@@ -32,21 +32,14 @@ BinTObjDrivers_IntSparseArrayDriver::BinTObjDrivers_IntSparseArrayDriver(
 {
 }
 
-//=======================================================================
-// function : NewEmpty
-// purpose  : Creates a new attribute
-//=======================================================================
+//=================================================================================================
 
 occ::handle<TDF_Attribute> BinTObjDrivers_IntSparseArrayDriver::NewEmpty() const
 {
   return new TObj_TIntSparseArray;
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : Retrieve. Translate the contents of <theSource> and put it
-//           into <theTarget>.
-//=======================================================================
+//=================================================================================================
 
 bool BinTObjDrivers_IntSparseArrayDriver::Paste(const BinObjMgt_Persistent&       theSource,
                                                 const occ::handle<TDF_Attribute>& theTarget,
@@ -76,11 +69,7 @@ bool BinTObjDrivers_IntSparseArrayDriver::Paste(const BinObjMgt_Persistent&     
   return true;
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : Store. Translate the contents of <theSource> and put it
-//           into <theTarget>
-//=======================================================================
+//=================================================================================================
 
 void BinTObjDrivers_IntSparseArrayDriver::Paste(
   const occ::handle<TDF_Attribute>& theSource,

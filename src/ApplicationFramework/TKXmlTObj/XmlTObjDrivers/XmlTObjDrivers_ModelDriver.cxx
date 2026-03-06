@@ -36,24 +36,14 @@ XmlTObjDrivers_ModelDriver::XmlTObjDrivers_ModelDriver(
 {
 }
 
-//=======================================================================
-// function : NewEmpty
-// purpose  : Creates a new attribute
-//=======================================================================
+//=================================================================================================
 
 occ::handle<TDF_Attribute> XmlTObjDrivers_ModelDriver::NewEmpty() const
 {
   return new TObj_TModel;
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : Translate the contents of <aSource> and put it
-//           into <aTarget>, using the relocation table
-//           <aRelocTable> to keep the sharings.
-//           Set CurrentModel of TObj_Assistant into Target TObj_TModel
-//           if its GUID and GUID stored in Source are same
-//=======================================================================
+//=================================================================================================
 
 bool XmlTObjDrivers_ModelDriver::Paste(const XmlObjMgt_Persistent&       Source,
                                        const occ::handle<TDF_Attribute>& Target,
@@ -78,13 +68,7 @@ bool XmlTObjDrivers_ModelDriver::Paste(const XmlObjMgt_Persistent&       Source,
   return false;
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : Translate the contents of <aSource> and put it
-//           into <aTarget>, using the relocation table
-//           <aRelocTable> to keep the sharings.
-//           a Model is stored as its GUID
-//=======================================================================
+//=================================================================================================
 
 void XmlTObjDrivers_ModelDriver::Paste(const occ::handle<TDF_Attribute>& Source,
                                        XmlObjMgt_Persistent&             Target,

@@ -126,10 +126,10 @@ static void GetGoodShape(TopoDS_Shape& theShape)
       }
       else
       {
-        anExp.Init(theShape, TopAbs_VERTEX);
-        if (anExp.More())
+        TopExp_Explorer anExpV(theShape, TopAbs_VERTEX);
+        if (anExpV.More())
         {
-          theShape = anExp.Current();
+          theShape = anExpV.Current();
         }
       }
     }
@@ -227,10 +227,7 @@ void TPrsStd_ConstraintTools::UpdateOnlyValue(const occ::handle<TDataXtd_Constra
     rel->SetText(txt);
 }
 
-//=======================================================================
-// function : ComputeDistance
-// purpose  : Build an PrsDim_LengthDimension.
-//=======================================================================
+//=================================================================================================
 void TPrsStd_ConstraintTools::ComputeDistance(const occ::handle<TDataXtd_Constraint>& theConst,
                                               occ::handle<AIS_InteractiveObject>&     theAIS)
 {
@@ -818,10 +815,7 @@ void TPrsStd_ConstraintTools::ComputeTangent(const occ::handle<TDataXtd_Constrai
   anAIS = ais;
 }
 
-//=======================================================================
-// function : ComputeAngleForOneFace
-// purpose  : computes AngleDimension for one-conical-face case
-//=======================================================================
+//=================================================================================================
 void TPrsStd_ConstraintTools::ComputeAngleForOneFace(const occ::handle<TDataXtd_Constraint>& aConst,
                                                      occ::handle<AIS_InteractiveObject>&     anAIS)
 {
@@ -1584,16 +1578,7 @@ void TPrsStd_ConstraintTools::ComputeEqualDistance(const occ::handle<TDataXtd_Co
   return;
 }
 
-//======================================================================
-// function : CheckShapesPair
-// purpose  : checks the types of two shapes.
-//            If the types aShape1 and aShape2 are EDGE - EDGE,
-//                                              or EDGE - VERTEX,
-//                                              or VERTEX - VERTEX,
-//                                              or CIRCLE - CIRCLE,
-//                                              or CIRCLE - VERTEX,
-//            then function returns TRUE, otherwise FALSE.
-//======================================================================
+//=================================================================================================
 static bool CheckShapesPair(const TopoDS_Shape& aShape1, const TopoDS_Shape& aShape2)
 {
   // Check whether the shapes form a correct pair.

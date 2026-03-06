@@ -23,7 +23,7 @@
 
 #include <CDM_Reference.hxx>
 
-#include <NCollection_List.hxx>
+#include <NCollection_DataMap.hxx>
 #include <Standard_Integer.hxx>
 class CDM_Document;
 
@@ -46,7 +46,7 @@ public:
   Standard_EXPORT int DocumentVersion() const;
 
 private:
-  NCollection_List<occ::handle<CDM_Reference>>::Iterator myIterator;
+  NCollection_DataMap<int, occ::handle<CDM_Reference>>::Iterator myIterator;
 };
 
 #endif // _CDM_ReferenceIterator_HeaderFile

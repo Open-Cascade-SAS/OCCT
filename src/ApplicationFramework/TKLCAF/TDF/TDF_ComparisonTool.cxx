@@ -28,10 +28,7 @@
 #include <NCollection_List.hxx>
 #include <TDF_RelocationTable.hxx>
 
-//=======================================================================
-// function : Compare
-// purpose  : Comparison method between 2 DataSets.
-//=======================================================================
+//=================================================================================================
 void TDF_ComparisonTool::Compare(const occ::handle<TDF_DataSet>&         aSourceDataSet,
                                  const occ::handle<TDF_DataSet>&         aTargetDataSet,
                                  const TDF_IDFilter&                     aFilter,
@@ -75,10 +72,7 @@ void TDF_ComparisonTool::Compare(const occ::handle<TDF_DataSet>&         aSource
   // because we cannot treat them.
 }
 
-//=======================================================================
-// function : Compare
-// purpose  : Internal recursive comparison method.
-//=======================================================================
+//=================================================================================================
 
 void TDF_ComparisonTool::Compare(const TDF_Label&                        aSrcLabel,
                                  const TDF_Label&                        aTrgLabel,
@@ -164,10 +158,7 @@ bool TDF_ComparisonTool::TargetUnbound(const occ::handle<TDF_DataSet>&         a
     return Unbound(aRefDataSet, aRelocationTable, aFilter, aDiffDataSet, anOption, false);
 }
 
-//=======================================================================
-// function : Unbound
-// purpose  : Internal function used by SourceUnbound and TargetUnbound.
-//=======================================================================
+//=================================================================================================
 
 bool TDF_ComparisonTool::Unbound(const occ::handle<TDF_DataSet>&         aRefDataSet,
                                  const occ::handle<TDF_RelocationTable>& aRelocationTable,
@@ -224,10 +215,7 @@ bool TDF_ComparisonTool::Unbound(const occ::handle<TDF_DataSet>&         aRefDat
   return hasDiff;
 }
 
-//=======================================================================
-// function : Cut
-// purpose  : Removes the attributes contained into <aDataSet>
-//=======================================================================
+//=================================================================================================
 
 void TDF_ComparisonTool::Cut(const occ::handle<TDF_DataSet>& aDataSet)
 {
@@ -245,11 +233,7 @@ void TDF_ComparisonTool::Cut(const occ::handle<TDF_DataSet>& aDataSet)
   }
 }
 
-//=======================================================================
-// function : IsSelfContained
-// purpose  : Returns true if all the labels of <aDataSet> are
-//          descendant of <aLabel>.
-//=======================================================================
+//=================================================================================================
 
 bool TDF_ComparisonTool::IsSelfContained(const TDF_Label&                aLabel,
                                          const occ::handle<TDF_DataSet>& aDataSet)

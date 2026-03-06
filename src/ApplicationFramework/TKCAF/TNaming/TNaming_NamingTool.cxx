@@ -15,6 +15,7 @@
 
 #include <TDF_ChildIterator.hxx>
 #include <TDF_Label.hxx>
+#include <TNaming.hxx>
 #include <TNaming_Iterator.hxx>
 #include <TNaming_Naming.hxx>
 #include <TNaming_NamingTool.hxx>
@@ -55,25 +56,6 @@ static void WriteS(const TopoDS_Shape& shape, const char* const filename)
 }
 #endif
 
-//=======================================================================
-// function : IsForbiden
-// purpose  : ANaming voir NamingTool
-//=======================================================================
-
-static bool IsForbiden(const NCollection_Map<TDF_Label>& Forbiden, const TDF_Label& Lab)
-{
-  if (Lab.IsRoot())
-  {
-    return false;
-  }
-  if (Forbiden.Contains(Lab))
-    return true;
-  else
-  {
-    return IsForbiden(Forbiden, Lab.Father());
-  }
-}
-
 //=================================================================================================
 
 static void LastModif(TNaming_NewShapeIterator&                                      it,
@@ -93,7 +75,7 @@ static void LastModif(TNaming_NewShapeIterator&                                 
 #endif
     if (!Updated.IsEmpty() && !Updated.Contains(Lab))
       continue;
-    if (IsForbiden(Forbiden, Lab))
+    if (TNaming::IsForbidden(Forbiden, Lab))
       continue;
     if (it.IsModification())
     {
@@ -110,27 +92,6 @@ static void LastModif(TNaming_NewShapeIterator&                                 
   }
   if (!YaModif)
     MS.Add(S);
-}
-
-//=======================================================================
-static void ApplyOrientation(NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& MS,
-                             const TopAbs_Orientation OrientationToApply)
-{
-#ifdef OCCT_DEBUG_APPLY
-  if (!MS.IsEmpty())
-  {
-    std::cout << "OrientationToApply = " << OrientationToApply << std::endl;
-    for (int anItMS1 = 1; anItMS1 <= MS.Extent(); ++anItMS1)
-    {
-      std::cout << "ApplyOrientation: TShape = " << MS(anItMS1).TShape()->This()
-                << " OR = " << MS(anItMS1).Orientation() << std::endl;
-    }
-  }
-#endif
-  for (int anItMS = 1; anItMS <= MS.Extent(); ++anItMS)
-  {
-    MS.Substitute(anItMS, MS(anItMS).Oriented(OrientationToApply));
-  }
 }
 
 //=================================================================================================
@@ -220,9 +181,8 @@ void TNaming_NamingTool::CurrentShape(
       //     LastModif(it, S, MS, Valid, Forbiden);
       NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> MS2;
       LastModif(it, S, MS2, Valid, Forbiden);
-      // clang-format off
-      if (YaOrientationToApply) ApplyOrientation (MS2, OrientationToApply);//the solution to be refined
-      // clang-format on
+      if (YaOrientationToApply)
+        TNaming::ApplyOrientation(MS2, OrientationToApply);
       for (int anItMS2 = 1; anItMS2 <= MS2.Extent(); ++anItMS2)
         MS.Add(MS2(anItMS2));
     }

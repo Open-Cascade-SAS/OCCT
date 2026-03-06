@@ -472,16 +472,8 @@ void TDocStd_Document::ClearRedos()
 #endif
 }
 
-//=======================================================================
-// function : Undo
-// purpose  :
-// Some important notice:
-// 1) The most recent undo delta is at the end of the list.
-// 2) Removing the LAST item of a list is tedious, but it is done only on
-//    Undo. Remove first is done at each command if the limit is reached!
-// 3) To make fun, the redos are not like the undos: the most recent delta
-//    is at the beginning! Like this, it is easier to remove it after use.
-//=======================================================================
+//=================================================================================================
+
 bool TDocStd_Document::Undo()
 {
   // Don't call NewCommand(), because it may commit Interactive Attributes
@@ -760,10 +752,7 @@ void TDocStd_Document::Recompute()
   PurgeModified();
 }
 
-//=======================================================================
-// function : AppendDeltaToTheFirst
-// purpose  : Appends delta to the first delta in the myUndoFILO
-//=======================================================================
+//=================================================================================================
 
 void TDocStd_Document::AppendDeltaToTheFirst(const occ::handle<TDocStd_CompoundDelta>& theDelta1,
                                              const occ::handle<TDF_Delta>&             theDelta2)
@@ -831,19 +820,15 @@ TDocStd_FormatVersion TDocStd_Document::StorageFormatVersion() const
   return myStorageFormatVersion;
 }
 
-//=======================================================================
-// function : ChangeStorageFormatVersion
-// purpose  : Sets <theVersion> of the format to be used to store the document
-//=======================================================================
+//=================================================================================================
+
 void TDocStd_Document::ChangeStorageFormatVersion(const TDocStd_FormatVersion theVersion)
 {
   myStorageFormatVersion = theVersion;
 }
 
-//=======================================================================
-// function : CurrentStorageFormatVersion
-// purpose  : Returns current storage format version of the document.
-//=======================================================================
+//=================================================================================================
+
 TDocStd_FormatVersion TDocStd_Document::CurrentStorageFormatVersion()
 {
   return TDocStd_FormatVersion_CURRENT;

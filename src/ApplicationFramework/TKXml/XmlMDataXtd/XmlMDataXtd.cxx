@@ -41,19 +41,13 @@ void XmlMDataXtd::AddDrivers(const occ::handle<XmlMDF_ADriverTable>& aDriverTabl
   aDriverTable->AddDriver(new XmlMDataXtd_PositionDriver(anMsgDrv));
 }
 
-//=======================================================================
-// function : SetDocumentVersion
-// purpose  : Sets current document version
-//=======================================================================
+//=================================================================================================
 void XmlMDataXtd::SetDocumentVersion(const int theVersion)
 {
   myDocumentVersion = theVersion;
 }
 
-//=======================================================================
-// function : DocumentVersion
-// purpose  : Retrieved document version
-//=======================================================================
+//=================================================================================================
 int XmlMDataXtd::DocumentVersion()
 {
   return myDocumentVersion;

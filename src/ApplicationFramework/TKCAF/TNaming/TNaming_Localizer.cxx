@@ -96,10 +96,7 @@ static void LWriteNSOnLabel(const occ::handle<TNaming_NamedShape>& NS, const cha
 }
   #endif
 #endif
-//=======================================================================
-// function : FindFeatureInAncestors
-// purpose  : Cherche les ancetres de S qui sont sous des labels
-//=======================================================================
+//=================================================================================================
 
 void TNaming_Localizer::FindFeaturesInAncestors(
   const TopoDS_Shape&                                     S,
@@ -711,10 +708,7 @@ void TNaming_Localizer::Localize(const TopoDS_Shape& PrevIn,
 }
 */
 
-//=======================================================================
-// function : FindGenerator
-// purpose  : Finds all generators of the <S> kept in <NS>
-//=======================================================================
+//=================================================================================================
 
 void TNaming_Localizer::FindGenerator(const occ::handle<TNaming_NamedShape>& NS,
                                       const TopoDS_Shape&                    S,
@@ -735,13 +729,7 @@ void TNaming_Localizer::FindGenerator(const occ::handle<TNaming_NamedShape>& NS,
   }
 }
 
-//=======================================================================
-// function : FindShapeContext
-// purpose  : Finds context of the shape <S>.
-//         : Looks for all oldshapes kept at father label of <NS>.
-//         : If <S> validated as subshape of one of the old shapes -
-//         : this oldshape is Context.
-//=======================================================================
+//=================================================================================================
 
 void TNaming_Localizer::FindShapeContext(const occ::handle<TNaming_NamedShape>& NS,
                                          const TopoDS_Shape&                    S,

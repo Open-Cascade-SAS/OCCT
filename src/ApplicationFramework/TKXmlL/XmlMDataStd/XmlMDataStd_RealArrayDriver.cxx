@@ -49,10 +49,7 @@ occ::handle<TDF_Attribute> XmlMDataStd_RealArrayDriver::NewEmpty() const
   return (new TDataStd_RealArray());
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : persistent -> transient (retrieve)
-//=======================================================================
+//=================================================================================================
 bool XmlMDataStd_RealArrayDriver::Paste(const XmlObjMgt_Persistent&       theSource,
                                         const occ::handle<TDF_Attribute>& theTarget,
                                         XmlObjMgt_RRelocationTable&       theRelocTable) const
@@ -165,10 +162,7 @@ bool XmlMDataStd_RealArrayDriver::Paste(const XmlObjMgt_Persistent&       theSou
   return true;
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : transient -> persistent (store)
-//=======================================================================
+//=================================================================================================
 void XmlMDataStd_RealArrayDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                         XmlObjMgt_Persistent&             theTarget,
                                         XmlObjMgt_SRelocationTable&) const
@@ -224,7 +218,7 @@ void XmlMDataStd_RealArrayDriver::Paste(const occ::handle<TDF_Attribute>& theSou
   if (realArray.Length())
   {
     str[iChar - 1] = '\0';
-    XmlObjMgt::SetStringValue(theTarget, (char*)str, true);
+    XmlObjMgt::SetStringValue(theTarget, static_cast<char*>(str), true);
   }
   if (aRealArray->ID() != TDataStd_RealArray::GetID())
   {

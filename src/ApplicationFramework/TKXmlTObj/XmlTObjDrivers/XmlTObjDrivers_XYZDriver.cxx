@@ -38,22 +38,14 @@ XmlTObjDrivers_XYZDriver::XmlTObjDrivers_XYZDriver(
 {
 }
 
-//=======================================================================
-// function : NewEmpty
-// purpose  : Creates a new attribute
-//=======================================================================
+//=================================================================================================
 
 occ::handle<TDF_Attribute> XmlTObjDrivers_XYZDriver::NewEmpty() const
 {
   return new TObj_TXYZ;
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : Translate the contents of <aSource> and put it
-//           into <aTarget>, using the relocation table
-//           <aRelocTable> to keep the sharings.
-//=======================================================================
+//=================================================================================================
 
 bool XmlTObjDrivers_XYZDriver::Paste(const XmlObjMgt_Persistent&       Source,
                                      const occ::handle<TDF_Attribute>& Target,
@@ -93,14 +85,7 @@ bool XmlTObjDrivers_XYZDriver::Paste(const XmlObjMgt_Persistent&       Source,
   return true;
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : Translate the contents of <aSource> and put it
-//           into <aTarget>, using the relocation table
-//           <aRelocTable> to keep the sharings.
-//           Store master and referred labels as entry, the other model referred
-//           as entry in model-container
-//=======================================================================
+//=================================================================================================
 
 void XmlTObjDrivers_XYZDriver::Paste(const occ::handle<TDF_Attribute>& Source,
                                      XmlObjMgt_Persistent&             Target,

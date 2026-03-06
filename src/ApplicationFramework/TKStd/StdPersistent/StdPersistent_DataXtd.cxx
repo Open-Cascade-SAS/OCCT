@@ -13,19 +13,13 @@
 
 #include <StdPersistent_DataXtd.hxx>
 
-//=======================================================================
-// function : ImportAttribute
-// purpose  : Import transient attribute from the persistent data
-//=======================================================================
+//=================================================================================================
 void StdPersistent_DataXtd::Geometry::ImportAttribute()
 {
   myTransient->SetType(static_cast<TDataXtd_GeometryEnum>(myData));
 }
 
-//=======================================================================
-// function : ImportAttribute
-// purpose  : Import transient attribute from the persistent data
-//=======================================================================
+//=================================================================================================
 void StdPersistent_DataXtd::Position::ImportAttribute()
 {
   myTransient->SetPosition(myData);

@@ -22,10 +22,7 @@
 #include <TFunction_IFunction.hxx>
 #include <TFunction_Scope.hxx>
 
-//=======================================================================
-// function : NewFunction
-// purpose  : Static method to create a new function.
-//=======================================================================
+//=================================================================================================
 bool TFunction_IFunction::NewFunction(const TDF_Label& L, const Standard_GUID& ID)
 {
   // Set Function (ID, code of failure)
@@ -43,10 +40,7 @@ bool TFunction_IFunction::NewFunction(const TDF_Label& L, const Standard_GUID& I
   return TFunction_DriverTable::Get()->HasDriver(ID);
 }
 
-//=======================================================================
-// function : DeleteFunction
-// purpose  : Static method to delete a function.
-//=======================================================================
+//=================================================================================================
 
 bool TFunction_IFunction::DeleteFunction(const TDF_Label& L)
 {
@@ -98,10 +92,7 @@ bool TFunction_IFunction::DeleteFunction(const TDF_Label& L)
   return true;
 }
 
-//=======================================================================
-// function : UpdateDependencies
-// purpose  : Updates the dependencies of all functions.
-//=======================================================================
+//=================================================================================================
 
 bool TFunction_IFunction::UpdateDependencies(const TDF_Label& Access)
 {
@@ -192,30 +183,21 @@ TFunction_IFunction::TFunction_IFunction(const TDF_Label& L)
   Init(L);
 }
 
-//=======================================================================
-// function : Init
-// purpose  : Initializes the interface.
-//=======================================================================
+//=================================================================================================
 
 void TFunction_IFunction::Init(const TDF_Label& L)
 {
   myLabel = L;
 }
 
-//=======================================================================
-// function : Label
-// purpose  : Returns the label of the interface.
-//=======================================================================
+//=================================================================================================
 
 const TDF_Label& TFunction_IFunction::Label() const
 {
   return myLabel;
 }
 
-//=======================================================================
-// function : UpdateDependencies
-// purpose  : Updates the dependencies of this function only.
-//=======================================================================
+//=================================================================================================
 
 bool TFunction_IFunction::UpdateDependencies() const
 {
@@ -282,11 +264,7 @@ bool TFunction_IFunction::UpdateDependencies() const
   return true;
 }
 
-//=======================================================================
-// function : Arguments
-// purpose  : The method fills-in the list by labels,
-//           where the arguments of the function are located.
-//=======================================================================
+//=================================================================================================
 
 void TFunction_IFunction::Arguments(NCollection_List<TDF_Label>& args) const
 {
@@ -294,11 +272,7 @@ void TFunction_IFunction::Arguments(NCollection_List<TDF_Label>& args) const
   driver->Arguments(args);
 }
 
-//=======================================================================
-// function : Results
-// purpose  : The method fills-in the list by labels,
-//           where the results of the function are located.
-//=======================================================================
+//=================================================================================================
 
 void TFunction_IFunction::Results(NCollection_List<TDF_Label>& res) const
 {
@@ -306,10 +280,7 @@ void TFunction_IFunction::Results(NCollection_List<TDF_Label>& res) const
   driver->Results(res);
 }
 
-//=======================================================================
-// function : GetPrevious
-// purpose  : Returns a list of previous functions.
-//=======================================================================
+//=================================================================================================
 
 void TFunction_IFunction::GetPrevious(NCollection_List<TDF_Label>& prev) const
 {
@@ -328,10 +299,7 @@ void TFunction_IFunction::GetPrevious(NCollection_List<TDF_Label>& prev) const
   }
 }
 
-//=======================================================================
-// function : GetNext
-// purpose  : Returns a list of next functions.
-//=======================================================================
+//=================================================================================================
 
 void TFunction_IFunction::GetNext(NCollection_List<TDF_Label>& next) const
 {
@@ -350,10 +318,7 @@ void TFunction_IFunction::GetNext(NCollection_List<TDF_Label>& next) const
   }
 }
 
-//=======================================================================
-// function : GetStatus
-// purpose  : Returns the execution status of the function.
-//=======================================================================
+//=================================================================================================
 
 TFunction_ExecutionStatus TFunction_IFunction::GetStatus() const
 {
@@ -361,10 +326,7 @@ TFunction_ExecutionStatus TFunction_IFunction::GetStatus() const
   return graph->GetStatus();
 }
 
-//=======================================================================
-// function : SetStatus
-// purpose  : Defines an execution status for a function.
-//=======================================================================
+//=================================================================================================
 
 void TFunction_IFunction::SetStatus(const TFunction_ExecutionStatus status) const
 {
@@ -372,10 +334,7 @@ void TFunction_IFunction::SetStatus(const TFunction_ExecutionStatus status) cons
   graph->SetStatus(status);
 }
 
-//=======================================================================
-// function : GetFunctions
-// purpose  : Returns the scope of functions.
-//=======================================================================
+//=================================================================================================
 
 const NCollection_DoubleMap<int, TDF_Label>& TFunction_IFunction::GetAllFunctions() const
 {
@@ -389,10 +348,7 @@ occ::handle<TFunction_Logbook> TFunction_IFunction::GetLogbook() const
   return TFunction_Scope::Set(myLabel)->GetLogbook();
 }
 
-//=======================================================================
-// function : GetDriver
-// purpose  : Returns the function driver.
-//=======================================================================
+//=================================================================================================
 
 occ::handle<TFunction_Driver> TFunction_IFunction::GetDriver(const int thread) const
 {
@@ -408,10 +364,7 @@ occ::handle<TFunction_Driver> TFunction_IFunction::GetDriver(const int thread) c
   return driver;
 }
 
-//=======================================================================
-// function : GetGraphNode
-// purpose  : Returns a graph node of the function.
-//=======================================================================
+//=================================================================================================
 
 occ::handle<TFunction_GraphNode> TFunction_IFunction::GetGraphNode() const
 {

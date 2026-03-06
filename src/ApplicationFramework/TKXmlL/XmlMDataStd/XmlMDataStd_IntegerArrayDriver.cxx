@@ -47,10 +47,7 @@ occ::handle<TDF_Attribute> XmlMDataStd_IntegerArrayDriver::NewEmpty() const
   return (new TDataStd_IntegerArray());
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : persistent -> transient (retrieve)
-//=======================================================================
+//=================================================================================================
 bool XmlMDataStd_IntegerArrayDriver::Paste(const XmlObjMgt_Persistent&       theSource,
                                            const occ::handle<TDF_Attribute>& theTarget,
                                            XmlObjMgt_RRelocationTable&       theRelocTable) const
@@ -151,10 +148,7 @@ bool XmlMDataStd_IntegerArrayDriver::Paste(const XmlObjMgt_Persistent&       the
   return true;
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : transient -> persistent (store)
-//=======================================================================
+//=================================================================================================
 void XmlMDataStd_IntegerArrayDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                            XmlObjMgt_Persistent&             theTarget,
                                            XmlObjMgt_SRelocationTable&) const
@@ -189,7 +183,7 @@ void XmlMDataStd_IntegerArrayDriver::Paste(const occ::handle<TDF_Attribute>& the
   {
     // No occurrence of '&', '<' and other irregular XML characters
     str[iChar - 1] = '\0';
-    XmlObjMgt::SetStringValue(theTarget, (char*)str, true);
+    XmlObjMgt::SetStringValue(theTarget, static_cast<char*>(str), true);
   }
   if (anIntArray->ID() != TDataStd_IntegerArray::GetID())
   {

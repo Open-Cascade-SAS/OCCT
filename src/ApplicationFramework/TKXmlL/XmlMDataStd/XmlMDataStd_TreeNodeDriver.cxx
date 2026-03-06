@@ -146,6 +146,6 @@ void XmlMDataStd_TreeNodeDriver::Paste(const occ::handle<TDF_Attribute>& theSour
 
   if (nbChildren)
   {
-    theTarget.Element().setAttribute(::ChildrenString(), (char*)str);
+    theTarget.Element().setAttribute(::ChildrenString(), static_cast<char*>(str));
   }
 }

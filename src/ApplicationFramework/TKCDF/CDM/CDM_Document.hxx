@@ -21,7 +21,9 @@
 #include <Standard_Type.hxx>
 
 #include <CDM_Reference.hxx>
+#include <NCollection_DataMap.hxx>
 #include <NCollection_List.hxx>
+#include <NCollection_Map.hxx>
 #include <CDM_CanCloseStatus.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <NCollection_Sequence.hxx>
@@ -356,15 +358,19 @@ private:
   //! used to search for the following resource items.
   Standard_EXPORT occ::handle<Resource_Manager> StorageResource();
 
+  //! Internal recursive implementation of DeepReferences with cycle detection.
+  Standard_EXPORT bool deepReferences(const occ::handle<CDM_Document>&    aDocument,
+                                      NCollection_Map<const CDM_Document*>& theVisited) const;
+
   Standard_EXPORT void AddToReference(const occ::handle<CDM_Reference>& aReference);
 
   Standard_EXPORT void AddFromReference(const occ::handle<CDM_Reference>& aReference);
 
   Standard_EXPORT void RemoveFromReference(const int aReferenceIdentifier);
 
-  NCollection_Sequence<TCollection_ExtendedString> myComments;
-  NCollection_List<occ::handle<CDM_Reference>>     myFromReferences;
-  NCollection_List<occ::handle<CDM_Reference>>     myToReferences;
+  NCollection_Sequence<TCollection_ExtendedString>             myComments;
+  NCollection_List<occ::handle<CDM_Reference>>          myFromReferences;
+  NCollection_DataMap<int, occ::handle<CDM_Reference>> myToReferences;
   int                                              myVersion;
   int                                              myActualReferenceIdentifier;
   int                                              myStorageVersion;

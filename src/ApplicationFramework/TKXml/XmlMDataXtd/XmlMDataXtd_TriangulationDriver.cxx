@@ -42,10 +42,7 @@ occ::handle<TDF_Attribute> XmlMDataXtd_TriangulationDriver::NewEmpty() const
   return new TDataXtd_Triangulation();
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : persistent -> transient (retrieve)
-//=======================================================================
+//=================================================================================================
 bool XmlMDataXtd_TriangulationDriver::Paste(const XmlObjMgt_Persistent&       theSource,
                                             const occ::handle<TDF_Attribute>& theTarget,
                                             XmlObjMgt_RRelocationTable&) const
@@ -114,10 +111,7 @@ bool XmlMDataXtd_TriangulationDriver::Paste(const XmlObjMgt_Persistent&       th
   return true;
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : transient -> persistent (store)
-//=======================================================================
+//=================================================================================================
 void XmlMDataXtd_TriangulationDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                             XmlObjMgt_Persistent&             theTarget,
                                             XmlObjMgt_SRelocationTable&) const
@@ -182,7 +176,7 @@ void XmlMDataXtd_TriangulationDriver::Paste(const occ::handle<TDF_Attribute>& th
     stream << std::ends;
 
     // clang-format off
-    char* dump = (char*)stream.str(); // copying! Don't forget to delete it.
+    char* dump = const_cast<char*>(stream.str()); // copying! Don't forget to delete it.
     // clang-format on
     XmlObjMgt::SetStringValue(theTarget, dump, true);
     delete[] dump;

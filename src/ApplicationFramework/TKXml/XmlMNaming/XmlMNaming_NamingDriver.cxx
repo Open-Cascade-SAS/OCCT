@@ -77,10 +77,7 @@ occ::handle<TDF_Attribute> XmlMNaming_NamingDriver::NewEmpty() const
   return (new TNaming_Naming());
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : persistent -> transient (retrieve)
-//=======================================================================
+//=================================================================================================
 bool XmlMNaming_NamingDriver::Paste(const XmlObjMgt_Persistent&       theSource,
                                     const occ::handle<TDF_Attribute>& theTarget,
                                     XmlObjMgt_RRelocationTable&       theRelocTable) const
@@ -249,10 +246,7 @@ bool XmlMNaming_NamingDriver::Paste(const XmlObjMgt_Persistent&       theSource,
   return true;
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : transient -> persistent (store)
-//=======================================================================
+//=================================================================================================
 void XmlMNaming_NamingDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                     XmlObjMgt_Persistent&             theTarget,
                                     XmlObjMgt_SRelocationTable&       theRelocTable) const

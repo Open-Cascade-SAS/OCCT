@@ -62,11 +62,7 @@ static std::mutex& Mutex()
 }
 } // namespace TDF_DerivedAttributeGlobals
 
-//=======================================================================
-// function : Register
-// purpose  : Registers a derived by the pointer to a method that creates a new derived attribute
-// instance
-//=======================================================================
+//=================================================================================================
 TDF_DerivedAttribute::NewDerived TDF_DerivedAttribute::Register(NewDerived  theNewAttributeFunction,
                                                                 const char* theNameSpace,
                                                                 const char* theTypeName)
@@ -79,11 +75,7 @@ TDF_DerivedAttribute::NewDerived TDF_DerivedAttribute::Register(NewDerived  theN
   return theNewAttributeFunction;
 }
 
-//=======================================================================
-// function : Initialize
-// purpose  : Checks synchronization and performs initialization of derived attributes maps if
-// needed
-//=======================================================================
+//=================================================================================================
 static void Initialize()
 {
   if (!TDF_DerivedAttributeGlobals::Creators().IsEmpty())

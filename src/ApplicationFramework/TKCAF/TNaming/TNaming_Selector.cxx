@@ -63,24 +63,15 @@ void PrintEntry(const TDF_Label& label, const bool allLevels)
 
 static void Write(const TopoDS_Shape& shape, const char* const filename)
 {
-  char buf[256];
-  if (strlen(filename) > 255)
-    return;
-  #if defined _MSC_VER
-  strcpy_s(buf, filename);
-  #else
-  strcpy(buf, filename);
-  #endif
-  char* p = buf;
-  while (*p)
+  TCollection_AsciiString aBuf(filename);
+  for (int i = 1; i <= aBuf.Length(); i++)
   {
-    if (*p == ':')
-      *p = '-';
-    p++;
+    if (aBuf.Value(i) == ':')
+      aBuf.SetValue(i, '-');
   }
-  std::ofstream save(buf);
+  std::ofstream save(aBuf.ToCString());
   if (!save)
-    std::cout << "File " << buf << " was not created: rdstate = " << save.rdstate() << std::endl;
+    std::cout << "File " << aBuf << " was not created: rdstate = " << save.rdstate() << std::endl;
   save << "DBRep_DrawableShape" << std::endl << std::endl;
   if (!shape.IsNull())
     BRepTools::Write(shape, save);
@@ -252,10 +243,7 @@ static bool IsSpecificCase2(const TDF_Label& F, const TopoDS_Shape& Selection)
   return isTheCase;
 }
 #endif
-//=======================================================================
-// function : FindGenerated
-// purpose  : Finds all generated from the <S>
-//=======================================================================
+//=================================================================================================
 
 static void FindGenerated(const occ::handle<TNaming_NamedShape>& NS,
                           const TopoDS_Shape&                    S,

@@ -46,10 +46,7 @@ occ::handle<TDF_Attribute> XmlMDataStd_ByteArrayDriver::NewEmpty() const
   return new TDataStd_ByteArray();
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : persistent -> transient (retrieve)
-//=======================================================================
+//=================================================================================================
 bool XmlMDataStd_ByteArrayDriver::Paste(const XmlObjMgt_Persistent&       theSource,
                                         const occ::handle<TDF_Attribute>& theTarget,
                                         XmlObjMgt_RRelocationTable&       theRelocTable) const
@@ -152,10 +149,7 @@ bool XmlMDataStd_ByteArrayDriver::Paste(const XmlObjMgt_Persistent&       theSou
   return true;
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : transient -> persistent (store)
-//=======================================================================
+//=================================================================================================
 void XmlMDataStd_ByteArrayDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                         XmlObjMgt_Persistent&             theTarget,
                                         XmlObjMgt_SRelocationTable&) const
@@ -191,7 +185,7 @@ void XmlMDataStd_ByteArrayDriver::Paste(const occ::handle<TDF_Attribute>& theSou
     }
 
     // Transfer the string (array of chars) to XML.
-    XmlObjMgt::SetStringValue(theTarget, (char*)str, true);
+    XmlObjMgt::SetStringValue(theTarget, static_cast<char*>(str), true);
   }
   if (aByteArray->ID() != TDataStd_ByteArray::GetID())
   {

@@ -151,10 +151,7 @@ void TDF_Attribute::BeforeForget() {}
 
 void TDF_Attribute::AfterResume() {}
 
-//=======================================================================
-// function : BeforeUndo
-// purpose  : Before application of a TDF_Delta.
-//=======================================================================
+//=================================================================================================
 
 bool TDF_Attribute::BeforeUndo(const occ::handle<TDF_AttributeDelta>& /*anAttDelta*/,
                                const bool /*forceIt*/)
@@ -162,10 +159,7 @@ bool TDF_Attribute::BeforeUndo(const occ::handle<TDF_AttributeDelta>& /*anAttDel
   return true;
 }
 
-//=======================================================================
-// function : AfterUndo
-// purpose  : After application of a TDF_Delta.
-//=======================================================================
+//=================================================================================================
 
 bool TDF_Attribute::AfterUndo(const occ::handle<TDF_AttributeDelta>& /*anAttDelta*/,
                               const bool /*forceIt*/)
@@ -184,10 +178,7 @@ bool TDF_Attribute::AfterRetrieval(const bool /*forceIt*/)
 
 void TDF_Attribute::BeforeCommitTransaction() {}
 
-//=======================================================================
-// function : Backup
-// purpose  : Backups the attribute.
-//=======================================================================
+//=================================================================================================
 
 void TDF_Attribute::Backup()
 {
@@ -225,10 +216,7 @@ void TDF_Attribute::Backup()
   }
 }
 
-//=======================================================================
-// function : BackupCopy
-// purpose  : Standard implementation of BackupCopy.
-//=======================================================================
+//=================================================================================================
 
 occ::handle<TDF_Attribute> TDF_Attribute::BackupCopy() const
 {
@@ -253,10 +241,7 @@ void TDF_Attribute::RemoveBackup()
     myBackup->myNext = this; // New back reference.
 }
 
-//=======================================================================
-// function : References
-// purpose  : Adds the referenced attributes or labels.
-//=======================================================================
+//=================================================================================================
 
 void TDF_Attribute::References(const occ::handle<TDF_DataSet>& /*aDataSet*/) const {}
 
@@ -304,10 +289,7 @@ occ::handle<TDF_DeltaOnRemoval> TDF_Attribute::DeltaOnRemoval() const
   return new TDF_DefaultDeltaOnRemoval(this);
 } // myBackup
 
-//=======================================================================
-// function : Dump
-// purpose  : This method is equivalent to operator <<
-//=======================================================================
+//=================================================================================================
 
 Standard_OStream& TDF_Attribute::Dump(Standard_OStream& anOS) const
 {

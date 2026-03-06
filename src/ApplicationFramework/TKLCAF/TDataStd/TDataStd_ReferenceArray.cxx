@@ -34,10 +34,7 @@ const Standard_GUID& TDataStd_ReferenceArray::GetID()
   return TDataStd_ReferenceArrayID;
 }
 
-//=======================================================================
-// function : SetAttr
-// purpose  : Implements Set functionality
-//=======================================================================
+//=================================================================================================
 static occ::handle<TDataStd_ReferenceArray> SetAttr(const TDF_Label&     label,
                                                     const int            lower,
                                                     const int            upper,
@@ -83,10 +80,8 @@ occ::handle<TDataStd_ReferenceArray> TDataStd_ReferenceArray::Set(const TDF_Labe
   return SetAttr(label, lower, upper, GetID());
 }
 
-//=======================================================================
-// function : Set
-// purpose  : Set user defined attribute with specific ID
-//=======================================================================
+//=================================================================================================
+
 occ::handle<TDataStd_ReferenceArray> TDataStd_ReferenceArray::Set(const TDF_Label&     label,
                                                                   const Standard_GUID& theGuid,
                                                                   const int            lower,
@@ -273,10 +268,8 @@ void TDataStd_ReferenceArray::Paste(const occ::handle<TDF_Attribute>&       Into
   anArray->SetID(myID);
 }
 
-//=======================================================================
-// function : References
-// purpose  : Adds the referenced attributes or labels.
-//=======================================================================
+//=================================================================================================
+
 void TDataStd_ReferenceArray::References(const occ::handle<TDF_DataSet>& aDataSet) const
 {
   if (!Label().IsImported() && !myArray.IsNull())

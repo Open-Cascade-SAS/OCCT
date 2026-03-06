@@ -42,10 +42,7 @@ occ::handle<TDF_Attribute> XmlMDataStd_BooleanArrayDriver::NewEmpty() const
   return new TDataStd_BooleanArray();
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : persistent -> transient (retrieve)
-//=======================================================================
+//=================================================================================================
 bool XmlMDataStd_BooleanArrayDriver::Paste(const XmlObjMgt_Persistent&       theSource,
                                            const occ::handle<TDF_Attribute>& theTarget,
                                            XmlObjMgt_RRelocationTable&) const
@@ -124,10 +121,7 @@ bool XmlMDataStd_BooleanArrayDriver::Paste(const XmlObjMgt_Persistent&       the
   return true;
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : transient -> persistent (store)
-//=======================================================================
+//=================================================================================================
 void XmlMDataStd_BooleanArrayDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                            XmlObjMgt_Persistent&             theTarget,
                                            XmlObjMgt_SRelocationTable&) const
@@ -162,7 +156,7 @@ void XmlMDataStd_BooleanArrayDriver::Paste(const occ::handle<TDF_Attribute>& the
 
   if (!arr.IsEmpty())
   {
-    XmlObjMgt::SetStringValue(theTarget, (char*)str, true);
+    XmlObjMgt::SetStringValue(theTarget, static_cast<char*>(str), true);
   }
 
   if (aBooleanArray->ID() != TDataStd_BooleanArray::GetID())

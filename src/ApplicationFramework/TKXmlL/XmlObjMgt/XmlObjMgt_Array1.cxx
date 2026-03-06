@@ -49,10 +49,7 @@ XmlObjMgt_Array1::XmlObjMgt_Array1(const int aFirst, const int aLast)
 {
 }
 
-//=======================================================================
-// function : CreateArrayElement
-// purpose  : Create DOM_Element representing the array, under 'theParent'
-//=======================================================================
+//=================================================================================================
 
 void XmlObjMgt_Array1::CreateArrayElement(XmlObjMgt_Element&         theParent,
                                           const XmlObjMgt_DOMString& theName)

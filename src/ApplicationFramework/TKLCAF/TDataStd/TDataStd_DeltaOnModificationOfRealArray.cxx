@@ -16,19 +16,13 @@
 #include <TDataStd_DeltaOnModificationOfRealArray.hxx>
 
 #include <Standard_Type.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_List.hxx>
+#include <TDataStd_DeltaOnModificationOfArray.hxx>
 #include <TDataStd_RealArray.hxx>
 #include <TDF_DeltaOnModification.hxx>
 #include <TDF_Label.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(TDataStd_DeltaOnModificationOfRealArray, TDF_DeltaOnModification)
 
-#ifdef OCCT_DEBUG
-  #define MAXUP 1000
-#endif
 //=================================================================================================
 
 TDataStd_DeltaOnModificationOfRealArray::TDataStd_DeltaOnModificationOfRealArray(
@@ -40,65 +34,13 @@ TDataStd_DeltaOnModificationOfRealArray::TDataStd_DeltaOnModificationOfRealArray
   occ::handle<TDataStd_RealArray> CurrAtt;
   if (Label().FindAttribute(OldAtt->ID(), CurrAtt))
   {
-    occ::handle<NCollection_HArray1<double>> Arr1, Arr2;
-    Arr1 = OldAtt->Array();
-    Arr2 = CurrAtt->Array();
-#ifdef OCCT_DEBUG
-    if (Arr1.IsNull())
-      std::cout << "DeltaOnModificationOfRealArray:: Old Array is Null" << std::endl;
-    if (Arr2.IsNull())
-      std::cout << "DeltaOnModificationOfRealArray:: Current Array is Null" << std::endl;
-#endif
-
-    if (Arr1.IsNull() || Arr2.IsNull())
-      return;
-    if (Arr1 != Arr2)
-    {
-      myUp1 = Arr1->Upper();
-      myUp2 = Arr2->Upper();
-      int i, N = 0, aCase = 0;
-      if (myUp1 == myUp2)
-      {
-        aCase = 1;
-        N     = myUp1;
-      }
-      else if (myUp1 < myUp2)
-      {
-        aCase = 2;
-        N     = myUp1;
-      }
-      else
-      {
-        aCase = 3;
-        N     = myUp2;
-      } // Up1 > Up2
-
-      NCollection_List<int> aList;
-      for (i = Arr1->Lower(); i <= N; i++)
-        if (Arr1->Value(i) != Arr2->Value(i))
-          aList.Append(i);
-      if (aCase == 3)
-      {
-        for (i = N + 1; i <= myUp1; i++)
-          aList.Append(i);
-      }
-      if (aList.Extent())
-      {
-        myIndxes = new NCollection_HArray1<int>(1, aList.Extent());
-        myValues = new NCollection_HArray1<double>(1, aList.Extent());
-        NCollection_List<int>::Iterator anIt(aList);
-        for (i = 1; anIt.More(); anIt.Next(), i++)
-        {
-          myIndxes->SetValue(i, anIt.Value());
-          myValues->SetValue(i, Arr1->Value(anIt.Value()));
-        }
-      }
-    }
+    TDataStd_DeltaOnModificationOfArray::ComputeDelta(OldAtt->Array(),
+                                                      CurrAtt->Array(),
+                                                      myIndxes,
+                                                      myValues,
+                                                      myUp1,
+                                                      myUp2);
     OldAtt->RemoveArray();
-#ifdef OCCT_DEBUG
-    if (OldAtt->Array().IsNull())
-      std::cout << "BackUp Arr is Nullified" << std::endl;
-#endif
   }
 }
 
@@ -106,87 +48,26 @@ TDataStd_DeltaOnModificationOfRealArray::TDataStd_DeltaOnModificationOfRealArray
 
 void TDataStd_DeltaOnModificationOfRealArray::Apply()
 {
-
   occ::handle<TDF_Attribute>      TDFAttribute = Attribute();
   occ::handle<TDataStd_RealArray> BackAtt      = occ::down_cast<TDataStd_RealArray>(TDFAttribute);
   if (BackAtt.IsNull())
-  {
-#ifdef OCCT_DEBUG
-    std::cout << "DeltaOnModificationOfRealArray::Apply: OldAtt is Null" << std::endl;
-#endif
     return;
-  }
 
   occ::handle<TDataStd_RealArray> aCurAtt;
   if (!Label().FindAttribute(BackAtt->ID(), aCurAtt))
-  {
-
     Label().AddAttribute(BackAtt);
-  }
 
   if (aCurAtt.IsNull())
-  {
-#ifdef OCCT_DEBUG
-    std::cout << "DeltaOnModificationOfRealArray::Apply: CurAtt is Null" << std::endl;
-#endif
-    return;
-  }
-  else
-    aCurAtt->Backup();
-
-  int aCase;
-  if (myUp1 == myUp2)
-    aCase = 1;
-  else if (myUp1 < myUp2)
-    aCase = 2;
-  else
-    aCase = 3; // Up1 > Up2
-
-  if (aCase == 1 && (myIndxes.IsNull() || myValues.IsNull()))
     return;
 
-  int                                      i;
-  occ::handle<NCollection_HArray1<double>> aRealArr = aCurAtt->Array();
-  if (aRealArr.IsNull())
-    return;
-  if (aCase == 1)
-    for (i = 1; i <= myIndxes->Upper(); i++)
-      aRealArr->ChangeArray1().SetValue(myIndxes->Value(i), myValues->Value(i));
-  else if (aCase == 2)
-  {
-    occ::handle<NCollection_HArray1<double>> realArr =
-      new NCollection_HArray1<double>(aRealArr->Lower(), myUp1);
-    for (i = aRealArr->Lower(); i <= myUp1 && i <= aRealArr->Upper(); i++)
-      realArr->SetValue(i, aRealArr->Value(i));
-    if (!myIndxes.IsNull() && !myValues.IsNull())
-      for (i = 1; i <= myIndxes->Upper(); i++)
-        realArr->ChangeArray1().SetValue(myIndxes->Value(i), myValues->Value(i));
-    aCurAtt->myValue = realArr;
-  }
-  else
-  { // == 3
-    int                                      low     = aRealArr->Lower();
-    occ::handle<NCollection_HArray1<double>> realArr = new NCollection_HArray1<double>(low, myUp1);
-    for (i = aRealArr->Lower(); i <= myUp2 && i <= aRealArr->Upper(); i++)
-      realArr->SetValue(i, aRealArr->Value(i));
-    if (!myIndxes.IsNull() && !myValues.IsNull())
-      for (i = 1; i <= myIndxes->Upper(); i++)
-      {
-#ifdef OCCT_DEBUG
-        std::cout << "i = " << i << "  myIndxes->Upper = " << myIndxes->Upper() << std::endl;
-        std::cout << "myIndxes->Value(i) = " << myIndxes->Value(i) << std::endl;
-        std::cout << "myValues->Value(i) = " << myValues->Value(i) << std::endl;
-#endif
-        realArr->ChangeArray1().SetValue(myIndxes->Value(i), myValues->Value(i));
-      }
-    aCurAtt->myValue = realArr;
-  }
+  aCurAtt->Backup();
 
-#ifdef OCCT_DEBUG
-  std::cout << " << RealArray Dump after Delta Apply >>" << std::endl;
-  occ::handle<NCollection_HArray1<double>> aRArr = aCurAtt->Array();
-  for (i = aRArr->Lower(); i <= aRArr->Upper() && i <= MAXUP; i++)
-    std::cout << aRArr->Value(i) << "  ";
-  std::cout << std::endl;
-#endif
+  occ::handle<NCollection_HArray1<double>> aNewArr =
+    TDataStd_DeltaOnModificationOfArray::ApplyDelta(aCurAtt->Array(),
+                                                    myIndxes,
+                                                    myValues,
+                                                    myUp1,
+                                                    myUp2);
+  if (!aNewArr.IsNull())
+    aCurAtt->myValue = aNewArr;
 }

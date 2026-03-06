@@ -45,10 +45,7 @@ occ::handle<TDF_Attribute> XmlMDataStd_ReferenceArrayDriver::NewEmpty() const
   return new TDataStd_ReferenceArray();
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : persistent -> transient (retrieve)
-//=======================================================================
+//=================================================================================================
 bool XmlMDataStd_ReferenceArrayDriver::Paste(const XmlObjMgt_Persistent&       theSource,
                                              const occ::handle<TDF_Attribute>& theTarget,
                                              XmlObjMgt_RRelocationTable&) const
@@ -104,7 +101,7 @@ bool XmlMDataStd_ReferenceArrayDriver::Paste(const XmlObjMgt_Persistent&       t
   }
 
   LDOM_Node           aCurNode    = anElement.getFirstChild();
-  LDOM_Element*       aCurElement = (LDOM_Element*)&aCurNode;
+  const LDOM_Element* aCurElement = static_cast<const LDOM_Element*>(&aCurNode);
   XmlObjMgt_DOMString aValueStr;
   int                 i = aFirstInd;
   while (*aCurElement != anElement.getLastChild())
@@ -132,7 +129,7 @@ bool XmlMDataStd_ReferenceArrayDriver::Paste(const XmlObjMgt_Persistent&       t
       }
       aReferenceArray->SetValue(i++, tLab);
       aCurNode    = aCurElement->getNextSibling();
-      aCurElement = (LDOM_Element*)&aCurNode;
+      aCurElement = static_cast<const LDOM_Element*>(&aCurNode);
     }
   }
 
@@ -164,10 +161,7 @@ bool XmlMDataStd_ReferenceArrayDriver::Paste(const XmlObjMgt_Persistent&       t
   return true;
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : transient -> persistent (store)
-//=======================================================================
+//=================================================================================================
 void XmlMDataStd_ReferenceArrayDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                              XmlObjMgt_Persistent&             theTarget,
                                              XmlObjMgt_SRelocationTable&) const

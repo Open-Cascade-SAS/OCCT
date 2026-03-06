@@ -19,10 +19,7 @@
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
 
-//=======================================================================
-// function : CopyTool
-// purpose  : Tool to copy a set of shape(s), using the aMap
-//=======================================================================
+//=================================================================================================
 void TNaming_CopyShape::CopyTool(const TopoDS_Shape& aShape,
                                  NCollection_IndexedDataMap<occ::handle<Standard_Transient>,
                                                             occ::handle<Standard_Transient>>& aMap,

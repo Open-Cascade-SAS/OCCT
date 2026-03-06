@@ -39,10 +39,8 @@ occ::handle<TDF_Attribute> XmlMDF_ReferenceDriver::NewEmpty() const
   return (new TDF_Reference());
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : persistent -> transient (retrieve)
-//=======================================================================
+//=================================================================================================
+
 bool XmlMDF_ReferenceDriver::Paste(const XmlObjMgt_Persistent&       theSource,
                                    const occ::handle<TDF_Attribute>& theTarget,
                                    XmlObjMgt_RRelocationTable&) const
@@ -79,16 +77,8 @@ bool XmlMDF_ReferenceDriver::Paste(const XmlObjMgt_Persistent&       theSource,
   return true;
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : transient -> persistent (store)
-//           <label tag='1'>     <This is label entry 0:4:1>
-//           ...
-//           <label tag='8'>     <This is label entry 0:4:1:8>
-//
-//           <TDF_Reference id="621"> /document/label/label[@tag="4"]/label[@tag="1"]
-//           </TDF_Reference>    <This is reference to label 0:4:1>
-//=======================================================================
+//=================================================================================================
+
 void XmlMDF_ReferenceDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                    XmlObjMgt_Persistent&             theTarget,
                                    XmlObjMgt_SRelocationTable&) const

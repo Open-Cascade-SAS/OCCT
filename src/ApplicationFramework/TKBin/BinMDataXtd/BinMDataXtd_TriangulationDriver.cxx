@@ -37,10 +37,7 @@ occ::handle<TDF_Attribute> BinMDataXtd_TriangulationDriver::NewEmpty() const
   return new TDataXtd_Triangulation();
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : persistent -> transient (retrieve)
-//=======================================================================
+//=================================================================================================
 bool BinMDataXtd_TriangulationDriver::Paste(const BinObjMgt_Persistent&       theSource,
                                             const occ::handle<TDF_Attribute>& theTarget,
                                             BinObjMgt_RRelocationTable&) const
@@ -103,10 +100,7 @@ bool BinMDataXtd_TriangulationDriver::Paste(const BinObjMgt_Persistent&       th
   return !PT.IsNull();
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : transient -> persistent (store)
-//=======================================================================
+//=================================================================================================
 void BinMDataXtd_TriangulationDriver::Paste(
   const occ::handle<TDF_Attribute>& theSource,
   BinObjMgt_Persistent&             theTarget,

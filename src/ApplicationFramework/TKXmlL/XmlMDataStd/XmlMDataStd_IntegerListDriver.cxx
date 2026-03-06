@@ -42,10 +42,7 @@ occ::handle<TDF_Attribute> XmlMDataStd_IntegerListDriver::NewEmpty() const
   return new TDataStd_IntegerList();
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : persistent -> transient (retrieve)
-//=======================================================================
+//=================================================================================================
 bool XmlMDataStd_IntegerListDriver::Paste(const XmlObjMgt_Persistent&       theSource,
                                           const occ::handle<TDF_Attribute>& theTarget,
                                           XmlObjMgt_RRelocationTable&) const
@@ -127,10 +124,7 @@ bool XmlMDataStd_IntegerListDriver::Paste(const XmlObjMgt_Persistent&       theS
   return true;
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : transient -> persistent (store)
-//=======================================================================
+//=================================================================================================
 void XmlMDataStd_IntegerListDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                           XmlObjMgt_Persistent&             theTarget,
                                           XmlObjMgt_SRelocationTable&) const
@@ -156,7 +150,7 @@ void XmlMDataStd_IntegerListDriver::Paste(const occ::handle<TDF_Attribute>& theS
     }
   }
   // No occurrence of '&', '<' and other irregular XML characters
-  XmlObjMgt::SetStringValue(theTarget, (char*)str, true);
+  XmlObjMgt::SetStringValue(theTarget, static_cast<char*>(str), true);
 
   if (anIntList->ID() != TDataStd_IntegerList::GetID())
   {

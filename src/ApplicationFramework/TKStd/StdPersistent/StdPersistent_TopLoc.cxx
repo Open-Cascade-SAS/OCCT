@@ -16,10 +16,7 @@
 #include <StdObjMgt_WriteData.hxx>
 #include <StdObject_gp_Trsfs.hxx>
 
-//=======================================================================
-// function : Read
-// purpose  : Read persistent data from a file
-//=======================================================================
+//=================================================================================================
 void StdPersistent_TopLoc::Datum3D::Read(StdObjMgt_ReadData& theReadData)
 {
   gp_Trsf aTrsf;
@@ -32,28 +29,19 @@ void StdPersistent_TopLoc::Datum3D::Write(StdObjMgt_WriteData& theWriteData) con
   theWriteData << myTransient->Transformation();
 }
 
-//=======================================================================
-// function : Read
-// purpose  : Read persistent data from a file
-//=======================================================================
+//=================================================================================================
 void StdPersistent_TopLoc::ItemLocation::Read(StdObjMgt_ReadData& theReadData)
 {
   theReadData >> myDatum >> myPower >> myNext;
 }
 
-//=======================================================================
-// function : Write
-// purpose  : Write persistent data to a file
-//=======================================================================
+//=================================================================================================
 void StdPersistent_TopLoc::ItemLocation::Write(StdObjMgt_WriteData& theWriteData) const
 {
   theWriteData << myDatum << myPower << myNext;
 }
 
-//=======================================================================
-// function : PChildren
-// purpose  : Gets persistent child objects
-//=======================================================================
+//=================================================================================================
 void StdPersistent_TopLoc::ItemLocation::PChildren(
   StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
 {
@@ -61,10 +49,7 @@ void StdPersistent_TopLoc::ItemLocation::PChildren(
   myNext.PChildren(theChildren);
 }
 
-//=======================================================================
-// function : Import
-// purpose  : Import transient object from the persistent data
-//=======================================================================
+//=================================================================================================
 TopLoc_Location StdPersistent_TopLoc::ItemLocation::Import() const
 {
   TopLoc_Location aNext = myNext.Import();
@@ -74,10 +59,7 @@ TopLoc_Location StdPersistent_TopLoc::ItemLocation::Import() const
     return aNext;
 }
 
-//=======================================================================
-// function : Translate
-// purpose  : Create a persistent object from a location
-//=======================================================================
+//=================================================================================================
 Handle(StdPersistent_TopLoc::ItemLocation) StdPersistent_TopLoc::Translate(
   const TopLoc_Location&                                                                   theLoc,
   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap)
@@ -89,10 +71,7 @@ Handle(StdPersistent_TopLoc::ItemLocation) StdPersistent_TopLoc::Translate(
   return aPLoc;
 }
 
-//=======================================================================
-// function : Translate
-// purpose  : Create a persistent object from a location datum
-//=======================================================================
+//=================================================================================================
 Handle(StdPersistent_TopLoc::Datum3D) StdPersistent_TopLoc::Translate(
   const occ::handle<TopLoc_Datum3D>&                                                       theDatum,
   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap)

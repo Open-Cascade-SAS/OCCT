@@ -33,21 +33,14 @@ BinTObjDrivers_ReferenceDriver::BinTObjDrivers_ReferenceDriver(
 {
 }
 
-//=======================================================================
-// function : NewEmpty
-// purpose  : Creates a new attribute
-//=======================================================================
+//=================================================================================================
 
 occ::handle<TDF_Attribute> BinTObjDrivers_ReferenceDriver::NewEmpty() const
 {
   return new TObj_TReference;
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : Translate the contents of <theSource> and put it
-//           into <theTarget>.
-//=======================================================================
+//=================================================================================================
 
 bool BinTObjDrivers_ReferenceDriver::Paste(const BinObjMgt_Persistent&       theSource,
                                            const occ::handle<TDF_Attribute>& theTarget,
@@ -94,13 +87,7 @@ bool BinTObjDrivers_ReferenceDriver::Paste(const BinObjMgt_Persistent&       the
   return !aLabel.IsNull() && !aMasterLabel.IsNull();
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : Translate the contents of <theSource> and put it
-//           into <theTarget>.
-//           Store master and referred labels as entry, the other model referred
-//           as entry in model-container
-//=======================================================================
+//=================================================================================================
 
 void BinTObjDrivers_ReferenceDriver::Paste(
   const occ::handle<TDF_Attribute>& theSource,

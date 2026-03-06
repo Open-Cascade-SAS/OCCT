@@ -26,10 +26,7 @@
 #include <TDF_Tool.hxx>
 
 // Attribute methods ++++++++++++++++++++++++++++++++++++++++++++++++++++
-//=======================================================================
-// function : Imported
-// purpose  : Sets imported and all its descendants.
-//=======================================================================
+//=================================================================================================
 void TDF_Label::Imported(const bool aStatus) const
 {
   if (IsNull())
@@ -42,10 +39,7 @@ void TDF_Label::Imported(const bool aStatus) const
   }
 }
 
-//=======================================================================
-// function : FindAttribute
-// purpose  : Finds an attributes according to an ID.
-//=======================================================================
+//=================================================================================================
 
 bool TDF_Label::FindAttribute(const Standard_GUID&        anID,
                               occ::handle<TDF_Attribute>& anAttribute) const
@@ -64,10 +58,7 @@ bool TDF_Label::FindAttribute(const Standard_GUID&        anID,
   return false;
 }
 
-//=======================================================================
-// function : FindAttribute
-// purpose  : Finds an attributes according to an ID and a Transaction.
-//=======================================================================
+//=================================================================================================
 
 bool TDF_Label::FindAttribute(const Standard_GUID&        anID,
                               const int                   aTransaction,
@@ -89,11 +80,7 @@ bool TDF_Label::FindAttribute(const Standard_GUID&        anID,
 
 // Label comfort methods ++++++++++++++++++++++++++++++++++++++++++++++++
 
-//=======================================================================
-// function : Depth
-// purpose  : Returns the depth of the label in the tree.
-//           Root has depth 0. So the depth is the number of fathers.
-//=======================================================================
+//=================================================================================================
 
 int TDF_Label::Depth() const
 {
@@ -102,10 +89,7 @@ int TDF_Label::Depth() const
   return myLabelNode->Depth();
 }
 
-//=======================================================================
-// function : IsDescendant
-// purpose  : Returns True if <me> is a descendant of <aLabel>.
-//=======================================================================
+//=================================================================================================
 
 bool TDF_Label::IsDescendant(const TDF_Label& aLabel) const
 {
@@ -142,10 +126,7 @@ const TDF_Label TDF_Label::Root() const
   return myLabelNode->RootNode();
 }
 
-//=======================================================================
-// function : NbChildren
-// purpose  : Returns the number of children.
-//=======================================================================
+//=================================================================================================
 
 int TDF_Label::NbChildren() const
 {
@@ -172,10 +153,7 @@ TDF_Label TDF_Label::FindChild(const int aTag, const bool create) const
 
 // Attribute comfort methods ++++++++++++++++++++++++++++++++++++++++++++
 
-//=======================================================================
-// function : IsA
-// purpose  : Returns true if owns an attribute with <anID> as ID.
-//=======================================================================
+//=================================================================================================
 
 // bool TDF_Label::IsA(const Standard_GUID& anID) const
 // {
@@ -183,10 +161,7 @@ TDF_Label TDF_Label::FindChild(const int aTag, const bool create) const
 //   return FindAttribute(anID,att);
 // }
 
-//=======================================================================
-// function : IsAttribute
-// purpose  : Returns true if owns an attribute with <anID> as ID.
-//=======================================================================
+//=================================================================================================
 
 bool TDF_Label::IsAttribute(const Standard_GUID& anID) const
 {
@@ -194,10 +169,7 @@ bool TDF_Label::IsAttribute(const Standard_GUID& anID) const
   return FindAttribute(anID, att);
 }
 
-//=======================================================================
-// function : HasAttribute
-// purpose  : Returns true if the label has at least one unremoved attribute.
-//=======================================================================
+//=================================================================================================
 
 bool TDF_Label::HasAttribute() const
 {
@@ -212,10 +184,7 @@ bool TDF_Label::HasAttribute() const
   return false;
 }
 
-//=======================================================================
-// function : NbAttributes
-// purpose  : Returns the number of attributes.
-//=======================================================================
+//=================================================================================================
 
 int TDF_Label::NbAttributes() const
 {
@@ -239,10 +208,7 @@ int TDF_Label::Transaction() const
   return myLabelNode->Data()->Transaction();
 }
 
-//=======================================================================
-// function : Dump
-// purpose  : This method is equivalent to operator <<
-//=======================================================================
+//=================================================================================================
 
 Standard_OStream& TDF_Label::Dump(Standard_OStream& anOS) const
 {
@@ -277,10 +243,7 @@ void TDF_Label::EntryDump(Standard_OStream& anOS) const
   }
 }
 
-//=======================================================================
-// function : FindOrAddChild
-// purpose  : Finds or adds a label child having <aTag> as tag.
-//=======================================================================
+//=================================================================================================
 
 TDF_LabelNode* TDF_Label::FindOrAddChild(const int aTag, const bool create) const
 {
@@ -509,10 +472,7 @@ void TDF_Label::ResumeAttribute(const occ::handle<TDF_Attribute>& anAttribute) c
   ResumeToNode(myLabelNode, anAttribute);
 }
 
-//=======================================================================
-// function : AddToNode
-// purpose  : Private method used by Add
-//=======================================================================
+//=================================================================================================
 
 void TDF_Label::AddToNode(const TDF_LabelNodePtr&           toNode,
                           const occ::handle<TDF_Attribute>& anAttribute,
@@ -553,10 +513,7 @@ void TDF_Label::AddToNode(const TDF_LabelNodePtr&           toNode,
     anAttribute->AfterAddition();
 }
 
-//=======================================================================
-// function : ForgetFromNode
-// purpose  : Private method used by Forget
-//=======================================================================
+//=================================================================================================
 
 void TDF_Label::ForgetFromNode(const TDF_LabelNodePtr&           fromNode,
                                const occ::handle<TDF_Attribute>& anAttribute) const
@@ -616,10 +573,7 @@ void TDF_Label::ForgetFromNode(const TDF_LabelNodePtr&           fromNode,
   }
 }
 
-//=======================================================================
-// function : ResumeToNode
-// purpose  : Private method used by Resume
-//=======================================================================
+//=================================================================================================
 
 void TDF_Label::ResumeToNode(const TDF_LabelNodePtr&           toNode,
                              const occ::handle<TDF_Attribute>& anAttribute) const

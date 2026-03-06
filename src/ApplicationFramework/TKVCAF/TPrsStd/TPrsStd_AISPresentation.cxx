@@ -495,11 +495,7 @@ void TPrsStd_AISPresentation::UnsetMode()
   }
 }
 
-//=======================================================================
-// function : GetNbSelectionModes
-// purpose  : Returns selection mode(s) of the attribute.
-//         : It starts with 1 .. GetNbSelectionModes().
-//=======================================================================
+//=================================================================================================
 int TPrsStd_AISPresentation::GetNbSelectionModes() const
 {
   return getData()->GetNbSelectionModes();
@@ -646,10 +642,7 @@ void TPrsStd_AISPresentation::AfterResume()
     AISErase();
 }
 
-//=======================================================================
-// function : BeforeUndo
-// purpose  : le NamedShape associe doit etre present
-//=======================================================================
+//=================================================================================================
 bool TPrsStd_AISPresentation::BeforeUndo(const occ::handle<TDF_AttributeDelta>& AD, const bool)
 {
   occ::handle<TPrsStd_AISPresentation> P;
@@ -672,10 +665,7 @@ bool TPrsStd_AISPresentation::BeforeUndo(const occ::handle<TDF_AttributeDelta>& 
   return true;
 }
 
-//=======================================================================
-// function : AfterUndo
-// purpose  : le NamedShape associe doit etre present
-//=======================================================================
+//=================================================================================================
 bool TPrsStd_AISPresentation::AfterUndo(const occ::handle<TDF_AttributeDelta>& AD, const bool)
 {
   occ::handle<TPrsStd_AISPresentation> P;
@@ -906,11 +896,7 @@ occ::handle<AIS_InteractiveContext> TPrsStd_AISPresentation::getAISContext() con
   return occ::handle<AIS_InteractiveContext>();
 }
 
-//=======================================================================
-// function : ActivateSelectionMode
-// purpose  : Activates selection mode of the interactive object.
-//           It is called internally on change of selection mode and AISUpdate().
-//=======================================================================
+//=================================================================================================
 void TPrsStd_AISPresentation::ActivateSelectionMode()
 {
   if (!myAIS.IsNull() && HasOwnSelectionMode())

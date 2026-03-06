@@ -73,19 +73,15 @@ void TDataStd_NamedData::clear()
 
 // Category: Integers
 
-//=======================================================================
-// function : HasIntegers
-// purpose  : Returns true if at least one named integer value is kept in the attribute.
-//=======================================================================
+//=================================================================================================
+
 bool TDataStd_NamedData::HasIntegers() const
 {
   return !myIntegers.IsNull() && !myIntegers->Map().IsEmpty();
 }
 
-//=======================================================================
-// function : HasInteger
-// purpose  : Returns true if the attribute contains this named integer.
-//=======================================================================
+//=================================================================================================
+
 bool TDataStd_NamedData::HasInteger(const TCollection_ExtendedString& theName) const
 {
   if (!HasIntegers())
@@ -93,11 +89,8 @@ bool TDataStd_NamedData::HasInteger(const TCollection_ExtendedString& theName) c
   return myIntegers->Map().IsBound(theName);
 }
 
-//=======================================================================
-// function :  GetInteger
-// purpose  : Returns the named integer. It returns 0 if there is no such
-//         : a named integer(use HasInteger()).
-//=======================================================================
+//=================================================================================================
+
 int TDataStd_NamedData::GetInteger(const TCollection_ExtendedString& theName)
 {
   if (!HasIntegers())
@@ -120,11 +113,8 @@ void TDataStd_NamedData::setInteger(const TCollection_ExtendedString& theName, c
   myIntegers->ChangeMap().Bind(theName, theInteger);
 }
 
-//=======================================================================
-// function : SetInteger
-// purpose  : Defines a named integer. If the integer already exists,
-//         : it changes its value to <theInteger>.
-//=======================================================================
+//=================================================================================================
+
 void TDataStd_NamedData::SetInteger(const TCollection_ExtendedString& theName, const int theInteger)
 {
   if (!HasIntegers())
@@ -147,11 +137,8 @@ void TDataStd_NamedData::SetInteger(const TCollection_ExtendedString& theName, c
   }
 }
 
-//=======================================================================
-// function : GetIntegersContainer
-// purpose  : Returns the internal container of named integers.
-//         : Use before HasIntegers()
-//=======================================================================
+//=================================================================================================
+
 const NCollection_DataMap<TCollection_ExtendedString, int>& TDataStd_NamedData::
   GetIntegersContainer()
 {
@@ -163,10 +150,8 @@ const NCollection_DataMap<TCollection_ExtendedString, int>& TDataStd_NamedData::
   return myIntegers->Map();
 }
 
-//=======================================================================
-// function : ChangeIntegers
-// purpose  : Replace the container content by new content of the <theIntegers>.
-//=======================================================================
+//=================================================================================================
+
 void TDataStd_NamedData::ChangeIntegers(
   const NCollection_DataMap<TCollection_ExtendedString, int>& theIntegers)
 {
@@ -184,19 +169,15 @@ void TDataStd_NamedData::ChangeIntegers(
 // Category: Reals
 //           =====
 
-//=======================================================================
-// function : HasReals
-// purpose  : Returns true if at least one named real value is kept in the attribute.
-//=======================================================================
+//=================================================================================================
+
 bool TDataStd_NamedData::HasReals() const
 {
   return !myReals.IsNull() && !myReals->Map().IsEmpty();
 }
 
-//=======================================================================
-// function : HasReal
-// purpose  : Returns true if the attribute contains this named real.
-//=======================================================================
+//=================================================================================================
+
 bool TDataStd_NamedData::HasReal(const TCollection_ExtendedString& theName) const
 {
   if (!HasReals())
@@ -204,11 +185,8 @@ bool TDataStd_NamedData::HasReal(const TCollection_ExtendedString& theName) cons
   return myReals->Map().IsBound(theName);
 }
 
-//=======================================================================
-// function : GetReal
-// purpose  : Returns the named real. It returns 0 if there is no such
-//         : a named real (use HasReal()).
-//=======================================================================
+//=================================================================================================
+
 double TDataStd_NamedData::GetReal(const TCollection_ExtendedString& theName)
 {
   if (!HasReals())
@@ -231,11 +209,8 @@ void TDataStd_NamedData::setReal(const TCollection_ExtendedString& theName, cons
   myReals->ChangeMap().Bind(theName, theReal);
 }
 
-//=======================================================================
-// function : SetReal
-// purpose  : Defines a named real. If the real already exists,
-//         : it changes its value to <theReal>.
-//=======================================================================
+//=================================================================================================
+
 void TDataStd_NamedData::SetReal(const TCollection_ExtendedString& theName, const double theReal)
 {
   if (!HasReals())
@@ -257,10 +232,8 @@ void TDataStd_NamedData::SetReal(const TCollection_ExtendedString& theName, cons
   }
 }
 
-//=======================================================================
-// function : GetRealsContainer
-// purpose  : Returns the internal container of named reals.
-//=======================================================================
+//=================================================================================================
+
 const NCollection_DataMap<TCollection_ExtendedString, double>& TDataStd_NamedData::
   GetRealsContainer()
 {
@@ -272,10 +245,8 @@ const NCollection_DataMap<TCollection_ExtendedString, double>& TDataStd_NamedDat
   return myReals->Map();
 }
 
-//=======================================================================
-// function : ChangeReals
-// purpose  : Replace the container content by new content of the <theReals>.
-//=======================================================================
+//=================================================================================================
+
 void TDataStd_NamedData::ChangeReals(
   const NCollection_DataMap<TCollection_ExtendedString, double>& theReals)
 {
@@ -293,19 +264,15 @@ void TDataStd_NamedData::ChangeReals(
 // Category: Strings
 //           =======
 
-//=======================================================================
-// function : HasStrings
-// purpose  : Returns true if there are some named strings in the attribute.
-//=======================================================================
+//=================================================================================================
+
 bool TDataStd_NamedData::HasStrings() const
 {
   return !myStrings.IsNull() && !myStrings->Map().IsEmpty();
 }
 
-//=======================================================================
-// function : HasString
-// purpose  : Returns true if the attribute contains this named string.
-//=======================================================================
+//=================================================================================================
+
 bool TDataStd_NamedData::HasString(const TCollection_ExtendedString& theName) const
 {
   if (!HasStrings())
@@ -313,11 +280,8 @@ bool TDataStd_NamedData::HasString(const TCollection_ExtendedString& theName) co
   return myStrings->Map().IsBound(theName);
 }
 
-//=======================================================================
-// function : GetString
-// purpose  : Returns the named string.It returns empty string if there is
-//         : string specified by the Name(use HasString()).
-//=======================================================================
+//=================================================================================================
+
 const TCollection_ExtendedString& TDataStd_NamedData::GetString(
   const TCollection_ExtendedString& theName)
 {
@@ -343,11 +307,8 @@ void TDataStd_NamedData::setString(const TCollection_ExtendedString& theName,
   myStrings->ChangeMap().Bind(theName, theString);
 }
 
-//=======================================================================
-// function : SetString
-// purpose  : Defines a named string. If the string already exists,
-//         : it changes its value to <theString>.
-//=======================================================================
+//=================================================================================================
+
 void TDataStd_NamedData::SetString(const TCollection_ExtendedString& theName,
                                    const TCollection_ExtendedString& theString)
 {
@@ -372,10 +333,8 @@ void TDataStd_NamedData::SetString(const TCollection_ExtendedString& theName,
   }
 }
 
-//=======================================================================
-// function : GetStringsContainer
-// purpose  : Returns the internal container of named strings.
-//=======================================================================
+//=================================================================================================
+
 const NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>&
   TDataStd_NamedData::GetStringsContainer()
 {
@@ -387,10 +346,8 @@ const NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString
   return myStrings->Map();
 }
 
-//=======================================================================
-// function : ChangeStrings
-// purpose  : Replace the container content by new content of the <theStrings>.
-//=======================================================================
+//=================================================================================================
+
 void TDataStd_NamedData::ChangeStrings(
   const NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>& theStrings)
 {
@@ -408,19 +365,15 @@ void TDataStd_NamedData::ChangeStrings(
 // Category: Bytes
 //           =====
 
-//=======================================================================
-// function : HasBytes
-// purpose  : Returns true if there are some named bytes in the attribute.
-//=======================================================================
+//=================================================================================================
+
 bool TDataStd_NamedData::HasBytes() const
 {
   return !myBytes.IsNull() && !myBytes->Map().IsEmpty();
 }
 
-//=======================================================================
-// function : HasByte
-// purpose  : Returns true if the attribute contains this named byte.
-//=======================================================================
+//=================================================================================================
+
 bool TDataStd_NamedData::HasByte(const TCollection_ExtendedString& theName) const
 {
   if (!HasBytes())
@@ -428,11 +381,8 @@ bool TDataStd_NamedData::HasByte(const TCollection_ExtendedString& theName) cons
   return myBytes->Map().IsBound(theName);
 }
 
-//=======================================================================
-// function : GetByte
-// purpose  : Returns the named byte. It returns 0 if there is no such
-//         : a named byte (use HasByte()).
-//=======================================================================
+//=================================================================================================
+
 uint8_t TDataStd_NamedData::GetByte(const TCollection_ExtendedString& theName)
 {
   if (!HasBytes())
@@ -455,11 +405,8 @@ void TDataStd_NamedData::setByte(const TCollection_ExtendedString& theName, cons
   myBytes->ChangeMap().Bind(theName, theByte);
 }
 
-//=======================================================================
-// function : SetByte
-// purpose  : Defines a named byte. If the byte already exists,
-//         : it changes its value to <theByte>.
-//=======================================================================
+//=================================================================================================
+
 void TDataStd_NamedData::SetByte(const TCollection_ExtendedString& theName, const uint8_t theByte)
 {
   if (!HasBytes())
@@ -483,10 +430,8 @@ void TDataStd_NamedData::SetByte(const TCollection_ExtendedString& theName, cons
   }
 }
 
-//=======================================================================
-// function : GetBytesContainer
-// purpose  : Returns the internal container of named bytes.
-//=======================================================================
+//=================================================================================================
+
 const NCollection_DataMap<TCollection_ExtendedString, uint8_t>& TDataStd_NamedData::
   GetBytesContainer()
 {
@@ -498,10 +443,8 @@ const NCollection_DataMap<TCollection_ExtendedString, uint8_t>& TDataStd_NamedDa
   return myBytes->Map();
 }
 
-//=======================================================================
-// function : ChangeBytes
-// purpose  : Replace the container content by new content of the <theBytes>.
-//=======================================================================
+//=================================================================================================
+
 void TDataStd_NamedData::ChangeBytes(
   const NCollection_DataMap<TCollection_ExtendedString, uint8_t>& theBytes)
 {
@@ -519,20 +462,15 @@ void TDataStd_NamedData::ChangeBytes(
 // Category: Arrays of integers
 //           ==================
 
-//=======================================================================
-// function : HasArrayOfIntegers
-// purpose  : Returns true if there are some named arrays of integer values in the attribute.
-//=======================================================================
+//=================================================================================================
+
 bool TDataStd_NamedData::HasArraysOfIntegers() const
 {
   return !myArraysOfIntegers.IsNull() && !myArraysOfIntegers->Map().IsEmpty();
 }
 
-//=======================================================================
-// function : HasArrayOfIntegers
-// purpose  : Returns true if the attribute contains this named array
-//         : of integer values.
-//=======================================================================
+//=================================================================================================
+
 bool TDataStd_NamedData::HasArrayOfIntegers(const TCollection_ExtendedString& theName) const
 {
   if (!HasArraysOfIntegers())
@@ -540,11 +478,8 @@ bool TDataStd_NamedData::HasArrayOfIntegers(const TCollection_ExtendedString& th
   return myArraysOfIntegers->Map().IsBound(theName);
 }
 
-//=======================================================================
-// function : GetArrayOfIntegers
-// purpose  : Returns the named array of integer values. It returns a NULL
-//         : Handle if there is no such a named array of integers
-//=======================================================================
+//=================================================================================================
+
 const occ::handle<NCollection_HArray1<int>>& TDataStd_NamedData::GetArrayOfIntegers(
   const TCollection_ExtendedString& theName)
 {
@@ -582,10 +517,8 @@ void TDataStd_NamedData::setArrayOfIntegers(
   myArraysOfIntegers->ChangeMap().Bind(theName, anArray);
 }
 
-//=======================================================================
-// function : GetArraysOfIntegersContainer
-// purpose  : Returns the internal container of named arrays of integer values.
-//=======================================================================
+//=================================================================================================
+
 const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>>&
   TDataStd_NamedData::GetArraysOfIntegersContainer()
 {
@@ -597,10 +530,8 @@ const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HA
   return myArraysOfIntegers->Map();
 }
 
-//=======================================================================
-// function : ChangeArraysOfIntegers
-// purpose  : Replace the container content by new content of the <theIntegers>.
-//=======================================================================
+//=================================================================================================
+
 void TDataStd_NamedData::ChangeArraysOfIntegers(
   const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>>&
     theIntegers)
@@ -619,20 +550,15 @@ void TDataStd_NamedData::ChangeArraysOfIntegers(
 // Category: Arrays of reals
 //           ===============
 
-//=======================================================================
-// function : HasArrayOfReals
-// purpose  : Returns true if there are some named arrays of real values in the attribute.
-//=======================================================================
+//=================================================================================================
+
 bool TDataStd_NamedData::HasArraysOfReals() const
 {
   return !myArraysOfReals.IsNull() && !myArraysOfReals->Map().IsEmpty();
 }
 
-//=======================================================================
-// function : HasArrayOfReals
-// purpose  : Returns true if the attribute contains this named array of
-//         : real values.
-//=======================================================================
+//=================================================================================================
+
 bool TDataStd_NamedData::HasArrayOfReals(const TCollection_ExtendedString& theName) const
 {
   if (!HasArraysOfReals())
@@ -640,11 +566,8 @@ bool TDataStd_NamedData::HasArrayOfReals(const TCollection_ExtendedString& theNa
   return myArraysOfReals->Map().IsBound(theName);
 }
 
-//=======================================================================
-// function : GetArrayOfReals
-// purpose  : Returns the named array of real values. It returns a NULL
-//         : Handle if there is no such a named array of reals.
-//=======================================================================
+//=================================================================================================
+
 const occ::handle<NCollection_HArray1<double>>& TDataStd_NamedData::GetArrayOfReals(
   const TCollection_ExtendedString& theName)
 {
@@ -682,10 +605,8 @@ void TDataStd_NamedData::setArrayOfReals(
   myArraysOfReals->ChangeMap().Bind(theName, anArray);
 }
 
-//=======================================================================
-// function : GetArraysOfRealsContainer
-// purpose  : Returns the internal container of named arrays of real values.
-//=======================================================================
+//=================================================================================================
+
 const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>>&
   TDataStd_NamedData::GetArraysOfRealsContainer()
 {
@@ -697,10 +618,8 @@ const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HA
   return myArraysOfReals->Map();
 }
 
-//=======================================================================
-// function : ChangeArraysOfReals
-// purpose  : Replace the container content by new content of the <theReals>.
-//=======================================================================
+//=================================================================================================
+
 void TDataStd_NamedData::ChangeArraysOfReals(
   const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>>&
     theReals)

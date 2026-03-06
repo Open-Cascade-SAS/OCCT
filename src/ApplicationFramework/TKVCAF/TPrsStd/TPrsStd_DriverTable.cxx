@@ -58,10 +58,7 @@ TPrsStd_DriverTable::TPrsStd_DriverTable()
   InitStandardDrivers();
 }
 
-//=======================================================================
-// function : InitStandardDrivers
-// purpose  : Adds standard drivers to the DriverTable
-//=======================================================================
+//=================================================================================================
 
 void TPrsStd_DriverTable::InitStandardDrivers()
 {
@@ -83,10 +80,7 @@ void TPrsStd_DriverTable::InitStandardDrivers()
   myDrivers.Bind(TDataXtd_Point::GetID(), pointdrv);
 }
 
-//=======================================================================
-// function : AddDriver
-// purpose  : Adds a driver to the DriverTable
-//=======================================================================
+//=================================================================================================
 
 bool TPrsStd_DriverTable::AddDriver(const Standard_GUID&               guid,
                                     const occ::handle<TPrsStd_Driver>& driver)
@@ -94,10 +88,7 @@ bool TPrsStd_DriverTable::AddDriver(const Standard_GUID&               guid,
   return myDrivers.Bind(guid, driver);
 }
 
-//=======================================================================
-// function : FindDriver
-// purpose  : Returns the driver if find
-//=======================================================================
+//=================================================================================================
 
 bool TPrsStd_DriverTable::FindDriver(const Standard_GUID&         guid,
                                      occ::handle<TPrsStd_Driver>& driver) const
@@ -110,10 +101,7 @@ bool TPrsStd_DriverTable::FindDriver(const Standard_GUID&         guid,
   return false;
 }
 
-//=======================================================================
-// function : RemoveDriver
-// purpose  : Removes a driver from the DriverTable
-//=======================================================================
+//=================================================================================================
 
 bool TPrsStd_DriverTable::RemoveDriver(const Standard_GUID& guid)
 {

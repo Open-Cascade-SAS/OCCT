@@ -35,21 +35,14 @@ XmlTObjDrivers_IntSparseArrayDriver::XmlTObjDrivers_IntSparseArrayDriver(
 {
 }
 
-//=======================================================================
-// function : NewEmpty
-// purpose  : Creates a new attribute
-//=======================================================================
+//=================================================================================================
 
 occ::handle<TDF_Attribute> XmlTObjDrivers_IntSparseArrayDriver::NewEmpty() const
 {
   return new TObj_TIntSparseArray;
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : Retrieve. Translate the contents of <theSource> and put it
-//           into <theTarget>.
-//=======================================================================
+//=================================================================================================
 
 bool XmlTObjDrivers_IntSparseArrayDriver::Paste(const XmlObjMgt_Persistent&       theSource,
                                                 const occ::handle<TDF_Attribute>& theTarget,
@@ -80,11 +73,7 @@ bool XmlTObjDrivers_IntSparseArrayDriver::Paste(const XmlObjMgt_Persistent&     
   return true;
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : Store. Translate the contents of <theSource> and put it
-//           into <theTarget>
-//=======================================================================
+//=================================================================================================
 
 void XmlTObjDrivers_IntSparseArrayDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                                 XmlObjMgt_Persistent&             theTarget,

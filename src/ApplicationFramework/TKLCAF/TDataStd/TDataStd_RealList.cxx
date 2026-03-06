@@ -33,10 +33,7 @@ const Standard_GUID& TDataStd_RealList::GetID()
   return TDataStd_RealListID;
 }
 
-//=======================================================================
-// function : SetAttr
-// purpose  : Implements Set functionality
-//=======================================================================
+//=================================================================================================
 static occ::handle<TDataStd_RealList> SetAttr(const TDF_Label& label, const Standard_GUID& theGuid)
 {
   occ::handle<TDataStd_RealList> A;
@@ -63,10 +60,8 @@ occ::handle<TDataStd_RealList> TDataStd_RealList::Set(const TDF_Label& label)
   return SetAttr(label, GetID());
 }
 
-//=======================================================================
-// function : Set
-// purpose  : Set user defined attribute with specific ID
-//=======================================================================
+//=================================================================================================
+
 occ::handle<TDataStd_RealList> TDataStd_RealList::Set(const TDF_Label&     label,
                                                       const Standard_GUID& theGuid)
 {
@@ -194,10 +189,8 @@ bool TDataStd_RealList::Remove(const double value)
   return false;
 }
 
-//=======================================================================
-// function : Remove
-// purpose  : Removes a value at the <index> position.
-//=======================================================================
+//=================================================================================================
+
 bool TDataStd_RealList::RemoveByIndex(const int index)
 {
   int                                i(1);

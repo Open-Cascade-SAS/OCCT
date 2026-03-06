@@ -278,7 +278,9 @@ void BinMDataStd_NamedDataDriver::Paste(
       theTarget << itr.Key(); // key
       const NCollection_Array1<int>& anArr1 = itr.Value()->Array1();
       theTarget << anArr1.Lower() << anArr1.Upper(); // value Arr1 dimensions
-      int* aPtr = (int*)&anArr1(anArr1.Lower());
+      int* aPtr = const_cast<int*>(&anArr1(anArr1.Lower()));
+
+
       theTarget.PutIntArray(aPtr, anArr1.Length());
     }
   }
@@ -298,7 +300,7 @@ void BinMDataStd_NamedDataDriver::Paste(
       theTarget << itr.Key(); // key
       const NCollection_Array1<double>& anArr1 = itr.Value()->Array1();
       theTarget << anArr1.Lower() << anArr1.Upper(); // value Arr1 dimensions
-      double* aPtr = (double*)&anArr1(anArr1.Lower());
+      double* aPtr = const_cast<double*>(&anArr1(anArr1.Lower()));
       theTarget.PutRealArray(aPtr, anArr1.Length());
     }
   }

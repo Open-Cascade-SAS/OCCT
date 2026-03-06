@@ -27,10 +27,7 @@ const Standard_GUID& TDataStd_Name::GetID()
   return TDataStd_NameID;
 }
 
-//=======================================================================
-// function : SetAttr
-// purpose  : Implements Set functionality
-//=======================================================================
+//=================================================================================================
 static occ::handle<TDataStd_Name> SetAttr(const TDF_Label&                  label,
                                           const TCollection_ExtendedString& theString,
                                           const Standard_GUID&              theGuid)
@@ -54,10 +51,7 @@ occ::handle<TDataStd_Name> TDataStd_Name::Set(const TDF_Label&                  
   return SetAttr(label, theString, GetID());
 }
 
-//=======================================================================
-// function : Set
-// purpose  : Set user defined attribute
-//=======================================================================
+//=================================================================================================
 
 occ::handle<TDataStd_Name> TDataStd_Name::Set(const TDF_Label&                  label,
                                               const Standard_GUID&              theGuid,

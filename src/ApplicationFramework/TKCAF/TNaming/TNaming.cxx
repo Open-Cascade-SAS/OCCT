@@ -42,6 +42,7 @@
 #include <TopoDS_Solid.hxx>
 #include <TopoDS_Wire.hxx>
 #include <NCollection_DataMap.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_List.hxx>
 #include <NCollection_Map.hxx>
@@ -146,6 +147,60 @@ TopoDS_Shape TNaming::MakeShape(const NCollection_Map<TopoDS_Shape, TopTools_Sha
     }
   }
   return TopoDS_Shape();
+}
+
+//=================================================================================================
+
+TopoDS_Shape TNaming::MakeShape(
+  const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMS)
+{
+  if (!theMS.IsEmpty())
+  {
+    if (theMS.Extent() == 1)
+    {
+      return theMS(1);
+    }
+    else
+    {
+      TopoDS_Compound aCompound;
+      BRep_Builder    aBuilder;
+      aBuilder.MakeCompound(aCompound);
+      for (int anIdx = 1; anIdx <= theMS.Extent(); ++anIdx)
+      {
+        aBuilder.Add(aCompound, theMS(anIdx));
+      }
+      return aCompound;
+    }
+  }
+  return TopoDS_Shape();
+}
+
+//=================================================================================================
+
+void TNaming::ApplyOrientation(
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMS,
+  const TopAbs_Orientation                                      theOrientation)
+{
+  for (int anIdx = 1; anIdx <= theMS.Extent(); ++anIdx)
+  {
+    theMS.Substitute(anIdx, theMS(anIdx).Oriented(theOrientation));
+  }
+}
+
+//=================================================================================================
+
+bool TNaming::IsForbidden(const NCollection_Map<TDF_Label>& theForbiden,
+                          const TDF_Label&                  theLabel)
+{
+  if (theLabel.IsRoot())
+  {
+    return false;
+  }
+  if (theForbiden.Contains(theLabel))
+  {
+    return true;
+  }
+  return IsForbidden(theForbiden, theLabel.Father());
 }
 
 //=================================================================================================

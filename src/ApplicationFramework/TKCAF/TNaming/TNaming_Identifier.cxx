@@ -282,11 +282,7 @@ void TNaming_Identifier::PrimitiveIdentification(TNaming_Localizer& /*L*/,
   myDone = true;
 }
 
-//=======================================================================
-// function : GeneratedIdentification
-// purpose  : Finds generators of identifying shape <myShape> and keeps
-//         : them in <myShapeArgs>
-//=======================================================================
+//=================================================================================================
 
 void TNaming_Identifier::GeneratedIdentification(TNaming_Localizer& /*Localizer*/,
                                                  const occ::handle<TNaming_NamedShape>& NS)

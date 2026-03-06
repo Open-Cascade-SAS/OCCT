@@ -340,10 +340,7 @@ static TopoDS_Shape MakeShape(
   return TopoDS_Shape();
 }
 
-//=======================================================================
-// function : ShapeWithType
-// purpose  : Tries to make shape with given type from the given shape
-//=======================================================================
+//=================================================================================================
 
 static TopoDS_Shape ShapeWithType(const TopoDS_Shape& theShape, const TopAbs_ShapeEnum theType)
 {
@@ -523,10 +520,7 @@ static bool FindModifUntil(TNaming_NewShapeIterator&                            
   return found;
 }
 
-//=======================================================================
-// function : ModifUntil
-// purpose  : returns map <theMS> of generators of Target
-//=======================================================================
+//=================================================================================================
 
 static void SearchModifUntil(
   const NCollection_Map<TDF_Label>& /*Valid*/,
@@ -1057,8 +1051,9 @@ static bool Union(const TDF_Label&                                         L,
       DbgTools_Write(aCand, "Cand.brep");
 #endif
       int num = S.Map().Extent();
-      anExpl.Init(aCand, (ShapeType == TopAbs_WIRE) ? TopAbs_EDGE : TopAbs_FACE);
-      for (; anExpl.More(); anExpl.Next())
+      for (TopExp_Explorer anExpl(aCand, (ShapeType == TopAbs_WIRE) ? TopAbs_EDGE : TopAbs_FACE);
+           anExpl.More();
+           anExpl.Next())
       {
         if (S.Map().Contains(anExpl.Current()))
           num--;
@@ -1160,14 +1155,7 @@ static TopoDS_Shape FindShape(
   return Compound;
 }
 
-//=======================================================================
-// function : Generation
-// purpose  : Resolves Name from arguments: arg1 - generated (target shape)
-//         : arg2 - the generator: the oldest ancestor (usually NS with
-//         : PRIMITIVE evolution. (See TNaming_Localizer::FindGenerator).
-//         : Resulting NamedShape contains shape, which is in the first
-//         : argument NamedShape and is modification of the last argument NS.
-//=======================================================================
+//=================================================================================================
 
 static bool Generated(const TDF_Label&                                         L,
                       const NCollection_Map<TDF_Label>&                        Valid,
@@ -1404,10 +1392,7 @@ static bool Generated(const TDF_Label&                                         L
   return true;
 }
 
-//=======================================================================
-// function : Identity
-// purpose  : Regenerates Naming attribute with Name = IDENTITY
-//=======================================================================
+//=================================================================================================
 // Name with this type must contain only one NamedShape attribute as argument.
 // Algorithm takes all last modifications of NamedShape of this argument
 // starting with this one ( see method TNaming_NamingTool::CurrentShape ).
@@ -1446,10 +1431,7 @@ static bool Identity(const TDF_Label&                                         L,
   return true;
 }
 
-//=======================================================================
-// function : FilterByNeighbourgs
-// purpose  : regenerated the specified shape with help of its neighbours
-//=======================================================================
+//=================================================================================================
 // result -  is a subshape of the first argument of the Name with type =
 // ShapeType of this Name, which has a common subshapes (boundaries) with
 // each neighbour - shapes from the other arguments of the Name.
@@ -1687,13 +1669,7 @@ static int Aggregation(const TopoDS_Shape& S, const TopoDS_Shape& AS, TNaming_Bu
   return N;
 }
 
-//==========================================================================
-// function : Orientation
-// purpose  : to solve  ORIENTATION name
-// this function explores the second argument | arguments (Context) and
-// keeps at the label (L) the first argument (S) with the orientation it
-// has in the context. Index is used only for Seam edge recomputing
-//==========================================================================
+//=================================================================================================
 static bool ORientation(const TDF_Label&                                         L,
                         const NCollection_Map<TDF_Label>&                        Valid,
                         const NCollection_List<occ::handle<TNaming_NamedShape>>& Args,
@@ -2071,10 +2047,7 @@ static bool WireIN(const TDF_Label&                                         L,
   return aResult;
 }
 
-//===========================================================================
-// function : ShellIN
-// purpose  : to solve  SHELLIN name
-//===========================================================================
+//=================================================================================================
 static bool ShellIN(const TDF_Label&                                         L,
                     const NCollection_Map<TDF_Label>&                        Valid,
                     const NCollection_List<occ::handle<TNaming_NamedShape>>& Args,

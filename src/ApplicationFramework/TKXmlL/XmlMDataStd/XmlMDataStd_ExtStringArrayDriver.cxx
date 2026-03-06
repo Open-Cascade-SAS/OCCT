@@ -63,10 +63,7 @@ occ::handle<TDF_Attribute> XmlMDataStd_ExtStringArrayDriver::NewEmpty() const
   return (new TDataStd_ExtStringArray());
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : persistent -> transient (retrieve)
-//=======================================================================
+//=================================================================================================
 bool XmlMDataStd_ExtStringArrayDriver::Paste(const XmlObjMgt_Persistent&       theSource,
                                              const occ::handle<TDF_Attribute>& theTarget,
                                              XmlObjMgt_RRelocationTable&       theRelocTable) const
@@ -125,14 +122,14 @@ bool XmlMDataStd_ExtStringArrayDriver::Paste(const XmlObjMgt_Persistent&       t
   {
     // Read values written by <string>VALUE<\string> notion - as children of the attribute.
     LDOM_Node                  aCurNode    = anElement.getFirstChild();
-    LDOM_Element*              aCurElement = (LDOM_Element*)&aCurNode;
+    const LDOM_Element*        aCurElement = static_cast<const LDOM_Element*>(&aCurNode);
     TCollection_ExtendedString aValueStr;
     for (ind = aFirstInd; ind <= aLastInd && *aCurElement != anElement.getLastChild(); ind++)
     {
       XmlObjMgt::GetExtendedString(*aCurElement, aValueStr);
       aExtStringArray->SetValue(ind, aValueStr);
       aCurNode    = aCurElement->getNextSibling();
-      aCurElement = (LDOM_Element*)&aCurNode;
+      aCurElement = static_cast<const LDOM_Element*>(&aCurNode);
     }
     XmlObjMgt::GetExtendedString(*aCurElement, aValueStr);
     aExtStringArray->SetValue(aLastInd, aValueStr);
@@ -211,10 +208,7 @@ bool XmlMDataStd_ExtStringArrayDriver::Paste(const XmlObjMgt_Persistent&       t
   return true;
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : transient -> persistent (store)
-//=======================================================================
+//=================================================================================================
 void XmlMDataStd_ExtStringArrayDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                              XmlObjMgt_Persistent&             theTarget,
                                              XmlObjMgt_SRelocationTable&       theRelocTable) const
