@@ -70,7 +70,7 @@ void BRepAdaptor_Surface::Initialize(const TopoDS_Face& F, const bool Restrictio
   {
     double umin, umax, vmin, vmax;
     BRepTools::UVBounds(F, umin, umax, vmin, vmax);
-    Load(aSurface, umin, umax, vmin, vmax, 0.0, 0.0, L.Transformation());
+    Load(aSurface, umin, umax, vmin, vmax, L.Transformation());
   }
   else
   {

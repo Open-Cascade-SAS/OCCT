@@ -89,9 +89,9 @@ void GeomAdaptor_TransformedSurface::Load(const occ::handle<Geom_Surface>& theSu
                                           const double                     theULast,
                                           const double                     theVFirst,
                                           const double                     theVLast,
+                                          const gp_Trsf&                   theTrsf,
                                           const double                     theTolU,
-                                          const double                     theTolV,
-                                          const gp_Trsf&                   theTrsf)
+                                          const double                     theTolV)
 {
   mySurf.Load(theSurface, theUFirst, theULast, theVFirst, theVLast, theTolU, theTolV);
   myTrsf = theTrsf;

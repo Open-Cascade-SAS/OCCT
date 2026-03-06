@@ -143,9 +143,9 @@ void ChFi3d_ApplyBounds(BRepAdaptor_Surface&             theSurface,
                   theULast,
                   theVFirst,
                   theVLast,
+                  theSurface.Trsf(),
                   theSurface.ToleranceU(),
-                  theSurface.ToleranceV(),
-                  theSurface.Trsf());
+                  theSurface.ToleranceV());
 }
 
 template <class SurfaceAdaptor>

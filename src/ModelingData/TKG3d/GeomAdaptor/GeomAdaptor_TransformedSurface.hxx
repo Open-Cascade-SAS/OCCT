@@ -87,8 +87,7 @@ public:
   //! Loads the surface geometry.
   //! @param theSurface underlying geometry
   //! @param theTrsf transformation to apply
-  Standard_EXPORT void Load(const occ::handle<Geom_Surface>& theSurface,
-                            const gp_Trsf&                   theTrsf = gp_Trsf());
+  Standard_EXPORT void Load(const occ::handle<Geom_Surface>& theSurface, const gp_Trsf& theTrsf);
 
   //! Loads the surface geometry with parameter bounds.
   //! @param theSurface underlying geometry
@@ -96,17 +95,17 @@ public:
   //! @param theULast maximum U parameter
   //! @param theVFirst minimum V parameter
   //! @param theVLast maximum V parameter
+  //! @param theTrsf transformation to apply
   //! @param theTolU tolerance in U direction
   //! @param theTolV tolerance in V direction
-  //! @param theTrsf transformation to apply
   Standard_EXPORT void Load(const occ::handle<Geom_Surface>& theSurface,
                             const double                     theUFirst,
                             const double                     theULast,
                             const double                     theVFirst,
                             const double                     theVLast,
+                            const gp_Trsf&                   theTrsf,
                             const double                     theTolU = 0.0,
-                            const double                     theTolV = 0.0,
-                            const gp_Trsf&                   theTrsf = gp_Trsf());
+                            const double                     theTolV = 0.0);
 
   //! Sets the transformation.
   //! @param theTrsf transformation to apply

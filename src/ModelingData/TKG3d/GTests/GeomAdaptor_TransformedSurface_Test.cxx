@@ -165,7 +165,7 @@ TEST(GeomAdaptor_TransformedSurfaceTest, LoadRebuildsCache)
 
   gp_Ax3                             aSphereAx(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(aSphereAx, 3.0);
-  anAdaptor.Load(aSphere);
+  anAdaptor.Load(aSphere, gp_Trsf());
 
   const occ::handle<Geom_Surface> aSecond = anAdaptor.GeomSurfaceTransformed();
   EXPECT_NE(aFirst, aSecond);
