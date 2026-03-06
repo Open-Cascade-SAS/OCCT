@@ -277,7 +277,7 @@ bool CDM_Document::ShallowReferences(const occ::handle<CDM_Document>& aDocument)
   for (NCollection_DataMap<int, occ::handle<CDM_Reference>>::Iterator it(myToReferences); it.More();
        it.Next())
   {
-    if (it.Value()->ToDocument() == aDocument)
+    if (IsReferenceTarget(it.Value(), aDocument))
       return true;
   }
   return false;
@@ -301,16 +301,36 @@ bool CDM_Document::deepReferences(const occ::handle<CDM_Document>&      aDocumen
   for (NCollection_DataMap<int, occ::handle<CDM_Reference>>::Iterator it(myToReferences); it.More();
        it.Next())
   {
-    occ::handle<CDM_Document> aRefDoc = it.Value()->ToDocument();
-    if (!aRefDoc.IsNull())
+    const occ::handle<CDM_Reference>& aReference = it.Value();
+    if (IsReferenceTarget(aReference, aDocument))
+      return true;
+
+    occ::handle<CDM_Document> aRefDoc = aReference->Document();
+    if (!aRefDoc.IsNull() && aRefDoc->deepReferences(aDocument, theVisited))
     {
-      if (aRefDoc == aDocument)
-        return true;
-      if (aRefDoc->deepReferences(aDocument, theVisited))
-        return true;
+      return true;
     }
   }
   return false;
+}
+
+//=================================================================================================
+
+bool CDM_Document::IsReferenceTarget(const occ::handle<CDM_Reference>& theReference,
+                                     const occ::handle<CDM_Document>&  theDocument) const
+{
+  if (theReference.IsNull() || theDocument.IsNull())
+    return false;
+
+  // Use non-retrieving access to keep graph checks free from lazy-load side effects.
+  const occ::handle<CDM_Document> aRefDoc = theReference->Document();
+  if (!aRefDoc.IsNull())
+    return aRefDoc == theDocument;
+
+  if (!theDocument->IsStored())
+    return false;
+
+  return !theReference->MetaData().IsNull() && theReference->MetaData() == theDocument->MetaData();
 }
 
 //=================================================================================================

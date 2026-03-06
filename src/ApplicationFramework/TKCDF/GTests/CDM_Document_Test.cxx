@@ -11,13 +11,46 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <CDM_Application.hxx>
 #include <CDM_Document.hxx>
+#include <CDM_MetaData.hxx>
 #include <CDM_Reference.hxx>
 #include <CDM_ReferenceIterator.hxx>
 #include <TDocStd_Application.hxx>
 #include <TDocStd_Document.hxx>
 
 #include <gtest/gtest.h>
+
+class CDM_TestApplication : public CDM_Application
+{
+public:
+  CDM_TestApplication()
+      : myRetrieveCalls(0)
+  {
+  }
+
+  int RetrieveCalls() const { return myRetrieveCalls; }
+
+  occ::handle<Resource_Manager> Resources() override { return occ::handle<Resource_Manager>(); }
+
+  DEFINE_STANDARD_RTTIEXT(CDM_TestApplication, CDM_Application)
+
+private:
+  occ::handle<CDM_Document> Retrieve(const occ::handle<CDM_MetaData>&,
+                                     const bool,
+                                     const occ::handle<PCDM_ReaderFilter>&,
+                                     const Message_ProgressRange&) override
+  {
+    ++myRetrieveCalls;
+    return occ::handle<CDM_Document>();
+  }
+
+  int DocumentVersion(const occ::handle<CDM_MetaData>&) override { return -1; }
+
+  int myRetrieveCalls;
+};
+
+IMPLEMENT_STANDARD_RTTIEXT(CDM_TestApplication, CDM_Application)
 
 class CDM_DocumentTest : public testing::Test
 {
@@ -144,6 +177,30 @@ TEST_F(CDM_DocumentTest, DeepReferences_NoCycleInfiniteLoop)
   occ::handle<TDocStd_Document> myDoc4;
   myApp->NewDocument("BinOcaf", myDoc4);
   EXPECT_FALSE(myDoc1->DeepReferences(myDoc4));
+}
+
+TEST_F(CDM_DocumentTest, ShallowAndDeepReferences_DoNotTriggerRetrieve)
+{
+  occ::handle<CDM_TestApplication> aLazyApp = new CDM_TestApplication();
+  occ::handle<CDM_MetaData>        aMeta    = CDM_MetaData::LookUp(aLazyApp->MetaDataLookUpTable(),
+                                                         "Folder",
+                                                         "Doc",
+                                                         "/tmp",
+                                                         "Doc.cbf",
+                                                         false);
+  ASSERT_FALSE(aMeta.IsNull());
+  ASSERT_FALSE(aMeta->IsRetrieved());
+
+  const int aRefId = myDoc1->CreateReference(aMeta, aLazyApp, 1, false);
+  EXPECT_EQ(0, aLazyApp->RetrieveCalls());
+
+  EXPECT_FALSE(myDoc1->ShallowReferences(myDoc2));
+  EXPECT_FALSE(myDoc1->DeepReferences(myDoc2));
+  EXPECT_EQ(0, aLazyApp->RetrieveCalls());
+
+  // Direct access to the referenced document is allowed to trigger retrieval.
+  myDoc1->Document(aRefId);
+  EXPECT_EQ(1, aLazyApp->RetrieveCalls());
 }
 
 TEST_F(CDM_DocumentTest, Modifications_IncrementOnModify)

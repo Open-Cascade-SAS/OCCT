@@ -362,6 +362,13 @@ private:
   Standard_EXPORT bool deepReferences(const occ::handle<CDM_Document>&      aDocument,
                                       NCollection_Map<const CDM_Document*>& theVisited) const;
 
+  //! Checks if a reference points to the specified document without forcing retrieval.
+  //! @param[in] theReference reference to inspect
+  //! @param[in] theDocument expected target document
+  //! @return true if reference target matches theDocument
+  Standard_EXPORT bool IsReferenceTarget(const occ::handle<CDM_Reference>& theReference,
+                                         const occ::handle<CDM_Document>&  theDocument) const;
+
   Standard_EXPORT void AddToReference(const occ::handle<CDM_Reference>& aReference);
 
   Standard_EXPORT void AddFromReference(const occ::handle<CDM_Reference>& aReference);

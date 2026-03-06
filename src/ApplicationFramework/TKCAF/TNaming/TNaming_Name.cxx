@@ -1157,6 +1157,9 @@ static TopoDS_Shape FindShape(
 
 //=================================================================================================
 
+//! Resolves GENERATION naming.
+//! The first argument is a generated target, following arguments are generators.
+//! The method rebuilds resulting selections using the last valid modifications.
 static bool Generated(const TDF_Label&                                         L,
                       const NCollection_Map<TDF_Label>&                        Valid,
                       const NCollection_List<occ::handle<TNaming_NamedShape>>& Args)
@@ -1393,12 +1396,9 @@ static bool Generated(const TDF_Label&                                         L
 }
 
 //=================================================================================================
-// Name with this type must contain only one NamedShape attribute as argument.
-// Algorithm takes all last modifications of NamedShape of this argument
-// starting with this one ( see method TNaming_NamingTool::CurrentShape ).
-// Algorithm takes only NamedShapes belonging to the labels from the Valid
-// labels map (if it's not empty) and put to the resulting NamedShape as compound.
-//=======================================================================
+
+//! Resolves IDENTITY naming from a single argument.
+//! The resulting selection is built from current shapes filtered by valid labels.
 static bool Identity(const TDF_Label&                                         L,
                      const NCollection_Map<TDF_Label>&                        Valid,
                      const NCollection_List<occ::handle<TNaming_NamedShape>>& Args,
@@ -1432,10 +1432,9 @@ static bool Identity(const TDF_Label&                                         L,
 }
 
 //=================================================================================================
-// result -  is a subshape of the first argument of the Name with type =
-// ShapeType of this Name, which has a common subshapes (boundaries) with
-// each neighbour - shapes from the other arguments of the Name.
-//=======================================================================
+
+//! Resolves FILTERBYNEIGHBOURS naming.
+//! The result is a candidate sub-shape sharing required boundaries with all neighbours.
 static bool FilterByNeighbourgs(const TDF_Label&                                         L,
                                 const NCollection_Map<TDF_Label>&                        Valid,
                                 const NCollection_List<occ::handle<TNaming_NamedShape>>& Args,
@@ -1670,6 +1669,9 @@ static int Aggregation(const TopoDS_Shape& S, const TopoDS_Shape& AS, TNaming_Bu
 }
 
 //=================================================================================================
+
+//! Resolves ORIENTATION naming.
+//! Applies orientation from context to the selected shape; Index is used for seam-edge cases.
 static bool ORientation(const TDF_Label&                                         L,
                         const NCollection_Map<TDF_Label>&                        Valid,
                         const NCollection_List<occ::handle<TNaming_NamedShape>>& Args,
@@ -2048,6 +2050,9 @@ static bool WireIN(const TDF_Label&                                         L,
 }
 
 //=================================================================================================
+
+//! Resolves SHELLIN naming.
+//! Builds shell selection from shape arguments within the current naming scope.
 static bool ShellIN(const TDF_Label&                                         L,
                     const NCollection_Map<TDF_Label>&                        Valid,
                     const NCollection_List<occ::handle<TNaming_NamedShape>>& Args,

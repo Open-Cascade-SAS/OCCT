@@ -135,6 +135,7 @@ static int RepeatabilityInContext(const TopoDS_Shape& Selection, const TopoDS_Sh
 
 //=================================================================================================
 
+//! Recursively solves sub-naming attributes and regenerates the current one.
 bool TNaming_Naming::Solve(NCollection_Map<TDF_Label>& Valid)
 {
   occ::handle<TNaming_Naming> subname;
@@ -194,6 +195,7 @@ occ::handle<TNaming_Naming> TNaming_Naming::Insert(const TDF_Label& under)
 
 //=================================================================================================
 
+//! Builds a child naming attribute selecting shape <S> with the requested naming type.
 static occ::handle<TNaming_NamedShape> BuildNS(const TDF_Label&        F,
                                                const TopoDS_Shape&     S,
                                                const TNaming_NameType& Name)
@@ -238,6 +240,8 @@ static bool CompareInGeneration(const occ::handle<TNaming_NamedShape>& NS, const
 }
 
 //=================================================================================================
+
+//! Collects backward evolution chain from target to source named shape.
 static bool GetShapeEvolutions(
   const TopoDS_Shape&                    theTarget, // this is changed in recursion
   const occ::handle<TNaming_NamedShape>& theSource,
@@ -926,6 +930,8 @@ static bool Filter(const TDF_Label&                 F,
 }
 
 //=================================================================================================
+
+//! Builds naming in the parent context using adjusted stop/context shapes.
 static occ::handle<TNaming_NamedShape> BuildNameInNS(const TDF_Label&                       F,
                                                      TNaming_Scope&                         MDF,
                                                      const TopoDS_Shape&                    S,
@@ -1272,6 +1278,8 @@ static void BuildScope(TNaming_Scope& MDF, const TopoDS_Shape& Context, const TD
 }
 
 //=================================================================================================
+
+//! Returns ancestor face of a wire in the given context.
 static bool HasAncFace(const TopoDS_Shape& Context,
                        const TopoDS_Shape& W,
                        TopoDS_Shape&       Face,
@@ -1521,6 +1529,8 @@ static int RepeatabilityInContext(const TopoDS_Shape& Selection, const TopoDS_Sh
 }
 
 //=================================================================================================
+
+//! Returns ancestor solid of a shell in the given context.
 static bool HasAncSolid(const TopoDS_Shape& Context,
                         const TopoDS_Shape& Sh,
                         TopoDS_Shape&       Solid,
