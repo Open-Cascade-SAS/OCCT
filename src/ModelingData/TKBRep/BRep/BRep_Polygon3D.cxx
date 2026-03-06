@@ -31,15 +31,6 @@ BRep_Polygon3D::BRep_Polygon3D(const occ::handle<Poly_Polygon3D>& P, const TopLo
 {
 }
 
-//=================================================================================================
-
-bool BRep_Polygon3D::IsPolygon3D() const
-{
-  return true;
-}
-
-//=================================================================================================
-
 const occ::handle<Poly_Polygon3D>& BRep_Polygon3D::Polygon3D() const
 {
   return myPolygon3D;

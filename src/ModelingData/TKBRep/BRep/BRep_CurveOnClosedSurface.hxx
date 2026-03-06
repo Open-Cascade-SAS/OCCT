@@ -31,6 +31,8 @@ class BRep_CurveOnClosedSurface : public BRep_CurveOnSurface
 {
 
 public:
+  using BRep_CurveRepresentation::IsRegularity;
+
   Standard_EXPORT BRep_CurveOnClosedSurface(const occ::handle<Geom2d_Curve>& PC1,
                                             const occ::handle<Geom2d_Curve>& PC2,
                                             const occ::handle<Geom_Surface>& S,
@@ -40,12 +42,6 @@ public:
   void SetUVPoints2(const gp_Pnt2d& P1, const gp_Pnt2d& P2);
 
   void UVPoints2(gp_Pnt2d& P1, gp_Pnt2d& P2) const;
-
-  //! Returns True.
-  Standard_EXPORT bool IsCurveOnClosedSurface() const override;
-
-  //! Returns True
-  Standard_EXPORT bool IsRegularity() const override;
 
   //! A curve on two surfaces (continuity).
   Standard_EXPORT bool IsRegularity(const occ::handle<Geom_Surface>& S1,

@@ -42,15 +42,6 @@ void BRep_Curve3D::D0(const double U, gp_Pnt& P) const
   P = myCurve->Value(U);
 }
 
-//=================================================================================================
-
-bool BRep_Curve3D::IsCurve3D() const
-{
-  return true;
-}
-
-//=================================================================================================
-
 const occ::handle<Geom_Curve>& BRep_Curve3D::Curve3D() const
 {
   return myCurve;

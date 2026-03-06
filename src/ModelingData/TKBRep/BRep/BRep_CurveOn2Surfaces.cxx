@@ -46,15 +46,6 @@ void BRep_CurveOn2Surfaces::D0(const double, gp_Pnt&) const
   throw Standard_NullObject("BRep_CurveOn2Surfaces::D0");
 }
 
-//=================================================================================================
-
-bool BRep_CurveOn2Surfaces::IsRegularity() const
-{
-  return true;
-}
-
-//=================================================================================================
-
 bool BRep_CurveOn2Surfaces::IsRegularity(const occ::handle<Geom_Surface>& S1,
                                          const occ::handle<Geom_Surface>& S2,
                                          const TopLoc_Location&           L1,

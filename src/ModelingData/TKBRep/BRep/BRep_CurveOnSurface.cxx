@@ -57,15 +57,6 @@ void BRep_CurveOnSurface::D0(const double U, gp_Pnt& P) const
   P.Transform(myLocation.Transformation());
 }
 
-//=================================================================================================
-
-bool BRep_CurveOnSurface::IsCurveOnSurface() const
-{
-  return true;
-}
-
-//=================================================================================================
-
 bool BRep_CurveOnSurface::IsCurveOnSurface(const occ::handle<Geom_Surface>& S,
                                            const TopLoc_Location&           L) const
 {

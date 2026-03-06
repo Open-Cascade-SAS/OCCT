@@ -35,15 +35,6 @@ BRep_PolygonOnClosedTriangulation::BRep_PolygonOnClosedTriangulation(
 {
 }
 
-//=================================================================================================
-
-bool BRep_PolygonOnClosedTriangulation::IsPolygonOnClosedTriangulation() const
-{
-  return true;
-}
-
-//=================================================================================================
-
 void BRep_PolygonOnClosedTriangulation::PolygonOnTriangulation2(
   const occ::handle<Poly_PolygonOnTriangulation>& P2)
 {

@@ -34,15 +34,6 @@ BRep_PolygonOnClosedSurface::BRep_PolygonOnClosedSurface(const occ::handle<Poly_
 {
 }
 
-//=================================================================================================
-
-bool BRep_PolygonOnClosedSurface::IsPolygonOnClosedSurface() const
-{
-  return true;
-}
-
-//=================================================================================================
-
 const occ::handle<Poly_Polygon2D>& BRep_PolygonOnClosedSurface::Polygon2() const
 {
   return myPolygon2;

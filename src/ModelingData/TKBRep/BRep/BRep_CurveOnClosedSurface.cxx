@@ -38,22 +38,6 @@ BRep_CurveOnClosedSurface::BRep_CurveOnClosedSurface(const occ::handle<Geom2d_Cu
 {
 }
 
-//=================================================================================================
-
-bool BRep_CurveOnClosedSurface::IsCurveOnClosedSurface() const
-{
-  return true;
-}
-
-//=================================================================================================
-
-bool BRep_CurveOnClosedSurface::IsRegularity() const
-{
-  return true;
-}
-
-//=================================================================================================
-
 bool BRep_CurveOnClosedSurface::IsRegularity(const occ::handle<Geom_Surface>& S1,
                                              const occ::handle<Geom_Surface>& S2,
                                              const TopLoc_Location&           L1,

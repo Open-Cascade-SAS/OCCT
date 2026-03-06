@@ -45,15 +45,6 @@ BRep_PolygonOnSurface::BRep_PolygonOnSurface(TypeEnum                           
 {
 }
 
-//=================================================================================================
-
-bool BRep_PolygonOnSurface::IsPolygonOnSurface() const
-{
-  return true;
-}
-
-//=================================================================================================
-
 bool BRep_PolygonOnSurface::IsPolygonOnSurface(const occ::handle<Geom_Surface>& S,
                                                const TopLoc_Location&           L) const
 {

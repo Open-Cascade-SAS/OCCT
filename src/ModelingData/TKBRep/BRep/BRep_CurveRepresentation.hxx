@@ -47,24 +47,25 @@ public:
     Type_PolygonOnSurface,
     Type_PolygonOnClosedSurface,
     Type_PolygonOnTriangulation,
-    Type_PolygonOnClosedTriangulation
+    Type_PolygonOnClosedTriangulation,
+    Type_Other
   };
 
   //! Returns the type discriminator of this representation.
   TypeEnum Type() const { return myType; }
 
   //! A 3D curve representation.
-  Standard_EXPORT virtual bool IsCurve3D() const;
+  bool IsCurve3D() const;
 
   //! A curve in the parametric space of a surface.
-  Standard_EXPORT virtual bool IsCurveOnSurface() const;
+  bool IsCurveOnSurface() const;
 
   //! A continuity between two surfaces.
-  Standard_EXPORT virtual bool IsRegularity() const;
+  bool IsRegularity() const;
 
   //! A curve with two parametric curves on the same
   //! surface.
-  Standard_EXPORT virtual bool IsCurveOnClosedSurface() const;
+  bool IsCurveOnClosedSurface() const;
 
   //! Is it a curve in the parametric space of <S> with
   //! location <L>.
@@ -79,11 +80,11 @@ public:
                                             const TopLoc_Location&           L2) const;
 
   //! A 3D polygon representation.
-  Standard_EXPORT virtual bool IsPolygon3D() const;
+  bool IsPolygon3D() const;
 
   //! A representation by an array of nodes on a
   //! triangulation.
-  Standard_EXPORT virtual bool IsPolygonOnTriangulation() const;
+  bool IsPolygonOnTriangulation() const;
 
   //! Is it a polygon in the definition of <T> with
   //! location <L>.
@@ -92,10 +93,10 @@ public:
 
   //! A representation by two arrays of nodes on a
   //! triangulation.
-  Standard_EXPORT virtual bool IsPolygonOnClosedTriangulation() const;
+  bool IsPolygonOnClosedTriangulation() const;
 
   //! A polygon in the parametric space of a surface.
-  Standard_EXPORT virtual bool IsPolygonOnSurface() const;
+  bool IsPolygonOnSurface() const;
 
   //! Is it a polygon in the parametric space of <S> with
   //! location <L>.
@@ -104,7 +105,7 @@ public:
 
   //! Two 2D polygon representations in the parametric
   //! space of a surface.
-  Standard_EXPORT virtual bool IsPolygonOnClosedSurface() const;
+  bool IsPolygonOnClosedSurface() const;
 
   const TopLoc_Location& Location() const;
 

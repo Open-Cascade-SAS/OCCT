@@ -34,12 +34,35 @@
 
 using TypeEnum = BRep_CurveRepresentation::TypeEnum;
 
+namespace
+{
+class BRep_CurveRepresentation_CustomOther : public BRep_CurveRepresentation
+{
+public:
+  BRep_CurveRepresentation_CustomOther()
+      : BRep_CurveRepresentation(Type_Other, TopLoc_Location())
+  {
+  }
+
+  occ::handle<BRep_CurveRepresentation> Copy() const override
+  {
+    return new BRep_CurveRepresentation_CustomOther();
+  }
+
+  DEFINE_STANDARD_RTTIEXT(BRep_CurveRepresentation_CustomOther, BRep_CurveRepresentation)
+};
+} // namespace
+
+IMPLEMENT_STANDARD_RTTIEXT(BRep_CurveRepresentation_CustomOther, BRep_CurveRepresentation)
+
 TEST(BRep_CurveRepresentationTest, Curve3D_Type)
 {
   occ::handle<Geom_Line>    aLine  = new Geom_Line(gp_Pnt(), gp_Dir(1, 0, 0));
   occ::handle<BRep_Curve3D> aCurve = new BRep_Curve3D(aLine, TopLoc_Location());
   EXPECT_EQ(aCurve->Type(), TypeEnum::Type_Curve3D);
   EXPECT_TRUE(aCurve->IsCurve3D());
+  EXPECT_FALSE(aCurve->IsCurveOnSurface());
+  EXPECT_FALSE(aCurve->IsRegularity());
 }
 
 TEST(BRep_CurveRepresentationTest, CurveOnSurface_Type)
@@ -50,6 +73,7 @@ TEST(BRep_CurveRepresentationTest, CurveOnSurface_Type)
   EXPECT_EQ(aCOS->Type(), TypeEnum::Type_CurveOnSurface);
   EXPECT_TRUE(aCOS->IsCurveOnSurface());
   EXPECT_FALSE(aCOS->IsCurveOnClosedSurface());
+  EXPECT_FALSE(aCOS->IsRegularity());
 }
 
 TEST(BRep_CurveRepresentationTest, CurveOnClosedSurface_Type)
@@ -72,6 +96,7 @@ TEST(BRep_CurveRepresentationTest, CurveOn2Surfaces_Type)
   occ::handle<BRep_CurveOn2Surfaces> aC2S =
     new BRep_CurveOn2Surfaces(aP1, aP2, TopLoc_Location(), TopLoc_Location(), GeomAbs_C0);
   EXPECT_EQ(aC2S->Type(), TypeEnum::Type_CurveOn2Surfaces);
+  EXPECT_FALSE(aC2S->IsCurveOnSurface());
   EXPECT_TRUE(aC2S->IsRegularity());
 }
 
@@ -84,6 +109,8 @@ TEST(BRep_CurveRepresentationTest, Polygon3D_Type)
   occ::handle<BRep_Polygon3D> aRep  = new BRep_Polygon3D(aPoly, TopLoc_Location());
   EXPECT_EQ(aRep->Type(), TypeEnum::Type_Polygon3D);
   EXPECT_TRUE(aRep->IsPolygon3D());
+  EXPECT_FALSE(aRep->IsPolygonOnSurface());
+  EXPECT_FALSE(aRep->IsPolygonOnTriangulation());
 }
 
 TEST(BRep_CurveRepresentationTest, PolygonOnSurface_Type)
@@ -98,6 +125,7 @@ TEST(BRep_CurveRepresentationTest, PolygonOnSurface_Type)
   EXPECT_EQ(aRep->Type(), TypeEnum::Type_PolygonOnSurface);
   EXPECT_TRUE(aRep->IsPolygonOnSurface());
   EXPECT_FALSE(aRep->IsPolygonOnClosedSurface());
+  EXPECT_FALSE(aRep->IsPolygonOnTriangulation());
 }
 
 TEST(BRep_CurveRepresentationTest, PolygonOnClosedSurface_Type)
@@ -113,6 +141,7 @@ TEST(BRep_CurveRepresentationTest, PolygonOnClosedSurface_Type)
   EXPECT_EQ(aRep->Type(), TypeEnum::Type_PolygonOnClosedSurface);
   EXPECT_TRUE(aRep->IsPolygonOnSurface());
   EXPECT_TRUE(aRep->IsPolygonOnClosedSurface());
+  EXPECT_FALSE(aRep->IsPolygonOnTriangulation());
 }
 
 TEST(BRep_CurveRepresentationTest, PolygonOnTriangulation_Type)
@@ -127,6 +156,7 @@ TEST(BRep_CurveRepresentationTest, PolygonOnTriangulation_Type)
   EXPECT_EQ(aRep->Type(), TypeEnum::Type_PolygonOnTriangulation);
   EXPECT_TRUE(aRep->IsPolygonOnTriangulation());
   EXPECT_FALSE(aRep->IsPolygonOnClosedTriangulation());
+  EXPECT_FALSE(aRep->IsPolygonOnSurface());
 }
 
 TEST(BRep_CurveRepresentationTest, PolygonOnClosedTriangulation_Type)
@@ -142,4 +172,20 @@ TEST(BRep_CurveRepresentationTest, PolygonOnClosedTriangulation_Type)
   EXPECT_EQ(aRep->Type(), TypeEnum::Type_PolygonOnClosedTriangulation);
   EXPECT_TRUE(aRep->IsPolygonOnTriangulation());
   EXPECT_TRUE(aRep->IsPolygonOnClosedTriangulation());
+  EXPECT_FALSE(aRep->IsPolygonOnSurface());
+}
+
+TEST(BRep_CurveRepresentationTest, OtherType_DefaultPredicates)
+{
+  occ::handle<BRep_CurveRepresentation> aRep = new BRep_CurveRepresentation_CustomOther();
+  EXPECT_EQ(aRep->Type(), TypeEnum::Type_Other);
+  EXPECT_FALSE(aRep->IsCurve3D());
+  EXPECT_FALSE(aRep->IsCurveOnSurface());
+  EXPECT_FALSE(aRep->IsCurveOnClosedSurface());
+  EXPECT_FALSE(aRep->IsRegularity());
+  EXPECT_FALSE(aRep->IsPolygon3D());
+  EXPECT_FALSE(aRep->IsPolygonOnSurface());
+  EXPECT_FALSE(aRep->IsPolygonOnClosedSurface());
+  EXPECT_FALSE(aRep->IsPolygonOnTriangulation());
+  EXPECT_FALSE(aRep->IsPolygonOnClosedTriangulation());
 }

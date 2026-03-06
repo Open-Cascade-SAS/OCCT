@@ -46,15 +46,6 @@ BRep_PolygonOnTriangulation::BRep_PolygonOnTriangulation(
 {
 }
 
-//=================================================================================================
-
-bool BRep_PolygonOnTriangulation::IsPolygonOnTriangulation() const
-{
-  return true;
-}
-
-//=================================================================================================
-
 bool BRep_PolygonOnTriangulation::IsPolygonOnTriangulation(const occ::handle<Poly_Triangulation>& T,
                                                            const TopLoc_Location& L) const
 {
