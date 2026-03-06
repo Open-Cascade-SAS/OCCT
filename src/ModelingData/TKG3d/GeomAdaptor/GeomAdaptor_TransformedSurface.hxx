@@ -51,6 +51,7 @@ public:
     std::optional<gp_Ax1>          Axis;
     std::optional<gp_Dir>          Direction;
     std::optional<double>          OffsetValue;
+    bool                           IsBuilt = false;
   };
 
   //! Creates an undefined surface with identity transformation.
@@ -241,9 +242,16 @@ public:
   Standard_EXPORT double OffsetValue() const override;
 
 protected:
-  //! Rebuilds cached transformed geometry and related metadata
-  //! for the currently loaded surface and transformation.
-  void initTransformedCache();
+  //! Invalidates transformed cache for subsequent lazy rebuild.
+  void invalidateTransformedCache();
+
+  //! Ensures transformed cache is built on demand.
+  //! Non-thread-safe: mutable cache is initialized in const context without synchronization.
+  void ensureTransformedCache() const;
+
+  //! Rebuilds transformed geometry and related metadata for current surface and transformation.
+  //! Non-thread-safe: invoked by ensureTransformedCache() for lazy initialization.
+  void initTransformedCache() const;
 
 protected:
   GeomAdaptor_Surface            mySurf;

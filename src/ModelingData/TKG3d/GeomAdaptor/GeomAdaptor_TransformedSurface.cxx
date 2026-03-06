@@ -37,7 +37,7 @@ GeomAdaptor_TransformedSurface::GeomAdaptor_TransformedSurface(
     : mySurf(theSurface),
       myTrsf(theTrsf)
 {
-  initTransformedCache();
+  invalidateTransformedCache();
 }
 
 //=================================================================================================
@@ -54,7 +54,7 @@ GeomAdaptor_TransformedSurface::GeomAdaptor_TransformedSurface(
     : mySurf(theSurface, theUFirst, theULast, theVFirst, theVLast, theTolU, theTolV),
       myTrsf(theTrsf)
 {
-  initTransformedCache();
+  invalidateTransformedCache();
 }
 
 //=================================================================================================
@@ -79,7 +79,7 @@ void GeomAdaptor_TransformedSurface::Load(const occ::handle<Geom_Surface>& theSu
 {
   mySurf.Load(theSurface);
   myTrsf = theTrsf;
-  initTransformedCache();
+  invalidateTransformedCache();
 }
 
 //=================================================================================================
@@ -95,7 +95,7 @@ void GeomAdaptor_TransformedSurface::Load(const occ::handle<Geom_Surface>& theSu
 {
   mySurf.Load(theSurface, theUFirst, theULast, theVFirst, theVLast, theTolU, theTolV);
   myTrsf = theTrsf;
-  initTransformedCache();
+  invalidateTransformedCache();
 }
 
 //=================================================================================================
@@ -103,23 +103,44 @@ void GeomAdaptor_TransformedSurface::Load(const occ::handle<Geom_Surface>& theSu
 void GeomAdaptor_TransformedSurface::SetTrsf(const gp_Trsf& theTrsf)
 {
   myTrsf = theTrsf;
-  initTransformedCache();
+  invalidateTransformedCache();
 }
 
 //=================================================================================================
 
 const occ::handle<Geom_Surface>& GeomAdaptor_TransformedSurface::GeomSurfaceTransformed() const
 {
+  ensureTransformedCache();
   return myTransformedData.Surface;
 }
 
 //=================================================================================================
 
-void GeomAdaptor_TransformedSurface::initTransformedCache()
+void GeomAdaptor_TransformedSurface::invalidateTransformedCache()
 {
   myTransformedData = TransformedSurfaceData();
+}
+
+//=================================================================================================
+
+void GeomAdaptor_TransformedSurface::ensureTransformedCache() const
+{
+  if (myTransformedData.IsBuilt)
+  {
+    return;
+  }
+  initTransformedCache();
+}
+
+//=================================================================================================
+
+void GeomAdaptor_TransformedSurface::initTransformedCache() const
+{
+  TransformedSurfaceData aData;
   if (mySurf.Surface().IsNull())
   {
+    aData.IsBuilt     = true;
+    myTransformedData = aData;
     return;
   }
 
@@ -128,50 +149,50 @@ void GeomAdaptor_TransformedSurface::initTransformedCache()
   switch (mySurf.GetType())
   {
     case GeomAbs_Plane:
-      myTransformedData.Primitive =
+      aData.Primitive =
         isIdentity ? TransformedSurfaceData::PrimitiveData(mySurf.Plane())
                    : TransformedSurfaceData::PrimitiveData(mySurf.Plane().Transformed(aTrsf));
-      myTransformedData.Surface = isIdentity ? mySurf.Surface()
-                                             : occ::handle<Geom_Surface>(new Geom_Plane(
-                                                 std::get<gp_Pln>(myTransformedData.Primitive)));
+      aData.Surface =
+        isIdentity ? mySurf.Surface()
+                   : occ::handle<Geom_Surface>(new Geom_Plane(std::get<gp_Pln>(aData.Primitive)));
       break;
     case GeomAbs_Cylinder:
-      myTransformedData.Primitive =
+      aData.Primitive =
         isIdentity ? TransformedSurfaceData::PrimitiveData(mySurf.Cylinder())
                    : TransformedSurfaceData::PrimitiveData(mySurf.Cylinder().Transformed(aTrsf));
-      myTransformedData.Surface = isIdentity
-                                    ? mySurf.Surface()
-                                    : occ::handle<Geom_Surface>(new Geom_CylindricalSurface(
-                                        std::get<gp_Cylinder>(myTransformedData.Primitive)));
+      aData.Surface = isIdentity ? mySurf.Surface()
+                                 : occ::handle<Geom_Surface>(new Geom_CylindricalSurface(
+                                     std::get<gp_Cylinder>(aData.Primitive)));
       break;
     case GeomAbs_Cone:
-      myTransformedData.Primitive =
-        isIdentity ? TransformedSurfaceData::PrimitiveData(mySurf.Cone())
-                   : TransformedSurfaceData::PrimitiveData(mySurf.Cone().Transformed(aTrsf));
-      myTransformedData.Surface = isIdentity ? mySurf.Surface()
-                                             : occ::handle<Geom_Surface>(new Geom_ConicalSurface(
-                                                 std::get<gp_Cone>(myTransformedData.Primitive)));
+      aData.Primitive = isIdentity
+                          ? TransformedSurfaceData::PrimitiveData(mySurf.Cone())
+                          : TransformedSurfaceData::PrimitiveData(mySurf.Cone().Transformed(aTrsf));
+      aData.Surface =
+        isIdentity
+          ? mySurf.Surface()
+          : occ::handle<Geom_Surface>(new Geom_ConicalSurface(std::get<gp_Cone>(aData.Primitive)));
       break;
     case GeomAbs_Sphere:
-      myTransformedData.Primitive =
+      aData.Primitive =
         isIdentity ? TransformedSurfaceData::PrimitiveData(mySurf.Sphere())
                    : TransformedSurfaceData::PrimitiveData(mySurf.Sphere().Transformed(aTrsf));
-      myTransformedData.Surface = isIdentity ? mySurf.Surface()
-                                             : occ::handle<Geom_Surface>(new Geom_SphericalSurface(
-                                                 std::get<gp_Sphere>(myTransformedData.Primitive)));
+      aData.Surface = isIdentity ? mySurf.Surface()
+                                 : occ::handle<Geom_Surface>(new Geom_SphericalSurface(
+                                     std::get<gp_Sphere>(aData.Primitive)));
       break;
     case GeomAbs_Torus:
-      myTransformedData.Primitive =
+      aData.Primitive =
         isIdentity ? TransformedSurfaceData::PrimitiveData(mySurf.Torus())
                    : TransformedSurfaceData::PrimitiveData(mySurf.Torus().Transformed(aTrsf));
-      myTransformedData.Surface = isIdentity ? mySurf.Surface()
-                                             : occ::handle<Geom_Surface>(new Geom_ToroidalSurface(
-                                                 std::get<gp_Torus>(myTransformedData.Primitive)));
+      aData.Surface = isIdentity ? mySurf.Surface()
+                                 : occ::handle<Geom_Surface>(
+                                     new Geom_ToroidalSurface(std::get<gp_Torus>(aData.Primitive)));
       break;
     default:
-      myTransformedData.Surface =
-        isIdentity ? mySurf.Surface()
-                   : occ::down_cast<Geom_Surface>(mySurf.Surface()->Transformed(aTrsf));
+      aData.Surface = isIdentity
+                        ? mySurf.Surface()
+                        : occ::down_cast<Geom_Surface>(mySurf.Surface()->Transformed(aTrsf));
       break;
   }
 
@@ -179,39 +200,42 @@ void GeomAdaptor_TransformedSurface::initTransformedCache()
   {
     if (mySurf.GetType() == GeomAbs_SurfaceOfRevolution)
     {
-      myTransformedData.Axis       = mySurf.AxeOfRevolution();
-      myTransformedData.BasisCurve = mySurf.BasisCurve();
+      aData.Axis       = mySurf.AxeOfRevolution();
+      aData.BasisCurve = mySurf.BasisCurve();
     }
     else if (mySurf.GetType() == GeomAbs_SurfaceOfExtrusion)
     {
-      myTransformedData.Direction  = mySurf.Direction();
-      myTransformedData.BasisCurve = mySurf.BasisCurve();
+      aData.Direction  = mySurf.Direction();
+      aData.BasisCurve = mySurf.BasisCurve();
     }
     else if (mySurf.GetType() == GeomAbs_OffsetSurface)
     {
-      myTransformedData.BasisSurface = mySurf.BasisSurface();
-      myTransformedData.OffsetValue  = mySurf.OffsetValue();
+      aData.BasisSurface = mySurf.BasisSurface();
+      aData.OffsetValue  = mySurf.OffsetValue();
     }
   }
-  else if (!myTransformedData.Surface.IsNull())
+  else if (!aData.Surface.IsNull())
   {
-    GeomAdaptor_Surface aTransformedSurf(myTransformedData.Surface);
+    GeomAdaptor_Surface aTransformedSurf(aData.Surface);
     if (aTransformedSurf.GetType() == GeomAbs_SurfaceOfRevolution)
     {
-      myTransformedData.Axis       = aTransformedSurf.AxeOfRevolution();
-      myTransformedData.BasisCurve = aTransformedSurf.BasisCurve();
+      aData.Axis       = aTransformedSurf.AxeOfRevolution();
+      aData.BasisCurve = aTransformedSurf.BasisCurve();
     }
     else if (aTransformedSurf.GetType() == GeomAbs_SurfaceOfExtrusion)
     {
-      myTransformedData.Direction  = aTransformedSurf.Direction();
-      myTransformedData.BasisCurve = aTransformedSurf.BasisCurve();
+      aData.Direction  = aTransformedSurf.Direction();
+      aData.BasisCurve = aTransformedSurf.BasisCurve();
     }
     else if (aTransformedSurf.GetType() == GeomAbs_OffsetSurface)
     {
-      myTransformedData.BasisSurface = aTransformedSurf.BasisSurface();
-      myTransformedData.OffsetValue  = aTransformedSurf.OffsetValue();
+      aData.BasisSurface = aTransformedSurf.BasisSurface();
+      aData.OffsetValue  = aTransformedSurf.OffsetValue();
     }
   }
+
+  aData.IsBuilt     = true;
+  myTransformedData = aData;
 }
 
 //=================================================================================================
@@ -333,6 +357,7 @@ gp_Vec GeomAdaptor_TransformedSurface::EvalDN(double theU, double theV, int theN
 
 gp_Pln GeomAdaptor_TransformedSurface::Plane() const
 {
+  ensureTransformedCache();
   if (mySurf.GetType() != GeomAbs_Plane
       || !std::holds_alternative<gp_Pln>(myTransformedData.Primitive))
   {
@@ -345,6 +370,7 @@ gp_Pln GeomAdaptor_TransformedSurface::Plane() const
 
 gp_Cylinder GeomAdaptor_TransformedSurface::Cylinder() const
 {
+  ensureTransformedCache();
   if (mySurf.GetType() != GeomAbs_Cylinder
       || !std::holds_alternative<gp_Cylinder>(myTransformedData.Primitive))
   {
@@ -357,6 +383,7 @@ gp_Cylinder GeomAdaptor_TransformedSurface::Cylinder() const
 
 gp_Cone GeomAdaptor_TransformedSurface::Cone() const
 {
+  ensureTransformedCache();
   if (mySurf.GetType() != GeomAbs_Cone
       || !std::holds_alternative<gp_Cone>(myTransformedData.Primitive))
   {
@@ -369,6 +396,7 @@ gp_Cone GeomAdaptor_TransformedSurface::Cone() const
 
 gp_Sphere GeomAdaptor_TransformedSurface::Sphere() const
 {
+  ensureTransformedCache();
   if (mySurf.GetType() != GeomAbs_Sphere
       || !std::holds_alternative<gp_Sphere>(myTransformedData.Primitive))
   {
@@ -381,6 +409,7 @@ gp_Sphere GeomAdaptor_TransformedSurface::Sphere() const
 
 gp_Torus GeomAdaptor_TransformedSurface::Torus() const
 {
+  ensureTransformedCache();
   if (mySurf.GetType() != GeomAbs_Torus
       || !std::holds_alternative<gp_Torus>(myTransformedData.Primitive))
   {
@@ -393,6 +422,7 @@ gp_Torus GeomAdaptor_TransformedSurface::Torus() const
 
 occ::handle<Geom_BezierSurface> GeomAdaptor_TransformedSurface::Bezier() const
 {
+  ensureTransformedCache();
   if (mySurf.GetType() != GeomAbs_BezierSurface || myTransformedData.Surface.IsNull())
   {
     throw Standard_NoSuchObject("GeomAdaptor_TransformedSurface::Bezier");
@@ -410,6 +440,7 @@ occ::handle<Geom_BezierSurface> GeomAdaptor_TransformedSurface::Bezier() const
 
 occ::handle<Geom_BSplineSurface> GeomAdaptor_TransformedSurface::BSpline() const
 {
+  ensureTransformedCache();
   if (mySurf.GetType() != GeomAbs_BSplineSurface || myTransformedData.Surface.IsNull())
   {
     throw Standard_NoSuchObject("GeomAdaptor_TransformedSurface::BSpline");
@@ -427,6 +458,7 @@ occ::handle<Geom_BSplineSurface> GeomAdaptor_TransformedSurface::BSpline() const
 
 gp_Ax1 GeomAdaptor_TransformedSurface::AxeOfRevolution() const
 {
+  ensureTransformedCache();
   if (!myTransformedData.Axis.has_value())
   {
     throw Standard_NoSuchObject("GeomAdaptor_TransformedSurface::AxeOfRevolution");
@@ -438,6 +470,7 @@ gp_Ax1 GeomAdaptor_TransformedSurface::AxeOfRevolution() const
 
 gp_Dir GeomAdaptor_TransformedSurface::Direction() const
 {
+  ensureTransformedCache();
   if (!myTransformedData.Direction.has_value())
   {
     throw Standard_NoSuchObject("GeomAdaptor_TransformedSurface::Direction");
@@ -449,6 +482,7 @@ gp_Dir GeomAdaptor_TransformedSurface::Direction() const
 
 occ::handle<Adaptor3d_Curve> GeomAdaptor_TransformedSurface::BasisCurve() const
 {
+  ensureTransformedCache();
   if (myTransformedData.BasisCurve.IsNull())
   {
     throw Standard_NoSuchObject("GeomAdaptor_TransformedSurface::BasisCurve");
@@ -460,6 +494,7 @@ occ::handle<Adaptor3d_Curve> GeomAdaptor_TransformedSurface::BasisCurve() const
 
 occ::handle<Adaptor3d_Surface> GeomAdaptor_TransformedSurface::BasisSurface() const
 {
+  ensureTransformedCache();
   if (myTransformedData.BasisSurface.IsNull())
   {
     throw Standard_NoSuchObject("GeomAdaptor_TransformedSurface::BasisSurface");
@@ -471,6 +506,7 @@ occ::handle<Adaptor3d_Surface> GeomAdaptor_TransformedSurface::BasisSurface() co
 
 double GeomAdaptor_TransformedSurface::OffsetValue() const
 {
+  ensureTransformedCache();
   if (!myTransformedData.OffsetValue.has_value())
   {
     throw Standard_NoSuchObject("GeomAdaptor_TransformedSurface::OffsetValue");

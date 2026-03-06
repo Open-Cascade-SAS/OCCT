@@ -123,6 +123,24 @@ TEST(GeomAdaptor_TransformedSurfaceTest, BSplineCachePreservedByShallowCopy)
 
 //=================================================================================================
 
+TEST(GeomAdaptor_TransformedSurfaceTest, ShallowCopyFromUnbuiltStateBuildsCacheLazily)
+{
+  occ::handle<Geom_Plane>        aPlane = new Geom_Plane(gp_Pln(gp::XOY()));
+  GeomAdaptor_TransformedSurface anAdaptor(aPlane, createTranslation(0.0, 0.0, 4.0));
+
+  const occ::handle<Adaptor3d_Surface>              aCopyBase = anAdaptor.ShallowCopy();
+  const occ::handle<GeomAdaptor_TransformedSurface> aCopy =
+    occ::down_cast<GeomAdaptor_TransformedSurface>(aCopyBase);
+  ASSERT_FALSE(aCopy.IsNull());
+
+  const occ::handle<Geom_Surface>& aFirst  = aCopy->GeomSurfaceTransformed();
+  const occ::handle<Geom_Surface>& aSecond = aCopy->GeomSurfaceTransformed();
+  EXPECT_EQ(aFirst, aSecond);
+  EXPECT_NEAR(aCopy->Plane().Location().Z(), 4.0, THE_TOLERANCE);
+}
+
+//=================================================================================================
+
 TEST(GeomAdaptor_TransformedSurfaceTest, SetTrsfRebuildsCache)
 {
   occ::handle<Geom_Plane>        aPlane = new Geom_Plane(gp_Pln(gp::XOY()));
