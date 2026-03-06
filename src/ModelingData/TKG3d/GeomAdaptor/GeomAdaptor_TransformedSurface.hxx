@@ -119,7 +119,12 @@ public:
   const gp_Trsf& Trsf() const { return myTrsf; }
 
   //! Returns the underlying GeomAdaptor_Surface.
+  Standard_DEPRECATED(
+    "Use AdaptorSurfaceOriginal() instead to get the original surface without transformation")
   const GeomAdaptor_Surface& Surface() const { return mySurf; }
+
+  //! Returns the underlying original GeomAdaptor_Surface without transformation applied.
+  const GeomAdaptor_Surface& AdaptorSurfaceOriginal() const { return mySurf; }
 
   //! Returns the underlying original Geom_Surface without transformation applied.
   const occ::handle<Geom_Surface>& GeomSurfaceOriginal() const { return mySurf.Surface(); }
@@ -173,6 +178,12 @@ public:
   bool IsVPeriodic() const override { return mySurf.IsVPeriodic(); }
 
   double VPeriod() const override { return mySurf.VPeriod(); }
+
+  //! Returns tolerance in U direction.
+  double ToleranceU() const { return mySurf.ToleranceU(); }
+
+  //! Returns tolerance in V direction.
+  double ToleranceV() const { return mySurf.ToleranceV(); }
 
   //! Point evaluation. Applies transformation after evaluation.
   [[nodiscard]] Standard_EXPORT gp_Pnt EvalD0(const double theU, const double theV) const final;

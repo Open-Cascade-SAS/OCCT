@@ -457,7 +457,7 @@ static void ChFi3d_Recale(const BRepAdaptor_Surface& Bs,
                           gp_Pnt2d&                  p2,
                           const bool                 refon1)
 {
-  occ::handle<Geom_Surface>                   surf = Bs.Surface().Surface();
+  occ::handle<Geom_Surface>                   surf = Bs.GeomSurfaceOriginal();
   occ::handle<Geom_RectangularTrimmedSurface> ts =
     occ::down_cast<Geom_RectangularTrimmedSurface>(surf);
   if (!ts.IsNull())

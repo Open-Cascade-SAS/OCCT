@@ -629,8 +629,7 @@ void BOPTools_AlgoTools2D::MakePCurveOnFace(const TopoDS_Face&                  
   }
 
   // compute the appropriate tolerance for the edge
-  occ::handle<Geom_Surface> aS = pBAS->Surface().Surface();
-  aS                           = occ::down_cast<Geom_Surface>(aS->Transformed(pBAS->Trsf()));
+  const occ::handle<Geom_Surface> aS = pBAS->GeomSurfaceTransformed();
   //
   double aT;
   if (IntTools_Tools::ComputeTolerance(aC3D, aC2D, aS, aT1, aT2, aTolR, aT))

@@ -112,7 +112,7 @@ const occ::handle<Geom_Surface>& ChFi3d_BaseSurface(const GeomAdaptor_Surface& t
 
 const occ::handle<Geom_Surface>& ChFi3d_BaseSurface(const BRepAdaptor_Surface& theSurface)
 {
-  return theSurface.Surface().Surface();
+  return theSurface.GeomSurfaceOriginal();
 }
 
 void ChFi3d_ApplyBounds(GeomAdaptor_Surface&             theSurface,
@@ -138,14 +138,13 @@ void ChFi3d_ApplyBounds(BRepAdaptor_Surface&             theSurface,
                         const double                     theVFirst,
                         const double                     theVLast)
 {
-  const GeomAdaptor_Surface& aGeomSurface = theSurface.Surface();
   theSurface.Load(theGeomSurface,
                   theUFirst,
                   theULast,
                   theVFirst,
                   theVLast,
-                  aGeomSurface.ToleranceU(),
-                  aGeomSurface.ToleranceV(),
+                  theSurface.ToleranceU(),
+                  theSurface.ToleranceV(),
                   theSurface.Trsf());
 }
 
@@ -3400,9 +3399,7 @@ occ::handle<Geom_Surface> trsfsurf(const occ::handle<Adaptor3d_Surface>& HS,
   occ::handle<GeomAdaptor_Surface> hgs = occ::down_cast<GeomAdaptor_Surface>(HS);
   if (!hbs.IsNull())
   {
-    res          = hbs->Surface().Surface();
-    gp_Trsf trsf = hbs->Trsf();
-    res          = occ::down_cast<Geom_Surface>(res->Transformed(trsf));
+    res = hbs->GeomSurfaceTransformed();
   }
   else if (!hgs.IsNull())
   {

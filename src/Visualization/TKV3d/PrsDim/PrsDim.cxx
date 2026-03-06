@@ -755,9 +755,7 @@ bool PrsDim::GetPlaneFromFace(const TopoDS_Face&         aFace,
   else
     surf2 = new BRepAdaptor_Surface(surf1);
 
-  aSurf = surf1.Surface().Surface();
-  //  aSurf->Transform(surf1.Trsf()) ;
-  aSurf = occ::down_cast<Geom_Surface>(aSurf->Transformed(surf1.Trsf()));
+  aSurf = surf1.GeomSurfaceTransformed();
 
   if (surf2->GetType() == GeomAbs_Plane)
   {

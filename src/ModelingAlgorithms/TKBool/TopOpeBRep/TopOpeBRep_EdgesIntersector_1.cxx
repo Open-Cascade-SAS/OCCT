@@ -425,13 +425,12 @@ const TopoDS_Shape& TopOpeBRep_EdgesIntersector::Vertex1(const int Index)
 gp_Pnt TopOpeBRep_EdgesIntersector::Value1() const
 {
   gp_Pnt2d p2 = Point1().Value();
-  gp_Pnt   p;
   if (Precision::IsInfinite(p2.X()) || Precision::IsInfinite(p2.Y()))
   {
-    double inf = Precision::Infinite();
-    p.SetCoord(inf, inf, inf);
+    return gp_Pnt(Precision::Infinite(), Precision::Infinite(), Precision::Infinite());
   }
   else
-    mySurface1->Surface().D0(p2.X(), p2.Y(), p);
-  return p;
+  {
+    return mySurface1->EvalD0(p2.X(), p2.Y());
+  }
 }

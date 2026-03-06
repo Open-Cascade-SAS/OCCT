@@ -60,10 +60,10 @@ void StdPrs_WFRestrictedFace::Add(
     aBndBox.Get(aUMin, aVMin, aUMax, aVMax);
   else
   { // No pcurves -- take natural bounds
-    aUMin = theFace->Surface().FirstUParameter();
-    aVMin = theFace->Surface().FirstVParameter();
-    aUMax = theFace->Surface().LastUParameter();
-    aVMax = theFace->Surface().LastVParameter();
+    aUMin = theFace->FirstUParameter();
+    aVMin = theFace->FirstVParameter();
+    aUMax = theFace->LastUParameter();
+    aVMax = theFace->LastVParameter();
   }
 
   // Load the isos
