@@ -1,0 +1,154 @@
+#ifndef _LProp_CompareDebug_HeaderFile
+#define _LProp_CompareDebug_HeaderFile
+
+#include <LProp_Status.hxx>
+#include <Standard_Failure.hxx>
+
+#include <gp_Dir.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <typeinfo>
+
+namespace LProp_CompareDebug
+{
+inline const char* ToString(const LProp_Status theStatus)
+{
+  switch (theStatus)
+  {
+    case LProp_Undecided:
+      return "Undecided";
+    case LProp_Undefined:
+      return "Undefined";
+    case LProp_Defined:
+      return "Defined";
+    case LProp_Computed:
+      return "Computed";
+  }
+  return "Unknown";
+}
+
+inline std::string ToString(const double theValue)
+{
+  std::ostringstream aStream;
+  aStream << theValue;
+  return aStream.str();
+}
+
+inline std::string ToString(const bool theValue)
+{
+  return theValue ? "true" : "false";
+}
+
+inline std::string ToString(const gp_Pnt& theValue)
+{
+  std::ostringstream aStream;
+  aStream << "(" << theValue.X() << ", " << theValue.Y() << ", " << theValue.Z() << ")";
+  return aStream.str();
+}
+
+inline std::string ToString(const gp_Pnt2d& theValue)
+{
+  std::ostringstream aStream;
+  aStream << "(" << theValue.X() << ", " << theValue.Y() << ")";
+  return aStream.str();
+}
+
+inline std::string ToString(const gp_Vec& theValue)
+{
+  std::ostringstream aStream;
+  aStream << "(" << theValue.X() << ", " << theValue.Y() << ", " << theValue.Z() << ")";
+  return aStream.str();
+}
+
+inline std::string ToString(const gp_Vec2d& theValue)
+{
+  std::ostringstream aStream;
+  aStream << "(" << theValue.X() << ", " << theValue.Y() << ")";
+  return aStream.str();
+}
+
+inline std::string ToString(const gp_Dir& theValue)
+{
+  std::ostringstream aStream;
+  aStream << "(" << theValue.X() << ", " << theValue.Y() << ", " << theValue.Z() << ")";
+  return aStream.str();
+}
+
+inline std::string ToString(const gp_Dir2d& theValue)
+{
+  std::ostringstream aStream;
+  aStream << "(" << theValue.X() << ", " << theValue.Y() << ")";
+  return aStream.str();
+}
+
+inline std::string ExceptionSummary(const Standard_Failure& theFailure)
+{
+  std::ostringstream aStream;
+  aStream << typeid(theFailure).name();
+  if (theFailure.what() != nullptr)
+  {
+    aStream << ": " << theFailure.what();
+  }
+  return aStream.str();
+}
+
+inline void LogMismatch(const char*         theMethod,
+                        const std::string&  theGeometry,
+                        const std::string&  theParameters,
+                        const int           theDerOrder,
+                        const double        theResolution,
+                        const std::string&  theDetails)
+{
+  std::cerr << "[LPropCompare] " << theMethod << " mismatch"
+            << " geom=" << theGeometry
+            << " params=" << theParameters
+            << " derOrder=" << theDerOrder
+            << " res=" << theResolution
+            << " " << theDetails << std::endl;
+}
+
+template <class Value>
+inline void LogValueMismatch(const char*         theMethod,
+                             const std::string&  theGeometry,
+                             const std::string&  theParameters,
+                             const int           theDerOrder,
+                             const double        theResolution,
+                             const char*         theLabel,
+                             const Value&        theNewValue,
+                             const Value&        theOldValue,
+                             const std::string&  theExtra = std::string())
+{
+  std::ostringstream aStream;
+  aStream << theLabel << " new=" << ToString(theNewValue) << " old=" << ToString(theOldValue);
+  if (!theExtra.empty())
+  {
+    aStream << " " << theExtra;
+  }
+  LogMismatch(theMethod, theGeometry, theParameters, theDerOrder, theResolution, aStream.str());
+}
+
+inline void LogExceptionMismatch(const char*          theMethod,
+                                 const std::string&   theGeometry,
+                                 const std::string&   theParameters,
+                                 const int            theDerOrder,
+                                 const double         theResolution,
+                                 const std::string&   theNewState,
+                                 const std::string&   theOldState)
+{
+  LogMismatch(theMethod,
+              theGeometry,
+              theParameters,
+              theDerOrder,
+              theResolution,
+              std::string("exception new=") + theNewState + " old=" + theOldState);
+}
+}
+
+#endif

@@ -15,9 +15,12 @@
 
 #include <GeomProp.hxx>
 #include <GeomProp_Curve.hxx>
+#include <LProp3d_LegacyCLProps.hxx>
 #include <LProp_CLPropsCompat.pxx>
+#include <LProp_CompareDebug.pxx>
 #include <LProp_NotDefined.hxx>
 #include <LProp_Status.hxx>
+#include <Precision.hxx>
 #include <Standard_OutOfRange.hxx>
 
 namespace
@@ -25,6 +28,16 @@ namespace
 bool hasGeomPropEvaluator(const std::shared_ptr<GeomProp_Curve>& theCurveProp)
 {
   return theCurveProp && theCurveProp->Adaptor() != nullptr;
+}
+
+std::string curveGeometry(const std::shared_ptr<GeomProp_Curve>& theCurveProp)
+{
+  return theCurveProp != nullptr ? std::to_string((int)theCurveProp->GetType()) : "null";
+}
+
+std::string curveParameters(const double theU)
+{
+  return "U=" + LProp_CompareDebug::ToString(theU);
 }
 } // namespace
 
@@ -125,6 +138,18 @@ void LProp3d_CLProps::SetCurve(const occ::handle<Adaptor3d_Curve>& C)
 
 const gp_Pnt& LProp3d_CLProps::Value() const
 {
+  LProp3d_LegacyCLProps aLegacy(myCurve, myU, myDerOrder, myLinTol);
+  if (!myPnt.IsEqual(aLegacy.Value(), myLinTol))
+  {
+    LProp_CompareDebug::LogValueMismatch("LProp3d_CLProps::Value",
+                                         curveGeometry(myCurveProp),
+                                         curveParameters(myU),
+                                         myDerOrder,
+                                         myLinTol,
+                                         "point",
+                                         myPnt,
+                                         aLegacy.Value());
+  }
   return myPnt;
 }
 
@@ -136,6 +161,18 @@ const gp_Vec& LProp3d_CLProps::D1()
   {
     myDerOrder = 1;
     myCurve->D1(myU, myPnt, myDerivArr[0]);
+  }
+  LProp3d_LegacyCLProps aLegacy(myCurve, myU, myDerOrder, myLinTol);
+  if (!myDerivArr[0].IsEqual(aLegacy.D1(), myLinTol, myLinTol))
+  {
+    LProp_CompareDebug::LogValueMismatch("LProp3d_CLProps::D1",
+                                         curveGeometry(myCurveProp),
+                                         curveParameters(myU),
+                                         myDerOrder,
+                                         myLinTol,
+                                         "vec",
+                                         myDerivArr[0],
+                                         aLegacy.D1());
   }
 
   return myDerivArr[0];
@@ -150,6 +187,18 @@ const gp_Vec& LProp3d_CLProps::D2()
     myDerOrder = 2;
     myCurve->D2(myU, myPnt, myDerivArr[0], myDerivArr[1]);
   }
+  LProp3d_LegacyCLProps aLegacy(myCurve, myU, myDerOrder, myLinTol);
+  if (!myDerivArr[1].IsEqual(aLegacy.D2(), myLinTol, myLinTol))
+  {
+    LProp_CompareDebug::LogValueMismatch("LProp3d_CLProps::D2",
+                                         curveGeometry(myCurveProp),
+                                         curveParameters(myU),
+                                         myDerOrder,
+                                         myLinTol,
+                                         "vec",
+                                         myDerivArr[1],
+                                         aLegacy.D2());
+  }
 
   return myDerivArr[1];
 }
@@ -163,6 +212,18 @@ const gp_Vec& LProp3d_CLProps::D3()
     myDerOrder = 3;
     myCurve->D3(myU, myPnt, myDerivArr[0], myDerivArr[1], myDerivArr[2]);
   }
+  LProp3d_LegacyCLProps aLegacy(myCurve, myU, myDerOrder, myLinTol);
+  if (!myDerivArr[2].IsEqual(aLegacy.D3(), myLinTol, myLinTol))
+  {
+    LProp_CompareDebug::LogValueMismatch("LProp3d_CLProps::D3",
+                                         curveGeometry(myCurveProp),
+                                         curveParameters(myU),
+                                         myDerOrder,
+                                         myLinTol,
+                                         "vec",
+                                         myDerivArr[2],
+                                         aLegacy.D3());
+  }
 
   return myDerivArr[2];
 }
@@ -171,13 +232,28 @@ const gp_Vec& LProp3d_CLProps::D3()
 
 bool LProp3d_CLProps::IsTangentDefined()
 {
-  return LProp_CLPropsCompat::IsTangentDefined(myCN,
-                                               myLinTol,
-                                               D1(),
-                                               D2(),
-                                               D3(),
-                                               mySignificantFirstDerivativeOrder,
-                                               myTangentStatus);
+  const bool isDefined = LProp_CLPropsCompat::IsTangentDefined(myCN,
+                                                               myLinTol,
+                                                               D1(),
+                                                               D2(),
+                                                               D3(),
+                                                               mySignificantFirstDerivativeOrder,
+                                                               myTangentStatus);
+  LProp3d_LegacyCLProps aLegacy(myCurve, myU, myDerOrder, myLinTol);
+  const bool            anOldDefined = aLegacy.IsTangentDefined();
+  if (isDefined != anOldDefined || myTangentStatus != aLegacy.TangentStatus())
+  {
+    LProp_CompareDebug::LogMismatch("LProp3d_CLProps::IsTangentDefined",
+                                    curveGeometry(myCurveProp),
+                                    curveParameters(myU),
+                                    myDerOrder,
+                                    myLinTol,
+                                    std::string("new=") + LProp_CompareDebug::ToString(isDefined)
+                                      + " old=" + LProp_CompareDebug::ToString(anOldDefined)
+                                      + " newStatus=" + LProp_CompareDebug::ToString(myTangentStatus)
+                                      + " oldStatus=" + LProp_CompareDebug::ToString(aLegacy.TangentStatus()));
+  }
+  return isDefined;
 }
 
 //==================================================================================================
@@ -206,6 +282,33 @@ void LProp3d_CLProps::Tangent(gp_Dir& D)
     },
     D,
     "LProp3d_CLProps::Tangent()");
+  LProp3d_LegacyCLProps aLegacy(myCurve, myU, myDerOrder, myLinTol);
+  try
+  {
+    gp_Dir anOldDir;
+    aLegacy.Tangent(anOldDir);
+    if (!D.IsEqual(anOldDir, Precision::Angular()))
+    {
+      LProp_CompareDebug::LogValueMismatch("LProp3d_CLProps::Tangent",
+                                           curveGeometry(myCurveProp),
+                                           curveParameters(myU),
+                                           myDerOrder,
+                                           myLinTol,
+                                           "dir",
+                                           D,
+                                           anOldDir);
+    }
+  }
+  catch (Standard_Failure const& theFailure)
+  {
+    LProp_CompareDebug::LogExceptionMismatch("LProp3d_CLProps::Tangent",
+                                             curveGeometry(myCurveProp),
+                                             curveParameters(myU),
+                                             myDerOrder,
+                                             myLinTol,
+                                             "value",
+                                             LProp_CompareDebug::ExceptionSummary(theFailure));
+  }
 }
 
 //==================================================================================================
@@ -224,6 +327,33 @@ double LProp3d_CLProps::Curvature()
                                                : GeomProp::ComputeCurvature(D1(), D2(), myLinTol);
     },
     "LProp3d_CLProps::Curvature()");
+  LProp3d_LegacyCLProps aLegacy(myCurve, myU, myDerOrder, myLinTol);
+  try
+  {
+    const double anOldCurv = aLegacy.Curvature();
+    if ((myCurvature == RealLast()) != (anOldCurv == RealLast())
+        || (myCurvature != RealLast() && std::abs(myCurvature - anOldCurv) > myLinTol))
+    {
+      LProp_CompareDebug::LogValueMismatch("LProp3d_CLProps::Curvature",
+                                           curveGeometry(myCurveProp),
+                                           curveParameters(myU),
+                                           myDerOrder,
+                                           myLinTol,
+                                           "curv",
+                                           myCurvature,
+                                           anOldCurv);
+    }
+  }
+  catch (Standard_Failure const& theFailure)
+  {
+    LProp_CompareDebug::LogExceptionMismatch("LProp3d_CLProps::Curvature",
+                                             curveGeometry(myCurveProp),
+                                             curveParameters(myU),
+                                             myDerOrder,
+                                             myLinTol,
+                                             "value",
+                                             LProp_CompareDebug::ExceptionSummary(theFailure));
+  }
   return myCurvature;
 }
 
@@ -241,6 +371,33 @@ void LProp3d_CLProps::Normal(gp_Dir& D)
     },
     D,
     "LProp3d_CLProps::Normal()");
+  LProp3d_LegacyCLProps aLegacy(myCurve, myU, myDerOrder, myLinTol);
+  try
+  {
+    gp_Dir anOldDir;
+    aLegacy.Normal(anOldDir);
+    if (!D.IsEqual(anOldDir, Precision::Angular()))
+    {
+      LProp_CompareDebug::LogValueMismatch("LProp3d_CLProps::Normal",
+                                           curveGeometry(myCurveProp),
+                                           curveParameters(myU),
+                                           myDerOrder,
+                                           myLinTol,
+                                           "dir",
+                                           D,
+                                           anOldDir);
+    }
+  }
+  catch (Standard_Failure const& theFailure)
+  {
+    LProp_CompareDebug::LogExceptionMismatch("LProp3d_CLProps::Normal",
+                                             curveGeometry(myCurveProp),
+                                             curveParameters(myU),
+                                             myDerOrder,
+                                             myLinTol,
+                                             "value",
+                                             LProp_CompareDebug::ExceptionSummary(theFailure));
+  }
 }
 
 //==================================================================================================
@@ -257,4 +414,31 @@ void LProp3d_CLProps::CentreOfCurvature(gp_Pnt& P)
     },
     P,
     "LProp3d_CLProps::CentreOfCurvature()");
+  LProp3d_LegacyCLProps aLegacy(myCurve, myU, myDerOrder, myLinTol);
+  try
+  {
+    gp_Pnt anOldPoint;
+    aLegacy.CentreOfCurvature(anOldPoint);
+    if (!P.IsEqual(anOldPoint, myLinTol))
+    {
+      LProp_CompareDebug::LogValueMismatch("LProp3d_CLProps::CentreOfCurvature",
+                                           curveGeometry(myCurveProp),
+                                           curveParameters(myU),
+                                           myDerOrder,
+                                           myLinTol,
+                                           "point",
+                                           P,
+                                           anOldPoint);
+    }
+  }
+  catch (Standard_Failure const& theFailure)
+  {
+    LProp_CompareDebug::LogExceptionMismatch("LProp3d_CLProps::CentreOfCurvature",
+                                             curveGeometry(myCurveProp),
+                                             curveParameters(myU),
+                                             myDerOrder,
+                                             myLinTol,
+                                             "value",
+                                             LProp_CompareDebug::ExceptionSummary(theFailure));
+  }
 }
