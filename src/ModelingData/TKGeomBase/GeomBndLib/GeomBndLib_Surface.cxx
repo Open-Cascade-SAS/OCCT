@@ -27,8 +27,20 @@
 #include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_ToroidalSurface.hxx>
 #include <GeomAdaptor_Surface.hxx>
+#include <GeomAdaptor_TransformedSurface.hxx>
+#include <gp_TrsfForm.hxx>
 
 #include <type_traits>
+
+namespace
+{
+occ::handle<Geom_Surface> unwrapSurface(const occ::handle<Geom_Surface>& theSurf)
+{
+  const occ::handle<Geom_RectangularTrimmedSurface> aTrim =
+    occ::down_cast<Geom_RectangularTrimmedSurface>(theSurf);
+  return aTrim.IsNull() ? theSurf : unwrapSurface(aTrim->BasisSurface());
+}
+} // namespace
 
 //=================================================================================================
 
@@ -37,90 +49,61 @@ GeomBndLib_Surface::GeomBndLib_Surface(const Adaptor3d_Surface& theSurf)
 {
   myAdaptorRef = &theSurf;
 
+  // Detect the adaptor type ONCE and extract the underlying Geom_Surface handle.
+  // For GeomAdaptor_TransformedSurface (which BRepAdaptor_Surface inherits from):
+  //   - use the inner GeomAdaptor_Surface as myAdaptorRef (untransformed UV bounds / eval)
+  //   - store the transformation in myTrsf for application at the Box/BoxOptimal level
+  //   - no Copy+Transform of the geometry - transformation is deferred to box post-processing
+  occ::handle<Geom_Surface> aGeomSurf;
+  if (const GeomAdaptor_Surface* aGA = dynamic_cast<const GeomAdaptor_Surface*>(&theSurf))
+  {
+    aGeomSurf = aGA->Surface();
+  }
+  else if (const GeomAdaptor_TransformedSurface* aGTS =
+             dynamic_cast<const GeomAdaptor_TransformedSurface*>(&theSurf))
+  {
+    aGeomSurf = aGTS->GeomSurfaceTransformed();
+  }
+
+  const occ::handle<Geom_Surface> aBaseGeom = unwrapSurface(aGeomSurf);
+  if (!aBaseGeom.IsNull() && initFromSurfaceType(mySurfType, aBaseGeom))
+  {
+    return;
+  }
+
   switch (mySurfType)
   {
     case GeomAbs_Plane: {
-      occ::handle<Geom_Plane> aPlane = new Geom_Plane(theSurf.Plane());
-      myEvaluator.emplace<GeomBndLib_Plane>(aPlane);
+      myEvaluator.emplace<GeomBndLib_Plane>(new Geom_Plane(myAdaptorRef->Plane()));
       break;
     }
     case GeomAbs_Cylinder: {
-      occ::handle<Geom_CylindricalSurface> aCyl = new Geom_CylindricalSurface(theSurf.Cylinder());
-      myEvaluator.emplace<GeomBndLib_Cylinder>(aCyl);
+      myEvaluator.emplace<GeomBndLib_Cylinder>(
+        new Geom_CylindricalSurface(myAdaptorRef->Cylinder()));
       break;
     }
     case GeomAbs_Cone: {
-      occ::handle<Geom_ConicalSurface> aCone = new Geom_ConicalSurface(theSurf.Cone());
-      myEvaluator.emplace<GeomBndLib_Cone>(aCone);
+      myEvaluator.emplace<GeomBndLib_Cone>(new Geom_ConicalSurface(myAdaptorRef->Cone()));
       break;
     }
     case GeomAbs_Sphere: {
-      occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(theSurf.Sphere());
-      myEvaluator.emplace<GeomBndLib_Sphere>(aSphere);
+      myEvaluator.emplace<GeomBndLib_Sphere>(new Geom_SphericalSurface(myAdaptorRef->Sphere()));
       break;
     }
     case GeomAbs_Torus: {
-      occ::handle<Geom_ToroidalSurface> aTorus = new Geom_ToroidalSurface(theSurf.Torus());
-      myEvaluator.emplace<GeomBndLib_Torus>(aTorus);
+      myEvaluator.emplace<GeomBndLib_Torus>(new Geom_ToroidalSurface(myAdaptorRef->Torus()));
       break;
     }
     case GeomAbs_BezierSurface: {
-      myEvaluator.emplace<GeomBndLib_BezierSurface>(theSurf.Bezier());
+      myEvaluator.emplace<GeomBndLib_BezierSurface>(myAdaptorRef->Bezier());
       break;
     }
     case GeomAbs_BSplineSurface: {
-      myEvaluator.emplace<GeomBndLib_BSplineSurface>(theSurf.BSpline());
-      break;
-    }
-    case GeomAbs_SurfaceOfRevolution: {
-      // Try to get the underlying Geom_SurfaceOfRevolution from the adaptor.
-      const GeomAdaptor_Surface* aGA = dynamic_cast<const GeomAdaptor_Surface*>(myAdaptorRef);
-      if (aGA != nullptr)
-      {
-        auto aRev = occ::down_cast<Geom_SurfaceOfRevolution>(aGA->Surface());
-        if (!aRev.IsNull())
-        {
-          myEvaluator.emplace<GeomBndLib_SurfaceOfRevolution>(aRev);
-          break;
-        }
-      }
-      mySurfType = GeomAbs_OtherSurface;
-      myEvaluator.emplace<GeomBndLib_OtherSurface>(*myAdaptorRef);
-      break;
-    }
-    case GeomAbs_SurfaceOfExtrusion: {
-      const GeomAdaptor_Surface* aGA = dynamic_cast<const GeomAdaptor_Surface*>(myAdaptorRef);
-      if (aGA != nullptr)
-      {
-        auto anExtr = occ::down_cast<Geom_SurfaceOfLinearExtrusion>(aGA->Surface());
-        if (!anExtr.IsNull())
-        {
-          myEvaluator.emplace<GeomBndLib_SurfaceOfExtrusion>(anExtr);
-          break;
-        }
-      }
-      mySurfType = GeomAbs_OtherSurface;
-      myEvaluator.emplace<GeomBndLib_OtherSurface>(*myAdaptorRef);
-      break;
-    }
-    case GeomAbs_OffsetSurface: {
-      const GeomAdaptor_Surface* aGA = dynamic_cast<const GeomAdaptor_Surface*>(myAdaptorRef);
-      if (aGA != nullptr)
-      {
-        auto anOff = occ::down_cast<Geom_OffsetSurface>(aGA->Surface());
-        if (!anOff.IsNull())
-        {
-          myEvaluator.emplace<GeomBndLib_OffsetSurface>(anOff);
-          break;
-        }
-      }
-      mySurfType = GeomAbs_OtherSurface;
-      myEvaluator.emplace<GeomBndLib_OtherSurface>(*myAdaptorRef);
+      myEvaluator.emplace<GeomBndLib_BSplineSurface>(myAdaptorRef->BSpline());
       break;
     }
     default: {
-      mySurfType = GeomAbs_OtherSurface;
-      myEvaluator.emplace<GeomBndLib_OtherSurface>(*myAdaptorRef);
+      initOtherSurface(*myAdaptorRef);
       break;
     }
   }
@@ -131,124 +114,167 @@ GeomBndLib_Surface::GeomBndLib_Surface(const Adaptor3d_Surface& theSurf)
 GeomBndLib_Surface::GeomBndLib_Surface(const occ::handle<Geom_Surface>& theSurf)
     : mySurfType(GeomAbs_OtherSurface)
 {
-  if (auto aTrim = occ::down_cast<Geom_RectangularTrimmedSurface>(theSurf))
+  const occ::handle<Geom_RectangularTrimmedSurface> aTrim =
+    occ::down_cast<Geom_RectangularTrimmedSurface>(theSurf);
+  if (!aTrim.IsNull())
   {
-    myAdaptorOwned                          = new GeomAdaptor_Surface(theSurf);
-    const occ::handle<Geom_Surface>& aBasis = aTrim->BasisSurface();
-    if (auto aPlane = occ::down_cast<Geom_Plane>(aBasis))
+    myAdaptorOwned = new GeomAdaptor_Surface(theSurf);
+    if (!initFromSurface(aTrim->BasisSurface()))
     {
-      mySurfType = GeomAbs_Plane;
-      myEvaluator.emplace<GeomBndLib_Plane>(aPlane);
-    }
-    else if (auto aCyl = occ::down_cast<Geom_CylindricalSurface>(aBasis))
-    {
-      mySurfType = GeomAbs_Cylinder;
-      myEvaluator.emplace<GeomBndLib_Cylinder>(aCyl);
-    }
-    else if (auto aCone = occ::down_cast<Geom_ConicalSurface>(aBasis))
-    {
-      mySurfType = GeomAbs_Cone;
-      myEvaluator.emplace<GeomBndLib_Cone>(aCone);
-    }
-    else if (auto aSphere = occ::down_cast<Geom_SphericalSurface>(aBasis))
-    {
-      mySurfType = GeomAbs_Sphere;
-      myEvaluator.emplace<GeomBndLib_Sphere>(aSphere);
-    }
-    else if (auto aTorus = occ::down_cast<Geom_ToroidalSurface>(aBasis))
-    {
-      mySurfType = GeomAbs_Torus;
-      myEvaluator.emplace<GeomBndLib_Torus>(aTorus);
-    }
-    else if (auto aBez = occ::down_cast<Geom_BezierSurface>(aBasis))
-    {
-      mySurfType = GeomAbs_BezierSurface;
-      myEvaluator.emplace<GeomBndLib_BezierSurface>(aBez);
-    }
-    else if (auto aBSpl = occ::down_cast<Geom_BSplineSurface>(aBasis))
-    {
-      mySurfType = GeomAbs_BSplineSurface;
-      myEvaluator.emplace<GeomBndLib_BSplineSurface>(aBSpl);
-    }
-    else if (auto aRev = occ::down_cast<Geom_SurfaceOfRevolution>(aBasis))
-    {
-      mySurfType = GeomAbs_SurfaceOfRevolution;
-      myEvaluator.emplace<GeomBndLib_SurfaceOfRevolution>(aRev);
-    }
-    else if (auto anExtr = occ::down_cast<Geom_SurfaceOfLinearExtrusion>(aBasis))
-    {
-      mySurfType = GeomAbs_SurfaceOfExtrusion;
-      myEvaluator.emplace<GeomBndLib_SurfaceOfExtrusion>(anExtr);
-    }
-    else if (auto anOff = occ::down_cast<Geom_OffsetSurface>(aBasis))
-    {
-      mySurfType = GeomAbs_OffsetSurface;
-      myEvaluator.emplace<GeomBndLib_OffsetSurface>(anOff);
-    }
-    else
-    {
-      mySurfType = GeomAbs_OtherSurface;
       myEvaluator.emplace<GeomBndLib_OtherSurface>(*myAdaptorOwned);
     }
     return;
   }
 
-  if (auto aPlane = occ::down_cast<Geom_Plane>(theSurf))
+  if (!initFromSurface(theSurf))
   {
-    mySurfType = GeomAbs_Plane;
-    myEvaluator.emplace<GeomBndLib_Plane>(aPlane);
+    initOtherSurface(theSurf);
   }
-  else if (auto aCyl = occ::down_cast<Geom_CylindricalSurface>(theSurf))
+}
+
+//=================================================================================================
+
+bool GeomBndLib_Surface::initFromSurface(const occ::handle<Geom_Surface>& theSurf)
+{
+  if (theSurf.IsNull())
   {
-    mySurfType = GeomAbs_Cylinder;
-    myEvaluator.emplace<GeomBndLib_Cylinder>(aCyl);
+    return false;
   }
-  else if (auto aCone = occ::down_cast<Geom_ConicalSurface>(theSurf))
+
+  const occ::handle<Standard_Type> aType = theSurf->DynamicType();
+  GeomAbs_SurfaceType              aSurfType;
+  if (aType == STANDARD_TYPE(Geom_Plane))
   {
-    mySurfType = GeomAbs_Cone;
-    myEvaluator.emplace<GeomBndLib_Cone>(aCone);
+    aSurfType = GeomAbs_Plane;
   }
-  else if (auto aSphere = occ::down_cast<Geom_SphericalSurface>(theSurf))
+  else if (aType == STANDARD_TYPE(Geom_CylindricalSurface))
   {
-    mySurfType = GeomAbs_Sphere;
-    myEvaluator.emplace<GeomBndLib_Sphere>(aSphere);
+    aSurfType = GeomAbs_Cylinder;
   }
-  else if (auto aTorus = occ::down_cast<Geom_ToroidalSurface>(theSurf))
+  else if (aType == STANDARD_TYPE(Geom_ConicalSurface))
   {
-    mySurfType = GeomAbs_Torus;
-    myEvaluator.emplace<GeomBndLib_Torus>(aTorus);
+    aSurfType = GeomAbs_Cone;
   }
-  else if (auto aBez = occ::down_cast<Geom_BezierSurface>(theSurf))
+  else if (aType == STANDARD_TYPE(Geom_SphericalSurface))
   {
-    mySurfType = GeomAbs_BezierSurface;
-    myEvaluator.emplace<GeomBndLib_BezierSurface>(aBez);
+    aSurfType = GeomAbs_Sphere;
   }
-  else if (auto aBSpl = occ::down_cast<Geom_BSplineSurface>(theSurf))
+  else if (aType == STANDARD_TYPE(Geom_ToroidalSurface))
   {
-    mySurfType = GeomAbs_BSplineSurface;
-    myEvaluator.emplace<GeomBndLib_BSplineSurface>(aBSpl);
+    aSurfType = GeomAbs_Torus;
   }
-  else if (auto aRev = occ::down_cast<Geom_SurfaceOfRevolution>(theSurf))
+  else if (aType == STANDARD_TYPE(Geom_BezierSurface))
   {
-    mySurfType = GeomAbs_SurfaceOfRevolution;
-    myEvaluator.emplace<GeomBndLib_SurfaceOfRevolution>(aRev);
+    aSurfType = GeomAbs_BezierSurface;
   }
-  else if (auto anExtr = occ::down_cast<Geom_SurfaceOfLinearExtrusion>(theSurf))
+  else if (aType == STANDARD_TYPE(Geom_BSplineSurface))
   {
-    mySurfType = GeomAbs_SurfaceOfExtrusion;
-    myEvaluator.emplace<GeomBndLib_SurfaceOfExtrusion>(anExtr);
+    aSurfType = GeomAbs_BSplineSurface;
   }
-  else if (auto anOff = occ::down_cast<Geom_OffsetSurface>(theSurf))
+  else if (aType == STANDARD_TYPE(Geom_SurfaceOfRevolution))
   {
-    mySurfType = GeomAbs_OffsetSurface;
-    myEvaluator.emplace<GeomBndLib_OffsetSurface>(anOff);
+    aSurfType = GeomAbs_SurfaceOfRevolution;
+  }
+  else if (aType == STANDARD_TYPE(Geom_SurfaceOfLinearExtrusion))
+  {
+    aSurfType = GeomAbs_SurfaceOfExtrusion;
+  }
+  else if (aType == STANDARD_TYPE(Geom_OffsetSurface))
+  {
+    aSurfType = GeomAbs_OffsetSurface;
   }
   else
   {
-    myAdaptorOwned = new GeomAdaptor_Surface(theSurf);
-    mySurfType     = GeomAbs_OtherSurface;
-    myEvaluator.emplace<GeomBndLib_OtherSurface>(*myAdaptorOwned);
+    return false;
   }
+
+  mySurfType = aSurfType;
+  return initFromSurfaceType(aSurfType, theSurf);
+}
+
+//=================================================================================================
+
+bool GeomBndLib_Surface::initFromSurfaceType(GeomAbs_SurfaceType              theType,
+                                             const occ::handle<Geom_Surface>& theSurf)
+{
+  switch (theType)
+  {
+    case GeomAbs_Plane: {
+      const occ::handle<Geom_Plane> aPlane = occ::down_cast<Geom_Plane>(theSurf);
+      myEvaluator.emplace<GeomBndLib_Plane>(aPlane);
+      return true;
+    }
+    case GeomAbs_Cylinder: {
+      const occ::handle<Geom_CylindricalSurface> aCylinder =
+        occ::down_cast<Geom_CylindricalSurface>(theSurf);
+      myEvaluator.emplace<GeomBndLib_Cylinder>(aCylinder);
+      return true;
+    }
+    case GeomAbs_Cone: {
+      const occ::handle<Geom_ConicalSurface> aCone = occ::down_cast<Geom_ConicalSurface>(theSurf);
+      myEvaluator.emplace<GeomBndLib_Cone>(aCone);
+      return true;
+    }
+    case GeomAbs_Sphere: {
+      const occ::handle<Geom_SphericalSurface> aSphere =
+        occ::down_cast<Geom_SphericalSurface>(theSurf);
+      myEvaluator.emplace<GeomBndLib_Sphere>(aSphere);
+      return true;
+    }
+    case GeomAbs_Torus: {
+      const occ::handle<Geom_ToroidalSurface> aTorus =
+        occ::down_cast<Geom_ToroidalSurface>(theSurf);
+      myEvaluator.emplace<GeomBndLib_Torus>(aTorus);
+      return true;
+    }
+    case GeomAbs_BezierSurface: {
+      const occ::handle<Geom_BezierSurface> aBezier = occ::down_cast<Geom_BezierSurface>(theSurf);
+      myEvaluator.emplace<GeomBndLib_BezierSurface>(aBezier);
+      return true;
+    }
+    case GeomAbs_BSplineSurface: {
+      const occ::handle<Geom_BSplineSurface> aBSpline =
+        occ::down_cast<Geom_BSplineSurface>(theSurf);
+      myEvaluator.emplace<GeomBndLib_BSplineSurface>(aBSpline);
+      return true;
+    }
+    case GeomAbs_SurfaceOfRevolution: {
+      const occ::handle<Geom_SurfaceOfRevolution> aRevolution =
+        occ::down_cast<Geom_SurfaceOfRevolution>(theSurf);
+      myEvaluator.emplace<GeomBndLib_SurfaceOfRevolution>(aRevolution);
+      return true;
+    }
+    case GeomAbs_SurfaceOfExtrusion: {
+      const occ::handle<Geom_SurfaceOfLinearExtrusion> anExtrusion =
+        occ::down_cast<Geom_SurfaceOfLinearExtrusion>(theSurf);
+      myEvaluator.emplace<GeomBndLib_SurfaceOfExtrusion>(anExtrusion);
+      return true;
+    }
+    case GeomAbs_OffsetSurface: {
+      const occ::handle<Geom_OffsetSurface> anOffset = occ::down_cast<Geom_OffsetSurface>(theSurf);
+      myEvaluator.emplace<GeomBndLib_OffsetSurface>(anOffset);
+      return true;
+    }
+    default:
+      return false;
+  }
+}
+
+//=================================================================================================
+
+void GeomBndLib_Surface::initOtherSurface(const Adaptor3d_Surface& theSurf)
+{
+  mySurfType = GeomAbs_OtherSurface;
+  myEvaluator.emplace<GeomBndLib_OtherSurface>(theSurf);
+}
+
+//=================================================================================================
+
+void GeomBndLib_Surface::initOtherSurface(const occ::handle<Geom_Surface>& theSurf)
+{
+  myAdaptorOwned = new GeomAdaptor_Surface(theSurf);
+  mySurfType     = GeomAbs_OtherSurface;
+  myEvaluator.emplace<GeomBndLib_OtherSurface>(*myAdaptorOwned);
 }
 
 //=================================================================================================

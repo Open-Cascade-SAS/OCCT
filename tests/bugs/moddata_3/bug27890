@@ -15,16 +15,16 @@ regexp { *([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+)} $rr full v
 set tol_abs 1.0e-4
 set tol_rel 0.0001
 
-set expected_v1_x -34.660696189548446
+set expected_v1_x -34.696157014910277
 checkreal "v1_x" ${v1_x} ${expected_v1_x} ${tol_abs} ${tol_rel}
 
-set expected_v1_y -69.996521506152177
+set expected_v1_y -70.031982331514001
 checkreal "v1_y" ${v1_y} ${expected_v1_y} ${tol_abs} ${tol_rel}
 
-set expected_v2_x -15.536166915190313
+set expected_v2_x -15.500706089827537
 checkreal "v2_x" ${v2_x} ${expected_v2_x} ${tol_abs} ${tol_rel}
 
-set expected_v2_y -21.097502159535235
+set expected_v2_y -21.06204133417317
 checkreal "v2_y" ${v2_y} ${expected_v2_y} ${tol_abs} ${tol_rel}
 
 #v2d2

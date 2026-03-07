@@ -17,10 +17,15 @@
 #include <Bnd_Box.hxx>
 #include <Bnd_Box2d.hxx>
 #include <BSplCLib.hxx>
+#include <ElCLib.hxx>
 #include <NCollection_Array1.hxx>
 #include <Precision.hxx>
+#include <Standard_Handle.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
+
+#include <GeomBndLib_OptimizationHelpers.pxx>
+#include <GeomBndLib_SamplingHelpers.pxx>
 
 #include <algorithm>
 #include <cmath>
@@ -216,6 +221,285 @@ void ReduceSplineBox(const NCollection_Array1<TPoint>& thePoles,
       theReducedBox.Update(aXMin, aYMin, aXMax, aYMax);
     }
   }
+}
+
+//! Compute bounding box for a Bezier curve (3D or 2D) over [theU1, theU2].
+//! For sub-ranges, segments the curve and uses the segmented poles' convex hull.
+//! For the full range, uses FillBox sampling + ReduceSplineBox.
+template <typename TBezier, typename TAdaptor, typename TBox, typename TPoint>
+TBox BezierCurveBox(const occ::handle<TBezier>& theGeom,
+                    const double                theU1,
+                    const double                theU2,
+                    const double                theTol)
+{
+  // For a strict sub-range, segment the curve so ReduceSplineBox uses the exact sub-curve
+  // poles. Without segmentation, the full poles' convex hull may exceed the sub-range extent.
+  constexpr double aSub = Precision::PConfusion();
+  if (theU1 - theGeom->FirstParameter() > aSub || theGeom->LastParameter() - theU2 > aSub)
+  {
+    occ::handle<TBezier> aBz = occ::down_cast<TBezier>(theGeom->Copy());
+    aBz->Segment(theU1, theU2);
+    TBox aBox;
+    for (int anI = 1; anI <= aBz->NbPoles(); ++anI)
+      aBox.Add(aBz->Pole(anI));
+    aBox.Enlarge(theTol);
+    return aBox;
+  }
+
+  constexpr double aWeakness = 1.5;
+  TAdaptor         aGACurve(theGeom);
+  TBox             aB1;
+  const double     aTol =
+    FillBox<TBox, TAdaptor, TPoint>(aB1, aGACurve, theU1, theU2, theGeom->Degree());
+  aB1.Enlarge(aWeakness * aTol);
+  TBox aBox;
+  ReduceSplineBox(theGeom->Poles(), aB1, aBox);
+  aBox.Enlarge(theTol);
+  return aBox;
+}
+
+//! Compute bounding box for a BSpline curve (3D or 2D) over [theU1, theU2].
+//! Handles periodic curves via Copy+Segment, sub-ranges via Segment+poles,
+//! and full-range via knot-span FillBox + ComputePoleIndexRange + ReduceSplineBox.
+template <typename TBSpline, typename TAdaptor, typename TBox, typename TPoint>
+TBox BSplineCurveBox(const occ::handle<TBSpline>& theGeom,
+                     const double                 theU1,
+                     const double                 theU2,
+                     const double                 theTol)
+{
+  constexpr double aWeakness = 1.5;
+  const int        aDegree   = theGeom->Degree();
+
+  if (theGeom->IsPeriodic())
+  {
+    // Periodic: use Segment to correctly unwrap the parameter range.
+    occ::handle<TBSpline> aBs = occ::down_cast<TBSpline>(theGeom->Copy());
+    double                aU1 = theU1, aU2 = theU2;
+    ElCLib::AdjustPeriodic(aBs->FirstParameter(),
+                           aBs->LastParameter(),
+                           Precision::PConfusion(),
+                           aU1,
+                           aU2);
+
+    const double aPeriod           = aBs->LastParameter() - aBs->FirstParameter();
+    const double aDirectDiff       = std::abs(aU2 - aU1);
+    const double aCrossPeriodDiff1 = std::abs(aU2 - aPeriod - aU1);
+    const double aCrossPeriodDiff2 = std::abs(aU1 - aPeriod - aU2);
+    double       aSegmentTol       = 2. * Precision::PConfusion();
+    const double aMinDiff = std::min(aDirectDiff, std::min(aCrossPeriodDiff1, aCrossPeriodDiff2));
+    if (aMinDiff < aSegmentTol)
+      aSegmentTol = aMinDiff * 0.01;
+    aBs->Segment(aU1, aU2, aSegmentTol);
+
+    const int                         aK1    = aBs->FirstUKnotIndex();
+    const int                         aK2    = aBs->LastUKnotIndex();
+    const NCollection_Array1<double>& aKnots = aBs->Knots();
+    TAdaptor                          aGACurve(aBs);
+    double                            aFirst = aKnots(aK1), aLast;
+    double                            aTol   = 0.0;
+    TBox                              aB1;
+    for (int aK = aK1 + 1; aK <= aK2; aK++)
+    {
+      aLast = aKnots(aK);
+      aTol = std::max(FillBox<TBox, TAdaptor, TPoint>(aB1, aGACurve, aFirst, aLast, aDegree), aTol);
+      aFirst = aLast;
+    }
+    TBox aBox;
+    if (!aB1.IsVoid())
+    {
+      aB1.Enlarge(aWeakness * aTol);
+      ReduceSplineBox(aBs->Poles(), aB1, aBox);
+      aBox.Enlarge(theTol);
+    }
+    else
+    {
+      // Degenerate parameter range: evaluate endpoints directly.
+      aBox.Add(aBs->EvalD0(aU1));
+      aBox.Add(aBs->EvalD0(aU2));
+      aBox.Enlarge(theTol);
+    }
+    return aBox;
+  }
+
+  // Non-periodic: traverse knot spans directly without Copy/Segment.
+  const double aU1 = std::max(theU1, theGeom->FirstParameter());
+  const double aU2 = std::min(theU2, theGeom->LastParameter());
+
+  // For a strict sub-range, segment the curve so ReduceSplineBox uses the exact sub-curve
+  // poles. Without segmentation, ComputePoleIndexRange includes adjacent-span poles whose
+  // convex hull may exceed the actual sub-range extent.
+  constexpr double aSub = Precision::PConfusion();
+  if (aU1 - theGeom->FirstParameter() > aSub || theGeom->LastParameter() - aU2 > aSub)
+  {
+    occ::handle<TBSpline> aBs = occ::down_cast<TBSpline>(theGeom->Copy());
+    aBs->Segment(aU1, aU2, 2.0 * Precision::PConfusion());
+    TBox aBox;
+    for (int anI = 1; anI <= aBs->NbPoles(); ++anI)
+      aBox.Add(aBs->Pole(anI));
+    aBox.Enlarge(theTol);
+    return aBox;
+  }
+
+  const NCollection_Array1<double>& aKnots   = theGeom->Knots();
+  const NCollection_Array1<int>&    aMults   = theGeom->Multiplicities();
+  const int                         aNbPoles = theGeom->NbPoles();
+
+  int aKMin = aKnots.Lower();
+  BSplCLib::Hunt(aKnots, aU1, aKMin);
+  aKMin = std::clamp(aKMin, aKnots.Lower(), aKnots.Upper() - 1);
+
+  int aKMax = aKnots.Lower();
+  BSplCLib::Hunt(aKnots, aU2, aKMax);
+  aKMax = std::clamp(aKMax + 1, aKnots.Lower(), aKnots.Upper());
+
+  TAdaptor aGACurve(theGeom);
+  TBox     aB1;
+  double   aTol   = 0.0;
+  double   aFirst = aU1;
+  for (int aK = aKMin + 1; aK <= aKMax; aK++)
+  {
+    const double aLast = (aK < aKMax) ? std::min(aU2, aKnots(aK)) : aU2;
+    if (aLast > aFirst + Precision::PConfusion())
+      aTol = std::max(FillBox<TBox, TAdaptor, TPoint>(aB1, aGACurve, aFirst, aLast, aDegree), aTol);
+    aFirst = aLast;
+    if (aFirst >= aU2 - Precision::PConfusion())
+      break;
+  }
+  TBox aBox;
+  if (!aB1.IsVoid())
+  {
+    aB1.Enlarge(aWeakness * aTol);
+    int aPoleMin = 1, aPoleMax = aNbPoles;
+    ComputePoleIndexRange(aKnots, aMults, aDegree, aU1, aU2, aNbPoles, false, aPoleMin, aPoleMax);
+    ReduceSplineBox(theGeom->Poles(), aPoleMin, aPoleMax, aB1, aBox);
+    aBox.Enlarge(theTol);
+  }
+  else
+  {
+    // Degenerate parameter range: evaluate endpoints directly.
+    aBox.Add(aGACurve.EvalD0(aU1));
+    aBox.Add(aGACurve.EvalD0(aU2));
+    aBox.Enlarge(theTol);
+  }
+  return aBox;
+}
+
+//! Compute precise bounding box for a curve (3D or 2D) using sampling + numerical optimization.
+//! Works for both Adaptor3d_Curve and Adaptor2d_Curve2d subtypes.
+template <typename TAdaptor, typename TBox, typename TPoint>
+TBox CurveBoxOptimal(TAdaptor&    theAdaptor,
+                     const double theU1,
+                     const double theU2,
+                     const double theTol)
+{
+  using TCoord         = std::conditional_t<std::is_same_v<TPoint, gp_Pnt>, gp_XYZ, gp_XY>;
+  constexpr int NDim   = std::is_same_v<TBox, Bnd_Box> ? 3 : 2;
+  const int aNbSamples = GeomBndLib_SamplingHelpers::ComputeNbSamplesT(theAdaptor, theU1, theU2);
+
+  double aCoordMin[NDim], aCoordMax[NDim], aDeflMax[NDim];
+  for (int aK = 0; aK < NDim; ++aK)
+  {
+    aCoordMin[aK] = RealLast();
+    aCoordMax[aK] = -RealLast();
+    aDeflMax[aK]  = -RealLast();
+  }
+
+  const double               aDU  = (theU2 - theU1) / (aNbSamples - 1);
+  const double               aDU2 = aDU / 2.;
+  NCollection_Array1<TCoord> aPnts(1, aNbSamples);
+  for (int anI = 1, aJ = 0; anI <= aNbSamples; anI++, aJ++)
+  {
+    const double aU = theU1 + aJ * aDU;
+    const TPoint aP = theAdaptor.EvalD0(aU);
+    if constexpr (std::is_same_v<TPoint, gp_Pnt>)
+      aPnts(anI) = aP.XYZ();
+    else
+      aPnts(anI) = aP.XY();
+    for (int aK = 0; aK < NDim; ++aK)
+    {
+      if (aCoordMin[aK] > aP.Coord(aK + 1))
+        aCoordMin[aK] = aP.Coord(aK + 1);
+      if (aCoordMax[aK] < aP.Coord(aK + 1))
+        aCoordMax[aK] = aP.Coord(aK + 1);
+    }
+    if (anI > 1)
+    {
+      const TCoord aPm   = 0.5 * (aPnts(anI - 1) + aPnts(anI));
+      const TPoint aPMid = theAdaptor.EvalD0(aU - aDU2);
+      TCoord       aD;
+      if constexpr (std::is_same_v<TPoint, gp_Pnt>)
+        aD = aPMid.XYZ() - aPm;
+      else
+        aD = aPMid.XY() - aPm;
+      for (int aK = 0; aK < NDim; ++aK)
+      {
+        if (aCoordMin[aK] > aPMid.Coord(aK + 1))
+          aCoordMin[aK] = aPMid.Coord(aK + 1);
+        if (aCoordMax[aK] < aPMid.Coord(aK + 1))
+          aCoordMax[aK] = aPMid.Coord(aK + 1);
+        const double aDiff = std::abs(aD.Coord(aK + 1));
+        if (aDeflMax[aK] < aDiff)
+          aDeflMax[aK] = aDiff;
+      }
+    }
+  }
+
+  const double anEps = std::max(theTol, Precision::Confusion());
+  for (int aK = 0; aK < NDim; ++aK)
+  {
+    const double aDiff = aDeflMax[aK];
+    if (aDiff <= anEps)
+      continue;
+    double aCMin = aCoordMin[aK];
+    double aCMax = aCoordMax[aK];
+    for (int anI = 1; anI <= aNbSamples; ++anI)
+    {
+      if (aPnts(anI).Coord(aK + 1) - aCMin < aDiff)
+      {
+        const double anUMin  = theU1 + std::max(0, anI - 2) * aDU;
+        const double anUMax  = theU1 + std::min(aNbSamples - 1, anI) * aDU;
+        const double aLocMin = GeomBndLib_OptimizationHelpers::AdjustExtrT(theAdaptor,
+                                                                           anUMin,
+                                                                           anUMax,
+                                                                           aCMin,
+                                                                           aK + 1,
+                                                                           anEps,
+                                                                           true);
+        if (aLocMin < aCMin)
+          aCMin = aLocMin;
+      }
+      else if (aCMax - aPnts(anI).Coord(aK + 1) < aDiff)
+      {
+        const double anUMin  = theU1 + std::max(0, anI - 2) * aDU;
+        const double anUMax  = theU1 + std::min(aNbSamples - 1, anI) * aDU;
+        const double aLocMax = GeomBndLib_OptimizationHelpers::AdjustExtrT(theAdaptor,
+                                                                           anUMin,
+                                                                           anUMax,
+                                                                           aCMax,
+                                                                           aK + 1,
+                                                                           anEps,
+                                                                           false);
+        if (aLocMax > aCMax)
+          aCMax = aLocMax;
+      }
+    }
+    aCoordMin[aK] = aCMin;
+    aCoordMax[aK] = aCMax;
+  }
+
+  TBox aBox;
+  if constexpr (std::is_same_v<TBox, Bnd_Box>)
+  {
+    aBox.Add(gp_Pnt(aCoordMin[0], aCoordMin[1], aCoordMin[2]));
+    aBox.Add(gp_Pnt(aCoordMax[0], aCoordMax[1], aCoordMax[2]));
+  }
+  else
+  {
+    aBox.Add(gp_Pnt2d(aCoordMin[0], aCoordMin[1]));
+    aBox.Add(gp_Pnt2d(aCoordMax[0], aCoordMax[1]));
+  }
+  aBox.Enlarge(anEps);
+  return aBox;
 }
 
 } // namespace GeomBndLib_SplineHelpers

@@ -27,9 +27,11 @@
 #include <GeomBndLib_Torus.hxx>
 #include <Bnd_Box.hxx>
 #include <GeomAbs_SurfaceType.hxx>
+#include <gp_Trsf.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
+#include <optional>
 #include <variant>
 
 class Adaptor3d_Surface;
@@ -105,6 +107,10 @@ private:
                                         GeomBndLib_SurfaceOfExtrusion,
                                         GeomBndLib_OffsetSurface,
                                         GeomBndLib_OtherSurface>;
+  bool initFromSurface(const occ::handle<Geom_Surface>& theSurf);
+  bool initFromSurfaceType(GeomAbs_SurfaceType theType, const occ::handle<Geom_Surface>& theSurf);
+  void initOtherSurface(const Adaptor3d_Surface& theSurf);
+  void initOtherSurface(const occ::handle<Geom_Surface>& theSurf);
   const Adaptor3d_Surface* adaptor() const;
   double                   effectiveU1() const;
   double                   effectiveU2() const;

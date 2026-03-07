@@ -28,8 +28,8 @@ if {$index > -1} {
   bounding e1 -save e1_x1 e1_y1 e1_z1 e1_x2 e1_y2 e1_z2
 
   set e1_good_x1 -17.610622244944413
-  set e1_good_y1 -0.010622244944394899
-  set e1_good_z1 -3.0106222449443973
+  set e1_good_y1 -3.8835885277044451e-05
+  set e1_good_z1 -3.0000388358852792
   set e1_good_x2 -17.589377755055537
   set e1_good_y2 5.700038816113608
   set e1_good_z2 -1.6251884728673096
@@ -51,8 +51,8 @@ set res [bounding result -save x1 y1 z1 x2 y2 z2 ]
 fit
 
 set good_x1 -17.6105835090592
-set good_y1 -4.7133570660117909
-set good_z1 -4.3679100133425806
+set good_y1 -4.7027736569526475
+set good_z1 -4.3573266042834353
 set good_x2 -17.589416490940806
 set good_y2 5.7000000802283299
 set good_z2 -1.6252272087525899

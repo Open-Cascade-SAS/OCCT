@@ -26,86 +26,139 @@
 
 #include <cmath>
 
+namespace
+{
+
+//! Try the exact offset-line fast path. Returns a non-void box on success.
+Bnd_Box2d tryOffsetLine2d(const occ::handle<Geom2d_Curve>&       theBasis,
+                          const occ::handle<Geom2d_OffsetCurve>& theOff,
+                          double                                 theU1,
+                          double                                 theU2,
+                          double                                 theTol)
+{
+  const occ::handle<Geom2d_Line> aLine = occ::down_cast<Geom2d_Line>(theBasis);
+  if (aLine.IsNull())
+  {
+    return Bnd_Box2d{};
+  }
+  const gp_Lin2d aBasisLin = aLine->Lin2d();
+  gp_Vec2d       aNormal(aBasisLin.Direction().Y(), -aBasisLin.Direction().X());
+  if (aNormal.SquareMagnitude() <= Precision::SquareConfusion())
+  {
+    return Bnd_Box2d{};
+  }
+  aNormal.Normalize();
+  aNormal *= theOff->Offset();
+  const gp_Pnt2d aLoc = aBasisLin.Location().Translated(aNormal);
+  Bnd_Box2d      aLocalBox =
+    GeomBndLib_Line2d::Box(gp_Lin2d(aLoc, aBasisLin.Direction()), theU1, theU2, 0.);
+  aLocalBox.Enlarge(theTol);
+  return aLocalBox;
+}
+
+//! Try the exact offset-circle fast path. Returns a non-void box on success.
+Bnd_Box2d tryOffsetCircle2d(const occ::handle<Geom2d_Curve>&       theBasis,
+                            const occ::handle<Geom2d_OffsetCurve>& theOff,
+                            double                                 theU1,
+                            double                                 theU2,
+                            double                                 theTol)
+{
+  const occ::handle<Geom2d_Circle> aCircle = occ::down_cast<Geom2d_Circle>(theBasis);
+  if (aCircle.IsNull())
+  {
+    return Bnd_Box2d{};
+  }
+  const gp_Circ2d aBasisCirc = aCircle->Circ2d();
+  const double    aUMid      = 0.5 * (theU1 + theU2);
+  gp_Pnt2d        aP;
+  gp_Vec2d        aV1;
+  ElCLib::D1(aUMid, aBasisCirc, aP, aV1);
+  if (aV1.SquareMagnitude() <= Precision::SquareConfusion())
+  {
+    return Bnd_Box2d{};
+  }
+  gp_Vec2d aNormal(aV1.Y(), -aV1.X());
+  if (aNormal.SquareMagnitude() <= Precision::SquareConfusion())
+  {
+    return Bnd_Box2d{};
+  }
+  aNormal.Normalize();
+  gp_Vec2d aRadial(aBasisCirc.Location(), aP);
+  if (aRadial.SquareMagnitude() <= Precision::SquareConfusion())
+  {
+    return Bnd_Box2d{};
+  }
+  aRadial.Normalize();
+  const double aSign = aNormal.Dot(aRadial);
+  if (std::abs(std::abs(aSign) - 1.0) > 1e-9)
+  {
+    return Bnd_Box2d{};
+  }
+  const double aNewRadius = aBasisCirc.Radius() + theOff->Offset() * aSign;
+  Bnd_Box2d    aLocalBox;
+  if (aNewRadius > Precision::Confusion())
+  {
+    gp_Circ2d aOffsetCirc = aBasisCirc;
+    aOffsetCirc.SetRadius(aNewRadius);
+    aLocalBox = GeomBndLib_Circle2d::Box(aOffsetCirc, theU1, theU2, 0.);
+  }
+  else if (std::abs(aNewRadius) <= Precision::Confusion())
+  {
+    aLocalBox.Add(aBasisCirc.Location());
+  }
+  else
+  {
+    return Bnd_Box2d{};
+  }
+  aLocalBox.Enlarge(theTol);
+  return aLocalBox;
+}
+
+} // namespace
+
 //=================================================================================================
 
 Bnd_Box2d GeomBndLib_OffsetCurve2d::Box(double theU1, double theU2, double theTol) const
 {
-  // Specialized fast paths for line and circle.
-  // For the general fallback, enlarge the basis curve box by |offset|.
-  const occ::handle<Geom2d_Curve>& aBasis   = myGeom->BasisCurve();
-  const double                     anOffset = std::abs(myGeom->Offset());
+  const occ::handle<Geom2d_Curve>& aBasis = myGeom->BasisCurve();
 
-  if (const occ::handle<Geom2d_Line> aLine = occ::down_cast<Geom2d_Line>(aBasis))
+  Bnd_Box2d aBox = tryOffsetLine2d(aBasis, myGeom, theU1, theU2, theTol);
+  if (!aBox.IsVoid())
   {
-    const gp_Lin2d aBasisLin = aLine->Lin2d();
-    gp_Vec2d       aNormal(aBasisLin.Direction().Y(), -aBasisLin.Direction().X());
-    if (aNormal.SquareMagnitude() > Precision::SquareConfusion())
-    {
-      aNormal.Normalize();
-      aNormal *= myGeom->Offset();
-      const gp_Pnt2d aLoc = aBasisLin.Location().Translated(aNormal);
-      Bnd_Box2d      aLocalBox =
-        GeomBndLib_Line2d::Box(gp_Lin2d(aLoc, aBasisLin.Direction()), theU1, theU2, 0.);
-      aLocalBox.Enlarge(theTol);
-      return aLocalBox;
-    }
+    return aBox;
+  }
+  aBox = tryOffsetCircle2d(aBasis, myGeom, theU1, theU2, theTol);
+  if (!aBox.IsVoid())
+  {
+    return aBox;
   }
 
-  if (const occ::handle<Geom2d_Circle> aCircle = occ::down_cast<Geom2d_Circle>(aBasis))
-  {
-    const gp_Circ2d aBasisCirc = aCircle->Circ2d();
-    const double    aUMid      = 0.5 * (theU1 + theU2);
-    gp_Pnt2d        aP;
-    gp_Vec2d        aV1;
-    ElCLib::D1(aUMid, aBasisCirc, aP, aV1);
-    if (aV1.SquareMagnitude() > Precision::SquareConfusion())
-    {
-      gp_Vec2d aNormal(aV1.Y(), -aV1.X());
-      if (aNormal.SquareMagnitude() > Precision::SquareConfusion())
-      {
-        aNormal.Normalize();
-        gp_Vec2d aRadial(aBasisCirc.Location(), aP);
-        if (aRadial.SquareMagnitude() > Precision::SquareConfusion())
-        {
-          aRadial.Normalize();
-          const double aSign = aNormal.Dot(aRadial);
-          if (std::abs(std::abs(aSign) - 1.0) <= 1e-9)
-          {
-            const double aNewRadius = aBasisCirc.Radius() + myGeom->Offset() * aSign;
-            if (aNewRadius > Precision::Confusion())
-            {
-              gp_Circ2d aOffsetCirc = aBasisCirc;
-              aOffsetCirc.SetRadius(aNewRadius);
-              Bnd_Box2d aLocalBox = GeomBndLib_Circle2d::Box(aOffsetCirc, theU1, theU2, 0.);
-              aLocalBox.Enlarge(theTol);
-              return aLocalBox;
-            }
-            if (std::abs(aNewRadius) <= Precision::Confusion())
-            {
-              Bnd_Box2d aLocalBox;
-              aLocalBox.Add(aBasisCirc.Location());
-              aLocalBox.Enlarge(theTol);
-              return aLocalBox;
-            }
-          }
-        }
-      }
-    }
-  }
-
-  // Generic fallback: enlarge basis curve box by the offset distance.
-  GeomBndLib_Curve2d aCurveEval(aBasis);
-  Bnd_Box2d          aLocalBox = aCurveEval.Box(theU1, theU2, 0.);
-  aLocalBox.Enlarge(anOffset);
-  aLocalBox.Enlarge(theTol);
-  return aLocalBox;
+  // Generic fallback: sample the actual offset curve for a tight bounding box.
+  // This avoids the large over-inflation of basis_box + Enlarge(|offset|).
+  Geom2dAdaptor_Curve     anAdaptor(myGeom);
+  GeomBndLib_OtherCurve2d anOther(anAdaptor);
+  return anOther.Box(theU1, theU2, theTol);
 }
 
 //=================================================================================================
 
 Bnd_Box2d GeomBndLib_OffsetCurve2d::BoxOptimal(double theU1, double theU2, double theTol) const
 {
-  // Sample the actual offset curve directly for a tight bounding box.
+  // Reuse exact fast paths for line and circle.
+  const occ::handle<Geom2d_Curve>& aBasis = myGeom->BasisCurve();
+
+  Bnd_Box2d aBox = tryOffsetLine2d(aBasis, myGeom, theU1, theU2, theTol);
+  if (!aBox.IsVoid())
+  {
+    return aBox;
+  }
+  aBox = tryOffsetCircle2d(aBasis, myGeom, theU1, theU2, theTol);
+  if (!aBox.IsVoid())
+  {
+    return aBox;
+  }
+
+  // Sampling fallback for precise result on general offset curves.
   Geom2dAdaptor_Curve     anAdaptor(myGeom);
   GeomBndLib_OtherCurve2d anOther(anAdaptor);
   return anOther.BoxOptimal(theU1, theU2, theTol);

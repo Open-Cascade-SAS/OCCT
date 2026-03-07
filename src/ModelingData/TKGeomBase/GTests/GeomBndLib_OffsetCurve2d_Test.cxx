@@ -44,11 +44,11 @@ void ExpectNoLarger2d(const Bnd_Box2d& theNew, const Bnd_Box2d& theOld, const do
 }
 
 //! Helper: verify 2D box contains all sampled points of the offset curve.
-void ExpectContainsCurve2d(const Bnd_Box2d&                  theBox,
-                           const Handle(Geom2d_OffsetCurve)& theCurve,
-                           const double                      theU1,
-                           const double                      theU2,
-                           const int                         theNbSamples)
+void ExpectContainsCurve2d(const Bnd_Box2d&                       theBox,
+                           const occ::handle<Geom2d_OffsetCurve>& theCurve,
+                           const double                           theU1,
+                           const double                           theU2,
+                           const int                              theNbSamples)
 {
   const double aStep = (theU2 - theU1) / theNbSamples;
   double       aXmin = 0., aYmin = 0., aXmax = 0., aYmax = 0.;
@@ -72,10 +72,10 @@ void ExpectContainsCurve2d(const Bnd_Box2d&                  theBox,
 
 TEST(GeomBndLib_OffsetCurve2dTest, Circle_PositiveOffset_Full_CompareWithBndLib)
 {
-  Handle(Geom2d_Circle) aCircle =
+  occ::handle<Geom2d_Circle> aCircle =
     new Geom2d_Circle(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 5.0);
-  Handle(Geom2d_OffsetCurve) anOff = new Geom2d_OffsetCurve(aCircle, 2.0);
-  Geom2dAdaptor_Curve        anAdaptor(anOff);
+  occ::handle<Geom2d_OffsetCurve> anOff = new Geom2d_OffsetCurve(aCircle, 2.0);
+  Geom2dAdaptor_Curve             anAdaptor(anOff);
 
   Bnd_Box2d aNewBox;
   GeomBndLib_Curve2d(anOff).Add(Precision::Confusion(), aNewBox);
@@ -89,10 +89,10 @@ TEST(GeomBndLib_OffsetCurve2dTest, Circle_PositiveOffset_Full_CompareWithBndLib)
 
 TEST(GeomBndLib_OffsetCurve2dTest, Circle_PositiveOffset_Arc_CompareWithBndLib)
 {
-  Handle(Geom2d_Circle) aCircle =
+  occ::handle<Geom2d_Circle> aCircle =
     new Geom2d_Circle(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 5.0);
-  Handle(Geom2d_OffsetCurve) anOff = new Geom2d_OffsetCurve(aCircle, 2.0);
-  Geom2dAdaptor_Curve        anAdaptor(anOff);
+  occ::handle<Geom2d_OffsetCurve> anOff = new Geom2d_OffsetCurve(aCircle, 2.0);
+  Geom2dAdaptor_Curve             anAdaptor(anOff);
 
   Bnd_Box2d aNewBox;
   GeomBndLib_Curve2d(anOff).Add(0.0, M_PI / 2.0, Precision::Confusion(), aNewBox);
@@ -110,10 +110,10 @@ TEST(GeomBndLib_OffsetCurve2dTest, Circle_PositiveOffset_Arc_CompareWithBndLib)
 
 TEST(GeomBndLib_OffsetCurve2dTest, Circle_NegativeOffset_Full_CompareWithBndLib)
 {
-  Handle(Geom2d_Circle) aCircle =
+  occ::handle<Geom2d_Circle> aCircle =
     new Geom2d_Circle(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 10.0);
-  Handle(Geom2d_OffsetCurve) anOff = new Geom2d_OffsetCurve(aCircle, -3.0);
-  Geom2dAdaptor_Curve        anAdaptor(anOff);
+  occ::handle<Geom2d_OffsetCurve> anOff = new Geom2d_OffsetCurve(aCircle, -3.0);
+  Geom2dAdaptor_Curve             anAdaptor(anOff);
 
   Bnd_Box2d aNewBox;
   GeomBndLib_Curve2d(anOff).Add(Precision::Confusion(), aNewBox);
@@ -127,10 +127,10 @@ TEST(GeomBndLib_OffsetCurve2dTest, Circle_NegativeOffset_Full_CompareWithBndLib)
 
 TEST(GeomBndLib_OffsetCurve2dTest, Circle_NegativeOffset_Arc_CompareWithBndLib)
 {
-  Handle(Geom2d_Circle) aCircle =
+  occ::handle<Geom2d_Circle> aCircle =
     new Geom2d_Circle(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 10.0);
-  Handle(Geom2d_OffsetCurve) anOff = new Geom2d_OffsetCurve(aCircle, -3.0);
-  Geom2dAdaptor_Curve        anAdaptor(anOff);
+  occ::handle<Geom2d_OffsetCurve> anOff = new Geom2d_OffsetCurve(aCircle, -3.0);
+  Geom2dAdaptor_Curve             anAdaptor(anOff);
 
   Bnd_Box2d aNewBox;
   GeomBndLib_Curve2d(anOff).Add(M_PI / 4.0, M_PI, Precision::Confusion(), aNewBox);
@@ -148,12 +148,12 @@ TEST(GeomBndLib_OffsetCurve2dTest, Circle_NegativeOffset_Arc_CompareWithBndLib)
 
 TEST(GeomBndLib_OffsetCurve2dTest, Ellipse_Full_CompareWithBndLib)
 {
-  Handle(Geom2d_Ellipse) anEllipse =
+  occ::handle<Geom2d_Ellipse> anEllipse =
     new Geom2d_Ellipse(gp_Ax22d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0), gp_Dir2d(0.0, 1.0)),
                        8.0,
                        3.0);
-  Handle(Geom2d_OffsetCurve) anOff = new Geom2d_OffsetCurve(anEllipse, 1.5);
-  Geom2dAdaptor_Curve        anAdaptor(anOff);
+  occ::handle<Geom2d_OffsetCurve> anOff = new Geom2d_OffsetCurve(anEllipse, 1.5);
+  Geom2dAdaptor_Curve             anAdaptor(anOff);
 
   Bnd_Box2d aNewBox;
   GeomBndLib_Curve2d(anOff).Add(Precision::Confusion(), aNewBox);
@@ -167,11 +167,11 @@ TEST(GeomBndLib_OffsetCurve2dTest, Ellipse_Full_CompareWithBndLib)
 
 TEST(GeomBndLib_OffsetCurve2dTest, Ellipse_Arc_OptimalCompareWithBndLib)
 {
-  Handle(Geom2d_Ellipse) anEllipse =
+  occ::handle<Geom2d_Ellipse> anEllipse =
     new Geom2d_Ellipse(gp_Ax22d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0), gp_Dir2d(0.0, 1.0)),
                        8.0,
                        3.0);
-  Handle(Geom2d_OffsetCurve) anOff = new Geom2d_OffsetCurve(anEllipse, 1.5);
+  occ::handle<Geom2d_OffsetCurve> anOff = new Geom2d_OffsetCurve(anEllipse, 1.5);
 
   Bnd_Box2d aNewBox;
   GeomBndLib_Curve2d(anOff).AddOptimal(0.0, M_PI, Precision::Confusion(), aNewBox);
@@ -189,9 +189,9 @@ TEST(GeomBndLib_OffsetCurve2dTest, Ellipse_Arc_OptimalCompareWithBndLib)
 
 TEST(GeomBndLib_OffsetCurve2dTest, Line_CompareWithBndLib)
 {
-  Handle(Geom2d_Line)        aLine = new Geom2d_Line(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0));
-  Handle(Geom2d_OffsetCurve) anOff = new Geom2d_OffsetCurve(aLine, 3.0);
-  Geom2dAdaptor_Curve        anAdaptor(anOff);
+  occ::handle<Geom2d_Line>        aLine = new Geom2d_Line(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0));
+  occ::handle<Geom2d_OffsetCurve> anOff = new Geom2d_OffsetCurve(aLine, 3.0);
+  Geom2dAdaptor_Curve             anAdaptor(anOff);
 
   Bnd_Box2d aNewBox;
   GeomBndLib_Curve2d(anOff).Add(0.0, 10.0, Precision::Confusion(), aNewBox);
@@ -225,8 +225,8 @@ TEST(GeomBndLib_OffsetCurve2dTest, BSpline_OptimalCompareWithBndLib)
   aMults.SetValue(2, 1);
   aMults.SetValue(3, 3);
 
-  Handle(Geom2d_BSplineCurve) aBSpl = new Geom2d_BSplineCurve(aPoles, aKnots, aMults, 2);
-  Handle(Geom2d_OffsetCurve)  anOff = new Geom2d_OffsetCurve(aBSpl, 1.0);
+  occ::handle<Geom2d_BSplineCurve> aBSpl = new Geom2d_BSplineCurve(aPoles, aKnots, aMults, 2);
+  occ::handle<Geom2d_OffsetCurve>  anOff = new Geom2d_OffsetCurve(aBSpl, 1.0);
 
   Bnd_Box2d aNewBox;
   GeomBndLib_Curve2d(anOff).AddOptimal(Precision::Confusion(), aNewBox);
@@ -244,10 +244,10 @@ TEST(GeomBndLib_OffsetCurve2dTest, BSpline_OptimalCompareWithBndLib)
 
 TEST(GeomBndLib_OffsetCurve2dTest, LargeOffset_CompareWithBndLib)
 {
-  Handle(Geom2d_Circle) aCircle =
+  occ::handle<Geom2d_Circle> aCircle =
     new Geom2d_Circle(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 2.0);
-  Handle(Geom2d_OffsetCurve) anOff = new Geom2d_OffsetCurve(aCircle, 20.0);
-  Geom2dAdaptor_Curve        anAdaptor(anOff);
+  occ::handle<Geom2d_OffsetCurve> anOff = new Geom2d_OffsetCurve(aCircle, 20.0);
+  Geom2dAdaptor_Curve             anAdaptor(anOff);
 
   Bnd_Box2d aNewBox;
   GeomBndLib_Curve2d(anOff).Add(Precision::Confusion(), aNewBox);
@@ -265,10 +265,10 @@ TEST(GeomBndLib_OffsetCurve2dTest, LargeOffset_CompareWithBndLib)
 
 TEST(GeomBndLib_OffsetCurve2dTest, OffCenterCircle_CompareWithBndLib)
 {
-  Handle(Geom2d_Circle) aCircle =
+  occ::handle<Geom2d_Circle> aCircle =
     new Geom2d_Circle(gp_Ax2d(gp_Pnt2d(5.0, 3.0), gp_Dir2d(1.0, 0.0)), 4.0);
-  Handle(Geom2d_OffsetCurve) anOff = new Geom2d_OffsetCurve(aCircle, 1.0);
-  Geom2dAdaptor_Curve        anAdaptor(anOff);
+  occ::handle<Geom2d_OffsetCurve> anOff = new Geom2d_OffsetCurve(aCircle, 1.0);
+  Geom2dAdaptor_Curve             anAdaptor(anOff);
 
   Bnd_Box2d aNewBox;
   GeomBndLib_Curve2d(anOff).Add(Precision::Confusion(), aNewBox);

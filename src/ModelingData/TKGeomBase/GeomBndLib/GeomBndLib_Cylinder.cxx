@@ -69,6 +69,9 @@ Bnd_Box GeomBndLib_Cylinder::Box(double theUMin,
     }
     else if (Precision::IsPositiveInfinite(theVMax))
     {
+      // Fully infinite V: add the arc at V=0 to give the box finite radial extent.
+      const gp_Circ aC = ElSLib::CylinderVIso(aCyl.Position(), aCyl.Radius(), 0.);
+      aBox.Add(GeomBndLib_Circle::Box(aC, theUMin, theUMax, 0.));
       GeomBndLib_InfiniteHelpers::OpenMinMax(aDir, aBox);
     }
     else
@@ -81,6 +84,9 @@ Bnd_Box GeomBndLib_Cylinder::Box(double theUMin,
   {
     if (Precision::IsNegativeInfinite(theVMax))
     {
+      // Reversed infinite V: add the arc at V=0 to give the box finite radial extent.
+      const gp_Circ aC = ElSLib::CylinderVIso(aCyl.Position(), aCyl.Radius(), 0.);
+      aBox.Add(GeomBndLib_Circle::Box(aC, theUMin, theUMax, 0.));
       GeomBndLib_InfiniteHelpers::OpenMinMax(aDir, aBox);
     }
     else if (Precision::IsPositiveInfinite(theVMax))
