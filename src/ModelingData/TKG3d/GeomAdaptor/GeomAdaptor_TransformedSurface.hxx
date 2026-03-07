@@ -18,8 +18,6 @@
 #include <GeomAdaptor_Surface.hxx>
 #include <gp_Trsf.hxx>
 
-#include <variant>
-
 class Geom_BezierSurface;
 class Geom_BSplineSurface;
 class Geom_Surface;
@@ -37,17 +35,6 @@ class GeomAdaptor_TransformedSurface : public Adaptor3d_Surface
 {
   DEFINE_STANDARD_RTTIEXT(GeomAdaptor_TransformedSurface, Adaptor3d_Surface)
 public:
-  //! Cached transformed data associated with the current transformation.
-  struct TransformedSurfaceData
-  {
-    using PrimitiveData =
-      std::variant<std::monostate, gp_Pln, gp_Cylinder, gp_Cone, gp_Sphere, gp_Torus>;
-
-    PrimitiveData             Primitive;
-    occ::handle<Geom_Surface> Surface;
-    bool                      IsBuilt = false;
-  };
-
   //! Creates an undefined surface with identity transformation.
   Standard_EXPORT GeomAdaptor_TransformedSurface();
 
@@ -253,7 +240,7 @@ protected:
   //! Non-thread-safe: mutable cache is initialized in const context without synchronization.
   void ensureTransformedCache() const;
 
-  //! Rebuilds transformed geometry and related metadata for current surface and transformation.
+  //! Rebuilds transformed geometry for current surface and transformation.
   //! Non-thread-safe: invoked by ensureTransformedCache() for lazy initialization.
   void initTransformedCache() const;
 
@@ -262,9 +249,9 @@ protected:
   GeomAdaptor_Surface transformedAdaptor() const;
 
 protected:
-  GeomAdaptor_Surface            mySurf;
-  gp_Trsf                        myTrsf;
-  mutable TransformedSurfaceData myTransformedData;
+  GeomAdaptor_Surface               mySurf;
+  gp_Trsf                           myTrsf;
+  mutable occ::handle<Geom_Surface> myTransformedSurface;
 };
 
 #endif // _GeomAdaptor_TransformedSurface_HeaderFile
