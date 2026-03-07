@@ -26,12 +26,15 @@
 #include <gp_Vec.hxx>
 #include <gp_Dir.hxx>
 #include <LProp_Status.hxx>
+
+#include <memory>
+
 class Geom_Surface;
+class GeomProp_Surface;
 class LProp_BadContinuity;
 class Standard_DomainError;
 class Standard_OutOfRange;
 class LProp_NotDefined;
-class GeomLProp_SurfaceTool;
 class gp_Pnt;
 class gp_Vec;
 class gp_Dir;
@@ -67,6 +70,8 @@ public:
   //! of parameters <U> and <V> and the surface.
   //! the surface can have an empty constructor.
   Standard_EXPORT GeomLProp_SLProps(const int N, const double Resolution);
+
+  Standard_EXPORT ~GeomLProp_SLProps();
 
   //! Initializes the local properties of the surface S
   //! for the new surface.
@@ -145,31 +150,32 @@ public:
   Standard_EXPORT double GaussianCurvature();
 
 private:
-  occ::handle<Geom_Surface> mySurf;
-  double                    myU;
-  double                    myV;
-  int                       myDerOrder;
-  int                       myCN;
-  double                    myLinTol;
-  gp_Pnt                    myPnt;
-  gp_Vec                    myD1u;
-  gp_Vec                    myD1v;
-  gp_Vec                    myD2u;
-  gp_Vec                    myD2v;
-  gp_Vec                    myDuv;
-  gp_Dir                    myNormal;
-  double                    myMinCurv;
-  double                    myMaxCurv;
-  gp_Dir                    myDirMinCurv;
-  gp_Dir                    myDirMaxCurv;
-  double                    myMeanCurv;
-  double                    myGausCurv;
-  int                       mySignificantFirstDerivativeOrderU;
-  int                       mySignificantFirstDerivativeOrderV;
-  LProp_Status              myUTangentStatus;
-  LProp_Status              myVTangentStatus;
-  LProp_Status              myNormalStatus;
-  LProp_Status              myCurvatureStatus;
+  occ::handle<Geom_Surface>         mySurf;
+  std::shared_ptr<GeomProp_Surface> mySurfaceProp;
+  double                            myU;
+  double                            myV;
+  int                               myDerOrder;
+  int                               myCN;
+  double                            myLinTol;
+  gp_Pnt                            myPnt;
+  gp_Vec                            myD1u;
+  gp_Vec                            myD1v;
+  gp_Vec                            myD2u;
+  gp_Vec                            myD2v;
+  gp_Vec                            myDuv;
+  gp_Dir                            myNormal;
+  double                            myMinCurv;
+  double                            myMaxCurv;
+  gp_Dir                            myDirMinCurv;
+  gp_Dir                            myDirMaxCurv;
+  double                            myMeanCurv;
+  double                            myGausCurv;
+  int                               mySignificantFirstDerivativeOrderU;
+  int                               mySignificantFirstDerivativeOrderV;
+  LProp_Status                      myUTangentStatus;
+  LProp_Status                      myVTangentStatus;
+  LProp_Status                      myNormalStatus;
+  LProp_Status                      myCurvatureStatus;
 };
 
 #endif // _GeomLProp_SLProps_HeaderFile

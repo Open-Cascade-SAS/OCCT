@@ -14,11 +14,57 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dLProp_CurAndInf2d.hxx>
-#include <Geom2dLProp_NumericCurInf2d.hxx>
-#include <LProp_AnalyticCurInf.hxx>
-#include <NCollection_Array1.hxx>
+#include <Geom2dProp.hxx>
+#include <Geom2dProp_Curve.hxx>
+
+namespace
+{
+// Maps the new explicit Geom2dProp analysis result to the legacy LProp enum.
+static LProp_CIType mapPointType(const Geom2dProp::CIType theType)
+{
+  switch (theType)
+  {
+    case Geom2dProp::CIType::Inflection:
+      return LProp_Inflection;
+    case Geom2dProp::CIType::MinCurvature:
+      return LProp_MinCur;
+    case Geom2dProp::CIType::MaxCurvature:
+      return LProp_MaxCur;
+  }
+
+  return LProp_Inflection;
+}
+
+static void appendAnalysis(const Geom2dProp::CurveAnalysis& theAnalysis,
+                           const bool                       theInflectionsOnly,
+                           LProp_CurAndInf&                 theResult)
+{
+  if (!theAnalysis.IsDone)
+  {
+    return;
+  }
+
+  for (int anIndex = 0; anIndex < theAnalysis.Points.Length(); ++anIndex)
+  {
+    const Geom2dProp::CurveSpecialPoint& aPoint = theAnalysis.Points.Value(anIndex);
+    if (theInflectionsOnly)
+    {
+      if (aPoint.Type == Geom2dProp::CIType::Inflection)
+      {
+        theResult.AddInflection(aPoint.Parameter);
+      }
+      continue;
+    }
+
+    if (aPoint.Type == Geom2dProp::CIType::Inflection)
+    {
+      continue;
+    }
+    theResult.AddExtCur(aPoint.Parameter, mapPointType(aPoint.Type) == LProp_MinCur);
+  }
+}
+} // namespace
 
 //=================================================================================================
 
@@ -31,121 +77,39 @@ Geom2dLProp_CurAndInf2d::Geom2dLProp_CurAndInf2d()
 
 void Geom2dLProp_CurAndInf2d::Perform(const occ::handle<Geom2d_Curve>& C)
 {
-  PerformCurExt(C);
-  PerformInf(C);
+  Clear();
+
+  const Geom2dProp_Curve          aProp(C);
+  const Geom2dProp::CurveAnalysis anExtrema = aProp.FindCurvatureExtrema();
+  const Geom2dProp::CurveAnalysis anInflect = aProp.FindInflections();
+
+  isDone = anExtrema.IsDone && anInflect.IsDone;
+  appendAnalysis(anExtrema, false, *this);
+  appendAnalysis(anInflect, true, *this);
 }
 
 //=================================================================================================
 
 void Geom2dLProp_CurAndInf2d::PerformCurExt(const occ::handle<Geom2d_Curve>& C)
 {
-  isDone = true;
+  Clear();
 
-  Geom2dAdaptor_Curve         CC(C);
-  LProp_AnalyticCurInf        AC;
-  Geom2dLProp_NumericCurInf2d NC;
-  GeomAbs_CurveType           CType = CC.GetType();
-
-  switch (CType)
-  {
-    case GeomAbs_Line:
-      break;
-    case GeomAbs_Circle:
-      break;
-    case GeomAbs_Ellipse:
-      AC.Perform(CType, CC.FirstParameter(), CC.LastParameter(), *this);
-      break;
-    case GeomAbs_Hyperbola:
-      AC.Perform(CType, CC.FirstParameter(), CC.LastParameter(), *this);
-      break;
-    case GeomAbs_Parabola:
-      AC.Perform(CType, CC.FirstParameter(), CC.LastParameter(), *this);
-      break;
-    case GeomAbs_BSplineCurve:
-      if (CC.Continuity() >= GeomAbs_C3)
-      {
-        NC.PerformCurExt(C, *this);
-        isDone = NC.IsDone();
-      }
-      else
-      {
-        // Decoupage en intervalles C3.
-        isDone                           = true;
-        int                        NbInt = CC.NbIntervals(GeomAbs_C3);
-        NCollection_Array1<double> Param(1, NbInt + 1);
-        CC.Intervals(Param, GeomAbs_C3);
-        for (int i = 1; i <= NbInt; i++)
-        {
-          NC.PerformCurExt(C, Param(i), Param(i + 1), *this);
-          if (!NC.IsDone())
-          {
-            isDone = false;
-          }
-        }
-      }
-      break;
-
-    default: {
-      NC.PerformCurExt(C, *this);
-      isDone = NC.IsDone();
-    }
-    break;
-  }
+  const Geom2dProp_Curve          aProp(C);
+  const Geom2dProp::CurveAnalysis anAnalysis = aProp.FindCurvatureExtrema();
+  isDone                                     = anAnalysis.IsDone;
+  appendAnalysis(anAnalysis, false, *this);
 }
 
 //=================================================================================================
 
 void Geom2dLProp_CurAndInf2d::PerformInf(const occ::handle<Geom2d_Curve>& C)
 {
-  isDone = true;
+  Clear();
 
-  Geom2dAdaptor_Curve         CC(C);
-  GeomAbs_CurveType           CType = CC.GetType();
-  Geom2dLProp_NumericCurInf2d NC;
-
-  switch (CType)
-  {
-    case GeomAbs_Line:
-      break;
-    case GeomAbs_Circle:
-      break;
-    case GeomAbs_Ellipse:
-      break;
-    case GeomAbs_Hyperbola:
-      break;
-    case GeomAbs_Parabola:
-      break;
-    case GeomAbs_BSplineCurve:
-      if (CC.Continuity() >= GeomAbs_C3)
-      {
-        NC.PerformInf(C, *this);
-        isDone = NC.IsDone();
-      }
-      else
-      {
-        // Decoupage en intervalles C3.
-        isDone                           = true;
-        int                        NbInt = CC.NbIntervals(GeomAbs_C3);
-        NCollection_Array1<double> Param(1, NbInt + 1);
-        CC.Intervals(Param, GeomAbs_C3);
-
-        for (int i = 1; i <= NbInt; i++)
-        {
-          NC.PerformInf(C, Param(i), Param(i + 1), *this);
-          if (!NC.IsDone())
-          {
-            isDone = false;
-          }
-        }
-      }
-      break;
-
-    default: {
-      NC.PerformInf(C, *this);
-      isDone = NC.IsDone();
-    }
-    break;
-  }
+  const Geom2dProp_Curve          aProp(C);
+  const Geom2dProp::CurveAnalysis anAnalysis = aProp.FindInflections();
+  isDone                                     = anAnalysis.IsDone;
+  appendAnalysis(anAnalysis, true, *this);
 }
 
 //=================================================================================================

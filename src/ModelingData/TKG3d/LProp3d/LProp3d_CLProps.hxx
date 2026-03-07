@@ -22,6 +22,9 @@
 #include <gp_Dir.hxx>
 #include <LProp_Status.hxx>
 
+#include <memory>
+
+class GeomProp_Curve;
 class LProp_BadContinuity;
 class Standard_DomainError;
 class Standard_OutOfRange;
@@ -29,7 +32,6 @@ class LProp_NotDefined;
 class gp_Vec;
 class gp_Pnt;
 class gp_Dir;
-class LProp3d_CurveTool;
 
 class LProp3d_CLProps
 {
@@ -64,6 +66,8 @@ public:
   //! All the computations done will be related to <C> and <U>
   //! when the functions "set" will be done.
   Standard_EXPORT LProp3d_CLProps(const int N, const double Resolution);
+
+  Standard_EXPORT ~LProp3d_CLProps();
 
   //! Initializes the local properties of the curve
   //! for the parameter value <U>.
@@ -106,17 +110,18 @@ public:
   Standard_EXPORT void CentreOfCurvature(gp_Pnt& P);
 
 private:
-  occ::handle<Adaptor3d_Curve> myCurve;
-  double                       myU;
-  int                          myDerOrder;
-  double                       myCN;
-  double                       myLinTol;
-  gp_Pnt                       myPnt;
-  gp_Vec                       myDerivArr[3];
-  gp_Dir                       myTangent;
-  double                       myCurvature;
-  LProp_Status                 myTangentStatus;
-  int                          mySignificantFirstDerivativeOrder;
+  occ::handle<Adaptor3d_Curve>    myCurve;
+  std::shared_ptr<GeomProp_Curve> myCurveProp;
+  double                          myU;
+  int                             myDerOrder;
+  double                          myCN;
+  double                          myLinTol;
+  gp_Pnt                          myPnt;
+  gp_Vec                          myDerivArr[3];
+  gp_Dir                          myTangent;
+  double                          myCurvature;
+  LProp_Status                    myTangentStatus;
+  int                             mySignificantFirstDerivativeOrder;
 };
 
 #endif // _LProp3d_CLProps_HeaderFile

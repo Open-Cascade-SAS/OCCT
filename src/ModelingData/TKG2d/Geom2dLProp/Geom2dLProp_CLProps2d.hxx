@@ -28,7 +28,11 @@
 #include <gp_Dir2d.hxx>
 #include <LProp_Status.hxx>
 #include <Standard_Boolean.hxx>
+
+#include <memory>
+
 class Geom2d_Curve;
+class Geom2dProp_Curve;
 class LProp_BadContinuity;
 class Standard_DomainError;
 class Standard_OutOfRange;
@@ -36,7 +40,6 @@ class LProp_NotDefined;
 class gp_Vec2d;
 class gp_Pnt2d;
 class gp_Dir2d;
-class Geom2dLProp_Curve2dTool;
 
 class Geom2dLProp_CLProps2d
 {
@@ -113,17 +116,18 @@ public:
   Standard_EXPORT void CentreOfCurvature(gp_Pnt2d& P);
 
 private:
-  occ::handle<Geom2d_Curve> myCurve;
-  double                    myU;
-  int                       myDerOrder;
-  double                    myCN;
-  double                    myLinTol;
-  gp_Pnt2d                  myPnt;
-  gp_Vec2d                  myDerivArr[3];
-  gp_Dir2d                  myTangent;
-  double                    myCurvature;
-  LProp_Status              myTangentStatus;
-  int                       mySignificantFirstDerivativeOrder;
+  occ::handle<Geom2d_Curve>         myCurve;
+  std::shared_ptr<Geom2dProp_Curve> myCurveProp;
+  double                            myU;
+  int                               myDerOrder;
+  double                            myCN;
+  double                            myLinTol;
+  gp_Pnt2d                          myPnt;
+  gp_Vec2d                          myDerivArr[3];
+  gp_Dir2d                          myTangent;
+  double                            myCurvature;
+  LProp_Status                      myTangentStatus;
+  int                               mySignificantFirstDerivativeOrder;
 };
 
 #endif // _Geom2dLProp_CLProps2d_HeaderFile
