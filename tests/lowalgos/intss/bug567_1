@@ -7,7 +7,7 @@ puts ""
 puts "TODO ?OCC30012 Linux: Error: 10 curves are expected but 9 ones are found."
 puts "TODO ?OCC30012 Linux: Error: 10 curves are expected but 8 ones are found."
 puts "TODO ?OCC29910 Windows: Error: 10 curves are expected but 11 ones are found."
-puts "TODO ?OCC29910 Windows: Error :  is WRONG because number of EDGE entities in shape \"rs\" is 15"
+puts "TODO ?OCC29910 Windows: Error :  is WRONG because number of EDGE entities in shape \"rs\" is 16"
 puts "TODO ?OCC29910 Linux: Error :  is WRONG because number of EDGE entities in shape \"rs\" is 8"
 puts "TODO ?OCC29910 Windows: Error: 0 vertices are expected but 2 are found"
 
