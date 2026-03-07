@@ -18,6 +18,8 @@
 #include <GeomAdaptor_Surface.hxx>
 #include <gp_Trsf.hxx>
 
+#include <optional>
+
 class Geom_BezierSurface;
 class Geom_BSplineSurface;
 class Geom_Surface;
@@ -246,12 +248,12 @@ protected:
 
   //! Returns an adaptor for the transformed surface state.
   //! Uses the original adaptor for identity transformation to preserve existing trimming.
-  GeomAdaptor_Surface transformedAdaptor() const;
+  const GeomAdaptor_Surface& transformedAdaptor() const;
 
 protected:
-  GeomAdaptor_Surface               mySurf;
-  gp_Trsf                           myTrsf;
-  mutable occ::handle<Geom_Surface> myTransformedSurface;
+  GeomAdaptor_Surface                        mySurf;
+  gp_Trsf                                    myTrsf;
+  mutable std::optional<GeomAdaptor_Surface> myTransformedAdaptor;
 };
 
 #endif // _GeomAdaptor_TransformedSurface_HeaderFile

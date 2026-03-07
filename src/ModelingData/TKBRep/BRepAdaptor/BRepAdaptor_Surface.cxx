@@ -44,9 +44,9 @@ occ::handle<Adaptor3d_Surface> BRepAdaptor_Surface::ShallowCopy() const
   const GeomAdaptor_Surface& aGeomSurface       = *occ::down_cast<GeomAdaptor_Surface>(aSurface);
   aCopy->mySurf                                 = aGeomSurface;
 
-  aCopy->myTrsf            = myTrsf;
-  aCopy->myFace            = myFace;
-  aCopy->myTransformedData = myTransformedData;
+  aCopy->myTrsf               = myTrsf;
+  aCopy->myFace               = myFace;
+  aCopy->myTransformedAdaptor = myTransformedAdaptor;
 
   return aCopy;
 }
