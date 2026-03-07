@@ -31,7 +31,6 @@
 
 class Geom_Surface;
 class GeomProp_Surface;
-class LProp_BadContinuity;
 class Standard_DomainError;
 class Standard_OutOfRange;
 class LProp_NotDefined;

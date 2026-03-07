@@ -25,7 +25,6 @@
 #include <gp_Vec2d.hxx>
 #include <gp_Dir2d.hxx>
 #include <LProp_Status.hxx>
-class LProp_BadContinuity;
 class Standard_DomainError;
 class Standard_OutOfRange;
 class LProp_NotDefined;

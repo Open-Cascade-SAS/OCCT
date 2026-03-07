@@ -1,0 +1,141 @@
+#ifndef _LProp_CLPropsCompat_HeaderFile
+#define _LProp_CLPropsCompat_HeaderFile
+
+#include <LProp_NotDefined.hxx>
+#include <LProp_Status.hxx>
+
+#include <algorithm>
+#include <cmath>
+
+namespace LProp_CLPropsCompat
+{
+constexpr double THE_MIN_STEP = 1.0e-7;
+
+template <class Vec>
+inline bool IsTangentDefined(const int    theContinuity,
+                             const double theLinTol,
+                             const Vec&   theD1,
+                             const Vec&   theD2,
+                             const Vec&   theD3,
+                             int&         theSignificantOrder,
+                             LProp_Status& theStatus)
+{
+  if (theStatus == LProp_Undefined)
+  {
+    return false;
+  }
+  if (theStatus >= LProp_Defined)
+  {
+    return true;
+  }
+
+  const double aTol2 = theLinTol * theLinTol;
+  theSignificantOrder = 0;
+
+  if (theContinuity >= 1 && theD1.SquareMagnitude() > aTol2)
+  {
+    theSignificantOrder = 1;
+  }
+  else if (theContinuity >= 2 && theD2.SquareMagnitude() > aTol2)
+  {
+    theSignificantOrder = 2;
+  }
+  else if (theContinuity >= 3 && theD3.SquareMagnitude() > aTol2)
+  {
+    theSignificantOrder = 3;
+  }
+
+  if (theSignificantOrder == 0)
+  {
+    theStatus = LProp_Undefined;
+    return false;
+  }
+
+  theStatus = LProp_Defined;
+  return true;
+}
+
+template <class Result, class Dir, class Pnt, class EvalAtParam, class EvalWithPoints, class ValueAt>
+inline void Tangent(const int     theSignificantOrder,
+                    const double,
+                    const double  theParam,
+                    const double  theFirst,
+                    const double  theLast,
+                    EvalAtParam&& theEvalAtParam,
+                    EvalWithPoints&& theEvalWithPoints,
+                    ValueAt&&     theValueAt,
+                    Dir&          theDir,
+                    const char*   theMessage)
+{
+  if (theSignificantOrder == 1)
+  {
+    const Result aResult = theEvalAtParam();
+    LProp_NotDefined_Raise_if(!aResult.IsDefined, theMessage);
+    theDir = aResult.Direction;
+    return;
+  }
+
+  const double aRange = (theLast >= RealLast() || theFirst <= RealFirst()) ? 0.0 : theLast - theFirst;
+  const double aDelta = std::max(aRange * 1.0e-3, THE_MIN_STEP);
+  const double aOther = (theParam - theFirst < aDelta) ? theParam + aDelta : theParam - aDelta;
+
+  const Pnt aPntBefore = theValueAt(std::min(theParam, aOther));
+  const Pnt aPntAfter  = theValueAt(std::max(theParam, aOther));
+  const Result aResult = theEvalWithPoints(aPntBefore, aPntAfter);
+  LProp_NotDefined_Raise_if(!aResult.IsDefined, theMessage);
+  theDir = aResult.Direction;
+}
+
+template <class Result, class Eval>
+inline double Curvature(const int theSignificantOrder,
+                        const double,
+                        Eval&&    theEval,
+                        const char* theMessage)
+{
+  if (theSignificantOrder > 1)
+  {
+    return RealLast();
+  }
+
+  const Result aResult = theEval();
+  LProp_NotDefined_Raise_if(!aResult.IsDefined, theMessage);
+  return aResult.IsInfinite ? RealLast() : aResult.Value;
+}
+
+template <class Result, class Dir, class Eval>
+inline void Normal(const double theCurvature,
+                   const double theLinTol,
+                   const char*  theUndefinedMessage,
+                   Eval&&       theEval,
+                   Dir&         theDir,
+                   const char*  theMessage)
+{
+  if (theCurvature == RealLast() || std::abs(theCurvature) <= theLinTol)
+  {
+    throw LProp_NotDefined(theUndefinedMessage);
+  }
+
+  const Result aResult = theEval();
+  LProp_NotDefined_Raise_if(!aResult.IsDefined, theMessage);
+  theDir = aResult.Direction;
+}
+
+template <class Result, class Pnt, class Eval>
+inline void CentreOfCurvature(const double theCurvature,
+                              const double theLinTol,
+                              Eval&&       theEval,
+                              Pnt&         thePoint,
+                              const char*  theMessage)
+{
+  if (std::abs(theCurvature) <= theLinTol)
+  {
+    throw LProp_NotDefined();
+  }
+
+  const Result aResult = theEval();
+  LProp_NotDefined_Raise_if(!aResult.IsDefined, theMessage);
+  thePoint = aResult.Centre;
+}
+} // namespace LProp_CLPropsCompat
+
+#endif // _LProp_CLPropsCompat_HeaderFile

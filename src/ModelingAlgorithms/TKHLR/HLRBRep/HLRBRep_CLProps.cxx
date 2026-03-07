@@ -11,11 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Geom2dLProp_CLProps2d.hxx>
+#include <HLRBRep_CLProps.hxx>
 
 #include <Geom2dProp.hxx>
-#include <Geom2dProp_Curve.hxx>
-#include <Geom2d_Curve.hxx>
+#include <HLRBRep_CLPropsATool.hxx>
 #include <LProp_CLPropsCompat.pxx>
 #include <LProp_NotDefined.hxx>
 #include <LProp_Status.hxx>
@@ -23,45 +22,44 @@
 
 //==================================================================================================
 
-Geom2dLProp_CLProps2d::Geom2dLProp_CLProps2d(const occ::handle<Geom2d_Curve>& C,
-                                             const double                     U,
-                                             const int                        N,
-                                             const double                     Resolution)
+HLRBRep_CLProps::HLRBRep_CLProps(const HLRBRep_Curve*& C,
+                                 const double          U,
+                                 const int             N,
+                                 const double          Resolution)
     : myCurve(C),
-      myCurveProp(C.IsNull() ? nullptr : std::make_shared<Geom2dProp_Curve>(C)),
       myDerOrder(N),
-      myCN(4),
+      myCN(HLRBRep_CLPropsATool::Continuity(C)),
       myLinTol(Resolution),
       myCurvature(0.0),
       myTangentStatus(LProp_Undecided),
       mySignificantFirstDerivativeOrder(0)
 {
-  Standard_OutOfRange_Raise_if(N < 0 || N > 3, "Geom2dLProp_CLProps2d::Geom2dLProp_CLProps2d()");
+  Standard_OutOfRange_Raise_if(N < 0 || N > 3, "HLRBRep_CLProps::HLRBRep_CLProps()");
   SetParameter(U);
 }
 
 //==================================================================================================
 
-Geom2dLProp_CLProps2d::Geom2dLProp_CLProps2d(const occ::handle<Geom2d_Curve>& C,
-                                             const int                        N,
-                                             const double                     Resolution)
+HLRBRep_CLProps::HLRBRep_CLProps(const HLRBRep_Curve*& C,
+                                 const int             N,
+                                 const double          Resolution)
     : myCurve(C),
-      myCurveProp(C.IsNull() ? nullptr : std::make_shared<Geom2dProp_Curve>(C)),
       myU(RealLast()),
       myDerOrder(N),
-      myCN(4),
+      myCN(HLRBRep_CLPropsATool::Continuity(C)),
       myLinTol(Resolution),
       myCurvature(0.0),
       myTangentStatus(LProp_Undecided),
       mySignificantFirstDerivativeOrder(0)
 {
-  Standard_OutOfRange_Raise_if(N < 0 || N > 3, "Geom2dLProp_CLProps2d::Geom2dLProp_CLProps2d()");
+  Standard_OutOfRange_Raise_if(N < 0 || N > 3, "HLRBRep_CLProps::HLRBRep_CLProps()");
 }
 
 //==================================================================================================
 
-Geom2dLProp_CLProps2d::Geom2dLProp_CLProps2d(const int N, const double Resolution)
-    : myU(RealLast()),
+HLRBRep_CLProps::HLRBRep_CLProps(const int N, const double Resolution)
+    : myCurve(nullptr),
+      myU(RealLast()),
       myDerOrder(N),
       myCN(0),
       myLinTol(Resolution),
@@ -69,27 +67,27 @@ Geom2dLProp_CLProps2d::Geom2dLProp_CLProps2d(const int N, const double Resolutio
       myTangentStatus(LProp_Undecided),
       mySignificantFirstDerivativeOrder(0)
 {
-  Standard_OutOfRange_Raise_if(N < 0 || N > 3, "Geom2dLProp_CLProps2d::Geom2dLProp_CLProps2d()");
+  Standard_OutOfRange_Raise_if(N < 0 || N > 3, "HLRBRep_CLProps::HLRBRep_CLProps()");
 }
 
 //==================================================================================================
 
-void Geom2dLProp_CLProps2d::SetParameter(const double U)
+void HLRBRep_CLProps::SetParameter(const double U)
 {
   myU = U;
   switch (myDerOrder)
   {
     case 0:
-      myPnt = myCurve->Value(myU);
+      HLRBRep_CLPropsATool::Value(myCurve, myU, myPnt);
       break;
     case 1:
-      myCurve->D1(myU, myPnt, myDerivArr[0]);
+      HLRBRep_CLPropsATool::D1(myCurve, myU, myPnt, myDerivArr[0]);
       break;
     case 2:
-      myCurve->D2(myU, myPnt, myDerivArr[0], myDerivArr[1]);
+      HLRBRep_CLPropsATool::D2(myCurve, myU, myPnt, myDerivArr[0], myDerivArr[1]);
       break;
     case 3:
-      myCurve->D3(myU, myPnt, myDerivArr[0], myDerivArr[1], myDerivArr[2]);
+      HLRBRep_CLPropsATool::D3(myCurve, myU, myPnt, myDerivArr[0], myDerivArr[1], myDerivArr[2]);
       break;
   }
 
@@ -100,11 +98,10 @@ void Geom2dLProp_CLProps2d::SetParameter(const double U)
 
 //==================================================================================================
 
-void Geom2dLProp_CLProps2d::SetCurve(const occ::handle<Geom2d_Curve>& C)
+void HLRBRep_CLProps::SetCurve(const HLRBRep_Curve*& C)
 {
   myCurve                           = C;
-  myCurveProp                       = C.IsNull() ? nullptr : std::make_shared<Geom2dProp_Curve>(C);
-  myCN                              = 4;
+  myCN                              = HLRBRep_CLPropsATool::Continuity(C);
   myCurvature                       = 0.0;
   myTangentStatus                   = LProp_Undecided;
   mySignificantFirstDerivativeOrder = 0;
@@ -112,19 +109,19 @@ void Geom2dLProp_CLProps2d::SetCurve(const occ::handle<Geom2d_Curve>& C)
 
 //==================================================================================================
 
-const gp_Pnt2d& Geom2dLProp_CLProps2d::Value() const
+const gp_Pnt2d& HLRBRep_CLProps::Value() const
 {
   return myPnt;
 }
 
 //==================================================================================================
 
-const gp_Vec2d& Geom2dLProp_CLProps2d::D1()
+const gp_Vec2d& HLRBRep_CLProps::D1()
 {
   if (myDerOrder < 1)
   {
     myDerOrder = 1;
-    myCurve->D1(myU, myPnt, myDerivArr[0]);
+    HLRBRep_CLPropsATool::D1(myCurve, myU, myPnt, myDerivArr[0]);
   }
 
   return myDerivArr[0];
@@ -132,12 +129,12 @@ const gp_Vec2d& Geom2dLProp_CLProps2d::D1()
 
 //==================================================================================================
 
-const gp_Vec2d& Geom2dLProp_CLProps2d::D2()
+const gp_Vec2d& HLRBRep_CLProps::D2()
 {
   if (myDerOrder < 2)
   {
     myDerOrder = 2;
-    myCurve->D2(myU, myPnt, myDerivArr[0], myDerivArr[1]);
+    HLRBRep_CLPropsATool::D2(myCurve, myU, myPnt, myDerivArr[0], myDerivArr[1]);
   }
 
   return myDerivArr[1];
@@ -145,12 +142,12 @@ const gp_Vec2d& Geom2dLProp_CLProps2d::D2()
 
 //==================================================================================================
 
-const gp_Vec2d& Geom2dLProp_CLProps2d::D3()
+const gp_Vec2d& HLRBRep_CLProps::D3()
 {
   if (myDerOrder < 3)
   {
     myDerOrder = 3;
-    myCurve->D3(myU, myPnt, myDerivArr[0], myDerivArr[1], myDerivArr[2]);
+    HLRBRep_CLPropsATool::D3(myCurve, myU, myPnt, myDerivArr[0], myDerivArr[1], myDerivArr[2]);
   }
 
   return myDerivArr[2];
@@ -158,7 +155,7 @@ const gp_Vec2d& Geom2dLProp_CLProps2d::D3()
 
 //==================================================================================================
 
-bool Geom2dLProp_CLProps2d::IsTangentDefined()
+bool HLRBRep_CLProps::IsTangentDefined()
 {
   return LProp_CLPropsCompat::IsTangentDefined(myCN,
                                                myLinTol,
@@ -171,73 +168,61 @@ bool Geom2dLProp_CLProps2d::IsTangentDefined()
 
 //==================================================================================================
 
-void Geom2dLProp_CLProps2d::Tangent(gp_Dir2d& D)
+void HLRBRep_CLProps::Tangent(gp_Dir2d& D)
 {
-  LProp_NotDefined_Raise_if(!IsTangentDefined(), "Geom2dLProp_CLProps2d::Tangent()");
+  LProp_NotDefined_Raise_if(!IsTangentDefined(), "HLRBRep_CLProps::Tangent()");
   LProp_CLPropsCompat::Tangent<Geom2dProp::TangentResult, gp_Dir2d, gp_Pnt2d>(
     mySignificantFirstDerivativeOrder,
     myLinTol,
     myU,
-    myCurve->FirstParameter(),
-    myCurve->LastParameter(),
-    [&]() {
-      return myCurveProp ? myCurveProp->Tangent(myU, myLinTol)
-                         : Geom2dProp::ComputeTangent(D1(), D2(), D3(), myLinTol);
-    },
+    HLRBRep_CLPropsATool::FirstParameter(myCurve),
+    HLRBRep_CLPropsATool::LastParameter(myCurve),
+    [&]() { return Geom2dProp::ComputeTangent(D1(), D2(), D3(), myLinTol); },
     [&](const gp_Pnt2d& thePntBefore, const gp_Pnt2d& thePntAfter) {
       return Geom2dProp::ComputeTangent(D1(), D2(), D3(), myLinTol, thePntBefore, thePntAfter);
     },
     [&](const double theParam) { return myCurve->Value(theParam); },
     D,
-    "Geom2dLProp_CLProps2d::Tangent()");
+    "HLRBRep_CLProps::Tangent()");
 }
 
 //==================================================================================================
 
-double Geom2dLProp_CLProps2d::Curvature()
+double HLRBRep_CLProps::Curvature()
 {
   const bool isDefined = IsTangentDefined();
   (void)isDefined;
-  LProp_NotDefined_Raise_if(!isDefined, "Geom2dLProp_CLProps2d::Curvature()");
+  LProp_NotDefined_Raise_if(!isDefined, "HLRBRep_CLProps::Curvature()");
 
   myCurvature = LProp_CLPropsCompat::Curvature<Geom2dProp::CurvatureResult>(
     mySignificantFirstDerivativeOrder,
     myLinTol,
-    [&]() {
-      return myCurveProp ? myCurveProp->Curvature(myU, myLinTol)
-                         : Geom2dProp::ComputeCurvature(D1(), D2(), myLinTol);
-    },
-    "Geom2dLProp_CLProps2d::Curvature()");
+    [&]() { return Geom2dProp::ComputeCurvature(D1(), D2(), myLinTol); },
+    "HLRBRep_CLProps::Curvature()");
   return myCurvature;
 }
 
 //==================================================================================================
 
-void Geom2dLProp_CLProps2d::Normal(gp_Dir2d& D)
+void HLRBRep_CLProps::Normal(gp_Dir2d& N)
 {
   LProp_CLPropsCompat::Normal<Geom2dProp::NormalResult>(
     Curvature(),
     myLinTol,
-    "Geom2dLProp_CLProps2d::Normal(): Curvature is null or infinity",
-    [&]() {
-      return myCurveProp ? myCurveProp->Normal(myU, myLinTol)
-                         : Geom2dProp::ComputeNormal(D1(), D2(), myLinTol);
-    },
-    D,
-    "Geom2dLProp_CLProps2d::Normal()");
+    "HLRBRep_CLProps::Normal(): Curvature is null or infinity",
+    [&]() { return Geom2dProp::ComputeNormal(D1(), D2(), myLinTol); },
+    N,
+    "HLRBRep_CLProps::Normal()");
 }
 
 //==================================================================================================
 
-void Geom2dLProp_CLProps2d::CentreOfCurvature(gp_Pnt2d& P)
+void HLRBRep_CLProps::CentreOfCurvature(gp_Pnt2d& P)
 {
   LProp_CLPropsCompat::CentreOfCurvature<Geom2dProp::CentreResult>(
     Curvature(),
     myLinTol,
-    [&]() {
-      return myCurveProp ? myCurveProp->CentreOfCurvature(myU, myLinTol)
-                         : Geom2dProp::ComputeCentreOfCurvature(myPnt, D1(), D2(), myLinTol);
-    },
+    [&]() { return Geom2dProp::ComputeCentreOfCurvature(myPnt, D1(), D2(), myLinTol); },
     P,
-    "Geom2dLProp_CLProps2d::CentreOfCurvature()");
+    "HLRBRep_CLProps::CentreOfCurvature()");
 }

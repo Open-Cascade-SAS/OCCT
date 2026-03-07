@@ -16,16 +16,101 @@
 #include <GeomProp.hxx>
 #include <GeomProp_Curve.hxx>
 #include <Geom_Curve.hxx>
+#include <LProp_CLPropsCompat.pxx>
 #include <LProp_NotDefined.hxx>
 #include <LProp_Status.hxx>
 #include <Standard_OutOfRange.hxx>
 
-#include <algorithm>
-#include <cmath>
-
 namespace
 {
-constexpr double THE_MIN_STEP = 1.0e-7;
+const GeomAdaptor_Curve* curveAdaptor(const std::shared_ptr<GeomProp_Curve>& theCurveProp)
+{
+  return theCurveProp ? theCurveProp->Adaptor() : nullptr;
+}
+
+gp_Pnt curveValue(const occ::handle<Geom_Curve>&          theCurve,
+                  const std::shared_ptr<GeomProp_Curve>& theCurveProp,
+                  const double                           theParam)
+{
+  if (const GeomAdaptor_Curve* anAdaptor = curveAdaptor(theCurveProp))
+  {
+    return anAdaptor->Value(theParam);
+  }
+
+  gp_Pnt aPoint;
+  theCurve->D0(theParam, aPoint);
+  return aPoint;
+}
+
+void curveD1(const occ::handle<Geom_Curve>&          theCurve,
+             const std::shared_ptr<GeomProp_Curve>& theCurveProp,
+             const double                           theParam,
+             gp_Pnt&                                thePoint,
+             gp_Vec&                                theD1)
+{
+  if (const GeomAdaptor_Curve* anAdaptor = curveAdaptor(theCurveProp))
+  {
+    anAdaptor->D1(theParam, thePoint, theD1);
+    return;
+  }
+
+  theCurve->D1(theParam, thePoint, theD1);
+}
+
+void curveD2(const occ::handle<Geom_Curve>&          theCurve,
+             const std::shared_ptr<GeomProp_Curve>& theCurveProp,
+             const double                           theParam,
+             gp_Pnt&                                thePoint,
+             gp_Vec&                                theD1,
+             gp_Vec&                                theD2)
+{
+  if (const GeomAdaptor_Curve* anAdaptor = curveAdaptor(theCurveProp))
+  {
+    anAdaptor->D2(theParam, thePoint, theD1, theD2);
+    return;
+  }
+
+  theCurve->D2(theParam, thePoint, theD1, theD2);
+}
+
+void curveD3(const occ::handle<Geom_Curve>&          theCurve,
+             const std::shared_ptr<GeomProp_Curve>& theCurveProp,
+             const double                           theParam,
+             gp_Pnt&                                thePoint,
+             gp_Vec&                                theD1,
+             gp_Vec&                                theD2,
+             gp_Vec&                                theD3)
+{
+  if (const GeomAdaptor_Curve* anAdaptor = curveAdaptor(theCurveProp))
+  {
+    anAdaptor->D3(theParam, thePoint, theD1, theD2, theD3);
+    return;
+  }
+
+  theCurve->D3(theParam, thePoint, theD1, theD2, theD3);
+}
+
+double curveFirstParameter(const occ::handle<Geom_Curve>&          theCurve,
+                           const std::shared_ptr<GeomProp_Curve>& theCurveProp)
+{
+  if (const GeomAdaptor_Curve* anAdaptor = curveAdaptor(theCurveProp))
+  {
+    return anAdaptor->FirstParameter();
+  }
+
+  return theCurve->FirstParameter();
+}
+
+double curveLastParameter(const occ::handle<Geom_Curve>&          theCurve,
+                          const std::shared_ptr<GeomProp_Curve>& theCurveProp)
+{
+  if (const GeomAdaptor_Curve* anAdaptor = curveAdaptor(theCurveProp))
+  {
+    return anAdaptor->LastParameter();
+  }
+
+  return theCurve->LastParameter();
+}
 }
 
 //==================================================================================================
@@ -91,16 +176,16 @@ void GeomLProp_CLProps::SetParameter(const double U)
   switch (myDerOrder)
   {
     case 0:
-      myCurve->D0(myU, myPnt);
+      myPnt = curveValue(myCurve, myCurveProp, myU);
       break;
     case 1:
-      myCurve->D1(myU, myPnt, myDerivArr[0]);
+      curveD1(myCurve, myCurveProp, myU, myPnt, myDerivArr[0]);
       break;
     case 2:
-      myCurve->D2(myU, myPnt, myDerivArr[0], myDerivArr[1]);
+      curveD2(myCurve, myCurveProp, myU, myPnt, myDerivArr[0], myDerivArr[1]);
       break;
     case 3:
-      myCurve->D3(myU, myPnt, myDerivArr[0], myDerivArr[1], myDerivArr[2]);
+      curveD3(myCurve, myCurveProp, myU, myPnt, myDerivArr[0], myDerivArr[1], myDerivArr[2]);
       break;
   }
 
@@ -135,7 +220,7 @@ const gp_Vec& GeomLProp_CLProps::D1()
   if (myDerOrder < 1)
   {
     myDerOrder = 1;
-    myCurve->D1(myU, myPnt, myDerivArr[0]);
+    curveD1(myCurve, myCurveProp, myU, myPnt, myDerivArr[0]);
   }
 
   return myDerivArr[0];
@@ -148,7 +233,7 @@ const gp_Vec& GeomLProp_CLProps::D2()
   if (myDerOrder < 2)
   {
     myDerOrder = 2;
-    myCurve->D2(myU, myPnt, myDerivArr[0], myDerivArr[1]);
+    curveD2(myCurve, myCurveProp, myU, myPnt, myDerivArr[0], myDerivArr[1]);
   }
 
   return myDerivArr[1];
@@ -161,7 +246,7 @@ const gp_Vec& GeomLProp_CLProps::D3()
   if (myDerOrder < 3)
   {
     myDerOrder = 3;
-    myCurve->D3(myU, myPnt, myDerivArr[0], myDerivArr[1], myDerivArr[2]);
+    curveD3(myCurve, myCurveProp, myU, myPnt, myDerivArr[0], myDerivArr[1], myDerivArr[2]);
   }
 
   return myDerivArr[2];
@@ -171,39 +256,13 @@ const gp_Vec& GeomLProp_CLProps::D3()
 
 bool GeomLProp_CLProps::IsTangentDefined()
 {
-  if (myTangentStatus == LProp_Undefined)
-  {
-    return false;
-  }
-  if (myTangentStatus >= LProp_Defined)
-  {
-    return true;
-  }
-
-  const double aTol2                = myLinTol * myLinTol;
-  mySignificantFirstDerivativeOrder = 0;
-
-  if (myCN >= 1 && D1().SquareMagnitude() > aTol2)
-  {
-    mySignificantFirstDerivativeOrder = 1;
-  }
-  else if (myCN >= 2 && D2().SquareMagnitude() > aTol2)
-  {
-    mySignificantFirstDerivativeOrder = 2;
-  }
-  else if (myCN >= 3 && D3().SquareMagnitude() > aTol2)
-  {
-    mySignificantFirstDerivativeOrder = 3;
-  }
-
-  if (mySignificantFirstDerivativeOrder == 0)
-  {
-    myTangentStatus = LProp_Undefined;
-    return false;
-  }
-
-  myTangentStatus = LProp_Defined;
-  return true;
+  return LProp_CLPropsCompat::IsTangentDefined(myCN,
+                                               myLinTol,
+                                               D1(),
+                                               D2(),
+                                               D3(),
+                                               mySignificantFirstDerivativeOrder,
+                                               myTangentStatus);
 }
 
 //==================================================================================================
@@ -211,32 +270,22 @@ bool GeomLProp_CLProps::IsTangentDefined()
 void GeomLProp_CLProps::Tangent(gp_Dir& D)
 {
   LProp_NotDefined_Raise_if(!IsTangentDefined(), "GeomLProp_CLProps::Tangent()");
-
-  if (mySignificantFirstDerivativeOrder == 1)
-  {
-    const GeomProp::TangentResult aResult =
-      myCurveProp ? myCurveProp->Tangent(myU, myLinTol)
-                  : GeomProp::ComputeTangent(D1(), D2(), D3(), myLinTol);
-    LProp_NotDefined_Raise_if(!aResult.IsDefined, "GeomLProp_CLProps::Tangent()");
-    D = aResult.Direction;
-    return;
-  }
-
-  const double aFirst = myCurve->FirstParameter();
-  const double aLast  = myCurve->LastParameter();
-  const double aRange = (aLast >= RealLast() || aFirst <= RealFirst()) ? 0.0 : aLast - aFirst;
-  const double aDelta = std::max(aRange * 1.0e-3, THE_MIN_STEP);
-  const double aOther = (myU - aFirst < aDelta) ? myU + aDelta : myU - aDelta;
-
-  gp_Pnt aPntBefore;
-  gp_Pnt aPntAfter;
-  myCurve->D0(std::min(myU, aOther), aPntBefore);
-  myCurve->D0(std::max(myU, aOther), aPntAfter);
-
-  const GeomProp::TangentResult aResult =
-    GeomProp::ComputeTangent(D1(), D2(), D3(), myLinTol, aPntBefore, aPntAfter);
-  LProp_NotDefined_Raise_if(!aResult.IsDefined, "GeomLProp_CLProps::Tangent()");
-  D = aResult.Direction;
+  LProp_CLPropsCompat::Tangent<GeomProp::TangentResult, gp_Dir, gp_Pnt>(
+    mySignificantFirstDerivativeOrder,
+    myLinTol,
+    myU,
+    curveFirstParameter(myCurve, myCurveProp),
+    curveLastParameter(myCurve, myCurveProp),
+    [&]() {
+      return myCurveProp ? myCurveProp->Tangent(myU, myLinTol)
+                         : GeomProp::ComputeTangent(D1(), D2(), D3(), myLinTol);
+    },
+    [&](const gp_Pnt& thePntBefore, const gp_Pnt& thePntAfter) {
+      return GeomProp::ComputeTangent(D1(), D2(), D3(), myLinTol, thePntBefore, thePntAfter);
+    },
+    [&](const double theParam) { return curveValue(myCurve, myCurveProp, theParam); },
+    D,
+    "GeomLProp_CLProps::Tangent()");
 }
 
 //==================================================================================================
@@ -246,19 +295,14 @@ double GeomLProp_CLProps::Curvature()
   const bool isDefined = IsTangentDefined();
   (void)isDefined;
   LProp_NotDefined_Raise_if(!isDefined, "GeomLProp_CLProps::Curvature()");
-
-  if (mySignificantFirstDerivativeOrder > 1)
-  {
-    myCurvature = RealLast();
-    return myCurvature;
-  }
-
-  const GeomProp::CurvatureResult aResult = myCurveProp
-                                              ? myCurveProp->Curvature(myU, myLinTol)
-                                              : GeomProp::ComputeCurvature(D1(), D2(), myLinTol);
-  LProp_NotDefined_Raise_if(!aResult.IsDefined, "GeomLProp_CLProps::Curvature()");
-
-  myCurvature = aResult.IsInfinite ? RealLast() : aResult.Value;
+  myCurvature = LProp_CLPropsCompat::Curvature<GeomProp::CurvatureResult>(
+    mySignificantFirstDerivativeOrder,
+    myLinTol,
+    [&]() {
+      return myCurveProp ? myCurveProp->Curvature(myU, myLinTol)
+                         : GeomProp::ComputeCurvature(D1(), D2(), myLinTol);
+    },
+    "GeomLProp_CLProps::Curvature()");
   return myCurvature;
 }
 
@@ -266,31 +310,29 @@ double GeomLProp_CLProps::Curvature()
 
 void GeomLProp_CLProps::Normal(gp_Dir& D)
 {
-  const double aCurvature = Curvature();
-  if (aCurvature == RealLast() || std::abs(aCurvature) <= myLinTol)
-  {
-    throw LProp_NotDefined("GeomLProp_CLProps::Normal(): Curvature is null or infinity");
-  }
-
-  const GeomProp::NormalResult aResult = myCurveProp
-                                           ? myCurveProp->Normal(myU, myLinTol)
-                                           : GeomProp::ComputeNormal(D1(), D2(), myLinTol);
-  LProp_NotDefined_Raise_if(!aResult.IsDefined, "GeomLProp_CLProps::Normal()");
-  D = aResult.Direction;
+  LProp_CLPropsCompat::Normal<GeomProp::NormalResult>(
+    Curvature(),
+    myLinTol,
+    "GeomLProp_CLProps::Normal(): Curvature is null or infinity",
+    [&]() {
+      return myCurveProp ? myCurveProp->Normal(myU, myLinTol)
+                         : GeomProp::ComputeNormal(D1(), D2(), myLinTol);
+    },
+    D,
+    "GeomLProp_CLProps::Normal()");
 }
 
 //==================================================================================================
 
 void GeomLProp_CLProps::CentreOfCurvature(gp_Pnt& P)
 {
-  if (std::abs(Curvature()) <= myLinTol)
-  {
-    throw LProp_NotDefined();
-  }
-
-  const GeomProp::CentreResult aResult =
-    myCurveProp ? myCurveProp->CentreOfCurvature(myU, myLinTol)
-                : GeomProp::ComputeCentreOfCurvature(myPnt, D1(), D2(), myLinTol);
-  LProp_NotDefined_Raise_if(!aResult.IsDefined, "GeomLProp_CLProps::CentreOfCurvature()");
-  P = aResult.Centre;
+  LProp_CLPropsCompat::CentreOfCurvature<GeomProp::CentreResult>(
+    Curvature(),
+    myLinTol,
+    [&]() {
+      return myCurveProp ? myCurveProp->CentreOfCurvature(myU, myLinTol)
+                         : GeomProp::ComputeCentreOfCurvature(myPnt, D1(), D2(), myLinTol);
+    },
+    P,
+    "GeomLProp_CLProps::CentreOfCurvature()");
 }

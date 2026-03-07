@@ -16,62 +16,89 @@
 #include <GeomProp.hxx>
 #include <GeomProp_Surface.hxx>
 #include <Geom_Surface.hxx>
+#include <LProp_SLPropsCompat.pxx>
 #include <LProp_NotDefined.hxx>
 #include <LProp_Status.hxx>
 #include <Standard_OutOfRange.hxx>
 
-#include <algorithm>
-#include <cmath>
-
 namespace
 {
-constexpr double THE_MIN_STEP = 1.0e-7;
-
-static bool isTangentDefined(GeomLProp_SLProps& theProps,
-                             const int          theContinuity,
-                             const double       theLinTol,
-                             const int          theDerivative,
-                             int&               theOrder,
-                             LProp_Status&      theStatus)
+const GeomAdaptor_Surface* surfaceAdaptor(const std::shared_ptr<GeomProp_Surface>& theSurfaceProp)
 {
-  const double aTol2 = theLinTol * theLinTol;
-  gp_Vec       aDerivatives[2];
-  theOrder = 0;
+  return theSurfaceProp ? theSurfaceProp->Adaptor() : nullptr;
+}
 
-  while (theOrder < 3)
+gp_Pnt surfaceValue(const occ::handle<Geom_Surface>&           theSurface,
+                    const std::shared_ptr<GeomProp_Surface>& theSurfaceProp,
+                    const double                             theU,
+                    const double                             theV)
+{
+  if (const GeomAdaptor_Surface* anAdaptor = surfaceAdaptor(theSurfaceProp))
   {
-    ++theOrder;
-    if (theContinuity < theOrder)
-    {
-      theStatus = LProp_Undefined;
-      return false;
-    }
-
-    switch (theOrder)
-    {
-      case 1:
-        aDerivatives[0] = theProps.D1U();
-        aDerivatives[1] = theProps.D1V();
-        break;
-      case 2:
-        aDerivatives[0] = theProps.D2U();
-        aDerivatives[1] = theProps.D2V();
-        break;
-      default:
-        break;
-    }
-
-    if (aDerivatives[theDerivative].SquareMagnitude() > aTol2)
-    {
-      theStatus = LProp_Defined;
-      return true;
-    }
+    return anAdaptor->Value(theU, theV);
   }
 
-  theStatus = LProp_Undefined;
-  return false;
+  gp_Pnt aPoint;
+  theSurface->D0(theU, theV, aPoint);
+  return aPoint;
 }
-} // namespace
+
+void surfaceD1(const occ::handle<Geom_Surface>&           theSurface,
+               const std::shared_ptr<GeomProp_Surface>& theSurfaceProp,
+               const double                             theU,
+               const double                             theV,
+               gp_Pnt&                                  thePoint,
+               gp_Vec&                                  theD1U,
+               gp_Vec&                                  theD1V)
+{
+  if (const GeomAdaptor_Surface* anAdaptor = surfaceAdaptor(theSurfaceProp))
+  {
+    anAdaptor->D1(theU, theV, thePoint, theD1U, theD1V);
+    return;
+  }
+
+  theSurface->D1(theU, theV, thePoint, theD1U, theD1V);
+}
+
+void surfaceD2(const occ::handle<Geom_Surface>&           theSurface,
+               const std::shared_ptr<GeomProp_Surface>& theSurfaceProp,
+               const double                             theU,
+               const double                             theV,
+               gp_Pnt&                                  thePoint,
+               gp_Vec&                                  theD1U,
+               gp_Vec&                                  theD1V,
+               gp_Vec&                                  theD2U,
+               gp_Vec&                                  theD2V,
+               gp_Vec&                                  theDUV)
+{
+  if (const GeomAdaptor_Surface* anAdaptor = surfaceAdaptor(theSurfaceProp))
+  {
+    anAdaptor->D2(theU, theV, thePoint, theD1U, theD1V, theD2U, theD2V, theDUV);
+    return;
+  }
+
+  theSurface->D2(theU, theV, thePoint, theD1U, theD1V, theD2U, theD2V, theDUV);
+}
+
+void surfaceBounds(const occ::handle<Geom_Surface>&           theSurface,
+                   const std::shared_ptr<GeomProp_Surface>& theSurfaceProp,
+                   double&                                   theU1,
+                   double&                                   theU2,
+                   double&                                   theV1,
+                   double&                                   theV2)
+{
+  if (const GeomAdaptor_Surface* anAdaptor = surfaceAdaptor(theSurfaceProp))
+  {
+    theU1 = anAdaptor->FirstUParameter();
+    theU2 = anAdaptor->LastUParameter();
+    theV1 = anAdaptor->FirstVParameter();
+    theV2 = anAdaptor->LastVParameter();
+    return;
+  }
+
+  theSurface->Bounds(theU1, theU2, theV1, theV2);
+}
+}
 
 //==================================================================================================
 
@@ -176,13 +203,13 @@ void GeomLProp_SLProps::SetParameters(const double U, const double V)
   switch (myDerOrder)
   {
     case 0:
-      mySurf->D0(myU, myV, myPnt);
+      myPnt = surfaceValue(mySurf, mySurfaceProp, myU, myV);
       break;
     case 1:
-      mySurf->D1(myU, myV, myPnt, myD1u, myD1v);
+      surfaceD1(mySurf, mySurfaceProp, myU, myV, myPnt, myD1u, myD1v);
       break;
     case 2:
-      mySurf->D2(myU, myV, myPnt, myD1u, myD1v, myD2u, myD2v, myDuv);
+      surfaceD2(mySurf, mySurfaceProp, myU, myV, myPnt, myD1u, myD1v, myD2u, myD2v, myDuv);
       break;
   }
 
@@ -212,7 +239,7 @@ const gp_Vec& GeomLProp_SLProps::D1U()
   if (myDerOrder < 1)
   {
     myDerOrder = 1;
-    mySurf->D1(myU, myV, myPnt, myD1u, myD1v);
+    surfaceD1(mySurf, mySurfaceProp, myU, myV, myPnt, myD1u, myD1v);
   }
 
   return myD1u;
@@ -225,7 +252,7 @@ const gp_Vec& GeomLProp_SLProps::D1V()
   if (myDerOrder < 1)
   {
     myDerOrder = 1;
-    mySurf->D1(myU, myV, myPnt, myD1u, myD1v);
+    surfaceD1(mySurf, mySurfaceProp, myU, myV, myPnt, myD1u, myD1v);
   }
 
   return myD1v;
@@ -238,7 +265,7 @@ const gp_Vec& GeomLProp_SLProps::D2U()
   if (myDerOrder < 2)
   {
     myDerOrder = 2;
-    mySurf->D2(myU, myV, myPnt, myD1u, myD1v, myD2u, myD2v, myDuv);
+    surfaceD2(mySurf, mySurfaceProp, myU, myV, myPnt, myD1u, myD1v, myD2u, myD2v, myDuv);
   }
 
   return myD2u;
@@ -251,7 +278,7 @@ const gp_Vec& GeomLProp_SLProps::D2V()
   if (myDerOrder < 2)
   {
     myDerOrder = 2;
-    mySurf->D2(myU, myV, myPnt, myD1u, myD1v, myD2u, myD2v, myDuv);
+    surfaceD2(mySurf, mySurfaceProp, myU, myV, myPnt, myD1u, myD1v, myD2u, myD2v, myDuv);
   }
 
   return myD2v;
@@ -264,7 +291,7 @@ const gp_Vec& GeomLProp_SLProps::DUV()
   if (myDerOrder < 2)
   {
     myDerOrder = 2;
-    mySurf->D2(myU, myV, myPnt, myD1u, myD1v, myD2u, myD2v, myDuv);
+    surfaceD2(mySurf, mySurfaceProp, myU, myV, myPnt, myD1u, myD1v, myD2u, myD2v, myDuv);
   }
 
   return myDuv;
@@ -274,21 +301,15 @@ const gp_Vec& GeomLProp_SLProps::DUV()
 
 bool GeomLProp_SLProps::IsTangentUDefined()
 {
-  if (myUTangentStatus == LProp_Undefined)
-  {
-    return false;
-  }
-  if (myUTangentStatus >= LProp_Defined)
-  {
-    return true;
-  }
-
-  return isTangentDefined(*this,
-                          myCN,
-                          myLinTol,
-                          0,
-                          mySignificantFirstDerivativeOrderU,
-                          myUTangentStatus);
+  return LProp_SLPropsCompat::IsTangentDefined(myCN,
+                                               myLinTol,
+                                               D1U(),
+                                               D1V(),
+                                               D2U(),
+                                               D2V(),
+                                               0,
+                                               mySignificantFirstDerivativeOrderU,
+                                               myUTangentStatus);
 }
 
 //==================================================================================================
@@ -296,49 +317,36 @@ bool GeomLProp_SLProps::IsTangentUDefined()
 void GeomLProp_SLProps::TangentU(gp_Dir& D)
 {
   LProp_NotDefined_Raise_if(!IsTangentUDefined(), "GeomLProp_SLProps::TangentU()");
-
-  if (mySignificantFirstDerivativeOrderU == 1)
-  {
-    D = gp_Dir(myD1u);
-    return;
-  }
-
   double aU1, aV1, aU2, aV2;
-  mySurf->Bounds(aU1, aU2, aV1, aV2);
-  const double aRange = (aU2 >= RealLast() || aU1 <= RealFirst()) ? 0.0 : aU2 - aU1;
-  const double aDelta = std::max(aRange * 1.0e-3, THE_MIN_STEP);
-  const double aOther = (myU - aU1 < aDelta) ? myU + aDelta : myU - aDelta;
-
-  gp_Pnt aPntBefore;
-  gp_Pnt aPntAfter;
-  mySurf->D0(std::min(myU, aOther), myV, aPntBefore);
-  mySurf->D0(std::max(myU, aOther), myV, aPntAfter);
-
-  const GeomProp::TangentResult aResult =
-    GeomProp::ComputeTangent(myD1u, myD2u, gp_Vec(0.0, 0.0, 0.0), myLinTol, aPntBefore, aPntAfter);
-  LProp_NotDefined_Raise_if(!aResult.IsDefined, "GeomLProp_SLProps::TangentU()");
-  D = aResult.Direction;
+  surfaceBounds(mySurf, mySurfaceProp, aU1, aU2, aV1, aV2);
+  LProp_SLPropsCompat::Tangent(
+    mySignificantFirstDerivativeOrderU,
+    myLinTol,
+    myU,
+    aU1,
+    aU2,
+    [&]() { return gp_Dir(D1U()); },
+    [&](const gp_Pnt& thePntBefore, const gp_Pnt& thePntAfter) {
+      return GeomProp::ComputeTangent(D1U(), D2U(), gp_Vec(0.0, 0.0, 0.0), myLinTol, thePntBefore, thePntAfter);
+    },
+    [&](const double theParam) { return surfaceValue(mySurf, mySurfaceProp, theParam, myV); },
+    D,
+    "GeomLProp_SLProps::TangentU()");
 }
 
 //==================================================================================================
 
 bool GeomLProp_SLProps::IsTangentVDefined()
 {
-  if (myVTangentStatus == LProp_Undefined)
-  {
-    return false;
-  }
-  if (myVTangentStatus >= LProp_Defined)
-  {
-    return true;
-  }
-
-  return isTangentDefined(*this,
-                          myCN,
-                          myLinTol,
-                          1,
-                          mySignificantFirstDerivativeOrderV,
-                          myVTangentStatus);
+  return LProp_SLPropsCompat::IsTangentDefined(myCN,
+                                               myLinTol,
+                                               D1U(),
+                                               D1V(),
+                                               D2U(),
+                                               D2V(),
+                                               1,
+                                               mySignificantFirstDerivativeOrderV,
+                                               myVTangentStatus);
 }
 
 //==================================================================================================
@@ -346,55 +354,34 @@ bool GeomLProp_SLProps::IsTangentVDefined()
 void GeomLProp_SLProps::TangentV(gp_Dir& D)
 {
   LProp_NotDefined_Raise_if(!IsTangentVDefined(), "GeomLProp_SLProps::TangentV()");
-
-  if (mySignificantFirstDerivativeOrderV == 1)
-  {
-    D = gp_Dir(myD1v);
-    return;
-  }
-
   double aU1, aV1, aU2, aV2;
-  mySurf->Bounds(aU1, aU2, aV1, aV2);
-  const double aRange = (aV2 >= RealLast() || aV1 <= RealFirst()) ? 0.0 : aV2 - aV1;
-  const double aDelta = std::max(aRange * 1.0e-3, THE_MIN_STEP);
-  const double aOther = (myV - aV1 < aDelta) ? myV + aDelta : myV - aDelta;
-
-  gp_Pnt aPntBefore;
-  gp_Pnt aPntAfter;
-  mySurf->D0(myU, std::min(myV, aOther), aPntBefore);
-  mySurf->D0(myU, std::max(myV, aOther), aPntAfter);
-
-  const GeomProp::TangentResult aResult =
-    GeomProp::ComputeTangent(myD1v, myD2v, gp_Vec(0.0, 0.0, 0.0), myLinTol, aPntBefore, aPntAfter);
-  LProp_NotDefined_Raise_if(!aResult.IsDefined, "GeomLProp_SLProps::TangentV()");
-  D = aResult.Direction;
+  surfaceBounds(mySurf, mySurfaceProp, aU1, aU2, aV1, aV2);
+  LProp_SLPropsCompat::Tangent(
+    mySignificantFirstDerivativeOrderV,
+    myLinTol,
+    myV,
+    aV1,
+    aV2,
+    [&]() { return gp_Dir(D1V()); },
+    [&](const gp_Pnt& thePntBefore, const gp_Pnt& thePntAfter) {
+      return GeomProp::ComputeTangent(D1V(), D2V(), gp_Vec(0.0, 0.0, 0.0), myLinTol, thePntBefore, thePntAfter);
+    },
+    [&](const double theParam) { return surfaceValue(mySurf, mySurfaceProp, myU, theParam); },
+    D,
+    "GeomLProp_SLProps::TangentV()");
 }
 
 //==================================================================================================
 
 bool GeomLProp_SLProps::IsNormalDefined()
 {
-  if (myNormalStatus == LProp_Undefined)
-  {
-    return false;
-  }
-  if (myNormalStatus >= LProp_Defined)
-  {
-    return true;
-  }
-
-  const GeomProp::SurfaceNormalResult aResult =
-    mySurfaceProp ? mySurfaceProp->Normal(myU, myV, myLinTol)
-                  : GeomProp::ComputeSurfaceNormal(D1U(), D1V(), myLinTol);
-  if (!aResult.IsDefined)
-  {
-    myNormalStatus = LProp_Undefined;
-    return false;
-  }
-
-  myNormal       = aResult.Direction;
-  myNormalStatus = LProp_Computed;
-  return true;
+  return LProp_SLPropsCompat::IsNormalDefined<GeomProp::SurfaceNormalResult>(
+    [&]() {
+      return mySurfaceProp ? mySurfaceProp->Normal(myU, myV, myLinTol)
+                           : GeomProp::ComputeSurfaceNormal(D1U(), D1V(), myLinTol);
+    },
+    myNormal,
+    myNormalStatus);
 }
 
 //==================================================================================================
@@ -413,40 +400,27 @@ const gp_Dir& GeomLProp_SLProps::Normal()
 
 bool GeomLProp_SLProps::IsCurvatureDefined()
 {
-  if (myCurvatureStatus == LProp_Undefined)
-  {
-    return false;
-  }
-  if (myCurvatureStatus >= LProp_Defined)
-  {
-    return true;
-  }
-  if (myCN < 2 || !IsNormalDefined() || !IsTangentUDefined() || !IsTangentVDefined())
-  {
-    myCurvatureStatus = LProp_Undefined;
-    return false;
-  }
-
-  const GeomProp::SurfaceCurvatureResult aCurvatures =
-    mySurfaceProp ? mySurfaceProp->Curvatures(myU, myV, myLinTol)
-                  : GeomProp::ComputeSurfaceCurvatures(D1U(), D1V(), D2U(), D2V(), DUV(), myLinTol);
-  const GeomProp::MeanGaussianResult aMeanGaussian =
-    mySurfaceProp ? mySurfaceProp->MeanGaussian(myU, myV, myLinTol)
-                  : GeomProp::ComputeMeanGaussian(D1U(), D1V(), D2U(), D2V(), DUV(), myLinTol);
-  if (!aCurvatures.IsDefined || !aMeanGaussian.IsDefined)
-  {
-    myCurvatureStatus = LProp_Undefined;
-    return false;
-  }
-
-  myMinCurv         = aCurvatures.MinCurvature;
-  myMaxCurv         = aCurvatures.MaxCurvature;
-  myDirMinCurv      = aCurvatures.MinDirection;
-  myDirMaxCurv      = aCurvatures.MaxDirection;
-  myMeanCurv        = aMeanGaussian.MeanCurvature;
-  myGausCurv        = aMeanGaussian.GaussianCurvature;
-  myCurvatureStatus = LProp_Computed;
-  return true;
+  return LProp_SLPropsCompat::IsCurvatureDefined<GeomProp::SurfaceCurvatureResult,
+                                                 GeomProp::MeanGaussianResult>(
+    myCN,
+    IsNormalDefined(),
+    IsTangentUDefined(),
+    IsTangentVDefined(),
+    [&]() {
+      return mySurfaceProp ? mySurfaceProp->Curvatures(myU, myV, myLinTol)
+                           : GeomProp::ComputeSurfaceCurvatures(D1U(), D1V(), D2U(), D2V(), DUV(), myLinTol);
+    },
+    [&]() {
+      return mySurfaceProp ? mySurfaceProp->MeanGaussian(myU, myV, myLinTol)
+                           : GeomProp::ComputeMeanGaussian(D1U(), D1V(), D2U(), D2V(), DUV(), myLinTol);
+    },
+    myMinCurv,
+    myMaxCurv,
+    myDirMinCurv,
+    myDirMaxCurv,
+    myMeanCurv,
+    myGausCurv,
+    myCurvatureStatus);
 }
 
 //==================================================================================================

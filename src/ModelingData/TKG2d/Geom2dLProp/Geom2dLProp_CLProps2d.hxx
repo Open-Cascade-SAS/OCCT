@@ -33,7 +33,6 @@
 
 class Geom2d_Curve;
 class Geom2dProp_Curve;
-class LProp_BadContinuity;
 class Standard_DomainError;
 class Standard_OutOfRange;
 class LProp_NotDefined;
