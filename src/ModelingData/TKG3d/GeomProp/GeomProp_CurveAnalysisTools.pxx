@@ -237,7 +237,8 @@ inline void NumericCurvatureExtrema(const GeomAdaptor_Curve* theCurve,
       MathUtils::Config aBrentCfg;
       aBrentCfg.XTolerance = Precision::PConfusion();
       aBrentCfg.FTolerance = Precision::PConfusion();
-      auto aBrent          = MathRoot::Brent(aFunc, aParam - aEpsH, aParam + aEpsH, aBrentCfg);
+      MathUtils::ScalarResult aBrent =
+        MathRoot::Brent(aFunc, aParam - aEpsH, aParam + aEpsH, aBrentCfg);
       if (aBrent.IsDone() && aBrent.Root.has_value())
       {
         aParam = *aBrent.Root;

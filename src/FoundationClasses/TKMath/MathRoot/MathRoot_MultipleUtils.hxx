@@ -681,7 +681,8 @@ MultipleResult FindAllRootsWithDerivativeImpl(Function&             theFunc,
     aDerivativeConfig.FTolerance    = 0.0;
     aDerivativeConfig.MaxIterations = theConfig.MaxIterations;
 
-    auto aDerivativeRoot = Brent(aDerivativeWrapper, aX0, aX3, aDerivativeConfig);
+    MathUtils::ScalarResult aDerivativeRoot =
+      Brent(aDerivativeWrapper, aX0, aX3, aDerivativeConfig);
     aResult.NbIterations += aDerivativeRoot.NbIterations;
     if (aDerivativeRoot.IsDone() && aDerivativeRoot.Root.has_value())
     {
