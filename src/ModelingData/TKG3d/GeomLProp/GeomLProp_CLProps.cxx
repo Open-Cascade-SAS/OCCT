@@ -28,7 +28,7 @@ const GeomAdaptor_Curve* curveAdaptor(const std::shared_ptr<GeomProp_Curve>& the
   return theCurveProp ? theCurveProp->Adaptor() : nullptr;
 }
 
-gp_Pnt curveValue(const occ::handle<Geom_Curve>&          theCurve,
+gp_Pnt curveValue(const occ::handle<Geom_Curve>&         theCurve,
                   const std::shared_ptr<GeomProp_Curve>& theCurveProp,
                   const double                           theParam)
 {
@@ -42,7 +42,7 @@ gp_Pnt curveValue(const occ::handle<Geom_Curve>&          theCurve,
   return aPoint;
 }
 
-void curveD1(const occ::handle<Geom_Curve>&          theCurve,
+void curveD1(const occ::handle<Geom_Curve>&         theCurve,
              const std::shared_ptr<GeomProp_Curve>& theCurveProp,
              const double                           theParam,
              gp_Pnt&                                thePoint,
@@ -57,7 +57,7 @@ void curveD1(const occ::handle<Geom_Curve>&          theCurve,
   theCurve->D1(theParam, thePoint, theD1);
 }
 
-void curveD2(const occ::handle<Geom_Curve>&          theCurve,
+void curveD2(const occ::handle<Geom_Curve>&         theCurve,
              const std::shared_ptr<GeomProp_Curve>& theCurveProp,
              const double                           theParam,
              gp_Pnt&                                thePoint,
@@ -73,7 +73,7 @@ void curveD2(const occ::handle<Geom_Curve>&          theCurve,
   theCurve->D2(theParam, thePoint, theD1, theD2);
 }
 
-void curveD3(const occ::handle<Geom_Curve>&          theCurve,
+void curveD3(const occ::handle<Geom_Curve>&         theCurve,
              const std::shared_ptr<GeomProp_Curve>& theCurveProp,
              const double                           theParam,
              gp_Pnt&                                thePoint,
@@ -90,7 +90,7 @@ void curveD3(const occ::handle<Geom_Curve>&          theCurve,
   theCurve->D3(theParam, thePoint, theD1, theD2, theD3);
 }
 
-double curveFirstParameter(const occ::handle<Geom_Curve>&          theCurve,
+double curveFirstParameter(const occ::handle<Geom_Curve>&         theCurve,
                            const std::shared_ptr<GeomProp_Curve>& theCurveProp)
 {
   if (const GeomAdaptor_Curve* anAdaptor = curveAdaptor(theCurveProp))
@@ -101,7 +101,7 @@ double curveFirstParameter(const occ::handle<Geom_Curve>&          theCurve,
   return theCurve->FirstParameter();
 }
 
-double curveLastParameter(const occ::handle<Geom_Curve>&          theCurve,
+double curveLastParameter(const occ::handle<Geom_Curve>&         theCurve,
                           const std::shared_ptr<GeomProp_Curve>& theCurveProp)
 {
   if (const GeomAdaptor_Curve* anAdaptor = curveAdaptor(theCurveProp))
@@ -111,7 +111,7 @@ double curveLastParameter(const occ::handle<Geom_Curve>&          theCurve,
 
   return theCurve->LastParameter();
 }
-}
+} // namespace
 
 //==================================================================================================
 

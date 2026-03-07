@@ -48,9 +48,7 @@ HLRBRep_SLProps::HLRBRep_SLProps(const HLRBRep_SurfacePtr& S,
 
 //==================================================================================================
 
-HLRBRep_SLProps::HLRBRep_SLProps(const HLRBRep_SurfacePtr& S,
-                                 const int                 N,
-                                 const double              Resolution)
+HLRBRep_SLProps::HLRBRep_SLProps(const HLRBRep_SurfacePtr& S, const int N, const double Resolution)
     : mySurf(S),
       myU(RealLast()),
       myV(RealLast()),
@@ -98,8 +96,8 @@ HLRBRep_SLProps::HLRBRep_SLProps(const int N, const double Resolution)
 
 void HLRBRep_SLProps::SetSurface(const HLRBRep_SurfacePtr& S)
 {
-  mySurf = S;
-  myCN   = HLRBRep_SLPropsATool::Continuity(S);
+  mySurf                             = S;
+  myCN                               = HLRBRep_SLPropsATool::Continuity(S);
   mySignificantFirstDerivativeOrderU = 0;
   mySignificantFirstDerivativeOrderV = 0;
   myUTangentStatus                   = LProp_Undecided;
@@ -241,7 +239,12 @@ void HLRBRep_SLProps::TangentU(gp_Dir& D)
     aU2,
     [&]() { return gp_Dir(D1U()); },
     [&](const gp_Pnt& thePntBefore, const gp_Pnt& thePntAfter) {
-      return GeomProp::ComputeTangent(D1U(), D2U(), gp_Vec(0.0, 0.0, 0.0), myLinTol, thePntBefore, thePntAfter);
+      return GeomProp::ComputeTangent(D1U(),
+                                      D2U(),
+                                      gp_Vec(0.0, 0.0, 0.0),
+                                      myLinTol,
+                                      thePntBefore,
+                                      thePntAfter);
     },
     [&](const double theParam) {
       gp_Pnt aPoint;
@@ -282,7 +285,12 @@ void HLRBRep_SLProps::TangentV(gp_Dir& D)
     aV2,
     [&]() { return gp_Dir(D1V()); },
     [&](const gp_Pnt& thePntBefore, const gp_Pnt& thePntAfter) {
-      return GeomProp::ComputeTangent(D1V(), D2V(), gp_Vec(0.0, 0.0, 0.0), myLinTol, thePntBefore, thePntAfter);
+      return GeomProp::ComputeTangent(D1V(),
+                                      D2V(),
+                                      gp_Vec(0.0, 0.0, 0.0),
+                                      myLinTol,
+                                      thePntBefore,
+                                      thePntAfter);
     },
     [&](const double theParam) {
       gp_Pnt aPoint;
@@ -325,7 +333,9 @@ bool HLRBRep_SLProps::IsCurvatureDefined()
     IsNormalDefined(),
     IsTangentUDefined(),
     IsTangentVDefined(),
-    [&]() { return GeomProp::ComputeSurfaceCurvatures(D1U(), D1V(), D2U(), D2V(), DUV(), myLinTol); },
+    [&]() {
+      return GeomProp::ComputeSurfaceCurvatures(D1U(), D1V(), D2U(), D2V(), DUV(), myLinTol);
+    },
     [&]() { return GeomProp::ComputeMeanGaussian(D1U(), D1V(), D2U(), D2V(), DUV(), myLinTol); },
     myMinCurv,
     myMaxCurv,

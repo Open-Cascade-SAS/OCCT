@@ -1,3 +1,16 @@
+// Copyright (c) 2026 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
 #ifndef _LProp_CLPropsCompat_HeaderFile
 #define _LProp_CLPropsCompat_HeaderFile
 
@@ -12,12 +25,12 @@ namespace LProp_CLPropsCompat
 constexpr double THE_MIN_STEP = 1.0e-7;
 
 template <class Vec>
-inline bool IsTangentDefined(const int    theContinuity,
-                             const double theLinTol,
-                             const Vec&   theD1,
-                             const Vec&   theD2,
-                             const Vec&   theD3,
-                             int&         theSignificantOrder,
+inline bool IsTangentDefined(const int     theContinuity,
+                             const double  theLinTol,
+                             const Vec&    theD1,
+                             const Vec&    theD2,
+                             const Vec&    theD3,
+                             int&          theSignificantOrder,
                              LProp_Status& theStatus)
 {
   if (theStatus == LProp_Undefined)
@@ -29,7 +42,7 @@ inline bool IsTangentDefined(const int    theContinuity,
     return true;
   }
 
-  const double aTol2 = theLinTol * theLinTol;
+  const double aTol2  = theLinTol * theLinTol;
   theSignificantOrder = 0;
 
   if (theContinuity >= 1 && theD1.SquareMagnitude() > aTol2)
@@ -55,17 +68,22 @@ inline bool IsTangentDefined(const int    theContinuity,
   return true;
 }
 
-template <class Result, class Dir, class Pnt, class EvalAtParam, class EvalWithPoints, class ValueAt>
-inline void Tangent(const int     theSignificantOrder,
+template <class Result,
+          class Dir,
+          class Pnt,
+          class EvalAtParam,
+          class EvalWithPoints,
+          class ValueAt>
+inline void Tangent(const int theSignificantOrder,
                     const double,
-                    const double  theParam,
-                    const double  theFirst,
-                    const double  theLast,
-                    EvalAtParam&& theEvalAtParam,
+                    const double     theParam,
+                    const double     theFirst,
+                    const double     theLast,
+                    EvalAtParam&&    theEvalAtParam,
                     EvalWithPoints&& theEvalWithPoints,
-                    ValueAt&&     theValueAt,
-                    Dir&          theDir,
-                    const char*   theMessage)
+                    ValueAt&&        theValueAt,
+                    Dir&             theDir,
+                    const char*      theMessage)
 {
   if (theSignificantOrder == 1)
   {
@@ -75,13 +93,14 @@ inline void Tangent(const int     theSignificantOrder,
     return;
   }
 
-  const double aRange = (theLast >= RealLast() || theFirst <= RealFirst()) ? 0.0 : theLast - theFirst;
+  const double aRange =
+    (theLast >= RealLast() || theFirst <= RealFirst()) ? 0.0 : theLast - theFirst;
   const double aDelta = std::max(aRange * 1.0e-3, THE_MIN_STEP);
   const double aOther = (theParam - theFirst < aDelta) ? theParam + aDelta : theParam - aDelta;
 
-  const Pnt aPntBefore = theValueAt(std::min(theParam, aOther));
-  const Pnt aPntAfter  = theValueAt(std::max(theParam, aOther));
-  const Result aResult = theEvalWithPoints(aPntBefore, aPntAfter);
+  const Pnt    aPntBefore = theValueAt(std::min(theParam, aOther));
+  const Pnt    aPntAfter  = theValueAt(std::max(theParam, aOther));
+  const Result aResult    = theEvalWithPoints(aPntBefore, aPntAfter);
   LProp_NotDefined_Raise_if(!aResult.IsDefined, theMessage);
   theDir = aResult.Direction;
 }
@@ -89,7 +108,7 @@ inline void Tangent(const int     theSignificantOrder,
 template <class Result, class Eval>
 inline double Curvature(const int theSignificantOrder,
                         const double,
-                        Eval&&    theEval,
+                        Eval&&      theEval,
                         const char* theMessage)
 {
   if (theSignificantOrder > 1)

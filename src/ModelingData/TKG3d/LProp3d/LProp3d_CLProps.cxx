@@ -192,8 +192,9 @@ void LProp3d_CLProps::Tangent(gp_Dir& D)
     myCurve->FirstParameter(),
     myCurve->LastParameter(),
     [&]() {
-      return hasGeomPropEvaluator(myCurveProp) ? myCurveProp->Tangent(myU, myLinTol)
-                                               : GeomProp::ComputeTangent(D1(), D2(), D3(), myLinTol);
+      return hasGeomPropEvaluator(myCurveProp)
+               ? myCurveProp->Tangent(myU, myLinTol)
+               : GeomProp::ComputeTangent(D1(), D2(), D3(), myLinTol);
     },
     [&](const gp_Pnt& thePntBefore, const gp_Pnt& thePntAfter) {
       return GeomProp::ComputeTangent(D1(), D2(), D3(), myLinTol, thePntBefore, thePntAfter);
@@ -252,7 +253,8 @@ void LProp3d_CLProps::CentreOfCurvature(gp_Pnt& P)
     [&]() {
       const GeomProp::CentreResult aResult =
         GeomProp::ComputeCentreOfCurvature(myPnt, D1(), D2(), myLinTol);
-      return hasGeomPropEvaluator(myCurveProp) ? myCurveProp->CentreOfCurvature(myU, myLinTol) : aResult;
+      return hasGeomPropEvaluator(myCurveProp) ? myCurveProp->CentreOfCurvature(myU, myLinTol)
+                                               : aResult;
     },
     P,
     "LProp3d_CLProps::CentreOfCurvature()");

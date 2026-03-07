@@ -28,7 +28,7 @@ const GeomAdaptor_Surface* surfaceAdaptor(const std::shared_ptr<GeomProp_Surface
   return theSurfaceProp ? theSurfaceProp->Adaptor() : nullptr;
 }
 
-gp_Pnt surfaceValue(const occ::handle<Geom_Surface>&           theSurface,
+gp_Pnt surfaceValue(const occ::handle<Geom_Surface>&         theSurface,
                     const std::shared_ptr<GeomProp_Surface>& theSurfaceProp,
                     const double                             theU,
                     const double                             theV)
@@ -43,7 +43,7 @@ gp_Pnt surfaceValue(const occ::handle<Geom_Surface>&           theSurface,
   return aPoint;
 }
 
-void surfaceD1(const occ::handle<Geom_Surface>&           theSurface,
+void surfaceD1(const occ::handle<Geom_Surface>&         theSurface,
                const std::shared_ptr<GeomProp_Surface>& theSurfaceProp,
                const double                             theU,
                const double                             theV,
@@ -60,7 +60,7 @@ void surfaceD1(const occ::handle<Geom_Surface>&           theSurface,
   theSurface->D1(theU, theV, thePoint, theD1U, theD1V);
 }
 
-void surfaceD2(const occ::handle<Geom_Surface>&           theSurface,
+void surfaceD2(const occ::handle<Geom_Surface>&         theSurface,
                const std::shared_ptr<GeomProp_Surface>& theSurfaceProp,
                const double                             theU,
                const double                             theV,
@@ -80,12 +80,12 @@ void surfaceD2(const occ::handle<Geom_Surface>&           theSurface,
   theSurface->D2(theU, theV, thePoint, theD1U, theD1V, theD2U, theD2V, theDUV);
 }
 
-void surfaceBounds(const occ::handle<Geom_Surface>&           theSurface,
+void surfaceBounds(const occ::handle<Geom_Surface>&         theSurface,
                    const std::shared_ptr<GeomProp_Surface>& theSurfaceProp,
-                   double&                                   theU1,
-                   double&                                   theU2,
-                   double&                                   theV1,
-                   double&                                   theV2)
+                   double&                                  theU1,
+                   double&                                  theU2,
+                   double&                                  theV1,
+                   double&                                  theV2)
 {
   if (const GeomAdaptor_Surface* anAdaptor = surfaceAdaptor(theSurfaceProp))
   {
@@ -98,7 +98,7 @@ void surfaceBounds(const occ::handle<Geom_Surface>&           theSurface,
 
   theSurface->Bounds(theU1, theU2, theV1, theV2);
 }
-}
+} // namespace
 
 //==================================================================================================
 
@@ -327,7 +327,12 @@ void GeomLProp_SLProps::TangentU(gp_Dir& D)
     aU2,
     [&]() { return gp_Dir(D1U()); },
     [&](const gp_Pnt& thePntBefore, const gp_Pnt& thePntAfter) {
-      return GeomProp::ComputeTangent(D1U(), D2U(), gp_Vec(0.0, 0.0, 0.0), myLinTol, thePntBefore, thePntAfter);
+      return GeomProp::ComputeTangent(D1U(),
+                                      D2U(),
+                                      gp_Vec(0.0, 0.0, 0.0),
+                                      myLinTol,
+                                      thePntBefore,
+                                      thePntAfter);
     },
     [&](const double theParam) { return surfaceValue(mySurf, mySurfaceProp, theParam, myV); },
     D,
@@ -364,7 +369,12 @@ void GeomLProp_SLProps::TangentV(gp_Dir& D)
     aV2,
     [&]() { return gp_Dir(D1V()); },
     [&](const gp_Pnt& thePntBefore, const gp_Pnt& thePntAfter) {
-      return GeomProp::ComputeTangent(D1V(), D2V(), gp_Vec(0.0, 0.0, 0.0), myLinTol, thePntBefore, thePntAfter);
+      return GeomProp::ComputeTangent(D1V(),
+                                      D2V(),
+                                      gp_Vec(0.0, 0.0, 0.0),
+                                      myLinTol,
+                                      thePntBefore,
+                                      thePntAfter);
     },
     [&](const double theParam) { return surfaceValue(mySurf, mySurfaceProp, myU, theParam); },
     D,
@@ -407,12 +417,14 @@ bool GeomLProp_SLProps::IsCurvatureDefined()
     IsTangentUDefined(),
     IsTangentVDefined(),
     [&]() {
-      return mySurfaceProp ? mySurfaceProp->Curvatures(myU, myV, myLinTol)
-                           : GeomProp::ComputeSurfaceCurvatures(D1U(), D1V(), D2U(), D2V(), DUV(), myLinTol);
+      return mySurfaceProp
+               ? mySurfaceProp->Curvatures(myU, myV, myLinTol)
+               : GeomProp::ComputeSurfaceCurvatures(D1U(), D1V(), D2U(), D2V(), DUV(), myLinTol);
     },
     [&]() {
-      return mySurfaceProp ? mySurfaceProp->MeanGaussian(myU, myV, myLinTol)
-                           : GeomProp::ComputeMeanGaussian(D1U(), D1V(), D2U(), D2V(), DUV(), myLinTol);
+      return mySurfaceProp
+               ? mySurfaceProp->MeanGaussian(myU, myV, myLinTol)
+               : GeomProp::ComputeMeanGaussian(D1U(), D1V(), D2U(), D2V(), DUV(), myLinTol);
     },
     myMinCurv,
     myMaxCurv,

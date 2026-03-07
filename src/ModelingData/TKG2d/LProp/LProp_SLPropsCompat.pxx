@@ -1,3 +1,16 @@
+// Copyright (c) 2026 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
 #ifndef _LProp_SLPropsCompat_HeaderFile
 #define _LProp_SLPropsCompat_HeaderFile
 
@@ -13,14 +26,14 @@ namespace LProp_SLPropsCompat
 constexpr double THE_MIN_STEP = 1.0e-7;
 
 template <class Vec>
-inline bool IsTangentDefined(const int    theContinuity,
-                             const double theLinTol,
-                             const Vec&   theD1U,
-                             const Vec&   theD1V,
-                             const Vec&   theD2U,
-                             const Vec&   theD2V,
-                             const int    theDerivative,
-                             int&         theOrder,
+inline bool IsTangentDefined(const int     theContinuity,
+                             const double  theLinTol,
+                             const Vec&    theD1U,
+                             const Vec&    theD1V,
+                             const Vec&    theD2U,
+                             const Vec&    theD2V,
+                             const int     theDerivative,
+                             int&          theOrder,
                              LProp_Status& theStatus)
 {
   if (theStatus == LProp_Undefined)
@@ -33,7 +46,7 @@ inline bool IsTangentDefined(const int    theContinuity,
   }
 
   const double aTol2 = theLinTol * theLinTol;
-  theOrder = 0;
+  theOrder           = 0;
 
   while (theOrder < 3)
   {
@@ -44,8 +57,8 @@ inline bool IsTangentDefined(const int    theContinuity,
       return false;
     }
 
-    const Vec& aDerivative =
-      (theOrder == 1) ? (theDerivative == 0 ? theD1U : theD1V) : (theDerivative == 0 ? theD2U : theD2V);
+    const Vec& aDerivative = (theOrder == 1) ? (theDerivative == 0 ? theD1U : theD1V)
+                                             : (theDerivative == 0 ? theD2U : theD2V);
     if (aDerivative.SquareMagnitude() > aTol2)
     {
       theStatus = LProp_Defined;
@@ -58,16 +71,16 @@ inline bool IsTangentDefined(const int    theContinuity,
 }
 
 template <class Dir, class DirectEval, class EvalWithPoints, class ValueAt>
-inline void Tangent(const int    theSignificantOrder,
-                    const double theLinTol,
-                    const double theParam,
-                    const double theFirst,
-                    const double theLast,
-                    DirectEval&& theDirectEval,
+inline void Tangent(const int        theSignificantOrder,
+                    const double     theLinTol,
+                    const double     theParam,
+                    const double     theFirst,
+                    const double     theLast,
+                    DirectEval&&     theDirectEval,
                     EvalWithPoints&& theEvalWithPoints,
-                    ValueAt&&    theValueAt,
-                    Dir&         theDir,
-                    const char*  theMessage)
+                    ValueAt&&        theValueAt,
+                    Dir&             theDir,
+                    const char*      theMessage)
 {
   (void)theLinTol;
   if (theSignificantOrder == 1)
@@ -76,22 +89,21 @@ inline void Tangent(const int    theSignificantOrder,
     return;
   }
 
-  const double aRange = (theLast >= RealLast() || theFirst <= RealFirst()) ? 0.0 : theLast - theFirst;
+  const double aRange =
+    (theLast >= RealLast() || theFirst <= RealFirst()) ? 0.0 : theLast - theFirst;
   const double aDelta = std::max(aRange * 1.0e-3, THE_MIN_STEP);
   const double aOther = (theParam - theFirst < aDelta) ? theParam + aDelta : theParam - aDelta;
 
-  using Pnt = std::decay_t<decltype(theValueAt(theParam))>;
-  const Pnt aPntBefore = theValueAt(std::min(theParam, aOther));
-  const Pnt aPntAfter  = theValueAt(std::max(theParam, aOther));
-  const auto aResult   = theEvalWithPoints(aPntBefore, aPntAfter);
+  using Pnt             = std::decay_t<decltype(theValueAt(theParam))>;
+  const Pnt  aPntBefore = theValueAt(std::min(theParam, aOther));
+  const Pnt  aPntAfter  = theValueAt(std::max(theParam, aOther));
+  const auto aResult    = theEvalWithPoints(aPntBefore, aPntAfter);
   LProp_NotDefined_Raise_if(!aResult.IsDefined, theMessage);
   theDir = aResult.Direction;
 }
 
 template <class Result, class Dir, class Eval>
-inline bool IsNormalDefined(Eval&&       theEval,
-                            Dir&         theNormal,
-                            LProp_Status& theStatus)
+inline bool IsNormalDefined(Eval&& theEval, Dir& theNormal, LProp_Status& theStatus)
 {
   if (theStatus == LProp_Undefined)
   {
@@ -114,19 +126,23 @@ inline bool IsNormalDefined(Eval&&       theEval,
   return true;
 }
 
-template <class CurvatureResult, class MeanGaussianResult, class Dir, class EvalCurv, class EvalMean>
-inline bool IsCurvatureDefined(const int   theContinuity,
-                               const bool  theHasNormal,
-                               const bool  theHasTangentU,
-                               const bool  theHasTangentV,
-                               EvalCurv&&  theEvalCurv,
-                               EvalMean&&  theEvalMean,
-                               double&     theMinCurv,
-                               double&     theMaxCurv,
-                               Dir&        theDirMinCurv,
-                               Dir&        theDirMaxCurv,
-                               double&     theMeanCurv,
-                               double&     theGausCurv,
+template <class CurvatureResult,
+          class MeanGaussianResult,
+          class Dir,
+          class EvalCurv,
+          class EvalMean>
+inline bool IsCurvatureDefined(const int     theContinuity,
+                               const bool    theHasNormal,
+                               const bool    theHasTangentU,
+                               const bool    theHasTangentV,
+                               EvalCurv&&    theEvalCurv,
+                               EvalMean&&    theEvalMean,
+                               double&       theMinCurv,
+                               double&       theMaxCurv,
+                               Dir&          theDirMinCurv,
+                               Dir&          theDirMaxCurv,
+                               double&       theMeanCurv,
+                               double&       theGausCurv,
                                LProp_Status& theStatus)
 {
   if (theStatus == LProp_Undefined)
@@ -143,21 +159,21 @@ inline bool IsCurvatureDefined(const int   theContinuity,
     return false;
   }
 
-  const CurvatureResult aCurvatures   = theEvalCurv();
-  const MeanGaussianResult aMeanGauss = theEvalMean();
+  const CurvatureResult    aCurvatures = theEvalCurv();
+  const MeanGaussianResult aMeanGauss  = theEvalMean();
   if (!aCurvatures.IsDefined || !aMeanGauss.IsDefined)
   {
     theStatus = LProp_Undefined;
     return false;
   }
 
-  theMinCurv     = aCurvatures.MinCurvature;
-  theMaxCurv     = aCurvatures.MaxCurvature;
-  theDirMinCurv  = aCurvatures.MinDirection;
-  theDirMaxCurv  = aCurvatures.MaxDirection;
-  theMeanCurv    = aMeanGauss.MeanCurvature;
-  theGausCurv    = aMeanGauss.GaussianCurvature;
-  theStatus      = LProp_Computed;
+  theMinCurv    = aCurvatures.MinCurvature;
+  theMaxCurv    = aCurvatures.MaxCurvature;
+  theDirMinCurv = aCurvatures.MinDirection;
+  theDirMaxCurv = aCurvatures.MaxDirection;
+  theMeanCurv   = aMeanGauss.MeanCurvature;
+  theGausCurv   = aMeanGauss.GaussianCurvature;
+  theStatus     = LProp_Computed;
   return true;
 }
 } // namespace LProp_SLPropsCompat

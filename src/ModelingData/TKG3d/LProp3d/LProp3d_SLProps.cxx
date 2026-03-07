@@ -253,7 +253,12 @@ void LProp3d_SLProps::TangentU(gp_Dir& D)
     mySurf->LastUParameter(),
     [&]() { return gp_Dir(D1U()); },
     [&](const gp_Pnt& thePntBefore, const gp_Pnt& thePntAfter) {
-      return GeomProp::ComputeTangent(D1U(), D2U(), gp_Vec(0.0, 0.0, 0.0), myLinTol, thePntBefore, thePntAfter);
+      return GeomProp::ComputeTangent(D1U(),
+                                      D2U(),
+                                      gp_Vec(0.0, 0.0, 0.0),
+                                      myLinTol,
+                                      thePntBefore,
+                                      thePntAfter);
     },
     [&](const double theParam) { return mySurf->Value(theParam, myV); },
     D,
@@ -288,7 +293,12 @@ void LProp3d_SLProps::TangentV(gp_Dir& D)
     mySurf->LastVParameter(),
     [&]() { return gp_Dir(D1V()); },
     [&](const gp_Pnt& thePntBefore, const gp_Pnt& thePntAfter) {
-      return GeomProp::ComputeTangent(D1V(), D2V(), gp_Vec(0.0, 0.0, 0.0), myLinTol, thePntBefore, thePntAfter);
+      return GeomProp::ComputeTangent(D1V(),
+                                      D2V(),
+                                      gp_Vec(0.0, 0.0, 0.0),
+                                      myLinTol,
+                                      thePntBefore,
+                                      thePntAfter);
     },
     [&](const double theParam) { return mySurf->Value(myU, theParam); },
     D,
@@ -301,8 +311,9 @@ bool LProp3d_SLProps::IsNormalDefined()
 {
   return LProp_SLPropsCompat::IsNormalDefined<GeomProp::SurfaceNormalResult>(
     [&]() {
-      return hasGeomPropEvaluator(mySurfaceProp) ? mySurfaceProp->Normal(myU, myV, myLinTol)
-                                                 : GeomProp::ComputeSurfaceNormal(D1U(), D1V(), myLinTol);
+      return hasGeomPropEvaluator(mySurfaceProp)
+               ? mySurfaceProp->Normal(myU, myV, myLinTol)
+               : GeomProp::ComputeSurfaceNormal(D1U(), D1V(), myLinTol);
     },
     myNormal,
     myNormalStatus);

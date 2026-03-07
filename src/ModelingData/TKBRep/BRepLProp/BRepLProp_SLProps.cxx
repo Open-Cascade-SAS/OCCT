@@ -119,8 +119,8 @@ BRepLProp_SLProps::BRepLProp_SLProps(const int N, const double Resolution)
 
 void BRepLProp_SLProps::SetSurface(const BRepAdaptor_Surface& S)
 {
-  mySurf = S;
-  myCN   = surfaceContinuity(S);
+  mySurf                             = S;
+  myCN                               = surfaceContinuity(S);
   mySignificantFirstDerivativeOrderU = 0;
   mySignificantFirstDerivativeOrderV = 0;
   myUTangentStatus                   = LProp_Undecided;
@@ -260,7 +260,12 @@ void BRepLProp_SLProps::TangentU(gp_Dir& D)
     mySurf.LastUParameter(),
     [&]() { return gp_Dir(D1U()); },
     [&](const gp_Pnt& thePntBefore, const gp_Pnt& thePntAfter) {
-      return GeomProp::ComputeTangent(D1U(), D2U(), gp_Vec(0.0, 0.0, 0.0), myLinTol, thePntBefore, thePntAfter);
+      return GeomProp::ComputeTangent(D1U(),
+                                      D2U(),
+                                      gp_Vec(0.0, 0.0, 0.0),
+                                      myLinTol,
+                                      thePntBefore,
+                                      thePntAfter);
     },
     [&](const double theParam) { return mySurf.Value(theParam, myV); },
     D,
@@ -295,7 +300,12 @@ void BRepLProp_SLProps::TangentV(gp_Dir& D)
     mySurf.LastVParameter(),
     [&]() { return gp_Dir(D1V()); },
     [&](const gp_Pnt& thePntBefore, const gp_Pnt& thePntAfter) {
-      return GeomProp::ComputeTangent(D1V(), D2V(), gp_Vec(0.0, 0.0, 0.0), myLinTol, thePntBefore, thePntAfter);
+      return GeomProp::ComputeTangent(D1V(),
+                                      D2V(),
+                                      gp_Vec(0.0, 0.0, 0.0),
+                                      myLinTol,
+                                      thePntBefore,
+                                      thePntAfter);
     },
     [&](const double theParam) { return mySurf.Value(myU, theParam); },
     D,
@@ -334,7 +344,9 @@ bool BRepLProp_SLProps::IsCurvatureDefined()
     IsNormalDefined(),
     IsTangentUDefined(),
     IsTangentVDefined(),
-    [&]() { return GeomProp::ComputeSurfaceCurvatures(D1U(), D1V(), D2U(), D2V(), DUV(), myLinTol); },
+    [&]() {
+      return GeomProp::ComputeSurfaceCurvatures(D1U(), D1V(), D2U(), D2V(), DUV(), myLinTol);
+    },
     [&]() { return GeomProp::ComputeMeanGaussian(D1U(), D1V(), D2U(), D2V(), DUV(), myLinTol); },
     myMinCurv,
     myMaxCurv,

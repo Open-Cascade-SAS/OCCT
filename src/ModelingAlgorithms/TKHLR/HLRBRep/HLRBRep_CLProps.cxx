@@ -40,9 +40,7 @@ HLRBRep_CLProps::HLRBRep_CLProps(const HLRBRep_Curve*& C,
 
 //==================================================================================================
 
-HLRBRep_CLProps::HLRBRep_CLProps(const HLRBRep_Curve*& C,
-                                 const int             N,
-                                 const double          Resolution)
+HLRBRep_CLProps::HLRBRep_CLProps(const HLRBRep_Curve*& C, const int N, const double Resolution)
     : myCurve(C),
       myU(RealLast()),
       myDerOrder(N),
