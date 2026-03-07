@@ -15,6 +15,8 @@
 
 #include <MathRoot_Multiple.hxx>
 #include <MathUtils_FunctorScalar.hxx>
+#include <math_FunctionRoots.hxx>
+#include <math_FunctionWithDerivative.hxx>
 
 #include <cmath>
 
@@ -230,12 +232,12 @@ TEST(MathRoot_Multiple, FindAllRootsWithDerivative_SineFunction)
 }
 
 //=================================================================================================
-// Comparison with Legacy math_FunctionRoots
+// Comparison with math_FunctionRoots
 //=================================================================================================
 
-TEST(MathRoot_Multiple, CompareWithLegacy_Polynomial)
+TEST(MathRoot_Multiple, CompareWithReference_Polynomial)
 {
-  // Compare results with legacy math_FunctionRoots behavior
+  // Compare results with math_FunctionRoots behavior
   // f(x) = x^3 - 6x^2 + 11x - 6 = (x-1)(x-2)(x-3)
   MathUtils::Polynomial aFunc({-6.0, 11.0, -6.0, 1.0});
 
@@ -257,7 +259,7 @@ TEST(MathRoot_Multiple, CompareWithLegacy_Polynomial)
   }
 }
 
-TEST(MathRoot_Multiple, CompareWithLegacy_HigherDegree)
+TEST(MathRoot_Multiple, CompareWithReference_HigherDegree)
 {
   // f(x) = x^4 - 10x^2 + 9 = (x^2-1)(x^2-9) = (x-1)(x+1)(x-3)(x+3)
   // Roots at -3, -1, 1, 3
@@ -274,6 +276,77 @@ TEST(MathRoot_Multiple, CompareWithLegacy_HigherDegree)
   EXPECT_NEAR(aResult.Roots[1], -1.0, THE_TOLERANCE);
   EXPECT_NEAR(aResult.Roots[2], 1.0, THE_TOLERANCE);
   EXPECT_NEAR(aResult.Roots[3], 3.0, THE_TOLERANCE);
+}
+
+TEST(MathRoot_Multiple, CompareWithReference_ClusteredTangentialRootsSparseSampling)
+{
+  struct ClusteredTangentialReference : public math_FunctionWithDerivative
+  {
+    bool Value(const double theX, double& theF) override
+    {
+      const double aD1 = theX - 1.003;
+      const double aD2 = theX - 1.007;
+      theF             = aD1 * aD1 * aD2 * aD2;
+      return true;
+    }
+
+    bool Derivative(const double theX, double& theD) override
+    {
+      const double aD1 = theX - 1.003;
+      const double aD2 = theX - 1.007;
+      theD             = 2.0 * aD1 * aD2 * (aD1 + aD2);
+      return true;
+    }
+
+    bool Values(const double theX, double& theF, double& theD) override
+    {
+      Value(theX, theF);
+      Derivative(theX, theD);
+      return true;
+    }
+  };
+
+  struct ClusteredTangentialCallable
+  {
+    bool Value(const double theX, double& theF) const
+    {
+      const double aD1 = theX - 1.003;
+      const double aD2 = theX - 1.007;
+      theF             = aD1 * aD1 * aD2 * aD2;
+      return true;
+    }
+
+    bool Values(const double theX, double& theF, double& theD) const
+    {
+      const double aD1 = theX - 1.003;
+      const double aD2 = theX - 1.007;
+      theF             = aD1 * aD1 * aD2 * aD2;
+      theD             = 2.0 * aD1 * aD2 * (aD1 + aD2);
+      return true;
+    }
+  };
+
+  ClusteredTangentialReference aReferenceFunc;
+  ClusteredTangentialCallable  aCallableFunc;
+
+  math_FunctionRoots aReferenceRoots(aReferenceFunc, 0.99, 1.02, 4, 1.0e-8, 1.0e-12, 1.0e-12);
+  ASSERT_TRUE(aReferenceRoots.IsDone());
+  ASSERT_FALSE(aReferenceRoots.IsAllNull());
+  ASSERT_EQ(aReferenceRoots.NbSolutions(), 2);
+
+  MathRoot::MultipleConfig aConfig;
+  aConfig.NbSamples     = 4;
+  aConfig.XTolerance    = 1.0e-8;
+  aConfig.FTolerance    = 1.0e-12;
+  aConfig.NullTolerance = 1.0e-12;
+
+  auto aResult = MathRoot::FindAllRootsWithDerivative(aCallableFunc, 0.99, 1.02, aConfig);
+  ASSERT_TRUE(aResult.IsDone());
+  ASSERT_FALSE(aResult.IsAllNull);
+  ASSERT_EQ(aResult.NbRoots(), 2u);
+
+  EXPECT_NEAR(aResult.Roots[0], aReferenceRoots.Value(1), 1.0e-8);
+  EXPECT_NEAR(aResult.Roots[1], aReferenceRoots.Value(2), 1.0e-8);
 }
 
 TEST(MathRoot_Multiple, FindAllRoots_ConvenienceOverload)

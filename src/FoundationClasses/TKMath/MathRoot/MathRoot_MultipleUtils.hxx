@@ -108,6 +108,13 @@ inline void AddRoot(MultipleResult& theResult, double theEpsX, double theRoot, d
   theResult.Values.Append(theValue);
 }
 
+//! Compute the minimal X tolerance compatible with the established multi-root behavior.
+inline double EffectiveXTolerance(double theLower, double theUpper, double theXTolerance)
+{
+  const double aMinEpsX = 1.0e-10 * (std::abs(theLower) + std::abs(theUpper));
+  return std::max(theXTolerance, aMinEpsX);
+}
+
 // ============================================================================
 //  Functor adapters for Value-only interface
 // ============================================================================
@@ -175,59 +182,737 @@ struct MultipleGetRootValueFn
 //  Functor adapters for Values (with derivative) interface
 // ============================================================================
 
-//! Samples a function with derivative and stores f(x)-offset and f'(x) into math_Vectors.
+//! Wrapper exposing a function derivative through the Value() contract required by Brent.
 //! @tparam Function type with Values(double theX, double& theF, double& theDF) method
 template <typename Function>
-struct MultipleSampleDerivFn
-{
-  Function&    myFunc;
-  math_Vector& myFValues;
-  math_Vector& myDFValues;
-  const double myOffset;
-
-  bool operator()(int theIndex, double theX) const
-  {
-    double aF = 0.0, aDF = 0.0;
-    if (!myFunc.Values(theX, aF, aDF))
-      return false;
-    myFValues(theIndex)  = aF - myOffset;
-    myDFValues(theIndex) = aDF;
-    return true;
-  }
-};
-
-//! Brent wrapper that adapts a Values (with derivative) function for offset root finding.
-//! @tparam Function type with Values(double theX, double& theF, double& theDF) method
-template <typename Function>
-struct MultipleBrentDerivWrapper
+struct MultipleDerivativeValueWrapper
 {
   Function& myFunc;
-  double    myOffset;
 
   bool Value(double theX, double& theY) const
   {
-    double aDF = 0.0;
-    if (!myFunc.Values(theX, theY, aDF))
-      return false;
-    theY -= myOffset;
-    return true;
+    double aF = 0.0;
+    return myFunc.Values(theX, aF, theY);
   }
 };
 
-//! Evaluates original (non-offset) function value at a root point via Values interface.
+//! Evaluate the original function value.
+//! @tparam Function type with Value(double theX, double& theF) method
+template <typename Function>
+bool EvaluateValue(Function& theFunc, double theX, double& theValue)
+{
+  return theFunc.Value(theX, theValue);
+}
+
+//! Evaluate the function value shifted by the requested offset.
+//! @tparam Function type with Value(double theX, double& theF) method
+template <typename Function>
+bool EvaluateShiftedValue(Function& theFunc, double theX, double theOffset, double& theValue)
+{
+  if (!theFunc.Value(theX, theValue))
+  {
+    return false;
+  }
+
+  theValue -= theOffset;
+  return true;
+}
+
+//! Evaluate the function value and derivative, then shift the value by the requested offset.
 //! @tparam Function type with Values(double theX, double& theF, double& theDF) method
 template <typename Function>
-struct MultipleGetRootDerivFn
+bool EvaluateShiftedValues(Function& theFunc,
+                           double    theX,
+                           double    theOffset,
+                           double&   theValue,
+                           double&   theDerivative)
 {
-  Function& myFunc;
-
-  double operator()(double theX) const
+  if (!theFunc.Values(theX, theValue, theDerivative))
   {
-    double aF = 0.0, aDF = 0.0;
-    myFunc.Values(theX, aF, aDF);
-    return aF;
+    return false;
   }
-};
+
+  theValue -= theOffset;
+  return true;
+}
+
+//! Refine a bracketed sign change using the same Brent/Newton sequence as math_FunctionRoots.
+//! @tparam Function type with Value() and Values() methods
+template <typename Function>
+bool RefineBracketedRoot(Function&       theFunc,
+                         double          theOffset,
+                         double          theX1,
+                         double          theY1,
+                         double          theX2,
+                         double          theY2,
+                         double          theTolerance,
+                         double          theEpsX,
+                         MultipleResult& theResult)
+{
+  constexpr int    THE_MAX_ITERATIONS = 100;
+  constexpr double THE_EPS2           = 2.0e-14;
+  constexpr double THE_DERIV_EPS      = 1.0e-10;
+
+  int    anIter = 0;
+  double aTol2  = 0.5 * theTolerance;
+  double aA     = theX1;
+  double aB     = theX2;
+  double aC     = theX2;
+  double aD     = 0.0;
+  double anE    = 0.0;
+  double aFa    = theY1;
+  double aFb    = theY2;
+  double aFc    = theY2;
+
+  for (anIter = 1; anIter <= THE_MAX_ITERATIONS; ++anIter)
+  {
+    if ((aFb > 0.0 && aFc > 0.0) || (aFb < 0.0 && aFc < 0.0))
+    {
+      aC  = aA;
+      aFc = aFa;
+      anE = aD = aB - aA;
+    }
+
+    if (std::abs(aFc) < std::abs(aFb))
+    {
+      const double aPrevA  = aA;
+      const double aPrevFa = aFa;
+      aA                   = aB;
+      aB                   = aC;
+      aC                   = aPrevA;
+      aFa                  = aFb;
+      aFb                  = aFc;
+      aFc                  = aPrevFa;
+    }
+
+    const double aTol1 = THE_EPS2 * std::abs(aB) + aTol2;
+    const double aXm   = 0.5 * (aC - aB);
+    if (std::abs(aXm) < aTol1 || aFb == 0.0)
+    {
+      double aNewtonX = aB;
+      for (int aNewtonIter = 0; aNewtonIter < 5; ++aNewtonIter)
+      {
+        double aY    = 0.0;
+        double aDfdx = 0.0;
+        if (!EvaluateShiftedValues(theFunc, aNewtonX, theOffset, aY, aDfdx))
+        {
+          return false;
+        }
+
+        if (std::abs(aDfdx) <= THE_DERIV_EPS)
+        {
+          break;
+        }
+
+        aNewtonX -= aY / aDfdx;
+        if (aNewtonX < theX1 || aNewtonX > theX2)
+        {
+          break;
+        }
+
+        if (!EvaluateShiftedValue(theFunc, aNewtonX, theOffset, aY))
+        {
+          return false;
+        }
+
+        if (std::abs(aY) < std::abs(aFb))
+        {
+          aB  = aNewtonX;
+          aFb = aY;
+        }
+      }
+
+      double aRootValue = 0.0;
+      if (!EvaluateValue(theFunc, aB, aRootValue))
+      {
+        return false;
+      }
+
+      theResult.NbIterations += static_cast<size_t>(anIter);
+      AddRoot(theResult, theEpsX, aB, aRootValue);
+      return true;
+    }
+
+    if (std::abs(anE) >= aTol1 && std::abs(aFa) > std::abs(aFb))
+    {
+      double       aP = 0.0;
+      double       aQ = 0.0;
+      const double aS = aFb / aFa;
+      if (aA == aC)
+      {
+        aP = 2.0 * aXm * aS;
+        aQ = 1.0 - aS;
+      }
+      else
+      {
+        aQ              = aFa / aFc;
+        const double aR = aFb / aFc;
+        aP              = aS * (2.0 * aXm * aQ * (aQ - aR) - (aB - aA) * (aR - 1.0));
+        aQ              = (aQ - 1.0) * (aR - 1.0) * (aS - 1.0);
+      }
+
+      if (aP > 0.0)
+      {
+        aQ = -aQ;
+      }
+
+      aP                 = std::abs(aP);
+      const double aMin1 = 3.0 * aXm * aQ - std::abs(aTol1 * aQ);
+      const double aMin2 = std::abs(anE * aQ);
+      if (2.0 * aP < std::min(aMin1, aMin2))
+      {
+        anE = aD;
+        aD  = aP / aQ;
+      }
+      else
+      {
+        aD  = aXm;
+        anE = aD;
+      }
+    }
+    else
+    {
+      aD  = aXm;
+      anE = aD;
+    }
+
+    aA  = aB;
+    aFa = aFb;
+    if (std::abs(aD) > aTol1)
+    {
+      aB += aD;
+    }
+    else
+    {
+      aB += (aXm >= 0.0) ? std::abs(aTol1) : -std::abs(aTol1);
+    }
+
+    if (!EvaluateShiftedValue(theFunc, aB, theOffset, aFb))
+    {
+      return false;
+    }
+  }
+
+  theResult.NbIterations += THE_MAX_ITERATIONS;
+  return true;
+}
+
+//! Derivative-aware implementation mirroring the proven math_FunctionRoots heuristics
+//! while operating on the modern callable-based MathRoot API.
+//! @tparam Function type with Value() and Values() methods
+template <typename Function>
+MultipleResult FindAllRootsWithDerivativeImpl(Function&             theFunc,
+                                              double                theLower,
+                                              double                theUpper,
+                                              const MultipleConfig& theConfig)
+{
+  MultipleResult aResult;
+  aResult.Status = MathUtils::Status::OK;
+
+  const double aLower         = std::min(theLower, theUpper);
+  const double aUpper         = std::max(theLower, theUpper);
+  const int    aNbSamples     = std::max(2 * theConfig.NbSamples, 20);
+  const double aDx            = (aUpper - aLower) / aNbSamples;
+  const double aEpsX          = EffectiveXTolerance(aLower, aUpper, theConfig.XTolerance);
+  const double aRawXTolerance = theConfig.XTolerance;
+  const double aMajorDx       = 5.0 * aDx;
+
+  math_Vector aValues(0, aNbSamples);
+  double      aX = aLower;
+  for (int i = 0; i <= aNbSamples; ++i, aX += aDx)
+  {
+    if (aX > aUpper)
+    {
+      aX = aUpper;
+    }
+
+    if (!EvaluateShiftedValue(theFunc, aX, theConfig.Offset, aValues(i)))
+    {
+      aResult.Status = MathUtils::Status::NumericalError;
+      return aResult;
+    }
+  }
+
+  aResult.IsAllNull = true;
+  for (int i = 0; i <= aNbSamples; ++i)
+  {
+    if (aValues(i) > theConfig.NullTolerance || aValues(i) < -theConfig.NullTolerance)
+    {
+      aResult.IsAllNull = false;
+      break;
+    }
+  }
+  if (aResult.IsAllNull)
+  {
+    return aResult;
+  }
+
+  const double aTolerance = aEpsX;
+  double       aX1        = aLower;
+  for (int i = 0, anIp1 = 1; i < aNbSamples; ++i, ++anIp1, aX1 += aDx)
+  {
+    double aX2 = aX1 + aDx;
+    if (aX2 > aUpper)
+    {
+      aX2 = aUpper;
+    }
+
+    if ((aValues(i) < 0.0 && aValues(anIp1) > 0.0) || (aValues(i) > 0.0 && aValues(anIp1) < 0.0))
+    {
+      if (!RefineBracketedRoot(theFunc,
+                               theConfig.Offset,
+                               aX1,
+                               aValues(i),
+                               aX2,
+                               aValues(anIp1),
+                               aTolerance,
+                               aEpsX,
+                               aResult))
+      {
+        aResult.Status = MathUtils::Status::NumericalError;
+        return aResult;
+      }
+    }
+  }
+
+  for (int i = 0; i <= aNbSamples; ++i)
+  {
+    if (aValues(i) != 0.0)
+    {
+      continue;
+    }
+
+    const double aZeroX  = std::min(aLower + i * aDx, aUpper);
+    double       aLeftX  = aZeroX + 0.5 * aDx;
+    double       aRightX = aLeftX;
+    aLeftX               = aZeroX + 0.5 * aDx;
+    aRightX              = aZeroX + 0.5 * aDx;
+    if (aLeftX < aLower)
+    {
+      aLeftX = aLower;
+    }
+    if (aLeftX > aUpper)
+    {
+      aLeftX = aUpper;
+    }
+    if (aRightX < aLower)
+    {
+      aRightX = aLower;
+    }
+    if (aRightX > aUpper)
+    {
+      aRightX = aUpper;
+    }
+
+    double aLeftY  = 0.0;
+    double aRightY = 0.0;
+    if (!EvaluateShiftedValue(theFunc, aLeftX, theConfig.Offset, aLeftY)
+        || !EvaluateShiftedValue(theFunc, aRightX, theConfig.Offset, aRightY))
+    {
+      aResult.Status = MathUtils::Status::NumericalError;
+      return aResult;
+    }
+
+    if (aLeftY * aRightY < 0.0)
+    {
+      if (!RefineBracketedRoot(theFunc,
+                               theConfig.Offset,
+                               aLeftX,
+                               aLeftY,
+                               aRightX,
+                               aRightY,
+                               aTolerance,
+                               aEpsX,
+                               aResult))
+      {
+        aResult.Status = MathUtils::Status::NumericalError;
+        return aResult;
+      }
+    }
+    else if (aLeftY != 0.0 || aRightY != 0.0)
+    {
+      double aRootValue = 0.0;
+      if (!EvaluateValue(theFunc, aZeroX, aRootValue))
+      {
+        aResult.Status = MathUtils::Status::NumericalError;
+        return aResult;
+      }
+      AddRoot(aResult, aEpsX, aZeroX, aRootValue);
+    }
+  }
+
+  if (aValues(0) <= theConfig.FTolerance && aValues(0) >= -theConfig.FTolerance)
+  {
+    double aRootValue = 0.0;
+    if (!EvaluateValue(theFunc, aLower, aRootValue))
+    {
+      aResult.Status = MathUtils::Status::NumericalError;
+      return aResult;
+    }
+    AddRoot(aResult, aEpsX, aLower, aRootValue);
+  }
+
+  if (aValues(aNbSamples) <= theConfig.FTolerance && aValues(aNbSamples) >= -theConfig.FTolerance)
+  {
+    double aRootValue = 0.0;
+    if (!EvaluateValue(theFunc, aUpper, aRootValue))
+    {
+      aResult.Status = MathUtils::Status::NumericalError;
+      return aResult;
+    }
+    AddRoot(aResult, aEpsX, aUpper, aRootValue);
+  }
+
+  int    anIm1 = 0;
+  int    anIp1 = 2;
+  double aMidX = aLower + aDx;
+  for (int i = 1; i < aNbSamples; ++i, ++anIm1, ++anIp1, aMidX += aDx)
+  {
+    if (aMidX > aUpper)
+    {
+      aMidX = aUpper;
+    }
+
+    bool isRediscretize = false;
+    if (aValues(i) > 0.0)
+    {
+      if (aValues(anIm1) > aValues(i) && aValues(anIp1) > aValues(i))
+      {
+        double aProbeX  = std::max(aLower, aMidX - aDx);
+        double aProbeY  = 0.0;
+        double aProbeDy = 0.0;
+        if (!EvaluateShiftedValues(theFunc, aProbeX, theConfig.Offset, aProbeY, aProbeDy))
+        {
+          aResult.Status = MathUtils::Status::NumericalError;
+          return aResult;
+        }
+
+        if (std::abs(aProbeDy) > 1.0e-10)
+        {
+          const double aStep = aProbeY / aProbeDy;
+          if (aStep < aMajorDx && aStep > -aMajorDx)
+          {
+            isRediscretize = true;
+          }
+        }
+
+        if (!isRediscretize)
+        {
+          aProbeX = std::min(aUpper, aMidX + aDx);
+          if (!EvaluateShiftedValues(theFunc, aProbeX, theConfig.Offset, aProbeY, aProbeDy))
+          {
+            aResult.Status = MathUtils::Status::NumericalError;
+            return aResult;
+          }
+
+          if (std::abs(aProbeDy) > 1.0e-10)
+          {
+            const double aStep = aProbeY / aProbeDy;
+            if (aStep < aMajorDx && aStep > -aMajorDx)
+            {
+              isRediscretize = true;
+            }
+          }
+        }
+      }
+    }
+    else if (aValues(i) < 0.0)
+    {
+      if (aValues(anIm1) < aValues(i) && aValues(anIp1) < aValues(i))
+      {
+        double aProbeX  = std::max(aLower, aMidX - aDx);
+        double aProbeY  = 0.0;
+        double aProbeDy = 0.0;
+        if (!EvaluateShiftedValues(theFunc, aProbeX, theConfig.Offset, aProbeY, aProbeDy))
+        {
+          aResult.Status = MathUtils::Status::NumericalError;
+          return aResult;
+        }
+
+        if (std::abs(aProbeDy) > 1.0e-10)
+        {
+          const double aStep = aProbeY / aProbeDy;
+          if (aStep < aMajorDx && aStep > -aMajorDx)
+          {
+            isRediscretize = true;
+          }
+        }
+
+        if (!isRediscretize)
+        {
+          aProbeX = std::max(aLower, aMidX - aDx);
+          if (!EvaluateShiftedValues(theFunc, aProbeX, theConfig.Offset, aProbeY, aProbeDy))
+          {
+            aResult.Status = MathUtils::Status::NumericalError;
+            return aResult;
+          }
+
+          if (std::abs(aProbeDy) > 1.0e-10)
+          {
+            const double aStep = aProbeY / aProbeDy;
+            if (aStep < aMajorDx && aStep > -aMajorDx)
+            {
+              isRediscretize = true;
+            }
+          }
+        }
+      }
+    }
+
+    if (!isRediscretize)
+    {
+      continue;
+    }
+
+    double aX0      = std::max(aLower, aMidX - aDx);
+    double aX3      = std::min(aUpper, aMidX + aDx);
+    double aRoot1   = 0.0;
+    double aRoot2   = 0.0;
+    double aVal1    = 0.0;
+    double aVal2    = 0.0;
+    double aDer1    = 0.0;
+    double aDer2    = 0.0;
+    bool   hasRoot1 = false;
+    bool   hasRoot2 = false;
+
+    MultipleDerivativeValueWrapper<Function> aDerivativeWrapper{theFunc};
+    MathUtils::Config                        aDerivativeConfig;
+    aDerivativeConfig.XTolerance    = aRawXTolerance;
+    aDerivativeConfig.FTolerance    = 0.0;
+    aDerivativeConfig.MaxIterations = theConfig.MaxIterations;
+
+    auto aDerivativeRoot = Brent(aDerivativeWrapper, aX0, aX3, aDerivativeConfig);
+    aResult.NbIterations += aDerivativeRoot.NbIterations;
+    if (aDerivativeRoot.IsDone() && aDerivativeRoot.Root.has_value())
+    {
+      aRoot1                = *aDerivativeRoot.Root;
+      double aOriginalValue = 0.0;
+      if (!EvaluateValue(theFunc, aRoot1, aOriginalValue))
+      {
+        aResult.Status = MathUtils::Status::NumericalError;
+        return aResult;
+      }
+      aVal1 = std::abs(aOriginalValue - theConfig.Offset);
+      if (aVal1 < theConfig.FTolerance)
+      {
+        hasRoot1 = true;
+        if (!EvaluateShiftedValues(theFunc, aRoot1, theConfig.Offset, aOriginalValue, aDer1))
+        {
+          aResult.Status = MathUtils::Status::NumericalError;
+          return aResult;
+        }
+      }
+    }
+
+    double           aXProbe1         = 0.0;
+    double           aXProbe2         = 0.0;
+    constexpr double THE_GOLDEN_RATIO = 0.61803399;
+    constexpr double THE_GOLDEN_COMP  = 1.0 - THE_GOLDEN_RATIO;
+    const double     aTolCR           = aEpsX * 10.0;
+    const double     aLocalTolX       = 0.001 * aEpsX;
+    double           aF0              = aValues(anIm1);
+    double           aF3              = aValues(anIp1);
+    const bool       isSearchMinimum  = (aF0 > 0.0);
+
+    if (std::abs(aX3 - aMidX) > std::abs(aX0 - aMidX))
+    {
+      aXProbe1 = aMidX;
+      aXProbe2 = aMidX + THE_GOLDEN_COMP * (aX3 - aMidX);
+    }
+    else
+    {
+      aXProbe2 = aMidX;
+      aXProbe1 = aMidX - THE_GOLDEN_COMP * (aMidX - aX0);
+    }
+
+    double aF1 = 0.0;
+    double aF2 = 0.0;
+    if (!EvaluateShiftedValue(theFunc, aXProbe1, theConfig.Offset, aF1)
+        || !EvaluateShiftedValue(theFunc, aXProbe2, theConfig.Offset, aF2))
+    {
+      aResult.Status = MathUtils::Status::NumericalError;
+      return aResult;
+    }
+
+    while (std::abs(aX3 - aX0) > aTolCR * (std::abs(aXProbe1) + std::abs(aXProbe2))
+           && std::abs(aXProbe1 - aXProbe2) > aLocalTolX)
+    {
+      if (isSearchMinimum)
+      {
+        if (aF2 < aF1)
+        {
+          aX0      = aXProbe1;
+          aXProbe1 = aXProbe2;
+          aXProbe2 = THE_GOLDEN_RATIO * aXProbe1 + THE_GOLDEN_COMP * aX3;
+          aF0      = aF1;
+          aF1      = aF2;
+          if (!EvaluateShiftedValue(theFunc, aXProbe2, theConfig.Offset, aF2))
+          {
+            aResult.Status = MathUtils::Status::NumericalError;
+            return aResult;
+          }
+        }
+        else
+        {
+          aX3      = aXProbe2;
+          aXProbe2 = aXProbe1;
+          aXProbe1 = THE_GOLDEN_RATIO * aXProbe2 + THE_GOLDEN_COMP * aX0;
+          aF3      = aF2;
+          aF2      = aF1;
+          if (!EvaluateShiftedValue(theFunc, aXProbe1, theConfig.Offset, aF1))
+          {
+            aResult.Status = MathUtils::Status::NumericalError;
+            return aResult;
+          }
+        }
+      }
+      else
+      {
+        if (aF2 > aF1)
+        {
+          aX0      = aXProbe1;
+          aXProbe1 = aXProbe2;
+          aXProbe2 = THE_GOLDEN_RATIO * aXProbe1 + THE_GOLDEN_COMP * aX3;
+          aF0      = aF1;
+          aF1      = aF2;
+          if (!EvaluateShiftedValue(theFunc, aXProbe2, theConfig.Offset, aF2))
+          {
+            aResult.Status = MathUtils::Status::NumericalError;
+            return aResult;
+          }
+        }
+        else
+        {
+          aX3      = aXProbe2;
+          aXProbe2 = aXProbe1;
+          aXProbe1 = THE_GOLDEN_RATIO * aXProbe2 + THE_GOLDEN_COMP * aX0;
+          aF3      = aF2;
+          aF2      = aF1;
+          if (!EvaluateShiftedValue(theFunc, aXProbe1, theConfig.Offset, aF1))
+          {
+            aResult.Status = MathUtils::Status::NumericalError;
+            return aResult;
+          }
+        }
+      }
+
+      if (aF1 * aF0 < 0.0)
+      {
+        if (!RefineBracketedRoot(theFunc,
+                                 theConfig.Offset,
+                                 aX0,
+                                 aF0,
+                                 aXProbe1,
+                                 aF1,
+                                 aTolerance,
+                                 aEpsX,
+                                 aResult))
+        {
+          aResult.Status = MathUtils::Status::NumericalError;
+          return aResult;
+        }
+      }
+
+      if (aF2 * aF3 < 0.0)
+      {
+        if (!RefineBracketedRoot(theFunc,
+                                 theConfig.Offset,
+                                 aXProbe2,
+                                 aF2,
+                                 aX3,
+                                 aF3,
+                                 aTolerance,
+                                 aEpsX,
+                                 aResult))
+        {
+          aResult.Status = MathUtils::Status::NumericalError;
+          return aResult;
+        }
+      }
+    }
+
+    if ((isSearchMinimum && aF1 < aF2) || (!isSearchMinimum && aF1 > aF2))
+    {
+      if (std::abs(aF1) < theConfig.FTolerance)
+      {
+        hasRoot2 = true;
+        aRoot2   = aXProbe1;
+        aVal2    = std::abs(aF1);
+      }
+    }
+    else if (std::abs(aF2) < theConfig.FTolerance)
+    {
+      hasRoot2 = true;
+      aRoot2   = aXProbe2;
+      aVal2    = std::abs(aF2);
+    }
+
+    if (hasRoot1 && hasRoot2)
+    {
+      if (aVal2 - aVal1 > theConfig.FTolerance)
+      {
+        double aRootValue = 0.0;
+        if (!EvaluateValue(theFunc, aRoot1, aRootValue))
+        {
+          aResult.Status = MathUtils::Status::NumericalError;
+          return aResult;
+        }
+        AddRoot(aResult, aEpsX, aRoot1, aRootValue);
+      }
+      else if (aVal1 - aVal2 > theConfig.FTolerance)
+      {
+        double aRootValue = 0.0;
+        if (!EvaluateValue(theFunc, aRoot2, aRootValue))
+        {
+          aResult.Status = MathUtils::Status::NumericalError;
+          return aResult;
+        }
+        AddRoot(aResult, aEpsX, aRoot2, aRootValue);
+      }
+      else
+      {
+        double aShiftedValue = 0.0;
+        if (!EvaluateShiftedValues(theFunc, aRoot2, theConfig.Offset, aShiftedValue, aDer2))
+        {
+          aResult.Status = MathUtils::Status::NumericalError;
+          return aResult;
+        }
+
+        const double aChosenRoot = (std::abs(aDer1) < std::abs(aDer2)) ? aRoot1 : aRoot2;
+        double       aRootValue  = 0.0;
+        if (!EvaluateValue(theFunc, aChosenRoot, aRootValue))
+        {
+          aResult.Status = MathUtils::Status::NumericalError;
+          return aResult;
+        }
+        AddRoot(aResult, aEpsX, aChosenRoot, aRootValue);
+      }
+    }
+    else if (hasRoot1)
+    {
+      double aRootValue = 0.0;
+      if (!EvaluateValue(theFunc, aRoot1, aRootValue))
+      {
+        aResult.Status = MathUtils::Status::NumericalError;
+        return aResult;
+      }
+      AddRoot(aResult, aEpsX, aRoot1, aRootValue);
+    }
+    else if (hasRoot2)
+    {
+      double aRootValue = 0.0;
+      if (!EvaluateValue(theFunc, aRoot2, aRootValue))
+      {
+        aResult.Status = MathUtils::Status::NumericalError;
+        return aResult;
+      }
+      AddRoot(aResult, aEpsX, aRoot2, aRootValue);
+    }
+  }
+
+  SortRoots(aResult);
+  return aResult;
+}
 
 // ============================================================================
 //  Interval handlers
@@ -237,84 +922,6 @@ struct MultipleGetRootDerivFn
 struct MultipleNoExtraHandler
 {
   void operator()(int, double, double, double, double, MultipleResult&, double) const {}
-};
-
-//! Tangential root detection: finds extrema that touch zero without sign change.
-//! Uses derivative sign changes to locate potential minima/maxima, then bisects
-//! the derivative to check whether the function value is close enough to zero.
-//! @tparam Function type with Values(double theX, double& theF, double& theDF) method
-template <typename Function>
-struct MultipleTangentialHandler
-{
-  Function&          myFunc;
-  const math_Vector& myDFValues;
-  const double       myOffset;
-  const double       myFTolerance;
-
-  void operator()(int             theIndex,
-                  double          theX0,
-                  double          theX1,
-                  double          theF0,
-                  double          theF1,
-                  MultipleResult& theResult,
-                  double          theEpsX) const
-  {
-    if (theF0 > 0.0 && theF1 > 0.0)
-    {
-      // Potential minimum - check if derivative changes sign (negative to positive)
-      if (myDFValues(theIndex) < 0.0 && myDFValues(theIndex + 1) > 0.0)
-      {
-        findTangentialRoot(theX0, theX1, true, theResult, theEpsX);
-      }
-    }
-    else if (theF0 < 0.0 && theF1 < 0.0)
-    {
-      // Potential maximum - check if derivative changes sign (positive to negative)
-      if (myDFValues(theIndex) > 0.0 && myDFValues(theIndex + 1) < 0.0)
-      {
-        findTangentialRoot(theX0, theX1, false, theResult, theEpsX);
-      }
-    }
-  }
-
-private:
-  //! Bisects derivative to locate an extremum and checks if it touches zero.
-  //! @param theIsMinimum true for minimum (derivative negative->positive),
-  //!                     false for maximum (derivative positive->negative)
-  void findTangentialRoot(double          theX0,
-                          double          theX1,
-                          bool            theIsMinimum,
-                          MultipleResult& theResult,
-                          double          theEpsX) const
-  {
-    double aXL = theX0, aXR = theX1;
-    for (int anIter = 0; anIter < 20; ++anIter)
-    {
-      double aXM = 0.5 * (aXL + aXR);
-      double aFM = 0.0, aDFM = 0.0;
-      if (!myFunc.Values(aXM, aFM, aDFM))
-        break;
-      aFM -= myOffset;
-
-      // For minimum: derivative goes from negative to positive
-      // For maximum: derivative goes from positive to negative
-      const bool isMoveRight = theIsMinimum ? (aDFM < 0.0) : (aDFM > 0.0);
-      if (isMoveRight)
-      {
-        aXL = aXM;
-      }
-      else
-      {
-        aXR = aXM;
-      }
-
-      if (std::abs(aFM) < myFTolerance)
-      {
-        AddRoot(theResult, theEpsX, aXM, aFM + myOffset);
-        break;
-      }
-    }
-  }
 };
 
 // ============================================================================
@@ -351,12 +958,11 @@ MultipleResult FindAllRootsImpl(double                theLower,
   const double aUpper = std::max(theLower, theUpper);
 
   // Minimum samples
-  const int    aNbSamples = std::max(theConfig.NbSamples, 10);
+  const int    aNbSamples = std::max(2 * theConfig.NbSamples, 20);
   const double aDx        = (aUpper - aLower) / aNbSamples;
 
   // Ensure EpsX is not too small relative to interval
-  const double aMinEpsX = 1e-10 * (std::abs(aLower) + std::abs(aUpper));
-  const double aEpsX    = std::max(theConfig.XTolerance, aMinEpsX);
+  const double aEpsX = EffectiveXTolerance(aLower, aUpper, theConfig.XTolerance);
 
   // Sample function values
   math_Vector aXValues(0, aNbSamples);

@@ -46,7 +46,7 @@ MultipleResult FindAllRoots(Function&             theFunc,
                             double                theUpper,
                             const MultipleConfig& theConfig = MultipleConfig())
 {
-  const int   aNbSamples = std::max(theConfig.NbSamples, 10);
+  const int   aNbSamples = std::max(2 * theConfig.NbSamples, 20);
   math_Vector aSamples(0, aNbSamples);
 
   MultipleSampleValueFn<Function>     aSampleFn{theFunc, aSamples, theConfig.Offset};
@@ -81,27 +81,7 @@ MultipleResult FindAllRootsWithDerivative(Function&             theFunc,
                                           double                theUpper,
                                           const MultipleConfig& theConfig = MultipleConfig())
 {
-  const int   aNbSamples = std::max(theConfig.NbSamples, 10);
-  math_Vector aFValues(0, aNbSamples);
-  math_Vector aDFValues(0, aNbSamples);
-
-  MultipleSampleDerivFn<Function>     aSampleFn{theFunc, aFValues, aDFValues, theConfig.Offset};
-  MultipleGetValueFn                  aGetValue{aFValues};
-  MultipleBrentDerivWrapper<Function> aWrapper{theFunc, theConfig.Offset};
-  MultipleGetRootDerivFn<Function>    aGetRootValue{theFunc};
-  MultipleTangentialHandler<Function> aTangentialExtra{theFunc,
-                                                       aDFValues,
-                                                       theConfig.Offset,
-                                                       theConfig.FTolerance};
-
-  return FindAllRootsImpl(theLower,
-                          theUpper,
-                          theConfig,
-                          aSampleFn,
-                          aGetValue,
-                          aWrapper,
-                          aGetRootValue,
-                          aTangentialExtra);
+  return FindAllRootsWithDerivativeImpl(theFunc, theLower, theUpper, theConfig);
 }
 
 //! Convenience alias using default configuration.
