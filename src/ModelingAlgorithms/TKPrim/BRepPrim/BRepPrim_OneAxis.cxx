@@ -319,10 +319,7 @@ const TopoDS_Shell& BRepPrim_OneAxis::Shell()
   return myShell;
 }
 
-//=======================================================================
-// function : LateralFace
-// purpose  : build the lateral face
-//=======================================================================
+//=================================================================================================
 
 const TopoDS_Face& BRepPrim_OneAxis::LateralFace()
 {
@@ -400,10 +397,7 @@ const TopoDS_Face& BRepPrim_OneAxis::LateralFace()
   return myFaces[FLATERAL];
 }
 
-//=======================================================================
-// function : TopFace
-// purpose  : build and return the TopFace
-//=======================================================================
+//=================================================================================================
 
 const TopoDS_Face& BRepPrim_OneAxis::TopFace()
 {

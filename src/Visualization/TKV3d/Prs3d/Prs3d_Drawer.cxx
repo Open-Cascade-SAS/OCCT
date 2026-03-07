@@ -110,20 +110,14 @@ void Prs3d_Drawer::SetTypeOfDeflection(const Aspect_TypeOfDeflection theTypeOfDe
   myTypeOfDeflection       = theTypeOfDeflection;
 }
 
-// =======================================================================
-// function : SetTypeOfHLR
-// purpose  : set type of HLR algorithm
-// =======================================================================
+//=================================================================================================
 
 void Prs3d_Drawer::SetTypeOfHLR(const Prs3d_TypeOfHLR theTypeOfHLR)
 {
   myTypeOfHLR = theTypeOfHLR;
 }
 
-// =======================================================================
-// function : TypeOfHLR
-// purpose  : gets type of HLR algorithm
-// =======================================================================
+//=================================================================================================
 
 Prs3d_TypeOfHLR Prs3d_Drawer::TypeOfHLR() const
 {

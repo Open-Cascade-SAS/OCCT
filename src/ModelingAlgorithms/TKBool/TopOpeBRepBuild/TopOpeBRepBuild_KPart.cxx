@@ -1256,10 +1256,7 @@ int TopOpeBRepBuild_Builder::KPiskoletge()
   return 1;
 }
 
-//=======================================================================
-// function : KPisdisj
-// purpose  : detection shapes disjoints
-//=======================================================================
+//=================================================================================================
 
 int TopOpeBRepBuild_Builder::KPisdisj()
 {
@@ -2166,10 +2163,8 @@ int TopOpeBRepBuild_Builder::KPreturn(const int b)
 }
 
 // modified by NIZHNY-MKK  Tue May 23 09:48:47 2000.BEGIN
-//=====================================================================================================
-//  static function : LocalKPisdisjanalyse
-//  purpose:
-//=====================================================================================================
+//=================================================================================================
+
 static void LocalKPisdisjanalyse(const TopAbs_State                     Stsol1,
                                  const TopAbs_State                     Stsol2,
                                  const TopOpeBRepBuild_KPart_Operation& theOperation,

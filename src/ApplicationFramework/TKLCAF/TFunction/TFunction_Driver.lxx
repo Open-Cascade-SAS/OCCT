@@ -14,10 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//=======================================================================
-// function : Label
-// purpose  : Returns the initialized label
-//=======================================================================
+//=================================================================================================
 
 inline TDF_Label TFunction_Driver::Label() const
 {

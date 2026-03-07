@@ -615,10 +615,8 @@ double TopOpeBRep_FacesIntersector::ToleranceMax(const TopoDS_Shape&    S,
 }
 
 // modified by NIZHNY-MKK  Mon Apr  2 12:18:30 2001.BEGIN
-// ================================================================================================
-// static function: TestWLineAlongRestriction
-// purpose:
-// ================================================================================================
+//=================================================================================================
+
 static bool TestWLineAlongRestriction(const occ::handle<IntPatch_WLine>&      theWLine,
                                       const int                               theRank,
                                       const occ::handle<Adaptor3d_Surface>&   theSurface,
@@ -664,10 +662,8 @@ static bool TestWLineAlongRestriction(const occ::handle<IntPatch_WLine>&      th
   return result;
 }
 
-// ================================================================================================
-// static function: BuildRLineBasedOnWLine
-// purpose:
-// ================================================================================================
+//=================================================================================================
+
 static occ::handle<IntPatch_RLine> BuildRLineBasedOnWLine(
   const occ::handle<IntPatch_WLine>&    theWLine,
   const occ::handle<Adaptor2d_Curve2d>& theArc,

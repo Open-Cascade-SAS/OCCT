@@ -907,10 +907,8 @@ const NCollection_List<TopoDS_Shape>& BRepFill_Draft::Generated(const TopoDS_Sha
   return myGenerated;
 }
 
-//=======================================================================
-// function : Shape
-// purpose  : return the complete shape
-//======================================================================
+//=================================================================================================
+
 TopoDS_Shape BRepFill_Draft::Shape() const
 {
   return myShape;

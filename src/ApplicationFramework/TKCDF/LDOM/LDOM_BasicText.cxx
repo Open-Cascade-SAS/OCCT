@@ -39,10 +39,7 @@ LDOM_BasicText& LDOM_BasicText::Create(const LDOM_Node::NodeType           aType
   return *aNewText;
 }
 
-//=======================================================================
-// function : operator =
-// purpose  : Assignment to NULL
-//=======================================================================
+//=================================================================================================
 
 LDOM_BasicText& LDOM_BasicText::operator=(const LDOM_NullPtr* aNull)
 {

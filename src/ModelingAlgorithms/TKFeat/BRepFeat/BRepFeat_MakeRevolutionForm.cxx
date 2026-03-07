@@ -1072,10 +1072,7 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
   }
 }
 
-//=======================================================================
-// function : Add
-// purpose  : add elements of gluing
-//=======================================================================
+//=================================================================================================
 
 void BRepFeat_MakeRevolutionForm::Add(const TopoDS_Edge& E, const TopoDS_Face& F)
 {
@@ -1845,10 +1842,7 @@ bool BRepFeat_MakeRevolutionForm::Propagate(NCollection_List<TopoDS_Shape>& SliL
   return result;
 }
 
-//=======================================================================
-// function : MajMap
-// purpose  : management of descendants
-//=======================================================================
+//=================================================================================================
 
 static void MajMap(
   const TopoDS_Shape&          theB,
@@ -1895,10 +1889,7 @@ static void MajMap(
   }
 }
 
-//=======================================================================
-// function : SetGluedFaces
-// purpose  : managemnet of sliding faces
-//=======================================================================
+//=================================================================================================
 
 static void SetGluedFaces(
   const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&

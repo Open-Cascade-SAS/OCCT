@@ -1302,10 +1302,8 @@ void IntTools_BeanFaceIntersector::ComputeRangeFromStartPoint(const bool   ToInc
   }
 }
 
-// ---------------------------------------------------------------------------------
-// static function: SetEmptyResultRange
-// purpose:
-// ---------------------------------------------------------------------------------
+//=================================================================================================
+
 static bool SetEmptyResultRange(const double theParameter, IntTools_MarkedRangeSet& theMarkedRange)
 {
 
@@ -2116,10 +2114,8 @@ bool IntTools_BeanFaceIntersector::TestComputeCoinside()
 }
 
 //  Modified by skv - Wed Nov  2 15:21:11 2005 Optimization Begin
-// ---------------------------------------------------------------------------------
-// static function: GetSurfaceBox
-// purpose:
-// ---------------------------------------------------------------------------------
+//=================================================================================================
+
 Bnd_Box GetSurfaceBox(const BRepAdaptor_Surface&         theSurf,
                       const double                       theFirstU,
                       const double                       theLastU,
@@ -2136,10 +2132,8 @@ Bnd_Box GetSurfaceBox(const BRepAdaptor_Surface&         theSurf,
   return aTotalBox;
 }
 
-// ---------------------------------------------------------------------------------
-// static function: ComputeGridPoints
-// purpose:
-// ---------------------------------------------------------------------------------
+//=================================================================================================
+
 void ComputeGridPoints(const BRepAdaptor_Surface&         theSurf,
                        occ::handle<Geom_BSplineSurface>   theBsplSurf,
                        const double                       theFirstU,
@@ -2373,10 +2367,8 @@ void ComputeGridPoints(const BRepAdaptor_Surface&         theSurf,
   theSurfaceData.SetGridDeflection(aDef);
 }
 
-// ---------------------------------------------------------------------------------
-// static function: BuildBox
-// purpose:  Compute bounding box.
-// ---------------------------------------------------------------------------------
+//=================================================================================================
+
 void BuildBox(const BRepAdaptor_Surface&         theSurf,
               const double                       theFirstU,
               const double                       theLastU,
@@ -2439,10 +2431,8 @@ void BuildBox(const BRepAdaptor_Surface&         theSurf,
 
 //  Modified by skv - Wed Nov  2 15:21:11 2005 Optimization End
 
-// ---------------------------------------------------------------------------------
-// static function: MergeSolutions
-// purpose:
-// ---------------------------------------------------------------------------------
+//=================================================================================================
+
 static void MergeSolutions(const NCollection_List<IntTools_CurveRangeSample>&   theListCurveRange,
                            const NCollection_List<IntTools_SurfaceRangeSample>& theListSurfaceRange,
                            NCollection_List<IntTools_CurveRangeSample>&   theListCurveRangeSort,
@@ -2488,10 +2478,8 @@ static void MergeSolutions(const NCollection_List<IntTools_CurveRangeSample>&   
   }
 }
 
-// ---------------------------------------------------------------------------------
-// static function: CheckSampling
-// purpose:
-// ---------------------------------------------------------------------------------
+//=================================================================================================
+
 static void CheckSampling(const IntTools_CurveRangeSample&         theCurveRange,
                           const IntTools_SurfaceRangeSample&       theSurfaceRange,
                           const IntTools_CurveRangeLocalizeData&   theCurveData,

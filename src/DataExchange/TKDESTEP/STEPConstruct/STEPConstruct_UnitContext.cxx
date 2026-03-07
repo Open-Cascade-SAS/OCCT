@@ -203,10 +203,7 @@ occ::handle<StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx>
   return GRC;
 }
 
-// ==========================================================================
-// Method  : ConvertSiPrefix
-// Purpose : Computes SiPrefix conversion
-// ==========================================================================
+//=================================================================================================
 
 double STEPConstruct_UnitContext::ConvertSiPrefix(const StepBasic_SiPrefix aPrefix)
 {

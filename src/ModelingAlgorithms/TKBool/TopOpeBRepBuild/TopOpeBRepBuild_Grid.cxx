@@ -416,11 +416,8 @@ void TopOpeBRepBuild_Builder::GCopyList(const NCollection_List<TopoDS_Shape>& Li
   }
 }
 
-//=======================================================================
-// function : GCopyList
-// purpose  :
-// copy de Lin dans Lou
-//=======================================================================
+//=================================================================================================
+
 void TopOpeBRepBuild_Builder::GCopyList(const NCollection_List<TopoDS_Shape>& Lin,
                                         NCollection_List<TopoDS_Shape>&       Lou)
 {

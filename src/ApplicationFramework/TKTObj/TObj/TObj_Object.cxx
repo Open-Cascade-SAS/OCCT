@@ -1396,10 +1396,7 @@ int TObj_Object::GetTypeFlags() const
   return Visible;
 }
 
-//=======================================================================
-// function : GetDictionary
-// purpose  : default implementation
-//=======================================================================
+//=================================================================================================
 
 occ::handle<TObj_TNameContainer> TObj_Object::GetDictionary() const
 {

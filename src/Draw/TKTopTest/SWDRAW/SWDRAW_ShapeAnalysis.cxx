@@ -1006,10 +1006,8 @@ static int freebounds(Draw_Interpretor& di, int n, const char** a)
   return 0;
 }
 
-//=======================================================================
-// function : PrintProps
-// purpose  : auxiliary for FreeBoundsProps
-//=======================================================================
+//=================================================================================================
+
 static void PrintProps(int                                             i,
                        const occ::handle<ShapeAnalysis_FreeBoundData>& fbd,
                        Draw_Interpretor&                               di)

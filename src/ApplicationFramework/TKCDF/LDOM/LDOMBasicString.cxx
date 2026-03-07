@@ -122,10 +122,7 @@ LDOMBasicString::~LDOMBasicString()
   }
 }
 
-//=======================================================================
-// function : operator =
-// purpose  : Assignment to NULL
-//=======================================================================
+//=================================================================================================
 
 LDOMBasicString& LDOMBasicString::operator=(const LDOM_NullPtr*)
 {
@@ -136,10 +133,7 @@ LDOMBasicString& LDOMBasicString::operator=(const LDOM_NullPtr*)
   return *this;
 }
 
-//=======================================================================
-// function : operator =
-// purpose  : Assignment
-//=======================================================================
+//=================================================================================================
 
 LDOMBasicString& LDOMBasicString::operator=(const LDOMBasicString& anOther)
 {

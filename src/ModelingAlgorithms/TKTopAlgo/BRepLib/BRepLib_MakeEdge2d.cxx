@@ -65,10 +65,7 @@ static gp_Pnt2d Project(const TopoDS_Vertex& Ve)
   return gp_Pnt2d(U, V);
 }
 
-//=======================================================================
-// function : Project
-// purpose  : project a vertex on a curve
-//=======================================================================
+//=================================================================================================
 
 static bool Project(const occ::handle<Geom2d_Curve>& C, const TopoDS_Vertex& V, double& p)
 {

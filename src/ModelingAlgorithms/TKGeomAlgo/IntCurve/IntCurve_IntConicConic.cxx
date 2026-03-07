@@ -104,10 +104,8 @@ void SetBinfBsupFromIntAna2d(const IntAna2d_AnaIntersection& theIntAna2d,
                              const double                    maxtol,
                              const double                    LIMITE);
 
-//=======================================================================
-// function : Perform
-// purpose  : Line - Parabola
-//=======================================================================
+//=================================================================================================
+
 void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L,
                                      const IntRes2d_Domain& DL,
                                      const gp_Parab2d&      P,
@@ -223,10 +221,8 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L,
   }
 }
 
-//=======================================================================
-// function : Perform
-// purpose  : Line - Hyperbola
-//=======================================================================
+//=================================================================================================
+
 void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L,
                                      const IntRes2d_Domain& DL,
                                      const gp_Hypr2d&       H,
@@ -326,10 +322,8 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L,
   }
 }
 
-//=======================================================================
-// function : Perform
-// purpose  : Circle - Parabola
-//=======================================================================
+//=================================================================================================
+
 void IntCurve_IntConicConic::Perform(const gp_Circ2d&       C,
                                      const IntRes2d_Domain& DC,
                                      const gp_Parab2d&      P,
@@ -430,10 +424,8 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d&       C,
   }
 }
 
-//=======================================================================
-// function : Perform
-// purpose  : Circle - Ellipse
-//=======================================================================
+//=================================================================================================
+
 void IntCurve_IntConicConic::Perform(const gp_Circ2d&       C,
                                      const IntRes2d_Domain& DC,
                                      const gp_Elips2d&      E,
@@ -479,10 +471,8 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d&       C,
   this->SetValues(Inter);
 }
 
-//=======================================================================
-// function : Perform
-// purpose  : Circle - Hyperbola
-//=======================================================================
+//=================================================================================================
+
 void IntCurve_IntConicConic::Perform(const gp_Circ2d&       C,
                                      const IntRes2d_Domain& DC,
                                      const gp_Hypr2d&       H,
@@ -580,10 +570,8 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d&       C,
   }
 }
 
-//=======================================================================
-// function : Perform
-// purpose  : Parabola - Parabola
-//=======================================================================
+//=================================================================================================
+
 void IntCurve_IntConicConic::Perform(const gp_Parab2d&      P1,
                                      const IntRes2d_Domain& DP1,
                                      const gp_Parab2d&      P2,
@@ -683,10 +671,8 @@ void IntCurve_IntConicConic::Perform(const gp_Parab2d&      P1,
   }
 }
 
-//=======================================================================
-// function : Perform
-// purpose  : Ellipse - Parabola
-//=======================================================================
+//=================================================================================================
+
 void IntCurve_IntConicConic::Perform(const gp_Elips2d&      E,
                                      const IntRes2d_Domain& DE,
                                      const gp_Parab2d&      P,
@@ -799,10 +785,8 @@ void IntCurve_IntConicConic::Perform(const gp_Elips2d&      E,
   }
 }
 
-//=======================================================================
-// function : Perform
-// purpose  : Parabola - Hyperbola
-//=======================================================================
+//=================================================================================================
+
 void IntCurve_IntConicConic::Perform(const gp_Parab2d&      P,
                                      const IntRes2d_Domain& DP,
                                      const gp_Hypr2d&       H,
@@ -900,10 +884,7 @@ void IntCurve_IntConicConic::Perform(const gp_Parab2d&      P,
   }
 }
 
-//=======================================================================
-// function : Perform
-// purpose  : Ellipse - Ellipse
-//=======================================================================
+//=================================================================================================
 
 void IntCurve_IntConicConic::Perform(const gp_Elips2d&      E1,
                                      const IntRes2d_Domain& DE1,
@@ -950,10 +931,8 @@ void IntCurve_IntConicConic::Perform(const gp_Elips2d&      E1,
   this->SetValues(Inter);
 }
 
-//=======================================================================
-// function : Perform
-// purpose  : Ellipse - Hyperbola
-//=======================================================================
+//=================================================================================================
+
 void IntCurve_IntConicConic::Perform(const gp_Elips2d&      E,
                                      const IntRes2d_Domain& DE,
                                      const gp_Hypr2d&       H,
@@ -1057,10 +1036,7 @@ void IntCurve_IntConicConic::Perform(const gp_Elips2d&      E,
   }
 }
 
-//=======================================================================
-// function : Perform
-// purpose  : Hyperbola - Hyperbola
-//=======================================================================
+//=================================================================================================
 
 void IntCurve_IntConicConic::Perform(const gp_Hypr2d&       H1,
                                      const IntRes2d_Domain& DH1,

@@ -42,10 +42,7 @@ inline double ShapeAnalysis_FreeBoundsProperties::Tolerance() const
   return myTolerance;
 }
 
-//=======================================================================
-// function : NbFreeBounds
-// purpose  : Returns number of free bounds
-//=======================================================================
+//=================================================================================================
 
 inline int ShapeAnalysis_FreeBoundsProperties::NbFreeBounds() const
 {
@@ -83,10 +80,7 @@ inline occ::handle<NCollection_HSequence<occ::handle<ShapeAnalysis_FreeBoundData
   return myClosedFreeBounds;
 }
 
-//=======================================================================
-// function : OpenFreeBounds
-// purpose  : Returns all open free bounds
-//=======================================================================
+//=================================================================================================
 
 inline occ::handle<NCollection_HSequence<occ::handle<ShapeAnalysis_FreeBoundData>>>
   ShapeAnalysis_FreeBoundsProperties::OpenFreeBounds() const

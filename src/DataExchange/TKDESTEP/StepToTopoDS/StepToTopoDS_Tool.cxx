@@ -184,10 +184,7 @@ bool StepToTopoDS_Tool::ComputePCurve() const
   return myComputePC;
 }
 
-// ============================================================================
-// Method  : StepToTopoDS_Tool::TransientProcess
-// Purpose : Returns the TransientProcess
-// ============================================================================
+//=================================================================================================
 
 occ::handle<Transfer_TransientProcess> StepToTopoDS_Tool::TransientProcess() const
 {

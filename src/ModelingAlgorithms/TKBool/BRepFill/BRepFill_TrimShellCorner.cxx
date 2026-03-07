@@ -1196,10 +1196,8 @@ bool BRepFill_TrimShellCorner::ChooseSection(const TopoDS_Shape&  Comp,
   return false;
 }
 
-// ------------------------------------------------------------------------------------------
-// static function: SplitUEdges
-// purpose:
-// ------------------------------------------------------------------------------------------
+//=================================================================================================
+
 bool SplitUEdges(
   const occ::handle<NCollection_HArray2<TopoDS_Shape>>& theUEdges,
   const BOPDS_PDS&                                      theDS,
@@ -1300,10 +1298,8 @@ bool SplitUEdges(
   return true;
 }
 
-// ------------------------------------------------------------------------------------------
-// static function: StoreVedgeInHistMap
-// purpose:
-// ------------------------------------------------------------------------------------------
+//=================================================================================================
+
 void StoreVedgeInHistMap(
   const occ::handle<NCollection_HArray1<TopoDS_Shape>>& theVEdges,
   const int                                             theIndex,
@@ -1318,10 +1314,8 @@ void StoreVedgeInHistMap(
   theHistMap.Bound(aVEdge, NCollection_List<TopoDS_Shape>())->Append(theNewVshape);
 }
 
-// ------------------------------------------------------------------------------------------
-// static function: FindFreeVertices
-// purpose:
-// ------------------------------------------------------------------------------------------
+//=================================================================================================
+
 void FindFreeVertices(
   const TopoDS_Shape&                                           theShape,
   const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theVerticesToAvoid,
@@ -1349,10 +1343,8 @@ void FindFreeVertices(
   }
 }
 
-// ------------------------------------------------------------------------------------------
-// static function: FindCommonVertex
-// purpose:
-// ------------------------------------------------------------------------------------------
+//=================================================================================================
+
 bool FindCommonVertex(const BOPDS_PDS& theDS,
                       const int        theEIndex1,
                       const int        theEIndex2,
@@ -1416,10 +1408,8 @@ bool FindCommonVertex(const BOPDS_PDS& theDS,
   return bvertexfound;
 }
 
-// ----------------------------------------------------------------------------------------------------
-// static function: GetUEdges
-// purpose:
-// ----------------------------------------------------------------------------------------------------
+//=================================================================================================
+
 bool GetUEdges(const int                                             theIndex,
                const int                                             theRank,
                const occ::handle<NCollection_HArray2<TopoDS_Shape>>& theUEdges,
@@ -1478,10 +1468,8 @@ bool GetUEdges(const int                                             theIndex,
   return true;
 }
 
-// ----------------------------------------------------------------------------------------------------
-// static function: FillGap
-// purpose:
-// ----------------------------------------------------------------------------------------------------
+//=================================================================================================
+
 bool FillGap(const TopoDS_Vertex&            theFirstVertex,
              const TopoDS_Vertex&            theLastVertex,
              const gp_Pnt2d&                 theFirstPoint,
@@ -1519,10 +1507,8 @@ bool FillGap(const TopoDS_Vertex&            theFirstVertex,
   return false;
 }
 
-// ----------------------------------------------------------------------------------------------------
-// static function: FindNextEdge
-// purpose:
-// ----------------------------------------------------------------------------------------------------
+//=================================================================================================
+
 bool FindNextEdge(const TopoDS_Vertex&                                          theFirstVertex,
                   const TopoDS_Vertex&                                          theLastVertex,
                   const NCollection_IndexedDataMap<TopoDS_Shape,
@@ -1606,10 +1592,8 @@ bool FindNextEdge(const TopoDS_Vertex&                                          
   return false;
 }
 
-// ----------------------------------------------------------------------------------------------------
-// static function: CheckAndOrientEdges
-// purpose:
-// ----------------------------------------------------------------------------------------------------
+//=================================================================================================
+
 bool CheckAndOrientEdges(const NCollection_List<TopoDS_Shape>& theOrderedList,
                          const gp_Pnt2d&                       theFirstPoint,
                          const gp_Pnt2d&                       theLastPoint,
@@ -1720,10 +1704,8 @@ bool CheckAndOrientEdges(const NCollection_List<TopoDS_Shape>& theOrderedList,
   return bFirstFound && bLastFound;
 }
 
-// ----------------------------------------------------------------------------------------------------
-// static function: FindVertex
-// purpose:
-// ----------------------------------------------------------------------------------------------------
+//=================================================================================================
+
 bool FindVertex(
   const TopoDS_Edge& theEdge,
   const int          theRank,
@@ -1778,10 +1760,8 @@ bool FindVertex(
   return true;
 }
 
-// ----------------------------------------------------------------------------------------------------
-// static function: FindNextVertex
-// purpose:
-// ----------------------------------------------------------------------------------------------------
+//=================================================================================================
+
 bool FindNextVertex(const int         theEdgeIndex,
                     const BOPDS_Pave& thePrevPave,
                     const BOPDS_PDS&  theDS,
@@ -1824,10 +1804,8 @@ bool FindNextVertex(const int         theEdgeIndex,
   return bFound;
 }
 
-// ----------------------------------------------------------------------------------------------------
-// static function: GetPave
-// purpose:
-// ----------------------------------------------------------------------------------------------------
+//=================================================================================================
+
 bool GetPave(const int        theEdgeIndex,
              const bool       isFirst,
              const BOPDS_PDS& theDS,
@@ -1855,10 +1833,8 @@ bool GetPave(const int        theEdgeIndex,
   return true;
 }
 
-// ----------------------------------------------------------------------------------------------------
-// static function: FindFromUEdge
-// purpose:
-// ----------------------------------------------------------------------------------------------------
+//=================================================================================================
+
 bool FindFromUEdge(
   const TopoDS_Edge&     theUE1Old,
   const TopoDS_Edge&     theUE2Old,
@@ -1968,10 +1944,8 @@ bool FindFromUEdge(
   return true;
 }
 
-// ----------------------------------------------------------------------------------------------------
-// static function: FindFromVEdge
-// purpose:
-// ----------------------------------------------------------------------------------------------------
+//=================================================================================================
+
 bool FindFromVEdge(
   const BOPDS_Pave&      thePrevPave,
   const bool&            isOnUEdge,
@@ -2409,10 +2383,8 @@ bool FindFromVEdge(
   return true;
 }
 
-// ----------------------------------------------------------------------------------------------------
-// static function: RemoveEdges
-// purpose:
-// ----------------------------------------------------------------------------------------------------
+//=================================================================================================
+
 void RemoveEdges(const TopoDS_Compound&                theSourceComp,
                  const NCollection_List<TopoDS_Shape>& theListToRemove,
                  TopoDS_Compound&                      theResultComp)
@@ -2440,10 +2412,8 @@ void RemoveEdges(const TopoDS_Compound&                theSourceComp,
   theResultComp = aComp;
 }
 
-// ----------------------------------------------------------------------------------------------------
-// static function: FilterSectionEdges
-// purpose:
-// ----------------------------------------------------------------------------------------------------
+//=================================================================================================
+
 bool FilterSectionEdges(const NCollection_Vector<BOPDS_Curve>& theBCurves,
                         const TopoDS_Face&                     theSecPlane,
                         const BOPDS_PDS&                       theDS,

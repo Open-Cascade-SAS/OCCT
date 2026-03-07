@@ -166,10 +166,8 @@ void MeshVS_PrsBuilder::SetPresentationManager(
   myPrsMgr = thePrsMgr;
 }
 
-//================================================================
-// Function : GetPresentationManager
-// Purpose  : Get presentation manager
-//================================================================
+//=================================================================================================
+
 occ::handle<PrsMgr_PresentationManager> MeshVS_PrsBuilder::GetPresentationManager() const
 {
   return myPrsMgr;

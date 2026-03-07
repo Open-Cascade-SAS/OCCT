@@ -769,10 +769,8 @@ bool OpenGl_ShaderProgram::DetachShader(const occ::handle<OpenGl_Context>&      
   return true;
 }
 
-// =======================================================================
-// function : Link
-// purpose  : Links the program object
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_ShaderProgram::link(const occ::handle<OpenGl_Context>& theCtx)
 {
   if (myProgramID == NO_PROGRAM)
@@ -1504,10 +1502,8 @@ bool OpenGl_ShaderProgram::Create(const occ::handle<OpenGl_Context>& theCtx)
   return myProgramID != NO_PROGRAM;
 }
 
-// =======================================================================
-// function : Release
-// purpose  : Destroys shader program
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_ShaderProgram::Release(OpenGl_Context* theCtx)
 {
   if (myProgramID == NO_PROGRAM)

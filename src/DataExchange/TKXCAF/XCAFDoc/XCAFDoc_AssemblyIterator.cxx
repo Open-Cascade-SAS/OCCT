@@ -24,10 +24,7 @@
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
 
-// =======================================================================
-// function : XCAFDoc_AssemblyIterator constructor
-// purpose  : Starts from free shapes
-// =======================================================================
+//=================================================================================================
 
 XCAFDoc_AssemblyIterator::XCAFDoc_AssemblyIterator(const occ::handle<TDocStd_Document>& theDoc,
                                                    const int                            theLevel)
@@ -112,10 +109,7 @@ bool XCAFDoc_AssemblyIterator::More() const
   return !myFringe.IsEmpty();
 }
 
-// =======================================================================
-// function : Next
-// purpose  : Moves to the next position
-// =======================================================================
+//=================================================================================================
 
 void XCAFDoc_AssemblyIterator::Next()
 {
@@ -156,10 +150,7 @@ void XCAFDoc_AssemblyIterator::Next()
   }
 }
 
-// =======================================================================
-// function : Current
-// purpose  : Returns current assembly item
-// =======================================================================
+//=================================================================================================
 
 XCAFDoc_AssemblyItemId XCAFDoc_AssemblyIterator::Current() const
 {

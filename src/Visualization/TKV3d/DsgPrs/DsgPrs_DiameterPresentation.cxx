@@ -120,10 +120,7 @@ static bool DsgPrs_InDomain(const double fpar, const double lpar, const double p
   return false;
 }
 
-//=======================================================================
-// function : DsgPrs_DiameterPresentation::Add
-// purpose  : SZY 12-february-98
-//=======================================================================
+//=================================================================================================
 
 void DsgPrs_DiameterPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                       const occ::handle<Prs3d_Drawer>&       aDrawer,

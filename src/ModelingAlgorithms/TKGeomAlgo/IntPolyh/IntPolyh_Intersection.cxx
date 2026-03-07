@@ -389,10 +389,8 @@ bool IntPolyh_Intersection::PerformMaillage(const NCollection_Array1<double>& th
   return AnalyzeIntersection(theMaillage);
 }
 
-//=======================================================================
-// function : PerformMaillage
-// purpose  : Computes MaillageAffinage
-//=======================================================================
+//=================================================================================================
+
 bool IntPolyh_Intersection::PerformMaillage(const NCollection_Array1<double>&  theUPars1,
                                             const NCollection_Array1<double>&  theVPars1,
                                             const NCollection_Array1<double>&  theUPars2,

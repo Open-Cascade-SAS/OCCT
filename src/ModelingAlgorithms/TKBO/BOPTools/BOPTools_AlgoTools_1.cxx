@@ -533,10 +533,8 @@ static double MapEdgeLength(const TopoDS_Edge&                         theEdge,
   return *pLen;
 }
 
-//=======================================================================
-// Function : EdgeData
-// purpose : Structure to store edge data
-//=======================================================================
+//=================================================================================================
+
 namespace
 {
 struct EdgeData
@@ -550,10 +548,8 @@ struct EdgeData
 };
 } // namespace
 
-//=======================================================================
-// Function : IntersectCurves2d
-// purpose  : Intersect 2d curves of edges
-//=======================================================================
+//=================================================================================================
+
 static double IntersectCurves2d(const TopoDS_Vertex&                       theV,
                                 const occ::handle<Geom_Surface>&           theS,
                                 const EdgeData&                            theEData1,
@@ -754,10 +750,8 @@ void CorrectWires(const TopoDS_Face&                                            
   } // for (i=1; i<=aNbV; ++i) {
 }
 
-//=======================================================================
-// Function : CorrectEdgeTolerance
-// purpose :  Correct tolerances for Edge
-//=======================================================================
+//=================================================================================================
+
 void CorrectEdgeTolerance(
   const TopoDS_Edge&                                                   myShape,
   const TopoDS_Face&                                                   S,

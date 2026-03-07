@@ -549,10 +549,8 @@ void BinLDrivers_DocumentStorageDriver::WriteSection(
   // empty; should be redefined in subclasses
 }
 
-//=======================================================================
-// function : WriteShapeSection
-// purpose  : defines WriteShapeSection
-//=======================================================================
+//=================================================================================================
+
 void BinLDrivers_DocumentStorageDriver::WriteShapeSection(BinLDrivers_DocumentSection& theSection,
                                                           Standard_OStream&            theOS,
                                                           const TDocStd_FormatVersion  theDocVer,

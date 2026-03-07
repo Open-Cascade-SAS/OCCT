@@ -197,10 +197,7 @@ void XCAFDoc_AssemblyGraph::addComponents(const TDF_Label& theParent, const int 
   }
 }
 
-// =======================================================================
-// function : addNode
-// purpose  : Adds node into the graph
-// =======================================================================
+//=================================================================================================
 
 int XCAFDoc_AssemblyGraph::addNode(const TDF_Label& theLabel, const int theParentId)
 {

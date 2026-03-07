@@ -78,10 +78,8 @@ int Law_Composite::NbIntervals(const GeomAbs_Shape S) const
   return nbr_interval;
 }
 
-//=======================================================================
-// function : Intervals
-// purpose  : Meme simplifications....
-//=======================================================================
+//=================================================================================================
+
 void Law_Composite::Intervals(NCollection_Array1<double>& T, const GeomAbs_Shape S) const
 {
   NCollection_List<occ::handle<Law_Function>>::Iterator It(funclist);

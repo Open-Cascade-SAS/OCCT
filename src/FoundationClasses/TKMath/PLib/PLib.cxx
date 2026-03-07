@@ -936,10 +936,7 @@ constexpr std::array<EvalPolyFunc, THE_MAX_OPT_DIM> THE_EVAL_POLY2_TABLE =
 
 } // namespace
 
-//=======================================================================
-// function : This evaluates a polynomial and its derivatives
-// purpose  : up to the requested order
-//=======================================================================
+//=================================================================================================
 
 void PLib::EvalPolynomial(const double  Par,
                           const int     DerivativeRequest,

@@ -117,12 +117,7 @@ int IGESControl_Reader::NbRootsForTransfer()
 
 //  ####    Remainder of methods to be reworked    ####
 
-//=======================================================================
-// Function : PrintTransferInfo
-// Purpose  : Print statistics information on transfer using MoniTool message management
-// Created  : 18/01/98 DCE for S3767
-// Modified :
-//=======================================================================
+//=================================================================================================
 
 void IGESControl_Reader::PrintTransferInfo(const IFSelect_PrintFail  failsonly,
                                            const IFSelect_PrintCount mode) const

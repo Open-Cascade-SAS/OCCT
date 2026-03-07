@@ -55,10 +55,8 @@ OpenGl_Caps::OpenGl_Caps()
 #endif
 }
 
-// =======================================================================
-// function : operator=
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_Caps& OpenGl_Caps::operator=(const OpenGl_Caps& theCopy)
 {
   sRGBDisable               = theCopy.sRGBDisable;

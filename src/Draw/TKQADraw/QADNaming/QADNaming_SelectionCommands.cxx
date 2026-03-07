@@ -200,10 +200,7 @@ static int QADNaming_DumpSelection(Draw_Interpretor& di, int n, const char** a)
   return 1;
 }
 
-//=======================================================================
-// function : ArgsSelection
-// purpose  : ArgsSelection DF entry
-//=======================================================================
+//=================================================================================================
 
 static int QADNaming_ArgsSelection(Draw_Interpretor& di, int n, const char** a)
 {

@@ -147,10 +147,7 @@ void BRepFeat_MakeDPrism::Init(const TopoDS_Shape& Sbase,
 #endif
 }
 
-//=======================================================================
-// function : Add
-// purpose  : add sliding faces and edges
-//=======================================================================
+//=================================================================================================
 
 void BRepFeat_MakeDPrism::Add(const TopoDS_Edge& E, const TopoDS_Face& F)
 {
@@ -414,10 +411,7 @@ void BRepFeat_MakeDPrism::Perform(const TopoDS_Shape& Until)
   }
 }
 
-//=======================================================================
-// function : Perform
-// purpose  : feature limited by two shapes
-//=======================================================================
+//=================================================================================================
 
 void BRepFeat_MakeDPrism::Perform(const TopoDS_Shape& From, const TopoDS_Shape& Until)
 {
@@ -611,10 +605,7 @@ void BRepFeat_MakeDPrism::Perform(const TopoDS_Shape& From, const TopoDS_Shape& 
   }
 }
 
-//=======================================================================
-// function : Perform
-// purpose  : feature semi-infinie
-//=======================================================================
+//=================================================================================================
 
 void BRepFeat_MakeDPrism::PerformUntilEnd()
 {

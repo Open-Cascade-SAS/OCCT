@@ -46,10 +46,7 @@ inline void BRep_Builder::MakeEdge(TopoDS_Edge& E, const occ::handle<Poly_Polygo
   UpdateEdge(E, P);
 }
 
-//=======================================================================
-// function : MakeEdge
-// purpose  : make edge from triangulation
-//=======================================================================
+//=================================================================================================
 
 inline void BRep_Builder::MakeEdge(TopoDS_Edge&                                    E,
                                    const occ::handle<Poly_PolygonOnTriangulation>& P,
@@ -59,10 +56,7 @@ inline void BRep_Builder::MakeEdge(TopoDS_Edge&                                 
   UpdateEdge(E, P, T, TopLoc_Location());
 }
 
-//=======================================================================
-// function : MakeEdge
-// purpose  : make edge from triangulation
-//=======================================================================
+//=================================================================================================
 
 inline void BRep_Builder::MakeEdge(TopoDS_Edge&                                    E,
                                    const occ::handle<Poly_PolygonOnTriangulation>& P,

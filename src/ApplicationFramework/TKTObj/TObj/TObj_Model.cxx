@@ -83,10 +83,7 @@ void TObj_Model::CloseDocument(const occ::handle<TDocStd_Document>& theDoc)
   anApplication->Close(theDoc);
 }
 
-//=======================================================================
-// function : Load
-// purpose  : Loads the model from the file
-//=======================================================================
+//=================================================================================================
 
 bool TObj_Model::Load(const TCollection_ExtendedString& theFile)
 {
@@ -325,10 +322,7 @@ bool TObj_Model::Save()
   return true;
 }
 
-//=======================================================================
-// function : SaveAs
-// purpose  : Save the model to a file
-//=======================================================================
+//=================================================================================================
 
 bool TObj_Model::SaveAs(const TCollection_ExtendedString& theFile)
 {
@@ -375,10 +369,7 @@ bool TObj_Model::SaveAs(const TCollection_ExtendedString& theFile)
   return aStatus;
 }
 
-//=======================================================================
-// function : SaveAs
-// purpose  : Save the model to a stream
-//=======================================================================
+//=================================================================================================
 
 bool TObj_Model::SaveAs(Standard_OStream& theOStream)
 {
@@ -756,10 +747,7 @@ void TObj_Model::AbortCommand() const
   GetDocument()->AbortCommand();
 }
 
-//=======================================================================
-// function : IsModified
-// purpose  : Status of modification
-//=======================================================================
+//=================================================================================================
 
 bool TObj_Model::IsModified() const
 {
@@ -767,10 +755,7 @@ bool TObj_Model::IsModified() const
   return aDoc.IsNull() ? false : aDoc->IsChanged();
 }
 
-//=======================================================================
-// function : SetModified
-// purpose  : Status of modification
-//=======================================================================
+//=================================================================================================
 
 void TObj_Model::SetModified(const bool theModified)
 {

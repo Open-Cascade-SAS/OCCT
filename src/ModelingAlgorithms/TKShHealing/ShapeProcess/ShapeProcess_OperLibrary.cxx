@@ -876,10 +876,7 @@ static bool splitcommonvertex(const occ::handle<ShapeProcess_Context>& context,
   return true;
 }
 
-//=======================================================================
-// function : Init
-// purpose  : Register standard operators
-//=======================================================================
+//=================================================================================================
 
 void ShapeProcess_OperLibrary::Init()
 {

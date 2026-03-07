@@ -1169,9 +1169,6 @@ void BRep_Builder::Transfert(const TopoDS_Edge& Ein, const TopoDS_Edge& Eout) co
 }
 
 //=================================================================================================
-// function : UpdateVertex
-// purpose  : update vertex with 3d point
-//=================================================================================================
 
 void BRep_Builder::UpdateVertex(const TopoDS_Vertex& V, const gp_Pnt& P, const double Tol) const
 {
@@ -1386,9 +1383,6 @@ void BRep_Builder::UpdateVertex(const TopoDS_Vertex& Ve,
   TV->Modified(true);
 }
 
-//=================================================================================================
-// function : UpdateVertex
-// purpose  : update vertex with 3d point
 //=================================================================================================
 
 void BRep_Builder::UpdateVertex(const TopoDS_Vertex& V, const double Tol) const

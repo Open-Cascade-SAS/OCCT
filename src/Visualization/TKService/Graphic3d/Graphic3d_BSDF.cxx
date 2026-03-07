@@ -71,10 +71,8 @@ Graphic3d_BSDF::Graphic3d_BSDF()
   FresnelBase = Graphic3d_Fresnel::CreateConstant(1.f);
 }
 
-// =======================================================================
-// function : operator==
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 bool Graphic3d_BSDF::operator==(const Graphic3d_BSDF& theOther) const
 {
   return Kc == theOther.Kc && Kd == theOther.Kd && Kt == theOther.Kt && Ks == theOther.Ks

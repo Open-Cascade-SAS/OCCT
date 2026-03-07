@@ -71,10 +71,8 @@ bool BRepFill_SectionLaw::IsDone() const
   return myDone;
 }
 
-//=======================================================================
-// function : Init
-// purpose  : Prepare the parsing of a wire
-//=======================================================================
+//=================================================================================================
+
 void BRepFill_SectionLaw::Init(const TopoDS_Wire& W)
 {
   myIterator.Init(W);

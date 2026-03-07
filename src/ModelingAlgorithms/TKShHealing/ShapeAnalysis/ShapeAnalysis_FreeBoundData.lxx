@@ -26,20 +26,14 @@ inline void ShapeAnalysis_FreeBoundData::SetFreeBound(const TopoDS_Wire& freebou
   myBound = freebound;
 }
 
-//=======================================================================
-// function : SetArea
-// purpose  : Sets area of the contour
-//=======================================================================
+//=================================================================================================
 
 inline void ShapeAnalysis_FreeBoundData::SetArea(const double area)
 {
   myArea = area;
 }
 
-//=======================================================================
-// function : SetPerimeter
-// purpose  : Sets perimeter of the contour
-//=======================================================================
+//=================================================================================================
 
 inline void ShapeAnalysis_FreeBoundData::SetPerimeter(const double perimeter)
 {
@@ -78,10 +72,7 @@ inline TopoDS_Wire ShapeAnalysis_FreeBoundData::FreeBound() const
   return myBound;
 }
 
-//=======================================================================
-// function : Area
-// purpose  : Returns area of the contour
-//=======================================================================
+//=================================================================================================
 
 inline double ShapeAnalysis_FreeBoundData::Area() const
 {
@@ -138,10 +129,7 @@ inline occ::handle<NCollection_HSequence<TopoDS_Shape>> ShapeAnalysis_FreeBoundD
   return myNotches;
 }
 
-//=======================================================================
-// function : Notch
-// purpose  : Returns notch on the contour
-//=======================================================================
+//=================================================================================================
 
 inline TopoDS_Wire ShapeAnalysis_FreeBoundData::Notch(const int index) const
 {

@@ -94,10 +94,8 @@ void NCollection_BasePointerVector::clear()
   myCapacity = 0;
 }
 
-//=======================================================================
-// function : operator=
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 NCollection_BasePointerVector& NCollection_BasePointerVector::operator=(
   const NCollection_BasePointerVector& theOther)
 {
@@ -116,10 +114,8 @@ NCollection_BasePointerVector& NCollection_BasePointerVector::operator=(
   return *this;
 }
 
-//=======================================================================
-// function : operator=
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 NCollection_BasePointerVector& NCollection_BasePointerVector::operator=(
   NCollection_BasePointerVector&& theOther) noexcept
 {

@@ -1063,10 +1063,8 @@ void GeomInt_IntSS::MakeCurve(const int                               Index,
   }
 }
 
-//=======================================================================
-// function : TreatRLine
-// purpose  : Approx of Restriction line
-//=======================================================================
+//=================================================================================================
+
 void GeomInt_IntSS::TreatRLine(const occ::handle<IntPatch_RLine>&      theRL,
                                const occ::handle<GeomAdaptor_Surface>& theHS1,
                                const occ::handle<GeomAdaptor_Surface>& theHS2,

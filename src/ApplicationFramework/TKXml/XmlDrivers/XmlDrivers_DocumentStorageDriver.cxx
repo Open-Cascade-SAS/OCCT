@@ -41,10 +41,8 @@ occ::handle<XmlMDF_ADriverTable> XmlDrivers_DocumentStorageDriver::AttributeDriv
   return XmlDrivers::AttributeDrivers(theMessageDriver);
 }
 
-//=======================================================================
-// function : WriteShapeSection
-// purpose  : Implements WriteShapeSection
-//=======================================================================
+//=================================================================================================
+
 bool XmlDrivers_DocumentStorageDriver::WriteShapeSection(
   XmlObjMgt_Element&           theElement,
   const TDocStd_FormatVersion  theStorageFormatVersion,

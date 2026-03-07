@@ -43,10 +43,7 @@
 #include <BRepBuilderAPI_FindPlane.hxx>
 #include <BRep_Builder.hxx>
 
-//=======================================================================
-// function : chfi2d
-// purpose  : 2d fillets and chamfers
-//=======================================================================
+//=================================================================================================
 
 static int chfi2d(Draw_Interpretor& di, int n, const char** a)
 {

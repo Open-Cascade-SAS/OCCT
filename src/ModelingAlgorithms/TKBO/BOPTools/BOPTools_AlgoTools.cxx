@@ -516,10 +516,8 @@ TopAbs_Orientation Orientation(const TopoDS_Edge& anE, const TopoDS_Face& aF)
   return anOr;
 }
 
-//=======================================================================
-// function: MakeConnexityBlock.
-// purpose:
-//=======================================================================
+//=================================================================================================
+
 void BOPTools_AlgoTools::MakeConnexityBlock(
   NCollection_List<TopoDS_Shape>&                                theLFIn,
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMEAvoid,

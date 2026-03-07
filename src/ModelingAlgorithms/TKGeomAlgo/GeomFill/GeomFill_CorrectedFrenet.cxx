@@ -335,10 +335,8 @@ bool GeomFill_CorrectedFrenet::SetCurve(const occ::handle<Adaptor3d_Curve>& C)
   return isFrenet;
 }
 
-//===============================================================
-// Function : Init
-// Purpose : Compute angle's law
-//===============================================================
+//=================================================================================================
+
 void GeomFill_CorrectedFrenet::Init()
 {
   EvolAroundT                    = new Law_Composite();

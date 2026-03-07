@@ -109,10 +109,7 @@ void TopOpeBRepTool_FuseEdges::Edges(
   theMapLstEdg = myMapLstEdg;
 }
 
-//=======================================================================
-// function : ResultEdges
-// purpose  : returns  all the fused edges
-//=======================================================================
+//=================================================================================================
 
 void TopOpeBRepTool_FuseEdges::ResultEdges(NCollection_DataMap<int, TopoDS_Shape>& theMapEdg)
 {
@@ -266,10 +263,7 @@ void TopOpeBRepTool_FuseEdges::BuildListEdges()
   myResultEdgesDone = false;
 }
 
-//=======================================================================
-// function : BuildListResultEdges
-// purpose  : Build the result fused edges
-//=======================================================================
+//=================================================================================================
 
 void TopOpeBRepTool_FuseEdges::BuildListResultEdges()
 {
@@ -608,10 +602,7 @@ bool TopOpeBRepTool_FuseEdges::NextConnexEdge(const TopoDS_Vertex& theVertex,
   return HasConnex;
 }
 
-//=======================================================================
-// function : SameSupport
-// purpose  : Edges SameSupport ou pas
-//=======================================================================
+//=================================================================================================
 
 bool TopOpeBRepTool_FuseEdges::SameSupport(const TopoDS_Edge& E1, const TopoDS_Edge& E2) const
 {

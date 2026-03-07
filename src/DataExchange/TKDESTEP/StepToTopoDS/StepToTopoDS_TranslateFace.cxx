@@ -234,10 +234,8 @@ static void SetTriangles(
   }
 }
 
-// ============================================================================
-// Method  : GetSimpleFaceElements
-// Purpose : Get elements from simple face
-// ============================================================================
+//=================================================================================================
+
 template <class Type>
 static void GetSimpleFaceElements(const Type&                               theFace,
                                   occ::handle<NCollection_HArray1<gp_XYZ>>& theNodes,
@@ -297,10 +295,8 @@ static void GetComplexFaceElements(
   }
 }
 
-// ============================================================================
-// Method  : CreatePolyTriangulation
-// Purpose : Create PolyTriangulation
-// ============================================================================
+//=================================================================================================
+
 static occ::handle<Poly_Triangulation> CreatePolyTriangulation(
   const occ::handle<StepVisual_TessellatedItem>& theTI,
   const StepData_Factors&                        theLocalFactors)
@@ -896,10 +892,8 @@ occ::handle<Poly_Triangulation> StepToTopoDS_TranslateFace::createMesh(
   return CreatePolyTriangulation(theTI, theLocalFactors);
 }
 
-// ============================================================================
-// Method  : Value
-// Purpose : Return the mapped Shape
-// ============================================================================
+//=================================================================================================
+
 const TopoDS_Shape& StepToTopoDS_TranslateFace::Value() const
 {
   StdFail_NotDone_Raise_if(!done, "StepToTopoDS_TranslateFace::Value() - no result");

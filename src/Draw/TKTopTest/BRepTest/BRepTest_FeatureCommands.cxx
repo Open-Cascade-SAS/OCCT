@@ -2675,10 +2675,8 @@ static int BOSS(Draw_Interpretor& theCommands, int narg, const char** a)
   return 1;
 }
 
-//=============================================================================
-// function : ComputeSimpleOffset
-// purpose  : Computes simple offset.
-//=============================================================================
+//=================================================================================================
+
 static int ComputeSimpleOffset(Draw_Interpretor& theCommands, int narg, const char** a)
 {
   if (narg < 4)

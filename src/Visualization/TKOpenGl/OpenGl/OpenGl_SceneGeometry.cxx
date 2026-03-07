@@ -33,10 +33,8 @@ static const BVH_Vec4f ZERO_VEC_4F;
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_TriangleSet, OpenGl_BVHTriangulation3f)
 
-// =======================================================================
-// function : OpenGl_RaytraceMaterial
-// purpose  : Creates new default material
-// =======================================================================
+//=================================================================================================
+
 OpenGl_RaytraceMaterial::OpenGl_RaytraceMaterial()
     : Ambient(ZERO_VEC_4F),
       Diffuse(ZERO_VEC_4F),
@@ -48,10 +46,8 @@ OpenGl_RaytraceMaterial::OpenGl_RaytraceMaterial()
 {
 }
 
-// =======================================================================
-// function : OpenGl_RaytraceLight
-// purpose  : Creates new light source
-// =======================================================================
+//=================================================================================================
+
 OpenGl_RaytraceLight::OpenGl_RaytraceLight(const BVH_Vec4f& theEmission,
                                            const BVH_Vec4f& thePosition)
     : Emission(theEmission),
@@ -99,10 +95,8 @@ float OpenGl_TriangleSet::Center(const int theIndex, const int theAxis) const
          * 0.5f;
 }
 
-// =======================================================================
-// function : Box
-// purpose  : Returns AABB of primitive set
-// =======================================================================
+//=================================================================================================
+
 OpenGl_TriangleSet::BVH_BoxNt OpenGl_TriangleSet::Box() const
 {
   BVH_BoxNt                      aBox = BVH_PrimitiveSet<float, 3>::Box();
@@ -144,10 +138,8 @@ OpenGl_TriangleSet::OpenGl_TriangleSet(const size_t                             
 {
 }
 
-// =======================================================================
-// function : Clear
-// purpose  : Clears ray-tracing geometry
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_RaytraceGeometry::Clear()
 {
   BVH_Geometry<float, 3>::BVH_Geometry::Clear();

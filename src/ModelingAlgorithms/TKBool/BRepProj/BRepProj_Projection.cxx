@@ -148,10 +148,7 @@ void BRepProj_Projection::BuildSection(const TopoDS_Shape& theShape, const TopoD
   }
 }
 
-//=======================================================================
-// function : BRepProj_Projection
-// purpose  : Cylindrical Projection
-//=======================================================================
+//=================================================================================================
 
 BRepProj_Projection::BRepProj_Projection(const TopoDS_Shape& Wire,
                                          const TopoDS_Shape& Shape,

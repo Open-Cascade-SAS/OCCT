@@ -452,10 +452,8 @@ static void take_time(const int                             isReset,
 }
 #endif
 
-//=======================================================================
-// function : WriteShapeSection
-// purpose  : defines WriteShapeSection
-//=======================================================================
+//=================================================================================================
+
 bool XmlLDrivers_DocumentStorageDriver::WriteShapeSection(
   XmlObjMgt_Element& /*theElement*/,
   const TDocStd_FormatVersion /*theStorageFormatVersion*/,

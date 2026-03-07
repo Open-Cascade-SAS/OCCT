@@ -501,10 +501,7 @@ void TopOpeBRepBuild_Builder::MergeKPartiskole()
 
 } // MergeKPartiskole
 
-//=======================================================================
-// function : KPiskole
-// purpose  : detection faces collees
-//=======================================================================
+//=================================================================================================
 
 int TopOpeBRepBuild_Builder::KPiskole()
 {

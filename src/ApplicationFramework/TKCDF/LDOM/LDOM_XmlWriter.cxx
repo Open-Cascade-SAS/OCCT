@@ -321,10 +321,8 @@ void LDOM_XmlWriter::Write(Standard_OStream& theOStream, const LDOM_Node& theNod
   }
 }
 
-//=======================================================================
-// function :
-// purpose  : Stream out an LDOMString
-//=======================================================================
+//=================================================================================================
+
 void LDOM_XmlWriter::Write(Standard_OStream& theOStream, const LDOMBasicString& theString)
 {
   switch (theString.Type())

@@ -220,10 +220,7 @@ Units_Measurement operator*(const double avalue, const Units_Measurement& ameasu
   return ameasurement * avalue;
 }
 
-//=======================================================================
-// function : operator/
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 Units_Measurement operator/(const double avalue, const Units_Measurement& ameasurement)
 {

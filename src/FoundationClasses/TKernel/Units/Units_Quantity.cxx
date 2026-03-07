@@ -44,10 +44,7 @@ void Units_Quantity::Dump(const int ashift, const int alevel) const
   }
 }
 
-//=======================================================================
-// function : operator ==
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 bool operator==(const occ::handle<Units_Quantity>& aquantity, const char* const astring)
 {

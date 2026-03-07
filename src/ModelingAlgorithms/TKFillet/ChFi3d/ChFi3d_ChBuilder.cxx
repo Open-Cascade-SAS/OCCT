@@ -516,10 +516,7 @@ void ChFi3d_ChBuilder::GetDistAngle(const int IC, double& Dis, double& Angle) co
   chsp->GetDistAngle(Dis, Angle);
 }
 
-//=======================================================================
-// function : SetMode
-// purpose  : set the mode of chamfer
-//=======================================================================
+//=================================================================================================
 
 void ChFi3d_ChBuilder::SetMode(const ChFiDS_ChamfMode theMode)
 {

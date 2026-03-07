@@ -854,10 +854,8 @@ gp_Circ ChFiDS_Spine::Circle() const
   return gp_Circ(A, myCurve.Circle().Radius());
 }
 
-//=======================================================================
-// function : SetErrorStatus
-// purpose  : met a jour le statut d'erreur
-//=======================================================================
+//=================================================================================================
+
 void ChFiDS_Spine::SetErrorStatus(const ChFiDS_ErrorStatus state)
 {
   errorstate = state;

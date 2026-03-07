@@ -77,10 +77,8 @@ occ::handle<Graphic3d_Camera> IVtkOCC_ViewerSelector::ConvertVtkToOccCamera(
   return aCamera;
 }
 
-//============================================================================
-// Method:  Pick
-// Purpose: Implements point picking
-//============================================================================
+//=================================================================================================
+
 void IVtkOCC_ViewerSelector::Pick(const int                 theXPix,
                                   const int                 theYPix,
                                   const IVtk_IView::Handle& theView)
@@ -199,10 +197,8 @@ void IVtkOCC_ViewerSelector::Pick(double**                  thePoly,
   TraverseSensitives(-1);
 }
 
-//============================================================================
-// Method:  Activate
-// Purpose: Activates the given selection
-//============================================================================
+//=================================================================================================
+
 void IVtkOCC_ViewerSelector::Activate(const occ::handle<SelectMgr_Selection>& theSelection)
 {
   for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(

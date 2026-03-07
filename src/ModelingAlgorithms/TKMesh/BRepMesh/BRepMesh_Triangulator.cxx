@@ -166,10 +166,8 @@ void BRepMesh_Triangulator::addTriange34(const NCollection_Sequence<int>& theW,
   }
 }
 
-//=======================================================================
-// function : checkCondition
-// purpose  : auxiliary for addTriange34
-//=======================================================================
+//=================================================================================================
+
 bool BRepMesh_Triangulator::checkCondition(const int (&theNodes)[4],
                                            const NCollection_Sequence<int>& theW)
 {

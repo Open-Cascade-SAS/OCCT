@@ -44,10 +44,8 @@
 // Periodic/Trim/Repeat directions
 static const gp_Dir MY_DIRECTIONS[3] = {gp::DX(), gp::DY(), gp::DZ()};
 
-//=======================================================================
-// function : Perform
-// purpose  : Performs the operation
-//=======================================================================
+//=================================================================================================
+
 void BOPAlgo_MakePeriodic::Perform()
 {
   // Check the validity of input data

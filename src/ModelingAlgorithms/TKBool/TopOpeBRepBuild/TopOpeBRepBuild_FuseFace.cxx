@@ -1176,10 +1176,7 @@ static void MakeEdge(
   mymapEdgLEdg = mapEdgLEdg;
 }
 
-//=======================================================================
-// function : SameSupport
-// purpose  : Edges SameSupport ou pas
-//=======================================================================
+//=================================================================================================
 
 bool SameSupport(const TopoDS_Edge& E1, const TopoDS_Edge& E2)
 {

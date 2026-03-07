@@ -1003,10 +1003,8 @@ void IntAna_QuadQuadGeo::Perform(const gp_Pln& P, const gp_Sphere& S)
   done      = true;
 }
 
-//=======================================================================
-// function : IntAna_QuadQuadGeo
-// purpose  : Cylinder - Cylinder
-//=======================================================================
+//=================================================================================================
+
 IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Cylinder& Cyl1,
                                        const gp_Cylinder& Cyl2,
                                        const double       Tol)
@@ -1279,10 +1277,8 @@ void IntAna_QuadQuadGeo::Perform(const gp_Cylinder& Cyl1, const gp_Cylinder& Cyl
   }
 }
 
-//=======================================================================
-// function : IntAna_QuadQuadGeo
-// purpose  : Cylinder - Cone
-//=======================================================================
+//=================================================================================================
+
 IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Cylinder& Cyl, const gp_Cone& Con, const double Tol)
     : done(false),
       nbint(0),
@@ -1328,10 +1324,8 @@ void IntAna_QuadQuadGeo::Perform(const gp_Cylinder& Cyl, const gp_Cone& Con, con
   }
 }
 
-//=======================================================================
-// function :
-// purpose  : Cylinder - Sphere
-//=======================================================================
+//=================================================================================================
+
 IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Cylinder& Cyl,
                                        const gp_Sphere&   Sph,
                                        const double       Tol)
@@ -1391,10 +1385,8 @@ void IntAna_QuadQuadGeo::Perform(const gp_Cylinder& Cyl, const gp_Sphere& Sph, c
   }
 }
 
-//=======================================================================
-// function : IntAna_QuadQuadGeo
-// purpose  : Cone - Cone
-//=======================================================================
+//=================================================================================================
+
 IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Cone& Con1, const gp_Cone& Con2, const double Tol)
     : done(false),
       nbint(0),
@@ -1878,10 +1870,8 @@ void IntAna_QuadQuadGeo::Perform(const gp_Cone& Con1, const gp_Cone& Con2, const
   }
 }
 
-//=======================================================================
-// function : IntAna_QuadQuadGeo
-// purpose  : Sphere - Cone
-//=======================================================================
+//=================================================================================================
+
 IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Sphere& Sph, const gp_Cone& Con, const double Tol)
     : done(false),
       nbint(0),
@@ -1995,10 +1985,8 @@ void IntAna_QuadQuadGeo::Perform(const gp_Sphere& Sph, const gp_Cone& Con, const
   }
 }
 
-//=======================================================================
-// function : IntAna_QuadQuadGeo
-// purpose  : Sphere - Sphere
-//=======================================================================
+//=================================================================================================
+
 IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Sphere& Sph1,
                                        const gp_Sphere& Sph2,
                                        const double     Tol)
@@ -2124,10 +2112,8 @@ void IntAna_QuadQuadGeo::Perform(const gp_Sphere& Sph1, const gp_Sphere& Sph2, c
   }
 }
 
-//=======================================================================
-// function : IntAna_QuadQuadGeo
-// purpose  : Plane - Torus
-//=======================================================================
+//=================================================================================================
+
 IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Pln& Pln, const gp_Torus& Tor, const double Tol)
     : done(false),
       nbint(0),
@@ -2239,10 +2225,8 @@ void IntAna_QuadQuadGeo::Perform(const gp_Pln& Pln, const gp_Torus& Tor, const d
   }
 }
 
-//=======================================================================
-// function : IntAna_QuadQuadGeo
-// purpose  : Cylinder - Torus
-//=======================================================================
+//=================================================================================================
+
 IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Cylinder& Cyl,
                                        const gp_Torus&    Tor,
                                        const double       Tol)
@@ -2322,10 +2306,8 @@ void IntAna_QuadQuadGeo::Perform(const gp_Cylinder& Cyl, const gp_Torus& Tor, co
   }
 }
 
-//=======================================================================
-// function : IntAna_QuadQuadGeo
-// purpose  : Cone - Torus
-//=======================================================================
+//=================================================================================================
+
 IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Cone& Con, const gp_Torus& Tor, const double Tol)
     : done(false),
       nbint(0),
@@ -2463,10 +2445,8 @@ void IntAna_QuadQuadGeo::Perform(const gp_Cone& Con, const gp_Torus& Tor, const 
   }
 }
 
-//=======================================================================
-// function : IntAna_QuadQuadGeo
-// purpose  : Sphere - Torus
-//=======================================================================
+//=================================================================================================
+
 IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Sphere& Sph, const gp_Torus& Tor, const double Tol)
     : done(false),
       nbint(0),
@@ -2557,10 +2537,8 @@ void IntAna_QuadQuadGeo::Perform(const gp_Sphere& Sph, const gp_Torus& Tor, cons
   }
 }
 
-//=======================================================================
-// function : IntAna_QuadQuadGeo
-// purpose  : Torus - Torus
-//=======================================================================
+//=================================================================================================
+
 IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Torus& Tor1, const gp_Torus& Tor2, const double Tol)
     : done(false),
       nbint(0),

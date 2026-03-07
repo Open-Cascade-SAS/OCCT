@@ -54,10 +54,7 @@ GeomAbs_Shape Law_BSpFunc::Continuity() const
   return curv->Continuity();
 }
 
-//=======================================================================
-// function : NbIntervals
-// purpose  : Inspirer de GeomAdaptor_Curve
-//=======================================================================
+//=================================================================================================
 
 int Law_BSpFunc::NbIntervals(const GeomAbs_Shape S) const
 {
@@ -134,10 +131,7 @@ int Law_BSpFunc::NbIntervals(const GeomAbs_Shape S) const
   return myNbIntervals;
 }
 
-//=======================================================================
-// function : Intervals
-// purpose  : Inspirer de GeomAdaptor_Curve
-//=======================================================================
+//=================================================================================================
 
 void Law_BSpFunc::Intervals(NCollection_Array1<double>& T, const GeomAbs_Shape S) const
 {

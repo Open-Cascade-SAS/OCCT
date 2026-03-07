@@ -305,10 +305,7 @@ static bool BonVoisin(const gp_Pnt&                     Point,
   return bonvoisin;
 }
 
-//=======================================================================
-// function : Projection
-// purpose  : Projects a point on a curve
-//=======================================================================
+//=================================================================================================
 
 static bool Projection(Extrema_ExtPC&         PExt,
                        const gp_Pnt&          P,
@@ -453,10 +450,7 @@ static bool IsInput(const gp_Vec& Vec, const TopoDS_Vertex& Ve, const TopoDS_Fac
   return ((Angle >= amin) && (Angle <= amax));
 }
 
-//=======================================================================
-// function : IsG1
-// purpose  : Find a neighbor G1 by an edge
-//=======================================================================
+//=================================================================================================
 
 static bool IsG1(const ChFiDS_Map&  TheMap,
                  const TopoDS_Edge& E,

@@ -125,10 +125,7 @@ LDOM_MemManager::HashTable::HashTable(/* const int   aMask, */
   }
 }
 
-//=======================================================================
-// function : Hash
-// purpose  : CRC-16 hash function
-//=======================================================================
+//=================================================================================================
 
 int LDOM_MemManager::HashTable::Hash(const char* aString, const int aLen)
 {

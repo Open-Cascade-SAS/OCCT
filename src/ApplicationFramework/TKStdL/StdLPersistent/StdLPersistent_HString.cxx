@@ -74,10 +74,8 @@ TDF_Label StdLPersistent_HString::instance<StringClass, CharType>::Label(
   return aLabel;
 }
 
-//=======================================================================
-// function : AsciiString
-// purpose  : Get referenced ASCII string
-//=======================================================================
+//=================================================================================================
+
 occ::handle<TCollection_HAsciiString> StdLPersistent_HString::Ascii::AsciiString() const
 {
   return myValue;

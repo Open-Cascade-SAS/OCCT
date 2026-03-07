@@ -112,10 +112,7 @@ void StepToTopoDS_TranslateVertexLoop::Init(const occ::handle<StepShape_VertexLo
   }
 }
 
-// ============================================================================
-// Method  : Value
-// Purpose : Return the mapped Shape
-// ============================================================================
+//=================================================================================================
 
 const TopoDS_Shape& StepToTopoDS_TranslateVertexLoop::Value() const
 {

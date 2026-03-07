@@ -78,10 +78,7 @@ bool DDocStd::GetDocument(const char*&                   Name,
   return false;
 }
 
-//=======================================================================
-// function : Label
-// purpose  : try to retrieve a label
-//=======================================================================
+//=================================================================================================
 
 bool DDocStd::Find(const occ::handle<TDocStd_Document>& D,
                    const char* const                    Entry,
@@ -95,10 +92,7 @@ bool DDocStd::Find(const occ::handle<TDocStd_Document>& D,
   return !Label.IsNull();
 }
 
-//=======================================================================
-// function : Find
-// purpose  : Try to retrieve an attribute.
-//=======================================================================
+//=================================================================================================
 
 bool DDocStd::Find(const occ::handle<TDocStd_Document>& D,
                    const char* const                    Entry,

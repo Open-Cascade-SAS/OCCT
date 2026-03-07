@@ -520,10 +520,8 @@ static int ParseDimensionParams(
   return 0;
 }
 
-//=======================================================================
-// function : SetDimensionParams
-// purpose  : Sets parameters for dimension
-//=======================================================================
+//=================================================================================================
+
 static void SetDimensionParams(
   const occ::handle<PrsDim_Dimension>&                                         theDim,
   const NCollection_DataMap<TCollection_AsciiString, double>&                  theRealParams,

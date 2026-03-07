@@ -4812,10 +4812,7 @@ int RWStepAP214_ReadWriteModule::CaseStep(
   return 0;
 }
 
-//=======================================================================
-// function : IsComplex
-// purpose  : External Mapping Recognition
-//=======================================================================
+//=================================================================================================
 
 bool RWStepAP214_ReadWriteModule::IsComplex(const int CN) const
 {

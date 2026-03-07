@@ -256,10 +256,7 @@ void TObj_TIntSparseArray::BeforeCommitTransaction()
   }
 }
 
-//=======================================================================
-// function : DeltaOnModification
-// purpose  : Applies aDelta to <me>
-//=======================================================================
+//=================================================================================================
 
 void TObj_TIntSparseArray::DeltaOnModification(const occ::handle<TDF_DeltaOnModification>& theDelta)
 {

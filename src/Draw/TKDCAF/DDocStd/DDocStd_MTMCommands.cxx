@@ -153,10 +153,7 @@ static int mtmDump(Draw_Interpretor& di, int /*n*/, const char** /*a*/)
   return 0;
 }
 
-//=======================================================================
-// function : mtmUndo
-// purpose  : undos last transaction
-//=======================================================================
+//=================================================================================================
 
 static int mtmUndo(Draw_Interpretor& di, int /*n*/, const char** /*a*/)
 {
@@ -169,10 +166,7 @@ static int mtmUndo(Draw_Interpretor& di, int /*n*/, const char** /*a*/)
   return 0;
 }
 
-//=======================================================================
-// function : mtmRedo
-// purpose  : redos last transaction
-//=======================================================================
+//=================================================================================================
 
 static int mtmRedo(Draw_Interpretor& di, int /*n*/, const char** /*a*/)
 {
@@ -185,10 +179,7 @@ static int mtmRedo(Draw_Interpretor& di, int /*n*/, const char** /*a*/)
   return 0;
 }
 
-//=======================================================================
-// function : mtmNestedMode
-// purpose  : redos last transaction
-//=======================================================================
+//=================================================================================================
 
 static int mtmNestedMode(Draw_Interpretor& di, int n, const char** a)
 {

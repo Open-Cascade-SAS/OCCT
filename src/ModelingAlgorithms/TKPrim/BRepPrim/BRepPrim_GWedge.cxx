@@ -105,10 +105,7 @@ static void BRepPrim_Wedge_Check(const bool V[], const bool E[], const bool W[],
       throw Standard_DomainError();
 }
 
-//=======================================================================
-// function : BRepPrim_Wedge_Init
-// purpose  : Set arrays to false
-//=======================================================================
+//=================================================================================================
 
 static void BRepPrim_Wedge_Init(bool& S, bool V[], bool E[], bool W[], bool F[])
 {
@@ -462,10 +459,7 @@ gp_Pln BRepPrim_GWedge::Plane(const BRepPrim_Direction d1)
   return plane;
 }
 
-//=======================================================================
-// function : Face
-// purpose  : the face in one direction
-//=======================================================================
+//=================================================================================================
 
 const TopoDS_Face& BRepPrim_GWedge::Face(const BRepPrim_Direction d1)
 {

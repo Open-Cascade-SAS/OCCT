@@ -37,10 +37,8 @@ void StdLPersistent_Document::Write(StdObjMgt_WriteData& theWriteData) const
   theWriteData << myData;
 }
 
-//=======================================================================
-// function : PChildren
-// purpose  : Gets persistent child objects
-//=======================================================================
+//=================================================================================================
+
 void StdLPersistent_Document::PChildren(
   StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
 {

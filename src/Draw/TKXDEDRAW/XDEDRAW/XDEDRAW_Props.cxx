@@ -793,10 +793,7 @@ static int ShapeVolume(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-//=======================================================================
-// function : GetMassProps
-// purpose  : auxiliary for ShapeMassProps
-//=======================================================================
+//=================================================================================================
 
 static bool GetMassProps(const TDF_Label& aLabel,
                          gp_XYZ&          theCenterGravity,

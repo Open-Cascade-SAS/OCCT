@@ -176,10 +176,7 @@ void Draw_Viewer::SetTitle(const int id, const char* name)
     myViews[id]->SetTitle(name);
 }
 
-//=======================================================================
-// function : ResetView
-// purpose  : reset view zoom and axes
-//=======================================================================
+//=================================================================================================
 
 void Draw_Viewer::ResetView(const int id)
 {
@@ -550,10 +547,8 @@ void Draw_Viewer::RepaintView(const int id) const
 }
 
 #ifdef _WIN32
-//=======================================================================
-// function : ResizeView
-// purpose  : WNT re-drawing optimization
-//=======================================================================
+//=================================================================================================
+
 void Draw_Viewer::ResizeView(const int id) const
 {
   if (Draw_Batch)
@@ -565,10 +560,8 @@ void Draw_Viewer::ResizeView(const int id) const
   }
 }
 
-//=======================================================================
-// function : UpdateView
-// purpose  : WNT re-drawing optimization
-//=======================================================================
+//=================================================================================================
+
 void Draw_Viewer::UpdateView(const int id, const bool forced) const
 {
   if (Draw_Batch)
@@ -873,10 +866,7 @@ void Draw_Viewer::RemoveDrawable(const occ::handle<Draw_Drawable3D>& D)
   }
 }
 
-//=======================================================================
-// function : MakeDisplay
-// purpose  : return a display on the view
-//=======================================================================
+//=================================================================================================
 
 Draw_Display Draw_Viewer::MakeDisplay(const int id) const
 {
@@ -1134,10 +1124,7 @@ Draw_Viewer::~Draw_Viewer()
     DeleteView(id);
 }
 
-//=======================================================================
-// function : operator<<
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 Draw_Viewer& Draw_Viewer::operator<<(const occ::handle<Draw_Drawable3D>& d3d)
 {

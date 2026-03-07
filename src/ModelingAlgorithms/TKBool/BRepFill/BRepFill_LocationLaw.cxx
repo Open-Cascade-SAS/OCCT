@@ -135,10 +135,8 @@ void BRepFill_LocationLaw::BiNormalIsMain()
   myType = 3;
 }
 
-//=======================================================================
-// function : TransformInCompatibleLaw
-// purpose  : Set in continuity of laws
-//=======================================================================
+//=================================================================================================
+
 void BRepFill_LocationLaw::TransformInCompatibleLaw(const double TolAngular)
 {
 
@@ -191,10 +189,8 @@ void BRepFill_LocationLaw::TransformInCompatibleLaw(const double TolAngular)
   }
 }
 
-//=======================================================================
-// function : TransformInG0Law
-// purpose  : Set in continuity of laws
-//=======================================================================
+//=================================================================================================
+
 void BRepFill_LocationLaw::TransformInG0Law()
 {
 

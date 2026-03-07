@@ -37,10 +37,7 @@ void NCollection_BaseSequence::ClearSeq(NCollection_DelSeqNode fDel)
   Nullify();
 }
 
-//=======================================================================
-// function : PAppend
-// purpose  : append an item to sequence
-//=======================================================================
+//=================================================================================================
 
 void NCollection_BaseSequence::PAppend(NCollection_SeqNode* theItem)
 {
@@ -89,10 +86,7 @@ void NCollection_BaseSequence::PAppend(NCollection_BaseSequence& Other)
   Other.Nullify();
 }
 
-//=======================================================================
-// function : PPrepend
-// purpose  : prepend an item to sequence
-//=======================================================================
+//=================================================================================================
 
 void NCollection_BaseSequence::PPrepend(NCollection_SeqNode* theItem)
 {

@@ -208,10 +208,8 @@ void BRepFill_Filling::LoadInitSurface(const TopoDS_Face& aFace)
   myIsInitFaceGiven = true;
 }
 
-//=======================================================================
-// function : Add
-// purpose  : adds an edge as a constraint
-//======================================================================
+//=================================================================================================
+
 int BRepFill_Filling::Add(const TopoDS_Edge& anEdge, const GeomAbs_Shape Order, const bool IsBound)
 {
   TopoDS_Face               NullFace;
@@ -261,10 +259,8 @@ int BRepFill_Filling::Add(const TopoDS_Face& Support, const GeomAbs_Shape Order)
   return (myBoundary.Length() + myFreeConstraints.Length());
 }
 
-//=======================================================================
-// function : Add
-// purpose  : adds a point constraint
-//======================================================================
+//=================================================================================================
+
 int BRepFill_Filling::Add(const gp_Pnt& Point)
 {
   occ::handle<GeomPlate_PointConstraint> aPC =
@@ -552,10 +548,8 @@ void BRepFill_Filling::FindExtremitiesOfHoles(const NCollection_List<TopoDS_Shap
   VerSeq.Append(Vfirst);
 }
 
-//=======================================================================
-// function : Build
-// purpose  : builds the resulting face
-//======================================================================
+//=================================================================================================
+
 void BRepFill_Filling::Build()
 {
   myBuilder.reset(new GeomPlate_BuildPlateSurface(myDegree,

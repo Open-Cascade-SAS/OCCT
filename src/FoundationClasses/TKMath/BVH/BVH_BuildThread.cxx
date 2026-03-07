@@ -17,10 +17,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(BVH_BuildThread, Standard_Transient)
 
-// =======================================================================
-// function : BVH_BuildThread
-// purpose  : Creates new BVH build thread
-// =======================================================================
+//=================================================================================================
+
 BVH_BuildThread::BVH_BuildThread(BVH_BuildTool& theBuildTool, BVH_BuildQueue& theBuildQueue)
     : myBuildTool(theBuildTool),
       myBuildQueue(theBuildQueue),
@@ -28,10 +26,8 @@ BVH_BuildThread::BVH_BuildThread(BVH_BuildTool& theBuildTool, BVH_BuildQueue& th
 {
 }
 
-// =======================================================================
-// function : execute
-// purpose  : Executes BVH build thread
-// =======================================================================
+//=================================================================================================
+
 void BVH_BuildThread::execute()
 {
   for (bool wasBusy = false; /**/; /**/)

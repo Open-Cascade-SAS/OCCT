@@ -958,10 +958,7 @@ void TopOpeBRepDS_BuildTool::UpdateEdge(const TopoDS_Shape& Ein, TopoDS_Shape& E
   }
 }
 
-//=======================================================================
-// function : Project
-// purpose  : project a vertex on a curve
-//=======================================================================
+//=================================================================================================
 
 static bool Project(const occ::handle<Geom_Curve>& C, const TopoDS_Vertex& V, double& p)
 {

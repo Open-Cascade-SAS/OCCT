@@ -128,9 +128,7 @@ BinTools_IStream::operator bool() const
 }
 
 //=================================================================================================
-// function : operator <<
-// purpose  :
-//=================================================================================================
+
 BinTools_IStream& BinTools_IStream::operator>>(double& theValue)
 {
   if (!myStream->read((char*)&theValue, sizeof(double)))
@@ -143,9 +141,7 @@ BinTools_IStream& BinTools_IStream::operator>>(double& theValue)
 }
 
 //=================================================================================================
-// function : operator <<
-// purpose  :
-//=================================================================================================
+
 BinTools_IStream& BinTools_IStream::operator>>(int& theValue)
 {
   if (!myStream->read((char*)&theValue, sizeof(int)))
@@ -158,9 +154,7 @@ BinTools_IStream& BinTools_IStream::operator>>(int& theValue)
 }
 
 //=================================================================================================
-// function : operator <<
-// purpose  :
-//=================================================================================================
+
 BinTools_IStream& BinTools_IStream::operator>>(gp_Pnt& theValue)
 {
   double aValue;
@@ -178,9 +172,7 @@ BinTools_IStream& BinTools_IStream::operator>>(gp_Pnt& theValue)
 }
 
 //=================================================================================================
-// function : operator <<
-// purpose  :
-//=================================================================================================
+
 BinTools_IStream& BinTools_IStream::operator>>(uint8_t& theValue)
 {
   myStream->read((char*)&theValue, sizeof(uint8_t));
@@ -189,9 +181,7 @@ BinTools_IStream& BinTools_IStream::operator>>(uint8_t& theValue)
 }
 
 //=================================================================================================
-// function : operator <<
-// purpose  :
-//=================================================================================================
+
 BinTools_IStream& BinTools_IStream::operator>>(float& theValue)
 {
   myStream->read((char*)&theValue, sizeof(float));
@@ -200,9 +190,7 @@ BinTools_IStream& BinTools_IStream::operator>>(float& theValue)
 }
 
 //=================================================================================================
-// function : operator <<
-// purpose  :
-//=================================================================================================
+
 BinTools_IStream& BinTools_IStream::operator>>(gp_Trsf& theValue)
 {
   double aV1[3], aV2[3], aV3[3], aV[3];

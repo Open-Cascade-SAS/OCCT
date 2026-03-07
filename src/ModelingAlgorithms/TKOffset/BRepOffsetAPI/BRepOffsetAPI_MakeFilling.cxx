@@ -79,10 +79,8 @@ void BRepOffsetAPI_MakeFilling::LoadInitSurface(const TopoDS_Face& Surf)
   myFilling.LoadInitSurface(Surf);
 }
 
-//=======================================================================
-// function : Add
-// purpose  : adds an edge as a constraint
-//======================================================================
+//=================================================================================================
+
 int BRepOffsetAPI_MakeFilling::Add(const TopoDS_Edge&  Constr,
                                    const GeomAbs_Shape Order,
                                    const bool          IsBound)
@@ -111,10 +109,8 @@ int BRepOffsetAPI_MakeFilling::Add(const TopoDS_Face& Support, const GeomAbs_Sha
   return myFilling.Add(Support, Order);
 }
 
-//=======================================================================
-// function : Add
-// purpose  : adds a point constraint
-//======================================================================
+//=================================================================================================
+
 int BRepOffsetAPI_MakeFilling::Add(const gp_Pnt& Point)
 {
   return myFilling.Add(Point);
@@ -132,10 +128,8 @@ int BRepOffsetAPI_MakeFilling::Add(const double        U,
   return myFilling.Add(U, V, Support, Order);
 }
 
-//=======================================================================
-// function : Build
-// purpose  : builds the resulting face
-//======================================================================
+//=================================================================================================
+
 void BRepOffsetAPI_MakeFilling::Build(const Message_ProgressRange& /*theRange*/)
 {
   myFilling.Build();

@@ -234,9 +234,6 @@ static void PrintOrientation(const TopAbs_Orientation O, Standard_OStream& S, bo
 }
 
 //=================================================================================================
-// function : DumpExtent
-// purpose  : Dump number of shapes.
-//=================================================================================================
 
 Standard_OStream& TopTools_ShapeSet::DumpExtent(Standard_OStream& OS) const
 {
@@ -307,9 +304,6 @@ Standard_OStream& TopTools_ShapeSet::DumpExtent(Standard_OStream& OS) const
   return OS;
 }
 
-//=================================================================================================
-// function : DumpExtent
-// purpose  : Dump number of shapes.
 //=================================================================================================
 
 void TopTools_ShapeSet::DumpExtent(TCollection_AsciiString& S) const

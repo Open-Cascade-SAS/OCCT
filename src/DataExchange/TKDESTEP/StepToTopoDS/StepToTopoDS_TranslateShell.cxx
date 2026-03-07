@@ -205,10 +205,7 @@ void StepToTopoDS_TranslateShell::Init(const occ::handle<StepVisual_TessellatedS
   done     = true;
 }
 
-// ============================================================================
-// Method  : Value
-// Purpose : Return the mapped Shape
-// ============================================================================
+//=================================================================================================
 
 const TopoDS_Shape& StepToTopoDS_TranslateShell::Value() const
 {

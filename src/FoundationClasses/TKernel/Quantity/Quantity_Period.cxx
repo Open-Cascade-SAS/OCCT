@@ -43,12 +43,8 @@ bool Quantity_Period::IsValid(const int dd,
   return (dd >= 0 && hh >= 0 && mn >= 0 && ss >= 0 && mis >= 0 && mics >= 0);
 }
 
-// -------------------------------------------------------------
-// IsValid : Checks the validity of a date
-// With:
-// 0 <= ss
-// 0 <= mics
-// -------------------------------------------------------------
+//=================================================================================================
+
 bool Quantity_Period::IsValid(const int ss, const int mics)
 {
   return (ss >= 0 && mics >= 0);

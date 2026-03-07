@@ -25,10 +25,8 @@
 
 #include <TopExp_Explorer.hxx>
 
-//=======================================================================
-// function : Perform
-// purpose  : Makes the shapes connected
-//=======================================================================
+//=================================================================================================
+
 void BOPAlgo_MakeConnected::Perform()
 {
   // Check the input data
@@ -96,10 +94,8 @@ void BOPAlgo_MakeConnected::CheckData()
   }
 }
 
-//=======================================================================
-// function : MakeConnected
-// purpose  : Glues the argument shapes
-//=======================================================================
+//=================================================================================================
+
 void BOPAlgo_MakeConnected::MakeConnected()
 {
   // Initialize the history
@@ -143,10 +139,8 @@ void BOPAlgo_MakeConnected::MakeConnected()
   FillOrigins();
 }
 
-//=======================================================================
-// function : FillOrigins
-// purpose  : Fills the map of origins
-//=======================================================================
+//=================================================================================================
+
 void BOPAlgo_MakeConnected::FillOrigins()
 {
   myOrigins.Clear();

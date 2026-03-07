@@ -338,9 +338,7 @@ public:
 
 //////////
 //=================================================================================================
-// function : IntAna_IntQuadQuad::IntAna_IntQuadQuad
-// purpose  : Empty constructor
-//=================================================================================================
+
 IntAna_IntQuadQuad::IntAna_IntQuadQuad()
 {
   done                   = false;

@@ -76,10 +76,8 @@ void Select3D_SensitiveFace::GetPoints(occ::handle<NCollection_HArray1<gp_Pnt>>&
   }
 }
 
-//=======================================================================
-// function : BVH
-// purpose  : Builds BVH tree for the face
-//=======================================================================
+//=================================================================================================
+
 void Select3D_SensitiveFace::BVH()
 {
   myFacePoints->BVH();

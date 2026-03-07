@@ -1722,10 +1722,8 @@ void IntPatch_WLineTool::JoinWLines(NCollection_Sequence<occ::handle<IntPatch_Li
   }
 }
 
-//=======================================================================
-// function : IsNeedSkipWL
-// purpose  : Detect is WLine need to skip.
-//=======================================================================
+//=================================================================================================
+
 static bool IsNeedSkipWL(const occ::handle<IntPatch_WLine>& theWL,
                          const Bnd_Box2d&                   theBoxS1,
                          const Bnd_Box2d&                   theBoxS2,

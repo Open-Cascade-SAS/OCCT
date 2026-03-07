@@ -235,10 +235,7 @@ TCollection_AsciiString DDF_Browser::OpenAttribute(const int anIndex)
   return list;
 }
 
-//=======================================================================
-// function : Information
-// purpose  : Information about <myDF>.
-//=======================================================================
+//=================================================================================================
 
 TCollection_AsciiString DDF_Browser::Information() const
 {
@@ -246,10 +243,7 @@ TCollection_AsciiString DDF_Browser::Information() const
   return list;
 }
 
-//=======================================================================
-// function : Information
-// purpose  : Information about a label.
-//=======================================================================
+//=================================================================================================
 
 TCollection_AsciiString DDF_Browser::Information(const TDF_Label& /*aLab*/) const
 {

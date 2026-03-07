@@ -529,9 +529,6 @@ void Approx_SameParameter::Build(const double Tolerance)
 }
 
 //=================================================================================================
-// function : BuildInitialDistribution
-// purpose  : Sub-method in Build.
-//=================================================================================================
 
 bool Approx_SameParameter::BuildInitialDistribution(Approx_SameParameter_Data& theData) const
 {
@@ -633,9 +630,6 @@ bool Approx_SameParameter::IncreaseInitialNbSamples(Approx_SameParameter_Data& t
   return true;
 }
 
-//=================================================================================================
-// function : CheckSameParameter
-// purpose  : Sub-method in Build.
 //=================================================================================================
 
 bool Approx_SameParameter::CheckSameParameter(Approx_SameParameter_Data& theData,
@@ -748,9 +742,6 @@ bool Approx_SameParameter::CheckSameParameter(Approx_SameParameter_Data& theData
 }
 
 //=================================================================================================
-// function : ComputeTangents
-// purpose  : Sub-method in Build.
-//=================================================================================================
 
 bool Approx_SameParameter::ComputeTangents(const Adaptor3d_CurveOnSurface& theCOnS,
                                            double&                         theFirstTangent,
@@ -785,9 +776,6 @@ bool Approx_SameParameter::ComputeTangents(const Adaptor3d_CurveOnSurface& theCO
   return true;
 }
 
-//=================================================================================================
-// function : Interpolate
-// purpose  : Sub-method in Build.
 //=================================================================================================
 
 bool Approx_SameParameter::Interpolate(const Approx_SameParameter_Data& theData,
@@ -832,9 +820,6 @@ bool Approx_SameParameter::Interpolate(const Approx_SameParameter_Data& theData,
   return inversion_problem == 0;
 }
 
-//=================================================================================================
-// function : IncreaseNbPoles
-// purpose  : Sub-method in Build.
 //=================================================================================================
 
 bool Approx_SameParameter::IncreaseNbPoles(const NCollection_Array1<double>& thePoles,

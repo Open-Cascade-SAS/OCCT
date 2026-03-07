@@ -48,10 +48,8 @@ Graphic3d_FrameStatsData::Graphic3d_FrameStatsData(Graphic3d_FrameStatsData&& th
 {
 }
 
-// =======================================================================
-// function : operator=
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_FrameStatsData& Graphic3d_FrameStatsData::operator=(
   const Graphic3d_FrameStatsData& theOther)
 {
@@ -70,10 +68,8 @@ Graphic3d_FrameStatsData& Graphic3d_FrameStatsData::operator=(
   return *this;
 }
 
-// =======================================================================
-// function : operator=
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_FrameStatsData& Graphic3d_FrameStatsData::operator=(
   Graphic3d_FrameStatsData&& theOther) noexcept
 {

@@ -32,10 +32,8 @@ void StdLPersistent_TreeNode::Write(StdObjMgt_WriteData& theWriteData) const
   theWriteData << myDynamicData->First << myNext << myDynamicData->TreeID;
 }
 
-//=======================================================================
-// function : PChildren
-// purpose  : Gets persistent child objects
-//=======================================================================
+//=================================================================================================
+
 void StdLPersistent_TreeNode::PChildren(
   StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
 {

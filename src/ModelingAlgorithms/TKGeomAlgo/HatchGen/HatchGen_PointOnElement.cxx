@@ -201,10 +201,7 @@ bool HatchGen_PointOnElement::IsDifferent(const HatchGen_PointOnElement& Point,
           || (mySegBeg != Point.mySegBeg) || (mySegEnd != Point.mySegEnd));
 }
 
-//=======================================================================
-// Function : Dump
-// Purpose  : Dump of the point on element
-//=======================================================================
+//=================================================================================================
 
 void HatchGen_PointOnElement::Dump(const int Index) const
 {

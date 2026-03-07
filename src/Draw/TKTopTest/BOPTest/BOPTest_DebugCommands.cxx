@@ -1150,10 +1150,8 @@ int bopfinfo(Draw_Interpretor& di, int n, const char** a, const int iPriz)
   return 0;
 }
 
-//=======================================================================
-// function : bopfav
-// purpose  : alone vertices on face
-//=======================================================================
+//=================================================================================================
+
 int bopfav(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 2)

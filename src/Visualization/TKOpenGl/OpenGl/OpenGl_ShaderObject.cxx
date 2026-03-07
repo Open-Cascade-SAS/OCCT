@@ -173,10 +173,8 @@ void OpenGl_ShaderObject::DumpSourceCode(const occ::handle<OpenGl_Context>& theC
                       getShaderTypeString(myType) + " [" + theId + "] source code:\n" + theSource);
 }
 
-// =======================================================================
-// function : LoadSource
-// purpose  : Loads shader source code
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_ShaderObject::LoadSource(const occ::handle<OpenGl_Context>& theCtx,
                                      const TCollection_AsciiString&     theSource)
 {
@@ -190,10 +188,8 @@ bool OpenGl_ShaderObject::LoadSource(const occ::handle<OpenGl_Context>& theCtx,
   return true;
 }
 
-// =======================================================================
-// function : Compile
-// purpose  : Compiles the shader object
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_ShaderObject::Compile(const occ::handle<OpenGl_Context>& theCtx)
 {
   if (myShaderID == NO_SHADER)
@@ -250,10 +246,8 @@ bool OpenGl_ShaderObject::Create(const occ::handle<OpenGl_Context>& theCtx)
   return myShaderID != NO_SHADER;
 }
 
-// =======================================================================
-// function : Release
-// purpose  : Destroys shader object
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_ShaderObject::Release(OpenGl_Context* theCtx)
 {
   if (myShaderID == NO_SHADER)

@@ -114,10 +114,8 @@ StepToTopoDS_Builder::StepToTopoDS_Builder()
   done = false;
 }
 
-// ============================================================================
-// Method  : Init
-// Purpose : Init with a ManifoldSolidBrep
-// ============================================================================
+//=================================================================================================
+
 void StepToTopoDS_Builder::Init(const occ::handle<StepShape_ManifoldSolidBrep>& theManifoldSolid,
                                 const occ::handle<Transfer_TransientProcess>&   theTP,
                                 const StepData_Factors&                         theLocalFactors,
@@ -176,10 +174,8 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepShape_ManifoldSolidBrep>& 
   ResetPreci(aStepModel, aSolid, MaxTol());
 }
 
-// ============================================================================
-// Method  : Init
-// Purpose : Init with a BrepWithVoids
-// ============================================================================
+//=================================================================================================
+
 void StepToTopoDS_Builder::Init(const occ::handle<StepShape_BrepWithVoids>&   theBRepWithVoids,
                                 const occ::handle<Transfer_TransientProcess>& theTP,
                                 const StepData_Factors&                       theLocalFactors,
@@ -271,10 +267,8 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepShape_BrepWithVoids>&   th
   ResetPreci(aStepModel, aSolid, MaxTol());
 }
 
-// ============================================================================
-// Method  : Init
-// Purpose : Init with a FacetedBrep
-// ============================================================================
+//=================================================================================================
+
 void StepToTopoDS_Builder::Init(const occ::handle<StepShape_FacetedBrep>&     theFB,
                                 const occ::handle<Transfer_TransientProcess>& theTP,
                                 const StepData_Factors&                       theLocalFactors,
@@ -634,10 +628,8 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepShape_FaceBasedSurfaceMode
 }
 
 // ***start DTH Apr/6
-// ============================================================================
-// Method  : Init
-// Purpose : Init with a GeometricCurveSet
-// ============================================================================
+//=================================================================================================
+
 //: i6 abv 17 Sep 98: ProSTEP TR9 r0601-ct.stp: to be able read GS: GeometricCurveSet ->
 //: GeometricSet
 

@@ -54,10 +54,7 @@ StepToTopoDS_TranslateVertex::StepToTopoDS_TranslateVertex(const occ::handle<Ste
   Init(V, T, NMTool, theLocalFactors);
 }
 
-// ============================================================================
-// Method  : Init
-// Purpose : Init with a Vertex and a Tool
-// ============================================================================
+//=================================================================================================
 
 void StepToTopoDS_TranslateVertex::Init(const occ::handle<StepShape_Vertex>& aVertex,
                                         StepToTopoDS_Tool&                   aTool,
@@ -129,10 +126,7 @@ void StepToTopoDS_TranslateVertex::Init(const occ::handle<StepShape_Vertex>& aVe
   done    = true;
 }
 
-// ============================================================================
-// Method  : Value
-// Purpose : Return the mapped Shape
-// ============================================================================
+//=================================================================================================
 
 const TopoDS_Shape& StepToTopoDS_TranslateVertex::Value() const
 {

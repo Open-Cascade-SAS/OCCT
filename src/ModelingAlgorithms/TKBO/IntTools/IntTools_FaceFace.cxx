@@ -202,10 +202,8 @@ bool IntTools_FaceFace::IsDone() const
   return myIsDone;
 }
 
-//=======================================================================
-// function : Lines
-// purpose  : return lines of intersection
-//=======================================================================
+//=================================================================================================
+
 const NCollection_Sequence<IntTools_Curve>& IntTools_FaceFace::Lines() const
 {
   StdFail_NotDone_Raise_if(!myIsDone, "IntTools_FaceFace::Lines() => myIntersector NOT DONE");
@@ -2288,10 +2286,8 @@ bool IsCurveValid(const occ::handle<Geom2d_Curve>& thePCurve)
   return true;
 }
 
-//=======================================================================
-// static function : ApproxWithPCurves
-// purpose  : for bug 20964 only
-//=======================================================================
+//=================================================================================================
+
 bool ApproxWithPCurves(const gp_Cylinder& theCyl, const gp_Sphere& theSph)
 {
   bool   bRes = true;

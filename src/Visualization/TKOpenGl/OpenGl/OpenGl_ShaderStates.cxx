@@ -64,10 +64,8 @@ OpenGl_ModelWorldState::OpenGl_ModelWorldState()
 {
 }
 
-// =======================================================================
-// function : Set
-// purpose  : Sets new model-world matrix
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_ModelWorldState::Set(const NCollection_Mat4<float>& theModelWorldMatrix)
 {
   myModelWorldMatrix  = theModelWorldMatrix;
@@ -97,10 +95,8 @@ OpenGl_WorldViewState::OpenGl_WorldViewState()
 {
 }
 
-// =======================================================================
-// function : Set
-// purpose  : Sets new world-view matrix
-// =======================================================================
+//=================================================================================================
+
 void OpenGl_WorldViewState::Set(const NCollection_Mat4<float>& theWorldViewMatrix)
 {
   myWorldViewMatrix   = theWorldViewMatrix;
@@ -121,10 +117,8 @@ const NCollection_Mat4<float>& OpenGl_WorldViewState::WorldViewMatrixInverse() c
   return myWorldViewMatrixInverse;
 }
 
-// =======================================================================
-// function : OpenGl_ClippingState
-// purpose  : Creates new clipping state
-// =======================================================================
+//=================================================================================================
+
 OpenGl_ClippingState::OpenGl_ClippingState()
     : myIndex(0),
       myNextIndex(1)

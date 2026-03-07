@@ -1116,9 +1116,6 @@ bool BRep_Tool::HasContinuity(const TopoDS_Edge& E, const TopoDS_Face& F1, const
 }
 
 //=================================================================================================
-// function : Continuity
-// purpose  : Returns the continuity.
-//=================================================================================================
 
 GeomAbs_Shape BRep_Tool::Continuity(const TopoDS_Edge& E,
                                     const TopoDS_Face& F1,
@@ -1159,9 +1156,6 @@ bool BRep_Tool::HasContinuity(const TopoDS_Edge&               E,
   return false;
 }
 
-//=================================================================================================
-// function : Continuity
-// purpose  : Returns the continuity.
 //=================================================================================================
 
 GeomAbs_Shape BRep_Tool::Continuity(const TopoDS_Edge&               E,
@@ -1249,9 +1243,6 @@ gp_Pnt BRep_Tool::Pnt(const TopoDS_Vertex& V)
   return P.Transformed(V.Location().Transformation());
 }
 
-//=================================================================================================
-// function : Tolerance
-// purpose  : Returns the tolerance.
 //=================================================================================================
 
 double BRep_Tool::Tolerance(const TopoDS_Vertex& V)

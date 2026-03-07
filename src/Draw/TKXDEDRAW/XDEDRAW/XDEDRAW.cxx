@@ -314,10 +314,7 @@ static int dump(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-//=======================================================================
-// function : StatAssembly
-// purpose  : recursive part of statistics
-//=======================================================================
+//=================================================================================================
 
 static void StatAssembly(const TDF_Label                        L,
                          const int                              level,
@@ -1294,10 +1291,8 @@ static int dumpLengthUnit(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-//=======================================================================
-// function : XShowFaceBoundary
-// purpose  : Set face boundaries on/off
-//=======================================================================
+//=================================================================================================
+
 static int XShowFaceBoundary(Draw_Interpretor& di, int argc, const char** argv)
 {
   if ((argc != 4 && argc < 7) || argc > 9)
@@ -1506,10 +1501,7 @@ static int XDumpAssemblyTree(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-//=======================================================================
-// function : graphNodeTypename
-// purpose  : Returns node type name
-//=======================================================================
+//=================================================================================================
 
 static const char* graphNodeTypename(const XCAFDoc_AssemblyGraph::NodeType theNodeType)
 {

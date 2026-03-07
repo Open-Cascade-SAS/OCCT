@@ -125,10 +125,8 @@ void BRepAlgoAPI_BuilderAlgo::IntersectShapes(const NCollection_List<TopoDS_Shap
   GetReport()->Merge(myDSFiller->GetReport());
 }
 
-//=======================================================================
-// function : BuildResult
-// purpose  : Builds the result shape
-//=======================================================================
+//=================================================================================================
+
 void BRepAlgoAPI_BuilderAlgo::BuildResult(const Message_ProgressRange& theRange)
 {
   // Set options to the builder
