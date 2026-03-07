@@ -107,6 +107,10 @@ private:
                                         GeomBndLib_SurfaceOfExtrusion,
                                         GeomBndLib_OffsetSurface,
                                         GeomBndLib_OtherSurface>;
+  bool initFromSurface(const occ::handle<Geom_Surface>& theSurf);
+  bool initFromSurfaceType(GeomAbs_SurfaceType theType, const occ::handle<Geom_Surface>& theSurf);
+  void initOtherSurface(const Adaptor3d_Surface& theSurf);
+  void initOtherSurface(const occ::handle<Geom_Surface>& theSurf);
   const Adaptor3d_Surface* adaptor() const;
   double                   effectiveU1() const;
   double                   effectiveU2() const;
@@ -118,8 +122,6 @@ private:
   occ::handle<Adaptor3d_Surface> myAdaptorOwned;
   EvaluatorVariant               myEvaluator;
   GeomAbs_SurfaceType            mySurfType;
-  //!< Non-identity trsf from GeomAdaptor_TransformedSurface; applied to Box/BoxOptimal results.
-  std::optional<gp_Trsf> myTrsf;
 };
 
 #endif // GeomBndLib_Surface_HeaderFile
