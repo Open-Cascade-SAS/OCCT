@@ -176,7 +176,7 @@ IntTools_BeanFaceIntersector::IntTools_BeanFaceIntersector(const BRepAdaptor_Cur
   myCriteria        = myBeanTolerance + myFaceTolerance;
   myCurveResolution = myCurve.Resolution(myCriteria);
 
-  mySurface = theSurface;
+  mySurface     = theSurface;
   myTrsfSurface = mySurface.GeomSurfaceTransformed();
 }
 
@@ -190,8 +190,8 @@ void IntTools_BeanFaceIntersector::Init(const TopoDS_Edge& theEdge, const TopoDS
   }
   //
   myCurve.Initialize(theEdge);
-  mySurface = myContext->SurfaceAdaptor(theFace);
-  myTrsfSurface = mySurface.GeomSurfaceTransformed();
+  mySurface       = myContext->SurfaceAdaptor(theFace);
+  myTrsfSurface   = mySurface.GeomSurfaceTransformed();
   myBeanTolerance = BRep_Tool::Tolerance(theEdge);
   myFaceTolerance = BRep_Tool::Tolerance(theFace);
 
@@ -212,9 +212,9 @@ void IntTools_BeanFaceIntersector::Init(const BRepAdaptor_Curve&   theCurve,
                                         const double               theBeanTolerance,
                                         const double               theFaceTolerance)
 {
-  myCurve   = theCurve;
-  mySurface = theSurface;
-  myTrsfSurface = mySurface.GeomSurfaceTransformed();
+  myCurve         = theCurve;
+  mySurface       = theSurface;
+  myTrsfSurface   = mySurface.GeomSurfaceTransformed();
   myBeanTolerance = theBeanTolerance;
   myFaceTolerance = theFaceTolerance;
 
