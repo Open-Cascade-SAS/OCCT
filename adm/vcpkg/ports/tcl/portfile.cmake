@@ -33,19 +33,17 @@ endif()
 
 # Use Windows NMAKE build for MSVC, but Unix build for MinGW
 if (VCPKG_TARGET_IS_WINDOWS AND NOT VCPKG_TARGET_IS_MINGW)
-   if(VCPKG_TARGET_ARCHITECTURE MATCHES "x64")
+   if(VCPKG_TARGET_ARCHITECTURE STREQUAL "x64")
         set(TCL_BUILD_MACHINE_STR MACHINE=AMD64)
         set(TCL_BUILD_ARCH_STR ARCH=AMD64)
-    elseif(VCPKG_TARGET_ARCHITECTURE MATCHES "arm")
+    elseif(VCPKG_TARGET_ARCHITECTURE STREQUAL "arm64")
         set(TCL_BUILD_MACHINE_STR MACHINE=ARM64)
         set(TCL_BUILD_ARCH_STR ARCH=ARM64)
-    elseif(VCPKG_TARGET_ARCHITECTURE MATCHES "x86")
+    elseif(VCPKG_TARGET_ARCHITECTURE STREQUAL "x86")
         set(TCL_BUILD_MACHINE_STR MACHINE=IX86)
         set(TCL_BUILD_ARCH_STR ARCH=IX86)
     else()
-        # Default fallback for unknown architectures
-        set(TCL_BUILD_MACHINE_STR MACHINE=IX86)
-        set(TCL_BUILD_ARCH_STR ARCH=IX86)
+        message(FATAL_ERROR "Unsupported Windows Tcl architecture: ${VCPKG_TARGET_ARCHITECTURE}")
     endif()
     
     # Handle features

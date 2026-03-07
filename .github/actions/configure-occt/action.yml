@@ -8,6 +8,10 @@ inputs:
   compiler:
     description: 'Compiler (msvc, clang, gcc)'
     required: true
+  target-arch:
+    description: 'Target architecture (x64, arm64)'
+    required: false
+    default: 'x64'
   additional-cmake-flags:
     description: 'Additional CMake flags'
     required: false
@@ -76,30 +80,67 @@ runs:
       run: |
           mkdir build
           cd build
-          cmake -T ${{ inputs.compiler == 'msvc' && 'host=x64' || 'ClangCL' }} `
-                -D USE_FREETYPE=ON `
-                -D USE_TK=ON `
-                -D BUILD_USE_PCH=${{ inputs.build-use-pch }} `
-                -D BUILD_OPT_PROFILE=${{ inputs.build-opt-profile }} `
-                -D BUILD_INCLUDE_SYMLINK=ON `
-                -D CMAKE_BUILD_TYPE=${{ inputs.cmake-build-type }} `
-                -D INSTALL_DIR=${{ github.workspace }}/install `
-                -D BUILD_USE_VCPKG=ON `
-                -D VCPKG_TARGET_TRIPLET=x64-windows `
-                -D USE_D3D=ON `
-                -D USE_DRACO=ON `
-                -D USE_FFMPEG=ON `
-                -D USE_FREEIMAGE=ON `
-                -D USE_GLES2=ON `
-                -D USE_OPENVR=ON `
-                -D USE_VTK=${{ inputs.use-vtk }} `
-                -D USE_TBB=ON `
-                -D USE_RAPIDJSON=ON `
-                -D USE_OPENGL=ON `
-                -D BUILD_GTEST=ON `
-                -D BUILD_CPP_STANDARD=C++17 `
-                -D INSTALL_GTEST=ON `
-                ${{ inputs.additional-cmake-flags }} ..
+          $targetArch = "${{ inputs.target-arch }}"
+          switch ($targetArch) {
+            "x64" {
+              $cmakeArch = "x64"
+              $vcpkgTriplet = "x64-windows"
+              $cmakeToolset = if ("${{ inputs.compiler }}" -eq "msvc") { "host=x64" } else { "ClangCL" }
+              $useTk = "ON"
+              $useOpenVr = "ON"
+            }
+            "arm64" {
+              $cmakeArch = "ARM64"
+              $vcpkgTriplet = "arm64-windows"
+              # Visual Studio ARM64 generators do not accept host=arm64 here.
+              $cmakeToolset = if ("${{ inputs.compiler }}" -eq "msvc") { "" } else { "ClangCL" }
+              $useTk = "OFF"
+              $useOpenVr = "OFF"
+            }
+            default {
+              throw "Unsupported Windows target architecture: $targetArch"
+            }
+          }
+
+          $cmakeArgs = @(
+            "-A", $cmakeArch,
+            "-D", "USE_FREETYPE=ON",
+            "-D", "USE_TK=$useTk",
+            "-D", "BUILD_USE_PCH=${{ inputs.build-use-pch }}",
+            "-D", "BUILD_OPT_PROFILE=${{ inputs.build-opt-profile }}",
+            "-D", "BUILD_INCLUDE_SYMLINK=ON",
+            "-D", "CMAKE_BUILD_TYPE=${{ inputs.cmake-build-type }}",
+            "-D", "INSTALL_DIR=${{ github.workspace }}/install",
+            "-D", "BUILD_USE_VCPKG=ON",
+            "-D", "VCPKG_TARGET_TRIPLET=$vcpkgTriplet",
+            "-D", "USE_D3D=ON",
+            "-D", "USE_DRACO=ON",
+            "-D", "USE_FFMPEG=ON",
+            "-D", "USE_FREEIMAGE=ON",
+            "-D", "USE_GLES2=ON",
+            "-D", "USE_OPENVR=$useOpenVr",
+            "-D", "USE_VTK=${{ inputs.use-vtk }}",
+            "-D", "USE_TBB=ON",
+            "-D", "USE_RAPIDJSON=ON",
+            "-D", "USE_OPENGL=ON",
+            "-D", "BUILD_GTEST=ON",
+            "-D", "BUILD_CPP_STANDARD=C++17",
+            "-D", "INSTALL_GTEST=ON"
+          )
+
+          if ($cmakeToolset) {
+            $cmakeArgs = @("-T", $cmakeToolset) + $cmakeArgs
+          }
+
+          if ("${{ inputs.additional-cmake-flags }}") {
+            $cmakeArgs += "${{ inputs.additional-cmake-flags }}"
+          }
+          $cmakeArgs += ".."
+
+          & cmake @cmakeArgs
+          if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+          }
           echo "Configuration completed successfully for Windows"
       shell: pwsh
 
