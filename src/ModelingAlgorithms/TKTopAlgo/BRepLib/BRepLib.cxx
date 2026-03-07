@@ -2943,8 +2943,7 @@ void BRepLib::ExtendFace(const TopoDS_Face& theF,
       || aType == GeomAbs_Torus || aType == GeomAbs_Cone)
   {
     // Get basis transformed basis surface
-    occ::handle<Geom_Surface> aSurf =
-      occ::down_cast<Geom_Surface>(aBAS.Surface().Surface()->Transformed(aBAS.Trsf()));
+    occ::handle<Geom_Surface> aSurf = aBAS.GeomSurfaceTransformed();
 
     // Get bounds of the basis surface
     double aSUMin, aSUMax, aSVMin, aSVMax;

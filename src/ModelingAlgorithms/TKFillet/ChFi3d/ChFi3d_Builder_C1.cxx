@@ -452,9 +452,12 @@ static void ComputeCurve2d(const occ::handle<Geom_Curve>& Ct,
 
 //=================================================================================================
 
-static void ChFi3d_Recale(BRepAdaptor_Surface& Bs, gp_Pnt2d& p1, gp_Pnt2d& p2, const bool refon1)
+static void ChFi3d_Recale(const BRepAdaptor_Surface& Bs,
+                          gp_Pnt2d&                  p1,
+                          gp_Pnt2d&                  p2,
+                          const bool                 refon1)
 {
-  occ::handle<Geom_Surface>                   surf = Bs.ChangeSurface().Surface();
+  occ::handle<Geom_Surface>                   surf = Bs.GeomSurfaceOriginal();
   occ::handle<Geom_RectangularTrimmedSurface> ts =
     occ::down_cast<Geom_RectangularTrimmedSurface>(surf);
   if (!ts.IsNull())

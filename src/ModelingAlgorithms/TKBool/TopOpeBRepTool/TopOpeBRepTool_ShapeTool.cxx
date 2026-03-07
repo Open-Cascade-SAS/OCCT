@@ -442,11 +442,10 @@ bool TopOpeBRepTool_ShapeTool::SurfacesSameOriented(const BRepAdaptor_Surface& S
     S1.D1(u1, v1, p1, d1u, d1v);
     gp_Vec n1 = d1u.Crossed(d1v);
 
-    occ::handle<Geom_Surface> HS2 = S2.Surface().Surface();
-    HS2                           = occ::down_cast<Geom_Surface>(HS2->Transformed(S2.Trsf()));
-    gp_Pnt2d p22d;
-    double   dp2;
-    bool     ok = FUN_tool_projPonS(p1, HS2, p22d, dp2);
+    const occ::handle<Geom_Surface> HS2 = S2.GeomSurfaceTransformed();
+    gp_Pnt2d                        p22d;
+    double                          dp2;
+    bool                            ok = FUN_tool_projPonS(p1, HS2, p22d, dp2);
     if (!ok)
       return so; // NYI : raise
 

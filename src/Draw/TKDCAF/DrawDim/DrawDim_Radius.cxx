@@ -80,8 +80,8 @@ void DrawDim_Radius::DrawOn(Draw_Display& dis) const
   double vMoy = (vFirst + vLast) / 2;
   gp_Pnt curpos;
   surfAlgo.D0(uMoy, vMoy, curpos);
-  const occ::handle<Geom_Surface>& surf = surfAlgo.Surface().Surface();
-  occ::handle<Geom_Curve>          aCurve;
+  const occ::handle<Geom_Surface> surf = surfAlgo.GeomSurfaceTransformed();
+  occ::handle<Geom_Curve>         aCurve;
   if (surf->DynamicType() == STANDARD_TYPE(Geom_ToroidalSurface))
   {
     aCurve = surf->UIso(uMoy);

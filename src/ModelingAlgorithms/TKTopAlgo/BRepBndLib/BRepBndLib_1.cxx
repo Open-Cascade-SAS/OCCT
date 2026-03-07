@@ -142,7 +142,7 @@ static int PointsForOBB(const TopoDS_Shape&         theS,
     const TopoDS_Face&        aF = TopoDS::Face(anExpF.Current());
     const BRepAdaptor_Surface anAS(aF, false);
 
-    if (!IsPlanar(anAS.Surface()))
+    if (!IsPlanar(anAS))
     {
       if (!theIsTriangulationUsed)
         // not planar and triangulation usage disabled

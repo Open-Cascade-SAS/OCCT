@@ -73,7 +73,6 @@ public:
   // Note: Most methods are inherited from GeomAdaptor_TransformedSurface.
   // The following methods provide access to the underlying surface/transformation:
   // - Surface() - returns const GeomAdaptor_Surface&
-  // - ChangeSurface() - returns GeomAdaptor_Surface&
   // - Trsf() - returns const gp_Trsf&
   //
   // Value, D0, D1, D2, D3, DN methods are inherited and marked as final.

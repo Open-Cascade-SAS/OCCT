@@ -39,7 +39,7 @@ static double GetDeflection(const occ::handle<BRepAdaptor_Surface>&  aFace,
   if (aDrawer->TypeOfDeflection() == Aspect_TOD_RELATIVE) // TOD_RELATIVE, TOD_ABSOLUTE
   {
     Bnd_Box box;
-    BndLib_AddSurface::Add(aFace->Surface(), Precision::Confusion(), box);
+    BndLib_AddSurface::Add(*aFace, Precision::Confusion(), box);
 
     double Xmin, Xmax, Ymin, Ymax, Zmin, Zmax, diagonal;
     box.Get(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);

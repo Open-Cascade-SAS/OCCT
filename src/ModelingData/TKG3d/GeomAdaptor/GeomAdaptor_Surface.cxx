@@ -450,7 +450,7 @@ void GeomAdaptor_Surface::load(const occ::handle<Geom_Surface>& S,
         occ::down_cast<Geom_SurfaceOfRevolution>(mySurface);
       // Populate revolution surface data
       GeomAdaptor_Surface::RevolutionData aRevData;
-      aRevData.BasisCurve = new GeomAdaptor_Curve(aRevSurf->BasisCurve());
+      aRevData.BasisCurve = new GeomAdaptor_Curve(aRevSurf->BasisCurve(), myVFirst, myVLast);
       aRevData.Axis       = aRevSurf->Axis();
       aRevData.EvalRep    = aRevSurf->EvalRepresentation();
       mySurfaceData       = aRevData;
@@ -462,7 +462,7 @@ void GeomAdaptor_Surface::load(const occ::handle<Geom_Surface>& S,
         occ::down_cast<Geom_SurfaceOfLinearExtrusion>(mySurface);
       // Populate extrusion surface data with XYZ for fast evaluation
       GeomAdaptor_Surface::ExtrusionData anExtData;
-      anExtData.BasisCurve = new GeomAdaptor_Curve(anExtSurf->BasisCurve());
+      anExtData.BasisCurve = new GeomAdaptor_Curve(anExtSurf->BasisCurve(), myUFirst, myULast);
       anExtData.Direction  = anExtSurf->Direction().XYZ();
       anExtData.EvalRep    = anExtSurf->EvalRepresentation();
       mySurfaceData        = anExtData;
@@ -558,10 +558,7 @@ GeomAbs_Shape GeomAdaptor_Surface::UContinuity() const
       break;
     }
     case GeomAbs_SurfaceOfExtrusion: {
-      occ::handle<Geom_SurfaceOfLinearExtrusion> myExtSurf =
-        occ::down_cast<Geom_SurfaceOfLinearExtrusion>(mySurface);
-      GeomAdaptor_Curve GC(myExtSurf->BasisCurve(), myUFirst, myULast);
-      return GC.Continuity();
+      return std::get<ExtrusionData>(mySurfaceData).BasisCurve->Continuity();
     }
     case GeomAbs_OtherSurface:
       throw Standard_NoSuchObject("GeomAdaptor_Surface::UContinuity");
@@ -613,10 +610,7 @@ GeomAbs_Shape GeomAdaptor_Surface::VContinuity() const
       break;
     }
     case GeomAbs_SurfaceOfRevolution: {
-      occ::handle<Geom_SurfaceOfRevolution> myRevSurf =
-        occ::down_cast<Geom_SurfaceOfRevolution>(mySurface);
-      GeomAdaptor_Curve GC(myRevSurf->BasisCurve(), myVFirst, myVLast);
-      return GC.Continuity();
+      return std::get<RevolutionData>(mySurfaceData).BasisCurve->Continuity();
     }
     case GeomAbs_OtherSurface:
       throw Standard_NoSuchObject("GeomAdaptor_Surface::VContinuity");
@@ -673,9 +667,7 @@ int GeomAdaptor_Surface::NbUIntervals(const GeomAbs_Shape S) const
         case GeomAbs_CN:
           break;
       }
-      occ::handle<Geom_OffsetSurface> myOffSurf = occ::down_cast<Geom_OffsetSurface>(mySurface);
-      GeomAdaptor_Surface Sur(myOffSurf->BasisSurface(), myUFirst, myULast, myVFirst, myVLast);
-      return Sur.NbUIntervals(BaseS);
+      return std::get<OffsetData>(mySurfaceData).BasisAdaptor->NbUIntervals(BaseS);
     }
     case GeomAbs_Plane:
     case GeomAbs_Cylinder:
@@ -731,9 +723,7 @@ int GeomAdaptor_Surface::NbVIntervals(const GeomAbs_Shape S) const
         case GeomAbs_CN:
           break;
       }
-      occ::handle<Geom_OffsetSurface> myOffSurf = occ::down_cast<Geom_OffsetSurface>(mySurface);
-      GeomAdaptor_Surface Sur(myOffSurf->BasisSurface(), myUFirst, myULast, myVFirst, myVLast);
-      return Sur.NbVIntervals(BaseS);
+      return std::get<OffsetData>(mySurfaceData).BasisAdaptor->NbVIntervals(BaseS);
     }
     case GeomAbs_Plane:
     case GeomAbs_Cylinder:
@@ -794,9 +784,7 @@ void GeomAdaptor_Surface::UIntervals(NCollection_Array1<double>& T, const GeomAb
         case GeomAbs_CN:
           break;
       }
-      occ::handle<Geom_OffsetSurface> myOffSurf = occ::down_cast<Geom_OffsetSurface>(mySurface);
-      GeomAdaptor_Surface Sur(myOffSurf->BasisSurface(), myUFirst, myULast, myVFirst, myVLast);
-      Sur.UIntervals(T, BaseS);
+      std::get<OffsetData>(mySurfaceData).BasisAdaptor->UIntervals(T, BaseS);
       return;
     }
     case GeomAbs_Plane:
@@ -859,9 +847,7 @@ void GeomAdaptor_Surface::VIntervals(NCollection_Array1<double>& T, const GeomAb
         case GeomAbs_CN:
           break;
       }
-      occ::handle<Geom_OffsetSurface> myOffSurf = occ::down_cast<Geom_OffsetSurface>(mySurface);
-      GeomAdaptor_Surface Sur(myOffSurf->BasisSurface(), myUFirst, myULast, myVFirst, myVLast);
-      Sur.VIntervals(T, BaseS);
+      std::get<OffsetData>(mySurfaceData).BasisAdaptor->VIntervals(T, BaseS);
       return;
     }
     case GeomAbs_Plane:
@@ -1739,11 +1725,8 @@ double GeomAdaptor_Surface::UResolution(const double R3d) const
   switch (mySurfaceType)
   {
     case GeomAbs_SurfaceOfExtrusion: {
-      GeomAdaptor_Curve myBasisCurve(
-        occ::down_cast<Geom_SurfaceOfLinearExtrusion>(mySurface)->BasisCurve(),
-        myUFirst,
-        myULast);
-      return myBasisCurve.Resolution(R3d);
+      return std::get<GeomAdaptor_Surface::ExtrusionData>(mySurfaceData)
+        .BasisCurve->Resolution(R3d);
     }
     case GeomAbs_Torus: {
       occ::handle<Geom_ToroidalSurface> S(occ::down_cast<Geom_ToroidalSurface>(mySurface));
@@ -1794,10 +1777,8 @@ double GeomAdaptor_Surface::UResolution(const double R3d) const
       return Ures;
     }
     case GeomAbs_OffsetSurface: {
-      occ::handle<Geom_Surface> base =
-        occ::down_cast<Geom_OffsetSurface>(mySurface)->BasisSurface();
-      GeomAdaptor_Surface gabase(base, myUFirst, myULast, myVFirst, myVLast);
-      return gabase.UResolution(R3d);
+      return std::get<GeomAdaptor_Surface::OffsetData>(mySurfaceData)
+        .BasisAdaptor->UResolution(R3d);
     }
     default:
       return Precision::Parametric(R3d);
@@ -1818,11 +1799,8 @@ double GeomAdaptor_Surface::VResolution(const double R3d) const
   switch (mySurfaceType)
   {
     case GeomAbs_SurfaceOfRevolution: {
-      GeomAdaptor_Curve myBasisCurve(
-        occ::down_cast<Geom_SurfaceOfRevolution>(mySurface)->BasisCurve(),
-        myUFirst,
-        myULast);
-      return myBasisCurve.Resolution(R3d);
+      return std::get<GeomAdaptor_Surface::RevolutionData>(mySurfaceData)
+        .BasisCurve->Resolution(R3d);
     }
     case GeomAbs_Torus: {
       occ::handle<Geom_ToroidalSurface> S(occ::down_cast<Geom_ToroidalSurface>(mySurface));
@@ -1855,10 +1833,8 @@ double GeomAdaptor_Surface::VResolution(const double R3d) const
       return Vres;
     }
     case GeomAbs_OffsetSurface: {
-      occ::handle<Geom_Surface> base =
-        occ::down_cast<Geom_OffsetSurface>(mySurface)->BasisSurface();
-      GeomAdaptor_Surface gabase(base, myUFirst, myULast, myVFirst, myVLast);
-      return gabase.VResolution(R3d);
+      return std::get<GeomAdaptor_Surface::OffsetData>(mySurfaceData)
+        .BasisAdaptor->VResolution(R3d);
     }
     default:
       return Precision::Parametric(R3d);
@@ -1925,11 +1901,7 @@ int GeomAdaptor_Surface::UDegree() const
     return occ::down_cast<Geom_BezierSurface>(mySurface)->UDegree();
   if (mySurfaceType == GeomAbs_SurfaceOfExtrusion)
   {
-    GeomAdaptor_Curve myBasisCurve(
-      occ::down_cast<Geom_SurfaceOfLinearExtrusion>(mySurface)->BasisCurve(),
-      myUFirst,
-      myULast);
-    return myBasisCurve.Degree();
+    return std::get<ExtrusionData>(mySurfaceData).BasisCurve->Degree();
   }
   throw Standard_NoSuchObject("GeomAdaptor_Surface::UDegree");
 }
@@ -1944,11 +1916,7 @@ int GeomAdaptor_Surface::NbUPoles() const
     return occ::down_cast<Geom_BezierSurface>(mySurface)->NbUPoles();
   if (mySurfaceType == GeomAbs_SurfaceOfExtrusion)
   {
-    GeomAdaptor_Curve myBasisCurve(
-      occ::down_cast<Geom_SurfaceOfLinearExtrusion>(mySurface)->BasisCurve(),
-      myUFirst,
-      myULast);
-    return myBasisCurve.NbPoles();
+    return std::get<ExtrusionData>(mySurfaceData).BasisCurve->NbPoles();
   }
   throw Standard_NoSuchObject("GeomAdaptor_Surface::NbUPoles");
 }
@@ -1963,11 +1931,7 @@ int GeomAdaptor_Surface::VDegree() const
     return occ::down_cast<Geom_BezierSurface>(mySurface)->VDegree();
   if (mySurfaceType == GeomAbs_SurfaceOfRevolution)
   {
-    GeomAdaptor_Curve myBasisCurve(
-      occ::down_cast<Geom_SurfaceOfRevolution>(mySurface)->BasisCurve(),
-      myUFirst,
-      myULast);
-    return myBasisCurve.Degree();
+    return std::get<RevolutionData>(mySurfaceData).BasisCurve->Degree();
   }
   throw Standard_NoSuchObject("GeomAdaptor_Surface::VDegree");
 }
@@ -1982,11 +1946,7 @@ int GeomAdaptor_Surface::NbVPoles() const
     return occ::down_cast<Geom_BezierSurface>(mySurface)->NbVPoles();
   if (mySurfaceType == GeomAbs_SurfaceOfRevolution)
   {
-    GeomAdaptor_Curve myBasisCurve(
-      occ::down_cast<Geom_SurfaceOfRevolution>(mySurface)->BasisCurve(),
-      myUFirst,
-      myULast);
-    return myBasisCurve.NbPoles();
+    return std::get<RevolutionData>(mySurfaceData).BasisCurve->NbPoles();
   }
   throw Standard_NoSuchObject("GeomAdaptor_Surface::NbVPoles");
 }
@@ -1999,11 +1959,7 @@ int GeomAdaptor_Surface::NbUKnots() const
     return std::get<BSplineData>(mySurfaceData).Surface->NbUKnots();
   if (mySurfaceType == GeomAbs_SurfaceOfExtrusion)
   {
-    GeomAdaptor_Curve myBasisCurve(
-      occ::down_cast<Geom_SurfaceOfLinearExtrusion>(mySurface)->BasisCurve(),
-      myUFirst,
-      myULast);
-    return myBasisCurve.NbKnots();
+    return std::get<ExtrusionData>(mySurfaceData).BasisCurve->NbKnots();
   }
   throw Standard_NoSuchObject("GeomAdaptor_Surface::NbUKnots");
 }

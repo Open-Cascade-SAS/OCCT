@@ -15,6 +15,17 @@
 
 #include <Geom_BezierSurface.hxx>
 #include <Geom_BSplineSurface.hxx>
+#include <Geom_OffsetSurface.hxx>
+#include <Geom_ConicalSurface.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_SphericalSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_SurfaceOfLinearExtrusion.hxx>
+#include <Geom_SurfaceOfRevolution.hxx>
+#include <Geom_ToroidalSurface.hxx>
+#include <GeomAdaptor_TransformedCurve.hxx>
+#include <Standard_NoSuchObject.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomAdaptor_TransformedSurface, Adaptor3d_Surface)
 
@@ -30,6 +41,7 @@ GeomAdaptor_TransformedSurface::GeomAdaptor_TransformedSurface(
     : mySurf(theSurface),
       myTrsf(theTrsf)
 {
+  invalidateTransformedCache();
 }
 
 //=================================================================================================
@@ -46,6 +58,7 @@ GeomAdaptor_TransformedSurface::GeomAdaptor_TransformedSurface(
     : mySurf(theSurface, theUFirst, theULast, theVFirst, theVLast, theTolU, theTolV),
       myTrsf(theTrsf)
 {
+  invalidateTransformedCache();
 }
 
 //=================================================================================================
@@ -58,8 +71,131 @@ occ::handle<Adaptor3d_Surface> GeomAdaptor_TransformedSurface::ShallowCopy() con
   const GeomAdaptor_Surface& aGeomSurface       = *occ::down_cast<GeomAdaptor_Surface>(aSurface);
   aCopy->mySurf                                 = aGeomSurface;
   aCopy->myTrsf                                 = myTrsf;
+  aCopy->myTransformedAdaptor                   = myTransformedAdaptor;
 
   return aCopy;
+}
+
+//=================================================================================================
+
+void GeomAdaptor_TransformedSurface::Load(const occ::handle<Geom_Surface>& theSurface,
+                                          const gp_Trsf&                   theTrsf)
+{
+  mySurf.Load(theSurface);
+  myTrsf = theTrsf;
+  invalidateTransformedCache();
+}
+
+//=================================================================================================
+
+void GeomAdaptor_TransformedSurface::Load(const occ::handle<Geom_Surface>& theSurface,
+                                          const double                     theUFirst,
+                                          const double                     theULast,
+                                          const double                     theVFirst,
+                                          const double                     theVLast,
+                                          const gp_Trsf&                   theTrsf,
+                                          const double                     theTolU,
+                                          const double                     theTolV)
+{
+  mySurf.Load(theSurface, theUFirst, theULast, theVFirst, theVLast, theTolU, theTolV);
+  myTrsf = theTrsf;
+  invalidateTransformedCache();
+}
+
+//=================================================================================================
+
+void GeomAdaptor_TransformedSurface::SetTrsf(const gp_Trsf& theTrsf)
+{
+  myTrsf = theTrsf;
+  invalidateTransformedCache();
+}
+
+//=================================================================================================
+
+const occ::handle<Geom_Surface>& GeomAdaptor_TransformedSurface::GeomSurfaceTransformed() const
+{
+  if (myTrsf.Form() == gp_Identity)
+  {
+    return mySurf.Surface();
+  }
+
+  ensureTransformedCache();
+  return myTransformedAdaptor->Surface();
+}
+
+//=================================================================================================
+
+void GeomAdaptor_TransformedSurface::invalidateTransformedCache()
+{
+  myTransformedAdaptor.reset();
+}
+
+//=================================================================================================
+
+void GeomAdaptor_TransformedSurface::ensureTransformedCache() const
+{
+  if (myTrsf.Form() == gp_Identity || myTransformedAdaptor.has_value())
+  {
+    return;
+  }
+  initTransformedCache();
+}
+
+//=================================================================================================
+
+void GeomAdaptor_TransformedSurface::initTransformedCache() const
+{
+  if (mySurf.Surface().IsNull())
+  {
+    myTransformedAdaptor.emplace();
+    return;
+  }
+
+  const bool                isIdentity = myTrsf.Form() == gp_Identity;
+  const gp_Trsf&            aTrsf      = myTrsf;
+  occ::handle<Geom_Surface> aSurface;
+  switch (mySurf.GetType())
+  {
+    case GeomAbs_Plane:
+      aSurface = isIdentity
+                   ? mySurf.Surface()
+                   : occ::handle<Geom_Surface>(new Geom_Plane(mySurf.Plane().Transformed(aTrsf)));
+      break;
+    case GeomAbs_Cylinder:
+      aSurface = isIdentity ? mySurf.Surface()
+                            : occ::handle<Geom_Surface>(
+                                new Geom_CylindricalSurface(mySurf.Cylinder().Transformed(aTrsf)));
+      break;
+    case GeomAbs_Cone:
+      aSurface =
+        isIdentity
+          ? mySurf.Surface()
+          : occ::handle<Geom_Surface>(new Geom_ConicalSurface(mySurf.Cone().Transformed(aTrsf)));
+      break;
+    case GeomAbs_Sphere:
+      aSurface = isIdentity ? mySurf.Surface()
+                            : occ::handle<Geom_Surface>(
+                                new Geom_SphericalSurface(mySurf.Sphere().Transformed(aTrsf)));
+      break;
+    case GeomAbs_Torus:
+      aSurface =
+        isIdentity
+          ? mySurf.Surface()
+          : occ::handle<Geom_Surface>(new Geom_ToroidalSurface(mySurf.Torus().Transformed(aTrsf)));
+      break;
+    default:
+      aSurface = isIdentity ? mySurf.Surface()
+                            : occ::down_cast<Geom_Surface>(mySurf.Surface()->Transformed(aTrsf));
+      break;
+  }
+
+  myTransformedAdaptor.emplace(aSurface,
+                               mySurf.FirstUParameter(),
+                               mySurf.LastUParameter(),
+                               mySurf.FirstVParameter(),
+                               mySurf.LastVParameter(),
+                               mySurf.ToleranceU(),
+                               mySurf.ToleranceV());
 }
 
 //=================================================================================================
@@ -84,9 +220,7 @@ occ::handle<Adaptor3d_Surface> GeomAdaptor_TransformedSurface::UTrim(const doubl
                                                                      const double theLast,
                                                                      const double theTol) const
 {
-  occ::handle<GeomAdaptor_Surface> HS = new GeomAdaptor_Surface();
-  HS->Load(occ::down_cast<Geom_Surface>(mySurf.Surface()->Transformed(myTrsf)));
-  return HS->UTrim(theFirst, theLast, theTol);
+  return transformedAdaptor().UTrim(theFirst, theLast, theTol);
 }
 
 //=================================================================================================
@@ -95,15 +229,17 @@ occ::handle<Adaptor3d_Surface> GeomAdaptor_TransformedSurface::VTrim(const doubl
                                                                      const double theLast,
                                                                      const double theTol) const
 {
-  occ::handle<GeomAdaptor_Surface> HS = new GeomAdaptor_Surface();
-  HS->Load(occ::down_cast<Geom_Surface>(mySurf.Surface()->Transformed(myTrsf)));
-  return HS->VTrim(theFirst, theLast, theTol);
+  return transformedAdaptor().VTrim(theFirst, theLast, theTol);
 }
 
 //=================================================================================================
 
 gp_Pnt GeomAdaptor_TransformedSurface::EvalD0(double theU, double theV) const
 {
+  if (myTrsf.Form() == gp_Identity)
+  {
+    return mySurf.EvalD0(theU, theV);
+  }
   return mySurf.EvalD0(theU, theV).Transformed(myTrsf);
 }
 
@@ -111,6 +247,10 @@ gp_Pnt GeomAdaptor_TransformedSurface::EvalD0(double theU, double theV) const
 
 Geom_Surface::ResD1 GeomAdaptor_TransformedSurface::EvalD1(double theU, double theV) const
 {
+  if (myTrsf.Form() == gp_Identity)
+  {
+    return mySurf.EvalD1(theU, theV);
+  }
   Geom_Surface::ResD1 aRes = mySurf.EvalD1(theU, theV);
   aRes.Point.Transform(myTrsf);
   aRes.D1U.Transform(myTrsf);
@@ -122,6 +262,10 @@ Geom_Surface::ResD1 GeomAdaptor_TransformedSurface::EvalD1(double theU, double t
 
 Geom_Surface::ResD2 GeomAdaptor_TransformedSurface::EvalD2(double theU, double theV) const
 {
+  if (myTrsf.Form() == gp_Identity)
+  {
+    return mySurf.EvalD2(theU, theV);
+  }
   Geom_Surface::ResD2 aRes = mySurf.EvalD2(theU, theV);
   aRes.Point.Transform(myTrsf);
   aRes.D1U.Transform(myTrsf);
@@ -136,6 +280,10 @@ Geom_Surface::ResD2 GeomAdaptor_TransformedSurface::EvalD2(double theU, double t
 
 Geom_Surface::ResD3 GeomAdaptor_TransformedSurface::EvalD3(double theU, double theV) const
 {
+  if (myTrsf.Form() == gp_Identity)
+  {
+    return mySurf.EvalD3(theU, theV);
+  }
   Geom_Surface::ResD3 aRes = mySurf.EvalD3(theU, theV);
   aRes.Point.Transform(myTrsf);
   aRes.D1U.Transform(myTrsf);
@@ -154,6 +302,10 @@ Geom_Surface::ResD3 GeomAdaptor_TransformedSurface::EvalD3(double theU, double t
 
 gp_Vec GeomAdaptor_TransformedSurface::EvalDN(double theU, double theV, int theNu, int theNv) const
 {
+  if (myTrsf.Form() == gp_Identity)
+  {
+    return mySurf.EvalDN(theU, theV, theNu, theNv);
+  }
   return mySurf.EvalDN(theU, theV, theNu, theNv).Transformed(myTrsf);
 }
 
@@ -161,86 +313,95 @@ gp_Vec GeomAdaptor_TransformedSurface::EvalDN(double theU, double theV, int theN
 
 gp_Pln GeomAdaptor_TransformedSurface::Plane() const
 {
-  return mySurf.Plane().Transformed(myTrsf);
+  return transformedAdaptor().Plane();
 }
 
 //=================================================================================================
 
 gp_Cylinder GeomAdaptor_TransformedSurface::Cylinder() const
 {
-  return mySurf.Cylinder().Transformed(myTrsf);
+  return transformedAdaptor().Cylinder();
 }
 
 //=================================================================================================
 
 gp_Cone GeomAdaptor_TransformedSurface::Cone() const
 {
-  return mySurf.Cone().Transformed(myTrsf);
+  return transformedAdaptor().Cone();
 }
 
 //=================================================================================================
 
 gp_Sphere GeomAdaptor_TransformedSurface::Sphere() const
 {
-  return mySurf.Sphere().Transformed(myTrsf);
+  return transformedAdaptor().Sphere();
 }
 
 //=================================================================================================
 
 gp_Torus GeomAdaptor_TransformedSurface::Torus() const
 {
-  return mySurf.Torus().Transformed(myTrsf);
+  return transformedAdaptor().Torus();
 }
 
 //=================================================================================================
 
 occ::handle<Geom_BezierSurface> GeomAdaptor_TransformedSurface::Bezier() const
 {
-  return occ::down_cast<Geom_BezierSurface>(mySurf.Bezier()->Transformed(myTrsf));
+  return transformedAdaptor().Bezier();
 }
 
 //=================================================================================================
 
 occ::handle<Geom_BSplineSurface> GeomAdaptor_TransformedSurface::BSpline() const
 {
-  return occ::down_cast<Geom_BSplineSurface>(mySurf.BSpline()->Transformed(myTrsf));
+  return transformedAdaptor().BSpline();
 }
 
 //=================================================================================================
 
 gp_Ax1 GeomAdaptor_TransformedSurface::AxeOfRevolution() const
 {
-  return mySurf.AxeOfRevolution().Transformed(myTrsf);
+  return transformedAdaptor().AxeOfRevolution();
 }
 
 //=================================================================================================
 
 gp_Dir GeomAdaptor_TransformedSurface::Direction() const
 {
-  return mySurf.Direction().Transformed(myTrsf);
+  return transformedAdaptor().Direction();
 }
 
 //=================================================================================================
 
 occ::handle<Adaptor3d_Curve> GeomAdaptor_TransformedSurface::BasisCurve() const
 {
-  occ::handle<GeomAdaptor_Surface> HS = new GeomAdaptor_Surface();
-  HS->Load(occ::down_cast<Geom_Surface>(mySurf.Surface()->Transformed(myTrsf)));
-  return HS->BasisCurve();
+  return transformedAdaptor().BasisCurve();
 }
 
 //=================================================================================================
 
 occ::handle<Adaptor3d_Surface> GeomAdaptor_TransformedSurface::BasisSurface() const
 {
-  occ::handle<GeomAdaptor_Surface> HS = new GeomAdaptor_Surface();
-  HS->Load(occ::down_cast<Geom_Surface>(mySurf.Surface()->Transformed(myTrsf)));
-  return HS->BasisSurface();
+  return transformedAdaptor().BasisSurface();
 }
 
 //=================================================================================================
 
 double GeomAdaptor_TransformedSurface::OffsetValue() const
 {
-  return mySurf.OffsetValue();
+  return transformedAdaptor().OffsetValue();
+}
+
+//=================================================================================================
+
+const GeomAdaptor_Surface& GeomAdaptor_TransformedSurface::transformedAdaptor() const
+{
+  if (myTrsf.Form() == gp_Identity)
+  {
+    return mySurf;
+  }
+
+  ensureTransformedCache();
+  return *myTransformedAdaptor;
 }
