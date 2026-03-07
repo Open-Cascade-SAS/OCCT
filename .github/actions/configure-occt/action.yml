@@ -85,24 +85,28 @@ runs:
             "x64" {
               $cmakeArch = "x64"
               $vcpkgTriplet = "x64-windows"
-              $hostArch = "x64"
+              $cmakeToolset = if ("${{ inputs.compiler }}" -eq "msvc") { "host=x64" } else { "ClangCL" }
+              $useTk = "ON"
+              $useOpenVr = "ON"
             }
             "arm64" {
               $cmakeArch = "ARM64"
               $vcpkgTriplet = "arm64-windows"
-              $hostArch = "arm64"
+              # Visual Studio ARM64 generators do not accept host=arm64 here.
+              $cmakeToolset = if ("${{ inputs.compiler }}" -eq "msvc") { "" } else { "ClangCL" }
+              # The current vcpkg manifests still mark Tcl/Tk and OpenVR unsupported on arm64-windows.
+              $useTk = "OFF"
+              $useOpenVr = "OFF"
             }
             default {
               throw "Unsupported Windows target architecture: $targetArch"
             }
           }
 
-          $toolset = if ("${{ inputs.compiler }}" -eq "msvc") { "host=$hostArch" } else { "ClangCL" }
           $cmakeArgs = @(
             "-A", $cmakeArch,
-            "-T", $toolset,
             "-D", "USE_FREETYPE=ON",
-            "-D", "USE_TK=ON",
+            "-D", "USE_TK=$useTk",
             "-D", "BUILD_USE_PCH=${{ inputs.build-use-pch }}",
             "-D", "BUILD_OPT_PROFILE=${{ inputs.build-opt-profile }}",
             "-D", "BUILD_INCLUDE_SYMLINK=ON",
@@ -115,7 +119,7 @@ runs:
             "-D", "USE_FFMPEG=ON",
             "-D", "USE_FREEIMAGE=ON",
             "-D", "USE_GLES2=ON",
-            "-D", "USE_OPENVR=ON",
+            "-D", "USE_OPENVR=$useOpenVr",
             "-D", "USE_VTK=${{ inputs.use-vtk }}",
             "-D", "USE_TBB=ON",
             "-D", "USE_RAPIDJSON=ON",
@@ -124,6 +128,10 @@ runs:
             "-D", "BUILD_CPP_STANDARD=C++17",
             "-D", "INSTALL_GTEST=ON"
           )
+
+          if ($cmakeToolset) {
+            $cmakeArgs = @("-T", $cmakeToolset) + $cmakeArgs
+          }
 
           if ("${{ inputs.additional-cmake-flags }}") {
             $cmakeArgs += "${{ inputs.additional-cmake-flags }}"
