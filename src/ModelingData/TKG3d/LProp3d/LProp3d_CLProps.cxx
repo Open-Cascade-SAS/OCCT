@@ -220,8 +220,8 @@ double LProp3d_CLProps::Curvature()
     mySignificantFirstDerivativeOrder,
     myLinTol,
     [&]() {
-      const GeomProp::CurvatureResult aResult = GeomProp::ComputeCurvature(D1(), D2(), myLinTol);
-      return hasGeomPropEvaluator(myCurveProp) ? myCurveProp->Curvature(myU, myLinTol) : aResult;
+      return hasGeomPropEvaluator(myCurveProp) ? myCurveProp->Curvature(myU, myLinTol)
+                                               : GeomProp::ComputeCurvature(D1(), D2(), myLinTol);
     },
     "LProp3d_CLProps::Curvature()");
   return myCurvature;
@@ -236,8 +236,8 @@ void LProp3d_CLProps::Normal(gp_Dir& D)
     myLinTol,
     "LProp3d_CLProps::Normal(): Curvature is null or infinity",
     [&]() {
-      const GeomProp::NormalResult aResult = GeomProp::ComputeNormal(D1(), D2(), myLinTol);
-      return hasGeomPropEvaluator(myCurveProp) ? myCurveProp->Normal(myU, myLinTol) : aResult;
+      return hasGeomPropEvaluator(myCurveProp) ? myCurveProp->Normal(myU, myLinTol)
+                                               : GeomProp::ComputeNormal(D1(), D2(), myLinTol);
     },
     D,
     "LProp3d_CLProps::Normal()");
@@ -251,10 +251,9 @@ void LProp3d_CLProps::CentreOfCurvature(gp_Pnt& P)
     Curvature(),
     myLinTol,
     [&]() {
-      const GeomProp::CentreResult aResult =
-        GeomProp::ComputeCentreOfCurvature(myPnt, D1(), D2(), myLinTol);
-      return hasGeomPropEvaluator(myCurveProp) ? myCurveProp->CentreOfCurvature(myU, myLinTol)
-                                               : aResult;
+      return hasGeomPropEvaluator(myCurveProp)
+               ? myCurveProp->CentreOfCurvature(myU, myLinTol)
+               : GeomProp::ComputeCentreOfCurvature(myPnt, D1(), D2(), myLinTol);
     },
     P,
     "LProp3d_CLProps::CentreOfCurvature()");

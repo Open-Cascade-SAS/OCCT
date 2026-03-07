@@ -58,10 +58,8 @@ public:
   //! each particular point
   //! - Type to check if the point is an inflection point or an
   //! extremum of curvature of the curve C.
-  //! Warning
-  //! These functions can be used to analyze a series of
-  //! curves, however it is necessary to clear the table of
-  //! results between each computation.
+  //! Note that each Perform*() call clears the previously stored result points
+  //! before analyzing the current curve.
   Standard_EXPORT void PerformInf(const occ::handle<Geom2d_Curve>& C);
 
   //! True if the solutions are found.

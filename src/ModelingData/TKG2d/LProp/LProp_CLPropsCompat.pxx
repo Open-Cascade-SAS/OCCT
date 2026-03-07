@@ -76,14 +76,14 @@ template <class Result,
           class ValueAt>
 inline void Tangent(const int theSignificantOrder,
                     const double,
-                    const double     theParam,
-                    const double     theFirst,
-                    const double     theLast,
-                    EvalAtParam&&    theEvalAtParam,
-                    EvalWithPoints&& theEvalWithPoints,
-                    ValueAt&&        theValueAt,
-                    Dir&             theDir,
-                    const char*      theMessage)
+                    const double                 theParam,
+                    const double                 theFirst,
+                    const double                 theLast,
+                    EvalAtParam&&                theEvalAtParam,
+                    EvalWithPoints&&             theEvalWithPoints,
+                    ValueAt&&                    theValueAt,
+                    Dir&                         theDir,
+                    [[maybe_unused]] const char* theMessage)
 {
   if (theSignificantOrder == 1)
   {
@@ -108,8 +108,8 @@ inline void Tangent(const int theSignificantOrder,
 template <class Result, class Eval>
 inline double Curvature(const int theSignificantOrder,
                         const double,
-                        Eval&&      theEval,
-                        const char* theMessage)
+                        Eval&&                       theEval,
+                        [[maybe_unused]] const char* theMessage)
 {
   if (theSignificantOrder > 1)
   {
@@ -122,12 +122,12 @@ inline double Curvature(const int theSignificantOrder,
 }
 
 template <class Result, class Dir, class Eval>
-inline void Normal(const double theCurvature,
-                   const double theLinTol,
-                   const char*  theUndefinedMessage,
-                   Eval&&       theEval,
-                   Dir&         theDir,
-                   const char*  theMessage)
+inline void Normal(const double                 theCurvature,
+                   const double                 theLinTol,
+                   const char*                  theUndefinedMessage,
+                   Eval&&                       theEval,
+                   Dir&                         theDir,
+                   [[maybe_unused]] const char* theMessage)
 {
   if (theCurvature == RealLast() || std::abs(theCurvature) <= theLinTol)
   {
@@ -140,11 +140,11 @@ inline void Normal(const double theCurvature,
 }
 
 template <class Result, class Pnt, class Eval>
-inline void CentreOfCurvature(const double theCurvature,
-                              const double theLinTol,
-                              Eval&&       theEval,
-                              Pnt&         thePoint,
-                              const char*  theMessage)
+inline void CentreOfCurvature(const double                 theCurvature,
+                              const double                 theLinTol,
+                              Eval&&                       theEval,
+                              Pnt&                         thePoint,
+                              [[maybe_unused]] const char* theMessage)
 {
   if (std::abs(theCurvature) <= theLinTol)
   {

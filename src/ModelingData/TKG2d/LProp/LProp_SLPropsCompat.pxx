@@ -71,16 +71,16 @@ inline bool IsTangentDefined(const int     theContinuity,
 }
 
 template <class Dir, class DirectEval, class EvalWithPoints, class ValueAt>
-inline void Tangent(const int        theSignificantOrder,
-                    const double     theLinTol,
-                    const double     theParam,
-                    const double     theFirst,
-                    const double     theLast,
-                    DirectEval&&     theDirectEval,
-                    EvalWithPoints&& theEvalWithPoints,
-                    ValueAt&&        theValueAt,
-                    Dir&             theDir,
-                    const char*      theMessage)
+inline void Tangent(const int                    theSignificantOrder,
+                    const double                 theLinTol,
+                    const double                 theParam,
+                    const double                 theFirst,
+                    const double                 theLast,
+                    DirectEval&&                 theDirectEval,
+                    EvalWithPoints&&             theEvalWithPoints,
+                    ValueAt&&                    theValueAt,
+                    Dir&                         theDir,
+                    [[maybe_unused]] const char* theMessage)
 {
   (void)theLinTol;
   if (theSignificantOrder == 1)
