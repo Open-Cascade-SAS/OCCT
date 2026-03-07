@@ -10,6 +10,4 @@ set(OCCT_BndLib_FILES
   BndLib_Add3dCurve.hxx
   BndLib_AddSurface.cxx
   BndLib_AddSurface.hxx
-  BndLib_LegacyCheck.cxx
-  BndLib_LegacyCheck.hxx
 )

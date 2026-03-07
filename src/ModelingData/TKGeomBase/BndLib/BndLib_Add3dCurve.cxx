@@ -15,7 +15,6 @@
 #include <Adaptor3d_Curve.hxx>
 #include <Bnd_Box.hxx>
 #include <BndLib_Add3dCurve.hxx>
-#include "BndLib_LegacyCheck.hxx"
 #include <GeomBndLib_Curve.hxx>
 
 //=================================================================================================
@@ -33,10 +32,7 @@ void BndLib_Add3dCurve::Add(const Adaptor3d_Curve& C,
                             const double           Tol,
                             Bnd_Box&               B)
 {
-  Bnd_Box aNewBox;
-  GeomBndLib_Curve(C).Add(U1, U2, Tol, aNewBox);
-  BndLib_LegacyCheck::Compare3dCurveAdd(C, U1, U2, Tol, aNewBox);
-  B.Add(aNewBox);
+  GeomBndLib_Curve(C).Add(U1, U2, Tol, B);
 }
 
 //=================================================================================================
@@ -54,8 +50,5 @@ void BndLib_Add3dCurve::AddOptimal(const Adaptor3d_Curve& C,
                                    const double           Tol,
                                    Bnd_Box&               B)
 {
-  Bnd_Box aNewBox;
-  GeomBndLib_Curve(C).AddOptimal(U1, U2, Tol, aNewBox);
-  BndLib_LegacyCheck::Compare3dCurveAddOptimal(C, U1, U2, Tol, aNewBox);
-  B.Add(aNewBox);
+  GeomBndLib_Curve(C).AddOptimal(U1, U2, Tol, B);
 }
