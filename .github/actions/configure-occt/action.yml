@@ -94,7 +94,6 @@ runs:
               $vcpkgTriplet = "arm64-windows"
               # Visual Studio ARM64 generators do not accept host=arm64 here.
               $cmakeToolset = if ("${{ inputs.compiler }}" -eq "msvc") { "" } else { "ClangCL" }
-              # The current vcpkg manifests still mark Tcl/Tk and OpenVR unsupported on arm64-windows.
               $useTk = "OFF"
               $useOpenVr = "OFF"
             }
