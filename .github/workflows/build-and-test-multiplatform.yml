@@ -88,23 +88,6 @@ jobs:
         artifact-name: install-windows-x64
         github-token: ${{ secrets.GITHUB_TOKEN }}
 
-  prepare-and-build-windows-arm64:
-    name: Prepare and Build on Windows with MSVC (ARM64)
-    runs-on: windows-11-arm
-
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4.2.2
-
-    - name: Build OCCT
-      uses: ./.github/actions/build-occt
-      with:
-        platform: windows
-        compiler: msvc
-        target-arch: arm64
-        artifact-name: install-windows-arm64
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-
   prepare-and-build-macos-x64:
     name: Prepare and Build on macOS with Clang (x64)
     runs-on: macos-15
