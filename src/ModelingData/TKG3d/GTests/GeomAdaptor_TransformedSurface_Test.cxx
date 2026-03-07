@@ -188,9 +188,9 @@ TEST(GeomAdaptor_TransformedSurfaceTest, ExtrusionCachesDirectionAndBasisCurve)
   EXPECT_NEAR(aDirection.Y(), 0.0, THE_TOLERANCE);
   EXPECT_NEAR(aDirection.Z(), 0.0, THE_TOLERANCE);
 
-  const occ::handle<Adaptor3d_Curve> aFirstCurve  = anAdaptor.BasisCurve();
-  const occ::handle<Adaptor3d_Curve> aSecondCurve = anAdaptor.BasisCurve();
-  EXPECT_EQ(aFirstCurve, aSecondCurve);
+  const occ::handle<Adaptor3d_Curve> aCurve = anAdaptor.BasisCurve();
+  ASSERT_FALSE(aCurve.IsNull());
+  EXPECT_EQ(aCurve->GetType(), GeomAbs_Line);
 }
 
 //=================================================================================================
@@ -208,7 +208,9 @@ TEST(GeomAdaptor_TransformedSurfaceTest, RevolutionCachesAxisAndBasisCurve)
   EXPECT_NEAR(aAxis.Direction().Y(), 0.0, THE_TOLERANCE);
   EXPECT_NEAR(aAxis.Direction().Z(), 0.0, THE_TOLERANCE);
 
-  EXPECT_EQ(anAdaptor.BasisCurve(), anAdaptor.BasisCurve());
+  const occ::handle<Adaptor3d_Curve> aCurve = anAdaptor.BasisCurve();
+  ASSERT_FALSE(aCurve.IsNull());
+  EXPECT_EQ(aCurve->GetType(), GeomAbs_Line);
 }
 
 //=================================================================================================
@@ -220,10 +222,60 @@ TEST(GeomAdaptor_TransformedSurfaceTest, OffsetCachesBasisSurfaceAndOffsetValue)
 
   GeomAdaptor_TransformedSurface anAdaptor(anOffset, createTranslation(0.0, 0.0, 3.0));
 
-  const occ::handle<Adaptor3d_Surface> aFirstBasis  = anAdaptor.BasisSurface();
-  const occ::handle<Adaptor3d_Surface> aSecondBasis = anAdaptor.BasisSurface();
-  EXPECT_EQ(aFirstBasis, aSecondBasis);
+  const occ::handle<Adaptor3d_Surface> aBasis = anAdaptor.BasisSurface();
+  ASSERT_FALSE(aBasis.IsNull());
+  EXPECT_EQ(aBasis->GetType(), GeomAbs_Plane);
   EXPECT_NEAR(anAdaptor.OffsetValue(), 2.5, THE_TOLERANCE);
+}
+
+//=================================================================================================
+
+TEST(GeomAdaptor_TransformedSurfaceTest, UTrimPreservesRestrictedBounds)
+{
+  occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pln(gp::XOY()));
+
+  GeomAdaptor_TransformedSurface
+    anAdaptor(aPlane, 2.0, 8.0, 3.0, 9.0, createTranslation(0.0, 0.0, 5.0), 0.1, 0.2);
+
+  const occ::handle<Adaptor3d_Surface>   aTrimmedBase = anAdaptor.UTrim(4.0, 6.0, 0.05);
+  const occ::handle<GeomAdaptor_Surface> aTrimmed =
+    occ::down_cast<GeomAdaptor_Surface>(aTrimmedBase);
+  ASSERT_FALSE(aTrimmed.IsNull());
+
+  EXPECT_NEAR(aTrimmed->FirstUParameter(), 4.0, THE_TOLERANCE);
+  EXPECT_NEAR(aTrimmed->LastUParameter(), 6.0, THE_TOLERANCE);
+  EXPECT_NEAR(aTrimmed->FirstVParameter(), 3.0, THE_TOLERANCE);
+  EXPECT_NEAR(aTrimmed->LastVParameter(), 9.0, THE_TOLERANCE);
+  EXPECT_NEAR(aTrimmed->ToleranceU(), 0.05, THE_TOLERANCE);
+  EXPECT_NEAR(aTrimmed->ToleranceV(), 0.2, THE_TOLERANCE);
+
+  const gp_Pnt aPoint = aTrimmed->EvalD0(4.0, 3.0);
+  EXPECT_NEAR(aPoint.Z(), 5.0, THE_TOLERANCE);
+}
+
+//=================================================================================================
+
+TEST(GeomAdaptor_TransformedSurfaceTest, VTrimPreservesRestrictedBounds)
+{
+  occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pln(gp::XOY()));
+
+  GeomAdaptor_TransformedSurface
+    anAdaptor(aPlane, 2.0, 8.0, 3.0, 9.0, createTranslation(0.0, 0.0, 7.0), 0.1, 0.2);
+
+  const occ::handle<Adaptor3d_Surface>   aTrimmedBase = anAdaptor.VTrim(4.0, 6.0, 0.15);
+  const occ::handle<GeomAdaptor_Surface> aTrimmed =
+    occ::down_cast<GeomAdaptor_Surface>(aTrimmedBase);
+  ASSERT_FALSE(aTrimmed.IsNull());
+
+  EXPECT_NEAR(aTrimmed->FirstUParameter(), 2.0, THE_TOLERANCE);
+  EXPECT_NEAR(aTrimmed->LastUParameter(), 8.0, THE_TOLERANCE);
+  EXPECT_NEAR(aTrimmed->FirstVParameter(), 4.0, THE_TOLERANCE);
+  EXPECT_NEAR(aTrimmed->LastVParameter(), 6.0, THE_TOLERANCE);
+  EXPECT_NEAR(aTrimmed->ToleranceU(), 0.1, THE_TOLERANCE);
+  EXPECT_NEAR(aTrimmed->ToleranceV(), 0.15, THE_TOLERANCE);
+
+  const gp_Pnt aPoint = aTrimmed->EvalD0(2.0, 4.0);
+  EXPECT_NEAR(aPoint.Z(), 7.0, THE_TOLERANCE);
 }
 
 //=================================================================================================

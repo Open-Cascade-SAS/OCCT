@@ -18,7 +18,6 @@
 #include <GeomAdaptor_Surface.hxx>
 #include <gp_Trsf.hxx>
 
-#include <optional>
 #include <variant>
 
 class Geom_BezierSurface;
@@ -44,14 +43,9 @@ public:
     using PrimitiveData =
       std::variant<std::monostate, gp_Pln, gp_Cylinder, gp_Cone, gp_Sphere, gp_Torus>;
 
-    PrimitiveData                  Primitive;
-    occ::handle<Geom_Surface>      Surface;
-    occ::handle<Adaptor3d_Curve>   BasisCurve;
-    occ::handle<Adaptor3d_Surface> BasisSurface;
-    std::optional<gp_Ax1>          Axis;
-    std::optional<gp_Dir>          Direction;
-    std::optional<double>          OffsetValue;
-    bool                           IsBuilt = false;
+    PrimitiveData             Primitive;
+    occ::handle<Geom_Surface> Surface;
+    bool                      IsBuilt = false;
   };
 
   //! Creates an undefined surface with identity transformation.
@@ -262,6 +256,10 @@ protected:
   //! Rebuilds transformed geometry and related metadata for current surface and transformation.
   //! Non-thread-safe: invoked by ensureTransformedCache() for lazy initialization.
   void initTransformedCache() const;
+
+  //! Returns an adaptor for the transformed surface state.
+  //! Uses the original adaptor for identity transformation to preserve existing trimming.
+  GeomAdaptor_Surface transformedAdaptor() const;
 
 protected:
   GeomAdaptor_Surface            mySurf;
