@@ -48,10 +48,9 @@ void GeomProp_Curve::initialization(const Adaptor3d_Curve& theCurve)
     return;
   }
 
-  // For non-GeomAdaptor, set uninitialized.
   myAdaptor.Nullify();
   myCurveType = theCurve.GetType();
-  myEvaluator.emplace<std::monostate>();
+  myEvaluator.emplace<GeomProp_OtherCurve>(&theCurve);
 }
 
 //=================================================================================================

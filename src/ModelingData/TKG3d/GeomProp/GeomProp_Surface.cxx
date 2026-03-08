@@ -45,10 +45,9 @@ void GeomProp_Surface::initialization(const Adaptor3d_Surface& theSurface)
     return;
   }
 
-  // For non-GeomAdaptor, set uninitialized.
   myAdaptor.Nullify();
   mySurfaceType = theSurface.GetType();
-  myEvaluator.emplace<std::monostate>();
+  myEvaluator.emplace<GeomProp_OtherSurface>(&theSurface);
 }
 
 //=================================================================================================

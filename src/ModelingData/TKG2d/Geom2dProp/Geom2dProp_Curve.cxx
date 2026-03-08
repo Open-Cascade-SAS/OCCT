@@ -46,10 +46,9 @@ void Geom2dProp_Curve::initialization(const Adaptor2d_Curve2d& theCurve)
     return;
   }
 
-  // For non-Geom2dAdaptor, set uninitialized.
   myAdaptor.Nullify();
   myCurveType = theCurve.GetType();
-  myEvaluator.emplace<std::monostate>();
+  myEvaluator.emplace<Geom2dProp_OtherCurve>(&theCurve);
 }
 
 //=================================================================================================
