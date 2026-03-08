@@ -66,14 +66,6 @@ public:
                                     const int                      N,
                                     const double                   Resolution);
 
-  //! Same as previous constructor but here the parameter is
-  //! set to the value <U> and the curve is set
-  //! with SetCurve.
-  //! the curve can have a empty constructor
-  //! All the computations done will be related to <C> and <U>
-  //! when the functions "set" will be done.
-  Standard_EXPORT GeomLProp_CLProps(const int N, const double Resolution);
-
   Standard_EXPORT ~GeomLProp_CLProps();
 
   Standard_EXPORT GeomLProp_CLProps(const GeomLProp_CLProps& theOther);
@@ -131,9 +123,15 @@ private:
   gp_Pnt                                     myPnt;
   gp_Vec                                     myDerivArr[3];
   gp_Dir                                     myTangent;
+  gp_Dir                                     myNormal;
+  gp_Pnt                                     myCentre;
   double                                     myCurvature;
   LProp_Status                               myTangentStatus;
   int                                        mySignificantFirstDerivativeOrder;
+  bool                                       myHasTangent;
+  bool                                       myHasCurvature;
+  bool                                       myHasNormal;
+  bool                                       myHasCentre;
 };
 
 #endif // _GeomLProp_CLProps_HeaderFile

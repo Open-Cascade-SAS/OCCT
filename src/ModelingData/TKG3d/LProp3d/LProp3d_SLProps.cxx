@@ -22,13 +22,14 @@
 #include <LProp_Status.hxx>
 #include <LProp_WrapperTools.pxx>
 #include <Precision.hxx>
+#include <Standard_NullObject.hxx>
 #include <Standard_OutOfRange.hxx>
 
 namespace
 {
 std::shared_ptr<GeomProp_Surface> makeSurfaceProp(const occ::handle<Adaptor3d_Surface>& theSurface)
 {
-  return theSurface.IsNull() ? nullptr : std::make_shared<GeomProp_Surface>(*theSurface);
+  return std::make_shared<GeomProp_Surface>(*theSurface);
 }
 
 std::string surfaceGeometry(const occ::handle<Adaptor3d_Surface>& theSurface)
@@ -67,6 +68,7 @@ LProp3d_SLProps::LProp3d_SLProps(const occ::handle<Adaptor3d_Surface>& S,
       myNormalStatus(LProp_Undecided),
       myCurvatureStatus(LProp_Undecided)
 {
+  Standard_NullObject_Raise_if(S.IsNull(), "LProp3d_SLProps::LProp3d_SLProps()");
   Standard_OutOfRange_Raise_if(N < 0 || N > 2, "LProp3d_SLProps::LProp3d_SLProps()");
   SetParameters(U, V);
 }
@@ -96,29 +98,7 @@ LProp3d_SLProps::LProp3d_SLProps(const occ::handle<Adaptor3d_Surface>& S,
       myNormalStatus(LProp_Undecided),
       myCurvatureStatus(LProp_Undecided)
 {
-  Standard_OutOfRange_Raise_if(N < 0 || N > 2, "LProp3d_SLProps::LProp3d_SLProps()");
-}
-
-//==================================================================================================
-
-LProp3d_SLProps::LProp3d_SLProps(const int N, const double Resolution)
-    : myLegacyProps(std::make_shared<LProp3d_LegacySLProps>(N, Resolution)),
-      myU(RealLast()),
-      myV(RealLast()),
-      myDerOrder(N),
-      myCN(0),
-      myLinTol(Resolution),
-      myMinCurv(0.0),
-      myMaxCurv(0.0),
-      myMeanCurv(0.0),
-      myGausCurv(0.0),
-      mySignificantFirstDerivativeOrderU(0),
-      mySignificantFirstDerivativeOrderV(0),
-      myUTangentStatus(LProp_Undecided),
-      myVTangentStatus(LProp_Undecided),
-      myNormalStatus(LProp_Undecided),
-      myCurvatureStatus(LProp_Undecided)
-{
+  Standard_NullObject_Raise_if(S.IsNull(), "LProp3d_SLProps::LProp3d_SLProps()");
   Standard_OutOfRange_Raise_if(N < 0 || N > 2, "LProp3d_SLProps::LProp3d_SLProps()");
 }
 
@@ -202,12 +182,9 @@ LProp3d_SLProps& LProp3d_SLProps::operator=(const LProp3d_SLProps& theOther)
 
 void LProp3d_SLProps::SetSurface(const occ::handle<Adaptor3d_Surface>& S)
 {
+  Standard_NullObject_Raise_if(S.IsNull(), "LProp3d_SLProps::SetSurface()");
   mySurf = S;
   mySurfaceProp = makeSurfaceProp(S);
-  if (myLegacyProps == nullptr)
-  {
-    myLegacyProps = std::make_shared<LProp3d_LegacySLProps>(myDerOrder, myLinTol);
-  }
   myLegacyProps->SetSurface(S);
   myCN = 4;
   LProp_WrapperTools::ResetSurfaceState(myMinCurv,
@@ -575,10 +552,7 @@ void LProp3d_SLProps::TangentV(gp_Dir& D)
 bool LProp3d_SLProps::IsNormalDefined()
 {
   const bool isDefined = LProp_SLPropsCompat::IsNormalDefined<GeomProp::SurfaceNormalResult>(
-    [&]() {
-      return mySurfaceProp != nullptr ? mySurfaceProp->Normal(myU, myV, myLinTol)
-                                      : GeomProp::ComputeSurfaceNormal(D1U(), D1V(), myLinTol);
-    },
+    [&]() { return mySurfaceProp->Normal(myU, myV, myLinTol); },
     myNormal,
     myNormalStatus);
   const bool anOldDefined = myLegacyProps != nullptr ? myLegacyProps->IsNormalDefined() : isDefined;
@@ -650,16 +624,8 @@ bool LProp3d_SLProps::IsCurvatureDefined()
     IsNormalDefined(),
     IsTangentUDefined(),
     IsTangentVDefined(),
-    [&]() {
-      return mySurfaceProp != nullptr
-               ? mySurfaceProp->Curvatures(myU, myV, myLinTol)
-               : GeomProp::ComputeSurfaceCurvatures(D1U(), D1V(), D2U(), D2V(), DUV(), myLinTol);
-    },
-    [&]() {
-      return mySurfaceProp != nullptr
-               ? mySurfaceProp->MeanGaussian(myU, myV, myLinTol)
-               : GeomProp::ComputeMeanGaussian(D1U(), D1V(), D2U(), D2V(), DUV(), myLinTol);
-    },
+    [&]() { return mySurfaceProp->Curvatures(myU, myV, myLinTol); },
+    [&]() { return mySurfaceProp->MeanGaussian(myU, myV, myLinTol); },
     myMinCurv,
     myMaxCurv,
     myDirMinCurv,

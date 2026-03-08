@@ -23,6 +23,7 @@
 #include <LProp_Status.hxx>
 #include <LProp_WrapperTools.pxx>
 #include <Precision.hxx>
+#include <Standard_NullObject.hxx>
 #include <Standard_OutOfRange.hxx>
 
 namespace
@@ -34,7 +35,7 @@ const GeomAdaptor_Surface* surfaceAdaptor(const std::shared_ptr<GeomProp_Surface
 
 std::shared_ptr<GeomProp_Surface> makeSurfaceProp(const occ::handle<Geom_Surface>& theSurface)
 {
-  return theSurface.IsNull() ? nullptr : std::make_shared<GeomProp_Surface>(theSurface);
+  return std::make_shared<GeomProp_Surface>(theSurface);
 }
 
 gp_Pnt surfaceValue(const occ::handle<Geom_Surface>& theSurface,
@@ -143,6 +144,7 @@ GeomLProp_SLProps::GeomLProp_SLProps(const occ::handle<Geom_Surface>& S,
       myNormalStatus(LProp_Undecided),
       myCurvatureStatus(LProp_Undecided)
 {
+  Standard_NullObject_Raise_if(S.IsNull(), "GeomLProp_SLProps::GeomLProp_SLProps()");
   Standard_OutOfRange_Raise_if(N < 0 || N > 2, "GeomLProp_SLProps::GeomLProp_SLProps()");
   SetParameters(U, V);
 }
@@ -172,29 +174,7 @@ GeomLProp_SLProps::GeomLProp_SLProps(const occ::handle<Geom_Surface>& S,
       myNormalStatus(LProp_Undecided),
       myCurvatureStatus(LProp_Undecided)
 {
-  Standard_OutOfRange_Raise_if(N < 0 || N > 2, "GeomLProp_SLProps::GeomLProp_SLProps()");
-}
-
-//==================================================================================================
-
-GeomLProp_SLProps::GeomLProp_SLProps(const int N, const double Resolution)
-    : myLegacyProps(std::make_shared<GeomLProp_LegacySLProps>(N, Resolution)),
-      myU(RealLast()),
-      myV(RealLast()),
-      myDerOrder(N),
-      myCN(0),
-      myLinTol(Resolution),
-      myMinCurv(0.0),
-      myMaxCurv(0.0),
-      myMeanCurv(0.0),
-      myGausCurv(0.0),
-      mySignificantFirstDerivativeOrderU(0),
-      mySignificantFirstDerivativeOrderV(0),
-      myUTangentStatus(LProp_Undecided),
-      myVTangentStatus(LProp_Undecided),
-      myNormalStatus(LProp_Undecided),
-      myCurvatureStatus(LProp_Undecided)
-{
+  Standard_NullObject_Raise_if(S.IsNull(), "GeomLProp_SLProps::GeomLProp_SLProps()");
   Standard_OutOfRange_Raise_if(N < 0 || N > 2, "GeomLProp_SLProps::GeomLProp_SLProps()");
 }
 
@@ -278,12 +258,9 @@ GeomLProp_SLProps& GeomLProp_SLProps::operator=(const GeomLProp_SLProps& theOthe
 
 void GeomLProp_SLProps::SetSurface(const occ::handle<Geom_Surface>& S)
 {
+  Standard_NullObject_Raise_if(S.IsNull(), "GeomLProp_SLProps::SetSurface()");
   mySurf = S;
   mySurfaceProp = makeSurfaceProp(S);
-  if (myLegacyProps == nullptr)
-  {
-    myLegacyProps = std::make_shared<GeomLProp_LegacySLProps>(myDerOrder, myLinTol);
-  }
   myLegacyProps->SetSurface(S);
   myCN = 4;
   LProp_WrapperTools::ResetSurfaceState(myMinCurv,
@@ -656,10 +633,7 @@ void GeomLProp_SLProps::TangentV(gp_Dir& D)
 bool GeomLProp_SLProps::IsNormalDefined()
 {
   const bool isDefined = LProp_SLPropsCompat::IsNormalDefined<GeomProp::SurfaceNormalResult>(
-    [&]() {
-      return mySurfaceProp != nullptr ? mySurfaceProp->Normal(myU, myV, myLinTol)
-                                      : GeomProp::ComputeSurfaceNormal(D1U(), D1V(), myLinTol);
-    },
+    [&]() { return mySurfaceProp->Normal(myU, myV, myLinTol); },
     myNormal,
     myNormalStatus);
   const bool anOldDefined = myLegacyProps != nullptr ? myLegacyProps->IsNormalDefined() : isDefined;
@@ -731,16 +705,8 @@ bool GeomLProp_SLProps::IsCurvatureDefined()
     IsNormalDefined(),
     IsTangentUDefined(),
     IsTangentVDefined(),
-    [&]() {
-      return mySurfaceProp != nullptr
-               ? mySurfaceProp->Curvatures(myU, myV, myLinTol)
-               : GeomProp::ComputeSurfaceCurvatures(D1U(), D1V(), D2U(), D2V(), DUV(), myLinTol);
-    },
-    [&]() {
-      return mySurfaceProp != nullptr
-               ? mySurfaceProp->MeanGaussian(myU, myV, myLinTol)
-               : GeomProp::ComputeMeanGaussian(D1U(), D1V(), D2U(), D2V(), DUV(), myLinTol);
-    },
+    [&]() { return mySurfaceProp->Curvatures(myU, myV, myLinTol); },
+    [&]() { return mySurfaceProp->MeanGaussian(myU, myV, myLinTol); },
     myMinCurv,
     myMaxCurv,
     myDirMinCurv,

@@ -49,11 +49,6 @@ public:
                                   const int                             N,
                                   const double                          Resolution);
 
-  //! idem as previous constructor but without setting the value
-  //! of parameters <U> and <V> and the surface.
-  //! the surface can have an empty constructor.
-  Standard_EXPORT LProp3d_SLProps(const int N, const double Resolution);
-
   Standard_EXPORT ~LProp3d_SLProps();
 
   Standard_EXPORT LProp3d_SLProps(const LProp3d_SLProps& theOther);

@@ -491,3 +491,35 @@ TEST(Geom2dProp_OffsetCurveTest, VsCLProps2d_CriticalPoints)
     compareCentre(aProp, aOld, aParam);
   }
 }
+
+TEST(Geom2dProp_OffsetCurveTest, RepeatedCalls_SameParameter_AreStable)
+{
+  occ::handle<Geom2d_OffsetCurve> aCurve = makeOffsetEllipse(10.0, 5.0, 1.0);
+  Geom2dProp_Curve                aProp(aCurve);
+  Geom2dProp_Curve                aFreshProp(aCurve);
+  const double                    aParam = M_PI / 3.0;
+
+  const Geom2dProp::TangentResult   aTangent = aProp.Tangent(aParam, THE_LIN_TOL);
+  const Geom2dProp::CurvatureResult aCurv    = aProp.Curvature(aParam, THE_LIN_TOL);
+  const Geom2dProp::NormalResult    aNorm    = aProp.Normal(aParam, THE_LIN_TOL);
+  const Geom2dProp::CentreResult    aCentre  = aProp.CentreOfCurvature(aParam, THE_LIN_TOL);
+
+  const Geom2dProp::CurvatureResult aFreshCurv   = aFreshProp.Curvature(aParam, THE_LIN_TOL);
+  const Geom2dProp::NormalResult    aFreshNorm   = aFreshProp.Normal(aParam, THE_LIN_TOL);
+  const Geom2dProp::CentreResult    aFreshCentre = aFreshProp.CentreOfCurvature(aParam, THE_LIN_TOL);
+
+  ASSERT_TRUE(aTangent.IsDefined);
+  ASSERT_TRUE(aCurv.IsDefined);
+  ASSERT_TRUE(aNorm.IsDefined);
+  ASSERT_TRUE(aCentre.IsDefined);
+  ASSERT_TRUE(aFreshCurv.IsDefined);
+  ASSERT_TRUE(aFreshNorm.IsDefined);
+  ASSERT_TRUE(aFreshCentre.IsDefined);
+
+  EXPECT_NEAR(aCurv.Value, aFreshCurv.Value, THE_CURV_TOL);
+  const double aNormDot =
+    aNorm.Direction.X() * aFreshNorm.Direction.X() + aNorm.Direction.Y() * aFreshNorm.Direction.Y();
+  EXPECT_NEAR(std::abs(aNormDot), 1.0, THE_DIR_TOL);
+  EXPECT_NEAR(aCentre.Centre.X(), aFreshCentre.Centre.X(), THE_POINT_TOL);
+  EXPECT_NEAR(aCentre.Centre.Y(), aFreshCentre.Centre.Y(), THE_POINT_TOL);
+}

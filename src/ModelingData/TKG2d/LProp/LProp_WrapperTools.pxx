@@ -35,6 +35,17 @@ inline void ResetCurveState(double&       theCurvature,
   theSignificantFirstDerivativeOrder = 0;
 }
 
+inline void ResetCurvePropertyCache(bool& theHasTangent,
+                                    bool& theHasCurvature,
+                                    bool& theHasNormal,
+                                    bool& theHasCentre)
+{
+  theHasTangent   = false;
+  theHasCurvature = false;
+  theHasNormal    = false;
+  theHasCentre    = false;
+}
+
 inline void ResetSurfaceState(double&       theMinCurvature,
                               double&       theMaxCurvature,
                               double&       theMeanCurvature,
