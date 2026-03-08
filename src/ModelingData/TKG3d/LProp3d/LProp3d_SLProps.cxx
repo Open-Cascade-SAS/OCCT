@@ -25,14 +25,9 @@
 
 namespace
 {
-bool hasGeomPropEvaluator(const std::shared_ptr<GeomProp_Surface>& theSurfaceProp)
+std::string surfaceGeometry(const occ::handle<Adaptor3d_Surface>& theSurface)
 {
-  return theSurfaceProp && theSurfaceProp->Adaptor() != nullptr;
-}
-
-std::string surfaceGeometry(const std::shared_ptr<GeomProp_Surface>& theSurfaceProp)
-{
-  return theSurfaceProp != nullptr ? std::to_string((int)theSurfaceProp->GetType()) : "null";
+  return theSurface.IsNull() ? "null" : std::to_string((int)GeomProp_Surface(*theSurface).GetType());
 }
 
 std::string surfaceParameters(const double theU, const double theV)
@@ -49,7 +44,8 @@ LProp3d_SLProps::LProp3d_SLProps(const occ::handle<Adaptor3d_Surface>& S,
                                  const int                             N,
                                  const double                          Resolution)
     : mySurf(S),
-      mySurfaceProp(S.IsNull() ? nullptr : std::make_shared<GeomProp_Surface>(*S)),
+      myLegacyProps(S.IsNull() ? nullptr
+                               : std::make_shared<LProp3d_LegacySLProps>(S, N, Resolution)),
       myDerOrder(N),
       myCN(4),
       myLinTol(Resolution),
@@ -74,7 +70,8 @@ LProp3d_SLProps::LProp3d_SLProps(const occ::handle<Adaptor3d_Surface>& S,
                                  const int                             N,
                                  const double                          Resolution)
     : mySurf(S),
-      mySurfaceProp(S.IsNull() ? nullptr : std::make_shared<GeomProp_Surface>(*S)),
+      myLegacyProps(S.IsNull() ? nullptr
+                               : std::make_shared<LProp3d_LegacySLProps>(S, N, Resolution)),
       myU(RealLast()),
       myV(RealLast()),
       myDerOrder(N),
@@ -97,7 +94,8 @@ LProp3d_SLProps::LProp3d_SLProps(const occ::handle<Adaptor3d_Surface>& S,
 //==================================================================================================
 
 LProp3d_SLProps::LProp3d_SLProps(const int N, const double Resolution)
-    : myU(RealLast()),
+    : myLegacyProps(std::make_shared<LProp3d_LegacySLProps>(N, Resolution)),
+      myU(RealLast()),
       myV(RealLast()),
       myDerOrder(N),
       myCN(0),
@@ -124,8 +122,9 @@ LProp3d_SLProps::~LProp3d_SLProps() = default;
 
 LProp3d_SLProps::LProp3d_SLProps(const LProp3d_SLProps& theOther)
     : mySurf(theOther.mySurf),
-      mySurfaceProp(theOther.mySurf.IsNull() ? nullptr
-                                             : std::make_shared<GeomProp_Surface>(*theOther.mySurf)),
+      myLegacyProps(theOther.myLegacyProps != nullptr
+                      ? std::make_shared<LProp3d_LegacySLProps>(*theOther.myLegacyProps)
+                      : nullptr),
       myU(theOther.myU),
       myV(theOther.myV),
       myDerOrder(theOther.myDerOrder),
@@ -162,9 +161,10 @@ LProp3d_SLProps& LProp3d_SLProps::operator=(const LProp3d_SLProps& theOther)
     return *this;
   }
 
-  mySurf        = theOther.mySurf;
-  mySurfaceProp = theOther.mySurf.IsNull() ? nullptr
-                                           : std::make_shared<GeomProp_Surface>(*theOther.mySurf);
+  mySurf = theOther.mySurf;
+  myLegacyProps = theOther.myLegacyProps != nullptr
+                    ? std::make_shared<LProp3d_LegacySLProps>(*theOther.myLegacyProps)
+                    : nullptr;
   myU                                  = theOther.myU;
   myV                                  = theOther.myV;
   myDerOrder                           = theOther.myDerOrder;
@@ -196,8 +196,12 @@ LProp3d_SLProps& LProp3d_SLProps::operator=(const LProp3d_SLProps& theOther)
 
 void LProp3d_SLProps::SetSurface(const occ::handle<Adaptor3d_Surface>& S)
 {
-  mySurf        = S;
-  mySurfaceProp = S.IsNull() ? nullptr : std::make_shared<GeomProp_Surface>(*S);
+  mySurf = S;
+  if (myLegacyProps == nullptr)
+  {
+    myLegacyProps = std::make_shared<LProp3d_LegacySLProps>(myDerOrder, myLinTol);
+  }
+  myLegacyProps->SetSurface(S);
   myCN          = 4;
   mySignificantFirstDerivativeOrderU = 0;
   mySignificantFirstDerivativeOrderV = 0;
@@ -236,23 +240,26 @@ void LProp3d_SLProps::SetParameters(const double U, const double V)
   myVTangentStatus                   = LProp_Undecided;
   myNormalStatus                     = LProp_Undecided;
   myCurvatureStatus                  = LProp_Undecided;
+  if (myLegacyProps != nullptr)
+  {
+    myLegacyProps->SetParameters(U, V);
+  }
 }
 
 //==================================================================================================
 
 const gp_Pnt& LProp3d_SLProps::Value() const
 {
-  LProp3d_LegacySLProps aLegacy(mySurf, myU, myV, myDerOrder, myLinTol);
-  if (!myPnt.IsEqual(aLegacy.Value(), myLinTol))
+  if (myLegacyProps != nullptr && !myPnt.IsEqual(myLegacyProps->Value(), myLinTol))
   {
     LProp_CompareDebug::LogValueMismatch("LProp3d_SLProps::Value",
-                                         surfaceGeometry(mySurfaceProp),
+                                         surfaceGeometry(mySurf),
                                          surfaceParameters(myU, myV),
                                          myDerOrder,
                                          myLinTol,
                                          "point",
                                          myPnt,
-                                         aLegacy.Value());
+                                         myLegacyProps->Value());
   }
   return myPnt;
 }
@@ -267,17 +274,16 @@ const gp_Vec& LProp3d_SLProps::D1U()
     mySurf->D1(myU, myV, myPnt, myD1u, myD1v);
   }
 
-  LProp3d_LegacySLProps aLegacy(mySurf, myU, myV, myDerOrder, myLinTol);
-  if (!myD1u.IsEqual(aLegacy.D1U(), myLinTol, myLinTol))
+  if (myLegacyProps != nullptr && !myD1u.IsEqual(myLegacyProps->D1U(), myLinTol, myLinTol))
   {
     LProp_CompareDebug::LogValueMismatch("LProp3d_SLProps::D1U",
-                                         surfaceGeometry(mySurfaceProp),
+                                         surfaceGeometry(mySurf),
                                          surfaceParameters(myU, myV),
                                          myDerOrder,
                                          myLinTol,
                                          "vec",
                                          myD1u,
-                                         aLegacy.D1U());
+                                         myLegacyProps->D1U());
   }
 
   return myD1u;
@@ -293,17 +299,16 @@ const gp_Vec& LProp3d_SLProps::D1V()
     mySurf->D1(myU, myV, myPnt, myD1u, myD1v);
   }
 
-  LProp3d_LegacySLProps aLegacy(mySurf, myU, myV, myDerOrder, myLinTol);
-  if (!myD1v.IsEqual(aLegacy.D1V(), myLinTol, myLinTol))
+  if (myLegacyProps != nullptr && !myD1v.IsEqual(myLegacyProps->D1V(), myLinTol, myLinTol))
   {
     LProp_CompareDebug::LogValueMismatch("LProp3d_SLProps::D1V",
-                                         surfaceGeometry(mySurfaceProp),
+                                         surfaceGeometry(mySurf),
                                          surfaceParameters(myU, myV),
                                          myDerOrder,
                                          myLinTol,
                                          "vec",
                                          myD1v,
-                                         aLegacy.D1V());
+                                         myLegacyProps->D1V());
   }
 
   return myD1v;
@@ -319,17 +324,16 @@ const gp_Vec& LProp3d_SLProps::D2U()
     mySurf->D2(myU, myV, myPnt, myD1u, myD1v, myD2u, myD2v, myDuv);
   }
 
-  LProp3d_LegacySLProps aLegacy(mySurf, myU, myV, myDerOrder, myLinTol);
-  if (!myD2u.IsEqual(aLegacy.D2U(), myLinTol, myLinTol))
+  if (myLegacyProps != nullptr && !myD2u.IsEqual(myLegacyProps->D2U(), myLinTol, myLinTol))
   {
     LProp_CompareDebug::LogValueMismatch("LProp3d_SLProps::D2U",
-                                         surfaceGeometry(mySurfaceProp),
+                                         surfaceGeometry(mySurf),
                                          surfaceParameters(myU, myV),
                                          myDerOrder,
                                          myLinTol,
                                          "vec",
                                          myD2u,
-                                         aLegacy.D2U());
+                                         myLegacyProps->D2U());
   }
 
   return myD2u;
@@ -345,17 +349,16 @@ const gp_Vec& LProp3d_SLProps::D2V()
     mySurf->D2(myU, myV, myPnt, myD1u, myD1v, myD2u, myD2v, myDuv);
   }
 
-  LProp3d_LegacySLProps aLegacy(mySurf, myU, myV, myDerOrder, myLinTol);
-  if (!myD2v.IsEqual(aLegacy.D2V(), myLinTol, myLinTol))
+  if (myLegacyProps != nullptr && !myD2v.IsEqual(myLegacyProps->D2V(), myLinTol, myLinTol))
   {
     LProp_CompareDebug::LogValueMismatch("LProp3d_SLProps::D2V",
-                                         surfaceGeometry(mySurfaceProp),
+                                         surfaceGeometry(mySurf),
                                          surfaceParameters(myU, myV),
                                          myDerOrder,
                                          myLinTol,
                                          "vec",
                                          myD2v,
-                                         aLegacy.D2V());
+                                         myLegacyProps->D2V());
   }
 
   return myD2v;
@@ -371,17 +374,16 @@ const gp_Vec& LProp3d_SLProps::DUV()
     mySurf->D2(myU, myV, myPnt, myD1u, myD1v, myD2u, myD2v, myDuv);
   }
 
-  LProp3d_LegacySLProps aLegacy(mySurf, myU, myV, myDerOrder, myLinTol);
-  if (!myDuv.IsEqual(aLegacy.DUV(), myLinTol, myLinTol))
+  if (myLegacyProps != nullptr && !myDuv.IsEqual(myLegacyProps->DUV(), myLinTol, myLinTol))
   {
     LProp_CompareDebug::LogValueMismatch("LProp3d_SLProps::DUV",
-                                         surfaceGeometry(mySurfaceProp),
+                                         surfaceGeometry(mySurf),
                                          surfaceParameters(myU, myV),
                                          myDerOrder,
                                          myLinTol,
                                          "vec",
                                          myDuv,
-                                         aLegacy.DUV());
+                                         myLegacyProps->DUV());
   }
 
   return myDuv;
@@ -400,12 +402,12 @@ bool LProp3d_SLProps::IsTangentUDefined()
                                                                0,
                                                                mySignificantFirstDerivativeOrderU,
                                                                myUTangentStatus);
-  LProp3d_LegacySLProps aLegacy(mySurf, myU, myV, myDerOrder, myLinTol);
-  const bool            anOldDefined = aLegacy.IsTangentUDefined();
-  if (isDefined != anOldDefined || myUTangentStatus != aLegacy.UTangentStatus())
+  const bool anOldDefined = myLegacyProps != nullptr ? myLegacyProps->IsTangentUDefined() : isDefined;
+  if (myLegacyProps != nullptr
+      && (isDefined != anOldDefined || myUTangentStatus != myLegacyProps->UTangentStatus()))
   {
     LProp_CompareDebug::LogMismatch("LProp3d_SLProps::IsTangentUDefined",
-                                    surfaceGeometry(mySurfaceProp),
+                                    surfaceGeometry(mySurf),
                                     surfaceParameters(myU, myV),
                                     myDerOrder,
                                     myLinTol,
@@ -413,7 +415,7 @@ bool LProp3d_SLProps::IsTangentUDefined()
                                       + " old=" + LProp_CompareDebug::ToString(anOldDefined)
                                       + " newStatus=" + LProp_CompareDebug::ToString(myUTangentStatus)
                                       + " oldStatus="
-                                      + LProp_CompareDebug::ToString(aLegacy.UTangentStatus()));
+                                      + LProp_CompareDebug::ToString(myLegacyProps->UTangentStatus()));
   }
   return isDefined;
 }
@@ -441,32 +443,34 @@ void LProp3d_SLProps::TangentU(gp_Dir& D)
     [&](const double theParam) { return mySurf->Value(theParam, myV); },
     D,
     "LProp3d_SLProps::TangentU()");
-  LProp3d_LegacySLProps aLegacy(mySurf, myU, myV, myDerOrder, myLinTol);
-  gp_Dir                anOldDir;
-  try
+  if (myLegacyProps != nullptr)
   {
-    aLegacy.TangentU(anOldDir);
-    if (!D.IsEqual(anOldDir, Precision::Angular()))
+    gp_Dir anOldDir;
+    try
     {
-      LProp_CompareDebug::LogValueMismatch("LProp3d_SLProps::TangentU",
-                                           surfaceGeometry(mySurfaceProp),
-                                           surfaceParameters(myU, myV),
-                                           myDerOrder,
-                                           myLinTol,
-                                           "dir",
-                                           D,
-                                           anOldDir);
-    }
-  }
-  catch (const Standard_Failure& theFailure)
-  {
-    LProp_CompareDebug::LogExceptionMismatch("LProp3d_SLProps::TangentU",
-                                             surfaceGeometry(mySurfaceProp),
+      myLegacyProps->TangentU(anOldDir);
+      if (!D.IsEqual(anOldDir, Precision::Angular()))
+      {
+        LProp_CompareDebug::LogValueMismatch("LProp3d_SLProps::TangentU",
+                                             surfaceGeometry(mySurf),
                                              surfaceParameters(myU, myV),
                                              myDerOrder,
                                              myLinTol,
-                                             "value",
-                                             LProp_CompareDebug::ExceptionSummary(theFailure));
+                                             "dir",
+                                             D,
+                                             anOldDir);
+      }
+    }
+    catch (const Standard_Failure& theFailure)
+    {
+      LProp_CompareDebug::LogExceptionMismatch("LProp3d_SLProps::TangentU",
+                                               surfaceGeometry(mySurf),
+                                               surfaceParameters(myU, myV),
+                                               myDerOrder,
+                                               myLinTol,
+                                               "value",
+                                               LProp_CompareDebug::ExceptionSummary(theFailure));
+    }
   }
 }
 
@@ -483,12 +487,12 @@ bool LProp3d_SLProps::IsTangentVDefined()
                                                                1,
                                                                mySignificantFirstDerivativeOrderV,
                                                                myVTangentStatus);
-  LProp3d_LegacySLProps aLegacy(mySurf, myU, myV, myDerOrder, myLinTol);
-  const bool            anOldDefined = aLegacy.IsTangentVDefined();
-  if (isDefined != anOldDefined || myVTangentStatus != aLegacy.VTangentStatus())
+  const bool anOldDefined = myLegacyProps != nullptr ? myLegacyProps->IsTangentVDefined() : isDefined;
+  if (myLegacyProps != nullptr
+      && (isDefined != anOldDefined || myVTangentStatus != myLegacyProps->VTangentStatus()))
   {
     LProp_CompareDebug::LogMismatch("LProp3d_SLProps::IsTangentVDefined",
-                                    surfaceGeometry(mySurfaceProp),
+                                    surfaceGeometry(mySurf),
                                     surfaceParameters(myU, myV),
                                     myDerOrder,
                                     myLinTol,
@@ -496,7 +500,7 @@ bool LProp3d_SLProps::IsTangentVDefined()
                                       + " old=" + LProp_CompareDebug::ToString(anOldDefined)
                                       + " newStatus=" + LProp_CompareDebug::ToString(myVTangentStatus)
                                       + " oldStatus="
-                                      + LProp_CompareDebug::ToString(aLegacy.VTangentStatus()));
+                                      + LProp_CompareDebug::ToString(myLegacyProps->VTangentStatus()));
   }
   return isDefined;
 }
@@ -524,32 +528,34 @@ void LProp3d_SLProps::TangentV(gp_Dir& D)
     [&](const double theParam) { return mySurf->Value(myU, theParam); },
     D,
     "LProp3d_SLProps::TangentV()");
-  LProp3d_LegacySLProps aLegacy(mySurf, myU, myV, myDerOrder, myLinTol);
-  gp_Dir                anOldDir;
-  try
+  if (myLegacyProps != nullptr)
   {
-    aLegacy.TangentV(anOldDir);
-    if (!D.IsEqual(anOldDir, Precision::Angular()))
+    gp_Dir anOldDir;
+    try
     {
-      LProp_CompareDebug::LogValueMismatch("LProp3d_SLProps::TangentV",
-                                           surfaceGeometry(mySurfaceProp),
-                                           surfaceParameters(myU, myV),
-                                           myDerOrder,
-                                           myLinTol,
-                                           "dir",
-                                           D,
-                                           anOldDir);
-    }
-  }
-  catch (const Standard_Failure& theFailure)
-  {
-    LProp_CompareDebug::LogExceptionMismatch("LProp3d_SLProps::TangentV",
-                                             surfaceGeometry(mySurfaceProp),
+      myLegacyProps->TangentV(anOldDir);
+      if (!D.IsEqual(anOldDir, Precision::Angular()))
+      {
+        LProp_CompareDebug::LogValueMismatch("LProp3d_SLProps::TangentV",
+                                             surfaceGeometry(mySurf),
                                              surfaceParameters(myU, myV),
                                              myDerOrder,
                                              myLinTol,
-                                             "value",
-                                             LProp_CompareDebug::ExceptionSummary(theFailure));
+                                             "dir",
+                                             D,
+                                             anOldDir);
+      }
+    }
+    catch (const Standard_Failure& theFailure)
+    {
+      LProp_CompareDebug::LogExceptionMismatch("LProp3d_SLProps::TangentV",
+                                               surfaceGeometry(mySurf),
+                                               surfaceParameters(myU, myV),
+                                               myDerOrder,
+                                               myLinTol,
+                                               "value",
+                                               LProp_CompareDebug::ExceptionSummary(theFailure));
+    }
   }
 }
 
@@ -558,19 +564,15 @@ void LProp3d_SLProps::TangentV(gp_Dir& D)
 bool LProp3d_SLProps::IsNormalDefined()
 {
   const bool isDefined = LProp_SLPropsCompat::IsNormalDefined<GeomProp::SurfaceNormalResult>(
-    [&]() {
-      return hasGeomPropEvaluator(mySurfaceProp)
-               ? mySurfaceProp->Normal(myU, myV, myLinTol)
-               : GeomProp::ComputeSurfaceNormal(D1U(), D1V(), myLinTol);
-    },
+    [&]() { return GeomProp::ComputeSurfaceNormal(D1U(), D1V(), myLinTol); },
     myNormal,
     myNormalStatus);
-  LProp3d_LegacySLProps aLegacy(mySurf, myU, myV, myDerOrder, myLinTol);
-  const bool            anOldDefined = aLegacy.IsNormalDefined();
-  if (isDefined != anOldDefined || myNormalStatus != aLegacy.NormalStatus())
+  const bool anOldDefined = myLegacyProps != nullptr ? myLegacyProps->IsNormalDefined() : isDefined;
+  if (myLegacyProps != nullptr
+      && (isDefined != anOldDefined || myNormalStatus != myLegacyProps->NormalStatus()))
   {
     LProp_CompareDebug::LogMismatch("LProp3d_SLProps::IsNormalDefined",
-                                    surfaceGeometry(mySurfaceProp),
+                                    surfaceGeometry(mySurf),
                                     surfaceParameters(myU, myV),
                                     myDerOrder,
                                     myLinTol,
@@ -578,7 +580,7 @@ bool LProp3d_SLProps::IsNormalDefined()
                                       + " old=" + LProp_CompareDebug::ToString(anOldDefined)
                                       + " newStatus=" + LProp_CompareDebug::ToString(myNormalStatus)
                                       + " oldStatus="
-                                      + LProp_CompareDebug::ToString(aLegacy.NormalStatus()));
+                                      + LProp_CompareDebug::ToString(myLegacyProps->NormalStatus()));
   }
   return isDefined;
 }
@@ -592,31 +594,33 @@ const gp_Dir& LProp3d_SLProps::Normal()
     throw LProp_NotDefined();
   }
 
-  LProp3d_LegacySLProps aLegacy(mySurf, myU, myV, myDerOrder, myLinTol);
-  try
+  if (myLegacyProps != nullptr)
   {
-    const gp_Dir& anOldNormal = aLegacy.Normal();
-    if (!myNormal.IsEqual(anOldNormal, Precision::Angular()))
+    try
     {
-      LProp_CompareDebug::LogValueMismatch("LProp3d_SLProps::Normal",
-                                           surfaceGeometry(mySurfaceProp),
-                                           surfaceParameters(myU, myV),
-                                           myDerOrder,
-                                           myLinTol,
-                                           "dir",
-                                           myNormal,
-                                           anOldNormal);
-    }
-  }
-  catch (const Standard_Failure& theFailure)
-  {
-    LProp_CompareDebug::LogExceptionMismatch("LProp3d_SLProps::Normal",
-                                             surfaceGeometry(mySurfaceProp),
+      const gp_Dir& anOldNormal = myLegacyProps->Normal();
+      if (!myNormal.IsEqual(anOldNormal, Precision::Angular()))
+      {
+        LProp_CompareDebug::LogValueMismatch("LProp3d_SLProps::Normal",
+                                             surfaceGeometry(mySurf),
                                              surfaceParameters(myU, myV),
                                              myDerOrder,
                                              myLinTol,
-                                             "value",
-                                             LProp_CompareDebug::ExceptionSummary(theFailure));
+                                             "dir",
+                                             myNormal,
+                                             anOldNormal);
+      }
+    }
+    catch (const Standard_Failure& theFailure)
+    {
+      LProp_CompareDebug::LogExceptionMismatch("LProp3d_SLProps::Normal",
+                                               surfaceGeometry(mySurf),
+                                               surfaceParameters(myU, myV),
+                                               myDerOrder,
+                                               myLinTol,
+                                               "value",
+                                               LProp_CompareDebug::ExceptionSummary(theFailure));
+    }
   }
 
   return myNormal;
@@ -632,16 +636,8 @@ bool LProp3d_SLProps::IsCurvatureDefined()
     IsNormalDefined(),
     IsTangentUDefined(),
     IsTangentVDefined(),
-    [&]() {
-      return hasGeomPropEvaluator(mySurfaceProp)
-               ? mySurfaceProp->Curvatures(myU, myV, myLinTol)
-               : GeomProp::ComputeSurfaceCurvatures(D1U(), D1V(), D2U(), D2V(), DUV(), myLinTol);
-    },
-    [&]() {
-      return hasGeomPropEvaluator(mySurfaceProp)
-               ? mySurfaceProp->MeanGaussian(myU, myV, myLinTol)
-               : GeomProp::ComputeMeanGaussian(D1U(), D1V(), D2U(), D2V(), DUV(), myLinTol);
-    },
+    [&]() { return GeomProp::ComputeSurfaceCurvatures(D1U(), D1V(), D2U(), D2V(), DUV(), myLinTol); },
+    [&]() { return GeomProp::ComputeMeanGaussian(D1U(), D1V(), D2U(), D2V(), DUV(), myLinTol); },
     myMinCurv,
     myMaxCurv,
     myDirMinCurv,
@@ -649,12 +645,12 @@ bool LProp3d_SLProps::IsCurvatureDefined()
     myMeanCurv,
     myGausCurv,
     myCurvatureStatus);
-  LProp3d_LegacySLProps aLegacy(mySurf, myU, myV, myDerOrder, myLinTol);
-  const bool            anOldDefined = aLegacy.IsCurvatureDefined();
-  if (isDefined != anOldDefined || myCurvatureStatus != aLegacy.CurvatureStatus())
+  const bool anOldDefined = myLegacyProps != nullptr ? myLegacyProps->IsCurvatureDefined() : isDefined;
+  if (myLegacyProps != nullptr
+      && (isDefined != anOldDefined || myCurvatureStatus != myLegacyProps->CurvatureStatus()))
   {
     LProp_CompareDebug::LogMismatch("LProp3d_SLProps::IsCurvatureDefined",
-                                    surfaceGeometry(mySurfaceProp),
+                                    surfaceGeometry(mySurf),
                                     surfaceParameters(myU, myV),
                                     myDerOrder,
                                     myLinTol,
@@ -662,7 +658,7 @@ bool LProp3d_SLProps::IsCurvatureDefined()
                                       + " old=" + LProp_CompareDebug::ToString(anOldDefined)
                                       + " newStatus=" + LProp_CompareDebug::ToString(myCurvatureStatus)
                                       + " oldStatus="
-                                      + LProp_CompareDebug::ToString(aLegacy.CurvatureStatus()));
+                                      + LProp_CompareDebug::ToString(myLegacyProps->CurvatureStatus()));
   }
   return isDefined;
 }
@@ -676,31 +672,33 @@ bool LProp3d_SLProps::IsUmbilic()
     throw LProp_NotDefined();
   }
   const bool isUmbilic = std::abs(myMaxCurv - myMinCurv) < std::abs(Epsilon(myMaxCurv));
-  LProp3d_LegacySLProps aLegacy(mySurf, myU, myV, myDerOrder, myLinTol);
-  try
+  if (myLegacyProps != nullptr)
   {
-    const bool anOldUmbilic = aLegacy.IsUmbilic();
-    if (isUmbilic != anOldUmbilic)
+    try
     {
-      LProp_CompareDebug::LogValueMismatch("LProp3d_SLProps::IsUmbilic",
-                                           surfaceGeometry(mySurfaceProp),
-                                           surfaceParameters(myU, myV),
-                                           myDerOrder,
-                                           myLinTol,
-                                           "value",
-                                           isUmbilic,
-                                           anOldUmbilic);
-    }
-  }
-  catch (const Standard_Failure& theFailure)
-  {
-    LProp_CompareDebug::LogExceptionMismatch("LProp3d_SLProps::IsUmbilic",
-                                             surfaceGeometry(mySurfaceProp),
+      const bool anOldUmbilic = myLegacyProps->IsUmbilic();
+      if (isUmbilic != anOldUmbilic)
+      {
+        LProp_CompareDebug::LogValueMismatch("LProp3d_SLProps::IsUmbilic",
+                                             surfaceGeometry(mySurf),
                                              surfaceParameters(myU, myV),
                                              myDerOrder,
                                              myLinTol,
                                              "value",
-                                             LProp_CompareDebug::ExceptionSummary(theFailure));
+                                             isUmbilic,
+                                             anOldUmbilic);
+      }
+    }
+    catch (const Standard_Failure& theFailure)
+    {
+      LProp_CompareDebug::LogExceptionMismatch("LProp3d_SLProps::IsUmbilic",
+                                               surfaceGeometry(mySurf),
+                                               surfaceParameters(myU, myV),
+                                               myDerOrder,
+                                               myLinTol,
+                                               "value",
+                                               LProp_CompareDebug::ExceptionSummary(theFailure));
+    }
   }
   return isUmbilic;
 }
@@ -713,31 +711,33 @@ double LProp3d_SLProps::MaxCurvature()
   {
     throw LProp_NotDefined();
   }
-  LProp3d_LegacySLProps aLegacy(mySurf, myU, myV, myDerOrder, myLinTol);
-  try
+  if (myLegacyProps != nullptr)
   {
-    const double anOldValue = aLegacy.MaxCurvature();
-    if (std::abs(myMaxCurv - anOldValue) > myLinTol)
+    try
     {
-      LProp_CompareDebug::LogValueMismatch("LProp3d_SLProps::MaxCurvature",
-                                           surfaceGeometry(mySurfaceProp),
-                                           surfaceParameters(myU, myV),
-                                           myDerOrder,
-                                           myLinTol,
-                                           "value",
-                                           myMaxCurv,
-                                           anOldValue);
-    }
-  }
-  catch (const Standard_Failure& theFailure)
-  {
-    LProp_CompareDebug::LogExceptionMismatch("LProp3d_SLProps::MaxCurvature",
-                                             surfaceGeometry(mySurfaceProp),
+      const double anOldValue = myLegacyProps->MaxCurvature();
+      if (std::abs(myMaxCurv - anOldValue) > myLinTol)
+      {
+        LProp_CompareDebug::LogValueMismatch("LProp3d_SLProps::MaxCurvature",
+                                             surfaceGeometry(mySurf),
                                              surfaceParameters(myU, myV),
                                              myDerOrder,
                                              myLinTol,
                                              "value",
-                                             LProp_CompareDebug::ExceptionSummary(theFailure));
+                                             myMaxCurv,
+                                             anOldValue);
+      }
+    }
+    catch (const Standard_Failure& theFailure)
+    {
+      LProp_CompareDebug::LogExceptionMismatch("LProp3d_SLProps::MaxCurvature",
+                                               surfaceGeometry(mySurf),
+                                               surfaceParameters(myU, myV),
+                                               myDerOrder,
+                                               myLinTol,
+                                               "value",
+                                               LProp_CompareDebug::ExceptionSummary(theFailure));
+    }
   }
   return myMaxCurv;
 }
@@ -750,31 +750,33 @@ double LProp3d_SLProps::MinCurvature()
   {
     throw LProp_NotDefined();
   }
-  LProp3d_LegacySLProps aLegacy(mySurf, myU, myV, myDerOrder, myLinTol);
-  try
+  if (myLegacyProps != nullptr)
   {
-    const double anOldValue = aLegacy.MinCurvature();
-    if (std::abs(myMinCurv - anOldValue) > myLinTol)
+    try
     {
-      LProp_CompareDebug::LogValueMismatch("LProp3d_SLProps::MinCurvature",
-                                           surfaceGeometry(mySurfaceProp),
-                                           surfaceParameters(myU, myV),
-                                           myDerOrder,
-                                           myLinTol,
-                                           "value",
-                                           myMinCurv,
-                                           anOldValue);
-    }
-  }
-  catch (const Standard_Failure& theFailure)
-  {
-    LProp_CompareDebug::LogExceptionMismatch("LProp3d_SLProps::MinCurvature",
-                                             surfaceGeometry(mySurfaceProp),
+      const double anOldValue = myLegacyProps->MinCurvature();
+      if (std::abs(myMinCurv - anOldValue) > myLinTol)
+      {
+        LProp_CompareDebug::LogValueMismatch("LProp3d_SLProps::MinCurvature",
+                                             surfaceGeometry(mySurf),
                                              surfaceParameters(myU, myV),
                                              myDerOrder,
                                              myLinTol,
                                              "value",
-                                             LProp_CompareDebug::ExceptionSummary(theFailure));
+                                             myMinCurv,
+                                             anOldValue);
+      }
+    }
+    catch (const Standard_Failure& theFailure)
+    {
+      LProp_CompareDebug::LogExceptionMismatch("LProp3d_SLProps::MinCurvature",
+                                               surfaceGeometry(mySurf),
+                                               surfaceParameters(myU, myV),
+                                               myDerOrder,
+                                               myLinTol,
+                                               "value",
+                                               LProp_CompareDebug::ExceptionSummary(theFailure));
+    }
   }
   return myMinCurv;
 }
@@ -790,44 +792,46 @@ void LProp3d_SLProps::CurvatureDirections(gp_Dir& MaxD, gp_Dir& MinD)
 
   MaxD = myDirMaxCurv;
   MinD = myDirMinCurv;
-  LProp3d_LegacySLProps aLegacy(mySurf, myU, myV, myDerOrder, myLinTol);
-  gp_Dir                anOldMax;
-  gp_Dir                anOldMin;
-  try
+  if (myLegacyProps != nullptr)
   {
-    aLegacy.CurvatureDirections(anOldMax, anOldMin);
-    if (!MaxD.IsEqual(anOldMax, Precision::Angular()))
+    gp_Dir anOldMax;
+    gp_Dir anOldMin;
+    try
     {
-      LProp_CompareDebug::LogValueMismatch("LProp3d_SLProps::CurvatureDirections",
-                                           surfaceGeometry(mySurfaceProp),
-                                           surfaceParameters(myU, myV),
-                                           myDerOrder,
-                                           myLinTol,
-                                           "maxDir",
-                                           MaxD,
-                                           anOldMax);
-    }
-    if (!MinD.IsEqual(anOldMin, Precision::Angular()))
-    {
-      LProp_CompareDebug::LogValueMismatch("LProp3d_SLProps::CurvatureDirections",
-                                           surfaceGeometry(mySurfaceProp),
-                                           surfaceParameters(myU, myV),
-                                           myDerOrder,
-                                           myLinTol,
-                                           "minDir",
-                                           MinD,
-                                           anOldMin);
-    }
-  }
-  catch (const Standard_Failure& theFailure)
-  {
-    LProp_CompareDebug::LogExceptionMismatch("LProp3d_SLProps::CurvatureDirections",
-                                             surfaceGeometry(mySurfaceProp),
+      myLegacyProps->CurvatureDirections(anOldMax, anOldMin);
+      if (!MaxD.IsEqual(anOldMax, Precision::Angular()))
+      {
+        LProp_CompareDebug::LogValueMismatch("LProp3d_SLProps::CurvatureDirections",
+                                             surfaceGeometry(mySurf),
                                              surfaceParameters(myU, myV),
                                              myDerOrder,
                                              myLinTol,
-                                             "value",
-                                             LProp_CompareDebug::ExceptionSummary(theFailure));
+                                             "maxDir",
+                                             MaxD,
+                                             anOldMax);
+      }
+      if (!MinD.IsEqual(anOldMin, Precision::Angular()))
+      {
+        LProp_CompareDebug::LogValueMismatch("LProp3d_SLProps::CurvatureDirections",
+                                             surfaceGeometry(mySurf),
+                                             surfaceParameters(myU, myV),
+                                             myDerOrder,
+                                             myLinTol,
+                                             "minDir",
+                                             MinD,
+                                             anOldMin);
+      }
+    }
+    catch (const Standard_Failure& theFailure)
+    {
+      LProp_CompareDebug::LogExceptionMismatch("LProp3d_SLProps::CurvatureDirections",
+                                               surfaceGeometry(mySurf),
+                                               surfaceParameters(myU, myV),
+                                               myDerOrder,
+                                               myLinTol,
+                                               "value",
+                                               LProp_CompareDebug::ExceptionSummary(theFailure));
+    }
   }
 }
 
@@ -839,31 +843,33 @@ double LProp3d_SLProps::MeanCurvature()
   {
     throw LProp_NotDefined();
   }
-  LProp3d_LegacySLProps aLegacy(mySurf, myU, myV, myDerOrder, myLinTol);
-  try
+  if (myLegacyProps != nullptr)
   {
-    const double anOldValue = aLegacy.MeanCurvature();
-    if (std::abs(myMeanCurv - anOldValue) > myLinTol)
+    try
     {
-      LProp_CompareDebug::LogValueMismatch("LProp3d_SLProps::MeanCurvature",
-                                           surfaceGeometry(mySurfaceProp),
-                                           surfaceParameters(myU, myV),
-                                           myDerOrder,
-                                           myLinTol,
-                                           "value",
-                                           myMeanCurv,
-                                           anOldValue);
-    }
-  }
-  catch (const Standard_Failure& theFailure)
-  {
-    LProp_CompareDebug::LogExceptionMismatch("LProp3d_SLProps::MeanCurvature",
-                                             surfaceGeometry(mySurfaceProp),
+      const double anOldValue = myLegacyProps->MeanCurvature();
+      if (std::abs(myMeanCurv - anOldValue) > myLinTol)
+      {
+        LProp_CompareDebug::LogValueMismatch("LProp3d_SLProps::MeanCurvature",
+                                             surfaceGeometry(mySurf),
                                              surfaceParameters(myU, myV),
                                              myDerOrder,
                                              myLinTol,
                                              "value",
-                                             LProp_CompareDebug::ExceptionSummary(theFailure));
+                                             myMeanCurv,
+                                             anOldValue);
+      }
+    }
+    catch (const Standard_Failure& theFailure)
+    {
+      LProp_CompareDebug::LogExceptionMismatch("LProp3d_SLProps::MeanCurvature",
+                                               surfaceGeometry(mySurf),
+                                               surfaceParameters(myU, myV),
+                                               myDerOrder,
+                                               myLinTol,
+                                               "value",
+                                               LProp_CompareDebug::ExceptionSummary(theFailure));
+    }
   }
   return myMeanCurv;
 }
@@ -876,31 +882,33 @@ double LProp3d_SLProps::GaussianCurvature()
   {
     throw LProp_NotDefined();
   }
-  LProp3d_LegacySLProps aLegacy(mySurf, myU, myV, myDerOrder, myLinTol);
-  try
+  if (myLegacyProps != nullptr)
   {
-    const double anOldValue = aLegacy.GaussianCurvature();
-    if (std::abs(myGausCurv - anOldValue) > myLinTol)
+    try
     {
-      LProp_CompareDebug::LogValueMismatch("LProp3d_SLProps::GaussianCurvature",
-                                           surfaceGeometry(mySurfaceProp),
-                                           surfaceParameters(myU, myV),
-                                           myDerOrder,
-                                           myLinTol,
-                                           "value",
-                                           myGausCurv,
-                                           anOldValue);
-    }
-  }
-  catch (const Standard_Failure& theFailure)
-  {
-    LProp_CompareDebug::LogExceptionMismatch("LProp3d_SLProps::GaussianCurvature",
-                                             surfaceGeometry(mySurfaceProp),
+      const double anOldValue = myLegacyProps->GaussianCurvature();
+      if (std::abs(myGausCurv - anOldValue) > myLinTol)
+      {
+        LProp_CompareDebug::LogValueMismatch("LProp3d_SLProps::GaussianCurvature",
+                                             surfaceGeometry(mySurf),
                                              surfaceParameters(myU, myV),
                                              myDerOrder,
                                              myLinTol,
                                              "value",
-                                             LProp_CompareDebug::ExceptionSummary(theFailure));
+                                             myGausCurv,
+                                             anOldValue);
+      }
+    }
+    catch (const Standard_Failure& theFailure)
+    {
+      LProp_CompareDebug::LogExceptionMismatch("LProp3d_SLProps::GaussianCurvature",
+                                               surfaceGeometry(mySurf),
+                                               surfaceParameters(myU, myV),
+                                               myDerOrder,
+                                               myLinTol,
+                                               "value",
+                                               LProp_CompareDebug::ExceptionSummary(theFailure));
+    }
   }
   return myGausCurv;
 }

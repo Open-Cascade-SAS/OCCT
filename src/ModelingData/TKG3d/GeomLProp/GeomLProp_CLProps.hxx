@@ -28,11 +28,10 @@
 #include <gp_Dir.hxx>
 #include <LProp_Status.hxx>
 #include <Standard_Boolean.hxx>
-
 #include <memory>
 
 class Geom_Curve;
-class GeomProp_Curve;
+class GeomLProp_LegacyCLProps;
 class Standard_DomainError;
 class Standard_OutOfRange;
 class LProp_NotDefined;
@@ -122,7 +121,7 @@ public:
 
 private:
   occ::handle<Geom_Curve>         myCurve;
-  std::shared_ptr<GeomProp_Curve> myCurveProp;
+  std::shared_ptr<GeomLProp_LegacyCLProps> myLegacyProps;
   double                          myU;
   int                             myDerOrder;
   double                          myCN;

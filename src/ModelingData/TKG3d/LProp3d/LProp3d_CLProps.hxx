@@ -21,10 +21,9 @@
 #include <gp_Vec.hxx>
 #include <gp_Dir.hxx>
 #include <LProp_Status.hxx>
-
 #include <memory>
 
-class GeomProp_Curve;
+class LProp3d_LegacyCLProps;
 class Standard_DomainError;
 class Standard_OutOfRange;
 class LProp_NotDefined;
@@ -114,7 +113,7 @@ public:
 
 private:
   occ::handle<Adaptor3d_Curve>    myCurve;
-  std::shared_ptr<GeomProp_Curve> myCurveProp;
+  std::shared_ptr<LProp3d_LegacyCLProps> myLegacyProps;
   double                          myU;
   int                             myDerOrder;
   double                          myCN;

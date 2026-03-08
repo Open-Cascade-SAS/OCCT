@@ -18,11 +18,9 @@
 
 #include <Adaptor3d_Surface.hxx>
 #include <LProp_Status.hxx>
-
 #include <memory>
 
-class GeomProp_Surface;
-
+class LProp3d_LegacySLProps;
 class LProp3d_SLProps
 {
 public:
@@ -139,7 +137,7 @@ public:
 
 private:
   occ::handle<Adaptor3d_Surface>    mySurf;
-  std::shared_ptr<GeomProp_Surface> mySurfaceProp;
+  std::shared_ptr<LProp3d_LegacySLProps> myLegacyProps;
   double                            myU;
   double                            myV;
   int                               myDerOrder;

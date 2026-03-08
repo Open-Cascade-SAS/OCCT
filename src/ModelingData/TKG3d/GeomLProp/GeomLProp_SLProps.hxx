@@ -26,11 +26,10 @@
 #include <gp_Vec.hxx>
 #include <gp_Dir.hxx>
 #include <LProp_Status.hxx>
-
 #include <memory>
 
 class Geom_Surface;
-class GeomProp_Surface;
+class GeomLProp_LegacySLProps;
 class Standard_DomainError;
 class Standard_OutOfRange;
 class LProp_NotDefined;
@@ -154,7 +153,7 @@ public:
 
 private:
   occ::handle<Geom_Surface>         mySurf;
-  std::shared_ptr<GeomProp_Surface> mySurfaceProp;
+  std::shared_ptr<GeomLProp_LegacySLProps> myLegacyProps;
   double                            myU;
   double                            myV;
   int                               myDerOrder;

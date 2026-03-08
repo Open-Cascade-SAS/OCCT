@@ -26,9 +26,9 @@
 
 namespace
 {
-std::string curveGeometry(const std::shared_ptr<Geom2dProp_Curve>& theCurveProp)
+std::string curveGeometry(const occ::handle<Geom2d_Curve>& theCurve)
 {
-  return theCurveProp != nullptr ? std::to_string((int)theCurveProp->GetType()) : "null";
+  return theCurve.IsNull() ? "null" : std::to_string((int)Geom2dProp_Curve(theCurve).GetType());
 }
 
 std::string curveParameters(const double theU)
@@ -67,7 +67,6 @@ Geom2dLProp_CLProps2d::Geom2dLProp_CLProps2d(const occ::handle<Geom2d_Curve>& C,
                                              const int                        N,
                                              const double                     Resolution)
     : myCurve(C),
-      myCurveProp(C.IsNull() ? nullptr : std::make_shared<Geom2dProp_Curve>(C)),
       myLegacyProps(C.IsNull() ? nullptr
                                : std::make_shared<Geom2dLProp_LegacyCLProps2d>(C, N, Resolution)),
       myDerOrder(N),
@@ -87,7 +86,6 @@ Geom2dLProp_CLProps2d::Geom2dLProp_CLProps2d(const occ::handle<Geom2d_Curve>& C,
                                              const int                        N,
                                              const double                     Resolution)
     : myCurve(C),
-      myCurveProp(C.IsNull() ? nullptr : std::make_shared<Geom2dProp_Curve>(C)),
       myLegacyProps(C.IsNull() ? nullptr
                                : std::make_shared<Geom2dLProp_LegacyCLProps2d>(C, N, Resolution)),
       myU(RealLast()),
@@ -120,8 +118,6 @@ Geom2dLProp_CLProps2d::Geom2dLProp_CLProps2d(const int N, const double Resolutio
 
 Geom2dLProp_CLProps2d::Geom2dLProp_CLProps2d(const Geom2dLProp_CLProps2d& theOther)
     : myCurve(theOther.myCurve),
-      myCurveProp(theOther.myCurve.IsNull() ? nullptr
-                                            : std::make_shared<Geom2dProp_Curve>(theOther.myCurve)),
       myLegacyProps(theOther.myLegacyProps != nullptr
                       ? std::make_shared<Geom2dLProp_LegacyCLProps2d>(*theOther.myLegacyProps)
                       : nullptr),
@@ -150,8 +146,6 @@ Geom2dLProp_CLProps2d& Geom2dLProp_CLProps2d::operator=(const Geom2dLProp_CLProp
   }
 
   myCurve    = theOther.myCurve;
-  myCurveProp = theOther.myCurve.IsNull() ? nullptr
-                                          : std::make_shared<Geom2dProp_Curve>(theOther.myCurve);
   myLegacyProps = theOther.myLegacyProps != nullptr
                     ? std::make_shared<Geom2dLProp_LegacyCLProps2d>(*theOther.myLegacyProps)
                     : nullptr;
@@ -205,7 +199,6 @@ void Geom2dLProp_CLProps2d::SetParameter(const double U)
 void Geom2dLProp_CLProps2d::SetCurve(const occ::handle<Geom2d_Curve>& C)
 {
   myCurve                           = C;
-  myCurveProp                       = C.IsNull() ? nullptr : std::make_shared<Geom2dProp_Curve>(C);
   if (myLegacyProps == nullptr)
   {
     myLegacyProps = std::make_shared<Geom2dLProp_LegacyCLProps2d>(myDerOrder, myLinTol);
@@ -224,7 +217,7 @@ const gp_Pnt2d& Geom2dLProp_CLProps2d::Value() const
   if (myLegacyProps != nullptr && !myPnt.IsEqual(myLegacyProps->Value(), myLinTol))
   {
     LProp_CompareDebug::LogValueMismatch("Geom2dLProp_CLProps2d::Value",
-                                         curveGeometry(myCurveProp),
+                                         curveGeometry(myCurve),
                                          curveParameters(myU),
                                          myDerOrder,
                                          myLinTol,
@@ -247,7 +240,7 @@ const gp_Vec2d& Geom2dLProp_CLProps2d::D1()
   if (myLegacyProps != nullptr && !myDerivArr[0].IsEqual(myLegacyProps->D1(), myLinTol, myLinTol))
   {
     LProp_CompareDebug::LogValueMismatch("Geom2dLProp_CLProps2d::D1",
-                                         curveGeometry(myCurveProp),
+                                         curveGeometry(myCurve),
                                          curveParameters(myU),
                                          myDerOrder,
                                          myLinTol,
@@ -271,7 +264,7 @@ const gp_Vec2d& Geom2dLProp_CLProps2d::D2()
   if (myLegacyProps != nullptr && !myDerivArr[1].IsEqual(myLegacyProps->D2(), myLinTol, myLinTol))
   {
     LProp_CompareDebug::LogValueMismatch("Geom2dLProp_CLProps2d::D2",
-                                         curveGeometry(myCurveProp),
+                                         curveGeometry(myCurve),
                                          curveParameters(myU),
                                          myDerOrder,
                                          myLinTol,
@@ -295,7 +288,7 @@ const gp_Vec2d& Geom2dLProp_CLProps2d::D3()
   if (myLegacyProps != nullptr && !myDerivArr[2].IsEqual(myLegacyProps->D3(), myLinTol, myLinTol))
   {
     LProp_CompareDebug::LogValueMismatch("Geom2dLProp_CLProps2d::D3",
-                                         curveGeometry(myCurveProp),
+                                         curveGeometry(myCurve),
                                          curveParameters(myU),
                                          myDerOrder,
                                          myLinTol,
@@ -323,7 +316,7 @@ bool Geom2dLProp_CLProps2d::IsTangentDefined()
       && (isDefined != anOldDefined || myTangentStatus != myLegacyProps->TangentStatus()))
   {
     LProp_CompareDebug::LogMismatch("Geom2dLProp_CLProps2d::IsTangentDefined",
-                                    curveGeometry(myCurveProp),
+                                    curveGeometry(myCurve),
                                     curveParameters(myU),
                                     myDerOrder,
                                     myLinTol,
@@ -361,7 +354,7 @@ void Geom2dLProp_CLProps2d::Tangent(gp_Dir2d& D)
     if (!D.IsEqual(anOldDir, Precision::Angular()))
     {
       LProp_CompareDebug::LogValueMismatch("Geom2dLProp_CLProps2d::Tangent",
-                                           curveGeometry(myCurveProp),
+                                           curveGeometry(myCurve),
                                            curveParameters(myU),
                                            myDerOrder,
                                            myLinTol,
@@ -373,7 +366,7 @@ void Geom2dLProp_CLProps2d::Tangent(gp_Dir2d& D)
   catch (Standard_Failure const& theFailure)
   {
     LProp_CompareDebug::LogExceptionMismatch("Geom2dLProp_CLProps2d::Tangent",
-                                             curveGeometry(myCurveProp),
+                                             curveGeometry(myCurve),
                                              curveParameters(myU),
                                              myDerOrder,
                                              myLinTol,
@@ -403,7 +396,7 @@ double Geom2dLProp_CLProps2d::Curvature()
         || (myCurvature != RealLast() && std::abs(myCurvature - anOldCurv) > myLinTol))
     {
       LProp_CompareDebug::LogValueMismatch("Geom2dLProp_CLProps2d::Curvature",
-                                           curveGeometry(myCurveProp),
+                                           curveGeometry(myCurve),
                                            curveParameters(myU),
                                            myDerOrder,
                                            myLinTol,
@@ -415,7 +408,7 @@ double Geom2dLProp_CLProps2d::Curvature()
   catch (Standard_Failure const& theFailure)
   {
     LProp_CompareDebug::LogExceptionMismatch("Geom2dLProp_CLProps2d::Curvature",
-                                             curveGeometry(myCurveProp),
+                                             curveGeometry(myCurve),
                                              curveParameters(myU),
                                              myDerOrder,
                                              myLinTol,
@@ -443,7 +436,7 @@ void Geom2dLProp_CLProps2d::Normal(gp_Dir2d& D)
     if (!D.IsEqual(anOldDir, Precision::Angular()))
     {
       LProp_CompareDebug::LogValueMismatch("Geom2dLProp_CLProps2d::Normal",
-                                           curveGeometry(myCurveProp),
+                                           curveGeometry(myCurve),
                                            curveParameters(myU),
                                            myDerOrder,
                                            myLinTol,
@@ -455,7 +448,7 @@ void Geom2dLProp_CLProps2d::Normal(gp_Dir2d& D)
   catch (Standard_Failure const& theFailure)
   {
     LProp_CompareDebug::LogExceptionMismatch("Geom2dLProp_CLProps2d::Normal",
-                                             curveGeometry(myCurveProp),
+                                             curveGeometry(myCurve),
                                              curveParameters(myU),
                                              myDerOrder,
                                              myLinTol,
@@ -481,7 +474,7 @@ void Geom2dLProp_CLProps2d::CentreOfCurvature(gp_Pnt2d& P)
     if (!P.IsEqual(anOldPoint, myLinTol))
     {
       LProp_CompareDebug::LogValueMismatch("Geom2dLProp_CLProps2d::CentreOfCurvature",
-                                           curveGeometry(myCurveProp),
+                                           curveGeometry(myCurve),
                                            curveParameters(myU),
                                            myDerOrder,
                                            myLinTol,
@@ -493,7 +486,7 @@ void Geom2dLProp_CLProps2d::CentreOfCurvature(gp_Pnt2d& P)
   catch (Standard_Failure const& theFailure)
   {
     LProp_CompareDebug::LogExceptionMismatch("Geom2dLProp_CLProps2d::CentreOfCurvature",
-                                             curveGeometry(myCurveProp),
+                                             curveGeometry(myCurve),
                                              curveParameters(myU),
                                              myDerOrder,
                                              myLinTol,
