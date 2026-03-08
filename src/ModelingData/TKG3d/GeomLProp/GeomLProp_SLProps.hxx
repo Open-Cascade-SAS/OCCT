@@ -65,6 +65,10 @@ public:
                                     const int                        N,
                                     const double                     Resolution);
 
+  //! Initializes local properties without a surface.
+  //! Surface should be provided later by SetSurface() before use.
+  Standard_EXPORT GeomLProp_SLProps(const int N, const double Resolution);
+
   Standard_EXPORT ~GeomLProp_SLProps();
 
   Standard_EXPORT GeomLProp_SLProps(const GeomLProp_SLProps& theOther);

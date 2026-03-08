@@ -49,6 +49,10 @@ public:
                                   const int                             N,
                                   const double                          Resolution);
 
+  //! Initializes local properties without a surface.
+  //! Surface should be provided later by SetSurface() before use.
+  Standard_EXPORT LProp3d_SLProps(const int N, const double Resolution);
+
   Standard_EXPORT ~LProp3d_SLProps();
 
   Standard_EXPORT LProp3d_SLProps(const LProp3d_SLProps& theOther);
