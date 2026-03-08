@@ -18,14 +18,16 @@
 #include <GeomProp.hxx>
 #include <Standard_DefineAlloc.hxx>
 
+#include <optional>
+
 //! @brief Local differential properties for a cylindrical surface.
 //!
 //! Analytical implementation with constant principal curvatures:
 //! - Min curvature = 0 (along the axis direction)
 //! - Max curvature = 1/R (along the circular cross-section)
 //!
-//! @warning The caller must ensure that the adaptor pointer remains valid
-//! for the entire lifetime of this object.
+//! Can be constructed from either a GeomAdaptor_Surface pointer or a Handle(Geom_Surface).
+//! When constructed from a handle, no adaptor is created.
 class GeomProp_Cylinder
 {
 public:
@@ -40,59 +42,91 @@ public:
     (void)theOrder;
   }
 
+  //! Constructor from geometry handle.
+  //! @param theSurface the 3D cylindrical surface geometry
+  //! @param theDomain optional parameter domain (for trimmed surfaces)
+  GeomProp_Cylinder(const Handle(Geom_Surface)& theSurface,
+                    const std::optional<GeomProp::SurfaceDomain>& theDomain = std::nullopt)
+      : myAdaptor(nullptr),
+        mySurface(theSurface),
+        myDomain(theDomain)
+  {
+  }
+
   //! Non-copyable and non-movable.
   GeomProp_Cylinder(const GeomProp_Cylinder&)            = delete;
   GeomProp_Cylinder& operator=(const GeomProp_Cylinder&) = delete;
   GeomProp_Cylinder(GeomProp_Cylinder&&)                 = delete;
   GeomProp_Cylinder& operator=(GeomProp_Cylinder&&)      = delete;
 
-  //! Returns the adaptor pointer.
+  //! Returns the adaptor pointer (nullptr when constructed from handle).
   const GeomAdaptor_Surface* Adaptor() const { return myAdaptor; }
 
   //! Compute surface normal at given (U, V) parameter.
   //! For a cylinder, the normal is radially outward from the axis.
-  //! TODO: Could use analytical normal (radial direction from axis) for degenerate D1 cases,
-  //!   though in practice cylinder D1 never degenerates.
   GeomProp::SurfaceNormalResult Normal(double theU, double theV, double theTol) const
   {
-    if (myAdaptor == nullptr)
+    gp_Pnt aPnt;
+    gp_Vec aD1U, aD1V;
+    if (!mySurface.IsNull())
+    {
+      mySurface->D1(theU, theV, aPnt, aD1U, aD1V);
+    }
+    else if (myAdaptor != nullptr)
+    {
+      myAdaptor->D1(theU, theV, aPnt, aD1U, aD1V);
+    }
+    else
     {
       return {{}, false};
     }
-    gp_Pnt aPnt;
-    gp_Vec aD1U, aD1V;
-    myAdaptor->D1(theU, theV, aPnt, aD1U, aD1V);
     return GeomProp::ComputeSurfaceNormal(aD1U, aD1V, theTol);
   }
 
   //! Compute principal curvatures using fundamental forms for correct sign convention.
   GeomProp::SurfaceCurvatureResult Curvatures(double theU, double theV, double theTol) const
   {
-    if (myAdaptor == nullptr)
+    gp_Pnt aPnt;
+    gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
+    if (!mySurface.IsNull())
+    {
+      mySurface->D2(theU, theV, aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV);
+    }
+    else if (myAdaptor != nullptr)
+    {
+      myAdaptor->D2(theU, theV, aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV);
+    }
+    else
     {
       return {};
     }
-    gp_Pnt aPnt;
-    gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
-    myAdaptor->D2(theU, theV, aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV);
     return GeomProp::ComputeSurfaceCurvatures(aD1U, aD1V, aD2U, aD2V, aD2UV, theTol);
   }
 
   //! Compute mean and Gaussian curvatures using fundamental forms for correct sign convention.
   GeomProp::MeanGaussianResult MeanGaussian(double theU, double theV, double theTol) const
   {
-    if (myAdaptor == nullptr)
+    gp_Pnt aPnt;
+    gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
+    if (!mySurface.IsNull())
+    {
+      mySurface->D2(theU, theV, aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV);
+    }
+    else if (myAdaptor != nullptr)
+    {
+      myAdaptor->D2(theU, theV, aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV);
+    }
+    else
     {
       return {};
     }
-    gp_Pnt aPnt;
-    gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
-    myAdaptor->D2(theU, theV, aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV);
     return GeomProp::ComputeMeanGaussian(aD1U, aD1V, aD2U, aD2V, aD2UV, theTol);
   }
 
 private:
-  const GeomAdaptor_Surface* myAdaptor;
+  const GeomAdaptor_Surface*             myAdaptor;
+  Handle(Geom_Surface)                   mySurface; //!< Geometry handle (handle path)
+  std::optional<GeomProp::SurfaceDomain> myDomain;  //!< Optional parameter domain
 };
 
 #endif // _GeomProp_Cylinder_HeaderFile

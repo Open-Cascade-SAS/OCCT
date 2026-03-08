@@ -14,19 +14,21 @@
 #ifndef _Geom2dProp_Parabola_HeaderFile
 #define _Geom2dProp_Parabola_HeaderFile
 
+#include <Geom2d_Curve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dProp.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
+
+#include <optional>
 
 //! @brief Local differential properties for a 2D parabola.
 //!
 //! A parabola has a single curvature extremum (maximum |curvature|) at parameter 0
 //! (the vertex). No inflection points exist.
 //!
-//! @warning The caller must ensure that the adaptor pointer remains valid
-//! for the entire lifetime of this object. This class does not manage
-//! the adaptor's lifetime.
+//! Can be constructed from either a Geom2dAdaptor_Curve pointer or a Handle(Geom2d_Curve).
+//! When constructed from a handle, no adaptor is created.
 class Geom2dProp_Parabola
 {
 public:
@@ -41,13 +43,24 @@ public:
     (void)theOrder;
   }
 
+  //! Constructor from geometry handle.
+  //! @param theCurve the 2D parabola geometry
+  //! @param theDomain optional parameter domain (for trimmed curves)
+  Geom2dProp_Parabola(const Handle(Geom2d_Curve)&                        theCurve,
+                      const std::optional<Geom2dProp::CurveDomain>& theDomain = std::nullopt)
+      : myAdaptor(nullptr),
+        myCurve(theCurve),
+        myDomain(theDomain)
+  {
+  }
+
   //! Non-copyable and non-movable.
   Geom2dProp_Parabola(const Geom2dProp_Parabola&)            = delete;
   Geom2dProp_Parabola& operator=(const Geom2dProp_Parabola&) = delete;
   Geom2dProp_Parabola(Geom2dProp_Parabola&&)                 = delete;
   Geom2dProp_Parabola& operator=(Geom2dProp_Parabola&&)      = delete;
 
-  //! Returns the adaptor pointer.
+  //! Returns the adaptor pointer (nullptr when constructed from handle).
   const Geom2dAdaptor_Curve* Adaptor() const { return myAdaptor; }
 
   //! Compute tangent at given parameter.
@@ -71,7 +84,9 @@ public:
   Geom2dProp::CurveAnalysis FindInflections() const { return {{}, true}; }
 
 private:
-  const Geom2dAdaptor_Curve* myAdaptor;
+  const Geom2dAdaptor_Curve*               myAdaptor; //!< Non-owning adaptor pointer (adaptor path)
+  Handle(Geom2d_Curve) myCurve;                        //!< Geometry handle (handle path)
+  std::optional<Geom2dProp::CurveDomain> myDomain;    //!< Optional parameter domain
 };
 
 #endif // _Geom2dProp_Parabola_HeaderFile

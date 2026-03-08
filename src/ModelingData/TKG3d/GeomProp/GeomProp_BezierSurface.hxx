@@ -19,12 +19,14 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
+#include <optional>
+
 //! @brief Local differential properties for a Bezier surface.
 //!
-//! Uses numeric evaluation from adaptor derivatives.
+//! Uses numeric evaluation from surface derivatives.
 //!
-//! @warning The caller must ensure that the adaptor pointer remains valid
-//! for the entire lifetime of this object.
+//! Can be constructed from either a GeomAdaptor_Surface pointer or a Handle(Geom_Surface).
+//! When constructed from a handle, no adaptor is created.
 class GeomProp_BezierSurface
 {
 public:
@@ -40,13 +42,25 @@ public:
   {
   }
 
+  //! Constructor from geometry handle.
+  //! @param theSurface the 3D Bezier surface geometry
+  //! @param theDomain optional parameter domain (for trimmed surfaces)
+  GeomProp_BezierSurface(const Handle(Geom_Surface)& theSurface,
+                         const std::optional<GeomProp::SurfaceDomain>& theDomain = std::nullopt)
+      : myAdaptor(nullptr),
+        myRequestedOrder(GeomProp::SurfaceDerivOrder::Curvature),
+        mySurface(theSurface),
+        myDomain(theDomain)
+  {
+  }
+
   //! Non-copyable and non-movable.
   GeomProp_BezierSurface(const GeomProp_BezierSurface&)            = delete;
   GeomProp_BezierSurface& operator=(const GeomProp_BezierSurface&) = delete;
   GeomProp_BezierSurface(GeomProp_BezierSurface&&)                 = delete;
   GeomProp_BezierSurface& operator=(GeomProp_BezierSurface&&)      = delete;
 
-  //! Returns the adaptor pointer.
+  //! Returns the adaptor pointer (nullptr when constructed from handle).
   const GeomAdaptor_Surface* Adaptor() const { return myAdaptor; }
 
   //! Compute surface normal at given parameter.
@@ -65,9 +79,11 @@ public:
                                                             double theTol) const;
 
 private:
-  const GeomAdaptor_Surface*     myAdaptor;
-  GeomProp::SurfaceDerivOrder    myRequestedOrder;
-  mutable GeomProp::SurfaceCache myCache;
+  const GeomAdaptor_Surface*             myAdaptor;
+  GeomProp::SurfaceDerivOrder            myRequestedOrder;
+  mutable GeomProp::SurfaceCache         myCache;
+  Handle(Geom_Surface)                   mySurface; //!< Geometry handle (handle path)
+  std::optional<GeomProp::SurfaceDomain> myDomain;  //!< Optional parameter domain
 };
 
 #endif // _GeomProp_BezierSurface_HeaderFile

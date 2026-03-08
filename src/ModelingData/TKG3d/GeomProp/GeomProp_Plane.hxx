@@ -14,17 +14,20 @@
 #ifndef _GeomProp_Plane_HeaderFile
 #define _GeomProp_Plane_HeaderFile
 
+#include <Geom_Plane.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomProp.hxx>
 #include <Standard_DefineAlloc.hxx>
+
+#include <optional>
 
 //! @brief Local differential properties for a plane surface.
 //!
 //! Trivial implementation: constant normal, zero curvatures everywhere.
 //! All properties are computed analytically without numerical evaluation.
 //!
-//! @warning The caller must ensure that the adaptor pointer remains valid
-//! for the entire lifetime of this object.
+//! Can be constructed from either a GeomAdaptor_Surface pointer or a Handle(Geom_Surface).
+//! When constructed from a handle, no adaptor is created.
 class GeomProp_Plane
 {
 public:
@@ -34,9 +37,22 @@ public:
   //! @param theAdaptor the surface adaptor (must not be null)
   GeomProp_Plane(const GeomAdaptor_Surface*  theAdaptor,
                  GeomProp::SurfaceDerivOrder theOrder = GeomProp::SurfaceDerivOrder::Undefined)
-      : myAdaptor(theAdaptor)
+      : myAdaptor(theAdaptor),
+        myPosition(theAdaptor->Plane().Position())
   {
     (void)theOrder;
+  }
+
+  //! Constructor from geometry handle.
+  //! @param theSurface the 3D plane geometry
+  //! @param theDomain optional parameter domain (unused for plane)
+  GeomProp_Plane(const Handle(Geom_Surface)& theSurface,
+                 const std::optional<GeomProp::SurfaceDomain>& theDomain = std::nullopt)
+      : myAdaptor(nullptr),
+        mySurface(theSurface),
+        myPosition(Handle(Geom_Plane)::DownCast(theSurface)->Pln().Position()),
+        myDomain(theDomain)
+  {
   }
 
   //! Non-copyable and non-movable.
@@ -45,20 +61,27 @@ public:
   GeomProp_Plane(GeomProp_Plane&&)                 = delete;
   GeomProp_Plane& operator=(GeomProp_Plane&&)      = delete;
 
-  //! Returns the adaptor pointer.
+  //! Returns the adaptor pointer (nullptr when constructed from handle).
   const GeomAdaptor_Surface* Adaptor() const { return myAdaptor; }
 
   //! Compute surface normal. Constant for a plane.
   //! Uses D1U x D1V cross product to ensure correct sign for flipped planes.
   GeomProp::SurfaceNormalResult Normal(double theU, double theV, double theTol) const
   {
-    if (myAdaptor == nullptr)
+    gp_Pnt aPnt;
+    gp_Vec aD1U, aD1V;
+    if (!mySurface.IsNull())
+    {
+      mySurface->D1(theU, theV, aPnt, aD1U, aD1V);
+    }
+    else if (myAdaptor != nullptr)
+    {
+      myAdaptor->D1(theU, theV, aPnt, aD1U, aD1V);
+    }
+    else
     {
       return {{}, false};
     }
-    gp_Pnt aPnt;
-    gp_Vec aD1U, aD1V;
-    myAdaptor->D1(theU, theV, aPnt, aD1U, aD1V);
     return GeomProp::ComputeSurfaceNormal(aD1U, aD1V, theTol);
   }
 
@@ -67,15 +90,15 @@ public:
                                               double /*theV*/,
                                               double /*theTol*/) const
   {
-    if (myAdaptor == nullptr)
+    if (mySurface.IsNull() && myAdaptor == nullptr)
     {
       return {};
     }
     GeomProp::SurfaceCurvatureResult aResult;
     aResult.MinCurvature = 0.0;
     aResult.MaxCurvature = 0.0;
-    aResult.MinDirection = myAdaptor->Plane().Position().XDirection();
-    aResult.MaxDirection = myAdaptor->Plane().Position().YDirection();
+    aResult.MinDirection = myPosition.XDirection();
+    aResult.MaxDirection = myPosition.YDirection();
     aResult.IsDefined    = true;
     aResult.IsUmbilic    = true;
     return aResult;
@@ -86,7 +109,7 @@ public:
                                             double /*theV*/,
                                             double /*theTol*/) const
   {
-    if (myAdaptor == nullptr)
+    if (mySurface.IsNull() && myAdaptor == nullptr)
     {
       return {};
     }
@@ -94,7 +117,10 @@ public:
   }
 
 private:
-  const GeomAdaptor_Surface* myAdaptor;
+  const GeomAdaptor_Surface*             myAdaptor;
+  Handle(Geom_Surface)                   mySurface; //!< Geometry handle (handle path)
+  gp_Ax3                                 myPosition; //!< Cached plane position
+  std::optional<GeomProp::SurfaceDomain> myDomain;  //!< Optional parameter domain
 };
 
 #endif // _GeomProp_Plane_HeaderFile

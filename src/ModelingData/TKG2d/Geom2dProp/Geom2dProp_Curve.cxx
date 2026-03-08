@@ -13,8 +13,16 @@
 
 #include <Geom2dProp_Curve.hxx>
 
-#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2d_BezierCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_Circle.hxx>
+#include <Geom2d_Ellipse.hxx>
+#include <Geom2d_Hyperbola.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_OffsetCurve.hxx>
+#include <Geom2d_Parabola.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 
 //=================================================================================================
 
@@ -40,12 +48,47 @@ void Geom2dProp_Curve::initialization(const Adaptor2d_Curve2d& theCurve)
 {
   if (theCurve.IsKind(STANDARD_TYPE(Geom2dAdaptor_Curve)))
   {
-    const auto& aGeomAdaptor = static_cast<const Geom2dAdaptor_Curve&>(theCurve);
-    myOwnedAdaptor           = new Geom2dAdaptor_Curve(aGeomAdaptor);
-    initFromAdaptor();
-    return;
+    const Geom2dAdaptor_Curve& aGeomAdaptor = static_cast<const Geom2dAdaptor_Curve&>(theCurve);
+    if (!aGeomAdaptor.Curve().IsNull())
+    {
+      // Dispatch specialized evaluators directly from the GeomAdaptor.
+      myOwnedAdaptor.Nullify();
+      myCurveType = aGeomAdaptor.GetType();
+      switch (myCurveType)
+      {
+        case GeomAbs_Line:
+          myEvaluator.emplace<Geom2dProp_Line>(&aGeomAdaptor);
+          break;
+        case GeomAbs_Circle:
+          myEvaluator.emplace<Geom2dProp_Circle>(&aGeomAdaptor);
+          break;
+        case GeomAbs_Ellipse:
+          myEvaluator.emplace<Geom2dProp_Ellipse>(&aGeomAdaptor);
+          break;
+        case GeomAbs_Hyperbola:
+          myEvaluator.emplace<Geom2dProp_Hyperbola>(&aGeomAdaptor);
+          break;
+        case GeomAbs_Parabola:
+          myEvaluator.emplace<Geom2dProp_Parabola>(&aGeomAdaptor);
+          break;
+        case GeomAbs_BezierCurve:
+          myEvaluator.emplace<Geom2dProp_BezierCurve>(&aGeomAdaptor);
+          break;
+        case GeomAbs_BSplineCurve:
+          myEvaluator.emplace<Geom2dProp_BSplineCurve>(&aGeomAdaptor);
+          break;
+        case GeomAbs_OffsetCurve:
+          myEvaluator.emplace<Geom2dProp_OffsetCurve>(&aGeomAdaptor);
+          break;
+        default:
+          myEvaluator.emplace<Geom2dProp_OtherCurve>(&theCurve);
+          break;
+      }
+      return;
+    }
   }
 
+  // Non-Geom adaptor or empty curve handle: use OtherCurve with adaptor pointer.
   myOwnedAdaptor.Nullify();
   myCurveType = theCurve.GetType();
   myEvaluator.emplace<Geom2dProp_OtherCurve>(&theCurve);
@@ -63,53 +106,67 @@ void Geom2dProp_Curve::initialization(const occ::handle<Geom2d_Curve>& theCurve)
     return;
   }
 
-  myOwnedAdaptor = new Geom2dAdaptor_Curve(theCurve);
-  initFromAdaptor();
-}
+  // No adaptor creation for the handle path.
+  myOwnedAdaptor.Nullify();
 
-//=================================================================================================
-
-void Geom2dProp_Curve::initFromAdaptor()
-{
-  if (myOwnedAdaptor.IsNull())
+  // Unwrap TrimmedCurve to basis curve + optional CurveDomain.
+  occ::handle<Geom2d_Curve>                aBasis = theCurve;
+  std::optional<Geom2dProp::CurveDomain> aDomain;
+  if (aBasis->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve)))
   {
-    myEvaluator.emplace<std::monostate>();
-    myCurveType = GeomAbs_OtherCurve;
-    return;
+    aDomain = Geom2dProp::CurveDomain{theCurve->FirstParameter(), theCurve->LastParameter()};
+    while (aBasis->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve)))
+    {
+      aBasis = Handle(Geom2d_TrimmedCurve)::DownCast(aBasis)->BasisCurve();
+    }
   }
 
-  const Geom2dAdaptor_Curve* aPtr = myOwnedAdaptor.get();
-  myCurveType                     = aPtr->GetType();
-
-  switch (myCurveType)
+  // Type detection using DynamicType() - extracted once to avoid repeated virtual calls.
+  const Handle(Standard_Type)& aType = aBasis->DynamicType();
+  if (aType == STANDARD_TYPE(Geom2d_Line))
   {
-    case GeomAbs_Line:
-      myEvaluator.emplace<Geom2dProp_Line>(aPtr);
-      break;
-    case GeomAbs_Circle:
-      myEvaluator.emplace<Geom2dProp_Circle>(aPtr);
-      break;
-    case GeomAbs_Ellipse:
-      myEvaluator.emplace<Geom2dProp_Ellipse>(aPtr);
-      break;
-    case GeomAbs_Hyperbola:
-      myEvaluator.emplace<Geom2dProp_Hyperbola>(aPtr);
-      break;
-    case GeomAbs_Parabola:
-      myEvaluator.emplace<Geom2dProp_Parabola>(aPtr);
-      break;
-    case GeomAbs_BezierCurve:
-      myEvaluator.emplace<Geom2dProp_BezierCurve>(aPtr);
-      break;
-    case GeomAbs_BSplineCurve:
-      myEvaluator.emplace<Geom2dProp_BSplineCurve>(aPtr);
-      break;
-    case GeomAbs_OffsetCurve:
-      myEvaluator.emplace<Geom2dProp_OffsetCurve>(aPtr);
-      break;
-    default:
-      myEvaluator.emplace<Geom2dProp_OtherCurve>(aPtr);
-      break;
+    myCurveType = GeomAbs_Line;
+    myEvaluator.emplace<Geom2dProp_Line>(aBasis, aDomain);
+  }
+  else if (aType == STANDARD_TYPE(Geom2d_Circle))
+  {
+    myCurveType = GeomAbs_Circle;
+    myEvaluator.emplace<Geom2dProp_Circle>(aBasis, aDomain);
+  }
+  else if (aType == STANDARD_TYPE(Geom2d_Ellipse))
+  {
+    myCurveType = GeomAbs_Ellipse;
+    myEvaluator.emplace<Geom2dProp_Ellipse>(aBasis, aDomain);
+  }
+  else if (aType == STANDARD_TYPE(Geom2d_Hyperbola))
+  {
+    myCurveType = GeomAbs_Hyperbola;
+    myEvaluator.emplace<Geom2dProp_Hyperbola>(aBasis, aDomain);
+  }
+  else if (aType == STANDARD_TYPE(Geom2d_Parabola))
+  {
+    myCurveType = GeomAbs_Parabola;
+    myEvaluator.emplace<Geom2dProp_Parabola>(aBasis, aDomain);
+  }
+  else if (aType == STANDARD_TYPE(Geom2d_BezierCurve))
+  {
+    myCurveType = GeomAbs_BezierCurve;
+    myEvaluator.emplace<Geom2dProp_BezierCurve>(aBasis, aDomain);
+  }
+  else if (aType == STANDARD_TYPE(Geom2d_BSplineCurve))
+  {
+    myCurveType = GeomAbs_BSplineCurve;
+    myEvaluator.emplace<Geom2dProp_BSplineCurve>(aBasis, aDomain);
+  }
+  else if (aType == STANDARD_TYPE(Geom2d_OffsetCurve))
+  {
+    myCurveType = GeomAbs_OffsetCurve;
+    myEvaluator.emplace<Geom2dProp_OffsetCurve>(aBasis, aDomain);
+  }
+  else
+  {
+    myCurveType = GeomAbs_OtherCurve;
+    myEvaluator.emplace<Geom2dProp_OtherCurve>(aBasis, aDomain);
   }
 }
 
@@ -117,19 +174,11 @@ void Geom2dProp_Curve::initFromAdaptor()
 
 const Adaptor2d_Curve2d* Geom2dProp_Curve::Adaptor() const
 {
-  return std::visit(
-    [](const auto& theEval) -> const Adaptor2d_Curve2d* {
-      using T = std::decay_t<decltype(theEval)>;
-      if constexpr (std::is_same_v<T, std::monostate>)
-      {
-        return nullptr;
-      }
-      else
-      {
-        return theEval.Adaptor();
-      }
-    },
-    myEvaluator);
+  if (!myOwnedAdaptor.IsNull())
+  {
+    return myOwnedAdaptor.get();
+  }
+  return nullptr;
 }
 
 //=================================================================================================

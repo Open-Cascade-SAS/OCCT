@@ -15,17 +15,18 @@
 #define _GeomProp_OtherSurface_HeaderFile
 
 #include <Adaptor3d_Surface.hxx>
-#include <GeomAdaptor_Surface.hxx>
 #include <GeomProp.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
+#include <optional>
+
 //! @brief Fallback local differential properties for any surface type.
 //!
-//! Uses adaptor D1/D2 methods for property computation.
+//! Uses adaptor D1/D2 methods or Geom_Surface D1/D2 for property computation.
 //!
-//! @warning The caller must ensure that the adaptor pointer remains valid
-//! for the entire lifetime of this object.
+//! Can be constructed from an Adaptor3d_Surface pointer
+//! or a Handle(Geom_Surface). When constructed from a handle, no adaptor is created.
 class GeomProp_OtherSurface
 {
 public:
@@ -34,18 +35,22 @@ public:
   //! Constructor with adaptor pointer (non-owning).
   //! @param theAdaptor the surface adaptor (must not be null)
   GeomProp_OtherSurface(
-    const GeomAdaptor_Surface*  theAdaptor,
+    const Adaptor3d_Surface*    theAdaptor,
     GeomProp::SurfaceDerivOrder theOrder = GeomProp::SurfaceDerivOrder::Curvature)
       : myAdaptor(theAdaptor),
         myRequestedOrder(theOrder)
   {
   }
 
-  GeomProp_OtherSurface(
-    const Adaptor3d_Surface*    theAdaptor,
-    GeomProp::SurfaceDerivOrder theOrder = GeomProp::SurfaceDerivOrder::Curvature)
-      : myAdaptor(theAdaptor),
-        myRequestedOrder(theOrder)
+  //! Constructor from geometry handle.
+  //! @param theSurface the 3D surface geometry
+  //! @param theDomain optional parameter domain (for trimmed surfaces)
+  GeomProp_OtherSurface(const Handle(Geom_Surface)& theSurface,
+                        const std::optional<GeomProp::SurfaceDomain>& theDomain = std::nullopt)
+      : myAdaptor(nullptr),
+        myRequestedOrder(GeomProp::SurfaceDerivOrder::Curvature),
+        mySurface(theSurface),
+        myDomain(theDomain)
   {
   }
 
@@ -55,11 +60,8 @@ public:
   GeomProp_OtherSurface(GeomProp_OtherSurface&&)                 = delete;
   GeomProp_OtherSurface& operator=(GeomProp_OtherSurface&&)      = delete;
 
-  //! Returns the adaptor pointer.
-  const GeomAdaptor_Surface* Adaptor() const
-  {
-    return dynamic_cast<const GeomAdaptor_Surface*>(myAdaptor);
-  }
+  //! Returns the adaptor pointer (nullptr when constructed from handle).
+  const Adaptor3d_Surface* Adaptor() const { return myAdaptor; }
 
   //! Compute surface normal at given parameter.
   Standard_EXPORT GeomProp::SurfaceNormalResult Normal(double theU,
@@ -77,9 +79,11 @@ public:
                                                             double theTol) const;
 
 private:
-  const Adaptor3d_Surface*       myAdaptor;
-  GeomProp::SurfaceDerivOrder    myRequestedOrder;
-  mutable GeomProp::SurfaceCache myCache;
+  const Adaptor3d_Surface*               myAdaptor;
+  GeomProp::SurfaceDerivOrder            myRequestedOrder;
+  mutable GeomProp::SurfaceCache         myCache;
+  Handle(Geom_Surface)                   mySurface; //!< Geometry handle (handle path)
+  std::optional<GeomProp::SurfaceDomain> myDomain;  //!< Optional parameter domain
 };
 
 #endif // _GeomProp_OtherSurface_HeaderFile

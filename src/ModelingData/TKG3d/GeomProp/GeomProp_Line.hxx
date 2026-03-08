@@ -14,18 +14,20 @@
 #ifndef _GeomProp_Line_HeaderFile
 #define _GeomProp_Line_HeaderFile
 
+#include <Geom_Line.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomProp.hxx>
 #include <Standard_DefineAlloc.hxx>
+
+#include <optional>
 
 //! @brief Local differential properties for a 3D line.
 //!
 //! A line has constant tangent, zero curvature, undefined normal and centre.
 //! No curvature extrema or inflection points exist.
 //!
-//! @warning The caller must ensure that the adaptor pointer remains valid
-//! for the entire lifetime of this object. This class does not manage
-//! the adaptor's lifetime.
+//! Can be constructed from either a GeomAdaptor_Curve pointer or a Handle(Geom_Curve).
+//! When constructed from a handle, no adaptor is created.
 class GeomProp_Line
 {
 public:
@@ -35,9 +37,19 @@ public:
   //! @param theAdaptor the 3D curve adaptor (must wrap a line, must not be null)
   GeomProp_Line(const GeomAdaptor_Curve*  theAdaptor,
                 GeomProp::CurveDerivOrder theOrder = GeomProp::CurveDerivOrder::Undefined)
-      : myAdaptor(theAdaptor)
+      : myDirection(theAdaptor->Line().Direction())
   {
     (void)theOrder;
+  }
+
+  //! Constructor from geometry handle.
+  //! @param theCurve the 3D line geometry (must be a Geom_Line or downcastable to it)
+  //! @param theDomain optional parameter domain (unused for line)
+  GeomProp_Line(const Handle(Geom_Curve)&                      theCurve,
+                const std::optional<GeomProp::CurveDomain>& theDomain = std::nullopt)
+      : myDirection(Handle(Geom_Line)::DownCast(theCurve)->Position().Direction())
+  {
+    (void)theDomain;
   }
 
   //! Non-copyable and non-movable.
@@ -46,8 +58,8 @@ public:
   GeomProp_Line(GeomProp_Line&&)                 = delete;
   GeomProp_Line& operator=(GeomProp_Line&&)      = delete;
 
-  //! Returns the adaptor pointer.
-  const GeomAdaptor_Curve* Adaptor() const { return myAdaptor; }
+  //! Returns nullptr (no adaptor is stored).
+  const GeomAdaptor_Curve* Adaptor() const { return nullptr; }
 
   //! Compute tangent at given parameter.
   //! For a line, the tangent is always the line direction.
@@ -58,7 +70,7 @@ public:
   {
     (void)theParam;
     (void)theTol;
-    return {myAdaptor->Line().Direction(), true};
+    return {myDirection, true};
   }
 
   //! Compute curvature at given parameter.
@@ -108,7 +120,7 @@ public:
   GeomProp::CurveAnalysis FindInflections() const { return {{}, true}; }
 
 private:
-  const GeomAdaptor_Curve* myAdaptor;
+  gp_Dir myDirection; //!< Cached line direction
 };
 
 #endif // _GeomProp_Line_HeaderFile

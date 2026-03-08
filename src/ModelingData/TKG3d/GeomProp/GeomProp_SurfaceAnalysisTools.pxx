@@ -24,7 +24,9 @@ namespace GeomProp_SurfaceAnalysisTools
 {
 
 //! Populate surface derivative cache at the requested order.
-inline void EnsureSurfaceDerivatives(const Adaptor3d_Surface*    theSurface,
+//! Works with both Adaptor3d_Surface* and Geom_Surface*.
+template <class SurfaceType>
+inline void EnsureSurfaceDerivatives(const SurfaceType*          theSurface,
                                      double                      theU,
                                      double                      theV,
                                      GeomProp::SurfaceDerivOrder theNeeded,
@@ -56,7 +58,9 @@ inline void EnsureSurfaceDerivatives(const Adaptor3d_Surface*    theSurface,
 }
 
 //! Evaluate surface normal using cached derivatives.
-inline GeomProp::SurfaceNormalResult EvaluateNormalCached(const Adaptor3d_Surface*    theSurface,
+//! Works with both Adaptor3d_Surface* and Geom_Surface*.
+template <class SurfaceType>
+inline GeomProp::SurfaceNormalResult EvaluateNormalCached(const SurfaceType*          theSurface,
                                                           double                      theU,
                                                           double                      theV,
                                                           double                      theTol,
@@ -90,8 +94,10 @@ inline GeomProp::SurfaceNormalResult EvaluateNormalCached(const Adaptor3d_Surfac
 }
 
 //! Evaluate principal curvatures using cached derivatives.
+//! Works with both Adaptor3d_Surface* and Geom_Surface*.
+template <class SurfaceType>
 inline GeomProp::SurfaceCurvatureResult EvaluateCurvaturesCached(
-  const Adaptor3d_Surface*    theSurface,
+  const SurfaceType*          theSurface,
   double                      theU,
   double                      theV,
   double                      theTol,
@@ -129,10 +135,12 @@ inline GeomProp::SurfaceCurvatureResult EvaluateCurvaturesCached(
 }
 
 //! Evaluate mean and Gaussian curvatures using cached derivatives.
-inline GeomProp::MeanGaussianResult EvaluateMeanGaussianCached(const Adaptor3d_Surface* theSurface,
-                                                               double                   theU,
-                                                               double                   theV,
-                                                               double                   theTol,
+//! Works with both Adaptor3d_Surface* and Geom_Surface*.
+template <class SurfaceType>
+inline GeomProp::MeanGaussianResult EvaluateMeanGaussianCached(const SurfaceType*          theSurface,
+                                                               double                      theU,
+                                                               double                      theV,
+                                                               double                      theTol,
                                                                GeomProp::SurfaceDerivOrder theOrder,
                                                                GeomProp::SurfaceCache&     theCache)
 {

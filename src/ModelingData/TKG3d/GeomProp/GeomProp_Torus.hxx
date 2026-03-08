@@ -19,6 +19,8 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
+#include <optional>
+
 //! @brief Local differential properties for a toroidal surface.
 //!
 //! Uses analytical formulas. Curvature varies along the meridian (V direction):
@@ -26,8 +28,8 @@
 //! - k2 = cos(V) / (R + r*cos(V)) (varies, along the major circle direction)
 //! where R is the major radius and r is the minor radius.
 //!
-//! @warning The caller must ensure that the adaptor pointer remains valid
-//! for the entire lifetime of this object.
+//! Can be constructed from either a GeomAdaptor_Surface pointer or a Handle(Geom_Surface).
+//! When constructed from a handle, no adaptor is created.
 class GeomProp_Torus
 {
 public:
@@ -42,13 +44,24 @@ public:
     (void)theOrder;
   }
 
+  //! Constructor from geometry handle.
+  //! @param theSurface the 3D toroidal surface geometry
+  //! @param theDomain optional parameter domain (for trimmed surfaces)
+  GeomProp_Torus(const Handle(Geom_Surface)& theSurface,
+                 const std::optional<GeomProp::SurfaceDomain>& theDomain = std::nullopt)
+      : myAdaptor(nullptr),
+        mySurface(theSurface),
+        myDomain(theDomain)
+  {
+  }
+
   //! Non-copyable and non-movable.
   GeomProp_Torus(const GeomProp_Torus&)            = delete;
   GeomProp_Torus& operator=(const GeomProp_Torus&) = delete;
   GeomProp_Torus(GeomProp_Torus&&)                 = delete;
   GeomProp_Torus& operator=(GeomProp_Torus&&)      = delete;
 
-  //! Returns the adaptor pointer.
+  //! Returns the adaptor pointer (nullptr when constructed from handle).
   const GeomAdaptor_Surface* Adaptor() const { return myAdaptor; }
 
   //! Compute surface normal at given parameter.
@@ -67,7 +80,9 @@ public:
                                                             double theTol) const;
 
 private:
-  const GeomAdaptor_Surface* myAdaptor;
+  const GeomAdaptor_Surface*             myAdaptor;
+  Handle(Geom_Surface)                   mySurface; //!< Geometry handle (handle path)
+  std::optional<GeomProp::SurfaceDomain> myDomain;  //!< Optional parameter domain
 };
 
 #endif // _GeomProp_Torus_HeaderFile

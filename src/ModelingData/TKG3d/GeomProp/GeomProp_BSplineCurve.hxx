@@ -14,10 +14,13 @@
 #ifndef _GeomProp_BSplineCurve_HeaderFile
 #define _GeomProp_BSplineCurve_HeaderFile
 
+#include <Geom_Curve.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomProp.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
+
+#include <optional>
 
 //! @brief Local differential properties for a 3D B-spline curve.
 //!
@@ -25,9 +28,9 @@
 //! For B-splines with continuity less than C3, the parameter range is subdivided
 //! into C3 intervals for more robust root-finding.
 //!
-//! @warning The caller must ensure that the adaptor pointer remains valid
-//! for the entire lifetime of this object. This class does not manage
-//! the adaptor's lifetime.
+//! Can be constructed from either a GeomAdaptor_Curve pointer or a Handle(Geom_Curve).
+//! When constructed from a handle, no adaptor is created; for complex methods
+//! (FindCurvatureExtrema, FindInflections) a stack-local adaptor is created on demand.
 class GeomProp_BSplineCurve
 {
 public:
@@ -42,13 +45,25 @@ public:
   {
   }
 
+  //! Constructor from geometry handle.
+  //! @param theCurve the 3D B-spline curve geometry
+  //! @param theDomain optional parameter domain (for trimmed curves)
+  GeomProp_BSplineCurve(const Handle(Geom_Curve)&                      theCurve,
+                        const std::optional<GeomProp::CurveDomain>& theDomain = std::nullopt)
+      : myAdaptor(nullptr),
+        myRequestedOrder(GeomProp::CurveDerivOrder::Curvature),
+        myCurve(theCurve),
+        myDomain(theDomain)
+  {
+  }
+
   //! Non-copyable and non-movable.
   GeomProp_BSplineCurve(const GeomProp_BSplineCurve&)            = delete;
   GeomProp_BSplineCurve& operator=(const GeomProp_BSplineCurve&) = delete;
   GeomProp_BSplineCurve(GeomProp_BSplineCurve&&)                 = delete;
   GeomProp_BSplineCurve& operator=(GeomProp_BSplineCurve&&)      = delete;
 
-  //! Returns the adaptor pointer.
+  //! Returns the adaptor pointer (nullptr when constructed from handle).
   const GeomAdaptor_Curve* Adaptor() const { return myAdaptor; }
 
   //! Compute tangent at given parameter.
@@ -72,9 +87,11 @@ public:
   Standard_EXPORT GeomProp::CurveAnalysis FindInflections() const;
 
 private:
-  const GeomAdaptor_Curve*     myAdaptor;
-  GeomProp::CurveDerivOrder    myRequestedOrder;
-  mutable GeomProp::CurveCache myCache;
+  const GeomAdaptor_Curve*              myAdaptor;
+  GeomProp::CurveDerivOrder             myRequestedOrder;
+  mutable GeomProp::CurveCache          myCache;
+  Handle(Geom_Curve) myCurve;                      //!< Geometry handle (handle path)
+  std::optional<GeomProp::CurveDomain> myDomain;  //!< Optional parameter domain
 };
 
 #endif // _GeomProp_BSplineCurve_HeaderFile

@@ -22,6 +22,7 @@
 #include <Standard.hxx>
 
 #include <limits>
+#include <optional>
 #include <variant>
 
 //! @brief Namespace containing result structures and free functions for 2D curve
@@ -32,6 +33,13 @@
 //! differential properties from derivative vectors.
 namespace Geom2dProp
 {
+
+//! Parameter domain for a 2D curve (used for trimmed curves).
+struct CurveDomain
+{
+  double First; //!< First parameter
+  double Last;  //!< Last parameter
+};
 
 //! Result of tangent direction computation.
 struct TangentResult

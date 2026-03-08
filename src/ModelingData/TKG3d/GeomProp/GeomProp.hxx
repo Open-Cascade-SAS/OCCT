@@ -23,6 +23,7 @@
 #include <Standard.hxx>
 
 #include <limits>
+#include <optional>
 #include <variant>
 
 //! @brief Namespace containing result structures and free functions for 3D curve
@@ -33,6 +34,26 @@
 //! differential properties from derivative vectors.
 namespace GeomProp
 {
+
+// ============================================================================
+// Domain structures
+// ============================================================================
+
+//! Parameter domain for a 3D curve (used for trimmed curves).
+struct CurveDomain
+{
+  double First; //!< First parameter
+  double Last;  //!< Last parameter
+};
+
+//! Parameter domain for a 3D surface (used for rectangular trimmed surfaces).
+struct SurfaceDomain
+{
+  double FirstU; //!< First U parameter
+  double LastU;  //!< Last U parameter
+  double FirstV; //!< First V parameter
+  double LastV;  //!< Last V parameter
+};
 
 // ============================================================================
 // Curve result structures

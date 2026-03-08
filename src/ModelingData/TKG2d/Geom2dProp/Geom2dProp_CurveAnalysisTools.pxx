@@ -27,6 +27,7 @@
 #include <math_FunctionWithDerivative.hxx>
 
 #include <cmath>
+#include <optional>
 
 //! Internal helper utilities for numeric curve analysis shared across all
 //! Geom2dProp curve evaluators (Bezier, BSpline, Offset, Other).
@@ -322,9 +323,10 @@ inline void RemoveDuplicatePoints(Geom2dProp::CurveAnalysis& theResult, const do
   theResult.Points = std::move(aFiltered);
 }
 
+template <class CurveType>
 inline Geom2dProp::CurveAnalysis FindWholeRange(
-  const Adaptor2d_Curve2d* theCurve,
-  void (*theFunc)(const Adaptor2d_Curve2d*, double, double, Geom2dProp::CurveAnalysis&))
+  const CurveType* theCurve,
+  void (*theFunc)(const CurveType*, double, double, Geom2dProp::CurveAnalysis&))
 {
   Geom2dProp::CurveAnalysis aResult;
   aResult.IsDone = true;
@@ -339,44 +341,12 @@ inline Geom2dProp::CurveAnalysis FindWholeRange(
   return aResult;
 }
 
-inline Geom2dProp::CurveAnalysis FindBySpans(
-  const Adaptor2d_Curve2d* theCurve,
-  const GeomAbs_Shape      theContinuity,
-  void (*theFunc)(const Adaptor2d_Curve2d*, double, double, Geom2dProp::CurveAnalysis&),
-  const double theDuplicateTol)
-{
-  Geom2dProp::CurveAnalysis aResult;
-  aResult.IsDone = true;
-
-  if (theCurve == nullptr)
-  {
-    aResult.IsDone = false;
-    return aResult;
-  }
-
-  if (theCurve->Continuity() >= theContinuity)
-  {
-    theFunc(theCurve, theCurve->FirstParameter(), theCurve->LastParameter(), aResult);
-  }
-  else
-  {
-    const int                  aNbInt = theCurve->NbIntervals(theContinuity);
-    NCollection_Array1<double> aParams(1, aNbInt + 1);
-    theCurve->Intervals(aParams, theContinuity);
-    for (int i = 1; i <= aNbInt; ++i)
-    {
-      theFunc(theCurve, aParams(i), aParams(i + 1), aResult);
-    }
-    RemoveDuplicatePoints(aResult, theDuplicateTol);
-  }
-
-  return aResult;
-}
-
 //! Evaluate tangent at a point on a 2D curve with sign correction for null D1.
-inline Geom2dProp::TangentResult EvaluateTangent(const Adaptor2d_Curve2d* theCurve,
-                                                 const double             theParam,
-                                                 const double             theTol)
+//! Works with both Adaptor2d_Curve2d and Geom2d_Curve.
+template <class CurveType>
+inline Geom2dProp::TangentResult EvaluateTangent(const CurveType* theCurve,
+                                                 const double     theParam,
+                                                 const double     theTol)
 {
   if (theCurve == nullptr)
   {
@@ -409,9 +379,11 @@ inline Geom2dProp::TangentResult EvaluateTangent(const Adaptor2d_Curve2d* theCur
 }
 
 //! Evaluate curvature at a point on a 2D curve.
-inline Geom2dProp::CurvatureResult EvaluateCurvature(const Adaptor2d_Curve2d* theCurve,
-                                                     const double             theParam,
-                                                     const double             theTol)
+//! Works with both Adaptor2d_Curve2d and Geom2d_Curve.
+template <class CurveType>
+inline Geom2dProp::CurvatureResult EvaluateCurvature(const CurveType* theCurve,
+                                                     const double     theParam,
+                                                     const double     theTol)
 {
   if (theCurve == nullptr)
   {
@@ -425,9 +397,11 @@ inline Geom2dProp::CurvatureResult EvaluateCurvature(const Adaptor2d_Curve2d* th
 }
 
 //! Evaluate normal at a point on a 2D curve.
-inline Geom2dProp::NormalResult EvaluateNormal(const Adaptor2d_Curve2d* theCurve,
-                                               const double             theParam,
-                                               const double             theTol)
+//! Works with both Adaptor2d_Curve2d and Geom2d_Curve.
+template <class CurveType>
+inline Geom2dProp::NormalResult EvaluateNormal(const CurveType* theCurve,
+                                               const double     theParam,
+                                               const double     theTol)
 {
   if (theCurve == nullptr)
   {
@@ -441,9 +415,11 @@ inline Geom2dProp::NormalResult EvaluateNormal(const Adaptor2d_Curve2d* theCurve
 }
 
 //! Evaluate centre of curvature at a point on a 2D curve.
-inline Geom2dProp::CentreResult EvaluateCentreOfCurvature(const Adaptor2d_Curve2d* theCurve,
-                                                          const double             theParam,
-                                                          const double             theTol)
+//! Works with both Adaptor2d_Curve2d and Geom2d_Curve.
+template <class CurveType>
+inline Geom2dProp::CentreResult EvaluateCentreOfCurvature(const CurveType* theCurve,
+                                                          const double     theParam,
+                                                          const double     theTol)
 {
   if (theCurve == nullptr)
   {
@@ -468,26 +444,116 @@ inline Geom2dProp::CurveAnalysis FindInflections(const Adaptor2d_Curve2d* theCur
   return FindWholeRange(theCurve, NumericInflections<Adaptor2d_Curve2d>);
 }
 
-//! Find curvature extrema with span-by-span subdivision for low-continuity curves.
-inline Geom2dProp::CurveAnalysis FindCurvatureExtremaBySpans(const Adaptor2d_Curve2d* theCurve,
-                                                             const GeomAbs_Shape      theContinuity)
+//! Find curvature extrema on a Geom2d_Curve over a given domain.
+inline Geom2dProp::CurveAnalysis FindCurvatureExtrema(
+  const Geom2d_Curve*                                theCurve,
+  const std::optional<Geom2dProp::CurveDomain>& theDomain)
 {
-  const double aTol = THE_EPSILON_SCALE * (theCurve->LastParameter() - theCurve->FirstParameter());
-  return FindBySpans(theCurve, theContinuity, NumericCurvatureExtrema<Adaptor2d_Curve2d>, aTol);
+  Geom2dProp::CurveAnalysis aResult;
+  aResult.IsDone = true;
+  if (theCurve == nullptr)
+  {
+    aResult.IsDone = false;
+    return aResult;
+  }
+  const double aFirst = theDomain.has_value() ? theDomain->First : theCurve->FirstParameter();
+  const double aLast  = theDomain.has_value() ? theDomain->Last : theCurve->LastParameter();
+  NumericCurvatureExtrema(theCurve, aFirst, aLast, aResult);
+  return aResult;
+}
+
+//! Find inflections on a Geom2d_Curve over a given domain.
+inline Geom2dProp::CurveAnalysis FindInflections(
+  const Geom2d_Curve*                                theCurve,
+  const std::optional<Geom2dProp::CurveDomain>& theDomain)
+{
+  Geom2dProp::CurveAnalysis aResult;
+  aResult.IsDone = true;
+  if (theCurve == nullptr)
+  {
+    aResult.IsDone = false;
+    return aResult;
+  }
+  const double aFirst = theDomain.has_value() ? theDomain->First : theCurve->FirstParameter();
+  const double aLast  = theDomain.has_value() ? theDomain->Last : theCurve->LastParameter();
+  NumericInflections(theCurve, aFirst, aLast, aResult);
+  return aResult;
+}
+
+//! Find curvature extrema with span-by-span subdivision for low-continuity curves.
+inline Geom2dProp::CurveAnalysis FindCurvatureExtremaBySpans(
+  const Geom2dAdaptor_Curve* theCurve,
+  const GeomAbs_Shape        theContinuity)
+{
+  Geom2dProp::CurveAnalysis aResult;
+  aResult.IsDone = true;
+
+  if (theCurve == nullptr)
+  {
+    aResult.IsDone = false;
+    return aResult;
+  }
+
+  if (theCurve->Continuity() >= theContinuity)
+  {
+    NumericCurvatureExtrema(theCurve,
+                            theCurve->FirstParameter(),
+                            theCurve->LastParameter(),
+                            aResult);
+  }
+  else
+  {
+    const int                  aNbInt = theCurve->NbIntervals(theContinuity);
+    NCollection_Array1<double> aParams(1, aNbInt + 1);
+    theCurve->Intervals(aParams, theContinuity);
+    for (int i = 1; i <= aNbInt; ++i)
+    {
+      NumericCurvatureExtrema(theCurve, aParams(i), aParams(i + 1), aResult);
+    }
+    const double aEpsH =
+      THE_EPSILON_SCALE * (theCurve->LastParameter() - theCurve->FirstParameter());
+    RemoveDuplicatePoints(aResult, aEpsH);
+  }
+
+  return aResult;
 }
 
 //! Find inflections with span-by-span subdivision for low-continuity curves.
-inline Geom2dProp::CurveAnalysis FindInflectionsBySpans(const Adaptor2d_Curve2d* theCurve,
-                                                        const GeomAbs_Shape      theContinuity)
+inline Geom2dProp::CurveAnalysis FindInflectionsBySpans(const Geom2dAdaptor_Curve* theCurve,
+                                                        const GeomAbs_Shape        theContinuity)
 {
-  return FindBySpans(theCurve,
-                     theContinuity,
-                     NumericInflections<Adaptor2d_Curve2d>,
-                     THE_INFLECTION_TOLERANCE);
+  Geom2dProp::CurveAnalysis aResult;
+  aResult.IsDone = true;
+
+  if (theCurve == nullptr)
+  {
+    aResult.IsDone = false;
+    return aResult;
+  }
+
+  if (theCurve->Continuity() >= theContinuity)
+  {
+    NumericInflections(theCurve, theCurve->FirstParameter(), theCurve->LastParameter(), aResult);
+  }
+  else
+  {
+    const int                  aNbInt = theCurve->NbIntervals(theContinuity);
+    NCollection_Array1<double> aParams(1, aNbInt + 1);
+    theCurve->Intervals(aParams, theContinuity);
+    for (int i = 1; i <= aNbInt; ++i)
+    {
+      NumericInflections(theCurve, aParams(i), aParams(i + 1), aResult);
+    }
+    RemoveDuplicatePoints(aResult, THE_INFLECTION_TOLERANCE);
+  }
+
+  return aResult;
 }
 
 //! Populate 2D curve derivative cache at the requested order.
-inline void EnsureCurveDerivatives(const Adaptor2d_Curve2d*    theCurve,
+//! Works with both Adaptor2d_Curve2d and Geom2d_Curve (they share the same D0/D1/D2/D3 interface).
+template <class CurveType>
+inline void EnsureCurveDerivatives(const CurveType*            theCurve,
                                    double                      theParam,
                                    Geom2dProp::CurveDerivOrder theNeeded,
                                    Geom2dProp::CurveDerivOrder theRequested,
@@ -533,7 +599,9 @@ inline void EnsureCurveDerivatives(const Adaptor2d_Curve2d*    theCurve,
 }
 
 //! Evaluate tangent at a point on a 2D curve using cached derivatives.
-inline Geom2dProp::TangentResult EvaluateTangentCached(const Adaptor2d_Curve2d*    theCurve,
+//! Works with both Adaptor2d_Curve2d and Geom2d_Curve.
+template <class CurveType>
+inline Geom2dProp::TangentResult EvaluateTangentCached(const CurveType*            theCurve,
                                                        double                      theParam,
                                                        double                      theTol,
                                                        Geom2dProp::CurveDerivOrder theOrder,
@@ -603,7 +671,9 @@ inline Geom2dProp::TangentResult EvaluateTangentCached(const Adaptor2d_Curve2d* 
 }
 
 //! Evaluate curvature at a point on a 2D curve using cached derivatives.
-inline Geom2dProp::CurvatureResult EvaluateCurvatureCached(const Adaptor2d_Curve2d*    theCurve,
+//! Works with both Adaptor2d_Curve2d and Geom2d_Curve.
+template <class CurveType>
+inline Geom2dProp::CurvatureResult EvaluateCurvatureCached(const CurveType*            theCurve,
                                                            double                      theParam,
                                                            double                      theTol,
                                                            Geom2dProp::CurveDerivOrder theOrder,
@@ -637,7 +707,9 @@ inline Geom2dProp::CurvatureResult EvaluateCurvatureCached(const Adaptor2d_Curve
 }
 
 //! Evaluate normal at a point on a 2D curve using cached derivatives.
-inline Geom2dProp::NormalResult EvaluateNormalCached(const Adaptor2d_Curve2d*    theCurve,
+//! Works with both Adaptor2d_Curve2d and Geom2d_Curve.
+template <class CurveType>
+inline Geom2dProp::NormalResult EvaluateNormalCached(const CurveType*            theCurve,
                                                      double                      theParam,
                                                      double                      theTol,
                                                      Geom2dProp::CurveDerivOrder theOrder,
@@ -671,8 +743,10 @@ inline Geom2dProp::NormalResult EvaluateNormalCached(const Adaptor2d_Curve2d*   
 }
 
 //! Evaluate centre of curvature at a point on a 2D curve using cached derivatives.
+//! Works with both Adaptor2d_Curve2d and Geom2d_Curve.
+template <class CurveType>
 inline Geom2dProp::CentreResult EvaluateCentreOfCurvatureCached(
-  const Adaptor2d_Curve2d*    theCurve,
+  const CurveType*            theCurve,
   double                      theParam,
   double                      theTol,
   Geom2dProp::CurveDerivOrder theOrder,

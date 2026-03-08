@@ -13,7 +13,19 @@
 
 #include <GeomProp_Surface.hxx>
 
+#include <Geom_BezierSurface.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Geom_ConicalSurface.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom_OffsetSurface.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_SphericalSurface.hxx>
+#include <Geom_SurfaceOfLinearExtrusion.hxx>
+#include <Geom_SurfaceOfRevolution.hxx>
+#include <Geom_ToroidalSurface.hxx>
 #include <GeomAdaptor_Surface.hxx>
+#include <GeomAdaptor_TransformedSurface.hxx>
 
 //=================================================================================================
 
@@ -37,14 +49,64 @@ GeomProp_Surface::GeomProp_Surface(const occ::handle<Geom_Surface>& theSurface)
 
 void GeomProp_Surface::initialization(const Adaptor3d_Surface& theSurface)
 {
-  if (theSurface.IsKind(STANDARD_TYPE(GeomAdaptor_Surface)))
+  if (theSurface.IsKind(STANDARD_TYPE(GeomAdaptor_TransformedSurface)))
   {
-    const auto& aGeomAdaptor = static_cast<const GeomAdaptor_Surface&>(theSurface);
-    myOwnedAdaptor           = new GeomAdaptor_Surface(aGeomAdaptor);
-    initFromAdaptor();
+    // Extract the transformed adaptor (carries both geometry and domain) and re-initialize.
+    const GeomAdaptor_TransformedSurface& aTransformed =
+      static_cast<const GeomAdaptor_TransformedSurface&>(theSurface);
+    initialization(aTransformed.AdaptorSurfaceTransformed());
     return;
   }
 
+  if (theSurface.IsKind(STANDARD_TYPE(GeomAdaptor_Surface)))
+  {
+    const GeomAdaptor_Surface& aGeomAdaptor = static_cast<const GeomAdaptor_Surface&>(theSurface);
+    if (!aGeomAdaptor.Surface().IsNull())
+    {
+      // Dispatch specialized evaluators directly from the GeomAdaptor.
+      myOwnedAdaptor.Nullify();
+      mySurfaceType = aGeomAdaptor.GetType();
+      switch (mySurfaceType)
+      {
+        case GeomAbs_Plane:
+          myEvaluator.emplace<GeomProp_Plane>(&aGeomAdaptor);
+          break;
+        case GeomAbs_Cylinder:
+          myEvaluator.emplace<GeomProp_Cylinder>(&aGeomAdaptor);
+          break;
+        case GeomAbs_Cone:
+          myEvaluator.emplace<GeomProp_Cone>(&aGeomAdaptor);
+          break;
+        case GeomAbs_Sphere:
+          myEvaluator.emplace<GeomProp_Sphere>(&aGeomAdaptor);
+          break;
+        case GeomAbs_Torus:
+          myEvaluator.emplace<GeomProp_Torus>(&aGeomAdaptor);
+          break;
+        case GeomAbs_BezierSurface:
+          myEvaluator.emplace<GeomProp_BezierSurface>(&aGeomAdaptor);
+          break;
+        case GeomAbs_BSplineSurface:
+          myEvaluator.emplace<GeomProp_BSplineSurface>(&aGeomAdaptor);
+          break;
+        case GeomAbs_SurfaceOfRevolution:
+          myEvaluator.emplace<GeomProp_SurfaceOfRevolution>(&aGeomAdaptor);
+          break;
+        case GeomAbs_SurfaceOfExtrusion:
+          myEvaluator.emplace<GeomProp_SurfaceOfExtrusion>(&aGeomAdaptor);
+          break;
+        case GeomAbs_OffsetSurface:
+          myEvaluator.emplace<GeomProp_OffsetSurface>(&aGeomAdaptor);
+          break;
+        default:
+          myEvaluator.emplace<GeomProp_OtherSurface>(&theSurface);
+          break;
+      }
+      return;
+    }
+  }
+
+  // Non-Geom adaptor or empty surface handle: use OtherSurface with adaptor pointer.
   myOwnedAdaptor.Nullify();
   mySurfaceType = theSurface.GetType();
   myEvaluator.emplace<GeomProp_OtherSurface>(&theSurface);
@@ -62,59 +124,76 @@ void GeomProp_Surface::initialization(const occ::handle<Geom_Surface>& theSurfac
     return;
   }
 
-  myOwnedAdaptor = new GeomAdaptor_Surface(theSurface);
-  initFromAdaptor();
-}
+  // No adaptor creation for the handle path.
+  myOwnedAdaptor.Nullify();
 
-//=================================================================================================
-
-void GeomProp_Surface::initFromAdaptor()
-{
-  if (myOwnedAdaptor.IsNull())
+  // Unwrap RectangularTrimmedSurface to basis surface + optional SurfaceDomain.
+  occ::handle<Geom_Surface>               aBasis = theSurface;
+  std::optional<GeomProp::SurfaceDomain> aDomain;
+  if (aBasis->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
   {
-    myEvaluator.emplace<std::monostate>();
-    mySurfaceType = GeomAbs_OtherSurface;
-    return;
+    double aU1, aU2, aV1, aV2;
+    Handle(Geom_RectangularTrimmedSurface)::DownCast(aBasis)->Bounds(aU1, aU2, aV1, aV2);
+    aDomain = GeomProp::SurfaceDomain{aU1, aU2, aV1, aV2};
+    aBasis  = Handle(Geom_RectangularTrimmedSurface)::DownCast(aBasis)->BasisSurface();
   }
 
-  const GeomAdaptor_Surface* aPtr = myOwnedAdaptor.get();
-  mySurfaceType                   = aPtr->GetType();
-
-  switch (mySurfaceType)
+  // Type detection using DynamicType() - extracted once to avoid repeated virtual calls.
+  const Handle(Standard_Type)& aType = aBasis->DynamicType();
+  if (aType == STANDARD_TYPE(Geom_Plane))
   {
-    case GeomAbs_Plane:
-      myEvaluator.emplace<GeomProp_Plane>(aPtr);
-      break;
-    case GeomAbs_Cylinder:
-      myEvaluator.emplace<GeomProp_Cylinder>(aPtr);
-      break;
-    case GeomAbs_Cone:
-      myEvaluator.emplace<GeomProp_Cone>(aPtr);
-      break;
-    case GeomAbs_Sphere:
-      myEvaluator.emplace<GeomProp_Sphere>(aPtr);
-      break;
-    case GeomAbs_Torus:
-      myEvaluator.emplace<GeomProp_Torus>(aPtr);
-      break;
-    case GeomAbs_BezierSurface:
-      myEvaluator.emplace<GeomProp_BezierSurface>(aPtr);
-      break;
-    case GeomAbs_BSplineSurface:
-      myEvaluator.emplace<GeomProp_BSplineSurface>(aPtr);
-      break;
-    case GeomAbs_SurfaceOfRevolution:
-      myEvaluator.emplace<GeomProp_SurfaceOfRevolution>(aPtr);
-      break;
-    case GeomAbs_SurfaceOfExtrusion:
-      myEvaluator.emplace<GeomProp_SurfaceOfExtrusion>(aPtr);
-      break;
-    case GeomAbs_OffsetSurface:
-      myEvaluator.emplace<GeomProp_OffsetSurface>(aPtr);
-      break;
-    default:
-      myEvaluator.emplace<GeomProp_OtherSurface>(aPtr);
-      break;
+    mySurfaceType = GeomAbs_Plane;
+    myEvaluator.emplace<GeomProp_Plane>(aBasis, aDomain);
+  }
+  else if (aType == STANDARD_TYPE(Geom_CylindricalSurface))
+  {
+    mySurfaceType = GeomAbs_Cylinder;
+    myEvaluator.emplace<GeomProp_Cylinder>(aBasis, aDomain);
+  }
+  else if (aType == STANDARD_TYPE(Geom_ConicalSurface))
+  {
+    mySurfaceType = GeomAbs_Cone;
+    myEvaluator.emplace<GeomProp_Cone>(aBasis, aDomain);
+  }
+  else if (aType == STANDARD_TYPE(Geom_SphericalSurface))
+  {
+    mySurfaceType = GeomAbs_Sphere;
+    myEvaluator.emplace<GeomProp_Sphere>(aBasis, aDomain);
+  }
+  else if (aType == STANDARD_TYPE(Geom_ToroidalSurface))
+  {
+    mySurfaceType = GeomAbs_Torus;
+    myEvaluator.emplace<GeomProp_Torus>(aBasis, aDomain);
+  }
+  else if (aType == STANDARD_TYPE(Geom_BezierSurface))
+  {
+    mySurfaceType = GeomAbs_BezierSurface;
+    myEvaluator.emplace<GeomProp_BezierSurface>(aBasis, aDomain);
+  }
+  else if (aType == STANDARD_TYPE(Geom_BSplineSurface))
+  {
+    mySurfaceType = GeomAbs_BSplineSurface;
+    myEvaluator.emplace<GeomProp_BSplineSurface>(aBasis, aDomain);
+  }
+  else if (aType == STANDARD_TYPE(Geom_SurfaceOfRevolution))
+  {
+    mySurfaceType = GeomAbs_SurfaceOfRevolution;
+    myEvaluator.emplace<GeomProp_SurfaceOfRevolution>(aBasis, aDomain);
+  }
+  else if (aType == STANDARD_TYPE(Geom_SurfaceOfLinearExtrusion))
+  {
+    mySurfaceType = GeomAbs_SurfaceOfExtrusion;
+    myEvaluator.emplace<GeomProp_SurfaceOfExtrusion>(aBasis, aDomain);
+  }
+  else if (aType == STANDARD_TYPE(Geom_OffsetSurface))
+  {
+    mySurfaceType = GeomAbs_OffsetSurface;
+    myEvaluator.emplace<GeomProp_OffsetSurface>(aBasis, aDomain);
+  }
+  else
+  {
+    mySurfaceType = GeomAbs_OtherSurface;
+    myEvaluator.emplace<GeomProp_OtherSurface>(aBasis, aDomain);
   }
 }
 
@@ -122,19 +201,11 @@ void GeomProp_Surface::initFromAdaptor()
 
 const Adaptor3d_Surface* GeomProp_Surface::Adaptor() const
 {
-  return std::visit(
-    [](const auto& theEval) -> const Adaptor3d_Surface* {
-      using T = std::decay_t<decltype(theEval)>;
-      if constexpr (std::is_same_v<T, std::monostate>)
-      {
-        return nullptr;
-      }
-      else
-      {
-        return theEval.Adaptor();
-      }
-    },
-    myEvaluator);
+  if (!myOwnedAdaptor.IsNull())
+  {
+    return myOwnedAdaptor.get();
+  }
+  return nullptr;
 }
 
 //=================================================================================================

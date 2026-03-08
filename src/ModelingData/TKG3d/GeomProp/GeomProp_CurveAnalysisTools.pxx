@@ -26,6 +26,7 @@
 #include <Precision.hxx>
 
 #include <cmath>
+#include <optional>
 
 //! Internal helper utilities for numeric curve analysis shared across all
 //! GeomProp curve evaluators (Bezier, BSpline, Offset, Other).
@@ -336,9 +337,10 @@ inline void RemoveDuplicatePoints(GeomProp::CurveAnalysis& theResult, const doub
   theResult.Points = std::move(aFiltered);
 }
 
+template <class CurveType>
 inline GeomProp::CurveAnalysis FindWholeRange(
-  const Adaptor3d_Curve* theCurve,
-  void (*theFunc)(const Adaptor3d_Curve*, double, double, GeomProp::CurveAnalysis&))
+  const CurveType* theCurve,
+  void (*theFunc)(const CurveType*, double, double, GeomProp::CurveAnalysis&))
 {
   GeomProp::CurveAnalysis aResult;
   aResult.IsDone = true;
@@ -354,9 +356,11 @@ inline GeomProp::CurveAnalysis FindWholeRange(
 }
 
 //! Evaluate tangent at a point on a 3D curve with sign correction for null D1.
-inline GeomProp::TangentResult EvaluateTangent(const Adaptor3d_Curve* theCurve,
-                                               const double           theParam,
-                                               const double           theTol)
+//! Works with both Adaptor3d_Curve and Geom_Curve.
+template <class CurveType>
+inline GeomProp::TangentResult EvaluateTangent(const CurveType* theCurve,
+                                               const double     theParam,
+                                               const double     theTol)
 {
   if (theCurve == nullptr)
   {
@@ -389,9 +393,11 @@ inline GeomProp::TangentResult EvaluateTangent(const Adaptor3d_Curve* theCurve,
 }
 
 //! Evaluate curvature at a point on a 3D curve.
-inline GeomProp::CurvatureResult EvaluateCurvature(const Adaptor3d_Curve* theCurve,
-                                                   const double           theParam,
-                                                   const double           theTol)
+//! Works with both Adaptor3d_Curve and Geom_Curve.
+template <class CurveType>
+inline GeomProp::CurvatureResult EvaluateCurvature(const CurveType* theCurve,
+                                                   const double     theParam,
+                                                   const double     theTol)
 {
   if (theCurve == nullptr)
   {
@@ -405,9 +411,11 @@ inline GeomProp::CurvatureResult EvaluateCurvature(const Adaptor3d_Curve* theCur
 }
 
 //! Evaluate normal at a point on a 3D curve.
-inline GeomProp::NormalResult EvaluateNormal(const Adaptor3d_Curve* theCurve,
-                                             const double           theParam,
-                                             const double           theTol)
+//! Works with both Adaptor3d_Curve and Geom_Curve.
+template <class CurveType>
+inline GeomProp::NormalResult EvaluateNormal(const CurveType* theCurve,
+                                             const double     theParam,
+                                             const double     theTol)
 {
   if (theCurve == nullptr)
   {
@@ -421,9 +429,11 @@ inline GeomProp::NormalResult EvaluateNormal(const Adaptor3d_Curve* theCurve,
 }
 
 //! Evaluate centre of curvature at a point on a 3D curve.
-inline GeomProp::CentreResult EvaluateCentreOfCurvature(const Adaptor3d_Curve* theCurve,
-                                                        const double           theParam,
-                                                        const double           theTol)
+//! Works with both Adaptor3d_Curve and Geom_Curve.
+template <class CurveType>
+inline GeomProp::CentreResult EvaluateCentreOfCurvature(const CurveType* theCurve,
+                                                        const double     theParam,
+                                                        const double     theTol)
 {
   if (theCurve == nullptr)
   {
@@ -446,6 +456,42 @@ inline GeomProp::CurveAnalysis FindCurvatureExtrema(const Adaptor3d_Curve* theCu
 inline GeomProp::CurveAnalysis FindInflections(const Adaptor3d_Curve* theCurve)
 {
   return FindWholeRange(theCurve, NumericInflections<Adaptor3d_Curve>);
+}
+
+//! Find curvature extrema on a Geom_Curve over a given domain.
+inline GeomProp::CurveAnalysis FindCurvatureExtrema(
+  const Geom_Curve*                              theCurve,
+  const std::optional<GeomProp::CurveDomain>& theDomain)
+{
+  GeomProp::CurveAnalysis aResult;
+  aResult.IsDone = true;
+  if (theCurve == nullptr)
+  {
+    aResult.IsDone = false;
+    return aResult;
+  }
+  const double aFirst = theDomain.has_value() ? theDomain->First : theCurve->FirstParameter();
+  const double aLast  = theDomain.has_value() ? theDomain->Last : theCurve->LastParameter();
+  NumericCurvatureExtrema(theCurve, aFirst, aLast, aResult);
+  return aResult;
+}
+
+//! Find inflections on a Geom_Curve over a given domain.
+inline GeomProp::CurveAnalysis FindInflections(
+  const Geom_Curve*                              theCurve,
+  const std::optional<GeomProp::CurveDomain>& theDomain)
+{
+  GeomProp::CurveAnalysis aResult;
+  aResult.IsDone = true;
+  if (theCurve == nullptr)
+  {
+    aResult.IsDone = false;
+    return aResult;
+  }
+  const double aFirst = theDomain.has_value() ? theDomain->First : theCurve->FirstParameter();
+  const double aLast  = theDomain.has_value() ? theDomain->Last : theCurve->LastParameter();
+  NumericInflections(theCurve, aFirst, aLast, aResult);
+  return aResult;
 }
 
 //! Find curvature extrema with span-by-span subdivision for low-continuity curves.
@@ -518,7 +564,9 @@ inline GeomProp::CurveAnalysis FindInflectionsBySpans(const GeomAdaptor_Curve* t
 }
 
 //! Populate 3D curve derivative cache at the requested order.
-inline void EnsureCurveDerivatives(const Adaptor3d_Curve*    theCurve,
+//! Works with both Adaptor3d_Curve and Geom_Curve (they share the same D0/D1/D2/D3 interface).
+template <class CurveType>
+inline void EnsureCurveDerivatives(const CurveType*          theCurve,
                                    double                    theParam,
                                    GeomProp::CurveDerivOrder theNeeded,
                                    GeomProp::CurveDerivOrder theRequested,
@@ -564,7 +612,9 @@ inline void EnsureCurveDerivatives(const Adaptor3d_Curve*    theCurve,
 }
 
 //! Evaluate tangent at a point on a 3D curve using cached derivatives.
-inline GeomProp::TangentResult EvaluateTangentCached(const Adaptor3d_Curve*    theCurve,
+//! Works with both Adaptor3d_Curve and Geom_Curve.
+template <class CurveType>
+inline GeomProp::TangentResult EvaluateTangentCached(const CurveType*          theCurve,
                                                      double                    theParam,
                                                      double                    theTol,
                                                      GeomProp::CurveDerivOrder theOrder,
@@ -634,7 +684,9 @@ inline GeomProp::TangentResult EvaluateTangentCached(const Adaptor3d_Curve*    t
 }
 
 //! Evaluate curvature at a point on a 3D curve using cached derivatives.
-inline GeomProp::CurvatureResult EvaluateCurvatureCached(const Adaptor3d_Curve*    theCurve,
+//! Works with both Adaptor3d_Curve and Geom_Curve.
+template <class CurveType>
+inline GeomProp::CurvatureResult EvaluateCurvatureCached(const CurveType*          theCurve,
                                                          double                    theParam,
                                                          double                    theTol,
                                                          GeomProp::CurveDerivOrder theOrder,
@@ -667,7 +719,9 @@ inline GeomProp::CurvatureResult EvaluateCurvatureCached(const Adaptor3d_Curve* 
 }
 
 //! Evaluate normal at a point on a 3D curve using cached derivatives.
-inline GeomProp::NormalResult EvaluateNormalCached(const Adaptor3d_Curve*    theCurve,
+//! Works with both Adaptor3d_Curve and Geom_Curve.
+template <class CurveType>
+inline GeomProp::NormalResult EvaluateNormalCached(const CurveType*          theCurve,
                                                    double                    theParam,
                                                    double                    theTol,
                                                    GeomProp::CurveDerivOrder theOrder,
@@ -700,7 +754,9 @@ inline GeomProp::NormalResult EvaluateNormalCached(const Adaptor3d_Curve*    the
 }
 
 //! Evaluate centre of curvature at a point on a 3D curve using cached derivatives.
-inline GeomProp::CentreResult EvaluateCentreOfCurvatureCached(const Adaptor3d_Curve*    theCurve,
+//! Works with both Adaptor3d_Curve and Geom_Curve.
+template <class CurveType>
+inline GeomProp::CentreResult EvaluateCentreOfCurvatureCached(const CurveType*          theCurve,
                                                               double                    theParam,
                                                               double                    theTol,
                                                               GeomProp::CurveDerivOrder theOrder,

@@ -19,6 +19,8 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
+#include <optional>
+
 //! @brief Local differential properties for a conical surface.
 //!
 //! Uses analytical formulas where possible; the curvature
@@ -27,8 +29,8 @@
 //! Max principal curvature = cos(alpha) / R(V), where alpha is the half-angle
 //! and R(V) is the radius at parameter V.
 //!
-//! @warning The caller must ensure that the adaptor pointer remains valid
-//! for the entire lifetime of this object.
+//! Can be constructed from either a GeomAdaptor_Surface pointer or a Handle(Geom_Surface).
+//! When constructed from a handle, no adaptor is created.
 class GeomProp_Cone
 {
 public:
@@ -43,18 +45,27 @@ public:
     (void)theOrder;
   }
 
+  //! Constructor from geometry handle.
+  //! @param theSurface the 3D conical surface geometry
+  //! @param theDomain optional parameter domain (for trimmed surfaces)
+  GeomProp_Cone(const Handle(Geom_Surface)& theSurface,
+                const std::optional<GeomProp::SurfaceDomain>& theDomain = std::nullopt)
+      : myAdaptor(nullptr),
+        mySurface(theSurface),
+        myDomain(theDomain)
+  {
+  }
+
   //! Non-copyable and non-movable.
   GeomProp_Cone(const GeomProp_Cone&)            = delete;
   GeomProp_Cone& operator=(const GeomProp_Cone&) = delete;
   GeomProp_Cone(GeomProp_Cone&&)                 = delete;
   GeomProp_Cone& operator=(GeomProp_Cone&&)      = delete;
 
-  //! Returns the adaptor pointer.
+  //! Returns the adaptor pointer (nullptr when constructed from handle).
   const GeomAdaptor_Surface* Adaptor() const { return myAdaptor; }
 
   //! Compute surface normal at given parameter.
-  //! TODO: At the apex (V = -R/sin(alpha)), D1U degenerates and Normal returns IsDefined=false.
-  //!   Could use analytical normal for this special case.
   Standard_EXPORT GeomProp::SurfaceNormalResult Normal(double theU,
                                                        double theV,
                                                        double theTol) const;
@@ -70,7 +81,9 @@ public:
                                                             double theTol) const;
 
 private:
-  const GeomAdaptor_Surface* myAdaptor;
+  const GeomAdaptor_Surface*             myAdaptor;
+  Handle(Geom_Surface)                   mySurface; //!< Geometry handle (handle path)
+  std::optional<GeomProp::SurfaceDomain> myDomain;  //!< Optional parameter domain
 };
 
 #endif // _GeomProp_Cone_HeaderFile

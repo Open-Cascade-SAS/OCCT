@@ -19,6 +19,14 @@
 Geom2dProp::TangentResult Geom2dProp_OffsetCurve::Tangent(const double theParam,
                                                           const double theTol) const
 {
+  if (!myCurve.IsNull())
+  {
+    return Geom2dProp_CurveAnalysisTools::EvaluateTangentCached(myCurve.get(),
+                                                                theParam,
+                                                                theTol,
+                                                                myRequestedOrder,
+                                                                myCache);
+  }
   return Geom2dProp_CurveAnalysisTools::EvaluateTangentCached(myAdaptor,
                                                               theParam,
                                                               theTol,
@@ -31,6 +39,14 @@ Geom2dProp::TangentResult Geom2dProp_OffsetCurve::Tangent(const double theParam,
 Geom2dProp::CurvatureResult Geom2dProp_OffsetCurve::Curvature(const double theParam,
                                                               const double theTol) const
 {
+  if (!myCurve.IsNull())
+  {
+    return Geom2dProp_CurveAnalysisTools::EvaluateCurvatureCached(myCurve.get(),
+                                                                  theParam,
+                                                                  theTol,
+                                                                  myRequestedOrder,
+                                                                  myCache);
+  }
   return Geom2dProp_CurveAnalysisTools::EvaluateCurvatureCached(myAdaptor,
                                                                 theParam,
                                                                 theTol,
@@ -43,6 +59,14 @@ Geom2dProp::CurvatureResult Geom2dProp_OffsetCurve::Curvature(const double thePa
 Geom2dProp::NormalResult Geom2dProp_OffsetCurve::Normal(const double theParam,
                                                         const double theTol) const
 {
+  if (!myCurve.IsNull())
+  {
+    return Geom2dProp_CurveAnalysisTools::EvaluateNormalCached(myCurve.get(),
+                                                               theParam,
+                                                               theTol,
+                                                               myRequestedOrder,
+                                                               myCache);
+  }
   return Geom2dProp_CurveAnalysisTools::EvaluateNormalCached(myAdaptor,
                                                              theParam,
                                                              theTol,
@@ -55,6 +79,14 @@ Geom2dProp::NormalResult Geom2dProp_OffsetCurve::Normal(const double theParam,
 Geom2dProp::CentreResult Geom2dProp_OffsetCurve::CentreOfCurvature(const double theParam,
                                                                    const double theTol) const
 {
+  if (!myCurve.IsNull())
+  {
+    return Geom2dProp_CurveAnalysisTools::EvaluateCentreOfCurvatureCached(myCurve.get(),
+                                                                          theParam,
+                                                                          theTol,
+                                                                          myRequestedOrder,
+                                                                          myCache);
+  }
   return Geom2dProp_CurveAnalysisTools::EvaluateCentreOfCurvatureCached(myAdaptor,
                                                                         theParam,
                                                                         theTol,
@@ -66,6 +98,13 @@ Geom2dProp::CentreResult Geom2dProp_OffsetCurve::CentreOfCurvature(const double 
 
 Geom2dProp::CurveAnalysis Geom2dProp_OffsetCurve::FindCurvatureExtrema() const
 {
+  if (!myCurve.IsNull())
+  {
+    const double          aFirst = myDomain.has_value() ? myDomain->First : myCurve->FirstParameter();
+    const double          aLast  = myDomain.has_value() ? myDomain->Last : myCurve->LastParameter();
+    Geom2dAdaptor_Curve   anAdaptor(myCurve, aFirst, aLast);
+    return Geom2dProp_CurveAnalysisTools::FindCurvatureExtrema(&anAdaptor);
+  }
   return Geom2dProp_CurveAnalysisTools::FindCurvatureExtrema(myAdaptor);
 }
 
@@ -73,5 +112,12 @@ Geom2dProp::CurveAnalysis Geom2dProp_OffsetCurve::FindCurvatureExtrema() const
 
 Geom2dProp::CurveAnalysis Geom2dProp_OffsetCurve::FindInflections() const
 {
+  if (!myCurve.IsNull())
+  {
+    const double          aFirst = myDomain.has_value() ? myDomain->First : myCurve->FirstParameter();
+    const double          aLast  = myDomain.has_value() ? myDomain->Last : myCurve->LastParameter();
+    Geom2dAdaptor_Curve   anAdaptor(myCurve, aFirst, aLast);
+    return Geom2dProp_CurveAnalysisTools::FindInflections(&anAdaptor);
+  }
   return Geom2dProp_CurveAnalysisTools::FindInflections(myAdaptor);
 }

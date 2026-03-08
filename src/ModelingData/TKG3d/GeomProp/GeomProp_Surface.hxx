@@ -142,10 +142,6 @@ protected:
   Standard_EXPORT void initialization(const occ::handle<Geom_Surface>& theSurface);
 
 private:
-  //! Initialize from owned Geom adaptor (dispatches to per-geometry evaluator).
-  //! Generic non-Geom adaptor inputs are handled directly in initialization().
-  Standard_EXPORT void initFromAdaptor();
-
   occ::handle<GeomAdaptor_Surface> myOwnedAdaptor; //!< Owned adaptor when lifetime must be managed.
   EvaluatorVariant                 myEvaluator;
   GeomAbs_SurfaceType              mySurfaceType;

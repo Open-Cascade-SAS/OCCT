@@ -20,6 +20,15 @@ GeomProp::SurfaceNormalResult GeomProp_OffsetSurface::Normal(const double theU,
                                                              const double theV,
                                                              const double theTol) const
 {
+  if (!mySurface.IsNull())
+  {
+    return GeomProp_SurfaceAnalysisTools::EvaluateNormalCached(mySurface.get(),
+                                                               theU,
+                                                               theV,
+                                                               theTol,
+                                                               myRequestedOrder,
+                                                               myCache);
+  }
   return GeomProp_SurfaceAnalysisTools::EvaluateNormalCached(myAdaptor,
                                                              theU,
                                                              theV,
@@ -34,6 +43,15 @@ GeomProp::SurfaceCurvatureResult GeomProp_OffsetSurface::Curvatures(const double
                                                                     const double theV,
                                                                     const double theTol) const
 {
+  if (!mySurface.IsNull())
+  {
+    return GeomProp_SurfaceAnalysisTools::EvaluateCurvaturesCached(mySurface.get(),
+                                                                   theU,
+                                                                   theV,
+                                                                   theTol,
+                                                                   myRequestedOrder,
+                                                                   myCache);
+  }
   return GeomProp_SurfaceAnalysisTools::EvaluateCurvaturesCached(myAdaptor,
                                                                  theU,
                                                                  theV,
@@ -48,6 +66,15 @@ GeomProp::MeanGaussianResult GeomProp_OffsetSurface::MeanGaussian(const double t
                                                                   const double theV,
                                                                   const double theTol) const
 {
+  if (!mySurface.IsNull())
+  {
+    return GeomProp_SurfaceAnalysisTools::EvaluateMeanGaussianCached(mySurface.get(),
+                                                                     theU,
+                                                                     theV,
+                                                                     theTol,
+                                                                     myRequestedOrder,
+                                                                     myCache);
+  }
   return GeomProp_SurfaceAnalysisTools::EvaluateMeanGaussianCached(myAdaptor,
                                                                    theU,
                                                                    theV,

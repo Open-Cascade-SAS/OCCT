@@ -19,6 +19,14 @@
 GeomProp::TangentResult GeomProp_OtherCurve::Tangent(const double theParam,
                                                      const double theTol) const
 {
+  if (!myCurve.IsNull())
+  {
+    return GeomProp_CurveAnalysisTools::EvaluateTangentCached(myCurve.get(),
+                                                              theParam,
+                                                              theTol,
+                                                              myRequestedOrder,
+                                                              myCache);
+  }
   return GeomProp_CurveAnalysisTools::EvaluateTangentCached(myAdaptor,
                                                             theParam,
                                                             theTol,
@@ -31,6 +39,14 @@ GeomProp::TangentResult GeomProp_OtherCurve::Tangent(const double theParam,
 GeomProp::CurvatureResult GeomProp_OtherCurve::Curvature(const double theParam,
                                                          const double theTol) const
 {
+  if (!myCurve.IsNull())
+  {
+    return GeomProp_CurveAnalysisTools::EvaluateCurvatureCached(myCurve.get(),
+                                                                theParam,
+                                                                theTol,
+                                                                myRequestedOrder,
+                                                                myCache);
+  }
   return GeomProp_CurveAnalysisTools::EvaluateCurvatureCached(myAdaptor,
                                                               theParam,
                                                               theTol,
@@ -42,6 +58,14 @@ GeomProp::CurvatureResult GeomProp_OtherCurve::Curvature(const double theParam,
 
 GeomProp::NormalResult GeomProp_OtherCurve::Normal(const double theParam, const double theTol) const
 {
+  if (!myCurve.IsNull())
+  {
+    return GeomProp_CurveAnalysisTools::EvaluateNormalCached(myCurve.get(),
+                                                             theParam,
+                                                             theTol,
+                                                             myRequestedOrder,
+                                                             myCache);
+  }
   return GeomProp_CurveAnalysisTools::EvaluateNormalCached(myAdaptor,
                                                            theParam,
                                                            theTol,
@@ -54,6 +78,14 @@ GeomProp::NormalResult GeomProp_OtherCurve::Normal(const double theParam, const 
 GeomProp::CentreResult GeomProp_OtherCurve::CentreOfCurvature(const double theParam,
                                                               const double theTol) const
 {
+  if (!myCurve.IsNull())
+  {
+    return GeomProp_CurveAnalysisTools::EvaluateCentreOfCurvatureCached(myCurve.get(),
+                                                                        theParam,
+                                                                        theTol,
+                                                                        myRequestedOrder,
+                                                                        myCache);
+  }
   return GeomProp_CurveAnalysisTools::EvaluateCentreOfCurvatureCached(myAdaptor,
                                                                       theParam,
                                                                       theTol,
@@ -65,6 +97,13 @@ GeomProp::CentreResult GeomProp_OtherCurve::CentreOfCurvature(const double thePa
 
 GeomProp::CurveAnalysis GeomProp_OtherCurve::FindCurvatureExtrema() const
 {
+  if (!myCurve.IsNull())
+  {
+    const double         aFirst = myDomain.has_value() ? myDomain->First : myCurve->FirstParameter();
+    const double         aLast  = myDomain.has_value() ? myDomain->Last : myCurve->LastParameter();
+    GeomAdaptor_Curve    anAdaptor(myCurve, aFirst, aLast);
+    return GeomProp_CurveAnalysisTools::FindCurvatureExtrema(&anAdaptor);
+  }
   return GeomProp_CurveAnalysisTools::FindCurvatureExtrema(myAdaptor);
 }
 
@@ -72,5 +111,12 @@ GeomProp::CurveAnalysis GeomProp_OtherCurve::FindCurvatureExtrema() const
 
 GeomProp::CurveAnalysis GeomProp_OtherCurve::FindInflections() const
 {
+  if (!myCurve.IsNull())
+  {
+    const double         aFirst = myDomain.has_value() ? myDomain->First : myCurve->FirstParameter();
+    const double         aLast  = myDomain.has_value() ? myDomain->Last : myCurve->LastParameter();
+    GeomAdaptor_Curve    anAdaptor(myCurve, aFirst, aLast);
+    return GeomProp_CurveAnalysisTools::FindInflections(&anAdaptor);
+  }
   return GeomProp_CurveAnalysisTools::FindInflections(myAdaptor);
 }

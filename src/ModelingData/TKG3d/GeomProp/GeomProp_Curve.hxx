@@ -32,6 +32,7 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
+#include <optional>
 #include <variant>
 
 //! @brief Unified local differential property evaluator for any 3D curve.
@@ -170,10 +171,6 @@ protected:
   Standard_EXPORT void initialization(const occ::handle<Geom_Curve>& theCurve);
 
 private:
-  //! Initialize from owned Geom adaptor (dispatches to per-geometry evaluator).
-  //! Generic non-Geom adaptor inputs are handled directly in initialization().
-  Standard_EXPORT void initFromAdaptor();
-
   occ::handle<GeomAdaptor_Curve> myOwnedAdaptor; //!< Owned adaptor when lifetime must be managed.
   EvaluatorVariant               myEvaluator;
   GeomAbs_CurveType              myCurveType;

@@ -14,10 +14,13 @@
 #ifndef _GeomProp_Ellipse_HeaderFile
 #define _GeomProp_Ellipse_HeaderFile
 
+#include <Geom_Curve.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomProp.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
+
+#include <optional>
 
 //! @brief Local differential properties for a 3D ellipse.
 //!
@@ -25,9 +28,8 @@
 //! - Parameter 0 and PI: endpoints of major axis (min radius of curvature)
 //! - Parameter PI/2 and 3*PI/2: endpoints of minor axis (max radius of curvature)
 //!
-//! @warning The caller must ensure that the adaptor pointer remains valid
-//! for the entire lifetime of this object. This class does not manage
-//! the adaptor's lifetime.
+//! Can be constructed from either a GeomAdaptor_Curve pointer or a Handle(Geom_Curve).
+//! When constructed from a handle, no adaptor is created.
 class GeomProp_Ellipse
 {
 public:
@@ -42,13 +44,24 @@ public:
     (void)theOrder;
   }
 
+  //! Constructor from geometry handle.
+  //! @param theCurve the 3D ellipse geometry
+  //! @param theDomain optional parameter domain (for trimmed curves)
+  GeomProp_Ellipse(const Handle(Geom_Curve)&                      theCurve,
+                   const std::optional<GeomProp::CurveDomain>& theDomain = std::nullopt)
+      : myAdaptor(nullptr),
+        myCurve(theCurve),
+        myDomain(theDomain)
+  {
+  }
+
   //! Non-copyable and non-movable.
   GeomProp_Ellipse(const GeomProp_Ellipse&)            = delete;
   GeomProp_Ellipse& operator=(const GeomProp_Ellipse&) = delete;
   GeomProp_Ellipse(GeomProp_Ellipse&&)                 = delete;
   GeomProp_Ellipse& operator=(GeomProp_Ellipse&&)      = delete;
 
-  //! Returns the adaptor pointer.
+  //! Returns the adaptor pointer (nullptr when constructed from handle).
   const GeomAdaptor_Curve* Adaptor() const { return myAdaptor; }
 
   //! Compute tangent at given parameter.
@@ -72,7 +85,9 @@ public:
   GeomProp::CurveAnalysis FindInflections() const { return {{}, true}; }
 
 private:
-  const GeomAdaptor_Curve* myAdaptor;
+  const GeomAdaptor_Curve*              myAdaptor; //!< Non-owning adaptor pointer (adaptor path)
+  Handle(Geom_Curve) myCurve;                      //!< Geometry handle (handle path)
+  std::optional<GeomProp::CurveDomain> myDomain;  //!< Optional parameter domain
 };
 
 #endif // _GeomProp_Ellipse_HeaderFile

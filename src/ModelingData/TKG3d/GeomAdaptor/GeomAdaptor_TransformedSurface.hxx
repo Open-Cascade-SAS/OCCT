@@ -108,6 +108,10 @@ public:
   //! Returns the underlying original GeomAdaptor_Surface without transformation applied.
   const GeomAdaptor_Surface& AdaptorSurfaceOriginal() const { return mySurf; }
 
+  //! Returns an adaptor for the transformed surface state.
+  //! Uses the original adaptor for identity transformation to preserve existing trimming.
+  Standard_EXPORT const GeomAdaptor_Surface& AdaptorSurfaceTransformed() const;
+
   //! Returns the underlying original Geom_Surface without transformation applied.
   const occ::handle<Geom_Surface>& GeomSurfaceOriginal() const { return mySurf.Surface(); }
 
