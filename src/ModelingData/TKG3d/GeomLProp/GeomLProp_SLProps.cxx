@@ -40,7 +40,10 @@ std::shared_ptr<GeomProp_Surface> makeSurfaceProp(const occ::handle<Geom_Surface
 
 void ensureSurfaceInitialized(const occ::handle<Geom_Surface>& theSurface, const char* theWhere)
 {
-  Standard_NullObject_Raise_if(theSurface.IsNull(), theWhere);
+  if (theSurface.IsNull())
+  {
+    throw Standard_NullObject(theWhere);
+  }
 }
 
 gp_Pnt surfaceValue(const occ::handle<Geom_Surface>& theSurface,
