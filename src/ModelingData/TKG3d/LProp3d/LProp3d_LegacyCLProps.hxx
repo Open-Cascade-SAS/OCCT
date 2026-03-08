@@ -23,6 +23,10 @@ public:
   LProp3d_LegacyCLProps(const occ::handle<Adaptor3d_Curve>& theCurve,
                         int                                 theDerOrder,
                         double                              theResolution);
+  LProp3d_LegacyCLProps(int theDerOrder, double theResolution);
+
+  void SetParameter(double theParam);
+  void SetCurve(const occ::handle<Adaptor3d_Curve>& theCurve);
 
   const gp_Pnt& Value() const;
   const gp_Vec& D1();

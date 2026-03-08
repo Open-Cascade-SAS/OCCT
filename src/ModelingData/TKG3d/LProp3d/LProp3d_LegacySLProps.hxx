@@ -21,6 +21,14 @@ public:
                         double                                theV,
                         int                                   theDerOrder,
                         double                                theResolution);
+  LProp3d_LegacySLProps(const occ::handle<Adaptor3d_Surface>& theSurface,
+                        int                                   theDerOrder,
+                        double                                theResolution);
+  LProp3d_LegacySLProps(int theDerOrder, double theResolution);
+
+  void SetSurface(const occ::handle<Adaptor3d_Surface>& theSurface);
+  void SetParameters(double theU, double theV);
+
   const gp_Pnt& Value() const;
   const gp_Vec& D1U();
   const gp_Vec& D1V();

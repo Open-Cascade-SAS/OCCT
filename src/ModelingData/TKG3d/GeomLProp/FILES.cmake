@@ -6,10 +6,12 @@ set(OCCT_GeomLProp_FILES
   GeomLProp.hxx
   GeomLProp_CLProps.hxx
   GeomLProp_CLProps.cxx
+  GeomLProp_LegacyCurveTool.hxx
   GeomLProp_LegacyCLProps.hxx
   GeomLProp_LegacyCLProps.cxx
   GeomLProp_SLProps.hxx
   GeomLProp_SLProps.cxx
+  GeomLProp_LegacySurfaceTool.hxx
   GeomLProp_LegacySLProps.hxx
   GeomLProp_LegacySLProps.cxx
 )

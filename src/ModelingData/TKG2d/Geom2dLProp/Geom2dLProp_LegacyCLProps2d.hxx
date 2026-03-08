@@ -15,10 +15,19 @@ class Geom2dLProp_LegacyCLProps2d
 {
 public:
   DEFINE_STANDARD_ALLOC
+
   Geom2dLProp_LegacyCLProps2d(const occ::handle<Geom2d_Curve>& theCurve,
                               double                           theParam,
                               int                              theDerOrder,
                               double                           theResolution);
+  Geom2dLProp_LegacyCLProps2d(const occ::handle<Geom2d_Curve>& theCurve,
+                              int                              theDerOrder,
+                              double                           theResolution);
+  Geom2dLProp_LegacyCLProps2d(int theDerOrder, double theResolution);
+
+  void SetParameter(double theParam);
+  void SetCurve(const occ::handle<Geom2d_Curve>& theCurve);
+
   const gp_Pnt2d& Value() const;
   const gp_Vec2d& D1();
   const gp_Vec2d& D2();
