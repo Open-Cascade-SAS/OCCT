@@ -20,6 +20,7 @@
 #include <LProp_Status.hxx>
 #include <memory>
 
+class GeomProp_Surface;
 class LProp3d_LegacySLProps;
 class LProp3d_SLProps
 {
@@ -136,32 +137,33 @@ public:
   Standard_EXPORT double GaussianCurvature();
 
 private:
-  occ::handle<Adaptor3d_Surface>    mySurf;
+  occ::handle<Adaptor3d_Surface>            mySurf;
+  std::shared_ptr<GeomProp_Surface>         mySurfaceProp;
   std::shared_ptr<LProp3d_LegacySLProps> myLegacyProps;
-  double                            myU;
-  double                            myV;
-  int                               myDerOrder;
-  int                               myCN;
-  double                            myLinTol;
-  gp_Pnt                            myPnt;
-  gp_Vec                            myD1u;
-  gp_Vec                            myD1v;
-  gp_Vec                            myD2u;
-  gp_Vec                            myD2v;
-  gp_Vec                            myDuv;
-  gp_Dir                            myNormal;
-  double                            myMinCurv;
-  double                            myMaxCurv;
-  gp_Dir                            myDirMinCurv;
-  gp_Dir                            myDirMaxCurv;
-  double                            myMeanCurv;
-  double                            myGausCurv;
-  int                               mySignificantFirstDerivativeOrderU;
-  int                               mySignificantFirstDerivativeOrderV;
-  LProp_Status                      myUTangentStatus;
-  LProp_Status                      myVTangentStatus;
-  LProp_Status                      myNormalStatus;
-  LProp_Status                      myCurvatureStatus;
+  double                                     myU;
+  double                                     myV;
+  int                                        myDerOrder;
+  int                                        myCN;
+  double                                     myLinTol;
+  gp_Pnt                                     myPnt;
+  gp_Vec                                     myD1u;
+  gp_Vec                                     myD1v;
+  gp_Vec                                     myD2u;
+  gp_Vec                                     myD2v;
+  gp_Vec                                     myDuv;
+  gp_Dir                                     myNormal;
+  double                                     myMinCurv;
+  double                                     myMaxCurv;
+  gp_Dir                                     myDirMinCurv;
+  gp_Dir                                     myDirMaxCurv;
+  double                                     myMeanCurv;
+  double                                     myGausCurv;
+  int                                        mySignificantFirstDerivativeOrderU;
+  int                                        mySignificantFirstDerivativeOrderV;
+  LProp_Status                               myUTangentStatus;
+  LProp_Status                               myVTangentStatus;
+  LProp_Status                               myNormalStatus;
+  LProp_Status                               myCurvatureStatus;
 };
 
 #endif // _LProp3d_SLProps_HeaderFile

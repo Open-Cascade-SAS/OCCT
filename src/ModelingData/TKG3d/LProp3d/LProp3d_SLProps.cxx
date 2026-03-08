@@ -25,6 +25,11 @@
 
 namespace
 {
+std::shared_ptr<GeomProp_Surface> makeSurfaceProp(const occ::handle<Adaptor3d_Surface>& theSurface)
+{
+  return theSurface.IsNull() ? nullptr : std::make_shared<GeomProp_Surface>(*theSurface);
+}
+
 std::string surfaceGeometry(const occ::handle<Adaptor3d_Surface>& theSurface)
 {
   return theSurface.IsNull() ? "null" : std::to_string((int)GeomProp_Surface(*theSurface).GetType());
@@ -44,6 +49,7 @@ LProp3d_SLProps::LProp3d_SLProps(const occ::handle<Adaptor3d_Surface>& S,
                                  const int                             N,
                                  const double                          Resolution)
     : mySurf(S),
+      mySurfaceProp(makeSurfaceProp(S)),
       myLegacyProps(S.IsNull() ? nullptr
                                : std::make_shared<LProp3d_LegacySLProps>(S, N, Resolution)),
       myDerOrder(N),
@@ -70,6 +76,7 @@ LProp3d_SLProps::LProp3d_SLProps(const occ::handle<Adaptor3d_Surface>& S,
                                  const int                             N,
                                  const double                          Resolution)
     : mySurf(S),
+      mySurfaceProp(makeSurfaceProp(S)),
       myLegacyProps(S.IsNull() ? nullptr
                                : std::make_shared<LProp3d_LegacySLProps>(S, N, Resolution)),
       myU(RealLast()),
@@ -122,6 +129,7 @@ LProp3d_SLProps::~LProp3d_SLProps() = default;
 
 LProp3d_SLProps::LProp3d_SLProps(const LProp3d_SLProps& theOther)
     : mySurf(theOther.mySurf),
+      mySurfaceProp(makeSurfaceProp(theOther.mySurf)),
       myLegacyProps(theOther.myLegacyProps != nullptr
                       ? std::make_shared<LProp3d_LegacySLProps>(*theOther.myLegacyProps)
                       : nullptr),
@@ -162,6 +170,7 @@ LProp3d_SLProps& LProp3d_SLProps::operator=(const LProp3d_SLProps& theOther)
   }
 
   mySurf = theOther.mySurf;
+  mySurfaceProp = makeSurfaceProp(theOther.mySurf);
   myLegacyProps = theOther.myLegacyProps != nullptr
                     ? std::make_shared<LProp3d_LegacySLProps>(*theOther.myLegacyProps)
                     : nullptr;
@@ -197,6 +206,7 @@ LProp3d_SLProps& LProp3d_SLProps::operator=(const LProp3d_SLProps& theOther)
 void LProp3d_SLProps::SetSurface(const occ::handle<Adaptor3d_Surface>& S)
 {
   mySurf = S;
+  mySurfaceProp = makeSurfaceProp(S);
   if (myLegacyProps == nullptr)
   {
     myLegacyProps = std::make_shared<LProp3d_LegacySLProps>(myDerOrder, myLinTol);
@@ -564,7 +574,10 @@ void LProp3d_SLProps::TangentV(gp_Dir& D)
 bool LProp3d_SLProps::IsNormalDefined()
 {
   const bool isDefined = LProp_SLPropsCompat::IsNormalDefined<GeomProp::SurfaceNormalResult>(
-    [&]() { return GeomProp::ComputeSurfaceNormal(D1U(), D1V(), myLinTol); },
+    [&]() {
+      return mySurfaceProp != nullptr ? mySurfaceProp->Normal(myU, myV, myLinTol)
+                                      : GeomProp::ComputeSurfaceNormal(D1U(), D1V(), myLinTol);
+    },
     myNormal,
     myNormalStatus);
   const bool anOldDefined = myLegacyProps != nullptr ? myLegacyProps->IsNormalDefined() : isDefined;
@@ -636,8 +649,16 @@ bool LProp3d_SLProps::IsCurvatureDefined()
     IsNormalDefined(),
     IsTangentUDefined(),
     IsTangentVDefined(),
-    [&]() { return GeomProp::ComputeSurfaceCurvatures(D1U(), D1V(), D2U(), D2V(), DUV(), myLinTol); },
-    [&]() { return GeomProp::ComputeMeanGaussian(D1U(), D1V(), D2U(), D2V(), DUV(), myLinTol); },
+    [&]() {
+      return mySurfaceProp != nullptr
+               ? mySurfaceProp->Curvatures(myU, myV, myLinTol)
+               : GeomProp::ComputeSurfaceCurvatures(D1U(), D1V(), D2U(), D2V(), DUV(), myLinTol);
+    },
+    [&]() {
+      return mySurfaceProp != nullptr
+               ? mySurfaceProp->MeanGaussian(myU, myV, myLinTol)
+               : GeomProp::ComputeMeanGaussian(D1U(), D1V(), D2U(), D2V(), DUV(), myLinTol);
+    },
     myMinCurv,
     myMaxCurv,
     myDirMinCurv,

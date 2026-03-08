@@ -25,6 +25,11 @@
 
 namespace
 {
+std::shared_ptr<GeomProp_Curve> makeCurveProp(const occ::handle<Adaptor3d_Curve>& theCurve)
+{
+  return theCurve.IsNull() ? nullptr : std::make_shared<GeomProp_Curve>(*theCurve);
+}
+
 std::string curveGeometry(const occ::handle<Adaptor3d_Curve>& theCurve)
 {
   return theCurve.IsNull() ? "null" : std::to_string((int)GeomProp_Curve(*theCurve).GetType());
@@ -43,6 +48,7 @@ LProp3d_CLProps::LProp3d_CLProps(const occ::handle<Adaptor3d_Curve>& C,
                                  const int                           N,
                                  const double                        Resolution)
     : myCurve(C),
+      myCurveProp(makeCurveProp(C)),
       myLegacyProps(C.IsNull() ? nullptr
                                : std::make_shared<LProp3d_LegacyCLProps>(C, N, Resolution)),
       myDerOrder(N),
@@ -62,6 +68,7 @@ LProp3d_CLProps::LProp3d_CLProps(const occ::handle<Adaptor3d_Curve>& C,
                                  const int                           N,
                                  const double                        Resolution)
     : myCurve(C),
+      myCurveProp(makeCurveProp(C)),
       myLegacyProps(C.IsNull() ? nullptr
                                : std::make_shared<LProp3d_LegacyCLProps>(C, N, Resolution)),
       myU(RealLast()),
@@ -98,6 +105,7 @@ LProp3d_CLProps::~LProp3d_CLProps() = default;
 
 LProp3d_CLProps::LProp3d_CLProps(const LProp3d_CLProps& theOther)
     : myCurve(theOther.myCurve),
+      myCurveProp(makeCurveProp(theOther.myCurve)),
       myLegacyProps(theOther.myLegacyProps != nullptr
                       ? std::make_shared<LProp3d_LegacyCLProps>(*theOther.myLegacyProps)
                       : nullptr),
@@ -126,6 +134,7 @@ LProp3d_CLProps& LProp3d_CLProps::operator=(const LProp3d_CLProps& theOther)
   }
 
   myCurve = theOther.myCurve;
+  myCurveProp = makeCurveProp(theOther.myCurve);
   myLegacyProps = theOther.myLegacyProps != nullptr
                     ? std::make_shared<LProp3d_LegacyCLProps>(*theOther.myLegacyProps)
                     : nullptr;
@@ -179,6 +188,7 @@ void LProp3d_CLProps::SetParameter(const double U)
 void LProp3d_CLProps::SetCurve(const occ::handle<Adaptor3d_Curve>& C)
 {
   myCurve                           = C;
+  myCurveProp                       = makeCurveProp(C);
   if (myLegacyProps == nullptr)
   {
     myLegacyProps = std::make_shared<LProp3d_LegacyCLProps>(myDerOrder, myLinTol);
@@ -320,7 +330,10 @@ void LProp3d_CLProps::Tangent(gp_Dir& D)
     myU,
     myCurve->FirstParameter(),
     myCurve->LastParameter(),
-    [&]() { return GeomProp::ComputeTangent(D1(), D2(), D3(), myLinTol); },
+    [&]() {
+      return myCurveProp != nullptr ? myCurveProp->Tangent(myU, myLinTol)
+                                    : GeomProp::ComputeTangent(D1(), D2(), D3(), myLinTol);
+    },
     [&](const gp_Pnt& thePntBefore, const gp_Pnt& thePntAfter) {
       return GeomProp::ComputeTangent(D1(), D2(), D3(), myLinTol, thePntBefore, thePntAfter);
     },
@@ -373,7 +386,10 @@ double LProp3d_CLProps::Curvature()
   myCurvature = LProp_CLPropsCompat::Curvature<GeomProp::CurvatureResult>(
     mySignificantFirstDerivativeOrder,
     myLinTol,
-    [&]() { return GeomProp::ComputeCurvature(D1(), D2(), myLinTol); },
+    [&]() {
+      return myCurveProp != nullptr ? myCurveProp->Curvature(myU, myLinTol)
+                                    : GeomProp::ComputeCurvature(D1(), D2(), myLinTol);
+    },
     "LProp3d_CLProps::Curvature()");
   if (myLegacyProps != nullptr)
   {
@@ -415,7 +431,10 @@ void LProp3d_CLProps::Normal(gp_Dir& D)
     Curvature(),
     myLinTol,
     "LProp3d_CLProps::Normal(): Curvature is null or infinity",
-    [&]() { return GeomProp::ComputeNormal(D1(), D2(), myLinTol); },
+    [&]() {
+      return myCurveProp != nullptr ? myCurveProp->Normal(myU, myLinTol)
+                                    : GeomProp::ComputeNormal(D1(), D2(), myLinTol);
+    },
     D,
     "LProp3d_CLProps::Normal()");
   if (myLegacyProps != nullptr)
@@ -456,7 +475,11 @@ void LProp3d_CLProps::CentreOfCurvature(gp_Pnt& P)
   LProp_CLPropsCompat::CentreOfCurvature<GeomProp::CentreResult>(
     Curvature(),
     myLinTol,
-    [&]() { return GeomProp::ComputeCentreOfCurvature(myPnt, D1(), D2(), myLinTol); },
+    [&]() {
+      return myCurveProp != nullptr
+               ? myCurveProp->CentreOfCurvature(myU, myLinTol)
+               : GeomProp::ComputeCentreOfCurvature(myPnt, D1(), D2(), myLinTol);
+    },
     P,
     "LProp3d_CLProps::CentreOfCurvature()");
   if (myLegacyProps != nullptr)

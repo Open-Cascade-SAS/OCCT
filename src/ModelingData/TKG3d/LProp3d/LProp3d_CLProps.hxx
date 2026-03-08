@@ -23,6 +23,7 @@
 #include <LProp_Status.hxx>
 #include <memory>
 
+class GeomProp_Curve;
 class LProp3d_LegacyCLProps;
 class Standard_DomainError;
 class Standard_OutOfRange;
@@ -112,18 +113,19 @@ public:
   Standard_EXPORT void CentreOfCurvature(gp_Pnt& P);
 
 private:
-  occ::handle<Adaptor3d_Curve>    myCurve;
+  occ::handle<Adaptor3d_Curve>            myCurve;
+  std::shared_ptr<GeomProp_Curve>         myCurveProp;
   std::shared_ptr<LProp3d_LegacyCLProps> myLegacyProps;
-  double                          myU;
-  int                             myDerOrder;
-  double                          myCN;
-  double                          myLinTol;
-  gp_Pnt                          myPnt;
-  gp_Vec                          myDerivArr[3];
-  gp_Dir                          myTangent;
-  double                          myCurvature;
-  LProp_Status                    myTangentStatus;
-  int                             mySignificantFirstDerivativeOrder;
+  double                                   myU;
+  int                                      myDerOrder;
+  double                                   myCN;
+  double                                   myLinTol;
+  gp_Pnt                                   myPnt;
+  gp_Vec                                   myDerivArr[3];
+  gp_Dir                                   myTangent;
+  double                                   myCurvature;
+  LProp_Status                             myTangentStatus;
+  int                                      mySignificantFirstDerivativeOrder;
 };
 
 #endif // _LProp3d_CLProps_HeaderFile

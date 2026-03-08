@@ -26,6 +26,11 @@
 
 namespace
 {
+std::shared_ptr<Geom2dProp_Curve> makeCurveProp(const occ::handle<Geom2d_Curve>& theCurve)
+{
+  return theCurve.IsNull() ? nullptr : std::make_shared<Geom2dProp_Curve>(theCurve);
+}
+
 std::string curveGeometry(const occ::handle<Geom2d_Curve>& theCurve)
 {
   return theCurve.IsNull() ? "null" : std::to_string((int)Geom2dProp_Curve(theCurve).GetType());
@@ -67,6 +72,7 @@ Geom2dLProp_CLProps2d::Geom2dLProp_CLProps2d(const occ::handle<Geom2d_Curve>& C,
                                              const int                        N,
                                              const double                     Resolution)
     : myCurve(C),
+      myCurveProp(makeCurveProp(C)),
       myLegacyProps(C.IsNull() ? nullptr
                                : std::make_shared<Geom2dLProp_LegacyCLProps2d>(C, N, Resolution)),
       myDerOrder(N),
@@ -86,6 +92,7 @@ Geom2dLProp_CLProps2d::Geom2dLProp_CLProps2d(const occ::handle<Geom2d_Curve>& C,
                                              const int                        N,
                                              const double                     Resolution)
     : myCurve(C),
+      myCurveProp(makeCurveProp(C)),
       myLegacyProps(C.IsNull() ? nullptr
                                : std::make_shared<Geom2dLProp_LegacyCLProps2d>(C, N, Resolution)),
       myU(RealLast()),
@@ -118,6 +125,7 @@ Geom2dLProp_CLProps2d::Geom2dLProp_CLProps2d(const int N, const double Resolutio
 
 Geom2dLProp_CLProps2d::Geom2dLProp_CLProps2d(const Geom2dLProp_CLProps2d& theOther)
     : myCurve(theOther.myCurve),
+      myCurveProp(makeCurveProp(theOther.myCurve)),
       myLegacyProps(theOther.myLegacyProps != nullptr
                       ? std::make_shared<Geom2dLProp_LegacyCLProps2d>(*theOther.myLegacyProps)
                       : nullptr),
@@ -145,7 +153,8 @@ Geom2dLProp_CLProps2d& Geom2dLProp_CLProps2d::operator=(const Geom2dLProp_CLProp
     return *this;
   }
 
-  myCurve    = theOther.myCurve;
+  myCurve       = theOther.myCurve;
+  myCurveProp   = makeCurveProp(theOther.myCurve);
   myLegacyProps = theOther.myLegacyProps != nullptr
                     ? std::make_shared<Geom2dLProp_LegacyCLProps2d>(*theOther.myLegacyProps)
                     : nullptr;
@@ -199,6 +208,7 @@ void Geom2dLProp_CLProps2d::SetParameter(const double U)
 void Geom2dLProp_CLProps2d::SetCurve(const occ::handle<Geom2d_Curve>& C)
 {
   myCurve                           = C;
+  myCurveProp                       = makeCurveProp(C);
   if (myLegacyProps == nullptr)
   {
     myLegacyProps = std::make_shared<Geom2dLProp_LegacyCLProps2d>(myDerOrder, myLinTol);
@@ -340,7 +350,10 @@ void Geom2dLProp_CLProps2d::Tangent(gp_Dir2d& D)
     myU,
     myCurve->FirstParameter(),
     myCurve->LastParameter(),
-    [&]() { return Geom2dProp::ComputeTangent(D1(), D2(), D3(), myLinTol); },
+    [&]() {
+      return myCurveProp != nullptr ? myCurveProp->Tangent(myU, myLinTol)
+                                    : Geom2dProp::ComputeTangent(D1(), D2(), D3(), myLinTol);
+    },
     [&](const gp_Pnt2d& thePntBefore, const gp_Pnt2d& thePntAfter) {
       return Geom2dProp::ComputeTangent(D1(), D2(), D3(), myLinTol, thePntBefore, thePntAfter);
     },
@@ -386,7 +399,10 @@ double Geom2dLProp_CLProps2d::Curvature()
   myCurvature = LProp_CLPropsCompat::Curvature<Geom2dProp::CurvatureResult>(
     mySignificantFirstDerivativeOrder,
     myLinTol,
-    [&]() { return Geom2dProp::ComputeCurvature(D1(), D2(), myLinTol); },
+    [&]() {
+      return myCurveProp != nullptr ? myCurveProp->Curvature(myU, myLinTol)
+                                    : Geom2dProp::ComputeCurvature(D1(), D2(), myLinTol);
+    },
     "Geom2dLProp_CLProps2d::Curvature()");
   if (myLegacyProps != nullptr) try
   {
@@ -426,7 +442,10 @@ void Geom2dLProp_CLProps2d::Normal(gp_Dir2d& D)
     Curvature(),
     myLinTol,
     "Geom2dLProp_CLProps2d::Normal(): Curvature is null or infinity",
-    [&]() { return Geom2dProp::ComputeNormal(D1(), D2(), myLinTol); },
+    [&]() {
+      return myCurveProp != nullptr ? myCurveProp->Normal(myU, myLinTol)
+                                    : Geom2dProp::ComputeNormal(D1(), D2(), myLinTol);
+    },
     D,
     "Geom2dLProp_CLProps2d::Normal()");
   if (myLegacyProps != nullptr) try
@@ -464,7 +483,11 @@ void Geom2dLProp_CLProps2d::CentreOfCurvature(gp_Pnt2d& P)
   LProp_CLPropsCompat::CentreOfCurvature<Geom2dProp::CentreResult>(
     Curvature(),
     myLinTol,
-    [&]() { return Geom2dProp::ComputeCentreOfCurvature(myPnt, D1(), D2(), myLinTol); },
+    [&]() {
+      return myCurveProp != nullptr
+               ? myCurveProp->CentreOfCurvature(myU, myLinTol)
+               : Geom2dProp::ComputeCentreOfCurvature(myPnt, D1(), D2(), myLinTol);
+    },
     P,
     "Geom2dLProp_CLProps2d::CentreOfCurvature()");
   if (myLegacyProps != nullptr) try

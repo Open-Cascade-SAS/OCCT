@@ -31,6 +31,7 @@
 #include <memory>
 
 class Geom_Curve;
+class GeomProp_Curve;
 class GeomLProp_LegacyCLProps;
 class Standard_DomainError;
 class Standard_OutOfRange;
@@ -120,18 +121,19 @@ public:
   Standard_EXPORT void CentreOfCurvature(gp_Pnt& P);
 
 private:
-  occ::handle<Geom_Curve>         myCurve;
+  occ::handle<Geom_Curve>                    myCurve;
+  std::shared_ptr<GeomProp_Curve>           myCurveProp;
   std::shared_ptr<GeomLProp_LegacyCLProps> myLegacyProps;
-  double                          myU;
-  int                             myDerOrder;
-  double                          myCN;
-  double                          myLinTol;
-  gp_Pnt                          myPnt;
-  gp_Vec                          myDerivArr[3];
-  gp_Dir                          myTangent;
-  double                          myCurvature;
-  LProp_Status                    myTangentStatus;
-  int                             mySignificantFirstDerivativeOrder;
+  double                                     myU;
+  int                                        myDerOrder;
+  double                                     myCN;
+  double                                     myLinTol;
+  gp_Pnt                                     myPnt;
+  gp_Vec                                     myDerivArr[3];
+  gp_Dir                                     myTangent;
+  double                                     myCurvature;
+  LProp_Status                               myTangentStatus;
+  int                                        mySignificantFirstDerivativeOrder;
 };
 
 #endif // _GeomLProp_CLProps_HeaderFile
