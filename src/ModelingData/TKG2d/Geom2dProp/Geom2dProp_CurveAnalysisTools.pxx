@@ -326,9 +326,10 @@ inline Geom2dProp::TangentResult EvaluateTangent(const Geom2dAdaptor_Curve* theC
   {
     return {{}, false};
   }
-  gp_Pnt2d aPnt;
-  gp_Vec2d aD1, aD2, aD3;
-  theCurve->D3(theParam, aPnt, aD1, aD2, aD3);
+  const Geom2d_Curve::ResD3 aRes = theCurve->EvalD3(theParam);
+  const gp_Vec2d&           aD1  = aRes.D1;
+  const gp_Vec2d&           aD2  = aRes.D2;
+  const gp_Vec2d&           aD3  = aRes.D3;
 
   if (aD1.SquareMagnitude() > theTol * theTol)
   {
@@ -347,8 +348,8 @@ inline Geom2dProp::TangentResult EvaluateTangent(const Geom2dAdaptor_Curve* theC
   const double aU     = (theParam - anUFirst < aDelta) ? theParam + aDelta : theParam - aDelta;
 
   gp_Pnt2d aP1, aP2;
-  theCurve->D0(std::min(theParam, aU), aP1);
-  theCurve->D0(std::max(theParam, aU), aP2);
+  aP1 = theCurve->EvalD0(std::min(theParam, aU));
+  aP2 = theCurve->EvalD0(std::max(theParam, aU));
   return Geom2dProp::ComputeTangent(aD1, aD2, aD3, theTol, aP1, aP2);
 }
 
@@ -361,10 +362,8 @@ inline Geom2dProp::CurvatureResult EvaluateCurvature(const Geom2dAdaptor_Curve* 
   {
     return {0.0, false, false};
   }
-  gp_Pnt2d aPnt;
-  gp_Vec2d aD1, aD2;
-  theCurve->D2(theParam, aPnt, aD1, aD2);
-  return Geom2dProp::ComputeCurvature(aD1, aD2, theTol);
+  const Geom2d_Curve::ResD2 aRes = theCurve->EvalD2(theParam);
+  return Geom2dProp::ComputeCurvature(aRes.D1, aRes.D2, theTol);
 }
 
 //! Evaluate normal at a point on a 2D curve.
@@ -376,10 +375,8 @@ inline Geom2dProp::NormalResult EvaluateNormal(const Geom2dAdaptor_Curve* theCur
   {
     return {{}, false};
   }
-  gp_Pnt2d aPnt;
-  gp_Vec2d aD1, aD2;
-  theCurve->D2(theParam, aPnt, aD1, aD2);
-  return Geom2dProp::ComputeNormal(aD1, aD2, theTol);
+  const Geom2d_Curve::ResD2 aRes = theCurve->EvalD2(theParam);
+  return Geom2dProp::ComputeNormal(aRes.D1, aRes.D2, theTol);
 }
 
 //! Evaluate centre of curvature at a point on a 2D curve.
@@ -391,10 +388,8 @@ inline Geom2dProp::CentreResult EvaluateCentreOfCurvature(const Geom2dAdaptor_Cu
   {
     return {{}, false};
   }
-  gp_Pnt2d aPnt;
-  gp_Vec2d aD1, aD2;
-  theCurve->D2(theParam, aPnt, aD1, aD2);
-  return Geom2dProp::ComputeCentreOfCurvature(aPnt, aD1, aD2, theTol);
+  const Geom2d_Curve::ResD2 aRes = theCurve->EvalD2(theParam);
+  return Geom2dProp::ComputeCentreOfCurvature(aRes.Point, aRes.D1, aRes.D2, theTol);
 }
 
 //! Find curvature extrema on the full curve domain.

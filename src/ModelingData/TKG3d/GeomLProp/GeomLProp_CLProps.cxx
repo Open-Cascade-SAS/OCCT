@@ -27,53 +27,89 @@
 
 namespace
 {
+const GeomAdaptor_Curve* curveAdaptor(const std::shared_ptr<GeomProp_Curve>& theCurveProp)
+{
+  return theCurveProp != nullptr ? theCurveProp->Adaptor() : nullptr;
+}
+
 std::shared_ptr<GeomProp_Curve> makeCurveProp(const occ::handle<Geom_Curve>& theCurve)
 {
   return theCurve.IsNull() ? nullptr : std::make_shared<GeomProp_Curve>(theCurve);
 }
 
-gp_Pnt curveValue(const occ::handle<Geom_Curve>& theCurve, const double theParam)
+gp_Pnt curveValue(const occ::handle<Geom_Curve>& theCurve,
+                  const GeomAdaptor_Curve*       theAdaptor,
+                  const double                   theParam)
 {
-  gp_Pnt aPoint;
-  theCurve->D0(theParam, aPoint);
-  return aPoint;
+  return theAdaptor != nullptr ? theAdaptor->EvalD0(theParam) : theCurve->EvalD0(theParam);
 }
 
 void curveD1(const occ::handle<Geom_Curve>& theCurve,
+             const GeomAdaptor_Curve*       theAdaptor,
              const double                   theParam,
              gp_Pnt&                        thePoint,
              gp_Vec&                        theD1)
 {
-  theCurve->D1(theParam, thePoint, theD1);
+  if (theAdaptor != nullptr)
+  {
+    theAdaptor->D1(theParam, thePoint, theD1);
+  }
+  else
+  {
+    theCurve->D1(theParam, thePoint, theD1);
+  }
 }
 
 void curveD2(const occ::handle<Geom_Curve>& theCurve,
+             const GeomAdaptor_Curve*       theAdaptor,
              const double                   theParam,
              gp_Pnt&                        thePoint,
              gp_Vec&                        theD1,
              gp_Vec&                        theD2)
 {
-  theCurve->D2(theParam, thePoint, theD1, theD2);
+  if (theAdaptor != nullptr)
+  {
+    const Geom_Curve::ResD2 aRes = theAdaptor->EvalD2(theParam);
+    thePoint = aRes.Point;
+    theD1    = aRes.D1;
+    theD2    = aRes.D2;
+  }
+  else
+  {
+    theCurve->D2(theParam, thePoint, theD1, theD2);
+  }
 }
 
 void curveD3(const occ::handle<Geom_Curve>& theCurve,
+             const GeomAdaptor_Curve*       theAdaptor,
              const double                   theParam,
              gp_Pnt&                        thePoint,
              gp_Vec&                        theD1,
              gp_Vec&                        theD2,
              gp_Vec&                        theD3)
 {
-  theCurve->D3(theParam, thePoint, theD1, theD2, theD3);
+  if (theAdaptor != nullptr)
+  {
+    const Geom_Curve::ResD3 aRes = theAdaptor->EvalD3(theParam);
+    thePoint = aRes.Point;
+    theD1    = aRes.D1;
+    theD2    = aRes.D2;
+    theD3    = aRes.D3;
+  }
+  else
+  {
+    theCurve->D3(theParam, thePoint, theD1, theD2, theD3);
+  }
 }
 
-double curveFirstParameter(const occ::handle<Geom_Curve>& theCurve)
+double curveFirstParameter(const occ::handle<Geom_Curve>& theCurve, const GeomAdaptor_Curve* theAdaptor)
 {
-  return theCurve->FirstParameter();
+  return theAdaptor != nullptr ? theAdaptor->FirstParameter() : theCurve->FirstParameter();
 }
 
-double curveLastParameter(const occ::handle<Geom_Curve>& theCurve)
+double curveLastParameter(const occ::handle<Geom_Curve>& theCurve, const GeomAdaptor_Curve* theAdaptor)
 {
-  return theCurve->LastParameter();
+  return theAdaptor != nullptr ? theAdaptor->LastParameter() : theCurve->LastParameter();
 }
 
 std::string curveGeometry(const occ::handle<Geom_Curve>& theCurve)
@@ -200,19 +236,20 @@ GeomLProp_CLProps& GeomLProp_CLProps::operator=(const GeomLProp_CLProps& theOthe
 void GeomLProp_CLProps::SetParameter(const double U)
 {
   myU = U;
+  const GeomAdaptor_Curve* anAdaptor = curveAdaptor(myCurveProp);
   switch (myDerOrder)
   {
     case 0:
-      myPnt = curveValue(myCurve, myU);
+      myPnt = curveValue(myCurve, anAdaptor, myU);
       break;
     case 1:
-      curveD1(myCurve, myU, myPnt, myDerivArr[0]);
+      curveD1(myCurve, anAdaptor, myU, myPnt, myDerivArr[0]);
       break;
     case 2:
-      curveD2(myCurve, myU, myPnt, myDerivArr[0], myDerivArr[1]);
+      curveD2(myCurve, anAdaptor, myU, myPnt, myDerivArr[0], myDerivArr[1]);
       break;
     case 3:
-      curveD3(myCurve, myU, myPnt, myDerivArr[0], myDerivArr[1], myDerivArr[2]);
+      curveD3(myCurve, anAdaptor, myU, myPnt, myDerivArr[0], myDerivArr[1], myDerivArr[2]);
       break;
   }
 
@@ -267,7 +304,7 @@ const gp_Vec& GeomLProp_CLProps::D1()
   if (myDerOrder < 1)
   {
     myDerOrder = 1;
-    curveD1(myCurve, myU, myPnt, myDerivArr[0]);
+    curveD1(myCurve, curveAdaptor(myCurveProp), myU, myPnt, myDerivArr[0]);
   }
   if (myLegacyProps != nullptr && !myDerivArr[0].IsEqual(myLegacyProps->D1(), myLinTol, myLinTol))
   {
@@ -291,7 +328,7 @@ const gp_Vec& GeomLProp_CLProps::D2()
   if (myDerOrder < 2)
   {
     myDerOrder = 2;
-    curveD2(myCurve, myU, myPnt, myDerivArr[0], myDerivArr[1]);
+    curveD2(myCurve, curveAdaptor(myCurveProp), myU, myPnt, myDerivArr[0], myDerivArr[1]);
   }
   if (myLegacyProps != nullptr && !myDerivArr[1].IsEqual(myLegacyProps->D2(), myLinTol, myLinTol))
   {
@@ -315,7 +352,7 @@ const gp_Vec& GeomLProp_CLProps::D3()
   if (myDerOrder < 3)
   {
     myDerOrder = 3;
-    curveD3(myCurve, myU, myPnt, myDerivArr[0], myDerivArr[1], myDerivArr[2]);
+    curveD3(myCurve, curveAdaptor(myCurveProp), myU, myPnt, myDerivArr[0], myDerivArr[1], myDerivArr[2]);
   }
   if (myLegacyProps != nullptr && !myDerivArr[2].IsEqual(myLegacyProps->D3(), myLinTol, myLinTol))
   {
@@ -370,8 +407,8 @@ void GeomLProp_CLProps::Tangent(gp_Dir& D)
     mySignificantFirstDerivativeOrder,
     myLinTol,
     myU,
-    curveFirstParameter(myCurve),
-    curveLastParameter(myCurve),
+    curveFirstParameter(myCurve, curveAdaptor(myCurveProp)),
+    curveLastParameter(myCurve, curveAdaptor(myCurveProp)),
     [&]() {
       return myCurveProp != nullptr ? myCurveProp->Tangent(myU, myLinTol)
                                     : GeomProp::ComputeTangent(D1(), D2(), D3(), myLinTol);
@@ -379,7 +416,7 @@ void GeomLProp_CLProps::Tangent(gp_Dir& D)
     [&](const gp_Pnt& thePntBefore, const gp_Pnt& thePntAfter) {
       return GeomProp::ComputeTangent(D1(), D2(), D3(), myLinTol, thePntBefore, thePntAfter);
     },
-    [&](const double theParam) { return curveValue(myCurve, theParam); },
+    [&](const double theParam) { return curveValue(myCurve, curveAdaptor(myCurveProp), theParam); },
     D,
     "GeomLProp_CLProps::Tangent()");
   if (myLegacyProps != nullptr)

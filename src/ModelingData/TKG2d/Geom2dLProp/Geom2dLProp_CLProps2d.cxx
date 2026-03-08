@@ -14,6 +14,7 @@
 #include <Geom2dLProp_CLProps2d.hxx>
 
 #include <Geom2dLProp_LegacyCLProps2d.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2d_OffsetCurve.hxx>
 #include <Geom2dProp.hxx>
 #include <Geom2dProp_Curve.hxx>
@@ -28,6 +29,11 @@
 
 namespace
 {
+const Geom2dAdaptor_Curve* curveAdaptor(const std::shared_ptr<Geom2dProp_Curve>& theCurveProp)
+{
+  return theCurveProp != nullptr ? theCurveProp->Adaptor() : nullptr;
+}
+
 std::shared_ptr<Geom2dProp_Curve> makeCurveProp(const occ::handle<Geom2d_Curve>& theCurve)
 {
   return theCurve.IsNull() ? nullptr : std::make_shared<Geom2dProp_Curve>(theCurve);
@@ -91,6 +97,82 @@ std::string curveDebugContext(const occ::handle<Geom2d_Curve>& theCurve,
             << (aBasisCurve.IsNull() ? std::string("null")
                                      : std::to_string((int)Geom2dProp_Curve(aBasisCurve).GetType()))
             << " basisCont=" << (int)anOffsetCurve->GetBasisCurveContinuity();
+  }
+  return aStream.str();
+}
+
+std::string curveCurvatureTerms(const char*    thePrefix,
+                                const gp_Vec2d& theD1,
+                                const gp_Vec2d& theD2)
+{
+  const double aD1Square = theD1.SquareMagnitude();
+  const double aD1Mag    = std::sqrt(aD1Square);
+  const double aDenom    = aD1Square * aD1Mag;
+  const double aCross    = theD1.Crossed(theD2);
+
+  std::ostringstream aStream;
+  aStream << thePrefix << "Cross=" << LProp_CompareDebug::ToString(aCross)
+          << " " << thePrefix << "|D1|^2=" << LProp_CompareDebug::ToString(aD1Square)
+          << " " << thePrefix << "|D1|^3=" << LProp_CompareDebug::ToString(aDenom);
+  return aStream.str();
+}
+
+std::string curveDerivativeComparison(const occ::handle<Geom2d_Curve>&      theCurve,
+                                      const double                          theParam,
+                                      const gp_Pnt2d&                       thePoint,
+                                      const gp_Vec2d&                       theD1,
+                                      const gp_Vec2d&                       theD2,
+                                      const gp_Vec2d&                       theD3,
+                                      Geom2dLProp_LegacyCLProps2d&          theLegacy)
+{
+  const gp_Vec2d& anOldD1 = theLegacy.D1();
+  const gp_Vec2d& anOldD2 = theLegacy.D2();
+  const gp_Vec2d& anOldD3 = theLegacy.D3();
+
+  std::ostringstream aStream;
+  aStream << curveDebugContext(theCurve, thePoint, theD1, theD2, theD3)
+          << " oldD1=" << LProp_CompareDebug::ToString(anOldD1)
+          << " old|D1|=" << LProp_CompareDebug::ToString(anOldD1.Magnitude())
+          << " oldD2=" << LProp_CompareDebug::ToString(anOldD2)
+          << " old|D2|=" << LProp_CompareDebug::ToString(anOldD2.Magnitude())
+          << " oldD3=" << LProp_CompareDebug::ToString(anOldD3)
+          << " old|D3|=" << LProp_CompareDebug::ToString(anOldD3.Magnitude())
+          << " dD1=" << LProp_CompareDebug::ToString(gp_Vec2d(theD1.XY() - anOldD1.XY()))
+          << " dD2=" << LProp_CompareDebug::ToString(gp_Vec2d(theD2.XY() - anOldD2.XY()))
+          << " dD3=" << LProp_CompareDebug::ToString(gp_Vec2d(theD3.XY() - anOldD3.XY()))
+          << " " << curveCurvatureTerms("new", theD1, theD2)
+          << " " << curveCurvatureTerms("old", anOldD1, anOldD2);
+
+  const occ::handle<Geom2d_OffsetCurve> anOffsetCurve =
+    occ::down_cast<Geom2d_OffsetCurve>(theCurve);
+  if (!anOffsetCurve.IsNull())
+  {
+    try
+    {
+      Geom2dAdaptor_Curve aCurveAdaptor(theCurve);
+      const Geom2d_Curve::ResD2 anAdaptorD2 = aCurveAdaptor.EvalD2(theParam);
+      const Geom2d_Curve::ResD3 anAdaptorD3 = aCurveAdaptor.EvalD3(theParam);
+      aStream << " a2D1=" << LProp_CompareDebug::ToString(anAdaptorD2.D1)
+              << " a2|D1|=" << LProp_CompareDebug::ToString(anAdaptorD2.D1.Magnitude())
+              << " a2D2=" << LProp_CompareDebug::ToString(anAdaptorD2.D2)
+              << " a2|D2|=" << LProp_CompareDebug::ToString(anAdaptorD2.D2.Magnitude())
+              << " a2D1-dNew=" << LProp_CompareDebug::ToString(gp_Vec2d(anAdaptorD2.D1.XY() - theD1.XY()))
+              << " a2D2-dNew=" << LProp_CompareDebug::ToString(gp_Vec2d(anAdaptorD2.D2.XY() - theD2.XY()))
+              << " " << curveCurvatureTerms("a2", anAdaptorD2.D1, anAdaptorD2.D2)
+              << " adD1=" << LProp_CompareDebug::ToString(anAdaptorD3.D1)
+              << " ad|D1|=" << LProp_CompareDebug::ToString(anAdaptorD3.D1.Magnitude())
+              << " adD2=" << LProp_CompareDebug::ToString(anAdaptorD3.D2)
+              << " ad|D2|=" << LProp_CompareDebug::ToString(anAdaptorD3.D2.Magnitude())
+              << " adD3=" << LProp_CompareDebug::ToString(anAdaptorD3.D3)
+              << " ad|D3|=" << LProp_CompareDebug::ToString(anAdaptorD3.D3.Magnitude())
+              << " adD1-dNew=" << LProp_CompareDebug::ToString(gp_Vec2d(anAdaptorD3.D1.XY() - theD1.XY()))
+              << " adD2-dNew=" << LProp_CompareDebug::ToString(gp_Vec2d(anAdaptorD3.D2.XY() - theD2.XY()))
+              << " adD3-dNew=" << LProp_CompareDebug::ToString(gp_Vec2d(anAdaptorD3.D3.XY() - theD3.XY()))
+              << " " << curveCurvatureTerms("ad", anAdaptorD3.D1, anAdaptorD3.D2);
+    }
+    catch (const Standard_Failure&)
+    {
+    }
   }
   return aStream.str();
 }
@@ -205,19 +287,41 @@ Geom2dLProp_CLProps2d& Geom2dLProp_CLProps2d::operator=(const Geom2dLProp_CLProp
 void Geom2dLProp_CLProps2d::SetParameter(const double U)
 {
   myU = U;
+  const Geom2dAdaptor_Curve* anAdaptor = curveAdaptor(myCurveProp);
   switch (myDerOrder)
   {
     case 0:
-      myPnt = myCurve->Value(myU);
+      myPnt = anAdaptor != nullptr ? anAdaptor->EvalD0(myU) : myCurve->EvalD0(myU);
       break;
     case 1:
-      myCurve->D1(myU, myPnt, myDerivArr[0]);
+      if (anAdaptor != nullptr)
+      {
+        anAdaptor->D1(myU, myPnt, myDerivArr[0]);
+      }
+      else
+      {
+        myCurve->D1(myU, myPnt, myDerivArr[0]);
+      }
       break;
     case 2:
-      myCurve->D2(myU, myPnt, myDerivArr[0], myDerivArr[1]);
+      if (anAdaptor != nullptr)
+      {
+        anAdaptor->D2(myU, myPnt, myDerivArr[0], myDerivArr[1]);
+      }
+      else
+      {
+        myCurve->D2(myU, myPnt, myDerivArr[0], myDerivArr[1]);
+      }
       break;
     case 3:
-      myCurve->D3(myU, myPnt, myDerivArr[0], myDerivArr[1], myDerivArr[2]);
+      if (anAdaptor != nullptr)
+      {
+        anAdaptor->D3(myU, myPnt, myDerivArr[0], myDerivArr[1], myDerivArr[2]);
+      }
+      else
+      {
+        myCurve->D3(myU, myPnt, myDerivArr[0], myDerivArr[1], myDerivArr[2]);
+      }
       break;
   }
 
@@ -272,7 +376,15 @@ const gp_Vec2d& Geom2dLProp_CLProps2d::D1()
   if (myDerOrder < 1)
   {
     myDerOrder = 1;
-    myCurve->D1(myU, myPnt, myDerivArr[0]);
+    const Geom2dAdaptor_Curve* anAdaptor = curveAdaptor(myCurveProp);
+    if (anAdaptor != nullptr)
+    {
+      anAdaptor->D1(myU, myPnt, myDerivArr[0]);
+    }
+    else
+    {
+      myCurve->D1(myU, myPnt, myDerivArr[0]);
+    }
   }
   if (myLegacyProps != nullptr && !myDerivArr[0].IsEqual(myLegacyProps->D1(), myLinTol, myLinTol))
   {
@@ -296,7 +408,15 @@ const gp_Vec2d& Geom2dLProp_CLProps2d::D2()
   if (myDerOrder < 2)
   {
     myDerOrder = 2;
-    myCurve->D2(myU, myPnt, myDerivArr[0], myDerivArr[1]);
+    const Geom2dAdaptor_Curve* anAdaptor = curveAdaptor(myCurveProp);
+    if (anAdaptor != nullptr)
+    {
+      anAdaptor->D2(myU, myPnt, myDerivArr[0], myDerivArr[1]);
+    }
+    else
+    {
+      myCurve->D2(myU, myPnt, myDerivArr[0], myDerivArr[1]);
+    }
   }
   if (myLegacyProps != nullptr && !myDerivArr[1].IsEqual(myLegacyProps->D2(), myLinTol, myLinTol))
   {
@@ -320,7 +440,15 @@ const gp_Vec2d& Geom2dLProp_CLProps2d::D3()
   if (myDerOrder < 3)
   {
     myDerOrder = 3;
-    myCurve->D3(myU, myPnt, myDerivArr[0], myDerivArr[1], myDerivArr[2]);
+    const Geom2dAdaptor_Curve* anAdaptor = curveAdaptor(myCurveProp);
+    if (anAdaptor != nullptr)
+    {
+      anAdaptor->D3(myU, myPnt, myDerivArr[0], myDerivArr[1], myDerivArr[2]);
+    }
+    else
+    {
+      myCurve->D3(myU, myPnt, myDerivArr[0], myDerivArr[1], myDerivArr[2]);
+    }
   }
   if (myLegacyProps != nullptr && !myDerivArr[2].IsEqual(myLegacyProps->D3(), myLinTol, myLinTol))
   {
@@ -384,7 +512,10 @@ void Geom2dLProp_CLProps2d::Tangent(gp_Dir2d& D)
     [&](const gp_Pnt2d& thePntBefore, const gp_Pnt2d& thePntAfter) {
       return Geom2dProp::ComputeTangent(D1(), D2(), D3(), myLinTol, thePntBefore, thePntAfter);
     },
-    [&](const double theParam) { return myCurve->Value(theParam); },
+    [&](const double theParam) {
+      const Geom2dAdaptor_Curve* anAdaptor = curveAdaptor(myCurveProp);
+      return anAdaptor != nullptr ? anAdaptor->EvalD0(theParam) : myCurve->EvalD0(theParam);
+    },
     D,
     "Geom2dLProp_CLProps2d::Tangent()");
   if (myLegacyProps != nullptr) try
@@ -447,7 +578,13 @@ double Geom2dLProp_CLProps2d::Curvature()
                                            "curv",
                                            myCurvature,
                                            anOldCurv,
-                                           curveDebugContext(myCurve, myPnt, myDerivArr[0], myDerivArr[1], myDerivArr[2]));
+                                           curveDerivativeComparison(myCurve,
+                                                                     myU,
+                                                                     myPnt,
+                                                                     myDerivArr[0],
+                                                                     myDerivArr[1],
+                                                                     myDerivArr[2],
+                                                                     *myLegacyProps));
     }
   }
   catch (Standard_Failure const& theFailure)

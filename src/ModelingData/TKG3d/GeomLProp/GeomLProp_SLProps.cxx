@@ -27,29 +27,44 @@
 
 namespace
 {
+const GeomAdaptor_Surface* surfaceAdaptor(const std::shared_ptr<GeomProp_Surface>& theSurfaceProp)
+{
+  return theSurfaceProp != nullptr ? theSurfaceProp->Adaptor() : nullptr;
+}
+
 std::shared_ptr<GeomProp_Surface> makeSurfaceProp(const occ::handle<Geom_Surface>& theSurface)
 {
   return theSurface.IsNull() ? nullptr : std::make_shared<GeomProp_Surface>(theSurface);
 }
 
-gp_Pnt surfaceValue(const occ::handle<Geom_Surface>& theSurface, const double theU, const double theV)
+gp_Pnt surfaceValue(const occ::handle<Geom_Surface>& theSurface,
+                    const GeomAdaptor_Surface*       theAdaptor,
+                    const double                     theU,
+                    const double                     theV)
 {
-  gp_Pnt aPoint;
-  theSurface->D0(theU, theV, aPoint);
-  return aPoint;
+  return theAdaptor != nullptr ? theAdaptor->EvalD0(theU, theV) : theSurface->EvalD0(theU, theV);
 }
 
 void surfaceD1(const occ::handle<Geom_Surface>& theSurface,
+               const GeomAdaptor_Surface*       theAdaptor,
                const double                     theU,
                const double                     theV,
                gp_Pnt&                          thePoint,
                gp_Vec&                          theD1U,
                gp_Vec&                          theD1V)
 {
-  theSurface->D1(theU, theV, thePoint, theD1U, theD1V);
+  if (theAdaptor != nullptr)
+  {
+    theAdaptor->D1(theU, theV, thePoint, theD1U, theD1V);
+  }
+  else
+  {
+    theSurface->D1(theU, theV, thePoint, theD1U, theD1V);
+  }
 }
 
 void surfaceD2(const occ::handle<Geom_Surface>& theSurface,
+               const GeomAdaptor_Surface*       theAdaptor,
                const double                     theU,
                const double                     theV,
                gp_Pnt&                          thePoint,
@@ -59,16 +74,37 @@ void surfaceD2(const occ::handle<Geom_Surface>& theSurface,
                gp_Vec&                          theD2V,
                gp_Vec&                          theDUV)
 {
-  theSurface->D2(theU, theV, thePoint, theD1U, theD1V, theD2U, theD2V, theDUV);
+  if (theAdaptor != nullptr)
+  {
+    const Geom_Surface::ResD2 aRes = theAdaptor->EvalD2(theU, theV);
+    thePoint = aRes.Point;
+    theD1U   = aRes.D1U;
+    theD1V   = aRes.D1V;
+    theD2U   = aRes.D2U;
+    theD2V   = aRes.D2V;
+    theDUV   = aRes.D2UV;
+  }
+  else
+  {
+    theSurface->D2(theU, theV, thePoint, theD1U, theD1V, theD2U, theD2V, theDUV);
+  }
 }
 
 void surfaceBounds(const occ::handle<Geom_Surface>& theSurface,
+                   const GeomAdaptor_Surface*       theAdaptor,
                    double&                          theU1,
                    double&                          theU2,
                    double&                          theV1,
                    double&                          theV2)
 {
-  theSurface->Bounds(theU1, theU2, theV1, theV2);
+  if (theAdaptor != nullptr)
+  {
+    theAdaptor->Bounds(theU1, theU2, theV1, theV2);
+  }
+  else
+  {
+    theSurface->Bounds(theU1, theU2, theV1, theV2);
+  }
 }
 
 std::string surfaceGeometry(const occ::handle<Geom_Surface>& theSurface)
@@ -268,16 +304,17 @@ void GeomLProp_SLProps::SetParameters(const double U, const double V)
 {
   myU = U;
   myV = V;
+  const GeomAdaptor_Surface* anAdaptor = surfaceAdaptor(mySurfaceProp);
   switch (myDerOrder)
   {
     case 0:
-      myPnt = surfaceValue(mySurf, myU, myV);
+      myPnt = surfaceValue(mySurf, anAdaptor, myU, myV);
       break;
     case 1:
-      surfaceD1(mySurf, myU, myV, myPnt, myD1u, myD1v);
+      surfaceD1(mySurf, anAdaptor, myU, myV, myPnt, myD1u, myD1v);
       break;
     case 2:
-      surfaceD2(mySurf, myU, myV, myPnt, myD1u, myD1v, myD2u, myD2v, myDuv);
+      surfaceD2(mySurf, anAdaptor, myU, myV, myPnt, myD1u, myD1v, myD2u, myD2v, myDuv);
       break;
   }
 
@@ -322,7 +359,7 @@ const gp_Vec& GeomLProp_SLProps::D1U()
   if (myDerOrder < 1)
   {
     myDerOrder = 1;
-    surfaceD1(mySurf, myU, myV, myPnt, myD1u, myD1v);
+    surfaceD1(mySurf, surfaceAdaptor(mySurfaceProp), myU, myV, myPnt, myD1u, myD1v);
   }
 
   if (myLegacyProps != nullptr && !myD1u.IsEqual(myLegacyProps->D1U(), myLinTol, myLinTol))
@@ -347,7 +384,7 @@ const gp_Vec& GeomLProp_SLProps::D1V()
   if (myDerOrder < 1)
   {
     myDerOrder = 1;
-    surfaceD1(mySurf, myU, myV, myPnt, myD1u, myD1v);
+    surfaceD1(mySurf, surfaceAdaptor(mySurfaceProp), myU, myV, myPnt, myD1u, myD1v);
   }
 
   if (myLegacyProps != nullptr && !myD1v.IsEqual(myLegacyProps->D1V(), myLinTol, myLinTol))
@@ -372,7 +409,7 @@ const gp_Vec& GeomLProp_SLProps::D2U()
   if (myDerOrder < 2)
   {
     myDerOrder = 2;
-    surfaceD2(mySurf, myU, myV, myPnt, myD1u, myD1v, myD2u, myD2v, myDuv);
+    surfaceD2(mySurf, surfaceAdaptor(mySurfaceProp), myU, myV, myPnt, myD1u, myD1v, myD2u, myD2v, myDuv);
   }
 
   if (myLegacyProps != nullptr && !myD2u.IsEqual(myLegacyProps->D2U(), myLinTol, myLinTol))
@@ -397,7 +434,7 @@ const gp_Vec& GeomLProp_SLProps::D2V()
   if (myDerOrder < 2)
   {
     myDerOrder = 2;
-    surfaceD2(mySurf, myU, myV, myPnt, myD1u, myD1v, myD2u, myD2v, myDuv);
+    surfaceD2(mySurf, surfaceAdaptor(mySurfaceProp), myU, myV, myPnt, myD1u, myD1v, myD2u, myD2v, myDuv);
   }
 
   if (myLegacyProps != nullptr && !myD2v.IsEqual(myLegacyProps->D2V(), myLinTol, myLinTol))
@@ -422,7 +459,7 @@ const gp_Vec& GeomLProp_SLProps::DUV()
   if (myDerOrder < 2)
   {
     myDerOrder = 2;
-    surfaceD2(mySurf, myU, myV, myPnt, myD1u, myD1v, myD2u, myD2v, myDuv);
+    surfaceD2(mySurf, surfaceAdaptor(mySurfaceProp), myU, myV, myPnt, myD1u, myD1v, myD2u, myD2v, myDuv);
   }
 
   if (myLegacyProps != nullptr && !myDuv.IsEqual(myLegacyProps->DUV(), myLinTol, myLinTol))
@@ -477,7 +514,7 @@ void GeomLProp_SLProps::TangentU(gp_Dir& D)
 {
   LProp_NotDefined_Raise_if(!IsTangentUDefined(), "GeomLProp_SLProps::TangentU()");
   double aU1, aV1, aU2, aV2;
-  surfaceBounds(mySurf, aU1, aU2, aV1, aV2);
+  surfaceBounds(mySurf, surfaceAdaptor(mySurfaceProp), aU1, aU2, aV1, aV2);
   LProp_SLPropsCompat::Tangent(
     mySignificantFirstDerivativeOrderU,
     myLinTol,
@@ -493,7 +530,7 @@ void GeomLProp_SLProps::TangentU(gp_Dir& D)
                                       thePntBefore,
                                       thePntAfter);
     },
-    [&](const double theParam) { return surfaceValue(mySurf, theParam, myV); },
+    [&](const double theParam) { return surfaceValue(mySurf, surfaceAdaptor(mySurfaceProp), theParam, myV); },
     D,
     "GeomLProp_SLProps::TangentU()");
   if (myLegacyProps != nullptr)
@@ -564,7 +601,7 @@ void GeomLProp_SLProps::TangentV(gp_Dir& D)
 {
   LProp_NotDefined_Raise_if(!IsTangentVDefined(), "GeomLProp_SLProps::TangentV()");
   double aU1, aV1, aU2, aV2;
-  surfaceBounds(mySurf, aU1, aU2, aV1, aV2);
+  surfaceBounds(mySurf, surfaceAdaptor(mySurfaceProp), aU1, aU2, aV1, aV2);
   LProp_SLPropsCompat::Tangent(
     mySignificantFirstDerivativeOrderV,
     myLinTol,
@@ -580,7 +617,7 @@ void GeomLProp_SLProps::TangentV(gp_Dir& D)
                                       thePntBefore,
                                       thePntAfter);
     },
-    [&](const double theParam) { return surfaceValue(mySurf, myU, theParam); },
+    [&](const double theParam) { return surfaceValue(mySurf, surfaceAdaptor(mySurfaceProp), myU, theParam); },
     D,
     "GeomLProp_SLProps::TangentV()");
   if (myLegacyProps != nullptr)
