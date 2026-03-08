@@ -124,25 +124,28 @@ struct MeanGaussianResult
 // ============================================================================
 
 //! Derivative order for 3D curve property caching.
+//! Values must match std::variant alternative indices in CurveCache::Data.
 enum class CurveDerivOrder
 {
-  Undefined,      //!< No caching specified
-  Value,          //!< Cache point only
-  Tangent,        //!< Cache up to D1 (enough for tangent)
-  Curvature,      //!< Cache up to D2 (enough for curvature/normal/centre)
-  CurvatureDeriv  //!< Cache up to D3 (enough for curvature derivative)
+  Undefined      = 0, //!< No caching specified (monostate)
+  Value          = 1, //!< Cache point only (gp_Pnt)
+  Tangent        = 2, //!< Cache up to D1 (Geom_Curve::ResD1)
+  Curvature      = 3, //!< Cache up to D2 (Geom_Curve::ResD2)
+  CurvatureDeriv = 4  //!< Cache up to D3 (Geom_Curve::ResD3)
 };
 
 //! Derivative order for 3D surface property caching.
+//! Values must match std::variant alternative indices in SurfaceCache::Data.
 enum class SurfaceDerivOrder
 {
-  Undefined, //!< No caching specified
-  Value,     //!< Cache point only
-  Normal,    //!< Cache up to D1U + D1V (enough for surface normal)
-  Curvature  //!< Cache up to D2 (enough for curvatures)
+  Undefined = 0, //!< No caching specified (monostate)
+  Value     = 1, //!< Cache point only (gp_Pnt)
+  Normal    = 2, //!< Cache up to D1U + D1V (Geom_Surface::ResD1)
+  Curvature = 3  //!< Cache up to D2 (Geom_Surface::ResD2)
 };
 
 //! Cached 3D curve derivatives at a parameter value.
+//! @note The variant alternative indices must match CurveDerivOrder enum values.
 struct CurveCache
 {
   double Param = std::numeric_limits<double>::quiet_NaN();
@@ -163,6 +166,7 @@ struct CurveCache
 };
 
 //! Cached 3D surface derivatives at a (U, V) parameter pair.
+//! @note The variant alternative indices must match SurfaceDerivOrder enum values.
 struct SurfaceCache
 {
   double ParamU = std::numeric_limits<double>::quiet_NaN();

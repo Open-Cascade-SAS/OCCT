@@ -89,16 +89,18 @@ struct CurveAnalysis
 // ============================================================================
 
 //! Derivative order for 2D curve property caching.
+//! Values must match std::variant alternative indices in CurveCache::Data.
 enum class CurveDerivOrder
 {
-  Undefined,      //!< No caching specified
-  Value,          //!< Cache point only
-  Tangent,        //!< Cache up to D1
-  Curvature,      //!< Cache up to D2
-  CurvatureDeriv  //!< Cache up to D3
+  Undefined      = 0, //!< No caching specified (monostate)
+  Value          = 1, //!< Cache point only (gp_Pnt2d)
+  Tangent        = 2, //!< Cache up to D1 (Geom2d_Curve::ResD1)
+  Curvature      = 3, //!< Cache up to D2 (Geom2d_Curve::ResD2)
+  CurvatureDeriv = 4  //!< Cache up to D3 (Geom2d_Curve::ResD3)
 };
 
 //! Cached 2D curve derivatives at a parameter value.
+//! @note The variant alternative indices must match CurveDerivOrder enum values.
 struct CurveCache
 {
   double Param = std::numeric_limits<double>::quiet_NaN();
