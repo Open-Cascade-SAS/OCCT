@@ -26,7 +26,7 @@
 //! - Min curvature = 0 (along the axis direction)
 //! - Max curvature = 1/R (along the circular cross-section)
 //!
-//! Can be constructed from either a GeomAdaptor_Surface pointer or a Handle(Geom_Surface).
+//! Can be constructed from either a GeomAdaptor_Surface pointer or a occ::handle<Geom_Surface>.
 //! When constructed from a handle, no adaptor is created.
 class GeomProp_Cylinder
 {
@@ -45,7 +45,7 @@ public:
   //! Constructor from geometry handle.
   //! @param theSurface the 3D cylindrical surface geometry
   //! @param theDomain optional parameter domain (for trimmed surfaces)
-  GeomProp_Cylinder(const Handle(Geom_Surface)& theSurface,
+  GeomProp_Cylinder(const occ::handle<Geom_Surface>& theSurface,
                     const std::optional<GeomProp::SurfaceDomain>& theDomain = std::nullopt)
       : myAdaptor(nullptr),
         mySurface(theSurface),
@@ -125,7 +125,7 @@ public:
 
 private:
   const GeomAdaptor_Surface*             myAdaptor;
-  Handle(Geom_Surface)                   mySurface; //!< Geometry handle (handle path)
+  occ::handle<Geom_Surface>                   mySurface; //!< Geometry handle (handle path)
   std::optional<GeomProp::SurfaceDomain> myDomain;  //!< Optional parameter domain
 };
 

@@ -27,7 +27,7 @@
 //! A hyperbola has a single curvature extremum (maximum |curvature|) at parameter 0
 //! (the vertex). No inflection points exist.
 //!
-//! Can be constructed from either a GeomAdaptor_Curve pointer or a Handle(Geom_Curve).
+//! Can be constructed from either a GeomAdaptor_Curve pointer or a occ::handle<Geom_Curve>.
 //! When constructed from a handle, no adaptor is created.
 class GeomProp_Hyperbola
 {
@@ -46,7 +46,7 @@ public:
   //! Constructor from geometry handle.
   //! @param theCurve the 3D hyperbola geometry
   //! @param theDomain optional parameter domain (for trimmed curves)
-  GeomProp_Hyperbola(const Handle(Geom_Curve)&                      theCurve,
+  GeomProp_Hyperbola(const occ::handle<Geom_Curve>&                      theCurve,
                      const std::optional<GeomProp::CurveDomain>& theDomain = std::nullopt)
       : myAdaptor(nullptr),
         myCurve(theCurve),
@@ -85,7 +85,7 @@ public:
 
 private:
   const GeomAdaptor_Curve*              myAdaptor; //!< Non-owning adaptor pointer (adaptor path)
-  Handle(Geom_Curve) myCurve;                      //!< Geometry handle (handle path)
+  occ::handle<Geom_Curve> myCurve;                      //!< Geometry handle (handle path)
   std::optional<GeomProp::CurveDomain> myDomain;  //!< Optional parameter domain
 };
 

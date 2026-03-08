@@ -27,7 +27,7 @@
 //! Uses numeric root-finding for curvature extrema and inflection points.
 //! Local properties are computed from the offset curve's own D1/D2/D3.
 //!
-//! Can be constructed from either a GeomAdaptor_Curve pointer or a Handle(Geom_Curve).
+//! Can be constructed from either a GeomAdaptor_Curve pointer or a occ::handle<Geom_Curve>.
 //! When constructed from a handle, no adaptor is created; for complex methods
 //! (FindCurvatureExtrema, FindInflections) a stack-local adaptor is created on demand.
 class GeomProp_OffsetCurve
@@ -47,7 +47,7 @@ public:
   //! Constructor from geometry handle.
   //! @param theCurve the 3D offset curve geometry
   //! @param theDomain optional parameter domain (for trimmed curves)
-  GeomProp_OffsetCurve(const Handle(Geom_Curve)&                      theCurve,
+  GeomProp_OffsetCurve(const occ::handle<Geom_Curve>&                      theCurve,
                        const std::optional<GeomProp::CurveDomain>& theDomain = std::nullopt)
       : myAdaptor(nullptr),
         myRequestedOrder(GeomProp::CurveDerivOrder::Curvature),
@@ -87,7 +87,7 @@ private:
   const GeomAdaptor_Curve*              myAdaptor;
   GeomProp::CurveDerivOrder             myRequestedOrder;
   mutable GeomProp::CurveCache          myCache;
-  Handle(Geom_Curve) myCurve;                      //!< Geometry handle (handle path)
+  occ::handle<Geom_Curve> myCurve;                      //!< Geometry handle (handle path)
   std::optional<GeomProp::CurveDomain> myDomain;  //!< Optional parameter domain
 };
 

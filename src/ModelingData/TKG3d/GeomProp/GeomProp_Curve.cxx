@@ -118,12 +118,12 @@ void GeomProp_Curve::initialization(const occ::handle<Geom_Curve>& theCurve)
     aDomain = GeomProp::CurveDomain{theCurve->FirstParameter(), theCurve->LastParameter()};
     while (aBasis->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
     {
-      aBasis = Handle(Geom_TrimmedCurve)::DownCast(aBasis)->BasisCurve();
+      aBasis = occ::down_cast<Geom_TrimmedCurve>(aBasis)->BasisCurve();
     }
   }
 
   // Type detection using DynamicType() - extracted once to avoid repeated virtual calls.
-  const Handle(Standard_Type)& aType = aBasis->DynamicType();
+  const occ::handle<Standard_Type>& aType = aBasis->DynamicType();
   if (aType == STANDARD_TYPE(Geom_Line))
   {
     myCurveType = GeomAbs_Line;

@@ -117,12 +117,12 @@ void Geom2dProp_Curve::initialization(const occ::handle<Geom2d_Curve>& theCurve)
     aDomain = Geom2dProp::CurveDomain{theCurve->FirstParameter(), theCurve->LastParameter()};
     while (aBasis->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve)))
     {
-      aBasis = Handle(Geom2d_TrimmedCurve)::DownCast(aBasis)->BasisCurve();
+      aBasis = occ::down_cast<Geom2d_TrimmedCurve>(aBasis)->BasisCurve();
     }
   }
 
   // Type detection using DynamicType() - extracted once to avoid repeated virtual calls.
-  const Handle(Standard_Type)& aType = aBasis->DynamicType();
+  const occ::handle<Standard_Type>& aType = aBasis->DynamicType();
   if (aType == STANDARD_TYPE(Geom2d_Line))
   {
     myCurveType = GeomAbs_Line;

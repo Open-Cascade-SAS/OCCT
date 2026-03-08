@@ -26,7 +26,7 @@
 //! A line has constant tangent, zero curvature, undefined normal and centre.
 //! No curvature extrema or inflection points exist.
 //!
-//! Can be constructed from either a Geom2dAdaptor_Curve pointer or a Handle(Geom2d_Curve).
+//! Can be constructed from either a Geom2dAdaptor_Curve pointer or a occ::handle<Geom2d_Curve>.
 //! When constructed from a handle, no adaptor is created.
 class Geom2dProp_Line
 {
@@ -45,9 +45,9 @@ public:
   //! Constructor from geometry handle.
   //! @param theCurve the 2D line geometry (must be a Geom2d_Line or downcastable to it)
   //! @param theDomain optional parameter domain (unused for line)
-  Geom2dProp_Line(const Handle(Geom2d_Curve)&                        theCurve,
+  Geom2dProp_Line(const occ::handle<Geom2d_Curve>&                        theCurve,
                   const std::optional<Geom2dProp::CurveDomain>& theDomain = std::nullopt)
-      : myDirection(Handle(Geom2d_Line)::DownCast(theCurve)->Direction())
+      : myDirection(occ::down_cast<Geom2d_Line>(theCurve)->Direction())
   {
     (void)theDomain;
   }

@@ -26,7 +26,7 @@
 //! Uses adaptor D1/D2 methods or Geom_Surface D1/D2 for property computation.
 //!
 //! Can be constructed from an Adaptor3d_Surface pointer
-//! or a Handle(Geom_Surface). When constructed from a handle, no adaptor is created.
+//! or a occ::handle<Geom_Surface>. When constructed from a handle, no adaptor is created.
 class GeomProp_OtherSurface
 {
 public:
@@ -45,7 +45,7 @@ public:
   //! Constructor from geometry handle.
   //! @param theSurface the 3D surface geometry
   //! @param theDomain optional parameter domain (for trimmed surfaces)
-  GeomProp_OtherSurface(const Handle(Geom_Surface)& theSurface,
+  GeomProp_OtherSurface(const occ::handle<Geom_Surface>& theSurface,
                         const std::optional<GeomProp::SurfaceDomain>& theDomain = std::nullopt)
       : myAdaptor(nullptr),
         myRequestedOrder(GeomProp::SurfaceDerivOrder::Curvature),
@@ -82,7 +82,7 @@ private:
   const Adaptor3d_Surface*               myAdaptor;
   GeomProp::SurfaceDerivOrder            myRequestedOrder;
   mutable GeomProp::SurfaceCache         myCache;
-  Handle(Geom_Surface)                   mySurface; //!< Geometry handle (handle path)
+  occ::handle<Geom_Surface>                   mySurface; //!< Geometry handle (handle path)
   std::optional<GeomProp::SurfaceDomain> myDomain;  //!< Optional parameter domain
 };
 

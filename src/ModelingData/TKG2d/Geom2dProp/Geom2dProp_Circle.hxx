@@ -26,7 +26,7 @@
 //! A circle has constant curvature = 1/R, well-defined tangent and normal
 //! at every point, and no curvature extrema or inflection points.
 //!
-//! Can be constructed from either a Geom2dAdaptor_Curve pointer or a Handle(Geom2d_Curve).
+//! Can be constructed from either a Geom2dAdaptor_Curve pointer or a occ::handle<Geom2d_Curve>.
 //! When constructed from a handle, no adaptor is created.
 class Geom2dProp_Circle
 {
@@ -47,13 +47,13 @@ public:
   //! Constructor from geometry handle.
   //! @param theCurve the 2D circle geometry (must be a Geom2d_Circle or downcastable to it)
   //! @param theDomain optional parameter domain (unused for circle)
-  Geom2dProp_Circle(const Handle(Geom2d_Curve)&                        theCurve,
+  Geom2dProp_Circle(const occ::handle<Geom2d_Curve>&                        theCurve,
                     const std::optional<Geom2dProp::CurveDomain>& theDomain = std::nullopt)
       : myAdaptor(nullptr),
         myCurve(theCurve)
   {
     (void)theDomain;
-    const Handle(Geom2d_Circle) aCircle = Handle(Geom2d_Circle)::DownCast(theCurve);
+    const occ::handle<Geom2d_Circle> aCircle = occ::down_cast<Geom2d_Circle>(theCurve);
     myRadius                            = aCircle->Radius();
     myCenter                            = aCircle->Circ2d().Location();
   }
@@ -145,7 +145,7 @@ public:
 
 private:
   const Geom2dAdaptor_Curve* myAdaptor = nullptr; //!< Non-owning adaptor pointer (adaptor path)
-  Handle(Geom2d_Curve) myCurve;                    //!< Geometry handle (handle path)
+  occ::handle<Geom2d_Curve> myCurve;                    //!< Geometry handle (handle path)
   double               myRadius;                  //!< Cached circle radius
   gp_Pnt2d             myCenter;                  //!< Cached circle centre
 };

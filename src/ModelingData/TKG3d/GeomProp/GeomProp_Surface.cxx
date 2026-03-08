@@ -133,13 +133,13 @@ void GeomProp_Surface::initialization(const occ::handle<Geom_Surface>& theSurfac
   if (aBasis->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
   {
     double aU1, aU2, aV1, aV2;
-    Handle(Geom_RectangularTrimmedSurface)::DownCast(aBasis)->Bounds(aU1, aU2, aV1, aV2);
+    occ::down_cast<Geom_RectangularTrimmedSurface>(aBasis)->Bounds(aU1, aU2, aV1, aV2);
     aDomain = GeomProp::SurfaceDomain{aU1, aU2, aV1, aV2};
-    aBasis  = Handle(Geom_RectangularTrimmedSurface)::DownCast(aBasis)->BasisSurface();
+    aBasis  = occ::down_cast<Geom_RectangularTrimmedSurface>(aBasis)->BasisSurface();
   }
 
   // Type detection using DynamicType() - extracted once to avoid repeated virtual calls.
-  const Handle(Standard_Type)& aType = aBasis->DynamicType();
+  const occ::handle<Standard_Type>& aType = aBasis->DynamicType();
   if (aType == STANDARD_TYPE(Geom_Plane))
   {
     mySurfaceType = GeomAbs_Plane;

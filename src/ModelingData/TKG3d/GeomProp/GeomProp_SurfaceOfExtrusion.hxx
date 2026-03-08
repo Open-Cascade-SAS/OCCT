@@ -25,7 +25,7 @@
 //!
 //! Uses numeric evaluation from surface derivatives.
 //!
-//! Can be constructed from either a GeomAdaptor_Surface pointer or a Handle(Geom_Surface).
+//! Can be constructed from either a GeomAdaptor_Surface pointer or a occ::handle<Geom_Surface>.
 //! When constructed from a handle, no adaptor is created.
 class GeomProp_SurfaceOfExtrusion
 {
@@ -46,7 +46,7 @@ public:
   //! @param theSurface the 3D surface of extrusion geometry
   //! @param theDomain optional parameter domain (for trimmed surfaces)
   GeomProp_SurfaceOfExtrusion(
-    const Handle(Geom_Surface)& theSurface,
+    const occ::handle<Geom_Surface>& theSurface,
     const std::optional<GeomProp::SurfaceDomain>& theDomain = std::nullopt)
       : myAdaptor(nullptr),
         myRequestedOrder(GeomProp::SurfaceDerivOrder::Curvature),
@@ -83,7 +83,7 @@ private:
   const GeomAdaptor_Surface*             myAdaptor;
   GeomProp::SurfaceDerivOrder            myRequestedOrder;
   mutable GeomProp::SurfaceCache         myCache;
-  Handle(Geom_Surface)                   mySurface; //!< Geometry handle (handle path)
+  occ::handle<Geom_Surface>                   mySurface; //!< Geometry handle (handle path)
   std::optional<GeomProp::SurfaceDomain> myDomain;  //!< Optional parameter domain
 };
 

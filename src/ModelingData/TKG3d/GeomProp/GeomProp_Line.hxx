@@ -26,7 +26,7 @@
 //! A line has constant tangent, zero curvature, undefined normal and centre.
 //! No curvature extrema or inflection points exist.
 //!
-//! Can be constructed from either a GeomAdaptor_Curve pointer or a Handle(Geom_Curve).
+//! Can be constructed from either a GeomAdaptor_Curve pointer or a occ::handle<Geom_Curve>.
 //! When constructed from a handle, no adaptor is created.
 class GeomProp_Line
 {
@@ -45,9 +45,9 @@ public:
   //! Constructor from geometry handle.
   //! @param theCurve the 3D line geometry (must be a Geom_Line or downcastable to it)
   //! @param theDomain optional parameter domain (unused for line)
-  GeomProp_Line(const Handle(Geom_Curve)&                      theCurve,
+  GeomProp_Line(const occ::handle<Geom_Curve>&                      theCurve,
                 const std::optional<GeomProp::CurveDomain>& theDomain = std::nullopt)
-      : myDirection(Handle(Geom_Line)::DownCast(theCurve)->Position().Direction())
+      : myDirection(occ::down_cast<Geom_Line>(theCurve)->Position().Direction())
   {
     (void)theDomain;
   }

@@ -29,7 +29,7 @@
 //! Max principal curvature = cos(alpha) / R(V), where alpha is the half-angle
 //! and R(V) is the radius at parameter V.
 //!
-//! Can be constructed from either a GeomAdaptor_Surface pointer or a Handle(Geom_Surface).
+//! Can be constructed from either a GeomAdaptor_Surface pointer or a occ::handle<Geom_Surface>.
 //! When constructed from a handle, no adaptor is created.
 class GeomProp_Cone
 {
@@ -48,7 +48,7 @@ public:
   //! Constructor from geometry handle.
   //! @param theSurface the 3D conical surface geometry
   //! @param theDomain optional parameter domain (for trimmed surfaces)
-  GeomProp_Cone(const Handle(Geom_Surface)& theSurface,
+  GeomProp_Cone(const occ::handle<Geom_Surface>& theSurface,
                 const std::optional<GeomProp::SurfaceDomain>& theDomain = std::nullopt)
       : myAdaptor(nullptr),
         mySurface(theSurface),
@@ -82,7 +82,7 @@ public:
 
 private:
   const GeomAdaptor_Surface*             myAdaptor;
-  Handle(Geom_Surface)                   mySurface; //!< Geometry handle (handle path)
+  occ::handle<Geom_Surface>                   mySurface; //!< Geometry handle (handle path)
   std::optional<GeomProp::SurfaceDomain> myDomain;  //!< Optional parameter domain
 };
 

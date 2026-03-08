@@ -28,7 +28,7 @@
 //! - Parameter 0 and PI: endpoints of major axis (min radius of curvature)
 //! - Parameter PI/2 and 3*PI/2: endpoints of minor axis (max radius of curvature)
 //!
-//! Can be constructed from either a GeomAdaptor_Curve pointer or a Handle(Geom_Curve).
+//! Can be constructed from either a GeomAdaptor_Curve pointer or a occ::handle<Geom_Curve>.
 //! When constructed from a handle, no adaptor is created.
 class GeomProp_Ellipse
 {
@@ -47,7 +47,7 @@ public:
   //! Constructor from geometry handle.
   //! @param theCurve the 3D ellipse geometry
   //! @param theDomain optional parameter domain (for trimmed curves)
-  GeomProp_Ellipse(const Handle(Geom_Curve)&                      theCurve,
+  GeomProp_Ellipse(const occ::handle<Geom_Curve>&                      theCurve,
                    const std::optional<GeomProp::CurveDomain>& theDomain = std::nullopt)
       : myAdaptor(nullptr),
         myCurve(theCurve),
@@ -86,7 +86,7 @@ public:
 
 private:
   const GeomAdaptor_Curve*              myAdaptor; //!< Non-owning adaptor pointer (adaptor path)
-  Handle(Geom_Curve) myCurve;                      //!< Geometry handle (handle path)
+  occ::handle<Geom_Curve> myCurve;                      //!< Geometry handle (handle path)
   std::optional<GeomProp::CurveDomain> myDomain;  //!< Optional parameter domain
 };
 

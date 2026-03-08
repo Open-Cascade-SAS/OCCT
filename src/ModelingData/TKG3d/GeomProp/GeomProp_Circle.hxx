@@ -26,7 +26,7 @@
 //! A circle has constant curvature = 1/R, well-defined tangent and normal
 //! at every point, and no curvature extrema or inflection points.
 //!
-//! Can be constructed from either a GeomAdaptor_Curve pointer or a Handle(Geom_Curve).
+//! Can be constructed from either a GeomAdaptor_Curve pointer or a occ::handle<Geom_Curve>.
 //! When constructed from a handle, no adaptor is created.
 class GeomProp_Circle
 {
@@ -47,13 +47,13 @@ public:
   //! Constructor from geometry handle.
   //! @param theCurve the 3D circle geometry (must be a Geom_Circle or downcastable to it)
   //! @param theDomain optional parameter domain (unused for circle)
-  GeomProp_Circle(const Handle(Geom_Curve)&                      theCurve,
+  GeomProp_Circle(const occ::handle<Geom_Curve>&                      theCurve,
                   const std::optional<GeomProp::CurveDomain>& theDomain = std::nullopt)
       : myAdaptor(nullptr),
         myCurve(theCurve)
   {
     (void)theDomain;
-    const Handle(Geom_Circle) aCircle = Handle(Geom_Circle)::DownCast(theCurve);
+    const occ::handle<Geom_Circle> aCircle = occ::down_cast<Geom_Circle>(theCurve);
     myRadius                          = aCircle->Radius();
     myCenter                          = aCircle->Circ().Location();
   }
@@ -145,7 +145,7 @@ public:
 
 private:
   const GeomAdaptor_Curve* myAdaptor = nullptr; //!< Non-owning adaptor pointer (adaptor path)
-  Handle(Geom_Curve) myCurve;                   //!< Geometry handle (handle path)
+  occ::handle<Geom_Curve> myCurve;                   //!< Geometry handle (handle path)
   double             myRadius;                  //!< Cached circle radius
   gp_Pnt             myCenter;                  //!< Cached circle centre
 };

@@ -26,7 +26,7 @@
 //!
 //! Uses numeric root-finding for curvature extrema and inflection points.
 //!
-//! Can be constructed from either a Geom2dAdaptor_Curve pointer or a Handle(Geom2d_Curve).
+//! Can be constructed from either a Geom2dAdaptor_Curve pointer or a occ::handle<Geom2d_Curve>.
 //! When constructed from a handle, no adaptor is created; for complex methods
 //! (FindCurvatureExtrema, FindInflections) a stack-local adaptor is created on demand.
 class Geom2dProp_BezierCurve
@@ -47,7 +47,7 @@ public:
   //! Constructor from geometry handle.
   //! @param theCurve the 2D Bezier curve geometry
   //! @param theDomain optional parameter domain (for trimmed curves)
-  Geom2dProp_BezierCurve(const Handle(Geom2d_Curve)&                        theCurve,
+  Geom2dProp_BezierCurve(const occ::handle<Geom2d_Curve>&                        theCurve,
                          const std::optional<Geom2dProp::CurveDomain>& theDomain = std::nullopt)
       : myAdaptor(nullptr),
         myRequestedOrder(Geom2dProp::CurveDerivOrder::Curvature),
@@ -87,7 +87,7 @@ private:
   const Geom2dAdaptor_Curve*               myAdaptor;
   Geom2dProp::CurveDerivOrder              myRequestedOrder;
   mutable Geom2dProp::CurveCache           myCache;
-  Handle(Geom2d_Curve) myCurve;                        //!< Geometry handle (handle path)
+  occ::handle<Geom2d_Curve> myCurve;                        //!< Geometry handle (handle path)
   std::optional<Geom2dProp::CurveDomain> myDomain;    //!< Optional parameter domain
 };
 
