@@ -101,9 +101,9 @@ Geom2dProp::CurveAnalysis Geom2dProp_BezierCurve::FindCurvatureExtrema() const
   if (!myCurve.IsNull())
   {
     // Create a stack-local adaptor for the span-based numeric search.
-    const double          aFirst = myDomain.has_value() ? myDomain->First : myCurve->FirstParameter();
-    const double          aLast  = myDomain.has_value() ? myDomain->Last : myCurve->LastParameter();
-    Geom2dAdaptor_Curve   anAdaptor(myCurve, aFirst, aLast);
+    const double        aFirst = myDomain.has_value() ? myDomain->First : myCurve->FirstParameter();
+    const double        aLast  = myDomain.has_value() ? myDomain->Last : myCurve->LastParameter();
+    Geom2dAdaptor_Curve anAdaptor(myCurve, aFirst, aLast);
     return Geom2dProp_CurveAnalysisTools::FindCurvatureExtrema(&anAdaptor);
   }
   return Geom2dProp_CurveAnalysisTools::FindCurvatureExtrema(myAdaptor);
@@ -115,9 +115,9 @@ Geom2dProp::CurveAnalysis Geom2dProp_BezierCurve::FindInflections() const
 {
   if (!myCurve.IsNull())
   {
-    const double          aFirst = myDomain.has_value() ? myDomain->First : myCurve->FirstParameter();
-    const double          aLast  = myDomain.has_value() ? myDomain->Last : myCurve->LastParameter();
-    Geom2dAdaptor_Curve   anAdaptor(myCurve, aFirst, aLast);
+    const double        aFirst = myDomain.has_value() ? myDomain->First : myCurve->FirstParameter();
+    const double        aLast  = myDomain.has_value() ? myDomain->Last : myCurve->LastParameter();
+    Geom2dAdaptor_Curve anAdaptor(myCurve, aFirst, aLast);
     return Geom2dProp_CurveAnalysisTools::FindInflections(&anAdaptor);
   }
   return Geom2dProp_CurveAnalysisTools::FindInflections(myAdaptor);

@@ -111,7 +111,7 @@ void GeomProp_Curve::initialization(const occ::handle<Geom_Curve>& theCurve)
   myOwnedAdaptor.Nullify();
 
   // Unwrap TrimmedCurve to basis curve + optional CurveDomain.
-  occ::handle<Geom_Curve>             aBasis = theCurve;
+  occ::handle<Geom_Curve>              aBasis = theCurve;
   std::optional<GeomProp::CurveDomain> aDomain;
   if (aBasis->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
   {

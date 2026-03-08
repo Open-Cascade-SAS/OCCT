@@ -47,7 +47,7 @@ public:
   //! Constructor from geometry handle.
   //! @param theSurface the 3D toroidal surface geometry
   //! @param theDomain optional parameter domain (for trimmed surfaces)
-  GeomProp_Torus(const occ::handle<Geom_Surface>& theSurface,
+  GeomProp_Torus(const occ::handle<Geom_Surface>&              theSurface,
                  const std::optional<GeomProp::SurfaceDomain>& theDomain = std::nullopt)
       : myAdaptor(nullptr),
         mySurface(theSurface),
@@ -81,7 +81,7 @@ public:
 
 private:
   const GeomAdaptor_Surface*             myAdaptor;
-  occ::handle<Geom_Surface>                   mySurface; //!< Geometry handle (handle path)
+  occ::handle<Geom_Surface>              mySurface; //!< Geometry handle (handle path)
   std::optional<GeomProp::SurfaceDomain> myDomain;  //!< Optional parameter domain
 };
 

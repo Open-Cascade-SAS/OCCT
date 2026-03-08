@@ -48,7 +48,7 @@ public:
   //! Constructor from geometry handle.
   //! @param theCurve the 3D B-spline curve geometry
   //! @param theDomain optional parameter domain (for trimmed curves)
-  GeomProp_BSplineCurve(const occ::handle<Geom_Curve>&                      theCurve,
+  GeomProp_BSplineCurve(const occ::handle<Geom_Curve>&              theCurve,
                         const std::optional<GeomProp::CurveDomain>& theDomain = std::nullopt)
       : myAdaptor(nullptr),
         myRequestedOrder(GeomProp::CurveDerivOrder::Curvature),
@@ -87,11 +87,11 @@ public:
   Standard_EXPORT GeomProp::CurveAnalysis FindInflections() const;
 
 private:
-  const GeomAdaptor_Curve*              myAdaptor;
-  GeomProp::CurveDerivOrder             myRequestedOrder;
-  mutable GeomProp::CurveCache          myCache;
-  occ::handle<Geom_Curve> myCurve;                      //!< Geometry handle (handle path)
-  std::optional<GeomProp::CurveDomain> myDomain;  //!< Optional parameter domain
+  const GeomAdaptor_Curve*             myAdaptor;
+  GeomProp::CurveDerivOrder            myRequestedOrder;
+  mutable GeomProp::CurveCache         myCache;
+  occ::handle<Geom_Curve>              myCurve;  //!< Geometry handle (handle path)
+  std::optional<GeomProp::CurveDomain> myDomain; //!< Optional parameter domain
 };
 
 #endif // _GeomProp_BSplineCurve_HeaderFile

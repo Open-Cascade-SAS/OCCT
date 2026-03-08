@@ -128,7 +128,7 @@ void GeomProp_Surface::initialization(const occ::handle<Geom_Surface>& theSurfac
   myOwnedAdaptor.Nullify();
 
   // Unwrap RectangularTrimmedSurface to basis surface + optional SurfaceDomain.
-  occ::handle<Geom_Surface>               aBasis = theSurface;
+  occ::handle<Geom_Surface>              aBasis = theSurface;
   std::optional<GeomProp::SurfaceDomain> aDomain;
   if (aBasis->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
   {

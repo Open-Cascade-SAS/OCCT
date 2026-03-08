@@ -48,7 +48,7 @@ public:
   //! Constructor from geometry handle.
   //! @param theCurve the 2D offset curve geometry
   //! @param theDomain optional parameter domain (for trimmed curves)
-  Geom2dProp_OffsetCurve(const occ::handle<Geom2d_Curve>&                        theCurve,
+  Geom2dProp_OffsetCurve(const occ::handle<Geom2d_Curve>&              theCurve,
                          const std::optional<Geom2dProp::CurveDomain>& theDomain = std::nullopt)
       : myAdaptor(nullptr),
         myRequestedOrder(Geom2dProp::CurveDerivOrder::Curvature),
@@ -85,11 +85,11 @@ public:
   Standard_EXPORT Geom2dProp::CurveAnalysis FindInflections() const;
 
 private:
-  const Geom2dAdaptor_Curve*               myAdaptor;
-  Geom2dProp::CurveDerivOrder              myRequestedOrder;
-  mutable Geom2dProp::CurveCache           myCache;
-  occ::handle<Geom2d_Curve> myCurve;                        //!< Geometry handle (handle path)
-  std::optional<Geom2dProp::CurveDomain> myDomain;    //!< Optional parameter domain
+  const Geom2dAdaptor_Curve*             myAdaptor;
+  Geom2dProp::CurveDerivOrder            myRequestedOrder;
+  mutable Geom2dProp::CurveCache         myCache;
+  occ::handle<Geom2d_Curve>              myCurve;  //!< Geometry handle (handle path)
+  std::optional<Geom2dProp::CurveDomain> myDomain; //!< Optional parameter domain
 };
 
 #endif // _Geom2dProp_OffsetCurve_HeaderFile

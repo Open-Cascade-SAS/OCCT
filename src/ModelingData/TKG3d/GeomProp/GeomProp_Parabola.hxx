@@ -46,7 +46,7 @@ public:
   //! Constructor from geometry handle.
   //! @param theCurve the 3D parabola geometry
   //! @param theDomain optional parameter domain (for trimmed curves)
-  GeomProp_Parabola(const occ::handle<Geom_Curve>&                      theCurve,
+  GeomProp_Parabola(const occ::handle<Geom_Curve>&              theCurve,
                     const std::optional<GeomProp::CurveDomain>& theDomain = std::nullopt)
       : myAdaptor(nullptr),
         myCurve(theCurve),
@@ -84,8 +84,8 @@ public:
   GeomProp::CurveAnalysis FindInflections() const { return {{}, true}; }
 
 private:
-  const GeomAdaptor_Curve*              myAdaptor; //!< Non-owning adaptor pointer (adaptor path)
-  occ::handle<Geom_Curve> myCurve;                      //!< Geometry handle (handle path)
+  const GeomAdaptor_Curve*             myAdaptor; //!< Non-owning adaptor pointer (adaptor path)
+  occ::handle<Geom_Curve>              myCurve;   //!< Geometry handle (handle path)
   std::optional<GeomProp::CurveDomain> myDomain;  //!< Optional parameter domain
 };
 

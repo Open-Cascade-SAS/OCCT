@@ -47,15 +47,15 @@ public:
   //! Constructor from geometry handle.
   //! @param theCurve the 3D circle geometry (must be a Geom_Circle or downcastable to it)
   //! @param theDomain optional parameter domain (unused for circle)
-  GeomProp_Circle(const occ::handle<Geom_Curve>&                      theCurve,
+  GeomProp_Circle(const occ::handle<Geom_Curve>&              theCurve,
                   const std::optional<GeomProp::CurveDomain>& theDomain = std::nullopt)
       : myAdaptor(nullptr),
         myCurve(theCurve)
   {
     (void)theDomain;
     const occ::handle<Geom_Circle> aCircle = occ::down_cast<Geom_Circle>(theCurve);
-    myRadius                          = aCircle->Radius();
-    myCenter                          = aCircle->Circ().Location();
+    myRadius                               = aCircle->Radius();
+    myCenter                               = aCircle->Circ().Location();
   }
 
   //! Non-copyable and non-movable.
@@ -145,9 +145,9 @@ public:
 
 private:
   const GeomAdaptor_Curve* myAdaptor = nullptr; //!< Non-owning adaptor pointer (adaptor path)
-  occ::handle<Geom_Curve> myCurve;                   //!< Geometry handle (handle path)
-  double             myRadius;                  //!< Cached circle radius
-  gp_Pnt             myCenter;                  //!< Cached circle centre
+  occ::handle<Geom_Curve>  myCurve;             //!< Geometry handle (handle path)
+  double                   myRadius;            //!< Cached circle radius
+  gp_Pnt                   myCenter;            //!< Cached circle centre
 };
 
 #endif // _GeomProp_Circle_HeaderFile

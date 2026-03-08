@@ -45,7 +45,7 @@ public:
   //! Constructor from geometry handle.
   //! @param theSurface the 3D B-spline surface geometry
   //! @param theDomain optional parameter domain (for trimmed surfaces)
-  GeomProp_BSplineSurface(const occ::handle<Geom_Surface>& theSurface,
+  GeomProp_BSplineSurface(const occ::handle<Geom_Surface>&              theSurface,
                           const std::optional<GeomProp::SurfaceDomain>& theDomain = std::nullopt)
       : myAdaptor(nullptr),
         myRequestedOrder(GeomProp::SurfaceDerivOrder::Curvature),
@@ -82,7 +82,7 @@ private:
   const GeomAdaptor_Surface*             myAdaptor;
   GeomProp::SurfaceDerivOrder            myRequestedOrder;
   mutable GeomProp::SurfaceCache         myCache;
-  occ::handle<Geom_Surface>                   mySurface; //!< Geometry handle (handle path)
+  occ::handle<Geom_Surface>              mySurface; //!< Geometry handle (handle path)
   std::optional<GeomProp::SurfaceDomain> myDomain;  //!< Optional parameter domain
 };
 

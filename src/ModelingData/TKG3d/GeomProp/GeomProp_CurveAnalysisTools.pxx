@@ -462,7 +462,7 @@ inline GeomProp::CurveAnalysis FindInflections(const Adaptor3d_Curve* theCurve)
 
 //! Find curvature extrema on a Geom_Curve over a given domain.
 inline GeomProp::CurveAnalysis FindCurvatureExtrema(
-  const Geom_Curve*                              theCurve,
+  const Geom_Curve*                           theCurve,
   const std::optional<GeomProp::CurveDomain>& theDomain)
 {
   GeomProp::CurveAnalysis aResult;
@@ -480,7 +480,7 @@ inline GeomProp::CurveAnalysis FindCurvatureExtrema(
 
 //! Find inflections on a Geom_Curve over a given domain.
 inline GeomProp::CurveAnalysis FindInflections(
-  const Geom_Curve*                              theCurve,
+  const Geom_Curve*                           theCurve,
   const std::optional<GeomProp::CurveDomain>& theDomain)
 {
   GeomProp::CurveAnalysis aResult;

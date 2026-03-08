@@ -46,7 +46,7 @@ public:
   //! Constructor from geometry handle.
   //! @param theSurface the 3D plane geometry
   //! @param theDomain optional parameter domain (unused for plane)
-  GeomProp_Plane(const occ::handle<Geom_Surface>& theSurface,
+  GeomProp_Plane(const occ::handle<Geom_Surface>&              theSurface,
                  const std::optional<GeomProp::SurfaceDomain>& theDomain = std::nullopt)
       : myAdaptor(nullptr),
         mySurface(theSurface),
@@ -118,9 +118,9 @@ public:
 
 private:
   const GeomAdaptor_Surface*             myAdaptor;
-  occ::handle<Geom_Surface>                   mySurface; //!< Geometry handle (handle path)
+  occ::handle<Geom_Surface>              mySurface;  //!< Geometry handle (handle path)
   gp_Ax3                                 myPosition; //!< Cached plane position
-  std::optional<GeomProp::SurfaceDomain> myDomain;  //!< Optional parameter domain
+  std::optional<GeomProp::SurfaceDomain> myDomain;   //!< Optional parameter domain
 };
 
 #endif // _GeomProp_Plane_HeaderFile

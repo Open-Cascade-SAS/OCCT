@@ -102,9 +102,9 @@ Geom2dProp::CurveAnalysis Geom2dProp_BSplineCurve::FindCurvatureExtrema() const
 {
   if (!myCurve.IsNull())
   {
-    const double          aFirst = myDomain.has_value() ? myDomain->First : myCurve->FirstParameter();
-    const double          aLast  = myDomain.has_value() ? myDomain->Last : myCurve->LastParameter();
-    Geom2dAdaptor_Curve   anAdaptor(myCurve, aFirst, aLast);
+    const double        aFirst = myDomain.has_value() ? myDomain->First : myCurve->FirstParameter();
+    const double        aLast  = myDomain.has_value() ? myDomain->Last : myCurve->LastParameter();
+    Geom2dAdaptor_Curve anAdaptor(myCurve, aFirst, aLast);
     return Geom2dProp_CurveAnalysisTools::FindCurvatureExtremaBySpans(&anAdaptor, GeomAbs_C3);
   }
   return Geom2dProp_CurveAnalysisTools::FindCurvatureExtremaBySpans(myAdaptor, GeomAbs_C3);
@@ -116,9 +116,9 @@ Geom2dProp::CurveAnalysis Geom2dProp_BSplineCurve::FindInflections() const
 {
   if (!myCurve.IsNull())
   {
-    const double          aFirst = myDomain.has_value() ? myDomain->First : myCurve->FirstParameter();
-    const double          aLast  = myDomain.has_value() ? myDomain->Last : myCurve->LastParameter();
-    Geom2dAdaptor_Curve   anAdaptor(myCurve, aFirst, aLast);
+    const double        aFirst = myDomain.has_value() ? myDomain->First : myCurve->FirstParameter();
+    const double        aLast  = myDomain.has_value() ? myDomain->Last : myCurve->LastParameter();
+    Geom2dAdaptor_Curve anAdaptor(myCurve, aFirst, aLast);
     return Geom2dProp_CurveAnalysisTools::FindInflectionsBySpans(&anAdaptor, GeomAbs_C3);
   }
   return Geom2dProp_CurveAnalysisTools::FindInflectionsBySpans(myAdaptor, GeomAbs_C3);

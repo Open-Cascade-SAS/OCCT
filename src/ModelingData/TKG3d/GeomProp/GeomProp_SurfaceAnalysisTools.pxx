@@ -139,10 +139,10 @@ inline GeomProp::SurfaceCurvatureResult EvaluateCurvaturesCached(
 //! Evaluate mean and Gaussian curvatures using cached derivatives.
 //! Works with both Adaptor3d_Surface* and Geom_Surface*.
 template <class SurfaceType>
-inline GeomProp::MeanGaussianResult EvaluateMeanGaussianCached(const SurfaceType*          theSurface,
-                                                               double                      theU,
-                                                               double                      theV,
-                                                               double                      theTol,
+inline GeomProp::MeanGaussianResult EvaluateMeanGaussianCached(const SurfaceType* theSurface,
+                                                               double             theU,
+                                                               double             theV,
+                                                               double             theTol,
                                                                GeomProp::SurfaceDerivOrder theOrder,
                                                                GeomProp::SurfaceCache&     theCache)
 {

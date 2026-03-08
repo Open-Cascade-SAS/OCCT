@@ -448,7 +448,7 @@ inline Geom2dProp::CurveAnalysis FindInflections(const Adaptor2d_Curve2d* theCur
 
 //! Find curvature extrema on a Geom2d_Curve over a given domain.
 inline Geom2dProp::CurveAnalysis FindCurvatureExtrema(
-  const Geom2d_Curve*                                theCurve,
+  const Geom2d_Curve*                           theCurve,
   const std::optional<Geom2dProp::CurveDomain>& theDomain)
 {
   Geom2dProp::CurveAnalysis aResult;
@@ -466,7 +466,7 @@ inline Geom2dProp::CurveAnalysis FindCurvatureExtrema(
 
 //! Find inflections on a Geom2d_Curve over a given domain.
 inline Geom2dProp::CurveAnalysis FindInflections(
-  const Geom2d_Curve*                                theCurve,
+  const Geom2d_Curve*                           theCurve,
   const std::optional<Geom2dProp::CurveDomain>& theDomain)
 {
   Geom2dProp::CurveAnalysis aResult;
@@ -483,9 +483,8 @@ inline Geom2dProp::CurveAnalysis FindInflections(
 }
 
 //! Find curvature extrema with span-by-span subdivision for low-continuity curves.
-inline Geom2dProp::CurveAnalysis FindCurvatureExtremaBySpans(
-  const Geom2dAdaptor_Curve* theCurve,
-  const GeomAbs_Shape        theContinuity)
+inline Geom2dProp::CurveAnalysis FindCurvatureExtremaBySpans(const Geom2dAdaptor_Curve* theCurve,
+                                                             const GeomAbs_Shape theContinuity)
 {
   Geom2dProp::CurveAnalysis aResult;
   aResult.IsDone = true;

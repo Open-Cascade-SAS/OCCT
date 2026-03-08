@@ -45,7 +45,7 @@ public:
   //! Constructor from geometry handle.
   //! @param theCurve the 3D line geometry (must be a Geom_Line or downcastable to it)
   //! @param theDomain optional parameter domain (unused for line)
-  GeomProp_Line(const occ::handle<Geom_Curve>&                      theCurve,
+  GeomProp_Line(const occ::handle<Geom_Curve>&              theCurve,
                 const std::optional<GeomProp::CurveDomain>& theDomain = std::nullopt)
       : myDirection(occ::down_cast<Geom_Line>(theCurve)->Position().Direction())
   {

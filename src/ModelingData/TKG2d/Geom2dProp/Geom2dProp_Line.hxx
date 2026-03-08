@@ -45,7 +45,7 @@ public:
   //! Constructor from geometry handle.
   //! @param theCurve the 2D line geometry (must be a Geom2d_Line or downcastable to it)
   //! @param theDomain optional parameter domain (unused for line)
-  Geom2dProp_Line(const occ::handle<Geom2d_Curve>&                        theCurve,
+  Geom2dProp_Line(const occ::handle<Geom2d_Curve>&              theCurve,
                   const std::optional<Geom2dProp::CurveDomain>& theDomain = std::nullopt)
       : myDirection(occ::down_cast<Geom2d_Line>(theCurve)->Direction())
   {
