@@ -567,7 +567,7 @@ inline Geom2dProp::TangentResult EvaluateTangentCached(const Adaptor2d_Curve2d* 
     return {gp_Dir2d(aD1), true};
   }
 
-  // Degenerate point — upgrade cache to D3 for sign correction.
+  // Degenerate point - upgrade cache to D3 for sign correction.
   // No need to invalidate: EnsureCurveDerivatives re-evaluates when IsValid && !HasOrder.
   EnsureCurveDerivatives(theCurve, theParam, Geom2dProp::CurveDerivOrder::CurvatureDeriv,
                          Geom2dProp::CurveDerivOrder::CurvatureDeriv, theCache);
