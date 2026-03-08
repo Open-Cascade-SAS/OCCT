@@ -532,23 +532,20 @@ inline void EnsureCurveDerivatives(const Adaptor3d_Curve*    theCurve,
   theCache.Param    = theParam;
   switch (static_cast<GeomProp::CurveDerivOrder>(aTarget))
   {
-    case GeomProp::CurveDerivOrder::Value:
-    {
+    case GeomProp::CurveDerivOrder::Value: {
       gp_Pnt aP;
       theCurve->D0(theParam, aP);
       theCache.Data.emplace<gp_Pnt>(aP);
       break;
     }
-    case GeomProp::CurveDerivOrder::Tangent:
-    {
+    case GeomProp::CurveDerivOrder::Tangent: {
       gp_Pnt aP;
       gp_Vec aD1;
       theCurve->D1(theParam, aP, aD1);
       theCache.Data.emplace<Geom_Curve::ResD1>(Geom_Curve::ResD1{aP, aD1});
       break;
     }
-    case GeomProp::CurveDerivOrder::Curvature:
-    {
+    case GeomProp::CurveDerivOrder::Curvature: {
       gp_Pnt aP;
       gp_Vec aD1, aD2;
       theCurve->D2(theParam, aP, aD1, aD2);
@@ -556,8 +553,7 @@ inline void EnsureCurveDerivatives(const Adaptor3d_Curve*    theCurve,
       break;
     }
     case GeomProp::CurveDerivOrder::CurvatureDeriv:
-    default:
-    {
+    default: {
       gp_Pnt aP;
       gp_Vec aD1, aD2, aD3;
       theCurve->D3(theParam, aP, aD1, aD2, aD3);
@@ -579,7 +575,11 @@ inline GeomProp::TangentResult EvaluateTangentCached(const Adaptor3d_Curve*    t
     return {{}, false};
   }
 
-  EnsureCurveDerivatives(theCurve, theParam, GeomProp::CurveDerivOrder::Tangent, theOrder, theCache);
+  EnsureCurveDerivatives(theCurve,
+                         theParam,
+                         GeomProp::CurveDerivOrder::Tangent,
+                         theOrder,
+                         theCache);
 
   gp_Vec aD1;
   std::visit(
@@ -600,8 +600,11 @@ inline GeomProp::TangentResult EvaluateTangentCached(const Adaptor3d_Curve*    t
 
   // Degenerate point - upgrade cache to D3 for sign correction.
   // No need to invalidate: EnsureCurveDerivatives re-evaluates when IsValid && !HasOrder.
-  EnsureCurveDerivatives(theCurve, theParam, GeomProp::CurveDerivOrder::CurvatureDeriv,
-                         GeomProp::CurveDerivOrder::CurvatureDeriv, theCache);
+  EnsureCurveDerivatives(theCurve,
+                         theParam,
+                         GeomProp::CurveDerivOrder::CurvatureDeriv,
+                         GeomProp::CurveDerivOrder::CurvatureDeriv,
+                         theCache);
 
   const auto& aD3Data = std::get<Geom_Curve::ResD3>(theCache.Data);
 
@@ -642,7 +645,11 @@ inline GeomProp::CurvatureResult EvaluateCurvatureCached(const Adaptor3d_Curve* 
     return {0.0, false, false};
   }
 
-  EnsureCurveDerivatives(theCurve, theParam, GeomProp::CurveDerivOrder::Curvature, theOrder, theCache);
+  EnsureCurveDerivatives(theCurve,
+                         theParam,
+                         GeomProp::CurveDerivOrder::Curvature,
+                         theOrder,
+                         theCache);
 
   return std::visit(
     [theTol](const auto& theVal) -> GeomProp::CurvatureResult {
@@ -671,7 +678,11 @@ inline GeomProp::NormalResult EvaluateNormalCached(const Adaptor3d_Curve*    the
     return {{}, false};
   }
 
-  EnsureCurveDerivatives(theCurve, theParam, GeomProp::CurveDerivOrder::Curvature, theOrder, theCache);
+  EnsureCurveDerivatives(theCurve,
+                         theParam,
+                         GeomProp::CurveDerivOrder::Curvature,
+                         theOrder,
+                         theCache);
 
   return std::visit(
     [theTol](const auto& theVal) -> GeomProp::NormalResult {
@@ -689,19 +700,22 @@ inline GeomProp::NormalResult EvaluateNormalCached(const Adaptor3d_Curve*    the
 }
 
 //! Evaluate centre of curvature at a point on a 3D curve using cached derivatives.
-inline GeomProp::CentreResult EvaluateCentreOfCurvatureCached(
-  const Adaptor3d_Curve*    theCurve,
-  double                    theParam,
-  double                    theTol,
-  GeomProp::CurveDerivOrder theOrder,
-  GeomProp::CurveCache&     theCache)
+inline GeomProp::CentreResult EvaluateCentreOfCurvatureCached(const Adaptor3d_Curve*    theCurve,
+                                                              double                    theParam,
+                                                              double                    theTol,
+                                                              GeomProp::CurveDerivOrder theOrder,
+                                                              GeomProp::CurveCache&     theCache)
 {
   if (theCurve == nullptr)
   {
     return {{}, false};
   }
 
-  EnsureCurveDerivatives(theCurve, theParam, GeomProp::CurveDerivOrder::Curvature, theOrder, theCache);
+  EnsureCurveDerivatives(theCurve,
+                         theParam,
+                         GeomProp::CurveDerivOrder::Curvature,
+                         theOrder,
+                         theCache);
 
   return std::visit(
     [theTol](const auto& theVal) -> GeomProp::CentreResult {

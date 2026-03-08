@@ -104,19 +104,19 @@ enum class CurveDerivOrder
 struct CurveCache
 {
   double Param = std::numeric_limits<double>::quiet_NaN();
-  std::variant<std::monostate,
-               gp_Pnt2d,
-               Geom2d_Curve::ResD1,
-               Geom2d_Curve::ResD2,
-               Geom2d_Curve::ResD3>
-    Data;
+  std::
+    variant<std::monostate, gp_Pnt2d, Geom2d_Curve::ResD1, Geom2d_Curve::ResD2, Geom2d_Curve::ResD3>
+      Data;
 
-  bool            IsValid(double theParam) const { return Param == theParam; }
+  bool IsValid(double theParam) const { return Param == theParam; }
+
   CurveDerivOrder Order() const { return static_cast<CurveDerivOrder>(Data.index()); }
-  bool            HasOrder(CurveDerivOrder theNeeded) const
+
+  bool HasOrder(CurveDerivOrder theNeeded) const
   {
     return static_cast<int>(Order()) >= static_cast<int>(theNeeded);
   }
+
   void Invalidate()
   {
     Param = std::numeric_limits<double>::quiet_NaN();

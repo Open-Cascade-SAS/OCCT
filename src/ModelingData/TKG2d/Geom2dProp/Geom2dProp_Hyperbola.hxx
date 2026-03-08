@@ -34,8 +34,9 @@ public:
 
   //! Constructor with adaptor pointer (non-owning).
   //! @param theAdaptor the 2D curve adaptor (must wrap a hyperbola, must not be null)
-  Geom2dProp_Hyperbola(const Geom2dAdaptor_Curve*  theAdaptor,
-                       Geom2dProp::CurveDerivOrder theOrder = Geom2dProp::CurveDerivOrder::Undefined)
+  Geom2dProp_Hyperbola(
+    const Geom2dAdaptor_Curve*  theAdaptor,
+    Geom2dProp::CurveDerivOrder theOrder = Geom2dProp::CurveDerivOrder::Undefined)
       : myAdaptor(theAdaptor)
   {
     (void)theOrder;
@@ -71,7 +72,7 @@ public:
   Geom2dProp::CurveAnalysis FindInflections() const { return {{}, true}; }
 
 private:
-  const Geom2dAdaptor_Curve*  myAdaptor;
+  const Geom2dAdaptor_Curve* myAdaptor;
 };
 
 #endif // _Geom2dProp_Hyperbola_HeaderFile

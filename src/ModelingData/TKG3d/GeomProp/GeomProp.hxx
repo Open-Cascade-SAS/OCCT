@@ -152,12 +152,15 @@ struct CurveCache
   std::variant<std::monostate, gp_Pnt, Geom_Curve::ResD1, Geom_Curve::ResD2, Geom_Curve::ResD3>
     Data;
 
-  bool            IsValid(double theParam) const { return Param == theParam; }
+  bool IsValid(double theParam) const { return Param == theParam; }
+
   CurveDerivOrder Order() const { return static_cast<CurveDerivOrder>(Data.index()); }
-  bool            HasOrder(CurveDerivOrder theNeeded) const
+
+  bool HasOrder(CurveDerivOrder theNeeded) const
   {
     return static_cast<int>(Order()) >= static_cast<int>(theNeeded);
   }
+
   void Invalidate()
   {
     Param = std::numeric_limits<double>::quiet_NaN();
@@ -173,15 +176,15 @@ struct SurfaceCache
   double ParamV = std::numeric_limits<double>::quiet_NaN();
   std::variant<std::monostate, gp_Pnt, Geom_Surface::ResD1, Geom_Surface::ResD2> Data;
 
-  bool              IsValid(double theU, double theV) const
-  {
-    return ParamU == theU && ParamV == theV;
-  }
+  bool IsValid(double theU, double theV) const { return ParamU == theU && ParamV == theV; }
+
   SurfaceDerivOrder Order() const { return static_cast<SurfaceDerivOrder>(Data.index()); }
-  bool              HasOrder(SurfaceDerivOrder theNeeded) const
+
+  bool HasOrder(SurfaceDerivOrder theNeeded) const
   {
     return static_cast<int>(Order()) >= static_cast<int>(theNeeded);
   }
+
   void Invalidate()
   {
     ParamU = ParamV = std::numeric_limits<double>::quiet_NaN();

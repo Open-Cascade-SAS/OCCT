@@ -112,7 +112,7 @@ public:
   Geom2dProp::CurveAnalysis FindInflections() const { return {{}, true}; }
 
 private:
-  const Geom2dAdaptor_Curve*  myAdaptor;
+  const Geom2dAdaptor_Curve* myAdaptor;
 };
 
 #endif // _Geom2dProp_Circle_HeaderFile

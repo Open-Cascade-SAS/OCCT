@@ -94,7 +94,7 @@ public:
   }
 
 private:
-  const GeomAdaptor_Surface*  myAdaptor;
+  const GeomAdaptor_Surface* myAdaptor;
 };
 
 #endif // _GeomProp_Plane_HeaderFile

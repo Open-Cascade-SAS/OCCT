@@ -70,7 +70,7 @@ public:
                                                             double theTol) const;
 
 private:
-  const GeomAdaptor_Surface*  myAdaptor;
+  const GeomAdaptor_Surface* myAdaptor;
 };
 
 #endif // _GeomProp_Cone_HeaderFile

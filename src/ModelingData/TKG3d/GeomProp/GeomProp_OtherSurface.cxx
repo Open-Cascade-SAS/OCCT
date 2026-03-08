@@ -20,8 +20,12 @@ GeomProp::SurfaceNormalResult GeomProp_OtherSurface::Normal(const double theU,
                                                             const double theV,
                                                             const double theTol) const
 {
-  return GeomProp_SurfaceAnalysisTools::EvaluateNormalCached(
-    myAdaptor, theU, theV, theTol, myRequestedOrder, myCache);
+  return GeomProp_SurfaceAnalysisTools::EvaluateNormalCached(myAdaptor,
+                                                             theU,
+                                                             theV,
+                                                             theTol,
+                                                             myRequestedOrder,
+                                                             myCache);
 }
 
 //=================================================================================================
@@ -30,8 +34,12 @@ GeomProp::SurfaceCurvatureResult GeomProp_OtherSurface::Curvatures(const double 
                                                                    const double theV,
                                                                    const double theTol) const
 {
-  return GeomProp_SurfaceAnalysisTools::EvaluateCurvaturesCached(
-    myAdaptor, theU, theV, theTol, myRequestedOrder, myCache);
+  return GeomProp_SurfaceAnalysisTools::EvaluateCurvaturesCached(myAdaptor,
+                                                                 theU,
+                                                                 theV,
+                                                                 theTol,
+                                                                 myRequestedOrder,
+                                                                 myCache);
 }
 
 //=================================================================================================
@@ -40,6 +48,10 @@ GeomProp::MeanGaussianResult GeomProp_OtherSurface::MeanGaussian(const double th
                                                                  const double theV,
                                                                  const double theTol) const
 {
-  return GeomProp_SurfaceAnalysisTools::EvaluateMeanGaussianCached(
-    myAdaptor, theU, theV, theTol, myRequestedOrder, myCache);
+  return GeomProp_SurfaceAnalysisTools::EvaluateMeanGaussianCached(myAdaptor,
+                                                                   theU,
+                                                                   theV,
+                                                                   theTol,
+                                                                   myRequestedOrder,
+                                                                   myCache);
 }

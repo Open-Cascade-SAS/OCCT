@@ -33,8 +33,9 @@ public:
 
   //! Constructor with adaptor pointer (non-owning).
   //! @param theAdaptor the 2D curve adaptor (must wrap a Bezier curve, must not be null)
-  Geom2dProp_BezierCurve(const Geom2dAdaptor_Curve*  theAdaptor,
-                         Geom2dProp::CurveDerivOrder theOrder = Geom2dProp::CurveDerivOrder::Curvature)
+  Geom2dProp_BezierCurve(
+    const Geom2dAdaptor_Curve*  theAdaptor,
+    Geom2dProp::CurveDerivOrder theOrder = Geom2dProp::CurveDerivOrder::Curvature)
       : myAdaptor(theAdaptor),
         myRequestedOrder(theOrder)
   {

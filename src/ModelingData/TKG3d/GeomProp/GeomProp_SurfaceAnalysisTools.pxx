@@ -24,12 +24,12 @@ namespace GeomProp_SurfaceAnalysisTools
 {
 
 //! Populate surface derivative cache at the requested order.
-inline void EnsureSurfaceDerivatives(const Adaptor3d_Surface*     theSurface,
-                                     double                       theU,
-                                     double                       theV,
-                                     GeomProp::SurfaceDerivOrder  theNeeded,
-                                     GeomProp::SurfaceDerivOrder  theRequested,
-                                     GeomProp::SurfaceCache&      theCache)
+inline void EnsureSurfaceDerivatives(const Adaptor3d_Surface*    theSurface,
+                                     double                      theU,
+                                     double                      theV,
+                                     GeomProp::SurfaceDerivOrder theNeeded,
+                                     GeomProp::SurfaceDerivOrder theRequested,
+                                     GeomProp::SurfaceCache&     theCache)
 {
   if (theCache.IsValid(theU, theV) && theCache.HasOrder(theNeeded))
   {
@@ -56,19 +56,23 @@ inline void EnsureSurfaceDerivatives(const Adaptor3d_Surface*     theSurface,
 }
 
 //! Evaluate surface normal using cached derivatives.
-inline GeomProp::SurfaceNormalResult EvaluateNormalCached(
-  const Adaptor3d_Surface*    theSurface,
-  double                      theU,
-  double                      theV,
-  double                      theTol,
-  GeomProp::SurfaceDerivOrder theOrder,
-  GeomProp::SurfaceCache&     theCache)
+inline GeomProp::SurfaceNormalResult EvaluateNormalCached(const Adaptor3d_Surface*    theSurface,
+                                                          double                      theU,
+                                                          double                      theV,
+                                                          double                      theTol,
+                                                          GeomProp::SurfaceDerivOrder theOrder,
+                                                          GeomProp::SurfaceCache&     theCache)
 {
   if (theSurface == nullptr)
   {
     return {{}, false};
   }
-  EnsureSurfaceDerivatives(theSurface, theU, theV, GeomProp::SurfaceDerivOrder::Normal, theOrder, theCache);
+  EnsureSurfaceDerivatives(theSurface,
+                           theU,
+                           theV,
+                           GeomProp::SurfaceDerivOrder::Normal,
+                           theOrder,
+                           theCache);
   return std::visit(
     [theTol](const auto& theVal) -> GeomProp::SurfaceNormalResult {
       using T = std::decay_t<decltype(theVal)>;
@@ -98,14 +102,23 @@ inline GeomProp::SurfaceCurvatureResult EvaluateCurvaturesCached(
   {
     return {};
   }
-  EnsureSurfaceDerivatives(theSurface, theU, theV, GeomProp::SurfaceDerivOrder::Curvature, theOrder, theCache);
+  EnsureSurfaceDerivatives(theSurface,
+                           theU,
+                           theV,
+                           GeomProp::SurfaceDerivOrder::Curvature,
+                           theOrder,
+                           theCache);
   return std::visit(
     [theTol](const auto& theVal) -> GeomProp::SurfaceCurvatureResult {
       using T = std::decay_t<decltype(theVal)>;
       if constexpr (std::is_same_v<T, Geom_Surface::ResD2>)
       {
-        return GeomProp::ComputeSurfaceCurvatures(
-          theVal.D1U, theVal.D1V, theVal.D2U, theVal.D2V, theVal.D2UV, theTol);
+        return GeomProp::ComputeSurfaceCurvatures(theVal.D1U,
+                                                  theVal.D1V,
+                                                  theVal.D2U,
+                                                  theVal.D2V,
+                                                  theVal.D2UV,
+                                                  theTol);
       }
       else
       {
@@ -116,26 +129,34 @@ inline GeomProp::SurfaceCurvatureResult EvaluateCurvaturesCached(
 }
 
 //! Evaluate mean and Gaussian curvatures using cached derivatives.
-inline GeomProp::MeanGaussianResult EvaluateMeanGaussianCached(
-  const Adaptor3d_Surface*    theSurface,
-  double                      theU,
-  double                      theV,
-  double                      theTol,
-  GeomProp::SurfaceDerivOrder theOrder,
-  GeomProp::SurfaceCache&     theCache)
+inline GeomProp::MeanGaussianResult EvaluateMeanGaussianCached(const Adaptor3d_Surface* theSurface,
+                                                               double                   theU,
+                                                               double                   theV,
+                                                               double                   theTol,
+                                                               GeomProp::SurfaceDerivOrder theOrder,
+                                                               GeomProp::SurfaceCache&     theCache)
 {
   if (theSurface == nullptr)
   {
     return {};
   }
-  EnsureSurfaceDerivatives(theSurface, theU, theV, GeomProp::SurfaceDerivOrder::Curvature, theOrder, theCache);
+  EnsureSurfaceDerivatives(theSurface,
+                           theU,
+                           theV,
+                           GeomProp::SurfaceDerivOrder::Curvature,
+                           theOrder,
+                           theCache);
   return std::visit(
     [theTol](const auto& theVal) -> GeomProp::MeanGaussianResult {
       using T = std::decay_t<decltype(theVal)>;
       if constexpr (std::is_same_v<T, Geom_Surface::ResD2>)
       {
-        return GeomProp::ComputeMeanGaussian(
-          theVal.D1U, theVal.D1V, theVal.D2U, theVal.D2V, theVal.D2UV, theTol);
+        return GeomProp::ComputeMeanGaussian(theVal.D1U,
+                                             theVal.D1V,
+                                             theVal.D2U,
+                                             theVal.D2V,
+                                             theVal.D2UV,
+                                             theTol);
       }
       else
       {

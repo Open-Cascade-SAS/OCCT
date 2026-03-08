@@ -32,8 +32,9 @@ public:
 
   //! Constructor with adaptor pointer (non-owning).
   //! @param theAdaptor the surface adaptor (must not be null)
-  GeomProp_SurfaceOfExtrusion(const GeomAdaptor_Surface*  theAdaptor,
-                              GeomProp::SurfaceDerivOrder theOrder = GeomProp::SurfaceDerivOrder::Curvature)
+  GeomProp_SurfaceOfExtrusion(
+    const GeomAdaptor_Surface*  theAdaptor,
+    GeomProp::SurfaceDerivOrder theOrder = GeomProp::SurfaceDerivOrder::Curvature)
       : myAdaptor(theAdaptor),
         myRequestedOrder(theOrder)
   {

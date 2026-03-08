@@ -19,7 +19,11 @@
 Geom2dProp::TangentResult Geom2dProp_OffsetCurve::Tangent(const double theParam,
                                                           const double theTol) const
 {
-  return Geom2dProp_CurveAnalysisTools::EvaluateTangentCached(myAdaptor, theParam, theTol, myRequestedOrder, myCache);
+  return Geom2dProp_CurveAnalysisTools::EvaluateTangentCached(myAdaptor,
+                                                              theParam,
+                                                              theTol,
+                                                              myRequestedOrder,
+                                                              myCache);
 }
 
 //=================================================================================================
@@ -27,7 +31,11 @@ Geom2dProp::TangentResult Geom2dProp_OffsetCurve::Tangent(const double theParam,
 Geom2dProp::CurvatureResult Geom2dProp_OffsetCurve::Curvature(const double theParam,
                                                               const double theTol) const
 {
-  return Geom2dProp_CurveAnalysisTools::EvaluateCurvatureCached(myAdaptor, theParam, theTol, myRequestedOrder, myCache);
+  return Geom2dProp_CurveAnalysisTools::EvaluateCurvatureCached(myAdaptor,
+                                                                theParam,
+                                                                theTol,
+                                                                myRequestedOrder,
+                                                                myCache);
 }
 
 //=================================================================================================
@@ -35,7 +43,11 @@ Geom2dProp::CurvatureResult Geom2dProp_OffsetCurve::Curvature(const double thePa
 Geom2dProp::NormalResult Geom2dProp_OffsetCurve::Normal(const double theParam,
                                                         const double theTol) const
 {
-  return Geom2dProp_CurveAnalysisTools::EvaluateNormalCached(myAdaptor, theParam, theTol, myRequestedOrder, myCache);
+  return Geom2dProp_CurveAnalysisTools::EvaluateNormalCached(myAdaptor,
+                                                             theParam,
+                                                             theTol,
+                                                             myRequestedOrder,
+                                                             myCache);
 }
 
 //=================================================================================================
@@ -43,7 +55,11 @@ Geom2dProp::NormalResult Geom2dProp_OffsetCurve::Normal(const double theParam,
 Geom2dProp::CentreResult Geom2dProp_OffsetCurve::CentreOfCurvature(const double theParam,
                                                                    const double theTol) const
 {
-  return Geom2dProp_CurveAnalysisTools::EvaluateCentreOfCurvatureCached(myAdaptor, theParam, theTol, myRequestedOrder, myCache);
+  return Geom2dProp_CurveAnalysisTools::EvaluateCentreOfCurvatureCached(myAdaptor,
+                                                                        theParam,
+                                                                        theTol,
+                                                                        myRequestedOrder,
+                                                                        myCache);
 }
 
 //=================================================================================================
