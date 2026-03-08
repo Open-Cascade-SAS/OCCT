@@ -20,6 +20,7 @@
 #include <LProp_CompareDebug.pxx>
 #include <LProp_NotDefined.hxx>
 #include <LProp_Status.hxx>
+#include <LProp_WrapperTools.pxx>
 #include <Precision.hxx>
 #include <Standard_OutOfRange.hxx>
 
@@ -130,9 +131,7 @@ LProp3d_SLProps::~LProp3d_SLProps() = default;
 LProp3d_SLProps::LProp3d_SLProps(const LProp3d_SLProps& theOther)
     : mySurf(theOther.mySurf),
       mySurfaceProp(makeSurfaceProp(theOther.mySurf)),
-      myLegacyProps(theOther.myLegacyProps != nullptr
-                      ? std::make_shared<LProp3d_LegacySLProps>(*theOther.myLegacyProps)
-                      : nullptr),
+      myLegacyProps(LProp_WrapperTools::CloneShared(theOther.myLegacyProps)),
       myU(theOther.myU),
       myV(theOther.myV),
       myDerOrder(theOther.myDerOrder),
@@ -171,9 +170,7 @@ LProp3d_SLProps& LProp3d_SLProps::operator=(const LProp3d_SLProps& theOther)
 
   mySurf = theOther.mySurf;
   mySurfaceProp = makeSurfaceProp(theOther.mySurf);
-  myLegacyProps = theOther.myLegacyProps != nullptr
-                    ? std::make_shared<LProp3d_LegacySLProps>(*theOther.myLegacyProps)
-                    : nullptr;
+  myLegacyProps = LProp_WrapperTools::CloneShared(theOther.myLegacyProps);
   myU                                  = theOther.myU;
   myV                                  = theOther.myV;
   myDerOrder                           = theOther.myDerOrder;
@@ -212,13 +209,17 @@ void LProp3d_SLProps::SetSurface(const occ::handle<Adaptor3d_Surface>& S)
     myLegacyProps = std::make_shared<LProp3d_LegacySLProps>(myDerOrder, myLinTol);
   }
   myLegacyProps->SetSurface(S);
-  myCN          = 4;
-  mySignificantFirstDerivativeOrderU = 0;
-  mySignificantFirstDerivativeOrderV = 0;
-  myUTangentStatus                   = LProp_Undecided;
-  myVTangentStatus                   = LProp_Undecided;
-  myNormalStatus                     = LProp_Undecided;
-  myCurvatureStatus                  = LProp_Undecided;
+  myCN = 4;
+  LProp_WrapperTools::ResetSurfaceState(myMinCurv,
+                                        myMaxCurv,
+                                        myMeanCurv,
+                                        myGausCurv,
+                                        mySignificantFirstDerivativeOrderU,
+                                        mySignificantFirstDerivativeOrderV,
+                                        myUTangentStatus,
+                                        myVTangentStatus,
+                                        myNormalStatus,
+                                        myCurvatureStatus);
 }
 
 //==================================================================================================
@@ -240,16 +241,16 @@ void LProp3d_SLProps::SetParameters(const double U, const double V)
       break;
   }
 
-  myMinCurv                          = 0.0;
-  myMaxCurv                          = 0.0;
-  myMeanCurv                         = 0.0;
-  myGausCurv                         = 0.0;
-  mySignificantFirstDerivativeOrderU = 0;
-  mySignificantFirstDerivativeOrderV = 0;
-  myUTangentStatus                   = LProp_Undecided;
-  myVTangentStatus                   = LProp_Undecided;
-  myNormalStatus                     = LProp_Undecided;
-  myCurvatureStatus                  = LProp_Undecided;
+  LProp_WrapperTools::ResetSurfaceState(myMinCurv,
+                                        myMaxCurv,
+                                        myMeanCurv,
+                                        myGausCurv,
+                                        mySignificantFirstDerivativeOrderU,
+                                        mySignificantFirstDerivativeOrderV,
+                                        myUTangentStatus,
+                                        myVTangentStatus,
+                                        myNormalStatus,
+                                        myCurvatureStatus);
   if (myLegacyProps != nullptr)
   {
     myLegacyProps->SetParameters(U, V);

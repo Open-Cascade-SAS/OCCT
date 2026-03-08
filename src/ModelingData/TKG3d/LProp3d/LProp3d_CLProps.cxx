@@ -20,6 +20,7 @@
 #include <LProp_CompareDebug.pxx>
 #include <LProp_NotDefined.hxx>
 #include <LProp_Status.hxx>
+#include <LProp_WrapperTools.pxx>
 #include <Precision.hxx>
 #include <Standard_OutOfRange.hxx>
 
@@ -106,9 +107,7 @@ LProp3d_CLProps::~LProp3d_CLProps() = default;
 LProp3d_CLProps::LProp3d_CLProps(const LProp3d_CLProps& theOther)
     : myCurve(theOther.myCurve),
       myCurveProp(makeCurveProp(theOther.myCurve)),
-      myLegacyProps(theOther.myLegacyProps != nullptr
-                      ? std::make_shared<LProp3d_LegacyCLProps>(*theOther.myLegacyProps)
-                      : nullptr),
+      myLegacyProps(LProp_WrapperTools::CloneShared(theOther.myLegacyProps)),
       myU(theOther.myU),
       myDerOrder(theOther.myDerOrder),
       myCN(theOther.myCN),
@@ -135,9 +134,7 @@ LProp3d_CLProps& LProp3d_CLProps::operator=(const LProp3d_CLProps& theOther)
 
   myCurve = theOther.myCurve;
   myCurveProp = makeCurveProp(theOther.myCurve);
-  myLegacyProps = theOther.myLegacyProps != nullptr
-                    ? std::make_shared<LProp3d_LegacyCLProps>(*theOther.myLegacyProps)
-                    : nullptr;
+  myLegacyProps = LProp_WrapperTools::CloneShared(theOther.myLegacyProps);
   myU                               = theOther.myU;
   myDerOrder                        = theOther.myDerOrder;
   myCN                              = theOther.myCN;
@@ -174,9 +171,9 @@ void LProp3d_CLProps::SetParameter(const double U)
       break;
   }
 
-  myCurvature                       = 0.0;
-  myTangentStatus                   = LProp_Undecided;
-  mySignificantFirstDerivativeOrder = 0;
+  LProp_WrapperTools::ResetCurveState(myCurvature,
+                                      myTangentStatus,
+                                      mySignificantFirstDerivativeOrder);
   if (myLegacyProps != nullptr)
   {
     myLegacyProps->SetParameter(U);
@@ -195,9 +192,9 @@ void LProp3d_CLProps::SetCurve(const occ::handle<Adaptor3d_Curve>& C)
   }
   myLegacyProps->SetCurve(C);
   myCN                              = 4;
-  myCurvature                       = 0.0;
-  myTangentStatus                   = LProp_Undecided;
-  mySignificantFirstDerivativeOrder = 0;
+  LProp_WrapperTools::ResetCurveState(myCurvature,
+                                      myTangentStatus,
+                                      mySignificantFirstDerivativeOrder);
 }
 
 //==================================================================================================

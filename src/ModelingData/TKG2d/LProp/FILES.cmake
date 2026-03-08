@@ -13,4 +13,5 @@ set(OCCT_LProp_FILES
   LProp_SLProps.gxx
   LProp_SLPropsCompat.pxx
   LProp_Status.hxx
+  LProp_WrapperTools.pxx
 )

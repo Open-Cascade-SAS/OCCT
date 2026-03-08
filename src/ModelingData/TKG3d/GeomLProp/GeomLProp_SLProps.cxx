@@ -21,6 +21,7 @@
 #include <LProp_CompareDebug.pxx>
 #include <LProp_NotDefined.hxx>
 #include <LProp_Status.hxx>
+#include <LProp_WrapperTools.pxx>
 #include <Precision.hxx>
 #include <Standard_OutOfRange.hxx>
 
@@ -170,9 +171,7 @@ GeomLProp_SLProps::~GeomLProp_SLProps() = default;
 GeomLProp_SLProps::GeomLProp_SLProps(const GeomLProp_SLProps& theOther)
     : mySurf(theOther.mySurf),
       mySurfaceProp(makeSurfaceProp(theOther.mySurf)),
-      myLegacyProps(theOther.myLegacyProps != nullptr
-                      ? std::make_shared<GeomLProp_LegacySLProps>(*theOther.myLegacyProps)
-                      : nullptr),
+      myLegacyProps(LProp_WrapperTools::CloneShared(theOther.myLegacyProps)),
       myU(theOther.myU),
       myV(theOther.myV),
       myDerOrder(theOther.myDerOrder),
@@ -211,9 +210,7 @@ GeomLProp_SLProps& GeomLProp_SLProps::operator=(const GeomLProp_SLProps& theOthe
 
   mySurf = theOther.mySurf;
   mySurfaceProp = makeSurfaceProp(theOther.mySurf);
-  myLegacyProps = theOther.myLegacyProps != nullptr
-                    ? std::make_shared<GeomLProp_LegacySLProps>(*theOther.myLegacyProps)
-                    : nullptr;
+  myLegacyProps = LProp_WrapperTools::CloneShared(theOther.myLegacyProps);
   myU                                  = theOther.myU;
   myV                                  = theOther.myV;
   myDerOrder                           = theOther.myDerOrder;
@@ -252,13 +249,17 @@ void GeomLProp_SLProps::SetSurface(const occ::handle<Geom_Surface>& S)
     myLegacyProps = std::make_shared<GeomLProp_LegacySLProps>(myDerOrder, myLinTol);
   }
   myLegacyProps->SetSurface(S);
-  myCN                               = 4;
-  mySignificantFirstDerivativeOrderU = 0;
-  mySignificantFirstDerivativeOrderV = 0;
-  myUTangentStatus                   = LProp_Undecided;
-  myVTangentStatus                   = LProp_Undecided;
-  myNormalStatus                     = LProp_Undecided;
-  myCurvatureStatus                  = LProp_Undecided;
+  myCN = 4;
+  LProp_WrapperTools::ResetSurfaceState(myMinCurv,
+                                        myMaxCurv,
+                                        myMeanCurv,
+                                        myGausCurv,
+                                        mySignificantFirstDerivativeOrderU,
+                                        mySignificantFirstDerivativeOrderV,
+                                        myUTangentStatus,
+                                        myVTangentStatus,
+                                        myNormalStatus,
+                                        myCurvatureStatus);
 }
 
 //==================================================================================================
@@ -280,16 +281,16 @@ void GeomLProp_SLProps::SetParameters(const double U, const double V)
       break;
   }
 
-  myMinCurv                          = 0.0;
-  myMaxCurv                          = 0.0;
-  myMeanCurv                         = 0.0;
-  myGausCurv                         = 0.0;
-  mySignificantFirstDerivativeOrderU = 0;
-  mySignificantFirstDerivativeOrderV = 0;
-  myUTangentStatus                   = LProp_Undecided;
-  myVTangentStatus                   = LProp_Undecided;
-  myNormalStatus                     = LProp_Undecided;
-  myCurvatureStatus                  = LProp_Undecided;
+  LProp_WrapperTools::ResetSurfaceState(myMinCurv,
+                                        myMaxCurv,
+                                        myMeanCurv,
+                                        myGausCurv,
+                                        mySignificantFirstDerivativeOrderU,
+                                        mySignificantFirstDerivativeOrderV,
+                                        myUTangentStatus,
+                                        myVTangentStatus,
+                                        myNormalStatus,
+                                        myCurvatureStatus);
   if (myLegacyProps != nullptr)
   {
     myLegacyProps->SetParameters(U, V);
