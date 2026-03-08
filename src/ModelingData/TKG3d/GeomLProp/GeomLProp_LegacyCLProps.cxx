@@ -32,7 +32,7 @@ GeomLProp_LegacyCLProps::GeomLProp_LegacyCLProps(const occ::handle<Geom_Curve>& 
                                                  double                         theResolution)
     : myCurve(theCurve),
       myDerOrder(theDerOrder),
-      myCN(4),
+      myCN(continuity(theCurve)),
       myLinTol(theResolution),
       myCurvature(0.0),
       myTangentStatus(LProp_Undecided),
@@ -48,7 +48,7 @@ GeomLProp_LegacyCLProps::GeomLProp_LegacyCLProps(const occ::handle<Geom_Curve>& 
     : myCurve(theCurve),
       myU(RealLast()),
       myDerOrder(theDerOrder),
-      myCN(4),
+      myCN(continuity(theCurve)),
       myLinTol(theResolution),
       myCurvature(0.0),
       myTangentStatus(LProp_Undecided),

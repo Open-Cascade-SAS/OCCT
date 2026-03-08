@@ -102,8 +102,8 @@ Geom2dProp::CurvatureResult Geom2dProp::ComputeCurvature(const gp_Vec2d& theD1,
     return {0.0, true, false};
   }
 
-  // Cross magnitude squared: |D1 x D2|^2
-  const double aN = theD1.CrossSquareMagnitude(theD2);
+  const double aCross = theD1.Crossed(theD2);
+  const double aN     = aCross * aCross;
 
   // If D1 and D2 are collinear, curvature is zero.
   const double aT = aN / aDD1 / aDD2;
@@ -112,8 +112,8 @@ Geom2dProp::CurvatureResult Geom2dProp::ComputeCurvature(const gp_Vec2d& theD1,
     return {0.0, true, false};
   }
 
-  // Curvature = |D1 x D2| / |D1|^3
-  const double aCurvature = std::sqrt(aN) / aDD1 / std::sqrt(aDD1);
+  // Signed curvature = (D1 x D2) / |D1|^3
+  const double aCurvature = aCross / aDD1 / std::sqrt(aDD1);
   return {aCurvature, true, false};
 }
 
@@ -130,9 +130,13 @@ Geom2dProp::NormalResult Geom2dProp::ComputeNormal(const gp_Vec2d& theD1,
     return {{}, false};
   }
 
-  // Normal = D2 * (D1.D1) - D1 * (D1.D2)
-  // This is equivalent to D1 x (D2 x D1) in 2D using the vector triple product identity.
-  const gp_Vec2d aNorm = theD2 * theD1.Dot(theD1) - theD1 * theD1.Dot(theD2);
+  // Match legacy Geom2dLProp semantics: start from the left normal and orient it toward
+  // the center of curvature using the second derivative.
+  gp_Vec2d aNorm(-theD1.Y(), theD1.X());
+  if (aNorm.Dot(theD2) < 0.0)
+  {
+    aNorm.Reverse();
+  }
   if (aNorm.SquareMagnitude() <= theTol * theTol)
   {
     return {{}, false};
@@ -153,13 +157,13 @@ Geom2dProp::CentreResult Geom2dProp::ComputeCentreOfCurvature(const gp_Pnt2d& th
     return {{}, false};
   }
 
-  // Normal vector (unnormalized) = D2 * (D1.D1) - D1 * (D1.D2)
-  gp_Vec2d aNorm = theD2 * theD1.Dot(theD1) - theD1 * theD1.Dot(theD2);
-  if (aNorm.SquareMagnitude() <= theTol * theTol)
+  const NormalResult aNormRes = ComputeNormal(theD1, theD2, theTol);
+  if (!aNormRes.IsDefined)
   {
     return {{}, false};
   }
-  aNorm.Normalize();
+
+  gp_Vec2d aNorm(aNormRes.Direction);
   aNorm.Divide(aCurvRes.Value);
 
   return {thePnt.Translated(aNorm), true};

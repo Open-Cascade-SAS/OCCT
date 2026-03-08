@@ -78,7 +78,7 @@ GeomLProp_LegacySLProps::GeomLProp_LegacySLProps(const occ::handle<Geom_Surface>
                                                  double                           theResolution)
     : mySurf(theSurface),
       myDerOrder(theDerOrder),
-      myCN(4),
+      myCN(continuity(theSurface)),
       myLinTol(theResolution),
       myMinCurv(0.0),
       myMaxCurv(0.0),
@@ -102,7 +102,7 @@ GeomLProp_LegacySLProps::GeomLProp_LegacySLProps(const occ::handle<Geom_Surface>
       myU(RealLast()),
       myV(RealLast()),
       myDerOrder(theDerOrder),
-      myCN(4),
+      myCN(continuity(theSurface)),
       myLinTol(theResolution),
       myMinCurv(0.0),
       myMaxCurv(0.0),

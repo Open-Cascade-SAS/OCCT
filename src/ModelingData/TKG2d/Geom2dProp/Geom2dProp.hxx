@@ -112,8 +112,8 @@ Standard_EXPORT TangentResult ComputeTangent(const gp_Vec2d& theD1,
                                              const gp_Pnt2d& thePntBefore,
                                              const gp_Pnt2d& thePntAfter);
 
-//! Compute curvature from first and second derivative vectors.
-//! Curvature = |D1 x D2| / |D1|^3
+//! Compute signed curvature from first and second derivative vectors.
+//! Curvature = (D1 x D2) / |D1|^3
 //! @param[in] theD1 first derivative vector
 //! @param[in] theD2 second derivative vector
 //! @param[in] theTol linear tolerance for zero-vector detection

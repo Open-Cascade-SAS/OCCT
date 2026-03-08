@@ -16,6 +16,7 @@
 #include <Geom2dLProp_LegacyCLProps2d.hxx>
 #include <Geom2dProp.hxx>
 #include <Geom2dProp_Curve.hxx>
+#include <GeomAbs_Shape.hxx>
 #include <Geom2d_Curve.hxx>
 #include <LProp_CLPropsCompat.pxx>
 #include <LProp_CompareDebug.pxx>
@@ -26,6 +27,24 @@
 
 namespace
 {
+int curveContinuity(const occ::handle<Geom2d_Curve>& theCurve)
+{
+  if (theCurve.IsNull())
+  {
+    return 0;
+  }
+
+  switch (theCurve->Continuity())
+  {
+    case GeomAbs_C0: return 0;
+    case GeomAbs_C1: return 1;
+    case GeomAbs_C2: return 2;
+    case GeomAbs_C3:
+    case GeomAbs_CN: return 3;
+    default: return 0;
+  }
+}
+
 std::string curveGeometry(const std::shared_ptr<Geom2dProp_Curve>& theCurveProp)
 {
   return theCurveProp != nullptr ? std::to_string((int)theCurveProp->GetType()) : "null";
@@ -46,7 +65,7 @@ Geom2dLProp_CLProps2d::Geom2dLProp_CLProps2d(const occ::handle<Geom2d_Curve>& C,
     : myCurve(C),
       myCurveProp(C.IsNull() ? nullptr : std::make_shared<Geom2dProp_Curve>(C)),
       myDerOrder(N),
-      myCN(4),
+      myCN(curveContinuity(C)),
       myLinTol(Resolution),
       myCurvature(0.0),
       myTangentStatus(LProp_Undecided),
@@ -65,7 +84,7 @@ Geom2dLProp_CLProps2d::Geom2dLProp_CLProps2d(const occ::handle<Geom2d_Curve>& C,
       myCurveProp(C.IsNull() ? nullptr : std::make_shared<Geom2dProp_Curve>(C)),
       myU(RealLast()),
       myDerOrder(N),
-      myCN(4),
+      myCN(curveContinuity(C)),
       myLinTol(Resolution),
       myCurvature(0.0),
       myTangentStatus(LProp_Undecided),
@@ -120,7 +139,7 @@ void Geom2dLProp_CLProps2d::SetCurve(const occ::handle<Geom2d_Curve>& C)
 {
   myCurve                           = C;
   myCurveProp                       = C.IsNull() ? nullptr : std::make_shared<Geom2dProp_Curve>(C);
-  myCN                              = 4;
+  myCN                              = curveContinuity(C);
   myCurvature                       = 0.0;
   myTangentStatus                   = LProp_Undecided;
   mySignificantFirstDerivativeOrder = 0;
