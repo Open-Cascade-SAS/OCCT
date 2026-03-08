@@ -41,12 +41,12 @@ void Geom2dProp_Curve::initialization(const Adaptor2d_Curve2d& theCurve)
   if (theCurve.IsKind(STANDARD_TYPE(Geom2dAdaptor_Curve)))
   {
     const auto& aGeomAdaptor = static_cast<const Geom2dAdaptor_Curve&>(theCurve);
-    myAdaptor                = new Geom2dAdaptor_Curve(aGeomAdaptor);
+    myOwnedAdaptor = new Geom2dAdaptor_Curve(aGeomAdaptor);
     initFromAdaptor();
     return;
   }
 
-  myAdaptor.Nullify();
+  myOwnedAdaptor.Nullify();
   myCurveType = theCurve.GetType();
   myEvaluator.emplace<Geom2dProp_OtherCurve>(&theCurve);
 }
@@ -57,13 +57,13 @@ void Geom2dProp_Curve::initialization(const occ::handle<Geom2d_Curve>& theCurve)
 {
   if (theCurve.IsNull())
   {
-    myAdaptor.Nullify();
+    myOwnedAdaptor.Nullify();
     myEvaluator.emplace<std::monostate>();
     myCurveType = GeomAbs_OtherCurve;
     return;
   }
 
-  myAdaptor = new Geom2dAdaptor_Curve(theCurve);
+  myOwnedAdaptor = new Geom2dAdaptor_Curve(theCurve);
   initFromAdaptor();
 }
 
@@ -71,8 +71,15 @@ void Geom2dProp_Curve::initialization(const occ::handle<Geom2d_Curve>& theCurve)
 
 void Geom2dProp_Curve::initFromAdaptor()
 {
-  myCurveType                     = myAdaptor->GetType();
-  const Geom2dAdaptor_Curve* aPtr = myAdaptor.get();
+  if (myOwnedAdaptor.IsNull())
+  {
+    myEvaluator.emplace<std::monostate>();
+    myCurveType = GeomAbs_OtherCurve;
+    return;
+  }
+
+  const Geom2dAdaptor_Curve* aPtr = myOwnedAdaptor.get();
+  myCurveType                     = aPtr->GetType();
 
   switch (myCurveType)
   {
@@ -108,15 +115,19 @@ void Geom2dProp_Curve::initFromAdaptor()
 
 //=================================================================================================
 
-const Geom2dAdaptor_Curve* Geom2dProp_Curve::Adaptor() const
+const Adaptor2d_Curve2d* Geom2dProp_Curve::Adaptor() const
 {
   return std::visit(
-    [](const auto& theEval) -> const Geom2dAdaptor_Curve* {
+    [](const auto& theEval) -> const Adaptor2d_Curve2d* {
       using T = std::decay_t<decltype(theEval)>;
       if constexpr (std::is_same_v<T, std::monostate>)
+      {
         return nullptr;
+      }
       else
+      {
         return theEval.Adaptor();
+      }
     },
     myEvaluator);
 }

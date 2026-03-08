@@ -102,8 +102,8 @@ public:
   //! Returns the detected surface type.
   GeomAbs_SurfaceType GetType() const { return mySurfaceType; }
 
-  //! Returns the adaptor pointer from the active evaluator, or null if not initialized.
-  Standard_EXPORT const GeomAdaptor_Surface* Adaptor() const;
+  //! Returns the stored adaptor pointer, or null if not initialized.
+  Standard_EXPORT const Adaptor3d_Surface* Adaptor() const;
 
   //! Compute surface normal at given (U, V) parameter.
   //! @param[in] theU U parameter on the surface
@@ -142,14 +142,13 @@ protected:
   Standard_EXPORT void initialization(const occ::handle<Geom_Surface>& theSurface);
 
 private:
-  //! Initialize from stored adaptor (dispatches to per-geometry evaluator).
-  //! Must be called after myAdaptor is set. Per-geometry evaluators receive
-  //! a non-owning pointer to myAdaptor; their lifetime is managed by the variant.
+  //! Initialize from owned Geom adaptor (dispatches to per-geometry evaluator).
+  //! Generic non-Geom adaptor inputs are handled directly in initialization().
   Standard_EXPORT void initFromAdaptor();
 
-  occ::handle<GeomAdaptor_Surface> myAdaptor; //!< Owns the adaptor (ensures lifetime).
-  EvaluatorVariant    myEvaluator; //!< Per-geometry evaluator (non-owning pointer to myAdaptor).
-  GeomAbs_SurfaceType mySurfaceType;
+  occ::handle<GeomAdaptor_Surface> myOwnedAdaptor; //!< Owned adaptor when lifetime must be managed.
+  EvaluatorVariant                 myEvaluator;
+  GeomAbs_SurfaceType              mySurfaceType;
 };
 
 #endif // _GeomProp_Surface_HeaderFile

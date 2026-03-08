@@ -30,7 +30,7 @@
 
 namespace
 {
-const Geom2dAdaptor_Curve* curveAdaptor(const std::shared_ptr<Geom2dProp_Curve>& theCurveProp)
+const Adaptor2d_Curve2d* curveAdaptor(const std::shared_ptr<Geom2dProp_Curve>& theCurveProp)
 {
   return theCurveProp != nullptr ? theCurveProp->Adaptor() : nullptr;
 }
@@ -295,7 +295,7 @@ Geom2dLProp_CLProps2d& Geom2dLProp_CLProps2d::operator=(const Geom2dLProp_CLProp
 void Geom2dLProp_CLProps2d::SetParameter(const double U)
 {
   myU = U;
-  const Geom2dAdaptor_Curve* anAdaptor = curveAdaptor(myCurveProp);
+  const Adaptor2d_Curve2d* anAdaptor = curveAdaptor(myCurveProp);
   switch (myDerOrder)
   {
     case 0:
@@ -389,7 +389,7 @@ const gp_Vec2d& Geom2dLProp_CLProps2d::D1()
   if (myDerOrder < 1)
   {
     myDerOrder = 1;
-    const Geom2dAdaptor_Curve* anAdaptor = curveAdaptor(myCurveProp);
+    const Adaptor2d_Curve2d* anAdaptor = curveAdaptor(myCurveProp);
     if (anAdaptor != nullptr)
     {
       anAdaptor->D1(myU, myPnt, myDerivArr[0]);
@@ -421,7 +421,7 @@ const gp_Vec2d& Geom2dLProp_CLProps2d::D2()
   if (myDerOrder < 2)
   {
     myDerOrder = 2;
-    const Geom2dAdaptor_Curve* anAdaptor = curveAdaptor(myCurveProp);
+    const Adaptor2d_Curve2d* anAdaptor = curveAdaptor(myCurveProp);
     if (anAdaptor != nullptr)
     {
       anAdaptor->D2(myU, myPnt, myDerivArr[0], myDerivArr[1]);
@@ -453,7 +453,7 @@ const gp_Vec2d& Geom2dLProp_CLProps2d::D3()
   if (myDerOrder < 3)
   {
     myDerOrder = 3;
-    const Geom2dAdaptor_Curve* anAdaptor = curveAdaptor(myCurveProp);
+    const Adaptor2d_Curve2d* anAdaptor = curveAdaptor(myCurveProp);
     if (anAdaptor != nullptr)
     {
       anAdaptor->D3(myU, myPnt, myDerivArr[0], myDerivArr[1], myDerivArr[2]);
@@ -528,8 +528,14 @@ void Geom2dLProp_CLProps2d::Tangent(gp_Dir2d& D)
       return Geom2dProp::ComputeTangent(D1(), D2(), D3(), myLinTol, thePntBefore, thePntAfter);
     },
     [&](const double theParam) {
-      const Geom2dAdaptor_Curve* anAdaptor = curveAdaptor(myCurveProp);
-      return anAdaptor != nullptr ? anAdaptor->EvalD0(theParam) : myCurve->EvalD0(theParam);
+      const Adaptor2d_Curve2d* anAdaptor = curveAdaptor(myCurveProp);
+      if (anAdaptor != nullptr)
+      {
+        gp_Pnt2d aPoint;
+        anAdaptor->D0(theParam, aPoint);
+        return aPoint;
+      }
+      return myCurve->EvalD0(theParam);
     },
     D,
     "Geom2dLProp_CLProps2d::Tangent()");

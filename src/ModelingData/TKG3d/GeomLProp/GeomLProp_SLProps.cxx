@@ -28,7 +28,7 @@
 
 namespace
 {
-const GeomAdaptor_Surface* surfaceAdaptor(const std::shared_ptr<GeomProp_Surface>& theSurfaceProp)
+const Adaptor3d_Surface* surfaceAdaptor(const std::shared_ptr<GeomProp_Surface>& theSurfaceProp)
 {
   return theSurfaceProp != nullptr ? theSurfaceProp->Adaptor() : nullptr;
 }
@@ -44,15 +44,21 @@ void ensureSurfaceInitialized(const occ::handle<Geom_Surface>& theSurface, const
 }
 
 gp_Pnt surfaceValue(const occ::handle<Geom_Surface>& theSurface,
-                    const GeomAdaptor_Surface*       theAdaptor,
+                    const Adaptor3d_Surface*         theAdaptor,
                     const double                     theU,
                     const double                     theV)
 {
-  return theAdaptor != nullptr ? theAdaptor->EvalD0(theU, theV) : theSurface->EvalD0(theU, theV);
+  if (theAdaptor != nullptr)
+  {
+    gp_Pnt aPoint;
+    theAdaptor->D0(theU, theV, aPoint);
+    return aPoint;
+  }
+  return theSurface->EvalD0(theU, theV);
 }
 
 void surfaceD1(const occ::handle<Geom_Surface>& theSurface,
-               const GeomAdaptor_Surface*       theAdaptor,
+               const Adaptor3d_Surface*         theAdaptor,
                const double                     theU,
                const double                     theV,
                gp_Pnt&                          thePoint,
@@ -70,7 +76,7 @@ void surfaceD1(const occ::handle<Geom_Surface>& theSurface,
 }
 
 void surfaceD2(const occ::handle<Geom_Surface>& theSurface,
-               const GeomAdaptor_Surface*       theAdaptor,
+               const Adaptor3d_Surface*         theAdaptor,
                const double                     theU,
                const double                     theV,
                gp_Pnt&                          thePoint,
@@ -82,13 +88,7 @@ void surfaceD2(const occ::handle<Geom_Surface>& theSurface,
 {
   if (theAdaptor != nullptr)
   {
-    const Geom_Surface::ResD2 aRes = theAdaptor->EvalD2(theU, theV);
-    thePoint = aRes.Point;
-    theD1U   = aRes.D1U;
-    theD1V   = aRes.D1V;
-    theD2U   = aRes.D2U;
-    theD2V   = aRes.D2V;
-    theDUV   = aRes.D2UV;
+    theAdaptor->D2(theU, theV, thePoint, theD1U, theD1V, theD2U, theD2V, theDUV);
   }
   else
   {
@@ -97,7 +97,7 @@ void surfaceD2(const occ::handle<Geom_Surface>& theSurface,
 }
 
 void surfaceBounds(const occ::handle<Geom_Surface>& theSurface,
-                   const GeomAdaptor_Surface*       theAdaptor,
+                   const Adaptor3d_Surface*         theAdaptor,
                    double&                          theU1,
                    double&                          theU2,
                    double&                          theV1,
@@ -105,7 +105,10 @@ void surfaceBounds(const occ::handle<Geom_Surface>& theSurface,
 {
   if (theAdaptor != nullptr)
   {
-    theAdaptor->Bounds(theU1, theU2, theV1, theV2);
+    theU1 = theAdaptor->FirstUParameter();
+    theU2 = theAdaptor->LastUParameter();
+    theV1 = theAdaptor->FirstVParameter();
+    theV2 = theAdaptor->LastVParameter();
   }
   else
   {
@@ -316,7 +319,7 @@ void GeomLProp_SLProps::SetParameters(const double U, const double V)
   ensureSurfaceInitialized(mySurf, "GeomLProp_SLProps::SetParameters()");
   myU = U;
   myV = V;
-  const GeomAdaptor_Surface* anAdaptor = surfaceAdaptor(mySurfaceProp);
+  const Adaptor3d_Surface* anAdaptor = surfaceAdaptor(mySurfaceProp);
   switch (myDerOrder)
   {
     case 0:

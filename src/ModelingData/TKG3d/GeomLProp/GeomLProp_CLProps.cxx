@@ -28,7 +28,7 @@
 
 namespace
 {
-const GeomAdaptor_Curve* curveAdaptor(const std::shared_ptr<GeomProp_Curve>& theCurveProp)
+const Adaptor3d_Curve* curveAdaptor(const std::shared_ptr<GeomProp_Curve>& theCurveProp)
 {
   return theCurveProp != nullptr ? theCurveProp->Adaptor() : nullptr;
 }
@@ -39,14 +39,20 @@ std::shared_ptr<GeomProp_Curve> makeCurveProp(const occ::handle<Geom_Curve>& the
 }
 
 gp_Pnt curveValue(const occ::handle<Geom_Curve>& theCurve,
-                  const GeomAdaptor_Curve*       theAdaptor,
+                  const Adaptor3d_Curve*         theAdaptor,
                   const double                   theParam)
 {
-  return theAdaptor != nullptr ? theAdaptor->EvalD0(theParam) : theCurve->EvalD0(theParam);
+  if (theAdaptor != nullptr)
+  {
+    gp_Pnt aPoint;
+    theAdaptor->D0(theParam, aPoint);
+    return aPoint;
+  }
+  return theCurve->EvalD0(theParam);
 }
 
 void curveD1(const occ::handle<Geom_Curve>& theCurve,
-             const GeomAdaptor_Curve*       theAdaptor,
+             const Adaptor3d_Curve*         theAdaptor,
              const double                   theParam,
              gp_Pnt&                        thePoint,
              gp_Vec&                        theD1)
@@ -62,7 +68,7 @@ void curveD1(const occ::handle<Geom_Curve>& theCurve,
 }
 
 void curveD2(const occ::handle<Geom_Curve>& theCurve,
-             const GeomAdaptor_Curve*       theAdaptor,
+             const Adaptor3d_Curve*         theAdaptor,
              const double                   theParam,
              gp_Pnt&                        thePoint,
              gp_Vec&                        theD1,
@@ -70,10 +76,7 @@ void curveD2(const occ::handle<Geom_Curve>& theCurve,
 {
   if (theAdaptor != nullptr)
   {
-    const Geom_Curve::ResD2 aRes = theAdaptor->EvalD2(theParam);
-    thePoint = aRes.Point;
-    theD1    = aRes.D1;
-    theD2    = aRes.D2;
+    theAdaptor->D2(theParam, thePoint, theD1, theD2);
   }
   else
   {
@@ -82,7 +85,7 @@ void curveD2(const occ::handle<Geom_Curve>& theCurve,
 }
 
 void curveD3(const occ::handle<Geom_Curve>& theCurve,
-             const GeomAdaptor_Curve*       theAdaptor,
+             const Adaptor3d_Curve*         theAdaptor,
              const double                   theParam,
              gp_Pnt&                        thePoint,
              gp_Vec&                        theD1,
@@ -91,11 +94,7 @@ void curveD3(const occ::handle<Geom_Curve>& theCurve,
 {
   if (theAdaptor != nullptr)
   {
-    const Geom_Curve::ResD3 aRes = theAdaptor->EvalD3(theParam);
-    thePoint = aRes.Point;
-    theD1    = aRes.D1;
-    theD2    = aRes.D2;
-    theD3    = aRes.D3;
+    theAdaptor->D3(theParam, thePoint, theD1, theD2, theD3);
   }
   else
   {
@@ -103,12 +102,12 @@ void curveD3(const occ::handle<Geom_Curve>& theCurve,
   }
 }
 
-double curveFirstParameter(const occ::handle<Geom_Curve>& theCurve, const GeomAdaptor_Curve* theAdaptor)
+double curveFirstParameter(const occ::handle<Geom_Curve>& theCurve, const Adaptor3d_Curve* theAdaptor)
 {
   return theAdaptor != nullptr ? theAdaptor->FirstParameter() : theCurve->FirstParameter();
 }
 
-double curveLastParameter(const occ::handle<Geom_Curve>& theCurve, const GeomAdaptor_Curve* theAdaptor)
+double curveLastParameter(const occ::handle<Geom_Curve>& theCurve, const Adaptor3d_Curve* theAdaptor)
 {
   return theAdaptor != nullptr ? theAdaptor->LastParameter() : theCurve->LastParameter();
 }
@@ -244,7 +243,7 @@ GeomLProp_CLProps& GeomLProp_CLProps::operator=(const GeomLProp_CLProps& theOthe
 void GeomLProp_CLProps::SetParameter(const double U)
 {
   myU = U;
-  const GeomAdaptor_Curve* anAdaptor = curveAdaptor(myCurveProp);
+  const Adaptor3d_Curve* anAdaptor = curveAdaptor(myCurveProp);
   switch (myDerOrder)
   {
     case 0:

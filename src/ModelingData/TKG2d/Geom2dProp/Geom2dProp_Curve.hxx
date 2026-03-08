@@ -95,8 +95,8 @@ public:
   //! Returns the detected curve type.
   GeomAbs_CurveType GetType() const { return myCurveType; }
 
-  //! Returns the adaptor pointer from the active evaluator, or null if not initialized.
-  Standard_EXPORT const Geom2dAdaptor_Curve* Adaptor() const;
+  //! Returns the stored adaptor pointer, or null if not initialized.
+  Standard_EXPORT const Adaptor2d_Curve2d* Adaptor() const;
 
   //! Compute tangent at given parameter.
   //! @param[in] theParam curve parameter
@@ -140,14 +140,13 @@ protected:
   Standard_EXPORT void initialization(const occ::handle<Geom2d_Curve>& theCurve);
 
 private:
-  //! Initialize from stored adaptor (dispatches to per-geometry evaluator).
-  //! Must be called after myAdaptor is set. Per-geometry evaluators receive
-  //! a non-owning pointer to myAdaptor; their lifetime is managed by the variant.
+  //! Initialize from owned Geom adaptor (dispatches to per-geometry evaluator).
+  //! Generic non-Geom adaptor inputs are handled directly in initialization().
   Standard_EXPORT void initFromAdaptor();
 
-  occ::handle<Geom2dAdaptor_Curve> myAdaptor; //!< Owns the adaptor (ensures lifetime).
-  EvaluatorVariant  myEvaluator; //!< Per-geometry evaluator (non-owning pointer to myAdaptor).
-  GeomAbs_CurveType myCurveType;
+  occ::handle<Geom2dAdaptor_Curve> myOwnedAdaptor; //!< Owned adaptor when lifetime must be managed.
+  EvaluatorVariant                 myEvaluator;
+  GeomAbs_CurveType                myCurveType;
 };
 
 #endif // _Geom2dProp_Curve_HeaderFile
