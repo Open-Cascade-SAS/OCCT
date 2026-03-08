@@ -12,6 +12,8 @@
 #include <gp_Vec2d.hxx>
 
 #include <iostream>
+#include <iomanip>
+#include <limits>
 #include <sstream>
 #include <string>
 #include <typeinfo>
@@ -37,6 +39,7 @@ inline const char* ToString(const LProp_Status theStatus)
 inline std::string ToString(const double theValue)
 {
   std::ostringstream aStream;
+  aStream << std::setprecision(std::numeric_limits<double>::max_digits10);
   aStream << theValue;
   return aStream.str();
 }
@@ -49,6 +52,7 @@ inline std::string ToString(const bool theValue)
 inline std::string ToString(const gp_Pnt& theValue)
 {
   std::ostringstream aStream;
+  aStream << std::setprecision(std::numeric_limits<double>::max_digits10);
   aStream << "(" << theValue.X() << ", " << theValue.Y() << ", " << theValue.Z() << ")";
   return aStream.str();
 }
@@ -56,6 +60,7 @@ inline std::string ToString(const gp_Pnt& theValue)
 inline std::string ToString(const gp_Pnt2d& theValue)
 {
   std::ostringstream aStream;
+  aStream << std::setprecision(std::numeric_limits<double>::max_digits10);
   aStream << "(" << theValue.X() << ", " << theValue.Y() << ")";
   return aStream.str();
 }
@@ -63,6 +68,7 @@ inline std::string ToString(const gp_Pnt2d& theValue)
 inline std::string ToString(const gp_Vec& theValue)
 {
   std::ostringstream aStream;
+  aStream << std::setprecision(std::numeric_limits<double>::max_digits10);
   aStream << "(" << theValue.X() << ", " << theValue.Y() << ", " << theValue.Z() << ")";
   return aStream.str();
 }
@@ -70,6 +76,7 @@ inline std::string ToString(const gp_Vec& theValue)
 inline std::string ToString(const gp_Vec2d& theValue)
 {
   std::ostringstream aStream;
+  aStream << std::setprecision(std::numeric_limits<double>::max_digits10);
   aStream << "(" << theValue.X() << ", " << theValue.Y() << ")";
   return aStream.str();
 }
@@ -77,6 +84,7 @@ inline std::string ToString(const gp_Vec2d& theValue)
 inline std::string ToString(const gp_Dir& theValue)
 {
   std::ostringstream aStream;
+  aStream << std::setprecision(std::numeric_limits<double>::max_digits10);
   aStream << "(" << theValue.X() << ", " << theValue.Y() << ", " << theValue.Z() << ")";
   return aStream.str();
 }
@@ -84,6 +92,7 @@ inline std::string ToString(const gp_Dir& theValue)
 inline std::string ToString(const gp_Dir2d& theValue)
 {
   std::ostringstream aStream;
+  aStream << std::setprecision(std::numeric_limits<double>::max_digits10);
   aStream << "(" << theValue.X() << ", " << theValue.Y() << ")";
   return aStream.str();
 }

@@ -15,7 +15,6 @@
 
 #include <GeomProp.hxx>
 #include <GeomProp_Curve.hxx>
-#include <GeomAbs_Shape.hxx>
 #include <LProp3d_LegacyCLProps.hxx>
 #include <LProp_CLPropsCompat.pxx>
 #include <LProp_CompareDebug.pxx>
@@ -26,24 +25,6 @@
 
 namespace
 {
-int curveContinuity(const occ::handle<Adaptor3d_Curve>& theCurve)
-{
-  if (theCurve.IsNull())
-  {
-    return 0;
-  }
-
-  switch (theCurve->Continuity())
-  {
-    case GeomAbs_C0: return 0;
-    case GeomAbs_C1: return 1;
-    case GeomAbs_C2: return 2;
-    case GeomAbs_C3:
-    case GeomAbs_CN: return 3;
-    default: return 0;
-  }
-}
-
 bool hasGeomPropEvaluator(const std::shared_ptr<GeomProp_Curve>& theCurveProp)
 {
   return theCurveProp && theCurveProp->Adaptor() != nullptr;
@@ -69,7 +50,7 @@ LProp3d_CLProps::LProp3d_CLProps(const occ::handle<Adaptor3d_Curve>& C,
     : myCurve(C),
       myCurveProp(C.IsNull() ? nullptr : std::make_shared<GeomProp_Curve>(*C)),
       myDerOrder(N),
-      myCN(curveContinuity(C)),
+      myCN(4),
       myLinTol(Resolution),
       myCurvature(0.0),
       myTangentStatus(LProp_Undecided),
@@ -88,7 +69,7 @@ LProp3d_CLProps::LProp3d_CLProps(const occ::handle<Adaptor3d_Curve>& C,
       myCurveProp(C.IsNull() ? nullptr : std::make_shared<GeomProp_Curve>(*C)),
       myU(RealLast()),
       myDerOrder(N),
-      myCN(curveContinuity(C)),
+      myCN(4),
       myLinTol(Resolution),
       myCurvature(0.0),
       myTangentStatus(LProp_Undecided),
@@ -147,7 +128,7 @@ void LProp3d_CLProps::SetCurve(const occ::handle<Adaptor3d_Curve>& C)
 {
   myCurve                           = C;
   myCurveProp                       = C.IsNull() ? nullptr : std::make_shared<GeomProp_Curve>(*C);
-  myCN                              = curveContinuity(C);
+  myCN                              = 4;
   myCurvature                       = 0.0;
   myTangentStatus                   = LProp_Undecided;
   mySignificantFirstDerivativeOrder = 0;

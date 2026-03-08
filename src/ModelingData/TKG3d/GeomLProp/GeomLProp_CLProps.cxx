@@ -14,7 +14,6 @@
 #include <GeomLProp_CLProps.hxx>
 
 #include <GeomLProp_LegacyCLProps.hxx>
-#include <GeomAbs_Shape.hxx>
 #include <GeomProp.hxx>
 #include <GeomProp_Curve.hxx>
 #include <Geom_Curve.hxx>
@@ -27,24 +26,6 @@
 
 namespace
 {
-int curveContinuity(const occ::handle<Geom_Curve>& theCurve)
-{
-  if (theCurve.IsNull())
-  {
-    return 0;
-  }
-
-  switch (theCurve->Continuity())
-  {
-    case GeomAbs_C0: return 0;
-    case GeomAbs_C1: return 1;
-    case GeomAbs_C2: return 2;
-    case GeomAbs_C3:
-    case GeomAbs_CN: return 3;
-    default: return 0;
-  }
-}
-
 gp_Pnt curveValue(const occ::handle<Geom_Curve>& theCurve, const double theParam)
 {
   gp_Pnt aPoint;
@@ -109,7 +90,7 @@ GeomLProp_CLProps::GeomLProp_CLProps(const occ::handle<Geom_Curve>& C,
     : myCurve(C),
       myCurveProp(C.IsNull() ? nullptr : std::make_shared<GeomProp_Curve>(C)),
       myDerOrder(N),
-      myCN(curveContinuity(C)),
+      myCN(4),
       myLinTol(Resolution),
       myCurvature(0.0),
       myTangentStatus(LProp_Undecided),
@@ -128,7 +109,7 @@ GeomLProp_CLProps::GeomLProp_CLProps(const occ::handle<Geom_Curve>& C,
       myCurveProp(C.IsNull() ? nullptr : std::make_shared<GeomProp_Curve>(C)),
       myU(RealLast()),
       myDerOrder(N),
-      myCN(curveContinuity(C)),
+      myCN(4),
       myLinTol(Resolution),
       myCurvature(0.0),
       myTangentStatus(LProp_Undecided),
@@ -187,7 +168,7 @@ void GeomLProp_CLProps::SetCurve(const occ::handle<Geom_Curve>& C)
 {
   myCurve                           = C;
   myCurveProp                       = C.IsNull() ? nullptr : std::make_shared<GeomProp_Curve>(C);
-  myCN                              = curveContinuity(C);
+  myCN                              = 4;
   myCurvature                       = 0.0;
   myTangentStatus                   = LProp_Undecided;
   mySignificantFirstDerivativeOrder = 0;

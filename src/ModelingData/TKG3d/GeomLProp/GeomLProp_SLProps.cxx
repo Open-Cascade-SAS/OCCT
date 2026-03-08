@@ -14,7 +14,6 @@
 #include <GeomLProp_SLProps.hxx>
 
 #include <GeomLProp_LegacySLProps.hxx>
-#include <GeomAbs_Shape.hxx>
 #include <GeomProp.hxx>
 #include <GeomProp_Surface.hxx>
 #include <Geom_Surface.hxx>
@@ -27,24 +26,6 @@
 
 namespace
 {
-int surfaceContinuity(const occ::handle<Geom_Surface>& theSurface)
-{
-  if (theSurface.IsNull())
-  {
-    return 0;
-  }
-
-  switch (theSurface->Continuity())
-  {
-    case GeomAbs_C0: return 0;
-    case GeomAbs_C1: return 1;
-    case GeomAbs_C2: return 2;
-    case GeomAbs_C3:
-    case GeomAbs_CN: return 3;
-    default: return 0;
-  }
-}
-
 const GeomAdaptor_Surface* surfaceAdaptor(const std::shared_ptr<GeomProp_Surface>& theSurfaceProp)
 {
   return theSurfaceProp ? theSurfaceProp->Adaptor() : nullptr;
@@ -142,7 +123,7 @@ GeomLProp_SLProps::GeomLProp_SLProps(const occ::handle<Geom_Surface>& S,
     : mySurf(S),
       mySurfaceProp(S.IsNull() ? nullptr : std::make_shared<GeomProp_Surface>(S)),
       myDerOrder(N),
-      myCN(surfaceContinuity(S)),
+      myCN(4),
       myLinTol(Resolution),
       myMinCurv(0.0),
       myMaxCurv(0.0),
@@ -169,7 +150,7 @@ GeomLProp_SLProps::GeomLProp_SLProps(const occ::handle<Geom_Surface>& S,
       myU(RealLast()),
       myV(RealLast()),
       myDerOrder(N),
-      myCN(surfaceContinuity(S)),
+      myCN(4),
       myLinTol(Resolution),
       myMinCurv(0.0),
       myMaxCurv(0.0),
@@ -217,7 +198,7 @@ void GeomLProp_SLProps::SetSurface(const occ::handle<Geom_Surface>& S)
 {
   mySurf                             = S;
   mySurfaceProp                      = S.IsNull() ? nullptr : std::make_shared<GeomProp_Surface>(S);
-  myCN                               = surfaceContinuity(S);
+  myCN                               = 4;
   mySignificantFirstDerivativeOrderU = 0;
   mySignificantFirstDerivativeOrderV = 0;
   myUTangentStatus                   = LProp_Undecided;

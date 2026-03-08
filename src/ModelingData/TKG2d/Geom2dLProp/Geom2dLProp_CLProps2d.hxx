@@ -33,6 +33,7 @@
 
 class Geom2d_Curve;
 class Geom2dProp_Curve;
+class Geom2dLProp_LegacyCLProps2d;
 class Standard_DomainError;
 class Standard_OutOfRange;
 class LProp_NotDefined;
@@ -117,6 +118,7 @@ public:
 private:
   occ::handle<Geom2d_Curve>         myCurve;
   std::shared_ptr<Geom2dProp_Curve> myCurveProp;
+  std::shared_ptr<Geom2dLProp_LegacyCLProps2d> myLegacyProps;
   double                            myU;
   int                               myDerOrder;
   double                            myCN;

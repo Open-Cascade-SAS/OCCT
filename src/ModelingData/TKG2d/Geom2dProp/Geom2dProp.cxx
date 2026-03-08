@@ -102,8 +102,7 @@ Geom2dProp::CurvatureResult Geom2dProp::ComputeCurvature(const gp_Vec2d& theD1,
     return {0.0, true, false};
   }
 
-  const double aCross = theD1.Crossed(theD2);
-  const double aN     = aCross * aCross;
+  const double aN = theD1.CrossSquareMagnitude(theD2);
 
   // If D1 and D2 are collinear, curvature is zero.
   const double aT = aN / aDD1 / aDD2;
@@ -112,8 +111,8 @@ Geom2dProp::CurvatureResult Geom2dProp::ComputeCurvature(const gp_Vec2d& theD1,
     return {0.0, true, false};
   }
 
-  // Signed curvature = (D1 x D2) / |D1|^3
-  const double aCurvature = aCross / aDD1 / std::sqrt(aDD1);
+  // Legacy Geom2dLProp compatibility: curvature is unsigned.
+  const double aCurvature = std::sqrt(aN) / aDD1 / std::sqrt(aDD1);
   return {aCurvature, true, false};
 }
 
@@ -123,20 +122,14 @@ Geom2dProp::NormalResult Geom2dProp::ComputeNormal(const gp_Vec2d& theD1,
                                                    const gp_Vec2d& theD2,
                                                    const double    theTol)
 {
-  // First compute curvature to check if normal is defined.
   const CurvatureResult aCurvRes = ComputeCurvature(theD1, theD2, theTol);
   if (!aCurvRes.IsDefined || aCurvRes.IsInfinite || std::abs(aCurvRes.Value) <= theTol)
   {
     return {{}, false};
   }
 
-  // Match legacy Geom2dLProp semantics: start from the left normal and orient it toward
-  // the center of curvature using the second derivative.
-  gp_Vec2d aNorm(-theD1.Y(), theD1.X());
-  if (aNorm.Dot(theD2) < 0.0)
-  {
-    aNorm.Reverse();
-  }
+  gp_Vec2d aNorm = theD2.Multiplied(theD1.Dot(theD1));
+  aNorm.Subtract(theD1.Multiplied(theD1.Dot(theD2)));
   if (aNorm.SquareMagnitude() <= theTol * theTol)
   {
     return {{}, false};
@@ -157,13 +150,14 @@ Geom2dProp::CentreResult Geom2dProp::ComputeCentreOfCurvature(const gp_Pnt2d& th
     return {{}, false};
   }
 
-  const NormalResult aNormRes = ComputeNormal(theD1, theD2, theTol);
-  if (!aNormRes.IsDefined)
+  gp_Vec2d aNorm = theD2.Multiplied(theD1.Dot(theD1));
+  aNorm.Subtract(theD1.Multiplied(theD1.Dot(theD2)));
+  if (aNorm.SquareMagnitude() <= theTol * theTol)
   {
     return {{}, false};
   }
 
-  gp_Vec2d aNorm(aNormRes.Direction);
+  aNorm.Normalize();
   aNorm.Divide(aCurvRes.Value);
 
   return {thePnt.Translated(aNorm), true};

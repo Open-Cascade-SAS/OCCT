@@ -15,7 +15,6 @@
 
 #include <GeomProp.hxx>
 #include <GeomProp_Surface.hxx>
-#include <GeomAbs_Shape.hxx>
 #include <LProp3d_LegacySLProps.hxx>
 #include <LProp_SLPropsCompat.pxx>
 #include <LProp_CompareDebug.pxx>
@@ -26,29 +25,6 @@
 
 namespace
 {
-int surfaceContinuity(const occ::handle<Adaptor3d_Surface>& theSurface)
-{
-  if (theSurface.IsNull())
-  {
-    return 0;
-  }
-
-  auto aContinuityOrder = [](const GeomAbs_Shape theShape) {
-    switch (theShape)
-    {
-      case GeomAbs_C0: return 0;
-      case GeomAbs_C1: return 1;
-      case GeomAbs_C2: return 2;
-      case GeomAbs_C3:
-      case GeomAbs_CN: return 3;
-      default: return 0;
-    }
-  };
-
-  return std::min(aContinuityOrder(theSurface->UContinuity()),
-                  aContinuityOrder(theSurface->VContinuity()));
-}
-
 bool hasGeomPropEvaluator(const std::shared_ptr<GeomProp_Surface>& theSurfaceProp)
 {
   return theSurfaceProp && theSurfaceProp->Adaptor() != nullptr;
@@ -75,7 +51,7 @@ LProp3d_SLProps::LProp3d_SLProps(const occ::handle<Adaptor3d_Surface>& S,
     : mySurf(S),
       mySurfaceProp(S.IsNull() ? nullptr : std::make_shared<GeomProp_Surface>(*S)),
       myDerOrder(N),
-      myCN(surfaceContinuity(S)),
+      myCN(4),
       myLinTol(Resolution),
       myMinCurv(0.0),
       myMaxCurv(0.0),
@@ -102,7 +78,7 @@ LProp3d_SLProps::LProp3d_SLProps(const occ::handle<Adaptor3d_Surface>& S,
       myU(RealLast()),
       myV(RealLast()),
       myDerOrder(N),
-      myCN(surfaceContinuity(S)),
+      myCN(4),
       myLinTol(Resolution),
       myMinCurv(0.0),
       myMaxCurv(0.0),
@@ -150,7 +126,7 @@ void LProp3d_SLProps::SetSurface(const occ::handle<Adaptor3d_Surface>& S)
 {
   mySurf        = S;
   mySurfaceProp = S.IsNull() ? nullptr : std::make_shared<GeomProp_Surface>(*S);
-  myCN          = surfaceContinuity(S);
+  myCN          = 4;
   mySignificantFirstDerivativeOrderU = 0;
   mySignificantFirstDerivativeOrderV = 0;
   myUTangentStatus                   = LProp_Undecided;
