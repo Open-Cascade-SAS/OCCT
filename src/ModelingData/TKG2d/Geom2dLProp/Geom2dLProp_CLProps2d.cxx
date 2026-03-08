@@ -68,7 +68,7 @@ bool sameCurvatureClass(const double theNewValue, const double theOldValue, cons
     return false;
   }
 
-  const int aNewSign = (theNewValue > theTol) - (theNewValue < -theTol);
+  const int aNewSign  = (theNewValue > theTol) - (theNewValue < -theTol);
   const int anOldSign = (theOldValue > theTol) - (theOldValue < -theTol);
   return aNewSign == anOldSign;
 }
@@ -93,8 +93,7 @@ std::string curveDebugContext(const occ::handle<Geom2d_Curve>& theCurve,
   if (!anOffsetCurve.IsNull())
   {
     const occ::handle<Geom2d_Curve> aBasisCurve = anOffsetCurve->BasisCurve();
-    aStream << " offset=" << LProp_CompareDebug::ToString(anOffsetCurve->Offset())
-            << " basisGeom="
+    aStream << " offset=" << LProp_CompareDebug::ToString(anOffsetCurve->Offset()) << " basisGeom="
             << (aBasisCurve.IsNull() ? std::string("null")
                                      : std::to_string((int)Geom2dProp_Curve(aBasisCurve).GetType()))
             << " basisCont=" << (int)anOffsetCurve->GetBasisCurveContinuity();
@@ -102,9 +101,7 @@ std::string curveDebugContext(const occ::handle<Geom2d_Curve>& theCurve,
   return aStream.str();
 }
 
-std::string curveCurvatureTerms(const char*    thePrefix,
-                                const gp_Vec2d& theD1,
-                                const gp_Vec2d& theD2)
+std::string curveCurvatureTerms(const char* thePrefix, const gp_Vec2d& theD1, const gp_Vec2d& theD2)
 {
   const double aD1Square = theD1.SquareMagnitude();
   const double aD1Mag    = std::sqrt(aD1Square);
@@ -112,19 +109,19 @@ std::string curveCurvatureTerms(const char*    thePrefix,
   const double aCross    = theD1.Crossed(theD2);
 
   std::ostringstream aStream;
-  aStream << thePrefix << "Cross=" << LProp_CompareDebug::ToString(aCross)
-          << " " << thePrefix << "|D1|^2=" << LProp_CompareDebug::ToString(aD1Square)
-          << " " << thePrefix << "|D1|^3=" << LProp_CompareDebug::ToString(aDenom);
+  aStream << thePrefix << "Cross=" << LProp_CompareDebug::ToString(aCross) << " " << thePrefix
+          << "|D1|^2=" << LProp_CompareDebug::ToString(aD1Square) << " " << thePrefix
+          << "|D1|^3=" << LProp_CompareDebug::ToString(aDenom);
   return aStream.str();
 }
 
-std::string curveDerivativeComparison(const occ::handle<Geom2d_Curve>&      theCurve,
-                                      const double                          theParam,
-                                      const gp_Pnt2d&                       thePoint,
-                                      const gp_Vec2d&                       theD1,
-                                      const gp_Vec2d&                       theD2,
-                                      const gp_Vec2d&                       theD3,
-                                      Geom2dLProp_LegacyCLProps2d&          theLegacy)
+std::string curveDerivativeComparison(const occ::handle<Geom2d_Curve>& theCurve,
+                                      const double                     theParam,
+                                      const gp_Pnt2d&                  thePoint,
+                                      const gp_Vec2d&                  theD1,
+                                      const gp_Vec2d&                  theD2,
+                                      const gp_Vec2d&                  theD3,
+                                      Geom2dLProp_LegacyCLProps2d&     theLegacy)
 {
   const gp_Vec2d& anOldD1 = theLegacy.D1();
   const gp_Vec2d& anOldD2 = theLegacy.D2();
@@ -140,9 +137,9 @@ std::string curveDerivativeComparison(const occ::handle<Geom2d_Curve>&      theC
           << " old|D3|=" << LProp_CompareDebug::ToString(anOldD3.Magnitude())
           << " dD1=" << LProp_CompareDebug::ToString(gp_Vec2d(theD1.XY() - anOldD1.XY()))
           << " dD2=" << LProp_CompareDebug::ToString(gp_Vec2d(theD2.XY() - anOldD2.XY()))
-          << " dD3=" << LProp_CompareDebug::ToString(gp_Vec2d(theD3.XY() - anOldD3.XY()))
-          << " " << curveCurvatureTerms("new", theD1, theD2)
-          << " " << curveCurvatureTerms("old", anOldD1, anOldD2);
+          << " dD3=" << LProp_CompareDebug::ToString(gp_Vec2d(theD3.XY() - anOldD3.XY())) << " "
+          << curveCurvatureTerms("new", theD1, theD2) << " "
+          << curveCurvatureTerms("old", anOldD1, anOldD2);
 
   const occ::handle<Geom2d_OffsetCurve> anOffsetCurve =
     occ::down_cast<Geom2d_OffsetCurve>(theCurve);
@@ -150,26 +147,27 @@ std::string curveDerivativeComparison(const occ::handle<Geom2d_Curve>&      theC
   {
     try
     {
-      Geom2dAdaptor_Curve aCurveAdaptor(theCurve);
+      Geom2dAdaptor_Curve       aCurveAdaptor(theCurve);
       const Geom2d_Curve::ResD2 anAdaptorD2 = aCurveAdaptor.EvalD2(theParam);
       const Geom2d_Curve::ResD3 anAdaptorD3 = aCurveAdaptor.EvalD3(theParam);
-      aStream << " a2D1=" << LProp_CompareDebug::ToString(anAdaptorD2.D1)
-              << " a2|D1|=" << LProp_CompareDebug::ToString(anAdaptorD2.D1.Magnitude())
-              << " a2D2=" << LProp_CompareDebug::ToString(anAdaptorD2.D2)
-              << " a2|D2|=" << LProp_CompareDebug::ToString(anAdaptorD2.D2.Magnitude())
-              << " a2D1-dNew=" << LProp_CompareDebug::ToString(gp_Vec2d(anAdaptorD2.D1.XY() - theD1.XY()))
-              << " a2D2-dNew=" << LProp_CompareDebug::ToString(gp_Vec2d(anAdaptorD2.D2.XY() - theD2.XY()))
-              << " " << curveCurvatureTerms("a2", anAdaptorD2.D1, anAdaptorD2.D2)
-              << " adD1=" << LProp_CompareDebug::ToString(anAdaptorD3.D1)
-              << " ad|D1|=" << LProp_CompareDebug::ToString(anAdaptorD3.D1.Magnitude())
-              << " adD2=" << LProp_CompareDebug::ToString(anAdaptorD3.D2)
-              << " ad|D2|=" << LProp_CompareDebug::ToString(anAdaptorD3.D2.Magnitude())
-              << " adD3=" << LProp_CompareDebug::ToString(anAdaptorD3.D3)
-              << " ad|D3|=" << LProp_CompareDebug::ToString(anAdaptorD3.D3.Magnitude())
-              << " adD1-dNew=" << LProp_CompareDebug::ToString(gp_Vec2d(anAdaptorD3.D1.XY() - theD1.XY()))
-              << " adD2-dNew=" << LProp_CompareDebug::ToString(gp_Vec2d(anAdaptorD3.D2.XY() - theD2.XY()))
-              << " adD3-dNew=" << LProp_CompareDebug::ToString(gp_Vec2d(anAdaptorD3.D3.XY() - theD3.XY()))
-              << " " << curveCurvatureTerms("ad", anAdaptorD3.D1, anAdaptorD3.D2);
+      aStream
+        << " a2D1=" << LProp_CompareDebug::ToString(anAdaptorD2.D1)
+        << " a2|D1|=" << LProp_CompareDebug::ToString(anAdaptorD2.D1.Magnitude())
+        << " a2D2=" << LProp_CompareDebug::ToString(anAdaptorD2.D2)
+        << " a2|D2|=" << LProp_CompareDebug::ToString(anAdaptorD2.D2.Magnitude())
+        << " a2D1-dNew=" << LProp_CompareDebug::ToString(gp_Vec2d(anAdaptorD2.D1.XY() - theD1.XY()))
+        << " a2D2-dNew=" << LProp_CompareDebug::ToString(gp_Vec2d(anAdaptorD2.D2.XY() - theD2.XY()))
+        << " " << curveCurvatureTerms("a2", anAdaptorD2.D1, anAdaptorD2.D2)
+        << " adD1=" << LProp_CompareDebug::ToString(anAdaptorD3.D1)
+        << " ad|D1|=" << LProp_CompareDebug::ToString(anAdaptorD3.D1.Magnitude())
+        << " adD2=" << LProp_CompareDebug::ToString(anAdaptorD3.D2)
+        << " ad|D2|=" << LProp_CompareDebug::ToString(anAdaptorD3.D2.Magnitude())
+        << " adD3=" << LProp_CompareDebug::ToString(anAdaptorD3.D3)
+        << " ad|D3|=" << LProp_CompareDebug::ToString(anAdaptorD3.D3.Magnitude())
+        << " adD1-dNew=" << LProp_CompareDebug::ToString(gp_Vec2d(anAdaptorD3.D1.XY() - theD1.XY()))
+        << " adD2-dNew=" << LProp_CompareDebug::ToString(gp_Vec2d(anAdaptorD3.D2.XY() - theD2.XY()))
+        << " adD3-dNew=" << LProp_CompareDebug::ToString(gp_Vec2d(anAdaptorD3.D3.XY() - theD3.XY()))
+        << " " << curveCurvatureTerms("ad", anAdaptorD3.D1, anAdaptorD3.D2);
     }
     catch (const Standard_Failure&)
     {
@@ -177,7 +175,7 @@ std::string curveDerivativeComparison(const occ::handle<Geom2d_Curve>&      theC
   }
   return aStream.str();
 }
-}
+} // namespace
 
 //==================================================================================================
 
@@ -266,27 +264,27 @@ Geom2dLProp_CLProps2d& Geom2dLProp_CLProps2d::operator=(const Geom2dLProp_CLProp
     return *this;
   }
 
-  myCurve       = theOther.myCurve;
-  myCurveProp   = makeCurveProp(theOther.myCurve);
-  myLegacyProps = LProp_WrapperTools::CloneShared(theOther.myLegacyProps);
-  myU                                  = theOther.myU;
-  myDerOrder                           = theOther.myDerOrder;
-  myCN                                 = theOther.myCN;
-  myLinTol                             = theOther.myLinTol;
-  myPnt                                = theOther.myPnt;
-  myDerivArr[0]                        = theOther.myDerivArr[0];
-  myDerivArr[1]                        = theOther.myDerivArr[1];
-  myDerivArr[2]                        = theOther.myDerivArr[2];
-  myTangent                            = theOther.myTangent;
-  myNormal                             = theOther.myNormal;
-  myCentre                             = theOther.myCentre;
-  myCurvature                          = theOther.myCurvature;
-  myTangentStatus                      = theOther.myTangentStatus;
-  mySignificantFirstDerivativeOrder    = theOther.mySignificantFirstDerivativeOrder;
-  myHasTangent                         = theOther.myHasTangent;
-  myHasCurvature                       = theOther.myHasCurvature;
-  myHasNormal                          = theOther.myHasNormal;
-  myHasCentre                          = theOther.myHasCentre;
+  myCurve                           = theOther.myCurve;
+  myCurveProp                       = makeCurveProp(theOther.myCurve);
+  myLegacyProps                     = LProp_WrapperTools::CloneShared(theOther.myLegacyProps);
+  myU                               = theOther.myU;
+  myDerOrder                        = theOther.myDerOrder;
+  myCN                              = theOther.myCN;
+  myLinTol                          = theOther.myLinTol;
+  myPnt                             = theOther.myPnt;
+  myDerivArr[0]                     = theOther.myDerivArr[0];
+  myDerivArr[1]                     = theOther.myDerivArr[1];
+  myDerivArr[2]                     = theOther.myDerivArr[2];
+  myTangent                         = theOther.myTangent;
+  myNormal                          = theOther.myNormal;
+  myCentre                          = theOther.myCentre;
+  myCurvature                       = theOther.myCurvature;
+  myTangentStatus                   = theOther.myTangentStatus;
+  mySignificantFirstDerivativeOrder = theOther.mySignificantFirstDerivativeOrder;
+  myHasTangent                      = theOther.myHasTangent;
+  myHasCurvature                    = theOther.myHasCurvature;
+  myHasNormal                       = theOther.myHasNormal;
+  myHasCentre                       = theOther.myHasCentre;
   return *this;
 }
 
@@ -294,7 +292,7 @@ Geom2dLProp_CLProps2d& Geom2dLProp_CLProps2d::operator=(const Geom2dLProp_CLProp
 
 void Geom2dLProp_CLProps2d::SetParameter(const double U)
 {
-  myU = U;
+  myU                                = U;
   const Adaptor2d_Curve2d* anAdaptor = curveAdaptor(myCurveProp);
   switch (myDerOrder)
   {
@@ -351,10 +349,10 @@ void Geom2dLProp_CLProps2d::SetParameter(const double U)
 void Geom2dLProp_CLProps2d::SetCurve(const occ::handle<Geom2d_Curve>& C)
 {
   Standard_NullObject_Raise_if(C.IsNull(), "Geom2dLProp_CLProps2d::SetCurve()");
-  myCurve                           = C;
-  myCurveProp                       = makeCurveProp(C);
+  myCurve     = C;
+  myCurveProp = makeCurveProp(C);
   myLegacyProps->SetCurve(C);
-  myCN                              = 4;
+  myCN = 4;
   LProp_WrapperTools::ResetCurveState(myCurvature,
                                       myTangentStatus,
                                       mySignificantFirstDerivativeOrder);
@@ -388,7 +386,7 @@ const gp_Vec2d& Geom2dLProp_CLProps2d::D1()
 {
   if (myDerOrder < 1)
   {
-    myDerOrder = 1;
+    myDerOrder                         = 1;
     const Adaptor2d_Curve2d* anAdaptor = curveAdaptor(myCurveProp);
     if (anAdaptor != nullptr)
     {
@@ -420,7 +418,7 @@ const gp_Vec2d& Geom2dLProp_CLProps2d::D2()
 {
   if (myDerOrder < 2)
   {
-    myDerOrder = 2;
+    myDerOrder                         = 2;
     const Adaptor2d_Curve2d* anAdaptor = curveAdaptor(myCurveProp);
     if (anAdaptor != nullptr)
     {
@@ -452,7 +450,7 @@ const gp_Vec2d& Geom2dLProp_CLProps2d::D3()
 {
   if (myDerOrder < 3)
   {
-    myDerOrder = 3;
+    myDerOrder                         = 3;
     const Adaptor2d_Curve2d* anAdaptor = curveAdaptor(myCurveProp);
     if (anAdaptor != nullptr)
     {
@@ -489,20 +487,21 @@ bool Geom2dLProp_CLProps2d::IsTangentDefined()
                                                                D3(),
                                                                mySignificantFirstDerivativeOrder,
                                                                myTangentStatus);
-  const bool anOldDefined = myLegacyProps != nullptr ? myLegacyProps->IsTangentDefined() : isDefined;
+  const bool anOldDefined =
+    myLegacyProps != nullptr ? myLegacyProps->IsTangentDefined() : isDefined;
   if (myLegacyProps != nullptr
       && (isDefined != anOldDefined || myTangentStatus != myLegacyProps->TangentStatus()))
   {
-    LProp_CompareDebug::LogMismatch("Geom2dLProp_CLProps2d::IsTangentDefined",
-                                    curveGeometry(myCurve),
-                                    curveParameters(myU),
-                                    myDerOrder,
-                                    myLinTol,
-                                    std::string("new=") + LProp_CompareDebug::ToString(isDefined)
-                                      + " old=" + LProp_CompareDebug::ToString(anOldDefined)
-                                      + " newStatus=" + LProp_CompareDebug::ToString(myTangentStatus)
-                                      + " oldStatus="
-                                      + LProp_CompareDebug::ToString(myLegacyProps->TangentStatus()));
+    LProp_CompareDebug::LogMismatch(
+      "Geom2dLProp_CLProps2d::IsTangentDefined",
+      curveGeometry(myCurve),
+      curveParameters(myU),
+      myDerOrder,
+      myLinTol,
+      std::string("new=") + LProp_CompareDebug::ToString(isDefined)
+        + " old=" + LProp_CompareDebug::ToString(anOldDefined)
+        + " newStatus=" + LProp_CompareDebug::ToString(myTangentStatus)
+        + " oldStatus=" + LProp_CompareDebug::ToString(myLegacyProps->TangentStatus()));
   }
   return isDefined;
 }
@@ -541,33 +540,35 @@ void Geom2dLProp_CLProps2d::Tangent(gp_Dir2d& D)
     "Geom2dLProp_CLProps2d::Tangent()");
   myTangent    = D;
   myHasTangent = true;
-  if (myLegacyProps != nullptr) try
-  {
-    gp_Dir2d anOldDir;
-    myLegacyProps->Tangent(anOldDir);
-    if (!D.IsEqual(anOldDir, Precision::Angular()))
+  if (myLegacyProps != nullptr)
+    try
     {
-      LProp_CompareDebug::LogValueMismatch("Geom2dLProp_CLProps2d::Tangent",
-                                           curveGeometry(myCurve),
-                                           curveParameters(myU),
-                                           myDerOrder,
-                                           myLinTol,
-                                           "dir",
-                                           D,
-                                           anOldDir,
-                                           curveDebugContext(myCurve, myPnt, myDerivArr[0], myDerivArr[1], myDerivArr[2]));
+      gp_Dir2d anOldDir;
+      myLegacyProps->Tangent(anOldDir);
+      if (!D.IsEqual(anOldDir, Precision::Angular()))
+      {
+        LProp_CompareDebug::LogValueMismatch(
+          "Geom2dLProp_CLProps2d::Tangent",
+          curveGeometry(myCurve),
+          curveParameters(myU),
+          myDerOrder,
+          myLinTol,
+          "dir",
+          D,
+          anOldDir,
+          curveDebugContext(myCurve, myPnt, myDerivArr[0], myDerivArr[1], myDerivArr[2]));
+      }
     }
-  }
-  catch (Standard_Failure const& theFailure)
-  {
-    LProp_CompareDebug::LogExceptionMismatch("Geom2dLProp_CLProps2d::Tangent",
-                                             curveGeometry(myCurve),
-                                             curveParameters(myU),
-                                             myDerOrder,
-                                             myLinTol,
-                                             "value",
-                                             LProp_CompareDebug::ExceptionSummary(theFailure));
-  }
+    catch (Standard_Failure const& theFailure)
+    {
+      LProp_CompareDebug::LogExceptionMismatch("Geom2dLProp_CLProps2d::Tangent",
+                                               curveGeometry(myCurve),
+                                               curveParameters(myU),
+                                               myDerOrder,
+                                               myLinTol,
+                                               "value",
+                                               LProp_CompareDebug::ExceptionSummary(theFailure));
+    }
 }
 
 //==================================================================================================
@@ -587,40 +588,41 @@ double Geom2dLProp_CLProps2d::Curvature()
     myLinTol,
     [&]() { return myCurveProp->Curvature(myU, myLinTol); },
     "Geom2dLProp_CLProps2d::Curvature()");
-  if (myLegacyProps != nullptr) try
-  {
-    const double anOldCurv = myLegacyProps->Curvature();
-    if ((myCurvature == RealLast()) != (anOldCurv == RealLast())
-        || !sameCurvatureClass(myCurvature, anOldCurv, myLinTol)
-        || (myCurvature != RealLast() && std::abs(myCurvature - anOldCurv) > myLinTol))
+  if (myLegacyProps != nullptr)
+    try
     {
-      LProp_CompareDebug::LogValueMismatch("Geom2dLProp_CLProps2d::Curvature",
-                                           curveGeometry(myCurve),
-                                           curveParameters(myU),
-                                           myDerOrder,
-                                           myLinTol,
-                                           "curv",
-                                           myCurvature,
-                                           anOldCurv,
-                                           curveDerivativeComparison(myCurve,
-                                                                     myU,
-                                                                     myPnt,
-                                                                     myDerivArr[0],
-                                                                     myDerivArr[1],
-                                                                     myDerivArr[2],
-                                                                     *myLegacyProps));
-    }
-  }
-  catch (Standard_Failure const& theFailure)
-  {
-    LProp_CompareDebug::LogExceptionMismatch("Geom2dLProp_CLProps2d::Curvature",
+      const double anOldCurv = myLegacyProps->Curvature();
+      if ((myCurvature == RealLast()) != (anOldCurv == RealLast())
+          || !sameCurvatureClass(myCurvature, anOldCurv, myLinTol)
+          || (myCurvature != RealLast() && std::abs(myCurvature - anOldCurv) > myLinTol))
+      {
+        LProp_CompareDebug::LogValueMismatch("Geom2dLProp_CLProps2d::Curvature",
                                              curveGeometry(myCurve),
                                              curveParameters(myU),
                                              myDerOrder,
                                              myLinTol,
-                                             "value",
-                                             LProp_CompareDebug::ExceptionSummary(theFailure));
-  }
+                                             "curv",
+                                             myCurvature,
+                                             anOldCurv,
+                                             curveDerivativeComparison(myCurve,
+                                                                       myU,
+                                                                       myPnt,
+                                                                       myDerivArr[0],
+                                                                       myDerivArr[1],
+                                                                       myDerivArr[2],
+                                                                       *myLegacyProps));
+      }
+    }
+    catch (Standard_Failure const& theFailure)
+    {
+      LProp_CompareDebug::LogExceptionMismatch("Geom2dLProp_CLProps2d::Curvature",
+                                               curveGeometry(myCurve),
+                                               curveParameters(myU),
+                                               myDerOrder,
+                                               myLinTol,
+                                               "value",
+                                               LProp_CompareDebug::ExceptionSummary(theFailure));
+    }
   return myCurvature;
 }
 
@@ -642,33 +644,35 @@ void Geom2dLProp_CLProps2d::Normal(gp_Dir2d& D)
     "Geom2dLProp_CLProps2d::Normal()");
   myNormal    = D;
   myHasNormal = true;
-  if (myLegacyProps != nullptr) try
-  {
-    gp_Dir2d anOldDir;
-    myLegacyProps->Normal(anOldDir);
-    if (!D.IsEqual(anOldDir, Precision::Angular()))
+  if (myLegacyProps != nullptr)
+    try
     {
-      LProp_CompareDebug::LogValueMismatch("Geom2dLProp_CLProps2d::Normal",
-                                           curveGeometry(myCurve),
-                                           curveParameters(myU),
-                                           myDerOrder,
-                                           myLinTol,
-                                           "dir",
-                                           D,
-                                           anOldDir,
-                                           curveDebugContext(myCurve, myPnt, myDerivArr[0], myDerivArr[1], myDerivArr[2]));
+      gp_Dir2d anOldDir;
+      myLegacyProps->Normal(anOldDir);
+      if (!D.IsEqual(anOldDir, Precision::Angular()))
+      {
+        LProp_CompareDebug::LogValueMismatch(
+          "Geom2dLProp_CLProps2d::Normal",
+          curveGeometry(myCurve),
+          curveParameters(myU),
+          myDerOrder,
+          myLinTol,
+          "dir",
+          D,
+          anOldDir,
+          curveDebugContext(myCurve, myPnt, myDerivArr[0], myDerivArr[1], myDerivArr[2]));
+      }
     }
-  }
-  catch (Standard_Failure const& theFailure)
-  {
-    LProp_CompareDebug::LogExceptionMismatch("Geom2dLProp_CLProps2d::Normal",
-                                             curveGeometry(myCurve),
-                                             curveParameters(myU),
-                                             myDerOrder,
-                                             myLinTol,
-                                             "value",
-                                             LProp_CompareDebug::ExceptionSummary(theFailure));
-  }
+    catch (Standard_Failure const& theFailure)
+    {
+      LProp_CompareDebug::LogExceptionMismatch("Geom2dLProp_CLProps2d::Normal",
+                                               curveGeometry(myCurve),
+                                               curveParameters(myU),
+                                               myDerOrder,
+                                               myLinTol,
+                                               "value",
+                                               LProp_CompareDebug::ExceptionSummary(theFailure));
+    }
 }
 
 //==================================================================================================
@@ -688,31 +692,33 @@ void Geom2dLProp_CLProps2d::CentreOfCurvature(gp_Pnt2d& P)
     "Geom2dLProp_CLProps2d::CentreOfCurvature()");
   myCentre    = P;
   myHasCentre = true;
-  if (myLegacyProps != nullptr) try
-  {
-    gp_Pnt2d anOldPoint;
-    myLegacyProps->CentreOfCurvature(anOldPoint);
-    if (!P.IsEqual(anOldPoint, myLinTol))
+  if (myLegacyProps != nullptr)
+    try
     {
-      LProp_CompareDebug::LogValueMismatch("Geom2dLProp_CLProps2d::CentreOfCurvature",
-                                           curveGeometry(myCurve),
-                                           curveParameters(myU),
-                                           myDerOrder,
-                                           myLinTol,
-                                           "point",
-                                           P,
-                                           anOldPoint,
-                                           curveDebugContext(myCurve, myPnt, myDerivArr[0], myDerivArr[1], myDerivArr[2]));
+      gp_Pnt2d anOldPoint;
+      myLegacyProps->CentreOfCurvature(anOldPoint);
+      if (!P.IsEqual(anOldPoint, myLinTol))
+      {
+        LProp_CompareDebug::LogValueMismatch(
+          "Geom2dLProp_CLProps2d::CentreOfCurvature",
+          curveGeometry(myCurve),
+          curveParameters(myU),
+          myDerOrder,
+          myLinTol,
+          "point",
+          P,
+          anOldPoint,
+          curveDebugContext(myCurve, myPnt, myDerivArr[0], myDerivArr[1], myDerivArr[2]));
+      }
     }
-  }
-  catch (Standard_Failure const& theFailure)
-  {
-    LProp_CompareDebug::LogExceptionMismatch("Geom2dLProp_CLProps2d::CentreOfCurvature",
-                                             curveGeometry(myCurve),
-                                             curveParameters(myU),
-                                             myDerOrder,
-                                             myLinTol,
-                                             "value",
-                                             LProp_CompareDebug::ExceptionSummary(theFailure));
-  }
+    catch (Standard_Failure const& theFailure)
+    {
+      LProp_CompareDebug::LogExceptionMismatch("Geom2dLProp_CLProps2d::CentreOfCurvature",
+                                               curveGeometry(myCurve),
+                                               curveParameters(myU),
+                                               myDerOrder,
+                                               myLinTol,
+                                               "value",
+                                               LProp_CompareDebug::ExceptionSummary(theFailure));
+    }
 }

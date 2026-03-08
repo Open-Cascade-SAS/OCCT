@@ -41,7 +41,7 @@ void Geom2dProp_Curve::initialization(const Adaptor2d_Curve2d& theCurve)
   if (theCurve.IsKind(STANDARD_TYPE(Geom2dAdaptor_Curve)))
   {
     const auto& aGeomAdaptor = static_cast<const Geom2dAdaptor_Curve&>(theCurve);
-    myOwnedAdaptor = new Geom2dAdaptor_Curve(aGeomAdaptor);
+    myOwnedAdaptor           = new Geom2dAdaptor_Curve(aGeomAdaptor);
     initFromAdaptor();
     return;
   }

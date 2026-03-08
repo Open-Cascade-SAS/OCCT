@@ -1,3 +1,16 @@
+// Copyright (c) 2026 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
 #ifndef _LProp3d_LegacySLProps_HeaderFile
 #define _LProp3d_LegacySLProps_HeaderFile
 
@@ -35,22 +48,26 @@ public:
   const gp_Vec& D2U();
   const gp_Vec& D2V();
   const gp_Vec& DUV();
-  bool IsTangentUDefined();
-  void TangentU(gp_Dir& theDir);
-  bool IsTangentVDefined();
-  void TangentV(gp_Dir& theDir);
-  bool IsNormalDefined();
+  bool          IsTangentUDefined();
+  void          TangentU(gp_Dir& theDir);
+  bool          IsTangentVDefined();
+  void          TangentV(gp_Dir& theDir);
+  bool          IsNormalDefined();
   const gp_Dir& Normal();
-  bool IsCurvatureDefined();
-  bool IsUmbilic();
-  double MaxCurvature();
-  double MinCurvature();
-  void CurvatureDirections(gp_Dir& theMax, gp_Dir& theMin);
-  double MeanCurvature();
-  double GaussianCurvature();
+  bool          IsCurvatureDefined();
+  bool          IsUmbilic();
+  double        MaxCurvature();
+  double        MinCurvature();
+  void          CurvatureDirections(gp_Dir& theMax, gp_Dir& theMin);
+  double        MeanCurvature();
+  double        GaussianCurvature();
+
   LProp_Status UTangentStatus() const { return myUTangentStatus; }
+
   LProp_Status VTangentStatus() const { return myVTangentStatus; }
+
   LProp_Status NormalStatus() const { return myNormalStatus; }
+
   LProp_Status CurvatureStatus() const { return myCurvatureStatus; }
 
 private:
@@ -62,8 +79,8 @@ private:
   gp_Vec                         myD1u, myD1v, myD2u, myD2v, myDuv;
   gp_Dir                         myNormal, myDirMinCurv, myDirMaxCurv;
   double                         myMinCurv, myMaxCurv, myMeanCurv, myGausCurv;
-  int                            mySignificantFirstDerivativeOrderU, mySignificantFirstDerivativeOrderV;
-  LProp_Status                   myUTangentStatus, myVTangentStatus, myNormalStatus, myCurvatureStatus;
+  int          mySignificantFirstDerivativeOrderU, mySignificantFirstDerivativeOrderV;
+  LProp_Status myUTangentStatus, myVTangentStatus, myNormalStatus, myCurvatureStatus;
 };
 
 #endif

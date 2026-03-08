@@ -57,16 +57,16 @@ inline void ResetSurfaceState(double&       theMinCurvature,
                               LProp_Status& theNormalStatus,
                               LProp_Status& theCurvatureStatus)
 {
-  theMinCurvature                    = 0.0;
-  theMaxCurvature                    = 0.0;
-  theMeanCurvature                   = 0.0;
-  theGaussianCurvature               = 0.0;
+  theMinCurvature                     = 0.0;
+  theMaxCurvature                     = 0.0;
+  theMeanCurvature                    = 0.0;
+  theGaussianCurvature                = 0.0;
   theSignificantFirstDerivativeOrderU = 0;
   theSignificantFirstDerivativeOrderV = 0;
-  theUTangentStatus                  = LProp_Undecided;
-  theVTangentStatus                  = LProp_Undecided;
-  theNormalStatus                    = LProp_Undecided;
-  theCurvatureStatus                 = LProp_Undecided;
+  theUTangentStatus                   = LProp_Undecided;
+  theVTangentStatus                   = LProp_Undecided;
+  theNormalStatus                     = LProp_Undecided;
+  theCurvatureStatus                  = LProp_Undecided;
 }
 } // namespace LProp_WrapperTools
 

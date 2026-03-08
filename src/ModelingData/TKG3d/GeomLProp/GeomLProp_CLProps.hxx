@@ -113,25 +113,25 @@ public:
   Standard_EXPORT void CentreOfCurvature(gp_Pnt& P);
 
 private:
-  occ::handle<Geom_Curve>                    myCurve;
-  std::shared_ptr<GeomProp_Curve>           myCurveProp;
+  occ::handle<Geom_Curve>                  myCurve;
+  std::shared_ptr<GeomProp_Curve>          myCurveProp;
   std::shared_ptr<GeomLProp_LegacyCLProps> myLegacyProps;
-  double                                     myU;
-  int                                        myDerOrder;
-  double                                     myCN;
-  double                                     myLinTol;
-  gp_Pnt                                     myPnt;
-  gp_Vec                                     myDerivArr[3];
-  gp_Dir                                     myTangent;
-  gp_Dir                                     myNormal;
-  gp_Pnt                                     myCentre;
-  double                                     myCurvature;
-  LProp_Status                               myTangentStatus;
-  int                                        mySignificantFirstDerivativeOrder;
-  bool                                       myHasTangent;
-  bool                                       myHasCurvature;
-  bool                                       myHasNormal;
-  bool                                       myHasCentre;
+  double                                   myU;
+  int                                      myDerOrder;
+  double                                   myCN;
+  double                                   myLinTol;
+  gp_Pnt                                   myPnt;
+  gp_Vec                                   myDerivArr[3];
+  gp_Dir                                   myTangent;
+  gp_Dir                                   myNormal;
+  gp_Pnt                                   myCentre;
+  double                                   myCurvature;
+  LProp_Status                             myTangentStatus;
+  int                                      mySignificantFirstDerivativeOrder;
+  bool                                     myHasTangent;
+  bool                                     myHasCurvature;
+  bool                                     myHasNormal;
+  bool                                     myHasCentre;
 };
 
 #endif // _GeomLProp_CLProps_HeaderFile

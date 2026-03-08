@@ -32,14 +32,16 @@ std::shared_ptr<GeomProp_Surface> makeSurfaceProp(const occ::handle<Adaptor3d_Su
   return theSurface.IsNull() ? nullptr : std::make_shared<GeomProp_Surface>(*theSurface);
 }
 
-void ensureSurfaceInitialized(const occ::handle<Adaptor3d_Surface>& theSurface, const char* theWhere)
+void ensureSurfaceInitialized(const occ::handle<Adaptor3d_Surface>& theSurface,
+                              const char*                           theWhere)
 {
   Standard_NullObject_Raise_if(theSurface.IsNull(), theWhere);
 }
 
 std::string surfaceGeometry(const occ::handle<Adaptor3d_Surface>& theSurface)
 {
-  return theSurface.IsNull() ? "null" : std::to_string((int)GeomProp_Surface(*theSurface).GetType());
+  return theSurface.IsNull() ? "null"
+                             : std::to_string((int)GeomProp_Surface(*theSurface).GetType());
 }
 
 std::string surfaceParameters(const double theU, const double theV)
@@ -175,33 +177,33 @@ LProp3d_SLProps& LProp3d_SLProps::operator=(const LProp3d_SLProps& theOther)
     return *this;
   }
 
-  mySurf = theOther.mySurf;
-  mySurfaceProp = makeSurfaceProp(theOther.mySurf);
-  myLegacyProps = LProp_WrapperTools::CloneShared(theOther.myLegacyProps);
-  myU                                  = theOther.myU;
-  myV                                  = theOther.myV;
-  myDerOrder                           = theOther.myDerOrder;
-  myCN                                 = theOther.myCN;
-  myLinTol                             = theOther.myLinTol;
-  myPnt                                = theOther.myPnt;
-  myD1u                                = theOther.myD1u;
-  myD1v                                = theOther.myD1v;
-  myD2u                                = theOther.myD2u;
-  myD2v                                = theOther.myD2v;
-  myDuv                                = theOther.myDuv;
-  myNormal                             = theOther.myNormal;
-  myMinCurv                            = theOther.myMinCurv;
-  myMaxCurv                            = theOther.myMaxCurv;
-  myDirMinCurv                         = theOther.myDirMinCurv;
-  myDirMaxCurv                         = theOther.myDirMaxCurv;
-  myMeanCurv                           = theOther.myMeanCurv;
-  myGausCurv                           = theOther.myGausCurv;
-  mySignificantFirstDerivativeOrderU   = theOther.mySignificantFirstDerivativeOrderU;
-  mySignificantFirstDerivativeOrderV   = theOther.mySignificantFirstDerivativeOrderV;
-  myUTangentStatus                     = theOther.myUTangentStatus;
-  myVTangentStatus                     = theOther.myVTangentStatus;
-  myNormalStatus                       = theOther.myNormalStatus;
-  myCurvatureStatus                    = theOther.myCurvatureStatus;
+  mySurf                             = theOther.mySurf;
+  mySurfaceProp                      = makeSurfaceProp(theOther.mySurf);
+  myLegacyProps                      = LProp_WrapperTools::CloneShared(theOther.myLegacyProps);
+  myU                                = theOther.myU;
+  myV                                = theOther.myV;
+  myDerOrder                         = theOther.myDerOrder;
+  myCN                               = theOther.myCN;
+  myLinTol                           = theOther.myLinTol;
+  myPnt                              = theOther.myPnt;
+  myD1u                              = theOther.myD1u;
+  myD1v                              = theOther.myD1v;
+  myD2u                              = theOther.myD2u;
+  myD2v                              = theOther.myD2v;
+  myDuv                              = theOther.myDuv;
+  myNormal                           = theOther.myNormal;
+  myMinCurv                          = theOther.myMinCurv;
+  myMaxCurv                          = theOther.myMaxCurv;
+  myDirMinCurv                       = theOther.myDirMinCurv;
+  myDirMaxCurv                       = theOther.myDirMaxCurv;
+  myMeanCurv                         = theOther.myMeanCurv;
+  myGausCurv                         = theOther.myGausCurv;
+  mySignificantFirstDerivativeOrderU = theOther.mySignificantFirstDerivativeOrderU;
+  mySignificantFirstDerivativeOrderV = theOther.mySignificantFirstDerivativeOrderV;
+  myUTangentStatus                   = theOther.myUTangentStatus;
+  myVTangentStatus                   = theOther.myVTangentStatus;
+  myNormalStatus                     = theOther.myNormalStatus;
+  myCurvatureStatus                  = theOther.myCurvatureStatus;
   return *this;
 }
 
@@ -210,7 +212,7 @@ LProp3d_SLProps& LProp3d_SLProps::operator=(const LProp3d_SLProps& theOther)
 void LProp3d_SLProps::SetSurface(const occ::handle<Adaptor3d_Surface>& S)
 {
   Standard_NullObject_Raise_if(S.IsNull(), "LProp3d_SLProps::SetSurface()");
-  mySurf = S;
+  mySurf        = S;
   mySurfaceProp = makeSurfaceProp(S);
   if (myLegacyProps != nullptr)
   {
@@ -431,20 +433,21 @@ bool LProp3d_SLProps::IsTangentUDefined()
                                                                0,
                                                                mySignificantFirstDerivativeOrderU,
                                                                myUTangentStatus);
-  const bool anOldDefined = myLegacyProps != nullptr ? myLegacyProps->IsTangentUDefined() : isDefined;
+  const bool anOldDefined =
+    myLegacyProps != nullptr ? myLegacyProps->IsTangentUDefined() : isDefined;
   if (myLegacyProps != nullptr
       && (isDefined != anOldDefined || myUTangentStatus != myLegacyProps->UTangentStatus()))
   {
-    LProp_CompareDebug::LogMismatch("LProp3d_SLProps::IsTangentUDefined",
-                                    surfaceGeometry(mySurf),
-                                    surfaceParameters(myU, myV),
-                                    myDerOrder,
-                                    myLinTol,
-                                    std::string("new=") + LProp_CompareDebug::ToString(isDefined)
-                                      + " old=" + LProp_CompareDebug::ToString(anOldDefined)
-                                      + " newStatus=" + LProp_CompareDebug::ToString(myUTangentStatus)
-                                      + " oldStatus="
-                                      + LProp_CompareDebug::ToString(myLegacyProps->UTangentStatus()));
+    LProp_CompareDebug::LogMismatch(
+      "LProp3d_SLProps::IsTangentUDefined",
+      surfaceGeometry(mySurf),
+      surfaceParameters(myU, myV),
+      myDerOrder,
+      myLinTol,
+      std::string("new=") + LProp_CompareDebug::ToString(isDefined)
+        + " old=" + LProp_CompareDebug::ToString(anOldDefined)
+        + " newStatus=" + LProp_CompareDebug::ToString(myUTangentStatus)
+        + " oldStatus=" + LProp_CompareDebug::ToString(myLegacyProps->UTangentStatus()));
   }
   return isDefined;
 }
@@ -516,20 +519,21 @@ bool LProp3d_SLProps::IsTangentVDefined()
                                                                1,
                                                                mySignificantFirstDerivativeOrderV,
                                                                myVTangentStatus);
-  const bool anOldDefined = myLegacyProps != nullptr ? myLegacyProps->IsTangentVDefined() : isDefined;
+  const bool anOldDefined =
+    myLegacyProps != nullptr ? myLegacyProps->IsTangentVDefined() : isDefined;
   if (myLegacyProps != nullptr
       && (isDefined != anOldDefined || myVTangentStatus != myLegacyProps->VTangentStatus()))
   {
-    LProp_CompareDebug::LogMismatch("LProp3d_SLProps::IsTangentVDefined",
-                                    surfaceGeometry(mySurf),
-                                    surfaceParameters(myU, myV),
-                                    myDerOrder,
-                                    myLinTol,
-                                    std::string("new=") + LProp_CompareDebug::ToString(isDefined)
-                                      + " old=" + LProp_CompareDebug::ToString(anOldDefined)
-                                      + " newStatus=" + LProp_CompareDebug::ToString(myVTangentStatus)
-                                      + " oldStatus="
-                                      + LProp_CompareDebug::ToString(myLegacyProps->VTangentStatus()));
+    LProp_CompareDebug::LogMismatch(
+      "LProp3d_SLProps::IsTangentVDefined",
+      surfaceGeometry(mySurf),
+      surfaceParameters(myU, myV),
+      myDerOrder,
+      myLinTol,
+      std::string("new=") + LProp_CompareDebug::ToString(isDefined)
+        + " old=" + LProp_CompareDebug::ToString(anOldDefined)
+        + " newStatus=" + LProp_CompareDebug::ToString(myVTangentStatus)
+        + " oldStatus=" + LProp_CompareDebug::ToString(myLegacyProps->VTangentStatus()));
   }
   return isDefined;
 }
@@ -601,16 +605,16 @@ bool LProp3d_SLProps::IsNormalDefined()
   if (myLegacyProps != nullptr
       && (isDefined != anOldDefined || myNormalStatus != myLegacyProps->NormalStatus()))
   {
-    LProp_CompareDebug::LogMismatch("LProp3d_SLProps::IsNormalDefined",
-                                    surfaceGeometry(mySurf),
-                                    surfaceParameters(myU, myV),
-                                    myDerOrder,
-                                    myLinTol,
-                                    std::string("new=") + LProp_CompareDebug::ToString(isDefined)
-                                      + " old=" + LProp_CompareDebug::ToString(anOldDefined)
-                                      + " newStatus=" + LProp_CompareDebug::ToString(myNormalStatus)
-                                      + " oldStatus="
-                                      + LProp_CompareDebug::ToString(myLegacyProps->NormalStatus()));
+    LProp_CompareDebug::LogMismatch(
+      "LProp3d_SLProps::IsNormalDefined",
+      surfaceGeometry(mySurf),
+      surfaceParameters(myU, myV),
+      myDerOrder,
+      myLinTol,
+      std::string("new=") + LProp_CompareDebug::ToString(isDefined)
+        + " old=" + LProp_CompareDebug::ToString(anOldDefined)
+        + " newStatus=" + LProp_CompareDebug::ToString(myNormalStatus)
+        + " oldStatus=" + LProp_CompareDebug::ToString(myLegacyProps->NormalStatus()));
   }
   return isDefined;
 }
@@ -676,20 +680,21 @@ bool LProp3d_SLProps::IsCurvatureDefined()
     myMeanCurv,
     myGausCurv,
     myCurvatureStatus);
-  const bool anOldDefined = myLegacyProps != nullptr ? myLegacyProps->IsCurvatureDefined() : isDefined;
+  const bool anOldDefined =
+    myLegacyProps != nullptr ? myLegacyProps->IsCurvatureDefined() : isDefined;
   if (myLegacyProps != nullptr
       && (isDefined != anOldDefined || myCurvatureStatus != myLegacyProps->CurvatureStatus()))
   {
-    LProp_CompareDebug::LogMismatch("LProp3d_SLProps::IsCurvatureDefined",
-                                    surfaceGeometry(mySurf),
-                                    surfaceParameters(myU, myV),
-                                    myDerOrder,
-                                    myLinTol,
-                                    std::string("new=") + LProp_CompareDebug::ToString(isDefined)
-                                      + " old=" + LProp_CompareDebug::ToString(anOldDefined)
-                                      + " newStatus=" + LProp_CompareDebug::ToString(myCurvatureStatus)
-                                      + " oldStatus="
-                                      + LProp_CompareDebug::ToString(myLegacyProps->CurvatureStatus()));
+    LProp_CompareDebug::LogMismatch(
+      "LProp3d_SLProps::IsCurvatureDefined",
+      surfaceGeometry(mySurf),
+      surfaceParameters(myU, myV),
+      myDerOrder,
+      myLinTol,
+      std::string("new=") + LProp_CompareDebug::ToString(isDefined)
+        + " old=" + LProp_CompareDebug::ToString(anOldDefined)
+        + " newStatus=" + LProp_CompareDebug::ToString(myCurvatureStatus)
+        + " oldStatus=" + LProp_CompareDebug::ToString(myLegacyProps->CurvatureStatus()));
   }
   return isDefined;
 }

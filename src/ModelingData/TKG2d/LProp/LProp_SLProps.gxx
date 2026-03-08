@@ -471,7 +471,7 @@ bool LProp_SLProps::IsCurvatureDefined()
     myDirMaxCurv = gp_Dir(VectCurv1);
   }
 
-  myMeanCurv = ((N * E) - (2. * M * F) + (L * G)) / (2. * ((E * G) - (F * F)));
+  myMeanCurv        = ((N * E) - (2. * M * F) + (L * G)) / (2. * ((E * G) - (F * F)));
   myGausCurv        = ((L * N) - (M * M)) / ((E * G) - (F * F));
   myCurvatureStatus = LProp_Computed;
   return true;

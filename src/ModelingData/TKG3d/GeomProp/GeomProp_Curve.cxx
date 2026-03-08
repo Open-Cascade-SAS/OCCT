@@ -43,7 +43,7 @@ void GeomProp_Curve::initialization(const Adaptor3d_Curve& theCurve)
   if (theCurve.IsKind(STANDARD_TYPE(GeomAdaptor_Curve)))
   {
     const auto& aGeomAdaptor = static_cast<const GeomAdaptor_Curve&>(theCurve);
-    myOwnedAdaptor = new GeomAdaptor_Curve(aGeomAdaptor);
+    myOwnedAdaptor           = new GeomAdaptor_Curve(aGeomAdaptor);
     initFromAdaptor();
     return;
   }

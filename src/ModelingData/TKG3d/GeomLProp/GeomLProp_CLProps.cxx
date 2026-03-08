@@ -102,12 +102,14 @@ void curveD3(const occ::handle<Geom_Curve>& theCurve,
   }
 }
 
-double curveFirstParameter(const occ::handle<Geom_Curve>& theCurve, const Adaptor3d_Curve* theAdaptor)
+double curveFirstParameter(const occ::handle<Geom_Curve>& theCurve,
+                           const Adaptor3d_Curve*         theAdaptor)
 {
   return theAdaptor != nullptr ? theAdaptor->FirstParameter() : theCurve->FirstParameter();
 }
 
-double curveLastParameter(const occ::handle<Geom_Curve>& theCurve, const Adaptor3d_Curve* theAdaptor)
+double curveLastParameter(const occ::handle<Geom_Curve>& theCurve,
+                          const Adaptor3d_Curve*         theAdaptor)
 {
   return theAdaptor != nullptr ? theAdaptor->LastParameter() : theCurve->LastParameter();
 }
@@ -214,9 +216,9 @@ GeomLProp_CLProps& GeomLProp_CLProps::operator=(const GeomLProp_CLProps& theOthe
     return *this;
   }
 
-  myCurve = theOther.myCurve;
-  myCurveProp = makeCurveProp(theOther.myCurve);
-  myLegacyProps = LProp_WrapperTools::CloneShared(theOther.myLegacyProps);
+  myCurve                           = theOther.myCurve;
+  myCurveProp                       = makeCurveProp(theOther.myCurve);
+  myLegacyProps                     = LProp_WrapperTools::CloneShared(theOther.myLegacyProps);
   myU                               = theOther.myU;
   myDerOrder                        = theOther.myDerOrder;
   myCN                              = theOther.myCN;
@@ -242,7 +244,7 @@ GeomLProp_CLProps& GeomLProp_CLProps::operator=(const GeomLProp_CLProps& theOthe
 
 void GeomLProp_CLProps::SetParameter(const double U)
 {
-  myU = U;
+  myU                              = U;
   const Adaptor3d_Curve* anAdaptor = curveAdaptor(myCurveProp);
   switch (myDerOrder)
   {
@@ -278,10 +280,10 @@ void GeomLProp_CLProps::SetParameter(const double U)
 void GeomLProp_CLProps::SetCurve(const occ::handle<Geom_Curve>& C)
 {
   Standard_NullObject_Raise_if(C.IsNull(), "GeomLProp_CLProps::SetCurve()");
-  myCurve                           = C;
-  myCurveProp                       = makeCurveProp(C);
+  myCurve     = C;
+  myCurveProp = makeCurveProp(C);
   myLegacyProps->SetCurve(C);
-  myCN                              = 4;
+  myCN = 4;
   LProp_WrapperTools::ResetCurveState(myCurvature,
                                       myTangentStatus,
                                       mySignificantFirstDerivativeOrder);
@@ -364,7 +366,13 @@ const gp_Vec& GeomLProp_CLProps::D3()
   if (myDerOrder < 3)
   {
     myDerOrder = 3;
-    curveD3(myCurve, curveAdaptor(myCurveProp), myU, myPnt, myDerivArr[0], myDerivArr[1], myDerivArr[2]);
+    curveD3(myCurve,
+            curveAdaptor(myCurveProp),
+            myU,
+            myPnt,
+            myDerivArr[0],
+            myDerivArr[1],
+            myDerivArr[2]);
   }
   if (myLegacyProps != nullptr && !myDerivArr[2].IsEqual(myLegacyProps->D3(), myLinTol, myLinTol))
   {
@@ -392,20 +400,21 @@ bool GeomLProp_CLProps::IsTangentDefined()
                                                                D3(),
                                                                mySignificantFirstDerivativeOrder,
                                                                myTangentStatus);
-  const bool anOldDefined = myLegacyProps != nullptr ? myLegacyProps->IsTangentDefined() : isDefined;
+  const bool anOldDefined =
+    myLegacyProps != nullptr ? myLegacyProps->IsTangentDefined() : isDefined;
   if (myLegacyProps != nullptr
       && (isDefined != anOldDefined || myTangentStatus != myLegacyProps->TangentStatus()))
   {
-    LProp_CompareDebug::LogMismatch("GeomLProp_CLProps::IsTangentDefined",
-                                    curveGeometry(myCurve),
-                                    curveParameters(myU),
-                                    myDerOrder,
-                                    myLinTol,
-                                    std::string("new=") + LProp_CompareDebug::ToString(isDefined)
-                                      + " old=" + LProp_CompareDebug::ToString(anOldDefined)
-                                      + " newStatus=" + LProp_CompareDebug::ToString(myTangentStatus)
-                                      + " oldStatus="
-                                      + LProp_CompareDebug::ToString(myLegacyProps->TangentStatus()));
+    LProp_CompareDebug::LogMismatch(
+      "GeomLProp_CLProps::IsTangentDefined",
+      curveGeometry(myCurve),
+      curveParameters(myU),
+      myDerOrder,
+      myLinTol,
+      std::string("new=") + LProp_CompareDebug::ToString(isDefined)
+        + " old=" + LProp_CompareDebug::ToString(anOldDefined)
+        + " newStatus=" + LProp_CompareDebug::ToString(myTangentStatus)
+        + " oldStatus=" + LProp_CompareDebug::ToString(myLegacyProps->TangentStatus()));
   }
   return isDefined;
 }

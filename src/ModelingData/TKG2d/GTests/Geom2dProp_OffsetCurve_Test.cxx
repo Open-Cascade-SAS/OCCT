@@ -504,9 +504,9 @@ TEST(Geom2dProp_OffsetCurveTest, RepeatedCalls_SameParameter_AreStable)
   const Geom2dProp::NormalResult    aNorm    = aProp.Normal(aParam, THE_LIN_TOL);
   const Geom2dProp::CentreResult    aCentre  = aProp.CentreOfCurvature(aParam, THE_LIN_TOL);
 
-  const Geom2dProp::CurvatureResult aFreshCurv   = aFreshProp.Curvature(aParam, THE_LIN_TOL);
-  const Geom2dProp::NormalResult    aFreshNorm   = aFreshProp.Normal(aParam, THE_LIN_TOL);
-  const Geom2dProp::CentreResult    aFreshCentre = aFreshProp.CentreOfCurvature(aParam, THE_LIN_TOL);
+  const Geom2dProp::CurvatureResult aFreshCurv = aFreshProp.Curvature(aParam, THE_LIN_TOL);
+  const Geom2dProp::NormalResult    aFreshNorm = aFreshProp.Normal(aParam, THE_LIN_TOL);
+  const Geom2dProp::CentreResult aFreshCentre  = aFreshProp.CentreOfCurvature(aParam, THE_LIN_TOL);
 
   ASSERT_TRUE(aTangent.IsDefined);
   ASSERT_TRUE(aCurv.IsDefined);

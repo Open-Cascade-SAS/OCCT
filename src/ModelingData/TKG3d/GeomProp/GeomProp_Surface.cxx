@@ -40,7 +40,7 @@ void GeomProp_Surface::initialization(const Adaptor3d_Surface& theSurface)
   if (theSurface.IsKind(STANDARD_TYPE(GeomAdaptor_Surface)))
   {
     const auto& aGeomAdaptor = static_cast<const GeomAdaptor_Surface&>(theSurface);
-    myOwnedAdaptor = new GeomAdaptor_Surface(aGeomAdaptor);
+    myOwnedAdaptor           = new GeomAdaptor_Surface(aGeomAdaptor);
     initFromAdaptor();
     return;
   }

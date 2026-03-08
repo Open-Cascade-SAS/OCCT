@@ -134,9 +134,9 @@ LProp3d_CLProps& LProp3d_CLProps::operator=(const LProp3d_CLProps& theOther)
     return *this;
   }
 
-  myCurve = theOther.myCurve;
-  myCurveProp = makeCurveProp(theOther.myCurve);
-  myLegacyProps = LProp_WrapperTools::CloneShared(theOther.myLegacyProps);
+  myCurve                           = theOther.myCurve;
+  myCurveProp                       = makeCurveProp(theOther.myCurve);
+  myLegacyProps                     = LProp_WrapperTools::CloneShared(theOther.myLegacyProps);
   myU                               = theOther.myU;
   myDerOrder                        = theOther.myDerOrder;
   myCN                              = theOther.myCN;
@@ -197,10 +197,10 @@ void LProp3d_CLProps::SetParameter(const double U)
 void LProp3d_CLProps::SetCurve(const occ::handle<Adaptor3d_Curve>& C)
 {
   Standard_NullObject_Raise_if(C.IsNull(), "LProp3d_CLProps::SetCurve()");
-  myCurve                           = C;
-  myCurveProp                       = makeCurveProp(C);
+  myCurve     = C;
+  myCurveProp = makeCurveProp(C);
   myLegacyProps->SetCurve(C);
-  myCN                              = 4;
+  myCN = 4;
   LProp_WrapperTools::ResetCurveState(myCurvature,
                                       myTangentStatus,
                                       mySignificantFirstDerivativeOrder);
@@ -311,20 +311,21 @@ bool LProp3d_CLProps::IsTangentDefined()
                                                                D3(),
                                                                mySignificantFirstDerivativeOrder,
                                                                myTangentStatus);
-  const bool anOldDefined = myLegacyProps != nullptr ? myLegacyProps->IsTangentDefined() : isDefined;
+  const bool anOldDefined =
+    myLegacyProps != nullptr ? myLegacyProps->IsTangentDefined() : isDefined;
   if (myLegacyProps != nullptr
       && (isDefined != anOldDefined || myTangentStatus != myLegacyProps->TangentStatus()))
   {
-    LProp_CompareDebug::LogMismatch("LProp3d_CLProps::IsTangentDefined",
-                                    curveGeometry(myCurve),
-                                    curveParameters(myU),
-                                    myDerOrder,
-                                    myLinTol,
-                                    std::string("new=") + LProp_CompareDebug::ToString(isDefined)
-                                      + " old=" + LProp_CompareDebug::ToString(anOldDefined)
-                                      + " newStatus=" + LProp_CompareDebug::ToString(myTangentStatus)
-                                      + " oldStatus="
-                                      + LProp_CompareDebug::ToString(myLegacyProps->TangentStatus()));
+    LProp_CompareDebug::LogMismatch(
+      "LProp3d_CLProps::IsTangentDefined",
+      curveGeometry(myCurve),
+      curveParameters(myU),
+      myDerOrder,
+      myLinTol,
+      std::string("new=") + LProp_CompareDebug::ToString(isDefined)
+        + " old=" + LProp_CompareDebug::ToString(anOldDefined)
+        + " newStatus=" + LProp_CompareDebug::ToString(myTangentStatus)
+        + " oldStatus=" + LProp_CompareDebug::ToString(myLegacyProps->TangentStatus()));
   }
   return isDefined;
 }
