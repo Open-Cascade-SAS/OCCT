@@ -232,10 +232,8 @@ Draw_Interpretor& Draw::GetInterpretor()
   return theCommands;
 }
 
-//=======================================================================
-// function :
-// purpose  : Set/Get Progress Indicator
-//=======================================================================
+//=================================================================================================
+
 void Draw::SetProgressBar(const occ::handle<Draw_ProgressIndicator>& theProgress)
 {
   global_Progress = theProgress;

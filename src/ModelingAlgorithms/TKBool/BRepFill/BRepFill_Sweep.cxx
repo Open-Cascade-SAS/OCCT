@@ -182,10 +182,8 @@ static void Translate(const occ::handle<NCollection_HArray2<TopoDS_Shape>>& Arra
   }
 }
 
-//=======================================================================
-// function : Box
-// purpose  : Bounding box of a section.
-//=======================================================================
+//=================================================================================================
+
 static void Box(occ::handle<GeomFill_SectionLaw>& Sec, const double U, Bnd_Box& Box)
 
 {
@@ -711,10 +709,8 @@ static void BuildFace(
     F.Reverse();
 }
 
-//=======================================================================
-// Fonction : BuildEdge
-// Objet : Construct non-closed Edge
-//=======================================================================
+//=================================================================================================
+
 static TopoDS_Edge BuildEdge(occ::handle<Geom_Curve>&   C3d,
                              occ::handle<Geom2d_Curve>& C2d,
                              occ::handle<Geom_Surface>& S,
@@ -1359,10 +1355,8 @@ static void KeepEdge(const TopoDS_Shape&             Face,
   }
 }
 
-//=======================================================================
-// Function :
-// Objet : Construct a vertex via an iso
-//=======================================================================
+//=================================================================================================
+
 static void BuildVertex(const occ::handle<Geom_Curve>& Iso,
                         const bool                     isfirst,
                         const double                   First,
@@ -1379,10 +1373,8 @@ static void BuildVertex(const occ::handle<Geom_Curve>& Iso,
   B.MakeVertex(TopoDS::Vertex(Vertex), Iso->Value(val), Precision::Confusion());
 }
 
-//=======================================================================
-// Function :
-// Objet : Construct an empty edge
-//=======================================================================
+//=================================================================================================
+
 static TopoDS_Edge NullEdge(TopoDS_Shape& Vertex)
 {
   TopoDS_Edge  E;
@@ -1395,10 +1387,8 @@ static TopoDS_Edge NullEdge(TopoDS_Shape& Vertex)
   return E;
 }
 
-//=======================================================================
-// Function :
-// Objet : Construct an edge via an iso
-//=======================================================================
+//=================================================================================================
+
 static TopoDS_Edge BuildEdge(const occ::handle<Geom_Surface>& S,
                              const bool                       isUiso,
                              const double                     ValIso,
@@ -1562,10 +1552,8 @@ static TopoDS_Edge BuildEdge(const occ::handle<Geom_Surface>& S,
   return E;
 }
 
-//=======================================================================
-// Function :
-// Objet : Complete an edge via an iso
-//=======================================================================
+//=================================================================================================
+
 static void UpdateEdge(TopoDS_Edge&                     E,
                        const occ::handle<Geom_Surface>& S,
                        const bool                       isUiso,
@@ -1849,10 +1837,8 @@ BRepFill_Sweep::BRepFill_Sweep(const occ::handle<BRepFill_SectionLaw>&  Section,
   myForceApproxC1 = false;
 }
 
-//=======================================================================
-// function : SetBounds
-// purpose  : Define start and end shapes
-//======================================================================
+//=================================================================================================
+
 void BRepFill_Sweep::SetBounds(const TopoDS_Wire& First, const TopoDS_Wire& Last)
 {
   FirstShape = First;
@@ -1961,10 +1947,8 @@ bool BRepFill_Sweep::CorrectApproxParameters()
   return Corrected;
 }
 
-//=======================================================================
-// function : BuildWire
-// purpose  : Construit a wire by sweeping
-//======================================================================
+//=================================================================================================
+
 bool BRepFill_Sweep::BuildWire(const BRepFill_TransitionStyle /*Transition*/)
 {
   int    ipath, isec = 1;
@@ -2078,10 +2062,8 @@ bool BRepFill_Sweep::BuildWire(const BRepFill_TransitionStyle /*Transition*/)
   return true;
 }
 
-//=======================================================================
-// function : BuildShell
-// purpose  : Construct a Shell by sweeping
-//======================================================================
+//=================================================================================================
+
 bool BRepFill_Sweep::BuildShell(
   const BRepFill_TransitionStyle /*Transition*/,
   const int                                               IFirst,
@@ -3237,19 +3219,15 @@ double BRepFill_Sweep::ErrorOnSurface() const
   return Error;
 }
 
-//=======================================================================
-// function : SubShape
-// purpose  : Faces obtained by sweeping
-//=======================================================================
+//=================================================================================================
+
 occ::handle<NCollection_HArray2<TopoDS_Shape>> BRepFill_Sweep::SubShape() const
 {
   return myFaces;
 }
 
-//=======================================================================
-// function : InterFaces
-// purpose  : Edges obtained by sweeping
-//=======================================================================
+//=================================================================================================
+
 occ::handle<NCollection_HArray2<TopoDS_Shape>> BRepFill_Sweep::InterFaces() const
 {
   return myUEdges;
@@ -3273,10 +3251,8 @@ TopoDS_Shape BRepFill_Sweep::Tape(const int Index) const
   return myTapes->Value(Index);
 }
 
-//=======================================================================
-// function : PerformCorner
-// purpose  : Trim and/or loop a corner
-//======================================================================
+//=================================================================================================
+
 bool BRepFill_Sweep::PerformCorner(const int                                             Index,
                                    const BRepFill_TransitionStyle                        Transition,
                                    const occ::handle<NCollection_HArray2<TopoDS_Shape>>& Bounds)

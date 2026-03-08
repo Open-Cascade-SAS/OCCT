@@ -1631,10 +1631,8 @@ void IntPatch_Intersection::ParamParamPerfom(const occ::handle<Adaptor3d_Surface
   }
 }
 
-//=======================================================================
-////function : GeomGeomPerfom
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 void IntPatch_Intersection::GeomGeomPerfom(const occ::handle<Adaptor3d_Surface>&   theS1,
                                            const occ::handle<Adaptor3d_TopolTool>& theD1,
                                            const occ::handle<Adaptor3d_Surface>&   theS2,
@@ -2235,10 +2233,8 @@ double IntPatch_Intersection::DefineUVMaxStep(const occ::handle<Adaptor3d_Surfac
   return anUVMaxStep;
 }
 
-//=======================================================================
-// function : splitCone
-// purpose  : Splits cone by the apex
-//=======================================================================
+//=================================================================================================
+
 static void splitCone(const occ::handle<Adaptor3d_Surface>&               theS,
                       const occ::handle<Adaptor3d_TopolTool>&             theD,
                       const double                                        theTol,

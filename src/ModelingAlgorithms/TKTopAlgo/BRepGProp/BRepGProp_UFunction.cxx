@@ -17,10 +17,8 @@
 #include <gp_Pnt.hxx>
 #include <gp_XYZ.hxx>
 
-//=======================================================================
-// function : Constructor.
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 BRepGProp_UFunction::BRepGProp_UFunction(const BRepGProp_Face& theSurface,
                                          const gp_Pnt&         theVertex,
                                          const bool            IsByPoint,
@@ -152,10 +150,7 @@ bool BRepGProp_UFunction::CenterMassValue(const double X, double& F)
   return true;
 }
 
-//=======================================================================
-// function : InertiaValue
-// purpose  : Compute the value of inertia.
-//=======================================================================
+//=================================================================================================
 
 bool BRepGProp_UFunction::InertiaValue(const double X, double& F)
 {

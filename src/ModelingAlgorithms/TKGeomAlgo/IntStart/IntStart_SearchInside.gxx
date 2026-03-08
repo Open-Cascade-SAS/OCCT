@@ -37,10 +37,7 @@ IntStart_SearchInside::IntStart_SearchInside(TheFunction&                     Fu
   Perform(Func, PS, T, Epsilon);
 }
 
-//=======================================================================
-// function : Perform
-// purpose  : Search all inside points
-//=======================================================================
+//=================================================================================================
 
 void IntStart_SearchInside::Perform(TheFunction&                     Func,
                                     const ThePSurface&               PS,
@@ -268,10 +265,7 @@ void IntStart_SearchInside::Perform(TheFunction&                     Func,
   done = true;
 }
 
-//=======================================================================
-// function : Perform
-// purpose  : Test the given inside point
-//=======================================================================
+//=================================================================================================
 
 void IntStart_SearchInside::Perform(TheFunction&       Func,
                                     const ThePSurface& PS,

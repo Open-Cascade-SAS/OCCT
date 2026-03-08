@@ -18,10 +18,7 @@
 #include <TObj_Persistence.hxx>
 #include <TObj_Object.hxx>
 
-//=======================================================================
-// function : getMapOfTypes
-// purpose  : Returns the map of types
-//=======================================================================
+//=================================================================================================
 
 NCollection_DataMap<TCollection_AsciiString, void*>& TObj_Persistence::getMapOfTypes()
 {

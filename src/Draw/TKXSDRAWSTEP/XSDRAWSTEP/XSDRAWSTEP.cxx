@@ -845,10 +845,8 @@ static int ReadStep(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
   return 0;
 }
 
-//=======================================================================
-// function : WriteStep
-// purpose  : Write DECAF document to STEP
-//=======================================================================
+//=================================================================================================
+
 static int WriteStep(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
 {
   DeclareAndCast(STEPControl_Controller, aController, XSDRAW::Controller());

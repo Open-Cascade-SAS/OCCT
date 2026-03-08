@@ -561,10 +561,8 @@ occ::handle<TDataStd_Integer> DNaming::GetInteger(
   return anInteger;
 }
 
-//=======================================================================
-// function : String
-// purpose  : Returns Name attribute
-//=======================================================================
+//=================================================================================================
+
 occ::handle<TDataStd_Name> DNaming::GetString(const occ::handle<TFunction_Function>& theFunction,
                                               const int                              thePosition)
 {
@@ -654,10 +652,8 @@ occ::handle<TNaming_NamedShape> DNaming::GetObjectValue(
   */
 }
 
-//=======================================================================
-// function : GetPrevFunction
-// purpose  : Returns previous function
-//=======================================================================
+//=================================================================================================
+
 occ::handle<TFunction_Function> DNaming::GetPrevFunction(
   const occ::handle<TFunction_Function>& theFunction)
 {
@@ -690,10 +686,8 @@ occ::handle<TFunction_Function> DNaming::GetPrevFunction(
   */
 }
 
-//=======================================================================
-// function : GetFirstFunction
-// purpose  : Returns first function
-//=======================================================================
+//=================================================================================================
+
 occ::handle<TFunction_Function> DNaming::GetFirstFunction(
   const occ::handle<TDataStd_UAttribute>& theObject)
 {

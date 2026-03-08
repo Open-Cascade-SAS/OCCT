@@ -44,20 +44,15 @@ GeomFill_GuideTrihedronAC::GeomFill_GuideTrihedronAC(const occ::handle<Adaptor3d
   Orig2       = 1;
 }
 
-//=======================================================================
-// function : Guide
-// purpose  : calculation of trihedron
-//=======================================================================
+//=================================================================================================
 
 occ::handle<Adaptor3d_Curve> GeomFill_GuideTrihedronAC::Guide() const
 {
   return myGuide;
 }
 
-//=======================================================================
-// function : D0
-// purpose  : calculation of trihedron
-//=======================================================================
+//=================================================================================================
+
 bool GeomFill_GuideTrihedronAC::D0(const double Param,
                                    gp_Vec&      Tangent,
                                    gp_Vec&      Normal,

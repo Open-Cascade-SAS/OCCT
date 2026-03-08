@@ -327,10 +327,7 @@ void BRepFeat_MakeRevol::Perform(const double Angle)
   }
 }
 
-//=======================================================================
-// function : Perform
-// purpose  : feature till shape Until
-//=======================================================================
+//=================================================================================================
 
 void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& Until)
 {
@@ -461,10 +458,7 @@ void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& Until)
   }
 }
 
-//=======================================================================
-// function : Perform
-// purpose  : feature limited by two shapes
-//=======================================================================
+//=================================================================================================
 
 void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& From, const TopoDS_Shape& Until)
 {
@@ -867,10 +861,7 @@ static void VerifGluedFaces(
   }
 }
 
-//=======================================================================
-// function : MajMap
-// purpose  : management of descendants
-//=======================================================================
+//=================================================================================================
 
 static void MajMap(
   const TopoDS_Shape& theB,
@@ -915,10 +906,7 @@ static void MajMap(
   }
 }
 
-//=======================================================================
-// function : ToFuse
-// purpose  : two faces samedomaine or not
-//=======================================================================
+//=================================================================================================
 
 bool ToFuse(const TopoDS_Face& F1, const TopoDS_Face& F2)
 {

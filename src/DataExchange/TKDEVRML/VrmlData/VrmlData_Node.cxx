@@ -62,10 +62,7 @@ VrmlData_Node::VrmlData_Node(const VrmlData_Scene& theScene, const char* theName
   setName(theName);
 }
 
-//=======================================================================
-// function : Clone
-// purpose  : Create a copy of this node.
-//=======================================================================
+//=================================================================================================
 
 occ::handle<VrmlData_Node> VrmlData_Node::Clone(const occ::handle<VrmlData_Node>& theOther) const
 {

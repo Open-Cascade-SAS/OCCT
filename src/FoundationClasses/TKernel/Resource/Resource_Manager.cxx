@@ -523,10 +523,8 @@ void Resource_Manager::SetResource(const char* const aResource, const char* cons
     myUserMap(Resource) = Value;
 }
 
-//=======================================================================
-// function : Find
-// purpose  : Tells if a resource exits.
-//=======================================================================
+//=================================================================================================
+
 bool Resource_Manager::Find(const char* const aResource) const
 {
   TCollection_AsciiString Resource(aResource);

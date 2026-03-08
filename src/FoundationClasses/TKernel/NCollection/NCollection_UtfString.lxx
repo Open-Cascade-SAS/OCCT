@@ -143,10 +143,8 @@ inline NCollection_UtfString<Type>::NCollection_UtfString(const wchar_t* theCopy
 }
 #endif
 
-// =======================================================================
-// function : ~NCollection_UtfString
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <typename Type>
 inline NCollection_UtfString<Type>::~NCollection_UtfString()
 {
@@ -259,10 +257,8 @@ inline bool NCollection_UtfString<Type>::ToLocale(char* theBuffer, const int the
 #endif
 }
 
-// =======================================================================
-// function : operator=
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <typename Type>
 inline const NCollection_UtfString<Type>& NCollection_UtfString<Type>::operator=(
   const char* theStringUtf8)
@@ -271,10 +267,8 @@ inline const NCollection_UtfString<Type>& NCollection_UtfString<Type>::operator=
   return (*this);
 }
 
-// =======================================================================
-// function : operator=
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <typename Type>
 inline const NCollection_UtfString<Type>& NCollection_UtfString<Type>::operator=(
   const wchar_t* theStringUtfWide)

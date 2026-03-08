@@ -74,10 +74,7 @@ occ::handle<MoniTool_Timer> MoniTool_Timer::Timer(const char* const name)
   return MT;
 }
 
-//=======================================================================
-// function : ClearTimers
-// purpose  : Clears all the map of timers
-//=======================================================================
+//=================================================================================================
 
 void MoniTool_Timer::ClearTimers()
 {

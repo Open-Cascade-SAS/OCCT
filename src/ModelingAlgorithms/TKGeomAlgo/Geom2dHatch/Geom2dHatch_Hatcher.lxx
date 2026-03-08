@@ -97,10 +97,7 @@ inline void Geom2dHatch_Hatcher::Clear()
     ClrElements();
 }
 
-//=======================================================================
-// Function : Element
-// Purpose  : Returns the IndE-th element.
-//=======================================================================
+//=================================================================================================
 
 inline Geom2dHatch_Element& Geom2dHatch_Hatcher::Element(const int IndE)
 {
@@ -125,10 +122,7 @@ inline const Geom2dAdaptor_Curve& Geom2dHatch_Hatcher::ElementCurve(const int In
   return Element.Curve();
 }
 
-//=======================================================================
-// Function : Hatching
-// Purpose  : Returns the IndH-th hatching.
-//=======================================================================
+//=================================================================================================
 
 inline Geom2dHatch_Hatching& Geom2dHatch_Hatcher::Hatching(const int IndH)
 {

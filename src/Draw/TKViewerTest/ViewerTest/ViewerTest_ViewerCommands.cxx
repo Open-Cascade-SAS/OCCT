@@ -837,10 +837,8 @@ TCollection_AsciiString ViewerTest::ViewerInit(const ViewerTest_VinitParams& the
   return aViewNames.GetViewName();
 }
 
-//==============================================================================
-// function : RedrawAllViews
-// purpose  : Redraw all created views
-//==============================================================================
+//=================================================================================================
+
 void ViewerTest::RedrawAllViews()
 {
   ViewerTest_ViewerCommandsViewMap::Iterator aViewIt(ViewerTest_myViews);
@@ -1880,10 +1878,8 @@ void ViewerTest::GetMousePosition(int& theX, int& theY)
   }
 }
 
-//==============================================================================
-// function : VViewProj
-// purpose  : Switch view projection
-//==============================================================================
+//=================================================================================================
+
 static int VViewProj(Draw_Interpretor&, int theNbArgs, const char** theArgVec)
 {
   static bool                  isYup = false;

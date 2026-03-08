@@ -467,10 +467,8 @@ void ContextualDump(Draw_Interpretor&         theCommands,
   theCommands << "\n";
 }
 
-//=======================================================================
-// function : FillProblems
-// purpose : auxiliary for StructuralDump
-//=======================================================================
+//=================================================================================================
+
 static void FillProblems(const BRepCheck_Status                 stat,
                          occ::handle<NCollection_HArray1<int>>& NbProblems)
 {
@@ -483,10 +481,8 @@ static void FillProblems(const BRepCheck_Status                 stat,
   NbProblems->SetValue(anID, NbProblems->Value(anID) + 1);
 }
 
-//=======================================================================
-// function : GetProblemSub
-// purpose : auxiliary for StructuralDump
-//=======================================================================
+//=================================================================================================
+
 static void GetProblemSub(const BRepCheck_Analyzer&                         Ana,
                           const TopoDS_Shape&                               Shape,
                           occ::handle<NCollection_HSequence<TopoDS_Shape>>& sl,
@@ -535,10 +531,8 @@ static void GetProblemSub(const BRepCheck_Analyzer&                         Ana,
   }
 }
 
-//=======================================================================
-// function : GetProblemShapes
-// purpose : auxiliary for StructuralDump
-//=======================================================================
+//=================================================================================================
+
 static void GetProblemShapes(const BRepCheck_Analyzer&                         Ana,
                              const TopoDS_Shape&                               Shape,
                              occ::handle<NCollection_HSequence<TopoDS_Shape>>& sl,

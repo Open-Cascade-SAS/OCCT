@@ -55,10 +55,8 @@
 // define parameter division number as 10*e^(-PI) = 0.43213918
 const double PAR_T = 0.43213918;
 
-//=======================================================================
-// function TopOpeBRepBuild_Tools::FindState
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 void TopOpeBRepBuild_Tools::FindState(
   const TopoDS_Shape&                                                       aSubsh,
   const TopAbs_State                                                        aState,
@@ -91,10 +89,8 @@ void TopOpeBRepBuild_Tools::FindState(
   }
 }
 
-//=======================================================================
-// function TopOpeBRepBuild_Tools::PropagateState
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 void TopOpeBRepBuild_Tools::PropagateState(
   const NCollection_DataMap<TopoDS_Shape, TopAbs_State, TopTools_ShapeMapHasher>& aSplShapesState,
   const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&            aShapesToRestMap,

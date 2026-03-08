@@ -195,10 +195,7 @@ occ::handle<Units_Dimensions> operator*(const occ::handle<Units_Dimensions>& adi
   return adimension1->Multiply(adimension2);
 }
 
-//=======================================================================
-// function : operator /
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 occ::handle<Units_Dimensions> operator/(const occ::handle<Units_Dimensions>& adimension1,
                                         const occ::handle<Units_Dimensions>& adimension2)
@@ -214,10 +211,7 @@ occ::handle<Units_Dimensions> pow(const occ::handle<Units_Dimensions>& adimensio
   return adimension->Power(areal);
 }
 
-//=======================================================================
-// function : operator ==
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 // bool operator ==(const occ::handle<Units_Dimensions>& adimension1,
 //			     const occ::handle<Units_Dimensions>& adimension2)

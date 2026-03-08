@@ -56,10 +56,8 @@
 #include <XSControl_WorkSession.hxx>
 #include <XSDRAW.hxx>
 
-//=======================================================================
-// function : WriteShape
-// purpose  : Creates a file Shape_'number'
-//=======================================================================
+//=================================================================================================
+
 void WriteShape(const TopoDS_Shape& shape, const int number)
 {
   char fname[110];
@@ -911,10 +909,8 @@ static int etest(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
   return 0;
 }
 
-//=======================================================================
-// function : ReadIges
-// purpose  : Read IGES to DECAF document
-//=======================================================================
+//=================================================================================================
+
 static int ReadIges(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
 {
   if (theNbArgs < 3)
@@ -1012,10 +1008,8 @@ static int ReadIges(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
   return 0;
 }
 
-//=======================================================================
-// function : WriteIges
-// purpose  : Write DECAF document to IGES
-//=======================================================================
+//=================================================================================================
+
 static int WriteIges(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
 {
   if (theNbArgs < 3)

@@ -76,19 +76,15 @@ int MeshVS_SensitiveMesh::NbSubElements() const
   return aDataSource->GetAllNodes().Extent();
 }
 
-//=======================================================================
-// function : BoundingBox
-// purpose  : Returns bounding box of mesh
-//=======================================================================
+//=================================================================================================
+
 Select3D_BndBox3d MeshVS_SensitiveMesh::BoundingBox()
 {
   return myBndBox;
 }
 
-//=======================================================================
-// function : CenterOfGeometry
-// purpose  : Returns center of mesh
-//=======================================================================
+//=================================================================================================
+
 gp_Pnt MeshVS_SensitiveMesh::CenterOfGeometry() const
 {
   if (!myBndBox.IsValid())

@@ -81,10 +81,7 @@ const occ::handle<TopoDS_TShape>& VrmlData_IndexedLineSet::TShape()
   return myTShape;
 }
 
-//=======================================================================
-// function : Clone
-// purpose  : Create a copy of this node
-//=======================================================================
+//=================================================================================================
 
 occ::handle<VrmlData_Node> VrmlData_IndexedLineSet::Clone(
   const occ::handle<VrmlData_Node>& theOther) const

@@ -3756,10 +3756,7 @@ const BRepAlgo_Image& BRepOffset_MakeOffset::OffsetFacesFromShapes() const
 
 //  Modified by skv - Tue Mar 15 16:20:43 2005 Begin
 
-//=======================================================================
-// function : GetJoinType
-// purpose  : Query offset join type.
-//=======================================================================
+//=================================================================================================
 
 GeomAbs_JoinType BRepOffset_MakeOffset::GetJoinType() const
 {
@@ -5390,10 +5387,8 @@ void RemoveSeamAndDegeneratedEdges(const TopoDS_Face& theFace, const TopoDS_Face
   }
 }
 
-//=======================================================================
-// function : IsSolid
-// purpose  : Checks if the shape is solid
-//=======================================================================
+//=================================================================================================
+
 bool IsSolid(const TopoDS_Shape& theS)
 {
   TopExp_Explorer aExp(theS, TopAbs_SOLID);

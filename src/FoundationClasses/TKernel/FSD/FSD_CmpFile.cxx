@@ -120,10 +120,7 @@ Storage_Error FSD_CmpFile::Open(const TCollection_AsciiString& aName, const Stor
   return result;
 }
 
-//=======================================================================
-// function : MagicNumber
-// purpose  : ------------------ PROTECTED
-//=======================================================================
+//=================================================================================================
 
 const char* FSD_CmpFile::MagicNumber()
 {

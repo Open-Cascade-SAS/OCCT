@@ -50,10 +50,8 @@ vtkStandardNewMacro(IVtkTools_ShapePicker)
   myOccPickerAlgo = new IVtkOCC_ShapePickerAlgo();
 }
 
-//============================================================================
-//  Method: ~IVtkTools_ShapePicker
-// Purpose: Destructor
-//============================================================================
+//=================================================================================================
+
 IVtkTools_ShapePicker::~IVtkTools_ShapePicker() = default;
 
 //============================================================================
@@ -219,10 +217,8 @@ void IVtkTools_ShapePicker::SetRenderer(vtkRenderer* theRenderer)
   myOccPickerAlgo->SetView(aView);
 }
 
-//============================================================================
-//  Method: SetAreaSelection
-// Purpose: Sets area selection on/off
-//============================================================================
+//=================================================================================================
+
 void IVtkTools_ShapePicker::SetAreaSelection(bool theIsOn)
 {
   myIsRectSelection = theIsOn;

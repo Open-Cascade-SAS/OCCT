@@ -63,10 +63,8 @@ Select3D_SensitiveGroup::Select3D_SensitiveGroup(
   MarkDirty();
 }
 
-//=======================================================================
-// function : Add
-// purpose  : No control of entities inside
-//=======================================================================
+//=================================================================================================
+
 void Select3D_SensitiveGroup::Add(
   NCollection_Sequence<occ::handle<Select3D_SensitiveEntity>>& theEntities)
 {

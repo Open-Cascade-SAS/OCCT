@@ -186,10 +186,8 @@ void GeomFill_GuideTrihedronPlan::Init()
   } // for_ii
 }
 
-//=======================================================================
-// function : SetCurve
-// purpose  : calculation of trihedron
-//=======================================================================
+//=================================================================================================
+
 bool GeomFill_GuideTrihedronPlan::SetCurve(const occ::handle<Adaptor3d_Curve>& C)
 {
   myCurve = C;
@@ -198,20 +196,15 @@ bool GeomFill_GuideTrihedronPlan::SetCurve(const occ::handle<Adaptor3d_Curve>& C
   return true;
 }
 
-//=======================================================================
-// function : Guide
-// purpose  : calculation of trihedron
-//=======================================================================
+//=================================================================================================
 
 occ::handle<Adaptor3d_Curve> GeomFill_GuideTrihedronPlan::Guide() const
 {
   return myGuide;
 }
 
-//=======================================================================
-// function : D0
-// purpose  : calculation of trihedron
-//=======================================================================
+//=================================================================================================
+
 bool GeomFill_GuideTrihedronPlan::D0(const double Param,
                                      gp_Vec&      Tangent,
                                      gp_Vec&      Normal,

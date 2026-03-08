@@ -1902,10 +1902,7 @@ void BRepBuilderAPI_Sewing::Init(const double tolerance,
   Load(TopoDS_Shape());
 }
 
-//=======================================================================
-// function : Load
-// purpose  : Loads the context shape
-//=======================================================================
+//=================================================================================================
 
 void BRepBuilderAPI_Sewing::Load(const TopoDS_Shape& theShape)
 {

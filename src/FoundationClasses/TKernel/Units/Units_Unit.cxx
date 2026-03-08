@@ -112,10 +112,7 @@ void Units_Unit::Dump(const int /*ashift*/, const int) const
             << std::endl;
 }
 
-//=======================================================================
-// function : operator ==
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 bool operator==(const occ::handle<Units_Unit>& aunit, const char* const astring)
 {

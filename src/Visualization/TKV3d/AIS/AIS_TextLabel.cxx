@@ -93,10 +93,8 @@ void AIS_TextLabel::SetHJustification(const Graphic3d_HorizontalTextAlignment th
   myDrawer->TextAspect()->SetHorizontalJustification(theHJust);
 }
 
-//=======================================================================
-// function : SetVJustification
-// purpose  : Setup vertical justification.
-//=======================================================================
+//=================================================================================================
+
 void AIS_TextLabel::SetVJustification(const Graphic3d_VerticalTextAlignment theVJust)
 {
   myDrawer->TextAspect()->SetVerticalJustification(theVJust);

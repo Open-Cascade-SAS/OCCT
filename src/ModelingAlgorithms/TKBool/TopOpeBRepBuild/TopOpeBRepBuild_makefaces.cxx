@@ -302,12 +302,8 @@ static TopAbs_Orientation FUN_ReOrientIntExtEdge(const TopoDS_Edge& FRE,
   return result;
 }
 
-//----------------------------------------------------------------------------
+//=================================================================================================
 
-//-- ofv --------------------------------------------------------------------
-// function : FUN_CheckORI
-// purpose  :
-//----------------------------------------------------------------------------
 static int FUN_CheckORI(TopAbs_Orientation O1, TopAbs_Orientation O2)
 {
   int result;

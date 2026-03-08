@@ -1276,10 +1276,8 @@ void SelectMgr_ViewerSelector::Pick(const int                    theXPMin,
   TraverseSensitives(theView->View()->Identification());
 }
 
-//=======================================================================
-// Function: Pick
-// Purpose : Selection using a polyline
-//=======================================================================
+//=================================================================================================
+
 void SelectMgr_ViewerSelector::Pick(const NCollection_Array1<gp_Pnt2d>& thePolyline,
                                     const occ::handle<V3d_View>&        theView)
 {
@@ -1347,10 +1345,8 @@ bool SelectMgr_ViewerSelector::ToPixMap(Image_PixMap&                        the
   return true;
 }
 
-//=======================================================================
-// Function: DisplaySensitive.
-// Purpose : Display active primitives.
-//=======================================================================
+//=================================================================================================
+
 void SelectMgr_ViewerSelector::DisplaySensitive(const occ::handle<V3d_View>& theView)
 {
   for (SelectMgr_SelectableObjectSet::Iterator aSelectableIt(mySelectableObjects);

@@ -445,10 +445,8 @@ void TopOpeBRep_FacesFiller::ResetDSC()
   myDSCIL.Clear();
 }
 
-//=======================================================================
-// function : ProcessVPInotonR
-// purpose  : Same as ProcessVPnotonR.
-//=======================================================================
+//=================================================================================================
+
 void TopOpeBRep_FacesFiller::ProcessVPInotonR(TopOpeBRep_VPointInterIterator& VPI)
 {
   const TopOpeBRep_VPointInter& VP = VPI.CurrentVP();

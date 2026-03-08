@@ -358,10 +358,7 @@ void IntPatch_GLine::Replace(const int /*Index*/, const IntPatch_Point& Pnt)
   //--   svtx(Index) = Pnt;
 }
 
-//=======================================================================
-// function : AddVertex
-// purpose  : To add a vertex in the list.
-//=======================================================================
+//=================================================================================================
 
 void IntPatch_GLine::AddVertex(const IntPatch_Point& Pnt)
 {

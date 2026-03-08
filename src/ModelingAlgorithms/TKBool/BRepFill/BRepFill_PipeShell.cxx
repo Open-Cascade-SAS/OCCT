@@ -864,19 +864,15 @@ double BRepFill_PipeShell::ErrorOnSurface() const
   return myErrorOnSurf;
 }
 
-//=======================================================================
-// function : FirstShape
-// purpose  : Return the start section
-//=======================================================================
+//=================================================================================================
+
 const TopoDS_Shape& BRepFill_PipeShell::FirstShape() const
 {
   return myFirst;
 }
 
-//=======================================================================
-// function : LastShape
-// purpose  : Return the end section
-//=======================================================================
+//=================================================================================================
+
 const TopoDS_Shape& BRepFill_PipeShell::LastShape() const
 {
   return myLast;
@@ -1481,10 +1477,8 @@ void BRepFill_PipeShell::BuildHistory(const BRepFill_Sweep& theSweep)
   }
 }
 
-// ---------------------------------------------------------------------------------
-// static function: BuildBoundaries
-// purpose:
-// ---------------------------------------------------------------------------------
+//=================================================================================================
+
 bool BuildBoundaries(const BRepFill_Sweep&                   theSweep,
                      const occ::handle<BRepFill_SectionLaw>& theSection,
                      TopoDS_Shape&                           theBottom,

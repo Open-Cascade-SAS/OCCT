@@ -170,30 +170,24 @@ void math_GlobOptMin::SetLocalParams(const math_Vector& theLocalA, const math_Ve
   myDone = false;
 }
 
-//=======================================================================
-// function : SetTol
-// purpose  : Set algorithm tolerances.
-//=======================================================================
+//=================================================================================================
+
 void math_GlobOptMin::SetTol(const double theDiscretizationTol, const double theSameTol)
 {
   myTol     = theDiscretizationTol;
   mySameTol = theSameTol;
 }
 
-//=======================================================================
-// function : GetTol
-// purpose  : Get algorithm tolerances.
-//=======================================================================
+//=================================================================================================
+
 void math_GlobOptMin::GetTol(double& theDiscretizationTol, double& theSameTol)
 {
   theDiscretizationTol = myTol;
   theSameTol           = mySameTol;
 }
 
-//=======================================================================
-// function : Perform
-// purpose  : Compute Global extremum point
-//=======================================================================
+//=================================================================================================
+
 // In this algo indexes started from 1, not from 0.
 void math_GlobOptMin::Perform(const bool isFindSingleSolution)
 {

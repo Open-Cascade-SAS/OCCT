@@ -59,10 +59,8 @@ void GeomFill_DraftTrihedron::SetAngle(const double Angle)
   myCos   = std::cos(myAngle);
 }
 
-//=======================================================================
-// function : D0
-// purpose  : calculation of trihedron
-//=======================================================================
+//=================================================================================================
+
 bool GeomFill_DraftTrihedron::D0(const double Param,
                                  gp_Vec&      Tangent,
                                  gp_Vec&      Normal,

@@ -76,10 +76,8 @@ BVH_LinearBuilder<T, N>::BVH_LinearBuilder(const int theLeafNodeSize, const int 
 {
 }
 
-// =======================================================================
-// function : ~BVH_LinearBuilder
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <class T, int N>
 BVH_LinearBuilder<T, N>::~BVH_LinearBuilder() = default;
 

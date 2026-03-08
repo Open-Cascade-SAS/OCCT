@@ -835,10 +835,7 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape&            Sbase,
   }
 }
 
-//=======================================================================
-// function : Add
-// purpose  : add des element de collage
-//=======================================================================
+//=================================================================================================
 
 void BRepFeat_MakeLinearForm::Add(const TopoDS_Edge& E, const TopoDS_Face& F)
 {
@@ -1252,10 +1249,7 @@ bool BRepFeat_MakeLinearForm::Propagate(NCollection_List<TopoDS_Shape>& SliList,
   return result;
 }
 
-//=======================================================================
-// function : MajMap
-// purpose  : management of descendants
-//=======================================================================
+//=================================================================================================
 
 static void MajMap(
   const TopoDS_Shape&      theB,
@@ -1300,10 +1294,7 @@ static void MajMap(
   }
 }
 
-//=======================================================================
-// function : SetGluedFaces
-// purpose  : management of faces of gluing
-//=======================================================================
+//=================================================================================================
 
 static void SetGluedFaces(
   const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&

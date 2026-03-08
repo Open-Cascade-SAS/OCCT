@@ -925,10 +925,8 @@ void BOPAlgo_RemoveFeatures::RemoveFeatures(const Message_ProgressRange& theRang
   }
 }
 
-//=======================================================================
-// function: RemoveFeature
-// purpose: Remove the single feature
-//=======================================================================
+//=================================================================================================
+
 void BOPAlgo_RemoveFeatures::RemoveFeature(
   const TopoDS_Shape&                                                  theFeature,
   const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theSolids,

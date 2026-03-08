@@ -118,10 +118,8 @@ static void DegeneratedIndex(const NCollection_Array1<double>&     Xpars,
 //=======================================================================
 typedef BVH_BoxSet<double, 3, int> IntPolyh_BoxBndTree;
 
-//=======================================================================
-// class : IntPolyh_BoxBndTreeSelector
-// purpose  : Selector of interfering boxes
-//=======================================================================
+//=================================================================================================
+
 class IntPolyh_BoxBndTreeSelector : public BVH_PairTraverse<double, 3, IntPolyh_BoxBndTree>
 {
 public:

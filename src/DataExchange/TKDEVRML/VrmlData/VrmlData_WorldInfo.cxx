@@ -35,10 +35,7 @@ VrmlData_WorldInfo::VrmlData_WorldInfo(const VrmlData_Scene& theScene,
   SetTitle(theTitle);
 }
 
-//=======================================================================
-// function : SetTitle
-// purpose  : Set or modify the title.
-//=======================================================================
+//=================================================================================================
 
 void VrmlData_WorldInfo::SetTitle(const char* theString)
 {
@@ -74,10 +71,7 @@ void VrmlData_WorldInfo::AddInfo(const char* theString)
     }
 }
 
-//=======================================================================
-// function : Clone
-// purpose  : Create a copy of this node
-//=======================================================================
+//=================================================================================================
 
 occ::handle<VrmlData_Node> VrmlData_WorldInfo::Clone(
   const occ::handle<VrmlData_Node>& theOther) const

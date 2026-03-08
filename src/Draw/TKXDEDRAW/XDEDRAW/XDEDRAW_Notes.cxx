@@ -93,10 +93,8 @@ static int noteCount(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-//=======================================================================
-// function : noteNotes
-// purpose  : returns list of all notes
-//=======================================================================
+//=================================================================================================
+
 static const cmd XNoteNotes = {"XNoteNotes", 2, "XNoteNotes Doc"};
 
 static int noteNotes(Draw_Interpretor& di, int argc, const char** argv)
@@ -129,10 +127,8 @@ static int noteNotes(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-//=======================================================================
-// function : noteAnnotations
-// purpose  : returns list of all notes
-//=======================================================================
+//=================================================================================================
+
 static const cmd XNoteAnnotations = {"XNoteAnnotations", 2, "XNoteAnnotations Doc"};
 
 static int noteAnnotations(Draw_Interpretor& di, int argc, const char** argv)
@@ -432,10 +428,8 @@ static int noteCreateBinData(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-//=======================================================================
-// function : noteDelete
-// purpose  : deletes a note by the entry
-//=======================================================================
+//=================================================================================================
+
 static const cmd XNoteDelete = {"XNoteDelete", 3, "XNoteDelete Doc note"};
 
 static int noteDelete(Draw_Interpretor& di, int argc, const char** argv)
@@ -503,10 +497,8 @@ static int noteDeleteAll(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-//=======================================================================
-// function : noteDeleteOrphan
-// purpose  : deletes all orphan notes
-//=======================================================================
+//=================================================================================================
+
 static const cmd XNoteDeleteOrphan = {"XNoteDeleteOrphan", 2, "XNoteDeleteOrphan Doc"};
 
 static int noteDeleteOrphan(Draw_Interpretor& di, int argc, const char** argv)
@@ -533,10 +525,8 @@ static int noteDeleteOrphan(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-//=======================================================================
-// function : noteAdd
-// purpose  : adds a note to a labeled item
-//=======================================================================
+//=================================================================================================
+
 static const cmd XNoteAdd = {"XNoteAdd",
                              4,
                              "XNoteAdd Doc note item [--attr guid | --subshape num]"};
@@ -974,10 +964,8 @@ static int noteFindAnnotated(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-//=======================================================================
-// function : noteGetNotes
-// purpose  : get notes of the labeled item
-//=======================================================================
+//=================================================================================================
+
 static const cmd XNoteGetNotes = {"XNoteGetNotes",
                                   3,
                                   "XNoteGetNotes Doc item [--attr guid | --subshape num]"};
@@ -1275,10 +1263,8 @@ static int noteDump(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-//=======================================================================
-// function : noteIsRefOrphan
-// purpose  : checks if a ref is orphan
-//=======================================================================
+//=================================================================================================
+
 static const cmd XNoteRefDump = {"XNoteRefDump", 3, "XNoteRefDump Doc ref"};
 
 static int noteRefDump(Draw_Interpretor& di, int argc, const char** argv)
@@ -1334,10 +1320,8 @@ static int noteRefDump(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-//=======================================================================
-// function : noteIsRefOrphan
-// purpose  : checks if a ref is orphan
-//=======================================================================
+//=================================================================================================
+
 static const cmd XNoteIsRefOrphan = {"XNoteIsRefOrphan", 3, "XNoteIsRefOrphan Doc ref"};
 
 static int noteIsRefOrphan(Draw_Interpretor& di, int argc, const char** argv)

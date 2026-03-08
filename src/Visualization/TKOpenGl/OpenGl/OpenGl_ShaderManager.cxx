@@ -181,10 +181,8 @@ void OpenGl_ShaderManager::clear()
   switchLightPrograms();
 }
 
-// =======================================================================
-// function : Create
-// purpose  : Creates new shader program
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_ShaderManager::Create(const occ::handle<Graphic3d_ShaderProgram>& theProxy,
                                   TCollection_AsciiString&                    theShareKey,
                                   occ::handle<OpenGl_ShaderProgram>&          theProgram)

@@ -86,10 +86,8 @@ TopOpeBRepBuild_Builder::TopOpeBRepBuild_Builder(const TopOpeBRepDS_BuildTool& B
 }
 
 // modified by NIZHNY-MZV  Sat May  6 10:04:49 2000
-//=======================================================================
-// function : ~TopOpeBRepBuild_Builder
-// purpose  : virtual destructor
-//=======================================================================
+//=================================================================================================
+
 TopOpeBRepBuild_Builder::~TopOpeBRepBuild_Builder() = default;
 
 //=================================================================================================
@@ -562,10 +560,8 @@ bool TopOpeBRepBuild_Builder::Reverse(const TopAbs_State ToBuild1, const TopAbs_
   return rev;
 }
 
-//=======================================================================
-// function : Orient
-// purpose  : reverse the orientation
-//=======================================================================
+//=================================================================================================
+
 TopAbs_Orientation TopOpeBRepBuild_Builder::Orient(const TopAbs_Orientation Ori, const bool Reverse)
 {
   return !Reverse ? Ori : TopAbs::Complement(Ori);
@@ -1056,10 +1052,7 @@ void TopOpeBRepBuild_Builder::SplitFace(const TopoDS_Shape& Foriented,
   return;
 }
 
-//=======================================================================
-// function : SplitFace1
-// purpose  : tout dans le meme edge set
-//=======================================================================
+//=================================================================================================
 
 void TopOpeBRepBuild_Builder::SplitFace1(const TopoDS_Shape& Foriented,
                                          const TopAbs_State  ToBuild1,

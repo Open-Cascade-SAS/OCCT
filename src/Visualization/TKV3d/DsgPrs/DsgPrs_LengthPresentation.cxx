@@ -377,10 +377,7 @@ void DsgPrs_LengthPresentation::Add(const occ::handle<Prs3d_Presentation>& aPres
   }
 }
 
-//================================
-// Function:
-// Purpose: Rob 26-mar-96
-//=================================
+//=================================================================================================
 
 void DsgPrs_LengthPresentation::Add(const occ::handle<Prs3d_Presentation>& aPrs,
                                     const occ::handle<Prs3d_Drawer>&       aDrawer,

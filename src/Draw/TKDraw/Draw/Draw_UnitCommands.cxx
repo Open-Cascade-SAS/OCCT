@@ -23,10 +23,8 @@
 #include <Units_UnitSentence.hxx>
 #include <UnitsAPI.hxx>
 
-//=======================================================================
-// function : parsing
-// purpose  : parsing of unit's expression
-//=======================================================================
+//=================================================================================================
+
 static int parsing(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 2)
@@ -61,10 +59,8 @@ static int parsing(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-//=======================================================================
-// function : unitsdico
-// purpose  : dump dictionary of units
-//=======================================================================
+//=================================================================================================
+
 static int unitsdico(Draw_Interpretor& /* di */, int /*argc*/, const char** /*argv*/)
 {
   UnitsAPI::SetLocalSystem();

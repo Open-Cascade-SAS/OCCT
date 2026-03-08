@@ -256,10 +256,8 @@ static void UpdateOrigins(
   }
 }
 
-//=======================================================================
-// function : UpdateImages
-// purpose  : Updating images of the shapes
-//=======================================================================
+//=================================================================================================
+
 static void UpdateImages(
   const NCollection_List<TopoDS_Shape>& theLA,
   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
@@ -2048,10 +2046,8 @@ bool BRepOffset_BuildOffsetFaces::CheckIfArtificial(
   return aItLE.More();
 }
 
-//=======================================================================
-// function : FindInvalidEdges
-// purpose  : Looking for the invalid edges
-//=======================================================================
+//=================================================================================================
+
 void BRepOffset_BuildOffsetFaces::FindInvalidEdges(
   const TopoDS_Face&                            theF,
   const NCollection_List<TopoDS_Shape>&         theLFImages,
@@ -3987,10 +3983,8 @@ void BRepOffset_BuildOffsetFaces::RemoveInvalidSplitsFromValid(
 
 namespace
 {
-//=======================================================================
-// function : buildPairs
-// purpose  : builds pairs of shapes
-//=======================================================================
+//=================================================================================================
+
 static void buildPairs(const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theSMap,
                        NCollection_DataMap<TopoDS_Shape,
                                            NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>,
@@ -4019,10 +4013,8 @@ static void buildPairs(const NCollection_IndexedMap<TopoDS_Shape, TopTools_Shape
   }
 }
 
-//=======================================================================
-// function : buildIntersectionPairs
-// purpose  : builds intersection pairs
-//=======================================================================
+//=================================================================================================
+
 static void buildIntersectionPairs(
   const NCollection_IndexedDataMap<TopoDS_Shape,
                                    NCollection_List<TopoDS_Shape>,
@@ -6922,10 +6914,8 @@ void BRepOffset_BuildOffsetFaces::ProcessCommonEdges(
 
 namespace
 {
-//=======================================================================
-// function : FindOrigins
-// purpose  : Looking for the origin edges
-//=======================================================================
+//=================================================================================================
+
 static void FindOrigins(
   const NCollection_List<TopoDS_Shape>&                                theLFIm1,
   const NCollection_List<TopoDS_Shape>&                                theLFIm2,

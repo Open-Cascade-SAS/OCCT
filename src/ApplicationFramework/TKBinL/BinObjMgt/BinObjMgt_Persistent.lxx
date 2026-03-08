@@ -16,10 +16,7 @@
 #define BP_HEADSIZE ((int)(3 * sizeof(int)))
 #define BP_PIECESIZE 102400
 
-//=======================================================================
-// function : SetId
-// purpose  : Sets the Id of the object
-//=======================================================================
+//=================================================================================================
 
 inline void BinObjMgt_Persistent::SetId(const int theId)
 {
@@ -37,10 +34,7 @@ inline void BinObjMgt_Persistent::SetTypeId(const int theTypeId)
   myStreamStart.Nullify();
 }
 
-//=======================================================================
-// function : Id
-// purpose  : Returns the Id of the object
-//=======================================================================
+//=================================================================================================
 
 inline int BinObjMgt_Persistent::Id() const
 {
@@ -57,30 +51,21 @@ inline int BinObjMgt_Persistent::TypeId() const
   return ((int*)myData(1))[0];
 }
 
-//=======================================================================
-// function : Length
-// purpose  : Returns the length of data
-//=======================================================================
+//=================================================================================================
 
 inline int BinObjMgt_Persistent::Length() const
 {
   return mySize - BP_HEADSIZE;
 }
 
-//=======================================================================
-// function : operator <<
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline Standard_OStream& operator<<(Standard_OStream& theOS, BinObjMgt_Persistent& theObj)
 {
   return theObj.Write(theOS);
 }
 
-//=======================================================================
-// function : operator >>
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 inline Standard_IStream& operator>>(Standard_IStream& theIS, BinObjMgt_Persistent& theObj)
 {

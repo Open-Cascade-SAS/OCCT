@@ -687,10 +687,8 @@ void Graphic3d_TransformPers::Apply(const occ::handle<Graphic3d_Camera>& theCame
   }
 }
 
-// =======================================================================
-// function : Compute
-// purpose  : Compute transformation.
-// =======================================================================
+//=================================================================================================
+
 template <class T>
 NCollection_Mat4<T> Graphic3d_TransformPers::Compute(const occ::handle<Graphic3d_Camera>& theCamera,
                                                      const NCollection_Mat4<T>& theProjection,

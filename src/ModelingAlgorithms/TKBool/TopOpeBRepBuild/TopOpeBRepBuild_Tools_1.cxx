@@ -97,10 +97,8 @@ void TopOpeBRepBuild_Tools::CorrectCurveOnSurface(const TopoDS_Shape& S, const d
   }
 }
 
-//=======================================================================
-// Function : CorrectEdgeTolerance
-// purpose :  Correct tolerances for Edge
-//=======================================================================
+//=================================================================================================
+
 void CorrectEdgeTolerance(const TopoDS_Edge& myShape, const TopoDS_Face& S, const double aMaxTol)
 {
   //

@@ -36,10 +36,7 @@ void NCollection_BaseList::PClear(NCollection_DelListNode fDel)
   myFirst = myLast = nullptr;
 }
 
-//=======================================================================
-// function : PAppend
-// purpose  : Appends one item at the end
-//=======================================================================
+//=================================================================================================
 
 void NCollection_BaseList::PAppend(NCollection_ListNode* theNode) noexcept
 {

@@ -154,10 +154,8 @@ static int QADNaming_IsSameShapes(Draw_Interpretor& di, int nb, const char** arg
   return 1;
 }
 
-//=======================================================================
-// function : CenterOfShape
-// purpose  : CenterOfShape DrawShape
-//=======================================================================
+//=================================================================================================
+
 static int QADNaming_CenterOfShape(Draw_Interpretor& di, int nb, const char** arg)
 {
   if (nb == 2)

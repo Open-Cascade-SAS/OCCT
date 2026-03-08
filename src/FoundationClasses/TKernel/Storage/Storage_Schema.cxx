@@ -256,10 +256,7 @@ Storage_Schema::Storage_Schema()
   myCallBackState = false;
 }
 
-//=======================================================================
-// function : SetVersion
-// purpose  : returns version of the schema
-//=======================================================================
+//=================================================================================================
 
 void Storage_Schema::SetVersion(const TCollection_AsciiString& aVersion)
 {
@@ -276,20 +273,14 @@ TCollection_AsciiString Storage_Schema::Version() const
   return myVersion;
 }
 
-//=======================================================================
-// function : SetName
-// purpose  : set the schema's name
-//=======================================================================
+//=================================================================================================
 
 void Storage_Schema::SetName(const TCollection_AsciiString& aSchemaName)
 {
   myName = aSchemaName;
 }
 
-//=======================================================================
-// function : Name
-// purpose  : returns the schema's name
-//=======================================================================
+//=================================================================================================
 
 TCollection_AsciiString Storage_Schema::Name() const
 {
@@ -496,10 +487,7 @@ void Storage_Schema::AddReadUnknownTypeCallBack(const TCollection_AsciiString&  
   }
 }
 
-//=======================================================================
-// function : RemoveReadUnknownTypeCallBack
-// purpose  : remove a callback for a type
-//=======================================================================
+//=================================================================================================
 
 void Storage_Schema::RemoveReadUnknownTypeCallBack(const TCollection_AsciiString& aTypeName)
 {

@@ -197,10 +197,8 @@ static int ReadVrml(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
   return 0;
 }
 
-//=======================================================================
-// function : WriteVrml
-// purpose  : Write DECAF document to Vrml
-//=======================================================================
+//=================================================================================================
+
 static int WriteVrml(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 3)

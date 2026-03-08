@@ -50,10 +50,8 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
 
-//=======================================================================
-// function : Project
-// purpose  : project a vertex on a curve
-//=======================================================================
+//=================================================================================================
+
 static bool Project(const occ::handle<Geom_Curve>& C, const TopoDS_Vertex& V, double& p)
 {
   double Eps2 = BRep_Tool::Tolerance(V);

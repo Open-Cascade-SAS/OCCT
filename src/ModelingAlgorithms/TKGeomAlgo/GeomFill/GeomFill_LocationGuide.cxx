@@ -175,10 +175,8 @@ GeomFill_LocationGuide::GeomFill_LocationGuide(
   WithTrans = false;
 }
 
-//==================================================================
-// Function: SetRotation
-// Purpose : init et force la Rotation
-//==================================================================
+//=================================================================================================
+
 void GeomFill_LocationGuide::SetRotation(const double PrecAngle, double& LastAngle)
 {
   if (myCurve.IsNull())
@@ -529,10 +527,8 @@ bool GeomFill_LocationGuide::SetCurve(const occ::handle<Adaptor3d_Curve>& C)
   return myStatus == GeomFill_PipeOk;
 }
 
-//==================================================================
-// Function: GetCurve
-// Purpose : return the trajectoire
-//==================================================================
+//=================================================================================================
+
 const occ::handle<Adaptor3d_Curve>& GeomFill_LocationGuide::GetCurve() const
 {
   return myCurve;

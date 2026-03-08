@@ -1475,10 +1475,8 @@ bool ShapeFix_Face::FixOrientation(
   return done;
 }
 
-//=======================================================================
-// function : CheckWire
-// purpose  : auxiliary for FixMissingSeam
-//=======================================================================
+//=================================================================================================
+
 //: i7 abv 18 Sep 98: ProSTEP TR9 r0501-ug.stp: algorithm of fixing missing seam changed
 // test whether the wire is opened on period of periodical surface
 static bool CheckWire(const TopoDS_Wire& wire,

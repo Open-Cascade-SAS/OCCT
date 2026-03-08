@@ -105,10 +105,7 @@ void DDataStd_DrawPresentation::Update(const TDF_Label& L)
   }
 }
 
-//=======================================================================
-// function : GetID
-// purpose  : idem GUID DDataStd Display
-//=======================================================================
+//=================================================================================================
 
 const Standard_GUID& DDataStd_DrawPresentation::GetID()
 {

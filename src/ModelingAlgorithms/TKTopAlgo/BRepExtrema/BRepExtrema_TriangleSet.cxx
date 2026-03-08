@@ -22,10 +22,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepExtrema_TriangleSet, BVH_PrimitiveSet3d)
 
-//=======================================================================
-// function : BRepExtrema_TriangleSet
-// purpose  : Creates empty triangle set
-//=======================================================================
+//=================================================================================================
+
 BRepExtrema_TriangleSet::BRepExtrema_TriangleSet()
 {
   // Set default builder - linear BVH (LBVH)
@@ -203,10 +201,8 @@ void BRepExtrema_TriangleSet::GetVtxIndices(const int                theIndex,
   theVtxIndices.SetValue(2, aTriangle.z());
 }
 
-//=======================================================================
-// function : Clear
-// purpose  : Clears triangle set data
-//=======================================================================
+//=================================================================================================
+
 void BRepExtrema_TriangleSet::Clear()
 {
   BVH_Array4i anEmptyTriangles;
@@ -216,10 +212,8 @@ void BRepExtrema_TriangleSet::Clear()
   myVertexArray.swap(anEmptyVertexArray);
 }
 
-//=======================================================================
-// function : Init
-// purpose  : Initializes triangle set
-//=======================================================================
+//=================================================================================================
+
 bool BRepExtrema_TriangleSet::Init(const NCollection_Vector<TopoDS_Shape>& theShapes)
 {
   Clear();
@@ -249,10 +243,8 @@ bool BRepExtrema_TriangleSet::Init(const NCollection_Vector<TopoDS_Shape>& theSh
   return true;
 }
 
-//=======================================================================
-// function : initFace
-// purpose  : Initializes triangle set
-//=======================================================================
+//=================================================================================================
+
 bool BRepExtrema_TriangleSet::initFace(const TopoDS_Face& theFace, const int theIndex)
 {
   TopLoc_Location aLocation;
@@ -284,10 +276,8 @@ bool BRepExtrema_TriangleSet::initFace(const TopoDS_Face& theFace, const int the
   return true;
 }
 
-//=======================================================================
-// function : initEdge
-// purpose  : Initializes triangle set
-//=======================================================================
+//=================================================================================================
+
 bool BRepExtrema_TriangleSet::initEdge(const TopoDS_Edge& theEdge, const int theIndex)
 {
   TopLoc_Location aLocation;

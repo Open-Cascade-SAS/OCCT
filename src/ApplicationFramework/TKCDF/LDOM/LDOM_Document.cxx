@@ -129,10 +129,7 @@ LDOM_Comment LDOM_Document::createComment(const LDOMString& theData)
   return LDOM_Comment(aBasicText, myMemManager);
 }
 
-//=======================================================================
-// function : operator =
-// purpose  : Nullify
-//=======================================================================
+//=================================================================================================
 
 LDOM_Document& LDOM_Document::operator=(const LDOM_NullPtr*)
 {
@@ -140,10 +137,7 @@ LDOM_Document& LDOM_Document::operator=(const LDOM_NullPtr*)
   return *this;
 }
 
-//=======================================================================
-// function : operator ==
-// purpose  : Compare to NULL
-//=======================================================================
+//=================================================================================================
 
 bool LDOM_Document::operator==(const LDOM_NullPtr*) const
 {

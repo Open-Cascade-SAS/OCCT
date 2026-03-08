@@ -1879,10 +1879,8 @@ bool OpenGl_View::initRaytraceResources(const int                          theSi
   return true;
 }
 
-// =======================================================================
-// function : nullifyResource
-// purpose  : Releases OpenGL resource
-// =======================================================================
+//=================================================================================================
+
 template <class T>
 inline void nullifyResource(const occ::handle<OpenGl_Context>& theGlContext,
                             occ::handle<T>&                    theResource)
@@ -3146,10 +3144,8 @@ bool OpenGl_View::runRaytrace(const int                          theSizeX,
   return aResult;
 }
 
-// =======================================================================
-// function : runPathtrace
-// purpose  : Runs path tracing shader
-// =======================================================================
+//=================================================================================================
+
 bool OpenGl_View::runPathtrace(const int                          theSizeX,
                                const int                          theSizeY,
                                const Graphic3d_Camera::Projection theProjection,

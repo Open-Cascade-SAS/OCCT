@@ -20,10 +20,8 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
-//=======================================================================
-// function : Constructor.
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 BRepGProp_TFunction::BRepGProp_TFunction(const BRepGProp_Face& theSurface,
                                          const gp_Pnt&         theVertex,
                                          const bool            IsByPoint,

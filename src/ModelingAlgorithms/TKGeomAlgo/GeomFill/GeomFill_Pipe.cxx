@@ -317,10 +317,7 @@ GeomFill_Pipe::GeomFill_Pipe(const occ::handle<Adaptor3d_Curve>& Path,
 
 //=======================================================================
 
-//=======================================================================
-// function : GeomFill_Pipe
-// purpose  : pipe avec courbe guide
-//=======================================================================
+//=================================================================================================
 
 GeomFill_Pipe::GeomFill_Pipe(const occ::handle<Geom_Curve>&      Path,
                              const occ::handle<Adaptor3d_Curve>& Guide,
@@ -339,10 +336,7 @@ GeomFill_Pipe::GeomFill_Pipe(const occ::handle<Geom_Curve>&      Path,
   Init(Path, Guide, FirstSect, byACR, rotat);
 }
 
-//=======================================================================
-// function : Init
-// purpose  : pipe avec courbe guide
-//=======================================================================
+//=================================================================================================
 
 void GeomFill_Pipe::Init(const occ::handle<Geom_Curve>&      Path,
                          const occ::handle<Adaptor3d_Curve>& Guide,

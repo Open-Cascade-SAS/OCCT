@@ -27,10 +27,7 @@ void ShapeCustom_Modification::SetMsgRegistrator(
   myMsgReg = msgreg;
 }
 
-//=======================================================================
-// function : MsgRegistrator
-// purpose  : Returns message registrator
-//=======================================================================
+//=================================================================================================
 
 occ::handle<ShapeExtend_BasicMsgRegistrator> ShapeCustom_Modification::MsgRegistrator() const
 {

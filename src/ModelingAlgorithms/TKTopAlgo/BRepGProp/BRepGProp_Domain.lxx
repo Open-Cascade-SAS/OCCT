@@ -61,10 +61,7 @@ inline void BRepGProp_Domain::Init()
   myExplorer.ReInit();
 }
 
-//=======================================================================
-// function : Value
-// purpose  : Returns the current edge.
-//=======================================================================
+//=================================================================================================
 
 inline const TopoDS_Edge& BRepGProp_Domain::Value()
 {

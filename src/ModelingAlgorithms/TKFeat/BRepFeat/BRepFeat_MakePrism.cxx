@@ -1102,10 +1102,7 @@ int SensOfPrism(const occ::handle<Geom_Curve>& C, const TopoDS_Shape& Until)
   return sens;
 }
 
-//=======================================================================
-// function : MajMap
-// purpose  : management of descendants
-//=======================================================================
+//=================================================================================================
 
 static void MajMap(
   const TopoDS_Shape& theB,
@@ -1150,10 +1147,7 @@ static void MajMap(
   }
 }
 
-//=======================================================================
-// function : MajMap
-// purpose  : management of descendants
-//=======================================================================
+//=================================================================================================
 
 static occ::handle<Geom_Curve> TestCurve(const TopoDS_Shape& Base, const gp_Vec& V)
 {
@@ -1171,10 +1165,7 @@ static occ::handle<Geom_Curve> TestCurve(const TopoDS_Shape& Base, const gp_Vec&
   return theLin;
 }
 
-//=======================================================================
-// function : ToFuse
-// purpose  : face SameDomaine or not
-//=======================================================================
+//=================================================================================================
 
 static bool ToFuse(const TopoDS_Face& F1, const TopoDS_Face& F2)
 {

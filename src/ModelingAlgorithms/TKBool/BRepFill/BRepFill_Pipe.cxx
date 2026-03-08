@@ -59,10 +59,8 @@
 #include <NCollection_DataMap.hxx>
 #include <NCollection_Sequence.hxx>
 
-// ---------------------------------------------------------------------------------
-// static function: UpdateMap
-// purpose:
-// ---------------------------------------------------------------------------------
+//=================================================================================================
+
 static bool UpdateMap(
   const TopoDS_Shape& theKey,
   const TopoDS_Shape& theValue,

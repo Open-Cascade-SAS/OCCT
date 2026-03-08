@@ -64,10 +64,7 @@ const char* TObj_Application::ResourcesName()
   return static_cast<const char*>("TObj");
 }
 
-//=======================================================================
-// function : SaveDocument
-// purpose  : Saving the OCAF document
-//=======================================================================
+//=================================================================================================
 
 bool TObj_Application::SaveDocument(const occ::handle<TDocStd_Document>& theSourceDoc,
                                     const TCollection_ExtendedString&    theTargetFile)
@@ -100,10 +97,7 @@ bool TObj_Application::SaveDocument(const occ::handle<TDocStd_Document>& theSour
   return !myIsError;
 }
 
-//=======================================================================
-// function : LoadDocument
-// purpose  : Loading the OCAF document
-//=======================================================================
+//=================================================================================================
 
 bool TObj_Application::LoadDocument(const TCollection_ExtendedString& theSourceFile,
                                     occ::handle<TDocStd_Document>&    theTargetDoc)

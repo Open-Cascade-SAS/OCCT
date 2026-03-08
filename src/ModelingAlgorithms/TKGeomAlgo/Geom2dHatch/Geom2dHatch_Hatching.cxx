@@ -130,20 +130,14 @@ bool Geom2dHatch_Hatching::IsDone() const
   return myIsDone;
 }
 
-//=======================================================================
-// Function : SetStatus
-// Purpose  : Sets the error status.
-//=======================================================================
+//=================================================================================================
 
 void Geom2dHatch_Hatching::Status(const HatchGen_ErrorStatus theStatus)
 {
   myStatus = theStatus;
 }
 
-//=======================================================================
-// Function : Status
-// Purpose  : Returns the error status.
-//=======================================================================
+//=================================================================================================
 
 HatchGen_ErrorStatus Geom2dHatch_Hatching::Status() const
 {

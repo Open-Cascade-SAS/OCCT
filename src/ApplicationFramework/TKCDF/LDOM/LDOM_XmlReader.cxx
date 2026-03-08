@@ -78,10 +78,7 @@ LDOM_XmlReader::LDOM_XmlReader(const occ::handle<LDOM_MemManager>& theDocument,
 {
 }
 
-//=======================================================================
-// function : ReadRecord
-// purpose  : Read a record from XML file
-//=======================================================================
+//=================================================================================================
 
 LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStream,
                                                       LDOM_OSStream&    theData,

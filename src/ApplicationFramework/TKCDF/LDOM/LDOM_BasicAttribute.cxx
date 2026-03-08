@@ -45,10 +45,7 @@ LDOM_BasicAttribute& LDOM_BasicAttribute::Create(const LDOMBasicString&         
   return *aNewAtt;
 }
 
-//=======================================================================
-// function : operator =
-// purpose  : Assignment to NULL
-//=======================================================================
+//=================================================================================================
 
 LDOM_BasicAttribute& LDOM_BasicAttribute::operator=(const LDOM_NullPtr* aNull)
 {

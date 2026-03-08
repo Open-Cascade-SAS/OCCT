@@ -88,10 +88,8 @@ double& FEmTool_ProfileMatrix::ChangeValue(const int I, const int J)
   return ProfileMatrix->ChangeValue(Ind);
 }
 
-//=======================================================================
-// function : Decompose
-// purpose  : Choleski's decomposition
-//=======================================================================
+//=================================================================================================
+
 bool FEmTool_ProfileMatrix::Decompose()
 {
   int    i, j, k, ik, jk, DiagAddr, CurrAddr, Kmin, Kj;

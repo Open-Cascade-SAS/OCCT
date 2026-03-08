@@ -62,10 +62,8 @@ Graphic3d_CubeMapOrder& Graphic3d_CubeMapOrder::Set(const Graphic3d_CubeMapOrder
   return *this;
 }
 
-// =======================================================================
-// function : operator=
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 Graphic3d_ValidatedCubeMapOrder Graphic3d_CubeMapOrder::Validated() const
 {
   if (!IsValid())

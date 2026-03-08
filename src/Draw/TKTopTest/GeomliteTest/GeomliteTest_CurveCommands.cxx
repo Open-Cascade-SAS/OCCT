@@ -1259,10 +1259,8 @@ static int minmaxcurandinf(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-//=======================================================================
-// function :  shcurvature
-// purpose  :  affiche le peigne de courbure
-//=======================================================================
+//=================================================================================================
+
 static int shcurvature(Draw_Interpretor&, int argc, const char** argv)
 {
   if (argc < 2)
@@ -1285,10 +1283,8 @@ static int shcurvature(Draw_Interpretor&, int argc, const char** argv)
   return 0;
 }
 
-//=======================================================================
-// function :  clcurvature
-// purpose  :  efface le peigne de courbure
-//=======================================================================
+//=================================================================================================
+
 static int clcurvature(Draw_Interpretor&, int argc, const char** argv)
 {
   if (argc < 2)
@@ -1967,10 +1963,7 @@ static int canceldenom(Draw_Interpretor&, int n, const char** c)
   return 0;
 }
 
-//=======================================================================
-// function : length
-// purpose  : eval curve's length
-//=======================================================================
+//=================================================================================================
 
 static int length(Draw_Interpretor& di, int n, const char** a)
 {

@@ -129,10 +129,8 @@ bool BRepOffsetAPI_MakeOffsetShape::IsDeleted(const TopoDS_Shape& S)
   return false;
 }
 
-//=======================================================================
-// function : GetJoinType
-// purpose  : Query offset join type.
-//=======================================================================
+//=================================================================================================
+
 GeomAbs_JoinType BRepOffsetAPI_MakeOffsetShape::GetJoinType() const
 {
   return myOffsetShape.GetJoinType();

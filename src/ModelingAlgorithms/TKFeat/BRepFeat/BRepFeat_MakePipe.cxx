@@ -269,10 +269,7 @@ void BRepFeat_MakePipe::Perform(const TopoDS_Shape& Until)
   GlobalPerform();
 }
 
-//=======================================================================
-// function : Perform
-// purpose  : between From and Until
-//=======================================================================
+//=================================================================================================
 
 void BRepFeat_MakePipe::Perform(const TopoDS_Shape& From, const TopoDS_Shape& Until)
 {
@@ -354,10 +351,7 @@ occ::handle<Geom_Curve> BRepFeat_MakePipe::BarycCurve()
   return myBCurve;
 }
 
-//=======================================================================
-// function : MajMap
-// purpose  : management of descendants
-//=======================================================================
+//=================================================================================================
 
 static void MajMap(
   const TopoDS_Shape& theB,

@@ -53,10 +53,7 @@ BinObjMgt_Persistent::BinObjMgt_Persistent()
   Init();
 }
 
-//=======================================================================
-// function : Init
-// purpose  : Initializes me to reuse again
-//=======================================================================
+//=================================================================================================
 
 void BinObjMgt_Persistent::Init()
 {
@@ -181,10 +178,7 @@ Standard_IStream& BinObjMgt_Persistent::Read(Standard_IStream& theIS)
   return theIS;
 }
 
-//=======================================================================
-// function : Destroy
-// purpose  : Frees the allocated memory
-//=======================================================================
+//=================================================================================================
 
 void BinObjMgt_Persistent::Destroy()
 {

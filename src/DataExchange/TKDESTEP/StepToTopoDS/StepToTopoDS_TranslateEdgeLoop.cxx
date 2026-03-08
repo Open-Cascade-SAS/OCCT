@@ -802,10 +802,7 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const occ::handle<StepShape_FaceBound>
   return;
 }
 
-// ============================================================================
-// Method  : Value
-// Purpose : Return the mapped Shape
-// ============================================================================
+//=================================================================================================
 
 const TopoDS_Shape& StepToTopoDS_TranslateEdgeLoop::Value() const
 {

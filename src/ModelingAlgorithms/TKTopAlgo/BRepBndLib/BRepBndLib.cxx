@@ -76,10 +76,8 @@ static bool IsModifySize(const BRepAdaptor_Surface&     theBS,
                          const double                   theTolV);
 
 //
-//=======================================================================
-// function : Add
-// purpose  : Add a shape bounding to a box
-//=======================================================================
+//=================================================================================================
+
 void BRepBndLib::Add(const TopoDS_Shape& S, Bnd_Box& B, bool useTriangulation)
 {
   TopExp_Explorer ex;
@@ -244,10 +242,8 @@ void BRepBndLib::AddClose(const TopoDS_Shape& S, Bnd_Box& B)
   }
 }
 
-//=======================================================================
-// function : AddOptimal
-// purpose  : Add a shape bounding to a box
-//=======================================================================
+//=================================================================================================
+
 void BRepBndLib::AddOptimal(const TopoDS_Shape& S,
                             Bnd_Box&            B,
                             const bool          useTriangulation,

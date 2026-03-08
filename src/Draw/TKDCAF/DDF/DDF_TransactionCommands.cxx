@@ -106,10 +106,7 @@ static int CommitTran(Draw_Interpretor& di, int n, const char** a)
   return 0;
 }
 
-//=======================================================================
-// function : CurrentTran
-// purpose  : Current transaction number.
-//=======================================================================
+//=================================================================================================
 
 static int CurrentTran(Draw_Interpretor& di, int n, const char** a)
 {

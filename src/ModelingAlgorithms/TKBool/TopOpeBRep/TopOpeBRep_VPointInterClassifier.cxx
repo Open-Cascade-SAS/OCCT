@@ -204,10 +204,8 @@ double TopOpeBRep_VPointInterClassifier::EdgeParameter() const
 }
 
 // modified by NIZHNY-MKK  Mon Jun 19 11:47:23 2000.BEGIN
-//=======================================================================
-// static function : SlowClassifyOnBoundary
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 static TopAbs_State SlowClassifyOnBoundary(const gp_Pnt&             thePointToClassify,
                                            const gp_Pnt2d&           thePoint2dToClassify,
                                            BRepClass_FaceClassifier& theSlowClassifier,

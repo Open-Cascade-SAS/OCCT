@@ -333,10 +333,7 @@ TopoDS_Shape IGESToBRep_TopoCurve::TransferCompositeCurveGeneral(
   return res;
 }
 
-//=======================================================================
-// function : TransferCompositeCurve
-// purpose  : Implementation for 3d case
-//=======================================================================
+//=================================================================================================
 
 TopoDS_Shape IGESToBRep_TopoCurve::TransferCompositeCurve(
   const occ::handle<IGESGeom_CompositeCurve>& start)
@@ -369,10 +366,7 @@ TopoDS_Shape IGESToBRep_TopoCurve::TransferCompositeCurve(
   return res;
 }
 
-//=======================================================================
-// function : Transfer2dCompositeCurve
-// purpose  : Implementation for 2d case
-//=======================================================================
+//=================================================================================================
 
 TopoDS_Shape IGESToBRep_TopoCurve::Transfer2dCompositeCurve(
   const occ::handle<IGESGeom_CompositeCurve>& start,

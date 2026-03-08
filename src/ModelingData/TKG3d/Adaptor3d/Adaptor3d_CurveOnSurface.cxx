@@ -647,10 +647,7 @@ static void Locate1Coord(const int                               Index,
   }
 }
 
-//=======================================================================
-// function :Locate2Coord
-// purpose  : along non-BSpline curve
-//=======================================================================
+//=================================================================================================
 
 static void Locate2Coord(const int       Index,
                          const gp_Pnt2d& UV,

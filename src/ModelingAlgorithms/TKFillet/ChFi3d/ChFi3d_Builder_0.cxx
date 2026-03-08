@@ -278,10 +278,8 @@ void ChFi3d_Boite(const gp_Pnt2d& p1,
   Dv = Mv - mv;
 }
 
-//=======================================================================
-// function : EnlargeBox and its friends.
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 static occ::handle<Adaptor3d_Surface> Geometry(TopOpeBRepDS_DataStructure& DStr, const int ind)
 {
   if (ind == 0)
@@ -3331,10 +3329,7 @@ TopoDS_Edge ChFi3d_EdgeFromV1(const TopoDS_Vertex&              V1,
   }
 }
 
-//=======================================================================
-// function : ConvTol2dToTol3d
-// purpose  : Comme son nom l indique.
-//=======================================================================
+//=================================================================================================
 
 double ChFi3d_ConvTol2dToTol3d(const occ::handle<Adaptor3d_Surface>& S, const double tol2d)
 {

@@ -33,10 +33,8 @@ BVH_DistanceField<T, N>::BVH_DistanceField(const int theMaximumSize, const bool 
   myVoxelData = new T[myMaximumSize * myMaximumSize * myMaximumSize];
 }
 
-// =======================================================================
-// function : ~BVH_DistanceField
-// purpose  :
-// =======================================================================
+//=================================================================================================
+
 template <class T, int N>
 BVH_DistanceField<T, N>::~BVH_DistanceField()
 {

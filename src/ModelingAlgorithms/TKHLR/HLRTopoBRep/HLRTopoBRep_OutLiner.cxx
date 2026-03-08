@@ -291,10 +291,7 @@ void HLRTopoBRep_OutLiner::ProcessFace(
   B.Add(S, NF); // add the face in the shell.
 }
 
-//=======================================================================
-// function : BuildShape
-// purpose  : Build the OutLinedShape
-//=======================================================================
+//=================================================================================================
 
 void HLRTopoBRep_OutLiner::BuildShape(
   NCollection_DataMap<TopoDS_Shape, BRepTopAdaptor_Tool, TopTools_ShapeMapHasher>& MST)

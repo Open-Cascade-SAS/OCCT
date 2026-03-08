@@ -82,10 +82,7 @@ void LDOM_BasicElement::RemoveNodes()
   myFirstChild = nullptr;
 }
 
-//=======================================================================
-// function : operator =
-// purpose  : Nullify
-//=======================================================================
+//=================================================================================================
 
 LDOM_BasicElement& LDOM_BasicElement::operator=(const LDOM_NullPtr* aNull)
 {
@@ -202,10 +199,7 @@ const LDOM_BasicAttribute* LDOM_BasicElement::GetFirstAttribute(
   return (LDOM_BasicAttribute*)aFirstAttr;
 }
 
-//=======================================================================
-// function : AddAttribute
-// purpose  : Add or replace an attribute
-//=======================================================================
+//=================================================================================================
 
 const LDOM_BasicNode* LDOM_BasicElement::AddAttribute(const LDOMBasicString& anAttrName,
                                                       const LDOMBasicString& anAttrValue,

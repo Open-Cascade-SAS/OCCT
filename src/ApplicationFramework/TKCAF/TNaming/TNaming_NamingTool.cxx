@@ -55,10 +55,7 @@ static void WriteS(const TopoDS_Shape& shape, const char* const filename)
 }
 #endif
 
-//=======================================================================
-// function : IsForbiden
-// purpose  : ANaming voir NamingTool
-//=======================================================================
+//=================================================================================================
 
 static bool IsForbiden(const NCollection_Map<TDF_Label>& Forbiden, const TDF_Label& Lab)
 {

@@ -280,10 +280,7 @@ void BRepBlend_RstRstLineBuilder::Perform(Blend_RstRstFunction&   Func,
   done = true;
 }
 
-//=======================================================================
-// function : PerformFirstSection
-// purpose  : Creation of the first section
-//=======================================================================
+//=================================================================================================
 
 bool BRepBlend_RstRstLineBuilder::PerformFirstSection(Blend_RstRstFunction&   Func,
                                                       Blend_SurfCurvFuncInv&  Finv1,
@@ -1294,10 +1291,7 @@ bool BRepBlend_RstRstLineBuilder::Recadre2(Blend_RstRstFunction&           Func,
   return false;
 }
 
-//=======================================================================
-// function : Recadre
-// purpose  : This is the end of curve rst1
-//=======================================================================
+//=================================================================================================
 
 bool BRepBlend_RstRstLineBuilder::Recadre1(Blend_CurvPointFuncInv&         FinvP,
                                            math_Vector&                    Solinv,
@@ -1368,10 +1362,7 @@ bool BRepBlend_RstRstLineBuilder::Recadre1(Blend_CurvPointFuncInv&         FinvP
   return false;
 }
 
-//=======================================================================
-// function : Recadre2
-// purpose  : This is the end of curve rst2
-//=======================================================================
+//=================================================================================================
 
 bool BRepBlend_RstRstLineBuilder::Recadre2(Blend_CurvPointFuncInv&         FinvP,
                                            math_Vector&                    Solinv,

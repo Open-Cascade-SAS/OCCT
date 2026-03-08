@@ -56,10 +56,8 @@
 #include <TopLoc_Location.hxx>
 #include <TopoDS_Compound.hxx>
 
-//=======================================================================
-// function : Expand
-// purpose  : Convert Shape to assembly
-//=======================================================================
+//=================================================================================================
+
 bool XCAFDoc_Editor::Expand(const TDF_Label& theDoc,
                             const TDF_Label& theShape,
                             const bool       theRecursively)

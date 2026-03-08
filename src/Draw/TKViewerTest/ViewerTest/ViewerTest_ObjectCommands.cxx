@@ -2721,11 +2721,7 @@ static int VDrawText(Draw_Interpretor& theDI, int theArgsNb, const char** theArg
 #include <utility>
 class AIS_InteractiveObject;
 
-//===============================================================================================
-// function : CalculationOfSphere
-// author   : psn
-// purpose  : Create a Sphere
-//===============================================================================================
+//=================================================================================================
 
 occ::handle<Poly_Triangulation> CalculationOfSphere(double X,
                                                     double Y,
@@ -2968,11 +2964,8 @@ occ::handle<Poly_Triangulation> CalculationOfSphere(double X,
   return polyTriangulation;
 }
 
-//===============================================================================================
-// function : VDrawSphere
-// author   : psn
-// purpose  : Create an AIS shape.
-//===============================================================================================
+//=================================================================================================
+
 static int VDrawSphere(Draw_Interpretor& /*di*/, int argc, const char** argv)
 {
   // check for errors
@@ -4953,11 +4946,8 @@ static int VSelectionPrevious(Draw_Interpretor& /*theDI*/,
   return 0;
 }
 
-//===========================================================================
-// function : VTriangle
-// Draw arg : vtriangle Name PointName PointName PointName
-// purpose  : creates and displays Triangle
-//===========================================================================
+//=================================================================================================
+
 static int VTriangle(Draw_Interpretor& /*di*/, int argc, const char** argv)
 {
   const bool                               isTri = TCollection_AsciiString(argv[0]) == "vtriangle";
@@ -5247,10 +5237,8 @@ static int VCylinder(Draw_Interpretor& /*di*/, int theNbArgs, const char** theAr
   return 0;
 }
 
-//===========================================================================
-// function : VSphere
-// purpose  : creates and displays a sphere
-//===========================================================================
+//=================================================================================================
+
 static int VSphere(Draw_Interpretor& /*di*/, int theNbArgs, const char** theArgVec)
 {
   if (ViewerTest::GetAISContext().IsNull())

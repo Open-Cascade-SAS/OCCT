@@ -717,16 +717,12 @@ OpenGl_GraduatedTrihedron::Axis::Axis(const Graphic3d_GraduatedTrihedron::AxisAs
   LineAspect.Aspect()->SetColor(theAspect.Color());
 }
 
-// =======================================================================
-// method  : OpenGl_GraduatedTrihedron::Axis::~Axis
-// purpose :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_GraduatedTrihedron::Axis::~Axis() = default;
 
-// =======================================================================
-// method  : OpenGl_GraduatedTrihedron::Axis operator=
-// purpose :
-// =======================================================================
+//=================================================================================================
+
 OpenGl_GraduatedTrihedron::Axis& OpenGl_GraduatedTrihedron::Axis::operator=(const Axis& theOther)
 {
   Direction  = theOther.Direction;

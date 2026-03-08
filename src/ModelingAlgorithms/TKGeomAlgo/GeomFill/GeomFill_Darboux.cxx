@@ -57,10 +57,8 @@ static gp_Vec DDeriv(const gp_Vec& F, const gp_Vec& DF, const gp_Vec& D2F)
   return Result;
 }
 
-//=======================================================================
-// function : NormalD0
-// purpose  : computes Normal to Surface
-//=======================================================================
+//=================================================================================================
+
 static void NormalD0(const double                          U,
                      const double                          V,
                      const occ::handle<Adaptor3d_Surface>& Surf,

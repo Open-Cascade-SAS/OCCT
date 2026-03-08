@@ -157,10 +157,7 @@ occ::handle<Poly_Triangulation> Poly_CoherentTriangulation::GetTriangulation() c
   return aResult;
 }
 
-//=======================================================================
-// function : GetFreeNodes
-// purpose  : Create a list of free nodes.
-//=======================================================================
+//=================================================================================================
 
 bool Poly_CoherentTriangulation::GetFreeNodes(NCollection_List<int>& lstNodes) const
 {

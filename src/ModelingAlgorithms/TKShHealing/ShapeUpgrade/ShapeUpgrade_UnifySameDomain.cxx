@@ -4079,10 +4079,8 @@ void ShapeUpgrade_UnifySameDomain::UnifyEdges()
   myShape = myContext->Apply(myShape);
 }
 
-//=======================================================================
-// function : Build
-// purpose  : builds the resulting shape
-//=======================================================================
+//=================================================================================================
+
 void ShapeUpgrade_UnifySameDomain::Build()
 {
   TopExp::MapShapesAndAncestors(myInitShape, TopAbs_EDGE, TopAbs_FACE, myEFmap);

@@ -43,10 +43,7 @@
 #include <TDF_Attribute.hxx>
 #include <NCollection_Map.hxx>
 
-//=======================================================================
-// function : MakeDF
-// purpose  : Creates a new data framework.
-//=======================================================================
+//=================================================================================================
 
 static int MakeDF(Draw_Interpretor& di, int n, const char** a)
 {
@@ -73,10 +70,7 @@ static int MakeDF(Draw_Interpretor& di, int n, const char** a)
   return 0;
 }
 
-//=======================================================================
-// function : ClearDF
-// purpose  : Creates a new data framework.
-//=======================================================================
+//=================================================================================================
 
 static int ClearDF(Draw_Interpretor& di, int n, const char** a)
 

@@ -204,10 +204,7 @@ const Intf_SectionPoint& Intf_TangentZone::GetPoint(const int Index) const
   return Result(Index);
 }
 
-//=======================================================================
-// function : IsEqual
-// purpose  : Compare two tangent zone.
-//=======================================================================
+//=================================================================================================
 
 bool Intf_TangentZone::IsEqual(const Intf_TangentZone& Other) const
 {

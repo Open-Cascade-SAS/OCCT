@@ -27,10 +27,8 @@
 #include <TopoDS_Shape.hxx>
 #include <NCollection_Sequence.hxx>
 
-//=======================================================================
-// function : BRepSweep_NumLinearRegularSweep
-// purpose  : Create a Regular Sweep.
-//=======================================================================
+//=================================================================================================
+
 BRepSweep_NumLinearRegularSweep::BRepSweep_NumLinearRegularSweep(const BRepSweep_Builder& aBuilder,
                                                                  const TopoDS_Shape&      aGenShape,
                                                                  const Sweep_NumShape&    aDirShape)
@@ -59,10 +57,7 @@ BRepSweep_NumLinearRegularSweep::BRepSweep_NumLinearRegularSweep(const BRepSweep
 
 BRepSweep_NumLinearRegularSweep::~BRepSweep_NumLinearRegularSweep() = default;
 
-//=======================================================================
-// function : Shape
-// purpose  : Returns the global Shape.
-//=======================================================================
+//=================================================================================================
 
 TopoDS_Shape BRepSweep_NumLinearRegularSweep::Shape()
 {

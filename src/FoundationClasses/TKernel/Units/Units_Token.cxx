@@ -338,10 +338,7 @@ occ::handle<Units_Token> operator+(const occ::handle<Units_Token>& atoken1,
   return atoken1->Add(atoken2);
 }
 
-//=======================================================================
-// function : operator -
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 occ::handle<Units_Token> operator-(const occ::handle<Units_Token>& atoken1,
                                    const occ::handle<Units_Token>& atoken2)
@@ -360,10 +357,7 @@ occ::handle<Units_Token> operator*(const occ::handle<Units_Token>& atoken1,
   return atoken1->Multiply(atoken2);
 }
 
-//=======================================================================
-// function : operator /
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 occ::handle<Units_Token> operator/(const occ::handle<Units_Token>& atoken1,
                                    const occ::handle<Units_Token>& atoken2)
@@ -386,20 +380,14 @@ occ::handle<Units_Token> pow(const occ::handle<Units_Token>& atoken, const doubl
   return atoken->Power(areal);
 }
 
-//=======================================================================
-// function : operator ==
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 bool operator==(const occ::handle<Units_Token>& atoken, const char* const astring)
 {
   return atoken->IsEqual(astring);
 }
 
-//=======================================================================
-// function : operator ==
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 // bool operator ==(const occ::handle<Units_Token>& atoken1,const occ::handle<Units_Token>&
 // atoken2)
@@ -428,40 +416,28 @@ bool operator!=(const occ::handle<Units_Token>& atoken, const char* const astrin
 //   return atoken1->IsNotEqual(atoken2);
 // }
 
-//=======================================================================
-// function : operator <=
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 bool operator<=(const occ::handle<Units_Token>& atoken, const char* const astring)
 {
   return atoken->IsLessOrEqual(astring);
 }
 
-//=======================================================================
-// function : operator >
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 bool operator>(const occ::handle<Units_Token>& atoken, const char* const astring)
 {
   return atoken->IsGreater(astring);
 }
 
-//=======================================================================
-// function : operator >
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 bool operator>(const occ::handle<Units_Token>& atoken1, const occ::handle<Units_Token>& atoken2)
 {
   return atoken1->IsGreater(atoken2);
 }
 
-//=======================================================================
-// function : operator >=
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 bool operator>=(const occ::handle<Units_Token>& atoken1, const occ::handle<Units_Token>& atoken2)
 {

@@ -562,10 +562,7 @@ occ::handle<Geom2d_Curve> StepToTopoDS_TranslateEdge::MakePCurve(
   return C2d;
 }
 
-// ============================================================================
-// Method  : Value
-// Purpose : Returns the mapped edge
-// ============================================================================
+//=================================================================================================
 
 const TopoDS_Shape& StepToTopoDS_TranslateEdge::Value() const
 {
@@ -573,10 +570,7 @@ const TopoDS_Shape& StepToTopoDS_TranslateEdge::Value() const
   return myResult;
 }
 
-// ============================================================================
-// Method  : Error
-// Purpose : Returns the error code
-// ============================================================================
+//=================================================================================================
 
 StepToTopoDS_TranslateEdgeError StepToTopoDS_TranslateEdge::Error() const
 {

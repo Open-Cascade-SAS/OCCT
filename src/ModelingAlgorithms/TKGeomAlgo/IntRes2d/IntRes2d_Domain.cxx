@@ -51,10 +51,7 @@ void IntRes2d_Domain::SetValues()
   periodfirst = periodlast = 0.0;
 }
 
-//=======================================================================
-// function : IntRes2d_Domain
-// purpose  : Creates a bounded Domain.
-//=======================================================================
+//=================================================================================================
 
 IntRes2d_Domain::IntRes2d_Domain(const gp_Pnt2d& Pnt1,
                                  const double    Par1,
