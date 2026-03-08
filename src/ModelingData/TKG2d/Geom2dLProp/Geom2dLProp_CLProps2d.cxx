@@ -14,6 +14,7 @@
 #include <Geom2dLProp_CLProps2d.hxx>
 
 #include <Geom2dLProp_LegacyCLProps2d.hxx>
+#include <Geom2d_OffsetCurve.hxx>
 #include <Geom2dProp.hxx>
 #include <Geom2dProp_Curve.hxx>
 #include <Geom2d_Curve.hxx>
@@ -63,6 +64,35 @@ bool sameCurvatureClass(const double theNewValue, const double theOldValue, cons
   const int aNewSign = (theNewValue > theTol) - (theNewValue < -theTol);
   const int anOldSign = (theOldValue > theTol) - (theOldValue < -theTol);
   return aNewSign == anOldSign;
+}
+
+std::string curveDebugContext(const occ::handle<Geom2d_Curve>& theCurve,
+                              const gp_Pnt2d&                  thePoint,
+                              const gp_Vec2d&                  theD1,
+                              const gp_Vec2d&                  theD2,
+                              const gp_Vec2d&                  theD3)
+{
+  std::ostringstream aStream;
+  aStream << "P=" << LProp_CompareDebug::ToString(thePoint)
+          << " D1=" << LProp_CompareDebug::ToString(theD1)
+          << " |D1|=" << LProp_CompareDebug::ToString(theD1.Magnitude())
+          << " D2=" << LProp_CompareDebug::ToString(theD2)
+          << " |D2|=" << LProp_CompareDebug::ToString(theD2.Magnitude())
+          << " D3=" << LProp_CompareDebug::ToString(theD3)
+          << " |D3|=" << LProp_CompareDebug::ToString(theD3.Magnitude());
+
+  const occ::handle<Geom2d_OffsetCurve> anOffsetCurve =
+    occ::down_cast<Geom2d_OffsetCurve>(theCurve);
+  if (!anOffsetCurve.IsNull())
+  {
+    const occ::handle<Geom2d_Curve> aBasisCurve = anOffsetCurve->BasisCurve();
+    aStream << " offset=" << LProp_CompareDebug::ToString(anOffsetCurve->Offset())
+            << " basisGeom="
+            << (aBasisCurve.IsNull() ? std::string("null")
+                                     : std::to_string((int)Geom2dProp_Curve(aBasisCurve).GetType()))
+            << " basisCont=" << (int)anOffsetCurve->GetBasisCurveContinuity();
+  }
+  return aStream.str();
 }
 }
 
@@ -370,7 +400,8 @@ void Geom2dLProp_CLProps2d::Tangent(gp_Dir2d& D)
                                            myLinTol,
                                            "dir",
                                            D,
-                                           anOldDir);
+                                           anOldDir,
+                                           curveDebugContext(myCurve, myPnt, myDerivArr[0], myDerivArr[1], myDerivArr[2]));
     }
   }
   catch (Standard_Failure const& theFailure)
@@ -415,7 +446,8 @@ double Geom2dLProp_CLProps2d::Curvature()
                                            myLinTol,
                                            "curv",
                                            myCurvature,
-                                           anOldCurv);
+                                           anOldCurv,
+                                           curveDebugContext(myCurve, myPnt, myDerivArr[0], myDerivArr[1], myDerivArr[2]));
     }
   }
   catch (Standard_Failure const& theFailure)
@@ -458,7 +490,8 @@ void Geom2dLProp_CLProps2d::Normal(gp_Dir2d& D)
                                            myLinTol,
                                            "dir",
                                            D,
-                                           anOldDir);
+                                           anOldDir,
+                                           curveDebugContext(myCurve, myPnt, myDerivArr[0], myDerivArr[1], myDerivArr[2]));
     }
   }
   catch (Standard_Failure const& theFailure)
@@ -500,7 +533,8 @@ void Geom2dLProp_CLProps2d::CentreOfCurvature(gp_Pnt2d& P)
                                            myLinTol,
                                            "point",
                                            P,
-                                           anOldPoint);
+                                           anOldPoint,
+                                           curveDebugContext(myCurve, myPnt, myDerivArr[0], myDerivArr[1], myDerivArr[2]));
     }
   }
   catch (Standard_Failure const& theFailure)
