@@ -34,8 +34,10 @@ public:
 
   //! Constructor with adaptor pointer (non-owning).
   //! @param theAdaptor the 3D curve adaptor (must wrap an offset curve, must not be null)
-  GeomProp_OffsetCurve(const GeomAdaptor_Curve* theAdaptor)
-      : myAdaptor(theAdaptor)
+  GeomProp_OffsetCurve(const GeomAdaptor_Curve* theAdaptor,
+                       GeomProp::CurveDerivOrder theOrder = GeomProp::CurveDerivOrder::Curvature)
+      : myAdaptor(theAdaptor),
+        myRequestedOrder(theOrder)
   {
   }
 
@@ -68,6 +70,8 @@ public:
 
 private:
   const GeomAdaptor_Curve* myAdaptor;
+  GeomProp::CurveDerivOrder    myRequestedOrder;
+  mutable GeomProp::CurveCache myCache;
 };
 
 #endif // _GeomProp_OffsetCurve_HeaderFile

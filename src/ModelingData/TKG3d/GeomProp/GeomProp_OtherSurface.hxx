@@ -33,13 +33,17 @@ public:
 
   //! Constructor with adaptor pointer (non-owning).
   //! @param theAdaptor the surface adaptor (must not be null)
-  GeomProp_OtherSurface(const GeomAdaptor_Surface* theAdaptor)
-      : myAdaptor(theAdaptor)
+  GeomProp_OtherSurface(const GeomAdaptor_Surface*  theAdaptor,
+                        GeomProp::SurfaceDerivOrder theOrder = GeomProp::SurfaceDerivOrder::Curvature)
+      : myAdaptor(theAdaptor),
+        myRequestedOrder(theOrder)
   {
   }
 
-  GeomProp_OtherSurface(const Adaptor3d_Surface* theAdaptor)
-      : myAdaptor(theAdaptor)
+  GeomProp_OtherSurface(const Adaptor3d_Surface*    theAdaptor,
+                        GeomProp::SurfaceDerivOrder theOrder = GeomProp::SurfaceDerivOrder::Curvature)
+      : myAdaptor(theAdaptor),
+        myRequestedOrder(theOrder)
   {
   }
 
@@ -71,7 +75,9 @@ public:
                                                             double theTol) const;
 
 private:
-  const Adaptor3d_Surface* myAdaptor;
+  const Adaptor3d_Surface*        myAdaptor;
+  GeomProp::SurfaceDerivOrder    myRequestedOrder;
+  mutable GeomProp::SurfaceCache myCache;
 };
 
 #endif // _GeomProp_OtherSurface_HeaderFile

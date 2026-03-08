@@ -35,9 +35,11 @@ public:
 
   //! Constructor with adaptor pointer (non-owning).
   //! @param theAdaptor the 3D curve adaptor (must wrap an ellipse, must not be null)
-  GeomProp_Ellipse(const GeomAdaptor_Curve* theAdaptor)
+  GeomProp_Ellipse(const GeomAdaptor_Curve*  theAdaptor,
+                   GeomProp::CurveDerivOrder theOrder = GeomProp::CurveDerivOrder::Undefined)
       : myAdaptor(theAdaptor)
   {
+    (void)theOrder;
   }
 
   //! Non-copyable and non-movable.

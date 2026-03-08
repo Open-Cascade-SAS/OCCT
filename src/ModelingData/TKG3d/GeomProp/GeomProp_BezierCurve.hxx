@@ -33,8 +33,10 @@ public:
 
   //! Constructor with adaptor pointer (non-owning).
   //! @param theAdaptor the 3D curve adaptor (must wrap a Bezier curve, must not be null)
-  GeomProp_BezierCurve(const GeomAdaptor_Curve* theAdaptor)
-      : myAdaptor(theAdaptor)
+  GeomProp_BezierCurve(const GeomAdaptor_Curve* theAdaptor,
+                       GeomProp::CurveDerivOrder theOrder = GeomProp::CurveDerivOrder::Curvature)
+      : myAdaptor(theAdaptor),
+        myRequestedOrder(theOrder)
   {
   }
 
@@ -67,6 +69,8 @@ public:
 
 private:
   const GeomAdaptor_Curve* myAdaptor;
+  GeomProp::CurveDerivOrder    myRequestedOrder;
+  mutable GeomProp::CurveCache myCache;
 };
 
 #endif // _GeomProp_BezierCurve_HeaderFile

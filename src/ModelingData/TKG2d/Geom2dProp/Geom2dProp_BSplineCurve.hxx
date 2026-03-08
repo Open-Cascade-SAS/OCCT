@@ -35,8 +35,10 @@ public:
 
   //! Constructor with adaptor pointer (non-owning).
   //! @param theAdaptor the 2D curve adaptor (must wrap a B-spline curve, must not be null)
-  Geom2dProp_BSplineCurve(const Geom2dAdaptor_Curve* theAdaptor)
-      : myAdaptor(theAdaptor)
+  Geom2dProp_BSplineCurve(const Geom2dAdaptor_Curve*  theAdaptor,
+                          Geom2dProp::CurveDerivOrder theOrder = Geom2dProp::CurveDerivOrder::Curvature)
+      : myAdaptor(theAdaptor),
+        myRequestedOrder(theOrder)
   {
   }
 
@@ -70,7 +72,9 @@ public:
   Standard_EXPORT Geom2dProp::CurveAnalysis FindInflections() const;
 
 private:
-  const Geom2dAdaptor_Curve* myAdaptor;
+  const Geom2dAdaptor_Curve*     myAdaptor;
+  Geom2dProp::CurveDerivOrder    myRequestedOrder;
+  mutable Geom2dProp::CurveCache myCache;
 };
 
 #endif // _Geom2dProp_BSplineCurve_HeaderFile

@@ -21,7 +21,7 @@
 Geom2dProp::TangentResult Geom2dProp_BSplineCurve::Tangent(const double theParam,
                                                            const double theTol) const
 {
-  return Geom2dProp_CurveAnalysisTools::EvaluateTangent(myAdaptor, theParam, theTol);
+  return Geom2dProp_CurveAnalysisTools::EvaluateTangentCached(myAdaptor, theParam, theTol, myRequestedOrder, myCache);
 }
 
 //=================================================================================================
@@ -29,7 +29,7 @@ Geom2dProp::TangentResult Geom2dProp_BSplineCurve::Tangent(const double theParam
 Geom2dProp::CurvatureResult Geom2dProp_BSplineCurve::Curvature(const double theParam,
                                                                const double theTol) const
 {
-  return Geom2dProp_CurveAnalysisTools::EvaluateCurvature(myAdaptor, theParam, theTol);
+  return Geom2dProp_CurveAnalysisTools::EvaluateCurvatureCached(myAdaptor, theParam, theTol, myRequestedOrder, myCache);
 }
 
 //=================================================================================================
@@ -37,7 +37,7 @@ Geom2dProp::CurvatureResult Geom2dProp_BSplineCurve::Curvature(const double theP
 Geom2dProp::NormalResult Geom2dProp_BSplineCurve::Normal(const double theParam,
                                                          const double theTol) const
 {
-  return Geom2dProp_CurveAnalysisTools::EvaluateNormal(myAdaptor, theParam, theTol);
+  return Geom2dProp_CurveAnalysisTools::EvaluateNormalCached(myAdaptor, theParam, theTol, myRequestedOrder, myCache);
 }
 
 //=================================================================================================
@@ -45,7 +45,7 @@ Geom2dProp::NormalResult Geom2dProp_BSplineCurve::Normal(const double theParam,
 Geom2dProp::CentreResult Geom2dProp_BSplineCurve::CentreOfCurvature(const double theParam,
                                                                     const double theTol) const
 {
-  return Geom2dProp_CurveAnalysisTools::EvaluateCentreOfCurvature(myAdaptor, theParam, theTol);
+  return Geom2dProp_CurveAnalysisTools::EvaluateCentreOfCurvatureCached(myAdaptor, theParam, theTol, myRequestedOrder, myCache);
 }
 
 //=================================================================================================

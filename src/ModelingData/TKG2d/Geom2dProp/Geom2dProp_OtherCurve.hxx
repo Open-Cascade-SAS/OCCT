@@ -35,13 +35,17 @@ public:
 
   //! Constructor with adaptor pointer (non-owning).
   //! @param theAdaptor the 2D curve adaptor (must not be null)
-  Geom2dProp_OtherCurve(const Geom2dAdaptor_Curve* theAdaptor)
-      : myAdaptor(theAdaptor)
+  Geom2dProp_OtherCurve(const Geom2dAdaptor_Curve*    theAdaptor,
+                        Geom2dProp::CurveDerivOrder theOrder = Geom2dProp::CurveDerivOrder::Curvature)
+      : myAdaptor(theAdaptor),
+        myRequestedOrder(theOrder)
   {
   }
 
-  Geom2dProp_OtherCurve(const Adaptor2d_Curve2d* theAdaptor)
-      : myAdaptor(theAdaptor)
+  Geom2dProp_OtherCurve(const Adaptor2d_Curve2d*     theAdaptor,
+                        Geom2dProp::CurveDerivOrder theOrder = Geom2dProp::CurveDerivOrder::Curvature)
+      : myAdaptor(theAdaptor),
+        myRequestedOrder(theOrder)
   {
   }
 
@@ -77,6 +81,8 @@ public:
 
 private:
   const Adaptor2d_Curve2d* myAdaptor;
+  Geom2dProp::CurveDerivOrder    myRequestedOrder;
+  mutable Geom2dProp::CurveCache myCache;
 };
 
 #endif // _Geom2dProp_OtherCurve_HeaderFile

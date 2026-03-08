@@ -35,9 +35,11 @@ public:
 
   //! Constructor with adaptor pointer (non-owning).
   //! @param theAdaptor the surface adaptor (must not be null)
-  GeomProp_Torus(const GeomAdaptor_Surface* theAdaptor)
+  GeomProp_Torus(const GeomAdaptor_Surface*  theAdaptor,
+                 GeomProp::SurfaceDerivOrder theOrder = GeomProp::SurfaceDerivOrder::Undefined)
       : myAdaptor(theAdaptor)
   {
+    (void)theOrder;
   }
 
   //! Non-copyable and non-movable.
@@ -65,7 +67,7 @@ public:
                                                             double theTol) const;
 
 private:
-  const GeomAdaptor_Surface* myAdaptor;
+  const GeomAdaptor_Surface*  myAdaptor;
 };
 
 #endif // _GeomProp_Torus_HeaderFile

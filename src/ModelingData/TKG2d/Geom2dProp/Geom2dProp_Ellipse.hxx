@@ -35,9 +35,11 @@ public:
 
   //! Constructor with adaptor pointer (non-owning).
   //! @param theAdaptor the 2D curve adaptor (must wrap an ellipse, must not be null)
-  Geom2dProp_Ellipse(const Geom2dAdaptor_Curve* theAdaptor)
+  Geom2dProp_Ellipse(const Geom2dAdaptor_Curve*  theAdaptor,
+                     Geom2dProp::CurveDerivOrder theOrder = Geom2dProp::CurveDerivOrder::Undefined)
       : myAdaptor(theAdaptor)
   {
+    (void)theOrder;
   }
 
   //! Non-copyable and non-movable.
@@ -70,7 +72,7 @@ public:
   Geom2dProp::CurveAnalysis FindInflections() const { return {{}, true}; }
 
 private:
-  const Geom2dAdaptor_Curve* myAdaptor;
+  const Geom2dAdaptor_Curve*  myAdaptor;
 };
 
 #endif // _Geom2dProp_Ellipse_HeaderFile

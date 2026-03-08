@@ -33,9 +33,11 @@ public:
 
   //! Constructor with adaptor pointer (non-owning).
   //! @param theAdaptor the 3D curve adaptor (must wrap a line, must not be null)
-  GeomProp_Line(const GeomAdaptor_Curve* theAdaptor)
+  GeomProp_Line(const GeomAdaptor_Curve*  theAdaptor,
+                GeomProp::CurveDerivOrder theOrder = GeomProp::CurveDerivOrder::Undefined)
       : myAdaptor(theAdaptor)
   {
+    (void)theOrder;
   }
 
   //! Non-copyable and non-movable.
