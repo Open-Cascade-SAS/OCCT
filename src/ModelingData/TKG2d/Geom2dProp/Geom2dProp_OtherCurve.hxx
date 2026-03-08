@@ -14,6 +14,7 @@
 #ifndef _Geom2dProp_OtherCurve_HeaderFile
 #define _Geom2dProp_OtherCurve_HeaderFile
 
+#include <Adaptor2d_Curve2d.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dProp.hxx>
 #include <Standard.hxx>
@@ -39,6 +40,11 @@ public:
   {
   }
 
+  Geom2dProp_OtherCurve(const Adaptor2d_Curve2d* theAdaptor)
+      : myAdaptor(theAdaptor)
+  {
+  }
+
   //! Non-copyable and non-movable.
   Geom2dProp_OtherCurve(const Geom2dProp_OtherCurve&)            = delete;
   Geom2dProp_OtherCurve& operator=(const Geom2dProp_OtherCurve&) = delete;
@@ -46,7 +52,10 @@ public:
   Geom2dProp_OtherCurve& operator=(Geom2dProp_OtherCurve&&)      = delete;
 
   //! Returns the adaptor pointer.
-  const Geom2dAdaptor_Curve* Adaptor() const { return myAdaptor; }
+  const Geom2dAdaptor_Curve* Adaptor() const
+  {
+    return dynamic_cast<const Geom2dAdaptor_Curve*>(myAdaptor);
+  }
 
   //! Compute tangent at given parameter.
   Standard_EXPORT Geom2dProp::TangentResult Tangent(double theParam, double theTol) const;
@@ -67,7 +76,7 @@ public:
   Standard_EXPORT Geom2dProp::CurveAnalysis FindInflections() const;
 
 private:
-  const Geom2dAdaptor_Curve* myAdaptor;
+  const Adaptor2d_Curve2d* myAdaptor;
 };
 
 #endif // _Geom2dProp_OtherCurve_HeaderFile

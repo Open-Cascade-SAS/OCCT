@@ -43,15 +43,14 @@ void GeomProp_Curve::initialization(const Adaptor3d_Curve& theCurve)
   if (theCurve.IsKind(STANDARD_TYPE(GeomAdaptor_Curve)))
   {
     const auto& aGeomAdaptor = static_cast<const GeomAdaptor_Curve&>(theCurve);
-    myAdaptor                = new GeomAdaptor_Curve(aGeomAdaptor);
+    myOwnedAdaptor           = new GeomAdaptor_Curve(aGeomAdaptor);
     initFromAdaptor();
     return;
   }
 
-  // For non-GeomAdaptor, set uninitialized.
-  myAdaptor.Nullify();
+  myOwnedAdaptor.Nullify();
   myCurveType = theCurve.GetType();
-  myEvaluator.emplace<std::monostate>();
+  myEvaluator.emplace<GeomProp_OtherCurve>(&theCurve);
 }
 
 //=================================================================================================
@@ -60,13 +59,13 @@ void GeomProp_Curve::initialization(const occ::handle<Geom_Curve>& theCurve)
 {
   if (theCurve.IsNull())
   {
-    myAdaptor.Nullify();
+    myOwnedAdaptor.Nullify();
     myEvaluator.emplace<std::monostate>();
     myCurveType = GeomAbs_OtherCurve;
     return;
   }
 
-  myAdaptor = new GeomAdaptor_Curve(theCurve);
+  myOwnedAdaptor = new GeomAdaptor_Curve(theCurve);
   initFromAdaptor();
 }
 
@@ -74,8 +73,15 @@ void GeomProp_Curve::initialization(const occ::handle<Geom_Curve>& theCurve)
 
 void GeomProp_Curve::initFromAdaptor()
 {
-  myCurveType                   = myAdaptor->GetType();
-  const GeomAdaptor_Curve* aPtr = myAdaptor.get();
+  if (myOwnedAdaptor.IsNull())
+  {
+    myEvaluator.emplace<std::monostate>();
+    myCurveType = GeomAbs_OtherCurve;
+    return;
+  }
+
+  const GeomAdaptor_Curve* aPtr = myOwnedAdaptor.get();
+  myCurveType                   = aPtr->GetType();
 
   switch (myCurveType)
   {
@@ -111,15 +117,19 @@ void GeomProp_Curve::initFromAdaptor()
 
 //=================================================================================================
 
-const GeomAdaptor_Curve* GeomProp_Curve::Adaptor() const
+const Adaptor3d_Curve* GeomProp_Curve::Adaptor() const
 {
   return std::visit(
-    [](const auto& theEval) -> const GeomAdaptor_Curve* {
+    [](const auto& theEval) -> const Adaptor3d_Curve* {
       using T = std::decay_t<decltype(theEval)>;
       if constexpr (std::is_same_v<T, std::monostate>)
+      {
         return nullptr;
+      }
       else
+      {
         return theEval.Adaptor();
+      }
     },
     myEvaluator);
 }

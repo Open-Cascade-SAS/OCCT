@@ -102,7 +102,6 @@ Geom2dProp::CurvatureResult Geom2dProp::ComputeCurvature(const gp_Vec2d& theD1,
     return {0.0, true, false};
   }
 
-  // Cross magnitude squared: |D1 x D2|^2
   const double aN = theD1.CrossSquareMagnitude(theD2);
 
   // If D1 and D2 are collinear, curvature is zero.
@@ -112,7 +111,7 @@ Geom2dProp::CurvatureResult Geom2dProp::ComputeCurvature(const gp_Vec2d& theD1,
     return {0.0, true, false};
   }
 
-  // Curvature = |D1 x D2| / |D1|^3
+  // Legacy Geom2dLProp compatibility: curvature is unsigned.
   const double aCurvature = std::sqrt(aN) / aDD1 / std::sqrt(aDD1);
   return {aCurvature, true, false};
 }
@@ -123,16 +122,14 @@ Geom2dProp::NormalResult Geom2dProp::ComputeNormal(const gp_Vec2d& theD1,
                                                    const gp_Vec2d& theD2,
                                                    const double    theTol)
 {
-  // First compute curvature to check if normal is defined.
   const CurvatureResult aCurvRes = ComputeCurvature(theD1, theD2, theTol);
   if (!aCurvRes.IsDefined || aCurvRes.IsInfinite || std::abs(aCurvRes.Value) <= theTol)
   {
     return {{}, false};
   }
 
-  // Normal = D2 * (D1.D1) - D1 * (D1.D2)
-  // This is equivalent to D1 x (D2 x D1) in 2D using the vector triple product identity.
-  const gp_Vec2d aNorm = theD2 * theD1.Dot(theD1) - theD1 * theD1.Dot(theD2);
+  gp_Vec2d aNorm = theD2.Multiplied(theD1.Dot(theD1));
+  aNorm.Subtract(theD1.Multiplied(theD1.Dot(theD2)));
   if (aNorm.SquareMagnitude() <= theTol * theTol)
   {
     return {{}, false};
@@ -153,12 +150,13 @@ Geom2dProp::CentreResult Geom2dProp::ComputeCentreOfCurvature(const gp_Pnt2d& th
     return {{}, false};
   }
 
-  // Normal vector (unnormalized) = D2 * (D1.D1) - D1 * (D1.D2)
-  gp_Vec2d aNorm = theD2 * theD1.Dot(theD1) - theD1 * theD1.Dot(theD2);
+  gp_Vec2d aNorm = theD2.Multiplied(theD1.Dot(theD1));
+  aNorm.Subtract(theD1.Multiplied(theD1.Dot(theD2)));
   if (aNorm.SquareMagnitude() <= theTol * theTol)
   {
     return {{}, false};
   }
+
   aNorm.Normalize();
   aNorm.Divide(aCurvRes.Value);
 

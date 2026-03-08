@@ -14,6 +14,7 @@
 #ifndef _GeomProp_OtherCurve_HeaderFile
 #define _GeomProp_OtherCurve_HeaderFile
 
+#include <Adaptor3d_Curve.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomProp.hxx>
 #include <Standard.hxx>
@@ -39,6 +40,11 @@ public:
   {
   }
 
+  GeomProp_OtherCurve(const Adaptor3d_Curve* theAdaptor)
+      : myAdaptor(theAdaptor)
+  {
+  }
+
   //! Non-copyable and non-movable.
   GeomProp_OtherCurve(const GeomProp_OtherCurve&)            = delete;
   GeomProp_OtherCurve& operator=(const GeomProp_OtherCurve&) = delete;
@@ -46,7 +52,10 @@ public:
   GeomProp_OtherCurve& operator=(GeomProp_OtherCurve&&)      = delete;
 
   //! Returns the adaptor pointer.
-  const GeomAdaptor_Curve* Adaptor() const { return myAdaptor; }
+  const GeomAdaptor_Curve* Adaptor() const
+  {
+    return dynamic_cast<const GeomAdaptor_Curve*>(myAdaptor);
+  }
 
   //! Compute tangent at given parameter.
   Standard_EXPORT GeomProp::TangentResult Tangent(double theParam, double theTol) const;
@@ -67,7 +76,7 @@ public:
   Standard_EXPORT GeomProp::CurveAnalysis FindInflections() const;
 
 private:
-  const GeomAdaptor_Curve* myAdaptor;
+  const Adaptor3d_Curve* myAdaptor;
 };
 
 #endif // _GeomProp_OtherCurve_HeaderFile

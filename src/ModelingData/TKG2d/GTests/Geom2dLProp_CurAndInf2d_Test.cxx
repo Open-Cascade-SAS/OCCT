@@ -13,14 +13,20 @@
 
 #include <Geom2d_Circle.hxx>
 #include <Geom2d_Ellipse.hxx>
+#include <Geom2d_Hyperbola.hxx>
 #include <Geom2dLProp_CurAndInf2d.hxx>
+#include <Geom2d_Parabola.hxx>
 #include <gp_Ax2d.hxx>
 #include <gp_Circ2d.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Elips2d.hxx>
+#include <gp_Hypr2d.hxx>
+#include <gp_Parab2d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <LProp_CIType.hxx>
 #include <Precision.hxx>
+
+#include <cmath>
 
 #include <gtest/gtest.h>
 
@@ -36,10 +42,18 @@ protected:
     // Ellipse centered at origin, major radius 10, minor radius 3
     gp_Elips2d anElips(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 10.0, 3.0);
     myEllipse = new Geom2d_Ellipse(anElips);
+
+    gp_Hypr2d aHypr(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 6.0, 3.0);
+    myHyperbola = new Geom2d_Hyperbola(aHypr);
+
+    gp_Parab2d aParab(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 2.0);
+    myParabola = new Geom2d_Parabola(aParab);
   }
 
-  occ::handle<Geom2d_Circle>  myCircle;
-  occ::handle<Geom2d_Ellipse> myEllipse;
+  occ::handle<Geom2d_Circle>    myCircle;
+  occ::handle<Geom2d_Ellipse>   myEllipse;
+  occ::handle<Geom2d_Hyperbola> myHyperbola;
+  occ::handle<Geom2d_Parabola>  myParabola;
 };
 
 TEST_F(Geom2dLProp_CurAndInf2dTest, Circle_Perform_NoInflections)
@@ -155,4 +169,49 @@ TEST_F(Geom2dLProp_CurAndInf2dTest, Ellipse_CurvatureExtremaAtExpectedParameters
   {
     EXPECT_NEAR(aAnalyzer.Parameter(i), anExpectedParams[i - 1], 1e-6);
   }
+}
+
+TEST_F(Geom2dLProp_CurAndInf2dTest, Hyperbola_PerformCurExt_VertexOnly)
+{
+  Geom2dLProp_CurAndInf2d aAnalyzer;
+  aAnalyzer.PerformCurExt(myHyperbola);
+
+  ASSERT_TRUE(aAnalyzer.IsDone());
+  ASSERT_EQ(aAnalyzer.NbPoints(), 1);
+  EXPECT_NEAR(aAnalyzer.Parameter(1), 0.0, Precision::PConfusion());
+  EXPECT_EQ(aAnalyzer.Type(1), LProp_MinCur);
+}
+
+TEST_F(Geom2dLProp_CurAndInf2dTest, Hyperbola_PerformInf_NoInflections)
+{
+  Geom2dLProp_CurAndInf2d aAnalyzer;
+  aAnalyzer.PerformInf(myHyperbola);
+
+  EXPECT_TRUE(aAnalyzer.IsDone());
+  EXPECT_EQ(aAnalyzer.NbPoints(), 0);
+}
+
+TEST_F(Geom2dLProp_CurAndInf2dTest, Parabola_PerformCurExt_VertexOnly)
+{
+  Geom2dLProp_CurAndInf2d aAnalyzer;
+  aAnalyzer.PerformCurExt(myParabola);
+
+  ASSERT_TRUE(aAnalyzer.IsDone());
+  ASSERT_EQ(aAnalyzer.NbPoints(), 1);
+  EXPECT_NEAR(aAnalyzer.Parameter(1), 0.0, Precision::PConfusion());
+  EXPECT_EQ(aAnalyzer.Type(1), LProp_MinCur);
+}
+
+TEST_F(Geom2dLProp_CurAndInf2dTest, PerformInf_ClearsPreviousExtrema)
+{
+  Geom2dLProp_CurAndInf2d aAnalyzer;
+  aAnalyzer.PerformCurExt(myEllipse);
+
+  ASSERT_TRUE(aAnalyzer.IsDone());
+  ASSERT_EQ(aAnalyzer.NbPoints(), 4);
+
+  aAnalyzer.PerformInf(myEllipse);
+
+  EXPECT_TRUE(aAnalyzer.IsDone());
+  EXPECT_EQ(aAnalyzer.NbPoints(), 0);
 }

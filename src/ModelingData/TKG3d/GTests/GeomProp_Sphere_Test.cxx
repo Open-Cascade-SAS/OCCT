@@ -411,3 +411,30 @@ TEST(GeomProp_SphereTest, VsSLProps_CriticalPoints)
     compareMeanGaussian(aSphere, aUV[0], aUV[1]);
   }
 }
+
+TEST(GeomProp_SphereTest, RepeatedCalls_SameParameter_AreStable)
+{
+  occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(gp_Ax3(), 5.0);
+  GeomProp_Surface                   aProp(aSphere);
+  GeomProp_Surface                   aFreshProp(aSphere);
+  const double                       aU = M_PI / 4.0;
+  const double                       aV = M_PI / 6.0;
+
+  const GeomProp::SurfaceNormalResult    aNormal = aProp.Normal(aU, aV, THE_LIN_TOL);
+  const GeomProp::SurfaceCurvatureResult aCurv   = aProp.Curvatures(aU, aV, THE_LIN_TOL);
+  const GeomProp::MeanGaussianResult     aMeanG  = aProp.MeanGaussian(aU, aV, THE_LIN_TOL);
+
+  const GeomProp::SurfaceCurvatureResult aFreshCurv  = aFreshProp.Curvatures(aU, aV, THE_LIN_TOL);
+  const GeomProp::MeanGaussianResult     aFreshMeanG = aFreshProp.MeanGaussian(aU, aV, THE_LIN_TOL);
+
+  ASSERT_TRUE(aNormal.IsDefined);
+  ASSERT_TRUE(aCurv.IsDefined);
+  ASSERT_TRUE(aMeanG.IsDefined);
+  ASSERT_TRUE(aFreshCurv.IsDefined);
+  ASSERT_TRUE(aFreshMeanG.IsDefined);
+
+  EXPECT_NEAR(aCurv.MinCurvature, aFreshCurv.MinCurvature, THE_CURV_TOL);
+  EXPECT_NEAR(aCurv.MaxCurvature, aFreshCurv.MaxCurvature, THE_CURV_TOL);
+  EXPECT_NEAR(aMeanG.MeanCurvature, aFreshMeanG.MeanCurvature, THE_CURV_TOL);
+  EXPECT_NEAR(aMeanG.GaussianCurvature, aFreshMeanG.GaussianCurvature, THE_CURV_TOL);
+}

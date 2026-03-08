@@ -14,6 +14,7 @@
 #ifndef _GeomProp_OtherSurface_HeaderFile
 #define _GeomProp_OtherSurface_HeaderFile
 
+#include <Adaptor3d_Surface.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomProp.hxx>
 #include <Standard.hxx>
@@ -37,6 +38,11 @@ public:
   {
   }
 
+  GeomProp_OtherSurface(const Adaptor3d_Surface* theAdaptor)
+      : myAdaptor(theAdaptor)
+  {
+  }
+
   //! Non-copyable and non-movable.
   GeomProp_OtherSurface(const GeomProp_OtherSurface&)            = delete;
   GeomProp_OtherSurface& operator=(const GeomProp_OtherSurface&) = delete;
@@ -44,7 +50,10 @@ public:
   GeomProp_OtherSurface& operator=(GeomProp_OtherSurface&&)      = delete;
 
   //! Returns the adaptor pointer.
-  const GeomAdaptor_Surface* Adaptor() const { return myAdaptor; }
+  const GeomAdaptor_Surface* Adaptor() const
+  {
+    return dynamic_cast<const GeomAdaptor_Surface*>(myAdaptor);
+  }
 
   //! Compute surface normal at given parameter.
   Standard_EXPORT GeomProp::SurfaceNormalResult Normal(double theU,
@@ -62,7 +71,7 @@ public:
                                                             double theTol) const;
 
 private:
-  const GeomAdaptor_Surface* myAdaptor;
+  const Adaptor3d_Surface* myAdaptor;
 };
 
 #endif // _GeomProp_OtherSurface_HeaderFile

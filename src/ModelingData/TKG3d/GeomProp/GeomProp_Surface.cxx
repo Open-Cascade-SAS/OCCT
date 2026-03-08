@@ -40,15 +40,14 @@ void GeomProp_Surface::initialization(const Adaptor3d_Surface& theSurface)
   if (theSurface.IsKind(STANDARD_TYPE(GeomAdaptor_Surface)))
   {
     const auto& aGeomAdaptor = static_cast<const GeomAdaptor_Surface&>(theSurface);
-    myAdaptor                = new GeomAdaptor_Surface(aGeomAdaptor);
+    myOwnedAdaptor           = new GeomAdaptor_Surface(aGeomAdaptor);
     initFromAdaptor();
     return;
   }
 
-  // For non-GeomAdaptor, set uninitialized.
-  myAdaptor.Nullify();
+  myOwnedAdaptor.Nullify();
   mySurfaceType = theSurface.GetType();
-  myEvaluator.emplace<std::monostate>();
+  myEvaluator.emplace<GeomProp_OtherSurface>(&theSurface);
 }
 
 //=================================================================================================
@@ -57,13 +56,13 @@ void GeomProp_Surface::initialization(const occ::handle<Geom_Surface>& theSurfac
 {
   if (theSurface.IsNull())
   {
-    myAdaptor.Nullify();
+    myOwnedAdaptor.Nullify();
     myEvaluator.emplace<std::monostate>();
     mySurfaceType = GeomAbs_OtherSurface;
     return;
   }
 
-  myAdaptor = new GeomAdaptor_Surface(theSurface);
+  myOwnedAdaptor = new GeomAdaptor_Surface(theSurface);
   initFromAdaptor();
 }
 
@@ -71,8 +70,15 @@ void GeomProp_Surface::initialization(const occ::handle<Geom_Surface>& theSurfac
 
 void GeomProp_Surface::initFromAdaptor()
 {
-  mySurfaceType                   = myAdaptor->GetType();
-  const GeomAdaptor_Surface* aPtr = myAdaptor.get();
+  if (myOwnedAdaptor.IsNull())
+  {
+    myEvaluator.emplace<std::monostate>();
+    mySurfaceType = GeomAbs_OtherSurface;
+    return;
+  }
+
+  const GeomAdaptor_Surface* aPtr = myOwnedAdaptor.get();
+  mySurfaceType                   = aPtr->GetType();
 
   switch (mySurfaceType)
   {
@@ -114,15 +120,19 @@ void GeomProp_Surface::initFromAdaptor()
 
 //=================================================================================================
 
-const GeomAdaptor_Surface* GeomProp_Surface::Adaptor() const
+const Adaptor3d_Surface* GeomProp_Surface::Adaptor() const
 {
   return std::visit(
-    [](const auto& theEval) -> const GeomAdaptor_Surface* {
+    [](const auto& theEval) -> const Adaptor3d_Surface* {
       using T = std::decay_t<decltype(theEval)>;
       if constexpr (std::is_same_v<T, std::monostate>)
+      {
         return nullptr;
+      }
       else
+      {
         return theEval.Adaptor();
+      }
     },
     myEvaluator);
 }

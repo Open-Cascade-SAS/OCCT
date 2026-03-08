@@ -221,6 +221,36 @@ TEST(GeomProp_CircleTest, Tangent_AtPi)
   EXPECT_NEAR(aTan.Direction.Z(), 0.0, THE_DIR_TOL);
 }
 
+TEST(GeomProp_CircleTest, RepeatedCalls_SameParameter_AreStable)
+{
+  gp_Circ                  aCirc(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
+  occ::handle<Geom_Circle> aCircle = new Geom_Circle(aCirc);
+  GeomProp_Curve           aProp(aCircle);
+  GeomProp_Curve           aFreshProp(aCircle);
+  const double             aParam = M_PI / 3.0;
+
+  const GeomProp::TangentResult   aTangent = aProp.Tangent(aParam, THE_LIN_TOL);
+  const GeomProp::CurvatureResult aCurv    = aProp.Curvature(aParam, THE_LIN_TOL);
+  const GeomProp::NormalResult    aNorm    = aProp.Normal(aParam, THE_LIN_TOL);
+  const GeomProp::CentreResult    aCentre  = aProp.CentreOfCurvature(aParam, THE_LIN_TOL);
+
+  const GeomProp::CurvatureResult aFreshCurv   = aFreshProp.Curvature(aParam, THE_LIN_TOL);
+  const GeomProp::NormalResult    aFreshNorm   = aFreshProp.Normal(aParam, THE_LIN_TOL);
+  const GeomProp::CentreResult    aFreshCentre = aFreshProp.CentreOfCurvature(aParam, THE_LIN_TOL);
+
+  ASSERT_TRUE(aTangent.IsDefined);
+  ASSERT_TRUE(aCurv.IsDefined);
+  ASSERT_TRUE(aNorm.IsDefined);
+  ASSERT_TRUE(aCentre.IsDefined);
+  ASSERT_TRUE(aFreshCurv.IsDefined);
+  ASSERT_TRUE(aFreshNorm.IsDefined);
+  ASSERT_TRUE(aFreshCentre.IsDefined);
+
+  EXPECT_NEAR(aCurv.Value, aFreshCurv.Value, THE_CURV_TOL);
+  EXPECT_NEAR(std::abs(aNorm.Direction.Dot(aFreshNorm.Direction)), 1.0, THE_DIR_TOL);
+  EXPECT_NEAR(aCentre.Centre.Distance(aFreshCentre.Centre), 0.0, THE_POINT_TOL);
+}
+
 TEST(GeomProp_CircleTest, Normal_PointsToCenter)
 {
   gp_Circ                  aCirc(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);

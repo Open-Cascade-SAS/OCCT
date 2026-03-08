@@ -89,17 +89,10 @@ MathUtils::ScalarResult Brent(Function&                theFunc,
   {
     aResult.NbIterations = anIter + 1;
 
-    // Check convergence on function value
-    if (std::abs(aFb) < theConfig.FTolerance)
-    {
-      aResult.Status = MathUtils::Status::OK;
-      aResult.Root   = aB;
-      aResult.Value  = aFb;
-      return aResult;
-    }
+    const double aTol = 2.0 * MathUtils::THE_EPSILON * std::abs(aB) + 0.5 * theConfig.XTolerance;
+    const double aM   = 0.5 * (aC - aB);
 
-    // Check convergence on interval size
-    if (std::abs(aB - aA) < theConfig.XTolerance * std::max(1.0, std::abs(aB)))
+    if (std::abs(aFb) < theConfig.FTolerance || aFb == 0.0 || std::abs(aM) <= aTol)
     {
       aResult.Status = MathUtils::Status::OK;
       aResult.Root   = aB;
@@ -125,9 +118,6 @@ MathUtils::ScalarResult Brent(Function&                theFunc,
     }
 
     // Decide whether to accept the interpolation step
-    const double aTol = 2.0 * MathUtils::THE_EPSILON * std::abs(aB) + 0.5 * theConfig.XTolerance;
-    const double aM   = 0.5 * (aC - aB);
-
     bool aUseInterp = false;
 
     // Check if s is between (3a+b)/4 and b
