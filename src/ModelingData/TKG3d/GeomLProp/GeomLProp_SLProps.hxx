@@ -72,6 +72,10 @@ public:
 
   Standard_EXPORT ~GeomLProp_SLProps();
 
+  Standard_EXPORT GeomLProp_SLProps(const GeomLProp_SLProps& theOther);
+
+  Standard_EXPORT GeomLProp_SLProps& operator=(const GeomLProp_SLProps& theOther);
+
   //! Initializes the local properties of the surface S
   //! for the new surface.
   Standard_EXPORT void SetSurface(const occ::handle<Geom_Surface>& S);

@@ -57,6 +57,10 @@ public:
 
   Standard_EXPORT ~LProp3d_SLProps();
 
+  Standard_EXPORT LProp3d_SLProps(const LProp3d_SLProps& theOther);
+
+  Standard_EXPORT LProp3d_SLProps& operator=(const LProp3d_SLProps& theOther);
+
   //! Initializes the local properties of the surface S
   //! for the new surface.
   Standard_EXPORT void SetSurface(const occ::handle<Adaptor3d_Surface>& S);

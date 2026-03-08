@@ -118,6 +118,60 @@ Geom2dLProp_CLProps2d::Geom2dLProp_CLProps2d(const int N, const double Resolutio
 
 //==================================================================================================
 
+Geom2dLProp_CLProps2d::Geom2dLProp_CLProps2d(const Geom2dLProp_CLProps2d& theOther)
+    : myCurve(theOther.myCurve),
+      myCurveProp(theOther.myCurve.IsNull() ? nullptr
+                                            : std::make_shared<Geom2dProp_Curve>(theOther.myCurve)),
+      myLegacyProps(theOther.myLegacyProps != nullptr
+                      ? std::make_shared<Geom2dLProp_LegacyCLProps2d>(*theOther.myLegacyProps)
+                      : nullptr),
+      myU(theOther.myU),
+      myDerOrder(theOther.myDerOrder),
+      myCN(theOther.myCN),
+      myLinTol(theOther.myLinTol),
+      myPnt(theOther.myPnt),
+      myTangent(theOther.myTangent),
+      myCurvature(theOther.myCurvature),
+      myTangentStatus(theOther.myTangentStatus),
+      mySignificantFirstDerivativeOrder(theOther.mySignificantFirstDerivativeOrder)
+{
+  myDerivArr[0] = theOther.myDerivArr[0];
+  myDerivArr[1] = theOther.myDerivArr[1];
+  myDerivArr[2] = theOther.myDerivArr[2];
+}
+
+//==================================================================================================
+
+Geom2dLProp_CLProps2d& Geom2dLProp_CLProps2d::operator=(const Geom2dLProp_CLProps2d& theOther)
+{
+  if (this == &theOther)
+  {
+    return *this;
+  }
+
+  myCurve    = theOther.myCurve;
+  myCurveProp = theOther.myCurve.IsNull() ? nullptr
+                                          : std::make_shared<Geom2dProp_Curve>(theOther.myCurve);
+  myLegacyProps = theOther.myLegacyProps != nullptr
+                    ? std::make_shared<Geom2dLProp_LegacyCLProps2d>(*theOther.myLegacyProps)
+                    : nullptr;
+  myU                                  = theOther.myU;
+  myDerOrder                           = theOther.myDerOrder;
+  myCN                                 = theOther.myCN;
+  myLinTol                             = theOther.myLinTol;
+  myPnt                                = theOther.myPnt;
+  myDerivArr[0]                        = theOther.myDerivArr[0];
+  myDerivArr[1]                        = theOther.myDerivArr[1];
+  myDerivArr[2]                        = theOther.myDerivArr[2];
+  myTangent                            = theOther.myTangent;
+  myCurvature                          = theOther.myCurvature;
+  myTangentStatus                      = theOther.myTangentStatus;
+  mySignificantFirstDerivativeOrder    = theOther.mySignificantFirstDerivativeOrder;
+  return *this;
+}
+
+//==================================================================================================
+
 void Geom2dLProp_CLProps2d::SetParameter(const double U)
 {
   myU = U;

@@ -76,6 +76,10 @@ public:
 
   Standard_EXPORT ~GeomLProp_CLProps();
 
+  Standard_EXPORT GeomLProp_CLProps(const GeomLProp_CLProps& theOther);
+
+  Standard_EXPORT GeomLProp_CLProps& operator=(const GeomLProp_CLProps& theOther);
+
   //! Initializes the local properties of the curve
   //! for the parameter value <U>.
   Standard_EXPORT void SetParameter(const double U);

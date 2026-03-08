@@ -68,6 +68,10 @@ public:
 
   Standard_EXPORT ~LProp3d_CLProps();
 
+  Standard_EXPORT LProp3d_CLProps(const LProp3d_CLProps& theOther);
+
+  Standard_EXPORT LProp3d_CLProps& operator=(const LProp3d_CLProps& theOther);
+
   //! Initializes the local properties of the curve
   //! for the parameter value <U>.
   Standard_EXPORT void SetParameter(const double U);

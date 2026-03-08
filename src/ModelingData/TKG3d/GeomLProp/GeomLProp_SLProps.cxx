@@ -194,6 +194,78 @@ GeomLProp_SLProps::~GeomLProp_SLProps() = default;
 
 //==================================================================================================
 
+GeomLProp_SLProps::GeomLProp_SLProps(const GeomLProp_SLProps& theOther)
+    : mySurf(theOther.mySurf),
+      mySurfaceProp(theOther.mySurf.IsNull() ? nullptr
+                                             : std::make_shared<GeomProp_Surface>(theOther.mySurf)),
+      myU(theOther.myU),
+      myV(theOther.myV),
+      myDerOrder(theOther.myDerOrder),
+      myCN(theOther.myCN),
+      myLinTol(theOther.myLinTol),
+      myPnt(theOther.myPnt),
+      myD1u(theOther.myD1u),
+      myD1v(theOther.myD1v),
+      myD2u(theOther.myD2u),
+      myD2v(theOther.myD2v),
+      myDuv(theOther.myDuv),
+      myNormal(theOther.myNormal),
+      myMinCurv(theOther.myMinCurv),
+      myMaxCurv(theOther.myMaxCurv),
+      myDirMinCurv(theOther.myDirMinCurv),
+      myDirMaxCurv(theOther.myDirMaxCurv),
+      myMeanCurv(theOther.myMeanCurv),
+      myGausCurv(theOther.myGausCurv),
+      mySignificantFirstDerivativeOrderU(theOther.mySignificantFirstDerivativeOrderU),
+      mySignificantFirstDerivativeOrderV(theOther.mySignificantFirstDerivativeOrderV),
+      myUTangentStatus(theOther.myUTangentStatus),
+      myVTangentStatus(theOther.myVTangentStatus),
+      myNormalStatus(theOther.myNormalStatus),
+      myCurvatureStatus(theOther.myCurvatureStatus)
+{
+}
+
+//==================================================================================================
+
+GeomLProp_SLProps& GeomLProp_SLProps::operator=(const GeomLProp_SLProps& theOther)
+{
+  if (this == &theOther)
+  {
+    return *this;
+  }
+
+  mySurf        = theOther.mySurf;
+  mySurfaceProp = theOther.mySurf.IsNull() ? nullptr
+                                           : std::make_shared<GeomProp_Surface>(theOther.mySurf);
+  myU                                  = theOther.myU;
+  myV                                  = theOther.myV;
+  myDerOrder                           = theOther.myDerOrder;
+  myCN                                 = theOther.myCN;
+  myLinTol                             = theOther.myLinTol;
+  myPnt                                = theOther.myPnt;
+  myD1u                                = theOther.myD1u;
+  myD1v                                = theOther.myD1v;
+  myD2u                                = theOther.myD2u;
+  myD2v                                = theOther.myD2v;
+  myDuv                                = theOther.myDuv;
+  myNormal                             = theOther.myNormal;
+  myMinCurv                            = theOther.myMinCurv;
+  myMaxCurv                            = theOther.myMaxCurv;
+  myDirMinCurv                         = theOther.myDirMinCurv;
+  myDirMaxCurv                         = theOther.myDirMaxCurv;
+  myMeanCurv                           = theOther.myMeanCurv;
+  myGausCurv                           = theOther.myGausCurv;
+  mySignificantFirstDerivativeOrderU   = theOther.mySignificantFirstDerivativeOrderU;
+  mySignificantFirstDerivativeOrderV   = theOther.mySignificantFirstDerivativeOrderV;
+  myUTangentStatus                     = theOther.myUTangentStatus;
+  myVTangentStatus                     = theOther.myVTangentStatus;
+  myNormalStatus                       = theOther.myNormalStatus;
+  myCurvatureStatus                    = theOther.myCurvatureStatus;
+  return *this;
+}
+
+//==================================================================================================
+
 void GeomLProp_SLProps::SetSurface(const occ::handle<Geom_Surface>& S)
 {
   mySurf                             = S;

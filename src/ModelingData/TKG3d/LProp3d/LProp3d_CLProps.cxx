@@ -98,6 +98,54 @@ LProp3d_CLProps::~LProp3d_CLProps() = default;
 
 //==================================================================================================
 
+LProp3d_CLProps::LProp3d_CLProps(const LProp3d_CLProps& theOther)
+    : myCurve(theOther.myCurve),
+      myCurveProp(theOther.myCurve.IsNull() ? nullptr
+                                            : std::make_shared<GeomProp_Curve>(*theOther.myCurve)),
+      myU(theOther.myU),
+      myDerOrder(theOther.myDerOrder),
+      myCN(theOther.myCN),
+      myLinTol(theOther.myLinTol),
+      myPnt(theOther.myPnt),
+      myTangent(theOther.myTangent),
+      myCurvature(theOther.myCurvature),
+      myTangentStatus(theOther.myTangentStatus),
+      mySignificantFirstDerivativeOrder(theOther.mySignificantFirstDerivativeOrder)
+{
+  myDerivArr[0] = theOther.myDerivArr[0];
+  myDerivArr[1] = theOther.myDerivArr[1];
+  myDerivArr[2] = theOther.myDerivArr[2];
+}
+
+//==================================================================================================
+
+LProp3d_CLProps& LProp3d_CLProps::operator=(const LProp3d_CLProps& theOther)
+{
+  if (this == &theOther)
+  {
+    return *this;
+  }
+
+  myCurve    = theOther.myCurve;
+  myCurveProp = theOther.myCurve.IsNull() ? nullptr
+                                          : std::make_shared<GeomProp_Curve>(*theOther.myCurve);
+  myU                               = theOther.myU;
+  myDerOrder                        = theOther.myDerOrder;
+  myCN                              = theOther.myCN;
+  myLinTol                          = theOther.myLinTol;
+  myPnt                             = theOther.myPnt;
+  myDerivArr[0]                     = theOther.myDerivArr[0];
+  myDerivArr[1]                     = theOther.myDerivArr[1];
+  myDerivArr[2]                     = theOther.myDerivArr[2];
+  myTangent                         = theOther.myTangent;
+  myCurvature                       = theOther.myCurvature;
+  myTangentStatus                   = theOther.myTangentStatus;
+  mySignificantFirstDerivativeOrder = theOther.mySignificantFirstDerivativeOrder;
+  return *this;
+}
+
+//==================================================================================================
+
 void LProp3d_CLProps::SetParameter(const double U)
 {
   myU = U;

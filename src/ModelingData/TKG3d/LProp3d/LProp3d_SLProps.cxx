@@ -122,6 +122,78 @@ LProp3d_SLProps::~LProp3d_SLProps() = default;
 
 //==================================================================================================
 
+LProp3d_SLProps::LProp3d_SLProps(const LProp3d_SLProps& theOther)
+    : mySurf(theOther.mySurf),
+      mySurfaceProp(theOther.mySurf.IsNull() ? nullptr
+                                             : std::make_shared<GeomProp_Surface>(*theOther.mySurf)),
+      myU(theOther.myU),
+      myV(theOther.myV),
+      myDerOrder(theOther.myDerOrder),
+      myCN(theOther.myCN),
+      myLinTol(theOther.myLinTol),
+      myPnt(theOther.myPnt),
+      myD1u(theOther.myD1u),
+      myD1v(theOther.myD1v),
+      myD2u(theOther.myD2u),
+      myD2v(theOther.myD2v),
+      myDuv(theOther.myDuv),
+      myNormal(theOther.myNormal),
+      myMinCurv(theOther.myMinCurv),
+      myMaxCurv(theOther.myMaxCurv),
+      myDirMinCurv(theOther.myDirMinCurv),
+      myDirMaxCurv(theOther.myDirMaxCurv),
+      myMeanCurv(theOther.myMeanCurv),
+      myGausCurv(theOther.myGausCurv),
+      mySignificantFirstDerivativeOrderU(theOther.mySignificantFirstDerivativeOrderU),
+      mySignificantFirstDerivativeOrderV(theOther.mySignificantFirstDerivativeOrderV),
+      myUTangentStatus(theOther.myUTangentStatus),
+      myVTangentStatus(theOther.myVTangentStatus),
+      myNormalStatus(theOther.myNormalStatus),
+      myCurvatureStatus(theOther.myCurvatureStatus)
+{
+}
+
+//==================================================================================================
+
+LProp3d_SLProps& LProp3d_SLProps::operator=(const LProp3d_SLProps& theOther)
+{
+  if (this == &theOther)
+  {
+    return *this;
+  }
+
+  mySurf        = theOther.mySurf;
+  mySurfaceProp = theOther.mySurf.IsNull() ? nullptr
+                                           : std::make_shared<GeomProp_Surface>(*theOther.mySurf);
+  myU                                  = theOther.myU;
+  myV                                  = theOther.myV;
+  myDerOrder                           = theOther.myDerOrder;
+  myCN                                 = theOther.myCN;
+  myLinTol                             = theOther.myLinTol;
+  myPnt                                = theOther.myPnt;
+  myD1u                                = theOther.myD1u;
+  myD1v                                = theOther.myD1v;
+  myD2u                                = theOther.myD2u;
+  myD2v                                = theOther.myD2v;
+  myDuv                                = theOther.myDuv;
+  myNormal                             = theOther.myNormal;
+  myMinCurv                            = theOther.myMinCurv;
+  myMaxCurv                            = theOther.myMaxCurv;
+  myDirMinCurv                         = theOther.myDirMinCurv;
+  myDirMaxCurv                         = theOther.myDirMaxCurv;
+  myMeanCurv                           = theOther.myMeanCurv;
+  myGausCurv                           = theOther.myGausCurv;
+  mySignificantFirstDerivativeOrderU   = theOther.mySignificantFirstDerivativeOrderU;
+  mySignificantFirstDerivativeOrderV   = theOther.mySignificantFirstDerivativeOrderV;
+  myUTangentStatus                     = theOther.myUTangentStatus;
+  myVTangentStatus                     = theOther.myVTangentStatus;
+  myNormalStatus                       = theOther.myNormalStatus;
+  myCurvatureStatus                    = theOther.myCurvatureStatus;
+  return *this;
+}
+
+//==================================================================================================
+
 void LProp3d_SLProps::SetSurface(const occ::handle<Adaptor3d_Surface>& S)
 {
   mySurf        = S;

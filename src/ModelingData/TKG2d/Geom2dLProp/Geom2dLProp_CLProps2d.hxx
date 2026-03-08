@@ -75,6 +75,10 @@ public:
   //! when the functions "set" will be done.
   Standard_EXPORT Geom2dLProp_CLProps2d(const int N, const double Resolution);
 
+  Standard_EXPORT Geom2dLProp_CLProps2d(const Geom2dLProp_CLProps2d& theOther);
+
+  Standard_EXPORT Geom2dLProp_CLProps2d& operator=(const Geom2dLProp_CLProps2d& theOther);
+
   //! Initializes the local properties of the curve
   //! for the parameter value <U>.
   Standard_EXPORT void SetParameter(const double U);
