@@ -26,8 +26,10 @@
 #include <Precision.hxx>
 #include <math_FunctionWithDerivative.hxx>
 
+#include <algorithm>
 #include <cmath>
 #include <optional>
+#include <type_traits>
 
 //! Internal helper utilities for numeric curve analysis shared across all
 //! Geom2dProp curve evaluators (Bezier, BSpline, Offset, Other).

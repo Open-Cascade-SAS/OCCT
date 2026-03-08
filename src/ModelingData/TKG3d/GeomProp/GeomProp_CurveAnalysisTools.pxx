@@ -25,8 +25,10 @@
 #include <NCollection_Array1.hxx>
 #include <Precision.hxx>
 
+#include <algorithm>
 #include <cmath>
 #include <optional>
+#include <type_traits>
 
 //! Internal helper utilities for numeric curve analysis shared across all
 //! GeomProp curve evaluators (Bezier, BSpline, Offset, Other).

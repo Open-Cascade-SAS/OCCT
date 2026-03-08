@@ -21,6 +21,7 @@
 
 #include <NCollection_Vector.hxx>
 
+#include <algorithm>
 #include <cmath>
 
 //! @file MathRoot_MultipleUtils.hxx
