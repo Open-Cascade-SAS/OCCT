@@ -248,6 +248,25 @@ const Adaptor3d_Surface* GeomProp_Surface::Adaptor() const
 
 //=================================================================================================
 
+const Geom_Surface* GeomProp_Surface::Geometry() const
+{
+  return std::visit(
+    [](const auto& theEval) -> const Geom_Surface* {
+      using T = std::decay_t<decltype(theEval)>;
+      if constexpr (std::is_same_v<T, std::monostate>)
+      {
+        return nullptr;
+      }
+      else
+      {
+        return theEval.Geometry();
+      }
+    },
+    myEvaluator);
+}
+
+//=================================================================================================
+
 GeomProp::SurfaceNormalResult GeomProp_Surface::Normal(const double theU,
                                                        const double theV,
                                                        const double theTol) const

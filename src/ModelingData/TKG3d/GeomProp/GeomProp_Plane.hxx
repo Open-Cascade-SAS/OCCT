@@ -72,6 +72,9 @@ public:
   //! Returns the adaptor pointer (nullptr when constructed from handle).
   const GeomAdaptor_Surface* Adaptor() const { return myAdaptor; }
 
+  //! Returns pointer to underlying geometry, or nullptr if constructed from adaptor.
+  const Geom_Surface* Geometry() const { return mySurface.get(); }
+
   //! Compute surface normal. Constant for a plane.
   //! Uses D1U x D1V cross product to ensure correct sign for flipped planes.
   GeomProp::SurfaceNormalResult Normal(double theU, double theV, double theTol) const

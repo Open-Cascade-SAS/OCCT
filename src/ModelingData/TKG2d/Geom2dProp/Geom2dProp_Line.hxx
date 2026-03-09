@@ -37,7 +37,8 @@ public:
   //! @param theAdaptor the 2D curve adaptor (must wrap a line, must not be null)
   Geom2dProp_Line(const Geom2dAdaptor_Curve*  theAdaptor,
                   Geom2dProp::CurveDerivOrder theOrder = Geom2dProp::CurveDerivOrder::Undefined)
-      : myDirection(theAdaptor->Line().Direction())
+      : myAdaptor(theAdaptor),
+        myCurve(theAdaptor->Curve())
   {
     (void)theOrder;
   }
@@ -48,7 +49,8 @@ public:
   Geom2dProp_Line(const occ::handle<Geom2d_Curve>&              theCurve,
                   const std::optional<Geom2dProp::CurveDomain>& theDomain = std::nullopt,
                   Geom2dProp::CurveDerivOrder theOrder = Geom2dProp::CurveDerivOrder::Undefined)
-      : myDirection(occ::down_cast<Geom2d_Line>(theCurve)->Direction())
+      : myAdaptor(nullptr),
+        myCurve(theCurve)
   {
     (void)theDomain;
     (void)theOrder;
@@ -66,8 +68,11 @@ public:
   //! Returns the derivative caching order (always Undefined for analytical curves).
   Geom2dProp::CurveDerivOrder DerivOrder() const { return Geom2dProp::CurveDerivOrder::Undefined; }
 
-  //! Returns nullptr (no adaptor is stored).
-  const Geom2dAdaptor_Curve* Adaptor() const { return nullptr; }
+  //! Returns the adaptor pointer (nullptr when constructed from handle).
+  const Geom2dAdaptor_Curve* Adaptor() const { return myAdaptor; }
+
+  //! Returns pointer to underlying geometry, or nullptr if constructed from adaptor.
+  const Geom2d_Curve* Geometry() const { return myCurve.get(); }
 
   //! Compute tangent at given parameter.
   //! For a line, the tangent is always the line direction.
@@ -78,7 +83,7 @@ public:
   {
     (void)theParam;
     (void)theTol;
-    return {myDirection, true};
+    return {occ::down_cast<Geom2d_Line>(myCurve)->Direction(), true};
   }
 
   //! Compute curvature at given parameter.
@@ -128,7 +133,8 @@ public:
   Geom2dProp::CurveAnalysis FindInflections() const { return {{}, true}; }
 
 private:
-  gp_Dir2d myDirection; //!< Cached line direction
+  const Geom2dAdaptor_Curve* myAdaptor = nullptr; //!< Non-owning adaptor pointer (adaptor path)
+  occ::handle<Geom2d_Curve>  myCurve;             //!< Geometry handle (handle path)
 };
 
 #endif // _Geom2dProp_Line_HeaderFile

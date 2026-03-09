@@ -73,6 +73,9 @@ public:
   //! Returns the adaptor pointer (nullptr when constructed from handle).
   const GeomAdaptor_Curve* Adaptor() const { return myAdaptor; }
 
+  //! Returns pointer to underlying geometry, or nullptr if constructed from adaptor.
+  const Geom_Curve* Geometry() const { return myCurve.get(); }
+
   //! Compute tangent at given parameter.
   Standard_EXPORT GeomProp::TangentResult Tangent(double theParam, double theTol) const;
 

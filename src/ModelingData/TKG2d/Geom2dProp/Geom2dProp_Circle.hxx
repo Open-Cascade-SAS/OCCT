@@ -72,8 +72,11 @@ public:
   //! Returns the derivative caching order (always Undefined for analytical curves).
   Geom2dProp::CurveDerivOrder DerivOrder() const { return Geom2dProp::CurveDerivOrder::Undefined; }
 
-  //! Returns nullptr (no adaptor is stored).
-  const Geom2dAdaptor_Curve* Adaptor() const { return nullptr; }
+  //! Returns the adaptor pointer (nullptr when constructed from handle).
+  const Geom2dAdaptor_Curve* Adaptor() const { return myAdaptor; }
+
+  //! Returns pointer to underlying geometry, or nullptr if constructed from adaptor.
+  const Geom2d_Curve* Geometry() const { return myCurve.get(); }
 
   //! Compute tangent at given parameter.
   //! @param[in] theParam curve parameter

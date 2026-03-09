@@ -118,6 +118,10 @@ public:
   //! Returns the stored adaptor pointer, or null if not initialized.
   Standard_EXPORT const Adaptor3d_Surface* Adaptor() const;
 
+  //! Returns pointer to underlying geometry, or nullptr if not available.
+  //! When constructed from a handle, trimmed surfaces are unwrapped to their basis surface.
+  Standard_EXPORT const Geom_Surface* Geometry() const;
+
   //! Compute surface normal at given (U, V) parameter.
   //! @param[in] theU U parameter on the surface
   //! @param[in] theV V parameter on the surface

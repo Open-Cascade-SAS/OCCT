@@ -113,6 +113,10 @@ public:
   //! Returns the stored adaptor pointer, or null if not initialized.
   Standard_EXPORT const Adaptor3d_Curve* Adaptor() const;
 
+  //! Returns pointer to underlying geometry, or nullptr if not available.
+  //! When constructed from a handle, trimmed curves are unwrapped to their basis curve.
+  Standard_EXPORT const Geom_Curve* Geometry() const;
+
   //! Compute tangent at given parameter.
   //! @param[in] theParam curve parameter
   //! @param[in] theTol linear tolerance

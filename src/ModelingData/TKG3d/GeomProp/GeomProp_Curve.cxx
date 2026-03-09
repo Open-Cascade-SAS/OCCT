@@ -222,6 +222,25 @@ const Adaptor3d_Curve* GeomProp_Curve::Adaptor() const
 
 //=================================================================================================
 
+const Geom_Curve* GeomProp_Curve::Geometry() const
+{
+  return std::visit(
+    [](const auto& theEval) -> const Geom_Curve* {
+      using T = std::decay_t<decltype(theEval)>;
+      if constexpr (std::is_same_v<T, std::monostate>)
+      {
+        return nullptr;
+      }
+      else
+      {
+        return theEval.Geometry();
+      }
+    },
+    myEvaluator);
+}
+
+//=================================================================================================
+
 GeomProp::TangentResult GeomProp_Curve::Tangent(const double theParam, const double theTol) const
 {
   return std::visit(

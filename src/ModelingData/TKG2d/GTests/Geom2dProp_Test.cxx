@@ -23,6 +23,8 @@
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dProp.hxx>
 #include <Geom2dProp_Curve.hxx>
+#include <GeomAbs_Shape.hxx>
+#include <Standard_Failure.hxx>
 #include <gp_Ax2d.hxx>
 #include <gp_Circ2d.hxx>
 #include <gp_Dir2d.hxx>
@@ -1451,4 +1453,136 @@ TEST(Geom2dProp_CrossValidationTest, AdaptorVsGeometryInit)
     ASSERT_TRUE(aCurvA.IsDefined);
     EXPECT_NEAR(aCurvG.Value, aCurvA.Value, 1.0e-10);
   }
+}
+
+// ============================================================================
+// Geometry() / Adaptor() accessor tests
+// ============================================================================
+
+TEST(Geom2dPropCurveTest, Geometry_HandlePath_ReturnsNonNull)
+{
+  occ::handle<Geom2d_Line> aLine = new Geom2d_Line(gp_Pnt2d(), gp_Dir2d(1, 0));
+  Geom2dProp_Curve         aProp(aLine);
+  EXPECT_NE(aProp.Geometry(), nullptr);
+  EXPECT_EQ(aProp.Adaptor(), nullptr);
+}
+
+TEST(Geom2dPropCurveTest, Geometry_AdaptorPath_Line_ReturnsNonNull)
+{
+  occ::handle<Geom2d_Line> aLine = new Geom2d_Line(gp_Pnt2d(), gp_Dir2d(1, 0));
+  Geom2dAdaptor_Curve      anAdaptor(aLine);
+  Geom2dProp_Curve         aProp(anAdaptor);
+  // Line evaluator extracts geometry from adaptor
+  EXPECT_NE(aProp.Geometry(), nullptr);
+}
+
+TEST(Geom2dPropCurveTest, Geometry_TrimmedCurve_ReturnsBasisCurve)
+{
+  occ::handle<Geom2d_Circle> aCircle =
+    new Geom2d_Circle(gp_Ax2d(gp_Pnt2d(), gp_Dir2d(1, 0)), 5.0);
+  occ::handle<Geom2d_TrimmedCurve> aTrimmed = new Geom2d_TrimmedCurve(aCircle, 0.0, M_PI);
+  Geom2dProp_Curve                 aProp(aTrimmed);
+
+  const Geom2d_Curve* aGeom = aProp.Geometry();
+  ASSERT_NE(aGeom, nullptr);
+  EXPECT_TRUE(aGeom->IsKind(STANDARD_TYPE(Geom2d_Circle)));
+}
+
+TEST(Geom2dPropCurveTest, Geometry_AllCurveTypes_NonNull)
+{
+  // Line
+  {
+    occ::handle<Geom2d_Line> aCurve = new Geom2d_Line(gp_Pnt2d(), gp_Dir2d(0, 1));
+    Geom2dProp_Curve         aProp(aCurve);
+    EXPECT_NE(aProp.Geometry(), nullptr);
+  }
+  // Ellipse
+  {
+    gp_Elips2d                  anElips(gp_Ax2d(gp_Pnt2d(), gp_Dir2d(1, 0)), 5.0, 3.0);
+    occ::handle<Geom2d_Ellipse> aCurve = new Geom2d_Ellipse(anElips);
+    Geom2dProp_Curve            aProp(aCurve);
+    EXPECT_NE(aProp.Geometry(), nullptr);
+  }
+  // Hyperbola
+  {
+    gp_Hypr2d                     aHypr(gp_Ax2d(gp_Pnt2d(), gp_Dir2d(1, 0)), 5.0, 3.0);
+    occ::handle<Geom2d_Hyperbola> aCurve = new Geom2d_Hyperbola(aHypr);
+    Geom2dProp_Curve              aProp(aCurve);
+    EXPECT_NE(aProp.Geometry(), nullptr);
+  }
+  // Parabola
+  {
+    gp_Parab2d                   aParab(gp_Ax2d(gp_Pnt2d(), gp_Dir2d(1, 0)), 2.0);
+    occ::handle<Geom2d_Parabola> aCurve = new Geom2d_Parabola(aParab);
+    Geom2dProp_Curve             aProp(aCurve);
+    EXPECT_NE(aProp.Geometry(), nullptr);
+  }
+}
+
+// ============================================================================
+// Continuity() tests
+// ============================================================================
+
+TEST(Geom2dPropCurveTest, Continuity_TwoLines_C1)
+{
+  occ::handle<Geom2d_Line> aL1 = new Geom2d_Line(gp_Pnt2d(0, 0), gp_Dir2d(1, 0));
+  occ::handle<Geom2d_Line> aL2 = new Geom2d_Line(gp_Pnt2d(1, 0), gp_Dir2d(1, 0));
+  GeomAbs_Shape            aCont = Geom2dProp_Curve::Continuity(aL1, aL2, 1.0, 0.0, false, false);
+  EXPECT_GE(aCont, GeomAbs_C1);
+}
+
+TEST(Geom2dPropCurveTest, Continuity_ReversedJunction_C1)
+{
+  occ::handle<Geom2d_Line> aL1 = new Geom2d_Line(gp_Pnt2d(0, 0), gp_Dir2d(1, 0));
+  occ::handle<Geom2d_Line> aL2 = new Geom2d_Line(gp_Pnt2d(1, 0), gp_Dir2d(-1, 0));
+  // Reversed second curve: directions match after reversal
+  GeomAbs_Shape aCont = Geom2dProp_Curve::Continuity(aL1, aL2, 1.0, 0.0, false, true);
+  EXPECT_GE(aCont, GeomAbs_C1);
+}
+
+TEST(Geom2dPropCurveTest, Continuity_PerpendicularLines_C0)
+{
+  occ::handle<Geom2d_Line> aL1 = new Geom2d_Line(gp_Pnt2d(0, 0), gp_Dir2d(1, 0));
+  occ::handle<Geom2d_Line> aL2 = new Geom2d_Line(gp_Pnt2d(1, 0), gp_Dir2d(0, 1));
+  GeomAbs_Shape            aCont = Geom2dProp_Curve::Continuity(aL1, aL2, 1.0, 0.0, false, false);
+  EXPECT_EQ(aCont, GeomAbs_C0);
+}
+
+TEST(Geom2dPropCurveTest, Continuity_TrimmedBSpline_AtKnot)
+{
+  // Build a simple cubic B-spline with an interior knot
+  NCollection_Array1<gp_Pnt2d> aPoles(1, 5);
+  aPoles.SetValue(1, gp_Pnt2d(0, 0));
+  aPoles.SetValue(2, gp_Pnt2d(1, 2));
+  aPoles.SetValue(3, gp_Pnt2d(3, 2));
+  aPoles.SetValue(4, gp_Pnt2d(4, 0));
+  aPoles.SetValue(5, gp_Pnt2d(5, 1));
+
+  NCollection_Array1<double> aKnots(1, 3);
+  aKnots.SetValue(1, 0.0);
+  aKnots.SetValue(2, 0.5);
+  aKnots.SetValue(3, 1.0);
+
+  NCollection_Array1<int> aMults(1, 3);
+  aMults.SetValue(1, 4);
+  aMults.SetValue(2, 1);
+  aMults.SetValue(3, 4);
+
+  occ::handle<Geom2d_BSplineCurve> aBSpl = new Geom2d_BSplineCurve(aPoles, aKnots, aMults, 3);
+
+  // Split at the interior knot: two trimmed pieces meet at u=0.5
+  occ::handle<Geom2d_TrimmedCurve> aT1 = new Geom2d_TrimmedCurve(aBSpl, 0.0, 0.5);
+  occ::handle<Geom2d_TrimmedCurve> aT2 = new Geom2d_TrimmedCurve(aBSpl, 0.5, 1.0);
+
+  GeomAbs_Shape aCont =
+    Geom2dProp_Curve::Continuity(aT1, aT2, 0.5, 0.5, false, false);
+  // Same underlying BSpline at same knot, first derivatives match -> at least C1
+  EXPECT_GE(aCont, GeomAbs_C1);
+}
+
+TEST(Geom2dPropCurveTest, Continuity_DisconnectedCurves_Throws)
+{
+  occ::handle<Geom2d_Line> aL1 = new Geom2d_Line(gp_Pnt2d(0, 0), gp_Dir2d(1, 0));
+  occ::handle<Geom2d_Line> aL2 = new Geom2d_Line(gp_Pnt2d(0, 10), gp_Dir2d(1, 0));
+  EXPECT_THROW(Geom2dProp_Curve::Continuity(aL1, aL2, 0.0, 0.0, false, false), Standard_Failure);
 }

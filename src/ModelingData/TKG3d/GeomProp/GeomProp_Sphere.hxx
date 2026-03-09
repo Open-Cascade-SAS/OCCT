@@ -69,6 +69,9 @@ public:
   //! Returns the adaptor pointer (nullptr when constructed from handle).
   const GeomAdaptor_Surface* Adaptor() const { return myAdaptor; }
 
+  //! Returns pointer to underlying geometry, or nullptr if constructed from adaptor.
+  const Geom_Surface* Geometry() const { return mySurface.get(); }
+
   //! Compute surface normal at given (U, V) parameter.
   //! For a sphere, the normal is radially outward from the center.
   GeomProp::SurfaceNormalResult Normal(double theU, double theV, double theTol) const

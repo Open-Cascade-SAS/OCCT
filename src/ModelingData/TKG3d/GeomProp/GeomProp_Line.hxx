@@ -37,7 +37,8 @@ public:
   //! @param theAdaptor the 3D curve adaptor (must wrap a line, must not be null)
   GeomProp_Line(const GeomAdaptor_Curve*  theAdaptor,
                 GeomProp::CurveDerivOrder theOrder = GeomProp::CurveDerivOrder::Undefined)
-      : myDirection(theAdaptor->Line().Direction())
+      : myAdaptor(theAdaptor),
+        myCurve(theAdaptor->Curve())
   {
     (void)theOrder;
   }
@@ -48,7 +49,8 @@ public:
   GeomProp_Line(const occ::handle<Geom_Curve>&              theCurve,
                 const std::optional<GeomProp::CurveDomain>& theDomain = std::nullopt,
                 GeomProp::CurveDerivOrder theOrder = GeomProp::CurveDerivOrder::Undefined)
-      : myDirection(occ::down_cast<Geom_Line>(theCurve)->Position().Direction())
+      : myAdaptor(nullptr),
+        myCurve(theCurve)
   {
     (void)theDomain;
     (void)theOrder;
@@ -66,8 +68,11 @@ public:
   //! Returns the derivative caching order (always Undefined for analytical curves).
   GeomProp::CurveDerivOrder DerivOrder() const { return GeomProp::CurveDerivOrder::Undefined; }
 
-  //! Returns nullptr (no adaptor is stored).
-  const GeomAdaptor_Curve* Adaptor() const { return nullptr; }
+  //! Returns the adaptor pointer (nullptr when constructed from handle).
+  const GeomAdaptor_Curve* Adaptor() const { return myAdaptor; }
+
+  //! Returns pointer to underlying geometry, or nullptr if constructed from adaptor.
+  const Geom_Curve* Geometry() const { return myCurve.get(); }
 
   //! Compute tangent at given parameter.
   //! For a line, the tangent is always the line direction.
@@ -78,7 +83,7 @@ public:
   {
     (void)theParam;
     (void)theTol;
-    return {myDirection, true};
+    return {occ::down_cast<Geom_Line>(myCurve)->Position().Direction(), true};
   }
 
   //! Compute curvature at given parameter.
@@ -128,7 +133,8 @@ public:
   GeomProp::CurveAnalysis FindInflections() const { return {{}, true}; }
 
 private:
-  gp_Dir myDirection; //!< Cached line direction
+  const GeomAdaptor_Curve* myAdaptor = nullptr; //!< Non-owning adaptor pointer (adaptor path)
+  occ::handle<Geom_Curve>  myCurve;             //!< Geometry handle (handle path)
 };
 
 #endif // _GeomProp_Line_HeaderFile
