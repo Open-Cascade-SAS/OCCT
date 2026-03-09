@@ -27,10 +27,10 @@ using Access = LProp_SurfaceUtils::DirectAccess;
 //=================================================================================================
 
 GeomLProp_SLProps::GeomLProp_SLProps(const occ::handle<Geom_Surface>& S,
-                                      const double                     U,
-                                      const double                     V,
-                                      const int                        N,
-                                      const double                     Resolution)
+                                     const double                     U,
+                                     const double                     V,
+                                     const int                        N,
+                                     const double                     Resolution)
     : mySurf(S),
       myDerOrder(N),
       myCN(4),
@@ -43,8 +43,8 @@ GeomLProp_SLProps::GeomLProp_SLProps(const occ::handle<Geom_Surface>& S,
 //=================================================================================================
 
 GeomLProp_SLProps::GeomLProp_SLProps(const occ::handle<Geom_Surface>& S,
-                                      const int                        N,
-                                      const double                     Resolution)
+                                     const int                        N,
+                                     const double                     Resolution)
     : mySurf(S),
       myU(RealLast()),
       myV(RealLast()),
@@ -87,7 +87,22 @@ void GeomLProp_SLProps::SetSurface(const occ::handle<Geom_Surface>& S)
 
 void GeomLProp_SLProps::SetParameters(const double U, const double V)
 {
-  LProp_SurfaceUtils::SetParameters<Access>(mySurf, U, V, myU, myV, myDerOrder, myPnt, myD1u, myD1v, myD2u, myD2v, myDuv, myUTangentStatus, myVTangentStatus, myNormalStatus, myCurvatureStatus);
+  LProp_SurfaceUtils::SetParameters<Access>(mySurf,
+                                            U,
+                                            V,
+                                            myU,
+                                            myV,
+                                            myDerOrder,
+                                            myPnt,
+                                            myD1u,
+                                            myD1v,
+                                            myD2u,
+                                            myD2v,
+                                            myDuv,
+                                            myUTangentStatus,
+                                            myVTangentStatus,
+                                            myNormalStatus,
+                                            myCurvatureStatus);
 }
 
 //=================================================================================================
@@ -101,63 +116,90 @@ const gp_Pnt& GeomLProp_SLProps::Value() const
 
 const gp_Vec& GeomLProp_SLProps::D1U()
 {
-  return LProp_SurfaceUtils::EnsureSurfDeriv<Access>(mySurf, myU, myV, myDerOrder, 1, myPnt, myD1u, myD1v, myD2u, myD2v, myDuv, myD1u);
+  return LProp_SurfaceUtils::EnsureSurfDeriv<
+    Access>(mySurf, myU, myV, myDerOrder, 1, myPnt, myD1u, myD1v, myD2u, myD2v, myDuv, myD1u);
 }
 
 //=================================================================================================
 
 const gp_Vec& GeomLProp_SLProps::D1V()
 {
-  return LProp_SurfaceUtils::EnsureSurfDeriv<Access>(mySurf, myU, myV, myDerOrder, 1, myPnt, myD1u, myD1v, myD2u, myD2v, myDuv, myD1v);
+  return LProp_SurfaceUtils::EnsureSurfDeriv<
+    Access>(mySurf, myU, myV, myDerOrder, 1, myPnt, myD1u, myD1v, myD2u, myD2v, myDuv, myD1v);
 }
 
 //=================================================================================================
 
 const gp_Vec& GeomLProp_SLProps::D2U()
 {
-  return LProp_SurfaceUtils::EnsureSurfDeriv<Access>(mySurf, myU, myV, myDerOrder, 2, myPnt, myD1u, myD1v, myD2u, myD2v, myDuv, myD2u);
+  return LProp_SurfaceUtils::EnsureSurfDeriv<
+    Access>(mySurf, myU, myV, myDerOrder, 2, myPnt, myD1u, myD1v, myD2u, myD2v, myDuv, myD2u);
 }
 
 //=================================================================================================
 
 const gp_Vec& GeomLProp_SLProps::D2V()
 {
-  return LProp_SurfaceUtils::EnsureSurfDeriv<Access>(mySurf, myU, myV, myDerOrder, 2, myPnt, myD1u, myD1v, myD2u, myD2v, myDuv, myD2v);
+  return LProp_SurfaceUtils::EnsureSurfDeriv<
+    Access>(mySurf, myU, myV, myDerOrder, 2, myPnt, myD1u, myD1v, myD2u, myD2v, myDuv, myD2v);
 }
 
 //=================================================================================================
 
 const gp_Vec& GeomLProp_SLProps::DUV()
 {
-  return LProp_SurfaceUtils::EnsureSurfDeriv<Access>(mySurf, myU, myV, myDerOrder, 2, myPnt, myD1u, myD1v, myD2u, myD2v, myDuv, myDuv);
+  return LProp_SurfaceUtils::EnsureSurfDeriv<
+    Access>(mySurf, myU, myV, myDerOrder, 2, myPnt, myD1u, myD1v, myD2u, myD2v, myDuv, myDuv);
 }
 
 //=================================================================================================
 
 bool GeomLProp_SLProps::IsTangentUDefined()
 {
-  return LProp_SurfaceUtils::IsTangentUDefined(*this, myCN, myLinTol, mySignificantFirstDerivativeOrderU, myUTangentStatus);
+  return LProp_SurfaceUtils::IsTangentUDefined(*this,
+                                               myCN,
+                                               myLinTol,
+                                               mySignificantFirstDerivativeOrderU,
+                                               myUTangentStatus);
 }
 
 //=================================================================================================
 
 void GeomLProp_SLProps::TangentU(gp_Dir& D)
 {
-  LProp_SurfaceUtils::TangentU<Access>(*this, mySurf, myU, myV, myD1u, myD2u, mySignificantFirstDerivativeOrderU, D);
+  LProp_SurfaceUtils::TangentU<Access>(*this,
+                                       mySurf,
+                                       myU,
+                                       myV,
+                                       myD1u,
+                                       myD2u,
+                                       mySignificantFirstDerivativeOrderU,
+                                       D);
 }
 
 //=================================================================================================
 
 bool GeomLProp_SLProps::IsTangentVDefined()
 {
-  return LProp_SurfaceUtils::IsTangentVDefined(*this, myCN, myLinTol, mySignificantFirstDerivativeOrderV, myVTangentStatus);
+  return LProp_SurfaceUtils::IsTangentVDefined(*this,
+                                               myCN,
+                                               myLinTol,
+                                               mySignificantFirstDerivativeOrderV,
+                                               myVTangentStatus);
 }
 
 //=================================================================================================
 
 void GeomLProp_SLProps::TangentV(gp_Dir& D)
 {
-  LProp_SurfaceUtils::TangentV<Access>(*this, mySurf, myU, myV, myD1v, myD2v, mySignificantFirstDerivativeOrderV, D);
+  LProp_SurfaceUtils::TangentV<Access>(*this,
+                                       mySurf,
+                                       myU,
+                                       myV,
+                                       myD1v,
+                                       myD2v,
+                                       mySignificantFirstDerivativeOrderV,
+                                       D);
 }
 
 //=================================================================================================
@@ -178,7 +220,22 @@ const gp_Dir& GeomLProp_SLProps::Normal()
 
 bool GeomLProp_SLProps::IsCurvatureDefined()
 {
-  return LProp_SurfaceUtils::IsCurvatureDefined(*this, myCN, myDerOrder, myD1u, myD1v, myD2u, myD2v, myDuv, myNormal, myMinCurv, myMaxCurv, myDirMinCurv, myDirMaxCurv, myMeanCurv, myGausCurv, myCurvatureStatus);
+  return LProp_SurfaceUtils::IsCurvatureDefined(*this,
+                                                myCN,
+                                                myDerOrder,
+                                                myD1u,
+                                                myD1v,
+                                                myD2u,
+                                                myD2v,
+                                                myDuv,
+                                                myNormal,
+                                                myMinCurv,
+                                                myMaxCurv,
+                                                myDirMinCurv,
+                                                myDirMaxCurv,
+                                                myMeanCurv,
+                                                myGausCurv,
+                                                myCurvatureStatus);
 }
 
 //=================================================================================================

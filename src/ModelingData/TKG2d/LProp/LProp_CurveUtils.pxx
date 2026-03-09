@@ -189,7 +189,7 @@ void ComputeTangent(Curve&     theCurve,
   constexpr double THE_MIN_STEP        = 1.0e-7;
 
   const double anUsupremum = Access::LastParameter(theCurve);
-  const double anUinfimum   = Access::FirstParameter(theCurve);
+  const double anUinfimum  = Access::FirstParameter(theCurve);
 
   double aDu;
   if ((anUsupremum >= RealLast()) || (anUinfimum <= RealFirst()))

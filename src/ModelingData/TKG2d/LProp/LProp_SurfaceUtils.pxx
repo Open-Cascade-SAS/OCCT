@@ -61,10 +61,10 @@ const T& Deref(const occ::handle<T>& theHandle)
 
 //! Get bounds from Geom_Surface (uses Bounds method with U1, U2, V1, V2 order).
 inline void GetSurfBounds(const Geom_Surface& theSurf,
-                           double&             theU1,
-                           double&             theV1,
-                           double&             theU2,
-                           double&             theV2)
+                          double&             theU1,
+                          double&             theV1,
+                          double&             theU2,
+                          double&             theV2)
 {
   theSurf.Bounds(theU1, theU2, theV1, theV2);
 }
@@ -72,10 +72,10 @@ inline void GetSurfBounds(const Geom_Surface& theSurf,
 //! Get bounds from Adaptor3d_Surface (uses individual parameter methods).
 //! Also works for BRepAdaptor_Surface which inherits from Adaptor3d_Surface.
 inline void GetSurfBounds(const Adaptor3d_Surface& theSurf,
-                           double&                  theU1,
-                           double&                  theV1,
-                           double&                  theU2,
-                           double&                  theV2)
+                          double&                  theU1,
+                          double&                  theV1,
+                          double&                  theU2,
+                          double&                  theV2)
 {
   theU1 = theSurf.FirstUParameter();
   theV1 = theSurf.FirstVParameter();
@@ -96,21 +96,26 @@ struct DirectAccess
   }
 
   template <typename S>
-  static void D1(S& theSurf, double theU, double theV, gp_Pnt& thePnt, gp_Vec& theD1u, gp_Vec& theD1v)
+  static void D1(S&      theSurf,
+                 double  theU,
+                 double  theV,
+                 gp_Pnt& thePnt,
+                 gp_Vec& theD1u,
+                 gp_Vec& theD1v)
   {
     Deref(theSurf).D1(theU, theV, thePnt, theD1u, theD1v);
   }
 
   template <typename S>
   static void D2(S&      theSurf,
-                 double   theU,
-                 double   theV,
-                 gp_Pnt&  thePnt,
-                 gp_Vec&  theD1u,
-                 gp_Vec&  theD1v,
-                 gp_Vec&  theD2u,
-                 gp_Vec&  theD2v,
-                 gp_Vec&  theDuv)
+                 double  theU,
+                 double  theV,
+                 gp_Pnt& thePnt,
+                 gp_Vec& theD1u,
+                 gp_Vec& theD1v,
+                 gp_Vec& theD2u,
+                 gp_Vec& theD2v,
+                 gp_Vec& theDuv)
   {
     Deref(theSurf).D2(theU, theV, thePnt, theD1u, theD1v, theD2u, theD2v, theDuv);
   }
@@ -134,21 +139,26 @@ struct ToolAccess
   }
 
   template <typename S>
-  static void D1(S& theSurf, double theU, double theV, gp_Pnt& thePnt, gp_Vec& theD1u, gp_Vec& theD1v)
+  static void D1(S&      theSurf,
+                 double  theU,
+                 double  theV,
+                 gp_Pnt& thePnt,
+                 gp_Vec& theD1u,
+                 gp_Vec& theD1v)
   {
     Tool::D1(theSurf, theU, theV, thePnt, theD1u, theD1v);
   }
 
   template <typename S>
   static void D2(S&      theSurf,
-                 double   theU,
-                 double   theV,
-                 gp_Pnt&  thePnt,
-                 gp_Vec&  theD1u,
-                 gp_Vec&  theD1v,
-                 gp_Vec&  theD2u,
-                 gp_Vec&  theD2v,
-                 gp_Vec&  theDuv)
+                 double  theU,
+                 double  theV,
+                 gp_Pnt& thePnt,
+                 gp_Vec& theD1u,
+                 gp_Vec& theD1v,
+                 gp_Vec& theD2u,
+                 gp_Vec& theD2v,
+                 gp_Vec& theDuv)
   {
     Tool::D2(theSurf, theU, theV, thePnt, theD1u, theD1v, theD2u, theD2v, theDuv);
   }
@@ -187,9 +197,15 @@ void EvalSurfDerivatives(Surface& theSurf,
 {
   switch (theOrder)
   {
-    case 0: Access::D0(theSurf, theU, theV, thePnt); break;
-    case 1: Access::D1(theSurf, theU, theV, thePnt, theD1u, theD1v); break;
-    case 2: Access::D2(theSurf, theU, theV, thePnt, theD1u, theD1v, theD2u, theD2v, theDuv); break;
+    case 0:
+      Access::D0(theSurf, theU, theV, thePnt);
+      break;
+    case 1:
+      Access::D1(theSurf, theU, theV, thePnt, theD1u, theD1v);
+      break;
+    case 2:
+      Access::D2(theSurf, theU, theV, thePnt, theD1u, theD1v, theD2u, theD2v, theDuv);
+      break;
   }
 }
 
@@ -202,15 +218,15 @@ void EvalSurfDerivatives(Surface& theSurf,
 //! @param[out] theOrder     order of first significant derivative
 //! @param[out] theStatus    resulting tangent status
 //! @return true if tangent is defined
-inline bool FindSurfTangentOrder(const gp_Vec&  theD1,
-                                 const gp_Vec&  theD2,
-                                 int            theCN,
-                                 double         theTolSq,
-                                 int&           theOrder,
-                                 LProp_Status&  theStatus)
+inline bool FindSurfTangentOrder(const gp_Vec& theD1,
+                                 const gp_Vec& theD2,
+                                 int           theCN,
+                                 double        theTolSq,
+                                 int&          theOrder,
+                                 LProp_Status& theStatus)
 {
   const gp_Vec* aDerivs[2] = {&theD1, &theD2};
-  theOrder = 0;
+  theOrder                 = 0;
 
   while (theOrder < 3)
   {
@@ -245,14 +261,14 @@ inline bool FindSurfTangentOrder(const gp_Vec&  theD1,
 //! @param[in]     theIsU        true for U direction, false for V direction
 //! @param[out]    theDir        computed tangent direction
 template <typename Access, typename Surface>
-void ComputeSurfTangent(Surface&       theSurf,
-                        double         theU,
-                        double         theV,
-                        const gp_Vec&  theFirstDeriv,
-                        const gp_Vec&  theSecDeriv,
-                        int            theSigOrder,
-                        bool           theIsU,
-                        gp_Dir&        theDir)
+void ComputeSurfTangent(Surface&      theSurf,
+                        double        theU,
+                        double        theV,
+                        const gp_Vec& theFirstDeriv,
+                        const gp_Vec& theSecDeriv,
+                        int           theSigOrder,
+                        bool          theIsU,
+                        gp_Dir&       theDir)
 {
   if (theSigOrder == 1)
   {
@@ -411,10 +427,8 @@ inline bool ComputeSurfCurvatures(const gp_Vec& theD1u,
 
     const double aRoot1 = aRoot.Value(1);
     const double aRoot2 = aRoot.Value(2);
-    aCurv1 = ((aL * aRoot1 + 2.0 * aM) * aRoot1 + aN)
-           / ((anE * aRoot1 + 2.0 * anF) * aRoot1 + aG);
-    aCurv2 = ((aL * aRoot2 + 2.0 * aM) * aRoot2 + aN)
-           / ((anE * aRoot2 + 2.0 * anF) * aRoot2 + aG);
+    aCurv1 = ((aL * aRoot1 + 2.0 * aM) * aRoot1 + aN) / ((anE * aRoot1 + 2.0 * anF) * aRoot1 + aG);
+    aCurv2 = ((aL * aRoot2 + 2.0 * aM) * aRoot2 + aN) / ((anE * aRoot2 + 2.0 * anF) * aRoot2 + aG);
     aVectCurv1 = aRoot1 * theD1u + theD1v;
     aVectCurv2 = aRoot2 * theD1u + theD1v;
   }
@@ -426,10 +440,8 @@ inline bool ComputeSurfCurvatures(const gp_Vec& theD1u,
 
     const double aRoot1 = aRoot.Value(1);
     const double aRoot2 = aRoot.Value(2);
-    aCurv1 = ((aN * aRoot1 + 2.0 * aM) * aRoot1 + aL)
-           / ((aG * aRoot1 + 2.0 * anF) * aRoot1 + anE);
-    aCurv2 = ((aN * aRoot2 + 2.0 * aM) * aRoot2 + aL)
-           / ((aG * aRoot2 + 2.0 * anF) * aRoot2 + anE);
+    aCurv1 = ((aN * aRoot1 + 2.0 * aM) * aRoot1 + aL) / ((aG * aRoot1 + 2.0 * anF) * aRoot1 + anE);
+    aCurv2 = ((aN * aRoot2 + 2.0 * aM) * aRoot2 + aL) / ((aG * aRoot2 + 2.0 * anF) * aRoot2 + anE);
     aVectCurv1 = theD1u + aRoot1 * theD1v;
     aVectCurv2 = theD1u + aRoot2 * theD1v;
   }
@@ -457,8 +469,8 @@ inline bool ComputeSurfCurvatures(const gp_Vec& theD1u,
   }
 
   const double anEG_FF = (anE * aG) - (anF * anF);
-  theMeanCurv = ((aN * anE) - (2.0 * aM * anF) + (aL * aG)) / (2.0 * anEG_FF);
-  theGausCurv = ((aL * aN) - (aM * aM)) / anEG_FF;
+  theMeanCurv          = ((aN * anE) - (2.0 * aM * anF) + (aL * aG)) / (2.0 * anEG_FF);
+  theGausCurv          = ((aL * aN) - (aM * aM)) / anEG_FF;
   return true;
 }
 
@@ -501,8 +513,8 @@ void SetParameters(Surface&      theSurf,
 {
   theStoredU = theU;
   theStoredV = theV;
-  EvalSurfDerivatives<Access>(theSurf, theU, theV, theDerOrder, thePnt,
-                               theD1u, theD1v, theD2u, theD2v, theDuv);
+  EvalSurfDerivatives<
+    Access>(theSurf, theU, theV, theDerOrder, thePnt, theD1u, theD1v, theD2u, theD2v, theDuv);
   theUTanSt = LProp_Undecided;
   theVTanSt = LProp_Undecided;
   theNormSt = LProp_Undecided;
@@ -524,24 +536,24 @@ void SetParameters(Surface&      theSurf,
 //! @param[in]     theResult   reference to the specific derivative field to return
 //! @return const reference to theResult
 template <typename Access, typename Surface>
-const gp_Vec& EnsureSurfDeriv(Surface&       theSurf,
-                               double         theU,
-                               double         theV,
-                               int&           theDerOrder,
-                               int            theRequired,
-                               gp_Pnt&        thePnt,
-                               gp_Vec&        theD1u,
-                               gp_Vec&        theD1v,
-                               gp_Vec&        theD2u,
-                               gp_Vec&        theD2v,
-                               gp_Vec&        theDuv,
-                               const gp_Vec&  theResult)
+const gp_Vec& EnsureSurfDeriv(Surface&      theSurf,
+                              double        theU,
+                              double        theV,
+                              int&          theDerOrder,
+                              int           theRequired,
+                              gp_Pnt&       thePnt,
+                              gp_Vec&       theD1u,
+                              gp_Vec&       theD1v,
+                              gp_Vec&       theD2u,
+                              gp_Vec&       theD2v,
+                              gp_Vec&       theDuv,
+                              const gp_Vec& theResult)
 {
   if (theDerOrder < theRequired)
   {
     theDerOrder = theRequired;
-    EvalSurfDerivatives<Access>(theSurf, theU, theV, theDerOrder, thePnt,
-                                 theD1u, theD1v, theD2u, theD2v, theDuv);
+    EvalSurfDerivatives<
+      Access>(theSurf, theU, theV, theDerOrder, thePnt, theD1u, theD1v, theD2u, theD2v, theDuv);
   }
   return theResult;
 }
@@ -564,8 +576,12 @@ bool IsTangentUDefined(Props&        theProps,
     return false;
   if (theTanStatus >= LProp_Defined)
     return true;
-  return FindSurfTangentOrder(theProps.D1U(), theProps.D2U(), theCN,
-                               theLinTol * theLinTol, theSigOrder, theTanStatus);
+  return FindSurfTangentOrder(theProps.D1U(),
+                              theProps.D2U(),
+                              theCN,
+                              theLinTol * theLinTol,
+                              theSigOrder,
+                              theTanStatus);
 }
 
 //! IsTangentVDefined: checks V tangent status, then searches via D1V/D2V.
@@ -586,8 +602,12 @@ bool IsTangentVDefined(Props&        theProps,
     return false;
   if (theTanStatus >= LProp_Defined)
     return true;
-  return FindSurfTangentOrder(theProps.D1V(), theProps.D2V(), theCN,
-                               theLinTol * theLinTol, theSigOrder, theTanStatus);
+  return FindSurfTangentOrder(theProps.D1V(),
+                              theProps.D2V(),
+                              theCN,
+                              theLinTol * theLinTol,
+                              theSigOrder,
+                              theTanStatus);
 }
 
 //! TangentU: checks IsTangentUDefined, then computes U tangent direction.
@@ -676,7 +696,8 @@ const gp_Dir& Normal(Props& theProps, const gp_Dir& theNormal)
   return theNormal;
 }
 
-//! IsCurvatureDefined: full check including continuity, normal, tangents, and curvature computation.
+//! IsCurvatureDefined: full check including continuity, normal, tangents, and curvature
+//! computation.
 //! @param[in,out] theProps      SLProps object
 //! @param[in]     theCN         continuity order
 //! @param[in,out] theDerOrder   current derivative order
@@ -733,9 +754,18 @@ bool IsCurvatureDefined(Props&        theProps,
   }
   if (theDerOrder < 2)
     theProps.D2U();
-  if (ComputeSurfCurvatures(theD1u, theD1v, theD2u, theD2v, theDuv, theNormal,
-                             theMinCurv, theMaxCurv, theDirMin, theDirMax,
-                             theMeanCurv, theGausCurv))
+  if (ComputeSurfCurvatures(theD1u,
+                            theD1v,
+                            theD2u,
+                            theD2v,
+                            theDuv,
+                            theNormal,
+                            theMinCurv,
+                            theMaxCurv,
+                            theDirMin,
+                            theDirMax,
+                            theMeanCurv,
+                            theGausCurv))
   {
     theCurvStatus = LProp_Computed;
     return true;

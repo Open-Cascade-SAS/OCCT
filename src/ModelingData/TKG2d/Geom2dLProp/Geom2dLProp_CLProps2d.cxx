@@ -27,9 +27,9 @@ using Access = LProp_CurveUtils::DirectAccess;
 //=================================================================================================
 
 Geom2dLProp_CLProps2d::Geom2dLProp_CLProps2d(const occ::handle<Geom2d_Curve>& C,
-                                              const double                     U,
-                                              const int                        N,
-                                              const double                     Resolution)
+                                             const double                     U,
+                                             const int                        N,
+                                             const double                     Resolution)
     : myCurve(C),
       myDerOrder(N),
       myCN(4),
@@ -43,8 +43,8 @@ Geom2dLProp_CLProps2d::Geom2dLProp_CLProps2d(const occ::handle<Geom2d_Curve>& C,
 //=================================================================================================
 
 Geom2dLProp_CLProps2d::Geom2dLProp_CLProps2d(const occ::handle<Geom2d_Curve>& C,
-                                              const int                        N,
-                                              const double                     Resolution)
+                                             const int                        N,
+                                             const double                     Resolution)
     : myCurve(C),
       myU(RealLast()),
       myDerOrder(N),
@@ -71,7 +71,13 @@ Geom2dLProp_CLProps2d::Geom2dLProp_CLProps2d(const int N, const double Resolutio
 
 void Geom2dLProp_CLProps2d::SetParameter(const double U)
 {
-  LProp_CurveUtils::SetParameter<Access>(myCurve, U, myU, myDerOrder, myPnt, myDerivArr, myTangentStatus);
+  LProp_CurveUtils::SetParameter<Access>(myCurve,
+                                         U,
+                                         myU,
+                                         myDerOrder,
+                                         myPnt,
+                                         myDerivArr,
+                                         myTangentStatus);
 }
 
 //=================================================================================================
@@ -114,21 +120,36 @@ const gp_Vec2d& Geom2dLProp_CLProps2d::D3()
 
 bool Geom2dLProp_CLProps2d::IsTangentDefined()
 {
-  return LProp_CurveUtils::IsTangentDefined<gp_Vec2d>(*this, myCN, myLinTol, mySignificantFirstDerivativeOrder, myTangentStatus);
+  return LProp_CurveUtils::IsTangentDefined<gp_Vec2d>(*this,
+                                                      myCN,
+                                                      myLinTol,
+                                                      mySignificantFirstDerivativeOrder,
+                                                      myTangentStatus);
 }
 
 //=================================================================================================
 
 void Geom2dLProp_CLProps2d::Tangent(gp_Dir2d& D)
 {
-  LProp_CurveUtils::Tangent<Access>(*this, myCurve, myU, myDerivArr, myPnt, mySignificantFirstDerivativeOrder, D);
+  LProp_CurveUtils::Tangent<Access>(*this,
+                                    myCurve,
+                                    myU,
+                                    myDerivArr,
+                                    myPnt,
+                                    mySignificantFirstDerivativeOrder,
+                                    D);
 }
 
 //=================================================================================================
 
 double Geom2dLProp_CLProps2d::Curvature()
 {
-  return LProp_CurveUtils::Curvature(*this, myDerivArr[0], myDerivArr[1], myLinTol, mySignificantFirstDerivativeOrder, myCurvature);
+  return LProp_CurveUtils::Curvature(*this,
+                                     myDerivArr[0],
+                                     myDerivArr[1],
+                                     myLinTol,
+                                     mySignificantFirstDerivativeOrder,
+                                     myCurvature);
 }
 
 //=================================================================================================
@@ -142,5 +163,11 @@ void Geom2dLProp_CLProps2d::Normal(gp_Dir2d& N)
 
 void Geom2dLProp_CLProps2d::CentreOfCurvature(gp_Pnt2d& P)
 {
-  LProp_CurveUtils::CentreOfCurvature(*this, myPnt, myDerivArr[0], myDerivArr[1], myLinTol, myCurvature, P);
+  LProp_CurveUtils::CentreOfCurvature(*this,
+                                      myPnt,
+                                      myDerivArr[0],
+                                      myDerivArr[1],
+                                      myLinTol,
+                                      myCurvature,
+                                      P);
 }

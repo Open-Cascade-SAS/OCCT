@@ -145,8 +145,8 @@ private:
   double                         myMaxCurv = 0.0;
   gp_Dir                         myDirMinCurv;
   gp_Dir                         myDirMaxCurv;
-  double                         myMeanCurv = 0.0;
-  double                         myGausCurv = 0.0;
+  double                         myMeanCurv                         = 0.0;
+  double                         myGausCurv                         = 0.0;
   int                            mySignificantFirstDerivativeOrderU = 0;
   int                            mySignificantFirstDerivativeOrderV = 0;
   LProp_Status                   myUTangentStatus;

@@ -28,9 +28,9 @@ using Access = LProp_CurveUtils::ToolAccess<HLRBRep_CLPropsATool>;
 //=================================================================================================
 
 HLRBRep_CLProps::HLRBRep_CLProps(const HLRBRep_Curve*& C,
-                                  const double          U,
-                                  const int             N,
-                                  const double          Resolution)
+                                 const double          U,
+                                 const int             N,
+                                 const double          Resolution)
     : myCurve(C),
       myDerOrder(N),
       myCN(4),
@@ -43,9 +43,7 @@ HLRBRep_CLProps::HLRBRep_CLProps(const HLRBRep_Curve*& C,
 
 //=================================================================================================
 
-HLRBRep_CLProps::HLRBRep_CLProps(const HLRBRep_Curve*& C,
-                                  const int             N,
-                                  const double          Resolution)
+HLRBRep_CLProps::HLRBRep_CLProps(const HLRBRep_Curve*& C, const int N, const double Resolution)
     : myCurve(C),
       myU(RealLast()),
       myDerOrder(N),
@@ -73,7 +71,13 @@ HLRBRep_CLProps::HLRBRep_CLProps(const int N, const double Resolution)
 
 void HLRBRep_CLProps::SetParameter(const double U)
 {
-  LProp_CurveUtils::SetParameter<Access>(myCurve, U, myU, myDerOrder, myPnt, myDerivArr, myTangentStatus);
+  LProp_CurveUtils::SetParameter<Access>(myCurve,
+                                         U,
+                                         myU,
+                                         myDerOrder,
+                                         myPnt,
+                                         myDerivArr,
+                                         myTangentStatus);
 }
 
 //=================================================================================================
@@ -116,21 +120,36 @@ const gp_Vec2d& HLRBRep_CLProps::D3()
 
 bool HLRBRep_CLProps::IsTangentDefined()
 {
-  return LProp_CurveUtils::IsTangentDefined<gp_Vec2d>(*this, myCN, myLinTol, mySignificantFirstDerivativeOrder, myTangentStatus);
+  return LProp_CurveUtils::IsTangentDefined<gp_Vec2d>(*this,
+                                                      myCN,
+                                                      myLinTol,
+                                                      mySignificantFirstDerivativeOrder,
+                                                      myTangentStatus);
 }
 
 //=================================================================================================
 
 void HLRBRep_CLProps::Tangent(gp_Dir2d& D)
 {
-  LProp_CurveUtils::Tangent<Access>(*this, myCurve, myU, myDerivArr, myPnt, mySignificantFirstDerivativeOrder, D);
+  LProp_CurveUtils::Tangent<Access>(*this,
+                                    myCurve,
+                                    myU,
+                                    myDerivArr,
+                                    myPnt,
+                                    mySignificantFirstDerivativeOrder,
+                                    D);
 }
 
 //=================================================================================================
 
 double HLRBRep_CLProps::Curvature()
 {
-  return LProp_CurveUtils::Curvature(*this, myDerivArr[0], myDerivArr[1], myLinTol, mySignificantFirstDerivativeOrder, myCurvature);
+  return LProp_CurveUtils::Curvature(*this,
+                                     myDerivArr[0],
+                                     myDerivArr[1],
+                                     myLinTol,
+                                     mySignificantFirstDerivativeOrder,
+                                     myCurvature);
 }
 
 //=================================================================================================
@@ -144,5 +163,11 @@ void HLRBRep_CLProps::Normal(gp_Dir2d& N)
 
 void HLRBRep_CLProps::CentreOfCurvature(gp_Pnt2d& P)
 {
-  LProp_CurveUtils::CentreOfCurvature(*this, myPnt, myDerivArr[0], myDerivArr[1], myLinTol, myCurvature, P);
+  LProp_CurveUtils::CentreOfCurvature(*this,
+                                      myPnt,
+                                      myDerivArr[0],
+                                      myDerivArr[1],
+                                      myLinTol,
+                                      myCurvature,
+                                      P);
 }

@@ -36,6 +36,7 @@ class LProp_NotDefined;
 class gp_Vec;
 class gp_Pnt;
 class gp_Dir;
+
 class GeomLProp_CLProps
 {
 public:

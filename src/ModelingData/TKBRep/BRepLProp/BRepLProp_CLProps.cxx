@@ -71,7 +71,13 @@ BRepLProp_CLProps::BRepLProp_CLProps(const int N, const double Resolution)
 
 void BRepLProp_CLProps::SetParameter(const double U)
 {
-  LProp_CurveUtils::SetParameter<Access>(myCurve, U, myU, myDerOrder, myPnt, myDerivArr, myTangentStatus);
+  LProp_CurveUtils::SetParameter<Access>(myCurve,
+                                         U,
+                                         myU,
+                                         myDerOrder,
+                                         myPnt,
+                                         myDerivArr,
+                                         myTangentStatus);
 }
 
 //=================================================================================================
@@ -114,21 +120,36 @@ const gp_Vec& BRepLProp_CLProps::D3()
 
 bool BRepLProp_CLProps::IsTangentDefined()
 {
-  return LProp_CurveUtils::IsTangentDefined<gp_Vec>(*this, myCN, myLinTol, mySignificantFirstDerivativeOrder, myTangentStatus);
+  return LProp_CurveUtils::IsTangentDefined<gp_Vec>(*this,
+                                                    myCN,
+                                                    myLinTol,
+                                                    mySignificantFirstDerivativeOrder,
+                                                    myTangentStatus);
 }
 
 //=================================================================================================
 
 void BRepLProp_CLProps::Tangent(gp_Dir& D)
 {
-  LProp_CurveUtils::Tangent<Access>(*this, myCurve, myU, myDerivArr, myPnt, mySignificantFirstDerivativeOrder, D);
+  LProp_CurveUtils::Tangent<Access>(*this,
+                                    myCurve,
+                                    myU,
+                                    myDerivArr,
+                                    myPnt,
+                                    mySignificantFirstDerivativeOrder,
+                                    D);
 }
 
 //=================================================================================================
 
 double BRepLProp_CLProps::Curvature()
 {
-  return LProp_CurveUtils::Curvature(*this, myDerivArr[0], myDerivArr[1], myLinTol, mySignificantFirstDerivativeOrder, myCurvature);
+  return LProp_CurveUtils::Curvature(*this,
+                                     myDerivArr[0],
+                                     myDerivArr[1],
+                                     myLinTol,
+                                     mySignificantFirstDerivativeOrder,
+                                     myCurvature);
 }
 
 //=================================================================================================
@@ -142,5 +163,11 @@ void BRepLProp_CLProps::Normal(gp_Dir& N)
 
 void BRepLProp_CLProps::CentreOfCurvature(gp_Pnt& P)
 {
-  LProp_CurveUtils::CentreOfCurvature(*this, myPnt, myDerivArr[0], myDerivArr[1], myLinTol, myCurvature, P);
+  LProp_CurveUtils::CentreOfCurvature(*this,
+                                      myPnt,
+                                      myDerivArr[0],
+                                      myDerivArr[1],
+                                      myLinTol,
+                                      myCurvature,
+                                      P);
 }
