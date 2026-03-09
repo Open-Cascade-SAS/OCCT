@@ -189,20 +189,20 @@ void ComputeTangent(Curve&     theCurve,
   constexpr double THE_MIN_STEP        = 1.0e-7;
 
   const double anUsupremum = Access::LastParameter(theCurve);
-  const double anUinfium   = Access::FirstParameter(theCurve);
+  const double anUinfimum   = Access::FirstParameter(theCurve);
 
   double aDu;
-  if ((anUsupremum >= RealLast()) || (anUinfium <= RealFirst()))
+  if ((anUsupremum >= RealLast()) || (anUinfimum <= RealFirst()))
     aDu = 0.0;
   else
-    aDu = anUsupremum - anUinfium;
+    aDu = anUsupremum - anUinfimum;
 
   const double aDelta = std::max(aDu * THE_DIVISION_FACTOR, THE_MIN_STEP);
 
   Vec aV = theDerivArr[theSigOrder - 1];
 
   double anOtherU;
-  if (theU - anUinfium < aDelta)
+  if (theU - anUinfimum < aDelta)
     anOtherU = theU + aDelta;
   else
     anOtherU = theU - aDelta;
@@ -331,7 +331,7 @@ const Vec& EnsureDeriv(Curve& theCurve,
 //! @return true if tangent is defined
 template <typename Vec, typename Props>
 bool IsTangentDefined(Props&        theProps,
-                      double        theCN,
+                      int           theCN,
                       double        theLinTol,
                       int&          theSigOrder,
                       LProp_Status& theTanStatus)

@@ -263,23 +263,23 @@ void ComputeSurfTangent(Surface&       theSurf,
   constexpr double THE_DIVISION_FACTOR = 1.0e-3;
   constexpr double THE_MIN_STEP        = 1.0e-7;
 
-  double anUinfium, anVinfium, anUsupremum, anVsupremum;
-  Access::Bounds(theSurf, anUinfium, anVinfium, anUsupremum, anVsupremum);
+  double anUinfimum, anVinfimum, anUsupremum, anVsupremum;
+  Access::Bounds(theSurf, anUinfimum, anVinfimum, anUsupremum, anVsupremum);
 
   if (theIsU)
   {
     double aDu;
-    if ((anUsupremum >= RealLast()) || (anUinfium <= RealFirst()))
+    if ((anUsupremum >= RealLast()) || (anUinfimum <= RealFirst()))
       aDu = 0.0;
     else
-      aDu = anUsupremum - anUinfium;
+      aDu = anUsupremum - anUinfimum;
 
     const double aDelta = std::max(aDu * THE_DIVISION_FACTOR, THE_MIN_STEP);
 
     gp_Vec aV = theSecDeriv;
 
     double anOtherU;
-    if (theU - anUinfium < aDelta)
+    if (theU - anUinfimum < aDelta)
       anOtherU = theU + aDelta;
     else
       anOtherU = theU - aDelta;
@@ -297,17 +297,17 @@ void ComputeSurfTangent(Surface&       theSurf,
   else
   {
     double aDv;
-    if ((anVsupremum >= RealLast()) || (anVinfium <= RealFirst()))
+    if ((anVsupremum >= RealLast()) || (anVinfimum <= RealFirst()))
       aDv = 0.0;
     else
-      aDv = anVsupremum - anVinfium;
+      aDv = anVsupremum - anVinfimum;
 
     const double aDelta = std::max(aDv * THE_DIVISION_FACTOR, THE_MIN_STEP);
 
     gp_Vec aV = theSecDeriv;
 
     double anOtherV;
-    if (theV - anVinfium < aDelta)
+    if (theV - anVinfimum < aDelta)
       anOtherV = theV + aDelta;
     else
       anOtherV = theV - aDelta;
