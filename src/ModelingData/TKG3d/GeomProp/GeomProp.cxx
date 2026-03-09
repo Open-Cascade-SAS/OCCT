@@ -14,6 +14,7 @@
 #include <GeomProp.hxx>
 
 #include <cmath>
+#include <gp.hxx>
 
 //=================================================================================================
 
@@ -134,7 +135,7 @@ GeomProp::NormalResult GeomProp::ComputeNormal(const gp_Vec& theD1,
   // Normal = D2 * (D1.D1) - D1 * (D1.D2)
   // This is equivalent to (D1 x D2) x D1 using the vector triple product identity.
   const gp_Vec aNorm = theD2 * theD1.Dot(theD1) - theD1 * theD1.Dot(theD2);
-  if (aNorm.SquareMagnitude() <= theTol * theTol)
+  if (aNorm.SquareMagnitude() <= gp::Resolution() * gp::Resolution())
   {
     return {{}, false};
   }
@@ -156,7 +157,7 @@ GeomProp::CentreResult GeomProp::ComputeCentreOfCurvature(const gp_Pnt& thePnt,
 
   // Normal vector (unnormalized) = D2 * (D1.D1) - D1 * (D1.D2)
   gp_Vec aNorm = theD2 * theD1.Dot(theD1) - theD1 * theD1.Dot(theD2);
-  if (aNorm.SquareMagnitude() <= theTol * theTol)
+  if (aNorm.SquareMagnitude() <= gp::Resolution() * gp::Resolution())
   {
     return {{}, false};
   }
@@ -172,8 +173,17 @@ GeomProp::SurfaceNormalResult GeomProp::ComputeSurfaceNormal(const gp_Vec& theD1
                                                              const gp_Vec& theD1V,
                                                              const double  theTol)
 {
+  const double aD1UMag = theD1U.SquareMagnitude();
+  const double aD1VMag = theD1V.SquareMagnitude();
+
+  if (aD1UMag <= gp::Resolution() || aD1VMag <= gp::Resolution())
+  {
+    return {{}, false};
+  }
+
   const gp_Vec aCross = theD1U.Crossed(theD1V);
-  if (aCross.SquareMagnitude() <= theTol * theTol)
+  const double aSin2  = aCross.SquareMagnitude() / (aD1UMag * aD1VMag);
+  if (aSin2 < theTol * theTol)
   {
     return {{}, false};
   }
@@ -247,11 +257,11 @@ GeomProp::SurfaceCurvatureResult GeomProp::ComputeSurfaceCurvatures(const gp_Vec
     aResult.MinCurvature      = aUmbilicCurv;
     aResult.MaxCurvature      = aUmbilicCurv;
     aResult.IsUmbilic         = true;
-    if (theD1U.SquareMagnitude() > theTol * theTol)
+    if (theD1U.SquareMagnitude() > gp::Resolution() * gp::Resolution())
     {
       aResult.MinDirection = gp_Dir(theD1U);
       const gp_Vec aMaxDir = theD1U.Crossed(aNormal);
-      if (aMaxDir.SquareMagnitude() > theTol * theTol)
+      if (aMaxDir.SquareMagnitude() > gp::Resolution() * gp::Resolution())
       {
         aResult.MaxDirection = gp_Dir(aMaxDir);
       }
@@ -265,11 +275,11 @@ GeomProp::SurfaceCurvatureResult GeomProp::ComputeSurfaceCurvatures(const gp_Vec
     aResult.MinCurvature      = aUmbilicCurv;
     aResult.MaxCurvature      = aUmbilicCurv;
     aResult.IsUmbilic         = true;
-    if (theD1U.SquareMagnitude() > theTol * theTol)
+    if (theD1U.SquareMagnitude() > gp::Resolution() * gp::Resolution())
     {
       aResult.MinDirection = gp_Dir(theD1U);
       const gp_Vec aMaxDir = theD1U.Crossed(aNormal);
-      if (aMaxDir.SquareMagnitude() > theTol * theTol)
+      if (aMaxDir.SquareMagnitude() > gp::Resolution() * gp::Resolution())
       {
         aResult.MaxDirection = gp_Dir(aMaxDir);
       }
@@ -384,18 +394,18 @@ GeomProp::SurfaceCurvatureResult GeomProp::ComputeSurfaceCurvatures(const gp_Vec
   {
     aResult.MinCurvature = aCurv1;
     aResult.MaxCurvature = aCurv2;
-    if (aVecCurv1.SquareMagnitude() > theTol * theTol)
+    if (aVecCurv1.SquareMagnitude() > gp::Resolution() * gp::Resolution())
       aResult.MinDirection = gp_Dir(aVecCurv1);
-    if (aVecCurv2.SquareMagnitude() > theTol * theTol)
+    if (aVecCurv2.SquareMagnitude() > gp::Resolution() * gp::Resolution())
       aResult.MaxDirection = gp_Dir(aVecCurv2);
   }
   else
   {
     aResult.MinCurvature = aCurv2;
     aResult.MaxCurvature = aCurv1;
-    if (aVecCurv2.SquareMagnitude() > theTol * theTol)
+    if (aVecCurv2.SquareMagnitude() > gp::Resolution() * gp::Resolution())
       aResult.MinDirection = gp_Dir(aVecCurv2);
-    if (aVecCurv1.SquareMagnitude() > theTol * theTol)
+    if (aVecCurv1.SquareMagnitude() > gp::Resolution() * gp::Resolution())
       aResult.MaxDirection = gp_Dir(aVecCurv1);
   }
   aResult.IsUmbilic = false;

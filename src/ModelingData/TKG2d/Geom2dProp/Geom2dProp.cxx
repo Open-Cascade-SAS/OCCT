@@ -14,6 +14,7 @@
 #include <Geom2dProp.hxx>
 
 #include <cmath>
+#include <gp.hxx>
 
 //=================================================================================================
 
@@ -130,7 +131,7 @@ Geom2dProp::NormalResult Geom2dProp::ComputeNormal(const gp_Vec2d& theD1,
 
   gp_Vec2d aNorm = theD2.Multiplied(theD1.Dot(theD1));
   aNorm.Subtract(theD1.Multiplied(theD1.Dot(theD2)));
-  if (aNorm.SquareMagnitude() <= theTol * theTol)
+  if (aNorm.SquareMagnitude() <= gp::Resolution() * gp::Resolution())
   {
     return {{}, false};
   }
@@ -152,7 +153,7 @@ Geom2dProp::CentreResult Geom2dProp::ComputeCentreOfCurvature(const gp_Pnt2d& th
 
   gp_Vec2d aNorm = theD2.Multiplied(theD1.Dot(theD1));
   aNorm.Subtract(theD1.Multiplied(theD1.Dot(theD2)));
-  if (aNorm.SquareMagnitude() <= theTol * theTol)
+  if (aNorm.SquareMagnitude() <= gp::Resolution() * gp::Resolution())
   {
     return {{}, false};
   }
