@@ -14,11 +14,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dLProp_CurAndInf2d.hxx>
-#include <Geom2dLProp_NumericCurInf2d.hxx>
-#include <LProp_AnalyticCurInf.hxx>
-#include <NCollection_Array1.hxx>
+
+#include <Geom2dProp_Curve.hxx>
 
 //=================================================================================================
 
@@ -50,63 +48,25 @@ void Geom2dLProp_CurAndInf2d::PerformCurExt(const occ::handle<Geom2d_Curve>& C)
 
 void Geom2dLProp_CurAndInf2d::performCurExt(const occ::handle<Geom2d_Curve>& theCurve)
 {
-  Geom2dAdaptor_Curve         anAdaptor(theCurve);
-  LProp_AnalyticCurInf        anAnalyticInf;
-  Geom2dLProp_NumericCurInf2d aNumericInf;
-  const GeomAbs_CurveType     aCurveType = anAdaptor.GetType();
+  Geom2dProp_Curve             aProp(theCurve);
+  Geom2dProp::CurveAnalysis    aResult = aProp.FindCurvatureExtrema();
 
-  switch (aCurveType)
+  if (!aResult.IsDone)
   {
-    case GeomAbs_Line:
-      break;
-    case GeomAbs_Circle:
-      break;
-    case GeomAbs_Ellipse:
-      anAnalyticInf.Perform(aCurveType,
-                            anAdaptor.FirstParameter(),
-                            anAdaptor.LastParameter(),
-                            *this);
-      break;
-    case GeomAbs_Hyperbola:
-      anAnalyticInf.Perform(aCurveType,
-                            anAdaptor.FirstParameter(),
-                            anAdaptor.LastParameter(),
-                            *this);
-      break;
-    case GeomAbs_Parabola:
-      anAnalyticInf.Perform(aCurveType,
-                            anAdaptor.FirstParameter(),
-                            anAdaptor.LastParameter(),
-                            *this);
-      break;
-    case GeomAbs_BSplineCurve:
-      if (anAdaptor.Continuity() >= GeomAbs_C3)
-      {
-        aNumericInf.PerformCurExt(theCurve, *this);
-        isDone = aNumericInf.IsDone();
-      }
-      else
-      {
-        isDone                                  = true;
-        const int                  aNbIntervals = anAdaptor.NbIntervals(GeomAbs_C3);
-        NCollection_Array1<double> aParams(1, aNbIntervals + 1);
-        anAdaptor.Intervals(aParams, GeomAbs_C3);
-        for (int i = 1; i <= aNbIntervals; i++)
-        {
-          aNumericInf.PerformCurExt(theCurve, aParams(i), aParams(i + 1), *this);
-          if (!aNumericInf.IsDone())
-          {
-            isDone = false;
-          }
-        }
-      }
-      break;
+    isDone = false;
+    return;
+  }
 
-    default: {
-      aNumericInf.PerformCurExt(theCurve, *this);
-      isDone = aNumericInf.IsDone();
+  for (const Geom2dProp::CurveSpecialPoint& aPt : aResult.Points)
+  {
+    if (aPt.Type == Geom2dProp::CIType::MinCurvature)
+    {
+      AddExtCur(aPt.Parameter, true);
     }
-    break;
+    else if (aPt.Type == Geom2dProp::CIType::MaxCurvature)
+    {
+      AddExtCur(aPt.Parameter, false);
+    }
   }
 }
 
@@ -123,51 +83,21 @@ void Geom2dLProp_CurAndInf2d::PerformInf(const occ::handle<Geom2d_Curve>& C)
 
 void Geom2dLProp_CurAndInf2d::performInf(const occ::handle<Geom2d_Curve>& theCurve)
 {
-  Geom2dAdaptor_Curve         anAdaptor(theCurve);
-  const GeomAbs_CurveType     aCurveType = anAdaptor.GetType();
-  Geom2dLProp_NumericCurInf2d aNumericInf;
+  Geom2dProp_Curve             aProp(theCurve);
+  Geom2dProp::CurveAnalysis    aResult = aProp.FindInflections();
 
-  switch (aCurveType)
+  if (!aResult.IsDone)
   {
-    case GeomAbs_Line:
-      break;
-    case GeomAbs_Circle:
-      break;
-    case GeomAbs_Ellipse:
-      break;
-    case GeomAbs_Hyperbola:
-      break;
-    case GeomAbs_Parabola:
-      break;
-    case GeomAbs_BSplineCurve:
-      if (anAdaptor.Continuity() >= GeomAbs_C3)
-      {
-        aNumericInf.PerformInf(theCurve, *this);
-        isDone = aNumericInf.IsDone();
-      }
-      else
-      {
-        isDone                                  = true;
-        const int                  aNbIntervals = anAdaptor.NbIntervals(GeomAbs_C3);
-        NCollection_Array1<double> aParams(1, aNbIntervals + 1);
-        anAdaptor.Intervals(aParams, GeomAbs_C3);
+    isDone = false;
+    return;
+  }
 
-        for (int i = 1; i <= aNbIntervals; i++)
-        {
-          aNumericInf.PerformInf(theCurve, aParams(i), aParams(i + 1), *this);
-          if (!aNumericInf.IsDone())
-          {
-            isDone = false;
-          }
-        }
-      }
-      break;
-
-    default: {
-      aNumericInf.PerformInf(theCurve, *this);
-      isDone = aNumericInf.IsDone();
+  for (const Geom2dProp::CurveSpecialPoint& aPt : aResult.Points)
+  {
+    if (aPt.Type == Geom2dProp::CIType::Inflection)
+    {
+      AddInflection(aPt.Parameter);
     }
-    break;
   }
 }
 

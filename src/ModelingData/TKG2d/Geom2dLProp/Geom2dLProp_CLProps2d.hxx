@@ -36,7 +36,6 @@ class LProp_NotDefined;
 class gp_Vec2d;
 class gp_Pnt2d;
 class gp_Dir2d;
-class Geom2dLProp_Curve2dTool;
 
 class Geom2dLProp_CLProps2d
 {
