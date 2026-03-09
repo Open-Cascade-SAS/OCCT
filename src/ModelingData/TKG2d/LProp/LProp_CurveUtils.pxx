@@ -30,23 +30,23 @@ namespace LProp_CurveUtils
 
 //! Dereference by-value or reference types (identity).
 template <typename T>
-T& Deref(T& x)
+T& Deref(T& theObj)
 {
-  return x;
+  return theObj;
 }
 
 //! Dereference occ::handle types.
 template <typename T>
-T& Deref(occ::handle<T>& x)
+T& Deref(occ::handle<T>& theHandle)
 {
-  return *x;
+  return *theHandle;
 }
 
 //! Dereference const occ::handle types.
 template <typename T>
-const T& Deref(const occ::handle<T>& x)
+const T& Deref(const occ::handle<T>& theHandle)
 {
-  return *x;
+  return *theHandle;
 }
 
 // ==================== Access Policies ====================
@@ -56,39 +56,39 @@ const T& Deref(const occ::handle<T>& x)
 struct DirectAccess
 {
   template <typename C, typename P>
-  static void D0(C& c, double u, P& p)
+  static void D0(C& theCurve, double theU, P& thePnt)
   {
-    Deref(c).D0(u, p);
+    Deref(theCurve).D0(theU, thePnt);
   }
 
   template <typename C, typename P, typename V>
-  static void D1(C& c, double u, P& p, V& v1)
+  static void D1(C& theCurve, double theU, P& thePnt, V& theV1)
   {
-    Deref(c).D1(u, p, v1);
+    Deref(theCurve).D1(theU, thePnt, theV1);
   }
 
   template <typename C, typename P, typename V>
-  static void D2(C& c, double u, P& p, V& v1, V& v2)
+  static void D2(C& theCurve, double theU, P& thePnt, V& theV1, V& theV2)
   {
-    Deref(c).D2(u, p, v1, v2);
+    Deref(theCurve).D2(theU, thePnt, theV1, theV2);
   }
 
   template <typename C, typename P, typename V>
-  static void D3(C& c, double u, P& p, V& v1, V& v2, V& v3)
+  static void D3(C& theCurve, double theU, P& thePnt, V& theV1, V& theV2, V& theV3)
   {
-    Deref(c).D3(u, p, v1, v2, v3);
+    Deref(theCurve).D3(theU, thePnt, theV1, theV2, theV3);
   }
 
   template <typename C>
-  static double FirstParameter(C& c)
+  static double FirstParameter(C& theCurve)
   {
-    return Deref(c).FirstParameter();
+    return Deref(theCurve).FirstParameter();
   }
 
   template <typename C>
-  static double LastParameter(C& c)
+  static double LastParameter(C& theCurve)
   {
-    return Deref(c).LastParameter();
+    return Deref(theCurve).LastParameter();
   }
 };
 
@@ -98,220 +98,278 @@ template <typename Tool>
 struct ToolAccess
 {
   template <typename C, typename P>
-  static void D0(C& c, double u, P& p)
+  static void D0(C& theCurve, double theU, P& thePnt)
   {
-    Tool::Value(c, u, p);
+    Tool::Value(theCurve, theU, thePnt);
   }
 
   template <typename C, typename P, typename V>
-  static void D1(C& c, double u, P& p, V& v1)
+  static void D1(C& theCurve, double theU, P& thePnt, V& theV1)
   {
-    Tool::D1(c, u, p, v1);
+    Tool::D1(theCurve, theU, thePnt, theV1);
   }
 
   template <typename C, typename P, typename V>
-  static void D2(C& c, double u, P& p, V& v1, V& v2)
+  static void D2(C& theCurve, double theU, P& thePnt, V& theV1, V& theV2)
   {
-    Tool::D2(c, u, p, v1, v2);
+    Tool::D2(theCurve, theU, thePnt, theV1, theV2);
   }
 
   template <typename C, typename P, typename V>
-  static void D3(C& c, double u, P& p, V& v1, V& v2, V& v3)
+  static void D3(C& theCurve, double theU, P& thePnt, V& theV1, V& theV2, V& theV3)
   {
-    Tool::D3(c, u, p, v1, v2, v3);
+    Tool::D3(theCurve, theU, thePnt, theV1, theV2, theV3);
   }
 
   template <typename C>
-  static double FirstParameter(C& c)
+  static double FirstParameter(C& theCurve)
   {
-    return Tool::FirstParameter(c);
+    return Tool::FirstParameter(theCurve);
   }
 
   template <typename C>
-  static double LastParameter(C& c)
+  static double LastParameter(C& theCurve)
   {
-    return Tool::LastParameter(c);
+    return Tool::LastParameter(theCurve);
   }
 };
 
 // ==================== Algorithm Utilities ====================
 
-//! Evaluate curve derivatives at parameter u up to specified order.
-//! @param[in,out] c      curve object
-//! @param[in]     u      parameter value
-//! @param[in]     order  maximum derivative order (0-3)
-//! @param[out]    p      evaluated point
-//! @param[out]    d      derivative array (size >= order)
+//! Evaluate curve derivatives at parameter theU up to specified order.
+//! @param[in,out] theCurve    curve object
+//! @param[in]     theU        parameter value
+//! @param[in]     theOrder    maximum derivative order (0-3)
+//! @param[out]    thePnt      evaluated point
+//! @param[out]    theDerivArr derivative array (size >= theOrder)
 template <typename Access, typename Curve, typename Pnt, typename Vec>
-void EvalDerivatives(Curve& c, double u, int order, Pnt& p, Vec* d)
+void EvalDerivatives(Curve& theCurve, double theU, int theOrder, Pnt& thePnt, Vec* theDerivArr)
 {
-  switch (order)
+  switch (theOrder)
   {
-    case 0: Access::D0(c, u, p); break;
-    case 1: Access::D1(c, u, p, d[0]); break;
-    case 2: Access::D2(c, u, p, d[0], d[1]); break;
-    case 3: Access::D3(c, u, p, d[0], d[1], d[2]); break;
+    case 0:
+      Access::D0(theCurve, theU, thePnt);
+      break;
+    case 1:
+      Access::D1(theCurve, theU, thePnt, theDerivArr[0]);
+      break;
+    case 2:
+      Access::D2(theCurve, theU, thePnt, theDerivArr[0], theDerivArr[1]);
+      break;
+    case 3:
+      Access::D3(theCurve, theU, thePnt, theDerivArr[0], theDerivArr[1], theDerivArr[2]);
+      break;
   }
 }
 
 //! Compute tangent direction with sign correction for higher-order derivatives.
 //! When the first significant derivative has order > 1, the sign of the tangent
 //! is determined by comparing with the chord direction near the point.
-//! @param[in,out] c         curve object
-//! @param[in]     u         current parameter
-//! @param[in]     derivArr  derivative array
-//! @param[in]     refPnt    reference point (used only for type deduction)
-//! @param[in]     sigOrder  order of first significant derivative
-//! @param[out]    dir       computed tangent direction
+//! @param[in,out] theCurve    curve object
+//! @param[in]     theU        current parameter
+//! @param[in]     theDerivArr derivative array
+//! @param[in]     theRefPnt   reference point (used only for type deduction)
+//! @param[in]     theSigOrder order of first significant derivative
+//! @param[out]    theDir      computed tangent direction
 template <typename Access, typename Curve, typename Vec, typename Pnt, typename Dir>
-void ComputeTangent(Curve& c, double u, const Vec* derivArr, const Pnt& /*refPnt*/, int sigOrder, Dir& dir)
+void ComputeTangent(Curve&     theCurve,
+                    double     theU,
+                    const Vec* theDerivArr,
+                    const Pnt& /*theRefPnt*/,
+                    int  theSigOrder,
+                    Dir& theDir)
 {
-  if (sigOrder == 1)
+  if (theSigOrder == 1)
   {
-    dir = Dir(derivArr[0]);
+    theDir = Dir(theDerivArr[0]);
     return;
   }
 
   constexpr double THE_DIVISION_FACTOR = 1.0e-3;
   constexpr double THE_MIN_STEP        = 1.0e-7;
 
-  const double anUsupremum = Access::LastParameter(c);
-  const double anUinfium   = Access::FirstParameter(c);
+  const double anUsupremum = Access::LastParameter(theCurve);
+  const double anUinfium   = Access::FirstParameter(theCurve);
 
-  double du;
+  double aDu;
   if ((anUsupremum >= RealLast()) || (anUinfium <= RealFirst()))
-    du = 0.0;
+    aDu = 0.0;
   else
-    du = anUsupremum - anUinfium;
+    aDu = anUsupremum - anUinfium;
 
-  const double aDelta = std::max(du * THE_DIVISION_FACTOR, THE_MIN_STEP);
+  const double aDelta = std::max(aDu * THE_DIVISION_FACTOR, THE_MIN_STEP);
 
-  Vec aV = derivArr[sigOrder - 1];
+  Vec aV = theDerivArr[theSigOrder - 1];
 
   double anOtherU;
-  if (u - anUinfium < aDelta)
-    anOtherU = u + aDelta;
+  if (theU - anUinfium < aDelta)
+    anOtherU = theU + aDelta;
   else
-    anOtherU = u - aDelta;
+    anOtherU = theU - aDelta;
 
   Pnt aP1, aP2;
-  Access::D0(c, std::min(u, anOtherU), aP1);
-  Access::D0(c, std::max(u, anOtherU), aP2);
+  Access::D0(theCurve, std::min(theU, anOtherU), aP1);
+  Access::D0(theCurve, std::max(theU, anOtherU), aP2);
 
   Vec aChord(aP1, aP2);
   if (aV.Dot(aChord) < 0.0)
     aV = -aV;
 
-  dir = Dir(aV);
+  theDir = Dir(aV);
 }
 
 //! Compute curvature from first and second derivatives.
 //! Returns |D1 x D2| / |D1|^3, or 0 if derivatives are collinear or D2 is null.
-//! @param[in]  d1     first derivative
-//! @param[in]  d2     second derivative
-//! @param[in]  tolSq  squared linear tolerance
+//! @param[in]  theD1    first derivative
+//! @param[in]  theD2    second derivative
+//! @param[in]  theTolSq squared linear tolerance
 //! @return curvature value
 template <typename Vec>
-double ComputeCurvature(const Vec& d1, const Vec& d2, double tolSq)
+double ComputeCurvature(const Vec& theD1, const Vec& theD2, double theTolSq)
 {
-  const double DD1 = d1.SquareMagnitude();
-  const double DD2 = d2.SquareMagnitude();
+  const double aDD1 = theD1.SquareMagnitude();
+  const double aDD2 = theD2.SquareMagnitude();
 
-  if (DD2 <= tolSq)
+  if (aDD2 <= theTolSq)
     return 0.0;
 
-  const double N = d1.CrossSquareMagnitude(d2);
-  const double t = N / DD1 / DD2;
-  if (t <= tolSq)
+  const double aN = theD1.CrossSquareMagnitude(theD2);
+  const double aT = aN / aDD1 / aDD2;
+  if (aT <= theTolSq)
     return 0.0;
 
-  return sqrt(N) / DD1 / sqrt(DD1);
+  return sqrt(aN) / aDD1 / sqrt(aDD1);
 }
 
 //! Compute normal direction from first and second derivatives.
 //! Normal = D2*(D1*D1) - D1*(D1*D2), using the vector triple product identity.
-//! @param[in]  d1   first derivative
-//! @param[in]  d2   second derivative
-//! @param[out] dir  computed normal direction
+//! @param[in]  theD1   first derivative
+//! @param[in]  theD2   second derivative
+//! @param[out] theDir  computed normal direction
 template <typename Vec, typename Dir>
-void ComputeNormal(const Vec& d1, const Vec& d2, Dir& dir)
+void ComputeNormal(const Vec& theD1, const Vec& theD2, Dir& theDir)
 {
-  Vec aNorm = d2 * (d1 * d1) - d1 * (d1 * d2);
-  dir = Dir(aNorm);
+  Vec aNorm = theD2 * (theD1 * theD1) - theD1 * (theD1 * theD2);
+  theDir    = Dir(aNorm);
 }
 
 //! Compute centre of curvature from point, derivatives, and curvature.
 //! Centre = Point + Normal / Curvature.
-//! @param[in]  pnt       current point
-//! @param[in]  d1        first derivative
-//! @param[in]  d2        second derivative
-//! @param[in]  curvature curvature value (must be non-zero)
-//! @param[out] centre    computed centre of curvature
+//! @param[in]  thePnt       current point
+//! @param[in]  theD1        first derivative
+//! @param[in]  theD2        second derivative
+//! @param[in]  theCurvature curvature value (must be non-zero)
+//! @param[out] theCentre    computed centre of curvature
 template <typename Vec, typename Pnt>
-void ComputeCentreOfCurvature(const Pnt& pnt, const Vec& d1, const Vec& d2, double curvature, Pnt& centre)
+void ComputeCentreOfCurvature(const Pnt& thePnt,
+                              const Vec& theD1,
+                              const Vec& theD2,
+                              double     theCurvature,
+                              Pnt&       theCentre)
 {
-  Vec aNorm = d2 * (d1 * d1) - d1 * (d1 * d2);
+  Vec aNorm = theD2 * (theD1 * theD1) - theD1 * (theD1 * theD2);
   aNorm.Normalize();
-  aNorm.Divide(curvature);
-  centre = pnt.Translated(aNorm);
+  aNorm.Divide(theCurvature);
+  theCentre = thePnt.Translated(aNorm);
 }
 
 // ==================== Higher-Level Method Wrappers ====================
 
 //! SetParameter wrapper: sets parameter, evaluates derivatives, resets tangent status.
+//! @param[in,out] theCurve    curve object
+//! @param[in]     theU        parameter value
+//! @param[out]    theStoredU  stored parameter field
+//! @param[in]     theDerOrder current derivative order
+//! @param[out]    thePnt      evaluated point
+//! @param[out]    theDerivArr derivative array
+//! @param[out]    theTanStatus tangent status field
 template <typename Access, typename Curve, typename Pnt, typename Vec>
-void SetParameter(Curve& c, double u, double& storedU, int derOrder, Pnt& p, Vec* d, LProp_Status& tanStatus)
+void SetParameter(Curve&        theCurve,
+                  double        theU,
+                  double&       theStoredU,
+                  int           theDerOrder,
+                  Pnt&          thePnt,
+                  Vec*          theDerivArr,
+                  LProp_Status& theTanStatus)
 {
-  storedU   = u;
-  EvalDerivatives<Access>(c, u, derOrder, p, d);
-  tanStatus = LProp_Undecided;
+  theStoredU = theU;
+  EvalDerivatives<Access>(theCurve, theU, theDerOrder, thePnt, theDerivArr);
+  theTanStatus = LProp_Undecided;
 }
 
-//! Ensure derivatives up to the required order are computed. Returns d[required-1].
+//! Ensure derivatives up to the required order are computed.
+//! @param[in,out] theCurve    curve object
+//! @param[in]     theU        parameter value
+//! @param[in,out] theDerOrder current derivative order (upgraded if needed)
+//! @param[in]     theRequired required derivative order
+//! @param[out]    thePnt      evaluated point
+//! @param[out]    theDerivArr derivative array
+//! @return reference to theDerivArr[theRequired-1]
 template <typename Access, typename Curve, typename Pnt, typename Vec>
-const Vec& EnsureDeriv(Curve& c, double u, int& derOrder, int required, Pnt& p, Vec* d)
+const Vec& EnsureDeriv(Curve& theCurve,
+                       double theU,
+                       int&   theDerOrder,
+                       int    theRequired,
+                       Pnt&   thePnt,
+                       Vec*   theDerivArr)
 {
-  if (derOrder < required)
+  if (theDerOrder < theRequired)
   {
-    derOrder = required;
-    EvalDerivatives<Access>(c, u, derOrder, p, d);
+    theDerOrder = theRequired;
+    EvalDerivatives<Access>(theCurve, theU, theDerOrder, thePnt, theDerivArr);
   }
-  return d[required - 1];
+  return theDerivArr[theRequired - 1];
 }
 
 //! IsTangentDefined: searches for first non-null derivative.
-//! Calls props.D1(), props.D2(), props.D3() to upgrade derivatives as needed.
+//! Calls theProps.D1(), theProps.D2(), theProps.D3() to upgrade derivatives as needed.
+//! @param[in,out] theProps     CLProps object
+//! @param[in]     theCN        continuity order
+//! @param[in]     theLinTol    linear tolerance
+//! @param[out]    theSigOrder  order of first significant derivative
+//! @param[in,out] theTanStatus tangent status field
+//! @return true if tangent is defined
 template <typename Vec, typename Props>
-bool IsTangentDefined(Props& props, double cn, double linTol, int& sigOrder, LProp_Status& tanStatus)
+bool IsTangentDefined(Props&        theProps,
+                      double        theCN,
+                      double        theLinTol,
+                      int&          theSigOrder,
+                      LProp_Status& theTanStatus)
 {
-  if (tanStatus == LProp_Undefined)
+  if (theTanStatus == LProp_Undefined)
     return false;
-  if (tanStatus >= LProp_Defined)
+  if (theTanStatus >= LProp_Defined)
     return true;
 
-  const double aTol = linTol * linTol;
+  const double aTolSq  = theLinTol * theLinTol;
   int          anOrder = 0;
   while (anOrder++ < 4)
   {
-    if (cn >= anOrder)
+    if (theCN >= anOrder)
     {
       Vec aV;
       switch (anOrder)
       {
-        case 1: aV = props.D1(); break;
-        case 2: aV = props.D2(); break;
-        case 3: aV = props.D3(); break;
+        case 1:
+          aV = theProps.D1();
+          break;
+        case 2:
+          aV = theProps.D2();
+          break;
+        case 3:
+          aV = theProps.D3();
+          break;
       }
-      if (aV.SquareMagnitude() > aTol)
+      if (aV.SquareMagnitude() > aTolSq)
       {
-        sigOrder  = anOrder;
-        tanStatus = LProp_Defined;
+        theSigOrder  = anOrder;
+        theTanStatus = LProp_Defined;
         return true;
       }
     }
     else
     {
-      tanStatus = LProp_Undefined;
+      theTanStatus = LProp_Undefined;
       return false;
     }
   }
@@ -319,55 +377,87 @@ bool IsTangentDefined(Props& props, double cn, double linTol, int& sigOrder, LPr
 }
 
 //! Tangent: checks IsTangentDefined, then computes tangent direction.
+//! @param[in,out] theProps     CLProps object
+//! @param[in,out] theCurve     curve object
+//! @param[in]     theU         current parameter
+//! @param[in]     theDerivArr  derivative array
+//! @param[in]     theRefPnt    reference point (for type deduction)
+//! @param[in]     theSigOrder  order of first significant derivative
+//! @param[out]    theDir       computed tangent direction
 template <typename Access, typename Props, typename Curve, typename Vec, typename Pnt, typename Dir>
-void Tangent(Props& props, Curve& c, double u, const Vec* derivArr, const Pnt& refPnt, int sigOrder, Dir& dir)
+void Tangent(Props&     theProps,
+             Curve&     theCurve,
+             double     theU,
+             const Vec* theDerivArr,
+             const Pnt& theRefPnt,
+             const int& theSigOrder,
+             Dir&       theDir)
 {
-  if (!props.IsTangentDefined())
+  if (!theProps.IsTangentDefined())
     throw LProp_NotDefined();
-  ComputeTangent<Access>(c, u, derivArr, refPnt, sigOrder, dir);
+  ComputeTangent<Access>(theCurve, theU, theDerivArr, theRefPnt, theSigOrder, theDir);
 }
 
 //! Curvature: checks IsTangentDefined, returns RealLast if higher-order, else computes.
+//! @param[in,out] theProps     CLProps object
+//! @param[in]     theD1        first derivative
+//! @param[in]     theD2        second derivative
+//! @param[in]     theLinTol    linear tolerance
+//! @param[in]     theSigOrder  order of first significant derivative
+//! @param[out]    theCurvature curvature value field
+//! @return computed curvature
 template <typename Props, typename Vec>
-double Curvature(Props&     props,
-                 const Vec& d1,
-                 const Vec& d2,
-                 double     linTol,
-                 int        sigOrder,
-                 double&    curvature)
+double Curvature(Props&     theProps,
+                 const Vec& theD1,
+                 const Vec& theD2,
+                 double     theLinTol,
+                 const int& theSigOrder,
+                 double&    theCurvature)
 {
-  const bool isDefined = props.IsTangentDefined();
-  (void)isDefined;
-  LProp_NotDefined_Raise_if(!isDefined, "CLProps::Curvature()");
-  if (sigOrder > 1)
+  const bool anIsDefined = theProps.IsTangentDefined();
+  (void)anIsDefined;
+  LProp_NotDefined_Raise_if(!anIsDefined, "CLProps::Curvature()");
+  if (theSigOrder > 1)
     return RealLast();
-  curvature = ComputeCurvature(d1, d2, linTol * linTol);
-  return curvature;
+  theCurvature = ComputeCurvature(theD1, theD2, theLinTol * theLinTol);
+  return theCurvature;
 }
 
 //! Normal: checks curvature, then computes normal direction.
+//! @param[in,out] theProps  CLProps object
+//! @param[in]     theD1     first derivative
+//! @param[in]     theD2     second derivative
+//! @param[in]     theLinTol linear tolerance
+//! @param[out]    theDir    computed normal direction
 template <typename Props, typename Vec, typename Dir>
-void Normal(Props& props, const Vec& d1, const Vec& d2, double linTol, Dir& dir)
+void Normal(Props& theProps, const Vec& theD1, const Vec& theD2, double theLinTol, Dir& theDir)
 {
-  const double c = props.Curvature();
-  if (c == RealLast() || std::abs(c) <= linTol)
+  const double aCurvature = theProps.Curvature();
+  if (aCurvature == RealLast() || std::abs(aCurvature) <= theLinTol)
     throw LProp_NotDefined("CLProps::Normal(): Curvature is null or infinity");
-  ComputeNormal(d1, d2, dir);
+  ComputeNormal(theD1, theD2, theDir);
 }
 
 //! CentreOfCurvature: checks curvature, then computes centre.
+//! @param[in,out] theProps     CLProps object
+//! @param[in]     thePnt       current point
+//! @param[in]     theD1        first derivative
+//! @param[in]     theD2        second derivative
+//! @param[in]     theLinTol    linear tolerance
+//! @param[in,out] theCurvature curvature value field
+//! @param[out]    theCentre    computed centre of curvature
 template <typename Props, typename Vec, typename Pnt>
-void CentreOfCurvature(Props&     props,
-                        const Pnt& pnt,
-                        const Vec& d1,
-                        const Vec& d2,
-                        double     linTol,
-                        double&    curvature,
-                        Pnt&       centre)
+void CentreOfCurvature(Props&     theProps,
+                       const Pnt& thePnt,
+                       const Vec& theD1,
+                       const Vec& theD2,
+                       double     theLinTol,
+                       double&    theCurvature,
+                       Pnt&       theCentre)
 {
-  if (std::abs(props.Curvature()) <= linTol)
+  if (std::abs(theProps.Curvature()) <= theLinTol)
     throw LProp_NotDefined();
-  ComputeCentreOfCurvature(pnt, d1, d2, curvature, centre);
+  ComputeCentreOfCurvature(thePnt, theD1, theD2, theCurvature, theCentre);
 }
 
 } // namespace LProp_CurveUtils
