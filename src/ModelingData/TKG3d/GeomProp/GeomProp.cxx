@@ -267,12 +267,6 @@ GeomProp::SurfaceCurvatureResult GeomProp::ComputeSurfaceCurvatures(const gp_Dir
   SurfaceCurvatureResult aResult;
   aResult.IsDefined = true;
 
-  // Mean and Gaussian curvature from fundamental form coefficients.
-  auto computeMeanGaussian = [&](SurfaceCurvatureResult& theRes) {
-    theRes.MeanCurvature     = (aN_ * aE - 2.0 * aM * aF + aL * aG) / (2.0 * aDet);
-    theRes.GaussianCurvature = (aL * aN_ - aM * aM) / aDet;
-  };
-
   // Lambda to handle umbilic (equal curvatures) cases.
   auto handleUmbilic = [&]() {
     const double aUmbilicCurv = (std::abs(aG) > theTol * theTol) ? aN_ / aG : 0.0;
@@ -419,8 +413,9 @@ GeomProp::SurfaceCurvatureResult GeomProp::ComputeSurfaceCurvatures(const gp_Dir
     if (aVecCurv1.SquareMagnitude() > gp::Resolution() * gp::Resolution())
       aResult.MaxDirection = gp_Dir(aVecCurv1);
   }
-  aResult.IsUmbilic = false;
-  computeMeanGaussian(aResult);
+  aResult.IsUmbilic         = false;
+  aResult.MeanCurvature     = (aN_ * aE - 2.0 * aM * aF + aL * aG) / (2.0 * aDet);
+  aResult.GaussianCurvature = (aL * aN_ - aM * aM) / aDet;
 
   return aResult;
 }
