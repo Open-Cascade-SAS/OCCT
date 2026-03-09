@@ -29,18 +29,6 @@ set(OCCT_TKG2d_GTests_FILES
   Geom2dEval_TBezierCurve_Test.cxx
   Geom2dGcc_Circ2d2TanOn_Test.cxx
   Geom2dGcc_Circ2d2TanRad_Test.cxx
-  Geom2dProp_BezierCurve_Test.cxx
-  Geom2dProp_BSplineCurve_Test.cxx
-  Geom2dProp_Circle_Test.cxx
-  Geom2dProp_Ellipse_Test.cxx
-  Geom2dProp_Hyperbola_Test.cxx
-  Geom2dProp_Line_Test.cxx
-  Geom2dProp_OffsetCurve_Test.cxx
-  Geom2dProp_OtherCurve_Test.cxx
-  Geom2dProp_Parabola_Test.cxx
-  Geom2dProp_Test.cxx
-  Geom2dProp_VsCLProps2d_Test.cxx
-  Geom2dProp_VsLProp_Test.cxx
   Geom2dGridEval_BezierCurve_Test.cxx
   Geom2dGridEval_Curve_Test.cxx
   Geom2dGridEval_Ellipse_Test.cxx
