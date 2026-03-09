@@ -208,8 +208,7 @@ void GeomLProp_CLProps::Tangent(gp_Dir& D)
   else if (mySignificantFirstDerivativeOrder > 1)
   {
     const double DivisionFactor = 1.e-3;
-    const double anUsupremum    = myCurve->LastParameter(),
-                 anUinfium      = myCurve->FirstParameter();
+    const double anUsupremum = myCurve->LastParameter(), anUinfium = myCurve->FirstParameter();
 
     double du;
     if ((anUsupremum >= RealLast()) || (anUinfium <= RealFirst()))
@@ -271,8 +270,7 @@ void GeomLProp_CLProps::Normal(gp_Dir& N)
                            "Curvature is null or infinity");
   }
 
-  GeomProp::NormalResult aResult =
-    GeomProp::ComputeNormal(myDerivArr[0], myDerivArr[1], myLinTol);
+  GeomProp::NormalResult aResult = GeomProp::ComputeNormal(myDerivArr[0], myDerivArr[1], myLinTol);
   if (!aResult.IsDefined)
   {
     throw LProp_NotDefined("GeomLProp_CLProps::Normal(...):"

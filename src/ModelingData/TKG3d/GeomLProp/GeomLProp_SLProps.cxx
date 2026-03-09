@@ -31,8 +31,8 @@ static bool IsTangentDefined(GeomLProp_SLProps& SProp,
                              int&               Order,
                              LProp_Status&      theStatus)
 {
-  double   Tol = linTol * linTol;
-  gp_Vec   V[2];
+  double Tol = linTol * linTol;
+  gp_Vec V[2];
   Order = 0;
 
   while (Order < 3)
@@ -357,8 +357,7 @@ bool GeomLProp_SLProps::IsNormalDefined()
   else if (myNormalStatus >= LProp_Defined)
     return true;
 
-  GeomProp::SurfaceNormalResult aResult =
-    GeomProp::ComputeSurfaceNormal(myD1u, myD1v, myLinTol);
+  GeomProp::SurfaceNormalResult aResult = GeomProp::ComputeSurfaceNormal(myD1u, myD1v, myLinTol);
   if (aResult.IsDefined)
   {
     myNormal       = aResult.Direction;

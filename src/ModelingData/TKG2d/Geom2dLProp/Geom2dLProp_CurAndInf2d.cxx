@@ -48,8 +48,8 @@ void Geom2dLProp_CurAndInf2d::PerformCurExt(const occ::handle<Geom2d_Curve>& C)
 
 void Geom2dLProp_CurAndInf2d::performCurExt(const occ::handle<Geom2d_Curve>& theCurve)
 {
-  Geom2dProp_Curve             aProp(theCurve);
-  Geom2dProp::CurveAnalysis    aResult = aProp.FindCurvatureExtrema();
+  Geom2dProp_Curve          aProp(theCurve);
+  Geom2dProp::CurveAnalysis aResult = aProp.FindCurvatureExtrema();
 
   if (!aResult.IsDone)
   {
@@ -83,8 +83,8 @@ void Geom2dLProp_CurAndInf2d::PerformInf(const occ::handle<Geom2d_Curve>& C)
 
 void Geom2dLProp_CurAndInf2d::performInf(const occ::handle<Geom2d_Curve>& theCurve)
 {
-  Geom2dProp_Curve             aProp(theCurve);
-  Geom2dProp::CurveAnalysis    aResult = aProp.FindInflections();
+  Geom2dProp_Curve          aProp(theCurve);
+  Geom2dProp::CurveAnalysis aResult = aProp.FindInflections();
 
   if (!aResult.IsDone)
   {

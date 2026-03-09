@@ -27,9 +27,9 @@ static const double MinStep = 1.0e-7;
 //=================================================================================================
 
 Geom2dLProp_CLProps2d::Geom2dLProp_CLProps2d(const occ::handle<Geom2d_Curve>& C,
-                                              const double                     U,
-                                              const int                        N,
-                                              const double                     Resolution)
+                                             const double                     U,
+                                             const int                        N,
+                                             const double                     Resolution)
     : myCurve(C),
       myDerOrder(N),
       myCN(4),
@@ -44,8 +44,8 @@ Geom2dLProp_CLProps2d::Geom2dLProp_CLProps2d(const occ::handle<Geom2d_Curve>& C,
 //=================================================================================================
 
 Geom2dLProp_CLProps2d::Geom2dLProp_CLProps2d(const occ::handle<Geom2d_Curve>& C,
-                                              const int                        N,
-                                              const double                     Resolution)
+                                             const int                        N,
+                                             const double                     Resolution)
     : myCurve(C),
       myU(RealLast()),
       myDerOrder(N),
@@ -208,8 +208,7 @@ void Geom2dLProp_CLProps2d::Tangent(gp_Dir2d& D)
   else if (mySignificantFirstDerivativeOrder > 1)
   {
     const double DivisionFactor = 1.e-3;
-    const double anUsupremum    = myCurve->LastParameter(),
-                 anUinfium      = myCurve->FirstParameter();
+    const double anUsupremum = myCurve->LastParameter(), anUinfium = myCurve->FirstParameter();
 
     double du;
     if ((anUsupremum >= RealLast()) || (anUinfium <= RealFirst()))
