@@ -1478,8 +1478,7 @@ TEST(Geom2dPropCurveTest, Geometry_AdaptorPath_Line_ReturnsNonNull)
 
 TEST(Geom2dPropCurveTest, Geometry_TrimmedCurve_ReturnsBasisCurve)
 {
-  occ::handle<Geom2d_Circle> aCircle =
-    new Geom2d_Circle(gp_Ax2d(gp_Pnt2d(), gp_Dir2d(1, 0)), 5.0);
+  occ::handle<Geom2d_Circle> aCircle = new Geom2d_Circle(gp_Ax2d(gp_Pnt2d(), gp_Dir2d(1, 0)), 5.0);
   occ::handle<Geom2d_TrimmedCurve> aTrimmed = new Geom2d_TrimmedCurve(aCircle, 0.0, M_PI);
   Geom2dProp_Curve                 aProp(aTrimmed);
 
@@ -1525,8 +1524,8 @@ TEST(Geom2dPropCurveTest, Geometry_AllCurveTypes_NonNull)
 
 TEST(Geom2dPropCurveTest, Continuity_TwoLines_C1)
 {
-  occ::handle<Geom2d_Line> aL1 = new Geom2d_Line(gp_Pnt2d(0, 0), gp_Dir2d(1, 0));
-  occ::handle<Geom2d_Line> aL2 = new Geom2d_Line(gp_Pnt2d(1, 0), gp_Dir2d(1, 0));
+  occ::handle<Geom2d_Line> aL1   = new Geom2d_Line(gp_Pnt2d(0, 0), gp_Dir2d(1, 0));
+  occ::handle<Geom2d_Line> aL2   = new Geom2d_Line(gp_Pnt2d(1, 0), gp_Dir2d(1, 0));
   GeomAbs_Shape            aCont = Geom2dProp_Curve::Continuity(aL1, aL2, 1.0, 0.0, false, false);
   EXPECT_GE(aCont, GeomAbs_C1);
 }
@@ -1542,8 +1541,8 @@ TEST(Geom2dPropCurveTest, Continuity_ReversedJunction_C1)
 
 TEST(Geom2dPropCurveTest, Continuity_PerpendicularLines_C0)
 {
-  occ::handle<Geom2d_Line> aL1 = new Geom2d_Line(gp_Pnt2d(0, 0), gp_Dir2d(1, 0));
-  occ::handle<Geom2d_Line> aL2 = new Geom2d_Line(gp_Pnt2d(1, 0), gp_Dir2d(0, 1));
+  occ::handle<Geom2d_Line> aL1   = new Geom2d_Line(gp_Pnt2d(0, 0), gp_Dir2d(1, 0));
+  occ::handle<Geom2d_Line> aL2   = new Geom2d_Line(gp_Pnt2d(1, 0), gp_Dir2d(0, 1));
   GeomAbs_Shape            aCont = Geom2dProp_Curve::Continuity(aL1, aL2, 1.0, 0.0, false, false);
   EXPECT_EQ(aCont, GeomAbs_C0);
 }
@@ -1574,8 +1573,7 @@ TEST(Geom2dPropCurveTest, Continuity_TrimmedBSpline_AtKnot)
   occ::handle<Geom2d_TrimmedCurve> aT1 = new Geom2d_TrimmedCurve(aBSpl, 0.0, 0.5);
   occ::handle<Geom2d_TrimmedCurve> aT2 = new Geom2d_TrimmedCurve(aBSpl, 0.5, 1.0);
 
-  GeomAbs_Shape aCont =
-    Geom2dProp_Curve::Continuity(aT1, aT2, 0.5, 0.5, false, false);
+  GeomAbs_Shape aCont = Geom2dProp_Curve::Continuity(aT1, aT2, 0.5, 0.5, false, false);
   // Same underlying BSpline at same knot, first derivatives match -> at least C1
   EXPECT_GE(aCont, GeomAbs_C1);
 }

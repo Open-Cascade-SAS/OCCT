@@ -384,13 +384,13 @@ static int geomAbsToInteger(const GeomAbs_Shape theCont)
 //=================================================================================================
 
 GeomAbs_Shape Geom2dProp_Curve::Continuity(const occ::handle<Geom2d_Curve>& theC1,
-                                            const occ::handle<Geom2d_Curve>& theC2,
-                                            const double                     theU1,
-                                            const double                     theU2,
-                                            const bool                       theR1,
-                                            const bool                       theR2,
-                                            const double                     theTolLinear,
-                                            const double                     theTolAngular)
+                                           const occ::handle<Geom2d_Curve>& theC2,
+                                           const double                     theU1,
+                                           const double                     theU2,
+                                           const bool                       theR1,
+                                           const bool                       theR2,
+                                           const double                     theTolLinear,
+                                           const double                     theTolAngular)
 {
   GeomAbs_Shape aCont     = GeomAbs_C0;
   bool          isChecked = false;
@@ -534,11 +534,11 @@ GeomAbs_Shape Geom2dProp_Curve::Continuity(const occ::handle<Geom2d_Curve>& theC
 //=================================================================================================
 
 GeomAbs_Shape Geom2dProp_Curve::Continuity(const occ::handle<Geom2d_Curve>& theC1,
-                                            const occ::handle<Geom2d_Curve>& theC2,
-                                            const double                     theU1,
-                                            const double                     theU2,
-                                            const bool                       theR1,
-                                            const bool                       theR2)
+                                           const occ::handle<Geom2d_Curve>& theC2,
+                                           const double                     theU1,
+                                           const double                     theU2,
+                                           const bool                       theR1,
+                                           const bool                       theR2)
 {
   return Continuity(theC1,
                     theC2,
