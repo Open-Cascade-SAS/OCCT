@@ -6,11 +6,10 @@ set(OCCT_LProp_FILES
   LProp_AnalyticCurInf.hxx
   LProp_BadContinuity.hxx
   LProp_CIType.hxx
-  LProp_CLProps.gxx
   LProp_CurAndInf.cxx
   LProp_CurAndInf.hxx
+  LProp_CurveUtils.pxx
   LProp_NotDefined.hxx
-
-  LProp_SLProps.gxx
+  LProp_SurfaceUtils.pxx
   LProp_Status.hxx
 )

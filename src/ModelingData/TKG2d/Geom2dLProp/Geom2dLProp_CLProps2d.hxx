@@ -116,14 +116,14 @@ private:
   occ::handle<Geom2d_Curve> myCurve;
   double                    myU;
   int                       myDerOrder;
-  double                    myCN;
+  int                       myCN;
   double                    myLinTol;
   gp_Pnt2d                  myPnt;
   gp_Vec2d                  myDerivArr[3];
   gp_Dir2d                  myTangent;
-  double                    myCurvature;
+  double                    myCurvature = 0.0;
   LProp_Status              myTangentStatus;
-  int                       mySignificantFirstDerivativeOrder;
+  int                       mySignificantFirstDerivativeOrder = 0;
 };
 
 #endif // _Geom2dLProp_CLProps2d_HeaderFile

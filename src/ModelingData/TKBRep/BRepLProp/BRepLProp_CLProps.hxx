@@ -33,7 +33,6 @@ class BRepAdaptor_Curve;
 class gp_Vec;
 class gp_Pnt;
 class gp_Dir;
-class BRepLProp_CurveTool;
 
 class BRepLProp_CLProps
 {
@@ -113,14 +112,14 @@ private:
   BRepAdaptor_Curve myCurve;
   double            myU;
   int               myDerOrder;
-  double            myCN;
+  int               myCN;
   double            myLinTol;
   gp_Pnt            myPnt;
   gp_Vec            myDerivArr[3];
   gp_Dir            myTangent;
-  double            myCurvature;
+  double            myCurvature = 0.0;
   LProp_Status      myTangentStatus;
-  int               mySignificantFirstDerivativeOrder;
+  int               mySignificantFirstDerivativeOrder = 0;
 };
 
 #endif // _BRepLProp_CLProps_HeaderFile

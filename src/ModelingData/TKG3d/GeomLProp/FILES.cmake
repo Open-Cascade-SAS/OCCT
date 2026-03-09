@@ -5,11 +5,7 @@ set(OCCT_GeomLProp_FILES
   GeomLProp.cxx
   GeomLProp.hxx
   GeomLProp_CLProps.hxx
-  GeomLProp_CLProps_0.cxx
-  GeomLProp_CurveTool.cxx
-  GeomLProp_CurveTool.hxx
+  GeomLProp_CLProps.cxx
   GeomLProp_SLProps.hxx
-  GeomLProp_SLProps_0.cxx
-  GeomLProp_SurfaceTool.cxx
-  GeomLProp_SurfaceTool.hxx
+  GeomLProp_SLProps.cxx
 )
