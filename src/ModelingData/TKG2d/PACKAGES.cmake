@@ -8,5 +8,4 @@ set(OCCT_TKG2d_LIST_OF_PACKAGES
   Geom2dHash
   Geom2dGridEval
   Geom2dEval
-  Geom2dProp
 )

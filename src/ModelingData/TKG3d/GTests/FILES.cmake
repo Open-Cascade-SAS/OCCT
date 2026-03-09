@@ -46,27 +46,4 @@ set(OCCT_TKG3d_GTests_FILES
   GeomGridEval_Torus_Test.cxx
   GeomHash_CurveHasher_Test.cxx
   GeomHash_SurfaceHasher_Test.cxx
-  GeomProp_BezierCurve_Test.cxx
-  GeomProp_BezierSurface_Test.cxx
-  GeomProp_BSplineCurve_Test.cxx
-  GeomProp_BSplineSurface_Test.cxx
-  GeomProp_Circle_Test.cxx
-  GeomProp_Cone_Test.cxx
-  GeomProp_Cylinder_Test.cxx
-  GeomProp_Ellipse_Test.cxx
-  GeomProp_Hyperbola_Test.cxx
-  GeomProp_Line_Test.cxx
-  GeomProp_OffsetCurve_Test.cxx
-  GeomProp_OffsetSurface_Test.cxx
-  GeomProp_OtherCurve_Test.cxx
-  GeomProp_OtherSurface_Test.cxx
-  GeomProp_Parabola_Test.cxx
-  GeomProp_Plane_Test.cxx
-  GeomProp_Sphere_Test.cxx
-  GeomProp_SurfaceOfExtrusion_Test.cxx
-  GeomProp_SurfaceOfRevolution_Test.cxx
-  GeomProp_Test.cxx
-  GeomProp_Torus_Test.cxx
-  GeomProp_VsCLProps_Test.cxx
-  GeomProp_VsSLProps_Test.cxx
 )

@@ -5,7 +5,6 @@ set(OCCT_TKBRep_LIST_OF_PACKAGES
   TopTools
   BRep
   BRepLProp
-  BRepProp
   BRepAdaptor
   BRepTools
   BinTools
