@@ -557,7 +557,7 @@ TEST(GeomPropCurveTest, Continuity_ReversedDirection_G1)
 {
   occ::handle<Geom_Line> aL1 = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   occ::handle<Geom_Line> aL2 = new Geom_Line(gp_Pnt(1, 0, 0), gp_Dir(-1, 0, 0));
-  // Same point, reversed tangent vectors — only G1 with reversal flags
+  // Same point, reversed tangent vectors - only G1 with reversal flags
   GeomAbs_Shape aCont = GeomProp_Curve::Continuity(aL1, aL2, 1.0, 0.0, false, true);
   EXPECT_GE(aCont, GeomAbs_C1);
 }
