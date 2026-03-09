@@ -29,8 +29,6 @@ class LProp_NotDefined;
 class gp_Vec;
 class gp_Pnt;
 class gp_Dir;
-class LProp3d_CurveTool;
-
 class LProp3d_CLProps
 {
 public:

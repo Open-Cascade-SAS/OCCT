@@ -1,0 +1,375 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _LProp_CurveUtils_HeaderFile
+#define _LProp_CurveUtils_HeaderFile
+
+#include <LProp_NotDefined.hxx>
+#include <LProp_Status.hxx>
+#include <Standard_Handle.hxx>
+
+#include <cmath>
+
+//! Template utility functions for CLProps curve local property computation.
+//! Provides access policies (DirectAccess, ToolAccess) and shared algorithms
+//! for evaluating derivatives, tangents, curvature, normals, and centres of curvature.
+namespace LProp_CurveUtils
+{
+
+// ==================== Deref helpers ====================
+
+//! Dereference by-value or reference types (identity).
+template <typename T>
+T& Deref(T& x)
+{
+  return x;
+}
+
+//! Dereference occ::handle types.
+template <typename T>
+T& Deref(occ::handle<T>& x)
+{
+  return *x;
+}
+
+//! Dereference const occ::handle types.
+template <typename T>
+const T& Deref(const occ::handle<T>& x)
+{
+  return *x;
+}
+
+// ==================== Access Policies ====================
+
+//! Direct access policy: calls D0/D1/D2/D3 methods on the curve object.
+//! Works with occ::handle<T> and by-value curve types.
+struct DirectAccess
+{
+  template <typename C, typename P>
+  static void D0(C& c, double u, P& p)
+  {
+    Deref(c).D0(u, p);
+  }
+
+  template <typename C, typename P, typename V>
+  static void D1(C& c, double u, P& p, V& v1)
+  {
+    Deref(c).D1(u, p, v1);
+  }
+
+  template <typename C, typename P, typename V>
+  static void D2(C& c, double u, P& p, V& v1, V& v2)
+  {
+    Deref(c).D2(u, p, v1, v2);
+  }
+
+  template <typename C, typename P, typename V>
+  static void D3(C& c, double u, P& p, V& v1, V& v2, V& v3)
+  {
+    Deref(c).D3(u, p, v1, v2, v3);
+  }
+
+  template <typename C>
+  static double FirstParameter(C& c)
+  {
+    return Deref(c).FirstParameter();
+  }
+
+  template <typename C>
+  static double LastParameter(C& c)
+  {
+    return Deref(c).LastParameter();
+  }
+};
+
+//! Tool-based access policy: delegates to static Tool methods.
+//! Used for HLRBRep types where Tool class provides the interface.
+template <typename Tool>
+struct ToolAccess
+{
+  template <typename C, typename P>
+  static void D0(C& c, double u, P& p)
+  {
+    Tool::Value(c, u, p);
+  }
+
+  template <typename C, typename P, typename V>
+  static void D1(C& c, double u, P& p, V& v1)
+  {
+    Tool::D1(c, u, p, v1);
+  }
+
+  template <typename C, typename P, typename V>
+  static void D2(C& c, double u, P& p, V& v1, V& v2)
+  {
+    Tool::D2(c, u, p, v1, v2);
+  }
+
+  template <typename C, typename P, typename V>
+  static void D3(C& c, double u, P& p, V& v1, V& v2, V& v3)
+  {
+    Tool::D3(c, u, p, v1, v2, v3);
+  }
+
+  template <typename C>
+  static double FirstParameter(C& c)
+  {
+    return Tool::FirstParameter(c);
+  }
+
+  template <typename C>
+  static double LastParameter(C& c)
+  {
+    return Tool::LastParameter(c);
+  }
+};
+
+// ==================== Algorithm Utilities ====================
+
+//! Evaluate curve derivatives at parameter u up to specified order.
+//! @param[in,out] c      curve object
+//! @param[in]     u      parameter value
+//! @param[in]     order  maximum derivative order (0-3)
+//! @param[out]    p      evaluated point
+//! @param[out]    d      derivative array (size >= order)
+template <typename Access, typename Curve, typename Pnt, typename Vec>
+void EvalDerivatives(Curve& c, double u, int order, Pnt& p, Vec* d)
+{
+  switch (order)
+  {
+    case 0: Access::D0(c, u, p); break;
+    case 1: Access::D1(c, u, p, d[0]); break;
+    case 2: Access::D2(c, u, p, d[0], d[1]); break;
+    case 3: Access::D3(c, u, p, d[0], d[1], d[2]); break;
+  }
+}
+
+//! Compute tangent direction with sign correction for higher-order derivatives.
+//! When the first significant derivative has order > 1, the sign of the tangent
+//! is determined by comparing with the chord direction near the point.
+//! @param[in,out] c         curve object
+//! @param[in]     u         current parameter
+//! @param[in]     derivArr  derivative array
+//! @param[in]     refPnt    reference point (used only for type deduction)
+//! @param[in]     sigOrder  order of first significant derivative
+//! @param[out]    dir       computed tangent direction
+template <typename Access, typename Curve, typename Vec, typename Pnt, typename Dir>
+void ComputeTangent(Curve& c, double u, const Vec* derivArr, const Pnt& /*refPnt*/, int sigOrder, Dir& dir)
+{
+  if (sigOrder == 1)
+  {
+    dir = Dir(derivArr[0]);
+    return;
+  }
+
+  constexpr double THE_DIVISION_FACTOR = 1.0e-3;
+  constexpr double THE_MIN_STEP        = 1.0e-7;
+
+  const double anUsupremum = Access::LastParameter(c);
+  const double anUinfium   = Access::FirstParameter(c);
+
+  double du;
+  if ((anUsupremum >= RealLast()) || (anUinfium <= RealFirst()))
+    du = 0.0;
+  else
+    du = anUsupremum - anUinfium;
+
+  const double aDelta = std::max(du * THE_DIVISION_FACTOR, THE_MIN_STEP);
+
+  Vec aV = derivArr[sigOrder - 1];
+
+  double anOtherU;
+  if (u - anUinfium < aDelta)
+    anOtherU = u + aDelta;
+  else
+    anOtherU = u - aDelta;
+
+  Pnt aP1, aP2;
+  Access::D0(c, std::min(u, anOtherU), aP1);
+  Access::D0(c, std::max(u, anOtherU), aP2);
+
+  Vec aChord(aP1, aP2);
+  if (aV.Dot(aChord) < 0.0)
+    aV = -aV;
+
+  dir = Dir(aV);
+}
+
+//! Compute curvature from first and second derivatives.
+//! Returns |D1 x D2| / |D1|^3, or 0 if derivatives are collinear or D2 is null.
+//! @param[in]  d1     first derivative
+//! @param[in]  d2     second derivative
+//! @param[in]  tolSq  squared linear tolerance
+//! @return curvature value
+template <typename Vec>
+double ComputeCurvature(const Vec& d1, const Vec& d2, double tolSq)
+{
+  const double DD1 = d1.SquareMagnitude();
+  const double DD2 = d2.SquareMagnitude();
+
+  if (DD2 <= tolSq)
+    return 0.0;
+
+  const double N = d1.CrossSquareMagnitude(d2);
+  const double t = N / DD1 / DD2;
+  if (t <= tolSq)
+    return 0.0;
+
+  return sqrt(N) / DD1 / sqrt(DD1);
+}
+
+//! Compute normal direction from first and second derivatives.
+//! Normal = D2*(D1*D1) - D1*(D1*D2), using the vector triple product identity.
+//! @param[in]  d1   first derivative
+//! @param[in]  d2   second derivative
+//! @param[out] dir  computed normal direction
+template <typename Vec, typename Dir>
+void ComputeNormal(const Vec& d1, const Vec& d2, Dir& dir)
+{
+  Vec aNorm = d2 * (d1 * d1) - d1 * (d1 * d2);
+  dir = Dir(aNorm);
+}
+
+//! Compute centre of curvature from point, derivatives, and curvature.
+//! Centre = Point + Normal / Curvature.
+//! @param[in]  pnt       current point
+//! @param[in]  d1        first derivative
+//! @param[in]  d2        second derivative
+//! @param[in]  curvature curvature value (must be non-zero)
+//! @param[out] centre    computed centre of curvature
+template <typename Vec, typename Pnt>
+void ComputeCentreOfCurvature(const Pnt& pnt, const Vec& d1, const Vec& d2, double curvature, Pnt& centre)
+{
+  Vec aNorm = d2 * (d1 * d1) - d1 * (d1 * d2);
+  aNorm.Normalize();
+  aNorm.Divide(curvature);
+  centre = pnt.Translated(aNorm);
+}
+
+// ==================== Higher-Level Method Wrappers ====================
+
+//! SetParameter wrapper: sets parameter, evaluates derivatives, resets tangent status.
+template <typename Access, typename Curve, typename Pnt, typename Vec>
+void SetParameter(Curve& c, double u, double& storedU, int derOrder, Pnt& p, Vec* d, LProp_Status& tanStatus)
+{
+  storedU   = u;
+  EvalDerivatives<Access>(c, u, derOrder, p, d);
+  tanStatus = LProp_Undecided;
+}
+
+//! Ensure derivatives up to the required order are computed. Returns d[required-1].
+template <typename Access, typename Curve, typename Pnt, typename Vec>
+const Vec& EnsureDeriv(Curve& c, double u, int& derOrder, int required, Pnt& p, Vec* d)
+{
+  if (derOrder < required)
+  {
+    derOrder = required;
+    EvalDerivatives<Access>(c, u, derOrder, p, d);
+  }
+  return d[required - 1];
+}
+
+//! IsTangentDefined: searches for first non-null derivative.
+//! Calls props.D1(), props.D2(), props.D3() to upgrade derivatives as needed.
+template <typename Vec, typename Props>
+bool IsTangentDefined(Props& props, double cn, double linTol, int& sigOrder, LProp_Status& tanStatus)
+{
+  if (tanStatus == LProp_Undefined)
+    return false;
+  if (tanStatus >= LProp_Defined)
+    return true;
+
+  const double aTol = linTol * linTol;
+  int          anOrder = 0;
+  while (anOrder++ < 4)
+  {
+    if (cn >= anOrder)
+    {
+      Vec aV;
+      switch (anOrder)
+      {
+        case 1: aV = props.D1(); break;
+        case 2: aV = props.D2(); break;
+        case 3: aV = props.D3(); break;
+      }
+      if (aV.SquareMagnitude() > aTol)
+      {
+        sigOrder  = anOrder;
+        tanStatus = LProp_Defined;
+        return true;
+      }
+    }
+    else
+    {
+      tanStatus = LProp_Undefined;
+      return false;
+    }
+  }
+  return false;
+}
+
+//! Tangent: checks IsTangentDefined, then computes tangent direction.
+template <typename Access, typename Props, typename Curve, typename Vec, typename Pnt, typename Dir>
+void Tangent(Props& props, Curve& c, double u, const Vec* derivArr, const Pnt& refPnt, int sigOrder, Dir& dir)
+{
+  if (!props.IsTangentDefined())
+    throw LProp_NotDefined();
+  ComputeTangent<Access>(c, u, derivArr, refPnt, sigOrder, dir);
+}
+
+//! Curvature: checks IsTangentDefined, returns RealLast if higher-order, else computes.
+template <typename Props, typename Vec>
+double Curvature(Props&     props,
+                 const Vec& d1,
+                 const Vec& d2,
+                 double     linTol,
+                 int        sigOrder,
+                 double&    curvature)
+{
+  const bool isDefined = props.IsTangentDefined();
+  (void)isDefined;
+  LProp_NotDefined_Raise_if(!isDefined, "CLProps::Curvature()");
+  if (sigOrder > 1)
+    return RealLast();
+  curvature = ComputeCurvature(d1, d2, linTol * linTol);
+  return curvature;
+}
+
+//! Normal: checks curvature, then computes normal direction.
+template <typename Props, typename Vec, typename Dir>
+void Normal(Props& props, const Vec& d1, const Vec& d2, double linTol, Dir& dir)
+{
+  const double c = props.Curvature();
+  if (c == RealLast() || std::abs(c) <= linTol)
+    throw LProp_NotDefined("CLProps::Normal(): Curvature is null or infinity");
+  ComputeNormal(d1, d2, dir);
+}
+
+//! CentreOfCurvature: checks curvature, then computes centre.
+template <typename Props, typename Vec, typename Pnt>
+void CentreOfCurvature(Props&     props,
+                        const Pnt& pnt,
+                        const Vec& d1,
+                        const Vec& d2,
+                        double     linTol,
+                        double&    curvature,
+                        Pnt&       centre)
+{
+  if (std::abs(props.Curvature()) <= linTol)
+    throw LProp_NotDefined();
+  ComputeCentreOfCurvature(pnt, d1, d2, curvature, centre);
+}
+
+} // namespace LProp_CurveUtils
+
+#endif // _LProp_CurveUtils_HeaderFile

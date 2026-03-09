@@ -31,7 +31,6 @@ class LProp_BadContinuity;
 class Standard_DomainError;
 class Standard_OutOfRange;
 class LProp_NotDefined;
-class GeomLProp_SurfaceTool;
 class gp_Pnt;
 class gp_Vec;
 class gp_Dir;

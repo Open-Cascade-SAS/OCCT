@@ -1,0 +1,670 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _LProp_SurfaceUtils_HeaderFile
+#define _LProp_SurfaceUtils_HeaderFile
+
+#include <Adaptor3d_Surface.hxx>
+#include <CSLib.hxx>
+#include <CSLib_DerivativeStatus.hxx>
+#include <Geom_Surface.hxx>
+#include <LProp_NotDefined.hxx>
+#include <LProp_Status.hxx>
+#include <Standard_Handle.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <math_DirectPolynomialRoots.hxx>
+
+#include <cmath>
+
+//! Template utility functions for SLProps surface local property computation.
+//! Provides access policies (DirectAccess, ToolAccess), surface bounds helpers,
+//! and shared algorithms for evaluating derivatives, tangents, normals, and curvatures.
+namespace LProp_SurfaceUtils
+{
+
+// ==================== Deref helpers ====================
+
+//! Dereference by-value or reference types (identity).
+template <typename T>
+T& Deref(T& x)
+{
+  return x;
+}
+
+//! Dereference occ::handle types.
+template <typename T>
+T& Deref(occ::handle<T>& x)
+{
+  return *x;
+}
+
+//! Dereference const occ::handle types.
+template <typename T>
+const T& Deref(const occ::handle<T>& x)
+{
+  return *x;
+}
+
+// ==================== Surface Bounds Helpers ====================
+
+//! Get bounds from Geom_Surface (uses Bounds method with u1, u2, v1, v2 order).
+inline void GetSurfBounds(const Geom_Surface& s, double& u1, double& v1, double& u2, double& v2)
+{
+  s.Bounds(u1, u2, v1, v2);
+}
+
+//! Get bounds from Adaptor3d_Surface (uses individual parameter methods).
+//! Also works for BRepAdaptor_Surface which inherits from Adaptor3d_Surface.
+inline void GetSurfBounds(const Adaptor3d_Surface& s,
+                           double&                  u1,
+                           double&                  v1,
+                           double&                  u2,
+                           double&                  v2)
+{
+  u1 = s.FirstUParameter();
+  v1 = s.FirstVParameter();
+  u2 = s.LastUParameter();
+  v2 = s.LastVParameter();
+}
+
+// ==================== Access Policies ====================
+
+//! Direct access policy: calls D0/D1/D2 methods on the surface object.
+//! Works with occ::handle<T> and by-value surface types.
+struct DirectAccess
+{
+  template <typename S>
+  static void D0(S& s, double u, double v, gp_Pnt& p)
+  {
+    Deref(s).D0(u, v, p);
+  }
+
+  template <typename S>
+  static void D1(S& s, double u, double v, gp_Pnt& p, gp_Vec& d1u, gp_Vec& d1v)
+  {
+    Deref(s).D1(u, v, p, d1u, d1v);
+  }
+
+  template <typename S>
+  static void D2(S&      s,
+                 double   u,
+                 double   v,
+                 gp_Pnt&  p,
+                 gp_Vec&  d1u,
+                 gp_Vec&  d1v,
+                 gp_Vec&  d2u,
+                 gp_Vec&  d2v,
+                 gp_Vec&  duv)
+  {
+    Deref(s).D2(u, v, p, d1u, d1v, d2u, d2v, duv);
+  }
+
+  template <typename S>
+  static void Bounds(S& s, double& u1, double& v1, double& u2, double& v2)
+  {
+    GetSurfBounds(Deref(s), u1, v1, u2, v2);
+  }
+};
+
+//! Tool-based access policy: delegates to static Tool methods.
+//! Used for HLRBRep types where Tool class provides the interface.
+template <typename Tool>
+struct ToolAccess
+{
+  template <typename S>
+  static void D0(S& s, double u, double v, gp_Pnt& p)
+  {
+    Tool::Value(s, u, v, p);
+  }
+
+  template <typename S>
+  static void D1(S& s, double u, double v, gp_Pnt& p, gp_Vec& d1u, gp_Vec& d1v)
+  {
+    Tool::D1(s, u, v, p, d1u, d1v);
+  }
+
+  template <typename S>
+  static void D2(S&      s,
+                 double   u,
+                 double   v,
+                 gp_Pnt&  p,
+                 gp_Vec&  d1u,
+                 gp_Vec&  d1v,
+                 gp_Vec&  d2u,
+                 gp_Vec&  d2v,
+                 gp_Vec&  duv)
+  {
+    Tool::D2(s, u, v, p, d1u, d1v, d2u, d2v, duv);
+  }
+
+  template <typename S>
+  static void Bounds(S& s, double& u1, double& v1, double& u2, double& v2)
+  {
+    Tool::Bounds(s, u1, v1, u2, v2);
+  }
+};
+
+// ==================== Algorithm Utilities ====================
+
+//! Evaluate surface derivatives at parameters (u, v) up to specified order.
+//! @param[in,out] s      surface object
+//! @param[in]     u      U parameter value
+//! @param[in]     v      V parameter value
+//! @param[in]     order  maximum derivative order (0-2)
+//! @param[out]    p      evaluated point
+//! @param[out]    d1u    first U derivative
+//! @param[out]    d1v    first V derivative
+//! @param[out]    d2u    second U derivative
+//! @param[out]    d2v    second V derivative
+//! @param[out]    duv    mixed UV derivative
+template <typename Access, typename Surface>
+void EvalSurfDerivatives(Surface& s,
+                         double   u,
+                         double   v,
+                         int      order,
+                         gp_Pnt&  p,
+                         gp_Vec&  d1u,
+                         gp_Vec&  d1v,
+                         gp_Vec&  d2u,
+                         gp_Vec&  d2v,
+                         gp_Vec&  duv)
+{
+  switch (order)
+  {
+    case 0: Access::D0(s, u, v, p); break;
+    case 1: Access::D1(s, u, v, p, d1u, d1v); break;
+    case 2: Access::D2(s, u, v, p, d1u, d1v, d2u, d2v, duv); break;
+  }
+}
+
+//! Check if the surface tangent is defined for a given derivative direction.
+//! Searches for the first non-null derivative in either U or V direction.
+//! @param[in]  d1         first derivative (D1U for U direction, D1V for V direction)
+//! @param[in]  d2         second derivative (D2U for U direction, D2V for V direction)
+//! @param[in]  cn         continuity order
+//! @param[in]  tolSq      squared linear tolerance
+//! @param[out] order      order of first significant derivative
+//! @param[out] theStatus  resulting tangent status
+//! @return true if tangent is defined
+inline bool FindSurfTangentOrder(const gp_Vec&  d1,
+                                 const gp_Vec&  d2,
+                                 int            cn,
+                                 double         tolSq,
+                                 int&           order,
+                                 LProp_Status&  theStatus)
+{
+  const gp_Vec* aDerivs[2] = {&d1, &d2};
+  order = 0;
+
+  while (order < 3)
+  {
+    order++;
+    if (cn >= order)
+    {
+      if (order <= 2 && aDerivs[order - 1]->SquareMagnitude() > tolSq)
+      {
+        theStatus = LProp_Defined;
+        return true;
+      }
+    }
+    else
+    {
+      theStatus = LProp_Undefined;
+      return false;
+    }
+  }
+
+  return false;
+}
+
+//! Compute surface tangent direction with sign correction for higher-order derivatives.
+//! When the first significant derivative has order > 1, the sign is determined
+//! by comparing with the chord direction near the point.
+//! @param[in,out] s          surface object
+//! @param[in]     u          current U parameter
+//! @param[in]     v          current V parameter
+//! @param[in]     firstDeriv first derivative in this direction (D1U or D1V)
+//! @param[in]     secDeriv   second derivative in this direction (D2U or D2V)
+//! @param[in]     sigOrder   order of first significant derivative
+//! @param[in]     isU        true for U direction, false for V direction
+//! @param[out]    dir        computed tangent direction
+template <typename Access, typename Surface>
+void ComputeSurfTangent(Surface&       s,
+                        double         u,
+                        double         v,
+                        const gp_Vec&  firstDeriv,
+                        const gp_Vec&  secDeriv,
+                        int            sigOrder,
+                        bool           isU,
+                        gp_Dir&        dir)
+{
+  if (sigOrder == 1)
+  {
+    dir = gp_Dir(firstDeriv);
+    return;
+  }
+
+  constexpr double THE_DIVISION_FACTOR = 1.0e-3;
+  constexpr double THE_MIN_STEP        = 1.0e-7;
+
+  double anUinfium, anVinfium, anUsupremum, anVsupremum;
+  Access::Bounds(s, anUinfium, anVinfium, anUsupremum, anVsupremum);
+
+  if (isU)
+  {
+    double du;
+    if ((anUsupremum >= RealLast()) || (anUinfium <= RealFirst()))
+      du = 0.0;
+    else
+      du = anUsupremum - anUinfium;
+
+    const double aDelta = std::max(du * THE_DIVISION_FACTOR, THE_MIN_STEP);
+
+    gp_Vec aV = secDeriv;
+
+    double anOtherU;
+    if (u - anUinfium < aDelta)
+      anOtherU = u + aDelta;
+    else
+      anOtherU = u - aDelta;
+
+    gp_Pnt aP1, aP2;
+    Access::D0(s, std::min(u, anOtherU), v, aP1);
+    Access::D0(s, std::max(u, anOtherU), v, aP2);
+
+    gp_Vec aChord(aP1, aP2);
+    if (aV.Dot(aChord) < 0.0)
+      aV = -aV;
+
+    dir = gp_Dir(aV);
+  }
+  else
+  {
+    double dv;
+    if ((anVsupremum >= RealLast()) || (anVinfium <= RealFirst()))
+      dv = 0.0;
+    else
+      dv = anVsupremum - anVinfium;
+
+    const double aDelta = std::max(dv * THE_DIVISION_FACTOR, THE_MIN_STEP);
+
+    gp_Vec aV = secDeriv;
+
+    double anOtherV;
+    if (v - anVinfium < aDelta)
+      anOtherV = v + aDelta;
+    else
+      anOtherV = v - aDelta;
+
+    gp_Pnt aP1, aP2;
+    Access::D0(s, u, std::min(v, anOtherV), aP1);
+    Access::D0(s, u, std::max(v, anOtherV), aP2);
+
+    gp_Vec aChord(aP1, aP2);
+    if (aV.Dot(aChord) < 0.0)
+      aV = -aV;
+
+    dir = gp_Dir(aV);
+  }
+}
+
+//! Check if surface normal is defined, and compute it via CSLib::Normal.
+//! @param[in]  d1u     first U derivative
+//! @param[in]  d1v     first V derivative
+//! @param[in]  linTol  linear tolerance
+//! @param[out] normal  computed normal direction (if defined)
+//! @return true if normal is defined
+inline bool ComputeSurfNormal(const gp_Vec& d1u, const gp_Vec& d1v, double linTol, gp_Dir& normal)
+{
+  CSLib_DerivativeStatus aStatus = CSLib_Done;
+  CSLib::Normal(d1u, d1v, linTol, aStatus, normal);
+  return aStatus == CSLib_Done;
+}
+
+//! Compute principal curvatures and directions via fundamental forms.
+//! Solves the eigenvalue problem for the shape operator using
+//! first and second fundamental form coefficients.
+//! @param[in]  d1u       first U derivative
+//! @param[in]  d1v       first V derivative
+//! @param[in]  d2u       second U derivative
+//! @param[in]  d2v       second V derivative
+//! @param[in]  duv       mixed UV derivative
+//! @param[in]  normal    surface normal direction
+//! @param[out] minCurv   minimum principal curvature
+//! @param[out] maxCurv   maximum principal curvature
+//! @param[out] dirMin    direction of minimum curvature
+//! @param[out] dirMax    direction of maximum curvature
+//! @param[out] meanCurv  mean curvature
+//! @param[out] gausCurv  Gaussian curvature
+//! @return true if curvatures are successfully computed
+inline bool ComputeSurfCurvatures(const gp_Vec& d1u,
+                                  const gp_Vec& d1v,
+                                  const gp_Vec& d2u,
+                                  const gp_Vec& d2v,
+                                  const gp_Vec& duv,
+                                  const gp_Dir& normal,
+                                  double&       minCurv,
+                                  double&       maxCurv,
+                                  gp_Dir&       dirMin,
+                                  gp_Dir&       dirMax,
+                                  double&       meanCurv,
+                                  double&       gausCurv)
+{
+  const gp_Vec aNorm(normal);
+
+  const double E = d1u.SquareMagnitude();
+  const double F = d1u.Dot(d1v);
+  const double G = d1v.SquareMagnitude();
+
+  const double L = aNorm.Dot(d2u);
+  const double M = aNorm.Dot(duv);
+  const double N = aNorm.Dot(d2v);
+
+  const double A0 = E * M - F * L;
+  const double B0 = E * N - G * L;
+  const double C0 = F * N - G * M;
+
+  const double aMaxABC = std::max(std::max(std::abs(A0), std::abs(B0)), std::abs(C0));
+  if (aMaxABC < RealEpsilon())
+  {
+    // Umbilic point
+    minCurv  = N / G;
+    maxCurv  = minCurv;
+    dirMin   = gp_Dir(d1u);
+    dirMax   = gp_Dir(d1u.Crossed(aNorm));
+    meanCurv = minCurv;
+    gausCurv = minCurv * minCurv;
+    return true;
+  }
+
+  const double A = A0 / aMaxABC;
+  const double B = B0 / aMaxABC;
+  const double C = C0 / aMaxABC;
+
+  double aCurv1, aCurv2;
+  gp_Vec aVectCurv1, aVectCurv2;
+
+  if (std::abs(A) > RealEpsilon())
+  {
+    math_DirectPolynomialRoots aRoot(A, B, C);
+    if (aRoot.NbSolutions() != 2)
+      return false;
+
+    const double aRoot1 = aRoot.Value(1);
+    const double aRoot2 = aRoot.Value(2);
+    aCurv1     = ((L * aRoot1 + 2.0 * M) * aRoot1 + N) / ((E * aRoot1 + 2.0 * F) * aRoot1 + G);
+    aCurv2     = ((L * aRoot2 + 2.0 * M) * aRoot2 + N) / ((E * aRoot2 + 2.0 * F) * aRoot2 + G);
+    aVectCurv1 = aRoot1 * d1u + d1v;
+    aVectCurv2 = aRoot2 * d1u + d1v;
+  }
+  else if (std::abs(C) > RealEpsilon())
+  {
+    math_DirectPolynomialRoots aRoot(C, B, A);
+    if (aRoot.NbSolutions() != 2)
+      return false;
+
+    const double aRoot1 = aRoot.Value(1);
+    const double aRoot2 = aRoot.Value(2);
+    aCurv1     = ((N * aRoot1 + 2.0 * M) * aRoot1 + L) / ((G * aRoot1 + 2.0 * F) * aRoot1 + E);
+    aCurv2     = ((N * aRoot2 + 2.0 * M) * aRoot2 + L) / ((G * aRoot2 + 2.0 * F) * aRoot2 + E);
+    aVectCurv1 = d1u + aRoot1 * d1v;
+    aVectCurv2 = d1u + aRoot2 * d1v;
+  }
+  else
+  {
+    aCurv1     = L / E;
+    aCurv2     = N / G;
+    aVectCurv1 = d1u;
+    aVectCurv2 = d1v;
+  }
+
+  if (aCurv1 < aCurv2)
+  {
+    minCurv = aCurv1;
+    maxCurv = aCurv2;
+    dirMin  = gp_Dir(aVectCurv1);
+    dirMax  = gp_Dir(aVectCurv2);
+  }
+  else
+  {
+    minCurv = aCurv2;
+    maxCurv = aCurv1;
+    dirMin  = gp_Dir(aVectCurv2);
+    dirMax  = gp_Dir(aVectCurv1);
+  }
+
+  const double EG_FF = (E * G) - (F * F);
+  meanCurv = ((N * E) - (2.0 * M * F) + (L * G)) / (2.0 * EG_FF);
+  gausCurv = ((L * N) - (M * M)) / EG_FF;
+  return true;
+}
+
+// ==================== Higher-Level Method Wrappers ====================
+
+//! SetParameters: sets parameters, evaluates derivatives, resets all statuses.
+template <typename Access, typename Surface>
+void SetParameters(Surface&      s,
+                   double        u,
+                   double        v,
+                   double&       storedU,
+                   double&       storedV,
+                   int           derOrder,
+                   gp_Pnt&       p,
+                   gp_Vec&       d1u,
+                   gp_Vec&       d1v,
+                   gp_Vec&       d2u,
+                   gp_Vec&       d2v,
+                   gp_Vec&       duv,
+                   LProp_Status& uTanSt,
+                   LProp_Status& vTanSt,
+                   LProp_Status& normSt,
+                   LProp_Status& curvSt)
+{
+  storedU = u;
+  storedV = v;
+  EvalSurfDerivatives<Access>(s, u, v, derOrder, p, d1u, d1v, d2u, d2v, duv);
+  uTanSt = LProp_Undecided;
+  vTanSt = LProp_Undecided;
+  normSt = LProp_Undecided;
+  curvSt = LProp_Undecided;
+}
+
+//! Ensure surface derivatives up to the required order. Returns the specified result field.
+template <typename Access, typename Surface>
+const gp_Vec& EnsureSurfDeriv(Surface&       s,
+                               double         u,
+                               double         v,
+                               int&           derOrder,
+                               int            required,
+                               gp_Pnt&        p,
+                               gp_Vec&        d1u,
+                               gp_Vec&        d1v,
+                               gp_Vec&        d2u,
+                               gp_Vec&        d2v,
+                               gp_Vec&        duv,
+                               const gp_Vec&  result)
+{
+  if (derOrder < required)
+  {
+    derOrder = required;
+    EvalSurfDerivatives<Access>(s, u, v, derOrder, p, d1u, d1v, d2u, d2v, duv);
+  }
+  return result;
+}
+
+//! IsTangentUDefined: checks U tangent status, then searches via D1U/D2U.
+template <typename Props>
+bool IsTangentUDefined(Props& props, int cn, double linTol, int& sigOrder, LProp_Status& tanStatus)
+{
+  if (tanStatus == LProp_Undefined)
+    return false;
+  if (tanStatus >= LProp_Defined)
+    return true;
+  return FindSurfTangentOrder(props.D1U(), props.D2U(), cn, linTol * linTol, sigOrder, tanStatus);
+}
+
+//! IsTangentVDefined: checks V tangent status, then searches via D1V/D2V.
+template <typename Props>
+bool IsTangentVDefined(Props& props, int cn, double linTol, int& sigOrder, LProp_Status& tanStatus)
+{
+  if (tanStatus == LProp_Undefined)
+    return false;
+  if (tanStatus >= LProp_Defined)
+    return true;
+  return FindSurfTangentOrder(props.D1V(), props.D2V(), cn, linTol * linTol, sigOrder, tanStatus);
+}
+
+//! TangentU: checks IsTangentUDefined, then computes U tangent direction.
+template <typename Access, typename Props, typename Surface>
+void TangentU(Props&        props,
+              Surface&      s,
+              double        u,
+              double        v,
+              const gp_Vec& d1u,
+              const gp_Vec& d2u,
+              int           sigOrder,
+              gp_Dir&       dir)
+{
+  if (!props.IsTangentUDefined())
+    throw LProp_NotDefined();
+  ComputeSurfTangent<Access>(s, u, v, d1u, d2u, sigOrder, true, dir);
+}
+
+//! TangentV: checks IsTangentVDefined, then computes V tangent direction.
+template <typename Access, typename Props, typename Surface>
+void TangentV(Props&        props,
+              Surface&      s,
+              double        u,
+              double        v,
+              const gp_Vec& d1v,
+              const gp_Vec& d2v,
+              int           sigOrder,
+              gp_Dir&       dir)
+{
+  if (!props.IsTangentVDefined())
+    throw LProp_NotDefined();
+  ComputeSurfTangent<Access>(s, u, v, d1v, d2v, sigOrder, false, dir);
+}
+
+//! IsNormalDefined: checks normal status, then computes via CSLib.
+inline bool IsNormalDefined(const gp_Vec& d1u,
+                            const gp_Vec& d1v,
+                            double        linTol,
+                            gp_Dir&       normal,
+                            LProp_Status& normStatus)
+{
+  if (normStatus == LProp_Undefined)
+    return false;
+  if (normStatus >= LProp_Defined)
+    return true;
+  if (ComputeSurfNormal(d1u, d1v, linTol, normal))
+  {
+    normStatus = LProp_Computed;
+    return true;
+  }
+  normStatus = LProp_Undefined;
+  return false;
+}
+
+//! Normal: checks IsNormalDefined (via props), then returns normal.
+template <typename Props>
+const gp_Dir& Normal(Props& props, const gp_Dir& normal)
+{
+  if (!props.IsNormalDefined())
+    throw LProp_NotDefined();
+  return normal;
+}
+
+//! IsCurvatureDefined: full check including continuity, normal, tangents, and curvature computation.
+template <typename Props>
+bool IsCurvatureDefined(Props&        props,
+                        int           cn,
+                        int&          derOrder,
+                        const gp_Vec& d1u,
+                        const gp_Vec& d1v,
+                        const gp_Vec& d2u,
+                        const gp_Vec& d2v,
+                        const gp_Vec& duv,
+                        const gp_Dir& normal,
+                        double&       minCurv,
+                        double&       maxCurv,
+                        gp_Dir&       dirMin,
+                        gp_Dir&       dirMax,
+                        double&       meanCurv,
+                        double&       gausCurv,
+                        LProp_Status& curvStatus)
+{
+  if (curvStatus == LProp_Undefined)
+    return false;
+  if (curvStatus >= LProp_Defined)
+    return true;
+  if (cn < 2)
+  {
+    curvStatus = LProp_Undefined;
+    return false;
+  }
+  if (!props.IsNormalDefined())
+  {
+    curvStatus = LProp_Undefined;
+    return false;
+  }
+  if (!props.IsTangentUDefined() || !props.IsTangentVDefined())
+  {
+    curvStatus = LProp_Undefined;
+    return false;
+  }
+  if (derOrder < 2)
+    props.D2U();
+  if (ComputeSurfCurvatures(d1u, d1v, d2u, d2v, duv, normal,
+                             minCurv, maxCurv, dirMin, dirMax, meanCurv, gausCurv))
+  {
+    curvStatus = LProp_Computed;
+    return true;
+  }
+  curvStatus = LProp_Undefined;
+  return false;
+}
+
+//! Require curvature to be defined, throw if not. Returns the given value.
+template <typename Props>
+double RequireCurvature(Props& props, double value)
+{
+  if (!props.IsCurvatureDefined())
+    throw LProp_NotDefined();
+  return value;
+}
+
+//! IsUmbilic: checks curvature, then compares min/max.
+template <typename Props>
+bool IsUmbilic(Props& props, double maxCurv, double minCurv)
+{
+  if (!props.IsCurvatureDefined())
+    throw LProp_NotDefined();
+  return std::abs(maxCurv - minCurv) < std::abs(Epsilon(maxCurv));
+}
+
+//! CurvatureDirections: checks curvature, then returns max/min directions.
+template <typename Props>
+void CurvatureDirections(Props& props, const gp_Dir& dirMax, const gp_Dir& dirMin, gp_Dir& Max, gp_Dir& Min)
+{
+  if (!props.IsCurvatureDefined())
+    throw LProp_NotDefined();
+  Max = dirMax;
+  Min = dirMin;
+}
+
+} // namespace LProp_SurfaceUtils
+
+#endif // _LProp_SurfaceUtils_HeaderFile

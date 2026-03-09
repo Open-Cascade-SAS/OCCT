@@ -33,8 +33,6 @@ class BRepAdaptor_Curve;
 class gp_Vec;
 class gp_Pnt;
 class gp_Dir;
-class BRepLProp_CurveTool;
-
 class BRepLProp_CLProps
 {
 public:
