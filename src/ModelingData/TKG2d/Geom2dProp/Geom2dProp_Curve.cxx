@@ -26,8 +26,8 @@
 
 //=================================================================================================
 
-Geom2dProp_Curve::Geom2dProp_Curve(const Adaptor2d_Curve2d&            theCurve,
-                                   const Geom2dProp::CurveDerivOrder   theOrder)
+Geom2dProp_Curve::Geom2dProp_Curve(const Adaptor2d_Curve2d&          theCurve,
+                                   const Geom2dProp::CurveDerivOrder theOrder)
     : myEvaluator(std::monostate{}),
       myCurveType(GeomAbs_OtherCurve)
 {
@@ -36,7 +36,7 @@ Geom2dProp_Curve::Geom2dProp_Curve(const Adaptor2d_Curve2d&            theCurve,
 
 //=================================================================================================
 
-Geom2dProp_Curve::Geom2dProp_Curve(const occ::handle<Geom2d_Curve>& theCurve,
+Geom2dProp_Curve::Geom2dProp_Curve(const occ::handle<Geom2d_Curve>&  theCurve,
                                    const Geom2dProp::CurveDerivOrder theOrder)
     : myEvaluator(std::monostate{}),
       myCurveType(GeomAbs_OtherCurve)

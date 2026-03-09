@@ -82,8 +82,8 @@ public:
   //! @param[in] theCurve 2D curve adaptor reference
   //! @param[in] theOrder derivative caching order
   Standard_EXPORT Geom2dProp_Curve(
-    const Adaptor2d_Curve2d&      theCurve,
-    Geom2dProp::CurveDerivOrder   theOrder = Geom2dProp::CurveDerivOrder::Curvature);
+    const Adaptor2d_Curve2d&    theCurve,
+    Geom2dProp::CurveDerivOrder theOrder = Geom2dProp::CurveDerivOrder::Curvature);
 
   //! Construct from geometry handle (auto-detects curve type).
   //! @param[in] theCurve 2D geometry to evaluate
@@ -147,8 +147,8 @@ protected:
   //! Initialize from 2D adaptor reference (auto-detects curve type).
   //! @param[in] theCurve 2D curve adaptor reference
   //! @param[in] theOrder derivative caching order
-  Standard_EXPORT void initialization(const Adaptor2d_Curve2d&      theCurve,
-                                      Geom2dProp::CurveDerivOrder   theOrder);
+  Standard_EXPORT void initialization(const Adaptor2d_Curve2d&    theCurve,
+                                      Geom2dProp::CurveDerivOrder theOrder);
 
   //! Initialize from geometry handle (auto-detects curve type).
   //! @param[in] theCurve 2D geometry to evaluate

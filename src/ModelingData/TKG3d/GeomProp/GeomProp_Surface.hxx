@@ -89,8 +89,8 @@ public:
   //! @param[in] theSurface 3D surface adaptor reference
   //! @param[in] theOrder derivative caching order
   Standard_EXPORT GeomProp_Surface(
-    const Adaptor3d_Surface&      theSurface,
-    GeomProp::SurfaceDerivOrder   theOrder = GeomProp::SurfaceDerivOrder::Curvature);
+    const Adaptor3d_Surface&    theSurface,
+    GeomProp::SurfaceDerivOrder theOrder = GeomProp::SurfaceDerivOrder::Curvature);
 
   //! Construct from geometry handle (auto-detects surface type).
   //! @param[in] theSurface 3D geometry to evaluate

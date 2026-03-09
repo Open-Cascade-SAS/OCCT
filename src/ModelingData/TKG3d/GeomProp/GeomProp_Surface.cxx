@@ -29,8 +29,8 @@
 
 //=================================================================================================
 
-GeomProp_Surface::GeomProp_Surface(const Adaptor3d_Surface&            theSurface,
-                                   const GeomProp::SurfaceDerivOrder   theOrder)
+GeomProp_Surface::GeomProp_Surface(const Adaptor3d_Surface&          theSurface,
+                                   const GeomProp::SurfaceDerivOrder theOrder)
     : myEvaluator(std::monostate{}),
       mySurfaceType(GeomAbs_OtherSurface)
 {

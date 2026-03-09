@@ -49,7 +49,7 @@ public:
   //! @param theDomain optional parameter domain (unused for circle)
   Geom2dProp_Circle(const occ::handle<Geom2d_Curve>&              theCurve,
                     const std::optional<Geom2dProp::CurveDomain>& theDomain = std::nullopt,
-                    Geom2dProp::CurveDerivOrder                   theOrder  = Geom2dProp::CurveDerivOrder::Undefined)
+                    Geom2dProp::CurveDerivOrder theOrder = Geom2dProp::CurveDerivOrder::Undefined)
       : myAdaptor(nullptr),
         myCurve(theCurve)
   {

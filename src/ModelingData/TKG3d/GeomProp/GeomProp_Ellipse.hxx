@@ -49,7 +49,7 @@ public:
   //! @param theDomain optional parameter domain (for trimmed curves)
   GeomProp_Ellipse(const occ::handle<Geom_Curve>&              theCurve,
                    const std::optional<GeomProp::CurveDomain>& theDomain = std::nullopt,
-                   GeomProp::CurveDerivOrder                   theOrder  = GeomProp::CurveDerivOrder::Undefined)
+                   GeomProp::CurveDerivOrder theOrder = GeomProp::CurveDerivOrder::Undefined)
       : myAdaptor(nullptr),
         myCurve(theCurve),
         myDomain(theDomain)

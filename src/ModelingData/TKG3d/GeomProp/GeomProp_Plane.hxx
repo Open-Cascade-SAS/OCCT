@@ -48,7 +48,7 @@ public:
   //! @param theDomain optional parameter domain (unused for plane)
   GeomProp_Plane(const occ::handle<Geom_Surface>&              theSurface,
                  const std::optional<GeomProp::SurfaceDomain>& theDomain = std::nullopt,
-                 GeomProp::SurfaceDerivOrder                   theOrder  = GeomProp::SurfaceDerivOrder::Undefined)
+                 GeomProp::SurfaceDerivOrder theOrder = GeomProp::SurfaceDerivOrder::Undefined)
       : myAdaptor(nullptr),
         mySurface(theSurface),
         myPosition(occ::down_cast<Geom_Plane>(theSurface)->Pln().Position()),

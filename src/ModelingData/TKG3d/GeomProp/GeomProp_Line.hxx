@@ -47,7 +47,7 @@ public:
   //! @param theDomain optional parameter domain (unused for line)
   GeomProp_Line(const occ::handle<Geom_Curve>&              theCurve,
                 const std::optional<GeomProp::CurveDomain>& theDomain = std::nullopt,
-                GeomProp::CurveDerivOrder                   theOrder  = GeomProp::CurveDerivOrder::Undefined)
+                GeomProp::CurveDerivOrder theOrder = GeomProp::CurveDerivOrder::Undefined)
       : myDirection(occ::down_cast<Geom_Line>(theCurve)->Position().Direction())
   {
     (void)theDomain;

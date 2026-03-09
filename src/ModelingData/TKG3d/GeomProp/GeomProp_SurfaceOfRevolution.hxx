@@ -48,7 +48,7 @@ public:
   GeomProp_SurfaceOfRevolution(
     const occ::handle<Geom_Surface>&              theSurface,
     const std::optional<GeomProp::SurfaceDomain>& theDomain = std::nullopt,
-    GeomProp::SurfaceDerivOrder                   theOrder  = GeomProp::SurfaceDerivOrder::Curvature)
+    GeomProp::SurfaceDerivOrder                   theOrder = GeomProp::SurfaceDerivOrder::Curvature)
       : myAdaptor(nullptr),
         myRequestedOrder(theOrder),
         mySurface(theSurface),

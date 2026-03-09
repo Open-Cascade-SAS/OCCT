@@ -46,7 +46,7 @@ public:
   //! @param theDomain optional parameter domain (for trimmed surfaces)
   GeomProp_Sphere(const occ::handle<Geom_Surface>&              theSurface,
                   const std::optional<GeomProp::SurfaceDomain>& theDomain = std::nullopt,
-                  GeomProp::SurfaceDerivOrder                   theOrder  = GeomProp::SurfaceDerivOrder::Undefined)
+                  GeomProp::SurfaceDerivOrder theOrder = GeomProp::SurfaceDerivOrder::Undefined)
       : myAdaptor(nullptr),
         mySurface(theSurface),
         myDomain(theDomain)

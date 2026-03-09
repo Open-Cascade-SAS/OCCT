@@ -48,7 +48,7 @@ public:
   //! @param theDomain optional parameter domain (for trimmed curves)
   Geom2dProp_Parabola(const occ::handle<Geom2d_Curve>&              theCurve,
                       const std::optional<Geom2dProp::CurveDomain>& theDomain = std::nullopt,
-                      Geom2dProp::CurveDerivOrder                   theOrder  = Geom2dProp::CurveDerivOrder::Undefined)
+                      Geom2dProp::CurveDerivOrder theOrder = Geom2dProp::CurveDerivOrder::Undefined)
       : myAdaptor(nullptr),
         myCurve(theCurve),
         myDomain(theDomain)

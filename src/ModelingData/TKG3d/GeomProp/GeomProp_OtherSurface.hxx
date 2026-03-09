@@ -45,9 +45,10 @@ public:
   //! Constructor from geometry handle.
   //! @param theSurface the 3D surface geometry
   //! @param theDomain optional parameter domain (for trimmed surfaces)
-  GeomProp_OtherSurface(const occ::handle<Geom_Surface>&              theSurface,
-                        const std::optional<GeomProp::SurfaceDomain>& theDomain = std::nullopt,
-                        GeomProp::SurfaceDerivOrder theOrder = GeomProp::SurfaceDerivOrder::Curvature)
+  GeomProp_OtherSurface(
+    const occ::handle<Geom_Surface>&              theSurface,
+    const std::optional<GeomProp::SurfaceDomain>& theDomain = std::nullopt,
+    GeomProp::SurfaceDerivOrder                   theOrder = GeomProp::SurfaceDerivOrder::Curvature)
       : myAdaptor(nullptr),
         myRequestedOrder(theOrder),
         mySurface(theSurface),

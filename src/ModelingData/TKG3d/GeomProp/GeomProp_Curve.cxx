@@ -37,7 +37,7 @@ GeomProp_Curve::GeomProp_Curve(const Adaptor3d_Curve&          theCurve,
 
 //=================================================================================================
 
-GeomProp_Curve::GeomProp_Curve(const occ::handle<Geom_Curve>& theCurve,
+GeomProp_Curve::GeomProp_Curve(const occ::handle<Geom_Curve>&  theCurve,
                                const GeomProp::CurveDerivOrder theOrder)
     : myEvaluator(std::monostate{}),
       myCurveType(GeomAbs_OtherCurve)
@@ -100,7 +100,7 @@ void GeomProp_Curve::initialization(const Adaptor3d_Curve&          theCurve,
 
 //=================================================================================================
 
-void GeomProp_Curve::initialization(const occ::handle<Geom_Curve>& theCurve,
+void GeomProp_Curve::initialization(const occ::handle<Geom_Curve>&  theCurve,
                                     const GeomProp::CurveDerivOrder theOrder)
 {
   if (theCurve.IsNull())

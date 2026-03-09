@@ -47,7 +47,7 @@ public:
   //! @param theDomain optional parameter domain (unused for line)
   Geom2dProp_Line(const occ::handle<Geom2d_Curve>&              theCurve,
                   const std::optional<Geom2dProp::CurveDomain>& theDomain = std::nullopt,
-                  Geom2dProp::CurveDerivOrder                   theOrder  = Geom2dProp::CurveDerivOrder::Undefined)
+                  Geom2dProp::CurveDerivOrder theOrder = Geom2dProp::CurveDerivOrder::Undefined)
       : myDirection(occ::down_cast<Geom2d_Line>(theCurve)->Direction())
   {
     (void)theDomain;

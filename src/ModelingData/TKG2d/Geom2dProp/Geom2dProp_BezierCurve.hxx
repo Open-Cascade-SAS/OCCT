@@ -47,9 +47,10 @@ public:
   //! Constructor from geometry handle.
   //! @param theCurve the 2D Bezier curve geometry
   //! @param theDomain optional parameter domain (for trimmed curves)
-  Geom2dProp_BezierCurve(const occ::handle<Geom2d_Curve>&              theCurve,
-                         const std::optional<Geom2dProp::CurveDomain>& theDomain = std::nullopt,
-                         Geom2dProp::CurveDerivOrder theOrder = Geom2dProp::CurveDerivOrder::Curvature)
+  Geom2dProp_BezierCurve(
+    const occ::handle<Geom2d_Curve>&              theCurve,
+    const std::optional<Geom2dProp::CurveDomain>& theDomain = std::nullopt,
+    Geom2dProp::CurveDerivOrder                   theOrder = Geom2dProp::CurveDerivOrder::Curvature)
       : myAdaptor(nullptr),
         myRequestedOrder(theOrder),
         myCurve(theCurve),
