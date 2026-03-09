@@ -87,11 +87,17 @@ public:
   //! Construct from 3D adaptor reference (auto-detects surface type).
   //! For GeomAdaptor_Surface, extracts underlying Geom_Surface for optimized evaluation.
   //! @param[in] theSurface 3D surface adaptor reference
-  Standard_EXPORT GeomProp_Surface(const Adaptor3d_Surface& theSurface);
+  //! @param[in] theOrder derivative caching order
+  Standard_EXPORT GeomProp_Surface(
+    const Adaptor3d_Surface&    theSurface,
+    GeomProp::SurfaceDerivOrder theOrder = GeomProp::SurfaceDerivOrder::Curvature);
 
   //! Construct from geometry handle (auto-detects surface type).
   //! @param[in] theSurface 3D geometry to evaluate
-  Standard_EXPORT GeomProp_Surface(const occ::handle<Geom_Surface>& theSurface);
+  //! @param[in] theOrder derivative caching order
+  Standard_EXPORT GeomProp_Surface(
+    const occ::handle<Geom_Surface>& theSurface,
+    GeomProp::SurfaceDerivOrder      theOrder = GeomProp::SurfaceDerivOrder::Curvature);
 
   //! Non-copyable and non-movable.
   GeomProp_Surface(const GeomProp_Surface&)            = delete;
@@ -102,8 +108,19 @@ public:
   //! Returns the detected surface type.
   GeomAbs_SurfaceType GetType() const { return mySurfaceType; }
 
-  //! Returns the adaptor pointer from the active evaluator, or null if not initialized.
-  Standard_EXPORT const GeomAdaptor_Surface* Adaptor() const;
+  //! Sets the derivative caching order for the active evaluator.
+  //! Only effective for non-analytical surface types.
+  Standard_EXPORT void SetDerivOrder(GeomProp::SurfaceDerivOrder theOrder);
+
+  //! Returns the derivative caching order of the active evaluator.
+  Standard_EXPORT GeomProp::SurfaceDerivOrder DerivOrder() const;
+
+  //! Returns the stored adaptor pointer, or null if not initialized.
+  Standard_EXPORT const Adaptor3d_Surface* Adaptor() const;
+
+  //! Returns pointer to underlying geometry, or nullptr if not available.
+  //! When constructed from a handle, trimmed surfaces are unwrapped to their basis surface.
+  Standard_EXPORT const Geom_Surface* Geometry() const;
 
   //! Compute surface normal at given (U, V) parameter.
   //! @param[in] theU U parameter on the surface
@@ -135,21 +152,20 @@ public:
 protected:
   //! Initialize from 3D adaptor reference (auto-detects surface type).
   //! @param[in] theSurface 3D surface adaptor reference
-  Standard_EXPORT void initialization(const Adaptor3d_Surface& theSurface);
+  //! @param[in] theOrder derivative caching order
+  Standard_EXPORT void initialization(const Adaptor3d_Surface&    theSurface,
+                                      GeomProp::SurfaceDerivOrder theOrder);
 
   //! Initialize from geometry handle (auto-detects surface type).
   //! @param[in] theSurface 3D geometry to evaluate
-  Standard_EXPORT void initialization(const occ::handle<Geom_Surface>& theSurface);
+  //! @param[in] theOrder derivative caching order
+  Standard_EXPORT void initialization(const occ::handle<Geom_Surface>& theSurface,
+                                      GeomProp::SurfaceDerivOrder      theOrder);
 
 private:
-  //! Initialize from stored adaptor (dispatches to per-geometry evaluator).
-  //! Must be called after myAdaptor is set. Per-geometry evaluators receive
-  //! a non-owning pointer to myAdaptor; their lifetime is managed by the variant.
-  Standard_EXPORT void initFromAdaptor();
-
-  occ::handle<GeomAdaptor_Surface> myAdaptor; //!< Owns the adaptor (ensures lifetime).
-  EvaluatorVariant    myEvaluator; //!< Per-geometry evaluator (non-owning pointer to myAdaptor).
-  GeomAbs_SurfaceType mySurfaceType;
+  occ::handle<GeomAdaptor_Surface> myOwnedAdaptor; //!< Owned adaptor when lifetime must be managed.
+  EvaluatorVariant                 myEvaluator;
+  GeomAbs_SurfaceType              mySurfaceType;
 };
 
 #endif // _GeomProp_Surface_HeaderFile

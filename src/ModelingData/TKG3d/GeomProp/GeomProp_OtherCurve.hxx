@@ -14,28 +14,46 @@
 #ifndef _GeomProp_OtherCurve_HeaderFile
 #define _GeomProp_OtherCurve_HeaderFile
 
-#include <GeomAdaptor_Curve.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <Geom_Curve.hxx>
 #include <GeomProp.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
+
+#include <optional>
 
 //! @brief Fallback local differential properties for any 3D curve type.
 //!
 //! Uses adaptor D1/D2/D3 methods for property computation
 //! and numeric root-finding for curvature extrema and inflection points.
 //!
-//! @warning The caller must ensure that the adaptor pointer remains valid
-//! for the entire lifetime of this object. This class does not manage
-//! the adaptor's lifetime.
+//! Can be constructed from an Adaptor3d_Curve pointer
+//! or a occ::handle<Geom_Curve>. When constructed from a handle, no adaptor is created;
+//! for complex methods a stack-local adaptor is created on demand.
 class GeomProp_OtherCurve
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Constructor with adaptor pointer (non-owning).
+  //! Constructor with Adaptor3d_Curve pointer (non-owning).
   //! @param theAdaptor the 3D curve adaptor (must not be null)
-  GeomProp_OtherCurve(const GeomAdaptor_Curve* theAdaptor)
-      : myAdaptor(theAdaptor)
+  GeomProp_OtherCurve(const Adaptor3d_Curve*    theAdaptor,
+                      GeomProp::CurveDerivOrder theOrder = GeomProp::CurveDerivOrder::Curvature)
+      : myAdaptor(theAdaptor),
+        myRequestedOrder(theOrder)
+  {
+  }
+
+  //! Constructor from geometry handle.
+  //! @param theCurve the 3D curve geometry
+  //! @param theDomain optional parameter domain (for trimmed curves)
+  GeomProp_OtherCurve(const occ::handle<Geom_Curve>&              theCurve,
+                      const std::optional<GeomProp::CurveDomain>& theDomain = std::nullopt,
+                      GeomProp::CurveDerivOrder theOrder = GeomProp::CurveDerivOrder::Curvature)
+      : myAdaptor(nullptr),
+        myRequestedOrder(theOrder),
+        myCurve(theCurve),
+        myDomain(theDomain)
   {
   }
 
@@ -45,8 +63,17 @@ public:
   GeomProp_OtherCurve(GeomProp_OtherCurve&&)                 = delete;
   GeomProp_OtherCurve& operator=(GeomProp_OtherCurve&&)      = delete;
 
-  //! Returns the adaptor pointer.
-  const GeomAdaptor_Curve* Adaptor() const { return myAdaptor; }
+  //! Sets the derivative caching order.
+  void SetDerivOrder(GeomProp::CurveDerivOrder theOrder) { myRequestedOrder = theOrder; }
+
+  //! Returns the derivative caching order.
+  GeomProp::CurveDerivOrder DerivOrder() const { return myRequestedOrder; }
+
+  //! Returns the adaptor pointer (nullptr when constructed from handle).
+  const Adaptor3d_Curve* Adaptor() const { return myAdaptor; }
+
+  //! Returns pointer to underlying geometry, or nullptr if constructed from adaptor.
+  const Geom_Curve* Geometry() const { return myCurve.get(); }
 
   //! Compute tangent at given parameter.
   Standard_EXPORT GeomProp::TangentResult Tangent(double theParam, double theTol) const;
@@ -67,7 +94,11 @@ public:
   Standard_EXPORT GeomProp::CurveAnalysis FindInflections() const;
 
 private:
-  const GeomAdaptor_Curve* myAdaptor;
+  const Adaptor3d_Curve*               myAdaptor;
+  GeomProp::CurveDerivOrder            myRequestedOrder;
+  mutable GeomProp::CurveCache         myCache;
+  occ::handle<Geom_Curve>              myCurve;  //!< Geometry handle (handle path)
+  std::optional<GeomProp::CurveDomain> myDomain; //!< Optional parameter domain
 };
 
 #endif // _GeomProp_OtherCurve_HeaderFile

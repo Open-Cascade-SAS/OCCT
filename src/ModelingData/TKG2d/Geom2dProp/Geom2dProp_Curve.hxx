@@ -18,6 +18,7 @@
 #include <Geom2d_Curve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <GeomAbs_CurveType.hxx>
+#include <GeomAbs_Shape.hxx>
 #include <Geom2dProp.hxx>
 #include <Geom2dProp_BezierCurve.hxx>
 #include <Geom2dProp_BSplineCurve.hxx>
@@ -80,11 +81,17 @@ public:
   //! Construct from 2D adaptor reference (auto-detects curve type).
   //! For Geom2dAdaptor_Curve, extracts underlying Geom2d_Curve for optimized evaluation.
   //! @param[in] theCurve 2D curve adaptor reference
-  Standard_EXPORT Geom2dProp_Curve(const Adaptor2d_Curve2d& theCurve);
+  //! @param[in] theOrder derivative caching order
+  Standard_EXPORT Geom2dProp_Curve(
+    const Adaptor2d_Curve2d&    theCurve,
+    Geom2dProp::CurveDerivOrder theOrder = Geom2dProp::CurveDerivOrder::Curvature);
 
   //! Construct from geometry handle (auto-detects curve type).
   //! @param[in] theCurve 2D geometry to evaluate
-  Standard_EXPORT Geom2dProp_Curve(const occ::handle<Geom2d_Curve>& theCurve);
+  //! @param[in] theOrder derivative caching order
+  Standard_EXPORT Geom2dProp_Curve(
+    const occ::handle<Geom2d_Curve>& theCurve,
+    Geom2dProp::CurveDerivOrder      theOrder = Geom2dProp::CurveDerivOrder::Curvature);
 
   //! Non-copyable and non-movable.
   Geom2dProp_Curve(const Geom2dProp_Curve&)            = delete;
@@ -95,8 +102,19 @@ public:
   //! Returns the detected curve type.
   GeomAbs_CurveType GetType() const { return myCurveType; }
 
-  //! Returns the adaptor pointer from the active evaluator, or null if not initialized.
-  Standard_EXPORT const Geom2dAdaptor_Curve* Adaptor() const;
+  //! Sets the derivative caching order for the active evaluator.
+  //! Only effective for non-analytical curve types (BSpline, Bezier, Offset, Other).
+  Standard_EXPORT void SetDerivOrder(Geom2dProp::CurveDerivOrder theOrder);
+
+  //! Returns the derivative caching order of the active evaluator.
+  Standard_EXPORT Geom2dProp::CurveDerivOrder DerivOrder() const;
+
+  //! Returns the stored adaptor pointer, or null if not initialized.
+  Standard_EXPORT const Adaptor2d_Curve2d* Adaptor() const;
+
+  //! Returns pointer to underlying geometry, or nullptr if not available.
+  //! When constructed from a handle, trimmed curves are unwrapped to their basis curve.
+  Standard_EXPORT const Geom2d_Curve* Geometry() const;
 
   //! Compute tangent at given parameter.
   //! @param[in] theParam curve parameter
@@ -130,24 +148,52 @@ public:
   //! @return analysis result with inflection points sorted by parameter
   Standard_EXPORT Geom2dProp::CurveAnalysis FindInflections() const;
 
+  //! Compute the degree of continuity at the junction between two curves.
+  //! The point theU1 on theC1 and the point theU2 on theC2 must be coincident.
+  //! For BSpline curves, knot multiplicity is used to determine available derivatives.
+  //! @param[in] theC1 first curve
+  //! @param[in] theC2 second curve
+  //! @param[in] theU1 parameter on first curve at junction
+  //! @param[in] theU2 parameter on second curve at junction
+  //! @param[in] theR1 true if first curve should be taken reversed
+  //! @param[in] theR2 true if second curve should be taken reversed
+  //! @param[in] theTolLinear linear tolerance for derivative comparison
+  //! @param[in] theTolAngular angular tolerance for direction comparison
+  //! @return degree of continuity at junction (C0, G1, C1, C2)
+  Standard_EXPORT static GeomAbs_Shape Continuity(const occ::handle<Geom2d_Curve>& theC1,
+                                                  const occ::handle<Geom2d_Curve>& theC2,
+                                                  double                           theU1,
+                                                  double                           theU2,
+                                                  bool                             theR1,
+                                                  bool                             theR2,
+                                                  double                           theTolLinear,
+                                                  double                           theTolAngular);
+
+  //! Same as above but using the standard tolerances from package Precision.
+  Standard_EXPORT static GeomAbs_Shape Continuity(const occ::handle<Geom2d_Curve>& theC1,
+                                                  const occ::handle<Geom2d_Curve>& theC2,
+                                                  double                           theU1,
+                                                  double                           theU2,
+                                                  bool                             theR1,
+                                                  bool                             theR2);
+
 protected:
   //! Initialize from 2D adaptor reference (auto-detects curve type).
   //! @param[in] theCurve 2D curve adaptor reference
-  Standard_EXPORT void initialization(const Adaptor2d_Curve2d& theCurve);
+  //! @param[in] theOrder derivative caching order
+  Standard_EXPORT void initialization(const Adaptor2d_Curve2d&    theCurve,
+                                      Geom2dProp::CurveDerivOrder theOrder);
 
   //! Initialize from geometry handle (auto-detects curve type).
   //! @param[in] theCurve 2D geometry to evaluate
-  Standard_EXPORT void initialization(const occ::handle<Geom2d_Curve>& theCurve);
+  //! @param[in] theOrder derivative caching order
+  Standard_EXPORT void initialization(const occ::handle<Geom2d_Curve>& theCurve,
+                                      Geom2dProp::CurveDerivOrder      theOrder);
 
 private:
-  //! Initialize from stored adaptor (dispatches to per-geometry evaluator).
-  //! Must be called after myAdaptor is set. Per-geometry evaluators receive
-  //! a non-owning pointer to myAdaptor; their lifetime is managed by the variant.
-  Standard_EXPORT void initFromAdaptor();
-
-  occ::handle<Geom2dAdaptor_Curve> myAdaptor; //!< Owns the adaptor (ensures lifetime).
-  EvaluatorVariant  myEvaluator; //!< Per-geometry evaluator (non-owning pointer to myAdaptor).
-  GeomAbs_CurveType myCurveType;
+  occ::handle<Geom2dAdaptor_Curve> myOwnedAdaptor; //!< Owned adaptor when lifetime must be managed.
+  EvaluatorVariant                 myEvaluator;
+  GeomAbs_CurveType                myCurveType;
 };
 
 #endif // _Geom2dProp_Curve_HeaderFile

@@ -14,11 +14,16 @@
 #ifndef _Geom2dProp_HeaderFile
 #define _Geom2dProp_HeaderFile
 
+#include <Geom2d_Curve.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
 #include <NCollection_DynamicArray.hxx>
 #include <Standard.hxx>
+
+#include <limits>
+#include <optional>
+#include <variant>
 
 //! @brief Namespace containing result structures and free functions for 2D curve
 //! differential property computation.
@@ -28,6 +33,13 @@
 //! differential properties from derivative vectors.
 namespace Geom2dProp
 {
+
+//! Parameter domain for a 2D curve (used for trimmed curves).
+struct CurveDomain
+{
+  double First; //!< First parameter
+  double Last;  //!< Last parameter
+};
 
 //! Result of tangent direction computation.
 struct TangentResult
@@ -78,6 +90,46 @@ struct CurveAnalysis
 {
   NCollection_DynamicArray<CurveSpecialPoint> Points; //!< Special points sorted by parameter
   bool                                        IsDone = false; //!< True if analysis completed
+};
+
+// ============================================================================
+// Derivative caching
+// ============================================================================
+
+//! Derivative order for 2D curve property caching.
+//! Values must match std::variant alternative indices in CurveCache::Data.
+enum class CurveDerivOrder
+{
+  Undefined      = 0, //!< No caching specified (monostate)
+  Value          = 1, //!< Cache point only (gp_Pnt2d)
+  Tangent        = 2, //!< Cache up to D1 (Geom2d_Curve::ResD1)
+  Curvature      = 3, //!< Cache up to D2 (Geom2d_Curve::ResD2)
+  CurvatureDeriv = 4  //!< Cache up to D3 (Geom2d_Curve::ResD3)
+};
+
+//! Cached 2D curve derivatives at a parameter value.
+//! @note The variant alternative indices must match CurveDerivOrder enum values.
+struct CurveCache
+{
+  double Param = std::numeric_limits<double>::quiet_NaN();
+  std::
+    variant<std::monostate, gp_Pnt2d, Geom2d_Curve::ResD1, Geom2d_Curve::ResD2, Geom2d_Curve::ResD3>
+      Data;
+
+  bool IsValid(double theParam) const { return Param == theParam; }
+
+  CurveDerivOrder Order() const { return static_cast<CurveDerivOrder>(Data.index()); }
+
+  bool HasOrder(CurveDerivOrder theNeeded) const
+  {
+    return static_cast<int>(Order()) >= static_cast<int>(theNeeded);
+  }
+
+  void Invalidate()
+  {
+    Param = std::numeric_limits<double>::quiet_NaN();
+    Data.emplace<std::monostate>();
+  }
 };
 
 //! Compute tangent direction from derivative vectors.

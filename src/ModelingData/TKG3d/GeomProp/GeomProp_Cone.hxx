@@ -19,6 +19,8 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
+#include <optional>
+
 //! @brief Local differential properties for a conical surface.
 //!
 //! Uses analytical formulas where possible; the curvature
@@ -27,8 +29,8 @@
 //! Max principal curvature = cos(alpha) / R(V), where alpha is the half-angle
 //! and R(V) is the radius at parameter V.
 //!
-//! @warning The caller must ensure that the adaptor pointer remains valid
-//! for the entire lifetime of this object.
+//! Can be constructed from either a GeomAdaptor_Surface pointer or a occ::handle<Geom_Surface>.
+//! When constructed from a handle, no adaptor is created.
 class GeomProp_Cone
 {
 public:
@@ -36,9 +38,24 @@ public:
 
   //! Constructor with adaptor pointer (non-owning).
   //! @param theAdaptor the surface adaptor (must not be null)
-  GeomProp_Cone(const GeomAdaptor_Surface* theAdaptor)
+  GeomProp_Cone(const GeomAdaptor_Surface*  theAdaptor,
+                GeomProp::SurfaceDerivOrder theOrder = GeomProp::SurfaceDerivOrder::Undefined)
       : myAdaptor(theAdaptor)
   {
+    (void)theOrder;
+  }
+
+  //! Constructor from geometry handle.
+  //! @param theSurface the 3D conical surface geometry
+  //! @param theDomain optional parameter domain (for trimmed surfaces)
+  GeomProp_Cone(const occ::handle<Geom_Surface>&              theSurface,
+                const std::optional<GeomProp::SurfaceDomain>& theDomain = std::nullopt,
+                GeomProp::SurfaceDerivOrder theOrder = GeomProp::SurfaceDerivOrder::Undefined)
+      : myAdaptor(nullptr),
+        mySurface(theSurface),
+        myDomain(theDomain)
+  {
+    (void)theOrder;
   }
 
   //! Non-copyable and non-movable.
@@ -47,12 +64,19 @@ public:
   GeomProp_Cone(GeomProp_Cone&&)                 = delete;
   GeomProp_Cone& operator=(GeomProp_Cone&&)      = delete;
 
-  //! Returns the adaptor pointer.
+  //! Sets the derivative caching order (no-op for analytical surfaces).
+  void SetDerivOrder(GeomProp::SurfaceDerivOrder) {}
+
+  //! Returns the derivative caching order (always Undefined for analytical surfaces).
+  GeomProp::SurfaceDerivOrder DerivOrder() const { return GeomProp::SurfaceDerivOrder::Undefined; }
+
+  //! Returns the adaptor pointer (nullptr when constructed from handle).
   const GeomAdaptor_Surface* Adaptor() const { return myAdaptor; }
 
+  //! Returns pointer to underlying geometry, or nullptr if constructed from adaptor.
+  const Geom_Surface* Geometry() const { return mySurface.get(); }
+
   //! Compute surface normal at given parameter.
-  //! TODO: At the apex (V = -R/sin(alpha)), D1U degenerates and Normal returns IsDefined=false.
-  //!   Could use analytical normal for this special case.
   Standard_EXPORT GeomProp::SurfaceNormalResult Normal(double theU,
                                                        double theV,
                                                        double theTol) const;
@@ -68,7 +92,9 @@ public:
                                                             double theTol) const;
 
 private:
-  const GeomAdaptor_Surface* myAdaptor;
+  const GeomAdaptor_Surface*             myAdaptor;
+  occ::handle<Geom_Surface>              mySurface; //!< Geometry handle (handle path)
+  std::optional<GeomProp::SurfaceDomain> myDomain;  //!< Optional parameter domain
 };
 
 #endif // _GeomProp_Cone_HeaderFile

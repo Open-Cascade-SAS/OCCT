@@ -14,18 +14,20 @@
 #ifndef _GeomProp_Circle_HeaderFile
 #define _GeomProp_Circle_HeaderFile
 
+#include <Geom_Circle.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomProp.hxx>
 #include <Standard_DefineAlloc.hxx>
+
+#include <optional>
 
 //! @brief Local differential properties for a 3D circle.
 //!
 //! A circle has constant curvature = 1/R, well-defined tangent and normal
 //! at every point, and no curvature extrema or inflection points.
 //!
-//! @warning The caller must ensure that the adaptor pointer remains valid
-//! for the entire lifetime of this object. This class does not manage
-//! the adaptor's lifetime.
+//! Can be constructed from either a GeomAdaptor_Curve pointer or a occ::handle<Geom_Curve>.
+//! When constructed from a handle, no adaptor is created.
 class GeomProp_Circle
 {
 public:
@@ -33,9 +35,29 @@ public:
 
   //! Constructor with adaptor pointer (non-owning).
   //! @param theAdaptor the 3D curve adaptor (must wrap a circle, must not be null)
-  GeomProp_Circle(const GeomAdaptor_Curve* theAdaptor)
-      : myAdaptor(theAdaptor)
+  GeomProp_Circle(const GeomAdaptor_Curve*  theAdaptor,
+                  GeomProp::CurveDerivOrder theOrder = GeomProp::CurveDerivOrder::Undefined)
+      : myAdaptor(theAdaptor),
+        myRadius(theAdaptor->Circle().Radius()),
+        myCenter(theAdaptor->Circle().Location())
   {
+    (void)theOrder;
+  }
+
+  //! Constructor from geometry handle.
+  //! @param theCurve the 3D circle geometry (must be a Geom_Circle or downcastable to it)
+  //! @param theDomain optional parameter domain (unused for circle)
+  GeomProp_Circle(const occ::handle<Geom_Curve>&              theCurve,
+                  const std::optional<GeomProp::CurveDomain>& theDomain = std::nullopt,
+                  GeomProp::CurveDerivOrder theOrder = GeomProp::CurveDerivOrder::Undefined)
+      : myAdaptor(nullptr),
+        myCurve(theCurve)
+  {
+    (void)theDomain;
+    (void)theOrder;
+    const occ::handle<Geom_Circle> aCircle = occ::down_cast<Geom_Circle>(theCurve);
+    myRadius                               = aCircle->Radius();
+    myCenter                               = aCircle->Circ().Location();
   }
 
   //! Non-copyable and non-movable.
@@ -44,8 +66,17 @@ public:
   GeomProp_Circle(GeomProp_Circle&&)                 = delete;
   GeomProp_Circle& operator=(GeomProp_Circle&&)      = delete;
 
-  //! Returns the adaptor pointer.
+  //! Sets the derivative caching order (no-op for analytical curves).
+  void SetDerivOrder(GeomProp::CurveDerivOrder) {}
+
+  //! Returns the derivative caching order (always Undefined for analytical curves).
+  GeomProp::CurveDerivOrder DerivOrder() const { return GeomProp::CurveDerivOrder::Undefined; }
+
+  //! Returns the adaptor pointer (nullptr when constructed from handle).
   const GeomAdaptor_Curve* Adaptor() const { return myAdaptor; }
+
+  //! Returns pointer to underlying geometry, or nullptr if constructed from adaptor.
+  const Geom_Curve* Geometry() const { return myCurve.get(); }
 
   //! Compute tangent at given parameter.
   //! @param[in] theParam curve parameter
@@ -56,7 +87,14 @@ public:
     (void)theTol;
     gp_Pnt aPnt;
     gp_Vec aD1;
-    myAdaptor->D1(theParam, aPnt, aD1);
+    if (!myCurve.IsNull())
+    {
+      myCurve->D1(theParam, aPnt, aD1);
+    }
+    else
+    {
+      myAdaptor->D1(theParam, aPnt, aD1);
+    }
     return {gp_Dir(aD1), true};
   }
 
@@ -69,7 +107,7 @@ public:
   {
     (void)theParam;
     (void)theTol;
-    return {1.0 / myAdaptor->Circle().Radius(), true, false};
+    return {1.0 / myRadius, true, false};
   }
 
   //! Compute normal at given parameter.
@@ -81,7 +119,14 @@ public:
     (void)theTol;
     gp_Pnt aPnt;
     gp_Vec aD1, aD2;
-    myAdaptor->D2(theParam, aPnt, aD1, aD2);
+    if (!myCurve.IsNull())
+    {
+      myCurve->D2(theParam, aPnt, aD1, aD2);
+    }
+    else
+    {
+      myAdaptor->D2(theParam, aPnt, aD1, aD2);
+    }
     // Normal = D2 * (D1.D1) - D1 * (D1.D2)
     const gp_Vec aNorm = aD2 * aD1.Dot(aD1) - aD1 * aD1.Dot(aD2);
     return {gp_Dir(aNorm), true};
@@ -96,7 +141,7 @@ public:
   {
     (void)theParam;
     (void)theTol;
-    return {myAdaptor->Circle().Location(), true};
+    return {myCenter, true};
   }
 
   //! Find curvature extrema on the circle.
@@ -110,7 +155,10 @@ public:
   GeomProp::CurveAnalysis FindInflections() const { return {{}, true}; }
 
 private:
-  const GeomAdaptor_Curve* myAdaptor;
+  const GeomAdaptor_Curve* myAdaptor = nullptr; //!< Non-owning adaptor pointer (adaptor path)
+  occ::handle<Geom_Curve>  myCurve;             //!< Geometry handle (handle path)
+  double                   myRadius;            //!< Cached circle radius
+  gp_Pnt                   myCenter;            //!< Cached circle centre
 };
 
 #endif // _GeomProp_Circle_HeaderFile

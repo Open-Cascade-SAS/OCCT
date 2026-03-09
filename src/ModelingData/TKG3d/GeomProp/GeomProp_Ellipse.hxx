@@ -14,10 +14,13 @@
 #ifndef _GeomProp_Ellipse_HeaderFile
 #define _GeomProp_Ellipse_HeaderFile
 
+#include <Geom_Curve.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomProp.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
+
+#include <optional>
 
 //! @brief Local differential properties for a 3D ellipse.
 //!
@@ -25,9 +28,8 @@
 //! - Parameter 0 and PI: endpoints of major axis (min radius of curvature)
 //! - Parameter PI/2 and 3*PI/2: endpoints of minor axis (max radius of curvature)
 //!
-//! @warning The caller must ensure that the adaptor pointer remains valid
-//! for the entire lifetime of this object. This class does not manage
-//! the adaptor's lifetime.
+//! Can be constructed from either a GeomAdaptor_Curve pointer or a occ::handle<Geom_Curve>.
+//! When constructed from a handle, no adaptor is created.
 class GeomProp_Ellipse
 {
 public:
@@ -35,9 +37,24 @@ public:
 
   //! Constructor with adaptor pointer (non-owning).
   //! @param theAdaptor the 3D curve adaptor (must wrap an ellipse, must not be null)
-  GeomProp_Ellipse(const GeomAdaptor_Curve* theAdaptor)
+  GeomProp_Ellipse(const GeomAdaptor_Curve*  theAdaptor,
+                   GeomProp::CurveDerivOrder theOrder = GeomProp::CurveDerivOrder::Undefined)
       : myAdaptor(theAdaptor)
   {
+    (void)theOrder;
+  }
+
+  //! Constructor from geometry handle.
+  //! @param theCurve the 3D ellipse geometry
+  //! @param theDomain optional parameter domain (for trimmed curves)
+  GeomProp_Ellipse(const occ::handle<Geom_Curve>&              theCurve,
+                   const std::optional<GeomProp::CurveDomain>& theDomain = std::nullopt,
+                   GeomProp::CurveDerivOrder theOrder = GeomProp::CurveDerivOrder::Undefined)
+      : myAdaptor(nullptr),
+        myCurve(theCurve),
+        myDomain(theDomain)
+  {
+    (void)theOrder;
   }
 
   //! Non-copyable and non-movable.
@@ -46,8 +63,17 @@ public:
   GeomProp_Ellipse(GeomProp_Ellipse&&)                 = delete;
   GeomProp_Ellipse& operator=(GeomProp_Ellipse&&)      = delete;
 
-  //! Returns the adaptor pointer.
+  //! Sets the derivative caching order (no-op for analytical curves).
+  void SetDerivOrder(GeomProp::CurveDerivOrder) {}
+
+  //! Returns the derivative caching order (always Undefined for analytical curves).
+  GeomProp::CurveDerivOrder DerivOrder() const { return GeomProp::CurveDerivOrder::Undefined; }
+
+  //! Returns the adaptor pointer (nullptr when constructed from handle).
   const GeomAdaptor_Curve* Adaptor() const { return myAdaptor; }
+
+  //! Returns pointer to underlying geometry, or nullptr if constructed from adaptor.
+  const Geom_Curve* Geometry() const { return myCurve.get(); }
 
   //! Compute tangent at given parameter.
   Standard_EXPORT GeomProp::TangentResult Tangent(double theParam, double theTol) const;
@@ -70,7 +96,9 @@ public:
   GeomProp::CurveAnalysis FindInflections() const { return {{}, true}; }
 
 private:
-  const GeomAdaptor_Curve* myAdaptor;
+  const GeomAdaptor_Curve*             myAdaptor; //!< Non-owning adaptor pointer (adaptor path)
+  occ::handle<Geom_Curve>              myCurve;   //!< Geometry handle (handle path)
+  std::optional<GeomProp::CurveDomain> myDomain;  //!< Optional parameter domain
 };
 
 #endif // _GeomProp_Ellipse_HeaderFile

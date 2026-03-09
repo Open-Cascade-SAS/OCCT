@@ -19,6 +19,8 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
+#include <optional>
+
 //! @brief Local differential properties for a toroidal surface.
 //!
 //! Uses analytical formulas. Curvature varies along the meridian (V direction):
@@ -26,8 +28,8 @@
 //! - k2 = cos(V) / (R + r*cos(V)) (varies, along the major circle direction)
 //! where R is the major radius and r is the minor radius.
 //!
-//! @warning The caller must ensure that the adaptor pointer remains valid
-//! for the entire lifetime of this object.
+//! Can be constructed from either a GeomAdaptor_Surface pointer or a occ::handle<Geom_Surface>.
+//! When constructed from a handle, no adaptor is created.
 class GeomProp_Torus
 {
 public:
@@ -35,9 +37,24 @@ public:
 
   //! Constructor with adaptor pointer (non-owning).
   //! @param theAdaptor the surface adaptor (must not be null)
-  GeomProp_Torus(const GeomAdaptor_Surface* theAdaptor)
+  GeomProp_Torus(const GeomAdaptor_Surface*  theAdaptor,
+                 GeomProp::SurfaceDerivOrder theOrder = GeomProp::SurfaceDerivOrder::Undefined)
       : myAdaptor(theAdaptor)
   {
+    (void)theOrder;
+  }
+
+  //! Constructor from geometry handle.
+  //! @param theSurface the 3D toroidal surface geometry
+  //! @param theDomain optional parameter domain (for trimmed surfaces)
+  GeomProp_Torus(const occ::handle<Geom_Surface>&              theSurface,
+                 const std::optional<GeomProp::SurfaceDomain>& theDomain = std::nullopt,
+                 GeomProp::SurfaceDerivOrder theOrder = GeomProp::SurfaceDerivOrder::Undefined)
+      : myAdaptor(nullptr),
+        mySurface(theSurface),
+        myDomain(theDomain)
+  {
+    (void)theOrder;
   }
 
   //! Non-copyable and non-movable.
@@ -46,8 +63,17 @@ public:
   GeomProp_Torus(GeomProp_Torus&&)                 = delete;
   GeomProp_Torus& operator=(GeomProp_Torus&&)      = delete;
 
-  //! Returns the adaptor pointer.
+  //! Sets the derivative caching order (no-op for analytical surfaces).
+  void SetDerivOrder(GeomProp::SurfaceDerivOrder) {}
+
+  //! Returns the derivative caching order (always Undefined for analytical surfaces).
+  GeomProp::SurfaceDerivOrder DerivOrder() const { return GeomProp::SurfaceDerivOrder::Undefined; }
+
+  //! Returns the adaptor pointer (nullptr when constructed from handle).
   const GeomAdaptor_Surface* Adaptor() const { return myAdaptor; }
+
+  //! Returns pointer to underlying geometry, or nullptr if constructed from adaptor.
+  const Geom_Surface* Geometry() const { return mySurface.get(); }
 
   //! Compute surface normal at given parameter.
   Standard_EXPORT GeomProp::SurfaceNormalResult Normal(double theU,
@@ -65,7 +91,9 @@ public:
                                                             double theTol) const;
 
 private:
-  const GeomAdaptor_Surface* myAdaptor;
+  const GeomAdaptor_Surface*             myAdaptor;
+  occ::handle<Geom_Surface>              mySurface; //!< Geometry handle (handle path)
+  std::optional<GeomProp::SurfaceDomain> myDomain;  //!< Optional parameter domain
 };
 
 #endif // _GeomProp_Torus_HeaderFile

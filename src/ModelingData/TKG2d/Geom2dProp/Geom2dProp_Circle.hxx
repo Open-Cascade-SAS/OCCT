@@ -14,18 +14,20 @@
 #ifndef _Geom2dProp_Circle_HeaderFile
 #define _Geom2dProp_Circle_HeaderFile
 
+#include <Geom2d_Circle.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dProp.hxx>
 #include <Standard_DefineAlloc.hxx>
+
+#include <optional>
 
 //! @brief Local differential properties for a 2D circle.
 //!
 //! A circle has constant curvature = 1/R, well-defined tangent and normal
 //! at every point, and no curvature extrema or inflection points.
 //!
-//! @warning The caller must ensure that the adaptor pointer remains valid
-//! for the entire lifetime of this object. This class does not manage
-//! the adaptor's lifetime.
+//! Can be constructed from either a Geom2dAdaptor_Curve pointer or a occ::handle<Geom2d_Curve>.
+//! When constructed from a handle, no adaptor is created.
 class Geom2dProp_Circle
 {
 public:
@@ -33,9 +35,29 @@ public:
 
   //! Constructor with adaptor pointer (non-owning).
   //! @param theAdaptor the 2D curve adaptor (must wrap a circle, must not be null)
-  Geom2dProp_Circle(const Geom2dAdaptor_Curve* theAdaptor)
-      : myAdaptor(theAdaptor)
+  Geom2dProp_Circle(const Geom2dAdaptor_Curve*  theAdaptor,
+                    Geom2dProp::CurveDerivOrder theOrder = Geom2dProp::CurveDerivOrder::Undefined)
+      : myAdaptor(theAdaptor),
+        myRadius(theAdaptor->Circle().Radius()),
+        myCenter(theAdaptor->Circle().Location())
   {
+    (void)theOrder;
+  }
+
+  //! Constructor from geometry handle.
+  //! @param theCurve the 2D circle geometry (must be a Geom2d_Circle or downcastable to it)
+  //! @param theDomain optional parameter domain (unused for circle)
+  Geom2dProp_Circle(const occ::handle<Geom2d_Curve>&              theCurve,
+                    const std::optional<Geom2dProp::CurveDomain>& theDomain = std::nullopt,
+                    Geom2dProp::CurveDerivOrder theOrder = Geom2dProp::CurveDerivOrder::Undefined)
+      : myAdaptor(nullptr),
+        myCurve(theCurve)
+  {
+    (void)theDomain;
+    (void)theOrder;
+    const occ::handle<Geom2d_Circle> aCircle = occ::down_cast<Geom2d_Circle>(theCurve);
+    myRadius                                 = aCircle->Radius();
+    myCenter                                 = aCircle->Circ2d().Location();
   }
 
   //! Non-copyable and non-movable.
@@ -44,8 +66,17 @@ public:
   Geom2dProp_Circle(Geom2dProp_Circle&&)                 = delete;
   Geom2dProp_Circle& operator=(Geom2dProp_Circle&&)      = delete;
 
-  //! Returns the adaptor pointer.
+  //! Sets the derivative caching order (no-op for analytical curves).
+  void SetDerivOrder(Geom2dProp::CurveDerivOrder) {}
+
+  //! Returns the derivative caching order (always Undefined for analytical curves).
+  Geom2dProp::CurveDerivOrder DerivOrder() const { return Geom2dProp::CurveDerivOrder::Undefined; }
+
+  //! Returns the adaptor pointer (nullptr when constructed from handle).
   const Geom2dAdaptor_Curve* Adaptor() const { return myAdaptor; }
+
+  //! Returns pointer to underlying geometry, or nullptr if constructed from adaptor.
+  const Geom2d_Curve* Geometry() const { return myCurve.get(); }
 
   //! Compute tangent at given parameter.
   //! @param[in] theParam curve parameter
@@ -56,7 +87,14 @@ public:
     (void)theTol;
     gp_Pnt2d aPnt;
     gp_Vec2d aD1;
-    myAdaptor->D1(theParam, aPnt, aD1);
+    if (!myCurve.IsNull())
+    {
+      myCurve->D1(theParam, aPnt, aD1);
+    }
+    else
+    {
+      myAdaptor->D1(theParam, aPnt, aD1);
+    }
     return {gp_Dir2d(aD1), true};
   }
 
@@ -69,7 +107,7 @@ public:
   {
     (void)theParam;
     (void)theTol;
-    return {1.0 / myAdaptor->Circle().Radius(), true, false};
+    return {1.0 / myRadius, true, false};
   }
 
   //! Compute normal at given parameter.
@@ -81,7 +119,14 @@ public:
     (void)theTol;
     gp_Pnt2d aPnt;
     gp_Vec2d aD1, aD2;
-    myAdaptor->D2(theParam, aPnt, aD1, aD2);
+    if (!myCurve.IsNull())
+    {
+      myCurve->D2(theParam, aPnt, aD1, aD2);
+    }
+    else
+    {
+      myAdaptor->D2(theParam, aPnt, aD1, aD2);
+    }
     // Normal = D2 * (D1.D1) - D1 * (D1.D2)
     const gp_Vec2d aNorm = aD2 * aD1.Dot(aD1) - aD1 * aD1.Dot(aD2);
     return {gp_Dir2d(aNorm), true};
@@ -96,7 +141,7 @@ public:
   {
     (void)theParam;
     (void)theTol;
-    return {myAdaptor->Circle().Location(), true};
+    return {myCenter, true};
   }
 
   //! Find curvature extrema on the circle.
@@ -110,7 +155,10 @@ public:
   Geom2dProp::CurveAnalysis FindInflections() const { return {{}, true}; }
 
 private:
-  const Geom2dAdaptor_Curve* myAdaptor;
+  const Geom2dAdaptor_Curve* myAdaptor = nullptr; //!< Non-owning adaptor pointer (adaptor path)
+  occ::handle<Geom2d_Curve>  myCurve;             //!< Geometry handle (handle path)
+  double                     myRadius;            //!< Cached circle radius
+  gp_Pnt2d                   myCenter;            //!< Cached circle centre
 };
 
 #endif // _Geom2dProp_Circle_HeaderFile

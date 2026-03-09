@@ -17,13 +17,20 @@
 
 GeomProp::TangentResult GeomProp_Parabola::Tangent(const double theParam, const double theTol) const
 {
-  if (myAdaptor == nullptr)
+  if (myCurve.IsNull() && myAdaptor == nullptr)
   {
     return {{}, false};
   }
   gp_Pnt aPnt;
   gp_Vec aD1, aD2, aD3;
-  myAdaptor->D3(theParam, aPnt, aD1, aD2, aD3);
+  if (!myCurve.IsNull())
+  {
+    myCurve->D3(theParam, aPnt, aD1, aD2, aD3);
+  }
+  else
+  {
+    myAdaptor->D3(theParam, aPnt, aD1, aD2, aD3);
+  }
   return GeomProp::ComputeTangent(aD1, aD2, aD3, theTol);
 }
 
@@ -32,13 +39,20 @@ GeomProp::TangentResult GeomProp_Parabola::Tangent(const double theParam, const 
 GeomProp::CurvatureResult GeomProp_Parabola::Curvature(const double theParam,
                                                        const double theTol) const
 {
-  if (myAdaptor == nullptr)
+  if (myCurve.IsNull() && myAdaptor == nullptr)
   {
     return {0.0, false, false};
   }
   gp_Pnt aPnt;
   gp_Vec aD1, aD2;
-  myAdaptor->D2(theParam, aPnt, aD1, aD2);
+  if (!myCurve.IsNull())
+  {
+    myCurve->D2(theParam, aPnt, aD1, aD2);
+  }
+  else
+  {
+    myAdaptor->D2(theParam, aPnt, aD1, aD2);
+  }
   return GeomProp::ComputeCurvature(aD1, aD2, theTol);
 }
 
@@ -46,13 +60,20 @@ GeomProp::CurvatureResult GeomProp_Parabola::Curvature(const double theParam,
 
 GeomProp::NormalResult GeomProp_Parabola::Normal(const double theParam, const double theTol) const
 {
-  if (myAdaptor == nullptr)
+  if (myCurve.IsNull() && myAdaptor == nullptr)
   {
     return {{}, false};
   }
   gp_Pnt aPnt;
   gp_Vec aD1, aD2;
-  myAdaptor->D2(theParam, aPnt, aD1, aD2);
+  if (!myCurve.IsNull())
+  {
+    myCurve->D2(theParam, aPnt, aD1, aD2);
+  }
+  else
+  {
+    myAdaptor->D2(theParam, aPnt, aD1, aD2);
+  }
   return GeomProp::ComputeNormal(aD1, aD2, theTol);
 }
 
@@ -61,13 +82,20 @@ GeomProp::NormalResult GeomProp_Parabola::Normal(const double theParam, const do
 GeomProp::CentreResult GeomProp_Parabola::CentreOfCurvature(const double theParam,
                                                             const double theTol) const
 {
-  if (myAdaptor == nullptr)
+  if (myCurve.IsNull() && myAdaptor == nullptr)
   {
     return {{}, false};
   }
   gp_Pnt aPnt;
   gp_Vec aD1, aD2;
-  myAdaptor->D2(theParam, aPnt, aD1, aD2);
+  if (!myCurve.IsNull())
+  {
+    myCurve->D2(theParam, aPnt, aD1, aD2);
+  }
+  else
+  {
+    myAdaptor->D2(theParam, aPnt, aD1, aD2);
+  }
   return GeomProp::ComputeCentreOfCurvature(aPnt, aD1, aD2, theTol);
 }
 
@@ -78,14 +106,28 @@ GeomProp::CurveAnalysis GeomProp_Parabola::FindCurvatureExtrema() const
   GeomProp::CurveAnalysis aResult;
   aResult.IsDone = true;
 
-  if (myAdaptor == nullptr)
+  if (myCurve.IsNull() && myAdaptor == nullptr)
   {
     aResult.IsDone = false;
     return aResult;
   }
 
-  const double aUFirst = myAdaptor->FirstParameter();
-  const double aULast  = myAdaptor->LastParameter();
+  double aUFirst, aULast;
+  if (myDomain.has_value())
+  {
+    aUFirst = myDomain->First;
+    aULast  = myDomain->Last;
+  }
+  else if (myAdaptor != nullptr)
+  {
+    aUFirst = myAdaptor->FirstParameter();
+    aULast  = myAdaptor->LastParameter();
+  }
+  else
+  {
+    aUFirst = myCurve->FirstParameter();
+    aULast  = myCurve->LastParameter();
+  }
 
   // Parabola has maximum |curvature| at parameter 0 (vertex).
   if (aUFirst <= 0.0 && aULast >= 0.0)

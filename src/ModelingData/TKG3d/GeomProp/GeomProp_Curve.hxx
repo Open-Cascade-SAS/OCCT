@@ -32,6 +32,7 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
+#include <optional>
 #include <variant>
 
 //! @brief Unified local differential property evaluator for any 3D curve.
@@ -81,11 +82,17 @@ public:
   //! Construct from 3D adaptor reference (auto-detects curve type).
   //! For GeomAdaptor_Curve, extracts underlying Geom_Curve for optimized evaluation.
   //! @param[in] theCurve 3D curve adaptor reference
-  Standard_EXPORT GeomProp_Curve(const Adaptor3d_Curve& theCurve);
+  //! @param[in] theOrder derivative caching order
+  Standard_EXPORT GeomProp_Curve(
+    const Adaptor3d_Curve&    theCurve,
+    GeomProp::CurveDerivOrder theOrder = GeomProp::CurveDerivOrder::Curvature);
 
   //! Construct from geometry handle (auto-detects curve type).
   //! @param[in] theCurve 3D geometry to evaluate
-  Standard_EXPORT GeomProp_Curve(const occ::handle<Geom_Curve>& theCurve);
+  //! @param[in] theOrder derivative caching order
+  Standard_EXPORT GeomProp_Curve(
+    const occ::handle<Geom_Curve>& theCurve,
+    GeomProp::CurveDerivOrder      theOrder = GeomProp::CurveDerivOrder::Curvature);
 
   //! Non-copyable and non-movable.
   GeomProp_Curve(const GeomProp_Curve&)            = delete;
@@ -96,8 +103,19 @@ public:
   //! Returns the detected curve type.
   GeomAbs_CurveType GetType() const { return myCurveType; }
 
-  //! Returns the adaptor pointer from the active evaluator, or null if not initialized.
-  Standard_EXPORT const GeomAdaptor_Curve* Adaptor() const;
+  //! Sets the derivative caching order for the active evaluator.
+  //! Only effective for non-analytical curve types (BSpline, Bezier, Offset, Other).
+  Standard_EXPORT void SetDerivOrder(GeomProp::CurveDerivOrder theOrder);
+
+  //! Returns the derivative caching order of the active evaluator.
+  Standard_EXPORT GeomProp::CurveDerivOrder DerivOrder() const;
+
+  //! Returns the stored adaptor pointer, or null if not initialized.
+  Standard_EXPORT const Adaptor3d_Curve* Adaptor() const;
+
+  //! Returns pointer to underlying geometry, or nullptr if not available.
+  //! When constructed from a handle, trimmed curves are unwrapped to their basis curve.
+  Standard_EXPORT const Geom_Curve* Geometry() const;
 
   //! Compute tangent at given parameter.
   //! @param[in] theParam curve parameter
@@ -163,21 +181,20 @@ public:
 protected:
   //! Initialize from 3D adaptor reference (auto-detects curve type).
   //! @param[in] theCurve 3D curve adaptor reference
-  Standard_EXPORT void initialization(const Adaptor3d_Curve& theCurve);
+  //! @param[in] theOrder derivative caching order
+  Standard_EXPORT void initialization(const Adaptor3d_Curve&    theCurve,
+                                      GeomProp::CurveDerivOrder theOrder);
 
   //! Initialize from geometry handle (auto-detects curve type).
   //! @param[in] theCurve 3D geometry to evaluate
-  Standard_EXPORT void initialization(const occ::handle<Geom_Curve>& theCurve);
+  //! @param[in] theOrder derivative caching order
+  Standard_EXPORT void initialization(const occ::handle<Geom_Curve>& theCurve,
+                                      GeomProp::CurveDerivOrder      theOrder);
 
 private:
-  //! Initialize from stored adaptor (dispatches to per-geometry evaluator).
-  //! Must be called after myAdaptor is set. Per-geometry evaluators receive
-  //! a non-owning pointer to myAdaptor; their lifetime is managed by the variant.
-  Standard_EXPORT void initFromAdaptor();
-
-  occ::handle<GeomAdaptor_Curve> myAdaptor; //!< Owns the adaptor (ensures lifetime).
-  EvaluatorVariant  myEvaluator; //!< Per-geometry evaluator (non-owning pointer to myAdaptor).
-  GeomAbs_CurveType myCurveType;
+  occ::handle<GeomAdaptor_Curve> myOwnedAdaptor; //!< Owned adaptor when lifetime must be managed.
+  EvaluatorVariant               myEvaluator;
+  GeomAbs_CurveType              myCurveType;
 };
 
 #endif // _GeomProp_Curve_HeaderFile

@@ -28,13 +28,20 @@ constexpr double THE_ELLIPSE_PERIOD     = 2.0 * M_PI; //!< One full period of el
 Geom2dProp::TangentResult Geom2dProp_Ellipse::Tangent(const double theParam,
                                                       const double theTol) const
 {
-  if (myAdaptor == nullptr)
+  if (myCurve.IsNull() && myAdaptor == nullptr)
   {
     return {{}, false};
   }
   gp_Pnt2d aPnt;
   gp_Vec2d aD1, aD2, aD3;
-  myAdaptor->D3(theParam, aPnt, aD1, aD2, aD3);
+  if (!myCurve.IsNull())
+  {
+    myCurve->D3(theParam, aPnt, aD1, aD2, aD3);
+  }
+  else
+  {
+    myAdaptor->D3(theParam, aPnt, aD1, aD2, aD3);
+  }
   return Geom2dProp::ComputeTangent(aD1, aD2, aD3, theTol);
 }
 
@@ -43,13 +50,20 @@ Geom2dProp::TangentResult Geom2dProp_Ellipse::Tangent(const double theParam,
 Geom2dProp::CurvatureResult Geom2dProp_Ellipse::Curvature(const double theParam,
                                                           const double theTol) const
 {
-  if (myAdaptor == nullptr)
+  if (myCurve.IsNull() && myAdaptor == nullptr)
   {
     return {0.0, false, false};
   }
   gp_Pnt2d aPnt;
   gp_Vec2d aD1, aD2;
-  myAdaptor->D2(theParam, aPnt, aD1, aD2);
+  if (!myCurve.IsNull())
+  {
+    myCurve->D2(theParam, aPnt, aD1, aD2);
+  }
+  else
+  {
+    myAdaptor->D2(theParam, aPnt, aD1, aD2);
+  }
   return Geom2dProp::ComputeCurvature(aD1, aD2, theTol);
 }
 
@@ -58,13 +72,20 @@ Geom2dProp::CurvatureResult Geom2dProp_Ellipse::Curvature(const double theParam,
 Geom2dProp::NormalResult Geom2dProp_Ellipse::Normal(const double theParam,
                                                     const double theTol) const
 {
-  if (myAdaptor == nullptr)
+  if (myCurve.IsNull() && myAdaptor == nullptr)
   {
     return {{}, false};
   }
   gp_Pnt2d aPnt;
   gp_Vec2d aD1, aD2;
-  myAdaptor->D2(theParam, aPnt, aD1, aD2);
+  if (!myCurve.IsNull())
+  {
+    myCurve->D2(theParam, aPnt, aD1, aD2);
+  }
+  else
+  {
+    myAdaptor->D2(theParam, aPnt, aD1, aD2);
+  }
   return Geom2dProp::ComputeNormal(aD1, aD2, theTol);
 }
 
@@ -73,13 +94,20 @@ Geom2dProp::NormalResult Geom2dProp_Ellipse::Normal(const double theParam,
 Geom2dProp::CentreResult Geom2dProp_Ellipse::CentreOfCurvature(const double theParam,
                                                                const double theTol) const
 {
-  if (myAdaptor == nullptr)
+  if (myCurve.IsNull() && myAdaptor == nullptr)
   {
     return {{}, false};
   }
   gp_Pnt2d aPnt;
   gp_Vec2d aD1, aD2;
-  myAdaptor->D2(theParam, aPnt, aD1, aD2);
+  if (!myCurve.IsNull())
+  {
+    myCurve->D2(theParam, aPnt, aD1, aD2);
+  }
+  else
+  {
+    myAdaptor->D2(theParam, aPnt, aD1, aD2);
+  }
   return Geom2dProp::ComputeCentreOfCurvature(aPnt, aD1, aD2, theTol);
 }
 
@@ -90,14 +118,29 @@ Geom2dProp::CurveAnalysis Geom2dProp_Ellipse::FindCurvatureExtrema() const
   Geom2dProp::CurveAnalysis aResult;
   aResult.IsDone = true;
 
-  if (myAdaptor == nullptr)
+  if (myCurve.IsNull() && myAdaptor == nullptr)
   {
     aResult.IsDone = false;
     return aResult;
   }
 
-  const double aUFirst    = myAdaptor->FirstParameter();
-  const double aULast     = myAdaptor->LastParameter();
+  double aUFirst, aULast;
+  if (myDomain.has_value())
+  {
+    aUFirst = myDomain->First;
+    aULast  = myDomain->Last;
+  }
+  else if (myAdaptor != nullptr)
+  {
+    aUFirst = myAdaptor->FirstParameter();
+    aULast  = myAdaptor->LastParameter();
+  }
+  else
+  {
+    aUFirst = myCurve->FirstParameter();
+    aULast  = myCurve->LastParameter();
+  }
+
   const double aUFPlus2PI = aUFirst + THE_ELLIPSE_PERIOD;
 
   // Ellipse curvature extrema at 0, PI/2, PI, 3*PI/2

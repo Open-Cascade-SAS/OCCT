@@ -16,15 +16,20 @@
 
 #include <Geom2dProp.hxx>
 
+#include <Adaptor2d_Curve2d.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <gp.hxx>
 #include <MathRoot_Brent.hxx>
 #include <MathRoot_Multiple.hxx>
+#include <gp.hxx>
 #include <NCollection_Array1.hxx>
 #include <Precision.hxx>
+#include <math_FunctionWithDerivative.hxx>
 
+#include <algorithm>
 #include <cmath>
+#include <optional>
+#include <type_traits>
 
 //! Internal helper utilities for numeric curve analysis shared across all
 //! Geom2dProp curve evaluators (Bezier, BSpline, Offset, Other).
@@ -43,16 +48,17 @@ constexpr double THE_INFLECTION_TOLERANCE  = 1.0e-6; //!< Tolerance for inflecti
 //! Function for finding curvature extrema: F = d(curvature)/dU = 0
 //! In 2D: KC = (V1 ^ V2) / ||V1||^3  (scalar cross product)
 //! F = d KC / dU
-class FuncCurExt
+template <class CurveAdaptor>
+class FuncCurExt : public math_FunctionWithDerivative
 {
 public:
-  FuncCurExt(const Geom2dAdaptor_Curve* theCurve, const double theTol)
+  FuncCurExt(const CurveAdaptor* theCurve, const double theTol)
       : myCurve(theCurve),
         myEpsX(theTol)
   {
   }
 
-  bool Value(const double X, double& F)
+  bool Value(const double X, double& F) override
   {
     gp_Pnt2d aP;
     gp_Vec2d aV1, aV2, aV3;
@@ -75,7 +81,13 @@ public:
     return true;
   }
 
-  bool Values(const double X, double& F, double& D)
+  bool Derivative(const double X, double& D) override
+  {
+    double aF;
+    return Values(X, aF, D);
+  }
+
+  bool Values(const double X, double& F, double& D) override
   {
     double aDx = myEpsX / THE_DIFF_STEP_DIVISOR;
     if (X + aDx > myCurve->LastParameter())
@@ -129,26 +141,33 @@ public:
   }
 
 private:
-  const Geom2dAdaptor_Curve* myCurve;
-  double                     myEpsX;
+  const CurveAdaptor* myCurve;
+  double              myEpsX;
 };
 
 //! Function for finding inflection points: F = (V1 ^ V2) / (||V1|| * ||V2||) = 0
-class FuncCurNul
+template <class CurveAdaptor>
+class FuncCurNul : public math_FunctionWithDerivative
 {
 public:
-  FuncCurNul(const Geom2dAdaptor_Curve* theCurve)
+  FuncCurNul(const CurveAdaptor* theCurve)
       : myCurve(theCurve)
   {
   }
 
-  bool Value(const double X, double& F)
+  bool Value(const double X, double& F) override
   {
     double aD;
     return Values(X, F, aD);
   }
 
-  bool Values(const double X, double& F, double& D)
+  bool Derivative(const double X, double& D) override
+  {
+    double aF;
+    return Values(X, aF, D);
+  }
+
+  bool Values(const double X, double& F, double& D) override
   {
     gp_Pnt2d aP;
     gp_Vec2d aV1, aV2, aV3;
@@ -179,18 +198,19 @@ public:
   }
 
 private:
-  const Geom2dAdaptor_Curve* myCurve;
+  const CurveAdaptor* myCurve;
 };
 
 //! Perform numeric curvature extrema finding on a curve interval.
-inline void NumericCurvatureExtrema(const Geom2dAdaptor_Curve* theCurve,
+template <class CurveAdaptor>
+inline void NumericCurvatureExtrema(const CurveAdaptor*        theCurve,
                                     const double               theUMin,
                                     const double               theUMax,
                                     Geom2dProp::CurveAnalysis& theResult)
 {
   const double aEpsH = THE_EPSILON_SCALE * (theUMax - theUMin);
 
-  FuncCurExt aFunc(theCurve, aEpsH);
+  FuncCurExt<CurveAdaptor> aFunc(theCurve, aEpsH);
 
   MathRoot::MultipleConfig aConfig;
   aConfig.NbSamples  = THE_EXTREMA_NB_SAMPLES;
@@ -205,15 +225,17 @@ inline void NumericCurvatureExtrema(const Geom2dAdaptor_Curve* theCurve,
     for (int j = 0; j < aRoots.NbRoots(); ++j)
     {
       double aParam = aRoots[j];
-      // Refine the solution.
+
       MathUtils::Config aBrentCfg;
       aBrentCfg.XTolerance = Precision::PConfusion();
       aBrentCfg.FTolerance = Precision::PConfusion();
-      auto aBrent          = MathRoot::Brent(aFunc, aParam - aEpsH, aParam + aEpsH, aBrentCfg);
+      MathUtils::ScalarResult aBrent =
+        MathRoot::Brent(aFunc, aParam - aEpsH, aParam + aEpsH, aBrentCfg);
       if (aBrent.IsDone() && aBrent.Root.has_value())
       {
         aParam = *aBrent.Root;
       }
+
       const bool               aIsMin = aFunc.IsMinKC(aParam);
       const Geom2dProp::CIType aType =
         aIsMin ? Geom2dProp::CIType::MinCurvature : Geom2dProp::CIType::MaxCurvature;
@@ -227,12 +249,13 @@ inline void NumericCurvatureExtrema(const Geom2dAdaptor_Curve* theCurve,
 }
 
 //! Perform numeric inflection finding on a curve interval.
-inline void NumericInflections(const Geom2dAdaptor_Curve* theCurve,
+template <class CurveAdaptor>
+inline void NumericInflections(const CurveAdaptor*        theCurve,
                                const double               theUMin,
                                const double               theUMax,
                                Geom2dProp::CurveAnalysis& theResult)
 {
-  FuncCurNul aFunc(theCurve);
+  FuncCurNul<CurveAdaptor> aFunc(theCurve);
 
   MathRoot::MultipleConfig aConfig;
   aConfig.NbSamples  = THE_INFLECTION_NB_SAMPLES;
@@ -302,25 +325,45 @@ inline void RemoveDuplicatePoints(Geom2dProp::CurveAnalysis& theResult, const do
   theResult.Points = std::move(aFiltered);
 }
 
+template <class CurveType>
+inline Geom2dProp::CurveAnalysis FindWholeRange(
+  const CurveType* theCurve,
+  void (*theFunc)(const CurveType*, double, double, Geom2dProp::CurveAnalysis&))
+{
+  Geom2dProp::CurveAnalysis aResult;
+  aResult.IsDone = true;
+
+  if (theCurve == nullptr)
+  {
+    aResult.IsDone = false;
+    return aResult;
+  }
+
+  theFunc(theCurve, theCurve->FirstParameter(), theCurve->LastParameter(), aResult);
+  return aResult;
+}
+
 //! Evaluate tangent at a point on a 2D curve with sign correction for null D1.
-inline Geom2dProp::TangentResult EvaluateTangent(const Geom2dAdaptor_Curve* theCurve,
-                                                 const double               theParam,
-                                                 const double               theTol)
+//! Works with both Adaptor2d_Curve2d and Geom2d_Curve.
+template <class CurveType>
+inline Geom2dProp::TangentResult EvaluateTangent(const CurveType* theCurve,
+                                                 const double     theParam,
+                                                 const double     theTol)
 {
   if (theCurve == nullptr)
   {
     return {{}, false};
   }
-  gp_Pnt2d aPnt;
+
+  gp_Pnt2d aP;
   gp_Vec2d aD1, aD2, aD3;
-  theCurve->D3(theParam, aPnt, aD1, aD2, aD3);
+  theCurve->D3(theParam, aP, aD1, aD2, aD3);
 
   if (aD1.SquareMagnitude() > theTol * theTol)
   {
     return {gp_Dir2d(aD1), true};
   }
 
-  // D1 is null: use sign-correcting overload with nearby D0 samples.
   constexpr double THE_DIV_FACTOR = 1.e-3;
   constexpr double THE_MIN_STEP   = 1.e-7;
   const double     anUFirst       = theCurve->FirstParameter();
@@ -338,79 +381,104 @@ inline Geom2dProp::TangentResult EvaluateTangent(const Geom2dAdaptor_Curve* theC
 }
 
 //! Evaluate curvature at a point on a 2D curve.
-inline Geom2dProp::CurvatureResult EvaluateCurvature(const Geom2dAdaptor_Curve* theCurve,
-                                                     const double               theParam,
-                                                     const double               theTol)
+//! Works with both Adaptor2d_Curve2d and Geom2d_Curve.
+template <class CurveType>
+inline Geom2dProp::CurvatureResult EvaluateCurvature(const CurveType* theCurve,
+                                                     const double     theParam,
+                                                     const double     theTol)
 {
   if (theCurve == nullptr)
   {
     return {0.0, false, false};
   }
-  gp_Pnt2d aPnt;
+
+  gp_Pnt2d aP;
   gp_Vec2d aD1, aD2;
-  theCurve->D2(theParam, aPnt, aD1, aD2);
+  theCurve->D2(theParam, aP, aD1, aD2);
   return Geom2dProp::ComputeCurvature(aD1, aD2, theTol);
 }
 
 //! Evaluate normal at a point on a 2D curve.
-inline Geom2dProp::NormalResult EvaluateNormal(const Geom2dAdaptor_Curve* theCurve,
-                                               const double               theParam,
-                                               const double               theTol)
+//! Works with both Adaptor2d_Curve2d and Geom2d_Curve.
+template <class CurveType>
+inline Geom2dProp::NormalResult EvaluateNormal(const CurveType* theCurve,
+                                               const double     theParam,
+                                               const double     theTol)
 {
   if (theCurve == nullptr)
   {
     return {{}, false};
   }
-  gp_Pnt2d aPnt;
+
+  gp_Pnt2d aP;
   gp_Vec2d aD1, aD2;
-  theCurve->D2(theParam, aPnt, aD1, aD2);
+  theCurve->D2(theParam, aP, aD1, aD2);
   return Geom2dProp::ComputeNormal(aD1, aD2, theTol);
 }
 
 //! Evaluate centre of curvature at a point on a 2D curve.
-inline Geom2dProp::CentreResult EvaluateCentreOfCurvature(const Geom2dAdaptor_Curve* theCurve,
-                                                          const double               theParam,
-                                                          const double               theTol)
+//! Works with both Adaptor2d_Curve2d and Geom2d_Curve.
+template <class CurveType>
+inline Geom2dProp::CentreResult EvaluateCentreOfCurvature(const CurveType* theCurve,
+                                                          const double     theParam,
+                                                          const double     theTol)
 {
   if (theCurve == nullptr)
   {
     return {{}, false};
   }
-  gp_Pnt2d aPnt;
+
+  gp_Pnt2d aP;
   gp_Vec2d aD1, aD2;
-  theCurve->D2(theParam, aPnt, aD1, aD2);
-  return Geom2dProp::ComputeCentreOfCurvature(aPnt, aD1, aD2, theTol);
+  theCurve->D2(theParam, aP, aD1, aD2);
+  return Geom2dProp::ComputeCentreOfCurvature(aP, aD1, aD2, theTol);
 }
 
 //! Find curvature extrema on the full curve domain.
-inline Geom2dProp::CurveAnalysis FindCurvatureExtrema(const Geom2dAdaptor_Curve* theCurve)
+inline Geom2dProp::CurveAnalysis FindCurvatureExtrema(const Adaptor2d_Curve2d* theCurve)
 {
-  Geom2dProp::CurveAnalysis aResult;
-  aResult.IsDone = true;
-
-  if (theCurve == nullptr)
-  {
-    aResult.IsDone = false;
-    return aResult;
-  }
-
-  NumericCurvatureExtrema(theCurve, theCurve->FirstParameter(), theCurve->LastParameter(), aResult);
-  return aResult;
+  return FindWholeRange(theCurve, NumericCurvatureExtrema<Adaptor2d_Curve2d>);
 }
 
 //! Find inflections on the full curve domain.
-inline Geom2dProp::CurveAnalysis FindInflections(const Geom2dAdaptor_Curve* theCurve)
+inline Geom2dProp::CurveAnalysis FindInflections(const Adaptor2d_Curve2d* theCurve)
+{
+  return FindWholeRange(theCurve, NumericInflections<Adaptor2d_Curve2d>);
+}
+
+//! Find curvature extrema on a Geom2d_Curve over a given domain.
+inline Geom2dProp::CurveAnalysis FindCurvatureExtrema(
+  const Geom2d_Curve*                           theCurve,
+  const std::optional<Geom2dProp::CurveDomain>& theDomain)
 {
   Geom2dProp::CurveAnalysis aResult;
   aResult.IsDone = true;
-
   if (theCurve == nullptr)
   {
     aResult.IsDone = false;
     return aResult;
   }
+  const double aFirst = theDomain.has_value() ? theDomain->First : theCurve->FirstParameter();
+  const double aLast  = theDomain.has_value() ? theDomain->Last : theCurve->LastParameter();
+  NumericCurvatureExtrema(theCurve, aFirst, aLast, aResult);
+  return aResult;
+}
 
-  NumericInflections(theCurve, theCurve->FirstParameter(), theCurve->LastParameter(), aResult);
+//! Find inflections on a Geom2d_Curve over a given domain.
+inline Geom2dProp::CurveAnalysis FindInflections(
+  const Geom2d_Curve*                           theCurve,
+  const std::optional<Geom2dProp::CurveDomain>& theDomain)
+{
+  Geom2dProp::CurveAnalysis aResult;
+  aResult.IsDone = true;
+  if (theCurve == nullptr)
+  {
+    aResult.IsDone = false;
+    return aResult;
+  }
+  const double aFirst = theDomain.has_value() ? theDomain->First : theCurve->FirstParameter();
+  const double aLast  = theDomain.has_value() ? theDomain->Last : theCurve->LastParameter();
+  NumericInflections(theCurve, aFirst, aLast, aResult);
   return aResult;
 }
 
@@ -481,6 +549,235 @@ inline Geom2dProp::CurveAnalysis FindInflectionsBySpans(const Geom2dAdaptor_Curv
   }
 
   return aResult;
+}
+
+//! Populate 2D curve derivative cache at the requested order.
+//! Works with both Adaptor2d_Curve2d and Geom2d_Curve (they share the same D0/D1/D2/D3 interface).
+template <class CurveType>
+inline void EnsureCurveDerivatives(const CurveType*            theCurve,
+                                   double                      theParam,
+                                   Geom2dProp::CurveDerivOrder theNeeded,
+                                   Geom2dProp::CurveDerivOrder theRequested,
+                                   Geom2dProp::CurveCache&     theCache)
+{
+  if (theCache.IsValid(theParam) && theCache.HasOrder(theNeeded))
+  {
+    return;
+  }
+  const int aTarget = std::max(static_cast<int>(theRequested), static_cast<int>(theNeeded));
+  theCache.Param    = theParam;
+  switch (static_cast<Geom2dProp::CurveDerivOrder>(aTarget))
+  {
+    case Geom2dProp::CurveDerivOrder::Value: {
+      gp_Pnt2d aP;
+      theCurve->D0(theParam, aP);
+      theCache.Data.emplace<gp_Pnt2d>(aP);
+      break;
+    }
+    case Geom2dProp::CurveDerivOrder::Tangent: {
+      gp_Pnt2d aP;
+      gp_Vec2d aD1;
+      theCurve->D1(theParam, aP, aD1);
+      theCache.Data.emplace<Geom2d_Curve::ResD1>(Geom2d_Curve::ResD1{aP, aD1});
+      break;
+    }
+    case Geom2dProp::CurveDerivOrder::Curvature: {
+      gp_Pnt2d aP;
+      gp_Vec2d aD1, aD2;
+      theCurve->D2(theParam, aP, aD1, aD2);
+      theCache.Data.emplace<Geom2d_Curve::ResD2>(Geom2d_Curve::ResD2{aP, aD1, aD2});
+      break;
+    }
+    case Geom2dProp::CurveDerivOrder::CurvatureDeriv:
+    default: {
+      gp_Pnt2d aP;
+      gp_Vec2d aD1, aD2, aD3;
+      theCurve->D3(theParam, aP, aD1, aD2, aD3);
+      theCache.Data.emplace<Geom2d_Curve::ResD3>(Geom2d_Curve::ResD3{aP, aD1, aD2, aD3});
+      break;
+    }
+  }
+}
+
+//! Evaluate tangent at a point on a 2D curve using cached derivatives.
+//! Works with both Adaptor2d_Curve2d and Geom2d_Curve.
+template <class CurveType>
+inline Geom2dProp::TangentResult EvaluateTangentCached(const CurveType*            theCurve,
+                                                       double                      theParam,
+                                                       double                      theTol,
+                                                       Geom2dProp::CurveDerivOrder theOrder,
+                                                       Geom2dProp::CurveCache&     theCache)
+{
+  if (theCurve == nullptr)
+  {
+    return {{}, false};
+  }
+
+  EnsureCurveDerivatives(theCurve,
+                         theParam,
+                         Geom2dProp::CurveDerivOrder::Tangent,
+                         theOrder,
+                         theCache);
+
+  gp_Vec2d aD1;
+  std::visit(
+    [&](const auto& theVal) {
+      using T = std::decay_t<decltype(theVal)>;
+      if constexpr (std::is_same_v<T, Geom2d_Curve::ResD3> || std::is_same_v<T, Geom2d_Curve::ResD2>
+                    || std::is_same_v<T, Geom2d_Curve::ResD1>)
+      {
+        aD1 = theVal.D1;
+      }
+    },
+    theCache.Data);
+
+  if (aD1.SquareMagnitude() > theTol * theTol)
+  {
+    return {gp_Dir2d(aD1), true};
+  }
+
+  // Degenerate point - upgrade cache to D3 for sign correction.
+  // No need to invalidate: EnsureCurveDerivatives re-evaluates when IsValid && !HasOrder.
+  EnsureCurveDerivatives(theCurve,
+                         theParam,
+                         Geom2dProp::CurveDerivOrder::CurvatureDeriv,
+                         Geom2dProp::CurveDerivOrder::CurvatureDeriv,
+                         theCache);
+
+  const auto& aD3Data = std::get<Geom2d_Curve::ResD3>(theCache.Data);
+
+  constexpr double THE_DIV_FACTOR = 1.e-3;
+  constexpr double THE_MIN_STEP   = 1.e-7;
+  const double     anUFirst       = theCurve->FirstParameter();
+  const double     anULast        = theCurve->LastParameter();
+  double           aDu            = 0.0;
+  if (anULast < RealLast() && anUFirst > RealFirst())
+    aDu = anULast - anUFirst;
+  const double aDelta = std::max(aDu * THE_DIV_FACTOR, THE_MIN_STEP);
+  const double aU     = (theParam - anUFirst < aDelta) ? theParam + aDelta : theParam - aDelta;
+
+  // Reuse cached point for the endpoint that matches theParam.
+  gp_Pnt2d aP1, aP2;
+  if (theParam <= aU)
+  {
+    aP1 = aD3Data.Point;
+    theCurve->D0(aU, aP2);
+  }
+  else
+  {
+    theCurve->D0(aU, aP1);
+    aP2 = aD3Data.Point;
+  }
+  return Geom2dProp::ComputeTangent(aD3Data.D1, aD3Data.D2, aD3Data.D3, theTol, aP1, aP2);
+}
+
+//! Evaluate curvature at a point on a 2D curve using cached derivatives.
+//! Works with both Adaptor2d_Curve2d and Geom2d_Curve.
+template <class CurveType>
+inline Geom2dProp::CurvatureResult EvaluateCurvatureCached(const CurveType*            theCurve,
+                                                           double                      theParam,
+                                                           double                      theTol,
+                                                           Geom2dProp::CurveDerivOrder theOrder,
+                                                           Geom2dProp::CurveCache&     theCache)
+{
+  if (theCurve == nullptr)
+  {
+    return {0.0, false, false};
+  }
+
+  EnsureCurveDerivatives(theCurve,
+                         theParam,
+                         Geom2dProp::CurveDerivOrder::Curvature,
+                         theOrder,
+                         theCache);
+
+  return std::visit(
+    [theTol](const auto& theVal) -> Geom2dProp::CurvatureResult {
+      using T = std::decay_t<decltype(theVal)>;
+      if constexpr (std::is_same_v<T, Geom2d_Curve::ResD2>
+                    || std::is_same_v<T, Geom2d_Curve::ResD3>)
+      {
+        return Geom2dProp::ComputeCurvature(theVal.D1, theVal.D2, theTol);
+      }
+      else
+      {
+        return {0.0, false, false};
+      }
+    },
+    theCache.Data);
+}
+
+//! Evaluate normal at a point on a 2D curve using cached derivatives.
+//! Works with both Adaptor2d_Curve2d and Geom2d_Curve.
+template <class CurveType>
+inline Geom2dProp::NormalResult EvaluateNormalCached(const CurveType*            theCurve,
+                                                     double                      theParam,
+                                                     double                      theTol,
+                                                     Geom2dProp::CurveDerivOrder theOrder,
+                                                     Geom2dProp::CurveCache&     theCache)
+{
+  if (theCurve == nullptr)
+  {
+    return {{}, false};
+  }
+
+  EnsureCurveDerivatives(theCurve,
+                         theParam,
+                         Geom2dProp::CurveDerivOrder::Curvature,
+                         theOrder,
+                         theCache);
+
+  return std::visit(
+    [theTol](const auto& theVal) -> Geom2dProp::NormalResult {
+      using T = std::decay_t<decltype(theVal)>;
+      if constexpr (std::is_same_v<T, Geom2d_Curve::ResD2>
+                    || std::is_same_v<T, Geom2d_Curve::ResD3>)
+      {
+        return Geom2dProp::ComputeNormal(theVal.D1, theVal.D2, theTol);
+      }
+      else
+      {
+        return {{}, false};
+      }
+    },
+    theCache.Data);
+}
+
+//! Evaluate centre of curvature at a point on a 2D curve using cached derivatives.
+//! Works with both Adaptor2d_Curve2d and Geom2d_Curve.
+template <class CurveType>
+inline Geom2dProp::CentreResult EvaluateCentreOfCurvatureCached(
+  const CurveType*            theCurve,
+  double                      theParam,
+  double                      theTol,
+  Geom2dProp::CurveDerivOrder theOrder,
+  Geom2dProp::CurveCache&     theCache)
+{
+  if (theCurve == nullptr)
+  {
+    return {{}, false};
+  }
+
+  EnsureCurveDerivatives(theCurve,
+                         theParam,
+                         Geom2dProp::CurveDerivOrder::Curvature,
+                         theOrder,
+                         theCache);
+
+  return std::visit(
+    [theTol](const auto& theVal) -> Geom2dProp::CentreResult {
+      using T = std::decay_t<decltype(theVal)>;
+      if constexpr (std::is_same_v<T, Geom2d_Curve::ResD2>
+                    || std::is_same_v<T, Geom2d_Curve::ResD3>)
+      {
+        return Geom2dProp::ComputeCentreOfCurvature(theVal.Point, theVal.D1, theVal.D2, theTol);
+      }
+      else
+      {
+        return {{}, false};
+      }
+    },
+    theCache.Data);
 }
 
 } // namespace Geom2dProp_CurveAnalysisTools

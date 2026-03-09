@@ -395,6 +395,13 @@ double GeomAdaptor_TransformedSurface::OffsetValue() const
 
 //=================================================================================================
 
+const GeomAdaptor_Surface& GeomAdaptor_TransformedSurface::AdaptorSurfaceTransformed() const
+{
+  return transformedAdaptor();
+}
+
+//=================================================================================================
+
 const GeomAdaptor_Surface& GeomAdaptor_TransformedSurface::transformedAdaptor() const
 {
   if (myTrsf.Form() == gp_Identity)

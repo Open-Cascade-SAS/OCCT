@@ -28,6 +28,9 @@
 #include <Geom_SphericalSurface.hxx>
 #include <Geom_ToroidalSurface.hxx>
 #include <Geom_TrimmedCurve.hxx>
+#include <GeomAbs_Shape.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomProp.hxx>
 #include <GeomProp_Curve.hxx>
 #include <GeomProp_Surface.hxx>
@@ -461,4 +464,100 @@ TEST(GeomPropSurfaceTest, Torus_CurvaturesVaryAlongV)
   const GeomProp::MeanGaussianResult aResPI = aProp.MeanGaussian(0.0, M_PI, Precision::Confusion());
   ASSERT_TRUE(aResPI.IsDefined);
   EXPECT_LT(aResPI.GaussianCurvature, 0.0); // Negative Gaussian curvature at inner edge
+}
+
+// ============================================================================
+// Geometry() / Adaptor() accessor tests
+// ============================================================================
+
+TEST(GeomPropCurveTest, Geometry_HandlePath_ReturnsNonNull)
+{
+  occ::handle<Geom_Line> aLine = new Geom_Line(gp_Pnt(), gp_Dir(1, 0, 0));
+  GeomProp_Curve         aProp(aLine);
+  EXPECT_NE(aProp.Geometry(), nullptr);
+  EXPECT_EQ(aProp.Adaptor(), nullptr);
+}
+
+TEST(GeomPropCurveTest, Geometry_AdaptorPath_Line_ReturnsNonNull)
+{
+  occ::handle<Geom_Line> aLine = new Geom_Line(gp_Pnt(), gp_Dir(1, 0, 0));
+  GeomAdaptor_Curve      anAdaptor(aLine);
+  GeomProp_Curve         aProp(anAdaptor);
+  // Line evaluator extracts geometry from adaptor
+  EXPECT_NE(aProp.Geometry(), nullptr);
+}
+
+TEST(GeomPropCurveTest, Geometry_TrimmedCurve_ReturnsBasisCurve)
+{
+  occ::handle<Geom_Circle>       aCircle  = new Geom_Circle(gp_Ax2(), 5.0);
+  occ::handle<Geom_TrimmedCurve> aTrimmed = new Geom_TrimmedCurve(aCircle, 0.0, M_PI);
+  GeomProp_Curve                 aProp(aTrimmed);
+
+  const Geom_Curve* aGeom = aProp.Geometry();
+  ASSERT_NE(aGeom, nullptr);
+  // The geometry should be the unwrapped basis circle, not the trimmed curve.
+  EXPECT_TRUE(aGeom->IsKind(STANDARD_TYPE(Geom_Circle)));
+}
+
+TEST(GeomPropCurveTest, Geometry_AllCurveTypes_NonNull)
+{
+  // Line
+  {
+    occ::handle<Geom_Line> aCurve = new Geom_Line(gp_Pnt(), gp_Dir(0, 0, 1));
+    GeomProp_Curve         aProp(aCurve);
+    EXPECT_NE(aProp.Geometry(), nullptr);
+  }
+  // Ellipse
+  {
+    occ::handle<Geom_Ellipse> aCurve = new Geom_Ellipse(gp_Ax2(), 5.0, 3.0);
+    GeomProp_Curve            aProp(aCurve);
+    EXPECT_NE(aProp.Geometry(), nullptr);
+  }
+  // Hyperbola
+  {
+    occ::handle<Geom_Hyperbola> aCurve = new Geom_Hyperbola(gp_Ax2(), 5.0, 3.0);
+    GeomProp_Curve              aProp(aCurve);
+    EXPECT_NE(aProp.Geometry(), nullptr);
+  }
+  // Parabola
+  {
+    occ::handle<Geom_Parabola> aCurve = new Geom_Parabola(gp_Ax2(), 2.0);
+    GeomProp_Curve             aProp(aCurve);
+    EXPECT_NE(aProp.Geometry(), nullptr);
+  }
+}
+
+TEST(GeomPropSurfaceTest, Geometry_HandlePath_ReturnsNonNull)
+{
+  occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Ax3());
+  GeomProp_Surface        aProp(aPlane);
+  EXPECT_NE(aProp.Geometry(), nullptr);
+  EXPECT_EQ(aProp.Adaptor(), nullptr);
+}
+
+TEST(GeomPropSurfaceTest, Geometry_AdaptorPath_ReturnsNull)
+{
+  // On the adaptor path, most evaluators do not extract the geometry handle
+  occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(gp_Ax3(), 5.0);
+  GeomAdaptor_Surface                anAdaptor(aSphere);
+  GeomProp_Surface                   aProp(anAdaptor);
+  EXPECT_EQ(aProp.Geometry(), nullptr);
+}
+
+TEST(GeomPropCurveTest, Continuity_TwoLines_C1)
+{
+  occ::handle<Geom_Line> aL1 = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+  occ::handle<Geom_Line> aL2 = new Geom_Line(gp_Pnt(1, 0, 0), gp_Dir(1, 0, 0));
+  // Junction at u1=1 (point (1,0,0)) and u2=0 (point (1,0,0))
+  GeomAbs_Shape aCont = GeomProp_Curve::Continuity(aL1, aL2, 1.0, 0.0, false, false);
+  EXPECT_GE(aCont, GeomAbs_C1);
+}
+
+TEST(GeomPropCurveTest, Continuity_ReversedDirection_G1)
+{
+  occ::handle<Geom_Line> aL1 = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+  occ::handle<Geom_Line> aL2 = new Geom_Line(gp_Pnt(1, 0, 0), gp_Dir(-1, 0, 0));
+  // Same point, reversed tangent vectors - only G1 with reversal flags
+  GeomAbs_Shape aCont = GeomProp_Curve::Continuity(aL1, aL2, 1.0, 0.0, false, true);
+  EXPECT_GE(aCont, GeomAbs_C1);
 }

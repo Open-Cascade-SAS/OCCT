@@ -13,113 +13,228 @@
 
 #include <GeomProp_Curve.hxx>
 
+#include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Ellipse.hxx>
+#include <Geom_Hyperbola.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_OffsetCurve.hxx>
+#include <Geom_Parabola.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <Precision.hxx>
 
 //=================================================================================================
 
-GeomProp_Curve::GeomProp_Curve(const Adaptor3d_Curve& theCurve)
+GeomProp_Curve::GeomProp_Curve(const Adaptor3d_Curve&          theCurve,
+                               const GeomProp::CurveDerivOrder theOrder)
     : myEvaluator(std::monostate{}),
       myCurveType(GeomAbs_OtherCurve)
 {
-  initialization(theCurve);
+  initialization(theCurve, theOrder);
 }
 
 //=================================================================================================
 
-GeomProp_Curve::GeomProp_Curve(const occ::handle<Geom_Curve>& theCurve)
+GeomProp_Curve::GeomProp_Curve(const occ::handle<Geom_Curve>&  theCurve,
+                               const GeomProp::CurveDerivOrder theOrder)
     : myEvaluator(std::monostate{}),
       myCurveType(GeomAbs_OtherCurve)
 {
-  initialization(theCurve);
+  initialization(theCurve, theOrder);
 }
 
 //=================================================================================================
 
-void GeomProp_Curve::initialization(const Adaptor3d_Curve& theCurve)
+void GeomProp_Curve::initialization(const Adaptor3d_Curve&          theCurve,
+                                    const GeomProp::CurveDerivOrder theOrder)
 {
   if (theCurve.IsKind(STANDARD_TYPE(GeomAdaptor_Curve)))
   {
-    const auto& aGeomAdaptor = static_cast<const GeomAdaptor_Curve&>(theCurve);
-    myAdaptor                = new GeomAdaptor_Curve(aGeomAdaptor);
-    initFromAdaptor();
-    return;
+    const GeomAdaptor_Curve& aGeomAdaptor = static_cast<const GeomAdaptor_Curve&>(theCurve);
+    if (!aGeomAdaptor.Curve().IsNull())
+    {
+      // Dispatch specialized evaluators directly from the GeomAdaptor.
+      myOwnedAdaptor.Nullify();
+      myCurveType = aGeomAdaptor.GetType();
+      switch (myCurveType)
+      {
+        case GeomAbs_Line:
+          myEvaluator.emplace<GeomProp_Line>(&aGeomAdaptor, theOrder);
+          break;
+        case GeomAbs_Circle:
+          myEvaluator.emplace<GeomProp_Circle>(&aGeomAdaptor, theOrder);
+          break;
+        case GeomAbs_Ellipse:
+          myEvaluator.emplace<GeomProp_Ellipse>(&aGeomAdaptor, theOrder);
+          break;
+        case GeomAbs_Hyperbola:
+          myEvaluator.emplace<GeomProp_Hyperbola>(&aGeomAdaptor, theOrder);
+          break;
+        case GeomAbs_Parabola:
+          myEvaluator.emplace<GeomProp_Parabola>(&aGeomAdaptor, theOrder);
+          break;
+        case GeomAbs_BezierCurve:
+          myEvaluator.emplace<GeomProp_BezierCurve>(&aGeomAdaptor, theOrder);
+          break;
+        case GeomAbs_BSplineCurve:
+          myEvaluator.emplace<GeomProp_BSplineCurve>(&aGeomAdaptor, theOrder);
+          break;
+        case GeomAbs_OffsetCurve:
+          myEvaluator.emplace<GeomProp_OffsetCurve>(&aGeomAdaptor, theOrder);
+          break;
+        default:
+          myEvaluator.emplace<GeomProp_OtherCurve>(&theCurve, theOrder);
+          break;
+      }
+      return;
+    }
   }
 
-  // For non-GeomAdaptor, set uninitialized.
-  myAdaptor.Nullify();
+  // Non-Geom adaptor or empty curve handle: use OtherCurve with adaptor pointer.
+  myOwnedAdaptor.Nullify();
   myCurveType = theCurve.GetType();
-  myEvaluator.emplace<std::monostate>();
+  myEvaluator.emplace<GeomProp_OtherCurve>(&theCurve, theOrder);
 }
 
 //=================================================================================================
 
-void GeomProp_Curve::initialization(const occ::handle<Geom_Curve>& theCurve)
+void GeomProp_Curve::initialization(const occ::handle<Geom_Curve>&  theCurve,
+                                    const GeomProp::CurveDerivOrder theOrder)
 {
   if (theCurve.IsNull())
   {
-    myAdaptor.Nullify();
+    myOwnedAdaptor.Nullify();
     myEvaluator.emplace<std::monostate>();
     myCurveType = GeomAbs_OtherCurve;
     return;
   }
 
-  myAdaptor = new GeomAdaptor_Curve(theCurve);
-  initFromAdaptor();
-}
+  // No adaptor creation for the handle path.
+  myOwnedAdaptor.Nullify();
 
-//=================================================================================================
-
-void GeomProp_Curve::initFromAdaptor()
-{
-  myCurveType                   = myAdaptor->GetType();
-  const GeomAdaptor_Curve* aPtr = myAdaptor.get();
-
-  switch (myCurveType)
+  // Unwrap TrimmedCurve to basis curve + optional CurveDomain.
+  occ::handle<Geom_Curve>              aBasis = theCurve;
+  std::optional<GeomProp::CurveDomain> aDomain;
+  if (aBasis->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
   {
-    case GeomAbs_Line:
-      myEvaluator.emplace<GeomProp_Line>(aPtr);
-      break;
-    case GeomAbs_Circle:
-      myEvaluator.emplace<GeomProp_Circle>(aPtr);
-      break;
-    case GeomAbs_Ellipse:
-      myEvaluator.emplace<GeomProp_Ellipse>(aPtr);
-      break;
-    case GeomAbs_Hyperbola:
-      myEvaluator.emplace<GeomProp_Hyperbola>(aPtr);
-      break;
-    case GeomAbs_Parabola:
-      myEvaluator.emplace<GeomProp_Parabola>(aPtr);
-      break;
-    case GeomAbs_BezierCurve:
-      myEvaluator.emplace<GeomProp_BezierCurve>(aPtr);
-      break;
-    case GeomAbs_BSplineCurve:
-      myEvaluator.emplace<GeomProp_BSplineCurve>(aPtr);
-      break;
-    case GeomAbs_OffsetCurve:
-      myEvaluator.emplace<GeomProp_OffsetCurve>(aPtr);
-      break;
-    default:
-      myEvaluator.emplace<GeomProp_OtherCurve>(aPtr);
-      break;
+    aDomain = GeomProp::CurveDomain{theCurve->FirstParameter(), theCurve->LastParameter()};
+    while (aBasis->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
+    {
+      aBasis = occ::down_cast<Geom_TrimmedCurve>(aBasis)->BasisCurve();
+    }
+  }
+
+  // Type detection using DynamicType() - extracted once to avoid repeated virtual calls.
+  const occ::handle<Standard_Type>& aType = aBasis->DynamicType();
+  if (aType == STANDARD_TYPE(Geom_Line))
+  {
+    myCurveType = GeomAbs_Line;
+    myEvaluator.emplace<GeomProp_Line>(aBasis, aDomain, theOrder);
+  }
+  else if (aType == STANDARD_TYPE(Geom_Circle))
+  {
+    myCurveType = GeomAbs_Circle;
+    myEvaluator.emplace<GeomProp_Circle>(aBasis, aDomain, theOrder);
+  }
+  else if (aType == STANDARD_TYPE(Geom_Ellipse))
+  {
+    myCurveType = GeomAbs_Ellipse;
+    myEvaluator.emplace<GeomProp_Ellipse>(aBasis, aDomain, theOrder);
+  }
+  else if (aType == STANDARD_TYPE(Geom_Hyperbola))
+  {
+    myCurveType = GeomAbs_Hyperbola;
+    myEvaluator.emplace<GeomProp_Hyperbola>(aBasis, aDomain, theOrder);
+  }
+  else if (aType == STANDARD_TYPE(Geom_Parabola))
+  {
+    myCurveType = GeomAbs_Parabola;
+    myEvaluator.emplace<GeomProp_Parabola>(aBasis, aDomain, theOrder);
+  }
+  else if (aType == STANDARD_TYPE(Geom_BezierCurve))
+  {
+    myCurveType = GeomAbs_BezierCurve;
+    myEvaluator.emplace<GeomProp_BezierCurve>(aBasis, aDomain, theOrder);
+  }
+  else if (aType == STANDARD_TYPE(Geom_BSplineCurve))
+  {
+    myCurveType = GeomAbs_BSplineCurve;
+    myEvaluator.emplace<GeomProp_BSplineCurve>(aBasis, aDomain, theOrder);
+  }
+  else if (aType == STANDARD_TYPE(Geom_OffsetCurve))
+  {
+    myCurveType = GeomAbs_OffsetCurve;
+    myEvaluator.emplace<GeomProp_OffsetCurve>(aBasis, aDomain, theOrder);
+  }
+  else
+  {
+    myCurveType = GeomAbs_OtherCurve;
+    myEvaluator.emplace<GeomProp_OtherCurve>(aBasis, aDomain, theOrder);
   }
 }
 
 //=================================================================================================
 
-const GeomAdaptor_Curve* GeomProp_Curve::Adaptor() const
+void GeomProp_Curve::SetDerivOrder(const GeomProp::CurveDerivOrder theOrder)
+{
+  std::visit(
+    [theOrder](auto& theEval) {
+      using T = std::decay_t<decltype(theEval)>;
+      if constexpr (!std::is_same_v<T, std::monostate>)
+      {
+        theEval.SetDerivOrder(theOrder);
+      }
+    },
+    myEvaluator);
+}
+
+//=================================================================================================
+
+GeomProp::CurveDerivOrder GeomProp_Curve::DerivOrder() const
 {
   return std::visit(
-    [](const auto& theEval) -> const GeomAdaptor_Curve* {
+    [](const auto& theEval) -> GeomProp::CurveDerivOrder {
       using T = std::decay_t<decltype(theEval)>;
       if constexpr (std::is_same_v<T, std::monostate>)
-        return nullptr;
+      {
+        return GeomProp::CurveDerivOrder::Undefined;
+      }
       else
-        return theEval.Adaptor();
+      {
+        return theEval.DerivOrder();
+      }
+    },
+    myEvaluator);
+}
+
+//=================================================================================================
+
+const Adaptor3d_Curve* GeomProp_Curve::Adaptor() const
+{
+  if (!myOwnedAdaptor.IsNull())
+  {
+    return myOwnedAdaptor.get();
+  }
+  return nullptr;
+}
+
+//=================================================================================================
+
+const Geom_Curve* GeomProp_Curve::Geometry() const
+{
+  return std::visit(
+    [](const auto& theEval) -> const Geom_Curve* {
+      using T = std::decay_t<decltype(theEval)>;
+      if constexpr (std::is_same_v<T, std::monostate>)
+      {
+        return nullptr;
+      }
+      else
+      {
+        return theEval.Geometry();
+      }
     },
     myEvaluator);
 }

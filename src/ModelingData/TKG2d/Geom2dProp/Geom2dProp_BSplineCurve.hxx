@@ -14,10 +14,13 @@
 #ifndef _Geom2dProp_BSplineCurve_HeaderFile
 #define _Geom2dProp_BSplineCurve_HeaderFile
 
+#include <Geom2d_Curve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dProp.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
+
+#include <optional>
 
 //! @brief Local differential properties for a 2D B-spline curve.
 //!
@@ -25,9 +28,9 @@
 //! For B-splines with continuity less than C3, the parameter range is subdivided
 //! into C3 intervals for more robust root-finding.
 //!
-//! @warning The caller must ensure that the adaptor pointer remains valid
-//! for the entire lifetime of this object. This class does not manage
-//! the adaptor's lifetime.
+//! Can be constructed from either a Geom2dAdaptor_Curve pointer or a occ::handle<Geom2d_Curve>.
+//! When constructed from a handle, no adaptor is created; for complex methods
+//! (FindCurvatureExtrema, FindInflections) a stack-local adaptor is created on demand.
 class Geom2dProp_BSplineCurve
 {
 public:
@@ -35,8 +38,25 @@ public:
 
   //! Constructor with adaptor pointer (non-owning).
   //! @param theAdaptor the 2D curve adaptor (must wrap a B-spline curve, must not be null)
-  Geom2dProp_BSplineCurve(const Geom2dAdaptor_Curve* theAdaptor)
-      : myAdaptor(theAdaptor)
+  Geom2dProp_BSplineCurve(
+    const Geom2dAdaptor_Curve*  theAdaptor,
+    Geom2dProp::CurveDerivOrder theOrder = Geom2dProp::CurveDerivOrder::Curvature)
+      : myAdaptor(theAdaptor),
+        myRequestedOrder(theOrder)
+  {
+  }
+
+  //! Constructor from geometry handle.
+  //! @param theCurve the 2D B-spline curve geometry
+  //! @param theDomain optional parameter domain (for trimmed curves)
+  Geom2dProp_BSplineCurve(
+    const occ::handle<Geom2d_Curve>&              theCurve,
+    const std::optional<Geom2dProp::CurveDomain>& theDomain = std::nullopt,
+    Geom2dProp::CurveDerivOrder                   theOrder = Geom2dProp::CurveDerivOrder::Curvature)
+      : myAdaptor(nullptr),
+        myRequestedOrder(theOrder),
+        myCurve(theCurve),
+        myDomain(theDomain)
   {
   }
 
@@ -46,8 +66,17 @@ public:
   Geom2dProp_BSplineCurve(Geom2dProp_BSplineCurve&&)                 = delete;
   Geom2dProp_BSplineCurve& operator=(Geom2dProp_BSplineCurve&&)      = delete;
 
-  //! Returns the adaptor pointer.
+  //! Sets the derivative caching order.
+  void SetDerivOrder(Geom2dProp::CurveDerivOrder theOrder) { myRequestedOrder = theOrder; }
+
+  //! Returns the derivative caching order.
+  Geom2dProp::CurveDerivOrder DerivOrder() const { return myRequestedOrder; }
+
+  //! Returns the adaptor pointer (nullptr when constructed from handle).
   const Geom2dAdaptor_Curve* Adaptor() const { return myAdaptor; }
+
+  //! Returns pointer to underlying geometry, or nullptr if constructed from adaptor.
+  const Geom2d_Curve* Geometry() const { return myCurve.get(); }
 
   //! Compute tangent at given parameter.
   Standard_EXPORT Geom2dProp::TangentResult Tangent(double theParam, double theTol) const;
@@ -70,7 +99,11 @@ public:
   Standard_EXPORT Geom2dProp::CurveAnalysis FindInflections() const;
 
 private:
-  const Geom2dAdaptor_Curve* myAdaptor;
+  const Geom2dAdaptor_Curve*             myAdaptor;
+  Geom2dProp::CurveDerivOrder            myRequestedOrder;
+  mutable Geom2dProp::CurveCache         myCache;
+  occ::handle<Geom2d_Curve>              myCurve;  //!< Geometry handle (handle path)
+  std::optional<Geom2dProp::CurveDomain> myDomain; //!< Optional parameter domain
 };
 
 #endif // _Geom2dProp_BSplineCurve_HeaderFile

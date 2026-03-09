@@ -14,19 +14,21 @@
 #ifndef _Geom2dProp_Parabola_HeaderFile
 #define _Geom2dProp_Parabola_HeaderFile
 
+#include <Geom2d_Curve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dProp.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
+
+#include <optional>
 
 //! @brief Local differential properties for a 2D parabola.
 //!
 //! A parabola has a single curvature extremum (maximum |curvature|) at parameter 0
 //! (the vertex). No inflection points exist.
 //!
-//! @warning The caller must ensure that the adaptor pointer remains valid
-//! for the entire lifetime of this object. This class does not manage
-//! the adaptor's lifetime.
+//! Can be constructed from either a Geom2dAdaptor_Curve pointer or a occ::handle<Geom2d_Curve>.
+//! When constructed from a handle, no adaptor is created.
 class Geom2dProp_Parabola
 {
 public:
@@ -34,9 +36,24 @@ public:
 
   //! Constructor with adaptor pointer (non-owning).
   //! @param theAdaptor the 2D curve adaptor (must wrap a parabola, must not be null)
-  Geom2dProp_Parabola(const Geom2dAdaptor_Curve* theAdaptor)
+  Geom2dProp_Parabola(const Geom2dAdaptor_Curve*  theAdaptor,
+                      Geom2dProp::CurveDerivOrder theOrder = Geom2dProp::CurveDerivOrder::Undefined)
       : myAdaptor(theAdaptor)
   {
+    (void)theOrder;
+  }
+
+  //! Constructor from geometry handle.
+  //! @param theCurve the 2D parabola geometry
+  //! @param theDomain optional parameter domain (for trimmed curves)
+  Geom2dProp_Parabola(const occ::handle<Geom2d_Curve>&              theCurve,
+                      const std::optional<Geom2dProp::CurveDomain>& theDomain = std::nullopt,
+                      Geom2dProp::CurveDerivOrder theOrder = Geom2dProp::CurveDerivOrder::Undefined)
+      : myAdaptor(nullptr),
+        myCurve(theCurve),
+        myDomain(theDomain)
+  {
+    (void)theOrder;
   }
 
   //! Non-copyable and non-movable.
@@ -45,8 +62,17 @@ public:
   Geom2dProp_Parabola(Geom2dProp_Parabola&&)                 = delete;
   Geom2dProp_Parabola& operator=(Geom2dProp_Parabola&&)      = delete;
 
-  //! Returns the adaptor pointer.
+  //! Sets the derivative caching order (no-op for analytical curves).
+  void SetDerivOrder(Geom2dProp::CurveDerivOrder) {}
+
+  //! Returns the derivative caching order (always Undefined for analytical curves).
+  Geom2dProp::CurveDerivOrder DerivOrder() const { return Geom2dProp::CurveDerivOrder::Undefined; }
+
+  //! Returns the adaptor pointer (nullptr when constructed from handle).
   const Geom2dAdaptor_Curve* Adaptor() const { return myAdaptor; }
+
+  //! Returns pointer to underlying geometry, or nullptr if constructed from adaptor.
+  const Geom2d_Curve* Geometry() const { return myCurve.get(); }
 
   //! Compute tangent at given parameter.
   Standard_EXPORT Geom2dProp::TangentResult Tangent(double theParam, double theTol) const;
@@ -69,7 +95,9 @@ public:
   Geom2dProp::CurveAnalysis FindInflections() const { return {{}, true}; }
 
 private:
-  const Geom2dAdaptor_Curve* myAdaptor;
+  const Geom2dAdaptor_Curve*             myAdaptor; //!< Non-owning adaptor pointer (adaptor path)
+  occ::handle<Geom2d_Curve>              myCurve;   //!< Geometry handle (handle path)
+  std::optional<Geom2dProp::CurveDomain> myDomain;  //!< Optional parameter domain
 };
 
 #endif // _Geom2dProp_Parabola_HeaderFile

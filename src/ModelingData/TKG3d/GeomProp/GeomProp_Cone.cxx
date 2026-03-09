@@ -19,13 +19,20 @@ GeomProp::SurfaceNormalResult GeomProp_Cone::Normal(const double theU,
                                                     const double theV,
                                                     const double theTol) const
 {
-  if (myAdaptor == nullptr)
+  gp_Pnt aPnt;
+  gp_Vec aD1U, aD1V;
+  if (!mySurface.IsNull())
+  {
+    mySurface->D1(theU, theV, aPnt, aD1U, aD1V);
+  }
+  else if (myAdaptor != nullptr)
+  {
+    myAdaptor->D1(theU, theV, aPnt, aD1U, aD1V);
+  }
+  else
   {
     return {{}, false};
   }
-  gp_Pnt aPnt;
-  gp_Vec aD1U, aD1V;
-  myAdaptor->D1(theU, theV, aPnt, aD1U, aD1V);
   return GeomProp::ComputeSurfaceNormal(aD1U, aD1V, theTol);
 }
 
@@ -35,13 +42,20 @@ GeomProp::SurfaceCurvatureResult GeomProp_Cone::Curvatures(const double theU,
                                                            const double theV,
                                                            const double theTol) const
 {
-  if (myAdaptor == nullptr)
+  gp_Pnt aPnt;
+  gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
+  if (!mySurface.IsNull())
+  {
+    mySurface->D2(theU, theV, aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV);
+  }
+  else if (myAdaptor != nullptr)
+  {
+    myAdaptor->D2(theU, theV, aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV);
+  }
+  else
   {
     return {};
   }
-  gp_Pnt aPnt;
-  gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
-  myAdaptor->D2(theU, theV, aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV);
   return GeomProp::ComputeSurfaceCurvatures(aD1U, aD1V, aD2U, aD2V, aD2UV, theTol);
 }
 
@@ -51,12 +65,19 @@ GeomProp::MeanGaussianResult GeomProp_Cone::MeanGaussian(const double theU,
                                                          const double theV,
                                                          const double theTol) const
 {
-  if (myAdaptor == nullptr)
+  gp_Pnt aPnt;
+  gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
+  if (!mySurface.IsNull())
+  {
+    mySurface->D2(theU, theV, aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV);
+  }
+  else if (myAdaptor != nullptr)
+  {
+    myAdaptor->D2(theU, theV, aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV);
+  }
+  else
   {
     return {};
   }
-  gp_Pnt aPnt;
-  gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
-  myAdaptor->D2(theU, theV, aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV);
   return GeomProp::ComputeMeanGaussian(aD1U, aD1V, aD2U, aD2V, aD2UV, theTol);
 }

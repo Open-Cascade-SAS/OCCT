@@ -31,53 +31,70 @@ Geom2dLProp_CurAndInf2d::Geom2dLProp_CurAndInf2d()
 
 void Geom2dLProp_CurAndInf2d::Perform(const occ::handle<Geom2d_Curve>& C)
 {
-  PerformCurExt(C);
-  PerformInf(C);
+  Clear();
+  isDone = true;
+  performCurExt(C);
+  performInf(C);
 }
 
 //=================================================================================================
 
 void Geom2dLProp_CurAndInf2d::PerformCurExt(const occ::handle<Geom2d_Curve>& C)
 {
+  Clear();
   isDone = true;
+  performCurExt(C);
+}
 
-  Geom2dAdaptor_Curve         CC(C);
-  LProp_AnalyticCurInf        AC;
-  Geom2dLProp_NumericCurInf2d NC;
-  GeomAbs_CurveType           CType = CC.GetType();
+//=================================================================================================
 
-  switch (CType)
+void Geom2dLProp_CurAndInf2d::performCurExt(const occ::handle<Geom2d_Curve>& theCurve)
+{
+  Geom2dAdaptor_Curve         anAdaptor(theCurve);
+  LProp_AnalyticCurInf        anAnalyticInf;
+  Geom2dLProp_NumericCurInf2d aNumericInf;
+  const GeomAbs_CurveType     aCurveType = anAdaptor.GetType();
+
+  switch (aCurveType)
   {
     case GeomAbs_Line:
       break;
     case GeomAbs_Circle:
       break;
     case GeomAbs_Ellipse:
-      AC.Perform(CType, CC.FirstParameter(), CC.LastParameter(), *this);
+      anAnalyticInf.Perform(aCurveType,
+                            anAdaptor.FirstParameter(),
+                            anAdaptor.LastParameter(),
+                            *this);
       break;
     case GeomAbs_Hyperbola:
-      AC.Perform(CType, CC.FirstParameter(), CC.LastParameter(), *this);
+      anAnalyticInf.Perform(aCurveType,
+                            anAdaptor.FirstParameter(),
+                            anAdaptor.LastParameter(),
+                            *this);
       break;
     case GeomAbs_Parabola:
-      AC.Perform(CType, CC.FirstParameter(), CC.LastParameter(), *this);
+      anAnalyticInf.Perform(aCurveType,
+                            anAdaptor.FirstParameter(),
+                            anAdaptor.LastParameter(),
+                            *this);
       break;
     case GeomAbs_BSplineCurve:
-      if (CC.Continuity() >= GeomAbs_C3)
+      if (anAdaptor.Continuity() >= GeomAbs_C3)
       {
-        NC.PerformCurExt(C, *this);
-        isDone = NC.IsDone();
+        aNumericInf.PerformCurExt(theCurve, *this);
+        isDone = aNumericInf.IsDone();
       }
       else
       {
-        // Decoupage en intervalles C3.
-        isDone                           = true;
-        int                        NbInt = CC.NbIntervals(GeomAbs_C3);
-        NCollection_Array1<double> Param(1, NbInt + 1);
-        CC.Intervals(Param, GeomAbs_C3);
-        for (int i = 1; i <= NbInt; i++)
+        isDone                                  = true;
+        const int                  aNbIntervals = anAdaptor.NbIntervals(GeomAbs_C3);
+        NCollection_Array1<double> aParams(1, aNbIntervals + 1);
+        anAdaptor.Intervals(aParams, GeomAbs_C3);
+        for (int i = 1; i <= aNbIntervals; i++)
         {
-          NC.PerformCurExt(C, Param(i), Param(i + 1), *this);
-          if (!NC.IsDone())
+          aNumericInf.PerformCurExt(theCurve, aParams(i), aParams(i + 1), *this);
+          if (!aNumericInf.IsDone())
           {
             isDone = false;
           }
@@ -86,8 +103,8 @@ void Geom2dLProp_CurAndInf2d::PerformCurExt(const occ::handle<Geom2d_Curve>& C)
       break;
 
     default: {
-      NC.PerformCurExt(C, *this);
-      isDone = NC.IsDone();
+      aNumericInf.PerformCurExt(theCurve, *this);
+      isDone = aNumericInf.IsDone();
     }
     break;
   }
@@ -97,13 +114,20 @@ void Geom2dLProp_CurAndInf2d::PerformCurExt(const occ::handle<Geom2d_Curve>& C)
 
 void Geom2dLProp_CurAndInf2d::PerformInf(const occ::handle<Geom2d_Curve>& C)
 {
+  Clear();
   isDone = true;
+  performInf(C);
+}
 
-  Geom2dAdaptor_Curve         CC(C);
-  GeomAbs_CurveType           CType = CC.GetType();
-  Geom2dLProp_NumericCurInf2d NC;
+//=================================================================================================
 
-  switch (CType)
+void Geom2dLProp_CurAndInf2d::performInf(const occ::handle<Geom2d_Curve>& theCurve)
+{
+  Geom2dAdaptor_Curve         anAdaptor(theCurve);
+  const GeomAbs_CurveType     aCurveType = anAdaptor.GetType();
+  Geom2dLProp_NumericCurInf2d aNumericInf;
+
+  switch (aCurveType)
   {
     case GeomAbs_Line:
       break;
@@ -116,23 +140,22 @@ void Geom2dLProp_CurAndInf2d::PerformInf(const occ::handle<Geom2d_Curve>& C)
     case GeomAbs_Parabola:
       break;
     case GeomAbs_BSplineCurve:
-      if (CC.Continuity() >= GeomAbs_C3)
+      if (anAdaptor.Continuity() >= GeomAbs_C3)
       {
-        NC.PerformInf(C, *this);
-        isDone = NC.IsDone();
+        aNumericInf.PerformInf(theCurve, *this);
+        isDone = aNumericInf.IsDone();
       }
       else
       {
-        // Decoupage en intervalles C3.
-        isDone                           = true;
-        int                        NbInt = CC.NbIntervals(GeomAbs_C3);
-        NCollection_Array1<double> Param(1, NbInt + 1);
-        CC.Intervals(Param, GeomAbs_C3);
+        isDone                                  = true;
+        const int                  aNbIntervals = anAdaptor.NbIntervals(GeomAbs_C3);
+        NCollection_Array1<double> aParams(1, aNbIntervals + 1);
+        anAdaptor.Intervals(aParams, GeomAbs_C3);
 
-        for (int i = 1; i <= NbInt; i++)
+        for (int i = 1; i <= aNbIntervals; i++)
         {
-          NC.PerformInf(C, Param(i), Param(i + 1), *this);
-          if (!NC.IsDone())
+          aNumericInf.PerformInf(theCurve, aParams(i), aParams(i + 1), *this);
+          if (!aNumericInf.IsDone())
           {
             isDone = false;
           }
@@ -141,8 +164,8 @@ void Geom2dLProp_CurAndInf2d::PerformInf(const occ::handle<Geom2d_Curve>& C)
       break;
 
     default: {
-      NC.PerformInf(C, *this);
-      isDone = NC.IsDone();
+      aNumericInf.PerformInf(theCurve, *this);
+      isDone = aNumericInf.IsDone();
     }
     break;
   }

@@ -18,13 +18,15 @@
 #include <GeomProp.hxx>
 #include <Standard_DefineAlloc.hxx>
 
+#include <optional>
+
 //! @brief Local differential properties for a spherical surface.
 //!
 //! Analytical implementation: constant curvature 1/R, umbilic everywhere.
 //! Both principal curvatures equal 1/R.
 //!
-//! @warning The caller must ensure that the adaptor pointer remains valid
-//! for the entire lifetime of this object.
+//! Can be constructed from either a GeomAdaptor_Surface pointer or a occ::handle<Geom_Surface>.
+//! When constructed from a handle, no adaptor is created.
 class GeomProp_Sphere
 {
 public:
@@ -32,9 +34,24 @@ public:
 
   //! Constructor with adaptor pointer (non-owning).
   //! @param theAdaptor the surface adaptor (must not be null)
-  GeomProp_Sphere(const GeomAdaptor_Surface* theAdaptor)
+  GeomProp_Sphere(const GeomAdaptor_Surface*  theAdaptor,
+                  GeomProp::SurfaceDerivOrder theOrder = GeomProp::SurfaceDerivOrder::Undefined)
       : myAdaptor(theAdaptor)
   {
+    (void)theOrder;
+  }
+
+  //! Constructor from geometry handle.
+  //! @param theSurface the 3D spherical surface geometry
+  //! @param theDomain optional parameter domain (for trimmed surfaces)
+  GeomProp_Sphere(const occ::handle<Geom_Surface>&              theSurface,
+                  const std::optional<GeomProp::SurfaceDomain>& theDomain = std::nullopt,
+                  GeomProp::SurfaceDerivOrder theOrder = GeomProp::SurfaceDerivOrder::Undefined)
+      : myAdaptor(nullptr),
+        mySurface(theSurface),
+        myDomain(theDomain)
+  {
+    (void)theOrder;
   }
 
   //! Non-copyable and non-movable.
@@ -43,53 +60,83 @@ public:
   GeomProp_Sphere(GeomProp_Sphere&&)                 = delete;
   GeomProp_Sphere& operator=(GeomProp_Sphere&&)      = delete;
 
-  //! Returns the adaptor pointer.
+  //! Sets the derivative caching order (no-op for analytical surfaces).
+  void SetDerivOrder(GeomProp::SurfaceDerivOrder) {}
+
+  //! Returns the derivative caching order (always Undefined for analytical surfaces).
+  GeomProp::SurfaceDerivOrder DerivOrder() const { return GeomProp::SurfaceDerivOrder::Undefined; }
+
+  //! Returns the adaptor pointer (nullptr when constructed from handle).
   const GeomAdaptor_Surface* Adaptor() const { return myAdaptor; }
+
+  //! Returns pointer to underlying geometry, or nullptr if constructed from adaptor.
+  const Geom_Surface* Geometry() const { return mySurface.get(); }
 
   //! Compute surface normal at given (U, V) parameter.
   //! For a sphere, the normal is radially outward from the center.
-  //! TODO: At poles (V = +/-PI/2), D1U degenerates and Normal returns IsDefined=false.
-  //!   Could use analytical normal (radial direction from center) for these special cases.
   GeomProp::SurfaceNormalResult Normal(double theU, double theV, double theTol) const
   {
-    if (myAdaptor == nullptr)
+    gp_Pnt aPnt;
+    gp_Vec aD1U, aD1V;
+    if (!mySurface.IsNull())
+    {
+      mySurface->D1(theU, theV, aPnt, aD1U, aD1V);
+    }
+    else if (myAdaptor != nullptr)
+    {
+      myAdaptor->D1(theU, theV, aPnt, aD1U, aD1V);
+    }
+    else
     {
       return {{}, false};
     }
-    gp_Pnt aPnt;
-    gp_Vec aD1U, aD1V;
-    myAdaptor->D1(theU, theV, aPnt, aD1U, aD1V);
     return GeomProp::ComputeSurfaceNormal(aD1U, aD1V, theTol);
   }
 
   //! Compute principal curvatures using fundamental forms for correct sign convention.
   GeomProp::SurfaceCurvatureResult Curvatures(double theU, double theV, double theTol) const
   {
-    if (myAdaptor == nullptr)
+    gp_Pnt aPnt;
+    gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
+    if (!mySurface.IsNull())
+    {
+      mySurface->D2(theU, theV, aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV);
+    }
+    else if (myAdaptor != nullptr)
+    {
+      myAdaptor->D2(theU, theV, aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV);
+    }
+    else
     {
       return {};
     }
-    gp_Pnt aPnt;
-    gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
-    myAdaptor->D2(theU, theV, aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV);
     return GeomProp::ComputeSurfaceCurvatures(aD1U, aD1V, aD2U, aD2V, aD2UV, theTol);
   }
 
   //! Compute mean and Gaussian curvatures using fundamental forms for correct sign convention.
   GeomProp::MeanGaussianResult MeanGaussian(double theU, double theV, double theTol) const
   {
-    if (myAdaptor == nullptr)
+    gp_Pnt aPnt;
+    gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
+    if (!mySurface.IsNull())
+    {
+      mySurface->D2(theU, theV, aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV);
+    }
+    else if (myAdaptor != nullptr)
+    {
+      myAdaptor->D2(theU, theV, aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV);
+    }
+    else
     {
       return {};
     }
-    gp_Pnt aPnt;
-    gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
-    myAdaptor->D2(theU, theV, aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV);
     return GeomProp::ComputeMeanGaussian(aD1U, aD1V, aD2U, aD2V, aD2UV, theTol);
   }
 
 private:
-  const GeomAdaptor_Surface* myAdaptor;
+  const GeomAdaptor_Surface*             myAdaptor;
+  occ::handle<Geom_Surface>              mySurface; //!< Geometry handle (handle path)
+  std::optional<GeomProp::SurfaceDomain> myDomain;  //!< Optional parameter domain
 };
 
 #endif // _GeomProp_Sphere_HeaderFile

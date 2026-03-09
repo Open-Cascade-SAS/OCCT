@@ -68,6 +68,12 @@ public:
   Standard_EXPORT bool IsDone() const;
 
 private:
+  //! Internal implementation of curvature extrema computation (no Clear).
+  void performCurExt(const occ::handle<Geom2d_Curve>& theCurve);
+
+  //! Internal implementation of inflection computation (no Clear).
+  void performInf(const occ::handle<Geom2d_Curve>& theCurve);
+
   bool isDone;
 };
 

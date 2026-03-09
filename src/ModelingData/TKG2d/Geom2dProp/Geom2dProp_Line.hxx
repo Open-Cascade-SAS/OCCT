@@ -14,18 +14,20 @@
 #ifndef _Geom2dProp_Line_HeaderFile
 #define _Geom2dProp_Line_HeaderFile
 
+#include <Geom2d_Line.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dProp.hxx>
 #include <Standard_DefineAlloc.hxx>
+
+#include <optional>
 
 //! @brief Local differential properties for a 2D line.
 //!
 //! A line has constant tangent, zero curvature, undefined normal and centre.
 //! No curvature extrema or inflection points exist.
 //!
-//! @warning The caller must ensure that the adaptor pointer remains valid
-//! for the entire lifetime of this object. This class does not manage
-//! the adaptor's lifetime.
+//! Can be constructed from either a Geom2dAdaptor_Curve pointer or a occ::handle<Geom2d_Curve>.
+//! When constructed from a handle, no adaptor is created.
 class Geom2dProp_Line
 {
 public:
@@ -33,9 +35,25 @@ public:
 
   //! Constructor with adaptor pointer (non-owning).
   //! @param theAdaptor the 2D curve adaptor (must wrap a line, must not be null)
-  Geom2dProp_Line(const Geom2dAdaptor_Curve* theAdaptor)
-      : myAdaptor(theAdaptor)
+  Geom2dProp_Line(const Geom2dAdaptor_Curve*  theAdaptor,
+                  Geom2dProp::CurveDerivOrder theOrder = Geom2dProp::CurveDerivOrder::Undefined)
+      : myAdaptor(theAdaptor),
+        myCurve(theAdaptor->Curve())
   {
+    (void)theOrder;
+  }
+
+  //! Constructor from geometry handle.
+  //! @param theCurve the 2D line geometry (must be a Geom2d_Line or downcastable to it)
+  //! @param theDomain optional parameter domain (unused for line)
+  Geom2dProp_Line(const occ::handle<Geom2d_Curve>&              theCurve,
+                  const std::optional<Geom2dProp::CurveDomain>& theDomain = std::nullopt,
+                  Geom2dProp::CurveDerivOrder theOrder = Geom2dProp::CurveDerivOrder::Undefined)
+      : myAdaptor(nullptr),
+        myCurve(theCurve)
+  {
+    (void)theDomain;
+    (void)theOrder;
   }
 
   //! Non-copyable and non-movable.
@@ -44,8 +62,17 @@ public:
   Geom2dProp_Line(Geom2dProp_Line&&)                 = delete;
   Geom2dProp_Line& operator=(Geom2dProp_Line&&)      = delete;
 
-  //! Returns the adaptor pointer.
+  //! Sets the derivative caching order (no-op for analytical curves).
+  void SetDerivOrder(Geom2dProp::CurveDerivOrder) {}
+
+  //! Returns the derivative caching order (always Undefined for analytical curves).
+  Geom2dProp::CurveDerivOrder DerivOrder() const { return Geom2dProp::CurveDerivOrder::Undefined; }
+
+  //! Returns the adaptor pointer (nullptr when constructed from handle).
   const Geom2dAdaptor_Curve* Adaptor() const { return myAdaptor; }
+
+  //! Returns pointer to underlying geometry, or nullptr if constructed from adaptor.
+  const Geom2d_Curve* Geometry() const { return myCurve.get(); }
 
   //! Compute tangent at given parameter.
   //! For a line, the tangent is always the line direction.
@@ -56,7 +83,7 @@ public:
   {
     (void)theParam;
     (void)theTol;
-    return {myAdaptor->Line().Direction(), true};
+    return {occ::down_cast<Geom2d_Line>(myCurve)->Direction(), true};
   }
 
   //! Compute curvature at given parameter.
@@ -106,7 +133,8 @@ public:
   Geom2dProp::CurveAnalysis FindInflections() const { return {{}, true}; }
 
 private:
-  const Geom2dAdaptor_Curve* myAdaptor;
+  const Geom2dAdaptor_Curve* myAdaptor = nullptr; //!< Non-owning adaptor pointer (adaptor path)
+  occ::handle<Geom2d_Curve>  myCurve;             //!< Geometry handle (handle path)
 };
 
 #endif // _Geom2dProp_Line_HeaderFile

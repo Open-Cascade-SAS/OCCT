@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <GeomProp_SurfaceOfExtrusion.hxx>
+#include <GeomProp_SurfaceAnalysisTools.pxx>
 
 //=================================================================================================
 
@@ -19,14 +20,21 @@ GeomProp::SurfaceNormalResult GeomProp_SurfaceOfExtrusion::Normal(const double t
                                                                   const double theV,
                                                                   const double theTol) const
 {
-  if (myAdaptor == nullptr)
+  if (!mySurface.IsNull())
   {
-    return {{}, false};
+    return GeomProp_SurfaceAnalysisTools::EvaluateNormalCached(mySurface.get(),
+                                                               theU,
+                                                               theV,
+                                                               theTol,
+                                                               myRequestedOrder,
+                                                               myCache);
   }
-  gp_Pnt aPnt;
-  gp_Vec aD1U, aD1V;
-  myAdaptor->D1(theU, theV, aPnt, aD1U, aD1V);
-  return GeomProp::ComputeSurfaceNormal(aD1U, aD1V, theTol);
+  return GeomProp_SurfaceAnalysisTools::EvaluateNormalCached(myAdaptor,
+                                                             theU,
+                                                             theV,
+                                                             theTol,
+                                                             myRequestedOrder,
+                                                             myCache);
 }
 
 //=================================================================================================
@@ -35,14 +43,21 @@ GeomProp::SurfaceCurvatureResult GeomProp_SurfaceOfExtrusion::Curvatures(const d
                                                                          const double theV,
                                                                          const double theTol) const
 {
-  if (myAdaptor == nullptr)
+  if (!mySurface.IsNull())
   {
-    return {};
+    return GeomProp_SurfaceAnalysisTools::EvaluateCurvaturesCached(mySurface.get(),
+                                                                   theU,
+                                                                   theV,
+                                                                   theTol,
+                                                                   myRequestedOrder,
+                                                                   myCache);
   }
-  gp_Pnt aPnt;
-  gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
-  myAdaptor->D2(theU, theV, aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV);
-  return GeomProp::ComputeSurfaceCurvatures(aD1U, aD1V, aD2U, aD2V, aD2UV, theTol);
+  return GeomProp_SurfaceAnalysisTools::EvaluateCurvaturesCached(myAdaptor,
+                                                                 theU,
+                                                                 theV,
+                                                                 theTol,
+                                                                 myRequestedOrder,
+                                                                 myCache);
 }
 
 //=================================================================================================
@@ -51,12 +66,19 @@ GeomProp::MeanGaussianResult GeomProp_SurfaceOfExtrusion::MeanGaussian(const dou
                                                                        const double theV,
                                                                        const double theTol) const
 {
-  if (myAdaptor == nullptr)
+  if (!mySurface.IsNull())
   {
-    return {};
+    return GeomProp_SurfaceAnalysisTools::EvaluateMeanGaussianCached(mySurface.get(),
+                                                                     theU,
+                                                                     theV,
+                                                                     theTol,
+                                                                     myRequestedOrder,
+                                                                     myCache);
   }
-  gp_Pnt aPnt;
-  gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
-  myAdaptor->D2(theU, theV, aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV);
-  return GeomProp::ComputeMeanGaussian(aD1U, aD1V, aD2U, aD2V, aD2UV, theTol);
+  return GeomProp_SurfaceAnalysisTools::EvaluateMeanGaussianCached(myAdaptor,
+                                                                   theU,
+                                                                   theV,
+                                                                   theTol,
+                                                                   myRequestedOrder,
+                                                                   myCache);
 }

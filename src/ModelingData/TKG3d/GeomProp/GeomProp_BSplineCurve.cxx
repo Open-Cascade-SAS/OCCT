@@ -21,7 +21,19 @@
 GeomProp::TangentResult GeomProp_BSplineCurve::Tangent(const double theParam,
                                                        const double theTol) const
 {
-  return GeomProp_CurveAnalysisTools::EvaluateTangent(myAdaptor, theParam, theTol);
+  if (!myCurve.IsNull())
+  {
+    return GeomProp_CurveAnalysisTools::EvaluateTangentCached(myCurve.get(),
+                                                              theParam,
+                                                              theTol,
+                                                              myRequestedOrder,
+                                                              myCache);
+  }
+  return GeomProp_CurveAnalysisTools::EvaluateTangentCached(myAdaptor,
+                                                            theParam,
+                                                            theTol,
+                                                            myRequestedOrder,
+                                                            myCache);
 }
 
 //=================================================================================================
@@ -29,7 +41,19 @@ GeomProp::TangentResult GeomProp_BSplineCurve::Tangent(const double theParam,
 GeomProp::CurvatureResult GeomProp_BSplineCurve::Curvature(const double theParam,
                                                            const double theTol) const
 {
-  return GeomProp_CurveAnalysisTools::EvaluateCurvature(myAdaptor, theParam, theTol);
+  if (!myCurve.IsNull())
+  {
+    return GeomProp_CurveAnalysisTools::EvaluateCurvatureCached(myCurve.get(),
+                                                                theParam,
+                                                                theTol,
+                                                                myRequestedOrder,
+                                                                myCache);
+  }
+  return GeomProp_CurveAnalysisTools::EvaluateCurvatureCached(myAdaptor,
+                                                              theParam,
+                                                              theTol,
+                                                              myRequestedOrder,
+                                                              myCache);
 }
 
 //=================================================================================================
@@ -37,7 +61,19 @@ GeomProp::CurvatureResult GeomProp_BSplineCurve::Curvature(const double theParam
 GeomProp::NormalResult GeomProp_BSplineCurve::Normal(const double theParam,
                                                      const double theTol) const
 {
-  return GeomProp_CurveAnalysisTools::EvaluateNormal(myAdaptor, theParam, theTol);
+  if (!myCurve.IsNull())
+  {
+    return GeomProp_CurveAnalysisTools::EvaluateNormalCached(myCurve.get(),
+                                                             theParam,
+                                                             theTol,
+                                                             myRequestedOrder,
+                                                             myCache);
+  }
+  return GeomProp_CurveAnalysisTools::EvaluateNormalCached(myAdaptor,
+                                                           theParam,
+                                                           theTol,
+                                                           myRequestedOrder,
+                                                           myCache);
 }
 
 //=================================================================================================
@@ -45,13 +81,32 @@ GeomProp::NormalResult GeomProp_BSplineCurve::Normal(const double theParam,
 GeomProp::CentreResult GeomProp_BSplineCurve::CentreOfCurvature(const double theParam,
                                                                 const double theTol) const
 {
-  return GeomProp_CurveAnalysisTools::EvaluateCentreOfCurvature(myAdaptor, theParam, theTol);
+  if (!myCurve.IsNull())
+  {
+    return GeomProp_CurveAnalysisTools::EvaluateCentreOfCurvatureCached(myCurve.get(),
+                                                                        theParam,
+                                                                        theTol,
+                                                                        myRequestedOrder,
+                                                                        myCache);
+  }
+  return GeomProp_CurveAnalysisTools::EvaluateCentreOfCurvatureCached(myAdaptor,
+                                                                      theParam,
+                                                                      theTol,
+                                                                      myRequestedOrder,
+                                                                      myCache);
 }
 
 //=================================================================================================
 
 GeomProp::CurveAnalysis GeomProp_BSplineCurve::FindCurvatureExtrema() const
 {
+  if (!myCurve.IsNull())
+  {
+    const double      aFirst = myDomain.has_value() ? myDomain->First : myCurve->FirstParameter();
+    const double      aLast  = myDomain.has_value() ? myDomain->Last : myCurve->LastParameter();
+    GeomAdaptor_Curve anAdaptor(myCurve, aFirst, aLast);
+    return GeomProp_CurveAnalysisTools::FindCurvatureExtremaBySpans(&anAdaptor, GeomAbs_C3);
+  }
   return GeomProp_CurveAnalysisTools::FindCurvatureExtremaBySpans(myAdaptor, GeomAbs_C3);
 }
 
@@ -59,5 +114,12 @@ GeomProp::CurveAnalysis GeomProp_BSplineCurve::FindCurvatureExtrema() const
 
 GeomProp::CurveAnalysis GeomProp_BSplineCurve::FindInflections() const
 {
+  if (!myCurve.IsNull())
+  {
+    const double      aFirst = myDomain.has_value() ? myDomain->First : myCurve->FirstParameter();
+    const double      aLast  = myDomain.has_value() ? myDomain->Last : myCurve->LastParameter();
+    GeomAdaptor_Curve anAdaptor(myCurve, aFirst, aLast);
+    return GeomProp_CurveAnalysisTools::FindInflectionsBySpans(&anAdaptor, GeomAbs_C3);
+  }
   return GeomProp_CurveAnalysisTools::FindInflectionsBySpans(myAdaptor, GeomAbs_C3);
 }

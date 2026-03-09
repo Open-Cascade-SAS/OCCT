@@ -19,12 +19,14 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
+#include <optional>
+
 //! @brief Local differential properties for a surface of revolution.
 //!
-//! Uses numeric evaluation from adaptor derivatives.
+//! Uses numeric evaluation from surface derivatives.
 //!
-//! @warning The caller must ensure that the adaptor pointer remains valid
-//! for the entire lifetime of this object.
+//! Can be constructed from either a GeomAdaptor_Surface pointer or a occ::handle<Geom_Surface>.
+//! When constructed from a handle, no adaptor is created.
 class GeomProp_SurfaceOfRevolution
 {
 public:
@@ -32,8 +34,25 @@ public:
 
   //! Constructor with adaptor pointer (non-owning).
   //! @param theAdaptor the surface adaptor (must not be null)
-  GeomProp_SurfaceOfRevolution(const GeomAdaptor_Surface* theAdaptor)
-      : myAdaptor(theAdaptor)
+  GeomProp_SurfaceOfRevolution(
+    const GeomAdaptor_Surface*  theAdaptor,
+    GeomProp::SurfaceDerivOrder theOrder = GeomProp::SurfaceDerivOrder::Curvature)
+      : myAdaptor(theAdaptor),
+        myRequestedOrder(theOrder)
+  {
+  }
+
+  //! Constructor from geometry handle.
+  //! @param theSurface the 3D surface of revolution geometry
+  //! @param theDomain optional parameter domain (for trimmed surfaces)
+  GeomProp_SurfaceOfRevolution(
+    const occ::handle<Geom_Surface>&              theSurface,
+    const std::optional<GeomProp::SurfaceDomain>& theDomain = std::nullopt,
+    GeomProp::SurfaceDerivOrder                   theOrder = GeomProp::SurfaceDerivOrder::Curvature)
+      : myAdaptor(nullptr),
+        myRequestedOrder(theOrder),
+        mySurface(theSurface),
+        myDomain(theDomain)
   {
   }
 
@@ -43,8 +62,17 @@ public:
   GeomProp_SurfaceOfRevolution(GeomProp_SurfaceOfRevolution&&)                 = delete;
   GeomProp_SurfaceOfRevolution& operator=(GeomProp_SurfaceOfRevolution&&)      = delete;
 
-  //! Returns the adaptor pointer.
+  //! Sets the derivative caching order.
+  void SetDerivOrder(GeomProp::SurfaceDerivOrder theOrder) { myRequestedOrder = theOrder; }
+
+  //! Returns the derivative caching order.
+  GeomProp::SurfaceDerivOrder DerivOrder() const { return myRequestedOrder; }
+
+  //! Returns the adaptor pointer (nullptr when constructed from handle).
   const GeomAdaptor_Surface* Adaptor() const { return myAdaptor; }
+
+  //! Returns pointer to underlying geometry, or nullptr if constructed from adaptor.
+  const Geom_Surface* Geometry() const { return mySurface.get(); }
 
   //! Compute surface normal at given parameter.
   Standard_EXPORT GeomProp::SurfaceNormalResult Normal(double theU,
@@ -62,7 +90,11 @@ public:
                                                             double theTol) const;
 
 private:
-  const GeomAdaptor_Surface* myAdaptor;
+  const GeomAdaptor_Surface*             myAdaptor;
+  GeomProp::SurfaceDerivOrder            myRequestedOrder;
+  mutable GeomProp::SurfaceCache         myCache;
+  occ::handle<Geom_Surface>              mySurface; //!< Geometry handle (handle path)
+  std::optional<GeomProp::SurfaceDomain> myDomain;  //!< Optional parameter domain
 };
 
 #endif // _GeomProp_SurfaceOfRevolution_HeaderFile

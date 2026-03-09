@@ -201,8 +201,7 @@ TEST_F(Geom2dLProp_CLProps2dTest, Ellipse_CurvatureAtMinorVertex)
 
 TEST_F(Geom2dLProp_CLProps2dTest, SetCurve)
 {
-  // Start with empty props, then set curve
-  Geom2dLProp_CLProps2d aProps(2, Precision::Confusion());
+  Geom2dLProp_CLProps2d aProps(myEllipse, 0.0, 2, Precision::Confusion());
   aProps.SetCurve(myCircle);
   aProps.SetParameter(0.0);
 

@@ -14,11 +14,17 @@
 #ifndef _GeomProp_HeaderFile
 #define _GeomProp_HeaderFile
 
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <NCollection_DynamicArray.hxx>
 #include <Standard.hxx>
+
+#include <limits>
+#include <optional>
+#include <variant>
 
 //! @brief Namespace containing result structures and free functions for 3D curve
 //! and surface differential property computation.
@@ -28,6 +34,26 @@
 //! differential properties from derivative vectors.
 namespace GeomProp
 {
+
+// ============================================================================
+// Domain structures
+// ============================================================================
+
+//! Parameter domain for a 3D curve (used for trimmed curves).
+struct CurveDomain
+{
+  double First; //!< First parameter
+  double Last;  //!< Last parameter
+};
+
+//! Parameter domain for a 3D surface (used for rectangular trimmed surfaces).
+struct SurfaceDomain
+{
+  double FirstU; //!< First U parameter
+  double LastU;  //!< Last U parameter
+  double FirstV; //!< First V parameter
+  double LastV;  //!< Last V parameter
+};
 
 // ============================================================================
 // Curve result structures
@@ -112,6 +138,79 @@ struct MeanGaussianResult
   double MeanCurvature     = 0.0;   //!< Mean curvature H = (k1 + k2) / 2
   double GaussianCurvature = 0.0;   //!< Gaussian curvature K = k1 * k2
   bool   IsDefined         = false; //!< True if curvatures could be computed
+};
+
+// ============================================================================
+// Derivative caching
+// ============================================================================
+
+//! Derivative order for 3D curve property caching.
+//! Values must match std::variant alternative indices in CurveCache::Data.
+enum class CurveDerivOrder
+{
+  Undefined      = 0, //!< No caching specified (monostate)
+  Value          = 1, //!< Cache point only (gp_Pnt)
+  Tangent        = 2, //!< Cache up to D1 (Geom_Curve::ResD1)
+  Curvature      = 3, //!< Cache up to D2 (Geom_Curve::ResD2)
+  CurvatureDeriv = 4  //!< Cache up to D3 (Geom_Curve::ResD3)
+};
+
+//! Derivative order for 3D surface property caching.
+//! Values must match std::variant alternative indices in SurfaceCache::Data.
+enum class SurfaceDerivOrder
+{
+  Undefined = 0, //!< No caching specified (monostate)
+  Value     = 1, //!< Cache point only (gp_Pnt)
+  Normal    = 2, //!< Cache up to D1U + D1V (Geom_Surface::ResD1)
+  Curvature = 3  //!< Cache up to D2 (Geom_Surface::ResD2)
+};
+
+//! Cached 3D curve derivatives at a parameter value.
+//! @note The variant alternative indices must match CurveDerivOrder enum values.
+struct CurveCache
+{
+  double Param = std::numeric_limits<double>::quiet_NaN();
+  std::variant<std::monostate, gp_Pnt, Geom_Curve::ResD1, Geom_Curve::ResD2, Geom_Curve::ResD3>
+    Data;
+
+  bool IsValid(double theParam) const { return Param == theParam; }
+
+  CurveDerivOrder Order() const { return static_cast<CurveDerivOrder>(Data.index()); }
+
+  bool HasOrder(CurveDerivOrder theNeeded) const
+  {
+    return static_cast<int>(Order()) >= static_cast<int>(theNeeded);
+  }
+
+  void Invalidate()
+  {
+    Param = std::numeric_limits<double>::quiet_NaN();
+    Data.emplace<std::monostate>();
+  }
+};
+
+//! Cached 3D surface derivatives at a (U, V) parameter pair.
+//! @note The variant alternative indices must match SurfaceDerivOrder enum values.
+struct SurfaceCache
+{
+  double ParamU = std::numeric_limits<double>::quiet_NaN();
+  double ParamV = std::numeric_limits<double>::quiet_NaN();
+  std::variant<std::monostate, gp_Pnt, Geom_Surface::ResD1, Geom_Surface::ResD2> Data;
+
+  bool IsValid(double theU, double theV) const { return ParamU == theU && ParamV == theV; }
+
+  SurfaceDerivOrder Order() const { return static_cast<SurfaceDerivOrder>(Data.index()); }
+
+  bool HasOrder(SurfaceDerivOrder theNeeded) const
+  {
+    return static_cast<int>(Order()) >= static_cast<int>(theNeeded);
+  }
+
+  void Invalidate()
+  {
+    ParamU = ParamV = std::numeric_limits<double>::quiet_NaN();
+    Data.emplace<std::monostate>();
+  }
 };
 
 // ============================================================================
