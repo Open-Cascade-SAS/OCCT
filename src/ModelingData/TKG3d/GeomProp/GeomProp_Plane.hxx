@@ -47,12 +47,14 @@ public:
   //! @param theSurface the 3D plane geometry
   //! @param theDomain optional parameter domain (unused for plane)
   GeomProp_Plane(const occ::handle<Geom_Surface>&              theSurface,
-                 const std::optional<GeomProp::SurfaceDomain>& theDomain = std::nullopt)
+                 const std::optional<GeomProp::SurfaceDomain>& theDomain = std::nullopt,
+                 GeomProp::SurfaceDerivOrder                   theOrder  = GeomProp::SurfaceDerivOrder::Undefined)
       : myAdaptor(nullptr),
         mySurface(theSurface),
         myPosition(occ::down_cast<Geom_Plane>(theSurface)->Pln().Position()),
         myDomain(theDomain)
   {
+    (void)theOrder;
   }
 
   //! Non-copyable and non-movable.
@@ -60,6 +62,12 @@ public:
   GeomProp_Plane& operator=(const GeomProp_Plane&) = delete;
   GeomProp_Plane(GeomProp_Plane&&)                 = delete;
   GeomProp_Plane& operator=(GeomProp_Plane&&)      = delete;
+
+  //! Sets the derivative caching order (no-op for analytical surfaces).
+  void SetDerivOrder(GeomProp::SurfaceDerivOrder) {}
+
+  //! Returns the derivative caching order (always Undefined for analytical surfaces).
+  GeomProp::SurfaceDerivOrder DerivOrder() const { return GeomProp::SurfaceDerivOrder::Undefined; }
 
   //! Returns the adaptor pointer (nullptr when constructed from handle).
   const GeomAdaptor_Surface* Adaptor() const { return myAdaptor; }

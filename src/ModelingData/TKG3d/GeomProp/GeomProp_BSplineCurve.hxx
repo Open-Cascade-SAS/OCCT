@@ -49,9 +49,10 @@ public:
   //! @param theCurve the 3D B-spline curve geometry
   //! @param theDomain optional parameter domain (for trimmed curves)
   GeomProp_BSplineCurve(const occ::handle<Geom_Curve>&              theCurve,
-                        const std::optional<GeomProp::CurveDomain>& theDomain = std::nullopt)
+                        const std::optional<GeomProp::CurveDomain>& theDomain = std::nullopt,
+                        GeomProp::CurveDerivOrder theOrder = GeomProp::CurveDerivOrder::Curvature)
       : myAdaptor(nullptr),
-        myRequestedOrder(GeomProp::CurveDerivOrder::Curvature),
+        myRequestedOrder(theOrder),
         myCurve(theCurve),
         myDomain(theDomain)
   {
@@ -62,6 +63,12 @@ public:
   GeomProp_BSplineCurve& operator=(const GeomProp_BSplineCurve&) = delete;
   GeomProp_BSplineCurve(GeomProp_BSplineCurve&&)                 = delete;
   GeomProp_BSplineCurve& operator=(GeomProp_BSplineCurve&&)      = delete;
+
+  //! Sets the derivative caching order.
+  void SetDerivOrder(GeomProp::CurveDerivOrder theOrder) { myRequestedOrder = theOrder; }
+
+  //! Returns the derivative caching order.
+  GeomProp::CurveDerivOrder DerivOrder() const { return myRequestedOrder; }
 
   //! Returns the adaptor pointer (nullptr when constructed from handle).
   const GeomAdaptor_Curve* Adaptor() const { return myAdaptor; }

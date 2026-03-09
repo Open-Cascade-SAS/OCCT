@@ -48,9 +48,10 @@ public:
   //! @param theCurve the 3D curve geometry
   //! @param theDomain optional parameter domain (for trimmed curves)
   GeomProp_OtherCurve(const occ::handle<Geom_Curve>&              theCurve,
-                      const std::optional<GeomProp::CurveDomain>& theDomain = std::nullopt)
+                      const std::optional<GeomProp::CurveDomain>& theDomain = std::nullopt,
+                      GeomProp::CurveDerivOrder theOrder = GeomProp::CurveDerivOrder::Curvature)
       : myAdaptor(nullptr),
-        myRequestedOrder(GeomProp::CurveDerivOrder::Curvature),
+        myRequestedOrder(theOrder),
         myCurve(theCurve),
         myDomain(theDomain)
   {
@@ -61,6 +62,12 @@ public:
   GeomProp_OtherCurve& operator=(const GeomProp_OtherCurve&) = delete;
   GeomProp_OtherCurve(GeomProp_OtherCurve&&)                 = delete;
   GeomProp_OtherCurve& operator=(GeomProp_OtherCurve&&)      = delete;
+
+  //! Sets the derivative caching order.
+  void SetDerivOrder(GeomProp::CurveDerivOrder theOrder) { myRequestedOrder = theOrder; }
+
+  //! Returns the derivative caching order.
+  GeomProp::CurveDerivOrder DerivOrder() const { return myRequestedOrder; }
 
   //! Returns the adaptor pointer (nullptr when constructed from handle).
   const Adaptor3d_Curve* Adaptor() const { return myAdaptor; }

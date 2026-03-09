@@ -82,11 +82,17 @@ public:
   //! Construct from 3D adaptor reference (auto-detects curve type).
   //! For GeomAdaptor_Curve, extracts underlying Geom_Curve for optimized evaluation.
   //! @param[in] theCurve 3D curve adaptor reference
-  Standard_EXPORT GeomProp_Curve(const Adaptor3d_Curve& theCurve);
+  //! @param[in] theOrder derivative caching order
+  Standard_EXPORT GeomProp_Curve(
+    const Adaptor3d_Curve&    theCurve,
+    GeomProp::CurveDerivOrder theOrder = GeomProp::CurveDerivOrder::Curvature);
 
   //! Construct from geometry handle (auto-detects curve type).
   //! @param[in] theCurve 3D geometry to evaluate
-  Standard_EXPORT GeomProp_Curve(const occ::handle<Geom_Curve>& theCurve);
+  //! @param[in] theOrder derivative caching order
+  Standard_EXPORT GeomProp_Curve(
+    const occ::handle<Geom_Curve>& theCurve,
+    GeomProp::CurveDerivOrder      theOrder = GeomProp::CurveDerivOrder::Curvature);
 
   //! Non-copyable and non-movable.
   GeomProp_Curve(const GeomProp_Curve&)            = delete;
@@ -96,6 +102,13 @@ public:
 
   //! Returns the detected curve type.
   GeomAbs_CurveType GetType() const { return myCurveType; }
+
+  //! Sets the derivative caching order for the active evaluator.
+  //! Only effective for non-analytical curve types (BSpline, Bezier, Offset, Other).
+  Standard_EXPORT void SetDerivOrder(GeomProp::CurveDerivOrder theOrder);
+
+  //! Returns the derivative caching order of the active evaluator.
+  Standard_EXPORT GeomProp::CurveDerivOrder DerivOrder() const;
 
   //! Returns the stored adaptor pointer, or null if not initialized.
   Standard_EXPORT const Adaptor3d_Curve* Adaptor() const;
@@ -164,11 +177,15 @@ public:
 protected:
   //! Initialize from 3D adaptor reference (auto-detects curve type).
   //! @param[in] theCurve 3D curve adaptor reference
-  Standard_EXPORT void initialization(const Adaptor3d_Curve& theCurve);
+  //! @param[in] theOrder derivative caching order
+  Standard_EXPORT void initialization(const Adaptor3d_Curve&    theCurve,
+                                      GeomProp::CurveDerivOrder theOrder);
 
   //! Initialize from geometry handle (auto-detects curve type).
   //! @param[in] theCurve 3D geometry to evaluate
-  Standard_EXPORT void initialization(const occ::handle<Geom_Curve>& theCurve);
+  //! @param[in] theOrder derivative caching order
+  Standard_EXPORT void initialization(const occ::handle<Geom_Curve>& theCurve,
+                                      GeomProp::CurveDerivOrder      theOrder);
 
 private:
   occ::handle<GeomAdaptor_Curve> myOwnedAdaptor; //!< Owned adaptor when lifetime must be managed.

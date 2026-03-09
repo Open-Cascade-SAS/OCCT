@@ -48,11 +48,13 @@ public:
   //! @param theCurve the 2D circle geometry (must be a Geom2d_Circle or downcastable to it)
   //! @param theDomain optional parameter domain (unused for circle)
   Geom2dProp_Circle(const occ::handle<Geom2d_Curve>&              theCurve,
-                    const std::optional<Geom2dProp::CurveDomain>& theDomain = std::nullopt)
+                    const std::optional<Geom2dProp::CurveDomain>& theDomain = std::nullopt,
+                    Geom2dProp::CurveDerivOrder                   theOrder  = Geom2dProp::CurveDerivOrder::Undefined)
       : myAdaptor(nullptr),
         myCurve(theCurve)
   {
     (void)theDomain;
+    (void)theOrder;
     const occ::handle<Geom2d_Circle> aCircle = occ::down_cast<Geom2d_Circle>(theCurve);
     myRadius                                 = aCircle->Radius();
     myCenter                                 = aCircle->Circ2d().Location();
@@ -63,6 +65,12 @@ public:
   Geom2dProp_Circle& operator=(const Geom2dProp_Circle&) = delete;
   Geom2dProp_Circle(Geom2dProp_Circle&&)                 = delete;
   Geom2dProp_Circle& operator=(Geom2dProp_Circle&&)      = delete;
+
+  //! Sets the derivative caching order (no-op for analytical curves).
+  void SetDerivOrder(Geom2dProp::CurveDerivOrder) {}
+
+  //! Returns the derivative caching order (always Undefined for analytical curves).
+  Geom2dProp::CurveDerivOrder DerivOrder() const { return Geom2dProp::CurveDerivOrder::Undefined; }
 
   //! Returns nullptr (no adaptor is stored).
   const Geom2dAdaptor_Curve* Adaptor() const { return nullptr; }

@@ -48,11 +48,13 @@ public:
   //! @param theCurve the 3D ellipse geometry
   //! @param theDomain optional parameter domain (for trimmed curves)
   GeomProp_Ellipse(const occ::handle<Geom_Curve>&              theCurve,
-                   const std::optional<GeomProp::CurveDomain>& theDomain = std::nullopt)
+                   const std::optional<GeomProp::CurveDomain>& theDomain = std::nullopt,
+                   GeomProp::CurveDerivOrder                   theOrder  = GeomProp::CurveDerivOrder::Undefined)
       : myAdaptor(nullptr),
         myCurve(theCurve),
         myDomain(theDomain)
   {
+    (void)theOrder;
   }
 
   //! Non-copyable and non-movable.
@@ -60,6 +62,12 @@ public:
   GeomProp_Ellipse& operator=(const GeomProp_Ellipse&) = delete;
   GeomProp_Ellipse(GeomProp_Ellipse&&)                 = delete;
   GeomProp_Ellipse& operator=(GeomProp_Ellipse&&)      = delete;
+
+  //! Sets the derivative caching order (no-op for analytical curves).
+  void SetDerivOrder(GeomProp::CurveDerivOrder) {}
+
+  //! Returns the derivative caching order (always Undefined for analytical curves).
+  GeomProp::CurveDerivOrder DerivOrder() const { return GeomProp::CurveDerivOrder::Undefined; }
 
   //! Returns the adaptor pointer (nullptr when constructed from handle).
   const GeomAdaptor_Curve* Adaptor() const { return myAdaptor; }

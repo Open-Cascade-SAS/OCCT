@@ -48,11 +48,13 @@ public:
   //! @param theCurve the 2D ellipse geometry
   //! @param theDomain optional parameter domain (for trimmed curves)
   Geom2dProp_Ellipse(const occ::handle<Geom2d_Curve>&              theCurve,
-                     const std::optional<Geom2dProp::CurveDomain>& theDomain = std::nullopt)
+                     const std::optional<Geom2dProp::CurveDomain>& theDomain = std::nullopt,
+                     Geom2dProp::CurveDerivOrder                   theOrder  = Geom2dProp::CurveDerivOrder::Undefined)
       : myAdaptor(nullptr),
         myCurve(theCurve),
         myDomain(theDomain)
   {
+    (void)theOrder;
   }
 
   //! Non-copyable and non-movable.
@@ -60,6 +62,12 @@ public:
   Geom2dProp_Ellipse& operator=(const Geom2dProp_Ellipse&) = delete;
   Geom2dProp_Ellipse(Geom2dProp_Ellipse&&)                 = delete;
   Geom2dProp_Ellipse& operator=(Geom2dProp_Ellipse&&)      = delete;
+
+  //! Sets the derivative caching order (no-op for analytical curves).
+  void SetDerivOrder(Geom2dProp::CurveDerivOrder) {}
+
+  //! Returns the derivative caching order (always Undefined for analytical curves).
+  Geom2dProp::CurveDerivOrder DerivOrder() const { return Geom2dProp::CurveDerivOrder::Undefined; }
 
   //! Returns the adaptor pointer (nullptr when constructed from handle).
   const Geom2dAdaptor_Curve* Adaptor() const { return myAdaptor; }

@@ -46,10 +46,12 @@ public:
   //! @param theCurve the 3D line geometry (must be a Geom_Line or downcastable to it)
   //! @param theDomain optional parameter domain (unused for line)
   GeomProp_Line(const occ::handle<Geom_Curve>&              theCurve,
-                const std::optional<GeomProp::CurveDomain>& theDomain = std::nullopt)
+                const std::optional<GeomProp::CurveDomain>& theDomain = std::nullopt,
+                GeomProp::CurveDerivOrder                   theOrder  = GeomProp::CurveDerivOrder::Undefined)
       : myDirection(occ::down_cast<Geom_Line>(theCurve)->Position().Direction())
   {
     (void)theDomain;
+    (void)theOrder;
   }
 
   //! Non-copyable and non-movable.
@@ -57,6 +59,12 @@ public:
   GeomProp_Line& operator=(const GeomProp_Line&) = delete;
   GeomProp_Line(GeomProp_Line&&)                 = delete;
   GeomProp_Line& operator=(GeomProp_Line&&)      = delete;
+
+  //! Sets the derivative caching order (no-op for analytical curves).
+  void SetDerivOrder(GeomProp::CurveDerivOrder) {}
+
+  //! Returns the derivative caching order (always Undefined for analytical curves).
+  GeomProp::CurveDerivOrder DerivOrder() const { return GeomProp::CurveDerivOrder::Undefined; }
 
   //! Returns nullptr (no adaptor is stored).
   const GeomAdaptor_Curve* Adaptor() const { return nullptr; }

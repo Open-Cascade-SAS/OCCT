@@ -49,11 +49,13 @@ public:
   //! @param theSurface the 3D conical surface geometry
   //! @param theDomain optional parameter domain (for trimmed surfaces)
   GeomProp_Cone(const occ::handle<Geom_Surface>&              theSurface,
-                const std::optional<GeomProp::SurfaceDomain>& theDomain = std::nullopt)
+                const std::optional<GeomProp::SurfaceDomain>& theDomain = std::nullopt,
+                GeomProp::SurfaceDerivOrder                   theOrder  = GeomProp::SurfaceDerivOrder::Undefined)
       : myAdaptor(nullptr),
         mySurface(theSurface),
         myDomain(theDomain)
   {
+    (void)theOrder;
   }
 
   //! Non-copyable and non-movable.
@@ -61,6 +63,12 @@ public:
   GeomProp_Cone& operator=(const GeomProp_Cone&) = delete;
   GeomProp_Cone(GeomProp_Cone&&)                 = delete;
   GeomProp_Cone& operator=(GeomProp_Cone&&)      = delete;
+
+  //! Sets the derivative caching order (no-op for analytical surfaces).
+  void SetDerivOrder(GeomProp::SurfaceDerivOrder) {}
+
+  //! Returns the derivative caching order (always Undefined for analytical surfaces).
+  GeomProp::SurfaceDerivOrder DerivOrder() const { return GeomProp::SurfaceDerivOrder::Undefined; }
 
   //! Returns the adaptor pointer (nullptr when constructed from handle).
   const GeomAdaptor_Surface* Adaptor() const { return myAdaptor; }

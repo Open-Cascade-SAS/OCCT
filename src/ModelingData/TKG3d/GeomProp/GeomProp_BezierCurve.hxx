@@ -47,9 +47,10 @@ public:
   //! @param theCurve the 3D Bezier curve geometry
   //! @param theDomain optional parameter domain (for trimmed curves)
   GeomProp_BezierCurve(const occ::handle<Geom_Curve>&              theCurve,
-                       const std::optional<GeomProp::CurveDomain>& theDomain = std::nullopt)
+                       const std::optional<GeomProp::CurveDomain>& theDomain = std::nullopt,
+                       GeomProp::CurveDerivOrder theOrder = GeomProp::CurveDerivOrder::Curvature)
       : myAdaptor(nullptr),
-        myRequestedOrder(GeomProp::CurveDerivOrder::Curvature),
+        myRequestedOrder(theOrder),
         myCurve(theCurve),
         myDomain(theDomain)
   {
@@ -60,6 +61,12 @@ public:
   GeomProp_BezierCurve& operator=(const GeomProp_BezierCurve&) = delete;
   GeomProp_BezierCurve(GeomProp_BezierCurve&&)                 = delete;
   GeomProp_BezierCurve& operator=(GeomProp_BezierCurve&&)      = delete;
+
+  //! Sets the derivative caching order.
+  void SetDerivOrder(GeomProp::CurveDerivOrder theOrder) { myRequestedOrder = theOrder; }
+
+  //! Returns the derivative caching order.
+  GeomProp::CurveDerivOrder DerivOrder() const { return myRequestedOrder; }
 
   //! Returns the adaptor pointer (nullptr when constructed from handle).
   const GeomAdaptor_Curve* Adaptor() const { return myAdaptor; }

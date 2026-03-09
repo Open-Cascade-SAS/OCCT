@@ -49,9 +49,10 @@ public:
   //! @param theCurve the 2D offset curve geometry
   //! @param theDomain optional parameter domain (for trimmed curves)
   Geom2dProp_OffsetCurve(const occ::handle<Geom2d_Curve>&              theCurve,
-                         const std::optional<Geom2dProp::CurveDomain>& theDomain = std::nullopt)
+                         const std::optional<Geom2dProp::CurveDomain>& theDomain = std::nullopt,
+                         Geom2dProp::CurveDerivOrder theOrder = Geom2dProp::CurveDerivOrder::Curvature)
       : myAdaptor(nullptr),
-        myRequestedOrder(Geom2dProp::CurveDerivOrder::Curvature),
+        myRequestedOrder(theOrder),
         myCurve(theCurve),
         myDomain(theDomain)
   {
@@ -62,6 +63,12 @@ public:
   Geom2dProp_OffsetCurve& operator=(const Geom2dProp_OffsetCurve&) = delete;
   Geom2dProp_OffsetCurve(Geom2dProp_OffsetCurve&&)                 = delete;
   Geom2dProp_OffsetCurve& operator=(Geom2dProp_OffsetCurve&&)      = delete;
+
+  //! Sets the derivative caching order.
+  void SetDerivOrder(Geom2dProp::CurveDerivOrder theOrder) { myRequestedOrder = theOrder; }
+
+  //! Returns the derivative caching order.
+  Geom2dProp::CurveDerivOrder DerivOrder() const { return myRequestedOrder; }
 
   //! Returns the adaptor pointer (nullptr when constructed from handle).
   const Geom2dAdaptor_Curve* Adaptor() const { return myAdaptor; }

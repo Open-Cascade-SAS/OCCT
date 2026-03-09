@@ -47,11 +47,13 @@ public:
   //! @param theCurve the 3D hyperbola geometry
   //! @param theDomain optional parameter domain (for trimmed curves)
   GeomProp_Hyperbola(const occ::handle<Geom_Curve>&              theCurve,
-                     const std::optional<GeomProp::CurveDomain>& theDomain = std::nullopt)
+                     const std::optional<GeomProp::CurveDomain>& theDomain = std::nullopt,
+                     GeomProp::CurveDerivOrder                   theOrder  = GeomProp::CurveDerivOrder::Undefined)
       : myAdaptor(nullptr),
         myCurve(theCurve),
         myDomain(theDomain)
   {
+    (void)theOrder;
   }
 
   //! Non-copyable and non-movable.
@@ -59,6 +61,12 @@ public:
   GeomProp_Hyperbola& operator=(const GeomProp_Hyperbola&) = delete;
   GeomProp_Hyperbola(GeomProp_Hyperbola&&)                 = delete;
   GeomProp_Hyperbola& operator=(GeomProp_Hyperbola&&)      = delete;
+
+  //! Sets the derivative caching order (no-op for analytical curves).
+  void SetDerivOrder(GeomProp::CurveDerivOrder) {}
+
+  //! Returns the derivative caching order (always Undefined for analytical curves).
+  GeomProp::CurveDerivOrder DerivOrder() const { return GeomProp::CurveDerivOrder::Undefined; }
 
   //! Returns the adaptor pointer (nullptr when constructed from handle).
   const GeomAdaptor_Curve* Adaptor() const { return myAdaptor; }

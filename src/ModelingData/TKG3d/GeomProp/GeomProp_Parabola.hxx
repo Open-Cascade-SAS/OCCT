@@ -47,11 +47,13 @@ public:
   //! @param theCurve the 3D parabola geometry
   //! @param theDomain optional parameter domain (for trimmed curves)
   GeomProp_Parabola(const occ::handle<Geom_Curve>&              theCurve,
-                    const std::optional<GeomProp::CurveDomain>& theDomain = std::nullopt)
+                    const std::optional<GeomProp::CurveDomain>& theDomain = std::nullopt,
+                    GeomProp::CurveDerivOrder                   theOrder  = GeomProp::CurveDerivOrder::Undefined)
       : myAdaptor(nullptr),
         myCurve(theCurve),
         myDomain(theDomain)
   {
+    (void)theOrder;
   }
 
   //! Non-copyable and non-movable.
@@ -59,6 +61,12 @@ public:
   GeomProp_Parabola& operator=(const GeomProp_Parabola&) = delete;
   GeomProp_Parabola(GeomProp_Parabola&&)                 = delete;
   GeomProp_Parabola& operator=(GeomProp_Parabola&&)      = delete;
+
+  //! Sets the derivative caching order (no-op for analytical curves).
+  void SetDerivOrder(GeomProp::CurveDerivOrder) {}
+
+  //! Returns the derivative caching order (always Undefined for analytical curves).
+  GeomProp::CurveDerivOrder DerivOrder() const { return GeomProp::CurveDerivOrder::Undefined; }
 
   //! Returns the adaptor pointer (nullptr when constructed from handle).
   const GeomAdaptor_Curve* Adaptor() const { return myAdaptor; }

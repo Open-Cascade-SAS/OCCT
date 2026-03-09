@@ -46,10 +46,12 @@ public:
   //! @param theCurve the 2D line geometry (must be a Geom2d_Line or downcastable to it)
   //! @param theDomain optional parameter domain (unused for line)
   Geom2dProp_Line(const occ::handle<Geom2d_Curve>&              theCurve,
-                  const std::optional<Geom2dProp::CurveDomain>& theDomain = std::nullopt)
+                  const std::optional<Geom2dProp::CurveDomain>& theDomain = std::nullopt,
+                  Geom2dProp::CurveDerivOrder                   theOrder  = Geom2dProp::CurveDerivOrder::Undefined)
       : myDirection(occ::down_cast<Geom2d_Line>(theCurve)->Direction())
   {
     (void)theDomain;
+    (void)theOrder;
   }
 
   //! Non-copyable and non-movable.
@@ -57,6 +59,12 @@ public:
   Geom2dProp_Line& operator=(const Geom2dProp_Line&) = delete;
   Geom2dProp_Line(Geom2dProp_Line&&)                 = delete;
   Geom2dProp_Line& operator=(Geom2dProp_Line&&)      = delete;
+
+  //! Sets the derivative caching order (no-op for analytical curves).
+  void SetDerivOrder(Geom2dProp::CurveDerivOrder) {}
+
+  //! Returns the derivative caching order (always Undefined for analytical curves).
+  Geom2dProp::CurveDerivOrder DerivOrder() const { return Geom2dProp::CurveDerivOrder::Undefined; }
 
   //! Returns nullptr (no adaptor is stored).
   const Geom2dAdaptor_Curve* Adaptor() const { return nullptr; }

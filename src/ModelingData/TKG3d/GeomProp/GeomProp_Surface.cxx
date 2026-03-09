@@ -29,32 +29,35 @@
 
 //=================================================================================================
 
-GeomProp_Surface::GeomProp_Surface(const Adaptor3d_Surface& theSurface)
+GeomProp_Surface::GeomProp_Surface(const Adaptor3d_Surface&            theSurface,
+                                   const GeomProp::SurfaceDerivOrder   theOrder)
     : myEvaluator(std::monostate{}),
       mySurfaceType(GeomAbs_OtherSurface)
 {
-  initialization(theSurface);
+  initialization(theSurface, theOrder);
 }
 
 //=================================================================================================
 
-GeomProp_Surface::GeomProp_Surface(const occ::handle<Geom_Surface>& theSurface)
+GeomProp_Surface::GeomProp_Surface(const occ::handle<Geom_Surface>&  theSurface,
+                                   const GeomProp::SurfaceDerivOrder theOrder)
     : myEvaluator(std::monostate{}),
       mySurfaceType(GeomAbs_OtherSurface)
 {
-  initialization(theSurface);
+  initialization(theSurface, theOrder);
 }
 
 //=================================================================================================
 
-void GeomProp_Surface::initialization(const Adaptor3d_Surface& theSurface)
+void GeomProp_Surface::initialization(const Adaptor3d_Surface&          theSurface,
+                                      const GeomProp::SurfaceDerivOrder theOrder)
 {
   if (theSurface.IsKind(STANDARD_TYPE(GeomAdaptor_TransformedSurface)))
   {
     // Extract the transformed adaptor (carries both geometry and domain) and re-initialize.
     const GeomAdaptor_TransformedSurface& aTransformed =
       static_cast<const GeomAdaptor_TransformedSurface&>(theSurface);
-    initialization(aTransformed.AdaptorSurfaceTransformed());
+    initialization(aTransformed.AdaptorSurfaceTransformed(), theOrder);
     return;
   }
 
@@ -69,37 +72,37 @@ void GeomProp_Surface::initialization(const Adaptor3d_Surface& theSurface)
       switch (mySurfaceType)
       {
         case GeomAbs_Plane:
-          myEvaluator.emplace<GeomProp_Plane>(&aGeomAdaptor);
+          myEvaluator.emplace<GeomProp_Plane>(&aGeomAdaptor, theOrder);
           break;
         case GeomAbs_Cylinder:
-          myEvaluator.emplace<GeomProp_Cylinder>(&aGeomAdaptor);
+          myEvaluator.emplace<GeomProp_Cylinder>(&aGeomAdaptor, theOrder);
           break;
         case GeomAbs_Cone:
-          myEvaluator.emplace<GeomProp_Cone>(&aGeomAdaptor);
+          myEvaluator.emplace<GeomProp_Cone>(&aGeomAdaptor, theOrder);
           break;
         case GeomAbs_Sphere:
-          myEvaluator.emplace<GeomProp_Sphere>(&aGeomAdaptor);
+          myEvaluator.emplace<GeomProp_Sphere>(&aGeomAdaptor, theOrder);
           break;
         case GeomAbs_Torus:
-          myEvaluator.emplace<GeomProp_Torus>(&aGeomAdaptor);
+          myEvaluator.emplace<GeomProp_Torus>(&aGeomAdaptor, theOrder);
           break;
         case GeomAbs_BezierSurface:
-          myEvaluator.emplace<GeomProp_BezierSurface>(&aGeomAdaptor);
+          myEvaluator.emplace<GeomProp_BezierSurface>(&aGeomAdaptor, theOrder);
           break;
         case GeomAbs_BSplineSurface:
-          myEvaluator.emplace<GeomProp_BSplineSurface>(&aGeomAdaptor);
+          myEvaluator.emplace<GeomProp_BSplineSurface>(&aGeomAdaptor, theOrder);
           break;
         case GeomAbs_SurfaceOfRevolution:
-          myEvaluator.emplace<GeomProp_SurfaceOfRevolution>(&aGeomAdaptor);
+          myEvaluator.emplace<GeomProp_SurfaceOfRevolution>(&aGeomAdaptor, theOrder);
           break;
         case GeomAbs_SurfaceOfExtrusion:
-          myEvaluator.emplace<GeomProp_SurfaceOfExtrusion>(&aGeomAdaptor);
+          myEvaluator.emplace<GeomProp_SurfaceOfExtrusion>(&aGeomAdaptor, theOrder);
           break;
         case GeomAbs_OffsetSurface:
-          myEvaluator.emplace<GeomProp_OffsetSurface>(&aGeomAdaptor);
+          myEvaluator.emplace<GeomProp_OffsetSurface>(&aGeomAdaptor, theOrder);
           break;
         default:
-          myEvaluator.emplace<GeomProp_OtherSurface>(&theSurface);
+          myEvaluator.emplace<GeomProp_OtherSurface>(&theSurface, theOrder);
           break;
       }
       return;
@@ -109,12 +112,13 @@ void GeomProp_Surface::initialization(const Adaptor3d_Surface& theSurface)
   // Non-Geom adaptor or empty surface handle: use OtherSurface with adaptor pointer.
   myOwnedAdaptor.Nullify();
   mySurfaceType = theSurface.GetType();
-  myEvaluator.emplace<GeomProp_OtherSurface>(&theSurface);
+  myEvaluator.emplace<GeomProp_OtherSurface>(&theSurface, theOrder);
 }
 
 //=================================================================================================
 
-void GeomProp_Surface::initialization(const occ::handle<Geom_Surface>& theSurface)
+void GeomProp_Surface::initialization(const occ::handle<Geom_Surface>&  theSurface,
+                                      const GeomProp::SurfaceDerivOrder theOrder)
 {
   if (theSurface.IsNull())
   {
@@ -143,58 +147,92 @@ void GeomProp_Surface::initialization(const occ::handle<Geom_Surface>& theSurfac
   if (aType == STANDARD_TYPE(Geom_Plane))
   {
     mySurfaceType = GeomAbs_Plane;
-    myEvaluator.emplace<GeomProp_Plane>(aBasis, aDomain);
+    myEvaluator.emplace<GeomProp_Plane>(aBasis, aDomain, theOrder);
   }
   else if (aType == STANDARD_TYPE(Geom_CylindricalSurface))
   {
     mySurfaceType = GeomAbs_Cylinder;
-    myEvaluator.emplace<GeomProp_Cylinder>(aBasis, aDomain);
+    myEvaluator.emplace<GeomProp_Cylinder>(aBasis, aDomain, theOrder);
   }
   else if (aType == STANDARD_TYPE(Geom_ConicalSurface))
   {
     mySurfaceType = GeomAbs_Cone;
-    myEvaluator.emplace<GeomProp_Cone>(aBasis, aDomain);
+    myEvaluator.emplace<GeomProp_Cone>(aBasis, aDomain, theOrder);
   }
   else if (aType == STANDARD_TYPE(Geom_SphericalSurface))
   {
     mySurfaceType = GeomAbs_Sphere;
-    myEvaluator.emplace<GeomProp_Sphere>(aBasis, aDomain);
+    myEvaluator.emplace<GeomProp_Sphere>(aBasis, aDomain, theOrder);
   }
   else if (aType == STANDARD_TYPE(Geom_ToroidalSurface))
   {
     mySurfaceType = GeomAbs_Torus;
-    myEvaluator.emplace<GeomProp_Torus>(aBasis, aDomain);
+    myEvaluator.emplace<GeomProp_Torus>(aBasis, aDomain, theOrder);
   }
   else if (aType == STANDARD_TYPE(Geom_BezierSurface))
   {
     mySurfaceType = GeomAbs_BezierSurface;
-    myEvaluator.emplace<GeomProp_BezierSurface>(aBasis, aDomain);
+    myEvaluator.emplace<GeomProp_BezierSurface>(aBasis, aDomain, theOrder);
   }
   else if (aType == STANDARD_TYPE(Geom_BSplineSurface))
   {
     mySurfaceType = GeomAbs_BSplineSurface;
-    myEvaluator.emplace<GeomProp_BSplineSurface>(aBasis, aDomain);
+    myEvaluator.emplace<GeomProp_BSplineSurface>(aBasis, aDomain, theOrder);
   }
   else if (aType == STANDARD_TYPE(Geom_SurfaceOfRevolution))
   {
     mySurfaceType = GeomAbs_SurfaceOfRevolution;
-    myEvaluator.emplace<GeomProp_SurfaceOfRevolution>(aBasis, aDomain);
+    myEvaluator.emplace<GeomProp_SurfaceOfRevolution>(aBasis, aDomain, theOrder);
   }
   else if (aType == STANDARD_TYPE(Geom_SurfaceOfLinearExtrusion))
   {
     mySurfaceType = GeomAbs_SurfaceOfExtrusion;
-    myEvaluator.emplace<GeomProp_SurfaceOfExtrusion>(aBasis, aDomain);
+    myEvaluator.emplace<GeomProp_SurfaceOfExtrusion>(aBasis, aDomain, theOrder);
   }
   else if (aType == STANDARD_TYPE(Geom_OffsetSurface))
   {
     mySurfaceType = GeomAbs_OffsetSurface;
-    myEvaluator.emplace<GeomProp_OffsetSurface>(aBasis, aDomain);
+    myEvaluator.emplace<GeomProp_OffsetSurface>(aBasis, aDomain, theOrder);
   }
   else
   {
     mySurfaceType = GeomAbs_OtherSurface;
-    myEvaluator.emplace<GeomProp_OtherSurface>(aBasis, aDomain);
+    myEvaluator.emplace<GeomProp_OtherSurface>(aBasis, aDomain, theOrder);
   }
+}
+
+//=================================================================================================
+
+void GeomProp_Surface::SetDerivOrder(const GeomProp::SurfaceDerivOrder theOrder)
+{
+  std::visit(
+    [theOrder](auto& theEval) {
+      using T = std::decay_t<decltype(theEval)>;
+      if constexpr (!std::is_same_v<T, std::monostate>)
+      {
+        theEval.SetDerivOrder(theOrder);
+      }
+    },
+    myEvaluator);
+}
+
+//=================================================================================================
+
+GeomProp::SurfaceDerivOrder GeomProp_Surface::DerivOrder() const
+{
+  return std::visit(
+    [](const auto& theEval) -> GeomProp::SurfaceDerivOrder {
+      using T = std::decay_t<decltype(theEval)>;
+      if constexpr (std::is_same_v<T, std::monostate>)
+      {
+        return GeomProp::SurfaceDerivOrder::Undefined;
+      }
+      else
+      {
+        return theEval.DerivOrder();
+      }
+    },
+    myEvaluator);
 }
 
 //=================================================================================================

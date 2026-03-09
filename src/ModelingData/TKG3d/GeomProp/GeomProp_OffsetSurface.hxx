@@ -46,9 +46,10 @@ public:
   //! @param theSurface the 3D offset surface geometry
   //! @param theDomain optional parameter domain (for trimmed surfaces)
   GeomProp_OffsetSurface(const occ::handle<Geom_Surface>&              theSurface,
-                         const std::optional<GeomProp::SurfaceDomain>& theDomain = std::nullopt)
+                         const std::optional<GeomProp::SurfaceDomain>& theDomain = std::nullopt,
+                         GeomProp::SurfaceDerivOrder theOrder = GeomProp::SurfaceDerivOrder::Curvature)
       : myAdaptor(nullptr),
-        myRequestedOrder(GeomProp::SurfaceDerivOrder::Curvature),
+        myRequestedOrder(theOrder),
         mySurface(theSurface),
         myDomain(theDomain)
   {
@@ -59,6 +60,12 @@ public:
   GeomProp_OffsetSurface& operator=(const GeomProp_OffsetSurface&) = delete;
   GeomProp_OffsetSurface(GeomProp_OffsetSurface&&)                 = delete;
   GeomProp_OffsetSurface& operator=(GeomProp_OffsetSurface&&)      = delete;
+
+  //! Sets the derivative caching order.
+  void SetDerivOrder(GeomProp::SurfaceDerivOrder theOrder) { myRequestedOrder = theOrder; }
+
+  //! Returns the derivative caching order.
+  GeomProp::SurfaceDerivOrder DerivOrder() const { return myRequestedOrder; }
 
   //! Returns the adaptor pointer (nullptr when constructed from handle).
   const GeomAdaptor_Surface* Adaptor() const { return myAdaptor; }

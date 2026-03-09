@@ -47,9 +47,10 @@ public:
   //! @param theDomain optional parameter domain (for trimmed surfaces)
   GeomProp_SurfaceOfRevolution(
     const occ::handle<Geom_Surface>&              theSurface,
-    const std::optional<GeomProp::SurfaceDomain>& theDomain = std::nullopt)
+    const std::optional<GeomProp::SurfaceDomain>& theDomain = std::nullopt,
+    GeomProp::SurfaceDerivOrder                   theOrder  = GeomProp::SurfaceDerivOrder::Curvature)
       : myAdaptor(nullptr),
-        myRequestedOrder(GeomProp::SurfaceDerivOrder::Curvature),
+        myRequestedOrder(theOrder),
         mySurface(theSurface),
         myDomain(theDomain)
   {
@@ -60,6 +61,12 @@ public:
   GeomProp_SurfaceOfRevolution& operator=(const GeomProp_SurfaceOfRevolution&) = delete;
   GeomProp_SurfaceOfRevolution(GeomProp_SurfaceOfRevolution&&)                 = delete;
   GeomProp_SurfaceOfRevolution& operator=(GeomProp_SurfaceOfRevolution&&)      = delete;
+
+  //! Sets the derivative caching order.
+  void SetDerivOrder(GeomProp::SurfaceDerivOrder theOrder) { myRequestedOrder = theOrder; }
+
+  //! Returns the derivative caching order.
+  GeomProp::SurfaceDerivOrder DerivOrder() const { return myRequestedOrder; }
 
   //! Returns the adaptor pointer (nullptr when constructed from handle).
   const GeomAdaptor_Surface* Adaptor() const { return myAdaptor; }
