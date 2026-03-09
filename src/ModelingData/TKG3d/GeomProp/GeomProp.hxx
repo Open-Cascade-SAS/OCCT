@@ -124,12 +124,14 @@ struct SurfaceNormalResult
 //! Result of surface principal curvature computation.
 struct SurfaceCurvatureResult
 {
-  double MinCurvature = 0.0; //!< Minimum principal curvature (valid only when IsDefined is true)
-  double MaxCurvature = 0.0; //!< Maximum principal curvature (valid only when IsDefined is true)
-  gp_Dir MinDirection;       //!< Direction of minimum curvature (valid only when IsDefined is true)
-  gp_Dir MaxDirection;       //!< Direction of maximum curvature (valid only when IsDefined is true)
-  bool   IsDefined = false;  //!< True if curvatures could be computed
-  bool   IsUmbilic = false;  //!< True if the point is umbilic (all curvatures equal)
+  double MinCurvature = 0.0;        //!< Minimum principal curvature
+  double MaxCurvature = 0.0;        //!< Maximum principal curvature
+  gp_Dir MinDirection;              //!< Direction of minimum curvature
+  gp_Dir MaxDirection;              //!< Direction of maximum curvature
+  double MeanCurvature     = 0.0;   //!< Mean curvature H = (k1 + k2) / 2
+  double GaussianCurvature = 0.0;   //!< Gaussian curvature K = k1 * k2
+  bool   IsDefined         = false; //!< True if curvatures could be computed
+  bool   IsUmbilic         = false; //!< True if the point is umbilic (all curvatures equal)
 };
 
 //! Result of mean and Gaussian curvature computation.
@@ -303,6 +305,25 @@ Standard_EXPORT SurfaceNormalResult ComputeSurfaceNormal(const gp_Vec& theD1U,
 //! @param[in] theTol linear tolerance for zero-vector detection
 //! @return surface curvature result with principal curvatures and directions
 Standard_EXPORT SurfaceCurvatureResult ComputeSurfaceCurvatures(const gp_Vec& theD1U,
+                                                                const gp_Vec& theD1V,
+                                                                const gp_Vec& theD2U,
+                                                                const gp_Vec& theD2V,
+                                                                const gp_Vec& theDUV,
+                                                                double        theTol);
+
+//! Compute principal curvatures, directions, mean and Gaussian curvatures
+//! from surface derivatives using a pre-computed normal direction.
+//! This avoids redundant normal computation when the normal is already known.
+//! @param[in] theNormal pre-computed surface normal direction
+//! @param[in] theD1U first partial derivative in U direction
+//! @param[in] theD1V first partial derivative in V direction
+//! @param[in] theD2U second partial derivative in U direction
+//! @param[in] theD2V second partial derivative in V direction
+//! @param[in] theDUV mixed partial derivative
+//! @param[in] theTol linear tolerance for zero-vector detection
+//! @return surface curvature result with all curvature properties
+Standard_EXPORT SurfaceCurvatureResult ComputeSurfaceCurvatures(const gp_Dir& theNormal,
+                                                                const gp_Vec& theD1U,
                                                                 const gp_Vec& theD1V,
                                                                 const gp_Vec& theD2U,
                                                                 const gp_Vec& theD2V,

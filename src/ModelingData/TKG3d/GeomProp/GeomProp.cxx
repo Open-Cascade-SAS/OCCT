@@ -199,14 +199,31 @@ GeomProp::SurfaceCurvatureResult GeomProp::ComputeSurfaceCurvatures(const gp_Vec
                                                                     const gp_Vec& theDUV,
                                                                     const double  theTol)
 {
-  // Compute surface normal.
   const SurfaceNormalResult aNormRes = ComputeSurfaceNormal(theD1U, theD1V, theTol);
   if (!aNormRes.IsDefined)
   {
     return {};
   }
+  return ComputeSurfaceCurvatures(aNormRes.Direction,
+                                  theD1U,
+                                  theD1V,
+                                  theD2U,
+                                  theD2V,
+                                  theDUV,
+                                  theTol);
+}
 
-  const gp_Vec aNormal(aNormRes.Direction);
+//=================================================================================================
+
+GeomProp::SurfaceCurvatureResult GeomProp::ComputeSurfaceCurvatures(const gp_Dir& theNormal,
+                                                                    const gp_Vec& theD1U,
+                                                                    const gp_Vec& theD1V,
+                                                                    const gp_Vec& theD2U,
+                                                                    const gp_Vec& theD2V,
+                                                                    const gp_Vec& theDUV,
+                                                                    const double  theTol)
+{
+  const gp_Vec aNormal(theNormal);
 
   // First fundamental form coefficients.
   const double aE = theD1U.Dot(theD1U);
@@ -250,30 +267,19 @@ GeomProp::SurfaceCurvatureResult GeomProp::ComputeSurfaceCurvatures(const gp_Vec
   SurfaceCurvatureResult aResult;
   aResult.IsDefined = true;
 
-  if (aMaxABC < RealEpsilon())
-  {
-    // Umbilic point: both principal curvatures are equal.
-    const double aUmbilicCurv = (std::abs(aG) > theTol * theTol) ? aN_ / aG : 0.0;
-    aResult.MinCurvature      = aUmbilicCurv;
-    aResult.MaxCurvature      = aUmbilicCurv;
-    aResult.IsUmbilic         = true;
-    if (theD1U.SquareMagnitude() > gp::Resolution() * gp::Resolution())
-    {
-      aResult.MinDirection = gp_Dir(theD1U);
-      const gp_Vec aMaxDir = theD1U.Crossed(aNormal);
-      if (aMaxDir.SquareMagnitude() > gp::Resolution() * gp::Resolution())
-      {
-        aResult.MaxDirection = gp_Dir(aMaxDir);
-      }
-    }
-    return aResult;
-  }
+  // Mean and Gaussian curvature from fundamental form coefficients.
+  auto computeMeanGaussian = [&](SurfaceCurvatureResult& theRes) {
+    theRes.MeanCurvature     = (aN_ * aE - 2.0 * aM * aF + aL * aG) / (2.0 * aDet);
+    theRes.GaussianCurvature = (aL * aN_ - aM * aM) / aDet;
+  };
 
-  // Lambda to handle umbilic (double root or degenerate) cases.
+  // Lambda to handle umbilic (equal curvatures) cases.
   auto handleUmbilic = [&]() {
     const double aUmbilicCurv = (std::abs(aG) > theTol * theTol) ? aN_ / aG : 0.0;
     aResult.MinCurvature      = aUmbilicCurv;
     aResult.MaxCurvature      = aUmbilicCurv;
+    aResult.MeanCurvature     = aUmbilicCurv;
+    aResult.GaussianCurvature = aUmbilicCurv * aUmbilicCurv;
     aResult.IsUmbilic         = true;
     if (theD1U.SquareMagnitude() > gp::Resolution() * gp::Resolution())
     {
@@ -286,6 +292,11 @@ GeomProp::SurfaceCurvatureResult GeomProp::ComputeSurfaceCurvatures(const gp_Vec
     }
     return aResult;
   };
+
+  if (aMaxABC < RealEpsilon())
+  {
+    return handleUmbilic();
+  }
 
   double aCurv1, aCurv2;
   gp_Vec aVecCurv1, aVecCurv2;
@@ -409,6 +420,7 @@ GeomProp::SurfaceCurvatureResult GeomProp::ComputeSurfaceCurvatures(const gp_Vec
       aResult.MaxDirection = gp_Dir(aVecCurv1);
   }
   aResult.IsUmbilic = false;
+  computeMeanGaussian(aResult);
 
   return aResult;
 }

@@ -412,8 +412,9 @@ bool GeomLProp_SLProps::IsCurvatureDefined()
   if (myDerOrder < 2)
     this->D2U();
 
+  // Use pre-computed normal to avoid redundant normal computation.
   GeomProp::SurfaceCurvatureResult aCurvResult =
-    GeomProp::ComputeSurfaceCurvatures(myD1u, myD1v, myD2u, myD2v, myDuv, myLinTol);
+    GeomProp::ComputeSurfaceCurvatures(myNormal, myD1u, myD1v, myD2u, myD2v, myDuv, myLinTol);
 
   if (!aCurvResult.IsDefined)
   {
@@ -425,19 +426,8 @@ bool GeomLProp_SLProps::IsCurvatureDefined()
   myMaxCurv    = aCurvResult.MaxCurvature;
   myDirMinCurv = aCurvResult.MinDirection;
   myDirMaxCurv = aCurvResult.MaxDirection;
-
-  GeomProp::MeanGaussianResult aMGResult =
-    GeomProp::ComputeMeanGaussian(myD1u, myD1v, myD2u, myD2v, myDuv, myLinTol);
-  if (aMGResult.IsDefined)
-  {
-    myMeanCurv = aMGResult.MeanCurvature;
-    myGausCurv = aMGResult.GaussianCurvature;
-  }
-  else
-  {
-    myMeanCurv = (myMinCurv + myMaxCurv) / 2.0;
-    myGausCurv = myMinCurv * myMaxCurv;
-  }
+  myMeanCurv   = aCurvResult.MeanCurvature;
+  myGausCurv   = aCurvResult.GaussianCurvature;
 
   myCurvatureStatus = LProp_Computed;
   return true;
