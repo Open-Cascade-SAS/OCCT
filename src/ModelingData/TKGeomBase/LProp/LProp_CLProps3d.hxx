@@ -20,7 +20,6 @@
 #include <GeomLProp_CLProps.hxx>
 
 //! Alias for curve local properties using Adaptor3d_Curve interface.
-using LProp_CLProps3d =
-  GeomLProp_CLPropsBase<gp_Pnt, gp_Vec, gp_Dir, occ::handle<Adaptor3d_Curve>>;
+using LProp_CLProps3d = GeomLProp_CLPropsBase<gp_Pnt, gp_Vec, gp_Dir, occ::handle<Adaptor3d_Curve>>;
 
 #endif // _LProp_CLProps3d_HeaderFile

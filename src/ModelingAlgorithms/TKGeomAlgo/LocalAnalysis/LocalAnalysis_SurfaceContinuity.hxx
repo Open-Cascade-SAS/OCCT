@@ -156,9 +156,9 @@ public:
                                                   const double Percent = 0.01,
                                                   const double Maxlen  = 10000);
 
-  Standard_EXPORT void ComputeAnalysis(GeomLProp_SLProps& Surf1,
-                                       GeomLProp_SLProps& Surf2,
-                                       const GeomAbs_Shape  Order);
+  Standard_EXPORT void ComputeAnalysis(GeomLProp_SLProps&  Surf1,
+                                       GeomLProp_SLProps&  Surf2,
+                                       const GeomAbs_Shape Order);
 
   Standard_EXPORT bool IsDone() const;
 

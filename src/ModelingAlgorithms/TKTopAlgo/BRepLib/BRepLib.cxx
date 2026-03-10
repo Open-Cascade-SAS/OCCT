@@ -2030,7 +2030,7 @@ public:
   }
 
 private:
-  GeomLProp_SLProps       mySurfaceProps; // properties calculator
+  GeomLProp_SLProps         mySurfaceProps; // properties calculator
   gp_Trsf                   mySurfaceTrsf;
   occ::handle<Geom2d_Curve> myCurve2d;
   bool                      myIsReversed; // the face based on the surface is reversed

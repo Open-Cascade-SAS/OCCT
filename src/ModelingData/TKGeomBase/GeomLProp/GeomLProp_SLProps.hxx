@@ -52,10 +52,10 @@ public:
   //! <Resolution> is the linear tolerance (it is used to test
   //! if a vector is null).
   GeomLProp_SLPropsBase(const SurfaceType& S,
-                    const double       U,
-                    const double       V,
-                    const int          N,
-                    const double       Resolution)
+                        const double       U,
+                        const double       V,
+                        const int          N,
+                        const double       Resolution)
       : mySurf(S),
         myU(RealLast()),
         myV(RealLast()),

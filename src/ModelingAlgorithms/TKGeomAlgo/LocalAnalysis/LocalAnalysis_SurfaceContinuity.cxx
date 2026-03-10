@@ -274,9 +274,9 @@ LocalAnalysis_SurfaceContinuity::LocalAnalysis_SurfaceContinuity(const double Ep
   myIsDone = true;
 }
 
-void LocalAnalysis_SurfaceContinuity::ComputeAnalysis(GeomLProp_SLProps& Surf1,
-                                                      GeomLProp_SLProps& Surf2,
-                                                      const GeomAbs_Shape  Order)
+void LocalAnalysis_SurfaceContinuity::ComputeAnalysis(GeomLProp_SLProps&  Surf1,
+                                                      GeomLProp_SLProps&  Surf2,
+                                                      const GeomAbs_Shape Order)
 {
   myTypeCont = Order;
   switch (Order)
