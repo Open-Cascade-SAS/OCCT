@@ -22,13 +22,13 @@
 #include <StdFail_NotDone.hxx>
 
 /***********************************************************************/
-void LocalAnalysis_CurveContinuity::CurvC0(GeomLProp_CLProps<>& Curv1, GeomLProp_CLProps<>& Curv2)
+void LocalAnalysis_CurveContinuity::CurvC0(GeomLProp_CLProps& Curv1, GeomLProp_CLProps& Curv2)
 {
   myContC0 = (Curv1.Value()).Distance(Curv2.Value());
 }
 
 /****************************************************************************/
-void LocalAnalysis_CurveContinuity::CurvC1(GeomLProp_CLProps<>& Curv1, GeomLProp_CLProps<>& Curv2)
+void LocalAnalysis_CurveContinuity::CurvC1(GeomLProp_CLProps& Curv1, GeomLProp_CLProps& Curv2)
 {
   gp_Vec V1, V2;
   double ang;
@@ -63,7 +63,7 @@ void LocalAnalysis_CurveContinuity::CurvC1(GeomLProp_CLProps<>& Curv1, GeomLProp
 
 /*********************************************************************************/
 
-void LocalAnalysis_CurveContinuity::CurvC2(GeomLProp_CLProps<>& Curv1, GeomLProp_CLProps<>& Curv2)
+void LocalAnalysis_CurveContinuity::CurvC2(GeomLProp_CLProps& Curv1, GeomLProp_CLProps& Curv2)
 {
   gp_Vec V1, V2, V12, V22;
   //  gp_Dir D1, D2;
@@ -115,7 +115,7 @@ void LocalAnalysis_CurveContinuity::CurvC2(GeomLProp_CLProps<>& Curv1, GeomLProp
 
 /*********************************************************************************/
 
-void LocalAnalysis_CurveContinuity::CurvG1(GeomLProp_CLProps<>& Curv1, GeomLProp_CLProps<>& Curv2)
+void LocalAnalysis_CurveContinuity::CurvG1(GeomLProp_CLProps& Curv1, GeomLProp_CLProps& Curv2)
 {
   gp_Dir Tang1, Tang2;
   double ang;
@@ -138,7 +138,7 @@ void LocalAnalysis_CurveContinuity::CurvG1(GeomLProp_CLProps<>& Curv1, GeomLProp
 
 /*********************************************************************************/
 
-void LocalAnalysis_CurveContinuity::CurvG2(GeomLProp_CLProps<>& Curv1, GeomLProp_CLProps<>& Curv2)
+void LocalAnalysis_CurveContinuity::CurvG2(GeomLProp_CLProps& Curv1, GeomLProp_CLProps& Curv2)
 {
   gp_Vec V1, V2;
   gp_Dir D1, D2;

@@ -108,7 +108,7 @@ public:
 
   Standard_EXPORT double Length() const;
 
-  Standard_EXPORT GeomLProp_SLProps<>& LPropSurf(const double U);
+  Standard_EXPORT GeomLProp_SLProps& LPropSurf(const double U);
 
   Standard_EXPORT void D0(const double U, gp_Pnt& P) const;
 
@@ -156,7 +156,7 @@ protected:
   bool                                  myConstG0;
   bool                                  myConstG1;
   bool                                  myConstG2;
-  GeomLProp_SLProps<>                   myLProp;
+  GeomLProp_SLProps                   myLProp;
   double                                myTolDist;
   double                                myTolAng;
   double                                myTolCurv;

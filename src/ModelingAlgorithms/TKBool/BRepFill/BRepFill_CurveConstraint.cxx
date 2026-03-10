@@ -42,7 +42,7 @@ BRepFill_CurveConstraint ::BRepFill_CurveConstraint(
   myTolDist   = TolDist;
   myTolAng    = TolAng;
   myTolCurv   = TolCurv;
-  GeomLProp_SLProps<> SLP(2, TolDist);
+  GeomLProp_SLProps SLP(2, TolDist);
   myLProp = SLP;
   myOrder = Tang;
   if ((Tang < -1) || (Tang > 2))

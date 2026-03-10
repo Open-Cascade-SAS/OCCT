@@ -156,8 +156,8 @@ public:
                                                   const double Percent = 0.01,
                                                   const double Maxlen  = 10000);
 
-  Standard_EXPORT void ComputeAnalysis(GeomLProp_SLProps<>& Surf1,
-                                       GeomLProp_SLProps<>& Surf2,
+  Standard_EXPORT void ComputeAnalysis(GeomLProp_SLProps& Surf1,
+                                       GeomLProp_SLProps& Surf2,
                                        const GeomAbs_Shape  Order);
 
   Standard_EXPORT bool IsDone() const;
@@ -199,15 +199,15 @@ public:
   Standard_EXPORT bool IsG2() const;
 
 private:
-  Standard_EXPORT void SurfC0(const GeomLProp_SLProps<>& Surf1, const GeomLProp_SLProps<>& Surf2);
+  Standard_EXPORT void SurfC0(const GeomLProp_SLProps& Surf1, const GeomLProp_SLProps& Surf2);
 
-  Standard_EXPORT void SurfC1(GeomLProp_SLProps<>& Surf1, GeomLProp_SLProps<>& Surf2);
+  Standard_EXPORT void SurfC1(GeomLProp_SLProps& Surf1, GeomLProp_SLProps& Surf2);
 
-  Standard_EXPORT void SurfC2(GeomLProp_SLProps<>& Surf1, GeomLProp_SLProps<>& Surf2);
+  Standard_EXPORT void SurfC2(GeomLProp_SLProps& Surf1, GeomLProp_SLProps& Surf2);
 
-  Standard_EXPORT void SurfG1(GeomLProp_SLProps<>& Surf1, GeomLProp_SLProps<>& Surf2);
+  Standard_EXPORT void SurfG1(GeomLProp_SLProps& Surf1, GeomLProp_SLProps& Surf2);
 
-  Standard_EXPORT void SurfG2(GeomLProp_SLProps<>& Surf1, GeomLProp_SLProps<>& Surf2);
+  Standard_EXPORT void SurfG2(GeomLProp_SLProps& Surf1, GeomLProp_SLProps& Surf2);
 
   double                        myContC0;
   double                        myContC1U;

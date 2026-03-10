@@ -23,6 +23,6 @@
 
 //! Alias for surface local properties using HLRBRep_SurfacePtr with ToolAccess.
 using HLRBRep_SLProps =
-  GeomLProp_SLProps<HLRBRep_SurfacePtr, LProp_SurfaceUtils::ToolAccess<HLRBRep_SLPropsATool>>;
+  GeomLProp_SLPropsBase<HLRBRep_SurfacePtr, LProp_SurfaceUtils::ToolAccess<HLRBRep_SLPropsATool>>;
 
 #endif // _HLRBRep_SLProps_HeaderFile

@@ -215,20 +215,11 @@ private:
   int          mySignificantFirstDerivativeOrder = 0;
 };
 
-//! Template class for computing local properties of a 3D curve.
-//! @tparam CurveType the curve storage type (e.g. occ::handle<Geom_Curve>,
-//!         BRepAdaptor_Curve, occ::handle<Adaptor3d_Curve>)
-//! @tparam Access the access policy for evaluating curve derivatives
-template <typename CurveType = occ::handle<Geom_Curve>,
-          typename Access    = LProp_CurveUtils::DirectAccess>
-using GeomLProp_CLProps = GeomLProp_CLPropsBase<gp_Pnt, gp_Vec, gp_Dir, CurveType, Access>;
+//! Default 3D curve local properties class using occ::handle<Geom_Curve>.
+using GeomLProp_CLProps = GeomLProp_CLPropsBase<gp_Pnt, gp_Vec, gp_Dir, occ::handle<Geom_Curve>>;
 
-//! Template class for computing local properties of a 2D curve.
-//! @tparam CurveType the curve storage type (e.g. occ::handle<Geom2d_Curve>,
-//!         const HLRBRep_Curve*)
-//! @tparam Access the access policy for evaluating curve derivatives
-template <typename CurveType = occ::handle<Geom2d_Curve>,
-          typename Access    = LProp_CurveUtils::DirectAccess>
-using GeomLProp_CLProps2d = GeomLProp_CLPropsBase<gp_Pnt2d, gp_Vec2d, gp_Dir2d, CurveType, Access>;
+//! Default 2D curve local properties class using occ::handle<Geom2d_Curve>.
+using GeomLProp_CLProps2d =
+  GeomLProp_CLPropsBase<gp_Pnt2d, gp_Vec2d, gp_Dir2d, occ::handle<Geom2d_Curve>>;
 
 #endif // _GeomLProp_CLProps_HeaderFile

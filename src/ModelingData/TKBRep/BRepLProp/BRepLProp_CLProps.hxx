@@ -21,6 +21,6 @@
 #include <GeomLProp_CLProps.hxx>
 
 //! Alias for curve local properties using BRepAdaptor_Curve.
-using BRepLProp_CLProps = GeomLProp_CLProps<BRepAdaptor_Curve>;
+using BRepLProp_CLProps = GeomLProp_CLPropsBase<gp_Pnt, gp_Vec, gp_Dir, BRepAdaptor_Curve>;
 
 #endif // _BRepLProp_CLProps_HeaderFile

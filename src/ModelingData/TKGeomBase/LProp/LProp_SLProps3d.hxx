@@ -20,6 +20,6 @@
 #include <GeomLProp_SLProps.hxx>
 
 //! Alias for surface local properties using Adaptor3d_Surface interface.
-using LProp_SLProps3d = GeomLProp_SLProps<occ::handle<Adaptor3d_Surface>>;
+using LProp_SLProps3d = GeomLProp_SLPropsBase<occ::handle<Adaptor3d_Surface>>;
 
 #endif // _LProp_SLProps3d_HeaderFile

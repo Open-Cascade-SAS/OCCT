@@ -35,9 +35,8 @@
 //! @tparam SurfaceType the surface storage type (e.g. occ::handle<Geom_Surface>,
 //!         BRepAdaptor_Surface, occ::handle<Adaptor3d_Surface>, HLRBRep_SurfacePtr)
 //! @tparam Access the access policy for evaluating surface derivatives
-template <typename SurfaceType = occ::handle<Geom_Surface>,
-          typename Access      = LProp_SurfaceUtils::DirectAccess>
-class GeomLProp_SLProps
+template <typename SurfaceType, typename Access = LProp_SurfaceUtils::DirectAccess>
+class GeomLProp_SLPropsBase
 {
 public:
   DEFINE_STANDARD_ALLOC
@@ -52,7 +51,7 @@ public:
   //! only the tangent, N should be equal to 1.
   //! <Resolution> is the linear tolerance (it is used to test
   //! if a vector is null).
-  GeomLProp_SLProps(const SurfaceType& S,
+  GeomLProp_SLPropsBase(const SurfaceType& S,
                     const double       U,
                     const double       V,
                     const int          N,
@@ -68,13 +67,13 @@ public:
         myNormalStatus(LProp_Undecided),
         myCurvatureStatus(LProp_Undecided)
   {
-    Standard_OutOfRange_Raise_if(N < 0 || N > 2, "GeomLProp_SLProps::GeomLProp_SLProps()");
+    Standard_OutOfRange_Raise_if(N < 0 || N > 2, "GeomLProp_SLPropsBase::GeomLProp_SLPropsBase()");
     SetParameters(U, V);
   }
 
   //! idem as previous constructor but without setting the value
   //! of parameters <U> and <V>.
-  GeomLProp_SLProps(const SurfaceType& S, const int N, const double Resolution)
+  GeomLProp_SLPropsBase(const SurfaceType& S, const int N, const double Resolution)
       : mySurf(S),
         myU(RealLast()),
         myV(RealLast()),
@@ -86,13 +85,13 @@ public:
         myNormalStatus(LProp_Undecided),
         myCurvatureStatus(LProp_Undecided)
   {
-    Standard_OutOfRange_Raise_if(N < 0 || N > 2, "GeomLProp_SLProps::GeomLProp_SLProps()");
+    Standard_OutOfRange_Raise_if(N < 0 || N > 2, "GeomLProp_SLPropsBase::GeomLProp_SLPropsBase()");
   }
 
   //! idem as previous constructor but without setting the value
   //! of parameters <U> and <V> and the surface.
   //! the surface can have an empty constructor.
-  GeomLProp_SLProps(const int N, const double Resolution)
+  GeomLProp_SLPropsBase(const int N, const double Resolution)
       : mySurf{},
         myU(RealLast()),
         myV(RealLast()),
@@ -105,7 +104,7 @@ public:
         myCurvatureStatus(LProp_Undecided)
   {
     Standard_OutOfRange_Raise_if(N < 0 || N > 2,
-                                 "GeomLProp_SLProps::GeomLProp_SLProps() bad level");
+                                 "GeomLProp_SLPropsBase::GeomLProp_SLPropsBase() bad level");
   }
 
   //! Initializes the local properties of the surface S
@@ -311,5 +310,8 @@ private:
   LProp_Status myNormalStatus;
   LProp_Status myCurvatureStatus;
 };
+
+//! Default surface local properties class using occ::handle<Geom_Surface>.
+using GeomLProp_SLProps = GeomLProp_SLPropsBase<occ::handle<Geom_Surface>>;
 
 #endif // _GeomLProp_SLProps_HeaderFile

@@ -21,6 +21,6 @@
 #include <GeomLProp_SLProps.hxx>
 
 //! Alias for surface local properties using BRepAdaptor_Surface.
-using BRepLProp_SLProps = GeomLProp_SLProps<BRepAdaptor_Surface>;
+using BRepLProp_SLProps = GeomLProp_SLPropsBase<BRepAdaptor_Surface>;
 
 #endif // _BRepLProp_SLProps_HeaderFile

@@ -377,7 +377,7 @@ void GeomPlate_CurveConstraint::SetOrder(const int Order)
 //------------------------------------------------------------
 // Fonction : LPropSurf
 //------------------------------------------------------------
-GeomLProp_SLProps<>& GeomPlate_CurveConstraint::LPropSurf(const double U)
+GeomLProp_SLProps& GeomPlate_CurveConstraint::LPropSurf(const double U)
 {
   if (myFrontiere.IsNull())
     throw Standard_Failure("GeomPlate_CurveConstraint.cxx : Curve must be on a Surface");

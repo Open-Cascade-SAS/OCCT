@@ -450,7 +450,7 @@ void BRepClass_Intersector::LocalGeometry(const BRepClass_Edge& E,
 {
   double                    fpar, lpar;
   occ::handle<Geom2d_Curve> aPCurve = BRep_Tool::CurveOnSurface(E.Edge(), E.Face(), fpar, lpar);
-  GeomLProp_CLProps2d       Prop(aPCurve, U, 2, Precision::PConfusion());
+  GeomLProp_CLProps2d     Prop(aPCurve, U, 2, Precision::PConfusion());
 
   C = 0.;
   if (Prop.IsTangentDefined())

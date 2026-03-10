@@ -22,7 +22,10 @@
 #include <HLRBRep_Curve.hxx>
 
 //! Alias for 2D curve local properties using HLRBRep_Curve with ToolAccess.
-using HLRBRep_CLProps =
-  GeomLProp_CLProps2d<const HLRBRep_Curve*, LProp_CurveUtils::ToolAccess<HLRBRep_CLPropsATool>>;
+using HLRBRep_CLProps = GeomLProp_CLPropsBase<gp_Pnt2d,
+                                             gp_Vec2d,
+                                             gp_Dir2d,
+                                             const HLRBRep_Curve*,
+                                             LProp_CurveUtils::ToolAccess<HLRBRep_CLPropsATool>>;
 
 #endif // _HLRBRep_CLProps_HeaderFile
