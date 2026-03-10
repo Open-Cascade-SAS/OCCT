@@ -447,12 +447,10 @@ static int dversion(Draw_Interpretor& di, int, const char**)
   di << "Architecture: SPARC\n";
 #elif defined(__aarch64__) && defined(__LP64__)
   di << "Architecture: ARM 64-bit\n";
-#elif defined(__arm__) || defined(__arm64__)
-  #if defined(__LP64__)
+#elif defined(_M_ARM64) || defined(__aarch64__) || defined(__arm64__)
   di << "Architecture: ARM 64-bit\n";
-  #else
+#elif defined(_M_ARM) || defined(__arm__)
   di << "Architecture: ARM 32-bit\n";
-  #endif
 #elif defined(__EMSCRIPTEN__)
   di << "Architecture: WASM "
   #if defined(__LP64__)
