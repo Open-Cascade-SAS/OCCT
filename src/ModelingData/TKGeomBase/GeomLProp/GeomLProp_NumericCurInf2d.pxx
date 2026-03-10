@@ -12,12 +12,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _Geom2dLProp_NumericCurInf2d_HeaderFile
-#define _Geom2dLProp_NumericCurInf2d_HeaderFile
+#ifndef _GeomLProp_NumericCurInf2d_HeaderFile
+#define _GeomLProp_NumericCurInf2d_HeaderFile
 
 #include <Geom2d_Curve.hxx>
-#include <Geom2dLProp_FuncCurExt.pxx>
-#include <Geom2dLProp_FuncCurNul.pxx>
+#include <GeomLProp_FuncCurExt2d.pxx>
+#include <GeomLProp_FuncCurNul2d.pxx>
 #include <LProp_CurAndInf.hxx>
 #include <math_BracketedRoot.hxx>
 #include <math_FunctionRoots.hxx>
@@ -25,12 +25,12 @@
 
 //! Computes the local extremas of curvature and the inflection points
 //! of a bounded 2D curve using numeric root-finding methods.
-//! Uses Geom2dLProp_FuncCurExt for curvature extrema and
-//! Geom2dLProp_FuncCurNul for inflection points.
-class Geom2dLProp_NumericCurInf2d
+//! Uses GeomLProp_FuncCurExt2d for curvature extrema and
+//! GeomLProp_FuncCurNul2d for inflection points.
+class GeomLProp_NumericCurInf2d
 {
 public:
-  Geom2dLProp_NumericCurInf2d()
+  GeomLProp_NumericCurInf2d()
       : myIsDone(false)
   {
   }
@@ -61,7 +61,7 @@ public:
     constexpr double       aTol   = Precision::PConfusion();
     constexpr int          aNbSamples = 100;
 
-    Geom2dLProp_FuncCurExt aFunc(theCurve, anEpsH);
+    GeomLProp_FuncCurExt2d aFunc(theCurve, anEpsH);
     math_FunctionRoots     aRootFinder(aFunc, theUMin, theUMax, aNbSamples, anEpsH, anEpsH, anEpsH);
 
     if (aRootFinder.IsDone())
@@ -105,7 +105,7 @@ public:
                   LProp_CurAndInf&                 theResult)
   {
     myIsDone = true;
-    Geom2dLProp_FuncCurNul aFunc(theCurve);
+    GeomLProp_FuncCurNul2d aFunc(theCurve);
     constexpr double       anEpsX     = 1.e-6;
     constexpr double       anEpsF     = 1.e-6;
     constexpr int          aNbSamples = 30;
@@ -132,4 +132,4 @@ private:
   bool myIsDone; //!< Status of the last computation.
 };
 
-#endif // _Geom2dLProp_NumericCurInf2d_HeaderFile
+#endif // _GeomLProp_NumericCurInf2d_HeaderFile

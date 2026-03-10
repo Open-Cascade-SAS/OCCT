@@ -49,7 +49,7 @@
 #include <Geom2d_OffsetCurve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2dLProp_CLProps2d.hxx>
+#include <GeomLProp_CLProps.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_OffsetCurve.hxx>
@@ -2531,7 +2531,7 @@ static void CheckBadEdges(const TopoDS_Face&              Spine,
           gp_Pnt2d P, Pc;
           gp_Dir2d N;
 
-          Geom2dLProp_CLProps2d aCLProps(G2d, 2, eps);
+          GeomLProp_CLProps2d aCLProps(G2d, 2, eps);
 
           aCLProps.SetParameter(f);
           if (!aCLProps.IsTangentDefined())

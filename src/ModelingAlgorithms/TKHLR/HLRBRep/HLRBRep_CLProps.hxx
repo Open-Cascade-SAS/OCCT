@@ -17,13 +17,13 @@
 #ifndef _HLRBRep_CLProps_HeaderFile
 #define _HLRBRep_CLProps_HeaderFile
 
-#include <Geom2dLProp_CLProps2d.hxx>
+#include <GeomLProp_CLProps.hxx>
 #include <HLRBRep_CLPropsATool.hxx>
 #include <HLRBRep_Curve.hxx>
 
 //! Alias for 2D curve local properties using HLRBRep_Curve with ToolAccess.
 using HLRBRep_CLProps =
-  Geom2dLProp_CLProps2d<const HLRBRep_Curve*,
+  GeomLProp_CLProps2d<const HLRBRep_Curve*,
                         LProp_CurveUtils::ToolAccess<HLRBRep_CLPropsATool>>;
 
 #endif // _HLRBRep_CLProps_HeaderFile

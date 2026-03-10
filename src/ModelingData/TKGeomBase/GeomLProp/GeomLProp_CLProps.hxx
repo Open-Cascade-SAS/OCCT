@@ -23,22 +23,32 @@
 #include <Standard_OutOfRange.hxx>
 
 #include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
 #include <gp_Dir.hxx>
+#include <gp_Dir2d.hxx>
 #include <LProp_Status.hxx>
 
 #include <Geom_Curve.hxx>
+#include <Geom2d_Curve.hxx>
 #include <LProp_CurveUtils.hxx>
 
-//! Template class for computing local properties of a 3D curve:
+//! Implementation class for computing local properties of a curve:
 //! point, derivatives up to order 3, tangent, curvature, normal,
 //! and centre of curvature.
-//! @tparam CurveType the curve storage type (e.g. occ::handle<Geom_Curve>,
-//!         BRepAdaptor_Curve, occ::handle<Adaptor3d_Curve>)
+//! Parameterized by geometric types (Pnt/Vec/Dir) and curve type.
+//! @tparam Pnt the point type (gp_Pnt for 3D, gp_Pnt2d for 2D)
+//! @tparam Vec the vector type (gp_Vec for 3D, gp_Vec2d for 2D)
+//! @tparam Dir the direction type (gp_Dir for 3D, gp_Dir2d for 2D)
+//! @tparam CurveType the curve storage type
 //! @tparam Access the access policy for evaluating curve derivatives
-template <typename CurveType = occ::handle<Geom_Curve>,
-          typename Access    = LProp_CurveUtils::DirectAccess>
-class GeomLProp_CLProps
+template <typename Pnt,
+          typename Vec,
+          typename Dir,
+          typename CurveType,
+          typename Access = LProp_CurveUtils::DirectAccess>
+class GeomLProp_CLPropsBase
 {
 public:
   DEFINE_STANDARD_ALLOC
@@ -52,7 +62,7 @@ public:
   //! only the tangent, N should be equal to 1.
   //! <Resolution> is the linear tolerance (it is used to test
   //! if a vector is null).
-  GeomLProp_CLProps(const CurveType& C, const int N, const double Resolution)
+  GeomLProp_CLPropsBase(const CurveType& C, const int N, const double Resolution)
       : myCurve(C),
         myU(RealLast()),
         myDerOrder(N),
@@ -66,10 +76,10 @@ public:
   //! Same as previous constructor but here the parameter is
   //! set to the value <U>.
   //! All the computations done will be related to <C> and <U>.
-  GeomLProp_CLProps(const CurveType& C,
-                    const double     U,
-                    const int        N,
-                    const double     Resolution)
+  GeomLProp_CLPropsBase(const CurveType& C,
+                        const double     U,
+                        const int        N,
+                        const double     Resolution)
       : myCurve(C),
         myDerOrder(N),
         myCN(4),
@@ -86,7 +96,7 @@ public:
   //! the curve can have a empty constructor
   //! All the computations done will be related to <C> and <U>
   //! when the functions "set" will be done.
-  GeomLProp_CLProps(const int N, const double Resolution)
+  GeomLProp_CLPropsBase(const int N, const double Resolution)
       : myCurve{},
         myU(RealLast()),
         myDerOrder(N),
@@ -119,25 +129,25 @@ public:
   }
 
   //! Returns the Point.
-  const gp_Pnt& Value() const { return myPnt; }
+  const Pnt& Value() const { return myPnt; }
 
   //! Returns the first derivative.
   //! The derivative is computed if it has not been yet.
-  const gp_Vec& D1()
+  const Vec& D1()
   {
     return LProp_CurveUtils::EnsureDeriv<Access>(myCurve, myU, myDerOrder, 1, myPnt, myDerivArr);
   }
 
   //! Returns the second derivative.
   //! The derivative is computed if it has not been yet.
-  const gp_Vec& D2()
+  const Vec& D2()
   {
     return LProp_CurveUtils::EnsureDeriv<Access>(myCurve, myU, myDerOrder, 2, myPnt, myDerivArr);
   }
 
   //! Returns the third derivative.
   //! The derivative is computed if it has not been yet.
-  const gp_Vec& D3()
+  const Vec& D3()
   {
     return LProp_CurveUtils::EnsureDeriv<Access>(myCurve, myU, myDerOrder, 3, myPnt, myDerivArr);
   }
@@ -147,15 +157,15 @@ public:
   //! three first derivatives are all null.
   bool IsTangentDefined()
   {
-    return LProp_CurveUtils::IsTangentDefined<gp_Vec>(*this,
-                                                       myCN,
-                                                       myLinTol,
-                                                       mySignificantFirstDerivativeOrder,
-                                                       myTangentStatus);
+    return LProp_CurveUtils::IsTangentDefined<Vec>(*this,
+                                                     myCN,
+                                                     myLinTol,
+                                                     mySignificantFirstDerivativeOrder,
+                                                     myTangentStatus);
   }
 
   //! output the tangent direction <D>.
-  void Tangent(gp_Dir& D)
+  void Tangent(Dir& D)
   {
     LProp_CurveUtils::Tangent<Access>(*this,
                                       myCurve,
@@ -178,13 +188,13 @@ public:
   }
 
   //! Returns the normal direction <N>.
-  void Normal(gp_Dir& N)
+  void Normal(Dir& N)
   {
     LProp_CurveUtils::Normal(*this, myDerivArr[0], myDerivArr[1], myLinTol, N);
   }
 
   //! Returns the centre of curvature <P>.
-  void CentreOfCurvature(gp_Pnt& P)
+  void CentreOfCurvature(Pnt& P)
   {
     LProp_CurveUtils::CentreOfCurvature(*this,
                                         myPnt,
@@ -201,12 +211,28 @@ private:
   int          myDerOrder;
   int          myCN;
   double       myLinTol;
-  gp_Pnt       myPnt;
-  gp_Vec       myDerivArr[3];
-  gp_Dir       myTangent;
+  Pnt          myPnt;
+  Vec          myDerivArr[3];
+  Dir          myTangent;
   double       myCurvature = 0.0;
   LProp_Status myTangentStatus;
   int          mySignificantFirstDerivativeOrder = 0;
 };
+
+//! Template class for computing local properties of a 3D curve.
+//! @tparam CurveType the curve storage type (e.g. occ::handle<Geom_Curve>,
+//!         BRepAdaptor_Curve, occ::handle<Adaptor3d_Curve>)
+//! @tparam Access the access policy for evaluating curve derivatives
+template <typename CurveType = occ::handle<Geom_Curve>,
+          typename Access    = LProp_CurveUtils::DirectAccess>
+using GeomLProp_CLProps = GeomLProp_CLPropsBase<gp_Pnt, gp_Vec, gp_Dir, CurveType, Access>;
+
+//! Template class for computing local properties of a 2D curve.
+//! @tparam CurveType the curve storage type (e.g. occ::handle<Geom2d_Curve>,
+//!         const HLRBRep_Curve*)
+//! @tparam Access the access policy for evaluating curve derivatives
+template <typename CurveType = occ::handle<Geom2d_Curve>,
+          typename Access    = LProp_CurveUtils::DirectAccess>
+using GeomLProp_CLProps2d = GeomLProp_CLPropsBase<gp_Pnt2d, gp_Vec2d, gp_Dir2d, CurveType, Access>;
 
 #endif // _GeomLProp_CLProps_HeaderFile

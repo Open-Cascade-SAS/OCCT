@@ -12,8 +12,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _Geom2dLProp_FuncCurNul_HeaderFile
-#define _Geom2dLProp_FuncCurNul_HeaderFile
+#ifndef _GeomLProp_FuncCurNul2d_HeaderFile
+#define _GeomLProp_FuncCurNul2d_HeaderFile
 
 #include <Geom2d_Curve.hxx>
 #include <gp_Pnt2d.hxx>
@@ -24,12 +24,12 @@
 //!   F = (V1 ^ V2).Z / (||V1|| * ||V2||)
 //! where V1 is the tangent and V2 is the second derivative.
 //! The roots of F correspond to inflection points.
-class Geom2dLProp_FuncCurNul : public math_FunctionWithDerivative
+class GeomLProp_FuncCurNul2d : public math_FunctionWithDerivative
 {
 public:
   //! Initializes the function with the curve to analyze.
   //! @param theCurve [in] the 2D curve
-  Geom2dLProp_FuncCurNul(const occ::handle<Geom2d_Curve>& theCurve)
+  GeomLProp_FuncCurNul2d(const occ::handle<Geom2d_Curve>& theCurve)
       : myCurve(theCurve)
   {
   }
@@ -100,4 +100,4 @@ private:
   occ::handle<Geom2d_Curve> myCurve; //!< The analyzed curve.
 };
 
-#endif // _Geom2dLProp_FuncCurNul_HeaderFile
+#endif // _GeomLProp_FuncCurNul2d_HeaderFile

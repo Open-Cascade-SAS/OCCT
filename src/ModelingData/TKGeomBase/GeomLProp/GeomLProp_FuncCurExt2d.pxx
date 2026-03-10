@@ -12,8 +12,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _Geom2dLProp_FuncCurExt_HeaderFile
-#define _Geom2dLProp_FuncCurExt_HeaderFile
+#ifndef _GeomLProp_FuncCurExt2d_HeaderFile
+#define _GeomLProp_FuncCurExt2d_HeaderFile
 
 #include <Geom2d_Curve.hxx>
 #include <gp_Pnt2d.hxx>
@@ -25,14 +25,14 @@
 //! where V1 is the tangent and V2 is the second derivative.
 //! The function value is F = dKC/dU, and its roots correspond
 //! to curvature extrema.
-class Geom2dLProp_FuncCurExt : public math_FunctionWithDerivative
+class GeomLProp_FuncCurExt2d : public math_FunctionWithDerivative
 {
 public:
   //! Initializes the function with the curve and the tolerance
   //! used for numerical differentiation.
   //! @param theCurve [in] the 2D curve to analyze
   //! @param theTol [in] the parametric tolerance for finite differences
-  Geom2dLProp_FuncCurExt(const occ::handle<Geom2d_Curve>& theCurve, const double theTol)
+  GeomLProp_FuncCurExt2d(const occ::handle<Geom2d_Curve>& theCurve, const double theTol)
       : myCurve(theCurve),
         myEpsX(theTol)
   {
@@ -147,4 +147,4 @@ private:
   double                    myEpsX;  //!< Parametric tolerance for finite differences.
 };
 
-#endif // _Geom2dLProp_FuncCurExt_HeaderFile
+#endif // _GeomLProp_FuncCurExt2d_HeaderFile

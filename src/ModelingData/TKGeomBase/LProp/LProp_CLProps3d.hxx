@@ -13,13 +13,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _LProp3d_SLProps_HeaderFile
-#define _LProp3d_SLProps_HeaderFile
+#ifndef _LProp_CLProps3d_HeaderFile
+#define _LProp_CLProps3d_HeaderFile
 
-#include <Adaptor3d_Surface.hxx>
-#include <GeomLProp_SLProps.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <GeomLProp_CLProps.hxx>
 
-//! Alias for surface local properties using Adaptor3d_Surface interface.
-using LProp3d_SLProps = GeomLProp_SLProps<occ::handle<Adaptor3d_Surface>>;
+//! Alias for curve local properties using Adaptor3d_Curve interface.
+using LProp_CLProps3d = GeomLProp_CLProps<occ::handle<Adaptor3d_Curve>>;
 
-#endif // _LProp3d_SLProps_HeaderFile
+#endif // _LProp_CLProps3d_HeaderFile

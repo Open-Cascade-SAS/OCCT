@@ -40,7 +40,7 @@
 #include <math_Matrix.hxx>
 #include <gce_MakeParab.hxx>
 #include <gce_MakeDir.hxx>
-#include <LProp3d_CLProps.hxx>
+#include <LProp_CLProps3d.hxx>
 #include <math_Function.hxx>
 #include <math_BrentMinimum.hxx>
 
@@ -268,7 +268,7 @@ class ProjLib_MaxCurvature : public math_Function
 {
 
 public:
-  ProjLib_MaxCurvature(LProp3d_CLProps& theProps)
+  ProjLib_MaxCurvature(LProp_CLProps3d& theProps)
       : myProps(&theProps)
   {
   }
@@ -281,7 +281,7 @@ public:
   }
 
 private:
-  LProp3d_CLProps* myProps;
+  LProp_CLProps3d* myProps;
 };
 
 //=====================================================================//
@@ -1381,7 +1381,7 @@ bool ProjLib_ProjectOnPlane::BuildParabolaByApex(occ::handle<Geom_Curve>& theGeo
                                // copy of instance;
   occ::handle<Adaptor3d_Curve> aProjCrv = ShallowCopy();
   myType                                = aCurType;
-  LProp3d_CLProps      aProps(aProjCrv, 2, Precision::Confusion());
+  LProp_CLProps3d      aProps(aProjCrv, 2, Precision::Confusion());
   ProjLib_MaxCurvature aMaxCur(aProps);
   math_BrentMinimum    aSolver(Precision::PConfusion());
   aSolver.Perform(aMaxCur, -10. * aF, 0., 10. * aF);
@@ -1439,7 +1439,7 @@ bool ProjLib_ProjectOnPlane::BuildHyperbolaByApex(occ::handle<Geom_Curve>& theGe
   occ::handle<Adaptor3d_Curve> aProjCrv = ShallowCopy();
   myType                                = aCurType;
   // Searching hyperbola apex as point with maximal curvature
-  LProp3d_CLProps      aProps(aProjCrv, 2, Precision::Confusion());
+  LProp_CLProps3d      aProps(aProjCrv, 2, Precision::Confusion());
   ProjLib_MaxCurvature aMaxCur(aProps);
   math_BrentMinimum    aSolver(Precision::PConfusion());
   aSolver.Perform(aMaxCur, -5., 0., 5.);

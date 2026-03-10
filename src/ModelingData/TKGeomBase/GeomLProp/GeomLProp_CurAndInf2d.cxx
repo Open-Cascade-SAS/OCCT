@@ -15,21 +15,21 @@
 // commercial license or contractual agreement.
 
 #include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2dLProp_CurAndInf2d.hxx>
-#include <Geom2dLProp_NumericCurInf2d.pxx>
+#include <GeomLProp_CurAndInf2d.hxx>
+#include <GeomLProp_NumericCurInf2d.pxx>
 #include <LProp_AnalyticCurInf.hxx>
 #include <NCollection_Array1.hxx>
 
 //=================================================================================================
 
-Geom2dLProp_CurAndInf2d::Geom2dLProp_CurAndInf2d()
+GeomLProp_CurAndInf2d::GeomLProp_CurAndInf2d()
     : isDone(false)
 {
 }
 
 //=================================================================================================
 
-void Geom2dLProp_CurAndInf2d::Perform(const occ::handle<Geom2d_Curve>& C)
+void GeomLProp_CurAndInf2d::Perform(const occ::handle<Geom2d_Curve>& C)
 {
   Clear();
   isDone = true;
@@ -39,7 +39,7 @@ void Geom2dLProp_CurAndInf2d::Perform(const occ::handle<Geom2d_Curve>& C)
 
 //=================================================================================================
 
-void Geom2dLProp_CurAndInf2d::PerformCurExt(const occ::handle<Geom2d_Curve>& C)
+void GeomLProp_CurAndInf2d::PerformCurExt(const occ::handle<Geom2d_Curve>& C)
 {
   Clear();
   isDone = true;
@@ -48,11 +48,11 @@ void Geom2dLProp_CurAndInf2d::PerformCurExt(const occ::handle<Geom2d_Curve>& C)
 
 //=================================================================================================
 
-void Geom2dLProp_CurAndInf2d::performCurExt(const occ::handle<Geom2d_Curve>& theCurve)
+void GeomLProp_CurAndInf2d::performCurExt(const occ::handle<Geom2d_Curve>& theCurve)
 {
   Geom2dAdaptor_Curve     anAdaptor(theCurve);
   LProp_AnalyticCurInf    anAnalyticInf;
-  Geom2dLProp_NumericCurInf2d aNumericInf;
+  GeomLProp_NumericCurInf2d aNumericInf;
   const GeomAbs_CurveType aCurveType = anAdaptor.GetType();
 
   switch (aCurveType)
@@ -112,7 +112,7 @@ void Geom2dLProp_CurAndInf2d::performCurExt(const occ::handle<Geom2d_Curve>& the
 
 //=================================================================================================
 
-void Geom2dLProp_CurAndInf2d::PerformInf(const occ::handle<Geom2d_Curve>& C)
+void GeomLProp_CurAndInf2d::PerformInf(const occ::handle<Geom2d_Curve>& C)
 {
   Clear();
   isDone = true;
@@ -121,11 +121,11 @@ void Geom2dLProp_CurAndInf2d::PerformInf(const occ::handle<Geom2d_Curve>& C)
 
 //=================================================================================================
 
-void Geom2dLProp_CurAndInf2d::performInf(const occ::handle<Geom2d_Curve>& theCurve)
+void GeomLProp_CurAndInf2d::performInf(const occ::handle<Geom2d_Curve>& theCurve)
 {
   Geom2dAdaptor_Curve     anAdaptor(theCurve);
   const GeomAbs_CurveType aCurveType = anAdaptor.GetType();
-  Geom2dLProp_NumericCurInf2d aNumericInf;
+  GeomLProp_NumericCurInf2d aNumericInf;
 
   switch (aCurveType)
   {
@@ -173,7 +173,7 @@ void Geom2dLProp_CurAndInf2d::performInf(const occ::handle<Geom2d_Curve>& theCur
 
 //=================================================================================================
 
-bool Geom2dLProp_CurAndInf2d::IsDone() const
+bool GeomLProp_CurAndInf2d::IsDone() const
 {
   return isDone;
 }

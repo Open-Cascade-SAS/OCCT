@@ -14,8 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _Geom2dLProp_CurAndInf2d_HeaderFile
-#define _Geom2dLProp_CurAndInf2d_HeaderFile
+#ifndef _GeomLProp_CurAndInf2d_HeaderFile
+#define _GeomLProp_CurAndInf2d_HeaderFile
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
@@ -32,7 +32,7 @@ class Geom2d_Curve;
 //! - defining the curve to be analyzed
 //! - implementing the computation algorithms
 //! - consulting the results.
-class Geom2dLProp_CurAndInf2d : public LProp_CurAndInf
+class GeomLProp_CurAndInf2d : public LProp_CurAndInf
 {
 public:
   DEFINE_STANDARD_ALLOC
@@ -41,7 +41,7 @@ public:
   //! Note: The curve on which the local properties are
   //! computed is defined using one of the following
   //! functions: Perform, PerformCurExt or PerformInf.
-  Standard_EXPORT Geom2dLProp_CurAndInf2d();
+  Standard_EXPORT GeomLProp_CurAndInf2d();
 
   //! For the curve C, Computes both the
   //! inflection points and the maximum and minimum curvatures.
@@ -77,4 +77,4 @@ private:
   bool isDone;
 };
 
-#endif // _Geom2dLProp_CurAndInf2d_HeaderFile
+#endif // _GeomLProp_CurAndInf2d_HeaderFile
