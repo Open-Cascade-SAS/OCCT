@@ -608,6 +608,10 @@ occ::handle<Geom_Curve> Geom_OffsetSurface::UIso(const double UU) const
       gp_Vec aD1U, aD1V;
       basisSurf->D1(UU, 0., aP, aD1U, aD1V);
       gp_Vec aDir = aD1U.Crossed(aD1V);
+      if (aDir.SquareMagnitude() < gp::Resolution())
+      {
+        return aL;
+      }
       aDir.Normalize();
       aDir *= offsetValue;
 

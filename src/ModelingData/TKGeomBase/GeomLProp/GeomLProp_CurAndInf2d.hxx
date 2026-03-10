@@ -74,7 +74,7 @@ private:
   //! Internal implementation of inflection computation (no Clear).
   void performInf(const occ::handle<Geom2d_Curve>& theCurve);
 
-  bool isDone;
+  bool myIsDone;
 };
 
 #endif // _GeomLProp_CurAndInf2d_HeaderFile

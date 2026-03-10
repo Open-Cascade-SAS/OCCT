@@ -23,7 +23,7 @@
 //=================================================================================================
 
 GeomLProp_CurAndInf2d::GeomLProp_CurAndInf2d()
-    : isDone(false)
+    : myIsDone(false)
 {
 }
 
@@ -32,7 +32,7 @@ GeomLProp_CurAndInf2d::GeomLProp_CurAndInf2d()
 void GeomLProp_CurAndInf2d::Perform(const occ::handle<Geom2d_Curve>& C)
 {
   Clear();
-  isDone = true;
+  myIsDone = true;
   performCurExt(C);
   performInf(C);
 }
@@ -42,7 +42,7 @@ void GeomLProp_CurAndInf2d::Perform(const occ::handle<Geom2d_Curve>& C)
 void GeomLProp_CurAndInf2d::PerformCurExt(const occ::handle<Geom2d_Curve>& C)
 {
   Clear();
-  isDone = true;
+  myIsDone = true;
   performCurExt(C);
 }
 
@@ -83,11 +83,11 @@ void GeomLProp_CurAndInf2d::performCurExt(const occ::handle<Geom2d_Curve>& theCu
       if (anAdaptor.Continuity() >= GeomAbs_C3)
       {
         aNumericInf.PerformCurExt(theCurve, *this);
-        isDone = aNumericInf.IsDone();
+        myIsDone = aNumericInf.IsDone();
       }
       else
       {
-        isDone                                  = true;
+        myIsDone                                = true;
         const int                  aNbIntervals = anAdaptor.NbIntervals(GeomAbs_C3);
         NCollection_Array1<double> aParams(1, aNbIntervals + 1);
         anAdaptor.Intervals(aParams, GeomAbs_C3);
@@ -96,7 +96,7 @@ void GeomLProp_CurAndInf2d::performCurExt(const occ::handle<Geom2d_Curve>& theCu
           aNumericInf.PerformCurExt(theCurve, aParams(i), aParams(i + 1), *this);
           if (!aNumericInf.IsDone())
           {
-            isDone = false;
+            myIsDone = false;
           }
         }
       }
@@ -104,7 +104,7 @@ void GeomLProp_CurAndInf2d::performCurExt(const occ::handle<Geom2d_Curve>& theCu
 
     default: {
       aNumericInf.PerformCurExt(theCurve, *this);
-      isDone = aNumericInf.IsDone();
+      myIsDone = aNumericInf.IsDone();
     }
     break;
   }
@@ -115,7 +115,7 @@ void GeomLProp_CurAndInf2d::performCurExt(const occ::handle<Geom2d_Curve>& theCu
 void GeomLProp_CurAndInf2d::PerformInf(const occ::handle<Geom2d_Curve>& C)
 {
   Clear();
-  isDone = true;
+  myIsDone = true;
   performInf(C);
 }
 
@@ -143,11 +143,11 @@ void GeomLProp_CurAndInf2d::performInf(const occ::handle<Geom2d_Curve>& theCurve
       if (anAdaptor.Continuity() >= GeomAbs_C3)
       {
         aNumericInf.PerformInf(theCurve, *this);
-        isDone = aNumericInf.IsDone();
+        myIsDone = aNumericInf.IsDone();
       }
       else
       {
-        isDone                                  = true;
+        myIsDone                                = true;
         const int                  aNbIntervals = anAdaptor.NbIntervals(GeomAbs_C3);
         NCollection_Array1<double> aParams(1, aNbIntervals + 1);
         anAdaptor.Intervals(aParams, GeomAbs_C3);
@@ -157,7 +157,7 @@ void GeomLProp_CurAndInf2d::performInf(const occ::handle<Geom2d_Curve>& theCurve
           aNumericInf.PerformInf(theCurve, aParams(i), aParams(i + 1), *this);
           if (!aNumericInf.IsDone())
           {
-            isDone = false;
+            myIsDone = false;
           }
         }
       }
@@ -165,7 +165,7 @@ void GeomLProp_CurAndInf2d::performInf(const occ::handle<Geom2d_Curve>& theCurve
 
     default: {
       aNumericInf.PerformInf(theCurve, *this);
-      isDone = aNumericInf.IsDone();
+      myIsDone = aNumericInf.IsDone();
     }
     break;
   }
@@ -175,5 +175,5 @@ void GeomLProp_CurAndInf2d::performInf(const occ::handle<Geom2d_Curve>& theCurve
 
 bool GeomLProp_CurAndInf2d::IsDone() const
 {
-  return isDone;
+  return myIsDone;
 }
