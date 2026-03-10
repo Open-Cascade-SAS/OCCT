@@ -48,13 +48,13 @@ public:
     gp_Vec2d aDeriv1, aDeriv2, aDeriv3;
 
     myCurve->D3(theU, aPnt, aDeriv1, aDeriv2, aDeriv3);
-    const double aCross12  = aDeriv1.Crossed(aDeriv2);
-    const double aCross13  = aDeriv1.Crossed(aDeriv3);
-    const double aDot12    = aDeriv1.Dot(aDeriv2);
-    const double aSqNorm1  = aDeriv1.SquareMagnitude();
-    const double aNorm1    = std::sqrt(aSqNorm1);
-    const double aNorm1Cb  = aSqNorm1 * aNorm1;   // ||V1||^3
-    const double aNorm1Pow5 = aNorm1Cb * aSqNorm1;  // ||V1||^5
+    const double aCross12   = aDeriv1.Crossed(aDeriv2);
+    const double aCross13   = aDeriv1.Crossed(aDeriv3);
+    const double aDot12     = aDeriv1.Dot(aDeriv2);
+    const double aSqNorm1   = aDeriv1.SquareMagnitude();
+    const double aNorm1     = std::sqrt(aSqNorm1);
+    const double aNorm1Cb   = aSqNorm1 * aNorm1;   // ||V1||^3
+    const double aNorm1Pow5 = aNorm1Cb * aSqNorm1; // ||V1||^5
 
     if (aNorm1Pow5 < gp::Resolution())
     {
@@ -109,10 +109,10 @@ public:
 
     // Compute curvature at theU.
     myCurve->D3(theU, aPnt, aDeriv1, aDeriv2, aDeriv3);
-    double       aCross12 = aDeriv1.Crossed(aDeriv2);
-    double       aSqNorm1 = aDeriv1.SquareMagnitude();
-    double       aNorm1   = std::sqrt(aSqNorm1);
-    double       aNorm1Cb = aSqNorm1 * aNorm1;
+    double aCross12 = aDeriv1.Crossed(aDeriv2);
+    double aSqNorm1 = aDeriv1.SquareMagnitude();
+    double aNorm1   = std::sqrt(aSqNorm1);
+    double aNorm1Cb = aSqNorm1 * aNorm1;
 
     if (aNorm1Cb < gp::Resolution())
     {

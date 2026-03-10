@@ -57,9 +57,9 @@ public:
   {
     myIsDone = true;
 
-    const double           anEpsH = 1.e-4 * (theUMax - theUMin);
-    constexpr double       aTol   = Precision::PConfusion();
-    constexpr int          aNbSamples = 100;
+    const double     anEpsH     = 1.e-4 * (theUMax - theUMin);
+    constexpr double aTol       = Precision::PConfusion();
+    constexpr int    aNbSamples = 100;
 
     GeomLProp_FuncCurExt2d aFunc(theCurve, anEpsH);
     math_FunctionRoots     aRootFinder(aFunc, theUMin, theUMax, aNbSamples, anEpsH, anEpsH, anEpsH);

@@ -1216,7 +1216,7 @@ static int minmaxcurandinf(Draw_Interpretor& di, int argc, const char** argv)
   if (C1.IsNull())
     return 1;
 
-  Draw_Color              Couleur;
+  Draw_Color            Couleur;
   GeomLProp_CurAndInf2d Sommets;
 
   Sommets.PerformCurExt(C1);

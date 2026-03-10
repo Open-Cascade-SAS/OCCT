@@ -169,20 +169,15 @@ public:
   Standard_EXPORT bool IsG2() const;
 
 private:
-  Standard_EXPORT void CurvC0(GeomLProp_CLProps<>& Curv1,
-                              GeomLProp_CLProps<>& Curv2);
+  Standard_EXPORT void CurvC0(GeomLProp_CLProps<>& Curv1, GeomLProp_CLProps<>& Curv2);
 
-  Standard_EXPORT void CurvC1(GeomLProp_CLProps<>& Curv1,
-                              GeomLProp_CLProps<>& Curv2);
+  Standard_EXPORT void CurvC1(GeomLProp_CLProps<>& Curv1, GeomLProp_CLProps<>& Curv2);
 
-  Standard_EXPORT void CurvC2(GeomLProp_CLProps<>& Curv1,
-                              GeomLProp_CLProps<>& Curv2);
+  Standard_EXPORT void CurvC2(GeomLProp_CLProps<>& Curv1, GeomLProp_CLProps<>& Curv2);
 
-  Standard_EXPORT void CurvG1(GeomLProp_CLProps<>& Curv1,
-                              GeomLProp_CLProps<>& Curv2);
+  Standard_EXPORT void CurvG1(GeomLProp_CLProps<>& Curv1, GeomLProp_CLProps<>& Curv2);
 
-  Standard_EXPORT void CurvG2(GeomLProp_CLProps<>& Curv1,
-                              GeomLProp_CLProps<>& Curv2);
+  Standard_EXPORT void CurvG2(GeomLProp_CLProps<>& Curv1, GeomLProp_CLProps<>& Curv2);
 
   double                        myContC0;
   double                        myContC1;

@@ -137,7 +137,7 @@ protected:
   int myOrder;
 
 private:
-  GeomLProp_SLProps<> myLProp;
+  GeomLProp_SLProps<>       myLProp;
   gp_Pnt                    myPoint;
   gp_Pnt2d                  myPt2d;
   occ::handle<Geom_Surface> mySurf;

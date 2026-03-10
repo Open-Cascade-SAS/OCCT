@@ -156,7 +156,7 @@ protected:
   bool                                  myConstG0;
   bool                                  myConstG1;
   bool                                  myConstG2;
-  GeomLProp_SLProps<> myLProp;
+  GeomLProp_SLProps<>                   myLProp;
   double                                myTolDist;
   double                                myTolAng;
   double                                myTolCurv;

@@ -163,7 +163,7 @@ TEST_F(GeomLProp_CLProps2dTest, Line_Tangent)
 TEST_F(GeomLProp_CLProps2dTest, Line_CurvatureIsZero)
 {
   GeomLProp_CLProps2d aProps(myLine, 5.0, 2, Precision::Confusion());
-  const double          aCurvature = aProps.Curvature();
+  const double        aCurvature = aProps.Curvature();
   EXPECT_NEAR(aCurvature, 0.0, Precision::Confusion());
 }
 
@@ -171,7 +171,7 @@ TEST_F(GeomLProp_CLProps2dTest, Line_CentreOfCurvature_Throws)
 {
   // Centre of curvature is not defined for a line (zero curvature)
   GeomLProp_CLProps2d aProps(myLine, 5.0, 2, Precision::Confusion());
-  gp_Pnt2d              aCenter;
+  gp_Pnt2d            aCenter;
   EXPECT_THROW(aProps.CentreOfCurvature(aCenter), LProp_NotDefined);
 }
 
@@ -212,7 +212,7 @@ TEST_F(GeomLProp_CLProps2dTest, SetCurve)
 TEST_F(GeomLProp_CLProps2dTest, D1_Circle)
 {
   GeomLProp_CLProps2d aProps(myCircle, 0.0, 2, Precision::Confusion());
-  const gp_Vec2d&       aD1 = aProps.D1();
+  const gp_Vec2d&     aD1 = aProps.D1();
 
   // First derivative at U=0 on circle(R=5) is (0, 5)
   EXPECT_NEAR(aD1.X(), 0.0, Precision::Confusion());
@@ -222,7 +222,7 @@ TEST_F(GeomLProp_CLProps2dTest, D1_Circle)
 TEST_F(GeomLProp_CLProps2dTest, D2_Circle)
 {
   GeomLProp_CLProps2d aProps(myCircle, 0.0, 2, Precision::Confusion());
-  const gp_Vec2d&       aD2 = aProps.D2();
+  const gp_Vec2d&     aD2 = aProps.D2();
 
   // Second derivative at U=0 on circle(R=5) is (-5, 0)
   EXPECT_NEAR(aD2.X(), -5.0, Precision::Confusion());

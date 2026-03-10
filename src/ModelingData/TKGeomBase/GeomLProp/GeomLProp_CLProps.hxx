@@ -76,10 +76,7 @@ public:
   //! Same as previous constructor but here the parameter is
   //! set to the value <U>.
   //! All the computations done will be related to <C> and <U>.
-  GeomLProp_CLPropsBase(const CurveType& C,
-                        const double     U,
-                        const int        N,
-                        const double     Resolution)
+  GeomLProp_CLPropsBase(const CurveType& C, const double U, const int N, const double Resolution)
       : myCurve(C),
         myDerOrder(N),
         myCN(4),
@@ -158,10 +155,10 @@ public:
   bool IsTangentDefined()
   {
     return LProp_CurveUtils::IsTangentDefined<Vec>(*this,
-                                                     myCN,
-                                                     myLinTol,
-                                                     mySignificantFirstDerivativeOrder,
-                                                     myTangentStatus);
+                                                   myCN,
+                                                   myLinTol,
+                                                   mySignificantFirstDerivativeOrder,
+                                                   myTangentStatus);
   }
 
   //! output the tangent direction <D>.

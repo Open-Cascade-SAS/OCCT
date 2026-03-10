@@ -67,12 +67,12 @@ public:
     gp_Pnt2d aPnt;
     gp_Vec2d aDeriv1, aDeriv2, aDeriv3;
     myCurve->D3(theU, aPnt, aDeriv1, aDeriv2, aDeriv3);
-    const double aCross12  = aDeriv1.Crossed(aDeriv2);
-    const double aCross13  = aDeriv1.Crossed(aDeriv3);
-    const double aDot12    = aDeriv1.Dot(aDeriv2);
-    const double aDot23    = aDeriv2.Dot(aDeriv3);
-    const double aNorm1    = aDeriv1.Magnitude();
-    const double aNorm2    = aDeriv2.Magnitude();
+    const double aCross12 = aDeriv1.Crossed(aDeriv2);
+    const double aCross13 = aDeriv1.Crossed(aDeriv3);
+    const double aDot12   = aDeriv1.Dot(aDeriv2);
+    const double aDot23   = aDeriv2.Dot(aDeriv3);
+    const double aNorm1   = aDeriv1.Magnitude();
+    const double aNorm2   = aDeriv2.Magnitude();
 
     theF = 0.0;
     theD = 0.0;
@@ -88,10 +88,10 @@ public:
     else
     {
       const double aNormProd = aNorm1 * aNorm2;
-      theF = aCross12 / aNormProd;
-      theD = (aCross13 - aCross12 * aDot12 / (aNorm1 * aNorm1)
-              - aCross12 * aDot23 / (aNorm2 * aNorm2))
-             / aNormProd;
+      theF                   = aCross12 / aNormProd;
+      theD =
+        (aCross13 - aCross12 * aDot12 / (aNorm1 * aNorm1) - aCross12 * aDot23 / (aNorm2 * aNorm2))
+        / aNormProd;
     }
     return true;
   }

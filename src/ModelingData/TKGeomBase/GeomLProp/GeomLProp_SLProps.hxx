@@ -104,7 +104,8 @@ public:
         myNormalStatus(LProp_Undecided),
         myCurvatureStatus(LProp_Undecided)
   {
-    Standard_OutOfRange_Raise_if(N < 0 || N > 2, "GeomLProp_SLProps::GeomLProp_SLProps() bad level");
+    Standard_OutOfRange_Raise_if(N < 0 || N > 2,
+                                 "GeomLProp_SLProps::GeomLProp_SLProps() bad level");
   }
 
   //! Initializes the local properties of the surface S
@@ -144,90 +145,40 @@ public:
   //! The derivative is computed if it has not been yet.
   const gp_Vec& D1U()
   {
-    return LProp_SurfaceUtils::EnsureSurfDeriv<Access>(mySurf,
-                                                       myU,
-                                                       myV,
-                                                       myDerOrder,
-                                                       1,
-                                                       myPnt,
-                                                       myD1u,
-                                                       myD1v,
-                                                       myD2u,
-                                                       myD2v,
-                                                       myDuv,
-                                                       myD1u);
+    return LProp_SurfaceUtils::EnsureSurfDeriv<
+      Access>(mySurf, myU, myV, myDerOrder, 1, myPnt, myD1u, myD1v, myD2u, myD2v, myDuv, myD1u);
   }
 
   //! Returns the first V derivative.
   //! The derivative is computed if it has not been yet.
   const gp_Vec& D1V()
   {
-    return LProp_SurfaceUtils::EnsureSurfDeriv<Access>(mySurf,
-                                                       myU,
-                                                       myV,
-                                                       myDerOrder,
-                                                       1,
-                                                       myPnt,
-                                                       myD1u,
-                                                       myD1v,
-                                                       myD2u,
-                                                       myD2v,
-                                                       myDuv,
-                                                       myD1v);
+    return LProp_SurfaceUtils::EnsureSurfDeriv<
+      Access>(mySurf, myU, myV, myDerOrder, 1, myPnt, myD1u, myD1v, myD2u, myD2v, myDuv, myD1v);
   }
 
   //! Returns the second U derivatives
   //! The derivative is computed if it has not been yet.
   const gp_Vec& D2U()
   {
-    return LProp_SurfaceUtils::EnsureSurfDeriv<Access>(mySurf,
-                                                       myU,
-                                                       myV,
-                                                       myDerOrder,
-                                                       2,
-                                                       myPnt,
-                                                       myD1u,
-                                                       myD1v,
-                                                       myD2u,
-                                                       myD2v,
-                                                       myDuv,
-                                                       myD2u);
+    return LProp_SurfaceUtils::EnsureSurfDeriv<
+      Access>(mySurf, myU, myV, myDerOrder, 2, myPnt, myD1u, myD1v, myD2u, myD2v, myDuv, myD2u);
   }
 
   //! Returns the second V derivative.
   //! The derivative is computed if it has not been yet.
   const gp_Vec& D2V()
   {
-    return LProp_SurfaceUtils::EnsureSurfDeriv<Access>(mySurf,
-                                                       myU,
-                                                       myV,
-                                                       myDerOrder,
-                                                       2,
-                                                       myPnt,
-                                                       myD1u,
-                                                       myD1v,
-                                                       myD2u,
-                                                       myD2v,
-                                                       myDuv,
-                                                       myD2v);
+    return LProp_SurfaceUtils::EnsureSurfDeriv<
+      Access>(mySurf, myU, myV, myDerOrder, 2, myPnt, myD1u, myD1v, myD2u, myD2v, myDuv, myD2v);
   }
 
   //! Returns the second UV cross-derivative.
   //! The derivative is computed if it has not been yet.
   const gp_Vec& DUV()
   {
-    return LProp_SurfaceUtils::EnsureSurfDeriv<Access>(mySurf,
-                                                       myU,
-                                                       myV,
-                                                       myDerOrder,
-                                                       2,
-                                                       myPnt,
-                                                       myD1u,
-                                                       myD1v,
-                                                       myD2u,
-                                                       myD2v,
-                                                       myDuv,
-                                                       myDuv);
+    return LProp_SurfaceUtils::EnsureSurfDeriv<
+      Access>(mySurf, myU, myV, myDerOrder, 2, myPnt, myD1u, myD1v, myD2u, myD2v, myDuv, myDuv);
   }
 
   //! returns True if the U tangent is defined.
@@ -287,10 +238,7 @@ public:
   }
 
   //! Returns the normal direction.
-  const gp_Dir& Normal()
-  {
-    return LProp_SurfaceUtils::Normal(*this, myNormal);
-  }
+  const gp_Dir& Normal() { return LProp_SurfaceUtils::Normal(*this, myNormal); }
 
   //! returns True if the curvature is defined.
   bool IsCurvatureDefined()
@@ -315,22 +263,13 @@ public:
 
   //! returns True if the point is umbilic (i.e. if the
   //! curvature is constant).
-  bool IsUmbilic()
-  {
-    return LProp_SurfaceUtils::IsUmbilic(*this, myMaxCurv, myMinCurv);
-  }
+  bool IsUmbilic() { return LProp_SurfaceUtils::IsUmbilic(*this, myMaxCurv, myMinCurv); }
 
   //! Returns the maximum curvature
-  double MaxCurvature()
-  {
-    return LProp_SurfaceUtils::RequireCurvature(*this, myMaxCurv);
-  }
+  double MaxCurvature() { return LProp_SurfaceUtils::RequireCurvature(*this, myMaxCurv); }
 
   //! Returns the minimum curvature
-  double MinCurvature()
-  {
-    return LProp_SurfaceUtils::RequireCurvature(*this, myMinCurv);
-  }
+  double MinCurvature() { return LProp_SurfaceUtils::RequireCurvature(*this, myMinCurv); }
 
   //! Returns the direction of the maximum and minimum curvature
   //! <MaxD> and <MinD>
@@ -340,16 +279,10 @@ public:
   }
 
   //! Returns the mean curvature.
-  double MeanCurvature()
-  {
-    return LProp_SurfaceUtils::RequireCurvature(*this, myMeanCurv);
-  }
+  double MeanCurvature() { return LProp_SurfaceUtils::RequireCurvature(*this, myMeanCurv); }
 
   //! Returns the Gaussian curvature
-  double GaussianCurvature()
-  {
-    return LProp_SurfaceUtils::RequireCurvature(*this, myGausCurv);
-  }
+  double GaussianCurvature() { return LProp_SurfaceUtils::RequireCurvature(*this, myGausCurv); }
 
 private:
   SurfaceType  mySurf;
