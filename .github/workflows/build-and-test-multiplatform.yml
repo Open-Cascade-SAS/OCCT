@@ -88,6 +88,23 @@ jobs:
         artifact-name: install-windows-x64
         github-token: ${{ secrets.GITHUB_TOKEN }}
 
+  prepare-and-build-windows-arm64:
+      name: Prepare and Build on Windows with MSVC (ARM64)
+      runs-on: windows-11-arm
+
+      steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.2.2
+
+      - name: Build OCCT
+        uses: ./.github/actions/build-occt
+        with:
+          platform: windows
+          compiler: msvc
+          target-arch: arm64
+          artifact-name: install-windows-arm64
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
   prepare-and-build-macos-x64:
     name: Prepare and Build on macOS with Clang (x64)
     runs-on: macos-15
@@ -160,6 +177,25 @@ jobs:
         test-directory-name: windows-x64
         test-script: .github/actions/testgrid/testwindows.tcl
 
+  test-windows-arm64:
+    name: Test on Windows (arm64)
+    runs-on: windows-11-arm
+    needs: prepare-and-build-windows-arm64
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.2.2
+
+    - name: Run tests
+      uses: ./.github/actions/run-tests
+      with:
+        platform: windows
+        compiler: msvc
+        target-arch: arm64
+        install-artifact-name: install-windows-arm64
+        test-directory-name: windows-arm64
+        test-script: .github/actions/testgrid/testwindowsarm.tcl
+
   retest-windows-x64:
     name: Regression Test on Windows (x64)
     runs-on: windows-2025
@@ -177,6 +213,25 @@ jobs:
         install-artifact-name: install-windows-x64
         results-artifact-name: results-windows-x64
         test-directory-name: windows-x64
+
+  retest-windows-arm64:
+    name: Regression Test on Windows (arm64)
+    runs-on: windows-11-arm
+    needs: test-windows-arm64
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.2.2
+      
+    - name: Run retest
+      uses: ./.github/actions/retest-failures
+      with:
+        platform: windows
+        compiler: msvc
+        target-arch: arm64
+        install-artifact-name: install-windows-arm64
+        results-artifact-name: results-windows-arm64
+        test-directory-name: windows-arm64
 
   test-macos-x64:
     name: Test on macOS (x64)
@@ -266,6 +321,24 @@ jobs:
         compiler: msvc
         install-artifact-name: install-windows-x64
         artifact-suffix: x64
+
+  run-gtest-windows-arm64:
+    name: Run GTest on Windows with MSVC (arm64)
+    needs: prepare-and-build-windows-arm64
+    runs-on: windows-11-arm
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.2.2
+
+    - name: Run GTests
+      uses: ./.github/actions/run-gtest
+      with:
+        platform: windows
+        compiler: msvc
+        target-arch: arm64
+        install-artifact-name: install-windows-arm64
+        artifact-suffix: arm64
 
   run-gtest-macos-x64:
     name: Run GTest on macOS with Clang (x64)

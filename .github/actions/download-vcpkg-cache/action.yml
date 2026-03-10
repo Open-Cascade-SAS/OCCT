@@ -2,6 +2,13 @@ name: 'Download vcpkg Cache'
 description: 'Download and restore vcpkg installed packages and cache'
 
 inputs:
+  platform:
+    description: 'Platform (windows, macos, linux)'
+    required: true
+  target-arch:
+    description: 'Target architecture (x64, arm64)'
+    required: false
+    default: 'x64'
   artifact-name:
     description: 'Name of the artifact containing vcpkg cache'
     required: true
@@ -28,7 +35,7 @@ runs:
       shell: bash
 
     - name: Copy manual-link libraries and set paths for Windows
-      if: runner.os == 'Windows'
+      if: ${{ inputs.platform == 'windows' && inputs.target-arch == 'x64' }}
       run: |
         $vcpkg_bin = "${{ inputs.build-directory }}/vcpkg_installed/x64-windows/bin"
         $vcpkg_lib = "${{ inputs.build-directory }}/vcpkg_installed/x64-windows/lib"
@@ -44,6 +51,25 @@ runs:
         $current_path = $env:PATH
         echo "PATH=$vcpkg_bin;$vcpkg_lib;$vcpkg_manual;$current_path" >> $env:GITHUB_ENV
       shell: pwsh
+
+    - name: Copy manual-link libraries and set paths for Windows arm64
+      if: ${{ inputs.platform == 'windows' && inputs.target-arch == 'arm64' }}
+      run: |
+        $vcpkg_bin = "${{ inputs.build-directory }}/vcpkg_installed/arm64-windows/bin"
+        $vcpkg_lib = "${{ inputs.build-directory }}/vcpkg_installed/arm64-windows/lib"
+        $vcpkg_manual = "${{ inputs.build-directory }}/vcpkg_installed/arm64-windows/lib/manual-link"
+            
+        # Copy manual-link DLLs to bin directory for runtime access
+        if (Test-Path $vcpkg_manual) {
+            Write-Host "Copying manual-link libraries to bin directory"
+            Copy-Item "$vcpkg_manual\*" "$vcpkg_bin\" -Force -ErrorAction SilentlyContinue
+        }
+        
+        # Set library search paths
+        $current_path = $env:PATH
+        echo "PATH=$vcpkg_bin;$vcpkg_lib;$vcpkg_manual;$current_path" >> $env:GITHUB_ENV
+      shell: pwsh
+
 
     - name: Copy manual-link libraries and set paths for Linux
       if: runner.os == 'Linux'
