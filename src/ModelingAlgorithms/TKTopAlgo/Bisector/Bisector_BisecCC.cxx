@@ -27,7 +27,7 @@
 #include <Geom2dAPI_ProjectPointOnCurve.hxx>
 #include <Geom2dGcc_Circ2d2TanRad.hxx>
 #include <Geom2dInt_GInter.hxx>
-#include <Geom2dLProp_CLProps2d.hxx>
+#include <GeomLProp_CLProps.hxx>
 #include <gp.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Trsf2d.hxx>

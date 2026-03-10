@@ -25,7 +25,7 @@
 #include <LocalAnalysis_StatusErrorType.hxx>
 class Geom_Surface;
 class Geom2d_Curve;
-class GeomLProp_SLProps;
+#include <GeomLProp_SLProps.hxx>
 
 //! This class gives tools to check local continuity C0
 //! C1 C2 G1 G2 between two points situated on two surfaces

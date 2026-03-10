@@ -36,4 +36,8 @@ set(OCCT_TKGeomBase_GTests_FILES
   gce_MakeCylinder_Test.cxx
   gce_MakeElips_Test.cxx
   gce_MakeHypr_Test.cxx
+  GeomLProp_CLProps2d_Test.cxx
+  GeomLProp_CurAndInf2d_Test.cxx
+  LProp_AnalyticCurInf_Test.cxx
+  LProp_CurAndInf_Test.cxx
 )

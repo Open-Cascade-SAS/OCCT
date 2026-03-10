@@ -27,7 +27,7 @@
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2dInt_GInter.hxx>
-#include <Geom2dLProp_CLProps2d.hxx>
+#include <GeomLProp_CLProps.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Lin2d.hxx>
 #include <IntRes2d_Domain.hxx>
@@ -450,7 +450,7 @@ void BRepClass_Intersector::LocalGeometry(const BRepClass_Edge& E,
 {
   double                    fpar, lpar;
   occ::handle<Geom2d_Curve> aPCurve = BRep_Tool::CurveOnSurface(E.Edge(), E.Face(), fpar, lpar);
-  Geom2dLProp_CLProps2d     Prop(aPCurve, U, 2, Precision::PConfusion());
+  GeomLProp_CLProps2d       Prop(aPCurve, U, 2, Precision::PConfusion());
 
   C = 0.;
   if (Prop.IsTangentDefined())

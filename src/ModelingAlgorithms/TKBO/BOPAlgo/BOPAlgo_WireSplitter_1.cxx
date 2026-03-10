@@ -37,7 +37,7 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
-#include <Geom2dLProp_CLProps2d.hxx>
+#include <GeomLProp_CLProps.hxx>
 #include <NCollection_Sequence.hxx>
 #include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
@@ -794,7 +794,7 @@ double Angle2D(const TopoDS_Vertex&                 aV,
   aType = aGAC2D.GetType();
   if (aType != GeomAbs_Line)
   {
-    Geom2dLProp_CLProps2d LProp(aC2D, aTV, 2, Precision::PConfusion());
+    GeomLProp_CLProps2d LProp(aC2D, aTV, 2, Precision::PConfusion());
     if (LProp.IsTangentDefined())
     {
       double R = LProp.Curvature();

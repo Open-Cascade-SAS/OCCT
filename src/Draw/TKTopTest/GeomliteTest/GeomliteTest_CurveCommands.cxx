@@ -55,8 +55,7 @@
 
 #include <GeomLProp.hxx>
 #include <GeomLProp_CLProps.hxx>
-#include <Geom2dLProp_CLProps2d.hxx>
-#include <Geom2dLProp_CurAndInf2d.hxx>
+#include <GeomLProp_CurAndInf2d.hxx>
 
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
@@ -1217,8 +1216,8 @@ static int minmaxcurandinf(Draw_Interpretor& di, int argc, const char** argv)
   if (C1.IsNull())
     return 1;
 
-  Draw_Color              Couleur;
-  Geom2dLProp_CurAndInf2d Sommets;
+  Draw_Color            Couleur;
+  GeomLProp_CurAndInf2d Sommets;
 
   Sommets.PerformCurExt(C1);
   if (Sommets.IsDone() && !Sommets.IsEmpty())
@@ -1242,7 +1241,7 @@ static int minmaxcurandinf(Draw_Interpretor& di, int argc, const char** argv)
     dout.Flush();
   }
 
-  Geom2dLProp_CurAndInf2d Sommets2;
+  GeomLProp_CurAndInf2d Sommets2;
   Sommets2.PerformInf(C1);
 
   if (Sommets2.IsDone() && !Sommets2.IsEmpty())
@@ -1407,7 +1406,7 @@ static int localprop(Draw_Interpretor& di, int argc, const char** argv)
   }
   else
   {
-    Geom2dLProp_CLProps2d Prop(C2d, 2, Precision::Confusion());
+    GeomLProp_CLProps2d Prop(C2d, 2, Precision::Confusion());
     Prop.SetParameter(U);
     occ::handle<Draw_Marker2D> drp = new Draw_Marker2D(Prop.Value(), Draw_Plus, Draw_vert);
     dout << drp;

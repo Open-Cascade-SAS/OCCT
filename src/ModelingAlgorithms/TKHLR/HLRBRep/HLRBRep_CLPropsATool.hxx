@@ -22,6 +22,7 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Real.hxx>
+class HLRBRep_Curve;
 class gp_Pnt2d;
 class gp_Vec2d;
 

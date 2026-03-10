@@ -3,12 +3,9 @@ set(OCCT_TKG3d_LIST_OF_PACKAGES
   Geom
   GeomAdaptor
   AdvApprox
-  GeomLProp
   Adaptor3d
-  LProp3d
   TopAbs
   GeomGridEval
-  GProp
   GeomHash
   GeomEval
 )

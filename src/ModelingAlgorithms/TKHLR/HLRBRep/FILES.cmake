@@ -20,7 +20,6 @@ set(OCCT_HLRBRep_FILES
   HLRBRep_CInter.hxx
   HLRBRep_CInter_0.cxx
   HLRBRep_CLProps.hxx
-  HLRBRep_CLProps.cxx
   HLRBRep_CLPropsATool.hxx
   HLRBRep_CLPropsATool.lxx
   HLRBRep_Curve.cxx
@@ -83,7 +82,6 @@ set(OCCT_HLRBRep_FILES
   HLRBRep_ShapeToHLR.cxx
   HLRBRep_ShapeToHLR.hxx
   HLRBRep_SLProps.hxx
-  HLRBRep_SLProps.cxx
   HLRBRep_SLPropsATool.hxx
   HLRBRep_SLPropsATool.lxx
   HLRBRep_Surface.cxx

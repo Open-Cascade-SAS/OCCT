@@ -17,7 +17,7 @@
 #include <ElCLib.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2dHatch_Intersector.hxx>
-#include <Geom2dLProp_CLProps2d.hxx>
+#include <GeomLProp_CLProps.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Lin2d.hxx>
 #include <Precision.hxx>
@@ -74,7 +74,7 @@ void Geom2dHatch_Intersector::LocalGeometry(const Geom2dAdaptor_Curve& E,
                                             double&                    C) const
 {
   // double f,l;
-  Geom2dLProp_CLProps2d Prop(E.Curve(), U, 2, Precision::PConfusion());
+  GeomLProp_CLProps2d Prop(E.Curve(), U, 2, Precision::PConfusion());
 
   if (!Prop.IsTangentDefined())
     return;

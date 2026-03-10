@@ -1,0 +1,103 @@
+// Copyright (c) 1994-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _GeomLProp_FuncCurNul2d_HeaderFile
+#define _GeomLProp_FuncCurNul2d_HeaderFile
+
+#include <Geom2d_Curve.hxx>
+#include <gp_Pnt2d.hxx>
+#include <math_FunctionWithDerivative.hxx>
+
+//! Function used to find the inflection points of a 2D curve.
+//! Computes the normalized curvature function:
+//!   F = (V1 ^ V2).Z / (||V1|| * ||V2||)
+//! where V1 is the tangent and V2 is the second derivative.
+//! The roots of F correspond to inflection points.
+class GeomLProp_FuncCurNul2d : public math_FunctionWithDerivative
+{
+public:
+  //! Initializes the function with the curve to analyze.
+  //! @param theCurve [in] the 2D curve
+  GeomLProp_FuncCurNul2d(const occ::handle<Geom2d_Curve>& theCurve)
+      : myCurve(theCurve)
+  {
+  }
+
+  //! Computes the function value at parameter theU.
+  //! @param theU [in] the curve parameter
+  //! @param theF [out] the function value
+  //! @return true on success
+  bool Value(const double theU, double& theF) override
+  {
+    double aD;
+    return Values(theU, theF, aD);
+  }
+
+  //! Computes the derivative of the function at parameter theU.
+  //! @param theU [in] the curve parameter
+  //! @param theD [out] the derivative value
+  //! @return true on success
+  bool Derivative(const double theU, double& theD) override
+  {
+    double aF;
+    return Values(theU, aF, theD);
+  }
+
+  //! Computes both function value and its derivative at parameter theU.
+  //! The derivative is computed analytically from:
+  //!   F  = (V1 ^ V2) / (||V1|| * ||V2||)
+  //!   F' = ((V1 ^ V3) - F*(V1.V2/||V1||^2) - F*(V2.V3/||V2||^2)) / (||V1||*||V2||)
+  //! @param theU [in] the curve parameter
+  //! @param theF [out] the function value
+  //! @param theD [out] the derivative value
+  //! @return false if the derivative magnitudes are degenerate
+  bool Values(const double theU, double& theF, double& theD) override
+  {
+    gp_Pnt2d aPnt;
+    gp_Vec2d aDeriv1, aDeriv2, aDeriv3;
+    myCurve->D3(theU, aPnt, aDeriv1, aDeriv2, aDeriv3);
+    const double aCross12 = aDeriv1.Crossed(aDeriv2);
+    const double aCross13 = aDeriv1.Crossed(aDeriv3);
+    const double aDot12   = aDeriv1.Dot(aDeriv2);
+    const double aDot23   = aDeriv2.Dot(aDeriv3);
+    const double aNorm1   = aDeriv1.Magnitude();
+    const double aNorm2   = aDeriv2.Magnitude();
+
+    theF = 0.0;
+    theD = 0.0;
+
+    if (aNorm2 < 1.e-4)
+    {
+      return true;
+    }
+    else if (aNorm1 * aNorm2 < gp::Resolution())
+    {
+      return false;
+    }
+    else
+    {
+      const double aNormProd = aNorm1 * aNorm2;
+      theF                   = aCross12 / aNormProd;
+      theD =
+        (aCross13 - aCross12 * aDot12 / (aNorm1 * aNorm1) - aCross12 * aDot23 / (aNorm2 * aNorm2))
+        / aNormProd;
+    }
+    return true;
+  }
+
+private:
+  occ::handle<Geom2d_Curve> myCurve; //!< The analyzed curve.
+};
+
+#endif // _GeomLProp_FuncCurNul2d_HeaderFile

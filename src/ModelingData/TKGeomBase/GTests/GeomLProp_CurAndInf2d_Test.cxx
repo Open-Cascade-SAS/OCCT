@@ -14,7 +14,7 @@
 #include <Geom2d_Circle.hxx>
 #include <Geom2d_Ellipse.hxx>
 #include <Geom2d_Hyperbola.hxx>
-#include <Geom2dLProp_CurAndInf2d.hxx>
+#include <GeomLProp_CurAndInf2d.hxx>
 #include <Geom2d_Parabola.hxx>
 #include <gp_Ax2d.hxx>
 #include <gp_Circ2d.hxx>
@@ -30,7 +30,7 @@
 
 #include <gtest/gtest.h>
 
-class Geom2dLProp_CurAndInf2dTest : public ::testing::Test
+class GeomLProp_CurAndInf2dTest : public ::testing::Test
 {
 protected:
   void SetUp() override
@@ -56,48 +56,48 @@ protected:
   occ::handle<Geom2d_Parabola>  myParabola;
 };
 
-TEST_F(Geom2dLProp_CurAndInf2dTest, Circle_Perform_NoInflections)
+TEST_F(GeomLProp_CurAndInf2dTest, Circle_Perform_NoInflections)
 {
   // A circle has constant curvature: no inflections or extrema
-  Geom2dLProp_CurAndInf2d aAnalyzer;
+  GeomLProp_CurAndInf2d aAnalyzer;
   aAnalyzer.Perform(myCircle);
 
   EXPECT_TRUE(aAnalyzer.IsDone());
   EXPECT_EQ(aAnalyzer.NbPoints(), 0);
 }
 
-TEST_F(Geom2dLProp_CurAndInf2dTest, Circle_PerformInf_NoInflections)
+TEST_F(GeomLProp_CurAndInf2dTest, Circle_PerformInf_NoInflections)
 {
-  Geom2dLProp_CurAndInf2d aAnalyzer;
+  GeomLProp_CurAndInf2d aAnalyzer;
   aAnalyzer.PerformInf(myCircle);
 
   EXPECT_TRUE(aAnalyzer.IsDone());
   EXPECT_EQ(aAnalyzer.NbPoints(), 0);
 }
 
-TEST_F(Geom2dLProp_CurAndInf2dTest, Circle_PerformCurExt_NoExtrema)
+TEST_F(GeomLProp_CurAndInf2dTest, Circle_PerformCurExt_NoExtrema)
 {
-  Geom2dLProp_CurAndInf2d aAnalyzer;
+  GeomLProp_CurAndInf2d aAnalyzer;
   aAnalyzer.PerformCurExt(myCircle);
 
   EXPECT_TRUE(aAnalyzer.IsDone());
   EXPECT_EQ(aAnalyzer.NbPoints(), 0);
 }
 
-TEST_F(Geom2dLProp_CurAndInf2dTest, Ellipse_PerformCurExt_HasExtrema)
+TEST_F(GeomLProp_CurAndInf2dTest, Ellipse_PerformCurExt_HasExtrema)
 {
   // An ellipse has 4 curvature extrema:
   // 2 maxima (at ends of minor axis) and 2 minima (at ends of major axis)
-  Geom2dLProp_CurAndInf2d aAnalyzer;
+  GeomLProp_CurAndInf2d aAnalyzer;
   aAnalyzer.PerformCurExt(myEllipse);
 
   EXPECT_TRUE(aAnalyzer.IsDone());
   EXPECT_EQ(aAnalyzer.NbPoints(), 4);
 }
 
-TEST_F(Geom2dLProp_CurAndInf2dTest, Ellipse_PerformCurExt_Types)
+TEST_F(GeomLProp_CurAndInf2dTest, Ellipse_PerformCurExt_Types)
 {
-  Geom2dLProp_CurAndInf2d aAnalyzer;
+  GeomLProp_CurAndInf2d aAnalyzer;
   aAnalyzer.PerformCurExt(myEllipse);
 
   ASSERT_TRUE(aAnalyzer.IsDone());
@@ -118,9 +118,9 @@ TEST_F(Geom2dLProp_CurAndInf2dTest, Ellipse_PerformCurExt_Types)
   EXPECT_EQ(aNbMax, 2);
 }
 
-TEST_F(Geom2dLProp_CurAndInf2dTest, Ellipse_PerformCurExt_Parameters)
+TEST_F(GeomLProp_CurAndInf2dTest, Ellipse_PerformCurExt_Parameters)
 {
-  Geom2dLProp_CurAndInf2d aAnalyzer;
+  GeomLProp_CurAndInf2d aAnalyzer;
   aAnalyzer.PerformCurExt(myEllipse);
 
   ASSERT_TRUE(aAnalyzer.IsDone());
@@ -133,20 +133,20 @@ TEST_F(Geom2dLProp_CurAndInf2dTest, Ellipse_PerformCurExt_Parameters)
   }
 }
 
-TEST_F(Geom2dLProp_CurAndInf2dTest, Ellipse_PerformInf_NoInflections)
+TEST_F(GeomLProp_CurAndInf2dTest, Ellipse_PerformInf_NoInflections)
 {
   // An ellipse is a convex curve, so it has no inflection points
-  Geom2dLProp_CurAndInf2d aAnalyzer;
+  GeomLProp_CurAndInf2d aAnalyzer;
   aAnalyzer.PerformInf(myEllipse);
 
   EXPECT_TRUE(aAnalyzer.IsDone());
   EXPECT_EQ(aAnalyzer.NbPoints(), 0);
 }
 
-TEST_F(Geom2dLProp_CurAndInf2dTest, Ellipse_Perform_CombinedResult)
+TEST_F(GeomLProp_CurAndInf2dTest, Ellipse_Perform_CombinedResult)
 {
   // Perform computes both inflections and curvature extrema
-  Geom2dLProp_CurAndInf2d aAnalyzer;
+  GeomLProp_CurAndInf2d aAnalyzer;
   aAnalyzer.Perform(myEllipse);
 
   EXPECT_TRUE(aAnalyzer.IsDone());
@@ -154,11 +154,11 @@ TEST_F(Geom2dLProp_CurAndInf2dTest, Ellipse_Perform_CombinedResult)
   EXPECT_EQ(aAnalyzer.NbPoints(), 4);
 }
 
-TEST_F(Geom2dLProp_CurAndInf2dTest, Ellipse_CurvatureExtremaAtExpectedParameters)
+TEST_F(GeomLProp_CurAndInf2dTest, Ellipse_CurvatureExtremaAtExpectedParameters)
 {
   // For an ellipse with major axis along X:
   // Curvature extrema at U = 0, PI/2, PI, 3*PI/2
-  Geom2dLProp_CurAndInf2d aAnalyzer;
+  GeomLProp_CurAndInf2d aAnalyzer;
   aAnalyzer.PerformCurExt(myEllipse);
 
   ASSERT_TRUE(aAnalyzer.IsDone());
@@ -171,9 +171,9 @@ TEST_F(Geom2dLProp_CurAndInf2dTest, Ellipse_CurvatureExtremaAtExpectedParameters
   }
 }
 
-TEST_F(Geom2dLProp_CurAndInf2dTest, Hyperbola_PerformCurExt_VertexOnly)
+TEST_F(GeomLProp_CurAndInf2dTest, Hyperbola_PerformCurExt_VertexOnly)
 {
-  Geom2dLProp_CurAndInf2d aAnalyzer;
+  GeomLProp_CurAndInf2d aAnalyzer;
   aAnalyzer.PerformCurExt(myHyperbola);
 
   ASSERT_TRUE(aAnalyzer.IsDone());
@@ -182,18 +182,18 @@ TEST_F(Geom2dLProp_CurAndInf2dTest, Hyperbola_PerformCurExt_VertexOnly)
   EXPECT_EQ(aAnalyzer.Type(1), LProp_MinCur);
 }
 
-TEST_F(Geom2dLProp_CurAndInf2dTest, Hyperbola_PerformInf_NoInflections)
+TEST_F(GeomLProp_CurAndInf2dTest, Hyperbola_PerformInf_NoInflections)
 {
-  Geom2dLProp_CurAndInf2d aAnalyzer;
+  GeomLProp_CurAndInf2d aAnalyzer;
   aAnalyzer.PerformInf(myHyperbola);
 
   EXPECT_TRUE(aAnalyzer.IsDone());
   EXPECT_EQ(aAnalyzer.NbPoints(), 0);
 }
 
-TEST_F(Geom2dLProp_CurAndInf2dTest, Parabola_PerformCurExt_VertexOnly)
+TEST_F(GeomLProp_CurAndInf2dTest, Parabola_PerformCurExt_VertexOnly)
 {
-  Geom2dLProp_CurAndInf2d aAnalyzer;
+  GeomLProp_CurAndInf2d aAnalyzer;
   aAnalyzer.PerformCurExt(myParabola);
 
   ASSERT_TRUE(aAnalyzer.IsDone());
@@ -202,9 +202,9 @@ TEST_F(Geom2dLProp_CurAndInf2dTest, Parabola_PerformCurExt_VertexOnly)
   EXPECT_EQ(aAnalyzer.Type(1), LProp_MinCur);
 }
 
-TEST_F(Geom2dLProp_CurAndInf2dTest, PerformInf_ClearsPreviousExtrema)
+TEST_F(GeomLProp_CurAndInf2dTest, PerformInf_ClearsPreviousExtrema)
 {
-  Geom2dLProp_CurAndInf2d aAnalyzer;
+  GeomLProp_CurAndInf2d aAnalyzer;
   aAnalyzer.PerformCurExt(myEllipse);
 
   ASSERT_TRUE(aAnalyzer.IsDone());

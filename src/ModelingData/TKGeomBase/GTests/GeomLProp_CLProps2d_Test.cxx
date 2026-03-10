@@ -14,7 +14,7 @@
 #include <Geom2d_Circle.hxx>
 #include <Geom2d_Ellipse.hxx>
 #include <Geom2d_Line.hxx>
-#include <Geom2dLProp_CLProps2d.hxx>
+#include <GeomLProp_CLProps.hxx>
 #include <gp_Ax2d.hxx>
 #include <gp_Circ2d.hxx>
 #include <gp_Dir2d.hxx>
@@ -28,7 +28,7 @@
 
 #include <cmath>
 
-class Geom2dLProp_CLProps2dTest : public ::testing::Test
+class GeomLProp_CLProps2dTest : public ::testing::Test
 {
 protected:
   void SetUp() override
@@ -51,18 +51,18 @@ protected:
   occ::handle<Geom2d_Ellipse> myEllipse;
 };
 
-TEST_F(Geom2dLProp_CLProps2dTest, Circle_Value)
+TEST_F(GeomLProp_CLProps2dTest, Circle_Value)
 {
-  Geom2dLProp_CLProps2d aProps(myCircle, 0.0, 2, Precision::Confusion());
+  GeomLProp_CLProps2d aProps(myCircle, 0.0, 2, Precision::Confusion());
 
   const gp_Pnt2d& aPnt = aProps.Value();
   EXPECT_NEAR(aPnt.X(), 5.0, Precision::Confusion());
   EXPECT_NEAR(aPnt.Y(), 0.0, Precision::Confusion());
 }
 
-TEST_F(Geom2dLProp_CLProps2dTest, Circle_SetParameter)
+TEST_F(GeomLProp_CLProps2dTest, Circle_SetParameter)
 {
-  Geom2dLProp_CLProps2d aProps(myCircle, 2, Precision::Confusion());
+  GeomLProp_CLProps2d aProps(myCircle, 2, Precision::Confusion());
 
   aProps.SetParameter(M_PI / 2.0);
   const gp_Pnt2d& aPnt = aProps.Value();
@@ -70,16 +70,16 @@ TEST_F(Geom2dLProp_CLProps2dTest, Circle_SetParameter)
   EXPECT_NEAR(aPnt.Y(), 5.0, Precision::Confusion());
 }
 
-TEST_F(Geom2dLProp_CLProps2dTest, Circle_TangentDefined)
+TEST_F(GeomLProp_CLProps2dTest, Circle_TangentDefined)
 {
-  Geom2dLProp_CLProps2d aProps(myCircle, 0.0, 2, Precision::Confusion());
+  GeomLProp_CLProps2d aProps(myCircle, 0.0, 2, Precision::Confusion());
   EXPECT_TRUE(aProps.IsTangentDefined());
 }
 
-TEST_F(Geom2dLProp_CLProps2dTest, Circle_TangentAtZero)
+TEST_F(GeomLProp_CLProps2dTest, Circle_TangentAtZero)
 {
   // At U=0 on a circle, the tangent should point in +Y direction
-  Geom2dLProp_CLProps2d aProps(myCircle, 0.0, 2, Precision::Confusion());
+  GeomLProp_CLProps2d aProps(myCircle, 0.0, 2, Precision::Confusion());
 
   gp_Dir2d aTangent;
   aProps.Tangent(aTangent);
@@ -87,19 +87,19 @@ TEST_F(Geom2dLProp_CLProps2dTest, Circle_TangentAtZero)
   EXPECT_NEAR(aTangent.Y(), 1.0, Precision::Confusion());
 }
 
-TEST_F(Geom2dLProp_CLProps2dTest, Circle_Curvature)
+TEST_F(GeomLProp_CLProps2dTest, Circle_Curvature)
 {
   // Curvature of a circle of radius R is 1/R
-  Geom2dLProp_CLProps2d aProps(myCircle, 0.0, 2, Precision::Confusion());
+  GeomLProp_CLProps2d aProps(myCircle, 0.0, 2, Precision::Confusion());
 
   const double aCurvature = aProps.Curvature();
   EXPECT_NEAR(aCurvature, 1.0 / 5.0, Precision::Confusion());
 }
 
-TEST_F(Geom2dLProp_CLProps2dTest, Circle_CurvatureConstant)
+TEST_F(GeomLProp_CLProps2dTest, Circle_CurvatureConstant)
 {
   // Curvature on a circle should be the same at every point
-  Geom2dLProp_CLProps2d aProps(myCircle, 2, Precision::Confusion());
+  GeomLProp_CLProps2d aProps(myCircle, 2, Precision::Confusion());
 
   for (double u = 0.0; u < 2.0 * M_PI; u += M_PI / 4.0)
   {
@@ -108,10 +108,10 @@ TEST_F(Geom2dLProp_CLProps2dTest, Circle_CurvatureConstant)
   }
 }
 
-TEST_F(Geom2dLProp_CLProps2dTest, Circle_Normal)
+TEST_F(GeomLProp_CLProps2dTest, Circle_Normal)
 {
   // Normal at U=0 on a circle centered at origin should point inward (-X)
-  Geom2dLProp_CLProps2d aProps(myCircle, 0.0, 2, Precision::Confusion());
+  GeomLProp_CLProps2d aProps(myCircle, 0.0, 2, Precision::Confusion());
 
   gp_Dir2d aNormal;
   aProps.Normal(aNormal);
@@ -123,10 +123,10 @@ TEST_F(Geom2dLProp_CLProps2dTest, Circle_Normal)
               Precision::Confusion());
 }
 
-TEST_F(Geom2dLProp_CLProps2dTest, Circle_CentreOfCurvature)
+TEST_F(GeomLProp_CLProps2dTest, Circle_CentreOfCurvature)
 {
   // Centre of curvature of a circle is its center
-  Geom2dLProp_CLProps2d aProps(myCircle, 0.0, 2, Precision::Confusion());
+  GeomLProp_CLProps2d aProps(myCircle, 0.0, 2, Precision::Confusion());
 
   gp_Pnt2d aCenter;
   aProps.CentreOfCurvature(aCenter);
@@ -134,9 +134,9 @@ TEST_F(Geom2dLProp_CLProps2dTest, Circle_CentreOfCurvature)
   EXPECT_NEAR(aCenter.Y(), 0.0, Precision::Confusion());
 }
 
-TEST_F(Geom2dLProp_CLProps2dTest, Circle_CentreOfCurvature_AtPiHalf)
+TEST_F(GeomLProp_CLProps2dTest, Circle_CentreOfCurvature_AtPiHalf)
 {
-  Geom2dLProp_CLProps2d aProps(myCircle, M_PI / 2.0, 2, Precision::Confusion());
+  GeomLProp_CLProps2d aProps(myCircle, M_PI / 2.0, 2, Precision::Confusion());
 
   gp_Pnt2d aCenter;
   aProps.CentreOfCurvature(aCenter);
@@ -144,15 +144,15 @@ TEST_F(Geom2dLProp_CLProps2dTest, Circle_CentreOfCurvature_AtPiHalf)
   EXPECT_NEAR(aCenter.Y(), 0.0, Precision::Confusion());
 }
 
-TEST_F(Geom2dLProp_CLProps2dTest, Line_TangentDefined)
+TEST_F(GeomLProp_CLProps2dTest, Line_TangentDefined)
 {
-  Geom2dLProp_CLProps2d aProps(myLine, 0.0, 2, Precision::Confusion());
+  GeomLProp_CLProps2d aProps(myLine, 0.0, 2, Precision::Confusion());
   EXPECT_TRUE(aProps.IsTangentDefined());
 }
 
-TEST_F(Geom2dLProp_CLProps2dTest, Line_Tangent)
+TEST_F(GeomLProp_CLProps2dTest, Line_Tangent)
 {
-  Geom2dLProp_CLProps2d aProps(myLine, 5.0, 2, Precision::Confusion());
+  GeomLProp_CLProps2d aProps(myLine, 5.0, 2, Precision::Confusion());
 
   gp_Dir2d aTangent;
   aProps.Tangent(aTangent);
@@ -160,48 +160,48 @@ TEST_F(Geom2dLProp_CLProps2dTest, Line_Tangent)
   EXPECT_NEAR(aTangent.Y(), 0.0, Precision::Confusion());
 }
 
-TEST_F(Geom2dLProp_CLProps2dTest, Line_CurvatureIsZero)
+TEST_F(GeomLProp_CLProps2dTest, Line_CurvatureIsZero)
 {
-  Geom2dLProp_CLProps2d aProps(myLine, 5.0, 2, Precision::Confusion());
-  const double          aCurvature = aProps.Curvature();
+  GeomLProp_CLProps2d aProps(myLine, 5.0, 2, Precision::Confusion());
+  const double        aCurvature = aProps.Curvature();
   EXPECT_NEAR(aCurvature, 0.0, Precision::Confusion());
 }
 
-TEST_F(Geom2dLProp_CLProps2dTest, Line_CentreOfCurvature_Throws)
+TEST_F(GeomLProp_CLProps2dTest, Line_CentreOfCurvature_Throws)
 {
   // Centre of curvature is not defined for a line (zero curvature)
-  Geom2dLProp_CLProps2d aProps(myLine, 5.0, 2, Precision::Confusion());
-  gp_Pnt2d              aCenter;
+  GeomLProp_CLProps2d aProps(myLine, 5.0, 2, Precision::Confusion());
+  gp_Pnt2d            aCenter;
   EXPECT_THROW(aProps.CentreOfCurvature(aCenter), LProp_NotDefined);
 }
 
-TEST_F(Geom2dLProp_CLProps2dTest, Ellipse_CurvatureAtMajorVertex)
+TEST_F(GeomLProp_CLProps2dTest, Ellipse_CurvatureAtMajorVertex)
 {
   // At U=0, ellipse is at major vertex. Curvature = b^2/a^3 for a=10, b=5
   // but actually for parametric ellipse, curvature at end of major axis = b^2/(a^2) * (1/a)
   // = b^2/a^2 * 1/a ... let's compute it properly:
   // Curvature at parameter 0 for ellipse(a,b) = a/b^2
   // Actually: radius of curvature at major vertex = b^2/a, so curvature = a/b^2
-  Geom2dLProp_CLProps2d aProps(myEllipse, 0.0, 2, Precision::Confusion());
+  GeomLProp_CLProps2d aProps(myEllipse, 0.0, 2, Precision::Confusion());
 
   const double aCurvature = aProps.Curvature();
   const double aExpected  = 10.0 / (5.0 * 5.0); // a/b^2 = 10/25 = 0.4
   EXPECT_NEAR(aCurvature, aExpected, 1e-6);
 }
 
-TEST_F(Geom2dLProp_CLProps2dTest, Ellipse_CurvatureAtMinorVertex)
+TEST_F(GeomLProp_CLProps2dTest, Ellipse_CurvatureAtMinorVertex)
 {
   // At U=PI/2, ellipse is at minor vertex. Curvature = b/a^2
-  Geom2dLProp_CLProps2d aProps(myEllipse, M_PI / 2.0, 2, Precision::Confusion());
+  GeomLProp_CLProps2d aProps(myEllipse, M_PI / 2.0, 2, Precision::Confusion());
 
   const double aCurvature = aProps.Curvature();
   const double aExpected  = 5.0 / (10.0 * 10.0); // b/a^2 = 5/100 = 0.05
   EXPECT_NEAR(aCurvature, aExpected, 1e-6);
 }
 
-TEST_F(Geom2dLProp_CLProps2dTest, SetCurve)
+TEST_F(GeomLProp_CLProps2dTest, SetCurve)
 {
-  Geom2dLProp_CLProps2d aProps(myEllipse, 0.0, 2, Precision::Confusion());
+  GeomLProp_CLProps2d aProps(myEllipse, 0.0, 2, Precision::Confusion());
   aProps.SetCurve(myCircle);
   aProps.SetParameter(0.0);
 
@@ -209,20 +209,20 @@ TEST_F(Geom2dLProp_CLProps2dTest, SetCurve)
   EXPECT_NEAR(aPnt.X(), 5.0, Precision::Confusion());
 }
 
-TEST_F(Geom2dLProp_CLProps2dTest, D1_Circle)
+TEST_F(GeomLProp_CLProps2dTest, D1_Circle)
 {
-  Geom2dLProp_CLProps2d aProps(myCircle, 0.0, 2, Precision::Confusion());
-  const gp_Vec2d&       aD1 = aProps.D1();
+  GeomLProp_CLProps2d aProps(myCircle, 0.0, 2, Precision::Confusion());
+  const gp_Vec2d&     aD1 = aProps.D1();
 
   // First derivative at U=0 on circle(R=5) is (0, 5)
   EXPECT_NEAR(aD1.X(), 0.0, Precision::Confusion());
   EXPECT_NEAR(aD1.Y(), 5.0, Precision::Confusion());
 }
 
-TEST_F(Geom2dLProp_CLProps2dTest, D2_Circle)
+TEST_F(GeomLProp_CLProps2dTest, D2_Circle)
 {
-  Geom2dLProp_CLProps2d aProps(myCircle, 0.0, 2, Precision::Confusion());
-  const gp_Vec2d&       aD2 = aProps.D2();
+  GeomLProp_CLProps2d aProps(myCircle, 0.0, 2, Precision::Confusion());
+  const gp_Vec2d&     aD2 = aProps.D2();
 
   // Second derivative at U=0 on circle(R=5) is (-5, 0)
   EXPECT_NEAR(aD2.X(), -5.0, Precision::Confusion());

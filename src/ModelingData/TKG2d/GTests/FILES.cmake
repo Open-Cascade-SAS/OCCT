@@ -35,8 +35,4 @@ set(OCCT_TKG2d_GTests_FILES
   Geom2dGridEval_Hyperbola_Test.cxx
   Geom2dGridEval_Parabola_Test.cxx
   Geom2dHash_CurveHasher_Test.cxx
-  Geom2dLProp_CLProps2d_Test.cxx
-  Geom2dLProp_CurAndInf2d_Test.cxx
-  LProp_AnalyticCurInf_Test.cxx
-  LProp_CurAndInf_Test.cxx
 )

@@ -16,7 +16,7 @@
 
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2dLProp_CurAndInf2d.hxx>
+#include <GeomLProp_CurAndInf2d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <MAT2d_CutCurve.hxx>
 #include <Precision.hxx>
@@ -40,7 +40,7 @@ void MAT2d_CutCurve::Perform(const occ::handle<Geom2d_Curve>& C)
 {
   theCurves.Clear();
 
-  Geom2dLProp_CurAndInf2d          Sommets;
+  GeomLProp_CurAndInf2d            Sommets;
   occ::handle<Geom2d_TrimmedCurve> TrimC;
   double                           UF, UL, UC;
   gp_Pnt2d                         PF, PL, PC;

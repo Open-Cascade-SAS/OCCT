@@ -1,7 +1,6 @@
-// Created on: 1994-02-24
-// Created by: Laurent BOURESCHE
-// Copyright (c) 1994-1999 Matra Datavision
-// Copyright (c) 1999-2014 OPEN CASCADE SAS
+// Created on: 2002-08-02
+// Created by: Alexander KARTOMIN  (akm)
+// Copyright (c) 2002-2014 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -14,13 +13,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _BRepLProp_CLProps_HeaderFile
-#define _BRepLProp_CLProps_HeaderFile
+#ifndef _LProp_SLProps3d_HeaderFile
+#define _LProp_SLProps3d_HeaderFile
 
-#include <BRepAdaptor_Curve.hxx>
-#include <GeomLProp_CLProps.hxx>
+#include <Adaptor3d_Surface.hxx>
+#include <GeomLProp_SLProps.hxx>
 
-//! Alias for curve local properties using BRepAdaptor_Curve.
-using BRepLProp_CLProps = GeomLProp_CLPropsBase<gp_Pnt, gp_Vec, gp_Dir, BRepAdaptor_Curve>;
+//! Alias for surface local properties using Adaptor3d_Surface interface.
+using LProp_SLProps3d = GeomLProp_SLPropsBase<occ::handle<Adaptor3d_Surface>>;
 
-#endif // _BRepLProp_CLProps_HeaderFile
+#endif // _LProp_SLProps3d_HeaderFile
