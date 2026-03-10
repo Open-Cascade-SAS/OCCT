@@ -24,7 +24,7 @@
 #include <GeomAbs_Shape.hxx>
 #include <LocalAnalysis_StatusErrorType.hxx>
 class Geom_Curve;
-class GeomLProp_CLProps;
+#include <GeomLProp_CLProps.hxx>
 
 //! This class gives tools to check local continuity C0
 //! C1 C2 G1 G2 between two points situated on two curves
@@ -169,15 +169,20 @@ public:
   Standard_EXPORT bool IsG2() const;
 
 private:
-  Standard_EXPORT void CurvC0(GeomLProp_CLProps& Curv1, GeomLProp_CLProps& Curv2);
+  Standard_EXPORT void CurvC0(GeomLProp_CLProps<>& Curv1,
+                              GeomLProp_CLProps<>& Curv2);
 
-  Standard_EXPORT void CurvC1(GeomLProp_CLProps& Curv1, GeomLProp_CLProps& Curv2);
+  Standard_EXPORT void CurvC1(GeomLProp_CLProps<>& Curv1,
+                              GeomLProp_CLProps<>& Curv2);
 
-  Standard_EXPORT void CurvC2(GeomLProp_CLProps& Curv1, GeomLProp_CLProps& Curv2);
+  Standard_EXPORT void CurvC2(GeomLProp_CLProps<>& Curv1,
+                              GeomLProp_CLProps<>& Curv2);
 
-  Standard_EXPORT void CurvG1(GeomLProp_CLProps& Curv1, GeomLProp_CLProps& Curv2);
+  Standard_EXPORT void CurvG1(GeomLProp_CLProps<>& Curv1,
+                              GeomLProp_CLProps<>& Curv2);
 
-  Standard_EXPORT void CurvG2(GeomLProp_CLProps& Curv1, GeomLProp_CLProps& Curv2);
+  Standard_EXPORT void CurvG2(GeomLProp_CLProps<>& Curv1,
+                              GeomLProp_CLProps<>& Curv2);
 
   double                        myContC0;
   double                        myContC1;

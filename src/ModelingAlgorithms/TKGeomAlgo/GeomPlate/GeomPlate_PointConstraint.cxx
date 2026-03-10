@@ -163,7 +163,7 @@ double GeomPlate_PointConstraint::G2Criterion() const
 //------------------------------------------------------------
 // Fonction : LPropSurf
 //------------------------------------------------------------
-GeomLProp_SLProps& GeomPlate_PointConstraint::LPropSurf()
+GeomLProp_SLProps<>& GeomPlate_PointConstraint::LPropSurf()
 { // if (myFrontiere.IsNull())
   //  throw Standard_Failure("GeomPlate_CurveConstraint.cxx : Curve must be on a Surface");
   // gp_Pnt2d P2d= myFrontiere->ChangeCurve().GetCurve()->Value(U);

@@ -129,7 +129,7 @@ public:
 
   Standard_EXPORT gp_Pnt2d Pnt2dOnSurf() const;
 
-  Standard_EXPORT GeomLProp_SLProps& LPropSurf();
+  Standard_EXPORT GeomLProp_SLProps<>& LPropSurf();
 
   DEFINE_STANDARD_RTTIEXT(GeomPlate_PointConstraint, Standard_Transient)
 
@@ -137,7 +137,7 @@ protected:
   int myOrder;
 
 private:
-  GeomLProp_SLProps         myLProp;
+  GeomLProp_SLProps<> myLProp;
   gp_Pnt                    myPoint;
   gp_Pnt2d                  myPt2d;
   occ::handle<Geom_Surface> mySurf;

@@ -26,15 +26,17 @@
 
 /*********************************************************************************/
 /*********************************************************************************/
-void LocalAnalysis_SurfaceContinuity::SurfC0(const GeomLProp_SLProps& Surf1,
-                                             const GeomLProp_SLProps& Surf2)
+void LocalAnalysis_SurfaceContinuity::SurfC0(
+  const GeomLProp_SLProps<>& Surf1,
+  const GeomLProp_SLProps<>& Surf2)
 {
   myContC0 = (Surf1.Value()).Distance(Surf2.Value());
 }
 
 /*********************************************************************************/
 
-void LocalAnalysis_SurfaceContinuity::SurfC1(GeomLProp_SLProps& Surf1, GeomLProp_SLProps& Surf2)
+void LocalAnalysis_SurfaceContinuity::SurfC1(GeomLProp_SLProps<>& Surf1,
+                                             GeomLProp_SLProps<>& Surf2)
 {
   gp_Vec V1u, V2u, V1v, V2v;
   double norm1u, norm2u, norm1v, norm2v, angu, angv;
@@ -80,7 +82,8 @@ void LocalAnalysis_SurfaceContinuity::SurfC1(GeomLProp_SLProps& Surf1, GeomLProp
 
 /*********************************************************************************/
 
-void LocalAnalysis_SurfaceContinuity::SurfC2(GeomLProp_SLProps& Surf1, GeomLProp_SLProps& Surf2)
+void LocalAnalysis_SurfaceContinuity::SurfC2(GeomLProp_SLProps<>& Surf1,
+                                             GeomLProp_SLProps<>& Surf2)
 
 {
   gp_Vec V11u, V12u, V21u, V22u, V11v, V12v, V21v, V22v;
@@ -171,7 +174,8 @@ void LocalAnalysis_SurfaceContinuity::SurfC2(GeomLProp_SLProps& Surf1, GeomLProp
 }
 
 /*********************************************************************************/
-void LocalAnalysis_SurfaceContinuity::SurfG1(GeomLProp_SLProps& Surf1, GeomLProp_SLProps& Surf2)
+void LocalAnalysis_SurfaceContinuity::SurfG1(GeomLProp_SLProps<>& Surf1,
+                                             GeomLProp_SLProps<>& Surf2)
 {
   if (Surf1.IsNormalDefined() && Surf2.IsNormalDefined())
   {
@@ -192,7 +196,8 @@ void LocalAnalysis_SurfaceContinuity::SurfG1(GeomLProp_SLProps& Surf1, GeomLProp
 
 /*********************************************************************************/
 
-void LocalAnalysis_SurfaceContinuity::SurfG2(GeomLProp_SLProps& Surf1, GeomLProp_SLProps& Surf2)
+void LocalAnalysis_SurfaceContinuity::SurfG2(GeomLProp_SLProps<>& Surf1,
+                                             GeomLProp_SLProps<>& Surf2)
 {
   gp_Dir DMIN1, DMIN2, DMAX1, DMAX2;
   double RMIN1, RMIN2, RMAX1, RMAX2;
@@ -274,9 +279,10 @@ LocalAnalysis_SurfaceContinuity::LocalAnalysis_SurfaceContinuity(const double Ep
   myIsDone = true;
 }
 
-void LocalAnalysis_SurfaceContinuity::ComputeAnalysis(GeomLProp_SLProps&  Surf1,
-                                                      GeomLProp_SLProps&  Surf2,
-                                                      const GeomAbs_Shape Order)
+void LocalAnalysis_SurfaceContinuity::ComputeAnalysis(
+  GeomLProp_SLProps<>& Surf1,
+  GeomLProp_SLProps<>& Surf2,
+  const GeomAbs_Shape                           Order)
 {
   myTypeCont = Order;
   switch (Order)

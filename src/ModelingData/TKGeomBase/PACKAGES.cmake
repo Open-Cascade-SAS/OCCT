@@ -23,4 +23,9 @@ set(OCCT_TKGeomBase_LIST_OF_PACKAGES
   GC
   GCE2d
   gce
+  LProp
+  Geom2dLProp
+  GeomLProp
+  LProp3d
+  GProp
 )

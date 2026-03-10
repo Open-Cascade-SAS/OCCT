@@ -45,7 +45,6 @@
 #include <Geom_UndefinedValue.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <GeomAdaptor_Surface.hxx>
-#include <GeomLProp_SLProps.hxx>
 #include <gp_Dir.hxx>
 #include <gp_GTrsf2d.hxx>
 #include <gp_Pnt.hxx>
@@ -604,10 +603,12 @@ occ::handle<Geom_Curve> Geom_OffsetSurface::UIso(const double UU) const
     if (aGAsurf.GetType() == GeomAbs_SurfaceOfExtrusion)
     {
       occ::handle<Geom_Curve> aL = basisSurf->UIso(UU);
-      GeomLProp_SLProps       aSurfProps(basisSurf, UU, 0., 2, Precision::Confusion());
 
-      gp_Vec aDir;
-      aDir = aSurfProps.Normal();
+      gp_Pnt aP;
+      gp_Vec aD1U, aD1V;
+      basisSurf->D1(UU, 0., aP, aD1U, aD1V);
+      gp_Vec aDir = aD1U.Crossed(aD1V);
+      aDir.Normalize();
       aDir *= offsetValue;
 
       aL->Translate(aDir);

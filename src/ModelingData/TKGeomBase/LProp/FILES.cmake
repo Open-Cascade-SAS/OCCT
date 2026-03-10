@@ -8,8 +8,7 @@ set(OCCT_LProp_FILES
   LProp_CIType.hxx
   LProp_CurAndInf.cxx
   LProp_CurAndInf.hxx
-  LProp_CurveUtils.pxx
+  LProp_CurveUtils.hxx
   LProp_NotDefined.hxx
-  LProp_SurfaceUtils.pxx
   LProp_Status.hxx
 )

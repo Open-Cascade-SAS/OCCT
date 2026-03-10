@@ -16,7 +16,7 @@
 
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dLProp_CurAndInf2d.hxx>
-#include <Geom2dLProp_NumericCurInf2d.hxx>
+#include <Geom2dLProp_NumericCurInf2d.pxx>
 #include <LProp_AnalyticCurInf.hxx>
 #include <NCollection_Array1.hxx>
 
@@ -50,10 +50,10 @@ void Geom2dLProp_CurAndInf2d::PerformCurExt(const occ::handle<Geom2d_Curve>& C)
 
 void Geom2dLProp_CurAndInf2d::performCurExt(const occ::handle<Geom2d_Curve>& theCurve)
 {
-  Geom2dAdaptor_Curve         anAdaptor(theCurve);
-  LProp_AnalyticCurInf        anAnalyticInf;
+  Geom2dAdaptor_Curve     anAdaptor(theCurve);
+  LProp_AnalyticCurInf    anAnalyticInf;
   Geom2dLProp_NumericCurInf2d aNumericInf;
-  const GeomAbs_CurveType     aCurveType = anAdaptor.GetType();
+  const GeomAbs_CurveType aCurveType = anAdaptor.GetType();
 
   switch (aCurveType)
   {
@@ -123,8 +123,8 @@ void Geom2dLProp_CurAndInf2d::PerformInf(const occ::handle<Geom2d_Curve>& C)
 
 void Geom2dLProp_CurAndInf2d::performInf(const occ::handle<Geom2d_Curve>& theCurve)
 {
-  Geom2dAdaptor_Curve         anAdaptor(theCurve);
-  const GeomAbs_CurveType     aCurveType = anAdaptor.GetType();
+  Geom2dAdaptor_Curve     anAdaptor(theCurve);
+  const GeomAbs_CurveType aCurveType = anAdaptor.GetType();
   Geom2dLProp_NumericCurInf2d aNumericInf;
 
   switch (aCurveType)

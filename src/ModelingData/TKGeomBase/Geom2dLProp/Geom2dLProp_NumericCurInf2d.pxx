@@ -1,0 +1,135 @@
+// Copyright (c) 1994-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _Geom2dLProp_NumericCurInf2d_HeaderFile
+#define _Geom2dLProp_NumericCurInf2d_HeaderFile
+
+#include <Geom2d_Curve.hxx>
+#include <Geom2dLProp_FuncCurExt.pxx>
+#include <Geom2dLProp_FuncCurNul.pxx>
+#include <LProp_CurAndInf.hxx>
+#include <math_BracketedRoot.hxx>
+#include <math_FunctionRoots.hxx>
+#include <Precision.hxx>
+
+//! Computes the local extremas of curvature and the inflection points
+//! of a bounded 2D curve using numeric root-finding methods.
+//! Uses Geom2dLProp_FuncCurExt for curvature extrema and
+//! Geom2dLProp_FuncCurNul for inflection points.
+class Geom2dLProp_NumericCurInf2d
+{
+public:
+  Geom2dLProp_NumericCurInf2d()
+      : myIsDone(false)
+  {
+  }
+
+  //! Computes the local extremas of curvature over the full parameter range.
+  //! @param theCurve [in] the 2D curve to analyze
+  //! @param theResult [in,out] container for curvature extrema parameters
+  void PerformCurExt(const occ::handle<Geom2d_Curve>& theCurve, LProp_CurAndInf& theResult)
+  {
+    PerformCurExt(theCurve, theCurve->FirstParameter(), theCurve->LastParameter(), theResult);
+  }
+
+  //! Computes the local extremas of curvature in [theUMin, theUMax].
+  //! Roots of dKC/dU are found using math_FunctionRoots (sampling + bisection),
+  //! then refined with math_BracketedRoot.
+  //! @param theCurve [in] the 2D curve to analyze
+  //! @param theUMin [in] the start of the parameter interval
+  //! @param theUMax [in] the end of the parameter interval
+  //! @param theResult [in,out] container for curvature extrema parameters
+  void PerformCurExt(const occ::handle<Geom2d_Curve>& theCurve,
+                     const double                     theUMin,
+                     const double                     theUMax,
+                     LProp_CurAndInf&                 theResult)
+  {
+    myIsDone = true;
+
+    const double           anEpsH = 1.e-4 * (theUMax - theUMin);
+    constexpr double       aTol   = Precision::PConfusion();
+    constexpr int          aNbSamples = 100;
+
+    Geom2dLProp_FuncCurExt aFunc(theCurve, anEpsH);
+    math_FunctionRoots     aRootFinder(aFunc, theUMin, theUMax, aNbSamples, anEpsH, anEpsH, anEpsH);
+
+    if (aRootFinder.IsDone())
+    {
+      for (int j = 1; j <= aRootFinder.NbSolutions(); j++)
+      {
+        double aParam = aRootFinder.Value(j);
+        // Refine the root with bracketed bisection.
+        math_BracketedRoot aRefinement(aFunc, aParam - anEpsH, aParam + anEpsH, aTol);
+        if (aRefinement.IsDone())
+        {
+          aParam = aRefinement.Root();
+        }
+        const bool isMinRadius = aFunc.IsMinKC(aParam);
+        theResult.AddExtCur(aParam, isMinRadius);
+      }
+    }
+    else
+    {
+      myIsDone = false;
+    }
+  }
+
+  //! Computes the inflection points over the full parameter range.
+  //! @param theCurve [in] the 2D curve to analyze
+  //! @param theResult [in,out] container for inflection point parameters
+  void PerformInf(const occ::handle<Geom2d_Curve>& theCurve, LProp_CurAndInf& theResult)
+  {
+    PerformInf(theCurve, theCurve->FirstParameter(), theCurve->LastParameter(), theResult);
+  }
+
+  //! Computes the inflection points in [theUMin, theUMax].
+  //! Inflection points are roots of the normalized curvature function.
+  //! @param theCurve [in] the 2D curve to analyze
+  //! @param theUMin [in] the start of the parameter interval
+  //! @param theUMax [in] the end of the parameter interval
+  //! @param theResult [in,out] container for inflection point parameters
+  void PerformInf(const occ::handle<Geom2d_Curve>& theCurve,
+                  const double                     theUMin,
+                  const double                     theUMax,
+                  LProp_CurAndInf&                 theResult)
+  {
+    myIsDone = true;
+    Geom2dLProp_FuncCurNul aFunc(theCurve);
+    constexpr double       anEpsX     = 1.e-6;
+    constexpr double       anEpsF     = 1.e-6;
+    constexpr int          aNbSamples = 30;
+
+    math_FunctionRoots aRootFinder(aFunc, theUMin, theUMax, aNbSamples, anEpsX, anEpsF, anEpsX);
+
+    if (aRootFinder.IsDone())
+    {
+      for (int j = 1; j <= aRootFinder.NbSolutions(); j++)
+      {
+        theResult.AddInflection(aRootFinder.Value(j));
+      }
+    }
+    else
+    {
+      myIsDone = false;
+    }
+  }
+
+  //! Returns true if the last computation was successful.
+  bool IsDone() const { return myIsDone; }
+
+private:
+  bool myIsDone; //!< Status of the last computation.
+};
+
+#endif // _Geom2dLProp_NumericCurInf2d_HeaderFile

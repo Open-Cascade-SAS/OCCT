@@ -1,0 +1,150 @@
+// Copyright (c) 1994-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _Geom2dLProp_FuncCurExt_HeaderFile
+#define _Geom2dLProp_FuncCurExt_HeaderFile
+
+#include <Geom2d_Curve.hxx>
+#include <gp_Pnt2d.hxx>
+#include <math_FunctionWithDerivative.hxx>
+
+//! Function used to find the extremas of curvature in 2d.
+//! Computes the derivative of the curvature function:
+//!   KC = (V1 ^ V2).Z / ||V1||^3
+//! where V1 is the tangent and V2 is the second derivative.
+//! The function value is F = dKC/dU, and its roots correspond
+//! to curvature extrema.
+class Geom2dLProp_FuncCurExt : public math_FunctionWithDerivative
+{
+public:
+  //! Initializes the function with the curve and the tolerance
+  //! used for numerical differentiation.
+  //! @param theCurve [in] the 2D curve to analyze
+  //! @param theTol [in] the parametric tolerance for finite differences
+  Geom2dLProp_FuncCurExt(const occ::handle<Geom2d_Curve>& theCurve, const double theTol)
+      : myCurve(theCurve),
+        myEpsX(theTol)
+  {
+  }
+
+  //! Computes the value of dKC/dU at parameter theU.
+  //! @param theU [in] the curve parameter
+  //! @param theF [out] the function value
+  //! @return false if the first derivative is degenerate
+  bool Value(const double theU, double& theF) override
+  {
+    gp_Pnt2d aPnt;
+    gp_Vec2d aDeriv1, aDeriv2, aDeriv3;
+
+    myCurve->D3(theU, aPnt, aDeriv1, aDeriv2, aDeriv3);
+    const double aCross12  = aDeriv1.Crossed(aDeriv2);
+    const double aCross13  = aDeriv1.Crossed(aDeriv3);
+    const double aDot12    = aDeriv1.Dot(aDeriv2);
+    const double aSqNorm1  = aDeriv1.SquareMagnitude();
+    const double aNorm1    = std::sqrt(aSqNorm1);
+    const double aNorm1Cb  = aSqNorm1 * aNorm1;   // ||V1||^3
+    const double aNorm1P5  = aNorm1Cb * aSqNorm1;  // ||V1||^5
+
+    if (aNorm1P5 < gp::Resolution())
+    {
+      return false;
+    }
+    theF = aCross13 / aNorm1Cb - 3.0 * aCross12 * aDot12 / aNorm1P5;
+    return true;
+  }
+
+  //! Computes the derivative of the function at parameter theU
+  //! using finite differences.
+  //! @param theU [in] the curve parameter
+  //! @param theD [out] the derivative value
+  //! @return true on success
+  bool Derivative(const double theU, double& theD) override
+  {
+    double aF;
+    return Values(theU, aF, theD);
+  }
+
+  //! Computes both function value and its derivative at parameter theU.
+  //! The derivative is estimated by forward (or backward) finite difference.
+  //! @param theU [in] the curve parameter
+  //! @param theF [out] the function value
+  //! @param theD [out] the derivative value
+  //! @return true on success
+  bool Values(const double theU, double& theF, double& theD) override
+  {
+    double aFNext;
+    double aDeltaU = myEpsX / 100.0;
+
+    if (theU + aDeltaU > myCurve->LastParameter())
+    {
+      aDeltaU = -aDeltaU;
+    }
+
+    Value(theU, theF);
+    Value(theU + aDeltaU, aFNext);
+    theD = (aFNext - theF) / aDeltaU;
+    return true;
+  }
+
+  //! Tests if the parameter corresponds to a minimum of the radius
+  //! of curvature by comparing the curvature at theU with a nearby point.
+  //! @param theU [in] the curve parameter to test
+  //! @return true if |KC(theU)| > |KC(theU + eps)|, i.e. local curvature maximum
+  bool IsMinKC(const double theU) const
+  {
+    gp_Pnt2d aPnt;
+    gp_Vec2d aDeriv1, aDeriv2, aDeriv3;
+    double   aDeltaU = myEpsX;
+
+    // Compute curvature at theU.
+    myCurve->D3(theU, aPnt, aDeriv1, aDeriv2, aDeriv3);
+    double       aCross12 = aDeriv1.Crossed(aDeriv2);
+    double       aSqNorm1 = aDeriv1.SquareMagnitude();
+    double       aNorm1   = std::sqrt(aSqNorm1);
+    double       aNorm1Cb = aSqNorm1 * aNorm1;
+
+    if (aNorm1Cb < gp::Resolution())
+    {
+      return false;
+    }
+
+    const double aCurvCurr = aCross12 / aNorm1Cb;
+
+    if (theU + aDeltaU > myCurve->LastParameter())
+    {
+      aDeltaU = -aDeltaU;
+    }
+
+    // Compute curvature at the probe point.
+    myCurve->D3(theU + aDeltaU, aPnt, aDeriv1, aDeriv2, aDeriv3);
+    aCross12 = aDeriv1.Crossed(aDeriv2);
+    aSqNorm1 = aDeriv1.SquareMagnitude();
+    aNorm1   = std::sqrt(aSqNorm1);
+    aNorm1Cb = aSqNorm1 * aNorm1;
+
+    if (aNorm1Cb < gp::Resolution())
+    {
+      return false;
+    }
+    const double aCurvProbe = aCross12 / aNorm1Cb;
+
+    return std::abs(aCurvCurr) > std::abs(aCurvProbe);
+  }
+
+private:
+  occ::handle<Geom2d_Curve> myCurve; //!< The analyzed curve.
+  double                    myEpsX;  //!< Parametric tolerance for finite differences.
+};
+
+#endif // _Geom2dLProp_FuncCurExt_HeaderFile

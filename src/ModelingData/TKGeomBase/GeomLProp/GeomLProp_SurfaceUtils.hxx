@@ -11,8 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _LProp_SurfaceUtils_HeaderFile
-#define _LProp_SurfaceUtils_HeaderFile
+#ifndef _GeomLProp_SurfaceUtils_HeaderFile
+#define _GeomLProp_SurfaceUtils_HeaderFile
 
 #include <Adaptor3d_Surface.hxx>
 #include <CSLib.hxx>
@@ -477,22 +477,6 @@ inline bool ComputeSurfCurvatures(const gp_Vec& theD1u,
 // ==================== Higher-Level Method Wrappers ====================
 
 //! SetParameters: sets parameters, evaluates derivatives, resets all statuses.
-//! @param[in,out] theSurf     surface object
-//! @param[in]     theU        U parameter value
-//! @param[in]     theV        V parameter value
-//! @param[out]    theStoredU  stored U parameter field
-//! @param[out]    theStoredV  stored V parameter field
-//! @param[in]     theDerOrder current derivative order
-//! @param[out]    thePnt      evaluated point
-//! @param[out]    theD1u      first U derivative
-//! @param[out]    theD1v      first V derivative
-//! @param[out]    theD2u      second U derivative
-//! @param[out]    theD2v      second V derivative
-//! @param[out]    theDuv      mixed UV derivative
-//! @param[out]    theUTanSt   U tangent status
-//! @param[out]    theVTanSt   V tangent status
-//! @param[out]    theNormSt   normal status
-//! @param[out]    theCurvSt   curvature status
 template <typename Access, typename Surface>
 void SetParameters(Surface&      theSurf,
                    double        theU,
@@ -522,19 +506,6 @@ void SetParameters(Surface&      theSurf,
 }
 
 //! Ensure surface derivatives up to the required order. Returns the specified result field.
-//! @param[in,out] theSurf     surface object
-//! @param[in]     theU        U parameter value
-//! @param[in]     theV        V parameter value
-//! @param[in,out] theDerOrder current derivative order (upgraded if needed)
-//! @param[in]     theRequired required derivative order
-//! @param[out]    thePnt      evaluated point
-//! @param[out]    theD1u      first U derivative
-//! @param[out]    theD1v      first V derivative
-//! @param[out]    theD2u      second U derivative
-//! @param[out]    theD2v      second V derivative
-//! @param[out]    theDuv      mixed UV derivative
-//! @param[in]     theResult   reference to the specific derivative field to return
-//! @return const reference to theResult
 template <typename Access, typename Surface>
 const gp_Vec& EnsureSurfDeriv(Surface&      theSurf,
                               double        theU,
@@ -559,12 +530,6 @@ const gp_Vec& EnsureSurfDeriv(Surface&      theSurf,
 }
 
 //! IsTangentUDefined: checks U tangent status, then searches via D1U/D2U.
-//! @param[in,out] theProps     SLProps object
-//! @param[in]     theCN        continuity order
-//! @param[in]     theLinTol    linear tolerance
-//! @param[out]    theSigOrder  order of first significant derivative
-//! @param[in,out] theTanStatus U tangent status field
-//! @return true if U tangent is defined
 template <typename Props>
 bool IsTangentUDefined(Props&        theProps,
                        int           theCN,
@@ -585,12 +550,6 @@ bool IsTangentUDefined(Props&        theProps,
 }
 
 //! IsTangentVDefined: checks V tangent status, then searches via D1V/D2V.
-//! @param[in,out] theProps     SLProps object
-//! @param[in]     theCN        continuity order
-//! @param[in]     theLinTol    linear tolerance
-//! @param[out]    theSigOrder  order of first significant derivative
-//! @param[in,out] theTanStatus V tangent status field
-//! @return true if V tangent is defined
 template <typename Props>
 bool IsTangentVDefined(Props&        theProps,
                        int           theCN,
@@ -611,14 +570,6 @@ bool IsTangentVDefined(Props&        theProps,
 }
 
 //! TangentU: checks IsTangentUDefined, then computes U tangent direction.
-//! @param[in,out] theProps    SLProps object
-//! @param[in,out] theSurf    surface object
-//! @param[in]     theU       current U parameter
-//! @param[in]     theV       current V parameter
-//! @param[in]     theD1u     first U derivative
-//! @param[in]     theD2u     second U derivative
-//! @param[in]     theSigOrder order of first significant derivative
-//! @param[out]    theDir     computed tangent direction
 template <typename Access, typename Props, typename Surface>
 void TangentU(Props&        theProps,
               Surface&      theSurf,
@@ -635,14 +586,6 @@ void TangentU(Props&        theProps,
 }
 
 //! TangentV: checks IsTangentVDefined, then computes V tangent direction.
-//! @param[in,out] theProps    SLProps object
-//! @param[in,out] theSurf    surface object
-//! @param[in]     theU       current U parameter
-//! @param[in]     theV       current V parameter
-//! @param[in]     theD1v     first V derivative
-//! @param[in]     theD2v     second V derivative
-//! @param[in]     theSigOrder order of first significant derivative
-//! @param[out]    theDir     computed tangent direction
 template <typename Access, typename Props, typename Surface>
 void TangentV(Props&        theProps,
               Surface&      theSurf,
@@ -659,12 +602,6 @@ void TangentV(Props&        theProps,
 }
 
 //! IsNormalDefined: checks normal status, then computes via CSLib.
-//! @param[in]     theD1u       first U derivative
-//! @param[in]     theD1v       first V derivative
-//! @param[in]     theLinTol    linear tolerance
-//! @param[out]    theNormal    computed normal direction
-//! @param[in,out] theNormStatus normal status field
-//! @return true if normal is defined
 inline bool IsNormalDefined(const gp_Vec& theD1u,
                             const gp_Vec& theD1v,
                             double        theLinTol,
@@ -685,9 +622,6 @@ inline bool IsNormalDefined(const gp_Vec& theD1u,
 }
 
 //! Normal: checks IsNormalDefined (via theProps), then returns normal.
-//! @param[in,out] theProps  SLProps object
-//! @param[in]     theNormal normal direction field
-//! @return const reference to theNormal
 template <typename Props>
 const gp_Dir& Normal(Props& theProps, const gp_Dir& theNormal)
 {
@@ -698,23 +632,6 @@ const gp_Dir& Normal(Props& theProps, const gp_Dir& theNormal)
 
 //! IsCurvatureDefined: full check including continuity, normal, tangents, and curvature
 //! computation.
-//! @param[in,out] theProps      SLProps object
-//! @param[in]     theCN         continuity order
-//! @param[in,out] theDerOrder   current derivative order
-//! @param[in]     theD1u        first U derivative
-//! @param[in]     theD1v        first V derivative
-//! @param[in]     theD2u        second U derivative
-//! @param[in]     theD2v        second V derivative
-//! @param[in]     theDuv        mixed UV derivative
-//! @param[in]     theNormal     surface normal
-//! @param[out]    theMinCurv    minimum principal curvature
-//! @param[out]    theMaxCurv    maximum principal curvature
-//! @param[out]    theDirMin     direction of minimum curvature
-//! @param[out]    theDirMax     direction of maximum curvature
-//! @param[out]    theMeanCurv   mean curvature
-//! @param[out]    theGausCurv   Gaussian curvature
-//! @param[in,out] theCurvStatus curvature status field
-//! @return true if curvature is defined
 template <typename Props>
 bool IsCurvatureDefined(Props&        theProps,
                         int           theCN,
@@ -775,9 +692,6 @@ bool IsCurvatureDefined(Props&        theProps,
 }
 
 //! Require curvature to be defined, throw if not. Returns the given value.
-//! @param[in,out] theProps SLProps object
-//! @param[in]     theValue curvature value to return
-//! @return theValue if curvature is defined
 template <typename Props>
 double RequireCurvature(Props& theProps, double theValue)
 {
@@ -787,10 +701,6 @@ double RequireCurvature(Props& theProps, double theValue)
 }
 
 //! IsUmbilic: checks curvature, then compares min/max.
-//! @param[in,out] theProps   SLProps object
-//! @param[in]     theMaxCurv maximum curvature value
-//! @param[in]     theMinCurv minimum curvature value
-//! @return true if the point is umbilic
 template <typename Props>
 bool IsUmbilic(Props& theProps, double theMaxCurv, double theMinCurv)
 {
@@ -800,11 +710,6 @@ bool IsUmbilic(Props& theProps, double theMaxCurv, double theMinCurv)
 }
 
 //! CurvatureDirections: checks curvature, then returns max/min directions.
-//! @param[in,out] theProps  SLProps object
-//! @param[in]     theDirMax direction of maximum curvature field
-//! @param[in]     theDirMin direction of minimum curvature field
-//! @param[out]    theMax    output maximum curvature direction
-//! @param[out]    theMin    output minimum curvature direction
 template <typename Props>
 void CurvatureDirections(Props&        theProps,
                          const gp_Dir& theDirMax,
@@ -820,4 +725,4 @@ void CurvatureDirections(Props&        theProps,
 
 } // namespace LProp_SurfaceUtils
 
-#endif // _LProp_SurfaceUtils_HeaderFile
+#endif // _GeomLProp_SurfaceUtils_HeaderFile
