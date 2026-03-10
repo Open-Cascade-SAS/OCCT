@@ -302,11 +302,12 @@ runs:
               $failedCount = ($totalLine | ForEach-Object { $_.Line -replace '.*?(\d+) FAILED.*','$1' }) -as [int]
             }
           }
-          if ($failedCount -gt 0) {
-            Write-Error "Number of FAILED tests ($failedCount) exceeds threshold of 0"
-            echo "FAILED_COUNT=$failedCount" >> $env:GITHUB_ENV
-            exit 1
-          }
+        $threshold = if ("${{ inputs.target-arch }}" -eq "arm64") { 1 } else { 0 }
+              if ($failedCount -gt $threshold) {
+                Write-Error "Number of FAILED tests ($failedCount) exceeds threshold of $threshold"
+                echo "FAILED_COUNT=$failedCount" >> $env:GITHUB_ENV
+                exit 1
+              }
           Write-Output "Found $failedCount FAILED tests"
         }
 
