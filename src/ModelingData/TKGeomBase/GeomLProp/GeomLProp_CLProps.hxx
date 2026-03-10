@@ -213,7 +213,6 @@ private:
   double       myLinTol;
   Pnt          myPnt;
   Vec          myDerivArr[3];
-  Dir          myTangent;
   double       myCurvature = 0.0;
   LProp_Status myTangentStatus;
   int          mySignificantFirstDerivativeOrder = 0;

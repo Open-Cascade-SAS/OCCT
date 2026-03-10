@@ -359,6 +359,9 @@ bool IsTangentDefined(Props&        theProps,
         case 3:
           aV = theProps.D3();
           break;
+        default:
+          theTanStatus = LProp_Undefined;
+          return false;
       }
       if (aV.SquareMagnitude() > aTolSq)
       {

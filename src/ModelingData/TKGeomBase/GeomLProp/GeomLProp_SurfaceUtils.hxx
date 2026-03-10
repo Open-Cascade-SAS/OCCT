@@ -246,6 +246,7 @@ inline bool FindSurfTangentOrder(const gp_Vec& theD1,
     }
   }
 
+  theStatus = LProp_Undefined;
   return false;
 }
 
@@ -403,6 +404,10 @@ inline bool ComputeSurfCurvatures(const gp_Vec& theD1u,
   if (aMaxABC < RealEpsilon())
   {
     // Umbilic point
+    if (aG < RealEpsilon())
+    {
+      return false;
+    }
     theMinCurv  = aN / aG;
     theMaxCurv  = theMinCurv;
     theDirMin   = gp_Dir(theD1u);

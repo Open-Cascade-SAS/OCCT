@@ -158,7 +158,7 @@ public:
 
   Standard_EXPORT void ComputeAnalysis(GeomLProp_SLProps<>& Surf1,
                                        GeomLProp_SLProps<>& Surf2,
-                                       const GeomAbs_Shape                           Order);
+                                       const GeomAbs_Shape  Order);
 
   Standard_EXPORT bool IsDone() const;
 

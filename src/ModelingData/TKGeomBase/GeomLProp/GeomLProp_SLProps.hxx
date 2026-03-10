@@ -58,9 +58,15 @@ public:
                     const int          N,
                     const double       Resolution)
       : mySurf(S),
+        myU(RealLast()),
+        myV(RealLast()),
         myDerOrder(N),
         myCN(4),
-        myLinTol(Resolution)
+        myLinTol(Resolution),
+        myUTangentStatus(LProp_Undecided),
+        myVTangentStatus(LProp_Undecided),
+        myNormalStatus(LProp_Undecided),
+        myCurvatureStatus(LProp_Undecided)
   {
     Standard_OutOfRange_Raise_if(N < 0 || N > 2, "GeomLProp_SLProps::GeomLProp_SLProps()");
     SetParameters(U, V);

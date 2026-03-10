@@ -55,7 +55,6 @@
 
 #include <GeomLProp.hxx>
 #include <GeomLProp_CLProps.hxx>
-#include <GeomLProp_CLProps.hxx>
 #include <GeomLProp_CurAndInf2d.hxx>
 
 #include <gp_Pnt.hxx>
