@@ -14,10 +14,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <ElCLib.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <GeomLProp_CurAndInf2d.hxx>
 #include <GeomLProp_NumericCurInf2d.pxx>
-#include <LProp_AnalyticCurInf.hxx>
 #include <NCollection_Array1.hxx>
 
 //=================================================================================================
@@ -51,7 +51,6 @@ void GeomLProp_CurAndInf2d::PerformCurExt(const occ::handle<Geom2d_Curve>& C)
 void GeomLProp_CurAndInf2d::performCurExt(const occ::handle<Geom2d_Curve>& theCurve)
 {
   Geom2dAdaptor_Curve       anAdaptor(theCurve);
-  LProp_AnalyticCurInf      anAnalyticInf;
   GeomLProp_NumericCurInf2d aNumericInf;
   const GeomAbs_CurveType   aCurveType = anAdaptor.GetType();
 
@@ -61,24 +60,40 @@ void GeomLProp_CurAndInf2d::performCurExt(const occ::handle<Geom2d_Curve>& theCu
       break;
     case GeomAbs_Circle:
       break;
-    case GeomAbs_Ellipse:
-      anAnalyticInf.Perform(aCurveType,
-                            anAdaptor.FirstParameter(),
-                            anAdaptor.LastParameter(),
-                            *this);
+    case GeomAbs_Ellipse: {
+      const double aUFirst       = anAdaptor.FirstParameter();
+      const double aULast        = anAdaptor.LastParameter();
+      const double aUFPlus2PI    = aUFirst + 2.0 * M_PI;
+      const double aQuarterPts[] = {0.0, M_PI / 2.0, M_PI, 3.0 * M_PI / 2.0};
+      const bool   aIsMin[]      = {true, false, true, false};
+      for (int i = 0; i < 4; ++i)
+      {
+        const double aU = ElCLib::InPeriod(aQuarterPts[i], aUFirst, aUFPlus2PI);
+        if (aUFirst <= aU && aU <= aULast)
+        {
+          AddExtCur(aU, aIsMin[i]);
+        }
+      }
       break;
-    case GeomAbs_Hyperbola:
-      anAnalyticInf.Perform(aCurveType,
-                            anAdaptor.FirstParameter(),
-                            anAdaptor.LastParameter(),
-                            *this);
+    }
+    case GeomAbs_Hyperbola: {
+      const double aUFirst = anAdaptor.FirstParameter();
+      const double aULast  = anAdaptor.LastParameter();
+      if (aUFirst <= 0.0 && aULast >= 0.0)
+      {
+        AddExtCur(0.0, true);
+      }
       break;
-    case GeomAbs_Parabola:
-      anAnalyticInf.Perform(aCurveType,
-                            anAdaptor.FirstParameter(),
-                            anAdaptor.LastParameter(),
-                            *this);
+    }
+    case GeomAbs_Parabola: {
+      const double aUFirst = anAdaptor.FirstParameter();
+      const double aULast  = anAdaptor.LastParameter();
+      if (aUFirst <= 0.0 && aULast >= 0.0)
+      {
+        AddExtCur(0.0, true);
+      }
       break;
+    }
     case GeomAbs_BSplineCurve:
       if (anAdaptor.Continuity() >= GeomAbs_C3)
       {
