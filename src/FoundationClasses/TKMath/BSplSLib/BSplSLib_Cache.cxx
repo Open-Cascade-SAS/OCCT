@@ -233,6 +233,15 @@ void EvaluatePolynomials(const double*               thePolesArray,
 
 //=================================================================================================
 
+BSplSLib_Cache::BSplSLib_Cache()
+    : myIsRational(false),
+      myNbRows(0),
+      myNbCols(0)
+{
+}
+
+//=================================================================================================
+
 BSplSLib_Cache::BSplSLib_Cache(const int&                        theDegreeU,
                                const bool&                       thePeriodicU,
                                const NCollection_Array1<double>& theFlatKnotsU,
@@ -246,6 +255,25 @@ BSplSLib_Cache::BSplSLib_Cache(const int&                        theDegreeU,
       myParamsU(theDegreeU, thePeriodicU, theFlatKnotsU),
       myParamsV(theDegreeV, thePeriodicV, theFlatKnotsV)
 {
+  Standard_ASSERT_RAISE(myNbRows * myNbCols <= THE_MAX_CACHE_SIZE,
+                        "BSplSLib_Cache: degree too high for inline buffer");
+}
+
+//=================================================================================================
+
+void BSplSLib_Cache::Init(const int&                        theDegreeU,
+                           const bool&                       thePeriodicU,
+                           const NCollection_Array1<double>& theFlatKnotsU,
+                           const int&                        theDegreeV,
+                           const bool&                       thePeriodicV,
+                           const NCollection_Array1<double>& theFlatKnotsV,
+                           const NCollection_Array2<double>* theWeights)
+{
+  myIsRational = (theWeights != nullptr);
+  myNbRows     = std::max(theDegreeU, theDegreeV) + 1;
+  myNbCols     = (myIsRational ? 4 : 3) * (std::min(theDegreeU, theDegreeV) + 1);
+  myParamsU.Init(theDegreeU, thePeriodicU, theFlatKnotsU);
+  myParamsV.Init(theDegreeV, thePeriodicV, theFlatKnotsV);
   Standard_ASSERT_RAISE(myNbRows * myNbCols <= THE_MAX_CACHE_SIZE,
                         "BSplSLib_Cache: degree too high for inline buffer");
 }

@@ -163,7 +163,7 @@ private:
 
   mutable int  myLastCell;                 //!< last-used cell index (fast-path hint)
   mutable bool myCellValid[THE_GRID_SIZE]; //!< true if cache is built for current span
-  mutable occ::handle<BSplCLib_Cache> myCache[THE_GRID_SIZE]; //!< cache objects
+  mutable BSplCLib_Cache myCache[THE_GRID_SIZE]; //!< cache objects (inline, no heap allocation)
 };
 
 #endif

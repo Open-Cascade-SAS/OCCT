@@ -28,6 +28,14 @@ static_assert(BSplCLib_Cache::THE_MAX_DEGREE == BSplCLib::MaxDegree(),
 
 //=================================================================================================
 
+BSplCLib_Cache::BSplCLib_Cache()
+    : myIsRational(false),
+      myRowLength(0)
+{
+}
+
+//=================================================================================================
+
 BSplCLib_Cache::BSplCLib_Cache(
   const int&                        theDegree,
   const bool&                       thePeriodic,
@@ -52,6 +60,32 @@ BSplCLib_Cache::BSplCLib_Cache(
       myParams(theDegree, thePeriodic, theFlatKnots),
       myRowLength(myIsRational ? 4 : 3)
 {
+}
+
+//=================================================================================================
+
+void BSplCLib_Cache::Init(const int&                          theDegree,
+                           const bool&                         thePeriodic,
+                           const NCollection_Array1<double>&   theFlatKnots,
+                           const NCollection_Array1<gp_Pnt2d>& /* thePoles2d */,
+                           const NCollection_Array1<double>*   theWeights)
+{
+  myIsRational = (theWeights != nullptr);
+  myParams.Init(theDegree, thePeriodic, theFlatKnots);
+  myRowLength = myIsRational ? 3 : 2;
+}
+
+//=================================================================================================
+
+void BSplCLib_Cache::Init(const int&                        theDegree,
+                           const bool&                       thePeriodic,
+                           const NCollection_Array1<double>& theFlatKnots,
+                           const NCollection_Array1<gp_Pnt>& /* thePoles */,
+                           const NCollection_Array1<double>* theWeights)
+{
+  myIsRational = (theWeights != nullptr);
+  myParams.Init(theDegree, thePeriodic, theFlatKnots);
+  myRowLength = myIsRational ? 4 : 3;
 }
 
 //=================================================================================================

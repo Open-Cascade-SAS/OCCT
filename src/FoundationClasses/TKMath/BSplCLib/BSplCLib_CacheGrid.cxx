@@ -48,7 +48,7 @@ BSplCLib_CacheGrid::BSplCLib_CacheGrid(int                               theDegr
     myCellSpanStart[i]  = 0.0;
     myCellSpanLength[i] = 0.0;
     myCellValid[i]      = false;
-    myCache[i] = new BSplCLib_Cache(myDegree, myIsPeriodic, *myFlatKnots, *myPoles3D, myWeights);
+    myCache[i].Init(myDegree, myIsPeriodic, *myFlatKnots, *myPoles3D, myWeights);
   }
 
   rebuildGrid(myFirstParam);
@@ -80,7 +80,7 @@ BSplCLib_CacheGrid::BSplCLib_CacheGrid(int                                 theDe
     myCellSpanStart[i]  = 0.0;
     myCellSpanLength[i] = 0.0;
     myCellValid[i]      = false;
-    myCache[i] = new BSplCLib_Cache(myDegree, myIsPeriodic, *myFlatKnots, *myPoles2D, myWeights);
+    myCache[i].Init(myDegree, myIsPeriodic, *myFlatKnots, *myPoles2D, myWeights);
   }
 
   rebuildGrid(myFirstParam);
@@ -210,9 +210,9 @@ void BSplCLib_CacheGrid::buildCell(int theCellIndex) const
 {
   const double aParam = myCellSpanStart[theCellIndex];
   if (myIs3D)
-    myCache[theCellIndex]->BuildCache(aParam, *myFlatKnots, *myPoles3D, myWeights);
+    myCache[theCellIndex].BuildCache(aParam, *myFlatKnots, *myPoles3D, myWeights);
   else
-    myCache[theCellIndex]->BuildCache(aParam, *myFlatKnots, *myPoles2D, myWeights);
+    myCache[theCellIndex].BuildCache(aParam, *myFlatKnots, *myPoles2D, myWeights);
   myCellValid[theCellIndex] = true;
 }
 
@@ -247,12 +247,12 @@ void BSplCLib_CacheGrid::D0(const double& theParameter, gp_Pnt& thePoint) const
     const double aDelta = theParameter - myCellSpanStart[myLastCell];
     if (aDelta >= 0.0 && aDelta < myCellSpanLength[myLastCell])
     {
-      myCache[myLastCell]->D0(theParameter, thePoint);
+      myCache[myLastCell].D0(theParameter, thePoint);
       return;
     }
   }
   const int aCell = ensureCell(theParameter);
-  myCache[aCell]->D0(theParameter, thePoint);
+  myCache[aCell].D0(theParameter, thePoint);
 }
 
 //==================================================================================================
@@ -264,12 +264,12 @@ void BSplCLib_CacheGrid::D0(const double& theParameter, gp_Pnt2d& thePoint) cons
     const double aDelta = theParameter - myCellSpanStart[myLastCell];
     if (aDelta >= 0.0 && aDelta < myCellSpanLength[myLastCell])
     {
-      myCache[myLastCell]->D0(theParameter, thePoint);
+      myCache[myLastCell].D0(theParameter, thePoint);
       return;
     }
   }
   const int aCell = ensureCell(theParameter);
-  myCache[aCell]->D0(theParameter, thePoint);
+  myCache[aCell].D0(theParameter, thePoint);
 }
 
 //==================================================================================================
@@ -281,12 +281,12 @@ void BSplCLib_CacheGrid::D1(const double& theParameter, gp_Pnt& thePoint, gp_Vec
     const double aDelta = theParameter - myCellSpanStart[myLastCell];
     if (aDelta >= 0.0 && aDelta < myCellSpanLength[myLastCell])
     {
-      myCache[myLastCell]->D1(theParameter, thePoint, theTangent);
+      myCache[myLastCell].D1(theParameter, thePoint, theTangent);
       return;
     }
   }
   const int aCell = ensureCell(theParameter);
-  myCache[aCell]->D1(theParameter, thePoint, theTangent);
+  myCache[aCell].D1(theParameter, thePoint, theTangent);
 }
 
 //==================================================================================================
@@ -300,12 +300,12 @@ void BSplCLib_CacheGrid::D1(const double& theParameter,
     const double aDelta = theParameter - myCellSpanStart[myLastCell];
     if (aDelta >= 0.0 && aDelta < myCellSpanLength[myLastCell])
     {
-      myCache[myLastCell]->D1(theParameter, thePoint, theTangent);
+      myCache[myLastCell].D1(theParameter, thePoint, theTangent);
       return;
     }
   }
   const int aCell = ensureCell(theParameter);
-  myCache[aCell]->D1(theParameter, thePoint, theTangent);
+  myCache[aCell].D1(theParameter, thePoint, theTangent);
 }
 
 //==================================================================================================
@@ -320,12 +320,12 @@ void BSplCLib_CacheGrid::D2(const double& theParameter,
     const double aDelta = theParameter - myCellSpanStart[myLastCell];
     if (aDelta >= 0.0 && aDelta < myCellSpanLength[myLastCell])
     {
-      myCache[myLastCell]->D2(theParameter, thePoint, theTangent, theCurvature);
+      myCache[myLastCell].D2(theParameter, thePoint, theTangent, theCurvature);
       return;
     }
   }
   const int aCell = ensureCell(theParameter);
-  myCache[aCell]->D2(theParameter, thePoint, theTangent, theCurvature);
+  myCache[aCell].D2(theParameter, thePoint, theTangent, theCurvature);
 }
 
 //==================================================================================================
@@ -340,12 +340,12 @@ void BSplCLib_CacheGrid::D2(const double& theParameter,
     const double aDelta = theParameter - myCellSpanStart[myLastCell];
     if (aDelta >= 0.0 && aDelta < myCellSpanLength[myLastCell])
     {
-      myCache[myLastCell]->D2(theParameter, thePoint, theTangent, theCurvature);
+      myCache[myLastCell].D2(theParameter, thePoint, theTangent, theCurvature);
       return;
     }
   }
   const int aCell = ensureCell(theParameter);
-  myCache[aCell]->D2(theParameter, thePoint, theTangent, theCurvature);
+  myCache[aCell].D2(theParameter, thePoint, theTangent, theCurvature);
 }
 
 //==================================================================================================
@@ -361,12 +361,12 @@ void BSplCLib_CacheGrid::D3(const double& theParameter,
     const double aDelta = theParameter - myCellSpanStart[myLastCell];
     if (aDelta >= 0.0 && aDelta < myCellSpanLength[myLastCell])
     {
-      myCache[myLastCell]->D3(theParameter, thePoint, theTangent, theCurvature, theTorsion);
+      myCache[myLastCell].D3(theParameter, thePoint, theTangent, theCurvature, theTorsion);
       return;
     }
   }
   const int aCell = ensureCell(theParameter);
-  myCache[aCell]->D3(theParameter, thePoint, theTangent, theCurvature, theTorsion);
+  myCache[aCell].D3(theParameter, thePoint, theTangent, theCurvature, theTorsion);
 }
 
 //==================================================================================================
@@ -382,10 +382,10 @@ void BSplCLib_CacheGrid::D3(const double& theParameter,
     const double aDelta = theParameter - myCellSpanStart[myLastCell];
     if (aDelta >= 0.0 && aDelta < myCellSpanLength[myLastCell])
     {
-      myCache[myLastCell]->D3(theParameter, thePoint, theTangent, theCurvature, theTorsion);
+      myCache[myLastCell].D3(theParameter, thePoint, theTangent, theCurvature, theTorsion);
       return;
     }
   }
   const int aCell = ensureCell(theParameter);
-  myCache[aCell]->D3(theParameter, thePoint, theTangent, theCurvature, theTorsion);
+  myCache[aCell].D3(theParameter, thePoint, theTangent, theCurvature, theTorsion);
 }

@@ -33,6 +33,10 @@ public:
   //! Covers the worst case of degree-25 3D rational curve
   static constexpr int THE_MAX_CACHE_SIZE = THE_MAX_ORDER * THE_MAX_POLE_DIMENSION;
 
+  //! Default constructor, creates an uninitialized cache.
+  //! Must call Init() before use.
+  Standard_EXPORT BSplCLib_Cache();
+
   //! Constructor, prepares data structures for caching values on a 2d curve.
   //! \param theDegree     degree of the curve
   //! \param thePeriodic   identify whether the curve is periodic
@@ -56,6 +60,30 @@ public:
                                  const NCollection_Array1<double>& theFlatKnots,
                                  const NCollection_Array1<gp_Pnt>& thePoles,
                                  const NCollection_Array1<double>* theWeights = nullptr);
+
+  //! Initialize for caching values on a 2D curve (re-usable after default construction).
+  //! \param theDegree     degree of the curve
+  //! \param thePeriodic   identify whether the curve is periodic
+  //! \param theFlatKnots  knots of Bezier/B-spline curve (with repetitions)
+  //! \param thePoles2d    array of poles of 2D curve
+  //! \param theWeights    array of weights of corresponding poles
+  Standard_EXPORT void Init(const int&                          theDegree,
+                             const bool&                         thePeriodic,
+                             const NCollection_Array1<double>&   theFlatKnots,
+                             const NCollection_Array1<gp_Pnt2d>& thePoles2d,
+                             const NCollection_Array1<double>*   theWeights = nullptr);
+
+  //! Initialize for caching values on a 3D curve (re-usable after default construction).
+  //! \param theDegree     degree of the curve
+  //! \param thePeriodic   identify whether the curve is periodic
+  //! \param theFlatKnots  knots of Bezier/B-spline curve (with repetitions)
+  //! \param thePoles      array of poles of 3D curve
+  //! \param theWeights    array of weights of corresponding poles
+  Standard_EXPORT void Init(const int&                        theDegree,
+                             const bool&                       thePeriodic,
+                             const NCollection_Array1<double>& theFlatKnots,
+                             const NCollection_Array1<gp_Pnt>& thePoles,
+                             const NCollection_Array1<double>* theWeights = nullptr);
 
   //! Verifies validity of the cache using flat parameter of the point
   //! \param theParameter parameter of the point placed in the span

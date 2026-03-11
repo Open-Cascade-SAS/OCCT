@@ -177,7 +177,8 @@ private:
   // 3x3 cache: myCache[iU * THE_GRID_SIZE + iV]
   mutable bool myCellValid[THE_GRID_SIZE * THE_GRID_SIZE]; //!< true if built for current span
   //! reused across grid shifts
-  mutable occ::handle<BSplSLib_Cache> myCache[THE_GRID_SIZE * THE_GRID_SIZE];
+  //! Cache objects (inline, no heap allocation), built lazily per cell
+  mutable BSplSLib_Cache myCache[THE_GRID_SIZE * THE_GRID_SIZE];
 };
 
 #endif

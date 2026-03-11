@@ -62,13 +62,13 @@ BSplSLib_CacheGrid::BSplSLib_CacheGrid(int                               theDegr
   for (int i = 0; i < THE_GRID_SIZE * THE_GRID_SIZE; ++i)
   {
     myCellValid[i] = false;
-    myCache[i]     = new BSplSLib_Cache(myDegreeU,
-                                    myIsPeriodicU,
-                                    *myFlatKnotsU,
-                                    myDegreeV,
-                                    myIsPeriodicV,
-                                    *myFlatKnotsV,
-                                    myWeights);
+    myCache[i].Init(myDegreeU,
+                    myIsPeriodicU,
+                    *myFlatKnotsU,
+                    myDegreeV,
+                    myIsPeriodicV,
+                    *myFlatKnotsV,
+                    myWeights);
   }
 
   rebuildGrid(myFirstParamU, myFirstParamV);
@@ -279,7 +279,7 @@ void BSplSLib_CacheGrid::rebuildGrid(double theU, double theV) const
 void BSplSLib_CacheGrid::buildCell(int theCellU, int theCellV) const
 {
   const int aIdx = cacheIndex(theCellU, theCellV);
-  myCache[aIdx]->BuildCache(myCellSpanStartU[theCellU],
+  myCache[aIdx].BuildCache(myCellSpanStartU[theCellU],
                             myCellSpanStartV[theCellV],
                             *myFlatKnotsU,
                             *myFlatKnotsV,
@@ -325,13 +325,13 @@ void BSplSLib_CacheGrid::D0(const double& theU, const double& theV, gp_Pnt& theP
     if (aDeltaU >= 0.0 && aDeltaU < myCellSpanLengthU[myLastCellU] && aDeltaV >= 0.0
         && aDeltaV < myCellSpanLengthV[myLastCellV])
     {
-      myCache[myLastCacheIdx]->D0(theU, theV, thePoint);
+      myCache[myLastCacheIdx].D0(theU, theV, thePoint);
       return;
     }
   }
   int aCellU = -1, aCellV = -1;
   ensureCell(theU, theV, aCellU, aCellV);
-  myCache[myLastCacheIdx]->D0(theU, theV, thePoint);
+  myCache[myLastCacheIdx].D0(theU, theV, thePoint);
 }
 
 //==================================================================================================
@@ -349,13 +349,13 @@ void BSplSLib_CacheGrid::D1(const double& theU,
     if (aDeltaU >= 0.0 && aDeltaU < myCellSpanLengthU[myLastCellU] && aDeltaV >= 0.0
         && aDeltaV < myCellSpanLengthV[myLastCellV])
     {
-      myCache[myLastCacheIdx]->D1(theU, theV, thePoint, theTangentU, theTangentV);
+      myCache[myLastCacheIdx].D1(theU, theV, thePoint, theTangentU, theTangentV);
       return;
     }
   }
   int aCellU = -1, aCellV = -1;
   ensureCell(theU, theV, aCellU, aCellV);
-  myCache[myLastCacheIdx]->D1(theU, theV, thePoint, theTangentU, theTangentV);
+  myCache[myLastCacheIdx].D1(theU, theV, thePoint, theTangentU, theTangentV);
 }
 
 //==================================================================================================
@@ -376,7 +376,7 @@ void BSplSLib_CacheGrid::D2(const double& theU,
     if (aDeltaU >= 0.0 && aDeltaU < myCellSpanLengthU[myLastCellU] && aDeltaV >= 0.0
         && aDeltaV < myCellSpanLengthV[myLastCellV])
     {
-      myCache[myLastCacheIdx]->D2(theU,
+      myCache[myLastCacheIdx].D2(theU,
                                   theV,
                                   thePoint,
                                   theTangentU,
@@ -389,7 +389,7 @@ void BSplSLib_CacheGrid::D2(const double& theU,
   }
   int aCellU = -1, aCellV = -1;
   ensureCell(theU, theV, aCellU, aCellV);
-  myCache[myLastCacheIdx]->D2(theU,
+  myCache[myLastCacheIdx].D2(theU,
                               theV,
                               thePoint,
                               theTangentU,

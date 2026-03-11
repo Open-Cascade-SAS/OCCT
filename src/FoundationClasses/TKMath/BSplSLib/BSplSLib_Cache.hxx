@@ -35,6 +35,10 @@ public:
   //! Covers the worst case of degree-25 rational surface with equal degrees in U and V
   static constexpr int THE_MAX_CACHE_SIZE = THE_MAX_ORDER * THE_MAX_POLE_DIMENSION * THE_MAX_ORDER;
 
+  //! Default constructor, creates an uninitialized cache.
+  //! Must call Init() before use.
+  Standard_EXPORT BSplSLib_Cache();
+
   //! Constructor for caching of the span for the surface
   //! \param theDegreeU    degree along the first parameter (U) of the surface
   //! \param thePeriodicU  identify the surface is periodical along U axis
@@ -50,6 +54,22 @@ public:
                                  const bool&                       thePeriodicV,
                                  const NCollection_Array1<double>& theFlatKnotsV,
                                  const NCollection_Array2<double>* theWeights = nullptr);
+
+  //! Initialize for caching of the span for the surface (re-usable after default construction).
+  //! \param theDegreeU    degree along the first parameter (U) of the surface
+  //! \param thePeriodicU  identify the surface is periodical along U axis
+  //! \param theFlatKnotsU knots of the surface (with repetition) along U axis
+  //! \param theDegreeV    degree along the second parameter (V) of the surface
+  //! \param thePeriodicV  identify the surface is periodical along V axis
+  //! \param theFlatKnotsV knots of the surface (with repetition) along V axis
+  //! \param theWeights    array of weights of corresponding poles
+  Standard_EXPORT void Init(const int&                        theDegreeU,
+                             const bool&                       thePeriodicU,
+                             const NCollection_Array1<double>& theFlatKnotsU,
+                             const int&                        theDegreeV,
+                             const bool&                       thePeriodicV,
+                             const NCollection_Array1<double>& theFlatKnotsV,
+                             const NCollection_Array2<double>* theWeights = nullptr);
 
   //! Verifies validity of the cache using parameters of the point
   //! \param theParameterU  first parameter of the point placed in the span
