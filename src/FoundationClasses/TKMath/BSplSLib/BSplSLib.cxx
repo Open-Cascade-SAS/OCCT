@@ -71,6 +71,18 @@ struct BSplSLib_DataContainer
   double knots2[2 * THE_MAX_DEGREE];
   double ders[48];
 };
+
+//! Maximum local knots size: 2 * MaxDegree = 50.
+static constexpr int THE_MAX_LOCKNOTS = 2 * THE_MAX_DEGREE;
+
+//! Maximum cache dimension for legacy CacheD0/D1/D2: 3 * (MaxDegree + 1) = 78.
+static constexpr int THE_MAX_CACHE_DIM = 3 * (THE_MAX_DEGREE + 1);
+
+//! Maximum RationalDerivative StoreW size: (MaxDegree+1)^2 = 676.
+static constexpr int THE_MAX_RATIONAL_STORE_W = (THE_MAX_DEGREE + 1) * (THE_MAX_DEGREE + 1);
+
+//! Maximum RationalDerivative StoreDerivatives size: StoreW * 3 = 2028.
+static constexpr int THE_MAX_RATIONAL_STORE_D = THE_MAX_RATIONAL_STORE_W * 3;
 } // namespace
 
 //**************************************************************************
@@ -148,9 +160,9 @@ void BSplSLib::RationalDerivative(const int  UDeg,
   M3 = (M1 << 1) + M1;
   M4 = (VDeg + 1) << 2;
 
-  NCollection_LocalArray<double> StoreDerivatives(All ? 0 : ii * 3);
+  NCollection_LocalArray<double, THE_MAX_RATIONAL_STORE_D> StoreDerivatives(All ? 0 : ii * 3);
   double*                        RArray = (All ? &RDerivatives : (double*)StoreDerivatives);
-  NCollection_LocalArray<double> StoreW(ii);
+  NCollection_LocalArray<double, THE_MAX_RATIONAL_STORE_W> StoreW(ii);
   double*                        HomogeneousArray = &HDerivatives;
   double                         denominator, Pii, Pip, Pjq;
 
@@ -1480,7 +1492,7 @@ void BSplSLib::Iso(const double                      Param,
 
   // compute local knots
 
-  NCollection_LocalArray<double> locknots1(2 * Degree);
+  NCollection_LocalArray<double, THE_MAX_LOCKNOTS> locknots1(2 * Degree);
   BSplCLib::LocateParameter(Degree, Knots, Mults, u, Periodic, index, u);
   BSplCLib::BuildKnots(Degree, index, Periodic, Knots, Mults, *locknots1);
   if (Mults == nullptr)
@@ -2493,7 +2505,7 @@ void BSplSLib::CacheD0(const double                      UParameter,
     new_parameter[1] = (VParameter - VCacheParameter) / VSpanLenght;
     dimension        = 3 * (VDegree + 1);
   }
-  NCollection_LocalArray<double> locpoles(dimension);
+  NCollection_LocalArray<double, THE_MAX_CACHE_DIM> locpoles(dimension);
 
   PLib::NoDerivativeEvalPolynomial(new_parameter[0],
                                    max_degree,
@@ -2645,7 +2657,7 @@ void BSplSLib::CacheD1(const double                      UParameter,
     my_vec_max       = (double*)&aVecU;
   }
 
-  NCollection_LocalArray<double> locpoles(2 * dimension);
+  NCollection_LocalArray<double, 2 * THE_MAX_CACHE_DIM> locpoles(2 * dimension);
 
   PLib::EvalPolynomial(new_parameter[0], 1, max_degree, dimension, PArray[0], locpoles[0]);
 
@@ -2872,7 +2884,7 @@ void BSplSLib::CacheD2(const double                      UParameter,
     my_vec_max_max   = (double*)&aVecUU;
   }
 
-  NCollection_LocalArray<double> locpoles(3 * dimension);
+  NCollection_LocalArray<double, 3 * THE_MAX_CACHE_DIM> locpoles(3 * dimension);
 
   //
   // initialize in case min or max degree are less than 2
