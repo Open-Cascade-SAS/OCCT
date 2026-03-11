@@ -80,8 +80,8 @@ runs:
     - name: Download and extract Mesa3D (Windows arm64)
       if: ${{ inputs.platform == 'windows' && inputs.target-arch == 'arm64' }}
       run: |
-        curl -L -o mesa3d-arm64.7z https://github.com/mmozeiko/build-mesa/releases/download/24.3.2/mesa-llvmpipe-arm64-24.3.2.zip
-        7z x mesa3d-arm64.7z -oinstall\win64\vc14\bin -y
+        curl -L -o mesa3d-arm64.zip https://github.com/mmozeiko/build-mesa/releases/download/24.3.2/mesa-llvmpipe-arm64-24.3.2.zip
+        7z x mesa3d-arm64.zip -oinstall\win64\vc14\bin -y
       shell: pwsh
 
     - name: Install CJK Fonts (Windows)
