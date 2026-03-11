@@ -23,6 +23,16 @@
 class BSplCLib_Cache : public Standard_Transient
 {
 public:
+  //! Maximum supported B-spline degree (must match BSplCLib::THE_MAX_DEGREE)
+  static constexpr int THE_MAX_DEGREE = 25;
+  //! Maximum order (degree + 1)
+  static constexpr int THE_MAX_ORDER = THE_MAX_DEGREE + 1;
+  //! Maximum number of components per pole: 4 for 3D rational (x, y, z, w)
+  static constexpr int THE_MAX_POLE_DIMENSION = 4;
+  //! Maximum inline buffer size: MaxOrder * MaxPoleDim
+  //! Covers the worst case of degree-25 3D rational curve
+  static constexpr int THE_MAX_CACHE_SIZE = THE_MAX_ORDER * THE_MAX_POLE_DIMENSION;
+
   //! Constructor, prepares data structures for caching values on a 2d curve.
   //! \param theDegree     degree of the curve
   //! \param thePeriodic   identify whether the curve is periodic
@@ -220,13 +230,13 @@ private:
   bool myIsRational;           //!< identifies the rationality of Bezier/B-spline curve
   BSplCLib_CacheParams myParams;           //!< cache parameters
   int myRowLength;            //!< number of columns in the cache array
-  double myPolesWeightsBuffer[128]; //!< stack buffer for poles/weights cache
-                                           //!< 128 elements covers degree 31 for 3D rational (32*4)
-                                           //!< Array structure:
-                                           //!<   x1 y1 [z1] [w1]
-                                           //!<   x2 y2 [z2] [w2] etc
-                                           //!< For 2D-curves: no z component
-                                           //!< For non-rational curves: no weight
+  //! Inline buffer for poles/weights cache.
+  //! Array structure:
+  //!   x1 y1 [z1] [w1]
+  //!   x2 y2 [z2] [w2] etc
+  //! For 2D-curves: no z component.
+  //! For non-rational curves: no weight.
+  double myPolesWeightsBuffer[THE_MAX_CACHE_SIZE];
   // clang-format on
 };
 

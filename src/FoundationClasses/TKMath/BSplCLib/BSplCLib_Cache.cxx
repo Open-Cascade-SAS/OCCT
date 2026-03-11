@@ -23,6 +23,9 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(BSplCLib_Cache, Standard_Transient)
 
+static_assert(BSplCLib_Cache::THE_MAX_DEGREE == BSplCLib::MaxDegree(),
+              "BSplCLib_Cache::THE_MAX_DEGREE must match BSplCLib::MaxDegree()");
+
 //=================================================================================================
 
 BSplCLib_Cache::BSplCLib_Cache(
