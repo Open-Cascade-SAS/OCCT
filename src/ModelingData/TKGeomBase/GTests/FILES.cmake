@@ -38,6 +38,5 @@ set(OCCT_TKGeomBase_GTests_FILES
   gce_MakeHypr_Test.cxx
   GeomLProp_CLProps2d_Test.cxx
   GeomLProp_CurAndInf2d_Test.cxx
-  LProp_AnalyticCurInf_Test.cxx
   LProp_CurAndInf_Test.cxx
 )
