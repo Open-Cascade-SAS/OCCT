@@ -585,17 +585,22 @@ static void addNodeBox(const BRepGraph& theGraph,
     }
     case BRepGraph_NodeId::Kind::Compound: {
       const BRepGraph_TopoNode::CompoundDef& aCompDef = theGraph.Defs().Compound(theNode.Index);
-      for (int anIdx = 0; anIdx < aCompDef.ChildDefIds.Length(); ++anIdx)
+      for (int anIdx = 0; anIdx < aCompDef.ChildRefs.Length(); ++anIdx)
       {
-        addNodeBox(theGraph, aCompDef.ChildDefIds.Value(anIdx), theBox, theUseTri);
+        const BRepGraphInc::ChildRef& aCR = aCompDef.ChildRefs.Value(anIdx);
+        addNodeBox(theGraph,
+                   BRepGraph_NodeId(static_cast<BRepGraph_NodeId::Kind>(aCR.Kind), aCR.ChildIdx),
+                   theBox, theUseTri);
       }
       break;
     }
     case BRepGraph_NodeId::Kind::CompSolid: {
       const BRepGraph_TopoNode::CompSolidDef& aCSolDef = theGraph.Defs().CompSolid(theNode.Index);
-      for (int anIdx = 0; anIdx < aCSolDef.SolidDefIds.Length(); ++anIdx)
+      for (int anIdx = 0; anIdx < aCSolDef.SolidRefs.Length(); ++anIdx)
       {
-        addNodeBox(theGraph, aCSolDef.SolidDefIds.Value(anIdx), theBox, theUseTri);
+        addNodeBox(theGraph,
+                   BRepGraph_NodeId::Solid(aCSolDef.SolidRefs.Value(anIdx).SolidIdx),
+                   theBox, theUseTri);
       }
       break;
     }
@@ -677,10 +682,11 @@ static void addNodeBoxOptimal(const BRepGraph& theGraph,
     }
     case BRepGraph_NodeId::Kind::Compound: {
       const BRepGraph_TopoNode::CompoundDef& aCompDef = theGraph.Defs().Compound(theNode.Index);
-      for (int anIdx = 0; anIdx < aCompDef.ChildDefIds.Length(); ++anIdx)
+      for (int anIdx = 0; anIdx < aCompDef.ChildRefs.Length(); ++anIdx)
       {
+        const BRepGraphInc::ChildRef& aCR = aCompDef.ChildRefs.Value(anIdx);
         addNodeBoxOptimal(theGraph,
-                          aCompDef.ChildDefIds.Value(anIdx),
+                          BRepGraph_NodeId(static_cast<BRepGraph_NodeId::Kind>(aCR.Kind), aCR.ChildIdx),
                           theBox,
                           theUseTri,
                           theUseShapeTol);
@@ -689,10 +695,10 @@ static void addNodeBoxOptimal(const BRepGraph& theGraph,
     }
     case BRepGraph_NodeId::Kind::CompSolid: {
       const BRepGraph_TopoNode::CompSolidDef& aCSolDef = theGraph.Defs().CompSolid(theNode.Index);
-      for (int anIdx = 0; anIdx < aCSolDef.SolidDefIds.Length(); ++anIdx)
+      for (int anIdx = 0; anIdx < aCSolDef.SolidRefs.Length(); ++anIdx)
       {
         addNodeBoxOptimal(theGraph,
-                          aCSolDef.SolidDefIds.Value(anIdx),
+                          BRepGraph_NodeId::Solid(aCSolDef.SolidRefs.Value(anIdx).SolidIdx),
                           theBox,
                           theUseTri,
                           theUseShapeTol);

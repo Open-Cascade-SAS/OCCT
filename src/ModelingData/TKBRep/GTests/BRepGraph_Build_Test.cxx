@@ -714,12 +714,12 @@ TEST(BRepGraphBuildTest, Box_EdgeVertexDefsAreValid)
   for (int anIdx = 0; anIdx < aGraph.Defs().NbEdges(); ++anIdx)
   {
     const auto& anEdge = aGraph.Defs().Edge(anIdx);
-    EXPECT_TRUE(anEdge.StartVertexDefId.IsValid())
+    EXPECT_TRUE(anEdge.StartVertexDefId().IsValid())
       << "Edge " << anIdx << " has invalid start vertex";
-    EXPECT_TRUE(anEdge.EndVertexDefId.IsValid())
+    EXPECT_TRUE(anEdge.EndVertexDefId().IsValid())
       << "Edge " << anIdx << " has invalid end vertex";
-    EXPECT_EQ(anEdge.StartVertexDefId.NodeKind, BRepGraph_NodeId::Kind::Vertex);
-    EXPECT_EQ(anEdge.EndVertexDefId.NodeKind, BRepGraph_NodeId::Kind::Vertex);
+    EXPECT_EQ(anEdge.StartVertexDefId().NodeKind, BRepGraph_NodeId::Kind::Vertex);
+    EXPECT_EQ(anEdge.EndVertexDefId().NodeKind, BRepGraph_NodeId::Kind::Vertex);
   }
 }
 

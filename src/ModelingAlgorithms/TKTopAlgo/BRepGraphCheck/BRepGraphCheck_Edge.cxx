@@ -104,9 +104,9 @@ void BRepGraphCheck::CheckEdgeMinimum(
   }
 
   // Vertex tolerances should not exceed edge tolerance unreasonably.
-  if (anEdgeDef.StartVertexDefId.IsValid())
+  if (anEdgeDef.StartVertexDefId().IsValid())
   {
-    const BRepGraph_TopoNode::VertexDef& aStartVtx = aDefs.Vertex(anEdgeDef.StartVertexDefId.Index);
+    const BRepGraph_TopoNode::VertexDef& aStartVtx = aDefs.Vertex(anEdgeDef.StartVertexIdx);
     if (aStartVtx.Tolerance < Precision::Confusion())
     {
       BRepGraphCheck_Issue anIssue;
@@ -116,9 +116,9 @@ void BRepGraphCheck::CheckEdgeMinimum(
       theIssues.Append(anIssue);
     }
   }
-  if (anEdgeDef.EndVertexDefId.IsValid())
+  if (anEdgeDef.EndVertexDefId().IsValid())
   {
-    const BRepGraph_TopoNode::VertexDef& anEndVtx = aDefs.Vertex(anEdgeDef.EndVertexDefId.Index);
+    const BRepGraph_TopoNode::VertexDef& anEndVtx = aDefs.Vertex(anEdgeDef.EndVertexIdx);
     if (anEndVtx.Tolerance < Precision::Confusion())
     {
       BRepGraphCheck_Issue anIssue;

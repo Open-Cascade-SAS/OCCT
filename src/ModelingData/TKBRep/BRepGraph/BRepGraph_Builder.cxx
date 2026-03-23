@@ -52,54 +52,6 @@ void BRepGraph_Builder::populateUsagesAndBridgeFields(BRepGraph& theGraph)
   for (int i = 0; i < aStorage.CompSolids.Length(); ++i)
     theGraph.allocateUID(aStorage.CompSolids.Value(i).Id);
 
-  // --- PCurves: derive from EdgeFaceGeom table and populate on EdgeEntity ---
-  for (int i = 0; i < aStorage.EdgeFaceGeoms.Length(); ++i)
-  {
-    const BRepGraphInc::EdgeFaceGeom& aGeom = aStorage.EdgeFaceGeoms.Value(i);
-    if (aGeom.EdgeIdx < 0 || aGeom.EdgeIdx >= aStorage.Edges.Length())
-      continue;
-
-    BRepGraphInc::EdgeEntity& anEdge = aStorage.Edges.ChangeValue(aGeom.EdgeIdx);
-
-    BRepGraphInc::EdgeEntity::PCurveEntry aPCEntry;
-    aPCEntry.Curve2d         = aGeom.PCurve;
-    aPCEntry.FaceDefId       = BRepGraph_NodeId::Face(aGeom.FaceIdx);
-    aPCEntry.ParamFirst      = aGeom.ParamFirst;
-    aPCEntry.ParamLast       = aGeom.ParamLast;
-    aPCEntry.Continuity      = aGeom.Continuity;
-    aPCEntry.UV1             = aGeom.UV1;
-    aPCEntry.UV2             = aGeom.UV2;
-    aPCEntry.EdgeOrientation = aGeom.EdgeOrientation;
-    anEdge.PCurves.Append(aPCEntry);
-
-    // PolygonOnSurface from the same EdgeFaceGeom row.
-    if (!aGeom.PolyOnSurf.IsNull())
-    {
-      BRepGraphInc::EdgeEntity::PolyOnSurfEntry aPolyEntry;
-      aPolyEntry.Polygon2D       = aGeom.PolyOnSurf;
-      aPolyEntry.FaceDefId       = BRepGraph_NodeId::Face(aGeom.FaceIdx);
-      aPolyEntry.EdgeOrientation = aGeom.EdgeOrientation;
-      anEdge.PolygonsOnSurf.Append(aPolyEntry);
-    }
-  }
-
-  // PolygonOnTriangulation: derive from EdgeFaceTriGeom table.
-  for (int i = 0; i < aStorage.EdgeFaceTriGeoms.Length(); ++i)
-  {
-    const BRepGraphInc::EdgeFaceTriGeom& aTriGeom = aStorage.EdgeFaceTriGeoms.Value(i);
-    if (aTriGeom.EdgeIdx < 0 || aTriGeom.EdgeIdx >= aStorage.Edges.Length())
-      continue;
-
-    BRepGraphInc::EdgeEntity& anEdge = aStorage.Edges.ChangeValue(aTriGeom.EdgeIdx);
-
-    BRepGraphInc::EdgeEntity::PolyOnTriEntry aPolyTriEntry;
-    aPolyTriEntry.Polygon            = aTriGeom.PolyOnTri;
-    aPolyTriEntry.FaceDefId          = BRepGraph_NodeId::Face(aTriGeom.FaceIdx);
-    aPolyTriEntry.TriangulationIndex = aTriGeom.TriangulationIndex;
-    aPolyTriEntry.EdgeOrientation    = aTriGeom.EdgeOrientation;
-    anEdge.PolygonsOnTri.Append(aPolyTriEntry);
-  }
-
   // --- Wires: build edge-to-wire reverse index ---
   for (int i = 0; i < aStorage.Wires.Length(); ++i)
   {
@@ -108,29 +60,6 @@ void BRepGraph_Builder::populateUsagesAndBridgeFields(BRepGraph& theGraph)
     {
       const BRepGraphInc::EdgeRef& aER = aWireDef.EdgeRefs.Value(e);
       BRepGraph_BackRefManager::BindEdgeToWire(theGraph, aER.EdgeIdx, i);
-    }
-  }
-
-  // --- Compounds: populate ChildDefIds bridge field ---
-  for (int i = 0; i < aStorage.Compounds.Length(); ++i)
-  {
-    BRepGraphInc::CompoundEntity& aCompDef = aStorage.Compounds.ChangeValue(i);
-    for (int c = 0; c < aCompDef.ChildRefs.Length(); ++c)
-    {
-      const BRepGraphInc::ChildRef& aCR = aCompDef.ChildRefs.Value(c);
-      aCompDef.ChildDefIds.Append(
-        BRepGraph_NodeId(static_cast<BRepGraph_NodeId::Kind>(aCR.Kind), aCR.ChildIdx));
-    }
-  }
-
-  // --- CompSolids: populate SolidDefIds bridge field ---
-  for (int i = 0; i < aStorage.CompSolids.Length(); ++i)
-  {
-    BRepGraphInc::CompSolidEntity& aCSolDef = aStorage.CompSolids.ChangeValue(i);
-    for (int s = 0; s < aCSolDef.SolidRefs.Length(); ++s)
-    {
-      const BRepGraphInc::SolidRef& aSR = aCSolDef.SolidRefs.Value(s);
-      aCSolDef.SolidDefIds.Append(BRepGraph_NodeId::Solid(aSR.SolidIdx));
     }
   }
 
@@ -281,15 +210,8 @@ void BRepGraph_Builder::Append(BRepGraph& theGraph, const TopoDS_Shape& theShape
   theGraph.myData->myCompSolidUIDs.Clear();
   theGraph.myData->myEdgeToWires.Clear();
 
-  // Clear bridge fields on incidence entities before re-populating.
+  // Clear vertex point representation bridge fields before re-populating.
   BRepGraphInc_Storage& aStorage = theGraph.myData->myIncStorage;
-  for (int i = 0; i < aStorage.Edges.Length(); ++i)
-  {
-    BRepGraphInc::EdgeEntity& anEdge = aStorage.Edges.ChangeValue(i);
-    anEdge.PCurves.Clear();
-    anEdge.PolygonsOnSurf.Clear();
-    anEdge.PolygonsOnTri.Clear();
-  }
   for (int i = 0; i < aStorage.Vertices.Length(); ++i)
   {
     BRepGraphInc::VertexEntity& aVtx = aStorage.Vertices.ChangeValue(i);
@@ -297,17 +219,6 @@ void BRepGraph_Builder::Append(BRepGraph& theGraph, const TopoDS_Shape& theShape
     aVtx.PointsOnSurface.Clear();
     aVtx.PointsOnPCurve.Clear();
   }
-  for (int i = 0; i < aStorage.Compounds.Length(); ++i)
-  {
-    BRepGraphInc::CompoundEntity& aComp = aStorage.Compounds.ChangeValue(i);
-    aComp.ChildDefIds.Clear();
-  }
-  for (int i = 0; i < aStorage.CompSolids.Length(); ++i)
-  {
-    BRepGraphInc::CompSolidEntity& aCSol = aStorage.CompSolids.ChangeValue(i);
-    aCSol.SolidDefIds.Clear();
-  }
-
   // Re-copy TShape->NodeId and OriginalShapes.
   theGraph.myData->myTShapeToDefId.Clear();
   theGraph.myData->myTShapeToDefId.ReSize(aStorage.TShapeToNodeId.Extent());

@@ -41,13 +41,13 @@ void BRepGraphCheck::CheckVertexOnEdge(
 
   // Determine parameter for this vertex on the curve.
   double aParam = 0.0;
-  if (anEdgeDef.StartVertexDefId.IsValid()
-      && anEdgeDef.StartVertexDefId.Index == theVertexDefIdx)
+  if (anEdgeDef.StartVertexDefId().IsValid()
+      && anEdgeDef.StartVertexIdx == theVertexDefIdx)
   {
     aParam = anEdgeDef.ParamFirst;
   }
-  else if (anEdgeDef.EndVertexDefId.IsValid()
-           && anEdgeDef.EndVertexDefId.Index == theVertexDefIdx)
+  else if (anEdgeDef.EndVertexDefId().IsValid()
+           && anEdgeDef.EndVertexIdx == theVertexDefIdx)
   {
     aParam = anEdgeDef.ParamLast;
   }
@@ -96,14 +96,14 @@ void BRepGraphCheck::CheckVertexOnFace(
     bool aIsEndpoint = false;
     double aParam = 0.0;
 
-    if (anEdgeDef.StartVertexDefId.IsValid()
-        && anEdgeDef.StartVertexDefId.Index == theVertexDefIdx)
+    if (anEdgeDef.StartVertexDefId().IsValid()
+        && anEdgeDef.StartVertexIdx == theVertexDefIdx)
     {
       aIsEndpoint = true;
       aParam = anEdgeDef.ParamFirst;
     }
-    else if (anEdgeDef.EndVertexDefId.IsValid()
-             && anEdgeDef.EndVertexDefId.Index == theVertexDefIdx)
+    else if (anEdgeDef.EndVertexDefId().IsValid()
+             && anEdgeDef.EndVertexIdx == theVertexDefIdx)
     {
       aIsEndpoint = true;
       aParam = anEdgeDef.ParamLast;

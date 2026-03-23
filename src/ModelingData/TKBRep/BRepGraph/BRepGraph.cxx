@@ -187,15 +187,15 @@ void BRepGraph::invalidateSubgraphImpl(BRepGraph_NodeId theNode)
     }
     case BRepGraph_NodeId::Kind::Edge: {
       const BRepGraph_TopoNode::EdgeDef& anEdgeDef = myData->myIncStorage.Edges.Value(theNode.Index);
-      if (anEdgeDef.StartVertexDefId.IsValid())
+      if (anEdgeDef.StartVertexDefId().IsValid())
       {
-        BRepGraph_NodeCache* aVtxCache = mutableCache(anEdgeDef.StartVertexDefId);
+        BRepGraph_NodeCache* aVtxCache = mutableCache(anEdgeDef.StartVertexDefId());
         if (aVtxCache != nullptr)
           aVtxCache->InvalidateAll();
       }
-      if (anEdgeDef.EndVertexDefId.IsValid())
+      if (anEdgeDef.EndVertexDefId().IsValid())
       {
-        BRepGraph_NodeCache* aVtxCache = mutableCache(anEdgeDef.EndVertexDefId);
+        BRepGraph_NodeCache* aVtxCache = mutableCache(anEdgeDef.EndVertexDefId());
         if (aVtxCache != nullptr)
           aVtxCache->InvalidateAll();
       }

@@ -288,7 +288,7 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
       if (isClosedOnFace(anEdgeDef, aFaceNodeId))
         anIsDegenerated = true;
 
-      if (!anEdgeDef.StartVertexDefId.IsValid() || !anEdgeDef.EndVertexDefId.IsValid())
+      if (!anEdgeDef.StartVertexDefId().IsValid() || !anEdgeDef.EndVertexDefId().IsValid())
         anIsDegenerated = true;
 
       // Check 3D curve degeneration if not already flagged.

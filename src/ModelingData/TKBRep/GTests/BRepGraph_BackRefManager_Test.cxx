@@ -151,7 +151,7 @@ TEST(BRepGraphBackRefManagerTest, SplitEdge_CurveGetsSubEdgeRefs)
   {
     const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(anEdgeIdx);
     if (!anEdge.Curve3d.IsNull() && !anEdge.IsDegenerate
-        && anEdge.StartVertexDefId.IsValid() && anEdge.EndVertexDefId.IsValid())
+        && anEdge.StartVertexDefId().IsValid() && anEdge.EndVertexDefId().IsValid())
     {
       aTargetEdgeIdx = anEdgeIdx;
       break;
@@ -165,9 +165,9 @@ TEST(BRepGraphBackRefManagerTest, SplitEdge_CurveGetsSubEdgeRefs)
   // Create split vertex.
   const double aMidParam = 0.5 * (anOrigEdge.ParamFirst + anOrigEdge.ParamLast);
   const BRepGraph_TopoNode::VertexDef& aStartVtx =
-    aGraph.Defs().Vertex(anOrigEdge.StartVertexDefId.Index);
+    aGraph.Defs().Vertex(anOrigEdge.StartVertexIdx);
   const BRepGraph_TopoNode::VertexDef& aEndVtx =
-    aGraph.Defs().Vertex(anOrigEdge.EndVertexDefId.Index);
+    aGraph.Defs().Vertex(anOrigEdge.EndVertexIdx);
   gp_Pnt aMidPoint(0.5 * (aStartVtx.Point.X() + aEndVtx.Point.X()),
                     0.5 * (aStartVtx.Point.Y() + aEndVtx.Point.Y()),
                     0.5 * (aStartVtx.Point.Z() + aEndVtx.Point.Z()));
@@ -216,7 +216,7 @@ TEST(BRepGraphBackRefManagerTest, ReplaceEdgeInWireMap_UpdatesCorrectly)
   // Create a new edge to replace the old one.
   const BRepGraph_TopoNode::EdgeDef& anOldEdge = aGraph.Defs().Edge(anOldEdgeIdx);
   BRepGraph_NodeId aNewEdgeId = aGraph.Builder().AddEdgeDef(
-    anOldEdge.StartVertexDefId, anOldEdge.EndVertexDefId,
+    anOldEdge.StartVertexDefId(), anOldEdge.EndVertexDefId(),
     Handle(Geom_Curve)(), anOldEdge.ParamFirst, anOldEdge.ParamLast, anOldEdge.Tolerance);
   ASSERT_TRUE(aNewEdgeId.IsValid());
 

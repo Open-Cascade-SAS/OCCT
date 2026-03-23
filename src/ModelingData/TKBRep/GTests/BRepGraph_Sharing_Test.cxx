@@ -139,9 +139,9 @@ TEST_F(BRepGraphSharingTest, EdgeDef_VertexDefs_BothValid)
   for (int anIdx = 0; anIdx < myGraph.Defs().NbEdges(); ++anIdx)
   {
     const BRepGraph_TopoNode::EdgeDef& anEdgeDef = myGraph.Defs().Edge(anIdx);
-    EXPECT_TRUE(anEdgeDef.StartVertexDefId.IsValid())
+    EXPECT_TRUE(anEdgeDef.StartVertexDefId().IsValid())
       << "Edge def " << anIdx << " has invalid start vertex def";
-    EXPECT_TRUE(anEdgeDef.EndVertexDefId.IsValid())
+    EXPECT_TRUE(anEdgeDef.EndVertexDefId().IsValid())
       << "Edge def " << anIdx << " has invalid end vertex def";
   }
 }
@@ -187,7 +187,7 @@ TEST_F(BRepGraphSharingTest, NonClosedEdge_StartEnd_Different)
     if (aDef.IsDegenerate)
       continue;
     // Box edges are not closed, so start and end vertex defs must differ
-    EXPECT_NE(aDef.StartVertexDefId.Index, aDef.EndVertexDefId.Index)
+    EXPECT_NE(aDef.StartVertexIdx, aDef.EndVertexIdx)
       << "Non-degenerate edge def " << anIdx
       << " has identical start and end vertex def ids";
   }

@@ -211,10 +211,10 @@ NCollection_Vector<BRepGraph_SubGraph> BRepGraph_Analyze::Decompose(const BRepGr
         theSub.myEdgeDefIndices.Append(anEdgeDefIdx);
 
         const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(anEdgeDefIdx);
-        if (anEdgeDef.StartVertexDefId.IsValid())
-          theSub.myVertexDefIndices.Append(anEdgeDef.StartVertexDefId.Index);
-        if (anEdgeDef.EndVertexDefId.IsValid())
-          theSub.myVertexDefIndices.Append(anEdgeDef.EndVertexDefId.Index);
+        if (anEdgeDef.StartVertexIdx >= 0)
+          theSub.myVertexDefIndices.Append(anEdgeDef.StartVertexIdx);
+        if (anEdgeDef.EndVertexIdx >= 0)
+          theSub.myVertexDefIndices.Append(anEdgeDef.EndVertexIdx);
       }
     }
   };
@@ -376,10 +376,10 @@ double BRepGraph_Analyze::EdgeEndpointPairScore(const BRepGraph& theGraph,
   const BRepGraph_TopoNode::EdgeDef& aEdgeA = theGraph.Defs().Edge(theEdgeA.Index);
   const BRepGraph_TopoNode::EdgeDef& aEdgeB = theGraph.Defs().Edge(theEdgeB.Index);
 
-  const gp_Pnt& aStartA = theGraph.Defs().Vertex(aEdgeA.StartVertexDefId.Index).Point;
-  const gp_Pnt& aEndA   = theGraph.Defs().Vertex(aEdgeA.EndVertexDefId.Index).Point;
-  const gp_Pnt& aStartB = theGraph.Defs().Vertex(aEdgeB.StartVertexDefId.Index).Point;
-  const gp_Pnt& aEndB   = theGraph.Defs().Vertex(aEdgeB.EndVertexDefId.Index).Point;
+  const gp_Pnt& aStartA = theGraph.Defs().Vertex(aEdgeA.StartVertexIdx).Point;
+  const gp_Pnt& aEndA   = theGraph.Defs().Vertex(aEdgeA.EndVertexIdx).Point;
+  const gp_Pnt& aStartB = theGraph.Defs().Vertex(aEdgeB.StartVertexIdx).Point;
+  const gp_Pnt& aEndB   = theGraph.Defs().Vertex(aEdgeB.EndVertexIdx).Point;
 
   return std::min(aStartA.Distance(aStartB) + aEndA.Distance(aEndB),
                   aStartA.Distance(aEndB) + aEndA.Distance(aStartB));
@@ -407,10 +407,10 @@ bool BRepGraph_Analyze::AreEdgesCompatibleSampled(const BRepGraph& theGraph,
     return false;
   }
 
-  const gp_Pnt& aStartA = theGraph.Defs().Vertex(aNodeA.StartVertexDefId.Index).Point;
-  const gp_Pnt& aEndA   = theGraph.Defs().Vertex(aNodeA.EndVertexDefId.Index).Point;
-  const gp_Pnt& aStartB = theGraph.Defs().Vertex(aNodeB.StartVertexDefId.Index).Point;
-  const gp_Pnt& aEndB   = theGraph.Defs().Vertex(aNodeB.EndVertexDefId.Index).Point;
+  const gp_Pnt& aStartA = theGraph.Defs().Vertex(aNodeA.StartVertexIdx).Point;
+  const gp_Pnt& aEndA   = theGraph.Defs().Vertex(aNodeA.EndVertexIdx).Point;
+  const gp_Pnt& aStartB = theGraph.Defs().Vertex(aNodeB.StartVertexIdx).Point;
+  const gp_Pnt& aEndB   = theGraph.Defs().Vertex(aNodeB.EndVertexIdx).Point;
 
   const bool isSameDir =
     aStartA.Distance(aStartB) <= theTolerance && aEndA.Distance(aEndB) <= theTolerance;
@@ -482,10 +482,10 @@ bool BRepGraph_Analyze::AreEdgesCompatibleSampled(const BRepGraph&            th
     return false;
   }
 
-  const gp_Pnt& aStartA = theGraph.Defs().Vertex(aNodeA.StartVertexDefId.Index).Point;
-  const gp_Pnt& aEndA   = theGraph.Defs().Vertex(aNodeA.EndVertexDefId.Index).Point;
-  const gp_Pnt& aStartB = theGraph.Defs().Vertex(aNodeB.StartVertexDefId.Index).Point;
-  const gp_Pnt& aEndB   = theGraph.Defs().Vertex(aNodeB.EndVertexDefId.Index).Point;
+  const gp_Pnt& aStartA = theGraph.Defs().Vertex(aNodeA.StartVertexIdx).Point;
+  const gp_Pnt& aEndA   = theGraph.Defs().Vertex(aNodeA.EndVertexIdx).Point;
+  const gp_Pnt& aStartB = theGraph.Defs().Vertex(aNodeB.StartVertexIdx).Point;
+  const gp_Pnt& aEndB   = theGraph.Defs().Vertex(aNodeB.EndVertexIdx).Point;
 
   const bool isSameDir =
     aStartA.Distance(aStartB) <= theTolerance && aEndA.Distance(aEndB) <= theTolerance;

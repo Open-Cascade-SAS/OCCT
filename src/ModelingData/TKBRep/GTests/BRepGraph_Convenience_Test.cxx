@@ -86,28 +86,28 @@ TEST_F(BRepGraphConvenienceTest, EdgeDef_OrientedStartVertex_Forward)
   const BRepGraph::DefsView aDefs = myGraph.Defs();
   ASSERT_GT(aDefs.NbEdges(), 0);
   const BRepGraph_TopoNode::EdgeDef& anEdge = aDefs.Edge(0);
-  EXPECT_EQ(anEdge.OrientedStartVertex(TopAbs_FORWARD), anEdge.StartVertexDefId);
+  EXPECT_EQ(anEdge.OrientedStartVertex(TopAbs_FORWARD), anEdge.StartVertexDefId());
 }
 
 TEST_F(BRepGraphConvenienceTest, EdgeDef_OrientedStartVertex_Reversed)
 {
   const BRepGraph::DefsView aDefs = myGraph.Defs();
   const BRepGraph_TopoNode::EdgeDef& anEdge = aDefs.Edge(0);
-  EXPECT_EQ(anEdge.OrientedStartVertex(TopAbs_REVERSED), anEdge.EndVertexDefId);
+  EXPECT_EQ(anEdge.OrientedStartVertex(TopAbs_REVERSED), anEdge.EndVertexDefId());
 }
 
 TEST_F(BRepGraphConvenienceTest, EdgeDef_OrientedEndVertex_Forward)
 {
   const BRepGraph::DefsView aDefs = myGraph.Defs();
   const BRepGraph_TopoNode::EdgeDef& anEdge = aDefs.Edge(0);
-  EXPECT_EQ(anEdge.OrientedEndVertex(TopAbs_FORWARD), anEdge.EndVertexDefId);
+  EXPECT_EQ(anEdge.OrientedEndVertex(TopAbs_FORWARD), anEdge.EndVertexDefId());
 }
 
 TEST_F(BRepGraphConvenienceTest, EdgeDef_OrientedEndVertex_Reversed)
 {
   const BRepGraph::DefsView aDefs = myGraph.Defs();
   const BRepGraph_TopoNode::EdgeDef& anEdge = aDefs.Edge(0);
-  EXPECT_EQ(anEdge.OrientedEndVertex(TopAbs_REVERSED), anEdge.StartVertexDefId);
+  EXPECT_EQ(anEdge.OrientedEndVertex(TopAbs_REVERSED), anEdge.StartVertexDefId());
 }
 
 TEST_F(BRepGraphConvenienceTest, EdgeDef_OrientedVertex_Internal_Invalid)

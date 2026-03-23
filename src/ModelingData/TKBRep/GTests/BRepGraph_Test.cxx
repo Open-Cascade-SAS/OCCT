@@ -116,9 +116,9 @@ TEST_F(BRepGraphTest, Edge_CurveAndVertices_AreValid)
       EXPECT_FALSE(anEdge.Curve3d.IsNull())
         << "Edge " << anEdgeIdx << " has null Curve3d";
     }
-    EXPECT_TRUE(anEdge.StartVertexDefId.IsValid())
+    EXPECT_TRUE(anEdge.StartVertexDefId().IsValid())
       << "Edge " << anEdgeIdx << " has invalid StartVertexId";
-    EXPECT_TRUE(anEdge.EndVertexDefId.IsValid()) << "Edge " << anEdgeIdx << " has invalid EndVertexId";
+    EXPECT_TRUE(anEdge.EndVertexDefId().IsValid()) << "Edge " << anEdgeIdx << " has invalid EndVertexId";
   }
 }
 

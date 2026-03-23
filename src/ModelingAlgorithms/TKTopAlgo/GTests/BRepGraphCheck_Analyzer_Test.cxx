@@ -599,14 +599,14 @@ TEST(BRepGraphCheck_AnalyzerTest, DisplacedVertex_DetectsInvalidPointOnCurve)
   {
     const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(anEdgeIter);
     NCollection_Vector<BRepGraphCheck_Issue> aIssues;
-    if (anEdgeDef.StartVertexDefId.IsValid())
+    if (anEdgeDef.StartVertexDefId().IsValid())
     {
-      BRepGraphCheck::CheckVertexOnEdge(aGraph, anEdgeDef.StartVertexDefId.Index,
+      BRepGraphCheck::CheckVertexOnEdge(aGraph, anEdgeDef.StartVertexIdx,
                                         anEdgeIter, aIssues);
     }
-    if (anEdgeDef.EndVertexDefId.IsValid())
+    if (anEdgeDef.EndVertexDefId().IsValid())
     {
-      BRepGraphCheck::CheckVertexOnEdge(aGraph, anEdgeDef.EndVertexDefId.Index,
+      BRepGraphCheck::CheckVertexOnEdge(aGraph, anEdgeDef.EndVertexIdx,
                                         anEdgeIter, aIssues);
     }
     for (int anIssueIter = 0; anIssueIter < aIssues.Length(); ++anIssueIter)

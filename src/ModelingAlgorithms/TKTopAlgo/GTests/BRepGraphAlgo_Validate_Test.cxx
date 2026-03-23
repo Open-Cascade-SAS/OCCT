@@ -87,9 +87,9 @@ TEST(BRepGraphAlgo_ValidateTest, DetectsRemovedNodeReference)
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
     const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(anEdgeIdx);
-    if (anEdge.StartVertexDefId.IsValid())
+    if (anEdge.StartVertexDefId().IsValid())
     {
-      aVtxToRemove = anEdge.StartVertexDefId.Index;
+      aVtxToRemove = anEdge.StartVertexIdx;
       break;
     }
   }
@@ -135,18 +135,18 @@ TEST(BRepGraphAlgo_ValidateTest, WireConnectivity_DisconnectedEdges)
   BRepGraph_TopoNode::EdgeDef& aFirstEdge = aGraph.Mut().EdgeDef(aFirstEdgeId.Index);
 
   // Find a vertex different from the current end vertex.
-  BRepGraph_NodeId anOrigEnd = aFirstEdge.EndVertexDefId;
+  BRepGraph_NodeId anOrigEnd = aFirstEdge.EndVertexDefId();
   for (int aVtxIdx = 0; aVtxIdx < aGraph.Defs().NbVertices(); ++aVtxIdx)
   {
     if (BRepGraph_NodeId::Vertex(aVtxIdx) != anOrigEnd
-        && BRepGraph_NodeId::Vertex(aVtxIdx) != aFirstEdge.StartVertexDefId)
+        && BRepGraph_NodeId::Vertex(aVtxIdx) != aFirstEdge.StartVertexDefId())
     {
-      aFirstEdge.EndVertexDefId = BRepGraph_NodeId::Vertex(aVtxIdx);
+      aFirstEdge.EndVertexIdx = aVtxIdx;
       break;
     }
   }
 
-  ASSERT_NE(aFirstEdge.EndVertexDefId, anOrigEnd);
+  ASSERT_NE(aFirstEdge.EndVertexDefId(), anOrigEnd);
 
   const BRepGraphAlgo_Validate::Result aResult = BRepGraphAlgo_Validate::Perform(aGraph);
   EXPECT_FALSE(aResult.IsValid());

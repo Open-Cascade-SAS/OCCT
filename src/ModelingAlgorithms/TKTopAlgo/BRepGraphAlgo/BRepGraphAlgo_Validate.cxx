@@ -65,13 +65,13 @@ void checkCrossReferenceBounds(const BRepGraph&                                 
     if (anEdge.IsRemoved)
       continue;
 
-    if (anEdge.StartVertexDefId.IsValid() && !isValidNodeId(theGraph, anEdge.StartVertexDefId))
+    if (anEdge.StartVertexDefId().IsValid() && !isValidNodeId(theGraph, anEdge.StartVertexDefId()))
     {
       theIssues.Append(Issue{Severity::Error,
                              anEdge.Id,
                              "EdgeDef.StartVertexDefId out of bounds"});
     }
-    if (anEdge.EndVertexDefId.IsValid() && !isValidNodeId(theGraph, anEdge.EndVertexDefId))
+    if (anEdge.EndVertexDefId().IsValid() && !isValidNodeId(theGraph, anEdge.EndVertexDefId()))
     {
       theIssues.Append(Issue{Severity::Error,
                              anEdge.Id,
@@ -126,9 +126,10 @@ void checkCrossReferenceBounds(const BRepGraph&                                 
     if (aComp.IsRemoved)
       continue;
 
-    for (int aChildIdx = 0; aChildIdx < aComp.ChildDefIds.Length(); ++aChildIdx)
+    for (int aChildIdx = 0; aChildIdx < aComp.ChildRefs.Length(); ++aChildIdx)
     {
-      const BRepGraph_NodeId& aChildId = aComp.ChildDefIds.Value(aChildIdx);
+      const BRepGraphInc::ChildRef& aCR = aComp.ChildRefs.Value(aChildIdx);
+      const BRepGraph_NodeId aChildId(static_cast<BRepGraph_NodeId::Kind>(aCR.Kind), aCR.ChildIdx);
       if (aChildId.IsValid() && !isValidNodeId(theGraph, aChildId))
       {
         theIssues.Append(Issue{Severity::Error,
@@ -145,9 +146,9 @@ void checkCrossReferenceBounds(const BRepGraph&                                 
     if (aCS.IsRemoved)
       continue;
 
-    for (int aSolidIdx = 0; aSolidIdx < aCS.SolidDefIds.Length(); ++aSolidIdx)
+    for (int aSolidIdx = 0; aSolidIdx < aCS.SolidRefs.Length(); ++aSolidIdx)
     {
-      const BRepGraph_NodeId& aSolidId = aCS.SolidDefIds.Value(aSolidIdx);
+      const BRepGraph_NodeId aSolidId = BRepGraph_NodeId::Solid(aCS.SolidRefs.Value(aSolidIdx).SolidIdx);
       if (aSolidId.IsValid() && !isValidNodeId(theGraph, aSolidId))
       {
         theIssues.Append(Issue{Severity::Error,
@@ -391,13 +392,13 @@ void checkRemovedNodeIsolation(const BRepGraph&                                 
     if (anEdge.IsRemoved)
       continue;
 
-    if (anEdge.StartVertexDefId.IsValid() && isDefRemoved(theGraph, anEdge.StartVertexDefId))
+    if (anEdge.StartVertexDefId().IsValid() && isDefRemoved(theGraph, anEdge.StartVertexDefId()))
     {
       theIssues.Append(Issue{Severity::Error,
                              anEdge.Id,
                              "Non-removed EdgeDef references removed StartVertexDef"});
     }
-    if (anEdge.EndVertexDefId.IsValid() && isDefRemoved(theGraph, anEdge.EndVertexDefId))
+    if (anEdge.EndVertexDefId().IsValid() && isDefRemoved(theGraph, anEdge.EndVertexDefId()))
     {
       theIssues.Append(Issue{Severity::Error,
                              anEdge.Id,

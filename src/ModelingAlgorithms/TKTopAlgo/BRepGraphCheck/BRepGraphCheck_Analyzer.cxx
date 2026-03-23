@@ -117,18 +117,18 @@ void BRepGraphCheck_Analyzer::Perform()
 
           // Vertex checks at edge endpoints.
           const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aLocalDefs.Edge(anEdgeDefIdx);
-          if (anEdgeDef.StartVertexDefId.IsValid())
+          if (anEdgeDef.StartVertexDefId().IsValid())
           {
-            BRepGraphCheck::CheckVertexOnEdge(*myGraph, anEdgeDef.StartVertexDefId.Index,
+            BRepGraphCheck::CheckVertexOnEdge(*myGraph, anEdgeDef.StartVertexIdx,
                                               anEdgeDefIdx, aLocal);
-            BRepGraphCheck::CheckVertexOnFace(*myGraph, anEdgeDef.StartVertexDefId.Index,
+            BRepGraphCheck::CheckVertexOnFace(*myGraph, anEdgeDef.StartVertexIdx,
                                               theFaceIdx, aLocal);
           }
-          if (anEdgeDef.EndVertexDefId.IsValid())
+          if (anEdgeDef.EndVertexDefId().IsValid())
           {
-            BRepGraphCheck::CheckVertexOnEdge(*myGraph, anEdgeDef.EndVertexDefId.Index,
+            BRepGraphCheck::CheckVertexOnEdge(*myGraph, anEdgeDef.EndVertexIdx,
                                               anEdgeDefIdx, aLocal);
-            BRepGraphCheck::CheckVertexOnFace(*myGraph, anEdgeDef.EndVertexDefId.Index,
+            BRepGraphCheck::CheckVertexOnFace(*myGraph, anEdgeDef.EndVertexIdx,
                                               theFaceIdx, aLocal);
           }
         }
@@ -190,8 +190,8 @@ void BRepGraphCheck_Analyzer::CheckVertex(int theVertexDefIdx)
   for (int anEdgeIter = 0; anEdgeIter < aNbEdges; ++anEdgeIter)
   {
     const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(anEdgeIter);
-    if ((anEdgeDef.StartVertexDefId.IsValid() && anEdgeDef.StartVertexDefId.Index == theVertexDefIdx)
-        || (anEdgeDef.EndVertexDefId.IsValid() && anEdgeDef.EndVertexDefId.Index == theVertexDefIdx))
+    if ((anEdgeDef.StartVertexDefId().IsValid() && anEdgeDef.StartVertexIdx == theVertexDefIdx)
+        || (anEdgeDef.EndVertexDefId().IsValid() && anEdgeDef.EndVertexIdx == theVertexDefIdx))
     {
       BRepGraphCheck::CheckVertexOnEdge(*myGraph, theVertexDefIdx, anEdgeIter, aLocal);
     }

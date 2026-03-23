@@ -254,8 +254,8 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
       continue;
     const BRepGraph_TopoNode::EdgeDef& anOldEdge = theGraph.Defs().Edge(anIdx);
 
-    const BRepGraph_NodeId aNewStart = remapId(anOldEdge.StartVertexDefId);
-    const BRepGraph_NodeId aNewEnd   = remapId(anOldEdge.EndVertexDefId);
+    const BRepGraph_NodeId aNewStart = remapId(anOldEdge.StartVertexDefId());
+    const BRepGraph_NodeId aNewEnd   = remapId(anOldEdge.EndVertexDefId());
 
     // Get the curve handle if available.
     Handle(Geom_Curve) aCurve = anOldEdge.Curve3d;
@@ -404,9 +404,11 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
 
     const BRepGraph_TopoNode::CompoundDef& anOldComp = theGraph.Defs().Compound(anIdx);
     NCollection_Vector<BRepGraph_NodeId>   aNewChildren;
-    for (int aChildIdx = 0; aChildIdx < anOldComp.ChildDefIds.Length(); ++aChildIdx)
+    for (int aChildIdx = 0; aChildIdx < anOldComp.ChildRefs.Length(); ++aChildIdx)
     {
-      const BRepGraph_NodeId aNewChild = remapId(anOldComp.ChildDefIds.Value(aChildIdx));
+      const BRepGraphInc::ChildRef& aCR = anOldComp.ChildRefs.Value(aChildIdx);
+      const BRepGraph_NodeId aNewChild =
+        remapId(BRepGraph_NodeId(static_cast<BRepGraph_NodeId::Kind>(aCR.Kind), aCR.ChildIdx));
       if (aNewChild.IsValid())
         aNewChildren.Append(aNewChild);
     }
@@ -421,9 +423,10 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
 
     const BRepGraph_TopoNode::CompSolidDef& anOldCS = theGraph.Defs().CompSolid(anIdx);
     NCollection_Vector<BRepGraph_NodeId>    aNewSolids;
-    for (int aSolidIdx = 0; aSolidIdx < anOldCS.SolidDefIds.Length(); ++aSolidIdx)
+    for (int aSolidIdx = 0; aSolidIdx < anOldCS.SolidRefs.Length(); ++aSolidIdx)
     {
-      const BRepGraph_NodeId aNewSolid = remapId(anOldCS.SolidDefIds.Value(aSolidIdx));
+      const BRepGraph_NodeId aNewSolid =
+        remapId(BRepGraph_NodeId::Solid(anOldCS.SolidRefs.Value(aSolidIdx).SolidIdx));
       if (aNewSolid.IsValid())
         aNewSolids.Append(aNewSolid);
     }

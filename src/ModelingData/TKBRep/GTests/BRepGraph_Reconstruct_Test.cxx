@@ -451,7 +451,7 @@ TEST(BRepGraphReconstructTest, AfterVertexMutation_ModifiedFlagAndPointChanged)
 
   const BRepGraphInc::EdgeRef& aFirstEdgeRef = aWireDef.EdgeRefs.First();
   const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.Defs().Edge(aFirstEdgeRef.EdgeIdx);
-  const int aVertIdx = anEdgeDef.StartVertexDefId.Index;
+  const int aVertIdx = anEdgeDef.StartVertexIdx;
   ASSERT_GE(aVertIdx, 0);
 
   // Mutate: move vertex by 5 units in Z.

@@ -382,13 +382,6 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
           anEdgeEnt.StartVertexIdx = processVertex(anEdgeData.StartVertex);
           anEdgeEnt.EndVertexIdx   = processVertex(anEdgeData.EndVertex);
 
-          // Derive NodeId-based vertex references from integer indices with bounds validation.
-          const int aNbVtx = theStorage.Vertices.Length();
-          if (anEdgeEnt.StartVertexIdx >= 0 && anEdgeEnt.StartVertexIdx < aNbVtx)
-            anEdgeEnt.StartVertexDefId = BRepGraph_NodeId::Vertex(anEdgeEnt.StartVertexIdx);
-          if (anEdgeEnt.EndVertexIdx >= 0 && anEdgeEnt.EndVertexIdx < aNbVtx)
-            anEdgeEnt.EndVertexDefId = BRepGraph_NodeId::Vertex(anEdgeEnt.EndVertexIdx);
-
           theStorage.TShapeToNodeId.Bind(anEdgeTShapeKey, anEdgeEnt.Id);
           theStorage.OriginalShapes.Bind(anEdgeEnt.Id, anEdge);
         }
@@ -418,6 +411,28 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
           if (!anEdgeData.PolyOnSurf.IsNull())
             aGeom.PolyOnSurf = anEdgeData.PolyOnSurf;
           theStorage.EdgeFaceGeoms.Append(aGeom);
+
+          // Populate inline PCurve entry on EdgeEntity.
+          BRepGraphInc::EdgeEntity& anEdgeMutPC = theStorage.Edges.ChangeValue(anEdgeIdx);
+          BRepGraphInc::EdgeEntity::PCurveEntry aPCEntry;
+          aPCEntry.Curve2d         = aGeom.PCurve;
+          aPCEntry.FaceDefId       = BRepGraph_NodeId::Face(aFaceIdx);
+          aPCEntry.ParamFirst      = aGeom.ParamFirst;
+          aPCEntry.ParamLast       = aGeom.ParamLast;
+          aPCEntry.Continuity      = aGeom.Continuity;
+          aPCEntry.UV1             = aGeom.UV1;
+          aPCEntry.UV2             = aGeom.UV2;
+          aPCEntry.EdgeOrientation = TopAbs_FORWARD;
+          anEdgeMutPC.PCurves.Append(aPCEntry);
+
+          if (!anEdgeData.PolyOnSurf.IsNull())
+          {
+            BRepGraphInc::EdgeEntity::PolyOnSurfEntry aPolyEntry;
+            aPolyEntry.Polygon2D       = anEdgeData.PolyOnSurf;
+            aPolyEntry.FaceDefId       = BRepGraph_NodeId::Face(aFaceIdx);
+            aPolyEntry.EdgeOrientation = TopAbs_FORWARD;
+            anEdgeMutPC.PolygonsOnSurf.Append(aPolyEntry);
+          }
         }
 
         // EdgeFaceGeom: reversed PCurve (seam).
@@ -434,6 +449,26 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
           if (!anEdgeData.PolyOnSurfReversed.IsNull())
             aGeom.PolyOnSurf = anEdgeData.PolyOnSurfReversed;
           theStorage.EdgeFaceGeoms.Append(aGeom);
+
+          // Populate inline PCurve entry on EdgeEntity.
+          BRepGraphInc::EdgeEntity& anEdgeMutPC = theStorage.Edges.ChangeValue(anEdgeIdx);
+          BRepGraphInc::EdgeEntity::PCurveEntry aPCEntry;
+          aPCEntry.Curve2d         = aGeom.PCurve;
+          aPCEntry.FaceDefId       = BRepGraph_NodeId::Face(aFaceIdx);
+          aPCEntry.ParamFirst      = aGeom.ParamFirst;
+          aPCEntry.ParamLast       = aGeom.ParamLast;
+          aPCEntry.Continuity      = aGeom.Continuity;
+          aPCEntry.EdgeOrientation = TopAbs_REVERSED;
+          anEdgeMutPC.PCurves.Append(aPCEntry);
+
+          if (!anEdgeData.PolyOnSurfReversed.IsNull())
+          {
+            BRepGraphInc::EdgeEntity::PolyOnSurfEntry aPolyEntry;
+            aPolyEntry.Polygon2D       = anEdgeData.PolyOnSurfReversed;
+            aPolyEntry.FaceDefId       = BRepGraph_NodeId::Face(aFaceIdx);
+            aPolyEntry.EdgeOrientation = TopAbs_REVERSED;
+            anEdgeMutPC.PolygonsOnSurf.Append(aPolyEntry);
+          }
         }
 
         // Polygon3D (once per edge).
@@ -466,6 +501,17 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
               aTriGeom.PolyOnTri          = aPolyOnTri;
               theStorage.EdgeFaceTriGeoms.Append(aTriGeom);
 
+              // Populate inline PolygonsOnTri on EdgeEntity.
+              {
+                BRepGraphInc::EdgeEntity& anEdgeMutTri = theStorage.Edges.ChangeValue(anEdgeIdx);
+                BRepGraphInc::EdgeEntity::PolyOnTriEntry aPolyTriEntry;
+                aPolyTriEntry.Polygon            = aPolyOnTri;
+                aPolyTriEntry.FaceDefId          = BRepGraph_NodeId::Face(aFaceIdx);
+                aPolyTriEntry.TriangulationIndex = aTriIdx;
+                aPolyTriEntry.EdgeOrientation    = TopAbs_FORWARD;
+                anEdgeMutTri.PolygonsOnTri.Append(aPolyTriEntry);
+              }
+
               // Check for seam polygon-on-triangulation.
               TopoDS_Edge aRevEdge = TopoDS::Edge(anEdgeData.Shape.Reversed());
               Handle(Poly_PolygonOnTriangulation) aPolyOnTriRev =
@@ -479,6 +525,15 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
                 aTriGeomRev.EdgeOrientation    = TopAbs_REVERSED;
                 aTriGeomRev.PolyOnTri          = aPolyOnTriRev;
                 theStorage.EdgeFaceTriGeoms.Append(aTriGeomRev);
+
+                // Populate inline PolygonsOnTri on EdgeEntity.
+                BRepGraphInc::EdgeEntity& anEdgeMutTriRev = theStorage.Edges.ChangeValue(anEdgeIdx);
+                BRepGraphInc::EdgeEntity::PolyOnTriEntry aPolyTriRevEntry;
+                aPolyTriRevEntry.Polygon            = aPolyOnTriRev;
+                aPolyTriRevEntry.FaceDefId          = BRepGraph_NodeId::Face(aFaceIdx);
+                aPolyTriRevEntry.TriangulationIndex = aTriIdx;
+                aPolyTriRevEntry.EdgeOrientation    = TopAbs_REVERSED;
+                anEdgeMutTriRev.PolygonsOnTri.Append(aPolyTriRevEntry);
               }
             }
           }

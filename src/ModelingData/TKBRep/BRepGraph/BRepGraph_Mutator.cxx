@@ -40,8 +40,8 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
   const bool             aOrigSameParameter    = anOrig.SameParameter;
   const double           aOrigParamFirst       = anOrig.ParamFirst;
   const double           aOrigParamLast        = anOrig.ParamLast;
-  const BRepGraph_NodeId aOrigStartVertexDefId = anOrig.StartVertexDefId;
-  const BRepGraph_NodeId aOrigEndVertexDefId   = anOrig.EndVertexDefId;
+  const BRepGraph_NodeId aOrigStartVertexDefId = anOrig.StartVertexDefId();
+  const BRepGraph_NodeId aOrigEndVertexDefId   = anOrig.EndVertexDefId();
   const bool             aOrigSameRange        = anOrig.SameRange;
 
   // Copy PCurve entries before any mutation.
@@ -70,10 +70,8 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
     aSubA.SameParameter    = aOrigSameParameter;
     aSubA.SameRange        = false;
     aSubA.IsDegenerate     = false;
-    aSubA.StartVertexDefId = aOrigStartVertexDefId;
-    aSubA.EndVertexDefId   = theSplitVertex;
-    aSubA.StartVertexIdx   = aOrigStartVertexDefId.IsValid() ? aOrigStartVertexDefId.Index : -1;
-    aSubA.EndVertexIdx     = theSplitVertex.IsValid() ? theSplitVertex.Index : -1;
+    aSubA.StartVertexIdx = aOrigStartVertexDefId.IsValid() ? aOrigStartVertexDefId.Index : -1;
+    aSubA.EndVertexIdx   = theSplitVertex.IsValid() ? theSplitVertex.Index : -1;
     aSubA.ParamFirst       = aOrigParamFirst;
     aSubA.ParamLast        = theSplitParam;
   }
@@ -86,10 +84,8 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
     aSubB.SameParameter    = aOrigSameParameter;
     aSubB.SameRange        = false;
     aSubB.IsDegenerate     = false;
-    aSubB.StartVertexDefId = theSplitVertex;
-    aSubB.EndVertexDefId   = aOrigEndVertexDefId;
-    aSubB.StartVertexIdx   = theSplitVertex.IsValid() ? theSplitVertex.Index : -1;
-    aSubB.EndVertexIdx     = aOrigEndVertexDefId.IsValid() ? aOrigEndVertexDefId.Index : -1;
+    aSubB.StartVertexIdx = theSplitVertex.IsValid() ? theSplitVertex.Index : -1;
+    aSubB.EndVertexIdx   = aOrigEndVertexDefId.IsValid() ? aOrigEndVertexDefId.Index : -1;
     aSubB.ParamFirst       = theSplitParam;
     aSubB.ParamLast        = aOrigParamLast;
   }

@@ -107,10 +107,6 @@ struct EdgeEntity : public BaseEntity
   };
   NCollection_Vector<PCurveEntry> PCurves;
 
-  //! Boundary vertex definitions.  For closed edges, Start == End.
-  BRepGraph_NodeId StartVertexDefId;
-  BRepGraph_NodeId EndVertexDefId;
-
   //! Curve parameter range.
   double ParamFirst = 0.0;
   double ParamLast  = 0.0;
@@ -127,9 +123,22 @@ struct EdgeEntity : public BaseEntity
   //! True if the PCurve parameter range equals the 3D curve parameter range.
   bool SameRange     = false;
 
-  //! Index into VertexEntity vector (internal incidence model use).
+  //! Index into VertexEntity vector (boundary vertices).
+  //! For closed edges, StartVertexIdx == EndVertexIdx.
   int StartVertexIdx = -1;
   int EndVertexIdx   = -1;
+
+  //! Convenience: start vertex NodeId from index.
+  BRepGraph_NodeId StartVertexDefId() const
+  {
+    return StartVertexIdx >= 0 ? BRepGraph_NodeId::Vertex(StartVertexIdx) : BRepGraph_NodeId();
+  }
+
+  //! Convenience: end vertex NodeId from index.
+  BRepGraph_NodeId EndVertexDefId() const
+  {
+    return EndVertexIdx >= 0 ? BRepGraph_NodeId::Vertex(EndVertexIdx) : BRepGraph_NodeId();
+  }
 
   //! Optional 3D polygon discretization (stored inline, not as a graph node).
   Handle(Poly_Polygon3D) Polygon3D;
@@ -163,20 +172,20 @@ struct EdgeEntity : public BaseEntity
   NCollection_Vector<RegularityEntry> Regularities;
 
   //! Return the start vertex adjusted for orientation in wire context.
-  //! FORWARD -> StartVertexDefId, REVERSED -> EndVertexDefId, other -> invalid.
+  //! FORWARD -> StartVertexDefId(), REVERSED -> EndVertexDefId(), other -> invalid.
   BRepGraph_NodeId OrientedStartVertex(TopAbs_Orientation theOri) const
   {
-    if (theOri == TopAbs_FORWARD)  return StartVertexDefId;
-    if (theOri == TopAbs_REVERSED) return EndVertexDefId;
+    if (theOri == TopAbs_FORWARD)  return StartVertexDefId();
+    if (theOri == TopAbs_REVERSED) return EndVertexDefId();
     return BRepGraph_NodeId();
   }
 
   //! Return the end vertex adjusted for orientation in wire context.
-  //! FORWARD -> EndVertexDefId, REVERSED -> StartVertexDefId, other -> invalid.
+  //! FORWARD -> EndVertexDefId(), REVERSED -> StartVertexDefId(), other -> invalid.
   BRepGraph_NodeId OrientedEndVertex(TopAbs_Orientation theOri) const
   {
-    if (theOri == TopAbs_FORWARD)  return EndVertexDefId;
-    if (theOri == TopAbs_REVERSED) return StartVertexDefId;
+    if (theOri == TopAbs_FORWARD)  return EndVertexDefId();
+    if (theOri == TopAbs_REVERSED) return StartVertexDefId();
     return BRepGraph_NodeId();
   }
 };
@@ -236,20 +245,12 @@ struct SolidEntity : public BaseEntity
 struct CompoundEntity : public BaseEntity
 {
   NCollection_Vector<ChildRef> ChildRefs;
-
-  //! Child definition NodeIds (Compound, CompSolid, Solid, Shell, or Face kinds).
-  //! Derived from ChildRefs; populated during legacy derivation.
-  NCollection_Vector<BRepGraph_NodeId> ChildDefIds;
 };
 
 //! Comp-solid entity: ordered solid references.
 struct CompSolidEntity : public BaseEntity
 {
   NCollection_Vector<SolidRef> SolidRefs;
-
-  //! Child solid definition NodeIds.
-  //! Derived from SolidRefs; populated during legacy derivation.
-  NCollection_Vector<BRepGraph_NodeId> SolidDefIds;
 };
 
 } // namespace BRepGraphInc

@@ -257,10 +257,10 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
           BRepGraph_TopoNode::EdgeDef& anEdge = theGraph.Mut().EdgeDef(anEdgeIdx);
           if (anEdge.IsRemoved)
             continue;
-          if (anEdge.StartVertexDefId == anOldId)
-            anEdge.StartVertexDefId = aCanonId;
-          if (anEdge.EndVertexDefId == anOldId)
-            anEdge.EndVertexDefId = aCanonId;
+          if (anEdge.StartVertexDefId() == anOldId)
+            anEdge.StartVertexIdx = aCanonId.Index;
+          if (anEdge.EndVertexDefId() == anOldId)
+            anEdge.EndVertexIdx = aCanonId.Index;
         }
 
         // Mark non-canonical as removed.
@@ -326,8 +326,8 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
       // Use canonical (forward) key: use raw pointer as a stable identity.
       EdgeKey aKey;
       aKey.CurvePtr = anEdge.Curve3d.get();
-      aKey.StartVtx = anEdge.StartVertexDefId.IsValid() ? anEdge.StartVertexDefId.Index : -1;
-      aKey.EndVtx   = anEdge.EndVertexDefId.IsValid() ? anEdge.EndVertexDefId.Index : -1;
+      aKey.StartVtx = anEdge.StartVertexIdx >= 0 ? anEdge.StartVertexIdx : -1;
+      aKey.EndVtx   = anEdge.EndVertexIdx >= 0 ? anEdge.EndVertexIdx : -1;
 
       // Normalize: always use min vertex index first for undirected matching.
       if (aKey.StartVtx > aKey.EndVtx)
@@ -383,8 +383,8 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
         // Determine if the non-canonical edge is reversed relative to canonical.
         const BRepGraph_TopoNode::EdgeDef& aCanonEdge = theGraph.Defs().Edge(aCanonicalIdx);
         const BRepGraph_TopoNode::EdgeDef& anOldEdge  = theGraph.Defs().Edge(anOldIdx);
-        const bool isReversed = (aCanonEdge.StartVertexDefId == anOldEdge.EndVertexDefId
-                                 && aCanonEdge.EndVertexDefId == anOldEdge.StartVertexDefId);
+        const bool isReversed = (aCanonEdge.StartVertexDefId() == anOldEdge.EndVertexDefId()
+                                 && aCanonEdge.EndVertexDefId() == anOldEdge.StartVertexDefId());
 
         // Replace in wires.
         const NCollection_Vector<int>& aWires = theGraph.RelEdges().WiresOfEdge(anOldIdx);

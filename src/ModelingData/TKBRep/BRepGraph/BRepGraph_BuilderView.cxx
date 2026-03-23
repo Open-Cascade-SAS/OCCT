@@ -48,11 +48,9 @@ BRepGraph_NodeId BRepGraph::BuilderView::AddEdgeDef(BRepGraph_NodeId          th
 {
   BRepGraph_TopoNode::EdgeDef& anEdgeDef = myGraph->myData->myIncStorage.Edges.Appended();
   const int                    aIdx      = myGraph->myData->myIncStorage.Edges.Length() - 1;
-  anEdgeDef.Id               = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, aIdx);
-  anEdgeDef.StartVertexDefId = theStartVtx;
-  anEdgeDef.EndVertexDefId   = theEndVtx;
-  anEdgeDef.StartVertexIdx   = theStartVtx.IsValid() ? theStartVtx.Index : -1;
-  anEdgeDef.EndVertexIdx     = theEndVtx.IsValid() ? theEndVtx.Index : -1;
+  anEdgeDef.Id             = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, aIdx);
+  anEdgeDef.StartVertexIdx = theStartVtx.IsValid() ? theStartVtx.Index : -1;
+  anEdgeDef.EndVertexIdx   = theEndVtx.IsValid() ? theEndVtx.Index : -1;
   anEdgeDef.ParamFirst       = theFirst;
   anEdgeDef.ParamLast        = theLast;
   anEdgeDef.Tolerance        = theTolerance;
@@ -104,11 +102,11 @@ BRepGraph_NodeId BRepGraph::BuilderView::AddWireDef(
       myGraph->myData->myIncStorage.Edges.Value(aLastDefId.Index);
 
     BRepGraph_NodeId aFirstVtx = (aFirstOri == TopAbs_FORWARD)
-                                   ? aFirstEdge.StartVertexDefId
-                                   : aFirstEdge.EndVertexDefId;
+                                   ? aFirstEdge.StartVertexDefId()
+                                   : aFirstEdge.EndVertexDefId();
     BRepGraph_NodeId aLastVtx  = (aLastOri == TopAbs_FORWARD)
-                                   ? aLastEdge.EndVertexDefId
-                                   : aLastEdge.StartVertexDefId;
+                                   ? aLastEdge.EndVertexDefId()
+                                   : aLastEdge.StartVertexDefId();
 
     const bool aIsClosed = aFirstVtx.IsValid() && aLastVtx.IsValid() && aFirstVtx == aLastVtx;
     myGraph->myData->myIncStorage.Wires.ChangeValue(aIdx).IsClosed = aIsClosed;
@@ -237,8 +235,6 @@ BRepGraph_NodeId BRepGraph::BuilderView::AddCompoundDef(
 
   for (int aChildIdx = 0; aChildIdx < theChildDefs.Length(); ++aChildIdx)
   {
-    aCompDef.ChildDefIds.Append(theChildDefs.Value(aChildIdx));
-
     const BRepGraph_NodeId& aChild = theChildDefs.Value(aChildIdx);
     BRepGraphInc::ChildRef aCR;
     aCR.Kind     = static_cast<int>(aChild.NodeKind);
@@ -261,8 +257,6 @@ BRepGraph_NodeId BRepGraph::BuilderView::AddCompSolidDef(
 
   for (int aSolIdx = 0; aSolIdx < theSolidDefs.Length(); ++aSolIdx)
   {
-    aCSolDef.SolidDefIds.Append(theSolidDefs.Value(aSolIdx));
-
     BRepGraphInc::SolidRef aSR;
     aSR.SolidIdx = theSolidDefs.Value(aSolIdx).Index;
     aCSolDef.SolidRefs.Append(aSR);

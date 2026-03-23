@@ -175,8 +175,8 @@ TEST(BRepGraphAPI_AddNodeTest, AddEdgeDef_WithCurve)
   EXPECT_EQ(anEdgeId.NodeKind, BRepGraph_NodeId::Kind::Edge);
 
   const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.Defs().Edge(0);
-  EXPECT_EQ(anEdgeDef.StartVertexDefId, aV1);
-  EXPECT_EQ(anEdgeDef.EndVertexDefId, aV2);
+  EXPECT_EQ(anEdgeDef.StartVertexDefId(), aV1);
+  EXPECT_EQ(anEdgeDef.EndVertexDefId(), aV2);
   EXPECT_FALSE(anEdgeDef.Curve3d.IsNull());
   EXPECT_NEAR(anEdgeDef.ParamFirst, 0.0, 1e-10);
   EXPECT_NEAR(anEdgeDef.ParamLast, 10.0, 1e-10);
@@ -417,7 +417,7 @@ TEST(BRepGraphAPI_ConstructionTest, AddCompoundDef_WithChildren)
   EXPECT_EQ(aGraph.Defs().NbCompounds(), 1);
 
   const BRepGraph_TopoNode::CompoundDef& aCompDef = aGraph.Defs().Compound(0);
-  EXPECT_EQ(aCompDef.ChildDefIds.Length(), 2);
+  EXPECT_EQ(aCompDef.ChildRefs.Length(), 2);
 }
 
 TEST(BRepGraphAPI_ConstructionTest, AddCompSolidDef_WithSolids)
@@ -437,7 +437,7 @@ TEST(BRepGraphAPI_ConstructionTest, AddCompSolidDef_WithSolids)
   EXPECT_EQ(aGraph.Defs().NbCompSolids(), 1);
 
   const BRepGraph_TopoNode::CompSolidDef& aCSolDef = aGraph.Defs().CompSolid(0);
-  EXPECT_EQ(aCSolDef.SolidDefIds.Length(), 2);
+  EXPECT_EQ(aCSolDef.SolidRefs.Length(), 2);
 }
 
 TEST(BRepGraphAPI_ConstructionTest, FullSolid_ProgrammaticConstruction)
