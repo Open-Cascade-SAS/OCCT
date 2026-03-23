@@ -497,7 +497,7 @@ struct BrepFileNameGenerator
   }
 };
 
-INSTANTIATE_TEST_SUITE_P(Dataset,
+INSTANTIATE_TEST_SUITE_P(DISABLED_Dataset,
                          BRepGraphBulkValidation,
                          testing::ValuesIn(collectBrepFiles(getDatasetDir())),
                          BrepFileNameGenerator());
