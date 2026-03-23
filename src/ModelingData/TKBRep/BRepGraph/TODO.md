@@ -65,9 +65,11 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 - Re-entrant: nested guards are no-ops, only outermost flushes and commits
 - Applied in: SameParameter::Perform, Sewing::processEdges
 
-### Seam detection strengthening [Stab] ★★★
-- `canSewSameFaceEdges` uses bounding-box heuristics
-- Add explicit opposite-side check using PCurve UV ranges on periodic surfaces
+### ~~Seam detection strengthening~~ — DONE (2026-03-20)
+- `canSewSameFaceEdges` now evaluates PCurves at midpoints for explicit opposite-side verification
+- Midpoint UV separation must exceed 25% of surface period in the closed direction
+- Catches same-side false positives where bounding box inner/outer distance was inconclusive
+- Ported from legacy `BRepBuilderAPI_Sewing::SameParameterEdge` UV-distance check pattern
 
 ### UVBounds/BndLib automatic invalidation [Stab] ★★★
 - Hook invalidation into `CacheView::InvalidateSubgraph` (or layer events once available)

@@ -67,7 +67,8 @@ constexpr int    THE_NB_EDGE_MATCH_SAMPLES = 5;   // sample count for edge geome
 constexpr double THE_MAX_CHORD_RATIO       = 2.0; // maximum chord-length ratio for sewable edges
 constexpr double THE_HIGH_CONFIDENCE_RATIO =
   0.01;                                       // forward-distance threshold to skip reverse pass
-constexpr int THE_INIT_VECTOR_CAPACITY = 256; // initial capacity for scratch vectors
+constexpr int    THE_INIT_VECTOR_CAPACITY      = 256;  // initial capacity for scratch vectors
+constexpr double THE_SEAM_SEPARATION_THRESHOLD = 0.25; // minimum midpoint UV separation as fraction of period
 
 // ---------------------------------------------------------------------------
 // UBTree selector for vertex bounding boxes (used in cutAtIntersections).
@@ -278,8 +279,8 @@ bool canSewSameFaceEdges(const BRepGraph& theGraph,
   const BRepGraph_NodeId anEdgeIdA(BRepGraph_NodeId::Kind::Edge, theEdgeA);
   const BRepGraph_NodeId anEdgeIdB(BRepGraph_NodeId::Kind::Edge, theEdgeB);
   const BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, theSharedFace);
-  const auto* aPCEntryA = theGraph.Defs().FindPCurve(anEdgeIdA, aFaceId);
-  const auto* aPCEntryB = theGraph.Defs().FindPCurve(anEdgeIdB, aFaceId);
+  const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCEntryA = theGraph.Defs().FindPCurve(anEdgeIdA, aFaceId);
+  const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCEntryB = theGraph.Defs().FindPCurve(anEdgeIdB, aFaceId);
   if (aPCEntryA == nullptr || aPCEntryB == nullptr
       || aPCEntryA->Curve2d.IsNull() || aPCEntryB->Curve2d.IsNull())
   {
@@ -312,9 +313,23 @@ bool canSewSameFaceEdges(const BRepGraph& theGraph,
   double aSUmin, aSUmax, aSVmin, aSVmax;
   aBasis->Bounds(aSUmin, aSUmax, aSVmin, aSVmax);
 
+  // Evaluate PCurves at midpoints for explicit opposite-side verification.
+  // Bounding box inner/outer distance can be inconclusive for short edges
+  // or edges near the seam line; midpoint UV separation is definitive.
+  const double aMidParam1 = 0.5 * (aPCEntryA->ParamFirst + aPCEntryA->ParamLast);
+  const double aMidParam2 = 0.5 * (aPCEntryB->ParamFirst + aPCEntryB->ParamLast);
+  const gp_Pnt2d aMid1 = aPCEntryA->Curve2d->EvalD0(aMidParam1);
+  const gp_Pnt2d aMid2 = aPCEntryB->Curve2d->EvalD0(aMidParam2);
+
   // U-closed surface: two V-long edges on opposite U-sides.
   if (isUClosed && isVLong1 && isVLong2)
   {
+    // Midpoint U separation must exceed 25% of surface U extent
+    // to confirm edges are on different sides of the periodic seam.
+    const double aUPeriod = aSUmax - aSUmin;
+    if (std::abs(aMid2.X() - aMid1.X()) < THE_SEAM_SEPARATION_THRESHOLD * aUPeriod)
+      return false;
+
     const double aDistV = std::max(aC2Vmin - aC1Vmax, aC1Vmin - aC2Vmax);
     if (aDistV < 0.0) // overlapping in V
     {
@@ -331,6 +346,12 @@ bool canSewSameFaceEdges(const BRepGraph& theGraph,
   // V-closed surface: two U-long edges on opposite V-sides.
   if (isVClosed && isULong1 && isULong2)
   {
+    // Midpoint V separation must exceed 25% of surface V extent
+    // to confirm edges are on different sides of the periodic seam.
+    const double aVPeriod = aSVmax - aSVmin;
+    if (std::abs(aMid2.Y() - aMid1.Y()) < THE_SEAM_SEPARATION_THRESHOLD * aVPeriod)
+      return false;
+
     const double aDistU = std::max(aC2Umin - aC1Umax, aC1Umin - aC2Umax);
     if (aDistU < 0.0) // overlapping in U
     {
