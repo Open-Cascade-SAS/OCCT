@@ -20,8 +20,12 @@
 #include <functional>
 #include <utility>
 
-//! Lightweight const view over analysis queries of a BRepGraph.
-//! Delegates to BRepGraph_Analyze static methods.
+//! @brief Read-only view for diagnostic and decomposition queries.
+//!
+//! Delegates to BRepGraph_Analyze static methods, providing free edge
+//! detection, missing PCurve analysis, tolerance conflict identification,
+//! degenerate wire detection, connected component decomposition, and
+//! parallel iteration over face/edge indices in a SubGraph.
 //! Obtained via BRepGraph::Analyze().
 class BRepGraph::AnalyzeView
 {

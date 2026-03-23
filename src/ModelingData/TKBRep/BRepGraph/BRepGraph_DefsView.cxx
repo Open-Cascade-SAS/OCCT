@@ -157,65 +157,65 @@ const NCollection_Vector<int>& BRepGraph::DefsView::CoEdgesOfEdge(int theEdgeDef
 
 //=================================================================================================
 
-const BRepGraph_TopoNode::SolidDef& BRepGraph::DefsView::Solid(int theIdx) const
+const BRepGraph_TopoNode::SolidDef& BRepGraph::DefsView::Solid(int theSolidIdx) const
 {
-  return myGraph->myData->myIncStorage.Solid(theIdx);
+  return myGraph->myData->myIncStorage.Solid(theSolidIdx);
 }
 
 //=================================================================================================
 
-const BRepGraph_TopoNode::ShellDef& BRepGraph::DefsView::Shell(int theIdx) const
+const BRepGraph_TopoNode::ShellDef& BRepGraph::DefsView::Shell(int theShellIdx) const
 {
-  return myGraph->myData->myIncStorage.Shell(theIdx);
+  return myGraph->myData->myIncStorage.Shell(theShellIdx);
 }
 
 //=================================================================================================
 
-const BRepGraph_TopoNode::FaceDef& BRepGraph::DefsView::Face(int theIdx) const
+const BRepGraph_TopoNode::FaceDef& BRepGraph::DefsView::Face(int theFaceIdx) const
 {
-  return myGraph->myData->myIncStorage.Face(theIdx);
+  return myGraph->myData->myIncStorage.Face(theFaceIdx);
 }
 
 //=================================================================================================
 
-const BRepGraph_TopoNode::WireDef& BRepGraph::DefsView::Wire(int theIdx) const
+const BRepGraph_TopoNode::WireDef& BRepGraph::DefsView::Wire(int theWireIdx) const
 {
-  return myGraph->myData->myIncStorage.Wire(theIdx);
+  return myGraph->myData->myIncStorage.Wire(theWireIdx);
 }
 
 //=================================================================================================
 
-const BRepGraph_TopoNode::EdgeDef& BRepGraph::DefsView::Edge(int theIdx) const
+const BRepGraph_TopoNode::EdgeDef& BRepGraph::DefsView::Edge(int theEdgeIdx) const
 {
-  return myGraph->myData->myIncStorage.Edge(theIdx);
+  return myGraph->myData->myIncStorage.Edge(theEdgeIdx);
 }
 
 //=================================================================================================
 
-const BRepGraph_TopoNode::VertexDef& BRepGraph::DefsView::Vertex(int theIdx) const
+const BRepGraph_TopoNode::VertexDef& BRepGraph::DefsView::Vertex(int theVertexIdx) const
 {
-  return myGraph->myData->myIncStorage.Vertex(theIdx);
+  return myGraph->myData->myIncStorage.Vertex(theVertexIdx);
 }
 
 //=================================================================================================
 
-const BRepGraph_TopoNode::CompoundDef& BRepGraph::DefsView::Compound(int theIdx) const
+const BRepGraph_TopoNode::CompoundDef& BRepGraph::DefsView::Compound(int theCompoundIdx) const
 {
-  return myGraph->myData->myIncStorage.Compound(theIdx);
+  return myGraph->myData->myIncStorage.Compound(theCompoundIdx);
 }
 
 //=================================================================================================
 
-const BRepGraph_TopoNode::CompSolidDef& BRepGraph::DefsView::CompSolid(int theIdx) const
+const BRepGraph_TopoNode::CompSolidDef& BRepGraph::DefsView::CompSolid(int theCompSolidIdx) const
 {
-  return myGraph->myData->myIncStorage.CompSolid(theIdx);
+  return myGraph->myData->myIncStorage.CompSolid(theCompSolidIdx);
 }
 
 //=================================================================================================
 
-const BRepGraph_TopoNode::CoEdgeDef& BRepGraph::DefsView::CoEdge(int theIdx) const
+const BRepGraph_TopoNode::CoEdgeDef& BRepGraph::DefsView::CoEdge(int theCoEdgeIdx) const
 {
-  return myGraph->myData->myIncStorage.CoEdge(theIdx);
+  return myGraph->myData->myIncStorage.CoEdge(theCoEdgeIdx);
 }
 
 //=================================================================================================
@@ -278,16 +278,16 @@ int BRepGraph::DefsView::NbActiveOccurrences() const
 
 //=================================================================================================
 
-const BRepGraph_TopoNode::ProductDef& BRepGraph::DefsView::Product(int theIdx) const
+const BRepGraph_TopoNode::ProductDef& BRepGraph::DefsView::Product(int theProductIdx) const
 {
-  return myGraph->myData->myIncStorage.Product(theIdx);
+  return myGraph->myData->myIncStorage.Product(theProductIdx);
 }
 
 //=================================================================================================
 
-const BRepGraph_TopoNode::OccurrenceDef& BRepGraph::DefsView::Occurrence(int theIdx) const
+const BRepGraph_TopoNode::OccurrenceDef& BRepGraph::DefsView::Occurrence(int theOccurrenceIdx) const
 {
-  return myGraph->myData->myIncStorage.Occurrence(theIdx);
+  return myGraph->myData->myIncStorage.Occurrence(theOccurrenceIdx);
 }
 
 //=================================================================================================
@@ -354,15 +354,15 @@ int BRepGraph::DefsView::NbComponents(int theProductIdx) const
 
 //=================================================================================================
 
-BRepGraph_NodeId BRepGraph::DefsView::Component(int theProductIdx, int theIdx) const
+BRepGraph_NodeId BRepGraph::DefsView::Component(int theProductIdx, int theComponentIdx) const
 {
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
   if (theProductIdx < 0 || theProductIdx >= aStorage.NbProducts())
     return BRepGraph_NodeId();
   const BRepGraphInc::ProductEntity& aProduct = aStorage.Product(theProductIdx);
-  if (theIdx < 0 || theIdx >= aProduct.OccurrenceRefs.Length())
+  if (theComponentIdx < 0 || theComponentIdx >= aProduct.OccurrenceRefs.Length())
     return BRepGraph_NodeId();
-  return BRepGraph_NodeId::Occurrence(aProduct.OccurrenceRefs.Value(theIdx).OccurrenceIdx);
+  return BRepGraph_NodeId::Occurrence(aProduct.OccurrenceRefs.Value(theComponentIdx).OccurrenceIdx);
 }
 
 //=================================================================================================
@@ -420,37 +420,37 @@ int BRepGraph::DefsView::NbPolygons3D() const
 
 //=================================================================================================
 
-const BRepGraphInc::SurfaceRep& BRepGraph::DefsView::SurfaceRep(int theIdx) const
+const BRepGraphInc::SurfaceRep& BRepGraph::DefsView::SurfaceRep(int theRepIdx) const
 {
-  return myGraph->myData->myIncStorage.SurfaceRep(theIdx);
+  return myGraph->myData->myIncStorage.SurfaceRep(theRepIdx);
 }
 
 //=================================================================================================
 
-const BRepGraphInc::Curve3DRep& BRepGraph::DefsView::Curve3DRep(int theIdx) const
+const BRepGraphInc::Curve3DRep& BRepGraph::DefsView::Curve3DRep(int theRepIdx) const
 {
-  return myGraph->myData->myIncStorage.Curve3DRep(theIdx);
+  return myGraph->myData->myIncStorage.Curve3DRep(theRepIdx);
 }
 
 //=================================================================================================
 
-const BRepGraphInc::Curve2DRep& BRepGraph::DefsView::Curve2DRep(int theIdx) const
+const BRepGraphInc::Curve2DRep& BRepGraph::DefsView::Curve2DRep(int theRepIdx) const
 {
-  return myGraph->myData->myIncStorage.Curve2DRep(theIdx);
+  return myGraph->myData->myIncStorage.Curve2DRep(theRepIdx);
 }
 
 //=================================================================================================
 
-const BRepGraphInc::TriangulationRep& BRepGraph::DefsView::TriangulationRep(int theIdx) const
+const BRepGraphInc::TriangulationRep& BRepGraph::DefsView::TriangulationRep(int theRepIdx) const
 {
-  return myGraph->myData->myIncStorage.TriangulationRep(theIdx);
+  return myGraph->myData->myIncStorage.TriangulationRep(theRepIdx);
 }
 
 //=================================================================================================
 
-const BRepGraphInc::Polygon3DRep& BRepGraph::DefsView::Polygon3DRep(int theIdx) const
+const BRepGraphInc::Polygon3DRep& BRepGraph::DefsView::Polygon3DRep(int theRepIdx) const
 {
-  return myGraph->myData->myIncStorage.Polygon3DRep(theIdx);
+  return myGraph->myData->myIncStorage.Polygon3DRep(theRepIdx);
 }
 
 //=================================================================================================
@@ -469,16 +469,16 @@ int BRepGraph::DefsView::NbPolygonsOnTri() const
 
 //=================================================================================================
 
-const BRepGraphInc::Polygon2DRep& BRepGraph::DefsView::Polygon2DRep(int theIdx) const
+const BRepGraphInc::Polygon2DRep& BRepGraph::DefsView::Polygon2DRep(int theRepIdx) const
 {
-  return myGraph->myData->myIncStorage.Polygon2DRep(theIdx);
+  return myGraph->myData->myIncStorage.Polygon2DRep(theRepIdx);
 }
 
 //=================================================================================================
 
-const BRepGraphInc::PolygonOnTriRep& BRepGraph::DefsView::PolygonOnTriRep(int theIdx) const
+const BRepGraphInc::PolygonOnTriRep& BRepGraph::DefsView::PolygonOnTriRep(int theRepIdx) const
 {
-  return myGraph->myData->myIncStorage.PolygonOnTriRep(theIdx);
+  return myGraph->myData->myIncStorage.PolygonOnTriRep(theRepIdx);
 }
 
 //=================================================================================================

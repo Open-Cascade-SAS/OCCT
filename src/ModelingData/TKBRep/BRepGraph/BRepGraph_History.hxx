@@ -75,9 +75,9 @@ public:
   Standard_EXPORT int NbRecords() const;
 
   //! Access a record by index (0-based).
-  //! @param[in] theIdx index into the records vector
-  //! @return the history record at theIdx
-  Standard_EXPORT const BRepGraph_HistoryRecord& Record(int theIdx) const;
+  //! @param[in] theRecordIdx zero-based index into the records vector
+  //! @return the history record at the given index
+  Standard_EXPORT const BRepGraph_HistoryRecord& Record(int theRecordIdx) const;
 
   //! Enable or disable history recording.
   //! @param[in] theVal true to enable, false to disable

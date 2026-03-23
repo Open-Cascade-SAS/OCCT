@@ -16,7 +16,12 @@
 
 #include <BRepGraph.hxx>
 
-//! Lightweight const view over relation edges of a BRepGraph.
+//! @brief Read-only view over directed relation edges in the graph.
+//!
+//! Relation edges represent semantic relationships between nodes beyond
+//! the core topology hierarchy (e.g., same-domain, merged-edge links).
+//! Provides outgoing/incoming edge access by node, kind-filtered iteration,
+//! and reverse-index queries (face count per edge, wires of edge).
 //! Obtained via BRepGraph::RelEdges().
 class BRepGraph::RelEdgesView
 {

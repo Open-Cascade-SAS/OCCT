@@ -23,7 +23,12 @@
 class Geom_Surface;
 class Geom_Curve;
 
-//! Lightweight non-const view over programmatic graph construction.
+//! @brief Non-const view for programmatic graph construction.
+//!
+//! Provides methods to create topology definition nodes (vertices, edges,
+//! wires, faces, shells, solids, compounds) and assembly nodes (products,
+//! occurrences) without an existing TopoDS_Shape. Also supports incremental
+//! shape appending and soft-deletion of nodes.
 //! Obtained via BRepGraph::Builder().
 class BRepGraph::BuilderView
 {

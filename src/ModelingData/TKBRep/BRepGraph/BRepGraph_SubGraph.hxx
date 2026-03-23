@@ -18,9 +18,11 @@
 
 class BRepGraph;
 
-//! A non-owning view over a connected component of BRepGraph.
+//! @brief Non-owning view over a connected component of BRepGraph.
 //!
-//! Stores per-kind definition index sets referencing the parent graph's vectors.
+//! Stores per-kind definition index sets referencing the parent graph's
+//! entity vectors. Created by BRepGraph_Analyze::Decompose() to partition
+//! a graph into independent connected components for parallel processing.
 class BRepGraph_SubGraph
 {
 public:

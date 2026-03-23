@@ -16,7 +16,11 @@
 
 #include <BRepGraph.hxx>
 
-//! Lightweight const view over shape reconstruction queries of a BRepGraph.
+//! @brief Read-only view for TopoDS_Shape reconstruction from graph data.
+//!
+//! Reconstructs TopoDS shapes from definition nodes on demand, with caching
+//! for repeated access. Provides lookup from original Build()-time shapes
+//! back to their graph NodeIds via TShape pointer comparison.
 //! Obtained via BRepGraph::Shapes().
 class BRepGraph::ShapesView
 {

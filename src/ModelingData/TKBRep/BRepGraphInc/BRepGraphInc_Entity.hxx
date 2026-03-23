@@ -44,11 +44,14 @@ inline void BRepGraphInc_InitVec(NCollection_Vector<T>& theVec,
   theVec = NCollection_Vector<T>(theBlockSize, theAlloc);
 }
 
-//! Entity structs for the incidence-table model.
+//! @brief Entity structs for the incidence-table topology model.
 //!
 //! Each entity holds its intrinsic geometry plus forward-direction children
-//! (incidence refs).  Locations are stored only at Shell/Solid/Compound level
-//! where they can be non-identity.  No separate Usage objects are needed.
+//! (incidence refs). The incidence model stores topology as flat vectors
+//! of entities (one per kind) with integer cross-references, enabling
+//! cache-friendly traversal and parallel geometry extraction.
+//! Locations are stored on refs (VertexRef, CoEdgeRef, WireRef, FaceRef,
+//! ShellRef, SolidRef) where they can differ per usage context.
 namespace BRepGraphInc
 {
 

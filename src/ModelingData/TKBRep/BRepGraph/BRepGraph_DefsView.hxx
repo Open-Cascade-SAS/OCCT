@@ -21,7 +21,12 @@
 
 class Adaptor3d_CurveOnSurface;
 
-//! Lightweight const view over topology definition nodes of a BRepGraph.
+//! @brief Read-only view over topology definition nodes stored in BRepGraph.
+//!
+//! Provides const access to all topology kinds (Vertex, Edge, Wire, Face,
+//! Shell, Solid, Compound, CompSolid, CoEdge) and assembly kinds (Product,
+//! Occurrence) by zero-based definition index. Also exposes representation
+//! counts and PCurve lookup methods.
 //! Obtained via BRepGraph::Defs().
 class BRepGraph::DefsView
 {
@@ -72,40 +77,40 @@ public:
   Standard_EXPORT const NCollection_Vector<int>& CoEdgesOfEdge(int theEdgeDefIdx) const;
 
   //! Access solid definition by index.
-  //! @param[in] theIdx zero-based definition index
-  Standard_EXPORT const BRepGraph_TopoNode::SolidDef& Solid(int theIdx) const;
+  //! @param[in] theSolidIdx zero-based solid definition index
+  Standard_EXPORT const BRepGraph_TopoNode::SolidDef& Solid(int theSolidIdx) const;
 
   //! Access shell definition by index.
-  //! @param[in] theIdx zero-based definition index
-  Standard_EXPORT const BRepGraph_TopoNode::ShellDef& Shell(int theIdx) const;
+  //! @param[in] theShellIdx zero-based shell definition index
+  Standard_EXPORT const BRepGraph_TopoNode::ShellDef& Shell(int theShellIdx) const;
 
   //! Access face definition by index.
-  //! @param[in] theIdx zero-based definition index
-  Standard_EXPORT const BRepGraph_TopoNode::FaceDef& Face(int theIdx) const;
+  //! @param[in] theFaceIdx zero-based face definition index
+  Standard_EXPORT const BRepGraph_TopoNode::FaceDef& Face(int theFaceIdx) const;
 
   //! Access wire definition by index.
-  //! @param[in] theIdx zero-based definition index
-  Standard_EXPORT const BRepGraph_TopoNode::WireDef& Wire(int theIdx) const;
+  //! @param[in] theWireIdx zero-based wire definition index
+  Standard_EXPORT const BRepGraph_TopoNode::WireDef& Wire(int theWireIdx) const;
 
   //! Access edge definition by index.
-  //! @param[in] theIdx zero-based definition index
-  Standard_EXPORT const BRepGraph_TopoNode::EdgeDef& Edge(int theIdx) const;
+  //! @param[in] theEdgeIdx zero-based edge definition index
+  Standard_EXPORT const BRepGraph_TopoNode::EdgeDef& Edge(int theEdgeIdx) const;
 
   //! Access vertex definition by index.
-  //! @param[in] theIdx zero-based definition index
-  Standard_EXPORT const BRepGraph_TopoNode::VertexDef& Vertex(int theIdx) const;
+  //! @param[in] theVertexIdx zero-based vertex definition index
+  Standard_EXPORT const BRepGraph_TopoNode::VertexDef& Vertex(int theVertexIdx) const;
 
   //! Access compound definition by index.
-  //! @param[in] theIdx zero-based definition index
-  Standard_EXPORT const BRepGraph_TopoNode::CompoundDef& Compound(int theIdx) const;
+  //! @param[in] theCompoundIdx zero-based compound definition index
+  Standard_EXPORT const BRepGraph_TopoNode::CompoundDef& Compound(int theCompoundIdx) const;
 
   //! Access compsolid definition by index.
-  //! @param[in] theIdx zero-based definition index
-  Standard_EXPORT const BRepGraph_TopoNode::CompSolidDef& CompSolid(int theIdx) const;
+  //! @param[in] theCompSolidIdx zero-based compsolid definition index
+  Standard_EXPORT const BRepGraph_TopoNode::CompSolidDef& CompSolid(int theCompSolidIdx) const;
 
   //! Access coedge definition by index.
-  //! @param[in] theIdx zero-based definition index
-  Standard_EXPORT const BRepGraph_TopoNode::CoEdgeDef& CoEdge(int theIdx) const;
+  //! @param[in] theCoEdgeIdx zero-based coedge definition index
+  Standard_EXPORT const BRepGraph_TopoNode::CoEdgeDef& CoEdge(int theCoEdgeIdx) const;
 
   //! Generic topology definition lookup by NodeId.
   //! @param[in] theId node identifier
@@ -134,12 +139,12 @@ public:
   Standard_EXPORT int NbActiveOccurrences() const;
 
   //! Access product definition by index.
-  //! @param[in] theIdx zero-based definition index
-  Standard_EXPORT const BRepGraph_TopoNode::ProductDef& Product(int theIdx) const;
+  //! @param[in] theProductIdx zero-based product definition index
+  Standard_EXPORT const BRepGraph_TopoNode::ProductDef& Product(int theProductIdx) const;
 
   //! Access occurrence definition by index.
-  //! @param[in] theIdx zero-based definition index
-  Standard_EXPORT const BRepGraph_TopoNode::OccurrenceDef& Occurrence(int theIdx) const;
+  //! @param[in] theOccurrenceIdx zero-based occurrence definition index
+  Standard_EXPORT const BRepGraph_TopoNode::OccurrenceDef& Occurrence(int theOccurrenceIdx) const;
 
   //! Return NodeIds of all root products (products that are not referenced by any occurrence).
   Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> RootProducts() const;
@@ -158,13 +163,13 @@ public:
 
   //! Return the i-th child occurrence NodeId of a product.
   //! @param[in] theProductIdx zero-based product definition index
-  //! @param[in] theIdx zero-based occurrence index within the product
-  Standard_EXPORT BRepGraph_NodeId Component(int theProductIdx, int theIdx) const;
+  //! @param[in] theComponentIdx zero-based occurrence index within the product
+  Standard_EXPORT BRepGraph_NodeId Component(int theProductIdx, int theComponentIdx) const;
 
   //! Total number of nodes in the graph (all topology + assembly kinds).
   Standard_EXPORT size_t NbNodes() const;
 
-  // -- Representation count accessors --
+  //! @name Representation count accessors
 
   //! Number of surface representations.
   Standard_EXPORT int NbSurfaces() const;
@@ -187,7 +192,7 @@ public:
   //! Number of polygon-on-triangulation representations.
   Standard_EXPORT int NbPolygonsOnTri() const;
 
-  // -- Geometry query methods --
+  //! @name Geometry query methods
 
   //! Find the CoEdge for an edge on a given face, or nullptr if none exists.
   //! @param[in] theEdgeDef edge definition NodeId
@@ -215,25 +220,25 @@ private:
   friend class BRepGraph_Tool;
 
   //! Access surface representation by index.
-  Standard_EXPORT const BRepGraphInc::SurfaceRep& SurfaceRep(int theIdx) const;
+  Standard_EXPORT const BRepGraphInc::SurfaceRep& SurfaceRep(int theRepIdx) const;
 
   //! Access 3D curve representation by index.
-  Standard_EXPORT const BRepGraphInc::Curve3DRep& Curve3DRep(int theIdx) const;
+  Standard_EXPORT const BRepGraphInc::Curve3DRep& Curve3DRep(int theRepIdx) const;
 
   //! Access 2D curve representation by index.
-  Standard_EXPORT const BRepGraphInc::Curve2DRep& Curve2DRep(int theIdx) const;
+  Standard_EXPORT const BRepGraphInc::Curve2DRep& Curve2DRep(int theRepIdx) const;
 
   //! Access triangulation representation by index.
-  Standard_EXPORT const BRepGraphInc::TriangulationRep& TriangulationRep(int theIdx) const;
+  Standard_EXPORT const BRepGraphInc::TriangulationRep& TriangulationRep(int theRepIdx) const;
 
   //! Access 3D polygon representation by index.
-  Standard_EXPORT const BRepGraphInc::Polygon3DRep& Polygon3DRep(int theIdx) const;
+  Standard_EXPORT const BRepGraphInc::Polygon3DRep& Polygon3DRep(int theRepIdx) const;
 
   //! Access 2D polygon representation by index.
-  Standard_EXPORT const BRepGraphInc::Polygon2DRep& Polygon2DRep(int theIdx) const;
+  Standard_EXPORT const BRepGraphInc::Polygon2DRep& Polygon2DRep(int theRepIdx) const;
 
   //! Access polygon-on-triangulation representation by index.
-  Standard_EXPORT const BRepGraphInc::PolygonOnTriRep& PolygonOnTriRep(int theIdx) const;
+  Standard_EXPORT const BRepGraphInc::PolygonOnTriRep& PolygonOnTriRep(int theRepIdx) const;
 
   explicit DefsView(const BRepGraph* theGraph) : myGraph(theGraph) {}
   const BRepGraph* myGraph;

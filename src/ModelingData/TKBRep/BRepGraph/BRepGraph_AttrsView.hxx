@@ -16,7 +16,12 @@
 
 #include <BRepGraph.hxx>
 
-//! Lightweight non-const view over user attributes of a BRepGraph.
+//! @brief Non-const view for managing user-defined attributes on nodes.
+//!
+//! Attributes are keyed by integer identifiers and stored as
+//! Handle(BRepGraph_UserAttribute). Supports set, get, remove,
+//! invalidate, and key enumeration per node. Attribute data is
+//! stored in the node's BRepGraph_NodeCache.
 //! Obtained via BRepGraph::Attrs().
 class BRepGraph::AttrsView
 {

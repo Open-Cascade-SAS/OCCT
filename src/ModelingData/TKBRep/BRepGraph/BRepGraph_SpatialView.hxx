@@ -17,7 +17,11 @@
 #include <BRepGraph.hxx>
 #include <TopLoc_Location.hxx>
 
-//! Lightweight const view over spatial and adjacency queries of a BRepGraph.
+//! @brief Read-only view for spatial queries and topological adjacency.
+//!
+//! Computes global transforms from per-node locations, finds same-domain
+//! faces sharing a surface, discovers face-edge and face-face adjacency
+//! relationships, and evaluates global placements for assembly occurrences.
 //! Obtained via BRepGraph::Spatial().
 class BRepGraph::SpatialView
 {

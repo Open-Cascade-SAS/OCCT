@@ -19,23 +19,49 @@
 
 class Geom2d_Curve;
 
-//! Lightweight non-const view over mutable definitions and mutation operations.
+//! @brief Non-const view for mutating existing topology definitions.
+//!
+//! Provides scoped mutable definition guards (BRepGraph_MutRef) for all
+//! topology kinds, plus structural mutations: PCurve attachment, edge
+//! replacement in wires, edge splitting, and relation edge management.
+//! Changes are tracked via markModified() and propagated through the
+//! invalidation system. Use CommitMutation() to finalize a batch of changes.
 //! Obtained via BRepGraph::Mut().
 class BRepGraph::MutView
 {
 public:
-  //! Return scoped mutable definition guard (defers markModified to scope exit).
-  //! @param[in] theIdx zero-based definition index
-  BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef>      EdgeDef(int theIdx)      { return myGraph->MutEdge(theIdx); }
-  BRepGraph_MutRef<BRepGraph_TopoNode::WireDef>      WireDef(int theIdx)      { return myGraph->MutWire(theIdx); }
-  BRepGraph_MutRef<BRepGraph_TopoNode::VertexDef>    VertexDef(int theIdx)    { return myGraph->MutVertex(theIdx); }
-  BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef>      FaceDef(int theIdx)      { return myGraph->MutFace(theIdx); }
-  BRepGraph_MutRef<BRepGraph_TopoNode::ShellDef>     ShellDef(int theIdx)     { return myGraph->MutShell(theIdx); }
-  BRepGraph_MutRef<BRepGraph_TopoNode::SolidDef>     SolidDef(int theIdx)     { return myGraph->MutSolid(theIdx); }
-  BRepGraph_MutRef<BRepGraph_TopoNode::CompoundDef>   CompoundDef(int theIdx)   { return myGraph->MutCompound(theIdx); }
-  BRepGraph_MutRef<BRepGraph_TopoNode::CompSolidDef>  CompSolidDef(int theIdx)  { return myGraph->MutCompSolid(theIdx); }
-  BRepGraph_MutRef<BRepGraph_TopoNode::ProductDef>    ProductDef(int theIdx)    { return myGraph->MutProduct(theIdx); }
-  BRepGraph_MutRef<BRepGraph_TopoNode::OccurrenceDef> OccurrenceDef(int theIdx) { return myGraph->MutOccurrence(theIdx); }
+  //! @name Scoped mutable definition guards
+
+  //! Return scoped mutable edge definition guard.
+  //! @param[in] theEdgeIdx zero-based edge definition index
+  BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef>      EdgeDef(int theEdgeIdx)      { return myGraph->MutEdge(theEdgeIdx); }
+  //! Return scoped mutable wire definition guard.
+  //! @param[in] theWireIdx zero-based wire definition index
+  BRepGraph_MutRef<BRepGraph_TopoNode::WireDef>      WireDef(int theWireIdx)      { return myGraph->MutWire(theWireIdx); }
+  //! Return scoped mutable vertex definition guard.
+  //! @param[in] theVertexIdx zero-based vertex definition index
+  BRepGraph_MutRef<BRepGraph_TopoNode::VertexDef>    VertexDef(int theVertexIdx)    { return myGraph->MutVertex(theVertexIdx); }
+  //! Return scoped mutable face definition guard.
+  //! @param[in] theFaceIdx zero-based face definition index
+  BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef>      FaceDef(int theFaceIdx)      { return myGraph->MutFace(theFaceIdx); }
+  //! Return scoped mutable shell definition guard.
+  //! @param[in] theShellIdx zero-based shell definition index
+  BRepGraph_MutRef<BRepGraph_TopoNode::ShellDef>     ShellDef(int theShellIdx)     { return myGraph->MutShell(theShellIdx); }
+  //! Return scoped mutable solid definition guard.
+  //! @param[in] theSolidIdx zero-based solid definition index
+  BRepGraph_MutRef<BRepGraph_TopoNode::SolidDef>     SolidDef(int theSolidIdx)     { return myGraph->MutSolid(theSolidIdx); }
+  //! Return scoped mutable compound definition guard.
+  //! @param[in] theCompoundIdx zero-based compound definition index
+  BRepGraph_MutRef<BRepGraph_TopoNode::CompoundDef>   CompoundDef(int theCompoundIdx)   { return myGraph->MutCompound(theCompoundIdx); }
+  //! Return scoped mutable comp-solid definition guard.
+  //! @param[in] theCompSolidIdx zero-based comp-solid definition index
+  BRepGraph_MutRef<BRepGraph_TopoNode::CompSolidDef>  CompSolidDef(int theCompSolidIdx)  { return myGraph->MutCompSolid(theCompSolidIdx); }
+  //! Return scoped mutable product definition guard.
+  //! @param[in] theProductIdx zero-based product definition index
+  BRepGraph_MutRef<BRepGraph_TopoNode::ProductDef>    ProductDef(int theProductIdx)    { return myGraph->MutProduct(theProductIdx); }
+  //! Return scoped mutable occurrence definition guard.
+  //! @param[in] theOccurrenceIdx zero-based occurrence definition index
+  BRepGraph_MutRef<BRepGraph_TopoNode::OccurrenceDef> OccurrenceDef(int theOccurrenceIdx) { return myGraph->MutOccurrence(theOccurrenceIdx); }
 
   //! Attach a PCurve to an edge for a given face context (stored inline on EdgeDef).
   //! @param[in] theEdgeDef           edge definition NodeId

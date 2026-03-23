@@ -228,9 +228,9 @@ int BRepGraph_History::NbRecords() const
 
 //=================================================================================================
 
-const BRepGraph_HistoryRecord& BRepGraph_History::Record(int theIdx) const
+const BRepGraph_HistoryRecord& BRepGraph_History::Record(int theRecordIdx) const
 {
-  return myRecords.Value(theIdx);
+  return myRecords.Value(theRecordIdx);
 }
 
 //=================================================================================================

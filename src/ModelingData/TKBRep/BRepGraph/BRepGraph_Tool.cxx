@@ -20,10 +20,6 @@
 #include <GeomAdaptor_Surface.hxx>
 #include <Standard_NoSuchObject.hxx>
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// Vertex
-// ═══════════════════════════════════════════════════════════════════════════════
-
 //=================================================================================================
 
 gp_Pnt BRepGraph_Tool::Vertex::Pnt(const BRepGraph& theGraph, const BRepGraphInc::VertexRef& theRef)
@@ -80,10 +76,6 @@ gp_Pnt2d BRepGraph_Tool::Vertex::Parameters(const BRepGraph& theGraph,
   }
   throw Standard_NoSuchObject("BRepGraph_Tool::Parameters - no PointOnSurface for this face");
 }
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// Edge — Properties
-// ═══════════════════════════════════════════════════════════════════════════════
 
 //=================================================================================================
 
@@ -151,10 +143,6 @@ const BRepGraphInc::VertexRef& BRepGraph_Tool::Edge::EndVertex(const BRepGraph& 
   return theGraph.Defs().Edge(theEdgeIdx).EndVertex;
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// Edge — 3D Curve
-// ═══════════════════════════════════════════════════════════════════════════════
-
 //=================================================================================================
 
 GeomAdaptor_TransformedCurve BRepGraph_Tool::Edge::CurveAdaptor(
@@ -214,10 +202,6 @@ GeomAdaptor_TransformedCurve BRepGraph_Tool::Edge::CurveAdaptor(const BRepGraph&
   return GeomAdaptor_TransformedCurve(aCurve, anEdge.ParamFirst, anEdge.ParamLast, gp_Trsf());
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// Edge — Raw Curve Handles
-// ═══════════════════════════════════════════════════════════════════════════════
-
 //=================================================================================================
 
 static const occ::handle<Geom_Curve> THE_NULL_CURVE;
@@ -246,10 +230,6 @@ occ::handle<Geom_Curve> BRepGraph_Tool::Edge::Curve(const BRepGraph&            
   return occ::down_cast<Geom_Curve>(aCurve->Transformed(theRef.LocalLocation.Transformation()));
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// Edge — 3D Polygon
-// ═══════════════════════════════════════════════════════════════════════════════
-
 //=================================================================================================
 
 static const occ::handle<Poly_Polygon3D> THE_NULL_POLYGON3D;
@@ -262,10 +242,6 @@ const occ::handle<Poly_Polygon3D>& BRepGraph_Tool::Edge::Polygon3D(const BRepGra
     return THE_NULL_POLYGON3D;
   return theGraph.Defs().Polygon3DRep(anEdge.Polygon3DRepIdx).Polygon;
 }
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// Edge — Continuity
-// ═══════════════════════════════════════════════════════════════════════════════
 
 //=================================================================================================
 
@@ -320,10 +296,6 @@ GeomAbs_Shape BRepGraph_Tool::Edge::MaxContinuity(const BRepGraph& theGraph, int
   }
   return aMax;
 }
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// CoEdge — PCurve
-// ═══════════════════════════════════════════════════════════════════════════════
 
 //=================================================================================================
 
@@ -449,10 +421,6 @@ bool BRepGraph_Tool::CoEdge::HasPolygonOnSurface(const BRepGraph& theGraph, int 
   return theGraph.Defs().CoEdge(theCoEdgeIdx).Polygon2DRepIdx >= 0;
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// Face — Properties
-// ═══════════════════════════════════════════════════════════════════════════════
-
 //=================================================================================================
 
 double BRepGraph_Tool::Face::Tolerance(const BRepGraph& theGraph, int theFaceIdx)
@@ -494,10 +462,6 @@ const BRepGraphInc::WireRef* BRepGraph_Tool::Face::OuterWire(const BRepGraph& th
   }
   return nullptr;
 }
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// Face — Surface
-// ═══════════════════════════════════════════════════════════════════════════════
 
 //=================================================================================================
 
@@ -544,10 +508,6 @@ GeomAdaptor_TransformedSurface BRepGraph_Tool::Face::SurfaceAdaptor(const BRepGr
   return GeomAdaptor_TransformedSurface(aSurf, theUFirst, theULast, theVFirst, theVLast, gp_Trsf());
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// Face — Triangulation
-// ═══════════════════════════════════════════════════════════════════════════════
-
 //=================================================================================================
 
 static const occ::handle<Poly_Triangulation> THE_NULL_TRIANGULATION;
@@ -562,10 +522,6 @@ const occ::handle<Poly_Triangulation>& BRepGraph_Tool::Face::Triangulation(
     return THE_NULL_TRIANGULATION;
   return theGraph.Defs().TriangulationRep(aTriRepIdx).Triangulation;
 }
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// Curve on Surface
-// ═══════════════════════════════════════════════════════════════════════════════
 
 //=================================================================================================
 
@@ -592,10 +548,6 @@ occ::handle<Adaptor3d_CurveOnSurface> BRepGraph_Tool::Edge::CurveOnSurface(
   occ::handle<GeomAdaptor_Surface> aHS = new GeomAdaptor_Surface(aSurf);
   return new Adaptor3d_CurveOnSurface(aHC2d, aHS);
 }
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// Wire
-// ═══════════════════════════════════════════════════════════════════════════════
 
 //=================================================================================================
 

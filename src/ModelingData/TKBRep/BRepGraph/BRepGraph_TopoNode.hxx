@@ -16,9 +16,12 @@
 
 #include <BRepGraphInc_Entity.hxx>
 
-//! Namespace grouping topology definition types for BRepGraph.
+//! @brief Type aliases mapping public definition names to internal entity types.
 //!
-//! All definition types are aliases to BRepGraphInc entity types.
+//! Provides a stable public API layer (VertexDef, EdgeDef, FaceDef, etc.)
+//! over BRepGraphInc entity structs. This decouples consumer code from the
+//! internal storage layout, allowing the incidence implementation to evolve
+//! without breaking the BRepGraph public interface.
 //! The legacy Usage layer has been removed — per-occurrence data
 //! (orientation, location) lives on incidence refs (FaceRef, ShellRef, etc.).
 namespace BRepGraph_TopoNode
