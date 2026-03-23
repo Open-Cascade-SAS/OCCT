@@ -801,12 +801,12 @@ TEST(BRepGraphRepresentations, Cylinder_TriangulationReps_Populated)
 TEST(BRepGraphRepresentations, RepId_FactoryMethods)
 {
   const auto aSurfId = BRepGraph_RepId::Surface(42);
-  EXPECT_EQ(aSurfId.Kind, BRepGraph_RepId::RepKind::Surface);
+  EXPECT_EQ(aSurfId.RepKind, BRepGraph_RepId::Kind::Surface);
   EXPECT_EQ(aSurfId.Index, 42);
   EXPECT_TRUE(aSurfId.IsValid());
 
   const auto aCurve3DId = BRepGraph_RepId::Curve3D(7);
-  EXPECT_EQ(aCurve3DId.Kind, BRepGraph_RepId::RepKind::Curve3D);
+  EXPECT_EQ(aCurve3DId.RepKind, BRepGraph_RepId::Kind::Curve3D);
   EXPECT_EQ(aCurve3DId.Index, 7);
 
   const auto aDefaultId = BRepGraph_RepId();

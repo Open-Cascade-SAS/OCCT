@@ -70,7 +70,7 @@ struct BaseEntity
 //! Fields shared by every representation entity.
 struct BaseRep
 {
-  BRepGraph_RepId Id;                  //!< Typed address (RepKind + per-kind index)
+  BRepGraph_RepId Id;                  //!< Typed address (Kind + per-kind index)
   uint32_t        MutationGen = 0;     //!< Per-rep mutation counter
   bool            IsRemoved   = false; //!< Soft-removal flag
 };

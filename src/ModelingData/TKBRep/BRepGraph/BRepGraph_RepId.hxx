@@ -21,7 +21,7 @@
 
 //! Lightweight typed index into a per-kind representation vector inside BRepGraph.
 //!
-//! The pair (RepKind, Index) forms a unique representation identifier within one
+//! The pair (Kind, Index) forms a unique representation identifier within one
 //! graph instance.  Default-constructed RepId has Index = -1 (invalid).
 //!
 //! Representations are NOT topology nodes — they hold geometry or mesh data
@@ -29,13 +29,10 @@
 //! reverse index, or parent-child relationships.
 //!
 //! RepId is a value type: cheap to copy, compare, hash.
-//! Fields are intentionally public (unlike BRepGraph_UID) because RepId
-//! has no validity invariant — any (RepKind, Index) combination is valid
-//! as a POD-like address, similar to BRepGraph_NodeId.
 struct BRepGraph_RepId
 {
   //! Categories of representation data.
-  enum class RepKind : int
+  enum class Kind : int
   {
     // Geometry (exact mathematical definition)
     Surface       = 0,  //!< Geom_Surface for faces
@@ -52,29 +49,44 @@ struct BRepGraph_RepId
     // Custom plugin types start at 100+
   };
 
-  RepKind Kind;
-  int     Index;
+  //! True if the kind is a geometry kind (Surface, Curve3D, Curve2D).
+  static bool IsGeometryKind(const Kind theKind)
+  {
+    return theKind == Kind::Surface || theKind == Kind::Curve3D || theKind == Kind::Curve2D;
+  }
 
+  //! True if the kind is a mesh kind (Triangulation, Polygon3D, Polygon2D, PolygonOnTri).
+  static bool IsMeshKind(const Kind theKind)
+  {
+    return theKind == Kind::Triangulation || theKind == Kind::Polygon3D
+        || theKind == Kind::Polygon2D     || theKind == Kind::PolygonOnTri;
+  }
+
+  Kind RepKind;
+  int  Index;
+
+  //! Default: invalid RepId (Index = -1).
+  //! RepKind is set to Kind::Surface but is meaningless when !IsValid().
   BRepGraph_RepId()
-    : Kind(RepKind::Surface), Index(-1) {}
+    : RepKind(Kind::Surface), Index(-1) {}
 
-  BRepGraph_RepId(const RepKind theKind, const int theIdx)
-    : Kind(theKind), Index(theIdx) {}
+  BRepGraph_RepId(const Kind theKind, const int theIdx)
+    : RepKind(theKind), Index(theIdx) {}
 
   //! True if this id points to an allocated representation slot.
   bool IsValid() const { return Index >= 0; }
 
   //! @name Static factory methods for readable RepId construction.
-  static BRepGraph_RepId Surface(const int theIdx)       { return {RepKind::Surface, theIdx}; }
-  static BRepGraph_RepId Curve3D(const int theIdx)       { return {RepKind::Curve3D, theIdx}; }
-  static BRepGraph_RepId Curve2D(const int theIdx)       { return {RepKind::Curve2D, theIdx}; }
-  static BRepGraph_RepId Triangulation(const int theIdx) { return {RepKind::Triangulation, theIdx}; }
-  static BRepGraph_RepId Polygon3D(const int theIdx)     { return {RepKind::Polygon3D, theIdx}; }
-  static BRepGraph_RepId Polygon2D(const int theIdx)     { return {RepKind::Polygon2D, theIdx}; }
-  static BRepGraph_RepId PolygonOnTri(const int theIdx)  { return {RepKind::PolygonOnTri, theIdx}; }
+  static BRepGraph_RepId Surface(const int theIdx)       { return {Kind::Surface, theIdx}; }
+  static BRepGraph_RepId Curve3D(const int theIdx)       { return {Kind::Curve3D, theIdx}; }
+  static BRepGraph_RepId Curve2D(const int theIdx)       { return {Kind::Curve2D, theIdx}; }
+  static BRepGraph_RepId Triangulation(const int theIdx) { return {Kind::Triangulation, theIdx}; }
+  static BRepGraph_RepId Polygon3D(const int theIdx)     { return {Kind::Polygon3D, theIdx}; }
+  static BRepGraph_RepId Polygon2D(const int theIdx)     { return {Kind::Polygon2D, theIdx}; }
+  static BRepGraph_RepId PolygonOnTri(const int theIdx)  { return {Kind::PolygonOnTri, theIdx}; }
 
   bool operator==(const BRepGraph_RepId& theOther) const
-  { return Kind == theOther.Kind && Index == theOther.Index; }
+  { return RepKind == theOther.RepKind && Index == theOther.Index; }
 
   bool operator!=(const BRepGraph_RepId& theOther) const
   { return !(*this == theOther); }
@@ -87,7 +99,7 @@ struct std::hash<BRepGraph_RepId>
   size_t operator()(const BRepGraph_RepId& theId) const noexcept
   {
     size_t aCombination[2];
-    aCombination[0] = opencascade::hash(static_cast<int>(theId.Kind));
+    aCombination[0] = opencascade::hash(static_cast<int>(theId.RepKind));
     aCombination[1] = opencascade::hash(theId.Index);
     return opencascade::hashBytes(aCombination, sizeof(aCombination));
   }

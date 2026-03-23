@@ -57,7 +57,7 @@ class BRepGraph_Mutator;
 //! Key design concepts:
 //! - **NodeId** (Kind + Index): lightweight typed address into per-kind vectors.
 //! - **UID** (Kind + Counter): persistent identity surviving compaction/reorder.
-//! - **RepId** (RepKind + Index): separate geometry/mesh addressing (Surface,
+//! - **RepId** (Kind + Index): separate geometry/mesh addressing (Surface,
 //!   Curve3D, Curve2D, Triangulation, Polygon) decoupled from topology nodes.
 //! - **CoEdge**: half-edge entity owning PCurve data for each edge-face binding;
 //!   seam edges use paired CoEdges with opposite Sense (Parasolid convention).
