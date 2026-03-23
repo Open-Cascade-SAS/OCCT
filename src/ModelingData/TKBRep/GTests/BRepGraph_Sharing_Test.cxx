@@ -153,29 +153,28 @@ TEST_F(BRepGraphSharingTest, EdgeDef_VertexDefs_BothValid)
 TEST_F(BRepGraphSharingTest, SharedEdge_IncidenceRefs_DifferentOrientation)
 {
   ASSERT_TRUE(myGraph.IsDone());
-  // In a box, shared edges between adjacent faces must have opposite orientations
-  // to maintain consistent face normals.
-  // Check via the PCurve entries on edge defs: each edge shared by 2 faces
-  // should have at least one pair of PCurves with different orientations.
-  int aDiffOrientCount = 0;
+  // In a box, shared edges between adjacent faces have PCurves on
+  // different face definitions. Check that at least some edges have
+  // PCurves referencing more than one face.
+  int aMultiFaceEdgeCount = 0;
   for (int anIdx = 0; anIdx < myGraph.Defs().NbEdges(); ++anIdx)
   {
     const BRepGraph_TopoNode::EdgeDef& aDef = myGraph.Defs().Edge(anIdx);
     if (aDef.PCurves.Length() < 2)
       continue;
-    // Check if orientations differ between any two PCurve entries.
-    const TopAbs_Orientation anOri0 = aDef.PCurves.Value(0).EdgeOrientation;
+    // Check if PCurves reference different faces.
+    const BRepGraph_NodeId aFace0 = aDef.PCurves.Value(0).FaceDefId;
     for (int aPCI = 1; aPCI < aDef.PCurves.Length(); ++aPCI)
     {
-      if (aDef.PCurves.Value(aPCI).EdgeOrientation != anOri0)
+      if (aDef.PCurves.Value(aPCI).FaceDefId != aFace0)
       {
-        ++aDiffOrientCount;
+        ++aMultiFaceEdgeCount;
         break;
       }
     }
   }
-  EXPECT_GT(aDiffOrientCount, 0)
-    << "Expected at least some shared edges with different orientations";
+  EXPECT_GT(aMultiFaceEdgeCount, 0)
+    << "Expected at least some shared edges with PCurves on different faces";
 }
 
 TEST_F(BRepGraphSharingTest, NonClosedEdge_StartEnd_Different)

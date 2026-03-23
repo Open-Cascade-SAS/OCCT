@@ -34,6 +34,8 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Iterator.hxx>
+#include <BRepTools.hxx>
+#include <BRepTools_WireExplorer.hxx>
 #include <gp_Pln.hxx>
 
 #include <gtest/gtest.h>
@@ -180,6 +182,125 @@ TEST(BRepGraphIncTest, Sphere_RoundTrip_AreaPreserved)
   ASSERT_FALSE(aRecon.IsNull());
 
   const double aReconArea = computeArea(aRecon);
+  EXPECT_NEAR(aReconArea, anOrigArea, Precision::Confusion());
+}
+
+TEST(BRepGraphIncTest, Sphere_WireEdgeOrder_Diagnostic)
+{
+  BRepPrimAPI_MakeSphere aSphMaker(8.0);
+  const TopoDS_Shape& aSph = aSphMaker.Shape();
+
+  // Dump original wire content
+  for (TopExp_Explorer aFaceExp(aSph, TopAbs_FACE); aFaceExp.More(); aFaceExp.Next())
+  {
+    const TopoDS_Face& aFace = TopoDS::Face(aFaceExp.Current());
+    const TopoDS_Face  aFwdFace = TopoDS::Face(aFace.Oriented(TopAbs_FORWARD));
+    std::cout << "Original face ori=" << aFace.Orientation() << std::endl;
+
+    for (TopoDS_Iterator aWireIt(aFwdFace); aWireIt.More(); aWireIt.Next())
+    {
+      if (aWireIt.Value().ShapeType() != TopAbs_WIRE)
+        continue;
+      const TopoDS_Wire& aWire = TopoDS::Wire(aWireIt.Value());
+      std::cout << "  Wire ori=" << aWire.Orientation() << std::endl;
+
+      std::cout << "    Iterator(false,false): ";
+      for (TopoDS_Iterator anEdgeIt(aWire, false, false); anEdgeIt.More(); anEdgeIt.Next())
+      {
+        if (anEdgeIt.Value().ShapeType() != TopAbs_EDGE)
+          continue;
+        const TopoDS_Edge& anEdge = TopoDS::Edge(anEdgeIt.Value());
+        std::cout << "ori=" << anEdge.Orientation()
+                  << " degen=" << BRep_Tool::Degenerated(anEdge)
+                  << " TShape=" << (void*)anEdge.TShape().get() << "  ";
+      }
+      std::cout << std::endl;
+
+      std::cout << "    Iterator(true,true):   ";
+      for (TopoDS_Iterator anEdgeIt(aWire, true, true); anEdgeIt.More(); anEdgeIt.Next())
+      {
+        if (anEdgeIt.Value().ShapeType() != TopAbs_EDGE)
+          continue;
+        const TopoDS_Edge& anEdge = TopoDS::Edge(anEdgeIt.Value());
+        std::cout << "ori=" << anEdge.Orientation()
+                  << " degen=" << BRep_Tool::Degenerated(anEdge)
+                  << " TShape=" << (void*)anEdge.TShape().get() << "  ";
+      }
+      std::cout << std::endl;
+
+      std::cout << "    WireExplorer:          ";
+      for (BRepTools_WireExplorer aWE(aWire, aFwdFace); aWE.More(); aWE.Next())
+      {
+        const TopoDS_Edge& anEdge = aWE.Current();
+        std::cout << "ori=" << anEdge.Orientation()
+                  << " degen=" << BRep_Tool::Degenerated(anEdge)
+                  << " TShape=" << (void*)anEdge.TShape().get() << "  ";
+      }
+      std::cout << std::endl;
+    }
+    break; // first face only
+  }
+
+  // Round-trip
+  BRepGraphInc_Storage aStorage;
+  BRepGraphInc_Populate::Perform(aStorage, aSph, false);
+  ASSERT_TRUE(aStorage.GetIsDone());
+
+  TopoDS_Shape aRecon = BRepGraphInc_Reconstruct::Node(aStorage, BRepGraph_NodeId::Solid(0));
+  ASSERT_FALSE(aRecon.IsNull());
+
+  // Dump reconstructed wire content
+  for (TopExp_Explorer aFaceExp(aRecon, TopAbs_FACE); aFaceExp.More(); aFaceExp.Next())
+  {
+    const TopoDS_Face& aFace = TopoDS::Face(aFaceExp.Current());
+    const TopoDS_Face  aFwdFace = TopoDS::Face(aFace.Oriented(TopAbs_FORWARD));
+    std::cout << "Reconstructed face ori=" << aFace.Orientation() << std::endl;
+
+    for (TopoDS_Iterator aWireIt(aFwdFace); aWireIt.More(); aWireIt.Next())
+    {
+      if (aWireIt.Value().ShapeType() != TopAbs_WIRE)
+        continue;
+      const TopoDS_Wire& aWire = TopoDS::Wire(aWireIt.Value());
+      std::cout << "  Wire ori=" << aWire.Orientation() << std::endl;
+
+      std::cout << "    Iterator(false,false): ";
+      for (TopoDS_Iterator anEdgeIt(aWire, false, false); anEdgeIt.More(); anEdgeIt.Next())
+      {
+        if (anEdgeIt.Value().ShapeType() != TopAbs_EDGE)
+          continue;
+        const TopoDS_Edge& anEdge = TopoDS::Edge(anEdgeIt.Value());
+        std::cout << "ori=" << anEdge.Orientation()
+                  << " degen=" << BRep_Tool::Degenerated(anEdge) << "  ";
+      }
+      std::cout << std::endl;
+    }
+    break; // first face only
+  }
+
+  // Dump BRep for comparison — write face-level for readability
+  {
+    TopExp_Explorer aOrigFaceExp(aSph, TopAbs_FACE);
+    TopExp_Explorer aReconFaceExp(aRecon, TopAbs_FACE);
+    std::ostringstream anOrigStr, aReconStr;
+    BRepTools::Write(aOrigFaceExp.Current(), anOrigStr);
+    BRepTools::Write(aReconFaceExp.Current(), aReconStr);
+    if (anOrigStr.str() != aReconStr.str())
+    {
+      std::cout << "=== ORIGINAL FACE BRep ===" << std::endl;
+      std::cout << anOrigStr.str() << std::endl;
+      std::cout << "=== RECONSTRUCTED FACE BRep ===" << std::endl;
+      std::cout << aReconStr.str() << std::endl;
+    }
+    else
+    {
+      std::cout << "Face BRep dumps are IDENTICAL" << std::endl;
+    }
+  }
+
+  const double anOrigArea = computeArea(aSph);
+  const double aReconArea = computeArea(aRecon);
+  std::cout << "Orig area=" << anOrigArea << " Recon area=" << aReconArea << std::endl;
+
   EXPECT_NEAR(aReconArea, anOrigArea, Precision::Confusion());
 }
 

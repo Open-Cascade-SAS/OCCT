@@ -429,6 +429,97 @@ void edgeVertices(const TopoDS_Edge&                           theEdge,
     theLast = theFirst;
 }
 
+//! Extract edge geometry and parametric data in a face context.
+//! Fills theEdgeData with 3D curve, vertices, PCurves, and polygons.
+void extractEdgeInFace(ExtractedEdge&                    theEdgeData,
+                       const TopoDS_Edge&                theEdge,
+                       const TopoDS_Face&                theForwardFace,
+                       const occ::handle<Geom_Surface>&  theFaceSurface)
+{
+  theEdgeData.Shape             = theEdge;
+  theEdgeData.Tolerance         = BRep_Tool::Tolerance(theEdge);
+  theEdgeData.IsDegenerate      = BRep_Tool::Degenerated(theEdge);
+  theEdgeData.SameParameter     = BRep_Tool::SameParameter(theEdge);
+  theEdgeData.SameRange         = BRep_Tool::SameRange(theEdge);
+  theEdgeData.OrientationInWire = theEdge.Orientation();
+
+  // 3D curve with representation location applied to definition frame.
+  {
+    double          aFirst = 0.0, aLast = 0.0;
+    TopLoc_Location aCurveCombinedLoc;
+    theEdgeData.Curve3d    = BRep_Tool::Curve(theEdge, aCurveCombinedLoc, aFirst, aLast);
+    theEdgeData.ParamFirst = aFirst;
+    theEdgeData.ParamLast  = aLast;
+    theEdgeData.Curve3d    = applyRepresentationLocation<Geom_Curve>(
+      theEdgeData.Curve3d, theEdge.Location(), aCurveCombinedLoc);
+  }
+
+  // Vertices.
+  TopoDS_Vertex aVFirst, aVLast;
+  edgeVertices(theEdge, aVFirst, aVLast, theEdgeData.InternalVertices);
+
+  if (!aVFirst.IsNull())
+  {
+    theEdgeData.StartVertex.Shape     = aVFirst;
+    theEdgeData.StartVertex.Point     = BRep_Tool::Pnt(aVFirst);
+    theEdgeData.StartVertex.Tolerance = BRep_Tool::Tolerance(aVFirst);
+  }
+  if (!aVLast.IsNull())
+  {
+    theEdgeData.EndVertex.Shape     = aVLast;
+    theEdgeData.EndVertex.Point     = BRep_Tool::Pnt(aVLast);
+    theEdgeData.EndVertex.Tolerance = BRep_Tool::Tolerance(aVLast);
+  }
+
+  // Extract PCurves using the edge always oriented FORWARD to ensure
+  // orientation-independent PCurve pair ordering. BRep_Tool::CurveOnSurface
+  // returns different PCurves depending on edge orientation for seam edges.
+  {
+    const TopoDS_Edge aFwdEdge = TopoDS::Edge(theEdge.Oriented(TopAbs_FORWARD));
+    double aPCFirst = 0.0, aPCLast = 0.0;
+    theEdgeData.PCurve2d = BRep_Tool::CurveOnSurface(aFwdEdge, theForwardFace, aPCFirst, aPCLast);
+    theEdgeData.PCFirst  = aPCFirst;
+    theEdgeData.PCLast   = aPCLast;
+    theEdgeData.PCurveContinuity = BRep_Tool::MaxContinuity(theEdge);
+
+    if (!theEdgeData.PCurve2d.IsNull() && !theFaceSurface.IsNull())
+      BRep_Tool::UVPoints(aFwdEdge, theForwardFace, theEdgeData.PCUV1, theEdgeData.PCUV2);
+
+    // Second PCurve for seam edges.
+    if (!theEdgeData.PCurve2d.IsNull() && BRep_Tool::IsClosed(aFwdEdge, theForwardFace))
+    {
+      double aPCFirstRev = 0.0, aPCLastRev = 0.0;
+      const TopoDS_Edge aRevEdge = TopoDS::Edge(theEdge.Oriented(TopAbs_REVERSED));
+      theEdgeData.PCurve2dReversed =
+        BRep_Tool::CurveOnSurface(aRevEdge, theForwardFace, aPCFirstRev, aPCLastRev);
+      theEdgeData.PCFirstReversed = aPCFirstRev;
+      theEdgeData.PCLastReversed  = aPCLastRev;
+    }
+  }
+
+  // Polygon3D with representation location applied.
+  {
+    TopLoc_Location aPoly3DLoc;
+    theEdgeData.Polygon3D = BRep_Tool::Polygon3D(theEdge, aPoly3DLoc);
+    theEdgeData.Polygon3D =
+      applyRepLocationToPolygon3D(theEdgeData.Polygon3D, theEdge.Location(), aPoly3DLoc);
+  }
+
+  // PolygonOnSurface: use FORWARD-oriented edge for consistent ordering.
+  {
+    const TopoDS_Edge aFwdEdge = TopoDS::Edge(theEdge.Oriented(TopAbs_FORWARD));
+    theEdgeData.PolyOnSurf = BRep_Tool::PolygonOnSurface(aFwdEdge, theForwardFace);
+    if (!theEdgeData.PolyOnSurf.IsNull())
+    {
+      const TopoDS_Edge aRevEdge = TopoDS::Edge(theEdge.Oriented(TopAbs_REVERSED));
+      occ::handle<Poly_Polygon2D> aPolyOnSurfRev =
+        BRep_Tool::PolygonOnSurface(aRevEdge, theForwardFace);
+      if (!aPolyOnSurfRev.IsNull() && aPolyOnSurfRev != theEdgeData.PolyOnSurf)
+        theEdgeData.PolyOnSurfReversed = aPolyOnSurfRev;
+    }
+  }
+}
+
 //! Extract per-face geometry/topology data from TopoDS.
 void extractFaceData(FaceLocalData& theData)
 {
@@ -494,92 +585,8 @@ void extractFaceData(FaceLocalData& theData)
 
     for (BRepTools_WireExplorer anEdgeExp(aWire, aForwardFace); anEdgeExp.More(); anEdgeExp.Next())
     {
-      const TopoDS_Edge& anEdge = anEdgeExp.Current();
-
       ExtractedEdge anEdgeData;
-      anEdgeData.Shape             = anEdge;
-      anEdgeData.Tolerance         = BRep_Tool::Tolerance(anEdge);
-      anEdgeData.IsDegenerate      = BRep_Tool::Degenerated(anEdge);
-      anEdgeData.SameParameter     = BRep_Tool::SameParameter(anEdge);
-      anEdgeData.SameRange         = BRep_Tool::SameRange(anEdge);
-      anEdgeData.OrientationInWire = anEdge.Orientation();
-
-      // Extract 3D curve with representation location applied to definition frame.
-      {
-        double          aFirst = 0.0, aLast = 0.0;
-        TopLoc_Location aCurveCombinedLoc;
-        anEdgeData.Curve3d    = BRep_Tool::Curve(anEdge, aCurveCombinedLoc, aFirst, aLast);
-        anEdgeData.ParamFirst = aFirst;
-        anEdgeData.ParamLast  = aLast;
-        anEdgeData.Curve3d    = applyRepresentationLocation<Geom_Curve>(anEdgeData.Curve3d,
-                                                                     anEdge.Location(),
-                                                                     aCurveCombinedLoc);
-      }
-
-      TopoDS_Vertex aVFirst, aVLast;
-      edgeVertices(anEdge, aVFirst, aVLast, anEdgeData.InternalVertices);
-
-      if (!aVFirst.IsNull())
-      {
-        anEdgeData.StartVertex.Shape     = aVFirst;
-        anEdgeData.StartVertex.Point     = BRep_Tool::Pnt(aVFirst);
-        anEdgeData.StartVertex.Tolerance = BRep_Tool::Tolerance(aVFirst);
-      }
-      if (!aVLast.IsNull())
-      {
-        anEdgeData.EndVertex.Shape     = aVLast;
-        anEdgeData.EndVertex.Point     = BRep_Tool::Pnt(aVLast);
-        anEdgeData.EndVertex.Tolerance = BRep_Tool::Tolerance(aVLast);
-      }
-
-      double aPCFirst = 0.0, aPCLast = 0.0;
-      anEdgeData.PCurve2d = BRep_Tool::CurveOnSurface(anEdge, aForwardFace, aPCFirst, aPCLast);
-      anEdgeData.PCFirst  = aPCFirst;
-      anEdgeData.PCLast   = aPCLast;
-      anEdgeData.PCurveContinuity = BRep_Tool::MaxContinuity(anEdge);
-
-      if (!anEdgeData.PCurve2d.IsNull() && !theData.Surface.IsNull())
-        BRep_Tool::UVPoints(anEdge, aForwardFace, anEdgeData.PCUV1, anEdgeData.PCUV2);
-
-      // Polygon3D: apply representation location to polygon nodes.
-      {
-        TopLoc_Location aPoly3DLoc;
-        anEdgeData.Polygon3D = BRep_Tool::Polygon3D(anEdge, aPoly3DLoc);
-        anEdgeData.Polygon3D =
-          applyRepLocationToPolygon3D(anEdgeData.Polygon3D, anEdge.Location(), aPoly3DLoc);
-      }
-
-      // PolygonOnSurface.
-      {
-        anEdgeData.PolyOnSurf = BRep_Tool::PolygonOnSurface(anEdge, aForwardFace);
-        if (!anEdgeData.PolyOnSurf.IsNull())
-        {
-          TopoDS_Edge                 aReversedEdge = TopoDS::Edge(anEdge.Reversed());
-          occ::handle<Poly_Polygon2D> aPolyOnSurfRev =
-            BRep_Tool::PolygonOnSurface(aReversedEdge, aForwardFace);
-          if (!aPolyOnSurfRev.IsNull() && aPolyOnSurfRev != anEdgeData.PolyOnSurf)
-            anEdgeData.PolyOnSurfReversed = aPolyOnSurfRev;
-        }
-      }
-
-      // Second PCurve for seam edges (edge closed on face = two distinct PCurves).
-      // Use BRep_Tool::IsClosed rather than Handle pointer comparison to avoid
-      // false positives: CurveOnSurface may return distinct Handle objects for
-      // FORWARD/REVERSED edges even on non-seam planar faces.
-      if (!anEdgeData.PCurve2d.IsNull() && BRep_Tool::IsClosed(anEdge, aForwardFace))
-      {
-        double                    aPCFirstRev = 0.0, aPCLastRev = 0.0;
-        TopoDS_Edge               aReversedEdge = TopoDS::Edge(anEdge.Reversed());
-        occ::handle<Geom2d_Curve> aPC2 =
-          BRep_Tool::CurveOnSurface(aReversedEdge, aForwardFace, aPCFirstRev, aPCLastRev);
-        if (!aPC2.IsNull())
-        {
-          anEdgeData.PCurve2dReversed = aPC2;
-          anEdgeData.PCFirstReversed  = aPCFirstRev;
-          anEdgeData.PCLastReversed   = aPCLastRev;
-        }
-      }
-
+      extractEdgeInFace(anEdgeData, anEdgeExp.Current(), aForwardFace, theData.Surface);
       aWireData.Edges.Append(anEdgeData);
     }
 
@@ -670,8 +677,6 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
         theStorage.ChangeFace(aFaceIdx).WireRefs.Append(aWireRef);
       }
 
-      int aFirstVertexIdx = -1;
-      int aLastVertexIdx  = -1;
 
       for (int anEdgeIter = 0; anEdgeIter < aWireData.Edges.Length(); ++anEdgeIter)
       {
@@ -691,7 +696,7 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
           theStorage.ChangeWire(aWireIdx).EdgeRefs.Append(anEdgeRef);
         }
 
-        // PCurve: forward.
+        // PCurve: first (always stored as FORWARD, orientation-independent).
         appendPCurveAndPolyEntry(anEdgeMut,
                                  anEdgeData.PCurve2d,
                                  aFaceIdx,
@@ -700,10 +705,10 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
                                  anEdgeData.PCurveContinuity,
                                  anEdgeData.PCUV1,
                                  anEdgeData.PCUV2,
-                                 anEdgeData.OrientationInWire,
+                                 TopAbs_FORWARD,
                                  anEdgeData.PolyOnSurf);
 
-        // PCurve: reversed (seam).
+        // PCurve: second (seam, always stored as REVERSED).
         appendPCurveAndPolyEntry(anEdgeMut,
                                  anEdgeData.PCurve2dReversed,
                                  aFaceIdx,
@@ -712,7 +717,7 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
                                  anEdgeData.PCurveContinuity,
                                  gp_Pnt2d(),
                                  gp_Pnt2d(),
-                                 TopAbs::Reverse(anEdgeData.OrientationInWire),
+                                 TopAbs_REVERSED,
                                  anEdgeData.PolyOnSurfReversed);
 
         // Polygon3D (once per edge).
@@ -726,26 +731,12 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
                                aFaceIdx,
                                aFaceDef.Triangulations.Length());
 
-        // Track first/last vertex for closure check.
-        if (aIsNewWireDef)
-        {
-          if (aFirstVertexIdx < 0)
-          {
-            aFirstVertexIdx = (anEdgeData.OrientationInWire == TopAbs_FORWARD)
-                                ? anEdgeMut.StartVertexIdx
-                                : anEdgeMut.EndVertexIdx;
-          }
-          aLastVertexIdx = (anEdgeData.OrientationInWire == TopAbs_FORWARD)
-                             ? anEdgeMut.EndVertexIdx
-                             : anEdgeMut.StartVertexIdx;
-        }
       }
 
-      // Set wire closure.
+      // Wire closure: copy directly from the original shape.
       if (aIsNewWireDef)
       {
-        theStorage.ChangeWire(aWireIdx).IsClosed =
-          aFirstVertexIdx >= 0 && aLastVertexIdx >= 0 && aFirstVertexIdx == aLastVertexIdx;
+        theStorage.ChangeWire(aWireIdx).IsClosed = aWireData.Shape.Closed();
       }
     }
 
@@ -972,7 +963,7 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&                       
         theStorage.BindTShapeToNode(aWire.TShape().get(), aWireEnt.Id);
         theStorage.BindOriginal(aWireEnt.Id, aWire);
 
-        for (TopoDS_Iterator anEdgeIt(aWire); anEdgeIt.More(); anEdgeIt.Next())
+        for (TopoDS_Iterator anEdgeIt(aWire, false, false); anEdgeIt.More(); anEdgeIt.Next())
         {
           if (anEdgeIt.Value().ShapeType() != TopAbs_EDGE)
             continue;
