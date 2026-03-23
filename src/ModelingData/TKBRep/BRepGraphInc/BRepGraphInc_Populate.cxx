@@ -37,14 +37,14 @@
 // Population pipeline overview:
 //
 // Phase 1 (sequential): Recursively traverse the TopoDS hierarchy
-//   (Compound → CompSolid → Solid → Shell), collecting face contexts
+//   (Compound -> CompSolid -> Solid -> Shell), collecting face contexts
 //   into a flat FaceLocalData vector. Registers container entities
 //   (Compound, CompSolid, Solid, Shell) with TShape deduplication.
 //
 // Phase 2 (parallel): Per-face geometry extraction via OSD_Parallel.
 //   Extracts surface, triangulations, wires, edges (with PCurves,
 //   polygons, vertices) into ExtractedEdge/ExtractedWire/FaceLocalData
-//   structs. No storage writes — thread-safe read-only access to TopoDS.
+//   structs. No storage writes - thread-safe read-only access to TopoDS.
 //
 // Phase 3 (sequential): Register extracted data into BRepGraphInc_Storage.
 //   Creates Face, Wire, Edge, CoEdge, Vertex entities with TShape dedup
@@ -137,7 +137,7 @@ struct FaceLocalData
 //! Uses multi-pass matching:
 //!   Pass 1: exact (Surface, Location) match via IsCurveOnSurface(S, L)
 //!   Pass 2: surface-handle-only fallback for TopLoc_Location structural equality bug
-//!           (only when a unique CR matches the surface — prevents wrong-context selection)
+//!           (only when a unique CR matches the surface - prevents wrong-context selection)
 //!   Pass 3: original (pre-transform) surface handle match when face surface
 //!           was transformed via applyRepresentationLocation
 //! For seam edges (IsCurveOnClosedSurface), extracts both PCurves + continuity.
@@ -381,7 +381,7 @@ occ::handle<T> applyRepresentationLocation(const occ::handle<T>&  theGeom,
 {
   if (theGeom.IsNull())
     return theGeom;
-  // Do NOT use theCombinedLoc.IsIdentity() as an early return — TopLoc_Location
+  // Do NOT use theCombinedLoc.IsIdentity() as an early return - TopLoc_Location
   // chain composition can structurally cancel to Identity (empty chain) even when
   // the actual repLoc (theShapeLoc^-1 * theCombinedLoc) is non-Identity.
   // This happens when the edge instance location and the CR location on TEdge
@@ -419,7 +419,7 @@ occ::handle<Poly_Polygon3D> applyRepLocationToPolygon3D(
 }
 
 //! Deduplication maps for representation entities.
-//! Keyed by raw Handle pointer — same underlying geometry object → same rep entity.
+//! Keyed by raw Handle pointer - same underlying geometry object -> same rep entity.
 struct RepDedup
 {
   NCollection_DataMap<const Geom_Surface*,       int> Surfaces;
@@ -701,7 +701,7 @@ void edgeVertices(const TopoDS_Edge&                           theEdge,
       theInternal.Append(anIntVtx);
     }
   }
-  // Note: do NOT copy theFirst↔theLast when one is null.
+  // Note: do NOT copy theFirst<->theLast when one is null.
   // Single-vertex edges (e.g., infinite edges) legitimately have only one vertex.
   // Closed edges already have both FORWARD and REVERSED vertices in the iterator.
 }
@@ -771,7 +771,7 @@ void extractEdgeInFace(ExtractedEdge&                    theEdgeData,
     theEdgeData.PCurveContinuity = BRep_Tool::MaxContinuity(theEdge);
     theEdgeData.SeamContinuity   = aSeamContinuity;
 
-    // When the surface was transformed (TFace.Location != Identity → theFaceSurface
+    // When the surface was transformed (TFace.Location != Identity -> theFaceSurface
     // differs from the raw TFace surface), the stored CR may belong to a different face
     // context using the same raw surface. Verify by calling BRep_Tool::CurveOnSurface
     // which correctly handles CurveOnPlane for planar surfaces and properly composes
@@ -787,7 +787,7 @@ void extractEdgeInFace(ExtractedEdge&                    theEdgeData,
       if (!aBTPCurve.IsNull() && !aBTIsStored
           && aBTPCurve.get() != theEdgeData.PCurve2d.get())
       {
-        // BRep_Tool computed a different PCurve (CurveOnPlane) — our stored match
+        // BRep_Tool computed a different PCurve (CurveOnPlane) - our stored match
         // is from the wrong face context. Discard it.
         theEdgeData.PCurve2d.Nullify();
         theEdgeData.PCurve2dReversed.Nullify();
@@ -979,7 +979,7 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
     // Pre-fetch face entity for triangulation access in edge loop.
     const BRepGraphInc::FaceEntity& aFaceDef = theStorage.Face(aFaceIdx);
 
-    // Process wires — only for newly created face definitions.
+    // Process wires - only for newly created face definitions.
     // Shared faces (same TShape referenced multiple times in a shell) must NOT
     // duplicate wire/edge/coedge data on the single FaceEntity.
     if (!aIsNewFaceDef)
@@ -1087,7 +1087,7 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
           aCoEdgeRef.LocalLocation  = anEdgeData.Shape.Location();
           theStorage.ChangeWire(aWireIdx).CoEdgeRefs.Append(aCoEdgeRef);
 
-          // Note: seam coedge (if any) is NOT added to wire CoEdgeRefs —
+          // Note: seam coedge (if any) is NOT added to wire CoEdgeRefs --
           // it shares the same wire position as the forward coedge.
           // The seam pair is accessible via SeamPairIdx on the CoEdgeEntity.
           // Only the forward coedge ref is in the wire's ordered list.
@@ -1492,7 +1492,7 @@ void traverseHierarchy(BRepGraphInc_Storage&              theStorage,
   }
 }
 
-//! Flatten hierarchy to face level for Append() — no entity registration.
+//! Flatten hierarchy to face level for Append() - no entity registration.
 void flattenToFaces(NCollection_Vector<FaceLocalData>& theFaceData,
                     const TopoDS_Shape&                theCurrentShape,
                     const TopLoc_Location&             theParentGlobalLoc)

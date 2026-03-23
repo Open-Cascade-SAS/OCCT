@@ -22,7 +22,7 @@
 //! over BRepGraphInc entity structs. This decouples consumer code from the
 //! internal storage layout, allowing the incidence implementation to evolve
 //! without breaking the BRepGraph public interface.
-//! The legacy Usage layer has been removed — per-occurrence data
+//! The legacy Usage layer has been removed - per-occurrence data
 //! (orientation, location) lives on incidence refs (FaceRef, ShellRef, etc.).
 namespace BRepGraph_TopoNode
 {

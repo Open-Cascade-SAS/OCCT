@@ -54,7 +54,7 @@ public:
     return myValue;
   }
 
-  //! Direct write -- stores the value and marks clean.
+  //! Direct write - stores the value and marks clean.
   void Set(const T& theValue)
   {
     std::unique_lock<std::shared_mutex> aLock(myMutex);

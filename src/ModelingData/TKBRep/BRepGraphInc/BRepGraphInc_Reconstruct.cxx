@@ -278,7 +278,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage& theStora
       break;
     }
 
-    // CoEdge is not a standalone TopoDS shape — it is an edge-face binding.
+    // CoEdge is not a standalone TopoDS shape - it is an edge-face binding.
     // Product and Occurrence are assembly-level entities without direct TopoDS equivalents.
     case BRepGraph_NodeId::Kind::CoEdge:
     case BRepGraph_NodeId::Kind::Product:
@@ -299,7 +299,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
   if (theFaceIdx < 0 || theFaceIdx >= theStorage.NbFaces())
     return TopoDS_Shape();
 
-  // Check cache first — 1 NodeId = 1 TShape.
+  // Check cache first - 1 NodeId = 1 TShape.
   BRepGraph_NodeId aFaceNodeId = BRepGraph_NodeId::Face(theFaceIdx);
   const TopoDS_Shape* aCachedFace = theCache.Seek(aFaceNodeId);
   if (aCachedFace != nullptr)
@@ -500,7 +500,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
     }
 
     // Attach PCurves/polygons for THIS face context onto shared edge TShapes.
-    // Each CoEdge carries its PCurve directly — no need to scan edge.PCurves by face.
+    // Each CoEdge carries its PCurve directly - no need to scan edge.PCurves by face.
     // The edge must temporarily carry its composed face-hierarchy location so that
     // BRep_Builder::UpdateEdge computes the correct CurveRepresentation storage key.
     // Without this, PCurves stored with Identity location become unfindable when
@@ -520,7 +520,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
       // UpdateEdge computes: stored_loc = L.Predivided(E.Location()) = L * E.Loc^-1.
       // With L = Identity and E.Loc = aEdgeInFaceLoc:
       //   stored_loc = aEdgeInFaceLoc^-1
-      // Later, BRep_Tool search computes the same loc from face/wire/edge context. ✓
+      // Later, BRep_Tool search computes the same loc from face/wire/edge context. OK
       if (!aEdgeInFaceLoc.IsIdentity())
         anEdge.Location(aEdgeInFaceLoc);
 

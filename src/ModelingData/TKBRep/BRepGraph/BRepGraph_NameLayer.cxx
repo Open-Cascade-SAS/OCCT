@@ -83,7 +83,7 @@ void BRepGraph_NameLayer::OnCompact(
 
 void BRepGraph_NameLayer::InvalidateAll()
 {
-  // NameLayer stores concrete values, not cached computations — nothing to invalidate.
+  // NameLayer stores concrete values, not cached computations - nothing to invalidate.
 }
 
 //=================================================================================================

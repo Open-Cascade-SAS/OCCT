@@ -59,13 +59,13 @@ TEST_F(BRepGraphMutationGenTest, MutationGen_DeferredMode)
 
   myGraph.EndDeferredInvalidation();
 
-  // Still 1 after flush — flush doesn't re-increment.
+  // Still 1 after flush - flush doesn't re-increment.
   EXPECT_EQ(myGraph.Defs().Edge(0).MutationGen, 1u);
 }
 
 TEST_F(BRepGraphMutationGenTest, MutationGen_PropagatedParent_NotIncremented)
 {
-  // Mutate an edge — parent wire/face/shell/solid get IsModified via propagation,
+  // Mutate an edge - parent wire/face/shell/solid get IsModified via propagation,
   // but their MutationGen must stay 0 (they weren't directly mutated).
   const int aNbWires  = myGraph.Defs().NbWires();
   const int aNbFaces  = myGraph.Defs().NbFaces();
@@ -88,7 +88,7 @@ TEST_F(BRepGraphMutationGenTest, MutationGen_PropagatedParent_NotIncremented)
 
 TEST_F(BRepGraphMutationGenTest, MutationGen_DeferredPropagatedParent_NotIncremented)
 {
-  // Same as above but in deferred mode — propagation on flush must not
+  // Same as above but in deferred mode - propagation on flush must not
   // increment MutationGen on parents.
   myGraph.BeginDeferredInvalidation();
   myGraph.Mut().EdgeDef(0)->Tolerance = 0.5;

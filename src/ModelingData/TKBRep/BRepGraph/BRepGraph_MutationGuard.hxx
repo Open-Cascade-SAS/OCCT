@@ -25,7 +25,7 @@
 //! no partial mutations are visible outside the guard scope.
 //!
 //! Re-entrant: if deferred mode is already active (e.g., nested guard),
-//! the inner guard is a no-op — only the outermost guard flushes and commits.
+//! the inner guard is a no-op - only the outermost guard flushes and commits.
 //!
 //! Usage:
 //! @code

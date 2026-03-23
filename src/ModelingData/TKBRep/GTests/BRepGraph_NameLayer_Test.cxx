@@ -71,7 +71,7 @@ TEST(BRepGraph_NameLayerTest, RegisterReplacesExisting)
 
   occ::handle<BRepGraph_Layer> aFound = aGraph.FindLayer("Name");
   ASSERT_FALSE(aFound.IsNull());
-  // Layer2 replaced Layer1 — Layer2 has no names.
+  // Layer2 replaced Layer1 - Layer2 has no names.
   occ::handle<BRepGraph_NameLayer> aCast = occ::down_cast<BRepGraph_NameLayer>(aFound);
   ASSERT_FALSE(aCast.IsNull());
   EXPECT_EQ(aCast->NbNames(), 0);
@@ -178,7 +178,7 @@ TEST(BRepGraph_NameLayerTest, Clear)
 }
 
 // ============================================================
-// OnNodeRemoved — Dispatch via Builder
+// OnNodeRemoved - Dispatch via Builder
 // ============================================================
 
 TEST(BRepGraph_NameLayerTest, OnNodeRemoved_PureDeletion)
@@ -244,7 +244,7 @@ TEST(BRepGraph_NameLayerTest, OnNodeRemoved_NeitherHasName)
   occ::handle<BRepGraph_NameLayer> aLayer = new BRepGraph_NameLayer();
   aLayer->SetNodeName(BRepGraph_NodeId::Face(5), "Unrelated");
 
-  // Removing a node that has no name — should not crash or affect other names.
+  // Removing a node that has no name - should not crash or affect other names.
   aLayer->OnNodeRemoved(BRepGraph_NodeId::Edge(0), BRepGraph_NodeId::Edge(1));
 
   EXPECT_EQ(aLayer->NbNames(), 1);
@@ -346,7 +346,7 @@ TEST(BRepGraph_NameLayerTest, MultipleLayers_RemoveWithReplacement)
 }
 
 // ============================================================
-// OnCompact — direct callback
+// OnCompact - direct callback
 // ============================================================
 
 TEST(BRepGraph_NameLayerTest, OnCompact_RemapsNodeIds)
@@ -458,7 +458,7 @@ TEST(BRepGraph_NameLayerTest, OnCompact_CompoundNodesRemapped)
 }
 
 // ============================================================
-// InvalidateAll — no-op for value-based layer
+// InvalidateAll - no-op for value-based layer
 // ============================================================
 
 TEST(BRepGraph_NameLayerTest, InvalidateAll_PreservesData)
@@ -513,7 +513,7 @@ TEST(BRepGraph_NameLayerTest, RemoveSubgraph_DispatchesForEachNode)
   const BRepGraph_NodeId aFaceId = BRepGraph_NodeId::Face(0);
   aGraph.Builder().RemoveSubgraph(aFaceId);
 
-  // Face + its wire(s) + edges + vertices — at least 4 removals.
+  // Face + its wire(s) + edges + vertices - at least 4 removals.
   EXPECT_GE(aCounterLayer->myRemoveCount, 4);
 }
 

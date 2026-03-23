@@ -119,7 +119,7 @@ void BRepGraphInc_ReverseIndex::Build(
 
   // Edge -> Faces: derive from CoEdge.FaceDefId (replaces legacy PCurve-based derivation).
   // Seam edges have two CoEdges with same FaceDefId but opposite Sense.
-  // Deduplicate per edge using the edge→coedges index built above.
+  // Deduplicate per edge using the edge->coedges index built above.
   for (int anEdgeIdx = 0; anEdgeIdx < theEdges.Length(); ++anEdgeIdx)
   {
     if (theEdges.Value(anEdgeIdx).IsRemoved)

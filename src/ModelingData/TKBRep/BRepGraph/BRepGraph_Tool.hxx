@@ -32,7 +32,7 @@
 
 class Adaptor3d_CurveOnSurface;
 
-//! Centralized geometry access for BRepGraph — analogue of BRep_Tool.
+//! Centralized geometry access for BRepGraph - analogue of BRep_Tool.
 //!
 //! Geometry in BRepGraph is stored in the definition frame (representation
 //! Location baked via applyRepresentationLocation). Instance Locations live
@@ -288,14 +288,14 @@ public:
     //! @return true if PCurve exists
     Standard_EXPORT static bool HasPCurve(const BRepGraph& theGraph, const int theCoEdgeIdx);
 
-    //! Returns the raw PCurve handle by coedge index (no Location — UV space).
+    //! Returns the raw PCurve handle by coedge index (no Location - UV space).
     //! @param[in] theGraph     source graph
     //! @param[in] theCoEdgeIdx zero-based coedge definition index
     //! @return curve handle, or null handle if no PCurve
     Standard_EXPORT static const occ::handle<Geom2d_Curve>& PCurve(const BRepGraph& theGraph,
                                                                    const int        theCoEdgeIdx);
 
-    //! Returns the raw PCurve handle from a CoEdgeEntity (no Location — UV space).
+    //! Returns the raw PCurve handle from a CoEdgeEntity (no Location - UV space).
     //! @param[in] theGraph  source graph
     //! @param[in] theCoEdge coedge entity reference
     //! @return curve handle, or null handle if no PCurve

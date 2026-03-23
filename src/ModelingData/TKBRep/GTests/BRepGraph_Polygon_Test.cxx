@@ -95,7 +95,7 @@ TEST(BRepGraph_PolygonTest, Polygon3D_Captured_WhenPresent)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  // Count Polygon3D on edges — matches what BRep_Tool reports for the original shape.
+  // Count Polygon3D on edges - matches what BRep_Tool reports for the original shape.
   int aNbPoly3DGraph = 0;
   int aNbPoly3DOrig  = 0;
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
@@ -273,7 +273,7 @@ TEST(BRepGraph_PolygonTest, VertexPointRepresentations_StructurallyValid)
       EXPECT_TRUE(aVtx.PointsOnPCurve.Value(i).FaceDefId.IsValid());
   }
 
-  // Just verify we can query — exact count depends on shape.
+  // Just verify we can query - exact count depends on shape.
   EXPECT_GE(aNbPointsOnCurve + aNbPointsOnSurface + aNbPointsOnPCurve, 0);
 }
 

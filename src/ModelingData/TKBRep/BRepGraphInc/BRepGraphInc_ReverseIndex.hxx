@@ -107,7 +107,7 @@ public:
     return seekVec(myEdgeToCoEdges, theEdgeIdx);
   }
 
-  //! Return cached face count for an edge — O(1).
+  //! Return cached face count for an edge - O(1).
   //! Populated during Build() and updated incrementally by BindEdgeToFace().
   int FaceCountOfEdge(const int theEdgeIdx) const
   {

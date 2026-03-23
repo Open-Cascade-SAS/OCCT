@@ -433,7 +433,7 @@ TEST_P(BRepGraphBulkValidation, RoundTrip)
   EXPECT_EQ(aReconCounts.NbVertices, anOrigCounts.NbVertices)
     << "Vertex count mismatch: " << aFilePath;
 
-  // Step 10: BRepCheck on reconstructed — expect same validity as original
+  // Step 10: BRepCheck on reconstructed - expect same validity as original
   BRepCheck_Analyzer aReconChecker(aReconShape);
   const bool         isReconValid = aReconChecker.IsValid();
   const std::string  anOrigInvalidityTypes = invalidityTypesToString(anOrigChecker, anOrigShape);

@@ -443,14 +443,14 @@ void BRepGraph::EndDeferredInvalidation()
   myData->myDeferredMode = false;
 
   // Bulk-clear all cached shapes. Safe because IsModified flags are already
-  // set on mutated entities — reconstruction will recompute as needed.
+  // set on mutated entities - reconstruction will recompute as needed.
   {
     std::unique_lock<std::shared_mutex> aWriteLock(myData->myCurrentShapesMutex);
     myData->myCurrentShapes.Clear();
   }
 
   // Propagate IsModified upward for all modified entities.
-  // Single iterative pass per kind: Edge→Wire→Face→Shell→Solid.
+  // Single iterative pass per kind: Edge->Wire->Face->Shell->Solid.
   // Skips already-propagated nodes: O(modified) not O(total).
   const BRepGraphInc_ReverseIndex& aRevIdx  = myData->myIncStorage.ReverseIndex();
   const int                        aNbEdges = myData->myIncStorage.NbEdges();
@@ -725,7 +725,7 @@ void BRepGraph::EndDeferredInvalidation()
 void BRepGraph::SetAllocator(const occ::handle<NCollection_BaseAllocator>& theAlloc)
 {
   Standard_ASSERT_VOID(!myData->myIsDone,
-                       "SetAllocator: must be called before Build() — existing graph state will be lost");
+                       "SetAllocator: must be called before Build() - existing graph state will be lost");
 
   myData->myAllocator = !theAlloc.IsNull() ? theAlloc : NCollection_BaseAllocator::CommonBaseAllocator();
 

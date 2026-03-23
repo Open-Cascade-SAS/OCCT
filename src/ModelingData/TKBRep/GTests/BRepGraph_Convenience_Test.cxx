@@ -221,7 +221,7 @@ TEST(BRepGraphConvenienceCylinderTest, FindPCurve_WithOrientation_SeamEdge)
       if (aCE.SeamPairIdx < 0)
         continue;
 
-      // Found seam edge -- verify FindPCurve returns distinct entries for each orientation.
+      // Found seam edge - verify FindPCurve returns distinct entries for each orientation.
       const BRepGraph_NodeId aFaceDefId = aCE.FaceDefId;
       const BRepGraphInc::CoEdgeEntity* aPCF =
         aDefs.FindPCurve(anEdgeDef.Id, aFaceDefId, TopAbs_FORWARD);

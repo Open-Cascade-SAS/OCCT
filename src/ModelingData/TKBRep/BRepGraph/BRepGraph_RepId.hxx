@@ -24,7 +24,7 @@
 //! The pair (Kind, Index) forms a unique representation identifier within one
 //! graph instance.  Default-constructed RepId has Index = -1 (invalid).
 //!
-//! Representations are NOT topology nodes — they hold geometry or mesh data
+//! Representations are NOT topology nodes - they hold geometry or mesh data
 //! referenced by topology entities.  They do not participate in BFS traversal,
 //! reverse index, or parent-child relationships.
 //!

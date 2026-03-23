@@ -28,7 +28,7 @@
 //! The coedges are reordered on construction (O(N^2) worst case for N coedges).
 //! For most wires this is fast since N is small (4-8 edges typically).
 //!
-//! Accepts any edge/coedge accessor — works with both BRepGraphInc_Storage and
+//! Accepts any edge/coedge accessor - works with both BRepGraphInc_Storage and
 //! higher-level views (BRepGraph::DefsView).
 //!
 //! Usage with BRepGraphInc_Storage:
@@ -133,7 +133,7 @@ private:
       }
       if (!aFound)
       {
-        // No connected coedge found — append next unused (disconnected wire segment).
+        // No connected coedge found - append next unused (disconnected wire segment).
         for (int i = 0; i < aNbEdges; ++i)
         {
           if (!aUsed.Value(i))

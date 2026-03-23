@@ -60,7 +60,7 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&              theGraph,
   aSubADef.Id = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, aSubAIdx);
   theSubA     = aSubADef.Id;
 
-  // Allocate SubB slot (note: Appended() may invalidate aSubADef reference -- use index).
+  // Allocate SubB slot (note: Appended() may invalidate aSubADef reference - use index).
   BRepGraph_TopoNode::EdgeDef& aSubBDef = theGraph.myData->myIncStorage.AppendEdge();
   const int                    aSubBIdx = theGraph.myData->myIncStorage.NbEdges() - 1;
   aSubBDef.Id = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, aSubBIdx);
@@ -314,7 +314,7 @@ void BRepGraph_Mutator::ReplaceEdgeInWire(BRepGraph&             theGraph,
 
       // Update edge-to-face: bind new edge, unbind old edge for all faces of this wire.
       // Wire-to-face mappings are built from FaceEntity.WireRefs during Build() and are
-      // stable across edge mutations — only face-level operations modify them.
+      // stable across edge mutations - only face-level operations modify them.
       const NCollection_Vector<int>* aFaces = aRevIdx.FacesOfWire(theWireDefIdx);
       if (aFaces != nullptr)
       {

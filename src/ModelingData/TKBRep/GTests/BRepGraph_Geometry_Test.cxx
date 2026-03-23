@@ -273,7 +273,7 @@ TEST(BRepGraphGeometry, GlobalTransform_CompoundWithLocation_NonIdentity)
   aGraph.Build(aCompound);
   ASSERT_TRUE(aGraph.IsDone());
 
-  // Moved() preserves TShape — one solid definition, two compound ChildRefs.
+  // Moved() preserves TShape - one solid definition, two compound ChildRefs.
   EXPECT_EQ(aGraph.Defs().NbSolids(), 1);
   // Verify the graph was built successfully.
   EXPECT_TRUE(aGraph.IsDone());
@@ -639,7 +639,7 @@ TEST(BRepGraphGeometry, Cylinder_SeamEdge_FindPCurve_WithOrientation)
       if (aCE.SeamPairIdx < 0)
         continue;
 
-      // This is a seam edge -- test oriented overload.
+      // This is a seam edge - test oriented overload.
       const BRepGraph_NodeId aFaceId = aCE.FaceDefId;
       const BRepGraphInc::CoEdgeEntity* aPC_Fwd =
         BRepGraph_Tool::Edge::FindPCurve(aGraph, i, aFaceId.Index, TopAbs_FORWARD);

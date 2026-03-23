@@ -38,7 +38,7 @@ public:
   //! Return the number of named nodes.
   int NbNames() const { return myNames.Extent(); }
 
-  // -- BRepGraph_Layer interface --
+  // - BRepGraph_Layer interface --
 
   Standard_EXPORT const TCollection_AsciiString& Name() const override;
 

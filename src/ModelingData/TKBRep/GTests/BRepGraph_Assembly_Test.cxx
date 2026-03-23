@@ -217,7 +217,7 @@ TEST(BRepGraphAssemblyTest, RemoveOccurrence_UpdatesParent)
 
   EXPECT_EQ(aGraph.Defs().NbComponents(aAssemblyId.Index), 1);
 
-  // Remove the occurrence — should update parent's OccurrenceRefs.
+  // Remove the occurrence - should update parent's OccurrenceRefs.
   aGraph.Builder().RemoveSubgraph(anOccId);
 
   EXPECT_TRUE(aGraph.Builder().IsRemoved(anOccId));
@@ -239,7 +239,7 @@ TEST(BRepGraphAssemblyTest, RemoveProduct_CascadeOccurrences)
   const BRepGraph_NodeId anOcc1 = aGraph.Builder().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location());
   const BRepGraph_NodeId anOcc2 = aGraph.Builder().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location());
 
-  // Remove the assembly product — cascades to its child occurrences.
+  // Remove the assembly product - cascades to its child occurrences.
   aGraph.Builder().RemoveSubgraph(aAssemblyId);
 
   EXPECT_TRUE(aGraph.Builder().IsRemoved(aAssemblyId));
@@ -517,7 +517,7 @@ TEST(BRepGraphAssemblyTest, RootProducts_RemovedOccurrence_DoesNotAffectRoots)
   EXPECT_EQ(aRoots.Length(), 1);
   EXPECT_EQ(aRoots.Value(0), aAssemblyId);
 
-  // Remove the occurrence — part should become a root again.
+  // Remove the occurrence - part should become a root again.
   aGraph.Builder().RemoveSubgraph(anOccId);
 
   aRoots = aGraph.Defs().RootProducts();
@@ -531,7 +531,7 @@ TEST(BRepGraphAssemblyTest, RootProducts_RemovedOccurrence_DoesNotAffectRoots)
 TEST(BRepGraphAssemblyTest, GlobalPlacement_DAGSharing_DistinctPathsGiveDistinctPlacements)
 {
   // Shared part placed twice under the same assembly at different locations.
-  // Each occurrence has its own placement chain — no ambiguity.
+  // Each occurrence has its own placement chain - no ambiguity.
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
@@ -679,6 +679,6 @@ TEST(BRepGraphAssemblyTest, GlobalPlacement_CircularParentOccurrence_Terminates)
 
   // GlobalPlacement must terminate despite the cycle (depth guard).
   TopLoc_Location aGlobal = aGraph.Spatial().GlobalPlacement(anOcc2.Index);
-  // We don't check the value — just that it doesn't hang.
+  // We don't check the value - just that it doesn't hang.
   (void)aGlobal;
 }

@@ -277,7 +277,7 @@ TEST(BRepGraphIncTest, Sphere_WireEdgeOrder_Diagnostic)
     break; // first face only
   }
 
-  // Dump BRep for comparison — write face-level for readability
+  // Dump BRep for comparison - write face-level for readability
   {
     TopExp_Explorer aOrigFaceExp(aSph, TopAbs_FACE);
     TopExp_Explorer aReconFaceExp(aRecon, TopAbs_FACE);

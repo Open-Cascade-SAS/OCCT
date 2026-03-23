@@ -54,7 +54,7 @@ public:
   //! true if the orientation of the modified
   //! face changes in the shells which contain it.
   //! Here, <RevFace> will return true if the
-  //! -- gp_Trsf is negative.
+  //! - gp_Trsf is negative.
   Standard_EXPORT bool NewSurface(const TopoDS_Face&         F,
                                   occ::handle<Geom_Surface>& S,
                                   TopLoc_Location&           L,

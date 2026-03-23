@@ -306,7 +306,7 @@ BRepGraph_NodeId BRepGraph::BuilderView::AddAssemblyProduct()
   BRepGraph_TopoNode::ProductDef& aProductDef = myGraph->myData->myIncStorage.AppendProduct();
   const int aIdx = myGraph->myData->myIncStorage.NbProducts() - 1;
   aProductDef.Id = BRepGraph_NodeId::Product(aIdx);
-  // ShapeRootId left invalid — this is an assembly.
+  // ShapeRootId left invalid - this is an assembly.
   myGraph->allocateUID(aProductDef.Id);
 
   return aProductDef.Id;

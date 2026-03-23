@@ -68,7 +68,7 @@ public:
   Standard_EXPORT int NbActiveCompounds() const;
   Standard_EXPORT int NbActiveCompSolids() const;
 
-  //! Return cached face count for an edge — O(1).
+  //! Return cached face count for an edge - O(1).
   //! @param[in] theEdgeDefIdx zero-based edge definition index
   Standard_EXPORT int FaceCountOfEdge(const int theEdgeDefIdx) const;
 

@@ -57,7 +57,7 @@ public:
   //! Called after Compact with a unified old->new remap map.
   //! Layer must remap all internal NodeId references using this map.
   //! The map covers all node kinds (Vertex through CompSolid and future extensions).
-  //! Nodes absent from the map were removed during compaction — layers should
+  //! Nodes absent from the map were removed during compaction - layers should
   //! drop data associated with those nodes.
   //! @param[in] theRemapMap maps old NodeId to new NodeId for all surviving nodes
   virtual void OnCompact(
@@ -73,7 +73,7 @@ public:
 
   //! Return a bitmask of BRepGraph_NodeId::Kind values this layer subscribes to.
   //! Only modification events matching subscribed kinds are dispatched.
-  //! Default: 0 (no subscription — no modification events received).
+  //! Default: 0 (no subscription - no modification events received).
   //! Override to receive OnNodeModified/OnNodesModified callbacks.
   //! The returned value must be constant for the lifetime of the layer.
   Standard_EXPORT virtual int SubscribedKinds() const;
@@ -87,7 +87,7 @@ public:
   //! Called after EndDeferredInvalidation() with all nodes modified during
   //! the deferred scope. Only dispatched if at least one modified node's kind
   //! matches SubscribedKinds(). The vector may contain nodes of kinds not
-  //! subscribed to — layers should filter internally if needed.
+  //! subscribed to - layers should filter internally if needed.
   //! Default: no-op.
   //! @param[in] theModifiedNodes all modified, non-removed nodes
   Standard_EXPORT virtual void OnNodesModified(

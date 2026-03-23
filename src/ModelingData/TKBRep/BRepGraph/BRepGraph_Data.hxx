@@ -45,8 +45,8 @@ struct BRepGraph_Data
 {
   occ::handle<NCollection_BaseAllocator> myAllocator;
 
-  //! Incidence-table storage — sole source of truth for all topology data,
-  //! original shapes, TShape→NodeId mapping, and UIDs.
+  //! Incidence-table storage - sole source of truth for all topology data,
+  //! original shapes, TShape->NodeId mapping, and UIDs.
   BRepGraphInc_Storage myIncStorage;
 
   //! Map-based RelEdge storage.
@@ -65,7 +65,7 @@ struct BRepGraph_Data
 
   bool myIsDone = false;
 
-  //! When true, markModified() only sets IsModified flags —
+  //! When true, markModified() only sets IsModified flags --
   //! no mutex acquisition and no upward propagation.
   std::atomic<bool> myDeferredMode{false};
 

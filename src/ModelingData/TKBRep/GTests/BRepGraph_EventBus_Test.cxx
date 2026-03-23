@@ -112,7 +112,7 @@ protected:
 
 TEST_F(BRepGraphEventBusTest, ZeroCost_NoSubscribers)
 {
-  // Mutate edge without any subscribing layer — verify no crash.
+  // Mutate edge without any subscribing layer - verify no crash.
   {
     auto aMut = myGraph.MutEdge(0);
     aMut->Tolerance = 0.5;
@@ -225,7 +225,7 @@ TEST_F(BRepGraphEventBusTest, DeferredMode_NoImmediateDispatch)
 
   myGraph.EndDeferredInvalidation();
 
-  // Immediate events still empty — only batch was dispatched.
+  // Immediate events still empty - only batch was dispatched.
   EXPECT_EQ(aLayer->myImmediateEvents.Length(), 0);
   EXPECT_EQ(aLayer->myBatchCallCount, 1);
 }
@@ -237,7 +237,7 @@ TEST_F(BRepGraphEventBusTest, UnregisterLayer_FlagUpdate)
     new BRepGraph_ModTrackingLayer("Tracker", aEdgeBit);
   myGraph.RegisterLayer(aLayer);
 
-  // Mutate — should dispatch.
+  // Mutate - should dispatch.
   {
     auto aMut = myGraph.MutEdge(0);
     aMut->Tolerance = 0.5;
@@ -248,7 +248,7 @@ TEST_F(BRepGraphEventBusTest, UnregisterLayer_FlagUpdate)
   myGraph.UnregisterLayer("Tracker");
   aLayer->Clear();
 
-  // Mutate again — should NOT dispatch (layer unregistered).
+  // Mutate again - should NOT dispatch (layer unregistered).
   {
     auto aMut = myGraph.MutEdge(1);
     aMut->Tolerance = 0.6;
@@ -289,7 +289,7 @@ TEST_F(BRepGraphEventBusTest, DefaultSubscribedKinds_Zero)
   // SubscribedKinds() == 0 for NameLayer (default).
   EXPECT_EQ(aNameLayer->SubscribedKinds(), 0);
 
-  // Mutate — NameLayer should not receive modification events.
+  // Mutate - NameLayer should not receive modification events.
   // (We just verify no crash; NameLayer has no event tracking.)
   {
     auto aMut = myGraph.MutEdge(0);
@@ -364,7 +364,7 @@ TEST_F(BRepGraphEventBusTest, KindBit_Helpers)
 
 TEST_F(BRepGraphEventBusTest, OverlappingSubscription_EdgeAndFace)
 {
-  // Layer subscribes to both Edge and Face — should receive events for both kinds.
+  // Layer subscribes to both Edge and Face - should receive events for both kinds.
   const int aEdgeFace = BRepGraph_Layer::KindBit(BRepGraph_NodeId::Kind::Edge)
                       | BRepGraph_Layer::KindBit(BRepGraph_NodeId::Kind::Face);
   occ::handle<BRepGraph_ModTrackingLayer> aLayer =

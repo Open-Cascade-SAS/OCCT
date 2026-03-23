@@ -81,7 +81,7 @@ const TopoDS_Shape& BRepGraph::ShapesView::OriginalOf(const BRepGraph_NodeId the
 {
   const TopoDS_Shape* aShape = myGraph->myData->myIncStorage.FindOriginal(theNode);
   if (aShape == nullptr)
-    throw Standard_ProgramError("BRepGraph::ShapesView::OriginalOf() -- no original shape.");
+    throw Standard_ProgramError("BRepGraph::ShapesView::OriginalOf() - no original shape.");
   return *aShape;
 }
 

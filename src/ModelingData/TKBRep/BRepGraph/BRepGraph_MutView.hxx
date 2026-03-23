@@ -111,7 +111,7 @@ public:
                                       const BRepGraph_NodeId  theTo,
                                       const BRepGraph_RelEdge::Kind theKind);
 
-  //! Finalize mutations — validates reverse index and active entity counts.
+  //! Finalize mutations - validates reverse index and active entity counts.
   Standard_EXPORT void CommitMutation();
 
 private:
