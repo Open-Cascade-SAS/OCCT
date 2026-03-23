@@ -373,47 +373,6 @@ int findRoot(NCollection_OrderedDataMap<int, int>& theParent, int theIdx)
 }
 
 // ---------------------------------------------------------------------------
-// Count distinct faces for an edge directly from its PCurve entries.
-// O(P^2) where P = NbPCurves, but P is typically 1-2 so this is effectively O(1).
-// Avoids the PackedMap overhead of RelEdgesView::FaceCountForEdge.
-// ---------------------------------------------------------------------------
-
-int countFacesForEdge(const BRepGraph_TopoNode::EdgeDef& theEdge)
-{
-  const int aNbPC = theEdge.PCurves.Length();
-  if (aNbPC <= 1)
-  {
-    return aNbPC;
-  }
-  if (aNbPC == 2)
-  {
-    return (theEdge.PCurves.Value(0).FaceDefId.Index == theEdge.PCurves.Value(1).FaceDefId.Index)
-             ? 1
-             : 2;
-  }
-  // General case (rare): count unique face IDs.
-  int aCount = 0;
-  for (int i = 0; i < aNbPC; ++i)
-  {
-    const int aFaceId = theEdge.PCurves.Value(i).FaceDefId.Index;
-    bool      isDup   = false;
-    for (int j = 0; j < i; ++j)
-    {
-      if (theEdge.PCurves.Value(j).FaceDefId.Index == aFaceId)
-      {
-        isDup = true;
-        break;
-      }
-    }
-    if (!isDup)
-    {
-      ++aCount;
-    }
-  }
-  return aCount;
-}
-
-// ---------------------------------------------------------------------------
 // Phase 1: Find free edges.
 // ---------------------------------------------------------------------------
 
@@ -432,8 +391,8 @@ NCollection_Array1<BRepGraph_NodeId> findFreeEdges(const BRepGraph& theGraph,
       continue;
     }
 
-    // Direct PCurve-based face count — O(1) for typical 1-2 PCurve edges.
-    const int aFaceCount = countFacesForEdge(anEdge);
+    // Cached face count from reverse index — O(1).
+    const int aFaceCount = aDefs.FaceCountOfEdge(anEdgeIdx);
 
     // Exclude seam edges: on a UV-closed surface (cylinder, sphere, torus) with
     // two PCurves on the same face. Surface closure is verified first via

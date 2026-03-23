@@ -50,6 +50,20 @@ public:
   //! Number of compsolid definitions.
   Standard_EXPORT int NbCompSolids() const;
 
+  //! Number of active (non-removed) definitions per kind.
+  Standard_EXPORT int NbActiveVertices() const;
+  Standard_EXPORT int NbActiveEdges() const;
+  Standard_EXPORT int NbActiveWires() const;
+  Standard_EXPORT int NbActiveFaces() const;
+  Standard_EXPORT int NbActiveShells() const;
+  Standard_EXPORT int NbActiveSolids() const;
+  Standard_EXPORT int NbActiveCompounds() const;
+  Standard_EXPORT int NbActiveCompSolids() const;
+
+  //! Return cached face count for an edge — O(1).
+  //! @param[in] theEdgeDefIdx zero-based edge definition index
+  Standard_EXPORT int FaceCountOfEdge(int theEdgeDefIdx) const;
+
   //! Access solid definition by index.
   //! @param[in] theIdx zero-based definition index
   Standard_EXPORT const BRepGraph_TopoNode::SolidDef& Solid(int theIdx) const;

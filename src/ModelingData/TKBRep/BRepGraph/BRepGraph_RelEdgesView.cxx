@@ -54,9 +54,10 @@ const NCollection_Vector<BRepGraph_RelEdge>* BRepGraph::RelEdgesView::InOf(
 
 int BRepGraph::RelEdgesView::FaceCountForEdge(int theEdgeDefIdx) const
 {
-  // Use the wire-based (topological) path: edge → wires → faces.
-  // The direct PCurve-based edge→faces path may disagree after mutations
-  // (e.g., sewing) where edges are placed into wires without full PCurve registration.
+  // Use the wire-based (topological) path: edge -> wires -> faces.
+  // This path remains correct after mutations (e.g., sewing AddPCurveToEdge)
+  // where the cached PCurve-based face count may be stale.
+  // For pre-mutation O(1) queries, use DefsView::FaceCountOfEdge() instead.
   const BRepGraphInc_ReverseIndex& aRevIdx = myGraph->myData->myIncStorage.ReverseIndex();
   const NCollection_Vector<int>& aWires = aRevIdx.WiresOfEdgeRef(theEdgeDefIdx);
   NCollection_PackedMap<int> aFaceSet;

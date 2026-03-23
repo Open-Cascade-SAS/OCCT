@@ -59,6 +59,24 @@ public:
                              const NCollection_Vector<BRepGraphInc::ShellEntity>& theShells,
                              const NCollection_Vector<BRepGraphInc::SolidEntity>& theSolids);
 
+  //! Incrementally update reverse indices for entities appended after a previous Build().
+  //! Only processes entities from the old counts to the current vector lengths.
+  //! @param[in] theOldNbEdges   edge count before the append operation
+  //! @param[in] theOldNbWires   wire count before the append operation
+  //! @param[in] theOldNbFaces   face count before the append operation
+  //! @param[in] theOldNbShells  shell count before the append operation
+  //! @param[in] theOldNbSolids  solid count before the append operation
+  Standard_EXPORT void BuildDelta(const NCollection_Vector<BRepGraphInc::EdgeEntity>&  theEdges,
+                                  const NCollection_Vector<BRepGraphInc::WireEntity>&  theWires,
+                                  const NCollection_Vector<BRepGraphInc::FaceEntity>&  theFaces,
+                                  const NCollection_Vector<BRepGraphInc::ShellEntity>& theShells,
+                                  const NCollection_Vector<BRepGraphInc::SolidEntity>& theSolids,
+                                  int theOldNbEdges,
+                                  int theOldNbWires,
+                                  int theOldNbFaces,
+                                  int theOldNbShells,
+                                  int theOldNbSolids);
+
   //! Return wire indices containing the given edge.
   const NCollection_Vector<int>* WiresOfEdge(int theEdgeIdx) const
   {
@@ -69,6 +87,15 @@ public:
   const NCollection_Vector<int>* FacesOfEdge(int theEdgeIdx) const
   {
     return seekVec(myEdgeToFaces, theEdgeIdx);
+  }
+
+  //! Return cached face count for an edge — O(1).
+  //! Populated during Build() and updated incrementally by BindEdgeToFace().
+  int FaceCountOfEdge(int theEdgeIdx) const
+  {
+    if (theEdgeIdx < 0 || theEdgeIdx >= myEdgeFaceCount.Length())
+      return 0;
+    return myEdgeFaceCount.Value(theEdgeIdx);
   }
 
   //! Return edge indices incident to the given vertex.
@@ -186,6 +213,8 @@ private:
   IndexTable myWireToFaces;
   IndexTable myFaceToShells;
   IndexTable myShellToSolids;
+
+  NCollection_Vector<int> myEdgeFaceCount; //!< Cached face count per edge, O(1) lookup.
 };
 
 #endif // _BRepGraphInc_ReverseIndex_HeaderFile

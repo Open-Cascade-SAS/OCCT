@@ -79,6 +79,69 @@ int BRepGraph::DefsView::NbCompSolids() const
 
 //=================================================================================================
 
+int BRepGraph::DefsView::NbActiveVertices() const
+{
+  return myGraph->myData->myIncStorage.NbActiveVertices();
+}
+
+//=================================================================================================
+
+int BRepGraph::DefsView::NbActiveEdges() const
+{
+  return myGraph->myData->myIncStorage.NbActiveEdges();
+}
+
+//=================================================================================================
+
+int BRepGraph::DefsView::NbActiveWires() const
+{
+  return myGraph->myData->myIncStorage.NbActiveWires();
+}
+
+//=================================================================================================
+
+int BRepGraph::DefsView::NbActiveFaces() const
+{
+  return myGraph->myData->myIncStorage.NbActiveFaces();
+}
+
+//=================================================================================================
+
+int BRepGraph::DefsView::NbActiveShells() const
+{
+  return myGraph->myData->myIncStorage.NbActiveShells();
+}
+
+//=================================================================================================
+
+int BRepGraph::DefsView::NbActiveSolids() const
+{
+  return myGraph->myData->myIncStorage.NbActiveSolids();
+}
+
+//=================================================================================================
+
+int BRepGraph::DefsView::NbActiveCompounds() const
+{
+  return myGraph->myData->myIncStorage.NbActiveCompounds();
+}
+
+//=================================================================================================
+
+int BRepGraph::DefsView::NbActiveCompSolids() const
+{
+  return myGraph->myData->myIncStorage.NbActiveCompSolids();
+}
+
+//=================================================================================================
+
+int BRepGraph::DefsView::FaceCountOfEdge(int theEdgeDefIdx) const
+{
+  return myGraph->myData->myIncStorage.ReverseIndex().FaceCountOfEdge(theEdgeDefIdx);
+}
+
+//=================================================================================================
+
 const BRepGraph_TopoNode::SolidDef& BRepGraph::DefsView::Solid(int theIdx) const
 {
   return myGraph->myData->myIncStorage.Solid(theIdx);

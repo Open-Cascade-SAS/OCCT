@@ -27,6 +27,7 @@ void BRepGraphInc_ReverseIndex::Clear()
   myWireToFaces.Clear();
   myFaceToShells.Clear();
   myShellToSolids.Clear();
+  myEdgeFaceCount.Clear();
 }
 
 //=================================================================================================
@@ -141,6 +142,14 @@ void BRepGraphInc_ReverseIndex::Build(
     }
   }
 
+  // Populate cached face counts from the edge-to-faces index.
+  myEdgeFaceCount.Clear();
+  for (int i = 0; i < theEdges.Length(); ++i)
+  {
+    const NCollection_Vector<int>* aFaceVec = seekVec(myEdgeToFaces, i);
+    myEdgeFaceCount.Append(aFaceVec != nullptr ? aFaceVec->Length() : 0);
+  }
+
   // Wire -> Faces: scan face entities for their wire refs.
   for (int aFaceIdx = 0; aFaceIdx < theFaces.Length(); ++aFaceIdx)
   {
@@ -174,6 +183,152 @@ void BRepGraphInc_ReverseIndex::Build(
     for (int i = 0; i < aSolid.ShellRefs.Length(); ++i)
     {
       appendDirect(myShellToSolids, aSolid.ShellRefs.Value(i).ShellIdx, aSolidIdx);
+    }
+  }
+}
+
+//=================================================================================================
+
+void BRepGraphInc_ReverseIndex::BuildDelta(
+  const NCollection_Vector<BRepGraphInc::EdgeEntity>&  theEdges,
+  const NCollection_Vector<BRepGraphInc::WireEntity>&  theWires,
+  const NCollection_Vector<BRepGraphInc::FaceEntity>&  theFaces,
+  const NCollection_Vector<BRepGraphInc::ShellEntity>& theShells,
+  const NCollection_Vector<BRepGraphInc::SolidEntity>& theSolids,
+  int theOldNbEdges,
+  int theOldNbWires,
+  int theOldNbFaces,
+  int theOldNbShells,
+  int theOldNbSolids)
+{
+  // Scan new edges for max vertex index to possibly extend myVertexToEdges.
+  int aMaxVertexIdx = myVertexToEdges.Length() - 1;
+  for (int anEdgeIdx = theOldNbEdges; anEdgeIdx < theEdges.Length(); ++anEdgeIdx)
+  {
+    const BRepGraphInc::EdgeEntity& anEdge = theEdges.Value(anEdgeIdx);
+    if (anEdge.IsRemoved)
+      continue;
+    if (anEdge.StartVertexIdx > aMaxVertexIdx)
+      aMaxVertexIdx = anEdge.StartVertexIdx;
+    if (anEdge.EndVertexIdx > aMaxVertexIdx)
+      aMaxVertexIdx = anEdge.EndVertexIdx;
+  }
+
+  // Extend outer vectors if needed (pre-size for new key ranges).
+  while (myVertexToEdges.Length() <= aMaxVertexIdx)
+    myVertexToEdges.Appended();
+  while (myEdgeToWires.Length() < theEdges.Length())
+    myEdgeToWires.Appended();
+  while (myEdgeToFaces.Length() < theEdges.Length())
+    myEdgeToFaces.Appended();
+  while (myWireToFaces.Length() < theWires.Length())
+    myWireToFaces.Appended();
+  while (myFaceToShells.Length() < theFaces.Length())
+    myFaceToShells.Appended();
+  while (myShellToSolids.Length() < theShells.Length())
+    myShellToSolids.Appended();
+
+  // Vertex -> Edges: only new edges.
+  for (int anEdgeIdx = theOldNbEdges; anEdgeIdx < theEdges.Length(); ++anEdgeIdx)
+  {
+    const BRepGraphInc::EdgeEntity& anEdge = theEdges.Value(anEdgeIdx);
+    if (anEdge.IsRemoved)
+      continue;
+    if (anEdge.StartVertexIdx >= 0)
+      appendUnique(myVertexToEdges, anEdge.StartVertexIdx, anEdgeIdx);
+    if (anEdge.EndVertexIdx >= 0 && anEdge.EndVertexIdx != anEdge.StartVertexIdx)
+      appendUnique(myVertexToEdges, anEdge.EndVertexIdx, anEdgeIdx);
+  }
+
+  // Edge -> Wires: only new wires (new wires may reference old edges too).
+  for (int aWireIdx = theOldNbWires; aWireIdx < theWires.Length(); ++aWireIdx)
+  {
+    const BRepGraphInc::WireEntity& aWire = theWires.Value(aWireIdx);
+    if (aWire.IsRemoved)
+      continue;
+    for (int i = 0; i < aWire.EdgeRefs.Length(); ++i)
+    {
+      appendUnique(myEdgeToWires, aWire.EdgeRefs.Value(i).EdgeIdx, aWireIdx);
+    }
+  }
+
+  // Edge -> Faces: only new edges (derive from their PCurves).
+  for (int anEdgeIdx = theOldNbEdges; anEdgeIdx < theEdges.Length(); ++anEdgeIdx)
+  {
+    const BRepGraphInc::EdgeEntity& anEdge = theEdges.Value(anEdgeIdx);
+    if (anEdge.IsRemoved)
+      continue;
+    const int aNbPC = anEdge.PCurves.Length();
+    if (aNbPC == 0)
+      continue;
+
+    NCollection_LocalArray<int, 8> aFaces(aNbPC);
+    for (int i = 0; i < aNbPC; ++i)
+      aFaces[i] = anEdge.PCurves.Value(i).FaceDefId.Index;
+
+    for (int i = 1; i < aNbPC; ++i)
+    {
+      const int aKey = aFaces[i];
+      int j = i - 1;
+      while (j >= 0 && aFaces[j] > aKey)
+      {
+        aFaces[j + 1] = aFaces[j];
+        --j;
+      }
+      aFaces[j + 1] = aKey;
+    }
+
+    int aPrev = -1;
+    for (int i = 0; i < aNbPC; ++i)
+    {
+      if (aFaces[i] != aPrev)
+      {
+        appendUnique(myEdgeToFaces, anEdgeIdx, aFaces[i]);
+        aPrev = aFaces[i];
+      }
+    }
+  }
+
+  // Update cached face counts for new edges (SetValue auto-expands with 0).
+  for (int anEdgeIdx = theOldNbEdges; anEdgeIdx < theEdges.Length(); ++anEdgeIdx)
+  {
+    const NCollection_Vector<int>* aFaceVec = seekVec(myEdgeToFaces, anEdgeIdx);
+    myEdgeFaceCount.SetValue(anEdgeIdx, aFaceVec != nullptr ? aFaceVec->Length() : 0);
+  }
+
+  // Wire -> Faces: only new faces (new faces may reference old wires too).
+  for (int aFaceIdx = theOldNbFaces; aFaceIdx < theFaces.Length(); ++aFaceIdx)
+  {
+    const BRepGraphInc::FaceEntity& aFace = theFaces.Value(aFaceIdx);
+    if (aFace.IsRemoved)
+      continue;
+    for (int i = 0; i < aFace.WireRefs.Length(); ++i)
+    {
+      appendUnique(myWireToFaces, aFace.WireRefs.Value(i).WireIdx, aFaceIdx);
+    }
+  }
+
+  // Face -> Shells: only new shells.
+  for (int aShellIdx = theOldNbShells; aShellIdx < theShells.Length(); ++aShellIdx)
+  {
+    const BRepGraphInc::ShellEntity& aShell = theShells.Value(aShellIdx);
+    if (aShell.IsRemoved)
+      continue;
+    for (int i = 0; i < aShell.FaceRefs.Length(); ++i)
+    {
+      appendUnique(myFaceToShells, aShell.FaceRefs.Value(i).FaceIdx, aShellIdx);
+    }
+  }
+
+  // Shell -> Solids: only new solids.
+  for (int aSolidIdx = theOldNbSolids; aSolidIdx < theSolids.Length(); ++aSolidIdx)
+  {
+    const BRepGraphInc::SolidEntity& aSolid = theSolids.Value(aSolidIdx);
+    if (aSolid.IsRemoved)
+      continue;
+    for (int i = 0; i < aSolid.ShellRefs.Length(); ++i)
+    {
+      appendUnique(myShellToSolids, aSolid.ShellRefs.Value(i).ShellIdx, aSolidIdx);
     }
   }
 }
@@ -284,7 +439,25 @@ void BRepGraphInc_ReverseIndex::UnbindVertexFromEdge(int theVertexIdx, int theEd
 
 void BRepGraphInc_ReverseIndex::BindEdgeToFace(int theEdgeIdx, int theFaceIdx)
 {
+  // Detect new binding by checking vector size before/after appendUnique.
+  const int aSizeBefore = (theEdgeIdx < myEdgeToFaces.Length())
+                            ? myEdgeToFaces.Value(theEdgeIdx).Length()
+                            : 0;
   appendUnique(myEdgeToFaces, theEdgeIdx, theFaceIdx);
+  const int aSizeAfter = myEdgeToFaces.Value(theEdgeIdx).Length();
+
+  if (aSizeAfter > aSizeBefore)
+  {
+    // SetValue auto-expands with 0-initialized entries.
+    if (theEdgeIdx >= myEdgeFaceCount.Length())
+    {
+      myEdgeFaceCount.SetValue(theEdgeIdx, 1);
+    }
+    else
+    {
+      myEdgeFaceCount.ChangeValue(theEdgeIdx) += 1;
+    }
+  }
 }
 
 //=================================================================================================

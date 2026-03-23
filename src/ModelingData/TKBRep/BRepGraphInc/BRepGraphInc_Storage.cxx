@@ -110,9 +110,34 @@ void BRepGraphInc_Storage::Clear()
   myTShapeToNodeId.Clear();
   myOriginalShapes.Clear();
   ResetAllUIDs();
+  myNbActiveVertices   = 0;
+  myNbActiveEdges      = 0;
+  myNbActiveWires      = 0;
+  myNbActiveFaces      = 0;
+  myNbActiveShells     = 0;
+  myNbActiveSolids     = 0;
+  myNbActiveCompounds  = 0;
+  myNbActiveCompSolids = 0;
   myIsDone             = false;
   myHasRegularities    = false;
   myHasVertexPointReps = false;
+}
+
+//=================================================================================================
+
+void BRepGraphInc_Storage::DecrementActiveCount(BRepGraph_NodeId::Kind theKind)
+{
+  switch (theKind)
+  {
+    case BRepGraph_NodeId::Kind::Vertex:    Standard_ASSERT_VOID(myNbActiveVertices   > 0, "DecrementActiveCount: underflow"); --myNbActiveVertices;   break;
+    case BRepGraph_NodeId::Kind::Edge:      Standard_ASSERT_VOID(myNbActiveEdges      > 0, "DecrementActiveCount: underflow"); --myNbActiveEdges;      break;
+    case BRepGraph_NodeId::Kind::Wire:      Standard_ASSERT_VOID(myNbActiveWires      > 0, "DecrementActiveCount: underflow"); --myNbActiveWires;      break;
+    case BRepGraph_NodeId::Kind::Face:      Standard_ASSERT_VOID(myNbActiveFaces      > 0, "DecrementActiveCount: underflow"); --myNbActiveFaces;      break;
+    case BRepGraph_NodeId::Kind::Shell:     Standard_ASSERT_VOID(myNbActiveShells     > 0, "DecrementActiveCount: underflow"); --myNbActiveShells;     break;
+    case BRepGraph_NodeId::Kind::Solid:     Standard_ASSERT_VOID(myNbActiveSolids     > 0, "DecrementActiveCount: underflow"); --myNbActiveSolids;     break;
+    case BRepGraph_NodeId::Kind::Compound:  Standard_ASSERT_VOID(myNbActiveCompounds  > 0, "DecrementActiveCount: underflow"); --myNbActiveCompounds;  break;
+    case BRepGraph_NodeId::Kind::CompSolid: Standard_ASSERT_VOID(myNbActiveCompSolids > 0, "DecrementActiveCount: underflow"); --myNbActiveCompSolids; break;
+  }
 }
 
 //=================================================================================================
@@ -121,6 +146,19 @@ void BRepGraphInc_Storage::BuildReverseIndex()
 {
   myReverseIdx.SetAllocator(myAllocator);
   myReverseIdx.Build(myEdges, myWires, myFaces, myShells, mySolids);
+}
+
+//=================================================================================================
+
+void BRepGraphInc_Storage::BuildDeltaReverseIndex(int theOldNbEdges,
+                                                   int theOldNbWires,
+                                                   int theOldNbFaces,
+                                                   int theOldNbShells,
+                                                   int theOldNbSolids)
+{
+  myReverseIdx.BuildDelta(myEdges, myWires, myFaces, myShells, mySolids,
+                          theOldNbEdges, theOldNbWires, theOldNbFaces,
+                          theOldNbShells, theOldNbSolids);
 }
 
 //=================================================================================================

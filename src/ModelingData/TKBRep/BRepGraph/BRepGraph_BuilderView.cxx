@@ -282,8 +282,11 @@ void BRepGraph::BuilderView::RemoveNode(BRepGraph_NodeId theNode)
   // Mark removed on the entity (which is the sole definition store).
   BRepGraph_TopoNode::BaseDef* aDef =
     const_cast<BRepGraph_TopoNode::BaseDef*>(myGraph->TopoDef(theNode));
-  if (aDef != nullptr)
+  if (aDef != nullptr && !aDef->IsRemoved)
+  {
     aDef->IsRemoved = true;
+    myGraph->myData->myIncStorage.DecrementActiveCount(theNode.NodeKind);
+  }
 
   BRepGraph_BackRefManager::ClearRelEdges(*myGraph, theNode);
 

@@ -45,7 +45,7 @@ public:
   //! Return the allocator used for internal collections.
   const Handle(NCollection_BaseAllocator)& Allocator() const { return myAllocator; }
 
-  // ------ Count accessors ------
+  // ------ Count accessors (total including removed) ------
 
   int NbVertices()   const { return myVertices.Length(); }
   int NbEdges()      const { return myEdges.Length(); }
@@ -55,6 +55,20 @@ public:
   int NbSolids()     const { return mySolids.Length(); }
   int NbCompounds()  const { return myCompounds.Length(); }
   int NbCompSolids() const { return myCompSolids.Length(); }
+
+  // ------ Active count accessors (excluding removed nodes) ------
+
+  int NbActiveVertices()   const { return myNbActiveVertices; }
+  int NbActiveEdges()      const { return myNbActiveEdges; }
+  int NbActiveWires()      const { return myNbActiveWires; }
+  int NbActiveFaces()      const { return myNbActiveFaces; }
+  int NbActiveShells()     const { return myNbActiveShells; }
+  int NbActiveSolids()     const { return myNbActiveSolids; }
+  int NbActiveCompounds()  const { return myNbActiveCompounds; }
+  int NbActiveCompSolids() const { return myNbActiveCompSolids; }
+
+  //! Decrement the active count for the given node kind.
+  void DecrementActiveCount(BRepGraph_NodeId::Kind theKind);
 
   // ------ Const entity access ------
 
@@ -81,14 +95,14 @@ public:
   // ------ Append (returns mutable ref to newly created entity) ------
   // Inner vectors of each entity are initialized with the storage allocator.
 
-  BRepGraphInc::VertexEntity&    AppendVertex()    { auto& e = myVertices.Appended();   e.InitVectors(myAllocator); return e; }
-  BRepGraphInc::EdgeEntity&      AppendEdge()      { auto& e = myEdges.Appended();      e.InitVectors(myAllocator); return e; }
-  BRepGraphInc::WireEntity&      AppendWire()      { auto& e = myWires.Appended();      e.InitVectors(myAllocator); return e; }
-  BRepGraphInc::FaceEntity&      AppendFace()      { auto& e = myFaces.Appended();      e.InitVectors(myAllocator); return e; }
-  BRepGraphInc::ShellEntity&     AppendShell()     { auto& e = myShells.Appended();     e.InitVectors(myAllocator); return e; }
-  BRepGraphInc::SolidEntity&     AppendSolid()     { auto& e = mySolids.Appended();     e.InitVectors(myAllocator); return e; }
-  BRepGraphInc::CompoundEntity&  AppendCompound()  { auto& e = myCompounds.Appended();  e.InitVectors(myAllocator); return e; }
-  BRepGraphInc::CompSolidEntity& AppendCompSolid() { auto& e = myCompSolids.Appended(); e.InitVectors(myAllocator); return e; }
+  BRepGraphInc::VertexEntity&    AppendVertex()    { ++myNbActiveVertices;   auto& e = myVertices.Appended();   e.InitVectors(myAllocator); return e; }
+  BRepGraphInc::EdgeEntity&      AppendEdge()      { ++myNbActiveEdges;      auto& e = myEdges.Appended();      e.InitVectors(myAllocator); return e; }
+  BRepGraphInc::WireEntity&      AppendWire()      { ++myNbActiveWires;      auto& e = myWires.Appended();      e.InitVectors(myAllocator); return e; }
+  BRepGraphInc::FaceEntity&      AppendFace()      { ++myNbActiveFaces;      auto& e = myFaces.Appended();      e.InitVectors(myAllocator); return e; }
+  BRepGraphInc::ShellEntity&     AppendShell()     { ++myNbActiveShells;     auto& e = myShells.Appended();     e.InitVectors(myAllocator); return e; }
+  BRepGraphInc::SolidEntity&     AppendSolid()     { ++myNbActiveSolids;     auto& e = mySolids.Appended();     e.InitVectors(myAllocator); return e; }
+  BRepGraphInc::CompoundEntity&  AppendCompound()  { ++myNbActiveCompounds;  auto& e = myCompounds.Appended();  e.InitVectors(myAllocator); return e; }
+  BRepGraphInc::CompSolidEntity& AppendCompSolid() { ++myNbActiveCompSolids; auto& e = myCompSolids.Appended(); e.InitVectors(myAllocator); return e; }
 
   // ------ UID access (Kind-dispatched, eliminates 8-way switches in consumers) ------
 
@@ -163,6 +177,14 @@ public:
   //! Call after population is complete.
   Standard_EXPORT void BuildReverseIndex();
 
+  //! Incrementally update reverse indices for entities appended after a previous Build.
+  //! Only processes entities from the old counts to the current vector lengths.
+  Standard_EXPORT void BuildDeltaReverseIndex(int theOldNbEdges,
+                                              int theOldNbWires,
+                                              int theOldNbFaces,
+                                              int theOldNbShells,
+                                              int theOldNbSolids);
+
   //! Debug: verify reverse index consistency against entity tables.
   //! @return true if all forward refs have matching reverse entries
   Standard_EXPORT bool ValidateReverseIndex() const;
@@ -194,6 +216,15 @@ private:
   NCollection_Vector<BRepGraph_UID> myCompSolidUIDs;
 
   Handle(NCollection_BaseAllocator) myAllocator;
+
+  int myNbActiveVertices   = 0;
+  int myNbActiveEdges      = 0;
+  int myNbActiveWires      = 0;
+  int myNbActiveFaces      = 0;
+  int myNbActiveShells     = 0;
+  int myNbActiveSolids     = 0;
+  int myNbActiveCompounds  = 0;
+  int myNbActiveCompSolids = 0;
 
   bool myIsDone              = false;
   bool myHasRegularities     = false;
