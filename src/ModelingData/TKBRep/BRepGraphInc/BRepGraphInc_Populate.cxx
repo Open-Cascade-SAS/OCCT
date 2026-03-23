@@ -284,8 +284,13 @@ occ::handle<T> applyRepresentationLocation(const occ::handle<T>&  theGeom,
                                            const TopLoc_Location& theShapeLoc,
                                            const TopLoc_Location& theCombinedLoc)
 {
-  if (theCombinedLoc.IsIdentity() || theGeom.IsNull())
+  if (theGeom.IsNull())
     return theGeom;
+  // Do NOT use theCombinedLoc.IsIdentity() as an early return — TopLoc_Location
+  // chain composition can structurally cancel to Identity (empty chain) even when
+  // the actual repLoc (theShapeLoc^-1 * theCombinedLoc) is non-Identity.
+  // This happens when the edge instance location and the CR location on TEdge
+  // form inverse pairs that cancel in Multiplied().
   const TopLoc_Location aRepLoc = theShapeLoc.Inverted() * theCombinedLoc;
   if (aRepLoc.IsIdentity())
     return theGeom;
@@ -298,7 +303,7 @@ occ::handle<Poly_Polygon3D> applyRepLocationToPolygon3D(
   const TopLoc_Location&             theShapeLoc,
   const TopLoc_Location&             theCombinedLoc)
 {
-  if (theCombinedLoc.IsIdentity() || thePolygon3D.IsNull())
+  if (thePolygon3D.IsNull())
     return thePolygon3D;
   const TopLoc_Location aRepLoc = theShapeLoc.Inverted() * theCombinedLoc;
   if (aRepLoc.IsIdentity())
