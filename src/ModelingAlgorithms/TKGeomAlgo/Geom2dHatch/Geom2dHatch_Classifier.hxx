@@ -82,28 +82,25 @@ protected:
   bool                             nowires;
 };
 
-#define TheFaceExplorer Geom2dHatch_Elements
-#define TheFaceExplorer_hxx <Geom2dHatch_Elements.hxx>
-#define TheEdge Geom2dAdaptor_Curve
-#define TheEdge_hxx <Geom2dAdaptor_Curve.hxx>
-#define TheIntersection2d Geom2dHatch_Intersector
-#define TheIntersection2d_hxx <Geom2dHatch_Intersector.hxx>
-#define TopClass_FClass2d Geom2dHatch_FClass2dOfClassifier
-#define TopClass_FClass2d_hxx <Geom2dHatch_FClass2dOfClassifier.hxx>
-#define TopClass_FaceClassifier Geom2dHatch_Classifier
-#define TopClass_FaceClassifier_hxx <Geom2dHatch_Classifier.hxx>
+//=================================================================================================
 
-#include <TopClass_FaceClassifier.lxx>
+inline bool Geom2dHatch_Classifier::Rejected() const
+{
+  return rejected;
+}
 
-#undef TheFaceExplorer
-#undef TheFaceExplorer_hxx
-#undef TheEdge
-#undef TheEdge_hxx
-#undef TheIntersection2d
-#undef TheIntersection2d_hxx
-#undef TopClass_FClass2d
-#undef TopClass_FClass2d_hxx
-#undef TopClass_FaceClassifier
-#undef TopClass_FaceClassifier_hxx
+//=================================================================================================
+
+inline bool Geom2dHatch_Classifier::NoWires() const
+{
+  return nowires;
+}
+
+//=================================================================================================
+
+inline IntRes2d_Position Geom2dHatch_Classifier::Position() const
+{
+  return myPosition;
+}
 
 #endif // _Geom2dHatch_Classifier_HeaderFile

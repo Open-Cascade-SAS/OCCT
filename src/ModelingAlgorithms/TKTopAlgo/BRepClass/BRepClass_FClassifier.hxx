@@ -82,28 +82,25 @@ protected:
   bool                            nowires;
 };
 
-#define TheFaceExplorer BRepClass_FaceExplorer
-#define TheFaceExplorer_hxx <BRepClass_FaceExplorer.hxx>
-#define TheEdge BRepClass_Edge
-#define TheEdge_hxx <BRepClass_Edge.hxx>
-#define TheIntersection2d BRepClass_Intersector
-#define TheIntersection2d_hxx <BRepClass_Intersector.hxx>
-#define TopClass_FClass2d BRepClass_FClass2dOfFClassifier
-#define TopClass_FClass2d_hxx <BRepClass_FClass2dOfFClassifier.hxx>
-#define TopClass_FaceClassifier BRepClass_FClassifier
-#define TopClass_FaceClassifier_hxx <BRepClass_FClassifier.hxx>
+//=================================================================================================
 
-#include <TopClass_FaceClassifier.lxx>
+inline bool BRepClass_FClassifier::Rejected() const
+{
+  return rejected;
+}
 
-#undef TheFaceExplorer
-#undef TheFaceExplorer_hxx
-#undef TheEdge
-#undef TheEdge_hxx
-#undef TheIntersection2d
-#undef TheIntersection2d_hxx
-#undef TopClass_FClass2d
-#undef TopClass_FClass2d_hxx
-#undef TopClass_FaceClassifier
-#undef TopClass_FaceClassifier_hxx
+//=================================================================================================
+
+inline bool BRepClass_FClassifier::NoWires() const
+{
+  return nowires;
+}
+
+//=================================================================================================
+
+inline IntRes2d_Position BRepClass_FClassifier::Position() const
+{
+  return myPosition;
+}
 
 #endif // _BRepClass_FClassifier_HeaderFile

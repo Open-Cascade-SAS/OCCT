@@ -84,20 +84,39 @@ private:
   bool                     myIsHeadOrEnd;
 };
 
-#define TheEdge Geom2dAdaptor_Curve
-#define TheEdge_hxx <Geom2dAdaptor_Curve.hxx>
-#define TheIntersector Geom2dHatch_Intersector
-#define TheIntersector_hxx <Geom2dHatch_Intersector.hxx>
-#define TopClass_Classifier2d Geom2dHatch_FClass2dOfClassifier
-#define TopClass_Classifier2d_hxx <Geom2dHatch_FClass2dOfClassifier.hxx>
+//=================================================================================================
 
-#include <TopClass_Classifier2d.lxx>
+inline double Geom2dHatch_FClass2dOfClassifier::Parameter() const
+{
+  return myParam;
+}
 
-#undef TheEdge
-#undef TheEdge_hxx
-#undef TheIntersector
-#undef TheIntersector_hxx
-#undef TopClass_Classifier2d
-#undef TopClass_Classifier2d_hxx
+//=================================================================================================
+
+inline Geom2dHatch_Intersector& Geom2dHatch_FClass2dOfClassifier::Intersector()
+{
+  return myIntersector;
+}
+
+//=================================================================================================
+
+inline int Geom2dHatch_FClass2dOfClassifier::ClosestIntersection() const
+{
+  return myClosest;
+}
+
+//=================================================================================================
+
+inline TopAbs_State Geom2dHatch_FClass2dOfClassifier::State() const
+{
+  return myState;
+}
+
+//=================================================================================================
+
+inline bool Geom2dHatch_FClass2dOfClassifier::IsHeadOrEnd() const
+{
+  return myIsHeadOrEnd;
+}
 
 #endif // _Geom2dHatch_FClass2dOfClassifier_HeaderFile

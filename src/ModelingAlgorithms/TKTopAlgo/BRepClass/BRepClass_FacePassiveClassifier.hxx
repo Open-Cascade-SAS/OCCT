@@ -84,20 +84,39 @@ private:
   bool                     myIsHeadOrEnd;
 };
 
-#define TheEdge BRepClass_Edge
-#define TheEdge_hxx <BRepClass_Edge.hxx>
-#define TheIntersector BRepClass_Intersector
-#define TheIntersector_hxx <BRepClass_Intersector.hxx>
-#define TopClass_Classifier2d BRepClass_FacePassiveClassifier
-#define TopClass_Classifier2d_hxx <BRepClass_FacePassiveClassifier.hxx>
+//=================================================================================================
 
-#include <TopClass_Classifier2d.lxx>
+inline double BRepClass_FacePassiveClassifier::Parameter() const
+{
+  return myParam;
+}
 
-#undef TheEdge
-#undef TheEdge_hxx
-#undef TheIntersector
-#undef TheIntersector_hxx
-#undef TopClass_Classifier2d
-#undef TopClass_Classifier2d_hxx
+//=================================================================================================
+
+inline BRepClass_Intersector& BRepClass_FacePassiveClassifier::Intersector()
+{
+  return myIntersector;
+}
+
+//=================================================================================================
+
+inline int BRepClass_FacePassiveClassifier::ClosestIntersection() const
+{
+  return myClosest;
+}
+
+//=================================================================================================
+
+inline TopAbs_State BRepClass_FacePassiveClassifier::State() const
+{
+  return myState;
+}
+
+//=================================================================================================
+
+inline bool BRepClass_FacePassiveClassifier::IsHeadOrEnd() const
+{
+  return myIsHeadOrEnd;
+}
 
 #endif // _BRepClass_FacePassiveClassifier_HeaderFile
