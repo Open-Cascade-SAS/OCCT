@@ -46,7 +46,7 @@ const char* getDatasetDir()
 std::vector<std::string> collectBrepFiles(const char* theDir)
 {
   std::vector<std::string> aFiles;
-  std::error_code anEC;
+  std::error_code          anEC;
   for (const auto& anEntry : std::filesystem::recursive_directory_iterator(theDir, anEC))
   {
     if (anEntry.is_regular_file() && anEntry.path().extension() == ".brep")
@@ -64,14 +64,12 @@ std::vector<std::string> collectBrepFiles(const char* theDir)
 // compounds inside compounds), then filters by type and deduplicates by TShape pointer.
 int countUnique(const TopoDS_Shape& theShape, TopAbs_ShapeEnum theType)
 {
-  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aMap;
-  TopExp::MapShapes(theShape, aMap);
-
   NCollection_Map<const TopoDS_TShape*> aTShapeSet;
-  for (int i = 1; i <= aMap.Extent(); ++i)
+  for (TopExp_Explorer exp(theShape, theType); exp.More(); exp.Next())
   {
-    if (aMap.FindKey(i).ShapeType() == theType)
-      aTShapeSet.Add(aMap.FindKey(i).TShape().get());
+    const TopoDS_Shape& aShape = exp.Current();
+    if (aShape.ShapeType() == theType)
+      aTShapeSet.Add(aShape.TShape().get());
   }
   return aTShapeSet.Extent();
 }
@@ -129,7 +127,7 @@ TEST_P(BRepGraphBulkValidation, RoundTrip)
 
   // Step 3: BRepCheck on the original
   BRepCheck_Analyzer anOrigChecker(anOrigShape);
-  const bool isOrigValid = anOrigChecker.IsValid();
+  const bool         isOrigValid = anOrigChecker.IsValid();
 
   // Step 4: Build the graph
   BRepGraph aGraph;
@@ -138,14 +136,14 @@ TEST_P(BRepGraphBulkValidation, RoundTrip)
 
   // Step 5: Verify graph entity counts match TopExp counts
   const auto aDefs = aGraph.Defs();
-  EXPECT_EQ(aDefs.NbVertices(),   anOrigCounts.NbVertices)   << aFilePath;
-  EXPECT_EQ(aDefs.NbEdges(),      anOrigCounts.NbEdges)      << aFilePath;
-  EXPECT_EQ(aDefs.NbWires(),      anOrigCounts.NbWires)      << aFilePath;
-  EXPECT_EQ(aDefs.NbFaces(),      anOrigCounts.NbFaces)      << aFilePath;
-  EXPECT_EQ(aDefs.NbShells(),     anOrigCounts.NbShells)     << aFilePath;
-  EXPECT_EQ(aDefs.NbSolids(),     anOrigCounts.NbSolids)     << aFilePath;
+  EXPECT_EQ(aDefs.NbVertices(), anOrigCounts.NbVertices) << aFilePath;
+  EXPECT_EQ(aDefs.NbEdges(), anOrigCounts.NbEdges) << aFilePath;
+  EXPECT_EQ(aDefs.NbWires(), anOrigCounts.NbWires) << aFilePath;
+  EXPECT_EQ(aDefs.NbFaces(), anOrigCounts.NbFaces) << aFilePath;
+  EXPECT_EQ(aDefs.NbShells(), anOrigCounts.NbShells) << aFilePath;
+  EXPECT_EQ(aDefs.NbSolids(), anOrigCounts.NbSolids) << aFilePath;
   EXPECT_EQ(aDefs.NbCompSolids(), anOrigCounts.NbCompSolids) << aFilePath;
-  EXPECT_EQ(aDefs.NbCompounds(),  anOrigCounts.NbCompounds)  << aFilePath;
+  EXPECT_EQ(aDefs.NbCompounds(), anOrigCounts.NbCompounds) << aFilePath;
 
   // Step 6: Get root NodeId from Product(0)
   ASSERT_GE(aDefs.NbProducts(), 1) << "No products: " << aFilePath;
@@ -159,21 +157,16 @@ TEST_P(BRepGraphBulkValidation, RoundTrip)
   const TopoCounts aReconCounts = countAll(aReconShape);
 
   // Step 9: Compare counts
-  EXPECT_EQ(aReconCounts.NbCompounds,  anOrigCounts.NbCompounds)
+  EXPECT_EQ(aReconCounts.NbCompounds, anOrigCounts.NbCompounds)
     << "Compound count mismatch: " << aFilePath;
   EXPECT_EQ(aReconCounts.NbCompSolids, anOrigCounts.NbCompSolids)
     << "CompSolid count mismatch: " << aFilePath;
-  EXPECT_EQ(aReconCounts.NbSolids,     anOrigCounts.NbSolids)
-    << "Solid count mismatch: " << aFilePath;
-  EXPECT_EQ(aReconCounts.NbShells,     anOrigCounts.NbShells)
-    << "Shell count mismatch: " << aFilePath;
-  EXPECT_EQ(aReconCounts.NbFaces,      anOrigCounts.NbFaces)
-    << "Face count mismatch: " << aFilePath;
-  EXPECT_EQ(aReconCounts.NbWires,      anOrigCounts.NbWires)
-    << "Wire count mismatch: " << aFilePath;
-  EXPECT_EQ(aReconCounts.NbEdges,      anOrigCounts.NbEdges)
-    << "Edge count mismatch: " << aFilePath;
-  EXPECT_EQ(aReconCounts.NbVertices,   anOrigCounts.NbVertices)
+  EXPECT_EQ(aReconCounts.NbSolids, anOrigCounts.NbSolids) << "Solid count mismatch: " << aFilePath;
+  EXPECT_EQ(aReconCounts.NbShells, anOrigCounts.NbShells) << "Shell count mismatch: " << aFilePath;
+  EXPECT_EQ(aReconCounts.NbFaces, anOrigCounts.NbFaces) << "Face count mismatch: " << aFilePath;
+  EXPECT_EQ(aReconCounts.NbWires, anOrigCounts.NbWires) << "Wire count mismatch: " << aFilePath;
+  EXPECT_EQ(aReconCounts.NbEdges, anOrigCounts.NbEdges) << "Edge count mismatch: " << aFilePath;
+  EXPECT_EQ(aReconCounts.NbVertices, anOrigCounts.NbVertices)
     << "Vertex count mismatch: " << aFilePath;
 
   // Step 10: BRepCheck on reconstructed — expect same validity as original
@@ -189,7 +182,7 @@ struct BrepFileNameGenerator
   std::string operator()(const testing::TestParamInfo<ParamType>& theInfo) const
   {
     std::filesystem::path aPath(theInfo.param);
-    std::string aName = aPath.stem().string();
+    std::string           aName = aPath.stem().string();
     // Replace characters invalid for GTest names with underscores
     for (char& aChar : aName)
     {
