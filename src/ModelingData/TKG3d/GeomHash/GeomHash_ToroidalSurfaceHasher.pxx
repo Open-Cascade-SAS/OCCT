@@ -18,18 +18,28 @@
 #include <Geom_ToroidalSurface.hxx>
 #include <GeomHash_AxisPlacement.pxx>
 #include <cmath>
+#include <Precision.hxx>
 
 //! OCCT-style hasher for Geom_ToroidalSurface.
 //! Used for geometry deduplication.
 struct GeomHash_ToroidalSurfaceHasher
 {
+  double CompTolerance;
+  double HashTolerance;
+
+  GeomHash_ToroidalSurfaceHasher(double theCompTolerance = Precision::Angular(),
+                                  double theHashTolerance = Precision::Confusion())
+    : CompTolerance(theCompTolerance),
+      HashTolerance(theHashTolerance)
+  {
+  }
+
   // Hashes the torus by its position, major radius, and minor radius.
   std::size_t operator()(const occ::handle<Geom_ToroidalSurface>& theTorus) const noexcept
   {
-    constexpr double aTolerance = 1e-12;
-    constexpr double aFactor    = 1.0 / aTolerance;
+    const double aFactor = 1.0 / HashTolerance;
 
-    const GeomHash_AxisPlacement anAxisHasher;
+    const GeomHash_AxisPlacement anAxisHasher(CompTolerance, HashTolerance);
     const std::size_t            aHashes[3] = {
       anAxisHasher(theTorus->Position().Ax2()),
       opencascade::hash(static_cast<int64_t>(std::round(theTorus->MajorRadius() * aFactor))),
@@ -41,11 +51,10 @@ struct GeomHash_ToroidalSurfaceHasher
   bool operator()(const occ::handle<Geom_ToroidalSurface>& theTorus1,
                   const occ::handle<Geom_ToroidalSurface>& theTorus2) const noexcept
   {
-    constexpr double             aTolerance = 1e-12;
-    const GeomHash_AxisPlacement anAxisHasher;
+    const GeomHash_AxisPlacement anAxisHasher(CompTolerance, HashTolerance);
     return anAxisHasher(theTorus1->Position().Ax2(), theTorus2->Position().Ax2())
-           && std::abs(theTorus1->MajorRadius() - theTorus2->MajorRadius()) <= aTolerance
-           && std::abs(theTorus1->MinorRadius() - theTorus2->MinorRadius()) <= aTolerance;
+           && std::abs(theTorus1->MajorRadius() - theTorus2->MajorRadius()) <= CompTolerance
+           && std::abs(theTorus1->MinorRadius() - theTorus2->MinorRadius()) <= CompTolerance;
   }
 };
 

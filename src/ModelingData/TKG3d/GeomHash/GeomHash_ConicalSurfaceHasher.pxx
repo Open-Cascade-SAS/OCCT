@@ -18,18 +18,28 @@
 #include <Geom_ConicalSurface.hxx>
 #include <GeomHash_AxisPlacement.pxx>
 #include <cmath>
+#include <Precision.hxx>
 
 //! OCCT-style hasher for Geom_ConicalSurface.
 //! Used for geometry deduplication.
 struct GeomHash_ConicalSurfaceHasher
 {
+  double CompTolerance;
+  double HashTolerance;
+
+  GeomHash_ConicalSurfaceHasher(double theCompTolerance = Precision::Angular(),
+                                double theHashTolerance = Precision::Confusion())
+    : CompTolerance(theCompTolerance),
+      HashTolerance(theHashTolerance)
+  {
+  }
+
   // Hashes the cone by its position, apex radius, and semi-angle.
   std::size_t operator()(const occ::handle<Geom_ConicalSurface>& theCone) const noexcept
   {
-    constexpr double aTolerance = 1e-12;
-    constexpr double aFactor    = 1.0 / aTolerance;
+    const double aFactor = 1.0 / HashTolerance;
 
-    const GeomHash_AxisPlacement anAxisHasher;
+    const GeomHash_AxisPlacement anAxisHasher(CompTolerance, HashTolerance);
     const std::size_t            aHashes[3] = {
       anAxisHasher(theCone->Position().Ax2()),
       opencascade::hash(static_cast<int64_t>(std::round(theCone->RefRadius() * aFactor))),
@@ -41,11 +51,10 @@ struct GeomHash_ConicalSurfaceHasher
   bool operator()(const occ::handle<Geom_ConicalSurface>& theCone1,
                   const occ::handle<Geom_ConicalSurface>& theCone2) const noexcept
   {
-    constexpr double             aTolerance = 1e-12;
-    const GeomHash_AxisPlacement anAxisHasher;
+    const GeomHash_AxisPlacement anAxisHasher(CompTolerance, HashTolerance);
     return anAxisHasher(theCone1->Position().Ax2(), theCone2->Position().Ax2())
-           && std::abs(theCone1->RefRadius() - theCone2->RefRadius()) <= aTolerance
-           && std::abs(theCone1->SemiAngle() - theCone2->SemiAngle()) <= aTolerance;
+           && std::abs(theCone1->RefRadius() - theCone2->RefRadius()) <= CompTolerance
+           && std::abs(theCone1->SemiAngle() - theCone2->SemiAngle()) <= CompTolerance;
   }
 };
 

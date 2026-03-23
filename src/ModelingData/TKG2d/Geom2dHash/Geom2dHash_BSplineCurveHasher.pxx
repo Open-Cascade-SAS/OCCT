@@ -18,12 +18,23 @@
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2dHash_PointHasher.pxx>
 #include <cmath>
+#include <Precision.hxx>
 
 //! OCCT-style hasher for Geom2d_BSplineCurve (2D B-spline curve).
 //! Used for geometry deduplication.
 //! Hashes only metadata (degree, pole count, knot count, rationality) for efficiency.
 struct Geom2dHash_BSplineCurveHasher
 {
+  double CompTolerance;
+  double HashTolerance;
+
+  Geom2dHash_BSplineCurveHasher(double theCompTolerance = Precision::Angular(),
+                                double theHashTolerance = Precision::Confusion())
+    : CompTolerance(theCompTolerance),
+      HashTolerance(theHashTolerance)
+  {
+  }
+
   // Hashes the B-spline curve metadata only.
   std::size_t operator()(const occ::handle<Geom2d_BSplineCurve>& theCurve) const noexcept
   {
@@ -38,8 +49,6 @@ struct Geom2dHash_BSplineCurveHasher
   bool operator()(const occ::handle<Geom2d_BSplineCurve>& theCurve1,
                   const occ::handle<Geom2d_BSplineCurve>& theCurve2) const noexcept
   {
-    constexpr double aTolerance = 1e-12;
-
     // Compare degrees
     if (theCurve1->Degree() != theCurve2->Degree())
     {
@@ -55,7 +64,7 @@ struct Geom2dHash_BSplineCurveHasher
     // Compare knots and multiplicities
     for (int i = 1; i <= theCurve1->NbKnots(); ++i)
     {
-      if (std::abs(theCurve1->Knot(i) - theCurve2->Knot(i)) > aTolerance
+      if (std::abs(theCurve1->Knot(i) - theCurve2->Knot(i)) > CompTolerance
           || theCurve1->Multiplicity(i) != theCurve2->Multiplicity(i))
       {
         return false;
@@ -68,7 +77,7 @@ struct Geom2dHash_BSplineCurveHasher
       return false;
     }
 
-    const Geom2dHash_PointHasher aPointHasher;
+    const Geom2dHash_PointHasher aPointHasher(CompTolerance, HashTolerance);
 
     // Compare poles
     for (int i = 1; i <= theCurve1->NbPoles(); ++i)
@@ -84,7 +93,7 @@ struct Geom2dHash_BSplineCurveHasher
     {
       for (int i = 1; i <= theCurve1->NbPoles(); ++i)
       {
-        if (std::abs(theCurve1->Weight(i) - theCurve2->Weight(i)) > aTolerance)
+        if (std::abs(theCurve1->Weight(i) - theCurve2->Weight(i)) > CompTolerance)
         {
           return false;
         }

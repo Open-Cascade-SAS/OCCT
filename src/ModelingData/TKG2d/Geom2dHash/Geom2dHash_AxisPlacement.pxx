@@ -18,16 +18,27 @@
 #include <gp_Ax22d.hxx>
 #include <Geom2dHash_PointHasher.pxx>
 #include <Geom2dHash_DirectionHasher.pxx>
+#include <Precision.hxx>
 
 //! OCCT-style hasher for gp_Ax22d (2D coordinate system).
 //! Used for geometry deduplication.
 struct Geom2dHash_AxisPlacement
 {
+  double CompTolerance;
+  double HashTolerance;
+
+  Geom2dHash_AxisPlacement(double theCompTolerance = Precision::Angular(),
+                           double theHashTolerance = Precision::Confusion())
+    : CompTolerance(theCompTolerance),
+      HashTolerance(theHashTolerance)
+  {
+  }
+
   // Hashes a 2D axis placement by its location, X direction, and Y direction.
   std::size_t operator()(const gp_Ax22d& theAxisPlacement) const noexcept
   {
-    const Geom2dHash_PointHasher     aPointHasher;
-    const Geom2dHash_DirectionHasher aDirHasher;
+    const Geom2dHash_PointHasher     aPointHasher(CompTolerance, HashTolerance);
+    const Geom2dHash_DirectionHasher aDirHasher(CompTolerance, HashTolerance);
 
     const std::size_t aHashes[3] = {aPointHasher(theAxisPlacement.Location()),
                                     aDirHasher(theAxisPlacement.XDirection()),
@@ -39,8 +50,8 @@ struct Geom2dHash_AxisPlacement
   bool operator()(const gp_Ax22d& theAxisPlacement1,
                   const gp_Ax22d& theAxisPlacement2) const noexcept
   {
-    const Geom2dHash_PointHasher     aPointHasher;
-    const Geom2dHash_DirectionHasher aDirHasher;
+    const Geom2dHash_PointHasher     aPointHasher(CompTolerance, HashTolerance);
+    const Geom2dHash_DirectionHasher aDirHasher(CompTolerance, HashTolerance);
 
     return aPointHasher(theAxisPlacement1.Location(), theAxisPlacement2.Location())
            && aDirHasher(theAxisPlacement1.XDirection(), theAxisPlacement2.XDirection())

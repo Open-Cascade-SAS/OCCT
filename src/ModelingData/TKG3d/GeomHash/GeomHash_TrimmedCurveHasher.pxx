@@ -18,18 +18,28 @@
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomHash_CurveHasher.hxx>
 #include <cmath>
+#include <Precision.hxx>
 
 //! OCCT-style hasher for Geom_TrimmedCurve (3D trimmed curve).
 //! Used for geometry deduplication.
 struct GeomHash_TrimmedCurveHasher
 {
+  double CompTolerance;
+  double HashTolerance;
+
+  GeomHash_TrimmedCurveHasher(double theCompTolerance = Precision::Angular(),
+                              double theHashTolerance = Precision::Confusion())
+    : CompTolerance(theCompTolerance),
+      HashTolerance(theHashTolerance)
+  {
+  }
+
   // Hashes the trimmed curve by its parameters and basis curve.
   std::size_t operator()(const occ::handle<Geom_TrimmedCurve>& theCurve) const noexcept
   {
-    constexpr double aTolerance = 1e-12;
-    constexpr double aFactor    = 1.0 / aTolerance;
+    const double aFactor = 1.0 / HashTolerance;
 
-    const GeomHash_CurveHasher aCurveHasher;
+    const GeomHash_CurveHasher aCurveHasher{CompTolerance, HashTolerance};
     const std::size_t          aHashes[3] = {
       aCurveHasher(theCurve->BasisCurve()),
       opencascade::hash(static_cast<int64_t>(std::round(theCurve->FirstParameter() * aFactor))),
@@ -41,13 +51,11 @@ struct GeomHash_TrimmedCurveHasher
   bool operator()(const occ::handle<Geom_TrimmedCurve>& theCurve1,
                   const occ::handle<Geom_TrimmedCurve>& theCurve2) const noexcept
   {
-    constexpr double aTolerance = 1e-12;
-
-    const GeomHash_CurveHasher aCurveHasher;
+    const GeomHash_CurveHasher aCurveHasher{CompTolerance, HashTolerance};
 
     return aCurveHasher(theCurve1->BasisCurve(), theCurve2->BasisCurve())
-           && std::abs(theCurve1->FirstParameter() - theCurve2->FirstParameter()) <= aTolerance
-           && std::abs(theCurve1->LastParameter() - theCurve2->LastParameter()) <= aTolerance;
+           && std::abs(theCurve1->FirstParameter() - theCurve2->FirstParameter()) <= CompTolerance
+           && std::abs(theCurve1->LastParameter() - theCurve2->LastParameter()) <= CompTolerance;
   }
 };
 

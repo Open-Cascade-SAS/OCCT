@@ -17,15 +17,26 @@
 #include <Standard_HashUtils.hxx>
 #include <Geom_Plane.hxx>
 #include <GeomHash_AxisPlacement.pxx>
+#include <Precision.hxx>
 
 //! OCCT-style hasher for Geom_Plane surfaces.
 //! Used for geometry deduplication.
 struct GeomHash_PlaneHasher
 {
+  double CompTolerance;
+  double HashTolerance;
+
+  GeomHash_PlaneHasher(double theCompTolerance = Precision::Angular(),
+                       double theHashTolerance = Precision::Confusion())
+    : CompTolerance(theCompTolerance),
+      HashTolerance(theHashTolerance)
+  {
+  }
+
   // Hashes the plane by its position (location, normal, reference direction).
   std::size_t operator()(const occ::handle<Geom_Plane>& thePlane) const noexcept
   {
-    const GeomHash_AxisPlacement anAxisHasher;
+    const GeomHash_AxisPlacement anAxisHasher(CompTolerance, HashTolerance);
     return anAxisHasher(thePlane->Position().Ax2());
   }
 
@@ -33,7 +44,7 @@ struct GeomHash_PlaneHasher
   bool operator()(const occ::handle<Geom_Plane>& thePlane1,
                   const occ::handle<Geom_Plane>& thePlane2) const noexcept
   {
-    const GeomHash_AxisPlacement anAxisHasher;
+    const GeomHash_AxisPlacement anAxisHasher(CompTolerance, HashTolerance);
     return anAxisHasher(thePlane1->Position().Ax2(), thePlane2->Position().Ax2());
   }
 };

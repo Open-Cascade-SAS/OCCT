@@ -17,16 +17,26 @@
 #include <Standard_HashUtils.hxx>
 #include <gp_Pnt.hxx>
 #include <cmath>
+#include <Precision.hxx>
 
 //! OCCT-style hasher for gp_Pnt (3D points).
 //! Used for geometry deduplication.
 struct GeomHash_PointHasher
 {
+  double CompTolerance;
+  double HashTolerance;
+
+  GeomHash_PointHasher(double theCompTolerance = Precision::Angular(),
+                       double theHashTolerance = Precision::Confusion())
+    : CompTolerance(theCompTolerance),
+      HashTolerance(theHashTolerance)
+  {
+  }
+
   // Hashes the 3D point by its XYZ coordinates.
   std::size_t operator()(const gp_Pnt& thePoint) const noexcept
   {
-    constexpr double aTolerance = 1e-12;
-    constexpr double aFactor    = 1.0 / aTolerance;
+    const double aFactor = 1.0 / HashTolerance;
 
     // Round each coordinate to tolerance precision before hashing
     const std::size_t aHashes[3] = {
@@ -39,10 +49,9 @@ struct GeomHash_PointHasher
   // Compares two 3D points with fixed tolerance.
   bool operator()(const gp_Pnt& thePoint1, const gp_Pnt& thePoint2) const noexcept
   {
-    constexpr double aTolerance = 1e-12;
-    return std::abs(thePoint1.X() - thePoint2.X()) <= aTolerance
-           && std::abs(thePoint1.Y() - thePoint2.Y()) <= aTolerance
-           && std::abs(thePoint1.Z() - thePoint2.Z()) <= aTolerance;
+    return std::abs(thePoint1.X() - thePoint2.X()) <= CompTolerance
+           && std::abs(thePoint1.Y() - thePoint2.Y()) <= CompTolerance
+           && std::abs(thePoint1.Z() - thePoint2.Z()) <= CompTolerance;
   }
 };
 

@@ -18,18 +18,28 @@
 #include <Geom2d_Parabola.hxx>
 #include <Geom2dHash_AxisPlacement.pxx>
 #include <cmath>
+#include <Precision.hxx>
 
 //! OCCT-style hasher for Geom2d_Parabola (2D parabola).
 //! Used for geometry deduplication.
 struct Geom2dHash_ParabolaHasher
 {
+  double CompTolerance;
+  double HashTolerance;
+
+  Geom2dHash_ParabolaHasher(double theCompTolerance = Precision::Angular(),
+                            double theHashTolerance = Precision::Confusion())
+    : CompTolerance(theCompTolerance),
+      HashTolerance(theHashTolerance)
+  {
+  }
+
   // Hashes the parabola by its position and focal length.
   std::size_t operator()(const occ::handle<Geom2d_Parabola>& theParabola) const noexcept
   {
-    constexpr double aTolerance = 1e-12;
-    constexpr double aFactor    = 1.0 / aTolerance;
+    const double aFactor = 1.0 / HashTolerance;
 
-    const Geom2dHash_AxisPlacement anAxisHasher;
+    const Geom2dHash_AxisPlacement anAxisHasher(CompTolerance, HashTolerance);
     const std::size_t              aHashes[2] = {
       anAxisHasher(theParabola->Position()),
       opencascade::hash(static_cast<int64_t>(std::round(theParabola->Focal() * aFactor)))};
@@ -40,11 +50,10 @@ struct Geom2dHash_ParabolaHasher
   bool operator()(const occ::handle<Geom2d_Parabola>& theParabola1,
                   const occ::handle<Geom2d_Parabola>& theParabola2) const noexcept
   {
-    constexpr double               aTolerance = 1e-12;
-    const Geom2dHash_AxisPlacement anAxisHasher;
+    const Geom2dHash_AxisPlacement anAxisHasher(CompTolerance, HashTolerance);
 
     return anAxisHasher(theParabola1->Position(), theParabola2->Position())
-           && std::abs(theParabola1->Focal() - theParabola2->Focal()) <= aTolerance;
+           && std::abs(theParabola1->Focal() - theParabola2->Focal()) <= CompTolerance;
   }
 };
 

@@ -18,12 +18,23 @@
 #include <Geom_BSplineSurface.hxx>
 #include <GeomHash_PointHasher.pxx>
 #include <cmath>
+#include <Precision.hxx>
 
 //! OCCT-style hasher for Geom_BSplineSurface.
 //! Used for geometry deduplication.
 //! Hashes only metadata (degrees, pole counts, knot counts, rationality) for efficiency.
 struct GeomHash_BSplineSurfaceHasher
 {
+  double CompTolerance;
+  double HashTolerance;
+
+  GeomHash_BSplineSurfaceHasher(double theCompTolerance = Precision::Angular(),
+                                 double theHashTolerance = Precision::Confusion())
+    : CompTolerance(theCompTolerance),
+      HashTolerance(theHashTolerance)
+  {
+  }
+
   // Hashes the B-spline surface metadata only.
   std::size_t operator()(const occ::handle<Geom_BSplineSurface>& theSurface) const noexcept
   {
@@ -43,8 +54,6 @@ struct GeomHash_BSplineSurfaceHasher
   bool operator()(const occ::handle<Geom_BSplineSurface>& theSurface1,
                   const occ::handle<Geom_BSplineSurface>& theSurface2) const noexcept
   {
-    constexpr double aTolerance = 1e-12;
-
     // Compare degrees
     if (theSurface1->UDegree() != theSurface2->UDegree()
         || theSurface1->VDegree() != theSurface2->VDegree())
@@ -62,7 +71,7 @@ struct GeomHash_BSplineSurfaceHasher
     // Compare U knots and multiplicities
     for (int i = 1; i <= theSurface1->NbUKnots(); ++i)
     {
-      if (std::abs(theSurface1->UKnot(i) - theSurface2->UKnot(i)) > aTolerance
+      if (std::abs(theSurface1->UKnot(i) - theSurface2->UKnot(i)) > CompTolerance
           || theSurface1->UMultiplicity(i) != theSurface2->UMultiplicity(i))
       {
         return false;
@@ -72,7 +81,7 @@ struct GeomHash_BSplineSurfaceHasher
     // Compare V knots and multiplicities
     for (int i = 1; i <= theSurface1->NbVKnots(); ++i)
     {
-      if (std::abs(theSurface1->VKnot(i) - theSurface2->VKnot(i)) > aTolerance
+      if (std::abs(theSurface1->VKnot(i) - theSurface2->VKnot(i)) > CompTolerance
           || theSurface1->VMultiplicity(i) != theSurface2->VMultiplicity(i))
       {
         return false;
@@ -86,7 +95,7 @@ struct GeomHash_BSplineSurfaceHasher
       return false;
     }
 
-    const GeomHash_PointHasher aPointHasher;
+    const GeomHash_PointHasher aPointHasher(CompTolerance, HashTolerance);
 
     // Compare poles
     for (int i = 1; i <= theSurface1->NbUPoles(); ++i)
@@ -107,7 +116,7 @@ struct GeomHash_BSplineSurfaceHasher
       {
         for (int j = 1; j <= theSurface1->NbVPoles(); ++j)
         {
-          if (std::abs(theSurface1->Weight(i, j) - theSurface2->Weight(i, j)) > aTolerance)
+          if (std::abs(theSurface1->Weight(i, j) - theSurface2->Weight(i, j)) > CompTolerance)
           {
             return false;
           }

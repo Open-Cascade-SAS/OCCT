@@ -18,18 +18,28 @@
 #include <Geom_CylindricalSurface.hxx>
 #include <GeomHash_AxisPlacement.pxx>
 #include <cmath>
+#include <Precision.hxx>
 
 //! OCCT-style hasher for Geom_CylindricalSurface.
 //! Used for geometry deduplication.
 struct GeomHash_CylindricalSurfaceHasher
 {
+  double CompTolerance;
+  double HashTolerance;
+
+  GeomHash_CylindricalSurfaceHasher(double theCompTolerance = Precision::Angular(),
+                                     double theHashTolerance = Precision::Confusion())
+    : CompTolerance(theCompTolerance),
+      HashTolerance(theHashTolerance)
+  {
+  }
+
   // Hashes the cylinder by its position and radius.
   std::size_t operator()(const occ::handle<Geom_CylindricalSurface>& theCylinder) const noexcept
   {
-    constexpr double aTolerance = 1e-12;
-    constexpr double aFactor    = 1.0 / aTolerance;
+    const double aFactor = 1.0 / HashTolerance;
 
-    const GeomHash_AxisPlacement anAxisHasher;
+    const GeomHash_AxisPlacement anAxisHasher(CompTolerance, HashTolerance);
     const std::size_t            aHashes[2] = {
       anAxisHasher(theCylinder->Position().Ax2()),
       opencascade::hash(static_cast<int64_t>(std::round(theCylinder->Radius() * aFactor)))};
@@ -40,10 +50,9 @@ struct GeomHash_CylindricalSurfaceHasher
   bool operator()(const occ::handle<Geom_CylindricalSurface>& theCylinder1,
                   const occ::handle<Geom_CylindricalSurface>& theCylinder2) const noexcept
   {
-    constexpr double             aTolerance = 1e-12;
-    const GeomHash_AxisPlacement anAxisHasher;
+    const GeomHash_AxisPlacement anAxisHasher(CompTolerance, HashTolerance);
     return anAxisHasher(theCylinder1->Position().Ax2(), theCylinder2->Position().Ax2())
-           && std::abs(theCylinder1->Radius() - theCylinder2->Radius()) <= aTolerance;
+           && std::abs(theCylinder1->Radius() - theCylinder2->Radius()) <= CompTolerance;
   }
 };
 

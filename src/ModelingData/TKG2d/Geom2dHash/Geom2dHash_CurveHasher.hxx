@@ -16,6 +16,7 @@
 
 #include <Standard_Handle.hxx>
 #include <cstddef>
+#include <Precision.hxx>
 
 class Geom2d_Curve;
 
@@ -23,6 +24,12 @@ class Geom2d_Curve;
 //! Used for geometry deduplication.
 struct Geom2dHash_CurveHasher
 {
+  double CompTolerance;
+  double HashTolerance;
+
+  Standard_EXPORT Geom2dHash_CurveHasher(double theCompTolerance = Precision::Angular(),
+                                         double theHashTolerance = Precision::Confusion());
+
   // Hashes any Geom2d_Curve by dispatching to the appropriate specific hasher.
   Standard_EXPORT std::size_t operator()(const occ::handle<Geom2d_Curve>& theCurve) const noexcept;
 

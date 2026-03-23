@@ -37,6 +37,15 @@
 
 //=================================================================================================
 
+GeomHash_CurveHasher::GeomHash_CurveHasher(double theCompTolerance,
+                                            double theHashTolerance)
+  : CompTolerance(theCompTolerance),
+    HashTolerance(theHashTolerance)
+{
+}
+
+//=================================================================================================
+
 std::size_t GeomHash_CurveHasher::operator()(const occ::handle<Geom_Curve>& theCurve) const noexcept
 {
   if (theCurve.IsNull())
@@ -44,46 +53,56 @@ std::size_t GeomHash_CurveHasher::operator()(const occ::handle<Geom_Curve>& theC
     return 0;
   }
 
-  // Dispatch based on actual curve type
-  if (occ::handle<Geom_Line> aLine = occ::down_cast<Geom_Line>(theCurve))
+  // Dispatch based on actual curve type using DynamicType check first (cheaper than down_cast)
+  const Handle(Standard_Type)& aType = theCurve->DynamicType();
+  if (aType == STANDARD_TYPE(Geom_Line))
   {
-    return GeomHash_LineHasher{}(aLine);
+    return GeomHash_LineHasher{CompTolerance, HashTolerance}(
+      occ::down_cast<Geom_Line>(theCurve));
   }
-  if (occ::handle<Geom_Circle> aCircle = occ::down_cast<Geom_Circle>(theCurve))
+  else if (aType == STANDARD_TYPE(Geom_Circle))
   {
-    return GeomHash_CircleHasher{}(aCircle);
+    return GeomHash_CircleHasher{CompTolerance, HashTolerance}(
+      occ::down_cast<Geom_Circle>(theCurve));
   }
-  if (occ::handle<Geom_Ellipse> anEllipse = occ::down_cast<Geom_Ellipse>(theCurve))
+  else if (aType == STANDARD_TYPE(Geom_Ellipse))
   {
-    return GeomHash_EllipseHasher{}(anEllipse);
+    return GeomHash_EllipseHasher{CompTolerance, HashTolerance}(
+      occ::down_cast<Geom_Ellipse>(theCurve));
   }
-  if (occ::handle<Geom_Hyperbola> aHyperbola = occ::down_cast<Geom_Hyperbola>(theCurve))
+  else if (aType == STANDARD_TYPE(Geom_Hyperbola))
   {
-    return GeomHash_HyperbolaHasher{}(aHyperbola);
+    return GeomHash_HyperbolaHasher{CompTolerance, HashTolerance}(
+      occ::down_cast<Geom_Hyperbola>(theCurve));
   }
-  if (occ::handle<Geom_Parabola> aParabola = occ::down_cast<Geom_Parabola>(theCurve))
+  else if (aType == STANDARD_TYPE(Geom_Parabola))
   {
-    return GeomHash_ParabolaHasher{}(aParabola);
+    return GeomHash_ParabolaHasher{CompTolerance, HashTolerance}(
+      occ::down_cast<Geom_Parabola>(theCurve));
   }
-  if (occ::handle<Geom_BezierCurve> aBezier = occ::down_cast<Geom_BezierCurve>(theCurve))
+  else if (aType == STANDARD_TYPE(Geom_BezierCurve))
   {
-    return GeomHash_BezierCurveHasher{}(aBezier);
+    return GeomHash_BezierCurveHasher{CompTolerance, HashTolerance}(
+      occ::down_cast<Geom_BezierCurve>(theCurve));
   }
-  if (occ::handle<Geom_BSplineCurve> aBSpline = occ::down_cast<Geom_BSplineCurve>(theCurve))
+  else if (aType == STANDARD_TYPE(Geom_BSplineCurve))
   {
-    return GeomHash_BSplineCurveHasher{}(aBSpline);
+    return GeomHash_BSplineCurveHasher{CompTolerance, HashTolerance}(
+      occ::down_cast<Geom_BSplineCurve>(theCurve));
   }
-  if (occ::handle<Geom_TrimmedCurve> aTrimmed = occ::down_cast<Geom_TrimmedCurve>(theCurve))
+  else if (aType == STANDARD_TYPE(Geom_TrimmedCurve))
   {
-    return GeomHash_TrimmedCurveHasher{}(aTrimmed);
+    return GeomHash_TrimmedCurveHasher{CompTolerance, HashTolerance}(
+      occ::down_cast<Geom_TrimmedCurve>(theCurve));
   }
-  if (occ::handle<Geom_OffsetCurve> anOffset = occ::down_cast<Geom_OffsetCurve>(theCurve))
+  else if (aType == STANDARD_TYPE(Geom_OffsetCurve))
   {
-    return GeomHash_OffsetCurveHasher{}(anOffset);
+    return GeomHash_OffsetCurveHasher{CompTolerance, HashTolerance}(
+      occ::down_cast<Geom_OffsetCurve>(theCurve));
   }
 
   // Unknown curve type - hash the type name
-  return Standard_CStringHasher{}(theCurve->DynamicType()->Name());
+  return Standard_CStringHasher{}(aType->Name());
 }
 
 //=================================================================================================
@@ -107,42 +126,61 @@ bool GeomHash_CurveHasher::operator()(const occ::handle<Geom_Curve>& theCurve1,
     return false;
   }
 
-  // Dispatch based on actual curve type
-  if (occ::handle<Geom_Line> aLine1 = occ::down_cast<Geom_Line>(theCurve1))
+  // Dispatch based on actual curve type using DynamicType check (already confirmed types match)
+  const Handle(Standard_Type)& aType = theCurve1->DynamicType();
+  if (aType == STANDARD_TYPE(Geom_Line))
   {
-    return GeomHash_LineHasher{}(aLine1, occ::down_cast<Geom_Line>(theCurve2));
+    return GeomHash_LineHasher{CompTolerance, HashTolerance}(
+      occ::down_cast<Geom_Line>(theCurve1),
+      occ::down_cast<Geom_Line>(theCurve2));
   }
-  if (occ::handle<Geom_Circle> aCircle1 = occ::down_cast<Geom_Circle>(theCurve1))
+  else if (aType == STANDARD_TYPE(Geom_Circle))
   {
-    return GeomHash_CircleHasher{}(aCircle1, occ::down_cast<Geom_Circle>(theCurve2));
+    return GeomHash_CircleHasher{CompTolerance, HashTolerance}(
+      occ::down_cast<Geom_Circle>(theCurve1),
+      occ::down_cast<Geom_Circle>(theCurve2));
   }
-  if (occ::handle<Geom_Ellipse> anEllipse1 = occ::down_cast<Geom_Ellipse>(theCurve1))
+  else if (aType == STANDARD_TYPE(Geom_Ellipse))
   {
-    return GeomHash_EllipseHasher{}(anEllipse1, occ::down_cast<Geom_Ellipse>(theCurve2));
+    return GeomHash_EllipseHasher{CompTolerance, HashTolerance}(
+      occ::down_cast<Geom_Ellipse>(theCurve1),
+      occ::down_cast<Geom_Ellipse>(theCurve2));
   }
-  if (occ::handle<Geom_Hyperbola> aHyp1 = occ::down_cast<Geom_Hyperbola>(theCurve1))
+  else if (aType == STANDARD_TYPE(Geom_Hyperbola))
   {
-    return GeomHash_HyperbolaHasher{}(aHyp1, occ::down_cast<Geom_Hyperbola>(theCurve2));
+    return GeomHash_HyperbolaHasher{CompTolerance, HashTolerance}(
+      occ::down_cast<Geom_Hyperbola>(theCurve1),
+      occ::down_cast<Geom_Hyperbola>(theCurve2));
   }
-  if (occ::handle<Geom_Parabola> aPar1 = occ::down_cast<Geom_Parabola>(theCurve1))
+  else if (aType == STANDARD_TYPE(Geom_Parabola))
   {
-    return GeomHash_ParabolaHasher{}(aPar1, occ::down_cast<Geom_Parabola>(theCurve2));
+    return GeomHash_ParabolaHasher{CompTolerance, HashTolerance}(
+      occ::down_cast<Geom_Parabola>(theCurve1),
+      occ::down_cast<Geom_Parabola>(theCurve2));
   }
-  if (occ::handle<Geom_BezierCurve> aBez1 = occ::down_cast<Geom_BezierCurve>(theCurve1))
+  else if (aType == STANDARD_TYPE(Geom_BezierCurve))
   {
-    return GeomHash_BezierCurveHasher{}(aBez1, occ::down_cast<Geom_BezierCurve>(theCurve2));
+    return GeomHash_BezierCurveHasher{CompTolerance, HashTolerance}(
+      occ::down_cast<Geom_BezierCurve>(theCurve1),
+      occ::down_cast<Geom_BezierCurve>(theCurve2));
   }
-  if (occ::handle<Geom_BSplineCurve> aBSpl1 = occ::down_cast<Geom_BSplineCurve>(theCurve1))
+  else if (aType == STANDARD_TYPE(Geom_BSplineCurve))
   {
-    return GeomHash_BSplineCurveHasher{}(aBSpl1, occ::down_cast<Geom_BSplineCurve>(theCurve2));
+    return GeomHash_BSplineCurveHasher{CompTolerance, HashTolerance}(
+      occ::down_cast<Geom_BSplineCurve>(theCurve1),
+      occ::down_cast<Geom_BSplineCurve>(theCurve2));
   }
-  if (occ::handle<Geom_TrimmedCurve> aTrim1 = occ::down_cast<Geom_TrimmedCurve>(theCurve1))
+  else if (aType == STANDARD_TYPE(Geom_TrimmedCurve))
   {
-    return GeomHash_TrimmedCurveHasher{}(aTrim1, occ::down_cast<Geom_TrimmedCurve>(theCurve2));
+    return GeomHash_TrimmedCurveHasher{CompTolerance, HashTolerance}(
+      occ::down_cast<Geom_TrimmedCurve>(theCurve1),
+      occ::down_cast<Geom_TrimmedCurve>(theCurve2));
   }
-  if (occ::handle<Geom_OffsetCurve> aOff1 = occ::down_cast<Geom_OffsetCurve>(theCurve1))
+  else if (aType == STANDARD_TYPE(Geom_OffsetCurve))
   {
-    return GeomHash_OffsetCurveHasher{}(aOff1, occ::down_cast<Geom_OffsetCurve>(theCurve2));
+    return GeomHash_OffsetCurveHasher{CompTolerance, HashTolerance}(
+      occ::down_cast<Geom_OffsetCurve>(theCurve1),
+      occ::down_cast<Geom_OffsetCurve>(theCurve2));
   }
 
   // Unknown curve type - compare by pointer

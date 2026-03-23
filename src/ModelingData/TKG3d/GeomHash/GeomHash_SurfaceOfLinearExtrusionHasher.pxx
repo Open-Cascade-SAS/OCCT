@@ -18,17 +18,28 @@
 #include <Geom_SurfaceOfLinearExtrusion.hxx>
 #include <GeomHash_DirectionHasher.pxx>
 #include <GeomHash_CurveHasher.hxx>
+#include <Precision.hxx>
 
 //! OCCT-style hasher for Geom_SurfaceOfLinearExtrusion.
 //! Used for geometry deduplication.
 struct GeomHash_SurfaceOfLinearExtrusionHasher
 {
+  double CompTolerance;
+  double HashTolerance;
+
+  GeomHash_SurfaceOfLinearExtrusionHasher(double theCompTolerance = Precision::Angular(),
+                                           double theHashTolerance = Precision::Confusion())
+    : CompTolerance(theCompTolerance),
+      HashTolerance(theHashTolerance)
+  {
+  }
+
   // Hashes the extrusion surface by its direction and basis curve.
   std::size_t operator()(
     const occ::handle<Geom_SurfaceOfLinearExtrusion>& theSurface) const noexcept
   {
-    const GeomHash_DirectionHasher aDirHasher;
-    const GeomHash_CurveHasher     aCurveHasher;
+    const GeomHash_DirectionHasher aDirHasher(CompTolerance, HashTolerance);
+    const GeomHash_CurveHasher     aCurveHasher{CompTolerance, HashTolerance};
     const std::size_t              aHashes[2] = {aCurveHasher(theSurface->BasisCurve()),
                                                  aDirHasher(theSurface->Direction())};
     return opencascade::hashBytes(aHashes, sizeof(aHashes));
@@ -38,8 +49,8 @@ struct GeomHash_SurfaceOfLinearExtrusionHasher
   bool operator()(const occ::handle<Geom_SurfaceOfLinearExtrusion>& theSurface1,
                   const occ::handle<Geom_SurfaceOfLinearExtrusion>& theSurface2) const noexcept
   {
-    const GeomHash_DirectionHasher aDirHasher;
-    const GeomHash_CurveHasher     aCurveHasher;
+    const GeomHash_DirectionHasher aDirHasher(CompTolerance, HashTolerance);
+    const GeomHash_CurveHasher     aCurveHasher{CompTolerance, HashTolerance};
 
     return aCurveHasher(theSurface1->BasisCurve(), theSurface2->BasisCurve())
            && aDirHasher(theSurface1->Direction(), theSurface2->Direction());
