@@ -17,7 +17,7 @@
 #include <Standard_DefineAlloc.hxx>
 
 class TopoDS_Shape;
-struct BRepGraphInc_Storage;
+class BRepGraphInc_Storage;
 
 //! @brief Populates a BRepGraphInc_Storage from a TopoDS_Shape.
 //!

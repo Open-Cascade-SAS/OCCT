@@ -27,50 +27,118 @@
 
 //! @brief Central storage for the incidence-table model.
 //!
-//! Holds all entity vectors, reverse indices, and TShape deduplication maps.
-//! This struct is the physical backing for BRepGraphInc_Populate and
-//! BRepGraphInc_Reconstruct.
-struct BRepGraphInc_Storage
+//! Holds all entity vectors, reverse indices, TShape deduplication maps,
+//! and UID vectors.  Typed accessor methods enforce invariants and provide
+//! compile-time safety.  BRepGraphInc_Populate has friend access for
+//! efficient bulk writes during population.
+class BRepGraphInc_Storage
 {
+public:
   DEFINE_STANDARD_ALLOC
 
-  // ------ Entity tables (8 kinds) ------
+  // ------ Count accessors ------
 
-  NCollection_Vector<BRepGraphInc::VertexEntity>    Vertices;
-  NCollection_Vector<BRepGraphInc::EdgeEntity>      Edges;
-  NCollection_Vector<BRepGraphInc::WireEntity>      Wires;
-  NCollection_Vector<BRepGraphInc::FaceEntity>      Faces;
-  NCollection_Vector<BRepGraphInc::ShellEntity>     Shells;
-  NCollection_Vector<BRepGraphInc::SolidEntity>     Solids;
-  NCollection_Vector<BRepGraphInc::CompoundEntity>  Compounds;
-  NCollection_Vector<BRepGraphInc::CompSolidEntity> CompSolids;
+  int NbVertices()   const { return myVertices.Length(); }
+  int NbEdges()      const { return myEdges.Length(); }
+  int NbWires()      const { return myWires.Length(); }
+  int NbFaces()      const { return myFaces.Length(); }
+  int NbShells()     const { return myShells.Length(); }
+  int NbSolids()     const { return mySolids.Length(); }
+  int NbCompounds()  const { return myCompounds.Length(); }
+  int NbCompSolids() const { return myCompSolids.Length(); }
 
-  // ------ Reverse indices ------
+  // ------ Const entity access ------
 
-  BRepGraphInc_ReverseIndex ReverseIdx;
+  const BRepGraphInc::VertexEntity&    Vertex(int theIdx)    const { return myVertices.Value(theIdx); }
+  const BRepGraphInc::EdgeEntity&      Edge(int theIdx)      const { return myEdges.Value(theIdx); }
+  const BRepGraphInc::WireEntity&      Wire(int theIdx)      const { return myWires.Value(theIdx); }
+  const BRepGraphInc::FaceEntity&      Face(int theIdx)      const { return myFaces.Value(theIdx); }
+  const BRepGraphInc::ShellEntity&     Shell(int theIdx)     const { return myShells.Value(theIdx); }
+  const BRepGraphInc::SolidEntity&     Solid(int theIdx)     const { return mySolids.Value(theIdx); }
+  const BRepGraphInc::CompoundEntity&  Compound(int theIdx)  const { return myCompounds.Value(theIdx); }
+  const BRepGraphInc::CompSolidEntity& CompSolid(int theIdx) const { return myCompSolids.Value(theIdx); }
 
-  // ------ Unified TShape → NodeId map ------
+  // ------ Mutable entity access ------
 
-  NCollection_DataMap<const TopoDS_TShape*, BRepGraph_NodeId> TShapeToNodeId;
+  BRepGraphInc::VertexEntity&    ChangeVertex(int theIdx)    { return myVertices.ChangeValue(theIdx); }
+  BRepGraphInc::EdgeEntity&      ChangeEdge(int theIdx)      { return myEdges.ChangeValue(theIdx); }
+  BRepGraphInc::WireEntity&      ChangeWire(int theIdx)      { return myWires.ChangeValue(theIdx); }
+  BRepGraphInc::FaceEntity&      ChangeFace(int theIdx)      { return myFaces.ChangeValue(theIdx); }
+  BRepGraphInc::ShellEntity&     ChangeShell(int theIdx)     { return myShells.ChangeValue(theIdx); }
+  BRepGraphInc::SolidEntity&     ChangeSolid(int theIdx)     { return mySolids.ChangeValue(theIdx); }
+  BRepGraphInc::CompoundEntity&  ChangeCompound(int theIdx)  { return myCompounds.ChangeValue(theIdx); }
+  BRepGraphInc::CompSolidEntity& ChangeCompSolid(int theIdx) { return myCompSolids.ChangeValue(theIdx); }
 
-  // ------ Original shapes from Build() input ------
+  // ------ Append (returns mutable ref to newly created entity) ------
 
-  NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape> OriginalShapes;
+  BRepGraphInc::VertexEntity&    AppendVertex()    { return myVertices.Appended(); }
+  BRepGraphInc::EdgeEntity&      AppendEdge()      { return myEdges.Appended(); }
+  BRepGraphInc::WireEntity&      AppendWire()      { return myWires.Appended(); }
+  BRepGraphInc::FaceEntity&      AppendFace()      { return myFaces.Appended(); }
+  BRepGraphInc::ShellEntity&     AppendShell()     { return myShells.Appended(); }
+  BRepGraphInc::SolidEntity&     AppendSolid()     { return mySolids.Appended(); }
+  BRepGraphInc::CompoundEntity&  AppendCompound()  { return myCompounds.Appended(); }
+  BRepGraphInc::CompSolidEntity& AppendCompSolid() { return myCompSolids.Appended(); }
 
-  // ------ UID vectors (parallel to entity vectors) ------
+  // ------ UID access (Kind-dispatched, eliminates 8-way switches in consumers) ------
 
-  NCollection_Vector<BRepGraph_UID> VertexUIDs;
-  NCollection_Vector<BRepGraph_UID> EdgeUIDs;
-  NCollection_Vector<BRepGraph_UID> WireUIDs;
-  NCollection_Vector<BRepGraph_UID> FaceUIDs;
-  NCollection_Vector<BRepGraph_UID> ShellUIDs;
-  NCollection_Vector<BRepGraph_UID> SolidUIDs;
-  NCollection_Vector<BRepGraph_UID> CompoundUIDs;
-  NCollection_Vector<BRepGraph_UID> CompSolidUIDs;
+  //! Return the per-kind UID vector for a given Kind.
+  const NCollection_Vector<BRepGraph_UID>& UIDs(BRepGraph_NodeId::Kind theKind) const;
+
+  //! Return the per-kind UID vector for a given Kind (mutable).
+  NCollection_Vector<BRepGraph_UID>& ChangeUIDs(BRepGraph_NodeId::Kind theKind);
+
+  //! Clear all UID vectors (reset lengths to 0).
+  void ResetAllUIDs();
+
+  // ------ Reverse index ------
+
+  const BRepGraphInc_ReverseIndex& ReverseIndex() const { return myReverseIdx; }
+  BRepGraphInc_ReverseIndex&       ChangeReverseIndex()  { return myReverseIdx; }
+
+  // ------ TShape -> NodeId map ------
+
+  const BRepGraph_NodeId* FindNodeByTShape(const TopoDS_TShape* theTShape) const
+  {
+    return myTShapeToNodeId.Seek(theTShape);
+  }
+
+  bool HasTShapeBinding(const TopoDS_TShape* theTShape) const
+  {
+    return myTShapeToNodeId.IsBound(theTShape);
+  }
+
+  void BindTShapeToNode(const TopoDS_TShape* theTShape, BRepGraph_NodeId theNodeId)
+  {
+    myTShapeToNodeId.Bind(theTShape, theNodeId);
+  }
+
+  // ------ Original shapes ------
+
+  const TopoDS_Shape* FindOriginal(BRepGraph_NodeId theNodeId) const
+  {
+    return myOriginalShapes.Seek(theNodeId);
+  }
+
+  bool HasOriginal(BRepGraph_NodeId theNodeId) const
+  {
+    return myOriginalShapes.IsBound(theNodeId);
+  }
+
+  void BindOriginal(BRepGraph_NodeId theNodeId, const TopoDS_Shape& theShape)
+  {
+    myOriginalShapes.Bind(theNodeId, theShape);
+  }
+
+  void UnBindOriginal(BRepGraph_NodeId theNodeId)
+  {
+    myOriginalShapes.UnBind(theNodeId);
+  }
 
   // ------ Population status ------
 
-  bool IsDone = false;
+  bool GetIsDone() const { return myIsDone; }
+  void SetIsDone(bool theVal) { myIsDone = theVal; }
 
   //! Clear all storage.
   Standard_EXPORT void Clear();
@@ -78,6 +146,34 @@ struct BRepGraphInc_Storage
   //! Build reverse indices from entity and relationship tables.
   //! Call after population is complete.
   Standard_EXPORT void BuildReverseIndex();
+
+private:
+  friend class BRepGraphInc_Populate;
+
+  NCollection_Vector<BRepGraphInc::VertexEntity>    myVertices;
+  NCollection_Vector<BRepGraphInc::EdgeEntity>      myEdges;
+  NCollection_Vector<BRepGraphInc::WireEntity>      myWires;
+  NCollection_Vector<BRepGraphInc::FaceEntity>      myFaces;
+  NCollection_Vector<BRepGraphInc::ShellEntity>     myShells;
+  NCollection_Vector<BRepGraphInc::SolidEntity>     mySolids;
+  NCollection_Vector<BRepGraphInc::CompoundEntity>  myCompounds;
+  NCollection_Vector<BRepGraphInc::CompSolidEntity> myCompSolids;
+
+  BRepGraphInc_ReverseIndex myReverseIdx;
+
+  NCollection_DataMap<const TopoDS_TShape*, BRepGraph_NodeId> myTShapeToNodeId;
+  NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape>         myOriginalShapes;
+
+  NCollection_Vector<BRepGraph_UID> myVertexUIDs;
+  NCollection_Vector<BRepGraph_UID> myEdgeUIDs;
+  NCollection_Vector<BRepGraph_UID> myWireUIDs;
+  NCollection_Vector<BRepGraph_UID> myFaceUIDs;
+  NCollection_Vector<BRepGraph_UID> myShellUIDs;
+  NCollection_Vector<BRepGraph_UID> mySolidUIDs;
+  NCollection_Vector<BRepGraph_UID> myCompoundUIDs;
+  NCollection_Vector<BRepGraph_UID> myCompSolidUIDs;
+
+  bool myIsDone = false;
 };
 
 #endif // _BRepGraphInc_Storage_HeaderFile

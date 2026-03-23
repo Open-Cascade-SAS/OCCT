@@ -41,14 +41,14 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::SameDomainFaces(
     return aResult;
 
   const BRepGraph_TopoNode::FaceDef& aFaceDef =
-    myGraph->myData->myIncStorage.Faces.Value(theFaceDef.Index);
+    myGraph->myData->myIncStorage.Face(theFaceDef.Index);
   if (aFaceDef.Surface.IsNull())
     return aResult;
 
   // Scan all face defs for matching surface
-  for (int aFaceIdx = 0; aFaceIdx < myGraph->myData->myIncStorage.Faces.Length(); ++aFaceIdx)
+  for (int aFaceIdx = 0; aFaceIdx < myGraph->myData->myIncStorage.NbFaces(); ++aFaceIdx)
   {
-    const BRepGraph_TopoNode::FaceDef& aOtherFace = myGraph->myData->myIncStorage.Faces.Value(aFaceIdx);
+    const BRepGraph_TopoNode::FaceDef& aOtherFace = myGraph->myData->myIncStorage.Face(aFaceIdx);
     if (aOtherFace.Surface.get() == aFaceDef.Surface.get() && aOtherFace.Id != theFaceDef)
       aResult.Append(aOtherFace.Id);
   }
@@ -63,11 +63,11 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::FacesOfEdge(
   NCollection_Vector<BRepGraph_NodeId> aResult;
   static const NCollection_Vector<int> THE_EMPTY;
   const NCollection_Vector<int>* aWiresPtr =
-    myGraph->myData->myIncStorage.ReverseIdx.WiresOfEdge(theEdgeDef.Index);
+    myGraph->myData->myIncStorage.ReverseIndex().WiresOfEdge(theEdgeDef.Index);
   const NCollection_Vector<int>& aWires = aWiresPtr != nullptr ? *aWiresPtr : THE_EMPTY;
 
   NCollection_PackedMap<int> aFaceSet;
-  const BRepGraphInc_ReverseIndex& aRevIdx = myGraph->myData->myIncStorage.ReverseIdx;
+  const BRepGraphInc_ReverseIndex& aRevIdx = myGraph->myData->myIncStorage.ReverseIndex();
   for (int aWIdx = 0; aWIdx < aWires.Length(); ++aWIdx)
   {
     const NCollection_Vector<int>* aFaces = aRevIdx.FacesOfWire(aWires.Value(aWIdx));
@@ -92,12 +92,12 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::SharedEdges(
 {
   NCollection_Vector<BRepGraph_NodeId> aResult;
 
-  const BRepGraph_TopoNode::FaceDef& aFaceDefA = myGraph->myData->myIncStorage.Faces.Value(theFaceA.Index);
+  const BRepGraph_TopoNode::FaceDef& aFaceDefA = myGraph->myData->myIncStorage.Face(theFaceA.Index);
 
   NCollection_PackedMap<int> aEdgesA;
   auto collectWireEdges = [&](int theWireDefIdx) {
     const BRepGraph_TopoNode::WireDef& aWireDef =
-      myGraph->myData->myIncStorage.Wires.Value(theWireDefIdx);
+      myGraph->myData->myIncStorage.Wire(theWireDefIdx);
     for (int anEdgeIdx = 0; anEdgeIdx < aWireDef.EdgeRefs.Length(); ++anEdgeIdx)
     {
       aEdgesA.Add(aWireDef.EdgeRefs.Value(anEdgeIdx).EdgeIdx);
@@ -106,18 +106,18 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::SharedEdges(
   for (int aWIdx = 0; aWIdx < aFaceDefA.WireRefs.Length(); ++aWIdx)
     collectWireEdges(aFaceDefA.WireRefs.Value(aWIdx).WireIdx);
 
-  const BRepGraph_TopoNode::FaceDef& aFaceDefB = myGraph->myData->myIncStorage.Faces.Value(theFaceB.Index);
+  const BRepGraph_TopoNode::FaceDef& aFaceDefB = myGraph->myData->myIncStorage.Face(theFaceB.Index);
 
   NCollection_PackedMap<int> aAdded;
   auto checkWireEdges = [&](int theWireDefIdx) {
     const BRepGraph_TopoNode::WireDef& aWireDef =
-      myGraph->myData->myIncStorage.Wires.Value(theWireDefIdx);
+      myGraph->myData->myIncStorage.Wire(theWireDefIdx);
     for (int anEdgeIdx = 0; anEdgeIdx < aWireDef.EdgeRefs.Length(); ++anEdgeIdx)
     {
       const int anEdgeDefIdx = aWireDef.EdgeRefs.Value(anEdgeIdx).EdgeIdx;
       if (aEdgesA.Contains(anEdgeDefIdx) && aAdded.Add(anEdgeDefIdx))
       {
-        aResult.Append(myGraph->myData->myIncStorage.Edges.Value(anEdgeDefIdx).Id);
+        aResult.Append(myGraph->myData->myIncStorage.Edge(anEdgeDefIdx).Id);
       }
     }
   };
@@ -136,17 +136,17 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::AdjacentFaces(
   NCollection_PackedMap<int>           aFaceSet;
 
   const BRepGraph_TopoNode::FaceDef& aFaceDef =
-    myGraph->myData->myIncStorage.Faces.Value(theFaceDef.Index);
+    myGraph->myData->myIncStorage.Face(theFaceDef.Index);
 
   for (int aWireRefIdx = 0; aWireRefIdx < aFaceDef.WireRefs.Length(); ++aWireRefIdx)
   {
     const int aWireDefIdx = aFaceDef.WireRefs.Value(aWireRefIdx).WireIdx;
     const BRepGraph_TopoNode::WireDef& aWireDef =
-      myGraph->myData->myIncStorage.Wires.Value(aWireDefIdx);
+      myGraph->myData->myIncStorage.Wire(aWireDefIdx);
     for (int anEdgeIdx = 0; anEdgeIdx < aWireDef.EdgeRefs.Length(); ++anEdgeIdx)
     {
       const int anEdgeDefIdx = aWireDef.EdgeRefs.Value(anEdgeIdx).EdgeIdx;
-      BRepGraph_NodeId anEdgeDefId = myGraph->myData->myIncStorage.Edges.Value(anEdgeDefIdx).Id;
+      BRepGraph_NodeId anEdgeDefId = myGraph->myData->myIncStorage.Edge(anEdgeDefIdx).Id;
       NCollection_Vector<BRepGraph_NodeId> aFaces = FacesOfEdge(anEdgeDefId);
       for (int aFIdx = 0; aFIdx < aFaces.Length(); ++aFIdx)
       {

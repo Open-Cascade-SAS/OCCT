@@ -15,33 +15,80 @@
 
 //=================================================================================================
 
+const NCollection_Vector<BRepGraph_UID>& BRepGraphInc_Storage::UIDs(
+  BRepGraph_NodeId::Kind theKind) const
+{
+  switch (theKind)
+  {
+    case BRepGraph_NodeId::Kind::Vertex:    return myVertexUIDs;
+    case BRepGraph_NodeId::Kind::Edge:      return myEdgeUIDs;
+    case BRepGraph_NodeId::Kind::Wire:      return myWireUIDs;
+    case BRepGraph_NodeId::Kind::Face:      return myFaceUIDs;
+    case BRepGraph_NodeId::Kind::Shell:     return myShellUIDs;
+    case BRepGraph_NodeId::Kind::Solid:     return mySolidUIDs;
+    case BRepGraph_NodeId::Kind::Compound:  return myCompoundUIDs;
+    case BRepGraph_NodeId::Kind::CompSolid: return myCompSolidUIDs;
+  }
+  static const NCollection_Vector<BRepGraph_UID> THE_EMPTY;
+  return THE_EMPTY;
+}
+
+//=================================================================================================
+
+NCollection_Vector<BRepGraph_UID>& BRepGraphInc_Storage::ChangeUIDs(
+  BRepGraph_NodeId::Kind theKind)
+{
+  switch (theKind)
+  {
+    case BRepGraph_NodeId::Kind::Vertex:    return myVertexUIDs;
+    case BRepGraph_NodeId::Kind::Edge:      return myEdgeUIDs;
+    case BRepGraph_NodeId::Kind::Wire:      return myWireUIDs;
+    case BRepGraph_NodeId::Kind::Face:      return myFaceUIDs;
+    case BRepGraph_NodeId::Kind::Shell:     return myShellUIDs;
+    case BRepGraph_NodeId::Kind::Solid:     return mySolidUIDs;
+    case BRepGraph_NodeId::Kind::Compound:  return myCompoundUIDs;
+    case BRepGraph_NodeId::Kind::CompSolid: return myCompSolidUIDs;
+  }
+  // Unreachable for valid Kind values; return Vertex as fallback.
+  return myVertexUIDs;
+}
+
+//=================================================================================================
+
+void BRepGraphInc_Storage::ResetAllUIDs()
+{
+  myVertexUIDs.Clear();
+  myEdgeUIDs.Clear();
+  myWireUIDs.Clear();
+  myFaceUIDs.Clear();
+  myShellUIDs.Clear();
+  mySolidUIDs.Clear();
+  myCompoundUIDs.Clear();
+  myCompSolidUIDs.Clear();
+}
+
+//=================================================================================================
+
 void BRepGraphInc_Storage::Clear()
 {
-  Vertices.Clear();
-  Edges.Clear();
-  Wires.Clear();
-  Faces.Clear();
-  Shells.Clear();
-  Solids.Clear();
-  Compounds.Clear();
-  CompSolids.Clear();
-  ReverseIdx.Clear();
-  TShapeToNodeId.Clear();
-  OriginalShapes.Clear();
-  VertexUIDs.Clear();
-  EdgeUIDs.Clear();
-  WireUIDs.Clear();
-  FaceUIDs.Clear();
-  ShellUIDs.Clear();
-  SolidUIDs.Clear();
-  CompoundUIDs.Clear();
-  CompSolidUIDs.Clear();
-  IsDone = false;
+  myVertices.Clear();
+  myEdges.Clear();
+  myWires.Clear();
+  myFaces.Clear();
+  myShells.Clear();
+  mySolids.Clear();
+  myCompounds.Clear();
+  myCompSolids.Clear();
+  myReverseIdx.Clear();
+  myTShapeToNodeId.Clear();
+  myOriginalShapes.Clear();
+  ResetAllUIDs();
+  myIsDone = false;
 }
 
 //=================================================================================================
 
 void BRepGraphInc_Storage::BuildReverseIndex()
 {
-  ReverseIdx.Build(Edges, Wires, Faces, Shells, Solids);
+  myReverseIdx.Build(myEdges, myWires, myFaces, myShells, mySolids);
 }

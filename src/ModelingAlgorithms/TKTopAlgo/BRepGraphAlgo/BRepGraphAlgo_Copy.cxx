@@ -247,14 +247,14 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
     }
   };
 
-  copyUIDs(theGraph.myData->myIncStorage.VertexUIDs,    aResult.myData->myIncStorage.VertexUIDs);
-  copyUIDs(theGraph.myData->myIncStorage.EdgeUIDs,      aResult.myData->myIncStorage.EdgeUIDs);
-  copyUIDs(theGraph.myData->myIncStorage.WireUIDs,      aResult.myData->myIncStorage.WireUIDs);
-  copyUIDs(theGraph.myData->myIncStorage.FaceUIDs,      aResult.myData->myIncStorage.FaceUIDs);
-  copyUIDs(theGraph.myData->myIncStorage.ShellUIDs,     aResult.myData->myIncStorage.ShellUIDs);
-  copyUIDs(theGraph.myData->myIncStorage.SolidUIDs,     aResult.myData->myIncStorage.SolidUIDs);
-  copyUIDs(theGraph.myData->myIncStorage.CompoundUIDs,  aResult.myData->myIncStorage.CompoundUIDs);
-  copyUIDs(theGraph.myData->myIncStorage.CompSolidUIDs, aResult.myData->myIncStorage.CompSolidUIDs);
+  copyUIDs(theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Vertex),    aResult.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Vertex));
+  copyUIDs(theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Edge),      aResult.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Edge));
+  copyUIDs(theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Wire),      aResult.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Wire));
+  copyUIDs(theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Face),      aResult.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Face));
+  copyUIDs(theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Shell),     aResult.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Shell));
+  copyUIDs(theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Solid),     aResult.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Solid));
+  copyUIDs(theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Compound),  aResult.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Compound));
+  copyUIDs(theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::CompSolid), aResult.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::CompSolid));
 
   aResult.myData->myNextUIDCounter.store(
     theGraph.myData->myNextUIDCounter.load(std::memory_order_relaxed),

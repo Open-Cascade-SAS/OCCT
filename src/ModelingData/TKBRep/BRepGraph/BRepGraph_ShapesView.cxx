@@ -30,7 +30,7 @@ TopoDS_Shape BRepGraph::ShapesView::Shape(BRepGraph_NodeId theNode) const
   const BRepGraph_TopoNode::BaseDef* aDef = myGraph->TopoDef(theNode);
   if (aDef != nullptr && !aDef->IsModified)
   {
-    const TopoDS_Shape* anOrig = myGraph->myData->myIncStorage.OriginalShapes.Seek(theNode);
+    const TopoDS_Shape* anOrig = myGraph->myData->myIncStorage.FindOriginal(theNode);
     if (anOrig != nullptr)
       return *anOrig;
   }
@@ -62,7 +62,7 @@ TopoDS_Shape BRepGraph::ShapesView::Shape(BRepGraph_NodeId theNode) const
     if (!myGraph->myData->myCurrentShapes.IsBound(theNode))
     {
       myGraph->myData->myCurrentShapes.Bind(theNode, aReconstructed);
-      myGraph->myData->myIncStorage.TShapeToNodeId.Bind(aReconstructed.TShape().get(), theNode);
+      myGraph->myData->myIncStorage.BindTShapeToNode(aReconstructed.TShape().get(), theNode);
     }
   }
   return aReconstructed;
@@ -72,14 +72,14 @@ TopoDS_Shape BRepGraph::ShapesView::Shape(BRepGraph_NodeId theNode) const
 
 bool BRepGraph::ShapesView::HasOriginal(BRepGraph_NodeId theNode) const
 {
-  return myGraph->myData->myIncStorage.OriginalShapes.IsBound(theNode);
+  return myGraph->myData->myIncStorage.HasOriginal(theNode);
 }
 
 //=================================================================================================
 
 const TopoDS_Shape& BRepGraph::ShapesView::OriginalOf(BRepGraph_NodeId theNode) const
 {
-  const TopoDS_Shape* aShape = myGraph->myData->myIncStorage.OriginalShapes.Seek(theNode);
+  const TopoDS_Shape* aShape = myGraph->myData->myIncStorage.FindOriginal(theNode);
   if (aShape == nullptr)
     throw Standard_ProgramError("BRepGraph::ShapesView::OriginalOf() -- no original shape.");
   return *aShape;
@@ -133,7 +133,7 @@ BRepGraph_NodeId BRepGraph::ShapesView::FindNode(const TopoDS_Shape& theShape) c
     return BRepGraph_NodeId();
 
   const BRepGraph_NodeId* aNodeId =
-    myGraph->myData->myIncStorage.TShapeToNodeId.Seek(theShape.TShape().get());
+    myGraph->myData->myIncStorage.FindNodeByTShape(theShape.TShape().get());
   if (aNodeId != nullptr)
     return *aNodeId;
   return BRepGraph_NodeId();
@@ -146,5 +146,5 @@ bool BRepGraph::ShapesView::HasNode(const TopoDS_Shape& theShape) const
   if (theShape.IsNull())
     return false;
 
-  return myGraph->myData->myIncStorage.TShapeToNodeId.IsBound(theShape.TShape().get());
+  return myGraph->myData->myIncStorage.HasTShapeBinding(theShape.TShape().get());
 }

@@ -451,14 +451,14 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
     }
   };
 
-  transferUIDs(aVertexMap,    theGraph.myData->myIncStorage.VertexUIDs,    aNewGraph.myData->myIncStorage.VertexUIDs);
-  transferUIDs(anEdgeMap,     theGraph.myData->myIncStorage.EdgeUIDs,      aNewGraph.myData->myIncStorage.EdgeUIDs);
-  transferUIDs(aWireMap,      theGraph.myData->myIncStorage.WireUIDs,      aNewGraph.myData->myIncStorage.WireUIDs);
-  transferUIDs(aFaceMap,      theGraph.myData->myIncStorage.FaceUIDs,      aNewGraph.myData->myIncStorage.FaceUIDs);
-  transferUIDs(aShellMap,     theGraph.myData->myIncStorage.ShellUIDs,     aNewGraph.myData->myIncStorage.ShellUIDs);
-  transferUIDs(aSolidMap,     theGraph.myData->myIncStorage.SolidUIDs,     aNewGraph.myData->myIncStorage.SolidUIDs);
-  transferUIDs(aCompoundMap,  theGraph.myData->myIncStorage.CompoundUIDs,  aNewGraph.myData->myIncStorage.CompoundUIDs);
-  transferUIDs(aCompSolidMap, theGraph.myData->myIncStorage.CompSolidUIDs, aNewGraph.myData->myIncStorage.CompSolidUIDs);
+  transferUIDs(aVertexMap,    theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Vertex),    aNewGraph.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Vertex));
+  transferUIDs(anEdgeMap,     theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Edge),      aNewGraph.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Edge));
+  transferUIDs(aWireMap,      theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Wire),      aNewGraph.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Wire));
+  transferUIDs(aFaceMap,      theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Face),      aNewGraph.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Face));
+  transferUIDs(aShellMap,     theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Shell),     aNewGraph.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Shell));
+  transferUIDs(aSolidMap,     theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Solid),     aNewGraph.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Solid));
+  transferUIDs(aCompoundMap,  theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Compound),  aNewGraph.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Compound));
+  transferUIDs(aCompSolidMap, theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::CompSolid), aNewGraph.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::CompSolid));
 
   aNewGraph.myData->myNextUIDCounter.store(
     theGraph.myData->myNextUIDCounter.load(std::memory_order_relaxed),

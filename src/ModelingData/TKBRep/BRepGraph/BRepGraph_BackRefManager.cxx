@@ -94,7 +94,7 @@ void BRepGraph_BackRefManager::ClearRelEdges(BRepGraph&       theGraph,
 void BRepGraph_BackRefManager::ClearAll(BRepGraph& theGraph)
 {
   // Clear incidence reverse indices (edge-to-wire, etc.).
-  theGraph.myData->myIncStorage.ReverseIdx.Clear();
+  theGraph.myData->myIncStorage.ChangeReverseIndex().Clear();
 
   // Clear relation edge maps.
   theGraph.myData->myOutRelEdges.Clear();

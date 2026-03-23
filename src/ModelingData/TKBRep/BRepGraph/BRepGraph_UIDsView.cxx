@@ -14,30 +14,6 @@
 #include <BRepGraph_UIDsView.hxx>
 #include <BRepGraph_Data.hxx>
 
-namespace
-{
-
-//! Return the per-kind forward UID vector for a given Kind.
-const NCollection_Vector<BRepGraph_UID>* uidVecForKind(const BRepGraph_Data&  theData,
-                                                       BRepGraph_NodeId::Kind theKind)
-{
-  const BRepGraphInc_Storage& aStorage = theData.myIncStorage;
-  switch (theKind)
-  {
-    case BRepGraph_NodeId::Kind::Solid:     return &aStorage.SolidUIDs;
-    case BRepGraph_NodeId::Kind::Shell:     return &aStorage.ShellUIDs;
-    case BRepGraph_NodeId::Kind::Face:      return &aStorage.FaceUIDs;
-    case BRepGraph_NodeId::Kind::Wire:      return &aStorage.WireUIDs;
-    case BRepGraph_NodeId::Kind::Edge:      return &aStorage.EdgeUIDs;
-    case BRepGraph_NodeId::Kind::Vertex:    return &aStorage.VertexUIDs;
-    case BRepGraph_NodeId::Kind::Compound:  return &aStorage.CompoundUIDs;
-    case BRepGraph_NodeId::Kind::CompSolid: return &aStorage.CompSolidUIDs;
-    default: return nullptr;
-  }
-}
-
-} // namespace
-
 //=================================================================================================
 
 BRepGraph_UID BRepGraph::UIDsView::Of(BRepGraph_NodeId theNode) const
@@ -45,10 +21,10 @@ BRepGraph_UID BRepGraph::UIDsView::Of(BRepGraph_NodeId theNode) const
   if (!theNode.IsValid())
     return BRepGraph_UID();
 
-  const NCollection_Vector<BRepGraph_UID>* aVec = uidVecForKind(*myGraph->myData, theNode.NodeKind);
-  if (aVec == nullptr || theNode.Index >= aVec->Length())
+  const NCollection_Vector<BRepGraph_UID>& aVec = myGraph->myData->myIncStorage.UIDs(theNode.NodeKind);
+  if (theNode.Index >= aVec.Length())
     return BRepGraph_UID();
-  return aVec->Value(theNode.Index);
+  return aVec.Value(theNode.Index);
 }
 
 //=================================================================================================
@@ -58,14 +34,11 @@ BRepGraph_NodeId BRepGraph::UIDsView::NodeIdFrom(const BRepGraph_UID& theUID) co
   if (!theUID.IsValid())
     return BRepGraph_NodeId();
 
-  // Linear scan of the matching per-kind forward vector.
-  const NCollection_Vector<BRepGraph_UID>* aVec = uidVecForKind(*myGraph->myData, theUID.Kind());
-  if (aVec == nullptr)
-    return BRepGraph_NodeId();
+  const NCollection_Vector<BRepGraph_UID>& aVec = myGraph->myData->myIncStorage.UIDs(theUID.Kind());
 
-  for (int i = 0; i < aVec->Length(); ++i)
+  for (int i = 0; i < aVec.Length(); ++i)
   {
-    if (aVec->Value(i) == theUID)
+    if (aVec.Value(i) == theUID)
       return BRepGraph_NodeId(theUID.Kind(), i);
   }
   return BRepGraph_NodeId();
@@ -80,13 +53,11 @@ bool BRepGraph::UIDsView::Has(const BRepGraph_UID& theUID) const
   if (theUID.Generation() != myGraph->myData->myGeneration)
     return false;
 
-  const NCollection_Vector<BRepGraph_UID>* aVec = uidVecForKind(*myGraph->myData, theUID.Kind());
-  if (aVec == nullptr)
-    return false;
+  const NCollection_Vector<BRepGraph_UID>& aVec = myGraph->myData->myIncStorage.UIDs(theUID.Kind());
 
-  for (int i = 0; i < aVec->Length(); ++i)
+  for (int i = 0; i < aVec.Length(); ++i)
   {
-    if (aVec->Value(i) == theUID)
+    if (aVec.Value(i) == theUID)
       return true;
   }
   return false;

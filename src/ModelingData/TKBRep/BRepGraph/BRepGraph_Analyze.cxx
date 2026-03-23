@@ -101,9 +101,9 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph_Analyze::ToleranceConflicts(
 
   // Build temporary curve pointer -> edges map by scanning edge defs
   NCollection_DataMap<const Geom_Curve*, NCollection_Vector<BRepGraph_NodeId>> aCurveToEdges;
-  for (int anEdgeIdx = 0; anEdgeIdx < theGraph.myData->myIncStorage.Edges.Length(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < theGraph.myData->myIncStorage.NbEdges(); ++anEdgeIdx)
   {
-    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = theGraph.myData->myIncStorage.Edges.Value(anEdgeIdx);
+    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = theGraph.myData->myIncStorage.Edge(anEdgeIdx);
     if (anEdgeDef.Curve3d.IsNull())
       continue;
     const Geom_Curve* aCurveKey = anEdgeDef.Curve3d.get();
@@ -122,7 +122,7 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph_Analyze::ToleranceConflicts(
     double aMaxTol = -1.0;
     for (int anIdx = 0; anIdx < anEdges.Length(); ++anIdx)
     {
-      const double aTol = theGraph.myData->myIncStorage.Edges.Value(anEdges.Value(anIdx).Index).Tolerance;
+      const double aTol = theGraph.myData->myIncStorage.Edge(anEdges.Value(anIdx).Index).Tolerance;
       if (aTol < aMinTol) aMinTol = aTol;
       if (aTol > aMaxTol) aMaxTol = aTol;
     }
@@ -164,7 +164,7 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph_Analyze::DegenerateWires(const BR
       // Check if this wire is the outer wire of any face (via reverse index).
       auto isOuterWireOfAnyFace = [&]() -> bool {
         const NCollection_Vector<int>* aFaces =
-          theGraph.myData->myIncStorage.ReverseIdx.FacesOfWire(aWireDefIdx);
+          theGraph.myData->myIncStorage.ReverseIndex().FacesOfWire(aWireDefIdx);
         if (aFaces == nullptr)
           return false;
         for (int aFIdx = 0; aFIdx < aFaces->Length(); ++aFIdx)

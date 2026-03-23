@@ -100,6 +100,15 @@ public:
   //! Replace an edge in the edge-to-wire index for a specific wire.
   Standard_EXPORT void ReplaceEdgeInWireMap(int theOldEdgeIdx, int theNewEdgeIdx, int theWireIdx);
 
+  //! Register a vertex as incident to an edge (O(1) amortized, deduplicates).
+  Standard_EXPORT void BindVertexToEdge(int theVertexIdx, int theEdgeIdx);
+
+  //! Remove an edge from the vertex-to-edge index for a given vertex.
+  Standard_EXPORT void UnbindVertexFromEdge(int theVertexIdx, int theEdgeIdx);
+
+  //! Register an edge as belonging to a face (O(1) amortized, deduplicates).
+  Standard_EXPORT void BindEdgeToFace(int theEdgeIdx, int theFaceIdx);
+
 private:
   //! Add theVal to the vector at theKey, creating if needed.  Skips duplicates.
   static void appendUnique(NCollection_DataMap<int, NCollection_Vector<int>>& theMap,

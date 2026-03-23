@@ -190,3 +190,36 @@ void BRepGraphInc_ReverseIndex::appendDirect(
     theMap.Bind(theKey, aNewVec);
   }
 }
+
+//=================================================================================================
+
+void BRepGraphInc_ReverseIndex::BindVertexToEdge(int theVertexIdx, int theEdgeIdx)
+{
+  appendUnique(myVertexToEdges, theVertexIdx, theEdgeIdx);
+}
+
+//=================================================================================================
+
+void BRepGraphInc_ReverseIndex::UnbindVertexFromEdge(int theVertexIdx, int theEdgeIdx)
+{
+  NCollection_Vector<int>* anEdges = myVertexToEdges.ChangeSeek(theVertexIdx);
+  if (anEdges == nullptr)
+    return;
+  for (int i = 0; i < anEdges->Length(); ++i)
+  {
+    if (anEdges->Value(i) == theEdgeIdx)
+    {
+      if (i < anEdges->Length() - 1)
+        anEdges->ChangeValue(i) = anEdges->Value(anEdges->Length() - 1);
+      anEdges->EraseLast();
+      break;
+    }
+  }
+}
+
+//=================================================================================================
+
+void BRepGraphInc_ReverseIndex::BindEdgeToFace(int theEdgeIdx, int theFaceIdx)
+{
+  appendUnique(myEdgeToFaces, theEdgeIdx, theFaceIdx);
+}

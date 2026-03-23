@@ -20,7 +20,7 @@
 
 #include <NCollection_DataMap.hxx>
 
-struct BRepGraphInc_Storage;
+class BRepGraphInc_Storage;
 
 //! @brief Reconstruct TopoDS shapes from incidence-table storage.
 //!
@@ -35,11 +35,23 @@ public:
   using Cache = NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape>;
 
   //! Reconstruct a TopoDS_Shape from an entity node.
+  //! Creates a local cache internally; shared vertices/edges are not reused
+  //! across calls.
   //! @param[in] theStorage  incidence storage
   //! @param[in] theNode     entity node id
   //! @return reconstructed shape
   static Standard_EXPORT TopoDS_Shape Node(const BRepGraphInc_Storage& theStorage,
                                            BRepGraph_NodeId            theNode);
+
+  //! Reconstruct a TopoDS_Shape with a shared cache for sub-shape reuse.
+  //! Vertices and edges already in theCache are returned directly.
+  //! @param[in]     theStorage  incidence storage
+  //! @param[in]     theNode     entity node id
+  //! @param[in,out] theCache    shared cache for vertex/edge/face shapes
+  //! @return reconstructed shape
+  static Standard_EXPORT TopoDS_Shape Node(const BRepGraphInc_Storage& theStorage,
+                                           BRepGraph_NodeId            theNode,
+                                           Cache&                      theCache);
 
   //! Reconstruct a face with shared edge/vertex cache for multi-face contexts.
   //! @param[in] theStorage    incidence storage

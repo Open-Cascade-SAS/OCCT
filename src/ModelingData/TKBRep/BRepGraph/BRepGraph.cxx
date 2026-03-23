@@ -22,45 +22,6 @@
 
 #include <shared_mutex>
 
-//=================================================================================================
-// dispatchDef template implementations.
-// Accesses incidence storage entity vectors directly.
-
-template <typename Func>
-auto BRepGraph::dispatchDef(BRepGraph_NodeId theNode, Func&& theFunc) const
-  -> decltype(theFunc(std::declval<const NCollection_Vector<BRepGraph_TopoNode::SolidDef>&>(), 0))
-{
-  switch (theNode.NodeKind)
-  {
-    case BRepGraph_NodeId::Kind::Solid:     return theFunc(myData->myIncStorage.Solids, theNode.Index);
-    case BRepGraph_NodeId::Kind::Shell:     return theFunc(myData->myIncStorage.Shells, theNode.Index);
-    case BRepGraph_NodeId::Kind::Face:      return theFunc(myData->myIncStorage.Faces, theNode.Index);
-    case BRepGraph_NodeId::Kind::Wire:      return theFunc(myData->myIncStorage.Wires, theNode.Index);
-    case BRepGraph_NodeId::Kind::Edge:      return theFunc(myData->myIncStorage.Edges, theNode.Index);
-    case BRepGraph_NodeId::Kind::Vertex:    return theFunc(myData->myIncStorage.Vertices, theNode.Index);
-    case BRepGraph_NodeId::Kind::Compound:  return theFunc(myData->myIncStorage.Compounds, theNode.Index);
-    case BRepGraph_NodeId::Kind::CompSolid: return theFunc(myData->myIncStorage.CompSolids, theNode.Index);
-    default: return decltype(theFunc(myData->myIncStorage.Solids, 0)){};
-  }
-}
-
-template <typename Func>
-auto BRepGraph::dispatchDef(BRepGraph_NodeId theNode, Func&& theFunc)
-  -> decltype(theFunc(std::declval<NCollection_Vector<BRepGraph_TopoNode::SolidDef>&>(), 0))
-{
-  switch (theNode.NodeKind)
-  {
-    case BRepGraph_NodeId::Kind::Solid:     return theFunc(myData->myIncStorage.Solids, theNode.Index);
-    case BRepGraph_NodeId::Kind::Shell:     return theFunc(myData->myIncStorage.Shells, theNode.Index);
-    case BRepGraph_NodeId::Kind::Face:      return theFunc(myData->myIncStorage.Faces, theNode.Index);
-    case BRepGraph_NodeId::Kind::Wire:      return theFunc(myData->myIncStorage.Wires, theNode.Index);
-    case BRepGraph_NodeId::Kind::Edge:      return theFunc(myData->myIncStorage.Edges, theNode.Index);
-    case BRepGraph_NodeId::Kind::Vertex:    return theFunc(myData->myIncStorage.Vertices, theNode.Index);
-    case BRepGraph_NodeId::Kind::Compound:  return theFunc(myData->myIncStorage.Compounds, theNode.Index);
-    case BRepGraph_NodeId::Kind::CompSolid: return theFunc(myData->myIncStorage.CompSolids, theNode.Index);
-    default: return decltype(theFunc(myData->myIncStorage.Solids, 0)){};
-  }
-}
 
 //=================================================================================================
 
@@ -101,22 +62,7 @@ BRepGraph_UID BRepGraph::allocateUID(BRepGraph_NodeId theNodeId)
 {
   const size_t  aCounter = myData->myNextUIDCounter.fetch_add(1, std::memory_order_relaxed);
   BRepGraph_UID aUID(theNodeId.NodeKind, aCounter, myData->myGeneration);
-
-  // Append to per-kind forward vector in Storage (O(1) amortized).
-  BRepGraphInc_Storage& aStorage = myData->myIncStorage;
-  switch (theNodeId.NodeKind)
-  {
-    case BRepGraph_NodeId::Kind::Solid:     aStorage.SolidUIDs.Append(aUID);     break;
-    case BRepGraph_NodeId::Kind::Shell:     aStorage.ShellUIDs.Append(aUID);     break;
-    case BRepGraph_NodeId::Kind::Face:      aStorage.FaceUIDs.Append(aUID);      break;
-    case BRepGraph_NodeId::Kind::Wire:      aStorage.WireUIDs.Append(aUID);      break;
-    case BRepGraph_NodeId::Kind::Edge:      aStorage.EdgeUIDs.Append(aUID);      break;
-    case BRepGraph_NodeId::Kind::Vertex:    aStorage.VertexUIDs.Append(aUID);    break;
-    case BRepGraph_NodeId::Kind::Compound:  aStorage.CompoundUIDs.Append(aUID);  break;
-    case BRepGraph_NodeId::Kind::CompSolid: aStorage.CompSolidUIDs.Append(aUID); break;
-    default: break;
-  }
-
+  myData->myIncStorage.ChangeUIDs(theNodeId.NodeKind).Append(aUID);
   return aUID;
 }
 
@@ -124,9 +70,19 @@ BRepGraph_UID BRepGraph::allocateUID(BRepGraph_NodeId theNodeId)
 
 BRepGraph_NodeCache* BRepGraph::mutableCache(BRepGraph_NodeId theNode)
 {
-  return dispatchDef(theNode, [](auto& theVec, int theIdx) -> BRepGraph_NodeCache* {
-    return &theVec.ChangeValue(theIdx).Cache;
-  });
+  BRepGraphInc_Storage& aStorage = myData->myIncStorage;
+  switch (theNode.NodeKind)
+  {
+    case BRepGraph_NodeId::Kind::Solid:     return &aStorage.ChangeSolid(theNode.Index).Cache;
+    case BRepGraph_NodeId::Kind::Shell:     return &aStorage.ChangeShell(theNode.Index).Cache;
+    case BRepGraph_NodeId::Kind::Face:      return &aStorage.ChangeFace(theNode.Index).Cache;
+    case BRepGraph_NodeId::Kind::Wire:      return &aStorage.ChangeWire(theNode.Index).Cache;
+    case BRepGraph_NodeId::Kind::Edge:      return &aStorage.ChangeEdge(theNode.Index).Cache;
+    case BRepGraph_NodeId::Kind::Vertex:    return &aStorage.ChangeVertex(theNode.Index).Cache;
+    case BRepGraph_NodeId::Kind::Compound:  return &aStorage.ChangeCompound(theNode.Index).Cache;
+    case BRepGraph_NodeId::Kind::CompSolid: return &aStorage.ChangeCompSolid(theNode.Index).Cache;
+    default: return nullptr;
+  }
 }
 
 //=================================================================================================
@@ -142,13 +98,27 @@ const BRepGraph_TopoNode::BaseDef* BRepGraph::TopoDef(BRepGraph_NodeId theId) co
 {
   if (!theId.IsValid())
     return nullptr;
-
-  return dispatchDef(theId,
-    [](const auto& theVec, int theIdx) -> const BRepGraph_TopoNode::BaseDef* {
-      return theIdx < theVec.Length()
-               ? static_cast<const BRepGraph_TopoNode::BaseDef*>(&theVec.Value(theIdx))
-               : nullptr;
-    });
+  const BRepGraphInc_Storage& aStorage = myData->myIncStorage;
+  switch (theId.NodeKind)
+  {
+    case BRepGraph_NodeId::Kind::Solid:
+      return theId.Index < aStorage.NbSolids() ? &aStorage.Solid(theId.Index) : nullptr;
+    case BRepGraph_NodeId::Kind::Shell:
+      return theId.Index < aStorage.NbShells() ? &aStorage.Shell(theId.Index) : nullptr;
+    case BRepGraph_NodeId::Kind::Face:
+      return theId.Index < aStorage.NbFaces() ? &aStorage.Face(theId.Index) : nullptr;
+    case BRepGraph_NodeId::Kind::Wire:
+      return theId.Index < aStorage.NbWires() ? &aStorage.Wire(theId.Index) : nullptr;
+    case BRepGraph_NodeId::Kind::Edge:
+      return theId.Index < aStorage.NbEdges() ? &aStorage.Edge(theId.Index) : nullptr;
+    case BRepGraph_NodeId::Kind::Vertex:
+      return theId.Index < aStorage.NbVertices() ? &aStorage.Vertex(theId.Index) : nullptr;
+    case BRepGraph_NodeId::Kind::Compound:
+      return theId.Index < aStorage.NbCompounds() ? &aStorage.Compound(theId.Index) : nullptr;
+    case BRepGraph_NodeId::Kind::CompSolid:
+      return theId.Index < aStorage.NbCompSolids() ? &aStorage.CompSolid(theId.Index) : nullptr;
+    default: return nullptr;
+  }
 }
 
 //=================================================================================================
@@ -163,31 +133,31 @@ void BRepGraph::invalidateSubgraphImpl(BRepGraph_NodeId theNode)
   switch (theNode.NodeKind)
   {
     case BRepGraph_NodeId::Kind::Solid: {
-      const BRepGraph_TopoNode::SolidDef& aSolidDef = myData->myIncStorage.Solids.Value(theNode.Index);
+      const BRepGraph_TopoNode::SolidDef& aSolidDef = myData->myIncStorage.Solid(theNode.Index);
       for (int s = 0; s < aSolidDef.ShellRefs.Length(); ++s)
         invalidateSubgraphImpl(BRepGraph_NodeId::Shell(aSolidDef.ShellRefs.Value(s).ShellIdx));
       break;
     }
     case BRepGraph_NodeId::Kind::Shell: {
-      const BRepGraph_TopoNode::ShellDef& aShellDef = myData->myIncStorage.Shells.Value(theNode.Index);
+      const BRepGraph_TopoNode::ShellDef& aShellDef = myData->myIncStorage.Shell(theNode.Index);
       for (int f = 0; f < aShellDef.FaceRefs.Length(); ++f)
         invalidateSubgraphImpl(BRepGraph_NodeId::Face(aShellDef.FaceRefs.Value(f).FaceIdx));
       break;
     }
     case BRepGraph_NodeId::Kind::Face: {
-      const BRepGraph_TopoNode::FaceDef& aFaceDef = myData->myIncStorage.Faces.Value(theNode.Index);
+      const BRepGraph_TopoNode::FaceDef& aFaceDef = myData->myIncStorage.Face(theNode.Index);
       for (int w = 0; w < aFaceDef.WireRefs.Length(); ++w)
         invalidateSubgraphImpl(BRepGraph_NodeId::Wire(aFaceDef.WireRefs.Value(w).WireIdx));
       break;
     }
     case BRepGraph_NodeId::Kind::Wire: {
-      const BRepGraph_TopoNode::WireDef& aWireDef = myData->myIncStorage.Wires.Value(theNode.Index);
+      const BRepGraph_TopoNode::WireDef& aWireDef = myData->myIncStorage.Wire(theNode.Index);
       for (int e = 0; e < aWireDef.EdgeRefs.Length(); ++e)
         invalidateSubgraphImpl(BRepGraph_NodeId::Edge(aWireDef.EdgeRefs.Value(e).EdgeIdx));
       break;
     }
     case BRepGraph_NodeId::Kind::Edge: {
-      const BRepGraph_TopoNode::EdgeDef& anEdgeDef = myData->myIncStorage.Edges.Value(theNode.Index);
+      const BRepGraph_TopoNode::EdgeDef& anEdgeDef = myData->myIncStorage.Edge(theNode.Index);
       if (anEdgeDef.StartVertexDefId().IsValid())
       {
         BRepGraph_NodeCache* aVtxCache = mutableCache(anEdgeDef.StartVertexDefId());
@@ -225,7 +195,7 @@ void BRepGraph::markModified(BRepGraph_NodeId theDefId)
   }
 
   // Propagate upward via reverse indices.
-  const BRepGraphInc_ReverseIndex& aRevIdx = myData->myIncStorage.ReverseIdx;
+  const BRepGraphInc_ReverseIndex& aRevIdx = myData->myIncStorage.ReverseIndex();
   switch (theDefId.NodeKind)
   {
     case BRepGraph_NodeId::Kind::Vertex:

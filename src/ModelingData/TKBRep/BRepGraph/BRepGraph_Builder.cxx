@@ -24,25 +24,25 @@ void BRepGraph_Builder::populateUIDs(BRepGraph& theGraph)
 {
   BRepGraphInc_Storage& aStorage = theGraph.myData->myIncStorage;
 
-  if (!aStorage.IsDone)
+  if (!aStorage.GetIsDone())
     return;
 
-  for (int i = 0; i < aStorage.Vertices.Length(); ++i)
-    theGraph.allocateUID(aStorage.Vertices.Value(i).Id);
-  for (int i = 0; i < aStorage.Edges.Length(); ++i)
-    theGraph.allocateUID(aStorage.Edges.Value(i).Id);
-  for (int i = 0; i < aStorage.Wires.Length(); ++i)
-    theGraph.allocateUID(aStorage.Wires.Value(i).Id);
-  for (int i = 0; i < aStorage.Faces.Length(); ++i)
-    theGraph.allocateUID(aStorage.Faces.Value(i).Id);
-  for (int i = 0; i < aStorage.Shells.Length(); ++i)
-    theGraph.allocateUID(aStorage.Shells.Value(i).Id);
-  for (int i = 0; i < aStorage.Solids.Length(); ++i)
-    theGraph.allocateUID(aStorage.Solids.Value(i).Id);
-  for (int i = 0; i < aStorage.Compounds.Length(); ++i)
-    theGraph.allocateUID(aStorage.Compounds.Value(i).Id);
-  for (int i = 0; i < aStorage.CompSolids.Length(); ++i)
-    theGraph.allocateUID(aStorage.CompSolids.Value(i).Id);
+  for (int i = 0; i < aStorage.NbVertices(); ++i)
+    theGraph.allocateUID(aStorage.Vertex(i).Id);
+  for (int i = 0; i < aStorage.NbEdges(); ++i)
+    theGraph.allocateUID(aStorage.Edge(i).Id);
+  for (int i = 0; i < aStorage.NbWires(); ++i)
+    theGraph.allocateUID(aStorage.Wire(i).Id);
+  for (int i = 0; i < aStorage.NbFaces(); ++i)
+    theGraph.allocateUID(aStorage.Face(i).Id);
+  for (int i = 0; i < aStorage.NbShells(); ++i)
+    theGraph.allocateUID(aStorage.Shell(i).Id);
+  for (int i = 0; i < aStorage.NbSolids(); ++i)
+    theGraph.allocateUID(aStorage.Solid(i).Id);
+  for (int i = 0; i < aStorage.NbCompounds(); ++i)
+    theGraph.allocateUID(aStorage.Compound(i).Id);
+  for (int i = 0; i < aStorage.NbCompSolids(); ++i)
+    theGraph.allocateUID(aStorage.CompSolid(i).Id);
 }
 
 //=================================================================================================
@@ -61,7 +61,7 @@ void BRepGraph_Builder::Perform(BRepGraph& theGraph, const TopoDS_Shape& theShap
     return;
 
   BRepGraphInc_Populate::Perform(theGraph.myData->myIncStorage, theShape, theParallel);
-  if (!theGraph.myData->myIncStorage.IsDone)
+  if (!theGraph.myData->myIncStorage.GetIsDone())
   {
     theGraph.myData->myIncStorage.Clear();
     return;
@@ -84,14 +84,7 @@ void BRepGraph_Builder::Append(BRepGraph& theGraph, const TopoDS_Shape& theShape
   // Clear UIDs for re-population: Append may add new entities, making
   // existing UID vectors shorter than their parallel entity vectors.
   BRepGraphInc_Storage& aStorage = theGraph.myData->myIncStorage;
-  aStorage.VertexUIDs.Clear();
-  aStorage.EdgeUIDs.Clear();
-  aStorage.WireUIDs.Clear();
-  aStorage.FaceUIDs.Clear();
-  aStorage.ShellUIDs.Clear();
-  aStorage.SolidUIDs.Clear();
-  aStorage.CompoundUIDs.Clear();
-  aStorage.CompSolidUIDs.Clear();
+  aStorage.ResetAllUIDs();
 
   theGraph.myData->myCurrentShapes.Clear();
 

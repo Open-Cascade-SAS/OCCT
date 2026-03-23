@@ -56,7 +56,7 @@ int BRepGraph::RelEdgesView::FaceCountForEdge(int theEdgeDefIdx) const
 {
   const NCollection_Vector<int>& aWires = WiresOfEdge(theEdgeDefIdx);
   NCollection_PackedMap<int>     aFaceSet;
-  const BRepGraphInc_ReverseIndex& aRevIdx = myGraph->myData->myIncStorage.ReverseIdx;
+  const BRepGraphInc_ReverseIndex& aRevIdx = myGraph->myData->myIncStorage.ReverseIndex();
   for (int aWIdx = 0; aWIdx < aWires.Length(); ++aWIdx)
   {
     const NCollection_Vector<int>* aFaces = aRevIdx.FacesOfWire(aWires.Value(aWIdx));
@@ -73,6 +73,6 @@ const NCollection_Vector<int>& BRepGraph::RelEdgesView::WiresOfEdge(int theEdgeD
 {
   static const NCollection_Vector<int> THE_EMPTY;
   const NCollection_Vector<int>* aResult =
-    myGraph->myData->myIncStorage.ReverseIdx.WiresOfEdge(theEdgeDefIdx);
+    myGraph->myData->myIncStorage.ReverseIndex().WiresOfEdge(theEdgeDefIdx);
   return aResult != nullptr ? *aResult : THE_EMPTY;
 }
