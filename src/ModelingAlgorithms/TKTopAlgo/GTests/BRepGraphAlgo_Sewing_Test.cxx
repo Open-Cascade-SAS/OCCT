@@ -1521,7 +1521,7 @@ TEST(BRepGraphAlgo_SewingTest, Performance_VsLegacy_STEPFile)
 
 TEST(BRepGraphAlgo_SewingTest, ParallelThreadPoolDiagnostics)
 {
-  const Handle(OSD_ThreadPool)& aPool              = OSD_ThreadPool::DefaultPool();
+  const occ::handle<OSD_ThreadPool>& aPool              = OSD_ThreadPool::DefaultPool();
   const int                     aNbPoolThreads     = aPool->NbThreads();
   const int                     aNbDefLaunch       = aPool->NbDefaultThreadsToLaunch();
   const int                     aNbLogical         = OSD_Parallel::NbLogicalProcessors();
@@ -1572,7 +1572,7 @@ TEST(BRepGraphAlgo_SewingTest, ParallelThreadPoolDiagnostics)
 
 TEST(BRepGraphAlgo_SewingTest, ParallelThreadUtilization_Sewing)
 {
-  const Handle(OSD_ThreadPool)& aPool          = OSD_ThreadPool::DefaultPool();
+  const occ::handle<OSD_ThreadPool>& aPool          = OSD_ThreadPool::DefaultPool();
   const int                     aNbPoolThreads = aPool->NbThreads();
   if (aNbPoolThreads < 2)
   {

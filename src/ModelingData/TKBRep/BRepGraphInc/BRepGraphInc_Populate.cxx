@@ -58,7 +58,7 @@ struct ExtractedInternalVertex
 struct ExtractedEdge
 {
   TopoDS_Edge          Shape;
-  Handle(Geom_Curve)   Curve3d;
+  occ::handle<Geom_Curve>   Curve3d;
   double               ParamFirst    = 0.0;
   double               ParamLast     = 0.0;
   double               Tolerance     = 0.0;
@@ -69,18 +69,18 @@ struct ExtractedEdge
   ExtractedVertex      EndVertex;
   NCollection_Vector<ExtractedInternalVertex> InternalVertices;
   TopAbs_Orientation   OrientationInWire = TopAbs_FORWARD;
-  Handle(Geom2d_Curve) PCurve2d;
+  occ::handle<Geom2d_Curve> PCurve2d;
   double               PCFirst = 0.0;
   double               PCLast  = 0.0;
-  Handle(Geom2d_Curve) PCurve2dReversed;
+  occ::handle<Geom2d_Curve> PCurve2dReversed;
   double               PCFirstReversed  = 0.0;
   double               PCLastReversed   = 0.0;
   GeomAbs_Shape        PCurveContinuity = GeomAbs_C0;
   gp_Pnt2d             PCUV1;
   gp_Pnt2d             PCUV2;
-  Handle(Poly_Polygon3D) Polygon3D;
-  Handle(Poly_Polygon2D) PolyOnSurf;
-  Handle(Poly_Polygon2D) PolyOnSurfReversed;
+  occ::handle<Poly_Polygon3D> Polygon3D;
+  occ::handle<Poly_Polygon2D> PolyOnSurf;
+  occ::handle<Poly_Polygon2D> PolyOnSurfReversed;
 };
 
 //! Per-wire data extracted in parallel phase.
@@ -100,8 +100,8 @@ struct FaceLocalData
   int             ParentShellIdx = -1;
 
   // Phase 2 extracted geometry.
-  Handle(Geom_Surface) Surface;
-  NCollection_Vector<Handle(Poly_Triangulation)> Triangulations;
+  occ::handle<Geom_Surface> Surface;
+  NCollection_Vector<occ::handle<Poly_Triangulation>> Triangulations;
   int                ActiveTriangulationIndex = -1;
   double             Tolerance          = 0.0;
   TopAbs_Orientation Orientation        = TopAbs_FORWARD;
@@ -158,7 +158,7 @@ void extractFaceData(FaceLocalData& theData)
     const TopLoc_Location aSurfRepLoc = aFace.Location().Inverted() * aSurfCombinedLoc;
     if (!aSurfRepLoc.IsIdentity())
     {
-      theData.Surface = Handle(Geom_Surface)::DownCast(
+      theData.Surface = occ::down_cast<Geom_Surface>(
         theData.Surface->Transformed(aSurfRepLoc.Transformation()));
     }
   }
@@ -166,15 +166,15 @@ void extractFaceData(FaceLocalData& theData)
   // Extract triangulations.
   {
     TopLoc_Location aTriLoc;
-    const NCollection_List<Handle(Poly_Triangulation)>& aTriList =
+    const NCollection_List<occ::handle<Poly_Triangulation>>& aTriList =
       BRep_Tool::Triangulations(aFace, aTriLoc);
-    Handle(Poly_Triangulation) anActiveTri;
+    occ::handle<Poly_Triangulation> anActiveTri;
     {
       TopLoc_Location aDummyLoc;
       anActiveTri = BRep_Tool::Triangulation(aFace, aDummyLoc);
     }
     int aTriIdx = 0;
-    for (NCollection_List<Handle(Poly_Triangulation)>::Iterator aTriIt(aTriList);
+    for (NCollection_List<occ::handle<Poly_Triangulation>>::Iterator aTriIt(aTriList);
          aTriIt.More(); aTriIt.Next(), ++aTriIdx)
     {
       theData.Triangulations.Append(aTriIt.Value());
@@ -239,7 +239,7 @@ void extractFaceData(FaceLocalData& theData)
         const TopLoc_Location aCurveRepLoc = anEdge.Location().Inverted() * aCurveCombinedLoc;
         if (!aCurveRepLoc.IsIdentity())
         {
-          anEdgeData.Curve3d = Handle(Geom_Curve)::DownCast(
+          anEdgeData.Curve3d = occ::down_cast<Geom_Curve>(
             anEdgeData.Curve3d->Transformed(aCurveRepLoc.Transformation()));
         }
       }
@@ -283,7 +283,7 @@ void extractFaceData(FaceLocalData& theData)
             NCollection_Array1<gp_Pnt> aNewNodes(aNodes.Lower(), aNodes.Upper());
             for (int aNodeIdx = aNodes.Lower(); aNodeIdx <= aNodes.Upper(); ++aNodeIdx)
               aNewNodes.SetValue(aNodeIdx, aNodes.Value(aNodeIdx).Transformed(aTrsf));
-            Handle(Poly_Polygon3D) aTransPoly;
+            occ::handle<Poly_Polygon3D> aTransPoly;
             if (anEdgeData.Polygon3D->HasParameters())
               aTransPoly = new Poly_Polygon3D(aNewNodes, anEdgeData.Polygon3D->Parameters());
             else
@@ -300,7 +300,7 @@ void extractFaceData(FaceLocalData& theData)
         if (!anEdgeData.PolyOnSurf.IsNull())
         {
           TopoDS_Edge aReversedEdge = TopoDS::Edge(anEdge.Reversed());
-          Handle(Poly_Polygon2D) aPolyOnSurfRev =
+          occ::handle<Poly_Polygon2D> aPolyOnSurfRev =
             BRep_Tool::PolygonOnSurface(aReversedEdge, aForwardFace);
           if (!aPolyOnSurfRev.IsNull() && aPolyOnSurfRev != anEdgeData.PolyOnSurf)
             anEdgeData.PolyOnSurfReversed = aPolyOnSurfRev;
@@ -316,7 +316,7 @@ void extractFaceData(FaceLocalData& theData)
       {
         double aPCFirstRev = 0.0, aPCLastRev = 0.0;
         TopoDS_Edge aReversedEdge = TopoDS::Edge(anEdge.Reversed());
-        Handle(Geom2d_Curve) aPC2 =
+        occ::handle<Geom2d_Curve> aPC2 =
           BRep_Tool::CurveOnSurface(aReversedEdge, aForwardFace, aPCFirstRev, aPCLastRev);
         if (!aPC2.IsNull())
         {
@@ -565,12 +565,12 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
         const int aNbOrigTris = aFaceDef.Triangulations.Length();
         for (int aTriIdx = 0; aTriIdx < aNbOrigTris; ++aTriIdx)
         {
-          const Handle(Poly_Triangulation)& aTri = aFaceDef.Triangulations.Value(aTriIdx);
+          const occ::handle<Poly_Triangulation>& aTri = aFaceDef.Triangulations.Value(aTriIdx);
           if (aTri.IsNull())
             continue;
 
           TopLoc_Location aPolyTriLoc;
-          Handle(Poly_PolygonOnTriangulation) aPolyOnTri =
+          occ::handle<Poly_PolygonOnTriangulation> aPolyOnTri =
             BRep_Tool::PolygonOnTriangulation(anEdgeData.Shape, aTri, aPolyTriLoc);
           if (aPolyOnTri.IsNull())
             continue;
@@ -584,7 +584,7 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
             if (!aRepLoc.IsIdentity())
             {
               // Create a transformed copy of the triangulation and append it.
-              Handle(Poly_Triangulation) aTriCopy = aTri->Copy();
+              occ::handle<Poly_Triangulation> aTriCopy = aTri->Copy();
               const gp_Trsf& aTrsf = aRepLoc.Transformation();
               for (int aNodeIdx = 1; aNodeIdx <= aTriCopy->NbNodes(); ++aNodeIdx)
                 aTriCopy->SetNode(aNodeIdx, aTriCopy->Node(aNodeIdx).Transformed(aTrsf));
@@ -602,7 +602,7 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
 
           // Check for seam polygon-on-triangulation.
           TopoDS_Edge aRevEdge = TopoDS::Edge(anEdgeData.Shape.Reversed());
-          Handle(Poly_PolygonOnTriangulation) aPolyOnTriRev =
+          occ::handle<Poly_PolygonOnTriangulation> aPolyOnTriRev =
             BRep_Tool::PolygonOnTriangulation(aRevEdge, aTri, aPolyTriLoc);
           if (!aPolyOnTriRev.IsNull() && aPolyOnTriRev != aPolyOnTri)
           {
@@ -675,7 +675,7 @@ void BRepGraphInc_Populate::Perform(
   const TopoDS_Shape&                      theShape,
   bool                                     theParallel,
   const Options&                           theOptions,
-  const Handle(NCollection_BaseAllocator)& theTmpAlloc)
+  const occ::handle<NCollection_BaseAllocator>& theTmpAlloc)
 {
   theStorage.Clear();
 
@@ -684,7 +684,7 @@ void BRepGraphInc_Populate::Perform(
 
   // Use temporary allocator if provided, else default.
   // Must NOT use the storage's persistent allocator for scratch data.
-  const Handle(NCollection_BaseAllocator)& aTmpAlloc =
+  const occ::handle<NCollection_BaseAllocator>& aTmpAlloc =
     !theTmpAlloc.IsNull() ? theTmpAlloc
                           : NCollection_BaseAllocator::CommonBaseAllocator();
 
@@ -896,7 +896,7 @@ void BRepGraphInc_Populate::Perform(
       if (anOrigFace != nullptr && !anOrigFace->IsNull())
       {
         TopLoc_Location aLoc;
-        Handle(Geom_Surface) aRawSurf =
+        occ::handle<Geom_Surface> aRawSurf =
           BRep_Tool::Surface(TopoDS::Face(*anOrigFace), aLoc);
         if (!aRawSurf.IsNull())
           aSurfToFaceIdx.TryBind(aRawSurf.get(), i);
@@ -912,16 +912,16 @@ void BRepGraphInc_Populate::Perform(
           return;
 
         const TopoDS_Edge& anEdge = TopoDS::Edge(*anOrigShape);
-        const Handle(BRep_TEdge) aTEdge = Handle(BRep_TEdge)::DownCast(anEdge.TShape());
+        const occ::handle<BRep_TEdge> aTEdge = occ::down_cast<BRep_TEdge>(anEdge.TShape());
         if (aTEdge.IsNull())
           return;
 
-        for (const Handle(BRep_CurveRepresentation)& aCRep : aTEdge->Curves())
+        for (const occ::handle<BRep_CurveRepresentation>& aCRep : aTEdge->Curves())
         {
           if (aCRep.IsNull())
             continue;
-          const Handle(BRep_CurveOn2Surfaces) aCon2S =
-            Handle(BRep_CurveOn2Surfaces)::DownCast(aCRep);
+          const occ::handle<BRep_CurveOn2Surfaces> aCon2S =
+            occ::down_cast<BRep_CurveOn2Surfaces>(aCRep);
           if (aCon2S.IsNull())
             continue;
 
@@ -960,7 +960,7 @@ void BRepGraphInc_Populate::Perform(
       {
         double aF = 0.0, aL = 0.0;
         TopLoc_Location aLoc;
-        Handle(Geom_Curve) aRawCurve =
+        occ::handle<Geom_Curve> aRawCurve =
           BRep_Tool::Curve(TopoDS::Edge(*anOrigEdge), aLoc, aF, aL);
         if (!aRawCurve.IsNull())
           aCurveToEdgeDef.TryBind(aRawCurve.get(), anEdgeEnt.Id);
@@ -975,7 +975,7 @@ void BRepGraphInc_Populate::Perform(
       if (anOrigFace != nullptr && !anOrigFace->IsNull())
       {
         TopLoc_Location aLoc;
-        Handle(Geom_Surface) aRawSurf =
+        occ::handle<Geom_Surface> aRawSurf =
           BRep_Tool::Surface(TopoDS::Face(*anOrigFace), aLoc);
         if (!aRawSurf.IsNull())
           aSurfToFaceDefVtx.TryBind(aRawSurf.get(), aFaceEnt.Id);
@@ -989,16 +989,16 @@ void BRepGraphInc_Populate::Perform(
         if (aVtxShape == nullptr || aVtxShape->IsNull())
           return;
         const TopoDS_Vertex& aVertex = TopoDS::Vertex(*aVtxShape);
-        const Handle(BRep_TVertex)& aTVertex =
-          Handle(BRep_TVertex)::DownCast(aVertex.TShape());
+        const occ::handle<BRep_TVertex>& aTVertex =
+          occ::down_cast<BRep_TVertex>(aVertex.TShape());
         if (aTVertex.IsNull())
           return;
 
-        for (const Handle(BRep_PointRepresentation)& aPtRep : aTVertex->Points())
+        for (const occ::handle<BRep_PointRepresentation>& aPtRep : aTVertex->Points())
         {
           if (aPtRep.IsNull())
             continue;
-          if (const Handle(BRep_PointOnCurve) aPOC = Handle(BRep_PointOnCurve)::DownCast(aPtRep))
+          if (const occ::handle<BRep_PointOnCurve> aPOC = occ::down_cast<BRep_PointOnCurve>(aPtRep))
           {
             const BRepGraph_NodeId* anEdgeId = aCurveToEdgeDef.Seek(aPOC->Curve().get());
             if (anEdgeId == nullptr)
@@ -1008,8 +1008,8 @@ void BRepGraphInc_Populate::Perform(
             anEntry.EdgeDefId = *anEdgeId;
             aVtxDef.PointsOnCurve.Append(anEntry);
           }
-          else if (const Handle(BRep_PointOnCurveOnSurface) aPOCS =
-                     Handle(BRep_PointOnCurveOnSurface)::DownCast(aPtRep))
+          else if (const occ::handle<BRep_PointOnCurveOnSurface> aPOCS =
+                     occ::down_cast<BRep_PointOnCurveOnSurface>(aPtRep))
           {
             const BRepGraph_NodeId* aFaceId = aSurfToFaceDefVtx.Seek(aPOCS->Surface().get());
             if (aFaceId == nullptr)
@@ -1019,8 +1019,8 @@ void BRepGraphInc_Populate::Perform(
             anEntry.FaceDefId = *aFaceId;
             aVtxDef.PointsOnPCurve.Append(anEntry);
           }
-          else if (const Handle(BRep_PointOnSurface) aPOS =
-                     Handle(BRep_PointOnSurface)::DownCast(aPtRep))
+          else if (const occ::handle<BRep_PointOnSurface> aPOS =
+                     occ::down_cast<BRep_PointOnSurface>(aPtRep))
           {
             const BRepGraph_NodeId* aFaceId = aSurfToFaceDefVtx.Seek(aPOS->Surface().get());
             if (aFaceId == nullptr)
@@ -1048,14 +1048,14 @@ void BRepGraphInc_Populate::Append(
   BRepGraphInc_Storage&                    theStorage,
   const TopoDS_Shape&                      theShape,
   bool                                     theParallel,
-  const Handle(NCollection_BaseAllocator)& theTmpAlloc)
+  const occ::handle<NCollection_BaseAllocator>& theTmpAlloc)
 {
   if (theShape.IsNull())
     return;
 
   // Use temporary allocator if provided, else default.
   // Must NOT use the storage's persistent allocator for scratch data.
-  const Handle(NCollection_BaseAllocator)& aTmpAlloc =
+  const occ::handle<NCollection_BaseAllocator>& aTmpAlloc =
     !theTmpAlloc.IsNull() ? theTmpAlloc
                           : NCollection_BaseAllocator::CommonBaseAllocator();
 

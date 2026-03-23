@@ -20,7 +20,7 @@ constexpr int THE_INIT_VECTOR_CAPACITY = 256;
 
 //=================================================================================================
 
-void BRepGraph_History::SetAllocator(const Handle(NCollection_BaseAllocator)& theAlloc)
+void BRepGraph_History::SetAllocator(const occ::handle<NCollection_BaseAllocator>& theAlloc)
 {
   Standard_ASSERT_VOID(myRecords.IsEmpty(),
                        "SetAllocator: must be called before any records are added");

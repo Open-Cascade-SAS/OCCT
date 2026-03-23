@@ -250,11 +250,11 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
   // Attach triangulations.
   if (!aFace.Triangulations.IsEmpty())
   {
-    NCollection_List<Handle(Poly_Triangulation)> aTriList;
-    Handle(Poly_Triangulation) anActiveTri;
+    NCollection_List<occ::handle<Poly_Triangulation>> aTriList;
+    occ::handle<Poly_Triangulation> anActiveTri;
     for (int aTriIdx = 0; aTriIdx < aFace.Triangulations.Length(); ++aTriIdx)
     {
-      const Handle(Poly_Triangulation)& aTri = aFace.Triangulations.Value(aTriIdx);
+      const occ::handle<Poly_Triangulation>& aTri = aFace.Triangulations.Value(aTriIdx);
       if (!aTri.IsNull())
       {
         aTriList.Append(aTri);
@@ -264,7 +264,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
     }
     if (!aTriList.IsEmpty())
     {
-      const Handle(BRep_TFace)& aTFace = Handle(BRep_TFace)::DownCast(aNewFace.TShape());
+      const occ::handle<BRep_TFace>& aTFace = occ::down_cast<BRep_TFace>(aNewFace.TShape());
       if (!aTFace.IsNull())
         aTFace->Triangulations(aTriList, anActiveTri);
     }
@@ -373,7 +373,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
 
       // Attach PCurve(s) for THIS face context from inline PCurve entries.
       const BRepGraphInc::EdgeEntity& anEdgeEnt = theStorage.Edge(aEdgeRef.EdgeIdx);
-      Handle(Geom2d_Curve) aPC1, aPC2;
+      occ::handle<Geom2d_Curve> aPC1, aPC2;
       double   aPCFirst = 0.0, aPCLast = 0.0;
       gp_Pnt2d aUV1, aUV2;
       bool     aHasUV = false;
@@ -456,7 +456,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
           continue;
         if (aPolyTriEntry.TriangulationIndex < aFace.Triangulations.Length())
         {
-          const Handle(Poly_Triangulation)& aTri =
+          const occ::handle<Poly_Triangulation>& aTri =
             aFace.Triangulations.Value(aPolyTriEntry.TriangulationIndex);
           if (!aTri.IsNull())
             aBB.UpdateEdge(anEdge, aPolyTriEntry.Polygon, aTri, TopLoc_Location());

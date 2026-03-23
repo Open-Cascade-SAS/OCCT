@@ -85,7 +85,7 @@ static void addFaceBox(const BRepGraph& theGraph, int theFaceIdx, Bnd_Box& theBo
   const BRepGraph_TopoNode::FaceDef& aFaceDef = theGraph.Defs().Face(theFaceIdx);
 
   // Triangulation path (fast, common).
-  const Handle(Poly_Triangulation) aTri = aFaceDef.ActiveTriangulation();
+  const occ::handle<Poly_Triangulation> aTri = aFaceDef.ActiveTriangulation();
   if ((theUseTri || aFaceDef.Surface.IsNull()) && !aTri.IsNull())
   {
     const TopLoc_Location aLoc = faceGlobalLocation(theGraph, theFaceIdx);
@@ -415,7 +415,7 @@ static void addFaceBoxOptimal(const BRepGraph& theGraph,
   const BRepGraph_TopoNode::FaceDef& aFaceDef = theGraph.Defs().Face(theFaceIdx);
 
   // Triangulation path.
-  const Handle(Poly_Triangulation) aTri = aFaceDef.ActiveTriangulation();
+  const occ::handle<Poly_Triangulation> aTri = aFaceDef.ActiveTriangulation();
   if (theUseTri && !aTri.IsNull())
   {
     Bnd_Box               aLocBox;
@@ -893,13 +893,13 @@ bool BRepGraphAlgo_BndLib::GetCached(const BRepGraph&                  theGraph,
     return false;
   }
 
-  Handle(BRepGraph_UserAttribute) anAttr = aDef->Cache.GetUserAttribute(aKey);
+  occ::handle<BRepGraph_UserAttribute> anAttr = aDef->Cache.GetUserAttribute(aKey);
   if (!anAttr)
   {
     return false;
   }
 
-  Handle(BRepGraphAlgo_BndBoxAttribute) aBndAttr = Handle(BRepGraphAlgo_BndBoxAttribute)::DownCast(anAttr);
+  occ::handle<BRepGraphAlgo_BndBoxAttribute> aBndAttr = occ::down_cast<BRepGraphAlgo_BndBoxAttribute>(anAttr);
   if (aBndAttr.IsNull())
   {
     return false;
@@ -921,10 +921,10 @@ Bnd_Box BRepGraphAlgo_BndLib::AddCached(BRepGraph&                      theGraph
   BRepGraph_NodeCache* aCache = theGraph.mutableCache(theNode);
   if (aCache != nullptr)
   {
-    Handle(BRepGraph_UserAttribute) anExisting = aCache->GetUserAttribute(aKey);
+    occ::handle<BRepGraph_UserAttribute> anExisting = aCache->GetUserAttribute(aKey);
     if (anExisting)
     {
-      Handle(BRepGraphAlgo_BndBoxAttribute) aBndAttr = Handle(BRepGraphAlgo_BndBoxAttribute)::DownCast(anExisting);
+      occ::handle<BRepGraphAlgo_BndBoxAttribute> aBndAttr = occ::down_cast<BRepGraphAlgo_BndBoxAttribute>(anExisting);
       if (!aBndAttr.IsNull())
       {
         BRepGraphAlgo_BndLib::CachedData aData;
@@ -959,10 +959,10 @@ Bnd_Box BRepGraphAlgo_BndLib::AddCached(BRepGraph&                      theGraph
 
   if (aCache != nullptr)
   {
-    Handle(BRepGraph_UserAttribute) anExisting = aCache->GetUserAttribute(aKey);
+    occ::handle<BRepGraph_UserAttribute> anExisting = aCache->GetUserAttribute(aKey);
     if (anExisting)
     {
-      Handle(BRepGraphAlgo_BndBoxAttribute) aBndAttr = Handle(BRepGraphAlgo_BndBoxAttribute)::DownCast(anExisting);
+      occ::handle<BRepGraphAlgo_BndBoxAttribute> aBndAttr = occ::down_cast<BRepGraphAlgo_BndBoxAttribute>(anExisting);
       if (!aBndAttr.IsNull())
       {
         aBndAttr->SetData(aData);
@@ -970,7 +970,7 @@ Bnd_Box BRepGraphAlgo_BndLib::AddCached(BRepGraph&                      theGraph
       }
     }
 
-    Handle(BRepGraphAlgo_BndBoxAttribute) aNewAttr = new BRepGraphAlgo_BndBoxAttribute();
+    occ::handle<BRepGraphAlgo_BndBoxAttribute> aNewAttr = new BRepGraphAlgo_BndBoxAttribute();
     aNewAttr->SetData(aData);
     aCache->SetUserAttribute(aKey, aNewAttr);
   }
@@ -1000,10 +1000,10 @@ void BRepGraphAlgo_BndLib::SetCached(BRepGraph&       theGraph,
   aData.UsedTriangulation  = theUsedTriangulation;
   aData.UsedShapeTolerance = theUsedShapeTolerance;
 
-  Handle(BRepGraph_UserAttribute) anExisting = aCache->GetUserAttribute(aKey);
+  occ::handle<BRepGraph_UserAttribute> anExisting = aCache->GetUserAttribute(aKey);
   if (anExisting)
   {
-    Handle(BRepGraphAlgo_BndBoxAttribute) aBndAttr = Handle(BRepGraphAlgo_BndBoxAttribute)::DownCast(anExisting);
+    occ::handle<BRepGraphAlgo_BndBoxAttribute> aBndAttr = occ::down_cast<BRepGraphAlgo_BndBoxAttribute>(anExisting);
     if (!aBndAttr.IsNull())
     {
       aBndAttr->SetData(aData);
@@ -1011,7 +1011,7 @@ void BRepGraphAlgo_BndLib::SetCached(BRepGraph&       theGraph,
     }
   }
 
-  Handle(BRepGraphAlgo_BndBoxAttribute) aNewAttr = new BRepGraphAlgo_BndBoxAttribute();
+  occ::handle<BRepGraphAlgo_BndBoxAttribute> aNewAttr = new BRepGraphAlgo_BndBoxAttribute();
   aNewAttr->SetData(aData);
   aCache->SetUserAttribute(aKey, aNewAttr);
 }

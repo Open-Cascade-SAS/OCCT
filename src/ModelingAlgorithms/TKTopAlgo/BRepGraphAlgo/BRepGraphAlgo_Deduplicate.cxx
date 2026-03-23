@@ -134,7 +134,7 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
     const int aFaceIdx       = anIt.Key();
     const int aCanonFaceIdx  = anIt.Value();
     BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aFaceDef = theGraph.Mut().FaceDef(aFaceIdx);
-    const Handle(Geom_Surface)& aCanonSurf = theGraph.Defs().Face(aCanonFaceIdx).Surface;
+    const occ::handle<Geom_Surface>& aCanonSurf = theGraph.Defs().Face(aCanonFaceIdx).Surface;
     aFaceDef->Surface = aCanonSurf;
     ++aResult.NbSurfaceRewrites;
     aResult.AffectedFaceDefs.Append(aFaceDef->Id);
@@ -153,7 +153,7 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
     const int anEdgeIdx      = anIt.Key();
     const int aCanonEdgeIdx  = anIt.Value();
     BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdgeDef = theGraph.Mut().EdgeDef(anEdgeIdx);
-    const Handle(Geom_Curve)& aCanonCurve = theGraph.Defs().Edge(aCanonEdgeIdx).Curve3d;
+    const occ::handle<Geom_Curve>& aCanonCurve = theGraph.Defs().Edge(aCanonEdgeIdx).Curve3d;
     anEdgeDef->Curve3d = aCanonCurve;
     ++aResult.NbCurveRewrites;
     aResult.AffectedEdgeDefs.Append(anEdgeDef->Id);

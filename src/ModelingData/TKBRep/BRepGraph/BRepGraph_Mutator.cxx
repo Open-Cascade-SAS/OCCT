@@ -37,7 +37,7 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
   // Copy all data from the original EdgeDef before appending to vectors (which may reallocate).
   const BRepGraph_TopoNode::EdgeDef& anOrig = theGraph.myData->myIncStorage.Edge(theEdgeDef.Index);
 
-  const Handle(Geom_Curve) aOrigCurve3d        = anOrig.Curve3d;
+  const occ::handle<Geom_Curve> aOrigCurve3d        = anOrig.Curve3d;
   const double           aOrigTolerance        = anOrig.Tolerance;
   const bool             aOrigSameParameter    = anOrig.SameParameter;
   const double           aOrigParamFirst       = anOrig.ParamFirst;

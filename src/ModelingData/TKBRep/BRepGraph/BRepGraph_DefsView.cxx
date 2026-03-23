@@ -428,14 +428,14 @@ static GeomAdaptor_TransformedCurve buildCurveAdaptorFromDef(
   if (!theEdge.PCurves.IsEmpty())
   {
     const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCE = theEdge.PCurves.First();
-    const Handle(Geom2d_Curve)& aPC = aPCE.Curve2d;
-    const Handle(Geom_Surface)& aSurf =
+    const occ::handle<Geom2d_Curve>& aPC = aPCE.Curve2d;
+    const occ::handle<Geom_Surface>& aSurf =
       theData.myIncStorage.Face(aPCE.FaceDefId.Index).Surface;
 
-    Handle(Geom2dAdaptor_Curve) aHC2d =
+    occ::handle<Geom2dAdaptor_Curve> aHC2d =
       new Geom2dAdaptor_Curve(aPC, theEdge.ParamFirst, theEdge.ParamLast);
-    Handle(GeomAdaptor_Surface)      aHS  = new GeomAdaptor_Surface(aSurf);
-    Handle(Adaptor3d_CurveOnSurface) aCOS = new Adaptor3d_CurveOnSurface(aHC2d, aHS);
+    occ::handle<GeomAdaptor_Surface>      aHS  = new GeomAdaptor_Surface(aSurf);
+    occ::handle<Adaptor3d_CurveOnSurface> aCOS = new Adaptor3d_CurveOnSurface(aHC2d, aHS);
 
     GeomAdaptor_TransformedCurve aResult;
     aResult.LoadCurveOnSurface(aCOS);
@@ -471,14 +471,14 @@ GeomAdaptor_TransformedCurve BRepGraph::DefsView::CurveAdaptor(BRepGraph_NodeId 
 
 //=================================================================================================
 
-Handle(Adaptor3d_CurveOnSurface) BRepGraph::DefsView::CurveOnSurfaceAdaptor(
+occ::handle<Adaptor3d_CurveOnSurface> BRepGraph::DefsView::CurveOnSurfaceAdaptor(
   BRepGraph_NodeId theEdgeDef,
   BRepGraph_NodeId theFaceDef) const
 {
   if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge || !theEdgeDef.IsValid())
-    return Handle(Adaptor3d_CurveOnSurface)();
+    return occ::handle<Adaptor3d_CurveOnSurface>();
   if (theFaceDef.NodeKind != BRepGraph_NodeId::Kind::Face || !theFaceDef.IsValid())
-    return Handle(Adaptor3d_CurveOnSurface)();
+    return occ::handle<Adaptor3d_CurveOnSurface>();
 
   const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
     myGraph->myData->myIncStorage.Edge(theEdgeDef.Index);
@@ -486,29 +486,29 @@ Handle(Adaptor3d_CurveOnSurface) BRepGraph::DefsView::CurveOnSurfaceAdaptor(
 
   const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCEntry = FindPCurve(theEdgeDef, theFaceDef);
   if (aPCEntry == nullptr || aPCEntry->Curve2d.IsNull())
-    return Handle(Adaptor3d_CurveOnSurface)();
+    return occ::handle<Adaptor3d_CurveOnSurface>();
 
   if (aFaceDef.Surface.IsNull())
-    return Handle(Adaptor3d_CurveOnSurface)();
+    return occ::handle<Adaptor3d_CurveOnSurface>();
 
-  Handle(Geom2dAdaptor_Curve) aHC2d =
+  occ::handle<Geom2dAdaptor_Curve> aHC2d =
     new Geom2dAdaptor_Curve(aPCEntry->Curve2d, anEdgeDef.ParamFirst, anEdgeDef.ParamLast);
-  Handle(GeomAdaptor_Surface) aHS = new GeomAdaptor_Surface(aFaceDef.Surface);
+  occ::handle<GeomAdaptor_Surface> aHS = new GeomAdaptor_Surface(aFaceDef.Surface);
 
   return new Adaptor3d_CurveOnSurface(aHC2d, aHS);
 }
 
 //=================================================================================================
 
-Handle(Adaptor3d_CurveOnSurface) BRepGraph::DefsView::CurveOnSurfaceAdaptor(
+occ::handle<Adaptor3d_CurveOnSurface> BRepGraph::DefsView::CurveOnSurfaceAdaptor(
   BRepGraph_NodeId   theEdgeDef,
   BRepGraph_NodeId   theFaceDef,
   TopAbs_Orientation theEdgeOrientation) const
 {
   if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge || !theEdgeDef.IsValid())
-    return Handle(Adaptor3d_CurveOnSurface)();
+    return occ::handle<Adaptor3d_CurveOnSurface>();
   if (theFaceDef.NodeKind != BRepGraph_NodeId::Kind::Face || !theFaceDef.IsValid())
-    return Handle(Adaptor3d_CurveOnSurface)();
+    return occ::handle<Adaptor3d_CurveOnSurface>();
 
   const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
     myGraph->myData->myIncStorage.Edge(theEdgeDef.Index);
@@ -517,14 +517,14 @@ Handle(Adaptor3d_CurveOnSurface) BRepGraph::DefsView::CurveOnSurfaceAdaptor(
   const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCEntry =
     FindPCurve(theEdgeDef, theFaceDef, theEdgeOrientation);
   if (aPCEntry == nullptr || aPCEntry->Curve2d.IsNull())
-    return Handle(Adaptor3d_CurveOnSurface)();
+    return occ::handle<Adaptor3d_CurveOnSurface>();
 
   if (aFaceDef.Surface.IsNull())
-    return Handle(Adaptor3d_CurveOnSurface)();
+    return occ::handle<Adaptor3d_CurveOnSurface>();
 
-  Handle(Geom2dAdaptor_Curve) aHC2d =
+  occ::handle<Geom2dAdaptor_Curve> aHC2d =
     new Geom2dAdaptor_Curve(aPCEntry->Curve2d, anEdgeDef.ParamFirst, anEdgeDef.ParamLast);
-  Handle(GeomAdaptor_Surface) aHS = new GeomAdaptor_Surface(aFaceDef.Surface);
+  occ::handle<GeomAdaptor_Surface> aHS = new GeomAdaptor_Surface(aFaceDef.Surface);
 
   return new Adaptor3d_CurveOnSurface(aHC2d, aHS);
 }

@@ -43,7 +43,7 @@
 //! Access via myIncStorage.Edges, myIncStorage.Faces, etc.
 struct BRepGraph_Data
 {
-  Handle(NCollection_BaseAllocator) myAllocator;
+  occ::handle<NCollection_BaseAllocator> myAllocator;
 
   //! Incidence-table storage — sole source of truth for all topology data,
   //! original shapes, TShape→NodeId mapping, and UIDs.
@@ -86,10 +86,10 @@ struct BRepGraph_Data
     myHistoryLog.SetAllocator(myAllocator);
   }
 
-  explicit BRepGraph_Data(const Handle(NCollection_BaseAllocator)& theAlloc)
+  explicit BRepGraph_Data(const occ::handle<NCollection_BaseAllocator>& theAlloc)
       : myAllocator(!theAlloc.IsNull()
                       ? theAlloc
-                      : Handle(NCollection_BaseAllocator)(new NCollection_IncAllocator)),
+                      : occ::handle<NCollection_BaseAllocator>(new NCollection_IncAllocator)),
         myIncStorage(myAllocator),
         myOutRelEdges(1, myAllocator),
         myInRelEdges(1, myAllocator),

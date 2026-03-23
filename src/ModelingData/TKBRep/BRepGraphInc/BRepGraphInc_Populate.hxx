@@ -55,7 +55,7 @@ public:
     const TopoDS_Shape&                      theShape,
     bool                                     theParallel,
     const Options&                           theOptions = Options(),
-    const Handle(NCollection_BaseAllocator)& theTmpAlloc = Handle(NCollection_BaseAllocator)());
+    const occ::handle<NCollection_BaseAllocator>& theTmpAlloc = occ::handle<NCollection_BaseAllocator>());
 
   //! Extend existing storage with additional shapes (no clear).
   //! Flattens hierarchy to face level only (no Solid/Shell/Compound entities created).
@@ -68,7 +68,7 @@ public:
     BRepGraphInc_Storage&                    theStorage,
     const TopoDS_Shape&                      theShape,
     bool                                     theParallel,
-    const Handle(NCollection_BaseAllocator)& theTmpAlloc = Handle(NCollection_BaseAllocator)());
+    const occ::handle<NCollection_BaseAllocator>& theTmpAlloc = occ::handle<NCollection_BaseAllocator>());
 
 private:
   BRepGraphInc_Populate() = delete;

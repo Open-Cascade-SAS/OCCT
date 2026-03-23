@@ -236,14 +236,14 @@ void BRepGraphCheck::CheckEdgeOnFace(
     return;
 
   // Build 3D curve adaptor.
-  Handle(GeomAdaptor_Curve) aRefCurve = new GeomAdaptor_Curve(
+  occ::handle<GeomAdaptor_Curve> aRefCurve = new GeomAdaptor_Curve(
     anEdgeDef.Curve3d, anEdgeDef.ParamFirst, anEdgeDef.ParamLast);
 
   // Build curve-on-surface adaptor from PCurve + Surface.
-  Handle(Geom2dAdaptor_Curve) aPC2d = new Geom2dAdaptor_Curve(
+  occ::handle<Geom2dAdaptor_Curve> aPC2d = new Geom2dAdaptor_Curve(
     aPCurve->Curve2d, anEdgeDef.ParamFirst, anEdgeDef.ParamLast);
-  Handle(GeomAdaptor_Surface) aHS = new GeomAdaptor_Surface(aFaceDef.Surface);
-  Handle(Adaptor3d_CurveOnSurface) aCOS = new Adaptor3d_CurveOnSurface(aPC2d, aHS);
+  occ::handle<GeomAdaptor_Surface> aHS = new GeomAdaptor_Surface(aFaceDef.Surface);
+  occ::handle<Adaptor3d_CurveOnSurface> aCOS = new Adaptor3d_CurveOnSurface(aPC2d, aHS);
 
   BRepLib_ValidateEdge aValidator(aRefCurve, aCOS, anEdgeDef.SameParameter);
   aValidator.SetExitIfToleranceExceeded(anEdgeDef.Tolerance);

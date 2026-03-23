@@ -49,7 +49,7 @@ TEST(BRepGraphGeometry, Sphere_AllFaces_SameSurface)
 
   // All face defs of a sphere share the same surface handle.
   ASSERT_GE(aGraph.Defs().NbFaces(), 1);
-  const Handle(Geom_Surface)& aFirstSurf = aGraph.Defs().Face(0).Surface;
+  const occ::handle<Geom_Surface>& aFirstSurf = aGraph.Defs().Face(0).Surface;
   EXPECT_FALSE(aFirstSurf.IsNull());
   for (int i = 1; i < aGraph.Defs().NbFaces(); ++i)
   {
@@ -64,7 +64,7 @@ TEST(BRepGraphGeometry, Sphere_AllFacesShareSurface)
   ASSERT_TRUE(aGraph.IsDone());
 
   // All faces of a sphere share the same surface pointer.
-  const Handle(Geom_Surface)& aFirstSurf = aGraph.Defs().Face(0).Surface;
+  const occ::handle<Geom_Surface>& aFirstSurf = aGraph.Defs().Face(0).Surface;
   EXPECT_FALSE(aFirstSurf.IsNull());
   int aSameCount = 0;
   for (int i = 0; i < aGraph.Defs().NbFaces(); ++i)

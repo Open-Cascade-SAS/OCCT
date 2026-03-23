@@ -104,18 +104,18 @@ private:
 // Ported from BRepBuilderAPI_Sewing::IsUClosedSurface (recursive unwrapping).
 // ---------------------------------------------------------------------------
 
-Handle(Geom_Surface) basisSurface(const Handle(Geom_Surface)& theSurf)
+occ::handle<Geom_Surface> basisSurface(const occ::handle<Geom_Surface>& theSurf)
 {
-  Handle(Geom_Surface) aSurf = theSurf;
+  occ::handle<Geom_Surface> aSurf = theSurf;
   for (;;)
   {
     if (aSurf->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
     {
-      aSurf = Handle(Geom_RectangularTrimmedSurface)::DownCast(aSurf)->BasisSurface();
+      aSurf = occ::down_cast<Geom_RectangularTrimmedSurface>(aSurf)->BasisSurface();
     }
     else if (aSurf->IsKind(STANDARD_TYPE(Geom_OffsetSurface)))
     {
-      aSurf = Handle(Geom_OffsetSurface)::DownCast(aSurf)->BasisSurface();
+      aSurf = occ::down_cast<Geom_OffsetSurface>(aSurf)->BasisSurface();
     }
     else
     {
@@ -129,8 +129,8 @@ Handle(Geom_Surface) basisSurface(const Handle(Geom_Surface)& theSurf)
 // Tests if two isocurves at the PCurve endpoints form closed loops.
 // ---------------------------------------------------------------------------
 
-bool isClosedByIsos(const Handle(Geom_Surface)& theSurf,
-                    const Handle(Geom2d_Curve)& thePCurve,
+bool isClosedByIsos(const occ::handle<Geom_Surface>& theSurf,
+                    const occ::handle<Geom2d_Curve>& thePCurve,
                     double                       theFirst,
                     double                       theLast,
                     bool                         theUIsos)
@@ -148,7 +148,7 @@ bool isClosedByIsos(const Handle(Geom_Surface)& theSurf,
       ? thePCurve->Value(theLast)
       : thePCurve->Value(std::min(theLast, thePCurve->LastParameter()));
 
-  Handle(Geom_Curve) anIso1, anIso2;
+  occ::handle<Geom_Curve> anIso1, anIso2;
   if (theUIsos)
   {
     anIso1 = theSurf->UIso(aPSurf1.X());
@@ -196,7 +196,7 @@ bool isSurfaceClosedForEdge(const BRepGraph&                           theGraph,
   {
     return false;
   }
-  const Handle(Geom_Surface) aBasis = basisSurface(aFace.Surface);
+  const occ::handle<Geom_Surface> aBasis = basisSurface(aFace.Surface);
   const bool isClosed = theCheckU ? aBasis->IsUClosed() : aBasis->IsVClosed();
   if (isClosed)
   {
@@ -267,7 +267,7 @@ bool canSewSameFaceEdges(const BRepGraph& theGraph,
   {
     return false;
   }
-  const Handle(Geom_Surface) aBasis = basisSurface(aFace.Surface);
+  const occ::handle<Geom_Surface> aBasis = basisSurface(aFace.Surface);
   const bool                 isUClosed = aBasis->IsUClosed();
   const bool                 isVClosed = aBasis->IsVClosed();
   if (!isUClosed && !isVClosed)
@@ -456,7 +456,7 @@ NCollection_Array1<BRepGraph_NodeId> findFreeEdges(const BRepGraph& theGraph,
 void assembleVertices(BRepGraph&                                  theGraph,
                       const NCollection_Array1<BRepGraph_NodeId>& theFreeEdges,
                       double                                      theTolerance,
-                      const Handle(NCollection_IncAllocator)&     theTmpAlloc)
+                      const occ::handle<NCollection_IncAllocator>&     theTmpAlloc)
 {
   const int               aNbFreeEdges = theFreeEdges.Length();
   NCollection_Vector<int> aFreeVertexIndices(THE_INIT_VECTOR_CAPACITY, theTmpAlloc);
@@ -579,7 +579,7 @@ void cutAtIntersections(BRepGraph&                               theGraph,
                         const BRepGraphAlgo_Sewing::Options&     theOptions,
                         double                                   theMinTol,
                         const NCollection_Map<int>&              theFloatingEdges,
-                        const Handle(NCollection_IncAllocator)&  theTmpAlloc)
+                        const occ::handle<NCollection_IncAllocator>&  theTmpAlloc)
 {
   const int aNbFreeEdges = theFreeEdges.Length();
   if (aNbFreeEdges == 0)
@@ -844,8 +844,8 @@ NCollection_Array1<NCollection_Vector<int>> detectCandidates(
   const NCollection_Array1<BRepGraph_NodeId>&        theFreeEdges,
   const NCollection_Array1<int>&                     theFaceOfPos,
   const BRepGraphAlgo_Sewing::Options&               theOptions,
-  const Handle(NCollection_IncAllocator)&             theTmpAlloc,
-  const Handle(NCollection_BaseAllocator)&            theGraphAlloc)
+  const occ::handle<NCollection_IncAllocator>&             theTmpAlloc,
+  const occ::handle<NCollection_BaseAllocator>&            theGraphAlloc)
 {
   const int aNbFreeEdges = theFreeEdges.Length();
   NCollection_Array1<NCollection_Vector<int>> anAdj(1, aNbFreeEdges);
@@ -1010,7 +1010,7 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> matchFreeEdges
   const NCollection_Array1<int>&                           theFaceOfPos,
   const BRepGraphAlgo_Sewing::Options&                     theOptions,
   double                                                   theMinTol,
-  const Handle(NCollection_IncAllocator)&                  theTmpAlloc)
+  const occ::handle<NCollection_IncAllocator>&                  theTmpAlloc)
 {
   NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> aResult;
   const int aNbFreeEdges = theFreeEdges.Length();
@@ -1358,7 +1358,7 @@ int mergeMatchedEdges(
   const BRepGraphAlgo_Sewing::Options&                                     theOptions,
   NCollection_IndexedMap<int>&                                             theSewnEdgeIndices,
   BRepGraphAlgo_Sewing::Result&                                            theResult,
-  const Handle(NCollection_IncAllocator)&                                  theTmpAlloc)
+  const occ::handle<NCollection_IncAllocator>&                                  theTmpAlloc)
 {
   int aSewnCount = 0;
 
@@ -1636,9 +1636,9 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
                            : std::max(theOptions.Tolerance * 1.0e-4, Precision::Confusion());
 
   // Main allocator for cross-phase data.
-  Handle(NCollection_IncAllocator) anAllocator = new NCollection_IncAllocator;
+  occ::handle<NCollection_IncAllocator> anAllocator = new NCollection_IncAllocator;
   // Temporary allocator for per-phase scratch, Reset(false) between phases.
-  Handle(NCollection_IncAllocator) aTmpAllocator = new NCollection_IncAllocator;
+  occ::handle<NCollection_IncAllocator> aTmpAllocator = new NCollection_IncAllocator;
 
   // Phase 0 (optional): Face analysis — detect/remove small edges and faces.
   if (theOptions.FaceAnalysis)
@@ -1761,7 +1761,7 @@ TopoDS_Shape BRepGraphAlgo_Sewing::Sew(const TopoDS_Shape& theShape, const Optio
   }
 
   BRepGraph                        aGraph;
-  Handle(NCollection_IncAllocator) anAllocator = new NCollection_IncAllocator;
+  occ::handle<NCollection_IncAllocator> anAllocator = new NCollection_IncAllocator;
   aGraph.SetAllocator(anAllocator);
   aGraph.Build(theShape, theOptions.Parallel);
   if (!aGraph.IsDone())

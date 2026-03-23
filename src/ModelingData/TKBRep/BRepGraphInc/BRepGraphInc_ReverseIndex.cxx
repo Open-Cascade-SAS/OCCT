@@ -383,7 +383,7 @@ void BRepGraphInc_ReverseIndex::ReplaceEdgeInWireMap(int theOldEdgeIdx,
 
 void BRepGraphInc_ReverseIndex::preSize(IndexTable&                               theIdx,
                                         int                                       theSize,
-                                        const Handle(NCollection_BaseAllocator)& theAlloc)
+                                        const occ::handle<NCollection_BaseAllocator>& theAlloc)
 {
   theIdx.Clear();
   for (int i = 0; i < theSize; ++i)

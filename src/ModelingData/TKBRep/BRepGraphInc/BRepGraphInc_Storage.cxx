@@ -16,7 +16,7 @@
 //=================================================================================================
 
 BRepGraphInc_Storage::BRepGraphInc_Storage(
-  const Handle(NCollection_BaseAllocator)& theAlloc)
+  const occ::handle<NCollection_BaseAllocator>& theAlloc)
   : myVertices(256, theAlloc),
     myEdges(256, theAlloc),
     myWires(256, theAlloc),

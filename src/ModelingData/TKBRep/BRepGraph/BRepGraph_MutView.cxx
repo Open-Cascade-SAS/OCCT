@@ -22,7 +22,7 @@
 
 void BRepGraph::MutView::AddPCurveToEdge(BRepGraph_NodeId            theEdgeDef,
                                           BRepGraph_NodeId            theFaceDef,
-                                          const Handle(Geom2d_Curve)& theCurve2d,
+                                          const occ::handle<Geom2d_Curve>& theCurve2d,
                                           double                      theFirst,
                                           double                      theLast,
                                           TopAbs_Orientation          theEdgeOrientation)

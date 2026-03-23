@@ -189,7 +189,7 @@ public:
   //! Build a curve-on-surface adaptor from edge's inline PCurve on a face.
   //! @param[in] theEdgeDef edge definition NodeId
   //! @param[in] theFaceDef face definition NodeId
-  Standard_EXPORT Handle(Adaptor3d_CurveOnSurface)
+  Standard_EXPORT occ::handle<Adaptor3d_CurveOnSurface>
     CurveOnSurfaceAdaptor(BRepGraph_NodeId theEdgeDef,
                           BRepGraph_NodeId theFaceDef) const;
 
@@ -197,7 +197,7 @@ public:
   //! @param[in] theEdgeDef           edge definition NodeId
   //! @param[in] theFaceDef           face definition NodeId
   //! @param[in] theEdgeOrientation   edge orientation on the face
-  Standard_EXPORT Handle(Adaptor3d_CurveOnSurface)
+  Standard_EXPORT occ::handle<Adaptor3d_CurveOnSurface>
     CurveOnSurfaceAdaptor(BRepGraph_NodeId   theEdgeDef,
                           BRepGraph_NodeId   theFaceDef,
                           TopAbs_Orientation theEdgeOrientation) const;

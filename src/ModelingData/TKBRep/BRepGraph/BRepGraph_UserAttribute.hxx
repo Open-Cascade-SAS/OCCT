@@ -25,7 +25,7 @@
 
 //! Abstract base for user-defined per-node cached attributes.
 //!
-//! Inherits from Standard_Transient, stored via Handle(BRepGraph_UserAttribute).
+//! Inherits from Standard_Transient, stored via occ::handle<BRepGraph_UserAttribute>.
 //! This uses OCCT's embedded refcount (zero extra allocation) and is consistent
 //! with the Handle pattern used throughout the codebase.
 //!

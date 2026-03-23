@@ -71,7 +71,7 @@ void BRepGraph_Builder::Perform(BRepGraph&                            theGraph,
   theGraph.myData->myIsDone = false;
 
   // Notify registered layers that graph data is being cleared.
-  for (NCollection_DataMap<TCollection_AsciiString, Handle(BRepGraph_Layer)>::Iterator
+  for (NCollection_DataMap<TCollection_AsciiString, occ::handle<BRepGraph_Layer>>::Iterator
          anIter(theGraph.myLayers); anIter.More(); anIter.Next())
   {
     anIter.Value()->Clear();
@@ -81,7 +81,7 @@ void BRepGraph_Builder::Perform(BRepGraph&                            theGraph,
     return;
 
   // Temporary allocator for populate scratch data, discarded after build.
-  Handle(NCollection_IncAllocator) aTmpAlloc = new NCollection_IncAllocator;
+  occ::handle<NCollection_IncAllocator> aTmpAlloc = new NCollection_IncAllocator;
 
   BRepGraphInc_Populate::Perform(theGraph.myData->myIncStorage,
                                  theShape, theParallel, theOptions, aTmpAlloc);
@@ -139,7 +139,7 @@ void BRepGraph_Builder::Append(BRepGraph& theGraph, const TopoDS_Shape& theShape
   const int anOldComp  = aStorage.NbCompounds();
   const int anOldCS    = aStorage.NbCompSolids();
 
-  Handle(NCollection_IncAllocator) aTmpAlloc = new NCollection_IncAllocator;
+  occ::handle<NCollection_IncAllocator> aTmpAlloc = new NCollection_IncAllocator;
   BRepGraphInc_Populate::Append(aStorage, theShape, theParallel, aTmpAlloc);
 
   if (!aStorage.GetIsDone())

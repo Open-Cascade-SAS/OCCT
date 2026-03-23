@@ -265,7 +265,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
     const BRepGraph_NodeId aNewEnd   = remapId(anOldEdge.EndVertexDefId());
 
     // Get the curve handle if available.
-    Handle(Geom_Curve) aCurve = anOldEdge.Curve3d;
+    occ::handle<Geom_Curve> aCurve = anOldEdge.Curve3d;
 
     BRepGraph_NodeId aNewEdgeId = aNewGraph.Builder().AddEdgeDef(aNewStart,
                                                                  aNewEnd,
@@ -309,7 +309,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
       continue;
     const BRepGraph_TopoNode::FaceDef& anOldFace = theGraph.Defs().Face(anIdx);
 
-    Handle(Geom_Surface) aSurf = anOldFace.Surface;
+    occ::handle<Geom_Surface> aSurf = anOldFace.Surface;
 
     // Find outer wire from incidence refs.
     BRepGraph_NodeId                     aNewOuterWire;
@@ -474,7 +474,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
   aNewGraph.myData->myIsDone = true;
 
   // Save layers before swap (default move would transfer empty layers from aNewGraph).
-  NCollection_DataMap<TCollection_AsciiString, Handle(BRepGraph_Layer)> aSavedLayers;
+  NCollection_DataMap<TCollection_AsciiString, occ::handle<BRepGraph_Layer>> aSavedLayers;
   aSavedLayers = std::move(theGraph.myLayers);
 
   // Swap.
@@ -502,7 +502,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
   for (NCollection_DataMap<int, int>::Iterator it(aCompSolidMap); it.More(); it.Next())
     aRemapMap.Bind(BRepGraph_NodeId::CompSolid(it.Key()), BRepGraph_NodeId::CompSolid(it.Value()));
 
-  for (NCollection_DataMap<TCollection_AsciiString, Handle(BRepGraph_Layer)>::Iterator
+  for (NCollection_DataMap<TCollection_AsciiString, occ::handle<BRepGraph_Layer>>::Iterator
          anIter(theGraph.myLayers); anIter.More(); anIter.Next())
   {
     anIter.Value()->OnCompact(aRemapMap);

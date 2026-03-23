@@ -91,7 +91,7 @@ BRepGraphAlgo_AttrTransfer::Result BRepGraphAlgo_AttrTransfer::Perform(
           // Check if target already has this attribute.
           if (!theOptions.OverwriteExisting)
           {
-            Handle(BRepGraph_UserAttribute) anExisting = theGraph.Attrs().Get(aTarget, aKey);
+            occ::handle<BRepGraph_UserAttribute> anExisting = theGraph.Attrs().Get(aTarget, aKey);
             if (!anExisting.IsNull())
             {
               ++aResult.NbSkipped;
@@ -99,7 +99,7 @@ BRepGraphAlgo_AttrTransfer::Result BRepGraphAlgo_AttrTransfer::Perform(
             }
           }
 
-          Handle(BRepGraph_UserAttribute) anAttr = theGraph.Attrs().Get(anOriginal, aKey);
+          occ::handle<BRepGraph_UserAttribute> anAttr = theGraph.Attrs().Get(anOriginal, aKey);
           if (!anAttr.IsNull())
           {
             theGraph.Attrs().Set(aTarget, aKey, anAttr);

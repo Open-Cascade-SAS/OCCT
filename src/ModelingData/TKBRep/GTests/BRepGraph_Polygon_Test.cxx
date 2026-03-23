@@ -69,7 +69,7 @@ TEST(BRepGraph_PolygonTest, MultiTriangulation_Roundtrip_PreservesAll)
     ASSERT_FALSE(aReconFace.IsNull());
 
     TopLoc_Location                  aLoc;
-    const Handle(Poly_Triangulation) aReconTri =
+    const occ::handle<Poly_Triangulation> aReconTri =
       BRep_Tool::Triangulation(TopoDS::Face(aReconFace), aLoc);
     EXPECT_FALSE(aReconTri.IsNull())
       << "Reconstructed face " << aFaceIdx << " should have triangulation";
@@ -119,7 +119,7 @@ TEST(BRepGraph_PolygonTest, Polygon3D_Captured_WhenPresent)
     TopoDS_Shape aReconEdge = aGraph.Shapes().Reconstruct( anEdge.Id);
     ASSERT_FALSE(aReconEdge.IsNull());
     TopLoc_Location        aPolyLoc;
-    Handle(Poly_Polygon3D) aPoly = BRep_Tool::Polygon3D(TopoDS::Edge(aReconEdge), aPolyLoc);
+    occ::handle<Poly_Polygon3D> aPoly = BRep_Tool::Polygon3D(TopoDS::Edge(aReconEdge), aPolyLoc);
     EXPECT_FALSE(aPoly.IsNull()) << "Reconstructed edge " << anEdgeIdx << " should have Polygon3D";
   }
 }
@@ -186,11 +186,11 @@ TEST(BRepGraph_PolygonTest, PolyOnTri_Roundtrip_PreservedOnReconstruct)
     {
       const TopoDS_Face&         aFace = TopoDS::Face(aFaceExp.Current());
       TopLoc_Location            aTriLoc;
-      Handle(Poly_Triangulation) aTri = BRep_Tool::Triangulation(aFace, aTriLoc);
+      occ::handle<Poly_Triangulation> aTri = BRep_Tool::Triangulation(aFace, aTriLoc);
       if (aTri.IsNull())
         continue;
       TopLoc_Location                     aPolyLoc;
-      Handle(Poly_PolygonOnTriangulation) aPolyOnTri =
+      occ::handle<Poly_PolygonOnTriangulation> aPolyOnTri =
         BRep_Tool::PolygonOnTriangulation(anEdge, aTri, aPolyLoc);
       if (!aPolyOnTri.IsNull())
         ++aNbReconPolyOnTri;
@@ -284,12 +284,12 @@ TEST(BRepGraph_PolygonTest, EdgeRegularity_MatchesOriginal)
   for (TopExp_Explorer anEdgeExp(aCyl, TopAbs_EDGE); anEdgeExp.More(); anEdgeExp.Next())
   {
     const TopoDS_Edge&        anEdge = TopoDS::Edge(anEdgeExp.Current());
-    const Handle(BRep_TEdge)& aTEdge = Handle(BRep_TEdge)::DownCast(anEdge.TShape());
+    const occ::handle<BRep_TEdge>& aTEdge = occ::down_cast<BRep_TEdge>(anEdge.TShape());
     if (aTEdge.IsNull())
       continue;
-    for (const Handle(BRep_CurveRepresentation)& aCRep : aTEdge->Curves())
+    for (const occ::handle<BRep_CurveRepresentation>& aCRep : aTEdge->Curves())
     {
-      if (!Handle(BRep_CurveOn2Surfaces)::DownCast(aCRep).IsNull())
+      if (!occ::down_cast<BRep_CurveOn2Surfaces>(aCRep).IsNull())
         ++aNbOrigReg;
     }
   }

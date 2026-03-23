@@ -37,7 +37,7 @@
 //! Helper: reinitialize a vector member with the given allocator and block size.
 template <typename T>
 inline void BRepGraphInc_InitVec(NCollection_Vector<T>& theVec,
-                                 const Handle(NCollection_BaseAllocator)& theAlloc,
+                                 const occ::handle<NCollection_BaseAllocator>& theAlloc,
                                  int theBlockSize = 4)
 {
   theVec = NCollection_Vector<T>(theBlockSize, theAlloc);
@@ -97,7 +97,7 @@ struct VertexEntity : public BaseEntity
   NCollection_Vector<PointOnPCurveEntry> PointsOnPCurve;
 
   //! Reinitialize inner vectors with the given allocator.
-  void InitVectors(const Handle(NCollection_BaseAllocator)& theAlloc)
+  void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
     BRepGraphInc_InitVec(PointsOnCurve, theAlloc, 2);    // typically 1-2 per vertex
     BRepGraphInc_InitVec(PointsOnSurface, theAlloc, 2);
@@ -110,14 +110,14 @@ struct VertexEntity : public BaseEntity
 struct EdgeEntity : public BaseEntity
 {
   //! 3D curve geometry (direct handle, null for degenerate edges).
-  Handle(Geom_Curve) Curve3d;
+  occ::handle<Geom_Curve> Curve3d;
 
   //! PCurve entries, one per (edge, face) context.
   //! For seam edges there are two entries with the same FaceDefId,
   //! distinguished by EdgeOrientation (FORWARD vs REVERSED).
   struct PCurveEntry
   {
-    Handle(Geom2d_Curve) Curve2d;          //!< 2D parametric curve on the face surface
+    occ::handle<Geom2d_Curve> Curve2d;          //!< 2D parametric curve on the face surface
     BRepGraph_NodeId     FaceDefId;
     double               ParamFirst = 0.0;
     double               ParamLast  = 0.0;
@@ -166,12 +166,12 @@ struct EdgeEntity : public BaseEntity
   }
 
   //! Optional 3D polygon discretization (stored inline, not as a graph node).
-  Handle(Poly_Polygon3D) Polygon3D;
+  occ::handle<Poly_Polygon3D> Polygon3D;
 
   //! Polygon-on-surface entries, one per (edge, face) context.
   struct PolyOnSurfEntry
   {
-    Handle(Poly_Polygon2D) Polygon2D;
+    occ::handle<Poly_Polygon2D> Polygon2D;
     BRepGraph_NodeId       FaceDefId;
     TopAbs_Orientation     EdgeOrientation = TopAbs_FORWARD;
   };
@@ -180,7 +180,7 @@ struct EdgeEntity : public BaseEntity
   //! Polygon-on-triangulation entries, one per (edge, face, triangulation) context.
   struct PolyOnTriEntry
   {
-    Handle(Poly_PolygonOnTriangulation) Polygon;
+    occ::handle<Poly_PolygonOnTriangulation> Polygon;
     BRepGraph_NodeId                    FaceDefId;
     int                                 TriangulationIndex = 0;
     TopAbs_Orientation                  EdgeOrientation = TopAbs_FORWARD;
@@ -197,7 +197,7 @@ struct EdgeEntity : public BaseEntity
   NCollection_Vector<RegularityEntry> Regularities;
 
   //! Reinitialize inner vectors with the given allocator.
-  void InitVectors(const Handle(NCollection_BaseAllocator)& theAlloc)
+  void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
     BRepGraphInc_InitVec(PCurves, theAlloc, 4);           // typically 1-4 (seam edges have 2)
     BRepGraphInc_InitVec(PolygonsOnSurf, theAlloc, 2);   // typically 0-2
@@ -231,7 +231,7 @@ struct WireEntity : public BaseEntity
   bool IsClosed = false;
   NCollection_Vector<EdgeRef> EdgeRefs;  //!< Ordered edge references
 
-  void InitVectors(const Handle(NCollection_BaseAllocator)& theAlloc)
+  void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
     BRepGraphInc_InitVec(EdgeRefs, theAlloc, 8);        // typically 3-8 edges per wire
   }
@@ -240,18 +240,18 @@ struct WireEntity : public BaseEntity
 //! Face entity: surface, triangulations, wires.
 struct FaceEntity : public BaseEntity
 {
-  Handle(Geom_Surface) Surface;
-  NCollection_Vector<Handle(Poly_Triangulation)> Triangulations;
+  occ::handle<Geom_Surface> Surface;
+  NCollection_Vector<occ::handle<Poly_Triangulation>> Triangulations;
   int    ActiveTriangulationIndex = -1;
   double Tolerance = 0.0;
   bool   NaturalRestriction = false;
 
   //! Convenience: return the active triangulation handle, or null if none.
-  Handle(Poly_Triangulation) ActiveTriangulation() const
+  occ::handle<Poly_Triangulation> ActiveTriangulation() const
   {
     if (ActiveTriangulationIndex >= 0 && ActiveTriangulationIndex < Triangulations.Length())
       return Triangulations.Value(ActiveTriangulationIndex);
-    return Handle(Poly_Triangulation)();
+    return occ::handle<Poly_Triangulation>();
   }
 
   //! Wire references: outer wire first (if present), then inner wires.
@@ -260,7 +260,7 @@ struct FaceEntity : public BaseEntity
   //! Direct INTERNAL/EXTERNAL vertex children (not inside wires).
   NCollection_Vector<VertexRef> VertexRefs;
 
-  void InitVectors(const Handle(NCollection_BaseAllocator)& theAlloc)
+  void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
     BRepGraphInc_InitVec(Triangulations, theAlloc, 2);  // typically 1
     BRepGraphInc_InitVec(WireRefs, theAlloc, 2);        // typically 1-2 (outer + holes)
@@ -284,7 +284,7 @@ struct ShellEntity : public BaseEntity
 {
   NCollection_Vector<FaceRef> FaceRefs;
 
-  void InitVectors(const Handle(NCollection_BaseAllocator)& theAlloc)
+  void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
     BRepGraphInc_InitVec(FaceRefs, theAlloc, 8);        // typically 4-8 faces per shell
   }
@@ -295,7 +295,7 @@ struct SolidEntity : public BaseEntity
 {
   NCollection_Vector<ShellRef> ShellRefs;
 
-  void InitVectors(const Handle(NCollection_BaseAllocator)& theAlloc)
+  void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
     BRepGraphInc_InitVec(ShellRefs, theAlloc, 2);       // typically 1
   }
@@ -306,7 +306,7 @@ struct CompoundEntity : public BaseEntity
 {
   NCollection_Vector<ChildRef> ChildRefs;
 
-  void InitVectors(const Handle(NCollection_BaseAllocator)& theAlloc)
+  void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
     BRepGraphInc_InitVec(ChildRefs, theAlloc, 4);       // varies
   }
@@ -317,7 +317,7 @@ struct CompSolidEntity : public BaseEntity
 {
   NCollection_Vector<SolidRef> SolidRefs;
 
-  void InitVectors(const Handle(NCollection_BaseAllocator)& theAlloc)
+  void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
     BRepGraphInc_InitVec(SolidRefs, theAlloc, 2);       // typically 1-2
   }
@@ -337,7 +337,7 @@ struct ProductEntity : public BaseEntity
   BRepGraph_NodeId ShapeRootId;  //!< Root topology for parts; invalid for assemblies
   NCollection_Vector<OccurrenceRef> OccurrenceRefs;
 
-  void InitVectors(const Handle(NCollection_BaseAllocator)& theAlloc)
+  void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
     BRepGraphInc_InitVec(OccurrenceRefs, theAlloc, 4);
   }

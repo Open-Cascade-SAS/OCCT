@@ -249,7 +249,7 @@ TEST_F(BRepGraphTest, UserAttribute_SetGet)
   Handle(BRepGraph_TypedAttribute<double>) anAttr = new BRepGraph_TypedAttribute<double>(3.14);
   myGraph.Attrs().Set(aFaceId, aKey, anAttr);
 
-  Handle(BRepGraph_UserAttribute) aRetrieved = myGraph.Attrs().Get(aFaceId, aKey);
+  occ::handle<BRepGraph_UserAttribute> aRetrieved = myGraph.Attrs().Get(aFaceId, aKey);
   ASSERT_FALSE(aRetrieved.IsNull());
 
   Handle(BRepGraph_TypedAttribute<double>) aTyped =
@@ -450,8 +450,8 @@ TEST_F(BRepGraphTest, ReconstructFace_EachBoxFace_SameSubShapeCounts)
     const TopoDS_Face& anOrigF = TopoDS::Face(anOrigFace);
     const TopoDS_Face& aReconF = TopoDS::Face(aReconstructed);
     TopLoc_Location aLoc1, aLoc2;
-    const Handle(Geom_Surface)& aSurf1 = BRep_Tool::Surface(anOrigF, aLoc1);
-    const Handle(Geom_Surface)& aSurf2 = BRep_Tool::Surface(aReconF, aLoc2);
+    const occ::handle<Geom_Surface>& aSurf1 = BRep_Tool::Surface(anOrigF, aLoc1);
+    const occ::handle<Geom_Surface>& aSurf2 = BRep_Tool::Surface(aReconF, aLoc2);
     EXPECT_EQ(aSurf1.get(), aSurf2.get())
       << "Surface handle differs for face " << aFaceIdx;
   }
@@ -470,10 +470,10 @@ TEST_F(BRepGraphTest, ReconstructFace_AfterEdgeReplace_ContainsNewEdge)
   // Get 3D curve handles from graph for old/new edges.
   const BRepGraph_TopoNode::EdgeDef& aNewEdgeNode = myGraph.Defs().Edge(aNewIdx);
   const BRepGraph_TopoNode::EdgeDef& anOldEdgeNode = myGraph.Defs().Edge(anOldEdgeId.Index);
-  Handle(Geom_Curve) aNewCurve = !aNewEdgeNode.Curve3d.IsNull()
-    ? aNewEdgeNode.Curve3d : Handle(Geom_Curve)();
-  Handle(Geom_Curve) anOldCurve = !anOldEdgeNode.Curve3d.IsNull()
-    ? anOldEdgeNode.Curve3d : Handle(Geom_Curve)();
+  occ::handle<Geom_Curve> aNewCurve = !aNewEdgeNode.Curve3d.IsNull()
+    ? aNewEdgeNode.Curve3d : occ::handle<Geom_Curve>();
+  occ::handle<Geom_Curve> anOldCurve = !anOldEdgeNode.Curve3d.IsNull()
+    ? anOldEdgeNode.Curve3d : occ::handle<Geom_Curve>();
 
   myGraph.Mut().ReplaceEdgeInWire(0, anOldEdgeId, aNewEdgeId, false);
 
@@ -489,7 +489,7 @@ TEST_F(BRepGraphTest, ReconstructFace_AfterEdgeReplace_ContainsNewEdge)
   {
     TopLoc_Location aLoc;
     double aFirst, aLast;
-    Handle(Geom_Curve) aCurve = BRep_Tool::Curve(TopoDS::Edge(anExp.Current()), aLoc, aFirst, aLast);
+    occ::handle<Geom_Curve> aCurve = BRep_Tool::Curve(TopoDS::Edge(anExp.Current()), aLoc, aFirst, aLast);
     if (!aCurve.IsNull() && !aNewCurve.IsNull() && aCurve.get() == aNewCurve.get())
       isNewFound = true;
     if (!aCurve.IsNull() && !anOldCurve.IsNull() && aCurve.get() == anOldCurve.get())
@@ -520,8 +520,8 @@ TEST_F(BRepGraphTest, ReconstructShape_FaceRoot_ReturnsSameShape)
   const TopoDS_Face& anOrigF = TopoDS::Face(anOriginal);
   const TopoDS_Face& aReconF = TopoDS::Face(aReconstructed);
   TopLoc_Location aLoc1, aLoc2;
-  const Handle(Geom_Surface)& aSurf1 = BRep_Tool::Surface(anOrigF, aLoc1);
-  const Handle(Geom_Surface)& aSurf2 = BRep_Tool::Surface(aReconF, aLoc2);
+  const occ::handle<Geom_Surface>& aSurf1 = BRep_Tool::Surface(anOrigF, aLoc1);
+  const occ::handle<Geom_Surface>& aSurf2 = BRep_Tool::Surface(aReconF, aLoc2);
   EXPECT_EQ(aSurf1.get(), aSurf2.get());
 }
 
@@ -848,7 +848,7 @@ TEST_F(BRepGraphTest, AddPCurveToEdge_NewPCurve_RetrievableViaFindPCurve)
   BRepGraph_NodeId anEdgeId(BRepGraph_NodeId::Kind::Edge, 0);
   BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
 
-  Handle(Geom2d_Line) aCurve2d = new Geom2d_Line(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0));
+  occ::handle<Geom2d_Line> aCurve2d = new Geom2d_Line(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0));
   myGraph.Mut().AddPCurveToEdge(anEdgeId, aFaceId, aCurve2d, 0.0, 1.0);
 
   const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aRetrieved =
@@ -1169,7 +1169,7 @@ TEST_F(BRepGraphTest, RemoveUserAttribute_AfterSet_ReturnsNull)
 {
   BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
   const int aKey = BRepGraph_UserAttribute::AllocateKey();
-  Handle(BRepGraph_UserAttribute) anAttr = new BRepGraph_TypedAttribute<int>(42);
+  occ::handle<BRepGraph_UserAttribute> anAttr = new BRepGraph_TypedAttribute<int>(42);
 
   myGraph.Attrs().Set(aFaceId, aKey, anAttr);
   ASSERT_FALSE(myGraph.Attrs().Get(aFaceId, aKey).IsNull());
@@ -1254,7 +1254,7 @@ TEST_F(BRepGraphTest, Allocator_DefaultConstructor_NotNull)
 
 TEST(BRepGraphAllocatorTest, Build_WithCustomAllocator_IsDone)
 {
-  Handle(NCollection_BaseAllocator) anAlloc = NCollection_BaseAllocator::CommonBaseAllocator();
+  occ::handle<NCollection_BaseAllocator> anAlloc = NCollection_BaseAllocator::CommonBaseAllocator();
   BRepGraph aGraph(anAlloc);
 
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
@@ -1530,7 +1530,7 @@ TEST_F(BRepGraphTest, InvalidateUserAttribute_SpecificKey)
   // Invalidate should not remove, just mark dirty.
   myGraph.Attrs().Invalidate(aFaceId, aKey);
 
-  Handle(BRepGraph_UserAttribute) aRetrieved = myGraph.Attrs().Get(aFaceId, aKey);
+  occ::handle<BRepGraph_UserAttribute> aRetrieved = myGraph.Attrs().Get(aFaceId, aKey);
   EXPECT_FALSE(aRetrieved.IsNull()); // still present
 }
 

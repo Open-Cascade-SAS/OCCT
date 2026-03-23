@@ -214,9 +214,9 @@ TEST_F(BRepGraphViewsTest, AttrsView_SetGet_RoundTrip)
 {
   BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
   const int aKey = 42;
-  Handle(BRepGraph_UserAttribute) anAttr = new TestUserAttribute();
+  occ::handle<BRepGraph_UserAttribute> anAttr = new TestUserAttribute();
   myGraph.Attrs().Set(aFaceId, aKey, anAttr);
-  Handle(BRepGraph_UserAttribute) aRetrieved = myGraph.Attrs().Get(aFaceId, aKey);
+  occ::handle<BRepGraph_UserAttribute> aRetrieved = myGraph.Attrs().Get(aFaceId, aKey);
   EXPECT_EQ(aRetrieved, anAttr);
 }
 
@@ -224,7 +224,7 @@ TEST_F(BRepGraphViewsTest, AttrsView_Remove_Works)
 {
   BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
   const int aKey = 99;
-  Handle(BRepGraph_UserAttribute) anAttr = new TestUserAttribute();
+  occ::handle<BRepGraph_UserAttribute> anAttr = new TestUserAttribute();
   myGraph.Attrs().Set(aFaceId, aKey, anAttr);
   EXPECT_TRUE(myGraph.Attrs().Remove(aFaceId, aKey));
   EXPECT_TRUE(myGraph.Attrs().Get(aFaceId, aKey).IsNull());

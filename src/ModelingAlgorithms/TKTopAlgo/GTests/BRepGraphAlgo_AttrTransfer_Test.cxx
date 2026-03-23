@@ -42,7 +42,7 @@ namespace
 static const int THE_COLOR_KEY = BRepGraph_UserAttribute::AllocateKey();
 static const int THE_LABEL_KEY = BRepGraph_UserAttribute::AllocateKey();
 
-Handle(BRepGraph_UserAttribute) makeIntAttr(int theValue)
+occ::handle<BRepGraph_UserAttribute> makeIntAttr(int theValue)
 {
   return new BRepGraph_TypedAttribute<int>(theValue);
 }

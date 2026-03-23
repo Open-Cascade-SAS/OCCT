@@ -40,10 +40,10 @@ public:
   //! Construct with allocator for internal collections.
   //! If null, uses CommonBaseAllocator.
   Standard_EXPORT explicit BRepGraphInc_Storage(
-    const Handle(NCollection_BaseAllocator)& theAlloc = Handle(NCollection_BaseAllocator)());
+    const occ::handle<NCollection_BaseAllocator>& theAlloc = occ::handle<NCollection_BaseAllocator>());
 
   //! Return the allocator used for internal collections.
-  const Handle(NCollection_BaseAllocator)& Allocator() const { return myAllocator; }
+  const occ::handle<NCollection_BaseAllocator>& Allocator() const { return myAllocator; }
 
   // ------ Count accessors (total including removed) ------
 
@@ -229,7 +229,7 @@ private:
   NCollection_Vector<BRepGraph_UID> myProductUIDs;
   NCollection_Vector<BRepGraph_UID> myOccurrenceUIDs;
 
-  Handle(NCollection_BaseAllocator) myAllocator;
+  occ::handle<NCollection_BaseAllocator> myAllocator;
 
   int myNbActiveVertices   = 0;
   int myNbActiveEdges      = 0;

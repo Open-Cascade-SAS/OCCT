@@ -83,7 +83,7 @@ struct WirePCurveSet
 {
   struct EdgeData
   {
-    Handle(Geom2dAdaptor_Curve) Adaptor;
+    occ::handle<Geom2dAdaptor_Curve> Adaptor;
     Bnd_Box2d                   Box;
     BRepGraph_NodeId            StartVtxId;
     BRepGraph_NodeId            EndVtxId;

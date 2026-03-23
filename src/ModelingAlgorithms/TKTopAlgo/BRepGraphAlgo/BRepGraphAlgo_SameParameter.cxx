@@ -51,9 +51,9 @@ namespace
 
 //! Compute max deviation between a 3D curve and a 2D curve evaluated on a surface.
 //! Replicates the static ComputeTol() from BRepLib.cxx.
-double computeTol(const Handle(Adaptor3d_Curve)&   theC3d,
-                  const Handle(Adaptor2d_Curve2d)& theC2d,
-                  const Handle(Adaptor3d_Surface)& theSurf,
+double computeTol(const occ::handle<Adaptor3d_Curve>&   theC3d,
+                  const occ::handle<Adaptor2d_Curve2d>& theC2d,
+                  const occ::handle<Adaptor3d_Surface>& theSurf,
                   int                              theNbP)
 {
   NCollection_Array1<double> aDist(1, theNbP + 10);
@@ -240,14 +240,14 @@ bool enforceImpl(BRepGraph&       theGraph,
   }
 
   // Build 3D curve adaptor from graph, handle periodicity/trimming like BRepLib.
-  Handle(Geom_Curve) aC3d = anEdge.Curve3d;
+  occ::handle<Geom_Curve> aC3d = anEdge.Curve3d;
   double             aF3d = anEdge.ParamFirst;
   double             aL3d = anEdge.ParamLast;
 
   bool isTrimmedPeriodical = false;
   if (aC3d->DynamicType() == STANDARD_TYPE(Geom_TrimmedCurve))
   {
-    Handle(Geom_Curve) aBasis = Handle(Geom_TrimmedCurve)::DownCast(aC3d)->BasisCurve();
+    occ::handle<Geom_Curve> aBasis = occ::down_cast<Geom_TrimmedCurve>(aC3d)->BasisCurve();
     isTrimmedPeriodical       = aBasis->IsPeriodic();
   }
 
@@ -266,17 +266,17 @@ bool enforceImpl(BRepGraph&       theGraph,
   GeomAdaptor_TransformedCurve aTransCurve = theGraph.Defs().CurveAdaptor(theEdgeId);
   const gp_Trsf&               aCrvTrsf    = aTransCurve.Trsf();
 
-  Handle(GeomAdaptor_Curve)   aHC    = new GeomAdaptor_Curve();
-  Handle(Geom2dAdaptor_Curve) aHC2d  = new Geom2dAdaptor_Curve();
-  Handle(GeomAdaptor_Surface) aHS    = new GeomAdaptor_Surface();
+  occ::handle<GeomAdaptor_Curve>   aHC    = new GeomAdaptor_Curve();
+  occ::handle<Geom2dAdaptor_Curve> aHC2d  = new Geom2dAdaptor_Curve();
+  occ::handle<GeomAdaptor_Surface> aHS    = new GeomAdaptor_Surface();
   GeomAdaptor_Curve&          aGAC   = *aHC;
   Geom2dAdaptor_Curve&        aGAC2d = *aHC2d;
   GeomAdaptor_Surface&        aGAS   = *aHS;
 
-  Handle(Geom_Curve) aC3dTransformed = aC3d;
+  occ::handle<Geom_Curve> aC3dTransformed = aC3d;
   if (aCrvTrsf.Form() != gp_Identity)
   {
-    aC3dTransformed = Handle(Geom_Curve)::DownCast(aC3d->Transformed(aCrvTrsf));
+    aC3dTransformed = occ::down_cast<Geom_Curve>(aC3d->Transformed(aCrvTrsf));
   }
   aGAC.Load(aC3dTransformed, aF3d, aL3d);
 
@@ -308,22 +308,22 @@ bool enforceImpl(BRepGraph&       theGraph,
 
     // Load surface (apply face transform if non-identity).
     GeomAdaptor_TransformedSurface aTransSurf = theGraph.Defs().SurfaceAdaptor(aPC.FaceDefId);
-    Handle(Geom_Surface)           aSurf      = aFace.Surface;
+    occ::handle<Geom_Surface>           aSurf      = aFace.Surface;
     const gp_Trsf&                 aSrfTrsf   = aTransSurf.Trsf();
     if (aSrfTrsf.Form() != gp_Identity)
     {
-      aSurf = Handle(Geom_Surface)::DownCast(aSurf->Transformed(aSrfTrsf));
+      aSurf = occ::down_cast<Geom_Surface>(aSurf->Transformed(aSrfTrsf));
     }
     aGAS.Load(aSurf);
 
-    Handle(Geom2d_Curve) aCurPC    = aPC.Curve2d;
+    occ::handle<Geom2d_Curve> aCurPC    = aPC.Curve2d;
     bool                 aUpdatePC = false;
 
     // SameRange check.
     const double aTolSameRange = std::max(aGAC.Resolution(theTolerance), Precision::PConfusion());
     if (!isSameRange)
     {
-      Handle(Geom2d_Curve) aNewPC;
+      occ::handle<Geom2d_Curve> aNewPC;
       GeomLib::SameRange(aTolSameRange,
                          aPC.Curve2d,
                          aPC.ParamFirst,
@@ -399,8 +399,8 @@ bool enforceImpl(BRepGraph&       theGraph,
       double       aTolConf2d = std::min(aUResol, aVResol);
       aTolConf2d              = std::max(aTolConf2d, Precision::PConfusion());
 
-      Handle(Geom2d_BSplineCurve) aBs2d         = aGAC2d.BSpline();
-      Handle(Geom2d_BSplineCurve) aBs2dSov      = aBs2d;
+      occ::handle<Geom2d_BSplineCurve> aBs2d         = aGAC2d.BSpline();
+      occ::handle<Geom2d_BSplineCurve> aBs2dSov      = aBs2d;
       const double                aFC0          = aBs2d->FirstParameter();
       const double                aLC0          = aBs2d->LastParameter();
       bool                        isRepar       = true;
@@ -612,8 +612,8 @@ bool enforceImpl(BRepGraph&       theGraph,
     if (isGoodPC)
     {
       const double                     aTol     = (isANA && isBSP) ? THE_ANA_BSP_TOL : theTolerance;
-      const Handle(Adaptor3d_Curve)&   aHCurv   = aHC;
-      const Handle(Adaptor2d_Curve2d)& aHCurv2d = aHC2d;
+      const occ::handle<Adaptor3d_Curve>&   aHCurv   = aHC;
+      const occ::handle<Adaptor2d_Curve2d>& aHCurv2d = aHC2d;
       Approx_SameParameter             aSameP(aHCurv, aHCurv2d, aHS, aTol);
 
       if (aSameP.IsSameParameter())
@@ -646,7 +646,7 @@ bool enforceImpl(BRepGraph&       theGraph,
       {
         // Approx_SameParameter failed — try SameRange fallback.
         ++theFlags.NbApproxFallbacks;
-        Handle(Geom2d_Curve) aFallbackPC;
+        occ::handle<Geom2d_Curve> aFallbackPC;
         GeomLib::SameRange(aTolSameRange,
                            aPC.Curve2d,
                            aPC.ParamFirst,

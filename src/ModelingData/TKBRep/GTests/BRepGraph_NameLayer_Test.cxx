@@ -33,10 +33,10 @@
 TEST(BRepGraph_NameLayerTest, RegisterAndFind)
 {
   BRepGraph aGraph;
-  Handle(BRepGraph_NameLayer) aLayer = new BRepGraph_NameLayer();
+  occ::handle<BRepGraph_NameLayer> aLayer = new BRepGraph_NameLayer();
   aGraph.RegisterLayer(aLayer);
 
-  Handle(BRepGraph_Layer) aFound = aGraph.FindLayer("Name");
+  occ::handle<BRepGraph_Layer> aFound = aGraph.FindLayer("Name");
   ASSERT_FALSE(aFound.IsNull());
   EXPECT_EQ(aFound->Name(), "Name");
 }
@@ -44,35 +44,35 @@ TEST(BRepGraph_NameLayerTest, RegisterAndFind)
 TEST(BRepGraph_NameLayerTest, UnregisterLayer)
 {
   BRepGraph aGraph;
-  Handle(BRepGraph_NameLayer) aLayer = new BRepGraph_NameLayer();
+  occ::handle<BRepGraph_NameLayer> aLayer = new BRepGraph_NameLayer();
   aGraph.RegisterLayer(aLayer);
 
   aGraph.UnregisterLayer("Name");
-  Handle(BRepGraph_Layer) aFound = aGraph.FindLayer("Name");
+  occ::handle<BRepGraph_Layer> aFound = aGraph.FindLayer("Name");
   EXPECT_TRUE(aFound.IsNull());
 }
 
 TEST(BRepGraph_NameLayerTest, FindNonExistent_ReturnsNull)
 {
   BRepGraph aGraph;
-  Handle(BRepGraph_Layer) aFound = aGraph.FindLayer("DoesNotExist");
+  occ::handle<BRepGraph_Layer> aFound = aGraph.FindLayer("DoesNotExist");
   EXPECT_TRUE(aFound.IsNull());
 }
 
 TEST(BRepGraph_NameLayerTest, RegisterReplacesExisting)
 {
   BRepGraph aGraph;
-  Handle(BRepGraph_NameLayer) aLayer1 = new BRepGraph_NameLayer();
-  Handle(BRepGraph_NameLayer) aLayer2 = new BRepGraph_NameLayer();
+  occ::handle<BRepGraph_NameLayer> aLayer1 = new BRepGraph_NameLayer();
+  occ::handle<BRepGraph_NameLayer> aLayer2 = new BRepGraph_NameLayer();
   aLayer1->SetNodeName(BRepGraph_NodeId::Face(0), "FromLayer1");
 
   aGraph.RegisterLayer(aLayer1);
   aGraph.RegisterLayer(aLayer2);
 
-  Handle(BRepGraph_Layer) aFound = aGraph.FindLayer("Name");
+  occ::handle<BRepGraph_Layer> aFound = aGraph.FindLayer("Name");
   ASSERT_FALSE(aFound.IsNull());
   // Layer2 replaced Layer1 — Layer2 has no names.
-  Handle(BRepGraph_NameLayer) aCast = Handle(BRepGraph_NameLayer)::DownCast(aFound);
+  occ::handle<BRepGraph_NameLayer> aCast = occ::down_cast<BRepGraph_NameLayer>(aFound);
   ASSERT_FALSE(aCast.IsNull());
   EXPECT_EQ(aCast->NbNames(), 0);
 }
@@ -80,7 +80,7 @@ TEST(BRepGraph_NameLayerTest, RegisterReplacesExisting)
 TEST(BRepGraph_NameLayerTest, RegisterNullLayer_NoOp)
 {
   BRepGraph aGraph;
-  Handle(BRepGraph_Layer) aNullLayer;
+  occ::handle<BRepGraph_Layer> aNullLayer;
   aGraph.RegisterLayer(aNullLayer);
   // Should not crash, no layer registered.
   EXPECT_TRUE(aGraph.FindLayer("Name").IsNull());
@@ -104,7 +104,7 @@ TEST(BRepGraph_NameLayerTest, SetAndGetName)
   aGraph.Build(aBoxMaker.Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  Handle(BRepGraph_NameLayer) aLayer = new BRepGraph_NameLayer();
+  occ::handle<BRepGraph_NameLayer> aLayer = new BRepGraph_NameLayer();
   aGraph.RegisterLayer(aLayer);
 
   const BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
@@ -118,7 +118,7 @@ TEST(BRepGraph_NameLayerTest, SetAndGetName)
 
 TEST(BRepGraph_NameLayerTest, SetOverwritesExisting)
 {
-  Handle(BRepGraph_NameLayer) aLayer = new BRepGraph_NameLayer();
+  occ::handle<BRepGraph_NameLayer> aLayer = new BRepGraph_NameLayer();
   const BRepGraph_NodeId aId = BRepGraph_NodeId::Face(0);
 
   aLayer->SetNodeName(aId, "First");
@@ -132,7 +132,7 @@ TEST(BRepGraph_NameLayerTest, SetOverwritesExisting)
 
 TEST(BRepGraph_NameLayerTest, RemoveName)
 {
-  Handle(BRepGraph_NameLayer) aLayer = new BRepGraph_NameLayer();
+  occ::handle<BRepGraph_NameLayer> aLayer = new BRepGraph_NameLayer();
 
   const BRepGraph_NodeId aNodeId(BRepGraph_NodeId::Kind::Edge, 0);
   aLayer->SetNodeName(aNodeId, "TestEdge");
@@ -145,14 +145,14 @@ TEST(BRepGraph_NameLayerTest, RemoveName)
 
 TEST(BRepGraph_NameLayerTest, RemoveNonExistent_NoOp)
 {
-  Handle(BRepGraph_NameLayer) aLayer = new BRepGraph_NameLayer();
+  occ::handle<BRepGraph_NameLayer> aLayer = new BRepGraph_NameLayer();
   aLayer->RemoveNodeName(BRepGraph_NodeId::Edge(99));
   EXPECT_EQ(aLayer->NbNames(), 0);
 }
 
 TEST(BRepGraph_NameLayerTest, NamesOnAllEntityKinds)
 {
-  Handle(BRepGraph_NameLayer) aLayer = new BRepGraph_NameLayer();
+  occ::handle<BRepGraph_NameLayer> aLayer = new BRepGraph_NameLayer();
   aLayer->SetNodeName(BRepGraph_NodeId::Vertex(0), "V0");
   aLayer->SetNodeName(BRepGraph_NodeId::Edge(0),   "E0");
   aLayer->SetNodeName(BRepGraph_NodeId::Wire(0),   "W0");
@@ -168,7 +168,7 @@ TEST(BRepGraph_NameLayerTest, NamesOnAllEntityKinds)
 
 TEST(BRepGraph_NameLayerTest, Clear)
 {
-  Handle(BRepGraph_NameLayer) aLayer = new BRepGraph_NameLayer();
+  occ::handle<BRepGraph_NameLayer> aLayer = new BRepGraph_NameLayer();
   aLayer->SetNodeName(BRepGraph_NodeId::Face(0), "Face0");
   aLayer->SetNodeName(BRepGraph_NodeId::Face(1), "Face1");
   EXPECT_EQ(aLayer->NbNames(), 2);
@@ -188,7 +188,7 @@ TEST(BRepGraph_NameLayerTest, OnNodeRemoved_PureDeletion)
   aGraph.Build(aBoxMaker.Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  Handle(BRepGraph_NameLayer) aLayer = new BRepGraph_NameLayer();
+  occ::handle<BRepGraph_NameLayer> aLayer = new BRepGraph_NameLayer();
   aGraph.RegisterLayer(aLayer);
 
   const BRepGraph_NodeId anEdgeId(BRepGraph_NodeId::Kind::Edge, 0);
@@ -207,7 +207,7 @@ TEST(BRepGraph_NameLayerTest, OnNodeRemoved_WithReplacement)
   aGraph.Build(aBoxMaker.Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  Handle(BRepGraph_NameLayer) aLayer = new BRepGraph_NameLayer();
+  occ::handle<BRepGraph_NameLayer> aLayer = new BRepGraph_NameLayer();
   aGraph.RegisterLayer(aLayer);
 
   const BRepGraph_NodeId anOldId(BRepGraph_NodeId::Kind::Edge, 0);
@@ -224,7 +224,7 @@ TEST(BRepGraph_NameLayerTest, OnNodeRemoved_WithReplacement)
 
 TEST(BRepGraph_NameLayerTest, OnNodeRemoved_ReplacementAlreadyHasName)
 {
-  Handle(BRepGraph_NameLayer) aLayer = new BRepGraph_NameLayer();
+  occ::handle<BRepGraph_NameLayer> aLayer = new BRepGraph_NameLayer();
 
   const BRepGraph_NodeId anOldId(BRepGraph_NodeId::Kind::Edge, 0);
   const BRepGraph_NodeId aNewId(BRepGraph_NodeId::Kind::Edge, 1);
@@ -241,7 +241,7 @@ TEST(BRepGraph_NameLayerTest, OnNodeRemoved_ReplacementAlreadyHasName)
 
 TEST(BRepGraph_NameLayerTest, OnNodeRemoved_NeitherHasName)
 {
-  Handle(BRepGraph_NameLayer) aLayer = new BRepGraph_NameLayer();
+  occ::handle<BRepGraph_NameLayer> aLayer = new BRepGraph_NameLayer();
   aLayer->SetNodeName(BRepGraph_NodeId::Face(5), "Unrelated");
 
   // Removing a node that has no name — should not crash or affect other names.
@@ -258,7 +258,7 @@ TEST(BRepGraph_NameLayerTest, OnNodeRemoved_MultipleSequential)
   aGraph.Build(aBoxMaker.Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  Handle(BRepGraph_NameLayer) aLayer = new BRepGraph_NameLayer();
+  occ::handle<BRepGraph_NameLayer> aLayer = new BRepGraph_NameLayer();
   aGraph.RegisterLayer(aLayer);
 
   // Name edges 0, 1, 2.
@@ -310,8 +310,8 @@ TEST(BRepGraph_NameLayerTest, MultipleLayers_BothNotified)
   aGraph.Build(aBoxMaker.Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  Handle(BRepGraph_NameLayer) aNameLayer = new BRepGraph_NameLayer();
-  Handle(BRepGraph_TestCounterLayer) aCounterLayer = new BRepGraph_TestCounterLayer();
+  occ::handle<BRepGraph_NameLayer> aNameLayer = new BRepGraph_NameLayer();
+  occ::handle<BRepGraph_TestCounterLayer> aCounterLayer = new BRepGraph_TestCounterLayer();
   aGraph.RegisterLayer(aNameLayer);
   aGraph.RegisterLayer(aCounterLayer);
 
@@ -330,8 +330,8 @@ TEST(BRepGraph_NameLayerTest, MultipleLayers_RemoveWithReplacement)
   aGraph.Build(aBoxMaker.Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  Handle(BRepGraph_NameLayer) aNameLayer = new BRepGraph_NameLayer();
-  Handle(BRepGraph_TestCounterLayer) aCounterLayer = new BRepGraph_TestCounterLayer();
+  occ::handle<BRepGraph_NameLayer> aNameLayer = new BRepGraph_NameLayer();
+  occ::handle<BRepGraph_TestCounterLayer> aCounterLayer = new BRepGraph_TestCounterLayer();
   aGraph.RegisterLayer(aNameLayer);
   aGraph.RegisterLayer(aCounterLayer);
 
@@ -351,7 +351,7 @@ TEST(BRepGraph_NameLayerTest, MultipleLayers_RemoveWithReplacement)
 
 TEST(BRepGraph_NameLayerTest, OnCompact_RemapsNodeIds)
 {
-  Handle(BRepGraph_NameLayer) aLayer = new BRepGraph_NameLayer();
+  occ::handle<BRepGraph_NameLayer> aLayer = new BRepGraph_NameLayer();
 
   // Simulate: face 0 removed, face 1 remapped to 0, face 2 remapped to 1.
   aLayer->SetNodeName(BRepGraph_NodeId::Face(1), "FaceA");
@@ -378,7 +378,7 @@ TEST(BRepGraph_NameLayerTest, OnCompact_RemapsNodeIds)
 
 TEST(BRepGraph_NameLayerTest, OnCompact_RemovedNodesDropped)
 {
-  Handle(BRepGraph_NameLayer) aLayer = new BRepGraph_NameLayer();
+  occ::handle<BRepGraph_NameLayer> aLayer = new BRepGraph_NameLayer();
 
   aLayer->SetNodeName(BRepGraph_NodeId::Face(0), "RemovedFace");
   aLayer->SetNodeName(BRepGraph_NodeId::Face(1), "SurvivingFace");
@@ -396,7 +396,7 @@ TEST(BRepGraph_NameLayerTest, OnCompact_RemovedNodesDropped)
 
 TEST(BRepGraph_NameLayerTest, OnCompact_EmptyLayer)
 {
-  Handle(BRepGraph_NameLayer) aLayer = new BRepGraph_NameLayer();
+  occ::handle<BRepGraph_NameLayer> aLayer = new BRepGraph_NameLayer();
 
   NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId> aRemapMap;
   aRemapMap.Bind(BRepGraph_NodeId::Face(0), BRepGraph_NodeId::Face(0));
@@ -407,7 +407,7 @@ TEST(BRepGraph_NameLayerTest, OnCompact_EmptyLayer)
 
 TEST(BRepGraph_NameLayerTest, OnCompact_MixedEntityKinds)
 {
-  Handle(BRepGraph_NameLayer) aLayer = new BRepGraph_NameLayer();
+  occ::handle<BRepGraph_NameLayer> aLayer = new BRepGraph_NameLayer();
 
   aLayer->SetNodeName(BRepGraph_NodeId::Vertex(5), "V5");
   aLayer->SetNodeName(BRepGraph_NodeId::Edge(3),   "E3");
@@ -437,7 +437,7 @@ TEST(BRepGraph_NameLayerTest, OnCompact_MixedEntityKinds)
 
 TEST(BRepGraph_NameLayerTest, OnCompact_CompoundNodesRemapped)
 {
-  Handle(BRepGraph_NameLayer) aLayer = new BRepGraph_NameLayer();
+  occ::handle<BRepGraph_NameLayer> aLayer = new BRepGraph_NameLayer();
 
   aLayer->SetNodeName(BRepGraph_NodeId::Compound(2), "MyCompound");
   aLayer->SetNodeName(BRepGraph_NodeId::CompSolid(1), "MyCompSolid");
@@ -463,7 +463,7 @@ TEST(BRepGraph_NameLayerTest, OnCompact_CompoundNodesRemapped)
 
 TEST(BRepGraph_NameLayerTest, InvalidateAll_PreservesData)
 {
-  Handle(BRepGraph_NameLayer) aLayer = new BRepGraph_NameLayer();
+  occ::handle<BRepGraph_NameLayer> aLayer = new BRepGraph_NameLayer();
   aLayer->SetNodeName(BRepGraph_NodeId::Face(0), "Persistent");
 
   aLayer->InvalidateAll();
@@ -479,7 +479,7 @@ TEST(BRepGraph_NameLayerTest, InvalidateAll_PreservesData)
 TEST(BRepGraph_NameLayerTest, LayerSurvivesGraphMove)
 {
   BRepGraph aGraph;
-  Handle(BRepGraph_NameLayer) aLayer = new BRepGraph_NameLayer();
+  occ::handle<BRepGraph_NameLayer> aLayer = new BRepGraph_NameLayer();
   aGraph.RegisterLayer(aLayer);
   aLayer->SetNodeName(BRepGraph_NodeId::Face(0), "BeforeMove");
 
@@ -487,9 +487,9 @@ TEST(BRepGraph_NameLayerTest, LayerSurvivesGraphMove)
   BRepGraph aGraph2 = std::move(aGraph);
 
   // Layer should be on the new graph.
-  Handle(BRepGraph_Layer) aFound = aGraph2.FindLayer("Name");
+  occ::handle<BRepGraph_Layer> aFound = aGraph2.FindLayer("Name");
   ASSERT_FALSE(aFound.IsNull());
-  Handle(BRepGraph_NameLayer) aCast = Handle(BRepGraph_NameLayer)::DownCast(aFound);
+  occ::handle<BRepGraph_NameLayer> aCast = occ::down_cast<BRepGraph_NameLayer>(aFound);
   ASSERT_FALSE(aCast.IsNull());
   EXPECT_TRUE(aCast->FindNodeName(BRepGraph_NodeId::Face(0))->IsEqual("BeforeMove"));
 }
@@ -505,7 +505,7 @@ TEST(BRepGraph_NameLayerTest, RemoveSubgraph_DispatchesForEachNode)
   aGraph.Build(aBoxMaker.Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  Handle(BRepGraph_TestCounterLayer) aCounterLayer = new BRepGraph_TestCounterLayer();
+  occ::handle<BRepGraph_TestCounterLayer> aCounterLayer = new BRepGraph_TestCounterLayer();
   aGraph.RegisterLayer(aCounterLayer);
 
   // RemoveSubgraph removes a node and all descendants.
@@ -519,10 +519,10 @@ TEST(BRepGraph_NameLayerTest, RemoveSubgraph_DispatchesForEachNode)
 
 TEST(BRepGraph_NameLayerTest, NameUnicodeString)
 {
-  Handle(BRepGraph_NameLayer) aLayer = new BRepGraph_NameLayer();
+  occ::handle<BRepGraph_NameLayer> aLayer = new BRepGraph_NameLayer();
   TCollection_ExtendedString aUnicode;
-  aUnicode += (Standard_ExtCharacter)0x00C9; // E-acute
-  aUnicode += (Standard_ExtCharacter)0x00E7; // c-cedilla
+  aUnicode += (char16_t)0x00C9; // E-acute
+  aUnicode += (char16_t)0x00E7; // c-cedilla
 
   aLayer->SetNodeName(BRepGraph_NodeId::Face(0), aUnicode);
 
@@ -533,7 +533,7 @@ TEST(BRepGraph_NameLayerTest, NameUnicodeString)
 
 TEST(BRepGraph_NameLayerTest, ManyNodesStress)
 {
-  Handle(BRepGraph_NameLayer) aLayer = new BRepGraph_NameLayer();
+  occ::handle<BRepGraph_NameLayer> aLayer = new BRepGraph_NameLayer();
 
   // Name 1000 nodes.
   for (int i = 0; i < 1000; ++i)

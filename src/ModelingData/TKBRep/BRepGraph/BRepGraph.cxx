@@ -33,7 +33,7 @@ BRepGraph::BRepGraph()
 
 //=================================================================================================
 
-BRepGraph::BRepGraph(const Handle(NCollection_BaseAllocator)& theAlloc)
+BRepGraph::BRepGraph(const occ::handle<NCollection_BaseAllocator>& theAlloc)
     : myData(std::make_unique<BRepGraph_Data>(theAlloc))
 {
 }
@@ -713,7 +713,7 @@ void BRepGraph::EndDeferredInvalidation()
 
 //=================================================================================================
 
-void BRepGraph::SetAllocator(const Handle(NCollection_BaseAllocator)& theAlloc)
+void BRepGraph::SetAllocator(const occ::handle<NCollection_BaseAllocator>& theAlloc)
 {
   Standard_ASSERT_VOID(!myData->myIsDone,
                        "SetAllocator: must be called before Build() — existing graph state will be lost");
@@ -724,7 +724,7 @@ void BRepGraph::SetAllocator(const Handle(NCollection_BaseAllocator)& theAlloc)
   myData = std::make_unique<BRepGraph_Data>(myData->myAllocator);
 }
 
-const Handle(NCollection_BaseAllocator)& BRepGraph::Allocator() const { return myData->myAllocator; }
+const occ::handle<NCollection_BaseAllocator>& BRepGraph::Allocator() const { return myData->myAllocator; }
 void BRepGraph::SetHistoryEnabled(bool theVal) { myData->myHistoryLog.SetEnabled(theVal); }
 bool BRepGraph::IsHistoryEnabled() const { return myData->myHistoryLog.IsEnabled(); }
 
@@ -733,7 +733,7 @@ const BRepGraph_History& BRepGraph::History() const { return myData->myHistoryLo
 
 //=================================================================================================
 
-void BRepGraph::RegisterLayer(const Handle(BRepGraph_Layer)& theLayer)
+void BRepGraph::RegisterLayer(const occ::handle<BRepGraph_Layer>& theLayer)
 {
   if (!theLayer.IsNull())
   {
@@ -744,10 +744,10 @@ void BRepGraph::RegisterLayer(const Handle(BRepGraph_Layer)& theLayer)
 
 //=================================================================================================
 
-Handle(BRepGraph_Layer) BRepGraph::FindLayer(const TCollection_AsciiString& theName) const
+occ::handle<BRepGraph_Layer> BRepGraph::FindLayer(const TCollection_AsciiString& theName) const
 {
-  const Handle(BRepGraph_Layer)* aPtr = myLayers.Seek(theName);
-  return aPtr != nullptr ? *aPtr : Handle(BRepGraph_Layer)();
+  const occ::handle<BRepGraph_Layer>* aPtr = myLayers.Seek(theName);
+  return aPtr != nullptr ? *aPtr : occ::handle<BRepGraph_Layer>();
 }
 
 //=================================================================================================
@@ -763,7 +763,7 @@ void BRepGraph::UnregisterLayer(const TCollection_AsciiString& theName)
 void BRepGraph::dispatchLayerOnNodeRemoved(BRepGraph_NodeId theNode,
                                            BRepGraph_NodeId theReplacement)
 {
-  for (NCollection_DataMap<TCollection_AsciiString, Handle(BRepGraph_Layer)>::Iterator
+  for (NCollection_DataMap<TCollection_AsciiString, occ::handle<BRepGraph_Layer>>::Iterator
          anIter(myLayers); anIter.More(); anIter.Next())
   {
     anIter.Value()->OnNodeRemoved(theNode, theReplacement);
@@ -775,7 +775,7 @@ void BRepGraph::dispatchLayerOnNodeRemoved(BRepGraph_NodeId theNode,
 void BRepGraph::updateModificationSubscriberFlag()
 {
   myHasModificationSubscribers = false;
-  for (NCollection_DataMap<TCollection_AsciiString, Handle(BRepGraph_Layer)>::Iterator
+  for (NCollection_DataMap<TCollection_AsciiString, occ::handle<BRepGraph_Layer>>::Iterator
          anIter(myLayers); anIter.More(); anIter.Next())
   {
     if (anIter.Value()->SubscribedKinds() != 0)
@@ -791,7 +791,7 @@ void BRepGraph::updateModificationSubscriberFlag()
 void BRepGraph::dispatchNodeModified(BRepGraph_NodeId theNode)
 {
   const int aKindBit = BRepGraph_Layer::KindBit(theNode.NodeKind);
-  for (NCollection_DataMap<TCollection_AsciiString, Handle(BRepGraph_Layer)>::Iterator
+  for (NCollection_DataMap<TCollection_AsciiString, occ::handle<BRepGraph_Layer>>::Iterator
          anIter(myLayers); anIter.More(); anIter.Next())
   {
     if ((anIter.Value()->SubscribedKinds() & aKindBit) != 0)
@@ -805,7 +805,7 @@ void BRepGraph::dispatchNodesModified(
   const NCollection_Vector<BRepGraph_NodeId>& theModifiedNodes,
   int theModifiedKindsMask)
 {
-  for (NCollection_DataMap<TCollection_AsciiString, Handle(BRepGraph_Layer)>::Iterator
+  for (NCollection_DataMap<TCollection_AsciiString, occ::handle<BRepGraph_Layer>>::Iterator
          anIter(myLayers); anIter.More(); anIter.Next())
   {
     if ((anIter.Value()->SubscribedKinds() & theModifiedKindsMask) != 0)

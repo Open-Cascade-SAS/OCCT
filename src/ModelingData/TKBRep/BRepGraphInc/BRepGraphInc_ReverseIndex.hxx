@@ -40,7 +40,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Set allocator for internal index tables.
-  void SetAllocator(const Handle(NCollection_BaseAllocator)& theAlloc)
+  void SetAllocator(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
     myAllocator = theAlloc;
   }
@@ -217,7 +217,7 @@ private:
   //! If theAlloc is non-null, inner vectors are constructed with it.
   static void preSize(IndexTable&                               theIdx,
                       int                                       theSize,
-                      const Handle(NCollection_BaseAllocator)& theAlloc = Handle(NCollection_BaseAllocator)());
+                      const occ::handle<NCollection_BaseAllocator>& theAlloc = occ::handle<NCollection_BaseAllocator>());
 
   //! Add theVal to the vector at theKey, creating if needed.  Skips duplicates.
   static void appendUnique(IndexTable& theIdx, int theKey, int theVal);
@@ -226,7 +226,7 @@ private:
   //! Used during Build() where freshly-cleared indices guarantee no duplicates.
   static void appendDirect(IndexTable& theIdx, int theKey, int theVal);
 
-  Handle(NCollection_BaseAllocator) myAllocator;
+  occ::handle<NCollection_BaseAllocator> myAllocator;
 
   IndexTable myEdgeToWires;
   IndexTable myEdgeToFaces;

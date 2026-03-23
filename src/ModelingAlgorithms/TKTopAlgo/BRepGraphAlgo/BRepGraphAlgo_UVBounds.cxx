@@ -74,7 +74,7 @@ private:
 //! @param[in] theVmin    surface V minimum
 //! @param[in] theVmax    surface V maximum
 //! @return true if the surface is geometrically U-periodic
-static bool isBSplinePseudoPeriodicU(const Handle(Geom_Surface)& theSurface,
+static bool isBSplinePseudoPeriodicU(const occ::handle<Geom_Surface>& theSurface,
                                      double                      theXmin,
                                      double                      theXmax,
                                      double                      theUmin,
@@ -163,7 +163,7 @@ static bool isBSplinePseudoPeriodicU(const Handle(Geom_Surface)& theSurface,
 //! @param[in] theVmin    surface V minimum
 //! @param[in] theVmax    surface V maximum
 //! @return true if the surface is geometrically V-periodic
-static bool isBSplinePseudoPeriodicV(const Handle(Geom_Surface)& theSurface,
+static bool isBSplinePseudoPeriodicV(const occ::handle<Geom_Surface>& theSurface,
                                      double                      theYmin,
                                      double                      theYmax,
                                      double                      theUmin,
@@ -419,10 +419,10 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph& theGraph, int theFaceIdx, 
 
   // Clamp to surface bounds, handle periodicity.
   // Unwrap RectangularTrimmedSurface to get the basis surface for periodicity checks.
-  Handle(Geom_Surface) aBasisSurf = aFaceDef.Surface;
+  occ::handle<Geom_Surface> aBasisSurf = aFaceDef.Surface;
   if (aBasisSurf->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
   {
-    aBasisSurf = Handle(Geom_RectangularTrimmedSurface)::DownCast(aBasisSurf)->BasisSurface();
+    aBasisSurf = occ::down_cast<Geom_RectangularTrimmedSurface>(aBasisSurf)->BasisSurface();
   }
 
   double aSUmin, aSUmax, aSVmin, aSVmax;
@@ -491,12 +491,12 @@ int BRepGraphAlgo_UVBounds::CacheKey()
 //=================================================================================================
 
 //! Helper: retrieve existing UV attribute from a cache, or nullptr.
-static Handle(BRepGraphAlgo_UVBoundsAttribute) findUVAttr(const BRepGraph_NodeCache& theCache, int theKey)
+static occ::handle<BRepGraphAlgo_UVBoundsAttribute> findUVAttr(const BRepGraph_NodeCache& theCache, int theKey)
 {
-  Handle(BRepGraph_UserAttribute) anAttr = theCache.GetUserAttribute(theKey);
+  occ::handle<BRepGraph_UserAttribute> anAttr = theCache.GetUserAttribute(theKey);
   if (anAttr.IsNull())
-    return Handle(BRepGraphAlgo_UVBoundsAttribute)();
-  return Handle(BRepGraphAlgo_UVBoundsAttribute)::DownCast(anAttr);
+    return occ::handle<BRepGraphAlgo_UVBoundsAttribute>();
+  return occ::down_cast<BRepGraphAlgo_UVBoundsAttribute>(anAttr);
 }
 
 //! Helper: store CachedData into a cache — reuses existing attribute or creates a new one.
@@ -504,14 +504,14 @@ static void storeUVAttr(BRepGraph_NodeCache&                      theCache,
                         int                                       theKey,
                         const BRepGraphAlgo_UVBounds::CachedData& theData)
 {
-  Handle(BRepGraphAlgo_UVBoundsAttribute) anExisting = findUVAttr(theCache, theKey);
+  occ::handle<BRepGraphAlgo_UVBoundsAttribute> anExisting = findUVAttr(theCache, theKey);
   if (!anExisting.IsNull())
   {
     anExisting->SetData(theData);
     return;
   }
 
-  Handle(BRepGraphAlgo_UVBoundsAttribute) aNewAttr = new BRepGraphAlgo_UVBoundsAttribute();
+  occ::handle<BRepGraphAlgo_UVBoundsAttribute> aNewAttr = new BRepGraphAlgo_UVBoundsAttribute();
   aNewAttr->SetData(theData);
   theCache.SetUserAttribute(theKey, aNewAttr);
 }
@@ -531,7 +531,7 @@ bool BRepGraphAlgo_UVBounds::GetCached(const BRepGraph& theGraph,
     return false;
   }
 
-  Handle(BRepGraphAlgo_UVBoundsAttribute) aUVAttr = findUVAttr(aDef->Cache, CacheKey());
+  occ::handle<BRepGraphAlgo_UVBoundsAttribute> aUVAttr = findUVAttr(aDef->Cache, CacheKey());
   return !aUVAttr.IsNull() && aUVAttr->Get(theData);
 }
 
@@ -553,7 +553,7 @@ BRepGraphAlgo_UVBounds::CachedData BRepGraphAlgo_UVBounds::AddCached(BRepGraph& 
   }
 
   // Try cache hit.
-  Handle(BRepGraphAlgo_UVBoundsAttribute) anExisting = findUVAttr(*aCache, aKey);
+  occ::handle<BRepGraphAlgo_UVBoundsAttribute> anExisting = findUVAttr(*aCache, aKey);
   if (!anExisting.IsNull())
   {
     CachedData aData;

@@ -27,13 +27,13 @@ public:
   //! @param[in] theAttr handle to the attribute
   Standard_EXPORT void Set(BRepGraph_NodeId                       theNode,
                            int                                    theKey,
-                           const Handle(BRepGraph_UserAttribute)& theAttr);
+                           const occ::handle<BRepGraph_UserAttribute>& theAttr);
 
   //! Retrieve a user attribute from a node.
   //! @param[in] theNode node identifier
   //! @param[in] theKey  attribute key
   //! @return handle to the attribute, or null handle if not set
-  Standard_EXPORT Handle(BRepGraph_UserAttribute) Get(BRepGraph_NodeId theNode, int theKey) const;
+  Standard_EXPORT occ::handle<BRepGraph_UserAttribute> Get(BRepGraph_NodeId theNode, int theKey) const;
 
   //! Remove a user attribute from a node.
   //! @param[in] theNode node identifier

@@ -41,7 +41,7 @@ BRepGraph_NodeId BRepGraph::BuilderView::AddVertexDef(const gp_Pnt& thePoint, do
 
 BRepGraph_NodeId BRepGraph::BuilderView::AddEdgeDef(BRepGraph_NodeId          theStartVtx,
                                                     BRepGraph_NodeId          theEndVtx,
-                                                    const Handle(Geom_Curve)& theCurve,
+                                                    const occ::handle<Geom_Curve>& theCurve,
                                                     double                    theFirst,
                                                     double                    theLast,
                                                     double                    theTolerance)
@@ -118,7 +118,7 @@ BRepGraph_NodeId BRepGraph::BuilderView::AddWireDef(
 //=================================================================================================
 
 BRepGraph_NodeId BRepGraph::BuilderView::AddFaceDef(
-  const Handle(Geom_Surface)&                 theSurface,
+  const occ::handle<Geom_Surface>&                 theSurface,
   BRepGraph_NodeId                            theOuterWire,
   const NCollection_Vector<BRepGraph_NodeId>& theInnerWires,
   double                                      theTolerance)

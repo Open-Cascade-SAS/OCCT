@@ -552,7 +552,7 @@ static TopoDS_Edge makeEdgeWithInternalVertex()
 // Helper: build a face containing the given edge (needed for graph population).
 static TopoDS_Shape wrapEdgeInFace(const TopoDS_Edge& theEdge)
 {
-  Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pln());
+  occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pln());
   BRep_Builder aBB;
   TopoDS_Face aFace;
   aBB.MakeFace(aFace, aPlane, Precision::Confusion());
@@ -719,7 +719,7 @@ TEST(BRepGraphIncTest, EdgeMultipleInternalVertices_AllCaptured)
 TEST(BRepGraphIncTest, FaceDirectVertex_Internal_Captured)
 {
   BRep_Builder aBB;
-  Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pln());
+  occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pln());
   TopoDS_Face aFace;
   aBB.MakeFace(aFace, aPlane, Precision::Confusion());
 
@@ -752,7 +752,7 @@ TEST(BRepGraphIncTest, FaceDirectVertex_Internal_Captured)
 TEST(BRepGraphIncTest, FaceDirectVertex_RoundTrip)
 {
   BRep_Builder aBB;
-  Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pln());
+  occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pln());
   TopoDS_Face aFace;
   aBB.MakeFace(aFace, aPlane, Precision::Confusion());
 
@@ -792,7 +792,7 @@ TEST(BRepGraphIncTest, FaceDirectVertex_RoundTrip)
 TEST(BRepGraphIncTest, FaceExternalVertex_Captured)
 {
   BRep_Builder aBB;
-  Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pln());
+  occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pln());
   TopoDS_Face aFace;
   aBB.MakeFace(aFace, aPlane, Precision::Confusion());
 
@@ -836,7 +836,7 @@ TEST(BRepGraphIncTest, FaceNoDirectVertices_EmptyVector)
 TEST(BRepGraphIncTest, FaceWithWiresAndVertices_BothCaptured)
 {
   BRep_Builder aBB;
-  Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pln());
+  occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pln());
   TopoDS_Face aFace;
   aBB.MakeFace(aFace, aPlane, Precision::Confusion());
 
@@ -871,7 +871,7 @@ TEST(BRepGraphIncTest, CompoundWithInternalVertices_RoundTrip_SubShapeCounts)
   aBB.MakeCompound(aCompound);
 
   // Face with a direct internal vertex.
-  Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pln());
+  occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pln());
   TopoDS_Face aFace;
   aBB.MakeFace(aFace, aPlane, Precision::Confusion());
 
@@ -951,7 +951,7 @@ TEST(BRepGraphIncTest, CompoundWithInternalVertices_RoundTrip_SubShapeCounts)
 TEST(BRepGraphIncTest, ParallelBuild_InternalVertices_SameAsSequential)
 {
   BRep_Builder aBB;
-  Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pln());
+  occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pln());
   TopoDS_Face aFace;
   aBB.MakeFace(aFace, aPlane, Precision::Confusion());
 

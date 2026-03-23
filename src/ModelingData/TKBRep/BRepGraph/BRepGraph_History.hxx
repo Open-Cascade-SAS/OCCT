@@ -93,11 +93,11 @@ public:
   //! Set the allocator for internal containers.
   //! Must be called before any Record/RecordBatch calls.
   //! @param[in] theAlloc allocator to use for internal maps
-  Standard_EXPORT void SetAllocator(const Handle(NCollection_BaseAllocator)& theAlloc);
+  Standard_EXPORT void SetAllocator(const occ::handle<NCollection_BaseAllocator>& theAlloc);
 
 private:
 
-  Handle(NCollection_BaseAllocator) myAllocator;
+  occ::handle<NCollection_BaseAllocator> myAllocator;
 
   NCollection_Vector<BRepGraph_HistoryRecord> myRecords;
 

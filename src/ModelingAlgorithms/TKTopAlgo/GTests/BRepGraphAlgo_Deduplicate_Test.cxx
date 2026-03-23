@@ -1438,7 +1438,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, BackRefs_CurveRewrite_UpdatesEdgeDefUsers)
   NCollection_Map<const Geom_Curve*> aDistinctCurves;
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    const Handle(Geom_Curve)& aCurve = aGraph.Defs().Edge(anEdgeIdx).Curve3d;
+    const occ::handle<Geom_Curve>& aCurve = aGraph.Defs().Edge(anEdgeIdx).Curve3d;
     if (!aCurve.IsNull())
       aDistinctCurves.Add(aCurve.get());
   }
@@ -1677,7 +1677,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, Pump_FullDedup_BackRefsAndNullify)
     for (TopExp_Explorer anExp(theShape, TopAbs_FACE); anExp.More(); anExp.Next())
     {
       TopLoc_Location aLoc;
-      const Handle(Geom_Surface)& aSurf = BRep_Tool::Surface(TopoDS::Face(anExp.Current()), aLoc);
+      const occ::handle<Geom_Surface>& aSurf = BRep_Tool::Surface(TopoDS::Face(anExp.Current()), aLoc);
       if (!aSurf.IsNull())
         aSet.Add(aSurf.get());
     }
@@ -1690,7 +1690,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, Pump_FullDedup_BackRefsAndNullify)
     {
       TopLoc_Location aLoc;
       double aFirst = 0.0, aLast = 0.0;
-      const Handle(Geom_Curve) aCurve = BRep_Tool::Curve(TopoDS::Edge(anExp.Current()),
+      const occ::handle<Geom_Curve> aCurve = BRep_Tool::Curve(TopoDS::Edge(anExp.Current()),
                                                           aLoc, aFirst, aLast);
       if (!aCurve.IsNull())
         aSet.Add(aCurve.get());

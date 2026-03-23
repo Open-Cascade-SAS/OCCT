@@ -250,7 +250,7 @@ void BRepGraphCheck::CheckWireOnFace(
   // Collect PCurve adaptors and bounding boxes for each edge in the wire.
   struct EdgePCurveData
   {
-    Handle(Geom2dAdaptor_Curve) Adaptor;
+    occ::handle<Geom2dAdaptor_Curve> Adaptor;
     Bnd_Box2d                   Box;
     int                         EdgeDefIdx;
     BRepGraph_NodeId            StartVtxId;

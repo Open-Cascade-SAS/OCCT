@@ -69,7 +69,7 @@ public:
   BRepGraph& operator=(const BRepGraph&) = delete;
 
   Standard_EXPORT BRepGraph();
-  Standard_EXPORT explicit BRepGraph(const Handle(NCollection_BaseAllocator)& theAlloc);
+  Standard_EXPORT explicit BRepGraph(const occ::handle<NCollection_BaseAllocator>& theAlloc);
   Standard_EXPORT ~BRepGraph();
   Standard_EXPORT BRepGraph(BRepGraph&&) noexcept;
   Standard_EXPORT BRepGraph& operator=(BRepGraph&&) noexcept;
@@ -86,10 +86,10 @@ public:
   Standard_EXPORT bool IsDone() const;
 
   //! Replace the internal allocator and re-create all storage.
-  Standard_EXPORT void SetAllocator(const Handle(NCollection_BaseAllocator)& theAlloc);
+  Standard_EXPORT void SetAllocator(const occ::handle<NCollection_BaseAllocator>& theAlloc);
 
   //! Return the current allocator.
-  Standard_EXPORT const Handle(NCollection_BaseAllocator)& Allocator() const;
+  Standard_EXPORT const occ::handle<NCollection_BaseAllocator>& Allocator() const;
 
   //! Begin deferred invalidation mode.
   //! While active, markModified() only sets IsModified flags on entities
@@ -199,10 +199,10 @@ public:
   Standard_EXPORT const BRepGraph_History& History() const;
 
   //! Register a named layer. Replaces existing layer with same name.
-  Standard_EXPORT void RegisterLayer(const Handle(BRepGraph_Layer)& theLayer);
+  Standard_EXPORT void RegisterLayer(const occ::handle<BRepGraph_Layer>& theLayer);
 
   //! Find a layer by name. Returns null handle if not found.
-  Standard_EXPORT Handle(BRepGraph_Layer) FindLayer(const TCollection_AsciiString& theName) const;
+  Standard_EXPORT occ::handle<BRepGraph_Layer> FindLayer(const TCollection_AsciiString& theName) const;
 
   //! Remove a layer by name.
   Standard_EXPORT void UnregisterLayer(const TCollection_AsciiString& theName);
@@ -234,7 +234,7 @@ private:
   std::unique_ptr<BRepGraph_Data> myData;
 
   //! Named layers (stored on BRepGraph, not BRepGraph_Data, to survive Compact swap).
-  NCollection_DataMap<TCollection_AsciiString, Handle(BRepGraph_Layer)> myLayers;
+  NCollection_DataMap<TCollection_AsciiString, occ::handle<BRepGraph_Layer>> myLayers;
 
   //! True if any registered layer has SubscribedKinds() != 0.
   //! Enables zero-cost skip of modification dispatch when no layer subscribes.

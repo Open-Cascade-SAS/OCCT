@@ -49,7 +49,7 @@ inline double safeIncrement(const double theValue,
 
 // Checks whether a 3D curve is degenerate between theStartParam and theEndParam by
 // sampling points and testing distance to start.
-bool isDegenerated(const Handle(Geom_Curve)& theCurve,
+bool isDegenerated(const occ::handle<Geom_Curve>& theCurve,
                    const TopLoc_Location&    theLoc,
                    const double              theStartParam,
                    const double              theEndParam)
@@ -273,7 +273,7 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
       if (aPCurveEntry == nullptr)
         return;
 
-      const Handle(Geom2d_Curve)& aCurve2d = aPCurveEntry->Curve2d;
+      const occ::handle<Geom2d_Curve>& aCurve2d = aPCurveEntry->Curve2d;
       if (aCurve2d.IsNull())
         return;
 

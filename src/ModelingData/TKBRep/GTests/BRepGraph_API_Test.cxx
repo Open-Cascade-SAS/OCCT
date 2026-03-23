@@ -168,7 +168,7 @@ TEST(BRepGraphAPI_AddNodeTest, AddEdgeDef_WithCurve)
   BRepGraph_NodeId aV1 = aGraph.Builder().AddVertexDef(gp_Pnt(0.0, 0.0, 0.0), 0.001);
   BRepGraph_NodeId aV2 = aGraph.Builder().AddVertexDef(gp_Pnt(10.0, 0.0, 0.0), 0.001);
 
-  Handle(Geom_Line) aLine = new Geom_Line(gp_Lin(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)));
+  occ::handle<Geom_Line> aLine = new Geom_Line(gp_Lin(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)));
   BRepGraph_NodeId anEdgeId = aGraph.Builder().AddEdgeDef(aV1, aV2, aLine, 0.0, 10.0, 0.001);
 
   EXPECT_TRUE(anEdgeId.IsValid());
@@ -190,10 +190,10 @@ TEST(BRepGraphAPI_AddNodeTest, AddWireDef_ClosedRectangle)
   BRepGraph_NodeId aV2 = aGraph.Builder().AddVertexDef(gp_Pnt(10, 10, 0), 0.001);
   BRepGraph_NodeId aV3 = aGraph.Builder().AddVertexDef(gp_Pnt(0, 10, 0), 0.001);
 
-  Handle(Geom_Line) aL0 = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
-  Handle(Geom_Line) aL1 = new Geom_Line(gp_Pnt(10, 0, 0), gp_Dir(0, 1, 0));
-  Handle(Geom_Line) aL2 = new Geom_Line(gp_Pnt(10, 10, 0), gp_Dir(-1, 0, 0));
-  Handle(Geom_Line) aL3 = new Geom_Line(gp_Pnt(0, 10, 0), gp_Dir(0, -1, 0));
+  occ::handle<Geom_Line> aL0 = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+  occ::handle<Geom_Line> aL1 = new Geom_Line(gp_Pnt(10, 0, 0), gp_Dir(0, 1, 0));
+  occ::handle<Geom_Line> aL2 = new Geom_Line(gp_Pnt(10, 10, 0), gp_Dir(-1, 0, 0));
+  occ::handle<Geom_Line> aL3 = new Geom_Line(gp_Pnt(0, 10, 0), gp_Dir(0, -1, 0));
 
   BRepGraph_NodeId aE0 = aGraph.Builder().AddEdgeDef(aV0, aV1, aL0, 0.0, 10.0, 0.001);
   BRepGraph_NodeId aE1 = aGraph.Builder().AddEdgeDef(aV1, aV2, aL1, 0.0, 10.0, 0.001);
@@ -225,10 +225,10 @@ TEST(BRepGraphAPI_AddNodeTest, AddFaceDef_WithSurface)
   BRepGraph_NodeId aV2 = aGraph.Builder().AddVertexDef(gp_Pnt(10, 10, 0), 0.001);
   BRepGraph_NodeId aV3 = aGraph.Builder().AddVertexDef(gp_Pnt(0, 10, 0), 0.001);
 
-  Handle(Geom_Line) aL0 = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
-  Handle(Geom_Line) aL1 = new Geom_Line(gp_Pnt(10, 0, 0), gp_Dir(0, 1, 0));
-  Handle(Geom_Line) aL2 = new Geom_Line(gp_Pnt(10, 10, 0), gp_Dir(-1, 0, 0));
-  Handle(Geom_Line) aL3 = new Geom_Line(gp_Pnt(0, 10, 0), gp_Dir(0, -1, 0));
+  occ::handle<Geom_Line> aL0 = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+  occ::handle<Geom_Line> aL1 = new Geom_Line(gp_Pnt(10, 0, 0), gp_Dir(0, 1, 0));
+  occ::handle<Geom_Line> aL2 = new Geom_Line(gp_Pnt(10, 10, 0), gp_Dir(-1, 0, 0));
+  occ::handle<Geom_Line> aL3 = new Geom_Line(gp_Pnt(0, 10, 0), gp_Dir(0, -1, 0));
 
   BRepGraph_NodeId aE0 = aGraph.Builder().AddEdgeDef(aV0, aV1, aL0, 0.0, 10.0, 0.001);
   BRepGraph_NodeId aE1 = aGraph.Builder().AddEdgeDef(aV1, aV2, aL1, 0.0, 10.0, 0.001);
@@ -243,7 +243,7 @@ TEST(BRepGraphAPI_AddNodeTest, AddFaceDef_WithSurface)
 
   BRepGraph_NodeId aWireId = aGraph.Builder().AddWireDef(aEdges);
 
-  Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pln());
+  occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pln());
   NCollection_Vector<BRepGraph_NodeId> aInnerWires;
   BRepGraph_NodeId aFaceId = aGraph.Builder().AddFaceDef(aPlane, aWireId, aInnerWires, 0.001);
 
@@ -357,10 +357,10 @@ TEST(BRepGraphAPI_ConstructionTest, AddFaceToShell_CreatesUsage)
   BRepGraph_NodeId aV2 = aGraph.Builder().AddVertexDef(gp_Pnt(10, 10, 0), 0.001);
   BRepGraph_NodeId aV3 = aGraph.Builder().AddVertexDef(gp_Pnt(0, 10, 0), 0.001);
 
-  Handle(Geom_Line) aL0 = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
-  Handle(Geom_Line) aL1 = new Geom_Line(gp_Pnt(10, 0, 0), gp_Dir(0, 1, 0));
-  Handle(Geom_Line) aL2 = new Geom_Line(gp_Pnt(10, 10, 0), gp_Dir(-1, 0, 0));
-  Handle(Geom_Line) aL3 = new Geom_Line(gp_Pnt(0, 10, 0), gp_Dir(0, -1, 0));
+  occ::handle<Geom_Line> aL0 = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+  occ::handle<Geom_Line> aL1 = new Geom_Line(gp_Pnt(10, 0, 0), gp_Dir(0, 1, 0));
+  occ::handle<Geom_Line> aL2 = new Geom_Line(gp_Pnt(10, 10, 0), gp_Dir(-1, 0, 0));
+  occ::handle<Geom_Line> aL3 = new Geom_Line(gp_Pnt(0, 10, 0), gp_Dir(0, -1, 0));
 
   BRepGraph_NodeId aE0 = aGraph.Builder().AddEdgeDef(aV0, aV1, aL0, 0.0, 10.0, 0.001);
   BRepGraph_NodeId aE1 = aGraph.Builder().AddEdgeDef(aV1, aV2, aL1, 0.0, 10.0, 0.001);
@@ -374,7 +374,7 @@ TEST(BRepGraphAPI_ConstructionTest, AddFaceToShell_CreatesUsage)
   aEdges.Append({aE3, TopAbs_FORWARD});
 
   BRepGraph_NodeId aWireId = aGraph.Builder().AddWireDef(aEdges);
-  Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pln());
+  occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pln());
   NCollection_Vector<BRepGraph_NodeId> aInnerWires;
   BRepGraph_NodeId aFaceId = aGraph.Builder().AddFaceDef(aPlane, aWireId, aInnerWires, 0.001);
 
@@ -450,10 +450,10 @@ TEST(BRepGraphAPI_ConstructionTest, FullSolid_ProgrammaticConstruction)
   BRepGraph_NodeId aV2 = aGraph.Builder().AddVertexDef(gp_Pnt(10, 10, 0), 0.001);
   BRepGraph_NodeId aV3 = aGraph.Builder().AddVertexDef(gp_Pnt(0, 10, 0), 0.001);
 
-  Handle(Geom_Line) aL0 = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
-  Handle(Geom_Line) aL1 = new Geom_Line(gp_Pnt(10, 0, 0), gp_Dir(0, 1, 0));
-  Handle(Geom_Line) aL2 = new Geom_Line(gp_Pnt(10, 10, 0), gp_Dir(-1, 0, 0));
-  Handle(Geom_Line) aL3 = new Geom_Line(gp_Pnt(0, 10, 0), gp_Dir(0, -1, 0));
+  occ::handle<Geom_Line> aL0 = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+  occ::handle<Geom_Line> aL1 = new Geom_Line(gp_Pnt(10, 0, 0), gp_Dir(0, 1, 0));
+  occ::handle<Geom_Line> aL2 = new Geom_Line(gp_Pnt(10, 10, 0), gp_Dir(-1, 0, 0));
+  occ::handle<Geom_Line> aL3 = new Geom_Line(gp_Pnt(0, 10, 0), gp_Dir(0, -1, 0));
 
   BRepGraph_NodeId aE0 = aGraph.Builder().AddEdgeDef(aV0, aV1, aL0, 0.0, 10.0, 0.001);
   BRepGraph_NodeId aE1 = aGraph.Builder().AddEdgeDef(aV1, aV2, aL1, 0.0, 10.0, 0.001);
@@ -467,7 +467,7 @@ TEST(BRepGraphAPI_ConstructionTest, FullSolid_ProgrammaticConstruction)
   aEdges.Append({aE3, TopAbs_FORWARD});
 
   BRepGraph_NodeId aWireId = aGraph.Builder().AddWireDef(aEdges);
-  Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pln());
+  occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pln());
   NCollection_Vector<BRepGraph_NodeId> aInnerWires;
   BRepGraph_NodeId aFaceId = aGraph.Builder().AddFaceDef(aPlane, aWireId, aInnerWires, 0.001);
 
@@ -644,10 +644,10 @@ TEST(BRepGraphAPI_RemoveSubgraphTest, RemoveFace_RemovesWiresAndEdges)
   BRepGraph_NodeId aV2 = aGraph.Builder().AddVertexDef(gp_Pnt(10, 10, 0), 0.001);
   BRepGraph_NodeId aV3 = aGraph.Builder().AddVertexDef(gp_Pnt(0, 10, 0), 0.001);
 
-  Handle(Geom_Line) aL0 = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
-  Handle(Geom_Line) aL1 = new Geom_Line(gp_Pnt(10, 0, 0), gp_Dir(0, 1, 0));
-  Handle(Geom_Line) aL2 = new Geom_Line(gp_Pnt(10, 10, 0), gp_Dir(-1, 0, 0));
-  Handle(Geom_Line) aL3 = new Geom_Line(gp_Pnt(0, 10, 0), gp_Dir(0, -1, 0));
+  occ::handle<Geom_Line> aL0 = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+  occ::handle<Geom_Line> aL1 = new Geom_Line(gp_Pnt(10, 0, 0), gp_Dir(0, 1, 0));
+  occ::handle<Geom_Line> aL2 = new Geom_Line(gp_Pnt(10, 10, 0), gp_Dir(-1, 0, 0));
+  occ::handle<Geom_Line> aL3 = new Geom_Line(gp_Pnt(0, 10, 0), gp_Dir(0, -1, 0));
 
   BRepGraph_NodeId aE0 = aGraph.Builder().AddEdgeDef(aV0, aV1, aL0, 0.0, 10.0, 0.001);
   BRepGraph_NodeId aE1 = aGraph.Builder().AddEdgeDef(aV1, aV2, aL1, 0.0, 10.0, 0.001);
@@ -661,7 +661,7 @@ TEST(BRepGraphAPI_RemoveSubgraphTest, RemoveFace_RemovesWiresAndEdges)
   aEdges.Append({aE3, TopAbs_FORWARD});
 
   BRepGraph_NodeId aWireId = aGraph.Builder().AddWireDef(aEdges);
-  Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pln());
+  occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pln());
   NCollection_Vector<BRepGraph_NodeId> aInnerWires;
   BRepGraph_NodeId aFaceId = aGraph.Builder().AddFaceDef(aPlane, aWireId, aInnerWires, 0.001);
 
@@ -777,7 +777,7 @@ TEST(BRepGraphAPI_AdjacencyTest, FacesOfEdge_NoFaces_Programmatic)
   BRepGraph_NodeId aV0 = aGraph.Builder().AddVertexDef(gp_Pnt(0, 0, 0), 0.001);
   BRepGraph_NodeId aV1 = aGraph.Builder().AddVertexDef(gp_Pnt(10, 0, 0), 0.001);
 
-  Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+  occ::handle<Geom_Line> aLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   BRepGraph_NodeId anEdgeId = aGraph.Builder().AddEdgeDef(aV0, aV1, aLine, 0.0, 10.0, 0.001);
 
   // Edge not in any face => empty result.

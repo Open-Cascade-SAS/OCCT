@@ -32,25 +32,25 @@ namespace
 {
 
 //! Copy geometry handle if theCopyGeom is true, otherwise return same handle.
-Handle(Geom_Surface) copySurface(const Handle(Geom_Surface)& theSurf, bool theCopyGeom)
+occ::handle<Geom_Surface> copySurface(const occ::handle<Geom_Surface>& theSurf, bool theCopyGeom)
 {
   if (theSurf.IsNull() || !theCopyGeom)
     return theSurf;
-  return Handle(Geom_Surface)::DownCast(theSurf->Copy());
+  return occ::down_cast<Geom_Surface>(theSurf->Copy());
 }
 
-Handle(Geom_Curve) copyCurve(const Handle(Geom_Curve)& theCrv, bool theCopyGeom)
+occ::handle<Geom_Curve> copyCurve(const occ::handle<Geom_Curve>& theCrv, bool theCopyGeom)
 {
   if (theCrv.IsNull() || !theCopyGeom)
     return theCrv;
-  return Handle(Geom_Curve)::DownCast(theCrv->Copy());
+  return occ::down_cast<Geom_Curve>(theCrv->Copy());
 }
 
-Handle(Geom2d_Curve) copyPCurve(const Handle(Geom2d_Curve)& theCrv, bool theCopyGeom)
+occ::handle<Geom2d_Curve> copyPCurve(const occ::handle<Geom2d_Curve>& theCrv, bool theCopyGeom)
 {
   if (theCrv.IsNull() || !theCopyGeom)
     return theCrv;
-  return Handle(Geom2d_Curve)::DownCast(theCrv->Copy());
+  return occ::down_cast<Geom2d_Curve>(theCrv->Copy());
 }
 
 //! Transfer user attributes from source node cache to destination node cache.
@@ -63,7 +63,7 @@ void transferUserAttributes(const BRepGraph_NodeCache& theSrc,
   NCollection_Vector<int> aKeys = theSrc.UserAttributeKeys();
   for (int anIdx = 0; anIdx < aKeys.Length(); ++anIdx)
   {
-    Handle(BRepGraph_UserAttribute) anAttr = theSrc.GetUserAttribute(aKeys.Value(anIdx));
+    occ::handle<BRepGraph_UserAttribute> anAttr = theSrc.GetUserAttribute(aKeys.Value(anIdx));
     if (!anAttr.IsNull())
       theDst.SetUserAttribute(aKeys.Value(anIdx), anAttr);
   }
@@ -96,7 +96,7 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
   {
     const BRepGraph_TopoNode::EdgeDef& anEdge = theGraph.Defs().Edge(anIdx);
 
-    Handle(Geom_Curve) aCurve = copyCurve(anEdge.Curve3d, theCopyGeom);
+    occ::handle<Geom_Curve> aCurve = copyCurve(anEdge.Curve3d, theCopyGeom);
 
     aResult.Builder().AddEdgeDef(anEdge.StartVertexDefId(),
                                  anEdge.EndVertexDefId(),
@@ -131,7 +131,7 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
   {
     const BRepGraph_TopoNode::FaceDef& aFace = theGraph.Defs().Face(anIdx);
 
-    Handle(Geom_Surface) aSurf = copySurface(aFace.Surface, theCopyGeom);
+    occ::handle<Geom_Surface> aSurf = copySurface(aFace.Surface, theCopyGeom);
 
     // Get outer/inner wire def NodeIds from incidence refs.
     BRepGraph_NodeId                     anOuterWire;
@@ -170,7 +170,7 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
       if (aPCEntry.Curve2d.IsNull())
         continue;
 
-      Handle(Geom2d_Curve) aNewPC = copyPCurve(aPCEntry.Curve2d, theCopyGeom);
+      occ::handle<Geom2d_Curve> aNewPC = copyPCurve(aPCEntry.Curve2d, theCopyGeom);
       aResult.Mut().AddPCurveToEdge(BRepGraph_NodeId::Edge(anIdx),
                                     aPCEntry.FaceDefId,
                                     aNewPC,
@@ -350,7 +350,7 @@ BRepGraph BRepGraphAlgo_Copy::CopyFace(const BRepGraph& theGraph,
         aNewEnd = BRepGraph_NodeId::Vertex(*aNewVtxIdx);
     }
 
-    Handle(Geom_Curve) aCurve = copyCurve(anEdge.Curve3d, theCopyGeom);
+    occ::handle<Geom_Curve> aCurve = copyCurve(anEdge.Curve3d, theCopyGeom);
 
     const int aNewEdgeIdx = anIdx - 1;
     aResult.Builder().AddEdgeDef(aNewStart, aNewEnd, aCurve,
@@ -383,7 +383,7 @@ BRepGraph BRepGraphAlgo_Copy::CopyFace(const BRepGraph& theGraph,
   }
 
   // Add the face.
-  Handle(Geom_Surface) aSurf = copySurface(aFaceDef.Surface, theCopyGeom);
+  occ::handle<Geom_Surface> aSurf = copySurface(aFaceDef.Surface, theCopyGeom);
 
   BRepGraph_NodeId anOuterWire;
   NCollection_Vector<BRepGraph_NodeId> anInnerWires;
@@ -426,7 +426,7 @@ BRepGraph BRepGraphAlgo_Copy::CopyFace(const BRepGraph& theGraph,
       if (aPCEntry.Curve2d.IsNull())
         continue;
 
-      Handle(Geom2d_Curve) aNewPC = copyPCurve(aPCEntry.Curve2d, theCopyGeom);
+      occ::handle<Geom2d_Curve> aNewPC = copyPCurve(aPCEntry.Curve2d, theCopyGeom);
       aResult.Mut().AddPCurveToEdge(BRepGraph_NodeId::Edge(aNewEdgeIdx),
                                     BRepGraph_NodeId::Face(0),
                                     aNewPC,

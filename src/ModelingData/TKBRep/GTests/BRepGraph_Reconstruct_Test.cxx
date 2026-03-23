@@ -227,7 +227,7 @@ TEST(BRepGraphReconstructTest, Edge_HasCurve_NonNull)
     TopLoc_Location aLoc;
     double aFirst = 0.0;
     double aLast  = 0.0;
-    Handle(Geom_Curve) aCurve = BRep_Tool::Curve(TopoDS::Edge(aReconEdge), aLoc, aFirst, aLast);
+    occ::handle<Geom_Curve> aCurve = BRep_Tool::Curve(TopoDS::Edge(aReconEdge), aLoc, aFirst, aLast);
     EXPECT_FALSE(aCurve.IsNull()) << "Edge " << anEdgeIdx << " has null curve";
   }
 }
@@ -310,7 +310,7 @@ TEST(BRepGraphReconstructTest, Face_PCurvesPresent_OnAllEdges)
 
       double aFirst = 0.0;
       double aLast  = 0.0;
-      Handle(Geom2d_Curve) aPCurve = BRep_Tool::CurveOnSurface(anEdge, aFace, aFirst, aLast);
+      occ::handle<Geom2d_Curve> aPCurve = BRep_Tool::CurveOnSurface(anEdge, aFace, aFirst, aLast);
       EXPECT_FALSE(aPCurve.IsNull())
         << "Edge on face " << aFaceIdx << " is missing a pcurve";
     }

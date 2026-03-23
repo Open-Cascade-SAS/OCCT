@@ -217,7 +217,7 @@ TEST(BRepGraphBackRefManagerTest, ReplaceEdgeInWireMap_UpdatesCorrectly)
   const BRepGraph_TopoNode::EdgeDef& anOldEdge = aGraph.Defs().Edge(anOldEdgeIdx);
   BRepGraph_NodeId aNewEdgeId = aGraph.Builder().AddEdgeDef(
     anOldEdge.StartVertexDefId(), anOldEdge.EndVertexDefId(),
-    Handle(Geom_Curve)(), anOldEdge.ParamFirst, anOldEdge.ParamLast, anOldEdge.Tolerance);
+    occ::handle<Geom_Curve>(), anOldEdge.ParamFirst, anOldEdge.ParamLast, anOldEdge.Tolerance);
   ASSERT_TRUE(aNewEdgeId.IsValid());
 
   // Replace edge in wire via MutView (updates EdgeRefs and rebuilds reverse index).

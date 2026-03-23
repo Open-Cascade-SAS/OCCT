@@ -65,23 +65,23 @@ struct BRepGraph_NodeCache
   //! Invalidate only a specific user attribute by key.
   void InvalidateUserAttribute(int theKey)
   {
-    const Handle(BRepGraph_UserAttribute)* aPtr = myUserAttributes.Seek(theKey);
+    const occ::handle<BRepGraph_UserAttribute>* aPtr = myUserAttributes.Seek(theKey);
     if (aPtr != nullptr && !(*aPtr).IsNull())
       (*aPtr)->Invalidate();
   }
 
   //! Attach a user attribute.  Replaces any existing attribute at the same key.
   void SetUserAttribute(int                                   theKey,
-                        const Handle(BRepGraph_UserAttribute)& theAttr)
+                        const occ::handle<BRepGraph_UserAttribute>& theAttr)
   {
     myUserAttributes.Bind(theKey, theAttr);
   }
 
   //! Retrieve a user attribute by key.  Returns null handle if absent.
-  Handle(BRepGraph_UserAttribute) GetUserAttribute(int theKey) const
+  occ::handle<BRepGraph_UserAttribute> GetUserAttribute(int theKey) const
   {
-    const Handle(BRepGraph_UserAttribute)* aPtr = myUserAttributes.Seek(theKey);
-    return (aPtr != nullptr) ? *aPtr : Handle(BRepGraph_UserAttribute)();
+    const occ::handle<BRepGraph_UserAttribute>* aPtr = myUserAttributes.Seek(theKey);
+    return (aPtr != nullptr) ? *aPtr : occ::handle<BRepGraph_UserAttribute>();
   }
 
   //! Remove a user attribute by key.  Returns true if something was removed.
@@ -100,7 +100,7 @@ struct BRepGraph_NodeCache
   NCollection_Vector<int> UserAttributeKeys() const
   {
     NCollection_Vector<int> aKeys;
-    for (NCollection_DataMap<int, Handle(BRepGraph_UserAttribute)>::Iterator anIter(myUserAttributes);
+    for (NCollection_DataMap<int, occ::handle<BRepGraph_UserAttribute>>::Iterator anIter(myUserAttributes);
          anIter.More(); anIter.Next())
     {
       aKeys.Append(anIter.Key());
@@ -110,7 +110,7 @@ struct BRepGraph_NodeCache
 
 private:
   //! User attributes map (empty until first SetUserAttribute).
-  NCollection_DataMap<int, Handle(BRepGraph_UserAttribute)> myUserAttributes;
+  NCollection_DataMap<int, occ::handle<BRepGraph_UserAttribute>> myUserAttributes;
 };
 
 #endif // _BRepGraph_NodeCache_HeaderFile

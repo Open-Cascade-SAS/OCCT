@@ -44,7 +44,7 @@ public:
   //! @return NodeId of the new edge definition
   Standard_EXPORT BRepGraph_NodeId AddEdgeDef(BRepGraph_NodeId          theStartVtx,
                                               BRepGraph_NodeId          theEndVtx,
-                                              const Handle(Geom_Curve)& theCurve,
+                                              const occ::handle<Geom_Curve>& theCurve,
                                               double                    theFirst,
                                               double                    theLast,
                                               double                    theTolerance);
@@ -63,7 +63,7 @@ public:
   //! @param[in] theTolerance  face tolerance
   //! @return NodeId of the new face definition
   Standard_EXPORT BRepGraph_NodeId AddFaceDef(
-    const Handle(Geom_Surface)&                 theSurface,
+    const occ::handle<Geom_Surface>&                 theSurface,
     BRepGraph_NodeId                            theOuterWire,
     const NCollection_Vector<BRepGraph_NodeId>& theInnerWires,
     double                                      theTolerance);
