@@ -649,7 +649,7 @@ bool GeomAdaptor_Curve::IsBoundary(const double theU, int& theSpanStart, int& th
 gp_Pnt GeomAdaptor_Curve::EvalD0(const double theU) const
 {
   const double U = theU;
-  gp_Pnt P;
+  gp_Pnt       P;
   switch (myTypeCurve)
   {
     case GeomAbs_Line:
@@ -730,7 +730,7 @@ gp_Pnt GeomAdaptor_Curve::EvalD0(const double theU) const
 
 Geom_Curve::ResD1 GeomAdaptor_Curve::EvalD1(const double theU) const
 {
-  const double U = theU;
+  const double      U = theU;
   Geom_Curve::ResD1 aResult;
   switch (myTypeCurve)
   {
@@ -813,7 +813,7 @@ Geom_Curve::ResD1 GeomAdaptor_Curve::EvalD1(const double theU) const
 
 Geom_Curve::ResD2 GeomAdaptor_Curve::EvalD2(const double theU) const
 {
-  const double U = theU;
+  const double      U = theU;
   Geom_Curve::ResD2 aResult;
   switch (myTypeCurve)
   {
@@ -898,7 +898,7 @@ Geom_Curve::ResD2 GeomAdaptor_Curve::EvalD2(const double theU) const
 
 Geom_Curve::ResD3 GeomAdaptor_Curve::EvalD3(const double theU) const
 {
-  const double U = theU;
+  const double      U = theU;
   Geom_Curve::ResD3 aResult;
   switch (myTypeCurve)
   {

@@ -691,7 +691,7 @@ void Geom2dAdaptor_Curve::D0(const double U, gp_Pnt2d& P) const
 gp_Pnt2d Geom2dAdaptor_Curve::EvalD0(const double theU) const
 {
   const double U = theU;
-  gp_Pnt2d P;
+  gp_Pnt2d     P;
   switch (myTypeCurve)
   {
     case GeomAbs_Line:
@@ -780,7 +780,7 @@ void Geom2dAdaptor_Curve::D1(const double U, gp_Pnt2d& P, gp_Vec2d& V) const
 
 Geom2d_Curve::ResD1 Geom2dAdaptor_Curve::EvalD1(const double theU) const
 {
-  const double U = theU;
+  const double        U = theU;
   Geom2d_Curve::ResD1 aResult;
   switch (myTypeCurve)
   {
@@ -872,7 +872,7 @@ void Geom2dAdaptor_Curve::D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d
 
 Geom2d_Curve::ResD2 Geom2dAdaptor_Curve::EvalD2(const double theU) const
 {
-  const double U = theU;
+  const double        U = theU;
   Geom2d_Curve::ResD2 aResult;
   switch (myTypeCurve)
   {
@@ -971,7 +971,7 @@ void Geom2dAdaptor_Curve::D3(const double U,
 
 Geom2d_Curve::ResD3 Geom2dAdaptor_Curve::EvalD3(const double theU) const
 {
-  const double U = theU;
+  const double        U = theU;
   Geom2d_Curve::ResD3 aResult;
   switch (myTypeCurve)
   {

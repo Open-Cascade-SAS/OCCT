@@ -257,8 +257,7 @@ public:
 
   //! Computes the point of parameters (U, V) on the surface.
   //! Raises an exception on failure.
-  [[nodiscard]] Standard_EXPORT virtual gp_Pnt EvalD0(const double theU,
-                                                      const double theV) const;
+  [[nodiscard]] Standard_EXPORT virtual gp_Pnt EvalD0(const double theU, const double theV) const;
 
   //! Computes the point and first partial derivatives at (U, V).
   //! Raises an exception on failure.
