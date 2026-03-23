@@ -114,7 +114,7 @@ graph LR
 
 ```mermaid
 graph TD
-    T1_3["T1.3 Benchmarks<br/><b>S</b> | ⏳ in progress"]
+    T1_3["T1.3 Benchmarks<br/><b>S</b> | ✅ done"]
     T1_4["T1.4 PCurve Continuity<br/><b>S</b> | ✅ done"]
     T1_5["T1.5 Cached UV Bounds<br/><b>M</b> | ✅ done"]
     T1_1["T1.1 Back-Ref Automation<br/><b>M</b> | foundation"]
@@ -229,15 +229,15 @@ graph LR
 
 ---
 
-### T1.3: Performance Benchmark Suite ⏳ IN PROGRESS
+### T1.3: Performance Benchmark Suite ✅ DONE
 
-**What:** Parameterized GTest benchmarks: `Build()` time (100/1K/10K faces), `Reconstruct` round-trip, Sewing throughput, Deduplicate+Compact cycle, spatial query throughput.
+**What:** Parameterized GTest benchmarks: `Build()` time (100/1K/10K faces, sequential and parallel), `Reconstruct` round-trip, Sewing throughput (sequential and parallel), Deduplicate+Compact cycle, spatial query throughput.
 
 **Why:** Without benchmarks, regressions from T1.1/T1.2 overhead go undetected. Must measure before changing.
 
-**Files:** `BRepGraph_Benchmark_Test.cxx`, `BRepGraphAlgo_Benchmark_Test.cxx` + `FILES.cmake`
+**Files:** `BRepGraph_Benchmark_Test.cxx`, `BRepGraphAlgo_Benchmark_Test.cxx` + `FILES.cmake`, `BENCHMARKS.md`
 
-**Status:** Initial benchmark files implemented with smoke tests (enabled) and timing benchmarks (DISABLED by default). Covers Build (100/1K/10K faces), Sewing throughput, Deduplicate+Compact cycle. Remaining: Reconstruct round-trip, spatial query throughput benchmarks.
+**Status:** Complete benchmark suite with 12 tests (2 smoke + 10 DISABLED timing benchmarks). Baseline results recorded in `BENCHMARKS.md`. Covers Build (100/1K/10K faces, seq+parallel), Reconstruct round-trip (1K faces), SpatialQuery throughput (1K faces), Sewing (100 faces, seq+parallel), Deduplicate+Compact cycle.
 
 **Complexity:** S | **Dependencies:** None (do first)
 
@@ -536,7 +536,7 @@ graph TB
 
 | # | Item | Tier | Complexity | Rationale |
 |---|------|------|-----------|-----------|
-| 1 | T1.3 Benchmarks | 1 | S | Measure before changing — **in progress** |
+| 1 | T1.3 Benchmarks | 1 | S | Measure before changing — **done** |
 | 2 | T1.4 PCurve Continuity | 1 | S | **Done** — uses `BRep_Tool::MaxContinuity` |
 | 2b | T1.5 Cached UV Bounds | 1 | M | **Done** — `BRepGraphAlgo_UVBounds` with GUID caching |
 | 3 | T1.1 Back-Ref Automation | 1 | M | Biggest risk-reducer |

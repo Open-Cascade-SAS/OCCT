@@ -15,6 +15,7 @@
 #include <BRepBuilderAPI_Copy.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_SpatialView.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -30,8 +31,8 @@
 namespace
 {
 
-constexpr int THE_WARMUP_ITERS = 1;
-constexpr int THE_MEASURE_ITERS = 5;
+constexpr int THE_WARMUP_ITERS = 2;
+constexpr int THE_MEASURE_ITERS = 20;
 
 TopoDS_Compound makeFaceCloud(int theNbFaces)
 {
@@ -132,5 +133,75 @@ TEST(BRepGraph_Benchmark, DISABLED_Build_10000Faces)
     aGraph.Build(aFaces);
     EXPECT_TRUE(aGraph.IsDone());
   });
+  EXPECT_GT(aAvg, 0.0);
+}
+
+TEST(BRepGraph_Benchmark, DISABLED_Build_1000Faces_Parallel)
+{
+  const TopoDS_Compound aFaces = makeFaceCloud(1000);
+  const double aAvg = runBenchmark("Build 1000 faces parallel", [&]() {
+    BRepGraph aGraph;
+    aGraph.Build(aFaces, true);
+    EXPECT_TRUE(aGraph.IsDone());
+  });
+  EXPECT_GT(aAvg, 0.0);
+}
+
+TEST(BRepGraph_Benchmark, DISABLED_Build_10000Faces_Parallel)
+{
+  const TopoDS_Compound aFaces = makeFaceCloud(10000);
+  const double aAvg = runBenchmark("Build 10000 faces parallel", [&]() {
+    BRepGraph aGraph;
+    aGraph.Build(aFaces, true);
+    EXPECT_TRUE(aGraph.IsDone());
+  });
+  EXPECT_GT(aAvg, 0.0);
+}
+
+TEST(BRepGraph_Benchmark, DISABLED_Reconstruct_RoundTrip)
+{
+  const TopoDS_Compound aFaces = makeFaceCloud(10000);
+  BRepGraph aGraph;
+  aGraph.Build(aFaces);
+  ASSERT_TRUE(aGraph.IsDone());
+
+  const int aNbFaces = aGraph.Defs().NbFaces();
+  ASSERT_GT(aNbFaces, 0);
+
+  const double aAvg = runBenchmark("Reconstruct 10000 faces", [&]() {
+    for (int anIdx = 0; anIdx < aNbFaces; ++anIdx)
+    {
+      const BRepGraph_NodeId aFaceId = BRepGraph_NodeId::Face(anIdx);
+      const TopoDS_Shape aShape = aGraph.Shapes().Reconstruct(aFaceId);
+      EXPECT_FALSE(aShape.IsNull());
+    }
+  });
+
+  const double aPerFace = aAvg / static_cast<double>(aNbFaces);
+  std::cout << "[  PERF   ] Reconstruct per-face avg: " << aPerFace << " s" << std::endl;
+  EXPECT_GT(aAvg, 0.0);
+}
+
+TEST(BRepGraph_Benchmark, DISABLED_SpatialQuery_Throughput)
+{
+  const TopoDS_Compound aFaces = makeFaceCloud(10000);
+  BRepGraph aGraph;
+  aGraph.Build(aFaces);
+  ASSERT_TRUE(aGraph.IsDone());
+
+  const int aNbFaces = aGraph.Defs().NbFaces();
+  ASSERT_GT(aNbFaces, 0);
+
+  const double aAvg = runBenchmark("SpatialQuery 10000 faces", [&]() {
+    for (int anIdx = 0; anIdx < aNbFaces; ++anIdx)
+    {
+      const BRepGraph_NodeId aFaceId = BRepGraph_NodeId::Face(anIdx);
+      const NCollection_Vector<BRepGraph_NodeId> anAdj = aGraph.Spatial().AdjacentFaces(aFaceId);
+      EXPECT_GE(anAdj.Length(), 0);
+    }
+  });
+
+  const double aPerQuery = aAvg / static_cast<double>(aNbFaces);
+  std::cout << "[  PERF   ] SpatialQuery per-face avg: " << aPerQuery << " s" << std::endl;
   EXPECT_GT(aAvg, 0.0);
 }

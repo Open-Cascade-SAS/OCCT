@@ -31,8 +31,8 @@
 namespace
 {
 
-constexpr int THE_WARMUP_ITERS = 1;
-constexpr int THE_MEASURE_ITERS = 5;
+constexpr int THE_WARMUP_ITERS = 2;
+constexpr int THE_MEASURE_ITERS = 20;
 
 NCollection_Sequence<TopoDS_Shape> makeFaceList(int theNbFaces)
 {
@@ -59,7 +59,7 @@ NCollection_Sequence<TopoDS_Shape> makeFaceList(int theNbFaces)
   return aFaces;
 }
 
-TopoDS_Compound makeTwoCopiedFaces()
+TopoDS_Compound makeCopiedFaceCompound(int theNbCopies)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -67,14 +67,14 @@ TopoDS_Compound makeTwoCopiedFaces()
   TopExp_Explorer aFaceExp(aBox, TopAbs_FACE);
   const TopoDS_Shape aFace = aFaceExp.Current();
 
-  BRepBuilderAPI_Copy aCopy1(aFace, true);
-  BRepBuilderAPI_Copy aCopy2(aFace, true);
-
   BRep_Builder aBuilder;
   TopoDS_Compound aCompound;
   aBuilder.MakeCompound(aCompound);
-  aBuilder.Add(aCompound, aCopy1.Shape());
-  aBuilder.Add(aCompound, aCopy2.Shape());
+  for (int anIdx = 0; anIdx < theNbCopies; ++anIdx)
+  {
+    BRepBuilderAPI_Copy aCopy(aFace, true);
+    aBuilder.Add(aCompound, aCopy.Shape());
+  }
   return aCompound;
 }
 
@@ -106,7 +106,7 @@ double runBenchmark(const char* theLabel, Func theFunc)
 TEST(BRepGraphAlgo_Benchmark, Smoke_DeduplicateCompactCycle)
 {
   BRepGraph aGraph;
-  aGraph.Build(makeTwoCopiedFaces());
+  aGraph.Build(makeCopiedFaceCompound(2));
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraphAlgo_Deduplicate::Result aDedupRes = BRepGraphAlgo_Deduplicate::Perform(aGraph);
@@ -116,11 +116,11 @@ TEST(BRepGraphAlgo_Benchmark, Smoke_DeduplicateCompactCycle)
   EXPECT_GE(aCompactRes.NbNodesBefore, aCompactRes.NbNodesAfter);
 }
 
-TEST(BRepGraphAlgo_Benchmark, DISABLED_Sewing_Throughput_100Faces)
+TEST(BRepGraphAlgo_Benchmark, DISABLED_Sewing_Throughput_500Faces)
 {
-  const NCollection_Sequence<TopoDS_Shape> aFaces = makeFaceList(100);
+  const NCollection_Sequence<TopoDS_Shape> aFaces = makeFaceList(500);
 
-  const double aAvg = runBenchmark("Sewing throughput 100 faces", [&]() {
+  const double aAvg = runBenchmark("Sewing throughput 500 faces", [&]() {
     BRepGraphAlgo_Sewing aSewer(1.0e-04);
     aSewer.SetParallel(true);
     for (int anIdx = 1; anIdx <= aFaces.Length(); ++anIdx)
@@ -134,11 +134,29 @@ TEST(BRepGraphAlgo_Benchmark, DISABLED_Sewing_Throughput_100Faces)
   EXPECT_GT(aAvg, 0.0);
 }
 
+TEST(BRepGraphAlgo_Benchmark, DISABLED_Sewing_Throughput_500Faces_Sequential)
+{
+  const NCollection_Sequence<TopoDS_Shape> aFaces = makeFaceList(500);
+
+  const double aAvg = runBenchmark("Sewing throughput 500 faces sequential", [&]() {
+    BRepGraphAlgo_Sewing aSewer(1.0e-04);
+    aSewer.SetParallel(false);
+    for (int anIdx = 1; anIdx <= aFaces.Length(); ++anIdx)
+    {
+      aSewer.Add(aFaces.Value(anIdx));
+    }
+    aSewer.Perform();
+    EXPECT_TRUE(aSewer.IsDone());
+  });
+
+  EXPECT_GT(aAvg, 0.0);
+}
+
 TEST(BRepGraphAlgo_Benchmark, DISABLED_DeduplicateCompact_Throughput)
 {
-  const TopoDS_Compound aFaces = makeTwoCopiedFaces();
+  const TopoDS_Compound aFaces = makeCopiedFaceCompound(500);
 
-  const double aAvg = runBenchmark("Deduplicate+Compact cycle", [&]() {
+  const double aAvg = runBenchmark("Deduplicate+Compact 500 copies", [&]() {
     BRepGraph aGraph;
     aGraph.Build(aFaces);
     ASSERT_TRUE(aGraph.IsDone());
