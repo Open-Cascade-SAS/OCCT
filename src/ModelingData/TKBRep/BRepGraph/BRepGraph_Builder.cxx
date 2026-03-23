@@ -81,7 +81,8 @@ void BRepGraph_Builder::Append(BRepGraph& theGraph, const TopoDS_Shape& theShape
 
   BRepGraphInc_Populate::Append(theGraph.myData->myIncStorage, theShape, theParallel);
 
-  // Clear UIDs for re-population (entity vectors may have grown).
+  // Clear UIDs for re-population: Append may add new entities, making
+  // existing UID vectors shorter than their parallel entity vectors.
   BRepGraphInc_Storage& aStorage = theGraph.myData->myIncStorage;
   aStorage.VertexUIDs.Clear();
   aStorage.EdgeUIDs.Clear();
