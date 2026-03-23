@@ -51,6 +51,12 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 - Sewing `mergeMatchedEdges` uses `Builder().RemoveNode()` for replaced edges
 - `FreeEdges` and multiple-edge detection switched to O(1) `DefsView::FaceCountOfEdge` with `IsRemoved` filter
 
+### MutationGuard RAII [Stab] ★★★
+- RAII wrapper: `BeginDeferredInvalidation()` on construct, `EndDeferredInvalidation()` + `CommitMutation()` on destruct
+- Guarantees atomicity — no partial mutations visible outside scope
+- Debug-mode `ValidateReverseIndex()` in destructor
+- Simplifies algorithm code: replace manual begin/end/commit with single guard scope
+
 ### Seam detection strengthening [Stab] ★★★
 - `canSewSameFaceEdges` uses bounding-box heuristics
 - Add explicit opposite-side check using PCurve UV ranges on periodic surfaces
@@ -62,6 +68,11 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 ### Incremental modes for Deduplicate/Compact [Perf] ★★★
 - `AnalyzeOnly`, `DeltaOnly`, `Incremental` flags
 - O(changed nodes) instead of O(N)
+
+### O(1) UID reverse lookup [Perf] ★★★
+- `UIDsView::NodeIdFrom` / `Has` currently do linear scan over per-kind UID vector
+- Add lazy `NCollection_DataMap<uint64_t, int>` per kind (counter → index), built on first access
+- Invalidated on Compact (which reassigns indices)
 
 ---
 
@@ -92,11 +103,21 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 
 ## Phase 3: Production Readiness
 
+### Per-node MutationGeneration [Arch] ★★★★
+- Add `uint32_t MutationGen` to `BaseEntity`, incremented by `markModified()`
+- Enables per-node change detection across serialization boundaries
+- Prerequisite for efficient delta-based Save/Load and parametric history
+
 ### Versioned Persistent Schema [Arch] ★★★★
 - Full Save/Load with schema versioning
-- UID + generation give stable identity across sessions
+- UID (Kind + Counter) is the persistent identity; MutationGen tracks freshness
 - Layer-aware: serialize only needed layers
 - Binary or JSON format
+
+### Compact remapping in history [Arch] ★★★
+- Record old→new index maps as history entries during Compact
+- Allows external code holding NodeIds to remap after Compact
+- Currently Compact transfers UIDs but doesn't expose the remapping
 
 ### Fingerprinting & Quick Equality [Perf] ★★★
 - Topological fingerprints (hash of reverse-index adjacency + geometry hashes)
