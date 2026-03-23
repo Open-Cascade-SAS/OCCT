@@ -1,16 +1,23 @@
-# BRepGraph Assembly Model — Detailed Design
+# BRepGraph Assembly Model — Intrinsic Design
 
 This document specifies the assembly extension for BRepGraph: Products (reusable
 shape definitions) and Occurrences (placed instances forming a DAG).
 
-**Architecture**: Foundation + Plugin.  The foundation adds `Kind::Product` and
-`Kind::Occurrence` as first-class node kinds in the core graph (UIDs, history,
-compact).  The plugin (`BRepGraph_AssemblyLayer`) provides assembly-specific
-query API and lifecycle management, registered on demand.
+**Architecture**: Intrinsic.  Assembly is part of the core graph, not a Layer plugin.
+Every `BRepGraph` always has at least one root Product.  A "pure topology" graph
+(e.g., `graph.Build(aBox)`) automatically gets a single root Product whose
+`ShapeRootId` points to the top-level topology node.  Algorithms always see a
+uniform model — no need to check "is this an assembly graph?".
+
+Location propagation works naturally: each Occurrence carries a `TopLoc_Location`,
+and global placement is composition through the occurrence path.
+
+**Visualizations**: [TODO_Assembly_Visualization.md](TODO_Assembly_Visualization.md) — Mermaid diagrams
+for DAG structure, API distribution, compact remap flow, location propagation, and phase dependencies.
 
 ---
 
-## Phase 1: Data Model (Foundation)
+## Phase 1: Data Model
 
 ### 1.1 New Kind Values
 
@@ -33,9 +40,15 @@ enum class Kind : int
 };
 ```
 
-Add helpers:
+Add helpers and factories:
 
 ```cpp
+//! True if this kind represents a topology entity (Solid through CompSolid).
+static bool IsTopologyKind(Kind theKind)
+{
+  return static_cast<int>(theKind) <= 7;
+}
+
 //! True if this kind represents an assembly entity (Product or Occurrence).
 static bool IsAssemblyKind(Kind theKind)
 {
@@ -47,12 +60,14 @@ static BRepGraph_NodeId Product(int theIdx)    { return {Kind::Product, theIdx};
 static BRepGraph_NodeId Occurrence(int theIdx) { return {Kind::Occurrence, theIdx}; }
 ```
 
-Update `BRepGraph_UID::IsTopology()`:
+Update `BRepGraph_UID`:
 
 ```cpp
-bool IsTopology()  const { return static_cast<int>(myKind) <= 7; }
-bool IsAssembly()  const { return myKind == BRepGraph_NodeId::Kind::Product
-                               || myKind == BRepGraph_NodeId::Kind::Occurrence; }
+bool IsAssembly() const
+{
+  return myKind == BRepGraph_NodeId::Kind::Product
+      || myKind == BRepGraph_NodeId::Kind::Occurrence;
+}
 ```
 
 ### 1.2 New Entity Structs
@@ -156,132 +171,197 @@ BRepGraphInc::OccurrenceEntity& AppendOccurrence();
 
 Extend the following switch statements to handle `Kind::Product` and `Kind::Occurrence`:
 
-| Method | Action |
-|--------|--------|
-| `TopoDef(NodeId)` | Return `const BaseEntity&` from `myIncStorage.Product/Occurrence` |
-| `ChangeTopoDef(NodeId)` | Return `BaseEntity&` via `ChangeProduct/ChangeOccurrence` |
-| `mutableCache(NodeId)` | Return `NodeCache&` from the entity |
-| `allocateUID(NodeId)` | Allocate UID with `Kind::Product` or `Kind::Occurrence` |
-| `markModified(NodeId)` | Set `IsModified` flag on product/occurrence entity |
+| Method | Product Action | Occurrence Action |
+|--------|---------------|-------------------|
+| `TopoDef(NodeId)` | `&myIncStorage.Product(idx)` | `&myIncStorage.Occurrence(idx)` |
+| `ChangeTopoDef(NodeId)` | `&myIncStorage.ChangeProduct(idx)` | `&myIncStorage.ChangeOccurrence(idx)` |
+| `mutableCache(NodeId)` | `&...ChangeProduct(idx).Cache` | `&...ChangeOccurrence(idx).Cache` |
+| `markModified(NodeId)` | Set flag, no upward propagation (products are roots) | Set flag, propagate to parent product |
+| `invalidateSubgraphImpl(NodeId)` | Recurse into ShapeRootId + OccurrenceRefs | Recurse into referenced product |
+| `allocateUID(NodeId)` | Allocate UID with `Kind::Product` | Allocate UID with `Kind::Occurrence` |
 
-### 1.5 Files Modified
+### 1.5 Auto Root Product in BRepGraph_Builder
+
+After `BRepGraphInc_Populate::Perform()` and `populateUIDs()`, automatically
+create a single root Product:
+
+```cpp
+// Determine the top-level topology NodeId from the input shape type.
+// Uses the first entity of the matching kind (index 0).
+BRepGraph_NodeId aTopologyRoot;
+switch (theShape.ShapeType())
+{
+  case TopAbs_COMPOUND:  aTopologyRoot = BRepGraph_NodeId::Compound(0);  break;
+  case TopAbs_COMPSOLID: aTopologyRoot = BRepGraph_NodeId::CompSolid(0); break;
+  case TopAbs_SOLID:     aTopologyRoot = BRepGraph_NodeId::Solid(0);     break;
+  case TopAbs_SHELL:     aTopologyRoot = BRepGraph_NodeId::Shell(0);     break;
+  case TopAbs_FACE:      aTopologyRoot = BRepGraph_NodeId::Face(0);      break;
+  case TopAbs_WIRE:      aTopologyRoot = BRepGraph_NodeId::Wire(0);      break;
+  case TopAbs_EDGE:      aTopologyRoot = BRepGraph_NodeId::Edge(0);      break;
+  case TopAbs_VERTEX:    aTopologyRoot = BRepGraph_NodeId::Vertex(0);    break;
+  default: break; // aTopologyRoot remains invalid
+}
+
+// Create a default root product.
+auto& aProduct = theGraph.myData->myIncStorage.AppendProduct();
+aProduct.Id = BRepGraph_NodeId::Product(0);
+aProduct.ShapeRootId = aTopologyRoot;
+theGraph.allocateUID(aProduct.Id);
+```
+
+**Single-shape-to-product mapping:**
+- `TopoDS_Solid` root → Product with `ShapeRootId = Solid(0)`
+- `TopoDS_Compound` root → Product with `ShapeRootId = Compound(0)`
+- Any shape type maps to the corresponding topology root NodeId
+- Zero occurrences for single-shape graphs
+
+### 1.6 Files Modified
 
 | File | Change |
 |------|--------|
-| `BRepGraph_NodeId.hxx` | Add `Kind::Product = 10`, `Kind::Occurrence = 11`, factories, `IsAssemblyKind()` |
+| `BRepGraph_NodeId.hxx` | Add `Kind::Product = 10`, `Kind::Occurrence = 11`, factories, `IsAssemblyKind()`, `IsTopologyKind()` |
 | `BRepGraph_UID.hxx` | Add `IsAssembly()` helper |
 | `BRepGraphInc_Entity.hxx` | Add `OccurrenceRef`, `ProductEntity`, `OccurrenceEntity` |
 | `BRepGraph_TopoNode.hxx` | Add `ProductDef`, `OccurrenceDef` aliases |
 | `BRepGraphInc_Storage.hxx/.cxx` | Add vectors, UIDs, counts, accessors, append, clear |
 | `BRepGraph.cxx` | Extend dispatch switches |
+| `BRepGraph_Builder.hxx/.cxx` | Auto root product creation, extend `populateUIDs()` |
 
 ---
 
-## Phase 2: AssemblyLayer Plugin
+## Phase 2: Core API Integration
 
-### 2.1 Class Design
+Assembly queries and mutations are distributed across existing views.
+No separate assembly class is needed because Products and Occurrences are
+intrinsic node kinds — they participate in dispatch, UIDs, history, and compact
+just like topology kinds.  Adding a Layer would create a removable wrapper
+around non-removable data, which is architecturally inconsistent.
 
-```
-BRepGraph_AssemblyLayer : public BRepGraph_Layer
-```
+### 2.1 DefsView — Const Accessors
 
-**Registered via**: `graph.RegisterLayer(new BRepGraph_AssemblyLayer)`
-
-**Zero overhead**: When not registered, the graph only carries empty product/occurrence
-vectors in storage. No virtual dispatch, no query overhead.
-
-### 2.2 Internal State
+In `BRepGraph_DefsView.hxx`, add:
 
 ```cpp
-//! Reverse index: for each product, the set of occurrences that reference it.
-//! Built lazily on first query, invalidated by OnNodeRemoved/OnCompact/InvalidateAll.
-NCollection_DataMap<int, NCollection_Vector<int>> myProductToOccurrences;
-bool myReverseIndexDirty = true;
-```
+// --- Assembly definition accessors ---
 
-### 2.3 Query API
+int NbProducts() const;
+int NbOccurrences() const;
+int NbActiveProducts() const;
+int NbActiveOccurrences() const;
 
-```cpp
-//! Layer identity.
-const TCollection_AsciiString& Name() const override; // returns "Assembly"
+const BRepGraph_TopoNode::ProductDef& Product(int theIdx) const;
+const BRepGraph_TopoNode::OccurrenceDef& Occurrence(int theIdx) const;
 
-//! Return product NodeIds not referenced by any occurrence (assembly roots).
-NCollection_Vector<BRepGraph_NodeId> RootProducts(const BRepGraph& theGraph) const;
+//! Return all product NodeIds not referenced by any occurrence (assembly roots).
+NCollection_Vector<BRepGraph_NodeId> RootProducts() const;
 
-//! True if the product has child occurrences (is an assembly, not a part).
-bool IsAssembly(const BRepGraph& theGraph, BRepGraph_NodeId theProductId) const;
+//! True if the product has child occurrences.
+bool IsAssembly(int theProductIdx) const;
 
-//! True if the product has a ShapeRootId and no child occurrences (is a leaf part).
-bool IsPart(const BRepGraph& theGraph, BRepGraph_NodeId theProductId) const;
+//! True if the product has a valid ShapeRootId and no child occurrences.
+bool IsPart(int theProductIdx) const;
 
 //! Number of child occurrences of a product.
-int NbComponents(const BRepGraph& theGraph, BRepGraph_NodeId theProductId) const;
+int NbComponents(int theProductIdx) const;
 
 //! Return the i-th child occurrence NodeId of a product.
-BRepGraph_NodeId Component(const BRepGraph& theGraph, BRepGraph_NodeId theProductId, int theIdx) const;
-
-//! Number of occurrences that reference a given product (usage count).
-int NbUsages(const BRepGraph& theGraph, BRepGraph_NodeId theProductId) const;
-
-//! Compute the composed global placement for a path of occurrence indices.
-//! Path is root-to-leaf: {occ0, occ1, ..., occN}.
-TopLoc_Location GlobalPlacement(const BRepGraph& theGraph,
-                                const NCollection_Vector<BRepGraph_NodeId>& thePath) const;
+BRepGraph_NodeId Component(int theProductIdx, int theIdx) const;
 ```
 
-### 2.4 Builder Methods
+Update `NbNodes()` to include `NbProducts() + NbOccurrences()`.
 
-Builder methods live on the layer (not on BuilderView) because assembly structure
-is higher-level than topology mutation:
+### 2.2 BuilderView — Mutations
+
+In `BRepGraph_BuilderView.hxx`, add:
 
 ```cpp
 //! Create a part product pointing to an existing topology root.
-//! @param[in,out] theGraph the graph to modify
 //! @param[in] theShapeRoot root topology NodeId (Solid, Compound, etc.)
-//! @return new product NodeId
-BRepGraph_NodeId AddProduct(BRepGraph& theGraph, BRepGraph_NodeId theShapeRoot);
+//! @return NodeId of the new product
+BRepGraph_NodeId AddProduct(BRepGraph_NodeId theShapeRoot);
 
-//! Create an assembly product (no shape root, children added via AddOccurrence).
-BRepGraph_NodeId AddAssemblyProduct(BRepGraph& theGraph);
+//! Create an assembly product (no shape root; children added via AddOccurrence).
+//! @return NodeId of the new assembly product
+BRepGraph_NodeId AddAssemblyProduct();
 
-//! Create an occurrence linking a parent product to a referenced product with placement.
-//! @param[in,out] theGraph the graph to modify
+//! Create an occurrence linking a parent product to a referenced product.
+//! Appends an OccurrenceRef to the parent product's OccurrenceRefs.
 //! @param[in] theParentProduct the assembly product owning this occurrence
 //! @param[in] theReferencedProduct the product being instanced
 //! @param[in] thePlacement local placement relative to parent
-//! @return new occurrence NodeId
-BRepGraph_NodeId AddOccurrence(BRepGraph&             theGraph,
-                               BRepGraph_NodeId       theParentProduct,
+//! @return NodeId of the new occurrence
+BRepGraph_NodeId AddOccurrence(BRepGraph_NodeId       theParentProduct,
                                BRepGraph_NodeId       theReferencedProduct,
                                const TopLoc_Location& thePlacement);
 ```
 
-### 2.5 Lifecycle Callbacks
+**Extend RemoveNode/RemoveSubgraph:**
+- Removing a Product cascades removal to all its child occurrences.
+- Removing an Occurrence removes it from the parent Product's OccurrenceRefs.
+- `RemoveSubgraph(Product)` removes the product, its occurrences, and recursively
+  the topology subgraph under ShapeRootId.
 
-**OnNodeRemoved(theNode, theReplacement)**:
-- If `theNode` is a Product: remove all its child occurrences (cascade).
-  If `theReplacement` is valid, migrate OccurrenceRefs to replacement product.
-- If `theNode` is an Occurrence: remove from parent product's OccurrenceRefs.
-  No cascade (occurrences don't own children).
-- Mark reverse index dirty.
+### 2.3 MutView — RAII Guards
 
-**OnCompact(remapMaps)**:
-- Remap `ProductIdx`, `ParentProductIdx` in all active occurrences.
-- Remap `ShapeRootId` in all active products.
-- Remap `OccurrenceRefs` indices in all active products.
-- Rebuild reverse index.
+In `BRepGraph_MutView.hxx`, add:
 
-**InvalidateAll()**: Mark reverse index dirty.
+```cpp
+BRepGraph_MutRef<BRepGraph_TopoNode::ProductDef>    ProductDef(int theIdx);
+BRepGraph_MutRef<BRepGraph_TopoNode::OccurrenceDef> OccurrenceDef(int theIdx);
+```
 
-**Clear()**: Clear reverse index, reset dirty flag.
+In `BRepGraph.hxx`, add corresponding MutRef factories:
 
-### 2.6 Files
+```cpp
+Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::ProductDef>    MutProduct(int theIdx);
+Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::OccurrenceDef> MutOccurrence(int theIdx);
+```
 
-| Action | File |
-|--------|------|
-| **Create** | `BRepGraph_AssemblyLayer.hxx` |
-| **Create** | `BRepGraph_AssemblyLayer.cxx` |
-| **Modify** | `FILES.cmake` — add new files |
+### 2.4 Iterator Support
+
+In `BRepGraph_Iterator.hxx`, add template specializations for `ProductDef` and
+`OccurrenceDef`.  Works automatically because both inherit from `BaseEntity`
+which has `IsRemoved` — the `skipRemoved()` SFINAE mechanism already handles them.
+
+### 2.5 SpatialView — GlobalPlacement
+
+In `BRepGraph_SpatialView.hxx`, add:
+
+```cpp
+//! Compute the composed global placement for an occurrence path.
+//! Path is root-to-leaf: {occ0, occ1, ..., occN}.
+TopLoc_Location GlobalPlacement(const NCollection_Vector<BRepGraph_NodeId>& thePath) const;
+
+//! Compute the global placement for a single occurrence.
+//! Walks the ParentProductIdx chain upward, composing Placement values.
+TopLoc_Location GlobalPlacement(int theOccurrenceIdx) const;
+```
+
+### 2.6 Reverse Index — Product-to-Occurrences
+
+In `BRepGraphInc_ReverseIndex.hxx`, add:
+
+```cpp
+//! Return occurrence indices that reference the given product.
+const NCollection_Vector<int>* OccurrencesOfProduct(int theProductIdx) const;
+```
+
+`OccurrenceEntity::ParentProductIdx` already provides occurrence-to-parent-product
+reverse lookup at O(1) — no separate index needed for that direction.
+
+Extend `Build()` to process product/occurrence vectors for the forward direction.
+
+### 2.7 Files Modified
+
+| File | Change |
+|------|--------|
+| `BRepGraph_DefsView.hxx/.cxx` | Product/Occurrence const accessors, RootProducts, IsAssembly, IsPart, NbComponents, Component |
+| `BRepGraph_BuilderView.hxx/.cxx` | AddProduct, AddAssemblyProduct, AddOccurrence, extend RemoveNode/RemoveSubgraph |
+| `BRepGraph_MutView.hxx` | ProductDef, OccurrenceDef RAII guard accessors |
+| `BRepGraph.hxx/.cxx` | MutProduct, MutOccurrence declarations and implementations |
+| `BRepGraph_Iterator.hxx` | ProductDef, OccurrenceDef specializations |
+| `BRepGraph_SpatialView.hxx/.cxx` | GlobalPlacement overloads |
+| `BRepGraphInc_ReverseIndex.hxx/.cxx` | OccurrencesOfProduct, extend Build() |
 
 ---
 
@@ -314,25 +394,33 @@ Issues:
 virtual void OnCompact(const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap) = 0;
 ```
 
-### 3.3 Migration
+### 3.3 Compact Pipeline Extension
+
+1. **Collect active**: Copy non-removed products/occurrences to new vectors
+   (same pattern as topology kinds).
+2. **Build remap entries**: `NodeId::Product(oldIdx) -> NodeId::Product(newIdx)` for each.
+3. **Build unified map**: Merge all per-kind maps into single `DataMap<NodeId, NodeId>`.
+4. **UID transfer**: Copy UIDs at old indices to new positions.
+5. **Cross-reference fixup**: Remap `ProductIdx`, `ParentProductIdx`,
+   `ShapeRootId`, `OccurrenceRefs` using `theRemapMap.Find()`.
+   Assert on missing entries — a valid cross-reference must always have
+   a remap entry (removed nodes are already excluded in step 1).
+6. **Layer dispatch**: Pass unified remap map to all registered layers.
+
+Add to `BRepGraphAlgo_Compact::Result`:
+```cpp
+int NbRemovedProducts    = 0;
+int NbRemovedOccurrences = 0;
+```
+
+### 3.4 Files Modified
 
 | File | Change |
 |------|--------|
-| `BRepGraph_Layer.hxx` | Change `OnCompact` signature |
-| `BRepGraph_NameLayer.hxx/.cxx` | Update implementation, replace 6-way `remapNodeId` with single map lookup |
-| `BRepGraph_AssemblyLayer.cxx` | Implement with unified map |
-| `BRepGraphAlgo_Compact.cxx` | Build unified `DataMap<NodeId, NodeId>` covering all kinds, pass to layers |
-
-### 3.4 Compact Pipeline Extension
-
-Add Product/Occurrence to the compact pipeline:
-
-1. **Collect active**: Copy non-removed products/occurrences to new vectors.
-2. **Build remap entries**: `NodeId::Product(oldIdx) -> NodeId::Product(newIdx)` for each.
-3. **UID transfer**: Copy UIDs at old indices to new positions.
-4. **Cross-reference fixup**: After vector copy, remap all `ProductIdx`,
-   `ParentProductIdx`, `ShapeRootId`, `OccurrenceRefs` using the remap map.
-5. **Layer dispatch**: Pass unified remap map to all registered layers.
+| `BRepGraph_Layer.hxx` | Change `OnCompact` signature to unified `DataMap<NodeId, NodeId>` |
+| `BRepGraph_NameLayer.hxx/.cxx` | Simplify to single map lookup |
+| `BRepGraphAlgo_Compact.hxx` | Add Product/Occurrence to Result |
+| `BRepGraphAlgo_Compact.cxx` | Add assembly compaction, build unified map, dispatch |
 
 ---
 
@@ -343,7 +431,7 @@ Add Product/Occurrence to the compact pipeline:
 New class in DataExchange module (TKBRep has no TKXCAF dependency):
 
 ```
-src/DataExchange/TKXDE/BRepGraphDE/BRepGraphDE_PopulateAssembly.hxx/.cxx
+src/DataExchange/TKXCAF/BRepGraphDE/BRepGraphDE_PopulateAssembly.hxx/.cxx
 ```
 
 ### 4.2 Algorithm
@@ -353,35 +441,37 @@ class BRepGraphDE_PopulateAssembly
 {
 public:
   //! Populate a BRepGraph with assembly structure from an XDE document.
-  //! @param[in,out] theGraph already populated with topology (via BRepGraphInc_Populate)
-  //! @param[in] theShapeTool XDE shape tool (provides label tree, locations, references)
-  //!
-  //! Registers BRepGraph_AssemblyLayer on the graph if not already present.
-  void Perform(BRepGraph& theGraph,
-               const Handle(XCAFDoc_ShapeTool)& theShapeTool);
+  //! The graph must already have topology populated (via Build).
+  //! Uses BuilderView::AddProduct()/AddOccurrence() directly.
+  //! @param[in,out] theGraph graph with topology already built
+  //! @param[in] theShapeTool XDE shape tool
+  static void Perform(BRepGraph&                       theGraph,
+                      const Handle(XCAFDoc_ShapeTool)& theShapeTool);
 };
 ```
 
-**Walk logic**:
-1. Iterate free shapes via `GetFreeShapes()`.
-2. For each free shape label:
-   - If simple shape → create ProductEntity with ShapeRootId linked to the
-     topology node found by TShape lookup in `myIncStorage`.
-   - If assembly → create ProductEntity (no ShapeRootId), recurse into components.
-3. For each component:
-   - Create OccurrenceEntity with `GetLocation()` as Placement.
-   - Resolve the referenced shape label.
-   - If referenced product already exists (shared part deduplication via
-     `TDF_Label -> int` map), reuse it. Otherwise create new ProductEntity.
-4. Register `BRepGraph_AssemblyLayer` and call `AddProduct`/`AddOccurrence`.
+**Walk logic:**
+1. Replace the auto-created root Product with XDE structure.
+2. Iterate free shapes via `GetFreeShapes()`.
+3. For each free shape label:
+   - If simple shape → `AddProduct(shapeRootNodeId)` via `FindNode(shape)`.
+   - If assembly → `AddAssemblyProduct()`, recurse into components.
+4. For each component:
+   - Get location via `GetLocation(componentLabel)`.
+   - Resolve referenced shape label.
+   - Shared-part deduplication via `TDF_Label → int` map.
+   - `AddOccurrence(parent, referenced, location)`.
+
+No layer registration needed — uses `BuilderView` directly.
 
 ### 4.3 Files
 
 | Action | File |
 |--------|------|
-| **Create** | `BRepGraphDE_PopulateAssembly.hxx` |
-| **Create** | `BRepGraphDE_PopulateAssembly.cxx` |
-| **Modify** | DataExchange `FILES.cmake` |
+| **Create** | `src/DataExchange/TKXCAF/BRepGraphDE/BRepGraphDE_PopulateAssembly.hxx` |
+| **Create** | `src/DataExchange/TKXCAF/BRepGraphDE/BRepGraphDE_PopulateAssembly.cxx` |
+| **Create** | `src/DataExchange/TKXCAF/BRepGraphDE/FILES.cmake` |
+| **Modify** | `src/DataExchange/TKXCAF/PACKAGES.cmake` — add BRepGraphDE package |
 
 ---
 
@@ -389,25 +479,39 @@ public:
 
 ### 5.1 Extend BRepGraphInc_Reconstruct::Node()
 
-Add cases for the new kinds:
+**Kind::Product (part):**
+```cpp
+// Reconstruct the topology root
+aResult = Node(theStorage, aProduct.ShapeRootId, theCache);
+```
 
-- **Kind::Product (part)**: Reconstruct the ShapeRootId topology node via existing
-  `Node()` dispatch. Return the reconstructed shape.
-- **Kind::Product (assembly)**: Iterate OccurrenceRefs, reconstruct each occurrence
-  child, create a `TopoDS_Compound` containing all children.
-- **Kind::Occurrence**: Reconstruct the referenced product's shape, apply
-  `Placement` via `TopoDS_Shape::Located()`.
+**Kind::Product (assembly):**
+```cpp
+// Create Compound from child occurrence reconstructions
+TopoDS_Compound aComp;
+aBB.MakeCompound(aComp);
+for (int i = 0; i < aProduct.OccurrenceRefs.Length(); ++i)
+{
+  const int anOccIdx = aProduct.OccurrenceRefs.Value(i).OccurrenceIdx;
+  TopoDS_Shape aChild = Node(theStorage, BRepGraph_NodeId::Occurrence(anOccIdx), theCache);
+  if (!aChild.IsNull())
+    aBB.Add(aComp, aChild);
+}
+aResult = aComp;
+```
+
+**Kind::Occurrence:**
+```cpp
+// Reconstruct referenced product, apply Placement
+aResult = Node(theStorage, BRepGraph_NodeId::Product(anOcc.ProductIdx), theCache);
+if (!aResult.IsNull() && !anOcc.Placement.IsIdentity())
+  aResult.Location(anOcc.Placement);
+```
 
 ### 5.2 BRepGraphDE_ReconstructAssembly
 
-New class for BRepGraph-to-XDE export (migration interop):
-
-```
-src/DataExchange/TKXDE/BRepGraphDE/BRepGraphDE_ReconstructAssembly.hxx/.cxx
-```
-
-Walks product/occurrence entities and creates matching XDE label structure
-with `XCAFDoc_ShapeTool::AddShape`, `AddComponent`, `SetShape`.
+New class for BRepGraph-to-XDE export (migration interop).
+Walks product/occurrence entities and creates matching XDE label structure.
 
 ### 5.3 Files
 
@@ -421,60 +525,80 @@ with `XCAFDoc_ShapeTool::AddShape`, `AddComponent`, `SetShape`.
 ## Phase 6: DE Metadata on Assembly Nodes
 
 The existing Layer system works on any `BRepGraph_NodeId`, including Product and
-Occurrence kinds. No special support needed — layers index by NodeId, not by Kind:
+Occurrence kinds.  No special support needed:
 
 ```cpp
 aColorLayer->SetColor(BRepGraph_NodeId::Product(0), Quantity_ColorRGBA(RED));   // product-level default
 aColorLayer->SetColor(BRepGraph_NodeId::Occurrence(3), Quantity_ColorRGBA(BLUE)); // instance override
 ```
 
-### 6.1 ResolveAttribute Helper
+### 6.1 BRepGraph_AssemblyQuery Utility
 
-Add to `BRepGraph_AssemblyLayer`:
+New stateless utility (not a Layer) for assembly-specific complex queries:
+
+**File:** `BRepGraph_AssemblyQuery.hxx/.cxx`
 
 ```cpp
-//! Resolve an attribute for an occurrence: check occurrence first, fall back to product.
-//! @tparam TLayer a layer type with Find(NodeId) returning const T*
-//! @tparam T the attribute value type
-//! @param[in] theLayer the attribute layer to query
-//! @param[in] theOccurrenceId the occurrence to resolve for
-//! @param[in] theGraph the owning graph
-//! @return pointer to attribute value, or nullptr if neither occurrence nor product has it
-template <typename TLayer, typename T>
-const T* ResolveAttribute(const TLayer&    theLayer,
-                          BRepGraph_NodeId theOccurrenceId,
-                          const BRepGraph& theGraph) const;
+namespace BRepGraph_AssemblyQuery
+{
+  //! Resolve an attribute for an occurrence: check occurrence first, fall back to product.
+  //! TLayer must provide Find(BRepGraph_NodeId) returning a pointer (nullptr if absent).
+  template <typename TLayer>
+  auto ResolveAttribute(const TLayer&    theLayer,
+                        BRepGraph_NodeId theOccurrenceId,
+                        const BRepGraph& theGraph)
+    -> decltype(theLayer.Find(theOccurrenceId));
+
+  //! Find all leaf part products reachable from a product (recursive).
+  NCollection_Vector<BRepGraph_NodeId> LeafParts(const BRepGraph& theGraph,
+                                                  BRepGraph_NodeId theProductId);
+
+  //! Build the occurrence path from root to the given occurrence.
+  NCollection_Vector<BRepGraph_NodeId> OccurrencePath(const BRepGraph& theGraph,
+                                                      int theOccurrenceIdx);
+}
 ```
 
-Implementation: query `theLayer.Find(theOccurrenceId)`. If null, look up
-`OccurrenceEntity::ProductIdx`, query `theLayer.Find(NodeId::Product(productIdx))`.
+### 6.2 Files
+
+| Action | File |
+|--------|------|
+| **Create** | `BRepGraph_AssemblyQuery.hxx` |
+| **Create** | `BRepGraph_AssemblyQuery.cxx` |
+| **Modify** | `FILES.cmake` — add new files |
 
 ---
 
 ## Phase 7: Testing
 
-### 7.1 Unit Tests
+### 7.1 Core Assembly Tests
 
-File: `src/ModelingData/TKBRep/GTests/BRepGraph_AssemblyLayer_Test.cxx`
+File: `src/ModelingData/TKBRep/GTests/BRepGraph_Assembly_Test.cxx`
 
 | Test | Description |
 |------|-------------|
-| `AddPartProduct` | Create product with ShapeRootId, verify IsPart/IsAssembly |
-| `AddAssemblyWithOccurrences` | Build 2-level assembly, verify NbComponents, Component() |
-| `DAGSharing` | Single part referenced by 3 occurrences, verify NbUsages == 3 |
-| `MultipleRoots` | Two independent products, verify RootProducts returns both |
-| `DeepNesting` | 4-level assembly, verify GlobalPlacement composition |
+| `Build_SingleSolid_AutoCreatesRootProduct` | `Build(aBox)` creates 1 product, 0 occurrences |
+| `Build_Compound_AutoCreatesRootProduct` | `Build(aCompound)` creates 1 product with `ShapeRootId = Compound(0)` |
+| `AddProduct_IsPart` | Create product with ShapeRootId, verify IsPart/IsAssembly |
+| `AddAssemblyProduct_IsAssembly` | Create assembly product, verify IsAssembly/IsPart |
+| `AddOccurrence_LinksCorrectly` | Build 2-level assembly, verify NbComponents, Component() |
+| `DAGSharing_NbUsages` | Single part referenced by 3 occurrences, verify usage count |
+| `MultipleRoots` | Two independent products, verify RootProducts() returns both |
+| `DeepNesting_GlobalPlacement` | 4-level assembly, verify location composition |
+| `Iterator_Product` | `BRepGraph_Iterator<ProductDef>` visits all non-removed products |
+| `Iterator_Occurrence` | `BRepGraph_Iterator<OccurrenceDef>` visits all non-removed occurrences |
 | `RemoveOccurrence` | Remove occurrence, verify parent product's OccurrenceRefs updated |
 | `RemoveProduct_Cascade` | Remove product, verify child occurrences cascade-removed |
-| `CompactRemap` | Compact after removals, verify all cross-references remapped correctly |
-| `HistoryTracking` | Verify UIDs assigned to products/occurrences survive compact |
-| `LayerLifecycle` | Register/unregister layer, verify no leaks |
-| `ZeroOverhead` | Pure topology graph without layer, verify no assembly vectors allocated beyond empty |
+| `MutProduct_RAII` | MutProduct() guard marks modified on scope exit |
+| `MutOccurrence_Placement` | Modify placement via MutOccurrence, verify markModified |
+| `CompactRemap_Assembly` | Compact after removals, verify cross-references remapped |
+| `HistoryTracking_UIDs` | UIDs assigned to products/occurrences survive compact |
 | `ResolveAttribute` | Set color on product, override on occurrence, verify resolution |
+| `NbNodes_IncludesAssembly` | `NbNodes()` includes product + occurrence counts |
 
 ### 7.2 XDE Round-Trip Tests
 
-Location: DataExchange GTests
+File: `src/DataExchange/TKXCAF/GTests/BRepGraphDE_Assembly_Test.cxx`
 
 | Test | Description |
 |------|-------------|
@@ -484,44 +608,65 @@ Location: DataExchange GTests
 
 ### 7.3 Benchmarks
 
-Add to `BENCHMARKS.md`:
-
 | Benchmark | Goal |
 |-----------|------|
-| `PureTopology_NoAssemblyLayer` | Verify zero overhead: Build/Query times unchanged vs baseline |
+| `PureTopology_SingleProduct` | Verify negligible overhead: Build/Query times unchanged vs baseline |
 | `Assembly_1000Parts` | Populate 1000-part flat assembly, measure AddProduct/AddOccurrence throughput |
 | `Assembly_DeepNesting_10Levels` | GlobalPlacement composition at depth 10 |
+
+### 7.4 Files
+
+| Action | File |
+|--------|------|
+| **Create** | `src/ModelingData/TKBRep/GTests/BRepGraph_Assembly_Test.cxx` |
+| **Modify** | `src/ModelingData/TKBRep/GTests/FILES.cmake` — add `BRepGraph_Assembly_Test.cxx` |
+| **Create** | `src/DataExchange/TKXCAF/GTests/BRepGraphDE_Assembly_Test.cxx` |
+| **Modify** | `src/DataExchange/TKXCAF/GTests/FILES.cmake` — add `BRepGraphDE_Assembly_Test.cxx` |
 
 ---
 
 ## Dependency Graph
 
 ```
-Phase 1 (Data Model)
+Phase 1 (Data Model + auto root Product)
   |
   v
-Phase 2 (AssemblyLayer)
+Phase 2 (Core API: DefsView, BuilderView, MutView, Iterator, SpatialView, ReverseIndex)
   |
-  +---> Phase 3 (OnCompact signature fix)
+  +---> Phase 3 (OnCompact unified map, Compact for Product/Occurrence)
+  +---> Phase 5 (Reconstruct for Product/Occurrence)
+  +---> Phase 6 (BRepGraph_AssemblyQuery utility)
+  +---> Phase 4 (XDE Population Bridge — needs BuilderView API)
   |
-  +---> Phase 4 (XDE Population)
-  |       |
-  |       v
-  |     Phase 5 (Reconstruction)
-  |
-  +---> Phase 6 (DE Metadata Layers)
-
-Phase 7 (Testing) — parallel with all phases
+  v
+Phase 7 (Testing — parallel with all phases)
 ```
+
+## API Distribution (replacing BRepGraph_AssemblyLayer)
+
+| Responsibility | Location |
+|---------------|----------|
+| Const accessors (`Product()`, `RootProducts()`, `IsAssembly()`, `IsPart()`) | `DefsView` |
+| Mutations (`AddProduct()`, `AddOccurrence()`) | `BuilderView` |
+| RAII guards (`MutProduct()`, `MutOccurrence()`) | `MutView` + `BRepGraph` |
+| `GlobalPlacement()` | `SpatialView` |
+| Reverse index (product→occurrences) | `BRepGraphInc_ReverseIndex` |
+| Removal cascade | `BuilderView::RemoveNode()` |
+| Compact remap | `BRepGraphAlgo_Compact` directly |
+| Removal cascade (product→occurrences) | `BuilderView::RemoveNode()` / `RemoveSubgraph()` |
+| `ResolveAttribute()`, `LeafParts()`, `OccurrencePath()` | `BRepGraph_AssemblyQuery` utility |
 
 ## Design Decisions & Rationale
 
 | Decision | Rationale |
 |----------|-----------|
-| **Always via Occurrence** | Product→Occurrence→Product. Every placement is explicit with its own NodeId. No implicit "direct child" shortcuts that would complicate the DAG. |
-| **Single ShapeRootId per product** | One NodeId pointing to the root topology (Solid, Compound, etc.). Mixed products (part + sub-assembly) are not supported — use nested products. |
-| **Layer-based query API** | Assembly queries (`RootProducts`, `GlobalPlacement`, etc.) live in `BRepGraph_AssemblyLayer`, keeping the core BRepGraph class focused on topology. |
-| **Builder methods on layer** | Assembly structure is higher-level than topology mutation. `AddProduct`/`AddOccurrence` on the layer avoids bloating `BuilderView`. |
-| **OnCompact unified map** | Replaces 6-argument signature. Fixes missing Compound/CompSolid remapping, extensible for Product/Occurrence without signature changes. |
-| **XDE bridge in DataExchange** | TKBRep has no TKXCAF dependency. Population and reconstruction of XDE structures belong in the DataExchange module. |
-| **External references deferred** | Core product/occurrence model first. Cross-document references (e.g., externally referenced parts) are a future extension. |
+| **Intrinsic, not Layer** | Assembly is fundamental to model identity. A Layer can be unregistered, leaving the graph inconsistent. Intrinsic assembly means the graph is always self-consistent and algorithms always see a uniform model. |
+| **Auto root Product on Build()** | Every graph has at least one Product. Algorithms never branch on "is this an assembly graph?" — it always is. Single-shape = degenerate case with one Product. |
+| **Methods on Views** | Follows existing pattern exactly: const on DefsView, mutations on BuilderView, spatial on SpatialView. No special-case API surface. |
+| **Always via Occurrence** | Product→Occurrence→Product. Every placement is explicit with its own NodeId. No implicit "direct child" shortcuts. |
+| **Single ShapeRootId** | One NodeId pointing to root topology. Mixed products (part + sub-assembly) not supported — use nested products. |
+| **OccurrenceEntity stores ParentProductIdx** | O(1) parent lookup without separate reverse index. |
+| **BRepGraph_AssemblyQuery for complex queries** | Stateless utility for LeafParts, OccurrencePath, ResolveAttribute — queries that don't belong on views. |
+| **OnCompact unified map** | Replaces 6-argument signature. Fixes missing Compound/CompSolid remapping, extensible for all kinds forever. |
+| **XDE bridge in DataExchange** | TKBRep has no TKXCAF dependency. Uses BuilderView directly, no layer registration. |
+| **External references deferred** | Core product/occurrence model first. Cross-document references are a future extension. |

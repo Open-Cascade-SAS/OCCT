@@ -132,13 +132,16 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 
 ### Assembly model extension [Arch] ★★★★
 - **Full design**: [TODO_Assembly.md](TODO_Assembly.md) — see for complete implementation details
-- Foundation: `Kind::Product = 10`, `Kind::Occurrence = 11` as first-class node kinds
-- Plugin: `BRepGraph_AssemblyLayer` with query API (RootProducts, GlobalPlacement, etc.)
+- **Intrinsic architecture**: assembly is core, not a Layer plugin — every graph has a root Product
+- `Kind::Product = 10`, `Kind::Occurrence = 11` as first-class node kinds with UIDs, history, compact
+- API distributed across existing views: DefsView (queries, RootProducts, IsAssembly, IsPart), BuilderView (AddProduct, AddOccurrence, RemoveNode cascade), MutView (RAII guards), SpatialView (GlobalPlacement), Iterator (ProductDef, OccurrenceDef)
+- `Build(aBox)` auto-creates root Product; algorithms always see a uniform model
 - Product→Occurrence→Product DAG; each occurrence carries `TopLoc_Location`
+- `BRepGraph_AssemblyQuery` utility for complex queries (ResolveAttribute, LeafParts, OccurrencePath)
 - Replaces XCAFDoc_ShapeTool's Shape/Reference/Component model
-- XDE bridge (`BRepGraphDE_PopulateAssembly`) in DataExchange module (no TKXCAF dependency in TKBRep)
-- Phase 3 also fixes OnCompact signature: unified `DataMap<NodeId, NodeId>` replaces 6-argument maps
-- 7 phases: Phase 1: Data Model → Phase 2: AssemblyLayer → Phase 3: OnCompact Signature Fix → Phase 4: XDE Population Bridge → Phase 5: Reconstruction → Phase 6: DE Metadata Layers → Phase 7: Testing
+- XDE bridge (`BRepGraphDE_PopulateAssembly`) lives in DataExchange/TKXCAF (uses TKXCAF internally; TKBRep itself has no TKXCAF dependency)
+- Phase 3 fixes OnCompact signature: `DataMap<BRepGraph_NodeId, BRepGraph_NodeId>` unified remap map replaces 6 per-kind `DataMap<int, int>` arguments
+- 7 phases: Phase 1: Data Model → Phase 2: Core API Integration → Phase 3: OnCompact Signature Fix → Phase 4: XDE Population Bridge → Phase 5: Reconstruction → Phase 6: DE Metadata on Assembly Nodes → Phase 7: Testing
 
 ### Compact remapping in history [Arch] ★★★
 - Record old→new index maps as history entries during Compact
