@@ -112,26 +112,27 @@ struct FaceLocalData
 };
 
 //! Extract stored PCurve(s) from edge for a given face's surface.
-//! Iterates BRep_TEdge::Curves() directly, matching by surface handle only.
-//! This avoids BRep_Tool::CurveOnSurface which can fail due to
-//! TopLoc_Location structural equality bug and can compute phantom PCurves
-//! via CurveOnPlane for planar surfaces.
+//! Iterates BRep_TEdge::Curves() directly, avoiding BRep_Tool::CurveOnSurface
+//! which can compute phantom PCurves via CurveOnPlane for planar surfaces.
+//! Uses two-pass matching:
+//!   Pass 1: exact (Surface, Location) match via IsCurveOnSurface(S, L)
+//!   Pass 2: surface-handle-only fallback for TopLoc_Location structural equality bug
 //! For seam edges (IsCurveOnClosedSurface), extracts both PCurves + continuity.
-//! @param[in]  theEdge      edge (FORWARD-oriented for consistent PCurve ordering)
-//! @param[in]  theFace      face (FORWARD-oriented)
+//! @param[in]  theEdge      edge with context orientation and location
+//! @param[in]  theFace      face with context location
 //! @param[out] thePCurve    primary PCurve (or null)
 //! @param[out] thePCurve2   seam PCurve (or null, only for closed surfaces)
 //! @param[out] theFirst     parameter range start
 //! @param[out] theLast      parameter range end
 //! @param[out] theSeamContinuity  seam continuity (GeomAbs_C0 if non-seam)
 //! @return true if a stored PCurve was found
-bool extractStoredPCurves(const TopoDS_Edge&        theEdge,
-                          const TopoDS_Face&        theFace,
+bool extractStoredPCurves(const TopoDS_Edge&         theEdge,
+                          const TopoDS_Face&         theFace,
                           occ::handle<Geom2d_Curve>& thePCurve,
                           occ::handle<Geom2d_Curve>& thePCurve2,
-                          double&                   theFirst,
-                          double&                   theLast,
-                          GeomAbs_Shape&            theSeamContinuity)
+                          double&                    theFirst,
+                          double&                    theLast,
+                          GeomAbs_Shape&             theSeamContinuity)
 {
   TopLoc_Location aFaceLoc;
   const occ::handle<Geom_Surface>& aSurf = BRep_Tool::Surface(theFace, aFaceLoc);
@@ -141,26 +142,49 @@ bool extractStoredPCurves(const TopoDS_Edge&        theEdge,
   if (aTEdge.IsNull())
     return false;
   const bool aReversed = (theEdge.Orientation() == TopAbs_REVERSED);
-  for (const auto& aCR : aTEdge->Curves())
-  {
-    if (!aCR->IsCurveOnSurface() || aCR->Surface() != aSurf)
-      continue;
-    const BRep_GCurve* aGC = static_cast<const BRep_GCurve*>(aCR.get());
+
+  // Expected CurveRepresentation location for this face+edge context.
+  // This is the same formula used by BRep_Tool::CurveOnSurface internally.
+  const TopLoc_Location aExpectedLoc = aFaceLoc.Predivided(theEdge.Location());
+
+  // Lambda to extract PCurve data from a matched CurveRepresentation.
+  auto extractFromCR = [&](const occ::handle<BRep_CurveRepresentation>& theCR) -> bool {
+    const BRep_GCurve* aGC = static_cast<const BRep_GCurve*>(theCR.get());
     aGC->Range(theFirst, theLast);
     if (aGC->IsCurveOnClosedSurface())
     {
-      // Seam edge: extract both PCurves and continuity in one pass.
       thePCurve  = aReversed ? aGC->PCurve2() : aGC->PCurve();
       thePCurve2 = aReversed ? aGC->PCurve()  : aGC->PCurve2();
       theSeamContinuity =
-        static_cast<const BRep_CurveOnClosedSurface*>(aCR.get())->Continuity();
+        static_cast<const BRep_CurveOnClosedSurface*>(theCR.get())->Continuity();
     }
     else
     {
       thePCurve = aGC->PCurve();
     }
     return true;
+  };
+
+  // Pass 1: exact match by (Surface, Location). Correctly distinguishes
+  // multiple CurveOnSurface entries for the same surface with different Locations.
+  for (const auto& aCR : aTEdge->Curves())
+  {
+    if (!aCR->IsCurveOnSurface())
+      continue;
+    if (aCR->IsCurveOnSurface(aSurf, aExpectedLoc))
+      return extractFromCR(aCR);
   }
+
+  // Pass 2: fallback to surface-handle-only match.
+  // Handles the TopLoc_Location structural equality bug where
+  // an explicit identity datum does not compare equal to a default empty identity.
+  for (const auto& aCR : aTEdge->Curves())
+  {
+    if (!aCR->IsCurveOnSurface() || aCR->Surface() != aSurf)
+      continue;
+    return extractFromCR(aCR);
+  }
+
   return false;
 }
 
