@@ -99,6 +99,22 @@ Common operations:
 
 History records lineage for downstream attribute transfer and diagnostics.
 
+`BRepGraph_History` supports allocator propagation via `SetAllocator()`. Must be called before any `Record()` or `RecordBatch()` operations. When set, all internal containers (`myRecords`, `myDerivedToOriginal`, `myOriginalToDerived`) and their inner vectors use the graph's IncAllocator for O(1) allocation and bulk-free destruction.
+
+## Memory Model
+
+BRepGraph uses a single `NCollection_IncAllocator` (bump-pointer allocator) for all internal containers:
+
+- All DataMaps in `BRepGraph_Data` (`myOutRelEdges`, `myInRelEdges`, `myNodeLocations`, `myCurrentShapes`)
+- All `BRepGraphInc_Storage` entity tables and UID vectors
+- All `BRepGraphInc_ReverseIndex` inner vectors (via `preSize` allocator parameter)
+- `BRepGraph_History` containers and inner vectors (via `SetAllocator`)
+
+Benefits:
+- Allocation is O(1) bump-pointer (no malloc overhead)
+- Destruction is O(1) bulk page release (no per-node free)
+- The allocator can be provided externally via `BRepGraph::SetAllocator()` or `BRepGraph_Data(theAlloc)`
+
 ## Threading Model
 
 - Const query paths are designed for concurrent read access.

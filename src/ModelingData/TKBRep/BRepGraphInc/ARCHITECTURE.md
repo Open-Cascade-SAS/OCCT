@@ -133,19 +133,43 @@ Recommended operation order:
 3. invalidate caches,
 4. append history record.
 
-## 8) Known Performance Priorities
+## 8) Allocator Propagation
+
+All containers use the graph's `NCollection_IncAllocator` (bump-pointer allocator):
+
+```mermaid
+flowchart TD
+  A[BRepGraph_Data.myAllocator] --> S[BRepGraphInc_Storage]
+  A --> H[BRepGraph_History]
+  A --> DM[DataMaps in BRepGraph_Data]
+  S --> E[Entity tables]
+  S --> RI[ReverseIndex]
+  RI --> IV[Inner vectors via preSize]
+  H --> R[myRecords]
+  H --> D2O[myDerivedToOriginal]
+  H --> O2D[myOriginalToDerived]
+```
+
+Contract:
+- `BRepGraphInc_ReverseIndex::preSize()` and `BuildDelta()` construct inner vectors with the allocator
+- `BRepGraph_History::SetAllocator()` must be called before any `Record`/`RecordBatch` calls
+- All temporary vectors created inside `Record()`/`RecordBatch()` also use the allocator
+
+## 9) Known Performance Priorities
 
 Primary:
 
-- reverse-index dedup strategy in build/maintenance paths,
-- append-mode UID maintenance,
-- populate post-pass costs.
+- geometric computation in SameParameter, ExtremaPC, edge matching,
+- KDTree traversal cost (squareDistance, coordinate access),
+- populate parallel extraction (BRepTools_WireExplorer).
 
 Secondary in common workloads:
 
-- edge-face context cardinality scans (often low row count).
+- edge-face context cardinality scans (often low row count),
+- reverse-index dedup strategy in build/maintenance paths,
+- populate post-pass costs.
 
-## 9) Validation Targets
+## 10) Validation Targets
 
 Debug-only validators should check:
 

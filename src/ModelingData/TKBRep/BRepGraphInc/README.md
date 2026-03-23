@@ -204,7 +204,20 @@ These are critical for adjacency-heavy algorithms like sewing and healing.
 - after each mutator operation: entities, reverse indices, cache invalidation, and history are coherent
 - `ReverseIndex::Validate()` checks all 6 reverse maps against forward refs (used in debug assertions after SplitEdge/ReplaceEdgeInWire)
 
-## Performance Notes
+## Memory and Performance Notes
+
+### Allocator Propagation
+
+All containers in BRepGraphInc use the graph's `NCollection_IncAllocator` for O(1) bump-pointer allocation and bulk-free destruction:
+
+- **Storage**: all entity tables, UID vectors, and DataMaps receive the allocator in the constructor
+- **ReverseIndex**: `SetAllocator()` is called before `Build()`. Inner `NCollection_Vector<int>` in each IndexTable slot are constructed with the allocator via `preSize(table, size, alloc)`. `BuildDelta()` also propagates the allocator to newly extended slots.
+
+This eliminates per-node malloc/free overhead and makes graph destruction O(1) regardless of entity count.
+
+Contract: `SetAllocator()` must be called before `Build()`/`BuildDelta()` on ReverseIndex, and before any `Record()`/`RecordBatch()` on History.
+
+### Other Performance Notes
 
 - Edge-to-face reverse index build uses sort-dedup (stack-allocated for typical 1-4 PCurves per edge)
 - `Append()` allocates UIDs incrementally (only for new entities, O(M) instead of O(N+M))

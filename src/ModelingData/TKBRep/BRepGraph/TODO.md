@@ -19,10 +19,6 @@
 - `canSewSameFaceEdges` uses bounding-box heuristics
 - Add explicit opposite-side check using PCurve UV ranges on periodic surfaces
 
-### History label granularity
-- Replace generic labels ("Dedup:MergeEdge") with more descriptive operation names
-- Optional extra data per history record
-
 ---
 
 ## Phase 1: High-ROI (1 week)
@@ -35,20 +31,10 @@
 - Store face count per edge in the reverse index during build
 - Eliminate runtime traversal in `FaceCountForEdge`
 
-### SoA (Structure-of-Arrays) entity layout
-- Convert entity vectors from AoS to SoA (separate arrays for geometry, refs, flags)
-- Huge cache-locality win for traversal-heavy algorithms
-- Impact: ★★★★★
-
 ### Algorithm Traits / Policy system
 - `template<class Policy> class BRepGraphAlgo_Traits`
 - Control UID allocation, invalidation depth, history granularity per algorithm
 - Domain-specific variants (MeshGraphTraits vs CADGraphTraits)
-
-### Visitor + Registry pattern for algorithms
-- Plugin registry where algorithms register visitors for specific node/relation kinds
-- Automatic parallel dispatch
-- Layers can register their own visitors
 
 ### Incremental modes for Deduplicate/Compact
 - `AnalyzeOnly`, `DeltaOnly`, `Incremental` flags
@@ -98,8 +84,10 @@
 - Only mutation paths use shared_mutex
 
 ### Sewing + SameParameter parallel optimization
+- `markModified` in SameParameter::Enforce acquires shared_mutex per call (125M in profile)
 - Eliminate shared-state contention in parallel phases
 - Per-thread accumulation buffers for all outputs
+- Batch cache invalidation after parallel phase instead of per-edge
 
 ### Diagnostic & Profiling Layer
 - Built-in optional layer recording operation counts, hot paths, memory usage
