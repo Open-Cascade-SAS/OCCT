@@ -645,3 +645,157 @@ TEST(NCollection_VectorTest, SetValue_ReplacesExisting)
   EXPECT_EQ(200, aVector(1).myA);
   EXPECT_EQ(30, aVector(2).myA);
 }
+
+TEST(NCollection_VectorTest, InsertAfter_Middle)
+{
+  NCollection_Vector<int> aVector;
+  aVector.Append(10);
+  aVector.Append(20);
+  aVector.Append(30);
+  aVector.Append(40);
+
+  // Insert 99 after index 1 (after 20): [10, 20, 99, 30, 40]
+  aVector.InsertAfter(1, 99);
+
+  EXPECT_EQ(5, aVector.Length());
+  EXPECT_EQ(10, aVector(0));
+  EXPECT_EQ(20, aVector(1));
+  EXPECT_EQ(99, aVector(2));
+  EXPECT_EQ(30, aVector(3));
+  EXPECT_EQ(40, aVector(4));
+}
+
+TEST(NCollection_VectorTest, InsertAfter_First)
+{
+  NCollection_Vector<int> aVector;
+  aVector.Append(10);
+  aVector.Append(20);
+  aVector.Append(30);
+
+  // Insert 99 after index 0 (after 10): [10, 99, 20, 30]
+  aVector.InsertAfter(0, 99);
+
+  EXPECT_EQ(4, aVector.Length());
+  EXPECT_EQ(10, aVector(0));
+  EXPECT_EQ(99, aVector(1));
+  EXPECT_EQ(20, aVector(2));
+  EXPECT_EQ(30, aVector(3));
+}
+
+TEST(NCollection_VectorTest, InsertAfter_Last)
+{
+  NCollection_Vector<int> aVector;
+  aVector.Append(10);
+  aVector.Append(20);
+  aVector.Append(30);
+
+  // Insert 99 after last index (after 30): [10, 20, 30, 99]
+  aVector.InsertAfter(2, 99);
+
+  EXPECT_EQ(4, aVector.Length());
+  EXPECT_EQ(10, aVector(0));
+  EXPECT_EQ(20, aVector(1));
+  EXPECT_EQ(30, aVector(2));
+  EXPECT_EQ(99, aVector(3));
+}
+
+TEST(NCollection_VectorTest, InsertAfter_SingleElement)
+{
+  NCollection_Vector<int> aVector;
+  aVector.Append(10);
+
+  // Insert 99 after index 0: [10, 99]
+  aVector.InsertAfter(0, 99);
+
+  EXPECT_EQ(2, aVector.Length());
+  EXPECT_EQ(10, aVector(0));
+  EXPECT_EQ(99, aVector(1));
+}
+
+TEST(NCollection_VectorTest, InsertBefore_Middle)
+{
+  NCollection_Vector<int> aVector;
+  aVector.Append(10);
+  aVector.Append(20);
+  aVector.Append(30);
+  aVector.Append(40);
+
+  // Insert 99 before index 2 (before 30): [10, 20, 99, 30, 40]
+  aVector.InsertBefore(2, 99);
+
+  EXPECT_EQ(5, aVector.Length());
+  EXPECT_EQ(10, aVector(0));
+  EXPECT_EQ(20, aVector(1));
+  EXPECT_EQ(99, aVector(2));
+  EXPECT_EQ(30, aVector(3));
+  EXPECT_EQ(40, aVector(4));
+}
+
+TEST(NCollection_VectorTest, InsertBefore_First)
+{
+  NCollection_Vector<int> aVector;
+  aVector.Append(10);
+  aVector.Append(20);
+  aVector.Append(30);
+
+  // Insert 99 before index 0: [99, 10, 20, 30]
+  aVector.InsertBefore(0, 99);
+
+  EXPECT_EQ(4, aVector.Length());
+  EXPECT_EQ(99, aVector(0));
+  EXPECT_EQ(10, aVector(1));
+  EXPECT_EQ(20, aVector(2));
+  EXPECT_EQ(30, aVector(3));
+}
+
+TEST(NCollection_VectorTest, InsertBefore_Last)
+{
+  NCollection_Vector<int> aVector;
+  aVector.Append(10);
+  aVector.Append(20);
+  aVector.Append(30);
+
+  // Insert 99 before last index (before 30): [10, 20, 99, 30]
+  aVector.InsertBefore(2, 99);
+
+  EXPECT_EQ(4, aVector.Length());
+  EXPECT_EQ(10, aVector(0));
+  EXPECT_EQ(20, aVector(1));
+  EXPECT_EQ(99, aVector(2));
+  EXPECT_EQ(30, aVector(3));
+}
+
+TEST(NCollection_VectorTest, InsertAfter_MoveSemantics)
+{
+  NCollection_Vector<VecMoveOnlyType> aVector;
+  aVector.EmplaceAppend(10);
+  aVector.EmplaceAppend(20);
+  aVector.EmplaceAppend(30);
+
+  // Move-insert 99 after index 1: [10, 20, 99, 30]
+  aVector.InsertAfter(1, VecMoveOnlyType(99));
+
+  EXPECT_EQ(4, aVector.Length());
+  EXPECT_EQ(10, aVector(0).myValue);
+  EXPECT_EQ(20, aVector(1).myValue);
+  EXPECT_EQ(99, aVector(2).myValue);
+  EXPECT_EQ(30, aVector(3).myValue);
+}
+
+TEST(NCollection_VectorTest, InsertAfter_MultipleInserts)
+{
+  NCollection_Vector<int> aVector;
+  aVector.Append(10);
+  aVector.Append(40);
+
+  // Insert 20 after 10: [10, 20, 40]
+  aVector.InsertAfter(0, 20);
+  // Insert 30 after 20: [10, 20, 30, 40]
+  aVector.InsertAfter(1, 30);
+
+  EXPECT_EQ(4, aVector.Length());
+  EXPECT_EQ(10, aVector(0));
+  EXPECT_EQ(20, aVector(1));
+  EXPECT_EQ(30, aVector(2));
+  EXPECT_EQ(40, aVector(3));
+}

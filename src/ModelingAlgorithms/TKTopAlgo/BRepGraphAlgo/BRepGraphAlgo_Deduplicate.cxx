@@ -23,15 +23,16 @@
 
 #include <GeomHash_CurveHasher.hxx>
 #include <GeomHash_SurfaceHasher.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_IncAllocator.hxx>
+#include <NCollection_KDTree.hxx>
 #include <NCollection_Map.hxx>
 #include <NCollection_Vector.hxx>
 #include <Standard_HashUtils.hxx>
 
 #include <algorithm>
 #include <cmath>
-#include <cstdint>
 
 //=================================================================================================
 
@@ -174,72 +175,60 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
     return aResult;
   }
 
-  // Phase 1: Vertex Merging via spatial hash.
+  // Phase 1: Vertex Merging via KDTree range search.
   {
     const double aTol = theOptions.HashTolerance;
-    const double aInvTol = (aTol > 0.0) ? 1.0 / aTol : 1.0;
 
-    // Spatial hash buckets: discretized coords -> list of vertex indices.
-    NCollection_DataMap<int64_t, NCollection_Vector<int>> aSpatialBuckets(
-      std::max(1, theGraph.Defs().NbVertices()),
-      aTmpAlloc);
-
-    auto spatialKey = [&](const gp_Pnt& thePnt) -> int64_t
-    {
-      const int64_t aX = static_cast<int64_t>(std::floor(thePnt.X() * aInvTol));
-      const int64_t aY = static_cast<int64_t>(std::floor(thePnt.Y() * aInvTol));
-      const int64_t aZ = static_cast<int64_t>(std::floor(thePnt.Z() * aInvTol));
-      // Simple hash combining.
-      return (aX * 73856093) ^ (aY * 19349663) ^ (aZ * 83492791);
-    };
-
-    for (int aVtxIdx = 0; aVtxIdx < theGraph.Defs().NbVertices(); ++aVtxIdx)
+    // Collect active vertices: (point, graph index) pairs.
+    const int aNbVertices = theGraph.Defs().NbVertices();
+    NCollection_Vector<std::pair<gp_Pnt, int>> aActiveVertices(256, aTmpAlloc);
+    for (int aVtxIdx = 0; aVtxIdx < aNbVertices; ++aVtxIdx)
     {
       const BRepGraph_TopoNode::VertexDef& aVtx = theGraph.Defs().Vertex(aVtxIdx);
       if (aVtx.IsRemoved)
         continue;
-      const int64_t aKey = spatialKey(aVtx.Point);
-      aSpatialBuckets.TryBind(aKey, NCollection_Vector<int>());
-      aSpatialBuckets.ChangeFind(aKey).Append(aVtxIdx);
+      aActiveVertices.Append(std::make_pair(aVtx.Point, aVtxIdx));
     }
 
-    // Canonical vertex map: old index -> canonical index.
+    // Build KDTree from active vertex points -- O(n log n).
+    const int aNbActive = aActiveVertices.Length();
+    NCollection_Array1<gp_Pnt> aPointsArr(0, std::max(0, aNbActive - 1));
+    for (int i = 0; i < aNbActive; ++i)
+      aPointsArr.SetValue(i, aActiveVertices.Value(i).first);
+
+    NCollection_KDTree<gp_Pnt, 3> aTree;
+    if (!aPointsArr.IsEmpty())
+      aTree.Build(aPointsArr);
+
+    // Canonical vertex map: old graph index -> canonical graph index.
     NCollection_DataMap<int, int> aCanonicalVertex(
-      std::max(1, theGraph.Defs().NbVertices()),
+      std::max(1, aNbVertices),
       aTmpAlloc);
 
-    for (NCollection_DataMap<int64_t, NCollection_Vector<int>>::Iterator
-           aBucketIter(aSpatialBuckets);
-         aBucketIter.More(); aBucketIter.Next())
+    for (int aLocalIdx = 0; aLocalIdx < aNbActive; ++aLocalIdx)
     {
-      const NCollection_Vector<int>& aBucket = aBucketIter.Value();
-      for (int aBaseIdx = 0; aBaseIdx < aBucket.Length(); ++aBaseIdx)
-      {
-        const int aBaseVtxIdx = aBucket.Value(aBaseIdx);
-        if (aCanonicalVertex.IsBound(aBaseVtxIdx))
-          continue;
+      const int aBaseVtxIdx = aActiveVertices.Value(aLocalIdx).second;
+      if (aCanonicalVertex.IsBound(aBaseVtxIdx))
+        continue;
 
-        const BRepGraph_TopoNode::VertexDef& aBaseVtx = theGraph.Defs().Vertex(aBaseVtxIdx);
-        if (aBaseVtx.IsRemoved)
-          continue;
+      const BRepGraph_TopoNode::VertexDef& aBaseVtx = theGraph.Defs().Vertex(aBaseVtxIdx);
 
-        for (int aCandIdx = aBaseIdx + 1; aCandIdx < aBucket.Length(); ++aCandIdx)
+      aTree.ForEachInRange(aBaseVtx.Point, aTol, [&](size_t theResultIdx) {
+        const int anArrayIdx = static_cast<int>(theResultIdx) - 1;
+        if (anArrayIdx <= aLocalIdx)
+          return; // skip self and already-processed
+
+        const int aCandVtxIdx = aActiveVertices.Value(anArrayIdx).second;
+        if (aCanonicalVertex.IsBound(aCandVtxIdx))
+          return;
+
+        const BRepGraph_TopoNode::VertexDef& aCandVtx = theGraph.Defs().Vertex(aCandVtxIdx);
+        const double aMaxTol = std::max(aBaseVtx.Tolerance, aCandVtx.Tolerance);
+        if (aBaseVtx.Point.Distance(aCandVtx.Point) <= aMaxTol)
         {
-          const int aCandVtxIdx = aBucket.Value(aCandIdx);
-          if (aCanonicalVertex.IsBound(aCandVtxIdx))
-            continue;
-
-          const BRepGraph_TopoNode::VertexDef& aCandVtx = theGraph.Defs().Vertex(aCandVtxIdx);
-          if (aCandVtx.IsRemoved)
-            continue;
-
-          const double aMaxTol = std::max(aBaseVtx.Tolerance, aCandVtx.Tolerance);
-          if (aBaseVtx.Point.Distance(aCandVtx.Point) <= aMaxTol)
-          {
-            aCanonicalVertex.Bind(aCandVtxIdx, aBaseVtxIdx);
-          }
+          aCanonicalVertex.Bind(aCandVtxIdx, aBaseVtxIdx);
         }
-      }
+      });
     }
 
     if (!theOptions.AnalyzeOnly)

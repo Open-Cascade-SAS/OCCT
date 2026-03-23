@@ -417,7 +417,7 @@ void BRepGraph::EndDeferredInvalidation()
     for (int aFaceIter = 0; aFaceIter < aFaces->Length(); ++aFaceIter)
     {
       const int aFaceIdx = aFaces->Value(aFaceIter);
-      auto& aFaceDef = myData->myIncStorage.ChangeFace(aFaceIdx);
+      BRepGraph_TopoNode::FaceDef& aFaceDef = myData->myIncStorage.ChangeFace(aFaceIdx);
       if (aFaceDef.IsModified)
         continue;
       aFaceDef.IsModified = true;
@@ -429,7 +429,7 @@ void BRepGraph::EndDeferredInvalidation()
       for (int aShellIter = 0; aShellIter < aShells->Length(); ++aShellIter)
       {
         const int aShellIdx = aShells->Value(aShellIter);
-        auto& aShellDef = myData->myIncStorage.ChangeShell(aShellIdx);
+        BRepGraph_TopoNode::ShellDef& aShellDef = myData->myIncStorage.ChangeShell(aShellIdx);
         if (aShellDef.IsModified)
           continue;
         aShellDef.IsModified = true;
@@ -460,7 +460,7 @@ void BRepGraph::EndDeferredInvalidation()
     for (int aShellIter = 0; aShellIter < aShells->Length(); ++aShellIter)
     {
       const int aShellIdx = aShells->Value(aShellIter);
-      auto& aShellDef = myData->myIncStorage.ChangeShell(aShellIdx);
+      BRepGraph_TopoNode::ShellDef& aShellDef = myData->myIncStorage.ChangeShell(aShellIdx);
       if (aShellDef.IsModified)
         continue;
       aShellDef.IsModified = true;

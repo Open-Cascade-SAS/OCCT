@@ -222,7 +222,7 @@ void BRepGraphInc_ReverseIndex::BuildDelta(
     {
       if (!myAllocator.IsNull())
       {
-        theIdx.Append(NCollection_Vector<int>(256, myAllocator));
+        theIdx.Append(NCollection_Vector<int>(16, myAllocator));
       }
       else
       {
