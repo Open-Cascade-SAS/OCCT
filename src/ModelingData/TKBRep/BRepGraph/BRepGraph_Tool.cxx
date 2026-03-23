@@ -109,7 +109,8 @@ bool BRepGraph_Tool::Edge::SameRange(const BRepGraph& theGraph, const int theEdg
 
 //=================================================================================================
 
-std::pair<double, double> BRepGraph_Tool::Edge::Range(const BRepGraph& theGraph, const int theEdgeIdx)
+std::pair<double, double> BRepGraph_Tool::Edge::Range(const BRepGraph& theGraph,
+                                                      const int        theEdgeIdx)
 {
   const BRepGraphInc::EdgeEntity& anEdge = theGraph.Defs().Edge(theEdgeIdx);
   return {anEdge.ParamFirst, anEdge.ParamLast};
@@ -315,7 +316,8 @@ Geom2dAdaptor_Curve BRepGraph_Tool::CoEdge::PCurveAdaptor(const BRepGraph& theGr
   const BRepGraphInc::CoEdgeEntity& aCoEdge = theGraph.Defs().CoEdge(theCoEdgeIdx);
   if (aCoEdge.Curve2DRepIdx >= 0)
   {
-    const occ::handle<Geom2d_Curve>& aCurve = theGraph.Defs().Curve2DRep(aCoEdge.Curve2DRepIdx).Curve;
+    const occ::handle<Geom2d_Curve>& aCurve =
+      theGraph.Defs().Curve2DRep(aCoEdge.Curve2DRepIdx).Curve;
     if (!aCurve.IsNull())
       return Geom2dAdaptor_Curve(aCurve, aCoEdge.ParamFirst, aCoEdge.ParamLast);
   }
@@ -328,7 +330,8 @@ Geom2dAdaptor_Curve BRepGraph_Tool::CoEdge::PCurveAdaptor(const BRepGraph& theGr
     const BRepGraphInc::FaceEntity& aFace = theGraph.Defs().Face(aCoEdge.FaceDefId.Index);
     if (aFace.SurfaceRepIdx >= 0)
     {
-      const occ::handle<Geom_Surface>& aSurf = theGraph.Defs().SurfaceRep(aFace.SurfaceRepIdx).Surface;
+      const occ::handle<Geom_Surface>& aSurf =
+        theGraph.Defs().SurfaceRep(aFace.SurfaceRepIdx).Surface;
       const occ::handle<Geom_Plane> aPlane = Handle(Geom_Plane)::DownCast(aSurf);
       if (!aPlane.IsNull())
       {
@@ -398,7 +401,8 @@ std::pair<gp_Pnt2d, gp_Pnt2d> BRepGraph_Tool::CoEdge::UVPoints(const BRepGraph& 
 
 //=================================================================================================
 
-std::pair<double, double> BRepGraph_Tool::CoEdge::Range(const BRepGraph& theGraph, const int theCoEdgeIdx)
+std::pair<double, double> BRepGraph_Tool::CoEdge::Range(const BRepGraph& theGraph,
+                                                        const int        theCoEdgeIdx)
 {
   const BRepGraphInc::CoEdgeEntity& aCoEdge = theGraph.Defs().CoEdge(theCoEdgeIdx);
   return {aCoEdge.ParamFirst, aCoEdge.ParamLast};
@@ -406,7 +410,9 @@ std::pair<double, double> BRepGraph_Tool::CoEdge::Range(const BRepGraph& theGrap
 
 //=================================================================================================
 
-bool BRepGraph_Tool::Edge::IsClosedOnFace(const BRepGraph& theGraph, const int theEdgeIdx, const int theFaceIdx)
+bool BRepGraph_Tool::Edge::IsClosedOnFace(const BRepGraph& theGraph,
+                                          const int        theEdgeIdx,
+                                          const int        theFaceIdx)
 {
   const BRepGraph_NodeId            anEdgeId = BRepGraph_NodeId::Edge(theEdgeIdx);
   const BRepGraph_NodeId            aFaceId  = BRepGraph_NodeId::Face(theFaceIdx);
