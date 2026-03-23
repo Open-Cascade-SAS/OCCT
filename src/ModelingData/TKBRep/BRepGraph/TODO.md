@@ -60,11 +60,10 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 - Sewing `mergeMatchedEdges` uses `Builder().RemoveNode()` for replaced edges
 - `FreeEdges` and multiple-edge detection switched to O(1) `DefsView::FaceCountOfEdge` with `IsRemoved` filter
 
-### MutationGuard RAII [Stab] ★★★
-- RAII wrapper: `BeginDeferredInvalidation()` on construct, `EndDeferredInvalidation()` + `CommitMutation()` on destruct
-- Guarantees atomicity — no partial mutations visible outside scope
-- Debug-mode `ValidateReverseIndex()` in destructor
-- Simplifies algorithm code: replace manual begin/end/commit with single guard scope
+### ~~MutationGuard RAII~~ — DONE (2026-03-20)
+- `BRepGraph_MutationGuard` RAII class: `BeginDeferredInvalidation()` on construct, `EndDeferredInvalidation()` + `CommitMutation()` on destruct
+- Re-entrant: nested guards are no-ops, only outermost flushes and commits
+- Applied in: SameParameter::Perform, Sewing::processEdges
 
 ### Seam detection strengthening [Stab] ★★★
 - `canSewSameFaceEdges` uses bounding-box heuristics

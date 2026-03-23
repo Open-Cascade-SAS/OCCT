@@ -51,6 +51,7 @@
 #include <BRepGraph_CacheView.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_History.hxx>
+#include <BRepGraph_MutationGuard.hxx>
 #include <BRepGraph_Mutator.hxx>
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_ShapesView.hxx>
@@ -1444,37 +1445,38 @@ void processEdges(BRepGraph&                           theGraph,
     return;
   }
 
-  theGraph.BeginDeferredInvalidation();
-  OSD_Parallel::For(
-    0,
-    aNbSewn,
-    [&](int theIdx) {
-      const int                          anEdgeIdx = theSewnEdgeIndices.FindKey(theIdx + 1);
-      const BRepGraph_TopoNode::EdgeDef& anEdge    = theGraph.Defs().Edge(anEdgeIdx);
-      if (anEdge.IsDegenerate)
-      {
-        return;
-      }
+  {
+    BRepGraph_MutationGuard aGuard(theGraph);
+    OSD_Parallel::For(
+      0,
+      aNbSewn,
+      [&](int theIdx) {
+        const int                          anEdgeIdx = theSewnEdgeIndices.FindKey(theIdx + 1);
+        const BRepGraph_TopoNode::EdgeDef& anEdge    = theGraph.Defs().Edge(anEdgeIdx);
+        if (anEdge.IsDegenerate)
+        {
+          return;
+        }
 
-      // Ensure edge tolerance is at least as large as its vertex tolerances.
-      double aMaxVtxTol = 0.0;
-      if (anEdge.StartVertexIdx >= 0)
-      {
-        aMaxVtxTol = std::max(aMaxVtxTol, theGraph.Defs().Vertex(anEdge.StartVertexIdx).Tolerance);
-      }
-      if (anEdge.EndVertexIdx >= 0)
-      {
-        aMaxVtxTol = std::max(aMaxVtxTol, theGraph.Defs().Vertex(anEdge.EndVertexIdx).Tolerance);
-      }
+        // Ensure edge tolerance is at least as large as its vertex tolerances.
+        double aMaxVtxTol = 0.0;
+        if (anEdge.StartVertexIdx >= 0)
+        {
+          aMaxVtxTol = std::max(aMaxVtxTol, theGraph.Defs().Vertex(anEdge.StartVertexIdx).Tolerance);
+        }
+        if (anEdge.EndVertexIdx >= 0)
+        {
+          aMaxVtxTol = std::max(aMaxVtxTol, theGraph.Defs().Vertex(anEdge.EndVertexIdx).Tolerance);
+        }
 
-      if (aMaxVtxTol > anEdge.Tolerance)
-      {
-        theGraph.Mut().EdgeDef(anEdgeIdx).Tolerance = aMaxVtxTol;
-        theGraph.Cache().Invalidate(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, anEdgeIdx));
-      }
-    },
-    !theOptions.Parallel);
-  theGraph.EndDeferredInvalidation();
+        if (aMaxVtxTol > anEdge.Tolerance)
+        {
+          theGraph.Mut().EdgeDef(anEdgeIdx).Tolerance = aMaxVtxTol;
+          theGraph.Cache().Invalidate(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, anEdgeIdx));
+        }
+      },
+      !theOptions.Parallel);
+  }
 }
 
 // ---------------------------------------------------------------------------

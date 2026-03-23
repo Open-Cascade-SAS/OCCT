@@ -24,6 +24,7 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_History.hxx
   BRepGraph_HistoryRecord.hxx
   BRepGraph_Iterator.hxx
+  BRepGraph_MutationGuard.hxx
   BRepGraph_Mutator.cxx
   BRepGraph_Mutator.hxx
   BRepGraph_MutView.cxx

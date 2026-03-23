@@ -164,6 +164,7 @@ private:
   friend class BRepGraphAlgo_Copy;
   friend class BRepGraphAlgo_Transform;
   friend class BRepGraphAlgo_UVBounds;
+  friend class BRepGraph_MutationGuard;
 
   Standard_EXPORT int NbHistoryRecords() const;
   Standard_EXPORT const BRepGraph_HistoryRecord& HistoryRecord(int theIdx) const;

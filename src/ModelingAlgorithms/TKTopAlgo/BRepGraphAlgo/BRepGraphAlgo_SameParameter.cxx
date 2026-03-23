@@ -17,6 +17,7 @@
 #include <Approx_SameParameter.hxx>
 #include <BRepCheck.hxx>
 #include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_MutationGuard.hxx>
 #include <BRepGraph_MutView.hxx>
 #include <BSplCLib.hxx>
 #include <ExtremaPC_Curve.hxx>
@@ -706,15 +707,16 @@ void BRepGraphAlgo_SameParameter::Perform(BRepGraph&                         the
     anIndices.SetValue(anIdx - 1, theEdgeIndices.FindKey(anIdx));
   }
 
-  theGraph.BeginDeferredInvalidation();
-  OSD_Parallel::For(
-    0,
-    aNbEdges,
-    [&](int theIdx) {
-      const int              anEdgeIdx = anIndices.Value(theIdx);
-      const BRepGraph_NodeId anEdgeId(BRepGraph_NodeId::Kind::Edge, anEdgeIdx);
-      Enforce(theGraph, anEdgeId, theTolerance);
-    },
-    !theParallel);
-  theGraph.EndDeferredInvalidation();
+  {
+    BRepGraph_MutationGuard aGuard(theGraph);
+    OSD_Parallel::For(
+      0,
+      aNbEdges,
+      [&](int theIdx) {
+        const int              anEdgeIdx = anIndices.Value(theIdx);
+        const BRepGraph_NodeId anEdgeId(BRepGraph_NodeId::Kind::Edge, anEdgeIdx);
+        Enforce(theGraph, anEdgeId, theTolerance);
+      },
+      !theParallel);
+  }
 }
