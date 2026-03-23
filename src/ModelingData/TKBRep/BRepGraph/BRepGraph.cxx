@@ -172,9 +172,6 @@ BRepGraph_NodeId BRepGraph::createPCurveNode(const Handle(Geom2d_Curve)& theCrv2
 
 BRepGraph_UID BRepGraph::allocateUID(BRepGraph_NodeId theNodeId)
 {
-  if (!myData->myUIDEnabled)
-    return BRepGraph_UID();
-
   const size_t  aCounter = myData->myNextUIDCounter.fetch_add(1, std::memory_order_relaxed);
   BRepGraph_UID aUID(theNodeId.NodeKind, aCounter, myData->myGeneration);
   myData->myNodeToUID.Bind(theNodeId, aUID);
@@ -197,10 +194,6 @@ bool BRepGraph::IsDone() const
 {
   return myData->myIsDone;
 }
-
-//=================================================================================================
-
-void BRepGraph::SetUIDEnabled(bool theVal) { myData->myUIDEnabled = theVal; }
 
 //=================================================================================================
 
@@ -464,6 +457,7 @@ void BRepGraph::SetAllocator(const Handle(NCollection_BaseAllocator)& theAlloc)
   myData->mySurfRegistry   = NCollection_IndexedDataMap<const Geom_Surface*, int>(100, myData->myAllocator);
   myData->myCurveRegistry  = NCollection_IndexedDataMap<const Geom_Curve*, int>(100, myData->myAllocator);
   myData->myTShapeToDefId  = NCollection_DataMap<const TopoDS_TShape*, BRepGraph_NodeId>(100, myData->myAllocator);
+  myData->myNodeToUID      = NCollection_DataMap<BRepGraph_NodeId, BRepGraph_UID>(100, myData->myAllocator);
   myData->myUIDToNodeId    = NCollection_DataMap<BRepGraph_UID, BRepGraph_NodeId>(100, myData->myAllocator);
   myData->myEdgeToWires = NCollection_DataMap<int, NCollection_Vector<int>>(100, myData->myAllocator);
 }

@@ -16,14 +16,8 @@
 
 //=================================================================================================
 
-bool BRepGraph::UIDsView::IsEnabled() const { return myGraph->myData->myUIDEnabled; }
-
-//=================================================================================================
-
 BRepGraph_UID BRepGraph::UIDsView::Of(BRepGraph_NodeId theNode) const
 {
-  if (!myGraph->myData->myUIDEnabled)
-    return BRepGraph_UID();
   const BRepGraph_UID* aPtr = myGraph->myData->myNodeToUID.Seek(theNode);
   return aPtr != nullptr ? *aPtr : BRepGraph_UID();
 }
@@ -40,7 +34,7 @@ BRepGraph_NodeId BRepGraph::UIDsView::NodeIdFrom(const BRepGraph_UID& theUID) co
 
 bool BRepGraph::UIDsView::Has(const BRepGraph_UID& theUID) const
 {
-  if (!myGraph->myData->myUIDEnabled || !theUID.IsValid())
+  if (!theUID.IsValid())
     return false;
   if (theUID.Generation() != myGraph->myData->myGeneration)
     return false;

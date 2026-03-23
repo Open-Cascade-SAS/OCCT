@@ -21,10 +21,7 @@
 class BRepGraph::UIDsView
 {
 public:
-  //! Check if UID generation is enabled.
-  Standard_EXPORT bool IsEnabled() const;
-
-  //! Return the UID assigned to a node (empty if UIDs are disabled).
+  //! Return the UID assigned to a node.
   //! @param[in] theNode node identifier
   Standard_EXPORT BRepGraph_UID Of(BRepGraph_NodeId theNode) const;
 

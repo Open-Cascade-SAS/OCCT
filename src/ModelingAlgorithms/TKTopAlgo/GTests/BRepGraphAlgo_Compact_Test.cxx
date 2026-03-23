@@ -23,6 +23,9 @@
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_ShapesView.hxx>
+#include <BRepGraph_UID.hxx>
+#include <BRepGraph_UIDsView.hxx>
+#include <NCollection_Map.hxx>
 #include <BRepGraphAlgo_Compact.hxx>
 #include <BRepGraphAlgo_Deduplicate.hxx>
 #include <BRepGraphAlgo_Validate.hxx>
@@ -104,7 +107,7 @@ TEST(BRepGraphAlgo_CompactTest, AfterDeduplicate_RemovesNodes)
   const int aNbSurfacesBefore = aGraph.Geom().NbSurfaces();
 
   BRepGraphAlgo_Compact::Options anOpts;
-  anOpts.HistoryMode = false;
+  anOpts.HistoryMode                       = false;
   const BRepGraphAlgo_Compact::Result aRes = BRepGraphAlgo_Compact::Perform(aGraph, anOpts);
 
   // Some geometry nodes should have been removed.
@@ -158,7 +161,8 @@ TEST(BRepGraphAlgo_CompactTest, HistoryMode_RecordsMapping)
   anOpts.HistoryMode = true;
   BRepGraphAlgo_Compact::Perform(aGraph, anOpts);
 
-  const int aNbRemapRecords = countHistoryRecordsByOp(aGraph, TCollection_AsciiString("Compact:Remap"));
+  const int aNbRemapRecords =
+    countHistoryRecordsByOp(aGraph, TCollection_AsciiString("Compact:Remap"));
   // There should be history records if any remapping occurred.
   // After geometry dedup only, topology indices don't change, so remap may be 0.
   // This test just verifies the mechanism works without crashing.
@@ -181,4 +185,105 @@ TEST(BRepGraphAlgo_CompactTest, FullPipeline_Deduplicate_Compact_Validate)
   // Validate.
   const BRepGraphAlgo_Validate::Result aValResult = BRepGraphAlgo_Validate::Perform(aGraph);
   EXPECT_TRUE(aValResult.IsValid());
+}
+
+TEST(BRepGraphAlgo_CompactTest, Compact_PreservesTopologyUIDs)
+{
+  BRepGraph aGraph;
+  aGraph.Build(makeTwoCopiedFaces());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  // Collect the set of all original topology UIDs before dedup+compact.
+  // Helper: record UIDs for all defs of a given kind.
+  auto collectUIDs = [&](BRepGraph_NodeId::Kind theKind, int theCount) {
+    NCollection_Map<BRepGraph_UID> aMap;
+    for (int anIdx = 0; anIdx < theCount; ++anIdx)
+    {
+      const BRepGraph_UID aUID = aGraph.UIDs().Of(BRepGraph_NodeId(theKind, anIdx));
+      EXPECT_TRUE(aUID.IsValid());
+      aMap.Add(aUID);
+    }
+    return aMap;
+  };
+
+  const NCollection_Map<BRepGraph_UID> anOrigVertexUIDs =
+    collectUIDs(BRepGraph_NodeId::Kind::Vertex, aGraph.Defs().NbVertices());
+  const NCollection_Map<BRepGraph_UID> anOrigEdgeUIDs =
+    collectUIDs(BRepGraph_NodeId::Kind::Edge, aGraph.Defs().NbEdges());
+  const NCollection_Map<BRepGraph_UID> anOrigWireUIDs =
+    collectUIDs(BRepGraph_NodeId::Kind::Wire, aGraph.Defs().NbWires());
+  const NCollection_Map<BRepGraph_UID> anOrigFaceUIDs =
+    collectUIDs(BRepGraph_NodeId::Kind::Face, aGraph.Defs().NbFaces());
+  const NCollection_Map<BRepGraph_UID> anOrigShellUIDs =
+    collectUIDs(BRepGraph_NodeId::Kind::Shell, aGraph.Defs().NbShells());
+  const NCollection_Map<BRepGraph_UID> anOrigSolidUIDs =
+    collectUIDs(BRepGraph_NodeId::Kind::Solid, aGraph.Defs().NbSolids());
+  const NCollection_Map<BRepGraph_UID> anOrigCompoundUIDs =
+    collectUIDs(BRepGraph_NodeId::Kind::Compound, aGraph.Defs().NbCompounds());
+  const NCollection_Map<BRepGraph_UID> anOrigCompSolidUIDs =
+    collectUIDs(BRepGraph_NodeId::Kind::CompSolid, aGraph.Defs().NbCompSolids());
+  const NCollection_Map<BRepGraph_UID> anOrigSurfaceUIDs =
+    collectUIDs(BRepGraph_NodeId::Kind::Surface, aGraph.Geom().NbSurfaces());
+  const NCollection_Map<BRepGraph_UID> anOrigCurveUIDs =
+    collectUIDs(BRepGraph_NodeId::Kind::Curve, aGraph.Geom().NbCurves());
+  const NCollection_Map<BRepGraph_UID> anOrigPCurveUIDs =
+    collectUIDs(BRepGraph_NodeId::Kind::PCurve, aGraph.Geom().NbPCurves());
+
+  const uint32_t aGenBefore = aGraph.UIDs().Generation();
+
+  // Run dedup + compact.
+  BRepGraphAlgo_Deduplicate::Perform(aGraph);
+  BRepGraphAlgo_Compact::Perform(aGraph);
+
+  // Generation must be preserved across compact.
+  EXPECT_EQ(aGraph.UIDs().Generation(), aGenBefore);
+
+  // Helper: verify surviving defs of a kind retain original UIDs.
+  auto verifyUIDs = [&](BRepGraph_NodeId::Kind                theKind,
+                        int                                   theCount,
+                        const NCollection_Map<BRepGraph_UID>& theOriginals,
+                        const char*                           theLabel) {
+    for (int anIdx = 0; anIdx < theCount; ++anIdx)
+    {
+      const BRepGraph_NodeId aNewId(theKind, anIdx);
+      const BRepGraph_UID    aNewUID = aGraph.UIDs().Of(aNewId);
+      EXPECT_TRUE(aNewUID.IsValid()) << theLabel << " " << anIdx << " lost UID after compact";
+      EXPECT_TRUE(theOriginals.Contains(aNewUID))
+        << theLabel << " " << anIdx << " has UID not present before compact";
+      EXPECT_EQ(aGraph.UIDs().NodeIdFrom(aNewUID), aNewId);
+      EXPECT_TRUE(aGraph.UIDs().Has(aNewUID));
+    }
+  };
+
+  verifyUIDs(BRepGraph_NodeId::Kind::Vertex,
+             aGraph.Defs().NbVertices(),
+             anOrigVertexUIDs,
+             "Vertex");
+  verifyUIDs(BRepGraph_NodeId::Kind::Edge, aGraph.Defs().NbEdges(), anOrigEdgeUIDs, "Edge");
+  verifyUIDs(BRepGraph_NodeId::Kind::Wire, aGraph.Defs().NbWires(), anOrigWireUIDs, "Wire");
+  verifyUIDs(BRepGraph_NodeId::Kind::Face, aGraph.Defs().NbFaces(), anOrigFaceUIDs, "Face");
+  verifyUIDs(BRepGraph_NodeId::Kind::Shell, aGraph.Defs().NbShells(), anOrigShellUIDs, "Shell");
+  verifyUIDs(BRepGraph_NodeId::Kind::Solid, aGraph.Defs().NbSolids(), anOrigSolidUIDs, "Solid");
+  verifyUIDs(BRepGraph_NodeId::Kind::Compound,
+             aGraph.Defs().NbCompounds(),
+             anOrigCompoundUIDs,
+             "Compound");
+  verifyUIDs(BRepGraph_NodeId::Kind::CompSolid,
+             aGraph.Defs().NbCompSolids(),
+             anOrigCompSolidUIDs,
+             "CompSolid");
+
+  // Verify geometry UIDs are also preserved from old graph.
+  verifyUIDs(BRepGraph_NodeId::Kind::Surface,
+             aGraph.Geom().NbSurfaces(),
+             anOrigSurfaceUIDs,
+             "Surface");
+  verifyUIDs(BRepGraph_NodeId::Kind::Curve,
+             aGraph.Geom().NbCurves(),
+             anOrigCurveUIDs,
+             "Curve");
+  verifyUIDs(BRepGraph_NodeId::Kind::PCurve,
+             aGraph.Geom().NbPCurves(),
+             anOrigPCurveUIDs,
+             "PCurve");
 }

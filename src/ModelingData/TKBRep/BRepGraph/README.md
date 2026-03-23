@@ -107,7 +107,7 @@ flowchart TB
 
 - `BRepGraph_NodeId`: typed definition identifier (`Kind` + index).
 - `BRepGraph_UsageId`: typed usage identifier (`Kind` + index).
-- `BRepGraph_UID`: optional persistent identifier with generation counter.
+- `BRepGraph_UID`: persistent identifier with generation counter (always assigned).
 
 ### Topology Definitions and Usages
 
@@ -501,7 +501,7 @@ BRepGraphAlgo_AttrTransfer::Perform(aGraph);
 
 ## Caveats and Current Constraints
 
-- UID allocation is opt-in (`SetUIDEnabled(true)` before build if needed).
+- UIDs are always assigned to every node during `Build()` and preserved across `Compact()`.
 - Node ids are generation-local; rebuild clears storage and increments generation.
 - Deduplication is pointer-based (`TopoDS_TShape*`, `Geom_* handle.get()` identity).
 - Seam edges may hold two pcurves for one face context (orientation-sensitive).

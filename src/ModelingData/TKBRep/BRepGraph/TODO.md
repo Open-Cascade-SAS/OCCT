@@ -118,7 +118,7 @@ graph TD
     T1_4["T1.4 PCurve Continuity<br/><b>S</b> | ✅ done"]
     T1_5["T1.5 Cached UV Bounds<br/><b>M</b> | ✅ done"]
     T1_1["T1.1 Back-Ref Automation<br/><b>M</b> | ✅ done"]
-    T1_2["T1.2 Mandatory UID<br/><b>M</b> | foundation"]
+    T1_2["T1.2 Mandatory UID<br/><b>M</b> | ✅ done"]
     T2_1["T2.1 Transactions<br/><b>L</b>"]
     T2_2["T2.2 Mutation Primitives<br/><b>L</b>"]
     T2_3["T2.3 Observers<br/><b>M</b>"]
@@ -544,7 +544,7 @@ graph TB
 | 2 | T1.4 PCurve Continuity | 1 | S | **Done** — uses `BRep_Tool::MaxContinuity` |
 | 2b | T1.5 Cached UV Bounds | 1 | M | **Done** — `BRepGraphAlgo_UVBounds` with GUID caching |
 | 3 | T1.1 Back-Ref Automation | 1 | M | **Done** — `BRepGraph_BackRefManager` centralizes all back-ref updates |
-| 4 | T1.2 Mandatory UID | 1 | M | Enables stable identity |
+| 4 | T1.2 Mandatory UID | 1 | M | **Done** — UIDs always-on, preserved across Compact |
 | 5 | T2.1 Transactions | 2 | L | Enables safe multi-step mutations |
 | 6 | T2.3 Observers | 2 | M | Transaction-aware events and cache invalidation |
 | 7 | T2.2 Mutation Primitives | 2 | L | Enables higher-level algorithms |

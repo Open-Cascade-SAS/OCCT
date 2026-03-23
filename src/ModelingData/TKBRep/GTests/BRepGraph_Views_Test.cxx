@@ -64,7 +64,6 @@ protected:
   {
     BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
     const TopoDS_Shape& aBox = aBoxMaker.Shape();
-    myGraph.SetUIDEnabled(true);
     myGraph.Build(aBox);
   }
 
@@ -177,11 +176,6 @@ TEST_F(BRepGraphViewsTest, GeomView_PCurveOf_Valid)
 }
 
 // ---------- UIDsView ----------
-
-TEST_F(BRepGraphViewsTest, UIDsView_IsEnabled)
-{
-  EXPECT_TRUE(myGraph.UIDs().IsEnabled());
-}
 
 TEST_F(BRepGraphViewsTest, UIDsView_Of_Valid)
 {

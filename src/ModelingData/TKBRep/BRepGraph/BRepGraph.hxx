@@ -87,9 +87,6 @@ public:
   //! Return true if the graph was successfully built.
   Standard_EXPORT bool IsDone() const;
 
-  //! Enable or disable UID generation for newly created nodes.
-  Standard_EXPORT void SetUIDEnabled(bool theVal);
-
   //! Return all usages of a given definition.
   Standard_EXPORT const NCollection_Vector<BRepGraph_UsageId>& UsagesOf(
     BRepGraph_NodeId theDefId) const;
@@ -174,6 +171,7 @@ private:
   friend class BRepGraph_Mutator;
   friend class BRepGraph_BackRefManager;
   friend class BRepGraphAlgo_BndLib;
+  friend class BRepGraphAlgo_Compact;
   friend class BRepGraphAlgo_UVBounds;
 
   // -- History flat methods (used internally by History subsystem) --

@@ -133,7 +133,6 @@ TEST(BRepGraphEdgeCasesTest, NbNodes_BeforeBuild_ReturnsZero)
 TEST(BRepGraphEdgeCasesTest, Build_TwiceOnSameGraph_GenerationIncrements)
 {
   BRepGraph aGraph;
-  aGraph.SetUIDEnabled(true);
 
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape aBox = aBoxMaker.Shape();
@@ -152,7 +151,6 @@ TEST(BRepGraphEdgeCasesTest, Build_TwiceOnSameGraph_GenerationIncrements)
 TEST(BRepGraphEdgeCasesTest, Build_TwiceOnSameGraph_OldUIDsInvalidated)
 {
   BRepGraph aGraph;
-  aGraph.SetUIDEnabled(true);
 
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape aBox = aBoxMaker.Shape();
@@ -218,16 +216,9 @@ TEST(BRepGraphEdgeCasesTest, Build_TwiceOnSameGraph_CountsResetCorrectly)
 // UID edge cases
 // ============================================================
 
-TEST(BRepGraphEdgeCasesTest, UID_DisabledByDefault)
+TEST(BRepGraphEdgeCasesTest, UID_AlwaysEnabled_AfterBuild)
 {
   BRepGraph aGraph;
-  EXPECT_FALSE(aGraph.UIDs().IsEnabled());
-}
-
-TEST(BRepGraphEdgeCasesTest, UID_WhenDisabled_UIDOfReturnsInvalid)
-{
-  BRepGraph aGraph;
-  // UID not enabled.
 
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   aGraph.Build(aBoxMaker.Shape());
@@ -235,7 +226,7 @@ TEST(BRepGraphEdgeCasesTest, UID_WhenDisabled_UIDOfReturnsInvalid)
 
   const BRepGraph_NodeId aSolidId(BRepGraph_NodeId::Kind::Solid, 0);
   const BRepGraph_UID aUID = aGraph.UIDs().Of(aSolidId);
-  EXPECT_FALSE(aUID.IsValid());
+  EXPECT_TRUE(aUID.IsValid());
 }
 
 // ============================================================

@@ -825,11 +825,8 @@ void BRepGraph_Builder::Perform(BRepGraph& theGraph, const TopoDS_Shape& theShap
   const int aNbFacesEst   = aFaceData.Length();
   const int anEstEntities = aNbFacesEst * 10;
   theGraph.myData->myTShapeToDefId.ReSize(anEstEntities);
-  if (theGraph.myData->myUIDEnabled)
-  {
-    theGraph.myData->myNodeToUID.ReSize(anEstEntities);
-    theGraph.myData->myUIDToNodeId.ReSize(anEstEntities);
-  }
+  theGraph.myData->myNodeToUID.ReSize(anEstEntities);
+  theGraph.myData->myUIDToNodeId.ReSize(anEstEntities);
 
   // Phase 3 (sequential): Register definitions and usages from pre-extracted data.
   registerFaceData(theGraph, aFaceData);

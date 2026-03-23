@@ -72,7 +72,6 @@ protected:
   {
     BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
     const TopoDS_Shape& aBox = aBoxMaker.Shape();
-    myGraph.SetUIDEnabled(true);
     myGraph.Build(aBox);
   }
 
@@ -285,7 +284,6 @@ TEST(BRepGraphReBuildTest, ReBuild_UIDMonotonic)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.SetUIDEnabled(true);
   aGraph.Build(aBox);
   const size_t   aCountAfterFirst = aGraph.Defs().NbNodes();
   const uint32_t aGen1            = aGraph.UIDs().Generation();
@@ -663,7 +661,7 @@ TEST_F(BRepGraphTest, Shape_InvalidatedAfterMutation)
   EXPECT_FALSE(aBefore.IsSame(anAfter));
 }
 
-TEST(BRepGraphUIDTest, UIDsDisabled_DefaultUIDIsInvalid)
+TEST(BRepGraphUIDTest, DefaultBuild_AssignsValidUIDs)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
 
@@ -676,25 +674,6 @@ TEST(BRepGraphUIDTest, UIDsDisabled_DefaultUIDIsInvalid)
   const BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
   const BRepGraph_UID    aUID = aGraph.UIDs().Of(aFaceId);
 
-  EXPECT_FALSE(aGraph.UIDs().IsEnabled());
-  EXPECT_FALSE(aUID.IsValid());
-}
-
-TEST(BRepGraphUIDTest, UIDsEnabled_AssignsValidUID)
-{
-  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-
-  BRepGraph aGraph;
-  aGraph.SetUIDEnabled(true);
-  aGraph.Build(aBoxMaker.Shape());
-
-  ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.Defs().NbFaces(), 0);
-
-  const BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
-  const BRepGraph_UID    aUID = aGraph.UIDs().Of(aFaceId);
-
-  EXPECT_TRUE(aGraph.UIDs().IsEnabled());
   EXPECT_TRUE(aUID.IsValid());
   EXPECT_TRUE(aGraph.UIDs().Has(aUID));
   EXPECT_EQ(aGraph.UIDs().NodeIdFrom(aUID), aFaceId);
@@ -706,8 +685,6 @@ TEST(BRepGraphUIDTest, UIDsGeneration_IncrementsAcrossBuilds)
   BRepPrimAPI_MakeBox aBoxMaker2(11.0, 21.0, 31.0);
 
   BRepGraph aGraph;
-  aGraph.SetUIDEnabled(true);
-
   aGraph.Build(aBoxMaker1.Shape());
   const uint32_t aGeneration1 = aGraph.UIDs().Generation();
 
@@ -724,8 +701,6 @@ TEST(BRepGraphUIDTest, StaleUID_HasReturnsFalseAfterRebuild)
   BRepPrimAPI_MakeBox aBoxMaker2(11.0, 21.0, 31.0);
 
   BRepGraph aGraph;
-  aGraph.SetUIDEnabled(true);
-
   aGraph.Build(aBoxMaker1.Shape());
   ASSERT_GT(aGraph.Defs().NbFaces(), 0);
   const BRepGraph_UID anOldUID =

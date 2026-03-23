@@ -82,8 +82,7 @@ struct BRepGraph_Data
   //! TShape -> Definition NodeId reverse lookup.
   NCollection_DataMap<const TopoDS_TShape*, BRepGraph_NodeId> myTShapeToDefId;
 
-  //! Opt-in UID system.
-  bool                myUIDEnabled = false;
+  //! UID system (always enabled).
   std::atomic<size_t> myNextUIDCounter{0};
   uint32_t            myGeneration{0};
 
@@ -132,6 +131,7 @@ struct BRepGraph_Data
         mySurfRegistry(100, myAllocator),
         myCurveRegistry(100, myAllocator),
         myTShapeToDefId(100, myAllocator),
+        myNodeToUID(100, myAllocator),
         myUIDToNodeId(100, myAllocator)
   {
   }
@@ -162,6 +162,7 @@ struct BRepGraph_Data
         mySurfRegistry(100, myAllocator),
         myCurveRegistry(100, myAllocator),
         myTShapeToDefId(100, myAllocator),
+        myNodeToUID(100, myAllocator),
         myUIDToNodeId(100, myAllocator)
   {
   }
