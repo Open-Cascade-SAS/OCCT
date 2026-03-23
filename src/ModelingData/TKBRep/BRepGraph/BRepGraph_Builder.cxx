@@ -1027,6 +1027,9 @@ void BRepGraph_Builder::Append(BRepGraph& theGraph, const TopoDS_Shape& theShape
   if (theShape.IsNull())
     return;
 
+  // Invalidate incidence storage — Append modifies legacy storage only.
+  theGraph.myData->myIncStorage.IsDone = false;
+
   // Phase 1 (sequential): Collect face contexts using simplified traversal.
   // Note: Append() intentionally flattens hierarchy to face level only --
   // no Solid/Shell/Compound defs are created. This is by design for

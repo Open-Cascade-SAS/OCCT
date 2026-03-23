@@ -14,6 +14,7 @@
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_Data.hxx>
 #include <BRepGraph_UsagesView.hxx>
+#include <BRepGraphInc_Storage.hxx>
 
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
@@ -21,35 +22,83 @@
 
 //=================================================================================================
 
-int BRepGraph::DefsView::NbSolids() const { return myGraph->myData->mySolids.Defs.Length(); }
+// Helper: true if incidence storage was successfully populated.
+static bool hasIncStorage(const BRepGraph_Data& theData)
+{
+  return theData.myIncStorage.IsDone;
+}
 
 //=================================================================================================
 
-int BRepGraph::DefsView::NbShells() const { return myGraph->myData->myShells.Defs.Length(); }
+int BRepGraph::DefsView::NbSolids() const
+{
+  if (hasIncStorage(*myGraph->myData))
+    return myGraph->myData->myIncStorage.Solids.Length();
+  return myGraph->myData->mySolids.Defs.Length();
+}
 
 //=================================================================================================
 
-int BRepGraph::DefsView::NbFaces() const { return myGraph->myData->myFaces.Defs.Length(); }
+int BRepGraph::DefsView::NbShells() const
+{
+  if (hasIncStorage(*myGraph->myData))
+    return myGraph->myData->myIncStorage.Shells.Length();
+  return myGraph->myData->myShells.Defs.Length();
+}
 
 //=================================================================================================
 
-int BRepGraph::DefsView::NbWires() const { return myGraph->myData->myWires.Defs.Length(); }
+int BRepGraph::DefsView::NbFaces() const
+{
+  if (hasIncStorage(*myGraph->myData))
+    return myGraph->myData->myIncStorage.Faces.Length();
+  return myGraph->myData->myFaces.Defs.Length();
+}
 
 //=================================================================================================
 
-int BRepGraph::DefsView::NbEdges() const { return myGraph->myData->myEdges.Defs.Length(); }
+int BRepGraph::DefsView::NbWires() const
+{
+  if (hasIncStorage(*myGraph->myData))
+    return myGraph->myData->myIncStorage.Wires.Length();
+  return myGraph->myData->myWires.Defs.Length();
+}
 
 //=================================================================================================
 
-int BRepGraph::DefsView::NbVertices() const { return myGraph->myData->myVertices.Defs.Length(); }
+int BRepGraph::DefsView::NbEdges() const
+{
+  if (hasIncStorage(*myGraph->myData))
+    return myGraph->myData->myIncStorage.Edges.Length();
+  return myGraph->myData->myEdges.Defs.Length();
+}
 
 //=================================================================================================
 
-int BRepGraph::DefsView::NbCompounds() const { return myGraph->myData->myCompounds.Defs.Length(); }
+int BRepGraph::DefsView::NbVertices() const
+{
+  if (hasIncStorage(*myGraph->myData))
+    return myGraph->myData->myIncStorage.Vertices.Length();
+  return myGraph->myData->myVertices.Defs.Length();
+}
 
 //=================================================================================================
 
-int BRepGraph::DefsView::NbCompSolids() const { return myGraph->myData->myCompSolids.Defs.Length(); }
+int BRepGraph::DefsView::NbCompounds() const
+{
+  if (hasIncStorage(*myGraph->myData))
+    return myGraph->myData->myIncStorage.Compounds.Length();
+  return myGraph->myData->myCompounds.Defs.Length();
+}
+
+//=================================================================================================
+
+int BRepGraph::DefsView::NbCompSolids() const
+{
+  if (hasIncStorage(*myGraph->myData))
+    return myGraph->myData->myIncStorage.CompSolids.Length();
+  return myGraph->myData->myCompSolids.Defs.Length();
+}
 
 //=================================================================================================
 
@@ -111,6 +160,14 @@ const BRepGraph_TopoNode::CompSolidDef& BRepGraph::DefsView::CompSolid(int theId
 
 int BRepGraph::DefsView::NbShellFaces(int theShellDefIdx) const
 {
+  if (hasIncStorage(*myGraph->myData))
+  {
+    const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+    if (theShellDefIdx < 0 || theShellDefIdx >= aStorage.Shells.Length())
+      return 0;
+    return aStorage.Shells.Value(theShellDefIdx).FaceRefs.Length();
+  }
+  // Legacy fallback via Usage chain.
   const BRepGraph_TopoNode::ShellDef& aShellDef = myGraph->myData->myShells.Defs.Value(theShellDefIdx);
   if (aShellDef.Usages.IsEmpty())
     return 0;
@@ -123,6 +180,17 @@ int BRepGraph::DefsView::NbShellFaces(int theShellDefIdx) const
 
 BRepGraph_NodeId BRepGraph::DefsView::ShellFaceDef(int theShellDefIdx, int theFaceIdx) const
 {
+  if (hasIncStorage(*myGraph->myData))
+  {
+    const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+    if (theShellDefIdx < 0 || theShellDefIdx >= aStorage.Shells.Length())
+      return BRepGraph_NodeId();
+    const BRepGraphInc::ShellEntity& aShell = aStorage.Shells.Value(theShellDefIdx);
+    if (theFaceIdx < 0 || theFaceIdx >= aShell.FaceRefs.Length())
+      return BRepGraph_NodeId();
+    return BRepGraph_NodeId::Face(aShell.FaceRefs.Value(theFaceIdx).FaceIdx);
+  }
+  // Legacy fallback via Usage chain.
   const BRepGraph_TopoNode::ShellDef& aShellDef = myGraph->myData->myShells.Defs.Value(theShellDefIdx);
   if (aShellDef.Usages.IsEmpty())
     return BRepGraph_NodeId();
@@ -144,6 +212,18 @@ const BRepGraph_TopoNode::BaseDef* BRepGraph::DefsView::TopoDef(BRepGraph_NodeId
 
 size_t BRepGraph::DefsView::NbNodes() const
 {
+  if (hasIncStorage(*myGraph->myData))
+  {
+    const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+    return static_cast<size_t>(aStorage.Solids.Length())
+           + static_cast<size_t>(aStorage.Shells.Length())
+           + static_cast<size_t>(aStorage.Faces.Length())
+           + static_cast<size_t>(aStorage.Wires.Length())
+           + static_cast<size_t>(aStorage.Edges.Length())
+           + static_cast<size_t>(aStorage.Vertices.Length())
+           + static_cast<size_t>(aStorage.Compounds.Length())
+           + static_cast<size_t>(aStorage.CompSolids.Length());
+  }
   return static_cast<size_t>(myGraph->myData->mySolids.Defs.Length())
          + static_cast<size_t>(myGraph->myData->myShells.Defs.Length())
          + static_cast<size_t>(myGraph->myData->myFaces.Defs.Length())
@@ -163,6 +243,8 @@ const BRepGraph_TopoNode::EdgeDef::PCurveEntry* BRepGraph::DefsView::FindPCurve(
   if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge || !theEdgeDef.IsValid())
     return nullptr;
 
+  // Read from legacy EdgeDef.PCurves (still authoritative until Phase 5).
+  // The incidence EdgeFaceGeoms table has the same data but returns a different type.
   const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
     myGraph->myData->myEdges.Defs.Value(theEdgeDef.Index);
   for (int aPCurveIter = 0; aPCurveIter < anEdgeDef.PCurves.Length(); ++aPCurveIter)
@@ -183,6 +265,7 @@ const BRepGraph_TopoNode::EdgeDef::PCurveEntry* BRepGraph::DefsView::FindPCurve(
   if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge || !theEdgeDef.IsValid())
     return nullptr;
 
+  // Read from legacy EdgeDef.PCurves (still authoritative until Phase 5).
   const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
     myGraph->myData->myEdges.Defs.Value(theEdgeDef.Index);
   for (int aPCurveIter = 0; aPCurveIter < anEdgeDef.PCurves.Length(); ++aPCurveIter)

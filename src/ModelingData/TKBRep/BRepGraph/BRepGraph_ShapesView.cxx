@@ -14,6 +14,7 @@
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_Data.hxx>
 #include <BRepGraph_Reconstruct.hxx>
+#include <BRepGraphInc_Reconstruct.hxx>
 
 #include <Standard_ProgramError.hxx>
 
@@ -44,7 +45,10 @@ TopoDS_Shape BRepGraph::ShapesView::Shape(BRepGraph_NodeId theNode) const
   }
 
   // Reconstruct outside the lock to avoid holding it during expensive computation.
-  TopoDS_Shape aReconstructed = BRepGraph_Reconstruct::Node(*myGraph, theNode);
+  // Phase 2: delegate to incidence-table reconstruct when available, legacy fallback otherwise.
+  TopoDS_Shape aReconstructed = myGraph->myData->myIncStorage.IsDone
+    ? BRepGraphInc_Reconstruct::Node(myGraph->myData->myIncStorage, theNode)
+    : BRepGraph_Reconstruct::Node(*myGraph, theNode);
 
   // Store under exclusive lock with double-check.
   if (!aReconstructed.IsNull())
@@ -82,6 +86,9 @@ const TopoDS_Shape& BRepGraph::ShapesView::OriginalOf(BRepGraph_NodeId theNode) 
 
 TopoDS_Shape BRepGraph::ShapesView::Reconstruct(BRepGraph_NodeId theRoot) const
 {
+  // Phase 2: delegate to incidence-table reconstruct when available.
+  if (myGraph->myData->myIncStorage.IsDone)
+    return BRepGraphInc_Reconstruct::Node(myGraph->myData->myIncStorage, theRoot);
   return BRepGraph_Reconstruct::Node(*myGraph, theRoot);
 }
 
@@ -89,6 +96,13 @@ TopoDS_Shape BRepGraph::ShapesView::Reconstruct(BRepGraph_NodeId theRoot) const
 
 TopoDS_Shape BRepGraph::ShapesView::ReconstructFace(int theFaceDefIdx) const
 {
+  // Phase 2: delegate to incidence-table reconstruct when available.
+  if (myGraph->myData->myIncStorage.IsDone)
+  {
+    BRepGraphInc_Reconstruct::Cache aCache;
+    return BRepGraphInc_Reconstruct::FaceWithCache(
+      myGraph->myData->myIncStorage, theFaceDefIdx, aCache);
+  }
   return BRepGraph_Reconstruct::Node(
     *myGraph, BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, theFaceDefIdx));
 }
