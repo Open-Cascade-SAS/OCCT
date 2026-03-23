@@ -306,16 +306,17 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
 
   BRep_Builder aBB;
   const BRepGraphInc::FaceEntity& aFace = theStorage.Face(theFaceIdx);
-  if (aFace.SurfaceRepIdx < 0)
-    return TopoDS_Shape();
 
-  const occ::handle<Geom_Surface>& aFaceSurface =
-    theStorage.SurfaceRep(aFace.SurfaceRepIdx).Surface;
-  if (aFaceSurface.IsNull())
-    return TopoDS_Shape();
+  // Resolve surface from rep storage (may be null for bare topology faces).
+  occ::handle<Geom_Surface> aFaceSurface;
+  if (aFace.SurfaceRepIdx >= 0)
+    aFaceSurface = theStorage.SurfaceRep(aFace.SurfaceRepIdx).Surface;
 
   TopoDS_Face aNewFace;
-  aBB.MakeFace(aNewFace, aFaceSurface, TopLoc_Location(), aFace.Tolerance);
+  if (!aFaceSurface.IsNull())
+    aBB.MakeFace(aNewFace, aFaceSurface, TopLoc_Location(), aFace.Tolerance);
+  else
+    aBB.MakeFace(aNewFace);
 
   // Attach triangulations.
   if (!aFace.TriangulationRepIdxs.IsEmpty())

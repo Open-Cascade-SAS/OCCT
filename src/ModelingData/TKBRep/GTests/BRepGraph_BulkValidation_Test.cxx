@@ -58,18 +58,29 @@ std::vector<std::string> collectBrepFiles(const char* theDir)
   return aFiles;
 }
 
-// Count unique sub-shapes by TShape pointer only (ignoring Location/Orientation),
-// matching BRepGraph's definition-level deduplication semantics.
-// Uses MapShapes(shape, map) which maps ALL shapes recursively (including
-// compounds inside compounds), then filters by type and deduplicates by TShape pointer.
+// Count unique shapes by TShape pointer, matching BRepGraph's definition-level
+// deduplication semantics. Uses recursive traversal for Compound/CompSolid types
+// since TopExp_Explorer doesn't recurse into these container types to find
+// nested sub-containers.
 int countUnique(const TopoDS_Shape& theShape, TopAbs_ShapeEnum theType)
 {
   NCollection_Map<const TopoDS_TShape*> aTShapeSet;
-  for (TopExp_Explorer exp(theShape, theType); exp.More(); exp.Next())
+  if (theType == TopAbs_COMPOUND || theType == TopAbs_COMPSOLID)
   {
-    const TopoDS_Shape& aShape = exp.Current();
-    if (aShape.ShapeType() == theType)
-      aTShapeSet.Add(aShape.TShape().get());
+    // Recursive traversal for container types.
+    std::function<void(const TopoDS_Shape&)> collect = [&](const TopoDS_Shape& theS) {
+      if (theS.ShapeType() == theType)
+        aTShapeSet.Add(theS.TShape().get());
+      for (TopoDS_Iterator anIt(theS); anIt.More(); anIt.Next())
+        collect(anIt.Value());
+    };
+    collect(theShape);
+  }
+  else
+  {
+    // TopExp_Explorer works correctly for non-container types.
+    for (TopExp_Explorer anExp(theShape, theType); anExp.More(); anExp.Next())
+      aTShapeSet.Add(anExp.Current().TShape().get());
   }
   return aTShapeSet.Extent();
 }
