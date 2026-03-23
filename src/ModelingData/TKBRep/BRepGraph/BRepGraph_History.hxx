@@ -16,6 +16,7 @@
 
 #include <BRepGraph_HistoryRecord.hxx>
 #include <BRepGraph_NodeId.hxx>
+#include <NCollection_BaseAllocator.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_Vector.hxx>
 #include <Standard_DefineAlloc.hxx>
@@ -89,7 +90,14 @@ public:
   //! Clear all records and lookup maps.
   Standard_EXPORT void Clear();
 
+  //! Set the allocator for internal containers.
+  //! Must be called before any Record/RecordBatch calls.
+  //! @param[in] theAlloc allocator to use for internal maps
+  Standard_EXPORT void SetAllocator(const Handle(NCollection_BaseAllocator)& theAlloc);
+
 private:
+
+  Handle(NCollection_BaseAllocator) myAllocator;
 
   NCollection_Vector<BRepGraph_HistoryRecord> myRecords;
 

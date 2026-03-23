@@ -1328,13 +1328,15 @@ int mergeMatchedEdges(
   const NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>>& thePairs,
   const BRepGraphAlgo_Sewing::Options&                                     theOptions,
   NCollection_IndexedMap<int>&                                             theSewnEdgeIndices,
-  BRepGraphAlgo_Sewing::Result&                                            theResult)
+  BRepGraphAlgo_Sewing::Result&                                            theResult,
+  const Handle(NCollection_IncAllocator)&                                  theTmpAlloc)
 {
   int aSewnCount = 0;
 
   // Accumulate history pairs for batch recording (Opt 5).
-  NCollection_Vector<BRepGraph_NodeId> aHistOriginals;
-  NCollection_Vector<BRepGraph_NodeId> aHistReplacements;
+  // Use the scoped temp allocator — these vectors are consumed by RecordBatch then discarded.
+  NCollection_Vector<BRepGraph_NodeId> aHistOriginals(THE_INIT_VECTOR_CAPACITY, theTmpAlloc);
+  NCollection_Vector<BRepGraph_NodeId> aHistReplacements(THE_INIT_VECTOR_CAPACITY, theTmpAlloc);
 
   for (int aPairIter = 0; aPairIter < thePairs.Length(); ++aPairIter)
   {
@@ -1706,7 +1708,7 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
   const int                   aNbPairs = aMatchedPairs.Length();
   NCollection_IndexedMap<int> aSewnEdgeIndices(aNbPairs, anAllocator);
   aResult.NbSewnEdges =
-    mergeMatchedEdges(theGraph, aMatchedPairs, theOptions, aSewnEdgeIndices, aResult);
+    mergeMatchedEdges(theGraph, aMatchedPairs, theOptions, aSewnEdgeIndices, aResult, aTmpAllocator);
 
   // Phase 7: Convert remaining free degenerate edges.
   convertDegenerateEdges(theGraph, aResult);

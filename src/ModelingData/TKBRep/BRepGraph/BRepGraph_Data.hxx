@@ -73,16 +73,26 @@ struct BRepGraph_Data
 
   BRepGraph_Data()
       : myAllocator(new NCollection_IncAllocator),
-        myIncStorage(myAllocator)
+        myIncStorage(myAllocator),
+        myOutRelEdges(1, myAllocator),
+        myInRelEdges(1, myAllocator),
+        myNodeLocations(1, myAllocator),
+        myCurrentShapes(1, myAllocator)
   {
+    myHistoryLog.SetAllocator(myAllocator);
   }
 
   explicit BRepGraph_Data(const Handle(NCollection_BaseAllocator)& theAlloc)
       : myAllocator(!theAlloc.IsNull()
                       ? theAlloc
                       : Handle(NCollection_BaseAllocator)(new NCollection_IncAllocator)),
-        myIncStorage(myAllocator)
+        myIncStorage(myAllocator),
+        myOutRelEdges(1, myAllocator),
+        myInRelEdges(1, myAllocator),
+        myNodeLocations(1, myAllocator),
+        myCurrentShapes(1, myAllocator)
   {
+    myHistoryLog.SetAllocator(myAllocator);
   }
 };
 
