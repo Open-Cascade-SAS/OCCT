@@ -5,32 +5,32 @@ Config: RelWithDebInfo
 
 ## Core (BRepGraph_Benchmark)
 
-| Benchmark | Mode | Baseline (s) | After T1.2 (s) | Array UIDs (s) | Grouped (s) | Dense RevIdx (s) | Static Sewing (s) | Perf Opt (s) | Alloc Prop (s) | Deferred (s) | O(1) FaceCount (s) | Review Fix (s) | KDTree Dedup (s) | Cache Inval (s) | Delta vs Baseline |
-|-----------|------|-------------|----------------|-----------------|-------------|-------------------|-------------------|-------------|----------------|--------------|---------------------|----------------|------------------|-----------------|-------------------|
-| Build 100 faces | seq | 0.000508 | 0.000691 | 0.000557 | 0.000529 | 0.000544 | 0.000506 | 0.000582 | 0.000480 | 0.000543 | 0.000535 | 0.000491 | 0.000540 | 0.000520 | +2% |
-| Build 1000 faces | seq | 0.006630 | 0.009284 | 0.007372 | 0.006567 | 0.006915 | 0.006203 | 0.006616 | 0.005832 | 0.006564 | 0.006982 | 0.006224 | 0.006800 | 0.007934 | +20% |
-| Build 1000 faces | parallel | 0.006626 | 0.009353 | 0.007292 | 0.006764 | 0.006408 | 0.006557 | 0.007961 | 0.005704 | 0.006195 | 0.006340 | 0.005971 | 0.006444 | 0.009214 | +39% |
-| Build 10000 faces | seq | 0.091667 | 0.136744 | 0.098299 | 0.093896 | 0.095669 | 0.089093 | 0.087900 | 0.081625 | 0.091012 | 0.093535 | 0.091299 | 0.089184 | 0.090464 | -1% |
-| Build 10000 faces | parallel | 0.086331 | 0.130992 | 0.093386 | 0.091926 | 0.088084 | 0.078611 | 0.076609 | 0.072994 | 0.078123 | 0.087002 | 0.077040 | 0.079027 | 0.078143 | -9% |
-| Reconstruct 10000 faces | - | 0.017034 | 0.018292 | 0.017795 | 0.016580 | 0.015884 | 0.015663 | 0.016304 | 0.015995 | 0.016870 | 0.017983 | 0.016769 | 0.017343 | 0.016965 | 0% |
-| SpatialQuery 10000 faces | - | 0.011979 | 0.011988 | 0.012316 | 0.012737 | 0.000740 | 0.000434 | 0.000428 | 0.000460 | 0.000485 | 0.000545 | 0.000330 | 0.000371 | 0.000340 | **-97%** |
+| Benchmark | Mode | Baseline (s) | After T1.2 (s) | Array UIDs (s) | Grouped (s) | Dense RevIdx (s) | Static Sewing (s) | Perf Opt (s) | Alloc Prop (s) | Deferred (s) | O(1) FaceCount (s) | Review Fix (s) | KDTree Dedup (s) | Cache Inval (s) | MutRef (s) | Delta vs Baseline |
+|-----------|------|-------------|----------------|-----------------|-------------|-------------------|-------------------|-------------|----------------|--------------|---------------------|----------------|------------------|-----------------|------------|-------------------|
+| Build 100 faces | seq | 0.000508 | 0.000691 | 0.000557 | 0.000529 | 0.000544 | 0.000506 | 0.000582 | 0.000480 | 0.000543 | 0.000535 | 0.000491 | 0.000540 | 0.000520 | 0.000534 | +5% |
+| Build 1000 faces | seq | 0.006630 | 0.009284 | 0.007372 | 0.006567 | 0.006915 | 0.006203 | 0.006616 | 0.005832 | 0.006564 | 0.006982 | 0.006224 | 0.006800 | 0.007934 | 0.006659 | 0% |
+| Build 1000 faces | parallel | 0.006626 | 0.009353 | 0.007292 | 0.006764 | 0.006408 | 0.006557 | 0.007961 | 0.005704 | 0.006195 | 0.006340 | 0.005971 | 0.006444 | 0.009214 | 0.006076 | -8% |
+| Build 10000 faces | seq | 0.091667 | 0.136744 | 0.098299 | 0.093896 | 0.095669 | 0.089093 | 0.087900 | 0.081625 | 0.091012 | 0.093535 | 0.091299 | 0.089184 | 0.090464 | 0.097125 | +6% |
+| Build 10000 faces | parallel | 0.086331 | 0.130992 | 0.093386 | 0.091926 | 0.088084 | 0.078611 | 0.076609 | 0.072994 | 0.078123 | 0.087002 | 0.077040 | 0.079027 | 0.078143 | 0.082372 | -5% |
+| Reconstruct 10000 faces | - | 0.017034 | 0.018292 | 0.017795 | 0.016580 | 0.015884 | 0.015663 | 0.016304 | 0.015995 | 0.016870 | 0.017983 | 0.016769 | 0.017343 | 0.016965 | 0.017287 | +1% |
+| SpatialQuery 10000 faces | - | 0.011979 | 0.011988 | 0.012316 | 0.012737 | 0.000740 | 0.000434 | 0.000428 | 0.000460 | 0.000485 | 0.000545 | 0.000330 | 0.000371 | 0.000340 | 0.000378 | **-97%** |
 
 ## Algorithms (BRepGraphAlgo_Benchmark)
 
-| Benchmark | Mode | Baseline (s) | After T1.2 (s) | Array UIDs (s) | Grouped (s) | Dense RevIdx (s) | Static Sewing (s) | Perf Opt (s) | Alloc Prop (s) | Deferred (s) | O(1) FaceCount (s) | Review Fix (s) | KDTree Dedup (s) | Cache Inval (s) | Delta vs Baseline |
-|-----------|------|-------------|----------------|-----------------|-------------|-------------------|-------------------|-------------|----------------|--------------|---------------------|----------------|------------------|-----------------|-------------------|
-| Sewing 500 faces | parallel | 0.090420 | 0.089111 | 0.089873 | 0.087665 | 0.093905 | 0.089684 | 0.042964 | 0.037183 | 0.040604 | 0.039473 | 0.036571 | 0.040277 | 0.038696 | **-57%** |
-| Sewing 500 faces | seq | 0.168491 | 0.164901 | 0.168284 | 0.162548 | 0.168708 | 0.167740 | 0.124732 | 0.093939 | 0.097588 | 0.095534 | 0.093600 | 0.094757 | 0.095963 | **-43%** |
-| Deduplicate+Compact 500 copies | - | 0.007665 | 0.012223 | 0.008819 | 0.010113 | 0.005390 | 0.005019 | 0.006232 | 0.004097 | 0.005701 | 0.004766 | 0.004525 | 0.004539 | 0.004410 | **-42%** |
+| Benchmark | Mode | Baseline (s) | After T1.2 (s) | Array UIDs (s) | Grouped (s) | Dense RevIdx (s) | Static Sewing (s) | Perf Opt (s) | Alloc Prop (s) | Deferred (s) | O(1) FaceCount (s) | Review Fix (s) | KDTree Dedup (s) | Cache Inval (s) | MutRef (s) | Delta vs Baseline |
+|-----------|------|-------------|----------------|-----------------|-------------|-------------------|-------------------|-------------|----------------|--------------|---------------------|----------------|------------------|-----------------|------------|-------------------|
+| Sewing 500 faces | parallel | 0.090420 | 0.089111 | 0.089873 | 0.087665 | 0.093905 | 0.089684 | 0.042964 | 0.037183 | 0.040604 | 0.039473 | 0.036571 | 0.040277 | 0.038696 | 0.038320 | **-58%** |
+| Sewing 500 faces | seq | 0.168491 | 0.164901 | 0.168284 | 0.162548 | 0.168708 | 0.167740 | 0.124732 | 0.093939 | 0.097588 | 0.095534 | 0.093600 | 0.094757 | 0.095963 | 0.094683 | **-44%** |
+| Deduplicate+Compact 500 copies | - | 0.007665 | 0.012223 | 0.008819 | 0.010113 | 0.005390 | 0.005019 | 0.006232 | 0.004097 | 0.005701 | 0.004766 | 0.004525 | 0.004539 | 0.004410 | 0.004356 | **-43%** |
 
 ## Sewing Profiling (BRepGraphAlgo_SewingTest)
 
-| Benchmark | Mode | Static Sewing (s) | Perf Opt (s) | Alloc Prop (s) | Deferred (s) | O(1) FaceCount (s) | Review Fix (s) | KDTree Dedup (s) | Cache Inval (s) | Delta vs Alloc Prop |
-|-----------|------|--------------------|-------------|----------------|--------------|---------------------|----------------|------------------|-----------------|---------------------|
-| 2500 faces (50x50) | seq | — | 0.048373 | 0.045253 | 0.049053 | 0.051594 | 0.045293 | 0.046022 | 0.045272 | 0% |
-| 2500 faces (50x50) | parallel | — | 0.052911 | 0.049522 | 0.037282 | 0.036822 | 0.032046 | 0.035192 | 0.032717 | **-34%** |
-| 2500 faces (50x50) | no history | — | 0.045610 | 0.045583 | 0.048532 | 0.049729 | 0.044238 | 0.046142 | 0.045087 | -1% |
-| 1200 faces (200 boxes) | parallel | — | 0.022005 | 0.020513 | 0.016265 | 0.016749 | 0.014637 | 0.015204 | 0.015524 | **-24%** |
+| Benchmark | Mode | Static Sewing (s) | Perf Opt (s) | Alloc Prop (s) | Deferred (s) | O(1) FaceCount (s) | Review Fix (s) | KDTree Dedup (s) | Cache Inval (s) | MutRef (s) | Delta vs Alloc Prop |
+|-----------|------|--------------------|-------------|----------------|--------------|---------------------|----------------|------------------|-----------------|------------|---------------------|
+| 2500 faces (50x50) | seq | — | 0.048373 | 0.045253 | 0.049053 | 0.051594 | 0.045293 | 0.046022 | 0.045272 | 0.045011 | 0% |
+| 2500 faces (50x50) | parallel | — | 0.052911 | 0.049522 | 0.037282 | 0.036822 | 0.032046 | 0.035192 | 0.032717 | 0.033176 | **-33%** |
+| 2500 faces (50x50) | no history | — | 0.045610 | 0.045583 | 0.048532 | 0.049729 | 0.044238 | 0.046142 | 0.045087 | 0.044502 | -2% |
+| 1200 faces (200 boxes) | parallel | — | 0.022005 | 0.020513 | 0.016265 | 0.016749 | 0.014637 | 0.015204 | 0.015524 | 0.014788 | **-28%** |
 
 ## Notes
 
@@ -107,3 +107,32 @@ Config: RelWithDebInfo
   - Core benchmarks within noise — InvalidateAll() is no-op on empty caches (checks IsEmpty() first)
   - Build 1000 faces spike (+20-39%) is run-to-run noise: 10000 faces shows -1% seq, -9% parallel
   - Sewing/profiling benchmarks stable: no regression from centralized invalidation
+- MutRef: 2026-03-20, unified RAII mutation API + markModified optimization:
+  - MutView::XxxDef() now returns BRepGraph_MutRef<> (deferred markModified) instead of raw reference (eager)
+  - MutView Def accessors inlined as one-line delegates to BRepGraph::MutXxx()
+  - markModified(NodeId, BaseDef&) overload skips ChangeTopoDef() + mutableCache() redundant dispatch
+  - All Mut().XxxDef() call sites migrated: `.Field` → `->Field`, captured refs use MutRef type
+  - SameParameter::enforceImpl() wraps all 6 edge mutations in single MutRef scope (1 markModified vs 6)
+  - Core benchmarks within noise — mutation path optimization, not build/read path
+  - Sewing profiling stable: deferred markModified is equivalent to eager for single-field mutations
+
+## How to Run
+
+```bash
+# Build
+cd build
+cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DBUILD_GTEST=ON
+cmake --build . --config RelWithDebInfo --parallel
+
+# Core benchmarks (Build, Reconstruct, SpatialQuery)
+./mac64/clang/bini/OpenCascadeGTest --gtest_filter="BRepGraph_Benchmark.*" --gtest_also_run_disabled_tests
+
+# Algorithm benchmarks (Sewing 500 faces, Deduplicate+Compact)
+./mac64/clang/bini/OpenCascadeGTest --gtest_filter="BRepGraphAlgo_Benchmark.*" --gtest_also_run_disabled_tests
+
+# Sewing profiling (2500 faces grid, 1200 faces boxes — 50 iterations each)
+./mac64/clang/bini/OpenCascadeGTest --gtest_filter="BRepGraphAlgo_SewingTest.Profiling_*"
+
+# All BRepGraph tests (functional correctness)
+./mac64/clang/bini/OpenCascadeGTest --gtest_filter="*BRepGraph*"
+```
