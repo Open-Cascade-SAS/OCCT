@@ -360,23 +360,10 @@ void BRepGraphCheck::CheckWireOnFace(
       continue;
     }
 
-    const BRepGraphInc::CoEdgeEntity* aPCurve =
-      BRepGraph_Tool::Edge::FindPCurve(theGraph, aCoEdgeDef.EdgeIdx, theFaceDefIdx);
-    if (aPCurve == nullptr)
-    {
-      aPCurveData.Append(EdgePCurveData());
-      continue;
-    }
-
-    if (aPCurve->Curve2DRepIdx < 0)
-    {
-      aPCurveData.Append(EdgePCurveData());
-      continue;
-    }
-
-    const occ::handle<Geom2d_Curve>& aWirePC2d =
-      BRepGraph_Tool::CoEdge::PCurve(theGraph, *aPCurve);
-    if (aWirePC2d.IsNull())
+    // Get PCurve adaptor — uses stored PCurve, or computes via CurveOnPlane for planar faces.
+    Geom2dAdaptor_Curve aPCAdaptor =
+      BRepGraph_Tool::CoEdge::PCurveAdaptor(theGraph, aCR.CoEdgeIdx);
+    if (aPCAdaptor.Curve().IsNull())
     {
       aPCurveData.Append(EdgePCurveData());
       continue;
@@ -388,9 +375,7 @@ void BRepGraphCheck::CheckWireOnFace(
     aData.StartVtxId = anEdgeDef.OrientedStartVertex(aCoEdgeDef.Sense);
     aData.EndVtxId   = anEdgeDef.OrientedEndVertex(aCoEdgeDef.Sense);
 
-    const double aFirst = aPCurve->ParamFirst;
-    const double aLast  = aPCurve->ParamLast;
-    aData.Adaptor = new Geom2dAdaptor_Curve(aWirePC2d, aFirst, aLast);
+    aData.Adaptor = new Geom2dAdaptor_Curve(aPCAdaptor);
 
     BndLib_Add2dCurve::Add(*aData.Adaptor, Precision::PConfusion(), aData.Box);
 

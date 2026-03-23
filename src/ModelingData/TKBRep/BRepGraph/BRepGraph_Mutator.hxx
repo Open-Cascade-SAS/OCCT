@@ -47,6 +47,9 @@ public:
                                         BRepGraph_NodeId&       theSubB);
 
   //! Replace one edge with another in a wire definition.
+  //! Updates the CoEdge's EdgeIdx to point to the new edge, adjusts orientation
+  //! if theReversed, and incrementally updates edge-to-wire, edge-to-face, and
+  //! edge-to-coedge reverse indices.
   //! @param[in,out] theGraph       graph to mutate
   //! @param[in] theWireDefIdx      wire definition index
   //! @param[in] theOldEdgeDef      edge to replace

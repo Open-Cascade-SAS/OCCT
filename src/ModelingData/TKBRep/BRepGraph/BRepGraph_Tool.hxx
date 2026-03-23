@@ -304,9 +304,13 @@ public:
       const BRepGraphInc::CoEdgeEntity& theCoEdge);
 
     //! Returns a PCurve adaptor by coedge index.
+    //! If the coedge has a stored PCurve (Curve2DRepIdx >= 0), returns it directly.
+    //! Otherwise, for planar face surfaces, computes the PCurve on-the-fly by projecting
+    //! the edge's 3D curve onto the plane (CurveOnPlane), mirroring the behavior of
+    //! BRep_Tool::CurveOnSurface for planar faces without stored PCurves.
     //! @param[in] theGraph     source graph
     //! @param[in] theCoEdgeIdx zero-based coedge definition index
-    //! @return 2D curve adaptor, or empty adaptor if no PCurve
+    //! @return 2D curve adaptor, or empty adaptor if no PCurve and surface is not planar
     Standard_EXPORT static Geom2dAdaptor_Curve PCurveAdaptor(const BRepGraph& theGraph,
                                                              const int        theCoEdgeIdx);
 

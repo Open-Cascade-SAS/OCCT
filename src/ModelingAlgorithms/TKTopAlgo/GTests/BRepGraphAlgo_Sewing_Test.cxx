@@ -24,6 +24,7 @@
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_Tool.hxx>
+#include <BRepGraph_Tool.hxx>
 #include <BRepGraphAlgo_Copy.hxx>
 #include <BRepGraphAlgo_SameParameter.hxx>
 #include <BRepGraphAlgo_Sewing.hxx>
@@ -2215,7 +2216,11 @@ TEST(BRepGraphAlgo_SewingTest, NonManifoldMode_ThreeFacesShareEdge)
       for (int j = 0; j < aCoEdgeIdxs.Length(); ++j)
       {
         const BRepGraphInc::CoEdgeEntity& aCE = aGraph.Defs().CoEdge(aCoEdgeIdxs.Value(j));
-        EXPECT_GE(aCE.Curve2DRepIdx, 0);
+        // PCurve may be stored (Curve2DRepIdx >= 0) or computed on-the-fly for planar faces.
+        // Use PCurveAdaptor which handles both cases.
+        const Geom2dAdaptor_Curve aPCAdaptor =
+          BRepGraph_Tool::CoEdge::PCurveAdaptor(aGraph, aCoEdgeIdxs.Value(j));
+        EXPECT_FALSE(aPCAdaptor.Curve().IsNull());
         EXPECT_TRUE(aCE.FaceDefId.IsValid());
         aFaceIds.Add(aCE.FaceDefId.Index);
       }

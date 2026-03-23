@@ -392,6 +392,31 @@ void BRepGraph::BuilderView::RemoveNode(const BRepGraph_NodeId theNode, const BR
   if (!theNode.IsValid())
     return;
 
+  // When removing an Edge with a replacement, reparent all CoEdges from the
+  // removed edge to the replacement edge. This prevents orphaned CoEdges
+  // that would be excluded from queries via CoEdgesOfEdge().
+  if (theNode.NodeKind == BRepGraph_NodeId::Kind::Edge
+      && theReplacement.IsValid()
+      && theReplacement.NodeKind == BRepGraph_NodeId::Kind::Edge)
+  {
+    BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+    const NCollection_Vector<int>* aCoEdgeIdxs =
+      aStorage.ReverseIndex().CoEdgesOfEdge(theNode.Index);
+    if (aCoEdgeIdxs != nullptr)
+    {
+      for (int i = 0; i < aCoEdgeIdxs->Length(); ++i)
+      {
+        const int aCoEdgeIdx = aCoEdgeIdxs->Value(i);
+        BRepGraphInc::CoEdgeEntity& aCoEdge = aStorage.ChangeCoEdge(aCoEdgeIdx);
+        if (aCoEdge.EdgeIdx == theNode.Index)
+        {
+          aCoEdge.EdgeIdx = theReplacement.Index;
+          aStorage.ChangeReverseIndex().BindEdgeToCoEdge(theReplacement.Index, aCoEdgeIdx);
+        }
+      }
+    }
+  }
+
   // Mark removed on the entity (which is the sole definition store).
   BRepGraph_TopoNode::BaseDef* aDef = myGraph->ChangeTopoDef(theNode);
   if (aDef != nullptr && !aDef->IsRemoved)

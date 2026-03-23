@@ -18,6 +18,8 @@
 #include <BRepGraphInc_Entity.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <GeomAdaptor_Surface.hxx>
+#include <Geom_Plane.hxx>
+#include <GeomProjLib.hxx>
 #include <Standard_NoSuchObject.hxx>
 
 //=================================================================================================
@@ -311,12 +313,47 @@ Geom2dAdaptor_Curve BRepGraph_Tool::CoEdge::PCurveAdaptor(const BRepGraph& theGr
                                                           const int        theCoEdgeIdx)
 {
   const BRepGraphInc::CoEdgeEntity& aCoEdge = theGraph.Defs().CoEdge(theCoEdgeIdx);
-  if (aCoEdge.Curve2DRepIdx < 0)
-    return Geom2dAdaptor_Curve();
-  const occ::handle<Geom2d_Curve>& aCurve = theGraph.Defs().Curve2DRep(aCoEdge.Curve2DRepIdx).Curve;
-  if (aCurve.IsNull())
-    return Geom2dAdaptor_Curve();
-  return Geom2dAdaptor_Curve(aCurve, aCoEdge.ParamFirst, aCoEdge.ParamLast);
+  if (aCoEdge.Curve2DRepIdx >= 0)
+  {
+    const occ::handle<Geom2d_Curve>& aCurve = theGraph.Defs().Curve2DRep(aCoEdge.Curve2DRepIdx).Curve;
+    if (!aCurve.IsNull())
+      return Geom2dAdaptor_Curve(aCurve, aCoEdge.ParamFirst, aCoEdge.ParamLast);
+  }
+
+  // CurveOnPlane fallback: for planar faces without stored PCurves, compute the
+  // PCurve by projecting the 3D curve onto the plane's parameter space.
+  // This mirrors BRep_Tool::CurveOnSurface's CurveOnPlane behavior.
+  if (aCoEdge.FaceDefId.IsValid() && aCoEdge.EdgeIdx >= 0)
+  {
+    const BRepGraphInc::FaceEntity& aFace = theGraph.Defs().Face(aCoEdge.FaceDefId.Index);
+    if (aFace.SurfaceRepIdx >= 0)
+    {
+      const occ::handle<Geom_Surface>& aSurf = theGraph.Defs().SurfaceRep(aFace.SurfaceRepIdx).Surface;
+      const occ::handle<Geom_Plane> aPlane = Handle(Geom_Plane)::DownCast(aSurf);
+      if (!aPlane.IsNull())
+      {
+        const BRepGraphInc::EdgeEntity& anEdge = theGraph.Defs().Edge(aCoEdge.EdgeIdx);
+        if (anEdge.Curve3DRepIdx >= 0)
+        {
+          const occ::handle<Geom_Curve>& aCurve3d =
+            theGraph.Defs().Curve3DRep(anEdge.Curve3DRepIdx).Curve;
+          if (!aCurve3d.IsNull())
+          {
+            // Project 3D curve onto the plane to get the 2D curve.
+            // Uses edge's 3D param range: the projected curve shares the same
+            // parameterization as the 3D curve, and the CoEdge has no stored range
+            // (ParamFirst/ParamLast are 0.0 when Curve2DRepIdx < 0).
+            occ::handle<Geom2d_Curve> aProjected =
+              GeomProjLib::Curve2d(aCurve3d, anEdge.ParamFirst, anEdge.ParamLast, aPlane);
+            if (!aProjected.IsNull())
+              return Geom2dAdaptor_Curve(aProjected, anEdge.ParamFirst, anEdge.ParamLast);
+          }
+        }
+      }
+    }
+  }
+
+  return Geom2dAdaptor_Curve();
 }
 
 //=================================================================================================

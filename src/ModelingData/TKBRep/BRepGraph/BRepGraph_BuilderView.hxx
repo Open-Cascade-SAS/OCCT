@@ -151,6 +151,9 @@ public:
   Standard_EXPORT void RemoveNode(const BRepGraph_NodeId theNode);
 
   //! Mark a node as removed with a known replacement (sewing/deduplicate).
+  //! For Edge nodes: all CoEdges referencing the removed edge are reparented to
+  //! the replacement edge (EdgeIdx updated, reverse index rebound). This prevents
+  //! orphaned CoEdges that would disappear from CoEdgesOfEdge() queries.
   //! Layers are notified with both old and replacement NodeIds for data migration.
   //! @param[in] theNode        node to remove
   //! @param[in] theReplacement node that replaces theNode

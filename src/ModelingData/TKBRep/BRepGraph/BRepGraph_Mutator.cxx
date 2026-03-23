@@ -307,9 +307,10 @@ void BRepGraph_Mutator::ReplaceEdgeInWire(BRepGraph&             theGraph,
       if (theReversed)
         aCoEdge.Sense = TopAbs::Reverse(aCoEdge.Sense);
 
-      // Update edge-to-wire reverse index incrementally.
+      // Update reverse indices incrementally.
       BRepGraphInc_ReverseIndex& aRevIdx = theGraph.myData->myIncStorage.ChangeReverseIndex();
       aRevIdx.ReplaceEdgeInWireMap(theOldEdgeDef.Index, theNewEdgeDef.Index, theWireDefIdx);
+      aRevIdx.BindEdgeToCoEdge(theNewEdgeDef.Index, aCoEdgeEntIdx);
 
       // Update edge-to-face: bind new edge, unbind old edge for all faces of this wire.
       // Wire-to-face mappings are built from FaceEntity.WireRefs during Build() and are
