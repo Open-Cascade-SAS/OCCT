@@ -16,7 +16,11 @@
 
 #include <BRep_CurveOn2Surfaces.hxx>
 #include <BRep_CurveRepresentation.hxx>
+#include <BRep_PointOnCurve.hxx>
+#include <BRep_PointOnCurveOnSurface.hxx>
+#include <BRep_PointOnSurface.hxx>
 #include <BRep_TEdge.hxx>
+#include <BRep_TVertex.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepTools.hxx>
 #include <BRepTools_WireExplorer.hxx>
@@ -817,6 +821,77 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage& theStorage,
       aRegEntry.FaceDef2   = BRepGraph_NodeId::Face(*aFaceIdx2);
       aRegEntry.Continuity = aCon2S->Continuity();
       anEdgeEnt.Regularities.Append(aRegEntry);
+    }
+  }
+
+  // Phase 3c: Vertex point representations.
+  {
+    NCollection_DataMap<const Geom_Curve*, BRepGraph_NodeId> aCurveToEdgeDef;
+    for (int i = 0; i < theStorage.Edges.Length(); ++i)
+    {
+      const BRepGraphInc::EdgeEntity& anEdge = theStorage.Edges.Value(i);
+      if (!anEdge.Curve3d.IsNull())
+        aCurveToEdgeDef.TryBind(anEdge.Curve3d.get(), anEdge.Id);
+    }
+
+    NCollection_DataMap<const Geom_Surface*, BRepGraph_NodeId> aSurfToFaceDefVtx;
+    for (int i = 0; i < theStorage.Faces.Length(); ++i)
+    {
+      const BRepGraphInc::FaceEntity& aFace = theStorage.Faces.Value(i);
+      if (!aFace.Surface.IsNull())
+        aSurfToFaceDefVtx.TryBind(aFace.Surface.get(), aFace.Id);
+    }
+
+    for (int aVtxIdx = 0; aVtxIdx < theStorage.Vertices.Length(); ++aVtxIdx)
+    {
+      BRepGraphInc::VertexEntity& aVtxDef = theStorage.Vertices.ChangeValue(aVtxIdx);
+      const TopoDS_Shape* aVtxShape = theStorage.OriginalShapes.Seek(aVtxDef.Id);
+      if (aVtxShape == nullptr || aVtxShape->IsNull())
+        continue;
+      const TopoDS_Vertex& aVertex = TopoDS::Vertex(*aVtxShape);
+      const Handle(BRep_TVertex)& aTVertex =
+        Handle(BRep_TVertex)::DownCast(aVertex.TShape());
+      if (aTVertex.IsNull())
+        continue;
+
+      for (const Handle(BRep_PointRepresentation)& aPtRep : aTVertex->Points())
+      {
+        if (aPtRep.IsNull())
+          continue;
+        if (const Handle(BRep_PointOnCurve) aPOC = Handle(BRep_PointOnCurve)::DownCast(aPtRep))
+        {
+          const BRepGraph_NodeId* anEdgeId = aCurveToEdgeDef.Seek(aPOC->Curve().get());
+          if (anEdgeId == nullptr)
+            continue;
+          BRepGraphInc::VertexEntity::PointOnCurveEntry anEntry;
+          anEntry.Parameter = aPOC->Parameter();
+          anEntry.EdgeDefId = *anEdgeId;
+          aVtxDef.PointsOnCurve.Append(anEntry);
+        }
+        else if (const Handle(BRep_PointOnCurveOnSurface) aPOCS =
+                   Handle(BRep_PointOnCurveOnSurface)::DownCast(aPtRep))
+        {
+          const BRepGraph_NodeId* aFaceId = aSurfToFaceDefVtx.Seek(aPOCS->Surface().get());
+          if (aFaceId == nullptr)
+            continue;
+          BRepGraphInc::VertexEntity::PointOnPCurveEntry anEntry;
+          anEntry.Parameter = aPOCS->Parameter();
+          anEntry.FaceDefId = *aFaceId;
+          aVtxDef.PointsOnPCurve.Append(anEntry);
+        }
+        else if (const Handle(BRep_PointOnSurface) aPOS =
+                   Handle(BRep_PointOnSurface)::DownCast(aPtRep))
+        {
+          const BRepGraph_NodeId* aFaceId = aSurfToFaceDefVtx.Seek(aPOS->Surface().get());
+          if (aFaceId == nullptr)
+            continue;
+          BRepGraphInc::VertexEntity::PointOnSurfaceEntry anEntry;
+          anEntry.ParameterU = aPOS->Parameter();
+          anEntry.ParameterV = aPOS->Parameter2();
+          anEntry.FaceDefId  = *aFaceId;
+          aVtxDef.PointsOnSurface.Append(anEntry);
+        }
+      }
     }
   }
 

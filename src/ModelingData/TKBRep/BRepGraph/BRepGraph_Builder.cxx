@@ -18,11 +18,6 @@
 #include <BRepGraphInc_Populate.hxx>
 #include <BRepGraphInc_Storage.hxx>
 
-#include <BRep_PointOnCurve.hxx>
-#include <BRep_PointOnCurveOnSurface.hxx>
-#include <BRep_PointOnSurface.hxx>
-#include <BRep_TVertex.hxx>
-#include <TopoDS.hxx>
 
 //=================================================================================================
 
@@ -63,74 +58,6 @@ void BRepGraph_Builder::populateUsagesAndBridgeFields(BRepGraph& theGraph)
     }
   }
 
-  // --- Vertex point representations (post-pass) ---
-  NCollection_DataMap<const Geom_Curve*, BRepGraph_NodeId> aCurveToEdgeDef;
-  for (int i = 0; i < aStorage.Edges.Length(); ++i)
-  {
-    const BRepGraphInc::EdgeEntity& anEdge = aStorage.Edges.Value(i);
-    if (!anEdge.Curve3d.IsNull())
-      aCurveToEdgeDef.TryBind(anEdge.Curve3d.get(), anEdge.Id);
-  }
-
-  NCollection_DataMap<const Geom_Surface*, BRepGraph_NodeId> aSurfToFaceDef;
-  for (int i = 0; i < aStorage.Faces.Length(); ++i)
-  {
-    const BRepGraphInc::FaceEntity& aFace = aStorage.Faces.Value(i);
-    if (!aFace.Surface.IsNull())
-      aSurfToFaceDef.TryBind(aFace.Surface.get(), aFace.Id);
-  }
-
-  for (int aVtxIdx = 0; aVtxIdx < aStorage.Vertices.Length(); ++aVtxIdx)
-  {
-    BRepGraphInc::VertexEntity& aVtxDef = aStorage.Vertices.ChangeValue(aVtxIdx);
-    const TopoDS_Shape* aVtxShape = aStorage.OriginalShapes.Seek(aVtxDef.Id);
-    if (aVtxShape == nullptr || aVtxShape->IsNull())
-      continue;
-    const TopoDS_Vertex& aVertex = TopoDS::Vertex(*aVtxShape);
-    const Handle(BRep_TVertex)& aTVertex =
-      Handle(BRep_TVertex)::DownCast(aVertex.TShape());
-    if (aTVertex.IsNull())
-      continue;
-
-    for (const Handle(BRep_PointRepresentation)& aPtRep : aTVertex->Points())
-    {
-      if (aPtRep.IsNull())
-        continue;
-      if (const Handle(BRep_PointOnCurve) aPOC = Handle(BRep_PointOnCurve)::DownCast(aPtRep))
-      {
-        const BRepGraph_NodeId* anEdgeId = aCurveToEdgeDef.Seek(aPOC->Curve().get());
-        if (anEdgeId == nullptr)
-          continue;
-        BRepGraphInc::VertexEntity::PointOnCurveEntry anEntry;
-        anEntry.Parameter = aPOC->Parameter();
-        anEntry.EdgeDefId = *anEdgeId;
-        aVtxDef.PointsOnCurve.Append(anEntry);
-      }
-      else if (const Handle(BRep_PointOnCurveOnSurface) aPOCS =
-                 Handle(BRep_PointOnCurveOnSurface)::DownCast(aPtRep))
-      {
-        const BRepGraph_NodeId* aFaceId = aSurfToFaceDef.Seek(aPOCS->Surface().get());
-        if (aFaceId == nullptr)
-          continue;
-        BRepGraphInc::VertexEntity::PointOnPCurveEntry anEntry;
-        anEntry.Parameter = aPOCS->Parameter();
-        anEntry.FaceDefId = *aFaceId;
-        aVtxDef.PointsOnPCurve.Append(anEntry);
-      }
-      else if (const Handle(BRep_PointOnSurface) aPOS =
-                 Handle(BRep_PointOnSurface)::DownCast(aPtRep))
-      {
-        const BRepGraph_NodeId* aFaceId = aSurfToFaceDef.Seek(aPOS->Surface().get());
-        if (aFaceId == nullptr)
-          continue;
-        BRepGraphInc::VertexEntity::PointOnSurfaceEntry anEntry;
-        anEntry.ParameterU = aPOS->Parameter();
-        anEntry.ParameterV = aPOS->Parameter2();
-        anEntry.FaceDefId  = *aFaceId;
-        aVtxDef.PointsOnSurface.Append(anEntry);
-      }
-    }
-  }
 }
 
 //=================================================================================================
@@ -210,16 +137,8 @@ void BRepGraph_Builder::Append(BRepGraph& theGraph, const TopoDS_Shape& theShape
   theGraph.myData->myCompSolidUIDs.Clear();
   theGraph.myData->myEdgeToWires.Clear();
 
-  // Clear vertex point representation bridge fields before re-populating.
-  BRepGraphInc_Storage& aStorage = theGraph.myData->myIncStorage;
-  for (int i = 0; i < aStorage.Vertices.Length(); ++i)
-  {
-    BRepGraphInc::VertexEntity& aVtx = aStorage.Vertices.ChangeValue(i);
-    aVtx.PointsOnCurve.Clear();
-    aVtx.PointsOnSurface.Clear();
-    aVtx.PointsOnPCurve.Clear();
-  }
   // Re-copy TShape->NodeId and OriginalShapes.
+  BRepGraphInc_Storage& aStorage = theGraph.myData->myIncStorage;
   theGraph.myData->myTShapeToDefId.Clear();
   theGraph.myData->myTShapeToDefId.ReSize(aStorage.TShapeToNodeId.Extent());
   for (NCollection_DataMap<const TopoDS_TShape*, BRepGraph_NodeId>::Iterator
