@@ -18,12 +18,23 @@
 #include <Geom_BezierCurve.hxx>
 #include <GeomHash_PointHasher.pxx>
 #include <cmath>
+#include <Precision.hxx>
 
 //! OCCT-style hasher for Geom_BezierCurve (3D Bezier curve).
 //! Used for geometry deduplication.
 //! Hashes only metadata (degree, pole count, rationality) for efficiency.
 struct GeomHash_BezierCurveHasher
 {
+  double CompTolerance;
+  double HashTolerance;
+
+  GeomHash_BezierCurveHasher(double theCompTolerance = Precision::Angular(),
+                             double theHashTolerance = Precision::Confusion())
+      : CompTolerance(theCompTolerance),
+        HashTolerance(theHashTolerance)
+  {
+  }
+
   // Hashes the Bezier curve metadata only.
   std::size_t operator()(const occ::handle<Geom_BezierCurve>& theCurve) const noexcept
   {
@@ -37,8 +48,6 @@ struct GeomHash_BezierCurveHasher
   bool operator()(const occ::handle<Geom_BezierCurve>& theCurve1,
                   const occ::handle<Geom_BezierCurve>& theCurve2) const noexcept
   {
-    constexpr double aTolerance = 1e-12;
-
     // Compare degrees
     if (theCurve1->Degree() != theCurve2->Degree())
     {
@@ -51,7 +60,7 @@ struct GeomHash_BezierCurveHasher
       return false;
     }
 
-    const GeomHash_PointHasher aPointHasher;
+    const GeomHash_PointHasher aPointHasher(CompTolerance, HashTolerance);
 
     // Compare poles
     for (int i = 1; i <= theCurve1->NbPoles(); ++i)
@@ -67,7 +76,7 @@ struct GeomHash_BezierCurveHasher
     {
       for (int i = 1; i <= theCurve1->NbPoles(); ++i)
       {
-        if (std::abs(theCurve1->Weight(i) - theCurve2->Weight(i)) > aTolerance)
+        if (std::abs(theCurve1->Weight(i) - theCurve2->Weight(i)) > CompTolerance)
         {
           return false;
         }

@@ -19,17 +19,28 @@
 #include <GeomHash_PointHasher.pxx>
 #include <GeomHash_DirectionHasher.pxx>
 #include <GeomHash_CurveHasher.hxx>
+#include <Precision.hxx>
 
 //! OCCT-style hasher for Geom_SurfaceOfRevolution.
 //! Used for geometry deduplication.
 struct GeomHash_SurfaceOfRevolutionHasher
 {
+  double CompTolerance;
+  double HashTolerance;
+
+  GeomHash_SurfaceOfRevolutionHasher(double theCompTolerance = Precision::Angular(),
+                                     double theHashTolerance = Precision::Confusion())
+      : CompTolerance(theCompTolerance),
+        HashTolerance(theHashTolerance)
+  {
+  }
+
   // Hashes the revolution surface by its axis and basis curve.
   std::size_t operator()(const occ::handle<Geom_SurfaceOfRevolution>& theSurface) const noexcept
   {
-    const GeomHash_PointHasher     aPointHasher;
-    const GeomHash_DirectionHasher aDirHasher;
-    const GeomHash_CurveHasher     aCurveHasher;
+    const GeomHash_PointHasher     aPointHasher(CompTolerance, HashTolerance);
+    const GeomHash_DirectionHasher aDirHasher(CompTolerance, HashTolerance);
+    const GeomHash_CurveHasher     aCurveHasher{CompTolerance, HashTolerance};
 
     const gp_Ax1&     anAxis     = theSurface->Axis();
     const std::size_t aHashes[3] = {aCurveHasher(theSurface->BasisCurve()),
@@ -42,9 +53,9 @@ struct GeomHash_SurfaceOfRevolutionHasher
   bool operator()(const occ::handle<Geom_SurfaceOfRevolution>& theSurface1,
                   const occ::handle<Geom_SurfaceOfRevolution>& theSurface2) const noexcept
   {
-    const GeomHash_PointHasher     aPointHasher;
-    const GeomHash_DirectionHasher aDirHasher;
-    const GeomHash_CurveHasher     aCurveHasher;
+    const GeomHash_PointHasher     aPointHasher(CompTolerance, HashTolerance);
+    const GeomHash_DirectionHasher aDirHasher(CompTolerance, HashTolerance);
+    const GeomHash_CurveHasher     aCurveHasher{CompTolerance, HashTolerance};
 
     const gp_Ax1& anAxis1 = theSurface1->Axis();
     const gp_Ax1& anAxis2 = theSurface2->Axis();
