@@ -70,14 +70,13 @@ Config: RelWithDebInfo
 - Sewing 2500 faces parallel: **-25%** vs Alloc Prop (mutex contention eliminated in SameParameter + processEdges)
 - Sewing 1200 faces parallel: **-21%** vs Alloc Prop
 - Sequential sewing shows noise (+6-8%) — expected since single-threaded has no mutex contention to eliminate
-- O(1) FaceCount: 2026-03-19, fix sewing mutation model for correct O(1) FaceCountOfEdge:
-  - mergeMatchedEdges marks replaced edges IsRemoved so FreeEdges/FaceCountOfEdge skip them
-  - ReplaceEdgeInWire leaves old edge face data stale (old edge is always IsRemoved by callers)
-  - FaceCountForEdge simplified to direct O(1) delegation (removes PackedMap allocation per call)
-  - FreeEdges switched to DefsView::FaceCountOfEdge with IsRemoved filter
-  - Sewing multiple-edge detection switched to DefsView::FaceCountOfEdge
-  - UnbindEdgeFromFace added to ReverseIndex API for future use
-- Core build/reconstruct benchmarks unchanged (mutation model fix doesn't affect build/read paths)
-- Sewing benchmarks within noise of Deferred — correctness-focused change, not a performance optimization
-- Sequential sewing profiling shows noise (+9-14%) — run-to-run variation, no code path change
+- O(1) FaceCount: 2026-03-20, fix sewing mutation model for correct O(1) FaceCountOfEdge:
+  - Sewing uses `Builder().RemoveNode()` for replaced edges (proper active count maintenance)
+  - `ReplaceEdgeInWire` binds new edge + unbinds old edge from faces in single loop
+  - `FaceCountForEdge` simplified to direct O(1) delegation (removes PackedMap allocation per call)
+  - `FreeEdges` and multiple-edge detection switched to `DefsView::FaceCountOfEdge` with `IsRemoved` filter
+  - `UnbindEdgeFromFace` added to ReverseIndex (mirrors UnbindVertexFromEdge pattern)
+  - `CommitMutation` guardrails: validates reverse index + active counts at end of Sewing, Compact, Deduplicate
+  - CommitMutation assertions are debug-only (`Standard_ASSERT_VOID` is no-op in non-debug) — zero overhead
+- Benchmarks unchanged vs Deferred — correctness-focused change, not a performance optimization
 - Parallel sewing profiling stable: -26% / -18% vs Alloc Prop (carried from Deferred)

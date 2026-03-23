@@ -58,6 +58,11 @@ public:
                                                 BRepGraph_NodeId theNewEdgeDef,
                                                 bool             theReversed);
 
+  //! Finalize a batch of mutations: validate reverse index consistency
+  //! and assert active entity counts match actual entity state.
+  //! Should be called at the end of every algorithm's Perform().
+  static Standard_EXPORT void CommitMutation(BRepGraph& theGraph);
+
 private:
   BRepGraph_Mutator() = delete;
 };

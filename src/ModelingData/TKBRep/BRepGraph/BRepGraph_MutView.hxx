@@ -104,6 +104,9 @@ public:
                                       BRepGraph_NodeId  theTo,
                                       BRepGraph_RelEdge::Kind theKind);
 
+  //! Finalize mutations — validates reverse index and active entity counts.
+  Standard_EXPORT void CommitMutation();
+
 private:
   friend class BRepGraph;
   explicit MutView(BRepGraph* theGraph) : myGraph(theGraph) {}

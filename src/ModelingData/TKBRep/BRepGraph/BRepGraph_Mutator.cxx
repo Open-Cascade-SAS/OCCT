@@ -292,3 +292,38 @@ void BRepGraph_Mutator::ReplaceEdgeInWire(BRepGraph&       theGraph,
   Standard_ASSERT_VOID(theGraph.myData->myIncStorage.ValidateReverseIndex(),
                         "ReplaceEdgeInWire: post-mutation reverse index inconsistency");
 }
+
+//=================================================================================================
+
+void BRepGraph_Mutator::CommitMutation(BRepGraph& theGraph)
+{
+  Standard_ASSERT_VOID(theGraph.myData->myIncStorage.ValidateReverseIndex(),
+                        "CommitMutation: reverse index inconsistency");
+
+  // Verify active counts match actual entity state.
+  const BRepGraphInc_Storage& aStg = theGraph.myData->myIncStorage;
+
+  int aNbVtx = 0, aNbEdg = 0, aNbWir = 0, aNbFac = 0;
+  int aNbShl = 0, aNbSol = 0, aNbCmp = 0, aNbCS = 0;
+  for (int i = 0; i < aStg.NbVertices();  ++i) if (!aStg.Vertex(i).IsRemoved)   ++aNbVtx;
+  for (int i = 0; i < aStg.NbEdges();     ++i) if (!aStg.Edge(i).IsRemoved)     ++aNbEdg;
+  for (int i = 0; i < aStg.NbWires();     ++i) if (!aStg.Wire(i).IsRemoved)     ++aNbWir;
+  for (int i = 0; i < aStg.NbFaces();     ++i) if (!aStg.Face(i).IsRemoved)     ++aNbFac;
+  for (int i = 0; i < aStg.NbShells();    ++i) if (!aStg.Shell(i).IsRemoved)    ++aNbShl;
+  for (int i = 0; i < aStg.NbSolids();    ++i) if (!aStg.Solid(i).IsRemoved)    ++aNbSol;
+  for (int i = 0; i < aStg.NbCompounds(); ++i) if (!aStg.Compound(i).IsRemoved) ++aNbCmp;
+  for (int i = 0; i < aStg.NbCompSolids();++i) if (!aStg.CompSolid(i).IsRemoved)++aNbCS;
+
+  Standard_ASSERT_VOID(aNbVtx == aStg.NbActiveVertices(),   "CommitMutation: active vertex count mismatch");
+  Standard_ASSERT_VOID(aNbEdg == aStg.NbActiveEdges(),      "CommitMutation: active edge count mismatch");
+  Standard_ASSERT_VOID(aNbWir == aStg.NbActiveWires(),      "CommitMutation: active wire count mismatch");
+  Standard_ASSERT_VOID(aNbFac == aStg.NbActiveFaces(),      "CommitMutation: active face count mismatch");
+  Standard_ASSERT_VOID(aNbShl == aStg.NbActiveShells(),     "CommitMutation: active shell count mismatch");
+  Standard_ASSERT_VOID(aNbSol == aStg.NbActiveSolids(),     "CommitMutation: active solid count mismatch");
+  Standard_ASSERT_VOID(aNbCmp == aStg.NbActiveCompounds(),  "CommitMutation: active compound count mismatch");
+  Standard_ASSERT_VOID(aNbCS  == aStg.NbActiveCompSolids(), "CommitMutation: active compsolid count mismatch");
+
+  // Suppress unused-variable warnings in non-debug builds where Standard_ASSERT_VOID is a no-op.
+  (void)aNbVtx; (void)aNbEdg; (void)aNbWir; (void)aNbFac;
+  (void)aNbShl; (void)aNbSol; (void)aNbCmp; (void)aNbCS;
+}

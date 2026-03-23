@@ -51,6 +51,7 @@
 #include <BRepGraph_CacheView.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_History.hxx>
+#include <BRepGraph_Mutator.hxx>
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_SpatialView.hxx>
@@ -1395,8 +1396,8 @@ int mergeMatchedEdges(
       theGraph.Mut().ReplaceEdgeInWire(aWires.Value(aWIdx), anIdB, anIdA, isReversed);
     }
 
-    // Mark the remove-edge as removed so FaceCountOfEdge/FreeEdges skip it.
-    theGraph.Mut().EdgeDef(anIdB.Index).IsRemoved = true;
+    // Remove the old edge properly — decrements NbActiveEdges, clears cache/RelEdges.
+    theGraph.Builder().RemoveNode(anIdB);
 
     // 5. Accumulate for batch history recording.
     aHistOriginals.Append(anIdB);
@@ -1747,6 +1748,7 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
   }
   aResult.NbMultipleEdges = aResult.MultipleEdges.Length();
 
+  BRepGraph_Mutator::CommitMutation(theGraph);
   aResult.IsDone = true;
   return aResult;
 }

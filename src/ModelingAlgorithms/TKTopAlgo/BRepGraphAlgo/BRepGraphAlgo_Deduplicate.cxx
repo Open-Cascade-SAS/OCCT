@@ -16,6 +16,7 @@
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_History.hxx>
+#include <BRepGraph_Mutator.hxx>
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_RelEdgesView.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
@@ -672,6 +673,7 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
                                   || aResult.NbMergedWires > 0
                                   || aResult.NbMergedFaces > 0);
 
+  BRepGraph_Mutator::CommitMutation(theGraph);
   theGraph.SetHistoryEnabled(wasHistoryEnabled);
   return aResult;
 }

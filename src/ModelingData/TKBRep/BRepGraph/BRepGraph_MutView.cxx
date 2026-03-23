@@ -148,3 +148,10 @@ void BRepGraph::MutView::RemoveRelEdges(BRepGraph_NodeId  theFrom,
 {
   BRepGraph_BackRefManager::RemoveRelEdges(*myGraph, theFrom, theTo, theKind);
 }
+
+//=================================================================================================
+
+void BRepGraph::MutView::CommitMutation()
+{
+  BRepGraph_Mutator::CommitMutation(*myGraph);
+}

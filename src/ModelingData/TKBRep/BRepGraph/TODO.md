@@ -15,13 +15,15 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 - Applied in: SameParameter::Perform, Sewing::processEdges
 - **Result**: Sewing 2500 faces parallel -25%, 1200 faces parallel -21%
 
-### CommitMutation guardrails [Stab] ★★★
-- Add `Mutator::CommitMutation` calls in Sewing, Compact, Deduplicate
-- Ensures mutation safety is explicit, not implicit
+### ~~CommitMutation guardrails~~ — DONE (2026-03-20)
+- `BRepGraph_Mutator::CommitMutation()` validates reverse index + active entity counts
+- Called at end of Sewing::Perform, Compact::Perform, Deduplicate::Perform
+- Exposed via `MutView::CommitMutation()` for algorithm use
 
-### NbActiveXXX counts [Arch] ★★
-- Validate and Compact should expose `NbActiveEdges()`, `NbActiveFaces()` etc.
-- Skip removed nodes in count methods
+### ~~NbActiveXXX counts~~ — DONE (2026-03-19)
+- `NbActiveEdges()`, `NbActiveFaces()` etc. in `BRepGraphInc_Storage`
+- `DecrementActiveCount()` called by `BuilderView::RemoveNode()`
+- Validated by `CommitMutation` guardrails
 
 ---
 
@@ -42,12 +44,12 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 - Captures entity counts before append, only processes new entities
 - **Result**: O(delta) instead of O(N) for append operations
 
-### ~~FaceCountForEdge fast path~~ — PARTIAL (2026-03-19)
-- `RelEdgesView::FaceCountForEdge` optimized with single-wire fast path (avoids PackedMap for 95%+ common case)
-- `AddPCurveToEdge` now calls `BindEdgeToFace` to keep `myEdgeFaceCount` in sync
-- `ReplaceEdgeInWire` now calls `BindEdgeToFace` for new edge to keep edge-to-face index in sync
-- Wire-based path retained: full O(1) switch requires sewing to mark replaced edges `IsRemoved` and decrement `myEdgeFaceCount` when edges lose wires
-- **Remaining**: Add `UnbindEdgeFromFace` to ReverseIndex, mark replaced edges `IsRemoved` in sewing
+### ~~FaceCountForEdge fast path~~ — DONE (2026-03-20)
+- `FaceCountForEdge` simplified to O(1) delegation to `ReverseIndex::FaceCountOfEdge()`
+- `UnbindEdgeFromFace` added to ReverseIndex for edge-to-face maintenance
+- `ReplaceEdgeInWire` binds new edge + unbinds old edge from wire's faces in single loop
+- Sewing `mergeMatchedEdges` uses `Builder().RemoveNode()` for replaced edges
+- `FreeEdges` and multiple-edge detection switched to O(1) `DefsView::FaceCountOfEdge` with `IsRemoved` filter
 
 ### Seam detection strengthening [Stab] ★★★
 - `canSewSameFaceEdges` uses bounding-box heuristics

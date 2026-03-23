@@ -17,6 +17,7 @@
 #include <BRepGraph_Data.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_History.hxx>
+#include <BRepGraph_Mutator.hxx>
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_RelEdgesView.hxx>
 #include <BRepGraph_UID.hxx>
@@ -468,6 +469,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
   // Swap.
   theGraph = std::move(aNewGraph);
 
+  BRepGraph_Mutator::CommitMutation(theGraph);
   theGraph.SetHistoryEnabled(wasHistoryEnabled);
   return aResult;
 }
