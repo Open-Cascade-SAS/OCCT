@@ -2,8 +2,6 @@
 set(OCCT_TopClass_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_TopClass_FILES
-  TopClass_Classifier2d.gxx
-  TopClass_Classifier2d.lxx
-  TopClass_FaceClassifier.gxx
-  TopClass_FaceClassifier.lxx
+  TopClass_Classifier2d.pxx
+  TopClass_FaceClassifier.pxx
 )

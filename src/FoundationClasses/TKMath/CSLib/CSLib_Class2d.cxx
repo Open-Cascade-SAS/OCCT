@@ -125,6 +125,19 @@ CSLib_Class2d::CSLib_Class2d(const NCollection_Sequence<gp_Pnt2d>& thePnts2d,
 
 //=================================================================================================
 
+CSLib_Class2d::CSLib_Class2d(const NCollection_Vector<gp_Pnt2d>& thePnts2d,
+                             const double                        theTolU,
+                             const double                        theTolV,
+                             const double                        theUMin,
+                             const double                        theVMin,
+                             const double                        theUMax,
+                             const double                        theVMax)
+{
+  init(thePnts2d, theTolU, theTolV, theUMin, theVMin, theUMax, theVMax);
+}
+
+//=================================================================================================
+
 CSLib_Class2d::Result CSLib_Class2d::SiDans(const gp_Pnt2d& thePoint) const
 {
   if (myPointsCount == 0)

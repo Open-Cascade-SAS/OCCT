@@ -51,24 +51,24 @@ public:
   Standard_EXPORT void Compare(const Geom2dAdaptor_Curve& E, const TopAbs_Orientation Or);
 
   //! Returns the current value of the parameter.
-  double Parameter() const;
+  double Parameter() const { return myParam; }
 
   //! Returns the intersecting algorithm.
-  Geom2dHatch_Intersector& Intersector();
+  Geom2dHatch_Intersector& Intersector() { return myIntersector; }
 
   //! Returns 0 if the last compared edge had no
   //! relevant intersection. Else returns the index of
   //! this intersection in the last intersection
   //! algorithm.
-  int ClosestIntersection() const;
+  int ClosestIntersection() const { return myClosest; }
 
   //! Returns the current state of the point.
-  TopAbs_State State() const;
+  TopAbs_State State() const { return myState; }
 
   //! Returns the true if the closest intersection point
   //! represents head or end of the edge. Returns false
   //! otherwise.
-  bool IsHeadOrEnd() const;
+  bool IsHeadOrEnd() const { return myIsHeadOrEnd; }
 
 private:
   bool                     myIsSet;
@@ -83,21 +83,5 @@ private:
   TopAbs_State             myState;
   bool                     myIsHeadOrEnd;
 };
-
-#define TheEdge Geom2dAdaptor_Curve
-#define TheEdge_hxx <Geom2dAdaptor_Curve.hxx>
-#define TheIntersector Geom2dHatch_Intersector
-#define TheIntersector_hxx <Geom2dHatch_Intersector.hxx>
-#define TopClass_Classifier2d Geom2dHatch_FClass2dOfClassifier
-#define TopClass_Classifier2d_hxx <Geom2dHatch_FClass2dOfClassifier.hxx>
-
-#include <TopClass_Classifier2d.lxx>
-
-#undef TheEdge
-#undef TheEdge_hxx
-#undef TheIntersector
-#undef TheIntersector_hxx
-#undef TopClass_Classifier2d
-#undef TopClass_Classifier2d_hxx
 
 #endif // _Geom2dHatch_FClass2dOfClassifier_HeaderFile

@@ -54,11 +54,11 @@ public:
 
   //! Returns True when the state was computed by a
   //! rejection. The state is OUT.
-  bool Rejected() const;
+  bool Rejected() const { return rejected; }
 
   //! Returns True if the face contains no wire.
   //! The state is IN.
-  bool NoWires() const;
+  bool NoWires() const { return nowires; }
 
   //! Returns the Edge used to determine the
   //! classification. When the State is ON this is the
@@ -71,7 +71,7 @@ public:
 
   //! Returns the position of the point on the edge
   //! returned by Edge.
-  IntRes2d_Position Position() const;
+  IntRes2d_Position Position() const { return myPosition; }
 
 protected:
   Geom2dHatch_FClass2dOfClassifier myClassifier;
@@ -81,29 +81,5 @@ protected:
   bool                             rejected;
   bool                             nowires;
 };
-
-#define TheFaceExplorer Geom2dHatch_Elements
-#define TheFaceExplorer_hxx <Geom2dHatch_Elements.hxx>
-#define TheEdge Geom2dAdaptor_Curve
-#define TheEdge_hxx <Geom2dAdaptor_Curve.hxx>
-#define TheIntersection2d Geom2dHatch_Intersector
-#define TheIntersection2d_hxx <Geom2dHatch_Intersector.hxx>
-#define TopClass_FClass2d Geom2dHatch_FClass2dOfClassifier
-#define TopClass_FClass2d_hxx <Geom2dHatch_FClass2dOfClassifier.hxx>
-#define TopClass_FaceClassifier Geom2dHatch_Classifier
-#define TopClass_FaceClassifier_hxx <Geom2dHatch_Classifier.hxx>
-
-#include <TopClass_FaceClassifier.lxx>
-
-#undef TheFaceExplorer
-#undef TheFaceExplorer_hxx
-#undef TheEdge
-#undef TheEdge_hxx
-#undef TheIntersection2d
-#undef TheIntersection2d_hxx
-#undef TopClass_FClass2d
-#undef TopClass_FClass2d_hxx
-#undef TopClass_FaceClassifier
-#undef TopClass_FaceClassifier_hxx
 
 #endif // _Geom2dHatch_Classifier_HeaderFile

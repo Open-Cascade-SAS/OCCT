@@ -1,0 +1,178 @@
+// Created on: 1992-11-18
+// Created by: Remi LEQUETTE
+// Copyright (c) 1992-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <IntRes2d_IntersectionPoint.hxx>
+#include <IntRes2d_IntersectionSegment.hxx>
+#include <IntRes2d_Position.hxx>
+#include <Standard_DomainError.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Pnt2d.hxx>
+
+namespace TopClass_FaceClassifier
+{
+
+//=================================================================================================
+
+template <typename TheFaceExplorer, typename TheEdge, typename FClass2d>
+inline void Perform(bool&              theRejected,
+                    bool&              theNoWires,
+                    FClass2d&          theClassifier,
+                    TheEdge&           theEdge,
+                    IntRes2d_Position& thePosition,
+                    double&            theEdgeParameter,
+                    TheFaceExplorer&   theFexp,
+                    const gp_Pnt2d&    theP,
+                    const double       theTol)
+{
+  gp_Pnt2d aPoint(theP);
+  bool     aResOfPointCheck = false;
+  while (aResOfPointCheck == false)
+  {
+    aResOfPointCheck = theFexp.CheckPoint(aPoint);
+  }
+
+  // Test for rejection.
+  theRejected = theFexp.Reject(aPoint);
+
+  if (theRejected)
+    return;
+
+  gp_Lin2d                   aLine;
+  double                     aParam;
+  bool                       aIsValidSegment = theFexp.Segment(aPoint, aLine, aParam);
+  TheEdge                    anEdge;
+  TopAbs_Orientation         anEdgeOri;
+  int                        aClosestInd;
+  IntRes2d_IntersectionPoint aPInter;
+  TopAbs_State               aState = TopAbs_UNKNOWN;
+  bool                       aIsWReject;
+  bool                       aIsEReject;
+
+  theNoWires = true;
+
+  while (aIsValidSegment)
+  {
+    theClassifier.Reset(aLine, aParam, theTol);
+
+    for (theFexp.InitWires(); theFexp.MoreWires(); theFexp.NextWire())
+    {
+      theNoWires = false;
+      aIsWReject = theFexp.RejectWire(aLine, theClassifier.Parameter());
+
+      if (!aIsWReject)
+      {
+        // Test this wire.
+        for (theFexp.InitEdges(); theFexp.MoreEdges(); theFexp.NextEdge())
+        {
+          aIsEReject = theFexp.RejectEdge(aLine, theClassifier.Parameter());
+
+          if (!aIsEReject)
+          {
+            // Test this edge.
+            theFexp.CurrentEdge(anEdge, anEdgeOri);
+
+            if (anEdgeOri == TopAbs_FORWARD || anEdgeOri == TopAbs_REVERSED)
+            {
+              theClassifier.Compare(anEdge, anEdgeOri);
+              aClosestInd = theClassifier.ClosestIntersection();
+
+              if (aClosestInd != 0)
+              {
+                // Save the closest edge.
+                auto& anIntersector = theClassifier.Intersector();
+                int   aNbPnts       = anIntersector.NbPoints();
+
+                theEdge = anEdge;
+
+                if (aClosestInd <= aNbPnts)
+                {
+                  aPInter = anIntersector.Point(aClosestInd);
+                }
+                else
+                {
+                  aClosestInd -= aNbPnts;
+
+                  if (aClosestInd & 1)
+                  {
+                    aPInter = anIntersector.Segment((aClosestInd + 1) / 2).FirstPoint();
+                  }
+                  else
+                  {
+                    aPInter = anIntersector.Segment((aClosestInd + 1) / 2).LastPoint();
+                  }
+                }
+
+                thePosition      = aPInter.TransitionOfSecond().PositionOnCurve();
+                theEdgeParameter = aPInter.ParamOnSecond();
+              }
+              // If we are ON, we stop.
+              aState = theClassifier.State();
+
+              if (aState == TopAbs_ON)
+                return;
+            }
+          }
+        }
+
+        // If we are out of the wire we stop.
+        aState = theClassifier.State();
+
+        if (aState == TopAbs_OUT)
+          return;
+      }
+    }
+
+    if (!theClassifier.IsHeadOrEnd() && aState != TopAbs_UNKNOWN)
+      break;
+
+    // Bad case for classification. Trying to get another segment.
+    aIsValidSegment = theFexp.OtherSegment(aPoint, aLine, aParam);
+  }
+}
+
+//=================================================================================================
+
+template <typename FClass2d>
+inline TopAbs_State State(const bool      theRejected,
+                          const bool      theNoWires,
+                          const FClass2d& theClassifier)
+{
+  if (theRejected)
+    return TopAbs_OUT;
+  else if (theNoWires)
+    return TopAbs_IN;
+  else
+    return theClassifier.State();
+}
+
+//=================================================================================================
+
+template <typename TheEdge>
+inline const TheEdge& Edge([[maybe_unused]] const bool theRejected, const TheEdge& theEdge)
+{
+  Standard_DomainError_Raise_if(theRejected, "TopClass_FaceClassifier::Edge : rejected");
+  return theEdge;
+}
+
+//=================================================================================================
+
+inline double EdgeParameter([[maybe_unused]] const bool theRejected, const double theEdgeParameter)
+{
+  Standard_DomainError_Raise_if(theRejected, "TopClass_FaceClassifier::EdgeParameter : rejected");
+  return theEdgeParameter;
+}
+
+} // namespace TopClass_FaceClassifier

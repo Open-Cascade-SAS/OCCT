@@ -33,9 +33,9 @@ public:
   Standard_EXPORT BRepTopAdaptor_HVertex(const TopoDS_Vertex&                    Vtx,
                                          const occ::handle<BRepAdaptor_Curve2d>& Curve);
 
-  const TopoDS_Vertex& Vertex() const;
+  const TopoDS_Vertex& Vertex() const { return myVtx; }
 
-  TopoDS_Vertex& ChangeVertex();
+  TopoDS_Vertex& ChangeVertex() { return myVtx; }
 
   Standard_EXPORT gp_Pnt2d Value() override;
 
@@ -54,7 +54,5 @@ private:
   TopoDS_Vertex                    myVtx;
   occ::handle<BRepAdaptor_Curve2d> myCurve;
 };
-
-#include <BRepTopAdaptor_HVertex.lxx>
 
 #endif // _BRepTopAdaptor_HVertex_HeaderFile

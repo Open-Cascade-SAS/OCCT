@@ -65,10 +65,10 @@ public:
   Standard_EXPORT void InitWires();
 
   //! Returns True if there is a current wire.
-  bool MoreWires() const;
+  bool MoreWires() const { return myWExplorer.More(); }
 
   //! Sets the explorer to the next wire.
-  void NextWire();
+  void NextWire() { myWExplorer.Next(); }
 
   //! Returns True if the wire bounding volume does not
   //! intersect the segment.
@@ -79,10 +79,10 @@ public:
   Standard_EXPORT void InitEdges();
 
   //! Returns True if there is a current edge.
-  bool MoreEdges() const;
+  bool MoreEdges() const { return myEExplorer.More(); }
 
   //! Sets the explorer to the next edge.
-  void NextEdge();
+  void NextEdge() { myEExplorer.Next(); }
 
   //! Returns True if the edge bounding volume does not
   //! intersect the segment.
@@ -126,7 +126,5 @@ private:
   double myVMin;
   double myVMax;
 };
-
-#include <BRepClass_FaceExplorer.lxx>
 
 #endif // _BRepClass_FaceExplorer_HeaderFile
