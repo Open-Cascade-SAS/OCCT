@@ -134,6 +134,7 @@ graph TD
     T2_2 --> T3_1
     T2_1 --> T3_3
     T2_2 --> T3_3
+    T2_1 --> T3_4
     T1_1 --> T3_4
     T1_2 --> T3_4
     T1_2 --> T4_1
@@ -387,7 +388,7 @@ graph LR
 
 **Files:** New `BRepGraphAlgo_Merge.hxx/.cxx`
 
-**Complexity:** L | **Dependencies:** T1.1, T1.2
+**Complexity:** L | **Dependencies:** T1.1, T1.2, T2.1
 
 ---
 
@@ -515,8 +516,8 @@ graph TB
 | 2 | T1.4 PCurve Continuity | 1 | S | Trivial, no risk |
 | 3 | T1.1 Back-Ref Automation | 1 | M | Biggest risk-reducer |
 | 4 | T1.2 Mandatory UID | 1 | M | Enables stable identity |
-| 5 | T2.3 Observers | 2 | M | Low risk, high extensibility |
-| 6 | T2.1 Transactions | 2 | L | Enables safe multi-step mutations |
+| 5 | T2.1 Transactions | 2 | L | Enables safe multi-step mutations |
+| 6 | T2.3 Observers | 2 | M | Transaction-aware events and cache invalidation |
 | 7 | T2.2 Mutation Primitives | 2 | L | Enables higher-level algorithms |
 | 8 | T3.2 CurveAdaptor | 3 | M | Independent utility |
 | 9 | T3.1 Shell Builder | 3 | M | Simplifies Sewing, unblocks T4.2 |
