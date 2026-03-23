@@ -1082,7 +1082,7 @@ double ProjLib_ProjectOnPlane::Period() const
 
 //=================================================================================================
 
-gp_Pnt ProjLib_ProjectOnPlane::EvalD0(double theU) const
+gp_Pnt ProjLib_ProjectOnPlane::EvalD0(const double theU) const
 {
   if (myType != GeomAbs_OtherCurve)
   {
@@ -1096,7 +1096,7 @@ gp_Pnt ProjLib_ProjectOnPlane::EvalD0(double theU) const
 
 //=================================================================================================
 
-Geom_Curve::ResD1 ProjLib_ProjectOnPlane::EvalD1(double theU) const
+Geom_Curve::ResD1 ProjLib_ProjectOnPlane::EvalD1(const double theU) const
 {
   if (myType != GeomAbs_OtherCurve)
   {
@@ -1113,7 +1113,7 @@ Geom_Curve::ResD1 ProjLib_ProjectOnPlane::EvalD1(double theU) const
 
 //=================================================================================================
 
-Geom_Curve::ResD2 ProjLib_ProjectOnPlane::EvalD2(double theU) const
+Geom_Curve::ResD2 ProjLib_ProjectOnPlane::EvalD2(const double theU) const
 {
   if (myType != GeomAbs_OtherCurve)
   {
@@ -1130,7 +1130,7 @@ Geom_Curve::ResD2 ProjLib_ProjectOnPlane::EvalD2(double theU) const
 
 //=================================================================================================
 
-Geom_Curve::ResD3 ProjLib_ProjectOnPlane::EvalD3(double theU) const
+Geom_Curve::ResD3 ProjLib_ProjectOnPlane::EvalD3(const double theU) const
 {
   if (myType != GeomAbs_OtherCurve)
   {
@@ -1147,7 +1147,7 @@ Geom_Curve::ResD3 ProjLib_ProjectOnPlane::EvalD3(double theU) const
 
 //=================================================================================================
 
-gp_Vec ProjLib_ProjectOnPlane::EvalDN(double theU, int theN) const
+gp_Vec ProjLib_ProjectOnPlane::EvalDN(const double theU, const int theN) const
 {
   if (myType != GeomAbs_OtherCurve)
   {

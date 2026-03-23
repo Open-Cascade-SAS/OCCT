@@ -320,7 +320,7 @@ double BRepAdaptor_CompCurve::Period() const
   return (TLast - TFirst);
 }
 
-gp_Pnt BRepAdaptor_CompCurve::EvalD0(double theU) const
+gp_Pnt BRepAdaptor_CompCurve::EvalD0(const double theU) const
 {
   double u     = theU, d;
   int    index = CurIndex;
@@ -328,7 +328,7 @@ gp_Pnt BRepAdaptor_CompCurve::EvalD0(double theU) const
   return myCurves->Value(index).EvalD0(u);
 }
 
-Geom_Curve::ResD1 BRepAdaptor_CompCurve::EvalD1(double theU) const
+Geom_Curve::ResD1 BRepAdaptor_CompCurve::EvalD1(const double theU) const
 {
   double u     = theU, d;
   int    index = CurIndex;
@@ -338,7 +338,7 @@ Geom_Curve::ResD1 BRepAdaptor_CompCurve::EvalD1(double theU) const
   return aRes;
 }
 
-Geom_Curve::ResD2 BRepAdaptor_CompCurve::EvalD2(double theU) const
+Geom_Curve::ResD2 BRepAdaptor_CompCurve::EvalD2(const double theU) const
 {
   double u     = theU, d;
   int    index = CurIndex;
@@ -349,7 +349,7 @@ Geom_Curve::ResD2 BRepAdaptor_CompCurve::EvalD2(double theU) const
   return aRes;
 }
 
-Geom_Curve::ResD3 BRepAdaptor_CompCurve::EvalD3(double theU) const
+Geom_Curve::ResD3 BRepAdaptor_CompCurve::EvalD3(const double theU) const
 {
   double u     = theU, d;
   int    index = CurIndex;
@@ -361,7 +361,7 @@ Geom_Curve::ResD3 BRepAdaptor_CompCurve::EvalD3(double theU) const
   return aRes;
 }
 
-gp_Vec BRepAdaptor_CompCurve::EvalDN(double theU, int theN) const
+gp_Vec BRepAdaptor_CompCurve::EvalDN(const double theU, const int theN) const
 {
   double u     = theU, d;
   int    index = CurIndex;

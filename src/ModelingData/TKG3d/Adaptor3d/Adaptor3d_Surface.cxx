@@ -347,35 +347,50 @@ double Adaptor3d_Surface::OffsetValue() const
 
 //=================================================================================================
 
-gp_Pnt Adaptor3d_Surface::EvalD0(double, double) const
+gp_Pnt Adaptor3d_Surface::EvalD0(const double theU, const double theV) const
 {
+  (void)theU;
+  (void)theV;
   throw Standard_NotImplemented("Adaptor3d_Surface::EvalD0");
 }
 
 //=================================================================================================
 
-Geom_Surface::ResD1 Adaptor3d_Surface::EvalD1(double, double) const
+Geom_Surface::ResD1 Adaptor3d_Surface::EvalD1(const double theU, const double theV) const
 {
+  (void)theU;
+  (void)theV;
   throw Standard_NotImplemented("Adaptor3d_Surface::EvalD1");
 }
 
 //=================================================================================================
 
-Geom_Surface::ResD2 Adaptor3d_Surface::EvalD2(double, double) const
+Geom_Surface::ResD2 Adaptor3d_Surface::EvalD2(const double theU, const double theV) const
 {
+  (void)theU;
+  (void)theV;
   throw Standard_NotImplemented("Adaptor3d_Surface::EvalD2");
 }
 
 //=================================================================================================
 
-Geom_Surface::ResD3 Adaptor3d_Surface::EvalD3(double, double) const
+Geom_Surface::ResD3 Adaptor3d_Surface::EvalD3(const double theU, const double theV) const
 {
+  (void)theU;
+  (void)theV;
   throw Standard_NotImplemented("Adaptor3d_Surface::EvalD3");
 }
 
 //=================================================================================================
 
-gp_Vec Adaptor3d_Surface::EvalDN(double, double, int, int) const
+gp_Vec Adaptor3d_Surface::EvalDN(const double theU,
+                                 const double theV,
+                                 const int    theNu,
+                                 const int    theNv) const
 {
+  (void)theU;
+  (void)theV;
+  (void)theNu;
+  (void)theNv;
   throw Standard_NotImplemented("Adaptor3d_Surface::EvalDN");
 }

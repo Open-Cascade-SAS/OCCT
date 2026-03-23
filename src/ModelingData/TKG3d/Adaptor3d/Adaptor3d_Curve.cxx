@@ -206,35 +206,41 @@ occ::handle<Geom_OffsetCurve> Adaptor3d_Curve::OffsetCurve() const
 
 //=================================================================================================
 
-gp_Pnt Adaptor3d_Curve::EvalD0(double) const
+gp_Pnt Adaptor3d_Curve::EvalD0(const double theU) const
 {
+  (void)theU;
   throw Standard_NotImplemented("Adaptor3d_Curve::EvalD0");
 }
 
 //=================================================================================================
 
-Geom_Curve::ResD1 Adaptor3d_Curve::EvalD1(double) const
+Geom_Curve::ResD1 Adaptor3d_Curve::EvalD1(const double theU) const
 {
+  (void)theU;
   throw Standard_NotImplemented("Adaptor3d_Curve::EvalD1");
 }
 
 //=================================================================================================
 
-Geom_Curve::ResD2 Adaptor3d_Curve::EvalD2(double) const
+Geom_Curve::ResD2 Adaptor3d_Curve::EvalD2(const double theU) const
 {
+  (void)theU;
   throw Standard_NotImplemented("Adaptor3d_Curve::EvalD2");
 }
 
 //=================================================================================================
 
-Geom_Curve::ResD3 Adaptor3d_Curve::EvalD3(double) const
+Geom_Curve::ResD3 Adaptor3d_Curve::EvalD3(const double theU) const
 {
+  (void)theU;
   throw Standard_NotImplemented("Adaptor3d_Curve::EvalD3");
 }
 
 //=================================================================================================
 
-gp_Vec Adaptor3d_Curve::EvalDN(double, int) const
+gp_Vec Adaptor3d_Curve::EvalDN(const double theU, const int theN) const
 {
+  (void)theU;
+  (void)theN;
   throw Standard_NotImplemented("Adaptor3d_Curve::EvalDN");
 }

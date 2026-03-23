@@ -169,28 +169,28 @@ double ChFiDS_ElSpine::Period() const
 
 //=================================================================================================
 
-gp_Pnt ChFiDS_ElSpine::EvalD0(double theAbsC) const
+gp_Pnt ChFiDS_ElSpine::EvalD0(const double theAbsC) const
 {
   return curve.EvalD0(theAbsC);
 }
 
 //=================================================================================================
 
-Geom_Curve::ResD1 ChFiDS_ElSpine::EvalD1(double theAbsC) const
+Geom_Curve::ResD1 ChFiDS_ElSpine::EvalD1(const double theAbsC) const
 {
   return curve.EvalD1(theAbsC);
 }
 
 //=================================================================================================
 
-Geom_Curve::ResD2 ChFiDS_ElSpine::EvalD2(double theAbsC) const
+Geom_Curve::ResD2 ChFiDS_ElSpine::EvalD2(const double theAbsC) const
 {
   return curve.EvalD2(theAbsC);
 }
 
 //=================================================================================================
 
-Geom_Curve::ResD3 ChFiDS_ElSpine::EvalD3(double theAbsC) const
+Geom_Curve::ResD3 ChFiDS_ElSpine::EvalD3(const double theAbsC) const
 {
   return curve.EvalD3(theAbsC);
 }

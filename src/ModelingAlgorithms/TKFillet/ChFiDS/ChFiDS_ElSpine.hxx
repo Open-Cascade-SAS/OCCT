@@ -85,16 +85,16 @@ public:
   Standard_EXPORT double Period() const override;
 
   //! Computes the point of parameter theAbsC on the curve.
-  [[nodiscard]] Standard_EXPORT gp_Pnt EvalD0(double theAbsC) const final;
+  [[nodiscard]] Standard_EXPORT gp_Pnt EvalD0(const double theAbsC) const final;
 
   //! Computes the point and first derivative at parameter theAbsC.
-  [[nodiscard]] Standard_EXPORT Geom_Curve::ResD1 EvalD1(double theAbsC) const final;
+  [[nodiscard]] Standard_EXPORT Geom_Curve::ResD1 EvalD1(const double theAbsC) const final;
 
   //! Computes the point and first two derivatives at parameter theAbsC.
-  [[nodiscard]] Standard_EXPORT Geom_Curve::ResD2 EvalD2(double theAbsC) const final;
+  [[nodiscard]] Standard_EXPORT Geom_Curve::ResD2 EvalD2(const double theAbsC) const final;
 
   //! Computes the point and first three derivatives at parameter theAbsC.
-  [[nodiscard]] Standard_EXPORT Geom_Curve::ResD3 EvalD3(double theAbsC) const final;
+  [[nodiscard]] Standard_EXPORT Geom_Curve::ResD3 EvalD3(const double theAbsC) const final;
 
   Standard_EXPORT void FirstParameter(const double P);
 

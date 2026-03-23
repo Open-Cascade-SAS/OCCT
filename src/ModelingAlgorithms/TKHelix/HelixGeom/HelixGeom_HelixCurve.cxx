@@ -161,7 +161,7 @@ double HelixGeom_HelixCurve::Period() const
 
 //=================================================================================================
 
-gp_Pnt HelixGeom_HelixCurve::EvalD0(double theT) const
+gp_Pnt HelixGeom_HelixCurve::EvalD0(const double theT) const
 {
   double aST, aCT, aX, aY, aZ, a1;
   // Calculate trigonometric values and radius
@@ -181,7 +181,7 @@ gp_Pnt HelixGeom_HelixCurve::EvalD0(double theT) const
 
 //=================================================================================================
 
-Geom_Curve::ResD1 HelixGeom_HelixCurve::EvalD1(double theT) const
+Geom_Curve::ResD1 HelixGeom_HelixCurve::EvalD1(const double theT) const
 {
   double aST, aCT, aX, aY, aZ, a1, a2;
   // Calculate point and first derivative
@@ -215,7 +215,7 @@ Geom_Curve::ResD1 HelixGeom_HelixCurve::EvalD1(double theT) const
 
 //=================================================================================================
 
-Geom_Curve::ResD2 HelixGeom_HelixCurve::EvalD2(double theT) const
+Geom_Curve::ResD2 HelixGeom_HelixCurve::EvalD2(const double theT) const
 {
   double aST, aCT, aX, aY, aZ, a1, a2;
   // Calculate point, first and second derivatives
@@ -259,7 +259,7 @@ Geom_Curve::ResD2 HelixGeom_HelixCurve::EvalD2(double theT) const
 
 //=================================================================================================
 
-gp_Vec HelixGeom_HelixCurve::EvalDN(double theT, int theN) const
+gp_Vec HelixGeom_HelixCurve::EvalDN(const double theT, const int theN) const
 {
   // Compute derivative based on order
   switch (theN)
@@ -274,7 +274,5 @@ gp_Vec HelixGeom_HelixCurve::EvalDN(double theT, int theN) const
     }
     default:
       throw Standard_NotImplemented("HelixGeom_HelixCurve::EvalDN");
-      break;
   }
-  return gp_Vec();
 }

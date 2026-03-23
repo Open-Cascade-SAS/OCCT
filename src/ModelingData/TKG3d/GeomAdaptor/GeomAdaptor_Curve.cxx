@@ -646,9 +646,10 @@ bool GeomAdaptor_Curve::IsBoundary(const double theU, int& theSpanStart, int& th
 
 //=================================================================================================
 
-gp_Pnt GeomAdaptor_Curve::EvalD0(double U) const
+gp_Pnt GeomAdaptor_Curve::EvalD0(const double theU) const
 {
-  gp_Pnt P;
+  const double U = theU;
+  gp_Pnt       P;
   switch (myTypeCurve)
   {
     case GeomAbs_Line:
@@ -727,8 +728,9 @@ gp_Pnt GeomAdaptor_Curve::EvalD0(double U) const
 
 //=================================================================================================
 
-Geom_Curve::ResD1 GeomAdaptor_Curve::EvalD1(double U) const
+Geom_Curve::ResD1 GeomAdaptor_Curve::EvalD1(const double theU) const
 {
+  const double      U = theU;
   Geom_Curve::ResD1 aResult;
   switch (myTypeCurve)
   {
@@ -809,8 +811,9 @@ Geom_Curve::ResD1 GeomAdaptor_Curve::EvalD1(double U) const
 
 //=================================================================================================
 
-Geom_Curve::ResD2 GeomAdaptor_Curve::EvalD2(double U) const
+Geom_Curve::ResD2 GeomAdaptor_Curve::EvalD2(const double theU) const
 {
+  const double      U = theU;
   Geom_Curve::ResD2 aResult;
   switch (myTypeCurve)
   {
@@ -893,8 +896,9 @@ Geom_Curve::ResD2 GeomAdaptor_Curve::EvalD2(double U) const
 
 //=================================================================================================
 
-Geom_Curve::ResD3 GeomAdaptor_Curve::EvalD3(double U) const
+Geom_Curve::ResD3 GeomAdaptor_Curve::EvalD3(const double theU) const
 {
+  const double      U = theU;
   Geom_Curve::ResD3 aResult;
   switch (myTypeCurve)
   {
@@ -996,8 +1000,10 @@ Geom_Curve::ResD3 GeomAdaptor_Curve::EvalD3(double U) const
 
 //=================================================================================================
 
-gp_Vec GeomAdaptor_Curve::EvalDN(double U, int N) const
+gp_Vec GeomAdaptor_Curve::EvalDN(const double theU, const int theN) const
 {
+  const double U = theU;
+  const int    N = theN;
   switch (myTypeCurve)
   {
     case GeomAbs_Line:

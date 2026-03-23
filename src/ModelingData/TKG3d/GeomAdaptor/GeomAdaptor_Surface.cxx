@@ -995,9 +995,11 @@ void GeomAdaptor_Surface::RebuildCache(const double theU, const double theV) con
 
 //=================================================================================================
 
-gp_Pnt GeomAdaptor_Surface::EvalD0(double U, double V) const
+gp_Pnt GeomAdaptor_Surface::EvalD0(const double theU, const double theV) const
 {
-  gp_Pnt P;
+  const double U = theU;
+  const double V = theV;
+  gp_Pnt       P;
   switch (mySurfaceType)
   {
     case GeomAbs_Plane:
@@ -1079,8 +1081,10 @@ gp_Pnt GeomAdaptor_Surface::EvalD0(double U, double V) const
 
 //=================================================================================================
 
-Geom_Surface::ResD1 GeomAdaptor_Surface::EvalD1(double U, double V) const
+Geom_Surface::ResD1 GeomAdaptor_Surface::EvalD1(const double theU, const double theV) const
 {
+  const double        U = theU;
+  const double        V = theV;
   Geom_Surface::ResD1 aResult;
   int                 Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
   double              u = U, v = V;
@@ -1209,8 +1213,10 @@ Geom_Surface::ResD1 GeomAdaptor_Surface::EvalD1(double U, double V) const
 
 //=================================================================================================
 
-Geom_Surface::ResD2 GeomAdaptor_Surface::EvalD2(double U, double V) const
+Geom_Surface::ResD2 GeomAdaptor_Surface::EvalD2(const double theU, const double theV) const
 {
+  const double        U = theU;
+  const double        V = theV;
   Geom_Surface::ResD2 aResult;
   int                 Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
   double              u = U, v = V;
@@ -1402,8 +1408,10 @@ Geom_Surface::ResD2 GeomAdaptor_Surface::EvalD2(double U, double V) const
 
 //=================================================================================================
 
-Geom_Surface::ResD3 GeomAdaptor_Surface::EvalD3(double U, double V) const
+Geom_Surface::ResD3 GeomAdaptor_Surface::EvalD3(const double theU, const double theV) const
 {
+  const double        U = theU;
+  const double        V = theV;
   Geom_Surface::ResD3 aResult;
   int                 Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
   double              u = U, v = V;
@@ -1616,10 +1624,17 @@ Geom_Surface::ResD3 GeomAdaptor_Surface::EvalD3(double U, double V) const
 
 //=================================================================================================
 
-gp_Vec GeomAdaptor_Surface::EvalDN(double U, double V, int Nu, int Nv) const
+gp_Vec GeomAdaptor_Surface::EvalDN(const double theU,
+                                   const double theV,
+                                   const int    theNu,
+                                   const int    theNv) const
 {
-  int    Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
-  double u = U, v = V;
+  const double U  = theU;
+  const double V  = theV;
+  const int    Nu = theNu;
+  const int    Nv = theNv;
+  int          Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
+  double       u = U, v = V;
   if (std::abs(U - myUFirst) <= myTolU)
   {
     USide = 1;

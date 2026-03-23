@@ -123,24 +123,24 @@ public:
   Standard_EXPORT double Period() const override;
 
   //! Computes the point of parameter theU on the curve.
-  [[nodiscard]] Standard_EXPORT gp_Pnt EvalD0(double theU) const final;
+  [[nodiscard]] Standard_EXPORT gp_Pnt EvalD0(const double theU) const final;
 
   //! Computes the point of parameter theU on the curve with its first derivative.
   //! Raised if the continuity of the current interval is not C1.
-  [[nodiscard]] Standard_EXPORT Geom_Curve::ResD1 EvalD1(double theU) const final;
+  [[nodiscard]] Standard_EXPORT Geom_Curve::ResD1 EvalD1(const double theU) const final;
 
   //! Returns the point and the first and second derivatives at parameter theU.
   //! Raised if the continuity of the current interval is not C2.
-  [[nodiscard]] Standard_EXPORT Geom_Curve::ResD2 EvalD2(double theU) const final;
+  [[nodiscard]] Standard_EXPORT Geom_Curve::ResD2 EvalD2(const double theU) const final;
 
   //! Returns the point and the first, second and third derivatives at parameter theU.
   //! Raised if the continuity of the current interval is not C3.
-  [[nodiscard]] Standard_EXPORT Geom_Curve::ResD3 EvalD3(double theU) const final;
+  [[nodiscard]] Standard_EXPORT Geom_Curve::ResD3 EvalD3(const double theU) const final;
 
   //! Returns the derivative of order theN at parameter theU.
   //! Raised if the continuity of the current interval is not CN.
   //! Raised if theN < 1.
-  [[nodiscard]] Standard_EXPORT gp_Vec EvalDN(double theU, int theN) const final;
+  [[nodiscard]] Standard_EXPORT gp_Vec EvalDN(const double theU, const int theN) const final;
 
   //! returns the parametric resolution
   Standard_EXPORT double Resolution(const double R3d) const override;

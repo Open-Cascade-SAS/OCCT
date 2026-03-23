@@ -230,19 +230,19 @@ public:
   Standard_EXPORT occ::handle<Geom2d_BSplineCurve> BSpline() const override;
 
   //! Point evaluation. Raises an exception on failure.
-  [[nodiscard]] Standard_EXPORT gp_Pnt2d EvalD0(double U) const final;
+  [[nodiscard]] Standard_EXPORT gp_Pnt2d EvalD0(const double theU) const final;
 
   //! D1 evaluation. Raises an exception on failure.
-  [[nodiscard]] Standard_EXPORT Geom2d_Curve::ResD1 EvalD1(double U) const final;
+  [[nodiscard]] Standard_EXPORT Geom2d_Curve::ResD1 EvalD1(const double theU) const final;
 
   //! D2 evaluation. Raises an exception on failure.
-  [[nodiscard]] Standard_EXPORT Geom2d_Curve::ResD2 EvalD2(double U) const final;
+  [[nodiscard]] Standard_EXPORT Geom2d_Curve::ResD2 EvalD2(const double theU) const final;
 
   //! D3 evaluation. Raises an exception on failure.
-  [[nodiscard]] Standard_EXPORT Geom2d_Curve::ResD3 EvalD3(double U) const final;
+  [[nodiscard]] Standard_EXPORT Geom2d_Curve::ResD3 EvalD3(const double theU) const final;
 
   //! DN evaluation. Raises an exception on failure.
-  [[nodiscard]] Standard_EXPORT gp_Vec2d EvalDN(double U, int N) const final;
+  [[nodiscard]] Standard_EXPORT gp_Vec2d EvalDN(const double theU, const int theN) const final;
 
 private:
   Standard_EXPORT GeomAbs_Shape LocalContinuity(const double U1, const double U2) const;

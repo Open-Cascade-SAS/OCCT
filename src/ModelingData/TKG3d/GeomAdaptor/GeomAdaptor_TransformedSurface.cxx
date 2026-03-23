@@ -234,7 +234,7 @@ occ::handle<Adaptor3d_Surface> GeomAdaptor_TransformedSurface::VTrim(const doubl
 
 //=================================================================================================
 
-gp_Pnt GeomAdaptor_TransformedSurface::EvalD0(double theU, double theV) const
+gp_Pnt GeomAdaptor_TransformedSurface::EvalD0(const double theU, const double theV) const
 {
   if (myTrsf.Form() == gp_Identity)
   {
@@ -245,7 +245,8 @@ gp_Pnt GeomAdaptor_TransformedSurface::EvalD0(double theU, double theV) const
 
 //=================================================================================================
 
-Geom_Surface::ResD1 GeomAdaptor_TransformedSurface::EvalD1(double theU, double theV) const
+Geom_Surface::ResD1 GeomAdaptor_TransformedSurface::EvalD1(const double theU,
+                                                           const double theV) const
 {
   if (myTrsf.Form() == gp_Identity)
   {
@@ -260,7 +261,8 @@ Geom_Surface::ResD1 GeomAdaptor_TransformedSurface::EvalD1(double theU, double t
 
 //=================================================================================================
 
-Geom_Surface::ResD2 GeomAdaptor_TransformedSurface::EvalD2(double theU, double theV) const
+Geom_Surface::ResD2 GeomAdaptor_TransformedSurface::EvalD2(const double theU,
+                                                           const double theV) const
 {
   if (myTrsf.Form() == gp_Identity)
   {
@@ -278,7 +280,8 @@ Geom_Surface::ResD2 GeomAdaptor_TransformedSurface::EvalD2(double theU, double t
 
 //=================================================================================================
 
-Geom_Surface::ResD3 GeomAdaptor_TransformedSurface::EvalD3(double theU, double theV) const
+Geom_Surface::ResD3 GeomAdaptor_TransformedSurface::EvalD3(const double theU,
+                                                           const double theV) const
 {
   if (myTrsf.Form() == gp_Identity)
   {
@@ -300,7 +303,10 @@ Geom_Surface::ResD3 GeomAdaptor_TransformedSurface::EvalD3(double theU, double t
 
 //=================================================================================================
 
-gp_Vec GeomAdaptor_TransformedSurface::EvalDN(double theU, double theV, int theNu, int theNv) const
+gp_Vec GeomAdaptor_TransformedSurface::EvalDN(const double theU,
+                                              const double theV,
+                                              const int    theNu,
+                                              const int    theNv) const
 {
   if (myTrsf.Form() == gp_Identity)
   {

@@ -360,14 +360,14 @@ double Adaptor3d_IsoCurve::Period() const
 
 //=================================================================================================
 
-gp_Pnt Adaptor3d_IsoCurve::EvalD0(double theT) const
+gp_Pnt Adaptor3d_IsoCurve::EvalD0(const double theU) const
 {
   switch (myIso)
   {
     case GeomAbs_IsoU:
-      return mySurface->EvalD0(myParameter, theT);
+      return mySurface->EvalD0(myParameter, theU);
     case GeomAbs_IsoV:
-      return mySurface->EvalD0(theT, myParameter);
+      return mySurface->EvalD0(theU, myParameter);
     case GeomAbs_NoneIso:
       throw Standard_NoSuchObject("Adaptor3d_IsoCurve:NoneIso");
   }
@@ -376,16 +376,16 @@ gp_Pnt Adaptor3d_IsoCurve::EvalD0(double theT) const
 
 //=================================================================================================
 
-Geom_Curve::ResD1 Adaptor3d_IsoCurve::EvalD1(double theT) const
+Geom_Curve::ResD1 Adaptor3d_IsoCurve::EvalD1(const double theU) const
 {
   switch (myIso)
   {
     case GeomAbs_IsoU: {
-      const Geom_Surface::ResD1 aRes = mySurface->EvalD1(myParameter, theT);
+      const Geom_Surface::ResD1 aRes = mySurface->EvalD1(myParameter, theU);
       return {aRes.Point, aRes.D1V};
     }
     case GeomAbs_IsoV: {
-      const Geom_Surface::ResD1 aRes = mySurface->EvalD1(theT, myParameter);
+      const Geom_Surface::ResD1 aRes = mySurface->EvalD1(theU, myParameter);
       return {aRes.Point, aRes.D1U};
     }
     case GeomAbs_NoneIso:
@@ -396,16 +396,16 @@ Geom_Curve::ResD1 Adaptor3d_IsoCurve::EvalD1(double theT) const
 
 //=================================================================================================
 
-Geom_Curve::ResD2 Adaptor3d_IsoCurve::EvalD2(double theT) const
+Geom_Curve::ResD2 Adaptor3d_IsoCurve::EvalD2(const double theU) const
 {
   switch (myIso)
   {
     case GeomAbs_IsoU: {
-      const Geom_Surface::ResD2 aRes = mySurface->EvalD2(myParameter, theT);
+      const Geom_Surface::ResD2 aRes = mySurface->EvalD2(myParameter, theU);
       return {aRes.Point, aRes.D1V, aRes.D2V};
     }
     case GeomAbs_IsoV: {
-      const Geom_Surface::ResD2 aRes = mySurface->EvalD2(theT, myParameter);
+      const Geom_Surface::ResD2 aRes = mySurface->EvalD2(theU, myParameter);
       return {aRes.Point, aRes.D1U, aRes.D2U};
     }
     case GeomAbs_NoneIso:
@@ -416,16 +416,16 @@ Geom_Curve::ResD2 Adaptor3d_IsoCurve::EvalD2(double theT) const
 
 //=================================================================================================
 
-Geom_Curve::ResD3 Adaptor3d_IsoCurve::EvalD3(double theT) const
+Geom_Curve::ResD3 Adaptor3d_IsoCurve::EvalD3(const double theU) const
 {
   switch (myIso)
   {
     case GeomAbs_IsoU: {
-      const Geom_Surface::ResD3 aRes = mySurface->EvalD3(myParameter, theT);
+      const Geom_Surface::ResD3 aRes = mySurface->EvalD3(myParameter, theU);
       return {aRes.Point, aRes.D1V, aRes.D2V, aRes.D3V};
     }
     case GeomAbs_IsoV: {
-      const Geom_Surface::ResD3 aRes = mySurface->EvalD3(theT, myParameter);
+      const Geom_Surface::ResD3 aRes = mySurface->EvalD3(theU, myParameter);
       return {aRes.Point, aRes.D1U, aRes.D2U, aRes.D3U};
     }
     case GeomAbs_NoneIso:
@@ -436,14 +436,14 @@ Geom_Curve::ResD3 Adaptor3d_IsoCurve::EvalD3(double theT) const
 
 //=================================================================================================
 
-gp_Vec Adaptor3d_IsoCurve::EvalDN(double theT, int theN) const
+gp_Vec Adaptor3d_IsoCurve::EvalDN(const double theU, const int theN) const
 {
   switch (myIso)
   {
     case GeomAbs_IsoU:
-      return mySurface->EvalDN(myParameter, theT, 0, theN);
+      return mySurface->EvalDN(myParameter, theU, 0, theN);
     case GeomAbs_IsoV:
-      return mySurface->EvalDN(theT, myParameter, theN, 0);
+      return mySurface->EvalDN(theU, myParameter, theN, 0);
     case GeomAbs_NoneIso:
       throw Standard_NoSuchObject("Adaptor3d_IsoCurve:NoneIso");
   }
