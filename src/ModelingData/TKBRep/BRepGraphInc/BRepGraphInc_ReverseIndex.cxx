@@ -216,18 +216,26 @@ void BRepGraphInc_ReverseIndex::BuildDelta(
   }
 
   // Extend outer vectors if needed (pre-size for new key ranges).
-  while (myVertexToEdges.Length() <= aMaxVertexIdx)
-    myVertexToEdges.Appended();
-  while (myEdgeToWires.Length() < theEdges.Length())
-    myEdgeToWires.Appended();
-  while (myEdgeToFaces.Length() < theEdges.Length())
-    myEdgeToFaces.Appended();
-  while (myWireToFaces.Length() < theWires.Length())
-    myWireToFaces.Appended();
-  while (myFaceToShells.Length() < theFaces.Length())
-    myFaceToShells.Appended();
-  while (myShellToSolids.Length() < theShells.Length())
-    myShellToSolids.Appended();
+  // Construct new inner vectors with allocator for O(1) alloc/free.
+  auto extendTable = [&](IndexTable& theIdx, int theTargetSize) {
+    while (theIdx.Length() < theTargetSize)
+    {
+      if (!myAllocator.IsNull())
+      {
+        theIdx.Append(NCollection_Vector<int>(256, myAllocator));
+      }
+      else
+      {
+        theIdx.Appended();
+      }
+    }
+  };
+  extendTable(myVertexToEdges, aMaxVertexIdx + 1);
+  extendTable(myEdgeToWires,   theEdges.Length());
+  extendTable(myEdgeToFaces,   theEdges.Length());
+  extendTable(myWireToFaces,   theWires.Length());
+  extendTable(myFaceToShells,  theFaces.Length());
+  extendTable(myShellToSolids, theShells.Length());
 
   // Vertex -> Edges: only new edges.
   for (int anEdgeIdx = theOldNbEdges; anEdgeIdx < theEdges.Length(); ++anEdgeIdx)
@@ -379,10 +387,13 @@ void BRepGraphInc_ReverseIndex::preSize(IndexTable&                             
   theIdx.Clear();
   for (int i = 0; i < theSize; ++i)
   {
-    NCollection_Vector<int>& aVec = theIdx.Appended();
     if (!theAlloc.IsNull())
     {
-      aVec = NCollection_Vector<int>(256, theAlloc);
+      theIdx.Append(NCollection_Vector<int>(256, theAlloc));
+    }
+    else
+    {
+      theIdx.Appended();
     }
   }
 }
