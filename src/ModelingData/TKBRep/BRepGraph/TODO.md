@@ -88,6 +88,7 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 - `UIDsView::NodeIdFrom` / `Has` currently do linear scan over per-kind UID vector
 - Add lazy `NCollection_DataMap<uint64_t, int>` per kind (counter → index), built on first access
 - Invalidated on Compact (which reassigns indices)
+- Deferred until production callers exist (currently test-only)
 
 ---
 
