@@ -65,6 +65,10 @@ struct BRepGraph_Data
 
   bool myIsDone = false;
 
+  //! When true, markModified() only sets IsModified flags —
+  //! no mutex acquisition and no upward propagation.
+  bool myDeferredMode = false;
+
   //! Thread-safe cache of reconstructed shapes.
   mutable NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape> myCurrentShapes;
   mutable std::shared_mutex                                   myCurrentShapesMutex;

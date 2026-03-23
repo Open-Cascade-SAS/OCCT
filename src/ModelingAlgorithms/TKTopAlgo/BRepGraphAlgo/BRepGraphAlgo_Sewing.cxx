@@ -1441,6 +1441,7 @@ void processEdges(BRepGraph&                           theGraph,
     return;
   }
 
+  theGraph.BeginDeferredInvalidation();
   OSD_Parallel::For(
     0,
     aNbSewn,
@@ -1470,6 +1471,7 @@ void processEdges(BRepGraph&                           theGraph,
       }
     },
     !theOptions.Parallel);
+  theGraph.EndDeferredInvalidation();
 }
 
 // ---------------------------------------------------------------------------

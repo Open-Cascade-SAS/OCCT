@@ -88,6 +88,18 @@ public:
   //! Return the current allocator.
   Standard_EXPORT const Handle(NCollection_BaseAllocator)& Allocator() const;
 
+  //! Begin deferred invalidation mode.
+  //! While active, markModified() only sets IsModified flags on entities
+  //! without acquiring the shape-cache mutex or propagating upward.
+  //! Call EndDeferredInvalidation() to batch-flush all accumulated changes.
+  //! Intended for parallel mutation loops (SameParameter, Sewing processEdges).
+  Standard_EXPORT void BeginDeferredInvalidation();
+
+  //! End deferred invalidation mode and batch-flush:
+  //! clears the entire shape cache and propagates IsModified upward
+  //! for all modified entities in a single pass.
+  Standard_EXPORT void EndDeferredInvalidation();
+
   //! Enable or disable history recording.
   Standard_EXPORT void SetHistoryEnabled(bool theVal);
 

@@ -706,6 +706,7 @@ void BRepGraphAlgo_SameParameter::Perform(BRepGraph&                         the
     anIndices.SetValue(anIdx - 1, theEdgeIndices.FindKey(anIdx));
   }
 
+  theGraph.BeginDeferredInvalidation();
   OSD_Parallel::For(
     0,
     aNbEdges,
@@ -715,4 +716,5 @@ void BRepGraphAlgo_SameParameter::Perform(BRepGraph&                         the
       Enforce(theGraph, anEdgeId, theTolerance);
     },
     !theParallel);
+  theGraph.EndDeferredInvalidation();
 }

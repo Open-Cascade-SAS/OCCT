@@ -10,6 +10,7 @@ set(OCCT_TKBRep_GTests_FILES
   BRepGraph_BackRefManager_Test.cxx
   BRepGraph_Benchmark_Test.cxx
   BRepGraph_Build_Test.cxx
+  BRepGraph_DeferredInvalidation_Test.cxx
   BRepGraph_Convenience_Test.cxx
   BRepGraph_EdgeCases_Test.cxx
   BRepGraph_Geometry_Test.cxx

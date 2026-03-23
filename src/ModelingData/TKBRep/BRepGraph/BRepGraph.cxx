@@ -198,6 +198,11 @@ void BRepGraph::markModified(BRepGraph_NodeId theDefId)
     return;
 
   const_cast<BRepGraph_TopoNode::BaseDef*>(aDef)->IsModified = true;
+
+  // In deferred mode: skip mutex and upward propagation.
+  if (myData->myDeferredMode)
+    return;
+
   {
     std::unique_lock<std::shared_mutex> aWriteLock(myData->myCurrentShapesMutex);
     myData->myCurrentShapes.UnBind(theDefId);
@@ -298,6 +303,179 @@ void BRepGraph::RecordHistory(const TCollection_AsciiString&              theOpL
                               const NCollection_Vector<BRepGraph_NodeId>& theReplacements)
 {
   myData->myHistoryLog.Record(theOpLabel, theOriginal, theReplacements);
+}
+
+//=================================================================================================
+
+void BRepGraph::BeginDeferredInvalidation()
+{
+  myData->myDeferredMode = true;
+}
+
+//=================================================================================================
+
+void BRepGraph::EndDeferredInvalidation()
+{
+  if (!myData->myDeferredMode)
+    return;
+
+  myData->myDeferredMode = false;
+
+  // Bulk-clear all cached shapes. Safe because IsModified flags are already
+  // set on mutated entities — reconstruction will recompute as needed.
+  {
+    std::unique_lock<std::shared_mutex> aWriteLock(myData->myCurrentShapesMutex);
+    myData->myCurrentShapes.Clear();
+  }
+
+  // Propagate IsModified upward for all modified entities.
+  // Single iterative pass per kind: Edge→Wire→Face→Shell→Solid.
+  // Skips already-propagated nodes: O(modified) not O(total).
+  const BRepGraphInc_ReverseIndex& aRevIdx  = myData->myIncStorage.ReverseIndex();
+  const int                        aNbEdges = myData->myIncStorage.NbEdges();
+  for (int anEdgeIdx = 0; anEdgeIdx < aNbEdges; ++anEdgeIdx)
+  {
+    if (!myData->myIncStorage.Edge(anEdgeIdx).IsModified)
+      continue;
+
+    const NCollection_Vector<int>* aWires = aRevIdx.WiresOfEdge(anEdgeIdx);
+    if (aWires == nullptr)
+      continue;
+
+    for (int aWireIter = 0; aWireIter < aWires->Length(); ++aWireIter)
+    {
+      const int aWireIdx = aWires->Value(aWireIter);
+      auto& aWireDef = myData->myIncStorage.ChangeWire(aWireIdx);
+      if (aWireDef.IsModified)
+        continue;
+      aWireDef.IsModified = true;
+
+      const NCollection_Vector<int>* aFaces = aRevIdx.FacesOfWire(aWireIdx);
+      if (aFaces == nullptr)
+        continue;
+
+      for (int aFaceIter = 0; aFaceIter < aFaces->Length(); ++aFaceIter)
+      {
+        const int aFaceIdx = aFaces->Value(aFaceIter);
+        auto& aFaceDef = myData->myIncStorage.ChangeFace(aFaceIdx);
+        if (aFaceDef.IsModified)
+          continue;
+        aFaceDef.IsModified = true;
+
+        const NCollection_Vector<int>* aShells = aRevIdx.ShellsOfFace(aFaceIdx);
+        if (aShells == nullptr)
+          continue;
+
+        for (int aShellIter = 0; aShellIter < aShells->Length(); ++aShellIter)
+        {
+          const int aShellIdx = aShells->Value(aShellIter);
+          auto& aShellDef = myData->myIncStorage.ChangeShell(aShellIdx);
+          if (aShellDef.IsModified)
+            continue;
+          aShellDef.IsModified = true;
+
+          const NCollection_Vector<int>* aSolids = aRevIdx.SolidsOfShell(aShellIdx);
+          if (aSolids == nullptr)
+            continue;
+
+          for (int aSolidIter = 0; aSolidIter < aSolids->Length(); ++aSolidIter)
+          {
+            myData->myIncStorage.ChangeSolid(aSolids->Value(aSolidIter)).IsModified = true;
+          }
+        }
+      }
+    }
+  }
+
+  // Propagate for directly modified wires (not reached via edges above).
+  const int aNbWires = myData->myIncStorage.NbWires();
+  for (int aWireIdx = 0; aWireIdx < aNbWires; ++aWireIdx)
+  {
+    if (!myData->myIncStorage.Wire(aWireIdx).IsModified)
+      continue;
+
+    const NCollection_Vector<int>* aFaces = aRevIdx.FacesOfWire(aWireIdx);
+    if (aFaces == nullptr)
+      continue;
+
+    for (int aFaceIter = 0; aFaceIter < aFaces->Length(); ++aFaceIter)
+    {
+      const int aFaceIdx = aFaces->Value(aFaceIter);
+      auto& aFaceDef = myData->myIncStorage.ChangeFace(aFaceIdx);
+      if (aFaceDef.IsModified)
+        continue;
+      aFaceDef.IsModified = true;
+
+      const NCollection_Vector<int>* aShells = aRevIdx.ShellsOfFace(aFaceIdx);
+      if (aShells == nullptr)
+        continue;
+
+      for (int aShellIter = 0; aShellIter < aShells->Length(); ++aShellIter)
+      {
+        const int aShellIdx = aShells->Value(aShellIter);
+        auto& aShellDef = myData->myIncStorage.ChangeShell(aShellIdx);
+        if (aShellDef.IsModified)
+          continue;
+        aShellDef.IsModified = true;
+
+        const NCollection_Vector<int>* aSolids = aRevIdx.SolidsOfShell(aShellIdx);
+        if (aSolids == nullptr)
+          continue;
+
+        for (int aSolidIter = 0; aSolidIter < aSolids->Length(); ++aSolidIter)
+        {
+          myData->myIncStorage.ChangeSolid(aSolids->Value(aSolidIter)).IsModified = true;
+        }
+      }
+    }
+  }
+
+  // Propagate for directly modified faces (not reached via wires above).
+  const int aNbFaces = myData->myIncStorage.NbFaces();
+  for (int aFaceIdx = 0; aFaceIdx < aNbFaces; ++aFaceIdx)
+  {
+    if (!myData->myIncStorage.Face(aFaceIdx).IsModified)
+      continue;
+
+    const NCollection_Vector<int>* aShells = aRevIdx.ShellsOfFace(aFaceIdx);
+    if (aShells == nullptr)
+      continue;
+
+    for (int aShellIter = 0; aShellIter < aShells->Length(); ++aShellIter)
+    {
+      const int aShellIdx = aShells->Value(aShellIter);
+      auto& aShellDef = myData->myIncStorage.ChangeShell(aShellIdx);
+      if (aShellDef.IsModified)
+        continue;
+      aShellDef.IsModified = true;
+
+      const NCollection_Vector<int>* aSolids = aRevIdx.SolidsOfShell(aShellIdx);
+      if (aSolids == nullptr)
+        continue;
+
+      for (int aSolidIter = 0; aSolidIter < aSolids->Length(); ++aSolidIter)
+      {
+        myData->myIncStorage.ChangeSolid(aSolids->Value(aSolidIter)).IsModified = true;
+      }
+    }
+  }
+
+  // Propagate for directly modified shells (not reached via faces above).
+  const int aNbShells = myData->myIncStorage.NbShells();
+  for (int aShellIdx = 0; aShellIdx < aNbShells; ++aShellIdx)
+  {
+    if (!myData->myIncStorage.Shell(aShellIdx).IsModified)
+      continue;
+
+    const NCollection_Vector<int>* aSolids = aRevIdx.SolidsOfShell(aShellIdx);
+    if (aSolids == nullptr)
+      continue;
+
+    for (int aSolidIter = 0; aSolidIter < aSolids->Length(); ++aSolidIter)
+    {
+      myData->myIncStorage.ChangeSolid(aSolids->Value(aSolidIter)).IsModified = true;
+    }
+  }
 }
 
 //=================================================================================================
