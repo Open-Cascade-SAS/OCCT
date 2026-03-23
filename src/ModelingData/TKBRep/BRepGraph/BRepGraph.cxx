@@ -1587,6 +1587,9 @@ const Handle(NCollection_BaseAllocator)& BRepGraph::Allocator() const { return m
 void BRepGraph::SetHistoryEnabled(bool theVal) { myData->myHistoryLog.SetEnabled(theVal); }
 bool BRepGraph::IsHistoryEnabled() const { return myData->myHistoryLog.IsEnabled(); }
 
+BRepGraph_History& BRepGraph::History() { return myData->myHistoryLog; }
+const BRepGraph_History& BRepGraph::History() const { return myData->myHistoryLog; }
+
 //=================================================================================================
 
 void BRepGraph::markModified(BRepGraph_NodeId theDefId)
