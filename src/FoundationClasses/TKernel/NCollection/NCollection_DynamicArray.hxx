@@ -27,7 +27,9 @@
 #include <StdFail_NotDone.hxx>
 #include <NCollection_IndexedIterator.hxx>
 
+#include <cstring>
 #include <locale>
+#include <type_traits>
 #include <vector>
 
 //! Class NCollection_DynamicArray (dynamic array of objects)
@@ -240,8 +242,11 @@ public: //! @name public methods
     {
       return;
     }
-    TheItemType* aLastElem = &ChangeLast();
-    myAlloc.destroy(aLastElem);
+    if constexpr (!std::is_trivially_destructible_v<TheItemType>)
+    {
+      TheItemType* aLastElem = &ChangeLast();
+      myAlloc.destroy(aLastElem);
+    }
     myUsedSize--;
   }
 
@@ -299,7 +304,10 @@ public: //! @name public methods
     pointer aPnt = &at(anIndex);
     if (isExisting)
     {
-      myAlloc.destroy(aPnt);
+      if constexpr (!std::is_trivially_destructible_v<TheItemType>)
+      {
+        myAlloc.destroy(aPnt);
+      }
     }
     myAlloc.construct(aPnt, std::forward<Args>(theArgs)...);
     return *aPnt;
@@ -364,7 +372,10 @@ public: //! @name public methods
     pointer aPnt = &at(anIndex);
     if (isExisting)
     {
-      myAlloc.destroy(aPnt);
+      if constexpr (!std::is_trivially_destructible_v<TheItemType>)
+      {
+        myAlloc.destroy(aPnt);
+      }
     }
     myAlloc.construct(aPnt, theValue);
     return *aPnt;
@@ -392,7 +403,10 @@ public: //! @name public methods
     pointer aPnt = &at(anIndex);
     if (isExisting)
     {
-      myAlloc.destroy(aPnt);
+      if constexpr (!std::is_trivially_destructible_v<TheItemType>)
+      {
+        myAlloc.destroy(aPnt);
+      }
     }
     myAlloc.construct(aPnt, std::forward<TheItemType>(theValue));
     return *aPnt;
@@ -400,14 +414,19 @@ public: //! @name public methods
 
   void Clear(const bool theReleaseMemory = false)
   {
-    size_t aUsedSize = 0;
     for (size_t aBlockInd = 0; aBlockInd < myContainer.Size(); aBlockInd++)
     {
       TheItemType* aCurStart = getArray()[aBlockInd];
-      for (size_t anElemInd = 0; anElemInd < myInternalSize && aUsedSize < myUsedSize;
-           anElemInd++, aUsedSize++)
+      if constexpr (!std::is_trivially_destructible_v<TheItemType>)
       {
-        aCurStart[anElemInd].~TheItemType();
+        const size_t aBlockStart = aBlockInd * myInternalSize;
+        const size_t aCount      = (myUsedSize > aBlockStart + myInternalSize)
+                                     ? myInternalSize
+                                     : (myUsedSize > aBlockStart ? myUsedSize - aBlockStart : 0);
+        for (size_t anElemInd = 0; anElemInd < aCount; anElemInd++)
+        {
+          aCurStart[anElemInd].~TheItemType();
+        }
       }
       if (theReleaseMemory)
         myAlloc.deallocate(aCurStart, myInternalSize);
@@ -456,11 +475,21 @@ protected:
     {
       TheItemType* aCurStart = getArray()[aBlockInd];
       TheItemType* aNewBlock = myAlloc.allocate(myInternalSize);
-      for (size_t anElemInd = 0; anElemInd < myInternalSize && aUsedSize < myUsedSize;
-           anElemInd++, aUsedSize++)
+      if constexpr (std::is_trivially_copyable_v<TheItemType>)
       {
-        pointer aPnt = &aNewBlock[anElemInd];
-        myAlloc.construct(aPnt, aCurStart[anElemInd]);
+        const size_t aCount =
+          (myUsedSize - aUsedSize < myInternalSize) ? myUsedSize - aUsedSize : myInternalSize;
+        std::memcpy(aNewBlock, aCurStart, aCount * sizeof(TheItemType));
+        aUsedSize += aCount;
+      }
+      else
+      {
+        for (size_t anElemInd = 0; anElemInd < myInternalSize && aUsedSize < myUsedSize;
+             anElemInd++, aUsedSize++)
+        {
+          pointer aPnt = &aNewBlock[anElemInd];
+          myAlloc.construct(aPnt, aCurStart[anElemInd]);
+        }
       }
       getArray()[aBlockInd] = aNewBlock;
     }
