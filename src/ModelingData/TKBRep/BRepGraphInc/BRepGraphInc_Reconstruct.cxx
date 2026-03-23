@@ -145,6 +145,20 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage& theStora
           aBB.Add(aNewShell, aFace);
         }
       }
+      // Reconstruct free children (wires, edges) attached directly to the shell.
+      for (int i = 0; i < aShell.FreeChildRefs.Length(); ++i)
+      {
+        const BRepGraphInc::ChildRef& aRef = aShell.FreeChildRefs.Value(i);
+        BRepGraph_NodeId aChildId(static_cast<BRepGraph_NodeId::Kind>(aRef.Kind), aRef.ChildIdx);
+        TopoDS_Shape aChild = Node(theStorage, aChildId, theCache);
+        if (!aChild.IsNull())
+        {
+          aChild.Orientation(aRef.Orientation);
+          if (!aRef.LocalLocation.IsIdentity())
+            aChild.Location(aRef.LocalLocation);
+          aBB.Add(aNewShell, aChild);
+        }
+      }
       aResult = aNewShell;
       break;
     }
@@ -171,10 +185,38 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage& theStora
             aBB.Add(aNewShell, aFace);
           }
         }
+        // Free children of the shell (wires, edges).
+        for (int j = 0; j < aShell.FreeChildRefs.Length(); ++j)
+        {
+          const BRepGraphInc::ChildRef& aCR = aShell.FreeChildRefs.Value(j);
+          BRepGraph_NodeId aChildId(static_cast<BRepGraph_NodeId::Kind>(aCR.Kind), aCR.ChildIdx);
+          TopoDS_Shape aChild = Node(theStorage, aChildId, theCache);
+          if (!aChild.IsNull())
+          {
+            aChild.Orientation(aCR.Orientation);
+            if (!aCR.LocalLocation.IsIdentity())
+              aChild.Location(aCR.LocalLocation);
+            aBB.Add(aNewShell, aChild);
+          }
+        }
         aNewShell.Orientation(aShellRef.Orientation);
         if (!aShellRef.LocalLocation.IsIdentity())
           aNewShell.Location(aShellRef.LocalLocation);
         aBB.Add(aNewSolid, aNewShell);
+      }
+      // Free children of the solid (edges, vertices).
+      for (int i = 0; i < aSolid.FreeChildRefs.Length(); ++i)
+      {
+        const BRepGraphInc::ChildRef& aCR = aSolid.FreeChildRefs.Value(i);
+        BRepGraph_NodeId aChildId(static_cast<BRepGraph_NodeId::Kind>(aCR.Kind), aCR.ChildIdx);
+        TopoDS_Shape aChild = Node(theStorage, aChildId, theCache);
+        if (!aChild.IsNull())
+        {
+          aChild.Orientation(aCR.Orientation);
+          if (!aCR.LocalLocation.IsIdentity())
+            aChild.Location(aCR.LocalLocation);
+          aBB.Add(aNewSolid, aChild);
+        }
       }
       aResult = aNewSolid;
       break;
@@ -238,6 +280,12 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
 {
   if (theFaceIdx < 0 || theFaceIdx >= theStorage.NbFaces())
     return TopoDS_Shape();
+
+  // Check cache first — 1 NodeId = 1 TShape.
+  BRepGraph_NodeId aFaceNodeId = BRepGraph_NodeId::Face(theFaceIdx);
+  const TopoDS_Shape* aCachedFace = theCache.Seek(aFaceNodeId);
+  if (aCachedFace != nullptr)
+    return *aCachedFace;
 
   BRep_Builder aBB;
   const BRepGraphInc::FaceEntity& aFace = theStorage.Face(theFaceIdx);
@@ -361,11 +409,37 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
   };
 
   // Build wires for this face.
+  // Wire TShape is cached (1 NodeId = 1 TShape); PCurve attachment is per-face.
   auto buildWireForFace = [&](int theWireIdx) -> TopoDS_Wire {
     const BRepGraphInc::WireEntity& aWire = theStorage.Wire(theWireIdx);
-    TopoDS_Wire aNewWire;
-    aBB.MakeWire(aNewWire);
+    BRepGraph_NodeId aWireNodeId = BRepGraph_NodeId::Wire(theWireIdx);
 
+    // Get or create wire TShape.
+    const TopoDS_Shape* aCachedWire = theCache.Seek(aWireNodeId);
+    TopoDS_Wire aNewWire;
+    if (aCachedWire != nullptr)
+    {
+      aNewWire = TopoDS::Wire(*aCachedWire);
+    }
+    else
+    {
+      aBB.MakeWire(aNewWire);
+      for (int i = 0; i < aWire.EdgeRefs.Length(); ++i)
+      {
+        const BRepGraphInc::EdgeRef& aEdgeRef = aWire.EdgeRefs.Value(i);
+        TopoDS_Edge anEdge = getOrBuildEdge(aEdgeRef.EdgeIdx);
+        anEdge.Orientation(aEdgeRef.Orientation);
+        aBB.Add(aNewWire, anEdge);
+      }
+      if (aWire.IsClosed)
+        aNewWire.Closed(true);
+      theCache.Bind(aWireNodeId, aNewWire);
+    }
+
+    // Attach PCurves/polygons for THIS face context onto shared edge TShapes.
+    // Safe: FaceWithCache caches by face NodeId, so each (wire, face) pair
+    // is processed exactly once. BRep_Builder::UpdateEdge adds PCurve entries
+    // keyed by (Surface, Location), so per-face entries coexist without conflict.
     for (int i = 0; i < aWire.EdgeRefs.Length(); ++i)
     {
       const BRepGraphInc::EdgeRef& aEdgeRef = aWire.EdgeRefs.Value(i);
@@ -463,12 +537,8 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
         }
       }
 
-      anEdge.Orientation(aEdgeRef.Orientation);
-      aBB.Add(aNewWire, anEdge);
     }
 
-    if (aWire.IsClosed)
-      aNewWire.Closed(true);
     return aNewWire;
   };
 
@@ -556,5 +626,6 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
   }
 
   aNewFace.Orientation(TopAbs_FORWARD);
+  theCache.Bind(aFaceNodeId, aNewFace);
   return aNewFace;
 }

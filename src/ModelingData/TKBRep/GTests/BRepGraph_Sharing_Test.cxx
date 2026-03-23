@@ -230,14 +230,19 @@ TEST(BRepGraphSharingCompoundTest, CompoundTwoIdenticalBoxes)
   aGraph.Build(aCompound);
   ASSERT_TRUE(aGraph.IsDone());
 
-  // Same TShape added twice to compound: each occurrence creates a separate solid def,
-  // but sub-shapes (faces, edges, vertices) are shared at the TShape level.
-  EXPECT_EQ(aGraph.Defs().NbSolids(), 2);
+  // Same TShape added twice to compound: definition is shared (1 solid def),
+  // compound has 2 ChildRefs pointing to the same solid index.
+  EXPECT_EQ(aGraph.Defs().NbSolids(), 1);
 
-  // Face/edge/vertex defs are shared (same TShape), so counts stay at single-box levels.
+  // All defs are shared (same TShape), counts stay at single-box levels.
   EXPECT_EQ(aGraph.Defs().NbFaces(), 6);
   EXPECT_EQ(aGraph.Defs().NbEdges(), 12);
   EXPECT_EQ(aGraph.Defs().NbVertices(), 8);
+
+  // Compound has 2 child references to the same solid.
+  EXPECT_EQ(aGraph.Defs().Compound(0).ChildRefs.Length(), 2);
+  EXPECT_EQ(aGraph.Defs().Compound(0).ChildRefs.Value(0).ChildIdx,
+            aGraph.Defs().Compound(0).ChildRefs.Value(1).ChildIdx);
 }
 
 TEST(BRepGraphSharingCompoundTest, CompoundTwoDistinctBoxes)
@@ -309,9 +314,9 @@ TEST(BRepGraphSharingCompoundTest, TranslatedCopy_SameTShape_SharedDefs)
   aGraph.Build(aCompound);
   ASSERT_TRUE(aGraph.IsDone());
 
-  // Moved() preserves TShape, so sub-shape definitions are shared,
-  // but each solid occurrence in the compound creates a separate solid def.
-  EXPECT_EQ(aGraph.Defs().NbSolids(), 2);
+  // Moved() preserves TShape, so all definitions are shared (1 solid def).
+  // Compound has 2 ChildRefs with different locations.
+  EXPECT_EQ(aGraph.Defs().NbSolids(), 1);
 
   // Face/edge/vertex defs are shared (same TShape).
   EXPECT_EQ(aGraph.Defs().NbFaces(), 6);

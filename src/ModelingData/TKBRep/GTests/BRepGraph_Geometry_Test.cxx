@@ -268,8 +268,8 @@ TEST(BRepGraphGeometry, GlobalTransform_CompoundWithLocation_NonIdentity)
   aGraph.Build(aCompound);
   ASSERT_TRUE(aGraph.IsDone());
 
-  // With two solids (one moved), the graph should have more defs than a single box.
-  EXPECT_EQ(aGraph.Defs().NbSolids(), 2);
+  // Moved() preserves TShape — one solid definition, two compound ChildRefs.
+  EXPECT_EQ(aGraph.Defs().NbSolids(), 1);
   // Verify the graph was built successfully.
   EXPECT_TRUE(aGraph.IsDone());
 }

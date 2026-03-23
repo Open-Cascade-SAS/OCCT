@@ -283,6 +283,7 @@ struct FaceEntity : public BaseEntity
 struct ShellEntity : public BaseEntity
 {
   NCollection_Vector<FaceRef> FaceRefs;
+  NCollection_Vector<ChildRef> FreeChildRefs; //!< Non-face children (wires, edges)
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
@@ -294,6 +295,7 @@ struct ShellEntity : public BaseEntity
 struct SolidEntity : public BaseEntity
 {
   NCollection_Vector<ShellRef> ShellRefs;
+  NCollection_Vector<ChildRef> FreeChildRefs; //!< Non-shell children (edges, vertices)
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
