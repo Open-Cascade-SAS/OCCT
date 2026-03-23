@@ -45,8 +45,7 @@ struct BRepGraph_NodeId
     Compound  = 6,  //!< TopoDS_Compound container
     CompSolid = 7,  //!< TopoDS_CompSolid container
     Surface   = 10,
-    Curve     = 11,
-    PCurve    = 12
+    Curve     = 11
   };
 
   Kind NodeKind;
@@ -72,7 +71,6 @@ struct BRepGraph_NodeId
   static BRepGraph_NodeId CompSolid(int theIdx)  { return {Kind::CompSolid, theIdx}; }
   static BRepGraph_NodeId SurfNode(int theIdx)   { return {Kind::Surface, theIdx}; }
   static BRepGraph_NodeId CurveNode(int theIdx)  { return {Kind::Curve, theIdx}; }
-  static BRepGraph_NodeId PCurveNode(int theIdx)    { return {Kind::PCurve, theIdx}; }
 
   bool operator==(const BRepGraph_NodeId& theOther) const
   { return NodeKind == theOther.NodeKind && Index == theOther.Index; }

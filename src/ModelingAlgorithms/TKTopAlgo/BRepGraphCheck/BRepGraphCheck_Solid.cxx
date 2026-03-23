@@ -131,11 +131,8 @@ void BRepGraphCheck::CheckSolidMinimum(
     if (aVMin < -1.0e6) aVMin = -1.0e6;
     if (aVMax >  1.0e6) aVMax =  1.0e6;
 
-    gp_Pnt aRepPnt = aSurfNode.Surface->Value(0.5 * (aUMin + aUMax), 0.5 * (aVMin + aVMax));
-    if (!aSurfNode.SurfaceLocation.IsIdentity())
-    {
-      aRepPnt.Transform(aSurfNode.SurfaceLocation.Transformation());
-    }
+    // Geometry is stored at identity, no location transform needed.
+    const gp_Pnt aRepPnt = aSurfNode.Surface->Value(0.5 * (aUMin + aUMax), 0.5 * (aVMin + aVMax));
 
     aClassifier.Perform(aRepPnt, Precision::Confusion());
     const TopAbs_State aState = aClassifier.State();

@@ -79,9 +79,6 @@ TEST_F(BRepGraphConvenienceTest, NodeId_Factories_CorrectKindAndIndex)
   EXPECT_EQ(aCurveNode.NodeKind, BRepGraph_NodeId::Kind::Curve);
   EXPECT_EQ(aCurveNode.Index, 6);
 
-  const BRepGraph_NodeId aPCurveNode = BRepGraph_NodeId::PCurveNode(8);
-  EXPECT_EQ(aPCurveNode.NodeKind, BRepGraph_NodeId::Kind::PCurve);
-  EXPECT_EQ(aPCurveNode.Index, 8);
 }
 
 TEST_F(BRepGraphConvenienceTest, NodeId_Factories_EqualToConstructor)
@@ -209,9 +206,9 @@ TEST_F(BRepGraphConvenienceTest, FaceSurface_AllBoxFaces)
   }
 }
 
-// ---------- Part E: GeomView::EdgePCurve ----------
+// ---------- Part E: GeomView::FindPCurve ----------
 
-TEST_F(BRepGraphConvenienceTest, EdgePCurve_ValidPair)
+TEST_F(BRepGraphConvenienceTest, FindPCurve_ValidPair)
 {
   const BRepGraph::DefsView aDefs = myGraph.Defs();
   const BRepGraph::GeomView aGeom = myGraph.Geom();
@@ -224,7 +221,8 @@ TEST_F(BRepGraphConvenienceTest, EdgePCurve_ValidPair)
     for (int anEdgeIter = 0; anEdgeIter < aDefs.NbEdges(); ++anEdgeIter)
     {
       const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(anEdgeIter);
-      const BRepGraph_GeomNode::PCurve* aPCurve = aGeom.EdgePCurve(anEdgeDef.Id, aFaceNodeId);
+      const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurve =
+        aGeom.FindPCurve(anEdgeDef.Id, aFaceNodeId);
       if (aPCurve != nullptr)
       {
         EXPECT_FALSE(aPCurve->Curve2d.IsNull());
@@ -234,10 +232,10 @@ TEST_F(BRepGraphConvenienceTest, EdgePCurve_ValidPair)
   }
 }
 
-TEST_F(BRepGraphConvenienceTest, EdgePCurve_InvalidPair_ReturnsNull)
+TEST_F(BRepGraphConvenienceTest, FindPCurve_InvalidPair_ReturnsNull)
 {
   const BRepGraph::GeomView aGeom = myGraph.Geom();
-  EXPECT_EQ(aGeom.EdgePCurve(BRepGraph_NodeId::Edge(0), BRepGraph_NodeId::Face(9999)), nullptr);
+  EXPECT_EQ(aGeom.FindPCurve(BRepGraph_NodeId::Edge(0), BRepGraph_NodeId::Face(9999)), nullptr);
 }
 
 // ---------- Part F: DefsView::NbShellFaces / ShellFaceDef ----------
@@ -270,7 +268,7 @@ TEST_F(BRepGraphConvenienceTest, ShellFaceDef_OutOfRange_Invalid)
 
 // ---------- Integration: Cylinder with seam edge ----------
 
-TEST(BRepGraphConvenienceCylinderTest, EdgePCurve_WithOrientation_SeamEdge)
+TEST(BRepGraphConvenienceCylinderTest, FindPCurve_WithOrientation_SeamEdge)
 {
   BRepPrimAPI_MakeCylinder aCylMaker(5.0, 10.0);
   const TopoDS_Shape& aCyl = aCylMaker.Shape();
@@ -297,10 +295,10 @@ TEST(BRepGraphConvenienceCylinderTest, EdgePCurve_WithOrientation_SeamEdge)
         if (anEdgeDef.PCurves.Value(aPCI).FaceDefId == anEdgeDef.PCurves.Value(aPCJ).FaceDefId)
         {
           const BRepGraph_NodeId aFaceDefId = anEdgeDef.PCurves.Value(aPCI).FaceDefId;
-          const BRepGraph_GeomNode::PCurve* aPCF =
-            aGeom.EdgePCurve(anEdgeDef.Id, aFaceDefId, TopAbs_FORWARD);
-          const BRepGraph_GeomNode::PCurve* aPCR =
-            aGeom.EdgePCurve(anEdgeDef.Id, aFaceDefId, TopAbs_REVERSED);
+          const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCF =
+            aGeom.FindPCurve(anEdgeDef.Id, aFaceDefId, TopAbs_FORWARD);
+          const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCR =
+            aGeom.FindPCurve(anEdgeDef.Id, aFaceDefId, TopAbs_REVERSED);
           EXPECT_NE(aPCF, nullptr);
           EXPECT_NE(aPCR, nullptr);
           if (aPCF != nullptr && aPCR != nullptr)

@@ -48,13 +48,10 @@ public:
   {
     int  NbCanonicalSurfaces = 0;
     int  NbCanonicalCurves   = 0;
-    int  NbCanonicalPCurves  = 0;
     int  NbSurfaceRewrites   = 0;
     int  NbCurveRewrites     = 0;
-    int  NbPCurveRewrites    = 0;
     int  NbNullifiedSurfaces = 0;
     int  NbNullifiedCurves   = 0;
-    int  NbNullifiedPCurves  = 0;
     int  NbHistoryRecords    = 0;
     bool IsDefMergeApplied   = false;
 

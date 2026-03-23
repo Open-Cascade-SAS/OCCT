@@ -226,8 +226,7 @@ TEST(BRepGraphAlgo_CompactTest, Compact_PreservesTopologyUIDs)
     collectUIDs(BRepGraph_NodeId::Kind::Surface, aGraph.Geom().NbSurfaces());
   const NCollection_Map<BRepGraph_UID> anOrigCurveUIDs =
     collectUIDs(BRepGraph_NodeId::Kind::Curve, aGraph.Geom().NbCurves());
-  const NCollection_Map<BRepGraph_UID> anOrigPCurveUIDs =
-    collectUIDs(BRepGraph_NodeId::Kind::PCurve, aGraph.Geom().NbPCurves());
+  (void)anOrigCurveUIDs; // suppress unused if PCurve UIDs removed
 
   const uint32_t aGenBefore = aGraph.UIDs().Generation();
 
@@ -282,8 +281,4 @@ TEST(BRepGraphAlgo_CompactTest, Compact_PreservesTopologyUIDs)
              aGraph.Geom().NbCurves(),
              anOrigCurveUIDs,
              "Curve");
-  verifyUIDs(BRepGraph_NodeId::Kind::PCurve,
-             aGraph.Geom().NbPCurves(),
-             anOrigPCurveUIDs,
-             "PCurve");
 }

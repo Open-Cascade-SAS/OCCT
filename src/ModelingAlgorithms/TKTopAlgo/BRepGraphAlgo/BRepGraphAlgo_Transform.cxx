@@ -19,15 +19,14 @@
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_GeomView.hxx>
 #include <BRepGraph_MutView.hxx>
-#include <TopLoc_Location.hxx>
 
 namespace
 {
 
 //! Geometry-level transform: deep-copy geometry is already done by Copy,
-//! so transform geometry handles in-place and reset locations to identity.
+//! so transform geometry handles in-place.
 //! Matches BRepBuilderAPI_Transform with theCopyGeom=true.
-//! Triangulations are invalidated (nullified) since geometry coordinates changed.
+//! Triangulations on FaceDefs are invalidated since geometry coordinates changed.
 void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
 {
   // Transform absolute vertex points.
@@ -36,32 +35,31 @@ void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
     theGraph.Mut().VertexDef(anIdx).Point.Transform(theTrsf);
   }
 
-  // Transform surface geometry handles directly and reset locations.
+  // Transform surface geometry handles directly.
   for (int anIdx = 0; anIdx < theGraph.Geom().NbSurfaces(); ++anIdx)
   {
     BRepGraph_GeomNode::Surf& aSurf = theGraph.Mut().SurfNode(anIdx);
     if (!aSurf.Surface.IsNull())
     {
-      if (!aSurf.SurfaceLocation.IsIdentity())
-        aSurf.Surface->Transform(aSurf.SurfaceLocation.Transformation());
       aSurf.Surface->Transform(theTrsf);
-      aSurf.SurfaceLocation = TopLoc_Location();
     }
-    // Invalidate triangulations — meshes are no longer valid after geometry transform.
-    aSurf.Triangulations.Clear();
-    aSurf.ActiveTriangulationIndex = -1;
   }
 
-  // Transform curve geometry handles directly and reset locations.
+  // Invalidate triangulations on face defs — meshes are no longer valid after geometry transform.
+  for (int anIdx = 0; anIdx < theGraph.Defs().NbFaces(); ++anIdx)
+  {
+    BRepGraph_TopoNode::FaceDef& aFace = theGraph.Mut().FaceDef(anIdx);
+    aFace.Triangulations.Clear();
+    aFace.ActiveTriangulationIndex = -1;
+  }
+
+  // Transform curve geometry handles directly.
   for (int anIdx = 0; anIdx < theGraph.Geom().NbCurves(); ++anIdx)
   {
     BRepGraph_GeomNode::Curve& aCurve = theGraph.Mut().CurveNode(anIdx);
     if (!aCurve.CurveGeom.IsNull())
     {
-      if (!aCurve.CurveLocation.IsIdentity())
-        aCurve.CurveGeom->Transform(aCurve.CurveLocation.Transformation());
       aCurve.CurveGeom->Transform(theTrsf);
-      aCurve.CurveLocation = TopLoc_Location();
     }
   }
   // PCurves are in UV space — they are not affected by 3D transforms.

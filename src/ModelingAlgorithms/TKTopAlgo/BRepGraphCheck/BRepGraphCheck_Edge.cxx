@@ -167,8 +167,9 @@ void BRepGraphCheck::CheckEdgeOnFace(
   const BRepGraph_NodeId    aFaceNodeId = BRepGraph_NodeId::Face(theFaceDefIdx);
 
   // Check PCurve existence.
-  const BRepGraph_NodeId aPCurveNodeId = aGeom.PCurveOf(aEdgeNodeId, aFaceNodeId);
-  if (!aPCurveNodeId.IsValid())
+  const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurve =
+    aGeom.FindPCurve(aEdgeNodeId, aFaceNodeId);
+  if (aPCurve == nullptr)
   {
     BRepGraphCheck_Issue anIssue;
     anIssue.NodeId        = anEdgeDef.Id;
@@ -180,11 +181,10 @@ void BRepGraphCheck::CheckEdgeOnFace(
   }
 
   // Check SameRange flag: PCurve range should match edge parameter range.
-  const BRepGraph_GeomNode::PCurve& aPCurve = aGeom.PCurve(aPCurveNodeId.Index);
-  if (!aPCurve.Curve2d.IsNull() && anEdgeDef.SameRange)
+  if (!aPCurve->Curve2d.IsNull() && anEdgeDef.SameRange)
   {
-    const double aPCFirst = aPCurve.ParamFirst;
-    const double aPCLast  = aPCurve.ParamLast;
+    const double aPCFirst = aPCurve->ParamFirst;
+    const double aPCLast  = aPCurve->ParamLast;
     if (std::abs(aPCFirst - anEdgeDef.ParamFirst) > Precision::PConfusion()
         || std::abs(aPCLast - anEdgeDef.ParamLast) > Precision::PConfusion())
     {
@@ -200,13 +200,14 @@ void BRepGraphCheck::CheckEdgeOnFace(
   // Seam edge check: for edges on closed surfaces, validate both PCurves.
   // A seam edge has two PCurves on the same face (FORWARD and REVERSED).
   {
-    const BRepGraph_NodeId aPCurveF = aGeom.PCurveOf(aEdgeNodeId, aFaceNodeId, TopAbs_FORWARD);
-    const BRepGraph_NodeId aPCurveR = aGeom.PCurveOf(aEdgeNodeId, aFaceNodeId, TopAbs_REVERSED);
-    if (aPCurveF.IsValid() && aPCurveR.IsValid() && aPCurveF != aPCurveR)
+    const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurveF =
+      aGeom.FindPCurve(aEdgeNodeId, aFaceNodeId, TopAbs_FORWARD);
+    const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurveR =
+      aGeom.FindPCurve(aEdgeNodeId, aFaceNodeId, TopAbs_REVERSED);
+    if (aPCurveF != nullptr && aPCurveR != nullptr && aPCurveF != aPCurveR)
     {
       // Both PCurves exist — this is a seam edge. Validate the second PCurve.
-      const BRepGraph_GeomNode::PCurve& aPCurve2 = aGeom.PCurve(aPCurveR.Index);
-      if (aPCurve2.Curve2d.IsNull())
+      if (aPCurveR->Curve2d.IsNull())
       {
         BRepGraphCheck_Issue anIssue;
         anIssue.NodeId        = anEdgeDef.Id;
@@ -218,8 +219,8 @@ void BRepGraphCheck::CheckEdgeOnFace(
       else if (anEdgeDef.SameRange)
       {
         // Validate SameRange for the second PCurve as well.
-        const double aPCFirst2 = aPCurve2.ParamFirst;
-        const double aPCLast2  = aPCurve2.ParamLast;
+        const double aPCFirst2 = aPCurveR->ParamFirst;
+        const double aPCLast2  = aPCurveR->ParamLast;
         if (std::abs(aPCFirst2 - anEdgeDef.ParamFirst) > Precision::PConfusion()
             || std::abs(aPCLast2 - anEdgeDef.ParamLast) > Precision::PConfusion())
         {
@@ -245,7 +246,7 @@ void BRepGraphCheck::CheckEdgeOnFace(
   if (aCurveNode.CurveGeom.IsNull())
     return;
 
-  if (aPCurve.Curve2d.IsNull())
+  if (aPCurve->Curve2d.IsNull())
     return;
 
   const BRepGraph_GeomNode::Surf& aSurfNode = aGeom.Surface(aFaceDef.SurfNodeId.Index);
@@ -258,7 +259,7 @@ void BRepGraphCheck::CheckEdgeOnFace(
 
   // Build curve-on-surface adaptor from PCurve + Surface.
   Handle(Geom2dAdaptor_Curve) aPC2d = new Geom2dAdaptor_Curve(
-    aPCurve.Curve2d, anEdgeDef.ParamFirst, anEdgeDef.ParamLast);
+    aPCurve->Curve2d, anEdgeDef.ParamFirst, anEdgeDef.ParamLast);
   Handle(GeomAdaptor_Surface) aHS = new GeomAdaptor_Surface(aSurfNode.Surface);
   Handle(Adaptor3d_CurveOnSurface) aCOS = new Adaptor3d_CurveOnSurface(aPC2d, aHS);
 

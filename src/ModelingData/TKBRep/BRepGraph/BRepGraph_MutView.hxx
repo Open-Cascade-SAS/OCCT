@@ -65,19 +65,14 @@ public:
   //! @param[in] theIdx zero-based geometry node index
   Standard_EXPORT BRepGraph_GeomNode::Curve& CurveNode(int theIdx);
 
-  //! Return mutable PCurve geometry node (no per-node modification tracking).
-  //! @param[in] theIdx zero-based geometry node index
-  Standard_EXPORT BRepGraph_GeomNode::PCurve& PCurveNode(int theIdx);
-
-  //! Attach a PCurve to an edge for a given face context.
+  //! Attach a PCurve to an edge for a given face context (stored inline on EdgeDef).
   //! @param[in] theEdgeDef           edge definition NodeId
   //! @param[in] theFaceDef           face definition NodeId
   //! @param[in] theCurve2d           2D curve geometry
   //! @param[in] theFirst             first curve parameter
   //! @param[in] theLast              last curve parameter
   //! @param[in] theEdgeOrientation   edge orientation on the face
-  //! @return NodeId of the newly created PCurve node
-  Standard_EXPORT BRepGraph_NodeId AddPCurveToEdge(
+  Standard_EXPORT void AddPCurveToEdge(
     BRepGraph_NodeId            theEdgeDef,
     BRepGraph_NodeId            theFaceDef,
     const Handle(Geom2d_Curve)& theCurve2d,

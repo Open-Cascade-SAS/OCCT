@@ -195,26 +195,25 @@ void BRepGraphCheck::CheckWireOnFace(
     const BRepGraph_TopoNode::EdgeDef& aLastEdge  = aDefs.Edge(aLastEntry.EdgeDefId.Index);
 
     // Get PCurves for first and last edges.
-    const BRepGraph_NodeId aFirstPCId = aGeom.PCurveOf(aFirstEdge.Id, aFaceNodeId);
-    const BRepGraph_NodeId aLastPCId  = aGeom.PCurveOf(aLastEdge.Id, aFaceNodeId);
+    const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aFirstPC =
+      aGeom.FindPCurve(aFirstEdge.Id, aFaceNodeId);
+    const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aLastPC =
+      aGeom.FindPCurve(aLastEdge.Id, aFaceNodeId);
 
-    if (aFirstPCId.IsValid() && aLastPCId.IsValid())
+    if (aFirstPC != nullptr && aLastPC != nullptr)
     {
-      const BRepGraph_GeomNode::PCurve& aFirstPC = aGeom.PCurve(aFirstPCId.Index);
-      const BRepGraph_GeomNode::PCurve& aLastPC  = aGeom.PCurve(aLastPCId.Index);
-
-      if (!aFirstPC.Curve2d.IsNull() && !aLastPC.Curve2d.IsNull())
+      if (!aFirstPC->Curve2d.IsNull() && !aLastPC->Curve2d.IsNull())
       {
         // Evaluate UV at wire-start of first edge and wire-end of last edge.
         const double aFirstParam = (aFirstEntry.OrientationInWire == TopAbs_FORWARD)
-                                     ? aFirstPC.ParamFirst
-                                     : aFirstPC.ParamLast;
+                                     ? aFirstPC->ParamFirst
+                                     : aFirstPC->ParamLast;
         const double aLastParam = (aLastEntry.OrientationInWire == TopAbs_FORWARD)
-                                    ? aLastPC.ParamLast
-                                    : aLastPC.ParamFirst;
+                                    ? aLastPC->ParamLast
+                                    : aLastPC->ParamFirst;
 
-        const gp_Pnt2d aFirstUV = aFirstPC.Curve2d->Value(aFirstParam);
-        const gp_Pnt2d aLastUV  = aLastPC.Curve2d->Value(aLastParam);
+        const gp_Pnt2d aFirstUV = aFirstPC->Curve2d->Value(aFirstParam);
+        const gp_Pnt2d aLastUV  = aLastPC->Curve2d->Value(aLastParam);
 
         // Convert 3D tolerance to UV tolerance using surface adaptor.
         const BRepGraph_GeomNode::Surf& aSurf = aGeom.Surface(aFaceDef.SurfNodeId.Index);
@@ -283,15 +282,15 @@ void BRepGraphCheck::CheckWireOnFace(
       continue;
     }
 
-    const BRepGraph_NodeId aPCurveNodeId = aGeom.PCurveOf(anEdgeDef.Id, aFaceNodeId);
-    if (!aPCurveNodeId.IsValid())
+    const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurve =
+      aGeom.FindPCurve(anEdgeDef.Id, aFaceNodeId);
+    if (aPCurve == nullptr)
     {
       aPCurveData.Append(EdgePCurveData());
       continue;
     }
 
-    const BRepGraph_GeomNode::PCurve& aPCurve = aGeom.PCurve(aPCurveNodeId.Index);
-    if (aPCurve.Curve2d.IsNull())
+    if (aPCurve->Curve2d.IsNull())
     {
       aPCurveData.Append(EdgePCurveData());
       continue;
@@ -303,9 +302,9 @@ void BRepGraphCheck::CheckWireOnFace(
     aData.StartVtxId = anEdgeDef.OrientedStartVertex(anEntry.OrientationInWire);
     aData.EndVtxId   = anEdgeDef.OrientedEndVertex(anEntry.OrientationInWire);
 
-    const double aFirst = aPCurve.ParamFirst;
-    const double aLast  = aPCurve.ParamLast;
-    aData.Adaptor = new Geom2dAdaptor_Curve(aPCurve.Curve2d, aFirst, aLast);
+    const double aFirst = aPCurve->ParamFirst;
+    const double aLast  = aPCurve->ParamLast;
+    aData.Adaptor = new Geom2dAdaptor_Curve(aPCurve->Curve2d, aFirst, aLast);
 
     BndLib_Add2dCurve::Add(*aData.Adaptor, Precision::PConfusion(), aData.Box);
 

@@ -1040,26 +1040,24 @@ void BRepGraphAlgo_Sewing::mergeMatchedEdges(
     {
       const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCEntry =
         aRemoveEdge.PCurves.Value(aPCurveIter);
-      const BRepGraph_GeomNode::PCurve& aPCNode =
-        myGraph.Geom().PCurve(aPCEntry.PCurveNodeId.Index);
       const BRepGraph_TopoNode::FaceDef& aFaceNode = myGraph.Defs().Face(aPCEntry.FaceDefId.Index);
 
-      if (!aPCNode.Curve2d.IsNull())
+      if (!aPCEntry.Curve2d.IsNull())
       {
         const BRepGraph_GeomNode::Surf& aSurfNode =
           myGraph.Geom().Surface(aFaceNode.SurfNodeId.Index);
         double aMergedTol =
           std::max(BRep_Tool::Tolerance(aKeepTopoEdge), BRep_Tool::Tolerance(aRemoveTopoEdge));
         TopLoc_Location aFaceLoc(myGraph.Spatial().GlobalTransform(aPCEntry.FaceDefId));
-        aBB.UpdateEdge(aKeepTopoEdge, aPCNode.Curve2d, aSurfNode.Surface, aFaceLoc, aMergedTol);
+        aBB.UpdateEdge(aKeepTopoEdge, aPCEntry.Curve2d, aSurfNode.Surface, aFaceLoc, aMergedTol);
 
         // Add PCurve entry to keep-edge via graph API; preserve original edge orientation
         // so that seam edges (REVERSED orientation) are correctly reconstructed as C2.
         myGraph.Mut().AddPCurveToEdge(anIdA,
                                       aPCEntry.FaceDefId,
-                                      aPCNode.Curve2d,
-                                      aPCNode.ParamFirst,
-                                      aPCNode.ParamLast,
+                                      aPCEntry.Curve2d,
+                                      aPCEntry.ParamFirst,
+                                      aPCEntry.ParamLast,
                                       aPCEntry.EdgeOrientation);
       }
     }

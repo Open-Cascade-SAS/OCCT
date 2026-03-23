@@ -79,9 +79,8 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
     return aResult;
 
   // Phase 1: Copy geometry handles into lookup arrays.
-  const int aNbSurfs   = theGraph.Geom().NbSurfaces();
-  const int aNbCurves  = theGraph.Geom().NbCurves();
-  const int aNbPCurves = theGraph.Geom().NbPCurves();
+  const int aNbSurfs  = theGraph.Geom().NbSurfaces();
+  const int aNbCurves = theGraph.Geom().NbCurves();
 
   NCollection_Array1<Handle(Geom_Surface)> aSurfCopies(0, aNbSurfs > 0 ? aNbSurfs - 1 : 0);
   for (int anIdx = 0; anIdx < aNbSurfs; ++anIdx)
@@ -93,12 +92,6 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
   for (int anIdx = 0; anIdx < aNbCurves; ++anIdx)
   {
     aCurveCopies.SetValue(anIdx, copyCurve(theGraph.Geom().Curve(anIdx).CurveGeom, theCopyGeom));
-  }
-
-  NCollection_Array1<Handle(Geom2d_Curve)> aPCurveCopies(0, aNbPCurves > 0 ? aNbPCurves - 1 : 0);
-  for (int anIdx = 0; anIdx < aNbPCurves; ++anIdx)
-  {
-    aPCurveCopies.SetValue(anIdx, copyPCurve(theGraph.Geom().PCurve(anIdx).Curve2d, theCopyGeom));
   }
 
   // Phase 2: Bottom-up graph rebuild via BuilderView.
@@ -185,26 +178,10 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
     aResult.Builder().AddFaceDef(aSurf, anOuterWire, anInnerWires, aFace.Tolerance);
 
     BRepGraph_TopoNode::FaceDef& aNewFace = aResult.Mut().FaceDef(anIdx);
-    aNewFace.NaturalRestriction = aFace.NaturalRestriction;
+    aNewFace.NaturalRestriction          = aFace.NaturalRestriction;
+    aNewFace.Triangulations              = aFace.Triangulations;
+    aNewFace.ActiveTriangulationIndex    = aFace.ActiveTriangulationIndex;
     transferUserAttributes(aFace.Cache, aNewFace.Cache);
-  }
-
-  // Transfer triangulations and surface locations from source geometry nodes.
-  for (int anIdx = 0; anIdx < aNbSurfs && anIdx < aResult.Geom().NbSurfaces(); ++anIdx)
-  {
-    const BRepGraph_GeomNode::Surf& aSrcSurf = theGraph.Geom().Surface(anIdx);
-    BRepGraph_GeomNode::Surf& aDstSurf       = aResult.Mut().SurfNode(anIdx);
-    aDstSurf.Triangulations          = aSrcSurf.Triangulations;
-    aDstSurf.ActiveTriangulationIndex = aSrcSurf.ActiveTriangulationIndex;
-    aDstSurf.SurfaceLocation          = aSrcSurf.SurfaceLocation;
-  }
-
-  // Transfer curve locations from source geometry nodes.
-  for (int anIdx = 0; anIdx < aNbCurves && anIdx < aResult.Geom().NbCurves(); ++anIdx)
-  {
-    const BRepGraph_GeomNode::Curve& aSrcCurve = theGraph.Geom().Curve(anIdx);
-    BRepGraph_GeomNode::Curve& aDstCurve       = aResult.Mut().CurveNode(anIdx);
-    aDstCurve.CurveLocation                    = aSrcCurve.CurveLocation;
   }
 
   // PCurves (after edges and faces are created).
@@ -214,21 +191,15 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
     for (int aPCIdx = 0; aPCIdx < anEdge.PCurves.Length(); ++aPCIdx)
     {
       const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCEntry = anEdge.PCurves.Value(aPCIdx);
-      if (!aPCEntry.PCurveNodeId.IsValid()
-          || aPCEntry.PCurveNodeId.Index >= aNbPCurves)
+      if (aPCEntry.Curve2d.IsNull())
         continue;
 
-      const BRepGraph_GeomNode::PCurve& aPCNode =
-        theGraph.Geom().PCurve(aPCEntry.PCurveNodeId.Index);
-      if (aPCNode.Curve2d.IsNull())
-        continue;
-
-      Handle(Geom2d_Curve) aNewPC = aPCurveCopies.Value(aPCEntry.PCurveNodeId.Index);
+      Handle(Geom2d_Curve) aNewPC = copyPCurve(aPCEntry.Curve2d, theCopyGeom);
       aResult.Mut().AddPCurveToEdge(BRepGraph_NodeId::Edge(anIdx),
                                     aPCEntry.FaceDefId,
                                     aNewPC,
-                                    aPCNode.ParamFirst,
-                                    aPCNode.ParamLast,
+                                    aPCEntry.ParamFirst,
+                                    aPCEntry.ParamLast,
                                     aPCEntry.EdgeOrientation);
     }
   }
@@ -329,7 +300,6 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
   copyUIDs(theGraph.myData->myCompSolids.UIDs,  aResult.myData->myCompSolids.UIDs);
   copyUIDs(theGraph.myData->mySurfaces.UIDs,    aResult.myData->mySurfaces.UIDs);
   copyUIDs(theGraph.myData->myCurves.UIDs,      aResult.myData->myCurves.UIDs);
-  copyUIDs(theGraph.myData->myPCurves.UIDs,     aResult.myData->myPCurves.UIDs);
 
   aResult.myData->myNextUIDCounter.store(
     theGraph.myData->myNextUIDCounter.load(std::memory_order_relaxed),
@@ -504,37 +474,10 @@ BRepGraph BRepGraphAlgo_Copy::CopyFace(const BRepGraph& theGraph,
 
   aResult.Builder().AddFaceDef(aSurf, anOuterWire, anInnerWires, aFaceDef.Tolerance);
   BRepGraph_TopoNode::FaceDef& aNewFace = aResult.Mut().FaceDef(0);
-  aNewFace.NaturalRestriction = aFaceDef.NaturalRestriction;
+  aNewFace.NaturalRestriction       = aFaceDef.NaturalRestriction;
+  aNewFace.Triangulations           = aFaceDef.Triangulations;
+  aNewFace.ActiveTriangulationIndex = aFaceDef.ActiveTriangulationIndex;
   transferUserAttributes(aFaceDef.Cache, aNewFace.Cache);
-
-  // Transfer surface triangulation and location.
-  if (aFaceDef.SurfNodeId.IsValid() && aResult.Geom().NbSurfaces() > 0)
-  {
-    const BRepGraph_GeomNode::Surf& aSrcSurf =
-      theGraph.Geom().Surface(aFaceDef.SurfNodeId.Index);
-    BRepGraph_GeomNode::Surf& aDstSurf = aResult.Mut().SurfNode(0);
-    aDstSurf.Triangulations          = aSrcSurf.Triangulations;
-    aDstSurf.ActiveTriangulationIndex = aSrcSurf.ActiveTriangulationIndex;
-    aDstSurf.SurfaceLocation          = aSrcSurf.SurfaceLocation;
-  }
-
-  // Transfer curve locations for edges in this face.
-  for (int anIdx = 1; anIdx <= anEdgeSet.Extent(); ++anIdx)
-  {
-    const int anOldEdgeIdx = anEdgeSet.FindKey(anIdx);
-    const BRepGraph_TopoNode::EdgeDef& anEdge = theGraph.Defs().Edge(anOldEdgeIdx);
-    if (anEdge.CurveNodeId.IsValid() && anEdge.CurveNodeId.Index < theGraph.Geom().NbCurves())
-    {
-      // Find the new edge's curve node in the result graph.
-      const int aNewEdgeIdx = anIdx - 1;
-      const BRepGraph_TopoNode::EdgeDef& aNewEdge = aResult.Defs().Edge(aNewEdgeIdx);
-      if (aNewEdge.CurveNodeId.IsValid() && aNewEdge.CurveNodeId.Index < aResult.Geom().NbCurves())
-      {
-        aResult.Mut().CurveNode(aNewEdge.CurveNodeId.Index).CurveLocation =
-          theGraph.Geom().Curve(anEdge.CurveNodeId.Index).CurveLocation;
-      }
-    }
-  }
 
   // PCurves for edges in this face.
   for (int anIdx = 1; anIdx <= anEdgeSet.Extent(); ++anIdx)
@@ -545,24 +488,18 @@ BRepGraph BRepGraphAlgo_Copy::CopyFace(const BRepGraph& theGraph,
     for (int aPCIdx = 0; aPCIdx < anEdge.PCurves.Length(); ++aPCIdx)
     {
       const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCEntry = anEdge.PCurves.Value(aPCIdx);
-      if (!aPCEntry.PCurveNodeId.IsValid()
-          || aPCEntry.PCurveNodeId.Index >= theGraph.Geom().NbPCurves())
-        continue;
       // Only copy PCurves belonging to this face.
       if (aPCEntry.FaceDefId.Index != theFaceIdx)
         continue;
-
-      const BRepGraph_GeomNode::PCurve& aPCNode =
-        theGraph.Geom().PCurve(aPCEntry.PCurveNodeId.Index);
-      if (aPCNode.Curve2d.IsNull())
+      if (aPCEntry.Curve2d.IsNull())
         continue;
 
-      Handle(Geom2d_Curve) aNewPC = copyPCurve(aPCNode.Curve2d, theCopyGeom);
+      Handle(Geom2d_Curve) aNewPC = copyPCurve(aPCEntry.Curve2d, theCopyGeom);
       aResult.Mut().AddPCurveToEdge(BRepGraph_NodeId::Edge(aNewEdgeIdx),
                                     BRepGraph_NodeId::Face(0),
                                     aNewPC,
-                                    aPCNode.ParamFirst,
-                                    aPCNode.ParamLast,
+                                    aPCEntry.ParamFirst,
+                                    aPCEntry.ParamLast,
                                     aPCEntry.EdgeOrientation);
     }
   }

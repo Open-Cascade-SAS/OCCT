@@ -65,12 +65,8 @@ void BRepGraphCheck::CheckVertexOnEdge(
     return; // Vertex not at endpoint of this edge.
   }
 
-  // Evaluate curve at parameter, applying location.
-  gp_Pnt aCurvePnt = aCurveNode.CurveGeom->Value(aParam);
-  if (!aCurveNode.CurveLocation.IsIdentity())
-  {
-    aCurvePnt.Transform(aCurveNode.CurveLocation.Transformation());
-  }
+  // Evaluate curve at parameter (geometry is stored at identity).
+  const gp_Pnt aCurvePnt = aCurveNode.CurveGeom->Value(aParam);
 
   const double aDist = aVtxDef.Point.Distance(aCurvePnt);
   if (aDist > anEdgeDef.Tolerance)
@@ -133,21 +129,17 @@ void BRepGraphCheck::CheckVertexOnFace(
 
     // Look for PCurve of this edge on this face.
     const BRepGraph_NodeId aFaceNodeId = BRepGraph_NodeId::Face(theFaceDefIdx);
-    const BRepGraph_NodeId aPCurveNodeId = aGeom.PCurveOf(anEdgeDef.Id, aFaceNodeId);
-    if (!aPCurveNodeId.IsValid())
+    const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurve =
+      aGeom.FindPCurve(anEdgeDef.Id, aFaceNodeId);
+    if (aPCurve == nullptr)
       continue;
 
-    const BRepGraph_GeomNode::PCurve& aPCurve = aGeom.PCurve(aPCurveNodeId.Index);
-    if (aPCurve.Curve2d.IsNull())
+    if (aPCurve->Curve2d.IsNull())
       continue;
 
-    // Evaluate PCurve at parameter to get UV, then evaluate surface.
-    const gp_Pnt2d aUV = aPCurve.Curve2d->Value(aParam);
-    gp_Pnt aSurfPnt = aSurfNode.Surface->Value(aUV.X(), aUV.Y());
-    if (!aSurfNode.SurfaceLocation.IsIdentity())
-    {
-      aSurfPnt.Transform(aSurfNode.SurfaceLocation.Transformation());
-    }
+    // Evaluate PCurve at parameter to get UV, then evaluate surface (geometry at identity).
+    const gp_Pnt2d aUV = aPCurve->Curve2d->Value(aParam);
+    const gp_Pnt aSurfPnt = aSurfNode.Surface->Value(aUV.X(), aUV.Y());
 
     const double aDist = aVtxDef.Point.Distance(aSurfPnt);
     if (aDist > aVtxDef.Tolerance + anEdgeDef.Tolerance)

@@ -34,13 +34,6 @@ int BRepGraph::GeomView::NbCurves() const
 
 //=================================================================================================
 
-int BRepGraph::GeomView::NbPCurves() const
-{
-  return myGraph->myData->myPCurves.Nodes.Length();
-}
-
-//=================================================================================================
-
 const BRepGraph_GeomNode::Surf& BRepGraph::GeomView::Surface(int theIdx) const
 {
   return myGraph->myData->mySurfaces.Nodes.Value(theIdx);
@@ -55,13 +48,6 @@ const BRepGraph_GeomNode::Curve& BRepGraph::GeomView::Curve(int theIdx) const
 
 //=================================================================================================
 
-const BRepGraph_GeomNode::PCurve& BRepGraph::GeomView::PCurve(int theIdx) const
-{
-  return myGraph->myData->myPCurves.Nodes.Value(theIdx);
-}
-
-//=================================================================================================
-
 BRepGraph_NodeId BRepGraph::GeomView::SurfaceOf(BRepGraph_NodeId theFaceDef) const
 {
   if (theFaceDef.NodeKind != BRepGraph_NodeId::Kind::Face || !theFaceDef.IsValid())
@@ -71,14 +57,22 @@ BRepGraph_NodeId BRepGraph::GeomView::SurfaceOf(BRepGraph_NodeId theFaceDef) con
 
 //=================================================================================================
 
-const NCollection_Vector<BRepGraph_NodeId>& BRepGraph::GeomView::FacesOnSurface(
+NCollection_Vector<BRepGraph_NodeId> BRepGraph::GeomView::FacesOnSurface(
   BRepGraph_NodeId theSurf) const
 {
-  static const NCollection_Vector<BRepGraph_NodeId> THE_EMPTY_VEC;
+  NCollection_Vector<BRepGraph_NodeId> aResult;
   if (theSurf.NodeKind != BRepGraph_NodeId::Kind::Surface || !theSurf.IsValid()
       || theSurf.Index >= myGraph->myData->mySurfaces.Nodes.Length())
-    return THE_EMPTY_VEC;
-  return myGraph->myData->mySurfaces.Nodes.Value(theSurf.Index).FaceDefUsers;
+    return aResult;
+
+  const NCollection_Vector<BRepGraph_TopoNode::FaceDef>& aFaceDefs =
+    myGraph->myData->myFaces.Defs;
+  for (int aFaceIdx = 0; aFaceIdx < aFaceDefs.Length(); ++aFaceIdx)
+  {
+    if (aFaceDefs.Value(aFaceIdx).SurfNodeId == theSurf)
+      aResult.Append(aFaceDefs.Value(aFaceIdx).Id);
+  }
+  return aResult;
 }
 
 //=================================================================================================
@@ -92,14 +86,72 @@ BRepGraph_NodeId BRepGraph::GeomView::CurveOf(BRepGraph_NodeId theEdgeDef) const
 
 //=================================================================================================
 
-const NCollection_Vector<BRepGraph_NodeId>& BRepGraph::GeomView::EdgesOnCurve(
+NCollection_Vector<BRepGraph_NodeId> BRepGraph::GeomView::EdgesOnCurve(
   BRepGraph_NodeId theCurve) const
 {
-  static const NCollection_Vector<BRepGraph_NodeId> THE_EMPTY_VEC;
+  NCollection_Vector<BRepGraph_NodeId> aResult;
   if (theCurve.NodeKind != BRepGraph_NodeId::Kind::Curve || !theCurve.IsValid()
       || theCurve.Index >= myGraph->myData->myCurves.Nodes.Length())
-    return THE_EMPTY_VEC;
-  return myGraph->myData->myCurves.Nodes.Value(theCurve.Index).EdgeDefUsers;
+    return aResult;
+
+  const NCollection_Vector<BRepGraph_TopoNode::EdgeDef>& anEdgeDefs =
+    myGraph->myData->myEdges.Defs;
+  for (int anEdgeIdx = 0; anEdgeIdx < anEdgeDefs.Length(); ++anEdgeIdx)
+  {
+    if (anEdgeDefs.Value(anEdgeIdx).CurveNodeId == theCurve)
+      aResult.Append(anEdgeDefs.Value(anEdgeIdx).Id);
+  }
+  return aResult;
+}
+
+//=================================================================================================
+
+const BRepGraph_TopoNode::EdgeDef::PCurveEntry* BRepGraph::GeomView::FindPCurve(
+  BRepGraph_NodeId theEdgeDef,
+  BRepGraph_NodeId theFaceDef) const
+{
+  if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge || !theEdgeDef.IsValid())
+    return nullptr;
+
+  const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
+    myGraph->myData->myEdges.Defs.Value(theEdgeDef.Index);
+  for (int aPCurveIter = 0; aPCurveIter < anEdgeDef.PCurves.Length(); ++aPCurveIter)
+  {
+    if (anEdgeDef.PCurves.Value(aPCurveIter).FaceDefId == theFaceDef)
+      return &anEdgeDef.PCurves.Value(aPCurveIter);
+  }
+  return nullptr;
+}
+
+//=================================================================================================
+
+const BRepGraph_TopoNode::EdgeDef::PCurveEntry* BRepGraph::GeomView::FindPCurve(
+  BRepGraph_NodeId   theEdgeDef,
+  BRepGraph_NodeId   theFaceDef,
+  TopAbs_Orientation theEdgeOrientation) const
+{
+  if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge || !theEdgeDef.IsValid())
+    return nullptr;
+
+  const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
+    myGraph->myData->myEdges.Defs.Value(theEdgeDef.Index);
+  for (int aPCurveIter = 0; aPCurveIter < anEdgeDef.PCurves.Length(); ++aPCurveIter)
+  {
+    const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCEntry = anEdgeDef.PCurves.Value(aPCurveIter);
+    if (aPCEntry.FaceDefId == theFaceDef && aPCEntry.EdgeOrientation == theEdgeOrientation)
+      return &aPCEntry;
+  }
+  return nullptr;
+}
+
+//=================================================================================================
+
+const BRepGraph_TopoNode::EdgeDef::PCurveEntry* BRepGraph::GeomView::FindPCurve(
+  const BRepGraph_PCurveContext& theContext) const
+{
+  return FindPCurve(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, theContext.EdgeDefIndex),
+                    BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, theContext.FaceDefIndex),
+                    theContext.Orientation);
 }
 
 //=================================================================================================
@@ -120,108 +172,29 @@ const BRepGraph_GeomNode::Surf* BRepGraph::GeomView::FaceSurface(int theFaceDefI
 
 //=================================================================================================
 
-const BRepGraph_GeomNode::PCurve* BRepGraph::GeomView::EdgePCurve(BRepGraph_NodeId theEdgeDef,
-                                                                  BRepGraph_NodeId theFaceDef) const
-{
-  const BRepGraph_NodeId aPCurveNodeId = PCurveOf(theEdgeDef, theFaceDef);
-  if (!aPCurveNodeId.IsValid())
-    return nullptr;
-  const BRepGraph_GeomNode::PCurve& aPCurve = myGraph->myData->myPCurves.Nodes.Value(aPCurveNodeId.Index);
-  if (aPCurve.Curve2d.IsNull())
-    return nullptr;
-  return &aPCurve;
-}
-
-//=================================================================================================
-
-const BRepGraph_GeomNode::PCurve* BRepGraph::GeomView::EdgePCurve(
-  BRepGraph_NodeId   theEdgeDef,
-  BRepGraph_NodeId   theFaceDef,
-  TopAbs_Orientation theEdgeOri) const
-{
-  const BRepGraph_NodeId aPCurveNodeId = PCurveOf(theEdgeDef, theFaceDef, theEdgeOri);
-  if (!aPCurveNodeId.IsValid())
-    return nullptr;
-  const BRepGraph_GeomNode::PCurve& aPCurve = myGraph->myData->myPCurves.Nodes.Value(aPCurveNodeId.Index);
-  if (aPCurve.Curve2d.IsNull())
-    return nullptr;
-  return &aPCurve;
-}
-
-//=================================================================================================
-
-BRepGraph_NodeId BRepGraph::GeomView::PCurveOf(BRepGraph_NodeId theEdgeDef,
-                                               BRepGraph_NodeId theFaceDef) const
-{
-  if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge || !theEdgeDef.IsValid())
-    return BRepGraph_NodeId();
-
-  const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
-    myGraph->myData->myEdges.Defs.Value(theEdgeDef.Index);
-  for (int aPCurveIter = 0; aPCurveIter < anEdgeDef.PCurves.Length(); ++aPCurveIter)
-  {
-    if (anEdgeDef.PCurves.Value(aPCurveIter).FaceDefId == theFaceDef)
-      return anEdgeDef.PCurves.Value(aPCurveIter).PCurveNodeId;
-  }
-  return BRepGraph_NodeId();
-}
-
-//=================================================================================================
-
-BRepGraph_NodeId BRepGraph::GeomView::PCurveOf(BRepGraph_NodeId   theEdgeDef,
-                                               BRepGraph_NodeId   theFaceDef,
-                                               TopAbs_Orientation theEdgeOrientation) const
-{
-  if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge || !theEdgeDef.IsValid())
-    return BRepGraph_NodeId();
-
-  const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
-    myGraph->myData->myEdges.Defs.Value(theEdgeDef.Index);
-  for (int aPCurveIter = 0; aPCurveIter < anEdgeDef.PCurves.Length(); ++aPCurveIter)
-  {
-    const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCEntry = anEdgeDef.PCurves.Value(aPCurveIter);
-    if (aPCEntry.FaceDefId == theFaceDef && aPCEntry.EdgeOrientation == theEdgeOrientation)
-      return aPCEntry.PCurveNodeId;
-  }
-  return BRepGraph_NodeId();
-}
-
-//=================================================================================================
-
-BRepGraph_NodeId BRepGraph::GeomView::PCurveOf(const BRepGraph_PCurveContext& theContext) const
-{
-  return PCurveOf(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, theContext.EdgeDefIndex),
-                  BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, theContext.FaceDefIndex),
-                  theContext.Orientation);
-}
-
-//=================================================================================================
-
 static GeomAdaptor_TransformedCurve buildCurveAdaptor(const BRepGraph_Data&              theData,
                                                       const BRepGraph_TopoNode::EdgeDef& theEdge)
 {
-  // The graph stores raw curves from BRep_Tool::Curve(E, loc, first, last) (4-arg).
-  // The curve location must be applied as a transform.
+  // The graph stores raw geometry with identity location (offsets absorbed into usages).
 
   // 3D curve available.
   if (theEdge.CurveNodeId.IsValid())
   {
-    const BRepGraph_GeomNode::Curve& aCurveNode = theData.myCurves.Nodes.Value(theEdge.CurveNodeId.Index);
-    const gp_Trsf                    aTrsf =
-      aCurveNode.CurveLocation.IsIdentity() ? gp_Trsf() : aCurveNode.CurveLocation.Transformation();
+    const BRepGraph_GeomNode::Curve& aCurveNode =
+      theData.myCurves.Nodes.Value(theEdge.CurveNodeId.Index);
     return GeomAdaptor_TransformedCurve(aCurveNode.CurveGeom,
                                         theEdge.ParamFirst,
                                         theEdge.ParamLast,
-                                        aTrsf);
+                                        gp_Trsf());
   }
 
   // Pcurve-only fallback: compose pcurve + surface.
   if (!theEdge.PCurves.IsEmpty())
   {
     const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCE = theEdge.PCurves.First();
-    const Handle(Geom2d_Curve)& aPC    = theData.myPCurves.Nodes.Value(aPCE.PCurveNodeId.Index).Curve2d;
+    const Handle(Geom2d_Curve)& aPC = aPCE.Curve2d;
     const BRepGraph_NodeId aSurfNodeId = theData.myFaces.Defs.Value(aPCE.FaceDefId.Index).SurfNodeId;
-    const Handle(Geom_Surface)& aSurf  = theData.mySurfaces.Nodes.Value(aSurfNodeId.Index).Surface;
+    const Handle(Geom_Surface)& aSurf = theData.mySurfaces.Nodes.Value(aSurfNodeId.Index).Surface;
 
     Handle(Geom2dAdaptor_Curve) aHC2d =
       new Geom2dAdaptor_Curve(aPC, theEdge.ParamFirst, theEdge.ParamLast);
@@ -275,13 +248,9 @@ Handle(Adaptor3d_CurveOnSurface) BRepGraph::GeomView::CurveOnSurfaceAdaptor(
     myGraph->myData->myEdges.Defs.Value(theEdgeDef.Index);
   const BRepGraph_TopoNode::FaceDef& aFaceDef = myGraph->myData->myFaces.Defs.Value(theFaceDef.Index);
 
-  // Look up PCurve for this edge on this face.
-  const BRepGraph_NodeId aPCurveNodeId = PCurveOf(theEdgeDef, theFaceDef);
-  if (!aPCurveNodeId.IsValid())
-    return Handle(Adaptor3d_CurveOnSurface)();
-
-  const BRepGraph_GeomNode::PCurve& aPCurve = myGraph->myData->myPCurves.Nodes.Value(aPCurveNodeId.Index);
-  if (aPCurve.Curve2d.IsNull())
+  // Look up inline PCurveEntry for this edge on this face.
+  const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCEntry = FindPCurve(theEdgeDef, theFaceDef);
+  if (aPCEntry == nullptr || aPCEntry->Curve2d.IsNull())
     return Handle(Adaptor3d_CurveOnSurface)();
 
   if (!aFaceDef.SurfNodeId.IsValid())
@@ -293,7 +262,7 @@ Handle(Adaptor3d_CurveOnSurface) BRepGraph::GeomView::CurveOnSurfaceAdaptor(
     return Handle(Adaptor3d_CurveOnSurface)();
 
   Handle(Geom2dAdaptor_Curve) aHC2d =
-    new Geom2dAdaptor_Curve(aPCurve.Curve2d, anEdgeDef.ParamFirst, anEdgeDef.ParamLast);
+    new Geom2dAdaptor_Curve(aPCEntry->Curve2d, anEdgeDef.ParamFirst, anEdgeDef.ParamLast);
   Handle(GeomAdaptor_Surface) aHS = new GeomAdaptor_Surface(aSurfNode.Surface);
 
   return new Adaptor3d_CurveOnSurface(aHC2d, aHS);
@@ -315,13 +284,10 @@ Handle(Adaptor3d_CurveOnSurface) BRepGraph::GeomView::CurveOnSurfaceAdaptor(
     myGraph->myData->myEdges.Defs.Value(theEdgeDef.Index);
   const BRepGraph_TopoNode::FaceDef& aFaceDef = myGraph->myData->myFaces.Defs.Value(theFaceDef.Index);
 
-  // Look up PCurve for this edge/face/orientation triple (seam edge support).
-  const BRepGraph_NodeId aPCurveNodeId = PCurveOf(theEdgeDef, theFaceDef, theEdgeOrientation);
-  if (!aPCurveNodeId.IsValid())
-    return Handle(Adaptor3d_CurveOnSurface)();
-
-  const BRepGraph_GeomNode::PCurve& aPCurve = myGraph->myData->myPCurves.Nodes.Value(aPCurveNodeId.Index);
-  if (aPCurve.Curve2d.IsNull())
+  // Look up inline PCurveEntry for this edge/face/orientation triple (seam edge support).
+  const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCEntry =
+    FindPCurve(theEdgeDef, theFaceDef, theEdgeOrientation);
+  if (aPCEntry == nullptr || aPCEntry->Curve2d.IsNull())
     return Handle(Adaptor3d_CurveOnSurface)();
 
   if (!aFaceDef.SurfNodeId.IsValid())
@@ -333,7 +299,7 @@ Handle(Adaptor3d_CurveOnSurface) BRepGraph::GeomView::CurveOnSurfaceAdaptor(
     return Handle(Adaptor3d_CurveOnSurface)();
 
   Handle(Geom2dAdaptor_Curve) aHC2d =
-    new Geom2dAdaptor_Curve(aPCurve.Curve2d, anEdgeDef.ParamFirst, anEdgeDef.ParamLast);
+    new Geom2dAdaptor_Curve(aPCEntry->Curve2d, anEdgeDef.ParamFirst, anEdgeDef.ParamLast);
   Handle(GeomAdaptor_Surface) aHS = new GeomAdaptor_Surface(aSurfNode.Surface);
 
   return new Adaptor3d_CurveOnSurface(aHC2d, aHS);
@@ -356,9 +322,7 @@ GeomAdaptor_TransformedSurface BRepGraph::GeomView::SurfaceAdaptor(
   if (aSurfNode.Surface.IsNull())
     return GeomAdaptor_TransformedSurface();
 
-  const gp_Trsf aTrsf =
-    aSurfNode.SurfaceLocation.IsIdentity() ? gp_Trsf() : aSurfNode.SurfaceLocation.Transformation();
-  return GeomAdaptor_TransformedSurface(aSurfNode.Surface, aTrsf);
+  return GeomAdaptor_TransformedSurface(aSurfNode.Surface, gp_Trsf());
 }
 
 //=================================================================================================
@@ -381,12 +345,10 @@ GeomAdaptor_TransformedSurface BRepGraph::GeomView::SurfaceAdaptor(BRepGraph_Nod
   if (aSurfNode.Surface.IsNull())
     return GeomAdaptor_TransformedSurface();
 
-  const gp_Trsf aTrsf =
-    aSurfNode.SurfaceLocation.IsIdentity() ? gp_Trsf() : aSurfNode.SurfaceLocation.Transformation();
   return GeomAdaptor_TransformedSurface(aSurfNode.Surface,
                                         theUFirst,
                                         theULast,
                                         theVFirst,
                                         theVLast,
-                                        aTrsf);
+                                        gp_Trsf());
 }

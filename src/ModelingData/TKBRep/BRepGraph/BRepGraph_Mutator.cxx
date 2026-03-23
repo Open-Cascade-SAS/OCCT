@@ -20,6 +20,7 @@
 #include <BRep_Builder.hxx>
 #include <TopAbs.hxx>
 #include <TopAbs_Orientation.hxx>
+#include <TopLoc_Location.hxx>
 
 //=================================================================================================
 
@@ -91,20 +92,13 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
   theGraph.allocateUID(theSubA);
   theGraph.allocateUID(theSubB);
 
-  // Register curve back-references for sub-edges.
-  if (aOrigCurveNodeId.IsValid())
-  {
-    BRepGraph_BackRefManager::BindEdgeToCurve(theGraph, theSubA, aOrigCurveNodeId.Index);
-    BRepGraph_BackRefManager::BindEdgeToCurve(theGraph, theSubB, aOrigCurveNodeId.Index);
-  }
+  (void)aOrigCurveNodeId; // curve back-refs are no longer stored on geometry nodes
 
-  // Split PCurve nodes for each PCurve entry in original.
+  // Split PCurve entries for each PCurve in original (inline data, no separate PCurve nodes).
   const double aParamRange = aOrigParamLast - aOrigParamFirst;
   for (int aPCIdx = 0; aPCIdx < aOrigPCurves.Length(); ++aPCIdx)
   {
     const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCEntry = aOrigPCurves.Value(aPCIdx);
-    const BRepGraph_GeomNode::PCurve& aPCNode =
-      theGraph.myData->myPCurves.Nodes.Value(aPCEntry.PCurveNodeId.Index);
 
     // Compute 2D split parameter.
     double aPCSplit;
@@ -114,29 +108,31 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
     }
     else
     {
-      const double aPCRange = aPCNode.ParamLast - aPCNode.ParamFirst;
+      const double aPCRange = aPCEntry.ParamLast - aPCEntry.ParamFirst;
       if (aParamRange > 0.0)
-        aPCSplit = aPCNode.ParamFirst
+        aPCSplit = aPCEntry.ParamFirst
                    + ((theSplitParam - aOrigParamFirst) / aParamRange) * aPCRange;
       else
-        aPCSplit = 0.5 * (aPCNode.ParamFirst + aPCNode.ParamLast);
+        aPCSplit = 0.5 * (aPCEntry.ParamFirst + aPCEntry.ParamLast);
     }
 
     // PCurve for SubA: [PCFirst, aPCSplit].
-    const BRepGraph_NodeId aPCSubAId = theGraph.createPCurveNode(
-      aPCNode.Curve2d, theSubA, aPCEntry.FaceDefId, aPCNode.ParamFirst, aPCSplit);
     BRepGraph_TopoNode::EdgeDef::PCurveEntry aPCSubAEntry;
-    aPCSubAEntry.PCurveNodeId    = aPCSubAId;
+    aPCSubAEntry.Curve2d         = aPCEntry.Curve2d;
     aPCSubAEntry.FaceDefId       = aPCEntry.FaceDefId;
+    aPCSubAEntry.ParamFirst      = aPCEntry.ParamFirst;
+    aPCSubAEntry.ParamLast       = aPCSplit;
+    aPCSubAEntry.Continuity      = aPCEntry.Continuity;
     aPCSubAEntry.EdgeOrientation = aPCEntry.EdgeOrientation;
     theGraph.myData->myEdges.Defs.ChangeValue(aSubAIdx).PCurves.Append(aPCSubAEntry);
 
     // PCurve for SubB: [aPCSplit, PCLast].
-    const BRepGraph_NodeId aPCSubBId = theGraph.createPCurveNode(
-      aPCNode.Curve2d, theSubB, aPCEntry.FaceDefId, aPCSplit, aPCNode.ParamLast);
     BRepGraph_TopoNode::EdgeDef::PCurveEntry aPCSubBEntry;
-    aPCSubBEntry.PCurveNodeId    = aPCSubBId;
+    aPCSubBEntry.Curve2d         = aPCEntry.Curve2d;
     aPCSubBEntry.FaceDefId       = aPCEntry.FaceDefId;
+    aPCSubBEntry.ParamFirst      = aPCSplit;
+    aPCSubBEntry.ParamLast       = aPCEntry.ParamLast;
+    aPCSubBEntry.Continuity      = aPCEntry.Continuity;
     aPCSubBEntry.EdgeOrientation = aPCEntry.EdgeOrientation;
     theGraph.myData->myEdges.Defs.ChangeValue(aSubBIdx).PCurves.Append(aPCSubBEntry);
   }
@@ -153,14 +149,14 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
     const TopoDS_Shape aEndVShape   = theGraph.Shapes().Shape( aOrigEndVertexDefId);
 
     TopoDS_Edge aSubAEdge;
-    aBB.MakeEdge(aSubAEdge, aCurveNode.CurveGeom, aCurveNode.CurveLocation, aOrigTolerance);
+    aBB.MakeEdge(aSubAEdge, aCurveNode.CurveGeom, TopLoc_Location(), aOrigTolerance);
     aBB.Range(aSubAEdge, aOrigParamFirst, theSplitParam);
     if (!aStartVShape.IsNull()) aBB.Add(aSubAEdge, aStartVShape.Oriented(TopAbs_FORWARD));
     if (!aSplitVShape.IsNull()) aBB.Add(aSubAEdge, aSplitVShape.Oriented(TopAbs_REVERSED));
     theGraph.myData->myOriginalShapes.Bind(theSubA, aSubAEdge);
 
     TopoDS_Edge aSubBEdge;
-    aBB.MakeEdge(aSubBEdge, aCurveNode.CurveGeom, aCurveNode.CurveLocation, aOrigTolerance);
+    aBB.MakeEdge(aSubBEdge, aCurveNode.CurveGeom, TopLoc_Location(), aOrigTolerance);
     aBB.Range(aSubBEdge, theSplitParam, aOrigParamLast);
     if (!aSplitVShape.IsNull()) aBB.Add(aSubBEdge, aSplitVShape.Oriented(TopAbs_FORWARD));
     if (!aEndVShape.IsNull())   aBB.Add(aSubBEdge, aEndVShape.Oriented(TopAbs_REVERSED));

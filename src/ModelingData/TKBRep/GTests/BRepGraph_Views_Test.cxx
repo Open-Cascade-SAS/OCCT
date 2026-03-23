@@ -166,13 +166,13 @@ TEST_F(BRepGraphViewsTest, GeomView_CurveOf_Valid)
   EXPECT_TRUE(aCurveId.IsValid());
 }
 
-TEST_F(BRepGraphViewsTest, GeomView_PCurveOf_Valid)
+TEST_F(BRepGraphViewsTest, GeomView_FindPCurve_NoCrash)
 {
   BRepGraph_NodeId anEdgeId(BRepGraph_NodeId::Kind::Edge, 0);
   BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
-  // PCurveOf may or may not be valid for an arbitrary edge/face pair.
+  // FindPCurve may or may not return a non-null pointer for an arbitrary edge/face pair.
   // Just verify it does not crash.
-  myGraph.Geom().PCurveOf(anEdgeId, aFaceId);
+  myGraph.Geom().FindPCurve(anEdgeId, aFaceId);
 }
 
 // ---------- UIDsView ----------

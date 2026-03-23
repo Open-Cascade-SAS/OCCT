@@ -47,18 +47,18 @@ TEST(BRepGraph_PolygonTest, MultiTriangulation_Roundtrip_PreservesAll)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  // Verify triangulations were captured.
+  // Verify triangulations were captured on face definitions.
   bool aHasTriangulations = false;
-  for (int aSurfIdx = 0; aSurfIdx < aGraph.Geom().NbSurfaces(); ++aSurfIdx)
+  for (int aFaceDefIdx = 0; aFaceDefIdx < aGraph.Defs().NbFaces(); ++aFaceDefIdx)
   {
-    const BRepGraph_GeomNode::Surf& aSurf = aGraph.Geom().Surface(aSurfIdx);
-    if (!aSurf.Triangulations.IsEmpty())
+    const BRepGraph_TopoNode::FaceDef& aFaceDef = aGraph.Defs().Face(aFaceDefIdx);
+    if (!aFaceDef.Triangulations.IsEmpty())
     {
       aHasTriangulations = true;
-      EXPECT_GE(aSurf.ActiveTriangulationIndex, 0)
+      EXPECT_GE(aFaceDef.ActiveTriangulationIndex, 0)
         << "Active triangulation index should be valid for meshed face";
-      EXPECT_LT(aSurf.ActiveTriangulationIndex, aSurf.Triangulations.Length());
-      EXPECT_FALSE(aSurf.ActiveTriangulation().IsNull());
+      EXPECT_LT(aFaceDef.ActiveTriangulationIndex, aFaceDef.Triangulations.Length());
+      EXPECT_FALSE(aFaceDef.ActiveTriangulation().IsNull());
     }
   }
   EXPECT_TRUE(aHasTriangulations) << "Meshed box should have triangulations";
@@ -215,15 +215,19 @@ TEST(BRepGraph_PolygonTest, UVPoints_Captured_OnPCurves)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  // At least some PCurves should have non-origin UV points.
+  // At least some inline PCurve entries should have non-origin UV points.
   int aNbNonOriginUV = 0;
-  for (int anIdx = 0; anIdx < aGraph.Geom().NbPCurves(); ++anIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    const BRepGraph_GeomNode::PCurve& aPC = aGraph.Geom().PCurve(anIdx);
-    if (aPC.UV1.Distance(gp_Pnt2d(0, 0)) > Precision::Confusion()
-        || aPC.UV2.Distance(gp_Pnt2d(0, 0)) > Precision::Confusion())
+    const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(anEdgeIdx);
+    for (int aPCIdx = 0; aPCIdx < anEdge.PCurves.Length(); ++aPCIdx)
     {
-      ++aNbNonOriginUV;
+      const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPC = anEdge.PCurves.Value(aPCIdx);
+      if (aPC.UV1.Distance(gp_Pnt2d(0, 0)) > Precision::Confusion()
+          || aPC.UV2.Distance(gp_Pnt2d(0, 0)) > Precision::Confusion())
+      {
+        ++aNbNonOriginUV;
+      }
     }
   }
   EXPECT_GT(aNbNonOriginUV, 0) << "Box PCurves should have non-origin UV points";

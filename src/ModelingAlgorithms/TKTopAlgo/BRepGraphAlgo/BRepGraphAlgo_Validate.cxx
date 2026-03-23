@@ -41,7 +41,6 @@ bool isValidNodeId(const BRepGraph& theGraph, BRepGraph_NodeId theId)
     case BRepGraph_NodeId::Kind::CompSolid: return theId.Index < theGraph.Defs().NbCompSolids();
     case BRepGraph_NodeId::Kind::Surface:   return theId.Index < theGraph.Geom().NbSurfaces();
     case BRepGraph_NodeId::Kind::Curve:     return theId.Index < theGraph.Geom().NbCurves();
-    case BRepGraph_NodeId::Kind::PCurve:    return theId.Index < theGraph.Geom().NbPCurves();
   }
   return false;
 }
@@ -111,12 +110,6 @@ void checkCrossReferenceBounds(const BRepGraph&                                 
     for (int aPCIdx = 0; aPCIdx < anEdge.PCurves.Length(); ++aPCIdx)
     {
       const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCEntry = anEdge.PCurves.Value(aPCIdx);
-      if (aPCEntry.PCurveNodeId.IsValid() && !isValidNodeId(theGraph, aPCEntry.PCurveNodeId))
-      {
-        theIssues.Append(Issue{Severity::Error,
-                               anEdge.Id,
-                               "EdgeDef.PCurveEntry.PCurveNodeId out of bounds"});
-      }
       if (aPCEntry.FaceDefId.IsValid() && !isValidNodeId(theGraph, aPCEntry.FaceDefId))
       {
         theIssues.Append(Issue{Severity::Error,
@@ -401,40 +394,32 @@ void checkGeometryReferences(const BRepGraph&                                   
       }
     }
 
-    // Check PCurve references.
+    // Check inline PCurve data.
     for (int aPCIdx = 0; aPCIdx < anEdge.PCurves.Length(); ++aPCIdx)
     {
       const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCEntry = anEdge.PCurves.Value(aPCIdx);
-      if (aPCEntry.PCurveNodeId.IsValid())
+      if (aPCEntry.Curve2d.IsNull())
       {
-        if (!isValidNodeId(theGraph, aPCEntry.PCurveNodeId))
-        {
-          theIssues.Append(Issue{Severity::Error,
-                                 anEdge.Id,
-                                 "EdgeDef.PCurveEntry.PCurveNodeId out of bounds"});
-        }
-        else if (theGraph.Geom().PCurve(aPCEntry.PCurveNodeId.Index).Curve2d.IsNull())
-        {
-          theIssues.Append(Issue{Severity::Error,
-                                 anEdge.Id,
-                                 "EdgeDef.PCurveEntry references null Curve2d handle"});
-        }
+        theIssues.Append(Issue{Severity::Error,
+                               anEdge.Id,
+                               "EdgeDef.PCurveEntry has null Curve2d handle"});
       }
     }
   }
 
-  // Check surface back-references.
+  // Check surface forward-references: scan face defs that reference each surface.
   for (int aSurfIdx = 0; aSurfIdx < theGraph.Geom().NbSurfaces(); ++aSurfIdx)
   {
     const BRepGraph_GeomNode::Surf& aSurf = theGraph.Geom().Surface(aSurfIdx);
-    for (int anUserIdx = 0; anUserIdx < aSurf.FaceDefUsers.Length(); ++anUserIdx)
+    const NCollection_Vector<BRepGraph_NodeId> aFaceIds = theGraph.Geom().FacesOnSurface(aSurf.Id);
+    for (int anUserIdx = 0; anUserIdx < aFaceIds.Length(); ++anUserIdx)
     {
-      const BRepGraph_NodeId& aFaceId = aSurf.FaceDefUsers.Value(anUserIdx);
+      const BRepGraph_NodeId& aFaceId = aFaceIds.Value(anUserIdx);
       if (!isValidNodeId(theGraph, aFaceId))
       {
         theIssues.Append(Issue{Severity::Error,
                                aSurf.Id,
-                               "Surf.FaceDefUsers contains out-of-bounds FaceDefId"});
+                               "FacesOnSurface contains out-of-bounds FaceDefId"});
         continue;
       }
       const BRepGraph_TopoNode::FaceDef& aFace = theGraph.Defs().Face(aFaceId.Index);
@@ -442,23 +427,24 @@ void checkGeometryReferences(const BRepGraph&                                   
       {
         theIssues.Append(Issue{Severity::Error,
                                aSurf.Id,
-                               "Surf.FaceDefUsers entry does not reference this surface"});
+                               "FacesOnSurface entry does not reference this surface"});
       }
     }
   }
 
-  // Check curve back-references.
+  // Check curve forward-references: scan edge defs that reference each curve.
   for (int aCurveIdx = 0; aCurveIdx < theGraph.Geom().NbCurves(); ++aCurveIdx)
   {
     const BRepGraph_GeomNode::Curve& aCurve = theGraph.Geom().Curve(aCurveIdx);
-    for (int anUserIdx = 0; anUserIdx < aCurve.EdgeDefUsers.Length(); ++anUserIdx)
+    const NCollection_Vector<BRepGraph_NodeId> anEdgeIds = theGraph.Geom().EdgesOnCurve(aCurve.Id);
+    for (int anUserIdx = 0; anUserIdx < anEdgeIds.Length(); ++anUserIdx)
     {
-      const BRepGraph_NodeId& anEdgeId = aCurve.EdgeDefUsers.Value(anUserIdx);
+      const BRepGraph_NodeId& anEdgeId = anEdgeIds.Value(anUserIdx);
       if (!isValidNodeId(theGraph, anEdgeId))
       {
         theIssues.Append(Issue{Severity::Error,
                                aCurve.Id,
-                               "Curve.EdgeDefUsers contains out-of-bounds EdgeDefId"});
+                               "EdgesOnCurve contains out-of-bounds EdgeDefId"});
         continue;
       }
       const BRepGraph_TopoNode::EdgeDef& anEdge = theGraph.Defs().Edge(anEdgeId.Index);
@@ -466,7 +452,7 @@ void checkGeometryReferences(const BRepGraph&                                   
       {
         theIssues.Append(Issue{Severity::Error,
                                aCurve.Id,
-                               "Curve.EdgeDefUsers entry does not reference this curve"});
+                               "EdgesOnCurve entry does not reference this curve"});
       }
     }
   }

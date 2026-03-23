@@ -96,7 +96,7 @@ static void addFaceBox(const BRepGraph& theGraph, int theFaceIdx, Bnd_Box& theBo
   }
 
   // Triangulation path (fast, common).
-  const Handle(Poly_Triangulation) aTri = aSurf->ActiveTriangulation();
+  const Handle(Poly_Triangulation) aTri = aFaceDef.ActiveTriangulation();
   if ((theUseTri || aSurf->Surface.IsNull()) && !aTri.IsNull())
   {
     const TopLoc_Location aLoc = faceGlobalLocation(theGraph, theFaceIdx);
@@ -446,7 +446,7 @@ static void addFaceBoxOptimal(const BRepGraph& theGraph,
   }
 
   // Triangulation path.
-  const Handle(Poly_Triangulation) aTri = aSurf->ActiveTriangulation();
+  const Handle(Poly_Triangulation) aTri = aFaceDef.ActiveTriangulation();
   if (theUseTri && !aTri.IsNull())
   {
     Bnd_Box               aLocBox;

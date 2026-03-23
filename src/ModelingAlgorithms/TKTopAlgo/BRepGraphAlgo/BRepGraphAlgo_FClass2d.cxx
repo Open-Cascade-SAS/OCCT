@@ -79,23 +79,22 @@ bool isDegenerated(const Handle(Geom_Curve)& theCurve,
 
 //=================================================================================================
 
-// Finds PCurve node ID for a given edge definition on a given face.
+// Finds PCurve entry for a given edge definition on a given face.
 // For seam edges (two PCurves on the same face), matches by edge orientation.
-BRepGraph_NodeId findPCurveForFace(const BRepGraph_TopoNode::EdgeDef& theEdgeDef,
-                                   const BRepGraph_NodeId             theFaceDefId,
-                                   const TopAbs_Orientation           theEdgeOri)
+const BRepGraph_TopoNode::EdgeDef::PCurveEntry*
+findPCurveForFace(const BRepGraph_TopoNode::EdgeDef& theEdgeDef,
+                  const BRepGraph_NodeId             theFaceDefId,
+                  const TopAbs_Orientation           theEdgeOri)
 {
-  BRepGraph_NodeId aResult;
-  bool             aHasFirst = false;
+  const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aResult = nullptr;
   for (int i = 0; i < theEdgeDef.PCurves.Length(); ++i)
   {
     const BRepGraph_TopoNode::EdgeDef::PCurveEntry& anEntry = theEdgeDef.PCurves(i);
     if (anEntry.FaceDefId == theFaceDefId)
     {
-      if (!aHasFirst)
+      if (aResult == nullptr)
       {
-        aResult   = anEntry.PCurveNodeId;
-        aHasFirst = true;
+        aResult = &anEntry;
         if (anEntry.EdgeOrientation == theEdgeOri)
           return aResult;
       }
@@ -103,7 +102,7 @@ BRepGraph_NodeId findPCurveForFace(const BRepGraph_TopoNode::EdgeDef& theEdgeDef
       {
         // Seam edge: pick the PCurve matching orientation.
         if (anEntry.EdgeOrientation == theEdgeOri)
-          return anEntry.PCurveNodeId;
+          return &anEntry;
       }
     }
   }
@@ -195,10 +194,9 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
   const BRepGraph_NodeId             aFaceNodeId = aFaceDef.Id;
 
   // Surface type and periodicity.
+  // Geometry is stored at identity; location offsets are absorbed into usages.
   const BRepGraph_GeomNode::Surf& aSurfNode = theGraph.Geom().Surface(aFaceDef.SurfNodeId.Index);
-  const gp_Trsf                   aTrsf =
-    aSurfNode.SurfaceLocation.IsIdentity() ? gp_Trsf() : aSurfNode.SurfaceLocation.Transformation();
-  GeomAdaptor_TransformedSurface aSurfAdaptor(aSurfNode.Surface, aTrsf);
+  GeomAdaptor_TransformedSurface aSurfAdaptor(aSurfNode.Surface, gp_Trsf());
 
   myIsUPer  = aSurfAdaptor.IsUPeriodic();
   myIsVPer  = aSurfAdaptor.IsVPeriodic();
@@ -265,17 +263,17 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
         continue;
 
       // PCurve lookup.
-      const BRepGraph_NodeId aPCurveNodeId = findPCurveForFace(anEdgeDef, aFaceNodeId, anOri);
-      if (!aPCurveNodeId.IsValid())
+      const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurveEntry =
+        findPCurveForFace(anEdgeDef, aFaceNodeId, anOri);
+      if (aPCurveEntry == nullptr)
         return;
 
-      const BRepGraph_GeomNode::PCurve& aPCurveNode = theGraph.Geom().PCurve(aPCurveNodeId.Index);
-      const Handle(Geom2d_Curve)&       aCurve2d    = aPCurveNode.Curve2d;
+      const Handle(Geom2d_Curve)& aCurve2d = aPCurveEntry->Curve2d;
       if (aCurve2d.IsNull())
         return;
 
-      double aParamFirst = aPCurveNode.ParamFirst;
-      double aParamLast  = aPCurveNode.ParamLast;
+      double aParamFirst = aPCurveEntry->ParamFirst;
+      double aParamLast  = aPCurveEntry->ParamLast;
 
       if (std::abs(aParamLast - aParamFirst) < 1.e-9)
         continue;
@@ -297,7 +295,7 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
         const BRepGraph_GeomNode::Curve& aCurveNode =
           theGraph.Geom().Curve(anEdgeDef.CurveNodeId.Index);
         anIsDegenerated = isDegenerated(aCurveNode.CurveGeom,
-                                        aCurveNode.CurveLocation,
+                                        TopLoc_Location(),
                                         anEdgeDef.ParamFirst,
                                         anEdgeDef.ParamLast);
       }
@@ -342,8 +340,6 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
           if (!aCurveNode.CurveGeom.IsNull())
           {
             aP3d = aCurveNode.CurveGeom->Value(aU);
-            if (!aCurveNode.CurveLocation.IsIdentity())
-              aP3d.Transform(aCurveNode.CurveLocation.Transformation());
             if (aNbPnts > 1 && anOldPnt3dInit)
               aDist3dOld = aP3d.Distance(aOldPnt3d);
           }
@@ -358,8 +354,6 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
             if (!aCurveNode.CurveGeom.IsNull())
             {
               gp_Pnt aMidP3d = aCurveNode.CurveGeom->Value(aU - aDu / 2.0);
-              if (!aCurveNode.CurveLocation.IsIdentity())
-                aMidP3d.Transform(aCurveNode.CurveLocation.Transformation());
               if (aP3d.Distance(aMidP3d) < Precision::Confusion())
                 anIsRealCurve3d = false;
             }
@@ -427,18 +421,17 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
             if (anOri != TopAbs_FORWARD && anOri != TopAbs_REVERSED)
               continue;
 
-            const BRepGraph_NodeId aPCurveNodeId = findPCurveForFace(anEdgeDef, aFaceNodeId, anOri);
-            if (!aPCurveNodeId.IsValid())
+            const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurveEntry =
+              findPCurveForFace(anEdgeDef, aFaceNodeId, anOri);
+            if (aPCurveEntry == nullptr)
               continue;
 
-            const BRepGraph_GeomNode::PCurve& aPCurveNode =
-              theGraph.Geom().PCurve(aPCurveNodeId.Index);
-            double aParamFirst = aPCurveNode.ParamFirst;
-            double aParamLast  = aPCurveNode.ParamLast;
+            double aParamFirst = aPCurveEntry->ParamFirst;
+            double aParamLast  = aPCurveEntry->ParamLast;
             if (std::abs(aParamLast - aParamFirst) < 1.e-9)
               continue;
 
-            Geom2dAdaptor_Curve           aC(aPCurveNode.Curve2d, aParamFirst, aParamLast);
+            Geom2dAdaptor_Curve           aC(aPCurveEntry->Curve2d, aParamFirst, aParamLast);
             GCPnts_QuasiUniformDeflection aDiscr(aC, aDiscrDefl);
             if (!aDiscr.IsDone())
               break;

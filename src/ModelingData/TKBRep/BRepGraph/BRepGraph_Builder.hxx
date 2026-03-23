@@ -51,9 +51,6 @@ public:
   template <typename FaceDataVec>
   static void registerFaceData(BRepGraph& theGraph, const FaceDataVec& theFaceData);
 
-  //! Phase 4: Set IsMultiLocated flags on surfaces and curves.
-  static void computeMultiLocatedFlags(BRepGraph& theGraph);
-
 private:
   BRepGraph_Builder() = delete;
 };

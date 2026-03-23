@@ -22,72 +22,13 @@ class BRepGraph;
 
 //! @brief Centralized back-reference maintenance for BRepGraph.
 //!
-//! All reverse-index updates (Surf.FaceDefUsers, Curve.EdgeDefUsers,
-//! myEdgeToWires) are routed through this static-only helper.
-//! This eliminates duplicated swap-and-pop logic across Builder,
-//! BuilderView, Mutator, and Deduplicate.
+//! Manages reverse-index updates (myEdgeToWires, relation edges).
+//! Geometry back-references (surface/curve) are not stored; queries
+//! scan definitions on demand.
 class BRepGraph_BackRefManager
 {
 public:
   DEFINE_STANDARD_ALLOC
-
-  // --- Geometry back-refs: Surface <-> FaceDef ---
-
-  //! Register a face definition as a user of the given surface node.
-  //! @param[in,out] theGraph     graph to update
-  //! @param[in] theFaceDefId     face definition that references the surface
-  //! @param[in] theSurfIdx       index into mySurfaces
-  static Standard_EXPORT void BindFaceToSurface(BRepGraph&       theGraph,
-                                                 BRepGraph_NodeId theFaceDefId,
-                                                 int              theSurfIdx);
-
-  //! Remove a face definition from the user list of the given surface node.
-  //! @param[in,out] theGraph     graph to update
-  //! @param[in] theFaceDefId     face definition to remove
-  //! @param[in] theSurfIdx       index into mySurfaces
-  static Standard_EXPORT void UnbindFaceFromSurface(BRepGraph&       theGraph,
-                                                     BRepGraph_NodeId theFaceDefId,
-                                                     int              theSurfIdx);
-
-  //! Move a face definition from one surface to another.
-  //! Equivalent to UnbindFaceFromSurface + BindFaceToSurface.
-  //! @param[in,out] theGraph     graph to update
-  //! @param[in] theFaceDefId     face definition being rewritten
-  //! @param[in] theOldSurfIdx    previous surface index
-  //! @param[in] theNewSurfIdx    new surface index
-  static Standard_EXPORT void RewriteFaceSurface(BRepGraph&       theGraph,
-                                                  BRepGraph_NodeId theFaceDefId,
-                                                  int              theOldSurfIdx,
-                                                  int              theNewSurfIdx);
-
-  // --- Geometry back-refs: Curve <-> EdgeDef ---
-
-  //! Register an edge definition as a user of the given curve node.
-  //! @param[in,out] theGraph     graph to update
-  //! @param[in] theEdgeDefId     edge definition that references the curve
-  //! @param[in] theCurveIdx      index into myCurves
-  static Standard_EXPORT void BindEdgeToCurve(BRepGraph&       theGraph,
-                                               BRepGraph_NodeId theEdgeDefId,
-                                               int              theCurveIdx);
-
-  //! Remove an edge definition from the user list of the given curve node.
-  //! @param[in,out] theGraph     graph to update
-  //! @param[in] theEdgeDefId     edge definition to remove
-  //! @param[in] theCurveIdx      index into myCurves
-  static Standard_EXPORT void UnbindEdgeFromCurve(BRepGraph&       theGraph,
-                                                   BRepGraph_NodeId theEdgeDefId,
-                                                   int              theCurveIdx);
-
-  //! Move an edge definition from one curve to another.
-  //! Equivalent to UnbindEdgeFromCurve + BindEdgeToCurve.
-  //! @param[in,out] theGraph     graph to update
-  //! @param[in] theEdgeDefId     edge definition being rewritten
-  //! @param[in] theOldCurveIdx   previous curve index
-  //! @param[in] theNewCurveIdx   new curve index
-  static Standard_EXPORT void RewriteEdgeCurve(BRepGraph&       theGraph,
-                                                BRepGraph_NodeId theEdgeDefId,
-                                                int              theOldCurveIdx,
-                                                int              theNewCurveIdx);
 
   // --- Edge-to-wire back-refs ---
 

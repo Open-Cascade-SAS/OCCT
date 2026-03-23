@@ -55,7 +55,6 @@ TEST(BRepGraphEdgeCasesTest, Build_EmptyCompound_IsDoneZeroCounts)
   EXPECT_EQ(aGraph.Defs().NbVertices(), 0);
   EXPECT_EQ(aGraph.Geom().NbSurfaces(), 0);
   EXPECT_EQ(aGraph.Geom().NbCurves(), 0);
-  EXPECT_EQ(aGraph.Geom().NbPCurves(), 0);
 }
 
 TEST(BRepGraphEdgeCasesTest, Shape_InvalidNodeId_ReturnsNull)
@@ -195,7 +194,6 @@ TEST(BRepGraphEdgeCasesTest, Build_TwiceOnSameGraph_CountsResetCorrectly)
   const int aVerts1   = aGraph.Defs().NbVertices();
   const int aSurfs1   = aGraph.Geom().NbSurfaces();
   const int aCurves1  = aGraph.Geom().NbCurves();
-  const int aPCurves1 = aGraph.Geom().NbPCurves();
 
   // Rebuild with same shape.
   aGraph.Build(aBox);
@@ -209,7 +207,6 @@ TEST(BRepGraphEdgeCasesTest, Build_TwiceOnSameGraph_CountsResetCorrectly)
   EXPECT_EQ(aGraph.Defs().NbVertices(), aVerts1);
   EXPECT_EQ(aGraph.Geom().NbSurfaces(), aSurfs1);
   EXPECT_EQ(aGraph.Geom().NbCurves(), aCurves1);
-  EXPECT_EQ(aGraph.Geom().NbPCurves(), aPCurves1);
 }
 
 // ============================================================
@@ -254,7 +251,6 @@ TEST(BRepGraphEdgeCasesTest, ParallelBuild_Sphere_SameAsSequential)
   EXPECT_EQ(aParGraph.Defs().NbVertices(), aSeqGraph.Defs().NbVertices());
   EXPECT_EQ(aParGraph.Geom().NbSurfaces(),   aSeqGraph.Geom().NbSurfaces());
   EXPECT_EQ(aParGraph.Geom().NbCurves(),     aSeqGraph.Geom().NbCurves());
-  EXPECT_EQ(aParGraph.Geom().NbPCurves(),    aSeqGraph.Geom().NbPCurves());
   EXPECT_EQ(aParGraph.Defs().NbNodes(),      aSeqGraph.Defs().NbNodes());
 
   EXPECT_EQ(aParGraph.Usages().NbSolids(),  aSeqGraph.Usages().NbSolids());
@@ -295,7 +291,6 @@ TEST(BRepGraphEdgeCasesTest, ParallelBuild_Compound_SameAsSequential)
   EXPECT_EQ(aParGraph.Defs().NbVertices(), aSeqGraph.Defs().NbVertices());
   EXPECT_EQ(aParGraph.Geom().NbSurfaces(),   aSeqGraph.Geom().NbSurfaces());
   EXPECT_EQ(aParGraph.Geom().NbCurves(),     aSeqGraph.Geom().NbCurves());
-  EXPECT_EQ(aParGraph.Geom().NbPCurves(),    aSeqGraph.Geom().NbPCurves());
   EXPECT_EQ(aParGraph.Defs().NbNodes(),      aSeqGraph.Defs().NbNodes());
 
   EXPECT_EQ(aParGraph.Usages().NbSolids(),  aSeqGraph.Usages().NbSolids());

@@ -205,7 +205,8 @@ static int pointsForOBB(const BRepGraph&            theGraph,
     }
 
     // Use active triangulation of the face.
-    const Handle(Poly_Triangulation) aTriangulation = aSurf->ActiveTriangulation();
+    const BRepGraph_TopoNode::FaceDef& aFaceDefTri = theGraph.Defs().Face(aFaceIdx);
+    const Handle(Poly_Triangulation) aTriangulation = aFaceDefTri.ActiveTriangulation();
     if (aTriangulation.IsNull())
     {
       return 0;

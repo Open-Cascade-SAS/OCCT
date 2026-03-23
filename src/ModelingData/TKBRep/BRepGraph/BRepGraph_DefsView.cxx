@@ -149,6 +149,5 @@ size_t BRepGraph::DefsView::NbNodes() const
          + static_cast<size_t>(myGraph->myData->myCompounds.Defs.Length())
          + static_cast<size_t>(myGraph->myData->myCompSolids.Defs.Length())
          + static_cast<size_t>(myGraph->myData->mySurfaces.Nodes.Length())
-         + static_cast<size_t>(myGraph->myData->myCurves.Nodes.Length())
-         + static_cast<size_t>(myGraph->myData->myPCurves.Nodes.Length());
+         + static_cast<size_t>(myGraph->myData->myCurves.Nodes.Length());
 }

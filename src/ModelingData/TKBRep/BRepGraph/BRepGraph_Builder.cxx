@@ -318,27 +318,12 @@ void BRepGraph_Builder::registerFaceData(BRepGraph& theGraph, const FaceDataVec&
       aFaceDef.NaturalRestriction = aData.NaturalRestriction;
       theGraph.allocateUID(aFaceDef.Id);
 
-      aFaceDef.SurfNodeId =
-        theGraph.registerSurface(aData.Surface,
-                                  aData.ActiveTriangulationIndex >= 0
-                                    ? aData.Triangulations.Value(aData.ActiveTriangulationIndex)
-                                    : Handle(Poly_Triangulation)(),
-                                  aData.SurfaceLocation);
-      if (aFaceDef.SurfNodeId.IsValid())
-      {
-        BRepGraph_BackRefManager::BindFaceToSurface(theGraph, aFaceDef.Id,
-                                                     aFaceDef.SurfNodeId.Index);
-        // Store all triangulations on the Surf node (if more than the active one).
-        if (aData.Triangulations.Length() > 1)
-        {
-          BRepGraph_GeomNode::Surf& aSurfNode =
-            theGraph.myData->mySurfaces.Nodes.ChangeValue(aFaceDef.SurfNodeId.Index);
-          aSurfNode.Triangulations.Clear();
-          for (int aTriIdx = 0; aTriIdx < aData.Triangulations.Length(); ++aTriIdx)
-            aSurfNode.Triangulations.Append(aData.Triangulations.Value(aTriIdx));
-          aSurfNode.ActiveTriangulationIndex = aData.ActiveTriangulationIndex;
-        }
-      }
+      aFaceDef.SurfNodeId = theGraph.registerSurface(aData.Surface);
+
+      // Store triangulations on the FaceDef.
+      for (int aTriIdx = 0; aTriIdx < aData.Triangulations.Length(); ++aTriIdx)
+        aFaceDef.Triangulations.Append(aData.Triangulations.Value(aTriIdx));
+      aFaceDef.ActiveTriangulationIndex = aData.ActiveTriangulationIndex;
 
       theGraph.myData->myTShapeToDefId.Bind(aFaceTShapeKey, aFaceDef.Id);
       theGraph.myData->myOriginalShapes.Bind(aFaceDef.Id, aCurFace);
@@ -449,13 +434,7 @@ void BRepGraph_Builder::registerFaceData(BRepGraph& theGraph, const FaceDataVec&
 
           if (!anEdgeData.Curve3d.IsNull())
           {
-            anEdgeDef.CurveNodeId =
-              theGraph.registerCurve(anEdgeData.Curve3d, anEdgeData.CurveLocation);
-            if (anEdgeDef.CurveNodeId.IsValid())
-            {
-              BRepGraph_BackRefManager::BindEdgeToCurve(theGraph, anEdgeDef.Id,
-                                                         anEdgeDef.CurveNodeId.Index);
-            }
+            anEdgeDef.CurveNodeId = theGraph.registerCurve(anEdgeData.Curve3d);
           }
 
           // Vertex definitions.
@@ -535,16 +514,14 @@ void BRepGraph_Builder::registerFaceData(BRepGraph& theGraph, const FaceDataVec&
         // PCurve from pre-extracted data.
         if (!anEdgeData.PCurve2d.IsNull())
         {
-          BRepGraph_NodeId aPCurveId = theGraph.createPCurveNode(anEdgeData.PCurve2d,
-                                                                 anEdgeDefId,
-                                                                 aFaceDefId,
-                                                                 anEdgeData.PCFirst,
-                                                                 anEdgeData.PCLast,
-                                                                 anEdgeData.PCurveContinuity);
-
           BRepGraph_TopoNode::EdgeDef::PCurveEntry aPCEntry;
-          aPCEntry.PCurveNodeId    = aPCurveId;
+          aPCEntry.Curve2d         = anEdgeData.PCurve2d;
           aPCEntry.FaceDefId       = aFaceDefId;
+          aPCEntry.ParamFirst      = anEdgeData.PCFirst;
+          aPCEntry.ParamLast       = anEdgeData.PCLast;
+          aPCEntry.Continuity      = anEdgeData.PCurveContinuity;
+          aPCEntry.UV1             = anEdgeData.PCUV1;
+          aPCEntry.UV2             = anEdgeData.PCUV2;
           aPCEntry.EdgeOrientation = TopAbs_FORWARD;
           theGraph.myData->myEdges.Defs.ChangeValue(anEdgeDefId.Index).PCurves.Append(aPCEntry);
         }
@@ -552,37 +529,14 @@ void BRepGraph_Builder::registerFaceData(BRepGraph& theGraph, const FaceDataVec&
         // Second PCurve for seam edges.
         if (!anEdgeData.PCurve2dReversed.IsNull())
         {
-          BRepGraph_NodeId aPCurveId2 = theGraph.createPCurveNode(anEdgeData.PCurve2dReversed,
-                                                                  anEdgeDefId,
-                                                                  aFaceDefId,
-                                                                  anEdgeData.PCFirstReversed,
-                                                                  anEdgeData.PCLastReversed,
-                                                                  anEdgeData.PCurveContinuity);
-
           BRepGraph_TopoNode::EdgeDef::PCurveEntry aPCEntry2;
-          aPCEntry2.PCurveNodeId    = aPCurveId2;
+          aPCEntry2.Curve2d         = anEdgeData.PCurve2dReversed;
           aPCEntry2.FaceDefId       = aFaceDefId;
+          aPCEntry2.ParamFirst      = anEdgeData.PCFirstReversed;
+          aPCEntry2.ParamLast       = anEdgeData.PCLastReversed;
+          aPCEntry2.Continuity      = anEdgeData.PCurveContinuity;
           aPCEntry2.EdgeOrientation = TopAbs_REVERSED;
           theGraph.myData->myEdges.Defs.ChangeValue(anEdgeDefId.Index).PCurves.Append(aPCEntry2);
-        }
-
-        // Store UV points on PCurve nodes.
-        if (!anEdgeData.PCurve2d.IsNull())
-        {
-          BRepGraph_TopoNode::EdgeDef& anEdgeDefMut =
-            theGraph.myData->myEdges.Defs.ChangeValue(anEdgeDefId.Index);
-          for (int aPCIdx = anEdgeDefMut.PCurves.Length() - 1; aPCIdx >= 0; --aPCIdx)
-          {
-            const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCE = anEdgeDefMut.PCurves.Value(aPCIdx);
-            if (aPCE.FaceDefId == aFaceDefId && aPCE.EdgeOrientation == TopAbs_FORWARD)
-            {
-              BRepGraph_GeomNode::PCurve& aPCNode =
-                theGraph.myData->myPCurves.Nodes.ChangeValue(aPCE.PCurveNodeId.Index);
-              aPCNode.UV1 = anEdgeData.PCUV1;
-              aPCNode.UV2 = anEdgeData.PCUV2;
-              break;
-            }
-          }
         }
 
         // Polygon3D (store inline on edge, once per edge).
@@ -621,43 +575,38 @@ void BRepGraph_Builder::registerFaceData(BRepGraph& theGraph, const FaceDataVec&
         {
           const BRepGraph_TopoNode::FaceDef& aFaceDefRef =
             theGraph.myData->myFaces.Defs.Value(aFaceDefId.Index);
-          if (aFaceDefRef.SurfNodeId.IsValid())
+          for (int aTriIdx = 0; aTriIdx < aFaceDefRef.Triangulations.Length(); ++aTriIdx)
           {
-            const BRepGraph_GeomNode::Surf& aSurfRef =
-              theGraph.myData->mySurfaces.Nodes.Value(aFaceDefRef.SurfNodeId.Index);
-            for (int aTriIdx = 0; aTriIdx < aSurfRef.Triangulations.Length(); ++aTriIdx)
+            const Handle(Poly_Triangulation)& aTri = aFaceDefRef.Triangulations.Value(aTriIdx);
+            if (aTri.IsNull())
+              continue;
+
+            TopLoc_Location aPolyTriLoc;
+            Handle(Poly_PolygonOnTriangulation) aPolyOnTri =
+              BRep_Tool::PolygonOnTriangulation(anEdgeData.Shape, aTri, aPolyTriLoc);
+            if (!aPolyOnTri.IsNull())
             {
-              const Handle(Poly_Triangulation)& aTri = aSurfRef.Triangulations.Value(aTriIdx);
-              if (aTri.IsNull())
-                continue;
+              BRepGraph_TopoNode::EdgeDef::PolyOnTriEntry aPolyTriEntry;
+              aPolyTriEntry.Polygon            = aPolyOnTri;
+              aPolyTriEntry.FaceDefId          = aFaceDefId;
+              aPolyTriEntry.TriangulationIndex = aTriIdx;
+              aPolyTriEntry.EdgeOrientation    = TopAbs_FORWARD;
+              theGraph.myData->myEdges.Defs.ChangeValue(anEdgeDefId.Index)
+                .PolygonsOnTri.Append(aPolyTriEntry);
 
-              TopLoc_Location aPolyTriLoc;
-              Handle(Poly_PolygonOnTriangulation) aPolyOnTri =
-                BRep_Tool::PolygonOnTriangulation(anEdgeData.Shape, aTri, aPolyTriLoc);
-              if (!aPolyOnTri.IsNull())
+              // Check for closed polygon on triangulation (seam edge).
+              TopoDS_Edge aRevEdge = TopoDS::Edge(anEdgeData.Shape.Reversed());
+              Handle(Poly_PolygonOnTriangulation) aPolyOnTriRev =
+                BRep_Tool::PolygonOnTriangulation(aRevEdge, aTri, aPolyTriLoc);
+              if (!aPolyOnTriRev.IsNull() && aPolyOnTriRev != aPolyOnTri)
               {
-                BRepGraph_TopoNode::EdgeDef::PolyOnTriEntry aPolyTriEntry;
-                aPolyTriEntry.Polygon            = aPolyOnTri;
-                aPolyTriEntry.FaceDefId          = aFaceDefId;
-                aPolyTriEntry.TriangulationIndex = aTriIdx;
-                aPolyTriEntry.EdgeOrientation    = TopAbs_FORWARD;
+                BRepGraph_TopoNode::EdgeDef::PolyOnTriEntry aPolyTriEntryRev;
+                aPolyTriEntryRev.Polygon            = aPolyOnTriRev;
+                aPolyTriEntryRev.FaceDefId          = aFaceDefId;
+                aPolyTriEntryRev.TriangulationIndex = aTriIdx;
+                aPolyTriEntryRev.EdgeOrientation    = TopAbs_REVERSED;
                 theGraph.myData->myEdges.Defs.ChangeValue(anEdgeDefId.Index)
-                  .PolygonsOnTri.Append(aPolyTriEntry);
-
-                // Check for closed polygon on triangulation (seam edge).
-                TopoDS_Edge aRevEdge = TopoDS::Edge(anEdgeData.Shape.Reversed());
-                Handle(Poly_PolygonOnTriangulation) aPolyOnTriRev =
-                  BRep_Tool::PolygonOnTriangulation(aRevEdge, aTri, aPolyTriLoc);
-                if (!aPolyOnTriRev.IsNull() && aPolyOnTriRev != aPolyOnTri)
-                {
-                  BRepGraph_TopoNode::EdgeDef::PolyOnTriEntry aPolyTriEntryRev;
-                  aPolyTriEntryRev.Polygon            = aPolyOnTriRev;
-                  aPolyTriEntryRev.FaceDefId          = aFaceDefId;
-                  aPolyTriEntryRev.TriangulationIndex = aTriIdx;
-                  aPolyTriEntryRev.EdgeOrientation    = TopAbs_REVERSED;
-                  theGraph.myData->myEdges.Defs.ChangeValue(anEdgeDefId.Index)
-                    .PolygonsOnTri.Append(aPolyTriEntryRev);
-                }
+                  .PolygonsOnTri.Append(aPolyTriEntryRev);
               }
             }
           }
@@ -704,78 +653,6 @@ void BRepGraph_Builder::registerFaceData(BRepGraph& theGraph, const FaceDataVec&
 
 //=================================================================================================
 
-void BRepGraph_Builder::computeMultiLocatedFlags(BRepGraph& theGraph)
-{
-  // A surface is multi-located only when its face usages have *different* GlobalLocations.
-  for (int aSurfIdx = 0; aSurfIdx < theGraph.myData->mySurfaces.Nodes.Length(); ++aSurfIdx)
-  {
-    BRepGraph_GeomNode::Surf& aSurf = theGraph.myData->mySurfaces.Nodes.ChangeValue(aSurfIdx);
-    if (aSurf.FaceDefUsers.Length() <= 1)
-    {
-      aSurf.IsMultiLocated = false;
-      continue;
-    }
-    bool            aIsMultiLocated = false;
-    TopLoc_Location aFirstLoc;
-    bool            aFoundFirst = false;
-    for (int aFDIdx = 0; aFDIdx < aSurf.FaceDefUsers.Length() && !aIsMultiLocated; ++aFDIdx)
-    {
-      const BRepGraph_TopoNode::FaceDef& aFaceDef =
-        theGraph.myData->myFaces.Defs.Value(aSurf.FaceDefUsers.Value(aFDIdx).Index);
-      for (int aUIdx = 0; aUIdx < aFaceDef.Usages.Length() && !aIsMultiLocated; ++aUIdx)
-      {
-        const TopLoc_Location& aLoc =
-          theGraph.myData->myFaces.Usages.Value(aFaceDef.Usages.Value(aUIdx).Index).GlobalLocation;
-        if (!aFoundFirst)
-        {
-          aFirstLoc   = aLoc;
-          aFoundFirst = true;
-        }
-        else if (aLoc != aFirstLoc)
-        {
-          aIsMultiLocated = true;
-        }
-      }
-    }
-    aSurf.IsMultiLocated = aIsMultiLocated;
-  }
-  // Similarly for curves.
-  for (int aCurveIdx = 0; aCurveIdx < theGraph.myData->myCurves.Nodes.Length(); ++aCurveIdx)
-  {
-    BRepGraph_GeomNode::Curve& aCurve = theGraph.myData->myCurves.Nodes.ChangeValue(aCurveIdx);
-    if (aCurve.EdgeDefUsers.Length() <= 1)
-    {
-      aCurve.IsMultiLocated = false;
-      continue;
-    }
-    bool            aIsMultiLocated = false;
-    TopLoc_Location aFirstLoc;
-    bool            aFoundFirst = false;
-    for (int aEDIdx = 0; aEDIdx < aCurve.EdgeDefUsers.Length() && !aIsMultiLocated; ++aEDIdx)
-    {
-      const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
-        theGraph.myData->myEdges.Defs.Value(aCurve.EdgeDefUsers.Value(aEDIdx).Index);
-      for (int aUIdx = 0; aUIdx < anEdgeDef.Usages.Length() && !aIsMultiLocated; ++aUIdx)
-      {
-        const TopLoc_Location& aLoc =
-          theGraph.myData->myEdges.Usages.Value(anEdgeDef.Usages.Value(aUIdx).Index).GlobalLocation;
-        if (!aFoundFirst)
-        {
-          aFirstLoc   = aLoc;
-          aFoundFirst = true;
-        }
-        else if (aLoc != aFirstLoc)
-        {
-          aIsMultiLocated = true;
-        }
-      }
-    }
-    aCurve.IsMultiLocated = aIsMultiLocated;
-  }
-}
-
-//=================================================================================================
-
 void BRepGraph_Builder::Perform(BRepGraph& theGraph, const TopoDS_Shape& theShape, bool theParallel)
 {
   // Phase 0: Clear all storage, increment generation.
@@ -793,7 +670,6 @@ void BRepGraph_Builder::Perform(BRepGraph& theGraph, const TopoDS_Shape& theShap
   theGraph.myData->myCompSolids.Clear();
   theGraph.myData->mySurfaces.Clear();
   theGraph.myData->myCurves.Clear();
-  theGraph.myData->myPCurves.Clear();
   theGraph.myData->mySurfRegistry.Clear();
   theGraph.myData->myCurveRegistry.Clear();
   theGraph.myData->myTShapeToDefId.Clear();
@@ -1044,7 +920,7 @@ void BRepGraph_Builder::Perform(BRepGraph& theGraph, const TopoDS_Shape& theShap
           anEntry.Parameter   = aPOCS->Parameter();
           anEntry.SurfNodeId  = BRepGraph_NodeId::SurfNode(*aSurfIdx);
           anEntry.Location    = aPOCS->Location();
-          // PCurveNodeId left invalid — matching PCurve by handle not supported.
+          // PCurve matching by handle not supported for PointOnPCurve.
           aVtxDef.PointsOnPCurve.Append(anEntry);
         }
       }
@@ -1094,14 +970,21 @@ void BRepGraph_Builder::Perform(BRepGraph& theGraph, const TopoDS_Shape& theShap
       if (aSurf1Idx == nullptr || aSurf2Idx == nullptr)
         continue;
 
-      // Find face defs for these surfaces that are adjacent to this edge.
-      // An edge may be shared by multiple faces on the same surface (multi-located),
-      // so we must find the face defs that actually reference this edge via PCurves.
-      const BRepGraph_GeomNode::Surf& aSurf1 =
-        theGraph.myData->mySurfaces.Nodes.Value(*aSurf1Idx);
-      const BRepGraph_GeomNode::Surf& aSurf2 =
-        theGraph.myData->mySurfaces.Nodes.Value(*aSurf2Idx);
-      if (aSurf1.FaceDefUsers.IsEmpty() || aSurf2.FaceDefUsers.IsEmpty())
+      // Find face defs that reference each surface.
+      auto findFacesForSurf = [&](int theSurfIdx) -> NCollection_Vector<BRepGraph_NodeId> {
+        NCollection_Vector<BRepGraph_NodeId> aResult;
+        for (int aFIdx = 0; aFIdx < theGraph.myData->myFaces.Defs.Length(); ++aFIdx)
+        {
+          const BRepGraph_TopoNode::FaceDef& aFDef = theGraph.myData->myFaces.Defs.Value(aFIdx);
+          if (aFDef.SurfNodeId.IsValid() && aFDef.SurfNodeId.Index == theSurfIdx)
+            aResult.Append(aFDef.Id);
+        }
+        return aResult;
+      };
+
+      NCollection_Vector<BRepGraph_NodeId> aFacesForSurf1 = findFacesForSurf(*aSurf1Idx);
+      NCollection_Vector<BRepGraph_NodeId> aFacesForSurf2 = findFacesForSurf(*aSurf2Idx);
+      if (aFacesForSurf1.IsEmpty() || aFacesForSurf2.IsEmpty())
         continue;
 
       // Find adjacent face for each surface: the face that has a PCurve for this edge.
@@ -1122,15 +1005,12 @@ void BRepGraph_Builder::Perform(BRepGraph& theGraph, const TopoDS_Shape& theShap
       };
 
       BRepGraph_TopoNode::EdgeDef::RegularityEntry aRegEntry;
-      aRegEntry.FaceDef1   = findAdjacentFace(aSurf1.FaceDefUsers);
-      aRegEntry.FaceDef2   = findAdjacentFace(aSurf2.FaceDefUsers);
+      aRegEntry.FaceDef1   = findAdjacentFace(aFacesForSurf1);
+      aRegEntry.FaceDef2   = findAdjacentFace(aFacesForSurf2);
       aRegEntry.Continuity = aCon2S->Continuity();
       anEdgeDef.Regularities.Append(aRegEntry);
     }
   }
-
-  // Phase 4: Set IsMultiLocated flags.
-  computeMultiLocatedFlags(theGraph);
 
   theGraph.myData->myIsDone = true;
 }

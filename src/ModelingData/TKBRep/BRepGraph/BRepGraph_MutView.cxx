@@ -98,33 +98,24 @@ BRepGraph_GeomNode::Curve& BRepGraph::MutView::CurveNode(int theIdx)
 
 //=================================================================================================
 
-BRepGraph_GeomNode::PCurve& BRepGraph::MutView::PCurveNode(int theIdx)
+void BRepGraph::MutView::AddPCurveToEdge(BRepGraph_NodeId            theEdgeDef,
+                                          BRepGraph_NodeId            theFaceDef,
+                                          const Handle(Geom2d_Curve)& theCurve2d,
+                                          double                      theFirst,
+                                          double                      theLast,
+                                          TopAbs_Orientation          theEdgeOrientation)
 {
-  return myGraph->myData->myPCurves.Nodes.ChangeValue(theIdx);
-}
-
-//=================================================================================================
-
-BRepGraph_NodeId BRepGraph::MutView::AddPCurveToEdge(BRepGraph_NodeId            theEdgeDef,
-                                                     BRepGraph_NodeId            theFaceDef,
-                                                     const Handle(Geom2d_Curve)& theCurve2d,
-                                                     double                      theFirst,
-                                                     double                      theLast,
-                                                     TopAbs_Orientation          theEdgeOrientation)
-{
-  BRepGraph_NodeId aPCId =
-    myGraph->createPCurveNode(theCurve2d, theEdgeDef, theFaceDef, theFirst, theLast);
-
   BRepGraph_TopoNode::EdgeDef& anEdgeDef =
     myGraph->myData->myEdges.Defs.ChangeValue(theEdgeDef.Index);
   BRepGraph_TopoNode::EdgeDef::PCurveEntry aNewEntry;
-  aNewEntry.PCurveNodeId    = aPCId;
+  aNewEntry.Curve2d         = theCurve2d;
   aNewEntry.FaceDefId       = theFaceDef;
+  aNewEntry.ParamFirst      = theFirst;
+  aNewEntry.ParamLast       = theLast;
   aNewEntry.EdgeOrientation = theEdgeOrientation;
   anEdgeDef.PCurves.Append(aNewEntry);
 
   myGraph->markModified(theEdgeDef);
-  return aPCId;
 }
 
 //=================================================================================================

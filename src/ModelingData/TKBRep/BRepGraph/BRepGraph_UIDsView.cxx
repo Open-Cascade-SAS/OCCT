@@ -33,7 +33,6 @@ const NCollection_Vector<BRepGraph_UID>* uidVecForKind(const BRepGraph_Data&  th
     case BRepGraph_NodeId::Kind::CompSolid: return &theData.myCompSolids.UIDs;
     case BRepGraph_NodeId::Kind::Surface:   return &theData.mySurfaces.UIDs;
     case BRepGraph_NodeId::Kind::Curve:     return &theData.myCurves.UIDs;
-    case BRepGraph_NodeId::Kind::PCurve:    return &theData.myPCurves.UIDs;
     default: return nullptr;
   }
 }

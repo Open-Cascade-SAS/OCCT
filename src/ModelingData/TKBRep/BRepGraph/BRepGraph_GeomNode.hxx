@@ -18,90 +18,28 @@
 
 #include <Geom_Surface.hxx>
 #include <Geom_Curve.hxx>
-#include <Geom2d_Curve.hxx>
-#include <GeomAbs_Shape.hxx>
-#include <Poly_Triangulation.hxx>
-#include <TopLoc_Location.hxx>
-#include <gp_Pnt2d.hxx>
-
-#include <NCollection_Vector.hxx>
 
 //! Namespace grouping all geometry node types for BRepGraph.
 //!
-//! Geometry nodes are non-owning references to existing OCCT Handle<>
-//! objects.  Deduplication during Build() ensures one node per unique
-//! geometry handle.
-//!
-//! Back-references store definition NodeIds (not usages), since geometry
-//! is shared at the definition level.
+//! Geometry nodes are pure geometry references — they hold only the
+//! Handle<> and an Id.  All intrinsic data (location, triangulations,
+//! pcurves) lives on the topology definitions (FaceDef, EdgeDef).
+//! Deduplication during Build() ensures one node per unique geometry handle.
 namespace BRepGraph_GeomNode
 {
 
-//! Graph node representing a unique Geom_Surface handle.
-//!
-//! Multiple Face definitions may reference one Surf node; this is the
-//! "same domain" relationship.  FaceDefUsers enables reverse queries.
+//! Graph node representing a unique Geom_Surface handle (pure geometry).
 struct Surf
 {
   BRepGraph_NodeId     Id;
-  Handle(Geom_Surface) Surface;         //!< The raw TFace geometry (not location-applied)
-  TopLoc_Location      SurfaceLocation; //!< Location from BRep_Tool::Surface(face, loc)
-
-  //! All triangulations attached to this face (may be empty).
-  NCollection_Vector<Handle(Poly_Triangulation)> Triangulations;
-  int ActiveTriangulationIndex = -1; //!< Index into Triangulations, -1 = none active
-
-  //! Convenience: return the active triangulation handle, or null if none.
-  Handle(Poly_Triangulation) ActiveTriangulation() const
-  {
-    if (ActiveTriangulationIndex >= 0 && ActiveTriangulationIndex < Triangulations.Length())
-      return Triangulations.Value(ActiveTriangulationIndex);
-    return Handle(Poly_Triangulation)();
-  }
-
-  //! Back-references: all Face definitions realized by this surface.
-  NCollection_Vector<BRepGraph_NodeId> FaceDefUsers;
-
-  //! True if referenced by Face definitions whose usages have different GlobalLocations.
-  bool IsMultiLocated = false;
+  Handle(Geom_Surface) Surface;
 };
 
-//! Graph node representing a unique Geom_Curve handle.
+//! Graph node representing a unique Geom_Curve handle (pure geometry).
 struct Curve
 {
   BRepGraph_NodeId   Id;
-  Handle(Geom_Curve) CurveGeom;     //!< The raw TEdge geometry (not location-applied)
-  TopLoc_Location    CurveLocation; //!< Location from BRep_Tool::Curve(edge, loc, f, l)
-
-  //! Back-references: all Edge definitions realized by this curve.
-  NCollection_Vector<BRepGraph_NodeId> EdgeDefUsers;
-
-  //! True if referenced by Edge definitions whose usages have different GlobalLocations.
-  bool IsMultiLocated = false;
-};
-
-//! Graph node representing a parametric 2D curve in a specific (Edge, Face)
-//! context.  A pcurve is never shared: each (Edge, Face, Orientation) triple produces
-//! exactly one PCurve node.  For seam edges, two PCurve nodes exist for the
-//! same (Edge, Face) pair, distinguished by edge orientation (FORWARD vs REVERSED).
-struct PCurve
-{
-  BRepGraph_NodeId     Id;
-  Handle(Geom2d_Curve) Curve2d;
-
-  BRepGraph_NodeId EdgeContext; //!< The edge def this pcurve belongs to
-  BRepGraph_NodeId FaceContext; //!< The face def whose UV space it lives in
-
-  double ParamFirst = 0.0;
-  double ParamLast  = 0.0;
-
-  //! Geometric continuity across face pairs sharing this edge.
-  //! Populated during Build() via BRep_Tool::Continuity().
-  GeomAbs_Shape Continuity = GeomAbs_C0;
-
-  //! Cached UV points at parameter extremities.
-  gp_Pnt2d UV1; //!< UV at ParamFirst
-  gp_Pnt2d UV2; //!< UV at ParamLast
+  Handle(Geom_Curve) CurveGeom;
 };
 
 } // namespace BRepGraph_GeomNode

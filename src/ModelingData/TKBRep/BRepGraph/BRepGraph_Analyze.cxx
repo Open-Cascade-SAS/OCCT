@@ -82,8 +82,8 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>>
         if (anEdge.IsDegenerate)
           continue;
 
-        const BRepGraph_NodeId aPCurveId = aGeom.PCurveOf(anEdgeDefId, aFaceDefId);
-        if (!aPCurveId.IsValid())
+        const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurve = aGeom.FindPCurve(anEdgeDefId, aFaceDefId);
+        if (aPCurve == nullptr)
           aResult.Append(std::make_pair(anEdgeDefId, aFaceDefId));
       }
     };
@@ -104,27 +104,37 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph_Analyze::ToleranceConflicts(
 {
   NCollection_Vector<BRepGraph_NodeId> aResult;
 
-  for (int aCurveIdx = 0; aCurveIdx < theGraph.myData->myCurves.Nodes.Length(); ++aCurveIdx)
+  // Build temporary curveIdx -> edges map by scanning edge defs
+  NCollection_DataMap<int, NCollection_Vector<BRepGraph_NodeId>> aCurveToEdges;
+  for (int anEdgeIdx = 0; anEdgeIdx < theGraph.myData->myEdges.Defs.Length(); ++anEdgeIdx)
   {
-    const BRepGraph_GeomNode::Curve& aCurve = theGraph.myData->myCurves.Nodes.Value(aCurveIdx);
-    if (aCurve.EdgeDefUsers.Length() <= 1)
+    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = theGraph.myData->myEdges.Defs.Value(anEdgeIdx);
+    if (!anEdgeDef.CurveNodeId.IsValid())
+      continue;
+    aCurveToEdges.TryBind(anEdgeDef.CurveNodeId.Index, NCollection_Vector<BRepGraph_NodeId>());
+    aCurveToEdges.ChangeFind(anEdgeDef.CurveNodeId.Index).Append(anEdgeDef.Id);
+  }
+
+  for (NCollection_DataMap<int, NCollection_Vector<BRepGraph_NodeId>>::Iterator anIter(aCurveToEdges);
+       anIter.More(); anIter.Next())
+  {
+    const NCollection_Vector<BRepGraph_NodeId>& anEdges = anIter.Value();
+    if (anEdges.Length() <= 1)
       continue;
 
     double aMinTol = 1.0e100;
     double aMaxTol = -1.0;
-    for (int anIdx = 0; anIdx < aCurve.EdgeDefUsers.Length(); ++anIdx)
+    for (int anIdx = 0; anIdx < anEdges.Length(); ++anIdx)
     {
-      const double aTol = theGraph.myData->myEdges.Defs.Value(aCurve.EdgeDefUsers.Value(anIdx).Index).Tolerance;
-      if (aTol < aMinTol)
-        aMinTol = aTol;
-      if (aTol > aMaxTol)
-        aMaxTol = aTol;
+      const double aTol = theGraph.myData->myEdges.Defs.Value(anEdges.Value(anIdx).Index).Tolerance;
+      if (aTol < aMinTol) aMinTol = aTol;
+      if (aTol > aMaxTol) aMaxTol = aTol;
     }
 
     if (aMaxTol - aMinTol > theThreshold)
     {
-      for (int anIdx = 0; anIdx < aCurve.EdgeDefUsers.Length(); ++anIdx)
-        aResult.Append(aCurve.EdgeDefUsers.Value(anIdx));
+      for (int anIdx = 0; anIdx < anEdges.Length(); ++anIdx)
+        aResult.Append(anEdges.Value(anIdx));
     }
   }
 

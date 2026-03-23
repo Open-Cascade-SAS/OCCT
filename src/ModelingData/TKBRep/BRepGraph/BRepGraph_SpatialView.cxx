@@ -69,12 +69,12 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::SameDomainFaces(
   if (!aFaceDef.SurfNodeId.IsValid())
     return aResult;
 
-  const NCollection_Vector<BRepGraph_NodeId>& aFaceDefUsers =
-    myGraph->myData->mySurfaces.Nodes.Value(aFaceDef.SurfNodeId.Index).FaceDefUsers;
-  for (int anIdx = 0; anIdx < aFaceDefUsers.Length(); ++anIdx)
+  // Scan all face defs for matching surface
+  for (int aFaceIdx = 0; aFaceIdx < myGraph->myData->myFaces.Defs.Length(); ++aFaceIdx)
   {
-    if (aFaceDefUsers.Value(anIdx) != theFaceDef)
-      aResult.Append(aFaceDefUsers.Value(anIdx));
+    const BRepGraph_TopoNode::FaceDef& aOtherFace = myGraph->myData->myFaces.Defs.Value(aFaceIdx);
+    if (aOtherFace.SurfNodeId == aFaceDef.SurfNodeId && aOtherFace.Id != theFaceDef)
+      aResult.Append(aOtherFace.Id);
   }
   return aResult;
 }

@@ -49,16 +49,16 @@ static double computeWireSignedArea(const BRepGraph&                           t
       theWireDef.OrderedEdges.Value(anEdgeIter);
     const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(anEntry.EdgeDefId.Index);
 
-    const BRepGraph_NodeId aPCurveNodeId = aGeom.PCurveOf(anEdgeDef.Id, theFaceNodeId);
-    if (!aPCurveNodeId.IsValid())
+    const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurve =
+      aGeom.FindPCurve(anEdgeDef.Id, theFaceNodeId);
+    if (aPCurve == nullptr)
       continue;
 
-    const BRepGraph_GeomNode::PCurve& aPCurve = aGeom.PCurve(aPCurveNodeId.Index);
-    if (aPCurve.Curve2d.IsNull())
+    if (aPCurve->Curve2d.IsNull())
       continue;
 
-    const double aFirst = aPCurve.ParamFirst;
-    const double aLast  = aPCurve.ParamLast;
+    const double aFirst = aPCurve->ParamFirst;
+    const double aLast  = aPCurve->ParamLast;
     const bool   anIsReversed = (anEntry.OrientationInWire == TopAbs_REVERSED);
 
     for (int aSampleIter = 0; aSampleIter <= THE_NB_SAMPLES; ++aSampleIter)
@@ -69,7 +69,7 @@ static double computeWireSignedArea(const BRepGraph&                           t
       else
         aT = aFirst + (aLast - aFirst) * aSampleIter / THE_NB_SAMPLES;
 
-      const gp_Pnt2d aCurrPnt = aPCurve.Curve2d->Value(aT);
+      const gp_Pnt2d aCurrPnt = aPCurve->Curve2d->Value(aT);
       if (aHasPrev)
       {
         anArea += (aPrevPnt.X() * aCurrPnt.Y() - aCurrPnt.X() * aPrevPnt.Y());
@@ -115,15 +115,15 @@ static void collectWirePCurves(const BRepGraph&                   theGraph,
       continue;
     }
 
-    const BRepGraph_NodeId aPCurveNodeId = aGeom.PCurveOf(anEdgeDef.Id, theFaceNodeId);
-    if (!aPCurveNodeId.IsValid())
+    const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurve =
+      aGeom.FindPCurve(anEdgeDef.Id, theFaceNodeId);
+    if (aPCurve == nullptr)
     {
       theResult.Edges.Append(WirePCurveSet::EdgeData());
       continue;
     }
 
-    const BRepGraph_GeomNode::PCurve& aPCurve = aGeom.PCurve(aPCurveNodeId.Index);
-    if (aPCurve.Curve2d.IsNull())
+    if (aPCurve->Curve2d.IsNull())
     {
       theResult.Edges.Append(WirePCurveSet::EdgeData());
       continue;
@@ -133,7 +133,7 @@ static void collectWirePCurves(const BRepGraph&                   theGraph,
     aData.StartVtxId = anEdgeDef.OrientedStartVertex(anEntry.OrientationInWire);
     aData.EndVtxId   = anEdgeDef.OrientedEndVertex(anEntry.OrientationInWire);
 
-    aData.Adaptor = new Geom2dAdaptor_Curve(aPCurve.Curve2d, aPCurve.ParamFirst, aPCurve.ParamLast);
+    aData.Adaptor = new Geom2dAdaptor_Curve(aPCurve->Curve2d, aPCurve->ParamFirst, aPCurve->ParamLast);
     BndLib_Add2dCurve::Add(*aData.Adaptor, Precision::PConfusion(), aData.Box);
 
     theResult.Edges.Append(aData);

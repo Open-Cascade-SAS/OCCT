@@ -13,13 +13,11 @@
 
 #include <BRepGraphAlgo_Deduplicate.hxx>
 
-#include <BRepGraph_BackRefManager.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_GeomView.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_MutView.hxx>
-#include <BRepGraph_PCurveContext.hxx>
 #include <BRepGraph_RelEdgesView.hxx>
 #include <BRepGraph_UsagesView.hxx>
 
@@ -72,12 +70,6 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
                                                  aTmpAlloc);
   NCollection_DataMap<int, int> aCanonicalByCurve(std::max(1, theGraph.Geom().NbCurves() * 2),
                                                   aTmpAlloc);
-  NCollection_DataMap<int, int> aCanonicalByPCurve(std::max(1, theGraph.Geom().NbPCurves() * 2),
-                                                   aTmpAlloc);
-
-  NCollection_DataMap<BRepGraph_PCurveContext, NCollection_Vector<int>> aPCurveNodesByContext(
-    std::max(1, theGraph.Defs().NbEdges() * 2),
-    aTmpAlloc);
 
   for (int aSurfIter = 0; aSurfIter < theGraph.Geom().NbSurfaces(); ++aSurfIter)
   {
@@ -117,74 +109,8 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
     }
   }
 
-  for (int anEdgeIdx = 0; anEdgeIdx < theGraph.Defs().NbEdges(); ++anEdgeIdx)
-  {
-    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = theGraph.Defs().Edge(anEdgeIdx);
-    for (int aPCIter = 0; aPCIter < anEdgeDef.PCurves.Length(); ++aPCIter)
-    {
-      const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCEntry = anEdgeDef.PCurves.Value(aPCIter);
-      if (!aPCEntry.PCurveNodeId.IsValid())
-      {
-        continue;
-      }
-
-      const BRepGraph_GeomNode::PCurve& aPCNode =
-        theGraph.Geom().PCurve(aPCEntry.PCurveNodeId.Index);
-      if (aPCNode.Curve2d.IsNull())
-      {
-        continue;
-      }
-
-      const BRepGraph_PCurveContext aCtx(anEdgeIdx,
-                                        aPCEntry.FaceDefId.Index,
-                                        aPCEntry.EdgeOrientation);
-
-      aPCurveNodesByContext.TryBind(aCtx, NCollection_Vector<int>());
-      aPCurveNodesByContext.ChangeFind(aCtx).Append(aPCEntry.PCurveNodeId.Index);
-    }
-  }
-
-  for (NCollection_DataMap<BRepGraph_PCurveContext, NCollection_Vector<int>>::Iterator aCtxIter(
-         aPCurveNodesByContext);
-       aCtxIter.More();
-       aCtxIter.Next())
-  {
-    const NCollection_Vector<int>& aPCNodes = aCtxIter.Value();
-    for (int aBaseIdx = 0; aBaseIdx < aPCNodes.Length(); ++aBaseIdx)
-    {
-      const int aCanonNodeIdx = aPCNodes.Value(aBaseIdx);
-      if (aCanonicalByPCurve.IsBound(aCanonNodeIdx))
-      {
-        continue;
-      }
-
-      for (int aCandIdx = aBaseIdx + 1; aCandIdx < aPCNodes.Length(); ++aCandIdx)
-      {
-        const int aCandNodeIdx = aPCNodes.Value(aCandIdx);
-        if (aCanonicalByPCurve.IsBound(aCandNodeIdx))
-        {
-          continue;
-        }
-
-        const BRepGraph_GeomNode::PCurve& aCandPC = theGraph.Geom().PCurve(aCandNodeIdx);
-        if (aCandPC.Curve2d.IsNull())
-        {
-          continue;
-        }
-
-        // Context-strict policy: within the same (edge, face, orientation) context,
-        // all PCurves are assumed geometrically identical (e.g. from AddPCurveToEdge
-        // adding a copy). The first entry becomes canonical without deep geometry
-        // comparison. If non-identical PCurves can appear in the same context,
-        // add Geom2dHash_CurveHasher comparison here.
-        aCanonicalByPCurve.Bind(aCandNodeIdx, aCanonNodeIdx);
-      }
-    }
-  }
-
   aResult.NbCanonicalSurfaces = theGraph.Geom().NbSurfaces() - aCanonicalBySurf.Size();
   aResult.NbCanonicalCurves   = theGraph.Geom().NbCurves() - aCanonicalByCurve.Size();
-  aResult.NbCanonicalPCurves  = theGraph.Geom().NbPCurves() - aCanonicalByPCurve.Size();
 
   if (theOptions.AnalyzeOnly && !theOptions.MergeDefsWhenSafe)
   {
@@ -196,8 +122,6 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
   {
   NCollection_Map<int> aRecordedSurfaceHistory(std::max(1, aCanonicalBySurf.Size() * 2), aTmpAlloc);
   NCollection_Map<int> aRecordedCurveHistory(std::max(1, aCanonicalByCurve.Size() * 2), aTmpAlloc);
-  NCollection_Map<int> aRecordedPCurveHistory(std::max(1, aCanonicalByPCurve.Size() * 2),
-                                              aTmpAlloc);
 
   for (int aFaceIdx = 0; aFaceIdx < theGraph.Defs().NbFaces(); ++aFaceIdx)
   {
@@ -217,10 +141,6 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
     aFaceDef.SurfNodeId = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Surface, *aCanonSurf);
     ++aResult.NbSurfaceRewrites;
     aResult.AffectedFaceDefs.Append(aFaceDef.Id);
-
-    // Fix back-references: remove from old surface, add to canonical surface.
-    BRepGraph_BackRefManager::RewriteFaceSurface(theGraph, aFaceDef.Id,
-                                                  anOldSurfId.Index, *aCanonSurf);
 
     if (!aRecordedSurfaceHistory.Contains(anOldSurfId.Index))
     {
@@ -247,10 +167,6 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
         ++aResult.NbCurveRewrites;
         aResult.AffectedEdgeDefs.Append(anEdgeDef.Id);
 
-        // Fix back-references: remove from old curve, add to canonical curve.
-        BRepGraph_BackRefManager::RewriteEdgeCurve(theGraph, anEdgeDef.Id,
-                                                    anOldCurveId.Index, *aCanonCurve);
-
         if (!aRecordedCurveHistory.Contains(anOldCurveId.Index))
         {
           NCollection_Vector<BRepGraph_NodeId> aRepl;
@@ -263,47 +179,28 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
         }
       }
     }
-
-    for (int aPCIter = 0; aPCIter < anEdgeDef.PCurves.Length(); ++aPCIter)
-    {
-      BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCEntry = anEdgeDef.PCurves.ChangeValue(aPCIter);
-      if (!aPCEntry.PCurveNodeId.IsValid())
-      {
-        continue;
-      }
-
-      const int* aCanonPCurve = aCanonicalByPCurve.Seek(aPCEntry.PCurveNodeId.Index);
-      if (aCanonPCurve == nullptr)
-      {
-        continue;
-      }
-
-      const BRepGraph_NodeId anOldPCurveId = aPCEntry.PCurveNodeId;
-      aPCEntry.PCurveNodeId = BRepGraph_NodeId(BRepGraph_NodeId::Kind::PCurve, *aCanonPCurve);
-      ++aResult.NbPCurveRewrites;
-
-      if (!aRecordedPCurveHistory.Contains(anOldPCurveId.Index))
-      {
-        NCollection_Vector<BRepGraph_NodeId> aRepl;
-        aRepl.Append(BRepGraph_NodeId(BRepGraph_NodeId::Kind::PCurve, *aCanonPCurve));
-        theGraph.History().Record(TCollection_AsciiString("Dedup:CanonicalizePCurve"),
-                                  anOldPCurveId,
-                                  aRepl);
-        aRecordedPCurveHistory.Add(anOldPCurveId.Index);
-        ++aResult.NbHistoryRecords;
-      }
-    }
   }
 
   // Nullify orphaned geometry handles to free memory.
   for (int aSurfIdx = 0; aSurfIdx < theGraph.Geom().NbSurfaces(); ++aSurfIdx)
   {
     BRepGraph_GeomNode::Surf& aSurfNode = theGraph.Mut().SurfNode(aSurfIdx);
-    if (aSurfNode.FaceDefUsers.IsEmpty() && !aSurfNode.Surface.IsNull())
+    if (aSurfNode.Surface.IsNull())
+    {
+      continue;
+    }
+    // Check if any FaceDef references this surface.
+    bool aIsReferenced = false;
+    for (int aFIdx = 0; aFIdx < theGraph.Defs().NbFaces() && !aIsReferenced; ++aFIdx)
+    {
+      if (theGraph.Defs().Face(aFIdx).SurfNodeId.Index == aSurfIdx)
+      {
+        aIsReferenced = true;
+      }
+    }
+    if (!aIsReferenced)
     {
       aSurfNode.Surface.Nullify();
-      aSurfNode.Triangulations.Clear();
-      aSurfNode.ActiveTriangulationIndex = -1;
       ++aResult.NbNullifiedSurfaces;
 
       NCollection_Vector<BRepGraph_NodeId> aEmptyRepl;
@@ -317,7 +214,20 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
   for (int aCurveIdx = 0; aCurveIdx < theGraph.Geom().NbCurves(); ++aCurveIdx)
   {
     BRepGraph_GeomNode::Curve& aCurveNode = theGraph.Mut().CurveNode(aCurveIdx);
-    if (aCurveNode.EdgeDefUsers.IsEmpty() && !aCurveNode.CurveGeom.IsNull())
+    if (aCurveNode.CurveGeom.IsNull())
+    {
+      continue;
+    }
+    // Check if any EdgeDef references this curve.
+    bool aIsReferenced = false;
+    for (int aEIdx = 0; aEIdx < theGraph.Defs().NbEdges() && !aIsReferenced; ++aEIdx)
+    {
+      if (theGraph.Defs().Edge(aEIdx).CurveNodeId.Index == aCurveIdx)
+      {
+        aIsReferenced = true;
+      }
+    }
+    if (!aIsReferenced)
     {
       aCurveNode.CurveGeom.Nullify();
       ++aResult.NbNullifiedCurves;
@@ -330,43 +240,6 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
     }
   }
 
-  {
-    NCollection_Map<int> aReferencedPCurves(std::max(1, theGraph.Geom().NbPCurves() * 2), aTmpAlloc);
-    for (int anEdgeIdx = 0; anEdgeIdx < theGraph.Defs().NbEdges(); ++anEdgeIdx)
-    {
-      const BRepGraph_TopoNode::EdgeDef& anEdgeDef = theGraph.Defs().Edge(anEdgeIdx);
-      for (int aPCIter = 0; aPCIter < anEdgeDef.PCurves.Length(); ++aPCIter)
-      {
-        const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCEntry =
-          anEdgeDef.PCurves.Value(aPCIter);
-        if (aPCEntry.PCurveNodeId.IsValid())
-        {
-          aReferencedPCurves.Add(aPCEntry.PCurveNodeId.Index);
-        }
-      }
-    }
-
-    for (int aPCIdx = 0; aPCIdx < theGraph.Geom().NbPCurves(); ++aPCIdx)
-    {
-      if (aReferencedPCurves.Contains(aPCIdx))
-      {
-        continue;
-      }
-
-      BRepGraph_GeomNode::PCurve& aPCNode = theGraph.Mut().PCurveNode(aPCIdx);
-      if (!aPCNode.Curve2d.IsNull())
-      {
-        aPCNode.Curve2d.Nullify();
-        ++aResult.NbNullifiedPCurves;
-
-        NCollection_Vector<BRepGraph_NodeId> aEmptyRepl;
-        theGraph.History().Record(TCollection_AsciiString("Dedup:NullifyOrphanPCurve"),
-                                  aPCNode.Id,
-                                  aEmptyRepl);
-        ++aResult.NbHistoryRecords;
-      }
-    }
-  }
   } // end if (!theOptions.AnalyzeOnly) for geometry rewrites
 
   // Definition merge phases (Vertex -> Edge -> Wire -> Face).
@@ -608,13 +481,10 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
         {
           const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCEntry =
             anOldEdge.PCurves.Value(aPCIdx);
-          if (!aPCEntry.PCurveNodeId.IsValid())
+          if (aPCEntry.Curve2d.IsNull())
+          {
             continue;
-
-          const BRepGraph_GeomNode::PCurve& aPCNode =
-            theGraph.Geom().PCurve(aPCEntry.PCurveNodeId.Index);
-          if (aPCNode.Curve2d.IsNull())
-            continue;
+          }
 
           // Check if canonical edge already has a PCurve for this face+orientation.
           bool aAlreadyHas = false;
@@ -634,9 +504,9 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
           {
             theGraph.Mut().AddPCurveToEdge(aCanonId,
                                            aPCEntry.FaceDefId,
-                                           aPCNode.Curve2d,
-                                           aPCNode.ParamFirst,
-                                           aPCNode.ParamLast,
+                                           aPCEntry.Curve2d,
+                                           aPCEntry.ParamFirst,
+                                           aPCEntry.ParamLast,
                                            aPCEntry.EdgeOrientation);
           }
         }

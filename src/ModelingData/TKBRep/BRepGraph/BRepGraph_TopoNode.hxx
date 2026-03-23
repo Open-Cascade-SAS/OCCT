@@ -18,13 +18,16 @@
 #include <BRepGraph_UsageId.hxx>
 #include <BRepGraph_NodeCache.hxx>
 
+#include <Geom2d_Curve.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Poly_Polygon2D.hxx>
 #include <Poly_Polygon3D.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
+#include <Poly_Triangulation.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 
 #include <NCollection_Vector.hxx>
 
@@ -79,6 +82,18 @@ struct FaceDef : public BaseDef
   //! Geometry: the surface node that realizes this face.
   BRepGraph_NodeId SurfNodeId;
 
+  //! All triangulations attached to this face (may be empty).
+  NCollection_Vector<Handle(Poly_Triangulation)> Triangulations;
+  int ActiveTriangulationIndex = -1; //!< Index into Triangulations, -1 = none active
+
+  //! Convenience: return the active triangulation handle, or null if none.
+  Handle(Poly_Triangulation) ActiveTriangulation() const
+  {
+    if (ActiveTriangulationIndex >= 0 && ActiveTriangulationIndex < Triangulations.Length())
+      return Triangulations.Value(ActiveTriangulationIndex);
+    return Handle(Poly_Triangulation)();
+  }
+
   //! Tolerance from BRep_TFace.
   double Tolerance = 0.0;
 
@@ -111,11 +126,17 @@ struct EdgeDef : public BaseDef
   //! PCurve entries, one per (edge, face) context.
   //! For seam edges there are two entries with the same FaceDefId,
   //! distinguished by EdgeOrientation (FORWARD vs REVERSED).
+  //! Self-contained: all PCurve geometry is stored inline (no separate PCurve graph node).
   struct PCurveEntry
   {
-    BRepGraph_NodeId    PCurveNodeId;
-    BRepGraph_NodeId    FaceDefId;
-    TopAbs_Orientation  EdgeOrientation = TopAbs_FORWARD; //!< Edge orientation when this PCurve was extracted.
+    Handle(Geom2d_Curve) Curve2d;          //!< 2D parametric curve on the face surface
+    BRepGraph_NodeId     FaceDefId;
+    double               ParamFirst = 0.0;
+    double               ParamLast  = 0.0;
+    GeomAbs_Shape        Continuity = GeomAbs_C0; //!< Geometric continuity across face pairs
+    gp_Pnt2d             UV1;              //!< UV at ParamFirst
+    gp_Pnt2d             UV2;              //!< UV at ParamLast
+    TopAbs_Orientation   EdgeOrientation = TopAbs_FORWARD; //!< Edge orientation when this PCurve was extracted.
   };
 
   NCollection_Vector<PCurveEntry> PCurves;
@@ -223,7 +244,6 @@ struct VertexDef : public BaseDef
   struct PointOnPCurveEntry
   {
     double          Parameter = 0.0;
-    BRepGraph_NodeId PCurveNodeId;
     BRepGraph_NodeId SurfNodeId;
     TopLoc_Location Location;
   };

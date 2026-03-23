@@ -23,13 +23,12 @@
 namespace
 {
 
-//! Check if a NodeId refers to a geometry node (Surface, Curve, PCurve).
+//! Check if a NodeId refers to a geometry node (Surface, Curve).
 //! Geometry nodes have no Cache and thus no user attributes.
 bool isGeometryKind(BRepGraph_NodeId::Kind theKind)
 {
   return theKind == BRepGraph_NodeId::Kind::Surface
-      || theKind == BRepGraph_NodeId::Kind::Curve
-      || theKind == BRepGraph_NodeId::Kind::PCurve;
+      || theKind == BRepGraph_NodeId::Kind::Curve;
 }
 
 } // namespace

@@ -143,9 +143,7 @@ template <>
 inline BRepGraph_Iterator<BRepGraph_GeomNode::Curve>::BRepGraph_Iterator(const BRepGraph& theGraph)
     : myGraph(theGraph), myLength(theGraph.Geom().NbCurves()) {}
 
-template <>
-inline BRepGraph_Iterator<BRepGraph_GeomNode::PCurve>::BRepGraph_Iterator(const BRepGraph& theGraph)
-    : myGraph(theGraph), myLength(theGraph.Geom().NbPCurves()) {}
+
 
 // ---------------------------------------------------------------------------
 // Definition iterators: Current()
@@ -229,9 +227,6 @@ inline const BRepGraph_GeomNode::Curve&
 BRepGraph_Iterator<BRepGraph_GeomNode::Curve>::Current() const
 { return myGraph.Geom().Curve(myIndex); }
 
-template <>
-inline const BRepGraph_GeomNode::PCurve&
-BRepGraph_Iterator<BRepGraph_GeomNode::PCurve>::Current() const
-{ return myGraph.Geom().PCurve(myIndex); }
+
 
 #endif // _BRepGraph_Iterator_HeaderFile

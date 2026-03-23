@@ -51,7 +51,6 @@ public:
     int NbRemovedCompSolids = 0;
     int NbRemovedSurfaces   = 0;
     int NbRemovedCurves     = 0;
-    int NbRemovedPCurves    = 0;
     int NbNodesBefore       = 0;
     int NbNodesAfter        = 0;
   };

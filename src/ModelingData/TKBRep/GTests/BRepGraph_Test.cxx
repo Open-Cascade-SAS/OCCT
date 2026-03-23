@@ -156,7 +156,7 @@ TEST_F(BRepGraphTest, SurfaceOf_Bidirectional)
   }
 }
 
-TEST_F(BRepGraphTest, PCurveOf_ValidPair)
+TEST_F(BRepGraphTest, FindPCurve_ValidPair)
 {
   for (int aFaceIdx = 0; aFaceIdx < myGraph.Defs().NbFaces(); ++aFaceIdx)
   {
@@ -174,8 +174,9 @@ TEST_F(BRepGraphTest, PCurveOf_ValidPair)
       const BRepGraph_TopoNode::EdgeDef& anEdge = myGraph.Defs().Edge(anEdgeId.Index);
       if (anEdge.IsDegenerate)
         continue;
-      BRepGraph_NodeId aPCurveId = myGraph.Geom().PCurveOf(anEdgeId, aFaceId);
-      EXPECT_TRUE(aPCurveId.IsValid())
+      const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurveEntry =
+        myGraph.Geom().FindPCurve(anEdgeId, aFaceId);
+      EXPECT_NE(aPCurveEntry, nullptr)
         << "Missing PCurve for edge " << anEdgeId.Index << " on face " << aFaceIdx;
     }
   }
@@ -200,8 +201,6 @@ TEST_F(BRepGraphTest, UID_Unique)
     EXPECT_TRUE(aUIDSet.Add(myGraph.UIDs().Of(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Surface, aSurfIdx))));
   for (int aCurveIdx = 0; aCurveIdx < myGraph.Geom().NbCurves(); ++aCurveIdx)
     EXPECT_TRUE(aUIDSet.Add(myGraph.UIDs().Of(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Curve, aCurveIdx))));
-  for (int aPCurveIdx = 0; aPCurveIdx < myGraph.Geom().NbPCurves(); ++aPCurveIdx)
-    EXPECT_TRUE(aUIDSet.Add(myGraph.UIDs().Of(BRepGraph_NodeId(BRepGraph_NodeId::Kind::PCurve, aPCurveIdx))));
 }
 
 TEST_F(BRepGraphTest, UID_NodeIdRoundTrip)
@@ -412,7 +411,6 @@ TEST(BRepGraphParallelTest, ParallelBuild_SameAsSequential)
   EXPECT_EQ(aParGraph.Defs().NbVertices(), aSeqGraph.Defs().NbVertices());
   EXPECT_EQ(aParGraph.Geom().NbSurfaces(), aSeqGraph.Geom().NbSurfaces());
   EXPECT_EQ(aParGraph.Geom().NbCurves(), aSeqGraph.Geom().NbCurves());
-  EXPECT_EQ(aParGraph.Geom().NbPCurves(), aSeqGraph.Geom().NbPCurves());
 }
 
 TEST(BRepGraphParallelTest, ParallelBuild_CompoundOfFaces)
@@ -853,19 +851,21 @@ TEST_F(BRepGraphTest, ApplyModification_MultiStepChain_FindOriginalTracesBack)
 // Group 3: Mutation APIs
 // ===================================================================
 
-TEST_F(BRepGraphTest, AddPCurveToEdge_NewPCurve_RetrievableViaPCurveOf)
+TEST_F(BRepGraphTest, AddPCurveToEdge_NewPCurve_RetrievableViaFindPCurve)
 {
   BRepGraph_NodeId anEdgeId(BRepGraph_NodeId::Kind::Edge, 0);
   BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
 
   Handle(Geom2d_Line) aCurve2d = new Geom2d_Line(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0));
-  BRepGraph_NodeId aPCurveId = myGraph.Mut().AddPCurveToEdge(anEdgeId, aFaceId, aCurve2d, 0.0, 1.0);
+  myGraph.Mut().AddPCurveToEdge(anEdgeId, aFaceId, aCurve2d, 0.0, 1.0);
 
-  ASSERT_TRUE(aPCurveId.IsValid());
-
-  BRepGraph_NodeId aRetrievedId = myGraph.Geom().PCurveOf(anEdgeId, aFaceId);
-  EXPECT_TRUE(aRetrievedId.IsValid());
-  EXPECT_FALSE(myGraph.Geom().PCurve(aRetrievedId.Index).Curve2d.IsNull());
+  const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aRetrieved =
+    myGraph.Geom().FindPCurve(anEdgeId, aFaceId);
+  EXPECT_NE(aRetrieved, nullptr);
+  if (aRetrieved != nullptr)
+  {
+    EXPECT_FALSE(aRetrieved->Curve2d.IsNull());
+  }
 }
 
 TEST_F(BRepGraphTest, ReplaceEdgeInWire_Reversed_OrientationFlipped)
@@ -1247,8 +1247,7 @@ TEST_F(BRepGraphTest, NbNodes_Box_TotalCount)
                     + myGraph.Defs().NbEdges()
                     + myGraph.Defs().NbVertices()
                     + myGraph.Geom().NbSurfaces()
-                    + myGraph.Geom().NbCurves()
-                    + myGraph.Geom().NbPCurves();
+                    + myGraph.Geom().NbCurves();
   EXPECT_EQ(myGraph.Defs().NbNodes(), anExpected);
 }
 
@@ -1675,11 +1674,6 @@ TEST_F(BRepGraphTest, UID_AllGeomNodesHaveValidUIDs)
   {
     EXPECT_TRUE(myGraph.UIDs().Of(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Curve, aCurveIdx)).IsValid())
       << "Curve " << aCurveIdx << " has invalid UID";
-  }
-  for (int aPCurveIdx = 0; aPCurveIdx < myGraph.Geom().NbPCurves(); ++aPCurveIdx)
-  {
-    EXPECT_TRUE(myGraph.UIDs().Of(BRepGraph_NodeId(BRepGraph_NodeId::Kind::PCurve, aPCurveIdx)).IsValid())
-      << "PCurve " << aPCurveIdx << " has invalid UID";
   }
 }
 

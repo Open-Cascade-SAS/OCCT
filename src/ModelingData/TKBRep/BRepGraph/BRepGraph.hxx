@@ -42,8 +42,6 @@ class NCollection_BaseAllocator;
 class TCollection_AsciiString;
 class Geom_Surface;
 class Geom_Curve;
-class Geom2d_Curve;
-class Poly_Triangulation;
 
 class BRepGraph_Builder;
 class BRepGraph_History;
@@ -194,17 +192,8 @@ private:
 
   // -- Internal build and utility helpers (called by views and friend classes) --
 
-  Standard_EXPORT BRepGraph_NodeId registerSurface(const Handle(Geom_Surface)&       theSurf,
-                                                   const Handle(Poly_Triangulation)& theTri,
-                                                   const TopLoc_Location&            theLoc = TopLoc_Location());
-  Standard_EXPORT BRepGraph_NodeId registerCurve(const Handle(Geom_Curve)&  theCrv,
-                                                 const TopLoc_Location&     theLoc = TopLoc_Location());
-  Standard_EXPORT BRepGraph_NodeId createPCurveNode(const Handle(Geom2d_Curve)& theCrv2d,
-                                                    BRepGraph_NodeId            theEdgeDef,
-                                                    BRepGraph_NodeId            theFaceDef,
-                                                    double                      theFirst,
-                                                    double                      theLast,
-                                                    GeomAbs_Shape               theContinuity = GeomAbs_C0);
+  Standard_EXPORT BRepGraph_NodeId registerSurface(const Handle(Geom_Surface)& theSurf);
+  Standard_EXPORT BRepGraph_NodeId registerCurve(const Handle(Geom_Curve)& theCrv);
 
   Standard_EXPORT void invalidateSubgraphImpl(BRepGraph_NodeId theNode);
   Standard_EXPORT BRepGraph_UID allocateUID(BRepGraph_NodeId theNodeId);

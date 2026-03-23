@@ -32,9 +32,6 @@ public:
   //! Number of 3D curve geometry nodes.
   Standard_EXPORT int NbCurves() const;
 
-  //! Number of 2D PCurve geometry nodes.
-  Standard_EXPORT int NbPCurves() const;
-
   //! Access surface geometry node by index.
   //! @param[in] theIdx zero-based surface index
   Standard_EXPORT const BRepGraph_GeomNode::Surf& Surface(int theIdx) const;
@@ -43,74 +40,53 @@ public:
   //! @param[in] theIdx zero-based curve index
   Standard_EXPORT const BRepGraph_GeomNode::Curve& Curve(int theIdx) const;
 
-  //! Access PCurve geometry node by index.
-  //! @param[in] theIdx zero-based PCurve index
-  Standard_EXPORT const BRepGraph_GeomNode::PCurve& PCurve(int theIdx) const;
-
   //! Return the surface definition NodeId for a face definition.
   //! @param[in] theFaceDef face definition NodeId
   Standard_EXPORT BRepGraph_NodeId SurfaceOf(BRepGraph_NodeId theFaceDef) const;
 
-  //! Return all face definitions that reference a given surface.
+  //! Return all face definitions that reference a given surface (by scanning FaceDefs).
   //! @param[in] theSurf surface NodeId
-  Standard_EXPORT const NCollection_Vector<BRepGraph_NodeId>& FacesOnSurface(
+  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> FacesOnSurface(
     BRepGraph_NodeId theSurf) const;
 
   //! Return the 3D curve definition NodeId for an edge definition.
   //! @param[in] theEdgeDef edge definition NodeId
   Standard_EXPORT BRepGraph_NodeId CurveOf(BRepGraph_NodeId theEdgeDef) const;
 
-  //! Return all edge definitions that reference a given 3D curve.
+  //! Return all edge definitions that reference a given 3D curve (by scanning EdgeDefs).
   //! @param[in] theCurve curve NodeId
-  Standard_EXPORT const NCollection_Vector<BRepGraph_NodeId>& EdgesOnCurve(
+  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> EdgesOnCurve(
     BRepGraph_NodeId theCurve) const;
 
-  //! Return the PCurve NodeId for an edge on a given face.
+  //! Find the PCurveEntry for an edge on a given face, or nullptr if none exists.
   //! @param[in] theEdgeDef edge definition NodeId
   //! @param[in] theFaceDef face definition NodeId
-  Standard_EXPORT BRepGraph_NodeId PCurveOf(BRepGraph_NodeId theEdgeDef,
-                                            BRepGraph_NodeId theFaceDef) const;
+  Standard_EXPORT const BRepGraph_TopoNode::EdgeDef::PCurveEntry* FindPCurve(
+    BRepGraph_NodeId theEdgeDef,
+    BRepGraph_NodeId theFaceDef) const;
 
-  //! Return the PCurve NodeId for an edge/face/orientation triple.
-  //! For seam edges two PCurve nodes share the same FaceDefId but differ in orientation;
-  //! use this overload to distinguish FORWARD (C1) from REVERSED (C2).
+  //! Find the PCurveEntry for an edge/face/orientation triple (seam edge support).
   //! @param[in] theEdgeDef           edge definition NodeId
   //! @param[in] theFaceDef           face definition NodeId
   //! @param[in] theEdgeOrientation   edge orientation on the face
-  Standard_EXPORT BRepGraph_NodeId PCurveOf(BRepGraph_NodeId   theEdgeDef,
-                                            BRepGraph_NodeId   theFaceDef,
-                                            TopAbs_Orientation theEdgeOrientation) const;
+  Standard_EXPORT const BRepGraph_TopoNode::EdgeDef::PCurveEntry* FindPCurve(
+    BRepGraph_NodeId   theEdgeDef,
+    BRepGraph_NodeId   theFaceDef,
+    TopAbs_Orientation theEdgeOrientation) const;
 
-  //! Return the PCurve NodeId for a given PCurve context.
-  //! Convenience overload that unpacks the context into (EdgeDef, FaceDef, Orientation)
-  //! and delegates to the 3-argument PCurveOf.
+  //! Find the PCurveEntry for a given PCurve context.
+  //! Convenience overload that unpacks the context into (EdgeDef, FaceDef, Orientation).
   //! @param[in] theContext  composite key identifying edge, face and orientation
-  Standard_EXPORT BRepGraph_NodeId PCurveOf(const BRepGraph_PCurveContext& theContext) const;
+  Standard_EXPORT const BRepGraph_TopoNode::EdgeDef::PCurveEntry* FindPCurve(
+    const BRepGraph_PCurveContext& theContext) const;
 
   //! Return pointer to the surface geometry for a face definition,
   //! or nullptr if the face has no valid surface or the handle is null.
   //! @param[in] theFaceDefIdx zero-based face definition index
   Standard_EXPORT const BRepGraph_GeomNode::Surf* FaceSurface(int theFaceDefIdx) const;
 
-  //! Return pointer to the PCurve geometry for an edge on a face,
-  //! or nullptr if no PCurve exists or Curve2d is null.
-  //! @param[in] theEdgeDef edge definition NodeId
-  //! @param[in] theFaceDef face definition NodeId
-  Standard_EXPORT const BRepGraph_GeomNode::PCurve* EdgePCurve(
-    BRepGraph_NodeId theEdgeDef, BRepGraph_NodeId theFaceDef) const;
-
-  //! Overload with explicit orientation for seam edges.
-  //! @param[in] theEdgeDef edge definition NodeId
-  //! @param[in] theFaceDef face definition NodeId
-  //! @param[in] theEdgeOri edge orientation on the face
-  Standard_EXPORT const BRepGraph_GeomNode::PCurve* EdgePCurve(
-    BRepGraph_NodeId   theEdgeDef,
-    BRepGraph_NodeId   theFaceDef,
-    TopAbs_Orientation theEdgeOri) const;
-
   //! Build a GeomAdaptor_TransformedCurve for an edge definition.
-  //! Uses the edge's 3D curve if available; falls back to pcurve-on-surface.
-  //! The transform comes from the edge's first usage GlobalLocation.
+  //! Uses the edge's 3D curve with identity location (geometry offset absorbed into usages).
   //! @param[in] theEdgeDef edge definition NodeId
   //! @return curve adaptor ready for evaluation, sampling, or projection
   Standard_EXPORT GeomAdaptor_TransformedCurve CurveAdaptor(BRepGraph_NodeId theEdgeDef) const;
@@ -123,10 +99,7 @@ public:
   Standard_EXPORT GeomAdaptor_TransformedCurve CurveAdaptor(BRepGraph_NodeId  theEdgeDef,
                                                             BRepGraph_UsageId theEdgeUsage) const;
 
-  //! Build a curve-on-surface adaptor from edge's PCurve on a face.
-  //! Looks up the PCurve node via PCurveOf(), creates Geom2dAdaptor_Curve
-  //! from PCurve.Curve2d, creates GeomAdaptor_Surface from Surf.Surface,
-  //! and combines into Adaptor3d_CurveOnSurface.
+  //! Build a curve-on-surface adaptor from edge's inline PCurve on a face.
   //! @param[in] theEdgeDef edge definition NodeId
   //! @param[in] theFaceDef face definition NodeId
   //! @return curve-on-surface adaptor, or null handle if data is missing
@@ -145,8 +118,7 @@ public:
                           TopAbs_Orientation theEdgeOrientation) const;
 
   //! Build a GeomAdaptor_TransformedSurface for a face definition.
-  //! Uses the face's Geom_Surface directly with the surface location as transform,
-  //! avoiding TopoDS_Face reconstruction.
+  //! Uses identity location (geometry offset absorbed into usage locations).
   //! @param[in] theFaceDef face definition NodeId
   //! @return surface adaptor ready for evaluation, or empty adaptor if surface is null
   Standard_EXPORT GeomAdaptor_TransformedSurface SurfaceAdaptor(BRepGraph_NodeId theFaceDef) const;

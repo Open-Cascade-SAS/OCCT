@@ -110,7 +110,7 @@ TEST(BRepGraphAlgo_Benchmark, Smoke_DeduplicateCompactCycle)
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraphAlgo_Deduplicate::Result aDedupRes = BRepGraphAlgo_Deduplicate::Perform(aGraph);
-  EXPECT_GE(aDedupRes.NbSurfaceRewrites + aDedupRes.NbCurveRewrites + aDedupRes.NbPCurveRewrites, 0);
+  EXPECT_GE(aDedupRes.NbSurfaceRewrites + aDedupRes.NbCurveRewrites, 0);
 
   const BRepGraphAlgo_Compact::Result aCompactRes = BRepGraphAlgo_Compact::Perform(aGraph);
   EXPECT_GE(aCompactRes.NbNodesBefore, aCompactRes.NbNodesAfter);
@@ -162,7 +162,7 @@ TEST(BRepGraphAlgo_Benchmark, DISABLED_DeduplicateCompact_Throughput)
     ASSERT_TRUE(aGraph.IsDone());
 
     const BRepGraphAlgo_Deduplicate::Result aDedupRes = BRepGraphAlgo_Deduplicate::Perform(aGraph);
-    EXPECT_GE(aDedupRes.NbSurfaceRewrites + aDedupRes.NbCurveRewrites + aDedupRes.NbPCurveRewrites, 0);
+    EXPECT_GE(aDedupRes.NbSurfaceRewrites + aDedupRes.NbCurveRewrites, 0);
 
     const BRepGraphAlgo_Compact::Result aCompactRes = BRepGraphAlgo_Compact::Perform(aGraph);
     EXPECT_GE(aCompactRes.NbNodesBefore, aCompactRes.NbNodesAfter);

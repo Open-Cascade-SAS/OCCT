@@ -311,7 +311,6 @@ TEST(BRepGraphAlgo_CopyTest, CopyBox_UIDsPreserved)
   checkUIDs(BRepGraph_NodeId::Kind::Solid, aGraph.Defs().NbSolids(), "solid");
   checkUIDs(BRepGraph_NodeId::Kind::Surface, aGraph.Geom().NbSurfaces(), "surface");
   checkUIDs(BRepGraph_NodeId::Kind::Curve, aGraph.Geom().NbCurves(), "curve");
-  checkUIDs(BRepGraph_NodeId::Kind::PCurve, aGraph.Geom().NbPCurves(), "pcurve");
 }
 
 // ============================================================
