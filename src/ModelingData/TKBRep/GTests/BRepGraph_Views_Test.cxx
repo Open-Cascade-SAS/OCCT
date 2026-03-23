@@ -11,6 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Bnd_Box.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_Analyze.hxx>
 #include <BRepGraph_AnalyzeView.hxx>
@@ -26,6 +27,7 @@
 #include <BRepGraph_SpatialView.hxx>
 #include <BRepGraph_UIDsView.hxx>
 #include <BRepGraph_UsagesView.hxx>
+#include <BRepGraphAlgo_BndLib.hxx>
 
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <Precision.hxx>
@@ -41,6 +43,18 @@ namespace
   public:
     TestUserAttribute() = default;
   };
+
+  //! Compute the center of a bounding box for the given node.
+  static gp_Pnt bboxCenter(BRepGraph& theGraph, BRepGraph_NodeId theNode)
+  {
+    Bnd_Box aBox;
+    BRepGraphAlgo_BndLib::Add(theGraph, theNode, aBox);
+    if (aBox.IsVoid())
+      return gp_Pnt();
+    double xn, yn, zn, xx, yx, zx;
+    aBox.Get(xn, yn, zn, xx, yx, zx);
+    return gp_Pnt((xn + xx) * 0.5, (yn + yx) * 0.5, (zn + zx) * 0.5);
+  }
 }
 
 class BRepGraphViewsTest : public testing::Test
@@ -202,15 +216,17 @@ TEST_F(BRepGraphViewsTest, SpatialView_FacesOfEdge_TwoPerBoxEdge)
 TEST_F(BRepGraphViewsTest, CacheView_BoundingBox_NonVoid)
 {
   BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
-  Bnd_Box aBox = myGraph.Cache().BoundingBox(aFaceId);
+  Bnd_Box aBox;
+  BRepGraphAlgo_BndLib::Add(myGraph, aFaceId, aBox);
   EXPECT_FALSE(aBox.IsVoid());
 }
 
 TEST_F(BRepGraphViewsTest, CacheView_Centroid_InsideBBox)
 {
   BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
-  gp_Pnt aCentroid = myGraph.Cache().Centroid(aFaceId);
-  Bnd_Box aBox = myGraph.Cache().BoundingBox(aFaceId);
+  gp_Pnt aCentroid = bboxCenter(myGraph, aFaceId);
+  Bnd_Box aBox;
+  BRepGraphAlgo_BndLib::Add(myGraph, aFaceId, aBox);
   ASSERT_FALSE(aBox.IsVoid());
 
   double aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;

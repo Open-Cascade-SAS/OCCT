@@ -1046,3 +1046,222 @@ void BRepGraphAlgo_BndLib::AddOptimal(const BRepGraph& theGraph,
 {
   addNodeBoxOptimal(theGraph, theNode, theBox, theUseTriangulation, theUseShapeTolerance);
 }
+
+//=================================================================================================
+// Cached API -- bounding box attribute stored as user attribute on graph nodes
+//=================================================================================================
+
+namespace
+{
+
+//! GUID for bounding box cache attribute.
+static const Standard_GUID THE_BNDBOX_GUID("b7e3a1f0-4c82-4d5e-9a1b-3f8e2d7c6a05");
+
+//! Internal attribute class storing precision-aware bbox data.
+class BRepGraphAlgo_BndBoxAttribute : public BRepGraph_UserAttribute
+{
+public:
+  BRepGraphAlgo_BndBoxAttribute() = default;
+
+  //! Return cached data if its precision is sufficient for the request.
+  //! @param[in]  thePrecision required minimum precision
+  //! @param[out] theData      cached data (unchanged if insufficient)
+  //! @return true if cached data is sufficient
+  bool GetIfSufficient(BRepGraphAlgo_BndLib::Precision thePrecision,
+                       BRepGraphAlgo_BndLib::CachedData&     theData) const
+  {
+    std::shared_lock<std::shared_mutex> aReadLock(myMutex);
+    if (IsDirty()
+        || static_cast<int>(myData.BoxPrecision) < static_cast<int>(thePrecision))
+    {
+      return false;
+    }
+    theData = myData;
+    return true;
+  }
+
+  //! Return cached data at any precision.
+  //! @param[out] theData cached data
+  //! @return true if cached data exists (not dirty)
+  bool GetAny(BRepGraphAlgo_BndLib::CachedData& theData) const
+  {
+    std::shared_lock<std::shared_mutex> aReadLock(myMutex);
+    if (IsDirty())
+    {
+      return false;
+    }
+    theData = myData;
+    return true;
+  }
+
+  //! Store new data and mark clean.
+  void SetData(const BRepGraphAlgo_BndLib::CachedData& theData)
+  {
+    std::unique_lock<std::shared_mutex> aWriteLock(myMutex);
+    myData = theData;
+    MarkClean();
+  }
+
+private:
+  BRepGraphAlgo_BndLib::CachedData myData;
+};
+
+} // namespace
+
+//=================================================================================================
+
+int BRepGraphAlgo_BndLib::CacheKey()
+{
+  static const int THE_KEY = BRepGraph_UserAttribute::AllocateKey(THE_BNDBOX_GUID);
+  return THE_KEY;
+}
+
+//=================================================================================================
+
+bool BRepGraphAlgo_BndLib::GetCached(const BRepGraph&          theGraph,
+                                     BRepGraph_NodeId          theNode,
+                                     BRepGraphAlgo_BndLib::CachedData& theData)
+{
+  const int                        aKey  = CacheKey();
+  const BRepGraph_TopoNode::BaseDef* aDef = theGraph.TopoDef(theNode);
+  if (aDef == nullptr)
+  {
+    return false;
+  }
+
+  BRepGraph_UserAttrPtr anAttr = aDef->Cache.GetUserAttribute(aKey);
+  if (!anAttr)
+  {
+    return false;
+  }
+
+  auto* aBndAttr = dynamic_cast<BRepGraphAlgo_BndBoxAttribute*>(anAttr.get());
+  if (aBndAttr == nullptr)
+  {
+    return false;
+  }
+
+  return aBndAttr->GetAny(theData);
+}
+
+//=================================================================================================
+
+Bnd_Box BRepGraphAlgo_BndLib::AddCached(BRepGraph&                    theGraph,
+                                        BRepGraph_NodeId              theNode,
+                                        BRepGraphAlgo_BndLib::Precision thePrecision,
+                                        bool                          theUseTriangulation)
+{
+  const int aKey = CacheKey();
+
+  // Try to read existing cached value.
+  BRepGraph_NodeCache* aCache = theGraph.mutableCache(theNode);
+  if (aCache != nullptr)
+  {
+    BRepGraph_UserAttrPtr anExisting = aCache->GetUserAttribute(aKey);
+    if (anExisting)
+    {
+      auto* aBndAttr = dynamic_cast<BRepGraphAlgo_BndBoxAttribute*>(anExisting.get());
+      if (aBndAttr != nullptr)
+      {
+        BRepGraphAlgo_BndLib::CachedData aData;
+        if (aBndAttr->GetIfSufficient(thePrecision, aData))
+        {
+          return aData.Box;
+        }
+      }
+    }
+  }
+
+  // Compute the bbox.
+  Bnd_Box aBox;
+  bool    aUsedShapeTol = false;
+  switch (thePrecision)
+  {
+    case Precision::Standard:
+      Add(theGraph, theNode, aBox, theUseTriangulation);
+      break;
+    case Precision::Optimal:
+      aUsedShapeTol = true;
+      AddOptimal(theGraph, theNode, aBox, theUseTriangulation, true);
+      break;
+  }
+
+  // Cache the result.
+  BRepGraphAlgo_BndLib::CachedData aData;
+  aData.Box                = aBox;
+  aData.BoxPrecision       = thePrecision;
+  aData.UsedTriangulation  = theUseTriangulation;
+  aData.UsedShapeTolerance = aUsedShapeTol;
+
+  if (aCache != nullptr)
+  {
+    BRepGraph_UserAttrPtr anExisting = aCache->GetUserAttribute(aKey);
+    if (anExisting)
+    {
+      auto* aBndAttr = dynamic_cast<BRepGraphAlgo_BndBoxAttribute*>(anExisting.get());
+      if (aBndAttr != nullptr)
+      {
+        aBndAttr->SetData(aData);
+        return aBox;
+      }
+    }
+
+    auto aNewAttr = std::make_shared<BRepGraphAlgo_BndBoxAttribute>();
+    aNewAttr->SetData(aData);
+    aCache->SetUserAttribute(aKey, aNewAttr);
+  }
+
+  return aBox;
+}
+
+//=================================================================================================
+
+void BRepGraphAlgo_BndLib::SetCached(BRepGraph&       theGraph,
+                                     BRepGraph_NodeId theNode,
+                                     const Bnd_Box&   theBox,
+                                     Precision        thePrecision,
+                                     bool             theUsedTriangulation,
+                                     bool             theUsedShapeTolerance)
+{
+  const int            aKey   = CacheKey();
+  BRepGraph_NodeCache* aCache = theGraph.mutableCache(theNode);
+  if (aCache == nullptr)
+  {
+    return;
+  }
+
+  CachedData aData;
+  aData.Box                = theBox;
+  aData.BoxPrecision       = thePrecision;
+  aData.UsedTriangulation  = theUsedTriangulation;
+  aData.UsedShapeTolerance = theUsedShapeTolerance;
+
+  BRepGraph_UserAttrPtr anExisting = aCache->GetUserAttribute(aKey);
+  if (anExisting)
+  {
+    auto* aBndAttr = dynamic_cast<BRepGraphAlgo_BndBoxAttribute*>(anExisting.get());
+    if (aBndAttr != nullptr)
+    {
+      aBndAttr->SetData(aData);
+      return;
+    }
+  }
+
+  auto aNewAttr = std::make_shared<BRepGraphAlgo_BndBoxAttribute>();
+  aNewAttr->SetData(aData);
+  aCache->SetUserAttribute(aKey, aNewAttr);
+}
+
+//=================================================================================================
+
+void BRepGraphAlgo_BndLib::InvalidateCached(BRepGraph&       theGraph,
+                                            BRepGraph_NodeId theNode)
+{
+  const int            aKey   = CacheKey();
+  BRepGraph_NodeCache* aCache = theGraph.mutableCache(theNode);
+  if (aCache == nullptr)
+  {
+    return;
+  }
+  aCache->InvalidateUserAttribute(aKey);
+}

@@ -14,37 +14,24 @@
 #ifndef _BRepGraph_NodeCache_HeaderFile
 #define _BRepGraph_NodeCache_HeaderFile
 
-#include <BRepGraph_CachedValue.hxx>
 #include <BRepGraph_UserAttribute.hxx>
 
-#include <Bnd_Box.hxx>
-#include <gp_Pnt.hxx>
 #include <NCollection_DataMap.hxx>
 
 //! Per-node cache bundle.
 //!
-//! Contains two layers:
-//!
-//! 1. **Fixed fields** -- BoundingBox, Centroid.
-//!    Always present.  Not every node kind uses every field; unused ones
-//!    stay dirty forever and are never computed.
-//!
-//! 2. **User attributes** -- an extensible map keyed by integer.
-//!    Downstream algorithms register a unique key via
-//!    BRepGraph_UserAttribute::AllocateKey() and attach
-//!    BRepGraph_TypedAttribute<T> instances.
-//!    The map is kept as a value member and remains empty until first bind.
+//! Provides an extensible map of **user attributes** keyed by integer.
+//! Downstream algorithms register a unique key via
+//! BRepGraph_UserAttribute::AllocateKey() and attach
+//! BRepGraph_TypedAttribute<T> instances.
+//! The map is kept as a value member and remains empty until first bind.
 struct BRepGraph_NodeCache
 {
-  //! Fixed cached fields.
-  BRepGraph_CachedValue<Bnd_Box> BoundingBox;
-  BRepGraph_CachedValue<gp_Pnt>  Centroid;
-
   ~BRepGraph_NodeCache() = default;
 
   BRepGraph_NodeCache() = default;
 
-  //! Copy constructor: creates fresh (dirty) cache slots, copies user attributes.
+  //! Copy constructor: copies user attributes.
   BRepGraph_NodeCache(const BRepGraph_NodeCache& theOther)
       : myUserAttributes(theOther.myUserAttributes)
   {
@@ -54,20 +41,14 @@ struct BRepGraph_NodeCache
   {
     if (this != &theOther)
     {
-      BoundingBox.Invalidate();
-      Centroid.Invalidate();
       myUserAttributes = theOther.myUserAttributes;
     }
     return *this;
   }
 
-  //! Invalidate ALL cached data on this node: fixed fields AND every
-  //! user attribute in the map.
+  //! Invalidate ALL cached data on this node: every user attribute in the map.
   void InvalidateAll()
   {
-    BoundingBox.Invalidate();
-    Centroid.Invalidate();
-
     if (!myUserAttributes.IsEmpty())
     {
       for (auto anIter = myUserAttributes.cbegin();

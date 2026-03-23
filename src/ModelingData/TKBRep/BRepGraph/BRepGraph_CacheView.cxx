@@ -16,39 +16,6 @@
 
 //=================================================================================================
 
-Bnd_Box BRepGraph::CacheView::BoundingBox(BRepGraph_NodeId theNode) const
-{
-  const BRepGraph_TopoNode::BaseDef* aDef = myGraph->TopoDef(theNode);
-  if (aDef == nullptr)
-    return Bnd_Box();
-
-  return aDef->Cache.BoundingBox.Get([&]() -> Bnd_Box {
-    Bnd_Box aBox;
-    myGraph->collectVertexPoints(theNode, aBox);
-    return aBox;
-  });
-}
-
-//=================================================================================================
-
-gp_Pnt BRepGraph::CacheView::Centroid(BRepGraph_NodeId theNode) const
-{
-  const BRepGraph_TopoNode::BaseDef* aDef = myGraph->TopoDef(theNode);
-  if (aDef == nullptr)
-    return gp_Pnt();
-
-  return aDef->Cache.Centroid.Get([&]() -> gp_Pnt {
-    Bnd_Box aBox = BoundingBox(theNode);
-    if (aBox.IsVoid())
-      return gp_Pnt();
-    double aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
-    aBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
-    return gp_Pnt((aXmin + aXmax) * 0.5, (aYmin + aYmax) * 0.5, (aZmin + aZmax) * 0.5);
-  });
-}
-
-//=================================================================================================
-
 void BRepGraph::CacheView::Invalidate(BRepGraph_NodeId theNode) const
 {
   BRepGraph_NodeCache* aCache = myGraph->mutableCache(theNode);

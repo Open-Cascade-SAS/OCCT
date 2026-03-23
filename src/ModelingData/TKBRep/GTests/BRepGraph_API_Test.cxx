@@ -16,7 +16,7 @@
 #include <BRepBuilderAPI_Copy.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_BuilderView.hxx>
-#include <BRepGraph_CacheView.hxx>
+#include <BRepGraphAlgo_BndLib.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_GeomView.hxx>
 #include <BRepGraph_Iterator.hxx>
@@ -36,6 +36,17 @@
 
 #include <gtest/gtest.h>
 
+static gp_Pnt bboxCenter(BRepGraph& theGraph, BRepGraph_NodeId theNode)
+{
+  Bnd_Box aBox;
+  BRepGraphAlgo_BndLib::Add(theGraph, theNode, aBox);
+  if (aBox.IsVoid())
+    return gp_Pnt();
+  double xn, yn, zn, xx, yx, zx;
+  aBox.Get(xn, yn, zn, xx, yx, zx);
+  return gp_Pnt((xn + xx) * 0.5, (yn + yx) * 0.5, (zn + zx) * 0.5);
+}
+
 // ============================================================
 // Task 1A: Graph-Native BoundingBox
 // ============================================================
@@ -51,7 +62,8 @@ TEST(BRepGraphAPI_BoundingBoxTest, Box_MatchesTopoDSBox)
 
   // Get bounding box from graph.
   BRepGraph_NodeId aSolidId(BRepGraph_NodeId::Kind::Solid, 0);
-  Bnd_Box aGraphBox = aGraph.Cache().BoundingBox(aSolidId);
+  Bnd_Box aGraphBox;
+  BRepGraphAlgo_BndLib::Add(aGraph, aSolidId, aGraphBox);
   ASSERT_FALSE(aGraphBox.IsVoid());
 
   double aGXmin, aGYmin, aGZmin, aGXmax, aGYmax, aGZmax;
@@ -76,7 +88,8 @@ TEST(BRepGraphAPI_BoundingBoxTest, Sphere_NonVoid)
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_NodeId aSolidId(BRepGraph_NodeId::Kind::Solid, 0);
-  Bnd_Box aGraphBox = aGraph.Cache().BoundingBox(aSolidId);
+  Bnd_Box aGraphBox;
+  BRepGraphAlgo_BndLib::Add(aGraph, aSolidId, aGraphBox);
   EXPECT_FALSE(aGraphBox.IsVoid());
 }
 
@@ -90,7 +103,8 @@ TEST(BRepGraphAPI_BoundingBoxTest, Cylinder_NonVoid)
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_NodeId aSolidId(BRepGraph_NodeId::Kind::Solid, 0);
-  Bnd_Box aGraphBox = aGraph.Cache().BoundingBox(aSolidId);
+  Bnd_Box aGraphBox;
+  BRepGraphAlgo_BndLib::Add(aGraph, aSolidId, aGraphBox);
   EXPECT_FALSE(aGraphBox.IsVoid());
 }
 
@@ -105,7 +119,8 @@ TEST(BRepGraphAPI_BoundingBoxTest, SingleFace_MatchesVertices)
   ASSERT_GT(aGraph.Defs().NbFaces(), 0);
 
   BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
-  Bnd_Box aGraphBox = aGraph.Cache().BoundingBox(aFaceId);
+  Bnd_Box aGraphBox;
+  BRepGraphAlgo_BndLib::Add(aGraph, aFaceId, aGraphBox);
   EXPECT_FALSE(aGraphBox.IsVoid());
 }
 
@@ -119,7 +134,7 @@ TEST(BRepGraphAPI_CentroidTest, Box_CentroidNearCenter)
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_NodeId aSolidId(BRepGraph_NodeId::Kind::Solid, 0);
-  gp_Pnt aCentroid = aGraph.Cache().Centroid(aSolidId);
+  gp_Pnt aCentroid = bboxCenter(aGraph, aSolidId);
 
   // Centroid should be near the center of the box.
   EXPECT_NEAR(aCentroid.X(), 5.0, 1.0);

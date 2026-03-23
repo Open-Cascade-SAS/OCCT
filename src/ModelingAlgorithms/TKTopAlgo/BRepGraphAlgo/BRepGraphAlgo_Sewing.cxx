@@ -14,6 +14,7 @@
 #include <BRepGraphAlgo_Sewing.hxx>
 
 #include <Bnd_Box.hxx>
+#include <BRepGraphAlgo_BndLib.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepLib.hxx>
@@ -456,7 +457,8 @@ void BRepGraphAlgo_Sewing::detectCandidates(const Handle(NCollection_IncAllocato
     0,
     aNbFreeEdges,
     [&](int theIdx) {
-      Bnd_Box aBox = myGraph.Cache().BoundingBox(myFreeEdgesBefore.Value(theIdx + 1));
+      Bnd_Box aBox;
+      BRepGraphAlgo_BndLib::Add(myGraph, myFreeEdgesBefore.Value(theIdx + 1), aBox);
       if (!aBox.IsVoid())
       {
         aBox.Enlarge(myTolerance);
@@ -647,7 +649,8 @@ void BRepGraphAlgo_Sewing::cutAtIntersections(const Handle(NCollection_IncAlloca
       GeomAdaptor_TransformedCurve aCurve = myGraph.Geom().CurveAdaptor(anEdgeId);
       ExtremaPC_Curve              anExtPC(aCurve);
 
-      Bnd_Box aEdgeBBox = myGraph.Cache().BoundingBox(anEdgeId);
+      Bnd_Box aEdgeBBox;
+      BRepGraphAlgo_BndLib::Add(myGraph, anEdgeId, aEdgeBBox);
       if (aEdgeBBox.IsVoid())
         return;
       aEdgeBBox.Enlarge(myTolerance);

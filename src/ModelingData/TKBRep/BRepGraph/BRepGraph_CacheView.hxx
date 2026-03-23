@@ -22,17 +22,7 @@
 class BRepGraph::CacheView
 {
 public:
-  //! Compute or return cached axis-aligned bounding box for a node.
-  //! @param[in] theNode node identifier
-  //! @return bounding box of the node
-  Standard_EXPORT Bnd_Box BoundingBox(BRepGraph_NodeId theNode) const;
-
-  //! Compute or return cached centroid for a node.
-  //! @param[in] theNode node identifier
-  //! @return centroid point
-  Standard_EXPORT gp_Pnt Centroid(BRepGraph_NodeId theNode) const;
-
-  //! Invalidate cached values (bounding box, centroid) for a single node.
+  //! Invalidate cached values (user attributes) for a single node.
   //! @param[in] theNode node to invalidate
   Standard_EXPORT void Invalidate(BRepGraph_NodeId theNode) const;
 

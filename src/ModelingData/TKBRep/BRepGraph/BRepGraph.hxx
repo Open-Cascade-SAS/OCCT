@@ -172,6 +172,7 @@ private:
   friend class BRepGraph_Analyze;
   friend class BRepGraph_Reconstruct;
   friend class BRepGraph_Mutator;
+  friend class BRepGraphAlgo_BndLib;
 
   // -- History flat methods (used internally by History subsystem) --
 
@@ -202,7 +203,6 @@ private:
                                                     double                      theFirst,
                                                     double                      theLast);
 
-  Standard_EXPORT void collectVertexPoints(BRepGraph_NodeId theNode, Bnd_Box& theBox) const;
   Standard_EXPORT void invalidateSubgraphImpl(BRepGraph_NodeId theNode);
   Standard_EXPORT BRepGraph_UID allocateUID(BRepGraph_NodeId theNodeId);
   Standard_EXPORT BRepGraph_NodeCache* mutableCache(BRepGraph_NodeId theNode);
