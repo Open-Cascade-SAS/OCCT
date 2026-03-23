@@ -495,13 +495,15 @@ public:
   //! @name UID access
 
   //! Return the per-kind UID vector for a given Kind.
-  const NCollection_Vector<BRepGraph_UID>& UIDs(const BRepGraph_NodeId::Kind theKind) const;
+  Standard_EXPORT const NCollection_Vector<BRepGraph_UID>& UIDs(
+    const BRepGraph_NodeId::Kind theKind) const;
 
   //! Return the per-kind UID vector for a given Kind (mutable).
-  NCollection_Vector<BRepGraph_UID>& ChangeUIDs(const BRepGraph_NodeId::Kind theKind);
+  Standard_EXPORT NCollection_Vector<BRepGraph_UID>& ChangeUIDs(
+    const BRepGraph_NodeId::Kind theKind);
 
   //! Clear all UID vectors (reset lengths to 0).
-  void ResetAllUIDs();
+  Standard_EXPORT void ResetAllUIDs();
 
   //! @name Reverse index
 

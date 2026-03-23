@@ -161,7 +161,7 @@ inline TopAbs_State State(const bool      theRejected,
 //=================================================================================================
 
 template <typename TheEdge>
-inline const TheEdge& Edge(const bool theRejected, const TheEdge& theEdge)
+inline const TheEdge& Edge([[maybe_unused]] const bool theRejected, const TheEdge& theEdge)
 {
   Standard_DomainError_Raise_if(theRejected, "TopClass_FaceClassifier::Edge : rejected");
   return theEdge;
@@ -169,7 +169,7 @@ inline const TheEdge& Edge(const bool theRejected, const TheEdge& theEdge)
 
 //=================================================================================================
 
-inline double EdgeParameter(const bool theRejected, const double theEdgeParameter)
+inline double EdgeParameter([[maybe_unused]] const bool theRejected, const double theEdgeParameter)
 {
   Standard_DomainError_Raise_if(theRejected, "TopClass_FaceClassifier::EdgeParameter : rejected");
   return theEdgeParameter;
