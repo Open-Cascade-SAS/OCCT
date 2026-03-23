@@ -24,7 +24,6 @@
 #include <gp_Pnt.hxx>
 
 #include <NCollection_Array1.hxx>
-#include <NCollection_Sequence.hxx>
 #include <NCollection_Vector.hxx>
 
 //! Namespace grouping all topology node types for BRepGraph.
@@ -62,13 +61,13 @@ struct Base
 struct Solid : public Base
 {
   //! Child Shell ids, in containment order.
-  NCollection_Sequence<BRepGraph_NodeId> Shells;
+  NCollection_Vector<BRepGraph_NodeId> Shells;
 };
 
 struct Shell : public Base
 {
   //! Child Face ids, in containment order.
-  NCollection_Sequence<BRepGraph_NodeId> Faces;
+  NCollection_Vector<BRepGraph_NodeId> Faces;
 };
 
 struct Face : public Base
@@ -80,7 +79,7 @@ struct Face : public Base
   BRepGraph_NodeId OuterWireId;
 
   //! Zero or more inner WireNodes (holes).
-  NCollection_Sequence<BRepGraph_NodeId> InnerWireIds;
+  NCollection_Vector<BRepGraph_NodeId> InnerWireIds;
 
   //! Face orientation relative to its surface normal.
   TopAbs_Orientation Orientation = TopAbs_FORWARD;
@@ -120,7 +119,7 @@ struct Edge : public Base
     BRepGraph_NodeId FaceNodeId;
   };
 
-  NCollection_Sequence<PCurveEntry> PCurves;
+  NCollection_Vector<PCurveEntry> PCurves;
 
   //! Boundary vertices.  For closed edges, Start == End.
   BRepGraph_NodeId StartVertexId;

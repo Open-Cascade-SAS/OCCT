@@ -119,7 +119,7 @@ TopoDS_Face buildCopiedFace(const BRepGraph&                           theGraph,
       aBB.Range(aNewEdge, anEdgeNode.ParamFirst, anEdgeNode.ParamLast);
 
       // Attach pcurves.
-      for (int aPCIdx = 1; aPCIdx <= anEdgeNode.PCurves.Length(); ++aPCIdx)
+      for (int aPCIdx = 0; aPCIdx < anEdgeNode.PCurves.Length(); ++aPCIdx)
       {
         const BRepGraph_TopoNode::Edge::PCurveEntry& aPCEntry =
           anEdgeNode.PCurves.Value(aPCIdx);
@@ -170,7 +170,7 @@ TopoDS_Face buildCopiedFace(const BRepGraph&                           theGraph,
   }
 
   // Add inner wires.
-  for (int aWireIdx = 1; aWireIdx <= aFaceNode.InnerWireIds.Length(); ++aWireIdx)
+  for (int aWireIdx = 0; aWireIdx < aFaceNode.InnerWireIds.Length(); ++aWireIdx)
   {
     aBB.Add(aNewFace, buildWire(aFaceNode.InnerWireIds.Value(aWireIdx)));
   }
@@ -225,13 +225,13 @@ TopoDS_Shape BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph, bool theCopy
       const BRepGraph_TopoNode::Solid& aSolid = theGraph.Solid(aSolidIdx);
       TopoDS_Solid aNewSolid;
       aBB.MakeSolid(aNewSolid);
-      for (int aShellIter = 1; aShellIter <= aSolid.Shells.Length(); ++aShellIter)
+      for (int aShellIter = 0; aShellIter < aSolid.Shells.Length(); ++aShellIter)
       {
         const BRepGraph_TopoNode::Shell& aShell =
           theGraph.Shell(aSolid.Shells.Value(aShellIter).Index);
         TopoDS_Shell aNewShell;
         aBB.MakeShell(aNewShell);
-        for (int aFaceIter = 1; aFaceIter <= aShell.Faces.Length(); ++aFaceIter)
+        for (int aFaceIter = 0; aFaceIter < aShell.Faces.Length(); ++aFaceIter)
         {
           TopoDS_Face aCopiedFace = buildCopiedFace(theGraph,
                                                     aShell.Faces.Value(aFaceIter).Index,
@@ -254,7 +254,7 @@ TopoDS_Shape BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph, bool theCopy
       const BRepGraph_TopoNode::Shell& aShell = theGraph.Shell(aShellIdx);
       TopoDS_Shell aNewShell;
       aBB.MakeShell(aNewShell);
-      for (int aFaceIter = 1; aFaceIter <= aShell.Faces.Length(); ++aFaceIter)
+      for (int aFaceIter = 0; aFaceIter < aShell.Faces.Length(); ++aFaceIter)
       {
         TopoDS_Face aCopiedFace = buildCopiedFace(theGraph,
                                                   aShell.Faces.Value(aFaceIter).Index,
@@ -343,7 +343,7 @@ TopoDS_Shape BRepGraphAlgo_Copy::CopyFace(const BRepGraph& theGraph,
   };
 
   collectFromWire(aFaceNode.OuterWireId);
-  for (int aWireIdx = 1; aWireIdx <= aFaceNode.InnerWireIds.Length(); ++aWireIdx)
+  for (int aWireIdx = 0; aWireIdx < aFaceNode.InnerWireIds.Length(); ++aWireIdx)
   {
     collectFromWire(aFaceNode.InnerWireIds.Value(aWireIdx));
   }

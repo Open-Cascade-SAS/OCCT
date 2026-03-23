@@ -33,7 +33,6 @@
 #include <gp_Pnt.hxx>
 
 #include <NCollection_Vector.hxx>
-#include <NCollection_Sequence.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_BaseAllocator.hxx>
@@ -132,11 +131,11 @@ public:
   Standard_EXPORT const BRepGraph_RelEdge& RelEdge(int theIdx) const;
 
   //! Outgoing edges from a node, filtered by relationship kind.
-  Standard_EXPORT NCollection_Sequence<int> OutEdgesOfKind(BRepGraph_NodeId  theNode,
+  Standard_EXPORT NCollection_Vector<int> OutEdgesOfKind(BRepGraph_NodeId  theNode,
                                                            BRepGraph_RelKind theKind) const;
 
   //! Incoming edges to a node, filtered by relationship kind.
-  Standard_EXPORT NCollection_Sequence<int> InEdgesOfKind(BRepGraph_NodeId  theNode,
+  Standard_EXPORT NCollection_Vector<int> InEdgesOfKind(BRepGraph_NodeId  theNode,
                                                           BRepGraph_RelKind theKind) const;
 
   //! Iterates outgoing edges of the given kind, calling theCallback(edgeIndex) for each.
@@ -204,7 +203,7 @@ public:
 
   //! All FaceNodes sharing the same Geom_Surface handle as theFace,
   //! excluding theFace itself.
-  Standard_EXPORT NCollection_Sequence<BRepGraph_NodeId> SameDomainFaces(
+  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> SameDomainFaces(
     BRepGraph_NodeId theFace) const;
 
   //! Bounding box (lazy-computed, thread-safe).
@@ -265,14 +264,14 @@ public:
   Standard_EXPORT BRepGraph_NodeId FindOriginal(BRepGraph_NodeId theModified) const;
 
   //! Walk history forwards from an original node to all derived nodes.
-  Standard_EXPORT NCollection_Sequence<BRepGraph_NodeId> FindDerived(
+  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> FindDerived(
     BRepGraph_NodeId theOriginal) const;
 
   //! Apply a mutation and record a HistoryRecord.
   //! NOT thread-safe -- caller ensures exclusive access.
   Standard_EXPORT void ApplyModification(
     BRepGraph_NodeId                                                                    theTarget,
-    std::function<NCollection_Sequence<BRepGraph_NodeId>(BRepGraph&, BRepGraph_NodeId)> theModifier,
+    std::function<NCollection_Vector<BRepGraph_NodeId>(BRepGraph&, BRepGraph_NodeId)> theModifier,
     const TCollection_AsciiString&                                                      theOpLabel);
 
   //! Rebuild a TopoDS_Shape tree from current graph state.
@@ -280,7 +279,7 @@ public:
   Standard_EXPORT TopoDS_Shape ReconstructShape(BRepGraph_NodeId theRoot) const;
 
   //! Split into connected components (non-owning SubGraph views).
-  Standard_EXPORT NCollection_Sequence<BRepGraph_SubGraph> Decompose() const;
+  Standard_EXPORT NCollection_Vector<BRepGraph_SubGraph> Decompose() const;
 
   //! Parallel iteration over FaceNode indices in a SubGraph.
   Standard_EXPORT void ParallelForEachFace(const BRepGraph_SubGraph&               theSub,
@@ -291,19 +290,19 @@ public:
                                            const std::function<void(int edgeIdx)>& theLambda) const;
 
   //! All (Edge, Face) pairs missing a PCurveNode.
-  Standard_EXPORT NCollection_Sequence<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>>
+  Standard_EXPORT NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>>
                   DetectMissingPCurves() const;
 
   //! Nodes with tolerance conflicts across shared geometry.
-  Standard_EXPORT NCollection_Sequence<BRepGraph_NodeId> DetectToleranceConflicts(
+  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> DetectToleranceConflicts(
     double theThreshold) const;
 
   //! WireNodes with < 2 edges or non-closed outer wires.
-  Standard_EXPORT NCollection_Sequence<BRepGraph_NodeId> DetectDegenerateWires() const;
+  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> DetectDegenerateWires() const;
 
   //! Detect free (boundary) edges: edges referenced by exactly one face.
   //! Degenerate edges are excluded.
-  Standard_EXPORT NCollection_Sequence<BRepGraph_NodeId> FreeEdges() const;
+  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> FreeEdges() const;
 
   //! Reconstruct a TopoDS_Face by rebuilding its wires from current graph state.
   //! This picks up any edge replacements done via ReplaceEdgeInWire().
@@ -381,7 +380,7 @@ public:
   //! @param[in] theReplacements  replacement nodes
   Standard_EXPORT void RecordHistory(const TCollection_AsciiString&                theOpLabel,
                                      BRepGraph_NodeId                              theOriginal,
-                                     const NCollection_Sequence<BRepGraph_NodeId>& theReplacements);
+                                     const NCollection_Vector<BRepGraph_NodeId>& theReplacements);
 
   //! Set the pool allocator before Build().
   //! Must be called before Build() to take effect on internal collections.

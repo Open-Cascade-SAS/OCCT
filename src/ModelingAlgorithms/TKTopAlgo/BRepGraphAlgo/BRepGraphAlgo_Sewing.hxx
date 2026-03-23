@@ -20,7 +20,6 @@
 #include <NCollection_IncAllocator.hxx>
 #include <NCollection_KDTree.hxx>
 #include <NCollection_Map.hxx>
-#include <NCollection_Sequence.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Extrema_ExtPC.hxx>
@@ -147,7 +146,7 @@ private:
   bool                                 myIsDone = false;
   BRepGraph                            myGraph;
   TopoDS_Shape                         myResult;
-  NCollection_Sequence<TopoDS_Shape>   myInputShapes;
+  NCollection_Vector<TopoDS_Shape>     myInputShapes;
   NCollection_Array1<BRepGraph_NodeId> myFreeEdgesBefore;
   int                                  myFreeEdgesAfter = 0;
   int                                  mySewnCount      = 0;
@@ -175,7 +174,7 @@ private:
   //! Phase 5a: Match free-edge pairs using BBox pre-filter + geometric validation.
   //! @param[in] theTmpAlloc temporary IncAllocator for scratch collections
   //! @return sequence of matched (keepEdge, removeEdge) node-id pairs
-  NCollection_Sequence<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> matchFreeEdges(
+  NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> matchFreeEdges(
     const Handle(NCollection_IncAllocator)& theTmpAlloc);
 
   //! Phase 5b: Merge matched edge pairs in the graph.
@@ -183,7 +182,7 @@ private:
   //! @param[out] theAffectedFaces set of face indices that need reconstruction
   //! @param[out] theSewnEdgeIndices indices of surviving (keep) edges
   void mergeMatchedEdges(
-    const NCollection_Sequence<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>>& thePairs,
+    const NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>>& thePairs,
     NCollection_Map<int>&                                                      theAffectedFaces,
     NCollection_Map<int>&                                                      theSewnEdgeIndices);
 

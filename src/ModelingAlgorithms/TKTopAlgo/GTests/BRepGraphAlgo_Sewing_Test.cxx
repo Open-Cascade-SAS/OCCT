@@ -385,7 +385,7 @@ TEST(BRepGraphAlgo_SewingTest, SewAllSixFaces_HistoryRecordsExist)
     const BRepGraph_HistoryRecord& aRecord = aGraph.History(0);
     // Iterate over the mapping to get the first original node.
     NCollection_DataMap<BRepGraph_NodeId,
-                        NCollection_Sequence<BRepGraph_NodeId>,
+                        NCollection_Vector<BRepGraph_NodeId>,
                         BRepGraph_NodeId::Hasher>::Iterator anIt(aRecord.Mapping);
     ASSERT_TRUE(anIt.More());
     const BRepGraph_NodeId anOrigId = aGraph.FindOriginal(anIt.Key());

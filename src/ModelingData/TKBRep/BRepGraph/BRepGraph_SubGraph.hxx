@@ -14,7 +14,7 @@
 #ifndef _BRepGraph_SubGraph_HeaderFile
 #define _BRepGraph_SubGraph_HeaderFile
 
-#include <NCollection_Sequence.hxx>
+#include <NCollection_Vector.hxx>
 
 class BRepGraph;
 
@@ -33,17 +33,17 @@ public:
   const BRepGraph* ParentGraph() const { return myParent; }
 
   //! Index sets -- each contains indices into the parent's per-kind vectors.
-  const NCollection_Sequence<int>& SolidIndices()  const
+  const NCollection_Vector<int>& SolidIndices()  const
   { return mySolidIndices; }
-  const NCollection_Sequence<int>& ShellIndices()  const
+  const NCollection_Vector<int>& ShellIndices()  const
   { return myShellIndices; }
-  const NCollection_Sequence<int>& FaceIndices()   const
+  const NCollection_Vector<int>& FaceIndices()   const
   { return myFaceIndices; }
-  const NCollection_Sequence<int>& WireIndices()   const
+  const NCollection_Vector<int>& WireIndices()   const
   { return myWireIndices; }
-  const NCollection_Sequence<int>& EdgeIndices()   const
+  const NCollection_Vector<int>& EdgeIndices()   const
   { return myEdgeIndices; }
-  const NCollection_Sequence<int>& VertexIndices() const
+  const NCollection_Vector<int>& VertexIndices() const
   { return myVertexIndices; }
 
   //! Total number of topology nodes in this connected component.
@@ -58,12 +58,12 @@ private:
   friend class BRepGraph;
 
   const BRepGraph*              myParent = nullptr;
-  NCollection_Sequence<int>     mySolidIndices;
-  NCollection_Sequence<int>     myShellIndices;
-  NCollection_Sequence<int>     myFaceIndices;
-  NCollection_Sequence<int>     myWireIndices;
-  NCollection_Sequence<int>     myEdgeIndices;
-  NCollection_Sequence<int>     myVertexIndices;
+  NCollection_Vector<int>     mySolidIndices;
+  NCollection_Vector<int>     myShellIndices;
+  NCollection_Vector<int>     myFaceIndices;
+  NCollection_Vector<int>     myWireIndices;
+  NCollection_Vector<int>     myEdgeIndices;
+  NCollection_Vector<int>     myVertexIndices;
 };
 
 #endif // _BRepGraph_SubGraph_HeaderFile

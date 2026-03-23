@@ -57,7 +57,7 @@ struct ExtractedWire
 {
   TopoDS_Wire                         Shape;
   bool                                IsOuter = false;
-  NCollection_Sequence<ExtractedEdge> Edges;
+  NCollection_Vector<ExtractedEdge> Edges;
 };
 
 //! All data extracted from a single face -- filled in parallel, consumed sequentially.
@@ -73,7 +73,7 @@ struct FaceLocalData
   Handle(Poly_Triangulation)          Triangulation;
   double                              Tolerance   = 0.0;
   TopAbs_Orientation                  Orientation = TopAbs_FORWARD;
-  NCollection_Sequence<ExtractedWire> Wires;
+  NCollection_Vector<ExtractedWire> Wires;
 };
 
 //! Extract per-face geometry/topology data from TopoDS.
@@ -373,7 +373,7 @@ void BRepGraph::Build(const TopoDS_Shape& theShape, bool theParallel)
     }
 
     // Process wires from pre-extracted data.
-    for (int aWireIter = 1; aWireIter <= aData.Wires.Length(); ++aWireIter)
+    for (int aWireIter = 0; aWireIter < aData.Wires.Length(); ++aWireIter)
     {
       const ExtractedWire& aWireData = aData.Wires.Value(aWireIter);
 
@@ -426,7 +426,7 @@ void BRepGraph::Build(const TopoDS_Shape& theShape, bool theParallel)
       BRepGraph_NodeId aFirstVertexId;
       BRepGraph_NodeId aLastVertexId;
 
-      for (int anEdgeIter = 1; anEdgeIter <= aWireData.Edges.Length(); ++anEdgeIter)
+      for (int anEdgeIter = 0; anEdgeIter < aWireData.Edges.Length(); ++anEdgeIter)
       {
         const ExtractedEdge& anEdgeData = aWireData.Edges.Value(anEdgeIter);
         const TopoDS_Edge&   anEdge     = anEdgeData.Shape;
@@ -537,7 +537,7 @@ void BRepGraph::Build(const TopoDS_Shape& theShape, bool theParallel)
         BRepGraph_TopoNode::Wire::EdgeEntry aWEEntry;
         aWEEntry.EdgeId            = anEdgeNodeId;
         aWEEntry.OrientationInWire = anEdgeData.OrientationInWire;
-        aWireNode.OrderedEdges.SetValue(anEdgeIter - 1, aWEEntry);
+        aWireNode.OrderedEdges.SetValue(anEdgeIter, aWEEntry);
 
         // Populate edge-to-wire reverse index.
         if (!myEdgeToWires.IsBound(anEdgeNodeId.Index))
@@ -1017,10 +1017,10 @@ const BRepGraph_RelEdge& BRepGraph::RelEdge(int theIdx) const
 
 //=================================================================================================
 
-NCollection_Sequence<int> BRepGraph::OutEdgesOfKind(BRepGraph_NodeId  theNode,
-                                                    BRepGraph_RelKind theKind) const
+NCollection_Vector<int> BRepGraph::OutEdgesOfKind(BRepGraph_NodeId  theNode,
+                                                  BRepGraph_RelKind theKind) const
 {
-  NCollection_Sequence<int>       aResult;
+  NCollection_Vector<int>         aResult;
   const BRepGraph_TopoNode::Base* aBase = TopoNode(theNode);
   if (aBase == nullptr)
     return aResult;
@@ -1036,10 +1036,10 @@ NCollection_Sequence<int> BRepGraph::OutEdgesOfKind(BRepGraph_NodeId  theNode,
 
 //=================================================================================================
 
-NCollection_Sequence<int> BRepGraph::InEdgesOfKind(BRepGraph_NodeId  theNode,
-                                                   BRepGraph_RelKind theKind) const
+NCollection_Vector<int> BRepGraph::InEdgesOfKind(BRepGraph_NodeId  theNode,
+                                                 BRepGraph_RelKind theKind) const
 {
-  NCollection_Sequence<int>       aResult;
+  NCollection_Vector<int>         aResult;
   const BRepGraph_TopoNode::Base* aBase = TopoNode(theNode);
   if (aBase == nullptr)
     return aResult;
@@ -1103,7 +1103,7 @@ BRepGraph_NodeId BRepGraph::PCurveOf(BRepGraph_NodeId theEdge, BRepGraph_NodeId 
     return BRepGraph_NodeId();
 
   const BRepGraph_TopoNode::Edge& anEdgeNode = myEdges.Value(theEdge.Index);
-  for (int aPCurveIter = 1; aPCurveIter <= anEdgeNode.PCurves.Length(); ++aPCurveIter)
+  for (int aPCurveIter = 0; aPCurveIter < anEdgeNode.PCurves.Length(); ++aPCurveIter)
   {
     if (anEdgeNode.PCurves.Value(aPCurveIter).FaceNodeId == theFace)
       return anEdgeNode.PCurves.Value(aPCurveIter).PCurveNodeId;
@@ -1123,9 +1123,9 @@ gp_Trsf BRepGraph::GlobalTransform(BRepGraph_NodeId theNode) const
 
 //=================================================================================================
 
-NCollection_Sequence<BRepGraph_NodeId> BRepGraph::SameDomainFaces(BRepGraph_NodeId theFace) const
+NCollection_Vector<BRepGraph_NodeId> BRepGraph::SameDomainFaces(BRepGraph_NodeId theFace) const
 {
-  NCollection_Sequence<BRepGraph_NodeId> aResult;
+  NCollection_Vector<BRepGraph_NodeId> aResult;
   if (theFace.Kind != BRepGraph_NodeKind::Face || !theFace.IsValid())
     return aResult;
 
@@ -1274,9 +1274,9 @@ void BRepGraph::InvalidateUserAttribute(BRepGraph_NodeId theNode, int theKey)
 
 //=================================================================================================
 
-NCollection_Sequence<BRepGraph_NodeId> BRepGraph::FreeEdges() const
+NCollection_Vector<BRepGraph_NodeId> BRepGraph::FreeEdges() const
 {
-  NCollection_Sequence<BRepGraph_NodeId> aResult;
+  NCollection_Vector<BRepGraph_NodeId> aResult;
 
   NCollection_Map<int> aFaceSet;
   for (int anEdgeIdx = 0; anEdgeIdx < myEdges.Length(); ++anEdgeIdx)
@@ -1341,7 +1341,7 @@ TopoDS_Shape BRepGraph::ReconstructFace(int theFaceIdx) const
   }
 
   // Add inner wires.
-  for (int aWireIdx = 1; aWireIdx <= aFaceNode.InnerWireIds.Length(); ++aWireIdx)
+  for (int aWireIdx = 0; aWireIdx < aFaceNode.InnerWireIds.Length(); ++aWireIdx)
   {
     TopoDS_Wire anInnerWire = buildWireFromGraph(aFaceNode.InnerWireIds.Value(aWireIdx));
     aBB.Add(aNewFace, anInnerWire);
@@ -1492,9 +1492,9 @@ const NCollection_Vector<int>& BRepGraph::WiresOfEdge(int theEdgeIdx) const
 
 //=================================================================================================
 
-void BRepGraph::RecordHistory(const TCollection_AsciiString&                theOpLabel,
-                              BRepGraph_NodeId                              theOriginal,
-                              const NCollection_Sequence<BRepGraph_NodeId>& theReplacements)
+void BRepGraph::RecordHistory(const TCollection_AsciiString&              theOpLabel,
+                              BRepGraph_NodeId                            theOriginal,
+                              const NCollection_Vector<BRepGraph_NodeId>& theReplacements)
 {
   if (!myIsHistoryEnabled)
     return;
@@ -1524,26 +1524,26 @@ const BRepGraph_HistoryRecord& BRepGraph::History(int theIdx) const
 
 BRepGraph_NodeId BRepGraph::FindOriginal(BRepGraph_NodeId theModified) const
 {
-  NCollection_Sequence<int> aInEdges = InEdgesOfKind(theModified, BRepGraph_RelKind::DerivedFrom);
+  NCollection_Vector<int> aInEdges = InEdgesOfKind(theModified, BRepGraph_RelKind::DerivedFrom);
   if (aInEdges.IsEmpty())
     return theModified;
 
-  BRepGraph_NodeId aSource = myRelEdges.Value(aInEdges.Value(1)).Source;
+  BRepGraph_NodeId aSource = myRelEdges.Value(aInEdges.Value(0)).Source;
   return FindOriginal(aSource);
 }
 
 //=================================================================================================
 
-NCollection_Sequence<BRepGraph_NodeId> BRepGraph::FindDerived(BRepGraph_NodeId theOriginal) const
+NCollection_Vector<BRepGraph_NodeId> BRepGraph::FindDerived(BRepGraph_NodeId theOriginal) const
 {
-  NCollection_Sequence<BRepGraph_NodeId> aResult;
-  NCollection_Sequence<int> aOutEdges = OutEdgesOfKind(theOriginal, BRepGraph_RelKind::DerivedFrom);
-  for (int aRelEdgeIdx = 1; aRelEdgeIdx <= aOutEdges.Length(); ++aRelEdgeIdx)
+  NCollection_Vector<BRepGraph_NodeId> aResult;
+  NCollection_Vector<int> aOutEdges = OutEdgesOfKind(theOriginal, BRepGraph_RelKind::DerivedFrom);
+  for (int aRelEdgeIdx = 0; aRelEdgeIdx < aOutEdges.Length(); ++aRelEdgeIdx)
   {
     BRepGraph_NodeId aDerived = myRelEdges.Value(aOutEdges.Value(aRelEdgeIdx)).Target;
     aResult.Append(aDerived);
-    NCollection_Sequence<BRepGraph_NodeId> aFurther = FindDerived(aDerived);
-    for (int aDerivedIter = 1; aDerivedIter <= aFurther.Length(); ++aDerivedIter)
+    NCollection_Vector<BRepGraph_NodeId> aFurther = FindDerived(aDerived);
+    for (int aDerivedIter = 0; aDerivedIter < aFurther.Length(); ++aDerivedIter)
       aResult.Append(aFurther.Value(aDerivedIter));
   }
   return aResult;
@@ -1552,11 +1552,11 @@ NCollection_Sequence<BRepGraph_NodeId> BRepGraph::FindDerived(BRepGraph_NodeId t
 //=================================================================================================
 
 void BRepGraph::ApplyModification(
-  BRepGraph_NodeId                                                                    theTarget,
-  std::function<NCollection_Sequence<BRepGraph_NodeId>(BRepGraph&, BRepGraph_NodeId)> theModifier,
-  const TCollection_AsciiString&                                                      theOpLabel)
+  BRepGraph_NodeId                                                                  theTarget,
+  std::function<NCollection_Vector<BRepGraph_NodeId>(BRepGraph&, BRepGraph_NodeId)> theModifier,
+  const TCollection_AsciiString&                                                    theOpLabel)
 {
-  NCollection_Sequence<BRepGraph_NodeId> aReplacements = theModifier(*this, theTarget);
+  NCollection_Vector<BRepGraph_NodeId> aReplacements = theModifier(*this, theTarget);
 
   if (myIsHistoryEnabled)
   {
@@ -1564,14 +1564,14 @@ void BRepGraph::ApplyModification(
     BRepGraph_HistoryRecord aRecord;
     aRecord.OperationName  = theOpLabel;
     aRecord.SequenceNumber = myHistory.Length();
-    NCollection_Sequence<BRepGraph_NodeId> aReplSeq;
-    for (int aReplIter = 1; aReplIter <= aReplacements.Length(); ++aReplIter)
+    NCollection_Vector<BRepGraph_NodeId> aReplSeq;
+    for (int aReplIter = 0; aReplIter < aReplacements.Length(); ++aReplIter)
       aReplSeq.Append(aReplacements.Value(aReplIter));
     aRecord.Mapping.Bind(theTarget, aReplSeq);
     myHistory.Append(aRecord);
 
     // Add DerivedFrom edges.
-    for (int aReplIter = 1; aReplIter <= aReplacements.Length(); ++aReplIter)
+    for (int aReplIter = 0; aReplIter < aReplacements.Length(); ++aReplIter)
     {
       if (aReplacements.Value(aReplIter) != theTarget)
       {
@@ -1600,7 +1600,7 @@ TopoDS_Shape BRepGraph::ReconstructShape(BRepGraph_NodeId theRoot) const
       const BRepGraph_TopoNode::Solid& aSolid = mySolids.Value(theRoot.Index);
       TopoDS_Solid                     aNewSolid;
       aBuilder.MakeSolid(aNewSolid);
-      for (int aShellIter = 1; aShellIter <= aSolid.Shells.Length(); ++aShellIter)
+      for (int aShellIter = 0; aShellIter < aSolid.Shells.Length(); ++aShellIter)
       {
         TopoDS_Shape aShellShape = ReconstructShape(aSolid.Shells.Value(aShellIter));
         aBuilder.Add(aNewSolid, aShellShape);
@@ -1611,7 +1611,7 @@ TopoDS_Shape BRepGraph::ReconstructShape(BRepGraph_NodeId theRoot) const
       const BRepGraph_TopoNode::Shell& aShell = myShells.Value(theRoot.Index);
       TopoDS_Shell                     aNewShell;
       aBuilder.MakeShell(aNewShell);
-      for (int aFaceIter = 1; aFaceIter <= aShell.Faces.Length(); ++aFaceIter)
+      for (int aFaceIter = 0; aFaceIter < aShell.Faces.Length(); ++aFaceIter)
       {
         TopoDS_Shape aFaceShape = ReconstructShape(aShell.Faces.Value(aFaceIter));
         aBuilder.Add(aNewShell, aFaceShape);
@@ -1631,9 +1631,9 @@ TopoDS_Shape BRepGraph::ReconstructShape(BRepGraph_NodeId theRoot) const
 
 //=================================================================================================
 
-NCollection_Sequence<BRepGraph_SubGraph> BRepGraph::Decompose() const
+NCollection_Vector<BRepGraph_SubGraph> BRepGraph::Decompose() const
 {
-  NCollection_Sequence<BRepGraph_SubGraph> aResult;
+  NCollection_Vector<BRepGraph_SubGraph> aResult;
 
   if (mySolids.Length() > 0)
   {
@@ -1644,13 +1644,13 @@ NCollection_Sequence<BRepGraph_SubGraph> BRepGraph::Decompose() const
       aSub.mySolidIndices.Append(aSolidIdx);
 
       const BRepGraph_TopoNode::Solid& aSolid = mySolids.Value(aSolidIdx);
-      for (int aShellIter = 1; aShellIter <= aSolid.Shells.Length(); ++aShellIter)
+      for (int aShellIter = 0; aShellIter < aSolid.Shells.Length(); ++aShellIter)
       {
         const int aShellIdx = aSolid.Shells.Value(aShellIter).Index;
         aSub.myShellIndices.Append(aShellIdx);
 
         const BRepGraph_TopoNode::Shell& aShell = myShells.Value(aShellIdx);
-        for (int aFaceIter = 1; aFaceIter <= aShell.Faces.Length(); ++aFaceIter)
+        for (int aFaceIter = 0; aFaceIter < aShell.Faces.Length(); ++aFaceIter)
         {
           const int aFaceIdx = aShell.Faces.Value(aFaceIter).Index;
           aSub.myFaceIndices.Append(aFaceIdx);
@@ -1674,7 +1674,7 @@ NCollection_Sequence<BRepGraph_SubGraph> BRepGraph::Decompose() const
           };
 
           collectWire(aFace.OuterWireId);
-          for (int aWireIdx = 1; aWireIdx <= aFace.InnerWireIds.Length(); ++aWireIdx)
+          for (int aWireIdx = 0; aWireIdx < aFace.InnerWireIds.Length(); ++aWireIdx)
             collectWire(aFace.InnerWireIds.Value(aWireIdx));
         }
       }
@@ -1710,7 +1710,7 @@ NCollection_Sequence<BRepGraph_SubGraph> BRepGraph::Decompose() const
       };
 
       collectWire(aFace.OuterWireId);
-      for (int aWireIdx = 1; aWireIdx <= aFace.InnerWireIds.Length(); ++aWireIdx)
+      for (int aWireIdx = 0; aWireIdx < aFace.InnerWireIds.Length(); ++aWireIdx)
         collectWire(aFace.InnerWireIds.Value(aWireIdx));
 
       aResult.Append(aSub);
@@ -1725,11 +1725,11 @@ NCollection_Sequence<BRepGraph_SubGraph> BRepGraph::Decompose() const
 void BRepGraph::ParallelForEachFace(const BRepGraph_SubGraph&               theSub,
                                     const std::function<void(int faceIdx)>& theLambda) const
 {
-  const NCollection_Sequence<int>& aIndices = theSub.FaceIndices();
+  const NCollection_Vector<int>& aIndices = theSub.FaceIndices();
   OSD_Parallel::For(
     0,
     aIndices.Length(),
-    [&](int anIdx) { theLambda(aIndices.Value(anIdx + 1)); },
+    [&](int anIdx) { theLambda(aIndices.Value(anIdx)); },
     false);
 }
 
@@ -1738,20 +1738,20 @@ void BRepGraph::ParallelForEachFace(const BRepGraph_SubGraph&               theS
 void BRepGraph::ParallelForEachEdge(const BRepGraph_SubGraph&               theSub,
                                     const std::function<void(int edgeIdx)>& theLambda) const
 {
-  const NCollection_Sequence<int>& aIndices = theSub.EdgeIndices();
+  const NCollection_Vector<int>& aIndices = theSub.EdgeIndices();
   OSD_Parallel::For(
     0,
     aIndices.Length(),
-    [&](int anIdx) { theLambda(aIndices.Value(anIdx + 1)); },
+    [&](int anIdx) { theLambda(aIndices.Value(anIdx)); },
     false);
 }
 
 //=================================================================================================
 
-NCollection_Sequence<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> BRepGraph::
+NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> BRepGraph::
   DetectMissingPCurves() const
 {
-  NCollection_Sequence<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> aResult;
+  NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> aResult;
 
   for (int aFaceIdx = 0; aFaceIdx < myFaces.Length(); ++aFaceIdx)
   {
@@ -1777,7 +1777,7 @@ NCollection_Sequence<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> BRepGraph::
     };
 
     checkWire(aFace.OuterWireId);
-    for (int aWireIdx = 1; aWireIdx <= aFace.InnerWireIds.Length(); ++aWireIdx)
+    for (int aWireIdx = 0; aWireIdx < aFace.InnerWireIds.Length(); ++aWireIdx)
       checkWire(aFace.InnerWireIds.Value(aWireIdx));
   }
 
@@ -1786,10 +1786,10 @@ NCollection_Sequence<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> BRepGraph::
 
 //=================================================================================================
 
-NCollection_Sequence<BRepGraph_NodeId> BRepGraph::DetectToleranceConflicts(
+NCollection_Vector<BRepGraph_NodeId> BRepGraph::DetectToleranceConflicts(
   double theThreshold) const
 {
-  NCollection_Sequence<BRepGraph_NodeId> aResult;
+  NCollection_Vector<BRepGraph_NodeId> aResult;
 
   for (int aCurveIdx = 0; aCurveIdx < myCurves.Length(); ++aCurveIdx)
   {
@@ -1819,9 +1819,9 @@ NCollection_Sequence<BRepGraph_NodeId> BRepGraph::DetectToleranceConflicts(
 
 //=================================================================================================
 
-NCollection_Sequence<BRepGraph_NodeId> BRepGraph::DetectDegenerateWires() const
+NCollection_Vector<BRepGraph_NodeId> BRepGraph::DetectDegenerateWires() const
 {
-  NCollection_Sequence<BRepGraph_NodeId> aResult;
+  NCollection_Vector<BRepGraph_NodeId> aResult;
 
   for (int aWireIdx = 0; aWireIdx < myWires.Length(); ++aWireIdx)
   {

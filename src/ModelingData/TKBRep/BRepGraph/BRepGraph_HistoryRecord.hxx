@@ -18,7 +18,7 @@
 
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_DataMap.hxx>
-#include <NCollection_Sequence.hxx>
+#include <NCollection_Vector.hxx>
 
 //! One atomic modification event recorded in the graph's history log.
 //!
@@ -40,7 +40,7 @@ struct BRepGraph_HistoryRecord
   //! Key: original node id before the operation.
   //! Value: sequence of replacement node ids after the operation.
   NCollection_DataMap<BRepGraph_NodeId,
-                      NCollection_Sequence<BRepGraph_NodeId>,
+                      NCollection_Vector<BRepGraph_NodeId>,
                       BRepGraph_NodeId::Hasher>  Mapping;
 };
 

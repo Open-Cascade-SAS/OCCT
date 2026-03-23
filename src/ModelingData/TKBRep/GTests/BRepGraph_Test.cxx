@@ -196,7 +196,7 @@ TEST_F(BRepGraphTest, SameDomainFaces_Box_Empty)
   for (int aFaceIdx = 0; aFaceIdx < myGraph.NbFaces(); ++aFaceIdx)
   {
     BRepGraph_NodeId                       aFaceId(BRepGraph_NodeKind::Face, aFaceIdx);
-    NCollection_Sequence<BRepGraph_NodeId> aSameDomain = myGraph.SameDomainFaces(aFaceId);
+    NCollection_Vector<BRepGraph_NodeId> aSameDomain = myGraph.SameDomainFaces(aFaceId);
     EXPECT_EQ(aSameDomain.Length(), 0)
       << "Box face " << aFaceIdx << " should have no same-domain faces";
   }
@@ -223,7 +223,7 @@ TEST(BRepGraphDecomposeTest, Decompose_TwoSeparateFaces)
   ASSERT_TRUE(aGraph.IsDone());
   EXPECT_EQ(aGraph.NbFaces(), 2);
 
-  NCollection_Sequence<BRepGraph_SubGraph> aSubs = aGraph.Decompose();
+  NCollection_Vector<BRepGraph_SubGraph> aSubs = aGraph.Decompose();
   EXPECT_EQ(aSubs.Length(), 2);
 }
 
@@ -302,7 +302,7 @@ TEST_F(BRepGraphTest, FaceCountForEdge_SharedEdge)
 
 TEST_F(BRepGraphTest, FreeEdges_ClosedBox_Empty)
 {
-  NCollection_Sequence<BRepGraph_NodeId> aFree = myGraph.FreeEdges();
+  NCollection_Vector<BRepGraph_NodeId> aFree = myGraph.FreeEdges();
   EXPECT_EQ(aFree.Length(), 0);
 }
 
@@ -315,16 +315,16 @@ TEST_F(BRepGraphTest, AddRelEdge_UserDefined)
   myGraph.AddRelEdge(anEdge0, anEdge1, BRepGraph_RelKind::UserDefined);
   EXPECT_EQ(myGraph.NbRelEdges(), aBefore + 1);
 
-  NCollection_Sequence<int> aOut = myGraph.OutEdgesOfKind(anEdge0, BRepGraph_RelKind::UserDefined);
+  NCollection_Vector<int> aOut = myGraph.OutEdgesOfKind(anEdge0, BRepGraph_RelKind::UserDefined);
   EXPECT_EQ(aOut.Length(), 1);
 }
 
 TEST_F(BRepGraphTest, RecordHistory_BasicEntry)
 {
   int                                    aBefore = myGraph.NbHistoryRecords();
-  BRepGraph_NodeId                       anEdge0(BRepGraph_NodeKind::Edge, 0);
-  BRepGraph_NodeId                       anEdge1(BRepGraph_NodeKind::Edge, 1);
-  NCollection_Sequence<BRepGraph_NodeId> aRepl;
+  BRepGraph_NodeId                      anEdge0(BRepGraph_NodeKind::Edge, 0);
+  BRepGraph_NodeId                      anEdge1(BRepGraph_NodeKind::Edge, 1);
+  NCollection_Vector<BRepGraph_NodeId> aRepl;
   aRepl.Append(anEdge1);
   myGraph.RecordHistory("TestOp", anEdge0, aRepl);
   EXPECT_EQ(myGraph.NbHistoryRecords(), aBefore + 1);
@@ -492,7 +492,7 @@ TEST_F(BRepGraphTest, RecordHistory_MultipleRecords_SequenceNumbers)
 
   BRepGraph_NodeId anEdge0(BRepGraph_NodeKind::Edge, 0);
   BRepGraph_NodeId anEdge1(BRepGraph_NodeKind::Edge, 1);
-  NCollection_Sequence<BRepGraph_NodeId> aRepl;
+  NCollection_Vector<BRepGraph_NodeId> aRepl;
   aRepl.Append(anEdge1);
 
   myGraph.RecordHistory("OpA", anEdge0, aRepl);
@@ -521,7 +521,7 @@ TEST_F(BRepGraphTest, FindOriginal_SingleHop_ReturnsSource)
 
   auto aModifier = [&](BRepGraph& /*theGraph*/, BRepGraph_NodeId /*theTarget*/)
   {
-    NCollection_Sequence<BRepGraph_NodeId> aResult;
+    NCollection_Vector<BRepGraph_NodeId> aResult;
     aResult.Append(anEdge1);
     return aResult;
   };
@@ -539,16 +539,16 @@ TEST_F(BRepGraphTest, FindDerived_SingleHop_ContainsTarget)
 
   auto aModifier = [&](BRepGraph& /*theGraph*/, BRepGraph_NodeId /*theTarget*/)
   {
-    NCollection_Sequence<BRepGraph_NodeId> aResult;
+    NCollection_Vector<BRepGraph_NodeId> aResult;
     aResult.Append(anEdge1);
     return aResult;
   };
 
   myGraph.ApplyModification(anEdge0, aModifier, "TestHop");
 
-  NCollection_Sequence<BRepGraph_NodeId> aDerived = myGraph.FindDerived(anEdge0);
+  NCollection_Vector<BRepGraph_NodeId> aDerived = myGraph.FindDerived(anEdge0);
   bool isFound = false;
-  for (int anIdx = 1; anIdx <= aDerived.Length(); ++anIdx)
+  for (int anIdx = 0; anIdx < aDerived.Length(); ++anIdx)
   {
     if (aDerived.Value(anIdx) == anEdge1)
     {
@@ -568,7 +568,7 @@ TEST_F(BRepGraphTest, ApplyModification_MultiStepChain_FindOriginalTracesBack)
   // Step 1: edge0 -> edge1
   auto aModifier1 = [&](BRepGraph& /*theGraph*/, BRepGraph_NodeId /*theTarget*/)
   {
-    NCollection_Sequence<BRepGraph_NodeId> aResult;
+    NCollection_Vector<BRepGraph_NodeId> aResult;
     aResult.Append(anEdge1);
     return aResult;
   };
@@ -577,7 +577,7 @@ TEST_F(BRepGraphTest, ApplyModification_MultiStepChain_FindOriginalTracesBack)
   // Step 2: edge1 -> edge2
   auto aModifier2 = [&](BRepGraph& /*theGraph*/, BRepGraph_NodeId /*theTarget*/)
   {
-    NCollection_Sequence<BRepGraph_NodeId> aResult;
+    NCollection_Vector<BRepGraph_NodeId> aResult;
     aResult.Append(anEdge2);
     return aResult;
   };
@@ -588,10 +588,10 @@ TEST_F(BRepGraphTest, ApplyModification_MultiStepChain_FindOriginalTracesBack)
   EXPECT_EQ(anOriginal, anEdge0);
 
   // FindDerived from edge0 should contain both edge1 and edge2.
-  NCollection_Sequence<BRepGraph_NodeId> aDerived = myGraph.FindDerived(anEdge0);
+  NCollection_Vector<BRepGraph_NodeId> aDerived = myGraph.FindDerived(anEdge0);
   bool isEdge1Found = false;
   bool isEdge2Found = false;
-  for (int anIdx = 1; anIdx <= aDerived.Length(); ++anIdx)
+  for (int anIdx = 0; anIdx < aDerived.Length(); ++anIdx)
   {
     if (aDerived.Value(anIdx) == anEdge1)
       isEdge1Found = true;
@@ -664,17 +664,17 @@ TEST_F(BRepGraphTest, RemoveRelEdges_AddThenRemove_GoneFromOutEdges)
 
   myGraph.AddRelEdge(anEdge0, anEdge1, BRepGraph_RelKind::UserDefined);
 
-  NCollection_Sequence<int> aBefore = myGraph.OutEdgesOfKind(anEdge0,
-                                                             BRepGraph_RelKind::UserDefined);
+  NCollection_Vector<int> aBefore = myGraph.OutEdgesOfKind(anEdge0,
+                                                           BRepGraph_RelKind::UserDefined);
   EXPECT_GE(aBefore.Length(), 1);
 
   myGraph.RemoveRelEdges(anEdge0, anEdge1, BRepGraph_RelKind::UserDefined);
 
   // RemoveRelEdges invalidates edges by clearing Source/Target (append-only array).
   // Verify the invalidated edge has cleared Source and Target.
-  NCollection_Sequence<int> anAfter = myGraph.OutEdgesOfKind(anEdge0,
-                                                             BRepGraph_RelKind::UserDefined);
-  for (int anIdx = 1; anIdx <= anAfter.Length(); ++anIdx)
+  NCollection_Vector<int> anAfter = myGraph.OutEdgesOfKind(anEdge0,
+                                                           BRepGraph_RelKind::UserDefined);
+  for (int anIdx = 0; anIdx < anAfter.Length(); ++anIdx)
   {
     const BRepGraph_RelEdge& aRel = myGraph.RelEdge(anAfter.Value(anIdx));
     EXPECT_FALSE(aRel.Source.IsValid()) << "Removed edge should have invalid Source";
@@ -689,12 +689,12 @@ TEST_F(BRepGraphTest, InEdgesOfKind_UserDefined_ReverseLookup)
 
   myGraph.AddRelEdge(anEdgeA, anEdgeB, BRepGraph_RelKind::UserDefined);
 
-  NCollection_Sequence<int> anInEdges = myGraph.InEdgesOfKind(anEdgeB,
-                                                              BRepGraph_RelKind::UserDefined);
+  NCollection_Vector<int> anInEdges = myGraph.InEdgesOfKind(anEdgeB,
+                                                            BRepGraph_RelKind::UserDefined);
   ASSERT_GE(anInEdges.Length(), 1);
 
   bool isFound = false;
-  for (int anIdx = 1; anIdx <= anInEdges.Length(); ++anIdx)
+  for (int anIdx = 0; anIdx < anInEdges.Length(); ++anIdx)
   {
     const BRepGraph_RelEdge& aRelEdge = myGraph.RelEdge(anInEdges.Value(anIdx));
     if (aRelEdge.Source == anEdgeA)
@@ -837,11 +837,11 @@ TEST_F(BRepGraphTest, InvalidateSubgraph_Face_ConsistentAfter)
 
 TEST_F(BRepGraphTest, ParallelForEachFace_AllFacesVisited)
 {
-  NCollection_Sequence<BRepGraph_SubGraph> aSubs = myGraph.Decompose();
+  NCollection_Vector<BRepGraph_SubGraph> aSubs = myGraph.Decompose();
   ASSERT_GE(aSubs.Length(), 1);
 
   std::atomic<int> aCounter{0};
-  for (int aSubIdx = 1; aSubIdx <= aSubs.Length(); ++aSubIdx)
+  for (int aSubIdx = 0; aSubIdx < aSubs.Length(); ++aSubIdx)
   {
     myGraph.ParallelForEachFace(aSubs.Value(aSubIdx),
       [&aCounter](int /*theFaceIdx*/)
@@ -854,11 +854,11 @@ TEST_F(BRepGraphTest, ParallelForEachFace_AllFacesVisited)
 
 TEST_F(BRepGraphTest, ParallelForEachEdge_AllEdgesVisited)
 {
-  NCollection_Sequence<BRepGraph_SubGraph> aSubs = myGraph.Decompose();
+  NCollection_Vector<BRepGraph_SubGraph> aSubs = myGraph.Decompose();
   ASSERT_GE(aSubs.Length(), 1);
 
   std::atomic<int> aCounter{0};
-  const BRepGraph_SubGraph& aSub = aSubs.Value(1);
+  const BRepGraph_SubGraph& aSub = aSubs.Value(0);
   myGraph.ParallelForEachEdge(aSub,
     [&aCounter](int /*theEdgeIdx*/)
     {
@@ -881,7 +881,7 @@ TEST(BRepGraphDetectionTest, FreeEdges_SingleFace_AllEdgesFree)
   aGraph.Build(aFace);
   ASSERT_TRUE(aGraph.IsDone());
 
-  NCollection_Sequence<BRepGraph_NodeId> aFreeEdges = aGraph.FreeEdges();
+  NCollection_Vector<BRepGraph_NodeId> aFreeEdges = aGraph.FreeEdges();
   EXPECT_EQ(aFreeEdges.Length(), 4);
 }
 
@@ -907,7 +907,7 @@ TEST(BRepGraphDetectionTest, Decompose_ThreeDisconnectedFaces_ThreeComponents)
   ASSERT_TRUE(aGraph.IsDone());
   EXPECT_EQ(aGraph.NbFaces(), 3);
 
-  NCollection_Sequence<BRepGraph_SubGraph> aSubs = aGraph.Decompose();
+  NCollection_Vector<BRepGraph_SubGraph> aSubs = aGraph.Decompose();
   EXPECT_EQ(aSubs.Length(), 3);
 }
 
@@ -943,7 +943,7 @@ TEST_F(BRepGraphTest, DetectToleranceConflicts_ManualConflict_Detected)
 
   if (isConflictSetUp)
   {
-    NCollection_Sequence<BRepGraph_NodeId> aConflicts =
+    NCollection_Vector<BRepGraph_NodeId> aConflicts =
       myGraph.DetectToleranceConflicts(0.5);
     EXPECT_GE(aConflicts.Length(), 1);
   }
@@ -1157,10 +1157,10 @@ TEST_F(BRepGraphTest, Face_ToleranceNonNegative)
 
 TEST_F(BRepGraphTest, SubGraph_BoxSolid_AllIndicesPresent)
 {
-  NCollection_Sequence<BRepGraph_SubGraph> aSubs = myGraph.Decompose();
+  NCollection_Vector<BRepGraph_SubGraph> aSubs = myGraph.Decompose();
   ASSERT_EQ(aSubs.Length(), 1);
 
-  const BRepGraph_SubGraph& aSub = aSubs.Value(1);
+  const BRepGraph_SubGraph& aSub = aSubs.Value(0);
   EXPECT_EQ(aSub.SolidIndices().Length(), 1);
   EXPECT_EQ(aSub.ShellIndices().Length(), 1);
   EXPECT_EQ(aSub.FaceIndices().Length(), 6);
@@ -1483,9 +1483,9 @@ TEST_F(BRepGraphTest, RecordHistory_Disabled_NoRecordAdded)
 
   myGraph.SetHistoryEnabled(false);
 
-  BRepGraph_NodeId                       anEdge0(BRepGraph_NodeKind::Edge, 0);
-  BRepGraph_NodeId                       anEdge1(BRepGraph_NodeKind::Edge, 1);
-  NCollection_Sequence<BRepGraph_NodeId> aRepl;
+  BRepGraph_NodeId                      anEdge0(BRepGraph_NodeKind::Edge, 0);
+  BRepGraph_NodeId                      anEdge1(BRepGraph_NodeKind::Edge, 1);
+  NCollection_Vector<BRepGraph_NodeId> aRepl;
   aRepl.Append(anEdge1);
   myGraph.RecordHistory("ShouldNotRecord", anEdge0, aRepl);
 
@@ -1498,9 +1498,9 @@ TEST_F(BRepGraphTest, RecordHistory_ReEnabled_RecordsAgain)
 
   const int aBefore = myGraph.NbHistoryRecords();
 
-  BRepGraph_NodeId                       anEdge0(BRepGraph_NodeKind::Edge, 0);
-  BRepGraph_NodeId                       anEdge1(BRepGraph_NodeKind::Edge, 1);
-  NCollection_Sequence<BRepGraph_NodeId> aRepl;
+  BRepGraph_NodeId                      anEdge0(BRepGraph_NodeKind::Edge, 0);
+  BRepGraph_NodeId                      anEdge1(BRepGraph_NodeKind::Edge, 1);
+  NCollection_Vector<BRepGraph_NodeId> aRepl;
   aRepl.Append(anEdge1);
   myGraph.RecordHistory("Skipped", anEdge0, aRepl);
   EXPECT_EQ(myGraph.NbHistoryRecords(), aBefore);
@@ -1523,7 +1523,7 @@ TEST_F(BRepGraphTest, ApplyModification_HistoryDisabled_NoHistoryNoDerivedEdges)
 
   auto aModifier = [&](BRepGraph& /*theGraph*/, BRepGraph_NodeId /*theTarget*/)
   {
-    NCollection_Sequence<BRepGraph_NodeId> aResult;
+    NCollection_Vector<BRepGraph_NodeId> aResult;
     aResult.Append(anEdge1);
     return aResult;
   };
@@ -1545,7 +1545,7 @@ TEST_F(BRepGraphTest, ApplyModification_HistoryDisabled_ModifierStillRuns)
   auto aModifier = [&](BRepGraph& /*theGraph*/, BRepGraph_NodeId /*theTarget*/)
   {
     isModifierCalled = true;
-    NCollection_Sequence<BRepGraph_NodeId> aResult;
+    NCollection_Vector<BRepGraph_NodeId> aResult;
     aResult.Append(anEdge0);
     return aResult;
   };

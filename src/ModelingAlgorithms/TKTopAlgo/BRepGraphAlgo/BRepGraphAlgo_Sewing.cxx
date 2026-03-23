@@ -168,7 +168,7 @@ void BRepGraphAlgo_Sewing::Perform()
     BRep_Builder    aBB;
     TopoDS_Compound aCompound;
     aBB.MakeCompound(aCompound);
-    for (int aShapeIter = 1; aShapeIter <= myInputShapes.Length(); ++aShapeIter)
+    for (int aShapeIter = 0; aShapeIter < myInputShapes.Length(); ++aShapeIter)
     {
       aBB.Add(aCompound, myInputShapes.Value(aShapeIter));
     }
@@ -192,7 +192,7 @@ void BRepGraphAlgo_Sewing::Perform()
   }
 
   // Phase 5a: Match free edge pairs.
-  NCollection_Sequence<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> aMatchedPairs =
+  NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> aMatchedPairs =
     matchFreeEdges(aTmpAllocator);
   aTmpAllocator->Reset(false);
 
@@ -201,7 +201,7 @@ void BRepGraphAlgo_Sewing::Perform()
     BRep_Builder    aBB;
     TopoDS_Compound aCompound;
     aBB.MakeCompound(aCompound);
-    for (int aShapeIter = 1; aShapeIter <= myInputShapes.Length(); ++aShapeIter)
+    for (int aShapeIter = 0; aShapeIter < myInputShapes.Length(); ++aShapeIter)
     {
       aBB.Add(aCompound, myInputShapes.Value(aShapeIter));
     }
@@ -245,7 +245,7 @@ void BRepGraphAlgo_Sewing::analyzeFaces(const Handle(NCollection_IncAllocator)& 
   BRep_Builder    aBB;
   TopoDS_Compound aCompound;
   aBB.MakeCompound(aCompound);
-  for (int aShapeIter = 1; aShapeIter <= myInputShapes.Length(); ++aShapeIter)
+  for (int aShapeIter = 0; aShapeIter < myInputShapes.Length(); ++aShapeIter)
   {
     aBB.Add(aCompound, myInputShapes.Value(aShapeIter));
   }
@@ -259,19 +259,19 @@ void BRepGraphAlgo_Sewing::analyzeFaces(const Handle(NCollection_IncAllocator)& 
 
 void BRepGraphAlgo_Sewing::findFreeEdges()
 {
-  // FreeEdges() returns NCollection_Sequence; convert to Array1 for thread-safe
-  // random access in parallel phases (NCollection_Sequence is not safe for concurrent reads).
-  NCollection_Sequence<BRepGraph_NodeId> aFreeSeq = myGraph.FreeEdges();
-  const int                              aNbFree  = aFreeSeq.Length();
+  // FreeEdges() returns NCollection_Vector (0-based); convert to Array1 for thread-safe
+  // random access in parallel phases.
+  NCollection_Vector<BRepGraph_NodeId> aFreeVec = myGraph.FreeEdges();
+  const int                            aNbFree  = aFreeVec.Length();
   if (aNbFree == 0)
   {
     myFreeEdgesBefore = NCollection_Array1<BRepGraph_NodeId>();
     return;
   }
   NCollection_Array1<BRepGraph_NodeId> anArray(1, aNbFree);
-  for (int anIdx = 1; anIdx <= aNbFree; ++anIdx)
+  for (int anIdx = 0; anIdx < aNbFree; ++anIdx)
   {
-    anArray.SetValue(anIdx, aFreeSeq.Value(anIdx));
+    anArray.SetValue(anIdx + 1, aFreeVec.Value(anIdx));
   }
   myFreeEdgesBefore = std::move(anArray);
 }
@@ -288,7 +288,7 @@ void BRepGraphAlgo_Sewing::assembleVertices(const Handle(NCollection_IncAllocato
   // Collect all unique vertex indices from free edges.
   // Each free edge has 2 vertices; estimate unique count ~ number of free edges.
   const int                 aNbFreeEdges = myFreeEdgesBefore.Length();
-  NCollection_Sequence<int> aFreeVertexIndices(theTmpAlloc);
+  NCollection_Vector<int> aFreeVertexIndices(256, theTmpAlloc);
   NCollection_Map<int>      aFreeVertexSet(aNbFreeEdges, theTmpAlloc);
   for (int aFreeEdgeIter = 1; aFreeEdgeIter <= myFreeEdgesBefore.Length(); ++aFreeEdgeIter)
   {
@@ -314,11 +314,11 @@ void BRepGraphAlgo_Sewing::assembleVertices(const Handle(NCollection_IncAllocato
   // aVertexPoints uses 0-based indexing; aGraphIndices maps array position -> graph vertex index.
   NCollection_Array1<gp_Pnt> aVertexPoints(0, aNbVertices - 1);
   NCollection_Array1<int>    aGraphIndices(0, aNbVertices - 1);
-  for (int aVtxIter = 1; aVtxIter <= aNbVertices; ++aVtxIter)
+  for (int aVtxIter = 0; aVtxIter < aNbVertices; ++aVtxIter)
   {
     const int anIdx = aFreeVertexIndices.Value(aVtxIter);
-    aVertexPoints.SetValue(aVtxIter - 1, myGraph.Vertex(anIdx).Point);
-    aGraphIndices.SetValue(aVtxIter - 1, anIdx);
+    aVertexPoints.SetValue(aVtxIter, myGraph.Vertex(anIdx).Point);
+    aGraphIndices.SetValue(aVtxIter, anIdx);
   }
 
   // Build the KDTree -- O(n log n).
@@ -578,10 +578,10 @@ void BRepGraphAlgo_Sewing::cutAtIntersections()
 
 //=================================================================================================
 
-NCollection_Sequence<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> BRepGraphAlgo_Sewing::
+NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> BRepGraphAlgo_Sewing::
   matchFreeEdges(const Handle(NCollection_IncAllocator)& theTmpAlloc)
 {
-  NCollection_Sequence<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> aResult;
+  NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> aResult;
   const int aNbFreeEdges = myFreeEdgesBefore.Length();
   if (aNbFreeEdges == 0)
     return aResult;
@@ -681,7 +681,7 @@ NCollection_Sequence<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> BRepGraphAlg
   };
 
   // Collect all valid (edgeA, edgeB, score) tuples.
-  NCollection_Sequence<ScoredPair> aScoredPairs;
+  NCollection_Vector<ScoredPair> aScoredPairs;
   for (int aEdgeIter = 1; aEdgeIter <= aNbFreeEdges; ++aEdgeIter)
   {
     const MatchResult& aMatch = aPerEdgeMatch.Value(aEdgeIter);
@@ -699,9 +699,9 @@ NCollection_Sequence<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> BRepGraphAlg
   if (aNbScored > 0)
   {
     NCollection_Array1<ScoredPair> aSortedPairs(0, aNbScored - 1);
-    for (int anIdx = 1; anIdx <= aNbScored; ++anIdx)
+    for (int anIdx = 0; anIdx < aNbScored; ++anIdx)
     {
-      aSortedPairs.SetValue(anIdx - 1, aScoredPairs.Value(anIdx));
+      aSortedPairs.SetValue(anIdx, aScoredPairs.Value(anIdx));
     }
     std::sort(
       &aSortedPairs.ChangeFirst(),
@@ -730,23 +730,23 @@ NCollection_Sequence<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> BRepGraphAlg
 //=================================================================================================
 
 void BRepGraphAlgo_Sewing::mergeMatchedEdges(
-  const NCollection_Sequence<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>>& thePairs,
+  const NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>>& thePairs,
   NCollection_Map<int>&                                                      theAffectedFaces,
   NCollection_Map<int>&                                                      theSewnEdgeIndices)
 {
   BRep_Builder aBB;
 
   // Collect edges that need SameParameter -- will be run in parallel after the loop.
-  NCollection_Sequence<TopoDS_Edge> aSameParamEdges;
+  NCollection_Vector<TopoDS_Edge> aSameParamEdges;
 
-  for (int aPairIter = 1; aPairIter <= thePairs.Length(); ++aPairIter)
+  for (int aPairIter = 0; aPairIter < thePairs.Length(); ++aPairIter)
   {
     const auto& [anIdA, anIdB] = thePairs.Value(aPairIter);
     theSewnEdgeIndices.Add(anIdA.Index);
 
     // Record which faces reference the removed edge (for reconstruction).
     const BRepGraph_TopoNode::Edge& aRemoveEdge = myGraph.Edge(anIdB.Index);
-    for (int aPCurveIter = 1; aPCurveIter <= aRemoveEdge.PCurves.Length(); ++aPCurveIter)
+    for (int aPCurveIter = 0; aPCurveIter < aRemoveEdge.PCurves.Length(); ++aPCurveIter)
     {
       theAffectedFaces.Add(aRemoveEdge.PCurves.Value(aPCurveIter).FaceNodeId.Index);
     }
@@ -755,7 +755,7 @@ void BRepGraphAlgo_Sewing::mergeMatchedEdges(
     const TopoDS_Edge& aRemoveTopoEdge = TopoDS::Edge(aRemoveEdge.OriginalShape);
 
     // Transfer pcurves from remove-edge to keep-edge.
-    for (int aPCurveIter = 1; aPCurveIter <= aRemoveEdge.PCurves.Length(); ++aPCurveIter)
+    for (int aPCurveIter = 0; aPCurveIter < aRemoveEdge.PCurves.Length(); ++aPCurveIter)
     {
       const BRepGraph_TopoNode::Edge::PCurveEntry& aPCEntry =
         aRemoveEdge.PCurves.Value(aPCurveIter);
@@ -803,7 +803,7 @@ void BRepGraphAlgo_Sewing::mergeMatchedEdges(
     }
 
     // Record history.
-    NCollection_Sequence<BRepGraph_NodeId> aReplacement;
+    NCollection_Vector<BRepGraph_NodeId> aReplacement;
     aReplacement.Append(anIdA);
     myGraph.RecordHistory("Sewing:MergeEdge", anIdB, aReplacement);
 
@@ -816,11 +816,11 @@ void BRepGraphAlgo_Sewing::mergeMatchedEdges(
   if (!aSameParamEdges.IsEmpty())
   {
     const int aNbSP = aSameParamEdges.Length();
-    // Copy to array for indexed parallel access (Sequence::Value is not thread-safe).
+    // Copy to array for indexed parallel access.
     NCollection_Array1<TopoDS_Edge> aSPArray(0, aNbSP - 1);
-    for (int anIdx = 1; anIdx <= aNbSP; ++anIdx)
+    for (int anIdx = 0; anIdx < aNbSP; ++anIdx)
     {
-      aSPArray.SetValue(anIdx - 1, aSameParamEdges.Value(anIdx));
+      aSPArray.SetValue(anIdx, aSameParamEdges.Value(anIdx));
     }
     OSD_Parallel::For(
       0,
