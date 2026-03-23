@@ -633,8 +633,8 @@ void BRepGraph_Builder::registerFaceData(BRepGraph& theGraph, const FaceDataVec&
 
       if (aIsNewWireDef)
       {
-        // Set wire closure.
-        theGraph.myData->myWires.Defs.ChangeValue(aWireDefIdx).IsClosed =
+        // Set wire closure on the WireUsage.
+        theGraph.myData->myWires.Usages.ChangeValue(aWireUsageIdx).IsClosed =
           aFirstVertexDefId.IsValid() && aLastVertexDefId.IsValid()
           && aFirstVertexDefId == aLastVertexDefId;
       }

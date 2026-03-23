@@ -32,6 +32,10 @@ public:
   //! @param[in] theIdx zero-based definition index
   Standard_EXPORT BRepGraph_TopoNode::WireDef& WireDef(int theIdx);
 
+  //! Return mutable wire usage.
+  //! @param[in] theIdx zero-based usage index
+  Standard_EXPORT BRepGraph_TopoNode::WireUsage& WireUsage(int theIdx);
+
   //! Return mutable vertex definition (marks node as modified).
   //! @param[in] theIdx zero-based definition index
   Standard_EXPORT BRepGraph_TopoNode::VertexDef& VertexDef(int theIdx);

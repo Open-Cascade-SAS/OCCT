@@ -95,7 +95,8 @@ TopoDS_Shape BRepGraph_Reconstruct::Node(const BRepGraph& theGraph,
           }
         }
       }
-      if (aWireDef.IsClosed)
+      if (!aWireDef.Usages.IsEmpty()
+          && theGraph.myData->myWires.Usages.Value(aWireDef.Usages.Value(0).Index).IsClosed)
         aNewWire.Closed(true);
       return aNewWire;
     }
@@ -145,10 +146,12 @@ TopoDS_Shape BRepGraph_Reconstruct::Node(const BRepGraph& theGraph,
 
         const BRepGraph_TopoNode::WireDef& aWireDef =
           theGraph.myData->myWires.Defs.Value(theWireDefId.Index);
+        bool aIsClosed = false;
         if (!aWireDef.Usages.IsEmpty())
         {
           const BRepGraph_TopoNode::WireUsage& aWireUsage =
             theGraph.myData->myWires.Usages.Value(aWireDef.Usages.Value(0).Index);
+          aIsClosed = aWireUsage.IsClosed;
           for (int anEdgeIdx = 0; anEdgeIdx < aWireUsage.EdgeUsages.Length(); ++anEdgeIdx)
           {
             const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage =
@@ -246,7 +249,7 @@ TopoDS_Shape BRepGraph_Reconstruct::Node(const BRepGraph& theGraph,
           }
         }
 
-        if (aWireDef.IsClosed)
+        if (aIsClosed)
           aNewWire.Closed(true);
         return aNewWire;
       };
@@ -494,10 +497,12 @@ TopoDS_Shape BRepGraph_Reconstruct::FaceWithCache(
 
     const BRepGraph_TopoNode::WireDef& aWireDef =
       theGraph.myData->myWires.Defs.Value(theWireDefId.Index);
+    bool aIsClosed = false;
     if (!aWireDef.Usages.IsEmpty())
     {
       const BRepGraph_TopoNode::WireUsage& aWireUsage =
         theGraph.myData->myWires.Usages.Value(aWireDef.Usages.Value(0).Index);
+      aIsClosed = aWireUsage.IsClosed;
       for (int anEdgeIdx = 0; anEdgeIdx < aWireUsage.EdgeUsages.Length(); ++anEdgeIdx)
       {
         const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage =
@@ -592,7 +597,7 @@ TopoDS_Shape BRepGraph_Reconstruct::FaceWithCache(
       }
     }
 
-    if (aWireDef.IsClosed)
+    if (aIsClosed)
       aNewWire.Closed(true);
     return aNewWire;
   };

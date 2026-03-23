@@ -168,8 +168,11 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph_Analyze::DegenerateWires(const BR
       continue;
     }
 
-    // Outer wire that is not closed.
-    if (!aWire.IsClosed)
+    // Outer wire that is not closed (check via canonical WireUsage).
+    bool aIsClosed = false;
+    if (!aWire.Usages.IsEmpty())
+      aIsClosed = aUsages.Wire(aWire.Usages.Value(0).Index).IsClosed;
+    if (!aIsClosed)
     {
       // Check if any usage of this wire is the outer wire of its face.
       for (int aUsageIdx = 0; aUsageIdx < aWire.Usages.Length(); ++aUsageIdx)

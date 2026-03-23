@@ -184,7 +184,7 @@ void BRepGraphCheck::CheckWireOnFace(
     const BRepGraph_NodeId aLastEndVtx    = aLastEdge.OrientedEndVertex(aLastEdgeUsage.Orientation);
 
     // If the wire is expected to be closed but vertices don't match.
-    if (aWireDef.IsClosed && aFirstStartVtx.IsValid() && aLastEndVtx.IsValid()
+    if (aWireUsage.IsClosed && aFirstStartVtx.IsValid() && aLastEndVtx.IsValid()
         && aFirstStartVtx != aLastEndVtx)
     {
       BRepGraphCheck_Issue anIssue;
@@ -203,7 +203,7 @@ void BRepGraphCheck::CheckWireOnFace(
   const BRepGraph_TopoNode::FaceDef& aFaceDef = aDefs.Face(theFaceDefIdx);
 
   // 2D parametric closure check: verify UV endpoints of first and last edges meet.
-  if (aWireDef.IsClosed && aNbEdges > 1 && !aFaceDef.Surface.IsNull())
+  if (aWireUsage.IsClosed && aNbEdges > 1 && !aFaceDef.Surface.IsNull())
   {
     const BRepGraph_TopoNode::EdgeUsage& aFirstEU =
       aUsages.Edge(aWireUsage.EdgeUsages.Value(0).Index);

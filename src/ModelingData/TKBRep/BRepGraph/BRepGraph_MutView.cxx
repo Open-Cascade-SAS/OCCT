@@ -36,6 +36,15 @@ BRepGraph_TopoNode::WireDef& BRepGraph::MutView::WireDef(int theIdx)
 
 //=================================================================================================
 
+BRepGraph_TopoNode::WireUsage& BRepGraph::MutView::WireUsage(int theIdx)
+{
+  BRepGraph_NodeId aDefId = myGraph->myData->myWires.Usages.Value(theIdx).DefId;
+  myGraph->markModified(aDefId);
+  return myGraph->myData->myWires.Usages.ChangeValue(theIdx);
+}
+
+//=================================================================================================
+
 BRepGraph_TopoNode::VertexDef& BRepGraph::MutView::VertexDef(int theIdx)
 {
   myGraph->markModified(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Vertex, theIdx));

@@ -120,7 +120,7 @@ BRepGraph_NodeId BRepGraph::BuilderView::AddWireDef(
     BRepGraph_NodeId aLastVtx  = (aLastOri == TopAbs_FORWARD)
                                    ? aLastEdge.EndVertexDefId
                                    : aLastEdge.StartVertexDefId;
-    myGraph->myData->myWires.Defs.ChangeValue(aIdx).IsClosed =
+    myGraph->myData->myWires.Usages.ChangeValue(aWireUsageIdx).IsClosed =
       aFirstVtx.IsValid() && aLastVtx.IsValid() && aFirstVtx == aLastVtx;
   }
 
@@ -253,6 +253,7 @@ BRepGraph_UsageId BRepGraph::BuilderView::AddFaceToShell(BRepGraph_NodeId   theS
       aNewWU.UsageId        = BRepGraph_UsageId(BRepGraph_NodeId::Kind::Wire, aNewWUIdx);
       aNewWU.DefId          = aWireDefId;
       aNewWU.OwnerFaceUsage = myGraph->myData->myFaces.Usages.Value(aFaceUsIdx).UsageId;
+      aNewWU.IsClosed       = aSrcWU.IsClosed;
       myGraph->myData->myWires.Defs.ChangeValue(aWireDefId.Index)
         .Usages.Append(aNewWU.UsageId);
 

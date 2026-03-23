@@ -214,7 +214,7 @@ TEST(BRepGraphAPI_AddNodeTest, AddWireDef_ClosedRectangle)
   ASSERT_FALSE(aWireDef.Usages.IsEmpty());
   const BRepGraph_TopoNode::WireUsage& aWireUsage = aGraph.Usages().Wire(aWireDef.Usages.Value(0).Index);
   EXPECT_EQ(aWireUsage.EdgeUsages.Length(), 4);
-  EXPECT_TRUE(aWireDef.IsClosed);
+  EXPECT_TRUE(aWireUsage.IsClosed);
 }
 
 TEST(BRepGraphAPI_AddNodeTest, AddFaceDef_WithSurface)

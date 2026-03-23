@@ -104,12 +104,10 @@ struct FaceDef : public BaseDef
   bool NaturalRestriction = false;
 };
 
-//! Wire definition holding closure status.
-//! Edge ordering and orientation are stored on WireUsage::EdgeUsages.
+//! Wire definition.
+//! Edge ordering, orientation, and closure are stored on WireUsage.
 struct WireDef : public BaseDef
 {
-  //! True if first edge's start vertex == last edge's end vertex.
-  bool IsClosed = false;
 };
 
 struct EdgeDef : public BaseDef
@@ -301,8 +299,11 @@ struct FaceUsage : public BaseUsage
 
 struct WireUsage : public BaseUsage
 {
-  BRepGraph_UsageId OwnerFaceUsage;
+  BRepGraph_UsageId OwnerFaceUsage;  //!< FaceUsage that contains this wire occurrence
   NCollection_Vector<BRepGraph_UsageId> EdgeUsages;  //!< Ordered edge usages in topological winding order
+
+  //! True if first edge's start vertex == last edge's end vertex.
+  bool IsClosed = false;
 };
 
 struct EdgeUsage : public BaseUsage

@@ -1277,9 +1277,9 @@ TEST_F(BRepGraphTest, Wire_IsClosed_BoxOuterWires)
     ASSERT_FALSE(aFace.Usages.IsEmpty());
     const BRepGraph_TopoNode::FaceUsage& aFaceUsage = myGraph.Usages().Face(aFace.Usages.First().Index);
     ASSERT_TRUE(aFaceUsage.OuterWireUsage.IsValid());
-    const BRepGraph_TopoNode::WireDef& aWire = myGraph.Defs().Wire(
-      myGraph.Usages().Wire(aFaceUsage.OuterWireUsage.Index).DefId.Index);
-    EXPECT_TRUE(aWire.IsClosed) << "Outer wire of face " << aFaceIdx << " should be closed";
+    const BRepGraph_TopoNode::WireUsage& aWireUsage =
+      myGraph.Usages().Wire(aFaceUsage.OuterWireUsage.Index);
+    EXPECT_TRUE(aWireUsage.IsClosed) << "Outer wire of face " << aFaceIdx << " should be closed";
   }
 }
 
@@ -1479,17 +1479,21 @@ TEST_F(BRepGraphTest, Centroid_Face_InsideBBox)
 // Group 13: Mutation (Extended)
 // ===================================================================
 
-TEST_F(BRepGraphTest, MutableWire_ModifyClosure_Verified)
+TEST_F(BRepGraphTest, MutableWireUsage_ModifyClosure_Verified)
 {
-  BRepGraph_TopoNode::WireDef& aMutWire = myGraph.Mut().WireDef(0);
-  bool anOrigClosed = aMutWire.IsClosed;
-  aMutWire.IsClosed = !anOrigClosed;
+  const BRepGraph_TopoNode::WireDef& aWireDef = myGraph.Defs().Wire(0);
+  ASSERT_FALSE(aWireDef.Usages.IsEmpty());
+  const int aWireUsageIdx = aWireDef.Usages.Value(0).Index;
 
-  EXPECT_EQ(myGraph.Defs().Wire(0).IsClosed, !anOrigClosed);
+  BRepGraph_TopoNode::WireUsage& aMutWU = myGraph.Mut().WireUsage(aWireUsageIdx);
+  bool anOrigClosed = aMutWU.IsClosed;
+  aMutWU.IsClosed = !anOrigClosed;
+
+  EXPECT_EQ(myGraph.Usages().Wire(aWireUsageIdx).IsClosed, !anOrigClosed);
 
   // Restore original state.
-  aMutWire.IsClosed = anOrigClosed;
-  EXPECT_EQ(myGraph.Defs().Wire(0).IsClosed, anOrigClosed);
+  myGraph.Mut().WireUsage(aWireUsageIdx).IsClosed = anOrigClosed;
+  EXPECT_EQ(myGraph.Usages().Wire(aWireUsageIdx).IsClosed, anOrigClosed);
 }
 
 TEST_F(BRepGraphTest, MultipleUserAttributes_SameNode_Independent)
