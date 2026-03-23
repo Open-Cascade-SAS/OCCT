@@ -75,7 +75,7 @@ BRepGraph_NodeId remapNodeId(const BRepGraph_NodeId&              theId,
       aMap = &theCompSolidMap;
       break;
     default:
-      // Product/Occurrence kinds are not compacted — they reference topology
+      // Product/Occurrence kinds are not compacted - they reference topology
       // nodes which are remapped independently.
       break;
   }

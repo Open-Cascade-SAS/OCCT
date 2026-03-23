@@ -512,7 +512,7 @@ static occ::handle<BRepGraphAlgo_UVBoundsAttribute> findUVAttr(const BRepGraph_N
   return occ::down_cast<BRepGraphAlgo_UVBoundsAttribute>(anAttr);
 }
 
-//! Helper: store CachedData into a cache — reuses existing attribute or creates a new one.
+//! Helper: store CachedData into a cache - reuses existing attribute or creates a new one.
 static void storeUVAttr(BRepGraph_NodeCache&                      theCache,
                         int                                       theKey,
                         const BRepGraphAlgo_UVBounds::CachedData& theData)

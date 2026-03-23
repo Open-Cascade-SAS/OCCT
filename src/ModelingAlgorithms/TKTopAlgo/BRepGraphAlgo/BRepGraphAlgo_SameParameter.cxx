@@ -209,7 +209,7 @@ bool evalTol(const Geom2dAdaptor_Curve& thePCAdaptor,
 constexpr int    THE_NCONTROL  = 22;     //!< Number of control points for ComputeTol sampling
 constexpr double THE_BIG_ERROR = 1.0e10; //!< Threshold above which error is considered degenerate
 constexpr double THE_MIN_POLE_DIST_RATIO =
-  0.1;                                        //!< Fraction of min pole distance for C0→C1 tolerance
+  0.1;                                        //!< Fraction of min pole distance for C0->C1 tolerance
 constexpr double THE_APPROX_MIN_TOL = 1.0e-3; //!< Minimum tolerance for Approx_CurvilinearParameter
 constexpr double THE_ANA_BSP_TOL    = 1.0e-7; //!< Tight tolerance for analytical+BSpline case
 constexpr double THE_KNOT_RATIO_CRIT =
@@ -654,7 +654,7 @@ bool enforceImpl(BRepGraph&       theGraph,
       }
       else
       {
-        // Approx_SameParameter failed — try SameRange fallback.
+        // Approx_SameParameter failed - try SameRange fallback.
         ++theFlags.NbApproxFallbacks;
         occ::handle<Geom2d_Curve> aFallbackPC;
         GeomLib::SameRange(aTolSameRange,

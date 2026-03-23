@@ -414,12 +414,12 @@ TEST(BRepGraphAlgo_DeduplicateTest, SingleFace_NoSurfaceRewrite)
   EXPECT_EQ(aRes.NbSurfaceRewrites, 0);
 }
 
-// PCurve dedup test removed — PCurves are now inline on EdgeDef, not separate graph nodes.
+// PCurve dedup test removed - PCurves are now inline on EdgeDef, not separate graph nodes.
 
 TEST(BRepGraphAlgo_DeduplicateTest, NotDoneGraph_ReturnsEmptyResult)
 {
   BRepGraph aGraph;
-  // Do not call Build() -- graph is not done.
+  // Do not call Build() - graph is not done.
   ASSERT_FALSE(aGraph.IsDone());
 
   const BRepGraphAlgo_Deduplicate::Result aRes = BRepGraphAlgo_Deduplicate::Perform(aGraph);
@@ -466,7 +466,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, FullBox_AllSurfacesUnique)
   ASSERT_TRUE(aGraph.IsDone());
 
   // A box has 6 faces with 6 distinct Geom_Plane instances (different origins/normals).
-  // No surface dedup should occur -- all 6 are canonical.
+  // No surface dedup should occur - all 6 are canonical.
   const BRepGraphAlgo_Deduplicate::Result aRes = BRepGraphAlgo_Deduplicate::Perform(aGraph);
   EXPECT_EQ(aRes.NbCanonicalSurfaces, 6);
   EXPECT_EQ(aRes.NbSurfaceRewrites, 0);
@@ -856,7 +856,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, HistoryFindOriginal_TracesBackToCanonical)
       {
         const BRepGraph_NodeId aTraced =
           aGraph.History().FindOriginal(aReplacements.Value(aReplIdx));
-        // FindOriginal should eventually reach a root -- the canonical node.
+        // FindOriginal should eventually reach a root - the canonical node.
         EXPECT_TRUE(aTraced.IsValid());
         // The original node from the record should match one of the trace results.
         EXPECT_TRUE(anOriginal.IsValid());
@@ -931,7 +931,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, HistoryOff_NbRecordsUnchanged)
   (void)BRepGraphAlgo_Deduplicate::Perform(aGraph, anOpts1);
   EXPECT_EQ(aGraph.History().NbRecords(), 5);
 
-  // Fresh graph, run with history off -- no records should be added.
+  // Fresh graph, run with history off - no records should be added.
   BRepGraph aGraph2;
   aGraph2.Build(makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph2.IsDone());
@@ -1676,7 +1676,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, Pump_FullDedup_BackRefsAndNullify)
             << "  History records: " << aRes.NbHistoryRecords << "\n"
             << "==========================\n";
 
-  // Get the final shape via Shape() -- returns original if unmodified,
+  // Get the final shape via Shape() - returns original if unmodified,
   // reconstructs if modified (dedup marks face/edge defs as modified,
   // which propagates up to the root compound).
   BRepGraph_NodeId aRootId;

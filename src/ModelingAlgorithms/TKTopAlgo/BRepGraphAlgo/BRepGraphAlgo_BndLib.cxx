@@ -731,7 +731,7 @@ void BRepGraphAlgo_BndLib::Add(const BRepGraph& theGraph, Bnd_Box& theBox, bool 
   }
 
   // Add free vertices (vertices not in edges).
-  // For simplicity, add all vertices — redundant additions are harmless.
+  // For simplicity, add all vertices - redundant additions are harmless.
   const int aNbVerts = theGraph.Defs().NbVertices();
   for (int i = 0; i < aNbVerts; ++i)
   {
@@ -806,7 +806,7 @@ void BRepGraphAlgo_BndLib::AddOptimal(const BRepGraph& theGraph,
 }
 
 //=================================================================================================
-// Cached API -- bounding box attribute stored as user attribute on graph nodes
+// Cached API - bounding box attribute stored as user attribute on graph nodes
 //=================================================================================================
 
 namespace

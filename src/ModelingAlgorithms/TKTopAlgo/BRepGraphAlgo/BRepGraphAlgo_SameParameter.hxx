@@ -49,7 +49,7 @@ public:
                                       double           theTolerance);
 
   //! Enforce SameParameter on a set of edges, optionally in parallel.
-  //! Each edge is independent -- safe for parallel execution.
+  //! Each edge is independent - safe for parallel execution.
   //! @param[in,out] theGraph       the graph containing the edges
   //! @param[in]     theEdgeIndices edge definition indices to process
   //! @param[in]     theTolerance   reference tolerance

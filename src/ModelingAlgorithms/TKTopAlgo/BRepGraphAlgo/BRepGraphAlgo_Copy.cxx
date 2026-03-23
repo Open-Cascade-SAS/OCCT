@@ -55,7 +55,7 @@ occ::handle<Geom2d_Curve> copyPCurve(const occ::handle<Geom2d_Curve>& theCrv, bo
 }
 
 //! Transfer user attributes from source node cache to destination node cache.
-//! Attributes are shared (same shared_ptr) — caller must deep-copy if needed.
+//! Attributes are shared (same shared_ptr) - caller must deep-copy if needed.
 void transferUserAttributes(const BRepGraph_NodeCache& theSrc,
                             BRepGraph_NodeCache&       theDst)
 {

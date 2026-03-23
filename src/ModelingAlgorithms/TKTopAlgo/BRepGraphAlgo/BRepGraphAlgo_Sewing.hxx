@@ -28,16 +28,16 @@
 //! and merges them in-place using BRepGraph mutation APIs.
 //!
 //! The algorithm follows these phases:
-//! 0. Face Analysis (optional) -- detect/remove small edges and faces
-//! 1. Find Free Edges -- boundary edge detection via face-reference counting
-//! 2. Vertex Assembling -- merge coincident free-edge vertices (union-find)
-//! 3. Edge Cutting (optional) -- split edges at T-vertex intersections
-//! 4. Candidate Detection -- BBox pre-filter + KDTree overlap detection
-//! 5. Edge Matching -- geometric validation + greedy best-score pairing
-//! 6. Edge Merging -- PCurve transfer, wire updates, tolerance merge
-//! 7. Degenerate Conversion -- convert remaining free degenerate wires
-//! 8. Edge Processing -- tolerance consistency + SameParameter
-//! 9. Output -- populate result diagnostics
+//! 0. Face Analysis (optional) - detect/remove small edges and faces
+//! 1. Find Free Edges - boundary edge detection via face-reference counting
+//! 2. Vertex Assembling - merge coincident free-edge vertices (union-find)
+//! 3. Edge Cutting (optional) - split edges at T-vertex intersections
+//! 4. Candidate Detection - BBox pre-filter + KDTree overlap detection
+//! 5. Edge Matching - geometric validation + greedy best-score pairing
+//! 6. Edge Merging - PCurve transfer, wire updates, tolerance merge
+//! 7. Degenerate Conversion - convert remaining free degenerate wires
+//! 8. Edge Processing - tolerance consistency + SameParameter
+//! 9. Output - populate result diagnostics
 //!
 //! ## Typical usage (graph-level)
 //! @code

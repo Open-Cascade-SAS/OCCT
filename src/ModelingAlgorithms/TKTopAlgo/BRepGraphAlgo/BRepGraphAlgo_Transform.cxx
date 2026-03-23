@@ -50,7 +50,7 @@ void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
       if (!aSurf.IsNull())
         aSurf->Transform(theTrsf);
     }
-    // Invalidate triangulations -- meshes are no longer valid after geometry transform.
+    // Invalidate triangulations - meshes are no longer valid after geometry transform.
     aFace->TriangulationRepIdxs.Clear();
     aFace->ActiveTriangulationIndex = -1;
   }
@@ -67,7 +67,7 @@ void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
         aCurve3d->Transform(theTrsf);
     }
   }
-  // PCurves are in UV space -- they are not affected by 3D transforms.
+  // PCurves are in UV space - they are not affected by 3D transforms.
 }
 
 } // namespace

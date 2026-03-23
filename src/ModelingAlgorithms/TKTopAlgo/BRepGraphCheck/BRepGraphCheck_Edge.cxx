@@ -201,7 +201,7 @@ void BRepGraphCheck::CheckEdgeOnFace(
       BRepGraph_Tool::Edge::FindPCurve(theGraph, theEdgeDefIdx, theFaceDefIdx, TopAbs_REVERSED);
     if (aPCurveF != nullptr && aPCurveR != nullptr && aPCurveF != aPCurveR)
     {
-      // Both PCurves exist — this is a seam edge. Validate the second PCurve.
+      // Both PCurves exist - this is a seam edge. Validate the second PCurve.
       if (aPCurveR->Curve2DRepIdx < 0)
       {
         BRepGraphCheck_Issue anIssue;

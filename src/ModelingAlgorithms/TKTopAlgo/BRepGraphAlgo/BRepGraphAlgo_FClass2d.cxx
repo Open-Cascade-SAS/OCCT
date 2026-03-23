@@ -343,7 +343,7 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
 
     if (aNbEdgeMismatch != 0)
     {
-      // Mismatch between ordered edges and usage edges — bad wire.
+      // Mismatch between ordered edges and usage edges - bad wire.
       NCollection_Array1<gp_Pnt2d> aPClass(1, 2);
       aPClass.Init(gp_Pnt2d(0., 0.));
       myWireClassifiers.Append(
@@ -601,7 +601,7 @@ TopAbs_State BRepGraphAlgo_FClass2d::classifyInternal(const gp_Pnt2d& thePntUV,
         }
         else
         {
-          // Uncertain — fallback to BRepClass_FaceClassifier via face reconstruction.
+          // Uncertain - fallback to BRepClass_FaceClassifier via face reconstruction.
           const TopoDS_Shape aReconstructed = myGraph->Shapes().ReconstructFace(myFaceDefIdx);
           if (!aReconstructed.IsNull())
           {
@@ -622,7 +622,7 @@ TopAbs_State BRepGraphAlgo_FClass2d::classifyInternal(const gp_Pnt2d& thePntUV,
     }
     else
     {
-      // Bad wire — fallback to BRepClass_FaceClassifier.
+      // Bad wire - fallback to BRepClass_FaceClassifier.
       const TopoDS_Shape aReconstructed = myGraph->Shapes().ReconstructFace(myFaceDefIdx);
       if (!aReconstructed.IsNull())
       {

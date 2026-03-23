@@ -569,7 +569,7 @@ TEST(BRepGraphCheck_AnalyzerTest, GeomControls_ValidSphere_NoIssues)
 }
 
 // ---------------------------------------------------------------------------
-// Negative test: displaced vertex → InvalidPointOnCurve
+// Negative test: displaced vertex -> InvalidPointOnCurve
 // ---------------------------------------------------------------------------
 
 TEST(BRepGraphCheck_AnalyzerTest, DisplacedVertex_DetectsInvalidPointOnCurve)
@@ -622,7 +622,7 @@ TEST(BRepGraphCheck_AnalyzerTest, DisplacedVertex_DetectsInvalidPointOnCurve)
 }
 
 // ---------------------------------------------------------------------------
-// Negative test: edge missing PCurve on face → NoCurveOnSurface
+// Negative test: edge missing PCurve on face -> NoCurveOnSurface
 // ---------------------------------------------------------------------------
 
 TEST(BRepGraphCheck_AnalyzerTest, MissingPCurve_DetectsNoCurveOnSurface)
@@ -654,7 +654,7 @@ TEST(BRepGraphCheck_AnalyzerTest, MissingPCurve_DetectsNoCurveOnSurface)
     if (aPCEntry != nullptr)
       continue; // This edge has a PCurve on face 0, skip it.
 
-    // Found an edge without PCurve on face 0 — verify detection.
+    // Found an edge without PCurve on face 0 - verify detection.
     NCollection_Vector<BRepGraphCheck_Issue> aIssues;
     BRepGraphCheck::CheckEdgeOnFace(aGraph, anEdgeIter, 0, false, aIssues);
     for (int anIssueIter = 0; anIssueIter < aIssues.Length(); ++anIssueIter)
@@ -670,14 +670,14 @@ TEST(BRepGraphCheck_AnalyzerTest, MissingPCurve_DetectsNoCurveOnSurface)
 }
 
 // ---------------------------------------------------------------------------
-// Negative test: wire with self-intersection → SelfIntersectingWire
+// Negative test: wire with self-intersection -> SelfIntersectingWire
 // ---------------------------------------------------------------------------
 
 TEST(BRepGraphCheck_AnalyzerTest, SelfIntersectingWire_DetectsCrossing)
 {
   // Build a "bowtie" wire on a plane: two edges cross at (0.5, 0.5, 0).
-  // Edge1: (0,0,0)→(1,1,0), Edge2: (1,1,0)→(1,0,0),
-  // Edge3: (1,0,0)→(0,1,0) (crosses Edge1), Edge4: (0,1,0)→(0,0,0).
+  // Edge1: (0,0,0)->(1,1,0), Edge2: (1,1,0)->(1,0,0),
+  // Edge3: (1,0,0)->(0,1,0) (crosses Edge1), Edge4: (0,1,0)->(0,0,0).
   const gp_Pnt aP00(0.0, 0.0, 0.0);
   const gp_Pnt aP11(1.0, 1.0, 0.0);
   const gp_Pnt aP10(1.0, 0.0, 0.0);
@@ -713,7 +713,7 @@ TEST(BRepGraphCheck_AnalyzerTest, SelfIntersectingWire_DetectsCrossing)
 }
 
 // ---------------------------------------------------------------------------
-// Negative test: solid with shared face between shells → InvalidImbricationOfShells
+// Negative test: solid with shared face between shells -> InvalidImbricationOfShells
 // ---------------------------------------------------------------------------
 
 TEST(BRepGraphCheck_AnalyzerTest, SharedFaceBetweenShells_DetectsImbrication)

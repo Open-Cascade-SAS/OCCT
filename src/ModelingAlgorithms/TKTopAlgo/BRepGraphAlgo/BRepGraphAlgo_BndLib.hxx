@@ -114,7 +114,7 @@ public:
                                      bool             theIsOptimal            = false,
                                      bool             theIsShapeToleranceUsed = true);
 
-  // -- Cached API --
+  // - Cached API --
   // Stores/retrieves bounding boxes as user attributes on graph nodes.
   // Thread-safe for concurrent calls on *different* nodes.
   // First attachment on a given node is NOT thread-safe with concurrent

@@ -63,7 +63,7 @@ namespace
 
 //! Extract faces from a box shape using BRepBuilderAPI_Copy with copyGeom=true.
 //! This produces faces with independent TShape edges that are geometrically
-//! identical but topologically distinct -- the exact scenario sewing must resolve.
+//! identical but topologically distinct - the exact scenario sewing must resolve.
 NCollection_Sequence<TopoDS_Face> extractCopiedFaces(const TopoDS_Shape& theBox)
 {
   NCollection_Sequence<TopoDS_Face> aFaces;
@@ -477,14 +477,14 @@ TEST(BRepGraphAlgo_SewingTest, SewEmptyInput_NotDone)
 {
   // An empty graph should return IsDone=false from Build, so Perform should also fail.
   BRepGraph aGraph;
-  // Don't build anything -- graph is not done.
+  // Don't build anything - graph is not done.
   BRepGraphAlgo_Sewing::Result aResult = BRepGraphAlgo_Sewing::Perform(aGraph);
   EXPECT_FALSE(aResult.IsDone);
 }
 
 TEST(BRepGraphAlgo_SewingTest, SewClosedSolid_NothingFree)
 {
-  // A complete solid has no free edges -- nothing to sew.
+  // A complete solid has no free edges - nothing to sew.
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
@@ -1913,7 +1913,7 @@ TEST(BRepGraphAlgo_SameParameterTest, Enforce_NoCurve3d_SetsFlag)
   aGraph.Build(aSphere);
   ASSERT_TRUE(aGraph.IsDone());
 
-  // Find a degenerate edge (pole of sphere) — it has no meaningful 3D curve.
+  // Find a degenerate edge (pole of sphere) - it has no meaningful 3D curve.
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
     if (BRepGraph_Tool::Edge::Degenerated(aGraph, anEdgeIdx) || !BRepGraph_Tool::Edge::HasCurve(aGraph, anEdgeIdx))
@@ -2059,7 +2059,7 @@ TEST(BRepGraphAlgo_SewingTest, Result_FreeEdgesPopulated)
   BRep_Builder    aBB;
   TopoDS_Compound aCompound;
   aBB.MakeCompound(aCompound);
-  // Only 2 of 6 faces — sewing will leave free edges.
+  // Only 2 of 6 faces - sewing will leave free edges.
   aBB.Add(aCompound, aFaces.Value(1));
   aBB.Add(aCompound, aFaces.Value(2));
 

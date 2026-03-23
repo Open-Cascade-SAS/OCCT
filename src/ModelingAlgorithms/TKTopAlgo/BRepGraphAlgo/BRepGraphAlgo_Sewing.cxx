@@ -417,7 +417,7 @@ NCollection_Array1<BRepGraph_NodeId> findFreeEdges(const BRepGraph& theGraph,
       continue;
     }
 
-    // Cached face count from reverse index — O(1).
+    // Cached face count from reverse index - O(1).
     const int aFaceCount = aDefs.FaceCountOfEdge(anEdgeIdx);
 
     // Exclude seam edges: on a UV-closed surface (cylinder, sphere, torus) with
@@ -497,7 +497,7 @@ void assembleVertices(BRepGraph&                                  theGraph,
     aGraphIndices.SetValue(aVtxIter, anIdx);
   }
 
-  // Build the KDTree -- O(n log n).
+  // Build the KDTree - O(n log n).
   NCollection_KDTree<gp_Pnt, 3> aTree;
   aTree.Build(aVertexPoints);
 
@@ -659,7 +659,7 @@ void cutAtIntersections(BRepGraph&                               theGraph,
         return;
       }
 
-      // Skip floating edges (no face — no cutting).
+      // Skip floating edges (no face - no cutting).
       if (theFloatingEdges.Contains(anEdgeId.Index))
       {
         return;
@@ -703,7 +703,7 @@ void cutAtIntersections(BRepGraph&                               theGraph,
 
       NCollection_Vector<SplitCandidate> aSplits;
 
-      // Query UBTree for vertices whose boxes overlap the edge box — O(log V).
+      // Query UBTree for vertices whose boxes overlap the edge box - O(log V).
       VtxBoxSelector aSelector;
       aSelector.SetCurrentBox(aEdgeBBox);
       aVtxTree.Select(aSelector);
@@ -840,7 +840,7 @@ void cutAtIntersections(BRepGraph&                               theGraph,
 // ---------------------------------------------------------------------------
 // Phase 4: Detect sewing candidates via BBox overlap.
 // Returns local adjacency lists indexed by free-edge position (1..N).
-// Eliminates persistent RelEdge storage — candidates live only until matching.
+// Eliminates persistent RelEdge storage - candidates live only until matching.
 // ---------------------------------------------------------------------------
 
 NCollection_Array1<NCollection_Vector<int>> detectCandidates(
@@ -1367,7 +1367,7 @@ int mergeMatchedEdges(
   int aSewnCount = 0;
 
   // Accumulate history pairs for batch recording (Opt 5).
-  // Use the scoped temp allocator — these vectors are consumed by RecordBatch then discarded.
+  // Use the scoped temp allocator - these vectors are consumed by RecordBatch then discarded.
   NCollection_Vector<BRepGraph_NodeId> aHistOriginals(THE_INIT_VECTOR_CAPACITY, theTmpAlloc);
   NCollection_Vector<BRepGraph_NodeId> aHistReplacements(THE_INIT_VECTOR_CAPACITY, theTmpAlloc);
 
@@ -1426,7 +1426,7 @@ int mergeMatchedEdges(
       theGraph.Mut().ReplaceEdgeInWire(aWires.Value(aWIdx), anIdB, anIdA, isReversed);
     }
 
-    // Remove the old edge properly — decrements NbActiveEdges, clears cache/RelEdges.
+    // Remove the old edge properly - decrements NbActiveEdges, clears cache/RelEdges.
     // Pass replacement (anIdA) so layers can migrate data from remove-edge to keep-edge.
     theGraph.Builder().RemoveNode(anIdB, anIdA);
 
@@ -1501,7 +1501,7 @@ TopoDS_Shape reconstructFromGraph(const BRepGraph& theGraph)
   }
   else
   {
-    // Flat faces -- wrap in compound.
+    // Flat faces - wrap in compound.
     BRep_Builder    aBB;
     TopoDS_Compound aResultCompound;
     aBB.MakeCompound(aResultCompound);
@@ -1559,7 +1559,7 @@ void convertDegenerateEdges(BRepGraph&                   theGraph,
     }
     else
     {
-      // Curved edge shorter than chord — use full arc length.
+      // Curved edge shorter than chord - use full arc length.
       try
       {
         OCC_CATCH_SIGNALS
@@ -1652,7 +1652,7 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
   // Temporary allocator for per-phase scratch, Reset(false) between phases.
   occ::handle<NCollection_IncAllocator> aTmpAllocator = new NCollection_IncAllocator;
 
-  // Phase 0 (optional): Face analysis — detect/remove small edges and faces.
+  // Phase 0 (optional): Face analysis - detect/remove small edges and faces.
   if (theOptions.FaceAnalysis)
   {
     BRepGraphAlgo_FaceAnalysis::Options aFAOptions;

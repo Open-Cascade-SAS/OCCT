@@ -96,7 +96,7 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(
   // Track which edges are small and which vertices need merging.
   NCollection_Map<int> aSmallEdgeSet;
 
-  // Vertex merge map: original vertex idx → target vertex idx.
+  // Vertex merge map: original vertex idx -> target vertex idx.
   NCollection_DataMap<int, int> aVertexMerge;
 
   // Process each face.
@@ -193,7 +193,7 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(
   aResult.NbDeletedFaces = aResult.DeletedFaces.Length();
 
   // Update merged vertex coordinates: compute centroids and combined tolerances.
-  // First, collect merge groups (target vertex → all source vertices).
+  // First, collect merge groups (target vertex -> all source vertices).
   NCollection_DataMap<int, NCollection_Vector<int>> aMergeGroups;
   for (NCollection_DataMap<int, int>::Iterator anIt(aVertexMerge); anIt.More(); anIt.Next())
   {

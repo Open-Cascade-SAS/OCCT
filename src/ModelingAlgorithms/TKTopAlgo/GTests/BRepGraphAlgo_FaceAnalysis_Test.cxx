@@ -89,7 +89,7 @@ TEST(BRepGraphAlgo_FaceAnalysisTest, SmallEdge_Detection)
 TEST(BRepGraphAlgo_FaceAnalysisTest, SmallFace_Removal)
 {
   // A face where ALL 4 edges are tiny (1e-5 units) + a normal box face.
-  // With MinTolerance = 1e-2, all tiny edges are small → face removed.
+  // With MinTolerance = 1e-2, all tiny edges are small -> face removed.
   const double aTiny = 1.0e-5;
   const gp_Pnt aP1(0, 0, 0);
   const gp_Pnt aP2(aTiny, 0, 0);

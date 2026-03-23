@@ -170,7 +170,7 @@ void BRepGraphCheck_Analyzer::Perform()
     }
   }
 
-  // Solid checks (sequential — may use BRepClass3d_SolidClassifier).
+  // Solid checks (sequential - may use BRepClass3d_SolidClassifier).
   for (int aSolidIter = 0; aSolidIter < aNbSolids; ++aSolidIter)
   {
     NCollection_Vector<BRepGraphCheck_Issue> aLocal;

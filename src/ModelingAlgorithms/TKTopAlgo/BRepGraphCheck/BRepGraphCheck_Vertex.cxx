@@ -36,7 +36,7 @@ void BRepGraphCheck::CheckVertexOnEdge(
   if (BRepGraph_Tool::Edge::Degenerated(theGraph, theEdgeDefIdx))
     return;
 
-  // No 3D curve — cannot check vertex position.
+  // No 3D curve - cannot check vertex position.
   if (!BRepGraph_Tool::Edge::HasCurve(theGraph, theEdgeDefIdx))
     return;
 

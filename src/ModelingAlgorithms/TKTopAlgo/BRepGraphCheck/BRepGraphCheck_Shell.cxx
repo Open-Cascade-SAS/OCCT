@@ -218,7 +218,7 @@ void BRepGraphCheck::CheckShellOrientation(
         const BRepGraph_TopoNode::CoEdgeDef& aCoEdgeDef = aDefs.CoEdge(aCR.CoEdgeIdx);
         const int anEdgeIdx = aCoEdgeDef.EdgeIdx;
 
-        // Compose edge orientation: coedge sense ⊕ wire ⊕ face orientation.
+        // Compose edge orientation: coedge sense x wire x face orientation.
         TopAbs_Orientation aCompOri = aCoEdgeDef.Sense;
         if (aWR.Orientation == TopAbs_REVERSED)
         {
@@ -344,7 +344,7 @@ void BRepGraphCheck::CheckShellOrientation(
           }
           else
           {
-            // Already assigned — check consistency.
+            // Already assigned - check consistency.
             if (aFaceOriMap.Find(anAdjFaceIdx) != aRequiredSign)
             {
               anIsUnorientable = true;

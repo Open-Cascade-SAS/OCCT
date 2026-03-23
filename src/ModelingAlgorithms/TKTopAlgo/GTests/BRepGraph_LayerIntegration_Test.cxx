@@ -109,7 +109,7 @@ TEST(BRepGraph_LayerIntegrationTest, Sewing_NameMigratesToKeptEdge)
   }
   EXPECT_EQ(aLayer->NbNames(), aNbEdges);
 
-  // Sew — edges at shared boundary will be merged (removed + replaced).
+  // Sew - edges at shared boundary will be merged (removed + replaced).
   BRepGraphAlgo_Sewing::Result aResult = BRepGraphAlgo_Sewing::Perform(aGraph);
   EXPECT_TRUE(aResult.IsDone);
 
@@ -150,7 +150,7 @@ TEST(BRepGraph_LayerIntegrationTest, Sewing_FaceNamesUntouched)
   occ::handle<BRepGraph_NameLayer> aLayer = new BRepGraph_NameLayer();
   aGraph.RegisterLayer(aLayer);
 
-  // Name faces — they should not be affected by sewing (only edges merge).
+  // Name faces - they should not be affected by sewing (only edges merge).
   const int aNbFaces = aGraph.Defs().NbFaces();
   for (int i = 0; i < aNbFaces; ++i)
   {
@@ -217,7 +217,7 @@ TEST(BRepGraph_LayerIntegrationTest, Deduplicate_NameMigratesToCanonical)
 
   BRepGraphAlgo_Deduplicate::Result aResult = BRepGraphAlgo_Deduplicate::Perform(aGraph);
 
-  // Some vertices were merged — names should have migrated.
+  // Some vertices were merged - names should have migrated.
   if (aResult.NbMergedVertices > 0)
   {
     // Total named vertices should be less (removed duplicates had names cleared).
@@ -410,7 +410,7 @@ TEST(BRepGraph_LayerIntegrationTest, SplitEdge_OriginalEdgeRemoved)
 
   // SplitEdge marks original as removed directly (not via RemoveNode),
   // so the layer callback is NOT triggered. Original name stays in the layer
-  // but the edge is marked IsRemoved. This is a known limitation —
+  // but the edge is marked IsRemoved. This is a known limitation -
   // SplitEdge doesn't know the "replacement" (it creates 2 sub-edges).
   EXPECT_TRUE(aGraph.Defs().Edge(aSplitEdgeIdx).IsRemoved);
 
@@ -420,7 +420,7 @@ TEST(BRepGraph_LayerIntegrationTest, SplitEdge_OriginalEdgeRemoved)
 }
 
 // ============================================================
-// Full pipeline: Build → Name → Sew → Deduplicate → Compact
+// Full pipeline: Build -> Name -> Sew -> Deduplicate -> Compact
 // ============================================================
 
 TEST(BRepGraph_LayerIntegrationTest, FullPipeline_NamesTrackThroughAllStages)
@@ -466,7 +466,7 @@ TEST(BRepGraph_LayerIntegrationTest, FullPipeline_NamesTrackThroughAllStages)
   for (int i = 0; i < aNbFacesAfter; ++i)
   {
     EXPECT_FALSE(aGraph.Defs().Face(i).IsRemoved)
-      << "Face " << i << " is removed after compact — should have been eliminated";
+      << "Face " << i << " is removed after compact - should have been eliminated";
   }
 }
 

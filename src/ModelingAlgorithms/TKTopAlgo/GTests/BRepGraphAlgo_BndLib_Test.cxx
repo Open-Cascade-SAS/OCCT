@@ -398,7 +398,7 @@ TEST(BRepGraphAlgo_BndLibTest, AddCached_OptimalSupersedesStandard)
     aGraph, aFaceId, BRepGraphAlgo_BndLib::Precision::Standard);
   ASSERT_FALSE(aStdBox.IsVoid());
 
-  // Request Optimal -- should recompute (Standard < Optimal).
+  // Request Optimal - should recompute (Standard < Optimal).
   Bnd_Box anOptBox = BRepGraphAlgo_BndLib::AddCached(
     aGraph, aFaceId, BRepGraphAlgo_BndLib::Precision::Optimal);
   ASSERT_FALSE(anOptBox.IsVoid());
@@ -408,7 +408,7 @@ TEST(BRepGraphAlgo_BndLibTest, AddCached_OptimalSupersedesStandard)
   ASSERT_TRUE(BRepGraphAlgo_BndLib::GetCached(aGraph, aFaceId, aData));
   EXPECT_EQ(aData.BoxPrecision, BRepGraphAlgo_BndLib::Precision::Optimal);
 
-  // Request Standard again -- should return cached Optimal (sufficient).
+  // Request Standard again - should return cached Optimal (sufficient).
   Bnd_Box aStdBox2 = BRepGraphAlgo_BndLib::AddCached(
     aGraph, aFaceId, BRepGraphAlgo_BndLib::Precision::Standard);
   EXPECT_FALSE(aStdBox2.IsVoid());

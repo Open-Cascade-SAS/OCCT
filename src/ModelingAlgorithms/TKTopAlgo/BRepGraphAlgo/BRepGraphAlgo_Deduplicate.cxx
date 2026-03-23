@@ -194,7 +194,7 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
       aActiveVertices.Append(std::make_pair(BRepGraph_Tool::Vertex::Pnt(theGraph, aVtxIdx), aVtxIdx));
     }
 
-    // Build KDTree from active vertex points -- O(n log n).
+    // Build KDTree from active vertex points - O(n log n).
     const int aNbActive = aActiveVertices.Length();
     NCollection_Array1<gp_Pnt> aPointsArr(0, std::max(0, aNbActive - 1));
     for (int i = 0; i < aNbActive; ++i)

@@ -162,7 +162,7 @@ static int pointsForOBB(const BRepGraph&            theGraph,
 
       if (!hasNonLinearEdge)
       {
-        // Skip planar face with linear edges — vertices already added.
+        // Skip planar face with linear edges - vertices already added.
         continue;
       }
 
@@ -215,7 +215,7 @@ static int pointsForOBB(const BRepGraph&            theGraph,
     const GeomAdaptor_TransformedCurve aCurveAdaptor = BRepGraph_Tool::Edge::CurveAdaptor(theGraph, i);
     if (isLinear(aCurveAdaptor))
     {
-      // Skip linear edge — vertices already added.
+      // Skip linear edge - vertices already added.
       continue;
     }
 

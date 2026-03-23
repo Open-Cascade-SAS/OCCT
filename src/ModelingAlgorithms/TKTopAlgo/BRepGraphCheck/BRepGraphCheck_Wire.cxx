@@ -124,12 +124,12 @@ void BRepGraphCheck::CheckWireOnFace(
     return;
 
   // Connectivity check: verify all edges are reachable via vertex adjacency.
-  // Uses the same approach as BRepCheck_Wire::Closed() — build a vertex-to-edge
+  // Uses the same approach as BRepCheck_Wire::Closed() - build a vertex-to-edge
   // adjacency map, then propagate from the first edge to check all are reachable.
   // This works regardless of CoEdgeRefs ordering.
   const int aNbEdges = aWireDef.CoEdgeRefs.Length();
   {
-    // Build vertex → edge-indices map (using oriented vertices).
+    // Build vertex -> edge-indices map (using oriented vertices).
     NCollection_DataMap<int, NCollection_Vector<int>> aVtxToEdgeIndices;
     for (int anEdgeIter = 0; anEdgeIter < aNbEdges; ++anEdgeIter)
     {
@@ -360,7 +360,7 @@ void BRepGraphCheck::CheckWireOnFace(
       continue;
     }
 
-    // Get PCurve adaptor — uses stored PCurve, or computes via CurveOnPlane for planar faces.
+    // Get PCurve adaptor - uses stored PCurve, or computes via CurveOnPlane for planar faces.
     Geom2dAdaptor_Curve aPCAdaptor =
       BRepGraph_Tool::CoEdge::PCurveAdaptor(theGraph, aCR.CoEdgeIdx);
     if (aPCAdaptor.Curve().IsNull())
