@@ -618,111 +618,115 @@ void BRepGraphAlgo_Sewing::cutAtIntersections(const Handle(NCollection_IncAlloca
     int    VtxIdx;
   };
 
-  // aSubEdgeChains[i] holds sub-edge chain for free edge (i+1); empty means no split.
-  NCollection_Vector<NCollection_Vector<BRepGraph_NodeId>> aSubEdgeChains(THE_INIT_VECTOR_CAPACITY,
-                                                                          theTmpAlloc);
-  for (int anIdx = 0; anIdx < aNbFreeEdges; ++anIdx)
-    aSubEdgeChains.Append(NCollection_Vector<BRepGraph_NodeId>());
+  // Step 2a (parallel): Find T-vertex split candidates per edge.
+  // ExtremaPC projections are the expensive part; graph reads are thread-safe.
+  // Store sorted/deduplicated candidates per edge, then apply splits sequentially.
+  NCollection_Array1<NCollection_Vector<SplitCandidate>> aPerEdgeSplits(1, aNbFreeEdges);
+
+  OSD_Parallel::For(
+    0,
+    aNbFreeEdges,
+    [&](int theIdx) {
+      const int                          aFreeEdgeIter = theIdx + 1;
+      const BRepGraph_NodeId             anEdgeId      = myFreeEdgesBefore.Value(aFreeEdgeIter);
+      const BRepGraph_TopoNode::EdgeDef& anEdge        = myGraph.Defs().Edge(anEdgeId.Index);
+
+      if (anEdge.IsDegenerate || !anEdge.CurveNodeId.IsValid())
+        return;
+
+      const int aStartIdx = anEdge.StartVertexDefId.IsValid() ? anEdge.StartVertexDefId.Index : -1;
+      const int aEndIdx   = anEdge.EndVertexDefId.IsValid() ? anEdge.EndVertexDefId.Index : -1;
+
+      GeomAdaptor_TransformedCurve aCurve = myGraph.Geom().CurveAdaptor(anEdgeId);
+      ExtremaPC_Curve              anExtPC(aCurve);
+
+      Bnd_Box aEdgeBBox = myGraph.Cache().BoundingBox(anEdgeId);
+      if (aEdgeBBox.IsVoid())
+        return;
+      aEdgeBBox.Enlarge(myTolerance);
+
+      const double aTolSq      = myTolerance * myTolerance;
+      const double aParamFirst = aCurve.FirstParameter();
+      const double aParamLast  = aCurve.LastParameter();
+      const double aParamEps   = Precision::Confusion();
+
+      // Thread-local vectors (default allocator, not shared theTmpAlloc).
+      NCollection_Vector<SplitCandidate> aSplits;
+
+      for (int aVtxIter = 0; aVtxIter < aNbVtx; ++aVtxIter)
+      {
+        const int aVtxIdx = aFreeVtxList.Value(aVtxIter);
+        if (aVtxIdx == aStartIdx || aVtxIdx == aEndIdx)
+          continue;
+
+        const gp_Pnt& aVtxPnt = aVtxPoints.Value(aVtxIter);
+
+        if (aEdgeBBox.IsOut(aVtxPnt))
+          continue;
+
+        const ExtremaPC::Result& aRes =
+          anExtPC.Perform(aVtxPnt, Precision::Confusion(), ExtremaPC::SearchMode::Min);
+        if (!aRes.IsDone() || aRes.NbExt() == 0)
+          continue;
+
+        const int    aMinIdx    = aRes.MinIndex();
+        const double aMinSqDist = aRes[aMinIdx].SquareDistance;
+        const double aMinParam  = aRes[aMinIdx].Parameter;
+
+        if (aMinSqDist <= aTolSq && aMinParam > aParamFirst + aParamEps
+            && aMinParam < aParamLast - aParamEps)
+        {
+          SplitCandidate aCand;
+          aCand.Param  = aMinParam;
+          aCand.VtxIdx = aVtxIdx;
+          aSplits.Append(aCand);
+        }
+      }
+
+      if (aSplits.IsEmpty())
+        return;
+
+      // Sort candidates by parameter (ascending).
+      const int                                 aNbSplits = aSplits.Length();
+      NCollection_LocalArray<SplitCandidate, 8> aSortedSplitsBuf(aNbSplits);
+      NCollection_Array1<SplitCandidate> aSortedSplits(aSortedSplitsBuf[0], 0, aNbSplits - 1);
+      for (int aSplitIter = 0; aSplitIter < aNbSplits; ++aSplitIter)
+        aSortedSplits.SetValue(aSplitIter, aSplits.Value(aSplitIter));
+      std::sort(&aSortedSplits.ChangeFirst(),
+                &aSortedSplits.ChangeFirst() + aNbSplits,
+                [](const SplitCandidate& theA, const SplitCandidate& theB) {
+                  return theA.Param < theB.Param;
+                });
+
+      // Deduplicate: remove candidates with parameters too close together.
+      NCollection_Vector<SplitCandidate>& aUniqueSplits = aPerEdgeSplits.ChangeValue(aFreeEdgeIter);
+      double                              aPrevParam    = aParamFirst - 1.0;
+      for (int aSplitIter = 0; aSplitIter < aNbSplits; ++aSplitIter)
+      {
+        const SplitCandidate& aCand = aSortedSplits.Value(aSplitIter);
+        if (std::abs(aCand.Param - aPrevParam) > aParamEps)
+        {
+          aUniqueSplits.Append(aCand);
+          aPrevParam = aCand.Param;
+        }
+      }
+    },
+    !myIsParallel);
+
+  // Step 2b (sequential): Apply splits to graph (SplitEdge mutates graph state).
+  NCollection_Array1<NCollection_Vector<BRepGraph_NodeId>> aSubEdgeChains(1, aNbFreeEdges);
 
   bool anySplits = false;
 
-  // Step 2: For each free edge, find T-vertex split candidates.
   for (int aFreeEdgeIter = 1; aFreeEdgeIter <= aNbFreeEdges; ++aFreeEdgeIter)
   {
-    const BRepGraph_NodeId             anEdgeId = myFreeEdgesBefore.Value(aFreeEdgeIter);
-    const BRepGraph_TopoNode::EdgeDef& anEdge   = myGraph.Defs().Edge(anEdgeId.Index);
-
-    if (anEdge.IsDegenerate || !anEdge.CurveNodeId.IsValid())
-      continue;
-
-    // Own endpoint indices to exclude from T-vertex candidates.
-    const int aStartIdx = anEdge.StartVertexDefId.IsValid() ? anEdge.StartVertexDefId.Index : -1;
-    const int aEndIdx   = anEdge.EndVertexDefId.IsValid() ? anEdge.EndVertexDefId.Index : -1;
-
-    // Build curve adaptor directly from graph geometry (no TopoDS roundtrip).
-    GeomAdaptor_TransformedCurve aCurve = myGraph.Geom().CurveAdaptor(anEdgeId);
-    ExtremaPC_Curve              anExtPC(aCurve);
-
-    // Get edge bounding box (enlarged by tolerance) for candidate pre-filtering.
-    Bnd_Box aEdgeBBox = myGraph.Cache().BoundingBox(anEdgeId);
-    if (aEdgeBBox.IsVoid())
-      continue;
-    aEdgeBBox.Enlarge(myTolerance);
-
-    const double aTolSq      = myTolerance * myTolerance;
-    const double aParamFirst = aCurve.FirstParameter();
-    const double aParamLast  = aCurve.LastParameter();
-    const double aParamEps   = Precision::Confusion();
-
-    NCollection_Vector<SplitCandidate> aSplits(4, theTmpAlloc);
-
-    for (int aVtxIter = 0; aVtxIter < aNbVtx; ++aVtxIter)
-    {
-      const int aVtxIdx = aFreeVtxList.Value(aVtxIter);
-      if (aVtxIdx == aStartIdx || aVtxIdx == aEndIdx)
-        continue;
-
-      const gp_Pnt& aVtxPnt = aVtxPoints.Value(aVtxIter);
-
-      // Quick pre-check: vertex must be inside the enlarged edge bbox.
-      if (aEdgeBBox.IsOut(aVtxPnt))
-        continue;
-
-      const ExtremaPC::Result& aRes =
-        anExtPC.Perform(aVtxPnt, Precision::Confusion(), ExtremaPC::SearchMode::Min);
-      if (!aRes.IsDone() || aRes.NbExt() == 0)
-        continue;
-
-      // Find closest extremal point.
-      const int    aMinIdx    = aRes.MinIndex();
-      const double aMinSqDist = aRes[aMinIdx].SquareDistance;
-      const double aMinParam  = aRes[aMinIdx].Parameter;
-
-      // Accept if within tolerance AND strictly inside the parameter range.
-      if (aMinSqDist <= aTolSq && aMinParam > aParamFirst + aParamEps
-          && aMinParam < aParamLast - aParamEps)
-      {
-        SplitCandidate aCand;
-        aCand.Param  = aMinParam;
-        aCand.VtxIdx = aVtxIdx;
-        aSplits.Append(aCand);
-      }
-    }
-
-    if (aSplits.IsEmpty())
-      continue;
-
-    // Sort candidates by parameter (ascending).
-    const int                                 aNbSplits = aSplits.Length();
-    NCollection_LocalArray<SplitCandidate, 8> aSortedSplitsBuf(aNbSplits);
-    NCollection_Array1<SplitCandidate>        aSortedSplits(aSortedSplitsBuf[0], 0, aNbSplits - 1);
-    for (int aSplitIter = 0; aSplitIter < aNbSplits; ++aSplitIter)
-      aSortedSplits.SetValue(aSplitIter, aSplits.Value(aSplitIter));
-    std::sort(&aSortedSplits.ChangeFirst(),
-              &aSortedSplits.ChangeFirst() + aNbSplits,
-              [](const SplitCandidate& theA, const SplitCandidate& theB) {
-                return theA.Param < theB.Param;
-              });
-
-    // Deduplicate: remove candidates with parameters too close together.
-    NCollection_Vector<SplitCandidate> aUniqueSplits(4, theTmpAlloc);
-    double                             aPrevParam = aParamFirst - 1.0;
-    for (int aSplitIter = 0; aSplitIter < aNbSplits; ++aSplitIter)
-    {
-      const SplitCandidate& aCand = aSortedSplits.Value(aSplitIter);
-      if (std::abs(aCand.Param - aPrevParam) > aParamEps)
-      {
-        aUniqueSplits.Append(aCand);
-        aPrevParam = aCand.Param;
-      }
-    }
-
+    const NCollection_Vector<SplitCandidate>& aUniqueSplits = aPerEdgeSplits.Value(aFreeEdgeIter);
     if (aUniqueSplits.IsEmpty())
       continue;
 
-    // Apply splits: chain SplitEdge calls along the edge.
-    anySplits                                    = true;
-    NCollection_Vector<BRepGraph_NodeId>& aChain = aSubEdgeChains.ChangeValue(aFreeEdgeIter - 1);
+    anySplits                                          = true;
+    const BRepGraph_NodeId                anEdgeId     = myFreeEdgesBefore.Value(aFreeEdgeIter);
+    NCollection_Vector<BRepGraph_NodeId>& aChain       = aSubEdgeChains.ChangeValue(aFreeEdgeIter);
     BRepGraph_NodeId                      aCurrentEdge = anEdgeId;
     for (int aSplitIter = 0; aSplitIter < aUniqueSplits.Length(); ++aSplitIter)
     {
@@ -733,7 +737,7 @@ void BRepGraphAlgo_Sewing::cutAtIntersections(const Handle(NCollection_IncAlloca
       aChain.Append(aSubA);
       aCurrentEdge = aSubB;
     }
-    aChain.Append(aCurrentEdge); // final sub-edge (last SubB)
+    aChain.Append(aCurrentEdge);
   }
 
   if (!anySplits)
@@ -743,7 +747,7 @@ void BRepGraphAlgo_Sewing::cutAtIntersections(const Handle(NCollection_IncAlloca
   NCollection_Vector<BRepGraph_NodeId> aNewFreeVec(THE_INIT_VECTOR_CAPACITY, theTmpAlloc);
   for (int aFreeEdgeIter = 1; aFreeEdgeIter <= aNbFreeEdges; ++aFreeEdgeIter)
   {
-    const NCollection_Vector<BRepGraph_NodeId>& aChain = aSubEdgeChains.Value(aFreeEdgeIter - 1);
+    const NCollection_Vector<BRepGraph_NodeId>& aChain = aSubEdgeChains.Value(aFreeEdgeIter);
     if (aChain.IsEmpty())
     {
       // No splits: keep original free edge.
