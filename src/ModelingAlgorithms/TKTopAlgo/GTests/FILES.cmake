@@ -13,6 +13,7 @@ set(OCCT_TKTopAlgo_GTests_FILES
   BRepGraphAlgo_Benchmark_Test.cxx
   BRepGraphAlgo_Copy_Test.cxx
   BRepGraphAlgo_Deduplicate_Test.cxx
+  BRepGraphAlgo_FaceAnalysis_Test.cxx
   BRepGraphAlgo_FClass2d_Test.cxx
   BRepGraphAlgo_Sewing_Test.cxx
   BRepGraphAlgo_Transform_Test.cxx

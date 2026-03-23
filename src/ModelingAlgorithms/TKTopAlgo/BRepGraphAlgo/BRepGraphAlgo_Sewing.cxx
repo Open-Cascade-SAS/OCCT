@@ -22,6 +22,7 @@
 #include <BRepGraphAlgo_SameParameter.hxx>
 #include <BRepLib.hxx>
 #include <ExtremaPC_Curve.hxx>
+#include <GCPnts_AbscissaPoint.hxx>
 #include <GCPnts_UniformAbscissa.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
@@ -1426,6 +1427,93 @@ TopoDS_Shape reconstructFromGraph(const BRepGraph& theGraph)
   }
 }
 
+// ---------------------------------------------------------------------------
+// Phase 7: Convert remaining free edges that form degenerate wires.
+// Ported from BRepBuilderAPI_Sewing::EdgeProcessing + IsDegeneratedWire +
+// DegeneratedSection (lines 4219-4474).
+// ---------------------------------------------------------------------------
+
+void convertDegenerateEdges(BRepGraph&                   theGraph,
+                            BRepGraphAlgo_Sewing::Result& theResult)
+{
+  // Collect remaining free edges after merging.
+  const NCollection_Vector<BRepGraph_NodeId> aFreeEdges = BRepGraph_Analyze::FreeEdges(theGraph);
+  if (aFreeEdges.IsEmpty())
+  {
+    return;
+  }
+
+  // For each free edge, check if it forms a degenerate "wire" by itself:
+  // edge chord length <= sum of vertex tolerances.
+  for (int aFreeIter = 0; aFreeIter < aFreeEdges.Length(); ++aFreeIter)
+  {
+    const BRepGraph_NodeId             anEdgeId = aFreeEdges.Value(aFreeIter);
+    const BRepGraph_TopoNode::EdgeDef& anEdge   = theGraph.Defs().Edge(anEdgeId.Index);
+
+    if (anEdge.IsDegenerate || anEdge.Curve3d.IsNull())
+    {
+      continue;
+    }
+
+    // Compute edge chord length via 3-point check (start, mid, end).
+    const gp_Pnt aPtFirst = anEdge.Curve3d->EvalD0(anEdge.ParamFirst);
+    const gp_Pnt aPtLast  = anEdge.Curve3d->EvalD0(anEdge.ParamLast);
+    const gp_Pnt aPtMid   = anEdge.Curve3d->EvalD0((anEdge.ParamFirst + anEdge.ParamLast) * 0.5);
+
+    double aLength = 0.0;
+    if (aPtFirst.Distance(aPtLast) > aPtFirst.Distance(aPtMid))
+    {
+      aLength = aPtFirst.Distance(aPtLast);
+    }
+    else
+    {
+      // Curved edge shorter than chord — use full arc length.
+      GeomAdaptor_TransformedCurve aCurve = theGraph.Defs().CurveAdaptor(anEdgeId);
+      aLength = GCPnts_AbscissaPoint::Length(aCurve);
+    }
+
+    // Sum vertex tolerances.
+    double aVertexTolSum = 0.0;
+    if (anEdge.StartVertexIdx >= 0)
+    {
+      aVertexTolSum += theGraph.Defs().Vertex(anEdge.StartVertexIdx).Tolerance;
+    }
+    if (anEdge.EndVertexIdx >= 0)
+    {
+      aVertexTolSum += theGraph.Defs().Vertex(anEdge.EndVertexIdx).Tolerance;
+    }
+
+    if (aLength <= aVertexTolSum)
+    {
+      // Mark as degenerate: clear 3D curve, merge vertices to midpoint.
+      BRepGraph_TopoNode::EdgeDef& aMutEdge = theGraph.Mut().EdgeDef(anEdgeId.Index);
+      aMutEdge.IsDegenerate                  = true;
+      aMutEdge.Curve3d.Nullify();
+
+      // Merge start/end vertices if they differ.
+      if (anEdge.StartVertexIdx >= 0 && anEdge.EndVertexIdx >= 0
+          && anEdge.StartVertexIdx != anEdge.EndVertexIdx)
+      {
+        const double aTolStart = theGraph.Defs().Vertex(anEdge.StartVertexIdx).Tolerance;
+        const double aTolEnd   = theGraph.Defs().Vertex(anEdge.EndVertexIdx).Tolerance;
+        const double aD1       = aTolStart + aPtMid.Distance(aPtFirst);
+        const double aD2       = aTolEnd + aPtMid.Distance(aPtLast);
+        const double aNewTol   = std::max(aD1, aD2);
+
+        // Keep start vertex, update it to midpoint.
+        BRepGraph_TopoNode::VertexDef& aVtx = theGraph.Mut().VertexDef(anEdge.StartVertexIdx);
+        aVtx.Point     = aPtMid;
+        aVtx.Tolerance = aNewTol;
+        aMutEdge.EndVertexIdx = anEdge.StartVertexIdx;
+      }
+
+      theResult.DegeneratedEdges.Append(anEdgeId);
+    }
+  }
+
+  theResult.NbDegeneratedEdges = theResult.DegeneratedEdges.Length();
+}
+
 } // anonymous namespace
 
 //=================================================================================================
@@ -1511,6 +1599,7 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
   {
     aResult.IsDone           = true;
     aResult.NbFreeEdgesAfter = aResult.NbFreeEdgesBefore;
+    aResult.FreeEdges        = BRepGraph_Analyze::FreeEdges(theGraph);
     return aResult;
   }
 
@@ -1520,12 +1609,8 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
   aResult.NbSewnEdges =
     mergeMatchedEdges(theGraph, aMatchedPairs, theOptions, aSewnEdgeIndices, aResult);
 
-  // TODO: Phase 7 — Degenerate conversion. Port from BRepBuilderAPI_Sewing:
-  //   - EdgeProcessing (lines 4400-4474): group remaining free edges into wires,
-  //     detect degenerate wires via IsDegeneratedWire (total length <= vertex tol sum).
-  //   - DegeneratedSection (lines 4296-4386): convert free edges in degenerate wires
-  //     to degenerate edges (mark IsDegenerate, clear Curve3d, create point vertex).
-  //   - Append converted edges to aResult.DegeneratedEdges.
+  // Phase 7: Convert remaining free degenerate edges.
+  convertDegenerateEdges(theGraph, aResult);
 
   // TODO: Full NonManifoldMode in Phase 5/6:
   //   - Use longest edge as reference (sort by curve length, prefer longest as keep-edge).
@@ -1536,10 +1621,8 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
   processEdges(theGraph, aSewnEdgeIndices, theOptions);
 
   // Phase 9: Populate result output.
-  const NCollection_Vector<BRepGraph_NodeId> aFreeEdgesAfter =
-    BRepGraph_Analyze::FreeEdges(theGraph);
-  aResult.NbFreeEdgesAfter = aFreeEdgesAfter.Length();
-  aResult.FreeEdges        = std::move(aFreeEdgesAfter);
+  aResult.FreeEdges        = BRepGraph_Analyze::FreeEdges(theGraph);
+  aResult.NbFreeEdgesAfter = aResult.FreeEdges.Length();
 
   // Detect multiple edges (shared by >2 faces).
   const BRepGraph::DefsView     aDefs     = theGraph.Defs();

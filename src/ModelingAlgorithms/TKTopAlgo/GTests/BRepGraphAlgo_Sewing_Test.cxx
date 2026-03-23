@@ -1987,3 +1987,153 @@ TEST(BRepGraphAlgo_CopyTest, DeepAndLightCopy_MatchNodeCounts)
   EXPECT_EQ(aDeepCopy.Defs().NbEdges(), aLightCopy.Defs().NbEdges());
   EXPECT_EQ(aDeepCopy.Defs().NbVertices(), aLightCopy.Defs().NbVertices());
 }
+
+// ============================================================
+// New Feature Tests: Options extensions
+// ============================================================
+
+TEST(BRepGraphAlgo_SewingTest, MaxTolerance_RejectLargeGaps)
+{
+  // Build two box faces; sew with MaxTolerance smaller than default edge tolerance.
+  // BRep edges typically have tolerance ~1e-7. Setting MaxTolerance below that rejects merges.
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  NCollection_Sequence<TopoDS_Face> aFaces = extractCopiedFaces(aBox);
+
+  BRep_Builder    aBB;
+  TopoDS_Compound aCompound;
+  aBB.MakeCompound(aCompound);
+  aBB.Add(aCompound, aFaces.Value(1));
+  aBB.Add(aCompound, aFaces.Value(2));
+
+  // MaxTolerance = 1e-10 blocks any merge (edges have tolerance ~1e-7).
+  BRepGraphAlgo_Sewing::Options aOpts;
+  aOpts.Tolerance    = 1.0e-04;
+  aOpts.MaxTolerance = 1.0e-10;
+  aOpts.FaceAnalysis = false;
+
+  BRepGraph aGraph;
+  aGraph.Build(aCompound);
+  BRepGraphAlgo_Sewing::Result aRes = BRepGraphAlgo_Sewing::Perform(aGraph, aOpts);
+  EXPECT_TRUE(aRes.IsDone);
+  EXPECT_EQ(aRes.NbSewnEdges, 0);
+}
+
+TEST(BRepGraphAlgo_SewingTest, LocalTolerancesMode_AdaptiveTol)
+{
+  // Verify LocalTolerancesMode sews all 6 box faces correctly.
+  // The adaptive tolerance adds per-edge tolerances to the global tolerance.
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  NCollection_Sequence<TopoDS_Face> aFaces = extractCopiedFaces(aBox);
+
+  BRep_Builder    aBB;
+  TopoDS_Compound aCompound;
+  aBB.MakeCompound(aCompound);
+  for (int i = 1; i <= aFaces.Length(); ++i)
+  {
+    aBB.Add(aCompound, aFaces.Value(i));
+  }
+
+  BRepGraphAlgo_Sewing::Options aOpts;
+  aOpts.Tolerance           = 1.0e-04;
+  aOpts.LocalTolerancesMode = true;
+  aOpts.FaceAnalysis        = false;
+
+  BRepGraph aGraph;
+  aGraph.Build(aCompound);
+  BRepGraphAlgo_Sewing::Result aResult = BRepGraphAlgo_Sewing::Perform(aGraph, aOpts);
+  EXPECT_TRUE(aResult.IsDone);
+  EXPECT_EQ(aResult.NbSewnEdges, 12);
+  EXPECT_EQ(aResult.NbFreeEdgesAfter, 0);
+}
+
+TEST(BRepGraphAlgo_SewingTest, Result_FreeEdgesPopulated)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  NCollection_Sequence<TopoDS_Face> aFaces = extractCopiedFaces(aBox);
+
+  BRep_Builder    aBB;
+  TopoDS_Compound aCompound;
+  aBB.MakeCompound(aCompound);
+  // Only 2 of 6 faces — sewing will leave free edges.
+  aBB.Add(aCompound, aFaces.Value(1));
+  aBB.Add(aCompound, aFaces.Value(2));
+
+  BRepGraphAlgo_Sewing::Options aOpts;
+  aOpts.Tolerance    = 1.0e-04;
+  aOpts.FaceAnalysis = false;
+
+  BRepGraph aGraph;
+  aGraph.Build(aCompound);
+  BRepGraphAlgo_Sewing::Result aResult = BRepGraphAlgo_Sewing::Perform(aGraph, aOpts);
+  EXPECT_TRUE(aResult.IsDone);
+  // FreeEdges vector should match NbFreeEdgesAfter count.
+  EXPECT_EQ(aResult.FreeEdges.Length(), aResult.NbFreeEdgesAfter);
+  EXPECT_GT(aResult.NbFreeEdgesAfter, 0);
+}
+
+TEST(BRepGraphAlgo_SewingTest, Result_SewnEdgePairsPopulated)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  NCollection_Sequence<TopoDS_Face> aFaces = extractCopiedFaces(aBox);
+
+  BRep_Builder    aBB;
+  TopoDS_Compound aCompound;
+  aBB.MakeCompound(aCompound);
+  for (int i = 1; i <= aFaces.Length(); ++i)
+  {
+    aBB.Add(aCompound, aFaces.Value(i));
+  }
+
+  BRepGraphAlgo_Sewing::Options aOpts;
+  aOpts.Tolerance    = 1.0e-04;
+  aOpts.FaceAnalysis = false;
+
+  BRepGraph aGraph;
+  aGraph.Build(aCompound);
+  BRepGraphAlgo_Sewing::Result aResult = BRepGraphAlgo_Sewing::Perform(aGraph, aOpts);
+  EXPECT_TRUE(aResult.IsDone);
+  // SewnEdgePairs should have NbSewnEdges entries.
+  EXPECT_EQ(aResult.SewnEdgePairs.Length(), aResult.NbSewnEdges);
+  EXPECT_GT(aResult.NbSewnEdges, 0);
+}
+
+TEST(BRepGraphAlgo_SewingTest, FaceAnalysis_IntegratedWithSewing)
+{
+  // End-to-end: build a box, sew with FaceAnalysis enabled (default).
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  NCollection_Sequence<TopoDS_Face> aFaces = extractCopiedFaces(aBox);
+
+  BRep_Builder    aBB;
+  TopoDS_Compound aCompound;
+  aBB.MakeCompound(aCompound);
+  for (int i = 1; i <= aFaces.Length(); ++i)
+  {
+    aBB.Add(aCompound, aFaces.Value(i));
+  }
+
+  BRepGraphAlgo_Sewing::Options aOpts;
+  aOpts.Tolerance    = 1.0e-04;
+  aOpts.FaceAnalysis = true; // explicitly enabled
+
+  BRepGraph aGraph;
+  aGraph.Build(aCompound);
+  BRepGraphAlgo_Sewing::Result aResult = BRepGraphAlgo_Sewing::Perform(aGraph, aOpts);
+  EXPECT_TRUE(aResult.IsDone);
+  EXPECT_EQ(aResult.NbFreeEdgesAfter, 0);
+  EXPECT_EQ(aResult.NbSewnEdges, 12);
+}
+
+TEST(BRepGraphAlgo_SewingTest, ConfigurationDefaults_NewOptions)
+{
+  BRepGraphAlgo_Sewing::Options aOpts;
+  EXPECT_TRUE(aOpts.FaceAnalysis);
+  EXPECT_FALSE(aOpts.FloatingEdgesMode);
+  EXPECT_FALSE(aOpts.LocalTolerancesMode);
+  EXPECT_NEAR(aOpts.MinTolerance, 0.0, 1.0e-15);
+  EXPECT_GT(aOpts.MaxTolerance, 1.0e+100);
+}
