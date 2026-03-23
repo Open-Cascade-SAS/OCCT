@@ -1494,7 +1494,6 @@ void processEdges(BRepGraph&                           theGraph,
         if (aMaxVtxTol > anEdge.Tolerance)
         {
           theGraph.Mut().EdgeDef(anEdgeIdx).Tolerance = aMaxVtxTol;
-          theGraph.Cache().Invalidate(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, anEdgeIdx));
         }
       },
       !theOptions.Parallel);

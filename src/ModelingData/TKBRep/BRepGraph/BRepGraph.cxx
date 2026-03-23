@@ -238,6 +238,11 @@ void BRepGraph::markModified(BRepGraph_NodeId theDefId)
     myData->myCurrentShapes.UnBind(theDefId);
   }
 
+  // Invalidate UserAttribute caches (UVBounds, BndLib, etc.).
+  BRepGraph_NodeCache* aCache = mutableCache(theDefId);
+  if (aCache != nullptr)
+    aCache->InvalidateAll();
+
   // Propagate upward via reverse indices.
   const BRepGraphInc_ReverseIndex& aRevIdx = myData->myIncStorage.ReverseIndex();
   switch (theDefId.NodeKind)
@@ -492,6 +497,60 @@ void BRepGraph::EndDeferredInvalidation()
     {
       myData->myIncStorage.ChangeSolid(aSolids->Value(aSolidIter)).IsModified = true;
     }
+  }
+
+  // Invalidate UserAttribute caches (UVBounds, BndLib, etc.) for all modified entities.
+  const int aNbVertices  = myData->myIncStorage.NbVertices();
+  const int aNbSolids    = myData->myIncStorage.NbSolids();
+  const int aNbCompounds = myData->myIncStorage.NbCompounds();
+  const int aNbCompSols  = myData->myIncStorage.NbCompSolids();
+  for (int i = 0; i < aNbVertices; ++i)
+  {
+    const BRepGraphInc::VertexEntity& aVtx = myData->myIncStorage.Vertex(i);
+    if (!aVtx.IsRemoved && aVtx.IsModified)
+      myData->myIncStorage.ChangeVertex(i).Cache.InvalidateAll();
+  }
+  for (int i = 0; i < aNbEdges; ++i)
+  {
+    const BRepGraphInc::EdgeEntity& anEdge = myData->myIncStorage.Edge(i);
+    if (!anEdge.IsRemoved && anEdge.IsModified)
+      myData->myIncStorage.ChangeEdge(i).Cache.InvalidateAll();
+  }
+  for (int i = 0; i < aNbWires; ++i)
+  {
+    const BRepGraphInc::WireEntity& aWire = myData->myIncStorage.Wire(i);
+    if (!aWire.IsRemoved && aWire.IsModified)
+      myData->myIncStorage.ChangeWire(i).Cache.InvalidateAll();
+  }
+  for (int i = 0; i < aNbFaces; ++i)
+  {
+    const BRepGraphInc::FaceEntity& aFace = myData->myIncStorage.Face(i);
+    if (!aFace.IsRemoved && aFace.IsModified)
+      myData->myIncStorage.ChangeFace(i).Cache.InvalidateAll();
+  }
+  for (int i = 0; i < aNbShells; ++i)
+  {
+    const BRepGraphInc::ShellEntity& aShell = myData->myIncStorage.Shell(i);
+    if (!aShell.IsRemoved && aShell.IsModified)
+      myData->myIncStorage.ChangeShell(i).Cache.InvalidateAll();
+  }
+  for (int i = 0; i < aNbSolids; ++i)
+  {
+    const BRepGraphInc::SolidEntity& aSolid = myData->myIncStorage.Solid(i);
+    if (!aSolid.IsRemoved && aSolid.IsModified)
+      myData->myIncStorage.ChangeSolid(i).Cache.InvalidateAll();
+  }
+  for (int i = 0; i < aNbCompounds; ++i)
+  {
+    const BRepGraphInc::CompoundEntity& aComp = myData->myIncStorage.Compound(i);
+    if (!aComp.IsRemoved && aComp.IsModified)
+      myData->myIncStorage.ChangeCompound(i).Cache.InvalidateAll();
+  }
+  for (int i = 0; i < aNbCompSols; ++i)
+  {
+    const BRepGraphInc::CompSolidEntity& aCS = myData->myIncStorage.CompSolid(i);
+    if (!aCS.IsRemoved && aCS.IsModified)
+      myData->myIncStorage.ChangeCompSolid(i).Cache.InvalidateAll();
   }
 }
 
