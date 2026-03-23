@@ -17,4 +17,8 @@ set(OCCT_BRepGraphAlgo_FILES
   BRepGraphAlgo_BndLib.hxx
   BRepGraphAlgo_BndLib.cxx
   BRepGraphAlgo_BndLib_OBB.cxx
+  BRepGraphAlgo_Validate.hxx
+  BRepGraphAlgo_Validate.cxx
+  BRepGraphAlgo_Compact.hxx
+  BRepGraphAlgo_Compact.cxx
 )

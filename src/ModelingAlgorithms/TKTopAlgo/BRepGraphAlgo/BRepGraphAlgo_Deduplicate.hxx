@@ -58,6 +58,12 @@ public:
     int  NbHistoryRecords    = 0;
     bool IsDefMergeApplied   = false;
 
+    //! Topology definition merge counters (active when MergeDefsWhenSafe = true).
+    int NbMergedVertices = 0;
+    int NbMergedEdges    = 0;
+    int NbMergedWires    = 0;
+    int NbMergedFaces    = 0;
+
     NCollection_Vector<BRepGraph_NodeId> AffectedFaceDefs; //!< Faces whose SurfNodeId changed.
     NCollection_Vector<BRepGraph_NodeId> AffectedEdgeDefs; //!< Edges whose CurveNodeId changed.
   };
