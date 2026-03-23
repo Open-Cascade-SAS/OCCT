@@ -65,9 +65,10 @@ bool isDefRemoved(const BRepGraph& theGraph, BRepGraph_NodeId theId)
   return aDef != nullptr && aDef->IsRemoved;
 }
 
-// -----------------------------------------------------------------------
-// Pass 1: Cross-reference bounds
-// -----------------------------------------------------------------------
+//! Validate that all cross-reference indices (vertex, edge, wire, face, shell,
+//! coedge, compound child refs) point to valid, in-bounds entity slots.
+//! @param[in]     theGraph  source graph
+//! @param[in,out] theIssues collection to append diagnostic issues
 void checkCrossReferenceBounds(const BRepGraph&                                   theGraph,
                                NCollection_Vector<BRepGraphAlgo_Validate::Issue>& theIssues)
 {
@@ -252,9 +253,10 @@ void checkCrossReferenceBounds(const BRepGraph&                                 
   }
 }
 
-// -----------------------------------------------------------------------
-// Pass 2: Reverse index consistency (edge-to-wires)
-// -----------------------------------------------------------------------
+//! Verify that every forward incidence ref has a matching reverse-index entry
+//! (edge->wires, edge->faces, vertex->edges, wire->faces, face->shells, shell->solids).
+//! @param[in]     theGraph  source graph
+//! @param[in,out] theIssues collection to append diagnostic issues
 void checkReverseIndexConsistency(const BRepGraph&                                   theGraph,
                                   NCollection_Vector<BRepGraphAlgo_Validate::Issue>& theIssues)
 {
@@ -322,9 +324,11 @@ void checkReverseIndexConsistency(const BRepGraph&                              
   }
 }
 
-// -----------------------------------------------------------------------
-// Pass 3: Incidence ref consistency (shell->face, solid->shell, etc.)
-// -----------------------------------------------------------------------
+//! Check that parent-child incidence refs (shell->face, solid->shell,
+//! compound->child, compsolid->solid) reference non-removed entities
+//! of the expected kind.
+//! @param[in]     theGraph  source graph
+//! @param[in,out] theIssues collection to append diagnostic issues
 void checkIncidenceRefConsistency(const BRepGraph&                                   theGraph,
                                   NCollection_Vector<BRepGraphAlgo_Validate::Issue>& theIssues)
 {
@@ -386,9 +390,11 @@ void checkIncidenceRefConsistency(const BRepGraph&                              
   }
 }
 
-// -----------------------------------------------------------------------
-// Pass 4: Geometry reference validity
-// -----------------------------------------------------------------------
+//! Validate that geometry representation indices (SurfaceRepIdx, Curve3DRepIdx,
+//! Curve2DRepIdx, TriangulationRepIdxs, Polygon3DRepIdx) are in bounds and
+//! reference non-null geometry handles.
+//! @param[in]     theGraph  source graph
+//! @param[in,out] theIssues collection to append diagnostic issues
 void checkGeometryReferences(const BRepGraph&                                   theGraph,
                              NCollection_Vector<BRepGraphAlgo_Validate::Issue>& theIssues)
 {
@@ -454,9 +460,10 @@ void checkGeometryReferences(const BRepGraph&                                   
   }
 }
 
-// -----------------------------------------------------------------------
-// Pass 5: Removed node isolation
-// -----------------------------------------------------------------------
+//! Verify that removed entities are not referenced by any active (non-removed)
+//! parent entity through forward incidence refs.
+//! @param[in]     theGraph  source graph
+//! @param[in,out] theIssues collection to append diagnostic issues
 void checkRemovedNodeIsolation(const BRepGraph&                                   theGraph,
                                NCollection_Vector<BRepGraphAlgo_Validate::Issue>& theIssues)
 {
@@ -504,9 +511,11 @@ void checkRemovedNodeIsolation(const BRepGraph&                                 
   }
 }
 
-// -----------------------------------------------------------------------
-// Pass 6: Wire connectivity (order-independent via WireExplorer)
-// -----------------------------------------------------------------------
+//! Check wire edge connectivity: each coedge's end vertex must match the
+//! next coedge's start vertex. Uses BRepGraphInc_WireExplorer for
+//! order-independent traversal.
+//! @param[in]     theGraph  source graph
+//! @param[in,out] theIssues collection to append diagnostic issues
 void checkWireConnectivity(const BRepGraph&                                   theGraph,
                            NCollection_Vector<BRepGraphAlgo_Validate::Issue>& theIssues)
 {
@@ -578,11 +587,11 @@ void checkWireConnectivity(const BRepGraph&                                   th
   }
 }
 
-// ---------------------------------------------------------------------------
-// Pass 7: Validate entity IDs match their vector position.
-// After Build() or Compact(), each entity's Id must equal (Kind, VectorIndex).
-// ---------------------------------------------------------------------------
-
+//! Validate that every entity's Id field matches its actual vector position:
+//! Entity[i].Id must equal (Kind, i). Detects corruption from incorrect
+//! Compact remapping or manual entity manipulation.
+//! @param[in]     theGraph  source graph
+//! @param[in,out] theIssues collection to append diagnostic issues
 void checkEntityIds(const BRepGraph&                                   theGraph,
                     NCollection_Vector<BRepGraphAlgo_Validate::Issue>& theIssues)
 {
@@ -625,10 +634,10 @@ void checkEntityIds(const BRepGraph&                                   theGraph,
   checkKind(BRepGraph_NodeId::Kind::CompSolid, aDefs.NbCompSolids());
 }
 
-// ---------------------------------------------------------------------------
-// Pass 8: Validate active counts match non-removed entity counts.
-// ---------------------------------------------------------------------------
-
+//! Validate that NbActive*() counts match the actual number of non-removed
+//! entities in each per-kind vector.
+//! @param[in]     theGraph  source graph
+//! @param[in,out] theIssues collection to append diagnostic issues
 void checkActiveCounts(const BRepGraph&                                   theGraph,
                        NCollection_Vector<BRepGraphAlgo_Validate::Issue>& theIssues)
 {

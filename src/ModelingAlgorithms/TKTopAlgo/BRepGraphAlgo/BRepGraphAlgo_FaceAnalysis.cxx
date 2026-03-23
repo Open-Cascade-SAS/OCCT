@@ -29,11 +29,14 @@ namespace
 {
 constexpr int THE_COMPACTNESS_SAMPLES = 5; // sampling points for edge compactness check
 
-// ---------------------------------------------------------------------------
-// Check if an edge is "small" (compact) using a 5-point sampling criterion.
-// Ported from BRepBuilderAPI_Sewing::FaceAnalysis().
-// ---------------------------------------------------------------------------
-
+//! Check if an edge is "small" by sampling points along the 3D curve
+//! and verifying that the maximum distance from the first point stays
+//! within the tolerance. Degenerate edges are always considered small.
+//! @param[in] theGraph   source graph
+//! @param[in] theEdgeIdx edge definition index
+//! @param[in] theCurve3d edge 3D curve handle
+//! @param[in] theMinTol  maximum distance for compactness
+//! @return true if the edge is small
 bool isSmallEdge(const BRepGraph&               theGraph,
                  int                            theEdgeIdx,
                  const occ::handle<Geom_Curve>& theCurve3d,

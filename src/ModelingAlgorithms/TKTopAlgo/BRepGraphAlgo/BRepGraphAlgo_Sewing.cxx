@@ -72,11 +72,8 @@ constexpr int    THE_INIT_VECTOR_CAPACITY = 256; // initial capacity for scratch
 constexpr double THE_SEAM_SEPARATION_THRESHOLD =
   0.25; // minimum midpoint UV separation as fraction of period
 
-// ---------------------------------------------------------------------------
-// UBTree selector for vertex bounding boxes (used in cutAtIntersections).
-// Each thread creates its own instance, so this is safe in parallel loops.
-// ---------------------------------------------------------------------------
-
+//! UBTree selector for vertex bounding boxes (used in cutAtIntersections).
+//! Each thread creates its own instance, so this is safe in parallel loops.
 class VtxBoxSelector : public NCollection_UBTree<int, Bnd_Box>::Selector
 {
 public:
@@ -101,11 +98,10 @@ private:
   NCollection_Vector<int> myResults;
 };
 
-// ---------------------------------------------------------------------------
-// Unwrap trimmed/offset surface to its basis surface.
-// Ported from BRepBuilderAPI_Sewing::IsUClosedSurface (recursive unwrapping).
-// ---------------------------------------------------------------------------
-
+//! Unwrap trimmed/offset surface to its underlying basis surface.
+//! @param[in] theSurf surface to unwrap (may be Geom_RectangularTrimmedSurface or
+//! Geom_OffsetSurface)
+//! @return the innermost basis surface
 occ::handle<Geom_Surface> basisSurface(const occ::handle<Geom_Surface>& theSurf)
 {
   occ::handle<Geom_Surface> aSurf = theSurf;
@@ -126,11 +122,15 @@ occ::handle<Geom_Surface> basisSurface(const occ::handle<Geom_Surface>& theSurf)
   }
 }
 
-// ---------------------------------------------------------------------------
-// Isocurve-based closure check. Ported from BRepBuilderAPI_Sewing::IsClosedByIsos.
-// Tests if two isocurves at the PCurve endpoints form closed loops.
-// ---------------------------------------------------------------------------
-
+//! Test surface closure via isocurve sampling at the PCurve endpoints.
+//! Returns true if the isocurves at both ends form closed loops,
+//! indicating the surface is closed in the direction perpendicular to the edge.
+//! @param[in] theSurf  face surface
+//! @param[in] thePCurve  parametric curve on the surface
+//! @param[in] theFirst  PCurve first parameter
+//! @param[in] theLast   PCurve last parameter
+//! @param[in] theIsU    true to test U-closure, false for V-closure
+//! @return true if isocurves at both endpoints close within tolerance
 bool isClosedByIsos(const occ::handle<Geom_Surface>& theSurf,
                     const occ::handle<Geom2d_Curve>& thePCurve,
                     double                           theFirst,
@@ -181,11 +181,16 @@ bool isClosedByIsos(const occ::handle<Geom_Surface>& theSurf,
              < (aPt2F.XYZ() - aPt2M.XYZ()).Modulus() - Precision::Confusion());
 }
 
-// ---------------------------------------------------------------------------
-// Check if surface is U-closed or V-closed (with isocurve fallback).
-// Ported from BRepBuilderAPI_Sewing::IsUClosedSurface / IsVClosedSurface.
-// ---------------------------------------------------------------------------
-
+//! Check if the face surface is closed in the direction perpendicular to an edge.
+//! First checks Surface::IsUClosed()/IsVClosed(), then falls back to
+//! isocurve-based sampling for surfaces that report non-closed but are
+//! geometrically closed (e.g., trimmed periodic surfaces).
+//! @param[in] theGraph      source graph
+//! @param[in] theFaceDefIdx face definition index
+//! @param[in] theCoEdge     coedge entity on the face
+//! @param[out] theIsUClosed set to true if closed in U
+//! @param[out] theIsVClosed set to true if closed in V
+//! @return true if closed in at least one direction
 bool isSurfaceClosedForEdge(const BRepGraph&                     theGraph,
                             int                                  theFaceDefIdx,
                             const BRepGraph_TopoNode::CoEdgeDef& theCoEdge,
@@ -217,12 +222,12 @@ bool isSurfaceClosedForEdge(const BRepGraph&                     theGraph,
   return false;
 }
 
-// ---------------------------------------------------------------------------
-// Seam edge detection: edge is on a UV-closed surface and has 2 CoEdges
-// with SeamPairIdx >= 0. A seam can ONLY exist on a closed surface.
-// This eliminates false positives from non-seam edges on planar/non-closed surfaces.
-// ---------------------------------------------------------------------------
-
+//! Detect if an edge is a seam (has two CoEdges with opposite Sense on the same
+//! UV-closed face, linked via SeamPairIdx). Eliminates false positives from
+//! non-seam edges on non-closed surfaces.
+//! @param[in] theGraph   source graph
+//! @param[in] theEdgeIdx edge definition index
+//! @return true if edge is a seam
 bool isSeamEdge(const BRepGraph& theGraph, int theEdgeIdx)
 {
   // Use reverse index for O(1) lookup instead of scanning all coedges.
@@ -242,18 +247,16 @@ bool isSeamEdge(const BRepGraph& theGraph, int theEdgeIdx)
   return false;
 }
 
-// ---------------------------------------------------------------------------
-// Check if two edges on the same face can be sewn (seam-like configuration).
-// Allowed only if the surface is UV-closed.
-// ---------------------------------------------------------------------------
-
-// ---------------------------------------------------------------------------
-// Check if two edges on the same UV-closed face are on opposite sides.
-// Ported from BRepBuilderAPI_Sewing::IsMergedClosed (lines 1354-1435).
-// Uses 2D bounding boxes of PCurves: on a U-closed surface, two V-long edges
-// are on opposite sides if their outer U-gap is smaller than their inner U-gap.
-// ---------------------------------------------------------------------------
-
+//! Check if two free edges on the same UV-closed face lie on opposite sides of
+//! the seam and can be sewn together. Uses 2D bounding boxes of their PCurves:
+//! on a U-closed surface, two V-long edges are on opposite sides if their
+//! outer U-gap (across the seam) is smaller than their inner U-gap.
+//! Midpoint UV separation must exceed 25% of the period to catch same-side false positives.
+//! @param[in] theGraph      source graph
+//! @param[in] theEdgeA      first edge index
+//! @param[in] theEdgeB      second edge index
+//! @param[in] theSharedFace shared face index (-1 if none)
+//! @return true if the edges can be sewn on the shared face
 bool canSewSameFaceEdges(const BRepGraph& theGraph, int theEdgeA, int theEdgeB, int theSharedFace)
 {
   if (theSharedFace < 0)
@@ -375,11 +378,7 @@ bool canSewSameFaceEdges(const BRepGraph& theGraph, int theEdgeA, int theEdgeB, 
   return false;
 }
 
-// ---------------------------------------------------------------------------
-// Union-Find with path compression: O(n * alpha(n)) ~ O(n).
-// ---------------------------------------------------------------------------
-
-//! Find root of theIdx with path compression.
+//! Find root of theIdx with path compression (Union-Find, amortized O(alpha(n))).
 int findRoot(NCollection_OrderedDataMap<int, int>& theParent, int theIdx)
 {
   int aRoot = theIdx;
@@ -401,10 +400,13 @@ int findRoot(NCollection_OrderedDataMap<int, int>& theParent, int theIdx)
   return aRoot;
 }
 
-// ---------------------------------------------------------------------------
-// Phase 1: Find free edges.
-// ---------------------------------------------------------------------------
-
+//! Collect boundary (free) edges - edges with exactly one adjacent face.
+//! Seam edges and removed edges are excluded. Optionally includes floating edges
+//! (zero adjacent faces) in a separate set.
+//! @param[in]  theGraph           source graph
+//! @param[in]  theIncludeFloating if true, include edges with zero faces
+//! @param[out] theFloatingEdges   set of floating edge indices (populated if theIncludeFloating)
+//! @return array of free edge NodeIds
 NCollection_Array1<BRepGraph_NodeId> findFreeEdges(const BRepGraph&      theGraph,
                                                    bool                  theIncludeFloating,
                                                    NCollection_Map<int>& theFloatingEdges)
@@ -456,10 +458,12 @@ NCollection_Array1<BRepGraph_NodeId> findFreeEdges(const BRepGraph&      theGrap
   return anArray;
 }
 
-// ---------------------------------------------------------------------------
-// Phase 2: Merge coincident free-edge vertices.
-// ---------------------------------------------------------------------------
-
+//! Merge coincident vertices of free edges using KDTree range search
+//! and Union-Find. Updates edge vertex references and reverse indices.
+//! @param[in,out] theGraph      graph to modify
+//! @param[in]     theFreeEdges  free edges from findFreeEdges()
+//! @param[in]     theTolerance  maximum merge distance
+//! @param[in,out] theResult     sewing result diagnostics
 void assembleVertices(BRepGraph&                                   theGraph,
                       const NCollection_Array1<BRepGraph_NodeId>&  theFreeEdges,
                       double                                       theTolerance,
@@ -578,10 +582,13 @@ void assembleVertices(BRepGraph&                                   theGraph,
   }
 }
 
-// ---------------------------------------------------------------------------
-// Phase 3 (optional): Cut edges at T-vertex intersections.
-// ---------------------------------------------------------------------------
-
+//! Split free edges at T-vertex intersections (vertices from other edges
+//! that project onto the edge within tolerance). Uses UBTree for spatial
+//! candidate detection. Updates theFreeEdges array in place.
+//! @param[in,out] theGraph      graph to modify
+//! @param[in,out] theFreeEdges  free edges (may grow due to splits)
+//! @param[in]     theOptions    sewing configuration
+//! @param[in,out] theResult     sewing result diagnostics
 void cutAtIntersections(BRepGraph&                                   theGraph,
                         NCollection_Array1<BRepGraph_NodeId>&        theFreeEdges,
                         const BRepGraphAlgo_Sewing::Options&         theOptions,
@@ -843,12 +850,15 @@ void cutAtIntersections(BRepGraph&                                   theGraph,
   theFreeEdges = std::move(aNewFreeArray);
 }
 
-// ---------------------------------------------------------------------------
-// Phase 4: Detect sewing candidates via BBox overlap.
-// Returns local adjacency lists indexed by free-edge position (1..N).
-// Eliminates persistent RelEdge storage - candidates live only until matching.
-// ---------------------------------------------------------------------------
-
+//! Detect sewing candidates via bounding-box overlap using UBTree.
+//! Returns local adjacency lists indexed by free-edge position (1..N).
+//! Candidate pairs are ephemeral - they live only until edge matching.
+//! @param[in]  theGraph         source graph
+//! @param[in]  theFreeEdges     free edges to match
+//! @param[in]  theFloatingEdges floating edge indices (excluded from candidates)
+//! @param[in]  theTolerance     distance tolerance for BBox expansion
+//! @param[in]  theParallel      enable parallel BBox computation
+//! @return per-edge adjacency lists of candidate indices
 NCollection_Array1<NCollection_Vector<int>> detectCandidates(
   const BRepGraph&                              theGraph,
   const NCollection_Array1<BRepGraph_NodeId>&   theFreeEdges,
@@ -1005,12 +1015,15 @@ NCollection_Array1<NCollection_Vector<int>> detectCandidates(
   return anAdj;
 }
 
-// ---------------------------------------------------------------------------
-// Phase 5: Match free-edge pairs.
-// Uses local adjacency from detectCandidates and inline union-find for
-// connected components (replaces RelationClusters + ForEachOutOfKind).
-// ---------------------------------------------------------------------------
-
+//! Match free-edge pairs by geometric proximity scoring.
+//! Uses local adjacency from detectCandidates() and inline Union-Find for
+//! connected component grouping. Greedy best-score pairing within each component.
+//! @param[in]  theGraph        source graph
+//! @param[in]  theFreeEdges    free edges from findFreeEdges()
+//! @param[in]  theAdj          adjacency lists from detectCandidates()
+//! @param[in]  theOptions      sewing configuration
+//! @param[in,out] theResult    sewing result diagnostics
+//! @return matched edge pairs ready for merging
 NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> matchFreeEdges(
   const BRepGraph&                                   theGraph,
   const NCollection_Array1<BRepGraph_NodeId>&        theFreeEdges,
@@ -1359,10 +1372,13 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> matchFreeEdges
   return aResult;
 }
 
-// ---------------------------------------------------------------------------
-// Phase 6: Merge matched edge pairs (graph-only, no shape access).
-// ---------------------------------------------------------------------------
-
+//! Merge matched edge pairs by transferring PCurves and updating wire references.
+//! Operates entirely on graph entities (no TopoDS shape access).
+//! @param[in,out] theGraph      graph to modify
+//! @param[in]     thePairs      matched pairs from matchFreeEdges()
+//! @param[in]     theOptions    sewing configuration
+//! @param[in,out] theResult     sewing result diagnostics
+//! @return number of successfully sewn edge pairs
 int mergeMatchedEdges(
   BRepGraph&                                                               theGraph,
   const NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>>& thePairs,
@@ -1468,10 +1484,8 @@ int mergeMatchedEdges(
   return aSewnCount;
 }
 
-// ---------------------------------------------------------------------------
-// Phase 7: Process sewn edges (tolerance consistency).
-// ---------------------------------------------------------------------------
-
+//! Post-process sewn edges for tolerance consistency.
+//! Currently a no-op: SameParameter enforcement is handled during merging.
 void processEdges([[maybe_unused]] BRepGraph&                           theGraph,
                   [[maybe_unused]] const NCollection_IndexedMap<int>&   theSewnEdgeIndices,
                   [[maybe_unused]] const BRepGraphAlgo_Sewing::Options& theOptions)
@@ -1482,10 +1496,10 @@ void processEdges([[maybe_unused]] BRepGraph&                           theGraph
   // that to edges would undo the careful tolerance set during merging.
 }
 
-// ---------------------------------------------------------------------------
-// Reconstruct result shape from graph state.
-// ---------------------------------------------------------------------------
-
+//! Reconstruct a TopoDS_Shape from the current graph state.
+//! Dispatches to the appropriate root node (Compound, Solid, Shell, or Face).
+//! @param[in] theGraph source graph
+//! @return reconstructed shape
 TopoDS_Shape reconstructFromGraph(const BRepGraph& theGraph)
 {
   const BRepGraph::DefsView aDefs = theGraph.Defs();
@@ -1523,12 +1537,10 @@ TopoDS_Shape reconstructFromGraph(const BRepGraph& theGraph)
   }
 }
 
-// ---------------------------------------------------------------------------
-// Phase 7: Convert remaining free edges that form degenerate wires.
-// Ported from BRepBuilderAPI_Sewing::EdgeProcessing + IsDegeneratedWire +
-// DegeneratedSection (lines 4219-4474).
-// ---------------------------------------------------------------------------
-
+//! Convert remaining free edges that form degenerate wires into
+//! degenerate edges (collapsed to a point on surface).
+//! @param[in,out] theGraph  graph to modify
+//! @param[in,out] theResult sewing result diagnostics
 void convertDegenerateEdges(BRepGraph& theGraph, BRepGraphAlgo_Sewing::Result& theResult)
 {
   // Collect remaining free edges after merging.

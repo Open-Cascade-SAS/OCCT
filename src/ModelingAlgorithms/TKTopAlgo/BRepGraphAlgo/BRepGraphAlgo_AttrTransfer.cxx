@@ -20,18 +20,6 @@
 
 #include <NCollection_Vector.hxx>
 
-namespace
-{
-
-//! Check if a NodeId refers to a kind that has no Cache and thus no user attributes.
-//! With geometry stored directly on defs, all topology kinds have caches.
-bool isGeometryKind(BRepGraph_NodeId::Kind /*theKind*/)
-{
-  return false;
-}
-
-} // namespace
-
 //=================================================================================================
 
 BRepGraphAlgo_AttrTransfer::Result BRepGraphAlgo_AttrTransfer::Perform(BRepGraph& theGraph)
@@ -62,10 +50,6 @@ BRepGraphAlgo_AttrTransfer::Result BRepGraphAlgo_AttrTransfer::Perform(BRepGraph
     {
       const BRepGraph_NodeId& anOriginal = aMapIter.Key();
 
-      // Skip geometry nodes - they have no Cache / user attributes.
-      if (isGeometryKind(anOriginal.NodeKind))
-        continue;
-
       const NCollection_Vector<BRepGraph_NodeId>& aReplacements = aMapIter.Value();
       if (aReplacements.IsEmpty())
         continue;
@@ -80,8 +64,8 @@ BRepGraphAlgo_AttrTransfer::Result BRepGraphAlgo_AttrTransfer::Perform(BRepGraph
       {
         const BRepGraph_NodeId& aTarget = aReplacements.Value(aReplIdx);
 
-        // Skip geometry replacement nodes and self-references.
-        if (isGeometryKind(aTarget.NodeKind) || aTarget == anOriginal)
+        // Skip self-references.
+        if (aTarget == anOriginal)
           continue;
 
         for (int aKeyIdx = 0; aKeyIdx < aKeys.Length(); ++aKeyIdx)
