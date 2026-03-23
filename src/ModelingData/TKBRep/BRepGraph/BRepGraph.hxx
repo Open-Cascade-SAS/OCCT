@@ -328,6 +328,76 @@ public:
                                      BRepGraph_NodeId                              theOriginal,
                                      const NCollection_Vector<BRepGraph_NodeId>& theReplacements);
 
+  // --- Programmatic node addition ---
+
+  //! Add a vertex definition to the graph.
+  //! @param[in] thePoint     3D coordinates
+  //! @param[in] theTolerance vertex tolerance
+  //! @return NodeId of the new vertex definition
+  Standard_EXPORT BRepGraph_NodeId AddVertexDef(const gp_Pnt& thePoint,
+                                                double        theTolerance);
+
+  //! Add an edge definition to the graph.
+  //! @param[in] theStartVtx  start vertex def NodeId
+  //! @param[in] theEndVtx    end vertex def NodeId
+  //! @param[in] theCurve     3D curve (may be null for degenerate edges)
+  //! @param[in] theFirst     first curve parameter
+  //! @param[in] theLast      last curve parameter
+  //! @param[in] theTolerance edge tolerance
+  //! @return NodeId of the new edge definition
+  Standard_EXPORT BRepGraph_NodeId AddEdgeDef(BRepGraph_NodeId          theStartVtx,
+                                              BRepGraph_NodeId          theEndVtx,
+                                              const Handle(Geom_Curve)& theCurve,
+                                              double                    theFirst,
+                                              double                    theLast,
+                                              double                    theTolerance);
+
+  //! Add a wire definition to the graph.
+  //! @param[in] theEdges ordered edge entries
+  //! @return NodeId of the new wire definition
+  Standard_EXPORT BRepGraph_NodeId AddWireDef(
+    const NCollection_Vector<BRepGraph_TopoNode::WireDef::EdgeEntry>& theEdges);
+
+  //! Add a face definition to the graph.
+  //! @param[in] theSurface    surface geometry
+  //! @param[in] theOuterWire  outer wire def NodeId
+  //! @param[in] theInnerWires inner wire def NodeIds
+  //! @param[in] theTolerance  face tolerance
+  //! @return NodeId of the new face definition
+  Standard_EXPORT BRepGraph_NodeId AddFaceDef(const Handle(Geom_Surface)&              theSurface,
+                                              BRepGraph_NodeId                         theOuterWire,
+                                              const NCollection_Vector<BRepGraph_NodeId>& theInnerWires,
+                                              double                                   theTolerance);
+
+  //! Add an empty shell definition to the graph.
+  //! @return NodeId of the new shell definition
+  Standard_EXPORT BRepGraph_NodeId AddShellDef();
+
+  //! Add an empty solid definition to the graph.
+  //! @return NodeId of the new solid definition
+  Standard_EXPORT BRepGraph_NodeId AddSolidDef();
+
+  // --- Incremental build ---
+
+  //! Append a shape to the existing graph without clearing.
+  //! Uses existing deduplication maps to avoid re-registering shared entities.
+  //! @param[in] theShape   shape to add
+  //! @param[in] theParallel if true, per-face geometry extraction is parallel
+  Standard_EXPORT void AppendShape(const TopoDS_Shape& theShape,
+                                   bool                theParallel = false);
+
+  // --- Soft removal ---
+
+  //! Mark a node as removed (soft deletion).
+  //! The node remains in storage but is skipped by iterators and queries.
+  //! @param[in] theNode node to remove
+  Standard_EXPORT void RemoveNode(BRepGraph_NodeId theNode);
+
+  //! Check if a node has been soft-removed.
+  //! @param[in] theNode node to check
+  //! @return true if the node was marked as removed
+  Standard_EXPORT bool IsRemoved(BRepGraph_NodeId theNode) const;
+
   // --- Allocator ---
 
   Standard_EXPORT void SetAllocator(const Handle(NCollection_BaseAllocator)& theAlloc);
@@ -424,6 +494,7 @@ private:
                                     double                      theFirst,
                                     double                      theLast);
 
+  void collectVertexPoints(BRepGraph_NodeId theNode, Bnd_Box& theBox) const;
   void invalidateSubgraphImpl(BRepGraph_NodeId theNode);
   BRepGraph_UID allocateUID(BRepGraph_NodeId theNodeId);
   BRepGraph_NodeCache* mutableCache(BRepGraph_NodeId theNode);
@@ -444,6 +515,46 @@ private:
   mutable NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape,
                               BRepGraph_NodeId::Hasher> myCurrentShapes;
   mutable std::shared_mutex myCurrentShapesMutex;
+
+  //! Dispatch a callback on the def vector matching theNode.Kind.
+  //! Returns the callback result, or a default-constructed value for unhandled kinds.
+  //! Usage: `auto result = dispatchDef(nodeId, [](auto& defVec, int idx) { ... });`
+  template <typename Func>
+  auto dispatchDef(BRepGraph_NodeId theNode, Func&& theFunc) const
+    -> decltype(theFunc(mySolidDefs, 0))
+  {
+    switch (theNode.Kind)
+    {
+      case BRepGraph_NodeKind::Solid:     return theFunc(mySolidDefs, theNode.Index);
+      case BRepGraph_NodeKind::Shell:     return theFunc(myShellDefs, theNode.Index);
+      case BRepGraph_NodeKind::Face:      return theFunc(myFaceDefs, theNode.Index);
+      case BRepGraph_NodeKind::Wire:      return theFunc(myWireDefs, theNode.Index);
+      case BRepGraph_NodeKind::Edge:      return theFunc(myEdgeDefs, theNode.Index);
+      case BRepGraph_NodeKind::Vertex:    return theFunc(myVertexDefs, theNode.Index);
+      case BRepGraph_NodeKind::Compound:  return theFunc(myCompoundDefs, theNode.Index);
+      case BRepGraph_NodeKind::CompSolid: return theFunc(myCompSolidDefs, theNode.Index);
+      default: return decltype(theFunc(mySolidDefs, 0)){};
+    }
+  }
+
+  //! Non-const overload of dispatchDef for mutable access.
+  template <typename Func>
+  auto dispatchDef(BRepGraph_NodeId theNode, Func&& theFunc)
+    -> decltype(theFunc(mySolidDefs, 0))
+  {
+    switch (theNode.Kind)
+    {
+      case BRepGraph_NodeKind::Solid:     return theFunc(mySolidDefs, theNode.Index);
+      case BRepGraph_NodeKind::Shell:     return theFunc(myShellDefs, theNode.Index);
+      case BRepGraph_NodeKind::Face:      return theFunc(myFaceDefs, theNode.Index);
+      case BRepGraph_NodeKind::Wire:      return theFunc(myWireDefs, theNode.Index);
+      case BRepGraph_NodeKind::Edge:      return theFunc(myEdgeDefs, theNode.Index);
+      case BRepGraph_NodeKind::Vertex:    return theFunc(myVertexDefs, theNode.Index);
+      case BRepGraph_NodeKind::Compound:  return theFunc(myCompoundDefs, theNode.Index);
+      case BRepGraph_NodeKind::CompSolid: return theFunc(myCompSolidDefs, theNode.Index);
+      default: return decltype(theFunc(mySolidDefs, 0)){};
+    }
+  }
 };
 
 #endif // _BRepGraph_HeaderFile

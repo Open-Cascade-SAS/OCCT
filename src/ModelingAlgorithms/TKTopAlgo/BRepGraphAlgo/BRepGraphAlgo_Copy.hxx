@@ -41,21 +41,25 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Deep-copy the entire shape represented by the graph.
-  //! @param[in] theGraph   a pre-built BRepGraph (must have IsDone() == true)
+  //! @param[in] theGraph    a pre-built BRepGraph (must have IsDone() == true)
   //! @param[in] theCopyGeom if true (default), geometry handles are deep-copied;
   //!                        if false, geometry is shared (only topology is duplicated)
+  //! @param[in] theParallel if true, face building is parallelized
   //! @return the deep-copied shape
   Standard_EXPORT static TopoDS_Shape Perform(const BRepGraph& theGraph,
-                                              bool             theCopyGeom = true);
+                                              bool             theCopyGeom = true,
+                                              bool             theParallel = false);
 
   //! Deep-copy a single face from the graph.
-  //! @param[in] theGraph   a pre-built BRepGraph
-  //! @param[in] theFaceIdx face index in the graph
+  //! @param[in] theGraph    a pre-built BRepGraph
+  //! @param[in] theFaceIdx  face index in the graph
   //! @param[in] theCopyGeom if true, geometry is deep-copied
+  //! @param[in] theParallel if true, face building is parallelized (unused for single face)
   //! @return the deep-copied face
   Standard_EXPORT static TopoDS_Shape CopyFace(const BRepGraph& theGraph,
                                                int              theFaceIdx,
-                                               bool             theCopyGeom = true);
+                                               bool             theCopyGeom = true,
+                                               bool             theParallel = false);
 
 private:
   BRepGraphAlgo_Copy() = delete;

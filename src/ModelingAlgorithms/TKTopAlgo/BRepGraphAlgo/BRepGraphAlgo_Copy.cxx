@@ -19,7 +19,9 @@
 #include <Geom2d_Curve.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DataMap.hxx>
+#include <OSD_Parallel.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Edge.hxx>
@@ -202,7 +204,9 @@ TopoDS_Face buildCopiedFace(const BRepGraph&                                    
 
 //==================================================================================================
 
-TopoDS_Shape BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph, bool theCopyGeom)
+TopoDS_Shape BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
+                                         bool             theCopyGeom,
+                                         bool             theParallel)
 {
   if (!theGraph.IsDone())
     return TopoDS_Shape();
@@ -233,31 +237,43 @@ TopoDS_Shape BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph, bool theCopy
     aVertexCopies.Bind(aVtxIdx, aNewVtx);
   }
 
-  // Phase 2b: Walk the usage tree for containment.
+  // Phase 2b: Build all faces (optionally parallel), then assemble hierarchy sequentially.
+  // buildCopiedFace() is independent per face: all shared data (surfCopies, curveCopies,
+  // vertexCopies) is read-only at this point, so parallelization is safe.
+  const int aNbFaceUsages = theGraph.NbFaceUsages();
+  NCollection_Array1<TopoDS_Face> aBuiltFaces(0, aNbFaceUsages > 0 ? aNbFaceUsages - 1 : 0);
+  if (aNbFaceUsages > 0)
+  {
+    OSD_Parallel::For(
+      0, aNbFaceUsages,
+      [&](int theFaceUsageIdx) {
+        aBuiltFaces.SetValue(theFaceUsageIdx,
+                             buildCopiedFace(theGraph, theFaceUsageIdx, theCopyGeom,
+                                             aSurfCopies, aCurveCopies, aVertexCopies));
+      },
+      !theParallel);
+  }
+
+  // Sequential assembly of containment hierarchy using pre-built faces.
   TopoDS_Compound aResult;
   aBB.MakeCompound(aResult);
 
   if (theGraph.NbSolidUsages() > 0)
   {
-    // Rebuild solids from usage tree.
     for (int aSolidIdx = 0; aSolidIdx < theGraph.NbSolidUsages(); ++aSolidIdx)
     {
-      const auto& aSolidUsage = theGraph.SolidUsageNode(aSolidIdx);
+      const BRepGraph_TopoNode::SolidUsage& aSolidUsage = theGraph.SolidUsageNode(aSolidIdx);
       TopoDS_Solid aNewSolid;
       aBB.MakeSolid(aNewSolid);
       for (int aShellIter = 0; aShellIter < aSolidUsage.ShellUsages.Length(); ++aShellIter)
       {
-        const auto& aShellUsage =
+        const BRepGraph_TopoNode::ShellUsage& aShellUsage =
           theGraph.ShellUsageNode(aSolidUsage.ShellUsages.Value(aShellIter).Index);
         TopoDS_Shell aNewShell;
         aBB.MakeShell(aNewShell);
         for (int aFaceIter = 0; aFaceIter < aShellUsage.FaceUsages.Length(); ++aFaceIter)
         {
-          TopoDS_Face aCopiedFace = buildCopiedFace(theGraph,
-                                                    aShellUsage.FaceUsages.Value(aFaceIter).Index,
-                                                    theCopyGeom, aSurfCopies, aCurveCopies,
-                                                    aVertexCopies);
-          aBB.Add(aNewShell, aCopiedFace);
+          aBB.Add(aNewShell, aBuiltFaces.Value(aShellUsage.FaceUsages.Value(aFaceIter).Index));
         }
         aBB.Add(aNewSolid, aNewShell);
       }
@@ -268,28 +284,21 @@ TopoDS_Shape BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph, bool theCopy
   {
     for (int aShellIdx = 0; aShellIdx < theGraph.NbShellUsages(); ++aShellIdx)
     {
-      const auto& aShellUsage = theGraph.ShellUsageNode(aShellIdx);
+      const BRepGraph_TopoNode::ShellUsage& aShellUsage = theGraph.ShellUsageNode(aShellIdx);
       TopoDS_Shell aNewShell;
       aBB.MakeShell(aNewShell);
       for (int aFaceIter = 0; aFaceIter < aShellUsage.FaceUsages.Length(); ++aFaceIter)
       {
-        TopoDS_Face aCopiedFace = buildCopiedFace(theGraph,
-                                                  aShellUsage.FaceUsages.Value(aFaceIter).Index,
-                                                  theCopyGeom, aSurfCopies, aCurveCopies,
-                                                  aVertexCopies);
-        aBB.Add(aNewShell, aCopiedFace);
+        aBB.Add(aNewShell, aBuiltFaces.Value(aShellUsage.FaceUsages.Value(aFaceIter).Index));
       }
       aBB.Add(aResult, aNewShell);
     }
   }
   else
   {
-    // Face usages only (compound of faces, typical for sewing input).
-    for (int aFaceIdx = 0; aFaceIdx < theGraph.NbFaceUsages(); ++aFaceIdx)
+    for (int aFaceIdx = 0; aFaceIdx < aNbFaceUsages; ++aFaceIdx)
     {
-      TopoDS_Face aCopiedFace = buildCopiedFace(theGraph, aFaceIdx, theCopyGeom,
-                                                aSurfCopies, aCurveCopies, aVertexCopies);
-      aBB.Add(aResult, aCopiedFace);
+      aBB.Add(aResult, aBuiltFaces.Value(aFaceIdx));
     }
   }
 
@@ -304,7 +313,8 @@ TopoDS_Shape BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph, bool theCopy
 
 TopoDS_Shape BRepGraphAlgo_Copy::CopyFace(const BRepGraph& theGraph,
                                           int              theFaceIdx,
-                                          bool             theCopyGeom)
+                                          bool             theCopyGeom,
+                                          bool             /*theParallel*/)
 {
   if (!theGraph.IsDone() || theFaceIdx < 0 || theFaceIdx >= theGraph.NbFaceDefs())
     return TopoDS_Shape();

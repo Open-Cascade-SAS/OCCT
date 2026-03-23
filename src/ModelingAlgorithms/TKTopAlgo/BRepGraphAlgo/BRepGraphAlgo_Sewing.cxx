@@ -31,13 +31,17 @@
 #include <Precision.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_CompSolid.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Edge.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
 #include <TopoDS_Vertex.hxx>
 
 #include <BRepGraph_Analyze.hxx>
 
 #include <algorithm>
+#include <functional>
 
 namespace
 {
@@ -1084,15 +1088,218 @@ void BRepGraphAlgo_Sewing::reconstructResult(const NCollection_Map<int>& theAffe
     },
     !myIsParallel);
 
-  // Step 2 (sequential): Assemble into result compound.
-  BRep_Builder    aBB;
-  TopoDS_Compound aResultCompound;
-  aBB.MakeCompound(aResultCompound);
-  for (int aFaceIdx = 0; aFaceIdx < aNbFaces; ++aFaceIdx)
+  // Step 2 (sequential): Reassemble preserving the original hierarchy.
+  // Helper lambda: build a shell from its face usages using reconstructed faces.
+  BRep_Builder aBB;
+  auto buildShell = [&](int theShellUsageIdx) -> TopoDS_Shell
   {
-    aBB.Add(aResultCompound, aFaceShapes.Value(aFaceIdx));
+    const BRepGraph_TopoNode::ShellUsage& aShellUsage = myGraph.ShellUsageNode(theShellUsageIdx);
+    TopoDS_Shell aNewShell;
+    aBB.MakeShell(aNewShell);
+    for (int aFaceIter = 0; aFaceIter < aShellUsage.FaceUsages.Length(); ++aFaceIter)
+    {
+      const int aFaceUsageIdx = aShellUsage.FaceUsages.Value(aFaceIter).Index;
+      const int aFaceDefIdx   = myGraph.FaceUsageNode(aFaceUsageIdx).DefId.Index;
+      aBB.Add(aNewShell, aFaceShapes.Value(aFaceDefIdx));
+    }
+    aNewShell.Orientation(aShellUsage.Orientation);
+    return aNewShell;
+  };
+
+  // Helper lambda: build a solid from its shell usages.
+  auto buildSolid = [&](int theSolidUsageIdx) -> TopoDS_Solid
+  {
+    const BRepGraph_TopoNode::SolidUsage& aSolidUsage = myGraph.SolidUsageNode(theSolidUsageIdx);
+    TopoDS_Solid aNewSolid;
+    aBB.MakeSolid(aNewSolid);
+    for (int aShellIter = 0; aShellIter < aSolidUsage.ShellUsages.Length(); ++aShellIter)
+    {
+      const int aShellUsageIdx = aSolidUsage.ShellUsages.Value(aShellIter).Index;
+      aBB.Add(aNewSolid, buildShell(aShellUsageIdx));
+    }
+    aNewSolid.Orientation(aSolidUsage.Orientation);
+    return aNewSolid;
+  };
+
+  // Recursive lambda: build a compound from its child usages.
+  std::function<TopoDS_Compound(int)> buildCompound;
+  buildCompound = [&](int theCompUsageIdx) -> TopoDS_Compound
+  {
+    const BRepGraph_TopoNode::CompoundUsage& aCompUsage = myGraph.CompoundUsageNode(theCompUsageIdx);
+    TopoDS_Compound aNewCompound;
+    aBB.MakeCompound(aNewCompound);
+    for (int aChildIter = 0; aChildIter < aCompUsage.ChildUsages.Length(); ++aChildIter)
+    {
+      const BRepGraph_UsageId& aChildId = aCompUsage.ChildUsages.Value(aChildIter);
+      switch (aChildId.Kind)
+      {
+        case BRepGraph_NodeKind::Compound:
+          aBB.Add(aNewCompound, buildCompound(aChildId.Index));
+          break;
+        case BRepGraph_NodeKind::CompSolid:
+        {
+          const BRepGraph_TopoNode::CompSolidUsage& aCSUsage = myGraph.CompSolidUsageNode(aChildId.Index);
+          TopoDS_CompSolid aNewCS;
+          aBB.MakeCompSolid(aNewCS);
+          for (int aSolIter = 0; aSolIter < aCSUsage.SolidUsages.Length(); ++aSolIter)
+          {
+            aBB.Add(aNewCS, buildSolid(aCSUsage.SolidUsages.Value(aSolIter).Index));
+          }
+          aNewCS.Orientation(aCSUsage.Orientation);
+          aBB.Add(aNewCompound, aNewCS);
+          break;
+        }
+        case BRepGraph_NodeKind::Solid:
+          aBB.Add(aNewCompound, buildSolid(aChildId.Index));
+          break;
+        case BRepGraph_NodeKind::Shell:
+          aBB.Add(aNewCompound, buildShell(aChildId.Index));
+          break;
+        case BRepGraph_NodeKind::Face:
+        {
+          const int aFaceDefIdx = myGraph.FaceUsageNode(aChildId.Index).DefId.Index;
+          aBB.Add(aNewCompound, aFaceShapes.Value(aFaceDefIdx));
+          break;
+        }
+        default:
+          break;
+      }
+    }
+    aNewCompound.Orientation(aCompUsage.Orientation);
+    return aNewCompound;
+  };
+
+  // Determine which assembly strategy to use based on graph hierarchy.
+  // Note: analyzeFaces() always wraps input into a compound, so NbCompoundUsages() >= 1.
+  // A root compound with non-empty ChildUsages indicates genuine compound hierarchy;
+  // an empty ChildUsages means it was the artificial wrapper around loose faces.
+  bool aHasCompoundHierarchy = false;
+  if (myGraph.NbCompoundUsages() > 0)
+  {
+    for (int aCompIdx = 0; aCompIdx < myGraph.NbCompoundUsages(); ++aCompIdx)
+    {
+      const BRepGraph_TopoNode::CompoundUsage& aCompUsage = myGraph.CompoundUsageNode(aCompIdx);
+      if (!aCompUsage.ParentUsage.IsValid() && aCompUsage.ChildUsages.Length() > 0)
+      {
+        aHasCompoundHierarchy = true;
+        break;
+      }
+    }
   }
-  myResult = aResultCompound;
+
+  if (aHasCompoundHierarchy)
+  {
+    // Find root compound(s) (those with no parent and non-empty children).
+    TopoDS_Compound aResultCompound;
+    aBB.MakeCompound(aResultCompound);
+    int aRootIdx = -1;
+    int aNbRoots = 0;
+    for (int aCompIdx = 0; aCompIdx < myGraph.NbCompoundUsages(); ++aCompIdx)
+    {
+      const BRepGraph_TopoNode::CompoundUsage& aCompUsage = myGraph.CompoundUsageNode(aCompIdx);
+      if (!aCompUsage.ParentUsage.IsValid() && aCompUsage.ChildUsages.Length() > 0)
+      {
+        aRootIdx = aCompIdx;
+        ++aNbRoots;
+      }
+    }
+    if (aNbRoots == 1)
+    {
+      myResult = buildCompound(aRootIdx);
+    }
+    else
+    {
+      // Multiple root compounds: wrap them.
+      for (int aCompIdx = 0; aCompIdx < myGraph.NbCompoundUsages(); ++aCompIdx)
+      {
+        const BRepGraph_TopoNode::CompoundUsage& aCompUsage = myGraph.CompoundUsageNode(aCompIdx);
+        if (!aCompUsage.ParentUsage.IsValid() && aCompUsage.ChildUsages.Length() > 0)
+          aBB.Add(aResultCompound, buildCompound(aCompIdx));
+      }
+      myResult = aResultCompound;
+    }
+  }
+  else if (myGraph.NbCompSolidUsages() > 0)
+  {
+    // CompSolid hierarchy without enclosing compound.
+    if (myGraph.NbCompSolidUsages() == 1)
+    {
+      const BRepGraph_TopoNode::CompSolidUsage& aCSUsage = myGraph.CompSolidUsageNode(0);
+      TopoDS_CompSolid aNewCS;
+      aBB.MakeCompSolid(aNewCS);
+      for (int aSolIter = 0; aSolIter < aCSUsage.SolidUsages.Length(); ++aSolIter)
+      {
+        aBB.Add(aNewCS, buildSolid(aCSUsage.SolidUsages.Value(aSolIter).Index));
+      }
+      aNewCS.Orientation(aCSUsage.Orientation);
+      myResult = aNewCS;
+    }
+    else
+    {
+      TopoDS_Compound aResultCompound;
+      aBB.MakeCompound(aResultCompound);
+      for (int aCSIdx = 0; aCSIdx < myGraph.NbCompSolidUsages(); ++aCSIdx)
+      {
+        const BRepGraph_TopoNode::CompSolidUsage& aCSUsage = myGraph.CompSolidUsageNode(aCSIdx);
+        TopoDS_CompSolid aNewCS;
+        aBB.MakeCompSolid(aNewCS);
+        for (int aSolIter = 0; aSolIter < aCSUsage.SolidUsages.Length(); ++aSolIter)
+        {
+          aBB.Add(aNewCS, buildSolid(aCSUsage.SolidUsages.Value(aSolIter).Index));
+        }
+        aNewCS.Orientation(aCSUsage.Orientation);
+        aBB.Add(aResultCompound, aNewCS);
+      }
+      myResult = aResultCompound;
+    }
+  }
+  else if (myGraph.NbSolidUsages() > 0)
+  {
+    // Solid hierarchy without enclosing compound/compsolid.
+    if (myGraph.NbSolidUsages() == 1)
+    {
+      myResult = buildSolid(0);
+    }
+    else
+    {
+      TopoDS_Compound aResultCompound;
+      aBB.MakeCompound(aResultCompound);
+      for (int aSolidIdx = 0; aSolidIdx < myGraph.NbSolidUsages(); ++aSolidIdx)
+      {
+        aBB.Add(aResultCompound, buildSolid(aSolidIdx));
+      }
+      myResult = aResultCompound;
+    }
+  }
+  else if (myGraph.NbShellUsages() > 0)
+  {
+    // Shell hierarchy without enclosing solid.
+    if (myGraph.NbShellUsages() == 1)
+    {
+      myResult = buildShell(0);
+    }
+    else
+    {
+      TopoDS_Compound aResultCompound;
+      aBB.MakeCompound(aResultCompound);
+      for (int aShellIdx = 0; aShellIdx < myGraph.NbShellUsages(); ++aShellIdx)
+      {
+        aBB.Add(aResultCompound, buildShell(aShellIdx));
+      }
+      myResult = aResultCompound;
+    }
+  }
+  else
+  {
+    // No hierarchy: flat compound of faces (typical for loose face input).
+    TopoDS_Compound aResultCompound;
+    aBB.MakeCompound(aResultCompound);
+    for (int aFaceIdx = 0; aFaceIdx < aNbFaces; ++aFaceIdx)
+    {
+      aBB.Add(aResultCompound, aFaceShapes.Value(aFaceIdx));
+    }
+    myResult = aResultCompound;
+  }
 }
 
 //=================================================================================================

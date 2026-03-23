@@ -1592,3 +1592,106 @@ TEST(BRepGraphAlgo_SewingTest, CutAtIntersections_TVertex)
   // Without cutting the T-junction edges should NOT be matched (0 sewn along that boundary).
   EXPECT_LT(aSewerNoCut.NbSewnEdges(), aSewer.NbSewnEdges());
 }
+
+// ============================================================
+// Task 1B: Sewing Hierarchy Preservation
+// ============================================================
+
+TEST(BRepGraphAlgo_SewingTest, SewBoxSolid_PreservesHierarchy)
+{
+  // Build a box, copy each face independently, sew them back.
+  // The input to sewing is a compound of individual faces with independent geometry.
+  // After sewing all 12 edges, the result should be a single solid with a shell containing 6 faces.
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_FALSE(aBox.IsNull());
+
+  NCollection_Sequence<TopoDS_Face> aFaces = extractCopiedFaces(aBox);
+  ASSERT_EQ(aFaces.Length(), 6);
+
+  BRepGraphAlgo_Sewing aSewer(1.0e-04);
+  for (int aFaceIdx = 1; aFaceIdx <= aFaces.Length(); ++aFaceIdx)
+    aSewer.Add(aFaces.Value(aFaceIdx));
+  aSewer.Perform();
+
+  ASSERT_TRUE(aSewer.IsDone());
+  const TopoDS_Shape& aResult = aSewer.Result();
+  ASSERT_FALSE(aResult.IsNull());
+
+  // Count faces in the result.
+  int aNbFaces = 0;
+  for (TopExp_Explorer anExp(aResult, TopAbs_FACE); anExp.More(); anExp.Next())
+    ++aNbFaces;
+  EXPECT_EQ(aNbFaces, 6);
+}
+
+TEST(BRepGraphAlgo_SewingTest, SewSolidInput_PreservesHierarchy)
+{
+  // When sewing a complete solid (all edges already shared), the result should
+  // preserve the original Solid > Shell > Faces hierarchy.
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_FALSE(aBox.IsNull());
+
+  BRepGraphAlgo_Sewing aSewer(1.0e-04);
+  aSewer.Add(aBox);
+  aSewer.Perform();
+
+  ASSERT_TRUE(aSewer.IsDone());
+  const TopoDS_Shape& aResult = aSewer.Result();
+  ASSERT_FALSE(aResult.IsNull());
+
+  // The result should contain a Solid.
+  int aNbSolids = 0;
+  for (TopExp_Explorer anExp(aResult, TopAbs_SOLID); anExp.More(); anExp.Next())
+    ++aNbSolids;
+  EXPECT_EQ(aNbSolids, 1);
+
+  // The result should contain a Shell.
+  int aNbShells = 0;
+  for (TopExp_Explorer anExp(aResult, TopAbs_SHELL); anExp.More(); anExp.Next())
+    ++aNbShells;
+  EXPECT_EQ(aNbShells, 1);
+
+  int aNbFaces = 0;
+  for (TopExp_Explorer anExp(aResult, TopAbs_FACE); anExp.More(); anExp.Next())
+    ++aNbFaces;
+  EXPECT_EQ(aNbFaces, 6);
+}
+
+// ============================================================
+// Task 1C: Parallel Copy Test
+// ============================================================
+
+TEST(BRepGraphAlgo_CopyTest, ParallelCopy_MatchesSequential)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+
+  BRepGraph aGraph;
+  aGraph.Build(aBox);
+  ASSERT_TRUE(aGraph.IsDone());
+
+  // Sequential copy.
+  TopoDS_Shape aSeqCopy = BRepGraphAlgo_Copy::Perform(aGraph, true, false);
+  ASSERT_FALSE(aSeqCopy.IsNull());
+
+  // Parallel copy.
+  TopoDS_Shape aParCopy = BRepGraphAlgo_Copy::Perform(aGraph, true, true);
+  ASSERT_FALSE(aParCopy.IsNull());
+
+  // Compare face counts.
+  int aSeqFaces = 0, aParFaces = 0;
+  for (TopExp_Explorer anExp(aSeqCopy, TopAbs_FACE); anExp.More(); anExp.Next())
+    ++aSeqFaces;
+  for (TopExp_Explorer anExp(aParCopy, TopAbs_FACE); anExp.More(); anExp.Next())
+    ++aParFaces;
+  EXPECT_EQ(aSeqFaces, aParFaces);
+
+  // Compare surface areas.
+  GProp_GProps aSeqProps, aParProps;
+  BRepGProp::SurfaceProperties(aSeqCopy, aSeqProps);
+  BRepGProp::SurfaceProperties(aParCopy, aParProps);
+  EXPECT_NEAR(std::abs(aSeqProps.Mass()), std::abs(aParProps.Mass()),
+              std::abs(aSeqProps.Mass()) * 0.01);
+}

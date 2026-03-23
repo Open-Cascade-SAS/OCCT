@@ -46,6 +46,10 @@ struct BaseDef
   //! True when this definition or a descendant has been mutated since Build().
   bool IsModified = false;
 
+  //! True when this definition has been soft-removed via RemoveNode().
+  //! Removed nodes remain in storage but are skipped by iterators and queries.
+  bool IsRemoved = false;
+
   //! All usages of this definition in the containment tree.
   NCollection_Vector<BRepGraph_UsageId> Usages;
 };
