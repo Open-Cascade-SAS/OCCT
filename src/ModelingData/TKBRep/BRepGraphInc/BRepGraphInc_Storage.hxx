@@ -15,6 +15,7 @@
 #define _BRepGraphInc_Storage_HeaderFile
 
 #include <BRepGraph_NodeId.hxx>
+#include <BRepGraph_UID.hxx>
 #include <BRepGraphInc_Entity.hxx>
 #include <BRepGraphInc_RelGeom.hxx>
 #include <BRepGraphInc_ReverseIndex.hxx>
@@ -22,6 +23,7 @@
 #include <NCollection_DataMap.hxx>
 #include <NCollection_Vector.hxx>
 #include <Standard_DefineAlloc.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopoDS_TShape.hxx>
 
 //! @brief Central storage for the incidence-table model.
@@ -53,12 +55,24 @@ struct BRepGraphInc_Storage
 
   BRepGraphInc_ReverseIndex ReverseIdx;
 
-  // ------ TShape dedup map ------
+  // ------ Unified TShape → NodeId map ------
 
-  NCollection_DataMap<const TopoDS_TShape*, int> TShapeToVertexIdx;
-  NCollection_DataMap<const TopoDS_TShape*, int> TShapeToEdgeIdx;
-  NCollection_DataMap<const TopoDS_TShape*, int> TShapeToWireIdx;
-  NCollection_DataMap<const TopoDS_TShape*, int> TShapeToFaceIdx;
+  NCollection_DataMap<const TopoDS_TShape*, BRepGraph_NodeId> TShapeToNodeId;
+
+  // ------ Original shapes from Build() input ------
+
+  NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape> OriginalShapes;
+
+  // ------ UID vectors (parallel to entity vectors) ------
+
+  NCollection_Vector<BRepGraph_UID> VertexUIDs;
+  NCollection_Vector<BRepGraph_UID> EdgeUIDs;
+  NCollection_Vector<BRepGraph_UID> WireUIDs;
+  NCollection_Vector<BRepGraph_UID> FaceUIDs;
+  NCollection_Vector<BRepGraph_UID> ShellUIDs;
+  NCollection_Vector<BRepGraph_UID> SolidUIDs;
+  NCollection_Vector<BRepGraph_UID> CompoundUIDs;
+  NCollection_Vector<BRepGraph_UID> CompSolidUIDs;
 
   // ------ Population status ------
 

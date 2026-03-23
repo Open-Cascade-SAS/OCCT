@@ -270,10 +270,6 @@ void BRepGraph::markModified(BRepGraph_NodeId theDefId)
   if (!theDefId.IsValid())
     return;
 
-  // Invalidate incidence storage on first modification after Build().
-  // This ensures DefsView/ShapesView fall back to legacy storage for post-Build mutations.
-  myData->myIncStorage.IsDone = false;
-
   const BRepGraph_TopoNode::BaseDef* aDef = TopoDef(theDefId);
   if (aDef == nullptr)
     return;

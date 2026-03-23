@@ -46,12 +46,11 @@ public:
                                      const TopoDS_Shape& theShape,
                                      bool                theParallel);
 
-  //! Register pre-extracted face data into graph definitions and usages.
-  //! Shared by Perform() and Append().
-  template <typename FaceDataVec>
-  static void registerFaceData(BRepGraph& theGraph, const FaceDataVec& theFaceData);
-
 private:
+  //! Derive legacy Def/Usage stores from incidence-table storage.
+  //! Temporary compatibility layer until all consumers migrate to incidence types.
+  static void deriveLegacyFromIncidence(BRepGraph& theGraph);
+
   BRepGraph_Builder() = delete;
 };
 

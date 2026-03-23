@@ -43,6 +43,15 @@ public:
                                       const TopoDS_Shape&   theShape,
                                       bool                  theParallel);
 
+  //! Extend existing storage with additional shapes (no clear).
+  //! Flattens hierarchy to face level only (no Solid/Shell/Compound entities created).
+  //! @param[in,out] theStorage  storage to extend
+  //! @param[in]     theShape    shape to append
+  //! @param[in]     theParallel if true, face-level extraction runs in parallel
+  static Standard_EXPORT void Append(BRepGraphInc_Storage& theStorage,
+                                     const TopoDS_Shape&   theShape,
+                                     bool                  theParallel);
+
 private:
   BRepGraphInc_Populate() = delete;
 };

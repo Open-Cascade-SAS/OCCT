@@ -44,11 +44,15 @@ TopoDS_Shape BRepGraph::ShapesView::Shape(BRepGraph_NodeId theNode) const
       return *aCached;
   }
 
-  // Reconstruct outside the lock to avoid holding it during expensive computation.
-  // Phase 2: delegate to incidence-table reconstruct when available, legacy fallback otherwise.
-  TopoDS_Shape aReconstructed = myGraph->myData->myIncStorage.IsDone
-    ? BRepGraphInc_Reconstruct::Node(myGraph->myData->myIncStorage, theNode)
-    : BRepGraph_Reconstruct::Node(*myGraph, theNode);
+  // Reconstruct: use incidence-table when unmodified, legacy for mutated nodes.
+  // Mutations via MutView/BuilderView update legacy Def stores but do not yet
+  // propagate to incidence storage, so modified nodes must use legacy reconstruct
+  // until incidence becomes the sole mutable store (Steps 3-4 of migration plan).
+  TopoDS_Shape aReconstructed;
+  if (aDef != nullptr && aDef->IsModified)
+    aReconstructed = BRepGraph_Reconstruct::Node(*myGraph, theNode);
+  else
+    aReconstructed = BRepGraphInc_Reconstruct::Node(myGraph->myData->myIncStorage, theNode);
 
   // Store under exclusive lock with double-check.
   if (!aReconstructed.IsNull())
@@ -57,8 +61,6 @@ TopoDS_Shape BRepGraph::ShapesView::Shape(BRepGraph_NodeId theNode) const
     if (!myGraph->myData->myCurrentShapes.IsBound(theNode))
     {
       myGraph->myData->myCurrentShapes.Bind(theNode, aReconstructed);
-
-      // Register reverse TShape lookup so FindNode() works for post-operation shapes.
       myGraph->myData->myTShapeToDefId.Bind(aReconstructed.TShape().get(), theNode);
     }
   }
@@ -86,25 +88,24 @@ const TopoDS_Shape& BRepGraph::ShapesView::OriginalOf(BRepGraph_NodeId theNode) 
 
 TopoDS_Shape BRepGraph::ShapesView::Reconstruct(BRepGraph_NodeId theRoot) const
 {
-  // Phase 2: delegate to incidence-table reconstruct when available.
-  if (myGraph->myData->myIncStorage.IsDone)
-    return BRepGraphInc_Reconstruct::Node(myGraph->myData->myIncStorage, theRoot);
-  return BRepGraph_Reconstruct::Node(*myGraph, theRoot);
+  const BRepGraph_TopoNode::BaseDef* aDef = myGraph->TopoDef(theRoot);
+  if (aDef != nullptr && aDef->IsModified)
+    return BRepGraph_Reconstruct::Node(*myGraph, theRoot);
+  return BRepGraphInc_Reconstruct::Node(myGraph->myData->myIncStorage, theRoot);
 }
 
 //=================================================================================================
 
 TopoDS_Shape BRepGraph::ShapesView::ReconstructFace(int theFaceDefIdx) const
 {
-  // Phase 2: delegate to incidence-table reconstruct when available.
-  if (myGraph->myData->myIncStorage.IsDone)
-  {
-    BRepGraphInc_Reconstruct::Cache aCache;
-    return BRepGraphInc_Reconstruct::FaceWithCache(
-      myGraph->myData->myIncStorage, theFaceDefIdx, aCache);
-  }
-  return BRepGraph_Reconstruct::Node(
-    *myGraph, BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, theFaceDefIdx));
+  const BRepGraph_TopoNode::BaseDef* aDef =
+    myGraph->TopoDef(BRepGraph_NodeId::Face(theFaceDefIdx));
+  if (aDef != nullptr && aDef->IsModified)
+    return BRepGraph_Reconstruct::Node(
+      *myGraph, BRepGraph_NodeId::Face(theFaceDefIdx));
+  BRepGraphInc_Reconstruct::Cache aCache;
+  return BRepGraphInc_Reconstruct::FaceWithCache(
+    myGraph->myData->myIncStorage, theFaceDefIdx, aCache);
 }
 
 //=================================================================================================
