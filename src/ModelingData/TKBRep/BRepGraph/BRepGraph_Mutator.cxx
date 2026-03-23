@@ -272,6 +272,8 @@ void BRepGraph_Mutator::ReplaceEdgeInWire(BRepGraph&       theGraph,
       aRevIdx.ReplaceEdgeInWireMap(theOldEdgeDef.Index, theNewEdgeDef.Index, theWireDefIdx);
 
       // Update edge-to-face: bind new edge, unbind old edge for all faces of this wire.
+      // Wire-to-face mappings are built from FaceEntity.WireRefs during Build() and are
+      // stable across edge mutations — only face-level operations modify them.
       const NCollection_Vector<int>* aFaces = aRevIdx.FacesOfWire(theWireDefIdx);
       if (aFaces != nullptr)
       {
