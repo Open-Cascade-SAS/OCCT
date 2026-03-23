@@ -36,6 +36,8 @@
 #include <memory>
 #include <utility>
 
+template <typename DefT> class BRepGraph_MutRef;
+
 struct BRepGraph_Data;
 class BRepGraph_Layer;
 class NCollection_BaseAllocator;
@@ -145,6 +147,43 @@ public:
   ShapesView   Shapes()   const;
   //! Access mutable definitions and mutation operations.
   MutView      Mut();
+
+  //! @name Scoped mutable definition guards (RAII).
+  //! Return a BRepGraph_MutRef that defers markModified() to scope exit.
+  //! Use when modifying multiple fields on the same entity.
+
+  //! Return scoped mutable edge definition guard.
+  //! @param[in] theIdx zero-based edge definition index
+  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> MutEdge(int theIdx);
+
+  //! Return scoped mutable vertex definition guard.
+  //! @param[in] theIdx zero-based vertex definition index
+  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::VertexDef> MutVertex(int theIdx);
+
+  //! Return scoped mutable wire definition guard.
+  //! @param[in] theIdx zero-based wire definition index
+  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::WireDef> MutWire(int theIdx);
+
+  //! Return scoped mutable face definition guard.
+  //! @param[in] theIdx zero-based face definition index
+  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> MutFace(int theIdx);
+
+  //! Return scoped mutable shell definition guard.
+  //! @param[in] theIdx zero-based shell definition index
+  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::ShellDef> MutShell(int theIdx);
+
+  //! Return scoped mutable solid definition guard.
+  //! @param[in] theIdx zero-based solid definition index
+  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::SolidDef> MutSolid(int theIdx);
+
+  //! Return scoped mutable compound definition guard.
+  //! @param[in] theIdx zero-based compound definition index
+  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::CompoundDef> MutCompound(int theIdx);
+
+  //! Return scoped mutable comp-solid definition guard.
+  //! @param[in] theIdx zero-based comp-solid definition index
+  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::CompSolidDef> MutCompSolid(int theIdx);
+  
   //! Access programmatic graph construction.
   BuilderView  Builder();
   //! Access analysis queries.
@@ -175,6 +214,7 @@ private:
   friend class BRepGraphAlgo_Transform;
   friend class BRepGraphAlgo_UVBounds;
   friend class BRepGraph_MutationGuard;
+  template <typename> friend class BRepGraph_MutRef;
 
   Standard_EXPORT int NbHistoryRecords() const;
   Standard_EXPORT const BRepGraph_HistoryRecord& HistoryRecord(int theIdx) const;
@@ -214,5 +254,8 @@ private:
   auto dispatchDef(BRepGraph_NodeId theNode, Func&& theFunc)
     -> decltype(theFunc(std::declval<NCollection_Vector<BRepGraph_TopoNode::SolidDef>&>(), 0));
 };
+
+// Included after BRepGraph is complete so the template body sees markModified().
+#include <BRepGraph_MutRef.hxx>
 
 #endif // _BRepGraph_HeaderFile
