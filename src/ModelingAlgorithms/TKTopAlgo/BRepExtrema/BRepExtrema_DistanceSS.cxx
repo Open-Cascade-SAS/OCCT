@@ -30,6 +30,7 @@
 #include <Standard_Integer.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Iterator.hxx>
 #include <Bnd_Box.hxx>
 #include <BRepExtrema_ExtPC.hxx>
 #include <BRepExtrema_ExtPF.hxx>

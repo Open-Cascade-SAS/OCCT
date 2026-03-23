@@ -27,7 +27,9 @@
 #include <StdFail_NotDone.hxx>
 #include <NCollection_IndexedIterator.hxx>
 
+#include <cstring>
 #include <locale>
+#include <type_traits>
 #include <vector>
 
 //! Class NCollection_DynamicArray (dynamic array of objects)
@@ -234,14 +236,73 @@ public: //! @name public methods
     return *aPnt;
   }
 
+  //! Insert a value after the element at theIndex, shifting subsequent elements right.
+  //! @param theIndex index after which to insert (must be in [0, Length()-1])
+  //! @param theValue value to insert
+  //! @return reference to the inserted element
+  reference InsertAfter(const int theIndex, const TheItemType& theValue)
+  {
+    Standard_OutOfRange_Raise_if(theIndex < 0 || static_cast<size_t>(theIndex) >= myUsedSize,
+                                 "NCollection_DynamicArray::InsertAfter: index out of range");
+    // Grow by one element at the end.
+    Appended();
+    // Shift elements [theIndex+1 .. myUsedSize-2] right by one position.
+    for (size_t i = myUsedSize - 1; i > static_cast<size_t>(theIndex) + 1; --i)
+      at(i) = std::move(at(i - 1));
+    at(static_cast<size_t>(theIndex) + 1) = theValue;
+    return at(static_cast<size_t>(theIndex) + 1);
+  }
+
+  //! Insert a value after the element at theIndex (move version).
+  reference InsertAfter(const int theIndex, TheItemType&& theValue)
+  {
+    Standard_OutOfRange_Raise_if(theIndex < 0 || static_cast<size_t>(theIndex) >= myUsedSize,
+                                 "NCollection_DynamicArray::InsertAfter: index out of range");
+    Appended();
+    for (size_t i = myUsedSize - 1; i > static_cast<size_t>(theIndex) + 1; --i)
+      at(i) = std::move(at(i - 1));
+    at(static_cast<size_t>(theIndex) + 1) = std::forward<TheItemType>(theValue);
+    return at(static_cast<size_t>(theIndex) + 1);
+  }
+
+  //! Insert a value before the element at theIndex, shifting it and subsequent elements right.
+  //! @param theIndex index before which to insert (must be in [0, Length()-1])
+  //! @param theValue value to insert
+  //! @return reference to the inserted element
+  reference InsertBefore(const int theIndex, const TheItemType& theValue)
+  {
+    Standard_OutOfRange_Raise_if(theIndex < 0 || static_cast<size_t>(theIndex) >= myUsedSize,
+                                 "NCollection_DynamicArray::InsertBefore: index out of range");
+    Appended();
+    for (size_t i = myUsedSize - 1; i > static_cast<size_t>(theIndex); --i)
+      at(i) = std::move(at(i - 1));
+    at(static_cast<size_t>(theIndex)) = theValue;
+    return at(static_cast<size_t>(theIndex));
+  }
+
+  //! Insert a value before the element at theIndex (move version).
+  reference InsertBefore(const int theIndex, TheItemType&& theValue)
+  {
+    Standard_OutOfRange_Raise_if(theIndex < 0 || static_cast<size_t>(theIndex) >= myUsedSize,
+                                 "NCollection_DynamicArray::InsertBefore: index out of range");
+    Appended();
+    for (size_t i = myUsedSize - 1; i > static_cast<size_t>(theIndex); --i)
+      at(i) = std::move(at(i - 1));
+    at(static_cast<size_t>(theIndex)) = std::forward<TheItemType>(theValue);
+    return at(static_cast<size_t>(theIndex));
+  }
+
   void EraseLast()
   {
     if (myUsedSize == 0)
     {
       return;
     }
-    TheItemType* aLastElem = &ChangeLast();
-    myAlloc.destroy(aLastElem);
+    if constexpr (!std::is_trivially_destructible_v<TheItemType>)
+    {
+      TheItemType* aLastElem = &ChangeLast();
+      myAlloc.destroy(aLastElem);
+    }
     myUsedSize--;
   }
 
@@ -299,7 +360,10 @@ public: //! @name public methods
     pointer aPnt = &at(anIndex);
     if (isExisting)
     {
-      myAlloc.destroy(aPnt);
+      if constexpr (!std::is_trivially_destructible_v<TheItemType>)
+      {
+        myAlloc.destroy(aPnt);
+      }
     }
     myAlloc.construct(aPnt, std::forward<Args>(theArgs)...);
     return *aPnt;
@@ -364,7 +428,10 @@ public: //! @name public methods
     pointer aPnt = &at(anIndex);
     if (isExisting)
     {
-      myAlloc.destroy(aPnt);
+      if constexpr (!std::is_trivially_destructible_v<TheItemType>)
+      {
+        myAlloc.destroy(aPnt);
+      }
     }
     myAlloc.construct(aPnt, theValue);
     return *aPnt;
@@ -392,7 +459,10 @@ public: //! @name public methods
     pointer aPnt = &at(anIndex);
     if (isExisting)
     {
-      myAlloc.destroy(aPnt);
+      if constexpr (!std::is_trivially_destructible_v<TheItemType>)
+      {
+        myAlloc.destroy(aPnt);
+      }
     }
     myAlloc.construct(aPnt, std::forward<TheItemType>(theValue));
     return *aPnt;
@@ -400,14 +470,19 @@ public: //! @name public methods
 
   void Clear(const bool theReleaseMemory = false)
   {
-    size_t aUsedSize = 0;
     for (size_t aBlockInd = 0; aBlockInd < myContainer.Size(); aBlockInd++)
     {
       TheItemType* aCurStart = getArray()[aBlockInd];
-      for (size_t anElemInd = 0; anElemInd < myInternalSize && aUsedSize < myUsedSize;
-           anElemInd++, aUsedSize++)
+      if constexpr (!std::is_trivially_destructible_v<TheItemType>)
       {
-        aCurStart[anElemInd].~TheItemType();
+        const size_t aBlockStart = aBlockInd * myInternalSize;
+        const size_t aCount      = (myUsedSize > aBlockStart + myInternalSize)
+                                     ? myInternalSize
+                                     : (myUsedSize > aBlockStart ? myUsedSize - aBlockStart : 0);
+        for (size_t anElemInd = 0; anElemInd < aCount; anElemInd++)
+        {
+          aCurStart[anElemInd].~TheItemType();
+        }
       }
       if (theReleaseMemory)
         myAlloc.deallocate(aCurStart, myInternalSize);
@@ -456,11 +531,21 @@ protected:
     {
       TheItemType* aCurStart = getArray()[aBlockInd];
       TheItemType* aNewBlock = myAlloc.allocate(myInternalSize);
-      for (size_t anElemInd = 0; anElemInd < myInternalSize && aUsedSize < myUsedSize;
-           anElemInd++, aUsedSize++)
+      if constexpr (std::is_trivially_copyable_v<TheItemType>)
       {
-        pointer aPnt = &aNewBlock[anElemInd];
-        myAlloc.construct(aPnt, aCurStart[anElemInd]);
+        const size_t aCount =
+          (myUsedSize - aUsedSize < myInternalSize) ? myUsedSize - aUsedSize : myInternalSize;
+        std::memcpy(aNewBlock, aCurStart, aCount * sizeof(TheItemType));
+        aUsedSize += aCount;
+      }
+      else
+      {
+        for (size_t anElemInd = 0; anElemInd < myInternalSize && aUsedSize < myUsedSize;
+             anElemInd++, aUsedSize++)
+        {
+          pointer aPnt = &aNewBlock[anElemInd];
+          myAlloc.construct(aPnt, aCurStart[anElemInd]);
+        }
       }
       getArray()[aBlockInd] = aNewBlock;
     }

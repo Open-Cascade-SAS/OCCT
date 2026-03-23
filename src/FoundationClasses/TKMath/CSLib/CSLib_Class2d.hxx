@@ -22,6 +22,7 @@
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Sequence.hxx>
+#include <NCollection_Vector.hxx>
 
 class gp_Pnt2d;
 
@@ -89,6 +90,25 @@ public:
                                 double                                theVMin,
                                 double                                theUMax,
                                 double                                theVMax);
+
+  //! Constructs a 2D classifier from a vector of polygon vertices.
+  //!
+  //! Same as the array constructor but accepts a vector for convenience.
+  //!
+  //! @param[in] thePnts2d Vector of polygon vertices (minimum 3 points required)
+  //! @param[in] theTolU   Tolerance in U direction for boundary detection
+  //! @param[in] theTolV   Tolerance in V direction for boundary detection
+  //! @param[in] theUMin   Minimum U bound of the polygon domain
+  //! @param[in] theVMin   Minimum V bound of the polygon domain
+  //! @param[in] theUMax   Maximum U bound of the polygon domain
+  //! @param[in] theVMax   Maximum V bound of the polygon domain
+  Standard_EXPORT CSLib_Class2d(const NCollection_Vector<gp_Pnt2d>& thePnts2d,
+                                double                              theTolU,
+                                double                              theTolV,
+                                double                              theUMin,
+                                double                              theVMin,
+                                double                              theUMax,
+                                double                              theVMax);
 
   //! Move constructor.
   CSLib_Class2d(CSLib_Class2d&& theOther) noexcept

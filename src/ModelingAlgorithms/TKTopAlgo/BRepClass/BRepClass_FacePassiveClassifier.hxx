@@ -51,24 +51,24 @@ public:
   Standard_EXPORT void Compare(const BRepClass_Edge& E, const TopAbs_Orientation Or);
 
   //! Returns the current value of the parameter.
-  double Parameter() const;
+  double Parameter() const { return myParam; }
 
   //! Returns the intersecting algorithm.
-  BRepClass_Intersector& Intersector();
+  BRepClass_Intersector& Intersector() { return myIntersector; }
 
   //! Returns 0 if the last compared edge had no
   //! relevant intersection. Else returns the index of
   //! this intersection in the last intersection
   //! algorithm.
-  int ClosestIntersection() const;
+  int ClosestIntersection() const { return myClosest; }
 
   //! Returns the current state of the point.
-  TopAbs_State State() const;
+  TopAbs_State State() const { return myState; }
 
   //! Returns the true if the closest intersection point
   //! represents head or end of the edge. Returns false
   //! otherwise.
-  bool IsHeadOrEnd() const;
+  bool IsHeadOrEnd() const { return myIsHeadOrEnd; }
 
 private:
   bool                     myIsSet;
@@ -83,21 +83,5 @@ private:
   TopAbs_State             myState;
   bool                     myIsHeadOrEnd;
 };
-
-#define TheEdge BRepClass_Edge
-#define TheEdge_hxx <BRepClass_Edge.hxx>
-#define TheIntersector BRepClass_Intersector
-#define TheIntersector_hxx <BRepClass_Intersector.hxx>
-#define TopClass_Classifier2d BRepClass_FacePassiveClassifier
-#define TopClass_Classifier2d_hxx <BRepClass_FacePassiveClassifier.hxx>
-
-#include <TopClass_Classifier2d.lxx>
-
-#undef TheEdge
-#undef TheEdge_hxx
-#undef TheIntersector
-#undef TheIntersector_hxx
-#undef TopClass_Classifier2d
-#undef TopClass_Classifier2d_hxx
 
 #endif // _BRepClass_FacePassiveClassifier_HeaderFile

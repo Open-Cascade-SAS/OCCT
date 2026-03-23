@@ -1,0 +1,227 @@
+// Created on: 1992-11-17
+// Created by: Laurent BUCHARD
+// Copyright (c) 1992-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <IntRes2d_IntersectionPoint.hxx>
+#include <IntRes2d_IntersectionSegment.hxx>
+#include <Standard_Real.hxx>
+#include <TopTrans_CurveTransition.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Vec2d.hxx>
+
+namespace TopClass_Classifier2d
+{
+
+//=================================================================================================
+
+inline void Reset(gp_Lin2d&       theLin,
+                  double&         theParam,
+                  double&         theTolerance,
+                  TopAbs_State&   theState,
+                  bool&           theFirstCompare,
+                  bool&           theFirstTrans,
+                  int&            theClosest,
+                  bool&           theIsSet,
+                  bool&           theIsHeadOrEnd,
+                  const gp_Lin2d& theL,
+                  const double    theP,
+                  const double    theTol)
+{
+  theLin          = theL;
+  theParam        = theP;
+  theTolerance    = theTol;
+  theState        = TopAbs_UNKNOWN;
+  theFirstCompare = true;
+  theFirstTrans   = true;
+  theClosest      = 0;
+  theIsSet        = true;
+  theIsHeadOrEnd  = false;
+}
+
+//=================================================================================================
+
+template <typename TheEdge, typename TheIntersector>
+inline void Compare(int&                      theClosest,
+                    TheIntersector&           theIntersector,
+                    const gp_Lin2d&           theLin,
+                    double&                   theParam,
+                    const double              theTolerance,
+                    TopAbs_State&             theState,
+                    bool&                     theFirstCompare,
+                    bool&                     theFirstTrans,
+                    TopTrans_CurveTransition& theTrans,
+                    bool&                     theIsHeadOrEnd,
+                    const TheEdge&            theEdge,
+                    const TopAbs_Orientation  theOr)
+{
+  // Intersect the edge and the segment.
+  theClosest = 0;
+  theIntersector.Perform(theLin, theParam, theTolerance, theEdge);
+  if (!theIntersector.IsDone())
+    return;
+  if ((theIntersector.NbPoints() == 0) && (theIntersector.NbSegments() == 0))
+    return;
+
+  // Find the closest point.
+  int aPoint, aSegment, aNbPoints, aNbSegments;
+
+  const IntRes2d_IntersectionPoint* aPClosest = nullptr;
+
+  double aDMin = RealLast();
+  aNbPoints    = theIntersector.NbPoints();
+  for (aPoint = 1; aPoint <= aNbPoints; aPoint++)
+  {
+    const IntRes2d_IntersectionPoint& aPInter = theIntersector.Point(aPoint);
+    // Test for ON.
+    if (aPInter.TransitionOfFirst().PositionOnCurve() == IntRes2d_Head)
+    {
+      theClosest = aPoint;
+      theState   = TopAbs_ON;
+      return;
+    }
+    const double aParamFirst = aPInter.ParamOnFirst();
+    if (aParamFirst < aDMin)
+    {
+      theClosest = aPoint;
+      aPClosest  = &aPInter;
+      aDMin      = aParamFirst;
+    }
+  }
+
+  // For the segments we only test the first point.
+  aNbSegments = theIntersector.NbSegments();
+  for (aSegment = 1; aSegment <= aNbSegments; aSegment++)
+  {
+    const IntRes2d_IntersectionSegment& aSegInter = theIntersector.Segment(aSegment);
+    const IntRes2d_IntersectionPoint&   aPInter   = aSegInter.FirstPoint();
+    if (aPInter.TransitionOfFirst().PositionOnCurve() == IntRes2d_Head)
+    {
+      theClosest = aNbPoints + aSegment + aSegment - 1;
+      theState   = TopAbs_ON;
+      return;
+    }
+    const double aParamFirst = aPInter.ParamOnFirst();
+    if (aParamFirst < aDMin)
+    {
+      theClosest = aNbPoints + aSegment + aSegment - 1;
+      aPClosest  = &aPInter;
+      aDMin      = aParamFirst;
+    }
+  }
+
+  // If no point was found return.
+  if (theClosest == 0)
+    return;
+
+  // If the edge is INTERNAL or EXTERNAL, no problem.
+  if (theOr == TopAbs_INTERNAL)
+  {
+    theState = TopAbs_IN;
+    return;
+  }
+  else if (theOr == TopAbs_EXTERNAL)
+  {
+    theState = TopAbs_OUT;
+    return;
+  }
+
+  if (!theFirstCompare)
+  {
+    if (aDMin > theParam)
+      return;
+  }
+
+  // Process the closest point aPClosest, found at aDMin on line.
+  theFirstCompare = false;
+
+  if (theParam > aDMin)
+    theFirstTrans = true;
+
+  theParam                       = aDMin;
+  const IntRes2d_Transition& aT2 = aPClosest->TransitionOfSecond();
+  theIsHeadOrEnd =
+    (aT2.PositionOnCurve() == IntRes2d_Head) || (aT2.PositionOnCurve() == IntRes2d_End);
+
+  // Transition on the segment.
+  TopAbs_Orientation aSegTrans = TopAbs_FORWARD;
+
+  const IntRes2d_Transition& aT1 = aPClosest->TransitionOfFirst();
+  switch (aT1.TransitionType())
+  {
+    case IntRes2d_In:
+      aSegTrans = (theOr == TopAbs_REVERSED) ? TopAbs_REVERSED : TopAbs_FORWARD;
+      break;
+    case IntRes2d_Out:
+      aSegTrans = (theOr == TopAbs_REVERSED) ? TopAbs_FORWARD : TopAbs_REVERSED;
+      break;
+    case IntRes2d_Touch:
+      switch (aT1.Situation())
+      {
+        case IntRes2d_Inside:
+          aSegTrans = (theOr == TopAbs_REVERSED) ? TopAbs_EXTERNAL : TopAbs_INTERNAL;
+          break;
+        case IntRes2d_Outside:
+          aSegTrans = (theOr == TopAbs_REVERSED) ? TopAbs_INTERNAL : TopAbs_EXTERNAL;
+          break;
+        case IntRes2d_Unknown:
+          return;
+      }
+      break;
+    case IntRes2d_Undecided:
+      return;
+  }
+
+  // Are we inside the edge?
+  if (!theIsHeadOrEnd)
+  {
+    // aPClosest is inside the edge.
+    switch (aSegTrans)
+    {
+      case TopAbs_FORWARD:
+      case TopAbs_EXTERNAL:
+        theState = TopAbs_OUT;
+        break;
+
+      case TopAbs_REVERSED:
+      case TopAbs_INTERNAL:
+        theState = TopAbs_IN;
+        break;
+    }
+  }
+  else
+  {
+    // aPClosest is Head or End of the edge: update the complex transition.
+    gp_Dir2d aTang2d, aNorm2d;
+    double   aCurv;
+    theIntersector.LocalGeometry(theEdge, aPClosest->ParamOnSecond(), aTang2d, aNorm2d, aCurv);
+    gp_Dir aTang(aTang2d.X(), aTang2d.Y(), 0.);
+    gp_Dir aNorm(aNorm2d.X(), aNorm2d.Y(), 0.);
+    if (theFirstTrans)
+    {
+      gp_Dir aDir(theLin.Direction().X(), theLin.Direction().Y(), 0.);
+      theTrans.Reset(aDir);
+      theFirstTrans = false;
+    }
+
+    const TopAbs_Orientation aOrt =
+      (aT2.PositionOnCurve() == IntRes2d_Head) ? TopAbs_FORWARD : TopAbs_REVERSED;
+    theTrans.Compare(RealEpsilon(), aTang, aNorm, aCurv, aSegTrans, aOrt);
+    theState = theTrans.StateBefore();
+  }
+}
+
+} // namespace TopClass_Classifier2d
