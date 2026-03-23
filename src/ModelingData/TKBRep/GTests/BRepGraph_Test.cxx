@@ -101,7 +101,7 @@ TEST_F(BRepGraphTest, Face_Surface_IsValid)
 {
   for (int aFaceIdx = 0; aFaceIdx < myGraph.Defs().NbFaces(); ++aFaceIdx)
   {
-    EXPECT_TRUE(BRepGraph_Tool::HasSurface(myGraph, aFaceIdx)) << "Face " << aFaceIdx << " has no surface rep";
+    EXPECT_TRUE(BRepGraph_Tool::Face::HasSurface(myGraph, aFaceIdx)) << "Face " << aFaceIdx << " has no surface rep";
   }
 }
 
@@ -109,9 +109,9 @@ TEST_F(BRepGraphTest, Edge_CurveAndVertices_AreValid)
 {
   for (int anEdgeIdx = 0; anEdgeIdx < myGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    if (!BRepGraph_Tool::Degenerated(myGraph, anEdgeIdx))
+    if (!BRepGraph_Tool::Edge::Degenerated(myGraph, anEdgeIdx))
     {
-      EXPECT_TRUE(BRepGraph_Tool::HasCurve(myGraph, anEdgeIdx))
+      EXPECT_TRUE(BRepGraph_Tool::Edge::HasCurve(myGraph, anEdgeIdx))
         << "Edge " << anEdgeIdx << " has no Curve3D rep";
     }
     const BRepGraph_TopoNode::EdgeDef& anEdge = myGraph.Defs().Edge(anEdgeIdx);
@@ -134,7 +134,7 @@ TEST_F(BRepGraphTest, FaceDef_HasValidSurface)
 {
   for (int aFaceIdx = 0; aFaceIdx < myGraph.Defs().NbFaces(); ++aFaceIdx)
   {
-    EXPECT_TRUE(BRepGraph_Tool::HasSurface(myGraph, aFaceIdx))
+    EXPECT_TRUE(BRepGraph_Tool::Face::HasSurface(myGraph, aFaceIdx))
       << "Face " << aFaceIdx << " has no surface rep";
   }
 }
@@ -155,10 +155,10 @@ TEST_F(BRepGraphTest, FindPCurve_ValidPair)
       const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = myGraph.Defs().CoEdge(aCR.CoEdgeIdx);
       BRepGraph_NodeId anEdgeId(BRepGraph_NodeId::Kind::Edge, aCoEdge.EdgeIdx);
       const BRepGraph_TopoNode::EdgeDef& anEdge = myGraph.Defs().Edge(aCoEdge.EdgeIdx);
-      if (BRepGraph_Tool::Degenerated(myGraph, aCoEdge.EdgeIdx))
+      if (BRepGraph_Tool::Edge::Degenerated(myGraph, aCoEdge.EdgeIdx))
         continue;
       const BRepGraphInc::CoEdgeEntity* aPCurveEntry =
-        BRepGraph_Tool::FindPCurve(myGraph, aCoEdge.EdgeIdx, aFaceIdx);
+        BRepGraph_Tool::Edge::FindPCurve(myGraph, aCoEdge.EdgeIdx, aFaceIdx);
       EXPECT_NE(aPCurveEntry, nullptr)
         << "Missing PCurve for edge " << aCoEdge.EdgeIdx << " on face " << aFaceIdx;
     }
@@ -306,10 +306,10 @@ TEST_F(BRepGraphTest, DetectDegenerateWires_ValidBox_Empty)
 
 TEST_F(BRepGraphTest, MutableEdge_ModifyTolerance)
 {
-  double                                            anOrigTol = BRepGraph_Tool::ToleranceEdge(myGraph, 0);
+  double                                            anOrigTol = BRepGraph_Tool::Edge::Tolerance(myGraph, 0);
   BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge    = myGraph.Mut().EdgeDef(0);
   anEdge->Tolerance                    = anOrigTol * 2.0;
-  EXPECT_NEAR(BRepGraph_Tool::ToleranceEdge(myGraph, 0), anOrigTol * 2.0, 1.0e-15);
+  EXPECT_NEAR(BRepGraph_Tool::Edge::Tolerance(myGraph, 0), anOrigTol * 2.0, 1.0e-15);
 }
 
 TEST_F(BRepGraphTest, FaceCountForEdge_SharedEdge)
@@ -317,7 +317,7 @@ TEST_F(BRepGraphTest, FaceCountForEdge_SharedEdge)
   // In a box, each non-degenerate edge is shared by exactly 2 faces.
   for (int anEdgeIdx = 0; anEdgeIdx < myGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    if (!BRepGraph_Tool::Degenerated(myGraph, anEdgeIdx))
+    if (!BRepGraph_Tool::Edge::Degenerated(myGraph, anEdgeIdx))
     {
       int aCount = myGraph.Builder().FaceCountForEdge(anEdgeIdx);
       EXPECT_EQ(aCount, 2) << "Edge " << anEdgeIdx << " should be shared by 2 faces";
@@ -473,8 +473,8 @@ TEST_F(BRepGraphTest, ReconstructFace_AfterEdgeReplace_ContainsNewEdge)
   // Get 3D curve handles from graph for old/new edges.
   const BRepGraph_TopoNode::EdgeDef& aNewEdgeNode = myGraph.Defs().Edge(aNewIdx);
   const BRepGraph_TopoNode::EdgeDef& anOldEdgeNode = myGraph.Defs().Edge(anOldEdgeId.Index);
-  occ::handle<Geom_Curve> aNewCurve = BRepGraph_Tool::Curve(myGraph, aNewIdx);
-  occ::handle<Geom_Curve> anOldCurve = BRepGraph_Tool::Curve(myGraph, anOldEdgeId.Index);
+  occ::handle<Geom_Curve> aNewCurve = BRepGraph_Tool::Edge::Curve(myGraph, aNewIdx);
+  occ::handle<Geom_Curve> anOldCurve = BRepGraph_Tool::Edge::Curve(myGraph, anOldEdgeId.Index);
 
   myGraph.Mut().ReplaceEdgeInWire(0, anOldEdgeId, aNewEdgeId, false);
 
@@ -965,10 +965,10 @@ TEST_F(BRepGraphTest, EdgeDef_HasValidCurve3d)
 {
   for (int anEdgeIdx = 0; anEdgeIdx < myGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    if (BRepGraph_Tool::Degenerated(myGraph, anEdgeIdx))
+    if (BRepGraph_Tool::Edge::Degenerated(myGraph, anEdgeIdx))
       continue;
 
-    EXPECT_TRUE(BRepGraph_Tool::HasCurve(myGraph, anEdgeIdx))
+    EXPECT_TRUE(BRepGraph_Tool::Edge::HasCurve(myGraph, anEdgeIdx))
       << "Edge " << anEdgeIdx << " has no Curve3D rep";
   }
 }
@@ -1136,14 +1136,14 @@ TEST_F(BRepGraphTest, DetectToleranceConflicts_ManualConflict_Detected)
   bool isConflictSetUp = false;
   for (int anEdgeIdx = 0; anEdgeIdx < myGraph.Defs().NbEdges() && !isConflictSetUp; ++anEdgeIdx)
   {
-    if (BRepGraph_Tool::Degenerated(myGraph, anEdgeIdx) || !BRepGraph_Tool::HasCurve(myGraph, anEdgeIdx))
+    if (BRepGraph_Tool::Edge::Degenerated(myGraph, anEdgeIdx) || !BRepGraph_Tool::Edge::HasCurve(myGraph, anEdgeIdx))
       continue;
 
     for (int anOtherIdx = anEdgeIdx + 1; anOtherIdx < myGraph.Defs().NbEdges(); ++anOtherIdx)
     {
-      if (BRepGraph_Tool::Degenerated(myGraph, anOtherIdx) || !BRepGraph_Tool::HasCurve(myGraph, anOtherIdx))
+      if (BRepGraph_Tool::Edge::Degenerated(myGraph, anOtherIdx) || !BRepGraph_Tool::Edge::HasCurve(myGraph, anOtherIdx))
         continue;
-      if (BRepGraph_Tool::Curve(myGraph, anEdgeIdx).get() != BRepGraph_Tool::Curve(myGraph, anOtherIdx).get())
+      if (BRepGraph_Tool::Edge::Curve(myGraph, anEdgeIdx).get() != BRepGraph_Tool::Edge::Curve(myGraph, anOtherIdx).get())
         continue;
 
       // Set very different tolerances on two edges sharing the same curve.
@@ -1333,9 +1333,9 @@ TEST_F(BRepGraphTest, Edge_ParamRange_ValidBounds)
 {
   for (int anEdgeIdx = 0; anEdgeIdx < myGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    if (BRepGraph_Tool::Degenerated(myGraph, anEdgeIdx))
+    if (BRepGraph_Tool::Edge::Degenerated(myGraph, anEdgeIdx))
       continue;
-    const auto [aFirst, aLast] = BRepGraph_Tool::Range(myGraph, anEdgeIdx);
+    const auto [aFirst, aLast] = BRepGraph_Tool::Edge::Range(myGraph, anEdgeIdx);
     EXPECT_LT(aFirst, aLast)
       << "Edge " << anEdgeIdx << " has invalid parameter range ["
       << aFirst << ", " << aLast << "]";
@@ -1346,7 +1346,7 @@ TEST_F(BRepGraphTest, Vertex_TolerancePositive)
 {
   for (int aVtxIdx = 0; aVtxIdx < myGraph.Defs().NbVertices(); ++aVtxIdx)
   {
-    EXPECT_GT(BRepGraph_Tool::Tolerance(myGraph, aVtxIdx), 0.0)
+    EXPECT_GT(BRepGraph_Tool::Vertex::Tolerance(myGraph, aVtxIdx), 0.0)
       << "Vertex " << aVtxIdx << " has non-positive tolerance";
   }
 }
@@ -1355,7 +1355,7 @@ TEST_F(BRepGraphTest, Edge_TolerancePositive)
 {
   for (int anEdgeIdx = 0; anEdgeIdx < myGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    EXPECT_GT(BRepGraph_Tool::ToleranceEdge(myGraph, anEdgeIdx), 0.0)
+    EXPECT_GT(BRepGraph_Tool::Edge::Tolerance(myGraph, anEdgeIdx), 0.0)
       << "Edge " << anEdgeIdx << " has non-positive tolerance";
   }
 }
@@ -1364,7 +1364,7 @@ TEST_F(BRepGraphTest, Face_ToleranceNonNegative)
 {
   for (int aFaceIdx = 0; aFaceIdx < myGraph.Defs().NbFaces(); ++aFaceIdx)
   {
-    EXPECT_GE(BRepGraph_Tool::ToleranceFace(myGraph, aFaceIdx), 0.0)
+    EXPECT_GE(BRepGraph_Tool::Face::Tolerance(myGraph, aFaceIdx), 0.0)
       << "Face " << aFaceIdx << " has negative tolerance";
   }
 }

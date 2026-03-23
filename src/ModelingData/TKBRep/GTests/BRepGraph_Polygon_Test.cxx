@@ -59,7 +59,7 @@ TEST(BRepGraph_PolygonTest, MultiTriangulation_Roundtrip_PreservesAll)
       EXPECT_LT(aFaceDef.ActiveTriangulationIndex, aFaceDef.TriangulationRepIdxs.Length());
       const int anActiveRepIdx = aFaceDef.ActiveTriangulationRepIdx();
       EXPECT_GE(anActiveRepIdx, 0);
-      EXPECT_FALSE(BRepGraph_Tool::Triangulation(aGraph, aFaceDefIdx).IsNull());
+      EXPECT_FALSE(BRepGraph_Tool::Face::Triangulation(aGraph, aFaceDefIdx).IsNull());
     }
   }
   EXPECT_TRUE(aHasTriangulations) << "Meshed box should have triangulations";
@@ -100,7 +100,7 @@ TEST(BRepGraph_PolygonTest, Polygon3D_Captured_WhenPresent)
   int aNbPoly3DOrig  = 0;
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    if (BRepGraph_Tool::HasPolygon3D(aGraph, anEdgeIdx))
+    if (BRepGraph_Tool::Edge::HasPolygon3D(aGraph, anEdgeIdx))
       ++aNbPoly3DGraph;
   }
   for (TopExp_Explorer anExp(aBox, TopAbs_EDGE); anExp.More(); anExp.Next())
@@ -115,7 +115,7 @@ TEST(BRepGraph_PolygonTest, Polygon3D_Captured_WhenPresent)
   // Verify Polygon3D roundtrip if present.
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    if (!BRepGraph_Tool::HasPolygon3D(aGraph, anEdgeIdx))
+    if (!BRepGraph_Tool::Edge::HasPolygon3D(aGraph, anEdgeIdx))
       continue;
     const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(anEdgeIdx);
     TopoDS_Shape aReconEdge = aGraph.Shapes().Reconstruct( anEdge.Id);

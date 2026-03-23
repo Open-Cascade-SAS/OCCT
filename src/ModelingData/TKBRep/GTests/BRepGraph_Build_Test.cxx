@@ -119,7 +119,7 @@ TEST(BRepGraphBuildTest, Sphere_SurfaceType)
   for (int anIdx = 0; anIdx < aGraph.Defs().NbFaces(); ++anIdx)
   {
     const occ::handle<Geom_Surface>& aSurf =
-      BRepGraph_Tool::Surface(aGraph, anIdx);
+      BRepGraph_Tool::Face::Surface(aGraph, anIdx);
     if (!aSurf.IsNull() && aSurf->DynamicType() == STANDARD_TYPE(Geom_SphericalSurface))
     {
       aHasSpherical = true;
@@ -141,7 +141,7 @@ TEST(BRepGraphBuildTest, Sphere_HasDegenerateEdges)
   int aDegCount = 0;
   for (int anIdx = 0; anIdx < aGraph.Defs().NbEdges(); ++anIdx)
   {
-    if (BRepGraph_Tool::Degenerated(aGraph, anIdx))
+    if (BRepGraph_Tool::Edge::Degenerated(aGraph, anIdx))
     {
       ++aDegCount;
     }
@@ -191,7 +191,7 @@ TEST(BRepGraphBuildTest, Cylinder_SurfaceType)
   for (int anIdx = 0; anIdx < aGraph.Defs().NbFaces(); ++anIdx)
   {
     const occ::handle<Geom_Surface>& aSurf =
-      BRepGraph_Tool::Surface(aGraph, anIdx);
+      BRepGraph_Tool::Face::Surface(aGraph, anIdx);
     if (!aSurf.IsNull() && aSurf->DynamicType() == STANDARD_TYPE(Geom_CylindricalSurface))
     {
       aHasCylindrical = true;
@@ -242,7 +242,7 @@ TEST(BRepGraphBuildTest, Cone_SurfaceType)
   for (int anIdx = 0; anIdx < aGraph.Defs().NbFaces(); ++anIdx)
   {
     const occ::handle<Geom_Surface>& aSurf =
-      BRepGraph_Tool::Surface(aGraph, anIdx);
+      BRepGraph_Tool::Face::Surface(aGraph, anIdx);
     if (!aSurf.IsNull() && aSurf->DynamicType() == STANDARD_TYPE(Geom_ConicalSurface))
     {
       aHasConical = true;
@@ -264,7 +264,7 @@ TEST(BRepGraphBuildTest, Cone_HasDegenerateEdge)
   int aDegCount = 0;
   for (int anIdx = 0; anIdx < aGraph.Defs().NbEdges(); ++anIdx)
   {
-    if (BRepGraph_Tool::Degenerated(aGraph, anIdx))
+    if (BRepGraph_Tool::Edge::Degenerated(aGraph, anIdx))
     {
       ++aDegCount;
     }
@@ -314,7 +314,7 @@ TEST(BRepGraphBuildTest, Torus_SurfaceType)
   for (int anIdx = 0; anIdx < aGraph.Defs().NbFaces(); ++anIdx)
   {
     const occ::handle<Geom_Surface>& aSurf =
-      BRepGraph_Tool::Surface(aGraph, anIdx);
+      BRepGraph_Tool::Face::Surface(aGraph, anIdx);
     if (!aSurf.IsNull() && aSurf->DynamicType() == STANDARD_TYPE(Geom_ToroidalSurface))
     {
       aHasToroidal = true;
@@ -367,7 +367,7 @@ TEST(BRepGraphBuildTest, Wedge_AllPlanarSurfaces)
   for (int anIdx = 0; anIdx < aGraph.Defs().NbFaces(); ++anIdx)
   {
     const occ::handle<Geom_Surface>& aSurf =
-      BRepGraph_Tool::Surface(aGraph, anIdx);
+      BRepGraph_Tool::Face::Surface(aGraph, anIdx);
     ASSERT_FALSE(aSurf.IsNull());
     EXPECT_TRUE(aSurf->DynamicType() == STANDARD_TYPE(Geom_Plane))
       << "Face " << anIdx << " surface is not a Geom_Plane";
@@ -500,8 +500,8 @@ TEST(BRepGraphBuildTest, SinglePlanarFace_Counts)
   EXPECT_GE(aGraph.Defs().NbFaces(), 1);
 
   // Verify surface is a plane.
-  ASSERT_TRUE(BRepGraph_Tool::HasSurface(aGraph, 0));
-  const occ::handle<Geom_Surface>& aSurf = BRepGraph_Tool::Surface(aGraph, 0);
+  ASSERT_TRUE(BRepGraph_Tool::Face::HasSurface(aGraph, 0));
+  const occ::handle<Geom_Surface>& aSurf = BRepGraph_Tool::Face::Surface(aGraph, 0);
   ASSERT_FALSE(aSurf.IsNull());
   EXPECT_TRUE(aSurf->DynamicType() == STANDARD_TYPE(Geom_Plane));
 }
@@ -595,7 +595,7 @@ TEST(BRepGraphBuildTest, Box_VertexPoints_MatchBRepTool)
   // For each graph vertex, verify that a matching TopExp vertex exists.
   for (int anIdx = 0; anIdx < aGraph.Defs().NbVertices(); ++anIdx)
   {
-    const gp_Pnt aGraphPnt = BRepGraph_Tool::Pnt(aGraph, anIdx);
+    const gp_Pnt aGraphPnt = BRepGraph_Tool::Vertex::Pnt(aGraph, anIdx);
     bool aFound = false;
     for (int aMapIdx = 1; aMapIdx <= aVertexMap.Extent(); ++aMapIdx)
     {
@@ -628,7 +628,7 @@ TEST(BRepGraphBuildTest, Box_FaceTolerances_MatchBRepTool)
   // Verify that each graph face tolerance appears in the TopExp set.
   for (int anIdx = 0; anIdx < aGraph.Defs().NbFaces(); ++anIdx)
   {
-    const double aGraphTol = BRepGraph_Tool::ToleranceFace(aGraph, anIdx);
+    const double aGraphTol = BRepGraph_Tool::Face::Tolerance(aGraph, anIdx);
     bool aFound = false;
     for (int aMapIdx = 1; aMapIdx <= aFaceMap.Extent(); ++aMapIdx)
     {
@@ -659,7 +659,7 @@ TEST(BRepGraphBuildTest, Box_EdgeTolerances_MatchBRepTool)
 
   for (int anIdx = 0; anIdx < aGraph.Defs().NbEdges(); ++anIdx)
   {
-    const double aGraphTol = BRepGraph_Tool::ToleranceEdge(aGraph, anIdx);
+    const double aGraphTol = BRepGraph_Tool::Edge::Tolerance(aGraph, anIdx);
     bool aFound = false;
     for (int aMapIdx = 1; aMapIdx <= anEdgeMap.Extent(); ++aMapIdx)
     {
@@ -689,7 +689,7 @@ TEST(BRepGraphBuildTest, Box_AllSurfacesArePlanes)
   for (int anIdx = 0; anIdx < aGraph.Defs().NbFaces(); ++anIdx)
   {
     const occ::handle<Geom_Surface>& aSurf =
-      BRepGraph_Tool::Surface(aGraph, anIdx);
+      BRepGraph_Tool::Face::Surface(aGraph, anIdx);
     ASSERT_FALSE(aSurf.IsNull());
     EXPECT_TRUE(aSurf->DynamicType() == STANDARD_TYPE(Geom_Plane))
       << "Face " << anIdx << " surface is not Geom_Plane";
@@ -707,7 +707,7 @@ TEST(BRepGraphBuildTest, Box_NoDegenerateEdges)
 
   for (int anIdx = 0; anIdx < aGraph.Defs().NbEdges(); ++anIdx)
   {
-    EXPECT_FALSE(BRepGraph_Tool::Degenerated(aGraph, anIdx))
+    EXPECT_FALSE(BRepGraph_Tool::Edge::Degenerated(aGraph, anIdx))
       << "Box edge " << anIdx << " is degenerate unexpectedly";
   }
 }
@@ -744,7 +744,7 @@ TEST(BRepGraphBuildTest, Box_FaceSurfacesAreValid)
 
   for (int anIdx = 0; anIdx < aGraph.Defs().NbFaces(); ++anIdx)
   {
-    EXPECT_TRUE(BRepGraph_Tool::HasSurface(aGraph, anIdx))
+    EXPECT_TRUE(BRepGraph_Tool::Face::HasSurface(aGraph, anIdx))
       << "Face " << anIdx << " has no surface rep";
   }
 }

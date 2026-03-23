@@ -150,9 +150,9 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
 
   // Surface type and periodicity.
   // Geometry is stored at identity; location offsets are absorbed into usages.
-  if (!BRepGraph_Tool::HasSurface(theGraph, theFaceDefIdx))
+  if (!BRepGraph_Tool::Face::HasSurface(theGraph, theFaceDefIdx))
     return;
-  GeomAdaptor_TransformedSurface aSurfAdaptor = BRepGraph_Tool::SurfaceAdaptor(theGraph, theFaceDefIdx);
+  GeomAdaptor_TransformedSurface aSurfAdaptor = BRepGraph_Tool::Face::SurfaceAdaptor(theGraph, theFaceDefIdx);
 
   myIsUPer  = aSurfAdaptor.IsUPeriodic();
   myIsVPer  = aSurfAdaptor.IsVPeriodic();
@@ -235,13 +235,13 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
 
       // Resolve 3D curve from rep index.
       const occ::handle<Geom_Curve>& anEdgeCurve3d =
-        BRepGraph_Tool::Curve(theGraph, aCoEdgeDef.EdgeIdx);
+        BRepGraph_Tool::Edge::Curve(theGraph, aCoEdgeDef.EdgeIdx);
 
       // PCurve data from CoEdge.
       if (aCoEdgeDef.Curve2DRepIdx < 0)
         return;
       const occ::handle<Geom2d_Curve>& aCurve2d =
-        BRepGraph_Tool::PCurve(theGraph, aCoEdgeRef.CoEdgeIdx);
+        BRepGraph_Tool::CoEdge::PCurve(theGraph, aCoEdgeRef.CoEdgeIdx);
 
       double aParamFirst = aCoEdgeDef.ParamFirst;
       double aParamLast  = aCoEdgeDef.ParamLast;
@@ -251,7 +251,7 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
 
       // Edge degeneration check.
       bool anIsDegenerated = false;
-      if (BRepGraph_Tool::Degenerated(theGraph, aCoEdgeDef.EdgeIdx))
+      if (BRepGraph_Tool::Edge::Degenerated(theGraph, aCoEdgeDef.EdgeIdx))
         anIsDegenerated = true;
 
       if (aCoEdgeDef.SeamPairIdx >= 0)
@@ -261,11 +261,11 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
         anIsDegenerated = true;
 
       // Check 3D curve degeneration if not already flagged.
-      if (!anIsDegenerated && BRepGraph_Tool::HasCurve(theGraph, aCoEdgeDef.EdgeIdx))
+      if (!anIsDegenerated && BRepGraph_Tool::Edge::HasCurve(theGraph, aCoEdgeDef.EdgeIdx))
       {
         const occ::handle<Geom_Curve>& aEdgeCurve3d =
-          BRepGraph_Tool::Curve(theGraph, aCoEdgeDef.EdgeIdx);
-        const auto [aEdgeParamFirst, aEdgeParamLast] = BRepGraph_Tool::Range(theGraph, aCoEdgeDef.EdgeIdx);
+          BRepGraph_Tool::Edge::Curve(theGraph, aCoEdgeDef.EdgeIdx);
+        const auto [aEdgeParamFirst, aEdgeParamLast] = BRepGraph_Tool::Edge::Range(theGraph, aCoEdgeDef.EdgeIdx);
         anIsDegenerated = isDegenerated(aEdgeCurve3d,
                                         TopLoc_Location(),
                                         aEdgeParamFirst,
@@ -386,7 +386,7 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
               continue;
 
             const occ::handle<Geom2d_Curve>& aCurve2d2 =
-              BRepGraph_Tool::PCurve(theGraph, aCoEdgeRef2.CoEdgeIdx);
+              BRepGraph_Tool::CoEdge::PCurve(theGraph, aCoEdgeRef2.CoEdgeIdx);
             double aParamFirst = aCoEdgeDef2.ParamFirst;
             double aParamLast  = aCoEdgeDef2.ParamLast;
             if (std::abs(aParamLast - aParamFirst) < 1.e-9)

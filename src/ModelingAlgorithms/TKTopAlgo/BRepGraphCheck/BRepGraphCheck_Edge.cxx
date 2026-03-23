@@ -37,8 +37,8 @@ void BRepGraphCheck::CheckEdgeMinimum(
   const BRepGraph::DefsView aDefs = theGraph.Defs();
   const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(theEdgeDefIdx);
 
-  const bool anIsDegenerate = BRepGraph_Tool::Degenerated(theGraph, theEdgeDefIdx);
-  const bool aHasCurve      = BRepGraph_Tool::HasCurve(theGraph, theEdgeDefIdx);
+  const bool anIsDegenerate = BRepGraph_Tool::Edge::Degenerated(theGraph, theEdgeDefIdx);
+  const bool aHasCurve      = BRepGraph_Tool::Edge::HasCurve(theGraph, theEdgeDefIdx);
 
   // Check No3DCurve: non-degenerate edge must have a 3D curve.
   if (!anIsDegenerate && !aHasCurve)
@@ -64,7 +64,7 @@ void BRepGraphCheck::CheckEdgeMinimum(
   // Check parameter range validity.
   if (aHasCurve)
   {
-    const auto [aFirst, aLast] = BRepGraph_Tool::Range(theGraph, theEdgeDefIdx);
+    const auto [aFirst, aLast] = BRepGraph_Tool::Edge::Range(theGraph, theEdgeDefIdx);
 
     // Parameters should be ordered (first < last for non-periodic,
     // or at least different for periodic curves).
@@ -79,7 +79,7 @@ void BRepGraphCheck::CheckEdgeMinimum(
     else
     {
       const GeomAdaptor_TransformedCurve aCurveAdaptor =
-        BRepGraph_Tool::CurveAdaptor(theGraph, theEdgeDefIdx);
+        BRepGraph_Tool::Edge::CurveAdaptor(theGraph, theEdgeDefIdx);
       if (!aCurveAdaptor.IsPeriodic() && aFirst > aLast)
       {
         BRepGraphCheck_Issue anIssue;
@@ -92,7 +92,7 @@ void BRepGraphCheck::CheckEdgeMinimum(
   }
 
   // Check tolerance value.
-  if (BRepGraph_Tool::ToleranceEdge(theGraph, theEdgeDefIdx) < 0.0)
+  if (BRepGraph_Tool::Edge::Tolerance(theGraph, theEdgeDefIdx) < 0.0)
   {
     BRepGraphCheck_Issue anIssue;
     anIssue.NodeId        = anEdgeDef.Id;
@@ -102,8 +102,8 @@ void BRepGraphCheck::CheckEdgeMinimum(
   }
 
   // SameRange=false but SameParameter=true is invalid.
-  if (BRepGraph_Tool::SameParameter(theGraph, theEdgeDefIdx)
-      && !BRepGraph_Tool::SameRange(theGraph, theEdgeDefIdx))
+  if (BRepGraph_Tool::Edge::SameParameter(theGraph, theEdgeDefIdx)
+      && !BRepGraph_Tool::Edge::SameRange(theGraph, theEdgeDefIdx))
   {
     BRepGraphCheck_Issue anIssue;
     anIssue.NodeId        = anEdgeDef.Id;
@@ -116,7 +116,7 @@ void BRepGraphCheck::CheckEdgeMinimum(
   if (anEdgeDef.StartVertexDefId().IsValid())
   {
     const int aStartVtxIdx = anEdgeDef.StartVertexIdx;
-    if (BRepGraph_Tool::Tolerance(theGraph, aStartVtxIdx) < Precision::Confusion())
+    if (BRepGraph_Tool::Vertex::Tolerance(theGraph, aStartVtxIdx) < Precision::Confusion())
     {
       BRepGraphCheck_Issue anIssue;
       anIssue.NodeId        = aDefs.Vertex(aStartVtxIdx).Id;
@@ -128,7 +128,7 @@ void BRepGraphCheck::CheckEdgeMinimum(
   if (anEdgeDef.EndVertexDefId().IsValid())
   {
     const int anEndVtxIdx = anEdgeDef.EndVertexIdx;
-    if (BRepGraph_Tool::Tolerance(theGraph, anEndVtxIdx) < Precision::Confusion())
+    if (BRepGraph_Tool::Vertex::Tolerance(theGraph, anEndVtxIdx) < Precision::Confusion())
     {
       BRepGraphCheck_Issue anIssue;
       anIssue.NodeId        = aDefs.Vertex(anEndVtxIdx).Id;
@@ -152,17 +152,17 @@ void BRepGraphCheck::CheckEdgeOnFace(
   const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(theEdgeDefIdx);
 
   // Skip degenerate edges for PCurve/SameParameter checks.
-  if (BRepGraph_Tool::Degenerated(theGraph, theEdgeDefIdx))
+  if (BRepGraph_Tool::Edge::Degenerated(theGraph, theEdgeDefIdx))
     return;
 
-  if (!BRepGraph_Tool::HasSurface(theGraph, theFaceDefIdx))
+  if (!BRepGraph_Tool::Face::HasSurface(theGraph, theFaceDefIdx))
     return;
 
   const BRepGraph_NodeId aFaceNodeId = BRepGraph_NodeId::Face(theFaceDefIdx);
 
   // Check PCurve existence.
   const BRepGraphInc::CoEdgeEntity* aPCurve =
-    BRepGraph_Tool::FindPCurve(theGraph, theEdgeDefIdx, theFaceDefIdx);
+    BRepGraph_Tool::Edge::FindPCurve(theGraph, theEdgeDefIdx, theFaceDefIdx);
   if (aPCurve == nullptr)
   {
     BRepGraphCheck_Issue anIssue;
@@ -175,8 +175,8 @@ void BRepGraphCheck::CheckEdgeOnFace(
   }
 
   // Check SameRange flag: PCurve range should match edge parameter range.
-  const auto [anEdgeFirst, anEdgeLast] = BRepGraph_Tool::Range(theGraph, theEdgeDefIdx);
-  if (aPCurve->Curve2DRepIdx >= 0 && BRepGraph_Tool::SameRange(theGraph, theEdgeDefIdx))
+  const auto [anEdgeFirst, anEdgeLast] = BRepGraph_Tool::Edge::Range(theGraph, theEdgeDefIdx);
+  if (aPCurve->Curve2DRepIdx >= 0 && BRepGraph_Tool::Edge::SameRange(theGraph, theEdgeDefIdx))
   {
     const double aPCFirst = aPCurve->ParamFirst;
     const double aPCLast  = aPCurve->ParamLast;
@@ -196,9 +196,9 @@ void BRepGraphCheck::CheckEdgeOnFace(
   // A seam edge has two PCurves on the same face (FORWARD and REVERSED).
   {
     const BRepGraphInc::CoEdgeEntity* aPCurveF =
-      BRepGraph_Tool::FindPCurve(theGraph, theEdgeDefIdx, theFaceDefIdx, TopAbs_FORWARD);
+      BRepGraph_Tool::Edge::FindPCurve(theGraph, theEdgeDefIdx, theFaceDefIdx, TopAbs_FORWARD);
     const BRepGraphInc::CoEdgeEntity* aPCurveR =
-      BRepGraph_Tool::FindPCurve(theGraph, theEdgeDefIdx, theFaceDefIdx, TopAbs_REVERSED);
+      BRepGraph_Tool::Edge::FindPCurve(theGraph, theEdgeDefIdx, theFaceDefIdx, TopAbs_REVERSED);
     if (aPCurveF != nullptr && aPCurveR != nullptr && aPCurveF != aPCurveR)
     {
       // Both PCurves exist — this is a seam edge. Validate the second PCurve.
@@ -211,7 +211,7 @@ void BRepGraphCheck::CheckEdgeOnFace(
         anIssue.IssueSeverity = BRepGraphCheck_Issue::Severity::Error;
         theIssues.Append(anIssue);
       }
-      else if (BRepGraph_Tool::SameRange(theGraph, theEdgeDefIdx))
+      else if (BRepGraph_Tool::Edge::SameRange(theGraph, theEdgeDefIdx))
       {
         // Validate SameRange for the second PCurve as well.
         const double aPCFirst2 = aPCurveR->ParamFirst;
@@ -231,23 +231,23 @@ void BRepGraphCheck::CheckEdgeOnFace(
   }
 
   // SameParameter check via BRepLib_ValidateEdge.
-  if (!BRepGraph_Tool::HasCurve(theGraph, theEdgeDefIdx))
+  if (!BRepGraph_Tool::Edge::HasCurve(theGraph, theEdgeDefIdx))
     return;
 
-  if (!BRepGraph_Tool::SameParameter(theGraph, theEdgeDefIdx))
+  if (!BRepGraph_Tool::Edge::SameParameter(theGraph, theEdgeDefIdx))
     return; // Cannot validate if not flagged as SameParameter.
 
   if (aPCurve->Curve2DRepIdx < 0)
     return;
 
   const occ::handle<Geom2d_Curve>& aPCurve2d =
-    BRepGraph_Tool::PCurve(theGraph, *aPCurve);
+    BRepGraph_Tool::CoEdge::PCurve(theGraph, *aPCurve);
   if (aPCurve2d.IsNull())
     return;
 
   // Build 3D curve adaptor (raw handle needed for BRepLib_ValidateEdge).
   const occ::handle<Geom_Curve>& aEdgeCurve3d =
-    BRepGraph_Tool::Curve(theGraph, theEdgeDefIdx);
+    BRepGraph_Tool::Edge::Curve(theGraph, theEdgeDefIdx);
   occ::handle<GeomAdaptor_Curve> aRefCurve = new GeomAdaptor_Curve(
     aEdgeCurve3d, anEdgeFirst, anEdgeLast);
 
@@ -255,12 +255,12 @@ void BRepGraphCheck::CheckEdgeOnFace(
   occ::handle<Geom2dAdaptor_Curve> aPC2d = new Geom2dAdaptor_Curve(
     aPCurve2d, anEdgeFirst, anEdgeLast);
   const occ::handle<Geom_Surface>& aFaceSurface =
-    BRepGraph_Tool::Surface(theGraph, theFaceDefIdx);
+    BRepGraph_Tool::Face::Surface(theGraph, theFaceDefIdx);
   occ::handle<GeomAdaptor_Surface> aHS = new GeomAdaptor_Surface(aFaceSurface);
   occ::handle<Adaptor3d_CurveOnSurface> aCOS = new Adaptor3d_CurveOnSurface(aPC2d, aHS);
 
-  const bool   anIsSameParam = BRepGraph_Tool::SameParameter(theGraph, theEdgeDefIdx);
-  const double anEdgeTol     = BRepGraph_Tool::ToleranceEdge(theGraph, theEdgeDefIdx);
+  const bool   anIsSameParam = BRepGraph_Tool::Edge::SameParameter(theGraph, theEdgeDefIdx);
+  const double anEdgeTol     = BRepGraph_Tool::Edge::Tolerance(theGraph, theEdgeDefIdx);
   BRepLib_ValidateEdge aValidator(aRefCurve, aCOS, anIsSameParam);
   aValidator.SetExitIfToleranceExceeded(anEdgeTol);
   aValidator.SetExactMethod(theIsExact);
@@ -291,7 +291,7 @@ void BRepGraphCheck::CheckEdgeInShell(
   const BRepGraph_NodeId aShellNodeId = BRepGraph_NodeId::Shell(theShellDefIdx);
 
   // Skip degenerate edges.
-  if (BRepGraph_Tool::Degenerated(theGraph, theEdgeDefIdx))
+  if (BRepGraph_Tool::Edge::Degenerated(theGraph, theEdgeDefIdx))
     return;
 
   if (theEdgeFaceCount == 1)

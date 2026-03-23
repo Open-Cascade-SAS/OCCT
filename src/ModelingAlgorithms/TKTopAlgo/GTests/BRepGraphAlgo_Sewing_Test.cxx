@@ -1833,7 +1833,7 @@ TEST(BRepGraphAlgo_SameParameterTest, Enforce_BoxEdge_SetsSameParameter)
     const BRepGraph_NodeId anEdgeId(BRepGraph_NodeId::Kind::Edge, anEdgeIdx);
     const bool             isOk = BRepGraphAlgo_SameParameter::Enforce(aGraph, anEdgeId, 1.0e-04);
     EXPECT_TRUE(isOk) << "Edge " << anEdgeIdx << " failed SameParameter enforcement";
-    EXPECT_TRUE(BRepGraph_Tool::SameParameter(aGraph, anEdgeIdx));
+    EXPECT_TRUE(BRepGraph_Tool::Edge::SameParameter(aGraph, anEdgeIdx));
   }
 }
 
@@ -1857,7 +1857,7 @@ TEST(BRepGraphAlgo_SameParameterTest, Enforce_CylinderEdge_ToleranceReasonable)
     const BRepGraph_NodeId anEdgeId(BRepGraph_NodeId::Kind::Edge, anEdgeIdx);
     BRepGraphAlgo_SameParameter::Enforce(aGraph, anEdgeId, 1.0e-04);
     // Tolerance should not blow up to unreasonable values.
-    EXPECT_LT(BRepGraph_Tool::ToleranceEdge(aGraph, anEdgeIdx), 1.0)
+    EXPECT_LT(BRepGraph_Tool::Edge::Tolerance(aGraph, anEdgeIdx), 1.0)
       << "Edge " << anEdgeIdx << " tolerance is unreasonably large";
   }
 }
@@ -1892,11 +1892,11 @@ TEST(BRepGraphAlgo_SameParameterTest, Perform_BatchParallel_MatchesSequential)
   // Both should set SameParameter and produce similar tolerances.
   for (int anEdgeIdx = 0; anEdgeIdx < aSeqGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    EXPECT_EQ(BRepGraph_Tool::SameParameter(aSeqGraph, anEdgeIdx),
-              BRepGraph_Tool::SameParameter(aParGraph, anEdgeIdx))
+    EXPECT_EQ(BRepGraph_Tool::Edge::SameParameter(aSeqGraph, anEdgeIdx),
+              BRepGraph_Tool::Edge::SameParameter(aParGraph, anEdgeIdx))
       << "Edge " << anEdgeIdx << " SameParameter mismatch";
-    EXPECT_NEAR(BRepGraph_Tool::ToleranceEdge(aSeqGraph, anEdgeIdx),
-                BRepGraph_Tool::ToleranceEdge(aParGraph, anEdgeIdx),
+    EXPECT_NEAR(BRepGraph_Tool::Edge::Tolerance(aSeqGraph, anEdgeIdx),
+                BRepGraph_Tool::Edge::Tolerance(aParGraph, anEdgeIdx),
                 1.0e-10)
       << "Edge " << anEdgeIdx << " tolerance mismatch";
   }
@@ -1915,13 +1915,13 @@ TEST(BRepGraphAlgo_SameParameterTest, Enforce_NoCurve3d_SetsFlag)
   // Find a degenerate edge (pole of sphere) — it has no meaningful 3D curve.
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    if (BRepGraph_Tool::Degenerated(aGraph, anEdgeIdx) || !BRepGraph_Tool::HasCurve(aGraph, anEdgeIdx))
+    if (BRepGraph_Tool::Edge::Degenerated(aGraph, anEdgeIdx) || !BRepGraph_Tool::Edge::HasCurve(aGraph, anEdgeIdx))
     {
       aGraph.Mut().EdgeDef(anEdgeIdx)->SameParameter = false;
       const BRepGraph_NodeId anEdgeId(BRepGraph_NodeId::Kind::Edge, anEdgeIdx);
       const bool isOk = BRepGraphAlgo_SameParameter::Enforce(aGraph, anEdgeId, 1.0e-04);
       EXPECT_TRUE(isOk);
-      EXPECT_TRUE(BRepGraph_Tool::SameParameter(aGraph, anEdgeIdx));
+      EXPECT_TRUE(BRepGraph_Tool::Edge::SameParameter(aGraph, anEdgeIdx));
       break;
     }
   }
@@ -1956,9 +1956,9 @@ TEST(BRepGraphAlgo_SameParameterTest, Enforce_AfterSewing_SewnEdgesAreValid)
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
     const NCollection_Vector<int>& aCoEdgeIdxs = aGraph.Defs().CoEdgesOfEdge(anEdgeIdx);
-    if (!aCoEdgeIdxs.IsEmpty() && BRepGraph_Tool::HasCurve(aGraph, anEdgeIdx))
+    if (!aCoEdgeIdxs.IsEmpty() && BRepGraph_Tool::Edge::HasCurve(aGraph, anEdgeIdx))
     {
-      if (BRepGraph_Tool::SameParameter(aGraph, anEdgeIdx))
+      if (BRepGraph_Tool::Edge::SameParameter(aGraph, anEdgeIdx))
         ++aNbSameParam;
     }
   }

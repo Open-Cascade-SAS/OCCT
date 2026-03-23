@@ -103,8 +103,8 @@ TEST(BRepGraphAlgo_TransformTest, TranslateBox_VertexPointsShifted)
   // Verify that all vertices have been shifted.
   for (int anIdx = 0; anIdx < aGraph.Defs().NbVertices(); ++anIdx)
   {
-    const gp_Pnt anOrigPt = BRepGraph_Tool::Pnt(aGraph, anIdx);
-    const gp_Pnt aTransPt = BRepGraph_Tool::Pnt(aResultGraph, anIdx);
+    const gp_Pnt anOrigPt = BRepGraph_Tool::Vertex::Pnt(aGraph, anIdx);
+    const gp_Pnt aTransPt = BRepGraph_Tool::Vertex::Pnt(aResultGraph, anIdx);
     EXPECT_NEAR(aTransPt.X(), anOrigPt.X() + aDx, Precision::Confusion())
         << "Vertex " << anIdx << " X mismatch";
     EXPECT_NEAR(aTransPt.Y(), anOrigPt.Y() + aDy, Precision::Confusion())
@@ -137,8 +137,8 @@ TEST(BRepGraphAlgo_TransformTest, LocationOnly_NoCopyGeom)
   // Vertex definition points must NOT be modified (location-only mode).
   for (int anIdx = 0; anIdx < aGraph.Defs().NbVertices(); ++anIdx)
   {
-    const gp_Pnt anOrigPt = BRepGraph_Tool::Pnt(aGraph, anIdx);
-    const gp_Pnt aGraphPt = BRepGraph_Tool::Pnt(aResultGraph, anIdx);
+    const gp_Pnt anOrigPt = BRepGraph_Tool::Vertex::Pnt(aGraph, anIdx);
+    const gp_Pnt aGraphPt = BRepGraph_Tool::Vertex::Pnt(aResultGraph, anIdx);
     EXPECT_NEAR(aGraphPt.X(), anOrigPt.X(), Precision::Confusion())
         << "Vertex " << anIdx << " point should not be modified";
   }

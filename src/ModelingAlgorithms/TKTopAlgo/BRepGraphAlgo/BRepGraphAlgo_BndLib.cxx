@@ -54,33 +54,33 @@ static void findExactUVBounds(const BRepGraph& theGraph,
 //! Add vertex point + tolerance to the bounding box.
 static void addVertexBox(const BRepGraph& theGraph, int theVertIdx, Bnd_Box& theBox)
 {
-  theBox.Add(BRepGraph_Tool::Pnt(theGraph, theVertIdx));
-  theBox.Enlarge(BRepGraph_Tool::Tolerance(theGraph, theVertIdx));
+  theBox.Add(BRepGraph_Tool::Vertex::Pnt(theGraph, theVertIdx));
+  theBox.Enlarge(BRepGraph_Tool::Vertex::Tolerance(theGraph, theVertIdx));
 }
 
 //! Add edge curve bbox using the graph's CurveAdaptor.
 static void addEdgeBox(const BRepGraph& theGraph, int theEdgeIdx, Bnd_Box& theBox)
 {
-  if (BRepGraph_Tool::Degenerated(theGraph, theEdgeIdx) || !BRepGraph_Tool::HasCurve(theGraph, theEdgeIdx))
+  if (BRepGraph_Tool::Edge::Degenerated(theGraph, theEdgeIdx) || !BRepGraph_Tool::Edge::HasCurve(theGraph, theEdgeIdx))
   {
     return;
   }
 
-  const GeomAdaptor_TransformedCurve aCurveAdaptor = BRepGraph_Tool::CurveAdaptor(theGraph, theEdgeIdx);
-  BndLib_Add3dCurve::Add(aCurveAdaptor, BRepGraph_Tool::ToleranceEdge(theGraph, theEdgeIdx), theBox);
+  const GeomAdaptor_TransformedCurve aCurveAdaptor = BRepGraph_Tool::Edge::CurveAdaptor(theGraph, theEdgeIdx);
+  BndLib_Add3dCurve::Add(aCurveAdaptor, BRepGraph_Tool::Edge::Tolerance(theGraph, theEdgeIdx), theBox);
 }
 
 //! Add face bbox using triangulation or geometry.
 static void addFaceBox(const BRepGraph& theGraph, int theFaceIdx, Bnd_Box& theBox, bool theUseTri)
 {
   const BRepGraph_TopoNode::FaceDef& aFaceDef = theGraph.Defs().Face(theFaceIdx);
-  const double aFaceTol = BRepGraph_Tool::ToleranceFace(theGraph, theFaceIdx);
+  const double aFaceTol = BRepGraph_Tool::Face::Tolerance(theGraph, theFaceIdx);
 
   // Triangulation path (fast, common).
-  const bool aHasTri = BRepGraph_Tool::HasTriangulation(theGraph, theFaceIdx);
-  if ((theUseTri || !BRepGraph_Tool::HasSurface(theGraph, theFaceIdx)) && aHasTri)
+  const bool aHasTri = BRepGraph_Tool::Face::HasTriangulation(theGraph, theFaceIdx);
+  if ((theUseTri || !BRepGraph_Tool::Face::HasSurface(theGraph, theFaceIdx)) && aHasTri)
   {
-    const occ::handle<Poly_Triangulation>& aTri = BRepGraph_Tool::Triangulation(theGraph, theFaceIdx);
+    const occ::handle<Poly_Triangulation>& aTri = BRepGraph_Tool::Face::Triangulation(theGraph, theFaceIdx);
     if (!aTri.IsNull())
     {
       const TopLoc_Location aLoc;
@@ -93,13 +93,13 @@ static void addFaceBox(const BRepGraph& theGraph, int theFaceIdx, Bnd_Box& theBo
   }
 
   // Geometry path.
-  if (!BRepGraph_Tool::HasSurface(theGraph, theFaceIdx))
+  if (!BRepGraph_Tool::Face::HasSurface(theGraph, theFaceIdx))
   {
     return;
   }
 
   // Check surface type (location-invariant).
-  const GeomAdaptor_TransformedSurface aGAS = BRepGraph_Tool::SurfaceAdaptor(theGraph, theFaceIdx);
+  const GeomAdaptor_TransformedSurface aGAS = BRepGraph_Tool::Face::SurfaceAdaptor(theGraph, theFaceIdx);
   if (aGAS.GetType() != GeomAbs_Plane)
   {
     // Non-plane: use SurfaceAdaptor with UV bounds from PCurves (avoids face reconstruction).
@@ -107,7 +107,7 @@ static void addFaceBox(const BRepGraph& theGraph, int theFaceIdx, Bnd_Box& theBo
     bool   anIsNatural = false;
     findExactUVBounds(theGraph, theFaceIdx, aUMin, aUMax, aVMin, aVMax, aFaceTol, anIsNatural);
     const GeomAdaptor_TransformedSurface aSurfAdaptor =
-      BRepGraph_Tool::SurfaceAdaptor(theGraph, theFaceIdx, aUMin, aUMax, aVMin, aVMax);
+      BRepGraph_Tool::Face::SurfaceAdaptor(theGraph, theFaceIdx, aUMin, aUMax, aVMin, aVMax);
     BndLib_AddSurface::Add(aSurfAdaptor, aFaceTol, theBox);
   }
   else
@@ -123,13 +123,13 @@ static void addFaceBox(const BRepGraph& theGraph, int theFaceIdx, Bnd_Box& theBo
         const BRepGraphInc::CoEdgeRef& aCR = aWireDef.CoEdgeRefs.Value(anIdx);
         const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Defs().CoEdge(aCR.CoEdgeIdx);
         const int anEdgeIdx = aCoEdge.EdgeIdx;
-        if (BRepGraph_Tool::Degenerated(theGraph, anEdgeIdx) || !BRepGraph_Tool::HasCurve(theGraph, anEdgeIdx))
+        if (BRepGraph_Tool::Edge::Degenerated(theGraph, anEdgeIdx) || !BRepGraph_Tool::Edge::HasCurve(theGraph, anEdgeIdx))
         {
           continue;
         }
         const GeomAdaptor_TransformedCurve aCurveAdaptor =
-          BRepGraph_Tool::CurveAdaptor(theGraph, anEdgeIdx);
-        BndLib_Add3dCurve::Add(aCurveAdaptor, BRepGraph_Tool::ToleranceEdge(theGraph, anEdgeIdx), theBox);
+          BRepGraph_Tool::Edge::CurveAdaptor(theGraph, anEdgeIdx);
+        BndLib_Add3dCurve::Add(aCurveAdaptor, BRepGraph_Tool::Edge::Tolerance(theGraph, anEdgeIdx), theBox);
         hasEdges = true;
       }
     }
@@ -152,7 +152,7 @@ static void addFaceBox(const BRepGraph& theGraph, int theFaceIdx, Bnd_Box& theBo
                         aFaceTol,
                         anIsNatural2);
       const GeomAdaptor_TransformedSurface aSurfAdaptor2 =
-        BRepGraph_Tool::SurfaceAdaptor(theGraph, theFaceIdx, aUMin2, aUMax2, aVMin2, aVMax2);
+        BRepGraph_Tool::Face::SurfaceAdaptor(theGraph, theFaceIdx, aUMin2, aUMax2, aVMin2, aVMax2);
       BndLib_AddSurface::Add(aSurfAdaptor2, aFaceTol, theBox);
     }
   }
@@ -390,12 +390,12 @@ static void addEdgeBoxOptimal(const BRepGraph& theGraph,
                               Bnd_Box&         theBox,
                               bool             theUseShapeTol)
 {
-  if (BRepGraph_Tool::Degenerated(theGraph, theEdgeIdx) || !BRepGraph_Tool::HasCurve(theGraph, theEdgeIdx))
+  if (BRepGraph_Tool::Edge::Degenerated(theGraph, theEdgeIdx) || !BRepGraph_Tool::Edge::HasCurve(theGraph, theEdgeIdx))
   {
     return;
   }
-  const GeomAdaptor_TransformedCurve aCurveAdaptor = BRepGraph_Tool::CurveAdaptor(theGraph, theEdgeIdx);
-  const double                       aTol          = theUseShapeTol ? BRepGraph_Tool::ToleranceEdge(theGraph, theEdgeIdx) : 0.;
+  const GeomAdaptor_TransformedCurve aCurveAdaptor = BRepGraph_Tool::Edge::CurveAdaptor(theGraph, theEdgeIdx);
+  const double                       aTol          = theUseShapeTol ? BRepGraph_Tool::Edge::Tolerance(theGraph, theEdgeIdx) : 0.;
   BndLib_Add3dCurve::AddOptimal(aCurveAdaptor, aTol, theBox);
 }
 
@@ -409,16 +409,16 @@ static void addFaceBoxOptimal(const BRepGraph& theGraph,
   const BRepGraph_TopoNode::FaceDef& aFaceDef = theGraph.Defs().Face(theFaceIdx);
 
   // Triangulation path.
-  if (theUseTri && BRepGraph_Tool::HasTriangulation(theGraph, theFaceIdx))
+  if (theUseTri && BRepGraph_Tool::Face::HasTriangulation(theGraph, theFaceIdx))
   {
-    const occ::handle<Poly_Triangulation>& aTri = BRepGraph_Tool::Triangulation(theGraph, theFaceIdx);
+    const occ::handle<Poly_Triangulation>& aTri = BRepGraph_Tool::Face::Triangulation(theGraph, theFaceIdx);
     if (!aTri.IsNull())
     {
       Bnd_Box               aLocBox;
       const TopLoc_Location aLoc;
       if (aTri->MinMax(aLocBox, aLoc))
       {
-        aLocBox.Enlarge(aTri->Deflection() + BRepGraph_Tool::ToleranceFace(theGraph, theFaceIdx));
+        aLocBox.Enlarge(aTri->Deflection() + BRepGraph_Tool::Face::Tolerance(theGraph, theFaceIdx));
         double xmin, ymin, zmin, xmax, ymax, zmax;
         aLocBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
         theBox.Update(xmin, ymin, zmin, xmax, ymax, zmax);
@@ -428,14 +428,14 @@ static void addFaceBoxOptimal(const BRepGraph& theGraph,
   }
 
   // Geometry path.
-  if (!BRepGraph_Tool::HasSurface(theGraph, theFaceIdx))
+  if (!BRepGraph_Tool::Face::HasSurface(theGraph, theFaceIdx))
   {
     return;
   }
 
   // Use SurfaceAdaptor directly (avoids face reconstruction).
-  const GeomAdaptor_TransformedSurface aBS      = BRepGraph_Tool::SurfaceAdaptor(theGraph, theFaceIdx);
-  const double                         aFaceTol = theUseShapeTol ? BRepGraph_Tool::ToleranceFace(theGraph, theFaceIdx) : 0.;
+  const GeomAdaptor_TransformedSurface aBS      = BRepGraph_Tool::Face::SurfaceAdaptor(theGraph, theFaceIdx);
+  const double                         aFaceTol = theUseShapeTol ? BRepGraph_Tool::Face::Tolerance(theGraph, theFaceIdx) : 0.;
 
   Bnd_Box aLocBox;
   if (canUseEdges(aBS))
@@ -451,14 +451,14 @@ static void addFaceBoxOptimal(const BRepGraph& theGraph,
         const BRepGraphInc::CoEdgeRef& aCR = aWireDef.CoEdgeRefs.Value(anIdx);
         const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Defs().CoEdge(aCR.CoEdgeIdx);
         const int anEdgeIdx = aCoEdge.EdgeIdx;
-        if (BRepGraph_Tool::Degenerated(theGraph, anEdgeIdx) || !BRepGraph_Tool::HasCurve(theGraph, anEdgeIdx))
+        if (BRepGraph_Tool::Edge::Degenerated(theGraph, anEdgeIdx) || !BRepGraph_Tool::Edge::HasCurve(theGraph, anEdgeIdx))
         {
           continue;
         }
         Bnd_Box                            anEBox;
         const GeomAdaptor_TransformedCurve aCurveAdaptor =
-          BRepGraph_Tool::CurveAdaptor(theGraph, anEdgeIdx);
-        const double aTol = theUseShapeTol ? BRepGraph_Tool::ToleranceEdge(theGraph, anEdgeIdx) : 0.;
+          BRepGraph_Tool::Edge::CurveAdaptor(theGraph, anEdgeIdx);
+        const double aTol = theUseShapeTol ? BRepGraph_Tool::Edge::Tolerance(theGraph, anEdgeIdx) : 0.;
         BndLib_Add3dCurve::AddOptimal(aCurveAdaptor, aTol, anEBox);
         aLocBox.Add(anEBox);
         hasEdges = true;
@@ -478,7 +478,7 @@ static void addFaceBoxOptimal(const BRepGraph& theGraph,
     findExactUVBounds(theGraph, theFaceIdx, umin, umax, vmin, vmax, aFaceTol, isNaturalRestriction);
 
     const GeomAdaptor_TransformedSurface aBSTrimmed =
-      BRepGraph_Tool::SurfaceAdaptor(theGraph, theFaceIdx, umin, umax, vmin, vmax);
+      BRepGraph_Tool::Face::SurfaceAdaptor(theGraph, theFaceIdx, umin, umax, vmin, vmax);
     BndLib_AddSurface::AddOptimal(aBSTrimmed, umin, umax, vmin, vmax, aFaceTol, aLocBox);
 
     if (!isNaturalRestriction)
@@ -494,14 +494,14 @@ static void addFaceBoxOptimal(const BRepGraph& theGraph,
           const BRepGraphInc::CoEdgeRef& aCR = aWireDef.CoEdgeRefs.Value(anIdx);
           const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Defs().CoEdge(aCR.CoEdgeIdx);
           const int anEdgeIdx = aCoEdge.EdgeIdx;
-          if (BRepGraph_Tool::Degenerated(theGraph, anEdgeIdx) || !BRepGraph_Tool::HasCurve(theGraph, anEdgeIdx))
+          if (BRepGraph_Tool::Edge::Degenerated(theGraph, anEdgeIdx) || !BRepGraph_Tool::Edge::HasCurve(theGraph, anEdgeIdx))
           {
             continue;
           }
           Bnd_Box                            anEBox;
           const GeomAdaptor_TransformedCurve aCurveAdaptor =
-            BRepGraph_Tool::CurveAdaptor(theGraph, anEdgeIdx);
-          const double aTol = theUseShapeTol ? BRepGraph_Tool::ToleranceEdge(theGraph, anEdgeIdx) : 0.;
+            BRepGraph_Tool::Edge::CurveAdaptor(theGraph, anEdgeIdx);
+          const double aTol = theUseShapeTol ? BRepGraph_Tool::Edge::Tolerance(theGraph, anEdgeIdx) : 0.;
           BndLib_Add3dCurve::AddOptimal(aCurveAdaptor, aTol, anEBox);
           aEBox.Add(anEBox);
         }
@@ -622,8 +622,8 @@ static void addNodeBoxOptimal(const BRepGraph& theGraph,
   {
     case BRepGraph_NodeId::Kind::Vertex: {
       Bnd_Box aLocBox;
-      aLocBox.Add(BRepGraph_Tool::Pnt(theGraph, theNode.Index));
-      const double aTol = theUseShapeTol ? BRepGraph_Tool::Tolerance(theGraph, theNode.Index) : 0.;
+      aLocBox.Add(BRepGraph_Tool::Vertex::Pnt(theGraph, theNode.Index));
+      const double aTol = theUseShapeTol ? BRepGraph_Tool::Vertex::Tolerance(theGraph, theNode.Index) : 0.;
       aLocBox.Enlarge(aTol);
       double xmin, ymin, zmin, xmax, ymax, zmax;
       aLocBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
@@ -785,8 +785,8 @@ void BRepGraphAlgo_BndLib::AddOptimal(const BRepGraph& theGraph,
   for (int i = 0; i < aNbVerts; ++i)
   {
     Bnd_Box aLocBox;
-    aLocBox.Add(BRepGraph_Tool::Pnt(theGraph, i));
-    const double aTol = theUseShapeTolerance ? BRepGraph_Tool::Tolerance(theGraph, i) : 0.;
+    aLocBox.Add(BRepGraph_Tool::Vertex::Pnt(theGraph, i));
+    const double aTol = theUseShapeTolerance ? BRepGraph_Tool::Vertex::Tolerance(theGraph, i) : 0.;
     aLocBox.Enlarge(aTol);
     double xmin, ymin, zmin, xmax, ymax, zmax;
     aLocBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);

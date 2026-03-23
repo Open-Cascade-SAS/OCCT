@@ -74,13 +74,13 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
 
   for (int aFaceIdx = 0; aFaceIdx < theGraph.Defs().NbFaces(); ++aFaceIdx)
   {
-    if (!BRepGraph_Tool::HasSurface(theGraph, aFaceIdx))
+    if (!BRepGraph_Tool::Face::HasSurface(theGraph, aFaceIdx))
     {
       continue;
     }
 
     const occ::handle<Geom_Surface>& aFaceSurf =
-      BRepGraph_Tool::Surface(theGraph, aFaceIdx);
+      BRepGraph_Tool::Face::Surface(theGraph, aFaceIdx);
     const int* aCanonFaceIdx = aSurfToCanonicalFace.Seek(aFaceSurf);
     if (aCanonFaceIdx == nullptr)
     {
@@ -102,13 +102,13 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
 
   for (int anEdgeIdx = 0; anEdgeIdx < theGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    if (!BRepGraph_Tool::HasCurve(theGraph, anEdgeIdx))
+    if (!BRepGraph_Tool::Edge::HasCurve(theGraph, anEdgeIdx))
     {
       continue;
     }
 
     const occ::handle<Geom_Curve>& anEdgeCurve =
-      BRepGraph_Tool::Curve(theGraph, anEdgeIdx);
+      BRepGraph_Tool::Edge::Curve(theGraph, anEdgeIdx);
     const int* aCanonEdgeIdx = aCurveToCanonicalEdge.Seek(anEdgeCurve);
     if (aCanonEdgeIdx == nullptr)
     {
@@ -191,7 +191,7 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
       const BRepGraph_TopoNode::VertexDef& aVtx = theGraph.Defs().Vertex(aVtxIdx);
       if (aVtx.IsRemoved)
         continue;
-      aActiveVertices.Append(std::make_pair(BRepGraph_Tool::Pnt(theGraph, aVtxIdx), aVtxIdx));
+      aActiveVertices.Append(std::make_pair(BRepGraph_Tool::Vertex::Pnt(theGraph, aVtxIdx), aVtxIdx));
     }
 
     // Build KDTree from active vertex points -- O(n log n).
@@ -215,8 +215,8 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
       if (aCanonicalVertex.IsBound(aBaseVtxIdx))
         continue;
 
-      const gp_Pnt aBaseVtxPnt = BRepGraph_Tool::Pnt(theGraph, aBaseVtxIdx);
-      const double aBaseVtxTol = BRepGraph_Tool::Tolerance(theGraph, aBaseVtxIdx);
+      const gp_Pnt aBaseVtxPnt = BRepGraph_Tool::Vertex::Pnt(theGraph, aBaseVtxIdx);
+      const double aBaseVtxTol = BRepGraph_Tool::Vertex::Tolerance(theGraph, aBaseVtxIdx);
 
       aTree.ForEachInRange(aBaseVtxPnt, aTol, [&](size_t theResultIdx) {
         const int anArrayIdx = static_cast<int>(theResultIdx) - 1;
@@ -227,9 +227,9 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
         if (aCanonicalVertex.IsBound(aCandVtxIdx))
           return;
 
-        const double aCandVtxTol = BRepGraph_Tool::Tolerance(theGraph, aCandVtxIdx);
+        const double aCandVtxTol = BRepGraph_Tool::Vertex::Tolerance(theGraph, aCandVtxIdx);
         const double aMaxTol = std::max(aBaseVtxTol, aCandVtxTol);
-        if (aBaseVtxPnt.Distance(BRepGraph_Tool::Pnt(theGraph, aCandVtxIdx)) <= aMaxTol)
+        if (aBaseVtxPnt.Distance(BRepGraph_Tool::Vertex::Pnt(theGraph, aCandVtxIdx)) <= aMaxTol)
         {
           aCanonicalVertex.Bind(aCandVtxIdx, aBaseVtxIdx);
         }
@@ -315,12 +315,12 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
     for (int anEdgeIdx = 0; anEdgeIdx < theGraph.Defs().NbEdges(); ++anEdgeIdx)
     {
       const BRepGraph_TopoNode::EdgeDef& anEdge = theGraph.Defs().Edge(anEdgeIdx);
-      if (anEdge.IsRemoved || !BRepGraph_Tool::HasCurve(theGraph, anEdgeIdx))
+      if (anEdge.IsRemoved || !BRepGraph_Tool::Edge::HasCurve(theGraph, anEdgeIdx))
         continue;
 
       // Use canonical (forward) key: use raw pointer as a stable identity.
       EdgeKey aKey;
-      aKey.CurvePtr = BRepGraph_Tool::Curve(theGraph, anEdgeIdx).get();
+      aKey.CurvePtr = BRepGraph_Tool::Edge::Curve(theGraph, anEdgeIdx).get();
       aKey.StartVtx = anEdge.StartVertexIdx >= 0 ? anEdge.StartVertexIdx : -1;
       aKey.EndVtx   = anEdge.EndVertexIdx >= 0 ? anEdge.EndVertexIdx : -1;
 
@@ -426,7 +426,7 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
           if (!aAlreadyHas)
           {
             const occ::handle<Geom2d_Curve>& aOldPCurve =
-              BRepGraph_Tool::PCurve(theGraph, aOldCoEdges.Value(aCEIdx));
+              BRepGraph_Tool::CoEdge::PCurve(theGraph, aOldCoEdges.Value(aCEIdx));
             theGraph.Mut().AddPCurveToEdge(aCanonId,
                                            aOldCE.FaceDefId,
                                            aOldPCurve,
@@ -614,11 +614,11 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
     for (int aFaceIdx = 0; aFaceIdx < theGraph.Defs().NbFaces(); ++aFaceIdx)
     {
       const BRepGraph_TopoNode::FaceDef& aFace = theGraph.Defs().Face(aFaceIdx);
-      if (aFace.IsRemoved || !BRepGraph_Tool::HasSurface(theGraph, aFaceIdx))
+      if (aFace.IsRemoved || !BRepGraph_Tool::Face::HasSurface(theGraph, aFaceIdx))
         continue;
 
       FaceKey aKey;
-      aKey.SurfPtr  = BRepGraph_Tool::Surface(theGraph, aFaceIdx).get();
+      aKey.SurfPtr  = BRepGraph_Tool::Face::Surface(theGraph, aFaceIdx).get();
       aKey.WireHash = faceWireHash(aFaceIdx);
 
       aFaceGroups.TryBind(aKey, NCollection_Vector<int>());

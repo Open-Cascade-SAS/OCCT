@@ -236,14 +236,14 @@ bool enforceImpl(BRepGraph&       theGraph,
   const BRepGraph_TopoNode::EdgeDef& anEdge = *aMutEdge;
   const NCollection_Vector<int>& aCoEdgeIdxs =
     theGraph.Defs().CoEdgesOfEdge(theEdgeId.Index);
-  if (!BRepGraph_Tool::HasCurve(theGraph, theEdgeId.Index) || aCoEdgeIdxs.IsEmpty())
+  if (!BRepGraph_Tool::Edge::HasCurve(theGraph, theEdgeId.Index) || aCoEdgeIdxs.IsEmpty())
   {
     aMutEdge->SameParameter = true;
     return true;
   }
 
   // Build 3D curve adaptor from graph, handle periodicity/trimming like BRepLib.
-  occ::handle<Geom_Curve> aC3d = BRepGraph_Tool::Curve(theGraph, theEdgeId.Index);
+  occ::handle<Geom_Curve> aC3d = BRepGraph_Tool::Edge::Curve(theGraph, theEdgeId.Index);
   double             aF3d = anEdge.ParamFirst;
   double             aL3d = anEdge.ParamLast;
 
@@ -266,7 +266,7 @@ bool enforceImpl(BRepGraph&       theGraph,
 
   // Apply edge location transform if any (graph CurveAdaptor handles this internally,
   // but for Approx_SameParameter we need explicit Geom_Curve + GeomAdaptor_Curve).
-  GeomAdaptor_TransformedCurve aTransCurve = BRepGraph_Tool::CurveAdaptor(theGraph, theEdgeId.Index);
+  GeomAdaptor_TransformedCurve aTransCurve = BRepGraph_Tool::Edge::CurveAdaptor(theGraph, theEdgeId.Index);
   const gp_Trsf&               aCrvTrsf    = aTransCurve.Trsf();
 
   occ::handle<GeomAdaptor_Curve>   aHC    = new GeomAdaptor_Curve();
@@ -306,7 +306,7 @@ bool enforceImpl(BRepGraph&       theGraph,
       continue;
     }
 
-    if (!BRepGraph_Tool::HasSurface(theGraph, aCoEdge.FaceDefId.Index))
+    if (!BRepGraph_Tool::Face::HasSurface(theGraph, aCoEdge.FaceDefId.Index))
     {
       continue;
     }
@@ -314,9 +314,9 @@ bool enforceImpl(BRepGraph&       theGraph,
     hasYaPCu = true;
 
     // Load surface (apply face transform if non-identity).
-    GeomAdaptor_TransformedSurface aTransSurf = BRepGraph_Tool::SurfaceAdaptor(theGraph, aCoEdge.FaceDefId.Index);
+    GeomAdaptor_TransformedSurface aTransSurf = BRepGraph_Tool::Face::SurfaceAdaptor(theGraph, aCoEdge.FaceDefId.Index);
     occ::handle<Geom_Surface>           aSurf      =
-      BRepGraph_Tool::Surface(theGraph, aCoEdge.FaceDefId.Index);
+      BRepGraph_Tool::Face::Surface(theGraph, aCoEdge.FaceDefId.Index);
     const gp_Trsf&                 aSrfTrsf   = aTransSurf.Trsf();
     if (aSrfTrsf.Form() != gp_Identity)
     {
@@ -325,7 +325,7 @@ bool enforceImpl(BRepGraph&       theGraph,
     aGAS.Load(aSurf);
 
     const occ::handle<Geom2d_Curve>& aCoEdgePCurve =
-      BRepGraph_Tool::PCurve(theGraph, aCoEdgeIdx);
+      BRepGraph_Tool::CoEdge::PCurve(theGraph, aCoEdgeIdx);
     occ::handle<Geom2d_Curve> aCurPC    = aCoEdgePCurve;
     bool                 aUpdatePC = false;
 

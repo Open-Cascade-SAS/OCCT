@@ -75,7 +75,7 @@ int nbUniqueFaceSurfaceDefs(const BRepGraph& theGraph)
   NCollection_Map<const Geom_Surface*> aSurfSet;
   for (int aFaceIdx = 0; aFaceIdx < theGraph.Defs().NbFaces(); ++aFaceIdx)
   {
-    const occ::handle<Geom_Surface>& aSurf = BRepGraph_Tool::Surface(theGraph, aFaceIdx);
+    const occ::handle<Geom_Surface>& aSurf = BRepGraph_Tool::Face::Surface(theGraph, aFaceIdx);
     if (!aSurf.IsNull())
     {
       aSurfSet.Add(aSurf.get());
@@ -91,7 +91,7 @@ int nbUniqueEdgeCurveDefs(const BRepGraph& theGraph)
   NCollection_Map<const Geom_Curve*> aCurveSet;
   for (int anEdgeIdx = 0; anEdgeIdx < theGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    const occ::handle<Geom_Curve>& aCurve = BRepGraph_Tool::Curve(theGraph, anEdgeIdx);
+    const occ::handle<Geom_Curve>& aCurve = BRepGraph_Tool::Edge::Curve(theGraph, anEdgeIdx);
     if (!aCurve.IsNull())
     {
       aCurveSet.Add(aCurve.get());
@@ -266,7 +266,7 @@ int addDuplicatePCurvesToAllEdges(BRepGraph& theGraph)
     }
 
     const occ::handle<Geom2d_Curve>& aDupPCurve =
-      BRepGraph_Tool::PCurve(theGraph, aCE);
+      BRepGraph_Tool::CoEdge::PCurve(theGraph, aCE);
     theGraph.Mut().AddPCurveToEdge(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, anEdgeIdx),
                                    aCE.FaceDefId,
                                    aDupPCurve,
@@ -563,7 +563,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, AfterDedup_AllCopiedFacesShareCanonicalSurfa
   NCollection_Map<const Geom_Surface*> aSurfIds;
   for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
   {
-    const occ::handle<Geom_Surface>& aSurf = BRepGraph_Tool::Surface(aGraph, aFaceIdx);
+    const occ::handle<Geom_Surface>& aSurf = BRepGraph_Tool::Face::Surface(aGraph, aFaceIdx);
     if (!aSurf.IsNull())
     {
       aSurfIds.Add(aSurf.get());
@@ -1309,8 +1309,8 @@ TEST(BRepGraphAlgo_DeduplicateTest, TwoCopiedSphereFaces_Deduped)
   EXPECT_EQ(aRes.NbCanonicalSurfaces, 1);
   EXPECT_EQ(aRes.NbSurfaceRewrites, 1);
   // After dedup, both sphere faces share the same surface pointer.
-  EXPECT_EQ(BRepGraph_Tool::Surface(aGraph, 0).get(),
-            BRepGraph_Tool::Surface(aGraph, 1).get());
+  EXPECT_EQ(BRepGraph_Tool::Face::Surface(aGraph, 0).get(),
+            BRepGraph_Tool::Face::Surface(aGraph, 1).get());
   EXPECT_GT(aRes.NbHistoryRecords, 0);
 }
 
@@ -1426,14 +1426,14 @@ TEST(BRepGraphAlgo_DeduplicateTest, BackRefs_SurfaceRewrite_UpdatesFaceDefUsers)
 
   // Before dedup: each face has its own surface handle.
   ASSERT_EQ(aGraph.Defs().NbFaces(), 2);
-  EXPECT_NE(BRepGraph_Tool::Surface(aGraph, 0).get(),
-            BRepGraph_Tool::Surface(aGraph, 1).get());
+  EXPECT_NE(BRepGraph_Tool::Face::Surface(aGraph, 0).get(),
+            BRepGraph_Tool::Face::Surface(aGraph, 1).get());
 
   (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
 
   // After dedup: both faces share the same canonical surface pointer.
-  EXPECT_EQ(BRepGraph_Tool::Surface(aGraph, 0).get(),
-            BRepGraph_Tool::Surface(aGraph, 1).get());
+  EXPECT_EQ(BRepGraph_Tool::Face::Surface(aGraph, 0).get(),
+            BRepGraph_Tool::Face::Surface(aGraph, 1).get());
 }
 
 TEST(BRepGraphAlgo_DeduplicateTest, BackRefs_CurveRewrite_UpdatesEdgeDefUsers)
@@ -1452,7 +1452,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, BackRefs_CurveRewrite_UpdatesEdgeDefUsers)
   NCollection_Map<const Geom_Curve*> aDistinctCurves;
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    const occ::handle<Geom_Curve>& aCurve = BRepGraph_Tool::Curve(aGraph, anEdgeIdx);
+    const occ::handle<Geom_Curve>& aCurve = BRepGraph_Tool::Edge::Curve(aGraph, anEdgeIdx);
     if (!aCurve.IsNull())
       aDistinctCurves.Add(aCurve.get());
   }
@@ -1470,10 +1470,10 @@ TEST(BRepGraphAlgo_DeduplicateTest, FacesOnSurface_AfterDedup_ReturnsCorrectDefs
 
   // After dedup, all face defs point to the same canonical surface.
   ASSERT_EQ(aGraph.Defs().NbFaces(), 2);
-  EXPECT_TRUE(BRepGraph_Tool::HasSurface(aGraph, 0));
-  EXPECT_TRUE(BRepGraph_Tool::HasSurface(aGraph, 1));
-  EXPECT_EQ(BRepGraph_Tool::Surface(aGraph, 0).get(),
-            BRepGraph_Tool::Surface(aGraph, 1).get());
+  EXPECT_TRUE(BRepGraph_Tool::Face::HasSurface(aGraph, 0));
+  EXPECT_TRUE(BRepGraph_Tool::Face::HasSurface(aGraph, 1));
+  EXPECT_EQ(BRepGraph_Tool::Face::Surface(aGraph, 0).get(),
+            BRepGraph_Tool::Face::Surface(aGraph, 1).get());
 }
 
 TEST(BRepGraphAlgo_DeduplicateTest, Nullify_OrphanedSurface_HandleIsNull)
@@ -1489,7 +1489,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, Nullify_OrphanedSurface_HandleIsNull)
   // After dedup, both faces share the same canonical surface; all surfaces non-null.
   for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
   {
-    EXPECT_TRUE(BRepGraph_Tool::HasSurface(aGraph, aFaceIdx))
+    EXPECT_TRUE(BRepGraph_Tool::Face::HasSurface(aGraph, aFaceIdx))
       << "Face " << aFaceIdx << " has null Surface after dedup";
   }
 }
@@ -1508,9 +1508,9 @@ TEST(BRepGraphAlgo_DeduplicateTest, Nullify_OrphanedCurve_HandleIsNull)
   // duplicate edges now share the canonical curve pointer.
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    if (!BRepGraph_Tool::Degenerated(aGraph, anEdgeIdx))
+    if (!BRepGraph_Tool::Edge::Degenerated(aGraph, anEdgeIdx))
     {
-      EXPECT_TRUE(BRepGraph_Tool::HasCurve(aGraph, anEdgeIdx))
+      EXPECT_TRUE(BRepGraph_Tool::Edge::HasCurve(aGraph, anEdgeIdx))
         << "Edge " << anEdgeIdx << " has null Curve3d after dedup";
     }
   }
@@ -1546,10 +1546,10 @@ TEST(BRepGraphAlgo_DeduplicateTest, AnalyzeOnly_NoBackRefChangesOrNullification)
   // Snapshot surface/curve pointers before.
   NCollection_Vector<const Geom_Surface*> aSurfPtrs;
   for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
-    aSurfPtrs.Append(BRepGraph_Tool::Surface(aGraph, aFaceIdx).get());
+    aSurfPtrs.Append(BRepGraph_Tool::Face::Surface(aGraph, aFaceIdx).get());
   NCollection_Vector<const Geom_Curve*> aCurvePtrs;
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
-    aCurvePtrs.Append(BRepGraph_Tool::Curve(aGraph, anEdgeIdx).get());
+    aCurvePtrs.Append(BRepGraph_Tool::Edge::Curve(aGraph, anEdgeIdx).get());
 
   BRepGraphAlgo_Deduplicate::Options anOpts;
   anOpts.AnalyzeOnly = true;
@@ -1561,22 +1561,22 @@ TEST(BRepGraphAlgo_DeduplicateTest, AnalyzeOnly_NoBackRefChangesOrNullification)
   // Surface/curve pointers unchanged (analyze only, no rewriting).
   for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
   {
-    EXPECT_EQ(BRepGraph_Tool::Surface(aGraph, aFaceIdx).get(), aSurfPtrs.Value(aFaceIdx));
+    EXPECT_EQ(BRepGraph_Tool::Face::Surface(aGraph, aFaceIdx).get(), aSurfPtrs.Value(aFaceIdx));
   }
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    EXPECT_EQ(BRepGraph_Tool::Curve(aGraph, anEdgeIdx).get(), aCurvePtrs.Value(anEdgeIdx));
+    EXPECT_EQ(BRepGraph_Tool::Edge::Curve(aGraph, anEdgeIdx).get(), aCurvePtrs.Value(anEdgeIdx));
   }
 
   // All handles still non-null.
   for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
   {
-    EXPECT_TRUE(BRepGraph_Tool::HasSurface(aGraph, aFaceIdx));
+    EXPECT_TRUE(BRepGraph_Tool::Face::HasSurface(aGraph, aFaceIdx));
   }
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    if (!BRepGraph_Tool::Degenerated(aGraph, anEdgeIdx))
-      EXPECT_TRUE(BRepGraph_Tool::HasCurve(aGraph, anEdgeIdx));
+    if (!BRepGraph_Tool::Edge::Degenerated(aGraph, anEdgeIdx))
+      EXPECT_TRUE(BRepGraph_Tool::Edge::HasCurve(aGraph, anEdgeIdx));
   }
 }
 
@@ -1637,16 +1637,16 @@ TEST(BRepGraphAlgo_DeduplicateTest, Pump_FullDedup_BackRefsAndNullify)
   // After dedup, all face surfaces should be non-null.
   for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
   {
-    EXPECT_TRUE(BRepGraph_Tool::HasSurface(aGraph, aFaceIdx))
+    EXPECT_TRUE(BRepGraph_Tool::Face::HasSurface(aGraph, aFaceIdx))
       << "Face " << aFaceIdx << " has null Surface after dedup";
   }
 
   // After dedup, non-degenerate edge curves should be non-null.
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    if (!BRepGraph_Tool::Degenerated(aGraph, anEdgeIdx))
+    if (!BRepGraph_Tool::Edge::Degenerated(aGraph, anEdgeIdx))
     {
-      EXPECT_TRUE(BRepGraph_Tool::HasCurve(aGraph, anEdgeIdx))
+      EXPECT_TRUE(BRepGraph_Tool::Edge::HasCurve(aGraph, anEdgeIdx))
         << "Edge " << anEdgeIdx << " has null Curve3d after dedup";
     }
   }

@@ -645,12 +645,12 @@ TEST(BRepGraphCheck_AnalyzerTest, MissingPCurve_DetectsNoCurveOnSurface)
   bool aHasNoCurveOnSurface = false;
   for (int anEdgeIter = 0; anEdgeIter < aDefs.NbEdges(); ++anEdgeIter)
   {
-    if (BRepGraph_Tool::Degenerated(aGraph, anEdgeIter))
+    if (BRepGraph_Tool::Edge::Degenerated(aGraph, anEdgeIter))
       continue;
 
     // Check if this edge has a PCurve on face 0.
     const BRepGraphInc::CoEdgeEntity* aPCEntry =
-      BRepGraph_Tool::FindPCurve(aGraph, anEdgeIter, 0);
+      BRepGraph_Tool::Edge::FindPCurve(aGraph, anEdgeIter, 0);
     if (aPCEntry != nullptr)
       continue; // This edge has a PCurve on face 0, skip it.
 

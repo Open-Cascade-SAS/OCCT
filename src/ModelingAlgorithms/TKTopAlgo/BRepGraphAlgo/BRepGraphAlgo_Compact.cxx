@@ -266,7 +266,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
     const BRepGraph_NodeId aNewEnd   = remapId(anOldEdge.EndVertexDefId());
 
     // Get the curve handle if available.
-    const occ::handle<Geom_Curve>& aCurve = BRepGraph_Tool::Curve(theGraph, anIdx);
+    const occ::handle<Geom_Curve>& aCurve = BRepGraph_Tool::Edge::Curve(theGraph, anIdx);
 
     BRepGraph_NodeId aNewEdgeId = aNewGraph.Builder().AddEdgeDef(aNewStart,
                                                                  aNewEnd,
@@ -311,7 +311,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
       continue;
     const BRepGraph_TopoNode::FaceDef& anOldFace = theGraph.Defs().Face(anIdx);
 
-    const occ::handle<Geom_Surface>& aSurf = BRepGraph_Tool::Surface(theGraph, anIdx);
+    const occ::handle<Geom_Surface>& aSurf = BRepGraph_Tool::Face::Surface(theGraph, anIdx);
 
     // Find outer wire from incidence refs.
     BRepGraph_NodeId                     aNewOuterWire;
@@ -365,7 +365,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
         continue;
 
       const occ::handle<Geom2d_Curve>& aCompactPCurve =
-        BRepGraph_Tool::PCurve(theGraph, aCoEdgeIdxs->Value(aCEIter));
+        BRepGraph_Tool::CoEdge::PCurve(theGraph, aCoEdgeIdxs->Value(aCEIter));
       aNewGraph.Mut().AddPCurveToEdge(BRepGraph_NodeId::Edge(aNewEdgeIdx),
                                       aNewFaceId,
                                       aCompactPCurve,

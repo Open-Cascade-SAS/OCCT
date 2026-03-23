@@ -39,7 +39,7 @@ bool isSmallEdge(const BRepGraph&  theGraph,
                  const occ::handle<Geom_Curve>& theCurve3d,
                  double                         theMinTol)
 {
-  if (BRepGraph_Tool::Degenerated(theGraph, theEdgeIdx))
+  if (BRepGraph_Tool::Edge::Degenerated(theGraph, theEdgeIdx))
   {
     return true;
   }
@@ -48,7 +48,7 @@ bool isSmallEdge(const BRepGraph&  theGraph,
     return true;
   }
 
-  const auto [aFirst, aLast] = BRepGraph_Tool::Range(theGraph, theEdgeIdx);
+  const auto [aFirst, aLast] = BRepGraph_Tool::Edge::Range(theGraph, theEdgeIdx);
   const double aDelta = (aLast - aFirst) / (THE_COMPACTNESS_SAMPLES - 1);
 
   // Compute midpoint of start/end.
@@ -124,7 +124,7 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(
         const BRepGraph_TopoNode::EdgeDef& anEdge    = aDefs.Edge(anEdgeIdx);
         ++aNbEdges;
 
-        if (BRepGraph_Tool::Degenerated(theGraph, anEdgeIdx))
+        if (BRepGraph_Tool::Edge::Degenerated(theGraph, anEdgeIdx))
         {
           ++aNbSmall;
           continue;
@@ -137,7 +137,7 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(
         }
 
         const occ::handle<Geom_Curve>& aEdgeCurve3d =
-          BRepGraph_Tool::Curve(theGraph, anEdgeIdx);
+          BRepGraph_Tool::Edge::Curve(theGraph, anEdgeIdx);
         if (isSmallEdge(theGraph, anEdgeIdx, aEdgeCurve3d, aMinTol))
         {
           aSmallEdgeSet.Add(anEdgeIdx);
@@ -170,8 +170,8 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(
             if (aResolvedStart != aResolvedEnd)
             {
               // Keep vertex with smaller tolerance as target.
-              const double aTolStart = BRepGraph_Tool::Tolerance(theGraph, aResolvedStart);
-              const double aTolEnd   = BRepGraph_Tool::Tolerance(theGraph, aResolvedEnd);
+              const double aTolStart = BRepGraph_Tool::Vertex::Tolerance(theGraph, aResolvedStart);
+              const double aTolEnd   = BRepGraph_Tool::Vertex::Tolerance(theGraph, aResolvedEnd);
               const int    aKeep     = (aTolStart <= aTolEnd) ? aResolvedStart : aResolvedEnd;
               const int    aRemove   = (aKeep == aResolvedStart) ? aResolvedEnd : aResolvedStart;
               aVertexMerge.Bind(aRemove, aKeep);
@@ -220,11 +220,11 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(
     const NCollection_Vector<int>& aSources   = aGrpIt.Value();
 
     // Collect all vertices in the group (target + sources).
-    gp_XYZ aCoordSum = BRepGraph_Tool::Pnt(theGraph, aTargetIdx).XYZ();
+    gp_XYZ aCoordSum = BRepGraph_Tool::Vertex::Pnt(theGraph, aTargetIdx).XYZ();
     int    aNbPoints  = 1;
     for (int aSrcIter = 0; aSrcIter < aSources.Length(); ++aSrcIter)
     {
-      aCoordSum += BRepGraph_Tool::Pnt(theGraph, aSources.Value(aSrcIter)).XYZ();
+      aCoordSum += BRepGraph_Tool::Vertex::Pnt(theGraph, aSources.Value(aSrcIter)).XYZ();
       ++aNbPoints;
     }
 
@@ -233,8 +233,8 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(
     // Compute tolerance = max(distance_to_centroid + original_tolerance).
     double aMaxTol = 0.0;
     {
-      const double aDist = aCentroid.Distance(BRepGraph_Tool::Pnt(theGraph, aTargetIdx));
-      const double aCombined = aDist + BRepGraph_Tool::Tolerance(theGraph, aTargetIdx);
+      const double aDist = aCentroid.Distance(BRepGraph_Tool::Vertex::Pnt(theGraph, aTargetIdx));
+      const double aCombined = aDist + BRepGraph_Tool::Vertex::Tolerance(theGraph, aTargetIdx);
       if (aCombined > aMaxTol)
       {
         aMaxTol = aCombined;
@@ -243,8 +243,8 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(
     for (int aSrcIter = 0; aSrcIter < aSources.Length(); ++aSrcIter)
     {
       const int    aSrcIdx   = aSources.Value(aSrcIter);
-      const double aDist     = aCentroid.Distance(BRepGraph_Tool::Pnt(theGraph, aSrcIdx));
-      const double aCombined = aDist + BRepGraph_Tool::Tolerance(theGraph, aSrcIdx);
+      const double aDist     = aCentroid.Distance(BRepGraph_Tool::Vertex::Pnt(theGraph, aSrcIdx));
+      const double aCombined = aDist + BRepGraph_Tool::Vertex::Tolerance(theGraph, aSrcIdx);
       if (aCombined > aMaxTol)
       {
         aMaxTol = aCombined;

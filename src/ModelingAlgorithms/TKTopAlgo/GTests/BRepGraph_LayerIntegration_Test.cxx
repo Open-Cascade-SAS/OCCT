@@ -399,9 +399,9 @@ TEST(BRepGraph_LayerIntegrationTest, SplitEdge_OriginalEdgeRemoved)
   aLayer->SetNodeName(aSplitEdgeId, "OriginalEdge");
 
   // Create a split vertex.
-  const auto [aEdgeFirst, aEdgeLast] = BRepGraph_Tool::Range(aGraph, aSplitEdgeIdx);
+  const auto [aEdgeFirst, aEdgeLast] = BRepGraph_Tool::Edge::Range(aGraph, aSplitEdgeIdx);
   const double aMidParam = 0.5 * (aEdgeFirst + aEdgeLast);
-  const gp_Pnt aMidPnt = BRepGraph_Tool::Curve(aGraph, aSplitEdgeIdx)->EvalD0(aMidParam);
+  const gp_Pnt aMidPnt = BRepGraph_Tool::Edge::Curve(aGraph, aSplitEdgeIdx)->EvalD0(aMidParam);
   const BRepGraph_NodeId aSplitVtx = aGraph.Builder().AddVertexDef(aMidPnt, Precision::Confusion());
 
   // Split the edge.

@@ -420,7 +420,7 @@ void checkGeometryReferences(const BRepGraph&                                   
     if (anEdge.IsRemoved)
       continue;
 
-    if (!BRepGraph_Tool::Degenerated(theGraph, anEdgeIdx) && !BRepGraph_Tool::HasCurve(theGraph, anEdgeIdx))
+    if (!BRepGraph_Tool::Edge::Degenerated(theGraph, anEdgeIdx) && !BRepGraph_Tool::Edge::HasCurve(theGraph, anEdgeIdx))
     {
       theIssues.Append(Issue{Severity::Error,
                              anEdge.Id,
@@ -471,7 +471,7 @@ void checkGeometryReferences(const BRepGraph&                                   
     if (aCoEdge.IsRemoved)
       continue;
 
-    if (aCoEdge.FaceDefId.IsValid() && !BRepGraph_Tool::HasPCurve(theGraph, aCoEdgeIdx))
+    if (aCoEdge.FaceDefId.IsValid() && !BRepGraph_Tool::CoEdge::HasPCurve(theGraph, aCoEdgeIdx))
     {
       theIssues.Append(Issue{Severity::Error,
                              aCoEdge.Id,

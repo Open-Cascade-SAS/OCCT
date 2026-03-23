@@ -144,7 +144,7 @@ void BRepGraphCheck::CheckShellClosed(
         const int anEdgeIdx = aCoEdgeDef.EdgeIdx;
 
         // Skip degenerate edges.
-        if (BRepGraph_Tool::Degenerated(theGraph, anEdgeIdx))
+        if (BRepGraph_Tool::Edge::Degenerated(theGraph, anEdgeIdx))
           continue;
 
         if (!anEdgeFaceCounts.IsBound(anEdgeIdx))
@@ -258,7 +258,7 @@ void BRepGraphCheck::CheckShellOrientation(
       continue;
 
     // Skip degenerate edges.
-    if (BRepGraph_Tool::Degenerated(theGraph, anIter.Key()))
+    if (BRepGraph_Tool::Edge::Degenerated(theGraph, anIter.Key()))
       continue;
 
     const TopAbs_Orientation anOri0 = aEntries.Value(0).OrientationInWire;

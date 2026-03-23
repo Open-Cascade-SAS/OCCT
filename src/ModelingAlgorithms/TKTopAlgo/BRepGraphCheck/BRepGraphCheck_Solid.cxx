@@ -103,12 +103,12 @@ void BRepGraphCheck::CheckSolidMinimum(
     // Get a point from the first face of the inner shell.
     const BRepGraphInc::FaceRef& aFR = aShellDef.FaceRefs.Value(0);
 
-    if (!BRepGraph_Tool::HasSurface(theGraph, aFR.FaceIdx))
+    if (!BRepGraph_Tool::Face::HasSurface(theGraph, aFR.FaceIdx))
       continue;
 
     // Use the surface midpoint as representative.
     const GeomAdaptor_TransformedSurface aSurfAdaptor =
-      BRepGraph_Tool::SurfaceAdaptor(theGraph, aFR.FaceIdx);
+      BRepGraph_Tool::Face::SurfaceAdaptor(theGraph, aFR.FaceIdx);
     double aUMin = aSurfAdaptor.FirstUParameter();
     double aUMax = aSurfAdaptor.LastUParameter();
     double aVMin = aSurfAdaptor.FirstVParameter();

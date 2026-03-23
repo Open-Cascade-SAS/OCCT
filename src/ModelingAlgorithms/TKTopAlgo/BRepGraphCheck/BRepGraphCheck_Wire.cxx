@@ -250,7 +250,7 @@ void BRepGraphCheck::CheckWireOnFace(
       aHasSeamEdge = true;
   }
   if (aWireDef.IsClosed && aNbEdges > 1
-      && BRepGraph_Tool::HasSurface(theGraph, theFaceDefIdx) && !aHasSeamEdge)
+      && BRepGraph_Tool::Face::HasSurface(theGraph, theFaceDefIdx) && !aHasSeamEdge)
   {
     auto edgeLookup = [&aDefs](int theIdx) -> const BRepGraphInc::EdgeEntity& {
       return aDefs.Edge(theIdx);
@@ -269,10 +269,10 @@ void BRepGraphCheck::CheckWireOnFace(
 
     // Get PCurves for first and last edges (orientation-specific for seam edges).
     const BRepGraphInc::CoEdgeEntity* aFirstPC =
-      BRepGraph_Tool::FindPCurve(theGraph, aFirstCoEdge.EdgeIdx,
+      BRepGraph_Tool::Edge::FindPCurve(theGraph, aFirstCoEdge.EdgeIdx,
                                  theFaceDefIdx, aFirstCoEdge.Sense);
     const BRepGraphInc::CoEdgeEntity* aLastPC =
-      BRepGraph_Tool::FindPCurve(theGraph, aLastCoEdge.EdgeIdx,
+      BRepGraph_Tool::Edge::FindPCurve(theGraph, aLastCoEdge.EdgeIdx,
                                  theFaceDefIdx, aLastCoEdge.Sense);
 
     if (aFirstPC != nullptr && aLastPC != nullptr)
@@ -280,9 +280,9 @@ void BRepGraphCheck::CheckWireOnFace(
       if (aFirstPC->Curve2DRepIdx >= 0 && aLastPC->Curve2DRepIdx >= 0)
       {
         const occ::handle<Geom2d_Curve>& aFirstPCCurve =
-          BRepGraph_Tool::PCurve(theGraph, *aFirstPC);
+          BRepGraph_Tool::CoEdge::PCurve(theGraph, *aFirstPC);
         const occ::handle<Geom2d_Curve>& aLastPCCurve =
-          BRepGraph_Tool::PCurve(theGraph, *aLastPC);
+          BRepGraph_Tool::CoEdge::PCurve(theGraph, *aLastPC);
         // Evaluate UV at wire-start of first edge and wire-end of last edge.
         const double aFirstParam = (aFirstCoEdge.Sense == TopAbs_FORWARD)
                                      ? aFirstPC->ParamFirst
@@ -298,7 +298,7 @@ void BRepGraphCheck::CheckWireOnFace(
         {
           const double aTol3d = Precision::Confusion();
           const GeomAdaptor_TransformedSurface aSurfAdaptor =
-            BRepGraph_Tool::SurfaceAdaptor(theGraph, theFaceDefIdx);
+            BRepGraph_Tool::Face::SurfaceAdaptor(theGraph, theFaceDefIdx);
           const double aUTol = aSurfAdaptor.UResolution(aTol3d);
           const double aVTol = aSurfAdaptor.VResolution(aTol3d);
 
@@ -333,7 +333,7 @@ void BRepGraphCheck::CheckWireOnFace(
     }
   }
 
-  if (!BRepGraph_Tool::HasSurface(theGraph, theFaceDefIdx))
+  if (!BRepGraph_Tool::Face::HasSurface(theGraph, theFaceDefIdx))
     return;
 
   // Collect PCurve adaptors and bounding boxes for each edge in the wire.
@@ -354,14 +354,14 @@ void BRepGraphCheck::CheckWireOnFace(
     const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(aCoEdgeDef.EdgeIdx);
 
     // Skip degenerate edges.
-    if (BRepGraph_Tool::Degenerated(theGraph, aCoEdgeDef.EdgeIdx))
+    if (BRepGraph_Tool::Edge::Degenerated(theGraph, aCoEdgeDef.EdgeIdx))
     {
       aPCurveData.Append(EdgePCurveData());
       continue;
     }
 
     const BRepGraphInc::CoEdgeEntity* aPCurve =
-      BRepGraph_Tool::FindPCurve(theGraph, aCoEdgeDef.EdgeIdx, theFaceDefIdx);
+      BRepGraph_Tool::Edge::FindPCurve(theGraph, aCoEdgeDef.EdgeIdx, theFaceDefIdx);
     if (aPCurve == nullptr)
     {
       aPCurveData.Append(EdgePCurveData());
@@ -375,7 +375,7 @@ void BRepGraphCheck::CheckWireOnFace(
     }
 
     const occ::handle<Geom2d_Curve>& aWirePC2d =
-      BRepGraph_Tool::PCurve(theGraph, *aPCurve);
+      BRepGraph_Tool::CoEdge::PCurve(theGraph, *aPCurve);
     if (aWirePC2d.IsNull())
     {
       aPCurveData.Append(EdgePCurveData());

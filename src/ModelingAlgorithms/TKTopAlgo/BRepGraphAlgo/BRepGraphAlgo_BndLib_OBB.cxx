@@ -101,11 +101,11 @@ static int pointsForOBB(const BRepGraph&            theGraph,
   {
     if (thePts != nullptr)
     {
-      (*thePts)(aRetVal) = BRepGraph_Tool::Pnt(theGraph, i);
+      (*thePts)(aRetVal) = BRepGraph_Tool::Vertex::Pnt(theGraph, i);
     }
     if (theArrOfToler != nullptr)
     {
-      (*theArrOfToler)(aRetVal) = BRepGraph_Tool::Tolerance(theGraph, i);
+      (*theArrOfToler)(aRetVal) = BRepGraph_Tool::Vertex::Tolerance(theGraph, i);
     }
     ++aRetVal;
   }
@@ -119,12 +119,12 @@ static int pointsForOBB(const BRepGraph&            theGraph,
   const int aNbFaces = theGraph.Defs().NbFaces();
   for (int aFaceIdx = 0; aFaceIdx < aNbFaces; ++aFaceIdx)
   {
-    if (!BRepGraph_Tool::HasSurface(theGraph, aFaceIdx))
+    if (!BRepGraph_Tool::Face::HasSurface(theGraph, aFaceIdx))
     {
       continue;
     }
 
-    const GeomAdaptor_TransformedSurface aGAS = BRepGraph_Tool::SurfaceAdaptor(theGraph, aFaceIdx);
+    const GeomAdaptor_TransformedSurface aGAS = BRepGraph_Tool::Face::SurfaceAdaptor(theGraph, aFaceIdx);
     if (!isPlanar(aGAS))
     {
       if (!theIsTriangulationUsed)
@@ -146,12 +146,12 @@ static int pointsForOBB(const BRepGraph&            theGraph,
           const BRepGraphInc::CoEdgeRef& aCR = aWireDef.CoEdgeRefs.Value(anIdx);
           const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Defs().CoEdge(aCR.CoEdgeIdx);
           const int anEdgeIdx = aCoEdge.EdgeIdx;
-          if (BRepGraph_Tool::Degenerated(theGraph, anEdgeIdx) || !BRepGraph_Tool::HasCurve(theGraph, anEdgeIdx))
+          if (BRepGraph_Tool::Edge::Degenerated(theGraph, anEdgeIdx) || !BRepGraph_Tool::Edge::HasCurve(theGraph, anEdgeIdx))
           {
             continue;
           }
           const GeomAdaptor_TransformedCurve aCurveAdaptor =
-            BRepGraph_Tool::CurveAdaptor(theGraph, anEdgeIdx);
+            BRepGraph_Tool::Edge::CurveAdaptor(theGraph, anEdgeIdx);
           if (!isLinear(aCurveAdaptor))
           {
             hasNonLinearEdge = true;
@@ -173,12 +173,12 @@ static int pointsForOBB(const BRepGraph&            theGraph,
     }
 
     // Use active triangulation of the face.
-    if (!BRepGraph_Tool::HasTriangulation(theGraph, aFaceIdx))
+    if (!BRepGraph_Tool::Face::HasTriangulation(theGraph, aFaceIdx))
     {
       return 0;
     }
     const occ::handle<Poly_Triangulation>& aTriangulation =
-      BRepGraph_Tool::Triangulation(theGraph, aFaceIdx);
+      BRepGraph_Tool::Face::Triangulation(theGraph, aFaceIdx);
     if (aTriangulation.IsNull())
     {
       return 0;
@@ -207,12 +207,12 @@ static int pointsForOBB(const BRepGraph&            theGraph,
     {
       continue; // Edge is in a face, already handled.
     }
-    if (BRepGraph_Tool::Degenerated(theGraph, i) || !BRepGraph_Tool::HasCurve(theGraph, i))
+    if (BRepGraph_Tool::Edge::Degenerated(theGraph, i) || !BRepGraph_Tool::Edge::HasCurve(theGraph, i))
     {
       continue;
     }
 
-    const GeomAdaptor_TransformedCurve aCurveAdaptor = BRepGraph_Tool::CurveAdaptor(theGraph, i);
+    const GeomAdaptor_TransformedCurve aCurveAdaptor = BRepGraph_Tool::Edge::CurveAdaptor(theGraph, i);
     if (isLinear(aCurveAdaptor))
     {
       // Skip linear edge — vertices already added.
@@ -240,7 +240,7 @@ static int pointsForOBB(const BRepGraph&            theGraph,
       }
       if (theArrOfToler != nullptr)
       {
-        (*theArrOfToler)(aRetVal) = BRepGraph_Tool::ToleranceEdge(theGraph, i);
+        (*theArrOfToler)(aRetVal) = BRepGraph_Tool::Edge::Tolerance(theGraph, i);
       }
       ++aRetVal;
     }
@@ -332,7 +332,7 @@ static void computeProperties(const BRepGraph& theGraph, GProp_GProps& theGCommo
   const int aNbVerts = theGraph.Defs().NbVertices();
   for (int i = 0; i < aNbVerts; ++i)
   {
-    GProp_GProps aG(BRepGraph_Tool::Pnt(theGraph, i));
+    GProp_GProps aG(BRepGraph_Tool::Vertex::Pnt(theGraph, i));
     theGCommon.Add(aG);
   }
 }
