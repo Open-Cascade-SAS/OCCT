@@ -98,14 +98,14 @@ flowchart TB
 - Analyzer suite: read-only diagnostics in `BRepGraph_Analyze`.
 - Mutator: write-path operations in `BRepGraph_Mutator`.
 - Command-like history capture: `ApplyModification()` + `BRepGraph_History` records operation lineage.
-- Flyweight-like sharing: surfaces/curves are deduplicated by handle identity registries.
+- Flyweight-like sharing: surfaces and curves are deduplicated by handle identity registries; PCurves are per-context (not shared).
 - View-object API: grouped zero-cost wrappers to keep the facade compact.
 
 ## Data Model
 
 ### Topology Identifiers
 
-- `BRepGraph_NodeId`: typed definition identifier (`Kind` + index).
+- `BRepGraph_NodeId`: typed definition identifier (`Kind` + index). Kinds cover 8 topology types (Solid..CompSolid) and 3 geometry types (Surface, Curve, PCurve).
 - `BRepGraph_UsageId`: typed usage identifier (`Kind` + index).
 - `BRepGraph_UID`: persistent identifier with generation counter (always assigned).
 
@@ -117,25 +117,26 @@ flowchart TB
 - Kind-specific definition fields:
   - `FaceDef`: `SurfNodeId`, `Tolerance`, `NaturalRestriction`.
   - `WireDef`: ordered edge entries + closure flag.
-  - `EdgeDef`: 3D curve link, pcurve entries, endpoints, param range, quality flags.
-  - `VertexDef`: point and tolerance.
+  - `EdgeDef`: 3D curve link, pcurve entries, endpoints, param range, quality flags, inline polygon data (Polygon3D, PolygonsOnSurf, PolygonsOnTri), regularities.
+  - `VertexDef`: point, tolerance, point representations on curves/surfaces.
 - Base usage fields: `UsageId`, `DefId`, local/global locations, orientation, parent usage.
 
 ### Geometry Nodes
 
-`BRepGraph_GeomNode.hxx` stores:
+`BRepGraph_GeomNode.hxx` stores 3 geometry node kinds:
 
-- `Surf`: `Geom_Surface` handle, optional triangulation, reverse users list, multi-location flag.
+- `Surf`: `Geom_Surface` handle, optional triangulations with active index, reverse users list, multi-location flag.
 - `Curve`: `Geom_Curve` handle, reverse users list, multi-location flag.
-- `PCurve`: contextual `Geom2d_Curve` with edge/face context and param range.
+- `PCurve`: contextual `Geom2d_Curve` with edge/face context, param range, and cached UV endpoints.
+
+Polygon discretization data (Polygon3D, PolygonOnSurface, PolygonOnTriangulation) is **not** stored as geometry graph nodes. Instead, it is stored inline as Handle fields directly on `EdgeDef` entries. This avoids the overhead of graph-node UIDs, back-references, and registration for what is essentially optional visualization data attached to edges.
 
 ### Internal Storage Layout
 
 `BRepGraph_Data` keeps separate vectors per kind:
 
-- definition vectors,
-- usage vectors,
-- geometry vectors,
+- 8 topology kind stores (definition + usage + UID vectors each),
+- 3 geometry kind stores (Surf, Curve, PCurve — node + UID vectors each),
 - dedup maps (`surface* -> idx`, `curve* -> idx`, `TShape* -> NodeId`),
 - optional UID maps (`NodeId <-> UID`),
 - edge-to-wire reverse index (`edgeDefIdx -> [wireDefIdx...]`),
@@ -160,16 +161,20 @@ flowchart TB
   collect face contexts]
   P2[Phase 2 parallel
   extract face geometry
-  wires edges vertices pcurves]
+  wires edges vertices pcurves polygons]
   P3[Phase 3 sequential
   register defs/usages
-  deduplicate entities]
+  deduplicate entities
+  store polygons inline on EdgeDef]
+  P3b[Phase 3b/3c sequential
+  vertex point representations
+  edge regularities]
   P4[Phase 4
   compute IsMultiLocated flags]
   O[Graph ready
   IsDone = true]
 
-  S --> P0 --> P1 --> P2 --> P3 --> P4 --> O
+  S --> P0 --> P1 --> P2 --> P3 --> P3b --> P4 --> O
 ```
 
 ### What Happens in Each Phase
@@ -189,15 +194,21 @@ flowchart TB
 - Extracts wires in oriented face context.
 - Extracts edge properties: curve, params, tolerance, degenerate/same flags.
 - Extracts vertices and pcurves.
-- For seam cases, tries to extract second reversed pcurve.
+- Extracts polygon data: Polygon3D, PolygonOnSurface, PolygonOnTriangulation.
+- For seam cases, tries to extract second reversed pcurve and reversed polygon entries.
 
 4. Phase 3 (sequential registration)
 - Deduplicates face/wire/edge/vertex definitions by `TopoDS_TShape*`.
 - Deduplicates geometry nodes by curve/surface handle pointer.
 - Always creates usages (even for reused defs).
+- Stores polygon data inline on `EdgeDef` entries (no separate graph nodes).
 - Builds edge-to-wire reverse index for adjacency and free-edge analysis.
 
-5. Phase 4
+5. Phase 3b/3c (sequential post-passes)
+- Extracts vertex point representations (PointOnCurve, PointOnSurface, PointOnPCurve).
+- Extracts edge regularities (BRep_CurveOn2Surfaces continuity entries).
+
+6. Phase 4
 - Sets `IsMultiLocated` on surfaces and curves when users have distinct global locations.
 
 ### Append Mode
@@ -222,15 +233,19 @@ This is useful for workflows like incremental sewing or face-level accumulation.
   - degenerate edge creation when needed,
   - 3D curve attachment if available,
   - parameter range and same flags restored,
-  - endpoint vertices attached.
+  - endpoint vertices attached,
+  - Polygon3D restored from inline `EdgeDef` fields,
+  - regularities restored when adjacent face shapes are available in cache.
 - Wire:
   - rebuild from ordered edge entries,
   - apply stored orientation-in-wire,
   - restore closure flag.
 - Face:
   - create on stored surface and location context,
+  - attach triangulations preserving active index,
   - rebuild outer and inner wires,
   - attach matching pcurve(s) for this face context,
+  - attach PolygonOnSurface and PolygonOnTriangulation from inline `EdgeDef` entries per face context,
   - support seam edge dual-pcurve update path,
   - restore `NaturalRestriction` and orientation.
 - Shell/Solid/Compound/CompSolid:
@@ -505,6 +520,7 @@ BRepGraphAlgo_AttrTransfer::Perform(aGraph);
 - Node ids are generation-local; rebuild clears storage and increments generation.
 - Deduplication is pointer-based (`TopoDS_TShape*`, `Geom_* handle.get()` identity).
 - Seam edges may hold two pcurves for one face context (orientation-sensitive).
+- Polygon data (Polygon3D, PolygonOnSurface, PolygonOnTriangulation) is stored inline on `EdgeDef`, not as separate geometry graph nodes. This means polygons have no UIDs, no back-references, and are not included in compact/deduplicate operations.
 - `Append()` intentionally flattens to face-level registration.
 - `IsRemoved` supports soft delete semantics; storage slots may still exist.
 - Relation-edge maps are not automatically a full mirror of topology links.
