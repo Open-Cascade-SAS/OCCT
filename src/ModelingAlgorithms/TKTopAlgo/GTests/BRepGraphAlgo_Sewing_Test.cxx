@@ -2188,7 +2188,7 @@ TEST(BRepGraphAlgo_SewingTest, NonManifoldMode_ThreeFacesShareEdge)
     EXPECT_EQ(aRes.NbSewnEdges, 1);
   }
 
-  // Non-manifold mode: 2 pairs sewn (keep-edge gets both).
+  // Non-manifold mode: 2 pairs sewn (vs 1 in manifold mode).
   {
     BRepGraphAlgo_Sewing::Options aOpts;
     aOpts.Tolerance       = 1.0e-4;
@@ -2200,5 +2200,26 @@ TEST(BRepGraphAlgo_SewingTest, NonManifoldMode_ThreeFacesShareEdge)
     BRepGraphAlgo_Sewing::Result aRes = BRepGraphAlgo_Sewing::Perform(aGraph, aOpts);
     ASSERT_TRUE(aRes.IsDone);
     EXPECT_EQ(aRes.NbSewnEdges, 2);
+    EXPECT_EQ(aRes.SewnEdgePairs.Length(), 2);
+
+    // Each keep-edge should have gained at least 1 extra PCurve from the merge.
+    // Verify PCurves reference valid, distinct faces with non-null 2D curves.
+    for (int i = 0; i < aRes.SewnEdgePairs.Length(); ++i)
+    {
+      const int aKeepIdx = aRes.SewnEdgePairs.Value(i).Index;
+      const BRepGraph_TopoNode::EdgeDef& aKeepEdge = aGraph.Defs().Edge(aKeepIdx);
+      EXPECT_GE(aKeepEdge.PCurves.Length(), 2);
+
+      NCollection_Map<int> aFaceIds;
+      for (int j = 0; j < aKeepEdge.PCurves.Length(); ++j)
+      {
+        const auto& aPCEntry = aKeepEdge.PCurves.Value(j);
+        EXPECT_FALSE(aPCEntry.Curve2d.IsNull());
+        EXPECT_TRUE(aPCEntry.FaceDefId.IsValid());
+        aFaceIds.Add(aPCEntry.FaceDefId.Index);
+      }
+      // PCurves should reference distinct faces (each merged from a different face).
+      EXPECT_GE(aFaceIds.Extent(), 2);
+    }
   }
 }

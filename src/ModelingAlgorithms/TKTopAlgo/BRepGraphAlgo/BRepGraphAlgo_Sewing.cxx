@@ -1224,6 +1224,44 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> matchFreeEdges
                   return theA.EdgeB.Index < theB.EdgeB.Index;
                 });
 
+      // In non-manifold mode, normalize pairs so the longest edge is EdgeA (keep-edge).
+      // This ensures the longest curve retains its geometry and accumulates PCurves.
+      // Uses actual arc length via GCPnts_AbscissaPoint for accuracy on curved edges.
+      if (theOptions.NonManifoldMode)
+      {
+        for (int anIdx = 0; anIdx < aNbScored; ++anIdx)
+        {
+          ScoredPair& aPair = aSortedPairs.ChangeValue(anIdx);
+          double aLenA = 0.0, aLenB = 0.0;
+          try
+          {
+            OCC_CATCH_SIGNALS
+            GeomAdaptor_TransformedCurve aCrvA = theGraph.Defs().CurveAdaptor(aPair.EdgeA);
+            aLenA = GCPnts_AbscissaPoint::Length(aCrvA);
+          }
+          catch (const Standard_Failure&)
+          {
+            aLenA = theGraph.Defs().Edge(aPair.EdgeA.Index).ParamLast
+                    - theGraph.Defs().Edge(aPair.EdgeA.Index).ParamFirst;
+          }
+          try
+          {
+            OCC_CATCH_SIGNALS
+            GeomAdaptor_TransformedCurve aCrvB = theGraph.Defs().CurveAdaptor(aPair.EdgeB);
+            aLenB = GCPnts_AbscissaPoint::Length(aCrvB);
+          }
+          catch (const Standard_Failure&)
+          {
+            aLenB = theGraph.Defs().Edge(aPair.EdgeB.Index).ParamLast
+                    - theGraph.Defs().Edge(aPair.EdgeB.Index).ParamFirst;
+          }
+          if (aLenB > aLenA)
+          {
+            std::swap(aPair.EdgeA, aPair.EdgeB);
+          }
+        }
+      }
+
       NCollection_Map<int> aConsumed;
       for (int anIdx = 0; anIdx < aNbScored; ++anIdx)
       {
