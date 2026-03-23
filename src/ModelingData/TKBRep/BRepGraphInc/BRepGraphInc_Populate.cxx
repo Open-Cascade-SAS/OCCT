@@ -23,6 +23,7 @@
 #include <BRep_TVertex.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepTools.hxx>
+#include <BRepTools_WireExplorer.hxx>
 #include <OSD_Parallel.hxx>
 #include <Poly_Polygon2D.hxx>
 #include <Poly_Polygon3D.hxx>
@@ -210,11 +211,9 @@ void extractFaceData(FaceLocalData& theData)
     aWireData.Shape   = aWire;
     aWireData.IsOuter = aWire.IsSame(anOuterWire);
 
-    for (TopoDS_Iterator anEdgeIt(aWire); anEdgeIt.More(); anEdgeIt.Next())
+    for (BRepTools_WireExplorer anEdgeExp(aWire, aForwardFace); anEdgeExp.More(); anEdgeExp.Next())
     {
-      if (anEdgeIt.Value().ShapeType() != TopAbs_EDGE)
-        continue;
-      const TopoDS_Edge& anEdge = TopoDS::Edge(anEdgeIt.Value());
+      const TopoDS_Edge& anEdge = anEdgeExp.Current();
 
       ExtractedEdge anEdgeData;
       anEdgeData.Shape             = anEdge;
@@ -417,6 +416,9 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
         theStorage.ChangeFace(aFaceIdx).WireRefs.Append(aWireRef);
       }
 
+      int aFirstVertexIdx = -1;
+      int aLastVertexIdx  = -1;
+
       for (int anEdgeIter = 0; anEdgeIter < aWireData.Edges.Length(); ++anEdgeIter)
       {
         const ExtractedEdge& anEdgeData = aWireData.Edges.Value(anEdgeIter);
@@ -505,67 +507,49 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
           theStorage.ChangeWire(aWireIdx).EdgeRefs.Append(anEdgeRef);
         }
 
-        // Skip if PCurves for this (edge, face) pair already stored.
-        // For seam edges, both forward and reversed PCurves are captured on
-        // first encounter; the second occurrence (opposite orientation) must
-        // not duplicate them, as that causes orientation-dependent swaps
-        // during reconstruction.
-        bool aHasPCurveForFace = false;
-        for (int aPCIdx = 0; aPCIdx < anEdgeMut.PCurves.Length(); ++aPCIdx)
+        // Inline PCurve: forward.
+        if (!anEdgeData.PCurve2d.IsNull())
         {
-          if (anEdgeMut.PCurves.Value(aPCIdx).FaceDefId.Index == aFaceIdx)
+          BRepGraphInc::EdgeEntity::PCurveEntry aPCEntry;
+          aPCEntry.Curve2d         = anEdgeData.PCurve2d;
+          aPCEntry.FaceDefId       = BRepGraph_NodeId::Face(aFaceIdx);
+          aPCEntry.ParamFirst      = anEdgeData.PCFirst;
+          aPCEntry.ParamLast       = anEdgeData.PCLast;
+          aPCEntry.Continuity      = anEdgeData.PCurveContinuity;
+          aPCEntry.UV1             = anEdgeData.PCUV1;
+          aPCEntry.UV2             = anEdgeData.PCUV2;
+          aPCEntry.EdgeOrientation = anEdgeData.OrientationInWire;
+          anEdgeMut.PCurves.Append(aPCEntry);
+
+          if (!anEdgeData.PolyOnSurf.IsNull())
           {
-            aHasPCurveForFace = true;
-            break;
+            BRepGraphInc::EdgeEntity::PolyOnSurfEntry aPolyEntry;
+            aPolyEntry.Polygon2D       = anEdgeData.PolyOnSurf;
+            aPolyEntry.FaceDefId       = BRepGraph_NodeId::Face(aFaceIdx);
+            aPolyEntry.EdgeOrientation = anEdgeData.OrientationInWire;
+            anEdgeMut.PolygonsOnSurf.Append(aPolyEntry);
           }
         }
 
-        if (!aHasPCurveForFace)
+        // Inline PCurve: reversed (seam).
+        if (!anEdgeData.PCurve2dReversed.IsNull())
         {
-          // Inline PCurve: forward.
-          if (!anEdgeData.PCurve2d.IsNull())
+          BRepGraphInc::EdgeEntity::PCurveEntry aPCEntry;
+          aPCEntry.Curve2d         = anEdgeData.PCurve2dReversed;
+          aPCEntry.FaceDefId       = BRepGraph_NodeId::Face(aFaceIdx);
+          aPCEntry.ParamFirst      = anEdgeData.PCFirstReversed;
+          aPCEntry.ParamLast       = anEdgeData.PCLastReversed;
+          aPCEntry.Continuity      = anEdgeData.PCurveContinuity;
+          aPCEntry.EdgeOrientation = TopAbs::Reverse(anEdgeData.OrientationInWire);
+          anEdgeMut.PCurves.Append(aPCEntry);
+
+          if (!anEdgeData.PolyOnSurfReversed.IsNull())
           {
-            BRepGraphInc::EdgeEntity::PCurveEntry aPCEntry;
-            aPCEntry.Curve2d         = anEdgeData.PCurve2d;
-            aPCEntry.FaceDefId       = BRepGraph_NodeId::Face(aFaceIdx);
-            aPCEntry.ParamFirst      = anEdgeData.PCFirst;
-            aPCEntry.ParamLast       = anEdgeData.PCLast;
-            aPCEntry.Continuity      = anEdgeData.PCurveContinuity;
-            aPCEntry.UV1             = anEdgeData.PCUV1;
-            aPCEntry.UV2             = anEdgeData.PCUV2;
-            aPCEntry.EdgeOrientation = anEdgeData.OrientationInWire;
-            anEdgeMut.PCurves.Append(aPCEntry);
-
-            if (!anEdgeData.PolyOnSurf.IsNull())
-            {
-              BRepGraphInc::EdgeEntity::PolyOnSurfEntry aPolyEntry;
-              aPolyEntry.Polygon2D       = anEdgeData.PolyOnSurf;
-              aPolyEntry.FaceDefId       = BRepGraph_NodeId::Face(aFaceIdx);
-              aPolyEntry.EdgeOrientation = anEdgeData.OrientationInWire;
-              anEdgeMut.PolygonsOnSurf.Append(aPolyEntry);
-            }
-          }
-
-          // Inline PCurve: reversed (seam).
-          if (!anEdgeData.PCurve2dReversed.IsNull())
-          {
-            BRepGraphInc::EdgeEntity::PCurveEntry aPCEntry;
-            aPCEntry.Curve2d         = anEdgeData.PCurve2dReversed;
-            aPCEntry.FaceDefId       = BRepGraph_NodeId::Face(aFaceIdx);
-            aPCEntry.ParamFirst      = anEdgeData.PCFirstReversed;
-            aPCEntry.ParamLast       = anEdgeData.PCLastReversed;
-            aPCEntry.Continuity      = anEdgeData.PCurveContinuity;
-            aPCEntry.EdgeOrientation = TopAbs::Reverse(anEdgeData.OrientationInWire);
-            anEdgeMut.PCurves.Append(aPCEntry);
-
-            if (!anEdgeData.PolyOnSurfReversed.IsNull())
-            {
-              BRepGraphInc::EdgeEntity::PolyOnSurfEntry aPolyEntry;
-              aPolyEntry.Polygon2D       = anEdgeData.PolyOnSurfReversed;
-              aPolyEntry.FaceDefId       = BRepGraph_NodeId::Face(aFaceIdx);
-              aPolyEntry.EdgeOrientation = TopAbs::Reverse(anEdgeData.OrientationInWire);
-              anEdgeMut.PolygonsOnSurf.Append(aPolyEntry);
-            }
+            BRepGraphInc::EdgeEntity::PolyOnSurfEntry aPolyEntry;
+            aPolyEntry.Polygon2D       = anEdgeData.PolyOnSurfReversed;
+            aPolyEntry.FaceDefId       = BRepGraph_NodeId::Face(aFaceIdx);
+            aPolyEntry.EdgeOrientation = TopAbs::Reverse(anEdgeData.OrientationInWire);
+            anEdgeMut.PolygonsOnSurf.Append(aPolyEntry);
           }
         }
 
@@ -574,83 +558,81 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
           anEdgeMut.Polygon3D = anEdgeData.Polygon3D;
 
         // Inline PolygonsOnTri: polygon-on-triangulation.
-        // Same face-dedup guard as PCurves above: skip if already stored.
-        bool aHasPolyOnTriForFace = false;
-        for (int aPTIdx = 0; aPTIdx < anEdgeMut.PolygonsOnTri.Length(); ++aPTIdx)
+        // If the representation location is non-identity, the triangulation nodes
+        // must be transformed. We create a copy of the triangulation with transformed
+        // nodes and append it to the face's triangulation list.
+        // Capture initial count: appended transformed copies must not be re-iterated.
+        const int aNbOrigTris = aFaceDef.Triangulations.Length();
+        for (int aTriIdx = 0; aTriIdx < aNbOrigTris; ++aTriIdx)
         {
-          if (anEdgeMut.PolygonsOnTri.Value(aPTIdx).FaceDefId.Index == aFaceIdx)
+          const occ::handle<Poly_Triangulation>& aTri = aFaceDef.Triangulations.Value(aTriIdx);
+          if (aTri.IsNull())
+            continue;
+
+          TopLoc_Location aPolyTriLoc;
+          occ::handle<Poly_PolygonOnTriangulation> aPolyOnTri =
+            BRep_Tool::PolygonOnTriangulation(anEdgeData.Shape, aTri, aPolyTriLoc);
+          if (aPolyOnTri.IsNull())
+            continue;
+
+          // Extract representation location by factoring out edge topological location.
+          int aEffTriIdx = aTriIdx;
+          if (!aPolyTriLoc.IsIdentity())
           {
-            aHasPolyOnTriForFace = true;
-            break;
+            const TopLoc_Location aRepLoc =
+              anEdgeData.Shape.Location().Inverted() * aPolyTriLoc;
+            if (!aRepLoc.IsIdentity())
+            {
+              // Create a transformed copy of the triangulation and append it.
+              occ::handle<Poly_Triangulation> aTriCopy = aTri->Copy();
+              const gp_Trsf& aTrsf = aRepLoc.Transformation();
+              for (int aNodeIdx = 1; aNodeIdx <= aTriCopy->NbNodes(); ++aNodeIdx)
+                aTriCopy->SetNode(aNodeIdx, aTriCopy->Node(aNodeIdx).Transformed(aTrsf));
+              aEffTriIdx = theStorage.ChangeFace(aFaceIdx).Triangulations.Length();
+              theStorage.ChangeFace(aFaceIdx).Triangulations.Append(aTriCopy);
+            }
+          }
+
+          BRepGraphInc::EdgeEntity::PolyOnTriEntry aPolyTriEntry;
+          aPolyTriEntry.Polygon            = aPolyOnTri;
+          aPolyTriEntry.FaceDefId          = BRepGraph_NodeId::Face(aFaceIdx);
+          aPolyTriEntry.TriangulationIndex = aEffTriIdx;
+          aPolyTriEntry.EdgeOrientation    = TopAbs_FORWARD;
+          anEdgeMut.PolygonsOnTri.Append(aPolyTriEntry);
+
+          // Check for seam polygon-on-triangulation.
+          TopoDS_Edge aRevEdge = TopoDS::Edge(anEdgeData.Shape.Reversed());
+          occ::handle<Poly_PolygonOnTriangulation> aPolyOnTriRev =
+            BRep_Tool::PolygonOnTriangulation(aRevEdge, aTri, aPolyTriLoc);
+          if (!aPolyOnTriRev.IsNull() && aPolyOnTriRev != aPolyOnTri)
+          {
+            BRepGraphInc::EdgeEntity::PolyOnTriEntry aPolyTriRevEntry;
+            aPolyTriRevEntry.Polygon            = aPolyOnTriRev;
+            aPolyTriRevEntry.FaceDefId          = BRepGraph_NodeId::Face(aFaceIdx);
+            aPolyTriRevEntry.TriangulationIndex = aEffTriIdx;
+            aPolyTriRevEntry.EdgeOrientation    = TopAbs_REVERSED;
+            anEdgeMut.PolygonsOnTri.Append(aPolyTriRevEntry);
           }
         }
 
-        if (!aHasPolyOnTriForFace)
+        // Track first/last vertex for closure check.
+        if (aIsNewWireDef)
         {
-          // If the representation location is non-identity, the triangulation nodes
-          // must be transformed. We create a copy of the triangulation with transformed
-          // nodes and append it to the face's triangulation list.
-          // Capture initial count: appended transformed copies must not be re-iterated.
-          const int aNbOrigTris = aFaceDef.Triangulations.Length();
-          for (int aTriIdx = 0; aTriIdx < aNbOrigTris; ++aTriIdx)
+          if (aFirstVertexIdx < 0)
           {
-            const occ::handle<Poly_Triangulation>& aTri = aFaceDef.Triangulations.Value(aTriIdx);
-            if (aTri.IsNull())
-              continue;
-
-            TopLoc_Location aPolyTriLoc;
-            occ::handle<Poly_PolygonOnTriangulation> aPolyOnTri =
-              BRep_Tool::PolygonOnTriangulation(anEdgeData.Shape, aTri, aPolyTriLoc);
-            if (aPolyOnTri.IsNull())
-              continue;
-
-            // Extract representation location by factoring out edge topological location.
-            int aEffTriIdx = aTriIdx;
-            if (!aPolyTriLoc.IsIdentity())
-            {
-              const TopLoc_Location aRepLoc =
-                anEdgeData.Shape.Location().Inverted() * aPolyTriLoc;
-              if (!aRepLoc.IsIdentity())
-              {
-                // Create a transformed copy of the triangulation and append it.
-                occ::handle<Poly_Triangulation> aTriCopy = aTri->Copy();
-                const gp_Trsf& aTrsf = aRepLoc.Transformation();
-                for (int aNodeIdx = 1; aNodeIdx <= aTriCopy->NbNodes(); ++aNodeIdx)
-                  aTriCopy->SetNode(aNodeIdx, aTriCopy->Node(aNodeIdx).Transformed(aTrsf));
-                aEffTriIdx = theStorage.ChangeFace(aFaceIdx).Triangulations.Length();
-                theStorage.ChangeFace(aFaceIdx).Triangulations.Append(aTriCopy);
-              }
-            }
-
-            BRepGraphInc::EdgeEntity::PolyOnTriEntry aPolyTriEntry;
-            aPolyTriEntry.Polygon            = aPolyOnTri;
-            aPolyTriEntry.FaceDefId          = BRepGraph_NodeId::Face(aFaceIdx);
-            aPolyTriEntry.TriangulationIndex = aEffTriIdx;
-            aPolyTriEntry.EdgeOrientation    = TopAbs_FORWARD;
-            anEdgeMut.PolygonsOnTri.Append(aPolyTriEntry);
-
-            // Check for seam polygon-on-triangulation.
-            TopoDS_Edge aRevEdge = TopoDS::Edge(anEdgeData.Shape.Reversed());
-            occ::handle<Poly_PolygonOnTriangulation> aPolyOnTriRev =
-              BRep_Tool::PolygonOnTriangulation(aRevEdge, aTri, aPolyTriLoc);
-            if (!aPolyOnTriRev.IsNull() && aPolyOnTriRev != aPolyOnTri)
-            {
-              BRepGraphInc::EdgeEntity::PolyOnTriEntry aPolyTriRevEntry;
-              aPolyTriRevEntry.Polygon            = aPolyOnTriRev;
-              aPolyTriRevEntry.FaceDefId          = BRepGraph_NodeId::Face(aFaceIdx);
-              aPolyTriRevEntry.TriangulationIndex = aEffTriIdx;
-              aPolyTriRevEntry.EdgeOrientation    = TopAbs_REVERSED;
-              anEdgeMut.PolygonsOnTri.Append(aPolyTriRevEntry);
-            }
+            aFirstVertexIdx = (anEdgeData.OrientationInWire == TopAbs_FORWARD)
+              ? anEdgeMut.StartVertexIdx : anEdgeMut.EndVertexIdx;
           }
+          aLastVertexIdx = (anEdgeData.OrientationInWire == TopAbs_FORWARD)
+            ? anEdgeMut.EndVertexIdx : anEdgeMut.StartVertexIdx;
         }
-
       }
 
-      // Set wire closure from the TopoDS wire flag.
+      // Set wire closure.
       if (aIsNewWireDef)
       {
-        theStorage.ChangeWire(aWireIdx).IsClosed = aWireData.Shape.Closed();
+        theStorage.ChangeWire(aWireIdx).IsClosed =
+          aFirstVertexIdx >= 0 && aLastVertexIdx >= 0 && aFirstVertexIdx == aLastVertexIdx;
       }
     }
 
