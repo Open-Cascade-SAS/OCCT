@@ -44,6 +44,8 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
   const double           aOrigParamLast        = anOrig.ParamLast;
   const BRepGraph_NodeId aOrigStartVertexDefId = anOrig.StartVertexDefId();
   const BRepGraph_NodeId aOrigEndVertexDefId   = anOrig.EndVertexDefId();
+  const BRepGraphInc::VertexRef aOrigStartVertexRef = anOrig.StartVertex;
+  const BRepGraphInc::VertexRef aOrigEndVertexRef   = anOrig.EndVertex;
   const bool             aOrigSameRange        = anOrig.SameRange;
 
   // Copy wire indices: ReverseIdx may be rebuilt below.
@@ -72,8 +74,9 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
     aSubA.SameParameter    = aOrigSameParameter;
     aSubA.SameRange        = false;
     aSubA.IsDegenerate     = false;
-    aSubA.StartVertexIdx = aOrigStartVertexDefId.IsValid() ? aOrigStartVertexDefId.Index : -1;
-    aSubA.EndVertexIdx   = theSplitVertex.IsValid() ? theSplitVertex.Index : -1;
+    aSubA.StartVertex = aOrigStartVertexRef;  // copy full ref with Location
+    aSubA.EndVertex.VertexIdx   = theSplitVertex.IsValid() ? theSplitVertex.Index : -1;
+    aSubA.EndVertex.Orientation = TopAbs_REVERSED;
     aSubA.ParamFirst       = aOrigParamFirst;
     aSubA.ParamLast        = theSplitParam;
   }
@@ -86,8 +89,9 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
     aSubB.SameParameter    = aOrigSameParameter;
     aSubB.SameRange        = false;
     aSubB.IsDegenerate     = false;
-    aSubB.StartVertexIdx = theSplitVertex.IsValid() ? theSplitVertex.Index : -1;
-    aSubB.EndVertexIdx   = aOrigEndVertexDefId.IsValid() ? aOrigEndVertexDefId.Index : -1;
+    aSubB.StartVertex.VertexIdx   = theSplitVertex.IsValid() ? theSplitVertex.Index : -1;
+    aSubB.StartVertex.Orientation = TopAbs_FORWARD;
+    aSubB.EndVertex = aOrigEndVertexRef;  // copy full ref with Location
     aSubB.ParamFirst       = theSplitParam;
     aSubB.ParamLast        = aOrigParamLast;
   }
@@ -247,14 +251,14 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
     const BRepGraphInc::EdgeEntity& aSubBEnt = theGraph.myData->myIncStorage.Edge(aSubBIdx);
     BRepGraphInc_ReverseIndex& aRevIdxMut = theGraph.myData->myIncStorage.ChangeReverseIndex();
 
-    if (aSubAEnt.StartVertexIdx >= 0)
-      aRevIdxMut.BindVertexToEdge(aSubAEnt.StartVertexIdx, aSubAIdx);
-    if (aSubAEnt.EndVertexIdx >= 0)
-      aRevIdxMut.BindVertexToEdge(aSubAEnt.EndVertexIdx, aSubAIdx);
-    if (aSubBEnt.StartVertexIdx >= 0)
-      aRevIdxMut.BindVertexToEdge(aSubBEnt.StartVertexIdx, aSubBIdx);
-    if (aSubBEnt.EndVertexIdx >= 0)
-      aRevIdxMut.BindVertexToEdge(aSubBEnt.EndVertexIdx, aSubBIdx);
+    if (aSubAEnt.StartVertex.VertexIdx >= 0)
+      aRevIdxMut.BindVertexToEdge(aSubAEnt.StartVertex.VertexIdx, aSubAIdx);
+    if (aSubAEnt.EndVertex.VertexIdx >= 0)
+      aRevIdxMut.BindVertexToEdge(aSubAEnt.EndVertex.VertexIdx, aSubAIdx);
+    if (aSubBEnt.StartVertex.VertexIdx >= 0)
+      aRevIdxMut.BindVertexToEdge(aSubBEnt.StartVertex.VertexIdx, aSubBIdx);
+    if (aSubBEnt.EndVertex.VertexIdx >= 0)
+      aRevIdxMut.BindVertexToEdge(aSubBEnt.EndVertex.VertexIdx, aSubBIdx);
 
     // Remove old edge from vertex-to-edge index.
     if (aOrigStartVertexDefId.IsValid())

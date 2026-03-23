@@ -151,8 +151,8 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(
             BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, anEdgeIdx));
 
           // Merge start/end vertices if they differ.
-          const int aStartIdx = anEdge.StartVertexIdx;
-          const int aEndIdx   = anEdge.EndVertexIdx;
+          const int aStartIdx = anEdge.StartVertex.VertexIdx;
+          const int aEndIdx   = anEdge.EndVertex.VertexIdx;
           if (aStartIdx >= 0 && aEndIdx >= 0 && aStartIdx != aEndIdx)
           {
             // Resolve existing merges.
@@ -276,8 +276,8 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(
     {
       const BRepGraph_TopoNode::EdgeDef& anEdge = aDefs.Edge(anEdgeIdx);
       bool                               aNeedUpdate = false;
-      int                                aNewStart = anEdge.StartVertexIdx;
-      int                                aNewEnd   = anEdge.EndVertexIdx;
+      int                                aNewStart = anEdge.StartVertex.VertexIdx;
+      int                                aNewEnd   = anEdge.EndVertex.VertexIdx;
 
       if (aNewStart >= 0)
       {
@@ -301,8 +301,8 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(
       if (aNeedUpdate)
       {
         BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aMutEdge = theGraph.MutEdge(anEdgeIdx);
-        aMutEdge->StartVertexIdx                = aNewStart;
-        aMutEdge->EndVertexIdx                  = aNewEnd;
+        aMutEdge->StartVertex.VertexIdx                = aNewStart;
+        aMutEdge->EndVertex.VertexIdx                  = aNewEnd;
       }
     }
   }

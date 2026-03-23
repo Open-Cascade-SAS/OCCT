@@ -49,8 +49,10 @@ BRepGraph_NodeId BRepGraph::BuilderView::AddEdgeDef(BRepGraph_NodeId          th
   BRepGraph_TopoNode::EdgeDef& anEdgeDef = myGraph->myData->myIncStorage.AppendEdge();
   const int                    aIdx      = myGraph->myData->myIncStorage.NbEdges() - 1;
   anEdgeDef.Id             = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, aIdx);
-  anEdgeDef.StartVertexIdx = theStartVtx.IsValid() ? theStartVtx.Index : -1;
-  anEdgeDef.EndVertexIdx   = theEndVtx.IsValid() ? theEndVtx.Index : -1;
+  anEdgeDef.StartVertex.VertexIdx   = theStartVtx.IsValid() ? theStartVtx.Index : -1;
+  anEdgeDef.StartVertex.Orientation = TopAbs_FORWARD;
+  anEdgeDef.EndVertex.VertexIdx     = theEndVtx.IsValid() ? theEndVtx.Index : -1;
+  anEdgeDef.EndVertex.Orientation   = TopAbs_REVERSED;
   anEdgeDef.ParamFirst       = theFirst;
   anEdgeDef.ParamLast        = theLast;
   anEdgeDef.Tolerance        = theTolerance;
@@ -495,10 +497,10 @@ void BRepGraph::BuilderView::RemoveSubgraph(BRepGraph_NodeId theNode)
       {
         const BRepGraphInc::EdgeEntity& anEdge =
           myGraph->myData->myIncStorage.Edge(theNode.Index);
-        if (anEdge.StartVertexIdx >= 0)
-          RemoveNode(BRepGraph_NodeId::Vertex(anEdge.StartVertexIdx));
-        if (anEdge.EndVertexIdx >= 0)
-          RemoveNode(BRepGraph_NodeId::Vertex(anEdge.EndVertexIdx));
+        if (anEdge.StartVertex.VertexIdx >= 0)
+          RemoveNode(BRepGraph_NodeId::Vertex(anEdge.StartVertex.VertexIdx));
+        if (anEdge.EndVertex.VertexIdx >= 0)
+          RemoveNode(BRepGraph_NodeId::Vertex(anEdge.EndVertex.VertexIdx));
       }
       break;
     }

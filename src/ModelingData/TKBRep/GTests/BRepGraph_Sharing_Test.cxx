@@ -186,7 +186,7 @@ TEST_F(BRepGraphSharingTest, NonClosedEdge_StartEnd_Different)
     if (aDef.IsDegenerate)
       continue;
     // Box edges are not closed, so start and end vertex defs must differ
-    EXPECT_NE(aDef.StartVertexIdx, aDef.EndVertexIdx)
+    EXPECT_NE(aDef.StartVertex.VertexIdx, aDef.EndVertex.VertexIdx)
       << "Non-degenerate edge def " << anIdx
       << " has identical start and end vertex def ids";
   }

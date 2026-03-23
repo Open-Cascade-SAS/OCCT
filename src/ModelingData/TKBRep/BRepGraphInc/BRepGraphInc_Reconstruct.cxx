@@ -85,19 +85,29 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage& theStora
       aBB.SameParameter(aNewEdge, anEdge.SameParameter);
       aBB.SameRange(aNewEdge, anEdge.SameRange);
 
-      if (anEdge.StartVertexIdx >= 0)
+      if (anEdge.StartVertex.VertexIdx >= 0)
       {
         TopoDS_Shape aStartVtx =
-          Node(theStorage, BRepGraph_NodeId::Vertex(anEdge.StartVertexIdx), theCache);
+          Node(theStorage, BRepGraph_NodeId::Vertex(anEdge.StartVertex.VertexIdx), theCache);
         if (!aStartVtx.IsNull())
-          aBB.Add(aNewEdge, aStartVtx.Oriented(TopAbs_FORWARD));
+        {
+          aStartVtx.Orientation(TopAbs_FORWARD);
+          if (!anEdge.StartVertex.LocalLocation.IsIdentity())
+            aStartVtx.Location(anEdge.StartVertex.LocalLocation);
+          aBB.Add(aNewEdge, aStartVtx);
+        }
       }
-      if (anEdge.EndVertexIdx >= 0)
+      if (anEdge.EndVertex.VertexIdx >= 0)
       {
         TopoDS_Shape anEndVtx =
-          Node(theStorage, BRepGraph_NodeId::Vertex(anEdge.EndVertexIdx), theCache);
+          Node(theStorage, BRepGraph_NodeId::Vertex(anEdge.EndVertex.VertexIdx), theCache);
         if (!anEndVtx.IsNull())
-          aBB.Add(aNewEdge, anEndVtx.Oriented(TopAbs_REVERSED));
+        {
+          anEndVtx.Orientation(TopAbs_REVERSED);
+          if (!anEdge.EndVertex.LocalLocation.IsIdentity())
+            anEndVtx.Location(anEdge.EndVertex.LocalLocation);
+          aBB.Add(aNewEdge, anEndVtx);
+        }
       }
       for (int i = 0; i < anEdge.InternalVertices.Length(); ++i)
       {
@@ -398,17 +408,27 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
       return aNewVtx;
     };
 
-    if (anEdge.StartVertexIdx >= 0)
+    if (anEdge.StartVertex.VertexIdx >= 0)
     {
-      TopoDS_Shape aStartVtx = getOrBuildVertex(anEdge.StartVertexIdx);
+      TopoDS_Shape aStartVtx = getOrBuildVertex(anEdge.StartVertex.VertexIdx);
       if (!aStartVtx.IsNull())
-        aBB.Add(aNewEdge, aStartVtx.Oriented(TopAbs_FORWARD));
+      {
+        aStartVtx.Orientation(TopAbs_FORWARD);
+        if (!anEdge.StartVertex.LocalLocation.IsIdentity())
+          aStartVtx.Location(anEdge.StartVertex.LocalLocation);
+        aBB.Add(aNewEdge, aStartVtx);
+      }
     }
-    if (anEdge.EndVertexIdx >= 0)
+    if (anEdge.EndVertex.VertexIdx >= 0)
     {
-      TopoDS_Shape anEndVtx = getOrBuildVertex(anEdge.EndVertexIdx);
+      TopoDS_Shape anEndVtx = getOrBuildVertex(anEdge.EndVertex.VertexIdx);
       if (!anEndVtx.IsNull())
-        aBB.Add(aNewEdge, anEndVtx.Oriented(TopAbs_REVERSED));
+      {
+        anEndVtx.Orientation(TopAbs_REVERSED);
+        if (!anEdge.EndVertex.LocalLocation.IsIdentity())
+          anEndVtx.Location(anEdge.EndVertex.LocalLocation);
+        aBB.Add(aNewEdge, anEndVtx);
+      }
     }
     for (int anIntIdx = 0; anIntIdx < anEdge.InternalVertices.Length(); ++anIntIdx)
     {
@@ -704,8 +724,8 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
                              TopoDS::Face(*aFaceCached), aVtx.Tolerance);
         }
       };
-      restoreVertexPointReps(anEdgeEnt.StartVertexIdx);
-      restoreVertexPointReps(anEdgeEnt.EndVertexIdx);
+      restoreVertexPointReps(anEdgeEnt.StartVertex.VertexIdx);
+      restoreVertexPointReps(anEdgeEnt.EndVertex.VertexIdx);
     }
   }
 

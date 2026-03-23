@@ -25,7 +25,9 @@
 namespace BRepGraphInc
 {
 
-//! Reference from an edge or face to a vertex with INTERNAL/EXTERNAL orientation.
+//! Reference to a vertex carrying Orientation and Location.
+//! Used for boundary vertices (FORWARD/REVERSED) on edges and
+//! direct INTERNAL/EXTERNAL vertex children on edges and faces.
 struct VertexRef
 {
   int                VertexIdx = -1;

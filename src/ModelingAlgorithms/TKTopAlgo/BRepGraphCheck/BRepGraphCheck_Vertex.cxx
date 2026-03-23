@@ -43,12 +43,12 @@ void BRepGraphCheck::CheckVertexOnEdge(
   // Determine parameter for this vertex on the curve.
   double aParam = 0.0;
   if (anEdgeDef.StartVertexDefId().IsValid()
-      && anEdgeDef.StartVertexIdx == theVertexDefIdx)
+      && anEdgeDef.StartVertex.VertexIdx == theVertexDefIdx)
   {
     aParam = anEdgeDef.ParamFirst;
   }
   else if (anEdgeDef.EndVertexDefId().IsValid()
-           && anEdgeDef.EndVertexIdx == theVertexDefIdx)
+           && anEdgeDef.EndVertex.VertexIdx == theVertexDefIdx)
   {
     aParam = anEdgeDef.ParamLast;
   }
@@ -100,13 +100,13 @@ void BRepGraphCheck::CheckVertexOnFace(
     double aParam = 0.0;
 
     if (anEdgeDef.StartVertexDefId().IsValid()
-        && anEdgeDef.StartVertexIdx == theVertexDefIdx)
+        && anEdgeDef.StartVertex.VertexIdx == theVertexDefIdx)
     {
       aIsEndpoint = true;
       aParam = anEdgeDef.ParamFirst;
     }
     else if (anEdgeDef.EndVertexDefId().IsValid()
-             && anEdgeDef.EndVertexIdx == theVertexDefIdx)
+             && anEdgeDef.EndVertex.VertexIdx == theVertexDefIdx)
     {
       aIsEndpoint = true;
       aParam = anEdgeDef.ParamLast;

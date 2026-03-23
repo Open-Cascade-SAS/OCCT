@@ -120,16 +120,16 @@ void BRepGraphCheck_Analyzer::Perform()
           const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aLocalDefs.Edge(anEdgeDefIdx);
           if (anEdgeDef.StartVertexDefId().IsValid())
           {
-            BRepGraphCheck::CheckVertexOnEdge(*myGraph, anEdgeDef.StartVertexIdx,
+            BRepGraphCheck::CheckVertexOnEdge(*myGraph, anEdgeDef.StartVertex.VertexIdx,
                                               anEdgeDefIdx, aLocal);
-            BRepGraphCheck::CheckVertexOnFace(*myGraph, anEdgeDef.StartVertexIdx,
+            BRepGraphCheck::CheckVertexOnFace(*myGraph, anEdgeDef.StartVertex.VertexIdx,
                                               theFaceIdx, aLocal);
           }
           if (anEdgeDef.EndVertexDefId().IsValid())
           {
-            BRepGraphCheck::CheckVertexOnEdge(*myGraph, anEdgeDef.EndVertexIdx,
+            BRepGraphCheck::CheckVertexOnEdge(*myGraph, anEdgeDef.EndVertex.VertexIdx,
                                               anEdgeDefIdx, aLocal);
-            BRepGraphCheck::CheckVertexOnFace(*myGraph, anEdgeDef.EndVertexIdx,
+            BRepGraphCheck::CheckVertexOnFace(*myGraph, anEdgeDef.EndVertex.VertexIdx,
                                               theFaceIdx, aLocal);
           }
         }
@@ -191,8 +191,8 @@ void BRepGraphCheck_Analyzer::CheckVertex(int theVertexDefIdx)
   for (int anEdgeIter = 0; anEdgeIter < aNbEdges; ++anEdgeIter)
   {
     const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(anEdgeIter);
-    if ((anEdgeDef.StartVertexDefId().IsValid() && anEdgeDef.StartVertexIdx == theVertexDefIdx)
-        || (anEdgeDef.EndVertexDefId().IsValid() && anEdgeDef.EndVertexIdx == theVertexDefIdx))
+    if ((anEdgeDef.StartVertexDefId().IsValid() && anEdgeDef.StartVertex.VertexIdx == theVertexDefIdx)
+        || (anEdgeDef.EndVertexDefId().IsValid() && anEdgeDef.EndVertex.VertexIdx == theVertexDefIdx))
     {
       BRepGraphCheck::CheckVertexOnEdge(*myGraph, theVertexDefIdx, anEdgeIter, aLocal);
     }

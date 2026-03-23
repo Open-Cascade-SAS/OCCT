@@ -253,9 +253,9 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
           if (anEdge->IsRemoved)
             continue;
           if (anEdge->StartVertexDefId() == anOldId)
-            anEdge->StartVertexIdx = aCanonId.Index;
+            anEdge->StartVertex.VertexIdx = aCanonId.Index;
           if (anEdge->EndVertexDefId() == anOldId)
-            anEdge->EndVertexIdx = aCanonId.Index;
+            anEdge->EndVertex.VertexIdx = aCanonId.Index;
         }
 
         // Mark non-canonical as removed.
@@ -321,8 +321,8 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
       // Use canonical (forward) key: use raw pointer as a stable identity.
       EdgeKey aKey;
       aKey.CurvePtr = BRepGraph_Tool::Edge::Curve(theGraph, anEdgeIdx).get();
-      aKey.StartVtx = anEdge.StartVertexIdx >= 0 ? anEdge.StartVertexIdx : -1;
-      aKey.EndVtx   = anEdge.EndVertexIdx >= 0 ? anEdge.EndVertexIdx : -1;
+      aKey.StartVtx = anEdge.StartVertex.VertexIdx >= 0 ? anEdge.StartVertex.VertexIdx : -1;
+      aKey.EndVtx   = anEdge.EndVertex.VertexIdx >= 0 ? anEdge.EndVertex.VertexIdx : -1;
 
       // Normalize: always use min vertex index first for undirected matching.
       if (aKey.StartVtx > aKey.EndVtx)

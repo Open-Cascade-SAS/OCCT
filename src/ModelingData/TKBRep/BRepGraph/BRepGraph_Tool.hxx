@@ -96,21 +96,13 @@ public:
     //! 3D curve parameter range as (first, last).
     Standard_EXPORT static std::pair<double, double> Range(const BRepGraph& theGraph, int theIdx);
 
-    //! Start vertex index (-1 if none).
-    Standard_EXPORT static int StartVertexIdx(const BRepGraph& theGraph, int theIdx);
+    //! Start vertex reference (carries Location and Orientation).
+    Standard_EXPORT static const BRepGraphInc::VertexRef& StartVertex(const BRepGraph& theGraph,
+                                                                      int              theEdgeIdx);
 
-    //! End vertex index (-1 if none).
-    Standard_EXPORT static int EndVertexIdx(const BRepGraph& theGraph, int theIdx);
-
-    //! Start vertex accounting for edge orientation in wire.
-    Standard_EXPORT static int OrientedStartVertex(const BRepGraph&   theGraph,
-                                                   int                theIdx,
-                                                   TopAbs_Orientation theOri);
-
-    //! End vertex accounting for edge orientation in wire.
-    Standard_EXPORT static int OrientedEndVertex(const BRepGraph&   theGraph,
-                                                 int                theIdx,
-                                                 TopAbs_Orientation theOri);
+    //! End vertex reference (carries Location and Orientation).
+    Standard_EXPORT static const BRepGraphInc::VertexRef& EndVertex(const BRepGraph& theGraph,
+                                                                    int              theEdgeIdx);
 
     // — 3D Curve —
 
@@ -248,8 +240,9 @@ public:
     //! Returns True if face has an active triangulation.
     Standard_EXPORT static bool HasTriangulation(const BRepGraph& theGraph, int theIdx);
 
-    //! Index of the outer wire, or -1.
-    Standard_EXPORT static int OuterWireIdx(const BRepGraph& theGraph, int theIdx);
+    //! Outer wire reference, or nullptr if none.
+    Standard_EXPORT static const BRepGraphInc::WireRef* OuterWire(const BRepGraph& theGraph,
+                                                                  int              theFaceIdx);
 
     //! Raw surface handle by face index (definition frame, no copy).
     Standard_EXPORT static const occ::handle<Geom_Surface>& Surface(const BRepGraph& theGraph,

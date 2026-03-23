@@ -416,15 +416,19 @@ int registerExtractedEdge(BRepGraphInc_Storage& theStorage,
     anEdgeEnt.Curve3DRepIdx = getOrCreateCurve3DRep(theStorage, theRepDedup, theEdgeData.Curve3d);
   }
 
-  // Vertex registration.
-  anEdgeEnt.StartVertexIdx = registerOrReuseVertex(theStorage,
-                                                   theEdgeData.StartVertex.Shape,
-                                                   theEdgeData.StartVertex.Point,
-                                                   theEdgeData.StartVertex.Tolerance);
-  anEdgeEnt.EndVertexIdx   = registerOrReuseVertex(theStorage,
-                                                 theEdgeData.EndVertex.Shape,
-                                                 theEdgeData.EndVertex.Point,
-                                                 theEdgeData.EndVertex.Tolerance);
+  // Vertex registration (boundary vertices use VertexRef with Location).
+  anEdgeEnt.StartVertex.VertexIdx = registerOrReuseVertex(theStorage,
+                                                          theEdgeData.StartVertex.Shape,
+                                                          theEdgeData.StartVertex.Point,
+                                                          theEdgeData.StartVertex.Tolerance);
+  anEdgeEnt.StartVertex.Orientation   = TopAbs_FORWARD;
+  anEdgeEnt.StartVertex.LocalLocation = theEdgeData.StartVertex.Shape.Location();
+  anEdgeEnt.EndVertex.VertexIdx = registerOrReuseVertex(theStorage,
+                                                        theEdgeData.EndVertex.Shape,
+                                                        theEdgeData.EndVertex.Point,
+                                                        theEdgeData.EndVertex.Tolerance);
+  anEdgeEnt.EndVertex.Orientation   = TopAbs_REVERSED;
+  anEdgeEnt.EndVertex.LocalLocation = theEdgeData.EndVertex.Shape.Location();
 
   // Register internal/external vertices.
   for (int anIntIdx = 0; anIntIdx < theEdgeData.InternalVertices.Length(); ++anIntIdx)
@@ -481,7 +485,7 @@ void edgeVertices(const TopoDS_Edge&                           theEdge,
         // Preserve previous FORWARD vertex in internal list.
         ExtractedInternalVertex anIntVtx;
         anIntVtx.Shape       = theFirst;
-        anIntVtx.Point       = BRep_Tool::Pnt(theFirst);
+        anIntVtx.Point       = rawVertexPoint(theFirst);
         anIntVtx.Tolerance   = BRep_Tool::Tolerance(theFirst);
         anIntVtx.Orientation = TopAbs_FORWARD;
         theInternal.Append(anIntVtx);
@@ -495,7 +499,7 @@ void edgeVertices(const TopoDS_Edge&                           theEdge,
         // Preserve previous REVERSED vertex in internal list.
         ExtractedInternalVertex anIntVtx;
         anIntVtx.Shape       = theLast;
-        anIntVtx.Point       = BRep_Tool::Pnt(theLast);
+        anIntVtx.Point       = rawVertexPoint(theLast);
         anIntVtx.Tolerance   = BRep_Tool::Tolerance(theLast);
         anIntVtx.Orientation = TopAbs_REVERSED;
         theInternal.Append(anIntVtx);
@@ -506,7 +510,7 @@ void edgeVertices(const TopoDS_Edge&                           theEdge,
     {
       ExtractedInternalVertex anIntVtx;
       anIntVtx.Shape       = aVertex;
-      anIntVtx.Point       = BRep_Tool::Pnt(aVertex);
+      anIntVtx.Point       = rawVertexPoint(aVertex);
       anIntVtx.Tolerance   = BRep_Tool::Tolerance(aVertex);
       anIntVtx.Orientation = aVertex.Orientation();
       theInternal.Append(anIntVtx);
@@ -553,13 +557,13 @@ void extractEdgeInFace(ExtractedEdge&                    theEdgeData,
   if (!aVFirst.IsNull())
   {
     theEdgeData.StartVertex.Shape     = aVFirst;
-    theEdgeData.StartVertex.Point     = BRep_Tool::Pnt(aVFirst);
+    theEdgeData.StartVertex.Point     = rawVertexPoint(aVFirst);
     theEdgeData.StartVertex.Tolerance = BRep_Tool::Tolerance(aVFirst);
   }
   if (!aVLast.IsNull())
   {
     theEdgeData.EndVertex.Shape     = aVLast;
-    theEdgeData.EndVertex.Point     = BRep_Tool::Pnt(aVLast);
+    theEdgeData.EndVertex.Point     = rawVertexPoint(aVLast);
     theEdgeData.EndVertex.Tolerance = BRep_Tool::Tolerance(aVLast);
   }
 
@@ -1237,13 +1241,17 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&                       
         NCollection_Vector<ExtractedInternalVertex> anInternalVerts;
         edgeVertices(anEdge, aVFirst, aVLast, anInternalVerts);
 
-        // Register vertices (using definition-frame points from edgeVertices with cumLoc=false).
-        anEdgeEnt.StartVertexIdx =
+        // Register vertices (using definition-frame points; Location stored on VertexRef).
+        anEdgeEnt.StartVertex.VertexIdx =
           registerOrReuseVertex(theStorage, aVFirst,
-                                BRep_Tool::Pnt(aVFirst), BRep_Tool::Tolerance(aVFirst));
-        anEdgeEnt.EndVertexIdx =
+                                rawVertexPoint(aVFirst), BRep_Tool::Tolerance(aVFirst));
+        anEdgeEnt.StartVertex.Orientation   = TopAbs_FORWARD;
+        anEdgeEnt.StartVertex.LocalLocation = aVFirst.Location();
+        anEdgeEnt.EndVertex.VertexIdx =
           registerOrReuseVertex(theStorage, aVLast,
-                                BRep_Tool::Pnt(aVLast), BRep_Tool::Tolerance(aVLast));
+                                rawVertexPoint(aVLast), BRep_Tool::Tolerance(aVLast));
+        anEdgeEnt.EndVertex.Orientation   = TopAbs_REVERSED;
+        anEdgeEnt.EndVertex.LocalLocation = aVLast.Location();
 
         for (int anIntIdx = 0; anIntIdx < anInternalVerts.Length(); ++anIntIdx)
         {

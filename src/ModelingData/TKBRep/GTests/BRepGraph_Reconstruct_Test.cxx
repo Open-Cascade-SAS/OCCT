@@ -452,7 +452,7 @@ TEST(BRepGraphReconstructTest, AfterVertexMutation_ModifiedFlagAndPointChanged)
   const BRepGraphInc::CoEdgeRef& aFirstCR = aWireDef.CoEdgeRefs.First();
   const BRepGraph_TopoNode::CoEdgeDef& aFirstCoEdge = aGraph.Defs().CoEdge(aFirstCR.CoEdgeIdx);
   const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.Defs().Edge(aFirstCoEdge.EdgeIdx);
-  const int aVertIdx = anEdgeDef.StartVertexIdx;
+  const int aVertIdx = anEdgeDef.StartVertex.VertexIdx;
   ASSERT_GE(aVertIdx, 0);
 
   // Mutate: move vertex by 5 units in Z.

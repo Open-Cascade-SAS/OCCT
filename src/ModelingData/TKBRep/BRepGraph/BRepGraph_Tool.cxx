@@ -137,44 +137,18 @@ bool BRepGraph_Tool::Edge::HasPolygon3D(const BRepGraph& theGraph, int theEdgeId
 
 //=================================================================================================
 
-int BRepGraph_Tool::Edge::StartVertexIdx(const BRepGraph& theGraph, int theEdgeIdx)
+const BRepGraphInc::VertexRef& BRepGraph_Tool::Edge::StartVertex(const BRepGraph& theGraph,
+                                                                 int              theEdgeIdx)
 {
-  return theGraph.Defs().Edge(theEdgeIdx).StartVertexIdx;
+  return theGraph.Defs().Edge(theEdgeIdx).StartVertex;
 }
 
 //=================================================================================================
 
-int BRepGraph_Tool::Edge::EndVertexIdx(const BRepGraph& theGraph, int theEdgeIdx)
+const BRepGraphInc::VertexRef& BRepGraph_Tool::Edge::EndVertex(const BRepGraph& theGraph,
+                                                               int              theEdgeIdx)
 {
-  return theGraph.Defs().Edge(theEdgeIdx).EndVertexIdx;
-}
-
-//=================================================================================================
-
-int BRepGraph_Tool::Edge::OrientedStartVertex(const BRepGraph&   theGraph,
-                                              int                theEdgeIdx,
-                                              TopAbs_Orientation theOri)
-{
-  const BRepGraphInc::EdgeEntity& anEdge = theGraph.Defs().Edge(theEdgeIdx);
-  if (theOri == TopAbs_FORWARD)
-    return anEdge.StartVertexIdx;
-  if (theOri == TopAbs_REVERSED)
-    return anEdge.EndVertexIdx;
-  return -1;
-}
-
-//=================================================================================================
-
-int BRepGraph_Tool::Edge::OrientedEndVertex(const BRepGraph&   theGraph,
-                                            int                theEdgeIdx,
-                                            TopAbs_Orientation theOri)
-{
-  const BRepGraphInc::EdgeEntity& anEdge = theGraph.Defs().Edge(theEdgeIdx);
-  if (theOri == TopAbs_FORWARD)
-    return anEdge.EndVertexIdx;
-  if (theOri == TopAbs_REVERSED)
-    return anEdge.StartVertexIdx;
-  return -1;
+  return theGraph.Defs().Edge(theEdgeIdx).EndVertex;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -509,9 +483,16 @@ bool BRepGraph_Tool::Face::HasTriangulation(const BRepGraph& theGraph, int theFa
 
 //=================================================================================================
 
-int BRepGraph_Tool::Face::OuterWireIdx(const BRepGraph& theGraph, int theFaceIdx)
+const BRepGraphInc::WireRef* BRepGraph_Tool::Face::OuterWire(const BRepGraph& theGraph,
+                                                             int              theFaceIdx)
 {
-  return theGraph.Defs().Face(theFaceIdx).OuterWireIdx();
+  const BRepGraphInc::FaceEntity& aFace = theGraph.Defs().Face(theFaceIdx);
+  for (int i = 0; i < aFace.WireRefs.Length(); ++i)
+  {
+    if (aFace.WireRefs.Value(i).IsOuter)
+      return &aFace.WireRefs.Value(i);
+  }
+  return nullptr;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════

@@ -93,7 +93,7 @@ TEST(BRepGraphAlgo_ValidateTest, DetectsRemovedNodeReference)
     const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(anEdgeIdx);
     if (anEdge.StartVertexDefId().IsValid())
     {
-      aVtxToRemove = anEdge.StartVertexIdx;
+      aVtxToRemove = anEdge.StartVertex.VertexIdx;
       break;
     }
   }
@@ -146,7 +146,7 @@ TEST(BRepGraphAlgo_ValidateTest, WireConnectivity_DisconnectedEdges)
     if (BRepGraph_NodeId::Vertex(aVtxIdx) != anOrigEnd
         && BRepGraph_NodeId::Vertex(aVtxIdx) != aFirstEdge->StartVertexDefId())
     {
-      aFirstEdge->EndVertexIdx = aVtxIdx;
+      aFirstEdge->EndVertex.VertexIdx = aVtxIdx;
       break;
     }
   }

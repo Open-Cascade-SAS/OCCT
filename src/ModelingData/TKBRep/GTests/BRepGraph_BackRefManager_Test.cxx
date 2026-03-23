@@ -166,9 +166,9 @@ TEST(BRepGraphBackRefManagerTest, SplitEdge_CurveGetsSubEdgeRefs)
   // Create split vertex.
   const double aMidParam = 0.5 * (anOrigEdge.ParamFirst + anOrigEdge.ParamLast);
   const BRepGraph_TopoNode::VertexDef& aStartVtx =
-    aGraph.Defs().Vertex(anOrigEdge.StartVertexIdx);
+    aGraph.Defs().Vertex(anOrigEdge.StartVertex.VertexIdx);
   const BRepGraph_TopoNode::VertexDef& aEndVtx =
-    aGraph.Defs().Vertex(anOrigEdge.EndVertexIdx);
+    aGraph.Defs().Vertex(anOrigEdge.EndVertex.VertexIdx);
   gp_Pnt aMidPoint(0.5 * (aStartVtx.Point.X() + aEndVtx.Point.X()),
                     0.5 * (aStartVtx.Point.Y() + aEndVtx.Point.Y()),
                     0.5 * (aStartVtx.Point.Z() + aEndVtx.Point.Z()));

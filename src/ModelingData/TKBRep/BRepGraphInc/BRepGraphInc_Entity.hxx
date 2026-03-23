@@ -118,7 +118,7 @@ struct PolygonOnTriRep : public BaseRep
 //! Vertex entity: 3D point + tolerance.
 struct VertexEntity : public BaseEntity
 {
-  //! 3D point in global coordinates (from BRep_Tool::Pnt, which applies vertex location).
+  //! 3D point in definition frame (raw BRep_TVertex::Pnt, without vertex-in-edge Location).
   gp_Pnt Point;
 
   //! Tolerance from BRep_TVertex.
@@ -181,10 +181,11 @@ struct EdgeEntity : public BaseEntity
   //! True if the PCurve parameter range equals the 3D curve parameter range.
   bool SameRange     = false;
 
-  //! Index into VertexEntity vector (boundary vertices).
-  //! For closed edges, StartVertexIdx == EndVertexIdx.
-  int StartVertexIdx = -1;
-  int EndVertexIdx   = -1;
+  //! Boundary vertex references (carry Location for shared vertices).
+  //! For closed edges, StartVertex.VertexIdx == EndVertex.VertexIdx.
+  //! StartVertex.Orientation is always FORWARD, EndVertex.Orientation is always REVERSED.
+  VertexRef StartVertex;
+  VertexRef EndVertex;
 
   //! Additional vertices with INTERNAL or EXTERNAL orientation.
   //! Edges with only FORWARD/REVERSED boundary vertices leave this empty.
@@ -193,13 +194,13 @@ struct EdgeEntity : public BaseEntity
   //! Convenience: start vertex NodeId from index.
   BRepGraph_NodeId StartVertexDefId() const
   {
-    return StartVertexIdx >= 0 ? BRepGraph_NodeId::Vertex(StartVertexIdx) : BRepGraph_NodeId();
+    return StartVertex.VertexIdx >= 0 ? BRepGraph_NodeId::Vertex(StartVertex.VertexIdx) : BRepGraph_NodeId();
   }
 
   //! Convenience: end vertex NodeId from index.
   BRepGraph_NodeId EndVertexDefId() const
   {
-    return EndVertexIdx >= 0 ? BRepGraph_NodeId::Vertex(EndVertexIdx) : BRepGraph_NodeId();
+    return EndVertex.VertexIdx >= 0 ? BRepGraph_NodeId::Vertex(EndVertex.VertexIdx) : BRepGraph_NodeId();
   }
 
   //! Representation index into Storage::myPolygons3D (-1 if no polygon).

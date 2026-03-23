@@ -115,7 +115,7 @@ void BRepGraphCheck::CheckEdgeMinimum(
   // Vertex tolerances should not exceed edge tolerance unreasonably.
   if (anEdgeDef.StartVertexDefId().IsValid())
   {
-    const int aStartVtxIdx = anEdgeDef.StartVertexIdx;
+    const int aStartVtxIdx = anEdgeDef.StartVertex.VertexIdx;
     if (BRepGraph_Tool::Vertex::Tolerance(theGraph, aStartVtxIdx) < Precision::Confusion())
     {
       BRepGraphCheck_Issue anIssue;
@@ -127,7 +127,7 @@ void BRepGraphCheck::CheckEdgeMinimum(
   }
   if (anEdgeDef.EndVertexDefId().IsValid())
   {
-    const int anEndVtxIdx = anEdgeDef.EndVertexIdx;
+    const int anEndVtxIdx = anEdgeDef.EndVertex.VertexIdx;
     if (BRepGraph_Tool::Vertex::Tolerance(theGraph, anEndVtxIdx) < Precision::Confusion())
     {
       BRepGraphCheck_Issue anIssue;

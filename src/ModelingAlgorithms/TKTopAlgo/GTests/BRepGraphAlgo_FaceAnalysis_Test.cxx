@@ -180,5 +180,5 @@ TEST(BRepGraphAlgo_FaceAnalysisTest, VertexGluing_AveragedCoordinates)
   const int  anEdgeIdx = aResult.DegeneratedEdges.Value(0).Index;
   const auto& anEdge    = aGraph.Defs().Edge(anEdgeIdx);
   EXPECT_TRUE(anEdge.IsDegenerate);
-  EXPECT_EQ(anEdge.StartVertexIdx, anEdge.EndVertexIdx);
+  EXPECT_EQ(anEdge.StartVertex.VertexIdx, anEdge.EndVertex.VertexIdx);
 }

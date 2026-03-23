@@ -64,10 +64,10 @@ void BRepGraphInc_ReverseIndex::Build(
     const BRepGraphInc::EdgeEntity& anEdge = theEdges.Value(anEdgeIdx);
     if (anEdge.IsRemoved)
       continue;
-    if (anEdge.StartVertexIdx > aMaxVertexIdx)
-      aMaxVertexIdx = anEdge.StartVertexIdx;
-    if (anEdge.EndVertexIdx > aMaxVertexIdx)
-      aMaxVertexIdx = anEdge.EndVertexIdx;
+    if (anEdge.StartVertex.VertexIdx > aMaxVertexIdx)
+      aMaxVertexIdx = anEdge.StartVertex.VertexIdx;
+    if (anEdge.EndVertex.VertexIdx > aMaxVertexIdx)
+      aMaxVertexIdx = anEdge.EndVertex.VertexIdx;
   }
 
   // Pre-size all outer vectors to their known key range.
@@ -80,16 +80,16 @@ void BRepGraphInc_ReverseIndex::Build(
   preSize(myShellToSolids, theShells.Length(), myAllocator);
 
   // Vertex -> Edges: scan edge entities for start/end vertex indices.
-  // Closed edges have StartVertexIdx == EndVertexIdx, so skip duplicate.
+  // Closed edges have StartVertex.VertexIdx == EndVertex.VertexIdx, so skip duplicate.
   for (int anEdgeIdx = 0; anEdgeIdx < theEdges.Length(); ++anEdgeIdx)
   {
     const BRepGraphInc::EdgeEntity& anEdge = theEdges.Value(anEdgeIdx);
     if (anEdge.IsRemoved)
       continue;
-    if (anEdge.StartVertexIdx >= 0)
-      appendDirect(myVertexToEdges, anEdge.StartVertexIdx, anEdgeIdx);
-    if (anEdge.EndVertexIdx >= 0 && anEdge.EndVertexIdx != anEdge.StartVertexIdx)
-      appendDirect(myVertexToEdges, anEdge.EndVertexIdx, anEdgeIdx);
+    if (anEdge.StartVertex.VertexIdx >= 0)
+      appendDirect(myVertexToEdges, anEdge.StartVertex.VertexIdx, anEdgeIdx);
+    if (anEdge.EndVertex.VertexIdx >= 0 && anEdge.EndVertex.VertexIdx != anEdge.StartVertex.VertexIdx)
+      appendDirect(myVertexToEdges, anEdge.EndVertex.VertexIdx, anEdgeIdx);
   }
 
   // Edge -> Wires: scan wire entities for their coedge refs, resolve edge index.
@@ -233,10 +233,10 @@ void BRepGraphInc_ReverseIndex::BuildDelta(
     const BRepGraphInc::EdgeEntity& anEdge = theEdges.Value(anEdgeIdx);
     if (anEdge.IsRemoved)
       continue;
-    if (anEdge.StartVertexIdx > aMaxVertexIdx)
-      aMaxVertexIdx = anEdge.StartVertexIdx;
-    if (anEdge.EndVertexIdx > aMaxVertexIdx)
-      aMaxVertexIdx = anEdge.EndVertexIdx;
+    if (anEdge.StartVertex.VertexIdx > aMaxVertexIdx)
+      aMaxVertexIdx = anEdge.StartVertex.VertexIdx;
+    if (anEdge.EndVertex.VertexIdx > aMaxVertexIdx)
+      aMaxVertexIdx = anEdge.EndVertex.VertexIdx;
   }
 
   // Extend outer vectors if needed (pre-size for new key ranges).
@@ -268,10 +268,10 @@ void BRepGraphInc_ReverseIndex::BuildDelta(
     const BRepGraphInc::EdgeEntity& anEdge = theEdges.Value(anEdgeIdx);
     if (anEdge.IsRemoved)
       continue;
-    if (anEdge.StartVertexIdx >= 0)
-      appendUnique(myVertexToEdges, anEdge.StartVertexIdx, anEdgeIdx);
-    if (anEdge.EndVertexIdx >= 0 && anEdge.EndVertexIdx != anEdge.StartVertexIdx)
-      appendUnique(myVertexToEdges, anEdge.EndVertexIdx, anEdgeIdx);
+    if (anEdge.StartVertex.VertexIdx >= 0)
+      appendUnique(myVertexToEdges, anEdge.StartVertex.VertexIdx, anEdgeIdx);
+    if (anEdge.EndVertex.VertexIdx >= 0 && anEdge.EndVertex.VertexIdx != anEdge.StartVertex.VertexIdx)
+      appendUnique(myVertexToEdges, anEdge.EndVertex.VertexIdx, anEdgeIdx);
   }
 
   // Edge -> Wires: only new wires (new wires may reference old edges too).
@@ -605,14 +605,14 @@ bool BRepGraphInc_ReverseIndex::Validate(
     const BRepGraphInc::EdgeEntity& anEdge = theEdges.Value(anEdgeIdx);
     if (anEdge.IsRemoved)
       continue;
-    if (anEdge.StartVertexIdx >= 0)
+    if (anEdge.StartVertex.VertexIdx >= 0)
     {
-      if (!containsVal(myVertexToEdges, anEdge.StartVertexIdx, anEdgeIdx))
+      if (!containsVal(myVertexToEdges, anEdge.StartVertex.VertexIdx, anEdgeIdx))
         return false;
     }
-    if (anEdge.EndVertexIdx >= 0 && anEdge.EndVertexIdx != anEdge.StartVertexIdx)
+    if (anEdge.EndVertex.VertexIdx >= 0 && anEdge.EndVertex.VertexIdx != anEdge.StartVertex.VertexIdx)
     {
-      if (!containsVal(myVertexToEdges, anEdge.EndVertexIdx, anEdgeIdx))
+      if (!containsVal(myVertexToEdges, anEdge.EndVertex.VertexIdx, anEdgeIdx))
         return false;
     }
   }
