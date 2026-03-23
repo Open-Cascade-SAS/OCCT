@@ -19,18 +19,6 @@ set(OCCT_TKGeomBase_GTests_FILES
   GeomBndLib_SurfaceOfExtrusion_Test.cxx
   GeomBndLib_SurfaceOfRevolution_Test.cxx
   Extrema_ExtPC_Test.cxx
-  ExtremaPC_BezierCurve_Test.cxx
-  ExtremaPC_BSplineCurve_Test.cxx
-  ExtremaPC_Circle_Test.cxx
-  ExtremaPC_Comparison_Test.cxx
-  ExtremaPC_Curve_Test.cxx
-  ExtremaPC_Ellipse_Test.cxx
-  ExtremaPC_ExtendedGeometry_Test.cxx
-  ExtremaPC_Hyperbola_Test.cxx
-  ExtremaPC_Line_Test.cxx
-  ExtremaPC_OffsetCurve_Test.cxx
-  ExtremaPC_Parabola_Test.cxx
-  ExtremaPC_SearchMode_Test.cxx
   GC_MakeArcOfCircle_Test.cxx
   GC_MakeCircle2d_Test.cxx
   GC_MakeConicalSurface_Test.cxx
