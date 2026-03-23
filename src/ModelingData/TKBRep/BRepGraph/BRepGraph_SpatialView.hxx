@@ -30,7 +30,7 @@ public:
   Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> SameDomainFaces(
     BRepGraph_NodeId theFaceDef) const;
 
-  //! Return all face definition NodeIds that reference this edge (via their wires).
+  //! Return all face definition NodeIds that reference this edge (via PCurve associations).
   //! @param[in] theEdgeDef edge definition NodeId
   Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> FacesOfEdge(
     BRepGraph_NodeId theEdgeDef) const;

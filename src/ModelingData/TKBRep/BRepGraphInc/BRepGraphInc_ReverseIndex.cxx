@@ -212,9 +212,10 @@ void BRepGraphInc_ReverseIndex::preSize(IndexTable& theIdx, int theSize)
 
 void BRepGraphInc_ReverseIndex::appendUnique(IndexTable& theIdx, int theKey, int theVal)
 {
+  Standard_ASSERT_RETURN(theKey >= 0, "appendUnique: negative key", );
   // Grow if needed for incremental mutation after Build().
-  while (theIdx.Length() <= theKey)
-    theIdx.Appended();
+  if (theKey >= theIdx.Length())
+    theIdx.SetValue(theKey, NCollection_Vector<int>());
 
   NCollection_Vector<int>& aVec = theIdx.ChangeValue(theKey);
   for (int i = 0; i < aVec.Length(); ++i)
@@ -229,10 +230,11 @@ void BRepGraphInc_ReverseIndex::appendUnique(IndexTable& theIdx, int theKey, int
 
 void BRepGraphInc_ReverseIndex::appendDirect(IndexTable& theIdx, int theKey, int theVal)
 {
+  Standard_ASSERT_RETURN(theKey >= 0, "appendDirect: negative key", );
   // During Build(), outer vector is pre-sized so theKey < Length().
   // For safety, grow if somehow out of range.
-  while (theIdx.Length() <= theKey)
-    theIdx.Appended();
+  if (theKey >= theIdx.Length())
+    theIdx.SetValue(theKey, NCollection_Vector<int>());
 
   theIdx.ChangeValue(theKey).Append(theVal);
 }
