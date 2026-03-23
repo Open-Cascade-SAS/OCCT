@@ -4,250 +4,294 @@ BRepGraphInc is the incidence-table backend used by BRepGraph.
 
 It provides the runtime source of truth for topology entities, assembly entities, context references, reverse indices, reconstruction support, and identity mapping.
 
+BRepGraphInc is not a user-facing API. It is the runtime model that powers BRepGraph.
+
 ## What This Backend Owns
 
-- topology entity tables (Vertex, Edge, Wire, Face, Shell, Solid, Compound, CompSolid)
-- assembly entity tables (Product, Occurrence)
-- context references with orientation and location
-- reverse adjacency indices (including product->occurrences)
+- Topology entity tables (Vertex, Edge, CoEdge, Wire, Face, Shell, Solid, Compound, CompSolid)
+- Assembly entity tables (Product, Occurrence)
+- Representation entity tables (SurfaceRep, Curve3DRep, Curve2DRep, TriangulationRep, Polygon3DRep, Polygon2DRep, PolygonOnTriRep)
+- Context references with orientation and location
+- Reverse adjacency indices (including product→occurrences)
 - TShape to NodeId mapping
-- original shape map
-- per-kind UID vectors (10 kinds: 8 topology + 2 assembly)
+- Original shape map
+- Per-kind UID vectors (10 kinds: 8 topology + 2 assembly)
 
-## High-Level Architecture
+## Architecture
 
 ```mermaid
 flowchart TB
-	F[BRepGraph facade] --> S[BRepGraphInc_Storage]
+  A[Algorithms] --> G[BRepGraph facade]
+  G --> D[BRepGraph_Data]
+  D --> S[BRepGraphInc_Storage]
 
-	S --> E[Topology Entity Tables]
-	S --> A[Assembly Entity Tables]
-	S --> R[Reverse Index]
-	S --> M[TShape to NodeId]
-	S --> O[Original Shapes]
-	S --> U[UID Vectors]
+  S --> E[Topology Entity Tables]
+  S --> AS[Assembly Entity Tables]
+  S --> RX[Reverse Index]
+  S --> TM[TShape to NodeId]
+  S --> OR[Original Shapes]
+  S --> UID[UID Vectors]
 
-	P[BRepGraphInc_Populate] --> S
-	X[BRepGraphInc_Reconstruct] --> S
+  P[BRepGraphInc_Populate] --> S
+  X[BRepGraphInc_Reconstruct] --> S
 ```
 
 ## Entity and Ref Model
 
 ```mermaid
 flowchart LR
-	subgraph Topology Entities
-		V[VertexEntity]
-		E[EdgeEntity]
-		W[WireEntity]
-		F[FaceEntity]
-		SH[ShellEntity]
-		SO[SolidEntity]
-		CO[CompoundEntity]
-		CS[CompSolidEntity]
-	end
+  subgraph Topology Entities
+    V[VertexEntity]
+    E[EdgeEntity]
+    CE[CoEdgeEntity]
+    W[WireEntity]
+    F[FaceEntity]
+    SH[ShellEntity]
+    SO[SolidEntity]
+    CO[CompoundEntity]
+    CS[CompSolidEntity]
+  end
 
-	subgraph Assembly Entities
-		PR[ProductEntity]
-		OC[OccurrenceEntity]
-	end
+  subgraph Assembly Entities
+    PR[ProductEntity]
+    OC[OccurrenceEntity]
+  end
 
-	F -->|WireRef| W
-	W -->|EdgeRef| E
-	E -->|Start/End vertex idx| V
-	SH -->|FaceRef| F
-	SO -->|ShellRef| SH
-	CO -->|ChildRef| SO
-	CO -->|ChildRef| SH
-	CO -->|ChildRef| F
-	CS -->|SolidRef| SO
+  F -->|WireRef| W
+  W -->|CoEdgeRef| CE
+  CE -->|EdgeIdx| E
+  E -->|Start/End VertexRef| V
+  SH -->|FaceRef| F
+  SO -->|ShellRef| SH
+  CO -->|ChildRef| SO
+  CO -->|ChildRef| SH
+  CO -->|ChildRef| F
+  CS -->|SolidRef| SO
 
-	PR -->|OccurrenceRef| OC
-	PR -->|ShapeRootId| SO
-	OC -->|ProductIdx| PR
-	OC -->|ParentOccurrenceIdx| OC
+  PR -->|OccurrenceRef| OC
+  PR -->|ShapeRootId| SO
+  OC -->|ProductIdx| PR
+  OC -.->|ParentOccurrenceIdx| OC
 ```
 
 Notes:
 
-- Topology entity tables are canonical topology.
-- Assembly entity tables store product definitions and placed instances.
-- Parent-context data belongs to refs, not separate usage objects.
-- Edge-face relation context is inline on EdgeEntity:
-	- PCurves
-	- PolygonsOnSurf
-	- PolygonsOnTri
+- Intrinsic data lives on entities; occurrence context (orientation/location) lives on refs
+- CoEdge owns PCurve data for each edge-face binding (Weiler half-edge pattern)
 - ProductEntity: `ShapeRootId` (topology root for parts; invalid for assemblies), `OccurrenceRefs`
-- OccurrenceEntity: `ProductIdx`, `ParentProductIdx`, `ParentOccurrenceIdx` (tree-structured placement chain), `Placement` (TopLoc_Location)
+- OccurrenceEntity: `ProductIdx`, `ParentProductIdx`, `ParentOccurrenceIdx` (tree-structured placement chain), `Placement`
 
-## TopoDS vs GraphInc (Box)
-
-This quick diagram shows the conceptual difference for the same box topology.
+## Entity Hierarchy
 
 ```mermaid
-flowchart LR
-	subgraph T[TopoDS Occurrence Tree]
-		TS[Solid shape]
-		TSH[Shell shape]
-		TF[Face shape]
-		TW[Wire shape]
-		TE[Edge shape]
-		TV[Vertex shape]
-		TS --> TSH --> TF --> TW --> TE --> TV
-	end
+graph TD
+    Product["ProductEntity<br/><i>ShapeRootId, RootOrientation, RootLocation</i>"]
 
-	subgraph G[GraphInc Incidence]
-		GS[SolidEntity]
-		GSH[ShellEntity]
-		GF[FaceEntity]
-		GW[WireEntity]
-		GE[EdgeEntity]
-		GV[VertexEntity]
-		GS -->|ShellRef| GSH
-		GSH -->|FaceRef| GF
-		GF -->|WireRef| GW
-		GW -->|EdgeRef| GE
-		GE -->|Start/End idx| GV
-	end
+    Compound["CompoundEntity<br/><i>ChildRefs[]</i>"]
+    CompSolid["CompSolidEntity<br/><i>SolidRefs[]</i>"]
+    Solid["SolidEntity<br/><i>ShellRefs[], FreeChildRefs[]</i>"]
+    Shell["ShellEntity<br/><i>IsClosed, FaceRefs[], FreeChildRefs[]</i>"]
+
+    Face["FaceEntity<br/><i>SurfaceRepIdx, TriangulationRepIdxs,<br/>WireRefs[], VertexRefs[], Tolerance</i>"]
+
+    Wire["WireEntity<br/><i>CoEdgeRefs[], IsClosed</i>"]
+
+    CoEdge["CoEdgeEntity<br/><i>EdgeIdx, FaceDefId, Sense,<br/>Curve2DRepIdx, Polygon2DRepIdx,<br/>ParamFirst/Last, UV1/UV2,<br/>SeamPairIdx, SeamContinuity</i>"]
+
+    Edge["EdgeEntity<br/><i>Curve3DRepIdx, Polygon3DRepIdx,<br/>StartVertex, EndVertex,<br/>InternalVertices[],<br/>ParamFirst/Last, Tolerance,<br/>SameParameter, SameRange,<br/>IsDegenerate, IsClosed,<br/>Regularities[]</i>"]
+
+    Vertex["VertexEntity<br/><i>Point (def frame), Tolerance,<br/>PointsOnCurve[],<br/>PointsOnPCurve[],<br/>PointsOnSurface[]</i>"]
+
+    SurfRep["SurfaceRep<br/><i>Geom_Surface</i>"]
+    C3DRep["Curve3DRep<br/><i>Geom_Curve</i>"]
+    C2DRep["Curve2DRep<br/><i>Geom2d_Curve</i>"]
+    TriRep["TriangulationRep<br/><i>Poly_Triangulation</i>"]
+
+    Product -->|"ShapeRootId"| Compound
+    Product -->|"ShapeRootId"| Solid
+    Compound -->|"ChildRef"| Solid
+    CompSolid -->|"SolidRef"| Solid
+    Solid -->|"ShellRef"| Shell
+    Shell -->|"FaceRef"| Face
+    Face -->|"WireRef"| Wire
+    Wire -->|"CoEdgeRef"| CoEdge
+    CoEdge -->|"EdgeIdx"| Edge
+    Edge -->|"VertexRef"| Vertex
+
+    Face -.->|"SurfaceRepIdx"| SurfRep
+    Face -.->|"TriangulationRepIdxs"| TriRep
+    Edge -.->|"Curve3DRepIdx"| C3DRep
+    CoEdge -.->|"Curve2DRepIdx"| C2DRep
+    CoEdge -.->|"SeamPairIdx"| CoEdge
 ```
-
-Key difference:
-
-- TopoDS expresses context through shape occurrences.
-- GraphInc keeps canonical entities and stores context on refs.
-
-For a full box-level graph with all 6 faces, 12 edges, and 8 vertices, see:
-
-- BRepGraphInc_Box_Topology_Comparison.md
-
-### Box Counts (Quick Reference)
-
-| Item | Box Count | GraphInc Storage |
-| --- | ---: | --- |
-| Solid | 1 | `SolidEntity` table |
-| Shell | 1 | `ShellEntity` table |
-| Face | 6 | `FaceEntity` table |
-| Outer Wire | 6 | `WireEntity` table |
-| Edge | 12 | `EdgeEntity` table |
-| Vertex | 8 | `VertexEntity` table |
-| Face->Wire links | 6 | `FaceEntity.WireRefs` |
-| Wire->Edge links | 24 | `WireEntity.EdgeRefs` |
-| Edge endpoints | 24 | `EdgeEntity.StartVertexIdx/EndVertexIdx` |
-| Edge->Face reverse rows | 24 logical refs, 12 unique edges each used by 2 faces | `ReverseIndex edge -> faces` |
-| Product | 1 (auto root) | `ProductEntity` table |
-| Occurrence | 0 | `OccurrenceEntity` table |
-
-Interpretation:
-
-- Canonical topology lives in entity tables.
-- Assembly structure lives in product/occurrence tables.
-- Context and ordering live in refs.
-- Fast upward traversal lives in reverse index maps.
-
-## File Map
-
-- BRepGraphInc_Entity.hxx: entity definitions
-- BRepGraphInc_IncidenceRef.hxx: context ref definitions
-- BRepGraphInc_Storage.hxx/.cxx: typed storage and ownership
-- BRepGraphInc_Populate.hxx/.cxx: TopoDS to incidence build and append
-- BRepGraphInc_ReverseIndex.hxx/.cxx: reverse adjacency services
-- BRepGraphInc_Reconstruct.hxx/.cxx: incidence to TopoDS reconstruction
 
 ## Build Pipeline
 
 ```mermaid
 flowchart LR
-	I[TopoDS input] --> P1[Hierarchy traversal]
-	P1 --> P2[Parallel face extraction]
-	P2 --> P3[Sequential register and dedup]
-	P3 --> P4[Post-passes]
-	P4 --> P5[Reverse index build]
-	P5 --> D[Storage IsDone]
+  I[TopoDS input] --> P1[Phase 1: Hierarchy traversal]
+  P1 --> P2[Phase 2: Parallel face extraction]
+  P2 --> P3[Phase 3: Sequential register and dedup]
+  P3 --> P3a[Phase 3a: Compound face fixup]
+  P3a --> P3b[Phase 3b: Edge regularities]
+  P3b --> P3c[Phase 3c: Vertex point reps]
+  P3c --> P4[Phase 4: Reverse index build]
+  P4 --> D[Storage IsDone]
 ```
 
-Build post-passes (controlled by `BRepGraphInc_Populate::Options`):
+| Phase | Mode | What happens |
+|-------|------|--------------|
+| **Phase 1** | Sequential | Traverse hierarchy. Create container entities (Compound, CompSolid, Solid, Shell). Collect face contexts. |
+| **Phase 2** | Parallel | Extract per-face geometry: surface, PCurves, triangulations, vertices, edges. |
+| **Phase 3** | Sequential | Register faces, wires, edges, CoEdges with TShape deduplication. Link faces to shells. |
+| **Phase 3a** | Sequential | Resolve deferred Compound→Face ChildRef indices via TShape lookup. |
+| **Phase 3b** | Optional | Edge regularities (controlled by `Options.ExtractRegularities`). |
+| **Phase 3c** | Optional | Vertex point representations (controlled by `Options.ExtractVertexPointReps`). |
+| **Phase 4** | Sequential | Build reverse indices for O(1) upward navigation. |
 
-- edge regularities (`ExtractRegularities`, default on)
-- vertex point representations (`ExtractVertexPointReps`, default on)
+Entry point: `BRepGraphInc_Populate::Perform()`.
 
-Storage flags `HasRegularities()` and `HasVertexPointReps()` indicate which passes ran.
+### Geometry: Definition-Frame Storage
+
+All geometry is stored in **definition frame** — the TShape-internal location is baked into the geometry, while instance locations are preserved separately in Ref structures.
+
+**Surface**: `S_merged = S0.Transformed(TFace.Location())`
+**3D Curve**: `C_merged = C0.Transformed(TEdge.Location())`
+**Vertex Point**: `BRep_TVertex::Pnt()` (raw, no Location applied)
+
+Formula: `repLoc = theShapeLoc⁻¹ × theCombinedLoc; if repLoc ≠ Identity: theGeom.Transformed(repLoc)`
+
+### PCurve Extraction
+
+PCurves are extracted directly from `BRep_TEdge::Curves()`, bypassing `BRep_Tool::CurveOnSurface` which can generate phantom computed PCurves via `CurveOnPlane` and has `TopLoc_Location` structural equality issues.
+
+Multi-pass matching in `extractStoredPCurves()`:
+- **Pass 1**: exact (Surface, Location) match via `IsCurveOnSurface(S, L)`
+- **Pass 2**: surface-handle-only fallback for TopLoc_Location structural equality bug
+- **Pass 3**: original (pre-transform) surface handle match
+- For seam edges: extracts both PCurves + continuity
+
+### Instance Locations
+
+| Ref Type | What it stores |
+|----------|---------------|
+| `FaceRef.LocalLocation` | face.Location() relative to shell |
+| `WireRef.LocalLocation` | wire.Location() relative to face |
+| `CoEdgeRef.LocalLocation` | edge.Location() relative to wire |
+| `ShellRef.LocalLocation` | shell.Location() relative to solid |
+| `VertexRef.LocalLocation` | vertex.Location() relative to edge |
+
+### Deduplication
+
+- **TShape dedup**: each unique `TopoDS_TShape*` maps to one graph entity
+- **Geometry rep dedup**: surfaces, curves, triangulations deduped by handle pointer in `RepDedup` maps
 
 ## Reconstruction Pipeline
 
 ```mermaid
 flowchart TD
-	N[Node request] --> C{Cache hit}
-	C -- yes --> R1[Return cached]
-	C -- no --> K[Kind dispatch]
-	K --> B[Build TopoDS shape]
-	B --> BIND[Bind cache]
-	BIND --> R1
+  N[Node request] --> C{Cache hit}
+  C -- yes --> R1[Return cached]
+  C -- no --> K[Kind dispatch]
+  K --> B[Build TopoDS shape]
+  B --> BIND[Bind cache]
+  BIND --> R1
 ```
 
 Primary API:
+- `Node(storage, nodeId)` — independent, local cache
+- `Node(storage, nodeId, cache)` — shared cache for vertex/edge reuse
+- `FaceWithCache(storage, faceIdx, cache)` — specialized face reconstruction
 
-- Node(storage, nodeId)
-- Node(storage, nodeId, cache)
-- FaceWithCache(storage, faceIdx, cache)
+### Geometry Restoration
 
-Use cache-enabled variants for shell and solid level reconstruction.
+All geometry restored with `TopLoc_Location() = Identity` (TShape location already baked):
+
+```cpp
+aBB.MakeFace(aNewFace, S_merged, TopLoc_Location(), tol);
+aBB.MakeEdge(aNewEdge, C_merged, TopLoc_Location(), tol);
+aBB.MakeVertex(aNewVtx, rawPoint, tol);
+```
+
+### PCurve Attachment with Location Compensation
+
+Edge temporarily carries composed wire+edge location for correct `BRep_Builder::UpdateEdge` storage key:
+
+```cpp
+anEdge.Location(aEdgeInFaceLoc);              // Temporarily apply
+aBB.UpdateEdge(anEdge, aPC, aSurf, Identity); // Stores CR with loc⁻¹
+anEdge.Location(Identity);                     // Reset after attachment
+```
+
+### Special Cases
+
+- **Seam edges**: Two CoEdges with opposite Sense, linked by `SeamPairIdx`. Both PCurves attached via `UpdateEdge(E, PC1, PC2, S, L, tol)`.
+- **Degenerate edges**: `MakeEdge()` + `Degenerated(true)`, no 3D curve.
+- **IsClosed/NaturalRestriction**: Set AFTER sub-shapes are added (Add can reset flags).
 
 ## Reverse Indices
 
-Current reverse maps:
-
-- edge -> wires
-- edge -> faces
-- vertex -> edges
-- wire -> faces
-- face -> shells
-- shell -> solids
-- product -> occurrences
-
-Topology reverse maps are critical for adjacency-heavy algorithms like sewing and healing. The product->occurrences map is built during `BuildReverseIndex` via `BuildProductOccurrences`.
+| Map | Purpose |
+|-----|---------|
+| edge → wires | Wire membership |
+| edge → faces | Face adjacency (from CoEdge.FaceDefId) |
+| edge → coedges | CoEdge lookup by parent edge |
+| vertex → edges | Vertex incidence |
+| wire → faces | Wire-to-face membership |
+| face → shells | Face-to-shell membership |
+| shell → solids | Shell-to-solid membership |
+| product → occurrences | Assembly references |
 
 ## Core Invariants
 
-1. Entity ID invariant
-- for each entity vector slot i: Id.Index == i and Id.Kind matches vector kind
+1. **Entity ID**: for each entity vector slot i: `Id.Index == i` and `Id.Kind` matches vector kind
+2. **Mapping**: TShape to NodeId must resolve to existing, type-correct entity
+3. **Reverse-index**: required reverse rows must exist for forward refs used by query paths
+4. **Removal**: IsRemoved entities must be filtered from normal traversals
+5. **Mutation boundary**: entities, reverse indices, cache invalidation, and history are coherent after each operation
+6. **Assembly**: every Build produces at least one root Product; occurrence cross-references valid; self-referencing rejected; ParentOccurrenceIdx forms a tree
 
-2. Mapping invariant
-- TShape to NodeId must resolve to an existing, type-correct entity
-
-3. Reverse-index invariant
-- required reverse rows must exist for forward refs used by query paths
-
-4. Removal invariant
-- IsRemoved entities must be filtered from normal traversals and adjacency queries
-
-5. Mutation boundary invariant
-- after each mutator operation: entities, reverse indices, cache invalidation, and history are coherent
-- `ReverseIndex::Validate()` checks all 6 topology reverse maps against forward refs (used in debug assertions after SplitEdge/ReplaceEdgeInWire)
-
-6. Assembly invariant
-- every successful Build produces at least one root Product
-- occurrence ProductIdx and ParentProductIdx must reference valid, non-removed products
-- self-referencing occurrences (parent == referenced) are rejected
-- ParentOccurrenceIdx forms a tree (not a DAG) for unambiguous placement chains
-
-## Memory and Performance Notes
+## Memory and Performance
 
 ### Allocator Propagation
 
-All containers in BRepGraphInc use the graph's `NCollection_IncAllocator` for O(1) bump-pointer allocation and bulk-free destruction:
+All containers use the graph's `NCollection_IncAllocator` for O(1) bump-pointer allocation and bulk-free destruction:
 
-- **Storage**: all entity tables, UID vectors, and DataMaps receive the allocator in the constructor
-- **ReverseIndex**: `SetAllocator()` is called before `Build()`. Inner `NCollection_Vector<int>` in each IndexTable slot are constructed with the allocator via `preSize(table, size, alloc)`. `BuildDelta()` also propagates the allocator to newly extended slots.
+- **Storage**: all entity tables, UID vectors, and DataMaps receive the allocator
+- **ReverseIndex**: `SetAllocator()` called before `Build()`. Inner vectors constructed with allocator via `preSize()`.
 
-This eliminates per-node malloc/free overhead and makes graph destruction O(1) regardless of entity count.
-
-Contract: `SetAllocator()` must be called before `Build()`/`BuildDelta()` on ReverseIndex, and before any `Record()`/`RecordBatch()` on History.
+Contract: `SetAllocator()` must be called before `Build()`/`BuildDelta()` on ReverseIndex.
 
 ### Other Performance Notes
 
-- Edge-to-face reverse index build uses sort-dedup (stack-allocated for typical 1-4 PCurves per edge)
-- `Append()` allocates UIDs incrementally (only for new entities, O(M) instead of O(N+M))
+- Edge-to-face reverse index uses sort-dedup (stack-allocated for typical 1-4 coedges per edge)
+- `Append()` allocates UIDs incrementally (O(M) instead of O(N+M))
 - Post-passes are optional via `BRepGraphInc_Populate::Options`
+- `FaceCountOfEdge()` is O(1) via cached count vector
 
-## Related Docs
+## TopoDS vs GraphInc Comparison (Box)
 
-- src/ModelingData/TKBRep/BRepGraph/README.md
+| Item | Count | GraphInc Storage |
+|------|------:|-----------------|
+| Solid | 1 | `SolidEntity` table |
+| Shell | 1 | `ShellEntity` table |
+| Face | 6 | `FaceEntity` table |
+| Wire | 6 | `WireEntity` table |
+| Edge | 12 | `EdgeEntity` table |
+| CoEdge | 24 | `CoEdgeEntity` table |
+| Vertex | 8 | `VertexEntity` table |
+| Product | 1 (auto root) | `ProductEntity` table |
+
+Key difference: TopoDS expresses context through shape occurrences. GraphInc keeps canonical entities and stores context on refs.
+
+## File Map
+
+| File | Purpose |
+|------|---------|
+| `BRepGraphInc_Entity.hxx` | Entity struct definitions |
+| `BRepGraphInc_IncidenceRef.hxx` | Context reference definitions |
+| `BRepGraphInc_Storage.hxx/.cxx` | Typed storage and ownership |
+| `BRepGraphInc_Populate.hxx/.cxx` | TopoDS → incidence build and append |
+| `BRepGraphInc_Reconstruct.hxx/.cxx` | Incidence → TopoDS reconstruction |
+| `BRepGraphInc_ReverseIndex.hxx/.cxx` | Reverse adjacency services |
+| `BRepGraphInc_WireExplorer.hxx` | Wire traversal in connection order |
