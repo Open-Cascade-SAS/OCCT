@@ -134,6 +134,15 @@ BRepGraph_NodeId BRepGraph::GeomView::PCurveOf(BRepGraph_NodeId   theEdgeDef,
 
 //=================================================================================================
 
+BRepGraph_NodeId BRepGraph::GeomView::PCurveOf(const BRepGraph_PCurveContext& theContext) const
+{
+  return PCurveOf(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, theContext.EdgeDefIndex),
+                  BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, theContext.FaceDefIndex),
+                  theContext.Orientation);
+}
+
+//=================================================================================================
+
 static GeomAdaptor_TransformedCurve buildCurveAdaptor(const BRepGraph_Data&              theData,
                                                       const BRepGraph_TopoNode::EdgeDef& theEdge)
 {

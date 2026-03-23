@@ -17,6 +17,7 @@
 #include <BRepGraph_Analyze.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_GeomView.hxx>
+#include <BRepGraph_PCurveContext.hxx>
 #include <BRepGraph_SpatialView.hxx>
 #include <BRepGraph_UsagesView.hxx>
 #include <BRepGraph_Iterator.hxx>
@@ -62,8 +63,8 @@ TEST(BRepGraphGeometry, Sphere_FacesOnSurface_ReturnsAll)
   aGraph.Build(BRepPrimAPI_MakeSphere(15.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  const BRepGraph_NodeId aSurfId = aGraph.Defs().Face(0).SurfNodeId;
-  const NCollection_Vector<BRepGraph_NodeId>& aFaces = aGraph.Geom().FacesOnSurface(aSurfId);
+  const BRepGraph_NodeId                      aSurfId = aGraph.Defs().Face(0).SurfNodeId;
+  const NCollection_Vector<BRepGraph_NodeId>& aFaces  = aGraph.Geom().FacesOnSurface(aSurfId);
   EXPECT_EQ(aFaces.Length(), aGraph.Defs().NbFaces());
 }
 
@@ -90,7 +91,7 @@ TEST(BRepGraphGeometry, Box_EdgesOnCurve_AtLeastOnePerCurve)
 
   for (int i = 0; i < aGraph.Geom().NbCurves(); ++i)
   {
-    const BRepGraph_NodeId aCurveId(BRepGraph_NodeId::Kind::Curve, i);
+    const BRepGraph_NodeId                      aCurveId(BRepGraph_NodeId::Kind::Curve, i);
     const NCollection_Vector<BRepGraph_NodeId>& aEdges = aGraph.Geom().EdgesOnCurve(aCurveId);
     EXPECT_GE(aEdges.Length(), 1) << "Curve " << i << " has no edge users";
   }
@@ -106,11 +107,11 @@ TEST(BRepGraphGeometry, Box_PCurveOf_AllEdgeFacePairs_Valid)
   for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
   {
     const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(i);
-    const BRepGraph_NodeId aEdgeDefId(BRepGraph_NodeId::Kind::Edge, i);
+    const BRepGraph_NodeId             aEdgeDefId(BRepGraph_NodeId::Kind::Edge, i);
     for (int j = 0; j < anEdge.PCurves.Length(); ++j)
     {
       const BRepGraph_NodeId aFaceDefId = anEdge.PCurves.Value(j).FaceDefId;
-      const BRepGraph_NodeId aPCurveId = aGraph.Geom().PCurveOf(aEdgeDefId, aFaceDefId);
+      const BRepGraph_NodeId aPCurveId  = aGraph.Geom().PCurveOf(aEdgeDefId, aFaceDefId);
       EXPECT_TRUE(aPCurveId.IsValid());
       ++aPCurveCount;
     }
@@ -144,9 +145,9 @@ TEST(BRepGraphGeometry, PCurve_ParamRange_NonZero)
   for (int i = 0; i < aGraph.Geom().NbPCurves(); ++i)
   {
     const BRepGraph_GeomNode::PCurve& aPCurve = aGraph.Geom().PCurve(i);
-    const double aRange = aPCurve.ParamLast - aPCurve.ParamFirst;
+    const double                      aRange  = aPCurve.ParamLast - aPCurve.ParamFirst;
     EXPECT_GT(std::abs(aRange), Precision::PConfusion())
-        << "PCurve " << i << " has zero parameter range";
+      << "PCurve " << i << " has zero parameter range";
   }
 }
 
@@ -158,7 +159,8 @@ TEST(BRepGraphGeometry, Surf_IsMultiLocated_FalseForSimpleBox)
 
   for (int i = 0; i < aGraph.Geom().NbSurfaces(); ++i)
   {
-    EXPECT_FALSE(aGraph.Geom().Surface(i).IsMultiLocated) << "Surface " << i << " unexpectedly multi-located";
+    EXPECT_FALSE(aGraph.Geom().Surface(i).IsMultiLocated)
+      << "Surface " << i << " unexpectedly multi-located";
   }
 }
 
@@ -170,7 +172,8 @@ TEST(BRepGraphGeometry, Curve_IsMultiLocated_FalseForSimpleBox)
 
   for (int i = 0; i < aGraph.Geom().NbCurves(); ++i)
   {
-    EXPECT_FALSE(aGraph.Geom().Curve(i).IsMultiLocated) << "Curve " << i << " unexpectedly multi-located";
+    EXPECT_FALSE(aGraph.Geom().Curve(i).IsMultiLocated)
+      << "Curve " << i << " unexpectedly multi-located";
   }
 }
 
@@ -195,8 +198,9 @@ TEST(BRepGraphGeometry, SameDomainFaces_SimpleBox_Empty)
   // For a simple box each face has a unique surface, so SameDomainFaces is empty.
   for (int i = 0; i < aGraph.Defs().NbFaces(); ++i)
   {
-    const BRepGraph_NodeId aFaceDefId(BRepGraph_NodeId::Kind::Face, i);
-    const NCollection_Vector<BRepGraph_NodeId> aSameDomain = aGraph.Spatial().SameDomainFaces(aFaceDefId);
+    const BRepGraph_NodeId                     aFaceDefId(BRepGraph_NodeId::Kind::Face, i);
+    const NCollection_Vector<BRepGraph_NodeId> aSameDomain =
+      aGraph.Spatial().SameDomainFaces(aFaceDefId);
     EXPECT_EQ(aSameDomain.Length(), 0) << "Face def " << i << " has unexpected same-domain faces";
   }
 }
@@ -209,7 +213,7 @@ TEST(BRepGraphGeometry, GlobalTransform_DefId_MatchesFirstUsage)
   ASSERT_GT(aGraph.Defs().NbFaces(), 0);
 
   const BRepGraph_NodeId aFaceDefId(BRepGraph_NodeId::Kind::Face, 0);
-  const gp_Trsf aDefTrsf = aGraph.Spatial().GlobalTransform(aFaceDefId);
+  const gp_Trsf          aDefTrsf = aGraph.Spatial().GlobalTransform(aFaceDefId);
 
   // The first usage of this face should give the same transform.
   const NCollection_Vector<BRepGraph_UsageId>& aUsages = aGraph.UsagesOf(aFaceDefId);
@@ -221,9 +225,7 @@ TEST(BRepGraphGeometry, GlobalTransform_DefId_MatchesFirstUsage)
   {
     for (int aCol = 1; aCol <= 4; ++aCol)
     {
-      EXPECT_NEAR(aDefTrsf.Value(aRow, aCol),
-                  aUsageTrsf.Value(aRow, aCol),
-                  Precision::Confusion());
+      EXPECT_NEAR(aDefTrsf.Value(aRow, aCol), aUsageTrsf.Value(aRow, aCol), Precision::Confusion());
     }
   }
 }
@@ -237,7 +239,7 @@ TEST(BRepGraphGeometry, GlobalTransform_CompoundWithLocation_NonIdentity)
   const TopoDS_Shape aMoved = aBox.Moved(TopLoc_Location(aTrsf));
 
   TopoDS_Compound aCompound;
-  BRep_Builder aBuilder;
+  BRep_Builder    aBuilder;
   aBuilder.MakeCompound(aCompound);
   aBuilder.Add(aCompound, aBox);
   aBuilder.Add(aCompound, aMoved);
@@ -250,15 +252,14 @@ TEST(BRepGraphGeometry, GlobalTransform_CompoundWithLocation_NonIdentity)
   bool hasNonIdentity = false;
   for (int i = 0; i < aGraph.Usages().NbFaces(); ++i)
   {
-    const gp_Trsf aGlobalTrsf = aGraph.Spatial().GlobalTransform(
-        BRepGraph_UsageId(BRepGraph_NodeId::Kind::Face, i));
+    const gp_Trsf aGlobalTrsf =
+      aGraph.Spatial().GlobalTransform(BRepGraph_UsageId(BRepGraph_NodeId::Kind::Face, i));
     if (aGlobalTrsf.IsNegative() || aGlobalTrsf.IsNegative() == false)
     {
       // Check if translation component is non-zero.
-      const double aDist = std::sqrt(
-          aGlobalTrsf.Value(1, 4) * aGlobalTrsf.Value(1, 4) +
-          aGlobalTrsf.Value(2, 4) * aGlobalTrsf.Value(2, 4) +
-          aGlobalTrsf.Value(3, 4) * aGlobalTrsf.Value(3, 4));
+      const double aDist = std::sqrt(aGlobalTrsf.Value(1, 4) * aGlobalTrsf.Value(1, 4)
+                                     + aGlobalTrsf.Value(2, 4) * aGlobalTrsf.Value(2, 4)
+                                     + aGlobalTrsf.Value(3, 4) * aGlobalTrsf.Value(3, 4));
       if (aDist > Precision::Confusion())
       {
         hasNonIdentity = true;
@@ -281,7 +282,7 @@ TEST(BRepGraphGeometry, Surf_Triangulation_NullForAnalyticNoCrash)
   {
     const BRepGraph_GeomNode::Surf& aSurf = aGraph.Geom().Surface(i);
     EXPECT_TRUE(aSurf.Triangulation.IsNull())
-        << "Surface " << i << " unexpectedly has a triangulation";
+      << "Surface " << i << " unexpectedly has a triangulation";
   }
 }
 
@@ -456,11 +457,11 @@ TEST(BRepGraphSubGraph, Decompose_SingleBox_OneComponent)
 TEST(BRepGraphSubGraph, Decompose_TwoBoxCompound_TwoComponents)
 {
   const TopoDS_Shape aBox1 = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
-  const TopoDS_Shape aBox2 = BRepPrimAPI_MakeBox(gp_Pnt(50.0, 50.0, 50.0),
-                                                  60.0, 60.0, 60.0).Shape();
+  const TopoDS_Shape aBox2 =
+    BRepPrimAPI_MakeBox(gp_Pnt(50.0, 50.0, 50.0), 60.0, 60.0, 60.0).Shape();
 
   TopoDS_Compound aCompound;
-  BRep_Builder aBuilder;
+  BRep_Builder    aBuilder;
   aBuilder.MakeCompound(aCompound);
   aBuilder.Add(aCompound, aBox1);
   aBuilder.Add(aCompound, aBox2);
@@ -476,11 +477,11 @@ TEST(BRepGraphSubGraph, Decompose_TwoBoxCompound_TwoComponents)
 TEST(BRepGraphSubGraph, SubGraph_IndicesDisjoint_BetweenComponents)
 {
   const TopoDS_Shape aBox1 = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
-  const TopoDS_Shape aBox2 = BRepPrimAPI_MakeBox(gp_Pnt(50.0, 50.0, 50.0),
-                                                  60.0, 60.0, 60.0).Shape();
+  const TopoDS_Shape aBox2 =
+    BRepPrimAPI_MakeBox(gp_Pnt(50.0, 50.0, 50.0), 60.0, 60.0, 60.0).Shape();
 
   TopoDS_Compound aCompound;
-  BRep_Builder aBuilder;
+  BRep_Builder    aBuilder;
   aBuilder.MakeCompound(aCompound);
   aBuilder.Add(aCompound, aBox1);
   aBuilder.Add(aCompound, aBox2);
@@ -493,7 +494,7 @@ TEST(BRepGraphSubGraph, SubGraph_IndicesDisjoint_BetweenComponents)
   ASSERT_EQ(aSubs.Length(), 2);
 
   // Collect face def indices from both components and verify they are disjoint.
-  NCollection_Map<int> aFaceSet1;
+  NCollection_Map<int>           aFaceSet1;
   const NCollection_Vector<int>& aFaces1 = aSubs.Value(0).FaceDefIndices();
   for (int i = 0; i < aFaces1.Length(); ++i)
   {
@@ -504,18 +505,18 @@ TEST(BRepGraphSubGraph, SubGraph_IndicesDisjoint_BetweenComponents)
   for (int i = 0; i < aFaces2.Length(); ++i)
   {
     EXPECT_FALSE(aFaceSet1.Contains(aFaces2.Value(i)))
-        << "Face def index " << aFaces2.Value(i) << " found in both components";
+      << "Face def index " << aFaces2.Value(i) << " found in both components";
   }
 }
 
 TEST(BRepGraphSubGraph, SubGraph_NbTopoNodes_SumEqualsTotal)
 {
   const TopoDS_Shape aBox1 = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
-  const TopoDS_Shape aBox2 = BRepPrimAPI_MakeBox(gp_Pnt(50.0, 50.0, 50.0),
-                                                  60.0, 60.0, 60.0).Shape();
+  const TopoDS_Shape aBox2 =
+    BRepPrimAPI_MakeBox(gp_Pnt(50.0, 50.0, 50.0), 60.0, 60.0, 60.0).Shape();
 
   TopoDS_Compound aCompound;
-  BRep_Builder aBuilder;
+  BRep_Builder    aBuilder;
   aBuilder.MakeCompound(aCompound);
   aBuilder.Add(aCompound, aBox1);
   aBuilder.Add(aCompound, aBox2);
@@ -538,8 +539,8 @@ TEST(BRepGraphSubGraph, SubGraph_NbTopoNodes_SumEqualsTotal)
   }
 
   const int aGraphTotal = aGraph.Defs().NbSolids() + aGraph.Defs().NbShells()
-                         + aGraph.Defs().NbFaces()  + aGraph.Defs().NbWires()
-                         + aGraph.Defs().NbEdges()  + aGraph.Defs().NbVertices();
+                          + aGraph.Defs().NbFaces() + aGraph.Defs().NbWires()
+                          + aGraph.Defs().NbEdges() + aGraph.Defs().NbVertices();
   EXPECT_GE(aTotalTopoNodes, aGraphTotal);
 }
 
@@ -624,7 +625,7 @@ TEST(BRepGraphGeometry, Cylinder_SeamEdge_PCurveOf_WithOrientation)
   for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
   {
     const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(i);
-    const BRepGraph_NodeId anEdgeDefId(BRepGraph_NodeId::Kind::Edge, i);
+    const BRepGraph_NodeId             anEdgeDefId(BRepGraph_NodeId::Kind::Edge, i);
 
     for (int j = 0; j < anEdge.PCurves.Length(); ++j)
     {
@@ -644,6 +645,67 @@ TEST(BRepGraphGeometry, Cylinder_SeamEdge_PCurveOf_WithOrientation)
         EXPECT_TRUE(aPC_Rev.IsValid()) << "PCurveOf REVERSED returned invalid for seam edge";
         EXPECT_NE(aPC_Fwd, aPC_Rev) << "FORWARD and REVERSED PCurves should be different nodes";
         return; // one seam is enough
+      }
+    }
+  }
+  GTEST_SKIP() << "No seam edge found; test inconclusive";
+}
+
+TEST(BRepGraphGeometry, Box_PCurveOf_Context_MatchesThreeArgOverload)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
+  {
+    const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(i);
+    const BRepGraph_NodeId             anEdgeDefId(BRepGraph_NodeId::Kind::Edge, i);
+
+    for (int j = 0; j < anEdge.PCurves.Length(); ++j)
+    {
+      const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCEntry = anEdge.PCurves.Value(j);
+      const BRepGraph_PCurveContext aCtx(i, aPCEntry.FaceDefId.Index, aPCEntry.EdgeOrientation);
+
+      const BRepGraph_NodeId aFromCtx = aGraph.Geom().PCurveOf(aCtx);
+      const BRepGraph_NodeId aFrom3Arg =
+        aGraph.Geom().PCurveOf(anEdgeDefId, aPCEntry.FaceDefId, aPCEntry.EdgeOrientation);
+
+      EXPECT_EQ(aFromCtx, aFrom3Arg);
+      EXPECT_TRUE(aFromCtx.IsValid());
+    }
+  }
+}
+
+TEST(BRepGraphGeometry, Cylinder_SeamEdge_PCurveOf_Context_DistinguishesOrientation)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeCylinder(5.0, 20.0).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
+  {
+    const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(i);
+
+    for (int j = 0; j < anEdge.PCurves.Length(); ++j)
+    {
+      for (int k = j + 1; k < anEdge.PCurves.Length(); ++k)
+      {
+        if (anEdge.PCurves.Value(j).FaceDefId != anEdge.PCurves.Value(k).FaceDefId)
+          continue;
+
+        // Seam edge: same face, two orientations.
+        const int                     aFaceIdx = anEdge.PCurves.Value(j).FaceDefId.Index;
+        const BRepGraph_PCurveContext aCtxFwd(i, aFaceIdx, TopAbs_FORWARD);
+        const BRepGraph_PCurveContext aCtxRev(i, aFaceIdx, TopAbs_REVERSED);
+
+        const BRepGraph_NodeId aPCFwd = aGraph.Geom().PCurveOf(aCtxFwd);
+        const BRepGraph_NodeId aPCRev = aGraph.Geom().PCurveOf(aCtxRev);
+
+        EXPECT_TRUE(aPCFwd.IsValid());
+        EXPECT_TRUE(aPCRev.IsValid());
+        EXPECT_NE(aPCFwd, aPCRev);
+        return;
       }
     }
   }

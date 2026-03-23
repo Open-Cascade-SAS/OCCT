@@ -10,6 +10,7 @@ set(OCCT_TKTopAlgo_GTests_FILES
   BRepClass3d_SolidClassifier_Test.cxx
   BRepGProp_Test.cxx
   BRepGraphAlgo_Copy_Test.cxx
+  BRepGraphAlgo_Deduplicate_Test.cxx
   BRepGraphAlgo_Sewing_Test.cxx
   BRepGraphAlgo_Transform_Test.cxx
   BRepLib_MakeWire_Test.cxx

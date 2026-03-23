@@ -15,6 +15,7 @@
 #define _BRepGraph_GeomView_HeaderFile
 
 #include <BRepGraph.hxx>
+#include <BRepGraph_PCurveContext.hxx>
 #include <GeomAdaptor_TransformedCurve.hxx>
 #include <TopAbs_Orientation.hxx>
 
@@ -77,6 +78,12 @@ public:
   Standard_EXPORT BRepGraph_NodeId PCurveOf(BRepGraph_NodeId   theEdgeDef,
                                             BRepGraph_NodeId   theFaceDef,
                                             TopAbs_Orientation theEdgeOrientation) const;
+
+  //! Return the PCurve NodeId for a given PCurve context.
+  //! Convenience overload that unpacks the context into (EdgeDef, FaceDef, Orientation)
+  //! and delegates to the 3-argument PCurveOf.
+  //! @param[in] theContext  composite key identifying edge, face and orientation
+  Standard_EXPORT BRepGraph_NodeId PCurveOf(const BRepGraph_PCurveContext& theContext) const;
 
   //! Build a GeomAdaptor_TransformedCurve for an edge definition.
   //! Uses the edge's 3D curve if available; falls back to pcurve-on-surface.
