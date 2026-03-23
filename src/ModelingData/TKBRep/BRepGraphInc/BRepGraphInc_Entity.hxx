@@ -125,6 +125,7 @@ struct EdgeEntity : public BaseEntity
     gp_Pnt2d             UV1;              //!< UV at ParamFirst
     gp_Pnt2d             UV2;              //!< UV at ParamLast
     TopAbs_Orientation   EdgeOrientation = TopAbs_FORWARD; //!< Edge orientation when this PCurve was extracted.
+    GeomAbs_Shape        SeamContinuity = GeomAbs_C0; //!< Continuity between seam PCurve pair (for REVERSED entry)
   };
   NCollection_Vector<PCurveEntry> PCurves;
 

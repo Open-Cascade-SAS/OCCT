@@ -15,6 +15,9 @@
 #include <BRepGraphInc_Storage.hxx>
 
 #include <BRep_Builder.hxx>
+#include <BRep_CurveOnClosedSurface.hxx>
+#include <BRep_CurveRepresentation.hxx>
+#include <BRep_TEdge.hxx>
 #include <BRep_TFace.hxx>
 #include <NCollection_List.hxx>
 #include <TopoDS.hxx>
@@ -318,9 +321,6 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
     }
   }
 
-  if (aFace.NaturalRestriction)
-    aBB.NaturalRestriction(aNewFace, true);
-
   // Helper: get or build edge from cache.
   auto getOrBuildEdge = [&](int theEdgeIdx) -> TopoDS_Edge {
     BRepGraph_NodeId anEdgeId = BRepGraph_NodeId::Edge(theEdgeIdx);
@@ -431,9 +431,12 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
         anEdge.Orientation(aEdgeRef.Orientation);
         aBB.Add(aNewWire, anEdge);
       }
-      if (aWire.IsClosed)
-        aNewWire.Closed(true);
       theCache.Bind(aWireNodeId, aNewWire);
+    }
+    // Apply closure flag after all edges are added (BRep_Builder::Add may reset it).
+    if (aWire.IsClosed)
+    {
+      aNewWire.Closed(true);
     }
 
     // Attach PCurves/polygons for THIS face context onto shared edge TShapes.
@@ -448,9 +451,10 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
       // Attach PCurve(s) for THIS face context from inline PCurve entries.
       const BRepGraphInc::EdgeEntity& anEdgeEnt = theStorage.Edge(aEdgeRef.EdgeIdx);
       occ::handle<Geom2d_Curve> aPC1, aPC2;
-      double   aPCFirst = 0.0, aPCLast = 0.0;
-      gp_Pnt2d aUV1, aUV2;
-      bool     aHasUV = false;
+      double        aPCFirst = 0.0, aPCLast = 0.0;
+      gp_Pnt2d      aUV1, aUV2;
+      bool          aHasUV = false;
+      GeomAbs_Shape aSeamContinuity = GeomAbs_C0;
       for (int aPCIdx = 0; aPCIdx < anEdgeEnt.PCurves.Length(); ++aPCIdx)
       {
         const BRepGraphInc::EdgeEntity::PCurveEntry& aPCEntry = anEdgeEnt.PCurves.Value(aPCIdx);
@@ -473,6 +477,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
         else
         {
           aPC2 = aPCEntry.Curve2d;
+          aSeamContinuity = aPCEntry.SeamContinuity;
           if (aPC1.IsNull())
           {
             aPCFirst = aPCEntry.ParamFirst;
@@ -491,6 +496,25 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
           aBB.UpdateEdge(anEdge, aPC1, aPC2,
                          aFace.Surface, TopLoc_Location(), anEdgeEnt.Tolerance);
         aBB.Range(anEdge, aFace.Surface, TopLoc_Location(), aPCFirst, aPCLast);
+
+        // Restore seam continuity (UpdateEdge creates CurveOnClosedSurface with C0).
+        if (aSeamContinuity != GeomAbs_C0)
+        {
+          const occ::handle<BRep_TEdge>& aTEdge =
+            occ::down_cast<BRep_TEdge>(anEdge.TShape());
+          if (!aTEdge.IsNull())
+          {
+            for (occ::handle<BRep_CurveRepresentation>& aCR : aTEdge->ChangeCurves())
+            {
+              if (!aCR.IsNull() && aCR->IsCurveOnClosedSurface()
+                  && aCR->IsCurveOnSurface(aFace.Surface, TopLoc_Location()))
+              {
+                occ::down_cast<BRep_CurveOnClosedSurface>(aCR)->Continuity(aSeamContinuity);
+                break;
+              }
+            }
+          }
+        }
       }
       else if (!aPC1.IsNull())
       {
@@ -545,12 +569,15 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
   };
 
   // Add wires to face: outer first, then inner.
+  // Wire orientation must be applied before adding to face.
   for (int i = 0; i < aFace.WireRefs.Length(); ++i)
   {
     const BRepGraphInc::WireRef& aWireRef = aFace.WireRefs.Value(i);
     if (aWireRef.IsOuter)
     {
-      aBB.Add(aNewFace, buildWireForFace(aWireRef.WireIdx));
+      TopoDS_Wire aWire = buildWireForFace(aWireRef.WireIdx);
+      aWire.Orientation(aWireRef.Orientation);
+      aBB.Add(aNewFace, aWire);
       break;
     }
   }
@@ -558,7 +585,11 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
   {
     const BRepGraphInc::WireRef& aWireRef = aFace.WireRefs.Value(i);
     if (!aWireRef.IsOuter)
-      aBB.Add(aNewFace, buildWireForFace(aWireRef.WireIdx));
+    {
+      TopoDS_Wire aWire = buildWireForFace(aWireRef.WireIdx);
+      aWire.Orientation(aWireRef.Orientation);
+      aBB.Add(aNewFace, aWire);
+    }
   }
 
   // Add direct INTERNAL/EXTERNAL vertex children.
@@ -626,6 +657,11 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
       restoreVertexPointReps(anEdgeEnt.EndVertexIdx);
     }
   }
+
+  // NaturalRestriction must be set AFTER wires are added
+  // (BRep_Builder::Add may reset the flag).
+  if (aFace.NaturalRestriction)
+    aBB.NaturalRestriction(aNewFace, true);
 
   aNewFace.Orientation(TopAbs_FORWARD);
   theCache.Bind(aFaceNodeId, aNewFace);

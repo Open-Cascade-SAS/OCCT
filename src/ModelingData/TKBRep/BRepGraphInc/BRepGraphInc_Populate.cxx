@@ -15,6 +15,7 @@
 #include <BRepGraphInc_Storage.hxx>
 
 #include <BRep_CurveOn2Surfaces.hxx>
+#include <BRep_CurveOnClosedSurface.hxx>
 #include <BRep_CurveRepresentation.hxx>
 #include <BRep_PointOnCurve.hxx>
 #include <BRep_PointOnCurveOnSurface.hxx>
@@ -23,7 +24,6 @@
 #include <BRep_TVertex.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepTools.hxx>
-#include <BRepTools_WireExplorer.hxx>
 #include <OSD_Parallel.hxx>
 #include <Poly_Polygon2D.hxx>
 #include <Poly_Polygon3D.hxx>
@@ -78,6 +78,7 @@ struct ExtractedEdge
   GeomAbs_Shape                               PCurveContinuity = GeomAbs_C0;
   gp_Pnt2d                                    PCUV1;
   gp_Pnt2d                                    PCUV2;
+  GeomAbs_Shape                               SeamContinuity = GeomAbs_C0;
   occ::handle<Poly_Polygon3D>                 Polygon3D;
   occ::handle<Poly_Polygon2D>                 PolyOnSurf;
   occ::handle<Poly_Polygon2D>                 PolyOnSurfReversed;
@@ -454,9 +455,12 @@ void extractEdgeInFace(ExtractedEdge&                    theEdgeData,
       theEdgeData.Curve3d, theEdge.Location(), aCurveCombinedLoc);
   }
 
-  // Vertices.
+  // Vertices: use FORWARD-oriented edge for orientation-independent extraction.
   TopoDS_Vertex aVFirst, aVLast;
-  edgeVertices(theEdge, aVFirst, aVLast, theEdgeData.InternalVertices);
+  {
+    const TopoDS_Edge aFwdEdge = TopoDS::Edge(theEdge.Oriented(TopAbs_FORWARD));
+    edgeVertices(aFwdEdge, aVFirst, aVLast, theEdgeData.InternalVertices);
+  }
 
   if (!aVFirst.IsNull())
   {
@@ -485,7 +489,7 @@ void extractEdgeInFace(ExtractedEdge&                    theEdgeData,
     if (!theEdgeData.PCurve2d.IsNull() && !theFaceSurface.IsNull())
       BRep_Tool::UVPoints(aFwdEdge, theForwardFace, theEdgeData.PCUV1, theEdgeData.PCUV2);
 
-    // Second PCurve for seam edges.
+    // Second PCurve for seam edges + seam continuity.
     if (!theEdgeData.PCurve2d.IsNull() && BRep_Tool::IsClosed(aFwdEdge, theForwardFace))
     {
       double aPCFirstRev = 0.0, aPCLastRev = 0.0;
@@ -494,6 +498,27 @@ void extractEdgeInFace(ExtractedEdge&                    theEdgeData,
         BRep_Tool::CurveOnSurface(aRevEdge, theForwardFace, aPCFirstRev, aPCLastRev);
       theEdgeData.PCFirstReversed = aPCFirstRev;
       theEdgeData.PCLastReversed  = aPCLastRev;
+
+      // Extract seam continuity from BRep_CurveOnClosedSurface.
+      const occ::handle<BRep_TEdge>& aTEdge =
+        occ::down_cast<BRep_TEdge>(theEdge.TShape());
+      if (!aTEdge.IsNull())
+      {
+        TopLoc_Location aFaceLoc;
+        const occ::handle<Geom_Surface>& aFaceSurf =
+          BRep_Tool::Surface(theForwardFace, aFaceLoc);
+        const TopLoc_Location aEdgeLoc = aFaceLoc.Predivided(theEdge.Location());
+        for (const occ::handle<BRep_CurveRepresentation>& aCRep : aTEdge->Curves())
+        {
+          if (!aCRep.IsNull() && aCRep->IsCurveOnClosedSurface()
+              && aCRep->IsCurveOnSurface(aFaceSurf, aEdgeLoc))
+          {
+            theEdgeData.SeamContinuity =
+              occ::down_cast<BRep_CurveOnClosedSurface>(aCRep)->Continuity();
+            break;
+          }
+        }
+      }
     }
   }
 
@@ -583,10 +608,13 @@ void extractFaceData(FaceLocalData& theData)
     aWireData.Shape   = aWire;
     aWireData.IsOuter = aWire.IsSame(anOuterWire);
 
-    for (BRepTools_WireExplorer anEdgeExp(aWire, aForwardFace); anEdgeExp.More(); anEdgeExp.Next())
+    for (TopoDS_Iterator anEdgeIt(aWire, false, false); anEdgeIt.More(); anEdgeIt.Next())
     {
+      if (anEdgeIt.Value().ShapeType() != TopAbs_EDGE)
+        continue;
       ExtractedEdge anEdgeData;
-      extractEdgeInFace(anEdgeData, anEdgeExp.Current(), aForwardFace, theData.Surface);
+      extractEdgeInFace(anEdgeData, TopoDS::Edge(anEdgeIt.Value()),
+                        aForwardFace, theData.Surface);
       aWireData.Edges.Append(anEdgeData);
     }
 
@@ -630,12 +658,13 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
       theStorage.BindOriginal(aFace.Id, aCurFace);
     }
 
-    // Link face to parent shell.
+    // Link face to parent shell (with per-instance location for shared TShapes).
     if (aData.ParentShellIdx >= 0)
     {
       BRepGraphInc::FaceRef aRef;
-      aRef.FaceIdx     = aFaceIdx;
-      aRef.Orientation = aData.Orientation;
+      aRef.FaceIdx       = aFaceIdx;
+      aRef.Orientation   = aData.Orientation;
+      aRef.LocalLocation = aCurFace.Location();
       theStorage.ChangeShell(aData.ParentShellIdx).FaceRefs.Append(aRef);
     }
 
@@ -719,6 +748,15 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
                                  gp_Pnt2d(),
                                  TopAbs_REVERSED,
                                  anEdgeData.PolyOnSurfReversed);
+
+        // Store seam continuity on the reversed entry.
+        if (!anEdgeData.PCurve2dReversed.IsNull()
+            && anEdgeData.SeamContinuity != GeomAbs_C0
+            && !anEdgeMut.PCurves.IsEmpty())
+        {
+          anEdgeMut.PCurves.ChangeValue(anEdgeMut.PCurves.Length() - 1).SeamContinuity =
+            anEdgeData.SeamContinuity;
+        }
 
         // Polygon3D (once per edge).
         if (!anEdgeData.Polygon3D.IsNull() && anEdgeMut.Polygon3D.IsNull())

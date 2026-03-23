@@ -653,6 +653,57 @@ TEST(BRepGraphIncTest, Compound_TranslatedChildren_VolumePreserved)
   EXPECT_EQ(countSubShapes(aRecon, TopAbs_FACE), 12);
 }
 
+TEST(BRepGraphIncTest, Cylinder_RoundTrip_BRepDump)
+{
+  BRepPrimAPI_MakeCylinder aCylMaker(5.0, 20.0);
+  const TopoDS_Shape&     aCyl = aCylMaker.Shape();
+
+  BRepGraphInc_Storage aStorage;
+  BRepGraphInc_Populate::Perform(aStorage, aCyl, false);
+  ASSERT_TRUE(aStorage.GetIsDone());
+
+  TopoDS_Shape aRecon = BRepGraphInc_Reconstruct::Node(aStorage, BRepGraph_NodeId::Solid(0));
+  ASSERT_FALSE(aRecon.IsNull());
+
+  // Dump both shapes and compare
+  std::ostringstream anOrigStream, aReconStream;
+  BRepTools::Write(aCyl, anOrigStream);
+  BRepTools::Write(aRecon, aReconStream);
+
+  if (anOrigStream.str() != aReconStream.str())
+  {
+    // Show ALL line differences
+    std::istringstream anOrigLines(anOrigStream.str());
+    std::istringstream aReconLines(aReconStream.str());
+    std::string anOrigLine, aReconLine;
+    int aLineNo = 0;
+    int aDiffCount = 0;
+    while (std::getline(anOrigLines, anOrigLine) && std::getline(aReconLines, aReconLine))
+    {
+      ++aLineNo;
+      if (anOrigLine != aReconLine)
+      {
+        std::cout << "BRep diff at line " << aLineNo << ":" << std::endl;
+        std::cout << "  ORIG:  " << anOrigLine << std::endl;
+        std::cout << "  RECON: " << aReconLine << std::endl;
+        ++aDiffCount;
+      }
+    }
+    std::cout << "Total " << aDiffCount << " line differences. "
+              << "Orig size=" << anOrigStream.str().size()
+              << " Recon size=" << aReconStream.str().size() << std::endl;
+  }
+  else
+  {
+    std::cout << "BRep dumps are IDENTICAL (size=" << anOrigStream.str().size() << ")" << std::endl;
+  }
+
+  const double anOrigArea = computeArea(aCyl);
+  const double aReconArea = computeArea(aRecon);
+  std::cout << "Orig area=" << anOrigArea << " Recon area=" << aReconArea << std::endl;
+  EXPECT_NEAR(aReconArea, anOrigArea, Precision::Confusion());
+}
+
 // ============================================================
 // Edge internal vertices
 // ============================================================
