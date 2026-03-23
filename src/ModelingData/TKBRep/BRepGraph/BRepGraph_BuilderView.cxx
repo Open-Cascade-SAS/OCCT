@@ -82,8 +82,7 @@ BRepGraph_NodeId BRepGraph::BuilderView::AddWireDef(
     aWireDef.OrderedEdges.Append(theEdges.Value(anEdgeIdx));
 
     const int anEdgeDefIdx = theEdges.Value(anEdgeIdx).EdgeDefId.Index;
-    if (!myGraph->myData->myEdgeToWires.IsBound(anEdgeDefIdx))
-      myGraph->myData->myEdgeToWires.Bind(anEdgeDefIdx, NCollection_Vector<int>());
+    myGraph->myData->myEdgeToWires.TryBind(anEdgeDefIdx, NCollection_Vector<int>());
     myGraph->myData->myEdgeToWires.ChangeFind(anEdgeDefIdx).Append(aIdx);
   }
 

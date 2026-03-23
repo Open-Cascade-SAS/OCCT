@@ -18,6 +18,7 @@
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepGraph.hxx>
+#include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_GeomView.hxx>
 #include <BRepGraph_UsagesView.hxx>
@@ -822,4 +823,74 @@ TEST(BRepGraphBuildTest, Box_EdgeParamRange_IsNonDegenerate)
       << "Edge " << anIdx << " has invalid parameter range ["
       << anEdge.ParamFirst << ", " << anEdge.ParamLast << "]";
   }
+}
+
+TEST(BRepGraphBuildTest, AppendShape_OnEmptyGraph_BuildsFaceLevelGraph)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+
+  BRepGraph aGraph;
+  aGraph.Builder().AppendShape(aBox);
+
+  EXPECT_TRUE(aGraph.IsDone());
+  EXPECT_EQ(aGraph.Defs().NbSolids(), 0);
+  EXPECT_EQ(aGraph.Defs().NbShells(), 0);
+  EXPECT_EQ(aGraph.Defs().NbFaces(), 6);
+}
+
+TEST(BRepGraphBuildTest, AppendShape_SameFaceTwice_DedupsDefinition)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+
+  TopExp_Explorer anExp(aBox, TopAbs_FACE);
+  ASSERT_TRUE(anExp.More());
+  const TopoDS_Face aFace = TopoDS::Face(anExp.Current());
+
+  BRepGraph aGraph;
+  aGraph.Builder().AppendShape(aFace);
+  aGraph.Builder().AppendShape(aFace);
+
+  ASSERT_TRUE(aGraph.IsDone());
+  ASSERT_EQ(aGraph.Defs().NbFaces(), 1);
+  EXPECT_EQ(aGraph.Usages().NbFaces(), 2);
+
+  const BRepGraph_TopoNode::FaceDef& aFaceDef = aGraph.Defs().Face(0);
+  EXPECT_EQ(aFaceDef.Usages.Length(), 2);
+}
+
+TEST(BRepGraphBuildTest, AppendShape_AfterBuild_DoesNotCreateNewSolidDefs)
+{
+  BRepPrimAPI_MakeBox aBox1Maker(10.0, 20.0, 30.0);
+  BRepPrimAPI_MakeBox aBox2Maker(15.0, 25.0, 35.0);
+
+  BRepGraph aGraph;
+  aGraph.Build(aBox1Maker.Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  const int aNbSolidsBefore = aGraph.Defs().NbSolids();
+  const int aNbFacesBefore  = aGraph.Defs().NbFaces();
+
+  aGraph.Builder().AppendShape(aBox2Maker.Shape());
+
+  EXPECT_EQ(aGraph.Defs().NbSolids(), aNbSolidsBefore);
+  EXPECT_EQ(aGraph.Defs().NbFaces(), aNbFacesBefore + 6);
+}
+
+TEST(BRepGraphBuildTest, AppendShape_AppendedFaceHasNoParentShellUsage)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+
+  TopExp_Explorer anExp(aBox, TopAbs_FACE);
+  ASSERT_TRUE(anExp.More());
+  const TopoDS_Face aFace = TopoDS::Face(anExp.Current());
+
+  BRepGraph aGraph;
+  aGraph.Builder().AppendShape(aFace);
+
+  ASSERT_EQ(aGraph.Usages().NbFaces(), 1);
+  const BRepGraph_TopoNode::FaceUsage& aFaceUsage = aGraph.Usages().Face(0);
+  EXPECT_FALSE(aFaceUsage.ParentUsage.IsValid());
 }

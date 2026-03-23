@@ -404,10 +404,11 @@ void BRepGraphAlgo_Sewing::assembleVertices(const Handle(NCollection_IncAllocato
     aChanged = false;
     for (NCollection_OrderedDataMap<int, int>::Iterator anIt(aVertexMerge); anIt.More(); anIt.Next())
     {
-      int aTarget = anIt.Value();
-      if (aVertexMerge.IsBound(aTarget))
+      const int  aTarget       = anIt.Value();
+      const int* aMergedTarget = aVertexMerge.Seek(aTarget);
+      if (aMergedTarget != nullptr)
       {
-        anIt.ChangeValue() = aVertexMerge.Find(aTarget);
+        anIt.ChangeValue() = *aMergedTarget;
         aChanged           = true;
       }
     }
@@ -418,15 +419,19 @@ void BRepGraphAlgo_Sewing::assembleVertices(const Handle(NCollection_IncAllocato
   {
     BRepGraph_TopoNode::EdgeDef& anEdge =
       myGraph.Mut().EdgeDef(myFreeEdgesBefore.Value(aFreeEdgeIter).Index);
-    if (anEdge.StartVertexDefId.IsValid() && aVertexMerge.IsBound(anEdge.StartVertexDefId.Index))
+    const int* aMergedStart =
+      anEdge.StartVertexDefId.IsValid() ? aVertexMerge.Seek(anEdge.StartVertexDefId.Index) : nullptr;
+    if (aMergedStart != nullptr)
     {
       anEdge.StartVertexDefId = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Vertex,
-                                                 aVertexMerge.Find(anEdge.StartVertexDefId.Index));
+                                                 *aMergedStart);
     }
-    if (anEdge.EndVertexDefId.IsValid() && aVertexMerge.IsBound(anEdge.EndVertexDefId.Index))
+    const int* aMergedEnd =
+      anEdge.EndVertexDefId.IsValid() ? aVertexMerge.Seek(anEdge.EndVertexDefId.Index) : nullptr;
+    if (aMergedEnd != nullptr)
     {
       anEdge.EndVertexDefId = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Vertex,
-                                               aVertexMerge.Find(anEdge.EndVertexDefId.Index));
+                                               *aMergedEnd);
     }
   }
 }

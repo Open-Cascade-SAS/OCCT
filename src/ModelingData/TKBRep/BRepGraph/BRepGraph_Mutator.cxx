@@ -215,10 +215,11 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
     aWireDef.OrderedEdges = std::move(aNewEdges);
 
     // Update myEdgeToWires: remove this wire from orig, register for SubA and SubB.
-    if (theGraph.myData->myEdgeToWires.IsBound(theEdgeDef.Index))
+    NCollection_Vector<int>* anOrigWireRefsPtr =
+      theGraph.myData->myEdgeToWires.ChangeSeek(theEdgeDef.Index);
+    if (anOrigWireRefsPtr != nullptr)
     {
-      NCollection_Vector<int>& anOrigWireRefs =
-        theGraph.myData->myEdgeToWires.ChangeFind(theEdgeDef.Index);
+      NCollection_Vector<int>& anOrigWireRefs = *anOrigWireRefsPtr;
       for (int aWI = 0; aWI < anOrigWireRefs.Length(); ++aWI)
       {
         if (anOrigWireRefs.Value(aWI) == aWireIdx)
@@ -230,12 +231,10 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
         }
       }
     }
-    if (!theGraph.myData->myEdgeToWires.IsBound(aSubAIdx))
-      theGraph.myData->myEdgeToWires.Bind(aSubAIdx, NCollection_Vector<int>());
+    theGraph.myData->myEdgeToWires.TryBind(aSubAIdx, NCollection_Vector<int>());
     theGraph.myData->myEdgeToWires.ChangeFind(aSubAIdx).Append(aWireIdx);
 
-    if (!theGraph.myData->myEdgeToWires.IsBound(aSubBIdx))
-      theGraph.myData->myEdgeToWires.Bind(aSubBIdx, NCollection_Vector<int>());
+    theGraph.myData->myEdgeToWires.TryBind(aSubBIdx, NCollection_Vector<int>());
     theGraph.myData->myEdgeToWires.ChangeFind(aSubBIdx).Append(aWireIdx);
 
     theGraph.markModified(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Wire, aWireIdx));
@@ -268,10 +267,11 @@ void BRepGraph_Mutator::ReplaceEdgeInWire(BRepGraph&       theGraph,
       }
 
       // Update edge-to-wire reverse index.
-      if (theGraph.myData->myEdgeToWires.IsBound(theOldEdgeDef.Index))
+      NCollection_Vector<int>* anOldWiresPtr =
+        theGraph.myData->myEdgeToWires.ChangeSeek(theOldEdgeDef.Index);
+      if (anOldWiresPtr != nullptr)
       {
-        NCollection_Vector<int>& anOldWires =
-          theGraph.myData->myEdgeToWires.ChangeFind(theOldEdgeDef.Index);
+        NCollection_Vector<int>& anOldWires = *anOldWiresPtr;
         for (int aWIdx = 0; aWIdx < anOldWires.Length(); ++aWIdx)
         {
           if (anOldWires.Value(aWIdx) == theWireDefIdx)
@@ -283,8 +283,7 @@ void BRepGraph_Mutator::ReplaceEdgeInWire(BRepGraph&       theGraph,
           }
         }
       }
-      if (!theGraph.myData->myEdgeToWires.IsBound(theNewEdgeDef.Index))
-        theGraph.myData->myEdgeToWires.Bind(theNewEdgeDef.Index, NCollection_Vector<int>());
+      theGraph.myData->myEdgeToWires.TryBind(theNewEdgeDef.Index, NCollection_Vector<int>());
       theGraph.myData->myEdgeToWires.ChangeFind(theNewEdgeDef.Index).Append(theWireDefIdx);
     }
   }

@@ -15,13 +15,16 @@
 #include <BRepGraph_AttrRegistry.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_History.hxx>
+#include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_RelEdgesView.hxx>
 #include <BRepGraph_RelEdge.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <NCollection_Vector.hxx>
+#include <Standard_Failure.hxx>
 #include <Standard_GUID.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <gp_Pnt.hxx>
 
 #include <gtest/gtest.h>
 
@@ -494,4 +497,116 @@ TEST(BRepGraphAttrRegistryTest, Find_ByKey_ReturnsCorrectGUID)
   const bool aOk = BRepGraph_AttrRegistry::Find(aKey, aFoundGUID);
   EXPECT_TRUE(aOk);
   EXPECT_TRUE(aFoundGUID == aGUID);
+}
+
+TEST_F(BRepGraphHistoryTest, ApplyModification_WhenModifierThrows_DoesNotRecordHistory)
+{
+  const int aNbRecordsBefore = myGraph.History().NbRecords();
+
+  const BRepGraph_NodeId anEdge(BRepGraph_NodeId::Kind::Edge, 0);
+
+  EXPECT_THROW(
+    myGraph.ApplyModification(
+      anEdge,
+      [](BRepGraph&, BRepGraph_NodeId) -> NCollection_Vector<BRepGraph_NodeId> {
+        throw Standard_Failure("Synthetic failure");
+      },
+      "ThrowingModification"),
+    Standard_Failure);
+
+  EXPECT_EQ(myGraph.History().NbRecords(), aNbRecordsBefore);
+}
+
+TEST_F(BRepGraphHistoryTest, SplitEdge_RewritesAllContainingWires)
+{
+  ASSERT_GT(myGraph.Defs().NbEdges(), 0);
+
+  const BRepGraph_NodeId             anEdgeId(BRepGraph_NodeId::Kind::Edge, 0);
+  const BRepGraph_TopoNode::EdgeDef& anEdgeDef = myGraph.Defs().Edge(anEdgeId.Index);
+
+  const double aSplitParam = 0.5 * (anEdgeDef.ParamFirst + anEdgeDef.ParamLast);
+
+  const int              aNbVerticesBefore = myGraph.Defs().NbVertices();
+  const gp_Pnt           aSplitPoint(1.0, 2.0, 3.0);
+  const BRepGraph_NodeId aSplitVertex = myGraph.Builder().AddVertexDef(aSplitPoint, 1.0e-7);
+
+  ASSERT_TRUE(aSplitVertex.IsValid());
+  EXPECT_EQ(myGraph.Defs().NbVertices(), aNbVerticesBefore + 1);
+
+  const NCollection_Vector<int>& aWireIndices = myGraph.RelEdges().WiresOfEdge(anEdgeId.Index);
+  ASSERT_GT(aWireIndices.Length(), 0);
+
+  const int aNbEdgesBefore = myGraph.Defs().NbEdges();
+
+  BRepGraph_NodeId aSubA;
+  BRepGraph_NodeId aSubB;
+
+  myGraph.Mut().SplitEdge(anEdgeId, aSplitVertex, aSplitParam, aSubA, aSubB);
+
+  ASSERT_TRUE(aSubA.IsValid());
+  ASSERT_TRUE(aSubB.IsValid());
+  EXPECT_EQ(myGraph.Defs().NbEdges(), aNbEdgesBefore + 2);
+
+  for (int aWireIter = 0; aWireIter < aWireIndices.Length(); ++aWireIter)
+  {
+    const BRepGraph_TopoNode::WireDef& aWire = myGraph.Defs().Wire(aWireIndices.Value(aWireIter));
+
+    bool hasOld = false;
+    bool hasSubA = false;
+    bool hasSubB = false;
+
+    for (int anIdx = 0; anIdx < aWire.OrderedEdges.Length(); ++anIdx)
+    {
+      const BRepGraph_NodeId anId = aWire.OrderedEdges.Value(anIdx).EdgeDefId;
+      if (anId == anEdgeId)
+      {
+        hasOld = true;
+      }
+      else if (anId == aSubA)
+      {
+        hasSubA = true;
+      }
+      else if (anId == aSubB)
+      {
+        hasSubB = true;
+      }
+    }
+
+    EXPECT_FALSE(hasOld);
+    EXPECT_TRUE(hasSubA);
+    EXPECT_TRUE(hasSubB);
+  }
+}
+
+TEST_F(BRepGraphHistoryTest, ApplyModification_SplitEdge_RecordsBothDerivedNodes)
+{
+  ASSERT_GT(myGraph.Defs().NbEdges(), 0);
+
+  const BRepGraph_NodeId             anEdgeId(BRepGraph_NodeId::Kind::Edge, 0);
+  const BRepGraph_TopoNode::EdgeDef& anEdgeDef = myGraph.Defs().Edge(anEdgeId.Index);
+  const double                       aSplitParam = 0.5 * (anEdgeDef.ParamFirst + anEdgeDef.ParamLast);
+
+  const BRepGraph_NodeId aSplitVertex = myGraph.Builder().AddVertexDef(gp_Pnt(4.0, 5.0, 6.0), 1.0e-7);
+  ASSERT_TRUE(aSplitVertex.IsValid());
+
+  const int aNbRecordsBefore = myGraph.History().NbRecords();
+
+  myGraph.ApplyModification(
+    anEdgeId,
+    [&](BRepGraph& theGraph, BRepGraph_NodeId theTarget) -> NCollection_Vector<BRepGraph_NodeId> {
+      BRepGraph_NodeId aSubA;
+      BRepGraph_NodeId aSubB;
+      theGraph.Mut().SplitEdge(theTarget, aSplitVertex, aSplitParam, aSubA, aSubB);
+
+      NCollection_Vector<BRepGraph_NodeId> aResult;
+      aResult.Append(aSubA);
+      aResult.Append(aSubB);
+      return aResult;
+    },
+    "SplitEdge");
+
+  EXPECT_EQ(myGraph.History().NbRecords(), aNbRecordsBefore + 1);
+
+  const NCollection_Vector<BRepGraph_NodeId> aDerived = myGraph.History().FindDerived(anEdgeId);
+  EXPECT_GE(aDerived.Length(), 2);
 }

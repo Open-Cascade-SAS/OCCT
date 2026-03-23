@@ -320,3 +320,137 @@ TEST_F(BRepGraphViewsTest, History_MutableAccessor)
   myGraph.History().SetEnabled(true);
   EXPECT_TRUE(myGraph.History().IsEnabled());
 }
+
+TEST_F(BRepGraphViewsTest, RelEdges_AddRelEdge_PopulatesOutAndInMaps)
+{
+  ASSERT_GE(myGraph.Defs().NbFaces(), 2);
+
+  const BRepGraph_NodeId aFace0(BRepGraph_NodeId::Kind::Face, 0);
+  const BRepGraph_NodeId aFace1(BRepGraph_NodeId::Kind::Face, 1);
+
+  myGraph.Mut().AddRelEdge(aFace0, aFace1, BRepGraph_RelEdge::Kind::UserDefined);
+
+  bool hasOut = false;
+  const NCollection_Vector<BRepGraph_RelEdge>* aOut = myGraph.RelEdges().OutOf(aFace0);
+  ASSERT_NE(aOut, nullptr);
+  for (int anIdx = 0; anIdx < aOut->Length(); ++anIdx)
+  {
+    const BRepGraph_RelEdge& anEdge = aOut->Value(anIdx);
+    if (anEdge.RelKind == BRepGraph_RelEdge::Kind::UserDefined
+        && anEdge.Source == aFace0 && anEdge.Target == aFace1)
+    {
+      hasOut = true;
+      break;
+    }
+  }
+
+  bool hasIn = false;
+  const NCollection_Vector<BRepGraph_RelEdge>* anIn = myGraph.RelEdges().InOf(aFace1);
+  ASSERT_NE(anIn, nullptr);
+  for (int anIdx = 0; anIdx < anIn->Length(); ++anIdx)
+  {
+    const BRepGraph_RelEdge& anEdge = anIn->Value(anIdx);
+    if (anEdge.RelKind == BRepGraph_RelEdge::Kind::UserDefined
+        && anEdge.Source == aFace0 && anEdge.Target == aFace1)
+    {
+      hasIn = true;
+      break;
+    }
+  }
+
+  EXPECT_TRUE(hasOut);
+  EXPECT_TRUE(hasIn);
+}
+
+TEST_F(BRepGraphViewsTest, RelEdges_RemoveRelEdges_CleansOutAndInMaps)
+{
+  ASSERT_GE(myGraph.Defs().NbFaces(), 2);
+
+  const BRepGraph_NodeId aFace0(BRepGraph_NodeId::Kind::Face, 0);
+  const BRepGraph_NodeId aFace1(BRepGraph_NodeId::Kind::Face, 1);
+
+  myGraph.Mut().AddRelEdge(aFace0, aFace1, BRepGraph_RelEdge::Kind::UserDefined);
+  myGraph.Mut().RemoveRelEdges(aFace0, aFace1, BRepGraph_RelEdge::Kind::UserDefined);
+
+  bool hasOut = false;
+  const NCollection_Vector<BRepGraph_RelEdge>* aOut = myGraph.RelEdges().OutOf(aFace0);
+  if (aOut != nullptr)
+  {
+    for (int anIdx = 0; anIdx < aOut->Length(); ++anIdx)
+    {
+      const BRepGraph_RelEdge& anEdge = aOut->Value(anIdx);
+      if (anEdge.RelKind == BRepGraph_RelEdge::Kind::UserDefined
+          && anEdge.Source == aFace0 && anEdge.Target == aFace1)
+      {
+        hasOut = true;
+        break;
+      }
+    }
+  }
+
+  bool hasIn = false;
+  const NCollection_Vector<BRepGraph_RelEdge>* anIn = myGraph.RelEdges().InOf(aFace1);
+  if (anIn != nullptr)
+  {
+    for (int anIdx = 0; anIdx < anIn->Length(); ++anIdx)
+    {
+      const BRepGraph_RelEdge& anEdge = anIn->Value(anIdx);
+      if (anEdge.RelKind == BRepGraph_RelEdge::Kind::UserDefined
+          && anEdge.Source == aFace0 && anEdge.Target == aFace1)
+      {
+        hasIn = true;
+        break;
+      }
+    }
+  }
+
+  EXPECT_FALSE(hasOut);
+  EXPECT_FALSE(hasIn);
+}
+
+TEST_F(BRepGraphViewsTest, RelEdges_MultipleRelEdges_KeepDirectionality)
+{
+  ASSERT_GE(myGraph.Defs().NbFaces(), 3);
+
+  const BRepGraph_NodeId aFace0(BRepGraph_NodeId::Kind::Face, 0);
+  const BRepGraph_NodeId aFace1(BRepGraph_NodeId::Kind::Face, 1);
+  const BRepGraph_NodeId aFace2(BRepGraph_NodeId::Kind::Face, 2);
+
+  myGraph.Mut().AddRelEdge(aFace0, aFace1, BRepGraph_RelEdge::Kind::UserDefined);
+  myGraph.Mut().AddRelEdge(aFace0, aFace2, BRepGraph_RelEdge::Kind::UserDefined);
+
+  bool has01Out = false;
+  bool has02Out = false;
+  const NCollection_Vector<BRepGraph_RelEdge>* aOut0 = myGraph.RelEdges().OutOf(aFace0);
+  ASSERT_NE(aOut0, nullptr);
+  for (int anIdx = 0; anIdx < aOut0->Length(); ++anIdx)
+  {
+    const BRepGraph_RelEdge& anEdge = aOut0->Value(anIdx);
+    if (anEdge.RelKind == BRepGraph_RelEdge::Kind::UserDefined
+        && anEdge.Source == aFace0 && anEdge.Target == aFace1)
+      has01Out = true;
+    if (anEdge.RelKind == BRepGraph_RelEdge::Kind::UserDefined
+        && anEdge.Source == aFace0 && anEdge.Target == aFace2)
+      has02Out = true;
+  }
+
+  bool has10Out = false;
+  const NCollection_Vector<BRepGraph_RelEdge>* aOut1 = myGraph.RelEdges().OutOf(aFace1);
+  if (aOut1 != nullptr)
+  {
+    for (int anIdx = 0; anIdx < aOut1->Length(); ++anIdx)
+    {
+      const BRepGraph_RelEdge& anEdge = aOut1->Value(anIdx);
+      if (anEdge.RelKind == BRepGraph_RelEdge::Kind::UserDefined
+          && anEdge.Source == aFace1 && anEdge.Target == aFace0)
+      {
+        has10Out = true;
+        break;
+      }
+    }
+  }
+
+  EXPECT_TRUE(has01Out);
+  EXPECT_TRUE(has02Out);
+  EXPECT_FALSE(has10Out);
+}

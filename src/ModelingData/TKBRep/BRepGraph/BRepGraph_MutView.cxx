@@ -139,15 +139,13 @@ int BRepGraph::MutView::AddRelEdge(BRepGraph_NodeId  theFrom,
   anEdge.Source = theFrom;
   anEdge.Target = theTo;
 
-  if (!myGraph->myData->myOutRelEdges.IsBound(theFrom))
-    myGraph->myData->myOutRelEdges.Bind(theFrom, NCollection_Vector<BRepGraph_RelEdge>());
-  NCollection_Vector<BRepGraph_RelEdge>& anOutVec =
-    myGraph->myData->myOutRelEdges.ChangeFind(theFrom);
+  myGraph->myData->myOutRelEdges.TryBind(theFrom, NCollection_Vector<BRepGraph_RelEdge>());
+  myGraph->myData->myInRelEdges.TryBind(theTo, NCollection_Vector<BRepGraph_RelEdge>());
+
+  NCollection_Vector<BRepGraph_RelEdge>& anOutVec = myGraph->myData->myOutRelEdges.ChangeFind(theFrom);
   anOutVec.Append(anEdge);
   const int anIdx = anOutVec.Length() - 1;
 
-  if (!myGraph->myData->myInRelEdges.IsBound(theTo))
-    myGraph->myData->myInRelEdges.Bind(theTo, NCollection_Vector<BRepGraph_RelEdge>());
   myGraph->myData->myInRelEdges.ChangeFind(theTo).Append(anEdge);
 
   return anIdx;

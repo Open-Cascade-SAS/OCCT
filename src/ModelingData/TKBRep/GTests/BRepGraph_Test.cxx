@@ -647,6 +647,81 @@ TEST_F(BRepGraphTest, Shape_InvalidatedAfterMutation)
   EXPECT_FALSE(aBefore.IsSame(anAfter));
 }
 
+TEST(BRepGraphUIDTest, UIDsDisabled_DefaultUIDIsInvalid)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+
+  BRepGraph aGraph;
+  aGraph.Build(aBoxMaker.Shape());
+
+  ASSERT_TRUE(aGraph.IsDone());
+  ASSERT_GT(aGraph.Defs().NbFaces(), 0);
+
+  const BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
+  const BRepGraph_UID    aUID = aGraph.UIDs().Of(aFaceId);
+
+  EXPECT_FALSE(aGraph.UIDs().IsEnabled());
+  EXPECT_FALSE(aUID.IsValid());
+}
+
+TEST(BRepGraphUIDTest, UIDsEnabled_AssignsValidUID)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+
+  BRepGraph aGraph;
+  aGraph.SetUIDEnabled(true);
+  aGraph.Build(aBoxMaker.Shape());
+
+  ASSERT_TRUE(aGraph.IsDone());
+  ASSERT_GT(aGraph.Defs().NbFaces(), 0);
+
+  const BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
+  const BRepGraph_UID    aUID = aGraph.UIDs().Of(aFaceId);
+
+  EXPECT_TRUE(aGraph.UIDs().IsEnabled());
+  EXPECT_TRUE(aUID.IsValid());
+  EXPECT_TRUE(aGraph.UIDs().Has(aUID));
+  EXPECT_EQ(aGraph.UIDs().NodeIdFrom(aUID), aFaceId);
+}
+
+TEST(BRepGraphUIDTest, UIDsGeneration_IncrementsAcrossBuilds)
+{
+  BRepPrimAPI_MakeBox aBoxMaker1(10.0, 20.0, 30.0);
+  BRepPrimAPI_MakeBox aBoxMaker2(11.0, 21.0, 31.0);
+
+  BRepGraph aGraph;
+  aGraph.SetUIDEnabled(true);
+
+  aGraph.Build(aBoxMaker1.Shape());
+  const uint32_t aGeneration1 = aGraph.UIDs().Generation();
+
+  aGraph.Build(aBoxMaker2.Shape());
+  const uint32_t aGeneration2 = aGraph.UIDs().Generation();
+
+  EXPECT_GT(aGeneration1, 0u);
+  EXPECT_EQ(aGeneration2, aGeneration1 + 1);
+}
+
+TEST(BRepGraphUIDTest, StaleUID_HasReturnsFalseAfterRebuild)
+{
+  BRepPrimAPI_MakeBox aBoxMaker1(10.0, 20.0, 30.0);
+  BRepPrimAPI_MakeBox aBoxMaker2(11.0, 21.0, 31.0);
+
+  BRepGraph aGraph;
+  aGraph.SetUIDEnabled(true);
+
+  aGraph.Build(aBoxMaker1.Shape());
+  ASSERT_GT(aGraph.Defs().NbFaces(), 0);
+  const BRepGraph_UID anOldUID =
+    aGraph.UIDs().Of(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, 0));
+  ASSERT_TRUE(anOldUID.IsValid());
+  ASSERT_TRUE(aGraph.UIDs().Has(anOldUID));
+
+  aGraph.Build(aBoxMaker2.Shape());
+
+  EXPECT_FALSE(aGraph.UIDs().Has(anOldUID));
+}
+
 // ===================================================================
 // Group 2: History Tracking
 // ===================================================================

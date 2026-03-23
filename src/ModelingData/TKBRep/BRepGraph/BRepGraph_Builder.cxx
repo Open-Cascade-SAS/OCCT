@@ -427,8 +427,7 @@ void BRepGraph_Builder::registerFaceData(BRepGraph&          theGraph,
           theGraph.myData->myWireDefs.ChangeValue(aWireDefIdx).OrderedEdges.Append(aWEEntry);
 
           // Populate edge-to-wire reverse index.
-          if (!theGraph.myData->myEdgeToWires.IsBound(anEdgeDefId.Index))
-            theGraph.myData->myEdgeToWires.Bind(anEdgeDefId.Index, NCollection_Vector<int>());
+          theGraph.myData->myEdgeToWires.TryBind(anEdgeDefId.Index, NCollection_Vector<int>());
           theGraph.myData->myEdgeToWires.ChangeFind(anEdgeDefId.Index).Append(aWireDefIdx);
 
           // Track first/last vertex for closure check.
