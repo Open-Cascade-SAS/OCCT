@@ -1,0 +1,57 @@
+// Copyright (c) 2026 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _BRepGraphInc_Reconstruct_HeaderFile
+#define _BRepGraphInc_Reconstruct_HeaderFile
+
+#include <BRepGraph_NodeId.hxx>
+#include <Standard_DefineAlloc.hxx>
+#include <TopoDS_Shape.hxx>
+
+#include <NCollection_DataMap.hxx>
+
+struct BRepGraphInc_Storage;
+
+//! @brief Reconstruct TopoDS shapes from incidence-table storage.
+//!
+//! Mirrors BRepGraph_Reconstruct but reads from BRepGraphInc_Storage
+//! entity structs and EdgeFaceGeom rows instead of Def/Usage objects.
+class BRepGraphInc_Reconstruct
+{
+public:
+  DEFINE_STANDARD_ALLOC
+
+  //! Shared cache for edge/vertex shapes during multi-face reconstruction.
+  using Cache = NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape>;
+
+  //! Reconstruct a TopoDS_Shape from an entity node.
+  //! @param[in] theStorage  incidence storage
+  //! @param[in] theNode     entity node id
+  //! @return reconstructed shape
+  static Standard_EXPORT TopoDS_Shape Node(const BRepGraphInc_Storage& theStorage,
+                                           BRepGraph_NodeId            theNode);
+
+  //! Reconstruct a face with shared edge/vertex cache for multi-face contexts.
+  //! @param[in] theStorage    incidence storage
+  //! @param[in] theFaceIdx    face entity index
+  //! @param[in,out] theCache  shared cache for edge and vertex shapes
+  //! @return reconstructed face shape
+  static Standard_EXPORT TopoDS_Shape FaceWithCache(const BRepGraphInc_Storage& theStorage,
+                                                    int                         theFaceIdx,
+                                                    Cache&                      theCache);
+
+private:
+  BRepGraphInc_Reconstruct() = delete;
+};
+
+#endif // _BRepGraphInc_Reconstruct_HeaderFile

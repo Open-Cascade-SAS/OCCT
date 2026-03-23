@@ -15,6 +15,7 @@
 #include <BRepGraph_Builder.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_Data.hxx>
+#include <BRepGraphInc_Populate.hxx>
 
 #include <BRep_CurveOn2Surfaces.hxx>
 #include <BRep_CurveRepresentation.hxx>
@@ -1005,6 +1006,18 @@ void BRepGraph_Builder::Perform(BRepGraph& theGraph, const TopoDS_Shape& theShap
   }
 
   theGraph.myData->myIsDone = true;
+
+  // Dual-write: populate incidence-table storage from the same input shape.
+  // During migration, the legacy Def/Usage storage remains authoritative.
+  // The incidence storage is derived and used for verification only.
+  // After Phase 5, incidence storage becomes the sole authoritative store.
+  BRepGraphInc_Populate::Perform(theGraph.myData->myIncStorage, theShape, theParallel);
+  if (!theGraph.myData->myIncStorage.IsDone)
+  {
+    // Incidence population failed — log but do not fail the legacy build.
+    // This is a non-fatal condition during the dual-write migration phase.
+    theGraph.myData->myIncStorage.Clear();
+  }
 }
 
 //=================================================================================================

@@ -22,6 +22,7 @@
 #include <BRepGraph_NodeCache.hxx>
 #include <BRepGraph_TopoNode.hxx>
 #include <BRepGraph_History.hxx>
+#include <BRepGraphInc_Storage.hxx>
 
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_TShape.hxx>
@@ -92,6 +93,9 @@ struct BRepGraph_Data
   BRepGraph_History myHistoryLog;
 
   bool myIsDone = false;
+
+  //! Incidence-table storage (Phase 1 dual-write, authoritative in later phases).
+  BRepGraphInc_Storage myIncStorage;
 
   //! Shapes from Build().
   NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape> myOriginalShapes;

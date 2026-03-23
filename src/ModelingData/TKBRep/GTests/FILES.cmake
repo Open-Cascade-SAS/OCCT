@@ -5,6 +5,7 @@ set(OCCT_TKBRep_GTests_FILES
   BRep_Tool_Test.cxx
   BRepAdaptor_CompCurve_Test.cxx
   BRepGraph_Analyze_Test.cxx
+  BRepGraphInc_Test.cxx
   BRepGraph_API_Test.cxx
   BRepGraph_BackRefManager_Test.cxx
   BRepGraph_Benchmark_Test.cxx
