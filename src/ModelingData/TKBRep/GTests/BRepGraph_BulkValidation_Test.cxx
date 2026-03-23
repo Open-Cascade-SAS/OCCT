@@ -247,34 +247,31 @@ TEST_P(BRepGraphBulkValidation, RoundTrip)
     << "], reconInvalidityTypes=[" << aReconInvalidityTypes
     << "): " << aFilePath;
 
-  // Debug: dump shape structure comparison
+  // Debug: dump BRepTools::Write comparison
   if (isReconValid != isOrigValid)
   {
-    // Dump shape tree with orientations
-    std::function<void(const TopoDS_Shape&, int, std::ostream&)> dumpTree;
-    dumpTree = [&dumpTree](const TopoDS_Shape& s, int depth, std::ostream& os) {
-      const char* types[] = {"Co","CS","So","Sh","Fa","Wi","Ed","Ve","??"};
-      const char* oris[]  = {"F","R","I","E"};
-      std::string indent(depth * 2, ' ');
-      os << indent << types[std::min((int)s.ShapeType(), 8)]
-         << " o=" << oris[s.Orientation()]
-         << " cl=" << s.Closed()
-         << (s.Location().IsIdentity() ? "" : " LOC")
-         << " @" << s.TShape().get() << "\n";
-      for (TopoDS_Iterator it(s, false, false); it.More(); it.Next())
-        dumpTree(it.Value(), depth + 1, os);
-    };
-    std::ostringstream anOrigTree, aReconTree;
-    dumpTree(anOrigShape, 0, anOrigTree);
-    dumpTree(aReconShape, 0, aReconTree);
-    if (anOrigTree.str() != aReconTree.str())
+    std::ostringstream anOrigStream, aReconStream;
+    BRepTools::Write(anOrigShape, anOrigStream);
+    BRepTools::Write(aReconShape, aReconStream);
+    const std::string anOrigDump  = anOrigStream.str();
+    const std::string aReconDump = aReconStream.str();
+    if (anOrigDump == aReconDump)
     {
-      std::cerr << "\n[ORIG TREE]\n" << anOrigTree.str()
-                << "\n[RECON TREE]\n" << aReconTree.str();
+      std::cerr << "\n[DEBUG] BRepTools dumps IDENTICAL\n";
     }
     else
     {
-      std::cerr << "\n[DEBUG] Shape trees are IDENTICAL — difference is in geometry/representation\n";
+      // Find first difference
+      size_t aDiffPos = 0;
+      while (aDiffPos < anOrigDump.size() && aDiffPos < aReconDump.size()
+             && anOrigDump[aDiffPos] == aReconDump[aDiffPos])
+        ++aDiffPos;
+      const size_t aCtxStart = aDiffPos > 300 ? aDiffPos - 300 : 0;
+      const size_t aCtxEnd   = std::min(aDiffPos + 300, std::min(anOrigDump.size(), aReconDump.size()));
+      std::cerr << "\n[DEBUG] First diff at byte " << aDiffPos
+                << " (orig=" << anOrigDump.size() << ", recon=" << aReconDump.size() << ")\n"
+                << "[ORIG ] ..." << anOrigDump.substr(aCtxStart, aCtxEnd - aCtxStart) << "...\n"
+                << "[RECON] ..." << aReconDump.substr(aCtxStart, aCtxEnd - aCtxStart) << "...\n";
     }
   }
 }

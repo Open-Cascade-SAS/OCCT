@@ -259,9 +259,6 @@ struct CoEdgeEntity : public BaseEntity
 
   //! Representation index into Storage::myCurves2D (-1 for free-wire coedges).
   int Curve2DRepIdx = -1;
-  //! True if PCurve was computed on-the-fly (projected onto plane), not stored in original BRep.
-  //! Computed PCurves are kept for graph algorithms but skipped during Reconstruct.
-  bool IsPCurveComputed = false;
   double               ParamFirst = 0.0;
   double               ParamLast  = 0.0;
   GeomAbs_Shape        Continuity = GeomAbs_C0; //!< Geometric continuity across face pairs

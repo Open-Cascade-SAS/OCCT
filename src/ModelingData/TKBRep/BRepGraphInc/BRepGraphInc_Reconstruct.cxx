@@ -485,7 +485,10 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
 
   // Build wires for this face.
   // Wire TShape is cached (1 NodeId = 1 TShape); PCurve attachment is per-face.
-  auto buildWireForFace = [&](int theWireIdx) -> TopoDS_Wire {
+  // theWireLocation is the wire's LocalLocation within the face (WireRef.LocalLocation),
+  // needed to compute the correct CurveRepresentation location for PCurve binding.
+  auto buildWireForFace = [&](int theWireIdx,
+                              const TopLoc_Location& theWireLocation) -> TopoDS_Wire {
     const BRepGraphInc::WireEntity& aWire = theStorage.Wire(theWireIdx);
     BRepGraph_NodeId aWireNodeId = BRepGraph_NodeId::Wire(theWireIdx);
 
@@ -520,12 +523,28 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
 
     // Attach PCurves/polygons for THIS face context onto shared edge TShapes.
     // Each CoEdge carries its PCurve directly — no need to scan edge.PCurves by face.
+    // The edge must temporarily carry its composed face-hierarchy location so that
+    // BRep_Builder::UpdateEdge computes the correct CurveRepresentation storage key.
+    // Without this, PCurves stored with Identity location become unfindable when
+    // wire/edge instance locations within the face are non-Identity.
     for (int i = 0; i < aWire.CoEdgeRefs.Length(); ++i)
     {
-      const int aCoEdgeEntIdx = aWire.CoEdgeRefs.Value(i).CoEdgeIdx;
-      const BRepGraphInc::CoEdgeEntity& aCoEdge = theStorage.CoEdge(aCoEdgeEntIdx);
+      const BRepGraphInc::CoEdgeRef& aCoEdgeRef = aWire.CoEdgeRefs.Value(i);
+      const BRepGraphInc::CoEdgeEntity& aCoEdge = theStorage.CoEdge(aCoEdgeRef.CoEdgeIdx);
       TopoDS_Edge anEdge = getOrBuildEdge(aCoEdge.EdgeIdx);
       const BRepGraphInc::EdgeEntity& anEdgeEnt = theStorage.Edge(aCoEdge.EdgeIdx);
+
+      // Compute composed edge location within the face TShape hierarchy.
+      // This is wire-in-face Location * edge-in-wire Location.
+      const TopLoc_Location aEdgeInFaceLoc = theWireLocation * aCoEdgeRef.LocalLocation;
+
+      // Temporarily apply composed location to the bare cached edge before UpdateEdge.
+      // UpdateEdge computes: stored_loc = L.Predivided(E.Location()) = L * E.Loc^-1.
+      // With L = Identity and E.Loc = aEdgeInFaceLoc:
+      //   stored_loc = aEdgeInFaceLoc^-1
+      // Later, BRep_Tool search computes the same loc from face/wire/edge context. ✓
+      if (!aEdgeInFaceLoc.IsIdentity())
+        anEdge.Location(aEdgeInFaceLoc);
 
       // Collect PCurve(s): primary from this coedge, seam from paired coedge.
       occ::handle<Geom2d_Curve> aPC1, aPC2;
@@ -534,7 +553,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
       bool          aHasUV = false;
       GeomAbs_Shape aSeamContinuity = GeomAbs_C0;
 
-      if (aCoEdge.Curve2DRepIdx >= 0 && !aCoEdge.IsPCurveComputed)
+      if (aCoEdge.Curve2DRepIdx >= 0)
       {
         aPC1     = theStorage.Curve2DRep(aCoEdge.Curve2DRepIdx).Curve;
         aPCFirst = aCoEdge.ParamFirst;
@@ -574,6 +593,9 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
         // Restore seam continuity (UpdateEdge creates CurveOnClosedSurface with C0).
         if (aSeamContinuity != GeomAbs_C0)
         {
+          // The stored CurveRepresentation location matches the edge's current location.
+          const TopLoc_Location aCRLoc = aEdgeInFaceLoc.IsIdentity()
+            ? TopLoc_Location() : aEdgeInFaceLoc.Inverted();
           const occ::handle<BRep_TEdge>& aTEdge =
             occ::down_cast<BRep_TEdge>(anEdge.TShape());
           if (!aTEdge.IsNull())
@@ -581,7 +603,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
             for (occ::handle<BRep_CurveRepresentation>& aCR : aTEdge->ChangeCurves())
             {
               if (!aCR.IsNull() && aCR->IsCurveOnClosedSurface()
-                  && aCR->IsCurveOnSurface(aFaceSurface, TopLoc_Location()))
+                  && aCR->IsCurveOnSurface(aFaceSurface, aCRLoc))
               {
                 occ::down_cast<BRep_CurveOnClosedSurface>(aCR)->Continuity(aSeamContinuity);
                 break;
@@ -633,6 +655,9 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
           aBB.UpdateEdge(anEdge, aPolyOnTriRep.Polygon, aTri, TopLoc_Location());
       }
 
+      // Reset temporary edge location after all UpdateEdge calls.
+      if (!aEdgeInFaceLoc.IsIdentity())
+        anEdge.Location(TopLoc_Location());
     }
 
     return aNewWire;
@@ -645,7 +670,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
     const BRepGraphInc::WireRef& aWireRef = aFace.WireRefs.Value(i);
     if (aWireRef.IsOuter)
     {
-      TopoDS_Wire aWire = buildWireForFace(aWireRef.WireIdx);
+      TopoDS_Wire aWire = buildWireForFace(aWireRef.WireIdx, aWireRef.LocalLocation);
       aWire.Orientation(aWireRef.Orientation);
       if (!aWireRef.LocalLocation.IsIdentity())
         aWire.Location(aWireRef.LocalLocation);
@@ -658,7 +683,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
     const BRepGraphInc::WireRef& aWireRef = aFace.WireRefs.Value(i);
     if (!aWireRef.IsOuter)
     {
-      TopoDS_Wire aWire = buildWireForFace(aWireRef.WireIdx);
+      TopoDS_Wire aWire = buildWireForFace(aWireRef.WireIdx, aWireRef.LocalLocation);
       aWire.Orientation(aWireRef.Orientation);
       if (!aWireRef.LocalLocation.IsIdentity())
         aWire.Location(aWireRef.LocalLocation);

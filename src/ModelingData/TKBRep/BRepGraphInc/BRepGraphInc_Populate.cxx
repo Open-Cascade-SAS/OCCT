@@ -70,7 +70,6 @@ struct ExtractedEdge
   NCollection_Vector<ExtractedInternalVertex> InternalVertices;
   TopAbs_Orientation                          OrientationInWire = TopAbs_FORWARD;
   occ::handle<Geom2d_Curve>                   PCurve2d;
-  bool                                        IsPCurveComputed = false;
   double                                      PCFirst = 0.0;
   double                                      PCLast  = 0.0;
   occ::handle<Geom2d_Curve>                   PCurve2dReversed;
@@ -111,6 +110,59 @@ struct FaceLocalData
   NCollection_Vector<ExtractedWire>                   Wires;
   NCollection_Vector<ExtractedInternalVertex> DirectVertices; //!< INTERNAL/EXTERNAL vertex children
 };
+
+//! Extract stored PCurve(s) from edge for a given face's surface.
+//! Iterates BRep_TEdge::Curves() directly, matching by surface handle only.
+//! This avoids BRep_Tool::CurveOnSurface which can fail due to
+//! TopLoc_Location structural equality bug and can compute phantom PCurves
+//! via CurveOnPlane for planar surfaces.
+//! For seam edges (IsCurveOnClosedSurface), extracts both PCurves + continuity.
+//! @param[in]  theEdge      edge (FORWARD-oriented for consistent PCurve ordering)
+//! @param[in]  theFace      face (FORWARD-oriented)
+//! @param[out] thePCurve    primary PCurve (or null)
+//! @param[out] thePCurve2   seam PCurve (or null, only for closed surfaces)
+//! @param[out] theFirst     parameter range start
+//! @param[out] theLast      parameter range end
+//! @param[out] theSeamContinuity  seam continuity (GeomAbs_C0 if non-seam)
+//! @return true if a stored PCurve was found
+bool extractStoredPCurves(const TopoDS_Edge&        theEdge,
+                          const TopoDS_Face&        theFace,
+                          occ::handle<Geom2d_Curve>& thePCurve,
+                          occ::handle<Geom2d_Curve>& thePCurve2,
+                          double&                   theFirst,
+                          double&                   theLast,
+                          GeomAbs_Shape&            theSeamContinuity)
+{
+  TopLoc_Location aFaceLoc;
+  const occ::handle<Geom_Surface>& aSurf = BRep_Tool::Surface(theFace, aFaceLoc);
+  if (aSurf.IsNull())
+    return false;
+  const occ::handle<BRep_TEdge> aTEdge = occ::down_cast<BRep_TEdge>(theEdge.TShape());
+  if (aTEdge.IsNull())
+    return false;
+  const bool aReversed = (theEdge.Orientation() == TopAbs_REVERSED);
+  for (const auto& aCR : aTEdge->Curves())
+  {
+    if (!aCR->IsCurveOnSurface() || aCR->Surface() != aSurf)
+      continue;
+    const BRep_GCurve* aGC = static_cast<const BRep_GCurve*>(aCR.get());
+    aGC->Range(theFirst, theLast);
+    if (aGC->IsCurveOnClosedSurface())
+    {
+      // Seam edge: extract both PCurves and continuity in one pass.
+      thePCurve  = aReversed ? aGC->PCurve2() : aGC->PCurve();
+      thePCurve2 = aReversed ? aGC->PCurve()  : aGC->PCurve2();
+      theSeamContinuity =
+        static_cast<const BRep_CurveOnClosedSurface*>(aCR.get())->Continuity();
+    }
+    else
+    {
+      thePCurve = aGC->PCurve();
+    }
+    return true;
+  }
+  return false;
+}
 
 //! Get the raw BRep_TVertex point without applying vertex Location.
 //! Stores the point in the TShape-local (definition) frame, consistent
@@ -568,52 +620,43 @@ void extractEdgeInFace(ExtractedEdge&                    theEdgeData,
     theEdgeData.EndVertex.Tolerance = BRep_Tool::Tolerance(aVLast);
   }
 
-  // Extract PCurves using the edge always oriented FORWARD to ensure
-  // orientation-independent PCurve pair ordering. BRep_Tool::CurveOnSurface
-  // returns different PCurves depending on edge orientation for seam edges.
+  // Extract stored PCurves directly from BRep_TEdge::Curves(), bypassing
+  // BRep_Tool::CurveOnSurface which can fail due to TopLoc_Location structural
+  // equality bug and can compute phantom PCurves via CurveOnPlane.
+  // Uses FORWARD-oriented edge for consistent PCurve pair ordering.
   {
     const TopoDS_Edge aFwdEdge = TopoDS::Edge(theEdge.Oriented(TopAbs_FORWARD));
-    double aPCFirst = 0.0, aPCLast = 0.0;
-    bool   aIsStored = false;
-    theEdgeData.PCurve2d = BRep_Tool::CurveOnSurface(aFwdEdge, theForwardFace,
-                                                      aPCFirst, aPCLast, &aIsStored);
-    theEdgeData.IsPCurveComputed = !aIsStored && !theEdgeData.PCurve2d.IsNull();
-    theEdgeData.PCFirst  = aPCFirst;
-    theEdgeData.PCLast   = aPCLast;
+    double            aPCFirst = 0.0, aPCLast = 0.0;
+    GeomAbs_Shape     aSeamContinuity = GeomAbs_C0;
+
+    extractStoredPCurves(aFwdEdge, theForwardFace,
+                         theEdgeData.PCurve2d, theEdgeData.PCurve2dReversed,
+                         aPCFirst, aPCLast, aSeamContinuity);
+
+    theEdgeData.PCFirst          = aPCFirst;
+    theEdgeData.PCLast           = aPCLast;
     theEdgeData.PCurveContinuity = BRep_Tool::MaxContinuity(theEdge);
+    theEdgeData.SeamContinuity   = aSeamContinuity;
 
     if (!theEdgeData.PCurve2d.IsNull() && !theFaceSurface.IsNull())
       BRep_Tool::UVPoints(aFwdEdge, theForwardFace, theEdgeData.PCUV1, theEdgeData.PCUV2);
 
-    // Second PCurve for seam edges + seam continuity.
-    if (!theEdgeData.PCurve2d.IsNull() && BRep_Tool::IsClosed(aFwdEdge, theForwardFace))
+    // For seam edges, extract reversed parameter range.
+    // The reversed edge accesses PCurve2/PCurve (swapped), so Range gives the same values.
+    // Fall back to primary range if extraction fails.
+    if (!theEdgeData.PCurve2dReversed.IsNull())
     {
-      double aPCFirstRev = 0.0, aPCLastRev = 0.0;
-      const TopoDS_Edge aRevEdge = TopoDS::Edge(theEdge.Oriented(TopAbs_REVERSED));
-      theEdgeData.PCurve2dReversed =
-        BRep_Tool::CurveOnSurface(aRevEdge, theForwardFace, aPCFirstRev, aPCLastRev);
-      theEdgeData.PCFirstReversed = aPCFirstRev;
-      theEdgeData.PCLastReversed  = aPCLastRev;
-
-      // Extract seam continuity from BRep_CurveOnClosedSurface.
-      const occ::handle<BRep_TEdge>& aTEdge =
-        occ::down_cast<BRep_TEdge>(theEdge.TShape());
-      if (!aTEdge.IsNull())
+      const TopoDS_Edge         aRevEdge = TopoDS::Edge(theEdge.Oriented(TopAbs_REVERSED));
+      occ::handle<Geom2d_Curve> aDummyPC1, aDummyPC2;
+      GeomAbs_Shape             aDummyCont = GeomAbs_C0;
+      if (!extractStoredPCurves(aRevEdge, theForwardFace,
+                                aDummyPC1, aDummyPC2,
+                                theEdgeData.PCFirstReversed, theEdgeData.PCLastReversed,
+                                aDummyCont))
       {
-        TopLoc_Location aFaceLoc;
-        const occ::handle<Geom_Surface>& aFaceSurf =
-          BRep_Tool::Surface(theForwardFace, aFaceLoc);
-        const TopLoc_Location aEdgeLoc = aFaceLoc.Predivided(theEdge.Location());
-        for (const occ::handle<BRep_CurveRepresentation>& aCRep : aTEdge->Curves())
-        {
-          if (!aCRep.IsNull() && aCRep->IsCurveOnClosedSurface()
-              && aCRep->IsCurveOnSurface(aFaceSurf, aEdgeLoc))
-          {
-            theEdgeData.SeamContinuity =
-              occ::down_cast<BRep_CurveOnClosedSurface>(aCRep)->Continuity();
-            break;
-          }
-        }
+        // Seam edges share the same parameter range; use primary as fallback.
+        theEdgeData.PCFirstReversed = aPCFirst;
+        theEdgeData.PCLastReversed  = aPCLast;
       }
     }
   }
@@ -842,9 +885,8 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
           // Populate CoEdge with PCurve and polygon data for this face context.
           if (!anEdgeData.PCurve2d.IsNull())
           {
-            aCoEdge.Curve2DRepIdx    = getOrCreateCurve2DRep(theStorage, theRepDedup,
-                                                             anEdgeData.PCurve2d);
-            aCoEdge.IsPCurveComputed = anEdgeData.IsPCurveComputed;
+            aCoEdge.Curve2DRepIdx = getOrCreateCurve2DRep(theStorage, theRepDedup,
+                                                          anEdgeData.PCurve2d);
             aCoEdge.ParamFirst = anEdgeData.PCFirst;
             aCoEdge.ParamLast  = anEdgeData.PCLast;
             aCoEdge.Continuity = anEdgeData.PCurveContinuity;
