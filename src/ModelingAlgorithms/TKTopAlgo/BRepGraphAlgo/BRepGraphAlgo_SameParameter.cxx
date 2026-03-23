@@ -275,6 +275,9 @@ bool BRepGraphAlgo_SameParameter::Enforce(BRepGraph&       theGraph,
   const double anEdgeTol   = anEdge.Tolerance;
   const bool   isSameRange = anEdge.SameRange;
 
+  // Pre-classify 3D curve type for analytic fast path (Opt 4).
+  const GeomAbs_CurveType aCrvType = aGAC.GetType();
+
   bool   isAllSameP = true;
   double aMaxDist   = 0.0;
   bool   hasYaPCu   = false;
@@ -329,6 +332,47 @@ bool BRepGraphAlgo_SameParameter::Enforce(BRepGraph&       theGraph,
 
     bool isGoodPC = true;
     aGAC2d.Load(aCurPC, aF3d, aL3d);
+
+    // Analytic fast path: line-on-plane, circle-on-plane, and line-on-cylinder
+    // have naturally matching parameterizations. Validate with a cheap 3-point
+    // sample before skipping the full computeTol + Approx_SameParameter.
+    {
+      const GeomAbs_SurfaceType aSrfType = aGAS.GetType();
+      if ((aCrvType == GeomAbs_Line
+           && (aSrfType == GeomAbs_Plane || aSrfType == GeomAbs_Cylinder))
+          || (aCrvType == GeomAbs_Circle && aSrfType == GeomAbs_Plane))
+      {
+        // Quick validation: sample at uniform intervals and check deviation.
+        constexpr int    THE_NB_ANALYTIC_SAMPLES = 5;
+        constexpr double THE_ANALYTIC_STEP = 1.0 / (THE_NB_ANALYTIC_SAMPLES - 1);
+        bool isAnalyticOk  = true;
+        double aMaxAnalErr = 0.0;
+        for (int iSmp = 0; iSmp < THE_NB_ANALYTIC_SAMPLES; ++iSmp)
+        {
+          const double aT   = aF3d + (aL3d - aF3d) * (static_cast<double>(iSmp) * THE_ANALYTIC_STEP);
+          const gp_Pnt aP3d = aGAC.EvalD0(aT);
+          const gp_Pnt2d aUV = aGAC2d.EvalD0(aT);
+          const gp_Pnt aPSurf = aGAS.EvalD0(aUV.X(), aUV.Y());
+          const double aDev  = aP3d.Distance(aPSurf);
+          aMaxAnalErr = std::max(aMaxAnalErr, aDev);
+          if (aDev > theTolerance)
+          {
+            isAnalyticOk = false;
+            break;
+          }
+        }
+        if (isAnalyticOk)
+        {
+          aMaxDist = std::max(aMaxDist, std::max(aMaxAnalErr, Precision::Confusion()));
+          if (aUpdatePC)
+          {
+            theGraph.Mut().EdgeDef(theEdgeId.Index).PCurves.ChangeValue(aPCIdx).Curve2d = aCurPC;
+          }
+          continue;
+        }
+        // Validation failed — fall through to full computeTol path.
+      }
+    }
 
     double anError = computeTol(aHC, aHC2d, aHS, THE_NCONTROL);
 

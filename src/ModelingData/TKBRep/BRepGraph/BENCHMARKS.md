@@ -5,23 +5,32 @@ Config: RelWithDebInfo
 
 ## Core (BRepGraph_Benchmark)
 
-| Benchmark | Mode | Baseline (s) | After T1.2 (s) | Array UIDs (s) | Grouped (s) | Dense RevIdx (s) | Static Sewing (s) | Delta vs Baseline |
-|-----------|------|-------------|----------------|-----------------|-------------|-------------------|-------------------|-------------------|
-| Build 100 faces | seq | 0.000508 | 0.000691 | 0.000557 | 0.000529 | 0.000544 | 0.000506 | 0% |
-| Build 1000 faces | seq | 0.006630 | 0.009284 | 0.007372 | 0.006567 | 0.006915 | 0.006203 | **-6%** |
-| Build 1000 faces | parallel | 0.006626 | 0.009353 | 0.007292 | 0.006764 | 0.006408 | 0.006557 | -1% |
-| Build 10000 faces | seq | 0.091667 | 0.136744 | 0.098299 | 0.093896 | 0.095669 | 0.089093 | **-3%** |
-| Build 10000 faces | parallel | 0.086331 | 0.130992 | 0.093386 | 0.091926 | 0.088084 | 0.078611 | **-9%** |
-| Reconstruct 10000 faces | - | 0.017034 | 0.018292 | 0.017795 | 0.016580 | 0.015884 | 0.015663 | **-8%** |
-| SpatialQuery 10000 faces | - | 0.011979 | 0.011988 | 0.012316 | 0.012737 | 0.000740 | 0.000434 | **-96%** |
+| Benchmark | Mode | Baseline (s) | After T1.2 (s) | Array UIDs (s) | Grouped (s) | Dense RevIdx (s) | Static Sewing (s) | Perf Opt (s) | Delta vs Baseline |
+|-----------|------|-------------|----------------|-----------------|-------------|-------------------|-------------------|-------------|-------------------|
+| Build 100 faces | seq | 0.000508 | 0.000691 | 0.000557 | 0.000529 | 0.000544 | 0.000506 | 0.000582 | 0% |
+| Build 1000 faces | seq | 0.006630 | 0.009284 | 0.007372 | 0.006567 | 0.006915 | 0.006203 | 0.006616 | 0% |
+| Build 1000 faces | parallel | 0.006626 | 0.009353 | 0.007292 | 0.006764 | 0.006408 | 0.006557 | 0.007961 | 0% |
+| Build 10000 faces | seq | 0.091667 | 0.136744 | 0.098299 | 0.093896 | 0.095669 | 0.089093 | 0.087900 | **-4%** |
+| Build 10000 faces | parallel | 0.086331 | 0.130992 | 0.093386 | 0.091926 | 0.088084 | 0.078611 | 0.076609 | **-11%** |
+| Reconstruct 10000 faces | - | 0.017034 | 0.018292 | 0.017795 | 0.016580 | 0.015884 | 0.015663 | 0.016304 | **-4%** |
+| SpatialQuery 10000 faces | - | 0.011979 | 0.011988 | 0.012316 | 0.012737 | 0.000740 | 0.000434 | 0.000428 | **-96%** |
 
 ## Algorithms (BRepGraphAlgo_Benchmark)
 
-| Benchmark | Mode | Baseline (s) | After T1.2 (s) | Array UIDs (s) | Grouped (s) | Dense RevIdx (s) | Static Sewing (s) | Delta vs Baseline |
-|-----------|------|-------------|----------------|-----------------|-------------|-------------------|-------------------|-------------------|
-| Sewing 500 faces | parallel | 0.090420 | 0.089111 | 0.089873 | 0.087665 | 0.093905 | 0.089684 | -1% |
-| Sewing 500 faces | seq | 0.168491 | 0.164901 | 0.168284 | 0.162548 | 0.168708 | 0.167740 | 0% |
-| Deduplicate+Compact 500 copies | - | 0.007665 | 0.012223 | 0.008819 | 0.010113 | 0.005390 | 0.005019 | **-35%** |
+| Benchmark | Mode | Baseline (s) | After T1.2 (s) | Array UIDs (s) | Grouped (s) | Dense RevIdx (s) | Static Sewing (s) | Perf Opt (s) | Delta vs Baseline |
+|-----------|------|-------------|----------------|-----------------|-------------|-------------------|-------------------|-------------|-------------------|
+| Sewing 500 faces | parallel | 0.090420 | 0.089111 | 0.089873 | 0.087665 | 0.093905 | 0.089684 | 0.042964 | **-52%** |
+| Sewing 500 faces | seq | 0.168491 | 0.164901 | 0.168284 | 0.162548 | 0.168708 | 0.167740 | 0.124732 | **-26%** |
+| Deduplicate+Compact 500 copies | - | 0.007665 | 0.012223 | 0.008819 | 0.010113 | 0.005390 | 0.005019 | 0.006232 | **-19%** |
+
+## Sewing Profiling (BRepGraphAlgo_SewingTest)
+
+| Benchmark | Mode | Static Sewing (s) | Perf Opt (s) | Delta |
+|-----------|------|--------------------|-------------|-------|
+| 2500 faces (50x50) | seq | — | 0.048373 | — |
+| 2500 faces (50x50) | parallel | — | 0.052911 | — |
+| 2500 faces (50x50) | no history | — | 0.045610 | — |
+| 1200 faces (200 boxes) | parallel | — | 0.022005 | — |
 
 ## Notes
 
@@ -34,7 +43,13 @@ Config: RelWithDebInfo
 - Reconstruct improved: -7% (dense ReverseIndex + better cache locality)
 - SpatialQuery 17x faster: direct edge->faces lookup eliminates 2-hop wire traversal + PackedMap
 - Static Sewing: 2026-03-19, BRepGraphAlgo_Sewing redesigned to static API, graph-only mergeMatchedEdges, BRepGraphAlgo_SameParameter replaces BRepLib::SameParameter
-- Sewing within noise: core algorithm unchanged, static API overhead neutral; graph-only merge eliminates TopoDS_Edge access but Sew() convenience still builds+reconstructs
+- Perf Opt: 2026-03-19, 5 sewing performance optimizations:
+  - Opt 1: Local adjacency replaces persistent RelEdge storage (eliminates ~18% RelEdge alloc/destroy)
+  - Opt 2: Precomputed faceIdx per free edge (O(1) same-face check vs O(P*Q) PCurve iteration)
+  - Opt 3: Inline PCurve-based FaceCountForEdge (avoids PackedMap in RelEdgesView)
+  - Opt 4: SameParameter analytic fast paths for line/circle on plane/cylinder
+  - Opt 5: Batch History.RecordBatch (single HistoryRecord vs N per-merge records)
+- Sewing 500 faces: **-52% parallel, -26% sequential** (combined effect of all 5 optimizations)
 - Compact improved: -35% (dense vector iteration faster than DataMap iteration in rebuild)
 - Forward lookup (UIDs().Of): O(1) direct array index, no lazy init, no hashing
 - Reverse lookup (UIDs().NodeIdFrom/Has): lazy DataMap, built on first access

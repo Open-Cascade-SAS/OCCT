@@ -64,6 +64,62 @@ void BRepGraph_History::Record(const TCollection_AsciiString&              theOp
 
 //=================================================================================================
 
+void BRepGraph_History::RecordBatch(const TCollection_AsciiString&              theOpLabel,
+                                    const NCollection_Vector<BRepGraph_NodeId>& theOriginals,
+                                    const NCollection_Vector<BRepGraph_NodeId>& theReplacements)
+{
+  Standard_ASSERT_VOID(theOriginals.Length() == theReplacements.Length(),
+                       "RecordBatch: mismatched vector lengths");
+  if (!myEnabled || theOriginals.IsEmpty())
+  {
+    return;
+  }
+
+  // Create a single history record with all mappings.
+  BRepGraph_HistoryRecord aRecord;
+  aRecord.OperationName  = theOpLabel;
+  aRecord.SequenceNumber = myRecords.Length();
+
+  const int aNbPairs = theOriginals.Length();
+  for (int i = 0; i < aNbPairs; ++i)
+  {
+    const BRepGraph_NodeId& anOriginal   = theOriginals.Value(i);
+    const BRepGraph_NodeId& aReplacement = theReplacements.Value(i);
+    Standard_ASSERT_VOID(!aRecord.Mapping.IsBound(anOriginal),
+                         "RecordBatch: duplicate original node");
+    NCollection_Vector<BRepGraph_NodeId> aRepVec;
+    aRepVec.Append(aReplacement);
+    aRecord.Mapping.Bind(anOriginal, aRepVec);
+  }
+  myRecords.Append(aRecord);
+
+  // Update bidirectional lookup maps in bulk.
+  for (int i = 0; i < aNbPairs; ++i)
+  {
+    const BRepGraph_NodeId& anOriginal   = theOriginals.Value(i);
+    const BRepGraph_NodeId& aReplacement = theReplacements.Value(i);
+    if (aReplacement == anOriginal)
+    {
+      continue;
+    }
+
+    myDerivedToOriginal.Bind(aReplacement, anOriginal);
+
+    if (myOriginalToDerived.IsBound(anOriginal))
+    {
+      myOriginalToDerived.ChangeFind(anOriginal).Append(aReplacement);
+    }
+    else
+    {
+      NCollection_Vector<BRepGraph_NodeId> aDerVec;
+      aDerVec.Append(aReplacement);
+      myOriginalToDerived.Bind(anOriginal, aDerVec);
+    }
+  }
+}
+
+//=================================================================================================
+
 BRepGraph_NodeId BRepGraph_History::FindOriginal(BRepGraph_NodeId theModified) const
 {
   // Walk the reverse map recursively until a root node is reached.

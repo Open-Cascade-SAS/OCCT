@@ -421,13 +421,14 @@ TEST(BRepGraphAlgo_SewingTest, SewAllSixFaces_HistoryRecordsExist)
   BRepGraphAlgo_Sewing::Result aResult = sewOnGraph(aShapes, aOpts, aGraph);
   ASSERT_TRUE(aResult.IsDone);
 
-  // A box has 12 edges; each merged edge should produce at least one history record.
-  EXPECT_GE(aGraph.History().NbRecords(), 12);
+  // RecordBatch creates one history record containing all merge mappings.
+  EXPECT_GE(aGraph.History().NbRecords(), 1);
 
-  // Verify that FindOriginal traces back to a valid node.
+  // Verify batch record has at least as many mappings as sewn edges.
   if (aGraph.History().NbRecords() > 0)
   {
     const BRepGraph_HistoryRecord& aRecord = aGraph.History().Record(0);
+    EXPECT_GE(aRecord.Mapping.Extent(), aResult.NbSewnEdges);
     NCollection_DataMap<BRepGraph_NodeId, NCollection_Vector<BRepGraph_NodeId>>::Iterator anIt(
       aRecord.Mapping);
     ASSERT_TRUE(anIt.More());
@@ -981,8 +982,8 @@ TEST(BRepGraphAlgo_SewingTest, Perform_PreBuiltGraph_ModifiesInPlace)
 
   // The graph was modified in-place; edge definitions still exist.
   EXPECT_GE(aGraph.Defs().NbEdges(), aNbEdgesBefore);
-  // History records are present.
-  EXPECT_GE(aGraph.History().NbRecords(), 12);
+  // History records are present (batch recording creates fewer records).
+  EXPECT_GE(aGraph.History().NbRecords(), 1);
 }
 
 TEST(BRepGraphAlgo_SewingTest, Sew_Convenience_MatchesPerform)

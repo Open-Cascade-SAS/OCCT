@@ -44,6 +44,17 @@ public:
                               BRepGraph_NodeId                            theOriginal,
                               const NCollection_Vector<BRepGraph_NodeId>& theReplacements);
 
+  //! Record a batch of 1-to-1 modifications in a single history event.
+  //! theOriginals[i] was replaced by theReplacements[i].
+  //! More efficient than calling Record() in a loop: creates one HistoryRecord
+  //! and updates the bidirectional maps with minimal overhead.
+  //! @param[in] theOpLabel      human-readable operation name
+  //! @param[in] theOriginals    node ids before the operation
+  //! @param[in] theReplacements node ids after the operation (same length)
+  Standard_EXPORT void RecordBatch(const TCollection_AsciiString&             theOpLabel,
+                                   const NCollection_Vector<BRepGraph_NodeId>& theOriginals,
+                                   const NCollection_Vector<BRepGraph_NodeId>& theReplacements);
+
   //! Walk backwards from a modified node to its original.
   //! Follows the reverse map recursively until a root is reached.
   //! @param[in] theModified node id to trace back
