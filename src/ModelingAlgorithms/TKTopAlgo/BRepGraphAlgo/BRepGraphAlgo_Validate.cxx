@@ -481,6 +481,100 @@ void checkWireConnectivity(const BRepGraph&                                     
   }
 }
 
+// ---------------------------------------------------------------------------
+// Pass 7: Validate entity IDs match their vector position.
+// After Build() or Compact(), each entity's Id must equal (Kind, VectorIndex).
+// ---------------------------------------------------------------------------
+
+void checkEntityIds(const BRepGraph& theGraph,
+                    NCollection_Vector<BRepGraphAlgo_Validate::Issue>& theIssues)
+{
+  using Severity = BRepGraphAlgo_Validate::Severity;
+  using Issue    = BRepGraphAlgo_Validate::Issue;
+  const BRepGraph::DefsView aDefs = theGraph.Defs();
+
+  auto checkKind = [&](BRepGraph_NodeId::Kind theKind, int theNb) {
+    for (int anIdx = 0; anIdx < theNb; ++anIdx)
+    {
+      const BRepGraph_NodeId anExpected(theKind, anIdx);
+      const BRepGraph_TopoNode::BaseDef* aDef = aDefs.TopoDef(anExpected);
+      if (aDef == nullptr)
+      {
+        continue;
+      }
+      if (aDef->Id != anExpected)
+      {
+        TCollection_AsciiString aDesc("Entity Id mismatch: expected (");
+        aDesc += TCollection_AsciiString(static_cast<int>(theKind));
+        aDesc += ",";
+        aDesc += TCollection_AsciiString(anIdx);
+        aDesc += ") got (";
+        aDesc += TCollection_AsciiString(static_cast<int>(aDef->Id.NodeKind));
+        aDesc += ",";
+        aDesc += TCollection_AsciiString(aDef->Id.Index);
+        aDesc += ")";
+        theIssues.Append(Issue{Severity::Error, anExpected, aDesc});
+      }
+    }
+  };
+
+  checkKind(BRepGraph_NodeId::Kind::Vertex,    aDefs.NbVertices());
+  checkKind(BRepGraph_NodeId::Kind::Edge,      aDefs.NbEdges());
+  checkKind(BRepGraph_NodeId::Kind::Wire,      aDefs.NbWires());
+  checkKind(BRepGraph_NodeId::Kind::Face,      aDefs.NbFaces());
+  checkKind(BRepGraph_NodeId::Kind::Shell,     aDefs.NbShells());
+  checkKind(BRepGraph_NodeId::Kind::Solid,     aDefs.NbSolids());
+  checkKind(BRepGraph_NodeId::Kind::Compound,  aDefs.NbCompounds());
+  checkKind(BRepGraph_NodeId::Kind::CompSolid, aDefs.NbCompSolids());
+}
+
+// ---------------------------------------------------------------------------
+// Pass 8: Validate active counts match non-removed entity counts.
+// ---------------------------------------------------------------------------
+
+void checkActiveCounts(const BRepGraph& theGraph,
+                       NCollection_Vector<BRepGraphAlgo_Validate::Issue>& theIssues)
+{
+  using Severity = BRepGraphAlgo_Validate::Severity;
+  using Issue    = BRepGraphAlgo_Validate::Issue;
+  const BRepGraph::DefsView aDefs = theGraph.Defs();
+
+  auto countActive = [&](BRepGraph_NodeId::Kind theKind, int theNb) -> int {
+    int aCount = 0;
+    for (int anIdx = 0; anIdx < theNb; ++anIdx)
+    {
+      const BRepGraph_NodeId anId(theKind, anIdx);
+      if (!isDefRemoved(theGraph, anId))
+      {
+        ++aCount;
+      }
+    }
+    return aCount;
+  };
+
+  auto verify = [&](const char* theName, int theActual, int theExpected) {
+    if (theActual != theExpected)
+    {
+      TCollection_AsciiString aDesc("NbActive");
+      aDesc += theName;
+      aDesc += " mismatch: cached=";
+      aDesc += TCollection_AsciiString(theActual);
+      aDesc += " actual=";
+      aDesc += TCollection_AsciiString(theExpected);
+      theIssues.Append(Issue{Severity::Error, BRepGraph_NodeId(), aDesc});
+    }
+  };
+
+  verify("Vertices",   aDefs.NbActiveVertices(),   countActive(BRepGraph_NodeId::Kind::Vertex,    aDefs.NbVertices()));
+  verify("Edges",      aDefs.NbActiveEdges(),      countActive(BRepGraph_NodeId::Kind::Edge,      aDefs.NbEdges()));
+  verify("Wires",      aDefs.NbActiveWires(),      countActive(BRepGraph_NodeId::Kind::Wire,      aDefs.NbWires()));
+  verify("Faces",      aDefs.NbActiveFaces(),      countActive(BRepGraph_NodeId::Kind::Face,      aDefs.NbFaces()));
+  verify("Shells",     aDefs.NbActiveShells(),      countActive(BRepGraph_NodeId::Kind::Shell,     aDefs.NbShells()));
+  verify("Solids",     aDefs.NbActiveSolids(),      countActive(BRepGraph_NodeId::Kind::Solid,     aDefs.NbSolids()));
+  verify("Compounds",  aDefs.NbActiveCompounds(),   countActive(BRepGraph_NodeId::Kind::Compound,  aDefs.NbCompounds()));
+  verify("CompSolids", aDefs.NbActiveCompSolids(),  countActive(BRepGraph_NodeId::Kind::CompSolid, aDefs.NbCompSolids()));
+}
+
 } // namespace
 
 //=================================================================================================
@@ -499,6 +593,8 @@ BRepGraphAlgo_Validate::Result BRepGraphAlgo_Validate::Perform(const BRepGraph& 
   checkGeometryReferences(theGraph, aResult.Issues);
   checkRemovedNodeIsolation(theGraph, aResult.Issues);
   checkWireConnectivity(theGraph, aResult.Issues);
+  checkEntityIds(theGraph, aResult.Issues);
+  checkActiveCounts(theGraph, aResult.Issues);
 
   return aResult;
 }

@@ -35,12 +35,16 @@
 struct BRepGraph_HistoryRecord
 {
   TCollection_AsciiString  OperationName;
-  int                      SequenceNumber;
+  int                      SequenceNumber = 0;
 
   //! Key: original node id before the operation.
   //! Value: sequence of replacement node ids after the operation.
   NCollection_DataMap<BRepGraph_NodeId,
                       NCollection_Vector<BRepGraph_NodeId>>  Mapping;
+
+  //! Optional extra info for diagnostic/debugging purposes.
+  //! E.g., merge tolerance, canonical source index.
+  TCollection_AsciiString  ExtraInfo;
 };
 
 #endif // _BRepGraph_HistoryRecord_HeaderFile

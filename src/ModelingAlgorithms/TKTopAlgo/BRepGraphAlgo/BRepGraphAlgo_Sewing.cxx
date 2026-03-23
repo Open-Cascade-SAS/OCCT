@@ -1399,7 +1399,11 @@ int mergeMatchedEdges(
   if (!aHistOriginals.IsEmpty())
   {
     static const TCollection_AsciiString THE_MERGE_LABEL("Sewing:MergeEdge");
-    theGraph.History().RecordBatch(THE_MERGE_LABEL, aHistOriginals, aHistReplacements);
+    TCollection_AsciiString anExtra("tol=");
+    anExtra += TCollection_AsciiString(theOptions.Tolerance);
+    anExtra += " pairs=";
+    anExtra += TCollection_AsciiString(aHistOriginals.Length());
+    theGraph.History().RecordBatch(THE_MERGE_LABEL, aHistOriginals, aHistReplacements, anExtra);
   }
 
   // 6. SameParameter enforcement (graph-only, parallel).

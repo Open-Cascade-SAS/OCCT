@@ -66,7 +66,8 @@ void BRepGraph_History::Record(const TCollection_AsciiString&              theOp
 
 void BRepGraph_History::RecordBatch(const TCollection_AsciiString&              theOpLabel,
                                     const NCollection_Vector<BRepGraph_NodeId>& theOriginals,
-                                    const NCollection_Vector<BRepGraph_NodeId>& theReplacements)
+                                    const NCollection_Vector<BRepGraph_NodeId>& theReplacements,
+                                    const TCollection_AsciiString&              theExtraInfo)
 {
   Standard_ASSERT_VOID(theOriginals.Length() == theReplacements.Length(),
                        "RecordBatch: mismatched vector lengths");
@@ -83,6 +84,7 @@ void BRepGraph_History::RecordBatch(const TCollection_AsciiString&              
   aRecord.OperationName  = theOpLabel;
   aRecord.SequenceNumber = myRecords.Length();
   aRecord.Mapping.ReSize(aNbPairs);
+  aRecord.ExtraInfo = theExtraInfo;
 
   // Build mapping: each pair creates a 1-element replacement vector.
   for (int i = 0; i < aNbPairs; ++i)

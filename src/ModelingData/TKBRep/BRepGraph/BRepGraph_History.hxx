@@ -51,9 +51,11 @@ public:
   //! @param[in] theOpLabel      human-readable operation name
   //! @param[in] theOriginals    node ids before the operation
   //! @param[in] theReplacements node ids after the operation (same length)
-  Standard_EXPORT void RecordBatch(const TCollection_AsciiString&             theOpLabel,
+  //! @param[in] theExtraInfo    optional diagnostic info stored on the record
+  Standard_EXPORT void RecordBatch(const TCollection_AsciiString&              theOpLabel,
                                    const NCollection_Vector<BRepGraph_NodeId>& theOriginals,
-                                   const NCollection_Vector<BRepGraph_NodeId>& theReplacements);
+                                   const NCollection_Vector<BRepGraph_NodeId>& theReplacements,
+                                   const TCollection_AsciiString&              theExtraInfo = TCollection_AsciiString());
 
   //! Walk backwards from a modified node to its original.
   //! Follows the reverse map recursively until a root is reached.

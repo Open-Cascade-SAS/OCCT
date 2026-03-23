@@ -146,6 +146,33 @@ void BRepGraphInc_Storage::BuildReverseIndex()
 {
   myReverseIdx.SetAllocator(myAllocator);
   myReverseIdx.Build(myEdges, myWires, myFaces, myShells, mySolids);
+
+  // Recount active entities to sync counters after Build.
+  // Populate may have set IsRemoved on some entities without going through RemoveNode.
+  myNbActiveVertices   = 0;
+  myNbActiveEdges      = 0;
+  myNbActiveWires      = 0;
+  myNbActiveFaces      = 0;
+  myNbActiveShells     = 0;
+  myNbActiveSolids     = 0;
+  myNbActiveCompounds  = 0;
+  myNbActiveCompSolids = 0;
+  for (int i = 0; i < myVertices.Length(); ++i)
+    if (!myVertices.Value(i).IsRemoved) ++myNbActiveVertices;
+  for (int i = 0; i < myEdges.Length(); ++i)
+    if (!myEdges.Value(i).IsRemoved) ++myNbActiveEdges;
+  for (int i = 0; i < myWires.Length(); ++i)
+    if (!myWires.Value(i).IsRemoved) ++myNbActiveWires;
+  for (int i = 0; i < myFaces.Length(); ++i)
+    if (!myFaces.Value(i).IsRemoved) ++myNbActiveFaces;
+  for (int i = 0; i < myShells.Length(); ++i)
+    if (!myShells.Value(i).IsRemoved) ++myNbActiveShells;
+  for (int i = 0; i < mySolids.Length(); ++i)
+    if (!mySolids.Value(i).IsRemoved) ++myNbActiveSolids;
+  for (int i = 0; i < myCompounds.Length(); ++i)
+    if (!myCompounds.Value(i).IsRemoved) ++myNbActiveCompounds;
+  for (int i = 0; i < myCompSolids.Length(); ++i)
+    if (!myCompSolids.Value(i).IsRemoved) ++myNbActiveCompSolids;
 }
 
 //=================================================================================================
