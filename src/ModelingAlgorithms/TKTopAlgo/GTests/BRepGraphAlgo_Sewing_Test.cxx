@@ -2137,3 +2137,68 @@ TEST(BRepGraphAlgo_SewingTest, ConfigurationDefaults_NewOptions)
   EXPECT_NEAR(aOpts.MinTolerance, 0.0, 1.0e-15);
   EXPECT_GT(aOpts.MaxTolerance, 1.0e+100);
 }
+
+TEST(BRepGraphAlgo_SewingTest, NonManifoldMode_ThreeFacesShareEdge)
+{
+  // Three faces share a common geometric edge (P1-P2).
+  // In manifold mode: only 1 pair is sewn. In non-manifold mode: 2 pairs are sewn
+  // (the keep-edge accumulates PCurves from both remove-edges).
+  const gp_Pnt aP1(0, 0, 0), aP2(10, 0, 0);
+  const gp_Pnt aP3(5, 5, 0), aP4(5, -5, 0), aP5(5, 0, 5);
+
+  // Face1: triangle P1-P2-P3.
+  BRepBuilderAPI_MakeWire aMW1;
+  aMW1.Add(BRepBuilderAPI_MakeEdge(aP1, aP2).Edge());
+  aMW1.Add(BRepBuilderAPI_MakeEdge(aP2, aP3).Edge());
+  aMW1.Add(BRepBuilderAPI_MakeEdge(aP3, aP1).Edge());
+  TopoDS_Face aF1 = BRepBuilderAPI_MakeFace(aMW1.Wire(), true);
+
+  // Face2: triangle P1-P2-P4.
+  BRepBuilderAPI_MakeWire aMW2;
+  aMW2.Add(BRepBuilderAPI_MakeEdge(aP1, aP2).Edge());
+  aMW2.Add(BRepBuilderAPI_MakeEdge(aP2, aP4).Edge());
+  aMW2.Add(BRepBuilderAPI_MakeEdge(aP4, aP1).Edge());
+  TopoDS_Face aF2 = BRepBuilderAPI_MakeFace(aMW2.Wire(), true);
+
+  // Face3: triangle P1-P2-P5.
+  BRepBuilderAPI_MakeWire aMW3;
+  aMW3.Add(BRepBuilderAPI_MakeEdge(aP1, aP2).Edge());
+  aMW3.Add(BRepBuilderAPI_MakeEdge(aP2, aP5).Edge());
+  aMW3.Add(BRepBuilderAPI_MakeEdge(aP5, aP1).Edge());
+  TopoDS_Face aF3 = BRepBuilderAPI_MakeFace(aMW3.Wire(), true);
+
+  BRep_Builder    aBB;
+  TopoDS_Compound aCompound;
+  aBB.MakeCompound(aCompound);
+  aBB.Add(aCompound, aF1);
+  aBB.Add(aCompound, aF2);
+  aBB.Add(aCompound, aF3);
+
+  // Manifold mode: 1 pair sewn (third edge left free).
+  {
+    BRepGraphAlgo_Sewing::Options aOpts;
+    aOpts.Tolerance       = 1.0e-4;
+    aOpts.NonManifoldMode = false;
+    aOpts.FaceAnalysis    = false;
+
+    BRepGraph aGraph;
+    aGraph.Build(aCompound);
+    BRepGraphAlgo_Sewing::Result aRes = BRepGraphAlgo_Sewing::Perform(aGraph, aOpts);
+    ASSERT_TRUE(aRes.IsDone);
+    EXPECT_EQ(aRes.NbSewnEdges, 1);
+  }
+
+  // Non-manifold mode: 2 pairs sewn (keep-edge gets both).
+  {
+    BRepGraphAlgo_Sewing::Options aOpts;
+    aOpts.Tolerance       = 1.0e-4;
+    aOpts.NonManifoldMode = true;
+    aOpts.FaceAnalysis    = false;
+
+    BRepGraph aGraph;
+    aGraph.Build(aCompound);
+    BRepGraphAlgo_Sewing::Result aRes = BRepGraphAlgo_Sewing::Perform(aGraph, aOpts);
+    ASSERT_TRUE(aRes.IsDone);
+    EXPECT_EQ(aRes.NbSewnEdges, 2);
+  }
+}

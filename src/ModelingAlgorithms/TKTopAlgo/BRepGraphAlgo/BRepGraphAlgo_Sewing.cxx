@@ -1228,13 +1228,23 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> matchFreeEdges
       for (int anIdx = 0; anIdx < aNbScored; ++anIdx)
       {
         const ScoredPair& aPair = aSortedPairs.Value(anIdx);
-        if (aConsumed.Contains(aPair.EdgeA.Index) || aConsumed.Contains(aPair.EdgeB.Index))
+        if (aConsumed.Contains(aPair.EdgeB.Index))
+        {
+          continue;
+        }
+        // In manifold mode, each edge participates in at most one pair.
+        // In non-manifold mode, only the remove-edge (EdgeB) is consumed;
+        // the keep-edge (EdgeA) can accumulate PCurves from multiple merges.
+        if (!theOptions.NonManifoldMode && aConsumed.Contains(aPair.EdgeA.Index))
         {
           continue;
         }
 
         aCompPairs.ChangeValue(aComp).Append({aPair.EdgeA, aPair.EdgeB});
-        aConsumed.Add(aPair.EdgeA.Index);
+        if (!theOptions.NonManifoldMode)
+        {
+          aConsumed.Add(aPair.EdgeA.Index);
+        }
         aConsumed.Add(aPair.EdgeB.Index);
       }
     },
@@ -1622,11 +1632,6 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
 
   // Phase 7: Convert remaining free degenerate edges.
   convertDegenerateEdges(theGraph, aResult);
-
-  // TODO: Full NonManifoldMode in Phase 5/6:
-  //   - Use longest edge as reference (sort by curve length, prefer longest as keep-edge).
-  //   - Allow keep-edge to appear in multiple pairs (only consume remove-edges in greedy).
-  //   - Port from BRepBuilderAPI_Sewing::MergedNearestEdges lines 3926-3966.
 
   // Phase 8: Process sewn edges (tolerance consistency).
   processEdges(theGraph, aSewnEdgeIndices, theOptions);
