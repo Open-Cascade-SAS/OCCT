@@ -151,7 +151,8 @@ BRepGraph_NodeId BRepGraph::createPCurveNode(const Handle(Geom2d_Curve)& theCrv2
                                              BRepGraph_NodeId            theEdgeDef,
                                              BRepGraph_NodeId            theFaceDef,
                                              double                      theFirst,
-                                             double                      theLast)
+                                             double                      theLast,
+                                             GeomAbs_Shape               theContinuity)
 {
   BRepGraph_GeomNode::PCurve& aNode = myData->myPCurves.Appended();
   const int                   aIdx  = myData->myPCurves.Length() - 1;
@@ -161,6 +162,7 @@ BRepGraph_NodeId BRepGraph::createPCurveNode(const Handle(Geom2d_Curve)& theCrv2
   aNode.FaceContext                 = theFaceDef;
   aNode.ParamFirst                  = theFirst;
   aNode.ParamLast                   = theLast;
+  aNode.Continuity                  = theContinuity;
   allocateUID(aNode.Id);
 
   return aNode.Id;

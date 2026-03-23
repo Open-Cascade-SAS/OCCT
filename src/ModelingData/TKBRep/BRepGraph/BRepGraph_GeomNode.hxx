@@ -43,9 +43,9 @@ namespace BRepGraph_GeomNode
 struct Surf
 {
   BRepGraph_NodeId           Id;
-  Handle(Geom_Surface)       Surface;          //!< The raw TFace geometry (not location-applied)
-  Handle(Poly_Triangulation) Triangulation;    //!< Optional cached mesh
-  TopLoc_Location            SurfaceLocation;  //!< Location from BRep_Tool::Surface(face, loc)
+  Handle(Geom_Surface)       Surface;         //!< The raw TFace geometry (not location-applied)
+  Handle(Poly_Triangulation) Triangulation;   //!< Optional cached mesh
+  TopLoc_Location            SurfaceLocation; //!< Location from BRep_Tool::Surface(face, loc)
 
   //! Back-references: all Face definitions realized by this surface.
   NCollection_Vector<BRepGraph_NodeId> FaceDefUsers;
@@ -57,9 +57,9 @@ struct Surf
 //! Graph node representing a unique Geom_Curve handle.
 struct Curve
 {
-  BRepGraph_NodeId           Id;
-  Handle(Geom_Curve)         CurveGeom;         //!< The raw TEdge geometry (not location-applied)
-  TopLoc_Location            CurveLocation;     //!< Location from BRep_Tool::Curve(edge, loc, f, l)
+  BRepGraph_NodeId   Id;
+  Handle(Geom_Curve) CurveGeom;     //!< The raw TEdge geometry (not location-applied)
+  TopLoc_Location    CurveLocation; //!< Location from BRep_Tool::Curve(edge, loc, f, l)
 
   //! Back-references: all Edge definitions realized by this curve.
   NCollection_Vector<BRepGraph_NodeId> EdgeDefUsers;
@@ -74,18 +74,18 @@ struct Curve
 //! same (Edge, Face) pair, distinguished by edge orientation (FORWARD vs REVERSED).
 struct PCurve
 {
-  BRepGraph_NodeId           Id;
-  Handle(Geom2d_Curve)       Curve2d;
+  BRepGraph_NodeId     Id;
+  Handle(Geom2d_Curve) Curve2d;
 
-  BRepGraph_NodeId           EdgeContext;  //!< The edge def this pcurve belongs to
-  BRepGraph_NodeId           FaceContext;  //!< The face def whose UV space it lives in
+  BRepGraph_NodeId EdgeContext; //!< The edge def this pcurve belongs to
+  BRepGraph_NodeId FaceContext; //!< The face def whose UV space it lives in
 
-  double                     ParamFirst = 0.0;
-  double                     ParamLast  = 0.0;
+  double ParamFirst = 0.0;
+  double ParamLast  = 0.0;
 
-  //! Geometric continuity.  Default GeomAbs_C0.
-  //! Not populated during Build(); reserved for future use.
-  GeomAbs_Shape              Continuity = GeomAbs_C0;
+  //! Geometric continuity across face pairs sharing this edge.
+  //! Populated during Build() via BRep_Tool::Continuity().
+  GeomAbs_Shape Continuity = GeomAbs_C0;
 };
 
 } // namespace BRepGraph_GeomNode

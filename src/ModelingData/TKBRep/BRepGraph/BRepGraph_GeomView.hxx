@@ -18,6 +18,7 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_PCurveContext.hxx>
 #include <GeomAdaptor_TransformedCurve.hxx>
+#include <GeomAdaptor_TransformedSurface.hxx>
 #include <TopAbs_Orientation.hxx>
 
 //! Lightweight const view over geometry nodes of a BRepGraph.
@@ -142,6 +143,26 @@ public:
     CurveOnSurfaceAdaptor(BRepGraph_NodeId   theEdgeDef,
                           BRepGraph_NodeId   theFaceDef,
                           TopAbs_Orientation theEdgeOrientation) const;
+
+  //! Build a GeomAdaptor_TransformedSurface for a face definition.
+  //! Uses the face's Geom_Surface directly with the surface location as transform,
+  //! avoiding TopoDS_Face reconstruction.
+  //! @param[in] theFaceDef face definition NodeId
+  //! @return surface adaptor ready for evaluation, or empty adaptor if surface is null
+  Standard_EXPORT GeomAdaptor_TransformedSurface SurfaceAdaptor(BRepGraph_NodeId theFaceDef) const;
+
+  //! Build a GeomAdaptor_TransformedSurface with explicit UV bounds for a face definition.
+  //! @param[in] theFaceDef face definition NodeId
+  //! @param[in] theUFirst  minimum U parameter
+  //! @param[in] theULast   maximum U parameter
+  //! @param[in] theVFirst  minimum V parameter
+  //! @param[in] theVLast   maximum V parameter
+  //! @return surface adaptor with bounds, or empty adaptor if surface is null
+  Standard_EXPORT GeomAdaptor_TransformedSurface SurfaceAdaptor(BRepGraph_NodeId theFaceDef,
+                                                                double           theUFirst,
+                                                                double           theULast,
+                                                                double           theVFirst,
+                                                                double           theVLast) const;
 
 private:
   friend class BRepGraph;

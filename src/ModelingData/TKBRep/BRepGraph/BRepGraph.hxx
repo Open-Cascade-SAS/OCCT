@@ -173,6 +173,7 @@ private:
   friend class BRepGraph_Reconstruct;
   friend class BRepGraph_Mutator;
   friend class BRepGraphAlgo_BndLib;
+  friend class BRepGraphAlgo_UVBounds;
 
   // -- History flat methods (used internally by History subsystem) --
 
@@ -201,7 +202,8 @@ private:
                                                     BRepGraph_NodeId            theEdgeDef,
                                                     BRepGraph_NodeId            theFaceDef,
                                                     double                      theFirst,
-                                                    double                      theLast);
+                                                    double                      theLast,
+                                                    GeomAbs_Shape               theContinuity = GeomAbs_C0);
 
   Standard_EXPORT void invalidateSubgraphImpl(BRepGraph_NodeId theNode);
   Standard_EXPORT BRepGraph_UID allocateUID(BRepGraph_NodeId theNodeId);

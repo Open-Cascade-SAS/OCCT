@@ -21,4 +21,6 @@ set(OCCT_BRepGraphAlgo_FILES
   BRepGraphAlgo_Validate.cxx
   BRepGraphAlgo_Compact.hxx
   BRepGraphAlgo_Compact.cxx
+  BRepGraphAlgo_UVBounds.hxx
+  BRepGraphAlgo_UVBounds.cxx
 )

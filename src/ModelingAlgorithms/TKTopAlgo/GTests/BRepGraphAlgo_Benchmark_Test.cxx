@@ -1,0 +1,154 @@
+// Copyright (c) 2026 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <BRep_Builder.hxx>
+#include <BRepBuilderAPI_Copy.hxx>
+#include <BRepGraph.hxx>
+#include <BRepGraph_DefsView.hxx>
+#include <BRepGraphAlgo_Compact.hxx>
+#include <BRepGraphAlgo_Deduplicate.hxx>
+#include <BRepGraphAlgo_Sewing.hxx>
+#include <BRepPrimAPI_MakeBox.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
+
+#include <gtest/gtest.h>
+
+#include <chrono>
+#include <iostream>
+
+namespace
+{
+
+constexpr int THE_WARMUP_ITERS = 1;
+constexpr int THE_MEASURE_ITERS = 5;
+
+NCollection_Sequence<TopoDS_Shape> makeFaceList(int theNbFaces)
+{
+  NCollection_Sequence<TopoDS_Shape> aFaces;
+
+  int aNbAdded = 0;
+  int aBoxIdx = 0;
+  while (aNbAdded < theNbFaces)
+  {
+    const double aSize = 10.0 + static_cast<double>(aBoxIdx % 7);
+    BRepPrimAPI_MakeBox aBoxMaker(aSize, aSize + 1.0, aSize + 2.0);
+    const TopoDS_Shape& aBox = aBoxMaker.Shape();
+
+    for (TopExp_Explorer aFaceExp(aBox, TopAbs_FACE); aFaceExp.More() && aNbAdded < theNbFaces; aFaceExp.Next())
+    {
+      BRepBuilderAPI_Copy aCopy(aFaceExp.Current(), true);
+      aFaces.Append(aCopy.Shape());
+      ++aNbAdded;
+    }
+
+    ++aBoxIdx;
+  }
+
+  return aFaces;
+}
+
+TopoDS_Compound makeTwoCopiedFaces()
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+
+  TopExp_Explorer aFaceExp(aBox, TopAbs_FACE);
+  const TopoDS_Shape aFace = aFaceExp.Current();
+
+  BRepBuilderAPI_Copy aCopy1(aFace, true);
+  BRepBuilderAPI_Copy aCopy2(aFace, true);
+
+  BRep_Builder aBuilder;
+  TopoDS_Compound aCompound;
+  aBuilder.MakeCompound(aCompound);
+  aBuilder.Add(aCompound, aCopy1.Shape());
+  aBuilder.Add(aCompound, aCopy2.Shape());
+  return aCompound;
+}
+
+template <typename Func>
+double runBenchmark(const char* theLabel, Func theFunc)
+{
+  for (int aWarmupIter = 0; aWarmupIter < THE_WARMUP_ITERS; ++aWarmupIter)
+  {
+    theFunc();
+  }
+
+  double aTotal = 0.0;
+  for (int anIter = 0; anIter < THE_MEASURE_ITERS; ++anIter)
+  {
+    const std::chrono::steady_clock::time_point aStart = std::chrono::steady_clock::now();
+    theFunc();
+    const std::chrono::steady_clock::time_point anEnd = std::chrono::steady_clock::now();
+    aTotal += std::chrono::duration<double>(anEnd - aStart).count();
+  }
+
+  const double anAvg = aTotal / static_cast<double>(THE_MEASURE_ITERS);
+  std::cout << "[  PERF   ] " << theLabel << ": avg " << anAvg << " s over "
+            << THE_MEASURE_ITERS << " iters" << std::endl;
+  return anAvg;
+}
+
+} // namespace
+
+TEST(BRepGraphAlgo_Benchmark, Smoke_DeduplicateCompactCycle)
+{
+  BRepGraph aGraph;
+  aGraph.Build(makeTwoCopiedFaces());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  const BRepGraphAlgo_Deduplicate::Result aDedupRes = BRepGraphAlgo_Deduplicate::Perform(aGraph);
+  EXPECT_GE(aDedupRes.NbSurfaceRewrites + aDedupRes.NbCurveRewrites + aDedupRes.NbPCurveRewrites, 0);
+
+  const BRepGraphAlgo_Compact::Result aCompactRes = BRepGraphAlgo_Compact::Perform(aGraph);
+  EXPECT_GE(aCompactRes.NbNodesBefore, aCompactRes.NbNodesAfter);
+}
+
+TEST(BRepGraphAlgo_Benchmark, DISABLED_Sewing_Throughput_100Faces)
+{
+  const NCollection_Sequence<TopoDS_Shape> aFaces = makeFaceList(100);
+
+  const double aAvg = runBenchmark("Sewing throughput 100 faces", [&]() {
+    BRepGraphAlgo_Sewing aSewer(1.0e-04);
+    aSewer.SetParallel(true);
+    for (int anIdx = 1; anIdx <= aFaces.Length(); ++anIdx)
+    {
+      aSewer.Add(aFaces.Value(anIdx));
+    }
+    aSewer.Perform();
+    EXPECT_TRUE(aSewer.IsDone());
+  });
+
+  EXPECT_GT(aAvg, 0.0);
+}
+
+TEST(BRepGraphAlgo_Benchmark, DISABLED_DeduplicateCompact_Throughput)
+{
+  const TopoDS_Compound aFaces = makeTwoCopiedFaces();
+
+  const double aAvg = runBenchmark("Deduplicate+Compact cycle", [&]() {
+    BRepGraph aGraph;
+    aGraph.Build(aFaces);
+    ASSERT_TRUE(aGraph.IsDone());
+
+    const BRepGraphAlgo_Deduplicate::Result aDedupRes = BRepGraphAlgo_Deduplicate::Perform(aGraph);
+    EXPECT_GE(aDedupRes.NbSurfaceRewrites + aDedupRes.NbCurveRewrites + aDedupRes.NbPCurveRewrites, 0);
+
+    const BRepGraphAlgo_Compact::Result aCompactRes = BRepGraphAlgo_Compact::Perform(aGraph);
+    EXPECT_GE(aCompactRes.NbNodesBefore, aCompactRes.NbNodesAfter);
+  });
+
+  EXPECT_GT(aAvg, 0.0);
+}

@@ -18,6 +18,8 @@
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_GeomView.hxx>
 #include <BRepGraph_PCurveContext.hxx>
+#include <BRepGraph_ShapesView.hxx>
+#include <BRep_Tool.hxx>
 #include <BRepGraph_SpatialView.hxx>
 #include <BRepGraph_UsagesView.hxx>
 #include <BRepGraph_Iterator.hxx>
@@ -149,6 +151,33 @@ TEST(BRepGraphGeometry, PCurve_ParamRange_NonZero)
     EXPECT_GT(std::abs(aRange), Precision::PConfusion())
       << "PCurve " << i << " has zero parameter range";
   }
+}
+
+TEST(BRepGraphGeometry, PCurve_Continuity_MatchesBRepTool)
+{
+  const TopoDS_Shape aShape = BRepPrimAPI_MakeCylinder(10.0, 20.0).Shape();
+
+  BRepGraph aGraph;
+  aGraph.Build(aShape);
+  ASSERT_TRUE(aGraph.IsDone());
+  ASSERT_GT(aGraph.Geom().NbPCurves(), 0);
+
+  bool hasNonC0Continuity = false;
+  for (int i = 0; i < aGraph.Geom().NbPCurves(); ++i)
+  {
+    const BRepGraph_GeomNode::PCurve& aPCurve = aGraph.Geom().PCurve(i);
+
+    const TopoDS_Edge   anEdge     = TopoDS::Edge(aGraph.Shapes().OriginalOf(aPCurve.EdgeContext));
+    const GeomAbs_Shape anExpected = BRep_Tool::MaxContinuity(anEdge);
+
+    EXPECT_EQ(aPCurve.Continuity, anExpected);
+    if (aPCurve.Continuity > GeomAbs_C0)
+    {
+      hasNonC0Continuity = true;
+    }
+  }
+
+  EXPECT_TRUE(hasNonC0Continuity);
 }
 
 TEST(BRepGraphGeometry, Surf_IsMultiLocated_FalseForSimpleBox)

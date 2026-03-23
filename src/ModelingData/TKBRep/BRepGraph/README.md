@@ -375,6 +375,8 @@ From public contract and implementation:
 | diagnostics | `AnalyzeView` / `BRepGraph_Analyze` |
 | relation clustering on subset | `BRepGraph_Analyze::RelationClusters` |
 | reusable edge compatibility / pair score | `BRepGraph_Analyze::AreEdgesCompatibleSampled`, `BRepGraph_Analyze::EdgeEndpointPairScore` |
+| structural validation | `BRepGraphAlgo_Validate::Perform` |
+| topology/geometry checking | `BRepGraphCheck_Analyzer` |
 | lineage tracking | `History()` / `BRepGraph_History` |
 | stable ids across one generation | `UIDsView` |
 | user metadata attachment | `AttrsView` |
@@ -527,10 +529,20 @@ Core files in this package:
 Algorithm files (in `BRepGraphAlgo` package):
 
 - `BRepGraphAlgo_AttrTransfer.hxx` / `.cxx`: history-based attribute propagation.
-- `BRepGraphAlgo_Deduplicate.hxx` / `.cxx`: deep geometry deduplication.
-- `BRepGraphAlgo_Sewing.hxx` / `.cxx`: edge sewing on disconnected faces.
+- `BRepGraphAlgo_BndLib.hxx` / `.cxx`: bounding box computation on graph nodes.
+- `BRepGraphAlgo_Compact.hxx` / `.cxx`: storage compaction (removes soft-deleted nodes).
 - `BRepGraphAlgo_Copy.hxx` / `.cxx`: graph-based shape copy.
+- `BRepGraphAlgo_Deduplicate.hxx` / `.cxx`: deep geometry deduplication.
+- `BRepGraphAlgo_FClass2d.hxx` / `.cxx`: 2D face classification on graph nodes.
+- `BRepGraphAlgo_Sewing.hxx` / `.cxx`: edge sewing on disconnected faces.
 - `BRepGraphAlgo_Transform.hxx` / `.cxx`: graph-based shape transformation.
+- `BRepGraphAlgo_Validate.hxx` / `.cxx`: structural validation of graph invariants.
+
+Validation/check files (in `BRepGraphCheck` package):
+
+- `BRepGraphCheck_Analyzer.hxx` / `.cxx`: comprehensive topology/geometry checker.
+- `BRepGraphCheck_Issue.hxx`: issue type enumeration.
+- `BRepGraphCheck_Report.hxx`: check result container.
 
 ## Suggested Reading Order
 

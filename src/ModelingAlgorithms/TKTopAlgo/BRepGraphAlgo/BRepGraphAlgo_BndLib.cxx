@@ -13,15 +13,14 @@
 
 #include <BRepGraphAlgo_BndLib.hxx>
 
-#include <BRepAdaptor_Surface.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_GeomNode.hxx>
 #include <BRepGraph_GeomView.hxx>
-#include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_TopoNode.hxx>
 #include <BRepGraph_UsagesView.hxx>
 #include <BRepGraphAlgo_FClass2d.hxx>
+#include <BRepGraphAlgo_UVBounds.hxx>
 
 #include <Bnd_Box.hxx>
 #include <Bnd_Box2d.hxx>
@@ -36,12 +35,22 @@
 #include <Geom_Plane.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_Surface.hxx>
+#include <GeomAdaptor_TransformedSurface.hxx>
 #include <Poly_Triangulation.hxx>
 #include <Precision.hxx>
-#include <TopoDS.hxx>
 
 namespace
 {
+
+// Forward declaration: defined below addFaceBox.
+static void findExactUVBounds(const BRepGraph& theGraph,
+                              int              theFaceIdx,
+                              double&          theUmin,
+                              double&          theUmax,
+                              double&          theVmin,
+                              double&          theVmax,
+                              double           theTol,
+                              bool&            theIsNaturalRestriction);
 
 //! Get the face usage's GlobalLocation for triangulation transform.
 //! Returns identity if no usages exist.
@@ -104,14 +113,17 @@ static void addFaceBox(const BRepGraph& theGraph, int theFaceIdx, Bnd_Box& theBo
   }
 
   // Check surface type (location-invariant).
-  GeomAdaptor_Surface aGAS(aSurf->Surface);
+  const BRepGraph_NodeId aFaceDefId(BRepGraph_NodeId::Kind::Face, theFaceIdx);
+  GeomAdaptor_Surface    aGAS(aSurf->Surface);
   if (aGAS.GetType() != GeomAbs_Plane)
   {
-    // Non-plane: reconstruct face for correct location handling via BRepAdaptor_Surface.
-    const TopoDS_Face   aFace = TopoDS::Face(theGraph.Shapes().ReconstructFace(theFaceIdx));
-    BRepAdaptor_Surface aBS;
-    aBS.Initialize(aFace);
-    BndLib_AddSurface::Add(aBS, aFaceDef.Tolerance, theBox);
+    // Non-plane: use SurfaceAdaptor with UV bounds from PCurves (avoids face reconstruction).
+    double aUMin, aUMax, aVMin, aVMax;
+    bool   anIsNatural = false;
+    findExactUVBounds(theGraph, theFaceIdx, aUMin, aUMax, aVMin, aVMax, aFaceDef.Tolerance, anIsNatural);
+    const GeomAdaptor_TransformedSurface aSurfAdaptor =
+      theGraph.Geom().SurfaceAdaptor(aFaceDefId, aUMin, aUMax, aVMin, aVMax);
+    BndLib_AddSurface::Add(aSurfAdaptor, aFaceDef.Tolerance, theBox);
   }
   else
   {
@@ -158,11 +170,20 @@ static void addFaceBox(const BRepGraph& theGraph, int theFaceIdx, Bnd_Box& theBo
     }
     else
     {
-      // No edges: fall back to full surface.
-      const TopoDS_Face   aFace = TopoDS::Face(theGraph.Shapes().ReconstructFace(theFaceIdx));
-      BRepAdaptor_Surface aBS;
-      aBS.Initialize(aFace);
-      BndLib_AddSurface::Add(aBS, aFaceDef.Tolerance, theBox);
+      // No edges: fall back to surface with UV bounds from PCurves.
+      double aUMin2, aUMax2, aVMin2, aVMax2;
+      bool   anIsNatural2 = false;
+      findExactUVBounds(theGraph,
+                        theFaceIdx,
+                        aUMin2,
+                        aUMax2,
+                        aVMin2,
+                        aVMax2,
+                        aFaceDef.Tolerance,
+                        anIsNatural2);
+      const GeomAdaptor_TransformedSurface aSurfAdaptor2 =
+        theGraph.Geom().SurfaceAdaptor(aFaceDefId, aUMin2, aUMax2, aVMin2, aVMax2);
+      BndLib_AddSurface::Add(aSurfAdaptor2, aFaceDef.Tolerance, theBox);
     }
   }
 }
@@ -201,229 +222,25 @@ static bool canUseEdges(const Adaptor3d_Surface& theBS)
 }
 
 //! Compute precise UV bounds from face PCurves.
+//! Delegates to BRepGraphAlgo_UVBounds::Compute().
 static void findExactUVBounds(const BRepGraph& theGraph,
                               int              theFaceIdx,
                               double&          theUmin,
                               double&          theUmax,
                               double&          theVmin,
                               double&          theVmax,
-                              double           theTol,
+                              double           /*theTol*/,
                               bool&            theIsNaturalRestriction)
 {
-  const BRepGraph_TopoNode::FaceDef& aFaceDef = theGraph.Defs().Face(theFaceIdx);
-  const BRepGraph_GeomNode::Surf*    aSurf    = theGraph.Geom().FaceSurface(theFaceIdx);
-  if (aSurf == nullptr || aSurf->Surface.IsNull())
+  BRepGraphAlgo_UVBounds::CachedData aData;
+  BRepGraphAlgo_UVBounds::Compute(theGraph, theFaceIdx, aData);
+  if (aData.IsValid)
   {
-    return;
-  }
-
-  theIsNaturalRestriction = aFaceDef.NaturalRestriction;
-  GeomAdaptor_Surface aGAS(aSurf->Surface);
-
-  theUmin = aGAS.FirstUParameter();
-  theUmax = aGAS.LastUParameter();
-  theVmin = aGAS.FirstVParameter();
-  theVmax = aGAS.LastVParameter();
-
-  if (theIsNaturalRestriction)
-  {
-    return;
-  }
-
-  // Check by comparing PCurves and surface boundaries (the 4-edge natural restriction check).
-  if (!aFaceDef.Usages.IsEmpty())
-  {
-    const bool     isUperiodic = aGAS.IsUPeriodic();
-    const bool     isVperiodic = aGAS.IsVPeriodic();
-    const double   aTolU       = std::max(aGAS.UResolution(theTol), Precision::PConfusion());
-    const double   aTolV       = std::max(aGAS.VResolution(theTol), Precision::PConfusion());
-    int            Nu = 0, Nv = 0, NbEdges = 0;
-    const gp_Vec2d Du(1, 0), Dv(0, 1);
-    bool           isAborted = false;
-
-    const BRepGraph_TopoNode::FaceUsage& aFaceUsage =
-      theGraph.Usages().Face(aFaceDef.Usages.First().Index);
-
-    // Collect all wire edges for the 4-edge check.
-    auto checkWireEdges = [&](BRepGraph_UsageId theWireUsageId) {
-      if (isAborted)
-      {
-        return;
-      }
-      const BRepGraph_NodeId             aWireDefId = theGraph.DefOf(theWireUsageId);
-      const BRepGraph_TopoNode::WireDef& aWireDef   = theGraph.Defs().Wire(aWireDefId.Index);
-      for (int anIdx = 0; anIdx < aWireDef.OrderedEdges.Length() && !isAborted; ++anIdx)
-      {
-        NbEdges++;
-        if (NbEdges > 4)
-        {
-          isAborted = true;
-          return;
-        }
-        const BRepGraph_TopoNode::WireDef::EdgeEntry& anEntry = aWireDef.OrderedEdges.Value(anIdx);
-        const BRepGraph_GeomNode::PCurve*             aPCurve =
-          theGraph.Geom().EdgePCurve(anEntry.EdgeDefId, aFaceDef.Id);
-        if (aPCurve == nullptr || aPCurve->Curve2d.IsNull())
-        {
-          isAborted = true;
-          return;
-        }
-        gp_Pnt2d     aP;
-        gp_Vec2d     aV;
-        const double aMidParam = (aPCurve->ParamFirst + aPCurve->ParamLast) / 2.;
-        aPCurve->Curve2d->D1(aMidParam, aP, aV);
-        const double aMagn = aV.SquareMagnitude();
-        if (aMagn < gp::Resolution())
-        {
-          isAborted = true;
-          return;
-        }
-        aV /= std::sqrt(aMagn);
-        double u = aP.X(), v = aP.Y();
-        if (isUperiodic)
-        {
-          ElCLib::InPeriod(u, theUmin, theUmax);
-        }
-        if (isVperiodic)
-        {
-          ElCLib::InPeriod(v, theVmin, theVmax);
-        }
-        if (std::abs(u - theUmin) <= aTolU || std::abs(u - theUmax) <= aTolU)
-        {
-          const double d = Dv * aV;
-          if (1. - std::abs(d) <= Precision::PConfusion())
-          {
-            Nu++;
-            if (Nu > 2)
-            {
-              isAborted = true;
-              return;
-            }
-          }
-          else
-          {
-            isAborted = true;
-            return;
-          }
-        }
-        else if (std::abs(v - theVmin) <= aTolV || std::abs(v - theVmax) <= aTolV)
-        {
-          const double d = Du * aV;
-          if (1. - std::abs(d) <= Precision::PConfusion())
-          {
-            Nv++;
-            if (Nv > 2)
-            {
-              isAborted = true;
-              return;
-            }
-          }
-          else
-          {
-            isAborted = true;
-            return;
-          }
-        }
-        else
-        {
-          isAborted = true;
-          return;
-        }
-      }
-    };
-
-    if (aFaceUsage.OuterWireUsage.IsValid())
-    {
-      checkWireEdges(aFaceUsage.OuterWireUsage);
-    }
-    for (int i = 0; i < aFaceUsage.InnerWireUsages.Length() && !isAborted; ++i)
-    {
-      checkWireEdges(aFaceUsage.InnerWireUsages.Value(i));
-    }
-
-    if (!isAborted && Nu == 2 && Nv == 2)
-    {
-      theIsNaturalRestriction = true;
-      return;
-    }
-  }
-
-  // Compute UV bounds from PCurves.
-  const double aTolU  = std::max(aGAS.UResolution(theTol), Precision::PConfusion());
-  const double aTolV  = std::max(aGAS.VResolution(theTol), Precision::PConfusion());
-  const double aTolUV = std::max(aTolU, aTolV);
-
-  Bnd_Box2d aBox;
-  if (!aFaceDef.Usages.IsEmpty())
-  {
-    const BRepGraph_TopoNode::FaceUsage& aFaceUsage =
-      theGraph.Usages().Face(aFaceDef.Usages.First().Index);
-
-    auto addWirePCurves = [&](BRepGraph_UsageId theWireUsageId) {
-      const BRepGraph_NodeId             aWireDefId = theGraph.DefOf(theWireUsageId);
-      const BRepGraph_TopoNode::WireDef& aWireDef   = theGraph.Defs().Wire(aWireDefId.Index);
-      for (int anIdx = 0; anIdx < aWireDef.OrderedEdges.Length(); ++anIdx)
-      {
-        const BRepGraph_TopoNode::WireDef::EdgeEntry& anEntry = aWireDef.OrderedEdges.Value(anIdx);
-        const BRepGraph_GeomNode::PCurve*             aPCurve =
-          theGraph.Geom().EdgePCurve(anEntry.EdgeDefId, aFaceDef.Id);
-        if (aPCurve == nullptr || aPCurve->Curve2d.IsNull())
-        {
-          continue;
-        }
-        BndLib_Add2dCurve::AddOptimal(aPCurve->Curve2d,
-                                      aPCurve->ParamFirst,
-                                      aPCurve->ParamLast,
-                                      aTolUV,
-                                      aBox);
-      }
-    };
-
-    if (aFaceUsage.OuterWireUsage.IsValid())
-    {
-      addWirePCurves(aFaceUsage.OuterWireUsage);
-    }
-    for (int i = 0; i < aFaceUsage.InnerWireUsages.Length(); ++i)
-    {
-      addWirePCurves(aFaceUsage.InnerWireUsages.Value(i));
-    }
-  }
-
-  if (!aBox.IsVoid())
-  {
-    aBox.Get(theUmin, theVmin, theUmax, theVmax);
-  }
-
-  // Clamp to surface bounds, handle periodicity.
-  double aSUmin, aSUmax, aSVmin, aSVmax;
-  aSurf->Surface->Bounds(aSUmin, aSUmax, aSVmin, aSVmax);
-  if (!aSurf->Surface->IsUPeriodic())
-  {
-    theUmin = std::max(aSUmin, theUmin);
-    theUmax = std::min(aSUmax, theUmax);
-  }
-  else
-  {
-    if (theUmax - theUmin > aSurf->Surface->UPeriod())
-    {
-      const double delta = theUmax - theUmin - aSurf->Surface->UPeriod();
-      theUmin += delta / 2.;
-      theUmax -= delta / 2.;
-    }
-  }
-  if (!aSurf->Surface->IsVPeriodic())
-  {
-    theVmin = std::max(aSVmin, theVmin);
-    theVmax = std::min(aSVmax, theVmax);
-  }
-  else
-  {
-    if (theVmax - theVmin > aSurf->Surface->VPeriod())
-    {
-      const double delta = theVmax - theVmin - aSurf->Surface->VPeriod();
-      theVmin += delta / 2.;
-      theVmax -= delta / 2.;
-    }
+    theUmin = aData.UMin;
+    theUmax = aData.UMax;
+    theVmin = aData.VMin;
+    theVmax = aData.VMax;
+    theIsNaturalRestriction = aData.IsNaturalRestriction;
   }
 }
 
@@ -437,7 +254,7 @@ inline void reorder(double& a, double& b)
 }
 
 //! Check if the face box can be tightened along a specific axis.
-static bool isModifySize(const BRepAdaptor_Surface&    theBS,
+static bool isModifySize(const Adaptor3d_Surface&      theBS,
                          const gp_Pln&                 thePln,
                          const gp_Pnt&                 theP,
                          double                        theUmin,
@@ -498,16 +315,16 @@ static bool isModifySize(const BRepAdaptor_Surface&    theBS,
 }
 
 //! Tighten face box using edge box comparison and extrema checks.
-static void adjustFaceBox(const BRepGraph&           theGraph,
-                          int                        theFaceIdx,
-                          const BRepAdaptor_Surface& theBS,
-                          double                     theUmin,
-                          double                     theUmax,
-                          double                     theVmin,
-                          double                     theVmax,
-                          Bnd_Box&                   theFaceBox,
-                          const Bnd_Box&             theEdgeBox,
-                          double                     theTol)
+static void adjustFaceBox(const BRepGraph&         theGraph,
+                          int                      theFaceIdx,
+                          const Adaptor3d_Surface& theBS,
+                          double                   theUmin,
+                          double                   theUmax,
+                          double                   theVmin,
+                          double                   theVmax,
+                          Bnd_Box&                 theFaceBox,
+                          const Bnd_Box&           theEdgeBox,
+                          double                   theTol)
 {
   if (theEdgeBox.IsVoid())
   {
@@ -648,11 +465,10 @@ static void addFaceBoxOptimal(const BRepGraph& theGraph,
     return;
   }
 
-  // Reconstruct face for BRepAdaptor_Surface (handles location correctly).
-  const TopoDS_Face   aFace = TopoDS::Face(theGraph.Shapes().ReconstructFace(theFaceIdx));
-  BRepAdaptor_Surface aBS;
-  aBS.Initialize(aFace, false);
-  const double aFaceTol = theUseShapeTol ? aFaceDef.Tolerance : 0.;
+  // Use SurfaceAdaptor directly (avoids face reconstruction).
+  const BRepGraph_NodeId               aFaceDefId(BRepGraph_NodeId::Kind::Face, theFaceIdx);
+  const GeomAdaptor_TransformedSurface aBS      = theGraph.Geom().SurfaceAdaptor(aFaceDefId);
+  const double                         aFaceTol = theUseShapeTol ? aFaceDef.Tolerance : 0.;
 
   Bnd_Box aLocBox;
   if (canUseEdges(aBS))
@@ -699,7 +515,6 @@ static void addFaceBoxOptimal(const BRepGraph& theGraph,
 
     if (!hasEdges)
     {
-      aBS.Initialize(aFace);
       BndLib_AddSurface::AddOptimal(aBS, aFaceTol, aLocBox);
     }
   }
@@ -709,7 +524,10 @@ static void addFaceBoxOptimal(const BRepGraph& theGraph,
     double umin, umax, vmin, vmax;
     bool   isNaturalRestriction = false;
     findExactUVBounds(theGraph, theFaceIdx, umin, umax, vmin, vmax, aFaceTol, isNaturalRestriction);
-    BndLib_AddSurface::AddOptimal(aBS, umin, umax, vmin, vmax, aFaceTol, aLocBox);
+
+    const GeomAdaptor_TransformedSurface aBSTrimmed =
+      theGraph.Geom().SurfaceAdaptor(aFaceDefId, umin, umax, vmin, vmax);
+    BndLib_AddSurface::AddOptimal(aBSTrimmed, umin, umax, vmin, vmax, aFaceTol, aLocBox);
 
     if (!isNaturalRestriction)
     {
@@ -751,7 +569,16 @@ static void addFaceBoxOptimal(const BRepGraph& theGraph,
           addWireEdgesForAdjust(aFaceUsage.InnerWireUsages.Value(i));
         }
       }
-      adjustFaceBox(theGraph, theFaceIdx, aBS, umin, umax, vmin, vmax, aLocBox, aEBox, aFaceTol);
+      adjustFaceBox(theGraph,
+                    theFaceIdx,
+                    aBSTrimmed,
+                    umin,
+                    umax,
+                    vmin,
+                    vmax,
+                    aLocBox,
+                    aEBox,
+                    aFaceTol);
     }
   }
 
@@ -1067,12 +894,11 @@ public:
   //! @param[in]  thePrecision required minimum precision
   //! @param[out] theData      cached data (unchanged if insufficient)
   //! @return true if cached data is sufficient
-  bool GetIfSufficient(BRepGraphAlgo_BndLib::Precision thePrecision,
-                       BRepGraphAlgo_BndLib::CachedData&     theData) const
+  bool GetIfSufficient(BRepGraphAlgo_BndLib::Precision   thePrecision,
+                       BRepGraphAlgo_BndLib::CachedData& theData) const
   {
     std::shared_lock<std::shared_mutex> aReadLock(myMutex);
-    if (IsDirty()
-        || static_cast<int>(myData.BoxPrecision) < static_cast<int>(thePrecision))
+    if (IsDirty() || static_cast<int>(myData.BoxPrecision) < static_cast<int>(thePrecision))
     {
       return false;
     }
@@ -1118,11 +944,11 @@ int BRepGraphAlgo_BndLib::CacheKey()
 
 //=================================================================================================
 
-bool BRepGraphAlgo_BndLib::GetCached(const BRepGraph&          theGraph,
-                                     BRepGraph_NodeId          theNode,
+bool BRepGraphAlgo_BndLib::GetCached(const BRepGraph&                  theGraph,
+                                     BRepGraph_NodeId                  theNode,
                                      BRepGraphAlgo_BndLib::CachedData& theData)
 {
-  const int                        aKey  = CacheKey();
+  const int                          aKey = CacheKey();
   const BRepGraph_TopoNode::BaseDef* aDef = theGraph.TopoDef(theNode);
   if (aDef == nullptr)
   {
@@ -1146,10 +972,10 @@ bool BRepGraphAlgo_BndLib::GetCached(const BRepGraph&          theGraph,
 
 //=================================================================================================
 
-Bnd_Box BRepGraphAlgo_BndLib::AddCached(BRepGraph&                    theGraph,
-                                        BRepGraph_NodeId              theNode,
+Bnd_Box BRepGraphAlgo_BndLib::AddCached(BRepGraph&                      theGraph,
+                                        BRepGraph_NodeId                theNode,
                                         BRepGraphAlgo_BndLib::Precision thePrecision,
-                                        bool                          theUseTriangulation)
+                                        bool                            theUseTriangulation)
 {
   const int aKey = CacheKey();
 
@@ -1254,8 +1080,7 @@ void BRepGraphAlgo_BndLib::SetCached(BRepGraph&       theGraph,
 
 //=================================================================================================
 
-void BRepGraphAlgo_BndLib::InvalidateCached(BRepGraph&       theGraph,
-                                            BRepGraph_NodeId theNode)
+void BRepGraphAlgo_BndLib::InvalidateCached(BRepGraph& theGraph, BRepGraph_NodeId theNode)
 {
   const int            aKey   = CacheKey();
   BRepGraph_NodeCache* aCache = theGraph.mutableCache(theNode);

@@ -113,8 +113,8 @@ graph LR
 
 ```mermaid
 graph TD
-    T1_3["T1.3 Benchmarks<br/><b>S</b> | independent"]
-    T1_4["T1.4 PCurve Continuity<br/><b>S</b> | independent"]
+    T1_3["T1.3 Benchmarks<br/><b>S</b> | ⏳ in progress"]
+    T1_4["T1.4 PCurve Continuity<br/><b>S/M</b> | ✅ done"]
     T1_1["T1.1 Back-Ref Automation<br/><b>M</b> | foundation"]
     T1_2["T1.2 Mandatory UID<br/><b>M</b> | foundation"]
     T2_1["T2.1 Transactions<br/><b>L</b>"]
@@ -225,27 +225,31 @@ graph LR
 
 ---
 
-### T1.3: Performance Benchmark Suite
+### T1.3: Performance Benchmark Suite ⏳ IN PROGRESS
 
 **What:** Parameterized GTest benchmarks: `Build()` time (100/1K/10K faces), `Reconstruct` round-trip, Sewing throughput, Deduplicate+Compact cycle, spatial query throughput.
 
 **Why:** Without benchmarks, regressions from T1.1/T1.2 overhead go undetected. Must measure before changing.
 
-**Files:** New `BRepGraph_Benchmark_Test.cxx`, `BRepGraphAlgo_Benchmark_Test.cxx` + `FILES.cmake`
+**Files:** `BRepGraph_Benchmark_Test.cxx`, `BRepGraphAlgo_Benchmark_Test.cxx` + `FILES.cmake`
+
+**Status:** Initial benchmark files implemented with smoke tests (enabled) and timing benchmarks (DISABLED by default). Covers Build (100/1K/10K faces), Sewing throughput, Deduplicate+Compact cycle. Remaining: Reconstruct round-trip, spatial query throughput benchmarks.
 
 **Complexity:** S | **Dependencies:** None (do first)
 
 ---
 
-### T1.4: Populate PCurve.Continuity
+### T1.4: Populate PCurve.Continuity ✅ DONE
 
 **What:** During `Build()`, compute `PCurve.Continuity` from `BRep_Tool::Continuity()` for each (Edge, Face) pair.
 
 **Why:** Field declared in `BRepGraph_GeomNode::PCurve` (line 88) but always `GeomAbs_C0`. Future fillet/offset algorithms need correct data.
 
-**Files:** `BRepGraph_Builder.cxx`
+**Files:** `BRepGraph_Builder.cxx`, `BRepGraph.cxx`, `BRepGraph.hxx`
 
-**Complexity:** S | **Dependencies:** None
+**Implementation notes:** Required building an edge-to-face map (`buildEdgeFaceMap`) in a sequential pre-pass before parallel Phase 2, plus a helper `edgeContinuityOnFace()` that computes the maximum continuity across all face pairs sharing an edge. The `createPCurveNode()` signature was extended with a `theContinuity` parameter (default `GeomAbs_C0` for backward compatibility). Tests added in `BRepGraph_Geometry_Test.cxx`.
+
+**Complexity:** S/M (originally estimated S, actual scope slightly larger due to edge-face map infrastructure) | **Dependencies:** None
 
 ---
 
@@ -512,8 +516,8 @@ graph TB
 
 | # | Item | Tier | Complexity | Rationale |
 |---|------|------|-----------|-----------|
-| 1 | T1.3 Benchmarks | 1 | S | Measure before changing |
-| 2 | T1.4 PCurve Continuity | 1 | S | Trivial, no risk |
+| 1 | T1.3 Benchmarks | 1 | S | Measure before changing — **in progress** |
+| 2 | T1.4 PCurve Continuity | 1 | S/M | **Done** — required edge-face map infrastructure |
 | 3 | T1.1 Back-Ref Automation | 1 | M | Biggest risk-reducer |
 | 4 | T1.2 Mandatory UID | 1 | M | Enables stable identity |
 | 5 | T2.1 Transactions | 2 | L | Enables safe multi-step mutations |
