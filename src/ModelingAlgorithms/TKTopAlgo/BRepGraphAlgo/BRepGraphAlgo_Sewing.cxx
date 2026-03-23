@@ -1380,6 +1380,7 @@ int mergeMatchedEdges(
     // MaxTolerance guard: skip pair if merged tolerance exceeds upper bound.
     if (aMergedTol > theOptions.MaxTolerance)
     {
+      ++theResult.NbRejectedByTolerance;
       continue;
     }
 
@@ -1457,47 +1458,14 @@ int mergeMatchedEdges(
 // Phase 7: Process sewn edges (tolerance consistency).
 // ---------------------------------------------------------------------------
 
-void processEdges(BRepGraph&                           theGraph,
-                  const NCollection_IndexedMap<int>&   theSewnEdgeIndices,
-                  const BRepGraphAlgo_Sewing::Options& theOptions)
+void processEdges([[maybe_unused]] BRepGraph&                           theGraph,
+                  [[maybe_unused]] const NCollection_IndexedMap<int>&   theSewnEdgeIndices,
+                  [[maybe_unused]] const BRepGraphAlgo_Sewing::Options& theOptions)
 {
-  const int aNbSewn = theSewnEdgeIndices.Extent();
-  if (aNbSewn == 0)
-  {
-    return;
-  }
-
-  {
-    BRepGraph_MutationGuard aGuard(theGraph);
-    OSD_Parallel::For(
-      0,
-      aNbSewn,
-      [&](int theIdx) {
-        const int                          anEdgeIdx = theSewnEdgeIndices.FindKey(theIdx + 1);
-        const BRepGraph_TopoNode::EdgeDef& anEdge    = theGraph.Defs().Edge(anEdgeIdx);
-        if (anEdge.IsDegenerate)
-        {
-          return;
-        }
-
-        // Ensure edge tolerance is at least as large as its vertex tolerances.
-        double aMaxVtxTol = 0.0;
-        if (anEdge.StartVertexIdx >= 0)
-        {
-          aMaxVtxTol = std::max(aMaxVtxTol, theGraph.Defs().Vertex(anEdge.StartVertexIdx).Tolerance);
-        }
-        if (anEdge.EndVertexIdx >= 0)
-        {
-          aMaxVtxTol = std::max(aMaxVtxTol, theGraph.Defs().Vertex(anEdge.EndVertexIdx).Tolerance);
-        }
-
-        if (aMaxVtxTol > anEdge.Tolerance)
-        {
-          theGraph.Mut().EdgeDef(anEdgeIdx).Tolerance = aMaxVtxTol;
-        }
-      },
-      !theOptions.Parallel);
-  }
+  // Sewn edges already have correct tolerances from the merge phase.
+  // Vertex-tolerance re-inflation is skipped: the vertex merge phase may
+  // have inflated vertex tolerances beyond the geometric need, and propagating
+  // that to edges would undo the careful tolerance set during merging.
 }
 
 // ---------------------------------------------------------------------------

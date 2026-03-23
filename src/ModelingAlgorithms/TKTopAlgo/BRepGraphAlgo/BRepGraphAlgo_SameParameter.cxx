@@ -42,6 +42,7 @@
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 
+#include <atomic>
 #include <cmath>
 
 namespace
@@ -214,13 +215,18 @@ constexpr double THE_KNOT_RATIO_CRIT =
 constexpr int THE_MAX_APPROX_DEGREE   = 14; //!< Max degree for CurvilinearParameter approximation
 constexpr int THE_MAX_APPROX_SEGMENTS = 10; //!< Max segments for CurvilinearParameter approximation
 
-} // anonymous namespace
+//! Internal per-edge fallback counters used by enforceImpl.
+struct EnforceFlags
+{
+  int NbC0Fallbacks    = 0;
+  int NbApproxFallbacks = 0;
+};
 
-//=================================================================================================
-
-bool BRepGraphAlgo_SameParameter::Enforce(BRepGraph&       theGraph,
-                                          BRepGraph_NodeId theEdgeId,
-                                          double           theTolerance)
+//! Internal implementation of SameParameter enforcement with fallback tracking.
+bool enforceImpl(BRepGraph&       theGraph,
+                 BRepGraph_NodeId theEdgeId,
+                 double           theTolerance,
+                 EnforceFlags&    theFlags)
 {
   const BRepGraph_TopoNode::EdgeDef& anEdge = theGraph.Defs().Edge(theEdgeId.Index);
   if (anEdge.Curve3d.IsNull() || anEdge.PCurves.IsEmpty())
@@ -256,7 +262,6 @@ bool BRepGraphAlgo_SameParameter::Enforce(BRepGraph&       theGraph,
   GeomAdaptor_TransformedCurve aTransCurve = theGraph.Defs().CurveAdaptor(theEdgeId);
   const gp_Trsf&               aCrvTrsf    = aTransCurve.Trsf();
 
-  // Build handles for Approx_SameParameter.
   Handle(GeomAdaptor_Curve)   aHC    = new GeomAdaptor_Curve();
   Handle(Geom2dAdaptor_Curve) aHC2d  = new Geom2dAdaptor_Curve();
   Handle(GeomAdaptor_Surface) aHS    = new GeomAdaptor_Surface();
@@ -264,7 +269,6 @@ bool BRepGraphAlgo_SameParameter::Enforce(BRepGraph&       theGraph,
   Geom2dAdaptor_Curve&        aGAC2d = *aHC2d;
   GeomAdaptor_Surface&        aGAS   = *aHS;
 
-  // Load 3D curve (apply transform if non-identity).
   Handle(Geom_Curve) aC3dTransformed = aC3d;
   if (aCrvTrsf.Form() != gp_Identity)
   {
@@ -276,7 +280,6 @@ bool BRepGraphAlgo_SameParameter::Enforce(BRepGraph&       theGraph,
   const double anEdgeTol   = anEdge.Tolerance;
   const bool   isSameRange = anEdge.SameRange;
 
-  // Pre-classify 3D curve type for analytic fast path (Opt 4).
   const GeomAbs_CurveType aCrvType = aGAC.GetType();
 
   bool   isAllSameP = true;
@@ -335,15 +338,14 @@ bool BRepGraphAlgo_SameParameter::Enforce(BRepGraph&       theGraph,
     aGAC2d.Load(aCurPC, aF3d, aL3d);
 
     // Analytic fast path: line-on-plane, circle-on-plane, and line-on-cylinder
-    // have naturally matching parameterizations. Validate with a cheap 3-point
-    // sample before skipping the full computeTol + Approx_SameParameter.
+    // have naturally matching parameterizations. Validate with a cheap sample
+    // before skipping the full computeTol + Approx_SameParameter.
     {
       const GeomAbs_SurfaceType aSrfType = aGAS.GetType();
       if ((aCrvType == GeomAbs_Line
            && (aSrfType == GeomAbs_Plane || aSrfType == GeomAbs_Cylinder))
           || (aCrvType == GeomAbs_Circle && aSrfType == GeomAbs_Plane))
       {
-        // Quick validation: sample at uniform intervals and check deviation.
         constexpr int    THE_NB_ANALYTIC_SAMPLES = 5;
         constexpr double THE_ANALYTIC_STEP = 1.0 / (THE_NB_ANALYTIC_SAMPLES - 1);
         bool isAnalyticOk  = true;
@@ -371,7 +373,6 @@ bool BRepGraphAlgo_SameParameter::Enforce(BRepGraph&       theGraph,
           }
           continue;
         }
-        // Validation failed — fall through to full computeTol path.
       }
     }
 
@@ -386,7 +387,7 @@ bool BRepGraphAlgo_SameParameter::Enforce(BRepGraph&       theGraph,
     bool isANA = false;
     bool isBSP = false;
 
-    // C0 BSpline PCurve → C1 conversion.
+    // C0 BSpline PCurve -> C1 conversion.
     if (aGAC2d.GetType() == GeomAbs_BSplineCurve && aGAC2d.Continuity() == GeomAbs_C0)
     {
       const double aUResol    = aGAS.UResolution(theTolerance);
@@ -496,7 +497,9 @@ bool BRepGraphAlgo_SameParameter::Enforce(BRepGraph&       theGraph,
         }
         else
         {
+          // C0 BSpline could not be promoted to C1.
           isGoodPC = false;
+          ++theFlags.NbC0Fallbacks;
         }
       }
 
@@ -638,6 +641,7 @@ bool BRepGraphAlgo_SameParameter::Enforce(BRepGraph&       theGraph,
       else
       {
         // Approx_SameParameter failed — try SameRange fallback.
+        ++theFlags.NbApproxFallbacks;
         Handle(Geom2d_Curve) aFallbackPC;
         GeomLib::SameRange(aTolSameRange,
                            aPC.Curve2d,
@@ -687,17 +691,31 @@ bool BRepGraphAlgo_SameParameter::Enforce(BRepGraph&       theGraph,
   return isAllSameP;
 }
 
+} // anonymous namespace
+
 //=================================================================================================
 
-void BRepGraphAlgo_SameParameter::Perform(BRepGraph&                         theGraph,
-                                          const NCollection_IndexedMap<int>& theEdgeIndices,
-                                          double                             theTolerance,
-                                          bool                               theParallel)
+bool BRepGraphAlgo_SameParameter::Enforce(BRepGraph&       theGraph,
+                                          BRepGraph_NodeId theEdgeId,
+                                          double           theTolerance)
 {
+  EnforceFlags aFlags;
+  return enforceImpl(theGraph, theEdgeId, theTolerance, aFlags);
+}
+
+//=================================================================================================
+
+BRepGraphAlgo_SameParameter::Result BRepGraphAlgo_SameParameter::Perform(
+  BRepGraph&                         theGraph,
+  const NCollection_IndexedMap<int>& theEdgeIndices,
+  double                             theTolerance,
+  bool                               theParallel)
+{
+  Result aResult;
   const int aNbEdges = theEdgeIndices.Extent();
   if (aNbEdges == 0)
   {
-    return;
+    return aResult;
   }
 
   // Copy indices to array for indexed parallel access.
@@ -707,6 +725,9 @@ void BRepGraphAlgo_SameParameter::Perform(BRepGraph&                         the
     anIndices.SetValue(anIdx - 1, theEdgeIndices.FindKey(anIdx));
   }
 
+  std::atomic<int> aNbC0(0);
+  std::atomic<int> aNbApprox(0);
+
   {
     BRepGraph_MutationGuard aGuard(theGraph);
     OSD_Parallel::For(
@@ -715,8 +736,17 @@ void BRepGraphAlgo_SameParameter::Perform(BRepGraph&                         the
       [&](int theIdx) {
         const int              anEdgeIdx = anIndices.Value(theIdx);
         const BRepGraph_NodeId anEdgeId(BRepGraph_NodeId::Kind::Edge, anEdgeIdx);
-        Enforce(theGraph, anEdgeId, theTolerance);
+        EnforceFlags aFlags;
+        enforceImpl(theGraph, anEdgeId, theTolerance, aFlags);
+        if (aFlags.NbC0Fallbacks > 0)
+          aNbC0.fetch_add(aFlags.NbC0Fallbacks, std::memory_order_relaxed);
+        if (aFlags.NbApproxFallbacks > 0)
+          aNbApprox.fetch_add(aFlags.NbApproxFallbacks, std::memory_order_relaxed);
       },
       !theParallel);
   }
+
+  aResult.NbC0Fallbacks    = aNbC0.load();
+  aResult.NbApproxFallbacks = aNbApprox.load();
+  return aResult;
 }

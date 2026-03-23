@@ -83,8 +83,9 @@ public:
     int  NbFreeEdgesAfter  = 0;     //!< Free edges remaining after sewing.
     int  NbSewnEdges       = 0;     //!< Edge pairs that were successfully sewn.
     int  NbMultipleEdges   = 0;     //!< Edges shared by >2 faces.
-    int  NbDegeneratedEdges = 0;    //!< Degenerate edges detected or created.
-    int  NbDeletedFaces    = 0;     //!< Small faces removed by face analysis.
+    int  NbDegeneratedEdges     = 0; //!< Degenerate edges detected or created.
+    int  NbDeletedFaces         = 0; //!< Small faces removed by face analysis.
+    int  NbRejectedByTolerance  = 0; //!< Candidate pairs rejected by MaxTolerance.
 
     NCollection_Vector<BRepGraph_NodeId> FreeEdges;        //!< Remaining free edges after sewing.
     NCollection_Vector<BRepGraph_NodeId> MultipleEdges;    //!< Edges shared by >2 faces.

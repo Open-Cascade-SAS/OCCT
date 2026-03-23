@@ -374,7 +374,9 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
       // Attach PCurve(s) for THIS face context from inline PCurve entries.
       const BRepGraphInc::EdgeEntity& anEdgeEnt = theStorage.Edge(aEdgeRef.EdgeIdx);
       Handle(Geom2d_Curve) aPC1, aPC2;
-      double aPCFirst = 0.0, aPCLast = 0.0;
+      double   aPCFirst = 0.0, aPCLast = 0.0;
+      gp_Pnt2d aUV1, aUV2;
+      bool     aHasUV = false;
       for (int aPCIdx = 0; aPCIdx < anEdgeEnt.PCurves.Length(); ++aPCIdx)
       {
         const BRepGraphInc::EdgeEntity::PCurveEntry& aPCEntry = anEdgeEnt.PCurves.Value(aPCIdx);
@@ -388,6 +390,9 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
           aPC1     = aPCEntry.Curve2d;
           aPCFirst = aPCEntry.ParamFirst;
           aPCLast  = aPCEntry.ParamLast;
+          aUV1     = aPCEntry.UV1;
+          aUV2     = aPCEntry.UV2;
+          aHasUV   = true;
         }
         else
         {
@@ -402,14 +407,24 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
 
       if (!aPC1.IsNull() && !aPC2.IsNull())
       {
-        aBB.UpdateEdge(anEdge, aPC1, aPC2,
-                       aFace.Surface, TopLoc_Location(), anEdgeEnt.Tolerance);
+        if (aHasUV)
+          aBB.UpdateEdge(anEdge, aPC1, aPC2,
+                         aFace.Surface, TopLoc_Location(), anEdgeEnt.Tolerance,
+                         aUV1, aUV2);
+        else
+          aBB.UpdateEdge(anEdge, aPC1, aPC2,
+                         aFace.Surface, TopLoc_Location(), anEdgeEnt.Tolerance);
         aBB.Range(anEdge, aFace.Surface, TopLoc_Location(), aPCFirst, aPCLast);
       }
       else if (!aPC1.IsNull())
       {
-        aBB.UpdateEdge(anEdge, aPC1,
-                       aFace.Surface, TopLoc_Location(), anEdgeEnt.Tolerance);
+        if (aHasUV)
+          aBB.UpdateEdge(anEdge, aPC1,
+                         aFace.Surface, TopLoc_Location(), anEdgeEnt.Tolerance,
+                         aUV1, aUV2);
+        else
+          aBB.UpdateEdge(anEdge, aPC1,
+                         aFace.Surface, TopLoc_Location(), anEdgeEnt.Tolerance);
         aBB.Range(anEdge, aFace.Surface, TopLoc_Location(), aPCFirst, aPCLast);
       }
       else if (!aPC2.IsNull())
@@ -496,6 +511,48 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
       aVtxShape = aNewVtx;
     }
     aBB.Add(aNewFace, aVtxShape.Oriented(aVR.Orientation));
+  }
+
+  // Restore vertex point representations now that all edges and this face are cached.
+  // UpdateVertex modifies TShape in-place, so cached vertex shapes are updated.
+  for (int aWireRefIdx = 0; aWireRefIdx < aFace.WireRefs.Length(); ++aWireRefIdx)
+  {
+    const BRepGraphInc::WireEntity& aWire = theStorage.Wire(aFace.WireRefs.Value(aWireRefIdx).WireIdx);
+    for (int anEdgeRefIdx = 0; anEdgeRefIdx < aWire.EdgeRefs.Length(); ++anEdgeRefIdx)
+    {
+      const BRepGraphInc::EdgeEntity& anEdgeEnt = theStorage.Edge(aWire.EdgeRefs.Value(anEdgeRefIdx).EdgeIdx);
+      auto restoreVertexPointReps = [&](int theVtxIdx) {
+        if (theVtxIdx < 0)
+          return;
+        const BRepGraphInc::VertexEntity& aVtx = theStorage.Vertex(theVtxIdx);
+        if (aVtx.PointsOnCurve.IsEmpty() && aVtx.PointsOnSurface.IsEmpty())
+          return;
+        const TopoDS_Shape* aVtxCached = theCache.Seek(BRepGraph_NodeId::Vertex(theVtxIdx));
+        if (aVtxCached == nullptr || aVtxCached->IsNull())
+          return;
+        TopoDS_Vertex aVtxShape = TopoDS::Vertex(*aVtxCached);
+        for (int aPOCIdx = 0; aPOCIdx < aVtx.PointsOnCurve.Length(); ++aPOCIdx)
+        {
+          const BRepGraphInc::VertexEntity::PointOnCurveEntry& aPOC =
+            aVtx.PointsOnCurve.Value(aPOCIdx);
+          const TopoDS_Shape* anEdgeCached = theCache.Seek(aPOC.EdgeDefId);
+          if (anEdgeCached != nullptr && !anEdgeCached->IsNull())
+            aBB.UpdateVertex(aVtxShape, aPOC.Parameter,
+                             TopoDS::Edge(*anEdgeCached), aVtx.Tolerance);
+        }
+        for (int aPOSIdx = 0; aPOSIdx < aVtx.PointsOnSurface.Length(); ++aPOSIdx)
+        {
+          const BRepGraphInc::VertexEntity::PointOnSurfaceEntry& aPOS =
+            aVtx.PointsOnSurface.Value(aPOSIdx);
+          const TopoDS_Shape* aFaceCached = theCache.Seek(aPOS.FaceDefId);
+          if (aFaceCached != nullptr && !aFaceCached->IsNull())
+            aBB.UpdateVertex(aVtxShape, aPOS.ParameterU, aPOS.ParameterV,
+                             TopoDS::Face(*aFaceCached), aVtx.Tolerance);
+        }
+      };
+      restoreVertexPointReps(anEdgeEnt.StartVertexIdx);
+      restoreVertexPointReps(anEdgeEnt.EndVertexIdx);
+    }
   }
 
   aNewFace.Orientation(TopAbs_FORWARD);

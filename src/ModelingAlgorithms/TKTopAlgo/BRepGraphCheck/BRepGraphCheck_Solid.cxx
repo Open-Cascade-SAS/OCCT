@@ -111,10 +111,10 @@ void BRepGraphCheck::CheckSolidMinimum(
     double aUMin = 0.0, aUMax = 0.0, aVMin = 0.0, aVMax = 0.0;
     aFaceDef.Surface->Bounds(aUMin, aUMax, aVMin, aVMax);
     // Clamp infinite bounds.
-    if (aUMin < -1.0e6) aUMin = -1.0e6;
-    if (aUMax >  1.0e6) aUMax =  1.0e6;
-    if (aVMin < -1.0e6) aVMin = -1.0e6;
-    if (aVMax >  1.0e6) aVMax =  1.0e6;
+    if (aUMin < -Precision::Infinite()) aUMin = -Precision::Infinite();
+    if (aUMax >  Precision::Infinite()) aUMax =  Precision::Infinite();
+    if (aVMin < -Precision::Infinite()) aVMin = -Precision::Infinite();
+    if (aVMax >  Precision::Infinite()) aVMax =  Precision::Infinite();
 
     // Geometry is stored at identity, no location transform needed.
     const gp_Pnt aRepPnt = aFaceDef.Surface->Value(0.5 * (aUMin + aUMax), 0.5 * (aVMin + aVMax));

@@ -31,6 +31,13 @@ class BRepGraphAlgo_SameParameter
 public:
   DEFINE_STANDARD_ALLOC
 
+  //! Diagnostic result from SameParameter enforcement.
+  struct Result
+  {
+    int NbC0Fallbacks    = 0; //!< Edges where C0 BSpline PCurve could not be promoted to C1.
+    int NbApproxFallbacks = 0; //!< Edges where Approx_SameParameter failed and SameRange fallback was used.
+  };
+
   //! Enforce SameParameter on a single edge.
   //! Checks each PCurve against the 3D curve; adjusts tolerance if needed.
   //! @param[in,out] theGraph     the graph containing the edge
@@ -47,10 +54,11 @@ public:
   //! @param[in]     theEdgeIndices edge definition indices to process
   //! @param[in]     theTolerance   reference tolerance
   //! @param[in]     theParallel    enable parallel execution
-  static Standard_EXPORT void Perform(BRepGraph&                      theGraph,
-                                      const NCollection_IndexedMap<int>& theEdgeIndices,
-                                      double                          theTolerance,
-                                      bool                            theParallel);
+  //! @return diagnostic counters
+  static Standard_EXPORT Result Perform(BRepGraph&                         theGraph,
+                                        const NCollection_IndexedMap<int>& theEdgeIndices,
+                                        double                             theTolerance,
+                                        bool                               theParallel);
 
 private:
   BRepGraphAlgo_SameParameter() = delete;

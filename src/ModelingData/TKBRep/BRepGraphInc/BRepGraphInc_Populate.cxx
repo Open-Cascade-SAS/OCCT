@@ -146,8 +146,22 @@ void extractFaceData(FaceLocalData& theData)
 {
   const TopoDS_Face& aFace = theData.Face;
 
-  TopLoc_Location aSurfLoc;
-  theData.Surface = BRep_Tool::Surface(aFace, aSurfLoc);
+  // Extract surface with its representation location baked in.
+  // BRep_Tool::Surface(face, loc) returns TFace->Surface() and sets
+  // loc = face.Location() * TFace->Location()  (see BRep_TFace.hxx).
+  // Factor out the topological location to isolate TFace->Location(),
+  // then apply it to the surface so stored geometry is in the definition frame.
+  TopLoc_Location aSurfCombinedLoc;
+  theData.Surface = BRep_Tool::Surface(aFace, aSurfCombinedLoc);
+  if (!aSurfCombinedLoc.IsIdentity() && !theData.Surface.IsNull())
+  {
+    const TopLoc_Location aSurfRepLoc = aFace.Location().Inverted() * aSurfCombinedLoc;
+    if (!aSurfRepLoc.IsIdentity())
+    {
+      theData.Surface = Handle(Geom_Surface)::DownCast(
+        theData.Surface->Transformed(aSurfRepLoc.Transformation()));
+    }
+  }
 
   // Extract triangulations.
   {
@@ -210,10 +224,25 @@ void extractFaceData(FaceLocalData& theData)
       anEdgeData.OrientationInWire = anEdge.Orientation();
 
       double aFirst = 0.0, aLast = 0.0;
-      TopLoc_Location aCurveLoc;
-      anEdgeData.Curve3d    = BRep_Tool::Curve(anEdge, aCurveLoc, aFirst, aLast);
+      TopLoc_Location aCurveCombinedLoc;
+      anEdgeData.Curve3d    = BRep_Tool::Curve(anEdge, aCurveCombinedLoc, aFirst, aLast);
       anEdgeData.ParamFirst = aFirst;
       anEdgeData.ParamLast  = aLast;
+
+      // Apply representation location to 3D curve.
+      // BRep_Tool::Curve(edge, loc, ...) returns BRep_Curve3D->Curve3D() and sets
+      // loc = edge.Location() * BRep_Curve3D->Location()  (see BRep_GCurve).
+      // Factor out the topological location to isolate the curve representation
+      // location, then apply it so stored geometry is in the definition frame.
+      if (!aCurveCombinedLoc.IsIdentity() && !anEdgeData.Curve3d.IsNull())
+      {
+        const TopLoc_Location aCurveRepLoc = anEdge.Location().Inverted() * aCurveCombinedLoc;
+        if (!aCurveRepLoc.IsIdentity())
+        {
+          anEdgeData.Curve3d = Handle(Geom_Curve)::DownCast(
+            anEdgeData.Curve3d->Transformed(aCurveRepLoc.Transformation()));
+        }
+      }
 
       TopoDS_Vertex aVFirst, aVLast;
       edgeVertices(anEdge, aVFirst, aVLast, anEdgeData.InternalVertices);
@@ -240,10 +269,29 @@ void extractFaceData(FaceLocalData& theData)
       if (!anEdgeData.PCurve2d.IsNull() && !theData.Surface.IsNull())
         BRep_Tool::UVPoints(anEdge, aForwardFace, anEdgeData.PCUV1, anEdgeData.PCUV2);
 
-      // Polygon3D.
+      // Polygon3D: apply representation location to polygon nodes.
       {
         TopLoc_Location aPoly3DLoc;
         anEdgeData.Polygon3D = BRep_Tool::Polygon3D(anEdge, aPoly3DLoc);
+        if (!aPoly3DLoc.IsIdentity() && !anEdgeData.Polygon3D.IsNull())
+        {
+          const TopLoc_Location aPolyRepLoc = anEdge.Location().Inverted() * aPoly3DLoc;
+          if (!aPolyRepLoc.IsIdentity())
+          {
+            const gp_Trsf& aTrsf = aPolyRepLoc.Transformation();
+            const NCollection_Array1<gp_Pnt>& aNodes = anEdgeData.Polygon3D->Nodes();
+            NCollection_Array1<gp_Pnt> aNewNodes(aNodes.Lower(), aNodes.Upper());
+            for (int aNodeIdx = aNodes.Lower(); aNodeIdx <= aNodes.Upper(); ++aNodeIdx)
+              aNewNodes.SetValue(aNodeIdx, aNodes.Value(aNodeIdx).Transformed(aTrsf));
+            Handle(Poly_Polygon3D) aTransPoly;
+            if (anEdgeData.Polygon3D->HasParameters())
+              aTransPoly = new Poly_Polygon3D(aNewNodes, anEdgeData.Polygon3D->Parameters());
+            else
+              aTransPoly = new Poly_Polygon3D(aNewNodes);
+            aTransPoly->Deflection(anEdgeData.Polygon3D->Deflection());
+            anEdgeData.Polygon3D = aTransPoly;
+          }
+        }
       }
 
       // PolygonOnSurface.
@@ -510,7 +558,12 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
           anEdgeMut.Polygon3D = anEdgeData.Polygon3D;
 
         // Inline PolygonsOnTri: polygon-on-triangulation.
-        for (int aTriIdx = 0; aTriIdx < aFaceDef.Triangulations.Length(); ++aTriIdx)
+        // If the representation location is non-identity, the triangulation nodes
+        // must be transformed. We create a copy of the triangulation with transformed
+        // nodes and append it to the face's triangulation list.
+        // Capture initial count: appended transformed copies must not be re-iterated.
+        const int aNbOrigTris = aFaceDef.Triangulations.Length();
+        for (int aTriIdx = 0; aTriIdx < aNbOrigTris; ++aTriIdx)
         {
           const Handle(Poly_Triangulation)& aTri = aFaceDef.Triangulations.Value(aTriIdx);
           if (aTri.IsNull())
@@ -522,10 +575,28 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
           if (aPolyOnTri.IsNull())
             continue;
 
+          // Extract representation location by factoring out edge topological location.
+          int aEffTriIdx = aTriIdx;
+          if (!aPolyTriLoc.IsIdentity())
+          {
+            const TopLoc_Location aRepLoc =
+              anEdgeData.Shape.Location().Inverted() * aPolyTriLoc;
+            if (!aRepLoc.IsIdentity())
+            {
+              // Create a transformed copy of the triangulation and append it.
+              Handle(Poly_Triangulation) aTriCopy = aTri->Copy();
+              const gp_Trsf& aTrsf = aRepLoc.Transformation();
+              for (int aNodeIdx = 1; aNodeIdx <= aTriCopy->NbNodes(); ++aNodeIdx)
+                aTriCopy->SetNode(aNodeIdx, aTriCopy->Node(aNodeIdx).Transformed(aTrsf));
+              aEffTriIdx = theStorage.ChangeFace(aFaceIdx).Triangulations.Length();
+              theStorage.ChangeFace(aFaceIdx).Triangulations.Append(aTriCopy);
+            }
+          }
+
           BRepGraphInc::EdgeEntity::PolyOnTriEntry aPolyTriEntry;
           aPolyTriEntry.Polygon            = aPolyOnTri;
           aPolyTriEntry.FaceDefId          = BRepGraph_NodeId::Face(aFaceIdx);
-          aPolyTriEntry.TriangulationIndex = aTriIdx;
+          aPolyTriEntry.TriangulationIndex = aEffTriIdx;
           aPolyTriEntry.EdgeOrientation    = TopAbs_FORWARD;
           anEdgeMut.PolygonsOnTri.Append(aPolyTriEntry);
 
@@ -538,7 +609,7 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
             BRepGraphInc::EdgeEntity::PolyOnTriEntry aPolyTriRevEntry;
             aPolyTriRevEntry.Polygon            = aPolyOnTriRev;
             aPolyTriRevEntry.FaceDefId          = BRepGraph_NodeId::Face(aFaceIdx);
-            aPolyTriRevEntry.TriangulationIndex = aTriIdx;
+            aPolyTriRevEntry.TriangulationIndex = aEffTriIdx;
             aPolyTriRevEntry.EdgeOrientation    = TopAbs_REVERSED;
             anEdgeMut.PolygonsOnTri.Append(aPolyTriRevEntry);
           }
@@ -814,12 +885,22 @@ void BRepGraphInc_Populate::Perform(
   // Edge regularities.
   if (theOptions.ExtractRegularities)
   {
+    // Map original raw surface pointers to face indices.
+    // BRep_CurveOn2Surfaces stores original raw surface pointers, so the lookup
+    // must use the same pointers (not the transformed ones in the entity).
     NCollection_DataMap<const Geom_Surface*, int> aSurfToFaceIdx(1, aTmpAlloc);
     for (int i = 0; i < theStorage.myFaces.Length(); ++i)
     {
       const BRepGraphInc::FaceEntity& aFace = theStorage.myFaces.Value(i);
-      if (!aFace.Surface.IsNull())
-        aSurfToFaceIdx.TryBind(aFace.Surface.get(), i);
+      const TopoDS_Shape* anOrigFace = theStorage.myOriginalShapes.Seek(aFace.Id);
+      if (anOrigFace != nullptr && !anOrigFace->IsNull())
+      {
+        TopLoc_Location aLoc;
+        Handle(Geom_Surface) aRawSurf =
+          BRep_Tool::Surface(TopoDS::Face(*anOrigFace), aLoc);
+        if (!aRawSurf.IsNull())
+          aSurfToFaceIdx.TryBind(aRawSurf.get(), i);
+      }
     }
 
     OSD_Parallel::For(0, theStorage.myEdges.Length(),
@@ -867,20 +948,38 @@ void BRepGraphInc_Populate::Perform(
   // Vertex point representations.
   if (theOptions.ExtractVertexPointReps)
   {
+    // Map original raw curve/surface pointers to edge/face node IDs.
+    // BRep_PointRepresentation stores original raw pointers, so the lookup
+    // must use the same pointers (not the transformed ones in the entity).
     NCollection_DataMap<const Geom_Curve*, BRepGraph_NodeId> aCurveToEdgeDef(1, aTmpAlloc);
     for (int i = 0; i < theStorage.myEdges.Length(); ++i)
     {
-      const BRepGraphInc::EdgeEntity& anEdge = theStorage.myEdges.Value(i);
-      if (!anEdge.Curve3d.IsNull())
-        aCurveToEdgeDef.TryBind(anEdge.Curve3d.get(), anEdge.Id);
+      const BRepGraphInc::EdgeEntity& anEdgeEnt = theStorage.myEdges.Value(i);
+      const TopoDS_Shape* anOrigEdge = theStorage.myOriginalShapes.Seek(anEdgeEnt.Id);
+      if (anOrigEdge != nullptr && !anOrigEdge->IsNull())
+      {
+        double aF = 0.0, aL = 0.0;
+        TopLoc_Location aLoc;
+        Handle(Geom_Curve) aRawCurve =
+          BRep_Tool::Curve(TopoDS::Edge(*anOrigEdge), aLoc, aF, aL);
+        if (!aRawCurve.IsNull())
+          aCurveToEdgeDef.TryBind(aRawCurve.get(), anEdgeEnt.Id);
+      }
     }
 
     NCollection_DataMap<const Geom_Surface*, BRepGraph_NodeId> aSurfToFaceDefVtx(1, aTmpAlloc);
     for (int i = 0; i < theStorage.myFaces.Length(); ++i)
     {
-      const BRepGraphInc::FaceEntity& aFace = theStorage.myFaces.Value(i);
-      if (!aFace.Surface.IsNull())
-        aSurfToFaceDefVtx.TryBind(aFace.Surface.get(), aFace.Id);
+      const BRepGraphInc::FaceEntity& aFaceEnt = theStorage.myFaces.Value(i);
+      const TopoDS_Shape* anOrigFace = theStorage.myOriginalShapes.Seek(aFaceEnt.Id);
+      if (anOrigFace != nullptr && !anOrigFace->IsNull())
+      {
+        TopLoc_Location aLoc;
+        Handle(Geom_Surface) aRawSurf =
+          BRep_Tool::Surface(TopoDS::Face(*anOrigFace), aLoc);
+        if (!aRawSurf.IsNull())
+          aSurfToFaceDefVtx.TryBind(aRawSurf.get(), aFaceEnt.Id);
+      }
     }
 
     OSD_Parallel::For(0, theStorage.myVertices.Length(),
