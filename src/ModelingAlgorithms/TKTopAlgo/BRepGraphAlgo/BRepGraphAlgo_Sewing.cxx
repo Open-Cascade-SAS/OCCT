@@ -22,6 +22,7 @@
 #include <Geom2d_Curve.hxx>
 #include <Geom_Surface.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_LocalArray.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_DynamicArray.hxx>
 #include <NCollection_IncAllocator.hxx>
@@ -692,8 +693,9 @@ void BRepGraphAlgo_Sewing::cutAtIntersections(const Handle(NCollection_IncAlloca
       continue;
 
     // Sort candidates by parameter (ascending).
-    const int                          aNbSplits = aSplits.Length();
-    NCollection_Array1<SplitCandidate> aSortedSplits(0, aNbSplits - 1);
+    const int                                 aNbSplits = aSplits.Length();
+    NCollection_LocalArray<SplitCandidate, 8> aSortedSplitsBuf(aNbSplits);
+    NCollection_Array1<SplitCandidate>        aSortedSplits(aSortedSplitsBuf[0], 0, aNbSplits - 1);
     for (int aSplitIter = 0; aSplitIter < aNbSplits; ++aSplitIter)
       aSortedSplits.SetValue(aSplitIter, aSplits.Value(aSplitIter));
     std::sort(&aSortedSplits.ChangeFirst(),
@@ -811,7 +813,8 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> BRepGraphAlgo_
         return;
 
       // Pre-sample points on edgeA (reused across all edgeB candidates).
-      NCollection_Array1<gp_Pnt> aSamplePtsA(1, aSamplerA.NbPoints());
+      NCollection_LocalArray<gp_Pnt, 8> aSamplePtsABuf(aSamplerA.NbPoints());
+      NCollection_Array1<gp_Pnt>        aSamplePtsA(aSamplePtsABuf[0], 1, aSamplerA.NbPoints());
       for (int aSmpIter = 1; aSmpIter <= aSamplerA.NbPoints(); ++aSmpIter)
       {
         aSamplePtsA.SetValue(aSmpIter, aCurveA.EvalD0(aSamplerA.Parameter(aSmpIter)));
@@ -879,7 +882,8 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> BRepGraphAlgo_
   const int aNbScored = aScoredPairs.Length();
   if (aNbScored > 0)
   {
-    NCollection_Array1<ScoredPair> aSortedPairs(0, aNbScored - 1);
+    NCollection_LocalArray<ScoredPair, 64> aSortedPairsBuf(aNbScored);
+    NCollection_Array1<ScoredPair>         aSortedPairs(aSortedPairsBuf[0], 0, aNbScored - 1);
     for (int anIdx = 0; anIdx < aNbScored; ++anIdx)
     {
       aSortedPairs.SetValue(anIdx, aScoredPairs.Value(anIdx));
@@ -919,6 +923,9 @@ void BRepGraphAlgo_Sewing::mergeMatchedEdges(
 
   // Collect edges that need SameParameter -- will be run in parallel after the loop.
   NCollection_Vector<TopoDS_Edge> aSameParamEdges;
+
+  // Reusable single-element buffer for history recording.
+  NCollection_Vector<BRepGraph_NodeId> aReplacement;
 
   for (int aPairIter = 0; aPairIter < thePairs.Length(); ++aPairIter)
   {
@@ -985,7 +992,7 @@ void BRepGraphAlgo_Sewing::mergeMatchedEdges(
     }
 
     // Record history.
-    NCollection_Vector<BRepGraph_NodeId> aReplacement;
+    aReplacement.Clear();
     aReplacement.Append(anIdA);
     myGraph.History().Record("Sewing:MergeEdge", anIdB, aReplacement);
 
