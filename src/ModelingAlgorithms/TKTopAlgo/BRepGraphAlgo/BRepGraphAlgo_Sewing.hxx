@@ -16,6 +16,8 @@
 
 #include <BRepGraph.hxx>
 
+#include <NCollection_Vector.hxx>
+#include <Precision.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <TopoDS_Shape.hxx>
 
@@ -26,14 +28,16 @@
 //! and merges them in-place using BRepGraph mutation APIs.
 //!
 //! The algorithm follows these phases:
+//! 0. Face Analysis (optional) -- detect/remove small edges and faces
 //! 1. Find Free Edges -- boundary edge detection via face-reference counting
 //! 2. Vertex Assembling -- merge coincident free-edge vertices (union-find)
 //! 3. Edge Cutting (optional) -- split edges at T-vertex intersections
 //! 4. Candidate Detection -- BBox pre-filter + KDTree overlap detection
 //! 5. Edge Matching -- geometric validation + greedy best-score pairing
 //! 6. Edge Merging -- PCurve transfer, wire updates, tolerance merge
-//! 7. SameParameter (optional) -- enforce SameParameter on sewn edges
-//! 8. Edge Processing -- tolerance consistency check
+//! 7. Degenerate Conversion -- convert remaining free degenerate wires
+//! 8. Edge Processing -- tolerance consistency + SameParameter
+//! 9. Output -- populate result diagnostics
 //!
 //! ## Typical usage (graph-level)
 //! @code
@@ -58,12 +62,17 @@ public:
   //! Configuration parameters for sewing.
   struct Options
   {
-    double Tolerance         = 1.0e-06; //!< Maximum distance for edge matching.
-    bool   Cutting           = true;    //!< Cut edges at T-vertex intersections.
-    bool   SameParameterMode = true;    //!< Enforce SameParameter on sewn edges.
-    bool   NonManifoldMode   = false;   //!< Allow >2 faces per edge.
-    bool   Parallel          = false;   //!< Enable parallel execution.
-    bool   HistoryMode       = true;    //!< Record history in the graph.
+    double Tolerance         = 1.0e-06;              //!< Maximum distance for edge matching.
+    bool   Cutting           = true;                 //!< Cut edges at T-vertex intersections.
+    bool   SameParameterMode = true;                 //!< Enforce SameParameter on sewn edges.
+    bool   NonManifoldMode   = false;                //!< Allow >2 faces per edge.
+    bool   Parallel          = false;                //!< Enable parallel execution.
+    bool   HistoryMode       = true;                 //!< Record history in the graph.
+    bool   FaceAnalysis      = true;                 //!< Run face analysis before sewing (small-edge/face cleanup).
+    bool   FloatingEdgesMode = false;                //!< Include edges with 0 adjacent faces.
+    bool   LocalTolerancesMode = false;              //!< Adaptive tolerance: WorkTol = Tolerance + tolEdge1 + tolEdge2.
+    double MinTolerance      = 0.0;                  //!< Minimum edge length threshold; 0 = auto (Tolerance * 1e-4).
+    double MaxTolerance      = Precision::Infinite(); //!< Upper bound for merge tolerance.
   };
 
   //! Diagnostic result from a sewing operation.
@@ -73,6 +82,15 @@ public:
     int  NbFreeEdgesBefore = 0;     //!< Free edges detected before sewing.
     int  NbFreeEdgesAfter  = 0;     //!< Free edges remaining after sewing.
     int  NbSewnEdges       = 0;     //!< Edge pairs that were successfully sewn.
+    int  NbMultipleEdges   = 0;     //!< Edges shared by >2 faces.
+    int  NbDegeneratedEdges = 0;    //!< Degenerate edges detected or created.
+    int  NbDeletedFaces    = 0;     //!< Small faces removed by face analysis.
+
+    NCollection_Vector<BRepGraph_NodeId> FreeEdges;        //!< Remaining free edges after sewing.
+    NCollection_Vector<BRepGraph_NodeId> MultipleEdges;    //!< Edges shared by >2 faces.
+    NCollection_Vector<BRepGraph_NodeId> SewnEdgePairs;    //!< Keep-edge IDs of sewn pairs.
+    NCollection_Vector<BRepGraph_NodeId> DegeneratedEdges; //!< Degenerate edges found or created.
+    NCollection_Vector<BRepGraph_NodeId> DeletedFaces;     //!< Faces removed by face analysis.
   };
 
   //! Primary API: sew free edges on a pre-built graph (in-place).

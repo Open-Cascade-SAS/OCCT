@@ -16,6 +16,7 @@
 #include <Bnd_Box.hxx>
 #include <BRep_Builder.hxx>
 #include <BRepGraphAlgo_BndLib.hxx>
+#include <BRepGraphAlgo_FaceAnalysis.hxx>
 #include <BRepGraphAlgo_SameParameter.hxx>
 #include <BRepLib.hxx>
 #include <ExtremaPC_Curve.hxx>
@@ -90,6 +91,97 @@ private:
 };
 
 // ---------------------------------------------------------------------------
+// Seam edge detection: edge has 2 PCurves on the same face (FORWARD+REVERSED).
+// ---------------------------------------------------------------------------
+
+bool isSeamEdge(const BRepGraph& theGraph, int theEdgeIdx)
+{
+  const BRepGraph_TopoNode::EdgeDef& anEdge = theGraph.Defs().Edge(theEdgeIdx);
+  // A seam edge has TWO distinct PCurve entries for the same face (different Geom2d_Curve
+  // handles representing opposite sides of a UV-closed surface). EdgeOrientation alone
+  // is NOT reliable: normal edges may store PCurves with both FORWARD and REVERSED
+  // orientations from different wire contexts, sharing the same Geom2d_Curve object.
+  for (int i = 0; i < anEdge.PCurves.Length(); ++i)
+  {
+    const int                       aFaceId = anEdge.PCurves.Value(i).FaceDefId.Index;
+    const Handle(Geom2d_Curve)& aCurve1 = anEdge.PCurves.Value(i).Curve2d;
+    for (int j = i + 1; j < anEdge.PCurves.Length(); ++j)
+    {
+      if (anEdge.PCurves.Value(j).FaceDefId.Index == aFaceId)
+      {
+        const Handle(Geom2d_Curve)& aCurve2 = anEdge.PCurves.Value(j).Curve2d;
+        if (!aCurve1.IsNull() && !aCurve2.IsNull() && aCurve1 != aCurve2)
+        {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
+// ---------------------------------------------------------------------------
+// Check if two edges share a common face via their PCurve entries.
+// Returns the shared FaceDefId in theSharedFace, or -1 if none.
+// ---------------------------------------------------------------------------
+
+bool edgesShareFace(const BRepGraph& theGraph,
+                    int              theEdgeA,
+                    int              theEdgeB,
+                    int&             theSharedFace)
+{
+  theSharedFace = -1;
+  const BRepGraph_TopoNode::EdgeDef& anEdgeA = theGraph.Defs().Edge(theEdgeA);
+  const BRepGraph_TopoNode::EdgeDef& anEdgeB = theGraph.Defs().Edge(theEdgeB);
+  for (int i = 0; i < anEdgeA.PCurves.Length(); ++i)
+  {
+    const int aFaceId = anEdgeA.PCurves.Value(i).FaceDefId.Index;
+    for (int j = 0; j < anEdgeB.PCurves.Length(); ++j)
+    {
+      if (anEdgeB.PCurves.Value(j).FaceDefId.Index == aFaceId)
+      {
+        theSharedFace = aFaceId;
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+// ---------------------------------------------------------------------------
+// Check if surface of a face is U-closed or V-closed.
+// ---------------------------------------------------------------------------
+
+bool isSurfaceClosed(const BRepGraph& theGraph, int theFaceDefIdx, bool theCheckU)
+{
+  const BRepGraph_TopoNode::FaceDef& aFace = theGraph.Defs().Face(theFaceDefIdx);
+  if (aFace.Surface.IsNull())
+  {
+    return false;
+  }
+  return theCheckU ? aFace.Surface->IsUClosed() : aFace.Surface->IsVClosed();
+}
+
+// ---------------------------------------------------------------------------
+// Check if two edges on the same face can be sewn (seam-like configuration).
+// Allowed only if the surface is UV-closed.
+// ---------------------------------------------------------------------------
+
+bool canSewSameFaceEdges(const BRepGraph& theGraph,
+                         int              /*theEdgeA*/,
+                         int              /*theEdgeB*/,
+                         int              theSharedFace)
+{
+  if (theSharedFace < 0)
+  {
+    return false;
+  }
+  // Allow sewing only if surface is U-closed or V-closed.
+  return isSurfaceClosed(theGraph, theSharedFace, true)
+         || isSurfaceClosed(theGraph, theSharedFace, false);
+}
+
+// ---------------------------------------------------------------------------
 // Union-Find with path compression: O(n * alpha(n)) ~ O(n).
 // ---------------------------------------------------------------------------
 
@@ -119,10 +211,46 @@ int findRoot(NCollection_OrderedDataMap<int, int>& theParent, int theIdx)
 // Phase 1: Find free edges.
 // ---------------------------------------------------------------------------
 
-NCollection_Array1<BRepGraph_NodeId> findFreeEdges(const BRepGraph& theGraph)
+NCollection_Array1<BRepGraph_NodeId> findFreeEdges(const BRepGraph& theGraph,
+                                                   bool             theIncludeFloating,
+                                                   NCollection_Map<int>& theFloatingEdges)
 {
-  NCollection_Vector<BRepGraph_NodeId> aFreeVec = BRepGraph_Analyze::FreeEdges(theGraph);
-  const int                            aNbFree  = aFreeVec.Length();
+  const BRepGraph::DefsView      aDefs     = theGraph.Defs();
+  const BRepGraph::RelEdgesView  aRelEdges = theGraph.RelEdges();
+  NCollection_Vector<BRepGraph_NodeId> aFreeVec;
+
+  for (int anEdgeIdx = 0; anEdgeIdx < aDefs.NbEdges(); ++anEdgeIdx)
+  {
+    const BRepGraph_TopoNode::EdgeDef& anEdge = aDefs.Edge(anEdgeIdx);
+    if (anEdge.IsDegenerate || anEdge.IsRemoved)
+    {
+      continue;
+    }
+
+    const int aFaceCount = aRelEdges.FaceCountForEdge(anEdgeIdx);
+
+    // Exclude seam edges: faceCount==1 but two distinct PCurves on the same face
+    // (e.g., closing edge on a cylindrical or spherical surface).
+    // TODO: add full IsClosedByIsos fallback for trimmed/offset surfaces where
+    //       Surface->IsUClosed()/IsVClosed() returns false but the surface is
+    //       parametrically closed. Port from BRepBuilderAPI_Sewing lines 203-299.
+    if (aFaceCount == 1 && isSeamEdge(theGraph, anEdgeIdx))
+    {
+      continue;
+    }
+
+    if (aFaceCount == 1)
+    {
+      aFreeVec.Append(anEdge.Id);
+    }
+    else if (aFaceCount == 0 && theIncludeFloating)
+    {
+      aFreeVec.Append(anEdge.Id);
+      theFloatingEdges.Add(anEdgeIdx);
+    }
+  }
+
+  const int aNbFree = aFreeVec.Length();
   if (aNbFree == 0)
   {
     return NCollection_Array1<BRepGraph_NodeId>();
@@ -258,10 +386,12 @@ void assembleVertices(BRepGraph&                                  theGraph,
 // Phase 3 (optional): Cut edges at T-vertex intersections.
 // ---------------------------------------------------------------------------
 
-void cutAtIntersections(BRepGraph&                              theGraph,
-                        NCollection_Array1<BRepGraph_NodeId>&   theFreeEdges,
-                        const BRepGraphAlgo_Sewing::Options&    theOptions,
-                        const Handle(NCollection_IncAllocator)& theTmpAlloc)
+void cutAtIntersections(BRepGraph&                               theGraph,
+                        NCollection_Array1<BRepGraph_NodeId>&    theFreeEdges,
+                        const BRepGraphAlgo_Sewing::Options&     theOptions,
+                        double                                   theMinTol,
+                        const NCollection_Map<int>&              theFloatingEdges,
+                        const Handle(NCollection_IncAllocator)&  theTmpAlloc)
 {
   const int aNbFreeEdges = theFreeEdges.Length();
   if (aNbFreeEdges == 0)
@@ -337,11 +467,34 @@ void cutAtIntersections(BRepGraph&                              theGraph,
         return;
       }
 
+      // Skip floating edges (no face — no cutting).
+      if (theFloatingEdges.Contains(anEdgeId.Index))
+      {
+        return;
+      }
+
       const int aStartIdx = anEdge.StartVertexIdx >= 0 ? anEdge.StartVertexIdx : -1;
       const int aEndIdx   = anEdge.EndVertexIdx >= 0 ? anEdge.EndVertexIdx : -1;
 
       GeomAdaptor_TransformedCurve aCurve = theGraph.Defs().CurveAdaptor(anEdgeId);
-      ExtremaPC_Curve              anExtPC(aCurve);
+
+      // Skip edges shorter than MinTolerance.
+      if (theMinTol > 0.0)
+      {
+        const double aParamRange = aCurve.LastParameter() - aCurve.FirstParameter();
+        if (aParamRange <= Precision::PConfusion())
+        {
+          return;
+        }
+        const double aChordLen =
+          aCurve.EvalD0(aCurve.FirstParameter()).Distance(aCurve.EvalD0(aCurve.LastParameter()));
+        if (aChordLen < theMinTol)
+        {
+          return;
+        }
+      }
+
+      ExtremaPC_Curve anExtPC(aCurve);
 
       Bnd_Box aEdgeBBox;
       BRepGraphAlgo_BndLib::Add(theGraph, anEdgeId, aEdgeBBox);
@@ -592,7 +745,19 @@ void detectCandidates(BRepGraph&                                  theGraph,
 
         if (!aBoxI.IsOut(aBoxJ))
         {
-          thePairs.Append({anIdI, theFreeEdges.Value(anJ)});
+          const BRepGraph_NodeId anIdJ = theFreeEdges.Value(anJ);
+
+          // Same-face rejection: skip if edges share a face on non-closed surface.
+          int aSharedFace = -1;
+          if (edgesShareFace(theGraph, anIdI.Index, anIdJ.Index, aSharedFace))
+          {
+            if (!canSewSameFaceEdges(theGraph, anIdI.Index, anIdJ.Index, aSharedFace))
+            {
+              continue;
+            }
+          }
+
+          thePairs.Append({anIdI, anIdJ});
         }
       }
     };
@@ -641,6 +806,7 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> matchFreeEdges
   const BRepGraph&                            theGraph,
   const NCollection_Array1<BRepGraph_NodeId>& theFreeEdges,
   const BRepGraphAlgo_Sewing::Options&        theOptions,
+  double                                      theMinTol,
   const Handle(NCollection_IncAllocator)&     theTmpAlloc)
 {
   NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> aResult;
@@ -716,7 +882,19 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> matchFreeEdges
       }
 
       GeomAdaptor_TransformedCurve aCurveA = theGraph.Defs().CurveAdaptor(anIdA);
-      GCPnts_UniformAbscissa       aSamplerA(aCurveA, THE_NB_EDGE_MATCH_SAMPLES);
+
+      // Skip edges shorter than MinTolerance.
+      if (theMinTol > 0.0)
+      {
+        const gp_Pnt aPtFirst = aCurveA.EvalD0(aCurveA.FirstParameter());
+        const gp_Pnt aPtLast  = aCurveA.EvalD0(aCurveA.LastParameter());
+        if (aPtFirst.Distance(aPtLast) < theMinTol)
+        {
+          return;
+        }
+      }
+
+      GCPnts_UniformAbscissa aSamplerA(aCurveA, THE_NB_EDGE_MATCH_SAMPLES);
       if (!aSamplerA.IsDone() || aSamplerA.NbPoints() < 2)
       {
         return;
@@ -750,13 +928,32 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> matchFreeEdges
           }
 
           const BRepGraph_NodeId anIdB = theRelEdge.Target;
+
+          // Same-face rejection inside matching loop.
+          int aSharedFace = -1;
+          if (edgesShareFace(theGraph, anIdA.Index, anIdB.Index, aSharedFace))
+          {
+            if (!canSewSameFaceEdges(theGraph, anIdA.Index, anIdB.Index, aSharedFace))
+            {
+              return;
+            }
+          }
+
+          // LocalTolerancesMode: use adaptive work tolerance.
+          double aWorkTol = theOptions.Tolerance;
+          if (theOptions.LocalTolerancesMode)
+          {
+            aWorkTol += theGraph.Defs().Edge(anIdA.Index).Tolerance
+                        + theGraph.Defs().Edge(anIdB.Index).Tolerance;
+          }
+
           if (BRepGraph_Analyze::AreEdgesCompatibleSampled(theGraph,
                                                            anIdA,
                                                            anIdB,
                                                            aSamplePtsA,
                                                            anExtPCRevA,
                                                            aChordA,
-                                                           theOptions.Tolerance,
+                                                           aWorkTol,
                                                            THE_NB_EDGE_MATCH_SAMPLES,
                                                            THE_MAX_CHORD_RATIO,
                                                            THE_HIGH_CONFIDENCE_RATIO))
@@ -872,7 +1069,8 @@ int mergeMatchedEdges(
   BRepGraph&                                                               theGraph,
   const NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>>& thePairs,
   const BRepGraphAlgo_Sewing::Options&                                     theOptions,
-  NCollection_IndexedMap<int>&                                             theSewnEdgeIndices)
+  NCollection_IndexedMap<int>&                                             theSewnEdgeIndices,
+  BRepGraphAlgo_Sewing::Result&                                            theResult)
 {
   int aSewnCount = 0;
 
@@ -882,13 +1080,20 @@ int mergeMatchedEdges(
   for (int aPairIter = 0; aPairIter < thePairs.Length(); ++aPairIter)
   {
     const auto& [anIdA, anIdB] = thePairs.Value(aPairIter);
-    theSewnEdgeIndices.Add(anIdA.Index);
 
     const BRepGraph_TopoNode::EdgeDef& aRemoveEdge = theGraph.Defs().Edge(anIdB.Index);
     const BRepGraph_TopoNode::EdgeDef& aKeepEdge   = theGraph.Defs().Edge(anIdA.Index);
 
     // 1. Tolerance merge (graph-only).
     const double aMergedTol = std::max(aKeepEdge.Tolerance, aRemoveEdge.Tolerance);
+
+    // MaxTolerance guard: skip pair if merged tolerance exceeds upper bound.
+    if (aMergedTol > theOptions.MaxTolerance)
+    {
+      continue;
+    }
+
+    theSewnEdgeIndices.Add(anIdA.Index);
     theGraph.Mut().EdgeDef(anIdA.Index).Tolerance = aMergedTol;
 
     // 2. PCurve transfer from remove-edge to keep-edge.
@@ -929,6 +1134,7 @@ int mergeMatchedEdges(
     aReplacement.Append(anIdA);
     theGraph.History().Record(THE_MERGE_LABEL, anIdB, aReplacement);
 
+    theResult.SewnEdgePairs.Append(anIdA);
     ++aSewnCount;
   }
 
@@ -1054,14 +1260,35 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
   // Configure history on the graph.
   theGraph.SetHistoryEnabled(theOptions.HistoryMode);
 
+  // Compute effective MinTolerance.
+  const double aMinTol = theOptions.MinTolerance > 0.0
+                           ? theOptions.MinTolerance
+                           : std::max(theOptions.Tolerance * 1.0e-4, Precision::Confusion());
+
   // Main allocator for cross-phase data.
   Handle(NCollection_IncAllocator) anAllocator = new NCollection_IncAllocator;
   // Temporary allocator for per-phase scratch, Reset(false) between phases.
   Handle(NCollection_IncAllocator) aTmpAllocator = new NCollection_IncAllocator;
 
+  // Phase 0 (optional): Face analysis — detect/remove small edges and faces.
+  if (theOptions.FaceAnalysis)
+  {
+    BRepGraphAlgo_FaceAnalysis::Options aFAOptions;
+    aFAOptions.MinTolerance = aMinTol;
+    aFAOptions.Parallel     = theOptions.Parallel;
+    BRepGraphAlgo_FaceAnalysis::Result aFAResult =
+      BRepGraphAlgo_FaceAnalysis::Perform(theGraph, aFAOptions);
+    aResult.DegeneratedEdges = std::move(aFAResult.DegeneratedEdges);
+    aResult.DeletedFaces     = std::move(aFAResult.DeletedFaces);
+    aResult.NbDeletedFaces   = aFAResult.NbDeletedFaces;
+    aResult.NbDegeneratedEdges = aFAResult.DegeneratedEdges.Length();
+  }
+
   // Phase 1: Find free edges.
-  NCollection_Array1<BRepGraph_NodeId> aFreeEdges = findFreeEdges(theGraph);
-  aResult.NbFreeEdgesBefore                       = aFreeEdges.Length();
+  NCollection_Map<int> aFloatingEdges;
+  NCollection_Array1<BRepGraph_NodeId> aFreeEdges =
+    findFreeEdges(theGraph, theOptions.FloatingEdgesMode, aFloatingEdges);
+  aResult.NbFreeEdgesBefore = aFreeEdges.Length();
 
   if (aFreeEdges.IsEmpty())
   {
@@ -1077,7 +1304,7 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
   // Phase 3 (optional): Cut edges at intersections.
   if (theOptions.Cutting)
   {
-    cutAtIntersections(theGraph, aFreeEdges, theOptions, aTmpAllocator);
+    cutAtIntersections(theGraph, aFreeEdges, theOptions, aMinTol, aFloatingEdges, aTmpAllocator);
     aTmpAllocator->Reset(false);
   }
 
@@ -1087,7 +1314,7 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
 
   // Phase 5: Match free edge pairs.
   NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> aMatchedPairs =
-    matchFreeEdges(theGraph, aFreeEdges, theOptions, aTmpAllocator);
+    matchFreeEdges(theGraph, aFreeEdges, theOptions, aMinTol, aTmpAllocator);
   aTmpAllocator->Reset(false);
 
   if (aMatchedPairs.IsEmpty())
@@ -1100,15 +1327,46 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
   // Phase 6: Merge matched edge pairs.
   const int                   aNbPairs = aMatchedPairs.Length();
   NCollection_IndexedMap<int> aSewnEdgeIndices(aNbPairs, anAllocator);
-  aResult.NbSewnEdges = mergeMatchedEdges(theGraph, aMatchedPairs, theOptions, aSewnEdgeIndices);
+  aResult.NbSewnEdges =
+    mergeMatchedEdges(theGraph, aMatchedPairs, theOptions, aSewnEdgeIndices, aResult);
 
-  // Phase 7: Process sewn edges (tolerance consistency).
+  // TODO: Phase 7 — Degenerate conversion. Port from BRepBuilderAPI_Sewing:
+  //   - EdgeProcessing (lines 4400-4474): group remaining free edges into wires,
+  //     detect degenerate wires via IsDegeneratedWire (total length <= vertex tol sum).
+  //   - DegeneratedSection (lines 4296-4386): convert free edges in degenerate wires
+  //     to degenerate edges (mark IsDegenerate, clear Curve3d, create point vertex).
+  //   - Append converted edges to aResult.DegeneratedEdges.
+
+  // TODO: Full NonManifoldMode in Phase 5/6:
+  //   - Use longest edge as reference (sort by curve length, prefer longest as keep-edge).
+  //   - Allow keep-edge to appear in multiple pairs (only consume remove-edges in greedy).
+  //   - Port from BRepBuilderAPI_Sewing::MergedNearestEdges lines 3926-3966.
+
+  // Phase 8: Process sewn edges (tolerance consistency).
   processEdges(theGraph, aSewnEdgeIndices, theOptions);
 
-  // Count free edges after sewing by re-analyzing the graph state.
+  // Phase 9: Populate result output.
   const NCollection_Vector<BRepGraph_NodeId> aFreeEdgesAfter =
     BRepGraph_Analyze::FreeEdges(theGraph);
   aResult.NbFreeEdgesAfter = aFreeEdgesAfter.Length();
+  aResult.FreeEdges        = std::move(aFreeEdgesAfter);
+
+  // Detect multiple edges (shared by >2 faces).
+  const BRepGraph::DefsView     aDefs     = theGraph.Defs();
+  const BRepGraph::RelEdgesView aRelEdges = theGraph.RelEdges();
+  for (int anEdgeIdx = 0; anEdgeIdx < aDefs.NbEdges(); ++anEdgeIdx)
+  {
+    const BRepGraph_TopoNode::EdgeDef& anEdge = aDefs.Edge(anEdgeIdx);
+    if (anEdge.IsRemoved || anEdge.IsDegenerate)
+    {
+      continue;
+    }
+    if (aRelEdges.FaceCountForEdge(anEdgeIdx) > 2)
+    {
+      aResult.MultipleEdges.Append(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, anEdgeIdx));
+    }
+  }
+  aResult.NbMultipleEdges = aResult.MultipleEdges.Length();
 
   aResult.IsDone = true;
   return aResult;

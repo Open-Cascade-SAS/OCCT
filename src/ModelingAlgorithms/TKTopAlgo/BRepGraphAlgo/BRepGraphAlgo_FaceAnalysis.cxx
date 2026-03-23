@@ -1,0 +1,305 @@
+// Copyright (c) 2026 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <BRepGraphAlgo_FaceAnalysis.hxx>
+
+#include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_MutView.hxx>
+#include <NCollection_DataMap.hxx>
+#include <NCollection_Map.hxx>
+#include <NCollection_Vector.hxx>
+#include <Precision.hxx>
+
+#include <gp_Pnt.hxx>
+#include <gp_XYZ.hxx>
+
+namespace
+{
+constexpr int THE_COMPACTNESS_SAMPLES = 5; // sampling points for edge compactness check
+
+// ---------------------------------------------------------------------------
+// Check if an edge is "small" (compact) using a 5-point sampling criterion.
+// Ported from BRepBuilderAPI_Sewing::FaceAnalysis().
+// ---------------------------------------------------------------------------
+
+bool isSmallEdge(const BRepGraph_TopoNode::EdgeDef& theEdge, double theMinTol)
+{
+  if (theEdge.IsDegenerate)
+  {
+    return true;
+  }
+  if (theEdge.Curve3d.IsNull())
+  {
+    return true;
+  }
+
+  const double aFirst = theEdge.ParamFirst;
+  const double aLast  = theEdge.ParamLast;
+  const double aDelta = (aLast - aFirst) / (THE_COMPACTNESS_SAMPLES - 1);
+
+  // Compute midpoint of start/end.
+  const gp_Pnt aPFirst = theEdge.Curve3d->Value(aFirst);
+  const gp_Pnt aPLast  = theEdge.Curve3d->Value(aLast);
+  const gp_Pnt aMid((aPFirst.XYZ() + aPLast.XYZ()) * 0.5);
+
+  // Measure max distance from midpoint to sampled points.
+  double aMaxDist = 0.0;
+  for (int anIdx = 0; anIdx < THE_COMPACTNESS_SAMPLES; ++anIdx)
+  {
+    const double aParam = aFirst + anIdx * aDelta;
+    const double aDist  = aMid.Distance(theEdge.Curve3d->Value(aParam));
+    if (aDist > aMaxDist)
+    {
+      aMaxDist = aDist;
+    }
+  }
+
+  return (2.0 * aMaxDist <= theMinTol);
+}
+
+} // anonymous namespace
+
+//=================================================================================================
+
+BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(
+  BRepGraph&     theGraph,
+  const Options& theOptions)
+{
+  Result aResult;
+
+  if (!theGraph.IsDone())
+  {
+    return aResult;
+  }
+
+  const double aMinTol =
+    theOptions.MinTolerance > 0.0
+      ? theOptions.MinTolerance
+      : std::max(Precision::Confusion(), theGraph.Defs().NbEdges() > 0 ? 1.0e-10 : 0.0);
+
+  const BRepGraph::DefsView aDefs = theGraph.Defs();
+
+  // Track which edges are small and which vertices need merging.
+  NCollection_Map<int> aSmallEdgeSet;
+
+  // Vertex merge map: original vertex idx → target vertex idx.
+  NCollection_DataMap<int, int> aVertexMerge;
+
+  // Process each face.
+  for (int aFaceIdx = 0; aFaceIdx < aDefs.NbFaces(); ++aFaceIdx)
+  {
+    const BRepGraph_TopoNode::FaceDef& aFace = aDefs.Face(aFaceIdx);
+    if (aFace.IsRemoved)
+    {
+      continue;
+    }
+
+    int aNbEdges = 0;
+    int aNbSmall = 0;
+
+    // Iterate over all wires of this face.
+    for (int aWireRefIdx = 0; aWireRefIdx < aFace.WireRefs.Length(); ++aWireRefIdx)
+    {
+      const int                          aWireIdx = aFace.WireRefs.Value(aWireRefIdx).WireIdx;
+      const BRepGraph_TopoNode::WireDef& aWire    = aDefs.Wire(aWireIdx);
+
+      for (int anEdgeRefIdx = 0; anEdgeRefIdx < aWire.EdgeRefs.Length(); ++anEdgeRefIdx)
+      {
+        const int                          anEdgeIdx = aWire.EdgeRefs.Value(anEdgeRefIdx).EdgeIdx;
+        const BRepGraph_TopoNode::EdgeDef& anEdge    = aDefs.Edge(anEdgeIdx);
+        ++aNbEdges;
+
+        if (anEdge.IsDegenerate)
+        {
+          ++aNbSmall;
+          continue;
+        }
+
+        if (aSmallEdgeSet.Contains(anEdgeIdx))
+        {
+          ++aNbSmall;
+          continue;
+        }
+
+        if (isSmallEdge(anEdge, aMinTol))
+        {
+          aSmallEdgeSet.Add(anEdgeIdx);
+          ++aNbSmall;
+
+          // Mark edge as degenerate.
+          BRepGraph_TopoNode::EdgeDef& aMutEdge = theGraph.Mut().EdgeDef(anEdgeIdx);
+          aMutEdge.IsDegenerate                  = true;
+          aMutEdge.Curve3d.Nullify();
+          aResult.DegeneratedEdges.Append(
+            BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, anEdgeIdx));
+
+          // Merge start/end vertices if they differ.
+          const int aStartIdx = anEdge.StartVertexIdx;
+          const int aEndIdx   = anEdge.EndVertexIdx;
+          if (aStartIdx >= 0 && aEndIdx >= 0 && aStartIdx != aEndIdx)
+          {
+            // Resolve existing merges.
+            int aResolvedStart = aStartIdx;
+            while (const int* aTarget = aVertexMerge.Seek(aResolvedStart))
+            {
+              aResolvedStart = *aTarget;
+            }
+            int aResolvedEnd = aEndIdx;
+            while (const int* aTarget = aVertexMerge.Seek(aResolvedEnd))
+            {
+              aResolvedEnd = *aTarget;
+            }
+
+            if (aResolvedStart != aResolvedEnd)
+            {
+              // Keep vertex with smaller tolerance as target.
+              const double aTolStart = aDefs.Vertex(aResolvedStart).Tolerance;
+              const double aTolEnd   = aDefs.Vertex(aResolvedEnd).Tolerance;
+              const int    aKeep     = (aTolStart <= aTolEnd) ? aResolvedStart : aResolvedEnd;
+              const int    aRemove   = (aKeep == aResolvedStart) ? aResolvedEnd : aResolvedStart;
+              aVertexMerge.Bind(aRemove, aKeep);
+            }
+          }
+        }
+      }
+    }
+
+    // Remove face if all edges are small/degenerate.
+    if (aNbEdges > 0 && aNbSmall == aNbEdges)
+    {
+      theGraph.Mut().FaceDef(aFaceIdx).IsRemoved = true;
+      aResult.DeletedFaces.Append(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, aFaceIdx));
+    }
+  }
+
+  aResult.NbSmallEdges  = aSmallEdgeSet.Extent();
+  aResult.NbDeletedFaces = aResult.DeletedFaces.Length();
+
+  // Update merged vertex coordinates: compute centroids and combined tolerances.
+  // First, collect merge groups (target vertex → all source vertices).
+  NCollection_DataMap<int, NCollection_Vector<int>> aMergeGroups;
+  for (NCollection_DataMap<int, int>::Iterator anIt(aVertexMerge); anIt.More(); anIt.Next())
+  {
+    // Resolve to final target.
+    int aTarget = anIt.Value();
+    while (const int* aNext = aVertexMerge.Seek(aTarget))
+    {
+      aTarget = *aNext;
+    }
+
+    if (!aMergeGroups.IsBound(aTarget))
+    {
+      aMergeGroups.Bind(aTarget, NCollection_Vector<int>());
+    }
+    aMergeGroups.ChangeFind(aTarget).Append(anIt.Key());
+  }
+
+  // For each merge group, average coordinates and compute tolerance.
+  for (NCollection_DataMap<int, NCollection_Vector<int>>::Iterator aGrpIt(aMergeGroups);
+       aGrpIt.More();
+       aGrpIt.Next())
+  {
+    const int                      aTargetIdx = aGrpIt.Key();
+    const NCollection_Vector<int>& aSources   = aGrpIt.Value();
+
+    // Collect all vertices in the group (target + sources).
+    gp_XYZ aCoordSum = aDefs.Vertex(aTargetIdx).Point.XYZ();
+    int    aNbPoints  = 1;
+    for (int aSrcIter = 0; aSrcIter < aSources.Length(); ++aSrcIter)
+    {
+      aCoordSum += aDefs.Vertex(aSources.Value(aSrcIter)).Point.XYZ();
+      ++aNbPoints;
+    }
+
+    const gp_Pnt aCentroid(aCoordSum / aNbPoints);
+
+    // Compute tolerance = max(distance_to_centroid + original_tolerance).
+    double aMaxTol = 0.0;
+    {
+      const double aDist = aCentroid.Distance(aDefs.Vertex(aTargetIdx).Point);
+      const double aCombined = aDist + aDefs.Vertex(aTargetIdx).Tolerance;
+      if (aCombined > aMaxTol)
+      {
+        aMaxTol = aCombined;
+      }
+    }
+    for (int aSrcIter = 0; aSrcIter < aSources.Length(); ++aSrcIter)
+    {
+      const int    aSrcIdx   = aSources.Value(aSrcIter);
+      const double aDist     = aCentroid.Distance(aDefs.Vertex(aSrcIdx).Point);
+      const double aCombined = aDist + aDefs.Vertex(aSrcIdx).Tolerance;
+      if (aCombined > aMaxTol)
+      {
+        aMaxTol = aCombined;
+      }
+    }
+
+    // Update target vertex.
+    BRepGraph_TopoNode::VertexDef& aTargetVtx = theGraph.Mut().VertexDef(aTargetIdx);
+    aTargetVtx.Point     = aCentroid;
+    aTargetVtx.Tolerance = aMaxTol;
+  }
+
+  // Apply vertex merges to all edges that reference merged vertices.
+  // Resolve all merges to final targets first.
+  NCollection_DataMap<int, int> aFinalMerge;
+  for (NCollection_DataMap<int, int>::Iterator anIt(aVertexMerge); anIt.More(); anIt.Next())
+  {
+    int aTarget = anIt.Value();
+    while (const int* aNext = aVertexMerge.Seek(aTarget))
+    {
+      aTarget = *aNext;
+    }
+    aFinalMerge.Bind(anIt.Key(), aTarget);
+  }
+
+  if (!aFinalMerge.IsEmpty())
+  {
+    for (int anEdgeIdx = 0; anEdgeIdx < aDefs.NbEdges(); ++anEdgeIdx)
+    {
+      const BRepGraph_TopoNode::EdgeDef& anEdge = aDefs.Edge(anEdgeIdx);
+      bool                               aNeedUpdate = false;
+      int                                aNewStart = anEdge.StartVertexIdx;
+      int                                aNewEnd   = anEdge.EndVertexIdx;
+
+      if (aNewStart >= 0)
+      {
+        const int* aMerged = aFinalMerge.Seek(aNewStart);
+        if (aMerged != nullptr)
+        {
+          aNewStart   = *aMerged;
+          aNeedUpdate = true;
+        }
+      }
+      if (aNewEnd >= 0)
+      {
+        const int* aMerged = aFinalMerge.Seek(aNewEnd);
+        if (aMerged != nullptr)
+        {
+          aNewEnd     = *aMerged;
+          aNeedUpdate = true;
+        }
+      }
+
+      if (aNeedUpdate)
+      {
+        BRepGraph_TopoNode::EdgeDef& aMutEdge = theGraph.Mut().EdgeDef(anEdgeIdx);
+        aMutEdge.StartVertexIdx                = aNewStart;
+        aMutEdge.EndVertexIdx                  = aNewEnd;
+      }
+    }
+  }
+
+  aResult.IsDone = true;
+  return aResult;
+}

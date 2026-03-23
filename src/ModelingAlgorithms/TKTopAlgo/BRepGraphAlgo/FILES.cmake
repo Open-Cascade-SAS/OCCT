@@ -8,6 +8,8 @@ set(OCCT_BRepGraphAlgo_FILES
   BRepGraphAlgo_Copy.cxx
   BRepGraphAlgo_Deduplicate.hxx
   BRepGraphAlgo_Deduplicate.cxx
+  BRepGraphAlgo_FaceAnalysis.hxx
+  BRepGraphAlgo_FaceAnalysis.cxx
   BRepGraphAlgo_SameParameter.hxx
   BRepGraphAlgo_SameParameter.cxx
   BRepGraphAlgo_Sewing.hxx
