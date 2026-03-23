@@ -43,6 +43,14 @@ struct BRepGraph_UsageId
   //! True if this id points to an allocated usage slot.
   bool IsValid() const { return Index >= 0; }
 
+  //! @name Static factory methods for readable UsageId construction.
+  static BRepGraph_UsageId Solid(int theIdx)  { return {BRepGraph_NodeId::Kind::Solid, theIdx}; }
+  static BRepGraph_UsageId Shell(int theIdx)  { return {BRepGraph_NodeId::Kind::Shell, theIdx}; }
+  static BRepGraph_UsageId Face(int theIdx)   { return {BRepGraph_NodeId::Kind::Face, theIdx}; }
+  static BRepGraph_UsageId Wire(int theIdx)   { return {BRepGraph_NodeId::Kind::Wire, theIdx}; }
+  static BRepGraph_UsageId Edge(int theIdx)   { return {BRepGraph_NodeId::Kind::Edge, theIdx}; }
+  static BRepGraph_UsageId Vertex(int theIdx) { return {BRepGraph_NodeId::Kind::Vertex, theIdx}; }
+
   bool operator==(const BRepGraph_UsageId& theOther) const
   { return NodeKind == theOther.NodeKind && Index == theOther.Index; }
 

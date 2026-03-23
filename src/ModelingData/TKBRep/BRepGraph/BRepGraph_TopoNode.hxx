@@ -136,6 +136,24 @@ struct EdgeDef : public BaseDef
 
   //! True if the PCurve parameter range equals the 3D curve parameter range.
   bool SameRange = false;
+
+  //! Return the start vertex adjusted for orientation in wire context.
+  //! FORWARD -> StartVertexDefId, REVERSED -> EndVertexDefId, other -> invalid.
+  BRepGraph_NodeId OrientedStartVertex(TopAbs_Orientation theOri) const
+  {
+    if (theOri == TopAbs_FORWARD)  return StartVertexDefId;
+    if (theOri == TopAbs_REVERSED) return EndVertexDefId;
+    return BRepGraph_NodeId();
+  }
+
+  //! Return the end vertex adjusted for orientation in wire context.
+  //! FORWARD -> EndVertexDefId, REVERSED -> StartVertexDefId, other -> invalid.
+  BRepGraph_NodeId OrientedEndVertex(TopAbs_Orientation theOri) const
+  {
+    if (theOri == TopAbs_FORWARD)  return EndVertexDefId;
+    if (theOri == TopAbs_REVERSED) return StartVertexDefId;
+    return BRepGraph_NodeId();
+  }
 };
 
 struct VertexDef : public BaseDef
@@ -186,6 +204,24 @@ struct FaceUsage : public BaseUsage
 {
   BRepGraph_UsageId OuterWireUsage;
   NCollection_Vector<BRepGraph_UsageId> InnerWireUsages;
+
+  //! Total number of wire usages (outer + inner).
+  int NbWireUsages() const
+  {
+    return (OuterWireUsage.IsValid() ? 1 : 0) + InnerWireUsages.Length();
+  }
+
+  //! Access wire usage by unified index (outer wire first, then inner wires).
+  //! @param[in] theIdx zero-based index in [0, NbWireUsages())
+  BRepGraph_UsageId WireUsage(int theIdx) const
+  {
+    if (OuterWireUsage.IsValid())
+    {
+      if (theIdx == 0) return OuterWireUsage;
+      return InnerWireUsages.Value(theIdx - 1);
+    }
+    return InnerWireUsages.Value(theIdx);
+  }
 };
 
 struct WireUsage : public BaseUsage

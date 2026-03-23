@@ -16,5 +16,6 @@ set(OCCT_TKTopAlgo_GTests_FILES
   BRepGraphAlgo_Sewing_Test.cxx
   BRepGraphAlgo_Transform_Test.cxx
   BRepLib_MakeWire_Test.cxx
+  BRepGraphCheck_Analyzer_Test.cxx
   BRepOffsetAPI_ThruSections_Test.cxx
 )

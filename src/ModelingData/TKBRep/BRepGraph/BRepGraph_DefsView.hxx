@@ -82,6 +82,15 @@ public:
   //! @return pointer to BaseDef or nullptr if invalid
   Standard_EXPORT const BRepGraph_TopoNode::BaseDef* TopoDef(BRepGraph_NodeId theId) const;
 
+  //! Number of face definitions in a shell (via first usage).
+  //! @param[in] theShellDefIdx zero-based shell definition index
+  Standard_EXPORT int NbShellFaces(int theShellDefIdx) const;
+
+  //! Access face definition NodeId belonging to a shell by index.
+  //! @param[in] theShellDefIdx zero-based shell definition index
+  //! @param[in] theFaceIdx zero-based face index within the shell
+  Standard_EXPORT BRepGraph_NodeId ShellFaceDef(int theShellDefIdx, int theFaceIdx) const;
+
   //! Total number of nodes in the graph (all kinds).
   Standard_EXPORT size_t NbNodes() const;
 

@@ -14,6 +14,7 @@
 #ifndef _BRepGraph_GeomView_HeaderFile
 #define _BRepGraph_GeomView_HeaderFile
 
+#include <Adaptor3d_CurveOnSurface.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_PCurveContext.hxx>
 #include <GeomAdaptor_TransformedCurve.hxx>
@@ -85,6 +86,27 @@ public:
   //! @param[in] theContext  composite key identifying edge, face and orientation
   Standard_EXPORT BRepGraph_NodeId PCurveOf(const BRepGraph_PCurveContext& theContext) const;
 
+  //! Return pointer to the surface geometry for a face definition,
+  //! or nullptr if the face has no valid surface or the handle is null.
+  //! @param[in] theFaceDefIdx zero-based face definition index
+  Standard_EXPORT const BRepGraph_GeomNode::Surf* FaceSurface(int theFaceDefIdx) const;
+
+  //! Return pointer to the PCurve geometry for an edge on a face,
+  //! or nullptr if no PCurve exists or Curve2d is null.
+  //! @param[in] theEdgeDef edge definition NodeId
+  //! @param[in] theFaceDef face definition NodeId
+  Standard_EXPORT const BRepGraph_GeomNode::PCurve* EdgePCurve(
+    BRepGraph_NodeId theEdgeDef, BRepGraph_NodeId theFaceDef) const;
+
+  //! Overload with explicit orientation for seam edges.
+  //! @param[in] theEdgeDef edge definition NodeId
+  //! @param[in] theFaceDef face definition NodeId
+  //! @param[in] theEdgeOri edge orientation on the face
+  Standard_EXPORT const BRepGraph_GeomNode::PCurve* EdgePCurve(
+    BRepGraph_NodeId   theEdgeDef,
+    BRepGraph_NodeId   theFaceDef,
+    TopAbs_Orientation theEdgeOri) const;
+
   //! Build a GeomAdaptor_TransformedCurve for an edge definition.
   //! Uses the edge's 3D curve if available; falls back to pcurve-on-surface.
   //! The transform comes from the edge's first usage GlobalLocation.
@@ -99,6 +121,27 @@ public:
   //! @return curve adaptor ready for evaluation
   Standard_EXPORT GeomAdaptor_TransformedCurve CurveAdaptor(BRepGraph_NodeId  theEdgeDef,
                                                             BRepGraph_UsageId theEdgeUsage) const;
+
+  //! Build a curve-on-surface adaptor from edge's PCurve on a face.
+  //! Looks up the PCurve node via PCurveOf(), creates Geom2dAdaptor_Curve
+  //! from PCurve.Curve2d, creates GeomAdaptor_Surface from Surf.Surface,
+  //! and combines into Adaptor3d_CurveOnSurface.
+  //! @param[in] theEdgeDef edge definition NodeId
+  //! @param[in] theFaceDef face definition NodeId
+  //! @return curve-on-surface adaptor, or null handle if data is missing
+  Standard_EXPORT Handle(Adaptor3d_CurveOnSurface)
+    CurveOnSurfaceAdaptor(BRepGraph_NodeId theEdgeDef,
+                          BRepGraph_NodeId theFaceDef) const;
+
+  //! Overload with explicit edge orientation for seam edges.
+  //! @param[in] theEdgeDef           edge definition NodeId
+  //! @param[in] theFaceDef           face definition NodeId
+  //! @param[in] theEdgeOrientation   edge orientation on the face (FORWARD or REVERSED)
+  //! @return curve-on-surface adaptor, or null handle if data is missing
+  Standard_EXPORT Handle(Adaptor3d_CurveOnSurface)
+    CurveOnSurfaceAdaptor(BRepGraph_NodeId   theEdgeDef,
+                          BRepGraph_NodeId   theFaceDef,
+                          TopAbs_Orientation theEdgeOrientation) const;
 
 private:
   friend class BRepGraph;

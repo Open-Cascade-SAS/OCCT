@@ -61,6 +61,19 @@ struct BRepGraph_NodeId
   //! True if this id points to an allocated node slot.
   bool IsValid() const { return Index >= 0; }
 
+  //! @name Static factory methods for readable NodeId construction.
+  static BRepGraph_NodeId Solid(int theIdx)      { return {Kind::Solid, theIdx}; }
+  static BRepGraph_NodeId Shell(int theIdx)      { return {Kind::Shell, theIdx}; }
+  static BRepGraph_NodeId Face(int theIdx)       { return {Kind::Face, theIdx}; }
+  static BRepGraph_NodeId Wire(int theIdx)       { return {Kind::Wire, theIdx}; }
+  static BRepGraph_NodeId Edge(int theIdx)       { return {Kind::Edge, theIdx}; }
+  static BRepGraph_NodeId Vertex(int theIdx)     { return {Kind::Vertex, theIdx}; }
+  static BRepGraph_NodeId Compound(int theIdx)   { return {Kind::Compound, theIdx}; }
+  static BRepGraph_NodeId CompSolid(int theIdx)  { return {Kind::CompSolid, theIdx}; }
+  static BRepGraph_NodeId SurfNode(int theIdx)   { return {Kind::Surface, theIdx}; }
+  static BRepGraph_NodeId CurveNode(int theIdx)  { return {Kind::Curve, theIdx}; }
+  static BRepGraph_NodeId PCurveNode(int theIdx) { return {Kind::PCurve, theIdx}; }
+
   bool operator==(const BRepGraph_NodeId& theOther) const
   { return NodeKind == theOther.NodeKind && Index == theOther.Index; }
 

@@ -13,6 +13,7 @@
 
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_Data.hxx>
+#include <BRepGraph_UsagesView.hxx>
 
 //=================================================================================================
 
@@ -100,6 +101,32 @@ const BRepGraph_TopoNode::CompoundDef& BRepGraph::DefsView::Compound(int theIdx)
 const BRepGraph_TopoNode::CompSolidDef& BRepGraph::DefsView::CompSolid(int theIdx) const
 {
   return myGraph->myData->myCompSolidDefs.Value(theIdx);
+}
+
+//=================================================================================================
+
+int BRepGraph::DefsView::NbShellFaces(int theShellDefIdx) const
+{
+  const BRepGraph_TopoNode::ShellDef& aShellDef = myGraph->myData->myShellDefs.Value(theShellDefIdx);
+  if (aShellDef.Usages.IsEmpty())
+    return 0;
+  const BRepGraph_TopoNode::ShellUsage& aSU =
+    myGraph->myData->myShellUsages.Value(aShellDef.Usages.Value(0).Index);
+  return aSU.FaceUsages.Length();
+}
+
+//=================================================================================================
+
+BRepGraph_NodeId BRepGraph::DefsView::ShellFaceDef(int theShellDefIdx, int theFaceIdx) const
+{
+  const BRepGraph_TopoNode::ShellDef& aShellDef = myGraph->myData->myShellDefs.Value(theShellDefIdx);
+  if (aShellDef.Usages.IsEmpty())
+    return BRepGraph_NodeId();
+  const BRepGraph_TopoNode::ShellUsage& aSU =
+    myGraph->myData->myShellUsages.Value(aShellDef.Usages.Value(0).Index);
+  if (theFaceIdx < 0 || theFaceIdx >= aSU.FaceUsages.Length())
+    return BRepGraph_NodeId();
+  return myGraph->DefOf(aSU.FaceUsages.Value(theFaceIdx));
 }
 
 //=================================================================================================
