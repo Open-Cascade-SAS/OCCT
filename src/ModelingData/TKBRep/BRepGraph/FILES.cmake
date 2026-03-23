@@ -20,5 +20,6 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_SubGraph.hxx
   BRepGraph_TopoNode.hxx
   BRepGraph_UID.hxx
+  BRepGraph_UsageId.hxx
   BRepGraph_UserAttribute.hxx
 )

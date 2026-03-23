@@ -15,9 +15,9 @@
 #define _BRepGraph_TopoNode_HeaderFile
 
 #include <BRepGraph_NodeId.hxx>
+#include <BRepGraph_UsageId.hxx>
 #include <BRepGraph_NodeCache.hxx>
 
-#include <TopoDS_Shape.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <gp_Pnt.hxx>
@@ -27,72 +27,50 @@
 
 //! Namespace grouping all topology node types for BRepGraph.
 //!
-//! Each concrete node type is stored in its own typed vector inside
-//! BRepGraph.  Inheritance from Base is purely for code reuse of common
-//! fields; there is no polymorphic dispatch.
+//! Two-layer architecture: Definitions (intrinsic data per unique TShape)
+//! and Usages (context-specific data per occurrence in the containment hierarchy).
 namespace BRepGraph_TopoNode
 {
 
-//! Fields shared by every topology node.
-struct Base
+// =========================================================================
+// Layer 1: Definitions — one per unique TShape
+// =========================================================================
+
+//! Fields shared by every topology definition.
+struct BaseDef
 {
   BRepGraph_NodeId Id;  //!< Typed address: (kind + per-kind index)
-
-  TopLoc_Location LocalLocation;  //!< Location stored on this specific shape
-  TopLoc_Location GlobalLocation; //!< Accumulated transform from root to here
-
-  //! Parent node in the containment hierarchy.
-  //! Invalid for root Solid / CompSolid / free Shell.
-  BRepGraph_NodeId Parent;
 
   //! Lazily-computed derived quantities + extensible user attributes.
   BRepGraph_NodeCache Cache;
 
-  //! True when this node or a descendant has been mutated since Build().
-  //! Used by Shape() to decide whether to return the original or reconstruct.
+  //! True when this definition or a descendant has been mutated since Build().
   bool IsModified = false;
+
+  //! All usages of this definition in the containment tree.
+  NCollection_Vector<BRepGraph_UsageId> Usages;
 };
 
-struct Solid : public Base
-{
-  //! Child Shell ids, in containment order.
-  NCollection_Vector<BRepGraph_NodeId> Shells;
-};
+struct SolidDef : public BaseDef {};
 
-struct Shell : public Base
-{
-  //! Child Face ids, in containment order.
-  NCollection_Vector<BRepGraph_NodeId> Faces;
-};
+struct ShellDef : public BaseDef {};
 
-struct Face : public Base
+struct FaceDef : public BaseDef
 {
   //! Geometry: the surface node that realizes this face.
   BRepGraph_NodeId SurfNodeId;
-
-  //! The single outer WireNode.
-  BRepGraph_NodeId OuterWireId;
-
-  //! Zero or more inner WireNodes (holes).
-  NCollection_Vector<BRepGraph_NodeId> InnerWireIds;
-
-  //! Face orientation relative to its surface normal.
-  TopAbs_Orientation Orientation = TopAbs_FORWARD;
 
   //! Tolerance from BRep_TFace.
   double Tolerance = 0.0;
 };
 
-//! Wire node holding edge winding order and closure status.
-struct Wire : public Base
+//! Wire definition holding edge winding order and closure status.
+struct WireDef : public BaseDef
 {
-  //! The Face that owns this wire.
-  BRepGraph_NodeId OwnerFaceId;
-
   //! One entry per edge, in topological winding order.
   struct EdgeEntry
   {
-    BRepGraph_NodeId   EdgeId;
+    BRepGraph_NodeId   EdgeDefId;
     TopAbs_Orientation OrientationInWire = TopAbs_FORWARD;
   };
 
@@ -102,7 +80,7 @@ struct Wire : public Base
   bool IsClosed = false;
 };
 
-struct Edge : public Base
+struct EdgeDef : public BaseDef
 {
   //! 3D curve geometry (may be invalid for degenerate edges).
   BRepGraph_NodeId CurveNodeId;
@@ -111,14 +89,14 @@ struct Edge : public Base
   struct PCurveEntry
   {
     BRepGraph_NodeId PCurveNodeId;
-    BRepGraph_NodeId FaceNodeId;
+    BRepGraph_NodeId FaceDefId;
   };
 
   NCollection_Vector<PCurveEntry> PCurves;
 
-  //! Boundary vertices.  For closed edges, Start == End.
-  BRepGraph_NodeId StartVertexId;
-  BRepGraph_NodeId EndVertexId;
+  //! Boundary vertex definitions.  For closed edges, Start == End.
+  BRepGraph_NodeId StartVertexDefId;
+  BRepGraph_NodeId EndVertexDefId;
 
   //! Curve parameter range.
   double ParamFirst = 0.0;
@@ -131,13 +109,61 @@ struct Edge : public Base
   bool IsDegenerate = false;
 };
 
-struct Vertex : public Base
+struct VertexDef : public BaseDef
 {
-  //! 3D point, already transformed by GlobalLocation.
+  //! 3D point in TShape-local coordinates (NOT pre-transformed).
   gp_Pnt Point;
 
   //! Tolerance from BRep_TVertex.
   double Tolerance = 0.0;
+};
+
+// =========================================================================
+// Layer 2: Usages — one per occurrence in the containment hierarchy
+// =========================================================================
+
+//! Fields shared by every topology usage.
+struct BaseUsage
+{
+  BRepGraph_UsageId  UsageId;
+  BRepGraph_NodeId   DefId;          //!< Points to definition
+  TopLoc_Location    LocalLocation;
+  TopLoc_Location    GlobalLocation;
+  TopAbs_Orientation Orientation = TopAbs_FORWARD;
+  BRepGraph_UsageId  ParentUsage;    //!< Parent in usage tree (invalid for roots)
+};
+
+struct SolidUsage : public BaseUsage
+{
+  NCollection_Vector<BRepGraph_UsageId> ShellUsages;
+};
+
+struct ShellUsage : public BaseUsage
+{
+  NCollection_Vector<BRepGraph_UsageId> FaceUsages;
+};
+
+struct FaceUsage : public BaseUsage
+{
+  BRepGraph_UsageId OuterWireUsage;
+  NCollection_Vector<BRepGraph_UsageId> InnerWireUsages;
+};
+
+struct WireUsage : public BaseUsage
+{
+  BRepGraph_UsageId OwnerFaceUsage;
+  NCollection_Vector<BRepGraph_UsageId> EdgeUsages;  //!< Parallel to WireDef::OrderedEdges
+};
+
+struct EdgeUsage : public BaseUsage
+{
+  BRepGraph_UsageId StartVertexUsage;
+  BRepGraph_UsageId EndVertexUsage;
+};
+
+struct VertexUsage : public BaseUsage
+{
+  gp_Pnt TransformedPoint;  //!< Point in global coordinates
 };
 
 } // namespace BRepGraph_TopoNode

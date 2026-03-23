@@ -28,23 +28,26 @@
 //! Geometry nodes are non-owning references to existing OCCT Handle<>
 //! objects.  Deduplication during Build() ensures one node per unique
 //! geometry handle.
+//!
+//! Back-references store definition NodeIds (not usages), since geometry
+//! is shared at the definition level.
 namespace BRepGraph_GeomNode
 {
 
 //! Graph node representing a unique Geom_Surface handle.
 //!
-//! Multiple Face nodes may reference one Surf node; this is the
-//! "same domain" relationship.  FaceUsers enables reverse queries.
+//! Multiple Face definitions may reference one Surf node; this is the
+//! "same domain" relationship.  FaceDefUsers enables reverse queries.
 struct Surf
 {
   BRepGraph_NodeId           Id;
   Handle(Geom_Surface)       Surface;        //!< The shared geometry
   Handle(Poly_Triangulation) Triangulation;  //!< Optional cached mesh
 
-  //! Back-references: all Face nodes realized by this surface.
-  NCollection_Vector<BRepGraph_NodeId> FaceUsers;
+  //! Back-references: all Face definitions realized by this surface.
+  NCollection_Vector<BRepGraph_NodeId> FaceDefUsers;
 
-  //! True if referenced by Face nodes with different GlobalLocations.
+  //! True if referenced by Face definitions whose usages have different GlobalLocations.
   bool IsMultiLocated = false;
 };
 
@@ -54,10 +57,10 @@ struct Curve
   BRepGraph_NodeId           Id;
   Handle(Geom_Curve)         CurveGeom;
 
-  //! Back-references: all Edge nodes realized by this curve.
-  NCollection_Vector<BRepGraph_NodeId> EdgeUsers;
+  //! Back-references: all Edge definitions realized by this curve.
+  NCollection_Vector<BRepGraph_NodeId> EdgeDefUsers;
 
-  //! True if referenced by Edge nodes with different GlobalLocations.
+  //! True if referenced by Edge definitions whose usages have different GlobalLocations.
   bool IsMultiLocated = false;
 };
 
@@ -69,8 +72,8 @@ struct PCurve
   BRepGraph_NodeId           Id;
   Handle(Geom2d_Curve)       Curve2d;
 
-  BRepGraph_NodeId           EdgeContext;  //!< The edge this pcurve belongs to
-  BRepGraph_NodeId           FaceContext;  //!< The face whose UV space it lives in
+  BRepGraph_NodeId           EdgeContext;  //!< The edge def this pcurve belongs to
+  BRepGraph_NodeId           FaceContext;  //!< The face def whose UV space it lives in
 
   double                     ParamFirst = 0.0;
   double                     ParamLast  = 0.0;

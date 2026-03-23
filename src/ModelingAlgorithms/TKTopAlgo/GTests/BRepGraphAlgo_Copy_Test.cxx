@@ -143,7 +143,7 @@ TEST(BRepGraphAlgo_CopyTest, CopySingleFace)
   BRepGraph aGraph;
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.NbFaces(), 0);
+  ASSERT_GT(aGraph.NbFaceDefs(), 0);
 
   TopoDS_Shape aCopiedFace = BRepGraphAlgo_Copy::CopyFace(aGraph, 0, true);
   ASSERT_FALSE(aCopiedFace.IsNull());
@@ -172,9 +172,9 @@ TEST(BRepGraphAlgo_CopyTest, CopyFacesOnly_Compound)
   BRepGraph aGraph;
   aGraph.Build(aCompound);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_EQ(aGraph.NbFaces(), 6);
-  ASSERT_EQ(aGraph.NbSolids(), 0);
-  ASSERT_EQ(aGraph.NbShells(), 0);
+  ASSERT_EQ(aGraph.NbFaceDefs(), 6);
+  ASSERT_EQ(aGraph.NbSolidDefs(), 0);
+  ASSERT_EQ(aGraph.NbShellDefs(), 0);
 
   TopoDS_Shape aCopy = BRepGraphAlgo_Copy::Perform(aGraph, true);
   ASSERT_FALSE(aCopy.IsNull());

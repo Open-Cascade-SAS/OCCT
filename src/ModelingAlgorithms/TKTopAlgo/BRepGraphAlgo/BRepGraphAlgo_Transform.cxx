@@ -49,30 +49,27 @@ TopoDS_Shape BRepGraphAlgo_Transform::Perform(const BRepGraph& theGraph,
 
   if (!theCopyGeom)
   {
-    // Cheap mode: apply as TopLoc_Location change to the reconstructed shape.
-    // First reconstruct, then apply location.
-    TopoDS_Shape aReconstructed;
-    if (theGraph.NbSolids() > 0)
+    // Cheap mode: apply as TopLoc_Location change to the original shape.
+    // Use Shape() which returns the original TopoDS_Shape (preserving TShape sharing).
+    TopoDS_Shape anOriginal;
+    if (theGraph.NbSolidDefs() > 0)
     {
-      aReconstructed =
-        theGraph.ReconstructShape(BRepGraph_NodeId(BRepGraph_NodeKind::Solid, 0));
+      anOriginal = theGraph.Shape(BRepGraph_NodeId(BRepGraph_NodeKind::Solid, 0));
     }
-    else if (theGraph.NbShells() > 0)
+    else if (theGraph.NbShellDefs() > 0)
     {
-      aReconstructed =
-        theGraph.ReconstructShape(BRepGraph_NodeId(BRepGraph_NodeKind::Shell, 0));
+      anOriginal = theGraph.Shape(BRepGraph_NodeId(BRepGraph_NodeKind::Shell, 0));
     }
-    else if (theGraph.NbFaces() > 0)
+    else if (theGraph.NbFaceDefs() > 0)
     {
-      // Reconstruct all faces into a compound.
       BRep_Builder    aBB;
       TopoDS_Compound aComp;
       aBB.MakeCompound(aComp);
-      for (int aFaceIdx = 0; aFaceIdx < theGraph.NbFaces(); ++aFaceIdx)
+      for (int aFaceIdx = 0; aFaceIdx < theGraph.NbFaceDefs(); ++aFaceIdx)
       {
         aBB.Add(aComp, theGraph.Shape(BRepGraph_NodeId(BRepGraph_NodeKind::Face, aFaceIdx)));
       }
-      aReconstructed = aComp;
+      anOriginal = aComp;
     }
     else
     {
@@ -80,7 +77,7 @@ TopoDS_Shape BRepGraphAlgo_Transform::Perform(const BRepGraph& theGraph,
     }
 
     TopLoc_Location aLoc(theTrsf);
-    return applyLocation(aReconstructed, aLoc);
+    return applyLocation(anOriginal, aLoc);
   }
 
   // Deep copy mode: copy geometry first, then transform the copy.
@@ -100,7 +97,7 @@ TopoDS_Shape BRepGraphAlgo_Transform::TransformFace(const BRepGraph& theGraph,
                                                     const gp_Trsf&   theTrsf,
                                                     bool             theCopyGeom)
 {
-  if (!theGraph.IsDone() || theFaceIdx < 0 || theFaceIdx >= theGraph.NbFaces())
+  if (!theGraph.IsDone() || theFaceIdx < 0 || theFaceIdx >= theGraph.NbFaceDefs())
     return TopoDS_Shape();
 
   TopoDS_Shape aFace;

@@ -29,6 +29,7 @@
 #include <NCollection_KDTree.hxx>
 #include <OSD_Parallel.hxx>
 #include <Precision.hxx>
+#include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Edge.hxx>
@@ -294,15 +295,15 @@ void BRepGraphAlgo_Sewing::assembleVertices(const Handle(NCollection_IncAllocato
   NCollection_Map<int>      aFreeVertexSet(aNbFreeEdges, theTmpAlloc);
   for (int aFreeEdgeIter = 1; aFreeEdgeIter <= myFreeEdgesBefore.Length(); ++aFreeEdgeIter)
   {
-    const BRepGraph_TopoNode::Edge& anEdge =
-      myGraph.Edge(myFreeEdgesBefore.Value(aFreeEdgeIter).Index);
-    if (anEdge.StartVertexId.IsValid() && aFreeVertexSet.Add(anEdge.StartVertexId.Index))
+    const BRepGraph_TopoNode::EdgeDef& anEdge =
+      myGraph.EdgeDef(myFreeEdgesBefore.Value(aFreeEdgeIter).Index);
+    if (anEdge.StartVertexDefId.IsValid() && aFreeVertexSet.Add(anEdge.StartVertexDefId.Index))
     {
-      aFreeVertexIndices.Append(anEdge.StartVertexId.Index);
+      aFreeVertexIndices.Append(anEdge.StartVertexDefId.Index);
     }
-    if (anEdge.EndVertexId.IsValid() && aFreeVertexSet.Add(anEdge.EndVertexId.Index))
+    if (anEdge.EndVertexDefId.IsValid() && aFreeVertexSet.Add(anEdge.EndVertexDefId.Index))
     {
-      aFreeVertexIndices.Append(anEdge.EndVertexId.Index);
+      aFreeVertexIndices.Append(anEdge.EndVertexDefId.Index);
     }
   }
 
@@ -319,7 +320,7 @@ void BRepGraphAlgo_Sewing::assembleVertices(const Handle(NCollection_IncAllocato
   for (int aVtxIter = 0; aVtxIter < aNbVertices; ++aVtxIter)
   {
     const int anIdx = aFreeVertexIndices.Value(aVtxIter);
-    aVertexPoints.SetValue(aVtxIter, myGraph.Vertex(anIdx).Point);
+    aVertexPoints.SetValue(aVtxIter, myGraph.VertexDef(anIdx).Point);
     aGraphIndices.SetValue(aVtxIter, anIdx);
   }
 
@@ -355,8 +356,8 @@ void BRepGraphAlgo_Sewing::assembleVertices(const Handle(NCollection_IncAllocato
       }
 
       // Merge: keep vertex with smaller tolerance.
-      const double aTolI = myGraph.Vertex(anIdxI).Tolerance;
-      const double aTolJ = myGraph.Vertex(anIdxJ).Tolerance;
+      const double aTolI = myGraph.VertexDef(anIdxI).Tolerance;
+      const double aTolJ = myGraph.VertexDef(anIdxJ).Tolerance;
       if (aTolJ < aTolI)
       {
         aVertexMerge.Bind(anIdxI, anIdxJ);
@@ -372,17 +373,17 @@ void BRepGraphAlgo_Sewing::assembleVertices(const Handle(NCollection_IncAllocato
   // Apply vertex merges to free edges.
   for (int aFreeEdgeIter = 1; aFreeEdgeIter <= myFreeEdgesBefore.Length(); ++aFreeEdgeIter)
   {
-    BRepGraph_TopoNode::Edge& anEdge =
-      myGraph.MutableEdge(myFreeEdgesBefore.Value(aFreeEdgeIter).Index);
-    if (anEdge.StartVertexId.IsValid() && aVertexMerge.IsBound(anEdge.StartVertexId.Index))
+    BRepGraph_TopoNode::EdgeDef& anEdge =
+      myGraph.MutableEdgeDef(myFreeEdgesBefore.Value(aFreeEdgeIter).Index);
+    if (anEdge.StartVertexDefId.IsValid() && aVertexMerge.IsBound(anEdge.StartVertexDefId.Index))
     {
-      anEdge.StartVertexId =
-        BRepGraph_NodeId(BRepGraph_NodeKind::Vertex, aVertexMerge.Find(anEdge.StartVertexId.Index));
+      anEdge.StartVertexDefId =
+        BRepGraph_NodeId(BRepGraph_NodeKind::Vertex, aVertexMerge.Find(anEdge.StartVertexDefId.Index));
     }
-    if (anEdge.EndVertexId.IsValid() && aVertexMerge.IsBound(anEdge.EndVertexId.Index))
+    if (anEdge.EndVertexDefId.IsValid() && aVertexMerge.IsBound(anEdge.EndVertexDefId.Index))
     {
-      anEdge.EndVertexId =
-        BRepGraph_NodeId(BRepGraph_NodeKind::Vertex, aVertexMerge.Find(anEdge.EndVertexId.Index));
+      anEdge.EndVertexDefId =
+        BRepGraph_NodeId(BRepGraph_NodeKind::Vertex, aVertexMerge.Find(anEdge.EndVertexDefId.Index));
     }
   }
 }
@@ -552,21 +553,21 @@ void BRepGraphAlgo_Sewing::cutAtIntersections()
   for (int aFreeEdgeIter = 1; aFreeEdgeIter <= myFreeEdgesBefore.Length(); ++aFreeEdgeIter)
   {
     const BRepGraph_NodeId          anIdA  = myFreeEdgesBefore.Value(aFreeEdgeIter);
-    const BRepGraph_TopoNode::Edge& aNodeA = myGraph.Edge(anIdA.Index);
+    const BRepGraph_TopoNode::EdgeDef& aNodeA = myGraph.EdgeDef(anIdA.Index);
 
     myGraph.ForEachOutEdgeOfKind(anIdA, BRepGraph_RelKind::UserDefined, [&](const BRepGraph_RelEdge& aRelEdge) {
       const BRepGraph_NodeId          anIdB    = aRelEdge.Target;
-      const BRepGraph_TopoNode::Edge& aNodeB   = myGraph.Edge(anIdB.Index);
+      const BRepGraph_TopoNode::EdgeDef& aNodeB   = myGraph.EdgeDef(anIdB.Index);
 
       if (aNodeA.IsDegenerate || aNodeB.IsDegenerate)
         return;
 
       // Count shared vertices between the two edges.
       int aNbShared = 0;
-      if (aNodeA.StartVertexId == aNodeB.StartVertexId
-          || aNodeA.StartVertexId == aNodeB.EndVertexId)
+      if (aNodeA.StartVertexDefId == aNodeB.StartVertexDefId
+          || aNodeA.StartVertexDefId == aNodeB.EndVertexDefId)
         ++aNbShared;
-      if (aNodeA.EndVertexId == aNodeB.StartVertexId || aNodeA.EndVertexId == aNodeB.EndVertexId)
+      if (aNodeA.EndVertexDefId == aNodeB.StartVertexDefId || aNodeA.EndVertexDefId == aNodeB.EndVertexDefId)
         ++aNbShared;
 
       // Partial overlap: one shared vertex but not both.
@@ -615,7 +616,7 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> BRepGraphAlgo_
       MatchResult& aMatch = aPerEdgeMatch.ChangeValue(anI);
 
       // Build per-edgeA cache: adaptor, sample points, parameters.
-      const BRepGraph_TopoNode::Edge& anEdgeANode = myGraph.Edge(anIdA.Index);
+      const BRepGraph_TopoNode::EdgeDef& anEdgeANode = myGraph.EdgeDef(anIdA.Index);
       if (anEdgeANode.IsDegenerate)
         return;
 
@@ -642,8 +643,8 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> BRepGraphAlgo_
                                aCurveA.LastParameter(),
                                Precision::Confusion());
 
-      const gp_Pnt& aStartA = myGraph.Vertex(anEdgeANode.StartVertexId.Index).Point;
-      const gp_Pnt& aEndA   = myGraph.Vertex(anEdgeANode.EndVertexId.Index).Point;
+      const gp_Pnt& aStartA = myGraph.VertexDef(anEdgeANode.StartVertexDefId.Index).Point;
+      const gp_Pnt& aEndA   = myGraph.VertexDef(anEdgeANode.EndVertexDefId.Index).Point;
       const double  aChordA = aStartA.Distance(aEndA);
 
       myGraph.ForEachOutEdgeOfKind(anIdA, BRepGraph_RelKind::UserDefined, [&](const BRepGraph_RelEdge& aRelEdge) {
@@ -655,9 +656,9 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> BRepGraphAlgo_
         // Full geometric validation using cached edgeA data.
         if (areEdgesSewable(anIdA, anIdB, aSamplePtsA, aProjectorFwdB, aProjectorRev, aChordA))
         {
-          const BRepGraph_TopoNode::Edge& anEdgeB = myGraph.Edge(anIdB.Index);
-          const gp_Pnt& aStartB = myGraph.Vertex(anEdgeB.StartVertexId.Index).Point;
-          const gp_Pnt& aEndB   = myGraph.Vertex(anEdgeB.EndVertexId.Index).Point;
+          const BRepGraph_TopoNode::EdgeDef& anEdgeB = myGraph.EdgeDef(anIdB.Index);
+          const gp_Pnt& aStartB = myGraph.VertexDef(anEdgeB.StartVertexDefId.Index).Point;
+          const gp_Pnt& aEndB   = myGraph.VertexDef(anEdgeB.EndVertexDefId.Index).Point;
 
           double aScore = std::min(aStartA.Distance(aStartB) + aEndA.Distance(aEndB),
                                    aStartA.Distance(aEndB) + aEndA.Distance(aStartB));
@@ -745,10 +746,10 @@ void BRepGraphAlgo_Sewing::mergeMatchedEdges(
     theSewnEdgeIndices.Add(anIdA.Index);
 
     // Record which faces reference the removed edge (for reconstruction).
-    const BRepGraph_TopoNode::Edge& aRemoveEdge = myGraph.Edge(anIdB.Index);
+    const BRepGraph_TopoNode::EdgeDef& aRemoveEdge = myGraph.EdgeDef(anIdB.Index);
     for (int aPCurveIter = 0; aPCurveIter < aRemoveEdge.PCurves.Length(); ++aPCurveIter)
     {
-      theAffectedFaces.Add(aRemoveEdge.PCurves.Value(aPCurveIter).FaceNodeId.Index);
+      theAffectedFaces.Add(aRemoveEdge.PCurves.Value(aPCurveIter).FaceDefId.Index);
     }
 
     const TopoDS_Edge& aKeepTopoEdge   = TopoDS::Edge(myGraph.OriginalOf(anIdA));
@@ -757,25 +758,26 @@ void BRepGraphAlgo_Sewing::mergeMatchedEdges(
     // Transfer pcurves from remove-edge to keep-edge.
     for (int aPCurveIter = 0; aPCurveIter < aRemoveEdge.PCurves.Length(); ++aPCurveIter)
     {
-      const BRepGraph_TopoNode::Edge::PCurveEntry& aPCEntry =
+      const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCEntry =
         aRemoveEdge.PCurves.Value(aPCurveIter);
       const BRepGraph_GeomNode::PCurve& aPCNode   = myGraph.PCurve(aPCEntry.PCurveNodeId.Index);
-      const BRepGraph_TopoNode::Face&   aFaceNode = myGraph.Face(aPCEntry.FaceNodeId.Index);
+      const BRepGraph_TopoNode::FaceDef&   aFaceNode = myGraph.FaceDef(aPCEntry.FaceDefId.Index);
 
       if (!aPCNode.Curve2d.IsNull())
       {
         const BRepGraph_GeomNode::Surf& aSurfNode = myGraph.Surf(aFaceNode.SurfNodeId.Index);
         double                          aMergedTol =
           std::max(BRep_Tool::Tolerance(aKeepTopoEdge), BRep_Tool::Tolerance(aRemoveTopoEdge));
+        TopLoc_Location aFaceLoc(myGraph.GlobalTransform(aPCEntry.FaceDefId));
         aBB.UpdateEdge(aKeepTopoEdge,
                        aPCNode.Curve2d,
                        aSurfNode.Surface,
-                       aFaceNode.GlobalLocation,
+                       aFaceLoc,
                        aMergedTol);
 
         // Add PCurve entry to keep-edge via graph API.
         myGraph.AddPCurveToEdge(anIdA,
-                                aPCEntry.FaceNodeId,
+                                aPCEntry.FaceDefId,
                                 aPCNode.Curve2d,
                                 aPCNode.ParamFirst,
                                 aPCNode.ParamLast);
@@ -783,9 +785,9 @@ void BRepGraphAlgo_Sewing::mergeMatchedEdges(
     }
 
     // Determine direction correspondence from vertex positions.
-    const BRepGraph_TopoNode::Edge& aKeepEdge = myGraph.Edge(anIdA.Index);
-    const gp_Pnt& aKeepStart                  = myGraph.Vertex(aKeepEdge.StartVertexId.Index).Point;
-    const gp_Pnt& aRemoveStart = myGraph.Vertex(aRemoveEdge.StartVertexId.Index).Point;
+    const BRepGraph_TopoNode::EdgeDef& aKeepEdge = myGraph.EdgeDef(anIdA.Index);
+    const gp_Pnt& aKeepStart                  = myGraph.VertexDef(aKeepEdge.StartVertexDefId.Index).Point;
+    const gp_Pnt& aRemoveStart = myGraph.VertexDef(aRemoveEdge.StartVertexDefId.Index).Point;
     const bool    isReversed   = aKeepStart.Distance(aRemoveStart) > myTolerance;
 
     // Update wire entries referencing the remove-edge (using cached reverse index).
@@ -853,20 +855,20 @@ void BRepGraphAlgo_Sewing::processEdges(const NCollection_Map<int>& theSewnEdgeI
     aNbSewn,
     [&](int theIdx) {
       const int                       anEdgeIdx = aSewnIndices.Value(theIdx);
-      const BRepGraph_TopoNode::Edge& anEdge    = myGraph.Edge(anEdgeIdx);
+      const BRepGraph_TopoNode::EdgeDef& anEdge    = myGraph.EdgeDef(anEdgeIdx);
       if (anEdge.IsDegenerate)
         return;
 
       // Ensure edge tolerance is at least as large as its vertex tolerances.
       double aMaxVtxTol = 0.0;
-      if (anEdge.StartVertexId.IsValid())
-        aMaxVtxTol = std::max(aMaxVtxTol, myGraph.Vertex(anEdge.StartVertexId.Index).Tolerance);
-      if (anEdge.EndVertexId.IsValid())
-        aMaxVtxTol = std::max(aMaxVtxTol, myGraph.Vertex(anEdge.EndVertexId.Index).Tolerance);
+      if (anEdge.StartVertexDefId.IsValid())
+        aMaxVtxTol = std::max(aMaxVtxTol, myGraph.VertexDef(anEdge.StartVertexDefId.Index).Tolerance);
+      if (anEdge.EndVertexDefId.IsValid())
+        aMaxVtxTol = std::max(aMaxVtxTol, myGraph.VertexDef(anEdge.EndVertexDefId.Index).Tolerance);
 
       if (aMaxVtxTol > anEdge.Tolerance)
       {
-        myGraph.MutableEdge(anEdgeIdx).Tolerance = aMaxVtxTol;
+        myGraph.MutableEdgeDef(anEdgeIdx).Tolerance = aMaxVtxTol;
       }
     },
     !myIsParallel);
@@ -876,7 +878,7 @@ void BRepGraphAlgo_Sewing::processEdges(const NCollection_Map<int>& theSewnEdgeI
 
 void BRepGraphAlgo_Sewing::reconstructResult(const NCollection_Map<int>& theAffectedFaces)
 {
-  const int aNbFaces = myGraph.NbFaces();
+  const int aNbFaces = myGraph.NbFaceDefs();
 
   // Step 1 (parallel): Reconstruct affected faces into a pre-allocated array.
   // ReconstructFace() is const and builds a new TopoDS_Face from graph data.
@@ -962,8 +964,8 @@ int BRepGraphAlgo_Sewing::NbSewnEdges() const
 bool BRepGraphAlgo_Sewing::areEdgesSewable(BRepGraph_NodeId theEdgeA,
                                            BRepGraph_NodeId theEdgeB) const
 {
-  const BRepGraph_TopoNode::Edge& aNodeA = myGraph.Edge(theEdgeA.Index);
-  const BRepGraph_TopoNode::Edge& aNodeB = myGraph.Edge(theEdgeB.Index);
+  const BRepGraph_TopoNode::EdgeDef& aNodeA = myGraph.EdgeDef(theEdgeA.Index);
+  const BRepGraph_TopoNode::EdgeDef& aNodeB = myGraph.EdgeDef(theEdgeB.Index);
 
   const TopoDS_Edge& anEdgeA = TopoDS::Edge(myGraph.OriginalOf(theEdgeA));
   const TopoDS_Edge& anEdgeB = TopoDS::Edge(myGraph.OriginalOf(theEdgeB));
@@ -974,10 +976,10 @@ bool BRepGraphAlgo_Sewing::areEdgesSewable(BRepGraph_NodeId theEdgeA,
   }
 
   // Check vertex proximity first (fast rejection via graph vertex data).
-  const gp_Pnt& aStartA = myGraph.Vertex(aNodeA.StartVertexId.Index).Point;
-  const gp_Pnt& aEndA   = myGraph.Vertex(aNodeA.EndVertexId.Index).Point;
-  const gp_Pnt& aStartB = myGraph.Vertex(aNodeB.StartVertexId.Index).Point;
-  const gp_Pnt& aEndB   = myGraph.Vertex(aNodeB.EndVertexId.Index).Point;
+  const gp_Pnt& aStartA = myGraph.VertexDef(aNodeA.StartVertexDefId.Index).Point;
+  const gp_Pnt& aEndA   = myGraph.VertexDef(aNodeA.EndVertexDefId.Index).Point;
+  const gp_Pnt& aStartB = myGraph.VertexDef(aNodeB.StartVertexDefId.Index).Point;
+  const gp_Pnt& aEndB   = myGraph.VertexDef(aNodeB.EndVertexDefId.Index).Point;
 
   const bool isSameDir =
     aStartA.Distance(aStartB) <= myTolerance && aEndA.Distance(aEndB) <= myTolerance;
@@ -1109,8 +1111,8 @@ bool BRepGraphAlgo_Sewing::areEdgesSewable(BRepGraph_NodeId                  the
                                            Extrema_ExtPC&                    theProjectorRevA,
                                            double                            theChordA) const
 {
-  const BRepGraph_TopoNode::Edge& aNodeA = myGraph.Edge(theEdgeA.Index);
-  const BRepGraph_TopoNode::Edge& aNodeB = myGraph.Edge(theEdgeB.Index);
+  const BRepGraph_TopoNode::EdgeDef& aNodeA = myGraph.EdgeDef(theEdgeA.Index);
+  const BRepGraph_TopoNode::EdgeDef& aNodeB = myGraph.EdgeDef(theEdgeB.Index);
 
   if (aNodeA.IsDegenerate || aNodeB.IsDegenerate)
   {
@@ -1118,10 +1120,10 @@ bool BRepGraphAlgo_Sewing::areEdgesSewable(BRepGraph_NodeId                  the
   }
 
   // Check vertex proximity first (fast rejection via graph vertex data).
-  const gp_Pnt& aStartA = myGraph.Vertex(aNodeA.StartVertexId.Index).Point;
-  const gp_Pnt& aEndA   = myGraph.Vertex(aNodeA.EndVertexId.Index).Point;
-  const gp_Pnt& aStartB = myGraph.Vertex(aNodeB.StartVertexId.Index).Point;
-  const gp_Pnt& aEndB   = myGraph.Vertex(aNodeB.EndVertexId.Index).Point;
+  const gp_Pnt& aStartA = myGraph.VertexDef(aNodeA.StartVertexDefId.Index).Point;
+  const gp_Pnt& aEndA   = myGraph.VertexDef(aNodeA.EndVertexDefId.Index).Point;
+  const gp_Pnt& aStartB = myGraph.VertexDef(aNodeB.StartVertexDefId.Index).Point;
+  const gp_Pnt& aEndB   = myGraph.VertexDef(aNodeB.EndVertexDefId.Index).Point;
 
   const bool isSameDir =
     aStartA.Distance(aStartB) <= myTolerance && aEndA.Distance(aEndB) <= myTolerance;

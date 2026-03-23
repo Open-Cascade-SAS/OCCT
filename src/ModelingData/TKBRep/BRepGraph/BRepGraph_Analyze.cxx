@@ -19,73 +19,64 @@
 
 #include <functional>
 
-//=================================================================================================
+//==================================================================================================
 
 NCollection_Vector<BRepGraph_NodeId> BRepGraph_Analyze::FreeEdges(const BRepGraph& theGraph)
 {
   NCollection_Vector<BRepGraph_NodeId> aResult;
 
-  NCollection_Map<int> aFaceSet;
-  for (int anEdgeIdx = 0; anEdgeIdx < theGraph.myEdges.Length(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < theGraph.NbEdgeDefs(); ++anEdgeIdx)
   {
-    const BRepGraph_TopoNode::Edge& anEdge = theGraph.myEdges.Value(anEdgeIdx);
+    const BRepGraph_TopoNode::EdgeDef& anEdge = theGraph.EdgeDef(anEdgeIdx);
     if (anEdge.IsDegenerate)
       continue;
 
-    // Count distinct faces via edge-to-wire reverse index.
-    const NCollection_Vector<int>& aWires = theGraph.WiresOfEdge(anEdgeIdx);
-    aFaceSet.Clear();
-    for (int aWIdx = 0; aWIdx < aWires.Length(); ++aWIdx)
-    {
-      const BRepGraph_TopoNode::Wire& aWire = theGraph.myWires.Value(aWires.Value(aWIdx));
-      if (aWire.OwnerFaceId.IsValid())
-        aFaceSet.Add(aWire.OwnerFaceId.Index);
-    }
-    if (aFaceSet.Extent() == 1)
+    if (theGraph.FaceCountForEdge(anEdgeIdx) == 1)
       aResult.Append(anEdge.Id);
   }
   return aResult;
 }
 
-//=================================================================================================
+//==================================================================================================
 
 NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>>
   BRepGraph_Analyze::MissingPCurves(const BRepGraph& theGraph)
 {
   NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> aResult;
 
-  for (int aFaceIdx = 0; aFaceIdx < theGraph.myFaces.Length(); ++aFaceIdx)
+  for (int aFaceUsageIdx = 0; aFaceUsageIdx < theGraph.NbFaceUsages(); ++aFaceUsageIdx)
   {
-    const BRepGraph_TopoNode::Face& aFace = theGraph.myFaces.Value(aFaceIdx);
-    const BRepGraph_NodeId          aFaceId(BRepGraph_NodeKind::Face, aFaceIdx);
+    const BRepGraph_TopoNode::FaceUsage& aFaceUsage = theGraph.FaceUsage(aFaceUsageIdx);
+    const BRepGraph_NodeId               aFaceDefId = aFaceUsage.DefId;
 
-    auto checkWire = [&](BRepGraph_NodeId theWireId) {
-      if (!theWireId.IsValid())
+    auto checkWire = [&](BRepGraph_UsageId theWireUsageId) {
+      if (!theWireUsageId.IsValid())
         return;
-      const BRepGraph_TopoNode::Wire& aWire = theGraph.myWires.Value(theWireId.Index);
-      for (int anEdgeIdx = 0; anEdgeIdx < aWire.OrderedEdges.Length(); ++anEdgeIdx)
+      const BRepGraph_TopoNode::WireUsage& aWireUsage = theGraph.WireUsage(theWireUsageId.Index);
+      const BRepGraph_TopoNode::WireDef&   aWireDef   = theGraph.WireDef(aWireUsage.DefId.Index);
+      for (int anEdgeIdx = 0; anEdgeIdx < aWireDef.OrderedEdges.Length(); ++anEdgeIdx)
       {
-        const BRepGraph_NodeId          anEdgeId = aWire.OrderedEdges.Value(anEdgeIdx).EdgeId;
-        const BRepGraph_TopoNode::Edge& anEdge   = theGraph.myEdges.Value(anEdgeId.Index);
+        const BRepGraph_NodeId               anEdgeDefId = aWireDef.OrderedEdges.Value(anEdgeIdx).EdgeDefId;
+        const BRepGraph_TopoNode::EdgeDef&   anEdge      = theGraph.EdgeDef(anEdgeDefId.Index);
 
         if (anEdge.IsDegenerate)
           continue;
 
-        const BRepGraph_NodeId aPCurveId = theGraph.PCurveOf(anEdgeId, aFaceId);
+        const BRepGraph_NodeId aPCurveId = theGraph.PCurveOf(anEdgeDefId, aFaceDefId);
         if (!aPCurveId.IsValid())
-          aResult.Append(std::make_pair(anEdgeId, aFaceId));
+          aResult.Append(std::make_pair(anEdgeDefId, aFaceDefId));
       }
     };
 
-    checkWire(aFace.OuterWireId);
-    for (int aWireIdx = 0; aWireIdx < aFace.InnerWireIds.Length(); ++aWireIdx)
-      checkWire(aFace.InnerWireIds.Value(aWireIdx));
+    checkWire(aFaceUsage.OuterWireUsage);
+    for (int aWireIdx = 0; aWireIdx < aFaceUsage.InnerWireUsages.Length(); ++aWireIdx)
+      checkWire(aFaceUsage.InnerWireUsages.Value(aWireIdx));
   }
 
   return aResult;
 }
 
-//=================================================================================================
+//==================================================================================================
 
 NCollection_Vector<BRepGraph_NodeId> BRepGraph_Analyze::ToleranceConflicts(
   const BRepGraph& theGraph,
@@ -96,14 +87,14 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph_Analyze::ToleranceConflicts(
   for (int aCurveIdx = 0; aCurveIdx < theGraph.myCurves.Length(); ++aCurveIdx)
   {
     const BRepGraph_GeomNode::Curve& aCurve = theGraph.myCurves.Value(aCurveIdx);
-    if (aCurve.EdgeUsers.Length() <= 1)
+    if (aCurve.EdgeDefUsers.Length() <= 1)
       continue;
 
     double aMinTol = 1.0e100;
     double aMaxTol = -1.0;
-    for (int anIdx = 0; anIdx < aCurve.EdgeUsers.Length(); ++anIdx)
+    for (int anIdx = 0; anIdx < aCurve.EdgeDefUsers.Length(); ++anIdx)
     {
-      const double aTol = theGraph.myEdges.Value(aCurve.EdgeUsers.Value(anIdx).Index).Tolerance;
+      const double aTol = theGraph.myEdgeDefs.Value(aCurve.EdgeDefUsers.Value(anIdx).Index).Tolerance;
       if (aTol < aMinTol)
         aMinTol = aTol;
       if (aTol > aMaxTol)
@@ -112,23 +103,23 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph_Analyze::ToleranceConflicts(
 
     if (aMaxTol - aMinTol > theThreshold)
     {
-      for (int anIdx = 0; anIdx < aCurve.EdgeUsers.Length(); ++anIdx)
-        aResult.Append(aCurve.EdgeUsers.Value(anIdx));
+      for (int anIdx = 0; anIdx < aCurve.EdgeDefUsers.Length(); ++anIdx)
+        aResult.Append(aCurve.EdgeDefUsers.Value(anIdx));
     }
   }
 
   return aResult;
 }
 
-//=================================================================================================
+//==================================================================================================
 
 NCollection_Vector<BRepGraph_NodeId> BRepGraph_Analyze::DegenerateWires(const BRepGraph& theGraph)
 {
   NCollection_Vector<BRepGraph_NodeId> aResult;
 
-  for (int aWireIdx = 0; aWireIdx < theGraph.myWires.Length(); ++aWireIdx)
+  for (int aWireDefIdx = 0; aWireDefIdx < theGraph.NbWireDefs(); ++aWireDefIdx)
   {
-    const BRepGraph_TopoNode::Wire& aWire = theGraph.myWires.Value(aWireIdx);
+    const BRepGraph_TopoNode::WireDef& aWire = theGraph.WireDef(aWireDefIdx);
 
     // Wire with < 2 edges.
     if (aWire.OrderedEdges.Length() < 2)
@@ -138,91 +129,137 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph_Analyze::DegenerateWires(const BR
     }
 
     // Outer wire that is not closed.
-    if (aWire.OwnerFaceId.IsValid())
+    if (!aWire.IsClosed)
     {
-      const BRepGraph_TopoNode::Face& aFace = theGraph.myFaces.Value(aWire.OwnerFaceId.Index);
-      if (aFace.OuterWireId == aWire.Id && !aWire.IsClosed)
-        aResult.Append(aWire.Id);
+      // Check if any usage of this wire is the outer wire of its face.
+      for (int aUsageIdx = 0; aUsageIdx < aWire.Usages.Length(); ++aUsageIdx)
+      {
+        const BRepGraph_UsageId& aWireUsageId = aWire.Usages.Value(aUsageIdx);
+        const BRepGraph_TopoNode::WireUsage& aWireUsage =
+          theGraph.WireUsage(aWireUsageId.Index);
+        if (aWireUsage.OwnerFaceUsage.IsValid())
+        {
+          const BRepGraph_TopoNode::FaceUsage& aFaceUsage =
+            theGraph.FaceUsage(aWireUsage.OwnerFaceUsage.Index);
+          if (aFaceUsage.OuterWireUsage == aWireUsageId)
+          {
+            aResult.Append(aWire.Id);
+            break;
+          }
+        }
+      }
     }
   }
 
   return aResult;
 }
 
-//=================================================================================================
+//==================================================================================================
 
 NCollection_Vector<BRepGraph_SubGraph> BRepGraph_Analyze::Decompose(const BRepGraph& theGraph)
 {
   NCollection_Vector<BRepGraph_SubGraph> aResult;
 
-  // Shared lambda: collect wire, edge and vertex indices from a face into a SubGraph.
-  auto collectWire = [&](BRepGraph_SubGraph& theSub, BRepGraph_NodeId theWireId) {
-    if (!theWireId.IsValid())
-      return;
-    theSub.myWireIndices.Append(theWireId.Index);
-    const BRepGraph_TopoNode::Wire& aWire = theGraph.myWires.Value(theWireId.Index);
-    for (int anEdgeIdx = 0; anEdgeIdx < aWire.OrderedEdges.Length(); ++anEdgeIdx)
-    {
-      theSub.myEdgeIndices.Append(aWire.OrderedEdges.Value(anEdgeIdx).EdgeId.Index);
-      const BRepGraph_TopoNode::Edge& anEdge =
-        theGraph.myEdges.Value(aWire.OrderedEdges.Value(anEdgeIdx).EdgeId.Index);
-      if (anEdge.StartVertexId.IsValid())
-        theSub.myVertexIndices.Append(anEdge.StartVertexId.Index);
-      if (anEdge.EndVertexId.IsValid())
-        theSub.myVertexIndices.Append(anEdge.EndVertexId.Index);
-    }
+  // Collect wire, edge and vertex children from a face usage into a SubGraph.
+  auto collectFaceChildren = [&](BRepGraph_SubGraph& theSub, int theFaceUsageIdx) {
+    const BRepGraph_TopoNode::FaceUsage& aFaceUsage = theGraph.FaceUsage(theFaceUsageIdx);
+
+    auto collectWire = [&](BRepGraph_UsageId theWireUsageId) {
+      if (!theWireUsageId.IsValid())
+        return;
+      const BRepGraph_TopoNode::WireUsage& aWireUsage =
+        theGraph.WireUsage(theWireUsageId.Index);
+      theSub.myWireDefIndices.Append(aWireUsage.DefId.Index);
+      theSub.myWireUsageIndices.Append(theWireUsageId.Index);
+      const BRepGraph_TopoNode::WireDef& aWireDef =
+        theGraph.WireDef(aWireUsage.DefId.Index);
+      for (int anEdgeIdx = 0; anEdgeIdx < aWireDef.OrderedEdges.Length(); ++anEdgeIdx)
+      {
+        const int anEdgeDefIdx = aWireDef.OrderedEdges.Value(anEdgeIdx).EdgeDefId.Index;
+        theSub.myEdgeDefIndices.Append(anEdgeDefIdx);
+
+        // Also add edge usage indices from WireUsage.EdgeUsages if available.
+        if (anEdgeIdx < aWireUsage.EdgeUsages.Length())
+        {
+          const BRepGraph_UsageId& anEdgeUsageId = aWireUsage.EdgeUsages.Value(anEdgeIdx);
+          theSub.myEdgeUsageIndices.Append(anEdgeUsageId.Index);
+
+          // Get vertex usages from edge usage.
+          const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage =
+            theGraph.EdgeUsage(anEdgeUsageId.Index);
+          if (anEdgeUsage.StartVertexUsage.IsValid())
+            theSub.myVertexUsageIndices.Append(anEdgeUsage.StartVertexUsage.Index);
+          if (anEdgeUsage.EndVertexUsage.IsValid())
+            theSub.myVertexUsageIndices.Append(anEdgeUsage.EndVertexUsage.Index);
+        }
+
+        const BRepGraph_TopoNode::EdgeDef& anEdgeDef = theGraph.EdgeDef(anEdgeDefIdx);
+        if (anEdgeDef.StartVertexDefId.IsValid())
+          theSub.myVertexDefIndices.Append(anEdgeDef.StartVertexDefId.Index);
+        if (anEdgeDef.EndVertexDefId.IsValid())
+          theSub.myVertexDefIndices.Append(anEdgeDef.EndVertexDefId.Index);
+      }
+    };
+
+    collectWire(aFaceUsage.OuterWireUsage);
+    for (int aWireIdx = 0; aWireIdx < aFaceUsage.InnerWireUsages.Length(); ++aWireIdx)
+      collectWire(aFaceUsage.InnerWireUsages.Value(aWireIdx));
   };
 
-  // Shared lambda: collect all wire/edge/vertex data for a face.
-  auto collectFaceChildren = [&](BRepGraph_SubGraph& theSub, int theFaceIdx) {
-    const BRepGraph_TopoNode::Face& aFace = theGraph.myFaces.Value(theFaceIdx);
-    collectWire(theSub, aFace.OuterWireId);
-    for (int aWireIdx = 0; aWireIdx < aFace.InnerWireIds.Length(); ++aWireIdx)
-      collectWire(theSub, aFace.InnerWireIds.Value(aWireIdx));
-  };
-
-  if (theGraph.mySolids.Length() > 0)
+  if (theGraph.NbSolidUsages() > 0)
   {
-    // Each solid -> one SubGraph.
-    for (int aSolidIdx = 0; aSolidIdx < theGraph.mySolids.Length(); ++aSolidIdx)
+    // Each solid usage -> one SubGraph.
+    for (int aSolidUsageIdx = 0; aSolidUsageIdx < theGraph.NbSolidUsages(); ++aSolidUsageIdx)
     {
       BRepGraph_SubGraph aSub;
       aSub.myParent = &theGraph;
-      aSub.mySolidIndices.Append(aSolidIdx);
 
-      const BRepGraph_TopoNode::Solid& aSolid = theGraph.mySolids.Value(aSolidIdx);
-      for (int aShellIter = 0; aShellIter < aSolid.Shells.Length(); ++aShellIter)
+      const BRepGraph_TopoNode::SolidUsage& aSolidUsage = theGraph.SolidUsage(aSolidUsageIdx);
+      aSub.mySolidDefIndices.Append(aSolidUsage.DefId.Index);
+      aSub.mySolidUsageIndices.Append(aSolidUsageIdx);
+
+      for (int aShellIter = 0; aShellIter < aSolidUsage.ShellUsages.Length(); ++aShellIter)
       {
-        const int aShellIdx = aSolid.Shells.Value(aShellIter).Index;
-        aSub.myShellIndices.Append(aShellIdx);
+        const BRepGraph_UsageId& aShellUsageId = aSolidUsage.ShellUsages.Value(aShellIter);
+        const BRepGraph_TopoNode::ShellUsage& aShellUsage =
+          theGraph.ShellUsage(aShellUsageId.Index);
+        aSub.myShellDefIndices.Append(aShellUsage.DefId.Index);
+        aSub.myShellUsageIndices.Append(aShellUsageId.Index);
 
-        const BRepGraph_TopoNode::Shell& aShell = theGraph.myShells.Value(aShellIdx);
-        for (int aFaceIter = 0; aFaceIter < aShell.Faces.Length(); ++aFaceIter)
+        for (int aFaceIter = 0; aFaceIter < aShellUsage.FaceUsages.Length(); ++aFaceIter)
         {
-          const int aFaceIdx = aShell.Faces.Value(aFaceIter).Index;
-          aSub.myFaceIndices.Append(aFaceIdx);
-          collectFaceChildren(aSub, aFaceIdx);
+          const BRepGraph_UsageId& aFaceUsageId = aShellUsage.FaceUsages.Value(aFaceIter);
+          const BRepGraph_TopoNode::FaceUsage& aFaceUsage =
+            theGraph.FaceUsage(aFaceUsageId.Index);
+          aSub.myFaceDefIndices.Append(aFaceUsage.DefId.Index);
+          aSub.myFaceUsageIndices.Append(aFaceUsageId.Index);
+          collectFaceChildren(aSub, aFaceUsageId.Index);
         }
       }
 
       aResult.Append(aSub);
     }
   }
-  else if (theGraph.myShells.Length() > 0)
+  else if (theGraph.NbShellUsages() > 0)
   {
-    // No solids but shells exist: each shell -> one SubGraph.
-    for (int aShellIdx = 0; aShellIdx < theGraph.myShells.Length(); ++aShellIdx)
+    // No solids but shells exist: each shell usage -> one SubGraph.
+    for (int aShellUsageIdx = 0; aShellUsageIdx < theGraph.NbShellUsages(); ++aShellUsageIdx)
     {
       BRepGraph_SubGraph aSub;
       aSub.myParent = &theGraph;
-      aSub.myShellIndices.Append(aShellIdx);
 
-      const BRepGraph_TopoNode::Shell& aShell = theGraph.myShells.Value(aShellIdx);
-      for (int aFaceIter = 0; aFaceIter < aShell.Faces.Length(); ++aFaceIter)
+      const BRepGraph_TopoNode::ShellUsage& aShellUsage = theGraph.ShellUsage(aShellUsageIdx);
+      aSub.myShellDefIndices.Append(aShellUsage.DefId.Index);
+      aSub.myShellUsageIndices.Append(aShellUsageIdx);
+
+      for (int aFaceIter = 0; aFaceIter < aShellUsage.FaceUsages.Length(); ++aFaceIter)
       {
-        const int aFaceIdx = aShell.Faces.Value(aFaceIter).Index;
-        aSub.myFaceIndices.Append(aFaceIdx);
-        collectFaceChildren(aSub, aFaceIdx);
+        const BRepGraph_UsageId& aFaceUsageId = aShellUsage.FaceUsages.Value(aFaceIter);
+        const BRepGraph_TopoNode::FaceUsage& aFaceUsage =
+          theGraph.FaceUsage(aFaceUsageId.Index);
+        aSub.myFaceDefIndices.Append(aFaceUsage.DefId.Index);
+        aSub.myFaceUsageIndices.Append(aFaceUsageId.Index);
+        collectFaceChildren(aSub, aFaceUsageId.Index);
       }
 
       aResult.Append(aSub);
@@ -230,13 +267,16 @@ NCollection_Vector<BRepGraph_SubGraph> BRepGraph_Analyze::Decompose(const BRepGr
   }
   else
   {
-    // No solids, no shells: each face -> one SubGraph.
-    for (int aFaceIdx = 0; aFaceIdx < theGraph.myFaces.Length(); ++aFaceIdx)
+    // No solids, no shells: each face usage -> one SubGraph.
+    for (int aFaceUsageIdx = 0; aFaceUsageIdx < theGraph.NbFaceUsages(); ++aFaceUsageIdx)
     {
       BRepGraph_SubGraph aSub;
       aSub.myParent = &theGraph;
-      aSub.myFaceIndices.Append(aFaceIdx);
-      collectFaceChildren(aSub, aFaceIdx);
+
+      const BRepGraph_TopoNode::FaceUsage& aFaceUsage = theGraph.FaceUsage(aFaceUsageIdx);
+      aSub.myFaceDefIndices.Append(aFaceUsage.DefId.Index);
+      aSub.myFaceUsageIndices.Append(aFaceUsageIdx);
+      collectFaceChildren(aSub, aFaceUsageIdx);
 
       aResult.Append(aSub);
     }
@@ -245,7 +285,7 @@ NCollection_Vector<BRepGraph_SubGraph> BRepGraph_Analyze::Decompose(const BRepGr
   return aResult;
 }
 
-//=================================================================================================
+//==================================================================================================
 
 void BRepGraph_Analyze::ParallelForEachFace(
   const BRepGraph&                        theGraph,
@@ -253,7 +293,7 @@ void BRepGraph_Analyze::ParallelForEachFace(
   const std::function<void(int faceIdx)>& theLambda)
 {
   (void)theGraph;
-  const NCollection_Vector<int>& aIndices = theSub.FaceIndices();
+  const NCollection_Vector<int>& aIndices = theSub.FaceDefIndices();
   OSD_Parallel::For(
     0,
     aIndices.Length(),
@@ -261,7 +301,7 @@ void BRepGraph_Analyze::ParallelForEachFace(
     false);
 }
 
-//=================================================================================================
+//==================================================================================================
 
 void BRepGraph_Analyze::ParallelForEachEdge(
   const BRepGraph&                        theGraph,
@@ -269,7 +309,7 @@ void BRepGraph_Analyze::ParallelForEachEdge(
   const std::function<void(int edgeIdx)>& theLambda)
 {
   (void)theGraph;
-  const NCollection_Vector<int>& aIndices = theSub.EdgeIndices();
+  const NCollection_Vector<int>& aIndices = theSub.EdgeDefIndices();
   OSD_Parallel::For(
     0,
     aIndices.Length(),

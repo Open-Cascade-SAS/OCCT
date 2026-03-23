@@ -15,6 +15,7 @@
 #define _BRepGraph_HeaderFile
 
 #include <BRepGraph_NodeId.hxx>
+#include <BRepGraph_UsageId.hxx>
 #include <BRepGraph_RelEdge.hxx>
 #include <BRepGraph_UID.hxx>
 #include <BRepGraph_AttrRegistry.hxx>
@@ -39,8 +40,8 @@
 #include <NCollection_BaseAllocator.hxx>
 
 #include <functional>
-#include <utility>
 #include <atomic>
+#include <shared_mutex>
 
 class BRepGraph_Builder;
 class BRepGraph_History;
@@ -48,19 +49,9 @@ class BRepGraph_Analyze;
 
 //! @brief Bidirectional topology-geometry graph over TopoDS / BRep.
 //!
-//! BRepGraph is a **non-owning runtime index**.  It holds Handle<> refs
-//! (incrementing refcount) to OCCT geometry but never deep-copies it.
-//! TopoDS_Shape appears only at the Build() entry point and the
-//! ReconstructShape() output.
-//!
-//! ## Typical lifecycle
-//! @code
-//!   BRepGraph aGraph(myPoolAllocator);
-//!   aGraph.Build(myShape, /*parallel=*/ true);
-//!
-//!   Bnd_Box aBox = aGraph.BoundingBox(someNodeId);
-//!   auto aSameDom = aGraph.SameDomainFaces(faceId);
-//! @endcode
+//! Two-layer architecture: Definitions (one per unique TShape) hold intrinsic
+//! data (geometry links, tolerances).  Usages (one per occurrence) hold
+//! context-specific data (orientation, location, parent).
 //!
 //! ## Thread safety
 //! All const query methods (including lazy cache Gets) are thread-safe.
@@ -71,99 +62,96 @@ class BRepGraph
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Non-copyable, non-movable (contains mutex and atomic members).
   BRepGraph(const BRepGraph&)            = delete;
   BRepGraph& operator=(const BRepGraph&) = delete;
 
-  //! Default constructor -- uses CommonBaseAllocator.
   Standard_EXPORT BRepGraph();
-
-  //! Construct with a caller-supplied pool allocator.
   Standard_EXPORT explicit BRepGraph(const Handle(NCollection_BaseAllocator)& theAlloc);
 
   //! Build the full graph from a TopoDS_Shape.
-  //!
-  //! @param theShape    Root shape (Solid, Shell, Compound, or any container).
-  //! @param theParallel If true, face-level construction runs in parallel.
   Standard_EXPORT void Build(const TopoDS_Shape& theShape, bool theParallel = false);
 
-  //! True after a successful Build().
   Standard_EXPORT bool IsDone() const;
 
-  //! Node counts by kind.
-  Standard_EXPORT int NbSolids() const;
-  Standard_EXPORT int NbShells() const;
-  Standard_EXPORT int NbFaces() const;
-  Standard_EXPORT int NbWires() const;
-  Standard_EXPORT int NbEdges() const;
-  Standard_EXPORT int NbVertices() const;
+  // --- Definition counts ---
+
+  Standard_EXPORT int NbSolidDefs() const;
+  Standard_EXPORT int NbShellDefs() const;
+  Standard_EXPORT int NbFaceDefs() const;
+  Standard_EXPORT int NbWireDefs() const;
+  Standard_EXPORT int NbEdgeDefs() const;
+  Standard_EXPORT int NbVertexDefs() const;
   Standard_EXPORT int NbSurfaces() const;
   Standard_EXPORT int NbCurves() const;
   Standard_EXPORT int NbPCurves() const;
 
-  //! Direct typed node access by per-kind index.
-  Standard_EXPORT const BRepGraph_TopoNode::Solid& Solid(int theIdx) const;
-  Standard_EXPORT const BRepGraph_TopoNode::Shell& Shell(int theIdx) const;
-  Standard_EXPORT const BRepGraph_TopoNode::Face& Face(int theIdx) const;
-  Standard_EXPORT const BRepGraph_TopoNode::Wire& Wire(int theIdx) const;
-  Standard_EXPORT const BRepGraph_TopoNode::Edge& Edge(int theIdx) const;
-  Standard_EXPORT const BRepGraph_TopoNode::Vertex& Vertex(int theIdx) const;
+  // --- Usage counts ---
+
+  Standard_EXPORT int NbSolidUsages() const;
+  Standard_EXPORT int NbShellUsages() const;
+  Standard_EXPORT int NbFaceUsages() const;
+  Standard_EXPORT int NbWireUsages() const;
+  Standard_EXPORT int NbEdgeUsages() const;
+  Standard_EXPORT int NbVertexUsages() const;
+
+  // --- Definition access ---
+
+  Standard_EXPORT const BRepGraph_TopoNode::SolidDef& SolidDef(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::ShellDef& ShellDef(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::FaceDef& FaceDef(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::WireDef& WireDef(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::EdgeDef& EdgeDef(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::VertexDef& VertexDef(int theIdx) const;
   Standard_EXPORT const BRepGraph_GeomNode::Surf& Surf(int theIdx) const;
   Standard_EXPORT const BRepGraph_GeomNode::Curve& Curve(int theIdx) const;
   Standard_EXPORT const BRepGraph_GeomNode::PCurve& PCurve(int theIdx) const;
 
-  //! Generic topology node lookup by NodeId.
-  //! Returns nullptr for invalid ids or geometry-kind ids.
-  Standard_EXPORT const BRepGraph_TopoNode::Base* TopoNode(BRepGraph_NodeId theId) const;
+  // --- Usage access ---
+
+  Standard_EXPORT const BRepGraph_TopoNode::SolidUsage& SolidUsage(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::ShellUsage& ShellUsage(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::FaceUsage& FaceUsage(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::WireUsage& WireUsage(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::EdgeUsage& EdgeUsage(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::VertexUsage& VertexUsage(int theIdx) const;
+
+  // --- Navigation between layers ---
+
+  //! All usages of a given definition.
+  Standard_EXPORT const NCollection_Vector<BRepGraph_UsageId>& UsagesOf(
+    BRepGraph_NodeId theDefId) const;
+
+  //! Definition id for a given usage.
+  Standard_EXPORT BRepGraph_NodeId DefOf(BRepGraph_UsageId theUsageId) const;
+
+  //! Generic topology definition lookup by NodeId.
+  Standard_EXPORT const BRepGraph_TopoNode::BaseDef* TopoDef(BRepGraph_NodeId theId) const;
 
   //! Total number of nodes in the graph (all kinds).
   Standard_EXPORT size_t NbNodes() const;
 
   // --- Opt-in UID system ---
 
-  //! Enable/disable UID tracking. When disabled (default), UID allocation
-  //! is a no-op during Build() for zero overhead.
   Standard_EXPORT void SetUIDEnabled(bool theVal);
-
-  //! Query UID tracking mode.
   Standard_EXPORT bool IsUIDEnabled() const;
-
-  //! UID of a node. Returns invalid UID if UIDs are disabled or node is invalid.
   Standard_EXPORT BRepGraph_UID UIDOf(BRepGraph_NodeId theNode) const;
-
-  //! Resolve a UID to its typed NodeId.
   Standard_EXPORT BRepGraph_NodeId NodeIdFromUID(const BRepGraph_UID& theUID) const;
-
-  //! Check whether a UID exists in this graph and is current-generation.
   Standard_EXPORT bool HasUID(const BRepGraph_UID& theUID) const;
-
-  //! The graph's current generation number.
   Standard_EXPORT uint32_t Generation() const;
 
-  // --- RelEdge system (map-based, for dynamic edges only) ---
+  // --- RelEdge system ---
 
-  //! Add a relationship edge to the graph.
-  //! @param[in] theFrom   source node
-  //! @param[in] theTo     target node
-  //! @param[in] theKind   relationship kind
-  //! @return index of the new edge in the per-source vector
   Standard_EXPORT int AddRelEdge(BRepGraph_NodeId  theFrom,
                                  BRepGraph_NodeId  theTo,
                                  BRepGraph_RelKind theKind);
 
-  //! Remove relationship edges of a given kind between two nodes.
   Standard_EXPORT void RemoveRelEdges(BRepGraph_NodeId  theFrom,
                                       BRepGraph_NodeId  theTo,
                                       BRepGraph_RelKind theKind);
 
-  //! Number of outgoing dynamic edges from a node.
   Standard_EXPORT int NbRelEdgesFrom(BRepGraph_NodeId theNode) const;
-
-  //! Number of incoming dynamic edges to a node.
   Standard_EXPORT int NbRelEdgesTo(BRepGraph_NodeId theNode) const;
 
-  //! Iterates outgoing edges of the given kind, calling theCallback(const BRepGraph_RelEdge&).
-  //! Avoids allocation of a temporary sequence.
   template <typename Func>
   void ForEachOutEdgeOfKind(BRepGraph_NodeId  theNodeId,
                             BRepGraph_RelKind theKind,
@@ -180,7 +168,6 @@ public:
     }
   }
 
-  //! Iterates incoming edges of the given kind, calling theCallback(const BRepGraph_RelEdge&).
   template <typename Func>
   void ForEachInEdgeOfKind(BRepGraph_NodeId  theNodeId,
                            BRepGraph_RelKind theKind,
@@ -197,66 +184,43 @@ public:
     }
   }
 
-  // --- Topology-Geometry queries (direct field access, no RelEdges needed) ---
+  // --- Topology-Geometry queries ---
 
-  //! SurfNode for a given FaceNode.
-  Standard_EXPORT BRepGraph_NodeId SurfaceOf(BRepGraph_NodeId theFace) const;
-
-  //! All FaceNodes referencing a SurfNode.
+  Standard_EXPORT BRepGraph_NodeId SurfaceOf(BRepGraph_NodeId theFaceDef) const;
   Standard_EXPORT const NCollection_Vector<BRepGraph_NodeId>& FacesOnSurface(
     BRepGraph_NodeId theSurf) const;
-
-  //! CurveNode for a given EdgeNode (invalid id if degenerate).
-  Standard_EXPORT BRepGraph_NodeId CurveOf(BRepGraph_NodeId theEdge) const;
-
-  //! All EdgeNodes referencing a CurveNode.
+  Standard_EXPORT BRepGraph_NodeId CurveOf(BRepGraph_NodeId theEdgeDef) const;
   Standard_EXPORT const NCollection_Vector<BRepGraph_NodeId>& EdgesOnCurve(
     BRepGraph_NodeId theCurve) const;
+  Standard_EXPORT BRepGraph_NodeId PCurveOf(BRepGraph_NodeId theEdgeDef,
+                                            BRepGraph_NodeId theFaceDef) const;
 
-  //! PCurveNode for a specific (Edge, Face) pair.
-  Standard_EXPORT BRepGraph_NodeId PCurveOf(BRepGraph_NodeId theEdge,
-                                            BRepGraph_NodeId theFace) const;
+  //! Accumulated global transform for a usage.
+  Standard_EXPORT gp_Trsf GlobalTransform(BRepGraph_UsageId theUsage) const;
 
-  //! Accumulated global transform for any topology node.
-  Standard_EXPORT gp_Trsf GlobalTransform(BRepGraph_NodeId theNode) const;
+  //! Accumulated global transform for a definition (from first usage).
+  Standard_EXPORT gp_Trsf GlobalTransform(BRepGraph_NodeId theDefId) const;
 
-  //! All FaceNodes sharing the same Geom_Surface handle as theFace,
-  //! excluding theFace itself.
   Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> SameDomainFaces(
-    BRepGraph_NodeId theFace) const;
+    BRepGraph_NodeId theFaceDef) const;
 
   // --- Cache ---
 
-  //! Bounding box (lazy-computed, thread-safe).
   Standard_EXPORT Bnd_Box BoundingBox(BRepGraph_NodeId theNode) const;
-
-  //! Centroid (lazy-computed, thread-safe).
   Standard_EXPORT gp_Pnt Centroid(BRepGraph_NodeId theNode) const;
-
-  //! Invalidate all cached data for a single node.
   Standard_EXPORT void Invalidate(BRepGraph_NodeId theNode);
-
-  //! Invalidate theNode and all descendants via containment hierarchy.
   Standard_EXPORT void InvalidateSubgraph(BRepGraph_NodeId theNode);
 
   // --- User attributes ---
 
-  //! Attach a user-defined attribute to a topology node.
   Standard_EXPORT void SetUserAttribute(BRepGraph_NodeId             theNode,
                                         int                          theKey,
                                         const BRepGraph_UserAttrPtr& theAttr);
-
-  //! Retrieve a user attribute by node and key.
   Standard_EXPORT BRepGraph_UserAttrPtr GetUserAttribute(BRepGraph_NodeId theNode,
                                                          int              theKey) const;
-
-  //! Remove a user attribute from a node.
   Standard_EXPORT bool RemoveUserAttribute(BRepGraph_NodeId theNode, int theKey);
-
-  //! Invalidate a specific user attribute on a node.
   Standard_EXPORT void InvalidateUserAttribute(BRepGraph_NodeId theNode, int theKey);
 
-  //! Convenience: get typed attribute value with lazy computation.
   template <typename T>
   T UserAttributeValue(BRepGraph_NodeId          theNode,
                        int                       theKey,
@@ -273,21 +237,11 @@ public:
 
   // --- History ---
 
-  //! Number of history records.
   Standard_EXPORT int NbHistoryRecords() const;
-
-  //! Direct access to a history record by index.
   Standard_EXPORT const BRepGraph_HistoryRecord& HistoryRecord(int theIdx) const;
-
-  //! Walk history backwards from a modified node to its original.
   Standard_EXPORT BRepGraph_NodeId FindOriginal(BRepGraph_NodeId theModified) const;
-
-  //! Walk history forwards from an original node to all derived nodes.
   Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> FindDerived(
     BRepGraph_NodeId theOriginal) const;
-
-  //! Apply a mutation and record a HistoryRecord.
-  //! NOT thread-safe -- caller ensures exclusive access.
   Standard_EXPORT void ApplyModification(
     BRepGraph_NodeId                                                                    theTarget,
     std::function<NCollection_Vector<BRepGraph_NodeId>(BRepGraph&, BRepGraph_NodeId)> theModifier,
@@ -295,74 +249,46 @@ public:
 
   // --- Shape access ---
 
-  //! Returns the current TopoDS_Shape for a node.
-  //! If unmodified and an original exists, returns it.
-  //! If modified or no original exists, reconstructs from graph state and caches.
   Standard_EXPORT TopoDS_Shape Shape(BRepGraph_NodeId theNode) const;
-
-  //! True if an original shape was stored during Build().
   Standard_EXPORT bool HasOriginalShape(BRepGraph_NodeId theNode) const;
-
-  //! Returns the original shape from Build(). Throws if none.
   Standard_EXPORT const TopoDS_Shape& OriginalOf(BRepGraph_NodeId theNode) const;
 
   // --- Reconstruction ---
 
-  //! Rebuild a TopoDS_Shape tree from current graph state.
-  //! Supports all topology kinds: Solid, Shell, Face, Wire, Edge, Vertex.
   Standard_EXPORT TopoDS_Shape ReconstructShape(BRepGraph_NodeId theRoot) const;
-
-  //! Reconstruct a TopoDS_Face by rebuilding its wires from current graph state.
-  //! This picks up any edge replacements done via ReplaceEdgeInWire().
-  Standard_EXPORT TopoDS_Shape ReconstructFace(int theFaceIdx) const;
+  Standard_EXPORT TopoDS_Shape ReconstructFace(int theFaceDefIdx) const;
+  Standard_EXPORT TopoDS_Shape ReconstructFromUsage(BRepGraph_UsageId theRoot) const;
 
   // --- Mutation ---
 
-  //! Mutable access to an Edge node.
-  Standard_EXPORT BRepGraph_TopoNode::Edge& MutableEdge(int theIdx);
+  Standard_EXPORT BRepGraph_TopoNode::EdgeDef& MutableEdgeDef(int theIdx);
+  Standard_EXPORT BRepGraph_TopoNode::WireDef& MutableWireDef(int theIdx);
+  Standard_EXPORT BRepGraph_TopoNode::VertexDef& MutableVertexDef(int theIdx);
 
-  //! Mutable access to a Wire node.
-  Standard_EXPORT BRepGraph_TopoNode::Wire& MutableWire(int theIdx);
-
-  //! Mutable access to a Vertex node.
-  Standard_EXPORT BRepGraph_TopoNode::Vertex& MutableVertex(int theIdx);
-
-  //! Create and register a new PCurve node, linking it to edge and face.
-  Standard_EXPORT BRepGraph_NodeId AddPCurveToEdge(BRepGraph_NodeId            theEdge,
-                                                   BRepGraph_NodeId            theFace,
+  Standard_EXPORT BRepGraph_NodeId AddPCurveToEdge(BRepGraph_NodeId            theEdgeDef,
+                                                   BRepGraph_NodeId            theFaceDef,
                                                    const Handle(Geom2d_Curve)& theCurve2d,
                                                    double                      theFirst,
                                                    double                      theLast);
 
-  //! Replace all references to theOldEdge with theNewEdge in a wire's OrderedEdges.
-  Standard_EXPORT void ReplaceEdgeInWire(int              theWireIdx,
-                                         BRepGraph_NodeId theOldEdge,
-                                         BRepGraph_NodeId theNewEdge,
+  Standard_EXPORT void ReplaceEdgeInWire(int              theWireDefIdx,
+                                         BRepGraph_NodeId theOldEdgeDef,
+                                         BRepGraph_NodeId theNewEdgeDef,
                                          bool             theReversed);
 
-  //! Number of distinct faces referencing an edge (via pcurves / wire membership).
-  Standard_EXPORT int FaceCountForEdge(int theEdgeIdx) const;
+  Standard_EXPORT int FaceCountForEdge(int theEdgeDefIdx) const;
+  Standard_EXPORT const NCollection_Vector<int>& WiresOfEdge(int theEdgeDefIdx) const;
 
-  //! Wire indices that contain a given edge.
-  Standard_EXPORT const NCollection_Vector<int>& WiresOfEdge(int theEdgeIdx) const;
-
-  //! Record a history entry: theOriginal was replaced by theReplacements.
   Standard_EXPORT void RecordHistory(const TCollection_AsciiString&                theOpLabel,
                                      BRepGraph_NodeId                              theOriginal,
                                      const NCollection_Vector<BRepGraph_NodeId>& theReplacements);
 
   // --- Allocator ---
 
-  //! Set the pool allocator before Build().
   Standard_EXPORT void SetAllocator(const Handle(NCollection_BaseAllocator)& theAlloc);
-
-  //! Allocator access.
   Standard_EXPORT const Handle(NCollection_BaseAllocator)& Allocator() const;
 
-  //! Enable/disable history recording. When disabled, RecordHistory() is a no-op.
   Standard_EXPORT void SetHistoryEnabled(bool theVal);
-
-  //! Query history recording mode.
   Standard_EXPORT bool IsHistoryEnabled() const;
 
 private:
@@ -372,35 +298,41 @@ private:
 
   Handle(NCollection_BaseAllocator) myAllocator;
 
-  //! Per-kind node vectors.
-  NCollection_Vector<BRepGraph_TopoNode::Solid>  mySolids;
-  NCollection_Vector<BRepGraph_TopoNode::Shell>  myShells;
-  NCollection_Vector<BRepGraph_TopoNode::Face>   myFaces;
-  NCollection_Vector<BRepGraph_TopoNode::Wire>   myWires;
-  NCollection_Vector<BRepGraph_TopoNode::Edge>   myEdges;
-  NCollection_Vector<BRepGraph_TopoNode::Vertex> myVertices;
+  //! Definition vectors (indexed by BRepGraph_NodeId.Index).
+  NCollection_Vector<BRepGraph_TopoNode::SolidDef>  mySolidDefs;
+  NCollection_Vector<BRepGraph_TopoNode::ShellDef>  myShellDefs;
+  NCollection_Vector<BRepGraph_TopoNode::FaceDef>   myFaceDefs;
+  NCollection_Vector<BRepGraph_TopoNode::WireDef>   myWireDefs;
+  NCollection_Vector<BRepGraph_TopoNode::EdgeDef>   myEdgeDefs;
+  NCollection_Vector<BRepGraph_TopoNode::VertexDef> myVertexDefs;
 
+  //! Usage vectors (indexed by BRepGraph_UsageId.Index).
+  NCollection_Vector<BRepGraph_TopoNode::SolidUsage>  mySolidUsages;
+  NCollection_Vector<BRepGraph_TopoNode::ShellUsage>  myShellUsages;
+  NCollection_Vector<BRepGraph_TopoNode::FaceUsage>   myFaceUsages;
+  NCollection_Vector<BRepGraph_TopoNode::WireUsage>   myWireUsages;
+  NCollection_Vector<BRepGraph_TopoNode::EdgeUsage>   myEdgeUsages;
+  NCollection_Vector<BRepGraph_TopoNode::VertexUsage>  myVertexUsages;
+
+  //! Geometry node vectors.
   NCollection_Vector<BRepGraph_GeomNode::Surf>   mySurfaces;
   NCollection_Vector<BRepGraph_GeomNode::Curve>  myCurves;
   NCollection_Vector<BRepGraph_GeomNode::PCurve> myPCurves;
 
-  //! Map-based RelEdge storage: source node -> outgoing dynamic edges.
-  //! Zero overhead for nodes without dynamic edges.
+  //! Map-based RelEdge storage.
   NCollection_DataMap<BRepGraph_NodeId,
                       NCollection_Vector<BRepGraph_RelEdge>,
                       BRepGraph_NodeId::Hasher> myOutRelEdges;
-
-  //! Target node -> incoming dynamic edges (for reverse lookups).
   NCollection_DataMap<BRepGraph_NodeId,
                       NCollection_Vector<BRepGraph_RelEdge>,
                       BRepGraph_NodeId::Hasher> myInRelEdges;
 
-  //! Geometry deduplication registries (key = Handle::get() raw pointer).
+  //! Geometry deduplication registries.
   NCollection_IndexedDataMap<void*, int> mySurfRegistry;
   NCollection_IndexedDataMap<void*, int> myCurveRegistry;
 
-  //! Shape -> NodeId reverse lookup.
-  NCollection_DataMap<void*, BRepGraph_NodeId> myTShapeToNodeId;
+  //! TShape -> Definition NodeId reverse lookup.
+  NCollection_DataMap<void*, BRepGraph_NodeId> myTShapeToDefId;
 
   //! Opt-in UID system.
   bool                myUIDEnabled = false;
@@ -410,13 +342,13 @@ private:
   NCollection_DataMap<BRepGraph_NodeId, BRepGraph_UID, BRepGraph_NodeId::Hasher> myNodeToUID;
   NCollection_DataMap<BRepGraph_UID, BRepGraph_NodeId, BRepGraph_UID::Hasher>    myUIDToNodeId;
 
-  //! Reverse index: edge index -> wire indices containing that edge.
+  //! Reverse index: edge def index -> wire def indices containing that edge.
   NCollection_DataMap<int, NCollection_Vector<int>> myEdgeToWires;
 
   //! History log.
   NCollection_Vector<BRepGraph_HistoryRecord> myHistory;
 
-  //! History reverse maps for O(1) lookups.
+  //! History reverse maps.
   NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId, BRepGraph_NodeId::Hasher>
     myDerivedToOriginal;
   NCollection_DataMap<BRepGraph_NodeId,
@@ -430,36 +362,27 @@ private:
   //! Internal build helpers.
   BRepGraph_NodeId registerSurface(const Handle(Geom_Surface)&       theSurf,
                                    const Handle(Poly_Triangulation)& theTri);
-
   BRepGraph_NodeId registerCurve(const Handle(Geom_Curve)& theCrv);
-
   BRepGraph_NodeId createPCurveNode(const Handle(Geom2d_Curve)& theCrv2d,
-                                    BRepGraph_NodeId            theEdge,
-                                    BRepGraph_NodeId            theFace,
+                                    BRepGraph_NodeId            theEdgeDef,
+                                    BRepGraph_NodeId            theFaceDef,
                                     double                      theFirst,
                                     double                      theLast);
 
   void invalidateSubgraphImpl(BRepGraph_NodeId theNode);
-
   BRepGraph_UID allocateUID(BRepGraph_NodeId theNodeId);
-
   BRepGraph_NodeCache* mutableCache(BRepGraph_NodeId theNode);
-
-  //! Propagate IsModified up the Parent chain and invalidate myCurrentShapes.
-  void markModified(BRepGraph_NodeId theNode);
-
-  //! Reconstruct a TopoDS_Shape from graph fields only (no cache/original lookup).
+  void markModified(BRepGraph_NodeId theDefId);
   TopoDS_Shape reconstructNode(BRepGraph_NodeId theNode) const;
+  TopoDS_Shape reconstructUsage(BRepGraph_UsageId theUsage) const;
 
-  //! Shapes from Build() — read-only after build.
-  //! Empty if graph was constructed algorithmically.
+  //! Shapes from Build().
   NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape,
                       BRepGraph_NodeId::Hasher> myOriginalShapes;
 
-  //! Lazily-cached current shapes.
-  //! Populated on first Shape() call, invalidated when IsModified is set.
   mutable NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape,
                               BRepGraph_NodeId::Hasher> myCurrentShapes;
+  mutable std::shared_mutex myCurrentShapesMutex;
 };
 
 #endif // _BRepGraph_HeaderFile

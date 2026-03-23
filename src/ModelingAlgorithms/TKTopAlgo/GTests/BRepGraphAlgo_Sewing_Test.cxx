@@ -177,9 +177,9 @@ TEST(BRepGraphAlgo_SewingTest, GraphAccessAfterSewing)
 
   const BRepGraph& aGraph = aSewer.Graph();
   EXPECT_TRUE(aGraph.IsDone());
-  EXPECT_EQ(aGraph.NbFaces(), 2);
-  EXPECT_GT(aGraph.NbEdges(), 0);
-  EXPECT_GT(aGraph.NbVertices(), 0);
+  EXPECT_EQ(aGraph.NbFaceDefs(), 2);
+  EXPECT_GT(aGraph.NbEdgeDefs(), 0);
+  EXPECT_GT(aGraph.NbVertexDefs(), 0);
   // History should record the merge.
   EXPECT_GE(aGraph.NbHistoryRecords(), 1);
 }
@@ -640,8 +640,8 @@ TEST(BRepGraphAlgo_SewingTest, VertexMerging_SharedVerticesAfterSewing)
   const BRepGraph& aGraph = aSewer.Graph();
   // 2 rectangular faces = 2 * 4 = 8 vertices before merge.
   // Sharing one edge means 2 shared vertices, so 6 unique after merge.
-  EXPECT_LE(aGraph.NbVertices(), 8);
-  EXPECT_GE(aGraph.NbVertices(), 6);
+  EXPECT_LE(aGraph.NbVertexDefs(), 8);
+  EXPECT_GE(aGraph.NbVertexDefs(), 6);
 }
 
 TEST(BRepGraphAlgo_SewingTest, GraphEdgeCount_AfterSewing)
@@ -662,10 +662,10 @@ TEST(BRepGraphAlgo_SewingTest, GraphEdgeCount_AfterSewing)
   // Graph should have edges from all 6 faces (6*4=24 edge entries),
   // but 12 pairs are merged, so some edge references are replaced.
   const BRepGraph& aGraph = aSewer.Graph();
-  EXPECT_EQ(aGraph.NbFaces(), 6);
+  EXPECT_EQ(aGraph.NbFaceDefs(), 6);
   // Each face has 4 edges. With 12 shared edges in the box,
   // original graph has 24 edge entries from individual faces.
-  EXPECT_GE(aGraph.NbEdges(), 12);
+  EXPECT_GE(aGraph.NbEdgeDefs(), 12);
 }
 
 TEST(BRepGraphAlgo_SewingTest, SewAllSixFaces_AreaPerFace)
@@ -774,7 +774,7 @@ NCollection_Sequence<TopoDS_Shape> buildFaceGrid(int    theNx,
       gp_Trsf aTrsf;
       aTrsf.SetTranslation(gp_Vec(anIx * theSizeX, anIy * theSizeY, 0.0));
 
-      if (aTemplateGraph.IsDone() && aTemplateGraph.NbFaces() > 0)
+      if (aTemplateGraph.IsDone() && aTemplateGraph.NbFaceDefs() > 0)
       {
         TopoDS_Shape aResult =
           BRepGraphAlgo_Transform::TransformFace(aTemplateGraph, 0, aTrsf, true);

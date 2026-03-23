@@ -20,51 +20,55 @@ class BRepGraph;
 
 //! A non-owning view over a connected component of BRepGraph.
 //!
-//! Stores per-kind index sets referencing the parent graph's node vectors.
-//! Produced by BRepGraph::Decompose() and consumed by
-//! BRepGraph::ParallelForEachFace/Edge().
-//!
-//! Thread safety: read-only access to the parent graph through a SubGraph
-//! is safe.  The caller must ensure the parent graph outlives all SubGraphs.
+//! Stores per-kind definition index sets and per-kind usage index sets
+//! referencing the parent graph's vectors.
 class BRepGraph_SubGraph
 {
 public:
-  //! Parent graph (non-owning pointer; must outlive this SubGraph).
   const BRepGraph* ParentGraph() const { return myParent; }
 
-  //! Index sets -- each contains indices into the parent's per-kind vectors.
-  const NCollection_Vector<int>& SolidIndices()  const
-  { return mySolidIndices; }
-  const NCollection_Vector<int>& ShellIndices()  const
-  { return myShellIndices; }
-  const NCollection_Vector<int>& FaceIndices()   const
-  { return myFaceIndices; }
-  const NCollection_Vector<int>& WireIndices()   const
-  { return myWireIndices; }
-  const NCollection_Vector<int>& EdgeIndices()   const
-  { return myEdgeIndices; }
-  const NCollection_Vector<int>& VertexIndices() const
-  { return myVertexIndices; }
+  //! Definition index sets.
+  const NCollection_Vector<int>& SolidDefIndices()  const { return mySolidDefIndices; }
+  const NCollection_Vector<int>& ShellDefIndices()  const { return myShellDefIndices; }
+  const NCollection_Vector<int>& FaceDefIndices()   const { return myFaceDefIndices; }
+  const NCollection_Vector<int>& WireDefIndices()   const { return myWireDefIndices; }
+  const NCollection_Vector<int>& EdgeDefIndices()   const { return myEdgeDefIndices; }
+  const NCollection_Vector<int>& VertexDefIndices() const { return myVertexDefIndices; }
 
-  //! Total number of topology nodes in this connected component.
+  //! Usage index sets.
+  const NCollection_Vector<int>& SolidUsageIndices()  const { return mySolidUsageIndices; }
+  const NCollection_Vector<int>& ShellUsageIndices()  const { return myShellUsageIndices; }
+  const NCollection_Vector<int>& FaceUsageIndices()   const { return myFaceUsageIndices; }
+  const NCollection_Vector<int>& WireUsageIndices()   const { return myWireUsageIndices; }
+  const NCollection_Vector<int>& EdgeUsageIndices()   const { return myEdgeUsageIndices; }
+  const NCollection_Vector<int>& VertexUsageIndices() const { return myVertexUsageIndices; }
+
   int NbTopoNodes() const
   {
-    return mySolidIndices.Length()  + myShellIndices.Length()
-         + myFaceIndices.Length()   + myWireIndices.Length()
-         + myEdgeIndices.Length()   + myVertexIndices.Length();
+    return mySolidDefIndices.Length()  + myShellDefIndices.Length()
+         + myFaceDefIndices.Length()   + myWireDefIndices.Length()
+         + myEdgeDefIndices.Length()   + myVertexDefIndices.Length();
   }
 
 private:
   friend class BRepGraph;
   friend class BRepGraph_Analyze;
 
-  const BRepGraph*              myParent = nullptr;
-  NCollection_Vector<int>     mySolidIndices;
-  NCollection_Vector<int>     myShellIndices;
-  NCollection_Vector<int>     myFaceIndices;
-  NCollection_Vector<int>     myWireIndices;
-  NCollection_Vector<int>     myEdgeIndices;
-  NCollection_Vector<int>     myVertexIndices;
+  const BRepGraph* myParent = nullptr;
+
+  NCollection_Vector<int> mySolidDefIndices;
+  NCollection_Vector<int> myShellDefIndices;
+  NCollection_Vector<int> myFaceDefIndices;
+  NCollection_Vector<int> myWireDefIndices;
+  NCollection_Vector<int> myEdgeDefIndices;
+  NCollection_Vector<int> myVertexDefIndices;
+
+  NCollection_Vector<int> mySolidUsageIndices;
+  NCollection_Vector<int> myShellUsageIndices;
+  NCollection_Vector<int> myFaceUsageIndices;
+  NCollection_Vector<int> myWireUsageIndices;
+  NCollection_Vector<int> myEdgeUsageIndices;
+  NCollection_Vector<int> myVertexUsageIndices;
 };
 
 #endif // _BRepGraph_SubGraph_HeaderFile

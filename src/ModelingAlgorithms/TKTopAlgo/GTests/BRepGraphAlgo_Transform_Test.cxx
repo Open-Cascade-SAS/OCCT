@@ -139,7 +139,7 @@ TEST(BRepGraphAlgo_TransformTest, TransformSingleFace)
   BRepGraph aGraph;
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.NbFaces(), 0);
+  ASSERT_GT(aGraph.NbFaceDefs(), 0);
 
   gp_Trsf aTrsf;
   aTrsf.SetTranslation(gp_Vec(10.0, 20.0, 30.0));
