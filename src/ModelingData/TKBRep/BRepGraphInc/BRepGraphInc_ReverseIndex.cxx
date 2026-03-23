@@ -38,9 +38,29 @@ void BRepGraphInc_ReverseIndex::Build(
 {
   Clear();
 
+  // Scan edges for max vertex index to pre-size myVertexToEdges.
+  int aMaxVertexIdx = -1;
+  for (int anEdgeIdx = 0; anEdgeIdx < theEdges.Length(); ++anEdgeIdx)
+  {
+    const BRepGraphInc::EdgeEntity& anEdge = theEdges.Value(anEdgeIdx);
+    if (anEdge.IsRemoved)
+      continue;
+    if (anEdge.StartVertexIdx > aMaxVertexIdx)
+      aMaxVertexIdx = anEdge.StartVertexIdx;
+    if (anEdge.EndVertexIdx > aMaxVertexIdx)
+      aMaxVertexIdx = anEdge.EndVertexIdx;
+  }
+
+  // Pre-size all outer vectors to their known key range.
+  preSize(myVertexToEdges, aMaxVertexIdx + 1);
+  preSize(myEdgeToWires,   theEdges.Length());
+  preSize(myEdgeToFaces,   theEdges.Length());
+  preSize(myWireToFaces,   theWires.Length());
+  preSize(myFaceToShells,  theFaces.Length());
+  preSize(myShellToSolids, theShells.Length());
+
   // Vertex -> Edges: scan edge entities for start/end vertex indices.
-  // Closed edges have StartVertexIdx == EndVertexIdx, so use appendUnique
-  // to avoid recording the same edge twice for the same vertex.
+  // Closed edges have StartVertexIdx == EndVertexIdx, so skip duplicate.
   for (int anEdgeIdx = 0; anEdgeIdx < theEdges.Length(); ++anEdgeIdx)
   {
     const BRepGraphInc::EdgeEntity& anEdge = theEdges.Value(anEdgeIdx);
@@ -48,7 +68,7 @@ void BRepGraphInc_ReverseIndex::Build(
       continue;
     if (anEdge.StartVertexIdx >= 0)
       appendDirect(myVertexToEdges, anEdge.StartVertexIdx, anEdgeIdx);
-    if (anEdge.EndVertexIdx >= 0 && anEdge.EndVertexIdx != anEdge.StartVertexIdx) // skip duplicate for closed edges
+    if (anEdge.EndVertexIdx >= 0 && anEdge.EndVertexIdx != anEdge.StartVertexIdx)
       appendDirect(myVertexToEdges, anEdge.EndVertexIdx, anEdgeIdx);
   }
 
@@ -154,16 +174,16 @@ void BRepGraphInc_ReverseIndex::BindEdgeToWire(int theEdgeIdx, int theWireIdx)
 
 void BRepGraphInc_ReverseIndex::UnbindEdgeFromWire(int theEdgeIdx, int theWireIdx)
 {
-  NCollection_Vector<int>* aWires = myEdgeToWires.ChangeSeek(theEdgeIdx);
-  if (aWires == nullptr)
+  if (theEdgeIdx < 0 || theEdgeIdx >= myEdgeToWires.Length())
     return;
-  for (int i = 0; i < aWires->Length(); ++i)
+  NCollection_Vector<int>& aWires = myEdgeToWires.ChangeValue(theEdgeIdx);
+  for (int i = 0; i < aWires.Length(); ++i)
   {
-    if (aWires->Value(i) == theWireIdx)
+    if (aWires.Value(i) == theWireIdx)
     {
-      if (i < aWires->Length() - 1)
-        aWires->ChangeValue(i) = aWires->Value(aWires->Length() - 1);
-      aWires->EraseLast();
+      if (i < aWires.Length() - 1)
+        aWires.ChangeValue(i) = aWires.Value(aWires.Length() - 1);
+      aWires.EraseLast();
       break;
     }
   }
@@ -181,45 +201,40 @@ void BRepGraphInc_ReverseIndex::ReplaceEdgeInWireMap(int theOldEdgeIdx,
 
 //=================================================================================================
 
-void BRepGraphInc_ReverseIndex::appendUnique(
-  NCollection_DataMap<int, NCollection_Vector<int>>& theMap,
-  int theKey, int theVal)
+void BRepGraphInc_ReverseIndex::preSize(IndexTable& theIdx, int theSize)
 {
-  NCollection_Vector<int>* aVec = theMap.ChangeSeek(theKey);
-  if (aVec != nullptr)
-  {
-    for (int i = 0; i < aVec->Length(); ++i)
-    {
-      if (aVec->Value(i) == theVal)
-        return;
-    }
-    aVec->Append(theVal);
-  }
-  else
-  {
-    NCollection_Vector<int> aNewVec;
-    aNewVec.Append(theVal);
-    theMap.Bind(theKey, aNewVec);
-  }
+  theIdx.Clear();
+  for (int i = 0; i < theSize; ++i)
+    theIdx.Appended();
 }
 
 //=================================================================================================
 
-void BRepGraphInc_ReverseIndex::appendDirect(
-  NCollection_DataMap<int, NCollection_Vector<int>>& theMap,
-  int theKey, int theVal)
+void BRepGraphInc_ReverseIndex::appendUnique(IndexTable& theIdx, int theKey, int theVal)
 {
-  NCollection_Vector<int>* aVec = theMap.ChangeSeek(theKey);
-  if (aVec != nullptr)
+  // Grow if needed for incremental mutation after Build().
+  while (theIdx.Length() <= theKey)
+    theIdx.Appended();
+
+  NCollection_Vector<int>& aVec = theIdx.ChangeValue(theKey);
+  for (int i = 0; i < aVec.Length(); ++i)
   {
-    aVec->Append(theVal);
+    if (aVec.Value(i) == theVal)
+      return;
   }
-  else
-  {
-    NCollection_Vector<int> aNewVec;
-    aNewVec.Append(theVal);
-    theMap.Bind(theKey, aNewVec);
-  }
+  aVec.Append(theVal);
+}
+
+//=================================================================================================
+
+void BRepGraphInc_ReverseIndex::appendDirect(IndexTable& theIdx, int theKey, int theVal)
+{
+  // During Build(), outer vector is pre-sized so theKey < Length().
+  // For safety, grow if somehow out of range.
+  while (theIdx.Length() <= theKey)
+    theIdx.Appended();
+
+  theIdx.ChangeValue(theKey).Append(theVal);
 }
 
 //=================================================================================================
@@ -233,16 +248,16 @@ void BRepGraphInc_ReverseIndex::BindVertexToEdge(int theVertexIdx, int theEdgeId
 
 void BRepGraphInc_ReverseIndex::UnbindVertexFromEdge(int theVertexIdx, int theEdgeIdx)
 {
-  NCollection_Vector<int>* anEdges = myVertexToEdges.ChangeSeek(theVertexIdx);
-  if (anEdges == nullptr)
+  if (theVertexIdx < 0 || theVertexIdx >= myVertexToEdges.Length())
     return;
-  for (int i = 0; i < anEdges->Length(); ++i)
+  NCollection_Vector<int>& anEdges = myVertexToEdges.ChangeValue(theVertexIdx);
+  for (int i = 0; i < anEdges.Length(); ++i)
   {
-    if (anEdges->Value(i) == theEdgeIdx)
+    if (anEdges.Value(i) == theEdgeIdx)
     {
-      if (i < anEdges->Length() - 1)
-        anEdges->ChangeValue(i) = anEdges->Value(anEdges->Length() - 1);
-      anEdges->EraseLast();
+      if (i < anEdges.Length() - 1)
+        anEdges.ChangeValue(i) = anEdges.Value(anEdges.Length() - 1);
+      anEdges.EraseLast();
       break;
     }
   }
@@ -264,11 +279,10 @@ bool BRepGraphInc_ReverseIndex::Validate(
   const NCollection_Vector<BRepGraphInc::ShellEntity>& theShells,
   const NCollection_Vector<BRepGraphInc::SolidEntity>& theSolids) const
 {
-  // Helper: check that theVal appears in the vector at theKey in theMap.
-  auto containsVal = [](const NCollection_DataMap<int, NCollection_Vector<int>>& theMap,
-                        int theKey, int theVal) -> bool
+  // Helper: check that theVal appears in the vector at theKey in theIdx.
+  auto containsVal = [](const IndexTable& theIdx, int theKey, int theVal) -> bool
   {
-    const NCollection_Vector<int>* aVec = theMap.Seek(theKey);
+    const NCollection_Vector<int>* aVec = seekVec(theIdx, theKey);
     if (aVec == nullptr)
       return false;
     for (int i = 0; i < aVec->Length(); ++i)

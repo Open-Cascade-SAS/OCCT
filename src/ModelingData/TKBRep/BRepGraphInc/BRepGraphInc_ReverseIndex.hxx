@@ -14,7 +14,6 @@
 #ifndef _BRepGraphInc_ReverseIndex_HeaderFile
 #define _BRepGraphInc_ReverseIndex_HeaderFile
 
-#include <NCollection_DataMap.hxx>
 #include <NCollection_Vector.hxx>
 #include <Standard_DefineAlloc.hxx>
 
@@ -56,37 +55,37 @@ public:
   //! Return wire indices containing the given edge.
   const NCollection_Vector<int>* WiresOfEdge(int theEdgeIdx) const
   {
-    return myEdgeToWires.Seek(theEdgeIdx);
+    return seekVec(myEdgeToWires, theEdgeIdx);
   }
 
   //! Return face indices containing the given edge (from EdgeFaceGeom rows).
   const NCollection_Vector<int>* FacesOfEdge(int theEdgeIdx) const
   {
-    return myEdgeToFaces.Seek(theEdgeIdx);
+    return seekVec(myEdgeToFaces, theEdgeIdx);
   }
 
   //! Return edge indices incident to the given vertex.
   const NCollection_Vector<int>* EdgesOfVertex(int theVertexIdx) const
   {
-    return myVertexToEdges.Seek(theVertexIdx);
+    return seekVec(myVertexToEdges, theVertexIdx);
   }
 
   //! Return face indices containing the given wire.
   const NCollection_Vector<int>* FacesOfWire(int theWireIdx) const
   {
-    return myWireToFaces.Seek(theWireIdx);
+    return seekVec(myWireToFaces, theWireIdx);
   }
 
   //! Return shell indices containing the given face.
   const NCollection_Vector<int>* ShellsOfFace(int theFaceIdx) const
   {
-    return myFaceToShells.Seek(theFaceIdx);
+    return seekVec(myFaceToShells, theFaceIdx);
   }
 
   //! Return solid indices containing the given shell.
   const NCollection_Vector<int>* SolidsOfShell(int theShellIdx) const
   {
-    return myShellToSolids.Seek(theShellIdx);
+    return seekVec(myShellToSolids, theShellIdx);
   }
 
   //! Verify reverse index consistency against forward entity tables.
@@ -121,21 +120,34 @@ public:
   Standard_EXPORT void BindEdgeToFace(int theEdgeIdx, int theFaceIdx);
 
 private:
+  //! Dense vector type: outer index = entity key, inner vector = adjacency list.
+  using IndexTable = NCollection_Vector<NCollection_Vector<int>>;
+
+  //! Bounds-checked lookup returning nullptr for out-of-range or empty slots.
+  static const NCollection_Vector<int>* seekVec(const IndexTable& theIdx, int theKey)
+  {
+    if (theKey < 0 || theKey >= theIdx.Length())
+      return nullptr;
+    const NCollection_Vector<int>& aVec = theIdx.Value(theKey);
+    return aVec.IsEmpty() ? nullptr : &aVec;
+  }
+
+  //! Ensure theIdx has at least theSize slots (pre-sizing with empty vectors).
+  static void preSize(IndexTable& theIdx, int theSize);
+
   //! Add theVal to the vector at theKey, creating if needed.  Skips duplicates.
-  static void appendUnique(NCollection_DataMap<int, NCollection_Vector<int>>& theMap,
-                           int theKey, int theVal);
+  static void appendUnique(IndexTable& theIdx, int theKey, int theVal);
 
   //! Add theVal to the vector at theKey unconditionally (no duplicate check).
   //! Used during Build() where freshly-cleared indices guarantee no duplicates.
-  static void appendDirect(NCollection_DataMap<int, NCollection_Vector<int>>& theMap,
-                           int theKey, int theVal);
+  static void appendDirect(IndexTable& theIdx, int theKey, int theVal);
 
-  NCollection_DataMap<int, NCollection_Vector<int>> myEdgeToWires;
-  NCollection_DataMap<int, NCollection_Vector<int>> myEdgeToFaces;
-  NCollection_DataMap<int, NCollection_Vector<int>> myVertexToEdges;
-  NCollection_DataMap<int, NCollection_Vector<int>> myWireToFaces;
-  NCollection_DataMap<int, NCollection_Vector<int>> myFaceToShells;
-  NCollection_DataMap<int, NCollection_Vector<int>> myShellToSolids;
+  IndexTable myEdgeToWires;
+  IndexTable myEdgeToFaces;
+  IndexTable myVertexToEdges;
+  IndexTable myWireToFaces;
+  IndexTable myFaceToShells;
+  IndexTable myShellToSolids;
 };
 
 #endif // _BRepGraphInc_ReverseIndex_HeaderFile

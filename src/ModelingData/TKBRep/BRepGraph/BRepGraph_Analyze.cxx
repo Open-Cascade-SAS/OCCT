@@ -321,13 +321,15 @@ NCollection_Vector<NCollection_Vector<BRepGraph_NodeId>> BRepGraph_Analyze::Rela
     }
 
     ++aNbComps;
-    NCollection_Vector<int> aQueue;
-    aQueue.Append(aStartPos);
+    NCollection_Array1<int> aQueue(0, theNodes.Length() - 1);
+    int aQHead = 0;
+    int aQTail = 0;
+    aQueue.SetValue(aQTail++, aStartPos);
     aCompOfPos.ChangeValue(aStartPos) = aNbComps;
 
-    for (int aQueueIter = 0; aQueueIter < aQueue.Length(); ++aQueueIter)
+    while (aQHead < aQTail)
     {
-      const int              aCurPos = aQueue.Value(aQueueIter);
+      const int              aCurPos = aQueue.Value(aQHead++);
       const BRepGraph_NodeId aCurId  = theNodes.Value(theNodes.Lower() + aCurPos - 1);
 
       theGraph.RelEdges().ForEachOutOfKind(
@@ -347,7 +349,7 @@ NCollection_Vector<NCollection_Vector<BRepGraph_NodeId>> BRepGraph_Analyze::Rela
           }
 
           aCompOfPos.ChangeValue(aNbrPos) = aNbComps;
-          aQueue.Append(aNbrPos);
+          aQueue.SetValue(aQTail++, aNbrPos);
         });
     }
   }
