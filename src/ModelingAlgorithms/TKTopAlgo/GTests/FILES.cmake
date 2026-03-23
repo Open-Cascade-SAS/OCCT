@@ -9,6 +9,9 @@ set(OCCT_TKTopAlgo_GTests_FILES
   BRepBuilderAPI_Transform_Test.cxx
   BRepClass3d_SolidClassifier_Test.cxx
   BRepGProp_Test.cxx
+  BRepGraphAlgo_Copy_Test.cxx
+  BRepGraphAlgo_Sewing_Test.cxx
+  BRepGraphAlgo_Transform_Test.cxx
   BRepLib_MakeWire_Test.cxx
   BRepOffsetAPI_ThruSections_Test.cxx
 )

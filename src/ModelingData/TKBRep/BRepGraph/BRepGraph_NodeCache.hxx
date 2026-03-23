@@ -1,0 +1,102 @@
+// Copyright (c) 2026 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _BRepGraph_NodeCache_HeaderFile
+#define _BRepGraph_NodeCache_HeaderFile
+
+#include <BRepGraph_CachedValue.hxx>
+#include <BRepGraph_UserAttribute.hxx>
+
+#include <Bnd_Box.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_DataMap.hxx>
+
+//! Per-node cache bundle.
+//!
+//! Contains two layers:
+//!
+//! 1. **Fixed fields** -- BoundingBox, Centroid, Area, Length.
+//!    Always present.  Not every node kind uses every field; unused ones
+//!    stay dirty forever and are never computed.
+//!
+//! 2. **User attributes** -- an extensible map keyed by integer.
+//!    Downstream algorithms register a unique key via
+//!    BRepGraph_UserAttribute::AllocateKey() and attach
+//!    BRepGraph_TypedAttribute<T> instances.
+struct BRepGraph_NodeCache
+{
+  //! Fixed cached fields.
+  BRepGraph_CachedValue<Bnd_Box> BoundingBox;
+  BRepGraph_CachedValue<gp_Pnt>  Centroid;
+  BRepGraph_CachedValue<double>  Area;    //!< Meaningful for Face nodes
+  BRepGraph_CachedValue<double>  Length;  //!< Meaningful for Edge nodes
+
+  //! Map of user-defined attribute slots.
+  //! Key = integer allocated by BRepGraph_UserAttribute::AllocateKey().
+  NCollection_DataMap<int, BRepGraph_UserAttrPtr>
+    UserAttributes;
+
+  //! Invalidate ALL cached data on this node: fixed fields AND every
+  //! user attribute in the map.
+  void InvalidateAll()
+  {
+    BoundingBox.Invalidate();
+    Centroid.Invalidate();
+    Area.Invalidate();
+    Length.Invalidate();
+
+    for (auto anIter = UserAttributes.cbegin();
+         anIter != UserAttributes.cend(); ++anIter)
+    {
+      if (*anIter)
+        (*anIter)->Invalidate();
+    }
+  }
+
+  //! Invalidate only a specific user attribute by key.
+  void InvalidateUserAttribute(int theKey)
+  {
+    const BRepGraph_UserAttrPtr* aPtr = UserAttributes.Seek(theKey);
+    if (aPtr != nullptr && *aPtr)
+      (*aPtr)->Invalidate();
+  }
+
+  //! Attach a user attribute.  Replaces any existing attribute at the same key.
+  void SetUserAttribute(int                          theKey,
+                        const BRepGraph_UserAttrPtr& theAttr)
+  {
+    UserAttributes.Bind(theKey, theAttr);
+  }
+
+  //! Retrieve a user attribute by key.  Returns nullptr if absent.
+  BRepGraph_UserAttrPtr
+    GetUserAttribute(int theKey) const
+  {
+    const BRepGraph_UserAttrPtr* aPtr = UserAttributes.Seek(theKey);
+    return (aPtr != nullptr) ? *aPtr : nullptr;
+  }
+
+  //! Remove a user attribute by key.  Returns true if something was removed.
+  bool RemoveUserAttribute(int theKey)
+  {
+    return UserAttributes.UnBind(theKey);
+  }
+
+  //! True if any user attributes are registered on this node.
+  bool HasUserAttributes() const
+  {
+    return !UserAttributes.IsEmpty();
+  }
+};
+
+#endif // _BRepGraph_NodeCache_HeaderFile

@@ -8,4 +8,5 @@ set(OCCT_TKBRep_LIST_OF_PACKAGES
   BRepAdaptor
   BRepTools
   BinTools
+  BRepGraph
 )

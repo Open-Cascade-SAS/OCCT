@@ -16,4 +16,5 @@ set(OCCT_TKTopAlgo_LIST_OF_PACKAGES
   BRepTopAdaptor
   BRepBuilderAPI
   BRepApprox
+  BRepGraphAlgo
 )
