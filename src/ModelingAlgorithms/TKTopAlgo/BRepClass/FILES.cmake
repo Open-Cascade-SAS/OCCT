@@ -10,12 +10,12 @@ set(OCCT_BRepClass_FILES
   BRepClass_FaceExplorer.cxx
   BRepClass_FaceExplorer.hxx
   BRepClass_FaceExplorer.lxx
+  BRepClass_FacePassiveClassifier.cxx
   BRepClass_FacePassiveClassifier.hxx
-  BRepClass_FacePassiveClassifier_0.cxx
+  BRepClass_FClass2dOfFClassifier.cxx
   BRepClass_FClass2dOfFClassifier.hxx
-  BRepClass_FClass2dOfFClassifier_0.cxx
+  BRepClass_FClassifier.cxx
   BRepClass_FClassifier.hxx
-  BRepClass_FClassifier_0.cxx
   BRepClass_Intersector.cxx
   BRepClass_Intersector.hxx
 )

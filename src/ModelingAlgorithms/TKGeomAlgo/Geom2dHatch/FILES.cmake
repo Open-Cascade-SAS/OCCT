@@ -2,15 +2,15 @@
 set(OCCT_Geom2dHatch_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_Geom2dHatch_FILES
+  Geom2dHatch_Classifier.cxx
   Geom2dHatch_Classifier.hxx
-  Geom2dHatch_Classifier_0.cxx
 
   Geom2dHatch_Element.cxx
   Geom2dHatch_Element.hxx
   Geom2dHatch_Elements.cxx
   Geom2dHatch_Elements.hxx
+  Geom2dHatch_FClass2dOfClassifier.cxx
   Geom2dHatch_FClass2dOfClassifier.hxx
-  Geom2dHatch_FClass2dOfClassifier_0.cxx
   Geom2dHatch_Hatcher.cxx
   Geom2dHatch_Hatcher.hxx
   Geom2dHatch_Hatcher.lxx
