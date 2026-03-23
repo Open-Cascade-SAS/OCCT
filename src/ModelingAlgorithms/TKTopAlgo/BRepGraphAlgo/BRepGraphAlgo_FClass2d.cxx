@@ -162,6 +162,9 @@ void computeAreaPerimeter(const NCollection_Vector<gp_Pnt2d>& thePnts,
   theSquare = 0.0;
   thePer    = 0.0;
 
+  if (theNbPnts < 3)
+    return;
+
   int anIdxM1          = theNbPnts - 1;
   int anIdxM0          = 1;
   thePClass(anIdxM1)   = thePnts.Value(anIdxM1 - 1);
@@ -474,9 +477,12 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
       {
         anIsBadWire = true;
         myWireOrients.Append(WireOrient::Invalid);
-        NCollection_Array1<gp_Pnt2d> aBadPClass(1, 2);
-        aBadPClass(1) = aPnt2dVec(0);
-        aBadPClass(2) = aPnt2dVec(1);
+        const int aBadLen = std::max(2, aPnt2dVec.Length());
+        NCollection_Array1<gp_Pnt2d> aBadPClass(1, aBadLen);
+        if (aPnt2dVec.Length() >= 1)
+          aBadPClass(1) = aPnt2dVec(0);
+        if (aPnt2dVec.Length() >= 2)
+          aBadPClass(2) = aPnt2dVec(1);
         myWireClassifiers.Append(
           CSLib_Class2d(aBadPClass, aFlecheU, aFlecheV, myUmin, myVmin, myUmax, myVmax));
       }

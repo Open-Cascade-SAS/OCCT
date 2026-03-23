@@ -117,11 +117,11 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
             const TopAbs_Orientation aOrigOri = aWire.EdgeRefs.Value(aERIdx).Orientation;
             // Replace in-place: change current to SubA.
             aWire.EdgeRefs.ChangeValue(aERIdx).EdgeIdx = aSubAIdx;
-            // Insert SubB after SubA.
+            // Insert SubB right after SubA to maintain traversal order.
             BRepGraphInc::EdgeRef aSubBRef;
             aSubBRef.EdgeIdx     = aSubBIdx;
             aSubBRef.Orientation = aOrigOri;
-            aWire.EdgeRefs.Append(aSubBRef);
+            aWire.EdgeRefs.InsertAfter(aERIdx, aSubBRef);
             break;
           }
         }

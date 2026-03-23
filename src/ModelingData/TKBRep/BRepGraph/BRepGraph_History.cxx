@@ -164,9 +164,11 @@ void BRepGraph_History::RecordBatch(const TCollection_AsciiString&              
 
 BRepGraph_NodeId BRepGraph_History::FindOriginal(BRepGraph_NodeId theModified) const
 {
-  // Walk the reverse map recursively until a root node is reached.
+  // Walk the reverse map iteratively until a root node is reached.
+  // Limit iterations to the map extent to protect against cycles.
   BRepGraph_NodeId aCurrent = theModified;
-  while (myDerivedToOriginal.IsBound(aCurrent))
+  int aMaxIter = myDerivedToOriginal.Extent();
+  while (myDerivedToOriginal.IsBound(aCurrent) && aMaxIter-- > 0)
   {
     const BRepGraph_NodeId& anOriginal = myDerivedToOriginal.Find(aCurrent);
     if (anOriginal == aCurrent)

@@ -236,6 +236,62 @@ public: //! @name public methods
     return *aPnt;
   }
 
+  //! Insert a value after the element at theIndex, shifting subsequent elements right.
+  //! @param theIndex index after which to insert (must be in [0, Length()-1])
+  //! @param theValue value to insert
+  //! @return reference to the inserted element
+  reference InsertAfter(const int theIndex, const TheItemType& theValue)
+  {
+    Standard_OutOfRange_Raise_if(theIndex < 0 || static_cast<size_t>(theIndex) >= myUsedSize,
+                                 "NCollection_DynamicArray::InsertAfter: index out of range");
+    // Grow by one element at the end.
+    Appended();
+    // Shift elements [theIndex+1 .. myUsedSize-2] right by one position.
+    for (size_t i = myUsedSize - 1; i > static_cast<size_t>(theIndex) + 1; --i)
+      at(i) = std::move(at(i - 1));
+    at(static_cast<size_t>(theIndex) + 1) = theValue;
+    return at(static_cast<size_t>(theIndex) + 1);
+  }
+
+  //! Insert a value after the element at theIndex (move version).
+  reference InsertAfter(const int theIndex, TheItemType&& theValue)
+  {
+    Standard_OutOfRange_Raise_if(theIndex < 0 || static_cast<size_t>(theIndex) >= myUsedSize,
+                                 "NCollection_DynamicArray::InsertAfter: index out of range");
+    Appended();
+    for (size_t i = myUsedSize - 1; i > static_cast<size_t>(theIndex) + 1; --i)
+      at(i) = std::move(at(i - 1));
+    at(static_cast<size_t>(theIndex) + 1) = std::forward<TheItemType>(theValue);
+    return at(static_cast<size_t>(theIndex) + 1);
+  }
+
+  //! Insert a value before the element at theIndex, shifting it and subsequent elements right.
+  //! @param theIndex index before which to insert (must be in [0, Length()-1])
+  //! @param theValue value to insert
+  //! @return reference to the inserted element
+  reference InsertBefore(const int theIndex, const TheItemType& theValue)
+  {
+    Standard_OutOfRange_Raise_if(theIndex < 0 || static_cast<size_t>(theIndex) >= myUsedSize,
+                                 "NCollection_DynamicArray::InsertBefore: index out of range");
+    Appended();
+    for (size_t i = myUsedSize - 1; i > static_cast<size_t>(theIndex); --i)
+      at(i) = std::move(at(i - 1));
+    at(static_cast<size_t>(theIndex)) = theValue;
+    return at(static_cast<size_t>(theIndex));
+  }
+
+  //! Insert a value before the element at theIndex (move version).
+  reference InsertBefore(const int theIndex, TheItemType&& theValue)
+  {
+    Standard_OutOfRange_Raise_if(theIndex < 0 || static_cast<size_t>(theIndex) >= myUsedSize,
+                                 "NCollection_DynamicArray::InsertBefore: index out of range");
+    Appended();
+    for (size_t i = myUsedSize - 1; i > static_cast<size_t>(theIndex); --i)
+      at(i) = std::move(at(i - 1));
+    at(static_cast<size_t>(theIndex)) = std::forward<TheItemType>(theValue);
+    return at(static_cast<size_t>(theIndex));
+  }
+
   void EraseLast()
   {
     if (myUsedSize == 0)

@@ -23,8 +23,9 @@
 //! This enables XDE-style attribute re-assignment after graph-modifying
 //! operations (sewing, boolean ops, etc.).
 //!
-//! Only topology nodes (Face, Edge, Wire, etc.) carry user attributes.
-//! Geometry nodes (Surface, Curve, PCurve) are skipped automatically.
+//! All topology kinds (Face, Edge, Wire, Vertex, etc.) carry user
+//! attributes via their NodeCache. No geometry-only node kinds exist
+//! in the current graph model, so no filtering is required.
 class BRepGraphAlgo_AttrTransfer
 {
 public:

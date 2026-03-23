@@ -389,7 +389,7 @@ void BRepGraphInc_ReverseIndex::preSize(IndexTable&                             
   {
     if (!theAlloc.IsNull())
     {
-      theIdx.Append(NCollection_Vector<int>(256, theAlloc));
+      theIdx.Append(NCollection_Vector<int>(16, theAlloc));
     }
     else
     {

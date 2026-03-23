@@ -184,8 +184,11 @@ private:
   Standard_EXPORT BRepGraph_NodeCache* mutableCache(BRepGraph_NodeId theNode);
   Standard_EXPORT void markModified(BRepGraph_NodeId theDefId);
 
-  //! Generic topology definition lookup by NodeId.
+  //! Generic topology definition lookup by NodeId (const).
   Standard_EXPORT const BRepGraph_TopoNode::BaseDef* TopoDef(BRepGraph_NodeId theId) const;
+
+  //! Generic mutable topology definition lookup by NodeId.
+  Standard_EXPORT BRepGraph_TopoNode::BaseDef* ChangeTopoDef(BRepGraph_NodeId theId);
 
   template <typename Func>
   auto dispatchDef(BRepGraph_NodeId theNode, Func&& theFunc) const

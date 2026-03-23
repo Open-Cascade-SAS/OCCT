@@ -76,7 +76,7 @@ NCollection_Vector<BRepGraph_UID>& BRepGraphInc_Storage::ChangeUIDs(
     case BRepGraph_NodeId::Kind::Compound:  return myCompoundUIDs;
     case BRepGraph_NodeId::Kind::CompSolid: return myCompSolidUIDs;
   }
-  // Unreachable for valid Kind values; return Vertex as fallback.
+  Standard_ASSERT_RETURN(false, "ChangeUIDs: invalid Kind value", myVertexUIDs);
   return myVertexUIDs;
 }
 
