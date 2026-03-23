@@ -18,7 +18,6 @@
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_Mutator.hxx>
 #include <BRepGraph_RelEdgesView.hxx>
-#include <BRepGraph_UsagesView.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
 
 #include <BRepPrimAPI_MakeBox.hxx>

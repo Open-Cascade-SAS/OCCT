@@ -23,14 +23,14 @@ const NCollection_Vector<BRepGraph_UID>* uidVecForKind(const BRepGraph_Data&  th
 {
   switch (theKind)
   {
-    case BRepGraph_NodeId::Kind::Solid:     return &theData.mySolids.UIDs;
-    case BRepGraph_NodeId::Kind::Shell:     return &theData.myShells.UIDs;
-    case BRepGraph_NodeId::Kind::Face:      return &theData.myFaces.UIDs;
-    case BRepGraph_NodeId::Kind::Wire:      return &theData.myWires.UIDs;
-    case BRepGraph_NodeId::Kind::Edge:      return &theData.myEdges.UIDs;
-    case BRepGraph_NodeId::Kind::Vertex:    return &theData.myVertices.UIDs;
-    case BRepGraph_NodeId::Kind::Compound:  return &theData.myCompounds.UIDs;
-    case BRepGraph_NodeId::Kind::CompSolid: return &theData.myCompSolids.UIDs;
+    case BRepGraph_NodeId::Kind::Solid:     return &theData.mySolidUIDs;
+    case BRepGraph_NodeId::Kind::Shell:     return &theData.myShellUIDs;
+    case BRepGraph_NodeId::Kind::Face:      return &theData.myFaceUIDs;
+    case BRepGraph_NodeId::Kind::Wire:      return &theData.myWireUIDs;
+    case BRepGraph_NodeId::Kind::Edge:      return &theData.myEdgeUIDs;
+    case BRepGraph_NodeId::Kind::Vertex:    return &theData.myVertexUIDs;
+    case BRepGraph_NodeId::Kind::Compound:  return &theData.myCompoundUIDs;
+    case BRepGraph_NodeId::Kind::CompSolid: return &theData.myCompSolidUIDs;
     default: return nullptr;
   }
 }

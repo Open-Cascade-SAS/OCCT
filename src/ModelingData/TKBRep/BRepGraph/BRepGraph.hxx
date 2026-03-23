@@ -15,7 +15,6 @@
 #define _BRepGraph_HeaderFile
 
 #include <BRepGraph_NodeId.hxx>
-#include <BRepGraph_UsageId.hxx>
 #include <BRepGraph_UID.hxx>
 #include <BRepGraph_TopoNode.hxx>
 #include <BRepGraph_RelEdge.hxx>
@@ -45,22 +44,18 @@ class BRepGraph_History;
 class BRepGraph_Analyze;
 class BRepGraph_Mutator;
 
-//! @brief Bidirectional topology-geometry graph over TopoDS / BRep.
+//! @brief Topology-geometry graph over TopoDS / BRep.
 //!
-//! Two-layer architecture: Definitions (one per unique TShape) hold intrinsic
-//! data (geometry links, tolerances).  Usages (one per occurrence) hold
-//! context-specific data (orientation, location, parent).
+//! Definition types are aliases to incidence entity types.
+//! Per-occurrence data (orientation, location) lives on incidence refs.
 //!
 //! ## Grouped View API
-//! Related methods are grouped behind lightweight view objects returned by
-//! value.  Each view is a zero-cost inner class holding a single pointer.
+//! Related methods are grouped behind lightweight view objects.
 //! Include the corresponding header (e.g. BRepGraph_DefsView.hxx) to use.
-//! Views are the primary public API for querying and mutating the graph.
 //!
 //! ## Thread safety
-//! All const query methods (including lazy cache Gets) are thread-safe.
+//! All const query methods are thread-safe.
 //! Build() is internally parallel when requested.
-//! ApplyModification() requires exclusive access.
 class BRepGraph
 {
 public:
@@ -81,14 +76,7 @@ public:
   //! Return true if the graph was successfully built.
   Standard_EXPORT bool IsDone() const;
 
-  //! Return all usages of a given definition.
-  Standard_EXPORT const NCollection_Vector<BRepGraph_UsageId>& UsagesOf(
-    BRepGraph_NodeId theDefId) const;
-
-  //! Return the definition NodeId for a given usage.
-  Standard_EXPORT BRepGraph_NodeId DefOf(BRepGraph_UsageId theUsageId) const;
-
-  //! Replace the internal allocator and re-create all storage with new allocator.
+  //! Replace the internal allocator and re-create all storage.
   Standard_EXPORT void SetAllocator(const Handle(NCollection_BaseAllocator)& theAlloc);
 
   //! Return the current allocator.
@@ -101,9 +89,6 @@ public:
   Standard_EXPORT bool IsHistoryEnabled() const;
 
   //! Apply a modification operation and record history.
-  //! @param[in] theTarget node to modify
-  //! @param[in] theModifier callback that performs the modification and returns replacements
-  //! @param[in] theOpLabel label for the history record
   Standard_EXPORT void ApplyModification(
     BRepGraph_NodeId                                                                    theTarget,
     std::function<NCollection_Vector<BRepGraph_NodeId>(BRepGraph&, BRepGraph_NodeId)> theModifier,
@@ -113,9 +98,8 @@ public:
   //! Shared cache for edge/vertex shapes during multi-face reconstruction.
   using ReconstructCache = NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape>;
 
-  // -- Grouped View API (inner classes defined in separate headers) --
+  // -- Grouped View API --
   class DefsView;
-  class UsagesView;
   class UIDsView;
   class RelEdgesView;
   class SpatialView;
@@ -126,32 +110,29 @@ public:
   class BuilderView;
   class AnalyzeView;
 
-  //! Access topology definitions. Include BRepGraph_DefsView.hxx to use.
+  //! Access topology definitions.
   DefsView     Defs()     const;
-  //! Access topology usages. Include BRepGraph_UsagesView.hxx to use.
-  UsagesView   Usages()   const;
-  //! Access unique identifiers. Include BRepGraph_UIDsView.hxx to use.
+  //! Access unique identifiers.
   UIDsView     UIDs()     const;
-  //! Access relation edges. Include BRepGraph_RelEdgesView.hxx to use.
+  //! Access relation edges.
   RelEdgesView RelEdges() const;
-  //! Access spatial and adjacency queries. Include BRepGraph_SpatialView.hxx to use.
+  //! Access spatial and adjacency queries.
   SpatialView  Spatial()  const;
-  //! Access cached spatial properties. Include BRepGraph_CacheView.hxx to use.
+  //! Access cached spatial properties.
   CacheView    Cache()    const;
-  //! Access user attributes. Include BRepGraph_AttrsView.hxx to use.
+  //! Access user attributes.
   AttrsView    Attrs();
-  //! Access shape reconstruction. Include BRepGraph_ShapesView.hxx to use.
+  //! Access shape reconstruction.
   ShapesView   Shapes()   const;
-  //! Access mutable definitions and mutation operations. Include BRepGraph_MutView.hxx to use.
+  //! Access mutable definitions and mutation operations.
   MutView      Mut();
-  //! Access programmatic graph construction. Include BRepGraph_BuilderView.hxx to use.
+  //! Access programmatic graph construction.
   BuilderView  Builder();
-  //! Access analysis queries. Include BRepGraph_AnalyzeView.hxx to use.
+  //! Access analysis queries.
   AnalyzeView  Analyze()  const;
 
   //! Access history subsystem directly.
   Standard_EXPORT BRepGraph_History&       History();
-  //! Access history subsystem directly (const).
   Standard_EXPORT const BRepGraph_History& History() const;
 
 private:
@@ -166,8 +147,6 @@ private:
   friend class BRepGraphAlgo_Transform;
   friend class BRepGraphAlgo_UVBounds;
 
-  // -- History flat methods (used internally by History subsystem) --
-
   Standard_EXPORT int NbHistoryRecords() const;
   Standard_EXPORT const BRepGraph_HistoryRecord& HistoryRecord(int theIdx) const;
   Standard_EXPORT BRepGraph_NodeId FindOriginal(BRepGraph_NodeId theModified) const;
@@ -178,11 +157,7 @@ private:
                                      BRepGraph_NodeId                              theOriginal,
                                      const NCollection_Vector<BRepGraph_NodeId>& theReplacements);
 
-  // -- Internal storage --
-
   std::unique_ptr<BRepGraph_Data> myData;
-
-  // -- Internal build and utility helpers (called by views and friend classes) --
 
   Standard_EXPORT void invalidateSubgraphImpl(BRepGraph_NodeId theNode);
   Standard_EXPORT BRepGraph_UID allocateUID(BRepGraph_NodeId theNodeId);
@@ -190,16 +165,13 @@ private:
   Standard_EXPORT BRepGraph_NodeCache* mutableCache(BRepGraph_NodeId theNode);
   Standard_EXPORT void markModified(BRepGraph_NodeId theDefId);
 
-  //! Generic topology definition lookup by NodeId (internal helper).
+  //! Generic topology definition lookup by NodeId.
   Standard_EXPORT const BRepGraph_TopoNode::BaseDef* TopoDef(BRepGraph_NodeId theId) const;
 
-  //! Dispatch a callback on the def vector matching theNode.NodeKind.
-  //! Defined in BRepGraph.cxx (only used internally).
   template <typename Func>
   auto dispatchDef(BRepGraph_NodeId theNode, Func&& theFunc) const
     -> decltype(theFunc(std::declval<const NCollection_Vector<BRepGraph_TopoNode::SolidDef>&>(), 0));
 
-  //! Non-const overload of dispatchDef for mutable access.
   template <typename Func>
   auto dispatchDef(BRepGraph_NodeId theNode, Func&& theFunc)
     -> decltype(theFunc(std::declval<NCollection_Vector<BRepGraph_TopoNode::SolidDef>&>(), 0));

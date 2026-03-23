@@ -21,11 +21,7 @@
 class BRepGraph::SpatialView
 {
 public:
-  //! Accumulated global transform for a usage.
-  //! @param[in] theUsage usage identifier
-  Standard_EXPORT gp_Trsf GlobalTransform(BRepGraph_UsageId theUsage) const;
-
-  //! Accumulated global transform for a definition (from first usage).
+  //! Accumulated global transform for a definition (from per-node location).
   //! @param[in] theDefId definition node identifier
   Standard_EXPORT gp_Trsf GlobalTransform(BRepGraph_NodeId theDefId) const;
 

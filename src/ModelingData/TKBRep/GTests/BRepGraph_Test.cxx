@@ -28,7 +28,6 @@
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_SpatialView.hxx>
 #include <BRepGraph_UIDsView.hxx>
-#include <BRepGraph_UsagesView.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <Geom2d_Line.hxx>
@@ -478,10 +477,9 @@ TEST_F(BRepGraphTest, ReconstructFace_AfterEdgeReplace_ContainsNewEdge)
 
   myGraph.Mut().ReplaceEdgeInWire(0, anOldEdgeId, aNewEdgeId, false);
 
-  // Reconstruct the face owning this wire (backward ref - kept as-is).
-  ASSERT_FALSE(aWireDef.Usages.IsEmpty());
-  const BRepGraph_TopoNode::WireUsage& aWireUsage = myGraph.Usages().Wire(aWireDef.Usages.First().Index);
-  int aFaceIdx = myGraph.Usages().Face(aWireUsage.OwnerFaceUsage.Index).DefId.Index;
+  // Reconstruct face 0 (the face owning wire 0).
+  const int aFaceIdx = myGraph.Defs().Face(0).OuterWireIdx() == 0 ? 0 : -1;
+  ASSERT_GE(aFaceIdx, 0);
   const TopoDS_Shape aReconstructed = myGraph.Shapes().ReconstructFace(aFaceIdx);
 
   // Check via 3D curve handle identity (reconstructed edges have new TShapes).
@@ -545,10 +543,18 @@ TEST_F(BRepGraphTest, Shape_AfterReplaceEdge_DiffersFromOriginal)
 
   myGraph.Mut().ReplaceEdgeInWire(0, anOldEdgeId, aNewEdgeId, false);
 
-  // Use backward ref to find the owning face.
-  ASSERT_FALSE(aWireDef.Usages.IsEmpty());
-  const BRepGraph_TopoNode::WireUsage& aWireUsage = myGraph.Usages().Wire(aWireDef.Usages.First().Index);
-  BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, myGraph.Usages().Face(aWireUsage.OwnerFaceUsage.Index).DefId.Index);
+  // Find the face that owns wire 0.
+  int aFaceDefIdx = -1;
+  for (int aFI = 0; aFI < myGraph.Defs().NbFaces(); ++aFI)
+  {
+    if (myGraph.Defs().Face(aFI).OuterWireIdx() == 0)
+    {
+      aFaceDefIdx = aFI;
+      break;
+    }
+  }
+  ASSERT_GE(aFaceDefIdx, 0);
+  BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, aFaceDefIdx);
   TopoDS_Shape aShape = myGraph.Shapes().Shape(aFaceId);
   const TopoDS_Shape& anOrig = myGraph.Shapes().OriginalOf(aFaceId);
   EXPECT_FALSE(aShape.IsSame(anOrig));
@@ -595,13 +601,13 @@ TEST_F(BRepGraphTest, IsModified_MutableEdge_PropagatesUp)
     if (aWires.Length() > 0)
     {
       EXPECT_TRUE(myGraph.Defs().Wire(aWires.Value(0)).IsModified);
-      const BRepGraph_TopoNode::WireDef& aWireNode = myGraph.Defs().Wire(aWires.Value(0));
-      if (!aWireNode.Usages.IsEmpty())
+      // Check propagation to owning face: find a face whose outer wire is this wire.
+      for (int aFI = 0; aFI < myGraph.Defs().NbFaces(); ++aFI)
       {
-        const BRepGraph_TopoNode::WireUsage& aWireUsageNode = myGraph.Usages().Wire(aWireNode.Usages.First().Index);
-        if (aWireUsageNode.OwnerFaceUsage.IsValid())
+        if (myGraph.Defs().Face(aFI).OuterWireIdx() == aWires.Value(0))
         {
-          EXPECT_TRUE(myGraph.Defs().Face(myGraph.Usages().Face(aWireUsageNode.OwnerFaceUsage.Index).DefId.Index).IsModified);
+          EXPECT_TRUE(myGraph.Defs().Face(aFI).IsModified);
+          break;
         }
       }
     }
@@ -1292,14 +1298,15 @@ TEST_F(BRepGraphTest, Face_InnerWireRefs_BoxHasNone)
 
 TEST_F(BRepGraphTest, Face_Orientation_ValidValue)
 {
-  for (int aFaceIdx = 0; aFaceIdx < myGraph.Defs().NbFaces(); ++aFaceIdx)
+  // Verify face orientations in the shell's incidence refs.
+  ASSERT_EQ(myGraph.Defs().NbShells(), 1);
+  const BRepGraph_TopoNode::ShellDef& aShellDef = myGraph.Defs().Shell(0);
+  for (int aRefIdx = 0; aRefIdx < aShellDef.FaceRefs.Length(); ++aRefIdx)
   {
-    const BRepGraph_TopoNode::FaceDef& aFace = myGraph.Defs().Face(aFaceIdx);
-    ASSERT_FALSE(aFace.Usages.IsEmpty());
-    const BRepGraph_TopoNode::FaceUsage& aFaceUsage = myGraph.Usages().Face(aFace.Usages.First().Index);
-    TopAbs_Orientation anOri = aFaceUsage.Orientation;
+    const BRepGraphInc::FaceRef& aFaceRef = aShellDef.FaceRefs.Value(aRefIdx);
+    TopAbs_Orientation anOri = aFaceRef.Orientation;
     EXPECT_TRUE(anOri == TopAbs_FORWARD || anOri == TopAbs_REVERSED)
-      << "Face " << aFaceIdx << " has unexpected orientation " << anOri;
+      << "Face ref " << aRefIdx << " has unexpected orientation " << anOri;
   }
 }
 
@@ -1468,21 +1475,17 @@ TEST_F(BRepGraphTest, Centroid_Face_InsideBBox)
 // Group 13: Mutation (Extended)
 // ===================================================================
 
-TEST_F(BRepGraphTest, MutableWireUsage_ModifyClosure_Verified)
+TEST_F(BRepGraphTest, MutableWireDef_ModifyClosure_Verified)
 {
-  const BRepGraph_TopoNode::WireDef& aWireDef = myGraph.Defs().Wire(0);
-  ASSERT_FALSE(aWireDef.Usages.IsEmpty());
-  const int aWireUsageIdx = aWireDef.Usages.Value(0).Index;
+  BRepGraph_TopoNode::WireDef& aMutWD = myGraph.Mut().WireDef(0);
+  bool anOrigClosed = aMutWD.IsClosed;
+  aMutWD.IsClosed = !anOrigClosed;
 
-  BRepGraph_TopoNode::WireUsage& aMutWU = myGraph.Mut().WireUsage(aWireUsageIdx);
-  bool anOrigClosed = aMutWU.IsClosed;
-  aMutWU.IsClosed = !anOrigClosed;
-
-  EXPECT_EQ(myGraph.Usages().Wire(aWireUsageIdx).IsClosed, !anOrigClosed);
+  EXPECT_EQ(myGraph.Defs().Wire(0).IsClosed, !anOrigClosed);
 
   // Restore original state.
-  myGraph.Mut().WireUsage(aWireUsageIdx).IsClosed = anOrigClosed;
-  EXPECT_EQ(myGraph.Usages().Wire(aWireUsageIdx).IsClosed, anOrigClosed);
+  myGraph.Mut().WireDef(0).IsClosed = anOrigClosed;
+  EXPECT_EQ(myGraph.Defs().Wire(0).IsClosed, anOrigClosed);
 }
 
 TEST_F(BRepGraphTest, MultipleUserAttributes_SameNode_Independent)
@@ -1642,19 +1645,17 @@ TEST_F(BRepGraphTest, UID_AllTopoNodesHaveValidUIDs)
   }
 }
 
-TEST_F(BRepGraphTest, Wire_OwnerFaceUsage_MatchesFaceOuterWire)
+TEST_F(BRepGraphTest, Wire_OuterWireIdx_MatchesFaceDef)
 {
   for (int aFaceIdx = 0; aFaceIdx < myGraph.Defs().NbFaces(); ++aFaceIdx)
   {
     const BRepGraph_TopoNode::FaceDef& aFace = myGraph.Defs().Face(aFaceIdx);
-    if (aFace.Usages.IsEmpty())
+    const int anOuterWireIdx = aFace.OuterWireIdx();
+    EXPECT_GE(anOuterWireIdx, 0) << "Face " << aFaceIdx << " has no outer wire";
+    if (anOuterWireIdx < 0)
       continue;
-    const BRepGraph_TopoNode::FaceUsage& aFaceUsage = myGraph.Usages().Face(aFace.Usages.First().Index);
-    if (!aFaceUsage.OuterWireUsage.IsValid())
-      continue;
-    const BRepGraph_TopoNode::WireUsage& aWireUsage = myGraph.Usages().Wire(aFaceUsage.OuterWireUsage.Index);
-    EXPECT_EQ(myGraph.Usages().Face(aWireUsage.OwnerFaceUsage.Index).DefId.Index, aFaceIdx)
-      << "Wire usage " << aFaceUsage.OuterWireUsage.Index << " owner doesn't match face " << aFaceIdx;
+    EXPECT_LT(anOuterWireIdx, myGraph.Defs().NbWires())
+      << "Face " << aFaceIdx << " outer wire index out of range";
   }
 }
 

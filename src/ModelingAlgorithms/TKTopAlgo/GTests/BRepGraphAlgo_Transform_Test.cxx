@@ -16,7 +16,6 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_ShapesView.hxx>
-#include <BRepGraph_UsagesView.hxx>
 #include <BRepGraphAlgo_Transform.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <GProp_GProps.hxx>
@@ -143,10 +142,10 @@ TEST(BRepGraphAlgo_TransformTest, LocationOnly_NoCopyGeom)
         << "Vertex " << anIdx << " point should not be modified";
   }
 
-  // Usage GlobalLocations must be updated — verify via ReconstructFromUsage.
-  ASSERT_GT(aResultGraph.Usages().NbSolids(), 0);
-  TopoDS_Shape aTransSolid = aResultGraph.Shapes().ReconstructFromUsage(
-    BRepGraph_UsageId(BRepGraph_NodeId::Kind::Solid, 0));
+  // Verify reconstructed solid has correct translation.
+  ASSERT_GT(aResultGraph.Defs().NbSolids(), 0);
+  TopoDS_Shape aTransSolid = aResultGraph.Shapes().Reconstruct(
+    BRepGraph_NodeId(BRepGraph_NodeId::Kind::Solid, 0));
   ASSERT_FALSE(aTransSolid.IsNull());
 
   GProp_GProps aOrigProps;

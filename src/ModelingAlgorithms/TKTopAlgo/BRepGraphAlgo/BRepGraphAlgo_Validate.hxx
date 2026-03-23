@@ -24,9 +24,8 @@
 //! @brief Structural invariant checker for BRepGraph.
 //!
 //! Read-only algorithm that verifies the graph's internal consistency:
-//! cross-reference bounds, reverse index symmetry, usage-def coherence,
-//! geometry reference validity, removed-node isolation, wire connectivity,
-//! and parent-chain acyclicity.
+//! cross-reference bounds, reverse index symmetry, incidence ref consistency,
+//! geometry reference validity, removed-node isolation, and wire connectivity.
 //!
 //! Distinct from BRepGraphCheck (geometric shape validity). This class
 //! checks the graph data structure itself.

@@ -21,7 +21,6 @@
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_RelEdge.hxx>
 #include <BRepGraph_SubGraph.hxx>
-#include <BRepGraph_UsagesView.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
 #include <BRepGraphAlgo_BndLib.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>

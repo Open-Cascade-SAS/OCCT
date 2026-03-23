@@ -15,7 +15,6 @@
 
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_RelEdgesView.hxx>
-#include <BRepGraph_UsagesView.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
 
 #include <NCollection_Map.hxx>
@@ -39,27 +38,6 @@ bool isValidNodeId(const BRepGraph& theGraph, BRepGraph_NodeId theId)
     case BRepGraph_NodeId::Kind::Vertex:    return theId.Index < theGraph.Defs().NbVertices();
     case BRepGraph_NodeId::Kind::Compound:  return theId.Index < theGraph.Defs().NbCompounds();
     case BRepGraph_NodeId::Kind::CompSolid: return theId.Index < theGraph.Defs().NbCompSolids();
-  }
-  return false;
-}
-
-//! Check that a UsageId refers to a valid index within graph bounds.
-bool isValidUsageId(const BRepGraph& theGraph, BRepGraph_UsageId theId)
-{
-  if (!theId.IsValid())
-    return false;
-
-  switch (theId.NodeKind)
-  {
-    case BRepGraph_NodeId::Kind::Solid:     return theId.Index < theGraph.Usages().NbSolids();
-    case BRepGraph_NodeId::Kind::Shell:     return theId.Index < theGraph.Usages().NbShells();
-    case BRepGraph_NodeId::Kind::Face:      return theId.Index < theGraph.Usages().NbFaces();
-    case BRepGraph_NodeId::Kind::Wire:      return theId.Index < theGraph.Usages().NbWires();
-    case BRepGraph_NodeId::Kind::Edge:      return theId.Index < theGraph.Usages().NbEdges();
-    case BRepGraph_NodeId::Kind::Vertex:    return theId.Index < theGraph.Usages().NbVertices();
-    case BRepGraph_NodeId::Kind::Compound:  return theId.Index < theGraph.Usages().NbCompounds();
-    case BRepGraph_NodeId::Kind::CompSolid: return theId.Index < theGraph.Usages().NbCompSolids();
-    default: break;
   }
   return false;
 }
@@ -178,6 +156,46 @@ void checkCrossReferenceBounds(const BRepGraph&                                 
       }
     }
   }
+
+  // Check ShellDef FaceRefs references.
+  for (int aShellIdx = 0; aShellIdx < theGraph.Defs().NbShells(); ++aShellIdx)
+  {
+    const BRepGraph_TopoNode::ShellDef& aShell = theGraph.Defs().Shell(aShellIdx);
+    if (aShell.IsRemoved)
+      continue;
+
+    for (int aFaceRefIdx = 0; aFaceRefIdx < aShell.FaceRefs.Length(); ++aFaceRefIdx)
+    {
+      const BRepGraphInc::FaceRef& aFR = aShell.FaceRefs.Value(aFaceRefIdx);
+      const BRepGraph_NodeId aFaceDefId = BRepGraph_NodeId::Face(aFR.FaceIdx);
+      if (aFaceDefId.IsValid() && !isValidNodeId(theGraph, aFaceDefId))
+      {
+        theIssues.Append(Issue{Severity::Error,
+                               aShell.Id,
+                               "ShellDef.FaceRef FaceIdx out of bounds"});
+      }
+    }
+  }
+
+  // Check SolidDef ShellRefs references.
+  for (int aSolidIdx = 0; aSolidIdx < theGraph.Defs().NbSolids(); ++aSolidIdx)
+  {
+    const BRepGraph_TopoNode::SolidDef& aSolid = theGraph.Defs().Solid(aSolidIdx);
+    if (aSolid.IsRemoved)
+      continue;
+
+    for (int aShellRefIdx = 0; aShellRefIdx < aSolid.ShellRefs.Length(); ++aShellRefIdx)
+    {
+      const BRepGraphInc::ShellRef& aSR = aSolid.ShellRefs.Value(aShellRefIdx);
+      const BRepGraph_NodeId aShellDefId = BRepGraph_NodeId::Shell(aSR.ShellIdx);
+      if (aShellDefId.IsValid() && !isValidNodeId(theGraph, aShellDefId))
+      {
+        theIssues.Append(Issue{Severity::Error,
+                               aSolid.Id,
+                               "SolidDef.ShellRef ShellIdx out of bounds"});
+      }
+    }
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -251,75 +269,71 @@ void checkReverseIndexConsistency(const BRepGraph&                              
 }
 
 // -----------------------------------------------------------------------
-// Pass 3: Usage <-> Def consistency
+// Pass 3: Incidence ref consistency (shell->face, solid->shell, etc.)
 // -----------------------------------------------------------------------
-void checkUsageDefConsistency(const BRepGraph&                                      theGraph,
-                              NCollection_Vector<BRepGraphAlgo_Validate::Issue>& theIssues)
+void checkIncidenceRefConsistency(const BRepGraph&                                      theGraph,
+                                  NCollection_Vector<BRepGraphAlgo_Validate::Issue>& theIssues)
 {
   using Issue    = BRepGraphAlgo_Validate::Issue;
   using Severity = BRepGraphAlgo_Validate::Severity;
 
-  // For each face usage, check DefId points back correctly.
-  for (int aFaceUsIdx = 0; aFaceUsIdx < theGraph.Usages().NbFaces(); ++aFaceUsIdx)
+  // Check face->wire incidence refs.
+  for (int aFaceIdx = 0; aFaceIdx < theGraph.Defs().NbFaces(); ++aFaceIdx)
   {
-    const BRepGraph_TopoNode::FaceUsage& aFaceUs = theGraph.Usages().Face(aFaceUsIdx);
-    if (!aFaceUs.DefId.IsValid() || !isValidNodeId(theGraph, aFaceUs.DefId))
-    {
-      theIssues.Append(Issue{Severity::Error,
-                             BRepGraph_NodeId::Face(aFaceUsIdx),
-                             "FaceUsage.DefId invalid or out of bounds"});
+    const BRepGraph_TopoNode::FaceDef& aFace = theGraph.Defs().Face(aFaceIdx);
+    if (aFace.IsRemoved)
       continue;
-    }
 
-    const BRepGraph_TopoNode::FaceDef& aFaceDef =
-      theGraph.Defs().Face(aFaceUs.DefId.Index);
-
-    bool aFound = false;
-    for (int anUsIdx = 0; anUsIdx < aFaceDef.Usages.Length(); ++anUsIdx)
+    for (int aWireRefIdx = 0; aWireRefIdx < aFace.WireRefs.Length(); ++aWireRefIdx)
     {
-      if (aFaceDef.Usages.Value(anUsIdx) == aFaceUs.UsageId)
+      const BRepGraphInc::WireRef& aWR = aFace.WireRefs.Value(aWireRefIdx);
+      const BRepGraph_NodeId aWireId = BRepGraph_NodeId::Wire(aWR.WireIdx);
+      if (aWireId.IsValid() && !isValidNodeId(theGraph, aWireId))
       {
-        aFound = true;
-        break;
+        theIssues.Append(Issue{Severity::Error,
+                               aFace.Id,
+                               "FaceDef.WireRef WireIdx out of bounds"});
       }
-    }
-    if (!aFound)
-    {
-      theIssues.Append(Issue{Severity::Error,
-                             aFaceDef.Id,
-                             "FaceDef.Usages does not contain its FaceUsage"});
     }
   }
 
-  // For each edge usage.
-  for (int anEdgeUsIdx = 0; anEdgeUsIdx < theGraph.Usages().NbEdges(); ++anEdgeUsIdx)
+  // Check shell->face incidence refs.
+  for (int aShellIdx = 0; aShellIdx < theGraph.Defs().NbShells(); ++aShellIdx)
   {
-    const BRepGraph_TopoNode::EdgeUsage& anEdgeUs = theGraph.Usages().Edge(anEdgeUsIdx);
-    if (!anEdgeUs.DefId.IsValid() || !isValidNodeId(theGraph, anEdgeUs.DefId))
-    {
-      theIssues.Append(Issue{Severity::Error,
-                             BRepGraph_NodeId::Edge(anEdgeUsIdx),
-                             "EdgeUsage.DefId invalid or out of bounds"});
+    const BRepGraph_TopoNode::ShellDef& aShell = theGraph.Defs().Shell(aShellIdx);
+    if (aShell.IsRemoved)
       continue;
-    }
 
-    const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
-      theGraph.Defs().Edge(anEdgeUs.DefId.Index);
-
-    bool aFound = false;
-    for (int anUsIdx = 0; anUsIdx < anEdgeDef.Usages.Length(); ++anUsIdx)
+    for (int aFaceRefIdx = 0; aFaceRefIdx < aShell.FaceRefs.Length(); ++aFaceRefIdx)
     {
-      if (anEdgeDef.Usages.Value(anUsIdx) == anEdgeUs.UsageId)
+      const BRepGraphInc::FaceRef& aFR = aShell.FaceRefs.Value(aFaceRefIdx);
+      const BRepGraph_NodeId aFaceId = BRepGraph_NodeId::Face(aFR.FaceIdx);
+      if (aFaceId.IsValid() && isDefRemoved(theGraph, aFaceId))
       {
-        aFound = true;
-        break;
+        theIssues.Append(Issue{Severity::Error,
+                               aShell.Id,
+                               "ShellDef references removed FaceDef"});
       }
     }
-    if (!aFound)
+  }
+
+  // Check solid->shell incidence refs.
+  for (int aSolidIdx = 0; aSolidIdx < theGraph.Defs().NbSolids(); ++aSolidIdx)
+  {
+    const BRepGraph_TopoNode::SolidDef& aSolid = theGraph.Defs().Solid(aSolidIdx);
+    if (aSolid.IsRemoved)
+      continue;
+
+    for (int aShellRefIdx = 0; aShellRefIdx < aSolid.ShellRefs.Length(); ++aShellRefIdx)
     {
-      theIssues.Append(Issue{Severity::Error,
-                             anEdgeDef.Id,
-                             "EdgeDef.Usages does not contain its EdgeUsage"});
+      const BRepGraphInc::ShellRef& aSR = aSolid.ShellRefs.Value(aShellRefIdx);
+      const BRepGraph_NodeId aShellId = BRepGraph_NodeId::Shell(aSR.ShellIdx);
+      if (aShellId.IsValid() && isDefRemoved(theGraph, aShellId))
+      {
+        theIssues.Append(Issue{Severity::Error,
+                               aSolid.Id,
+                               "SolidDef references removed ShellDef"});
+      }
     }
   }
 }
@@ -466,71 +480,6 @@ void checkWireConnectivity(const BRepGraph&                                     
   }
 }
 
-// -----------------------------------------------------------------------
-// Pass 7: Parent chain acyclicity
-// -----------------------------------------------------------------------
-void checkParentChainAcyclicity(const BRepGraph&                                      theGraph,
-                                NCollection_Vector<BRepGraphAlgo_Validate::Issue>& theIssues)
-{
-  using Issue    = BRepGraphAlgo_Validate::Issue;
-  using Severity = BRepGraphAlgo_Validate::Severity;
-
-  // Check face usages as a representative sample.
-  const int aTotalUsages = theGraph.Usages().NbFaces()
-                         + theGraph.Usages().NbEdges()
-                         + theGraph.Usages().NbVertices()
-                         + theGraph.Usages().NbWires()
-                         + theGraph.Usages().NbShells()
-                         + theGraph.Usages().NbSolids()
-                         + theGraph.Usages().NbCompounds()
-                         + theGraph.Usages().NbCompSolids();
-
-  // Check face usage parent chains.
-  for (int aFaceUsIdx = 0; aFaceUsIdx < theGraph.Usages().NbFaces(); ++aFaceUsIdx)
-  {
-    BRepGraph_UsageId aCurrent = theGraph.Usages().Face(aFaceUsIdx).ParentUsage;
-    int aSteps = 0;
-    while (aCurrent.IsValid() && aSteps < aTotalUsages)
-    {
-      if (!isValidUsageId(theGraph, aCurrent))
-        break;
-      BRepGraph_UsageId aParent = theGraph.DefOf(aCurrent).IsValid()
-                                    ? BRepGraph_UsageId() // simplified: stop at invalid
-                                    : BRepGraph_UsageId();
-      // Walk up parent usage chain via the usage's own ParentUsage.
-      // We need to access the usage's ParentUsage field.
-      // Since UsageId can be of any kind, we need kind-based dispatch.
-      switch (aCurrent.NodeKind)
-      {
-        case BRepGraph_NodeId::Kind::Shell:
-          aParent = theGraph.Usages().Shell(aCurrent.Index).ParentUsage;
-          break;
-        case BRepGraph_NodeId::Kind::Solid:
-          aParent = theGraph.Usages().Solid(aCurrent.Index).ParentUsage;
-          break;
-        case BRepGraph_NodeId::Kind::Compound:
-          aParent = theGraph.Usages().Compound(aCurrent.Index).ParentUsage;
-          break;
-        case BRepGraph_NodeId::Kind::CompSolid:
-          aParent = theGraph.Usages().CompSolid(aCurrent.Index).ParentUsage;
-          break;
-        default:
-          aParent = BRepGraph_UsageId(); // stop
-          break;
-      }
-      aCurrent = aParent;
-      ++aSteps;
-    }
-
-    if (aSteps >= aTotalUsages)
-    {
-      theIssues.Append(Issue{Severity::Error,
-                             BRepGraph_NodeId::Face(aFaceUsIdx),
-                             "FaceUsage parent chain exceeds total usage count (cycle?)"});
-    }
-  }
-}
-
 } // namespace
 
 //=================================================================================================
@@ -545,11 +494,10 @@ BRepGraphAlgo_Validate::Result BRepGraphAlgo_Validate::Perform(const BRepGraph& 
 
   checkCrossReferenceBounds(theGraph, aResult.Issues);
   checkReverseIndexConsistency(theGraph, aResult.Issues);
-  checkUsageDefConsistency(theGraph, aResult.Issues);
+  checkIncidenceRefConsistency(theGraph, aResult.Issues);
   checkGeometryReferences(theGraph, aResult.Issues);
   checkRemovedNodeIsolation(theGraph, aResult.Issues);
   checkWireConnectivity(theGraph, aResult.Issues);
-  checkParentChainAcyclicity(theGraph, aResult.Issues);
 
   return aResult;
 }

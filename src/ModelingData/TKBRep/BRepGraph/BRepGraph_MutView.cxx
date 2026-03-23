@@ -23,7 +23,7 @@
 BRepGraph_TopoNode::EdgeDef& BRepGraph::MutView::EdgeDef(int theIdx)
 {
   myGraph->markModified(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, theIdx));
-  return myGraph->myData->myEdges.Defs.ChangeValue(theIdx);
+  return myGraph->myData->myIncStorage.Edges.ChangeValue(theIdx);
 }
 
 //=================================================================================================
@@ -31,16 +31,7 @@ BRepGraph_TopoNode::EdgeDef& BRepGraph::MutView::EdgeDef(int theIdx)
 BRepGraph_TopoNode::WireDef& BRepGraph::MutView::WireDef(int theIdx)
 {
   myGraph->markModified(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Wire, theIdx));
-  return myGraph->myData->myWires.Defs.ChangeValue(theIdx);
-}
-
-//=================================================================================================
-
-BRepGraph_TopoNode::WireUsage& BRepGraph::MutView::WireUsage(int theIdx)
-{
-  BRepGraph_NodeId aDefId = myGraph->myData->myWires.Usages.Value(theIdx).DefId;
-  myGraph->markModified(aDefId);
-  return myGraph->myData->myWires.Usages.ChangeValue(theIdx);
+  return myGraph->myData->myIncStorage.Wires.ChangeValue(theIdx);
 }
 
 //=================================================================================================
@@ -48,7 +39,7 @@ BRepGraph_TopoNode::WireUsage& BRepGraph::MutView::WireUsage(int theIdx)
 BRepGraph_TopoNode::VertexDef& BRepGraph::MutView::VertexDef(int theIdx)
 {
   myGraph->markModified(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Vertex, theIdx));
-  return myGraph->myData->myVertices.Defs.ChangeValue(theIdx);
+  return myGraph->myData->myIncStorage.Vertices.ChangeValue(theIdx);
 }
 
 //=================================================================================================
@@ -56,7 +47,7 @@ BRepGraph_TopoNode::VertexDef& BRepGraph::MutView::VertexDef(int theIdx)
 BRepGraph_TopoNode::FaceDef& BRepGraph::MutView::FaceDef(int theIdx)
 {
   myGraph->markModified(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, theIdx));
-  return myGraph->myData->myFaces.Defs.ChangeValue(theIdx);
+  return myGraph->myData->myIncStorage.Faces.ChangeValue(theIdx);
 }
 
 //=================================================================================================
@@ -64,7 +55,7 @@ BRepGraph_TopoNode::FaceDef& BRepGraph::MutView::FaceDef(int theIdx)
 BRepGraph_TopoNode::ShellDef& BRepGraph::MutView::ShellDef(int theIdx)
 {
   myGraph->markModified(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Shell, theIdx));
-  return myGraph->myData->myShells.Defs.ChangeValue(theIdx);
+  return myGraph->myData->myIncStorage.Shells.ChangeValue(theIdx);
 }
 
 //=================================================================================================
@@ -72,7 +63,7 @@ BRepGraph_TopoNode::ShellDef& BRepGraph::MutView::ShellDef(int theIdx)
 BRepGraph_TopoNode::SolidDef& BRepGraph::MutView::SolidDef(int theIdx)
 {
   myGraph->markModified(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Solid, theIdx));
-  return myGraph->myData->mySolids.Defs.ChangeValue(theIdx);
+  return myGraph->myData->myIncStorage.Solids.ChangeValue(theIdx);
 }
 
 //=================================================================================================
@@ -80,7 +71,7 @@ BRepGraph_TopoNode::SolidDef& BRepGraph::MutView::SolidDef(int theIdx)
 BRepGraph_TopoNode::CompoundDef& BRepGraph::MutView::CompoundDef(int theIdx)
 {
   myGraph->markModified(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Compound, theIdx));
-  return myGraph->myData->myCompounds.Defs.ChangeValue(theIdx);
+  return myGraph->myData->myIncStorage.Compounds.ChangeValue(theIdx);
 }
 
 //=================================================================================================
@@ -88,7 +79,7 @@ BRepGraph_TopoNode::CompoundDef& BRepGraph::MutView::CompoundDef(int theIdx)
 BRepGraph_TopoNode::CompSolidDef& BRepGraph::MutView::CompSolidDef(int theIdx)
 {
   myGraph->markModified(BRepGraph_NodeId(BRepGraph_NodeId::Kind::CompSolid, theIdx));
-  return myGraph->myData->myCompSolids.Defs.ChangeValue(theIdx);
+  return myGraph->myData->myIncStorage.CompSolids.ChangeValue(theIdx);
 }
 
 //=================================================================================================
@@ -101,7 +92,7 @@ void BRepGraph::MutView::AddPCurveToEdge(BRepGraph_NodeId            theEdgeDef,
                                           TopAbs_Orientation          theEdgeOrientation)
 {
   BRepGraph_TopoNode::EdgeDef& anEdgeDef =
-    myGraph->myData->myEdges.Defs.ChangeValue(theEdgeDef.Index);
+    myGraph->myData->myIncStorage.Edges.ChangeValue(theEdgeDef.Index);
   BRepGraph_TopoNode::EdgeDef::PCurveEntry aNewEntry;
   aNewEntry.Curve2d         = theCurve2d;
   aNewEntry.FaceDefId       = theFaceDef;

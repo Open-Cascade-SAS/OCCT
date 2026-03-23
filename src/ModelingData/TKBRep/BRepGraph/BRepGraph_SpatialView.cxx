@@ -18,41 +18,17 @@
 
 //=================================================================================================
 
-gp_Trsf BRepGraph::SpatialView::GlobalTransform(BRepGraph_UsageId theUsage) const
-{
-  if (!theUsage.IsValid())
-    return gp_Trsf();
-
-  switch (theUsage.NodeKind)
-  {
-    case BRepGraph_NodeId::Kind::Solid:
-      return myGraph->myData->mySolids.Usages.Value(theUsage.Index).GlobalLocation.Transformation();
-    case BRepGraph_NodeId::Kind::Shell:
-      return myGraph->myData->myShells.Usages.Value(theUsage.Index).GlobalLocation.Transformation();
-    case BRepGraph_NodeId::Kind::Face:
-      return myGraph->myData->myFaces.Usages.Value(theUsage.Index).GlobalLocation.Transformation();
-    case BRepGraph_NodeId::Kind::Wire:
-      return myGraph->myData->myWires.Usages.Value(theUsage.Index).GlobalLocation.Transformation();
-    case BRepGraph_NodeId::Kind::Edge:
-      return myGraph->myData->myEdges.Usages.Value(theUsage.Index).GlobalLocation.Transformation();
-    case BRepGraph_NodeId::Kind::Vertex:
-      return myGraph->myData->myVertices.Usages.Value(theUsage.Index).GlobalLocation.Transformation();
-    case BRepGraph_NodeId::Kind::Compound:
-      return myGraph->myData->myCompounds.Usages.Value(theUsage.Index).GlobalLocation.Transformation();
-    case BRepGraph_NodeId::Kind::CompSolid:
-      return myGraph->myData->myCompSolids.Usages.Value(theUsage.Index).GlobalLocation.Transformation();
-    default: return gp_Trsf();
-  }
-}
-
-//=================================================================================================
-
 gp_Trsf BRepGraph::SpatialView::GlobalTransform(BRepGraph_NodeId theDefId) const
 {
-  const BRepGraph_TopoNode::BaseDef* aDef = myGraph->TopoDef(theDefId);
-  if (aDef == nullptr || aDef->Usages.IsEmpty())
+  if (!theDefId.IsValid())
     return gp_Trsf();
-  return GlobalTransform(aDef->Usages.Value(0));
+
+  // Read per-node location from myNodeLocations if available.
+  const TopLoc_Location* aNodeLoc = myGraph->myData->myNodeLocations.Seek(theDefId);
+  if (aNodeLoc != nullptr)
+    return aNodeLoc->Transformation();
+
+  return gp_Trsf();
 }
 
 //=================================================================================================
@@ -65,14 +41,14 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::SameDomainFaces(
     return aResult;
 
   const BRepGraph_TopoNode::FaceDef& aFaceDef =
-    myGraph->myData->myFaces.Defs.Value(theFaceDef.Index);
+    myGraph->myData->myIncStorage.Faces.Value(theFaceDef.Index);
   if (aFaceDef.Surface.IsNull())
     return aResult;
 
   // Scan all face defs for matching surface
-  for (int aFaceIdx = 0; aFaceIdx < myGraph->myData->myFaces.Defs.Length(); ++aFaceIdx)
+  for (int aFaceIdx = 0; aFaceIdx < myGraph->myData->myIncStorage.Faces.Length(); ++aFaceIdx)
   {
-    const BRepGraph_TopoNode::FaceDef& aOtherFace = myGraph->myData->myFaces.Defs.Value(aFaceIdx);
+    const BRepGraph_TopoNode::FaceDef& aOtherFace = myGraph->myData->myIncStorage.Faces.Value(aFaceIdx);
     if (aOtherFace.Surface.get() == aFaceDef.Surface.get() && aOtherFace.Id != theFaceDef)
       aResult.Append(aOtherFace.Id);
   }
@@ -116,12 +92,12 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::SharedEdges(
 {
   NCollection_Vector<BRepGraph_NodeId> aResult;
 
-  const BRepGraph_TopoNode::FaceDef& aFaceDefA = myGraph->myData->myFaces.Defs.Value(theFaceA.Index);
+  const BRepGraph_TopoNode::FaceDef& aFaceDefA = myGraph->myData->myIncStorage.Faces.Value(theFaceA.Index);
 
   NCollection_PackedMap<int> aEdgesA;
   auto collectWireEdges = [&](int theWireDefIdx) {
     const BRepGraph_TopoNode::WireDef& aWireDef =
-      myGraph->myData->myWires.Defs.Value(theWireDefIdx);
+      myGraph->myData->myIncStorage.Wires.Value(theWireDefIdx);
     for (int anEdgeIdx = 0; anEdgeIdx < aWireDef.EdgeRefs.Length(); ++anEdgeIdx)
     {
       aEdgesA.Add(aWireDef.EdgeRefs.Value(anEdgeIdx).EdgeIdx);
@@ -130,18 +106,18 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::SharedEdges(
   for (int aWIdx = 0; aWIdx < aFaceDefA.WireRefs.Length(); ++aWIdx)
     collectWireEdges(aFaceDefA.WireRefs.Value(aWIdx).WireIdx);
 
-  const BRepGraph_TopoNode::FaceDef& aFaceDefB = myGraph->myData->myFaces.Defs.Value(theFaceB.Index);
+  const BRepGraph_TopoNode::FaceDef& aFaceDefB = myGraph->myData->myIncStorage.Faces.Value(theFaceB.Index);
 
   NCollection_PackedMap<int> aAdded;
   auto checkWireEdges = [&](int theWireDefIdx) {
     const BRepGraph_TopoNode::WireDef& aWireDef =
-      myGraph->myData->myWires.Defs.Value(theWireDefIdx);
+      myGraph->myData->myIncStorage.Wires.Value(theWireDefIdx);
     for (int anEdgeIdx = 0; anEdgeIdx < aWireDef.EdgeRefs.Length(); ++anEdgeIdx)
     {
       const int anEdgeDefIdx = aWireDef.EdgeRefs.Value(anEdgeIdx).EdgeIdx;
       if (aEdgesA.Contains(anEdgeDefIdx) && aAdded.Add(anEdgeDefIdx))
       {
-        aResult.Append(myGraph->myData->myEdges.Defs.Value(anEdgeDefIdx).Id);
+        aResult.Append(myGraph->myData->myIncStorage.Edges.Value(anEdgeDefIdx).Id);
       }
     }
   };
@@ -160,17 +136,17 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::AdjacentFaces(
   NCollection_PackedMap<int>           aFaceSet;
 
   const BRepGraph_TopoNode::FaceDef& aFaceDef =
-    myGraph->myData->myFaces.Defs.Value(theFaceDef.Index);
+    myGraph->myData->myIncStorage.Faces.Value(theFaceDef.Index);
 
   for (int aWireRefIdx = 0; aWireRefIdx < aFaceDef.WireRefs.Length(); ++aWireRefIdx)
   {
     const int aWireDefIdx = aFaceDef.WireRefs.Value(aWireRefIdx).WireIdx;
     const BRepGraph_TopoNode::WireDef& aWireDef =
-      myGraph->myData->myWires.Defs.Value(aWireDefIdx);
+      myGraph->myData->myIncStorage.Wires.Value(aWireDefIdx);
     for (int anEdgeIdx = 0; anEdgeIdx < aWireDef.EdgeRefs.Length(); ++anEdgeIdx)
     {
       const int anEdgeDefIdx = aWireDef.EdgeRefs.Value(anEdgeIdx).EdgeIdx;
-      BRepGraph_NodeId anEdgeDefId = myGraph->myData->myEdges.Defs.Value(anEdgeDefIdx).Id;
+      BRepGraph_NodeId anEdgeDefId = myGraph->myData->myIncStorage.Edges.Value(anEdgeDefIdx).Id;
       NCollection_Vector<BRepGraph_NodeId> aFaces = FacesOfEdge(anEdgeDefId);
       for (int aFIdx = 0; aFIdx < aFaces.Length(); ++aFIdx)
       {

@@ -33,7 +33,7 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
                                   BRepGraph_NodeId& theSubB)
 {
   // Copy all data from the original EdgeDef before appending to vectors (which may reallocate).
-  const BRepGraph_TopoNode::EdgeDef& anOrig = theGraph.myData->myEdges.Defs.Value(theEdgeDef.Index);
+  const BRepGraph_TopoNode::EdgeDef& anOrig = theGraph.myData->myIncStorage.Edges.Value(theEdgeDef.Index);
 
   const Handle(Geom_Curve) aOrigCurve3d        = anOrig.Curve3d;
   const double           aOrigTolerance        = anOrig.Tolerance;
@@ -44,27 +44,27 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
   const BRepGraph_NodeId aOrigEndVertexDefId   = anOrig.EndVertexDefId;
   const bool             aOrigSameRange        = anOrig.SameRange;
 
-  // Copy PCurve entries and wire list before any mutation.
+  // Copy PCurve entries before any mutation.
   NCollection_Vector<BRepGraph_TopoNode::EdgeDef::PCurveEntry> aOrigPCurves = anOrig.PCurves;
   // Copy required: the loop below mutates myEdgeToWires (same key + new Bind calls can rehash).
   const NCollection_Vector<int>* aOrigWiresPtr = theGraph.myData->myEdgeToWires.Seek(theEdgeDef.Index);
   const NCollection_Vector<int>  aOrigWires    = aOrigWiresPtr != nullptr ? *aOrigWiresPtr : NCollection_Vector<int>();
 
   // Allocate SubA slot.
-  BRepGraph_TopoNode::EdgeDef& aSubADef = theGraph.myData->myEdges.Defs.Appended();
-  const int                    aSubAIdx = theGraph.myData->myEdges.Defs.Length() - 1;
+  BRepGraph_TopoNode::EdgeDef& aSubADef = theGraph.myData->myIncStorage.Edges.Appended();
+  const int                    aSubAIdx = theGraph.myData->myIncStorage.Edges.Length() - 1;
   aSubADef.Id = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, aSubAIdx);
   theSubA     = aSubADef.Id;
 
   // Allocate SubB slot (note: Appended() may invalidate aSubADef reference -- use index).
-  BRepGraph_TopoNode::EdgeDef& aSubBDef = theGraph.myData->myEdges.Defs.Appended();
-  const int                    aSubBIdx = theGraph.myData->myEdges.Defs.Length() - 1;
+  BRepGraph_TopoNode::EdgeDef& aSubBDef = theGraph.myData->myIncStorage.Edges.Appended();
+  const int                    aSubBIdx = theGraph.myData->myIncStorage.Edges.Length() - 1;
   aSubBDef.Id = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, aSubBIdx);
   theSubB     = aSubBDef.Id;
 
   // Set SubA: StartVertex -> SplitVertex, [ParamFirst, theSplitParam].
   {
-    BRepGraph_TopoNode::EdgeDef& aSubA = theGraph.myData->myEdges.Defs.ChangeValue(aSubAIdx);
+    BRepGraph_TopoNode::EdgeDef& aSubA = theGraph.myData->myIncStorage.Edges.ChangeValue(aSubAIdx);
     aSubA.Curve3d          = aOrigCurve3d;
     aSubA.Tolerance        = aOrigTolerance;
     aSubA.SameParameter    = aOrigSameParameter;
@@ -80,7 +80,7 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
 
   // Set SubB: SplitVertex -> EndVertex, [theSplitParam, ParamLast].
   {
-    BRepGraph_TopoNode::EdgeDef& aSubB = theGraph.myData->myEdges.Defs.ChangeValue(aSubBIdx);
+    BRepGraph_TopoNode::EdgeDef& aSubB = theGraph.myData->myIncStorage.Edges.ChangeValue(aSubBIdx);
     aSubB.Curve3d          = aOrigCurve3d;
     aSubB.Tolerance        = aOrigTolerance;
     aSubB.SameParameter    = aOrigSameParameter;
@@ -98,7 +98,6 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
   theGraph.allocateUID(theSubB);
 
   // Update incidence: wire EdgeRefs and mark original as removed.
-  // (SubA/SubB edge entities already exist in Defs, which IS myIncStorage.Edges.)
   {
     // Update WireEntity.EdgeRefs: replace original edge with SubA+SubB in all containing wires.
     const NCollection_Vector<int>* aWireIndices =
@@ -122,9 +121,6 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
             BRepGraphInc::EdgeRef aSubBRef;
             aSubBRef.EdgeIdx     = aSubBIdx;
             aSubBRef.Orientation = aOrigOri;
-            // NCollection_Vector doesn't have Insert, so rebuild the portion.
-            // For simplicity, append SubB and note that ordering may not be exact.
-            // The legacy Mutator handles wire ordering separately.
             aWire.EdgeRefs.Append(aSubBRef);
             break;
           }
@@ -167,7 +163,7 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
     aPCSubAEntry.ParamLast       = aPCSplit;
     aPCSubAEntry.Continuity      = aPCEntry.Continuity;
     aPCSubAEntry.EdgeOrientation = aPCEntry.EdgeOrientation;
-    theGraph.myData->myEdges.Defs.ChangeValue(aSubAIdx).PCurves.Append(aPCSubAEntry);
+    theGraph.myData->myIncStorage.Edges.ChangeValue(aSubAIdx).PCurves.Append(aPCSubAEntry);
 
     // PCurve for SubB: [aPCSplit, PCLast].
     BRepGraph_TopoNode::EdgeDef::PCurveEntry aPCSubBEntry;
@@ -177,7 +173,7 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
     aPCSubBEntry.ParamLast       = aPCEntry.ParamLast;
     aPCSubBEntry.Continuity      = aPCEntry.Continuity;
     aPCSubBEntry.EdgeOrientation = aPCEntry.EdgeOrientation;
-    theGraph.myData->myEdges.Defs.ChangeValue(aSubBIdx).PCurves.Append(aPCSubBEntry);
+    theGraph.myData->myIncStorage.Edges.ChangeValue(aSubBIdx).PCurves.Append(aPCSubBEntry);
   }
 
   // Register TopoDS shapes for sub-edges so OriginalOf() works in downstream algorithms.
@@ -204,65 +200,10 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
     theGraph.myData->myOriginalShapes.Bind(theSubB, aSubBEdge);
   }
 
-  // Update WireUsage EdgeUsages: replace original edge with two sub-edges.
+  // Update edge-to-wire reverse index for the containing wires.
   for (int aWIdx = 0; aWIdx < aOrigWires.Length(); ++aWIdx)
   {
     const int aWireIdx = aOrigWires.Value(aWIdx);
-    BRepGraph_TopoNode::WireDef& aWireDef = theGraph.myData->myWires.Defs.ChangeValue(aWireIdx);
-    if (aWireDef.Usages.IsEmpty())
-      continue;
-
-    BRepGraph_TopoNode::WireUsage& aWireUsage =
-      theGraph.myData->myWires.Usages.ChangeValue(aWireDef.Usages.Value(0).Index);
-
-    // Rebuild EdgeUsages replacing the original entry with SubA + SubB (or SubB + SubA).
-    NCollection_Vector<BRepGraph_UsageId> aNewEdgeUsages;
-    for (int aEIdx = 0; aEIdx < aWireUsage.EdgeUsages.Length(); ++aEIdx)
-    {
-      const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage =
-        theGraph.myData->myEdges.Usages.Value(aWireUsage.EdgeUsages.Value(aEIdx).Index);
-      if (anEdgeUsage.DefId != theEdgeDef)
-      {
-        aNewEdgeUsages.Append(aWireUsage.EdgeUsages.Value(aEIdx));
-      }
-      else if (anEdgeUsage.Orientation != TopAbs_REVERSED)
-      {
-        // Forward traversal: Start -> SplitVtx (SubA), SplitVtx -> End (SubB).
-        auto createSplitUsage = [&](BRepGraph_NodeId theDefId,
-                                    TopAbs_Orientation theOri) -> BRepGraph_UsageId {
-          BRepGraph_TopoNode::EdgeUsage& aNewEU = theGraph.myData->myEdges.Usages.Appended();
-          const int aNewEUIdx = theGraph.myData->myEdges.Usages.Length() - 1;
-          aNewEU.UsageId     = BRepGraph_UsageId(BRepGraph_NodeId::Kind::Edge, aNewEUIdx);
-          aNewEU.DefId       = theDefId;
-          aNewEU.Orientation = theOri;
-          aNewEU.ParentUsage = aWireUsage.UsageId;
-          theGraph.myData->myEdges.Defs.ChangeValue(theDefId.Index)
-            .Usages.Append(aNewEU.UsageId);
-          return aNewEU.UsageId;
-        };
-        aNewEdgeUsages.Append(createSplitUsage(theSubA, TopAbs_FORWARD));
-        aNewEdgeUsages.Append(createSplitUsage(theSubB, TopAbs_FORWARD));
-      }
-      else
-      {
-        // Reversed traversal: End -> SplitVtx (SubB rev), SplitVtx -> Start (SubA rev).
-        auto createSplitUsage = [&](BRepGraph_NodeId theDefId,
-                                    TopAbs_Orientation theOri) -> BRepGraph_UsageId {
-          BRepGraph_TopoNode::EdgeUsage& aNewEU = theGraph.myData->myEdges.Usages.Appended();
-          const int aNewEUIdx = theGraph.myData->myEdges.Usages.Length() - 1;
-          aNewEU.UsageId     = BRepGraph_UsageId(BRepGraph_NodeId::Kind::Edge, aNewEUIdx);
-          aNewEU.DefId       = theDefId;
-          aNewEU.Orientation = theOri;
-          aNewEU.ParentUsage = aWireUsage.UsageId;
-          theGraph.myData->myEdges.Defs.ChangeValue(theDefId.Index)
-            .Usages.Append(aNewEU.UsageId);
-          return aNewEU.UsageId;
-        };
-        aNewEdgeUsages.Append(createSplitUsage(theSubB, TopAbs_REVERSED));
-        aNewEdgeUsages.Append(createSplitUsage(theSubA, TopAbs_REVERSED));
-      }
-    }
-    aWireUsage.EdgeUsages = std::move(aNewEdgeUsages);
 
     // Update myEdgeToWires: remove this wire from orig, register for SubA and SubB.
     BRepGraph_BackRefManager::UnbindEdgeFromWire(theGraph, theEdgeDef.Index, aWireIdx);
@@ -288,7 +229,7 @@ void BRepGraph_Mutator::ReplaceEdgeInWire(BRepGraph&       theGraph,
                                           BRepGraph_NodeId theNewEdgeDef,
                                           bool             theReversed)
 {
-  BRepGraph_TopoNode::WireDef& aWireDef = theGraph.myData->myWires.Defs.ChangeValue(theWireDefIdx);
+  BRepGraph_TopoNode::WireDef& aWireDef = theGraph.myData->myIncStorage.Wires.ChangeValue(theWireDefIdx);
 
   // Update incidence EdgeRefs on the WireEntity.
   for (int anEdgeIdx = 0; anEdgeIdx < aWireDef.EdgeRefs.Length(); ++anEdgeIdx)
@@ -299,29 +240,12 @@ void BRepGraph_Mutator::ReplaceEdgeInWire(BRepGraph&       theGraph,
       aER.EdgeIdx = theNewEdgeDef.Index;
       if (theReversed)
         aER.Orientation = TopAbs::Reverse(aER.Orientation);
+
+      // Update edge-to-wire reverse index.
+      BRepGraph_BackRefManager::ReplaceEdgeInWireMap(theGraph, theOldEdgeDef.Index,
+                                                      theNewEdgeDef.Index, theWireDefIdx);
     }
   }
 
-  // Update legacy WireUsage EdgeUsages.
-  if (!aWireDef.Usages.IsEmpty())
-  {
-    BRepGraph_TopoNode::WireUsage& aWireUsage =
-      theGraph.myData->myWires.Usages.ChangeValue(aWireDef.Usages.Value(0).Index);
-    for (int anEdgeIdx = 0; anEdgeIdx < aWireUsage.EdgeUsages.Length(); ++anEdgeIdx)
-    {
-      BRepGraph_TopoNode::EdgeUsage& anEdgeUsage =
-        theGraph.myData->myEdges.Usages.ChangeValue(aWireUsage.EdgeUsages.Value(anEdgeIdx).Index);
-      if (anEdgeUsage.DefId == theOldEdgeDef)
-      {
-        anEdgeUsage.DefId = theNewEdgeDef;
-        if (theReversed)
-          anEdgeUsage.Orientation = TopAbs::Reverse(anEdgeUsage.Orientation);
-
-        // Update edge-to-wire reverse index.
-        BRepGraph_BackRefManager::ReplaceEdgeInWireMap(theGraph, theOldEdgeDef.Index,
-                                                        theNewEdgeDef.Index, theWireDefIdx);
-      }
-    }
-  }
   theGraph.markModified(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Wire, theWireDefIdx));
 }

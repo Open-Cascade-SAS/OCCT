@@ -16,7 +16,6 @@
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_UIDsView.hxx>
-#include <BRepGraph_UsagesView.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <TopoDS_Compound.hxx>
@@ -78,32 +77,6 @@ TEST(BRepGraphEdgeCasesTest, ReconstructShape_InvalidNodeId_ReturnsNull)
   const BRepGraph_NodeId anInvalidId;
   const TopoDS_Shape aShape = aGraph.Shapes().Reconstruct(anInvalidId);
   EXPECT_TRUE(aShape.IsNull());
-}
-
-TEST(BRepGraphEdgeCasesTest, UsagesOf_InvalidNodeId_HandlesGracefully)
-{
-  BRepGraph aGraph;
-  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-  aGraph.Build(aBoxMaker.Shape());
-  ASSERT_TRUE(aGraph.IsDone());
-
-  const BRepGraph_NodeId anInvalidId;
-  EXPECT_NO_THROW({
-    const NCollection_Vector<BRepGraph_UsageId>& aUsages = aGraph.UsagesOf(anInvalidId);
-    (void)aUsages;
-  });
-}
-
-TEST(BRepGraphEdgeCasesTest, DefOf_InvalidUsageId_ReturnsInvalid)
-{
-  BRepGraph aGraph;
-  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-  aGraph.Build(aBoxMaker.Shape());
-  ASSERT_TRUE(aGraph.IsDone());
-
-  const BRepGraph_UsageId anInvalidUsage;
-  const BRepGraph_NodeId aDefId = aGraph.DefOf(anInvalidUsage);
-  EXPECT_FALSE(aDefId.IsValid());
 }
 
 TEST(BRepGraphEdgeCasesTest, TopoDef_InvalidNodeId_ReturnsNull)
@@ -251,13 +224,6 @@ TEST(BRepGraphEdgeCasesTest, ParallelBuild_Sphere_SameAsSequential)
   EXPECT_EQ(aParGraph.Defs().NbFaces(),   aSeqGraph.Defs().NbFaces());
   EXPECT_EQ(aParGraph.Defs().NbEdges(),   aSeqGraph.Defs().NbEdges());
   EXPECT_EQ(aParGraph.Defs().NbNodes(),      aSeqGraph.Defs().NbNodes());
-
-  EXPECT_EQ(aParGraph.Usages().NbSolids(),  aSeqGraph.Usages().NbSolids());
-  EXPECT_EQ(aParGraph.Usages().NbShells(),  aSeqGraph.Usages().NbShells());
-  EXPECT_EQ(aParGraph.Usages().NbFaces(),   aSeqGraph.Usages().NbFaces());
-  EXPECT_EQ(aParGraph.Usages().NbWires(),   aSeqGraph.Usages().NbWires());
-  EXPECT_EQ(aParGraph.Usages().NbEdges(),   aSeqGraph.Usages().NbEdges());
-  EXPECT_EQ(aParGraph.Usages().NbVertices(), aSeqGraph.Usages().NbVertices());
 }
 
 TEST(BRepGraphEdgeCasesTest, ParallelBuild_Compound_SameAsSequential)
@@ -291,11 +257,4 @@ TEST(BRepGraphEdgeCasesTest, ParallelBuild_Compound_SameAsSequential)
   EXPECT_EQ(aParGraph.Defs().NbFaces(),   aSeqGraph.Defs().NbFaces());
   EXPECT_EQ(aParGraph.Defs().NbEdges(),   aSeqGraph.Defs().NbEdges());
   EXPECT_EQ(aParGraph.Defs().NbNodes(),      aSeqGraph.Defs().NbNodes());
-
-  EXPECT_EQ(aParGraph.Usages().NbSolids(),  aSeqGraph.Usages().NbSolids());
-  EXPECT_EQ(aParGraph.Usages().NbShells(),  aSeqGraph.Usages().NbShells());
-  EXPECT_EQ(aParGraph.Usages().NbFaces(),   aSeqGraph.Usages().NbFaces());
-  EXPECT_EQ(aParGraph.Usages().NbWires(),   aSeqGraph.Usages().NbWires());
-  EXPECT_EQ(aParGraph.Usages().NbEdges(),   aSeqGraph.Usages().NbEdges());
-  EXPECT_EQ(aParGraph.Usages().NbVertices(), aSeqGraph.Usages().NbVertices());
 }

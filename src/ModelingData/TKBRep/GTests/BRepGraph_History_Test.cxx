@@ -19,7 +19,6 @@
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_RelEdgesView.hxx>
 #include <BRepGraph_RelEdge.hxx>
-#include <BRepGraph_UsagesView.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <NCollection_Vector.hxx>

@@ -46,7 +46,7 @@ void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
     {
       aFace.Surface->Transform(theTrsf);
     }
-    // Invalidate triangulations — meshes are no longer valid after geometry transform.
+    // Invalidate triangulations -- meshes are no longer valid after geometry transform.
     aFace.Triangulations.Clear();
     aFace.ActiveTriangulationIndex = -1;
   }
@@ -61,7 +61,7 @@ void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
       anEdge.Curve3d->Transform(theTrsf);
     }
   }
-  // PCurves are in UV space — they are not affected by 3D transforms.
+  // PCurves are in UV space -- they are not affected by 3D transforms.
 }
 
 } // namespace
@@ -72,38 +72,34 @@ void BRepGraphAlgo_Transform::applyLocationTransform(BRepGraph& theGraph, const 
 {
   const TopLoc_Location aLoc(theTrsf);
 
-  // Modify LocalLocation on root usages (those with no parent) and
-  // recompute GlobalLocation for all usages by prepending the transform.
-  // Definition-level data (vertex points, geometry handles/locations) is NOT modified.
-  auto updateUsages = [&](auto& theUsages) {
-    for (int anIdx = 0; anIdx < theUsages.Length(); ++anIdx)
+  // Store the transform as a per-node location for all root-level nodes.
+  // Without the Usage layer, locations are stored in myData->myNodeLocations.
+  // Prepend the transform to any existing node location.
+  auto applyToKind = [&](BRepGraph_NodeId::Kind theKind, int theCount) {
+    for (int anIdx = 0; anIdx < theCount; ++anIdx)
     {
-      auto& aUsage = theUsages.ChangeValue(anIdx);
-      if (!aUsage.ParentUsage.IsValid())
+      const BRepGraph_NodeId aNodeId(theKind, anIdx);
+      const TopLoc_Location* anExisting = theGraph.myData->myNodeLocations.Seek(aNodeId);
+      if (anExisting != nullptr)
       {
-        // Root usage: multiply LocalLocation.
-        aUsage.LocalLocation = aLoc * aUsage.LocalLocation;
+        theGraph.myData->myNodeLocations.Bind(aNodeId, aLoc * (*anExisting));
       }
-      // All usages: update GlobalLocation.
-      aUsage.GlobalLocation = aLoc * aUsage.GlobalLocation;
+      else
+      {
+        theGraph.myData->myNodeLocations.Bind(aNodeId, aLoc);
+      }
+      theGraph.markModified(aNodeId);
     }
   };
 
-  updateUsages(theGraph.myData->mySolids.Usages);
-  updateUsages(theGraph.myData->myShells.Usages);
-  updateUsages(theGraph.myData->myFaces.Usages);
-  updateUsages(theGraph.myData->myWires.Usages);
-  updateUsages(theGraph.myData->myEdges.Usages);
-  updateUsages(theGraph.myData->myVertices.Usages);
-  updateUsages(theGraph.myData->myCompounds.Usages);
-  updateUsages(theGraph.myData->myCompSolids.Usages);
-
-  // Update vertex usage TransformedPoint fields.
-  for (int anIdx = 0; anIdx < theGraph.myData->myVertices.Usages.Length(); ++anIdx)
-  {
-    BRepGraph_TopoNode::VertexUsage& aVU = theGraph.myData->myVertices.Usages.ChangeValue(anIdx);
-    aVU.TransformedPoint.Transform(theTrsf);
-  }
+  applyToKind(BRepGraph_NodeId::Kind::Vertex,    theGraph.Defs().NbVertices());
+  applyToKind(BRepGraph_NodeId::Kind::Edge,      theGraph.Defs().NbEdges());
+  applyToKind(BRepGraph_NodeId::Kind::Wire,      theGraph.Defs().NbWires());
+  applyToKind(BRepGraph_NodeId::Kind::Face,      theGraph.Defs().NbFaces());
+  applyToKind(BRepGraph_NodeId::Kind::Shell,     theGraph.Defs().NbShells());
+  applyToKind(BRepGraph_NodeId::Kind::Solid,     theGraph.Defs().NbSolids());
+  applyToKind(BRepGraph_NodeId::Kind::Compound,  theGraph.Defs().NbCompounds());
+  applyToKind(BRepGraph_NodeId::Kind::CompSolid, theGraph.Defs().NbCompSolids());
 
   // Invalidate cached reconstructed shapes.
   theGraph.myData->myCurrentShapes.Clear();
@@ -134,7 +130,7 @@ BRepGraph BRepGraphAlgo_Transform::Perform(const BRepGraph& theGraph,
     return aResult;
   }
 
-  // Root-level (location-only): light-copy, multiply transform into usage locations.
+  // Root-level (location-only): light-copy, multiply transform into node locations.
   // Matches BRepBuilderAPI_Transform with theCopyGeom=false (shape.Moved(trsf)).
   BRepGraph aResult = BRepGraphAlgo_Copy::Perform(theGraph, false);
   if (!aResult.IsDone())

@@ -20,8 +20,7 @@ class BRepGraph;
 
 //! A non-owning view over a connected component of BRepGraph.
 //!
-//! Stores per-kind definition index sets and per-kind usage index sets
-//! referencing the parent graph's vectors.
+//! Stores per-kind definition index sets referencing the parent graph's vectors.
 class BRepGraph_SubGraph
 {
 public:
@@ -34,14 +33,6 @@ public:
   const NCollection_Vector<int>& WireDefIndices()   const { return myWireDefIndices; }
   const NCollection_Vector<int>& EdgeDefIndices()   const { return myEdgeDefIndices; }
   const NCollection_Vector<int>& VertexDefIndices() const { return myVertexDefIndices; }
-
-  //! Usage index sets.
-  const NCollection_Vector<int>& SolidUsageIndices()  const { return mySolidUsageIndices; }
-  const NCollection_Vector<int>& ShellUsageIndices()  const { return myShellUsageIndices; }
-  const NCollection_Vector<int>& FaceUsageIndices()   const { return myFaceUsageIndices; }
-  const NCollection_Vector<int>& WireUsageIndices()   const { return myWireUsageIndices; }
-  const NCollection_Vector<int>& EdgeUsageIndices()   const { return myEdgeUsageIndices; }
-  const NCollection_Vector<int>& VertexUsageIndices() const { return myVertexUsageIndices; }
 
   int NbTopoNodes() const
   {
@@ -62,13 +53,6 @@ private:
   NCollection_Vector<int> myWireDefIndices;
   NCollection_Vector<int> myEdgeDefIndices;
   NCollection_Vector<int> myVertexDefIndices;
-
-  NCollection_Vector<int> mySolidUsageIndices;
-  NCollection_Vector<int> myShellUsageIndices;
-  NCollection_Vector<int> myFaceUsageIndices;
-  NCollection_Vector<int> myWireUsageIndices;
-  NCollection_Vector<int> myEdgeUsageIndices;
-  NCollection_Vector<int> myVertexUsageIndices;
 };
 
 #endif // _BRepGraph_SubGraph_HeaderFile

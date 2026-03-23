@@ -18,7 +18,6 @@
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_NodeId.hxx>
-#include <BRepGraph_UsagesView.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
 #include <BRepGraphAlgo_Deduplicate.hxx>
 #include <BRepGraphAlgo_Validate.hxx>

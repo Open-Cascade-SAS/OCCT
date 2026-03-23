@@ -16,7 +16,6 @@
 
 #include <BRepGraph_NodeCache.hxx>
 #include <BRepGraph_NodeId.hxx>
-#include <BRepGraph_UsageId.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
 
 #include <Geom2d_Curve.hxx>
@@ -48,10 +47,6 @@ struct BaseEntity
   BRepGraph_NodeCache Cache;        //!< Lazily-computed derived quantities + user attributes
   bool               IsModified = false; //!< True when mutated since Build()
   bool               IsRemoved = false;  //!< Soft-removal flag
-
-  //! All usages of this definition in the containment tree.
-  //! Bridge field for Phase A migration — will be removed in Phase D.
-  NCollection_Vector<BRepGraph_UsageId> Usages;
 };
 
 //! Vertex entity: 3D point + tolerance.

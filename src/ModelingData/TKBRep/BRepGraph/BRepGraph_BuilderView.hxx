@@ -75,23 +75,21 @@ public:
   //! @return NodeId of the new solid definition
   Standard_EXPORT BRepGraph_NodeId AddSolidDef();
 
-  //! Link a face to a shell (creates FaceUsage under the ShellUsage).
+  //! Link a face to a shell (appends FaceRef to shell entity).
   //! @param[in] theShellDef  shell definition NodeId
   //! @param[in] theFaceDef   face definition NodeId
   //! @param[in] theOri       orientation of the face in the shell
-  //! @return UsageId of the created FaceUsage
-  Standard_EXPORT BRepGraph_UsageId AddFaceToShell(BRepGraph_NodeId   theShellDef,
-                                                   BRepGraph_NodeId   theFaceDef,
-                                                   TopAbs_Orientation theOri = TopAbs_FORWARD);
+  Standard_EXPORT void AddFaceToShell(BRepGraph_NodeId   theShellDef,
+                                      BRepGraph_NodeId   theFaceDef,
+                                      TopAbs_Orientation theOri = TopAbs_FORWARD);
 
-  //! Link a shell to a solid (creates ShellUsage under the SolidUsage).
+  //! Link a shell to a solid (appends ShellRef to solid entity).
   //! @param[in] theSolidDef  solid definition NodeId
   //! @param[in] theShellDef  shell definition NodeId
   //! @param[in] theOri       orientation of the shell in the solid
-  //! @return UsageId of the created ShellUsage
-  Standard_EXPORT BRepGraph_UsageId AddShellToSolid(BRepGraph_NodeId   theSolidDef,
-                                                    BRepGraph_NodeId   theShellDef,
-                                                    TopAbs_Orientation theOri = TopAbs_FORWARD);
+  Standard_EXPORT void AddShellToSolid(BRepGraph_NodeId   theSolidDef,
+                                       BRepGraph_NodeId   theShellDef,
+                                       TopAbs_Orientation theOri = TopAbs_FORWARD);
 
   //! Add a compound definition with child definitions.
   //! @param[in] theChildDefs child definition NodeIds

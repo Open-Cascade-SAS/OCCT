@@ -16,12 +16,10 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_DefsView.hxx>
-#include <BRepGraph_UsagesView.hxx>
 
-//! @brief Type-safe, allocation-free iterator over BRepGraph nodes.
+//! @brief Type-safe, allocation-free iterator over BRepGraph definition nodes.
 //!
-//! Provides sequential read-only access to definitions or usages
-//! stored in BRepGraph.
+//! Provides sequential read-only access to definitions stored in BRepGraph.
 //!
 //! ## Usage
 //! @code
@@ -103,34 +101,6 @@ inline BRepGraph_Iterator<BRepGraph_TopoNode::VertexDef>::BRepGraph_Iterator(con
     : myGraph(theGraph), myLength(theGraph.Defs().NbVertices()) { skipRemoved(); }
 
 // ---------------------------------------------------------------------------
-// Usage iterators: constructors
-// ---------------------------------------------------------------------------
-
-template <>
-inline BRepGraph_Iterator<BRepGraph_TopoNode::SolidUsage>::BRepGraph_Iterator(const BRepGraph& theGraph)
-    : myGraph(theGraph), myLength(theGraph.Usages().NbSolids()) {}
-
-template <>
-inline BRepGraph_Iterator<BRepGraph_TopoNode::ShellUsage>::BRepGraph_Iterator(const BRepGraph& theGraph)
-    : myGraph(theGraph), myLength(theGraph.Usages().NbShells()) {}
-
-template <>
-inline BRepGraph_Iterator<BRepGraph_TopoNode::FaceUsage>::BRepGraph_Iterator(const BRepGraph& theGraph)
-    : myGraph(theGraph), myLength(theGraph.Usages().NbFaces()) {}
-
-template <>
-inline BRepGraph_Iterator<BRepGraph_TopoNode::WireUsage>::BRepGraph_Iterator(const BRepGraph& theGraph)
-    : myGraph(theGraph), myLength(theGraph.Usages().NbWires()) {}
-
-template <>
-inline BRepGraph_Iterator<BRepGraph_TopoNode::EdgeUsage>::BRepGraph_Iterator(const BRepGraph& theGraph)
-    : myGraph(theGraph), myLength(theGraph.Usages().NbEdges()) {}
-
-template <>
-inline BRepGraph_Iterator<BRepGraph_TopoNode::VertexUsage>::BRepGraph_Iterator(const BRepGraph& theGraph)
-    : myGraph(theGraph), myLength(theGraph.Usages().NbVertices()) {}
-
-// ---------------------------------------------------------------------------
 // Definition iterators: Current()
 // ---------------------------------------------------------------------------
 
@@ -163,39 +133,5 @@ template <>
 inline const BRepGraph_TopoNode::VertexDef&
 BRepGraph_Iterator<BRepGraph_TopoNode::VertexDef>::Current() const
 { return myGraph.Defs().Vertex(myIndex); }
-
-// ---------------------------------------------------------------------------
-// Usage iterators: Current()
-// ---------------------------------------------------------------------------
-
-template <>
-inline const BRepGraph_TopoNode::SolidUsage&
-BRepGraph_Iterator<BRepGraph_TopoNode::SolidUsage>::Current() const
-{ return myGraph.Usages().Solid(myIndex); }
-
-template <>
-inline const BRepGraph_TopoNode::ShellUsage&
-BRepGraph_Iterator<BRepGraph_TopoNode::ShellUsage>::Current() const
-{ return myGraph.Usages().Shell(myIndex); }
-
-template <>
-inline const BRepGraph_TopoNode::FaceUsage&
-BRepGraph_Iterator<BRepGraph_TopoNode::FaceUsage>::Current() const
-{ return myGraph.Usages().Face(myIndex); }
-
-template <>
-inline const BRepGraph_TopoNode::WireUsage&
-BRepGraph_Iterator<BRepGraph_TopoNode::WireUsage>::Current() const
-{ return myGraph.Usages().Wire(myIndex); }
-
-template <>
-inline const BRepGraph_TopoNode::EdgeUsage&
-BRepGraph_Iterator<BRepGraph_TopoNode::EdgeUsage>::Current() const
-{ return myGraph.Usages().Edge(myIndex); }
-
-template <>
-inline const BRepGraph_TopoNode::VertexUsage&
-BRepGraph_Iterator<BRepGraph_TopoNode::VertexUsage>::Current() const
-{ return myGraph.Usages().Vertex(myIndex); }
 
 #endif // _BRepGraph_Iterator_HeaderFile

@@ -45,8 +45,5 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_UID.hxx
   BRepGraph_UIDsView.cxx
   BRepGraph_UIDsView.hxx
-  BRepGraph_UsageId.hxx
-  BRepGraph_UsagesView.cxx
-  BRepGraph_UsagesView.hxx
   BRepGraph_UserAttribute.hxx
 )

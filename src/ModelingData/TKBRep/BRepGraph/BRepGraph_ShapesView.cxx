@@ -47,35 +47,12 @@ TopoDS_Shape BRepGraph::ShapesView::Shape(BRepGraph_NodeId theNode) const
   TopoDS_Shape aReconstructed =
     BRepGraphInc_Reconstruct::Node(myGraph->myData->myIncStorage, theNode);
 
-  // For modified nodes, apply usage-specific orientation and location
-  // (e.g. from Transform). Transitional: will be removed when orientation/location
-  // data migrates from Usage structs to incidence entities.
-  // Uses first usage only — Shape() returns a single representative shape.
-  // Multi-usage scenarios (shared sub-shapes) use ReconstructFromUsage() with a specific UsageId.
-  if (aDef != nullptr && aDef->IsModified && !aReconstructed.IsNull() && !aDef->Usages.IsEmpty())
+  // For modified nodes, apply per-node location if stored.
+  if (aDef != nullptr && aDef->IsModified && !aReconstructed.IsNull())
   {
-    const BRepGraph_UsageId& aFirstUsage = aDef->Usages.Value(0);
-    auto applyFirstUsageLoc = [&](const auto& theUsageVec) {
-      if (aFirstUsage.Index >= 0 && aFirstUsage.Index < theUsageVec.Length())
-      {
-        const auto& aUsage = theUsageVec.Value(aFirstUsage.Index);
-        aReconstructed.Orientation(aUsage.Orientation);
-        if (!aUsage.GlobalLocation.IsIdentity())
-          aReconstructed.Location(aUsage.GlobalLocation);
-      }
-    };
-    switch (theNode.NodeKind)
-    {
-      case BRepGraph_NodeId::Kind::Solid:     applyFirstUsageLoc(myGraph->myData->mySolids.Usages); break;
-      case BRepGraph_NodeId::Kind::Shell:     applyFirstUsageLoc(myGraph->myData->myShells.Usages); break;
-      case BRepGraph_NodeId::Kind::Face:      applyFirstUsageLoc(myGraph->myData->myFaces.Usages); break;
-      case BRepGraph_NodeId::Kind::Wire:      applyFirstUsageLoc(myGraph->myData->myWires.Usages); break;
-      case BRepGraph_NodeId::Kind::Edge:      applyFirstUsageLoc(myGraph->myData->myEdges.Usages); break;
-      case BRepGraph_NodeId::Kind::Vertex:    applyFirstUsageLoc(myGraph->myData->myVertices.Usages); break;
-      case BRepGraph_NodeId::Kind::Compound:  applyFirstUsageLoc(myGraph->myData->myCompounds.Usages); break;
-      case BRepGraph_NodeId::Kind::CompSolid: applyFirstUsageLoc(myGraph->myData->myCompSolids.Usages); break;
-      default: break;
-    }
+    const TopLoc_Location* aNodeLoc = myGraph->myData->myNodeLocations.Seek(theNode);
+    if (aNodeLoc != nullptr && !aNodeLoc->IsIdentity())
+      aReconstructed.Location(*aNodeLoc);
   }
 
   // Store under exclusive lock with double-check.
@@ -112,7 +89,16 @@ const TopoDS_Shape& BRepGraph::ShapesView::OriginalOf(BRepGraph_NodeId theNode) 
 
 TopoDS_Shape BRepGraph::ShapesView::Reconstruct(BRepGraph_NodeId theRoot) const
 {
-  return BRepGraphInc_Reconstruct::Node(myGraph->myData->myIncStorage, theRoot);
+  TopoDS_Shape aShape = BRepGraphInc_Reconstruct::Node(myGraph->myData->myIncStorage, theRoot);
+
+  // Apply per-node location if stored (e.g. from Transform).
+  if (!aShape.IsNull())
+  {
+    const TopLoc_Location* aNodeLoc = myGraph->myData->myNodeLocations.Seek(theRoot);
+    if (aNodeLoc != nullptr && !aNodeLoc->IsIdentity())
+      aShape.Location(*aNodeLoc);
+  }
+  return aShape;
 }
 
 //=================================================================================================
@@ -126,37 +112,17 @@ TopoDS_Shape BRepGraph::ShapesView::ReconstructFace(int theFaceDefIdx) const
 
 //=================================================================================================
 
-TopoDS_Shape BRepGraph::ShapesView::ReconstructFromUsage(BRepGraph_UsageId theRoot) const
+TopoDS_Shape BRepGraph::ShapesView::ReconstructFromNode(BRepGraph_NodeId theNode) const
 {
-  // Reconstruct from incidence, then apply usage-specific orientation and location.
-  const BRepGraph_NodeId aDefId = myGraph->DefOf(theRoot);
-  TopoDS_Shape aShape = BRepGraphInc_Reconstruct::Node(myGraph->myData->myIncStorage, aDefId);
-  if (aShape.IsNull() || !theRoot.IsValid())
+  TopoDS_Shape aShape = BRepGraphInc_Reconstruct::Node(myGraph->myData->myIncStorage, theNode);
+  if (aShape.IsNull() || !theNode.IsValid())
     return aShape;
 
-  // Apply usage orientation and location.
-  auto applyUsage = [&](const auto& theUsageVec) {
-    if (theRoot.Index >= 0 && theRoot.Index < theUsageVec.Length())
-    {
-      const auto& aUsage = theUsageVec.Value(theRoot.Index);
-      aShape.Orientation(aUsage.Orientation);
-      if (!aUsage.GlobalLocation.IsIdentity())
-        aShape.Location(aUsage.GlobalLocation);
-    }
-  };
+  // Apply per-node location if stored.
+  const TopLoc_Location* aNodeLoc = myGraph->myData->myNodeLocations.Seek(theNode);
+  if (aNodeLoc != nullptr && !aNodeLoc->IsIdentity())
+    aShape.Location(*aNodeLoc);
 
-  switch (theRoot.NodeKind)
-  {
-    case BRepGraph_NodeId::Kind::Solid:     applyUsage(myGraph->myData->mySolids.Usages); break;
-    case BRepGraph_NodeId::Kind::Shell:     applyUsage(myGraph->myData->myShells.Usages); break;
-    case BRepGraph_NodeId::Kind::Face:      applyUsage(myGraph->myData->myFaces.Usages); break;
-    case BRepGraph_NodeId::Kind::Wire:      applyUsage(myGraph->myData->myWires.Usages); break;
-    case BRepGraph_NodeId::Kind::Edge:      applyUsage(myGraph->myData->myEdges.Usages); break;
-    case BRepGraph_NodeId::Kind::Vertex:    applyUsage(myGraph->myData->myVertices.Usages); break;
-    case BRepGraph_NodeId::Kind::Compound:  applyUsage(myGraph->myData->myCompounds.Usages); break;
-    case BRepGraph_NodeId::Kind::CompSolid: applyUsage(myGraph->myData->myCompSolids.Usages); break;
-    default: break;
-  }
   return aShape;
 }
 

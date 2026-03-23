@@ -67,7 +67,7 @@ public:
                                                  bool             theCopyGeom = true);
 
 private:
-  //! Apply location-only transform by multiplying into usage GlobalLocations.
+  //! Apply location-only transform by storing per-node locations.
   static void applyLocationTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf);
 
   BRepGraphAlgo_Transform() = delete;

@@ -21,7 +21,6 @@
 #include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_SpatialView.hxx>
-#include <BRepGraph_UsagesView.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
@@ -381,11 +380,7 @@ TEST(BRepGraphAPI_ConstructionTest, AddFaceToShell_CreatesUsage)
 
   // Create shell and link face to it.
   BRepGraph_NodeId aShellId = aGraph.Builder().AddShellDef();
-  BRepGraph_UsageId aFaceUsage = aGraph.Builder().AddFaceToShell(aShellId, aFaceId);
-  EXPECT_TRUE(aFaceUsage.IsValid());
-  EXPECT_EQ(aFaceUsage.NodeKind, BRepGraph_NodeId::Kind::Face);
-  EXPECT_EQ(aGraph.Usages().NbShells(), 1);
-  EXPECT_GE(aGraph.Usages().NbFaces(), 2); // Initial + shell-linked
+  aGraph.Builder().AddFaceToShell(aShellId, aFaceId);
 
   // Verify shell has a face ref.
   const BRepGraph_TopoNode::ShellDef& aShellDef = aGraph.Defs().Shell(0);
@@ -399,10 +394,7 @@ TEST(BRepGraphAPI_ConstructionTest, AddShellToSolid_CreatesUsage)
   BRepGraph_NodeId aShellId = aGraph.Builder().AddShellDef();
   BRepGraph_NodeId aSolidId = aGraph.Builder().AddSolidDef();
 
-  BRepGraph_UsageId aShellUsage = aGraph.Builder().AddShellToSolid(aSolidId, aShellId);
-  EXPECT_TRUE(aShellUsage.IsValid());
-  EXPECT_EQ(aShellUsage.NodeKind, BRepGraph_NodeId::Kind::Shell);
-  EXPECT_EQ(aGraph.Usages().NbSolids(), 1);
+  aGraph.Builder().AddShellToSolid(aSolidId, aShellId);
 
   const BRepGraph_TopoNode::SolidDef& aSolidDef = aGraph.Defs().Solid(0);
   EXPECT_EQ(aSolidDef.ShellRefs.Length(), 1);
@@ -489,8 +481,6 @@ TEST(BRepGraphAPI_ConstructionTest, FullSolid_ProgrammaticConstruction)
   EXPECT_EQ(aGraph.Defs().NbSolids(), 1);
   EXPECT_EQ(aGraph.Defs().NbShells(), 1);
   EXPECT_EQ(aGraph.Defs().NbFaces(), 1);
-  EXPECT_EQ(aGraph.Usages().NbSolids(), 1);
-  EXPECT_GE(aGraph.Usages().NbShells(), 1);
 
   const BRepGraph_TopoNode::SolidDef& aSolidDefUs = aGraph.Defs().Solid(0);
   EXPECT_EQ(aSolidDefUs.ShellRefs.Length(), 1);

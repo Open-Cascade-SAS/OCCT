@@ -688,6 +688,33 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage& theStorage,
   // Phase 3 (sequential): Register into storage with deduplication.
   registerFaceData(theStorage, aFaceData);
 
+  // Phase 3a: Fix compound face ChildRefs (face indices were unknown during Phase 1).
+  // ChildRefs are in the same order as TopoDS_Iterator over the original compound.
+  for (int aCompIdx = 0; aCompIdx < theStorage.Compounds.Length(); ++aCompIdx)
+  {
+    BRepGraphInc::CompoundEntity& aComp = theStorage.Compounds.ChangeValue(aCompIdx);
+    const TopoDS_Shape* aCompOrig = theStorage.OriginalShapes.Seek(aComp.Id);
+    if (aCompOrig == nullptr)
+      continue;
+
+    int aCRIdx = 0;
+    for (TopoDS_Iterator aChildIt(*aCompOrig); aChildIt.More(); aChildIt.Next())
+    {
+      if (aCRIdx >= aComp.ChildRefs.Length())
+        break;
+      BRepGraphInc::ChildRef& aCR = aComp.ChildRefs.ChangeValue(aCRIdx);
+      if (aCR.Kind == static_cast<int>(BRepGraph_NodeId::Kind::Face) && aCR.ChildIdx < 0)
+      {
+        const BRepGraph_NodeId* aFaceNodeId =
+          theStorage.TShapeToNodeId.Seek(aChildIt.Value().TShape().get());
+        if (aFaceNodeId != nullptr
+            && aFaceNodeId->NodeKind == BRepGraph_NodeId::Kind::Face)
+          aCR.ChildIdx = aFaceNodeId->Index;
+      }
+      ++aCRIdx;
+    }
+  }
+
   // Phase 3b: Edge regularities.
   NCollection_DataMap<const Geom_Surface*, int> aSurfToFaceIdx;
   for (int i = 0; i < theStorage.Faces.Length(); ++i)

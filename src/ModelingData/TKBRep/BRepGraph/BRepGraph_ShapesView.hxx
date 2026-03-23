@@ -47,10 +47,10 @@ public:
   //! @return reconstructed face shape
   Standard_EXPORT TopoDS_Shape ReconstructFace(int theFaceDefIdx) const;
 
-  //! Reconstruct a TopoDS_Shape from a usage node.
-  //! @param[in] theRoot usage identifier
-  //! @return reconstructed shape
-  Standard_EXPORT TopoDS_Shape ReconstructFromUsage(BRepGraph_UsageId theRoot) const;
+  //! Reconstruct a TopoDS_Shape from a definition node, applying per-node location.
+  //! @param[in] theNode definition node identifier
+  //! @return reconstructed shape with location applied
+  Standard_EXPORT TopoDS_Shape ReconstructFromNode(BRepGraph_NodeId theNode) const;
 
   //! Look up the definition NodeId for a shape from the Build() input.
   //! Uses TShape pointer comparison (same semantics as IsSame()).

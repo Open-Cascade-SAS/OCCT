@@ -153,9 +153,9 @@ void BRepGraph_BackRefManager::RebuildAll(BRepGraph& theGraph)
   theGraph.myData->myEdgeToWires.Clear();
 
   // Rebuild edge-to-wire map from WireEntity EdgeRefs.
-  for (int aWireIdx = 0; aWireIdx < theGraph.myData->myWires.Defs.Length(); ++aWireIdx)
+  for (int aWireIdx = 0; aWireIdx < theGraph.myData->myIncStorage.Wires.Length(); ++aWireIdx)
   {
-    const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.myData->myWires.Defs.Value(aWireIdx);
+    const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.myData->myIncStorage.Wires.Value(aWireIdx);
     for (int anEdgeIdx = 0; anEdgeIdx < aWireDef.EdgeRefs.Length(); ++anEdgeIdx)
     {
       const int anEdgeDefIdx = aWireDef.EdgeRefs.Value(anEdgeIdx).EdgeIdx;

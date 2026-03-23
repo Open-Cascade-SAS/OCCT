@@ -126,11 +126,11 @@ public:
   //! @param[in] theEdgeDef edge definition NodeId
   Standard_EXPORT GeomAdaptor_TransformedCurve CurveAdaptor(BRepGraph_NodeId theEdgeDef) const;
 
-  //! Build a GeomAdaptor_TransformedCurve for a specific edge usage.
+  //! Build a GeomAdaptor_TransformedCurve for a specific edge node.
   //! @param[in] theEdgeDef   edge definition NodeId
-  //! @param[in] theEdgeUsage edge usage id (determines the transform)
+  //! @param[in] theEdgeNode  edge node id (reserved for per-node transform)
   Standard_EXPORT GeomAdaptor_TransformedCurve CurveAdaptor(BRepGraph_NodeId  theEdgeDef,
-                                                            BRepGraph_UsageId theEdgeUsage) const;
+                                                            BRepGraph_NodeId  theEdgeNode) const;
 
   //! Build a curve-on-surface adaptor from edge's inline PCurve on a face.
   //! @param[in] theEdgeDef edge definition NodeId

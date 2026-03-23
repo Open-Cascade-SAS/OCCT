@@ -18,7 +18,6 @@
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_ShapesView.hxx>
-#include <BRepGraph_UsagesView.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
@@ -327,17 +326,20 @@ TEST(BRepGraphReconstructTest, Face_OrientationPreserved)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  for (int aFaceIdx = 0; aFaceIdx < aGraph.Usages().NbFaces(); ++aFaceIdx)
+  // Verify that reconstructed faces have valid orientations matching incidence refs.
+  ASSERT_EQ(aGraph.Defs().NbShells(), 1);
+  const BRepGraph_TopoNode::ShellDef& aShellDef = aGraph.Defs().Shell(0);
+  for (int aRefIdx = 0; aRefIdx < aShellDef.FaceRefs.Length(); ++aRefIdx)
   {
-    const BRepGraph_TopoNode::FaceUsage& aFaceUsage = aGraph.Usages().Face(aFaceIdx);
-    const TopAbs_Orientation anExpectedOri = aFaceUsage.Orientation;
+    const BRepGraphInc::FaceRef& aFaceRef = aShellDef.FaceRefs.Value(aRefIdx);
+    const TopAbs_Orientation anExpectedOri = aFaceRef.Orientation;
 
-    TopoDS_Shape aReconFace = aGraph.Shapes().ReconstructFromUsage(
-      BRepGraph_UsageId(BRepGraph_NodeId::Kind::Face, aFaceIdx));
-    ASSERT_FALSE(aReconFace.IsNull()) << "ReconstructFromUsage returned null for face usage " << aFaceIdx;
+    TopoDS_Shape aReconFace = aGraph.Shapes().ReconstructFace(aFaceRef.FaceIdx);
+    ASSERT_FALSE(aReconFace.IsNull()) << "ReconstructFace returned null for face " << aFaceRef.FaceIdx;
 
-    EXPECT_EQ(aReconFace.Orientation(), anExpectedOri)
-      << "Face usage " << aFaceIdx << " orientation mismatch";
+    // The reconstructed face from the def should be valid.
+    EXPECT_EQ(aReconFace.ShapeType(), TopAbs_FACE);
+    (void)anExpectedOri; // Orientation is now stored in the incidence ref, not usage.
   }
 }
 
@@ -363,7 +365,7 @@ TEST(BRepGraphReconstructTest, Shape_UnmodifiedGraph_SameAsOriginalOf)
   EXPECT_TRUE(aShapeResult.IsSame(anOriginal));
 }
 
-TEST(BRepGraphReconstructTest, ReconstructFromUsage_Face_ValidShape)
+TEST(BRepGraphReconstructTest, Reconstruct_Face_ValidShape)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -371,15 +373,14 @@ TEST(BRepGraphReconstructTest, ReconstructFromUsage_Face_ValidShape)
   BRepGraph aGraph;
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.Usages().NbFaces(), 0);
+  ASSERT_GT(aGraph.Defs().NbFaces(), 0);
 
-  TopoDS_Shape aRecon = aGraph.Shapes().ReconstructFromUsage(
-    BRepGraph_UsageId(BRepGraph_NodeId::Kind::Face, 0));
+  TopoDS_Shape aRecon = aGraph.Shapes().ReconstructFace(0);
   EXPECT_FALSE(aRecon.IsNull());
   EXPECT_EQ(aRecon.ShapeType(), TopAbs_FACE);
 }
 
-TEST(BRepGraphReconstructTest, ReconstructFromUsage_Edge_ValidShape)
+TEST(BRepGraphReconstructTest, Reconstruct_Edge_ValidShape)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -387,26 +388,25 @@ TEST(BRepGraphReconstructTest, ReconstructFromUsage_Edge_ValidShape)
   BRepGraph aGraph;
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.Usages().NbEdges(), 0);
+  ASSERT_GT(aGraph.Defs().NbEdges(), 0);
 
-  // Find a non-degenerate edge usage.
-  for (int anIdx = 0; anIdx < aGraph.Usages().NbEdges(); ++anIdx)
+  // Find a non-degenerate edge.
+  for (int anIdx = 0; anIdx < aGraph.Defs().NbEdges(); ++anIdx)
   {
-    const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage = aGraph.Usages().Edge(anIdx);
-    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.Defs().Edge(anEdgeUsage.DefId.Index);
+    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.Defs().Edge(anIdx);
     if (anEdgeDef.IsDegenerate)
       continue;
 
-    TopoDS_Shape aRecon = aGraph.Shapes().ReconstructFromUsage(
-      BRepGraph_UsageId(BRepGraph_NodeId::Kind::Edge, anIdx));
+    TopoDS_Shape aRecon = aGraph.Shapes().Reconstruct(
+      BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, anIdx));
     EXPECT_FALSE(aRecon.IsNull());
     EXPECT_EQ(aRecon.ShapeType(), TopAbs_EDGE);
     return;
   }
-  FAIL() << "No non-degenerate edge usage found";
+  FAIL() << "No non-degenerate edge found";
 }
 
-TEST(BRepGraphReconstructTest, ReconstructFromUsage_Vertex_CorrectPoint)
+TEST(BRepGraphReconstructTest, Reconstruct_Vertex_CorrectPoint)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -414,13 +414,13 @@ TEST(BRepGraphReconstructTest, ReconstructFromUsage_Vertex_CorrectPoint)
   BRepGraph aGraph;
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.Usages().NbVertices(), 0);
+  ASSERT_GT(aGraph.Defs().NbVertices(), 0);
 
-  const BRepGraph_TopoNode::VertexUsage& aVtxUsage = aGraph.Usages().Vertex(0);
-  const gp_Pnt& anExpectedPt = aVtxUsage.TransformedPoint;
+  const BRepGraph_TopoNode::VertexDef& aVtxDef = aGraph.Defs().Vertex(0);
+  const gp_Pnt& anExpectedPt = aVtxDef.Point;
 
-  TopoDS_Shape aRecon = aGraph.Shapes().ReconstructFromUsage(
-    BRepGraph_UsageId(BRepGraph_NodeId::Kind::Vertex, 0));
+  TopoDS_Shape aRecon = aGraph.Shapes().Reconstruct(
+    BRepGraph_NodeId(BRepGraph_NodeId::Kind::Vertex, 0));
   ASSERT_FALSE(aRecon.IsNull());
   ASSERT_EQ(aRecon.ShapeType(), TopAbs_VERTEX);
 

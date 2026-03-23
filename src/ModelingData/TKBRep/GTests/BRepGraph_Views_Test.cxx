@@ -25,7 +25,6 @@
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_SpatialView.hxx>
 #include <BRepGraph_UIDsView.hxx>
-#include <BRepGraph_UsagesView.hxx>
 #include <BRepGraphAlgo_BndLib.hxx>
 
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -121,22 +120,6 @@ TEST_F(BRepGraphViewsTest, DefsView_TopoDef_Valid)
 TEST_F(BRepGraphViewsTest, DefsView_NbNodes_Positive)
 {
   EXPECT_GT(myGraph.Defs().NbNodes(), 0u);
-}
-
-// ---------- UsagesView ----------
-
-TEST_F(BRepGraphViewsTest, UsagesView_NbFaces)
-{
-  EXPECT_EQ(myGraph.Usages().NbFaces(), 6);
-}
-
-TEST_F(BRepGraphViewsTest, UsagesView_FaceAccessor_Valid)
-{
-  for (int anIdx = 0; anIdx < myGraph.Usages().NbFaces(); ++anIdx)
-  {
-    const BRepGraph_TopoNode::FaceUsage& aUsage = myGraph.Usages().Face(anIdx);
-    EXPECT_TRUE(aUsage.UsageId.IsValid()) << "Face usage " << anIdx << " has invalid UsageId";
-  }
 }
 
 // ---------- DefsView Geometry ----------

@@ -248,7 +248,7 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
     const int aNbE        = aNbEdgeRefs;
 
     // Edge count mismatch detection.
-    const int aNbEdgeMismatch = 0; // EdgeUsages is the single source of truth now.
+    const int aNbEdgeMismatch = 0; // EdgeRefs is the single source of truth now.
 
     gp_Pnt aOldPnt3d(0, 0, 0);
     bool   anOldPnt3dInit = false;

@@ -263,12 +263,6 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
             anEdge.EndVertexDefId = aCanonId;
         }
 
-        // Transfer usages from old vertex to canonical.
-        BRepGraph_TopoNode::VertexDef& aCanonVtx = theGraph.Mut().VertexDef(aCanonicalIdx);
-        const BRepGraph_TopoNode::VertexDef& anOldVtx = theGraph.Defs().Vertex(anOldIdx);
-        for (int anUsIdx = 0; anUsIdx < anOldVtx.Usages.Length(); ++anUsIdx)
-          aCanonVtx.Usages.Append(anOldVtx.Usages.Value(anUsIdx));
-
         // Mark non-canonical as removed.
         theGraph.Builder().RemoveNode(anOldId);
 
@@ -434,11 +428,6 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
           }
         }
 
-        // Transfer usages.
-        BRepGraph_TopoNode::EdgeDef& aCanonMut = theGraph.Mut().EdgeDef(aCanonicalIdx);
-        for (int anUsIdx = 0; anUsIdx < anOldEdge.Usages.Length(); ++anUsIdx)
-          aCanonMut.Usages.Append(anOldEdge.Usages.Value(anUsIdx));
-
         theGraph.Builder().RemoveNode(anOldId);
 
         NCollection_Vector<BRepGraph_NodeId> aRepl;
@@ -534,18 +523,13 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
 
     if (!theOptions.AnalyzeOnly)
     {
-      // Redirect face usage wire references.
+      // Mark non-canonical wires as removed.
       for (NCollection_DataMap<int, int>::Iterator anIt(aCanonicalWire); anIt.More(); anIt.Next())
       {
         const int anOldIdx      = anIt.Key();
         const int aCanonicalIdx = anIt.Value();
         const BRepGraph_NodeId anOldId  = BRepGraph_NodeId::Wire(anOldIdx);
         const BRepGraph_NodeId aCanonId = BRepGraph_NodeId::Wire(aCanonicalIdx);
-
-        BRepGraph_TopoNode::WireDef& aCanonWire = theGraph.Mut().WireDef(aCanonicalIdx);
-        const BRepGraph_TopoNode::WireDef& anOldWire = theGraph.Defs().Wire(anOldIdx);
-        for (int anUsIdx = 0; anUsIdx < anOldWire.Usages.Length(); ++anUsIdx)
-          aCanonWire.Usages.Append(anOldWire.Usages.Value(anUsIdx));
 
         theGraph.Builder().RemoveNode(anOldId);
 
@@ -666,11 +650,6 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
         const int aCanonicalIdx = anIt.Value();
         const BRepGraph_NodeId anOldId  = BRepGraph_NodeId::Face(anOldIdx);
         const BRepGraph_NodeId aCanonId = BRepGraph_NodeId::Face(aCanonicalIdx);
-
-        BRepGraph_TopoNode::FaceDef& aCanonMut = theGraph.Mut().FaceDef(aCanonicalIdx);
-        const BRepGraph_TopoNode::FaceDef& anOldFace = theGraph.Defs().Face(anOldIdx);
-        for (int anUsIdx = 0; anUsIdx < anOldFace.Usages.Length(); ++anUsIdx)
-          aCanonMut.Usages.Append(anOldFace.Usages.Value(anUsIdx));
 
         theGraph.Builder().RemoveNode(anOldId);
 

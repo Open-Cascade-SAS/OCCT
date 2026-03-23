@@ -13,7 +13,6 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_DefsView.hxx>
-#include <BRepGraph_UsagesView.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <Precision.hxx>
@@ -80,23 +79,6 @@ TEST_F(BRepGraphConvenienceTest, NodeId_Factories_EqualToConstructor)
             BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, 0));
 }
 
-// ---------- Part A: UsageId Static Factories ----------
-
-TEST_F(BRepGraphConvenienceTest, UsageId_Factories_CorrectKindAndIndex)
-{
-  const BRepGraph_UsageId aSolid = BRepGraph_UsageId::Solid(1);
-  EXPECT_EQ(aSolid.NodeKind, BRepGraph_NodeId::Kind::Solid);
-  EXPECT_EQ(aSolid.Index, 1);
-
-  const BRepGraph_UsageId aFace = BRepGraph_UsageId::Face(2);
-  EXPECT_EQ(aFace.NodeKind, BRepGraph_NodeId::Kind::Face);
-  EXPECT_EQ(aFace.Index, 2);
-
-  const BRepGraph_UsageId aVertex = BRepGraph_UsageId::Vertex(0);
-  EXPECT_EQ(aVertex.NodeKind, BRepGraph_NodeId::Kind::Vertex);
-  EXPECT_EQ(aVertex.Index, 0);
-}
-
 // ---------- Part B: EdgeDef Oriented Vertices ----------
 
 TEST_F(BRepGraphConvenienceTest, EdgeDef_OrientedStartVertex_Forward)
@@ -134,40 +116,6 @@ TEST_F(BRepGraphConvenienceTest, EdgeDef_OrientedVertex_Internal_Invalid)
   const BRepGraph_TopoNode::EdgeDef& anEdge = aDefs.Edge(0);
   EXPECT_FALSE(anEdge.OrientedStartVertex(TopAbs_INTERNAL).IsValid());
   EXPECT_FALSE(anEdge.OrientedEndVertex(TopAbs_INTERNAL).IsValid());
-}
-
-// ---------- Part C: FaceUsage NbWireUsages / WireUsage ----------
-
-TEST_F(BRepGraphConvenienceTest, FaceUsage_NbWireUsages_AtLeastOne)
-{
-  const BRepGraph::UsagesView aUsages = myGraph.Usages();
-  ASSERT_GT(aUsages.NbFaces(), 0);
-  const BRepGraph_TopoNode::FaceUsage& aFU = aUsages.Face(0);
-  EXPECT_GE(aFU.NbWireUsages(), 1);
-}
-
-TEST_F(BRepGraphConvenienceTest, FaceUsage_WireUsage_OuterFirst)
-{
-  const BRepGraph::UsagesView aUsages = myGraph.Usages();
-  const BRepGraph_TopoNode::FaceUsage& aFU = aUsages.Face(0);
-  if (aFU.OuterWireUsage.IsValid())
-  {
-    EXPECT_EQ(aFU.WireUsage(0), aFU.OuterWireUsage);
-  }
-}
-
-TEST_F(BRepGraphConvenienceTest, FaceUsage_WireUsage_AllValid)
-{
-  const BRepGraph::UsagesView aUsages = myGraph.Usages();
-  for (int aFaceIter = 0; aFaceIter < aUsages.NbFaces(); ++aFaceIter)
-  {
-    const BRepGraph_TopoNode::FaceUsage& aFU = aUsages.Face(aFaceIter);
-    for (int aWireIter = 0; aWireIter < aFU.NbWireUsages(); ++aWireIter)
-    {
-      EXPECT_TRUE(aFU.WireUsage(aWireIter).IsValid())
-        << "Face " << aFaceIter << " wire " << aWireIter;
-    }
-  }
 }
 
 // ---------- Part D: FaceDef::Surface ----------

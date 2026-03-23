@@ -238,14 +238,14 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
     }
   };
 
-  copyUIDs(theGraph.myData->myVertices.UIDs,    aResult.myData->myVertices.UIDs);
-  copyUIDs(theGraph.myData->myEdges.UIDs,       aResult.myData->myEdges.UIDs);
-  copyUIDs(theGraph.myData->myWires.UIDs,       aResult.myData->myWires.UIDs);
-  copyUIDs(theGraph.myData->myFaces.UIDs,       aResult.myData->myFaces.UIDs);
-  copyUIDs(theGraph.myData->myShells.UIDs,      aResult.myData->myShells.UIDs);
-  copyUIDs(theGraph.myData->mySolids.UIDs,      aResult.myData->mySolids.UIDs);
-  copyUIDs(theGraph.myData->myCompounds.UIDs,   aResult.myData->myCompounds.UIDs);
-  copyUIDs(theGraph.myData->myCompSolids.UIDs,  aResult.myData->myCompSolids.UIDs);
+  copyUIDs(theGraph.myData->myVertexUIDs,    aResult.myData->myVertexUIDs);
+  copyUIDs(theGraph.myData->myEdgeUIDs,       aResult.myData->myEdgeUIDs);
+  copyUIDs(theGraph.myData->myWireUIDs,       aResult.myData->myWireUIDs);
+  copyUIDs(theGraph.myData->myFaceUIDs,       aResult.myData->myFaceUIDs);
+  copyUIDs(theGraph.myData->myShellUIDs,      aResult.myData->myShellUIDs);
+  copyUIDs(theGraph.myData->mySolidUIDs,      aResult.myData->mySolidUIDs);
+  copyUIDs(theGraph.myData->myCompoundUIDs,   aResult.myData->myCompoundUIDs);
+  copyUIDs(theGraph.myData->myCompSolidUIDs,  aResult.myData->myCompSolidUIDs);
 
   aResult.myData->myNextUIDCounter.store(
     theGraph.myData->myNextUIDCounter.load(std::memory_order_relaxed),

@@ -20,7 +20,6 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_DefsView.hxx>
-#include <BRepGraph_UsagesView.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCone.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
@@ -368,39 +367,6 @@ TEST(BRepGraphBuildTest, Wedge_AllPlanarSurfaces)
 }
 
 // =============================================================================
-// Usage count tests for primitives
-// =============================================================================
-
-TEST(BRepGraphBuildTest, Sphere_UsageCounts_MatchDefCounts)
-{
-  BRepPrimAPI_MakeSphere aMaker(10.0);
-  const TopoDS_Shape aShape = aMaker.Shape();
-
-  BRepGraph aGraph;
-  aGraph.Build(aShape);
-  ASSERT_TRUE(aGraph.IsDone());
-
-  // For a single solid, usages >= defs (usages count occurrences in hierarchy).
-  EXPECT_GE(aGraph.Usages().NbFaces(),   aGraph.Defs().NbFaces());
-  EXPECT_GE(aGraph.Usages().NbEdges(),   aGraph.Defs().NbEdges());
-  EXPECT_GE(aGraph.Usages().NbVertices(), aGraph.Defs().NbVertices());
-}
-
-TEST(BRepGraphBuildTest, Cylinder_UsageCounts_MatchNonUniqueTopExp)
-{
-  BRepPrimAPI_MakeCylinder aMaker(5.0, 20.0);
-  const TopoDS_Shape aShape = aMaker.Shape();
-
-  BRepGraph aGraph;
-  aGraph.Build(aShape);
-  ASSERT_TRUE(aGraph.IsDone());
-
-  EXPECT_EQ(aGraph.Usages().NbFaces(),   countNonUnique(aShape, TopAbs_FACE));
-  EXPECT_EQ(aGraph.Usages().NbEdges(),   countNonUnique(aShape, TopAbs_EDGE));
-  EXPECT_EQ(aGraph.Usages().NbVertices(), countNonUnique(aShape, TopAbs_VERTEX));
-}
-
-// =============================================================================
 // Compound builds
 // =============================================================================
 
@@ -701,35 +667,6 @@ TEST(BRepGraphBuildTest, Box_EdgeTolerances_MatchBRepTool)
   }
 }
 
-TEST(BRepGraphBuildTest, Box_EdgeUsageCount_MatchesNonUniqueTopExp)
-{
-  BRepPrimAPI_MakeBox aMaker(10.0, 20.0, 30.0);
-  const TopoDS_Shape aBox = aMaker.Shape();
-
-  BRepGraph aGraph;
-  aGraph.Build(aBox);
-  ASSERT_TRUE(aGraph.IsDone());
-
-  // Count total non-unique edge occurrences across all wires in all faces.
-  const int aNonUniqueEdges = countNonUnique(aBox, TopAbs_EDGE);
-
-  EXPECT_EQ(aGraph.Usages().NbEdges(), aNonUniqueEdges);
-}
-
-TEST(BRepGraphBuildTest, Box_VertexUsageCount_MatchesNonUniqueTopExp)
-{
-  BRepPrimAPI_MakeBox aMaker(10.0, 20.0, 30.0);
-  const TopoDS_Shape aBox = aMaker.Shape();
-
-  BRepGraph aGraph;
-  aGraph.Build(aBox);
-  ASSERT_TRUE(aGraph.IsDone());
-
-  const int aNonUniqueVertices = countNonUnique(aBox, TopAbs_VERTEX);
-
-  EXPECT_EQ(aGraph.Usages().NbVertices(), aNonUniqueVertices);
-}
-
 TEST(BRepGraphBuildTest, Box_AllSurfacesArePlanes)
 {
   BRepPrimAPI_MakeBox aMaker(10.0, 20.0, 30.0);
@@ -849,11 +786,8 @@ TEST(BRepGraphBuildTest, AppendShape_SameFaceTwice_DedupsDefinition)
   aGraph.Builder().AppendShape(aFace);
 
   ASSERT_TRUE(aGraph.IsDone());
+  // Same TShape appended twice: definition is deduplicated.
   ASSERT_EQ(aGraph.Defs().NbFaces(), 1);
-  EXPECT_EQ(aGraph.Usages().NbFaces(), 2);
-
-  const BRepGraph_TopoNode::FaceDef& aFaceDef = aGraph.Defs().Face(0);
-  EXPECT_EQ(aFaceDef.Usages.Length(), 2);
 }
 
 TEST(BRepGraphBuildTest, AppendShape_AfterBuild_DoesNotCreateNewSolidDefs)
@@ -874,7 +808,7 @@ TEST(BRepGraphBuildTest, AppendShape_AfterBuild_DoesNotCreateNewSolidDefs)
   EXPECT_EQ(aGraph.Defs().NbFaces(), aNbFacesBefore + 6);
 }
 
-TEST(BRepGraphBuildTest, AppendShape_AppendedFaceHasNoParentShellUsage)
+TEST(BRepGraphBuildTest, AppendShape_AppendedFaceHasNoParentShell)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -886,7 +820,7 @@ TEST(BRepGraphBuildTest, AppendShape_AppendedFaceHasNoParentShellUsage)
   BRepGraph aGraph;
   aGraph.Builder().AppendShape(aFace);
 
-  ASSERT_EQ(aGraph.Usages().NbFaces(), 1);
-  const BRepGraph_TopoNode::FaceUsage& aFaceUsage = aGraph.Usages().Face(0);
-  EXPECT_FALSE(aFaceUsage.ParentUsage.IsValid());
+  ASSERT_EQ(aGraph.Defs().NbFaces(), 1);
+  // Appended face should not be part of any shell.
+  EXPECT_EQ(aGraph.Defs().NbShells(), 0);
 }
