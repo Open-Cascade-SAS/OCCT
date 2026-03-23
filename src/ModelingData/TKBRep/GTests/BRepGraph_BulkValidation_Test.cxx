@@ -362,6 +362,7 @@ void dumpShapeCheckDetails(const BRepCheck_Analyzer& theAnalyzer,
 class BRepGraphBulkValidation : public testing::TestWithParam<std::string>
 {
 };
+GTEST_ALLOW_UNINSTANTIATED_PARAMETERIZED_TEST(BRepGraphBulkValidation);
 
 TEST_P(BRepGraphBulkValidation, RoundTrip)
 {

@@ -17,6 +17,7 @@
 #include <Standard_GUID.hxx>
 #include <NCollection_DataMap.hxx>
 
+#include <mutex>
 #include <shared_mutex>
 #include <atomic>
 
