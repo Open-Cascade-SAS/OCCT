@@ -102,6 +102,7 @@ struct FaceLocalData
 
   // Phase 2 extracted geometry.
   occ::handle<Geom_Surface>                           Surface;
+  occ::handle<Geom_Surface>                           OriginalSurface; //!< Pre-transform surface for PCurve matching
   NCollection_Vector<occ::handle<Poly_Triangulation>> Triangulations;
   int                                                 ActiveTriangulationIndex = -1;
   double                                              Tolerance                = 0.0;
@@ -114,9 +115,10 @@ struct FaceLocalData
 //! Extract stored PCurve(s) from edge for a given face's surface.
 //! Iterates BRep_TEdge::Curves() directly, avoiding BRep_Tool::CurveOnSurface
 //! which can compute phantom PCurves via CurveOnPlane for planar surfaces.
-//! Uses two-pass matching:
+//! Uses multi-pass matching:
 //!   Pass 1: exact (Surface, Location) match via IsCurveOnSurface(S, L)
 //!   Pass 2: surface-handle-only fallback for TopLoc_Location structural equality bug
+//!           (only when a unique CR matches the surface — prevents wrong-context selection)
 //! For seam edges (IsCurveOnClosedSurface), extracts both PCurves + continuity.
 //! @param[in]  theEdge      edge with context orientation and location
 //! @param[in]  theFace      face with context location
@@ -125,14 +127,18 @@ struct FaceLocalData
 //! @param[out] theFirst     parameter range start
 //! @param[out] theLast      parameter range end
 //! @param[out] theSeamContinuity  seam continuity (GeomAbs_C0 if non-seam)
+//! @param[in]  theOrigSurface  pre-transform surface handle for fallback matching
+//!                             when the face's raw TFace surface differs from edge CRs
 //! @return true if a stored PCurve was found
-bool extractStoredPCurves(const TopoDS_Edge&         theEdge,
-                          const TopoDS_Face&         theFace,
-                          occ::handle<Geom2d_Curve>& thePCurve,
-                          occ::handle<Geom2d_Curve>& thePCurve2,
-                          double&                    theFirst,
-                          double&                    theLast,
-                          GeomAbs_Shape&             theSeamContinuity)
+bool extractStoredPCurves(const TopoDS_Edge&                theEdge,
+                          const TopoDS_Face&                theFace,
+                          occ::handle<Geom2d_Curve>&        thePCurve,
+                          occ::handle<Geom2d_Curve>&        thePCurve2,
+                          double&                           theFirst,
+                          double&                           theLast,
+                          GeomAbs_Shape&                    theSeamContinuity,
+                          const occ::handle<Geom_Surface>&  theOrigSurface
+                            = occ::handle<Geom_Surface>())
 {
   TopLoc_Location aFaceLoc;
   const occ::handle<Geom_Surface>& aSurf = BRep_Tool::Surface(theFace, aFaceLoc);
@@ -183,6 +189,32 @@ bool extractStoredPCurves(const TopoDS_Edge&         theEdge,
     if (!aCR->IsCurveOnSurface() || aCR->Surface() != aSurf)
       continue;
     return extractFromCR(aCR);
+  }
+
+
+  // Pass 3: match by the original (pre-transform) surface handle.
+  // When applyRepresentationLocation creates a new surface via Transformed(),
+  // the edge's CRs still reference the OLD surface handle. If the face's raw
+  // TFace surface differs from the old surface (e.g., compound children at
+  // different locations), passes 1-2 fail. Here we retry with the original
+  // surface handle that the edge CRs actually reference.
+  if (!theOrigSurface.IsNull() && theOrigSurface != aSurf)
+  {
+    // Pass 3a: exact (original surface, expected location) match.
+    for (const auto& aCR : aTEdge->Curves())
+    {
+      if (!aCR->IsCurveOnSurface())
+        continue;
+      if (aCR->IsCurveOnSurface(theOrigSurface, aExpectedLoc))
+        return extractFromCR(aCR);
+    }
+    // Pass 3b: original surface handle-only match (location structural equality fallback).
+    for (const auto& aCR : aTEdge->Curves())
+    {
+      if (!aCR->IsCurveOnSurface() || aCR->Surface() != theOrigSurface)
+        continue;
+      return extractFromCR(aCR);
+    }
   }
 
   return false;
@@ -609,7 +641,8 @@ void edgeVertices(const TopoDS_Edge&                           theEdge,
 void extractEdgeInFace(ExtractedEdge&                    theEdgeData,
                        const TopoDS_Edge&                theEdge,
                        const TopoDS_Face&                theForwardFace,
-                       const occ::handle<Geom_Surface>&  theFaceSurface)
+                       const occ::handle<Geom_Surface>&  theFaceSurface,
+                       const occ::handle<Geom_Surface>&  theOrigSurface)
 {
   theEdgeData.Shape             = theEdge;
   theEdgeData.Tolerance         = BRep_Tool::Tolerance(theEdge);
@@ -660,12 +693,41 @@ void extractEdgeInFace(ExtractedEdge&                    theEdgeData,
 
     extractStoredPCurves(aFwdEdge, theForwardFace,
                          theEdgeData.PCurve2d, theEdgeData.PCurve2dReversed,
-                         aPCFirst, aPCLast, aSeamContinuity);
+                         aPCFirst, aPCLast, aSeamContinuity,
+                         theOrigSurface);
 
     theEdgeData.PCFirst          = aPCFirst;
     theEdgeData.PCLast           = aPCLast;
     theEdgeData.PCurveContinuity = BRep_Tool::MaxContinuity(theEdge);
     theEdgeData.SeamContinuity   = aSeamContinuity;
+
+    // When the surface was transformed (TFace.Location != Identity → theFaceSurface
+    // differs from the raw TFace surface), the stored CR may belong to a different face
+    // context using the same raw surface. Verify by calling BRep_Tool::CurveOnSurface
+    // which correctly handles CurveOnPlane for planar surfaces and properly composes
+    // face+edge locations. If BRep_Tool COMPUTED a PCurve (not stored) AND it differs
+    // from what we extracted, our stored-only extraction picked a CR from the wrong
+    // context. Discard ours so reconstruction doesn't attach the wrong PCurve.
+    if (!theEdgeData.PCurve2d.IsNull() && theFaceSurface != theOrigSurface)
+    {
+      double aBTFirst = 0.0, aBTLast = 0.0;
+      bool   aBTIsStored = false;
+      occ::handle<Geom2d_Curve> aBTPCurve =
+        BRep_Tool::CurveOnSurface(aFwdEdge, theForwardFace, aBTFirst, aBTLast, &aBTIsStored);
+      if (!aBTPCurve.IsNull() && !aBTIsStored
+          && aBTPCurve.get() != theEdgeData.PCurve2d.get())
+      {
+        // BRep_Tool computed a different PCurve (CurveOnPlane) — our stored match
+        // is from the wrong face context. Discard it.
+        theEdgeData.PCurve2d.Nullify();
+        theEdgeData.PCurve2dReversed.Nullify();
+        theEdgeData.PCFirst = 0.0;
+        theEdgeData.PCLast  = 0.0;
+        aPCFirst            = 0.0;
+        aPCLast             = 0.0;
+        theEdgeData.SeamContinuity = GeomAbs_C0;
+      }
+    }
 
     if (!theEdgeData.PCurve2d.IsNull() && !theFaceSurface.IsNull())
       BRep_Tool::UVPoints(aFwdEdge, theForwardFace, theEdgeData.PCUV1, theEdgeData.PCUV2);
@@ -722,6 +784,7 @@ void extractFaceData(FaceLocalData& theData)
   {
     TopLoc_Location aSurfCombinedLoc;
     theData.Surface = BRep_Tool::Surface(aFace, aSurfCombinedLoc);
+    theData.OriginalSurface = theData.Surface; // save pre-transform handle for PCurve matching
     theData.Surface = applyRepresentationLocation<Geom_Surface>(theData.Surface,
                                                                 aFace.Location(),
                                                                 aSurfCombinedLoc);
@@ -782,7 +845,7 @@ void extractFaceData(FaceLocalData& theData)
         continue;
       ExtractedEdge anEdgeData;
       extractEdgeInFace(anEdgeData, TopoDS::Edge(anEdgeIt.Value()),
-                        aForwardFace, theData.Surface);
+                        aForwardFace, theData.Surface, theData.OriginalSurface);
       aWireData.Edges.Append(anEdgeData);
     }
 

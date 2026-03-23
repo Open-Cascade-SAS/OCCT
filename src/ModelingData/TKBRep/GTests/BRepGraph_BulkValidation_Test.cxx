@@ -12,6 +12,9 @@
 // commercial license or contractual agreement.
 
 #include <BRep_Builder.hxx>
+#include <BRep_TEdge.hxx>
+#include <BRep_TFace.hxx>
+#include <BRep_Tool.hxx>
 #include <BRepCheck.hxx>
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepCheck_Result.hxx>
@@ -20,11 +23,15 @@
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepTools.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_Surface.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <NCollection_Map.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
+#include <TopoDS.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
 
@@ -161,6 +168,196 @@ std::string invalidityTypesToString(const BRepCheck_Analyzer& theAnalyzer,
   return aStream.str();
 }
 
+void dumpShapeCheckDetails(const BRepCheck_Analyzer& theAnalyzer,
+                            const TopoDS_Shape&       theShape,
+                            const char*               theLabel)
+{
+  // Per-face: check PCurve availability and wire self-intersection
+  int aFaceIdx = 0;
+  for (TopExp_Explorer aFaceExp(theShape, TopAbs_FACE); aFaceExp.More(); aFaceExp.Next(), ++aFaceIdx)
+  {
+    const TopoDS_Face& aFace = TopoDS::Face(aFaceExp.Current());
+    const occ::handle<BRepCheck_Result>& aFaceResult = theAnalyzer.Result(aFace);
+    if (!aFaceResult.IsNull())
+    {
+      for (auto aIt = aFaceResult->Status().cbegin(); aIt != aFaceResult->Status().cend(); ++aIt)
+      {
+        if (*aIt != BRepCheck_NoError)
+        {
+          std::ostringstream aMsg;
+          BRepCheck::Print(*aIt, aMsg);
+          std::cerr << "[" << theLabel << "] Face " << aFaceIdx << " error: " << aMsg.str();
+        }
+      }
+    }
+
+    // Check PCurve availability for all edges in face
+    int aWireIdx = 0;
+    for (TopoDS_Iterator aWireIt(aFace); aWireIt.More(); aWireIt.Next())
+    {
+      if (aWireIt.Value().ShapeType() != TopAbs_WIRE)
+        continue;
+      const TopoDS_Wire& aWire = TopoDS::Wire(aWireIt.Value());
+      const occ::handle<BRepCheck_Result>& aWireResult = theAnalyzer.Result(aWire);
+      if (!aWireResult.IsNull())
+      {
+        for (auto aIt = aWireResult->Status().cbegin(); aIt != aWireResult->Status().cend(); ++aIt)
+        {
+          if (*aIt != BRepCheck_NoError)
+          {
+            std::ostringstream aMsg;
+            BRepCheck::Print(*aIt, aMsg);
+            std::cerr << "[" << theLabel << "] Face " << aFaceIdx << " Wire " << aWireIdx
+                      << " error: " << aMsg.str();
+          }
+        }
+      }
+
+      int anEdgeIdx = 0;
+      for (TopoDS_Iterator anEdgeIt(aWire); anEdgeIt.More(); anEdgeIt.Next(), ++anEdgeIdx)
+      {
+        if (anEdgeIt.Value().ShapeType() != TopAbs_EDGE)
+          continue;
+        const TopoDS_Edge& anEdge = TopoDS::Edge(anEdgeIt.Value());
+        double aFirst = 0.0, aLast = 0.0;
+        const occ::handle<Geom2d_Curve> aPC = BRep_Tool::CurveOnSurface(anEdge, aFace, aFirst, aLast);
+        if (aPC.IsNull() && !BRep_Tool::Degenerated(anEdge))
+        {
+          std::cerr << "[" << theLabel << "] Face " << aFaceIdx << " Wire " << aWireIdx
+                    << " Edge " << anEdgeIdx
+                    << " -> NULL PCurve! Ori=" << anEdge.Orientation()
+                    << " EdgeLoc.IsId=" << anEdge.Location().IsIdentity() << "\n";
+
+          // Dump edge CRs
+          const occ::handle<BRep_TEdge> aTEdge = occ::down_cast<BRep_TEdge>(anEdge.TShape());
+          if (!aTEdge.IsNull())
+          {
+            TopLoc_Location aFaceSurfLoc;
+            const occ::handle<Geom_Surface>& aFaceSurf = BRep_Tool::Surface(aFace, aFaceSurfLoc);
+            std::cerr << "  FaceSurf=" << aFaceSurf.get()
+                      << " FaceSurfLoc.IsId=" << aFaceSurfLoc.IsIdentity() << "\n";
+            int aCRIdx = 0;
+            for (const auto& aCR : aTEdge->Curves())
+            {
+              if (aCR->IsCurveOnSurface())
+              {
+                std::cerr << "  CR[" << aCRIdx << "] surf=" << aCR->Surface().get()
+                          << " loc.IsId=" << aCR->Location().IsIdentity()
+                          << " match=" << (aCR->Surface() == aFaceSurf) << "\n";
+              }
+              ++aCRIdx;
+            }
+          }
+        }
+      }
+      ++aWireIdx;
+    }
+  }
+
+  // Dump face surfaces and PCurve details for failing faces
+  aFaceIdx = 0;
+  for (TopExp_Explorer aFaceExp2(theShape, TopAbs_FACE); aFaceExp2.More(); aFaceExp2.Next(), ++aFaceIdx)
+  {
+    const TopoDS_Face& aFace2 = TopoDS::Face(aFaceExp2.Current());
+    TopLoc_Location aSurfLoc;
+    const occ::handle<Geom_Surface>& aSurf2 = BRep_Tool::Surface(aFace2, aSurfLoc);
+    const auto* aTFace = static_cast<const BRep_TFace*>(aFace2.TShape().get());
+    std::cerr << "[" << theLabel << "] Face " << aFaceIdx
+              << " surf=" << aSurf2.get()
+              << " TFaceSurf=" << aTFace->Surface().get()
+              << " TFaceLoc.IsId=" << aTFace->Location().IsIdentity()
+              << " faceLoc.IsId=" << aFace2.Location().IsIdentity()
+              << " surfLoc.IsId=" << aSurfLoc.IsIdentity()
+              << " ori=" << aFace2.Orientation()
+              << " type=" << aSurf2->DynamicType()->Name()
+              << "\n";
+
+    // For the failing face, dump all edge PCurves
+    const occ::handle<BRepCheck_Result>& aFaceResult2 = theAnalyzer.Result(aFace2);
+    bool aHasError2 = false;
+    if (!aFaceResult2.IsNull())
+    {
+      for (auto aIt = aFaceResult2->Status().cbegin(); aIt != aFaceResult2->Status().cend(); ++aIt)
+      {
+        if (*aIt != BRepCheck_NoError)
+          aHasError2 = true;
+      }
+    }
+    if (aHasError2)
+    {
+      int aWireIdx2 = 0;
+      for (TopoDS_Iterator aWireIt2(aFace2); aWireIt2.More(); aWireIt2.Next())
+      {
+        if (aWireIt2.Value().ShapeType() != TopAbs_WIRE)
+          continue;
+        const TopoDS_Wire& aWire2 = TopoDS::Wire(aWireIt2.Value());
+        std::cerr << "  Wire " << aWireIdx2 << " wireLoc.IsId=" << aWire2.Location().IsIdentity()
+                  << " ori=" << aWire2.Orientation() << "\n";
+        int anEdgeIdx2 = 0;
+        for (TopoDS_Iterator anEdgeIt2(aWire2); anEdgeIt2.More(); anEdgeIt2.Next(), ++anEdgeIdx2)
+        {
+          if (anEdgeIt2.Value().ShapeType() != TopAbs_EDGE)
+            continue;
+          const TopoDS_Edge& anEdge2 = TopoDS::Edge(anEdgeIt2.Value());
+          double aFirst2 = 0.0, aLast2 = 0.0;
+          const occ::handle<Geom2d_Curve> aPC2 =
+            BRep_Tool::CurveOnSurface(anEdge2, aFace2, aFirst2, aLast2);
+          std::cerr << "    Edge " << anEdgeIdx2
+                    << " ori=" << anEdge2.Orientation()
+                    << " loc.IsId=" << anEdge2.Location().IsIdentity()
+                    << " degen=" << BRep_Tool::Degenerated(anEdge2);
+          if (!aPC2.IsNull())
+          {
+            gp_Pnt2d aP0 = aPC2->Value(aFirst2);
+            gp_Pnt2d aP1 = aPC2->Value(aLast2);
+            std::cerr << " PC=[" << aFirst2 << "," << aLast2 << "]"
+                      << " start=(" << aP0.X() << "," << aP0.Y() << ")"
+                      << " end=(" << aP1.X() << "," << aP1.Y() << ")";
+          }
+          else
+          {
+            std::cerr << " PC=NULL";
+          }
+
+          // Dump all CRs on this edge's TShape
+          const occ::handle<BRep_TEdge> aTEdge2 = occ::down_cast<BRep_TEdge>(anEdge2.TShape());
+          int aCRCount = 0;
+          if (!aTEdge2.IsNull())
+          {
+            for (const auto& aCR : aTEdge2->Curves())
+            {
+              if (aCR->IsCurveOnSurface())
+                ++aCRCount;
+            }
+          }
+          std::cerr << " #CRonSurf=" << aCRCount << "\n";
+        }
+        ++aWireIdx2;
+      }
+    }
+  }
+
+  // Per-shell: check orientation
+  int aShellIdx = 0;
+  for (TopExp_Explorer aShellExp(theShape, TopAbs_SHELL); aShellExp.More(); aShellExp.Next(), ++aShellIdx)
+  {
+    const TopoDS_Shape& aShell = aShellExp.Current();
+    const occ::handle<BRepCheck_Result>& aShellResult = theAnalyzer.Result(aShell);
+    if (!aShellResult.IsNull())
+    {
+      for (auto aIt = aShellResult->Status().cbegin(); aIt != aShellResult->Status().cend(); ++aIt)
+      {
+        if (*aIt != BRepCheck_NoError)
+        {
+          std::ostringstream aMsg;
+          BRepCheck::Print(*aIt, aMsg);
+          std::cerr << "[" << theLabel << "] Shell " << aShellIdx << " error: " << aMsg.str();
+        }
+      }
+    }
+  }
+}
+
 } // namespace
 
 class BRepGraphBulkValidation : public testing::TestWithParam<std::string>
@@ -247,9 +444,13 @@ TEST_P(BRepGraphBulkValidation, RoundTrip)
     << "], reconInvalidityTypes=[" << aReconInvalidityTypes
     << "): " << aFilePath;
 
-  // Debug: dump BRepTools::Write comparison
+  // Debug: detailed sub-shape diagnostics and BRepTools::Write comparison
   if (isReconValid != isOrigValid)
   {
+    std::cerr << "\n=== DETAILED DIAGNOSTICS for " << aFilePath << " ===\n";
+    dumpShapeCheckDetails(anOrigChecker, anOrigShape, "ORIG");
+    dumpShapeCheckDetails(aReconChecker, aReconShape, "RECON");
+    std::cerr << "=== END DIAGNOSTICS ===\n\n";
     std::ostringstream anOrigStream, aReconStream;
     BRepTools::Write(anOrigShape, anOrigStream);
     BRepTools::Write(aReconShape, aReconStream);
