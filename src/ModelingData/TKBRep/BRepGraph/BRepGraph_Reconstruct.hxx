@@ -46,8 +46,7 @@ public:
   static Standard_EXPORT TopoDS_Shape FaceWithCache(const BRepGraph&  theGraph,
                                                     BRepGraph_NodeId  theNode,
                                                     NCollection_DataMap<BRepGraph_NodeId,
-                                                                       TopoDS_Shape,
-                                                                       BRepGraph_NodeId::Hasher>& theEdgeCache);
+                                                                       TopoDS_Shape>& theEdgeCache);
 
   //! Reconstruct a TopoDS_Shape from a usage node.
   //! @param[in] theGraph  the graph to reconstruct from

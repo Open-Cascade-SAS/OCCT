@@ -81,14 +81,11 @@ private:
   NCollection_Vector<BRepGraph_HistoryRecord> myRecords;
 
   //! Reverse map: derived node -> original node.
-  NCollection_DataMap<BRepGraph_NodeId,
-                      BRepGraph_NodeId,
-                      BRepGraph_NodeId::Hasher> myDerivedToOriginal;
+  NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId> myDerivedToOriginal;
 
   //! Forward map: original node -> vector of derived nodes.
   NCollection_DataMap<BRepGraph_NodeId,
-                      NCollection_Vector<BRepGraph_NodeId>,
-                      BRepGraph_NodeId::Hasher> myOriginalToDerived;
+                      NCollection_Vector<BRepGraph_NodeId>> myOriginalToDerived;
 
   bool myEnabled = true;
 };

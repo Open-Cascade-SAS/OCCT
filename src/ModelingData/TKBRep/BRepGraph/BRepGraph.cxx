@@ -54,7 +54,7 @@ BRepGraph::BRepGraph()
       mySurfRegistry(THE_INIT_CAPACITY_REGISTRY, myAllocator),
       myCurveRegistry(THE_INIT_CAPACITY_REGISTRY, myAllocator),
       myTShapeToDefId(THE_INIT_CAPACITY_REGISTRY, myAllocator),
-      myUIDToNodeId(BRepGraph_UID::Hasher(), THE_INIT_CAPACITY_REGISTRY, myAllocator),
+      myUIDToNodeId(THE_INIT_CAPACITY_REGISTRY, myAllocator),
       myIsDone(false)
 {
 }
@@ -81,7 +81,7 @@ BRepGraph::BRepGraph(const Handle(NCollection_BaseAllocator)& theAlloc)
       mySurfRegistry(THE_INIT_CAPACITY_REGISTRY, myAllocator),
       myCurveRegistry(THE_INIT_CAPACITY_REGISTRY, myAllocator),
       myTShapeToDefId(THE_INIT_CAPACITY_REGISTRY, myAllocator),
-      myUIDToNodeId(BRepGraph_UID::Hasher(), THE_INIT_CAPACITY_REGISTRY, myAllocator),
+      myUIDToNodeId(THE_INIT_CAPACITY_REGISTRY, myAllocator),
       myIsDone(false)
 {
 }
@@ -1560,14 +1560,10 @@ void BRepGraph::SetAllocator(const Handle(NCollection_BaseAllocator)& theAlloc)
   mySurfaces       = NCollection_Vector<BRepGraph_GeomNode::Surf>(64, myAllocator);
   myCurves         = NCollection_Vector<BRepGraph_GeomNode::Curve>(64, myAllocator);
   myPCurves        = NCollection_Vector<BRepGraph_GeomNode::PCurve>(128, myAllocator);
-  mySurfRegistry   = NCollection_IndexedDataMap<const Geom_Surface*, int,
-                       BRepGraph_PtrHasher<Geom_Surface>>(100, myAllocator);
-  myCurveRegistry  = NCollection_IndexedDataMap<const Geom_Curve*, int,
-                       BRepGraph_PtrHasher<Geom_Curve>>(100, myAllocator);
-  myTShapeToDefId  = NCollection_DataMap<const TopoDS_TShape*, BRepGraph_NodeId,
-                       BRepGraph_PtrHasher<TopoDS_TShape>>(100, myAllocator);
-  myUIDToNodeId    = NCollection_DataMap<BRepGraph_UID, BRepGraph_NodeId, BRepGraph_UID::Hasher>(
-    BRepGraph_UID::Hasher(), 100, myAllocator);
+  mySurfRegistry   = NCollection_IndexedDataMap<const Geom_Surface*, int>(100, myAllocator);
+  myCurveRegistry  = NCollection_IndexedDataMap<const Geom_Curve*, int>(100, myAllocator);
+  myTShapeToDefId  = NCollection_DataMap<const TopoDS_TShape*, BRepGraph_NodeId>(100, myAllocator);
+  myUIDToNodeId    = NCollection_DataMap<BRepGraph_UID, BRepGraph_NodeId>(100, myAllocator);
   myEdgeToWires = NCollection_DataMap<int, NCollection_Vector<int>>(100, myAllocator);
 }
 

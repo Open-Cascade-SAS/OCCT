@@ -83,17 +83,6 @@ struct BRepGraph_UID
     return opencascade::hashBytes(aCombination, sizeof(aCombination));
   }
 
-  //! Hasher for NCollection_DataMap / NCollection_Map.
-  struct Hasher
-  {
-    size_t operator()(const BRepGraph_UID& theUID) const noexcept
-    { return theUID.HashValue(); }
-
-    bool operator()(const BRepGraph_UID& theA,
-                    const BRepGraph_UID& theB) const noexcept
-    { return theA == theB; }
-  };
-
 private:
   BRepGraph_NodeKind myKind;
   size_t             myCounter;

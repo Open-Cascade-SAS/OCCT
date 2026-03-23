@@ -51,17 +51,6 @@ class BRepGraph_Analyze;
 class BRepGraph_Reconstruct;
 class BRepGraph_Mutator;
 
-//! Hasher for raw pointer keys (hashes by address).  Used internally by BRepGraph
-//! for typed-pointer map keys (replaces void* for type safety).
-template<typename T>
-struct BRepGraph_PtrHasher
-{
-  size_t operator()(const T* thePtr) const noexcept
-  { return std::hash<const void*>{}(static_cast<const void*>(thePtr)); }
-  bool operator()(const T* theA, const T* theB) const noexcept
-  { return theA == theB; }
-};
-
 //! @brief Bidirectional topology-geometry graph over TopoDS / BRep.
 //!
 //! Two-layer architecture: Definitions (one per unique TShape) hold intrinsic
@@ -507,32 +496,24 @@ private:
 
   //! Map-based RelEdge storage.
   NCollection_DataMap<BRepGraph_NodeId,
-                      NCollection_Vector<BRepGraph_RelEdge>,
-                      BRepGraph_NodeId::Hasher> myOutRelEdges;
+                      NCollection_Vector<BRepGraph_RelEdge>> myOutRelEdges;
   NCollection_DataMap<BRepGraph_NodeId,
-                      NCollection_Vector<BRepGraph_RelEdge>,
-                      BRepGraph_NodeId::Hasher> myInRelEdges;
+                      NCollection_Vector<BRepGraph_RelEdge>> myInRelEdges;
 
   //! Geometry deduplication registries.
-  NCollection_IndexedDataMap<const Geom_Surface*,
-                             int,
-                             BRepGraph_PtrHasher<Geom_Surface>> mySurfRegistry;
-  NCollection_IndexedDataMap<const Geom_Curve*,
-                             int,
-                             BRepGraph_PtrHasher<Geom_Curve>>   myCurveRegistry;
+  NCollection_IndexedDataMap<const Geom_Surface*, int> mySurfRegistry;
+  NCollection_IndexedDataMap<const Geom_Curve*, int>   myCurveRegistry;
 
   //! TShape -> Definition NodeId reverse lookup.
-  NCollection_DataMap<const TopoDS_TShape*,
-                      BRepGraph_NodeId,
-                      BRepGraph_PtrHasher<TopoDS_TShape>>        myTShapeToDefId;
+  NCollection_DataMap<const TopoDS_TShape*, BRepGraph_NodeId> myTShapeToDefId;
 
   //! Opt-in UID system.
   bool                myUIDEnabled = false;
   std::atomic<size_t> myNextUIDCounter{0};
   uint32_t            myGeneration{0};
 
-  NCollection_DataMap<BRepGraph_NodeId, BRepGraph_UID, BRepGraph_NodeId::Hasher> myNodeToUID;
-  NCollection_DataMap<BRepGraph_UID, BRepGraph_NodeId, BRepGraph_UID::Hasher>    myUIDToNodeId;
+  NCollection_DataMap<BRepGraph_NodeId, BRepGraph_UID> myNodeToUID;
+  NCollection_DataMap<BRepGraph_UID, BRepGraph_NodeId> myUIDToNodeId;
 
   //! Reverse index: edge def index -> wire def indices containing that edge.
   NCollection_DataMap<int, NCollection_Vector<int>> myEdgeToWires;
@@ -560,16 +541,13 @@ private:
 
 public:
   //! Shared cache for edge/vertex shapes during multi-face reconstruction.
-  using ReconstructCache = NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape,
-                                               BRepGraph_NodeId::Hasher>;
+  using ReconstructCache = NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape>;
 private:
 
   //! Shapes from Build().
-  NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape,
-                      BRepGraph_NodeId::Hasher> myOriginalShapes;
+  NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape> myOriginalShapes;
 
-  mutable NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape,
-                              BRepGraph_NodeId::Hasher> myCurrentShapes;
+  mutable NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape> myCurrentShapes;
   mutable std::shared_mutex myCurrentShapesMutex;
 
   //! Dispatch a callback on the def vector matching theNode.Kind.

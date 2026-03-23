@@ -156,7 +156,7 @@ TEST_F(BRepGraphTest, PCurveOf_ValidPair)
 
 TEST_F(BRepGraphTest, UID_Unique)
 {
-  NCollection_Map<BRepGraph_UID, BRepGraph_UID::Hasher> aUIDSet;
+  NCollection_Map<BRepGraph_UID> aUIDSet;
   for (int aSolidIdx = 0; aSolidIdx < myGraph.NbSolidDefs(); ++aSolidIdx)
     EXPECT_TRUE(aUIDSet.Add(myGraph.UIDOf(BRepGraph_NodeId(BRepGraph_NodeKind::Solid, aSolidIdx))));
   for (int aShellIdx = 0; aShellIdx < myGraph.NbShellDefs(); ++aShellIdx)

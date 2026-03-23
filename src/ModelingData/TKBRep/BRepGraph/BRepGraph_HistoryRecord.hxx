@@ -40,8 +40,7 @@ struct BRepGraph_HistoryRecord
   //! Key: original node id before the operation.
   //! Value: sequence of replacement node ids after the operation.
   NCollection_DataMap<BRepGraph_NodeId,
-                      NCollection_Vector<BRepGraph_NodeId>,
-                      BRepGraph_NodeId::Hasher>  Mapping;
+                      NCollection_Vector<BRepGraph_NodeId>>  Mapping;
 };
 
 #endif // _BRepGraph_HistoryRecord_HeaderFile

@@ -66,21 +66,6 @@ struct BRepGraph_NodeId
 
   bool operator!=(const BRepGraph_NodeId& theOther) const
   { return !(*this == theOther); }
-
-  //! Hasher for NCollection_DataMap / NCollection_IndexedDataMap.
-  struct Hasher
-  {
-    size_t operator()(const BRepGraph_NodeId& theId) const noexcept
-    {
-      size_t aCombination[2];
-      aCombination[0] = opencascade::hash(static_cast<int>(theId.Kind));
-      aCombination[1] = opencascade::hash(theId.Index);
-      return opencascade::hashBytes(aCombination, sizeof(aCombination));
-    }
-    bool operator()(const BRepGraph_NodeId& theA,
-                    const BRepGraph_NodeId& theB) const noexcept
-    { return theA == theB; }
-  };
 };
 
 //! std::hash specialization for NCollection_DefaultHasher support.

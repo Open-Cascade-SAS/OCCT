@@ -310,7 +310,7 @@ TopoDS_Shape BRepGraph_Reconstruct::Node(const BRepGraph& theGraph,
 TopoDS_Shape BRepGraph_Reconstruct::FaceWithCache(
   const BRepGraph&  theGraph,
   BRepGraph_NodeId  theNode,
-  NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape, BRepGraph_NodeId::Hasher>& theEdgeCache)
+  NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape>& theEdgeCache)
 {
   if (!theNode.IsValid() || theNode.Kind != BRepGraph_NodeKind::Face)
     return Node(theGraph, theNode);
