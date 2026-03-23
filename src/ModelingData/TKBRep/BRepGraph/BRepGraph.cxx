@@ -286,6 +286,10 @@ void BRepGraph::markModified(BRepGraph_NodeId theDefId)
       // Solid/Compound/CompSolid modifications don't propagate further.
       break;
   }
+
+  // Dispatch modification event to subscribing layers.
+  if (myHasModificationSubscribers)
+    dispatchNodeModified(theDefId);
 }
 
 //=================================================================================================
@@ -349,6 +353,10 @@ void BRepGraph::markModified(BRepGraph_NodeId theDefId, BRepGraph_TopoNode::Base
       // Solid/Compound/CompSolid modifications don't propagate further.
       break;
   }
+
+  // Dispatch modification event to subscribing layers.
+  if (myHasModificationSubscribers)
+    dispatchNodeModified(theDefId);
 }
 
 //=================================================================================================
@@ -563,58 +571,124 @@ void BRepGraph::EndDeferredInvalidation()
   }
 
   // Invalidate UserAttribute caches (UVBounds, BndLib, etc.) for all modified entities.
+  // When modification subscribers exist, the collection of modified NodeIds piggybacks
+  // on this existing per-kind iteration to avoid a separate sweep pass.
   const int aNbVertices  = myData->myIncStorage.NbVertices();
   const int aNbSolids    = myData->myIncStorage.NbSolids();
   const int aNbCompounds = myData->myIncStorage.NbCompounds();
   const int aNbCompSols  = myData->myIncStorage.NbCompSolids();
+  const bool aCollectModified = myHasModificationSubscribers;
+  NCollection_Vector<BRepGraph_NodeId> aModifiedNodes;
+  int aModifiedKindsMask = 0;
+
   for (int i = 0; i < aNbVertices; ++i)
   {
     const BRepGraphInc::VertexEntity& aVtx = myData->myIncStorage.Vertex(i);
     if (!aVtx.IsRemoved && aVtx.IsModified)
+    {
       myData->myIncStorage.ChangeVertex(i).Cache.InvalidateAll();
+      if (aCollectModified)
+      {
+        aModifiedNodes.Append(BRepGraph_NodeId::Vertex(i));
+        aModifiedKindsMask |= BRepGraph_Layer::KindBit(BRepGraph_NodeId::Kind::Vertex);
+      }
+    }
   }
   for (int i = 0; i < aNbEdges; ++i)
   {
     const BRepGraphInc::EdgeEntity& anEdge = myData->myIncStorage.Edge(i);
     if (!anEdge.IsRemoved && anEdge.IsModified)
+    {
       myData->myIncStorage.ChangeEdge(i).Cache.InvalidateAll();
+      if (aCollectModified)
+      {
+        aModifiedNodes.Append(BRepGraph_NodeId::Edge(i));
+        aModifiedKindsMask |= BRepGraph_Layer::KindBit(BRepGraph_NodeId::Kind::Edge);
+      }
+    }
   }
   for (int i = 0; i < aNbWires; ++i)
   {
     const BRepGraphInc::WireEntity& aWire = myData->myIncStorage.Wire(i);
     if (!aWire.IsRemoved && aWire.IsModified)
+    {
       myData->myIncStorage.ChangeWire(i).Cache.InvalidateAll();
+      if (aCollectModified)
+      {
+        aModifiedNodes.Append(BRepGraph_NodeId::Wire(i));
+        aModifiedKindsMask |= BRepGraph_Layer::KindBit(BRepGraph_NodeId::Kind::Wire);
+      }
+    }
   }
   for (int i = 0; i < aNbFaces; ++i)
   {
     const BRepGraphInc::FaceEntity& aFace = myData->myIncStorage.Face(i);
     if (!aFace.IsRemoved && aFace.IsModified)
+    {
       myData->myIncStorage.ChangeFace(i).Cache.InvalidateAll();
+      if (aCollectModified)
+      {
+        aModifiedNodes.Append(BRepGraph_NodeId::Face(i));
+        aModifiedKindsMask |= BRepGraph_Layer::KindBit(BRepGraph_NodeId::Kind::Face);
+      }
+    }
   }
   for (int i = 0; i < aNbShells; ++i)
   {
     const BRepGraphInc::ShellEntity& aShell = myData->myIncStorage.Shell(i);
     if (!aShell.IsRemoved && aShell.IsModified)
+    {
       myData->myIncStorage.ChangeShell(i).Cache.InvalidateAll();
+      if (aCollectModified)
+      {
+        aModifiedNodes.Append(BRepGraph_NodeId::Shell(i));
+        aModifiedKindsMask |= BRepGraph_Layer::KindBit(BRepGraph_NodeId::Kind::Shell);
+      }
+    }
   }
   for (int i = 0; i < aNbSolids; ++i)
   {
     const BRepGraphInc::SolidEntity& aSolid = myData->myIncStorage.Solid(i);
     if (!aSolid.IsRemoved && aSolid.IsModified)
+    {
       myData->myIncStorage.ChangeSolid(i).Cache.InvalidateAll();
+      if (aCollectModified)
+      {
+        aModifiedNodes.Append(BRepGraph_NodeId::Solid(i));
+        aModifiedKindsMask |= BRepGraph_Layer::KindBit(BRepGraph_NodeId::Kind::Solid);
+      }
+    }
   }
   for (int i = 0; i < aNbCompounds; ++i)
   {
     const BRepGraphInc::CompoundEntity& aComp = myData->myIncStorage.Compound(i);
     if (!aComp.IsRemoved && aComp.IsModified)
+    {
       myData->myIncStorage.ChangeCompound(i).Cache.InvalidateAll();
+      if (aCollectModified)
+      {
+        aModifiedNodes.Append(BRepGraph_NodeId::Compound(i));
+        aModifiedKindsMask |= BRepGraph_Layer::KindBit(BRepGraph_NodeId::Kind::Compound);
+      }
+    }
   }
   for (int i = 0; i < aNbCompSols; ++i)
   {
     const BRepGraphInc::CompSolidEntity& aCS = myData->myIncStorage.CompSolid(i);
     if (!aCS.IsRemoved && aCS.IsModified)
+    {
       myData->myIncStorage.ChangeCompSolid(i).Cache.InvalidateAll();
+      if (aCollectModified)
+      {
+        aModifiedNodes.Append(BRepGraph_NodeId::CompSolid(i));
+        aModifiedKindsMask |= BRepGraph_Layer::KindBit(BRepGraph_NodeId::Kind::CompSolid);
+      }
+    }
   }
+
+  // Dispatch batch modification event to subscribing layers.
+  if (aCollectModified && !aModifiedNodes.IsEmpty())
+    dispatchNodesModified(aModifiedNodes, aModifiedKindsMask);
 }
 
 //=================================================================================================
@@ -642,7 +716,10 @@ const BRepGraph_History& BRepGraph::History() const { return myData->myHistoryLo
 void BRepGraph::RegisterLayer(const Handle(BRepGraph_Layer)& theLayer)
 {
   if (!theLayer.IsNull())
+  {
     myLayers.Bind(theLayer->Name(), theLayer);
+    updateModificationSubscriberFlag();
+  }
 }
 
 //=================================================================================================
@@ -658,6 +735,7 @@ Handle(BRepGraph_Layer) BRepGraph::FindLayer(const TCollection_AsciiString& theN
 void BRepGraph::UnregisterLayer(const TCollection_AsciiString& theName)
 {
   myLayers.UnBind(theName);
+  updateModificationSubscriberFlag();
 }
 
 //=================================================================================================
@@ -669,6 +747,49 @@ void BRepGraph::dispatchLayerOnNodeRemoved(BRepGraph_NodeId theNode,
          anIter(myLayers); anIter.More(); anIter.Next())
   {
     anIter.Value()->OnNodeRemoved(theNode, theReplacement);
+  }
+}
+
+//=================================================================================================
+
+void BRepGraph::updateModificationSubscriberFlag()
+{
+  myHasModificationSubscribers = false;
+  for (NCollection_DataMap<TCollection_AsciiString, Handle(BRepGraph_Layer)>::Iterator
+         anIter(myLayers); anIter.More(); anIter.Next())
+  {
+    if (anIter.Value()->SubscribedKinds() != 0)
+    {
+      myHasModificationSubscribers = true;
+      return;
+    }
+  }
+}
+
+//=================================================================================================
+
+void BRepGraph::dispatchNodeModified(BRepGraph_NodeId theNode)
+{
+  const int aKindBit = BRepGraph_Layer::KindBit(theNode.NodeKind);
+  for (NCollection_DataMap<TCollection_AsciiString, Handle(BRepGraph_Layer)>::Iterator
+         anIter(myLayers); anIter.More(); anIter.Next())
+  {
+    if ((anIter.Value()->SubscribedKinds() & aKindBit) != 0)
+      anIter.Value()->OnNodeModified(theNode);
+  }
+}
+
+//=================================================================================================
+
+void BRepGraph::dispatchNodesModified(
+  const NCollection_Vector<BRepGraph_NodeId>& theModifiedNodes,
+  int theModifiedKindsMask)
+{
+  for (NCollection_DataMap<TCollection_AsciiString, Handle(BRepGraph_Layer)>::Iterator
+         anIter(myLayers); anIter.More(); anIter.Next())
+  {
+    if ((anIter.Value()->SubscribedKinds() & theModifiedKindsMask) != 0)
+      anIter.Value()->OnNodesModified(theModifiedNodes);
   }
 }
 

@@ -14,3 +14,23 @@
 #include <BRepGraph_Layer.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepGraph_Layer, Standard_Transient)
+
+//=================================================================================================
+
+int BRepGraph_Layer::SubscribedKinds() const
+{
+  return 0;
+}
+
+//=================================================================================================
+
+void BRepGraph_Layer::OnNodeModified(BRepGraph_NodeId /*theNode*/)
+{
+}
+
+//=================================================================================================
+
+void BRepGraph_Layer::OnNodesModified(
+  const NCollection_Vector<BRepGraph_NodeId>& /*theModifiedNodes*/)
+{
+}

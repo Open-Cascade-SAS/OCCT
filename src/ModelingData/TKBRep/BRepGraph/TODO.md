@@ -94,12 +94,12 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 
 ## Phase 2: Modularity (2 weeks)
 
-### Event-Driven Invalidation Bus [Arch] ★★★★
-- Replace direct `markModified`/`invalidateSubgraphImpl` with lightweight event dispatch
-- Layers subscribe to node modification events by kind (Edge, Face, etc.)
-- Enables reactive updates and zero-cost disabled layers
-- **Connects to**: batch invalidation (events dispatched after batch), attribute layers (layers subscribe)
-- **Profile context**: `invalidateSubgraphImpl` traverses full downward hierarchy per mutation — events allow lazy/selective invalidation
+### ~~Event-Driven Invalidation Bus~~ — DONE (2026-03-20)
+- Extended `BRepGraph_Layer` with `SubscribedKinds()` bitmask + `OnNodeModified()` / `OnNodesModified()` callbacks
+- Immediate mode: `markModified()` dispatches `OnNodeModified()` to layers matching kind bitmask
+- Deferred mode: `EndDeferredInvalidation()` collects modified NodeIds during Stage 3 sweep, dispatches `OnNodesModified()` once
+- Zero-cost: `myHasModificationSubscribers` flag skips all dispatch when no layer subscribes
+- **Result**: Layers can now react to geometry mutations, not just structural changes (OnNodeRemoved)
 
 ### Core/Extension RelEdge split [Arch] ★★★
 - Keep only fundamental relations in main graph

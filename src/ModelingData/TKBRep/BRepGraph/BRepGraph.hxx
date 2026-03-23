@@ -231,8 +231,23 @@ private:
   //! Named layers (stored on BRepGraph, not BRepGraph_Data, to survive Compact swap).
   NCollection_DataMap<TCollection_AsciiString, Handle(BRepGraph_Layer)> myLayers;
 
+  //! True if any registered layer has SubscribedKinds() != 0.
+  //! Enables zero-cost skip of modification dispatch when no layer subscribes.
+  bool myHasModificationSubscribers = false;
+
   //! Dispatch OnNodeRemoved to all registered layers.
   void dispatchLayerOnNodeRemoved(BRepGraph_NodeId theNode, BRepGraph_NodeId theReplacement);
+
+  //! Rescan myLayers and update myHasModificationSubscribers flag.
+  void updateModificationSubscriberFlag();
+
+  //! Dispatch OnNodeModified to layers whose SubscribedKinds matches the node's kind.
+  void dispatchNodeModified(BRepGraph_NodeId theNode);
+
+  //! Dispatch OnNodesModified to layers whose SubscribedKinds matches at least
+  //! one kind in theModifiedKindsMask.
+  void dispatchNodesModified(const NCollection_Vector<BRepGraph_NodeId>& theModifiedNodes,
+                             int theModifiedKindsMask);
 
   Standard_EXPORT void invalidateSubgraphImpl(BRepGraph_NodeId theNode);
   Standard_EXPORT BRepGraph_UID allocateUID(BRepGraph_NodeId theNodeId);
