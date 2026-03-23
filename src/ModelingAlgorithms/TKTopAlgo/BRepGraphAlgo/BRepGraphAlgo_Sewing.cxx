@@ -223,16 +223,13 @@ bool isSurfaceClosedForEdge(const BRepGraph&                           theGraph,
 
 bool isSeamEdge(const BRepGraph& theGraph, int theEdgeIdx)
 {
-  // Scan all coedges to find those referencing this edge with a seam pair.
-  const int aNbCoEdges = theGraph.Defs().NbCoEdges();
-  for (int i = 0; i < aNbCoEdges; ++i)
+  // Use reverse index for O(1) lookup instead of scanning all coedges.
+  const NCollection_Vector<int>& aCoEdgeIdxs = theGraph.Defs().CoEdgesOfEdge(theEdgeIdx);
+  for (int i = 0; i < aCoEdgeIdxs.Length(); ++i)
   {
-    const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Defs().CoEdge(i);
-    if (aCoEdge.EdgeIdx != theEdgeIdx)
-      continue;
+    const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Defs().CoEdge(aCoEdgeIdxs.Value(i));
     if (aCoEdge.SeamPairIdx >= 0 && aCoEdge.FaceDefId.IsValid())
     {
-      // Seam coedge found — verify the surface is actually U or V closed.
       if (isSurfaceClosedForEdge(theGraph, aCoEdge.FaceDefId.Index, aCoEdge, true)
           || isSurfaceClosedForEdge(theGraph, aCoEdge.FaceDefId.Index, aCoEdge, false))
       {
@@ -1697,16 +1694,16 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
   // Free edges have exactly 1 face; floating edges have 0 (-1 sentinel).
   // Look up the face via the first CoEdge referencing each edge.
   const int aNbFreeEdgesForMap = aFreeEdges.Length();
-  const int aTotalCoEdges      = theGraph.Defs().NbCoEdges();
   NCollection_Array1<int> aFaceOfPos(1, aNbFreeEdgesForMap);
   for (int aFreeIdx = 1; aFreeIdx <= aNbFreeEdgesForMap; ++aFreeIdx)
   {
     const int anEdgeIdx = aFreeEdges.Value(aFreeIdx).Index;
     int aFaceIdx = -1;
-    for (int aCEIdx = 0; aCEIdx < aTotalCoEdges; ++aCEIdx)
+    const NCollection_Vector<int>& aCoEdgeIdxs = theGraph.Defs().CoEdgesOfEdge(anEdgeIdx);
+    for (int aCEIdx = 0; aCEIdx < aCoEdgeIdxs.Length(); ++aCEIdx)
     {
-      const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Defs().CoEdge(aCEIdx);
-      if (aCoEdge.EdgeIdx == anEdgeIdx && aCoEdge.FaceDefId.IsValid())
+      const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Defs().CoEdge(aCoEdgeIdxs.Value(aCEIdx));
+      if (aCoEdge.FaceDefId.IsValid())
       {
         aFaceIdx = aCoEdge.FaceDefId.Index;
         break;

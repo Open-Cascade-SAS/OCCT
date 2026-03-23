@@ -1228,7 +1228,7 @@ constexpr int THE_NB_PROFILE_ITERS = 50;
 
 TEST(BRepGraphAlgo_SewingTest, Profiling_Grid50x50_Sequential)
 {
-  int    aNbSewn = 0;
+    int    aNbSewn = 0;
   double aTotal  = 0.0;
   for (int anIter = 0; anIter < THE_NB_PROFILE_ITERS; ++anIter)
   {
