@@ -6,7 +6,7 @@ This plan focuses on clarity, performance, and robustness for the backend.
 
 1. Add debug validators
 - ValidateEntityIds
-- ValidateReverseIndex
+- ValidateReverseIndex (DONE: called via Standard_ASSERT_VOID after SplitEdge/ReplaceEdgeInWire)
 - ValidateTShapeMapping
 
 2. Add invariant comments at mutation boundaries
@@ -25,11 +25,11 @@ Acceptance:
 
 ## Phase B: High-ROI Performance
 
-1. Optimize reverse-index dedup strategy
-- avoid repeated linear duplicate checks in high-volume build paths
+1. ~~Optimize reverse-index dedup strategy~~ DONE (2026-03-19)
+- Dense Vector-of-Vector storage, pre-sized during Build, sort+dedup for edge→faces
 
-2. Incremental append UID policy
-- allocate UIDs only for appended ranges when possible
+2. ~~Incremental append UID policy~~ DONE (2026-03-18)
+- Per-kind NCollection_Vector forward lookup, lazy DataMap reverse lookup
 
 3. Add phase timers
 - traverse
@@ -72,8 +72,8 @@ Acceptance:
 
 ## Priority Order
 
-1. Reverse-index optimization
-2. Append UID incrementality
+1. ~~Reverse-index optimization~~ DONE
+2. ~~Append UID incrementality~~ DONE
 3. Debug validators
 4. Timers and targeted profiles
 5. Optional post-pass policies

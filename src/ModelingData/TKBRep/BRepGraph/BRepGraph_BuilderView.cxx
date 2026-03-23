@@ -401,6 +401,7 @@ bool BRepGraph::BuilderView::IsRemoved(BRepGraph_NodeId theNode) const
 
 int BRepGraph::BuilderView::FaceCountForEdge(int theEdgeDefIdx) const
 {
+  // Direct PCurve-based path: valid during/after build when PCurves and wires are consistent.
   const NCollection_Vector<int>* aFaces =
     myGraph->myData->myIncStorage.ReverseIndex().FacesOfEdge(theEdgeDefIdx);
   return aFaces != nullptr ? aFaces->Length() : 0;
