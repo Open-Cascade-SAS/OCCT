@@ -214,7 +214,7 @@ TEST(BRepGraphReconstructTest, Edge_HasCurve_NonNull)
 
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.NbEdgeDefs(); ++anEdgeIdx)
   {
-    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.EdgeDef(anEdgeIdx);
+    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.EdgeDefinition(anEdgeIdx);
     if (anEdgeDef.IsDegenerate)
       continue;
 
@@ -239,7 +239,7 @@ TEST(BRepGraphReconstructTest, Edge_ParameterRange_Preserved)
 
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.NbEdgeDefs(); ++anEdgeIdx)
   {
-    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.EdgeDef(anEdgeIdx);
+    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.EdgeDefinition(anEdgeIdx);
     if (anEdgeDef.IsDegenerate)
       continue;
 
@@ -268,7 +268,7 @@ TEST(BRepGraphReconstructTest, Vertex_Point_MatchesDefPoint)
 
   for (int aVertIdx = 0; aVertIdx < aGraph.NbVertexDefs(); ++aVertIdx)
   {
-    const BRepGraph_TopoNode::VertexDef& aVertDef = aGraph.VertexDef(aVertIdx);
+    const BRepGraph_TopoNode::VertexDef& aVertDef = aGraph.VertexDefinition(aVertIdx);
 
     TopoDS_Shape aReconVtx = aGraph.ReconstructShape(
       BRepGraph_NodeId(BRepGraph_NodeKind::Vertex, aVertIdx));
@@ -324,7 +324,7 @@ TEST(BRepGraphReconstructTest, Face_OrientationPreserved)
 
   for (int aFaceIdx = 0; aFaceIdx < aGraph.NbFaceUsages(); ++aFaceIdx)
   {
-    const BRepGraph_TopoNode::FaceUsage& aFaceUsage = aGraph.FaceUsage(aFaceIdx);
+    const BRepGraph_TopoNode::FaceUsage& aFaceUsage = aGraph.FaceUsageNode(aFaceIdx);
     const TopAbs_Orientation anExpectedOri = aFaceUsage.Orientation;
 
     TopoDS_Shape aReconFace = aGraph.ReconstructFromUsage(
@@ -387,8 +387,8 @@ TEST(BRepGraphReconstructTest, ReconstructFromUsage_Edge_ValidShape)
   // Find a non-degenerate edge usage.
   for (int anIdx = 0; anIdx < aGraph.NbEdgeUsages(); ++anIdx)
   {
-    const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage = aGraph.EdgeUsage(anIdx);
-    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.EdgeDef(anEdgeUsage.DefId.Index);
+    const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage = aGraph.EdgeUsageNode(anIdx);
+    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.EdgeDefinition(anEdgeUsage.DefId.Index);
     if (anEdgeDef.IsDegenerate)
       continue;
 
@@ -411,7 +411,7 @@ TEST(BRepGraphReconstructTest, ReconstructFromUsage_Vertex_CorrectPoint)
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.NbVertexUsages(), 0);
 
-  const BRepGraph_TopoNode::VertexUsage& aVtxUsage = aGraph.VertexUsage(0);
+  const BRepGraph_TopoNode::VertexUsage& aVtxUsage = aGraph.VertexUsageNode(0);
   const gp_Pnt& anExpectedPt = aVtxUsage.TransformedPoint;
 
   TopoDS_Shape aRecon = aGraph.ReconstructFromUsage(
@@ -437,31 +437,31 @@ TEST(BRepGraphReconstructTest, AfterVertexMutation_ModifiedFlagAndPointChanged)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Find a vertex belonging to face 0 and move it significantly.
-  const BRepGraph_TopoNode::FaceDef& aFaceDef = aGraph.FaceDef(0);
+  const BRepGraph_TopoNode::FaceDef& aFaceDef = aGraph.FaceDefinition(0);
   ASSERT_FALSE(aFaceDef.Usages.IsEmpty());
-  const BRepGraph_TopoNode::FaceUsage& aFaceUsage = aGraph.FaceUsage(aFaceDef.Usages.First().Index);
+  const BRepGraph_TopoNode::FaceUsage& aFaceUsage = aGraph.FaceUsageNode(aFaceDef.Usages.First().Index);
   ASSERT_TRUE(aFaceUsage.OuterWireUsage.IsValid());
 
-  const BRepGraph_TopoNode::WireUsage& aWireUsage = aGraph.WireUsage(aFaceUsage.OuterWireUsage.Index);
-  const BRepGraph_TopoNode::WireDef& aWireDef = aGraph.WireDef(aWireUsage.DefId.Index);
+  const BRepGraph_TopoNode::WireUsage& aWireUsage = aGraph.WireUsageNode(aFaceUsage.OuterWireUsage.Index);
+  const BRepGraph_TopoNode::WireDef& aWireDef = aGraph.WireDefinition(aWireUsage.DefId.Index);
   ASSERT_GT(aWireDef.OrderedEdges.Length(), 0);
 
   const BRepGraph_NodeId anEdgeDefId = aWireDef.OrderedEdges.First().EdgeDefId;
-  const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.EdgeDef(anEdgeDefId.Index);
+  const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.EdgeDefinition(anEdgeDefId.Index);
   const int aVertIdx = anEdgeDef.StartVertexDefId.Index;
   ASSERT_GE(aVertIdx, 0);
 
   // Mutate: move vertex by 5 units in Z.
-  const gp_Pnt anOldPt = aGraph.VertexDef(aVertIdx).Point;
-  BRepGraph_TopoNode::VertexDef& aMutVtx = aGraph.MutableVertexDef(aVertIdx);
+  const gp_Pnt anOldPt = aGraph.VertexDefinition(aVertIdx).Point;
+  BRepGraph_TopoNode::VertexDef& aMutVtx = aGraph.MutableVertexDefinition(aVertIdx);
   aMutVtx.Point = gp_Pnt(anOldPt.X(), anOldPt.Y(), anOldPt.Z() + 5.0);
 
   // Verify the modification flag is set on the vertex def.
-  EXPECT_TRUE(aGraph.VertexDef(aVertIdx).IsModified)
+  EXPECT_TRUE(aGraph.VertexDefinition(aVertIdx).IsModified)
     << "Vertex def should be marked as modified after mutation";
 
   // Verify the graph VertexDef.Point has actually changed.
-  const gp_Pnt aNewPt = aGraph.VertexDef(aVertIdx).Point;
+  const gp_Pnt aNewPt = aGraph.VertexDefinition(aVertIdx).Point;
   EXPECT_GT(anOldPt.Distance(aNewPt), Precision::Confusion())
     << "VertexDef.Point should differ after mutation";
 }
@@ -479,7 +479,7 @@ TEST(BRepGraphReconstructTest, AfterToleranceMutation_NewTShape)
   TopoDS_Shape aShapeBefore = aGraph.Shape(anEdgeId);
 
   // Mutate tolerance.
-  BRepGraph_TopoNode::EdgeDef& aMutEdge = aGraph.MutableEdgeDef(0);
+  BRepGraph_TopoNode::EdgeDef& aMutEdge = aGraph.MutableEdgeDefinition(0);
   aMutEdge.Tolerance = aMutEdge.Tolerance + 1.0;
 
   // After mutation, Shape() should return a reconstructed shape with a different TShape.

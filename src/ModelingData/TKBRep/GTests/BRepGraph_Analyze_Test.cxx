@@ -405,7 +405,7 @@ TEST_F(BRepGraphAnalyzeTest, BoundingBox_Edge_SubsetOfOwningFace)
   aFaceBox.Get(aFXmin, aFYmin, aFZmin, aFXmax, aFYmax, aFZmax);
 
   // Get edges of the first wire of the first face.
-  const BRepGraph_TopoNode::WireDef& aWire = myGraph.WireDef(0);
+  const BRepGraph_TopoNode::WireDef& aWire = myGraph.WireDefinition(0);
   const double aTol = Precision::Confusion();
 
   for (int anEdgeIter = 0; anEdgeIter < aWire.OrderedEdges.Length(); ++anEdgeIter)
@@ -455,7 +455,7 @@ TEST_F(BRepGraphAnalyzeTest, BoundingBox_AfterMutation_CacheInvalidated)
   ASSERT_FALSE(aBoxBefore.IsVoid());
 
   // Mutate vertex — this should invalidate the cache via markModified.
-  myGraph.MutableVertexDef(0);
+  myGraph.MutableVertexDefinition(0);
 
   // Verify that after mutation, recomputing still produces a valid bbox.
   // BoundingBox uses the original shape for computation, so results stay consistent.
@@ -463,7 +463,7 @@ TEST_F(BRepGraphAnalyzeTest, BoundingBox_AfterMutation_CacheInvalidated)
   ASSERT_FALSE(aBoxAfter.IsVoid());
 
   // Verify IsModified flag was set.
-  EXPECT_TRUE(myGraph.VertexDef(0).IsModified);
+  EXPECT_TRUE(myGraph.VertexDefinition(0).IsModified);
 }
 
 TEST_F(BRepGraphAnalyzeTest, Invalidate_ThenRecompute_SameResult)
@@ -586,7 +586,7 @@ TEST_F(BRepGraphAnalyzeTest, Centroid_AfterMutation_CacheInvalidated)
   const gp_Pnt aCentroidBefore = myGraph.Centroid(aVertId);
 
   // Mutate vertex (marks modified, invalidates cache).
-  myGraph.MutableVertexDef(0);
+  myGraph.MutableVertexDefinition(0);
 
   // Centroid recomputes from original shape — result stays consistent.
   const gp_Pnt aCentroidAfter = myGraph.Centroid(aVertId);
@@ -597,5 +597,5 @@ TEST_F(BRepGraphAnalyzeTest, Centroid_AfterMutation_CacheInvalidated)
   EXPECT_NEAR(aCentroidBefore.Z(), aCentroidAfter.Z(), Precision::Confusion());
 
   // Verify the modification flag was set.
-  EXPECT_TRUE(myGraph.VertexDef(0).IsModified);
+  EXPECT_TRUE(myGraph.VertexDefinition(0).IsModified);
 }

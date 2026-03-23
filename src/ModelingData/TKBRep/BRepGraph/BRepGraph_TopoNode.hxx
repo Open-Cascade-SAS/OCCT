@@ -22,7 +22,6 @@
 #include <TopAbs_Orientation.hxx>
 #include <gp_Pnt.hxx>
 
-#include <NCollection_Array1.hxx>
 #include <NCollection_Vector.hxx>
 
 //! Namespace grouping all topology node types for BRepGraph.
@@ -55,6 +54,18 @@ struct SolidDef : public BaseDef {};
 
 struct ShellDef : public BaseDef {};
 
+struct CompoundDef : public BaseDef
+{
+  //! Child definition NodeIds (Compound, CompSolid, Solid, Shell, or Face kinds).
+  NCollection_Vector<BRepGraph_NodeId> ChildDefIds;
+};
+
+struct CompSolidDef : public BaseDef
+{
+  //! Child solid definition NodeIds.
+  NCollection_Vector<BRepGraph_NodeId> SolidDefIds;
+};
+
 struct FaceDef : public BaseDef
 {
   //! Geometry: the surface node that realizes this face.
@@ -74,7 +85,7 @@ struct WireDef : public BaseDef
     TopAbs_Orientation OrientationInWire = TopAbs_FORWARD;
   };
 
-  NCollection_Array1<EdgeEntry> OrderedEdges;
+  NCollection_Vector<EdgeEntry> OrderedEdges;
 
   //! True if first edge's start vertex == last edge's end vertex.
   bool IsClosed = false;
@@ -144,6 +155,16 @@ struct SolidUsage : public BaseUsage
 struct ShellUsage : public BaseUsage
 {
   NCollection_Vector<BRepGraph_UsageId> FaceUsages;
+};
+
+struct CompoundUsage : public BaseUsage
+{
+  NCollection_Vector<BRepGraph_UsageId> ChildUsages;
+};
+
+struct CompSolidUsage : public BaseUsage
+{
+  NCollection_Vector<BRepGraph_UsageId> SolidUsages;
 };
 
 struct FaceUsage : public BaseUsage

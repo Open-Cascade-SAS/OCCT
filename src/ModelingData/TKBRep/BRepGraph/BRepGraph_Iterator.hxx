@@ -125,32 +125,32 @@ inline BRepGraph_Iterator<BRepGraph_GeomNode::PCurve>::BRepGraph_Iterator(const 
 template <>
 inline const BRepGraph_TopoNode::SolidDef&
 BRepGraph_Iterator<BRepGraph_TopoNode::SolidDef>::Current() const
-{ return myGraph.SolidDef(myIndex); }
+{ return myGraph.SolidDefinition(myIndex); }
 
 template <>
 inline const BRepGraph_TopoNode::ShellDef&
 BRepGraph_Iterator<BRepGraph_TopoNode::ShellDef>::Current() const
-{ return myGraph.ShellDef(myIndex); }
+{ return myGraph.ShellDefinition(myIndex); }
 
 template <>
 inline const BRepGraph_TopoNode::FaceDef&
 BRepGraph_Iterator<BRepGraph_TopoNode::FaceDef>::Current() const
-{ return myGraph.FaceDef(myIndex); }
+{ return myGraph.FaceDefinition(myIndex); }
 
 template <>
 inline const BRepGraph_TopoNode::WireDef&
 BRepGraph_Iterator<BRepGraph_TopoNode::WireDef>::Current() const
-{ return myGraph.WireDef(myIndex); }
+{ return myGraph.WireDefinition(myIndex); }
 
 template <>
 inline const BRepGraph_TopoNode::EdgeDef&
 BRepGraph_Iterator<BRepGraph_TopoNode::EdgeDef>::Current() const
-{ return myGraph.EdgeDef(myIndex); }
+{ return myGraph.EdgeDefinition(myIndex); }
 
 template <>
 inline const BRepGraph_TopoNode::VertexDef&
 BRepGraph_Iterator<BRepGraph_TopoNode::VertexDef>::Current() const
-{ return myGraph.VertexDef(myIndex); }
+{ return myGraph.VertexDefinition(myIndex); }
 
 // ---------------------------------------------------------------------------
 // Usage iterators: Current()
@@ -159,32 +159,32 @@ BRepGraph_Iterator<BRepGraph_TopoNode::VertexDef>::Current() const
 template <>
 inline const BRepGraph_TopoNode::SolidUsage&
 BRepGraph_Iterator<BRepGraph_TopoNode::SolidUsage>::Current() const
-{ return myGraph.SolidUsage(myIndex); }
+{ return myGraph.SolidUsageNode(myIndex); }
 
 template <>
 inline const BRepGraph_TopoNode::ShellUsage&
 BRepGraph_Iterator<BRepGraph_TopoNode::ShellUsage>::Current() const
-{ return myGraph.ShellUsage(myIndex); }
+{ return myGraph.ShellUsageNode(myIndex); }
 
 template <>
 inline const BRepGraph_TopoNode::FaceUsage&
 BRepGraph_Iterator<BRepGraph_TopoNode::FaceUsage>::Current() const
-{ return myGraph.FaceUsage(myIndex); }
+{ return myGraph.FaceUsageNode(myIndex); }
 
 template <>
 inline const BRepGraph_TopoNode::WireUsage&
 BRepGraph_Iterator<BRepGraph_TopoNode::WireUsage>::Current() const
-{ return myGraph.WireUsage(myIndex); }
+{ return myGraph.WireUsageNode(myIndex); }
 
 template <>
 inline const BRepGraph_TopoNode::EdgeUsage&
 BRepGraph_Iterator<BRepGraph_TopoNode::EdgeUsage>::Current() const
-{ return myGraph.EdgeUsage(myIndex); }
+{ return myGraph.EdgeUsageNode(myIndex); }
 
 template <>
 inline const BRepGraph_TopoNode::VertexUsage&
 BRepGraph_Iterator<BRepGraph_TopoNode::VertexUsage>::Current() const
-{ return myGraph.VertexUsage(myIndex); }
+{ return myGraph.VertexUsageNode(myIndex); }
 
 // ---------------------------------------------------------------------------
 // Geometry iterators: Current()
@@ -193,16 +193,16 @@ BRepGraph_Iterator<BRepGraph_TopoNode::VertexUsage>::Current() const
 template <>
 inline const BRepGraph_GeomNode::Surf&
 BRepGraph_Iterator<BRepGraph_GeomNode::Surf>::Current() const
-{ return myGraph.Surf(myIndex); }
+{ return myGraph.SurfNode(myIndex); }
 
 template <>
 inline const BRepGraph_GeomNode::Curve&
 BRepGraph_Iterator<BRepGraph_GeomNode::Curve>::Current() const
-{ return myGraph.Curve(myIndex); }
+{ return myGraph.CurveNode(myIndex); }
 
 template <>
 inline const BRepGraph_GeomNode::PCurve&
 BRepGraph_Iterator<BRepGraph_GeomNode::PCurve>::Current() const
-{ return myGraph.PCurve(myIndex); }
+{ return myGraph.PCurveNode(myIndex); }
 
 #endif // _BRepGraph_Iterator_HeaderFile

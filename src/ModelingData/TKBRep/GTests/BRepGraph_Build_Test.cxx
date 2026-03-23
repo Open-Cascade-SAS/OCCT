@@ -113,7 +113,7 @@ TEST(BRepGraphBuildTest, Sphere_SurfaceType)
   bool aHasSpherical = false;
   for (int anIdx = 0; anIdx < aGraph.NbSurfaces(); ++anIdx)
   {
-    const Handle(Geom_Surface)& aSurf = aGraph.Surf(anIdx).Surface;
+    const Handle(Geom_Surface)& aSurf = aGraph.SurfNode(anIdx).Surface;
     if (!aSurf.IsNull() && aSurf->DynamicType() == STANDARD_TYPE(Geom_SphericalSurface))
     {
       aHasSpherical = true;
@@ -135,7 +135,7 @@ TEST(BRepGraphBuildTest, Sphere_HasDegenerateEdges)
   int aDegCount = 0;
   for (int anIdx = 0; anIdx < aGraph.NbEdgeDefs(); ++anIdx)
   {
-    if (aGraph.EdgeDef(anIdx).IsDegenerate)
+    if (aGraph.EdgeDefinition(anIdx).IsDegenerate)
     {
       ++aDegCount;
     }
@@ -184,7 +184,7 @@ TEST(BRepGraphBuildTest, Cylinder_SurfaceType)
   bool aHasCylindrical = false;
   for (int anIdx = 0; anIdx < aGraph.NbSurfaces(); ++anIdx)
   {
-    const Handle(Geom_Surface)& aSurf = aGraph.Surf(anIdx).Surface;
+    const Handle(Geom_Surface)& aSurf = aGraph.SurfNode(anIdx).Surface;
     if (!aSurf.IsNull() && aSurf->DynamicType() == STANDARD_TYPE(Geom_CylindricalSurface))
     {
       aHasCylindrical = true;
@@ -234,7 +234,7 @@ TEST(BRepGraphBuildTest, Cone_SurfaceType)
   bool aHasConical = false;
   for (int anIdx = 0; anIdx < aGraph.NbSurfaces(); ++anIdx)
   {
-    const Handle(Geom_Surface)& aSurf = aGraph.Surf(anIdx).Surface;
+    const Handle(Geom_Surface)& aSurf = aGraph.SurfNode(anIdx).Surface;
     if (!aSurf.IsNull() && aSurf->DynamicType() == STANDARD_TYPE(Geom_ConicalSurface))
     {
       aHasConical = true;
@@ -256,7 +256,7 @@ TEST(BRepGraphBuildTest, Cone_HasDegenerateEdge)
   int aDegCount = 0;
   for (int anIdx = 0; anIdx < aGraph.NbEdgeDefs(); ++anIdx)
   {
-    if (aGraph.EdgeDef(anIdx).IsDegenerate)
+    if (aGraph.EdgeDefinition(anIdx).IsDegenerate)
     {
       ++aDegCount;
     }
@@ -305,7 +305,7 @@ TEST(BRepGraphBuildTest, Torus_SurfaceType)
   bool aHasToroidal = false;
   for (int anIdx = 0; anIdx < aGraph.NbSurfaces(); ++anIdx)
   {
-    const Handle(Geom_Surface)& aSurf = aGraph.Surf(anIdx).Surface;
+    const Handle(Geom_Surface)& aSurf = aGraph.SurfNode(anIdx).Surface;
     if (!aSurf.IsNull() && aSurf->DynamicType() == STANDARD_TYPE(Geom_ToroidalSurface))
     {
       aHasToroidal = true;
@@ -357,7 +357,7 @@ TEST(BRepGraphBuildTest, Wedge_AllPlanarSurfaces)
 
   for (int anIdx = 0; anIdx < aGraph.NbSurfaces(); ++anIdx)
   {
-    const Handle(Geom_Surface)& aSurf = aGraph.Surf(anIdx).Surface;
+    const Handle(Geom_Surface)& aSurf = aGraph.SurfNode(anIdx).Surface;
     ASSERT_FALSE(aSurf.IsNull());
     EXPECT_TRUE(aSurf->DynamicType() == STANDARD_TYPE(Geom_Plane))
       << "Surface index " << anIdx << " is not a Geom_Plane";
@@ -523,7 +523,7 @@ TEST(BRepGraphBuildTest, SinglePlanarFace_Counts)
   EXPECT_GE(aGraph.NbSurfaces(), 1);
 
   // Verify surface is a plane.
-  const Handle(Geom_Surface)& aSurf = aGraph.Surf(0).Surface;
+  const Handle(Geom_Surface)& aSurf = aGraph.SurfNode(0).Surface;
   ASSERT_FALSE(aSurf.IsNull());
   EXPECT_TRUE(aSurf->DynamicType() == STANDARD_TYPE(Geom_Plane));
 }
@@ -617,7 +617,7 @@ TEST(BRepGraphBuildTest, Box_VertexPoints_MatchBRepTool)
   // For each graph vertex, verify that a matching TopExp vertex exists.
   for (int anIdx = 0; anIdx < aGraph.NbVertexDefs(); ++anIdx)
   {
-    const gp_Pnt& aGraphPnt = aGraph.VertexDef(anIdx).Point;
+    const gp_Pnt& aGraphPnt = aGraph.VertexDefinition(anIdx).Point;
     bool aFound = false;
     for (int aMapIdx = 1; aMapIdx <= aVertexMap.Extent(); ++aMapIdx)
     {
@@ -650,7 +650,7 @@ TEST(BRepGraphBuildTest, Box_FaceTolerances_MatchBRepTool)
   // Verify that each graph face tolerance appears in the TopExp set.
   for (int anIdx = 0; anIdx < aGraph.NbFaceDefs(); ++anIdx)
   {
-    const double aGraphTol = aGraph.FaceDef(anIdx).Tolerance;
+    const double aGraphTol = aGraph.FaceDefinition(anIdx).Tolerance;
     bool aFound = false;
     for (int aMapIdx = 1; aMapIdx <= aFaceMap.Extent(); ++aMapIdx)
     {
@@ -681,7 +681,7 @@ TEST(BRepGraphBuildTest, Box_EdgeTolerances_MatchBRepTool)
 
   for (int anIdx = 0; anIdx < aGraph.NbEdgeDefs(); ++anIdx)
   {
-    const double aGraphTol = aGraph.EdgeDef(anIdx).Tolerance;
+    const double aGraphTol = aGraph.EdgeDefinition(anIdx).Tolerance;
     bool aFound = false;
     for (int aMapIdx = 1; aMapIdx <= anEdgeMap.Extent(); ++aMapIdx)
     {
@@ -739,7 +739,7 @@ TEST(BRepGraphBuildTest, Box_AllSurfacesArePlanes)
   ASSERT_EQ(aGraph.NbSurfaces(), 6);
   for (int anIdx = 0; anIdx < aGraph.NbSurfaces(); ++anIdx)
   {
-    const Handle(Geom_Surface)& aSurf = aGraph.Surf(anIdx).Surface;
+    const Handle(Geom_Surface)& aSurf = aGraph.SurfNode(anIdx).Surface;
     ASSERT_FALSE(aSurf.IsNull());
     EXPECT_TRUE(aSurf->DynamicType() == STANDARD_TYPE(Geom_Plane))
       << "Surface " << anIdx << " is not Geom_Plane";
@@ -757,7 +757,7 @@ TEST(BRepGraphBuildTest, Box_NoDegenerateEdges)
 
   for (int anIdx = 0; anIdx < aGraph.NbEdgeDefs(); ++anIdx)
   {
-    EXPECT_FALSE(aGraph.EdgeDef(anIdx).IsDegenerate)
+    EXPECT_FALSE(aGraph.EdgeDefinition(anIdx).IsDegenerate)
       << "Box edge " << anIdx << " is degenerate unexpectedly";
   }
 }
@@ -773,7 +773,7 @@ TEST(BRepGraphBuildTest, Box_EdgeVertexDefsAreValid)
 
   for (int anIdx = 0; anIdx < aGraph.NbEdgeDefs(); ++anIdx)
   {
-    const auto& anEdge = aGraph.EdgeDef(anIdx);
+    const auto& anEdge = aGraph.EdgeDefinition(anIdx);
     EXPECT_TRUE(anEdge.StartVertexDefId.IsValid())
       << "Edge " << anIdx << " has invalid start vertex";
     EXPECT_TRUE(anEdge.EndVertexDefId.IsValid())
@@ -794,7 +794,7 @@ TEST(BRepGraphBuildTest, Box_FaceSurfNodeIdsAreValid)
 
   for (int anIdx = 0; anIdx < aGraph.NbFaceDefs(); ++anIdx)
   {
-    const auto& aFace = aGraph.FaceDef(anIdx);
+    const auto& aFace = aGraph.FaceDefinition(anIdx);
     EXPECT_TRUE(aFace.SurfNodeId.IsValid())
       << "Face " << anIdx << " has invalid SurfNodeId";
     EXPECT_EQ(aFace.SurfNodeId.Kind, BRepGraph_NodeKind::Surface);
@@ -814,7 +814,7 @@ TEST(BRepGraphBuildTest, Box_EdgeParamRange_IsNonDegenerate)
 
   for (int anIdx = 0; anIdx < aGraph.NbEdgeDefs(); ++anIdx)
   {
-    const auto& anEdge = aGraph.EdgeDef(anIdx);
+    const auto& anEdge = aGraph.EdgeDefinition(anIdx);
     EXPECT_LT(anEdge.ParamFirst, anEdge.ParamLast)
       << "Edge " << anIdx << " has invalid parameter range ["
       << anEdge.ParamFirst << ", " << anEdge.ParamLast << "]";

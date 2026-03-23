@@ -29,7 +29,7 @@
 //! Generation is NOT part of identity; it indicates which Build() cycle
 //! produced this UID (for stale-reference detection).
 //!
-//! 16 bytes on 64-bit.  Trivially copyable, cheap to pass by value.
+//! 24 bytes on 64-bit (4 + 8 + 4 + 1 + 7 padding).  Trivially copyable, cheap to pass by value.
 struct BRepGraph_UID
 {
   //! Default: invalid UID.
@@ -52,7 +52,7 @@ struct BRepGraph_UID
   size_t             Counter()    const { return myCounter; }
   uint32_t           Generation() const { return myGeneration; }
 
-  bool IsTopology() const { return static_cast<int>(myKind) <= 5; }
+  bool IsTopology() const { return static_cast<int>(myKind) <= 7; }
   bool IsGeometry() const { return static_cast<int>(myKind) >= 10; }
 
   //! Equality: Identity = (Kind, Counter).  Generation excluded.

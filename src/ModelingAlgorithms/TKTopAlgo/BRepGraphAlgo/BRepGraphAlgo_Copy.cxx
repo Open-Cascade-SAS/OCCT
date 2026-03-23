@@ -69,9 +69,9 @@ TopoDS_Face buildCopiedFace(const BRepGraph&                                    
                             const NCollection_DataMap<int, Handle(Geom_Curve)>&   theCurveCopies,
                             const NCollection_DataMap<int, TopoDS_Vertex>&        theVertexCopies)
 {
-  const auto& aFaceUsage = theGraph.FaceUsage(theFaceUsageIdx);
-  const BRepGraph_TopoNode::FaceDef& aFaceDef = theGraph.FaceDef(aFaceUsage.DefId.Index);
-  const BRepGraph_GeomNode::Surf& aSurfNode = theGraph.Surf(aFaceDef.SurfNodeId.Index);
+  const auto& aFaceUsage = theGraph.FaceUsageNode(theFaceUsageIdx);
+  const BRepGraph_TopoNode::FaceDef& aFaceDef = theGraph.FaceDefinition(aFaceUsage.DefId.Index);
+  const BRepGraph_GeomNode::Surf& aSurfNode = theGraph.SurfNode(aFaceDef.SurfNodeId.Index);
 
   BRep_Builder aBB;
 
@@ -89,16 +89,16 @@ TopoDS_Face buildCopiedFace(const BRepGraph&                                    
     TopoDS_Wire aNewWire;
     aBB.MakeWire(aNewWire);
 
-    const auto& aWireUsage = theGraph.WireUsage(theWireUsageId.Index);
-    const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.WireDef(aWireUsage.DefId.Index);
+    const auto& aWireUsage = theGraph.WireUsageNode(theWireUsageId.Index);
+    const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.WireDefinition(aWireUsage.DefId.Index);
     for (int anEdgeIdx = 0; anEdgeIdx < aWireDef.OrderedEdges.Length(); ++anEdgeIdx)
     {
       const BRepGraph_TopoNode::WireDef::EdgeEntry& anEntry =
         aWireDef.OrderedEdges.Value(anEdgeIdx);
-      const BRepGraph_TopoNode::EdgeDef& anEdgeDef = theGraph.EdgeDef(anEntry.EdgeDefId.Index);
+      const BRepGraph_TopoNode::EdgeDef& anEdgeDef = theGraph.EdgeDefinition(anEntry.EdgeDefId.Index);
 
       // Get edge usage for local location.
-      const auto& anEdgeUsage = theGraph.EdgeUsage(aWireUsage.EdgeUsages.Value(anEdgeIdx).Index);
+      const auto& anEdgeUsage = theGraph.EdgeUsageNode(aWireUsage.EdgeUsages.Value(anEdgeIdx).Index);
 
       // Build new edge.
       TopoDS_Edge aNewEdge;
@@ -111,7 +111,7 @@ TopoDS_Face buildCopiedFace(const BRepGraph&                                    
       else if (anEdgeDef.CurveNodeId.IsValid())
       {
         const BRepGraph_GeomNode::Curve& aCurveNode =
-          theGraph.Curve(anEdgeDef.CurveNodeId.Index);
+          theGraph.CurveNode(anEdgeDef.CurveNodeId.Index);
         Handle(Geom_Curve) aNewCurve =
           theCurveCopies.IsBound(anEdgeDef.CurveNodeId.Index)
             ? theCurveCopies.Find(anEdgeDef.CurveNodeId.Index)
@@ -132,14 +132,14 @@ TopoDS_Face buildCopiedFace(const BRepGraph&                                    
         const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCEntry =
           anEdgeDef.PCurves.Value(aPCIdx);
         const BRepGraph_GeomNode::PCurve& aPCNode =
-          theGraph.PCurve(aPCEntry.PCurveNodeId.Index);
+          theGraph.PCurveNode(aPCEntry.PCurveNodeId.Index);
         if (!aPCNode.Curve2d.IsNull())
         {
           Handle(Geom2d_Curve) aNewPC = copyPCurve(aPCNode.Curve2d, theCopyGeom);
           const BRepGraph_TopoNode::FaceDef& aPCFaceDef =
-            theGraph.FaceDef(aPCEntry.FaceDefId.Index);
+            theGraph.FaceDefinition(aPCEntry.FaceDefId.Index);
           const BRepGraph_GeomNode::Surf& aPCSurf =
-            theGraph.Surf(aPCFaceDef.SurfNodeId.Index);
+            theGraph.SurfNode(aPCFaceDef.SurfNodeId.Index);
           Handle(Geom_Surface) aPCSurfCopy =
             theSurfCopies.IsBound(aPCFaceDef.SurfNodeId.Index)
               ? theSurfCopies.Find(aPCFaceDef.SurfNodeId.Index)
@@ -205,14 +205,14 @@ TopoDS_Shape BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph, bool theCopy
   NCollection_DataMap<int, Handle(Geom_Surface)> aSurfCopies;
   for (int aSurfIdx = 0; aSurfIdx < theGraph.NbSurfaces(); ++aSurfIdx)
   {
-    const BRepGraph_GeomNode::Surf& aSurfNode = theGraph.Surf(aSurfIdx);
+    const BRepGraph_GeomNode::Surf& aSurfNode = theGraph.SurfNode(aSurfIdx);
     aSurfCopies.Bind(aSurfIdx, copySurface(aSurfNode.Surface, theCopyGeom));
   }
 
   NCollection_DataMap<int, Handle(Geom_Curve)> aCurveCopies;
   for (int aCurveIdx = 0; aCurveIdx < theGraph.NbCurves(); ++aCurveIdx)
   {
-    const BRepGraph_GeomNode::Curve& aCurveNode = theGraph.Curve(aCurveIdx);
+    const BRepGraph_GeomNode::Curve& aCurveNode = theGraph.CurveNode(aCurveIdx);
     aCurveCopies.Bind(aCurveIdx, copyCurve(aCurveNode.CurveGeom, theCopyGeom));
   }
 
@@ -221,7 +221,7 @@ TopoDS_Shape BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph, bool theCopy
   BRep_Builder aBB;
   for (int aVtxIdx = 0; aVtxIdx < theGraph.NbVertexDefs(); ++aVtxIdx)
   {
-    const BRepGraph_TopoNode::VertexDef& aVtxDef = theGraph.VertexDef(aVtxIdx);
+    const BRepGraph_TopoNode::VertexDef& aVtxDef = theGraph.VertexDefinition(aVtxIdx);
     TopoDS_Vertex aNewVtx;
     aBB.MakeVertex(aNewVtx, aVtxDef.Point, aVtxDef.Tolerance);
     aVertexCopies.Bind(aVtxIdx, aNewVtx);
@@ -235,13 +235,13 @@ TopoDS_Shape BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph, bool theCopy
     aBB.MakeCompound(aResult);
     for (int aSolidIdx = 0; aSolidIdx < theGraph.NbSolidUsages(); ++aSolidIdx)
     {
-      const auto& aSolidUsage = theGraph.SolidUsage(aSolidIdx);
+      const auto& aSolidUsage = theGraph.SolidUsageNode(aSolidIdx);
       TopoDS_Solid aNewSolid;
       aBB.MakeSolid(aNewSolid);
       for (int aShellIter = 0; aShellIter < aSolidUsage.ShellUsages.Length(); ++aShellIter)
       {
         const auto& aShellUsage =
-          theGraph.ShellUsage(aSolidUsage.ShellUsages.Value(aShellIter).Index);
+          theGraph.ShellUsageNode(aSolidUsage.ShellUsages.Value(aShellIter).Index);
         TopoDS_Shell aNewShell;
         aBB.MakeShell(aNewShell);
         for (int aFaceIter = 0; aFaceIter < aShellUsage.FaceUsages.Length(); ++aFaceIter)
@@ -264,7 +264,7 @@ TopoDS_Shape BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph, bool theCopy
     aBB.MakeCompound(aResult);
     for (int aShellIdx = 0; aShellIdx < theGraph.NbShellUsages(); ++aShellIdx)
     {
-      const auto& aShellUsage = theGraph.ShellUsage(aShellIdx);
+      const auto& aShellUsage = theGraph.ShellUsageNode(aShellIdx);
       TopoDS_Shell aNewShell;
       aBB.MakeShell(aNewShell);
       for (int aFaceIter = 0; aFaceIter < aShellUsage.FaceUsages.Length(); ++aFaceIter)
@@ -304,7 +304,7 @@ TopoDS_Shape BRepGraphAlgo_Copy::CopyFace(const BRepGraph& theGraph,
     return TopoDS_Shape();
 
   // Get the face definition and its first usage for containment/location data.
-  const BRepGraph_TopoNode::FaceDef& aFaceDef = theGraph.FaceDef(theFaceIdx);
+  const BRepGraph_TopoNode::FaceDef& aFaceDef = theGraph.FaceDefinition(theFaceIdx);
   if (aFaceDef.Usages.IsEmpty())
     return TopoDS_Shape();
   const int aFaceUsageIdx = aFaceDef.Usages.First().Index;
@@ -313,7 +313,7 @@ TopoDS_Shape BRepGraphAlgo_Copy::CopyFace(const BRepGraph& theGraph,
   NCollection_DataMap<int, Handle(Geom_Surface)> aSurfCopies;
   if (aFaceDef.SurfNodeId.IsValid())
   {
-    const BRepGraph_GeomNode::Surf& aSurfNode = theGraph.Surf(aFaceDef.SurfNodeId.Index);
+    const BRepGraph_GeomNode::Surf& aSurfNode = theGraph.SurfNode(aFaceDef.SurfNodeId.Index);
     aSurfCopies.Bind(aFaceDef.SurfNodeId.Index, copySurface(aSurfNode.Surface, theCopyGeom));
   }
 
@@ -322,24 +322,24 @@ TopoDS_Shape BRepGraphAlgo_Copy::CopyFace(const BRepGraph& theGraph,
   BRep_Builder aBB;
 
   // Collect edges and vertices from all wires of this face's usage.
-  const auto& aFaceUsage = theGraph.FaceUsage(aFaceUsageIdx);
+  const auto& aFaceUsage = theGraph.FaceUsageNode(aFaceUsageIdx);
 
   auto collectFromWireUsage = [&](BRepGraph_UsageId theWireUsageId) {
     if (!theWireUsageId.IsValid())
       return;
-    const auto& aWireUsage = theGraph.WireUsage(theWireUsageId.Index);
-    const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.WireDef(aWireUsage.DefId.Index);
+    const auto& aWireUsage = theGraph.WireUsageNode(theWireUsageId.Index);
+    const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.WireDefinition(aWireUsage.DefId.Index);
     for (int anEdgeIter = 0; anEdgeIter < aWireDef.OrderedEdges.Length(); ++anEdgeIter)
     {
       const BRepGraph_TopoNode::WireDef::EdgeEntry& anEntry =
         aWireDef.OrderedEdges.Value(anEdgeIter);
-      const BRepGraph_TopoNode::EdgeDef& anEdgeDef = theGraph.EdgeDef(anEntry.EdgeDefId.Index);
+      const BRepGraph_TopoNode::EdgeDef& anEdgeDef = theGraph.EdgeDefinition(anEntry.EdgeDefId.Index);
 
       if (anEdgeDef.CurveNodeId.IsValid()
           && !aCurveCopies.IsBound(anEdgeDef.CurveNodeId.Index))
       {
         const BRepGraph_GeomNode::Curve& aCurveNode =
-          theGraph.Curve(anEdgeDef.CurveNodeId.Index);
+          theGraph.CurveNode(anEdgeDef.CurveNodeId.Index);
         aCurveCopies.Bind(anEdgeDef.CurveNodeId.Index,
                           copyCurve(aCurveNode.CurveGeom, theCopyGeom));
       }
@@ -348,7 +348,7 @@ TopoDS_Shape BRepGraphAlgo_Copy::CopyFace(const BRepGraph& theGraph,
           && !aVertexCopies.IsBound(anEdgeDef.StartVertexDefId.Index))
       {
         const BRepGraph_TopoNode::VertexDef& aVtx =
-          theGraph.VertexDef(anEdgeDef.StartVertexDefId.Index);
+          theGraph.VertexDefinition(anEdgeDef.StartVertexDefId.Index);
         TopoDS_Vertex aNewVtx;
         aBB.MakeVertex(aNewVtx, aVtx.Point, aVtx.Tolerance);
         aVertexCopies.Bind(anEdgeDef.StartVertexDefId.Index, aNewVtx);
@@ -357,7 +357,7 @@ TopoDS_Shape BRepGraphAlgo_Copy::CopyFace(const BRepGraph& theGraph,
           && !aVertexCopies.IsBound(anEdgeDef.EndVertexDefId.Index))
       {
         const BRepGraph_TopoNode::VertexDef& aVtx =
-          theGraph.VertexDef(anEdgeDef.EndVertexDefId.Index);
+          theGraph.VertexDefinition(anEdgeDef.EndVertexDefId.Index);
         TopoDS_Vertex aNewVtx;
         aBB.MakeVertex(aNewVtx, aVtx.Point, aVtx.Tolerance);
         aVertexCopies.Bind(anEdgeDef.EndVertexDefId.Index, aNewVtx);

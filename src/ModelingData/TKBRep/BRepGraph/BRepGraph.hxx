@@ -30,6 +30,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Face.hxx>
+#include <TopoDS_TShape.hxx>
 #include <gp_Trsf.hxx>
 #include <Bnd_Box.hxx>
 #include <gp_Pnt.hxx>
@@ -46,6 +47,17 @@
 class BRepGraph_Builder;
 class BRepGraph_History;
 class BRepGraph_Analyze;
+
+//! Hasher for raw pointer keys (hashes by address).  Used internally by BRepGraph
+//! for typed-pointer map keys (replaces void* for type safety).
+template<typename T>
+struct BRepGraph_PtrHasher
+{
+  size_t operator()(const T* thePtr) const noexcept
+  { return std::hash<const void*>{}(static_cast<const void*>(thePtr)); }
+  bool operator()(const T* theA, const T* theB) const noexcept
+  { return theA == theB; }
+};
 
 //! @brief Bidirectional topology-geometry graph over TopoDS / BRep.
 //!
@@ -81,6 +93,8 @@ public:
   Standard_EXPORT int NbWireDefs() const;
   Standard_EXPORT int NbEdgeDefs() const;
   Standard_EXPORT int NbVertexDefs() const;
+  Standard_EXPORT int NbCompoundDefs() const;
+  Standard_EXPORT int NbCompSolidDefs() const;
   Standard_EXPORT int NbSurfaces() const;
   Standard_EXPORT int NbCurves() const;
   Standard_EXPORT int NbPCurves() const;
@@ -93,27 +107,33 @@ public:
   Standard_EXPORT int NbWireUsages() const;
   Standard_EXPORT int NbEdgeUsages() const;
   Standard_EXPORT int NbVertexUsages() const;
+  Standard_EXPORT int NbCompoundUsages() const;
+  Standard_EXPORT int NbCompSolidUsages() const;
 
   // --- Definition access ---
 
-  Standard_EXPORT const BRepGraph_TopoNode::SolidDef& SolidDef(int theIdx) const;
-  Standard_EXPORT const BRepGraph_TopoNode::ShellDef& ShellDef(int theIdx) const;
-  Standard_EXPORT const BRepGraph_TopoNode::FaceDef& FaceDef(int theIdx) const;
-  Standard_EXPORT const BRepGraph_TopoNode::WireDef& WireDef(int theIdx) const;
-  Standard_EXPORT const BRepGraph_TopoNode::EdgeDef& EdgeDef(int theIdx) const;
-  Standard_EXPORT const BRepGraph_TopoNode::VertexDef& VertexDef(int theIdx) const;
-  Standard_EXPORT const BRepGraph_GeomNode::Surf& Surf(int theIdx) const;
-  Standard_EXPORT const BRepGraph_GeomNode::Curve& Curve(int theIdx) const;
-  Standard_EXPORT const BRepGraph_GeomNode::PCurve& PCurve(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::SolidDef& SolidDefinition(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::ShellDef& ShellDefinition(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::FaceDef& FaceDefinition(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::WireDef& WireDefinition(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::EdgeDef& EdgeDefinition(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::VertexDef& VertexDefinition(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::CompoundDef& CompoundDefinition(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::CompSolidDef& CompSolidDefinition(int theIdx) const;
+  Standard_EXPORT const BRepGraph_GeomNode::Surf& SurfNode(int theIdx) const;
+  Standard_EXPORT const BRepGraph_GeomNode::Curve& CurveNode(int theIdx) const;
+  Standard_EXPORT const BRepGraph_GeomNode::PCurve& PCurveNode(int theIdx) const;
 
   // --- Usage access ---
 
-  Standard_EXPORT const BRepGraph_TopoNode::SolidUsage& SolidUsage(int theIdx) const;
-  Standard_EXPORT const BRepGraph_TopoNode::ShellUsage& ShellUsage(int theIdx) const;
-  Standard_EXPORT const BRepGraph_TopoNode::FaceUsage& FaceUsage(int theIdx) const;
-  Standard_EXPORT const BRepGraph_TopoNode::WireUsage& WireUsage(int theIdx) const;
-  Standard_EXPORT const BRepGraph_TopoNode::EdgeUsage& EdgeUsage(int theIdx) const;
-  Standard_EXPORT const BRepGraph_TopoNode::VertexUsage& VertexUsage(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::SolidUsage& SolidUsageNode(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::ShellUsage& ShellUsageNode(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::FaceUsage& FaceUsageNode(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::WireUsage& WireUsageNode(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::EdgeUsage& EdgeUsageNode(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::VertexUsage& VertexUsageNode(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::CompoundUsage& CompoundUsageNode(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::CompSolidUsage& CompSolidUsageNode(int theIdx) const;
 
   // --- Navigation between layers ---
 
@@ -261,9 +281,9 @@ public:
 
   // --- Mutation ---
 
-  Standard_EXPORT BRepGraph_TopoNode::EdgeDef& MutableEdgeDef(int theIdx);
-  Standard_EXPORT BRepGraph_TopoNode::WireDef& MutableWireDef(int theIdx);
-  Standard_EXPORT BRepGraph_TopoNode::VertexDef& MutableVertexDef(int theIdx);
+  Standard_EXPORT BRepGraph_TopoNode::EdgeDef& MutableEdgeDefinition(int theIdx);
+  Standard_EXPORT BRepGraph_TopoNode::WireDef& MutableWireDefinition(int theIdx);
+  Standard_EXPORT BRepGraph_TopoNode::VertexDef& MutableVertexDefinition(int theIdx);
 
   Standard_EXPORT BRepGraph_NodeId AddPCurveToEdge(BRepGraph_NodeId            theEdgeDef,
                                                    BRepGraph_NodeId            theFaceDef,
@@ -299,20 +319,24 @@ private:
   Handle(NCollection_BaseAllocator) myAllocator;
 
   //! Definition vectors (indexed by BRepGraph_NodeId.Index).
-  NCollection_Vector<BRepGraph_TopoNode::SolidDef>  mySolidDefs;
-  NCollection_Vector<BRepGraph_TopoNode::ShellDef>  myShellDefs;
-  NCollection_Vector<BRepGraph_TopoNode::FaceDef>   myFaceDefs;
-  NCollection_Vector<BRepGraph_TopoNode::WireDef>   myWireDefs;
-  NCollection_Vector<BRepGraph_TopoNode::EdgeDef>   myEdgeDefs;
-  NCollection_Vector<BRepGraph_TopoNode::VertexDef> myVertexDefs;
+  NCollection_Vector<BRepGraph_TopoNode::SolidDef>    mySolidDefs;
+  NCollection_Vector<BRepGraph_TopoNode::ShellDef>    myShellDefs;
+  NCollection_Vector<BRepGraph_TopoNode::FaceDef>     myFaceDefs;
+  NCollection_Vector<BRepGraph_TopoNode::WireDef>     myWireDefs;
+  NCollection_Vector<BRepGraph_TopoNode::EdgeDef>     myEdgeDefs;
+  NCollection_Vector<BRepGraph_TopoNode::VertexDef>   myVertexDefs;
+  NCollection_Vector<BRepGraph_TopoNode::CompoundDef>  myCompoundDefs;
+  NCollection_Vector<BRepGraph_TopoNode::CompSolidDef> myCompSolidDefs;
 
   //! Usage vectors (indexed by BRepGraph_UsageId.Index).
-  NCollection_Vector<BRepGraph_TopoNode::SolidUsage>  mySolidUsages;
-  NCollection_Vector<BRepGraph_TopoNode::ShellUsage>  myShellUsages;
-  NCollection_Vector<BRepGraph_TopoNode::FaceUsage>   myFaceUsages;
-  NCollection_Vector<BRepGraph_TopoNode::WireUsage>   myWireUsages;
-  NCollection_Vector<BRepGraph_TopoNode::EdgeUsage>   myEdgeUsages;
-  NCollection_Vector<BRepGraph_TopoNode::VertexUsage>  myVertexUsages;
+  NCollection_Vector<BRepGraph_TopoNode::SolidUsage>    mySolidUsages;
+  NCollection_Vector<BRepGraph_TopoNode::ShellUsage>    myShellUsages;
+  NCollection_Vector<BRepGraph_TopoNode::FaceUsage>     myFaceUsages;
+  NCollection_Vector<BRepGraph_TopoNode::WireUsage>     myWireUsages;
+  NCollection_Vector<BRepGraph_TopoNode::EdgeUsage>     myEdgeUsages;
+  NCollection_Vector<BRepGraph_TopoNode::VertexUsage>   myVertexUsages;
+  NCollection_Vector<BRepGraph_TopoNode::CompoundUsage>  myCompoundUsages;
+  NCollection_Vector<BRepGraph_TopoNode::CompSolidUsage> myCompSolidUsages;
 
   //! Geometry node vectors.
   NCollection_Vector<BRepGraph_GeomNode::Surf>   mySurfaces;
@@ -328,11 +352,17 @@ private:
                       BRepGraph_NodeId::Hasher> myInRelEdges;
 
   //! Geometry deduplication registries.
-  NCollection_IndexedDataMap<void*, int> mySurfRegistry;
-  NCollection_IndexedDataMap<void*, int> myCurveRegistry;
+  NCollection_IndexedDataMap<const Geom_Surface*,
+                             int,
+                             BRepGraph_PtrHasher<Geom_Surface>> mySurfRegistry;
+  NCollection_IndexedDataMap<const Geom_Curve*,
+                             int,
+                             BRepGraph_PtrHasher<Geom_Curve>>   myCurveRegistry;
 
   //! TShape -> Definition NodeId reverse lookup.
-  NCollection_DataMap<void*, BRepGraph_NodeId> myTShapeToDefId;
+  NCollection_DataMap<const TopoDS_TShape*,
+                      BRepGraph_NodeId,
+                      BRepGraph_PtrHasher<TopoDS_TShape>>        myTShapeToDefId;
 
   //! Opt-in UID system.
   bool                myUIDEnabled = false;

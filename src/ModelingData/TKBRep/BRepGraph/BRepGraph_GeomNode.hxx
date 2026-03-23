@@ -65,8 +65,9 @@ struct Curve
 };
 
 //! Graph node representing a parametric 2D curve in a specific (Edge, Face)
-//! context.  A pcurve is never shared: each (Edge, Face) pair produces
-//! exactly one PCurve node.
+//! context.  A pcurve is never shared: each (Edge, Face, Orientation) triple produces
+//! exactly one PCurve node.  For seam edges, two PCurve nodes exist for the
+//! same (Edge, Face) pair, distinguished by edge orientation (FORWARD vs REVERSED).
 struct PCurve
 {
   BRepGraph_NodeId           Id;

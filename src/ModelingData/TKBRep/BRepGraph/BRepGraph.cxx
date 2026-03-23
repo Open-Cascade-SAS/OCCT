@@ -22,6 +22,8 @@
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_CompSolid.hxx>
+#include <TopoDS_Compound.hxx>
 #include <TopoDS_Iterator.hxx>
 
 namespace
@@ -217,12 +219,16 @@ void BRepGraph::Build(const TopoDS_Shape& theShape, bool theParallel)
   myWireDefs.Clear();
   myEdgeDefs.Clear();
   myVertexDefs.Clear();
+  myCompoundDefs.Clear();
+  myCompSolidDefs.Clear();
   mySolidUsages.Clear();
   myShellUsages.Clear();
   myFaceUsages.Clear();
   myWireUsages.Clear();
   myEdgeUsages.Clear();
   myVertexUsages.Clear();
+  myCompoundUsages.Clear();
+  myCompSolidUsages.Clear();
   mySurfaces.Clear();
   myCurves.Clear();
   myPCurves.Clear();
@@ -246,117 +252,182 @@ void BRepGraph::Build(const TopoDS_Shape& theShape, bool theParallel)
   if (theShape.IsNull())
     return;
 
-  // Phase 1 (sequential): Explore hierarchy, create Solid/Shell defs + usages,
-  // collect face contexts for parallel extraction.
+  // Phase 1 (sequential): Recursively explore hierarchy, collecting face contexts.
   NCollection_Vector<FaceLocalData> aFaceData(128, myAllocator);
 
-  bool aHasSolids = false;
-  for (TopExp_Explorer aSolidExp(theShape, TopAbs_SOLID); aSolidExp.More(); aSolidExp.Next())
+  // Recursive traversal function.
+  std::function<BRepGraph_UsageId(const TopoDS_Shape&, BRepGraph_UsageId, const TopLoc_Location&)>
+    traverseShape;
+
+  traverseShape = [&](const TopoDS_Shape&    theCurrentShape,
+                      BRepGraph_UsageId      theParentUsage,
+                      const TopLoc_Location& theParentGlobalLoc) -> BRepGraph_UsageId
   {
-    aHasSolids                 = true;
-    const TopoDS_Solid& aSolid = TopoDS::Solid(aSolidExp.Current());
+    if (theCurrentShape.IsNull())
+      return BRepGraph_UsageId();
 
-    // Create SolidDef.
-    BRepGraph_TopoNode::SolidDef& aSolidDef = mySolidDefs.Appended();
-    const int aSolidDefIdx = mySolidDefs.Length() - 1;
-    aSolidDef.Id = BRepGraph_NodeId(BRepGraph_NodeKind::Solid, aSolidDefIdx);
-    allocateUID(aSolidDef.Id);
-
-    // Create SolidUsage.
-    BRepGraph_TopoNode::SolidUsage& aSolidUsage = mySolidUsages.Appended();
-    const int aSolidUsageIdx = mySolidUsages.Length() - 1;
-    aSolidUsage.UsageId       = BRepGraph_UsageId(BRepGraph_NodeKind::Solid, aSolidUsageIdx);
-    aSolidUsage.DefId         = aSolidDef.Id;
-    aSolidUsage.LocalLocation = aSolid.Location();
-    aSolidUsage.GlobalLocation = aSolid.Location();
-    aSolidUsage.Orientation   = aSolid.Orientation();
-    aSolidDef.Usages.Append(aSolidUsage.UsageId);
-    myOriginalShapes.Bind(aSolidDef.Id, aSolid);
-
-    for (TopoDS_Iterator aShellIt(aSolid); aShellIt.More(); aShellIt.Next())
+    switch (theCurrentShape.ShapeType())
     {
-      if (aShellIt.Value().ShapeType() != TopAbs_SHELL)
-        continue;
-
-      const TopoDS_Shell& aShell = TopoDS::Shell(aShellIt.Value());
-
-      // Create ShellDef.
-      BRepGraph_TopoNode::ShellDef& aShellDef = myShellDefs.Appended();
-      const int aShellDefIdx = myShellDefs.Length() - 1;
-      aShellDef.Id = BRepGraph_NodeId(BRepGraph_NodeKind::Shell, aShellDefIdx);
-      allocateUID(aShellDef.Id);
-
-      // Create ShellUsage.
-      BRepGraph_TopoNode::ShellUsage& aShellUsage = myShellUsages.Appended();
-      const int aShellUsageIdx = myShellUsages.Length() - 1;
-      aShellUsage.UsageId        = BRepGraph_UsageId(BRepGraph_NodeKind::Shell, aShellUsageIdx);
-      aShellUsage.DefId          = aShellDef.Id;
-      aShellUsage.LocalLocation  = aShell.Location();
-      aShellUsage.GlobalLocation = aSolidUsage.GlobalLocation * aShell.Location();
-      aShellUsage.Orientation    = aShell.Orientation();
-      aShellUsage.ParentUsage    = aSolidUsage.UsageId;
-      aShellDef.Usages.Append(aShellUsage.UsageId);
-      myOriginalShapes.Bind(aShellDef.Id, aShell);
-
-      aSolidUsage.ShellUsages.Append(aShellUsage.UsageId);
-
-      for (TopoDS_Iterator aFaceIt(aShell); aFaceIt.More(); aFaceIt.Next())
+      case TopAbs_COMPOUND:
       {
-        if (aFaceIt.Value().ShapeType() != TopAbs_FACE)
-          continue;
-        FaceLocalData& aData     = aFaceData.Appended();
-        aData.Face               = TopoDS::Face(aFaceIt.Value());
-        aData.ParentGlobalLoc    = aShellUsage.GlobalLocation;
-        aData.ParentShellUsage   = aShellUsage.UsageId;
+        const TopoDS_Compound& aCompound = TopoDS::Compound(theCurrentShape);
+
+        // Create CompoundDef.
+        BRepGraph_TopoNode::CompoundDef& aCompDef = myCompoundDefs.Appended();
+        const int aCompDefIdx = myCompoundDefs.Length() - 1;
+        aCompDef.Id = BRepGraph_NodeId(BRepGraph_NodeKind::Compound, aCompDefIdx);
+        allocateUID(aCompDef.Id);
+        myOriginalShapes.Bind(aCompDef.Id, aCompound);
+
+        // Create CompoundUsage.
+        BRepGraph_TopoNode::CompoundUsage& aCompUsage = myCompoundUsages.Appended();
+        const int aCompUsageIdx = myCompoundUsages.Length() - 1;
+        aCompUsage.UsageId        = BRepGraph_UsageId(BRepGraph_NodeKind::Compound, aCompUsageIdx);
+        aCompUsage.DefId          = aCompDef.Id;
+        aCompUsage.LocalLocation  = aCompound.Location();
+        aCompUsage.GlobalLocation = theParentGlobalLoc * aCompound.Location();
+        aCompUsage.Orientation    = aCompound.Orientation();
+        aCompUsage.ParentUsage    = theParentUsage;
+        aCompDef.Usages.Append(aCompUsage.UsageId);
+
+        // Cache before recursive calls may reallocate myCompoundUsages.
+        const BRepGraph_UsageId aCompUsageId     = aCompUsage.UsageId;
+        const TopLoc_Location   aCompGlobalLoc   = aCompUsage.GlobalLocation;
+
+        // Recurse into children.
+        for (TopoDS_Iterator aChildIt(aCompound); aChildIt.More(); aChildIt.Next())
+        {
+          BRepGraph_UsageId aChildUsage = traverseShape(
+            aChildIt.Value(), aCompUsageId, aCompGlobalLoc);
+          if (aChildUsage.IsValid())
+            myCompoundUsages.ChangeValue(aCompUsageIdx).ChildUsages.Append(aChildUsage);
+        }
+
+        return aCompUsageId;
       }
-    }
-  }
 
-  if (!aHasSolids)
-  {
-    bool aHasShells = false;
-    for (TopExp_Explorer aShellExp(theShape, TopAbs_SHELL, TopAbs_SOLID); aShellExp.More();
-         aShellExp.Next())
-    {
-      aHasShells                 = true;
-      const TopoDS_Shell& aShell = TopoDS::Shell(aShellExp.Current());
-
-      BRepGraph_TopoNode::ShellDef& aShellDef = myShellDefs.Appended();
-      const int aShellDefIdx = myShellDefs.Length() - 1;
-      aShellDef.Id = BRepGraph_NodeId(BRepGraph_NodeKind::Shell, aShellDefIdx);
-      allocateUID(aShellDef.Id);
-
-      BRepGraph_TopoNode::ShellUsage& aShellUsage = myShellUsages.Appended();
-      const int aShellUsageIdx = myShellUsages.Length() - 1;
-      aShellUsage.UsageId        = BRepGraph_UsageId(BRepGraph_NodeKind::Shell, aShellUsageIdx);
-      aShellUsage.DefId          = aShellDef.Id;
-      aShellUsage.LocalLocation  = aShell.Location();
-      aShellUsage.GlobalLocation = aShell.Location();
-      aShellUsage.Orientation    = aShell.Orientation();
-      aShellDef.Usages.Append(aShellUsage.UsageId);
-      myOriginalShapes.Bind(aShellDef.Id, aShell);
-
-      for (TopoDS_Iterator aFaceIt(aShell); aFaceIt.More(); aFaceIt.Next())
+      case TopAbs_COMPSOLID:
       {
-        if (aFaceIt.Value().ShapeType() != TopAbs_FACE)
-          continue;
-        FaceLocalData& aData     = aFaceData.Appended();
-        aData.Face               = TopoDS::Face(aFaceIt.Value());
-        aData.ParentGlobalLoc    = aShellUsage.GlobalLocation;
-        aData.ParentShellUsage   = aShellUsage.UsageId;
-      }
-    }
+        const TopoDS_CompSolid& aCompSolid = TopoDS::CompSolid(theCurrentShape);
 
-    if (!aHasShells)
-    {
-      for (TopExp_Explorer aFaceExp(theShape, TopAbs_FACE, TopAbs_SHELL); aFaceExp.More();
-           aFaceExp.Next())
-      {
-        FaceLocalData& aData = aFaceData.Appended();
-        aData.Face           = TopoDS::Face(aFaceExp.Current());
+        BRepGraph_TopoNode::CompSolidDef& aCSolidDef = myCompSolidDefs.Appended();
+        const int aCSolidDefIdx = myCompSolidDefs.Length() - 1;
+        aCSolidDef.Id = BRepGraph_NodeId(BRepGraph_NodeKind::CompSolid, aCSolidDefIdx);
+        allocateUID(aCSolidDef.Id);
+        myOriginalShapes.Bind(aCSolidDef.Id, aCompSolid);
+
+        BRepGraph_TopoNode::CompSolidUsage& aCSolidUsage = myCompSolidUsages.Appended();
+        const int aCSolidUsageIdx = myCompSolidUsages.Length() - 1;
+        aCSolidUsage.UsageId        = BRepGraph_UsageId(BRepGraph_NodeKind::CompSolid, aCSolidUsageIdx);
+        aCSolidUsage.DefId          = aCSolidDef.Id;
+        aCSolidUsage.LocalLocation  = aCompSolid.Location();
+        aCSolidUsage.GlobalLocation = theParentGlobalLoc * aCompSolid.Location();
+        aCSolidUsage.Orientation    = aCompSolid.Orientation();
+        aCSolidUsage.ParentUsage    = theParentUsage;
+        aCSolidDef.Usages.Append(aCSolidUsage.UsageId);
+
+        // Cache before recursive calls may reallocate myCompSolidUsages.
+        const BRepGraph_UsageId aCSolidUsageId  = aCSolidUsage.UsageId;
+        const TopLoc_Location   aCSolidGlobalLoc = aCSolidUsage.GlobalLocation;
+
+        for (TopoDS_Iterator aChildIt(aCompSolid); aChildIt.More(); aChildIt.Next())
+        {
+          if (aChildIt.Value().ShapeType() != TopAbs_SOLID)
+            continue;
+          BRepGraph_UsageId aChildUsage = traverseShape(
+            aChildIt.Value(), aCSolidUsageId, aCSolidGlobalLoc);
+          if (aChildUsage.IsValid())
+            myCompSolidUsages.ChangeValue(aCSolidUsageIdx).SolidUsages.Append(aChildUsage);
+        }
+
+        return aCSolidUsageId;
       }
+
+      case TopAbs_SOLID:
+      {
+        const TopoDS_Solid& aSolid = TopoDS::Solid(theCurrentShape);
+
+        BRepGraph_TopoNode::SolidDef& aSolidDef = mySolidDefs.Appended();
+        const int aSolidDefIdx = mySolidDefs.Length() - 1;
+        aSolidDef.Id = BRepGraph_NodeId(BRepGraph_NodeKind::Solid, aSolidDefIdx);
+        allocateUID(aSolidDef.Id);
+
+        BRepGraph_TopoNode::SolidUsage& aSolidUsage = mySolidUsages.Appended();
+        const int aSolidUsageIdx = mySolidUsages.Length() - 1;
+        aSolidUsage.UsageId        = BRepGraph_UsageId(BRepGraph_NodeKind::Solid, aSolidUsageIdx);
+        aSolidUsage.DefId          = aSolidDef.Id;
+        aSolidUsage.LocalLocation  = aSolid.Location();
+        aSolidUsage.GlobalLocation = theParentGlobalLoc * aSolid.Location();
+        aSolidUsage.Orientation    = aSolid.Orientation();
+        aSolidUsage.ParentUsage    = theParentUsage;
+        aSolidDef.Usages.Append(aSolidUsage.UsageId);
+        myOriginalShapes.Bind(aSolidDef.Id, aSolid);
+
+        // Cache UsageId and GlobalLocation before recursive calls may reallocate mySolidUsages.
+        const BRepGraph_UsageId     aSolidUsageId  = aSolidUsage.UsageId;
+        const TopLoc_Location       aSolidGlobalLoc = aSolidUsage.GlobalLocation;
+
+        for (TopoDS_Iterator aShellIt(aSolid); aShellIt.More(); aShellIt.Next())
+        {
+          if (aShellIt.Value().ShapeType() != TopAbs_SHELL)
+            continue;
+          BRepGraph_UsageId aShellUsageId = traverseShape(
+            aShellIt.Value(), aSolidUsageId, aSolidGlobalLoc);
+          if (aShellUsageId.IsValid())
+            mySolidUsages.ChangeValue(aSolidUsageIdx).ShellUsages.Append(aShellUsageId);
+        }
+
+        return aSolidUsageId;
+      }
+
+      case TopAbs_SHELL:
+      {
+        const TopoDS_Shell& aShell = TopoDS::Shell(theCurrentShape);
+
+        BRepGraph_TopoNode::ShellDef& aShellDef = myShellDefs.Appended();
+        const int aShellDefIdx = myShellDefs.Length() - 1;
+        aShellDef.Id = BRepGraph_NodeId(BRepGraph_NodeKind::Shell, aShellDefIdx);
+        allocateUID(aShellDef.Id);
+
+        BRepGraph_TopoNode::ShellUsage& aShellUsage = myShellUsages.Appended();
+        const int aShellUsageIdx = myShellUsages.Length() - 1;
+        aShellUsage.UsageId        = BRepGraph_UsageId(BRepGraph_NodeKind::Shell, aShellUsageIdx);
+        aShellUsage.DefId          = aShellDef.Id;
+        aShellUsage.LocalLocation  = aShell.Location();
+        aShellUsage.GlobalLocation = theParentGlobalLoc * aShell.Location();
+        aShellUsage.Orientation    = aShell.Orientation();
+        aShellUsage.ParentUsage    = theParentUsage;
+        aShellDef.Usages.Append(aShellUsage.UsageId);
+        myOriginalShapes.Bind(aShellDef.Id, aShell);
+
+        for (TopoDS_Iterator aFaceIt(aShell); aFaceIt.More(); aFaceIt.Next())
+        {
+          if (aFaceIt.Value().ShapeType() != TopAbs_FACE)
+            continue;
+          FaceLocalData& aData   = aFaceData.Appended();
+          aData.Face             = TopoDS::Face(aFaceIt.Value());
+          aData.ParentGlobalLoc  = aShellUsage.GlobalLocation;
+          aData.ParentShellUsage = aShellUsage.UsageId;
+        }
+
+        return aShellUsage.UsageId;
+      }
+
+      case TopAbs_FACE:
+      {
+        FaceLocalData& aData  = aFaceData.Appended();
+        aData.Face            = TopoDS::Face(theCurrentShape);
+        aData.ParentGlobalLoc = theParentGlobalLoc;
+        return BRepGraph_UsageId(); // FaceUsage created in Phase 3
+      }
+
+      default:
+        return BRepGraph_UsageId(); // Ignore Wire/Edge/Vertex at top level
     }
-  }
+  };
+
+  // Start traversal from the root shape.
+  traverseShape(theShape, BRepGraph_UsageId(), TopLoc_Location());
 
   // Phase 2 (parallel): Extract per-face geometry/topology data.
   OSD_Parallel::For(
@@ -382,7 +453,7 @@ void BRepGraph::Build(const TopoDS_Shape& theShape, bool theParallel)
     const TopoDS_Face&   aCurFace = aData.Face;
 
     // Create or reuse FaceDef.
-    void*                   aFaceTShapeKey   = aCurFace.TShape().get();
+    const TopoDS_TShape*    aFaceTShapeKey    = aCurFace.TShape().get();
     const BRepGraph_NodeId* anExistingFaceDef = myTShapeToDefId.Seek(aFaceTShapeKey);
 
     BRepGraph_NodeId aFaceDefId;
@@ -460,11 +531,6 @@ void BRepGraph::Build(const TopoDS_Shape& theShape, bool theParallel)
         aFaceUsage.InnerWireUsages.Append(aWireUsage.UsageId);
       }
 
-      // Pre-allocate ordered edges array.
-      const int aNbWireEdges = aWireData.Edges.Length();
-      if (aNbWireEdges > 0)
-        aWireDef.OrderedEdges.Resize(0, aNbWireEdges - 1, false);
-
       BRepGraph_NodeId aFirstVertexDefId;
       BRepGraph_NodeId aLastVertexDefId;
 
@@ -474,7 +540,7 @@ void BRepGraph::Build(const TopoDS_Shape& theShape, bool theParallel)
         const TopoDS_Edge&   anEdge     = anEdgeData.Shape;
 
         // Dedup edge definition by TShape.
-        void*                   aTShapeKey         = anEdge.TShape().get();
+        const TopoDS_TShape*    aTShapeKey          = anEdge.TShape().get();
         const BRepGraph_NodeId* anExistingEdgeDefId = myTShapeToDefId.Seek(aTShapeKey);
 
         BRepGraph_NodeId anEdgeDefId;
@@ -509,7 +575,7 @@ void BRepGraph::Build(const TopoDS_Shape& theShape, bool theParallel)
             if (theVtxData.Shape.IsNull())
               return BRepGraph_NodeId();
 
-            void*                   aVTShapeKey   = theVtxData.Shape.TShape().get();
+            const TopoDS_TShape*    aVTShapeKey   = theVtxData.Shape.TShape().get();
             const BRepGraph_NodeId* anExistingVtx = myTShapeToDefId.Seek(aVTShapeKey);
             if (anExistingVtx != nullptr)
               return *anExistingVtx;
@@ -593,7 +659,7 @@ void BRepGraph::Build(const TopoDS_Shape& theShape, bool theParallel)
         BRepGraph_TopoNode::WireDef::EdgeEntry aWEEntry;
         aWEEntry.EdgeDefId         = anEdgeDefId;
         aWEEntry.OrientationInWire = anEdgeData.OrientationInWire;
-        aWireDef.OrderedEdges.SetValue(anEdgeIter, aWEEntry);
+        aWireDef.OrderedEdges.Append(aWEEntry);
 
         // Populate edge-to-wire reverse index.
         if (!myEdgeToWires.IsBound(anEdgeDefId.Index))
@@ -646,8 +712,8 @@ BRepGraph_NodeId BRepGraph::registerSurface(const Handle(Geom_Surface)&       th
   if (theSurf.IsNull())
     return BRepGraph_NodeId();
 
-  void*      aKey       = theSurf.get();
-  const int* anExisting = mySurfRegistry.Seek(aKey);
+  const Geom_Surface* aKey       = theSurf.get();
+  const int*          anExisting = mySurfRegistry.Seek(aKey);
   if (anExisting != nullptr)
     return BRepGraph_NodeId(BRepGraph_NodeKind::Surface, *anExisting);
 
@@ -670,8 +736,8 @@ BRepGraph_NodeId BRepGraph::registerCurve(const Handle(Geom_Curve)& theCrv)
   if (theCrv.IsNull())
     return BRepGraph_NodeId();
 
-  void*      aKey       = theCrv.get();
-  const int* anExisting = myCurveRegistry.Seek(aKey);
+  const Geom_Curve* aKey       = theCrv.get();
+  const int*        anExisting = myCurveRegistry.Seek(aKey);
   if (anExisting != nullptr)
     return BRepGraph_NodeId(BRepGraph_NodeKind::Curve, *anExisting);
 
@@ -739,6 +805,10 @@ BRepGraph_NodeCache* BRepGraph::mutableCache(BRepGraph_NodeId theNode)
       return &myEdgeDefs.ChangeValue(theNode.Index).Cache;
     case BRepGraph_NodeKind::Vertex:
       return &myVertexDefs.ChangeValue(theNode.Index).Cache;
+    case BRepGraph_NodeKind::Compound:
+      return &myCompoundDefs.ChangeValue(theNode.Index).Cache;
+    case BRepGraph_NodeKind::CompSolid:
+      return &myCompSolidDefs.ChangeValue(theNode.Index).Cache;
     default:
       return nullptr;
   }
@@ -759,6 +829,8 @@ int BRepGraph::NbFaceDefs() const { return myFaceDefs.Length(); }
 int BRepGraph::NbWireDefs() const { return myWireDefs.Length(); }
 int BRepGraph::NbEdgeDefs() const { return myEdgeDefs.Length(); }
 int BRepGraph::NbVertexDefs() const { return myVertexDefs.Length(); }
+int BRepGraph::NbCompoundDefs() const { return myCompoundDefs.Length(); }
+int BRepGraph::NbCompSolidDefs() const { return myCompSolidDefs.Length(); }
 int BRepGraph::NbSurfaces() const { return mySurfaces.Length(); }
 int BRepGraph::NbCurves() const { return myCurves.Length(); }
 int BRepGraph::NbPCurves() const { return myPCurves.Length(); }
@@ -769,55 +841,69 @@ int BRepGraph::NbFaceUsages() const { return myFaceUsages.Length(); }
 int BRepGraph::NbWireUsages() const { return myWireUsages.Length(); }
 int BRepGraph::NbEdgeUsages() const { return myEdgeUsages.Length(); }
 int BRepGraph::NbVertexUsages() const { return myVertexUsages.Length(); }
+int BRepGraph::NbCompoundUsages() const { return myCompoundUsages.Length(); }
+int BRepGraph::NbCompSolidUsages() const { return myCompSolidUsages.Length(); }
 
 //=================================================================================================
 
-const BRepGraph_TopoNode::SolidDef& BRepGraph::SolidDef(int theIdx) const
+const BRepGraph_TopoNode::SolidDef& BRepGraph::SolidDefinition(int theIdx) const
 { return mySolidDefs.Value(theIdx); }
 
-const BRepGraph_TopoNode::ShellDef& BRepGraph::ShellDef(int theIdx) const
+const BRepGraph_TopoNode::ShellDef& BRepGraph::ShellDefinition(int theIdx) const
 { return myShellDefs.Value(theIdx); }
 
-const BRepGraph_TopoNode::FaceDef& BRepGraph::FaceDef(int theIdx) const
+const BRepGraph_TopoNode::FaceDef& BRepGraph::FaceDefinition(int theIdx) const
 { return myFaceDefs.Value(theIdx); }
 
-const BRepGraph_TopoNode::WireDef& BRepGraph::WireDef(int theIdx) const
+const BRepGraph_TopoNode::WireDef& BRepGraph::WireDefinition(int theIdx) const
 { return myWireDefs.Value(theIdx); }
 
-const BRepGraph_TopoNode::EdgeDef& BRepGraph::EdgeDef(int theIdx) const
+const BRepGraph_TopoNode::EdgeDef& BRepGraph::EdgeDefinition(int theIdx) const
 { return myEdgeDefs.Value(theIdx); }
 
-const BRepGraph_TopoNode::VertexDef& BRepGraph::VertexDef(int theIdx) const
+const BRepGraph_TopoNode::VertexDef& BRepGraph::VertexDefinition(int theIdx) const
 { return myVertexDefs.Value(theIdx); }
 
-const BRepGraph_GeomNode::Surf& BRepGraph::Surf(int theIdx) const
+const BRepGraph_TopoNode::CompoundDef& BRepGraph::CompoundDefinition(int theIdx) const
+{ return myCompoundDefs.Value(theIdx); }
+
+const BRepGraph_TopoNode::CompSolidDef& BRepGraph::CompSolidDefinition(int theIdx) const
+{ return myCompSolidDefs.Value(theIdx); }
+
+const BRepGraph_GeomNode::Surf& BRepGraph::SurfNode(int theIdx) const
 { return mySurfaces.Value(theIdx); }
 
-const BRepGraph_GeomNode::Curve& BRepGraph::Curve(int theIdx) const
+const BRepGraph_GeomNode::Curve& BRepGraph::CurveNode(int theIdx) const
 { return myCurves.Value(theIdx); }
 
-const BRepGraph_GeomNode::PCurve& BRepGraph::PCurve(int theIdx) const
+const BRepGraph_GeomNode::PCurve& BRepGraph::PCurveNode(int theIdx) const
 { return myPCurves.Value(theIdx); }
 
 //=================================================================================================
 
-const BRepGraph_TopoNode::SolidUsage& BRepGraph::SolidUsage(int theIdx) const
+const BRepGraph_TopoNode::SolidUsage& BRepGraph::SolidUsageNode(int theIdx) const
 { return mySolidUsages.Value(theIdx); }
 
-const BRepGraph_TopoNode::ShellUsage& BRepGraph::ShellUsage(int theIdx) const
+const BRepGraph_TopoNode::ShellUsage& BRepGraph::ShellUsageNode(int theIdx) const
 { return myShellUsages.Value(theIdx); }
 
-const BRepGraph_TopoNode::FaceUsage& BRepGraph::FaceUsage(int theIdx) const
+const BRepGraph_TopoNode::FaceUsage& BRepGraph::FaceUsageNode(int theIdx) const
 { return myFaceUsages.Value(theIdx); }
 
-const BRepGraph_TopoNode::WireUsage& BRepGraph::WireUsage(int theIdx) const
+const BRepGraph_TopoNode::WireUsage& BRepGraph::WireUsageNode(int theIdx) const
 { return myWireUsages.Value(theIdx); }
 
-const BRepGraph_TopoNode::EdgeUsage& BRepGraph::EdgeUsage(int theIdx) const
+const BRepGraph_TopoNode::EdgeUsage& BRepGraph::EdgeUsageNode(int theIdx) const
 { return myEdgeUsages.Value(theIdx); }
 
-const BRepGraph_TopoNode::VertexUsage& BRepGraph::VertexUsage(int theIdx) const
+const BRepGraph_TopoNode::VertexUsage& BRepGraph::VertexUsageNode(int theIdx) const
 { return myVertexUsages.Value(theIdx); }
+
+const BRepGraph_TopoNode::CompoundUsage& BRepGraph::CompoundUsageNode(int theIdx) const
+{ return myCompoundUsages.Value(theIdx); }
+
+const BRepGraph_TopoNode::CompSolidUsage& BRepGraph::CompSolidUsageNode(int theIdx) const
+{ return myCompSolidUsages.Value(theIdx); }
 
 //=================================================================================================
 
@@ -839,12 +925,14 @@ BRepGraph_NodeId BRepGraph::DefOf(BRepGraph_UsageId theUsageId) const
 
   switch (theUsageId.Kind)
   {
-    case BRepGraph_NodeKind::Solid:  return mySolidUsages.Value(theUsageId.Index).DefId;
-    case BRepGraph_NodeKind::Shell:  return myShellUsages.Value(theUsageId.Index).DefId;
-    case BRepGraph_NodeKind::Face:   return myFaceUsages.Value(theUsageId.Index).DefId;
-    case BRepGraph_NodeKind::Wire:   return myWireUsages.Value(theUsageId.Index).DefId;
-    case BRepGraph_NodeKind::Edge:   return myEdgeUsages.Value(theUsageId.Index).DefId;
-    case BRepGraph_NodeKind::Vertex: return myVertexUsages.Value(theUsageId.Index).DefId;
+    case BRepGraph_NodeKind::Solid:     return mySolidUsages.Value(theUsageId.Index).DefId;
+    case BRepGraph_NodeKind::Shell:     return myShellUsages.Value(theUsageId.Index).DefId;
+    case BRepGraph_NodeKind::Face:      return myFaceUsages.Value(theUsageId.Index).DefId;
+    case BRepGraph_NodeKind::Wire:      return myWireUsages.Value(theUsageId.Index).DefId;
+    case BRepGraph_NodeKind::Edge:      return myEdgeUsages.Value(theUsageId.Index).DefId;
+    case BRepGraph_NodeKind::Vertex:    return myVertexUsages.Value(theUsageId.Index).DefId;
+    case BRepGraph_NodeKind::Compound:  return myCompoundUsages.Value(theUsageId.Index).DefId;
+    case BRepGraph_NodeKind::CompSolid: return myCompSolidUsages.Value(theUsageId.Index).DefId;
     default: return BRepGraph_NodeId();
   }
 }
@@ -882,6 +970,14 @@ const BRepGraph_TopoNode::BaseDef* BRepGraph::TopoDef(BRepGraph_NodeId theId) co
       return theId.Index < myVertexDefs.Length()
                ? static_cast<const BRepGraph_TopoNode::BaseDef*>(&myVertexDefs.Value(theId.Index))
                : nullptr;
+    case BRepGraph_NodeKind::Compound:
+      return theId.Index < myCompoundDefs.Length()
+               ? static_cast<const BRepGraph_TopoNode::BaseDef*>(&myCompoundDefs.Value(theId.Index))
+               : nullptr;
+    case BRepGraph_NodeKind::CompSolid:
+      return theId.Index < myCompSolidDefs.Length()
+               ? static_cast<const BRepGraph_TopoNode::BaseDef*>(&myCompSolidDefs.Value(theId.Index))
+               : nullptr;
     default:
       return nullptr;
   }
@@ -894,6 +990,7 @@ size_t BRepGraph::NbNodes() const
   return static_cast<size_t>(mySolidDefs.Length()) + static_cast<size_t>(myShellDefs.Length())
          + static_cast<size_t>(myFaceDefs.Length()) + static_cast<size_t>(myWireDefs.Length())
          + static_cast<size_t>(myEdgeDefs.Length()) + static_cast<size_t>(myVertexDefs.Length())
+         + static_cast<size_t>(myCompoundDefs.Length()) + static_cast<size_t>(myCompSolidDefs.Length())
          + static_cast<size_t>(mySurfaces.Length()) + static_cast<size_t>(myCurves.Length())
          + static_cast<size_t>(myPCurves.Length());
 }
@@ -1064,12 +1161,14 @@ gp_Trsf BRepGraph::GlobalTransform(BRepGraph_UsageId theUsage) const
 
   switch (theUsage.Kind)
   {
-    case BRepGraph_NodeKind::Solid:  return mySolidUsages.Value(theUsage.Index).GlobalLocation.Transformation();
-    case BRepGraph_NodeKind::Shell:  return myShellUsages.Value(theUsage.Index).GlobalLocation.Transformation();
-    case BRepGraph_NodeKind::Face:   return myFaceUsages.Value(theUsage.Index).GlobalLocation.Transformation();
-    case BRepGraph_NodeKind::Wire:   return myWireUsages.Value(theUsage.Index).GlobalLocation.Transformation();
-    case BRepGraph_NodeKind::Edge:   return myEdgeUsages.Value(theUsage.Index).GlobalLocation.Transformation();
-    case BRepGraph_NodeKind::Vertex: return myVertexUsages.Value(theUsage.Index).GlobalLocation.Transformation();
+    case BRepGraph_NodeKind::Solid:     return mySolidUsages.Value(theUsage.Index).GlobalLocation.Transformation();
+    case BRepGraph_NodeKind::Shell:     return myShellUsages.Value(theUsage.Index).GlobalLocation.Transformation();
+    case BRepGraph_NodeKind::Face:      return myFaceUsages.Value(theUsage.Index).GlobalLocation.Transformation();
+    case BRepGraph_NodeKind::Wire:      return myWireUsages.Value(theUsage.Index).GlobalLocation.Transformation();
+    case BRepGraph_NodeKind::Edge:      return myEdgeUsages.Value(theUsage.Index).GlobalLocation.Transformation();
+    case BRepGraph_NodeKind::Vertex:    return myVertexUsages.Value(theUsage.Index).GlobalLocation.Transformation();
+    case BRepGraph_NodeKind::Compound:  return myCompoundUsages.Value(theUsage.Index).GlobalLocation.Transformation();
+    case BRepGraph_NodeKind::CompSolid: return myCompSolidUsages.Value(theUsage.Index).GlobalLocation.Transformation();
     default: return gp_Trsf();
   }
 }
@@ -1353,19 +1452,19 @@ TopoDS_Shape BRepGraph::ReconstructFromUsage(BRepGraph_UsageId theRoot) const
 
 //=================================================================================================
 
-BRepGraph_TopoNode::EdgeDef& BRepGraph::MutableEdgeDef(int theIdx)
+BRepGraph_TopoNode::EdgeDef& BRepGraph::MutableEdgeDefinition(int theIdx)
 {
   markModified(BRepGraph_NodeId(BRepGraph_NodeKind::Edge, theIdx));
   return myEdgeDefs.ChangeValue(theIdx);
 }
 
-BRepGraph_TopoNode::WireDef& BRepGraph::MutableWireDef(int theIdx)
+BRepGraph_TopoNode::WireDef& BRepGraph::MutableWireDefinition(int theIdx)
 {
   markModified(BRepGraph_NodeId(BRepGraph_NodeKind::Wire, theIdx));
   return myWireDefs.ChangeValue(theIdx);
 }
 
-BRepGraph_TopoNode::VertexDef& BRepGraph::MutableVertexDef(int theIdx)
+BRepGraph_TopoNode::VertexDef& BRepGraph::MutableVertexDefinition(int theIdx)
 {
   markModified(BRepGraph_NodeId(BRepGraph_NodeKind::Vertex, theIdx));
   return myVertexDefs.ChangeValue(theIdx);
@@ -1501,24 +1600,31 @@ void BRepGraph::SetAllocator(const Handle(NCollection_BaseAllocator)& theAlloc)
 {
   myAllocator = !theAlloc.IsNull() ? theAlloc : NCollection_BaseAllocator::CommonBaseAllocator();
 
-  mySolidDefs      = NCollection_Vector<BRepGraph_TopoNode::SolidDef>(16, myAllocator);
-  myShellDefs      = NCollection_Vector<BRepGraph_TopoNode::ShellDef>(16, myAllocator);
-  myFaceDefs       = NCollection_Vector<BRepGraph_TopoNode::FaceDef>(128, myAllocator);
-  myWireDefs       = NCollection_Vector<BRepGraph_TopoNode::WireDef>(128, myAllocator);
-  myEdgeDefs       = NCollection_Vector<BRepGraph_TopoNode::EdgeDef>(256, myAllocator);
-  myVertexDefs     = NCollection_Vector<BRepGraph_TopoNode::VertexDef>(256, myAllocator);
-  mySolidUsages    = NCollection_Vector<BRepGraph_TopoNode::SolidUsage>(16, myAllocator);
-  myShellUsages    = NCollection_Vector<BRepGraph_TopoNode::ShellUsage>(16, myAllocator);
-  myFaceUsages     = NCollection_Vector<BRepGraph_TopoNode::FaceUsage>(128, myAllocator);
-  myWireUsages     = NCollection_Vector<BRepGraph_TopoNode::WireUsage>(128, myAllocator);
-  myEdgeUsages     = NCollection_Vector<BRepGraph_TopoNode::EdgeUsage>(256, myAllocator);
-  myVertexUsages   = NCollection_Vector<BRepGraph_TopoNode::VertexUsage>(256, myAllocator);
+  mySolidDefs       = NCollection_Vector<BRepGraph_TopoNode::SolidDef>(16, myAllocator);
+  myShellDefs       = NCollection_Vector<BRepGraph_TopoNode::ShellDef>(16, myAllocator);
+  myFaceDefs        = NCollection_Vector<BRepGraph_TopoNode::FaceDef>(128, myAllocator);
+  myWireDefs        = NCollection_Vector<BRepGraph_TopoNode::WireDef>(128, myAllocator);
+  myEdgeDefs        = NCollection_Vector<BRepGraph_TopoNode::EdgeDef>(256, myAllocator);
+  myVertexDefs      = NCollection_Vector<BRepGraph_TopoNode::VertexDef>(256, myAllocator);
+  myCompoundDefs    = NCollection_Vector<BRepGraph_TopoNode::CompoundDef>(8, myAllocator);
+  myCompSolidDefs   = NCollection_Vector<BRepGraph_TopoNode::CompSolidDef>(8, myAllocator);
+  mySolidUsages     = NCollection_Vector<BRepGraph_TopoNode::SolidUsage>(16, myAllocator);
+  myShellUsages     = NCollection_Vector<BRepGraph_TopoNode::ShellUsage>(16, myAllocator);
+  myFaceUsages      = NCollection_Vector<BRepGraph_TopoNode::FaceUsage>(128, myAllocator);
+  myWireUsages      = NCollection_Vector<BRepGraph_TopoNode::WireUsage>(128, myAllocator);
+  myEdgeUsages      = NCollection_Vector<BRepGraph_TopoNode::EdgeUsage>(256, myAllocator);
+  myVertexUsages    = NCollection_Vector<BRepGraph_TopoNode::VertexUsage>(256, myAllocator);
+  myCompoundUsages  = NCollection_Vector<BRepGraph_TopoNode::CompoundUsage>(8, myAllocator);
+  myCompSolidUsages = NCollection_Vector<BRepGraph_TopoNode::CompSolidUsage>(8, myAllocator);
   mySurfaces       = NCollection_Vector<BRepGraph_GeomNode::Surf>(64, myAllocator);
   myCurves         = NCollection_Vector<BRepGraph_GeomNode::Curve>(64, myAllocator);
   myPCurves        = NCollection_Vector<BRepGraph_GeomNode::PCurve>(128, myAllocator);
-  mySurfRegistry   = NCollection_IndexedDataMap<void*, int>(100, myAllocator);
-  myCurveRegistry  = NCollection_IndexedDataMap<void*, int>(100, myAllocator);
-  myTShapeToDefId  = NCollection_DataMap<void*, BRepGraph_NodeId>(100, myAllocator);
+  mySurfRegistry   = NCollection_IndexedDataMap<const Geom_Surface*, int,
+                       BRepGraph_PtrHasher<Geom_Surface>>(100, myAllocator);
+  myCurveRegistry  = NCollection_IndexedDataMap<const Geom_Curve*, int,
+                       BRepGraph_PtrHasher<Geom_Curve>>(100, myAllocator);
+  myTShapeToDefId  = NCollection_DataMap<const TopoDS_TShape*, BRepGraph_NodeId,
+                       BRepGraph_PtrHasher<TopoDS_TShape>>(100, myAllocator);
   myUIDToNodeId    = NCollection_DataMap<BRepGraph_UID, BRepGraph_NodeId, BRepGraph_UID::Hasher>(
     BRepGraph_UID::Hasher(), 100, myAllocator);
   myEdgeToWires = NCollection_DataMap<int, NCollection_Vector<int>>(100, myAllocator);
