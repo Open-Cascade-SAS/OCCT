@@ -15,6 +15,7 @@
 
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
+#include <BRepLib.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
@@ -125,6 +126,8 @@ TopoDS_Face buildCopiedFace(const BRepGraph&                                    
       }
 
       aBB.Range(aNewEdge, anEdgeDef.ParamFirst, anEdgeDef.ParamLast);
+      aBB.SameParameter(aNewEdge, anEdgeDef.SameParameter);
+      aBB.SameRange(aNewEdge, anEdgeDef.SameRange);
 
       // Attach pcurves.
       for (int aPCIdx = 0; aPCIdx < anEdgeDef.PCurves.Length(); ++aPCIdx)
@@ -188,6 +191,9 @@ TopoDS_Face buildCopiedFace(const BRepGraph&                                    
     aBB.Add(aNewFace, buildWire(aFaceUsage.InnerWireUsages.Value(aWireIdx)));
   }
 
+  if (aFaceDef.NaturalRestriction)
+    aBB.NaturalRestriction(aNewFace, true);
+
   aNewFace.Orientation(aFaceUsage.Orientation);
   return aNewFace;
 }
@@ -228,11 +234,12 @@ TopoDS_Shape BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph, bool theCopy
   }
 
   // Phase 2b: Walk the usage tree for containment.
+  TopoDS_Compound aResult;
+  aBB.MakeCompound(aResult);
+
   if (theGraph.NbSolidUsages() > 0)
   {
     // Rebuild solids from usage tree.
-    TopoDS_Compound aResult;
-    aBB.MakeCompound(aResult);
     for (int aSolidIdx = 0; aSolidIdx < theGraph.NbSolidUsages(); ++aSolidIdx)
     {
       const auto& aSolidUsage = theGraph.SolidUsageNode(aSolidIdx);
@@ -256,12 +263,9 @@ TopoDS_Shape BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph, bool theCopy
       }
       aBB.Add(aResult, aNewSolid);
     }
-    return aResult;
   }
   else if (theGraph.NbShellUsages() > 0)
   {
-    TopoDS_Compound aResult;
-    aBB.MakeCompound(aResult);
     for (int aShellIdx = 0; aShellIdx < theGraph.NbShellUsages(); ++aShellIdx)
     {
       const auto& aShellUsage = theGraph.ShellUsageNode(aShellIdx);
@@ -277,21 +281,23 @@ TopoDS_Shape BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph, bool theCopy
       }
       aBB.Add(aResult, aNewShell);
     }
-    return aResult;
   }
   else
   {
     // Face usages only (compound of faces, typical for sewing input).
-    TopoDS_Compound aResult;
-    aBB.MakeCompound(aResult);
     for (int aFaceIdx = 0; aFaceIdx < theGraph.NbFaceUsages(); ++aFaceIdx)
     {
       TopoDS_Face aCopiedFace = buildCopiedFace(theGraph, aFaceIdx, theCopyGeom,
                                                 aSurfCopies, aCurveCopies, aVertexCopies);
       aBB.Add(aResult, aCopiedFace);
     }
-    return aResult;
   }
+
+  // Re-encode regularity (BRep_CurveOn2Surfaces) on the copied result.
+  // This restores G1/G2 continuity annotations that are not stored in the graph.
+  BRepLib::EncodeRegularity(aResult);
+
+  return aResult;
 }
 
 //==================================================================================================

@@ -16,6 +16,7 @@
 #include <BRepGraphAlgo_Copy.hxx>
 
 #include <BRep_Builder.hxx>
+#include <BRepLib.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>

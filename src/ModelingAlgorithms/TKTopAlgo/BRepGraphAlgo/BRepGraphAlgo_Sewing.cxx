@@ -791,12 +791,14 @@ void BRepGraphAlgo_Sewing::mergeMatchedEdges(
                        aFaceLoc,
                        aMergedTol);
 
-        // Add PCurve entry to keep-edge via graph API.
+        // Add PCurve entry to keep-edge via graph API; preserve original edge orientation
+        // so that seam edges (REVERSED orientation) are correctly reconstructed as C2.
         myGraph.AddPCurveToEdge(anIdA,
                                 aPCEntry.FaceDefId,
                                 aPCNode.Curve2d,
                                 aPCNode.ParamFirst,
-                                aPCNode.ParamLast);
+                                aPCNode.ParamLast,
+                                aPCEntry.EdgeOrientation);
       }
     }
 

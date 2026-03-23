@@ -215,6 +215,13 @@ public:
   Standard_EXPORT BRepGraph_NodeId PCurveOf(BRepGraph_NodeId theEdgeDef,
                                             BRepGraph_NodeId theFaceDef) const;
 
+  //! Returns the PCurve node id for the given edge/face/orientation triple.
+  //! For seam edges two PCurve nodes share the same FaceDefId but differ in orientation;
+  //! use this overload to distinguish FORWARD (C1) from REVERSED (C2).
+  Standard_EXPORT BRepGraph_NodeId PCurveOf(BRepGraph_NodeId   theEdgeDef,
+                                            BRepGraph_NodeId   theFaceDef,
+                                            TopAbs_Orientation theEdgeOrientation) const;
+
   //! Accumulated global transform for a usage.
   Standard_EXPORT gp_Trsf GlobalTransform(BRepGraph_UsageId theUsage) const;
 
@@ -285,11 +292,13 @@ public:
   Standard_EXPORT BRepGraph_TopoNode::WireDef& MutableWireDefinition(int theIdx);
   Standard_EXPORT BRepGraph_TopoNode::VertexDef& MutableVertexDefinition(int theIdx);
 
-  Standard_EXPORT BRepGraph_NodeId AddPCurveToEdge(BRepGraph_NodeId            theEdgeDef,
-                                                   BRepGraph_NodeId            theFaceDef,
-                                                   const Handle(Geom2d_Curve)& theCurve2d,
-                                                   double                      theFirst,
-                                                   double                      theLast);
+  Standard_EXPORT BRepGraph_NodeId AddPCurveToEdge(
+    BRepGraph_NodeId            theEdgeDef,
+    BRepGraph_NodeId            theFaceDef,
+    const Handle(Geom2d_Curve)& theCurve2d,
+    double                      theFirst,
+    double                      theLast,
+    TopAbs_Orientation          theEdgeOrientation = TopAbs_FORWARD);
 
   Standard_EXPORT void ReplaceEdgeInWire(int              theWireDefIdx,
                                          BRepGraph_NodeId theOldEdgeDef,

@@ -12,17 +12,22 @@
 // commercial license or contractual agreement.
 
 #include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_Analyze.hxx>
 #include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_SubGraph.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
+#include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
 #include <NCollection_Map.hxx>
 #include <Precision.hxx>
+#include <TopAbs_Orientation.hxx>
+#include <TopExp_Explorer.hxx>
 #include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
 
 #include <gtest/gtest.h>
@@ -532,4 +537,111 @@ TEST(BRepGraphSubGraph, SubGraph_NbTopoNodes_SumEqualsTotal)
                          + aGraph.NbFaceDefs()  + aGraph.NbWireDefs()
                          + aGraph.NbEdgeDefs()  + aGraph.NbVertexDefs();
   EXPECT_GE(aTotalTopoNodes, aGraphTotal);
+}
+
+// ============================================================
+// SameParameter / SameRange round-trip tests
+// ============================================================
+
+TEST(BRepGraphGeometry, Box_EdgeDef_SameParameter_IsSet)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+  ASSERT_GT(aGraph.NbEdgeDefs(), 0);
+
+  // Box edges are well-formed; SameParameter should be true for all.
+  for (int i = 0; i < aGraph.NbEdgeDefs(); ++i)
+  {
+    const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.EdgeDefinition(i);
+    EXPECT_TRUE(anEdge.SameParameter) << "Edge def " << i << " has SameParameter=false";
+  }
+}
+
+TEST(BRepGraphGeometry, Box_EdgeDef_SameRange_IsSet)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+  ASSERT_GT(aGraph.NbEdgeDefs(), 0);
+
+  for (int i = 0; i < aGraph.NbEdgeDefs(); ++i)
+  {
+    const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.EdgeDefinition(i);
+    EXPECT_TRUE(anEdge.SameRange) << "Edge def " << i << " has SameRange=false";
+  }
+}
+
+// ============================================================
+// Seam edge PCurve validation tests
+// ============================================================
+
+TEST(BRepGraphGeometry, Cylinder_SeamEdge_HasTwoPCurves)
+{
+  // A cylinder has a seam edge on its lateral face.
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeCylinder(5.0, 20.0).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  // Find an edge with two PCurve entries on the same face (seam edge).
+  bool aFoundSeam = false;
+  for (int i = 0; i < aGraph.NbEdgeDefs(); ++i)
+  {
+    const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.EdgeDefinition(i);
+    if (anEdge.PCurves.Length() < 2)
+      continue;
+
+    // Check if any two entries share the same FaceDefId (seam condition).
+    for (int j = 0; j < anEdge.PCurves.Length() && !aFoundSeam; ++j)
+    {
+      for (int k = j + 1; k < anEdge.PCurves.Length() && !aFoundSeam; ++k)
+      {
+        if (anEdge.PCurves.Value(j).FaceDefId == anEdge.PCurves.Value(k).FaceDefId)
+        {
+          // Verify the two entries have opposite orientations.
+          const TopAbs_Orientation anOri1 = anEdge.PCurves.Value(j).EdgeOrientation;
+          const TopAbs_Orientation anOri2 = anEdge.PCurves.Value(k).EdgeOrientation;
+          EXPECT_NE(anOri1, anOri2) << "Seam edge PCurves should have opposite orientations";
+          aFoundSeam = true;
+        }
+      }
+    }
+  }
+  EXPECT_TRUE(aFoundSeam) << "No seam edge found in cylinder";
+}
+
+TEST(BRepGraphGeometry, Cylinder_SeamEdge_PCurveOf_WithOrientation)
+{
+  // Verify PCurveOf(edge, face, orientation) returns different nodes for FORWARD vs REVERSED.
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeCylinder(5.0, 20.0).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  for (int i = 0; i < aGraph.NbEdgeDefs(); ++i)
+  {
+    const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.EdgeDefinition(i);
+    const BRepGraph_NodeId anEdgeDefId(BRepGraph_NodeKind::Edge, i);
+
+    for (int j = 0; j < anEdge.PCurves.Length(); ++j)
+    {
+      for (int k = j + 1; k < anEdge.PCurves.Length(); ++k)
+      {
+        if (anEdge.PCurves.Value(j).FaceDefId != anEdge.PCurves.Value(k).FaceDefId)
+          continue;
+
+        // This is a seam edge — test oriented overload.
+        const BRepGraph_NodeId aFaceId = anEdge.PCurves.Value(j).FaceDefId;
+        const BRepGraph_NodeId aPC_Fwd =
+          aGraph.PCurveOf(anEdgeDefId, aFaceId, TopAbs_FORWARD);
+        const BRepGraph_NodeId aPC_Rev =
+          aGraph.PCurveOf(anEdgeDefId, aFaceId, TopAbs_REVERSED);
+
+        EXPECT_TRUE(aPC_Fwd.IsValid()) << "PCurveOf FORWARD returned invalid for seam edge";
+        EXPECT_TRUE(aPC_Rev.IsValid()) << "PCurveOf REVERSED returned invalid for seam edge";
+        EXPECT_NE(aPC_Fwd, aPC_Rev) << "FORWARD and REVERSED PCurves should be different nodes";
+        return; // one seam is enough
+      }
+    }
+  }
+  GTEST_SKIP() << "No seam edge found; test inconclusive";
 }

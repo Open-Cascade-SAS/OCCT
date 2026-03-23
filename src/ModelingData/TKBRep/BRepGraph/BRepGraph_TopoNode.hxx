@@ -73,6 +73,10 @@ struct FaceDef : public BaseDef
 
   //! Tolerance from BRep_TFace.
   double Tolerance = 0.0;
+
+  //! True if the face boundary is exactly the parametric domain of the surface
+  //! (UMin/UMax/VMin/VMax) and no wire topology is stored.
+  bool NaturalRestriction = false;
 };
 
 //! Wire definition holding edge winding order and closure status.
@@ -121,6 +125,13 @@ struct EdgeDef : public BaseDef
 
   //! True if this edge collapses to a point on the surface.
   bool IsDegenerate = false;
+
+  //! True if all PCurves are reparametrized to the same range as the 3D curve.
+  //! Required by BRepCheck_Analyzer and downstream algorithms.
+  bool SameParameter = false;
+
+  //! True if the PCurve parameter range equals the 3D curve parameter range.
+  bool SameRange = false;
 };
 
 struct VertexDef : public BaseDef

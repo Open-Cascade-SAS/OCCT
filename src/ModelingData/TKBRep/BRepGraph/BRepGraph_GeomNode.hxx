@@ -19,6 +19,7 @@
 #include <Geom_Surface.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom2d_Curve.hxx>
+#include <GeomAbs_Shape.hxx>
 #include <Poly_Triangulation.hxx>
 
 #include <NCollection_Vector.hxx>
@@ -78,6 +79,10 @@ struct PCurve
 
   double                     ParamFirst = 0.0;
   double                     ParamLast  = 0.0;
+
+  //! Geometric continuity across the edge (from BRep_CurveOnClosedSurface).
+  //! GeomAbs_C0 for most edges; higher values encode G1/G2 continuity.
+  GeomAbs_Shape              Continuity = GeomAbs_C0;
 };
 
 } // namespace BRepGraph_GeomNode

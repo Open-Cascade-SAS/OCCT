@@ -19,6 +19,7 @@
 #include <BRepTools_WireExplorer.hxx>
 #include <OSD_Parallel.hxx>
 #include <Standard_ProgramError.hxx>
+#include <TopAbs_Orientation.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -45,7 +46,9 @@ struct ExtractedEdge
   double               ParamFirst   = 0.0;
   double               ParamLast    = 0.0;
   double               Tolerance    = 0.0;
-  bool                 IsDegenerate = false;
+  bool                 IsDegenerate   = false;
+  bool                 SameParameter  = false;
+  bool                 SameRange      = false;
   ExtractedVertex      StartVertex;
   ExtractedVertex      EndVertex;
   TopAbs_Orientation   OrientationInWire = TopAbs_FORWARD;
@@ -73,8 +76,9 @@ struct FaceLocalData
   // Geometry extracted in Phase 2 (parallel).
   Handle(Geom_Surface)                Surface;
   Handle(Poly_Triangulation)          Triangulation;
-  double                              Tolerance   = 0.0;
-  TopAbs_Orientation                  Orientation = TopAbs_FORWARD;
+  double                              Tolerance          = 0.0;
+  TopAbs_Orientation                  Orientation        = TopAbs_FORWARD;
+  bool                                NaturalRestriction = false;
   NCollection_Vector<ExtractedWire>   Wires;
 };
 
@@ -83,11 +87,12 @@ void extractFaceData(FaceLocalData& theData)
 {
   const TopoDS_Face& aFace = theData.Face;
 
-  theData.Surface = BRep_Tool::Surface(aFace);
+  theData.Surface            = BRep_Tool::Surface(aFace);
   TopLoc_Location aFaceLoc;
-  theData.Triangulation = BRep_Tool::Triangulation(aFace, aFaceLoc);
-  theData.Tolerance     = BRep_Tool::Tolerance(aFace);
-  theData.Orientation   = aFace.Orientation();
+  theData.Triangulation      = BRep_Tool::Triangulation(aFace, aFaceLoc);
+  theData.Tolerance          = BRep_Tool::Tolerance(aFace);
+  theData.Orientation        = aFace.Orientation();
+  theData.NaturalRestriction = BRep_Tool::NaturalRestriction(aFace);
 
   // Use a FORWARD-oriented face for wire/edge iteration so that edge orientations
   // and traversal order are stored relative to the face TShape, not composed with
@@ -115,6 +120,8 @@ void extractFaceData(FaceLocalData& theData)
       anEdgeData.Shape             = anEdge;
       anEdgeData.Tolerance         = BRep_Tool::Tolerance(anEdge);
       anEdgeData.IsDegenerate      = BRep_Tool::Degenerated(anEdge);
+      anEdgeData.SameParameter     = BRep_Tool::SameParameter(anEdge);
+      anEdgeData.SameRange         = BRep_Tool::SameRange(anEdge);
       anEdgeData.OrientationInWire = anEdge.Orientation();
 
       double aFirst = 0.0, aLast = 0.0;
@@ -465,8 +472,9 @@ void BRepGraph::Build(const TopoDS_Shape& theShape, bool theParallel)
     {
       BRepGraph_TopoNode::FaceDef& aFaceDef = myFaceDefs.Appended();
       const int aFaceDefIdx = myFaceDefs.Length() - 1;
-      aFaceDef.Id        = BRepGraph_NodeId(BRepGraph_NodeKind::Face, aFaceDefIdx);
-      aFaceDef.Tolerance = aData.Tolerance;
+      aFaceDef.Id                 = BRepGraph_NodeId(BRepGraph_NodeKind::Face, aFaceDefIdx);
+      aFaceDef.Tolerance          = aData.Tolerance;
+      aFaceDef.NaturalRestriction = aData.NaturalRestriction;
       allocateUID(aFaceDef.Id);
 
       // Register surface.
@@ -553,11 +561,13 @@ void BRepGraph::Build(const TopoDS_Shape& theShape, bool theParallel)
         {
           BRepGraph_TopoNode::EdgeDef& anEdgeDef = myEdgeDefs.Appended();
           const int anEdgeDefIdx = myEdgeDefs.Length() - 1;
-          anEdgeDef.Id          = BRepGraph_NodeId(BRepGraph_NodeKind::Edge, anEdgeDefIdx);
-          anEdgeDef.Tolerance   = anEdgeData.Tolerance;
-          anEdgeDef.IsDegenerate = anEdgeData.IsDegenerate;
-          anEdgeDef.ParamFirst  = anEdgeData.ParamFirst;
-          anEdgeDef.ParamLast   = anEdgeData.ParamLast;
+          anEdgeDef.Id            = BRepGraph_NodeId(BRepGraph_NodeKind::Edge, anEdgeDefIdx);
+          anEdgeDef.Tolerance     = anEdgeData.Tolerance;
+          anEdgeDef.IsDegenerate  = anEdgeData.IsDegenerate;
+          anEdgeDef.SameParameter = anEdgeData.SameParameter;
+          anEdgeDef.SameRange     = anEdgeData.SameRange;
+          anEdgeDef.ParamFirst    = anEdgeData.ParamFirst;
+          anEdgeDef.ParamLast     = anEdgeData.ParamLast;
           allocateUID(anEdgeDef.Id);
           myOriginalShapes.Bind(anEdgeDef.Id, anEdge);
 
@@ -690,15 +700,72 @@ void BRepGraph::Build(const TopoDS_Shape& theShape, bool theParallel)
   }
 
   // Phase 4: Set IsMultiLocated flags.
+  // A surface is multi-located only when its face usages have *different* GlobalLocations.
+  // (Two same-domain faces at the same location do NOT require defensive geometry copies.)
   for (int aSurfIdx = 0; aSurfIdx < mySurfaces.Length(); ++aSurfIdx)
   {
-    mySurfaces.ChangeValue(aSurfIdx).IsMultiLocated =
-      (mySurfaces.Value(aSurfIdx).FaceDefUsers.Length() > 1);
+    BRepGraph_GeomNode::Surf& aSurf = mySurfaces.ChangeValue(aSurfIdx);
+    if (aSurf.FaceDefUsers.Length() <= 1)
+    {
+      aSurf.IsMultiLocated = false;
+      continue;
+    }
+    bool            aIsMultiLocated = false;
+    TopLoc_Location aFirstLoc;
+    bool            aFoundFirst = false;
+    for (int aFDIdx = 0; aFDIdx < aSurf.FaceDefUsers.Length() && !aIsMultiLocated; ++aFDIdx)
+    {
+      const BRepGraph_TopoNode::FaceDef& aFaceDef =
+        myFaceDefs.Value(aSurf.FaceDefUsers.Value(aFDIdx).Index);
+      for (int aUIdx = 0; aUIdx < aFaceDef.Usages.Length() && !aIsMultiLocated; ++aUIdx)
+      {
+        const TopLoc_Location& aLoc =
+          myFaceUsages.Value(aFaceDef.Usages.Value(aUIdx).Index).GlobalLocation;
+        if (!aFoundFirst)
+        {
+          aFirstLoc   = aLoc;
+          aFoundFirst = true;
+        }
+        else if (aLoc != aFirstLoc)
+        {
+          aIsMultiLocated = true;
+        }
+      }
+    }
+    aSurf.IsMultiLocated = aIsMultiLocated;
   }
+  // Similarly for curves: multi-located only when edge usages have different GlobalLocations.
   for (int aCurveIdx = 0; aCurveIdx < myCurves.Length(); ++aCurveIdx)
   {
-    myCurves.ChangeValue(aCurveIdx).IsMultiLocated =
-      (myCurves.Value(aCurveIdx).EdgeDefUsers.Length() > 1);
+    BRepGraph_GeomNode::Curve& aCurve = myCurves.ChangeValue(aCurveIdx);
+    if (aCurve.EdgeDefUsers.Length() <= 1)
+    {
+      aCurve.IsMultiLocated = false;
+      continue;
+    }
+    bool            aIsMultiLocated = false;
+    TopLoc_Location aFirstLoc;
+    bool            aFoundFirst = false;
+    for (int aEDIdx = 0; aEDIdx < aCurve.EdgeDefUsers.Length() && !aIsMultiLocated; ++aEDIdx)
+    {
+      const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
+        myEdgeDefs.Value(aCurve.EdgeDefUsers.Value(aEDIdx).Index);
+      for (int aUIdx = 0; aUIdx < anEdgeDef.Usages.Length() && !aIsMultiLocated; ++aUIdx)
+      {
+        const TopLoc_Location& aLoc =
+          myEdgeUsages.Value(anEdgeDef.Usages.Value(aUIdx).Index).GlobalLocation;
+        if (!aFoundFirst)
+        {
+          aFirstLoc   = aLoc;
+          aFoundFirst = true;
+        }
+        else if (aLoc != aFirstLoc)
+        {
+          aIsMultiLocated = true;
+        }
+      }
+    }
+    aCurve.IsMultiLocated = aIsMultiLocated;
   }
 
   myIsDone = true;
@@ -1154,6 +1221,26 @@ BRepGraph_NodeId BRepGraph::PCurveOf(BRepGraph_NodeId theEdgeDef, BRepGraph_Node
 
 //=================================================================================================
 
+BRepGraph_NodeId BRepGraph::PCurveOf(BRepGraph_NodeId   theEdgeDef,
+                                     BRepGraph_NodeId   theFaceDef,
+                                     TopAbs_Orientation theEdgeOrientation) const
+{
+  if (theEdgeDef.Kind != BRepGraph_NodeKind::Edge || !theEdgeDef.IsValid())
+    return BRepGraph_NodeId();
+
+  const BRepGraph_TopoNode::EdgeDef& anEdgeDef = myEdgeDefs.Value(theEdgeDef.Index);
+  for (int aPCurveIter = 0; aPCurveIter < anEdgeDef.PCurves.Length(); ++aPCurveIter)
+  {
+    const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCEntry =
+      anEdgeDef.PCurves.Value(aPCurveIter);
+    if (aPCEntry.FaceDefId == theFaceDef && aPCEntry.EdgeOrientation == theEdgeOrientation)
+      return aPCEntry.PCurveNodeId;
+  }
+  return BRepGraph_NodeId();
+}
+
+//=================================================================================================
+
 gp_Trsf BRepGraph::GlobalTransform(BRepGraph_UsageId theUsage) const
 {
   if (!theUsage.IsValid())
@@ -1476,14 +1563,16 @@ BRepGraph_NodeId BRepGraph::AddPCurveToEdge(BRepGraph_NodeId            theEdgeD
                                             BRepGraph_NodeId            theFaceDef,
                                             const Handle(Geom2d_Curve)& theCurve2d,
                                             double                      theFirst,
-                                            double                      theLast)
+                                            double                      theLast,
+                                            TopAbs_Orientation          theEdgeOrientation)
 {
   BRepGraph_NodeId aPCId = createPCurveNode(theCurve2d, theEdgeDef, theFaceDef, theFirst, theLast);
 
   BRepGraph_TopoNode::EdgeDef&             anEdgeDef = myEdgeDefs.ChangeValue(theEdgeDef.Index);
   BRepGraph_TopoNode::EdgeDef::PCurveEntry aNewEntry;
-  aNewEntry.PCurveNodeId = aPCId;
-  aNewEntry.FaceDefId    = theFaceDef;
+  aNewEntry.PCurveNodeId   = aPCId;
+  aNewEntry.FaceDefId      = theFaceDef;
+  aNewEntry.EdgeOrientation = theEdgeOrientation;
   anEdgeDef.PCurves.Append(aNewEntry);
 
   markModified(theEdgeDef);
@@ -1868,6 +1957,8 @@ TopoDS_Shape BRepGraph::reconstructNode(BRepGraph_NodeId theNode) const
             aBB.MakeEdge(anEdge);
           }
           aBB.Range(anEdge, anEdgeDef.ParamFirst, anEdgeDef.ParamLast);
+          aBB.SameParameter(anEdge, anEdgeDef.SameParameter);
+          aBB.SameRange(anEdge, anEdgeDef.SameRange);
 
           if (anEdgeDef.StartVertexDefId.IsValid())
           {
@@ -1968,6 +2059,9 @@ TopoDS_Shape BRepGraph::reconstructNode(BRepGraph_NodeId theNode) const
           aBB.Add(aNewFace, buildWireForFace(aWireDefId));
         }
       }
+
+      if (aFaceDef.NaturalRestriction)
+        aBB.NaturalRestriction(aNewFace, true);
 
       aNewFace.Orientation(aFaceOri);
       return aNewFace;
