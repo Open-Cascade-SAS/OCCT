@@ -16,6 +16,8 @@
 
 #include <BRepGraph.hxx>
 
+#include <BRepGraph_NodeId.hxx>
+#include <NCollection_Vector.hxx>
 #include <Precision.hxx>
 #include <Standard_DefineAlloc.hxx>
 
@@ -55,6 +57,9 @@ public:
     int  NbNullifiedPCurves  = 0;
     int  NbHistoryRecords    = 0;
     bool IsDefMergeApplied   = false;
+
+    NCollection_Vector<BRepGraph_NodeId> AffectedFaceDefs; //!< Faces whose SurfNodeId changed.
+    NCollection_Vector<BRepGraph_NodeId> AffectedEdgeDefs; //!< Edges whose CurveNodeId changed.
   };
 
   //! Run deduplication on a built graph.

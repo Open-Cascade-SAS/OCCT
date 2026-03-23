@@ -52,6 +52,18 @@ public:
   //! @return reconstructed shape
   Standard_EXPORT TopoDS_Shape ReconstructFromUsage(BRepGraph_UsageId theRoot) const;
 
+  //! Look up the definition NodeId for a shape from the Build() input.
+  //! Uses TShape pointer comparison (same semantics as IsSame()).
+  //! @param[in] theShape shape to look up
+  //! @return node identifier, or invalid NodeId if the shape is not in the graph
+  Standard_EXPORT BRepGraph_NodeId FindNode(const TopoDS_Shape& theShape) const;
+
+  //! Check if a shape is known to the graph (was part of the Build() input).
+  //! Uses TShape pointer comparison (same semantics as IsSame()).
+  //! @param[in] theShape shape to check
+  //! @return true if the shape has a corresponding definition node
+  Standard_EXPORT bool HasNode(const TopoDS_Shape& theShape) const;
+
 private:
   friend class BRepGraph;
   explicit ShapesView(const BRepGraph* theGraph) : myGraph(theGraph) {}

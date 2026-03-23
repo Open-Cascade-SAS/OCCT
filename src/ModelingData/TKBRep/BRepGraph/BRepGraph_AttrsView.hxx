@@ -46,6 +46,11 @@ public:
   //! @param[in] theKey  attribute key
   Standard_EXPORT void Invalidate(BRepGraph_NodeId theNode, int theKey);
 
+  //! Return all user attribute keys on a node.
+  //! @param[in] theNode node identifier
+  //! @return vector of attribute keys (empty if node has no attributes or is a geometry node)
+  Standard_EXPORT NCollection_Vector<int> AttributeKeys(BRepGraph_NodeId theNode) const;
+
 private:
   friend class BRepGraph;
   explicit AttrsView(BRepGraph* theGraph) : myGraph(theGraph) {}

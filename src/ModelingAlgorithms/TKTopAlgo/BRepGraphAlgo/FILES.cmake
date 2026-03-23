@@ -2,6 +2,8 @@
 set(OCCT_BRepGraphAlgo_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_BRepGraphAlgo_FILES
+  BRepGraphAlgo_AttrTransfer.hxx
+  BRepGraphAlgo_AttrTransfer.cxx
   BRepGraphAlgo_Copy.hxx
   BRepGraphAlgo_Copy.cxx
   BRepGraphAlgo_Deduplicate.hxx

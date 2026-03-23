@@ -114,6 +114,18 @@ struct BRepGraph_NodeCache
     return !myUserAttributes.IsEmpty();
   }
 
+  //! Return all registered user attribute keys.
+  NCollection_Vector<int> UserAttributeKeys() const
+  {
+    NCollection_Vector<int> aKeys;
+    for (NCollection_DataMap<int, BRepGraph_UserAttrPtr>::Iterator anIter(myUserAttributes);
+         anIter.More(); anIter.Next())
+    {
+      aKeys.Append(anIter.Key());
+    }
+    return aKeys;
+  }
+
 private:
   //! User attributes map (empty until first SetUserAttribute).
   NCollection_DataMap<int, BRepGraph_UserAttrPtr> myUserAttributes;

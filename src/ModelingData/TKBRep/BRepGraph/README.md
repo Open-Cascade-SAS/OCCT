@@ -334,6 +334,10 @@ History stores an append-only sequence of operation records plus bidirectional l
 - derived -> original,
 - original -> derived[] (transitive queries supported).
 
+### Topology-Level Affected Tracking
+
+`BRepGraphAlgo_Deduplicate::Result` includes `AffectedFaceDefs` and `AffectedEdgeDefs` vectors listing which topology definitions had their geometry links rewritten. This enables downstream consumers to know which faces/edges were affected by dedup without inspecting history records (which only record geometry-level events).
+
 ## Relation Edges vs Built-in Topology Links
 
 `BRepGraph_RelEdge` defines semantic edge kinds (`Contains`, `OuterWire`, `InnerWire`, `RealizedBy`, `ParameterizedBy`, `SameDomain`, `DerivedFrom`, `UserDefined`).
@@ -374,6 +378,101 @@ From public contract and implementation:
 | lineage tracking | `History()` / `BRepGraph_History` |
 | stable ids across one generation | `UIDsView` |
 | user metadata attachment | `AttrsView` |
+| reverse shape-to-node lookup | `ShapesView::FindNode` / `HasNode` |
+| enumerate node attributes | `AttrsView::AttributeKeys` |
+| propagate attrs through history | `BRepGraphAlgo_AttrTransfer::Perform` |
+
+## Shape-to-Node Reverse Lookup
+
+`ShapesView` provides reverse lookup from `TopoDS_Shape` to `BRepGraph_NodeId`:
+
+- `FindNode(theShape)`: returns the definition `NodeId` for a shape that was part of the `Build()` input, using `TShape` pointer comparison (`IsSame()` semantics). Returns invalid `NodeId` if the shape is unknown.
+- `HasNode(theShape)`: returns `true` if the shape has a corresponding definition node.
+
+These enable workflows where external code holds `TopoDS_Shape` references and needs to operate on the graph:
+
+```cpp
+BRepGraph aGraph;
+aGraph.Build(myShape);
+
+for (TopExp_Explorer anExp(myShape, TopAbs_FACE); anExp.More(); anExp.Next())
+{
+  BRepGraph_NodeId aNodeId = aGraph.Shapes().FindNode(anExp.Current());
+  if (aNodeId.IsValid())
+  {
+    // attach attributes, query adjacency, etc.
+  }
+}
+```
+
+## User Attributes and Transfer
+
+### Attribute System
+
+User attributes live on **topology** definition nodes (`FaceDef`, `EdgeDef`, `WireDef`, etc.) via `BRepGraph_NodeCache`. Geometry nodes (`Surf`, `Curve`, `PCurve`) do not carry user attributes.
+
+Key operations:
+
+| Operation | API |
+| --- | --- |
+| Attach attribute | `AttrsView::Set(nodeId, key, attrPtr)` |
+| Read attribute | `AttrsView::Get(nodeId, key)` |
+| Remove attribute | `AttrsView::Remove(nodeId, key)` |
+| Enumerate keys on a node | `AttrsView::AttributeKeys(nodeId)` |
+| Allocate attribute key | `BRepGraph_UserAttribute::AllocateKey()` or `AllocateKey(guid)` |
+
+### History-Based Attribute Transfer
+
+After graph-modifying operations (sewing, edge merge, split), the history log records which original nodes became which replacement nodes. `BRepGraphAlgo_AttrTransfer` propagates user attributes through these history chains.
+
+```mermaid
+flowchart LR
+  A[Original node
+  with attrs] -->|history record| B[Replacement node
+  receives attrs]
+  A -->|history record| C[Another replacement
+  receives attrs]
+```
+
+**Algorithm:**
+
+1. Walk history records in chronological order.
+2. For each mapping entry (original → replacements):
+   - Skip geometry-level records (surfaces/curves have no attributes).
+   - Skip deletion records (empty replacements).
+   - Copy all user attributes from original to each replacement.
+3. `OverwriteExisting` option controls whether existing attrs on targets are replaced.
+
+**When transfer is needed:**
+
+- Sewing merges edge A into edge B → edge B should inherit edge A's attributes.
+- Split creates new edges from an old one → new edges should inherit the original's attributes.
+
+**When transfer is NOT needed:**
+
+- Dedup only changes internal geometry links (face/edge identities are preserved) → attributes stay in place automatically.
+
+### End-to-End Example
+
+```cpp
+// 1. Build graph and assign attributes.
+BRepGraph aGraph;
+aGraph.Build(originalShape);
+
+BRepGraph_NodeId aFaceNode = aGraph.Shapes().FindNode(myFace);
+int COLOR_KEY = BRepGraph_UserAttribute::AllocateKey();
+auto aColorAttr = std::make_shared<BRepGraph_TypedAttribute<int>>(42);
+aGraph.Attrs().Set(aFaceNode, COLOR_KEY, aColorAttr);
+
+// 2. Run a graph-modifying operation.
+BRepGraphAlgo_Sewing aSewer(1.0e-04);
+// ... add faces, perform ...
+
+// 3. Transfer attributes through history.
+BRepGraphAlgo_AttrTransfer::Perform(aGraph);
+
+// 4. Merged/split nodes now carry the original attributes.
+```
 
 ## Practical Query Recipes
 
@@ -419,6 +518,16 @@ Core files in this package:
 - `BRepGraph_Mutator.hxx` / `.cxx`: edge/wire rewrite logic.
 - `BRepGraph_History.hxx` / `.cxx`: lineage and records.
 - `BRepGraph_*View.hxx` / `.cxx`: grouped API accessors.
+- `BRepGraph_TypedAttribute.hxx`: templated user attribute with lazy compute.
+- `BRepGraph_AttrRegistry.hxx`: GUID-to-int key registry for attribute kinds.
+
+Algorithm files (in `BRepGraphAlgo` package):
+
+- `BRepGraphAlgo_AttrTransfer.hxx` / `.cxx`: history-based attribute propagation.
+- `BRepGraphAlgo_Deduplicate.hxx` / `.cxx`: deep geometry deduplication.
+- `BRepGraphAlgo_Sewing.hxx` / `.cxx`: edge sewing on disconnected faces.
+- `BRepGraphAlgo_Copy.hxx` / `.cxx`: graph-based shape copy.
+- `BRepGraphAlgo_Transform.hxx` / `.cxx`: graph-based shape transformation.
 
 ## Suggested Reading Order
 
@@ -427,4 +536,6 @@ Core files in this package:
 3. `BRepGraph_Builder.cxx` (how graph gets populated).
 4. `BRepGraph_Reconstruct.cxx` (how graph maps back to shape).
 5. `BRepGraph_Analyze.cxx` and `BRepGraph_Mutator.cxx` (practical algorithms).
-6. view headers for day-to-day API usage.
+6. `BRepGraph_UserAttribute.hxx` and `BRepGraph_TypedAttribute.hxx` (attribute system).
+7. `BRepGraphAlgo_AttrTransfer.hxx` (attribute propagation through history).
+8. View headers for day-to-day API usage.

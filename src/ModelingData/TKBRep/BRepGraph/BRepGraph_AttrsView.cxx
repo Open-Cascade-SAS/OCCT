@@ -13,6 +13,7 @@
 
 #include <BRepGraph_AttrsView.hxx>
 #include <BRepGraph_Data.hxx>
+#include <NCollection_Vector.hxx>
 
 //=================================================================================================
 
@@ -52,4 +53,14 @@ void BRepGraph::AttrsView::Invalidate(BRepGraph_NodeId theNode, int theKey)
   BRepGraph_NodeCache* aCache = myGraph->mutableCache(theNode);
   if (aCache != nullptr)
     aCache->InvalidateUserAttribute(theKey);
+}
+
+//=================================================================================================
+
+NCollection_Vector<int> BRepGraph::AttrsView::AttributeKeys(BRepGraph_NodeId theNode) const
+{
+  const BRepGraph_TopoNode::BaseDef* aDef = myGraph->TopoDef(theNode);
+  if (aDef == nullptr)
+    return NCollection_Vector<int>();
+  return aDef->Cache.UserAttributeKeys();
 }

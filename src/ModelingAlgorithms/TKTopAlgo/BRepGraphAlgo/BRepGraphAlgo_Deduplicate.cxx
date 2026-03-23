@@ -206,6 +206,7 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
     const BRepGraph_NodeId anOldSurfId = aFaceDef.SurfNodeId;
     aFaceDef.SurfNodeId = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Surface, *aCanonSurf);
     ++aResult.NbSurfaceRewrites;
+    aResult.AffectedFaceDefs.Append(aFaceDef.Id);
 
     // Fix back-references: remove from old surface, add to canonical surface.
     {
@@ -247,6 +248,7 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
         const BRepGraph_NodeId anOldCurveId = anEdgeDef.CurveNodeId;
         anEdgeDef.CurveNodeId = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Curve, *aCanonCurve);
         ++aResult.NbCurveRewrites;
+        aResult.AffectedEdgeDefs.Append(anEdgeDef.Id);
 
         // Fix back-references: remove from old curve, add to canonical curve.
         {

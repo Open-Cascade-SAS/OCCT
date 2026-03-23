@@ -51,7 +51,12 @@ TopoDS_Shape BRepGraph::ShapesView::Shape(BRepGraph_NodeId theNode) const
   {
     std::unique_lock<std::shared_mutex> aWriteLock(myGraph->myData->myCurrentShapesMutex);
     if (!myGraph->myData->myCurrentShapes.IsBound(theNode))
+    {
       myGraph->myData->myCurrentShapes.Bind(theNode, aReconstructed);
+
+      // Register reverse TShape lookup so FindNode() works for post-operation shapes.
+      myGraph->myData->myTShapeToDefId.Bind(aReconstructed.TShape().get(), theNode);
+    }
   }
   return aReconstructed;
 }
@@ -93,4 +98,28 @@ TopoDS_Shape BRepGraph::ShapesView::ReconstructFace(int theFaceDefIdx) const
 TopoDS_Shape BRepGraph::ShapesView::ReconstructFromUsage(BRepGraph_UsageId theRoot) const
 {
   return BRepGraph_Reconstruct::Usage(*myGraph, theRoot);
+}
+
+//=================================================================================================
+
+BRepGraph_NodeId BRepGraph::ShapesView::FindNode(const TopoDS_Shape& theShape) const
+{
+  if (theShape.IsNull())
+    return BRepGraph_NodeId();
+
+  const BRepGraph_NodeId* aNodeId = myGraph->myData->myTShapeToDefId.Seek(theShape.TShape().get());
+  if (aNodeId == nullptr)
+    return BRepGraph_NodeId();
+
+  return *aNodeId;
+}
+
+//=================================================================================================
+
+bool BRepGraph::ShapesView::HasNode(const TopoDS_Shape& theShape) const
+{
+  if (theShape.IsNull())
+    return false;
+
+  return myGraph->myData->myTShapeToDefId.IsBound(theShape.TShape().get());
 }
