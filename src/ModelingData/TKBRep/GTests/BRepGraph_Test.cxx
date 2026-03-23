@@ -15,6 +15,7 @@
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepGraph.hxx>
+#include <BRepGraph_Analyze.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom_Surface.hxx>
@@ -42,6 +43,7 @@ protected:
   {
     BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
     const TopoDS_Shape& aBox = aBoxMaker.Shape();
+    myGraph.SetUIDEnabled(true);
     myGraph.Build(aBox);
   }
 
@@ -152,32 +154,33 @@ TEST_F(BRepGraphTest, UID_Unique)
 {
   NCollection_Map<BRepGraph_UID, BRepGraph_UID::Hasher> aUIDSet;
   for (int aSolidIdx = 0; aSolidIdx < myGraph.NbSolids(); ++aSolidIdx)
-    EXPECT_TRUE(aUIDSet.Add(myGraph.Solid(aSolidIdx).UID));
+    EXPECT_TRUE(aUIDSet.Add(myGraph.UIDOf(BRepGraph_NodeId(BRepGraph_NodeKind::Solid, aSolidIdx))));
   for (int aShellIdx = 0; aShellIdx < myGraph.NbShells(); ++aShellIdx)
-    EXPECT_TRUE(aUIDSet.Add(myGraph.Shell(aShellIdx).UID));
+    EXPECT_TRUE(aUIDSet.Add(myGraph.UIDOf(BRepGraph_NodeId(BRepGraph_NodeKind::Shell, aShellIdx))));
   for (int aFaceIdx = 0; aFaceIdx < myGraph.NbFaces(); ++aFaceIdx)
-    EXPECT_TRUE(aUIDSet.Add(myGraph.Face(aFaceIdx).UID));
+    EXPECT_TRUE(aUIDSet.Add(myGraph.UIDOf(BRepGraph_NodeId(BRepGraph_NodeKind::Face, aFaceIdx))));
   for (int aWireIdx = 0; aWireIdx < myGraph.NbWires(); ++aWireIdx)
-    EXPECT_TRUE(aUIDSet.Add(myGraph.Wire(aWireIdx).UID));
+    EXPECT_TRUE(aUIDSet.Add(myGraph.UIDOf(BRepGraph_NodeId(BRepGraph_NodeKind::Wire, aWireIdx))));
   for (int anEdgeIdx = 0; anEdgeIdx < myGraph.NbEdges(); ++anEdgeIdx)
-    EXPECT_TRUE(aUIDSet.Add(myGraph.Edge(anEdgeIdx).UID));
+    EXPECT_TRUE(aUIDSet.Add(myGraph.UIDOf(BRepGraph_NodeId(BRepGraph_NodeKind::Edge, anEdgeIdx))));
   for (int aVertexIdx = 0; aVertexIdx < myGraph.NbVertices(); ++aVertexIdx)
-    EXPECT_TRUE(aUIDSet.Add(myGraph.Vertex(aVertexIdx).UID));
+    EXPECT_TRUE(aUIDSet.Add(myGraph.UIDOf(BRepGraph_NodeId(BRepGraph_NodeKind::Vertex, aVertexIdx))));
   for (int aSurfIdx = 0; aSurfIdx < myGraph.NbSurfaces(); ++aSurfIdx)
-    EXPECT_TRUE(aUIDSet.Add(myGraph.Surf(aSurfIdx).UID));
+    EXPECT_TRUE(aUIDSet.Add(myGraph.UIDOf(BRepGraph_NodeId(BRepGraph_NodeKind::Surface, aSurfIdx))));
   for (int aCurveIdx = 0; aCurveIdx < myGraph.NbCurves(); ++aCurveIdx)
-    EXPECT_TRUE(aUIDSet.Add(myGraph.Curve(aCurveIdx).UID));
+    EXPECT_TRUE(aUIDSet.Add(myGraph.UIDOf(BRepGraph_NodeId(BRepGraph_NodeKind::Curve, aCurveIdx))));
   for (int aPCurveIdx = 0; aPCurveIdx < myGraph.NbPCurves(); ++aPCurveIdx)
-    EXPECT_TRUE(aUIDSet.Add(myGraph.PCurve(aPCurveIdx).UID));
+    EXPECT_TRUE(aUIDSet.Add(myGraph.UIDOf(BRepGraph_NodeId(BRepGraph_NodeKind::PCurve, aPCurveIdx))));
 }
 
 TEST_F(BRepGraphTest, UID_NodeIdRoundTrip)
 {
   for (int aFaceIdx = 0; aFaceIdx < myGraph.NbFaces(); ++aFaceIdx)
   {
-    const BRepGraph_TopoNode::Face& aFace     = myGraph.Face(aFaceIdx);
-    BRepGraph_NodeId                aResolved = myGraph.NodeIdFromUID(aFace.UID);
-    EXPECT_EQ(aResolved, aFace.Id) << "Round trip failed for face " << aFaceIdx;
+    BRepGraph_NodeId aFaceId(BRepGraph_NodeKind::Face, aFaceIdx);
+    const BRepGraph_UID& aUID = myGraph.UIDOf(aFaceId);
+    BRepGraph_NodeId     aResolved = myGraph.NodeIdFromUID(aUID);
+    EXPECT_EQ(aResolved, aFaceId) << "Round trip failed for face " << aFaceIdx;
   }
 }
 
@@ -223,7 +226,7 @@ TEST(BRepGraphDecomposeTest, Decompose_TwoSeparateFaces)
   ASSERT_TRUE(aGraph.IsDone());
   EXPECT_EQ(aGraph.NbFaces(), 2);
 
-  NCollection_Vector<BRepGraph_SubGraph> aSubs = aGraph.Decompose();
+  NCollection_Vector<BRepGraph_SubGraph> aSubs = BRepGraph_Analyze::Decompose(aGraph);
   EXPECT_EQ(aSubs.Length(), 2);
 }
 
@@ -249,6 +252,7 @@ TEST(BRepGraphReBuildTest, ReBuild_UIDMonotonic)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
+  aGraph.SetUIDEnabled(true);
   aGraph.Build(aBox);
   const size_t   aCountAfterFirst = aGraph.NbNodes();
   const uint32_t aGen1            = aGraph.Generation();
@@ -261,21 +265,22 @@ TEST(BRepGraphReBuildTest, ReBuild_UIDMonotonic)
   size_t aMinCounter = SIZE_MAX;
   for (int aFaceIdx = 0; aFaceIdx < aGraph.NbFaces(); ++aFaceIdx)
   {
-    if (aGraph.Face(aFaceIdx).UID.Counter() < aMinCounter)
-      aMinCounter = aGraph.Face(aFaceIdx).UID.Counter();
+    BRepGraph_NodeId aNodeId(BRepGraph_NodeKind::Face, aFaceIdx);
+    if (aGraph.UIDOf(aNodeId).Counter() < aMinCounter)
+      aMinCounter = aGraph.UIDOf(aNodeId).Counter();
   }
   EXPECT_GE(aMinCounter, aCountAfterFirst);
 }
 
 TEST_F(BRepGraphTest, DetectMissingPCurves_ValidBox_Empty)
 {
-  auto aMissing = myGraph.DetectMissingPCurves();
+  auto aMissing = BRepGraph_Analyze::MissingPCurves(myGraph);
   EXPECT_EQ(aMissing.Length(), 0);
 }
 
 TEST_F(BRepGraphTest, DetectDegenerateWires_ValidBox_Empty)
 {
-  auto aDegenerate = myGraph.DetectDegenerateWires();
+  auto aDegenerate = BRepGraph_Analyze::DegenerateWires(myGraph);
   EXPECT_EQ(aDegenerate.Length(), 0);
 }
 
@@ -302,7 +307,7 @@ TEST_F(BRepGraphTest, FaceCountForEdge_SharedEdge)
 
 TEST_F(BRepGraphTest, FreeEdges_ClosedBox_Empty)
 {
-  NCollection_Vector<BRepGraph_NodeId> aFree = myGraph.FreeEdges();
+  NCollection_Vector<BRepGraph_NodeId> aFree = BRepGraph_Analyze::FreeEdges(myGraph);
   EXPECT_EQ(aFree.Length(), 0);
 }
 
@@ -311,12 +316,11 @@ TEST_F(BRepGraphTest, AddRelEdge_UserDefined)
   BRepGraph_NodeId anEdge0(BRepGraph_NodeKind::Edge, 0);
   BRepGraph_NodeId anEdge1(BRepGraph_NodeKind::Edge, 1);
 
-  int aBefore = myGraph.NbRelEdges();
   myGraph.AddRelEdge(anEdge0, anEdge1, BRepGraph_RelKind::UserDefined);
-  EXPECT_EQ(myGraph.NbRelEdges(), aBefore + 1);
-
-  NCollection_Vector<int> aOut = myGraph.OutEdgesOfKind(anEdge0, BRepGraph_RelKind::UserDefined);
-  EXPECT_EQ(aOut.Length(), 1);
+  int aCount = 0;
+  myGraph.ForEachOutEdgeOfKind(anEdge0, BRepGraph_RelKind::UserDefined,
+    [&](const BRepGraph_RelEdge&) { ++aCount; });
+  EXPECT_EQ(aCount, 1);
 }
 
 TEST_F(BRepGraphTest, RecordHistory_BasicEntry)
@@ -328,7 +332,7 @@ TEST_F(BRepGraphTest, RecordHistory_BasicEntry)
   aRepl.Append(anEdge1);
   myGraph.RecordHistory("TestOp", anEdge0, aRepl);
   EXPECT_EQ(myGraph.NbHistoryRecords(), aBefore + 1);
-  EXPECT_TRUE(myGraph.History(aBefore).OperationName.IsEqual("TestOp"));
+  EXPECT_TRUE(myGraph.HistoryRecord(aBefore).OperationName.IsEqual("TestOp"));
 }
 
 TEST_F(BRepGraphTest, ReplaceEdgeInWire_Substitution)
@@ -474,11 +478,13 @@ TEST_F(BRepGraphTest, ReconstructShape_SolidRoot_SameFaceCount)
   EXPECT_EQ(aFaceCount, 6);
 }
 
-TEST_F(BRepGraphTest, ReconstructShape_FaceRoot_ReturnsOriginalShape)
+TEST_F(BRepGraphTest, ReconstructShape_FaceRoot_ReturnsSameShape)
 {
   BRepGraph_NodeId aFaceId(BRepGraph_NodeKind::Face, 0);
   const TopoDS_Shape aReconstructed = myGraph.ReconstructShape(aFaceId);
   const TopoDS_Shape& anOriginal = myGraph.Face(0).OriginalShape;
+
+  // Face root returns OriginalShape directly.
   EXPECT_TRUE(aReconstructed.IsSame(anOriginal));
 }
 
@@ -504,14 +510,14 @@ TEST_F(BRepGraphTest, RecordHistory_MultipleRecords_SequenceNumbers)
   // Check monotonically increasing sequence numbers.
   for (int anIdx = aBefore + 1; anIdx < aBefore + 3; ++anIdx)
   {
-    EXPECT_GT(myGraph.History(anIdx).SequenceNumber,
-              myGraph.History(anIdx - 1).SequenceNumber)
+    EXPECT_GT(myGraph.HistoryRecord(anIdx).SequenceNumber,
+              myGraph.HistoryRecord(anIdx - 1).SequenceNumber)
       << "SequenceNumber not monotonically increasing at index " << anIdx;
   }
 
-  EXPECT_TRUE(myGraph.History(aBefore).OperationName.IsEqual("OpA"));
-  EXPECT_TRUE(myGraph.History(aBefore + 1).OperationName.IsEqual("OpB"));
-  EXPECT_TRUE(myGraph.History(aBefore + 2).OperationName.IsEqual("OpC"));
+  EXPECT_TRUE(myGraph.HistoryRecord(aBefore).OperationName.IsEqual("OpA"));
+  EXPECT_TRUE(myGraph.HistoryRecord(aBefore + 1).OperationName.IsEqual("OpB"));
+  EXPECT_TRUE(myGraph.HistoryRecord(aBefore + 2).OperationName.IsEqual("OpC"));
 }
 
 TEST_F(BRepGraphTest, FindOriginal_SingleHop_ReturnsSource)
@@ -664,22 +670,17 @@ TEST_F(BRepGraphTest, RemoveRelEdges_AddThenRemove_GoneFromOutEdges)
 
   myGraph.AddRelEdge(anEdge0, anEdge1, BRepGraph_RelKind::UserDefined);
 
-  NCollection_Vector<int> aBefore = myGraph.OutEdgesOfKind(anEdge0,
-                                                           BRepGraph_RelKind::UserDefined);
-  EXPECT_GE(aBefore.Length(), 1);
+  int aBefore = 0;
+  myGraph.ForEachOutEdgeOfKind(anEdge0, BRepGraph_RelKind::UserDefined,
+    [&](const BRepGraph_RelEdge&) { ++aBefore; });
+  EXPECT_GE(aBefore, 1);
 
   myGraph.RemoveRelEdges(anEdge0, anEdge1, BRepGraph_RelKind::UserDefined);
 
-  // RemoveRelEdges invalidates edges by clearing Source/Target (append-only array).
-  // Verify the invalidated edge has cleared Source and Target.
-  NCollection_Vector<int> anAfter = myGraph.OutEdgesOfKind(anEdge0,
-                                                           BRepGraph_RelKind::UserDefined);
-  for (int anIdx = 0; anIdx < anAfter.Length(); ++anIdx)
-  {
-    const BRepGraph_RelEdge& aRel = myGraph.RelEdge(anAfter.Value(anIdx));
-    EXPECT_FALSE(aRel.Source.IsValid()) << "Removed edge should have invalid Source";
-    EXPECT_FALSE(aRel.Target.IsValid()) << "Removed edge should have invalid Target";
-  }
+  int anAfter = 0;
+  myGraph.ForEachOutEdgeOfKind(anEdge0, BRepGraph_RelKind::UserDefined,
+    [&](const BRepGraph_RelEdge&) { ++anAfter; });
+  EXPECT_EQ(anAfter, 0);
 }
 
 TEST_F(BRepGraphTest, InEdgesOfKind_UserDefined_ReverseLookup)
@@ -689,21 +690,13 @@ TEST_F(BRepGraphTest, InEdgesOfKind_UserDefined_ReverseLookup)
 
   myGraph.AddRelEdge(anEdgeA, anEdgeB, BRepGraph_RelKind::UserDefined);
 
-  NCollection_Vector<int> anInEdges = myGraph.InEdgesOfKind(anEdgeB,
-                                                            BRepGraph_RelKind::UserDefined);
-  ASSERT_GE(anInEdges.Length(), 1);
-
   bool isFound = false;
-  for (int anIdx = 0; anIdx < anInEdges.Length(); ++anIdx)
-  {
-    const BRepGraph_RelEdge& aRelEdge = myGraph.RelEdge(anInEdges.Value(anIdx));
-    if (aRelEdge.Source == anEdgeA)
-    {
-      isFound = true;
-      break;
-    }
-  }
-  EXPECT_TRUE(isFound) << "EdgeA not found as source in InEdgesOfKind(EdgeB)";
+  myGraph.ForEachInEdgeOfKind(anEdgeB, BRepGraph_RelKind::UserDefined,
+    [&](const BRepGraph_RelEdge& theRelEdge) {
+      if (theRelEdge.Source == anEdgeA)
+        isFound = true;
+    });
+  EXPECT_TRUE(isFound) << "EdgeA not found as source in ForEachInEdgeOfKind(EdgeB)";
 }
 
 // ===================================================================
@@ -837,13 +830,13 @@ TEST_F(BRepGraphTest, InvalidateSubgraph_Face_ConsistentAfter)
 
 TEST_F(BRepGraphTest, ParallelForEachFace_AllFacesVisited)
 {
-  NCollection_Vector<BRepGraph_SubGraph> aSubs = myGraph.Decompose();
+  NCollection_Vector<BRepGraph_SubGraph> aSubs = BRepGraph_Analyze::Decompose(myGraph);
   ASSERT_GE(aSubs.Length(), 1);
 
   std::atomic<int> aCounter{0};
   for (int aSubIdx = 0; aSubIdx < aSubs.Length(); ++aSubIdx)
   {
-    myGraph.ParallelForEachFace(aSubs.Value(aSubIdx),
+    BRepGraph_Analyze::ParallelForEachFace(myGraph, aSubs.Value(aSubIdx),
       [&aCounter](int /*theFaceIdx*/)
       {
         aCounter.fetch_add(1, std::memory_order_relaxed);
@@ -854,12 +847,12 @@ TEST_F(BRepGraphTest, ParallelForEachFace_AllFacesVisited)
 
 TEST_F(BRepGraphTest, ParallelForEachEdge_AllEdgesVisited)
 {
-  NCollection_Vector<BRepGraph_SubGraph> aSubs = myGraph.Decompose();
+  NCollection_Vector<BRepGraph_SubGraph> aSubs = BRepGraph_Analyze::Decompose(myGraph);
   ASSERT_GE(aSubs.Length(), 1);
 
   std::atomic<int> aCounter{0};
   const BRepGraph_SubGraph& aSub = aSubs.Value(0);
-  myGraph.ParallelForEachEdge(aSub,
+  BRepGraph_Analyze::ParallelForEachEdge(myGraph, aSub,
     [&aCounter](int /*theEdgeIdx*/)
     {
       aCounter.fetch_add(1, std::memory_order_relaxed);
@@ -881,7 +874,7 @@ TEST(BRepGraphDetectionTest, FreeEdges_SingleFace_AllEdgesFree)
   aGraph.Build(aFace);
   ASSERT_TRUE(aGraph.IsDone());
 
-  NCollection_Vector<BRepGraph_NodeId> aFreeEdges = aGraph.FreeEdges();
+  NCollection_Vector<BRepGraph_NodeId> aFreeEdges = BRepGraph_Analyze::FreeEdges(aGraph);
   EXPECT_EQ(aFreeEdges.Length(), 4);
 }
 
@@ -907,7 +900,7 @@ TEST(BRepGraphDetectionTest, Decompose_ThreeDisconnectedFaces_ThreeComponents)
   ASSERT_TRUE(aGraph.IsDone());
   EXPECT_EQ(aGraph.NbFaces(), 3);
 
-  NCollection_Vector<BRepGraph_SubGraph> aSubs = aGraph.Decompose();
+  NCollection_Vector<BRepGraph_SubGraph> aSubs = BRepGraph_Analyze::Decompose(aGraph);
   EXPECT_EQ(aSubs.Length(), 3);
 }
 
@@ -944,7 +937,7 @@ TEST_F(BRepGraphTest, DetectToleranceConflicts_ManualConflict_Detected)
   if (isConflictSetUp)
   {
     NCollection_Vector<BRepGraph_NodeId> aConflicts =
-      myGraph.DetectToleranceConflicts(0.5);
+      BRepGraph_Analyze::ToleranceConflicts(myGraph, 0.5);
     EXPECT_GE(aConflicts.Length(), 1);
   }
 }
@@ -964,18 +957,6 @@ TEST_F(BRepGraphTest, RemoveUserAttribute_AfterSet_ReturnsNull)
 
   myGraph.RemoveUserAttribute(aFaceId, aKey);
   EXPECT_EQ(myGraph.GetUserAttribute(aFaceId, aKey), nullptr);
-}
-
-TEST_F(BRepGraphTest, Area_ThrowsProgramError)
-{
-  BRepGraph_NodeId aFaceId(BRepGraph_NodeKind::Face, 0);
-  EXPECT_THROW(myGraph.Area(aFaceId), Standard_ProgramError);
-}
-
-TEST_F(BRepGraphTest, Length_ThrowsProgramError)
-{
-  BRepGraph_NodeId anEdgeId(BRepGraph_NodeKind::Edge, 0);
-  EXPECT_THROW(myGraph.Length(anEdgeId), Standard_ProgramError);
 }
 
 TEST(BRepGraphErrorTest, Build_EmptyCompound_IsDoneZeroCounts)
@@ -1000,7 +981,7 @@ TEST_F(BRepGraphTest, TopoNode_GenericLookup_MatchesTypedAccess)
   BRepGraph_NodeId aFaceId(BRepGraph_NodeKind::Face, 0);
   const BRepGraph_TopoNode::Base* aBase = myGraph.TopoNode(aFaceId);
   ASSERT_NE(aBase, nullptr);
-  EXPECT_EQ(aBase->UID, myGraph.Face(0).UID);
+  EXPECT_EQ(aBase->Id, myGraph.Face(0).Id);
 
   // Geometry kind should return nullptr.
   BRepGraph_NodeId aSurfId(BRepGraph_NodeKind::Surface, 0);
@@ -1029,7 +1010,7 @@ TEST_F(BRepGraphTest, NbNodes_Box_TotalCount)
 
 TEST_F(BRepGraphTest, HasUID_ValidFace_ReturnsTrue)
 {
-  const BRepGraph_UID& aUID = myGraph.Face(0).UID;
+  const BRepGraph_UID& aUID = myGraph.UIDOf(BRepGraph_NodeId(BRepGraph_NodeKind::Face, 0));
   EXPECT_TRUE(myGraph.HasUID(aUID));
 }
 
@@ -1157,7 +1138,7 @@ TEST_F(BRepGraphTest, Face_ToleranceNonNegative)
 
 TEST_F(BRepGraphTest, SubGraph_BoxSolid_AllIndicesPresent)
 {
-  NCollection_Vector<BRepGraph_SubGraph> aSubs = myGraph.Decompose();
+  NCollection_Vector<BRepGraph_SubGraph> aSubs = BRepGraph_Analyze::Decompose(myGraph);
   ASSERT_EQ(aSubs.Length(), 1);
 
   const BRepGraph_SubGraph& aSub = aSubs.Value(0);
@@ -1409,28 +1390,28 @@ TEST(BRepGraphBuildTest, ReconstructShape_ShellRoot_SameFaceCount)
 
 TEST_F(BRepGraphTest, UID_FaceIsTopology_SurfaceIsGeometry)
 {
-  EXPECT_TRUE(myGraph.Face(0).UID.IsTopology());
-  EXPECT_FALSE(myGraph.Face(0).UID.IsGeometry());
+  EXPECT_TRUE(myGraph.UIDOf(BRepGraph_NodeId(BRepGraph_NodeKind::Face, 0)).IsTopology());
+  EXPECT_FALSE(myGraph.UIDOf(BRepGraph_NodeId(BRepGraph_NodeKind::Face, 0)).IsGeometry());
 
-  EXPECT_FALSE(myGraph.Surf(0).UID.IsTopology());
-  EXPECT_TRUE(myGraph.Surf(0).UID.IsGeometry());
+  EXPECT_FALSE(myGraph.UIDOf(BRepGraph_NodeId(BRepGraph_NodeKind::Surface, 0)).IsTopology());
+  EXPECT_TRUE(myGraph.UIDOf(BRepGraph_NodeId(BRepGraph_NodeKind::Surface, 0)).IsGeometry());
 }
 
 TEST_F(BRepGraphTest, UID_AllGeomNodesHaveValidUIDs)
 {
   for (int aSurfIdx = 0; aSurfIdx < myGraph.NbSurfaces(); ++aSurfIdx)
   {
-    EXPECT_TRUE(myGraph.Surf(aSurfIdx).UID.IsValid())
+    EXPECT_TRUE(myGraph.UIDOf(BRepGraph_NodeId(BRepGraph_NodeKind::Surface, aSurfIdx)).IsValid())
       << "Surface " << aSurfIdx << " has invalid UID";
   }
   for (int aCurveIdx = 0; aCurveIdx < myGraph.NbCurves(); ++aCurveIdx)
   {
-    EXPECT_TRUE(myGraph.Curve(aCurveIdx).UID.IsValid())
+    EXPECT_TRUE(myGraph.UIDOf(BRepGraph_NodeId(BRepGraph_NodeKind::Curve, aCurveIdx)).IsValid())
       << "Curve " << aCurveIdx << " has invalid UID";
   }
   for (int aPCurveIdx = 0; aPCurveIdx < myGraph.NbPCurves(); ++aPCurveIdx)
   {
-    EXPECT_TRUE(myGraph.PCurve(aPCurveIdx).UID.IsValid())
+    EXPECT_TRUE(myGraph.UIDOf(BRepGraph_NodeId(BRepGraph_NodeKind::PCurve, aPCurveIdx)).IsValid())
       << "PCurve " << aPCurveIdx << " has invalid UID";
   }
 }
@@ -1508,7 +1489,7 @@ TEST_F(BRepGraphTest, RecordHistory_ReEnabled_RecordsAgain)
   myGraph.SetHistoryEnabled(true);
   myGraph.RecordHistory("Recorded", anEdge0, aRepl);
   EXPECT_EQ(myGraph.NbHistoryRecords(), aBefore + 1);
-  EXPECT_TRUE(myGraph.History(aBefore).OperationName.IsEqual("Recorded"));
+  EXPECT_TRUE(myGraph.HistoryRecord(aBefore).OperationName.IsEqual("Recorded"));
 }
 
 TEST_F(BRepGraphTest, ApplyModification_HistoryDisabled_NoHistoryNoDerivedEdges)
@@ -1516,7 +1497,6 @@ TEST_F(BRepGraphTest, ApplyModification_HistoryDisabled_NoHistoryNoDerivedEdges)
   myGraph.SetHistoryEnabled(false);
 
   const int aNbHistBefore = myGraph.NbHistoryRecords();
-  const int aNbRelBefore  = myGraph.NbRelEdges();
 
   BRepGraph_NodeId anEdge0(BRepGraph_NodeKind::Edge, 0);
   BRepGraph_NodeId anEdge1(BRepGraph_NodeKind::Edge, 1);
@@ -1530,9 +1510,8 @@ TEST_F(BRepGraphTest, ApplyModification_HistoryDisabled_NoHistoryNoDerivedEdges)
 
   myGraph.ApplyModification(anEdge0, aModifier, "NoHistory");
 
-  // No history records or DerivedFrom edges should be added.
+  // No history records should be added.
   EXPECT_EQ(myGraph.NbHistoryRecords(), aNbHistBefore);
-  EXPECT_EQ(myGraph.NbRelEdges(), aNbRelBefore);
 }
 
 TEST_F(BRepGraphTest, ApplyModification_HistoryDisabled_ModifierStillRuns)

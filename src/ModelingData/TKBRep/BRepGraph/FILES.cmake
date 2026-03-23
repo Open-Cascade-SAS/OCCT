@@ -3,10 +3,17 @@ set(OCCT_BRepGraph_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_BRepGraph_FILES
   BRepGraph.cxx
   BRepGraph.hxx
+  BRepGraph_Analyze.cxx
+  BRepGraph_Analyze.hxx
   BRepGraph_AttrRegistry.hxx
+  BRepGraph_Builder.cxx
+  BRepGraph_Builder.hxx
   BRepGraph_CachedValue.hxx
   BRepGraph_GeomNode.hxx
+  BRepGraph_History.cxx
+  BRepGraph_History.hxx
   BRepGraph_HistoryRecord.hxx
+  BRepGraph_Iterator.hxx
   BRepGraph_NodeCache.hxx
   BRepGraph_NodeId.hxx
   BRepGraph_RelEdge.hxx

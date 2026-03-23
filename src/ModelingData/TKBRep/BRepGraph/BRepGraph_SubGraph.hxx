@@ -56,6 +56,7 @@ public:
 
 private:
   friend class BRepGraph;
+  friend class BRepGraph_Analyze;
 
   const BRepGraph*              myParent = nullptr;
   NCollection_Vector<int>     mySolidIndices;

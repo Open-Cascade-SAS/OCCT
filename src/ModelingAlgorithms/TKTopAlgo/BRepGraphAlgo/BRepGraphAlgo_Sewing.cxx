@@ -34,6 +34,8 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
 
+#include <BRepGraph_Analyze.hxx>
+
 #include <algorithm>
 
 //=================================================================================================
@@ -261,7 +263,7 @@ void BRepGraphAlgo_Sewing::findFreeEdges()
 {
   // FreeEdges() returns NCollection_Vector (0-based); convert to Array1 for thread-safe
   // random access in parallel phases.
-  NCollection_Vector<BRepGraph_NodeId> aFreeVec = myGraph.FreeEdges();
+  NCollection_Vector<BRepGraph_NodeId> aFreeVec = BRepGraph_Analyze::FreeEdges(myGraph);
   const int                            aNbFree  = aFreeVec.Length();
   if (aNbFree == 0)
   {
@@ -552,8 +554,7 @@ void BRepGraphAlgo_Sewing::cutAtIntersections()
     const BRepGraph_NodeId          anIdA  = myFreeEdgesBefore.Value(aFreeEdgeIter);
     const BRepGraph_TopoNode::Edge& aNodeA = myGraph.Edge(anIdA.Index);
 
-    myGraph.ForEachOutEdgeOfKind(anIdA, BRepGraph_RelKind::UserDefined, [&](int theRelEdgeIdx) {
-      const BRepGraph_RelEdge&        aRelEdge = myGraph.RelEdge(theRelEdgeIdx);
+    myGraph.ForEachOutEdgeOfKind(anIdA, BRepGraph_RelKind::UserDefined, [&](const BRepGraph_RelEdge& aRelEdge) {
       const BRepGraph_NodeId          anIdB    = aRelEdge.Target;
       const BRepGraph_TopoNode::Edge& aNodeB   = myGraph.Edge(anIdB.Index);
 
@@ -645,8 +646,7 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> BRepGraphAlgo_
       const gp_Pnt& aEndA   = myGraph.Vertex(anEdgeANode.EndVertexId.Index).Point;
       const double  aChordA = aStartA.Distance(aEndA);
 
-      myGraph.ForEachOutEdgeOfKind(anIdA, BRepGraph_RelKind::UserDefined, [&](int theRelEdgeIdx) {
-        const BRepGraph_RelEdge& aRelEdge = myGraph.RelEdge(theRelEdgeIdx);
+      myGraph.ForEachOutEdgeOfKind(anIdA, BRepGraph_RelKind::UserDefined, [&](const BRepGraph_RelEdge& aRelEdge) {
         const BRepGraph_NodeId   anIdB    = aRelEdge.Target;
 
         if (!aFreeEdgeIndices.Contains(anIdB.Index))

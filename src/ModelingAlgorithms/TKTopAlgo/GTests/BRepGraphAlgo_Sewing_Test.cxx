@@ -382,7 +382,7 @@ TEST(BRepGraphAlgo_SewingTest, SewAllSixFaces_HistoryRecordsExist)
   // Verify that FindOriginal traces back to a valid node for the first history record.
   if (aGraph.NbHistoryRecords() > 0)
   {
-    const BRepGraph_HistoryRecord& aRecord = aGraph.History(0);
+    const BRepGraph_HistoryRecord& aRecord = aGraph.HistoryRecord(0);
     // Iterate over the mapping to get the first original node.
     NCollection_DataMap<BRepGraph_NodeId,
                         NCollection_Vector<BRepGraph_NodeId>,

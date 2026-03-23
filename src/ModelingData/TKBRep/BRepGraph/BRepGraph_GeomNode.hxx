@@ -15,7 +15,6 @@
 #define _BRepGraph_GeomNode_HeaderFile
 
 #include <BRepGraph_NodeId.hxx>
-#include <BRepGraph_UID.hxx>
 
 #include <Geom_Surface.hxx>
 #include <Geom_Curve.hxx>
@@ -39,7 +38,6 @@ namespace BRepGraph_GeomNode
 struct Surf
 {
   BRepGraph_NodeId           Id;
-  BRepGraph_UID              UID;
   Handle(Geom_Surface)       Surface;        //!< The shared geometry
   Handle(Poly_Triangulation) Triangulation;  //!< Optional cached mesh
 
@@ -54,7 +52,6 @@ struct Surf
 struct Curve
 {
   BRepGraph_NodeId           Id;
-  BRepGraph_UID              UID;
   Handle(Geom_Curve)         CurveGeom;
 
   //! Back-references: all Edge nodes realized by this curve.
@@ -70,7 +67,6 @@ struct Curve
 struct PCurve
 {
   BRepGraph_NodeId           Id;
-  BRepGraph_UID              UID;
   Handle(Geom2d_Curve)       Curve2d;
 
   BRepGraph_NodeId           EdgeContext;  //!< The edge this pcurve belongs to

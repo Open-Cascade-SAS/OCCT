@@ -15,7 +15,6 @@
 #define _BRepGraph_TopoNode_HeaderFile
 
 #include <BRepGraph_NodeId.hxx>
-#include <BRepGraph_UID.hxx>
 #include <BRepGraph_NodeCache.hxx>
 
 #include <TopoDS_Shape.hxx>
@@ -38,7 +37,6 @@ namespace BRepGraph_TopoNode
 struct Base
 {
   BRepGraph_NodeId Id;  //!< Typed address: (kind + per-kind index)
-  BRepGraph_UID    UID; //!< Graph-wide unique identifier
 
   TopoDS_Shape    OriginalShape;  //!< The TopoDS_Shape this node was built from
   TopLoc_Location LocalLocation;  //!< Location stored on this specific shape
@@ -47,12 +45,6 @@ struct Base
   //! Parent node in the containment hierarchy.
   //! Invalid for root Solid / CompSolid / free Shell.
   BRepGraph_NodeId Parent;
-
-  //! Outgoing relationship edge indices (into BRepGraph::myRelEdges).
-  NCollection_Vector<int> OutRelEdgeIndices;
-
-  //! Incoming relationship edge indices (into BRepGraph::myRelEdges).
-  NCollection_Vector<int> InRelEdgeIndices;
 
   //! Lazily-computed derived quantities + extensible user attributes.
   BRepGraph_NodeCache Cache;
