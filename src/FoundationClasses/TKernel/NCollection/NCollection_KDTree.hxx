@@ -369,7 +369,7 @@ public:
   }
 
   //! Calls theFunctor for each point within theRadius of theQuery.
-  //! Zero-allocation alternative to RangeSearch — avoids DynamicArray overhead.
+  //! Zero-allocation alternative to RangeSearch - avoids DynamicArray overhead.
   //! Indices passed to theFunctor are 1-based (same convention as RangeSearch).
   //! @tparam Functor callable with signature void(size_t theIndex)
   //! @param[in] theQuery   query point
@@ -943,7 +943,7 @@ private:
     }
   }
 
-  //! Recursive range search (sphere) with callback — zero-allocation variant.
+  //! Recursive range search (sphere) with callback - zero-allocation variant.
   template <typename Functor>
   void forEachInRangeRecursive(const ThePointType& theQuery,
                                double              theRadiusSq,
