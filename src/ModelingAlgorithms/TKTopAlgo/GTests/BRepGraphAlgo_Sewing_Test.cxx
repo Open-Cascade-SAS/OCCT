@@ -388,8 +388,8 @@ TEST(BRepGraphAlgo_SewingTest, SewAllSixFaces_HistoryRecordsExist)
   {
     const BRepGraph_HistoryRecord& aRecord = aGraph.History().Record(0);
     // Iterate over the mapping to get the first original node.
-    NCollection_DataMap<BRepGraph_NodeId,
-                        NCollection_Vector<BRepGraph_NodeId>>::Iterator anIt(aRecord.Mapping);
+    NCollection_DataMap<BRepGraph_NodeId, NCollection_Vector<BRepGraph_NodeId>>::Iterator anIt(
+      aRecord.Mapping);
     ASSERT_TRUE(anIt.More());
     const BRepGraph_NodeId anOrigId = aGraph.History().FindOriginal(anIt.Key());
     EXPECT_TRUE(anOrigId.IsValid());
@@ -564,6 +564,44 @@ TEST(BRepGraphAlgo_SewingTest, SewParallel_MatchesSequential)
   EXPECT_EQ(aParSewer.NbSewnEdges(), aSeqSewer.NbSewnEdges());
   EXPECT_EQ(aParSewer.NbFreeEdgesAfter(), aSeqSewer.NbFreeEdgesAfter());
   EXPECT_EQ(aParSewer.NbFreeEdgesBefore(), aSeqSewer.NbFreeEdgesBefore());
+}
+
+TEST(BRepGraphAlgo_SewingTest, SewParallel_TwoDisconnectedFaceGroups)
+{
+  BRepPrimAPI_MakeBox aBoxMaker1(10.0, 20.0, 30.0);
+  const TopoDS_Shape& aBox1 = aBoxMaker1.Shape();
+
+  BRepPrimAPI_MakeBox aBoxMaker2(10.0, 20.0, 30.0);
+  const TopoDS_Shape& aBox2Base = aBoxMaker2.Shape();
+
+  gp_Trsf aMove;
+  aMove.SetTranslation(gp_Vec(1000.0, 0.0, 0.0));
+  BRepBuilderAPI_Transform aTransform(aBox2Base, aMove, true);
+  const TopoDS_Shape&      aBox2 = aTransform.Shape();
+
+  NCollection_Sequence<TopoDS_Face> aFaces1 = extractCopiedFaces(aBox1);
+  NCollection_Sequence<TopoDS_Face> aFaces2 = extractCopiedFaces(aBox2);
+  ASSERT_EQ(aFaces1.Length(), 6);
+  ASSERT_EQ(aFaces2.Length(), 6);
+
+  BRepGraphAlgo_Sewing aSewer(1.0e-04);
+  aSewer.SetParallel(true);
+  for (int aFaceIdx = 1; aFaceIdx <= aFaces1.Length(); ++aFaceIdx)
+  {
+    aSewer.Add(aFaces1.Value(aFaceIdx));
+  }
+  for (int aFaceIdx = 1; aFaceIdx <= aFaces2.Length(); ++aFaceIdx)
+  {
+    aSewer.Add(aFaces2.Value(aFaceIdx));
+  }
+
+  aSewer.Perform();
+  ASSERT_TRUE(aSewer.IsDone());
+  EXPECT_FALSE(aSewer.Result().IsNull());
+
+  // Two independent boxes should sew independently: 12 + 12 shared edges.
+  EXPECT_EQ(aSewer.NbSewnEdges(), 24);
+  EXPECT_EQ(aSewer.NbFreeEdgesAfter(), 0);
 }
 
 TEST(BRepGraphAlgo_SewingTest, SewCylinder_TwoHalves)
@@ -1527,7 +1565,7 @@ TEST(BRepGraphAlgo_SewingTest, CutAtIntersections_TVertex)
   const gp_Pnt aP20(2, 0, 0);
   const gp_Pnt aP01(0, 1, 0);
   const gp_Pnt aP21(2, 1, 0);
-  const gp_Pnt aP10(1, 0, 0);   // T-vertex (midpoint)
+  const gp_Pnt aP10(1, 0, 0); // T-vertex (midpoint)
   const gp_Pnt aP0m1(0, -1, 0);
   const gp_Pnt aP1m1(1, -1, 0);
   const gp_Pnt aP2m1(2, -1, 0);
@@ -1693,6 +1731,7 @@ TEST(BRepGraphAlgo_CopyTest, ParallelCopy_MatchesSequential)
   GProp_GProps aSeqProps, aParProps;
   BRepGProp::SurfaceProperties(aSeqCopy, aSeqProps);
   BRepGProp::SurfaceProperties(aParCopy, aParProps);
-  EXPECT_NEAR(std::abs(aSeqProps.Mass()), std::abs(aParProps.Mass()),
+  EXPECT_NEAR(std::abs(aSeqProps.Mass()),
+              std::abs(aParProps.Mass()),
               std::abs(aSeqProps.Mass()) * 0.01);
 }
