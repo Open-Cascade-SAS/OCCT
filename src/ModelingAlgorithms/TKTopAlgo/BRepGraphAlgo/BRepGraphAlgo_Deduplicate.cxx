@@ -15,7 +15,6 @@
 
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_DefsView.hxx>
-#include <BRepGraph_GeomView.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_RelEdgesView.hxx>
@@ -31,6 +30,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstdint>
 
 //=================================================================================================
 
@@ -58,59 +58,64 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
 
   const occ::handle<NCollection_IncAllocator> aTmpAlloc = new NCollection_IncAllocator();
 
-  NCollection_DataMap<occ::handle<Geom_Surface>, int, GeomHash_SurfaceHasher> aSurfToCanonical(
+  // Deduplicate surfaces by comparing Handle pointers on FaceDefs.
+  // Map: surface handle -> canonical face index (first face that owns it).
+  NCollection_DataMap<occ::handle<Geom_Surface>, int, GeomHash_SurfaceHasher> aSurfToCanonicalFace(
     aSurfHasher,
-    std::max(1, theGraph.Geom().NbSurfaces() * 2),
+    std::max(1, theGraph.Defs().NbFaces() * 2),
     aTmpAlloc);
-  NCollection_DataMap<occ::handle<Geom_Curve>, int, GeomHash_CurveHasher> aCurveToCanonical(
+  // Map: face index -> canonical face index (for faces whose surface should be replaced).
+  NCollection_DataMap<int, int> aSurfRewriteMap(std::max(1, theGraph.Defs().NbFaces()),
+                                                aTmpAlloc);
+
+  for (int aFaceIdx = 0; aFaceIdx < theGraph.Defs().NbFaces(); ++aFaceIdx)
+  {
+    const BRepGraph_TopoNode::FaceDef& aFaceDef = theGraph.Defs().Face(aFaceIdx);
+    if (aFaceDef.Surface.IsNull())
+    {
+      continue;
+    }
+
+    const int* aCanonFaceIdx = aSurfToCanonicalFace.Seek(aFaceDef.Surface);
+    if (aCanonFaceIdx == nullptr)
+    {
+      aSurfToCanonicalFace.Bind(aFaceDef.Surface, aFaceIdx);
+    }
+    else if (*aCanonFaceIdx != aFaceIdx)
+    {
+      aSurfRewriteMap.Bind(aFaceIdx, *aCanonFaceIdx);
+    }
+  }
+
+  // Deduplicate curves by comparing Handle pointers on EdgeDefs.
+  NCollection_DataMap<occ::handle<Geom_Curve>, int, GeomHash_CurveHasher> aCurveToCanonicalEdge(
     aCurveHasher,
-    std::max(1, theGraph.Geom().NbCurves() * 2),
+    std::max(1, theGraph.Defs().NbEdges() * 2),
     aTmpAlloc);
-  NCollection_DataMap<int, int> aCanonicalBySurf(std::max(1, theGraph.Geom().NbSurfaces() * 2),
+  NCollection_DataMap<int, int> aCurveRewriteMap(std::max(1, theGraph.Defs().NbEdges()),
                                                  aTmpAlloc);
-  NCollection_DataMap<int, int> aCanonicalByCurve(std::max(1, theGraph.Geom().NbCurves() * 2),
-                                                  aTmpAlloc);
 
-  for (int aSurfIter = 0; aSurfIter < theGraph.Geom().NbSurfaces(); ++aSurfIter)
+  for (int anEdgeIdx = 0; anEdgeIdx < theGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    const occ::handle<Geom_Surface>& aSurf = theGraph.Geom().Surface(aSurfIter).Surface;
-    if (aSurf.IsNull())
+    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = theGraph.Defs().Edge(anEdgeIdx);
+    if (anEdgeDef.Curve3d.IsNull())
     {
       continue;
     }
 
-    const int* aCanonicalIdx = aSurfToCanonical.Seek(aSurf);
-    if (aCanonicalIdx == nullptr)
+    const int* aCanonEdgeIdx = aCurveToCanonicalEdge.Seek(anEdgeDef.Curve3d);
+    if (aCanonEdgeIdx == nullptr)
     {
-      aSurfToCanonical.Bind(aSurf, aSurfIter);
+      aCurveToCanonicalEdge.Bind(anEdgeDef.Curve3d, anEdgeIdx);
     }
-    else if (*aCanonicalIdx != aSurfIter)
+    else if (*aCanonEdgeIdx != anEdgeIdx)
     {
-      aCanonicalBySurf.Bind(aSurfIter, *aCanonicalIdx);
-    }
-  }
-
-  for (int aCurveIter = 0; aCurveIter < theGraph.Geom().NbCurves(); ++aCurveIter)
-  {
-    const occ::handle<Geom_Curve>& aCurve = theGraph.Geom().Curve(aCurveIter).CurveGeom;
-    if (aCurve.IsNull())
-    {
-      continue;
-    }
-
-    const int* aCanonicalIdx = aCurveToCanonical.Seek(aCurve);
-    if (aCanonicalIdx == nullptr)
-    {
-      aCurveToCanonical.Bind(aCurve, aCurveIter);
-    }
-    else if (*aCanonicalIdx != aCurveIter)
-    {
-      aCanonicalByCurve.Bind(aCurveIter, *aCanonicalIdx);
+      aCurveRewriteMap.Bind(anEdgeIdx, *aCanonEdgeIdx);
     }
   }
 
-  aResult.NbCanonicalSurfaces = theGraph.Geom().NbSurfaces() - aCanonicalBySurf.Size();
-  aResult.NbCanonicalCurves   = theGraph.Geom().NbCurves() - aCanonicalByCurve.Size();
+  aResult.NbCanonicalSurfaces = theGraph.Defs().NbFaces() - aSurfRewriteMap.Size();
+  aResult.NbCanonicalCurves   = theGraph.Defs().NbEdges() - aCurveRewriteMap.Size();
 
   if (theOptions.AnalyzeOnly && !theOptions.MergeDefsWhenSafe)
   {
@@ -120,124 +125,42 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
 
   if (!theOptions.AnalyzeOnly)
   {
-  NCollection_Map<int> aRecordedSurfaceHistory(std::max(1, aCanonicalBySurf.Size() * 2), aTmpAlloc);
-  NCollection_Map<int> aRecordedCurveHistory(std::max(1, aCanonicalByCurve.Size() * 2), aTmpAlloc);
-
-  for (int aFaceIdx = 0; aFaceIdx < theGraph.Defs().NbFaces(); ++aFaceIdx)
+  // Rewrite face surfaces: replace duplicate surface handles with canonical ones.
+  for (NCollection_DataMap<int, int>::Iterator anIt(aSurfRewriteMap); anIt.More(); anIt.Next())
   {
+    const int aFaceIdx       = anIt.Key();
+    const int aCanonFaceIdx  = anIt.Value();
     BRepGraph_TopoNode::FaceDef& aFaceDef = theGraph.Mut().FaceDef(aFaceIdx);
-    if (!aFaceDef.SurfNodeId.IsValid())
-    {
-      continue;
-    }
-
-    const int* aCanonSurf = aCanonicalBySurf.Seek(aFaceDef.SurfNodeId.Index);
-    if (aCanonSurf == nullptr)
-    {
-      continue;
-    }
-
-    const BRepGraph_NodeId anOldSurfId = aFaceDef.SurfNodeId;
-    aFaceDef.SurfNodeId = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Surface, *aCanonSurf);
+    const Handle(Geom_Surface)& aCanonSurf = theGraph.Defs().Face(aCanonFaceIdx).Surface;
+    aFaceDef.Surface = aCanonSurf;
     ++aResult.NbSurfaceRewrites;
     aResult.AffectedFaceDefs.Append(aFaceDef.Id);
 
-    if (!aRecordedSurfaceHistory.Contains(anOldSurfId.Index))
-    {
-      NCollection_Vector<BRepGraph_NodeId> aRepl;
-      aRepl.Append(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Surface, *aCanonSurf));
-      theGraph.History().Record(TCollection_AsciiString("Dedup:CanonicalizeSurface"),
-                                anOldSurfId,
-                                aRepl);
-      aRecordedSurfaceHistory.Add(anOldSurfId.Index);
-      ++aResult.NbHistoryRecords;
-    }
+    NCollection_Vector<BRepGraph_NodeId> aRepl;
+    aRepl.Append(BRepGraph_NodeId::Face(aCanonFaceIdx));
+    theGraph.History().Record(TCollection_AsciiString("Dedup:CanonicalizeSurface"),
+                              aFaceDef.Id,
+                              aRepl);
+    ++aResult.NbHistoryRecords;
   }
 
-  for (int anEdgeIdx = 0; anEdgeIdx < theGraph.Defs().NbEdges(); ++anEdgeIdx)
+  // Rewrite edge curves: replace duplicate curve handles with canonical ones.
+  for (NCollection_DataMap<int, int>::Iterator anIt(aCurveRewriteMap); anIt.More(); anIt.Next())
   {
+    const int anEdgeIdx      = anIt.Key();
+    const int aCanonEdgeIdx  = anIt.Value();
     BRepGraph_TopoNode::EdgeDef& anEdgeDef = theGraph.Mut().EdgeDef(anEdgeIdx);
-    if (anEdgeDef.CurveNodeId.IsValid())
-    {
-      const int* aCanonCurve = aCanonicalByCurve.Seek(anEdgeDef.CurveNodeId.Index);
-      if (aCanonCurve != nullptr)
-      {
-        const BRepGraph_NodeId anOldCurveId = anEdgeDef.CurveNodeId;
-        anEdgeDef.CurveNodeId = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Curve, *aCanonCurve);
-        ++aResult.NbCurveRewrites;
-        aResult.AffectedEdgeDefs.Append(anEdgeDef.Id);
+    const Handle(Geom_Curve)& aCanonCurve = theGraph.Defs().Edge(aCanonEdgeIdx).Curve3d;
+    anEdgeDef.Curve3d = aCanonCurve;
+    ++aResult.NbCurveRewrites;
+    aResult.AffectedEdgeDefs.Append(anEdgeDef.Id);
 
-        if (!aRecordedCurveHistory.Contains(anOldCurveId.Index))
-        {
-          NCollection_Vector<BRepGraph_NodeId> aRepl;
-          aRepl.Append(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Curve, *aCanonCurve));
-          theGraph.History().Record(TCollection_AsciiString("Dedup:CanonicalizeCurve"),
-                                    anOldCurveId,
-                                    aRepl);
-          aRecordedCurveHistory.Add(anOldCurveId.Index);
-          ++aResult.NbHistoryRecords;
-        }
-      }
-    }
-  }
-
-  // Nullify orphaned geometry handles to free memory.
-  for (int aSurfIdx = 0; aSurfIdx < theGraph.Geom().NbSurfaces(); ++aSurfIdx)
-  {
-    BRepGraph_GeomNode::Surf& aSurfNode = theGraph.Mut().SurfNode(aSurfIdx);
-    if (aSurfNode.Surface.IsNull())
-    {
-      continue;
-    }
-    // Check if any FaceDef references this surface.
-    bool aIsReferenced = false;
-    for (int aFIdx = 0; aFIdx < theGraph.Defs().NbFaces() && !aIsReferenced; ++aFIdx)
-    {
-      if (theGraph.Defs().Face(aFIdx).SurfNodeId.Index == aSurfIdx)
-      {
-        aIsReferenced = true;
-      }
-    }
-    if (!aIsReferenced)
-    {
-      aSurfNode.Surface.Nullify();
-      ++aResult.NbNullifiedSurfaces;
-
-      NCollection_Vector<BRepGraph_NodeId> aEmptyRepl;
-      theGraph.History().Record(TCollection_AsciiString("Dedup:NullifyOrphanSurface"),
-                                aSurfNode.Id,
-                                aEmptyRepl);
-      ++aResult.NbHistoryRecords;
-    }
-  }
-
-  for (int aCurveIdx = 0; aCurveIdx < theGraph.Geom().NbCurves(); ++aCurveIdx)
-  {
-    BRepGraph_GeomNode::Curve& aCurveNode = theGraph.Mut().CurveNode(aCurveIdx);
-    if (aCurveNode.CurveGeom.IsNull())
-    {
-      continue;
-    }
-    // Check if any EdgeDef references this curve.
-    bool aIsReferenced = false;
-    for (int aEIdx = 0; aEIdx < theGraph.Defs().NbEdges() && !aIsReferenced; ++aEIdx)
-    {
-      if (theGraph.Defs().Edge(aEIdx).CurveNodeId.Index == aCurveIdx)
-      {
-        aIsReferenced = true;
-      }
-    }
-    if (!aIsReferenced)
-    {
-      aCurveNode.CurveGeom.Nullify();
-      ++aResult.NbNullifiedCurves;
-
-      NCollection_Vector<BRepGraph_NodeId> aEmptyRepl;
-      theGraph.History().Record(TCollection_AsciiString("Dedup:NullifyOrphanCurve"),
-                                aCurveNode.Id,
-                                aEmptyRepl);
-      ++aResult.NbHistoryRecords;
-    }
+    NCollection_Vector<BRepGraph_NodeId> aRepl;
+    aRepl.Append(BRepGraph_NodeId::Edge(aCanonEdgeIdx));
+    theGraph.History().Record(TCollection_AsciiString("Dedup:CanonicalizeCurve"),
+                              anEdgeDef.Id,
+                              aRepl);
+    ++aResult.NbHistoryRecords;
   }
 
   } // end if (!theOptions.AnalyzeOnly) for geometry rewrites
@@ -364,16 +287,16 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
 
   // Phase 2: Edge Merging.
   {
-    // Key: (canonical CurveNodeId, canonical StartVertexDefId, canonical EndVertexDefId).
+    // Key: (canonical Curve3d pointer, canonical StartVertexDefId, canonical EndVertexDefId).
     struct EdgeKey
     {
-      int CurveIdx;
+      const Geom_Curve* CurvePtr;
       int StartVtx;
       int EndVtx;
 
       bool operator==(const EdgeKey& theOther) const
       {
-        return CurveIdx == theOther.CurveIdx
+        return CurvePtr == theOther.CurvePtr
             && StartVtx == theOther.StartVtx
             && EndVtx == theOther.EndVtx;
       }
@@ -384,7 +307,7 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
       size_t operator()(const EdgeKey& theKey) const noexcept
       {
         size_t aCombination[3];
-        aCombination[0] = opencascade::hash(theKey.CurveIdx);
+        aCombination[0] = std::hash<const void*>{}(theKey.CurvePtr);
         aCombination[1] = opencascade::hash(theKey.StartVtx);
         aCombination[2] = opencascade::hash(theKey.EndVtx);
         return opencascade::hashBytes(aCombination, sizeof(aCombination));
@@ -403,12 +326,12 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
     for (int anEdgeIdx = 0; anEdgeIdx < theGraph.Defs().NbEdges(); ++anEdgeIdx)
     {
       const BRepGraph_TopoNode::EdgeDef& anEdge = theGraph.Defs().Edge(anEdgeIdx);
-      if (anEdge.IsRemoved || !anEdge.CurveNodeId.IsValid())
+      if (anEdge.IsRemoved || anEdge.Curve3d.IsNull())
         continue;
 
-      // Use canonical (forward) key.
+      // Use canonical (forward) key: use raw pointer as a stable identity.
       EdgeKey aKey;
-      aKey.CurveIdx = anEdge.CurveNodeId.Index;
+      aKey.CurvePtr = anEdge.Curve3d.get();
       aKey.StartVtx = anEdge.StartVertexDefId.IsValid() ? anEdge.StartVertexDefId.Index : -1;
       aKey.EndVtx   = anEdge.EndVertexDefId.IsValid() ? anEdge.EndVertexDefId.Index : -1;
 
@@ -652,12 +575,12 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
   {
     struct FaceKey
     {
-      int    SurfIdx;
-      size_t WireHash;
+      const Geom_Surface* SurfPtr;
+      size_t              WireHash;
 
       bool operator==(const FaceKey& theOther) const
       {
-        return SurfIdx == theOther.SurfIdx && WireHash == theOther.WireHash;
+        return SurfPtr == theOther.SurfPtr && WireHash == theOther.WireHash;
       }
     };
 
@@ -666,7 +589,7 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
       size_t operator()(const FaceKey& theKey) const noexcept
       {
         size_t aCombination[2];
-        aCombination[0] = opencascade::hash(theKey.SurfIdx);
+        aCombination[0] = std::hash<const void*>{}(theKey.SurfPtr);
         aCombination[1] = theKey.WireHash;
         return opencascade::hashBytes(aCombination, sizeof(aCombination));
       }
@@ -719,11 +642,11 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
     for (int aFaceIdx = 0; aFaceIdx < theGraph.Defs().NbFaces(); ++aFaceIdx)
     {
       const BRepGraph_TopoNode::FaceDef& aFace = theGraph.Defs().Face(aFaceIdx);
-      if (aFace.IsRemoved || !aFace.SurfNodeId.IsValid())
+      if (aFace.IsRemoved || aFace.Surface.IsNull())
         continue;
 
       FaceKey aKey;
-      aKey.SurfIdx  = aFace.SurfNodeId.Index;
+      aKey.SurfPtr  = aFace.Surface.get();
       aKey.WireHash = faceWireHash(aFaceIdx);
 
       aFaceGroups.TryBind(aKey, NCollection_Vector<int>());

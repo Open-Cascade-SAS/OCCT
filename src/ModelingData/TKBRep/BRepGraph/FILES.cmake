@@ -21,9 +21,6 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_Data.hxx
   BRepGraph_DefsView.cxx
   BRepGraph_DefsView.hxx
-  BRepGraph_GeomNode.hxx
-  BRepGraph_GeomView.cxx
-  BRepGraph_GeomView.hxx
   BRepGraph_History.cxx
   BRepGraph_History.hxx
   BRepGraph_HistoryRecord.hxx

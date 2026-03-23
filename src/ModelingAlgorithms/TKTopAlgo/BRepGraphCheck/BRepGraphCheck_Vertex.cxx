@@ -14,10 +14,7 @@
 #include <BRepGraphCheck.hxx>
 
 #include <BRepGraph_DefsView.hxx>
-#include <BRepGraph_GeomNode.hxx>
-#include <BRepGraph_GeomView.hxx>
 #include <BRepGraph_TopoNode.hxx>
-#include <Geom2d_Curve.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
 #include <gp_Pnt.hxx>
@@ -39,13 +36,7 @@ void BRepGraphCheck::CheckVertexOnEdge(
     return;
 
   // No 3D curve — cannot check vertex position.
-  if (!anEdgeDef.CurveNodeId.IsValid())
-    return;
-
-  const BRepGraph::GeomView aGeom = theGraph.Geom();
-  const BRepGraph_GeomNode::Curve& aCurveNode = aGeom.Curve(anEdgeDef.CurveNodeId.Index);
-
-  if (aCurveNode.CurveGeom.IsNull())
+  if (anEdgeDef.Curve3d.IsNull())
     return;
 
   // Determine parameter for this vertex on the curve.
@@ -66,7 +57,7 @@ void BRepGraphCheck::CheckVertexOnEdge(
   }
 
   // Evaluate curve at parameter (geometry is stored at identity).
-  const gp_Pnt aCurvePnt = aCurveNode.CurveGeom->Value(aParam);
+  const gp_Pnt aCurvePnt = anEdgeDef.Curve3d->Value(aParam);
 
   const double aDist = aVtxDef.Point.Distance(aCurvePnt);
   if (aDist > anEdgeDef.Tolerance)
@@ -92,13 +83,7 @@ void BRepGraphCheck::CheckVertexOnFace(
   const BRepGraph_TopoNode::VertexDef& aVtxDef  = aDefs.Vertex(theVertexDefIdx);
   const BRepGraph_TopoNode::FaceDef&   aFaceDef = aDefs.Face(theFaceDefIdx);
 
-  if (!aFaceDef.SurfNodeId.IsValid())
-    return;
-
-  const BRepGraph::GeomView aGeom = theGraph.Geom();
-  const BRepGraph_GeomNode::Surf& aSurfNode = aGeom.Surface(aFaceDef.SurfNodeId.Index);
-
-  if (aSurfNode.Surface.IsNull())
+  if (aFaceDef.Surface.IsNull())
     return;
 
   // Check vertex through PCurve evaluation: find an edge of this face
@@ -130,7 +115,7 @@ void BRepGraphCheck::CheckVertexOnFace(
     // Look for PCurve of this edge on this face.
     const BRepGraph_NodeId aFaceNodeId = BRepGraph_NodeId::Face(theFaceDefIdx);
     const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurve =
-      aGeom.FindPCurve(anEdgeDef.Id, aFaceNodeId);
+      aDefs.FindPCurve(anEdgeDef.Id, aFaceNodeId);
     if (aPCurve == nullptr)
       continue;
 
@@ -139,7 +124,7 @@ void BRepGraphCheck::CheckVertexOnFace(
 
     // Evaluate PCurve at parameter to get UV, then evaluate surface (geometry at identity).
     const gp_Pnt2d aUV = aPCurve->Curve2d->Value(aParam);
-    const gp_Pnt aSurfPnt = aSurfNode.Surface->Value(aUV.X(), aUV.Y());
+    const gp_Pnt aSurfPnt = aFaceDef.Surface->Value(aUV.X(), aUV.Y());
 
     const double aDist = aVtxDef.Point.Distance(aSurfPnt);
     if (aDist > aVtxDef.Tolerance + anEdgeDef.Tolerance)

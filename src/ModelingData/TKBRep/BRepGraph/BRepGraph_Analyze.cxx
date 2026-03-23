@@ -16,10 +16,11 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_Data.hxx>
 #include <BRepGraph_DefsView.hxx>
-#include <BRepGraph_GeomView.hxx>
 #include <BRepGraph_RelEdgesView.hxx>
 #include <BRepGraph_UsagesView.hxx>
 #include <BRepGraph_AnalyzeView.hxx>
+
+#include <Geom_Curve.hxx>
 
 #include <ExtremaPC_Curve.hxx>
 #include <GCPnts_UniformAbscissa.hxx>
@@ -62,7 +63,6 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>>
 
   const BRepGraph::UsagesView aUsages = theGraph.Usages();
   const BRepGraph::DefsView   aDefs   = theGraph.Defs();
-  const BRepGraph::GeomView   aGeom   = theGraph.Geom();
 
   for (int aFaceUsageIdx = 0; aFaceUsageIdx < aUsages.NbFaces(); ++aFaceUsageIdx)
   {
@@ -82,7 +82,7 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>>
         if (anEdge.IsDegenerate)
           continue;
 
-        const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurve = aGeom.FindPCurve(anEdgeDefId, aFaceDefId);
+        const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurve = aDefs.FindPCurve(anEdgeDefId, aFaceDefId);
         if (aPCurve == nullptr)
           aResult.Append(std::make_pair(anEdgeDefId, aFaceDefId));
       }
@@ -104,18 +104,19 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph_Analyze::ToleranceConflicts(
 {
   NCollection_Vector<BRepGraph_NodeId> aResult;
 
-  // Build temporary curveIdx -> edges map by scanning edge defs
-  NCollection_DataMap<int, NCollection_Vector<BRepGraph_NodeId>> aCurveToEdges;
+  // Build temporary curve pointer -> edges map by scanning edge defs
+  NCollection_DataMap<const Geom_Curve*, NCollection_Vector<BRepGraph_NodeId>> aCurveToEdges;
   for (int anEdgeIdx = 0; anEdgeIdx < theGraph.myData->myEdges.Defs.Length(); ++anEdgeIdx)
   {
     const BRepGraph_TopoNode::EdgeDef& anEdgeDef = theGraph.myData->myEdges.Defs.Value(anEdgeIdx);
-    if (!anEdgeDef.CurveNodeId.IsValid())
+    if (anEdgeDef.Curve3d.IsNull())
       continue;
-    aCurveToEdges.TryBind(anEdgeDef.CurveNodeId.Index, NCollection_Vector<BRepGraph_NodeId>());
-    aCurveToEdges.ChangeFind(anEdgeDef.CurveNodeId.Index).Append(anEdgeDef.Id);
+    const Geom_Curve* aCurveKey = anEdgeDef.Curve3d.get();
+    aCurveToEdges.TryBind(aCurveKey, NCollection_Vector<BRepGraph_NodeId>());
+    aCurveToEdges.ChangeFind(aCurveKey).Append(anEdgeDef.Id);
   }
 
-  for (NCollection_DataMap<int, NCollection_Vector<BRepGraph_NodeId>>::Iterator anIter(aCurveToEdges);
+  for (NCollection_DataMap<const Geom_Curve*, NCollection_Vector<BRepGraph_NodeId>>::Iterator anIter(aCurveToEdges);
        anIter.More(); anIter.Next())
   {
     const NCollection_Vector<BRepGraph_NodeId>& anEdges = anIter.Value();
@@ -437,7 +438,7 @@ bool BRepGraph_Analyze::AreEdgesCompatibleSampled(const BRepGraph& theGraph,
   {
     return false;
   }
-  if (!aNodeA.CurveNodeId.IsValid() || !aNodeB.CurveNodeId.IsValid())
+  if (aNodeA.Curve3d.IsNull() || aNodeB.Curve3d.IsNull())
   {
     return false;
   }
@@ -467,8 +468,8 @@ bool BRepGraph_Analyze::AreEdgesCompatibleSampled(const BRepGraph& theGraph,
     }
   }
 
-  GeomAdaptor_TransformedCurve aCurveA = theGraph.Geom().CurveAdaptor(theEdgeA);
-  GeomAdaptor_TransformedCurve aCurveB = theGraph.Geom().CurveAdaptor(theEdgeB);
+  GeomAdaptor_TransformedCurve aCurveA = theGraph.Defs().CurveAdaptor(theEdgeA);
+  GeomAdaptor_TransformedCurve aCurveB = theGraph.Defs().CurveAdaptor(theEdgeB);
 
   GCPnts_UniformAbscissa aSamplerA(aCurveA, theNbSamples);
   if (!aSamplerA.IsDone() || aSamplerA.NbPoints() < 2)
@@ -541,7 +542,7 @@ bool BRepGraph_Analyze::AreEdgesCompatibleSampled(const BRepGraph&            th
     }
   }
 
-  GeomAdaptor_TransformedCurve aCurveB = theGraph.Geom().CurveAdaptor(theEdgeB);
+  GeomAdaptor_TransformedCurve aCurveB = theGraph.Defs().CurveAdaptor(theEdgeB);
   ExtremaPC_Curve              anExtPCB(aCurveB);
 
   const double aTolSq = theTolerance * theTolerance;

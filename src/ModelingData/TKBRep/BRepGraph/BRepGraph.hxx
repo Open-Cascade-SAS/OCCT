@@ -18,7 +18,6 @@
 #include <BRepGraph_UsageId.hxx>
 #include <BRepGraph_UID.hxx>
 #include <BRepGraph_TopoNode.hxx>
-#include <BRepGraph_GeomNode.hxx>
 #include <BRepGraph_RelEdge.hxx>
 #include <BRepGraph_HistoryRecord.hxx>
 #include <BRepGraph_SubGraph.hxx>
@@ -40,8 +39,6 @@
 struct BRepGraph_Data;
 class NCollection_BaseAllocator;
 class TCollection_AsciiString;
-class Geom_Surface;
-class Geom_Curve;
 
 class BRepGraph_Builder;
 class BRepGraph_History;
@@ -120,7 +117,6 @@ public:
   // -- Grouped View API (inner classes defined in separate headers) --
   class DefsView;
   class UsagesView;
-  class GeomView;
   class UIDsView;
   class RelEdgesView;
   class SpatialView;
@@ -135,8 +131,6 @@ public:
   DefsView     Defs()     const;
   //! Access topology usages. Include BRepGraph_UsagesView.hxx to use.
   UsagesView   Usages()   const;
-  //! Access geometry nodes and links. Include BRepGraph_GeomView.hxx to use.
-  GeomView     Geom()     const;
   //! Access unique identifiers. Include BRepGraph_UIDsView.hxx to use.
   UIDsView     UIDs()     const;
   //! Access relation edges. Include BRepGraph_RelEdgesView.hxx to use.
@@ -191,9 +185,6 @@ private:
   std::unique_ptr<BRepGraph_Data> myData;
 
   // -- Internal build and utility helpers (called by views and friend classes) --
-
-  Standard_EXPORT BRepGraph_NodeId registerSurface(const Handle(Geom_Surface)& theSurf);
-  Standard_EXPORT BRepGraph_NodeId registerCurve(const Handle(Geom_Curve)& theCrv);
 
   Standard_EXPORT void invalidateSubgraphImpl(BRepGraph_NodeId theNode);
   Standard_EXPORT BRepGraph_UID allocateUID(BRepGraph_NodeId theNodeId);

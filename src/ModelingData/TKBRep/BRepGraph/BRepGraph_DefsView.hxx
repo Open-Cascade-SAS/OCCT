@@ -15,6 +15,11 @@
 #define _BRepGraph_DefsView_HeaderFile
 
 #include <BRepGraph.hxx>
+#include <BRepGraph_PCurveContext.hxx>
+#include <GeomAdaptor_TransformedCurve.hxx>
+#include <GeomAdaptor_TransformedSurface.hxx>
+
+class Adaptor3d_CurveOnSurface;
 
 //! Lightweight const view over topology definition nodes of a BRepGraph.
 //! Obtained via BRepGraph::Defs().
@@ -91,8 +96,73 @@ public:
   //! @param[in] theFaceIdx zero-based face index within the shell
   Standard_EXPORT BRepGraph_NodeId ShellFaceDef(int theShellDefIdx, int theFaceIdx) const;
 
-  //! Total number of nodes in the graph (all kinds).
+  //! Total number of nodes in the graph (all topology kinds).
   Standard_EXPORT size_t NbNodes() const;
+
+  // -- Geometry query methods (moved from GeomView) --
+
+  //! Find the PCurveEntry for an edge on a given face, or nullptr if none exists.
+  //! @param[in] theEdgeDef edge definition NodeId
+  //! @param[in] theFaceDef face definition NodeId
+  Standard_EXPORT const BRepGraph_TopoNode::EdgeDef::PCurveEntry* FindPCurve(
+    BRepGraph_NodeId theEdgeDef,
+    BRepGraph_NodeId theFaceDef) const;
+
+  //! Find the PCurveEntry for an edge/face/orientation triple (seam edge support).
+  //! @param[in] theEdgeDef           edge definition NodeId
+  //! @param[in] theFaceDef           face definition NodeId
+  //! @param[in] theEdgeOrientation   edge orientation on the face
+  Standard_EXPORT const BRepGraph_TopoNode::EdgeDef::PCurveEntry* FindPCurve(
+    BRepGraph_NodeId   theEdgeDef,
+    BRepGraph_NodeId   theFaceDef,
+    TopAbs_Orientation theEdgeOrientation) const;
+
+  //! Find the PCurveEntry for a given PCurve context.
+  //! @param[in] theContext  composite key identifying edge, face and orientation
+  Standard_EXPORT const BRepGraph_TopoNode::EdgeDef::PCurveEntry* FindPCurve(
+    const BRepGraph_PCurveContext& theContext) const;
+
+  //! Build a GeomAdaptor_TransformedCurve for an edge definition.
+  //! @param[in] theEdgeDef edge definition NodeId
+  Standard_EXPORT GeomAdaptor_TransformedCurve CurveAdaptor(BRepGraph_NodeId theEdgeDef) const;
+
+  //! Build a GeomAdaptor_TransformedCurve for a specific edge usage.
+  //! @param[in] theEdgeDef   edge definition NodeId
+  //! @param[in] theEdgeUsage edge usage id (determines the transform)
+  Standard_EXPORT GeomAdaptor_TransformedCurve CurveAdaptor(BRepGraph_NodeId  theEdgeDef,
+                                                            BRepGraph_UsageId theEdgeUsage) const;
+
+  //! Build a curve-on-surface adaptor from edge's inline PCurve on a face.
+  //! @param[in] theEdgeDef edge definition NodeId
+  //! @param[in] theFaceDef face definition NodeId
+  Standard_EXPORT Handle(Adaptor3d_CurveOnSurface)
+    CurveOnSurfaceAdaptor(BRepGraph_NodeId theEdgeDef,
+                          BRepGraph_NodeId theFaceDef) const;
+
+  //! Overload with explicit edge orientation for seam edges.
+  //! @param[in] theEdgeDef           edge definition NodeId
+  //! @param[in] theFaceDef           face definition NodeId
+  //! @param[in] theEdgeOrientation   edge orientation on the face
+  Standard_EXPORT Handle(Adaptor3d_CurveOnSurface)
+    CurveOnSurfaceAdaptor(BRepGraph_NodeId   theEdgeDef,
+                          BRepGraph_NodeId   theFaceDef,
+                          TopAbs_Orientation theEdgeOrientation) const;
+
+  //! Build a GeomAdaptor_TransformedSurface for a face definition.
+  //! @param[in] theFaceDef face definition NodeId
+  Standard_EXPORT GeomAdaptor_TransformedSurface SurfaceAdaptor(BRepGraph_NodeId theFaceDef) const;
+
+  //! Build a GeomAdaptor_TransformedSurface with explicit UV bounds.
+  //! @param[in] theFaceDef face definition NodeId
+  //! @param[in] theUFirst  minimum U parameter
+  //! @param[in] theULast   maximum U parameter
+  //! @param[in] theVFirst  minimum V parameter
+  //! @param[in] theVLast   maximum V parameter
+  Standard_EXPORT GeomAdaptor_TransformedSurface SurfaceAdaptor(BRepGraph_NodeId theFaceDef,
+                                                                double           theUFirst,
+                                                                double           theULast,
+                                                                double           theVFirst,
+                                                                double           theVLast) const;
 
 private:
   friend class BRepGraph;

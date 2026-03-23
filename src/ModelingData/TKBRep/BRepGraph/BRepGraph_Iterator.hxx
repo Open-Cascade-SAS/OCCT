@@ -17,7 +17,6 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_UsagesView.hxx>
-#include <BRepGraph_GeomView.hxx>
 
 //! @brief Type-safe, allocation-free iterator over BRepGraph nodes.
 //!
@@ -132,20 +131,6 @@ inline BRepGraph_Iterator<BRepGraph_TopoNode::VertexUsage>::BRepGraph_Iterator(c
     : myGraph(theGraph), myLength(theGraph.Usages().NbVertices()) {}
 
 // ---------------------------------------------------------------------------
-// Geometry iterators: constructors
-// ---------------------------------------------------------------------------
-
-template <>
-inline BRepGraph_Iterator<BRepGraph_GeomNode::Surf>::BRepGraph_Iterator(const BRepGraph& theGraph)
-    : myGraph(theGraph), myLength(theGraph.Geom().NbSurfaces()) {}
-
-template <>
-inline BRepGraph_Iterator<BRepGraph_GeomNode::Curve>::BRepGraph_Iterator(const BRepGraph& theGraph)
-    : myGraph(theGraph), myLength(theGraph.Geom().NbCurves()) {}
-
-
-
-// ---------------------------------------------------------------------------
 // Definition iterators: Current()
 // ---------------------------------------------------------------------------
 
@@ -212,21 +197,5 @@ template <>
 inline const BRepGraph_TopoNode::VertexUsage&
 BRepGraph_Iterator<BRepGraph_TopoNode::VertexUsage>::Current() const
 { return myGraph.Usages().Vertex(myIndex); }
-
-// ---------------------------------------------------------------------------
-// Geometry iterators: Current()
-// ---------------------------------------------------------------------------
-
-template <>
-inline const BRepGraph_GeomNode::Surf&
-BRepGraph_Iterator<BRepGraph_GeomNode::Surf>::Current() const
-{ return myGraph.Geom().Surface(myIndex); }
-
-template <>
-inline const BRepGraph_GeomNode::Curve&
-BRepGraph_Iterator<BRepGraph_GeomNode::Curve>::Current() const
-{ return myGraph.Geom().Curve(myIndex); }
-
-
 
 #endif // _BRepGraph_Iterator_HeaderFile

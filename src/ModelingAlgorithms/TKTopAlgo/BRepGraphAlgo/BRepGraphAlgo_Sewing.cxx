@@ -45,7 +45,6 @@
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_CacheView.hxx>
 #include <BRepGraph_DefsView.hxx>
-#include <BRepGraph_GeomView.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_RelEdgesView.hxx>
@@ -640,13 +639,13 @@ void BRepGraphAlgo_Sewing::cutAtIntersections(const Handle(NCollection_IncAlloca
       const BRepGraph_NodeId             anEdgeId      = myFreeEdgesBefore.Value(aFreeEdgeIter);
       const BRepGraph_TopoNode::EdgeDef& anEdge        = myGraph.Defs().Edge(anEdgeId.Index);
 
-      if (anEdge.IsDegenerate || !anEdge.CurveNodeId.IsValid())
+      if (anEdge.IsDegenerate || anEdge.Curve3d.IsNull())
         return;
 
       const int aStartIdx = anEdge.StartVertexDefId.IsValid() ? anEdge.StartVertexDefId.Index : -1;
       const int aEndIdx   = anEdge.EndVertexDefId.IsValid() ? anEdge.EndVertexDefId.Index : -1;
 
-      GeomAdaptor_TransformedCurve aCurve = myGraph.Geom().CurveAdaptor(anEdgeId);
+      GeomAdaptor_TransformedCurve aCurve = myGraph.Defs().CurveAdaptor(anEdgeId);
       ExtremaPC_Curve              anExtPC(aCurve);
 
       Bnd_Box aEdgeBBox;
@@ -856,7 +855,7 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> BRepGraphAlgo_
         return;
       }
 
-      GeomAdaptor_TransformedCurve aCurveA = myGraph.Geom().CurveAdaptor(anIdA);
+      GeomAdaptor_TransformedCurve aCurveA = myGraph.Defs().CurveAdaptor(anIdA);
       GCPnts_UniformAbscissa       aSamplerA(aCurveA, THE_NB_EDGE_MATCH_SAMPLES);
       if (!aSamplerA.IsDone() || aSamplerA.NbPoints() < 2)
       {
@@ -1044,12 +1043,10 @@ void BRepGraphAlgo_Sewing::mergeMatchedEdges(
 
       if (!aPCEntry.Curve2d.IsNull())
       {
-        const BRepGraph_GeomNode::Surf& aSurfNode =
-          myGraph.Geom().Surface(aFaceNode.SurfNodeId.Index);
         double aMergedTol =
           std::max(BRep_Tool::Tolerance(aKeepTopoEdge), BRep_Tool::Tolerance(aRemoveTopoEdge));
         TopLoc_Location aFaceLoc(myGraph.Spatial().GlobalTransform(aPCEntry.FaceDefId));
-        aBB.UpdateEdge(aKeepTopoEdge, aPCEntry.Curve2d, aSurfNode.Surface, aFaceLoc, aMergedTol);
+        aBB.UpdateEdge(aKeepTopoEdge, aPCEntry.Curve2d, aFaceNode.Surface, aFaceLoc, aMergedTol);
 
         // Add PCurve entry to keep-edge via graph API; preserve original edge orientation
         // so that seam edges (REVERSED orientation) are correctly reconstructed as C2.

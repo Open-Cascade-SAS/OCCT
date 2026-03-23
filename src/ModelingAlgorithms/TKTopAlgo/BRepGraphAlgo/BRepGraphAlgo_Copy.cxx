@@ -16,7 +16,6 @@
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_Data.hxx>
 #include <BRepGraph_DefsView.hxx>
-#include <BRepGraph_GeomView.hxx>
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_UsagesView.hxx>
 
@@ -78,23 +77,7 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
   if (!theGraph.IsDone())
     return aResult;
 
-  // Phase 1: Copy geometry handles into lookup arrays.
-  const int aNbSurfs  = theGraph.Geom().NbSurfaces();
-  const int aNbCurves = theGraph.Geom().NbCurves();
-
-  NCollection_Array1<Handle(Geom_Surface)> aSurfCopies(0, aNbSurfs > 0 ? aNbSurfs - 1 : 0);
-  for (int anIdx = 0; anIdx < aNbSurfs; ++anIdx)
-  {
-    aSurfCopies.SetValue(anIdx, copySurface(theGraph.Geom().Surface(anIdx).Surface, theCopyGeom));
-  }
-
-  NCollection_Array1<Handle(Geom_Curve)> aCurveCopies(0, aNbCurves > 0 ? aNbCurves - 1 : 0);
-  for (int anIdx = 0; anIdx < aNbCurves; ++anIdx)
-  {
-    aCurveCopies.SetValue(anIdx, copyCurve(theGraph.Geom().Curve(anIdx).CurveGeom, theCopyGeom));
-  }
-
-  // Phase 2: Bottom-up graph rebuild via BuilderView.
+  // Bottom-up graph rebuild via BuilderView.
   // Since this is a full copy, old index == new index (identity mapping).
 
   // Vertices.
@@ -110,11 +93,7 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
   {
     const BRepGraph_TopoNode::EdgeDef& anEdge = theGraph.Defs().Edge(anIdx);
 
-    Handle(Geom_Curve) aCurve;
-    if (anEdge.CurveNodeId.IsValid() && anEdge.CurveNodeId.Index < aNbCurves)
-    {
-      aCurve = aCurveCopies.Value(anEdge.CurveNodeId.Index);
-    }
+    Handle(Geom_Curve) aCurve = copyCurve(anEdge.Curve3d, theCopyGeom);
 
     aResult.Builder().AddEdgeDef(anEdge.StartVertexDefId,
                                  anEdge.EndVertexDefId,
@@ -143,11 +122,7 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
   {
     const BRepGraph_TopoNode::FaceDef& aFace = theGraph.Defs().Face(anIdx);
 
-    Handle(Geom_Surface) aSurf;
-    if (aFace.SurfNodeId.IsValid() && aFace.SurfNodeId.Index < aNbSurfs)
-    {
-      aSurf = aSurfCopies.Value(aFace.SurfNodeId.Index);
-    }
+    Handle(Geom_Surface) aSurf = copySurface(aFace.Surface, theCopyGeom);
 
     // Get outer/inner wire def NodeIds from the first usage.
     BRepGraph_NodeId                     anOuterWire;
@@ -298,8 +273,6 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
   copyUIDs(theGraph.myData->mySolids.UIDs,      aResult.myData->mySolids.UIDs);
   copyUIDs(theGraph.myData->myCompounds.UIDs,   aResult.myData->myCompounds.UIDs);
   copyUIDs(theGraph.myData->myCompSolids.UIDs,  aResult.myData->myCompSolids.UIDs);
-  copyUIDs(theGraph.myData->mySurfaces.UIDs,    aResult.myData->mySurfaces.UIDs);
-  copyUIDs(theGraph.myData->myCurves.UIDs,      aResult.myData->myCurves.UIDs);
 
   aResult.myData->myNextUIDCounter.store(
     theGraph.myData->myNextUIDCounter.load(std::memory_order_relaxed),
@@ -407,9 +380,7 @@ BRepGraph BRepGraphAlgo_Copy::CopyFace(const BRepGraph& theGraph,
         aNewEnd = BRepGraph_NodeId::Vertex(*aNewVtxIdx);
     }
 
-    Handle(Geom_Curve) aCurve;
-    if (anEdge.CurveNodeId.IsValid() && anEdge.CurveNodeId.Index < theGraph.Geom().NbCurves())
-      aCurve = copyCurve(theGraph.Geom().Curve(anEdge.CurveNodeId.Index).CurveGeom, theCopyGeom);
+    Handle(Geom_Curve) aCurve = copyCurve(anEdge.Curve3d, theCopyGeom);
 
     const int aNewEdgeIdx = anIdx - 1;
     aResult.Builder().AddEdgeDef(aNewStart, aNewEnd, aCurve,
@@ -445,9 +416,7 @@ BRepGraph BRepGraphAlgo_Copy::CopyFace(const BRepGraph& theGraph,
   }
 
   // Add the face.
-  Handle(Geom_Surface) aSurf;
-  if (aFaceDef.SurfNodeId.IsValid() && aFaceDef.SurfNodeId.Index < theGraph.Geom().NbSurfaces())
-    aSurf = copySurface(theGraph.Geom().Surface(aFaceDef.SurfNodeId.Index).Surface, theCopyGeom);
+  Handle(Geom_Surface) aSurf = copySurface(aFaceDef.Surface, theCopyGeom);
 
   BRepGraph_NodeId anOuterWire;
   NCollection_Vector<BRepGraph_NodeId> anInnerWires;

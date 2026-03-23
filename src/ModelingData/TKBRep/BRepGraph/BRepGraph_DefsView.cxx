@@ -15,6 +15,10 @@
 #include <BRepGraph_Data.hxx>
 #include <BRepGraph_UsagesView.hxx>
 
+#include <Adaptor3d_CurveOnSurface.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <GeomAdaptor_Surface.hxx>
+
 //=================================================================================================
 
 int BRepGraph::DefsView::NbSolids() const { return myGraph->myData->mySolids.Defs.Length(); }
@@ -147,7 +151,210 @@ size_t BRepGraph::DefsView::NbNodes() const
          + static_cast<size_t>(myGraph->myData->myEdges.Defs.Length())
          + static_cast<size_t>(myGraph->myData->myVertices.Defs.Length())
          + static_cast<size_t>(myGraph->myData->myCompounds.Defs.Length())
-         + static_cast<size_t>(myGraph->myData->myCompSolids.Defs.Length())
-         + static_cast<size_t>(myGraph->myData->mySurfaces.Nodes.Length())
-         + static_cast<size_t>(myGraph->myData->myCurves.Nodes.Length());
+         + static_cast<size_t>(myGraph->myData->myCompSolids.Defs.Length());
+}
+
+//=================================================================================================
+
+const BRepGraph_TopoNode::EdgeDef::PCurveEntry* BRepGraph::DefsView::FindPCurve(
+  BRepGraph_NodeId theEdgeDef,
+  BRepGraph_NodeId theFaceDef) const
+{
+  if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge || !theEdgeDef.IsValid())
+    return nullptr;
+
+  const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
+    myGraph->myData->myEdges.Defs.Value(theEdgeDef.Index);
+  for (int aPCurveIter = 0; aPCurveIter < anEdgeDef.PCurves.Length(); ++aPCurveIter)
+  {
+    if (anEdgeDef.PCurves.Value(aPCurveIter).FaceDefId == theFaceDef)
+      return &anEdgeDef.PCurves.Value(aPCurveIter);
+  }
+  return nullptr;
+}
+
+//=================================================================================================
+
+const BRepGraph_TopoNode::EdgeDef::PCurveEntry* BRepGraph::DefsView::FindPCurve(
+  BRepGraph_NodeId   theEdgeDef,
+  BRepGraph_NodeId   theFaceDef,
+  TopAbs_Orientation theEdgeOrientation) const
+{
+  if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge || !theEdgeDef.IsValid())
+    return nullptr;
+
+  const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
+    myGraph->myData->myEdges.Defs.Value(theEdgeDef.Index);
+  for (int aPCurveIter = 0; aPCurveIter < anEdgeDef.PCurves.Length(); ++aPCurveIter)
+  {
+    const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCEntry = anEdgeDef.PCurves.Value(aPCurveIter);
+    if (aPCEntry.FaceDefId == theFaceDef && aPCEntry.EdgeOrientation == theEdgeOrientation)
+      return &aPCEntry;
+  }
+  return nullptr;
+}
+
+//=================================================================================================
+
+const BRepGraph_TopoNode::EdgeDef::PCurveEntry* BRepGraph::DefsView::FindPCurve(
+  const BRepGraph_PCurveContext& theContext) const
+{
+  return FindPCurve(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, theContext.EdgeDefIndex),
+                    BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, theContext.FaceDefIndex),
+                    theContext.Orientation);
+}
+
+//=================================================================================================
+
+static GeomAdaptor_TransformedCurve buildCurveAdaptorFromDef(
+  const BRepGraph_Data&              theData,
+  const BRepGraph_TopoNode::EdgeDef& theEdge)
+{
+  if (!theEdge.Curve3d.IsNull())
+  {
+    return GeomAdaptor_TransformedCurve(theEdge.Curve3d,
+                                        theEdge.ParamFirst,
+                                        theEdge.ParamLast,
+                                        gp_Trsf());
+  }
+
+  // Pcurve-only fallback: compose pcurve + surface.
+  if (!theEdge.PCurves.IsEmpty())
+  {
+    const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCE = theEdge.PCurves.First();
+    const Handle(Geom2d_Curve)& aPC = aPCE.Curve2d;
+    const Handle(Geom_Surface)& aSurf =
+      theData.myFaces.Defs.Value(aPCE.FaceDefId.Index).Surface;
+
+    Handle(Geom2dAdaptor_Curve) aHC2d =
+      new Geom2dAdaptor_Curve(aPC, theEdge.ParamFirst, theEdge.ParamLast);
+    Handle(GeomAdaptor_Surface)      aHS  = new GeomAdaptor_Surface(aSurf);
+    Handle(Adaptor3d_CurveOnSurface) aCOS = new Adaptor3d_CurveOnSurface(aHC2d, aHS);
+
+    GeomAdaptor_TransformedCurve aResult;
+    aResult.LoadCurveOnSurface(aCOS);
+    return aResult;
+  }
+
+  return GeomAdaptor_TransformedCurve();
+}
+
+//=================================================================================================
+
+GeomAdaptor_TransformedCurve BRepGraph::DefsView::CurveAdaptor(BRepGraph_NodeId theEdgeDef) const
+{
+  if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge || !theEdgeDef.IsValid())
+    return GeomAdaptor_TransformedCurve();
+
+  const BRepGraph_TopoNode::EdgeDef& anEdge = myGraph->myData->myEdges.Defs.Value(theEdgeDef.Index);
+  return buildCurveAdaptorFromDef(*myGraph->myData, anEdge);
+}
+
+//=================================================================================================
+
+GeomAdaptor_TransformedCurve BRepGraph::DefsView::CurveAdaptor(BRepGraph_NodeId  theEdgeDef,
+                                                               BRepGraph_UsageId theEdgeUsage) const
+{
+  (void)theEdgeUsage;
+  if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge || !theEdgeDef.IsValid())
+    return GeomAdaptor_TransformedCurve();
+
+  const BRepGraph_TopoNode::EdgeDef& anEdge = myGraph->myData->myEdges.Defs.Value(theEdgeDef.Index);
+  return buildCurveAdaptorFromDef(*myGraph->myData, anEdge);
+}
+
+//=================================================================================================
+
+Handle(Adaptor3d_CurveOnSurface) BRepGraph::DefsView::CurveOnSurfaceAdaptor(
+  BRepGraph_NodeId theEdgeDef,
+  BRepGraph_NodeId theFaceDef) const
+{
+  if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge || !theEdgeDef.IsValid())
+    return Handle(Adaptor3d_CurveOnSurface)();
+  if (theFaceDef.NodeKind != BRepGraph_NodeId::Kind::Face || !theFaceDef.IsValid())
+    return Handle(Adaptor3d_CurveOnSurface)();
+
+  const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
+    myGraph->myData->myEdges.Defs.Value(theEdgeDef.Index);
+  const BRepGraph_TopoNode::FaceDef& aFaceDef = myGraph->myData->myFaces.Defs.Value(theFaceDef.Index);
+
+  const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCEntry = FindPCurve(theEdgeDef, theFaceDef);
+  if (aPCEntry == nullptr || aPCEntry->Curve2d.IsNull())
+    return Handle(Adaptor3d_CurveOnSurface)();
+
+  if (aFaceDef.Surface.IsNull())
+    return Handle(Adaptor3d_CurveOnSurface)();
+
+  Handle(Geom2dAdaptor_Curve) aHC2d =
+    new Geom2dAdaptor_Curve(aPCEntry->Curve2d, anEdgeDef.ParamFirst, anEdgeDef.ParamLast);
+  Handle(GeomAdaptor_Surface) aHS = new GeomAdaptor_Surface(aFaceDef.Surface);
+
+  return new Adaptor3d_CurveOnSurface(aHC2d, aHS);
+}
+
+//=================================================================================================
+
+Handle(Adaptor3d_CurveOnSurface) BRepGraph::DefsView::CurveOnSurfaceAdaptor(
+  BRepGraph_NodeId   theEdgeDef,
+  BRepGraph_NodeId   theFaceDef,
+  TopAbs_Orientation theEdgeOrientation) const
+{
+  if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge || !theEdgeDef.IsValid())
+    return Handle(Adaptor3d_CurveOnSurface)();
+  if (theFaceDef.NodeKind != BRepGraph_NodeId::Kind::Face || !theFaceDef.IsValid())
+    return Handle(Adaptor3d_CurveOnSurface)();
+
+  const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
+    myGraph->myData->myEdges.Defs.Value(theEdgeDef.Index);
+  const BRepGraph_TopoNode::FaceDef& aFaceDef = myGraph->myData->myFaces.Defs.Value(theFaceDef.Index);
+
+  const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCEntry =
+    FindPCurve(theEdgeDef, theFaceDef, theEdgeOrientation);
+  if (aPCEntry == nullptr || aPCEntry->Curve2d.IsNull())
+    return Handle(Adaptor3d_CurveOnSurface)();
+
+  if (aFaceDef.Surface.IsNull())
+    return Handle(Adaptor3d_CurveOnSurface)();
+
+  Handle(Geom2dAdaptor_Curve) aHC2d =
+    new Geom2dAdaptor_Curve(aPCEntry->Curve2d, anEdgeDef.ParamFirst, anEdgeDef.ParamLast);
+  Handle(GeomAdaptor_Surface) aHS = new GeomAdaptor_Surface(aFaceDef.Surface);
+
+  return new Adaptor3d_CurveOnSurface(aHC2d, aHS);
+}
+
+//=================================================================================================
+
+GeomAdaptor_TransformedSurface BRepGraph::DefsView::SurfaceAdaptor(
+  BRepGraph_NodeId theFaceDef) const
+{
+  if (theFaceDef.NodeKind != BRepGraph_NodeId::Kind::Face || !theFaceDef.IsValid())
+    return GeomAdaptor_TransformedSurface();
+
+  const BRepGraph_TopoNode::FaceDef& aFaceDef = myGraph->myData->myFaces.Defs.Value(theFaceDef.Index);
+  if (aFaceDef.Surface.IsNull())
+    return GeomAdaptor_TransformedSurface();
+
+  return GeomAdaptor_TransformedSurface(aFaceDef.Surface, gp_Trsf());
+}
+
+//=================================================================================================
+
+GeomAdaptor_TransformedSurface BRepGraph::DefsView::SurfaceAdaptor(BRepGraph_NodeId theFaceDef,
+                                                                   double           theUFirst,
+                                                                   double           theULast,
+                                                                   double           theVFirst,
+                                                                   double           theVLast) const
+{
+  if (theFaceDef.NodeKind != BRepGraph_NodeId::Kind::Face || !theFaceDef.IsValid())
+    return GeomAdaptor_TransformedSurface();
+
+  const BRepGraph_TopoNode::FaceDef& aFaceDef = myGraph->myData->myFaces.Defs.Value(theFaceDef.Index);
+  if (aFaceDef.Surface.IsNull())
+    return GeomAdaptor_TransformedSurface();
+
+  return GeomAdaptor_TransformedSurface(aFaceDef.Surface,
+                                        theUFirst, theULast,
+                                        theVFirst, theVLast,
+                                        gp_Trsf());
 }

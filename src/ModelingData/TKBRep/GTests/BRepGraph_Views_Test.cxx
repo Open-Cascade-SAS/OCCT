@@ -19,7 +19,6 @@
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_CacheView.hxx>
 #include <BRepGraph_DefsView.hxx>
-#include <BRepGraph_GeomView.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_RelEdgesView.hxx>
@@ -140,39 +139,33 @@ TEST_F(BRepGraphViewsTest, UsagesView_FaceAccessor_Valid)
   }
 }
 
-// ---------- GeomView ----------
+// ---------- DefsView Geometry ----------
 
-TEST_F(BRepGraphViewsTest, GeomView_NbSurfaces)
+TEST_F(BRepGraphViewsTest, DefsView_FaceSurface_NonNull)
 {
-  EXPECT_EQ(myGraph.Geom().NbSurfaces(), 6);
+  for (int anIdx = 0; anIdx < myGraph.Defs().NbFaces(); ++anIdx)
+  {
+    EXPECT_FALSE(myGraph.Defs().Face(anIdx).Surface.IsNull())
+      << "Face " << anIdx << " has null Surface";
+  }
 }
 
-TEST_F(BRepGraphViewsTest, GeomView_NbCurves)
+TEST_F(BRepGraphViewsTest, DefsView_EdgeCurve3d_NonNull)
 {
-  EXPECT_GT(myGraph.Geom().NbCurves(), 0);
+  for (int anIdx = 0; anIdx < myGraph.Defs().NbEdges(); ++anIdx)
+  {
+    EXPECT_FALSE(myGraph.Defs().Edge(anIdx).Curve3d.IsNull())
+      << "Edge " << anIdx << " has null Curve3d";
+  }
 }
 
-TEST_F(BRepGraphViewsTest, GeomView_SurfaceOf_Valid)
-{
-  BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
-  BRepGraph_NodeId aSurfId = myGraph.Geom().SurfaceOf(aFaceId);
-  EXPECT_TRUE(aSurfId.IsValid());
-}
-
-TEST_F(BRepGraphViewsTest, GeomView_CurveOf_Valid)
-{
-  BRepGraph_NodeId anEdgeId(BRepGraph_NodeId::Kind::Edge, 0);
-  BRepGraph_NodeId aCurveId = myGraph.Geom().CurveOf(anEdgeId);
-  EXPECT_TRUE(aCurveId.IsValid());
-}
-
-TEST_F(BRepGraphViewsTest, GeomView_FindPCurve_NoCrash)
+TEST_F(BRepGraphViewsTest, DefsView_FindPCurve_NoCrash)
 {
   BRepGraph_NodeId anEdgeId(BRepGraph_NodeId::Kind::Edge, 0);
   BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
   // FindPCurve may or may not return a non-null pointer for an arbitrary edge/face pair.
   // Just verify it does not crash.
-  myGraph.Geom().FindPCurve(anEdgeId, aFaceId);
+  myGraph.Defs().FindPCurve(anEdgeId, aFaceId);
 }
 
 // ---------- UIDsView ----------

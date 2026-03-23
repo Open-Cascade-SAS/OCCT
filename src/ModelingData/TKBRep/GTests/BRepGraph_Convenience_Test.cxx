@@ -13,7 +13,6 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_DefsView.hxx>
-#include <BRepGraph_GeomView.hxx>
 #include <BRepGraph_UsagesView.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
@@ -70,14 +69,6 @@ TEST_F(BRepGraphConvenienceTest, NodeId_Factories_CorrectKindAndIndex)
   const BRepGraph_NodeId aCompSolid = BRepGraph_NodeId::CompSolid(0);
   EXPECT_EQ(aCompSolid.NodeKind, BRepGraph_NodeId::Kind::CompSolid);
   EXPECT_EQ(aCompSolid.Index, 0);
-
-  const BRepGraph_NodeId aSurfNode = BRepGraph_NodeId::SurfNode(4);
-  EXPECT_EQ(aSurfNode.NodeKind, BRepGraph_NodeId::Kind::Surface);
-  EXPECT_EQ(aSurfNode.Index, 4);
-
-  const BRepGraph_NodeId aCurveNode = BRepGraph_NodeId::CurveNode(6);
-  EXPECT_EQ(aCurveNode.NodeKind, BRepGraph_NodeId::Kind::Curve);
-  EXPECT_EQ(aCurveNode.Index, 6);
 
 }
 
@@ -179,39 +170,30 @@ TEST_F(BRepGraphConvenienceTest, FaceUsage_WireUsage_AllValid)
   }
 }
 
-// ---------- Part D: GeomView::FaceSurface ----------
+// ---------- Part D: FaceDef::Surface ----------
 
 TEST_F(BRepGraphConvenienceTest, FaceSurface_Valid)
 {
-  const BRepGraph::GeomView aGeom = myGraph.Geom();
-  const BRepGraph_GeomNode::Surf* aSurf = aGeom.FaceSurface(0);
-  ASSERT_NE(aSurf, nullptr);
-  EXPECT_FALSE(aSurf->Surface.IsNull());
-}
-
-TEST_F(BRepGraphConvenienceTest, FaceSurface_InvalidIndex)
-{
-  const BRepGraph::GeomView aGeom = myGraph.Geom();
-  EXPECT_EQ(aGeom.FaceSurface(-1), nullptr);
-  EXPECT_EQ(aGeom.FaceSurface(9999), nullptr);
+  const BRepGraph::DefsView aDefs = myGraph.Defs();
+  ASSERT_GT(aDefs.NbFaces(), 0);
+  EXPECT_FALSE(aDefs.Face(0).Surface.IsNull());
 }
 
 TEST_F(BRepGraphConvenienceTest, FaceSurface_AllBoxFaces)
 {
-  const BRepGraph::GeomView aGeom = myGraph.Geom();
-  for (int aFaceIter = 0; aFaceIter < myGraph.Defs().NbFaces(); ++aFaceIter)
+  const BRepGraph::DefsView aDefs = myGraph.Defs();
+  for (int aFaceIter = 0; aFaceIter < aDefs.NbFaces(); ++aFaceIter)
   {
-    const BRepGraph_GeomNode::Surf* aSurf = aGeom.FaceSurface(aFaceIter);
-    EXPECT_NE(aSurf, nullptr) << "Face " << aFaceIter << " has no surface";
+    EXPECT_FALSE(aDefs.Face(aFaceIter).Surface.IsNull())
+      << "Face " << aFaceIter << " has no surface";
   }
 }
 
-// ---------- Part E: GeomView::FindPCurve ----------
+// ---------- Part E: DefsView::FindPCurve ----------
 
 TEST_F(BRepGraphConvenienceTest, FindPCurve_ValidPair)
 {
   const BRepGraph::DefsView aDefs = myGraph.Defs();
-  const BRepGraph::GeomView aGeom = myGraph.Geom();
 
   // Find an edge/face pair that has a PCurve.
   for (int aFaceIter = 0; aFaceIter < aDefs.NbFaces(); ++aFaceIter)
@@ -222,7 +204,7 @@ TEST_F(BRepGraphConvenienceTest, FindPCurve_ValidPair)
     {
       const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(anEdgeIter);
       const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurve =
-        aGeom.FindPCurve(anEdgeDef.Id, aFaceNodeId);
+        aDefs.FindPCurve(anEdgeDef.Id, aFaceNodeId);
       if (aPCurve != nullptr)
       {
         EXPECT_FALSE(aPCurve->Curve2d.IsNull());
@@ -234,8 +216,8 @@ TEST_F(BRepGraphConvenienceTest, FindPCurve_ValidPair)
 
 TEST_F(BRepGraphConvenienceTest, FindPCurve_InvalidPair_ReturnsNull)
 {
-  const BRepGraph::GeomView aGeom = myGraph.Geom();
-  EXPECT_EQ(aGeom.FindPCurve(BRepGraph_NodeId::Edge(0), BRepGraph_NodeId::Face(9999)), nullptr);
+  const BRepGraph::DefsView aDefs = myGraph.Defs();
+  EXPECT_EQ(aDefs.FindPCurve(BRepGraph_NodeId::Edge(0), BRepGraph_NodeId::Face(9999)), nullptr);
 }
 
 // ---------- Part F: DefsView::NbShellFaces / ShellFaceDef ----------
@@ -278,7 +260,6 @@ TEST(BRepGraphConvenienceCylinderTest, FindPCurve_WithOrientation_SeamEdge)
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph::DefsView aDefs = aGraph.Defs();
-  const BRepGraph::GeomView aGeom = aGraph.Geom();
 
   // Look for seam edges (two PCurves on same face).
   for (int anEdgeIter = 0; anEdgeIter < aDefs.NbEdges(); ++anEdgeIter)
@@ -296,9 +277,9 @@ TEST(BRepGraphConvenienceCylinderTest, FindPCurve_WithOrientation_SeamEdge)
         {
           const BRepGraph_NodeId aFaceDefId = anEdgeDef.PCurves.Value(aPCI).FaceDefId;
           const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCF =
-            aGeom.FindPCurve(anEdgeDef.Id, aFaceDefId, TopAbs_FORWARD);
+            aDefs.FindPCurve(anEdgeDef.Id, aFaceDefId, TopAbs_FORWARD);
           const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCR =
-            aGeom.FindPCurve(anEdgeDef.Id, aFaceDefId, TopAbs_REVERSED);
+            aDefs.FindPCurve(anEdgeDef.Id, aFaceDefId, TopAbs_REVERSED);
           EXPECT_NE(aPCF, nullptr);
           EXPECT_NE(aPCR, nullptr);
           if (aPCF != nullptr && aPCR != nullptr)

@@ -23,12 +23,11 @@
 namespace
 {
 
-//! Check if a NodeId refers to a geometry node (Surface, Curve).
-//! Geometry nodes have no Cache and thus no user attributes.
-bool isGeometryKind(BRepGraph_NodeId::Kind theKind)
+//! Check if a NodeId refers to a kind that has no Cache and thus no user attributes.
+//! With geometry stored directly on defs, all topology kinds have caches.
+bool isGeometryKind(BRepGraph_NodeId::Kind /*theKind*/)
 {
-  return theKind == BRepGraph_NodeId::Kind::Surface
-      || theKind == BRepGraph_NodeId::Kind::Curve;
+  return false;
 }
 
 } // namespace

@@ -15,7 +15,6 @@
 #include <BRepGraph_BackRefManager.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_DefsView.hxx>
-#include <BRepGraph_GeomView.hxx>
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_Mutator.hxx>
 #include <BRepGraph_RelEdgesView.hxx>
@@ -44,8 +43,8 @@ BRepGraph buildBoxGraph()
 
 } // namespace
 
-// Verify that after Build(), back-refs match forward links for surfaces.
-TEST(BRepGraphBackRefManagerTest, Build_SurfaceBackRefsMatchForwardLinks)
+// Verify that after Build(), face defs have valid surface handles.
+TEST(BRepGraphBackRefManagerTest, Build_FaceDefsHaveValidSurfaces)
 {
   BRepGraph aGraph = buildBoxGraph();
   ASSERT_TRUE(aGraph.IsDone());
@@ -53,26 +52,13 @@ TEST(BRepGraphBackRefManagerTest, Build_SurfaceBackRefsMatchForwardLinks)
   for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
   {
     const BRepGraph_TopoNode::FaceDef& aFaceDef = aGraph.Defs().Face(aFaceIdx);
-    if (!aFaceDef.SurfNodeId.IsValid())
-      continue;
-
-    const BRepGraph_GeomNode::Surf& aSurf = aGraph.Geom().Surface(aFaceDef.SurfNodeId.Index);
-    const NCollection_Vector<BRepGraph_NodeId> aFaceIds = aGraph.Geom().FacesOnSurface(aSurf.Id);
-    bool aFound = false;
-    for (int aUserIdx = 0; aUserIdx < aFaceIds.Length(); ++aUserIdx)
-    {
-      if (aFaceIds.Value(aUserIdx) == aFaceDef.Id)
-      {
-        aFound = true;
-        break;
-      }
-    }
-    EXPECT_TRUE(aFound) << "FaceDef " << aFaceIdx << " not found in FacesOnSurface";
+    EXPECT_FALSE(aFaceDef.Surface.IsNull())
+      << "FaceDef " << aFaceIdx << " has null Surface";
   }
 }
 
-// Verify that after Build(), back-refs match forward links for curves.
-TEST(BRepGraphBackRefManagerTest, Build_CurveBackRefsMatchForwardLinks)
+// Verify that after Build(), edge defs have valid curve handles.
+TEST(BRepGraphBackRefManagerTest, Build_EdgeDefsHaveValidCurves)
 {
   BRepGraph aGraph = buildBoxGraph();
   ASSERT_TRUE(aGraph.IsDone());
@@ -80,21 +66,10 @@ TEST(BRepGraphBackRefManagerTest, Build_CurveBackRefsMatchForwardLinks)
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
     const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.Defs().Edge(anEdgeIdx);
-    if (!anEdgeDef.CurveNodeId.IsValid())
+    if (anEdgeDef.IsDegenerate)
       continue;
-
-    const BRepGraph_GeomNode::Curve& aCurve = aGraph.Geom().Curve(anEdgeDef.CurveNodeId.Index);
-    const NCollection_Vector<BRepGraph_NodeId> anEdgeIds = aGraph.Geom().EdgesOnCurve(aCurve.Id);
-    bool aFound = false;
-    for (int aUserIdx = 0; aUserIdx < anEdgeIds.Length(); ++aUserIdx)
-    {
-      if (anEdgeIds.Value(aUserIdx) == anEdgeDef.Id)
-      {
-        aFound = true;
-        break;
-      }
-    }
-    EXPECT_TRUE(aFound) << "EdgeDef " << anEdgeIdx << " not found in EdgesOnCurve";
+    EXPECT_FALSE(anEdgeDef.Curve3d.IsNull())
+      << "EdgeDef " << anEdgeIdx << " has null Curve3d";
   }
 }
 
@@ -131,40 +106,31 @@ TEST(BRepGraphBackRefManagerTest, RebuildAll_ProducesIdenticalResults)
   BRepGraph aGraph = buildBoxGraph();
   ASSERT_TRUE(aGraph.IsDone());
 
-  // Collect original surface back-ref counts.
-  NCollection_Vector<int> aOrigSurfUserCounts;
-  for (int aSIdx = 0; aSIdx < aGraph.Geom().NbSurfaces(); ++aSIdx)
-  {
-    const BRepGraph_GeomNode::Surf& aSurf = aGraph.Geom().Surface(aSIdx);
-    aOrigSurfUserCounts.Append(aGraph.Geom().FacesOnSurface(aSurf.Id).Length());
-  }
-
-  NCollection_Vector<int> aOrigCurveUserCounts;
-  for (int aCIdx = 0; aCIdx < aGraph.Geom().NbCurves(); ++aCIdx)
-  {
-    const BRepGraph_GeomNode::Curve& aCurve = aGraph.Geom().Curve(aCIdx);
-    aOrigCurveUserCounts.Append(aGraph.Geom().EdgesOnCurve(aCurve.Id).Length());
-  }
+  const int aNbFacesBefore = aGraph.Defs().NbFaces();
+  const int aNbEdgesBefore = aGraph.Defs().NbEdges();
 
   // Rebuild.
   BRepGraph_BackRefManager::RebuildAll(aGraph);
 
-  // Verify surface forward-ref counts match.
-  for (int aSIdx = 0; aSIdx < aGraph.Geom().NbSurfaces(); ++aSIdx)
+  // Verify counts are unchanged.
+  EXPECT_EQ(aGraph.Defs().NbFaces(), aNbFacesBefore);
+  EXPECT_EQ(aGraph.Defs().NbEdges(), aNbEdgesBefore);
+
+  // Verify face surfaces are still valid.
+  for (int aFIdx = 0; aFIdx < aGraph.Defs().NbFaces(); ++aFIdx)
   {
-    const BRepGraph_GeomNode::Surf& aSurf = aGraph.Geom().Surface(aSIdx);
-    EXPECT_EQ(aGraph.Geom().FacesOnSurface(aSurf.Id).Length(),
-              aOrigSurfUserCounts.Value(aSIdx))
-      << "Surface " << aSIdx << " user count mismatch after RebuildAll";
+    EXPECT_FALSE(aGraph.Defs().Face(aFIdx).Surface.IsNull())
+      << "Face " << aFIdx << " lost Surface after RebuildAll";
   }
 
-  // Verify curve forward-ref counts match.
-  for (int aCIdx = 0; aCIdx < aGraph.Geom().NbCurves(); ++aCIdx)
+  // Verify edge curves are still valid.
+  for (int aEIdx = 0; aEIdx < aGraph.Defs().NbEdges(); ++aEIdx)
   {
-    const BRepGraph_GeomNode::Curve& aCurve = aGraph.Geom().Curve(aCIdx);
-    EXPECT_EQ(aGraph.Geom().EdgesOnCurve(aCurve.Id).Length(),
-              aOrigCurveUserCounts.Value(aCIdx))
-      << "Curve " << aCIdx << " user count mismatch after RebuildAll";
+    if (!aGraph.Defs().Edge(aEIdx).IsDegenerate)
+    {
+      EXPECT_FALSE(aGraph.Defs().Edge(aEIdx).Curve3d.IsNull())
+        << "Edge " << aEIdx << " lost Curve3d after RebuildAll";
+    }
   }
 }
 
@@ -183,7 +149,7 @@ TEST(BRepGraphBackRefManagerTest, SplitEdge_CurveGetsSubEdgeRefs)
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
     const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(anEdgeIdx);
-    if (anEdge.CurveNodeId.IsValid() && !anEdge.IsDegenerate
+    if (!anEdge.Curve3d.IsNull() && !anEdge.IsDegenerate
         && anEdge.StartVertexDefId.IsValid() && anEdge.EndVertexDefId.IsValid())
     {
       aTargetEdgeIdx = anEdgeIdx;
@@ -193,9 +159,7 @@ TEST(BRepGraphBackRefManagerTest, SplitEdge_CurveGetsSubEdgeRefs)
   ASSERT_GE(aTargetEdgeIdx, 0) << "No suitable edge found for splitting";
 
   const BRepGraph_TopoNode::EdgeDef& anOrigEdge = aGraph.Defs().Edge(aTargetEdgeIdx);
-  const int aCurveIdx = anOrigEdge.CurveNodeId.Index;
-  const BRepGraph_GeomNode::Curve& aCurveRef = aGraph.Geom().Curve(aCurveIdx);
-  const int anOrigCurveUserCount = aGraph.Geom().EdgesOnCurve(aCurveRef.Id).Length();
+  ASSERT_FALSE(anOrigEdge.Curve3d.IsNull());
 
   // Create split vertex.
   const double aMidParam = 0.5 * (anOrigEdge.ParamFirst + anOrigEdge.ParamLast);
@@ -213,23 +177,11 @@ TEST(BRepGraphBackRefManagerTest, SplitEdge_CurveGetsSubEdgeRefs)
                                 BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, aTargetEdgeIdx),
                                 aSplitVtx, aMidParam, aSubA, aSubB);
 
-  // Curve should have gained 2 new users (SubA and SubB).
-  const BRepGraph_GeomNode::Curve& aCurve = aGraph.Geom().Curve(aCurveIdx);
-  const NCollection_Vector<BRepGraph_NodeId> aEdgeIds = aGraph.Geom().EdgesOnCurve(aCurve.Id);
-  const int aNewCurveUserCount = aEdgeIds.Length();
-  EXPECT_EQ(aNewCurveUserCount, anOrigCurveUserCount + 2);
-
-  // Verify SubA and SubB are in the curve's user list.
-  bool aFoundA = false, aFoundB = false;
-  for (int anIdx = 0; anIdx < aEdgeIds.Length(); ++anIdx)
-  {
-    if (aEdgeIds.Value(anIdx) == aSubA)
-      aFoundA = true;
-    if (aEdgeIds.Value(anIdx) == aSubB)
-      aFoundB = true;
-  }
-  EXPECT_TRUE(aFoundA) << "SubA not found in EdgesOnCurve";
-  EXPECT_TRUE(aFoundB) << "SubB not found in EdgesOnCurve";
+  // SubA and SubB should inherit the same curve.
+  EXPECT_FALSE(aGraph.Defs().Edge(aSubA.Index).Curve3d.IsNull())
+    << "SubA has no Curve3d";
+  EXPECT_FALSE(aGraph.Defs().Edge(aSubB.Index).Curve3d.IsNull())
+    << "SubB has no Curve3d";
 
   // Verify edge-to-wire was updated: SubA and SubB should be in wires.
   const NCollection_Vector<int>& aWiresA = aGraph.RelEdges().WiresOfEdge(aSubA.Index);

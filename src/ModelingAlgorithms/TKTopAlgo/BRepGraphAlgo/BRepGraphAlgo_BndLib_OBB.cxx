@@ -15,8 +15,6 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_DefsView.hxx>
-#include <BRepGraph_GeomNode.hxx>
-#include <BRepGraph_GeomView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_TopoNode.hxx>
 #include <BRepGraph_UsagesView.hxx>
@@ -132,13 +130,13 @@ static int pointsForOBB(const BRepGraph&            theGraph,
   const int aNbFaces = theGraph.Defs().NbFaces();
   for (int aFaceIdx = 0; aFaceIdx < aNbFaces; ++aFaceIdx)
   {
-    const BRepGraph_GeomNode::Surf* aSurf = theGraph.Geom().FaceSurface(aFaceIdx);
-    if (aSurf == nullptr || aSurf->Surface.IsNull())
+    const BRepGraph_TopoNode::FaceDef& aFaceDefSurf = theGraph.Defs().Face(aFaceIdx);
+    if (aFaceDefSurf.Surface.IsNull())
     {
       continue;
     }
 
-    GeomAdaptor_Surface aGAS(aSurf->Surface);
+    GeomAdaptor_Surface aGAS(aFaceDefSurf.Surface);
     if (!isPlanar(aGAS))
     {
       if (!theIsTriangulationUsed)
@@ -165,12 +163,12 @@ static int pointsForOBB(const BRepGraph&            theGraph,
               aWireDef.OrderedEdges.Value(anIdx);
             const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
               theGraph.Defs().Edge(anEntry.EdgeDefId.Index);
-            if (anEdgeDef.IsDegenerate || !anEdgeDef.CurveNodeId.IsValid())
+            if (anEdgeDef.IsDegenerate || anEdgeDef.Curve3d.IsNull())
             {
               continue;
             }
             const GeomAdaptor_TransformedCurve aCurveAdaptor =
-              theGraph.Geom().CurveAdaptor(anEdgeDef.Id);
+              theGraph.Defs().CurveAdaptor(anEdgeDef.Id);
             if (!isLinear(aCurveAdaptor))
             {
               hasNonLinearEdge = true;
@@ -241,12 +239,12 @@ static int pointsForOBB(const BRepGraph&            theGraph,
     {
       continue; // Edge is in a face, already handled.
     }
-    if (anEdgeDef.IsDegenerate || !anEdgeDef.CurveNodeId.IsValid())
+    if (anEdgeDef.IsDegenerate || anEdgeDef.Curve3d.IsNull())
     {
       continue;
     }
 
-    const GeomAdaptor_TransformedCurve aCurveAdaptor = theGraph.Geom().CurveAdaptor(anEdgeDef.Id);
+    const GeomAdaptor_TransformedCurve aCurveAdaptor = theGraph.Defs().CurveAdaptor(anEdgeDef.Id);
     if (isLinear(aCurveAdaptor))
     {
       // Skip linear edge — vertices already added.

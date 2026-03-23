@@ -16,7 +16,6 @@
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_Data.hxx>
 #include <BRepGraph_DefsView.hxx>
-#include <BRepGraph_GeomView.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_RelEdgesView.hxx>
@@ -24,7 +23,6 @@
 #include <BRepGraph_UsagesView.hxx>
 
 #include <NCollection_DataMap.hxx>
-#include <NCollection_Map.hxx>
 
 namespace
 {
@@ -38,9 +36,7 @@ BRepGraph_NodeId remapNodeId(const BRepGraph_NodeId&              theId,
                              const NCollection_DataMap<int, int>& theShellMap,
                              const NCollection_DataMap<int, int>& theSolidMap,
                              const NCollection_DataMap<int, int>& theCompoundMap,
-                             const NCollection_DataMap<int, int>& theCompSolidMap,
-                             const NCollection_DataMap<int, int>& theSurfMap,
-                             const NCollection_DataMap<int, int>& theCurveMap)
+                             const NCollection_DataMap<int, int>& theCompSolidMap)
 {
   if (!theId.IsValid())
     return BRepGraph_NodeId();
@@ -71,12 +67,6 @@ BRepGraph_NodeId remapNodeId(const BRepGraph_NodeId&              theId,
       break;
     case BRepGraph_NodeId::Kind::CompSolid:
       aMap = &theCompSolidMap;
-      break;
-    case BRepGraph_NodeId::Kind::Surface:
-      aMap = &theSurfMap;
-      break;
-    case BRepGraph_NodeId::Kind::Curve:
-      aMap = &theCurveMap;
       break;
   }
 
@@ -136,21 +126,12 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
     if (theGraph.Defs().CompSolid(anIdx).IsRemoved)
       ++aResult.NbRemovedCompSolids;
 
-  // Count unreferenced (nullified) geometry nodes.
-  for (int anIdx = 0; anIdx < theGraph.Geom().NbSurfaces(); ++anIdx)
-    if (theGraph.Geom().Surface(anIdx).Surface.IsNull())
-      ++aResult.NbRemovedSurfaces;
-  for (int anIdx = 0; anIdx < theGraph.Geom().NbCurves(); ++anIdx)
-    if (theGraph.Geom().Curve(anIdx).CurveGeom.IsNull())
-      ++aResult.NbRemovedCurves;
   const int aTotalRemoved =
     aResult.NbRemovedVertices + aResult.NbRemovedEdges + aResult.NbRemovedWires
     + aResult.NbRemovedFaces + aResult.NbRemovedShells + aResult.NbRemovedSolids
-    + aResult.NbRemovedCompounds + aResult.NbRemovedCompSolids + aResult.NbRemovedSurfaces
-    + aResult.NbRemovedCurves;
+    + aResult.NbRemovedCompounds + aResult.NbRemovedCompSolids;
 
-  aResult.NbNodesBefore = static_cast<int>(theGraph.Defs().NbNodes()) + theGraph.Geom().NbSurfaces()
-                          + theGraph.Geom().NbCurves();
+  aResult.NbNodesBefore = static_cast<int>(theGraph.Defs().NbNodes());
 
   // Short-circuit: nothing to compact.
   if (aTotalRemoved == 0)
@@ -162,7 +143,6 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
   // Build old->new index maps for each node kind.
   NCollection_DataMap<int, int> aVertexMap, anEdgeMap, aWireMap, aFaceMap;
   NCollection_DataMap<int, int> aShellMap, aSolidMap, aCompoundMap, aCompSolidMap;
-  NCollection_DataMap<int, int> aSurfMap, aCurveMap;
 
   int aNewIdx = 0;
   for (int anIdx = 0; anIdx < theGraph.Defs().NbVertices(); ++anIdx)
@@ -196,33 +176,6 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
   for (int anIdx = 0; anIdx < theGraph.Defs().NbCompSolids(); ++anIdx)
     if (!theGraph.Defs().CompSolid(anIdx).IsRemoved)
       aCompSolidMap.Bind(anIdx, aNewIdx++);
-
-  // Build geometry maps (only include non-null entries).
-  // Also collect which geometry nodes are still referenced by non-removed defs.
-  NCollection_Map<int> aReferencedSurfaces, aReferencedCurves;
-  for (int anIdx = 0; anIdx < theGraph.Defs().NbFaces(); ++anIdx)
-  {
-    const BRepGraph_TopoNode::FaceDef& aFace = theGraph.Defs().Face(anIdx);
-    if (!aFace.IsRemoved && aFace.SurfNodeId.IsValid())
-      aReferencedSurfaces.Add(aFace.SurfNodeId.Index);
-  }
-  for (int anIdx = 0; anIdx < theGraph.Defs().NbEdges(); ++anIdx)
-  {
-    const BRepGraph_TopoNode::EdgeDef& anEdge = theGraph.Defs().Edge(anIdx);
-    if (anEdge.IsRemoved)
-      continue;
-    if (anEdge.CurveNodeId.IsValid())
-      aReferencedCurves.Add(anEdge.CurveNodeId.Index);
-  }
-
-  aNewIdx = 0;
-  for (int anIdx = 0; anIdx < theGraph.Geom().NbSurfaces(); ++anIdx)
-    if (aReferencedSurfaces.Contains(anIdx) && !theGraph.Geom().Surface(anIdx).Surface.IsNull())
-      aSurfMap.Bind(anIdx, aNewIdx++);
-  aNewIdx = 0;
-  for (int anIdx = 0; anIdx < theGraph.Geom().NbCurves(); ++anIdx)
-    if (aReferencedCurves.Contains(anIdx) && !theGraph.Geom().Curve(anIdx).CurveGeom.IsNull())
-      aCurveMap.Bind(anIdx, aNewIdx++);
 
   const bool wasHistoryEnabled = theGraph.IsHistoryEnabled();
   theGraph.SetHistoryEnabled(theOptions.HistoryMode);
@@ -279,9 +232,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
                        aShellMap,
                        aSolidMap,
                        aCompoundMap,
-                       aCompSolidMap,
-                       aSurfMap,
-                       aCurveMap);
+                       aCompSolidMap);
   };
 
   // Add topology defs bottom-up (Vertex -> Edge -> Wire -> Face -> Shell -> Solid).
@@ -305,11 +256,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
     const BRepGraph_NodeId aNewEnd   = remapId(anOldEdge.EndVertexDefId);
 
     // Get the curve handle if available.
-    Handle(Geom_Curve) aCurve;
-    if (anOldEdge.CurveNodeId.IsValid() && anOldEdge.CurveNodeId.Index < theGraph.Geom().NbCurves())
-    {
-      aCurve = theGraph.Geom().Curve(anOldEdge.CurveNodeId.Index).CurveGeom;
-    }
+    Handle(Geom_Curve) aCurve = anOldEdge.Curve3d;
 
     BRepGraph_NodeId aNewEdgeId = aNewGraph.Builder().AddEdgeDef(aNewStart,
                                                                  aNewEnd,
@@ -356,11 +303,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
       continue;
     const BRepGraph_TopoNode::FaceDef& anOldFace = theGraph.Defs().Face(anIdx);
 
-    Handle(Geom_Surface) aSurf;
-    if (anOldFace.SurfNodeId.IsValid() && anOldFace.SurfNodeId.Index < theGraph.Geom().NbSurfaces())
-    {
-      aSurf = theGraph.Geom().Surface(anOldFace.SurfNodeId.Index).Surface;
-    }
+    Handle(Geom_Surface) aSurf = anOldFace.Surface;
 
     // Find outer wire from usages.
     BRepGraph_NodeId                     aNewOuterWire;
@@ -524,8 +467,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
     aNewGraph.Builder().AddCompSolidDef(aNewSolids);
   }
 
-  aResult.NbNodesAfter = static_cast<int>(aNewGraph.Defs().NbNodes())
-                         + aNewGraph.Geom().NbSurfaces() + aNewGraph.Geom().NbCurves();
+  aResult.NbNodesAfter = static_cast<int>(aNewGraph.Defs().NbNodes());
 
   // Transfer per-kind UID vectors from old graph to new graph using index remap maps.
   // Each new graph's UID vector[newIdx] = old graph's UID vector[oldIdx].
@@ -551,8 +493,6 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
   transferUIDs(aSolidMap,     theGraph.myData->mySolids.UIDs,     aNewGraph.myData->mySolids.UIDs);
   transferUIDs(aCompoundMap,  theGraph.myData->myCompounds.UIDs,  aNewGraph.myData->myCompounds.UIDs);
   transferUIDs(aCompSolidMap, theGraph.myData->myCompSolids.UIDs, aNewGraph.myData->myCompSolids.UIDs);
-  transferUIDs(aSurfMap,      theGraph.myData->mySurfaces.UIDs,   aNewGraph.myData->mySurfaces.UIDs);
-  transferUIDs(aCurveMap,     theGraph.myData->myCurves.UIDs,     aNewGraph.myData->myCurves.UIDs);
 
   aNewGraph.myData->myNextUIDCounter.store(
     theGraph.myData->myNextUIDCounter.load(std::memory_order_relaxed),

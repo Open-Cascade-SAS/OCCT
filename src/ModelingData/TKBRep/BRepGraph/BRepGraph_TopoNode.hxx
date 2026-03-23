@@ -19,6 +19,8 @@
 #include <BRepGraph_NodeCache.hxx>
 
 #include <Geom2d_Curve.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Poly_Polygon2D.hxx>
 #include <Poly_Polygon3D.hxx>
@@ -79,8 +81,8 @@ struct CompSolidDef : public BaseDef
 
 struct FaceDef : public BaseDef
 {
-  //! Geometry: the surface node that realizes this face.
-  BRepGraph_NodeId SurfNodeId;
+  //! Surface geometry (direct handle, no separate geometry node).
+  Handle(Geom_Surface) Surface;
 
   //! All triangulations attached to this face (may be empty).
   NCollection_Vector<Handle(Poly_Triangulation)> Triangulations;
@@ -120,8 +122,8 @@ struct WireDef : public BaseDef
 
 struct EdgeDef : public BaseDef
 {
-  //! 3D curve geometry (may be invalid for degenerate edges).
-  BRepGraph_NodeId CurveNodeId;
+  //! 3D curve geometry (direct handle, null for degenerate edges).
+  Handle(Geom_Curve) Curve3d;
 
   //! PCurve entries, one per (edge, face) context.
   //! For seam edges there are two entries with the same FaceDefId,
@@ -224,28 +226,28 @@ struct VertexDef : public BaseDef
   //! Vertex parameter on a 3D curve.
   struct PointOnCurveEntry
   {
-    double          Parameter = 0.0;
-    BRepGraph_NodeId CurveNodeId;
-    TopLoc_Location Location;
+    double             Parameter = 0.0;
+    Handle(Geom_Curve) Curve;
+    TopLoc_Location    Location;
   };
   NCollection_Vector<PointOnCurveEntry> PointsOnCurve;
 
   //! Vertex parameter on a surface (U, V).
   struct PointOnSurfaceEntry
   {
-    double          ParameterU = 0.0;
-    double          ParameterV = 0.0;
-    BRepGraph_NodeId SurfNodeId;
-    TopLoc_Location Location;
+    double               ParameterU = 0.0;
+    double               ParameterV = 0.0;
+    Handle(Geom_Surface) Surface;
+    TopLoc_Location      Location;
   };
   NCollection_Vector<PointOnSurfaceEntry> PointsOnSurface;
 
   //! Vertex parameter on a PCurve on a surface.
   struct PointOnPCurveEntry
   {
-    double          Parameter = 0.0;
-    BRepGraph_NodeId SurfNodeId;
-    TopLoc_Location Location;
+    double               Parameter = 0.0;
+    Handle(Geom_Surface) Surface;
+    TopLoc_Location      Location;
   };
   NCollection_Vector<PointOnPCurveEntry> PointsOnPCurve;
 };

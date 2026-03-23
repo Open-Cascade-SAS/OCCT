@@ -16,8 +16,6 @@
 #include <BRepClass_FaceClassifier.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_DefsView.hxx>
-#include <BRepGraph_GeomNode.hxx>
-#include <BRepGraph_GeomView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_TopoNode.hxx>
 #include <BRepGraph_UsagesView.hxx>
@@ -195,8 +193,9 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
 
   // Surface type and periodicity.
   // Geometry is stored at identity; location offsets are absorbed into usages.
-  const BRepGraph_GeomNode::Surf& aSurfNode = theGraph.Geom().Surface(aFaceDef.SurfNodeId.Index);
-  GeomAdaptor_TransformedSurface aSurfAdaptor(aSurfNode.Surface, gp_Trsf());
+  if (aFaceDef.Surface.IsNull())
+    return;
+  GeomAdaptor_TransformedSurface aSurfAdaptor(aFaceDef.Surface, gp_Trsf());
 
   myIsUPer  = aSurfAdaptor.IsUPeriodic();
   myIsVPer  = aSurfAdaptor.IsVPeriodic();
@@ -290,11 +289,9 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
         anIsDegenerated = true;
 
       // Check 3D curve degeneration if not already flagged.
-      if (!anIsDegenerated && anEdgeDef.CurveNodeId.IsValid())
+      if (!anIsDegenerated && !anEdgeDef.Curve3d.IsNull())
       {
-        const BRepGraph_GeomNode::Curve& aCurveNode =
-          theGraph.Geom().Curve(anEdgeDef.CurveNodeId.Index);
-        anIsDegenerated = isDegenerated(aCurveNode.CurveGeom,
+        anIsDegenerated = isDegenerated(anEdgeDef.Curve3d,
                                         TopLoc_Location(),
                                         anEdgeDef.ParamFirst,
                                         anEdgeDef.ParamLast);
@@ -333,30 +330,20 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
 
         double aDist3dOld = 1e+20;
         gp_Pnt aP3d;
-        if (!anIsDegenerated && anEdgeDef.CurveNodeId.IsValid())
+        if (!anIsDegenerated && !anEdgeDef.Curve3d.IsNull())
         {
-          const BRepGraph_GeomNode::Curve& aCurveNode =
-            theGraph.Geom().Curve(anEdgeDef.CurveNodeId.Index);
-          if (!aCurveNode.CurveGeom.IsNull())
-          {
-            aP3d = aCurveNode.CurveGeom->Value(aU);
-            if (aNbPnts > 1 && anOldPnt3dInit)
-              aDist3dOld = aP3d.Distance(aOldPnt3d);
-          }
+          aP3d = anEdgeDef.Curve3d->Value(aU);
+          if (aNbPnts > 1 && anOldPnt3dInit)
+            aDist3dOld = aP3d.Distance(aOldPnt3d);
         }
         bool anIsRealCurve3d = true;
         if (aDist3dOld < Precision::Confusion())
         {
-          if (!anIsDegenerated && anEdgeDef.CurveNodeId.IsValid())
+          if (!anIsDegenerated && !anEdgeDef.Curve3d.IsNull())
           {
-            const BRepGraph_GeomNode::Curve& aCurveNode =
-              theGraph.Geom().Curve(anEdgeDef.CurveNodeId.Index);
-            if (!aCurveNode.CurveGeom.IsNull())
-            {
-              gp_Pnt aMidP3d = aCurveNode.CurveGeom->Value(aU - aDu / 2.0);
-              if (aP3d.Distance(aMidP3d) < Precision::Confusion())
-                anIsRealCurve3d = false;
-            }
+            gp_Pnt aMidP3d = anEdgeDef.Curve3d->Value(aU - aDu / 2.0);
+            if (aP3d.Distance(aMidP3d) < Precision::Confusion())
+              anIsRealCurve3d = false;
           }
         }
         if (anIsRealCurve3d)

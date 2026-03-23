@@ -59,7 +59,7 @@ BRepGraph_NodeId BRepGraph::BuilderView::AddEdgeDef(BRepGraph_NodeId          th
 
   if (!theCurve.IsNull())
   {
-    anEdgeDef.CurveNodeId = myGraph->registerCurve(theCurve);
+    anEdgeDef.Curve3d = theCurve;
   }
 
   return anEdgeDef.Id;
@@ -119,7 +119,7 @@ BRepGraph_NodeId BRepGraph::BuilderView::AddFaceDef(
   aFaceDef.Tolerance = theTolerance;
   myGraph->allocateUID(aFaceDef.Id);
 
-  aFaceDef.SurfNodeId = myGraph->registerSurface(theSurface);
+  aFaceDef.Surface = theSurface;
 
   BRepGraph_TopoNode::FaceUsage& aFaceUsage = myGraph->myData->myFaces.Usages.Appended();
   const int                      aFaceUsageIdx = myGraph->myData->myFaces.Usages.Length() - 1;

@@ -16,8 +16,6 @@
 #include <Bnd_Box2d.hxx>
 #include <BndLib_Add2dCurve.hxx>
 #include <BRepGraph_DefsView.hxx>
-#include <BRepGraph_GeomNode.hxx>
-#include <BRepGraph_GeomView.hxx>
 #include <BRepGraph_TopoNode.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dInt_GInter.hxx>
@@ -180,11 +178,10 @@ void BRepGraphCheck::CheckWireOnFace(
   if (!theGeomControls)
     return;
 
-  const BRepGraph::GeomView aGeom = theGraph.Geom();
   const BRepGraph_TopoNode::FaceDef& aFaceDef = aDefs.Face(theFaceDefIdx);
 
   // 2D parametric closure check: verify UV endpoints of first and last edges meet.
-  if (aWireDef.IsClosed && aNbEdges > 1 && aFaceDef.SurfNodeId.IsValid())
+  if (aWireDef.IsClosed && aNbEdges > 1 && !aFaceDef.Surface.IsNull())
   {
     const BRepGraph_TopoNode::WireDef::EdgeEntry& aFirstEntry =
       aWireDef.OrderedEdges.Value(0);
@@ -196,9 +193,9 @@ void BRepGraphCheck::CheckWireOnFace(
 
     // Get PCurves for first and last edges.
     const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aFirstPC =
-      aGeom.FindPCurve(aFirstEdge.Id, aFaceNodeId);
+      aDefs.FindPCurve(aFirstEdge.Id, aFaceNodeId);
     const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aLastPC =
-      aGeom.FindPCurve(aLastEdge.Id, aFaceNodeId);
+      aDefs.FindPCurve(aLastEdge.Id, aFaceNodeId);
 
     if (aFirstPC != nullptr && aLastPC != nullptr)
     {
@@ -216,11 +213,9 @@ void BRepGraphCheck::CheckWireOnFace(
         const gp_Pnt2d aLastUV  = aLastPC->Curve2d->Value(aLastParam);
 
         // Convert 3D tolerance to UV tolerance using surface adaptor.
-        const BRepGraph_GeomNode::Surf& aSurf = aGeom.Surface(aFaceDef.SurfNodeId.Index);
-        if (!aSurf.Surface.IsNull())
         {
           const double aTol3d = Precision::Confusion();
-          GeomAdaptor_Surface aSurfAdaptor(aSurf.Surface);
+          GeomAdaptor_Surface aSurfAdaptor(aFaceDef.Surface);
           const double aUTol = aSurfAdaptor.UResolution(aTol3d);
           const double aVTol = aSurfAdaptor.VResolution(aTol3d);
 
@@ -228,15 +223,15 @@ void BRepGraphCheck::CheckWireOnFace(
           double aDeltaV = std::abs(aFirstUV.Y() - aLastUV.Y());
 
           // Account for period wrapping on periodic surfaces.
-          if (aSurf.Surface->IsUPeriodic())
+          if (aFaceDef.Surface->IsUPeriodic())
           {
-            const double aUPeriod = aSurf.Surface->UPeriod();
+            const double aUPeriod = aFaceDef.Surface->UPeriod();
             if (aDeltaU > aUPeriod * 0.5)
               aDeltaU = aUPeriod - aDeltaU;
           }
-          if (aSurf.Surface->IsVPeriodic())
+          if (aFaceDef.Surface->IsVPeriodic())
           {
-            const double aVPeriod = aSurf.Surface->VPeriod();
+            const double aVPeriod = aFaceDef.Surface->VPeriod();
             if (aDeltaV > aVPeriod * 0.5)
               aDeltaV = aVPeriod - aDeltaV;
           }
@@ -255,7 +250,7 @@ void BRepGraphCheck::CheckWireOnFace(
     }
   }
 
-  if (!aFaceDef.SurfNodeId.IsValid())
+  if (aFaceDef.Surface.IsNull())
     return;
 
   // Collect PCurve adaptors and bounding boxes for each edge in the wire.
@@ -283,7 +278,7 @@ void BRepGraphCheck::CheckWireOnFace(
     }
 
     const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurve =
-      aGeom.FindPCurve(anEdgeDef.Id, aFaceNodeId);
+      aDefs.FindPCurve(anEdgeDef.Id, aFaceNodeId);
     if (aPCurve == nullptr)
     {
       aPCurveData.Append(EdgePCurveData());

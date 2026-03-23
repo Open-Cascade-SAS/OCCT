@@ -17,8 +17,6 @@
 #include <BRep_Tool.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_DefsView.hxx>
-#include <BRepGraph_GeomNode.hxx>
-#include <BRepGraph_GeomView.hxx>
 #include <BRepGraph_Reconstruct.hxx>
 #include <BRepGraph_TopoNode.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
@@ -260,11 +258,11 @@ TEST(BRepGraph_PolygonTest, VertexPointRepresentations_StructurallyValid)
 
     // Validate that any captured entries have valid node references.
     for (int i = 0; i < aVtx.PointsOnCurve.Length(); ++i)
-      EXPECT_TRUE(aVtx.PointsOnCurve.Value(i).CurveNodeId.IsValid());
+      EXPECT_FALSE(aVtx.PointsOnCurve.Value(i).Curve.IsNull());
     for (int i = 0; i < aVtx.PointsOnSurface.Length(); ++i)
-      EXPECT_TRUE(aVtx.PointsOnSurface.Value(i).SurfNodeId.IsValid());
+      EXPECT_FALSE(aVtx.PointsOnSurface.Value(i).Surface.IsNull());
     for (int i = 0; i < aVtx.PointsOnPCurve.Length(); ++i)
-      EXPECT_TRUE(aVtx.PointsOnPCurve.Value(i).SurfNodeId.IsValid());
+      EXPECT_FALSE(aVtx.PointsOnPCurve.Value(i).Surface.IsNull());
   }
 
   // Just verify we can query — exact count depends on shape.

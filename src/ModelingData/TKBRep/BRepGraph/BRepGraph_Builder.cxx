@@ -318,7 +318,7 @@ void BRepGraph_Builder::registerFaceData(BRepGraph& theGraph, const FaceDataVec&
       aFaceDef.NaturalRestriction = aData.NaturalRestriction;
       theGraph.allocateUID(aFaceDef.Id);
 
-      aFaceDef.SurfNodeId = theGraph.registerSurface(aData.Surface);
+      aFaceDef.Surface = aData.Surface;
 
       // Store triangulations on the FaceDef.
       for (int aTriIdx = 0; aTriIdx < aData.Triangulations.Length(); ++aTriIdx)
@@ -434,7 +434,7 @@ void BRepGraph_Builder::registerFaceData(BRepGraph& theGraph, const FaceDataVec&
 
           if (!anEdgeData.Curve3d.IsNull())
           {
-            anEdgeDef.CurveNodeId = theGraph.registerCurve(anEdgeData.Curve3d);
+            anEdgeDef.Curve3d = anEdgeData.Curve3d;
           }
 
           // Vertex definitions.
@@ -668,10 +668,6 @@ void BRepGraph_Builder::Perform(BRepGraph& theGraph, const TopoDS_Shape& theShap
   theGraph.myData->myVertices.Clear();
   theGraph.myData->myCompounds.Clear();
   theGraph.myData->myCompSolids.Clear();
-  theGraph.myData->mySurfaces.Clear();
-  theGraph.myData->myCurves.Clear();
-  theGraph.myData->mySurfRegistry.Clear();
-  theGraph.myData->myCurveRegistry.Clear();
   theGraph.myData->myTShapeToDefId.Clear();
   theGraph.myData->myHistoryLog.Clear();
   theGraph.myData->myOriginalShapes.Clear();
@@ -896,48 +892,30 @@ void BRepGraph_Builder::Perform(BRepGraph& theGraph, const TopoDS_Shape& theShap
         continue;
       if (const Handle(BRep_PointOnCurve) aPOC = Handle(BRep_PointOnCurve)::DownCast(aPtRep))
       {
-        // Match curve handle to graph curve node.
-        const Geom_Curve* aCurveKey = aPOC->Curve().get();
-        const int* aCurveIdx = theGraph.myData->myCurveRegistry.Seek(aCurveKey);
-        if (aCurveIdx != nullptr)
-        {
-          BRepGraph_TopoNode::VertexDef::PointOnCurveEntry anEntry;
-          anEntry.Parameter   = aPOC->Parameter();
-          anEntry.CurveNodeId = BRepGraph_NodeId::CurveNode(*aCurveIdx);
-          anEntry.Location    = aPOC->Location();
-          aVtxDef.PointsOnCurve.Append(anEntry);
-        }
+        BRepGraph_TopoNode::VertexDef::PointOnCurveEntry anEntry;
+        anEntry.Parameter = aPOC->Parameter();
+        anEntry.Curve     = aPOC->Curve();
+        anEntry.Location  = aPOC->Location();
+        aVtxDef.PointsOnCurve.Append(anEntry);
       }
       else if (const Handle(BRep_PointOnCurveOnSurface) aPOCS =
                  Handle(BRep_PointOnCurveOnSurface)::DownCast(aPtRep))
       {
-        // Match to pcurve + surface nodes.
-        const Geom_Surface* aSurfKey = aPOCS->Surface().get();
-        const int* aSurfIdx = theGraph.myData->mySurfRegistry.Seek(aSurfKey);
-        if (aSurfIdx != nullptr)
-        {
-          BRepGraph_TopoNode::VertexDef::PointOnPCurveEntry anEntry;
-          anEntry.Parameter   = aPOCS->Parameter();
-          anEntry.SurfNodeId  = BRepGraph_NodeId::SurfNode(*aSurfIdx);
-          anEntry.Location    = aPOCS->Location();
-          // PCurve matching by handle not supported for PointOnPCurve.
-          aVtxDef.PointsOnPCurve.Append(anEntry);
-        }
+        BRepGraph_TopoNode::VertexDef::PointOnPCurveEntry anEntry;
+        anEntry.Parameter = aPOCS->Parameter();
+        anEntry.Surface   = aPOCS->Surface();
+        anEntry.Location  = aPOCS->Location();
+        aVtxDef.PointsOnPCurve.Append(anEntry);
       }
       else if (const Handle(BRep_PointOnSurface) aPOS =
                  Handle(BRep_PointOnSurface)::DownCast(aPtRep))
       {
-        const Geom_Surface* aSurfKey = aPOS->Surface().get();
-        const int* aSurfIdx = theGraph.myData->mySurfRegistry.Seek(aSurfKey);
-        if (aSurfIdx != nullptr)
-        {
-          BRepGraph_TopoNode::VertexDef::PointOnSurfaceEntry anEntry;
-          anEntry.ParameterU = aPOS->Parameter();
-          anEntry.ParameterV = aPOS->Parameter2();
-          anEntry.SurfNodeId = BRepGraph_NodeId::SurfNode(*aSurfIdx);
-          anEntry.Location   = aPOS->Location();
-          aVtxDef.PointsOnSurface.Append(anEntry);
-        }
+        BRepGraph_TopoNode::VertexDef::PointOnSurfaceEntry anEntry;
+        anEntry.ParameterU = aPOS->Parameter();
+        anEntry.ParameterV = aPOS->Parameter2();
+        anEntry.Surface    = aPOS->Surface();
+        anEntry.Location   = aPOS->Location();
+        aVtxDef.PointsOnSurface.Append(anEntry);
       }
     }
   }
@@ -963,27 +941,27 @@ void BRepGraph_Builder::Perform(BRepGraph& theGraph, const TopoDS_Shape& theShap
       if (aCon2S.IsNull())
         continue;
 
-      const Geom_Surface* aSurf1Key = aCon2S->Surface().get();
-      const Geom_Surface* aSurf2Key = aCon2S->Surface2().get();
-      const int* aSurf1Idx = theGraph.myData->mySurfRegistry.Seek(aSurf1Key);
-      const int* aSurf2Idx = theGraph.myData->mySurfRegistry.Seek(aSurf2Key);
-      if (aSurf1Idx == nullptr || aSurf2Idx == nullptr)
+      const Geom_Surface* aSurf1Ptr = aCon2S->Surface().get();
+      const Geom_Surface* aSurf2Ptr = aCon2S->Surface2().get();
+      if (aSurf1Ptr == nullptr || aSurf2Ptr == nullptr)
         continue;
 
-      // Find face defs that reference each surface.
-      auto findFacesForSurf = [&](int theSurfIdx) -> NCollection_Vector<BRepGraph_NodeId> {
+      // Find face defs that reference each surface by pointer comparison.
+      auto findFacesForSurf = [&](const Geom_Surface* theSurfPtr)
+        -> NCollection_Vector<BRepGraph_NodeId>
+      {
         NCollection_Vector<BRepGraph_NodeId> aResult;
         for (int aFIdx = 0; aFIdx < theGraph.myData->myFaces.Defs.Length(); ++aFIdx)
         {
           const BRepGraph_TopoNode::FaceDef& aFDef = theGraph.myData->myFaces.Defs.Value(aFIdx);
-          if (aFDef.SurfNodeId.IsValid() && aFDef.SurfNodeId.Index == theSurfIdx)
+          if (!aFDef.Surface.IsNull() && aFDef.Surface.get() == theSurfPtr)
             aResult.Append(aFDef.Id);
         }
         return aResult;
       };
 
-      NCollection_Vector<BRepGraph_NodeId> aFacesForSurf1 = findFacesForSurf(*aSurf1Idx);
-      NCollection_Vector<BRepGraph_NodeId> aFacesForSurf2 = findFacesForSurf(*aSurf2Idx);
+      NCollection_Vector<BRepGraph_NodeId> aFacesForSurf1 = findFacesForSurf(aSurf1Ptr);
+      NCollection_Vector<BRepGraph_NodeId> aFacesForSurf2 = findFacesForSurf(aSurf2Ptr);
       if (aFacesForSurf1.IsEmpty() || aFacesForSurf2.IsEmpty())
         continue;
 

@@ -16,8 +16,6 @@
 #include <Bnd_Box2d.hxx>
 #include <BndLib_Add2dCurve.hxx>
 #include <BRepGraph_DefsView.hxx>
-#include <BRepGraph_GeomNode.hxx>
-#include <BRepGraph_GeomView.hxx>
 #include <BRepGraph_TopoNode.hxx>
 #include <BRepGraph_UsagesView.hxx>
 #include <BRepGraphAlgo_FClass2d.hxx>
@@ -35,8 +33,7 @@ static double computeWireSignedArea(const BRepGraph&                           t
                                     const BRepGraph_TopoNode::WireDef&         theWireDef,
                                     const BRepGraph_NodeId&                    theFaceNodeId)
 {
-  const BRepGraph::DefsView  aDefs = theGraph.Defs();
-  const BRepGraph::GeomView  aGeom = theGraph.Geom();
+  const BRepGraph::DefsView aDefs = theGraph.Defs();
 
   constexpr int THE_NB_SAMPLES = 20;
   double        anArea = 0.0;
@@ -50,7 +47,7 @@ static double computeWireSignedArea(const BRepGraph&                           t
     const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(anEntry.EdgeDefId.Index);
 
     const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurve =
-      aGeom.FindPCurve(anEdgeDef.Id, theFaceNodeId);
+      aDefs.FindPCurve(anEdgeDef.Id, theFaceNodeId);
     if (aPCurve == nullptr)
       continue;
 
@@ -101,7 +98,6 @@ static void collectWirePCurves(const BRepGraph&                   theGraph,
                                WirePCurveSet&                     theResult)
 {
   const BRepGraph::DefsView aDefs = theGraph.Defs();
-  const BRepGraph::GeomView aGeom = theGraph.Geom();
 
   for (int anEdgeIter = 0; anEdgeIter < theWireDef.OrderedEdges.Length(); ++anEdgeIter)
   {
@@ -116,7 +112,7 @@ static void collectWirePCurves(const BRepGraph&                   theGraph,
     }
 
     const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurve =
-      aGeom.FindPCurve(anEdgeDef.Id, theFaceNodeId);
+      aDefs.FindPCurve(anEdgeDef.Id, theFaceNodeId);
     if (aPCurve == nullptr)
     {
       theResult.Edges.Append(WirePCurveSet::EdgeData());
@@ -151,7 +147,7 @@ void BRepGraphCheck::CheckFaceMinimum(
   const BRepGraph_TopoNode::FaceDef& aFaceDef = aDefs.Face(theFaceDefIdx);
 
   // Face must have a surface.
-  if (!aFaceDef.SurfNodeId.IsValid())
+  if (aFaceDef.Surface.IsNull())
   {
     BRepGraphCheck_Issue anIssue;
     anIssue.NodeId        = aFaceDef.Id;
@@ -159,18 +155,6 @@ void BRepGraphCheck::CheckFaceMinimum(
     anIssue.IssueSeverity = BRepGraphCheck_Issue::Severity::Error;
     theIssues.Append(anIssue);
     return;
-  }
-
-  // Verify the surface handle is not null.
-  const BRepGraph::GeomView aGeom = theGraph.Geom();
-  const BRepGraph_GeomNode::Surf& aSurfNode = aGeom.Surface(aFaceDef.SurfNodeId.Index);
-  if (aSurfNode.Surface.IsNull())
-  {
-    BRepGraphCheck_Issue anIssue;
-    anIssue.NodeId        = aFaceDef.Id;
-    anIssue.Status        = BRepCheck_NoSurface;
-    anIssue.IssueSeverity = BRepGraphCheck_Issue::Severity::Error;
-    theIssues.Append(anIssue);
   }
 
   // Check tolerance value.

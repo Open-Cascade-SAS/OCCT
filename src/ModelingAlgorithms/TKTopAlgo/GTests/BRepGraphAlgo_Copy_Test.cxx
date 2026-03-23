@@ -16,7 +16,6 @@
 #include <BRepGProp.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_DefsView.hxx>
-#include <BRepGraph_GeomView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_UIDsView.hxx>
 #include <BRepGraphAlgo_Copy.hxx>
@@ -104,10 +103,10 @@ TEST(BRepGraphAlgo_CopyTest, CopyBox_GeometryIsIndependent)
   ASSERT_TRUE(aCopyGraph.IsDone());
 
   // Deep copy: surface handles must be different objects.
-  ASSERT_GT(aGraph.Geom().NbSurfaces(), 0);
-  ASSERT_GT(aCopyGraph.Geom().NbSurfaces(), 0);
-  EXPECT_NE(aCopyGraph.Geom().Surface(0).Surface.get(),
-            aGraph.Geom().Surface(0).Surface.get());
+  ASSERT_GT(aGraph.Defs().NbFaces(), 0);
+  ASSERT_GT(aCopyGraph.Defs().NbFaces(), 0);
+  EXPECT_NE(aCopyGraph.Defs().Face(0).Surface.get(),
+            aGraph.Defs().Face(0).Surface.get());
 }
 
 TEST(BRepGraphAlgo_CopyTest, CopyBox_SharedGeometry)
@@ -125,10 +124,10 @@ TEST(BRepGraphAlgo_CopyTest, CopyBox_SharedGeometry)
   EXPECT_EQ(aCopyGraph.Defs().NbFaces(), 6);
 
   // Light copy: surface handles must be the same objects.
-  ASSERT_GT(aGraph.Geom().NbSurfaces(), 0);
-  ASSERT_GT(aCopyGraph.Geom().NbSurfaces(), 0);
-  EXPECT_EQ(aCopyGraph.Geom().Surface(0).Surface.get(),
-            aGraph.Geom().Surface(0).Surface.get());
+  ASSERT_GT(aGraph.Defs().NbFaces(), 0);
+  ASSERT_GT(aCopyGraph.Defs().NbFaces(), 0);
+  EXPECT_EQ(aCopyGraph.Defs().Face(0).Surface.get(),
+            aGraph.Defs().Face(0).Surface.get());
 }
 
 TEST(BRepGraphAlgo_CopyTest, CopyCylinder_FaceCount)
@@ -309,8 +308,7 @@ TEST(BRepGraphAlgo_CopyTest, CopyBox_UIDsPreserved)
   checkUIDs(BRepGraph_NodeId::Kind::Face, aGraph.Defs().NbFaces(), "face");
   checkUIDs(BRepGraph_NodeId::Kind::Shell, aGraph.Defs().NbShells(), "shell");
   checkUIDs(BRepGraph_NodeId::Kind::Solid, aGraph.Defs().NbSolids(), "solid");
-  checkUIDs(BRepGraph_NodeId::Kind::Surface, aGraph.Geom().NbSurfaces(), "surface");
-  checkUIDs(BRepGraph_NodeId::Kind::Curve, aGraph.Geom().NbCurves(), "curve");
+  // Geometry is now stored inline on face/edge defs; no separate geometry UIDs to check.
 }
 
 // ============================================================

@@ -15,8 +15,6 @@
 
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <BRepGraph_DefsView.hxx>
-#include <BRepGraph_GeomNode.hxx>
-#include <BRepGraph_GeomView.hxx>
 #include <BRepGraph_TopoNode.hxx>
 #include <BRepLib_ValidateEdge.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
@@ -39,7 +37,7 @@ void BRepGraphCheck::CheckEdgeMinimum(
   const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(theEdgeDefIdx);
 
   // Check No3DCurve: non-degenerate edge must have a 3D curve.
-  if (!anEdgeDef.IsDegenerate && !anEdgeDef.CurveNodeId.IsValid())
+  if (!anEdgeDef.IsDegenerate && anEdgeDef.Curve3d.IsNull())
   {
     BRepGraphCheck_Issue anIssue;
     anIssue.NodeId        = anEdgeDef.Id;
@@ -50,48 +48,38 @@ void BRepGraphCheck::CheckEdgeMinimum(
 
   // Check degenerate edge flag consistency:
   // A degenerate edge should have no 3D curve.
-  if (anEdgeDef.IsDegenerate && anEdgeDef.CurveNodeId.IsValid())
+  if (anEdgeDef.IsDegenerate && !anEdgeDef.Curve3d.IsNull())
   {
-    const BRepGraph::GeomView aGeom = theGraph.Geom();
-    const BRepGraph_GeomNode::Curve& aCurveNode = aGeom.Curve(anEdgeDef.CurveNodeId.Index);
-    if (!aCurveNode.CurveGeom.IsNull())
-    {
-      BRepGraphCheck_Issue anIssue;
-      anIssue.NodeId        = anEdgeDef.Id;
-      anIssue.Status        = BRepCheck_InvalidDegeneratedFlag;
-      anIssue.IssueSeverity = BRepGraphCheck_Issue::Severity::Error;
-      theIssues.Append(anIssue);
-    }
+    BRepGraphCheck_Issue anIssue;
+    anIssue.NodeId        = anEdgeDef.Id;
+    anIssue.Status        = BRepCheck_InvalidDegeneratedFlag;
+    anIssue.IssueSeverity = BRepGraphCheck_Issue::Severity::Error;
+    theIssues.Append(anIssue);
   }
 
   // Check parameter range validity.
-  if (anEdgeDef.CurveNodeId.IsValid())
+  if (!anEdgeDef.Curve3d.IsNull())
   {
-    const BRepGraph::GeomView aGeom = theGraph.Geom();
-    const BRepGraph_GeomNode::Curve& aCurveNode = aGeom.Curve(anEdgeDef.CurveNodeId.Index);
-    if (!aCurveNode.CurveGeom.IsNull())
-    {
-      const double aFirst = anEdgeDef.ParamFirst;
-      const double aLast  = anEdgeDef.ParamLast;
+    const double aFirst = anEdgeDef.ParamFirst;
+    const double aLast  = anEdgeDef.ParamLast;
 
-      // Parameters should be ordered (first < last for non-periodic,
-      // or at least different for periodic curves).
-      if (std::abs(aFirst - aLast) < Precision::PConfusion())
-      {
-        BRepGraphCheck_Issue anIssue;
-        anIssue.NodeId        = anEdgeDef.Id;
-        anIssue.Status        = BRepCheck_InvalidRange;
-        anIssue.IssueSeverity = BRepGraphCheck_Issue::Severity::Error;
-        theIssues.Append(anIssue);
-      }
-      else if (!aCurveNode.CurveGeom->IsPeriodic() && aFirst > aLast)
-      {
-        BRepGraphCheck_Issue anIssue;
-        anIssue.NodeId        = anEdgeDef.Id;
-        anIssue.Status        = BRepCheck_InvalidRange;
-        anIssue.IssueSeverity = BRepGraphCheck_Issue::Severity::Error;
-        theIssues.Append(anIssue);
-      }
+    // Parameters should be ordered (first < last for non-periodic,
+    // or at least different for periodic curves).
+    if (std::abs(aFirst - aLast) < Precision::PConfusion())
+    {
+      BRepGraphCheck_Issue anIssue;
+      anIssue.NodeId        = anEdgeDef.Id;
+      anIssue.Status        = BRepCheck_InvalidRange;
+      anIssue.IssueSeverity = BRepGraphCheck_Issue::Severity::Error;
+      theIssues.Append(anIssue);
+    }
+    else if (!anEdgeDef.Curve3d->IsPeriodic() && aFirst > aLast)
+    {
+      BRepGraphCheck_Issue anIssue;
+      anIssue.NodeId        = anEdgeDef.Id;
+      anIssue.Status        = BRepCheck_InvalidRange;
+      anIssue.IssueSeverity = BRepGraphCheck_Issue::Severity::Error;
+      theIssues.Append(anIssue);
     }
   }
 
@@ -159,16 +147,15 @@ void BRepGraphCheck::CheckEdgeOnFace(
   if (anEdgeDef.IsDegenerate)
     return;
 
-  if (!aFaceDef.SurfNodeId.IsValid())
+  if (aFaceDef.Surface.IsNull())
     return;
 
-  const BRepGraph::GeomView aGeom = theGraph.Geom();
-  const BRepGraph_NodeId    aEdgeNodeId = BRepGraph_NodeId::Edge(theEdgeDefIdx);
-  const BRepGraph_NodeId    aFaceNodeId = BRepGraph_NodeId::Face(theFaceDefIdx);
+  const BRepGraph_NodeId aEdgeNodeId = BRepGraph_NodeId::Edge(theEdgeDefIdx);
+  const BRepGraph_NodeId aFaceNodeId = BRepGraph_NodeId::Face(theFaceDefIdx);
 
   // Check PCurve existence.
   const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurve =
-    aGeom.FindPCurve(aEdgeNodeId, aFaceNodeId);
+    aDefs.FindPCurve(aEdgeNodeId, aFaceNodeId);
   if (aPCurve == nullptr)
   {
     BRepGraphCheck_Issue anIssue;
@@ -201,9 +188,9 @@ void BRepGraphCheck::CheckEdgeOnFace(
   // A seam edge has two PCurves on the same face (FORWARD and REVERSED).
   {
     const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurveF =
-      aGeom.FindPCurve(aEdgeNodeId, aFaceNodeId, TopAbs_FORWARD);
+      aDefs.FindPCurve(aEdgeNodeId, aFaceNodeId, TopAbs_FORWARD);
     const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurveR =
-      aGeom.FindPCurve(aEdgeNodeId, aFaceNodeId, TopAbs_REVERSED);
+      aDefs.FindPCurve(aEdgeNodeId, aFaceNodeId, TopAbs_REVERSED);
     if (aPCurveF != nullptr && aPCurveR != nullptr && aPCurveF != aPCurveR)
     {
       // Both PCurves exist — this is a seam edge. Validate the second PCurve.
@@ -236,31 +223,26 @@ void BRepGraphCheck::CheckEdgeOnFace(
   }
 
   // SameParameter check via BRepLib_ValidateEdge.
-  if (!anEdgeDef.CurveNodeId.IsValid())
+  if (anEdgeDef.Curve3d.IsNull())
     return;
 
   if (!anEdgeDef.SameParameter)
     return; // Cannot validate if not flagged as SameParameter.
 
-  const BRepGraph_GeomNode::Curve& aCurveNode = aGeom.Curve(anEdgeDef.CurveNodeId.Index);
-  if (aCurveNode.CurveGeom.IsNull())
-    return;
-
   if (aPCurve->Curve2d.IsNull())
     return;
 
-  const BRepGraph_GeomNode::Surf& aSurfNode = aGeom.Surface(aFaceDef.SurfNodeId.Index);
-  if (aSurfNode.Surface.IsNull())
+  if (aFaceDef.Surface.IsNull())
     return;
 
   // Build 3D curve adaptor.
   Handle(GeomAdaptor_Curve) aRefCurve = new GeomAdaptor_Curve(
-    aCurveNode.CurveGeom, anEdgeDef.ParamFirst, anEdgeDef.ParamLast);
+    anEdgeDef.Curve3d, anEdgeDef.ParamFirst, anEdgeDef.ParamLast);
 
   // Build curve-on-surface adaptor from PCurve + Surface.
   Handle(Geom2dAdaptor_Curve) aPC2d = new Geom2dAdaptor_Curve(
     aPCurve->Curve2d, anEdgeDef.ParamFirst, anEdgeDef.ParamLast);
-  Handle(GeomAdaptor_Surface) aHS = new GeomAdaptor_Surface(aSurfNode.Surface);
+  Handle(GeomAdaptor_Surface) aHS = new GeomAdaptor_Surface(aFaceDef.Surface);
   Handle(Adaptor3d_CurveOnSurface) aCOS = new Adaptor3d_CurveOnSurface(aPC2d, aHS);
 
   BRepLib_ValidateEdge aValidator(aRefCurve, aCOS, anEdgeDef.SameParameter);

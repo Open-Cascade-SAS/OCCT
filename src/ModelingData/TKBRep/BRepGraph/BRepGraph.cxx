@@ -95,50 +95,6 @@ void BRepGraph::Build(const TopoDS_Shape& theShape, bool theParallel)
 
 //=================================================================================================
 
-BRepGraph_NodeId BRepGraph::registerSurface(const Handle(Geom_Surface)& theSurf)
-{
-  if (theSurf.IsNull())
-    return BRepGraph_NodeId();
-
-  const Geom_Surface* aKey       = theSurf.get();
-  const int*          anExisting = myData->mySurfRegistry.Seek(aKey);
-  if (anExisting != nullptr)
-    return BRepGraph_NodeId(BRepGraph_NodeId::Kind::Surface, *anExisting);
-
-  BRepGraph_GeomNode::Surf& aSurfNode = myData->mySurfaces.Nodes.Appended();
-  const int                 aSurfIdx  = myData->mySurfaces.Nodes.Length() - 1;
-  aSurfNode.Id      = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Surface, aSurfIdx);
-  aSurfNode.Surface = theSurf;
-  allocateUID(aSurfNode.Id);
-
-  myData->mySurfRegistry.Add(aKey, aSurfIdx);
-  return aSurfNode.Id;
-}
-
-//=================================================================================================
-
-BRepGraph_NodeId BRepGraph::registerCurve(const Handle(Geom_Curve)& theCrv)
-{
-  if (theCrv.IsNull())
-    return BRepGraph_NodeId();
-
-  const Geom_Curve* aKey       = theCrv.get();
-  const int*        anExisting = myData->myCurveRegistry.Seek(aKey);
-  if (anExisting != nullptr)
-    return BRepGraph_NodeId(BRepGraph_NodeId::Kind::Curve, *anExisting);
-
-  BRepGraph_GeomNode::Curve& aCurveNode = myData->myCurves.Nodes.Appended();
-  const int                  aCurveIdx  = myData->myCurves.Nodes.Length() - 1;
-  aCurveNode.Id       = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Curve, aCurveIdx);
-  aCurveNode.CurveGeom = theCrv;
-  allocateUID(aCurveNode.Id);
-
-  myData->myCurveRegistry.Add(aKey, aCurveIdx);
-  return aCurveNode.Id;
-}
-
-//=================================================================================================
-
 BRepGraph_UID BRepGraph::allocateUID(BRepGraph_NodeId theNodeId)
 {
   const size_t  aCounter = myData->myNextUIDCounter.fetch_add(1, std::memory_order_relaxed);
@@ -155,8 +111,6 @@ BRepGraph_UID BRepGraph::allocateUID(BRepGraph_NodeId theNodeId)
     case BRepGraph_NodeId::Kind::Vertex:    myData->myVertices.UIDs.Append(aUID);    break;
     case BRepGraph_NodeId::Kind::Compound:  myData->myCompounds.UIDs.Append(aUID);  break;
     case BRepGraph_NodeId::Kind::CompSolid: myData->myCompSolids.UIDs.Append(aUID); break;
-    case BRepGraph_NodeId::Kind::Surface:   myData->mySurfaces.UIDs.Append(aUID);   break;
-    case BRepGraph_NodeId::Kind::Curve:     myData->myCurves.UIDs.Append(aUID);     break;
     default: break;
   }
 
@@ -427,8 +381,6 @@ void BRepGraph::SetAllocator(const Handle(NCollection_BaseAllocator)& theAlloc)
   using TopoVertex    = BRepGraph_Data::TopoKindData<BRepGraph_TopoNode::VertexDef, BRepGraph_TopoNode::VertexUsage>;
   using TopoCompound  = BRepGraph_Data::TopoKindData<BRepGraph_TopoNode::CompoundDef, BRepGraph_TopoNode::CompoundUsage>;
   using TopoCompSolid = BRepGraph_Data::TopoKindData<BRepGraph_TopoNode::CompSolidDef, BRepGraph_TopoNode::CompSolidUsage>;
-  using GeomSurf       = BRepGraph_Data::GeomKindData<BRepGraph_GeomNode::Surf>;
-  using GeomCurve      = BRepGraph_Data::GeomKindData<BRepGraph_GeomNode::Curve>;
 
   const auto& anAlloc = myData->myAllocator;
   myData->mySolids         = TopoSolid(16, 16, anAlloc);
@@ -439,10 +391,6 @@ void BRepGraph::SetAllocator(const Handle(NCollection_BaseAllocator)& theAlloc)
   myData->myVertices       = TopoVertex(256, 256, anAlloc);
   myData->myCompounds      = TopoCompound(8, 8, anAlloc);
   myData->myCompSolids     = TopoCompSolid(8, 8, anAlloc);
-  myData->mySurfaces       = GeomSurf(64, anAlloc);
-  myData->myCurves         = GeomCurve(64, anAlloc);
-  myData->mySurfRegistry  = NCollection_IndexedDataMap<const Geom_Surface*, int>(100, anAlloc);
-  myData->myCurveRegistry = NCollection_IndexedDataMap<const Geom_Curve*, int>(100, anAlloc);
   myData->myTShapeToDefId = NCollection_DataMap<const TopoDS_TShape*, BRepGraph_NodeId>(100, anAlloc);
   myData->myEdgeToWires   = NCollection_DataMap<int, NCollection_Vector<int>>(100, anAlloc);
 }

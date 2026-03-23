@@ -16,7 +16,6 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_DefsView.hxx>
-#include <BRepGraph_GeomView.hxx>
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraphAlgo_Deduplicate.hxx>
@@ -178,9 +177,9 @@ TEST(BRepGraphAlgo_ValidateTest, BoundsCheck_InvalidIndex)
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Defs().NbEdges(), 0);
 
-  // Corrupt edge's CurveNodeId to an out-of-bounds index.
+  // Corrupt edge's Curve3d to null.
   BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Mut().EdgeDef(0);
-  anEdge.CurveNodeId = BRepGraph_NodeId::CurveNode(99999);
+  anEdge.Curve3d.Nullify();
 
   const BRepGraphAlgo_Validate::Result aResult = BRepGraphAlgo_Validate::Perform(aGraph);
   EXPECT_FALSE(aResult.IsValid());

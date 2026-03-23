@@ -18,7 +18,6 @@
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraphAlgo_BndLib.hxx>
 #include <BRepGraph_DefsView.hxx>
-#include <BRepGraph_GeomView.hxx>
 #include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_SpatialView.hxx>
@@ -176,7 +175,7 @@ TEST(BRepGraphAPI_AddNodeTest, AddEdgeDef_WithCurve)
   const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.Defs().Edge(0);
   EXPECT_EQ(anEdgeDef.StartVertexDefId, aV1);
   EXPECT_EQ(anEdgeDef.EndVertexDefId, aV2);
-  EXPECT_TRUE(anEdgeDef.CurveNodeId.IsValid());
+  EXPECT_FALSE(anEdgeDef.Curve3d.IsNull());
   EXPECT_NEAR(anEdgeDef.ParamFirst, 0.0, 1e-10);
   EXPECT_NEAR(anEdgeDef.ParamLast, 10.0, 1e-10);
 }
@@ -254,10 +253,10 @@ TEST(BRepGraphAPI_AddNodeTest, AddFaceDef_WithSurface)
   EXPECT_TRUE(aFaceId.IsValid());
   EXPECT_EQ(aFaceId.NodeKind, BRepGraph_NodeId::Kind::Face);
   EXPECT_EQ(aGraph.Defs().NbFaces(), 1);
-  EXPECT_EQ(aGraph.Geom().NbSurfaces(), 1);
+  EXPECT_EQ(aGraph.Defs().NbFaces(), 1);
 
   const BRepGraph_TopoNode::FaceDef& aFaceDef = aGraph.Defs().Face(0);
-  EXPECT_TRUE(aFaceDef.SurfNodeId.IsValid());
+  EXPECT_FALSE(aFaceDef.Surface.IsNull());
 }
 
 TEST(BRepGraphAPI_AddNodeTest, AddShellAndSolid)

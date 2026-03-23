@@ -21,7 +21,6 @@
 #include <BRepGraph_CachedValue.hxx>
 #include <BRepGraph_NodeCache.hxx>
 #include <BRepGraph_TopoNode.hxx>
-#include <BRepGraph_GeomNode.hxx>
 #include <BRepGraph_History.hxx>
 
 #include <TopoDS_Shape.hxx>
@@ -59,21 +58,6 @@ struct BRepGraph_Data
     void Clear() { Defs.Clear(); Usages.Clear(); UIDs.Clear(); }
   };
 
-  //! Groups node and UID vectors for a single geometry kind.
-  template <typename NodeT>
-  struct GeomKindData
-  {
-    NCollection_Vector<NodeT>         Nodes;
-    NCollection_Vector<BRepGraph_UID> UIDs;
-
-    GeomKindData(int theCap,
-                 const Handle(NCollection_BaseAllocator)& theAlloc)
-        : Nodes(theCap, theAlloc),
-          UIDs(theCap, theAlloc) {}
-
-    void Clear() { Nodes.Clear(); UIDs.Clear(); }
-  };
-
   Handle(NCollection_BaseAllocator) myAllocator;
 
   //! Topology kind data (8 kinds), each grouping Defs, Usages, and UIDs.
@@ -86,19 +70,11 @@ struct BRepGraph_Data
   TopoKindData<BRepGraph_TopoNode::CompoundDef, BRepGraph_TopoNode::CompoundUsage>   myCompounds;
   TopoKindData<BRepGraph_TopoNode::CompSolidDef, BRepGraph_TopoNode::CompSolidUsage> myCompSolids;
 
-  //! Geometry kind data (2 kinds), each grouping Nodes and UIDs.
-  GeomKindData<BRepGraph_GeomNode::Surf>      mySurfaces;
-  GeomKindData<BRepGraph_GeomNode::Curve>     myCurves;
-
   //! Map-based RelEdge storage.
   NCollection_DataMap<BRepGraph_NodeId,
                       NCollection_Vector<BRepGraph_RelEdge>> myOutRelEdges;
   NCollection_DataMap<BRepGraph_NodeId,
                       NCollection_Vector<BRepGraph_RelEdge>> myInRelEdges;
-
-  //! Geometry deduplication registries.
-  NCollection_IndexedDataMap<const Geom_Surface*, int> mySurfRegistry;
-  NCollection_IndexedDataMap<const Geom_Curve*, int>   myCurveRegistry;
 
   //! TShape -> Definition NodeId reverse lookup.
   NCollection_DataMap<const TopoDS_TShape*, BRepGraph_NodeId> myTShapeToDefId;
@@ -137,10 +113,6 @@ struct BRepGraph_Data
         myVertices(256, 256, myAllocator),
         myCompounds(16, 16, myAllocator),
         myCompSolids(16, 16, myAllocator),
-        mySurfaces(64, myAllocator),
-        myCurves(64, myAllocator),
-        mySurfRegistry(100, myAllocator),
-        myCurveRegistry(100, myAllocator),
         myTShapeToDefId(100, myAllocator)
   {
   }
@@ -157,10 +129,6 @@ struct BRepGraph_Data
         myVertices(256, 256, myAllocator),
         myCompounds(16, 16, myAllocator),
         myCompSolids(16, 16, myAllocator),
-        mySurfaces(64, myAllocator),
-        myCurves(64, myAllocator),
-        mySurfRegistry(100, myAllocator),
-        myCurveRegistry(100, myAllocator),
         myTShapeToDefId(100, myAllocator)
   {
   }

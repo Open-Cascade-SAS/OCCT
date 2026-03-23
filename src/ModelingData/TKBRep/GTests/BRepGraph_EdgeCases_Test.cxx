@@ -14,7 +14,6 @@
 #include <BRep_Builder.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_DefsView.hxx>
-#include <BRepGraph_GeomView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_UIDsView.hxx>
 #include <BRepGraph_UsagesView.hxx>
@@ -53,8 +52,8 @@ TEST(BRepGraphEdgeCasesTest, Build_EmptyCompound_IsDoneZeroCounts)
   EXPECT_EQ(aGraph.Defs().NbWires(), 0);
   EXPECT_EQ(aGraph.Defs().NbEdges(), 0);
   EXPECT_EQ(aGraph.Defs().NbVertices(), 0);
-  EXPECT_EQ(aGraph.Geom().NbSurfaces(), 0);
-  EXPECT_EQ(aGraph.Geom().NbCurves(), 0);
+  EXPECT_EQ(aGraph.Defs().NbFaces(), 0);
+  EXPECT_EQ(aGraph.Defs().NbEdges(), 0);
 }
 
 TEST(BRepGraphEdgeCasesTest, Shape_InvalidNodeId_ReturnsNull)
@@ -192,8 +191,8 @@ TEST(BRepGraphEdgeCasesTest, Build_TwiceOnSameGraph_CountsResetCorrectly)
   const int aWires1   = aGraph.Defs().NbWires();
   const int aEdges1   = aGraph.Defs().NbEdges();
   const int aVerts1   = aGraph.Defs().NbVertices();
-  const int aSurfs1   = aGraph.Geom().NbSurfaces();
-  const int aCurves1  = aGraph.Geom().NbCurves();
+  const int aSurfs1   = aGraph.Defs().NbFaces();
+  const int aCurves1  = aGraph.Defs().NbEdges();
 
   // Rebuild with same shape.
   aGraph.Build(aBox);
@@ -205,8 +204,8 @@ TEST(BRepGraphEdgeCasesTest, Build_TwiceOnSameGraph_CountsResetCorrectly)
   EXPECT_EQ(aGraph.Defs().NbWires(), aWires1);
   EXPECT_EQ(aGraph.Defs().NbEdges(), aEdges1);
   EXPECT_EQ(aGraph.Defs().NbVertices(), aVerts1);
-  EXPECT_EQ(aGraph.Geom().NbSurfaces(), aSurfs1);
-  EXPECT_EQ(aGraph.Geom().NbCurves(), aCurves1);
+  EXPECT_EQ(aGraph.Defs().NbFaces(), aSurfs1);
+  EXPECT_EQ(aGraph.Defs().NbEdges(), aCurves1);
 }
 
 // ============================================================
@@ -249,8 +248,8 @@ TEST(BRepGraphEdgeCasesTest, ParallelBuild_Sphere_SameAsSequential)
   EXPECT_EQ(aParGraph.Defs().NbWires(),   aSeqGraph.Defs().NbWires());
   EXPECT_EQ(aParGraph.Defs().NbEdges(),   aSeqGraph.Defs().NbEdges());
   EXPECT_EQ(aParGraph.Defs().NbVertices(), aSeqGraph.Defs().NbVertices());
-  EXPECT_EQ(aParGraph.Geom().NbSurfaces(),   aSeqGraph.Geom().NbSurfaces());
-  EXPECT_EQ(aParGraph.Geom().NbCurves(),     aSeqGraph.Geom().NbCurves());
+  EXPECT_EQ(aParGraph.Defs().NbFaces(),   aSeqGraph.Defs().NbFaces());
+  EXPECT_EQ(aParGraph.Defs().NbEdges(),   aSeqGraph.Defs().NbEdges());
   EXPECT_EQ(aParGraph.Defs().NbNodes(),      aSeqGraph.Defs().NbNodes());
 
   EXPECT_EQ(aParGraph.Usages().NbSolids(),  aSeqGraph.Usages().NbSolids());
@@ -289,8 +288,8 @@ TEST(BRepGraphEdgeCasesTest, ParallelBuild_Compound_SameAsSequential)
   EXPECT_EQ(aParGraph.Defs().NbWires(),   aSeqGraph.Defs().NbWires());
   EXPECT_EQ(aParGraph.Defs().NbEdges(),   aSeqGraph.Defs().NbEdges());
   EXPECT_EQ(aParGraph.Defs().NbVertices(), aSeqGraph.Defs().NbVertices());
-  EXPECT_EQ(aParGraph.Geom().NbSurfaces(),   aSeqGraph.Geom().NbSurfaces());
-  EXPECT_EQ(aParGraph.Geom().NbCurves(),     aSeqGraph.Geom().NbCurves());
+  EXPECT_EQ(aParGraph.Defs().NbFaces(),   aSeqGraph.Defs().NbFaces());
+  EXPECT_EQ(aParGraph.Defs().NbEdges(),   aSeqGraph.Defs().NbEdges());
   EXPECT_EQ(aParGraph.Defs().NbNodes(),      aSeqGraph.Defs().NbNodes());
 
   EXPECT_EQ(aParGraph.Usages().NbSolids(),  aSeqGraph.Usages().NbSolids());

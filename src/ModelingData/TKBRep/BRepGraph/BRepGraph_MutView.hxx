@@ -15,7 +15,6 @@
 #define _BRepGraph_MutView_HeaderFile
 
 #include <BRepGraph.hxx>
-#include <BRepGraph_GeomNode.hxx>
 #include <TopAbs_Orientation.hxx>
 
 class Geom2d_Curve;
@@ -56,14 +55,6 @@ public:
   //! Return mutable compsolid definition (marks node as modified).
   //! @param[in] theIdx zero-based definition index
   Standard_EXPORT BRepGraph_TopoNode::CompSolidDef& CompSolidDef(int theIdx);
-
-  //! Return mutable surface geometry node (no per-node modification tracking).
-  //! @param[in] theIdx zero-based geometry node index
-  Standard_EXPORT BRepGraph_GeomNode::Surf& SurfNode(int theIdx);
-
-  //! Return mutable curve geometry node (no per-node modification tracking).
-  //! @param[in] theIdx zero-based geometry node index
-  Standard_EXPORT BRepGraph_GeomNode::Curve& CurveNode(int theIdx);
 
   //! Attach a PCurve to an edge for a given face context (stored inline on EdgeDef).
   //! @param[in] theEdgeDef           edge definition NodeId

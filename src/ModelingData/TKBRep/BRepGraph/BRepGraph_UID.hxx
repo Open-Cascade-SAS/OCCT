@@ -53,7 +53,6 @@ struct BRepGraph_UID
   uint32_t           Generation() const { return myGeneration; }
 
   bool IsTopology() const { return static_cast<int>(myKind) <= 7; }
-  bool IsGeometry() const { return static_cast<int>(myKind) >= 10; }
 
   //! Equality: Identity = (Kind, Counter).  Generation excluded.
   bool operator==(const BRepGraph_UID& theOther) const

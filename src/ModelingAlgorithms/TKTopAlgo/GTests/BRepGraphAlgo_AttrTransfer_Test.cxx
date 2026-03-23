@@ -178,7 +178,7 @@ TEST(BRepGraphAlgo_AttrTransferTest, AttributeKeys_AfterSet)
   EXPECT_TRUE(hasLabel);
 }
 
-TEST(BRepGraphAlgo_AttrTransferTest, AttributeKeys_GeometryNode)
+TEST(BRepGraphAlgo_AttrTransferTest, AttributeKeys_FreshNode_Empty)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -187,9 +187,9 @@ TEST(BRepGraphAlgo_AttrTransferTest, AttributeKeys_GeometryNode)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  // Geometry nodes have no Cache, so AttributeKeys should return empty.
-  const BRepGraph_NodeId aSurfNode(BRepGraph_NodeId::Kind::Surface, 0);
-  const NCollection_Vector<int> aKeys = aGraph.Attrs().AttributeKeys(aSurfNode);
+  // A node with no attributes set should return empty keys.
+  const BRepGraph_NodeId aVertexNode(BRepGraph_NodeId::Kind::Vertex, 0);
+  const NCollection_Vector<int> aKeys = aGraph.Attrs().AttributeKeys(aVertexNode);
   EXPECT_TRUE(aKeys.IsEmpty());
 }
 

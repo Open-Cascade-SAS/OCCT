@@ -15,8 +15,6 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_DefsView.hxx>
-#include <BRepGraph_GeomNode.hxx>
-#include <BRepGraph_GeomView.hxx>
 #include <BRepGraph_TopoNode.hxx>
 #include <BRepGraph_UsagesView.hxx>
 
@@ -252,8 +250,7 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph& theGraph, int theFaceIdx, 
   theData = CachedData();
 
   const BRepGraph_TopoNode::FaceDef& aFaceDef = theGraph.Defs().Face(theFaceIdx);
-  const BRepGraph_GeomNode::Surf*    aSurf    = theGraph.Geom().FaceSurface(theFaceIdx);
-  if (aSurf == nullptr || aSurf->Surface.IsNull())
+  if (aFaceDef.Surface.IsNull())
   {
     return;
   }
@@ -262,7 +259,7 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph& theGraph, int theFaceIdx, 
   theData.IsNaturalRestriction = aFaceDef.NaturalRestriction;
   theData.ComputeMethod        = Method::PCurve;
 
-  GeomAdaptor_Surface aGAS(aSurf->Surface);
+  GeomAdaptor_Surface aGAS(aFaceDef.Surface);
 
   theData.UMin = aGAS.FirstUParameter();
   theData.UMax = aGAS.LastUParameter();
@@ -307,7 +304,7 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph& theGraph, int theFaceIdx, 
         }
         const BRepGraph_TopoNode::WireDef::EdgeEntry& anEntry = aWireDef.OrderedEdges.Value(anIdx);
         const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurve =
-          theGraph.Geom().FindPCurve(anEntry.EdgeDefId, aFaceDef.Id);
+          theGraph.Defs().FindPCurve(anEntry.EdgeDefId, aFaceDef.Id);
         if (aPCurve == nullptr || aPCurve->Curve2d.IsNull())
         {
           isAborted = true;
@@ -411,7 +408,7 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph& theGraph, int theFaceIdx, 
       {
         const BRepGraph_TopoNode::WireDef::EdgeEntry& anEntry = aWireDef.OrderedEdges.Value(anIdx);
         const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurve =
-          theGraph.Geom().FindPCurve(anEntry.EdgeDefId, aFaceDef.Id);
+          theGraph.Defs().FindPCurve(anEntry.EdgeDefId, aFaceDef.Id);
         if (aPCurve == nullptr || aPCurve->Curve2d.IsNull())
         {
           continue;
@@ -441,16 +438,16 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph& theGraph, int theFaceIdx, 
 
   // Clamp to surface bounds, handle periodicity.
   // Unwrap RectangularTrimmedSurface to get the basis surface for periodicity checks.
-  Handle(Geom_Surface) aBasisSurf = aSurf->Surface;
+  Handle(Geom_Surface) aBasisSurf = aFaceDef.Surface;
   if (aBasisSurf->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
   {
     aBasisSurf = Handle(Geom_RectangularTrimmedSurface)::DownCast(aBasisSurf)->BasisSurface();
   }
 
   double aSUmin, aSUmax, aSVmin, aSVmax;
-  aSurf->Surface->Bounds(aSUmin, aSUmax, aSVmin, aSVmax);
+  aFaceDef.Surface->Bounds(aSUmin, aSUmax, aSVmin, aSVmax);
 
-  if (!aSurf->Surface->IsUPeriodic())
+  if (!aFaceDef.Surface->IsUPeriodic())
   {
     // BSpline pseudo-periodicity check: surface may be geometrically periodic
     // even though IsUPeriodic() returns false.
@@ -468,15 +465,15 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph& theGraph, int theFaceIdx, 
   }
   else
   {
-    if (theData.UMax - theData.UMin > aSurf->Surface->UPeriod())
+    if (theData.UMax - theData.UMin > aFaceDef.Surface->UPeriod())
     {
-      const double delta = theData.UMax - theData.UMin - aSurf->Surface->UPeriod();
+      const double delta = theData.UMax - theData.UMin - aFaceDef.Surface->UPeriod();
       theData.UMin += delta / 2.;
       theData.UMax -= delta / 2.;
     }
   }
 
-  if (!aSurf->Surface->IsVPeriodic())
+  if (!aFaceDef.Surface->IsVPeriodic())
   {
     // BSpline pseudo-periodicity check for V direction.
     if (!isBSplinePseudoPeriodicV(aBasisSurf,
@@ -493,9 +490,9 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph& theGraph, int theFaceIdx, 
   }
   else
   {
-    if (theData.VMax - theData.VMin > aSurf->Surface->VPeriod())
+    if (theData.VMax - theData.VMin > aFaceDef.Surface->VPeriod())
     {
-      const double delta = theData.VMax - theData.VMin - aSurf->Surface->VPeriod();
+      const double delta = theData.VMax - theData.VMin - aFaceDef.Surface->VPeriod();
       theData.VMin += delta / 2.;
       theData.VMax -= delta / 2.;
     }

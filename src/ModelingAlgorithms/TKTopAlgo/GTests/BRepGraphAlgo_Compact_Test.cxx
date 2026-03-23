@@ -17,7 +17,6 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_DefsView.hxx>
-#include <BRepGraph_GeomView.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_HistoryRecord.hxx>
 #include <BRepGraph_MutView.hxx>
@@ -101,19 +100,18 @@ TEST(BRepGraphAlgo_CompactTest, AfterDeduplicate_RemovesNodes)
   aGraph.Build(makeTwoCopiedFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
-  // Run geometry dedup which nullifies orphan surfaces/curves.
+  // Run geometry dedup which replaces duplicate surface/curve handles directly.
   BRepGraphAlgo_Deduplicate::Perform(aGraph);
-
-  const int aNbSurfacesBefore = aGraph.Geom().NbSurfaces();
 
   BRepGraphAlgo_Compact::Options anOpts;
   anOpts.HistoryMode                       = false;
   const BRepGraphAlgo_Compact::Result aRes = BRepGraphAlgo_Compact::Perform(aGraph, anOpts);
 
-  // Some geometry nodes should have been removed.
-  EXPECT_GT(aRes.NbRemovedSurfaces + aRes.NbRemovedCurves, 0);
-  EXPECT_LT(aRes.NbNodesAfter, aRes.NbNodesBefore);
-  EXPECT_LT(aGraph.Geom().NbSurfaces(), aNbSurfacesBefore);
+  // No separate geometry nodes exist, so NbRemovedSurfaces/NbRemovedCurves is always 0.
+  EXPECT_EQ(aRes.NbRemovedSurfaces, 0);
+  EXPECT_EQ(aRes.NbRemovedCurves, 0);
+  // Without MergeDefsWhenSafe, topology node count does not change either.
+  EXPECT_EQ(aRes.NbNodesAfter, aRes.NbNodesBefore);
 }
 
 TEST(BRepGraphAlgo_CompactTest, IndexDensity_NoGaps)
@@ -175,12 +173,13 @@ TEST(BRepGraphAlgo_CompactTest, FullPipeline_Deduplicate_Compact_Validate)
   aGraph.Build(makeTwoCopiedFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
-  // Full dedup.
+  // Full dedup (replaces duplicate handles directly on defs).
   BRepGraphAlgo_Deduplicate::Perform(aGraph);
 
-  // Compact.
+  // Compact. Without MergeDefsWhenSafe, no topology nodes are removed,
+  // so NbNodesAfter == NbNodesBefore.
   const BRepGraphAlgo_Compact::Result aCompactRes = BRepGraphAlgo_Compact::Perform(aGraph);
-  EXPECT_LT(aCompactRes.NbNodesAfter, aCompactRes.NbNodesBefore);
+  EXPECT_EQ(aCompactRes.NbNodesAfter, aCompactRes.NbNodesBefore);
 
   // Validate.
   const BRepGraphAlgo_Validate::Result aValResult = BRepGraphAlgo_Validate::Perform(aGraph);
@@ -222,11 +221,7 @@ TEST(BRepGraphAlgo_CompactTest, Compact_PreservesTopologyUIDs)
     collectUIDs(BRepGraph_NodeId::Kind::Compound, aGraph.Defs().NbCompounds());
   const NCollection_Map<BRepGraph_UID> anOrigCompSolidUIDs =
     collectUIDs(BRepGraph_NodeId::Kind::CompSolid, aGraph.Defs().NbCompSolids());
-  const NCollection_Map<BRepGraph_UID> anOrigSurfaceUIDs =
-    collectUIDs(BRepGraph_NodeId::Kind::Surface, aGraph.Geom().NbSurfaces());
-  const NCollection_Map<BRepGraph_UID> anOrigCurveUIDs =
-    collectUIDs(BRepGraph_NodeId::Kind::Curve, aGraph.Geom().NbCurves());
-  (void)anOrigCurveUIDs; // suppress unused if PCurve UIDs removed
+  // Geometry is now stored inline on defs; no separate geometry UIDs to collect.
 
   const uint32_t aGenBefore = aGraph.UIDs().Generation();
 
@@ -272,13 +267,5 @@ TEST(BRepGraphAlgo_CompactTest, Compact_PreservesTopologyUIDs)
              anOrigCompSolidUIDs,
              "CompSolid");
 
-  // Verify geometry UIDs are also preserved from old graph.
-  verifyUIDs(BRepGraph_NodeId::Kind::Surface,
-             aGraph.Geom().NbSurfaces(),
-             anOrigSurfaceUIDs,
-             "Surface");
-  verifyUIDs(BRepGraph_NodeId::Kind::Curve,
-             aGraph.Geom().NbCurves(),
-             anOrigCurveUIDs,
-             "Curve");
+  // Geometry is now stored inline on defs; no separate geometry UIDs to verify.
 }

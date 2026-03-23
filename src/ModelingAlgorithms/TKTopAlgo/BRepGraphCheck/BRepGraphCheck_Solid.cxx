@@ -15,8 +15,6 @@
 
 #include <BRepClass3d_SolidClassifier.hxx>
 #include <BRepGraph_DefsView.hxx>
-#include <BRepGraph_GeomNode.hxx>
-#include <BRepGraph_GeomView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_TopoNode.hxx>
 #include <BRepGraph_UsagesView.hxx>
@@ -114,17 +112,12 @@ void BRepGraphCheck::CheckSolidMinimum(
       continue;
 
     const BRepGraph_TopoNode::FaceDef& aFaceDef = aDefs.Face(aFaceDefId.Index);
-    if (!aFaceDef.SurfNodeId.IsValid())
-      continue;
-
-    const BRepGraph::GeomView aGeom = theGraph.Geom();
-    const BRepGraph_GeomNode::Surf& aSurfNode = aGeom.Surface(aFaceDef.SurfNodeId.Index);
-    if (aSurfNode.Surface.IsNull())
+    if (aFaceDef.Surface.IsNull())
       continue;
 
     // Use the surface midpoint as representative.
     double aUMin = 0.0, aUMax = 0.0, aVMin = 0.0, aVMax = 0.0;
-    aSurfNode.Surface->Bounds(aUMin, aUMax, aVMin, aVMax);
+    aFaceDef.Surface->Bounds(aUMin, aUMax, aVMin, aVMax);
     // Clamp infinite bounds.
     if (aUMin < -1.0e6) aUMin = -1.0e6;
     if (aUMax >  1.0e6) aUMax =  1.0e6;
@@ -132,7 +125,7 @@ void BRepGraphCheck::CheckSolidMinimum(
     if (aVMax >  1.0e6) aVMax =  1.0e6;
 
     // Geometry is stored at identity, no location transform needed.
-    const gp_Pnt aRepPnt = aSurfNode.Surface->Value(0.5 * (aUMin + aUMax), 0.5 * (aVMin + aVMax));
+    const gp_Pnt aRepPnt = aFaceDef.Surface->Value(0.5 * (aUMin + aUMax), 0.5 * (aVMin + aVMax));
 
     aClassifier.Perform(aRepPnt, Precision::Confusion());
     const TopAbs_State aState = aClassifier.State();
