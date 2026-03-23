@@ -14,6 +14,7 @@
 #include <BRepGraphAlgo_FaceAnalysis.hxx>
 
 #include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_MutRef.hxx>
 #include <BRepGraph_MutView.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_Map.hxx>
@@ -137,9 +138,9 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(
           ++aNbSmall;
 
           // Mark edge as degenerate.
-          BRepGraph_TopoNode::EdgeDef& aMutEdge = theGraph.Mut().EdgeDef(anEdgeIdx);
-          aMutEdge.IsDegenerate                  = true;
-          aMutEdge.Curve3d.Nullify();
+          BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aMutEdge = theGraph.MutEdge(anEdgeIdx);
+          aMutEdge->IsDegenerate                  = true;
+          aMutEdge->Curve3d.Nullify();
           aResult.DegeneratedEdges.Append(
             BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, anEdgeIdx));
 
@@ -245,9 +246,9 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(
     }
 
     // Update target vertex.
-    BRepGraph_TopoNode::VertexDef& aTargetVtx = theGraph.Mut().VertexDef(aTargetIdx);
-    aTargetVtx.Point     = aCentroid;
-    aTargetVtx.Tolerance = aMaxTol;
+    BRepGraph_MutRef<BRepGraph_TopoNode::VertexDef> aTargetVtx = theGraph.MutVertex(aTargetIdx);
+    aTargetVtx->Point     = aCentroid;
+    aTargetVtx->Tolerance = aMaxTol;
   }
 
   // Apply vertex merges to all edges that reference merged vertices.
@@ -293,9 +294,9 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(
 
       if (aNeedUpdate)
       {
-        BRepGraph_TopoNode::EdgeDef& aMutEdge = theGraph.Mut().EdgeDef(anEdgeIdx);
-        aMutEdge.StartVertexIdx                = aNewStart;
-        aMutEdge.EndVertexIdx                  = aNewEnd;
+        BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aMutEdge = theGraph.MutEdge(anEdgeIdx);
+        aMutEdge->StartVertexIdx                = aNewStart;
+        aMutEdge->EndVertexIdx                  = aNewEnd;
       }
     }
   }

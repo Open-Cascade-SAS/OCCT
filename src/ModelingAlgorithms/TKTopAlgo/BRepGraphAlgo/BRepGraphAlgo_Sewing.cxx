@@ -53,6 +53,7 @@
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_MutationGuard.hxx>
 #include <BRepGraph_Mutator.hxx>
+#include <BRepGraph_MutRef.hxx>
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_SpatialView.hxx>
@@ -1578,9 +1579,9 @@ void convertDegenerateEdges(BRepGraph&                   theGraph,
     if (aLength <= aVertexTolSum)
     {
       // Mark as degenerate: clear 3D curve, merge vertices to midpoint.
-      BRepGraph_TopoNode::EdgeDef& aMutEdge = theGraph.Mut().EdgeDef(anEdgeId.Index);
-      aMutEdge.IsDegenerate                  = true;
-      aMutEdge.Curve3d.Nullify();
+      BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aMutEdge = theGraph.MutEdge(anEdgeId.Index);
+      aMutEdge->IsDegenerate                  = true;
+      aMutEdge->Curve3d.Nullify();
 
       // Merge start/end vertices if they differ.
       if (anEdge.StartVertexIdx >= 0 && anEdge.EndVertexIdx >= 0
@@ -1593,10 +1594,10 @@ void convertDegenerateEdges(BRepGraph&                   theGraph,
         const double aNewTol   = std::max(aD1, aD2);
 
         // Keep start vertex, update it to midpoint.
-        BRepGraph_TopoNode::VertexDef& aVtx = theGraph.Mut().VertexDef(anEdge.StartVertexIdx);
-        aVtx.Point     = aPtMid;
-        aVtx.Tolerance = aNewTol;
-        aMutEdge.EndVertexIdx = anEdge.StartVertexIdx;
+        BRepGraph_MutRef<BRepGraph_TopoNode::VertexDef> aVtx = theGraph.MutVertex(anEdge.StartVertexIdx);
+        aVtx->Point     = aPtMid;
+        aVtx->Tolerance = aNewTol;
+        aMutEdge->EndVertexIdx = anEdge.StartVertexIdx;
       }
 
       theResult.DegeneratedEdges.Append(anEdgeId);

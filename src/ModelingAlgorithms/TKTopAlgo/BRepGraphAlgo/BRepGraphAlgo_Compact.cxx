@@ -19,6 +19,7 @@
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_Mutator.hxx>
+#include <BRepGraph_MutRef.hxx>
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_RelEdgesView.hxx>
 #include <BRepGraph_UID.hxx>
@@ -270,10 +271,10 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
                                                                  anOldEdge.Tolerance);
 
     // Copy edge properties.
-    BRepGraph_TopoNode::EdgeDef& aNewEdge = aNewGraph.Mut().EdgeDef(aNewEdgeId.Index);
-    aNewEdge.IsDegenerate                 = anOldEdge.IsDegenerate;
-    aNewEdge.SameParameter                = anOldEdge.SameParameter;
-    aNewEdge.SameRange                    = anOldEdge.SameRange;
+    BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aNewEdge = aNewGraph.MutEdge(aNewEdgeId.Index);
+    aNewEdge->IsDegenerate                 = anOldEdge.IsDegenerate;
+    aNewEdge->SameParameter                = anOldEdge.SameParameter;
+    aNewEdge->SameRange                    = anOldEdge.SameRange;
   }
 
   // PCurves (added after edges and faces are known).

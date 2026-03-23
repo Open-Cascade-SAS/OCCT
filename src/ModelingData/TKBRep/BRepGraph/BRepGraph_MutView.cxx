@@ -22,64 +22,72 @@
 
 BRepGraph_TopoNode::EdgeDef& BRepGraph::MutView::EdgeDef(int theIdx)
 {
-  myGraph->markModified(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, theIdx));
-  return myGraph->myData->myIncStorage.ChangeEdge(theIdx);
+  BRepGraph_TopoNode::EdgeDef& aDef = myGraph->myData->myIncStorage.ChangeEdge(theIdx);
+  myGraph->markModified(BRepGraph_NodeId::Edge(theIdx), aDef);
+  return aDef;
 }
 
 //=================================================================================================
 
 BRepGraph_TopoNode::WireDef& BRepGraph::MutView::WireDef(int theIdx)
 {
-  myGraph->markModified(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Wire, theIdx));
-  return myGraph->myData->myIncStorage.ChangeWire(theIdx);
+  BRepGraph_TopoNode::WireDef& aDef = myGraph->myData->myIncStorage.ChangeWire(theIdx);
+  myGraph->markModified(BRepGraph_NodeId::Wire(theIdx), aDef);
+  return aDef;
 }
 
 //=================================================================================================
 
 BRepGraph_TopoNode::VertexDef& BRepGraph::MutView::VertexDef(int theIdx)
 {
-  myGraph->markModified(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Vertex, theIdx));
-  return myGraph->myData->myIncStorage.ChangeVertex(theIdx);
+  BRepGraph_TopoNode::VertexDef& aDef = myGraph->myData->myIncStorage.ChangeVertex(theIdx);
+  myGraph->markModified(BRepGraph_NodeId::Vertex(theIdx), aDef);
+  return aDef;
 }
 
 //=================================================================================================
 
 BRepGraph_TopoNode::FaceDef& BRepGraph::MutView::FaceDef(int theIdx)
 {
-  myGraph->markModified(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, theIdx));
-  return myGraph->myData->myIncStorage.ChangeFace(theIdx);
+  BRepGraph_TopoNode::FaceDef& aDef = myGraph->myData->myIncStorage.ChangeFace(theIdx);
+  myGraph->markModified(BRepGraph_NodeId::Face(theIdx), aDef);
+  return aDef;
 }
 
 //=================================================================================================
 
 BRepGraph_TopoNode::ShellDef& BRepGraph::MutView::ShellDef(int theIdx)
 {
-  myGraph->markModified(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Shell, theIdx));
-  return myGraph->myData->myIncStorage.ChangeShell(theIdx);
+  BRepGraph_TopoNode::ShellDef& aDef = myGraph->myData->myIncStorage.ChangeShell(theIdx);
+  myGraph->markModified(BRepGraph_NodeId::Shell(theIdx), aDef);
+  return aDef;
 }
 
 //=================================================================================================
 
 BRepGraph_TopoNode::SolidDef& BRepGraph::MutView::SolidDef(int theIdx)
 {
-  myGraph->markModified(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Solid, theIdx));
-  return myGraph->myData->myIncStorage.ChangeSolid(theIdx);
+  BRepGraph_TopoNode::SolidDef& aDef = myGraph->myData->myIncStorage.ChangeSolid(theIdx);
+  myGraph->markModified(BRepGraph_NodeId::Solid(theIdx), aDef);
+  return aDef;
 }
 
 //=================================================================================================
 
 BRepGraph_TopoNode::CompoundDef& BRepGraph::MutView::CompoundDef(int theIdx)
 {
-  myGraph->markModified(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Compound, theIdx));
-  return myGraph->myData->myIncStorage.ChangeCompound(theIdx);
+  BRepGraph_TopoNode::CompoundDef& aDef = myGraph->myData->myIncStorage.ChangeCompound(theIdx);
+  myGraph->markModified(BRepGraph_NodeId::Compound(theIdx), aDef);
+  return aDef;
 }
 
 //=================================================================================================
 
 BRepGraph_TopoNode::CompSolidDef& BRepGraph::MutView::CompSolidDef(int theIdx)
 {
-  myGraph->markModified(BRepGraph_NodeId(BRepGraph_NodeId::Kind::CompSolid, theIdx));
-  return myGraph->myData->myIncStorage.ChangeCompSolid(theIdx);
+  BRepGraph_TopoNode::CompSolidDef& aDef = myGraph->myData->myIncStorage.ChangeCompSolid(theIdx);
+  myGraph->markModified(BRepGraph_NodeId::CompSolid(theIdx), aDef);
+  return aDef;
 }
 
 //=================================================================================================

@@ -240,6 +240,10 @@ private:
   Standard_EXPORT BRepGraph_NodeCache* mutableCache(BRepGraph_NodeId theNode);
   Standard_EXPORT void markModified(BRepGraph_NodeId theDefId);
 
+  //! Optimized overload: skips ChangeTopoDef() and mutableCache() dispatch
+  //! when the caller already holds a mutable reference to the definition.
+  Standard_EXPORT void markModified(BRepGraph_NodeId theDefId, BRepGraph_TopoNode::BaseDef& theDef);
+
   //! Generic topology definition lookup by NodeId (const).
   Standard_EXPORT const BRepGraph_TopoNode::BaseDef* TopoDef(BRepGraph_NodeId theId) const;
 

@@ -16,6 +16,7 @@
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_Data.hxx>
 #include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_MutRef.hxx>
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
 
@@ -104,11 +105,11 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
                                  anEdge.ParamLast,
                                  anEdge.Tolerance);
 
-    BRepGraph_TopoNode::EdgeDef& aNewEdge = aResult.Mut().EdgeDef(anIdx);
-    aNewEdge.IsDegenerate  = anEdge.IsDegenerate;
-    aNewEdge.SameParameter = anEdge.SameParameter;
-    aNewEdge.SameRange     = anEdge.SameRange;
-    transferUserAttributes(anEdge.Cache, aNewEdge.Cache);
+    BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aNewEdge = aResult.MutEdge(anIdx);
+    aNewEdge->IsDegenerate  = anEdge.IsDegenerate;
+    aNewEdge->SameParameter = anEdge.SameParameter;
+    aNewEdge->SameRange     = anEdge.SameRange;
+    transferUserAttributes(anEdge.Cache, aNewEdge->Cache);
   }
 
   // Wires.
@@ -152,11 +153,11 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
 
     aResult.Builder().AddFaceDef(aSurf, anOuterWire, anInnerWires, aFace.Tolerance);
 
-    BRepGraph_TopoNode::FaceDef& aNewFace = aResult.Mut().FaceDef(anIdx);
-    aNewFace.NaturalRestriction          = aFace.NaturalRestriction;
-    aNewFace.Triangulations              = aFace.Triangulations;
-    aNewFace.ActiveTriangulationIndex    = aFace.ActiveTriangulationIndex;
-    transferUserAttributes(aFace.Cache, aNewFace.Cache);
+    BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aNewFace = aResult.MutFace(anIdx);
+    aNewFace->NaturalRestriction          = aFace.NaturalRestriction;
+    aNewFace->Triangulations              = aFace.Triangulations;
+    aNewFace->ActiveTriangulationIndex    = aFace.ActiveTriangulationIndex;
+    transferUserAttributes(aFace.Cache, aNewFace->Cache);
   }
 
   // PCurves (after edges and faces are created).
@@ -355,11 +356,11 @@ BRepGraph BRepGraphAlgo_Copy::CopyFace(const BRepGraph& theGraph,
     aResult.Builder().AddEdgeDef(aNewStart, aNewEnd, aCurve,
                                  anEdge.ParamFirst, anEdge.ParamLast, anEdge.Tolerance);
 
-    BRepGraph_TopoNode::EdgeDef& aNewEdge = aResult.Mut().EdgeDef(aNewEdgeIdx);
-    aNewEdge.IsDegenerate  = anEdge.IsDegenerate;
-    aNewEdge.SameParameter = anEdge.SameParameter;
-    aNewEdge.SameRange     = anEdge.SameRange;
-    transferUserAttributes(anEdge.Cache, aNewEdge.Cache);
+    BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aNewEdge = aResult.MutEdge(aNewEdgeIdx);
+    aNewEdge->IsDegenerate  = anEdge.IsDegenerate;
+    aNewEdge->SameParameter = anEdge.SameParameter;
+    aNewEdge->SameRange     = anEdge.SameRange;
+    transferUserAttributes(anEdge.Cache, aNewEdge->Cache);
   }
 
   // Add wires in deterministic order.
@@ -404,11 +405,11 @@ BRepGraph BRepGraphAlgo_Copy::CopyFace(const BRepGraph& theGraph,
   }
 
   aResult.Builder().AddFaceDef(aSurf, anOuterWire, anInnerWires, aFaceDef.Tolerance);
-  BRepGraph_TopoNode::FaceDef& aNewFace = aResult.Mut().FaceDef(0);
-  aNewFace.NaturalRestriction       = aFaceDef.NaturalRestriction;
-  aNewFace.Triangulations           = aFaceDef.Triangulations;
-  aNewFace.ActiveTriangulationIndex = aFaceDef.ActiveTriangulationIndex;
-  transferUserAttributes(aFaceDef.Cache, aNewFace.Cache);
+  BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aNewFace = aResult.MutFace(0);
+  aNewFace->NaturalRestriction       = aFaceDef.NaturalRestriction;
+  aNewFace->Triangulations           = aFaceDef.Triangulations;
+  aNewFace->ActiveTriangulationIndex = aFaceDef.ActiveTriangulationIndex;
+  transferUserAttributes(aFaceDef.Cache, aNewFace->Cache);
 
   // PCurves for edges in this face.
   for (int anIdx = 1; anIdx <= anEdgeSet.Extent(); ++anIdx)

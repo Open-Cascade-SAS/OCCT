@@ -290,6 +290,69 @@ void BRepGraph::markModified(BRepGraph_NodeId theDefId)
 
 //=================================================================================================
 
+void BRepGraph::markModified(BRepGraph_NodeId theDefId, BRepGraph_TopoNode::BaseDef& theDef)
+{
+  theDef.IsModified = true;
+
+  // In deferred mode: skip mutex and upward propagation.
+  if (myData->myDeferredMode)
+    return;
+
+  {
+    std::unique_lock<std::shared_mutex> aWriteLock(myData->myCurrentShapesMutex);
+    myData->myCurrentShapes.UnBind(theDefId);
+  }
+
+  // Invalidate UserAttribute caches (UVBounds, BndLib, etc.).
+  theDef.Cache.InvalidateAll();
+
+  // Propagate upward via reverse indices.
+  const BRepGraphInc_ReverseIndex& aRevIdx = myData->myIncStorage.ReverseIndex();
+  switch (theDefId.NodeKind)
+  {
+    case BRepGraph_NodeId::Kind::Vertex:
+      // Vertex modifications don't propagate.
+      break;
+    case BRepGraph_NodeId::Kind::Edge: {
+      // Edge -> Wire (via incidence reverse index).
+      const NCollection_Vector<int>* aWires = aRevIdx.WiresOfEdge(theDefId.Index);
+      if (aWires != nullptr)
+        for (int i = 0; i < aWires->Length(); ++i)
+          markModified(BRepGraph_NodeId::Wire(aWires->Value(i)));
+      break;
+    }
+    case BRepGraph_NodeId::Kind::Wire: {
+      // Wire -> Face (via wire-to-face reverse index).
+      const NCollection_Vector<int>* aFaces = aRevIdx.FacesOfWire(theDefId.Index);
+      if (aFaces != nullptr)
+        for (int i = 0; i < aFaces->Length(); ++i)
+          markModified(BRepGraph_NodeId::Face(aFaces->Value(i)));
+      break;
+    }
+    case BRepGraph_NodeId::Kind::Face: {
+      // Face -> Shell (via face-to-shell reverse index).
+      const NCollection_Vector<int>* aShells = aRevIdx.ShellsOfFace(theDefId.Index);
+      if (aShells != nullptr)
+        for (int i = 0; i < aShells->Length(); ++i)
+          markModified(BRepGraph_NodeId::Shell(aShells->Value(i)));
+      break;
+    }
+    case BRepGraph_NodeId::Kind::Shell: {
+      // Shell -> Solid (via shell-to-solid reverse index).
+      const NCollection_Vector<int>* aSolids = aRevIdx.SolidsOfShell(theDefId.Index);
+      if (aSolids != nullptr)
+        for (int i = 0; i < aSolids->Length(); ++i)
+          markModified(BRepGraph_NodeId::Solid(aSolids->Value(i)));
+      break;
+    }
+    default:
+      // Solid/Compound/CompSolid modifications don't propagate further.
+      break;
+  }
+}
+
+//=================================================================================================
+
 int BRepGraph::NbHistoryRecords() const { return myData->myHistoryLog.NbRecords(); }
 
 const BRepGraph_HistoryRecord& BRepGraph::HistoryRecord(int theIdx) const

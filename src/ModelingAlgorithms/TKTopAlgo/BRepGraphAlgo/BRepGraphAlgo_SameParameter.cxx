@@ -18,6 +18,7 @@
 #include <BRepCheck.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_MutationGuard.hxx>
+#include <BRepGraph_MutRef.hxx>
 #include <BRepGraph_MutView.hxx>
 #include <BSplCLib.hxx>
 #include <ExtremaPC_Curve.hxx>
@@ -228,10 +229,13 @@ bool enforceImpl(BRepGraph&       theGraph,
                  double           theTolerance,
                  EnforceFlags&    theFlags)
 {
-  const BRepGraph_TopoNode::EdgeDef& anEdge = theGraph.Defs().Edge(theEdgeId.Index);
+  // Single MutRef scope ensures markModified fires exactly once,
+  // even on early returns, due to RAII.
+  BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aMutEdge = theGraph.MutEdge(theEdgeId.Index);
+  const BRepGraph_TopoNode::EdgeDef& anEdge = *aMutEdge;
   if (anEdge.Curve3d.IsNull() || anEdge.PCurves.IsEmpty())
   {
-    theGraph.Mut().EdgeDef(theEdgeId.Index).SameParameter = true;
+    aMutEdge->SameParameter = true;
     return true;
   }
 
@@ -369,7 +373,7 @@ bool enforceImpl(BRepGraph&       theGraph,
           aMaxDist = std::max(aMaxDist, std::max(aMaxAnalErr, Precision::Confusion()));
           if (aUpdatePC)
           {
-            theGraph.Mut().EdgeDef(theEdgeId.Index).PCurves.ChangeValue(aPCIdx).Curve2d = aCurPC;
+            aMutEdge->PCurves.ChangeValue(aPCIdx).Curve2d = aCurPC;
           }
           continue;
         }
@@ -617,7 +621,7 @@ bool enforceImpl(BRepGraph&       theGraph,
         aMaxDist = std::max(aMaxDist, aSameP.TolReached());
         if (aUpdatePC)
         {
-          theGraph.Mut().EdgeDef(theEdgeId.Index).PCurves.ChangeValue(aPCIdx).Curve2d = aCurPC;
+          aMutEdge->PCurves.ChangeValue(aPCIdx).Curve2d = aCurPC;
         }
       }
       else if (aSameP.IsDone())
@@ -635,7 +639,7 @@ bool enforceImpl(BRepGraph&       theGraph,
         }
         if (aUpdatePC)
         {
-          theGraph.Mut().EdgeDef(theEdgeId.Index).PCurves.ChangeValue(aPCIdx).Curve2d = aCurPC;
+          aMutEdge->PCurves.ChangeValue(aPCIdx).Curve2d = aCurPC;
         }
       }
       else
@@ -652,7 +656,7 @@ bool enforceImpl(BRepGraph&       theGraph,
                            aFallbackPC);
         if (!aFallbackPC.IsNull())
         {
-          theGraph.Mut().EdgeDef(theEdgeId.Index).PCurves.ChangeValue(aPCIdx).Curve2d = aFallbackPC;
+          aMutEdge->PCurves.ChangeValue(aPCIdx).Curve2d = aFallbackPC;
         }
         isAllSameP = false;
       }
@@ -675,17 +679,16 @@ bool enforceImpl(BRepGraph&       theGraph,
     }
   }
 
-  BRepGraph_TopoNode::EdgeDef& anEdgeMut = theGraph.Mut().EdgeDef(theEdgeId.Index);
-  anEdgeMut.SameRange                    = true;
+  aMutEdge->SameRange = true;
 
   if (isAllSameP)
   {
     if (hasYaPCu)
     {
-      aMaxDist            = std::max(aMaxDist, Precision::Confusion());
-      anEdgeMut.Tolerance = aMaxDist;
+      aMaxDist              = std::max(aMaxDist, Precision::Confusion());
+      aMutEdge->Tolerance   = aMaxDist;
     }
-    anEdgeMut.SameParameter = true;
+    aMutEdge->SameParameter = true;
   }
 
   return isAllSameP;

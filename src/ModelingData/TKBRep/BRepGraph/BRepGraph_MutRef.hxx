@@ -49,11 +49,12 @@ public:
   {
   }
 
-  //! Destructor: calls markModified() if the guard still owns the reference.
+  //! Destructor: calls the optimized markModified(NodeId, BaseDef&) overload
+  //! if the guard still owns the reference, skipping redundant storage dispatch.
   ~BRepGraph_MutRef()
   {
     if (myGraph != nullptr)
-      myGraph->markModified(myId);
+      myGraph->markModified(myId, *myDef);
   }
 
   //! Move constructor: transfers ownership; source becomes inert.
@@ -71,7 +72,7 @@ public:
     if (this != &theOther)
     {
       if (myGraph != nullptr)
-        myGraph->markModified(myId);
+        myGraph->markModified(myId, *myDef);
       myGraph = theOther.myGraph;
       myDef   = theOther.myDef;
       myId    = theOther.myId;
