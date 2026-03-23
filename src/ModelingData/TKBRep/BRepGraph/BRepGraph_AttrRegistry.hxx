@@ -32,7 +32,6 @@
 class BRepGraph_AttrRegistry
 {
 public:
-
   //! Register a GUID and obtain its integer key.
   //! Idempotent: same GUID always yields same int.
   //! Thread-safe.
@@ -46,16 +45,14 @@ public:
   //! @param theGUID  Attribute kind identifier.
   //! @param theKey   [out] The integer key, if found.
   //! @return         True if the GUID is registered.
-  static bool Find(const Standard_GUID& theGUID,
-                   int&                 theKey);
+  static bool Find(const Standard_GUID& theGUID, int& theKey);
 
   //! Look up the GUID for a previously registered integer key.
   //!
   //! @param theKey   Integer key from Register().
   //! @param theGUID  [out] The GUID, if found.
   //! @return         True if the key is registered.
-  static bool Find(int            theKey,
-                   Standard_GUID& theGUID);
+  static bool Find(int theKey, Standard_GUID& theGUID);
 
   //! Check whether a GUID has been registered.
   static bool Contains(const Standard_GUID& theGUID);
@@ -69,19 +66,14 @@ public:
   //! Allocate an anonymous integer key (no GUID association).
   //! Uses the same atomic counter as Register(), so anonymous keys
   //! and GUID-registered keys never collide.
-  static int AllocateAnonymous()
-  {
-    return nextKey().fetch_add(1, std::memory_order_relaxed);
-  }
+  static int AllocateAnonymous() { return nextKey().fetch_add(1, std::memory_order_relaxed); }
 
 private:
   BRepGraph_AttrRegistry() = delete;
 
   //! The bidirectional maps (lazily initialized on first use).
-  static NCollection_DataMap<Standard_GUID, int>&
-    guidToInt();
-  static NCollection_DataMap<int, Standard_GUID>&
-    intToGuid();
+  static NCollection_DataMap<Standard_GUID, int>& guidToInt();
+  static NCollection_DataMap<int, Standard_GUID>& intToGuid();
 
   //! Next integer key to allocate.
   static std::atomic<int>& nextKey();
@@ -92,15 +84,13 @@ private:
 
 //! Inline implementation kept in the header (small registry, few TUs).
 
-inline NCollection_DataMap<Standard_GUID, int>&
-BRepGraph_AttrRegistry::guidToInt()
+inline NCollection_DataMap<Standard_GUID, int>& BRepGraph_AttrRegistry::guidToInt()
 {
   static NCollection_DataMap<Standard_GUID, int> aMap;
   return aMap;
 }
 
-inline NCollection_DataMap<int, Standard_GUID>&
-BRepGraph_AttrRegistry::intToGuid()
+inline NCollection_DataMap<int, Standard_GUID>& BRepGraph_AttrRegistry::intToGuid()
 {
   static NCollection_DataMap<int, Standard_GUID> aMap;
   return aMap;
@@ -118,19 +108,18 @@ inline std::shared_mutex& BRepGraph_AttrRegistry::mutex()
   return aMutex;
 }
 
-inline int
-BRepGraph_AttrRegistry::Register(const Standard_GUID& theGUID)
+inline int BRepGraph_AttrRegistry::Register(const Standard_GUID& theGUID)
 {
   // Fast path: already registered?
   {
     std::shared_lock<std::shared_mutex> aReadLock(mutex());
-    const int* aPtr = guidToInt().Seek(theGUID);
+    const int*                          aPtr = guidToInt().Seek(theGUID);
     if (aPtr != nullptr)
       return *aPtr;
   }
   // Slow path: allocate under exclusive lock.
   std::unique_lock<std::shared_mutex> aWriteLock(mutex());
-  const int* aPtr = guidToInt().Seek(theGUID);
+  const int*                          aPtr = guidToInt().Seek(theGUID);
   if (aPtr != nullptr)
     return *aPtr;
 
@@ -140,39 +129,33 @@ BRepGraph_AttrRegistry::Register(const Standard_GUID& theGUID)
   return aNewKey;
 }
 
-inline bool
-BRepGraph_AttrRegistry::Find(const Standard_GUID& theGUID,
-                             int&                 theKey)
+inline bool BRepGraph_AttrRegistry::Find(const Standard_GUID& theGUID, int& theKey)
 {
   std::shared_lock<std::shared_mutex> aLock(mutex());
-  const int* aPtr = guidToInt().Seek(theGUID);
+  const int*                          aPtr = guidToInt().Seek(theGUID);
   if (aPtr == nullptr)
     return false;
   theKey = *aPtr;
   return true;
 }
 
-inline bool
-BRepGraph_AttrRegistry::Find(int            theKey,
-                             Standard_GUID& theGUID)
+inline bool BRepGraph_AttrRegistry::Find(int theKey, Standard_GUID& theGUID)
 {
   std::shared_lock<std::shared_mutex> aLock(mutex());
-  const Standard_GUID* aPtr = intToGuid().Seek(theKey);
+  const Standard_GUID*                aPtr = intToGuid().Seek(theKey);
   if (aPtr == nullptr)
     return false;
   theGUID = *aPtr;
   return true;
 }
 
-inline bool
-BRepGraph_AttrRegistry::Contains(const Standard_GUID& theGUID)
+inline bool BRepGraph_AttrRegistry::Contains(const Standard_GUID& theGUID)
 {
   std::shared_lock<std::shared_mutex> aLock(mutex());
   return guidToInt().IsBound(theGUID);
 }
 
-inline bool
-BRepGraph_AttrRegistry::Contains(int theKey)
+inline bool BRepGraph_AttrRegistry::Contains(int theKey)
 {
   std::shared_lock<std::shared_mutex> aLock(mutex());
   return intToGuid().IsBound(theKey);
