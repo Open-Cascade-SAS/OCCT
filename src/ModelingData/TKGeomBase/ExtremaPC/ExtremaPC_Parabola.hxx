@@ -145,15 +145,15 @@ private:
     myVertexY             = aVertex.Y();
     myVertexZ             = aVertex.Z();
 
-    const gp_Dir& aXDir = myParabola.XAxis().Direction();
-    myXDirX             = aXDir.X();
-    myXDirY             = aXDir.Y();
-    myXDirZ             = aXDir.Z();
+    const gp_Dir aXDir = myParabola.XAxis().Direction();
+    myXDirX            = aXDir.X();
+    myXDirY            = aXDir.Y();
+    myXDirZ            = aXDir.Z();
 
-    const gp_Dir& aYDir = myParabola.YAxis().Direction();
-    myYDirX             = aYDir.X();
-    myYDirY             = aYDir.Y();
-    myYDirZ             = aYDir.Z();
+    const gp_Dir aYDir = myParabola.YAxis().Direction();
+    myYDirX            = aYDir.X();
+    myYDirY            = aYDir.Y();
+    myYDirZ            = aYDir.Z();
 
     const gp_Dir& aAxis = myParabola.Axis().Direction();
     myAxisX             = aAxis.X();

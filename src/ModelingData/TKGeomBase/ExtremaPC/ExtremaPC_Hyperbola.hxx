@@ -149,15 +149,15 @@ private:
     myCenterY             = aCenter.Y();
     myCenterZ             = aCenter.Z();
 
-    const gp_Dir& aXDir = myHyperbola.XAxis().Direction();
-    myXDirX             = aXDir.X();
-    myXDirY             = aXDir.Y();
-    myXDirZ             = aXDir.Z();
+    const gp_Dir aXDir = myHyperbola.XAxis().Direction();
+    myXDirX            = aXDir.X();
+    myXDirY            = aXDir.Y();
+    myXDirZ            = aXDir.Z();
 
-    const gp_Dir& aYDir = myHyperbola.YAxis().Direction();
-    myYDirX             = aYDir.X();
-    myYDirY             = aYDir.Y();
-    myYDirZ             = aYDir.Z();
+    const gp_Dir aYDir = myHyperbola.YAxis().Direction();
+    myYDirX            = aYDir.X();
+    myYDirY            = aYDir.Y();
+    myYDirZ            = aYDir.Z();
 
     const gp_Dir& aAxis = myHyperbola.Axis().Direction();
     myAxisX             = aAxis.X();
