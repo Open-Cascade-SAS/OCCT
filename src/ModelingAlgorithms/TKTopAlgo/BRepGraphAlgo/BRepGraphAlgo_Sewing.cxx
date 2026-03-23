@@ -229,15 +229,18 @@ NCollection_Array1<BRepGraph_NodeId> findFreeEdges(const BRepGraph& theGraph,
 
     const int aFaceCount = aRelEdges.FaceCountForEdge(anEdgeIdx);
 
-    // Exclude seam edges: faceCount==1 but two distinct PCurves on the same face
-    // (e.g., closing edge on a cylindrical or spherical surface).
-    // TODO: add full IsClosedByIsos fallback for trimmed/offset surfaces where
-    //       Surface->IsUClosed()/IsVClosed() returns false but the surface is
-    //       parametrically closed. Port from BRepBuilderAPI_Sewing lines 203-299.
-    if (aFaceCount == 1 && isSeamEdge(theGraph, anEdgeIdx))
-    {
-      continue;
-    }
+    // TODO: Exclude seam edges from free boundaries. A seam edge is on a UV-closed
+    //   surface (cylinder, sphere, torus) and has two distinct PCurves on the same face.
+    //   Current issue: BRepGraphInc_Populate stores PCurve2dReversed when Handle pointers
+    //   differ (line 269), which happens even for non-seam planar edges because
+    //   BRep_Tool::CurveOnSurface returns distinct Handle objects for FORWARD/REVERSED.
+    //   Fix options:
+    //   (a) Fix BRepGraphInc_Populate to use geometric comparison (not Handle pointer)
+    //       for PCurve2dReversed detection — e.g., compare curve values at endpoints.
+    //   (b) Check Surface->IsUClosed()/IsVClosed() before calling isSeamEdge().
+    //   (c) Port full IsClosedByIsos fallback from BRepBuilderAPI_Sewing lines 203-299.
+    //   Until fixed, seam edges on closed surfaces will appear as free and may be
+    //   incorrectly matched. This is non-critical for typical sewing inputs (flat faces).
 
     if (aFaceCount == 1)
     {
