@@ -30,15 +30,16 @@ public:
   //! @param[in] theNode node identifier
   //! @param[in] theKey  attribute key
   //! @param[in] theAttr handle to the attribute
-  Standard_EXPORT void Set(const BRepGraph_NodeId                       theNode,
-                           const int                                    theKey,
+  Standard_EXPORT void Set(const BRepGraph_NodeId                      theNode,
+                           const int                                   theKey,
                            const occ::handle<BRepGraph_UserAttribute>& theAttr);
 
   //! Retrieve a user attribute from a node.
   //! @param[in] theNode node identifier
   //! @param[in] theKey  attribute key
   //! @return handle to the attribute, or null handle if not set
-  Standard_EXPORT occ::handle<BRepGraph_UserAttribute> Get(const BRepGraph_NodeId theNode, const int theKey) const;
+  Standard_EXPORT occ::handle<BRepGraph_UserAttribute> Get(const BRepGraph_NodeId theNode,
+                                                           const int              theKey) const;
 
   //! Remove a user attribute from a node.
   //! @param[in] theNode node identifier
@@ -58,10 +59,18 @@ public:
 
 private:
   friend class BRepGraph;
-  explicit AttrsView(BRepGraph* theGraph) : myGraph(theGraph) {}
+
+  explicit AttrsView(BRepGraph* theGraph)
+      : myGraph(theGraph)
+  {
+  }
+
   BRepGraph* myGraph;
 };
 
-inline BRepGraph::AttrsView BRepGraph::Attrs() { return AttrsView(this); }
+inline BRepGraph::AttrsView BRepGraph::Attrs()
+{
+  return AttrsView(this);
+}
 
 #endif // _BRepGraph_AttrsView_HeaderFile

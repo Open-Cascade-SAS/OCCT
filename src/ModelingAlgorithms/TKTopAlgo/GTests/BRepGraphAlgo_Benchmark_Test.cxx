@@ -31,7 +31,7 @@
 namespace
 {
 
-constexpr int THE_WARMUP_ITERS = 2;
+constexpr int THE_WARMUP_ITERS  = 2;
 constexpr int THE_MEASURE_ITERS = 20;
 
 NCollection_Sequence<TopoDS_Shape> makeFaceList(int theNbFaces)
@@ -39,14 +39,15 @@ NCollection_Sequence<TopoDS_Shape> makeFaceList(int theNbFaces)
   NCollection_Sequence<TopoDS_Shape> aFaces;
 
   int aNbAdded = 0;
-  int aBoxIdx = 0;
+  int aBoxIdx  = 0;
   while (aNbAdded < theNbFaces)
   {
-    const double aSize = 10.0 + static_cast<double>(aBoxIdx % 7);
+    const double        aSize = 10.0 + static_cast<double>(aBoxIdx % 7);
     BRepPrimAPI_MakeBox aBoxMaker(aSize, aSize + 1.0, aSize + 2.0);
     const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
-    for (TopExp_Explorer aFaceExp(aBox, TopAbs_FACE); aFaceExp.More() && aNbAdded < theNbFaces; aFaceExp.Next())
+    for (TopExp_Explorer aFaceExp(aBox, TopAbs_FACE); aFaceExp.More() && aNbAdded < theNbFaces;
+         aFaceExp.Next())
     {
       BRepBuilderAPI_Copy aCopy(aFaceExp.Current(), true);
       aFaces.Append(aCopy.Shape());
@@ -64,10 +65,10 @@ TopoDS_Compound makeCopiedFaceCompound(int theNbCopies)
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
-  TopExp_Explorer aFaceExp(aBox, TopAbs_FACE);
+  TopExp_Explorer    aFaceExp(aBox, TopAbs_FACE);
   const TopoDS_Shape aFace = aFaceExp.Current();
 
-  BRep_Builder aBuilder;
+  BRep_Builder    aBuilder;
   TopoDS_Compound aCompound;
   aBuilder.MakeCompound(aCompound);
   for (int anIdx = 0; anIdx < theNbCopies; ++anIdx)
@@ -96,8 +97,8 @@ double runBenchmark(const char* theLabel, Func theFunc)
   }
 
   const double anAvg = aTotal / static_cast<double>(THE_MEASURE_ITERS);
-  std::cout << "[  PERF   ] " << theLabel << ": avg " << anAvg << " s over "
-            << THE_MEASURE_ITERS << " iters" << std::endl;
+  std::cout << "[  PERF   ] " << theLabel << ": avg " << anAvg << " s over " << THE_MEASURE_ITERS
+            << " iters" << std::endl;
   return anAvg;
 }
 

@@ -37,7 +37,7 @@ BRepGraph buildBoxGraph()
 {
   BRepPrimAPI_MakeBox aMakeBox(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aMakeBox.Shape();
-  BRepGraph aGraph;
+  BRepGraph           aGraph;
   aGraph.Build(aBox);
   return aGraph;
 }
@@ -85,10 +85,10 @@ TEST(BRepGraphBackRefManagerTest, Build_EdgeToWiresMatchForwardLinks)
     const BRepGraph_TopoNode::WireDef& aWireDef = aGraph.Defs().Wire(aWireIdx);
     for (int aCoEdgeIdx = 0; aCoEdgeIdx < aWireDef.CoEdgeRefs.Length(); ++aCoEdgeIdx)
     {
-      const BRepGraphInc::CoEdgeRef& aCR = aWireDef.CoEdgeRefs.Value(aCoEdgeIdx);
-      const int anEdgeDefIdx = aGraph.Defs().CoEdge(aCR.CoEdgeIdx).EdgeIdx;
-      const NCollection_Vector<int>& aWires = aGraph.RelEdges().WiresOfEdge(anEdgeDefIdx);
-      bool aFound = false;
+      const BRepGraphInc::CoEdgeRef& aCR          = aWireDef.CoEdgeRefs.Value(aCoEdgeIdx);
+      const int                      anEdgeDefIdx = aGraph.Defs().CoEdge(aCR.CoEdgeIdx).EdgeIdx;
+      const NCollection_Vector<int>& aWires       = aGraph.RelEdges().WiresOfEdge(anEdgeDefIdx);
+      bool                           aFound       = false;
       for (int aW = 0; aW < aWires.Length(); ++aW)
       {
         if (aWires.Value(aW) == aWireIdx)
@@ -97,7 +97,8 @@ TEST(BRepGraphBackRefManagerTest, Build_EdgeToWiresMatchForwardLinks)
           break;
         }
       }
-      EXPECT_TRUE(aFound) << "Wire " << aWireIdx << " not found in WiresOfEdge(" << anEdgeDefIdx << ")";
+      EXPECT_TRUE(aFound) << "Wire " << aWireIdx << " not found in WiresOfEdge(" << anEdgeDefIdx
+                          << ")";
     }
   }
 }
@@ -151,8 +152,8 @@ TEST(BRepGraphBackRefManagerTest, SplitEdge_CurveGetsSubEdgeRefs)
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
     const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(anEdgeIdx);
-    if (anEdge.Curve3DRepIdx >= 0 && !anEdge.IsDegenerate
-        && anEdge.StartVertexDefId().IsValid() && anEdge.EndVertexDefId().IsValid())
+    if (anEdge.Curve3DRepIdx >= 0 && !anEdge.IsDegenerate && anEdge.StartVertexDefId().IsValid()
+        && anEdge.EndVertexDefId().IsValid())
     {
       aTargetEdgeIdx = anEdgeIdx;
       break;
@@ -169,21 +170,22 @@ TEST(BRepGraphBackRefManagerTest, SplitEdge_CurveGetsSubEdgeRefs)
     aGraph.Defs().Vertex(anOrigEdge.StartVertex.VertexIdx);
   const BRepGraph_TopoNode::VertexDef& aEndVtx =
     aGraph.Defs().Vertex(anOrigEdge.EndVertex.VertexIdx);
-  gp_Pnt aMidPoint(0.5 * (aStartVtx.Point.X() + aEndVtx.Point.X()),
-                    0.5 * (aStartVtx.Point.Y() + aEndVtx.Point.Y()),
-                    0.5 * (aStartVtx.Point.Z() + aEndVtx.Point.Z()));
+  gp_Pnt           aMidPoint(0.5 * (aStartVtx.Point.X() + aEndVtx.Point.X()),
+                   0.5 * (aStartVtx.Point.Y() + aEndVtx.Point.Y()),
+                   0.5 * (aStartVtx.Point.Z() + aEndVtx.Point.Z()));
   BRepGraph_NodeId aSplitVtx = aGraph.Builder().AddVertexDef(aMidPoint, Precision::Confusion());
 
   BRepGraph_NodeId aSubA, aSubB;
   BRepGraph_Mutator::SplitEdge(aGraph,
-                                BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, aTargetEdgeIdx),
-                                aSplitVtx, aMidParam, aSubA, aSubB);
+                               BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, aTargetEdgeIdx),
+                               aSplitVtx,
+                               aMidParam,
+                               aSubA,
+                               aSubB);
 
   // SubA and SubB should inherit the same curve.
-  EXPECT_GE(aGraph.Defs().Edge(aSubA.Index).Curve3DRepIdx, 0)
-    << "SubA has no Curve3D rep";
-  EXPECT_GE(aGraph.Defs().Edge(aSubB.Index).Curve3DRepIdx, 0)
-    << "SubB has no Curve3D rep";
+  EXPECT_GE(aGraph.Defs().Edge(aSubA.Index).Curve3DRepIdx, 0) << "SubA has no Curve3D rep";
+  EXPECT_GE(aGraph.Defs().Edge(aSubB.Index).Curve3DRepIdx, 0) << "SubB has no Curve3D rep";
 
   // Verify edge-to-wire was updated: SubA and SubB should be in wires.
   const NCollection_Vector<int>& aWiresA = aGraph.RelEdges().WiresOfEdge(aSubA.Index);
@@ -216,9 +218,12 @@ TEST(BRepGraphBackRefManagerTest, ReplaceEdgeInWireMap_UpdatesCorrectly)
 
   // Create a new edge to replace the old one.
   const BRepGraph_TopoNode::EdgeDef& anOldEdge = aGraph.Defs().Edge(anOldEdgeIdx);
-  BRepGraph_NodeId aNewEdgeId = aGraph.Builder().AddEdgeDef(
-    anOldEdge.StartVertexDefId(), anOldEdge.EndVertexDefId(),
-    occ::handle<Geom_Curve>(), anOldEdge.ParamFirst, anOldEdge.ParamLast, anOldEdge.Tolerance);
+  BRepGraph_NodeId aNewEdgeId = aGraph.Builder().AddEdgeDef(anOldEdge.StartVertexDefId(),
+                                                            anOldEdge.EndVertexDefId(),
+                                                            occ::handle<Geom_Curve>(),
+                                                            anOldEdge.ParamFirst,
+                                                            anOldEdge.ParamLast,
+                                                            anOldEdge.Tolerance);
   ASSERT_TRUE(aNewEdgeId.IsValid());
 
   // Replace edge in wire via MutView (updates EdgeRefs and rebuilds reverse index).
@@ -229,7 +234,7 @@ TEST(BRepGraphBackRefManagerTest, ReplaceEdgeInWireMap_UpdatesCorrectly)
 
   // Old edge should no longer reference this wire.
   const NCollection_Vector<int>& anOldWires = aGraph.RelEdges().WiresOfEdge(anOldEdgeIdx);
-  bool aOldFound = false;
+  bool                           aOldFound  = false;
   for (int aW = 0; aW < anOldWires.Length(); ++aW)
   {
     if (anOldWires.Value(aW) == aWireDefIdx)
@@ -242,7 +247,7 @@ TEST(BRepGraphBackRefManagerTest, ReplaceEdgeInWireMap_UpdatesCorrectly)
 
   // New edge should reference this wire.
   const NCollection_Vector<int>& aNewWires = aGraph.RelEdges().WiresOfEdge(aNewEdgeId.Index);
-  bool aNewFound = false;
+  bool                           aNewFound = false;
   for (int aW = 0; aW < aNewWires.Length(); ++aW)
   {
     if (aNewWires.Value(aW) == aWireDefIdx)
@@ -264,8 +269,10 @@ TEST(BRepGraphBackRefManagerTest, AddRelEdge_CreatesOutAndInEntries)
   const BRepGraph_NodeId aFace0 = aGraph.Defs().Face(0).Id;
   const BRepGraph_NodeId aFace1 = aGraph.Defs().Face(1).Id;
 
-  const int anIdx = BRepGraph_BackRefManager::AddRelEdge(
-    aGraph, aFace0, aFace1, BRepGraph_RelEdge::Kind::SameDomain);
+  const int anIdx = BRepGraph_BackRefManager::AddRelEdge(aGraph,
+                                                         aFace0,
+                                                         aFace1,
+                                                         BRepGraph_RelEdge::Kind::SameDomain);
   EXPECT_GE(anIdx, 0);
 
   // Verify outgoing from Face0.
@@ -310,13 +317,16 @@ TEST(BRepGraphBackRefManagerTest, RemoveRelEdges_CleansUpBothDirections)
   const BRepGraph_NodeId aFace1 = aGraph.Defs().Face(1).Id;
 
   // Add two edges of different kinds.
-  BRepGraph_BackRefManager::AddRelEdge(aGraph, aFace0, aFace1,
-                                       BRepGraph_RelEdge::Kind::SameDomain);
-  BRepGraph_BackRefManager::AddRelEdge(aGraph, aFace0, aFace1,
+  BRepGraph_BackRefManager::AddRelEdge(aGraph, aFace0, aFace1, BRepGraph_RelEdge::Kind::SameDomain);
+  BRepGraph_BackRefManager::AddRelEdge(aGraph,
+                                       aFace0,
+                                       aFace1,
                                        BRepGraph_RelEdge::Kind::UserDefined);
 
   // Remove only SameDomain.
-  BRepGraph_BackRefManager::RemoveRelEdges(aGraph, aFace0, aFace1,
+  BRepGraph_BackRefManager::RemoveRelEdges(aGraph,
+                                           aFace0,
+                                           aFace1,
                                            BRepGraph_RelEdge::Kind::SameDomain);
 
   // SameDomain should be gone, UserDefined should remain.
@@ -360,9 +370,10 @@ TEST(BRepGraphBackRefManagerTest, ClearRelEdges_UnbindsNode)
   const BRepGraph_NodeId aFace1 = aGraph.Defs().Face(1).Id;
   const BRepGraph_NodeId aFace2 = aGraph.Defs().Face(2).Id;
 
-  BRepGraph_BackRefManager::AddRelEdge(aGraph, aFace0, aFace1,
-                                       BRepGraph_RelEdge::Kind::SameDomain);
-  BRepGraph_BackRefManager::AddRelEdge(aGraph, aFace2, aFace0,
+  BRepGraph_BackRefManager::AddRelEdge(aGraph, aFace0, aFace1, BRepGraph_RelEdge::Kind::SameDomain);
+  BRepGraph_BackRefManager::AddRelEdge(aGraph,
+                                       aFace2,
+                                       aFace0,
                                        BRepGraph_RelEdge::Kind::UserDefined);
 
   // Clear all rel-edges for Face0.
@@ -387,8 +398,7 @@ TEST(BRepGraphBackRefManagerTest, ClearAll_EmptiesAllBackRefs)
   // Add a RelEdge so we can verify it gets cleared.
   const BRepGraph_NodeId aFace0 = aGraph.Defs().Face(0).Id;
   const BRepGraph_NodeId aFace1 = aGraph.Defs().Face(1).Id;
-  BRepGraph_BackRefManager::AddRelEdge(aGraph, aFace0, aFace1,
-                                       BRepGraph_RelEdge::Kind::SameDomain);
+  BRepGraph_BackRefManager::AddRelEdge(aGraph, aFace0, aFace1, BRepGraph_RelEdge::Kind::SameDomain);
 
   BRepGraph_BackRefManager::ClearAll(aGraph);
 

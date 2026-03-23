@@ -18,7 +18,7 @@
 void BRepGraphCheck_Report::AddIssue(const BRepGraphCheck_Issue& theIssue)
 {
   std::lock_guard<std::mutex> aLock(myMutex);
-  const int anIdx = myIssues.Length();
+  const int                   anIdx = myIssues.Length();
   myIssues.Append(theIssue);
 
   if (theIssue.NodeId.IsValid())
@@ -42,7 +42,7 @@ void BRepGraphCheck_Report::AddIssues(const NCollection_Vector<BRepGraphCheck_Is
   for (int anIssueIter = 0; anIssueIter < theIssues.Length(); ++anIssueIter)
   {
     const BRepGraphCheck_Issue& anIssue = theIssues.Value(anIssueIter);
-    const int anIdx = myIssues.Length();
+    const int                   anIdx   = myIssues.Length();
     myIssues.Append(anIssue);
 
     if (anIssue.NodeId.IsValid())

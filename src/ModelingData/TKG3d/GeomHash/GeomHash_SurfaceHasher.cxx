@@ -41,10 +41,9 @@
 
 //=================================================================================================
 
-GeomHash_SurfaceHasher::GeomHash_SurfaceHasher(double theCompTolerance,
-                                                double theHashTolerance)
-  : CompTolerance(theCompTolerance),
-    HashTolerance(theHashTolerance)
+GeomHash_SurfaceHasher::GeomHash_SurfaceHasher(double theCompTolerance, double theHashTolerance)
+    : CompTolerance(theCompTolerance),
+      HashTolerance(theHashTolerance)
 {
 }
 
@@ -62,8 +61,8 @@ std::size_t GeomHash_SurfaceHasher::operator()(
   const Handle(Standard_Type)& aType = theSurface->DynamicType();
   if (aType == STANDARD_TYPE(Geom_Plane))
   {
-    return GeomHash_PlaneHasher{CompTolerance, HashTolerance}(
-      occ::down_cast<Geom_Plane>(theSurface));
+    return GeomHash_PlaneHasher{CompTolerance,
+                                HashTolerance}(occ::down_cast<Geom_Plane>(theSurface));
   }
   else if (aType == STANDARD_TYPE(Geom_CylindricalSurface))
   {
@@ -145,9 +144,9 @@ bool GeomHash_SurfaceHasher::operator()(const occ::handle<Geom_Surface>& theSurf
   const Handle(Standard_Type)& aType = theSurface1->DynamicType();
   if (aType == STANDARD_TYPE(Geom_Plane))
   {
-    return GeomHash_PlaneHasher{CompTolerance, HashTolerance}(
-      occ::down_cast<Geom_Plane>(theSurface1),
-      occ::down_cast<Geom_Plane>(theSurface2));
+    return GeomHash_PlaneHasher{CompTolerance,
+                                HashTolerance}(occ::down_cast<Geom_Plane>(theSurface1),
+                                               occ::down_cast<Geom_Plane>(theSurface2));
   }
   else if (aType == STANDARD_TYPE(Geom_CylindricalSurface))
   {

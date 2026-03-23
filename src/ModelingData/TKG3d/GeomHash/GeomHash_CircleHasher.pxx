@@ -29,8 +29,8 @@ struct GeomHash_CircleHasher
 
   GeomHash_CircleHasher(double theCompTolerance = Precision::Angular(),
                         double theHashTolerance = Precision::Confusion())
-    : CompTolerance(theCompTolerance),
-      HashTolerance(theHashTolerance)
+      : CompTolerance(theCompTolerance),
+        HashTolerance(theHashTolerance)
   {
   }
 

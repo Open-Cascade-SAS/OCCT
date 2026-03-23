@@ -30,8 +30,8 @@ struct GeomHash_BSplineCurveHasher
 
   GeomHash_BSplineCurveHasher(double theCompTolerance = Precision::Angular(),
                               double theHashTolerance = Precision::Confusion())
-    : CompTolerance(theCompTolerance),
-      HashTolerance(theHashTolerance)
+      : CompTolerance(theCompTolerance),
+        HashTolerance(theHashTolerance)
   {
   }
 

@@ -29,8 +29,8 @@ struct GeomHash_HyperbolaHasher
 
   GeomHash_HyperbolaHasher(double theCompTolerance = Precision::Angular(),
                            double theHashTolerance = Precision::Confusion())
-    : CompTolerance(theCompTolerance),
-      HashTolerance(theHashTolerance)
+      : CompTolerance(theCompTolerance),
+        HashTolerance(theHashTolerance)
   {
   }
 
@@ -55,7 +55,8 @@ struct GeomHash_HyperbolaHasher
 
     return anAxisHasher(theHyperbola1->Position(), theHyperbola2->Position())
            && std::abs(theHyperbola1->MajorRadius() - theHyperbola2->MajorRadius()) <= CompTolerance
-           && std::abs(theHyperbola1->MinorRadius() - theHyperbola2->MinorRadius()) <= CompTolerance;
+           && std::abs(theHyperbola1->MinorRadius() - theHyperbola2->MinorRadius())
+                <= CompTolerance;
   }
 };
 

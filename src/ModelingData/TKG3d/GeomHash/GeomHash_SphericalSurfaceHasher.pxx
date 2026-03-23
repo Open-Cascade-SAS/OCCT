@@ -28,9 +28,9 @@ struct GeomHash_SphericalSurfaceHasher
   double HashTolerance;
 
   GeomHash_SphericalSurfaceHasher(double theCompTolerance = Precision::Angular(),
-                                   double theHashTolerance = Precision::Confusion())
-    : CompTolerance(theCompTolerance),
-      HashTolerance(theHashTolerance)
+                                  double theHashTolerance = Precision::Confusion())
+      : CompTolerance(theCompTolerance),
+        HashTolerance(theHashTolerance)
   {
   }
 

@@ -206,7 +206,8 @@ const BRepGraph_TopoNode::CompoundDef& BRepGraph::DefsView::Compound(const int t
 
 //=================================================================================================
 
-const BRepGraph_TopoNode::CompSolidDef& BRepGraph::DefsView::CompSolid(const int theCompSolidIdx) const
+const BRepGraph_TopoNode::CompSolidDef& BRepGraph::DefsView::CompSolid(
+  const int theCompSolidIdx) const
 {
   return myGraph->myData->myIncStorage.CompSolid(theCompSolidIdx);
 }
@@ -230,7 +231,8 @@ int BRepGraph::DefsView::NbShellFaces(const int theShellDefIdx) const
 
 //=================================================================================================
 
-BRepGraph_NodeId BRepGraph::DefsView::ShellFaceDef(const int theShellDefIdx, const int theFaceIdx) const
+BRepGraph_NodeId BRepGraph::DefsView::ShellFaceDef(const int theShellDefIdx,
+                                                   const int theFaceIdx) const
 {
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
   if (theShellDefIdx < 0 || theShellDefIdx >= aStorage.NbShells())
@@ -285,7 +287,8 @@ const BRepGraph_TopoNode::ProductDef& BRepGraph::DefsView::Product(const int the
 
 //=================================================================================================
 
-const BRepGraph_TopoNode::OccurrenceDef& BRepGraph::DefsView::Occurrence(const int theOccurrenceIdx) const
+const BRepGraph_TopoNode::OccurrenceDef& BRepGraph::DefsView::Occurrence(
+  const int theOccurrenceIdx) const
 {
   return myGraph->myData->myIncStorage.Occurrence(theOccurrenceIdx);
 }
@@ -294,8 +297,8 @@ const BRepGraph_TopoNode::OccurrenceDef& BRepGraph::DefsView::Occurrence(const i
 
 NCollection_Vector<BRepGraph_NodeId> BRepGraph::DefsView::RootProducts() const
 {
-  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
-  const int aNbProducts = aStorage.NbProducts();
+  const BRepGraphInc_Storage& aStorage    = myGraph->myData->myIncStorage;
+  const int                   aNbProducts = aStorage.NbProducts();
 
   // Collect product indices that are referenced by at least one active occurrence.
   // Scan occurrences directly (always up to date, unlike the reverse index which
@@ -354,7 +357,8 @@ int BRepGraph::DefsView::NbComponents(const int theProductIdx) const
 
 //=================================================================================================
 
-BRepGraph_NodeId BRepGraph::DefsView::Component(const int theProductIdx, const int theComponentIdx) const
+BRepGraph_NodeId BRepGraph::DefsView::Component(const int theProductIdx,
+                                                const int theComponentIdx) const
 {
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
   if (theProductIdx < 0 || theProductIdx >= aStorage.NbProducts())
@@ -370,16 +374,11 @@ BRepGraph_NodeId BRepGraph::DefsView::Component(const int theProductIdx, const i
 size_t BRepGraph::DefsView::NbNodes() const
 {
   const BRepGraphInc_Storage& aS = myGraph->myData->myIncStorage;
-  return static_cast<size_t>(aS.NbSolids())
-         + static_cast<size_t>(aS.NbShells())
-         + static_cast<size_t>(aS.NbFaces())
-         + static_cast<size_t>(aS.NbWires())
-         + static_cast<size_t>(aS.NbCoEdges())
-         + static_cast<size_t>(aS.NbEdges())
-         + static_cast<size_t>(aS.NbVertices())
-         + static_cast<size_t>(aS.NbCompounds())
-         + static_cast<size_t>(aS.NbCompSolids())
-         + static_cast<size_t>(aS.NbProducts())
+  return static_cast<size_t>(aS.NbSolids()) + static_cast<size_t>(aS.NbShells())
+         + static_cast<size_t>(aS.NbFaces()) + static_cast<size_t>(aS.NbWires())
+         + static_cast<size_t>(aS.NbCoEdges()) + static_cast<size_t>(aS.NbEdges())
+         + static_cast<size_t>(aS.NbVertices()) + static_cast<size_t>(aS.NbCompounds())
+         + static_cast<size_t>(aS.NbCompSolids()) + static_cast<size_t>(aS.NbProducts())
          + static_cast<size_t>(aS.NbOccurrences());
 }
 
@@ -441,7 +440,8 @@ const BRepGraphInc::Curve2DRep& BRepGraph::DefsView::Curve2DRep(const int theRep
 
 //=================================================================================================
 
-const BRepGraphInc::TriangulationRep& BRepGraph::DefsView::TriangulationRep(const int theRepIdx) const
+const BRepGraphInc::TriangulationRep& BRepGraph::DefsView::TriangulationRep(
+  const int theRepIdx) const
 {
   return myGraph->myData->myIncStorage.TriangulationRep(theRepIdx);
 }
@@ -490,7 +490,7 @@ const BRepGraphInc::CoEdgeEntity* BRepGraph::DefsView::FindPCurve(
   if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge || !theEdgeDef.IsValid())
     return nullptr;
 
-  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  const BRepGraphInc_Storage&    aStorage = myGraph->myData->myIncStorage;
   const NCollection_Vector<int>& aCoEdgeIdxs =
     aStorage.ReverseIndex().CoEdgesOfEdgeRef(theEdgeDef.Index);
   for (int anIter = 0; anIter < aCoEdgeIdxs.Length(); ++anIter)
@@ -512,7 +512,7 @@ const BRepGraphInc::CoEdgeEntity* BRepGraph::DefsView::FindPCurve(
   if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge || !theEdgeDef.IsValid())
     return nullptr;
 
-  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  const BRepGraphInc_Storage&    aStorage = myGraph->myData->myIncStorage;
   const NCollection_Vector<int>& aCoEdgeIdxs =
     aStorage.ReverseIndex().CoEdgesOfEdgeRef(theEdgeDef.Index);
   // For non-seam edges (1 CoEdge per face), return the only match.

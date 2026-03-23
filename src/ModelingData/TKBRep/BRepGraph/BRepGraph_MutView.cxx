@@ -21,29 +21,29 @@
 
 //=================================================================================================
 
-void BRepGraph::MutView::AddPCurveToEdge(const BRepGraph_NodeId            theEdgeDef,
-                                          const BRepGraph_NodeId            theFaceDef,
-                                          const occ::handle<Geom2d_Curve>& theCurve2d,
-                                          const double                      theFirst,
-                                          const double                      theLast,
-                                          const TopAbs_Orientation          theEdgeOrientation)
+void BRepGraph::MutView::AddPCurveToEdge(const BRepGraph_NodeId           theEdgeDef,
+                                         const BRepGraph_NodeId           theFaceDef,
+                                         const occ::handle<Geom2d_Curve>& theCurve2d,
+                                         const double                     theFirst,
+                                         const double                     theLast,
+                                         const TopAbs_Orientation         theEdgeOrientation)
 {
   BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
 
   // Create CoEdge entity for the new PCurve binding.
-  BRepGraphInc::CoEdgeEntity& aCoEdge = aStorage.AppendCoEdge();
-  const int aCoEdgeIdx = aStorage.NbCoEdges() - 1;
-  aCoEdge.Id        = BRepGraph_NodeId::CoEdge(aCoEdgeIdx);
-  aCoEdge.EdgeIdx   = theEdgeDef.Index;
-  aCoEdge.FaceDefId = theFaceDef;
-  aCoEdge.Sense     = theEdgeOrientation;
+  BRepGraphInc::CoEdgeEntity& aCoEdge    = aStorage.AppendCoEdge();
+  const int                   aCoEdgeIdx = aStorage.NbCoEdges() - 1;
+  aCoEdge.Id                             = BRepGraph_NodeId::CoEdge(aCoEdgeIdx);
+  aCoEdge.EdgeIdx                        = theEdgeDef.Index;
+  aCoEdge.FaceDefId                      = theFaceDef;
+  aCoEdge.Sense                          = theEdgeOrientation;
   if (!theCurve2d.IsNull())
   {
-    BRepGraphInc::Curve2DRep& aCurve2DRep = aStorage.AppendCurve2DRep();
-    const int aCurve2DRepIdx = aStorage.NbCurves2D() - 1;
-    aCurve2DRep.Id    = BRepGraph_RepId::Curve2D(aCurve2DRepIdx);
-    aCurve2DRep.Curve = theCurve2d;
-    aCoEdge.Curve2DRepIdx = aCurve2DRepIdx;
+    BRepGraphInc::Curve2DRep& aCurve2DRep    = aStorage.AppendCurve2DRep();
+    const int                 aCurve2DRepIdx = aStorage.NbCurves2D() - 1;
+    aCurve2DRep.Id                           = BRepGraph_RepId::Curve2D(aCurve2DRepIdx);
+    aCurve2DRep.Curve                        = theCurve2d;
+    aCoEdge.Curve2DRepIdx                    = aCurve2DRepIdx;
   }
   aCoEdge.ParamFirst = theFirst;
   aCoEdge.ParamLast  = theLast;
@@ -62,26 +62,33 @@ void BRepGraph::MutView::ReplaceEdgeInWire(const int              theWireDefIdx,
                                            const BRepGraph_NodeId theNewEdgeDef,
                                            const bool             theReversed)
 {
-  BRepGraph_Mutator::ReplaceEdgeInWire(
-    *myGraph, theWireDefIdx, theOldEdgeDef, theNewEdgeDef, theReversed);
+  BRepGraph_Mutator::ReplaceEdgeInWire(*myGraph,
+                                       theWireDefIdx,
+                                       theOldEdgeDef,
+                                       theNewEdgeDef,
+                                       theReversed);
 }
 
 //=================================================================================================
 
-void BRepGraph::MutView::SplitEdge(const BRepGraph_NodeId  theEdgeDef,
-                                   const BRepGraph_NodeId  theSplitVertex,
-                                   const double            theSplitParam,
-                                   BRepGraph_NodeId&       theSubA,
-                                   BRepGraph_NodeId&       theSubB)
+void BRepGraph::MutView::SplitEdge(const BRepGraph_NodeId theEdgeDef,
+                                   const BRepGraph_NodeId theSplitVertex,
+                                   const double           theSplitParam,
+                                   BRepGraph_NodeId&      theSubA,
+                                   BRepGraph_NodeId&      theSubB)
 {
-  BRepGraph_Mutator::SplitEdge(
-    *myGraph, theEdgeDef, theSplitVertex, theSplitParam, theSubA, theSubB);
+  BRepGraph_Mutator::SplitEdge(*myGraph,
+                               theEdgeDef,
+                               theSplitVertex,
+                               theSplitParam,
+                               theSubA,
+                               theSubB);
 }
 
 //=================================================================================================
 
-int BRepGraph::MutView::AddRelEdge(const BRepGraph_NodeId  theFrom,
-                                   const BRepGraph_NodeId  theTo,
+int BRepGraph::MutView::AddRelEdge(const BRepGraph_NodeId        theFrom,
+                                   const BRepGraph_NodeId        theTo,
                                    const BRepGraph_RelEdge::Kind theKind)
 {
   return BRepGraph_BackRefManager::AddRelEdge(*myGraph, theFrom, theTo, theKind);
@@ -89,8 +96,8 @@ int BRepGraph::MutView::AddRelEdge(const BRepGraph_NodeId  theFrom,
 
 //=================================================================================================
 
-void BRepGraph::MutView::RemoveRelEdges(const BRepGraph_NodeId  theFrom,
-                                        const BRepGraph_NodeId  theTo,
+void BRepGraph::MutView::RemoveRelEdges(const BRepGraph_NodeId        theFrom,
+                                        const BRepGraph_NodeId        theTo,
                                         const BRepGraph_RelEdge::Kind theKind)
 {
   BRepGraph_BackRefManager::RemoveRelEdges(*myGraph, theFrom, theTo, theKind);

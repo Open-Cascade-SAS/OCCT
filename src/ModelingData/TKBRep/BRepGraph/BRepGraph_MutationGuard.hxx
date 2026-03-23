@@ -39,8 +39,8 @@ class BRepGraph_MutationGuard
 public:
   //! Begin deferred invalidation if not already active.
   explicit BRepGraph_MutationGuard(BRepGraph& theGraph)
-    : myGraph(theGraph),
-      myOwnsScope(!theGraph.myData->myDeferredMode)
+      : myGraph(theGraph),
+        myOwnsScope(!theGraph.myData->myDeferredMode)
   {
     if (myOwnsScope)
       myGraph.BeginDeferredInvalidation();
@@ -56,7 +56,7 @@ public:
     }
   }
 
-  BRepGraph_MutationGuard(const BRepGraph_MutationGuard&) = delete;
+  BRepGraph_MutationGuard(const BRepGraph_MutationGuard&)            = delete;
   BRepGraph_MutationGuard& operator=(const BRepGraph_MutationGuard&) = delete;
 
 private:

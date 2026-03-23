@@ -48,9 +48,7 @@ occ::handle<BRepGraph_UserAttribute> makeIntAttr(int theValue)
 }
 
 //! Find two adjacent faces from a shape (sharing a common edge).
-bool findAdjacentFaces(const TopoDS_Shape& theShape,
-                       TopoDS_Face&        theFace1,
-                       TopoDS_Face&        theFace2)
+bool findAdjacentFaces(const TopoDS_Shape& theShape, TopoDS_Face& theFace1, TopoDS_Face& theFace2)
 {
   NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
     anEdgeFaceMap;
@@ -125,7 +123,7 @@ TEST(BRepGraphAlgo_AttrTransferTest, HasNode_BasicCheck)
 
   // Unknown shape.
   BRepPrimAPI_MakeBox aBoxMaker2(1.0, 1.0, 1.0);
-  TopExp_Explorer anExp2(aBoxMaker2.Shape(), TopAbs_FACE);
+  TopExp_Explorer     anExp2(aBoxMaker2.Shape(), TopAbs_FACE);
   ASSERT_TRUE(anExp2.More());
   EXPECT_FALSE(aGraph.Shapes().HasNode(anExp2.Current()));
 
@@ -144,7 +142,7 @@ TEST(BRepGraphAlgo_AttrTransferTest, AttributeKeys_Empty)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  const BRepGraph_NodeId aFaceNode(BRepGraph_NodeId::Kind::Face, 0);
+  const BRepGraph_NodeId        aFaceNode(BRepGraph_NodeId::Kind::Face, 0);
   const NCollection_Vector<int> aKeys = aGraph.Attrs().AttributeKeys(aFaceNode);
   EXPECT_TRUE(aKeys.IsEmpty());
 }
@@ -171,8 +169,10 @@ TEST(BRepGraphAlgo_AttrTransferTest, AttributeKeys_AfterSet)
   bool hasLabel = false;
   for (int anIdx = 0; anIdx < aKeys.Length(); ++anIdx)
   {
-    if (aKeys.Value(anIdx) == THE_COLOR_KEY) hasColor = true;
-    if (aKeys.Value(anIdx) == THE_LABEL_KEY) hasLabel = true;
+    if (aKeys.Value(anIdx) == THE_COLOR_KEY)
+      hasColor = true;
+    if (aKeys.Value(anIdx) == THE_LABEL_KEY)
+      hasLabel = true;
   }
   EXPECT_TRUE(hasColor);
   EXPECT_TRUE(hasLabel);
@@ -188,7 +188,7 @@ TEST(BRepGraphAlgo_AttrTransferTest, AttributeKeys_FreshNode_Empty)
   ASSERT_TRUE(aGraph.IsDone());
 
   // A node with no attributes set should return empty keys.
-  const BRepGraph_NodeId aVertexNode(BRepGraph_NodeId::Kind::Vertex, 0);
+  const BRepGraph_NodeId        aVertexNode(BRepGraph_NodeId::Kind::Vertex, 0);
   const NCollection_Vector<int> aKeys = aGraph.Attrs().AttributeKeys(aVertexNode);
   EXPECT_TRUE(aKeys.IsEmpty());
 }
@@ -355,13 +355,13 @@ TEST(BRepGraphAlgo_AttrTransferTest, AttrTransfer_GeometryHistorySkipped)
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
-  TopExp_Explorer anExp(aBox, TopAbs_FACE);
+  TopExp_Explorer    anExp(aBox, TopAbs_FACE);
   const TopoDS_Shape aFace = anExp.Current();
 
   BRepBuilderAPI_Copy aCopy1(aFace, true);
   BRepBuilderAPI_Copy aCopy2(aFace, true);
 
-  BRep_Builder aBuilder;
+  BRep_Builder    aBuilder;
   TopoDS_Compound aCompound;
   aBuilder.MakeCompound(aCompound);
   aBuilder.Add(aCompound, aCopy1.Shape());
@@ -417,13 +417,13 @@ TEST(BRepGraphAlgo_AttrTransferTest, FindNode_ReconstructedShape)
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
-  TopExp_Explorer anExp(aBox, TopAbs_FACE);
+  TopExp_Explorer    anExp(aBox, TopAbs_FACE);
   const TopoDS_Shape aFace = anExp.Current();
 
   BRepBuilderAPI_Copy aCopy1(aFace, true);
   BRepBuilderAPI_Copy aCopy2(aFace, true);
 
-  BRep_Builder aBuilder;
+  BRep_Builder    aBuilder;
   TopoDS_Compound aCompound;
   aBuilder.MakeCompound(aCompound);
   aBuilder.Add(aCompound, aCopy1.Shape());
@@ -438,7 +438,7 @@ TEST(BRepGraphAlgo_AttrTransferTest, FindNode_ReconstructedShape)
 
   // Reconstruct face 0 - this creates a new TShape.
   const BRepGraph_NodeId aFaceNode(BRepGraph_NodeId::Kind::Face, 0);
-  const TopoDS_Shape aReconstructed = aGraph.Shapes().Shape(aFaceNode);
+  const TopoDS_Shape     aReconstructed = aGraph.Shapes().Shape(aFaceNode);
   ASSERT_FALSE(aReconstructed.IsNull());
 
   // FindNode should resolve the reconstructed shape back to its NodeId.
@@ -454,13 +454,13 @@ TEST(BRepGraphAlgo_AttrTransferTest, Deduplicate_AffectedFaceDefs)
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
-  TopExp_Explorer anExp(aBox, TopAbs_FACE);
+  TopExp_Explorer    anExp(aBox, TopAbs_FACE);
   const TopoDS_Shape aFace = anExp.Current();
 
   BRepBuilderAPI_Copy aCopy1(aFace, true);
   BRepBuilderAPI_Copy aCopy2(aFace, true);
 
-  BRep_Builder aBuilder;
+  BRep_Builder    aBuilder;
   TopoDS_Compound aCompound;
   aBuilder.MakeCompound(aCompound);
   aBuilder.Add(aCompound, aCopy1.Shape());
@@ -490,13 +490,13 @@ TEST(BRepGraphAlgo_AttrTransferTest, Deduplicate_AffectedEdgeDefs)
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
-  TopExp_Explorer anExp(aBox, TopAbs_FACE);
+  TopExp_Explorer    anExp(aBox, TopAbs_FACE);
   const TopoDS_Shape aFace = anExp.Current();
 
   BRepBuilderAPI_Copy aCopy1(aFace, true);
   BRepBuilderAPI_Copy aCopy2(aFace, true);
 
-  BRep_Builder aBuilder;
+  BRep_Builder    aBuilder;
   TopoDS_Compound aCompound;
   aBuilder.MakeCompound(aCompound);
   aBuilder.Add(aCompound, aCopy1.Shape());

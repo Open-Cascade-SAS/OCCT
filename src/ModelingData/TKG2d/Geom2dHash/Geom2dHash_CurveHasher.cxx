@@ -37,10 +37,9 @@
 
 //=================================================================================================
 
-Geom2dHash_CurveHasher::Geom2dHash_CurveHasher(double theCompTolerance,
-                                                double theHashTolerance)
-  : CompTolerance(theCompTolerance),
-    HashTolerance(theHashTolerance)
+Geom2dHash_CurveHasher::Geom2dHash_CurveHasher(double theCompTolerance, double theHashTolerance)
+    : CompTolerance(theCompTolerance),
+      HashTolerance(theHashTolerance)
 {
 }
 
@@ -58,28 +57,28 @@ std::size_t Geom2dHash_CurveHasher::operator()(
   const Handle(Standard_Type)& aType = theCurve->DynamicType();
   if (aType == STANDARD_TYPE(Geom2d_Line))
   {
-    return Geom2dHash_LineHasher{CompTolerance, HashTolerance}(
-      occ::down_cast<Geom2d_Line>(theCurve));
+    return Geom2dHash_LineHasher{CompTolerance,
+                                 HashTolerance}(occ::down_cast<Geom2d_Line>(theCurve));
   }
   else if (aType == STANDARD_TYPE(Geom2d_Circle))
   {
-    return Geom2dHash_CircleHasher{CompTolerance, HashTolerance}(
-      occ::down_cast<Geom2d_Circle>(theCurve));
+    return Geom2dHash_CircleHasher{CompTolerance,
+                                   HashTolerance}(occ::down_cast<Geom2d_Circle>(theCurve));
   }
   else if (aType == STANDARD_TYPE(Geom2d_Ellipse))
   {
-    return Geom2dHash_EllipseHasher{CompTolerance, HashTolerance}(
-      occ::down_cast<Geom2d_Ellipse>(theCurve));
+    return Geom2dHash_EllipseHasher{CompTolerance,
+                                    HashTolerance}(occ::down_cast<Geom2d_Ellipse>(theCurve));
   }
   else if (aType == STANDARD_TYPE(Geom2d_Hyperbola))
   {
-    return Geom2dHash_HyperbolaHasher{CompTolerance, HashTolerance}(
-      occ::down_cast<Geom2d_Hyperbola>(theCurve));
+    return Geom2dHash_HyperbolaHasher{CompTolerance,
+                                      HashTolerance}(occ::down_cast<Geom2d_Hyperbola>(theCurve));
   }
   else if (aType == STANDARD_TYPE(Geom2d_Parabola))
   {
-    return Geom2dHash_ParabolaHasher{CompTolerance, HashTolerance}(
-      occ::down_cast<Geom2d_Parabola>(theCurve));
+    return Geom2dHash_ParabolaHasher{CompTolerance,
+                                     HashTolerance}(occ::down_cast<Geom2d_Parabola>(theCurve));
   }
   else if (aType == STANDARD_TYPE(Geom2d_BezierCurve))
   {
@@ -131,33 +130,33 @@ bool Geom2dHash_CurveHasher::operator()(const occ::handle<Geom2d_Curve>& theCurv
   const Handle(Standard_Type)& aType = theCurve1->DynamicType();
   if (aType == STANDARD_TYPE(Geom2d_Line))
   {
-    return Geom2dHash_LineHasher{CompTolerance, HashTolerance}(
-      occ::down_cast<Geom2d_Line>(theCurve1),
-      occ::down_cast<Geom2d_Line>(theCurve2));
+    return Geom2dHash_LineHasher{CompTolerance,
+                                 HashTolerance}(occ::down_cast<Geom2d_Line>(theCurve1),
+                                                occ::down_cast<Geom2d_Line>(theCurve2));
   }
   else if (aType == STANDARD_TYPE(Geom2d_Circle))
   {
-    return Geom2dHash_CircleHasher{CompTolerance, HashTolerance}(
-      occ::down_cast<Geom2d_Circle>(theCurve1),
-      occ::down_cast<Geom2d_Circle>(theCurve2));
+    return Geom2dHash_CircleHasher{CompTolerance,
+                                   HashTolerance}(occ::down_cast<Geom2d_Circle>(theCurve1),
+                                                  occ::down_cast<Geom2d_Circle>(theCurve2));
   }
   else if (aType == STANDARD_TYPE(Geom2d_Ellipse))
   {
-    return Geom2dHash_EllipseHasher{CompTolerance, HashTolerance}(
-      occ::down_cast<Geom2d_Ellipse>(theCurve1),
-      occ::down_cast<Geom2d_Ellipse>(theCurve2));
+    return Geom2dHash_EllipseHasher{CompTolerance,
+                                    HashTolerance}(occ::down_cast<Geom2d_Ellipse>(theCurve1),
+                                                   occ::down_cast<Geom2d_Ellipse>(theCurve2));
   }
   else if (aType == STANDARD_TYPE(Geom2d_Hyperbola))
   {
-    return Geom2dHash_HyperbolaHasher{CompTolerance, HashTolerance}(
-      occ::down_cast<Geom2d_Hyperbola>(theCurve1),
-      occ::down_cast<Geom2d_Hyperbola>(theCurve2));
+    return Geom2dHash_HyperbolaHasher{CompTolerance,
+                                      HashTolerance}(occ::down_cast<Geom2d_Hyperbola>(theCurve1),
+                                                     occ::down_cast<Geom2d_Hyperbola>(theCurve2));
   }
   else if (aType == STANDARD_TYPE(Geom2d_Parabola))
   {
-    return Geom2dHash_ParabolaHasher{CompTolerance, HashTolerance}(
-      occ::down_cast<Geom2d_Parabola>(theCurve1),
-      occ::down_cast<Geom2d_Parabola>(theCurve2));
+    return Geom2dHash_ParabolaHasher{CompTolerance,
+                                     HashTolerance}(occ::down_cast<Geom2d_Parabola>(theCurve1),
+                                                    occ::down_cast<Geom2d_Parabola>(theCurve2));
   }
   else if (aType == STANDARD_TYPE(Geom2d_BezierCurve))
   {

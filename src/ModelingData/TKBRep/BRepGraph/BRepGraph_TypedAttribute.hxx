@@ -28,7 +28,7 @@ public:
 
   //! Construct with an initial value (marked clean).
   explicit BRepGraph_TypedAttribute(const T& theInitial)
-    : myValue(theInitial)
+      : myValue(theInitial)
   {
     MarkClean();
   }

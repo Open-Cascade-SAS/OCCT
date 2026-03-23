@@ -34,13 +34,13 @@ public:
   Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> FreeEdges() const;
 
   //! All (Edge, Face) pairs missing a PCurveNode.
-  Standard_EXPORT NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>>
-    MissingPCurves() const;
+  Standard_EXPORT NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> MissingPCurves()
+    const;
 
   //! Nodes with tolerance conflicts across shared geometry.
   //! @param[in] theThreshold maximum allowed tolerance spread
-  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId>
-    ToleranceConflicts(const double theThreshold) const;
+  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> ToleranceConflicts(
+    const double theThreshold) const;
 
   //! WireNodes with < 2 edges or non-closed outer wires.
   Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> DegenerateWires() const;
@@ -51,23 +51,29 @@ public:
   //! Parallel iteration over FaceNode indices in a SubGraph.
   //! @param[in] theSub    SubGraph whose faces to iterate
   //! @param[in] theLambda callback invoked with each face index
-  Standard_EXPORT void ParallelForEachFace(
-    const BRepGraph_SubGraph&               theSub,
-    const std::function<void(int faceIdx)>& theLambda) const;
+  Standard_EXPORT void ParallelForEachFace(const BRepGraph_SubGraph&               theSub,
+                                           const std::function<void(int faceIdx)>& theLambda) const;
 
   //! Parallel iteration over EdgeNode indices in a SubGraph.
   //! @param[in] theSub    SubGraph whose edges to iterate
   //! @param[in] theLambda callback invoked with each edge index
-  Standard_EXPORT void ParallelForEachEdge(
-    const BRepGraph_SubGraph&               theSub,
-    const std::function<void(int edgeIdx)>& theLambda) const;
+  Standard_EXPORT void ParallelForEachEdge(const BRepGraph_SubGraph&               theSub,
+                                           const std::function<void(int edgeIdx)>& theLambda) const;
 
 private:
   friend class BRepGraph;
-  explicit AnalyzeView(const BRepGraph* theGraph) : myGraph(theGraph) {}
+
+  explicit AnalyzeView(const BRepGraph* theGraph)
+      : myGraph(theGraph)
+  {
+  }
+
   const BRepGraph* myGraph;
 };
 
-inline BRepGraph::AnalyzeView BRepGraph::Analyze() const { return AnalyzeView(this); }
+inline BRepGraph::AnalyzeView BRepGraph::Analyze() const
+{
+  return AnalyzeView(this);
+}
 
 #endif // _BRepGraph_AnalyzeView_HeaderFile

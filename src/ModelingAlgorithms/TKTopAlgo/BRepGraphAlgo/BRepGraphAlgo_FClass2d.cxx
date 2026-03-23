@@ -52,9 +52,9 @@ inline double safeIncrement(const double theValue,
 // Checks whether a 3D curve is degenerate between theStartParam and theEndParam by
 // sampling points and testing distance to start.
 bool isDegenerated(const occ::handle<Geom_Curve>& theCurve,
-                   const TopLoc_Location&    theLoc,
-                   const double              theStartParam,
-                   const double              theEndParam)
+                   const TopLoc_Location&         theLoc,
+                   const double                   theStartParam,
+                   const double                   theEndParam)
 {
   if (theCurve.IsNull())
     return true;
@@ -152,7 +152,8 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
   // Geometry is stored at identity; location offsets are absorbed into usages.
   if (!BRepGraph_Tool::Face::HasSurface(theGraph, theFaceDefIdx))
     return;
-  GeomAdaptor_TransformedSurface aSurfAdaptor = BRepGraph_Tool::Face::SurfaceAdaptor(theGraph, theFaceDefIdx);
+  GeomAdaptor_TransformedSurface aSurfAdaptor =
+    BRepGraph_Tool::Face::SurfaceAdaptor(theGraph, theFaceDefIdx);
 
   myIsUPer  = aSurfAdaptor.IsUPeriodic();
   myIsVPer  = aSurfAdaptor.IsVPeriodic();
@@ -164,9 +165,9 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
     return;
 
   // Collect wire indices: outer wire first, then inner wires.
-  const int aNbWires = aFaceDef.WireRefs.Length();
+  const int               aNbWires = aFaceDef.WireRefs.Length();
   NCollection_Array1<int> aWireDefIndices(0, aNbWires - 1);
-  int aWireFillIdx = 0;
+  int                     aWireFillIdx = 0;
   // Put outer wire first.
   for (int i = 0; i < aFaceDef.WireRefs.Length(); ++i)
   {
@@ -192,9 +193,8 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
 
   for (int aWireIdx = 0; aWireIdx < aNbWires && !anIsBadWire; ++aWireIdx)
   {
-    const BRepGraph_TopoNode::WireDef& aWireDef =
-      theGraph.Defs().Wire(aWireDefIndices(aWireIdx));
-    int aNbPnts = 0;
+    const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.Defs().Wire(aWireDefIndices(aWireIdx));
+    int                                aNbPnts  = 0;
     aPnt2dVec.Clear();
     int    aFirstPoint     = 1;
     double aFlecheU        = 0.0;
@@ -223,12 +223,11 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
     // Iterate coedge refs in connection order.
     for (int anEdgeIdx = 0; anEdgeIdx < aNbEdgeRefs; ++anEdgeIdx)
     {
-      const BRepGraphInc::CoEdgeRef& aCoEdgeRef = anOrderedRefs.Value(anEdgeIdx);
+      const BRepGraphInc::CoEdgeRef&       aCoEdgeRef = anOrderedRefs.Value(anEdgeIdx);
       const BRepGraph_TopoNode::CoEdgeDef& aCoEdgeDef =
         theGraph.Defs().CoEdge(aCoEdgeRef.CoEdgeIdx);
-      const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
-        theGraph.Defs().Edge(aCoEdgeDef.EdgeIdx);
-      const TopAbs_Orientation anOri = aCoEdgeDef.Sense;
+      const BRepGraph_TopoNode::EdgeDef& anEdgeDef = theGraph.Defs().Edge(aCoEdgeDef.EdgeIdx);
+      const TopAbs_Orientation           anOri     = aCoEdgeDef.Sense;
 
       if (anOri != TopAbs_FORWARD && anOri != TopAbs_REVERSED)
         continue;
@@ -265,11 +264,10 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
       {
         const occ::handle<Geom_Curve>& aEdgeCurve3d =
           BRepGraph_Tool::Edge::Curve(theGraph, aCoEdgeDef.EdgeIdx);
-        const auto [aEdgeParamFirst, aEdgeParamLast] = BRepGraph_Tool::Edge::Range(theGraph, aCoEdgeDef.EdgeIdx);
-        anIsDegenerated = isDegenerated(aEdgeCurve3d,
-                                        TopLoc_Location(),
-                                        aEdgeParamFirst,
-                                        aEdgeParamLast);
+        const auto [aEdgeParamFirst, aEdgeParamLast] =
+          BRepGraph_Tool::Edge::Range(theGraph, aCoEdgeDef.EdgeIdx);
+        anIsDegenerated =
+          isDegenerated(aEdgeCurve3d, TopLoc_Location(), aEdgeParamFirst, aEdgeParamLast);
       }
 
       // Discretize pcurve into 2D points.
@@ -374,7 +372,7 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
 
           for (int anEdgeIdx = 0; anEdgeIdx < aNbEdgeRefs; ++anEdgeIdx)
           {
-            const BRepGraphInc::CoEdgeRef& aCoEdgeRef2 = anOrderedRefs.Value(anEdgeIdx);
+            const BRepGraphInc::CoEdgeRef&       aCoEdgeRef2 = anOrderedRefs.Value(anEdgeIdx);
             const BRepGraph_TopoNode::CoEdgeDef& aCoEdgeDef2 =
               theGraph.Defs().CoEdge(aCoEdgeRef2.CoEdgeIdx);
             const TopAbs_Orientation anOri = aCoEdgeDef2.Sense;
@@ -446,7 +444,7 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
       {
         anIsBadWire = true;
         myWireOrients.Append(WireOrient::Invalid);
-        const int aBadLen = std::max(2, aPnt2dVec.Length());
+        const int                    aBadLen = std::max(2, aPnt2dVec.Length());
         NCollection_Array1<gp_Pnt2d> aBadPClass(1, aBadLen);
         if (aPnt2dVec.Length() >= 1)
           aBadPClass(1) = aPnt2dVec(0);

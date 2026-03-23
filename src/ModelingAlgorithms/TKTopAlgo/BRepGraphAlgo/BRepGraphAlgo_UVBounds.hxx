@@ -49,13 +49,13 @@ public:
   //! Cached UV bounds data for a single face node.
   struct CachedData
   {
-    double UMin = 0.0;  //!< Minimum U parameter.
-    double UMax = 0.0;  //!< Maximum U parameter.
-    double VMin = 0.0;  //!< Minimum V parameter.
-    double VMax = 0.0;  //!< Maximum V parameter.
-    bool   IsNaturalRestriction = false; //!< True if face uses full surface domain.
-    bool   IsValid = false;              //!< True if computation succeeded.
-    Method ComputeMethod = Method::PCurve; //!< Method used for computation.
+    double UMin                 = 0.0;            //!< Minimum U parameter.
+    double UMax                 = 0.0;            //!< Maximum U parameter.
+    double VMin                 = 0.0;            //!< Minimum V parameter.
+    double VMax                 = 0.0;            //!< Maximum V parameter.
+    bool   IsNaturalRestriction = false;          //!< True if face uses full surface domain.
+    bool   IsValid              = false;          //!< True if computation succeeded.
+    Method ComputeMethod        = Method::PCurve; //!< Method used for computation.
   };
 
   //! Compute UV bounds for a face definition (by zero-based index).
@@ -87,22 +87,20 @@ public:
   //! @param[in]  theGraph  pre-built BRepGraph (non-const for cache mutation)
   //! @param[in]  theNode   face definition node identifier
   //! @return computed or cached UV bounds data
-  Standard_EXPORT static CachedData AddCached(BRepGraph&       theGraph,
-                                              BRepGraph_NodeId theNode);
+  Standard_EXPORT static CachedData AddCached(BRepGraph& theGraph, BRepGraph_NodeId theNode);
 
   //! Store externally-computed UV bounds into the cache.
   //! @param[in]  theGraph  pre-built BRepGraph (non-const for cache mutation)
   //! @param[in]  theNode   face definition node identifier
   //! @param[in]  theData   UV bounds data to store
-  Standard_EXPORT static void SetCached(BRepGraph&       theGraph,
-                                        BRepGraph_NodeId theNode,
+  Standard_EXPORT static void SetCached(BRepGraph&        theGraph,
+                                        BRepGraph_NodeId  theNode,
                                         const CachedData& theData);
 
   //! Invalidate the cached UV bounds for a node.
   //! @param[in]  theGraph  pre-built BRepGraph (non-const for cache mutation)
   //! @param[in]  theNode   face definition node identifier
-  Standard_EXPORT static void InvalidateCached(BRepGraph&       theGraph,
-                                               BRepGraph_NodeId theNode);
+  Standard_EXPORT static void InvalidateCached(BRepGraph& theGraph, BRepGraph_NodeId theNode);
 
   //! Return the user attribute key used for UV bounds caching.
   //! @return integer key registered via GUID

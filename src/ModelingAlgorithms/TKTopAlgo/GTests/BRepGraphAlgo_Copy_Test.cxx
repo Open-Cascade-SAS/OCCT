@@ -134,7 +134,7 @@ TEST(BRepGraphAlgo_CopyTest, CopyBox_SharedGeometry)
 TEST(BRepGraphAlgo_CopyTest, CopyCylinder_FaceCount)
 {
   BRepPrimAPI_MakeCylinder aCylMaker(5.0, 20.0);
-  const TopoDS_Shape& aCyl = aCylMaker.Shape();
+  const TopoDS_Shape&      aCyl = aCylMaker.Shape();
 
   BRepGraph aGraph;
   aGraph.Build(aCyl);
@@ -183,7 +183,7 @@ TEST(BRepGraphAlgo_CopyTest, CopyFacesOnly_Compound)
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
-  BRep_Builder aBB;
+  BRep_Builder    aBB;
   TopoDS_Compound aCompound;
   aBB.MakeCompound(aCompound);
   for (TopExp_Explorer anExp(aBox, TopAbs_FACE); anExp.More(); anExp.Next())
@@ -225,10 +225,8 @@ TEST(BRepGraphAlgo_CopyTest, CopyBox_SameParameter_Preserved)
   for (int anIdx = 0; anIdx < aCopyGraph.Defs().NbEdges(); ++anIdx)
   {
     const BRepGraph_TopoNode::EdgeDef& anEdge = aCopyGraph.Defs().Edge(anIdx);
-    EXPECT_TRUE(anEdge.SameParameter)
-        << "Copied edge " << anIdx << " lost SameParameter flag";
-    EXPECT_TRUE(anEdge.SameRange)
-        << "Copied edge " << anIdx << " lost SameRange flag";
+    EXPECT_TRUE(anEdge.SameParameter) << "Copied edge " << anIdx << " lost SameParameter flag";
+    EXPECT_TRUE(anEdge.SameRange) << "Copied edge " << anIdx << " lost SameRange flag";
   }
 }
 
@@ -240,8 +238,8 @@ TEST(BRepGraphAlgo_CopyTest, FusedBoxes_Regularity_AreaPreserved)
 {
   // Fuse two adjacent boxes to produce a shape with regularity edges.
   // Verify that the copy preserves area (geometry integrity).
-  TopoDS_Shape aBox1 = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
-  TopoDS_Shape aBox2 = BRepPrimAPI_MakeBox(gp_Pnt(10.0, 0.0, 0.0), 10.0, 10.0, 10.0).Shape();
+  TopoDS_Shape     aBox1 = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
+  TopoDS_Shape     aBox2 = BRepPrimAPI_MakeBox(gp_Pnt(10.0, 0.0, 0.0), 10.0, 10.0, 10.0).Shape();
   BRepAlgoAPI_Fuse aFuser(aBox1, aBox2);
   ASSERT_TRUE(aFuser.IsDone());
   const TopoDS_Shape& aFused = aFuser.Shape();
@@ -293,10 +291,10 @@ TEST(BRepGraphAlgo_CopyTest, CopyBox_UIDsPreserved)
     for (int anIdx = 0; anIdx < theCount; ++anIdx)
     {
       BRepGraph_NodeId aNodeId(theKind, anIdx);
-      BRepGraph_UID anOrigUID = aGraph.UIDs().Of(aNodeId);
-      BRepGraph_UID aCopyUID  = aCopyGraph.UIDs().Of(aNodeId);
+      BRepGraph_UID    anOrigUID = aGraph.UIDs().Of(aNodeId);
+      BRepGraph_UID    aCopyUID  = aCopyGraph.UIDs().Of(aNodeId);
       EXPECT_EQ(aCopyUID.IsValid(), anOrigUID.IsValid())
-          << "UID validity mismatch at " << theLabel << " " << anIdx;
+        << "UID validity mismatch at " << theLabel << " " << anIdx;
       if (anOrigUID.IsValid())
         EXPECT_EQ(aCopyUID, anOrigUID) << "UID mismatch at " << theLabel << " " << anIdx;
     }
@@ -343,18 +341,18 @@ TEST(BRepGraphAlgo_CopyTest, Performance_VsLegacy)
   for (int anIter = 0; anIter < THE_NB_ITERS; ++anIter)
   {
     BRepBuilderAPI_Copy aCopier(aBox, true);
-    TopoDS_Shape aCopy = aCopier.Shape();
+    TopoDS_Shape        aCopy = aCopier.Shape();
     (void)aCopy;
   }
   aLegacyTimer.Stop();
 
-  std::cout << "[  PERF   ] BRepGraphAlgo_Copy: " << aGraphTimer.ElapsedTime()
-            << " s (" << THE_NB_ITERS << " iters)" << std::endl;
-  std::cout << "[  PERF   ] BRepBuilderAPI_Copy: " << aLegacyTimer.ElapsedTime()
-            << " s (" << THE_NB_ITERS << " iters)" << std::endl;
+  std::cout << "[  PERF   ] BRepGraphAlgo_Copy: " << aGraphTimer.ElapsedTime() << " s ("
+            << THE_NB_ITERS << " iters)" << std::endl;
+  std::cout << "[  PERF   ] BRepBuilderAPI_Copy: " << aLegacyTimer.ElapsedTime() << " s ("
+            << THE_NB_ITERS << " iters)" << std::endl;
   if (aGraphTimer.ElapsedTime() > 1.0e-9)
   {
-    std::cout << "[  PERF   ] Speedup: "
-              << aLegacyTimer.ElapsedTime() / aGraphTimer.ElapsedTime() << "x" << std::endl;
+    std::cout << "[  PERF   ] Speedup: " << aLegacyTimer.ElapsedTime() / aGraphTimer.ElapsedTime()
+              << "x" << std::endl;
   }
 }

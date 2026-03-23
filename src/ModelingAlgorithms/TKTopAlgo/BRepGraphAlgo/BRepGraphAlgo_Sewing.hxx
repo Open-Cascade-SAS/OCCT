@@ -62,30 +62,31 @@ public:
   //! Configuration parameters for sewing.
   struct Options
   {
-    double Tolerance         = 1.0e-06;              //!< Maximum distance for edge matching.
-    bool   Cutting           = true;                 //!< Cut edges at T-vertex intersections.
-    bool   SameParameterMode = true;                 //!< Enforce SameParameter on sewn edges.
-    bool   NonManifoldMode   = false;                //!< Allow >2 faces per edge.
-    bool   Parallel          = false;                //!< Enable parallel execution.
-    bool   HistoryMode       = true;                 //!< Record history in the graph.
-    bool   FaceAnalysis      = true;                 //!< Run face analysis before sewing (small-edge/face cleanup).
-    bool   FloatingEdgesMode = false;                //!< Include edges with 0 adjacent faces.
-    bool   LocalTolerancesMode = false;              //!< Adaptive tolerance: WorkTol = Tolerance + tolEdge1 + tolEdge2.
-    double MinTolerance      = 0.0;                  //!< Minimum edge length threshold; 0 = auto (Tolerance * 1e-4).
-    double MaxTolerance      = Precision::Infinite(); //!< Upper bound for merge tolerance.
+    double Tolerance         = 1.0e-06; //!< Maximum distance for edge matching.
+    bool   Cutting           = true;    //!< Cut edges at T-vertex intersections.
+    bool   SameParameterMode = true;    //!< Enforce SameParameter on sewn edges.
+    bool   NonManifoldMode   = false;   //!< Allow >2 faces per edge.
+    bool   Parallel          = false;   //!< Enable parallel execution.
+    bool   HistoryMode       = true;    //!< Record history in the graph.
+    bool   FaceAnalysis      = true; //!< Run face analysis before sewing (small-edge/face cleanup).
+    bool   FloatingEdgesMode = false; //!< Include edges with 0 adjacent faces.
+    bool   LocalTolerancesMode =
+      false;                   //!< Adaptive tolerance: WorkTol = Tolerance + tolEdge1 + tolEdge2.
+    double MinTolerance = 0.0; //!< Minimum edge length threshold; 0 = auto (Tolerance * 1e-4).
+    double MaxTolerance = Precision::Infinite(); //!< Upper bound for merge tolerance.
   };
 
   //! Diagnostic result from a sewing operation.
   struct Result
   {
-    bool IsDone            = false; //!< True if sewing completed successfully.
-    int  NbFreeEdgesBefore = 0;     //!< Free edges detected before sewing.
-    int  NbFreeEdgesAfter  = 0;     //!< Free edges remaining after sewing.
-    int  NbSewnEdges       = 0;     //!< Edge pairs that were successfully sewn.
-    int  NbMultipleEdges   = 0;     //!< Edges shared by >2 faces.
-    int  NbDegeneratedEdges     = 0; //!< Degenerate edges detected or created.
-    int  NbDeletedFaces         = 0; //!< Small faces removed by face analysis.
-    int  NbRejectedByTolerance  = 0; //!< Candidate pairs rejected by MaxTolerance.
+    bool IsDone                = false; //!< True if sewing completed successfully.
+    int  NbFreeEdgesBefore     = 0;     //!< Free edges detected before sewing.
+    int  NbFreeEdgesAfter      = 0;     //!< Free edges remaining after sewing.
+    int  NbSewnEdges           = 0;     //!< Edge pairs that were successfully sewn.
+    int  NbMultipleEdges       = 0;     //!< Edges shared by >2 faces.
+    int  NbDegeneratedEdges    = 0;     //!< Degenerate edges detected or created.
+    int  NbDeletedFaces        = 0;     //!< Small faces removed by face analysis.
+    int  NbRejectedByTolerance = 0;     //!< Candidate pairs rejected by MaxTolerance.
 
     NCollection_Vector<BRepGraph_NodeId> FreeEdges;        //!< Remaining free edges after sewing.
     NCollection_Vector<BRepGraph_NodeId> MultipleEdges;    //!< Edges shared by >2 faces.
@@ -105,8 +106,7 @@ public:
   //! @param[in,out] theGraph   the graph to modify
   //! @param[in]     theOptions sewing parameters
   //! @return result with diagnostics
-  static Standard_EXPORT Result Perform(BRepGraph&     theGraph,
-                                        const Options& theOptions);
+  static Standard_EXPORT Result Perform(BRepGraph& theGraph, const Options& theOptions);
 
   //! Convenience: sew a shape, return the result shape.
   //! Builds graph internally, calls Perform(), reconstructs, encodes regularity.
@@ -120,8 +120,7 @@ public:
   //! @param[in] theShape   root shape (Face, Shell, Compound, etc.)
   //! @param[in] theOptions sewing parameters
   //! @return sewn result shape (empty if failed)
-  static Standard_EXPORT TopoDS_Shape Sew(const TopoDS_Shape& theShape,
-                                          const Options&       theOptions);
+  static Standard_EXPORT TopoDS_Shape Sew(const TopoDS_Shape& theShape, const Options& theOptions);
 
 private:
   BRepGraphAlgo_Sewing() = delete;

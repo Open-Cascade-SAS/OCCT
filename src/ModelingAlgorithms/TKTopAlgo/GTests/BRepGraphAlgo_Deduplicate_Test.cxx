@@ -265,8 +265,7 @@ int addDuplicatePCurvesToAllEdges(BRepGraph& theGraph)
       continue;
     }
 
-    const occ::handle<Geom2d_Curve>& aDupPCurve =
-      BRepGraph_Tool::CoEdge::PCurve(theGraph, aCE);
+    const occ::handle<Geom2d_Curve>& aDupPCurve = BRepGraph_Tool::CoEdge::PCurve(theGraph, aCE);
     theGraph.Mut().AddPCurveToEdge(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, anEdgeIdx),
                                    aCE.FaceDefId,
                                    aDupPCurve,
@@ -447,7 +446,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, Idempotent_SecondRunNoRewrites)
   // edges share the same curve pointer. A second run still detects the same
   // canonical mapping via GeomHash, so rewrite counts may be non-zero (no-op
   // at pointer level). Verify the unique pointer count is unchanged.
-  const int aUniqueSurfsBefore = nbUniqueFaceSurfaceDefs(aGraph);
+  const int aUniqueSurfsBefore  = nbUniqueFaceSurfaceDefs(aGraph);
   const int aUniqueCurvesBefore = nbUniqueEdgeCurveDefs(aGraph);
 
   const BRepGraphAlgo_Deduplicate::Result aRes2 = BRepGraphAlgo_Deduplicate::Perform(aGraph);
@@ -1126,7 +1125,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, Idempotent_MixedCompound_SurfacesAndCurves)
   ASSERT_EQ(aRes1.NbCurveRewrites, 4);
 
   // After first dedup, unique pointer counts are stable.
-  const int aUniqueSurfs = nbUniqueFaceSurfaceDefs(aGraph);
+  const int aUniqueSurfs  = nbUniqueFaceSurfaceDefs(aGraph);
   const int aUniqueCurves = nbUniqueEdgeCurveDefs(aGraph);
 
   const BRepGraphAlgo_Deduplicate::Result aRes2 = BRepGraphAlgo_Deduplicate::Perform(aGraph);
@@ -1147,7 +1146,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, Idempotent_TwoIdenticalBoxes)
   ASSERT_EQ(aRes1.NbCurveRewrites, 12);
 
   // After first dedup, unique pointer counts are stable.
-  const int aUniqueSurfs = nbUniqueFaceSurfaceDefs(aGraph);
+  const int aUniqueSurfs  = nbUniqueFaceSurfaceDefs(aGraph);
   const int aUniqueCurves = nbUniqueEdgeCurveDefs(aGraph);
 
   const BRepGraphAlgo_Deduplicate::Result aRes2 = BRepGraphAlgo_Deduplicate::Perform(aGraph);
@@ -1656,9 +1655,10 @@ TEST(BRepGraphAlgo_DeduplicateTest, Pump_FullDedup_BackRefsAndNullify)
   EXPECT_EQ(aRes.NbNullifiedCurves, 0);
 
   // Idempotency: second run unique pointer counts should be unchanged.
-  const int aUniqueSurfsAfter = nbUniqueFaceSurfaceDefs(aGraph);
-  const int aUniqueCurvesAfter = nbUniqueEdgeCurveDefs(aGraph);
-  const BRepGraphAlgo_Deduplicate::Result aRes2 = BRepGraphAlgo_Deduplicate::Perform(aGraph, anOpts);
+  const int                               aUniqueSurfsAfter  = nbUniqueFaceSurfaceDefs(aGraph);
+  const int                               aUniqueCurvesAfter = nbUniqueEdgeCurveDefs(aGraph);
+  const BRepGraphAlgo_Deduplicate::Result aRes2 =
+    BRepGraphAlgo_Deduplicate::Perform(aGraph, anOpts);
   EXPECT_EQ(nbUniqueFaceSurfaceDefs(aGraph), aUniqueSurfsAfter);
   EXPECT_EQ(nbUniqueEdgeCurveDefs(aGraph), aUniqueCurvesAfter);
   EXPECT_EQ(aRes2.NbNullifiedSurfaces, 0);
@@ -1671,8 +1671,8 @@ TEST(BRepGraphAlgo_DeduplicateTest, Pump_FullDedup_BackRefsAndNullify)
             << ", rewrites: " << aRes.NbSurfaceRewrites
             << ", nullified: " << aRes.NbNullifiedSurfaces << ")\n"
             << "  Curves: " << aNbCurvesBefore << " (canonical: " << aRes.NbCanonicalCurves
-            << ", rewrites: " << aRes.NbCurveRewrites
-            << ", nullified: " << aRes.NbNullifiedCurves << ")\n"
+            << ", rewrites: " << aRes.NbCurveRewrites << ", nullified: " << aRes.NbNullifiedCurves
+            << ")\n"
             << "  History records: " << aRes.NbHistoryRecords << "\n"
             << "==========================\n";
 
@@ -1694,8 +1694,9 @@ TEST(BRepGraphAlgo_DeduplicateTest, Pump_FullDedup_BackRefsAndNullify)
     NCollection_Map<const Geom_Surface*> aSet;
     for (TopExp_Explorer anExp(theShape, TopAbs_FACE); anExp.More(); anExp.Next())
     {
-      TopLoc_Location aLoc;
-      const occ::handle<Geom_Surface>& aSurf = BRep_Tool::Surface(TopoDS::Face(anExp.Current()), aLoc);
+      TopLoc_Location                  aLoc;
+      const occ::handle<Geom_Surface>& aSurf =
+        BRep_Tool::Surface(TopoDS::Face(anExp.Current()), aLoc);
       if (!aSurf.IsNull())
         aSet.Add(aSurf.get());
     }
@@ -1706,24 +1707,25 @@ TEST(BRepGraphAlgo_DeduplicateTest, Pump_FullDedup_BackRefsAndNullify)
     NCollection_Map<const Geom_Curve*> aSet;
     for (TopExp_Explorer anExp(theShape, TopAbs_EDGE); anExp.More(); anExp.Next())
     {
-      TopLoc_Location aLoc;
-      double aFirst = 0.0, aLast = 0.0;
-      const occ::handle<Geom_Curve> aCurve = BRep_Tool::Curve(TopoDS::Edge(anExp.Current()),
-                                                          aLoc, aFirst, aLast);
+      TopLoc_Location               aLoc;
+      double                        aFirst = 0.0, aLast = 0.0;
+      const occ::handle<Geom_Curve> aCurve =
+        BRep_Tool::Curve(TopoDS::Edge(anExp.Current()), aLoc, aFirst, aLast);
       if (!aCurve.IsNull())
         aSet.Add(aCurve.get());
     }
     return aSet.Extent();
   };
 
-  const int aOrigSurfs  = countUniqueSurfaces(aShape);
-  const int aFinalSurfs = countUniqueSurfaces(aFinalShape);
+  const int aOrigSurfs   = countUniqueSurfaces(aShape);
+  const int aFinalSurfs  = countUniqueSurfaces(aFinalShape);
   const int aOrigCurves  = countUniqueCurves(aShape);
   const int aFinalCurves = countUniqueCurves(aFinalShape);
 
   std::cout << "\n  === Geometry pointer sharing ===\n"
             << "  Unique surfaces: original=" << aOrigSurfs << ", deduped=" << aFinalSurfs << "\n"
-            << "  Unique curves:   original=" << aOrigCurves << ", deduped=" << aFinalCurves << "\n";
+            << "  Unique curves:   original=" << aOrigCurves << ", deduped=" << aFinalCurves
+            << "\n";
 
   // After dedup, fewer unique geometry pointers should exist.
   EXPECT_LE(aFinalSurfs, aOrigSurfs);
@@ -1735,11 +1737,11 @@ TEST(BRepGraphAlgo_DeduplicateTest, Pump_FullDedup_BackRefsAndNullify)
   ASSERT_TRUE(aGraph2.IsDone());
 
   std::cout << "  === Graph from reconstructed shape ===\n"
-            << "  Faces: " << aGraph2.Defs().NbFaces()
-            << ", Edges: " << aGraph2.Defs().NbEdges() << "\n"
+            << "  Faces: " << aGraph2.Defs().NbFaces() << ", Edges: " << aGraph2.Defs().NbEdges()
+            << "\n"
             << "  Surfaces: " << aGraph2.Defs().NbFaces()
-            << ", Curves: " << aGraph2.Defs().NbEdges()
-            << ", PCurves: " << nbPCurveEntries(aGraph2) << "\n";
+            << ", Curves: " << aGraph2.Defs().NbEdges() << ", PCurves: " << nbPCurveEntries(aGraph2)
+            << "\n";
 
   // The new graph should have fewer geometry nodes (shared handles -> single node).
   EXPECT_EQ(aGraph2.Defs().NbFaces(), aNbFaces);
@@ -1759,19 +1761,19 @@ TEST(BRepGraphAlgo_DeduplicateTest, Pump_FullDedup_BackRefsAndNullify)
   // -------------------------------------------------------------------------
 
   // --- BRepCheck_Analyzer (legacy) on original shape ---
-  auto aLegacyOrigStart = std::chrono::high_resolution_clock::now();
+  auto               aLegacyOrigStart = std::chrono::high_resolution_clock::now();
   BRepCheck_Analyzer aLegacyOrig(aShape, true);
-  auto aLegacyOrigEnd = std::chrono::high_resolution_clock::now();
-  const bool aLegacyOrigValid = aLegacyOrig.IsValid();
-  const double aLegacyOrigMs =
+  auto               aLegacyOrigEnd   = std::chrono::high_resolution_clock::now();
+  const bool         aLegacyOrigValid = aLegacyOrig.IsValid();
+  const double       aLegacyOrigMs =
     std::chrono::duration<double, std::milli>(aLegacyOrigEnd - aLegacyOrigStart).count();
 
   // --- BRepCheck_Analyzer (legacy) on deduped shape ---
-  auto aLegacyDedupStart = std::chrono::high_resolution_clock::now();
+  auto               aLegacyDedupStart = std::chrono::high_resolution_clock::now();
   BRepCheck_Analyzer aLegacyDedup(aFinalShape, true);
-  auto aLegacyDedupEnd = std::chrono::high_resolution_clock::now();
-  const bool aLegacyDedupValid = aLegacyDedup.IsValid();
-  const double aLegacyDedupMs =
+  auto               aLegacyDedupEnd   = std::chrono::high_resolution_clock::now();
+  const bool         aLegacyDedupValid = aLegacyDedup.IsValid();
+  const double       aLegacyDedupMs =
     std::chrono::duration<double, std::milli>(aLegacyDedupEnd - aLegacyDedupStart).count();
 
   // --- BRepGraphCheck_Analyzer on original shape (serial) ---
@@ -1779,60 +1781,60 @@ TEST(BRepGraphAlgo_DeduplicateTest, Pump_FullDedup_BackRefsAndNullify)
   aGraphOrig.Build(aShape);
   ASSERT_TRUE(aGraphOrig.IsDone());
 
-  auto aGraphOrigStart = std::chrono::high_resolution_clock::now();
+  auto                    aGraphOrigStart = std::chrono::high_resolution_clock::now();
   BRepGraphCheck_Analyzer aGraphCheckOrig(aGraphOrig);
   aGraphCheckOrig.SetGeometricControls(true);
   aGraphCheckOrig.Perform();
-  auto aGraphOrigEnd = std::chrono::high_resolution_clock::now();
-  const bool aGraphOrigValid = aGraphCheckOrig.IsValid();
+  auto         aGraphOrigEnd   = std::chrono::high_resolution_clock::now();
+  const bool   aGraphOrigValid = aGraphCheckOrig.IsValid();
   const double aGraphOrigMs =
     std::chrono::duration<double, std::milli>(aGraphOrigEnd - aGraphOrigStart).count();
 
   // --- BRepGraphCheck_Analyzer on original shape (parallel) ---
-  auto aGraphOrigParStart = std::chrono::high_resolution_clock::now();
+  auto                    aGraphOrigParStart = std::chrono::high_resolution_clock::now();
   BRepGraphCheck_Analyzer aGraphCheckOrigPar(aGraphOrig);
   aGraphCheckOrigPar.SetGeometricControls(true);
   aGraphCheckOrigPar.SetParallel(true);
   aGraphCheckOrigPar.Perform();
-  auto aGraphOrigParEnd = std::chrono::high_resolution_clock::now();
-  const bool aGraphOrigParValid = aGraphCheckOrigPar.IsValid();
+  auto         aGraphOrigParEnd   = std::chrono::high_resolution_clock::now();
+  const bool   aGraphOrigParValid = aGraphCheckOrigPar.IsValid();
   const double aGraphOrigParMs =
     std::chrono::duration<double, std::milli>(aGraphOrigParEnd - aGraphOrigParStart).count();
 
   // --- BRepGraphCheck_Analyzer on deduped shape (serial, reuse aGraph2) ---
-  auto aGraphDedupStart = std::chrono::high_resolution_clock::now();
+  auto                    aGraphDedupStart = std::chrono::high_resolution_clock::now();
   BRepGraphCheck_Analyzer aGraphCheckDedup(aGraph2);
   aGraphCheckDedup.SetGeometricControls(true);
   aGraphCheckDedup.Perform();
-  auto aGraphDedupEnd = std::chrono::high_resolution_clock::now();
-  const bool aGraphDedupValid = aGraphCheckDedup.IsValid();
+  auto         aGraphDedupEnd   = std::chrono::high_resolution_clock::now();
+  const bool   aGraphDedupValid = aGraphCheckDedup.IsValid();
   const double aGraphDedupMs =
     std::chrono::duration<double, std::milli>(aGraphDedupEnd - aGraphDedupStart).count();
 
   // --- BRepGraphCheck_Analyzer on deduped shape (parallel) ---
-  auto aGraphDedupParStart = std::chrono::high_resolution_clock::now();
+  auto                    aGraphDedupParStart = std::chrono::high_resolution_clock::now();
   BRepGraphCheck_Analyzer aGraphCheckDedupPar(aGraph2);
   aGraphCheckDedupPar.SetGeometricControls(true);
   aGraphCheckDedupPar.SetParallel(true);
   aGraphCheckDedupPar.Perform();
-  auto aGraphDedupParEnd = std::chrono::high_resolution_clock::now();
-  const bool aGraphDedupParValid = aGraphCheckDedupPar.IsValid();
+  auto         aGraphDedupParEnd   = std::chrono::high_resolution_clock::now();
+  const bool   aGraphDedupParValid = aGraphCheckDedupPar.IsValid();
   const double aGraphDedupParMs =
     std::chrono::duration<double, std::milli>(aGraphDedupParEnd - aGraphDedupParStart).count();
 
   // Print comparison table.
   std::cout << "\n  === Analyzer comparison ===\n"
             << "                                  Valid    Time (ms)\n"
-            << "  BRepCheck       (original):      " << (aLegacyOrigValid ? "yes" : "no ")
-            << "    " << aLegacyOrigMs << "\n"
+            << "  BRepCheck       (original):      " << (aLegacyOrigValid ? "yes" : "no ") << "    "
+            << aLegacyOrigMs << "\n"
             << "  BRepCheck       (deduped):       " << (aLegacyDedupValid ? "yes" : "no ")
             << "    " << aLegacyDedupMs << "\n"
-            << "  BRepGraph serial  (original):    " << (aGraphOrigValid ? "yes" : "no ")
-            << "    " << aGraphOrigMs << "\n"
+            << "  BRepGraph serial  (original):    " << (aGraphOrigValid ? "yes" : "no ") << "    "
+            << aGraphOrigMs << "\n"
             << "  BRepGraph parallel (original):   " << (aGraphOrigParValid ? "yes" : "no ")
             << "    " << aGraphOrigParMs << "\n"
-            << "  BRepGraph serial  (deduped):     " << (aGraphDedupValid ? "yes" : "no ")
-            << "    " << aGraphDedupMs << "\n"
+            << "  BRepGraph serial  (deduped):     " << (aGraphDedupValid ? "yes" : "no ") << "    "
+            << aGraphDedupMs << "\n"
             << "  BRepGraph parallel (deduped):    " << (aGraphDedupParValid ? "yes" : "no ")
             << "    " << aGraphDedupParMs << "\n"
             << "  Speedup vs BRepCheck (serial):   "
@@ -1977,7 +1979,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, RoundTrip_TwoBoxes_GeomReduction)
   aGraph1.Build(aCompound);
   ASSERT_TRUE(aGraph1.IsDone());
 
-  const int aSurfsBefore = aGraph1.Defs().NbFaces();
+  const int aSurfsBefore  = aGraph1.Defs().NbFaces();
   const int aCurvesBefore = aGraph1.Defs().NbEdges();
   ASSERT_EQ(aSurfsBefore, 12);
   ASSERT_EQ(aCurvesBefore, 24);
@@ -1985,7 +1987,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, RoundTrip_TwoBoxes_GeomReduction)
   (void)BRepGraphAlgo_Deduplicate::Perform(aGraph1);
 
   // Force reconstruction from deduped graph.
-  BRepGraph_NodeId aRootId(BRepGraph_NodeId::Kind::Compound, 0);
+  BRepGraph_NodeId   aRootId(BRepGraph_NodeId::Kind::Compound, 0);
   const TopoDS_Shape aReconstructed = aGraph1.Shapes().Reconstruct(aRootId);
   ASSERT_FALSE(aReconstructed.IsNull());
 

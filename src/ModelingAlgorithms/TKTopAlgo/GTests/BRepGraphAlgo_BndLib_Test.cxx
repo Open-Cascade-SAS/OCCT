@@ -32,9 +32,7 @@ namespace
 
 //! Compare two Bnd_Box instances for near-equality.
 //! Checks that the min/max corners differ by at most theTol.
-void expectBoxNear(const Bnd_Box& theGraphBox,
-                   const Bnd_Box& theLegacyBox,
-                   double         theTol)
+void expectBoxNear(const Bnd_Box& theGraphBox, const Bnd_Box& theLegacyBox, double theTol)
 {
   ASSERT_FALSE(theGraphBox.IsVoid()) << "Graph box is void";
   ASSERT_FALSE(theLegacyBox.IsVoid()) << "Legacy box is void";
@@ -308,8 +306,8 @@ TEST(BRepGraphAlgo_BndLibTest, Add_Compound)
   const TopoDS_Shape aBox1 = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
   const TopoDS_Shape aBox2 = BRepPrimAPI_MakeBox(gp_Pnt(20.0, 0.0, 0.0), 10.0, 10.0, 10.0).Shape();
 
-  BRep_Builder       aBuilder;
-  TopoDS_Compound    aCompound;
+  BRep_Builder    aBuilder;
+  TopoDS_Compound aCompound;
   aBuilder.MakeCompound(aCompound);
   aBuilder.Add(aCompound, aBox1);
   aBuilder.Add(aCompound, aBox2);
@@ -356,8 +354,9 @@ TEST(BRepGraphAlgo_BndLibTest, AddCached_Standard_ReturnsNonVoid)
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Defs().NbFaces(), 0);
 
-  Bnd_Box aCachedBox = BRepGraphAlgo_BndLib::AddCached(
-    aGraph, BRepGraph_NodeId::Face(0), BRepGraphAlgo_BndLib::Precision::Standard);
+  Bnd_Box aCachedBox = BRepGraphAlgo_BndLib::AddCached(aGraph,
+                                                       BRepGraph_NodeId::Face(0),
+                                                       BRepGraphAlgo_BndLib::Precision::Standard);
 
   EXPECT_FALSE(aCachedBox.IsVoid());
 }
@@ -394,13 +393,13 @@ TEST(BRepGraphAlgo_BndLibTest, AddCached_OptimalSupersedesStandard)
   const BRepGraph_NodeId aFaceId = BRepGraph_NodeId::Face(0);
 
   // Cache at Standard level.
-  Bnd_Box aStdBox = BRepGraphAlgo_BndLib::AddCached(
-    aGraph, aFaceId, BRepGraphAlgo_BndLib::Precision::Standard);
+  Bnd_Box aStdBox =
+    BRepGraphAlgo_BndLib::AddCached(aGraph, aFaceId, BRepGraphAlgo_BndLib::Precision::Standard);
   ASSERT_FALSE(aStdBox.IsVoid());
 
   // Request Optimal - should recompute (Standard < Optimal).
-  Bnd_Box anOptBox = BRepGraphAlgo_BndLib::AddCached(
-    aGraph, aFaceId, BRepGraphAlgo_BndLib::Precision::Optimal);
+  Bnd_Box anOptBox =
+    BRepGraphAlgo_BndLib::AddCached(aGraph, aFaceId, BRepGraphAlgo_BndLib::Precision::Optimal);
   ASSERT_FALSE(anOptBox.IsVoid());
 
   // Verify cached precision is now Optimal.
@@ -409,8 +408,8 @@ TEST(BRepGraphAlgo_BndLibTest, AddCached_OptimalSupersedesStandard)
   EXPECT_EQ(aData.BoxPrecision, BRepGraphAlgo_BndLib::Precision::Optimal);
 
   // Request Standard again - should return cached Optimal (sufficient).
-  Bnd_Box aStdBox2 = BRepGraphAlgo_BndLib::AddCached(
-    aGraph, aFaceId, BRepGraphAlgo_BndLib::Precision::Standard);
+  Bnd_Box aStdBox2 =
+    BRepGraphAlgo_BndLib::AddCached(aGraph, aFaceId, BRepGraphAlgo_BndLib::Precision::Standard);
   EXPECT_FALSE(aStdBox2.IsVoid());
 }
 
@@ -427,8 +426,12 @@ TEST(BRepGraphAlgo_BndLibTest, SetCached_ExternalBox_RetrievedByGet)
   Bnd_Box anExternalBox;
   anExternalBox.Update(0.0, 0.0, 0.0, 100.0, 200.0, 300.0);
 
-  BRepGraphAlgo_BndLib::SetCached(
-    aGraph, aFaceId, anExternalBox, BRepGraphAlgo_BndLib::Precision::Optimal, false, true);
+  BRepGraphAlgo_BndLib::SetCached(aGraph,
+                                  aFaceId,
+                                  anExternalBox,
+                                  BRepGraphAlgo_BndLib::Precision::Optimal,
+                                  false,
+                                  true);
 
   // Retrieve and verify.
   BRepGraphAlgo_BndLib::CachedData aData;
@@ -454,8 +457,8 @@ TEST(BRepGraphAlgo_BndLibTest, InvalidateCached_ForcesRecompute)
   const BRepGraph_NodeId aFaceId = BRepGraph_NodeId::Face(0);
 
   // Populate cache.
-  Bnd_Box aBox1 = BRepGraphAlgo_BndLib::AddCached(
-    aGraph, aFaceId, BRepGraphAlgo_BndLib::Precision::Standard);
+  Bnd_Box aBox1 =
+    BRepGraphAlgo_BndLib::AddCached(aGraph, aFaceId, BRepGraphAlgo_BndLib::Precision::Standard);
   ASSERT_FALSE(aBox1.IsVoid());
 
   // Invalidate.
@@ -466,8 +469,8 @@ TEST(BRepGraphAlgo_BndLibTest, InvalidateCached_ForcesRecompute)
   EXPECT_FALSE(BRepGraphAlgo_BndLib::GetCached(aGraph, aFaceId, aData));
 
   // AddCached should recompute and return a valid box.
-  Bnd_Box aBox2 = BRepGraphAlgo_BndLib::AddCached(
-    aGraph, aFaceId, BRepGraphAlgo_BndLib::Precision::Standard);
+  Bnd_Box aBox2 =
+    BRepGraphAlgo_BndLib::AddCached(aGraph, aFaceId, BRepGraphAlgo_BndLib::Precision::Standard);
   ASSERT_FALSE(aBox2.IsVoid());
 
   // Results should match (same geometry, no mutation).

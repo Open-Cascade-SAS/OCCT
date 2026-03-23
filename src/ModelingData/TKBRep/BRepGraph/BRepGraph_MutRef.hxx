@@ -43,9 +43,9 @@ public:
   //! @param[in] theDef    pointer to the mutable definition
   //! @param[in] theId     node identity for markModified
   BRepGraph_MutRef(BRepGraph* theGraph, DefT* theDef, const BRepGraph_NodeId theId)
-    : myGraph(theGraph),
-      myDef(theDef),
-      myId(theId)
+      : myGraph(theGraph),
+        myDef(theDef),
+        myId(theId)
   {
   }
 
@@ -59,9 +59,9 @@ public:
 
   //! Move constructor: transfers ownership; source becomes inert.
   BRepGraph_MutRef(BRepGraph_MutRef&& theOther) noexcept
-    : myGraph(theOther.myGraph),
-      myDef(theOther.myDef),
-      myId(theOther.myId)
+      : myGraph(theOther.myGraph),
+        myDef(theOther.myDef),
+        myId(theOther.myId)
   {
     theOther.myGraph = nullptr;
   }
@@ -73,9 +73,9 @@ public:
     {
       if (myGraph != nullptr)
         myGraph->markModified(myId, *myDef);
-      myGraph = theOther.myGraph;
-      myDef   = theOther.myDef;
-      myId    = theOther.myId;
+      myGraph          = theOther.myGraph;
+      myDef            = theOther.myDef;
+      myId             = theOther.myId;
       theOther.myGraph = nullptr;
     }
     return *this;

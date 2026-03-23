@@ -136,10 +136,10 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
     if (theGraph.Defs().CompSolid(anIdx).IsRemoved)
       ++aResult.NbRemovedCompSolids;
 
-  const int aTotalRemoved =
-    aResult.NbRemovedVertices + aResult.NbRemovedEdges + aResult.NbRemovedWires
-    + aResult.NbRemovedFaces + aResult.NbRemovedShells + aResult.NbRemovedSolids
-    + aResult.NbRemovedCompounds + aResult.NbRemovedCompSolids;
+  const int aTotalRemoved = aResult.NbRemovedVertices + aResult.NbRemovedEdges
+                            + aResult.NbRemovedWires + aResult.NbRemovedFaces
+                            + aResult.NbRemovedShells + aResult.NbRemovedSolids
+                            + aResult.NbRemovedCompounds + aResult.NbRemovedCompSolids;
 
   aResult.NbNodesBefore = static_cast<int>(theGraph.Defs().NbNodes());
 
@@ -277,9 +277,9 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
 
     // Copy edge properties.
     BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aNewEdge = aNewGraph.MutEdge(aNewEdgeId.Index);
-    aNewEdge->IsDegenerate                 = anOldEdge.IsDegenerate;
-    aNewEdge->SameParameter                = anOldEdge.SameParameter;
-    aNewEdge->SameRange                    = anOldEdge.SameRange;
+    aNewEdge->IsDegenerate                                 = anOldEdge.IsDegenerate;
+    aNewEdge->SameParameter                                = anOldEdge.SameParameter;
+    aNewEdge->SameRange                                    = anOldEdge.SameRange;
   }
 
   // PCurves (added after edges and faces are known).
@@ -295,7 +295,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
     NCollection_Vector<std::pair<BRepGraph_NodeId, TopAbs_Orientation>> aNewEntries;
     for (int aCoEdgeIter = 0; aCoEdgeIter < anOldWire.CoEdgeRefs.Length(); ++aCoEdgeIter)
     {
-      const BRepGraphInc::CoEdgeRef& aCR = anOldWire.CoEdgeRefs.Value(aCoEdgeIter);
+      const BRepGraphInc::CoEdgeRef&       aCR     = anOldWire.CoEdgeRefs.Value(aCoEdgeIter);
       const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Defs().CoEdge(aCR.CoEdgeIdx);
       const BRepGraph_NodeId aNewEdgeDefId = remapId(BRepGraph_NodeId::Edge(aCoEdge.EdgeIdx));
       if (aNewEdgeDefId.IsValid())
@@ -319,8 +319,8 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
 
     for (int aWireRefIdx = 0; aWireRefIdx < anOldFace.WireRefs.Length(); ++aWireRefIdx)
     {
-      const BRepGraphInc::WireRef& aWR = anOldFace.WireRefs.Value(aWireRefIdx);
-      const BRepGraph_NodeId aRemapped = remapId(BRepGraph_NodeId::Wire(aWR.WireIdx));
+      const BRepGraphInc::WireRef& aWR       = anOldFace.WireRefs.Value(aWireRefIdx);
+      const BRepGraph_NodeId       aRemapped = remapId(BRepGraph_NodeId::Wire(aWR.WireIdx));
       if (!aRemapped.IsValid())
         continue;
       if (aWR.IsOuter)
@@ -336,7 +336,8 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
     aNewGraph.Builder().AddFaceDef(aSurf, aNewOuterWire, aNewInnerWires, anOldFace.Tolerance);
 
     // Copy triangulations from old FaceDef to new FaceDef.
-    BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aNewFace = aNewGraph.Mut().FaceDef(aFaceMap.Find(anIdx));
+    BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aNewFace =
+      aNewGraph.Mut().FaceDef(aFaceMap.Find(anIdx));
     aNewFace->TriangulationRepIdxs     = anOldFace.TriangulationRepIdxs;
     aNewFace->ActiveTriangulationIndex = anOldFace.ActiveTriangulationIndex;
   }
@@ -387,8 +388,8 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
     const BRepGraph_TopoNode::ShellDef& anOldShell = theGraph.Defs().Shell(anIdx);
     for (int aFaceRefIdx = 0; aFaceRefIdx < anOldShell.FaceRefs.Length(); ++aFaceRefIdx)
     {
-      const BRepGraphInc::FaceRef& aFR = anOldShell.FaceRefs.Value(aFaceRefIdx);
-      const BRepGraph_NodeId aNewFace = remapId(BRepGraph_NodeId::Face(aFR.FaceIdx));
+      const BRepGraphInc::FaceRef& aFR      = anOldShell.FaceRefs.Value(aFaceRefIdx);
+      const BRepGraph_NodeId       aNewFace = remapId(BRepGraph_NodeId::Face(aFR.FaceIdx));
       if (aNewFace.IsValid())
         aNewGraph.Builder().AddFaceToShell(aNewShellId, aNewFace, aFR.Orientation);
     }
@@ -405,8 +406,8 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
     const BRepGraph_TopoNode::SolidDef& anOldSolid = theGraph.Defs().Solid(anIdx);
     for (int aShellRefIdx = 0; aShellRefIdx < anOldSolid.ShellRefs.Length(); ++aShellRefIdx)
     {
-      const BRepGraphInc::ShellRef& aSR = anOldSolid.ShellRefs.Value(aShellRefIdx);
-      const BRepGraph_NodeId aNewShell = remapId(BRepGraph_NodeId::Shell(aSR.ShellIdx));
+      const BRepGraphInc::ShellRef& aSR       = anOldSolid.ShellRefs.Value(aShellRefIdx);
+      const BRepGraph_NodeId        aNewShell = remapId(BRepGraph_NodeId::Shell(aSR.ShellIdx));
       if (aNewShell.IsValid())
         aNewGraph.Builder().AddShellToSolid(aNewSolidId, aNewShell, aSR.Orientation);
     }
@@ -423,7 +424,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
     for (int aChildIdx = 0; aChildIdx < anOldComp.ChildRefs.Length(); ++aChildIdx)
     {
       const BRepGraphInc::ChildRef& aCR = anOldComp.ChildRefs.Value(aChildIdx);
-      const BRepGraph_NodeId aNewChild =
+      const BRepGraph_NodeId        aNewChild =
         remapId(BRepGraph_NodeId(static_cast<BRepGraph_NodeId::Kind>(aCR.Kind), aCR.ChildIdx));
       if (aNewChild.IsValid())
         aNewChildren.Append(aNewChild);
@@ -453,9 +454,9 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
 
   // Transfer per-kind UID vectors from old graph to new graph using index remap maps.
   // Each new graph's UID vector[newIdx] = old graph's UID vector[oldIdx].
-  auto transferUIDs = [&](const NCollection_DataMap<int, int>&      theMap,
-                          const NCollection_Vector<BRepGraph_UID>&  theOldVec,
-                          NCollection_Vector<BRepGraph_UID>&        theNewVec) {
+  auto transferUIDs = [&](const NCollection_DataMap<int, int>&     theMap,
+                          const NCollection_Vector<BRepGraph_UID>& theOldVec,
+                          NCollection_Vector<BRepGraph_UID>&       theNewVec) {
     // New vector was already populated by BuilderView during reconstruction.
     // Overwrite entries that have a mapping from the old graph.
     for (const auto& [anOldIdx, aNewIdx] : theMap.Items())
@@ -467,20 +468,36 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
     }
   };
 
-  transferUIDs(aVertexMap,    theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Vertex),    aNewGraph.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Vertex));
-  transferUIDs(anEdgeMap,     theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Edge),      aNewGraph.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Edge));
-  transferUIDs(aWireMap,      theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Wire),      aNewGraph.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Wire));
-  transferUIDs(aFaceMap,      theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Face),      aNewGraph.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Face));
-  transferUIDs(aShellMap,     theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Shell),     aNewGraph.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Shell));
-  transferUIDs(aSolidMap,     theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Solid),     aNewGraph.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Solid));
-  transferUIDs(aCompoundMap,  theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Compound),  aNewGraph.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Compound));
-  transferUIDs(aCompSolidMap, theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::CompSolid), aNewGraph.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::CompSolid));
+  transferUIDs(aVertexMap,
+               theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Vertex),
+               aNewGraph.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Vertex));
+  transferUIDs(anEdgeMap,
+               theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Edge),
+               aNewGraph.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Edge));
+  transferUIDs(aWireMap,
+               theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Wire),
+               aNewGraph.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Wire));
+  transferUIDs(aFaceMap,
+               theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Face),
+               aNewGraph.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Face));
+  transferUIDs(aShellMap,
+               theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Shell),
+               aNewGraph.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Shell));
+  transferUIDs(aSolidMap,
+               theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Solid),
+               aNewGraph.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Solid));
+  transferUIDs(aCompoundMap,
+               theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Compound),
+               aNewGraph.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Compound));
+  transferUIDs(aCompSolidMap,
+               theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::CompSolid),
+               aNewGraph.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::CompSolid));
 
   aNewGraph.myData->myNextUIDCounter.store(
     theGraph.myData->myNextUIDCounter.load(std::memory_order_relaxed),
     std::memory_order_relaxed);
   aNewGraph.myData->myGeneration = theGraph.myData->myGeneration;
-  aNewGraph.myData->myIsDone = true;
+  aNewGraph.myData->myIsDone     = true;
 
   // Save layers before swap (default move would transfer empty layers from aNewGraph).
   NCollection_DataMap<TCollection_AsciiString, occ::handle<BRepGraph_Layer>> aSavedLayers;
@@ -511,8 +528,10 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
   for (NCollection_DataMap<int, int>::Iterator it(aCompSolidMap); it.More(); it.Next())
     aRemapMap.Bind(BRepGraph_NodeId::CompSolid(it.Key()), BRepGraph_NodeId::CompSolid(it.Value()));
 
-  for (NCollection_DataMap<TCollection_AsciiString, occ::handle<BRepGraph_Layer>>::Iterator
-         anIter(theGraph.myLayers); anIter.More(); anIter.Next())
+  for (NCollection_DataMap<TCollection_AsciiString, occ::handle<BRepGraph_Layer>>::Iterator anIter(
+         theGraph.myLayers);
+       anIter.More();
+       anIter.Next())
   {
     anIter.Value()->OnCompact(aRemapMap);
   }

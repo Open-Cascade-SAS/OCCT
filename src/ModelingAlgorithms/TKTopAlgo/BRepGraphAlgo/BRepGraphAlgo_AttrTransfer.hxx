@@ -29,7 +29,6 @@
 class BRepGraphAlgo_AttrTransfer
 {
 public:
-
   //! Options controlling attribute transfer behavior.
   struct Options
   {
@@ -40,7 +39,7 @@ public:
   struct Result
   {
     int NbTransferred = 0; //!< Number of attribute copies performed.
-    int NbSkipped     = 0; //!< Attrs skipped because target already had them (OverwriteExisting=false).
+    int NbSkipped = 0; //!< Attrs skipped because target already had them (OverwriteExisting=false).
   };
 
   //! Transfer attributes from original nodes to derived nodes using history.

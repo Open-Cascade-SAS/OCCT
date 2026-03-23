@@ -26,10 +26,10 @@ void BRepGraph_History::SetAllocator(const occ::handle<NCollection_BaseAllocator
                        "SetAllocator: must be called before any records are added");
   myAllocator = theAlloc;
   // Reconstruct internal containers with the new allocator.
-  myRecords           = NCollection_Vector<BRepGraph_HistoryRecord>(THE_INIT_VECTOR_CAPACITY, myAllocator);
+  myRecords = NCollection_Vector<BRepGraph_HistoryRecord>(THE_INIT_VECTOR_CAPACITY, myAllocator);
   myDerivedToOriginal = NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>(1, myAllocator);
-  myOriginalToDerived = NCollection_DataMap<BRepGraph_NodeId,
-                                            NCollection_Vector<BRepGraph_NodeId>>(1, myAllocator);
+  myOriginalToDerived =
+    NCollection_DataMap<BRepGraph_NodeId, NCollection_Vector<BRepGraph_NodeId>>(1, myAllocator);
 }
 
 //=================================================================================================
@@ -49,8 +49,8 @@ void BRepGraph_History::Record(const TCollection_AsciiString&              theOp
   aRecord.SequenceNumber = myRecords.Length();
   if (!myAllocator.IsNull())
   {
-    aRecord.Mapping = NCollection_DataMap<BRepGraph_NodeId,
-                                          NCollection_Vector<BRepGraph_NodeId>>(1, myAllocator);
+    aRecord.Mapping =
+      NCollection_DataMap<BRepGraph_NodeId, NCollection_Vector<BRepGraph_NodeId>>(1, myAllocator);
   }
   aRecord.Mapping.Bind(theOriginal, theReplacements);
   myRecords.Append(std::move(aRecord));
@@ -109,8 +109,9 @@ void BRepGraph_History::RecordBatch(const TCollection_AsciiString&              
   aRecord.SequenceNumber = myRecords.Length();
   if (!myAllocator.IsNull())
   {
-    aRecord.Mapping = NCollection_DataMap<BRepGraph_NodeId,
-                                          NCollection_Vector<BRepGraph_NodeId>>(aNbPairs, myAllocator);
+    aRecord.Mapping =
+      NCollection_DataMap<BRepGraph_NodeId, NCollection_Vector<BRepGraph_NodeId>>(aNbPairs,
+                                                                                  myAllocator);
   }
   else
   {
@@ -167,7 +168,7 @@ BRepGraph_NodeId BRepGraph_History::FindOriginal(const BRepGraph_NodeId theModif
   // Walk the reverse map iteratively until a root node is reached.
   // Limit iterations to the map extent to protect against cycles.
   BRepGraph_NodeId aCurrent = theModified;
-  int aMaxIter = myDerivedToOriginal.Extent();
+  int              aMaxIter = myDerivedToOriginal.Extent();
   while (myDerivedToOriginal.IsBound(aCurrent) && aMaxIter-- > 0)
   {
     const BRepGraph_NodeId& anOriginal = myDerivedToOriginal.Find(aCurrent);
@@ -182,7 +183,8 @@ BRepGraph_NodeId BRepGraph_History::FindOriginal(const BRepGraph_NodeId theModif
 
 //=================================================================================================
 
-NCollection_Vector<BRepGraph_NodeId> BRepGraph_History::FindDerived(const BRepGraph_NodeId theOriginal) const
+NCollection_Vector<BRepGraph_NodeId> BRepGraph_History::FindDerived(
+  const BRepGraph_NodeId theOriginal) const
 {
   // Collect all transitively derived nodes using iterative BFS.
   NCollection_Vector<BRepGraph_NodeId> aResult;

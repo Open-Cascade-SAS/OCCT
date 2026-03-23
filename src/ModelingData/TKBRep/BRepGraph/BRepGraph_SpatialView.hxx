@@ -58,10 +58,18 @@ public:
 
 private:
   friend class BRepGraph;
-  explicit SpatialView(const BRepGraph* theGraph) : myGraph(theGraph) {}
+
+  explicit SpatialView(const BRepGraph* theGraph)
+      : myGraph(theGraph)
+  {
+  }
+
   const BRepGraph* myGraph;
 };
 
-inline BRepGraph::SpatialView BRepGraph::Spatial() const { return SpatialView(this); }
+inline BRepGraph::SpatialView BRepGraph::Spatial() const
+{
+  return SpatialView(this);
+}
 
 #endif // _BRepGraph_SpatialView_HeaderFile

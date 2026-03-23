@@ -41,14 +41,13 @@ BRepGraphAlgo_AttrTransfer::Result BRepGraphAlgo_AttrTransfer::Perform(BRepGraph
 
 //=================================================================================================
 
-BRepGraphAlgo_AttrTransfer::Result BRepGraphAlgo_AttrTransfer::Perform(
-  BRepGraph&     theGraph,
-  const Options& theOptions)
+BRepGraphAlgo_AttrTransfer::Result BRepGraphAlgo_AttrTransfer::Perform(BRepGraph&     theGraph,
+                                                                       const Options& theOptions)
 {
   Result aResult;
 
-  const BRepGraph_History& aHistory = theGraph.History();
-  const int aNbRecords = aHistory.NbRecords();
+  const BRepGraph_History& aHistory   = theGraph.History();
+  const int                aNbRecords = aHistory.NbRecords();
   if (aNbRecords == 0)
     return aResult;
 
@@ -56,9 +55,10 @@ BRepGraphAlgo_AttrTransfer::Result BRepGraphAlgo_AttrTransfer::Perform(
   {
     const BRepGraph_HistoryRecord& aRecord = aHistory.Record(aRecIdx);
 
-    for (NCollection_DataMap<BRepGraph_NodeId,
-                             NCollection_Vector<BRepGraph_NodeId>>::Iterator aMapIter(aRecord.Mapping);
-         aMapIter.More(); aMapIter.Next())
+    for (NCollection_DataMap<BRepGraph_NodeId, NCollection_Vector<BRepGraph_NodeId>>::Iterator
+           aMapIter(aRecord.Mapping);
+         aMapIter.More();
+         aMapIter.Next())
     {
       const BRepGraph_NodeId& anOriginal = aMapIter.Key();
 

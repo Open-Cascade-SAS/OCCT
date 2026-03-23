@@ -38,7 +38,7 @@ TopoDS_Shape BRepGraph::ShapesView::Shape(const BRepGraph_NodeId theNode) const
   // Check mutable cache under shared lock.
   {
     std::shared_lock<std::shared_mutex> aReadLock(myGraph->myData->myCurrentShapesMutex);
-    const TopoDS_Shape* aCached = myGraph->myData->myCurrentShapes.Seek(theNode);
+    const TopoDS_Shape*                 aCached = myGraph->myData->myCurrentShapes.Seek(theNode);
     if (aCached != nullptr)
       return *aCached;
   }
@@ -106,8 +106,9 @@ TopoDS_Shape BRepGraph::ShapesView::Reconstruct(const BRepGraph_NodeId theRoot) 
 TopoDS_Shape BRepGraph::ShapesView::ReconstructFace(const int theFaceDefIdx) const
 {
   BRepGraphInc_Reconstruct::Cache aCache;
-  return BRepGraphInc_Reconstruct::FaceWithCache(
-    myGraph->myData->myIncStorage, theFaceDefIdx, aCache);
+  return BRepGraphInc_Reconstruct::FaceWithCache(myGraph->myData->myIncStorage,
+                                                 theFaceDefIdx,
+                                                 aCache);
 }
 
 //=================================================================================================

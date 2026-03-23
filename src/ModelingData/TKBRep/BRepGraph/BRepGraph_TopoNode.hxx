@@ -27,14 +27,14 @@
 namespace BRepGraph_TopoNode
 {
 
-using BaseDef      = BRepGraphInc::BaseEntity;
-using VertexDef    = BRepGraphInc::VertexEntity;
-using EdgeDef      = BRepGraphInc::EdgeEntity;
-using CoEdgeDef    = BRepGraphInc::CoEdgeEntity;
-using WireDef      = BRepGraphInc::WireEntity;
-using FaceDef      = BRepGraphInc::FaceEntity;
-using ShellDef     = BRepGraphInc::ShellEntity;
-using SolidDef     = BRepGraphInc::SolidEntity;
+using BaseDef       = BRepGraphInc::BaseEntity;
+using VertexDef     = BRepGraphInc::VertexEntity;
+using EdgeDef       = BRepGraphInc::EdgeEntity;
+using CoEdgeDef     = BRepGraphInc::CoEdgeEntity;
+using WireDef       = BRepGraphInc::WireEntity;
+using FaceDef       = BRepGraphInc::FaceEntity;
+using ShellDef      = BRepGraphInc::ShellEntity;
+using SolidDef      = BRepGraphInc::SolidEntity;
 using CompoundDef   = BRepGraphInc::CompoundEntity;
 using CompSolidDef  = BRepGraphInc::CompSolidEntity;
 using ProductDef    = BRepGraphInc::ProductEntity;

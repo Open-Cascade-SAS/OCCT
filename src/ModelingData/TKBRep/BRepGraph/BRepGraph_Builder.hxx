@@ -60,11 +60,15 @@ private:
 
   //! Allocate UIDs only for entities in range [theOld, current) per kind.
   //! Used by Append() to avoid re-walking existing entities.
-  static void populateUIDsIncremental(BRepGraph&  theGraph,
-                                       const int theOldVtx,   const int theOldEdge,
-                                       const int theOldWire,  const int theOldFace,
-                                       const int theOldShell, const int theOldSolid,
-                                       const int theOldComp,  const int theOldCS);
+  static void populateUIDsIncremental(BRepGraph& theGraph,
+                                      const int  theOldVtx,
+                                      const int  theOldEdge,
+                                      const int  theOldWire,
+                                      const int  theOldFace,
+                                      const int  theOldShell,
+                                      const int  theOldSolid,
+                                      const int  theOldComp,
+                                      const int  theOldCS);
 
   BRepGraph_Builder() = delete;
 };

@@ -62,9 +62,9 @@ public:
   Standard_EXPORT void Clear();
 
 private:
-  NCollection_Vector<BRepGraphCheck_Issue>                    myIssues;
+  NCollection_Vector<BRepGraphCheck_Issue>                       myIssues;
   NCollection_DataMap<BRepGraph_NodeId, NCollection_Vector<int>> myNodeIndex;
-  mutable std::mutex                                          myMutex;
+  mutable std::mutex                                             myMutex;
 };
 
 #endif // _BRepGraphCheck_Report_HeaderFile

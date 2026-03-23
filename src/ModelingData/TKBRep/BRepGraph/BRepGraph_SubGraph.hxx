@@ -29,18 +29,22 @@ public:
   const BRepGraph* ParentGraph() const { return myParent; }
 
   //! Definition index sets.
-  const NCollection_Vector<int>& SolidDefIndices()  const { return mySolidDefIndices; }
-  const NCollection_Vector<int>& ShellDefIndices()  const { return myShellDefIndices; }
-  const NCollection_Vector<int>& FaceDefIndices()   const { return myFaceDefIndices; }
-  const NCollection_Vector<int>& WireDefIndices()   const { return myWireDefIndices; }
-  const NCollection_Vector<int>& EdgeDefIndices()   const { return myEdgeDefIndices; }
+  const NCollection_Vector<int>& SolidDefIndices() const { return mySolidDefIndices; }
+
+  const NCollection_Vector<int>& ShellDefIndices() const { return myShellDefIndices; }
+
+  const NCollection_Vector<int>& FaceDefIndices() const { return myFaceDefIndices; }
+
+  const NCollection_Vector<int>& WireDefIndices() const { return myWireDefIndices; }
+
+  const NCollection_Vector<int>& EdgeDefIndices() const { return myEdgeDefIndices; }
+
   const NCollection_Vector<int>& VertexDefIndices() const { return myVertexDefIndices; }
 
   int NbTopoNodes() const
   {
-    return mySolidDefIndices.Length()  + myShellDefIndices.Length()
-         + myFaceDefIndices.Length()   + myWireDefIndices.Length()
-         + myEdgeDefIndices.Length()   + myVertexDefIndices.Length();
+    return mySolidDefIndices.Length() + myShellDefIndices.Length() + myFaceDefIndices.Length()
+           + myWireDefIndices.Length() + myEdgeDefIndices.Length() + myVertexDefIndices.Length();
   }
 
 private:

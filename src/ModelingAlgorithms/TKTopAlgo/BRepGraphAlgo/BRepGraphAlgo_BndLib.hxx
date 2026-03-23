@@ -55,10 +55,10 @@ public:
   //! Cached bounding box data for a single graph node.
   struct CachedData
   {
-    Bnd_Box   Box;                              //!< The computed bounding box.
-    Precision BoxPrecision = Precision::Standard; //!< Precision level used.
-    bool      UsedTriangulation  = false;        //!< True if triangulation was used.
-    bool      UsedShapeTolerance = false;        //!< True if shape tolerances were applied.
+    Bnd_Box   Box;                                      //!< The computed bounding box.
+    Precision BoxPrecision       = Precision::Standard; //!< Precision level used.
+    bool      UsedTriangulation  = false;               //!< True if triangulation was used.
+    bool      UsedShapeTolerance = false;               //!< True if shape tolerances were applied.
   };
 
   //! AABB of entire graph (all faces, free edges, free vertices).
@@ -138,7 +138,7 @@ public:
   Standard_EXPORT static Bnd_Box AddCached(BRepGraph&       theGraph,
                                            BRepGraph_NodeId theNode,
                                            Precision        thePrecision = Precision::Standard,
-                                           bool theUseTriangulation = true);
+                                           bool             theUseTriangulation = true);
 
   //! Store an externally-computed bounding box into the cache.
   //! @param[in]  theGraph    pre-built BRepGraph (non-const for cache mutation)
@@ -151,14 +151,13 @@ public:
                                         BRepGraph_NodeId theNode,
                                         const Bnd_Box&   theBox,
                                         Precision        thePrecision,
-                                        bool theUsedTriangulation  = false,
-                                        bool theUsedShapeTolerance = false);
+                                        bool             theUsedTriangulation  = false,
+                                        bool             theUsedShapeTolerance = false);
 
   //! Invalidate the cached bounding box for a node.
   //! @param[in]  theGraph  pre-built BRepGraph (non-const for cache mutation)
   //! @param[in]  theNode   node identifier
-  Standard_EXPORT static void InvalidateCached(BRepGraph&       theGraph,
-                                               BRepGraph_NodeId theNode);
+  Standard_EXPORT static void InvalidateCached(BRepGraph& theGraph, BRepGraph_NodeId theNode);
 
   //! Return the user attribute key used for bbox caching.
   //! @return integer key registered via GUID

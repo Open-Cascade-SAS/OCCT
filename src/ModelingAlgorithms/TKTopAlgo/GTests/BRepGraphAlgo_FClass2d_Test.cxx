@@ -46,7 +46,7 @@ TEST(BRepGraphAlgo_FClass2dTest, PlanarBoxFace_CenterIsIN)
   double aUmin, aUmax, aVmin, aVmax;
   BRepTools::UVBounds(aFace, aUmin, aUmax, aVmin, aVmax);
 
-  const double aTolUV = 1.0e-6;
+  const double           aTolUV = 1.0e-6;
   BRepGraphAlgo_FClass2d aClassifier(aGraph, 0, aTolUV);
 
   // Center of UV domain should be IN.
@@ -90,7 +90,7 @@ TEST(BRepGraphAlgo_FClass2dTest, CylindricalFace_CenterIsIN)
   for (TopExp_Explorer anExp(aCyl, TopAbs_FACE); anExp.More(); anExp.Next(), aIdx++)
   {
     const TopoDS_Face& aFace = TopoDS::Face(anExp.Current());
-    double aUmin, aUmax, aVmin, aVmax;
+    double             aUmin, aUmax, aVmin, aVmax;
     BRepTools::UVBounds(aFace, aUmin, aUmax, aVmin, aVmax);
     // Cylindrical face has U range close to [0, 2*PI].
     if (aUmax - aUmin > 5.0)
@@ -130,9 +130,9 @@ TEST(BRepGraphAlgo_FClass2dTest, FaceWithHole_InsideHoleIsOUT)
 {
   // Create a box with a cylindrical hole.
   const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(20.0, 20.0, 5.0).Shape();
-  const TopoDS_Shape aCyl = BRepPrimAPI_MakeCylinder(gp_Ax2(gp_Pnt(10.0, 10.0, -1.0),
-                                                             gp_Dir(0.0, 0.0, 1.0)),
-                                                     3.0, 7.0).Shape();
+  const TopoDS_Shape aCyl =
+    BRepPrimAPI_MakeCylinder(gp_Ax2(gp_Pnt(10.0, 10.0, -1.0), gp_Dir(0.0, 0.0, 1.0)), 3.0, 7.0)
+      .Shape();
   BRepAlgoAPI_Cut aCutter(aBox, aCyl);
   ASSERT_TRUE(aCutter.IsDone());
   const TopoDS_Shape& aCutShape = aCutter.Shape();
@@ -146,8 +146,8 @@ TEST(BRepGraphAlgo_FClass2dTest, FaceWithHole_InsideHoleIsOUT)
   int aIdx     = 0;
   for (TopExp_Explorer anExp(aCutShape, TopAbs_FACE); anExp.More(); anExp.Next(), aIdx++)
   {
-    const TopoDS_Face& aFace = TopoDS::Face(anExp.Current());
-    int aNbWires = 0;
+    const TopoDS_Face& aFace    = TopoDS::Face(anExp.Current());
+    int                aNbWires = 0;
     for (TopExp_Explorer aWireExp(aFace, TopAbs_WIRE); aWireExp.More(); aWireExp.Next())
       aNbWires++;
     if (aNbWires >= 2)
@@ -163,7 +163,7 @@ TEST(BRepGraphAlgo_FClass2dTest, FaceWithHole_InsideHoleIsOUT)
 
     // Center of the hole (approximately 10,10 in face UV space) should be OUT.
     const gp_Pnt2d aHoleCenter(10.0, 10.0);
-    TopAbs_State aState = aClassifier.Perform(aHoleCenter);
+    TopAbs_State   aState = aClassifier.Perform(aHoleCenter);
     EXPECT_EQ(aState, TopAbs_OUT);
 
     // Corner should be IN (outside the hole, inside the face).
@@ -196,29 +196,29 @@ TEST(BRepGraphAlgo_FClass2dTest, Consistency_VsLegacy_Box)
   int aFaceIdx = 0;
   for (TopExp_Explorer anExp(aBox, TopAbs_FACE); anExp.More(); anExp.Next(), aFaceIdx++)
   {
-    const TopoDS_Face& aFace = TopoDS::Face(anExp.Current());
-    const double aTolUV = 1.0e-6;
+    const TopoDS_Face& aFace  = TopoDS::Face(anExp.Current());
+    const double       aTolUV = 1.0e-6;
 
     BRepTopAdaptor_FClass2d aLegacy(aFace, aTolUV);
-    BRepGraphAlgo_FClass2d aGraphBased(aGraph, aFaceIdx, aTolUV);
+    BRepGraphAlgo_FClass2d  aGraphBased(aGraph, aFaceIdx, aTolUV);
 
     double aUmin, aUmax, aVmin, aVmax;
     BRepTools::UVBounds(aFace, aUmin, aUmax, aVmin, aVmax);
 
     // Test on a grid of UV points.
     constexpr int THE_NB_SAMPLES = 5;
-    const double aUStep = (aUmax - aUmin) / (THE_NB_SAMPLES + 1);
-    const double aVStep = (aVmax - aVmin) / (THE_NB_SAMPLES + 1);
+    const double  aUStep         = (aUmax - aUmin) / (THE_NB_SAMPLES + 1);
+    const double  aVStep         = (aVmax - aVmin) / (THE_NB_SAMPLES + 1);
 
     for (int i = 1; i <= THE_NB_SAMPLES; i++)
     {
       for (int j = 1; j <= THE_NB_SAMPLES; j++)
       {
-        const gp_Pnt2d aPnt(aUmin + i * aUStep, aVmin + j * aVStep);
+        const gp_Pnt2d     aPnt(aUmin + i * aUStep, aVmin + j * aVStep);
         const TopAbs_State aLegacyState = aLegacy.Perform(aPnt, false);
         const TopAbs_State aGraphState  = aGraphBased.Perform(aPnt, false);
         EXPECT_EQ(aGraphState, aLegacyState)
-            << "Mismatch at face " << aFaceIdx << " UV=(" << aPnt.X() << "," << aPnt.Y() << ")";
+          << "Mismatch at face " << aFaceIdx << " UV=(" << aPnt.X() << "," << aPnt.Y() << ")";
       }
     }
   }
@@ -226,8 +226,8 @@ TEST(BRepGraphAlgo_FClass2dTest, Consistency_VsLegacy_Box)
 
 TEST(BRepGraphAlgo_FClass2dTest, Consistency_VsLegacy_FusedBoxes)
 {
-  TopoDS_Shape aBox1 = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
-  TopoDS_Shape aBox2 = BRepPrimAPI_MakeBox(gp_Pnt(10.0, 0.0, 0.0), 10.0, 10.0, 10.0).Shape();
+  TopoDS_Shape     aBox1 = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
+  TopoDS_Shape     aBox2 = BRepPrimAPI_MakeBox(gp_Pnt(10.0, 0.0, 0.0), 10.0, 10.0, 10.0).Shape();
   BRepAlgoAPI_Fuse aFuser(aBox1, aBox2);
   ASSERT_TRUE(aFuser.IsDone());
   const TopoDS_Shape& aFused = aFuser.Shape();
@@ -239,28 +239,28 @@ TEST(BRepGraphAlgo_FClass2dTest, Consistency_VsLegacy_FusedBoxes)
   int aFaceIdx = 0;
   for (TopExp_Explorer anExp(aFused, TopAbs_FACE); anExp.More(); anExp.Next(), aFaceIdx++)
   {
-    const TopoDS_Face& aFace = TopoDS::Face(anExp.Current());
-    const double aTolUV = 1.0e-6;
+    const TopoDS_Face& aFace  = TopoDS::Face(anExp.Current());
+    const double       aTolUV = 1.0e-6;
 
     BRepTopAdaptor_FClass2d aLegacy(aFace, aTolUV);
-    BRepGraphAlgo_FClass2d aGraphBased(aGraph, aFaceIdx, aTolUV);
+    BRepGraphAlgo_FClass2d  aGraphBased(aGraph, aFaceIdx, aTolUV);
 
     double aUmin, aUmax, aVmin, aVmax;
     BRepTools::UVBounds(aFace, aUmin, aUmax, aVmin, aVmax);
 
     constexpr int THE_NB_SAMPLES = 5;
-    const double aUStep = (aUmax - aUmin) / (THE_NB_SAMPLES + 1);
-    const double aVStep = (aVmax - aVmin) / (THE_NB_SAMPLES + 1);
+    const double  aUStep         = (aUmax - aUmin) / (THE_NB_SAMPLES + 1);
+    const double  aVStep         = (aVmax - aVmin) / (THE_NB_SAMPLES + 1);
 
     for (int i = 1; i <= THE_NB_SAMPLES; i++)
     {
       for (int j = 1; j <= THE_NB_SAMPLES; j++)
       {
-        const gp_Pnt2d aPnt(aUmin + i * aUStep, aVmin + j * aVStep);
+        const gp_Pnt2d     aPnt(aUmin + i * aUStep, aVmin + j * aVStep);
         const TopAbs_State aLegacyState = aLegacy.Perform(aPnt, false);
         const TopAbs_State aGraphState  = aGraphBased.Perform(aPnt, false);
         EXPECT_EQ(aGraphState, aLegacyState)
-            << "Mismatch at face " << aFaceIdx << " UV=(" << aPnt.X() << "," << aPnt.Y() << ")";
+          << "Mismatch at face " << aFaceIdx << " UV=(" << aPnt.X() << "," << aPnt.Y() << ")";
       }
     }
   }

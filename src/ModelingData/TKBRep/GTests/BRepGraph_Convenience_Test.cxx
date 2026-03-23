@@ -68,15 +68,12 @@ TEST_F(BRepGraphConvenienceTest, NodeId_Factories_CorrectKindAndIndex)
   const BRepGraph_NodeId aCompSolid = BRepGraph_NodeId::CompSolid(0);
   EXPECT_EQ(aCompSolid.NodeKind, BRepGraph_NodeId::Kind::CompSolid);
   EXPECT_EQ(aCompSolid.Index, 0);
-
 }
 
 TEST_F(BRepGraphConvenienceTest, NodeId_Factories_EqualToConstructor)
 {
-  EXPECT_EQ(BRepGraph_NodeId::Face(3),
-            BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, 3));
-  EXPECT_EQ(BRepGraph_NodeId::Edge(0),
-            BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, 0));
+  EXPECT_EQ(BRepGraph_NodeId::Face(3), BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, 3));
+  EXPECT_EQ(BRepGraph_NodeId::Edge(0), BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, 0));
 }
 
 // ---------- Part B: EdgeDef Oriented Vertices ----------
@@ -91,28 +88,28 @@ TEST_F(BRepGraphConvenienceTest, EdgeDef_OrientedStartVertex_Forward)
 
 TEST_F(BRepGraphConvenienceTest, EdgeDef_OrientedStartVertex_Reversed)
 {
-  const BRepGraph::DefsView aDefs = myGraph.Defs();
+  const BRepGraph::DefsView          aDefs  = myGraph.Defs();
   const BRepGraph_TopoNode::EdgeDef& anEdge = aDefs.Edge(0);
   EXPECT_EQ(anEdge.OrientedStartVertex(TopAbs_REVERSED), anEdge.EndVertexDefId());
 }
 
 TEST_F(BRepGraphConvenienceTest, EdgeDef_OrientedEndVertex_Forward)
 {
-  const BRepGraph::DefsView aDefs = myGraph.Defs();
+  const BRepGraph::DefsView          aDefs  = myGraph.Defs();
   const BRepGraph_TopoNode::EdgeDef& anEdge = aDefs.Edge(0);
   EXPECT_EQ(anEdge.OrientedEndVertex(TopAbs_FORWARD), anEdge.EndVertexDefId());
 }
 
 TEST_F(BRepGraphConvenienceTest, EdgeDef_OrientedEndVertex_Reversed)
 {
-  const BRepGraph::DefsView aDefs = myGraph.Defs();
+  const BRepGraph::DefsView          aDefs  = myGraph.Defs();
   const BRepGraph_TopoNode::EdgeDef& anEdge = aDefs.Edge(0);
   EXPECT_EQ(anEdge.OrientedEndVertex(TopAbs_REVERSED), anEdge.StartVertexDefId());
 }
 
 TEST_F(BRepGraphConvenienceTest, EdgeDef_OrientedVertex_Internal_Invalid)
 {
-  const BRepGraph::DefsView aDefs = myGraph.Defs();
+  const BRepGraph::DefsView          aDefs  = myGraph.Defs();
   const BRepGraph_TopoNode::EdgeDef& anEdge = aDefs.Edge(0);
   EXPECT_FALSE(anEdge.OrientedStartVertex(TopAbs_INTERNAL).IsValid());
   EXPECT_FALSE(anEdge.OrientedEndVertex(TopAbs_INTERNAL).IsValid());
@@ -132,8 +129,7 @@ TEST_F(BRepGraphConvenienceTest, FaceSurface_AllBoxFaces)
   const BRepGraph::DefsView aDefs = myGraph.Defs();
   for (int aFaceIter = 0; aFaceIter < aDefs.NbFaces(); ++aFaceIter)
   {
-    EXPECT_GE(aDefs.Face(aFaceIter).SurfaceRepIdx, 0)
-      << "Face " << aFaceIter << " has no surface";
+    EXPECT_GE(aDefs.Face(aFaceIter).SurfaceRepIdx, 0) << "Face " << aFaceIter << " has no surface";
   }
 }
 
@@ -151,8 +147,7 @@ TEST_F(BRepGraphConvenienceTest, FindPCurve_ValidPair)
     for (int anEdgeIter = 0; anEdgeIter < aDefs.NbEdges(); ++anEdgeIter)
     {
       const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(anEdgeIter);
-      const BRepGraphInc::CoEdgeEntity* aPCurve =
-        aDefs.FindPCurve(anEdgeDef.Id, aFaceNodeId);
+      const BRepGraphInc::CoEdgeEntity*  aPCurve   = aDefs.FindPCurve(anEdgeDef.Id, aFaceNodeId);
       if (aPCurve != nullptr)
       {
         EXPECT_GE(aPCurve->Curve2DRepIdx, 0);
@@ -179,8 +174,8 @@ TEST_F(BRepGraphConvenienceTest, NbShellFaces_Box_SixFaces)
 
 TEST_F(BRepGraphConvenienceTest, ShellFaceDef_AllValid)
 {
-  const BRepGraph::DefsView aDefs = myGraph.Defs();
-  const int aNbFaces = aDefs.NbShellFaces(0);
+  const BRepGraph::DefsView aDefs    = myGraph.Defs();
+  const int                 aNbFaces = aDefs.NbShellFaces(0);
   for (int aFaceIter = 0; aFaceIter < aNbFaces; ++aFaceIter)
   {
     const BRepGraph_NodeId aFaceDefId = aDefs.ShellFaceDef(0, aFaceIter);
@@ -201,7 +196,7 @@ TEST_F(BRepGraphConvenienceTest, ShellFaceDef_OutOfRange_Invalid)
 TEST(BRepGraphConvenienceCylinderTest, FindPCurve_WithOrientation_SeamEdge)
 {
   BRepPrimAPI_MakeCylinder aCylMaker(5.0, 10.0);
-  const TopoDS_Shape& aCyl = aCylMaker.Shape();
+  const TopoDS_Shape&      aCyl = aCylMaker.Shape();
 
   BRepGraph aGraph;
   aGraph.Build(aCyl);
@@ -212,8 +207,8 @@ TEST(BRepGraphConvenienceCylinderTest, FindPCurve_WithOrientation_SeamEdge)
   // Look for seam edges (coedge with SeamPairIdx >= 0).
   for (int anEdgeIter = 0; anEdgeIter < aDefs.NbEdges(); ++anEdgeIter)
   {
-    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(anEdgeIter);
-    const NCollection_Vector<int>& aCoEdgeIdxs = aDefs.CoEdgesOfEdge(anEdgeIter);
+    const BRepGraph_TopoNode::EdgeDef& anEdgeDef   = aDefs.Edge(anEdgeIter);
+    const NCollection_Vector<int>&     aCoEdgeIdxs = aDefs.CoEdgesOfEdge(anEdgeIter);
 
     for (int aCEI = 0; aCEI < aCoEdgeIdxs.Length(); ++aCEI)
     {
@@ -222,7 +217,7 @@ TEST(BRepGraphConvenienceCylinderTest, FindPCurve_WithOrientation_SeamEdge)
         continue;
 
       // Found seam edge - verify FindPCurve returns distinct entries for each orientation.
-      const BRepGraph_NodeId aFaceDefId = aCE.FaceDefId;
+      const BRepGraph_NodeId            aFaceDefId = aCE.FaceDefId;
       const BRepGraphInc::CoEdgeEntity* aPCF =
         aDefs.FindPCurve(anEdgeDef.Id, aFaceDefId, TopAbs_FORWARD);
       const BRepGraphInc::CoEdgeEntity* aPCR =

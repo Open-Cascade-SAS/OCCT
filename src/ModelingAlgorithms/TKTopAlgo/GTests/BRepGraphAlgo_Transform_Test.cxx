@@ -93,7 +93,7 @@ TEST(BRepGraphAlgo_TransformTest, TranslateBox_VertexPointsShifted)
   ASSERT_GT(aGraph.Defs().NbVertices(), 0);
 
   const double aDx = 100.0, aDy = 200.0, aDz = 300.0;
-  gp_Trsf aTrsf;
+  gp_Trsf      aTrsf;
   aTrsf.SetTranslation(gp_Vec(aDx, aDy, aDz));
 
   BRepGraph aResultGraph = BRepGraphAlgo_Transform::Perform(aGraph, aTrsf, true);
@@ -106,11 +106,11 @@ TEST(BRepGraphAlgo_TransformTest, TranslateBox_VertexPointsShifted)
     const gp_Pnt anOrigPt = BRepGraph_Tool::Vertex::Pnt(aGraph, anIdx);
     const gp_Pnt aTransPt = BRepGraph_Tool::Vertex::Pnt(aResultGraph, anIdx);
     EXPECT_NEAR(aTransPt.X(), anOrigPt.X() + aDx, Precision::Confusion())
-        << "Vertex " << anIdx << " X mismatch";
+      << "Vertex " << anIdx << " X mismatch";
     EXPECT_NEAR(aTransPt.Y(), anOrigPt.Y() + aDy, Precision::Confusion())
-        << "Vertex " << anIdx << " Y mismatch";
+      << "Vertex " << anIdx << " Y mismatch";
     EXPECT_NEAR(aTransPt.Z(), anOrigPt.Z() + aDz, Precision::Confusion())
-        << "Vertex " << anIdx << " Z mismatch";
+      << "Vertex " << anIdx << " Z mismatch";
   }
 }
 
@@ -125,7 +125,7 @@ TEST(BRepGraphAlgo_TransformTest, LocationOnly_NoCopyGeom)
   ASSERT_GT(aGraph.Defs().NbVertices(), 0);
 
   const double aDx = 50.0;
-  gp_Trsf aTrsf;
+  gp_Trsf      aTrsf;
   aTrsf.SetTranslation(gp_Vec(aDx, 0.0, 0.0));
 
   // theCopyGeom = false: location-only, no geometry modification.
@@ -140,13 +140,13 @@ TEST(BRepGraphAlgo_TransformTest, LocationOnly_NoCopyGeom)
     const gp_Pnt anOrigPt = BRepGraph_Tool::Vertex::Pnt(aGraph, anIdx);
     const gp_Pnt aGraphPt = BRepGraph_Tool::Vertex::Pnt(aResultGraph, anIdx);
     EXPECT_NEAR(aGraphPt.X(), anOrigPt.X(), Precision::Confusion())
-        << "Vertex " << anIdx << " point should not be modified";
+      << "Vertex " << anIdx << " point should not be modified";
   }
 
   // Verify reconstructed solid has correct translation.
   ASSERT_GT(aResultGraph.Defs().NbSolids(), 0);
-  TopoDS_Shape aTransSolid = aResultGraph.Shapes().Reconstruct(
-    BRepGraph_NodeId(BRepGraph_NodeId::Kind::Solid, 0));
+  TopoDS_Shape aTransSolid =
+    aResultGraph.Shapes().Reconstruct(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Solid, 0));
   ASSERT_FALSE(aTransSolid.IsNull());
 
   GProp_GProps aOrigProps;
@@ -206,18 +206,18 @@ TEST(BRepGraphAlgo_TransformTest, Performance_VsLegacy)
   for (int anIter = 0; anIter < THE_NB_ITERS; ++anIter)
   {
     BRepBuilderAPI_Transform aTransformer(aBox, aTrsf, true);
-    TopoDS_Shape aResult = aTransformer.Shape();
+    TopoDS_Shape             aResult = aTransformer.Shape();
     (void)aResult;
   }
   aLegacyTimer.Stop();
 
-  std::cout << "[  PERF   ] BRepGraphAlgo_Transform: " << aGraphTimer.ElapsedTime()
-            << " s (" << THE_NB_ITERS << " iters)" << std::endl;
-  std::cout << "[  PERF   ] BRepBuilderAPI_Transform: " << aLegacyTimer.ElapsedTime()
-            << " s (" << THE_NB_ITERS << " iters)" << std::endl;
+  std::cout << "[  PERF   ] BRepGraphAlgo_Transform: " << aGraphTimer.ElapsedTime() << " s ("
+            << THE_NB_ITERS << " iters)" << std::endl;
+  std::cout << "[  PERF   ] BRepBuilderAPI_Transform: " << aLegacyTimer.ElapsedTime() << " s ("
+            << THE_NB_ITERS << " iters)" << std::endl;
   if (aGraphTimer.ElapsedTime() > 1.0e-9)
   {
-    std::cout << "[  PERF   ] Speedup: "
-              << aLegacyTimer.ElapsedTime() / aGraphTimer.ElapsedTime() << "x" << std::endl;
+    std::cout << "[  PERF   ] Speedup: " << aLegacyTimer.ElapsedTime() / aGraphTimer.ElapsedTime()
+              << "x" << std::endl;
   }
 }

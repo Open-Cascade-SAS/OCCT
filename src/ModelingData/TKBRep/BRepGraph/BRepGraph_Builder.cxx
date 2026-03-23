@@ -50,7 +50,9 @@ void BRepGraph_Builder::populateUIDs(BRepGraph& theGraph)
 
 //=================================================================================================
 
-void BRepGraph_Builder::Perform(BRepGraph& theGraph, const TopoDS_Shape& theShape, const bool theParallel)
+void BRepGraph_Builder::Perform(BRepGraph&          theGraph,
+                                const TopoDS_Shape& theShape,
+                                const bool          theParallel)
 {
   Perform(theGraph, theShape, theParallel, BRepGraphInc_Populate::Options());
 }
@@ -71,8 +73,10 @@ void BRepGraph_Builder::Perform(BRepGraph&                            theGraph,
   theGraph.myData->myIsDone = false;
 
   // Notify registered layers that graph data is being cleared.
-  for (NCollection_DataMap<TCollection_AsciiString, occ::handle<BRepGraph_Layer>>::Iterator
-         anIter(theGraph.myLayers); anIter.More(); anIter.Next())
+  for (NCollection_DataMap<TCollection_AsciiString, occ::handle<BRepGraph_Layer>>::Iterator anIter(
+         theGraph.myLayers);
+       anIter.More();
+       anIter.Next())
   {
     anIter.Value()->Clear();
   }
@@ -84,7 +88,10 @@ void BRepGraph_Builder::Perform(BRepGraph&                            theGraph,
   occ::handle<NCollection_IncAllocator> aTmpAlloc = new NCollection_IncAllocator;
 
   BRepGraphInc_Populate::Perform(theGraph.myData->myIncStorage,
-                                 theShape, theParallel, theOptions, aTmpAlloc);
+                                 theShape,
+                                 theParallel,
+                                 theOptions,
+                                 aTmpAlloc);
   if (!theGraph.myData->myIncStorage.GetIsDone())
   {
     theGraph.myData->myIncStorage.Clear();
@@ -97,26 +104,51 @@ void BRepGraph_Builder::Perform(BRepGraph&                            theGraph,
   // aTopologyRoot defaults to invalid (Index = -1); set only if topology exists.
   {
     BRepGraphInc_Storage& aStorage = theGraph.myData->myIncStorage;
-    BRepGraph_NodeId aTopologyRoot; // default: invalid (Index = -1)
+    BRepGraph_NodeId      aTopologyRoot; // default: invalid (Index = -1)
     switch (theShape.ShapeType())
     {
-      case TopAbs_COMPOUND:  if (aStorage.NbCompounds()  > 0) aTopologyRoot = BRepGraph_NodeId::Compound(0);  break;
-      case TopAbs_COMPSOLID: if (aStorage.NbCompSolids() > 0) aTopologyRoot = BRepGraph_NodeId::CompSolid(0); break;
-      case TopAbs_SOLID:     if (aStorage.NbSolids()     > 0) aTopologyRoot = BRepGraph_NodeId::Solid(0);     break;
-      case TopAbs_SHELL:     if (aStorage.NbShells()     > 0) aTopologyRoot = BRepGraph_NodeId::Shell(0);     break;
-      case TopAbs_FACE:      if (aStorage.NbFaces()      > 0) aTopologyRoot = BRepGraph_NodeId::Face(0);      break;
-      case TopAbs_WIRE:      if (aStorage.NbWires()      > 0) aTopologyRoot = BRepGraph_NodeId::Wire(0);      break;
-      case TopAbs_EDGE:      if (aStorage.NbEdges()      > 0) aTopologyRoot = BRepGraph_NodeId::Edge(0);      break;
-      case TopAbs_VERTEX:    if (aStorage.NbVertices()    > 0) aTopologyRoot = BRepGraph_NodeId::Vertex(0);    break;
-      default: break;
+      case TopAbs_COMPOUND:
+        if (aStorage.NbCompounds() > 0)
+          aTopologyRoot = BRepGraph_NodeId::Compound(0);
+        break;
+      case TopAbs_COMPSOLID:
+        if (aStorage.NbCompSolids() > 0)
+          aTopologyRoot = BRepGraph_NodeId::CompSolid(0);
+        break;
+      case TopAbs_SOLID:
+        if (aStorage.NbSolids() > 0)
+          aTopologyRoot = BRepGraph_NodeId::Solid(0);
+        break;
+      case TopAbs_SHELL:
+        if (aStorage.NbShells() > 0)
+          aTopologyRoot = BRepGraph_NodeId::Shell(0);
+        break;
+      case TopAbs_FACE:
+        if (aStorage.NbFaces() > 0)
+          aTopologyRoot = BRepGraph_NodeId::Face(0);
+        break;
+      case TopAbs_WIRE:
+        if (aStorage.NbWires() > 0)
+          aTopologyRoot = BRepGraph_NodeId::Wire(0);
+        break;
+      case TopAbs_EDGE:
+        if (aStorage.NbEdges() > 0)
+          aTopologyRoot = BRepGraph_NodeId::Edge(0);
+        break;
+      case TopAbs_VERTEX:
+        if (aStorage.NbVertices() > 0)
+          aTopologyRoot = BRepGraph_NodeId::Vertex(0);
+        break;
+      default:
+        break;
     }
 
-    BRepGraphInc::ProductEntity& aProduct = aStorage.AppendProduct();
-    const int aProductIdx = aStorage.NbProducts() - 1;
-    aProduct.Id = BRepGraph_NodeId::Product(aProductIdx);
-    aProduct.ShapeRootId      = aTopologyRoot; // invalid if no topology matched
-    aProduct.RootOrientation  = theShape.Orientation();
-    aProduct.RootLocation     = theShape.Location();
+    BRepGraphInc::ProductEntity& aProduct    = aStorage.AppendProduct();
+    const int                    aProductIdx = aStorage.NbProducts() - 1;
+    aProduct.Id                              = BRepGraph_NodeId::Product(aProductIdx);
+    aProduct.ShapeRootId                     = aTopologyRoot; // invalid if no topology matched
+    aProduct.RootOrientation                 = theShape.Orientation();
+    aProduct.RootLocation                    = theShape.Location();
     theGraph.allocateUID(aProduct.Id);
   }
 
@@ -125,21 +157,23 @@ void BRepGraph_Builder::Perform(BRepGraph&                            theGraph,
 
 //=================================================================================================
 
-void BRepGraph_Builder::Append(BRepGraph& theGraph, const TopoDS_Shape& theShape, const bool theParallel)
+void BRepGraph_Builder::Append(BRepGraph&          theGraph,
+                               const TopoDS_Shape& theShape,
+                               const bool          theParallel)
 {
   if (theShape.IsNull())
     return;
 
   // Snapshot entity counts before append to allocate UIDs only for new entities.
-  BRepGraphInc_Storage& aStorage = theGraph.myData->myIncStorage;
-  const int anOldVtx   = aStorage.NbVertices();
-  const int anOldEdge  = aStorage.NbEdges();
-  const int anOldWire  = aStorage.NbWires();
-  const int anOldFace  = aStorage.NbFaces();
-  const int anOldShell = aStorage.NbShells();
-  const int anOldSolid = aStorage.NbSolids();
-  const int anOldComp  = aStorage.NbCompounds();
-  const int anOldCS    = aStorage.NbCompSolids();
+  BRepGraphInc_Storage& aStorage   = theGraph.myData->myIncStorage;
+  const int             anOldVtx   = aStorage.NbVertices();
+  const int             anOldEdge  = aStorage.NbEdges();
+  const int             anOldWire  = aStorage.NbWires();
+  const int             anOldFace  = aStorage.NbFaces();
+  const int             anOldShell = aStorage.NbShells();
+  const int             anOldSolid = aStorage.NbSolids();
+  const int             anOldComp  = aStorage.NbCompounds();
+  const int             anOldCS    = aStorage.NbCompSolids();
 
   occ::handle<NCollection_IncAllocator> aTmpAlloc = new NCollection_IncAllocator;
   BRepGraphInc_Populate::Append(aStorage, theShape, theParallel, aTmpAlloc);
@@ -149,19 +183,30 @@ void BRepGraph_Builder::Append(BRepGraph& theGraph, const TopoDS_Shape& theShape
 
   theGraph.myData->myCurrentShapes.Clear();
 
-  populateUIDsIncremental(theGraph, anOldVtx, anOldEdge, anOldWire, anOldFace,
-                          anOldShell, anOldSolid, anOldComp, anOldCS);
+  populateUIDsIncremental(theGraph,
+                          anOldVtx,
+                          anOldEdge,
+                          anOldWire,
+                          anOldFace,
+                          anOldShell,
+                          anOldSolid,
+                          anOldComp,
+                          anOldCS);
 
   theGraph.myData->myIsDone = true;
 }
 
 //=================================================================================================
 
-void BRepGraph_Builder::populateUIDsIncremental(BRepGraph&  theGraph,
-                                                 const int theOldVtx,   const int theOldEdge,
-                                                 const int theOldWire,  const int theOldFace,
-                                                 const int theOldShell, const int theOldSolid,
-                                                 const int theOldComp,  const int theOldCS)
+void BRepGraph_Builder::populateUIDsIncremental(BRepGraph& theGraph,
+                                                const int  theOldVtx,
+                                                const int  theOldEdge,
+                                                const int  theOldWire,
+                                                const int  theOldFace,
+                                                const int  theOldShell,
+                                                const int  theOldSolid,
+                                                const int  theOldComp,
+                                                const int  theOldCS)
 {
   BRepGraphInc_Storage& aStorage = theGraph.myData->myIncStorage;
 

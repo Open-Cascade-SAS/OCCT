@@ -46,7 +46,7 @@ TopoDS_Compound makeTwoAdjacentFaces()
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
-  TopExp_Explorer anExp(aBox, TopAbs_FACE);
+  TopExp_Explorer    anExp(aBox, TopAbs_FACE);
   const TopoDS_Shape aFace1 = anExp.Current();
   anExp.Next();
   const TopoDS_Shape aFace2 = anExp.Current();
@@ -54,7 +54,7 @@ TopoDS_Compound makeTwoAdjacentFaces()
   BRepBuilderAPI_Copy aCopy1(aFace1, true);
   BRepBuilderAPI_Copy aCopy2(aFace2, true);
 
-  BRep_Builder aBB;
+  BRep_Builder    aBB;
   TopoDS_Compound aCompound;
   aBB.MakeCompound(aCompound);
   aBB.Add(aCompound, aCopy1.Shape());
@@ -68,13 +68,13 @@ TopoDS_Compound makeTwoCopiedFaces()
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
-  TopExp_Explorer anExp(aBox, TopAbs_FACE);
+  TopExp_Explorer    anExp(aBox, TopAbs_FACE);
   const TopoDS_Shape aFace = anExp.Current();
 
   BRepBuilderAPI_Copy aCopy1(aFace, true);
   BRepBuilderAPI_Copy aCopy2(aFace, true);
 
-  BRep_Builder aBB;
+  BRep_Builder    aBB;
   TopoDS_Compound aCompound;
   aBB.MakeCompound(aCompound);
   aBB.Add(aCompound, aCopy1.Shape());
@@ -133,7 +133,8 @@ TEST(BRepGraph_LayerIntegrationTest, Sewing_NameMigratesToKeptEdge)
   int aNbNamedKept = 0;
   for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
   {
-    if (!aGraph.Defs().Edge(i).IsRemoved && aLayer->FindNodeName(BRepGraph_NodeId::Edge(i)) != nullptr)
+    if (!aGraph.Defs().Edge(i).IsRemoved
+        && aLayer->FindNodeName(BRepGraph_NodeId::Edge(i)) != nullptr)
       ++aNbNamedKept;
   }
   EXPECT_EQ(aNbNamedKept, aLayer->NbNames());
@@ -302,7 +303,7 @@ TEST(BRepGraph_LayerIntegrationTest, Compact_LayerSurvivesSwap)
 TEST(BRepGraph_LayerIntegrationTest, Compact_RemappedNamesAccessible)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-  BRepGraph aGraph;
+  BRepGraph           aGraph;
   aGraph.Build(aBoxMaker.Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
@@ -342,7 +343,7 @@ TEST(BRepGraph_LayerIntegrationTest, Compact_RemappedNamesAccessible)
 TEST(BRepGraph_LayerIntegrationTest, Compact_MultipleEntityKindsRemapped)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-  BRepGraph aGraph;
+  BRepGraph           aGraph;
   aGraph.Build(aBoxMaker.Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
@@ -351,8 +352,8 @@ TEST(BRepGraph_LayerIntegrationTest, Compact_MultipleEntityKindsRemapped)
 
   // Name vertices and edges.
   aLayer->SetNodeName(BRepGraph_NodeId::Vertex(0), "V0");
-  aLayer->SetNodeName(BRepGraph_NodeId::Edge(0),   "E0");
-  aLayer->SetNodeName(BRepGraph_NodeId::Face(0),   "F0");
+  aLayer->SetNodeName(BRepGraph_NodeId::Edge(0), "E0");
+  aLayer->SetNodeName(BRepGraph_NodeId::Face(0), "F0");
 
   // Remove vertex 0, edge 0, face 0.
   aGraph.Builder().RemoveNode(BRepGraph_NodeId::Vertex(0));
@@ -374,7 +375,7 @@ TEST(BRepGraph_LayerIntegrationTest, Compact_MultipleEntityKindsRemapped)
 TEST(BRepGraph_LayerIntegrationTest, SplitEdge_OriginalEdgeRemoved)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-  BRepGraph aGraph;
+  BRepGraph           aGraph;
   aGraph.Build(aBoxMaker.Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
@@ -386,8 +387,8 @@ TEST(BRepGraph_LayerIntegrationTest, SplitEdge_OriginalEdgeRemoved)
   for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
   {
     const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(i);
-    if (!anEdge.IsDegenerate && anEdge.Curve3DRepIdx >= 0
-        && anEdge.StartVertex.VertexIdx >= 0 && anEdge.EndVertex.VertexIdx >= 0)
+    if (!anEdge.IsDegenerate && anEdge.Curve3DRepIdx >= 0 && anEdge.StartVertex.VertexIdx >= 0
+        && anEdge.EndVertex.VertexIdx >= 0)
     {
       aSplitEdgeIdx = i;
       break;
@@ -400,7 +401,7 @@ TEST(BRepGraph_LayerIntegrationTest, SplitEdge_OriginalEdgeRemoved)
 
   // Create a split vertex.
   const auto [aEdgeFirst, aEdgeLast] = BRepGraph_Tool::Edge::Range(aGraph, aSplitEdgeIdx);
-  const double aMidParam = 0.5 * (aEdgeFirst + aEdgeLast);
+  const double aMidParam             = 0.5 * (aEdgeFirst + aEdgeLast);
   const gp_Pnt aMidPnt = BRepGraph_Tool::Edge::Curve(aGraph, aSplitEdgeIdx)->EvalD0(aMidParam);
   const BRepGraph_NodeId aSplitVtx = aGraph.Builder().AddVertexDef(aMidPnt, Precision::Confusion());
 
@@ -478,16 +479,16 @@ TEST(BRepGraph_LayerIntegrationTest, Sewing_Cylinder_NamesPreserved)
 {
   // Build two half-cylinders and sew them.
   BRepPrimAPI_MakeCylinder aCylMaker(10.0, 30.0);
-  const TopoDS_Shape& aCyl = aCylMaker.Shape();
+  const TopoDS_Shape&      aCyl = aCylMaker.Shape();
 
   // Extract lateral face and copy it twice (simulates separate shells).
-  TopExp_Explorer anExp(aCyl, TopAbs_FACE);
+  TopExp_Explorer    anExp(aCyl, TopAbs_FACE);
   const TopoDS_Shape aFace = anExp.Current();
 
   BRepBuilderAPI_Copy aCopy1(aFace, true);
   BRepBuilderAPI_Copy aCopy2(aFace, true);
 
-  BRep_Builder aBB;
+  BRep_Builder    aBB;
   TopoDS_Compound aComp;
   aBB.MakeCompound(aComp);
   aBB.Add(aComp, aCopy1.Shape());
@@ -538,8 +539,8 @@ public:
     const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap) override
   {
     NCollection_DataMap<BRepGraph_NodeId, int> aRemapped;
-    for (NCollection_DataMap<BRepGraph_NodeId, int>::Iterator
-           anIter(myData); anIter.More(); anIter.Next())
+    for (NCollection_DataMap<BRepGraph_NodeId, int>::Iterator anIter(myData); anIter.More();
+         anIter.Next())
     {
       const BRepGraph_NodeId* aNewId = theRemapMap.Seek(anIter.Key());
       if (aNewId != nullptr)
@@ -549,10 +550,13 @@ public:
   }
 
   void InvalidateAll() override {}
+
   void Clear() override { myData.Clear(); }
 
   void Set(BRepGraph_NodeId theId, int theVal) { myData.Bind(theId, theVal); }
+
   const int* Get(BRepGraph_NodeId theId) const { return myData.Seek(theId); }
+
   int NbEntries() const { return myData.Extent(); }
 
   DEFINE_STANDARD_RTTIEXT(BRepGraph_IntCounterLayer, BRepGraph_Layer)
@@ -571,8 +575,8 @@ TEST(BRepGraph_LayerIntegrationTest, TwoLayers_BothSurviveFullPipeline)
   aGraph.Build(aCompound);
   ASSERT_TRUE(aGraph.IsDone());
 
-  occ::handle<BRepGraph_NameLayer> aNameLayer = new BRepGraph_NameLayer();
-  occ::handle<BRepGraph_IntCounterLayer> aIntLayer = new BRepGraph_IntCounterLayer();
+  occ::handle<BRepGraph_NameLayer>       aNameLayer = new BRepGraph_NameLayer();
+  occ::handle<BRepGraph_IntCounterLayer> aIntLayer  = new BRepGraph_IntCounterLayer();
   aGraph.RegisterLayer(aNameLayer);
   aGraph.RegisterLayer(aIntLayer);
 

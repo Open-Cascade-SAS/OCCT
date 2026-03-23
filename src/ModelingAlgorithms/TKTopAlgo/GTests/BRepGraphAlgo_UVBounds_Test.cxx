@@ -66,7 +66,7 @@ TEST(BRepGraphAlgo_UVBoundsTest, Compute_Box_ValidBounds)
     EXPECT_LE(aData.VMin, aData.VMax) << "V range for face " << aFaceIdx;
 
     const TopoDS_Face& aFace = TopoDS::Face(anExp.Current());
-    double aLegacyUmin, aLegacyUmax, aLegacyVmin, aLegacyVmax;
+    double             aLegacyUmin, aLegacyUmax, aLegacyVmin, aLegacyVmax;
     BRepTools::UVBounds(aFace, aLegacyUmin, aLegacyUmax, aLegacyVmin, aLegacyVmax);
 
     const double aTol = 1.0e-6;
@@ -94,7 +94,7 @@ TEST(BRepGraphAlgo_UVBoundsTest, Compute_Cylinder_MatchesLegacy)
     }
 
     const TopoDS_Face& aFace = TopoDS::Face(anExp.Current());
-    double aLegacyUmin, aLegacyUmax, aLegacyVmin, aLegacyVmax;
+    double             aLegacyUmin, aLegacyUmax, aLegacyVmin, aLegacyVmax;
     BRepTools::UVBounds(aFace, aLegacyUmin, aLegacyUmax, aLegacyVmin, aLegacyVmax);
 
     BRepGraphAlgo_UVBounds::CachedData aData;
@@ -139,7 +139,7 @@ TEST(BRepGraphAlgo_UVBoundsTest, Compute_Sphere_PeriodicClamping)
     }
 
     const TopoDS_Face& aFace = TopoDS::Face(anExp.Current());
-    double aLegacyUmin, aLegacyUmax, aLegacyVmin, aLegacyVmax;
+    double             aLegacyUmin, aLegacyUmax, aLegacyVmin, aLegacyVmax;
     BRepTools::UVBounds(aFace, aLegacyUmin, aLegacyUmax, aLegacyVmin, aLegacyVmax);
 
     BRepGraphAlgo_UVBounds::CachedData aData;

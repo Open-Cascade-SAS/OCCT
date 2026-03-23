@@ -49,8 +49,8 @@ namespace BRepGraphInc
 //! Helper: reinitialize a vector member with the given allocator and block size.
 template <typename T>
 inline void InitVec(NCollection_Vector<T>&                        theVec,
-                                 const occ::handle<NCollection_BaseAllocator>& theAlloc,
-                                 const int                                     theBlockSize = 4)
+                    const occ::handle<NCollection_BaseAllocator>& theAlloc,
+                    const int                                     theBlockSize = 4)
 {
   theVec = NCollection_Vector<T>(theBlockSize, theAlloc);
 }
@@ -359,7 +359,7 @@ struct ShellEntity : public BaseEntity
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
     InitVec(FaceRefs, theAlloc, 8);      // typically 4-8 faces per shell
-    InitVec(FreeChildRefs, theAlloc, 2);  // typically 0
+    InitVec(FreeChildRefs, theAlloc, 2); // typically 0
   }
 };
 
@@ -371,8 +371,8 @@ struct SolidEntity : public BaseEntity
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
-    InitVec(ShellRefs, theAlloc, 2);      // typically 1
-    InitVec(FreeChildRefs, theAlloc, 2);  // typically 0
+    InitVec(ShellRefs, theAlloc, 2);     // typically 1
+    InitVec(FreeChildRefs, theAlloc, 2); // typically 0
   }
 };
 

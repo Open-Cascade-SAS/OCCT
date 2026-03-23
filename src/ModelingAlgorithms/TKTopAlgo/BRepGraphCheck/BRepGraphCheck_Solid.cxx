@@ -28,14 +28,13 @@
 
 //=================================================================================================
 
-void BRepGraphCheck::CheckSolidMinimum(
-  const BRepGraph&                         theGraph,
-  int                                      theSolidDefIdx,
-  NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
+void BRepGraphCheck::CheckSolidMinimum(const BRepGraph&                          theGraph,
+                                       int                                       theSolidDefIdx,
+                                       NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
 {
-  const BRepGraph::DefsView aDefs = theGraph.Defs();
-  const BRepGraph_TopoNode::SolidDef& aSolidDef = aDefs.Solid(theSolidDefIdx);
-  const BRepGraph_NodeId aSolidNodeId = aSolidDef.Id;
+  const BRepGraph::DefsView           aDefs        = theGraph.Defs();
+  const BRepGraph_TopoNode::SolidDef& aSolidDef    = aDefs.Solid(theSolidDefIdx);
+  const BRepGraph_NodeId              aSolidNodeId = aSolidDef.Id;
 
   if (aSolidDef.ShellRefs.IsEmpty())
     return;
@@ -44,7 +43,7 @@ void BRepGraphCheck::CheckSolidMinimum(
   NCollection_Map<int> aAllFaces;
   for (int aShellIter = 0; aShellIter < aSolidDef.ShellRefs.Length(); ++aShellIter)
   {
-    const BRepGraphInc::ShellRef& aSR = aSolidDef.ShellRefs.Value(aShellIter);
+    const BRepGraphInc::ShellRef&       aSR       = aSolidDef.ShellRefs.Value(aShellIter);
     const BRepGraph_TopoNode::ShellDef& aShellDef = aDefs.Shell(aSR.ShellIdx);
 
     // Check shell orientation: shells in a solid should have FORWARD or REVERSED orientation.
@@ -61,8 +60,8 @@ void BRepGraphCheck::CheckSolidMinimum(
 
     for (int aFaceIter = 0; aFaceIter < aShellDef.FaceRefs.Length(); ++aFaceIter)
     {
-      const BRepGraphInc::FaceRef& aFR = aShellDef.FaceRefs.Value(aFaceIter);
-      const BRepGraph_NodeId aFaceDefId = BRepGraph_NodeId::Face(aFR.FaceIdx);
+      const BRepGraphInc::FaceRef& aFR        = aShellDef.FaceRefs.Value(aFaceIter);
+      const BRepGraph_NodeId       aFaceDefId = BRepGraph_NodeId::Face(aFR.FaceIdx);
 
       if (!aAllFaces.Add(aFR.FaceIdx))
       {
@@ -83,7 +82,7 @@ void BRepGraphCheck::CheckSolidMinimum(
     return;
 
   const BRepGraph::ShapesView aShapes = theGraph.Shapes();
-  const TopoDS_Shape aSolid = aShapes.Shape(aSolidNodeId);
+  const TopoDS_Shape          aSolid  = aShapes.Shape(aSolidNodeId);
   if (aSolid.IsNull() || aSolid.ShapeType() != TopAbs_SOLID)
     return;
 
@@ -93,9 +92,9 @@ void BRepGraphCheck::CheckSolidMinimum(
   // For each inner shell (index > 0), find a representative face point and classify it.
   for (int aShellIter = 1; aShellIter < aSolidDef.ShellRefs.Length(); ++aShellIter)
   {
-    const BRepGraphInc::ShellRef& aSR = aSolidDef.ShellRefs.Value(aShellIter);
-    const BRepGraph_NodeId aShellDefId = BRepGraph_NodeId::Shell(aSR.ShellIdx);
-    const BRepGraph_TopoNode::ShellDef& aShellDef = aDefs.Shell(aSR.ShellIdx);
+    const BRepGraphInc::ShellRef&       aSR         = aSolidDef.ShellRefs.Value(aShellIter);
+    const BRepGraph_NodeId              aShellDefId = BRepGraph_NodeId::Shell(aSR.ShellIdx);
+    const BRepGraph_TopoNode::ShellDef& aShellDef   = aDefs.Shell(aSR.ShellIdx);
 
     if (aShellDef.FaceRefs.IsEmpty())
       continue;
@@ -114,10 +113,14 @@ void BRepGraphCheck::CheckSolidMinimum(
     double aVMin = aSurfAdaptor.FirstVParameter();
     double aVMax = aSurfAdaptor.LastVParameter();
     // Clamp infinite bounds.
-    if (aUMin < -Precision::Infinite()) aUMin = -Precision::Infinite();
-    if (aUMax >  Precision::Infinite()) aUMax =  Precision::Infinite();
-    if (aVMin < -Precision::Infinite()) aVMin = -Precision::Infinite();
-    if (aVMax >  Precision::Infinite()) aVMax =  Precision::Infinite();
+    if (aUMin < -Precision::Infinite())
+      aUMin = -Precision::Infinite();
+    if (aUMax > Precision::Infinite())
+      aUMax = Precision::Infinite();
+    if (aVMin < -Precision::Infinite())
+      aVMin = -Precision::Infinite();
+    if (aVMax > Precision::Infinite())
+      aVMax = Precision::Infinite();
 
     // Geometry is stored at identity, no location transform needed.
     const gp_Pnt aRepPnt = aSurfAdaptor.Value(0.5 * (aUMin + aUMax), 0.5 * (aVMin + aVMax));

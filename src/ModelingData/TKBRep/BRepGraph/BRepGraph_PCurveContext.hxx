@@ -33,24 +33,30 @@ struct BRepGraph_PCurveContext
   TopAbs_Orientation Orientation;
 
   BRepGraph_PCurveContext()
-    : EdgeDefIndex(-1), FaceDefIndex(-1), Orientation(TopAbs_FORWARD) {}
+      : EdgeDefIndex(-1),
+        FaceDefIndex(-1),
+        Orientation(TopAbs_FORWARD)
+  {
+  }
 
   BRepGraph_PCurveContext(const int theEdge, const int theFace, const TopAbs_Orientation theOri)
-    : EdgeDefIndex(theEdge), FaceDefIndex(theFace), Orientation(theOri) {}
+      : EdgeDefIndex(theEdge),
+        FaceDefIndex(theFace),
+        Orientation(theOri)
+  {
+  }
 
   bool operator==(const BRepGraph_PCurveContext& theOther) const
   {
-    return EdgeDefIndex == theOther.EdgeDefIndex
-        && FaceDefIndex == theOther.FaceDefIndex
-        && Orientation  == theOther.Orientation;
+    return EdgeDefIndex == theOther.EdgeDefIndex && FaceDefIndex == theOther.FaceDefIndex
+           && Orientation == theOther.Orientation;
   }
 
-  bool operator!=(const BRepGraph_PCurveContext& theOther) const
-  { return !(*this == theOther); }
+  bool operator!=(const BRepGraph_PCurveContext& theOther) const { return !(*this == theOther); }
 };
 
 //! std::hash specialization for NCollection_DefaultHasher support.
-template<>
+template <>
 struct std::hash<BRepGraph_PCurveContext>
 {
   size_t operator()(const BRepGraph_PCurveContext& theCtx) const noexcept

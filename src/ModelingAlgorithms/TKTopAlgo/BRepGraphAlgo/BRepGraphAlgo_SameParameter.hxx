@@ -34,8 +34,9 @@ public:
   //! Diagnostic result from SameParameter enforcement.
   struct Result
   {
-    int NbC0Fallbacks    = 0; //!< Edges where C0 BSpline PCurve could not be promoted to C1.
-    int NbApproxFallbacks = 0; //!< Edges where Approx_SameParameter failed and SameRange fallback was used.
+    int NbC0Fallbacks = 0; //!< Edges where C0 BSpline PCurve could not be promoted to C1.
+    int NbApproxFallbacks =
+      0; //!< Edges where Approx_SameParameter failed and SameRange fallback was used.
   };
 
   //! Enforce SameParameter on a single edge.

@@ -47,19 +47,19 @@ public:
   //! @param[in] theLast      last curve parameter
   //! @param[in] theTolerance edge tolerance
   //! @return NodeId of the new edge definition
-  Standard_EXPORT BRepGraph_NodeId AddEdgeDef(const BRepGraph_NodeId          theStartVtx,
-                                              const BRepGraph_NodeId          theEndVtx,
+  Standard_EXPORT BRepGraph_NodeId AddEdgeDef(const BRepGraph_NodeId         theStartVtx,
+                                              const BRepGraph_NodeId         theEndVtx,
                                               const occ::handle<Geom_Curve>& theCurve,
-                                              const double                    theFirst,
-                                              const double                    theLast,
-                                              const double                    theTolerance);
+                                              const double                   theFirst,
+                                              const double                   theLast,
+                                              const double                   theTolerance);
 
   //! Add a wire definition to the graph.
   //! Each pair is (EdgeDefId, OrientationInWire).
   //! @param[in] theEdges ordered edge entries
   //! @return NodeId of the new wire definition
-  Standard_EXPORT BRepGraph_NodeId AddWireDef(
-    const NCollection_Vector<std::pair<BRepGraph_NodeId, TopAbs_Orientation>>& theEdges);
+  Standard_EXPORT BRepGraph_NodeId
+    AddWireDef(const NCollection_Vector<std::pair<BRepGraph_NodeId, TopAbs_Orientation>>& theEdges);
 
   //! Add a face definition to the graph.
   //! @param[in] theSurface    surface geometry
@@ -67,11 +67,11 @@ public:
   //! @param[in] theInnerWires inner wire def NodeIds
   //! @param[in] theTolerance  face tolerance
   //! @return NodeId of the new face definition
-  Standard_EXPORT BRepGraph_NodeId AddFaceDef(
-    const occ::handle<Geom_Surface>&                 theSurface,
-    const BRepGraph_NodeId                            theOuterWire,
-    const NCollection_Vector<BRepGraph_NodeId>& theInnerWires,
-    const double                                      theTolerance);
+  Standard_EXPORT BRepGraph_NodeId
+    AddFaceDef(const occ::handle<Geom_Surface>&            theSurface,
+               const BRepGraph_NodeId                      theOuterWire,
+               const NCollection_Vector<BRepGraph_NodeId>& theInnerWires,
+               const double                                theTolerance);
 
   //! Add an empty shell definition to the graph.
   //! @return NodeId of the new shell definition
@@ -100,14 +100,14 @@ public:
   //! Add a compound definition with child definitions.
   //! @param[in] theChildDefs child definition NodeIds
   //! @return NodeId of the new compound definition
-  Standard_EXPORT BRepGraph_NodeId AddCompoundDef(
-    const NCollection_Vector<BRepGraph_NodeId>& theChildDefs);
+  Standard_EXPORT BRepGraph_NodeId
+    AddCompoundDef(const NCollection_Vector<BRepGraph_NodeId>& theChildDefs);
 
   //! Add a compsolid definition with child solid definitions.
   //! @param[in] theSolidDefs child solid definition NodeIds
   //! @return NodeId of the new compsolid definition
-  Standard_EXPORT BRepGraph_NodeId AddCompSolidDef(
-    const NCollection_Vector<BRepGraph_NodeId>& theSolidDefs);
+  Standard_EXPORT BRepGraph_NodeId
+    AddCompSolidDef(const NCollection_Vector<BRepGraph_NodeId>& theSolidDefs);
 
   //! Add a part product with a root shape node.
   //! @param[in] theShapeRoot root topology NodeId for the part
@@ -124,9 +124,9 @@ public:
   //! @param[in] theReferencedProduct  child product being instantiated
   //! @param[in] thePlacement          local placement relative to parent
   //! @return NodeId of the new occurrence definition
-  Standard_EXPORT BRepGraph_NodeId AddOccurrence(const BRepGraph_NodeId        theParentProduct,
-                                                  const BRepGraph_NodeId        theReferencedProduct,
-                                                  const TopLoc_Location& thePlacement);
+  Standard_EXPORT BRepGraph_NodeId AddOccurrence(const BRepGraph_NodeId theParentProduct,
+                                                 const BRepGraph_NodeId theReferencedProduct,
+                                                 const TopLoc_Location& thePlacement);
 
   //! Add an occurrence with an explicit parent occurrence for nested assembly chains.
   //! This establishes a tree-structured placement path for unambiguous
@@ -136,10 +136,10 @@ public:
   //! @param[in] thePlacement          local placement relative to parent
   //! @param[in] theParentOccurrence   the occurrence that placed the parent product
   //! @return NodeId of the new occurrence definition
-  Standard_EXPORT BRepGraph_NodeId AddOccurrence(const BRepGraph_NodeId        theParentProduct,
-                                                  const BRepGraph_NodeId        theReferencedProduct,
-                                                  const TopLoc_Location& thePlacement,
-                                                  const BRepGraph_NodeId        theParentOccurrence);
+  Standard_EXPORT BRepGraph_NodeId AddOccurrence(const BRepGraph_NodeId theParentProduct,
+                                                 const BRepGraph_NodeId theReferencedProduct,
+                                                 const TopLoc_Location& thePlacement,
+                                                 const BRepGraph_NodeId theParentOccurrence);
 
   //! Append a shape to the existing graph without clearing.
   //! @param[in] theShape   shape to add
@@ -157,7 +157,8 @@ public:
   //! Layers are notified with both old and replacement NodeIds for data migration.
   //! @param[in] theNode        node to remove
   //! @param[in] theReplacement node that replaces theNode
-  Standard_EXPORT void RemoveNode(const BRepGraph_NodeId theNode, const BRepGraph_NodeId theReplacement);
+  Standard_EXPORT void RemoveNode(const BRepGraph_NodeId theNode,
+                                  const BRepGraph_NodeId theReplacement);
 
   //! Mark a node and all its descendants as removed (cascading soft deletion).
   //! @param[in] theNode root node to remove
@@ -178,10 +179,18 @@ public:
 
 private:
   friend class BRepGraph;
-  explicit BuilderView(BRepGraph* theGraph) : myGraph(theGraph) {}
+
+  explicit BuilderView(BRepGraph* theGraph)
+      : myGraph(theGraph)
+  {
+  }
+
   BRepGraph* myGraph;
 };
 
-inline BRepGraph::BuilderView BRepGraph::Builder() { return BuilderView(this); }
+inline BRepGraph::BuilderView BRepGraph::Builder()
+{
+  return BuilderView(this);
+}
 
 #endif // _BRepGraph_BuilderView_HeaderFile

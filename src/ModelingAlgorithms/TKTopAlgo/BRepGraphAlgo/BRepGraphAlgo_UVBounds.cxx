@@ -76,12 +76,12 @@ private:
 //! @param[in] theVmax    surface V maximum
 //! @return true if the surface is geometrically U-periodic
 static bool isBSplinePseudoPeriodicU(const occ::handle<Geom_Surface>& theSurface,
-                                     double                      theXmin,
-                                     double                      theXmax,
-                                     double                      theUmin,
-                                     double                      theUmax,
-                                     double                      theVmin,
-                                     double                      theVmax)
+                                     double                           theXmin,
+                                     double                           theXmax,
+                                     double                           theUmin,
+                                     double                           theUmax,
+                                     double                           theVmin,
+                                     double                           theVmax)
 {
   const GeomAdaptor_Surface aSurfAdaptor(theSurface);
   const GeomAdaptor_Surface aExtAdaptor(theSurface);
@@ -165,12 +165,12 @@ static bool isBSplinePseudoPeriodicU(const occ::handle<Geom_Surface>& theSurface
 //! @param[in] theVmax    surface V maximum
 //! @return true if the surface is geometrically V-periodic
 static bool isBSplinePseudoPeriodicV(const occ::handle<Geom_Surface>& theSurface,
-                                     double                      theYmin,
-                                     double                      theYmax,
-                                     double                      theUmin,
-                                     double                      theUmax,
-                                     double                      theVmin,
-                                     double                      theVmax)
+                                     double                           theYmin,
+                                     double                           theYmax,
+                                     double                           theUmin,
+                                     double                           theUmax,
+                                     double                           theVmin,
+                                     double                           theVmax)
 {
   const GeomAdaptor_Surface aSurfAdaptor(theSurface);
   const GeomAdaptor_Surface aExtAdaptor(theSurface);
@@ -257,8 +257,7 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph& theGraph, int theFaceIdx, 
     return;
   }
 
-  const occ::handle<Geom_Surface>& aFaceSurf =
-    BRepGraph_Tool::Face::Surface(theGraph, theFaceIdx);
+  const occ::handle<Geom_Surface>& aFaceSurf = BRepGraph_Tool::Face::Surface(theGraph, theFaceIdx);
 
   theData.IsValid              = true;
   theData.IsNaturalRestriction = BRepGraph_Tool::Face::NaturalRestriction(theGraph, theFaceIdx);
@@ -303,9 +302,9 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph& theGraph, int theFaceIdx, 
           isAborted = true;
           return;
         }
-        const BRepGraphInc::CoEdgeRef& aCR = aWireDef.CoEdgeRefs.Value(anIdx);
+        const BRepGraphInc::CoEdgeRef&       aCR     = aWireDef.CoEdgeRefs.Value(anIdx);
         const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Defs().CoEdge(aCR.CoEdgeIdx);
-        const BRepGraphInc::CoEdgeEntity* aPCurve =
+        const BRepGraphInc::CoEdgeEntity*    aPCurve =
           BRepGraph_Tool::Edge::FindPCurve(theGraph, aCoEdge.EdgeIdx, theFaceIdx);
         if (aPCurve == nullptr || aPCurve->Curve2DRepIdx < 0)
         {
@@ -403,13 +402,13 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph& theGraph, int theFaceIdx, 
   Bnd_Box2d aBox;
   for (int aWireRefIdx = 0; aWireRefIdx < aFaceDef.WireRefs.Length(); ++aWireRefIdx)
   {
-    const BRepGraphInc::WireRef& aWR = aFaceDef.WireRefs.Value(aWireRefIdx);
+    const BRepGraphInc::WireRef&       aWR      = aFaceDef.WireRefs.Value(aWireRefIdx);
     const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.Defs().Wire(aWR.WireIdx);
     for (int anIdx = 0; anIdx < aWireDef.CoEdgeRefs.Length(); ++anIdx)
     {
-      const BRepGraphInc::CoEdgeRef& aCR = aWireDef.CoEdgeRefs.Value(anIdx);
+      const BRepGraphInc::CoEdgeRef&       aCR     = aWireDef.CoEdgeRefs.Value(anIdx);
       const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Defs().CoEdge(aCR.CoEdgeIdx);
-      const BRepGraphInc::CoEdgeEntity* aPCurve =
+      const BRepGraphInc::CoEdgeEntity*    aPCurve =
         BRepGraph_Tool::Edge::FindPCurve(theGraph, aCoEdge.EdgeIdx, theFaceIdx);
       if (aPCurve == nullptr || aPCurve->Curve2DRepIdx < 0)
         continue;
@@ -504,7 +503,8 @@ int BRepGraphAlgo_UVBounds::CacheKey()
 //=================================================================================================
 
 //! Helper: retrieve existing UV attribute from a cache, or nullptr.
-static occ::handle<BRepGraphAlgo_UVBoundsAttribute> findUVAttr(const BRepGraph_NodeCache& theCache, int theKey)
+static occ::handle<BRepGraphAlgo_UVBoundsAttribute> findUVAttr(const BRepGraph_NodeCache& theCache,
+                                                               int                        theKey)
 {
   occ::handle<BRepGraph_UserAttribute> anAttr = theCache.GetUserAttribute(theKey);
   if (anAttr.IsNull())

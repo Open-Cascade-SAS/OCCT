@@ -29,12 +29,11 @@
 
 //=================================================================================================
 
-void BRepGraphCheck::CheckEdgeMinimum(
-  const BRepGraph&                         theGraph,
-  int                                      theEdgeDefIdx,
-  NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
+void BRepGraphCheck::CheckEdgeMinimum(const BRepGraph&                          theGraph,
+                                      int                                       theEdgeDefIdx,
+                                      NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
 {
-  const BRepGraph::DefsView aDefs = theGraph.Defs();
+  const BRepGraph::DefsView          aDefs     = theGraph.Defs();
   const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(theEdgeDefIdx);
 
   const bool anIsDegenerate = BRepGraph_Tool::Edge::Degenerated(theGraph, theEdgeDefIdx);
@@ -141,14 +140,13 @@ void BRepGraphCheck::CheckEdgeMinimum(
 
 //=================================================================================================
 
-void BRepGraphCheck::CheckEdgeOnFace(
-  const BRepGraph&                         theGraph,
-  int                                      theEdgeDefIdx,
-  int                                      theFaceDefIdx,
-  bool                                     theIsExact,
-  NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
+void BRepGraphCheck::CheckEdgeOnFace(const BRepGraph&                          theGraph,
+                                     int                                       theEdgeDefIdx,
+                                     int                                       theFaceDefIdx,
+                                     bool                                      theIsExact,
+                                     NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
 {
-  const BRepGraph::DefsView aDefs = theGraph.Defs();
+  const BRepGraph::DefsView          aDefs     = theGraph.Defs();
   const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(theEdgeDefIdx);
 
   // Skip degenerate edges for PCurve/SameParameter checks.
@@ -240,27 +238,26 @@ void BRepGraphCheck::CheckEdgeOnFace(
   if (aPCurve->Curve2DRepIdx < 0)
     return;
 
-  const occ::handle<Geom2d_Curve>& aPCurve2d =
-    BRepGraph_Tool::CoEdge::PCurve(theGraph, *aPCurve);
+  const occ::handle<Geom2d_Curve>& aPCurve2d = BRepGraph_Tool::CoEdge::PCurve(theGraph, *aPCurve);
   if (aPCurve2d.IsNull())
     return;
 
   // Build 3D curve adaptor (raw handle needed for BRepLib_ValidateEdge).
   const occ::handle<Geom_Curve>& aEdgeCurve3d =
     BRepGraph_Tool::Edge::Curve(theGraph, theEdgeDefIdx);
-  occ::handle<GeomAdaptor_Curve> aRefCurve = new GeomAdaptor_Curve(
-    aEdgeCurve3d, anEdgeFirst, anEdgeLast);
+  occ::handle<GeomAdaptor_Curve> aRefCurve =
+    new GeomAdaptor_Curve(aEdgeCurve3d, anEdgeFirst, anEdgeLast);
 
   // Build curve-on-surface adaptor from PCurve + Surface (raw handles needed).
-  occ::handle<Geom2dAdaptor_Curve> aPC2d = new Geom2dAdaptor_Curve(
-    aPCurve2d, anEdgeFirst, anEdgeLast);
+  occ::handle<Geom2dAdaptor_Curve> aPC2d =
+    new Geom2dAdaptor_Curve(aPCurve2d, anEdgeFirst, anEdgeLast);
   const occ::handle<Geom_Surface>& aFaceSurface =
     BRepGraph_Tool::Face::Surface(theGraph, theFaceDefIdx);
-  occ::handle<GeomAdaptor_Surface> aHS = new GeomAdaptor_Surface(aFaceSurface);
+  occ::handle<GeomAdaptor_Surface>      aHS  = new GeomAdaptor_Surface(aFaceSurface);
   occ::handle<Adaptor3d_CurveOnSurface> aCOS = new Adaptor3d_CurveOnSurface(aPC2d, aHS);
 
-  const bool   anIsSameParam = BRepGraph_Tool::Edge::SameParameter(theGraph, theEdgeDefIdx);
-  const double anEdgeTol     = BRepGraph_Tool::Edge::Tolerance(theGraph, theEdgeDefIdx);
+  const bool           anIsSameParam = BRepGraph_Tool::Edge::SameParameter(theGraph, theEdgeDefIdx);
+  const double         anEdgeTol     = BRepGraph_Tool::Edge::Tolerance(theGraph, theEdgeDefIdx);
   BRepLib_ValidateEdge aValidator(aRefCurve, aCOS, anIsSameParam);
   aValidator.SetExitIfToleranceExceeded(anEdgeTol);
   aValidator.SetExactMethod(theIsExact);
@@ -279,16 +276,15 @@ void BRepGraphCheck::CheckEdgeOnFace(
 
 //=================================================================================================
 
-void BRepGraphCheck::CheckEdgeInShell(
-  const BRepGraph&                         theGraph,
-  int                                      theEdgeDefIdx,
-  int                                      theShellDefIdx,
-  int                                      theEdgeFaceCount,
-  NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
+void BRepGraphCheck::CheckEdgeInShell(const BRepGraph&                          theGraph,
+                                      int                                       theEdgeDefIdx,
+                                      int                                       theShellDefIdx,
+                                      int                                       theEdgeFaceCount,
+                                      NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
 {
-  const BRepGraph::DefsView aDefs = theGraph.Defs();
-  const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(theEdgeDefIdx);
-  const BRepGraph_NodeId aShellNodeId = BRepGraph_NodeId::Shell(theShellDefIdx);
+  const BRepGraph::DefsView          aDefs        = theGraph.Defs();
+  const BRepGraph_TopoNode::EdgeDef& anEdgeDef    = aDefs.Edge(theEdgeDefIdx);
+  const BRepGraph_NodeId             aShellNodeId = BRepGraph_NodeId::Shell(theShellDefIdx);
 
   // Skip degenerate edges.
   if (BRepGraph_Tool::Edge::Degenerated(theGraph, theEdgeDefIdx))

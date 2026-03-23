@@ -35,7 +35,11 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Severity level for reported issues.
-  enum class Severity { Warning, Error };
+  enum class Severity
+  {
+    Warning,
+    Error
+  };
 
   //! A single structural issue found in the graph.
   struct Issue

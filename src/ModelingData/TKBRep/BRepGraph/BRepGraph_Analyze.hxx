@@ -56,21 +56,22 @@ public:
   //! @param[in] theGraph     the graph to analyze
   //! @param[in] theThreshold maximum allowed tolerance spread on a shared curve
   //! @return vector of edge NodeIds involved in tolerance conflicts
-  Standard_EXPORT static NCollection_Vector<BRepGraph_NodeId>
-    ToleranceConflicts(const BRepGraph& theGraph, const double theThreshold);
+  Standard_EXPORT static NCollection_Vector<BRepGraph_NodeId> ToleranceConflicts(
+    const BRepGraph& theGraph,
+    const double     theThreshold);
 
   //! WireNodes with < 2 edges or non-closed outer wires.
   //! @param[in] theGraph the graph to analyze
   //! @return vector of degenerate wire NodeIds
-  Standard_EXPORT static NCollection_Vector<BRepGraph_NodeId>
-    DegenerateWires(const BRepGraph& theGraph);
+  Standard_EXPORT static NCollection_Vector<BRepGraph_NodeId> DegenerateWires(
+    const BRepGraph& theGraph);
 
   //! Split into connected components (non-owning SubGraph views).
   //! When no solids but shells exist, each shell becomes one SubGraph.
   //! @param[in] theGraph the graph to decompose
   //! @return vector of SubGraph views over connected components
-  Standard_EXPORT static NCollection_Vector<BRepGraph_SubGraph>
-    Decompose(const BRepGraph& theGraph);
+  Standard_EXPORT static NCollection_Vector<BRepGraph_SubGraph> Decompose(
+    const BRepGraph& theGraph);
 
   //! Build connected clusters over a subset of nodes using relation edges of a given kind.
   //!
@@ -80,10 +81,10 @@ public:
   //! @param[in] theNodes subset of nodes to cluster
   //! @param[in] theKind relation kind used to define connectivity
   //! @return vector of connected clusters (each cluster is a vector of NodeIds)
-  Standard_EXPORT static NCollection_Vector<NCollection_Vector<BRepGraph_NodeId>>
-    RelationClusters(const BRepGraph&                       theGraph,
-                     const NCollection_Array1<BRepGraph_NodeId>& theNodes,
-                     const BRepGraph_RelEdge::Kind               theKind);
+  Standard_EXPORT static NCollection_Vector<NCollection_Vector<BRepGraph_NodeId>> RelationClusters(
+    const BRepGraph&                            theGraph,
+    const NCollection_Array1<BRepGraph_NodeId>& theNodes,
+    const BRepGraph_RelEdge::Kind               theKind);
 
   //! Compute endpoint-based matching score between two edges.
   //! Lower score means a better endpoint correspondence.
@@ -91,9 +92,9 @@ public:
   //! @param[in] theEdgeA first edge id
   //! @param[in] theEdgeB second edge id
   //! @return endpoint distance score
-  Standard_EXPORT static double EdgeEndpointPairScore(const BRepGraph&    theGraph,
-                                                      const BRepGraph_NodeId  theEdgeA,
-                                                      const BRepGraph_NodeId  theEdgeB);
+  Standard_EXPORT static double EdgeEndpointPairScore(const BRepGraph&       theGraph,
+                                                      const BRepGraph_NodeId theEdgeA,
+                                                      const BRepGraph_NodeId theEdgeB);
 
   //! Geometric compatibility test between two edges using sampled bidirectional projection.
   //! @param[in] theGraph source graph
@@ -104,13 +105,13 @@ public:
   //! @param[in] theMaxChordRatio max accepted endpoint chord ratio
   //! @param[in] theHighConfidenceRatio forward-pass threshold to skip reverse pass
   //! @return true if edges are geometrically compatible
-  Standard_EXPORT static bool AreEdgesCompatibleSampled(const BRepGraph& theGraph,
-                                                        const BRepGraph_NodeId  theEdgeA,
-                                                        const BRepGraph_NodeId  theEdgeB,
-                                                        const double            theTolerance,
-                                                        const int               theNbSamples          = 5,
-                                                        const double            theMaxChordRatio      = 2.0,
-                                                        const double            theHighConfidenceRatio = 0.01);
+  Standard_EXPORT static bool AreEdgesCompatibleSampled(const BRepGraph&       theGraph,
+                                                        const BRepGraph_NodeId theEdgeA,
+                                                        const BRepGraph_NodeId theEdgeB,
+                                                        const double           theTolerance,
+                                                        const int              theNbSamples = 5,
+                                                        const double theMaxChordRatio       = 2.0,
+                                                        const double theHighConfidenceRatio = 0.01);
 
   //! Cached variant of geometric compatibility test.
   //! @param[in] theGraph source graph
@@ -124,16 +125,17 @@ public:
   //! @param[in] theMaxChordRatio max accepted endpoint chord ratio
   //! @param[in] theHighConfidenceRatio forward-pass threshold to skip reverse pass
   //! @return true if edges are geometrically compatible
-  Standard_EXPORT static bool AreEdgesCompatibleSampled(const BRepGraph&            theGraph,
-                                                        const BRepGraph_NodeId             theEdgeA,
-                                                        const BRepGraph_NodeId             theEdgeB,
-                                                        const NCollection_Array1<gp_Pnt>& theSamplePtsA,
-                                                        const ExtremaPC_Curve&       theExtPCRevA,
-                                                        const double                       theChordA,
-                                                        const double                       theTolerance,
-                                                        const int                          theNbSamples          = 5,
-                                                        const double                       theMaxChordRatio      = 2.0,
-                                                        const double                       theHighConfidenceRatio = 0.01);
+  Standard_EXPORT static bool AreEdgesCompatibleSampled(
+    const BRepGraph&                  theGraph,
+    const BRepGraph_NodeId            theEdgeA,
+    const BRepGraph_NodeId            theEdgeB,
+    const NCollection_Array1<gp_Pnt>& theSamplePtsA,
+    const ExtremaPC_Curve&            theExtPCRevA,
+    const double                      theChordA,
+    const double                      theTolerance,
+    const int                         theNbSamples           = 5,
+    const double                      theMaxChordRatio       = 2.0,
+    const double                      theHighConfidenceRatio = 0.01);
 
   //! Parallel iteration over FaceNode indices in a SubGraph.
   //! @param[in] theGraph  the parent graph

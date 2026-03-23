@@ -26,7 +26,7 @@ const TCollection_AsciiString& BRepGraph_NameLayer::Name() const
 
 //=================================================================================================
 
-void BRepGraph_NameLayer::SetNodeName(const BRepGraph_NodeId              theNode,
+void BRepGraph_NameLayer::SetNodeName(const BRepGraph_NodeId            theNode,
                                       const TCollection_ExtendedString& theName)
 {
   myNames.Bind(theNode, theName);
@@ -34,7 +34,8 @@ void BRepGraph_NameLayer::SetNodeName(const BRepGraph_NodeId              theNod
 
 //=================================================================================================
 
-const TCollection_ExtendedString* BRepGraph_NameLayer::FindNodeName(const BRepGraph_NodeId theNode) const
+const TCollection_ExtendedString* BRepGraph_NameLayer::FindNodeName(
+  const BRepGraph_NodeId theNode) const
 {
   return myNames.Seek(theNode);
 }
@@ -69,8 +70,9 @@ void BRepGraph_NameLayer::OnCompact(
   const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap)
 {
   NCollection_DataMap<BRepGraph_NodeId, TCollection_ExtendedString> aRemapped;
-  for (NCollection_DataMap<BRepGraph_NodeId, TCollection_ExtendedString>::Iterator
-         anIter(myNames); anIter.More(); anIter.Next())
+  for (NCollection_DataMap<BRepGraph_NodeId, TCollection_ExtendedString>::Iterator anIter(myNames);
+       anIter.More();
+       anIter.Next())
   {
     const BRepGraph_NodeId* aNewId = theRemapMap.Seek(anIter.Key());
     if (aNewId != nullptr)

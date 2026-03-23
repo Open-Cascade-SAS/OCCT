@@ -47,12 +47,17 @@ Geom2dHatch_Classifier::Geom2dHatch_Classifier(Geom2dHatch_Elements& F,
 
 //=================================================================================================
 
-void Geom2dHatch_Classifier::Perform(Geom2dHatch_Elements& F,
-                                     const gp_Pnt2d&       P,
-                                     const double          Tol)
+void Geom2dHatch_Classifier::Perform(Geom2dHatch_Elements& F, const gp_Pnt2d& P, const double Tol)
 {
-  TopClass_FaceClassifier::Perform(rejected, nowires, myClassifier, myEdge, myPosition,
-                                   myEdgeParameter, F, P, Tol);
+  TopClass_FaceClassifier::Perform(rejected,
+                                   nowires,
+                                   myClassifier,
+                                   myEdge,
+                                   myPosition,
+                                   myEdgeParameter,
+                                   F,
+                                   P,
+                                   Tol);
 }
 
 //=================================================================================================

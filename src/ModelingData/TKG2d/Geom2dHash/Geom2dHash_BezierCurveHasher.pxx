@@ -30,8 +30,8 @@ struct Geom2dHash_BezierCurveHasher
 
   Geom2dHash_BezierCurveHasher(double theCompTolerance = Precision::Angular(),
                                double theHashTolerance = Precision::Confusion())
-    : CompTolerance(theCompTolerance),
-      HashTolerance(theHashTolerance)
+      : CompTolerance(theCompTolerance),
+        HashTolerance(theHashTolerance)
   {
   }
 

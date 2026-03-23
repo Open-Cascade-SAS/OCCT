@@ -55,8 +55,8 @@ TEST_F(BRepGraphSharingTest, EdgeDef_EachSharedByTwoFaces)
   for (int anIdx = 0; anIdx < myGraph.Defs().NbEdges(); ++anIdx)
   {
     int aFaceCount = myGraph.Builder().FaceCountForEdge(anIdx);
-    EXPECT_EQ(aFaceCount, 2)
-      << "Edge def " << anIdx << " expected to be shared by 2 faces, got " << aFaceCount;
+    EXPECT_EQ(aFaceCount, 2) << "Edge def " << anIdx << " expected to be shared by 2 faces, got "
+                             << aFaceCount;
   }
 }
 
@@ -67,8 +67,7 @@ TEST_F(BRepGraphSharingTest, FaceDef_EachHasValidSurface)
   for (int anIdx = 0; anIdx < myGraph.Defs().NbFaces(); ++anIdx)
   {
     const BRepGraph_TopoNode::FaceDef& aDef = myGraph.Defs().Face(anIdx);
-    EXPECT_GE(aDef.SurfaceRepIdx, 0)
-      << "Face def " << anIdx << " has no surface rep";
+    EXPECT_GE(aDef.SurfaceRepIdx, 0) << "Face def " << anIdx << " has no surface rep";
   }
 }
 
@@ -114,8 +113,7 @@ TEST_F(BRepGraphSharingTest, FaceDef_OuterWireIdx_Valid)
   for (int anIdx = 0; anIdx < myGraph.Defs().NbFaces(); ++anIdx)
   {
     const BRepGraph_TopoNode::FaceDef& aFaceDef = myGraph.Defs().Face(anIdx);
-    EXPECT_GE(aFaceDef.OuterWireIdx(), 0)
-      << "Face def " << anIdx << " has no outer wire";
+    EXPECT_GE(aFaceDef.OuterWireIdx(), 0) << "Face def " << anIdx << " has no outer wire";
   }
 }
 
@@ -125,8 +123,7 @@ TEST_F(BRepGraphSharingTest, WireDef_CoEdgeRefsCount_FourPerBoxFace)
   for (int anIdx = 0; anIdx < myGraph.Defs().NbWires(); ++anIdx)
   {
     const BRepGraph_TopoNode::WireDef& aWireDef = myGraph.Defs().Wire(anIdx);
-    EXPECT_GT(aWireDef.CoEdgeRefs.Length(), 0)
-      << "Wire def " << anIdx << " has no coedge refs";
+    EXPECT_GT(aWireDef.CoEdgeRefs.Length(), 0) << "Wire def " << anIdx << " has no coedge refs";
     // Box face wires have 4 edges
     EXPECT_EQ(aWireDef.CoEdgeRefs.Length(), 4)
       << "Wire def " << anIdx << " expected 4 coedge refs for box face";
@@ -187,8 +184,7 @@ TEST_F(BRepGraphSharingTest, NonClosedEdge_StartEnd_Different)
       continue;
     // Box edges are not closed, so start and end vertex defs must differ
     EXPECT_NE(aDef.StartVertex.VertexIdx, aDef.EndVertex.VertexIdx)
-      << "Non-degenerate edge def " << anIdx
-      << " has identical start and end vertex def ids";
+      << "Non-degenerate edge def " << anIdx << " has identical start and end vertex def ids";
   }
 }
 
@@ -219,7 +215,7 @@ TEST(BRepGraphSharingCompoundTest, CompoundTwoIdenticalBoxes)
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
-  BRep_Builder aBuilder;
+  BRep_Builder    aBuilder;
   TopoDS_Compound aCompound;
   aBuilder.MakeCompound(aCompound);
   aBuilder.Add(aCompound, aBox);
@@ -252,7 +248,7 @@ TEST(BRepGraphSharingCompoundTest, CompoundTwoDistinctBoxes)
   BRepPrimAPI_MakeBox aBoxMaker2(5.0, 15.0, 25.0);
   const TopoDS_Shape& aBox2 = aBoxMaker2.Shape();
 
-  BRep_Builder aBuilder;
+  BRep_Builder    aBuilder;
   TopoDS_Compound aCompound;
   aBuilder.MakeCompound(aCompound);
   aBuilder.Add(aCompound, aBox1);
@@ -278,7 +274,7 @@ TEST(BRepGraphSharingCompoundTest, CompoundWithLocation_MoreUsagesThanDefs)
   aTrsf.SetTranslation(gp_Vec(100.0, 0.0, 0.0));
   TopoDS_Shape aMovedBox = aBox.Moved(TopLoc_Location(aTrsf));
 
-  BRep_Builder aBuilder;
+  BRep_Builder    aBuilder;
   TopoDS_Compound aCompound;
   aBuilder.MakeCompound(aCompound);
   aBuilder.Add(aCompound, aBox);
@@ -303,7 +299,7 @@ TEST(BRepGraphSharingCompoundTest, TranslatedCopy_SameTShape_SharedDefs)
   aTrsf.SetTranslation(gp_Vec(50.0, 50.0, 50.0));
   TopoDS_Shape aCopy = aBox.Moved(TopLoc_Location(aTrsf));
 
-  BRep_Builder aBuilder;
+  BRep_Builder    aBuilder;
   TopoDS_Compound aCompound;
   aBuilder.MakeCompound(aCompound);
   aBuilder.Add(aCompound, aBox);

@@ -29,9 +29,9 @@ struct GeomHash_BezierSurfaceHasher
   double HashTolerance;
 
   GeomHash_BezierSurfaceHasher(double theCompTolerance = Precision::Angular(),
-                                double theHashTolerance = Precision::Confusion())
-    : CompTolerance(theCompTolerance),
-      HashTolerance(theHashTolerance)
+                               double theHashTolerance = Precision::Confusion())
+      : CompTolerance(theCompTolerance),
+        HashTolerance(theHashTolerance)
   {
   }
 

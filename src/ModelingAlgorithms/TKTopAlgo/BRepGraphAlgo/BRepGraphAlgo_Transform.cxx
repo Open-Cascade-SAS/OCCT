@@ -44,7 +44,8 @@ void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
   for (int anIdx = 0; anIdx < theGraph.Defs().NbFaces(); ++anIdx)
   {
     BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aFace = theGraph.Mut().FaceDef(anIdx);
-    if (BRepGraph_Tool::Face::HasSurface(theGraph, anIdx) && aVisitedSurfReps.Add(aFace->SurfaceRepIdx))
+    if (BRepGraph_Tool::Face::HasSurface(theGraph, anIdx)
+        && aVisitedSurfReps.Add(aFace->SurfaceRepIdx))
     {
       const occ::handle<Geom_Surface>& aSurf = BRepGraph_Tool::Face::Surface(theGraph, anIdx);
       if (!aSurf.IsNull())
@@ -60,7 +61,8 @@ void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
   for (int anIdx = 0; anIdx < theGraph.Defs().NbEdges(); ++anIdx)
   {
     BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge = theGraph.Mut().EdgeDef(anIdx);
-    if (BRepGraph_Tool::Edge::HasCurve(theGraph, anIdx) && aVisitedCurveReps.Add(anEdge->Curve3DRepIdx))
+    if (BRepGraph_Tool::Edge::HasCurve(theGraph, anIdx)
+        && aVisitedCurveReps.Add(anEdge->Curve3DRepIdx))
     {
       const occ::handle<Geom_Curve>& aCurve3d = BRepGraph_Tool::Edge::Curve(theGraph, anIdx);
       if (!aCurve3d.IsNull())
@@ -98,13 +100,13 @@ void BRepGraphAlgo_Transform::applyLocationTransform(BRepGraph& theGraph, const 
     }
   };
 
-  applyToKind(BRepGraph_NodeId::Kind::Vertex,    theGraph.Defs().NbVertices());
-  applyToKind(BRepGraph_NodeId::Kind::Edge,      theGraph.Defs().NbEdges());
-  applyToKind(BRepGraph_NodeId::Kind::Wire,      theGraph.Defs().NbWires());
-  applyToKind(BRepGraph_NodeId::Kind::Face,      theGraph.Defs().NbFaces());
-  applyToKind(BRepGraph_NodeId::Kind::Shell,     theGraph.Defs().NbShells());
-  applyToKind(BRepGraph_NodeId::Kind::Solid,     theGraph.Defs().NbSolids());
-  applyToKind(BRepGraph_NodeId::Kind::Compound,  theGraph.Defs().NbCompounds());
+  applyToKind(BRepGraph_NodeId::Kind::Vertex, theGraph.Defs().NbVertices());
+  applyToKind(BRepGraph_NodeId::Kind::Edge, theGraph.Defs().NbEdges());
+  applyToKind(BRepGraph_NodeId::Kind::Wire, theGraph.Defs().NbWires());
+  applyToKind(BRepGraph_NodeId::Kind::Face, theGraph.Defs().NbFaces());
+  applyToKind(BRepGraph_NodeId::Kind::Shell, theGraph.Defs().NbShells());
+  applyToKind(BRepGraph_NodeId::Kind::Solid, theGraph.Defs().NbSolids());
+  applyToKind(BRepGraph_NodeId::Kind::Compound, theGraph.Defs().NbCompounds());
   applyToKind(BRepGraph_NodeId::Kind::CompSolid, theGraph.Defs().NbCompSolids());
 
   // Invalidate cached reconstructed shapes.
@@ -121,7 +123,8 @@ BRepGraph BRepGraphAlgo_Transform::Perform(const BRepGraph& theGraph,
     return BRepGraph();
 
   // Determine if we need geometry-level modification (like BRepBuilderAPI_Transform).
-  const bool useGeomModif = theCopyGeom || theTrsf.IsNegative()
+  const bool useGeomModif =
+    theCopyGeom || theTrsf.IsNegative()
     || (std::abs(std::abs(theTrsf.ScaleFactor()) - 1.) > TopLoc_Location::ScalePrec());
 
   if (useGeomModif)
@@ -155,7 +158,8 @@ BRepGraph BRepGraphAlgo_Transform::TransformFace(const BRepGraph& theGraph,
   if (!theGraph.IsDone() || theFaceIdx < 0 || theFaceIdx >= theGraph.Defs().NbFaces())
     return BRepGraph();
 
-  const bool useGeomModif = theCopyGeom || theTrsf.IsNegative()
+  const bool useGeomModif =
+    theCopyGeom || theTrsf.IsNegative()
     || (std::abs(std::abs(theTrsf.ScaleFactor()) - 1.) > TopLoc_Location::ScalePrec());
 
   if (useGeomModif)

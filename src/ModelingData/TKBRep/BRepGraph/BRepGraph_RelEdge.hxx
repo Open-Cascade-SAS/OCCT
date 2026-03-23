@@ -27,21 +27,21 @@ struct BRepGraph_RelEdge
   //! Semantic kind of a directed relationship edge in the graph.
   enum class Kind : int
   {
-    Contains        = 0,   //!< Parent -> child in TopoDS hierarchy
-    OuterWire       = 1,   //!< FaceNode -> its outer WireNode
-    InnerWire       = 2,   //!< FaceNode -> a hole WireNode
-    RealizedBy      = 3,   //!< TopoNode -> geometry node (Face->Surf, Edge->Curve)
-    ParameterizedBy = 4,   //!< EdgeNode -> PCurveNode (with FaceNode context)
-    SameDomain      = 5,   //!< FaceNode <-> FaceNode sharing identical Surface Handle
-    DerivedFrom     = 6,   //!< History: new node -> original node, with op label
-    UserDefined     = 100  //!< Algorithm-specific edges (sewing candidates, etc.)
+    Contains        = 0,  //!< Parent -> child in TopoDS hierarchy
+    OuterWire       = 1,  //!< FaceNode -> its outer WireNode
+    InnerWire       = 2,  //!< FaceNode -> a hole WireNode
+    RealizedBy      = 3,  //!< TopoNode -> geometry node (Face->Surf, Edge->Curve)
+    ParameterizedBy = 4,  //!< EdgeNode -> PCurveNode (with FaceNode context)
+    SameDomain      = 5,  //!< FaceNode <-> FaceNode sharing identical Surface Handle
+    DerivedFrom     = 6,  //!< History: new node -> original node, with op label
+    UserDefined     = 100 //!< Algorithm-specific edges (sewing candidates, etc.)
   };
 
   Kind                    RelKind = Kind::Contains;
   BRepGraph_NodeId        Source;
   BRepGraph_NodeId        Target;
-  BRepGraph_NodeId        ContextNode;  //!< ParameterizedBy only
-  TCollection_AsciiString Label;        //!< DerivedFrom only
+  BRepGraph_NodeId        ContextNode; //!< ParameterizedBy only
+  TCollection_AsciiString Label;       //!< DerivedFrom only
 };
 
 #endif // _BRepGraph_RelEdge_HeaderFile

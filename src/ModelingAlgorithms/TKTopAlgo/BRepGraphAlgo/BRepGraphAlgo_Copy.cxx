@@ -56,8 +56,7 @@ occ::handle<Geom2d_Curve> copyPCurve(const occ::handle<Geom2d_Curve>& theCrv, bo
 
 //! Transfer user attributes from source node cache to destination node cache.
 //! Attributes are shared (same shared_ptr) - caller must deep-copy if needed.
-void transferUserAttributes(const BRepGraph_NodeCache& theSrc,
-                            BRepGraph_NodeCache&       theDst)
+void transferUserAttributes(const BRepGraph_NodeCache& theSrc, BRepGraph_NodeCache& theDst)
 {
   if (!theSrc.HasUserAttributes())
     return;
@@ -74,8 +73,7 @@ void transferUserAttributes(const BRepGraph_NodeCache& theSrc,
 
 //=================================================================================================
 
-BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
-                                      bool             theCopyGeom)
+BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph, bool theCopyGeom)
 {
   BRepGraph aResult;
   if (!theGraph.IsDone())
@@ -98,7 +96,7 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
     const BRepGraph_TopoNode::EdgeDef& anEdge = theGraph.Defs().Edge(anIdx);
 
     const occ::handle<Geom_Curve>& anEdgeSrcCurve = BRepGraph_Tool::Edge::Curve(theGraph, anIdx);
-    occ::handle<Geom_Curve> aCurve = copyCurve(anEdgeSrcCurve, theCopyGeom);
+    occ::handle<Geom_Curve>        aCurve         = copyCurve(anEdgeSrcCurve, theCopyGeom);
 
     aResult.Builder().AddEdgeDef(anEdge.StartVertexDefId(),
                                  anEdge.EndVertexDefId(),
@@ -108,9 +106,9 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
                                  anEdge.Tolerance);
 
     BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aNewEdge = aResult.MutEdge(anIdx);
-    aNewEdge->IsDegenerate  = anEdge.IsDegenerate;
-    aNewEdge->SameParameter = anEdge.SameParameter;
-    aNewEdge->SameRange     = anEdge.SameRange;
+    aNewEdge->IsDegenerate                                 = anEdge.IsDegenerate;
+    aNewEdge->SameParameter                                = anEdge.SameParameter;
+    aNewEdge->SameRange                                    = anEdge.SameRange;
     transferUserAttributes(anEdge.Cache, aNewEdge->Cache);
   }
 
@@ -121,7 +119,7 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
     NCollection_Vector<std::pair<BRepGraph_NodeId, TopAbs_Orientation>> aWireEdges;
     for (int aCoEdgeIter = 0; aCoEdgeIter < aWire.CoEdgeRefs.Length(); ++aCoEdgeIter)
     {
-      const BRepGraphInc::CoEdgeRef& aCR = aWire.CoEdgeRefs.Value(aCoEdgeIter);
+      const BRepGraphInc::CoEdgeRef&       aCR     = aWire.CoEdgeRefs.Value(aCoEdgeIter);
       const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Defs().CoEdge(aCR.CoEdgeIdx);
       aWireEdges.Append(std::make_pair(BRepGraph_NodeId::Edge(aCoEdge.EdgeIdx), aCoEdge.Sense));
     }
@@ -135,7 +133,7 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
     const BRepGraph_TopoNode::FaceDef& aFace = theGraph.Defs().Face(anIdx);
 
     const occ::handle<Geom_Surface>& aFaceSrcSurf = BRepGraph_Tool::Face::Surface(theGraph, anIdx);
-    occ::handle<Geom_Surface> aSurf = copySurface(aFaceSrcSurf, theCopyGeom);
+    occ::handle<Geom_Surface>        aSurf        = copySurface(aFaceSrcSurf, theCopyGeom);
 
     // Get outer/inner wire def NodeIds from incidence refs.
     BRepGraph_NodeId                     anOuterWire;
@@ -143,8 +141,8 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
 
     for (int aWireIdx = 0; aWireIdx < aFace.WireRefs.Length(); ++aWireIdx)
     {
-      const BRepGraphInc::WireRef& aWR = aFace.WireRefs.Value(aWireIdx);
-      const BRepGraph_NodeId aWireDefId = BRepGraph_NodeId::Wire(aWR.WireIdx);
+      const BRepGraphInc::WireRef& aWR        = aFace.WireRefs.Value(aWireIdx);
+      const BRepGraph_NodeId       aWireDefId = BRepGraph_NodeId::Wire(aWR.WireIdx);
       if (aWR.IsOuter)
       {
         anOuterWire = aWireDefId;
@@ -158,9 +156,9 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
     aResult.Builder().AddFaceDef(aSurf, anOuterWire, anInnerWires, aFace.Tolerance);
 
     BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aNewFace = aResult.MutFace(anIdx);
-    aNewFace->NaturalRestriction          = aFace.NaturalRestriction;
-    aNewFace->TriangulationRepIdxs        = aFace.TriangulationRepIdxs;
-    aNewFace->ActiveTriangulationIndex    = aFace.ActiveTriangulationIndex;
+    aNewFace->NaturalRestriction                           = aFace.NaturalRestriction;
+    aNewFace->TriangulationRepIdxs                         = aFace.TriangulationRepIdxs;
+    aNewFace->ActiveTriangulationIndex                     = aFace.ActiveTriangulationIndex;
     transferUserAttributes(aFace.Cache, aNewFace->Cache);
   }
 
@@ -200,8 +198,8 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
 
     for (int aFaceRefIdx = 0; aFaceRefIdx < aShell.FaceRefs.Length(); ++aFaceRefIdx)
     {
-      const BRepGraphInc::FaceRef& aFR = aShell.FaceRefs.Value(aFaceRefIdx);
-      const BRepGraph_NodeId aFaceDefId = BRepGraph_NodeId::Face(aFR.FaceIdx);
+      const BRepGraphInc::FaceRef& aFR        = aShell.FaceRefs.Value(aFaceRefIdx);
+      const BRepGraph_NodeId       aFaceDefId = BRepGraph_NodeId::Face(aFR.FaceIdx);
       aResult.Builder().AddFaceToShell(aNewShellId, aFaceDefId, aFR.Orientation);
     }
   }
@@ -216,8 +214,8 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
 
     for (int aShellRefIdx = 0; aShellRefIdx < aSolid.ShellRefs.Length(); ++aShellRefIdx)
     {
-      const BRepGraphInc::ShellRef& aSR = aSolid.ShellRefs.Value(aShellRefIdx);
-      const BRepGraph_NodeId aShellDefId = BRepGraph_NodeId::Shell(aSR.ShellIdx);
+      const BRepGraphInc::ShellRef& aSR         = aSolid.ShellRefs.Value(aShellRefIdx);
+      const BRepGraph_NodeId        aShellDefId = BRepGraph_NodeId::Shell(aSR.ShellIdx);
       aResult.Builder().AddShellToSolid(aNewSolidId, aShellDefId, aSR.Orientation);
     }
   }
@@ -226,11 +224,12 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
   for (int anIdx = 0; anIdx < theGraph.Defs().NbCompounds(); ++anIdx)
   {
     const BRepGraph_TopoNode::CompoundDef& aComp = theGraph.Defs().Compound(anIdx);
-    NCollection_Vector<BRepGraph_NodeId> aChildNodeIds;
+    NCollection_Vector<BRepGraph_NodeId>   aChildNodeIds;
     for (int aCI = 0; aCI < aComp.ChildRefs.Length(); ++aCI)
     {
       const BRepGraphInc::ChildRef& aCR = aComp.ChildRefs.Value(aCI);
-      aChildNodeIds.Append(BRepGraph_NodeId(static_cast<BRepGraph_NodeId::Kind>(aCR.Kind), aCR.ChildIdx));
+      aChildNodeIds.Append(
+        BRepGraph_NodeId(static_cast<BRepGraph_NodeId::Kind>(aCR.Kind), aCR.ChildIdx));
     }
     aResult.Builder().AddCompoundDef(aChildNodeIds);
     transferUserAttributes(aComp.Cache, aResult.Mut().CompoundDef(anIdx)->Cache);
@@ -240,7 +239,7 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
   for (int anIdx = 0; anIdx < theGraph.Defs().NbCompSolids(); ++anIdx)
   {
     const BRepGraph_TopoNode::CompSolidDef& aCS = theGraph.Defs().CompSolid(anIdx);
-    NCollection_Vector<BRepGraph_NodeId> aSolidNodeIds;
+    NCollection_Vector<BRepGraph_NodeId>    aSolidNodeIds;
     for (int aSI = 0; aSI < aCS.SolidRefs.Length(); ++aSI)
       aSolidNodeIds.Append(BRepGraph_NodeId::Solid(aCS.SolidRefs.Value(aSI).SolidIdx));
     aResult.Builder().AddCompSolidDef(aSolidNodeIds);
@@ -249,7 +248,7 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
 
   // Phase 3: Transfer UIDs (identity mapping - direct vector copy).
   auto copyUIDs = [](const NCollection_Vector<BRepGraph_UID>& theSrc,
-                      NCollection_Vector<BRepGraph_UID>&       theDst) {
+                     NCollection_Vector<BRepGraph_UID>&       theDst) {
     const int aNbToCopy = std::min(theSrc.Length(), theDst.Length());
     for (int anIdx = 0; anIdx < aNbToCopy; ++anIdx)
     {
@@ -258,29 +257,35 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
     }
   };
 
-  copyUIDs(theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Vertex),    aResult.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Vertex));
-  copyUIDs(theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Edge),      aResult.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Edge));
-  copyUIDs(theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Wire),      aResult.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Wire));
-  copyUIDs(theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Face),      aResult.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Face));
-  copyUIDs(theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Shell),     aResult.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Shell));
-  copyUIDs(theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Solid),     aResult.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Solid));
-  copyUIDs(theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Compound),  aResult.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Compound));
-  copyUIDs(theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::CompSolid), aResult.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::CompSolid));
+  copyUIDs(theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Vertex),
+           aResult.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Vertex));
+  copyUIDs(theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Edge),
+           aResult.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Edge));
+  copyUIDs(theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Wire),
+           aResult.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Wire));
+  copyUIDs(theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Face),
+           aResult.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Face));
+  copyUIDs(theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Shell),
+           aResult.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Shell));
+  copyUIDs(theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Solid),
+           aResult.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Solid));
+  copyUIDs(theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Compound),
+           aResult.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Compound));
+  copyUIDs(theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::CompSolid),
+           aResult.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::CompSolid));
 
   aResult.myData->myNextUIDCounter.store(
     theGraph.myData->myNextUIDCounter.load(std::memory_order_relaxed),
     std::memory_order_relaxed);
   aResult.myData->myGeneration = theGraph.myData->myGeneration;
-  aResult.myData->myIsDone = true;
+  aResult.myData->myIsDone     = true;
 
   return aResult;
 }
 
 //=================================================================================================
 
-BRepGraph BRepGraphAlgo_Copy::CopyFace(const BRepGraph& theGraph,
-                                       int              theFaceIdx,
-                                       bool             theCopyGeom)
+BRepGraph BRepGraphAlgo_Copy::CopyFace(const BRepGraph& theGraph, int theFaceIdx, bool theCopyGeom)
 {
   BRepGraph aResult;
   if (!theGraph.IsDone() || theFaceIdx < 0 || theFaceIdx >= theGraph.Defs().NbFaces())
@@ -296,14 +301,14 @@ BRepGraph BRepGraphAlgo_Copy::CopyFace(const BRepGraph& theGraph,
   // Collect all edges/vertices/wires from the face's wire refs.
   for (int aWireRefIdx = 0; aWireRefIdx < aFaceDef.WireRefs.Length(); ++aWireRefIdx)
   {
-    const BRepGraphInc::WireRef& aWR = aFaceDef.WireRefs.Value(aWireRefIdx);
-    const int aWireDefIdx = aWR.WireIdx;
+    const BRepGraphInc::WireRef& aWR         = aFaceDef.WireRefs.Value(aWireRefIdx);
+    const int                    aWireDefIdx = aWR.WireIdx;
     aWireSet.Add(aWireDefIdx);
 
     const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.Defs().Wire(aWireDefIdx);
     for (int aCoEdgeIter = 0; aCoEdgeIter < aWireDef.CoEdgeRefs.Length(); ++aCoEdgeIter)
     {
-      const BRepGraphInc::CoEdgeRef& aCR = aWireDef.CoEdgeRefs.Value(aCoEdgeIter);
+      const BRepGraphInc::CoEdgeRef&       aCR     = aWireDef.CoEdgeRefs.Value(aCoEdgeIter);
       const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Defs().CoEdge(aCR.CoEdgeIdx);
       if (aCoEdge.EdgeIdx < 0 || aCoEdge.EdgeIdx >= theGraph.Defs().NbEdges())
         continue;
@@ -335,8 +340,8 @@ BRepGraph BRepGraphAlgo_Copy::CopyFace(const BRepGraph& theGraph,
   // Add vertices in deterministic order.
   for (int anIdx = 1; anIdx <= aVertexSet.Extent(); ++anIdx)
   {
-    const int anOldIdx = aVertexSet.FindKey(anIdx);
-    const BRepGraph_TopoNode::VertexDef& aVtx = theGraph.Defs().Vertex(anOldIdx);
+    const int                            anOldIdx = aVertexSet.FindKey(anIdx);
+    const BRepGraph_TopoNode::VertexDef& aVtx     = theGraph.Defs().Vertex(anOldIdx);
     aResult.Builder().AddVertexDef(aVtx.Point, aVtx.Tolerance);
     transferUserAttributes(aVtx.Cache, aResult.Mut().VertexDef(anIdx - 1)->Cache);
   }
@@ -344,8 +349,8 @@ BRepGraph BRepGraphAlgo_Copy::CopyFace(const BRepGraph& theGraph,
   // Add edges in deterministic order.
   for (int anIdx = 1; anIdx <= anEdgeSet.Extent(); ++anIdx)
   {
-    const int anOldIdx = anEdgeSet.FindKey(anIdx);
-    const BRepGraph_TopoNode::EdgeDef& anEdge = theGraph.Defs().Edge(anOldIdx);
+    const int                          anOldIdx = anEdgeSet.FindKey(anIdx);
+    const BRepGraph_TopoNode::EdgeDef& anEdge   = theGraph.Defs().Edge(anOldIdx);
 
     BRepGraph_NodeId aNewStart, aNewEnd;
     if (anEdge.StartVertex.VertexIdx >= 0)
@@ -361,51 +366,56 @@ BRepGraph BRepGraphAlgo_Copy::CopyFace(const BRepGraph& theGraph,
         aNewEnd = BRepGraph_NodeId::Vertex(*aNewVtxIdx);
     }
 
-    const occ::handle<Geom_Curve>& anEdgeSrcCurve2 = BRepGraph_Tool::Edge::Curve(theGraph, anOldIdx);
+    const occ::handle<Geom_Curve>& anEdgeSrcCurve2 =
+      BRepGraph_Tool::Edge::Curve(theGraph, anOldIdx);
     occ::handle<Geom_Curve> aCurve = copyCurve(anEdgeSrcCurve2, theCopyGeom);
 
     const int aNewEdgeIdx = anIdx - 1;
-    aResult.Builder().AddEdgeDef(aNewStart, aNewEnd, aCurve,
-                                 anEdge.ParamFirst, anEdge.ParamLast, anEdge.Tolerance);
+    aResult.Builder().AddEdgeDef(aNewStart,
+                                 aNewEnd,
+                                 aCurve,
+                                 anEdge.ParamFirst,
+                                 anEdge.ParamLast,
+                                 anEdge.Tolerance);
 
     BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aNewEdge = aResult.MutEdge(aNewEdgeIdx);
-    aNewEdge->IsDegenerate  = anEdge.IsDegenerate;
-    aNewEdge->SameParameter = anEdge.SameParameter;
-    aNewEdge->SameRange     = anEdge.SameRange;
+    aNewEdge->IsDegenerate                                 = anEdge.IsDegenerate;
+    aNewEdge->SameParameter                                = anEdge.SameParameter;
+    aNewEdge->SameRange                                    = anEdge.SameRange;
     transferUserAttributes(anEdge.Cache, aNewEdge->Cache);
   }
 
   // Add wires in deterministic order.
   for (int anIdx = 1; anIdx <= aWireSet.Extent(); ++anIdx)
   {
-    const int anOldIdx = aWireSet.FindKey(anIdx);
-    const BRepGraph_TopoNode::WireDef& aWire = theGraph.Defs().Wire(anOldIdx);
+    const int                          anOldIdx = aWireSet.FindKey(anIdx);
+    const BRepGraph_TopoNode::WireDef& aWire    = theGraph.Defs().Wire(anOldIdx);
     NCollection_Vector<std::pair<BRepGraph_NodeId, TopAbs_Orientation>> aNewEntries;
     for (int aCoEdgeIter = 0; aCoEdgeIter < aWire.CoEdgeRefs.Length(); ++aCoEdgeIter)
     {
-      const BRepGraphInc::CoEdgeRef& aCR = aWire.CoEdgeRefs.Value(aCoEdgeIter);
-      const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Defs().CoEdge(aCR.CoEdgeIdx);
-      const int* aNewEdgeIdx = anEdgeMap.Seek(aCoEdge.EdgeIdx);
+      const BRepGraphInc::CoEdgeRef&       aCR         = aWire.CoEdgeRefs.Value(aCoEdgeIter);
+      const BRepGraph_TopoNode::CoEdgeDef& aCoEdge     = theGraph.Defs().CoEdge(aCR.CoEdgeIdx);
+      const int*                           aNewEdgeIdx = anEdgeMap.Seek(aCoEdge.EdgeIdx);
       if (aNewEdgeIdx == nullptr)
         continue;
-      aNewEntries.Append(
-        std::make_pair(BRepGraph_NodeId::Edge(*aNewEdgeIdx), aCoEdge.Sense));
+      aNewEntries.Append(std::make_pair(BRepGraph_NodeId::Edge(*aNewEdgeIdx), aCoEdge.Sense));
     }
     aResult.Builder().AddWireDef(aNewEntries);
     transferUserAttributes(aWire.Cache, aResult.Mut().WireDef(anIdx - 1)->Cache);
   }
 
   // Add the face.
-  const occ::handle<Geom_Surface>& aFaceSrcSurf2 = BRepGraph_Tool::Face::Surface(theGraph, theFaceIdx);
+  const occ::handle<Geom_Surface>& aFaceSrcSurf2 =
+    BRepGraph_Tool::Face::Surface(theGraph, theFaceIdx);
   occ::handle<Geom_Surface> aSurf = copySurface(aFaceSrcSurf2, theCopyGeom);
 
-  BRepGraph_NodeId anOuterWire;
+  BRepGraph_NodeId                     anOuterWire;
   NCollection_Vector<BRepGraph_NodeId> anInnerWires;
 
   for (int aWireRefIdx = 0; aWireRefIdx < aFaceDef.WireRefs.Length(); ++aWireRefIdx)
   {
-    const BRepGraphInc::WireRef& aWR = aFaceDef.WireRefs.Value(aWireRefIdx);
-    const int* aNewWireIdx = aWireMap.Seek(aWR.WireIdx);
+    const BRepGraphInc::WireRef& aWR         = aFaceDef.WireRefs.Value(aWireRefIdx);
+    const int*                   aNewWireIdx = aWireMap.Seek(aWR.WireIdx);
     if (aNewWireIdx == nullptr)
       continue;
     if (aWR.IsOuter)
@@ -420,18 +430,18 @@ BRepGraph BRepGraphAlgo_Copy::CopyFace(const BRepGraph& theGraph,
 
   aResult.Builder().AddFaceDef(aSurf, anOuterWire, anInnerWires, aFaceDef.Tolerance);
   BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aNewFace = aResult.MutFace(0);
-  aNewFace->NaturalRestriction       = aFaceDef.NaturalRestriction;
-  aNewFace->TriangulationRepIdxs     = aFaceDef.TriangulationRepIdxs;
-  aNewFace->ActiveTriangulationIndex = aFaceDef.ActiveTriangulationIndex;
+  aNewFace->NaturalRestriction                           = aFaceDef.NaturalRestriction;
+  aNewFace->TriangulationRepIdxs                         = aFaceDef.TriangulationRepIdxs;
+  aNewFace->ActiveTriangulationIndex                     = aFaceDef.ActiveTriangulationIndex;
   transferUserAttributes(aFaceDef.Cache, aNewFace->Cache);
 
   // PCurves for edges in this face via CoEdge data.
   const BRepGraphInc_ReverseIndex& aFaceRevIdx = theGraph.myData->myIncStorage.ReverseIndex();
   for (int anIdx = 1; anIdx <= anEdgeSet.Extent(); ++anIdx)
   {
-    const int anOldEdgeIdx = anEdgeSet.FindKey(anIdx);
-    const int aNewEdgeIdx  = anIdx - 1;
-    const NCollection_Vector<int>* aCoEdgeIdxs = aFaceRevIdx.CoEdgesOfEdge(anOldEdgeIdx);
+    const int                      anOldEdgeIdx = anEdgeSet.FindKey(anIdx);
+    const int                      aNewEdgeIdx  = anIdx - 1;
+    const NCollection_Vector<int>* aCoEdgeIdxs  = aFaceRevIdx.CoEdgesOfEdge(anOldEdgeIdx);
     if (aCoEdgeIdxs == nullptr)
       continue;
     for (int aCEIter = 0; aCEIter < aCoEdgeIdxs->Length(); ++aCEIter)

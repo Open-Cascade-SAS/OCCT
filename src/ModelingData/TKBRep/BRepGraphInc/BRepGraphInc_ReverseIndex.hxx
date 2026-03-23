@@ -28,7 +28,7 @@ struct ShellEntity;
 struct SolidEntity;
 struct ProductEntity;
 struct OccurrenceEntity;
-}
+} // namespace BRepGraphInc
 
 //! @brief Reverse incidence indices for O(1) upward navigation.
 //!
@@ -87,7 +87,7 @@ public:
   //! @param[in] theNbProducts  total number of products (for pre-sizing)
   Standard_EXPORT void BuildProductOccurrences(
     const NCollection_Vector<BRepGraphInc::OccurrenceEntity>& theOccurrences,
-    const int theNbProducts);
+    const int                                                 theNbProducts);
 
   //! Return wire indices containing the given edge.
   const NCollection_Vector<int>* WiresOfEdge(const int theEdgeIdx) const
@@ -193,7 +193,9 @@ public:
   Standard_EXPORT void UnbindEdgeFromWire(const int theEdgeIdx, const int theWireIdx);
 
   //! Replace an edge in the edge-to-wire index for a specific wire.
-  Standard_EXPORT void ReplaceEdgeInWireMap(const int theOldEdgeIdx, const int theNewEdgeIdx, const int theWireIdx);
+  Standard_EXPORT void ReplaceEdgeInWireMap(const int theOldEdgeIdx,
+                                            const int theNewEdgeIdx,
+                                            const int theWireIdx);
 
   //! Register a vertex as incident to an edge (O(1) amortized, deduplicates).
   Standard_EXPORT void BindVertexToEdge(const int theVertexIdx, const int theEdgeIdx);
@@ -234,9 +236,10 @@ private:
 
   //! Ensure theIdx has at least theSize slots (pre-sizing with empty vectors).
   //! If theAlloc is non-null, inner vectors are constructed with it.
-  static void preSize(IndexTable&                               theIdx,
-                      const int                                 theSize,
-                      const occ::handle<NCollection_BaseAllocator>& theAlloc = occ::handle<NCollection_BaseAllocator>());
+  static void preSize(IndexTable&                                   theIdx,
+                      const int                                     theSize,
+                      const occ::handle<NCollection_BaseAllocator>& theAlloc =
+                        occ::handle<NCollection_BaseAllocator>());
 
   //! Add theVal to the vector at theKey, creating if needed.  Skips duplicates.
   static void appendUnique(IndexTable& theIdx, const int theKey, const int theVal);

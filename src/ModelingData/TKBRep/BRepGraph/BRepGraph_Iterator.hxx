@@ -31,13 +31,17 @@
 //! @endcode
 namespace BRepGraph_IteratorDetail
 {
-  //! SFINAE helper: detect whether NodeType has an IsRemoved member (BaseDef types do).
-  template <typename T, typename = void>
-  struct HasIsRemoved : std::false_type {};
+//! SFINAE helper: detect whether NodeType has an IsRemoved member (BaseDef types do).
+template <typename T, typename = void>
+struct HasIsRemoved : std::false_type
+{
+};
 
-  template <typename T>
-  struct HasIsRemoved<T, std::void_t<decltype(std::declval<T>().IsRemoved)>> : std::true_type {};
-}
+template <typename T>
+struct HasIsRemoved<T, std::void_t<decltype(std::declval<T>().IsRemoved)>> : std::true_type
+{
+};
+} // namespace BRepGraph_IteratorDetail
 
 template <typename NodeType>
 class BRepGraph_Iterator
@@ -54,6 +58,7 @@ public:
   }
 
   const NodeType& Current() const;
+
   int Index() const { return myIndex; }
 
   //! Advance past any nodes marked as removed.
@@ -77,79 +82,135 @@ private:
 // ---------------------------------------------------------------------------
 
 template <>
-inline BRepGraph_Iterator<BRepGraph_TopoNode::SolidDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
-    : myGraph(theGraph), myLength(theGraph.Defs().NbSolids()) { skipRemoved(); }
+inline BRepGraph_Iterator<BRepGraph_TopoNode::SolidDef>::BRepGraph_Iterator(
+  const BRepGraph& theGraph)
+    : myGraph(theGraph),
+      myLength(theGraph.Defs().NbSolids())
+{
+  skipRemoved();
+}
 
 template <>
-inline BRepGraph_Iterator<BRepGraph_TopoNode::ShellDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
-    : myGraph(theGraph), myLength(theGraph.Defs().NbShells()) { skipRemoved(); }
+inline BRepGraph_Iterator<BRepGraph_TopoNode::ShellDef>::BRepGraph_Iterator(
+  const BRepGraph& theGraph)
+    : myGraph(theGraph),
+      myLength(theGraph.Defs().NbShells())
+{
+  skipRemoved();
+}
 
 template <>
-inline BRepGraph_Iterator<BRepGraph_TopoNode::FaceDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
-    : myGraph(theGraph), myLength(theGraph.Defs().NbFaces()) { skipRemoved(); }
+inline BRepGraph_Iterator<BRepGraph_TopoNode::FaceDef>::BRepGraph_Iterator(
+  const BRepGraph& theGraph)
+    : myGraph(theGraph),
+      myLength(theGraph.Defs().NbFaces())
+{
+  skipRemoved();
+}
 
 template <>
-inline BRepGraph_Iterator<BRepGraph_TopoNode::WireDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
-    : myGraph(theGraph), myLength(theGraph.Defs().NbWires()) { skipRemoved(); }
+inline BRepGraph_Iterator<BRepGraph_TopoNode::WireDef>::BRepGraph_Iterator(
+  const BRepGraph& theGraph)
+    : myGraph(theGraph),
+      myLength(theGraph.Defs().NbWires())
+{
+  skipRemoved();
+}
 
 template <>
-inline BRepGraph_Iterator<BRepGraph_TopoNode::EdgeDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
-    : myGraph(theGraph), myLength(theGraph.Defs().NbEdges()) { skipRemoved(); }
+inline BRepGraph_Iterator<BRepGraph_TopoNode::EdgeDef>::BRepGraph_Iterator(
+  const BRepGraph& theGraph)
+    : myGraph(theGraph),
+      myLength(theGraph.Defs().NbEdges())
+{
+  skipRemoved();
+}
 
 template <>
-inline BRepGraph_Iterator<BRepGraph_TopoNode::VertexDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
-    : myGraph(theGraph), myLength(theGraph.Defs().NbVertices()) { skipRemoved(); }
+inline BRepGraph_Iterator<BRepGraph_TopoNode::VertexDef>::BRepGraph_Iterator(
+  const BRepGraph& theGraph)
+    : myGraph(theGraph),
+      myLength(theGraph.Defs().NbVertices())
+{
+  skipRemoved();
+}
 
 template <>
-inline BRepGraph_Iterator<BRepGraph_TopoNode::ProductDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
-    : myGraph(theGraph), myLength(theGraph.Defs().NbProducts()) { skipRemoved(); }
+inline BRepGraph_Iterator<BRepGraph_TopoNode::ProductDef>::BRepGraph_Iterator(
+  const BRepGraph& theGraph)
+    : myGraph(theGraph),
+      myLength(theGraph.Defs().NbProducts())
+{
+  skipRemoved();
+}
 
 template <>
-inline BRepGraph_Iterator<BRepGraph_TopoNode::OccurrenceDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
-    : myGraph(theGraph), myLength(theGraph.Defs().NbOccurrences()) { skipRemoved(); }
+inline BRepGraph_Iterator<BRepGraph_TopoNode::OccurrenceDef>::BRepGraph_Iterator(
+  const BRepGraph& theGraph)
+    : myGraph(theGraph),
+      myLength(theGraph.Defs().NbOccurrences())
+{
+  skipRemoved();
+}
 
 // ---------------------------------------------------------------------------
 // Definition iterators: Current()
 // ---------------------------------------------------------------------------
 
 template <>
-inline const BRepGraph_TopoNode::SolidDef&
-BRepGraph_Iterator<BRepGraph_TopoNode::SolidDef>::Current() const
-{ return myGraph.Defs().Solid(myIndex); }
+inline const BRepGraph_TopoNode::SolidDef& BRepGraph_Iterator<
+  BRepGraph_TopoNode::SolidDef>::Current() const
+{
+  return myGraph.Defs().Solid(myIndex);
+}
 
 template <>
-inline const BRepGraph_TopoNode::ShellDef&
-BRepGraph_Iterator<BRepGraph_TopoNode::ShellDef>::Current() const
-{ return myGraph.Defs().Shell(myIndex); }
+inline const BRepGraph_TopoNode::ShellDef& BRepGraph_Iterator<
+  BRepGraph_TopoNode::ShellDef>::Current() const
+{
+  return myGraph.Defs().Shell(myIndex);
+}
 
 template <>
-inline const BRepGraph_TopoNode::FaceDef&
-BRepGraph_Iterator<BRepGraph_TopoNode::FaceDef>::Current() const
-{ return myGraph.Defs().Face(myIndex); }
+inline const BRepGraph_TopoNode::FaceDef& BRepGraph_Iterator<BRepGraph_TopoNode::FaceDef>::Current()
+  const
+{
+  return myGraph.Defs().Face(myIndex);
+}
 
 template <>
-inline const BRepGraph_TopoNode::WireDef&
-BRepGraph_Iterator<BRepGraph_TopoNode::WireDef>::Current() const
-{ return myGraph.Defs().Wire(myIndex); }
+inline const BRepGraph_TopoNode::WireDef& BRepGraph_Iterator<BRepGraph_TopoNode::WireDef>::Current()
+  const
+{
+  return myGraph.Defs().Wire(myIndex);
+}
 
 template <>
-inline const BRepGraph_TopoNode::EdgeDef&
-BRepGraph_Iterator<BRepGraph_TopoNode::EdgeDef>::Current() const
-{ return myGraph.Defs().Edge(myIndex); }
+inline const BRepGraph_TopoNode::EdgeDef& BRepGraph_Iterator<BRepGraph_TopoNode::EdgeDef>::Current()
+  const
+{
+  return myGraph.Defs().Edge(myIndex);
+}
 
 template <>
-inline const BRepGraph_TopoNode::VertexDef&
-BRepGraph_Iterator<BRepGraph_TopoNode::VertexDef>::Current() const
-{ return myGraph.Defs().Vertex(myIndex); }
+inline const BRepGraph_TopoNode::VertexDef& BRepGraph_Iterator<
+  BRepGraph_TopoNode::VertexDef>::Current() const
+{
+  return myGraph.Defs().Vertex(myIndex);
+}
 
 template <>
-inline const BRepGraph_TopoNode::ProductDef&
-BRepGraph_Iterator<BRepGraph_TopoNode::ProductDef>::Current() const
-{ return myGraph.Defs().Product(myIndex); }
+inline const BRepGraph_TopoNode::ProductDef& BRepGraph_Iterator<
+  BRepGraph_TopoNode::ProductDef>::Current() const
+{
+  return myGraph.Defs().Product(myIndex);
+}
 
 template <>
-inline const BRepGraph_TopoNode::OccurrenceDef&
-BRepGraph_Iterator<BRepGraph_TopoNode::OccurrenceDef>::Current() const
-{ return myGraph.Defs().Occurrence(myIndex); }
+inline const BRepGraph_TopoNode::OccurrenceDef& BRepGraph_Iterator<
+  BRepGraph_TopoNode::OccurrenceDef>::Current() const
+{
+  return myGraph.Defs().Occurrence(myIndex);
+}
 
 #endif // _BRepGraph_Iterator_HeaderFile

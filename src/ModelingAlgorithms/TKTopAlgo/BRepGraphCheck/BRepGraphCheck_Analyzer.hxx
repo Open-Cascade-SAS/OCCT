@@ -97,11 +97,11 @@ public:
   Standard_EXPORT const BRepGraphCheck_Report& Report() const;
 
 private:
-  const BRepGraph*       myGraph;
-  BRepGraphCheck_Report  myReport;
-  bool                   myGeomControls = true;
-  bool                   myIsParallel   = false;
-  bool                   myIsExact      = false;
+  const BRepGraph*      myGraph;
+  BRepGraphCheck_Report myReport;
+  bool                  myGeomControls = true;
+  bool                  myIsParallel   = false;
+  bool                  myIsExact      = false;
 };
 
 #endif // _BRepGraphCheck_Analyzer_HeaderFile

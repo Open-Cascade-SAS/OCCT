@@ -34,17 +34,16 @@
 //! The history log is append-only within a graph's lifetime.
 struct BRepGraph_HistoryRecord
 {
-  TCollection_AsciiString  OperationName;
-  int                      SequenceNumber = 0;
+  TCollection_AsciiString OperationName;
+  int                     SequenceNumber = 0;
 
   //! Key: original node id before the operation.
   //! Value: sequence of replacement node ids after the operation.
-  NCollection_DataMap<BRepGraph_NodeId,
-                      NCollection_Vector<BRepGraph_NodeId>>  Mapping;
+  NCollection_DataMap<BRepGraph_NodeId, NCollection_Vector<BRepGraph_NodeId>> Mapping;
 
   //! Optional extra info for diagnostic/debugging purposes.
   //! E.g., merge tolerance, canonical source index.
-  TCollection_AsciiString  ExtraInfo;
+  TCollection_AsciiString ExtraInfo;
 };
 
 #endif // _BRepGraph_HistoryRecord_HeaderFile

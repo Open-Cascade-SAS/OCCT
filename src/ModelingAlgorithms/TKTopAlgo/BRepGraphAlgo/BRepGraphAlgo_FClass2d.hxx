@@ -23,7 +23,6 @@
 class BRepGraph;
 class gp_Pnt2d;
 
-
 //! Graph-based 2D face point classifier.
 //!
 //! Classifies UV points relative to a face boundary (IN/OUT/ON) using polygon
@@ -62,21 +61,21 @@ public:
   //! @param[in] theRecadreOnPeriodic  wrap coordinates for periodic surfaces
   //! @return classification state
   Standard_EXPORT TopAbs_State TestOnRestriction(const gp_Pnt2d& thePntUV,
-                                                  double          theTol,
-                                                  bool            theRecadreOnPeriodic = true) const;
+                                                 double          theTol,
+                                                 bool            theRecadreOnPeriodic = true) const;
 
-  BRepGraphAlgo_FClass2d(const BRepGraphAlgo_FClass2d&) = delete;
-  BRepGraphAlgo_FClass2d& operator=(const BRepGraphAlgo_FClass2d&) = delete;
-  BRepGraphAlgo_FClass2d(BRepGraphAlgo_FClass2d&&) noexcept = default;
+  BRepGraphAlgo_FClass2d(const BRepGraphAlgo_FClass2d&)                = delete;
+  BRepGraphAlgo_FClass2d& operator=(const BRepGraphAlgo_FClass2d&)     = delete;
+  BRepGraphAlgo_FClass2d(BRepGraphAlgo_FClass2d&&) noexcept            = default;
   BRepGraphAlgo_FClass2d& operator=(BRepGraphAlgo_FClass2d&&) noexcept = default;
 
 private:
   //! Wire orientation in the face.
   enum class WireOrient
   {
-    Outer   =  1, //!< Outer boundary wire.
-    Inner   =  0, //!< Inner (hole) wire.
-    Invalid = -1  //!< Bad/degenerate wire.
+    Outer   = 1, //!< Outer boundary wire.
+    Inner   = 0, //!< Inner (hole) wire.
+    Invalid = -1 //!< Bad/degenerate wire.
   };
 
   //! Internal classification with periodic retry logic.
@@ -93,17 +92,17 @@ private:
 
   NCollection_Vector<CSLib_Class2d> myWireClassifiers; //!< Per-wire polygon classifiers.
   NCollection_Vector<WireOrient>    myWireOrients;     //!< Per-wire orientation.
-  double myTolUV = 0.0;
-  const BRepGraph* myGraph = nullptr; //!< For fallback face reconstruction.
-  int myFaceDefIdx = 0;              //!< For fallback face reconstruction.
-  double myUmin = 0.0;
-  double myUmax = 0.0;
-  double myVmin = 0.0;
-  double myVmax = 0.0;
-  bool   myIsUPer = false;
-  bool   myIsVPer = false;
-  double myUPeriod = 0.0;
-  double myVPeriod = 0.0;
+  double                            myTolUV      = 0.0;
+  const BRepGraph*                  myGraph      = nullptr; //!< For fallback face reconstruction.
+  int                               myFaceDefIdx = 0;       //!< For fallback face reconstruction.
+  double                            myUmin       = 0.0;
+  double                            myUmax       = 0.0;
+  double                            myVmin       = 0.0;
+  double                            myVmax       = 0.0;
+  bool                              myIsUPer     = false;
+  bool                              myIsVPer     = false;
+  double                            myUPeriod    = 0.0;
+  double                            myVPeriod    = 0.0;
 };
 
 #endif // _BRepGraphAlgo_FClass2d_HeaderFile

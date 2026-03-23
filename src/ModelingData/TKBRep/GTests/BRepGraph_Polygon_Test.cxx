@@ -67,11 +67,11 @@ TEST(BRepGraph_PolygonTest, MultiTriangulation_Roundtrip_PreservesAll)
   // Reconstruct and verify triangulations are preserved.
   for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
   {
-    const BRepGraph_TopoNode::FaceDef& aFaceDef = aGraph.Defs().Face(aFaceIdx);
-    TopoDS_Shape aReconFace                     = aGraph.Shapes().Reconstruct( aFaceDef.Id);
+    const BRepGraph_TopoNode::FaceDef& aFaceDef   = aGraph.Defs().Face(aFaceIdx);
+    TopoDS_Shape                       aReconFace = aGraph.Shapes().Reconstruct(aFaceDef.Id);
     ASSERT_FALSE(aReconFace.IsNull());
 
-    TopLoc_Location                  aLoc;
+    TopLoc_Location                       aLoc;
     const occ::handle<Poly_Triangulation> aReconTri =
       BRep_Tool::Triangulation(TopoDS::Face(aReconFace), aLoc);
     EXPECT_FALSE(aReconTri.IsNull())
@@ -117,10 +117,10 @@ TEST(BRepGraph_PolygonTest, Polygon3D_Captured_WhenPresent)
   {
     if (!BRepGraph_Tool::Edge::HasPolygon3D(aGraph, anEdgeIdx))
       continue;
-    const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(anEdgeIdx);
-    TopoDS_Shape aReconEdge = aGraph.Shapes().Reconstruct( anEdge.Id);
+    const BRepGraph_TopoNode::EdgeDef& anEdge     = aGraph.Defs().Edge(anEdgeIdx);
+    TopoDS_Shape                       aReconEdge = aGraph.Shapes().Reconstruct(anEdge.Id);
     ASSERT_FALSE(aReconEdge.IsNull());
-    TopLoc_Location        aPolyLoc;
+    TopLoc_Location             aPolyLoc;
     occ::handle<Poly_Polygon3D> aPoly = BRep_Tool::Polygon3D(TopoDS::Edge(aReconEdge), aPolyLoc);
     EXPECT_FALSE(aPoly.IsNull()) << "Reconstructed edge " << anEdgeIdx << " should have Polygon3D";
   }
@@ -183,7 +183,7 @@ TEST(BRepGraph_PolygonTest, PolyOnTri_Roundtrip_PreservedOnReconstruct)
 
   // Reconstruct solid and verify polygon-on-triangulation is re-attached.
   BRepGraph_NodeId aSolidDefId = BRepGraph_NodeId::Solid(0);
-  TopoDS_Shape     aReconSolid = aGraph.Shapes().Reconstruct( aSolidDefId);
+  TopoDS_Shape     aReconSolid = aGraph.Shapes().Reconstruct(aSolidDefId);
   ASSERT_FALSE(aReconSolid.IsNull());
 
   int aNbReconPolyOnTri = 0;
@@ -192,12 +192,12 @@ TEST(BRepGraph_PolygonTest, PolyOnTri_Roundtrip_PreservedOnReconstruct)
     const TopoDS_Edge& anEdge = TopoDS::Edge(anEdgeExp.Current());
     for (TopExp_Explorer aFaceExp(aReconSolid, TopAbs_FACE); aFaceExp.More(); aFaceExp.Next())
     {
-      const TopoDS_Face&         aFace = TopoDS::Face(aFaceExp.Current());
-      TopLoc_Location            aTriLoc;
+      const TopoDS_Face&              aFace = TopoDS::Face(aFaceExp.Current());
+      TopLoc_Location                 aTriLoc;
       occ::handle<Poly_Triangulation> aTri = BRep_Tool::Triangulation(aFace, aTriLoc);
       if (aTri.IsNull())
         continue;
-      TopLoc_Location                     aPolyLoc;
+      TopLoc_Location                          aPolyLoc;
       occ::handle<Poly_PolygonOnTriangulation> aPolyOnTri =
         BRep_Tool::PolygonOnTriangulation(anEdge, aTri, aPolyLoc);
       if (!aPolyOnTri.IsNull())
@@ -291,7 +291,7 @@ TEST(BRepGraph_PolygonTest, EdgeRegularity_MatchesOriginal)
   int aNbOrigReg = 0;
   for (TopExp_Explorer anEdgeExp(aCyl, TopAbs_EDGE); anEdgeExp.More(); anEdgeExp.Next())
   {
-    const TopoDS_Edge&        anEdge = TopoDS::Edge(anEdgeExp.Current());
+    const TopoDS_Edge&             anEdge = TopoDS::Edge(anEdgeExp.Current());
     const occ::handle<BRep_TEdge>& aTEdge = occ::down_cast<BRep_TEdge>(anEdge.TShape());
     if (aTEdge.IsNull())
       continue;
@@ -340,8 +340,8 @@ TEST(BRepGraph_PolygonTest, SeamEdge_PolyOnTri_TwoEntries)
     NCollection_DataMap<int, int> aFaceCounts;
     for (int aCEIdx = 0; aCEIdx < aCoEdgeIdxs.Length(); ++aCEIdx)
     {
-      const BRepGraphInc::CoEdgeEntity& aCE = aGraph.Defs().CoEdge(aCoEdgeIdxs.Value(aCEIdx));
-      const int aFaceIdx = aCE.FaceDefId.Index;
+      const BRepGraphInc::CoEdgeEntity& aCE      = aGraph.Defs().CoEdge(aCoEdgeIdxs.Value(aCEIdx));
+      const int                         aFaceIdx = aCE.FaceDefId.Index;
       if (!aFaceCounts.IsBound(aFaceIdx))
         aFaceCounts.Bind(aFaceIdx, 0);
       aFaceCounts.ChangeFind(aFaceIdx) += 1;

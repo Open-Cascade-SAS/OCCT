@@ -30,7 +30,7 @@ namespace BRepGraphInc
 //! direct INTERNAL/EXTERNAL vertex children on edges and faces.
 struct VertexRef
 {
-  int                VertexIdx = -1;
+  int                VertexIdx   = -1;
   TopAbs_Orientation Orientation = TopAbs_INTERNAL;
   TopLoc_Location    LocalLocation;
 };
@@ -52,8 +52,8 @@ struct CoEdgeRef
 //! Reference from a face to one of its wires.
 struct WireRef
 {
-  int                WireIdx = -1;
-  bool               IsOuter = false;
+  int                WireIdx     = -1;
+  bool               IsOuter     = false;
   TopAbs_Orientation Orientation = TopAbs_FORWARD;
   TopLoc_Location    LocalLocation;
 };
@@ -61,7 +61,7 @@ struct WireRef
 //! Reference from a shell to one of its faces.
 struct FaceRef
 {
-  int                FaceIdx = -1;
+  int                FaceIdx     = -1;
   TopAbs_Orientation Orientation = TopAbs_FORWARD;
   TopLoc_Location    LocalLocation;
 };
@@ -69,7 +69,7 @@ struct FaceRef
 //! Reference from a solid to one of its shells.
 struct ShellRef
 {
-  int                ShellIdx = -1;
+  int                ShellIdx    = -1;
   TopAbs_Orientation Orientation = TopAbs_FORWARD;
   TopLoc_Location    LocalLocation;
 };
@@ -77,7 +77,7 @@ struct ShellRef
 //! Reference from a comp-solid to one of its solids.
 struct SolidRef
 {
-  int                SolidIdx = -1;
+  int                SolidIdx    = -1;
   TopAbs_Orientation Orientation = TopAbs_FORWARD;
   TopLoc_Location    LocalLocation;
 };
@@ -85,8 +85,8 @@ struct SolidRef
 //! Reference from a compound to a child of any kind.
 struct ChildRef
 {
-  int                Kind = -1;     //!< BRepGraph_NodeId::Kind as int
-  int                ChildIdx = -1;
+  int                Kind        = -1; //!< BRepGraph_NodeId::Kind as int
+  int                ChildIdx    = -1;
   TopAbs_Orientation Orientation = TopAbs_FORWARD;
   TopLoc_Location    LocalLocation;
 };

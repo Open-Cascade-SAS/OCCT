@@ -53,8 +53,7 @@ struct BRepGraph_NodeCache
   {
     if (!myUserAttributes.IsEmpty())
     {
-      for (auto anIter = myUserAttributes.cbegin();
-           anIter != myUserAttributes.cend(); ++anIter)
+      for (auto anIter = myUserAttributes.cbegin(); anIter != myUserAttributes.cend(); ++anIter)
       {
         if (!(*anIter).IsNull())
           (*anIter)->Invalidate();
@@ -71,8 +70,7 @@ struct BRepGraph_NodeCache
   }
 
   //! Attach a user attribute.  Replaces any existing attribute at the same key.
-  void SetUserAttribute(const int                             theKey,
-                        const occ::handle<BRepGraph_UserAttribute>& theAttr)
+  void SetUserAttribute(const int theKey, const occ::handle<BRepGraph_UserAttribute>& theAttr)
   {
     myUserAttributes.Bind(theKey, theAttr);
   }
@@ -85,23 +83,19 @@ struct BRepGraph_NodeCache
   }
 
   //! Remove a user attribute by key.  Returns true if something was removed.
-  bool RemoveUserAttribute(const int theKey)
-  {
-    return myUserAttributes.UnBind(theKey);
-  }
+  bool RemoveUserAttribute(const int theKey) { return myUserAttributes.UnBind(theKey); }
 
   //! True if any user attributes are registered on this node.
-  bool HasUserAttributes() const
-  {
-    return !myUserAttributes.IsEmpty();
-  }
+  bool HasUserAttributes() const { return !myUserAttributes.IsEmpty(); }
 
   //! Return all registered user attribute keys.
   NCollection_Vector<int> UserAttributeKeys() const
   {
     NCollection_Vector<int> aKeys;
-    for (NCollection_DataMap<int, occ::handle<BRepGraph_UserAttribute>>::Iterator anIter(myUserAttributes);
-         anIter.More(); anIter.Next())
+    for (NCollection_DataMap<int, occ::handle<BRepGraph_UserAttribute>>::Iterator anIter(
+           myUserAttributes);
+         anIter.More();
+         anIter.Next())
     {
       aKeys.Append(anIter.Key());
     }

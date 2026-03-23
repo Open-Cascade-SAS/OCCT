@@ -21,7 +21,8 @@ BRepGraph_UID BRepGraph::UIDsView::Of(const BRepGraph_NodeId theNode) const
   if (!theNode.IsValid())
     return BRepGraph_UID();
 
-  const NCollection_Vector<BRepGraph_UID>& aVec = myGraph->myData->myIncStorage.UIDs(theNode.NodeKind);
+  const NCollection_Vector<BRepGraph_UID>& aVec =
+    myGraph->myData->myIncStorage.UIDs(theNode.NodeKind);
   if (theNode.Index >= aVec.Length())
     return BRepGraph_UID();
   return aVec.Value(theNode.Index);
@@ -65,4 +66,7 @@ bool BRepGraph::UIDsView::Has(const BRepGraph_UID& theUID) const
 
 //=================================================================================================
 
-uint32_t BRepGraph::UIDsView::Generation() const { return myGraph->myData->myGeneration; }
+uint32_t BRepGraph::UIDsView::Generation() const
+{
+  return myGraph->myData->myGeneration;
+}

@@ -28,8 +28,8 @@ struct GeomHash_PointHasher
 
   GeomHash_PointHasher(double theCompTolerance = Precision::Angular(),
                        double theHashTolerance = Precision::Confusion())
-    : CompTolerance(theCompTolerance),
-      HashTolerance(theHashTolerance)
+      : CompTolerance(theCompTolerance),
+        HashTolerance(theHashTolerance)
   {
   }
 

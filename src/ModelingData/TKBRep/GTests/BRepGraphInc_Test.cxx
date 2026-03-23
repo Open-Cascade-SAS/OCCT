@@ -137,8 +137,8 @@ TEST(BRepGraphIncTest, Sphere_EntityCounts_MatchDefCounts)
 TEST(BRepGraphIncTest, Box_RoundTrip_AreaPreserved)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-  const TopoDS_Shape& aBox = aBoxMaker.Shape();
-  const double anOrigArea = computeArea(aBox);
+  const TopoDS_Shape& aBox       = aBoxMaker.Shape();
+  const double        anOrigArea = computeArea(aBox);
 
   BRepGraphInc_Storage aStorage;
   BRepGraphInc_Populate::Perform(aStorage, aBox, false);
@@ -154,8 +154,8 @@ TEST(BRepGraphIncTest, Box_RoundTrip_AreaPreserved)
 TEST(BRepGraphIncTest, Cylinder_RoundTrip_AreaPreserved)
 {
   BRepPrimAPI_MakeCylinder aCylMaker(5.0, 15.0);
-  const TopoDS_Shape& aCyl = aCylMaker.Shape();
-  const double anOrigArea = computeArea(aCyl);
+  const TopoDS_Shape&      aCyl       = aCylMaker.Shape();
+  const double             anOrigArea = computeArea(aCyl);
 
   BRepGraphInc_Storage aStorage;
   BRepGraphInc_Populate::Perform(aStorage, aCyl, false);
@@ -171,8 +171,8 @@ TEST(BRepGraphIncTest, Cylinder_RoundTrip_AreaPreserved)
 TEST(BRepGraphIncTest, Sphere_RoundTrip_AreaPreserved)
 {
   BRepPrimAPI_MakeSphere aSphMaker(8.0);
-  const TopoDS_Shape& aSph = aSphMaker.Shape();
-  const double anOrigArea = computeArea(aSph);
+  const TopoDS_Shape&    aSph       = aSphMaker.Shape();
+  const double           anOrigArea = computeArea(aSph);
 
   BRepGraphInc_Storage aStorage;
   BRepGraphInc_Populate::Perform(aStorage, aSph, false);
@@ -188,12 +188,12 @@ TEST(BRepGraphIncTest, Sphere_RoundTrip_AreaPreserved)
 TEST(BRepGraphIncTest, Sphere_WireEdgeOrder_Diagnostic)
 {
   BRepPrimAPI_MakeSphere aSphMaker(8.0);
-  const TopoDS_Shape& aSph = aSphMaker.Shape();
+  const TopoDS_Shape&    aSph = aSphMaker.Shape();
 
   // Dump original wire content
   for (TopExp_Explorer aFaceExp(aSph, TopAbs_FACE); aFaceExp.More(); aFaceExp.Next())
   {
-    const TopoDS_Face& aFace = TopoDS::Face(aFaceExp.Current());
+    const TopoDS_Face& aFace    = TopoDS::Face(aFaceExp.Current());
     const TopoDS_Face  aFwdFace = TopoDS::Face(aFace.Oriented(TopAbs_FORWARD));
     std::cout << "Original face ori=" << aFace.Orientation() << std::endl;
 
@@ -210,8 +210,7 @@ TEST(BRepGraphIncTest, Sphere_WireEdgeOrder_Diagnostic)
         if (anEdgeIt.Value().ShapeType() != TopAbs_EDGE)
           continue;
         const TopoDS_Edge& anEdge = TopoDS::Edge(anEdgeIt.Value());
-        std::cout << "ori=" << anEdge.Orientation()
-                  << " degen=" << BRep_Tool::Degenerated(anEdge)
+        std::cout << "ori=" << anEdge.Orientation() << " degen=" << BRep_Tool::Degenerated(anEdge)
                   << " TShape=" << (void*)anEdge.TShape().get() << "  ";
       }
       std::cout << std::endl;
@@ -222,8 +221,7 @@ TEST(BRepGraphIncTest, Sphere_WireEdgeOrder_Diagnostic)
         if (anEdgeIt.Value().ShapeType() != TopAbs_EDGE)
           continue;
         const TopoDS_Edge& anEdge = TopoDS::Edge(anEdgeIt.Value());
-        std::cout << "ori=" << anEdge.Orientation()
-                  << " degen=" << BRep_Tool::Degenerated(anEdge)
+        std::cout << "ori=" << anEdge.Orientation() << " degen=" << BRep_Tool::Degenerated(anEdge)
                   << " TShape=" << (void*)anEdge.TShape().get() << "  ";
       }
       std::cout << std::endl;
@@ -232,8 +230,7 @@ TEST(BRepGraphIncTest, Sphere_WireEdgeOrder_Diagnostic)
       for (BRepTools_WireExplorer aWE(aWire, aFwdFace); aWE.More(); aWE.Next())
       {
         const TopoDS_Edge& anEdge = aWE.Current();
-        std::cout << "ori=" << anEdge.Orientation()
-                  << " degen=" << BRep_Tool::Degenerated(anEdge)
+        std::cout << "ori=" << anEdge.Orientation() << " degen=" << BRep_Tool::Degenerated(anEdge)
                   << " TShape=" << (void*)anEdge.TShape().get() << "  ";
       }
       std::cout << std::endl;
@@ -252,7 +249,7 @@ TEST(BRepGraphIncTest, Sphere_WireEdgeOrder_Diagnostic)
   // Dump reconstructed wire content
   for (TopExp_Explorer aFaceExp(aRecon, TopAbs_FACE); aFaceExp.More(); aFaceExp.Next())
   {
-    const TopoDS_Face& aFace = TopoDS::Face(aFaceExp.Current());
+    const TopoDS_Face& aFace    = TopoDS::Face(aFaceExp.Current());
     const TopoDS_Face  aFwdFace = TopoDS::Face(aFace.Oriented(TopAbs_FORWARD));
     std::cout << "Reconstructed face ori=" << aFace.Orientation() << std::endl;
 
@@ -269,8 +266,8 @@ TEST(BRepGraphIncTest, Sphere_WireEdgeOrder_Diagnostic)
         if (anEdgeIt.Value().ShapeType() != TopAbs_EDGE)
           continue;
         const TopoDS_Edge& anEdge = TopoDS::Edge(anEdgeIt.Value());
-        std::cout << "ori=" << anEdge.Orientation()
-                  << " degen=" << BRep_Tool::Degenerated(anEdge) << "  ";
+        std::cout << "ori=" << anEdge.Orientation() << " degen=" << BRep_Tool::Degenerated(anEdge)
+                  << "  ";
       }
       std::cout << std::endl;
     }
@@ -279,8 +276,8 @@ TEST(BRepGraphIncTest, Sphere_WireEdgeOrder_Diagnostic)
 
   // Dump BRep for comparison - write face-level for readability
   {
-    TopExp_Explorer aOrigFaceExp(aSph, TopAbs_FACE);
-    TopExp_Explorer aReconFaceExp(aRecon, TopAbs_FACE);
+    TopExp_Explorer    aOrigFaceExp(aSph, TopAbs_FACE);
+    TopExp_Explorer    aReconFaceExp(aRecon, TopAbs_FACE);
     std::ostringstream anOrigStr, aReconStr;
     BRepTools::Write(aOrigFaceExp.Current(), anOrigStr);
     BRepTools::Write(aReconFaceExp.Current(), aReconStr);
@@ -311,8 +308,8 @@ TEST(BRepGraphIncTest, Sphere_WireEdgeOrder_Diagnostic)
 TEST(BRepGraphIncTest, Box_RoundTrip_VolumePreserved)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-  const TopoDS_Shape& aBox = aBoxMaker.Shape();
-  const double anOrigVol = computeVolume(aBox);
+  const TopoDS_Shape& aBox      = aBoxMaker.Shape();
+  const double        anOrigVol = computeVolume(aBox);
 
   BRepGraphInc_Storage aStorage;
   BRepGraphInc_Populate::Perform(aStorage, aBox, false);
@@ -328,8 +325,8 @@ TEST(BRepGraphIncTest, Box_RoundTrip_VolumePreserved)
 TEST(BRepGraphIncTest, Cylinder_RoundTrip_VolumePreserved)
 {
   BRepPrimAPI_MakeCylinder aCylMaker(5.0, 15.0);
-  const TopoDS_Shape& aCyl = aCylMaker.Shape();
-  const double anOrigVol = computeVolume(aCyl);
+  const TopoDS_Shape&      aCyl      = aCylMaker.Shape();
+  const double             anOrigVol = computeVolume(aCyl);
 
   BRepGraphInc_Storage aStorage;
   BRepGraphInc_Populate::Perform(aStorage, aCyl, false);
@@ -515,8 +512,7 @@ TEST(BRepGraphIncTest, Box_CoEdgeCount)
   int aCoEdgeCount = 0;
   for (int anEdgeIdx = 0; anEdgeIdx < aStorage.NbEdges(); ++anEdgeIdx)
   {
-    const NCollection_Vector<int>* aCoEdgeIdxs =
-      aStorage.ReverseIndex().CoEdgesOfEdge(anEdgeIdx);
+    const NCollection_Vector<int>* aCoEdgeIdxs = aStorage.ReverseIndex().CoEdgesOfEdge(anEdgeIdx);
     if (aCoEdgeIdxs != nullptr)
       aCoEdgeCount += aCoEdgeIdxs->Length();
   }
@@ -536,8 +532,7 @@ TEST(BRepGraphIncTest, Cylinder_HasSeamEdges)
   int aSeamPairCount = 0;
   for (int anEdgeIdx = 0; anEdgeIdx < aStorage.NbEdges(); ++anEdgeIdx)
   {
-    const NCollection_Vector<int>* aCoEdgeIdxs =
-      aStorage.ReverseIndex().CoEdgesOfEdge(anEdgeIdx);
+    const NCollection_Vector<int>* aCoEdgeIdxs = aStorage.ReverseIndex().CoEdgesOfEdge(anEdgeIdx);
     if (aCoEdgeIdxs == nullptr)
       continue;
     for (int i = 0; i < aCoEdgeIdxs->Length(); ++i)
@@ -655,7 +650,7 @@ TEST(BRepGraphIncTest, Compound_TranslatedChildren_VolumePreserved)
 TEST(BRepGraphIncTest, Cylinder_RoundTrip_BRepDump)
 {
   BRepPrimAPI_MakeCylinder aCylMaker(5.0, 20.0);
-  const TopoDS_Shape&     aCyl = aCylMaker.Shape();
+  const TopoDS_Shape&      aCyl = aCylMaker.Shape();
 
   BRepGraphInc_Storage aStorage;
   BRepGraphInc_Populate::Perform(aStorage, aCyl, false);
@@ -674,9 +669,9 @@ TEST(BRepGraphIncTest, Cylinder_RoundTrip_BRepDump)
     // Show ALL line differences
     std::istringstream anOrigLines(anOrigStream.str());
     std::istringstream aReconLines(aReconStream.str());
-    std::string anOrigLine, aReconLine;
-    int aLineNo = 0;
-    int aDiffCount = 0;
+    std::string        anOrigLine, aReconLine;
+    int                aLineNo    = 0;
+    int                aDiffCount = 0;
     while (std::getline(anOrigLines, anOrigLine) && std::getline(aReconLines, aReconLine))
     {
       ++aLineNo;
@@ -710,9 +705,9 @@ TEST(BRepGraphIncTest, Cylinder_RoundTrip_BRepDump)
 // Helper: create an edge with a line segment and add vertices with given orientations.
 static TopoDS_Edge makeEdgeWithInternalVertex()
 {
-  BRep_Builder aBB;
+  BRep_Builder            aBB;
   BRepBuilderAPI_MakeEdge aMakeEdge(gp_Pnt(0, 0, 0), gp_Pnt(10, 0, 0));
-  TopoDS_Edge anEdge = aMakeEdge.Edge();
+  TopoDS_Edge             anEdge = aMakeEdge.Edge();
 
   TopoDS_Vertex anIntVtx;
   aBB.MakeVertex(anIntVtx, gp_Pnt(5, 0, 0), Precision::Confusion());
@@ -724,8 +719,8 @@ static TopoDS_Edge makeEdgeWithInternalVertex()
 static TopoDS_Shape wrapEdgeInFace(const TopoDS_Edge& theEdge)
 {
   occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pln());
-  BRep_Builder aBB;
-  TopoDS_Face aFace;
+  BRep_Builder            aBB;
+  TopoDS_Face             aFace;
   aBB.MakeFace(aFace, aPlane, Precision::Confusion());
   TopoDS_Wire aWire;
   aBB.MakeWire(aWire);
@@ -736,8 +731,8 @@ static TopoDS_Shape wrapEdgeInFace(const TopoDS_Edge& theEdge)
 
 TEST(BRepGraphIncTest, EdgeInternalVertex_Captured)
 {
-  TopoDS_Edge anEdge = makeEdgeWithInternalVertex();
-  TopoDS_Shape aFace = wrapEdgeInFace(anEdge);
+  TopoDS_Edge  anEdge = makeEdgeWithInternalVertex();
+  TopoDS_Shape aFace  = wrapEdgeInFace(anEdge);
 
   BRepGraphInc_Storage aStorage;
   BRepGraphInc_Populate::Perform(aStorage, aFace, false);
@@ -755,7 +750,7 @@ TEST(BRepGraphIncTest, EdgeInternalVertex_Captured)
       EXPECT_GE(anEdgeEnt.InternalVertices.Value(0).VertexIdx, 0);
       EXPECT_EQ(anEdgeEnt.InternalVertices.Value(0).Orientation, TopAbs_INTERNAL);
       // Verify the vertex point.
-      int aVtxIdx = anEdgeEnt.InternalVertices.Value(0).VertexIdx;
+      int                               aVtxIdx = anEdgeEnt.InternalVertices.Value(0).VertexIdx;
       const BRepGraphInc::VertexEntity& aVtxEnt = aStorage.Vertex(aVtxIdx);
       EXPECT_NEAR(aVtxEnt.Point.X(), 5.0, Precision::Confusion());
       break;
@@ -766,8 +761,8 @@ TEST(BRepGraphIncTest, EdgeInternalVertex_Captured)
 
 TEST(BRepGraphIncTest, EdgeInternalVertex_RoundTrip)
 {
-  TopoDS_Edge anEdge = makeEdgeWithInternalVertex();
-  TopoDS_Shape aFace = wrapEdgeInFace(anEdge);
+  TopoDS_Edge  anEdge = makeEdgeWithInternalVertex();
+  TopoDS_Shape aFace  = wrapEdgeInFace(anEdge);
 
   BRepGraphInc_Storage aStorage;
   BRepGraphInc_Populate::Perform(aStorage, aFace, false);
@@ -786,7 +781,7 @@ TEST(BRepGraphIncTest, EdgeInternalVertex_RoundTrip)
       if (aVIt.Value().ShapeType() == TopAbs_VERTEX
           && aVIt.Value().Orientation() == TopAbs_INTERNAL)
       {
-        aFoundInternal = true;
+        aFoundInternal            = true;
         const TopoDS_Vertex& aVtx = TopoDS::Vertex(aVIt.Value());
         EXPECT_NEAR(BRep_Tool::Pnt(aVtx).X(), 5.0, Precision::Confusion());
       }
@@ -797,9 +792,9 @@ TEST(BRepGraphIncTest, EdgeInternalVertex_RoundTrip)
 
 TEST(BRepGraphIncTest, EdgeExternalVertex_Captured)
 {
-  BRep_Builder aBB;
+  BRep_Builder            aBB;
   BRepBuilderAPI_MakeEdge aMakeEdge(gp_Pnt(0, 0, 0), gp_Pnt(10, 0, 0));
-  TopoDS_Edge anEdge = aMakeEdge.Edge();
+  TopoDS_Edge             anEdge = aMakeEdge.Edge();
 
   TopoDS_Vertex anExtVtx;
   aBB.MakeVertex(anExtVtx, gp_Pnt(7, 0, 0), Precision::Confusion());
@@ -843,9 +838,9 @@ TEST(BRepGraphIncTest, EdgeNoInternalVertices_EmptyVector)
 
 TEST(BRepGraphIncTest, EdgeMultipleInternalVertices_AllCaptured)
 {
-  BRep_Builder aBB;
+  BRep_Builder            aBB;
   BRepBuilderAPI_MakeEdge aMakeEdge(gp_Pnt(0, 0, 0), gp_Pnt(10, 0, 0));
-  TopoDS_Edge anEdge = aMakeEdge.Edge();
+  TopoDS_Edge             anEdge = aMakeEdge.Edge();
 
   TopoDS_Vertex aVtx1, aVtx2;
   aBB.MakeVertex(aVtx1, gp_Pnt(3, 0, 0), Precision::Confusion());
@@ -889,14 +884,14 @@ TEST(BRepGraphIncTest, EdgeMultipleInternalVertices_AllCaptured)
 
 TEST(BRepGraphIncTest, FaceDirectVertex_Internal_Captured)
 {
-  BRep_Builder aBB;
+  BRep_Builder            aBB;
   occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pln());
-  TopoDS_Face aFace;
+  TopoDS_Face             aFace;
   aBB.MakeFace(aFace, aPlane, Precision::Confusion());
 
   // Add a wire so the face is valid for population.
   BRepBuilderAPI_MakeEdge aME(gp_Pnt(0, 0, 0), gp_Pnt(10, 0, 0));
-  TopoDS_Wire aWire;
+  TopoDS_Wire             aWire;
   aBB.MakeWire(aWire);
   aBB.Add(aWire, aME.Edge());
   aBB.Add(aFace, aWire);
@@ -922,13 +917,13 @@ TEST(BRepGraphIncTest, FaceDirectVertex_Internal_Captured)
 
 TEST(BRepGraphIncTest, FaceDirectVertex_RoundTrip)
 {
-  BRep_Builder aBB;
+  BRep_Builder            aBB;
   occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pln());
-  TopoDS_Face aFace;
+  TopoDS_Face             aFace;
   aBB.MakeFace(aFace, aPlane, Precision::Confusion());
 
   BRepBuilderAPI_MakeEdge aME(gp_Pnt(0, 0, 0), gp_Pnt(10, 0, 0));
-  TopoDS_Wire aWire;
+  TopoDS_Wire             aWire;
   aBB.MakeWire(aWire);
   aBB.Add(aWire, aME.Edge());
   aBB.Add(aFace, aWire);
@@ -948,10 +943,9 @@ TEST(BRepGraphIncTest, FaceDirectVertex_RoundTrip)
   bool aFoundDirect = false;
   for (TopoDS_Iterator aIt(aRecon); aIt.More(); aIt.Next())
   {
-    if (aIt.Value().ShapeType() == TopAbs_VERTEX
-        && aIt.Value().Orientation() == TopAbs_INTERNAL)
+    if (aIt.Value().ShapeType() == TopAbs_VERTEX && aIt.Value().Orientation() == TopAbs_INTERNAL)
     {
-      aFoundDirect = true;
+      aFoundDirect                   = true;
       const TopoDS_Vertex& aReconVtx = TopoDS::Vertex(aIt.Value());
       EXPECT_NEAR(BRep_Tool::Pnt(aReconVtx).X(), 5.0, Precision::Confusion());
       EXPECT_NEAR(BRep_Tool::Pnt(aReconVtx).Y(), 5.0, Precision::Confusion());
@@ -962,13 +956,13 @@ TEST(BRepGraphIncTest, FaceDirectVertex_RoundTrip)
 
 TEST(BRepGraphIncTest, FaceExternalVertex_Captured)
 {
-  BRep_Builder aBB;
+  BRep_Builder            aBB;
   occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pln());
-  TopoDS_Face aFace;
+  TopoDS_Face             aFace;
   aBB.MakeFace(aFace, aPlane, Precision::Confusion());
 
   BRepBuilderAPI_MakeEdge aME(gp_Pnt(0, 0, 0), gp_Pnt(10, 0, 0));
-  TopoDS_Wire aWire;
+  TopoDS_Wire             aWire;
   aBB.MakeWire(aWire);
   aBB.Add(aWire, aME.Edge());
   aBB.Add(aFace, aWire);
@@ -1006,13 +1000,13 @@ TEST(BRepGraphIncTest, FaceNoDirectVertices_EmptyVector)
 
 TEST(BRepGraphIncTest, FaceWithWiresAndVertices_BothCaptured)
 {
-  BRep_Builder aBB;
+  BRep_Builder            aBB;
   occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pln());
-  TopoDS_Face aFace;
+  TopoDS_Face             aFace;
   aBB.MakeFace(aFace, aPlane, Precision::Confusion());
 
   BRepBuilderAPI_MakeEdge aME(gp_Pnt(0, 0, 0), gp_Pnt(10, 0, 0));
-  TopoDS_Wire aWire;
+  TopoDS_Wire             aWire;
   aBB.MakeWire(aWire);
   aBB.Add(aWire, aME.Edge());
   aBB.Add(aFace, aWire);
@@ -1037,17 +1031,17 @@ TEST(BRepGraphIncTest, FaceWithWiresAndVertices_BothCaptured)
 
 TEST(BRepGraphIncTest, CompoundWithInternalVertices_RoundTrip_SubShapeCounts)
 {
-  BRep_Builder aBB;
+  BRep_Builder    aBB;
   TopoDS_Compound aCompound;
   aBB.MakeCompound(aCompound);
 
   // Face with a direct internal vertex.
   occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pln());
-  TopoDS_Face aFace;
+  TopoDS_Face             aFace;
   aBB.MakeFace(aFace, aPlane, Precision::Confusion());
 
   BRepBuilderAPI_MakeEdge aME(gp_Pnt(0, 0, 0), gp_Pnt(10, 0, 0));
-  TopoDS_Edge anEdge = aME.Edge();
+  TopoDS_Edge             anEdge = aME.Edge();
   // Add internal vertex to the edge.
   TopoDS_Vertex anEdgeIntVtx;
   aBB.MakeVertex(anEdgeIntVtx, gp_Pnt(5, 0, 0), Precision::Confusion());
@@ -1091,7 +1085,7 @@ TEST(BRepGraphIncTest, CompoundWithInternalVertices_RoundTrip_SubShapeCounts)
       if (aVIt.Value().ShapeType() == TopAbs_VERTEX
           && aVIt.Value().Orientation() == TopAbs_INTERNAL)
       {
-        aFoundEdgeIntVtx = true;
+        aFoundEdgeIntVtx          = true;
         const TopoDS_Vertex& aVtx = TopoDS::Vertex(aVIt.Value());
         EXPECT_NEAR(BRep_Tool::Pnt(aVtx).X(), 5.0, Precision::Confusion());
         EXPECT_NEAR(BRep_Tool::Pnt(aVtx).Y(), 0.0, Precision::Confusion());
@@ -1109,7 +1103,7 @@ TEST(BRepGraphIncTest, CompoundWithInternalVertices_RoundTrip_SubShapeCounts)
       if (aFIt.Value().ShapeType() == TopAbs_VERTEX
           && aFIt.Value().Orientation() == TopAbs_INTERNAL)
       {
-        aFoundFaceIntVtx = true;
+        aFoundFaceIntVtx          = true;
         const TopoDS_Vertex& aVtx = TopoDS::Vertex(aFIt.Value());
         EXPECT_NEAR(BRep_Tool::Pnt(aVtx).X(), 5.0, Precision::Confusion());
         EXPECT_NEAR(BRep_Tool::Pnt(aVtx).Y(), 5.0, Precision::Confusion());
@@ -1121,14 +1115,14 @@ TEST(BRepGraphIncTest, CompoundWithInternalVertices_RoundTrip_SubShapeCounts)
 
 TEST(BRepGraphIncTest, ParallelBuild_InternalVertices_SameAsSequential)
 {
-  BRep_Builder aBB;
+  BRep_Builder            aBB;
   occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pln());
-  TopoDS_Face aFace;
+  TopoDS_Face             aFace;
   aBB.MakeFace(aFace, aPlane, Precision::Confusion());
 
   BRepBuilderAPI_MakeEdge aME(gp_Pnt(0, 0, 0), gp_Pnt(10, 0, 0));
-  TopoDS_Edge anEdge = aME.Edge();
-  TopoDS_Vertex anIntVtx;
+  TopoDS_Edge             anEdge = aME.Edge();
+  TopoDS_Vertex           anIntVtx;
   aBB.MakeVertex(anIntVtx, gp_Pnt(5, 0, 0), Precision::Confusion());
   aBB.Add(anEdge, anIntVtx.Oriented(TopAbs_INTERNAL));
 
@@ -1162,8 +1156,7 @@ TEST(BRepGraphIncTest, ParallelBuild_InternalVertices_SameAsSequential)
   }
   for (int i = 0; i < aSerial.NbFaces(); ++i)
   {
-    EXPECT_EQ(aParallel.Face(i).VertexRefs.Length(),
-              aSerial.Face(i).VertexRefs.Length())
+    EXPECT_EQ(aParallel.Face(i).VertexRefs.Length(), aSerial.Face(i).VertexRefs.Length())
       << "Face " << i << " direct vertex count mismatch";
   }
 }

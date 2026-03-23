@@ -46,10 +46,7 @@ class BRepGraph_UserAttribute : public Standard_Transient
 public:
   //! Allocate an anonymous integer key (no GUID association).
   //! Thread-safe (shared atomic counter with BRepGraph_AttrRegistry).
-  static int AllocateKey()
-  {
-    return BRepGraph_AttrRegistry::AllocateAnonymous();
-  }
+  static int AllocateKey() { return BRepGraph_AttrRegistry::AllocateAnonymous(); }
 
   //! Allocate (or retrieve) an integer key associated with a GUID.
   //! Convenience wrapper around BRepGraph_AttrRegistry::Register().
@@ -63,13 +60,15 @@ public:
   void Invalidate() { myDirty.store(true, std::memory_order_release); }
 
   //! True if the attribute needs recomputation.
-  bool IsDirty() const
-  { return myDirty.load(std::memory_order_acquire); }
+  bool IsDirty() const { return myDirty.load(std::memory_order_acquire); }
 
   DEFINE_STANDARD_RTTI_INLINE(BRepGraph_UserAttribute, Standard_Transient)
 
 protected:
-  BRepGraph_UserAttribute() : myDirty(true) {}
+  BRepGraph_UserAttribute()
+      : myDirty(true)
+  {
+  }
 
   //! Subclass calls after successful computation to clear the dirty flag.
   void MarkClean() { myDirty.store(false, std::memory_order_release); }

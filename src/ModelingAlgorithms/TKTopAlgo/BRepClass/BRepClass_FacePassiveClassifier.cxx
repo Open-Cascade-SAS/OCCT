@@ -40,15 +40,34 @@ BRepClass_FacePassiveClassifier::BRepClass_FacePassiveClassifier()
 
 void BRepClass_FacePassiveClassifier::Reset(const gp_Lin2d& L, const double P, const double Tol)
 {
-  TopClass_Classifier2d::Reset(myLin, myParam, myTolerance, myState, myFirstCompare, myFirstTrans,
-                               myClosest, myIsSet, myIsHeadOrEnd, L, P, Tol);
+  TopClass_Classifier2d::Reset(myLin,
+                               myParam,
+                               myTolerance,
+                               myState,
+                               myFirstCompare,
+                               myFirstTrans,
+                               myClosest,
+                               myIsSet,
+                               myIsHeadOrEnd,
+                               L,
+                               P,
+                               Tol);
 }
 
 //=================================================================================================
 
-void BRepClass_FacePassiveClassifier::Compare(const BRepClass_Edge&    E,
-                                              const TopAbs_Orientation Or)
+void BRepClass_FacePassiveClassifier::Compare(const BRepClass_Edge& E, const TopAbs_Orientation Or)
 {
-  TopClass_Classifier2d::Compare(myClosest, myIntersector, myLin, myParam, myTolerance, myState,
-                                 myFirstCompare, myFirstTrans, myTrans, myIsHeadOrEnd, E, Or);
+  TopClass_Classifier2d::Compare(myClosest,
+                                 myIntersector,
+                                 myLin,
+                                 myParam,
+                                 myTolerance,
+                                 myState,
+                                 myFirstCompare,
+                                 myFirstTrans,
+                                 myTrans,
+                                 myIsHeadOrEnd,
+                                 E,
+                                 Or);
 }

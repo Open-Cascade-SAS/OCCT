@@ -36,7 +36,8 @@
 #include <memory>
 #include <utility>
 
-template <typename DefT> class BRepGraph_MutRef;
+template <typename DefT>
+class BRepGraph_MutRef;
 
 struct BRepGraph_Data;
 class BRepGraph_Layer;
@@ -85,16 +86,16 @@ public:
   Standard_EXPORT BRepGraph();
   Standard_EXPORT explicit BRepGraph(const occ::handle<NCollection_BaseAllocator>& theAlloc);
   Standard_EXPORT ~BRepGraph();
-  Standard_EXPORT BRepGraph(BRepGraph&&) noexcept;
+  Standard_EXPORT            BRepGraph(BRepGraph&&) noexcept;
   Standard_EXPORT BRepGraph& operator=(BRepGraph&&) noexcept;
 
   //! Build the full graph from a TopoDS_Shape.
   Standard_EXPORT void Build(const TopoDS_Shape& theShape, const bool theParallel = false);
 
   //! Build the full graph with explicit post-pass control.
-  Standard_EXPORT void Build(const TopoDS_Shape& theShape,
-                             const bool                               theParallel,
-                             const BRepGraphInc_Populate::Options&    theOptions);
+  Standard_EXPORT void Build(const TopoDS_Shape&                   theShape,
+                             const bool                            theParallel,
+                             const BRepGraphInc_Populate::Options& theOptions);
 
   //! Return true if the graph was successfully built.
   Standard_EXPORT bool IsDone() const;
@@ -125,9 +126,9 @@ public:
 
   //! Apply a modification operation and record history.
   Standard_EXPORT void ApplyModification(
-    const BRepGraph_NodeId                                                              theTarget,
+    const BRepGraph_NodeId                                                            theTarget,
     std::function<NCollection_Vector<BRepGraph_NodeId>(BRepGraph&, BRepGraph_NodeId)> theModifier,
-    const TCollection_AsciiString&                                                      theOpLabel);
+    const TCollection_AsciiString&                                                    theOpLabel);
 
 public:
   //! Shared cache for edge/vertex shapes during multi-face reconstruction.
@@ -145,19 +146,19 @@ public:
   class AnalyzeView;
 
   //! Access topology definitions.
-  DefsView     Defs()     const;
+  DefsView Defs() const;
   //! Access unique identifiers.
-  UIDsView     UIDs()     const;
+  UIDsView UIDs() const;
   //! Access relation edges.
   RelEdgesView RelEdges() const;
   //! Access spatial and adjacency queries.
-  SpatialView  Spatial()  const;
+  SpatialView Spatial() const;
   //! Access user attributes.
-  AttrsView    Attrs();
+  AttrsView Attrs();
   //! Access shape reconstruction.
-  ShapesView   Shapes()   const;
+  ShapesView Shapes() const;
   //! Access mutable definitions and mutation operations.
-  MutView      Mut();
+  MutView Mut();
 
   //! @name Scoped mutable definition guards (RAII).
   //! Return a BRepGraph_MutRef that defers markModified() to scope exit.
@@ -189,7 +190,8 @@ public:
 
   //! Return scoped mutable compound definition guard.
   //! @param[in] theCompoundIdx zero-based compound definition index
-  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::CompoundDef> MutCompound(const int theCompoundIdx);
+  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::CompoundDef> MutCompound(
+    const int theCompoundIdx);
 
   //! Return scoped mutable coedge definition guard.
   //! @param[in] theCoEdgeIdx zero-based coedge definition index
@@ -204,20 +206,23 @@ public:
 
   //! Return scoped mutable comp-solid definition guard.
   //! @param[in] theCompSolidIdx zero-based comp-solid definition index
-  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::CompSolidDef> MutCompSolid(const int theCompSolidIdx);
+  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::CompSolidDef> MutCompSolid(
+    const int theCompSolidIdx);
 
   //! Return scoped mutable product definition guard.
   //! @param[in] theProductIdx zero-based product definition index
-  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::ProductDef> MutProduct(const int theProductIdx);
+  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::ProductDef> MutProduct(
+    const int theProductIdx);
 
   //! Return scoped mutable occurrence definition guard.
   //! @param[in] theOccurrenceIdx zero-based occurrence definition index
-  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::OccurrenceDef> MutOccurrence(const int theOccurrenceIdx);
-  
+  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::OccurrenceDef> MutOccurrence(
+    const int theOccurrenceIdx);
+
   //! Access programmatic graph construction.
-  BuilderView  Builder();
+  BuilderView Builder();
   //! Access analysis queries.
-  AnalyzeView  Analyze()  const;
+  AnalyzeView Analyze() const;
 
   //! Access history subsystem directly.
   Standard_EXPORT BRepGraph_History&       History();
@@ -227,7 +232,8 @@ public:
   Standard_EXPORT void RegisterLayer(const occ::handle<BRepGraph_Layer>& theLayer);
 
   //! Find a layer by name. Returns null handle if not found.
-  Standard_EXPORT occ::handle<BRepGraph_Layer> FindLayer(const TCollection_AsciiString& theName) const;
+  Standard_EXPORT occ::handle<BRepGraph_Layer> FindLayer(
+    const TCollection_AsciiString& theName) const;
 
   //! Remove a layer by name.
   Standard_EXPORT void UnregisterLayer(const TCollection_AsciiString& theName);
@@ -244,16 +250,17 @@ private:
   friend class BRepGraphAlgo_Transform;
   friend class BRepGraphAlgo_UVBounds;
   friend class BRepGraph_MutationGuard;
-  template <typename> friend class BRepGraph_MutRef;
+  template <typename>
+  friend class BRepGraph_MutRef;
 
-  Standard_EXPORT int NbHistoryRecords() const;
+  Standard_EXPORT int                            NbHistoryRecords() const;
   Standard_EXPORT const BRepGraph_HistoryRecord& HistoryRecord(const int theRecordIdx) const;
   Standard_EXPORT BRepGraph_NodeId FindOriginal(const BRepGraph_NodeId theModified) const;
   Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> FindDerived(
     const BRepGraph_NodeId theOriginal) const;
 
-  Standard_EXPORT void RecordHistory(const TCollection_AsciiString&                theOpLabel,
-                                     const BRepGraph_NodeId                        theOriginal,
+  Standard_EXPORT void RecordHistory(const TCollection_AsciiString&              theOpLabel,
+                                     const BRepGraph_NodeId                      theOriginal,
                                      const NCollection_Vector<BRepGraph_NodeId>& theReplacements);
 
   std::unique_ptr<BRepGraph_Data> myData;
@@ -266,7 +273,8 @@ private:
   bool myHasModificationSubscribers = false;
 
   //! Dispatch OnNodeRemoved to all registered layers.
-  void dispatchLayerOnNodeRemoved(const BRepGraph_NodeId theNode, const BRepGraph_NodeId theReplacement);
+  void dispatchLayerOnNodeRemoved(const BRepGraph_NodeId theNode,
+                                  const BRepGraph_NodeId theReplacement);
 
   //! Rescan myLayers and update myHasModificationSubscribers flag.
   void updateModificationSubscriberFlag();
@@ -277,17 +285,18 @@ private:
   //! Dispatch OnNodesModified to layers whose SubscribedKinds matches at least
   //! one kind in theModifiedKindsMask.
   void dispatchNodesModified(const NCollection_Vector<BRepGraph_NodeId>& theModifiedNodes,
-                             const int theModifiedKindsMask);
+                             const int                                   theModifiedKindsMask);
 
-  Standard_EXPORT void invalidateSubgraphImpl(const BRepGraph_NodeId theNode);
+  Standard_EXPORT void          invalidateSubgraphImpl(const BRepGraph_NodeId theNode);
   Standard_EXPORT BRepGraph_UID allocateUID(const BRepGraph_NodeId theNodeId);
 
   Standard_EXPORT BRepGraph_NodeCache* mutableCache(const BRepGraph_NodeId theNode);
-  Standard_EXPORT void markModified(const BRepGraph_NodeId theDefId);
+  Standard_EXPORT void                 markModified(const BRepGraph_NodeId theDefId);
 
   //! Optimized overload: skips ChangeTopoDef() and mutableCache() dispatch
   //! when the caller already holds a mutable reference to the definition.
-  Standard_EXPORT void markModified(const BRepGraph_NodeId theDefId, BRepGraph_TopoNode::BaseDef& theDef);
+  Standard_EXPORT void markModified(const BRepGraph_NodeId       theDefId,
+                                    BRepGraph_TopoNode::BaseDef& theDef);
 
   //! Mark a parent node as transitively modified (IsModified only, no MutationGen increment).
   //! Skips if already modified. Clears caches, dispatches events, and continues propagation.
@@ -304,7 +313,8 @@ private:
 
   template <typename Func>
   auto dispatchDef(const BRepGraph_NodeId theNode, Func&& theFunc) const
-    -> decltype(theFunc(std::declval<const NCollection_Vector<BRepGraph_TopoNode::SolidDef>&>(), 0));
+    -> decltype(theFunc(std::declval<const NCollection_Vector<BRepGraph_TopoNode::SolidDef>&>(),
+                        0));
 
   template <typename Func>
   auto dispatchDef(const BRepGraph_NodeId theNode, Func&& theFunc)

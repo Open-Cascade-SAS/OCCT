@@ -23,7 +23,6 @@
 
 #include <shared_mutex>
 
-
 //=================================================================================================
 
 BRepGraph::BRepGraph()
@@ -83,18 +82,30 @@ BRepGraph_NodeCache* BRepGraph::mutableCache(const BRepGraph_NodeId theNode)
   BRepGraphInc_Storage& aStorage = myData->myIncStorage;
   switch (theNode.NodeKind)
   {
-    case BRepGraph_NodeId::Kind::Solid:      return &aStorage.ChangeSolid(theNode.Index).Cache;
-    case BRepGraph_NodeId::Kind::Shell:      return &aStorage.ChangeShell(theNode.Index).Cache;
-    case BRepGraph_NodeId::Kind::Face:       return &aStorage.ChangeFace(theNode.Index).Cache;
-    case BRepGraph_NodeId::Kind::Wire:       return &aStorage.ChangeWire(theNode.Index).Cache;
-    case BRepGraph_NodeId::Kind::Edge:       return &aStorage.ChangeEdge(theNode.Index).Cache;
-    case BRepGraph_NodeId::Kind::CoEdge:     return &aStorage.ChangeCoEdge(theNode.Index).Cache;
-    case BRepGraph_NodeId::Kind::Vertex:     return &aStorage.ChangeVertex(theNode.Index).Cache;
-    case BRepGraph_NodeId::Kind::Compound:   return &aStorage.ChangeCompound(theNode.Index).Cache;
-    case BRepGraph_NodeId::Kind::CompSolid:  return &aStorage.ChangeCompSolid(theNode.Index).Cache;
-    case BRepGraph_NodeId::Kind::Product:    return &aStorage.ChangeProduct(theNode.Index).Cache;
-    case BRepGraph_NodeId::Kind::Occurrence: return &aStorage.ChangeOccurrence(theNode.Index).Cache;
-    default: return nullptr;
+    case BRepGraph_NodeId::Kind::Solid:
+      return &aStorage.ChangeSolid(theNode.Index).Cache;
+    case BRepGraph_NodeId::Kind::Shell:
+      return &aStorage.ChangeShell(theNode.Index).Cache;
+    case BRepGraph_NodeId::Kind::Face:
+      return &aStorage.ChangeFace(theNode.Index).Cache;
+    case BRepGraph_NodeId::Kind::Wire:
+      return &aStorage.ChangeWire(theNode.Index).Cache;
+    case BRepGraph_NodeId::Kind::Edge:
+      return &aStorage.ChangeEdge(theNode.Index).Cache;
+    case BRepGraph_NodeId::Kind::CoEdge:
+      return &aStorage.ChangeCoEdge(theNode.Index).Cache;
+    case BRepGraph_NodeId::Kind::Vertex:
+      return &aStorage.ChangeVertex(theNode.Index).Cache;
+    case BRepGraph_NodeId::Kind::Compound:
+      return &aStorage.ChangeCompound(theNode.Index).Cache;
+    case BRepGraph_NodeId::Kind::CompSolid:
+      return &aStorage.ChangeCompSolid(theNode.Index).Cache;
+    case BRepGraph_NodeId::Kind::Product:
+      return &aStorage.ChangeProduct(theNode.Index).Cache;
+    case BRepGraph_NodeId::Kind::Occurrence:
+      return &aStorage.ChangeOccurrence(theNode.Index).Cache;
+    default:
+      return nullptr;
   }
 }
 
@@ -136,7 +147,8 @@ const BRepGraph_TopoNode::BaseDef* BRepGraph::TopoDef(const BRepGraph_NodeId the
       return theId.Index < aStorage.NbProducts() ? &aStorage.Product(theId.Index) : nullptr;
     case BRepGraph_NodeId::Kind::Occurrence:
       return theId.Index < aStorage.NbOccurrences() ? &aStorage.Occurrence(theId.Index) : nullptr;
-    default: return nullptr;
+    default:
+      return nullptr;
   }
 }
 
@@ -166,12 +178,15 @@ BRepGraph_TopoNode::BaseDef* BRepGraph::ChangeTopoDef(const BRepGraph_NodeId the
     case BRepGraph_NodeId::Kind::Compound:
       return theId.Index < aStorage.NbCompounds() ? &aStorage.ChangeCompound(theId.Index) : nullptr;
     case BRepGraph_NodeId::Kind::CompSolid:
-      return theId.Index < aStorage.NbCompSolids() ? &aStorage.ChangeCompSolid(theId.Index) : nullptr;
+      return theId.Index < aStorage.NbCompSolids() ? &aStorage.ChangeCompSolid(theId.Index)
+                                                   : nullptr;
     case BRepGraph_NodeId::Kind::Product:
       return theId.Index < aStorage.NbProducts() ? &aStorage.ChangeProduct(theId.Index) : nullptr;
     case BRepGraph_NodeId::Kind::Occurrence:
-      return theId.Index < aStorage.NbOccurrences() ? &aStorage.ChangeOccurrence(theId.Index) : nullptr;
-    default: return nullptr;
+      return theId.Index < aStorage.NbOccurrences() ? &aStorage.ChangeOccurrence(theId.Index)
+                                                    : nullptr;
+    default:
+      return nullptr;
   }
 }
 
@@ -231,15 +246,18 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
       break;
     }
     case BRepGraph_NodeId::Kind::Product: {
-      const BRepGraph_TopoNode::ProductDef& aProductDef = myData->myIncStorage.Product(theNode.Index);
+      const BRepGraph_TopoNode::ProductDef& aProductDef =
+        myData->myIncStorage.Product(theNode.Index);
       if (aProductDef.ShapeRootId.IsValid())
         invalidateSubgraphImpl(aProductDef.ShapeRootId);
       for (int o = 0; o < aProductDef.OccurrenceRefs.Length(); ++o)
-        invalidateSubgraphImpl(BRepGraph_NodeId::Occurrence(aProductDef.OccurrenceRefs.Value(o).OccurrenceIdx));
+        invalidateSubgraphImpl(
+          BRepGraph_NodeId::Occurrence(aProductDef.OccurrenceRefs.Value(o).OccurrenceIdx));
       break;
     }
     case BRepGraph_NodeId::Kind::Occurrence: {
-      const BRepGraph_TopoNode::OccurrenceDef& anOccDef = myData->myIncStorage.Occurrence(theNode.Index);
+      const BRepGraph_TopoNode::OccurrenceDef& anOccDef =
+        myData->myIncStorage.Occurrence(theNode.Index);
       if (anOccDef.ProductIdx >= 0)
         invalidateSubgraphImpl(BRepGraph_NodeId::Product(anOccDef.ProductIdx));
       break;
@@ -377,7 +395,8 @@ void BRepGraph::propagateModified(const BRepGraph_NodeId theDefId)
     }
     case BRepGraph_NodeId::Kind::Occurrence: {
       // Occurrence modifications propagate to the parent product.
-      const BRepGraph_TopoNode::OccurrenceDef& anOccDef = myData->myIncStorage.Occurrence(theDefId.Index);
+      const BRepGraph_TopoNode::OccurrenceDef& anOccDef =
+        myData->myIncStorage.Occurrence(theDefId.Index);
       if (anOccDef.ParentProductIdx >= 0)
         markParentModified(BRepGraph_NodeId::Product(anOccDef.ParentProductIdx));
       break;
@@ -390,15 +409,23 @@ void BRepGraph::propagateModified(const BRepGraph_NodeId theDefId)
 
 //=================================================================================================
 
-int BRepGraph::NbHistoryRecords() const { return myData->myHistoryLog.NbRecords(); }
+int BRepGraph::NbHistoryRecords() const
+{
+  return myData->myHistoryLog.NbRecords();
+}
 
 const BRepGraph_HistoryRecord& BRepGraph::HistoryRecord(const int theRecordIdx) const
-{ return myData->myHistoryLog.Record(theRecordIdx); }
+{
+  return myData->myHistoryLog.Record(theRecordIdx);
+}
 
 BRepGraph_NodeId BRepGraph::FindOriginal(const BRepGraph_NodeId theModified) const
-{ return myData->myHistoryLog.FindOriginal(theModified); }
+{
+  return myData->myHistoryLog.FindOriginal(theModified);
+}
 
-NCollection_Vector<BRepGraph_NodeId> BRepGraph::FindDerived(const BRepGraph_NodeId theOriginal) const
+NCollection_Vector<BRepGraph_NodeId> BRepGraph::FindDerived(
+  const BRepGraph_NodeId theOriginal) const
 {
   return myData->myHistoryLog.FindDerived(theOriginal);
 }
@@ -466,7 +493,7 @@ void BRepGraph::EndDeferredInvalidation()
 
     for (int aWireIter = 0; aWireIter < aWires->Length(); ++aWireIter)
     {
-      const int aWireIdx = aWires->Value(aWireIter);
+      const int                    aWireIdx = aWires->Value(aWireIter);
       BRepGraph_TopoNode::WireDef& aWireDef = myData->myIncStorage.ChangeWire(aWireIdx);
       if (aWireDef.IsModified)
         continue;
@@ -478,7 +505,7 @@ void BRepGraph::EndDeferredInvalidation()
 
       for (int aFaceIter = 0; aFaceIter < aFaces->Length(); ++aFaceIter)
       {
-        const int aFaceIdx = aFaces->Value(aFaceIter);
+        const int                    aFaceIdx = aFaces->Value(aFaceIter);
         BRepGraph_TopoNode::FaceDef& aFaceDef = myData->myIncStorage.ChangeFace(aFaceIdx);
         if (aFaceDef.IsModified)
           continue;
@@ -490,7 +517,7 @@ void BRepGraph::EndDeferredInvalidation()
 
         for (int aShellIter = 0; aShellIter < aShells->Length(); ++aShellIter)
         {
-          const int aShellIdx = aShells->Value(aShellIter);
+          const int                     aShellIdx = aShells->Value(aShellIter);
           BRepGraph_TopoNode::ShellDef& aShellDef = myData->myIncStorage.ChangeShell(aShellIdx);
           if (aShellDef.IsModified)
             continue;
@@ -522,7 +549,7 @@ void BRepGraph::EndDeferredInvalidation()
 
     for (int aFaceIter = 0; aFaceIter < aFaces->Length(); ++aFaceIter)
     {
-      const int aFaceIdx = aFaces->Value(aFaceIter);
+      const int                    aFaceIdx = aFaces->Value(aFaceIter);
       BRepGraph_TopoNode::FaceDef& aFaceDef = myData->myIncStorage.ChangeFace(aFaceIdx);
       if (aFaceDef.IsModified)
         continue;
@@ -534,7 +561,7 @@ void BRepGraph::EndDeferredInvalidation()
 
       for (int aShellIter = 0; aShellIter < aShells->Length(); ++aShellIter)
       {
-        const int aShellIdx = aShells->Value(aShellIter);
+        const int                     aShellIdx = aShells->Value(aShellIter);
         BRepGraph_TopoNode::ShellDef& aShellDef = myData->myIncStorage.ChangeShell(aShellIdx);
         if (aShellDef.IsModified)
           continue;
@@ -565,7 +592,7 @@ void BRepGraph::EndDeferredInvalidation()
 
     for (int aShellIter = 0; aShellIter < aShells->Length(); ++aShellIter)
     {
-      const int aShellIdx = aShells->Value(aShellIter);
+      const int                     aShellIdx = aShells->Value(aShellIter);
       BRepGraph_TopoNode::ShellDef& aShellDef = myData->myIncStorage.ChangeShell(aShellIdx);
       if (aShellDef.IsModified)
         continue;
@@ -602,13 +629,13 @@ void BRepGraph::EndDeferredInvalidation()
   // Invalidate UserAttribute caches (UVBounds, BndLib, etc.) for all modified entities.
   // When modification subscribers exist, the collection of modified NodeIds piggybacks
   // on this existing per-kind iteration to avoid a separate sweep pass.
-  const int aNbVertices  = myData->myIncStorage.NbVertices();
-  const int aNbSolids    = myData->myIncStorage.NbSolids();
-  const int aNbCompounds = myData->myIncStorage.NbCompounds();
-  const int aNbCompSols  = myData->myIncStorage.NbCompSolids();
-  const bool aCollectModified = myHasModificationSubscribers;
+  const int                            aNbVertices      = myData->myIncStorage.NbVertices();
+  const int                            aNbSolids        = myData->myIncStorage.NbSolids();
+  const int                            aNbCompounds     = myData->myIncStorage.NbCompounds();
+  const int                            aNbCompSols      = myData->myIncStorage.NbCompSolids();
+  const bool                           aCollectModified = myHasModificationSubscribers;
   NCollection_Vector<BRepGraph_NodeId> aModifiedNodes;
-  int aModifiedKindsMask = 0;
+  int                                  aModifiedKindsMask = 0;
 
   for (int i = 0; i < aNbVertices; ++i)
   {
@@ -724,21 +751,41 @@ void BRepGraph::EndDeferredInvalidation()
 
 void BRepGraph::SetAllocator(const occ::handle<NCollection_BaseAllocator>& theAlloc)
 {
-  Standard_ASSERT_VOID(!myData->myIsDone,
-                       "SetAllocator: must be called before Build() - existing graph state will be lost");
+  Standard_ASSERT_VOID(
+    !myData->myIsDone,
+    "SetAllocator: must be called before Build() - existing graph state will be lost");
 
-  myData->myAllocator = !theAlloc.IsNull() ? theAlloc : NCollection_BaseAllocator::CommonBaseAllocator();
+  myData->myAllocator =
+    !theAlloc.IsNull() ? theAlloc : NCollection_BaseAllocator::CommonBaseAllocator();
 
   // Recreate the entire data object with the new allocator.
   myData = std::make_unique<BRepGraph_Data>(myData->myAllocator);
 }
 
-const occ::handle<NCollection_BaseAllocator>& BRepGraph::Allocator() const { return myData->myAllocator; }
-void BRepGraph::SetHistoryEnabled(const bool theVal) { myData->myHistoryLog.SetEnabled(theVal); }
-bool BRepGraph::IsHistoryEnabled() const { return myData->myHistoryLog.IsEnabled(); }
+const occ::handle<NCollection_BaseAllocator>& BRepGraph::Allocator() const
+{
+  return myData->myAllocator;
+}
 
-BRepGraph_History& BRepGraph::History() { return myData->myHistoryLog; }
-const BRepGraph_History& BRepGraph::History() const { return myData->myHistoryLog; }
+void BRepGraph::SetHistoryEnabled(const bool theVal)
+{
+  myData->myHistoryLog.SetEnabled(theVal);
+}
+
+bool BRepGraph::IsHistoryEnabled() const
+{
+  return myData->myHistoryLog.IsEnabled();
+}
+
+BRepGraph_History& BRepGraph::History()
+{
+  return myData->myHistoryLog;
+}
+
+const BRepGraph_History& BRepGraph::History() const
+{
+  return myData->myHistoryLog;
+}
 
 //=================================================================================================
 
@@ -772,8 +819,10 @@ void BRepGraph::UnregisterLayer(const TCollection_AsciiString& theName)
 void BRepGraph::dispatchLayerOnNodeRemoved(const BRepGraph_NodeId theNode,
                                            const BRepGraph_NodeId theReplacement)
 {
-  for (NCollection_DataMap<TCollection_AsciiString, occ::handle<BRepGraph_Layer>>::Iterator
-         anIter(myLayers); anIter.More(); anIter.Next())
+  for (NCollection_DataMap<TCollection_AsciiString, occ::handle<BRepGraph_Layer>>::Iterator anIter(
+         myLayers);
+       anIter.More();
+       anIter.Next())
   {
     anIter.Value()->OnNodeRemoved(theNode, theReplacement);
   }
@@ -784,8 +833,10 @@ void BRepGraph::dispatchLayerOnNodeRemoved(const BRepGraph_NodeId theNode,
 void BRepGraph::updateModificationSubscriberFlag()
 {
   myHasModificationSubscribers = false;
-  for (NCollection_DataMap<TCollection_AsciiString, occ::handle<BRepGraph_Layer>>::Iterator
-         anIter(myLayers); anIter.More(); anIter.Next())
+  for (NCollection_DataMap<TCollection_AsciiString, occ::handle<BRepGraph_Layer>>::Iterator anIter(
+         myLayers);
+       anIter.More();
+       anIter.Next())
   {
     if (anIter.Value()->SubscribedKinds() != 0)
     {
@@ -800,8 +851,10 @@ void BRepGraph::updateModificationSubscriberFlag()
 void BRepGraph::dispatchNodeModified(const BRepGraph_NodeId theNode)
 {
   const int aKindBit = BRepGraph_Layer::KindBit(theNode.NodeKind);
-  for (NCollection_DataMap<TCollection_AsciiString, occ::handle<BRepGraph_Layer>>::Iterator
-         anIter(myLayers); anIter.More(); anIter.Next())
+  for (NCollection_DataMap<TCollection_AsciiString, occ::handle<BRepGraph_Layer>>::Iterator anIter(
+         myLayers);
+       anIter.More();
+       anIter.Next())
   {
     if ((anIter.Value()->SubscribedKinds() & aKindBit) != 0)
       anIter.Value()->OnNodeModified(theNode);
@@ -810,12 +863,13 @@ void BRepGraph::dispatchNodeModified(const BRepGraph_NodeId theNode)
 
 //=================================================================================================
 
-void BRepGraph::dispatchNodesModified(
-  const NCollection_Vector<BRepGraph_NodeId>& theModifiedNodes,
-  const int theModifiedKindsMask)
+void BRepGraph::dispatchNodesModified(const NCollection_Vector<BRepGraph_NodeId>& theModifiedNodes,
+                                      const int theModifiedKindsMask)
 {
-  for (NCollection_DataMap<TCollection_AsciiString, occ::handle<BRepGraph_Layer>>::Iterator
-         anIter(myLayers); anIter.More(); anIter.Next())
+  for (NCollection_DataMap<TCollection_AsciiString, occ::handle<BRepGraph_Layer>>::Iterator anIter(
+         myLayers);
+       anIter.More();
+       anIter.Next())
   {
     if ((anIter.Value()->SubscribedKinds() & theModifiedKindsMask) != 0)
       anIter.Value()->OnNodesModified(theModifiedNodes);
@@ -827,7 +881,8 @@ void BRepGraph::dispatchNodesModified(
 BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> BRepGraph::MutEdge(const int theEdgeIdx)
 {
   return BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef>(
-    this, &myData->myIncStorage.ChangeEdge(theEdgeIdx),
+    this,
+    &myData->myIncStorage.ChangeEdge(theEdgeIdx),
     BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, theEdgeIdx));
 }
 
@@ -836,7 +891,8 @@ BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> BRepGraph::MutEdge(const int theEd
 BRepGraph_MutRef<BRepGraph_TopoNode::CoEdgeDef> BRepGraph::MutCoEdge(const int theCoEdgeIdx)
 {
   return BRepGraph_MutRef<BRepGraph_TopoNode::CoEdgeDef>(
-    this, &myData->myIncStorage.ChangeCoEdge(theCoEdgeIdx),
+    this,
+    &myData->myIncStorage.ChangeCoEdge(theCoEdgeIdx),
     BRepGraph_NodeId(BRepGraph_NodeId::Kind::CoEdge, theCoEdgeIdx));
 }
 
@@ -846,10 +902,10 @@ int BRepGraph::CreateCurve2DRep(const occ::handle<Geom2d_Curve>& theCurve2d)
 {
   if (theCurve2d.IsNull())
     return -1;
-  BRepGraphInc::Curve2DRep& aRep = myData->myIncStorage.AppendCurve2DRep();
-  const int anIdx = myData->myIncStorage.NbCurves2D() - 1;
-  aRep.Id    = BRepGraph_RepId::Curve2D(anIdx);
-  aRep.Curve = theCurve2d;
+  BRepGraphInc::Curve2DRep& aRep  = myData->myIncStorage.AppendCurve2DRep();
+  const int                 anIdx = myData->myIncStorage.NbCurves2D() - 1;
+  aRep.Id                         = BRepGraph_RepId::Curve2D(anIdx);
+  aRep.Curve                      = theCurve2d;
   return anIdx;
 }
 
@@ -858,7 +914,8 @@ int BRepGraph::CreateCurve2DRep(const occ::handle<Geom2d_Curve>& theCurve2d)
 BRepGraph_MutRef<BRepGraph_TopoNode::VertexDef> BRepGraph::MutVertex(const int theVertexIdx)
 {
   return BRepGraph_MutRef<BRepGraph_TopoNode::VertexDef>(
-    this, &myData->myIncStorage.ChangeVertex(theVertexIdx),
+    this,
+    &myData->myIncStorage.ChangeVertex(theVertexIdx),
     BRepGraph_NodeId(BRepGraph_NodeId::Kind::Vertex, theVertexIdx));
 }
 
@@ -867,7 +924,8 @@ BRepGraph_MutRef<BRepGraph_TopoNode::VertexDef> BRepGraph::MutVertex(const int t
 BRepGraph_MutRef<BRepGraph_TopoNode::WireDef> BRepGraph::MutWire(const int theWireIdx)
 {
   return BRepGraph_MutRef<BRepGraph_TopoNode::WireDef>(
-    this, &myData->myIncStorage.ChangeWire(theWireIdx),
+    this,
+    &myData->myIncStorage.ChangeWire(theWireIdx),
     BRepGraph_NodeId(BRepGraph_NodeId::Kind::Wire, theWireIdx));
 }
 
@@ -876,7 +934,8 @@ BRepGraph_MutRef<BRepGraph_TopoNode::WireDef> BRepGraph::MutWire(const int theWi
 BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> BRepGraph::MutFace(const int theFaceIdx)
 {
   return BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef>(
-    this, &myData->myIncStorage.ChangeFace(theFaceIdx),
+    this,
+    &myData->myIncStorage.ChangeFace(theFaceIdx),
     BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, theFaceIdx));
 }
 
@@ -885,7 +944,8 @@ BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> BRepGraph::MutFace(const int theFa
 BRepGraph_MutRef<BRepGraph_TopoNode::ShellDef> BRepGraph::MutShell(const int theShellIdx)
 {
   return BRepGraph_MutRef<BRepGraph_TopoNode::ShellDef>(
-    this, &myData->myIncStorage.ChangeShell(theShellIdx),
+    this,
+    &myData->myIncStorage.ChangeShell(theShellIdx),
     BRepGraph_NodeId(BRepGraph_NodeId::Kind::Shell, theShellIdx));
 }
 
@@ -894,7 +954,8 @@ BRepGraph_MutRef<BRepGraph_TopoNode::ShellDef> BRepGraph::MutShell(const int the
 BRepGraph_MutRef<BRepGraph_TopoNode::SolidDef> BRepGraph::MutSolid(const int theSolidIdx)
 {
   return BRepGraph_MutRef<BRepGraph_TopoNode::SolidDef>(
-    this, &myData->myIncStorage.ChangeSolid(theSolidIdx),
+    this,
+    &myData->myIncStorage.ChangeSolid(theSolidIdx),
     BRepGraph_NodeId(BRepGraph_NodeId::Kind::Solid, theSolidIdx));
 }
 
@@ -903,16 +964,19 @@ BRepGraph_MutRef<BRepGraph_TopoNode::SolidDef> BRepGraph::MutSolid(const int the
 BRepGraph_MutRef<BRepGraph_TopoNode::CompoundDef> BRepGraph::MutCompound(const int theCompoundIdx)
 {
   return BRepGraph_MutRef<BRepGraph_TopoNode::CompoundDef>(
-    this, &myData->myIncStorage.ChangeCompound(theCompoundIdx),
+    this,
+    &myData->myIncStorage.ChangeCompound(theCompoundIdx),
     BRepGraph_NodeId(BRepGraph_NodeId::Kind::Compound, theCompoundIdx));
 }
 
 //=================================================================================================
 
-BRepGraph_MutRef<BRepGraph_TopoNode::CompSolidDef> BRepGraph::MutCompSolid(const int theCompSolidIdx)
+BRepGraph_MutRef<BRepGraph_TopoNode::CompSolidDef> BRepGraph::MutCompSolid(
+  const int theCompSolidIdx)
 {
   return BRepGraph_MutRef<BRepGraph_TopoNode::CompSolidDef>(
-    this, &myData->myIncStorage.ChangeCompSolid(theCompSolidIdx),
+    this,
+    &myData->myIncStorage.ChangeCompSolid(theCompSolidIdx),
     BRepGraph_NodeId(BRepGraph_NodeId::Kind::CompSolid, theCompSolidIdx));
 }
 
@@ -921,15 +985,18 @@ BRepGraph_MutRef<BRepGraph_TopoNode::CompSolidDef> BRepGraph::MutCompSolid(const
 BRepGraph_MutRef<BRepGraph_TopoNode::ProductDef> BRepGraph::MutProduct(const int theProductIdx)
 {
   return BRepGraph_MutRef<BRepGraph_TopoNode::ProductDef>(
-    this, &myData->myIncStorage.ChangeProduct(theProductIdx),
+    this,
+    &myData->myIncStorage.ChangeProduct(theProductIdx),
     BRepGraph_NodeId(BRepGraph_NodeId::Kind::Product, theProductIdx));
 }
 
 //=================================================================================================
 
-BRepGraph_MutRef<BRepGraph_TopoNode::OccurrenceDef> BRepGraph::MutOccurrence(const int theOccurrenceIdx)
+BRepGraph_MutRef<BRepGraph_TopoNode::OccurrenceDef> BRepGraph::MutOccurrence(
+  const int theOccurrenceIdx)
 {
   return BRepGraph_MutRef<BRepGraph_TopoNode::OccurrenceDef>(
-    this, &myData->myIncStorage.ChangeOccurrence(theOccurrenceIdx),
+    this,
+    &myData->myIncStorage.ChangeOccurrence(theOccurrenceIdx),
     BRepGraph_NodeId(BRepGraph_NodeId::Kind::Occurrence, theOccurrenceIdx));
 }

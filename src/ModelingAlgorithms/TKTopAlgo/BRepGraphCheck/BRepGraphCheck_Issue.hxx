@@ -32,10 +32,10 @@ struct BRepGraphCheck_Issue
     Fatal   = 2  //!< Severe corruption that prevents further processing.
   };
 
-  BRepGraph_NodeId NodeId;                   //!< Node with the problem.
-  BRepGraph_NodeId ContextNodeId;            //!< Parent context (e.g. face for edge-in-face check).
-  BRepCheck_Status Status = BRepCheck_NoError; //!< Error code from BRepCheck_Status enum.
-  Severity IssueSeverity  = Severity::Error; //!< Severity classification.
+  BRepGraph_NodeId NodeId;        //!< Node with the problem.
+  BRepGraph_NodeId ContextNodeId; //!< Parent context (e.g. face for edge-in-face check).
+  BRepCheck_Status Status        = BRepCheck_NoError; //!< Error code from BRepCheck_Status enum.
+  Severity         IssueSeverity = Severity::Error;   //!< Severity classification.
 };
 
 #endif // _BRepGraphCheck_Issue_HeaderFile

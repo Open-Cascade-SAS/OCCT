@@ -42,7 +42,11 @@ public:
     bool ExtractRegularities;    //!< Phase 3b: edge regularities
     bool ExtractVertexPointReps; //!< Phase 3c: vertex point representations
 
-    Options() : ExtractRegularities(true), ExtractVertexPointReps(true) {}
+    Options()
+        : ExtractRegularities(true),
+          ExtractVertexPointReps(true)
+    {
+    }
   };
 
   //! Build incidence storage from a TopoDS_Shape.
@@ -50,12 +54,12 @@ public:
   //! @param[in]  theShape    root shape
   //! @param[in]  theParallel if true, face-level extraction runs in parallel
   //! @param[in]  theOptions  optional post-pass controls
-  static Standard_EXPORT void Perform(
-    BRepGraphInc_Storage&                    theStorage,
-    const TopoDS_Shape&                      theShape,
-    const bool                               theParallel,
-    const Options&                           theOptions = Options(),
-    const occ::handle<NCollection_BaseAllocator>& theTmpAlloc = occ::handle<NCollection_BaseAllocator>());
+  static Standard_EXPORT void Perform(BRepGraphInc_Storage& theStorage,
+                                      const TopoDS_Shape&   theShape,
+                                      const bool            theParallel,
+                                      const Options&        theOptions = Options(),
+                                      const occ::handle<NCollection_BaseAllocator>& theTmpAlloc =
+                                        occ::handle<NCollection_BaseAllocator>());
 
   //! Extend existing storage with additional shapes (no clear).
   //! Flattens hierarchy to face level only (no Solid/Shell/Compound entities created).
@@ -64,11 +68,11 @@ public:
   //! @param[in]     theShape    shape to append
   //! @param[in]     theParallel if true, face-level extraction runs in parallel
   //! @param[in]     theTmpAlloc optional allocator for temporary scratch data
-  static Standard_EXPORT void Append(
-    BRepGraphInc_Storage&                    theStorage,
-    const TopoDS_Shape&                      theShape,
-    const bool                               theParallel,
-    const occ::handle<NCollection_BaseAllocator>& theTmpAlloc = occ::handle<NCollection_BaseAllocator>());
+  static Standard_EXPORT void Append(BRepGraphInc_Storage&                         theStorage,
+                                     const TopoDS_Shape&                           theShape,
+                                     const bool                                    theParallel,
+                                     const occ::handle<NCollection_BaseAllocator>& theTmpAlloc =
+                                       occ::handle<NCollection_BaseAllocator>());
 
 private:
   BRepGraphInc_Populate() = delete;

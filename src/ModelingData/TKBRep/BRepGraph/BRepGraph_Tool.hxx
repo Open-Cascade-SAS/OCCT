@@ -131,7 +131,8 @@ public:
     //! @param[in] theGraph   source graph
     //! @param[in] theEdgeIdx zero-based edge definition index
     //! @return pair of (first, last) parameters
-    Standard_EXPORT static std::pair<double, double> Range(const BRepGraph& theGraph, const int theEdgeIdx);
+    Standard_EXPORT static std::pair<double, double> Range(const BRepGraph& theGraph,
+                                                           const int        theEdgeIdx);
 
     //! Returns the start vertex reference (carries Location and Orientation).
     //! @param[in] theGraph   source graph
@@ -198,7 +199,7 @@ public:
     //! @param[in] theEdgeIdx zero-based edge definition index
     //! @return polygon handle, or null handle if no polygon
     Standard_EXPORT static const occ::handle<Poly_Polygon3D>& Polygon3D(const BRepGraph& theGraph,
-                                                                        const int        theEdgeIdx);
+                                                                        const int theEdgeIdx);
 
     //! @name Continuity
 
@@ -228,7 +229,8 @@ public:
     //! @param[in] theGraph   source graph
     //! @param[in] theEdgeIdx zero-based edge definition index
     //! @return maximum continuity order
-    Standard_EXPORT static GeomAbs_Shape MaxContinuity(const BRepGraph& theGraph, const int theEdgeIdx);
+    Standard_EXPORT static GeomAbs_Shape MaxContinuity(const BRepGraph& theGraph,
+                                                       const int        theEdgeIdx);
 
     //! @name PCurve lookup (edge-face context)
 
@@ -248,7 +250,7 @@ public:
     //! @return pointer to CoEdgeEntity, or nullptr if not found
     Standard_EXPORT static const BRepGraphInc::CoEdgeEntity* FindPCurve(const BRepGraph& theGraph,
                                                                         const int        theEdgeIdx,
-                                                                        const int        theFaceIdx);
+                                                                        const int theFaceIdx);
 
     //! Finds the CoEdge entity with specific orientation (for seam edges).
     //! @param[in] theGraph   source graph
@@ -256,10 +258,11 @@ public:
     //! @param[in] theFaceIdx zero-based face definition index
     //! @param[in] theOri     edge orientation on the face
     //! @return pointer to CoEdgeEntity, or nullptr if not found
-    Standard_EXPORT static const BRepGraphInc::CoEdgeEntity* FindPCurve(const BRepGraph&         theGraph,
-                                                                        const int                theEdgeIdx,
-                                                                        const int                theFaceIdx,
-                                                                        const TopAbs_Orientation theOri);
+    Standard_EXPORT static const BRepGraphInc::CoEdgeEntity* FindPCurve(
+      const BRepGraph&         theGraph,
+      const int                theEdgeIdx,
+      const int                theFaceIdx,
+      const TopAbs_Orientation theOri);
 
     //! @name CurveOnSurface
 
@@ -333,13 +336,14 @@ public:
     //! @param[in] theCoEdgeIdx zero-based coedge definition index
     //! @return pair of (first, last) parameters
     Standard_EXPORT static std::pair<double, double> Range(const BRepGraph& theGraph,
-                                                          const int        theCoEdgeIdx);
+                                                           const int        theCoEdgeIdx);
 
     //! Returns true if the coedge has a polygon-on-surface representation.
     //! @param[in] theGraph     source graph
     //! @param[in] theCoEdgeIdx zero-based coedge definition index
     //! @return true if polygon exists
-    Standard_EXPORT static bool HasPolygonOnSurface(const BRepGraph& theGraph, const int theCoEdgeIdx);
+    Standard_EXPORT static bool HasPolygonOnSurface(const BRepGraph& theGraph,
+                                                    const int        theCoEdgeIdx);
 
     //! Returns the polygon-on-surface (2D) for the coedge.
     //! @param[in] theGraph     source graph
@@ -401,7 +405,7 @@ public:
     //! @param[in] theFaceIdx zero-based face definition index
     //! @return surface adaptor, or empty adaptor if no surface
     Standard_EXPORT static GeomAdaptor_TransformedSurface SurfaceAdaptor(const BRepGraph& theGraph,
-                                                                         const int        theFaceIdx);
+                                                                         const int theFaceIdx);
 
     //! Returns a surface adaptor with explicit UV bounds.
     //! @param[in] theGraph   source graph
@@ -412,11 +416,11 @@ public:
     //! @param[in] theVLast   last V parameter
     //! @return surface adaptor with bounds, or empty adaptor if no surface
     Standard_EXPORT static GeomAdaptor_TransformedSurface SurfaceAdaptor(const BRepGraph& theGraph,
-                                                                         const int        theFaceIdx,
-                                                                         const double     theUFirst,
-                                                                         const double     theULast,
-                                                                         const double     theVFirst,
-                                                                         const double     theVLast);
+                                                                         const int    theFaceIdx,
+                                                                         const double theUFirst,
+                                                                         const double theULast,
+                                                                         const double theVFirst,
+                                                                         const double theVLast);
 
     //! Returns the active triangulation for the face (definition frame).
     //! @param[in] theGraph   source graph

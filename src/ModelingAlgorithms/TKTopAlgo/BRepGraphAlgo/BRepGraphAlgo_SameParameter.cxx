@@ -55,7 +55,7 @@ namespace
 double computeTol(const occ::handle<Adaptor3d_Curve>&   theC3d,
                   const occ::handle<Adaptor2d_Curve2d>& theC2d,
                   const occ::handle<Adaptor3d_Surface>& theSurf,
-                  int                              theNbP)
+                  int                                   theNbP)
 {
   NCollection_Array1<double> aDist(1, theNbP + 10);
   aDist.Init(-1.0);
@@ -209,7 +209,7 @@ bool evalTol(const Geom2dAdaptor_Curve& thePCAdaptor,
 constexpr int    THE_NCONTROL  = 22;     //!< Number of control points for ComputeTol sampling
 constexpr double THE_BIG_ERROR = 1.0e10; //!< Threshold above which error is considered degenerate
 constexpr double THE_MIN_POLE_DIST_RATIO =
-  0.1;                                        //!< Fraction of min pole distance for C0->C1 tolerance
+  0.1; //!< Fraction of min pole distance for C0->C1 tolerance
 constexpr double THE_APPROX_MIN_TOL = 1.0e-3; //!< Minimum tolerance for Approx_CurvilinearParameter
 constexpr double THE_ANA_BSP_TOL    = 1.0e-7; //!< Tight tolerance for analytical+BSpline case
 constexpr double THE_KNOT_RATIO_CRIT =
@@ -220,7 +220,7 @@ constexpr int THE_MAX_APPROX_SEGMENTS = 10; //!< Max segments for CurvilinearPar
 //! Internal per-edge fallback counters used by enforceImpl.
 struct EnforceFlags
 {
-  int NbC0Fallbacks    = 0;
+  int NbC0Fallbacks     = 0;
   int NbApproxFallbacks = 0;
 };
 
@@ -233,9 +233,8 @@ bool enforceImpl(BRepGraph&       theGraph,
   // Single MutRef scope ensures markModified fires exactly once,
   // even on early returns, due to RAII.
   BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aMutEdge = theGraph.MutEdge(theEdgeId.Index);
-  const BRepGraph_TopoNode::EdgeDef& anEdge = *aMutEdge;
-  const NCollection_Vector<int>& aCoEdgeIdxs =
-    theGraph.Defs().CoEdgesOfEdge(theEdgeId.Index);
+  const BRepGraph_TopoNode::EdgeDef&            anEdge   = *aMutEdge;
+  const NCollection_Vector<int>& aCoEdgeIdxs = theGraph.Defs().CoEdgesOfEdge(theEdgeId.Index);
   if (!BRepGraph_Tool::Edge::HasCurve(theGraph, theEdgeId.Index) || aCoEdgeIdxs.IsEmpty())
   {
     aMutEdge->SameParameter = true;
@@ -244,14 +243,14 @@ bool enforceImpl(BRepGraph&       theGraph,
 
   // Build 3D curve adaptor from graph, handle periodicity/trimming like BRepLib.
   occ::handle<Geom_Curve> aC3d = BRepGraph_Tool::Edge::Curve(theGraph, theEdgeId.Index);
-  double             aF3d = anEdge.ParamFirst;
-  double             aL3d = anEdge.ParamLast;
+  double                  aF3d = anEdge.ParamFirst;
+  double                  aL3d = anEdge.ParamLast;
 
   bool isTrimmedPeriodical = false;
   if (aC3d->DynamicType() == STANDARD_TYPE(Geom_TrimmedCurve))
   {
     occ::handle<Geom_Curve> aBasis = occ::down_cast<Geom_TrimmedCurve>(aC3d)->BasisCurve();
-    isTrimmedPeriodical       = aBasis->IsPeriodic();
+    isTrimmedPeriodical            = aBasis->IsPeriodic();
   }
 
   if (!aC3d->IsPeriodic() && !isTrimmedPeriodical)
@@ -266,15 +265,16 @@ bool enforceImpl(BRepGraph&       theGraph,
 
   // Apply edge location transform if any (graph CurveAdaptor handles this internally,
   // but for Approx_SameParameter we need explicit Geom_Curve + GeomAdaptor_Curve).
-  GeomAdaptor_TransformedCurve aTransCurve = BRepGraph_Tool::Edge::CurveAdaptor(theGraph, theEdgeId.Index);
-  const gp_Trsf&               aCrvTrsf    = aTransCurve.Trsf();
+  GeomAdaptor_TransformedCurve aTransCurve =
+    BRepGraph_Tool::Edge::CurveAdaptor(theGraph, theEdgeId.Index);
+  const gp_Trsf& aCrvTrsf = aTransCurve.Trsf();
 
   occ::handle<GeomAdaptor_Curve>   aHC    = new GeomAdaptor_Curve();
   occ::handle<Geom2dAdaptor_Curve> aHC2d  = new Geom2dAdaptor_Curve();
   occ::handle<GeomAdaptor_Surface> aHS    = new GeomAdaptor_Surface();
-  GeomAdaptor_Curve&          aGAC   = *aHC;
-  Geom2dAdaptor_Curve&        aGAC2d = *aHC2d;
-  GeomAdaptor_Surface&        aGAS   = *aHS;
+  GeomAdaptor_Curve&               aGAC   = *aHC;
+  Geom2dAdaptor_Curve&             aGAC2d = *aHC2d;
+  GeomAdaptor_Surface&             aGAS   = *aHS;
 
   occ::handle<Geom_Curve> aC3dTransformed = aC3d;
   if (aCrvTrsf.Form() != gp_Identity)
@@ -295,8 +295,8 @@ bool enforceImpl(BRepGraph&       theGraph,
 
   for (int aCEIter = 0; aCEIter < aCoEdgeIdxs.Length(); ++aCEIter)
   {
-    const int aCoEdgeIdx = aCoEdgeIdxs.Value(aCEIter);
-    const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Defs().CoEdge(aCoEdgeIdx);
+    const int                            aCoEdgeIdx = aCoEdgeIdxs.Value(aCEIter);
+    const BRepGraph_TopoNode::CoEdgeDef& aCoEdge    = theGraph.Defs().CoEdge(aCoEdgeIdx);
     if (aCoEdge.Curve2DRepIdx < 0)
     {
       continue;
@@ -314,10 +314,11 @@ bool enforceImpl(BRepGraph&       theGraph,
     hasYaPCu = true;
 
     // Load surface (apply face transform if non-identity).
-    GeomAdaptor_TransformedSurface aTransSurf = BRepGraph_Tool::Face::SurfaceAdaptor(theGraph, aCoEdge.FaceDefId.Index);
-    occ::handle<Geom_Surface>           aSurf      =
+    GeomAdaptor_TransformedSurface aTransSurf =
+      BRepGraph_Tool::Face::SurfaceAdaptor(theGraph, aCoEdge.FaceDefId.Index);
+    occ::handle<Geom_Surface> aSurf =
       BRepGraph_Tool::Face::Surface(theGraph, aCoEdge.FaceDefId.Index);
-    const gp_Trsf&                 aSrfTrsf   = aTransSurf.Trsf();
+    const gp_Trsf& aSrfTrsf = aTransSurf.Trsf();
     if (aSrfTrsf.Form() != gp_Identity)
     {
       aSurf = occ::down_cast<Geom_Surface>(aSurf->Transformed(aSrfTrsf));
@@ -327,7 +328,7 @@ bool enforceImpl(BRepGraph&       theGraph,
     const occ::handle<Geom2d_Curve>& aCoEdgePCurve =
       BRepGraph_Tool::CoEdge::PCurve(theGraph, aCoEdgeIdx);
     occ::handle<Geom2d_Curve> aCurPC    = aCoEdgePCurve;
-    bool                 aUpdatePC = false;
+    bool                      aUpdatePC = false;
 
     // SameRange check.
     const double aTolSameRange = std::max(aGAC.Resolution(theTolerance), Precision::PConfusion());
@@ -356,22 +357,21 @@ bool enforceImpl(BRepGraph&       theGraph,
     // before skipping the full computeTol + Approx_SameParameter.
     {
       const GeomAbs_SurfaceType aSrfType = aGAS.GetType();
-      if ((aCrvType == GeomAbs_Line
-           && (aSrfType == GeomAbs_Plane || aSrfType == GeomAbs_Cylinder))
+      if ((aCrvType == GeomAbs_Line && (aSrfType == GeomAbs_Plane || aSrfType == GeomAbs_Cylinder))
           || (aCrvType == GeomAbs_Circle && aSrfType == GeomAbs_Plane))
       {
         constexpr int    THE_NB_ANALYTIC_SAMPLES = 5;
-        constexpr double THE_ANALYTIC_STEP = 1.0 / (THE_NB_ANALYTIC_SAMPLES - 1);
-        bool isAnalyticOk  = true;
-        double aMaxAnalErr = 0.0;
+        constexpr double THE_ANALYTIC_STEP       = 1.0 / (THE_NB_ANALYTIC_SAMPLES - 1);
+        bool             isAnalyticOk            = true;
+        double           aMaxAnalErr             = 0.0;
         for (int iSmp = 0; iSmp < THE_NB_ANALYTIC_SAMPLES; ++iSmp)
         {
-          const double aT   = aF3d + (aL3d - aF3d) * (static_cast<double>(iSmp) * THE_ANALYTIC_STEP);
-          const gp_Pnt aP3d = aGAC.EvalD0(aT);
-          const gp_Pnt2d aUV = aGAC2d.EvalD0(aT);
-          const gp_Pnt aPSurf = aGAS.EvalD0(aUV.X(), aUV.Y());
-          const double aDev  = aP3d.Distance(aPSurf);
-          aMaxAnalErr = std::max(aMaxAnalErr, aDev);
+          const double aT = aF3d + (aL3d - aF3d) * (static_cast<double>(iSmp) * THE_ANALYTIC_STEP);
+          const gp_Pnt aP3d     = aGAC.EvalD0(aT);
+          const gp_Pnt2d aUV    = aGAC2d.EvalD0(aT);
+          const gp_Pnt   aPSurf = aGAS.EvalD0(aUV.X(), aUV.Y());
+          const double   aDev   = aP3d.Distance(aPSurf);
+          aMaxAnalErr           = std::max(aMaxAnalErr, aDev);
           if (aDev > theTolerance)
           {
             isAnalyticOk = false;
@@ -411,10 +411,10 @@ bool enforceImpl(BRepGraph&       theGraph,
 
       occ::handle<Geom2d_BSplineCurve> aBs2d         = aGAC2d.BSpline();
       occ::handle<Geom2d_BSplineCurve> aBs2dSov      = aBs2d;
-      const double                aFC0          = aBs2d->FirstParameter();
-      const double                aLC0          = aBs2d->LastParameter();
-      bool                        isRepar       = true;
-      const gp_Pnt2d              anOriginPoint = aGAC2d.EvalD0(aFC0);
+      const double                     aFC0          = aBs2d->FirstParameter();
+      const double                     aLC0          = aBs2d->LastParameter();
+      bool                             isRepar       = true;
+      const gp_Pnt2d                   anOriginPoint = aGAC2d.EvalD0(aFC0);
       try
       {
         OCC_CATCH_SIGNALS
@@ -621,10 +621,10 @@ bool enforceImpl(BRepGraph&       theGraph,
 
     if (isGoodPC)
     {
-      const double                     aTol     = (isANA && isBSP) ? THE_ANA_BSP_TOL : theTolerance;
-      const occ::handle<Adaptor3d_Curve>&   aHCurv   = aHC;
+      const double                        aTol = (isANA && isBSP) ? THE_ANA_BSP_TOL : theTolerance;
+      const occ::handle<Adaptor3d_Curve>& aHCurv     = aHC;
       const occ::handle<Adaptor2d_Curve2d>& aHCurv2d = aHC2d;
-      Approx_SameParameter             aSameP(aHCurv, aHCurv2d, aHS, aTol);
+      Approx_SameParameter                  aSameP(aHCurv, aHCurv2d, aHS, aTol);
 
       if (aSameP.IsSameParameter())
       {
@@ -695,8 +695,8 @@ bool enforceImpl(BRepGraph&       theGraph,
   {
     if (hasYaPCu)
     {
-      aMaxDist              = std::max(aMaxDist, Precision::Confusion());
-      aMutEdge->Tolerance   = aMaxDist;
+      aMaxDist            = std::max(aMaxDist, Precision::Confusion());
+      aMutEdge->Tolerance = aMaxDist;
     }
     aMutEdge->SameParameter = true;
   }
@@ -724,7 +724,7 @@ BRepGraphAlgo_SameParameter::Result BRepGraphAlgo_SameParameter::Perform(
   double                             theTolerance,
   bool                               theParallel)
 {
-  Result aResult;
+  Result    aResult;
   const int aNbEdges = theEdgeIndices.Extent();
   if (aNbEdges == 0)
   {
@@ -749,7 +749,7 @@ BRepGraphAlgo_SameParameter::Result BRepGraphAlgo_SameParameter::Perform(
       [&](int theIdx) {
         const int              anEdgeIdx = anIndices.Value(theIdx);
         const BRepGraph_NodeId anEdgeId(BRepGraph_NodeId::Kind::Edge, anEdgeIdx);
-        EnforceFlags aFlags;
+        EnforceFlags           aFlags;
         enforceImpl(theGraph, anEdgeId, theTolerance, aFlags);
         if (aFlags.NbC0Fallbacks > 0)
           aNbC0.fetch_add(aFlags.NbC0Fallbacks, std::memory_order_relaxed);
@@ -759,7 +759,7 @@ BRepGraphAlgo_SameParameter::Result BRepGraphAlgo_SameParameter::Perform(
       !theParallel);
   }
 
-  aResult.NbC0Fallbacks    = aNbC0.load();
+  aResult.NbC0Fallbacks     = aNbC0.load();
   aResult.NbApproxFallbacks = aNbApprox.load();
   return aResult;
 }

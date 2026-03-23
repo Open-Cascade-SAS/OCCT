@@ -41,7 +41,7 @@ TEST(BRepGraphAlgo_FaceAnalysisTest, NormalFace_Unaffected)
   const int aNbFacesBefore = aGraph.Defs().NbFaces();
 
   BRepGraphAlgo_FaceAnalysis::Options aOpts;
-  aOpts.MinTolerance = 1.0e-8;
+  aOpts.MinTolerance                         = 1.0e-8;
   BRepGraphAlgo_FaceAnalysis::Result aResult = BRepGraphAlgo_FaceAnalysis::Perform(aGraph, aOpts);
 
   EXPECT_TRUE(aResult.IsDone);
@@ -77,7 +77,7 @@ TEST(BRepGraphAlgo_FaceAnalysisTest, SmallEdge_Detection)
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraphAlgo_FaceAnalysis::Options aOpts;
-  aOpts.MinTolerance = 1.0e-2;
+  aOpts.MinTolerance                         = 1.0e-2;
   BRepGraphAlgo_FaceAnalysis::Result aResult = BRepGraphAlgo_FaceAnalysis::Perform(aGraph, aOpts);
 
   EXPECT_TRUE(aResult.IsDone);
@@ -107,7 +107,7 @@ TEST(BRepGraphAlgo_FaceAnalysisTest, SmallFace_Removal)
   ASSERT_FALSE(aTinyFace.IsNull());
 
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
-  TopoDS_Face aNormalFace;
+  TopoDS_Face         aNormalFace;
   for (TopExp_Explorer anExp(aBoxMaker.Shape(), TopAbs_FACE); anExp.More(); anExp.Next())
   {
     aNormalFace = TopoDS::Face(anExp.Current());
@@ -125,7 +125,7 @@ TEST(BRepGraphAlgo_FaceAnalysisTest, SmallFace_Removal)
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraphAlgo_FaceAnalysis::Options aOpts;
-  aOpts.MinTolerance = 1.0e-2;
+  aOpts.MinTolerance                         = 1.0e-2;
   BRepGraphAlgo_FaceAnalysis::Result aResult = BRepGraphAlgo_FaceAnalysis::Perform(aGraph, aOpts);
 
   EXPECT_TRUE(aResult.IsDone);
@@ -169,7 +169,7 @@ TEST(BRepGraphAlgo_FaceAnalysisTest, VertexGluing_AveragedCoordinates)
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraphAlgo_FaceAnalysis::Options aOpts;
-  aOpts.MinTolerance = 1.0e-2;
+  aOpts.MinTolerance                         = 1.0e-2;
   BRepGraphAlgo_FaceAnalysis::Result aResult = BRepGraphAlgo_FaceAnalysis::Perform(aGraph, aOpts);
 
   EXPECT_TRUE(aResult.IsDone);
@@ -177,7 +177,7 @@ TEST(BRepGraphAlgo_FaceAnalysisTest, VertexGluing_AveragedCoordinates)
   EXPECT_EQ(aResult.DegeneratedEdges.Length(), 1);
 
   // The degenerated edge's vertices should be merged.
-  const int  anEdgeIdx = aResult.DegeneratedEdges.Value(0).Index;
+  const int   anEdgeIdx = aResult.DegeneratedEdges.Value(0).Index;
   const auto& anEdge    = aGraph.Defs().Edge(anEdgeIdx);
   EXPECT_TRUE(anEdge.IsDegenerate);
   EXPECT_EQ(anEdge.StartVertex.VertexIdx, anEdge.EndVertex.VertexIdx);

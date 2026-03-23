@@ -34,7 +34,6 @@ class BRepGraph_History
   friend class BRepGraph;
 
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Record a modification: theOriginal was replaced by theReplacements.
@@ -53,10 +52,11 @@ public:
   //! @param[in] theOriginals    node ids before the operation
   //! @param[in] theReplacements node ids after the operation (same length)
   //! @param[in] theExtraInfo    optional diagnostic info stored on the record
-  Standard_EXPORT void RecordBatch(const TCollection_AsciiString&              theOpLabel,
-                                   const NCollection_Vector<BRepGraph_NodeId>& theOriginals,
-                                   const NCollection_Vector<BRepGraph_NodeId>& theReplacements,
-                                   const TCollection_AsciiString&              theExtraInfo = TCollection_AsciiString());
+  Standard_EXPORT void RecordBatch(
+    const TCollection_AsciiString&              theOpLabel,
+    const NCollection_Vector<BRepGraph_NodeId>& theOriginals,
+    const NCollection_Vector<BRepGraph_NodeId>& theReplacements,
+    const TCollection_AsciiString&              theExtraInfo = TCollection_AsciiString());
 
   //! Walk backwards from a modified node to its original.
   //! Follows the reverse map recursively until a root is reached.
@@ -68,7 +68,8 @@ public:
   //! Follows the forward map recursively, collecting all leaves.
   //! @param[in] theOriginal node id to trace forward
   //! @return all transitively derived node ids
-  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> FindDerived(const BRepGraph_NodeId theOriginal) const;
+  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> FindDerived(
+    const BRepGraph_NodeId theOriginal) const;
 
   //! Number of recorded history events.
   //! @return record count
@@ -96,7 +97,6 @@ public:
   Standard_EXPORT void SetAllocator(const occ::handle<NCollection_BaseAllocator>& theAlloc);
 
 private:
-
   occ::handle<NCollection_BaseAllocator> myAllocator;
 
   NCollection_Vector<BRepGraph_HistoryRecord> myRecords;
@@ -105,8 +105,7 @@ private:
   NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId> myDerivedToOriginal;
 
   //! Forward map: original node -> vector of derived nodes.
-  NCollection_DataMap<BRepGraph_NodeId,
-                      NCollection_Vector<BRepGraph_NodeId>> myOriginalToDerived;
+  NCollection_DataMap<BRepGraph_NodeId, NCollection_Vector<BRepGraph_NodeId>> myOriginalToDerived;
 
   bool myEnabled = true;
 };

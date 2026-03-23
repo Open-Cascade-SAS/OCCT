@@ -43,10 +43,18 @@ public:
 
 private:
   friend class BRepGraph;
-  explicit UIDsView(const BRepGraph* theGraph) : myGraph(theGraph) {}
+
+  explicit UIDsView(const BRepGraph* theGraph)
+      : myGraph(theGraph)
+  {
+  }
+
   const BRepGraph* myGraph;
 };
 
-inline BRepGraph::UIDsView BRepGraph::UIDs() const { return UIDsView(this); }
+inline BRepGraph::UIDsView BRepGraph::UIDs() const
+{
+  return UIDsView(this);
+}
 
 #endif // _BRepGraph_UIDsView_HeaderFile

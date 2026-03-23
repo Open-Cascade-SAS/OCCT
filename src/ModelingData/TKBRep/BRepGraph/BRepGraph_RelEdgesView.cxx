@@ -27,8 +27,7 @@ int BRepGraph::RelEdgesView::NbFrom(const BRepGraph_NodeId theNode) const
 
 int BRepGraph::RelEdgesView::NbTo(const BRepGraph_NodeId theNode) const
 {
-  const NCollection_Vector<BRepGraph_RelEdge>* aEdges =
-    myGraph->myData->myInRelEdges.Seek(theNode);
+  const NCollection_Vector<BRepGraph_RelEdge>* aEdges = myGraph->myData->myInRelEdges.Seek(theNode);
   return aEdges != nullptr ? aEdges->Length() : 0;
 }
 

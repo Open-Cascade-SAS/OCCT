@@ -24,7 +24,6 @@
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_Tool.hxx>
-#include <BRepGraph_Tool.hxx>
 #include <BRepGraphAlgo_Copy.hxx>
 #include <BRepGraphAlgo_SameParameter.hxx>
 #include <BRepGraphAlgo_Sewing.hxx>
@@ -110,10 +109,9 @@ TopoDS_Shape sewCopiedFaces(const NCollection_Sequence<TopoDS_Face>& theFaces,
 }
 
 //! Build a compound from shapes and sew using Perform on a pre-built graph.
-BRepGraphAlgo_Sewing::Result sewOnGraph(
-  const NCollection_Sequence<TopoDS_Shape>& theShapes,
-  const BRepGraphAlgo_Sewing::Options&      theOptions,
-  BRepGraph&                                theGraph)
+BRepGraphAlgo_Sewing::Result sewOnGraph(const NCollection_Sequence<TopoDS_Shape>& theShapes,
+                                        const BRepGraphAlgo_Sewing::Options&      theOptions,
+                                        BRepGraph&                                theGraph)
 {
   BRep_Builder    aBB;
   TopoDS_Compound aCompound;
@@ -183,7 +181,7 @@ TEST(BRepGraphAlgo_SewingTest, SewAllSixBoxFaces)
   ASSERT_FALSE(aResult.IsNull());
 
   // Verify via Perform on graph for diagnostics.
-  BRepGraph aGraph;
+  BRepGraph                          aGraph;
   NCollection_Sequence<TopoDS_Shape> aShapes;
   for (int aFaceIdx = 1; aFaceIdx <= aFaces.Length(); ++aFaceIdx)
     aShapes.Append(aFaces.Value(aFaceIdx));
@@ -837,8 +835,8 @@ NCollection_Sequence<TopoDS_Shape> buildFaceGrid(int    theNx,
                                                  double theSizeY)
 {
   NCollection_Sequence<TopoDS_Shape> aFaces;
-  BRepPrimAPI_MakeBox               aBoxMaker(theSizeX, theSizeY, 1.0);
-  const TopoDS_Shape&               aBox = aBoxMaker.Shape();
+  BRepPrimAPI_MakeBox                aBoxMaker(theSizeX, theSizeY, 1.0);
+  const TopoDS_Shape&                aBox = aBoxMaker.Shape();
 
   // Find the bottom face (Z=0 plane).
   TopoDS_Face aTemplate;
@@ -977,7 +975,7 @@ TEST(BRepGraphAlgo_SewingTest, Perform_PreBuiltGraph_ModifiesInPlace)
   const int aNbEdgesBefore = aGraph.Defs().NbEdges();
 
   BRepGraphAlgo_Sewing::Options aOpts;
-  aOpts.Tolerance = 1.0e-04;
+  aOpts.Tolerance                      = 1.0e-04;
   BRepGraphAlgo_Sewing::Result aResult = BRepGraphAlgo_Sewing::Perform(aGraph, aOpts);
   ASSERT_TRUE(aResult.IsDone);
   EXPECT_EQ(aResult.NbSewnEdges, 12);
@@ -1230,11 +1228,11 @@ constexpr int THE_NB_PROFILE_ITERS = 50;
 
 TEST(BRepGraphAlgo_SewingTest, Profiling_Grid50x50_Sequential)
 {
-    int    aNbSewn = 0;
+  int    aNbSewn = 0;
   double aTotal  = 0.0;
   for (int anIter = 0; anIter < THE_NB_PROFILE_ITERS; ++anIter)
   {
-    NCollection_Sequence<TopoDS_Shape> aFaces = buildFaceGrid(50, 50, 1.0, 1.0);
+    NCollection_Sequence<TopoDS_Shape> aFaces      = buildFaceGrid(50, 50, 1.0, 1.0);
     auto                               aTimerStart = std::chrono::steady_clock::now();
 
     BRep_Builder    aBB;
@@ -1271,7 +1269,7 @@ TEST(BRepGraphAlgo_SewingTest, Profiling_Grid50x50_Parallel)
   double aTotal  = 0.0;
   for (int anIter = 0; anIter < THE_NB_PROFILE_ITERS; ++anIter)
   {
-    NCollection_Sequence<TopoDS_Shape> aFaces = buildFaceGrid(50, 50, 1.0, 1.0);
+    NCollection_Sequence<TopoDS_Shape> aFaces      = buildFaceGrid(50, 50, 1.0, 1.0);
     auto                               aTimerStart = std::chrono::steady_clock::now();
 
     BRep_Builder    aBB;
@@ -1308,7 +1306,7 @@ TEST(BRepGraphAlgo_SewingTest, Profiling_Grid50x50_NoHistory)
   double aTotal  = 0.0;
   for (int anIter = 0; anIter < THE_NB_PROFILE_ITERS; ++anIter)
   {
-    NCollection_Sequence<TopoDS_Shape> aFaces = buildFaceGrid(50, 50, 1.0, 1.0);
+    NCollection_Sequence<TopoDS_Shape> aFaces      = buildFaceGrid(50, 50, 1.0, 1.0);
     auto                               aTimerStart = std::chrono::steady_clock::now();
 
     BRep_Builder    aBB;
@@ -1524,10 +1522,10 @@ TEST(BRepGraphAlgo_SewingTest, Performance_VsLegacy_STEPFile)
 TEST(BRepGraphAlgo_SewingTest, ParallelThreadPoolDiagnostics)
 {
   const occ::handle<OSD_ThreadPool>& aPool              = OSD_ThreadPool::DefaultPool();
-  const int                     aNbPoolThreads     = aPool->NbThreads();
-  const int                     aNbDefLaunch       = aPool->NbDefaultThreadsToLaunch();
-  const int                     aNbLogical         = OSD_Parallel::NbLogicalProcessors();
-  const bool                    isUsingOcctThreads = OSD_Parallel::ToUseOcctThreads();
+  const int                          aNbPoolThreads     = aPool->NbThreads();
+  const int                          aNbDefLaunch       = aPool->NbDefaultThreadsToLaunch();
+  const int                          aNbLogical         = OSD_Parallel::NbLogicalProcessors();
+  const bool                         isUsingOcctThreads = OSD_Parallel::ToUseOcctThreads();
 
   std::cout << "[  INFO   ] OSD_Parallel diagnostics:" << std::endl;
   std::cout << "[  INFO   ]   Logical processors:        " << aNbLogical << std::endl;
@@ -1575,7 +1573,7 @@ TEST(BRepGraphAlgo_SewingTest, ParallelThreadPoolDiagnostics)
 TEST(BRepGraphAlgo_SewingTest, ParallelThreadUtilization_Sewing)
 {
   const occ::handle<OSD_ThreadPool>& aPool          = OSD_ThreadPool::DefaultPool();
-  const int                     aNbPoolThreads = aPool->NbThreads();
+  const int                          aNbPoolThreads = aPool->NbThreads();
   if (aNbPoolThreads < 2)
   {
     GTEST_SKIP() << "Thread pool has only 1 thread, skipping utilization test";
@@ -1606,7 +1604,7 @@ TEST(BRepGraphAlgo_SewingTest, ParallelThreadUtilization_Sewing)
   aSeqOpts.Tolerance = 1.0e-04;
   aSeqOpts.Parallel  = false;
 
-  BRepGraph aSeqGraph;
+  BRepGraph                    aSeqGraph;
   BRepGraphAlgo_Sewing::Result aSeqResult = sewOnGraph(aFaces, aSeqOpts, aSeqGraph);
   ASSERT_TRUE(aSeqResult.IsDone);
 
@@ -1615,7 +1613,7 @@ TEST(BRepGraphAlgo_SewingTest, ParallelThreadUtilization_Sewing)
   aParOpts.Tolerance = 1.0e-04;
   aParOpts.Parallel  = true;
 
-  BRepGraph aParGraph;
+  BRepGraph                    aParGraph;
   BRepGraphAlgo_Sewing::Result aParResult = sewOnGraph(aFaces, aParOpts, aParGraph);
   ASSERT_TRUE(aParResult.IsDone);
 
@@ -1916,11 +1914,12 @@ TEST(BRepGraphAlgo_SameParameterTest, Enforce_NoCurve3d_SetsFlag)
   // Find a degenerate edge (pole of sphere) - it has no meaningful 3D curve.
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    if (BRepGraph_Tool::Edge::Degenerated(aGraph, anEdgeIdx) || !BRepGraph_Tool::Edge::HasCurve(aGraph, anEdgeIdx))
+    if (BRepGraph_Tool::Edge::Degenerated(aGraph, anEdgeIdx)
+        || !BRepGraph_Tool::Edge::HasCurve(aGraph, anEdgeIdx))
     {
       aGraph.Mut().EdgeDef(anEdgeIdx)->SameParameter = false;
       const BRepGraph_NodeId anEdgeId(BRepGraph_NodeId::Kind::Edge, anEdgeIdx);
-      const bool isOk = BRepGraphAlgo_SameParameter::Enforce(aGraph, anEdgeId, 1.0e-04);
+      const bool             isOk = BRepGraphAlgo_SameParameter::Enforce(aGraph, anEdgeId, 1.0e-04);
       EXPECT_TRUE(isOk);
       EXPECT_TRUE(BRepGraph_Tool::Edge::SameParameter(aGraph, anEdgeIdx));
       break;
@@ -1998,8 +1997,8 @@ TEST(BRepGraphAlgo_SewingTest, MaxTolerance_RejectLargeGaps)
 {
   // Build two box faces; sew with MaxTolerance smaller than default edge tolerance.
   // BRep edges typically have tolerance ~1e-7. Setting MaxTolerance below that rejects merges.
-  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  BRepPrimAPI_MakeBox               aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape&               aBox   = aBoxMaker.Shape();
   NCollection_Sequence<TopoDS_Face> aFaces = extractCopiedFaces(aBox);
 
   BRep_Builder    aBB;
@@ -2025,8 +2024,8 @@ TEST(BRepGraphAlgo_SewingTest, LocalTolerancesMode_AdaptiveTol)
 {
   // Verify LocalTolerancesMode sews all 6 box faces correctly.
   // The adaptive tolerance adds per-edge tolerances to the global tolerance.
-  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  BRepPrimAPI_MakeBox               aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape&               aBox   = aBoxMaker.Shape();
   NCollection_Sequence<TopoDS_Face> aFaces = extractCopiedFaces(aBox);
 
   BRep_Builder    aBB;
@@ -2052,8 +2051,8 @@ TEST(BRepGraphAlgo_SewingTest, LocalTolerancesMode_AdaptiveTol)
 
 TEST(BRepGraphAlgo_SewingTest, Result_FreeEdgesPopulated)
 {
-  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  BRepPrimAPI_MakeBox               aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape&               aBox   = aBoxMaker.Shape();
   NCollection_Sequence<TopoDS_Face> aFaces = extractCopiedFaces(aBox);
 
   BRep_Builder    aBB;
@@ -2078,8 +2077,8 @@ TEST(BRepGraphAlgo_SewingTest, Result_FreeEdgesPopulated)
 
 TEST(BRepGraphAlgo_SewingTest, Result_SewnEdgePairsPopulated)
 {
-  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  BRepPrimAPI_MakeBox               aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape&               aBox   = aBoxMaker.Shape();
   NCollection_Sequence<TopoDS_Face> aFaces = extractCopiedFaces(aBox);
 
   BRep_Builder    aBB;
@@ -2106,8 +2105,8 @@ TEST(BRepGraphAlgo_SewingTest, Result_SewnEdgePairsPopulated)
 TEST(BRepGraphAlgo_SewingTest, FaceAnalysis_IntegratedWithSewing)
 {
   // End-to-end: build a box, sew with FaceAnalysis enabled (default).
-  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  BRepPrimAPI_MakeBox               aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape&               aBox   = aBoxMaker.Shape();
   NCollection_Sequence<TopoDS_Face> aFaces = extractCopiedFaces(aBox);
 
   BRep_Builder    aBB;
@@ -2208,7 +2207,7 @@ TEST(BRepGraphAlgo_SewingTest, NonManifoldMode_ThreeFacesShareEdge)
     // Verify coedges reference valid, distinct faces with non-null 2D curves.
     for (int i = 0; i < aRes.SewnEdgePairs.Length(); ++i)
     {
-      const int aKeepIdx = aRes.SewnEdgePairs.Value(i).Index;
+      const int                      aKeepIdx    = aRes.SewnEdgePairs.Value(i).Index;
       const NCollection_Vector<int>& aCoEdgeIdxs = aGraph.Defs().CoEdgesOfEdge(aKeepIdx);
       EXPECT_GE(aCoEdgeIdxs.Length(), 2);
 

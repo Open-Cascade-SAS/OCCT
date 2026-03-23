@@ -36,7 +36,7 @@ public:
   //! Configuration for face analysis.
   struct Options
   {
-    double MinTolerance = 0.0;  //!< Threshold for small-edge detection; 0 = auto.
+    double MinTolerance = 0.0;   //!< Threshold for small-edge detection; 0 = auto.
     bool   Parallel     = false; //!< Enable parallel execution.
   };
 
@@ -45,9 +45,9 @@ public:
   {
     bool IsDone = false; //!< True if analysis completed successfully.
     NCollection_Vector<BRepGraph_NodeId> DegeneratedEdges; //!< Edges marked degenerate.
-    NCollection_Vector<BRepGraph_NodeId> DeletedFaces;     //!< Faces removed (all edges degenerate).
-    int NbSmallEdges   = 0; //!< Number of small edges detected.
-    int NbDeletedFaces = 0; //!< Number of deleted faces.
+    NCollection_Vector<BRepGraph_NodeId> DeletedFaces; //!< Faces removed (all edges degenerate).
+    int                                  NbSmallEdges   = 0; //!< Number of small edges detected.
+    int                                  NbDeletedFaces = 0; //!< Number of deleted faces.
   };
 
   //! Perform face analysis on a pre-built graph.

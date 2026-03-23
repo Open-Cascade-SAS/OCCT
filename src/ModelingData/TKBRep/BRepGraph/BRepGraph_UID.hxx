@@ -34,25 +34,37 @@ struct BRepGraph_UID
 {
   //! Default: invalid UID.
   BRepGraph_UID()
-    : myKind(BRepGraph_NodeId::Kind::Solid), myCounter(0),
-      myGeneration(0), myValid(false) {}
+      : myKind(BRepGraph_NodeId::Kind::Solid),
+        myCounter(0),
+        myGeneration(0),
+        myValid(false)
+  {
+  }
 
   //! Construct a valid UID.  Called internally by BRepGraph::allocateUID().
   BRepGraph_UID(const BRepGraph_NodeId::Kind theKind,
-                const size_t                theCounter,
-                const uint32_t              theGeneration)
-    : myKind(theKind), myCounter(theCounter),
-      myGeneration(theGeneration), myValid(true) {}
+                const size_t                 theCounter,
+                const uint32_t               theGeneration)
+      : myKind(theKind),
+        myCounter(theCounter),
+        myGeneration(theGeneration),
+        myValid(true)
+  {
+  }
 
   //! Factory: returns an explicitly invalid UID.
   static BRepGraph_UID Invalid() { return BRepGraph_UID(); }
 
-  bool               IsValid()    const { return myValid; }
-  BRepGraph_NodeId::Kind Kind()       const { return myKind; }
-  size_t             Counter()    const { return myCounter; }
-  uint32_t           Generation() const { return myGeneration; }
+  bool IsValid() const { return myValid; }
+
+  BRepGraph_NodeId::Kind Kind() const { return myKind; }
+
+  size_t Counter() const { return myCounter; }
+
+  uint32_t Generation() const { return myGeneration; }
 
   bool IsTopology() const { return BRepGraph_NodeId::IsTopologyKind(myKind); }
+
   bool IsAssembly() const { return BRepGraph_NodeId::IsAssemblyKind(myKind); }
 
   //! Equality: Identity = (Kind, Counter).  Generation excluded.
@@ -60,12 +72,10 @@ struct BRepGraph_UID
   {
     if (!myValid || !theOther.myValid)
       return myValid == theOther.myValid;
-    return myKind    == theOther.myKind
-        && myCounter == theOther.myCounter;
+    return myKind == theOther.myKind && myCounter == theOther.myCounter;
   }
 
-  bool operator!=(const BRepGraph_UID& theOther) const
-  { return !(*this == theOther); }
+  bool operator!=(const BRepGraph_UID& theOther) const { return !(*this == theOther); }
 
   bool operator<(const BRepGraph_UID& theOther) const
   {
@@ -85,17 +95,16 @@ struct BRepGraph_UID
 
 private:
   BRepGraph_NodeId::Kind myKind;
-  size_t             myCounter;
-  uint32_t           myGeneration;
-  bool               myValid;
+  size_t                 myCounter;
+  uint32_t               myGeneration;
+  bool                   myValid;
 };
 
 //! std::hash specialization for NCollection_DefaultHasher support.
-template<>
+template <>
 struct std::hash<BRepGraph_UID>
 {
-  size_t operator()(const BRepGraph_UID& theUID) const noexcept
-  { return theUID.HashValue(); }
+  size_t operator()(const BRepGraph_UID& theUID) const noexcept { return theUID.HashValue(); }
 };
 
 #endif // _BRepGraph_UID_HeaderFile

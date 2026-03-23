@@ -106,7 +106,8 @@ public:
 
   //! Access compsolid definition by index.
   //! @param[in] theCompSolidIdx zero-based compsolid definition index
-  Standard_EXPORT const BRepGraph_TopoNode::CompSolidDef& CompSolid(const int theCompSolidIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::CompSolidDef& CompSolid(
+    const int theCompSolidIdx) const;
 
   //! Access coedge definition by index.
   //! @param[in] theCoEdgeIdx zero-based coedge definition index
@@ -124,7 +125,8 @@ public:
   //! Access face definition NodeId belonging to a shell by index.
   //! @param[in] theShellDefIdx zero-based shell definition index
   //! @param[in] theFaceIdx zero-based face index within the shell
-  Standard_EXPORT BRepGraph_NodeId ShellFaceDef(const int theShellDefIdx, const int theFaceIdx) const;
+  Standard_EXPORT BRepGraph_NodeId ShellFaceDef(const int theShellDefIdx,
+                                                const int theFaceIdx) const;
 
   //! Number of product definitions.
   Standard_EXPORT int NbProducts() const;
@@ -144,7 +146,8 @@ public:
 
   //! Access occurrence definition by index.
   //! @param[in] theOccurrenceIdx zero-based occurrence definition index
-  Standard_EXPORT const BRepGraph_TopoNode::OccurrenceDef& Occurrence(const int theOccurrenceIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::OccurrenceDef& Occurrence(
+    const int theOccurrenceIdx) const;
 
   //! Return NodeIds of all root products (products that are not referenced by any occurrence).
   Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> RootProducts() const;
@@ -164,7 +167,8 @@ public:
   //! Return the i-th child occurrence NodeId of a product.
   //! @param[in] theProductIdx zero-based product definition index
   //! @param[in] theComponentIdx zero-based occurrence index within the product
-  Standard_EXPORT BRepGraph_NodeId Component(const int theProductIdx, const int theComponentIdx) const;
+  Standard_EXPORT BRepGraph_NodeId Component(const int theProductIdx,
+                                             const int theComponentIdx) const;
 
   //! Total number of nodes in the graph (all topology + assembly kinds).
   Standard_EXPORT size_t NbNodes() const;
@@ -240,10 +244,17 @@ private:
   //! Access polygon-on-triangulation representation by index.
   Standard_EXPORT const BRepGraphInc::PolygonOnTriRep& PolygonOnTriRep(const int theRepIdx) const;
 
-  explicit DefsView(const BRepGraph* theGraph) : myGraph(theGraph) {}
+  explicit DefsView(const BRepGraph* theGraph)
+      : myGraph(theGraph)
+  {
+  }
+
   const BRepGraph* myGraph;
 };
 
-inline BRepGraph::DefsView BRepGraph::Defs() const { return DefsView(this); }
+inline BRepGraph::DefsView BRepGraph::Defs() const
+{
+  return DefsView(this);
+}
 
 #endif // _BRepGraph_DefsView_HeaderFile

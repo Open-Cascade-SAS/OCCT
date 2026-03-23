@@ -35,15 +35,15 @@ struct BRepGraph_RepId
   enum class Kind : int
   {
     // Geometry (exact mathematical definition)
-    Surface       = 0,  //!< Geom_Surface for faces
-    Curve3D       = 1,  //!< Geom_Curve for edges
-    Curve2D       = 2,  //!< Geom2d_Curve for coedges (PCurve geometry)
+    Surface = 0, //!< Geom_Surface for faces
+    Curve3D = 1, //!< Geom_Curve for edges
+    Curve2D = 2, //!< Geom2d_Curve for coedges (PCurve geometry)
 
     // Mesh (discrete approximation)
-    Triangulation = 3,  //!< Poly_Triangulation for faces
-    Polygon3D     = 4,  //!< Poly_Polygon3D for edges
-    Polygon2D     = 5,  //!< Poly_Polygon2D for coedges (polygon-on-surface)
-    PolygonOnTri  = 6,  //!< Poly_PolygonOnTriangulation for coedges
+    Triangulation = 3, //!< Poly_Triangulation for faces
+    Polygon3D     = 4, //!< Poly_Polygon3D for edges
+    Polygon2D     = 5, //!< Poly_Polygon2D for coedges (polygon-on-surface)
+    PolygonOnTri  = 6, //!< Poly_PolygonOnTriangulation for coedges
 
     // Reserved 7-19 for future built-in types
     // Custom plugin types start at 100+
@@ -59,7 +59,7 @@ struct BRepGraph_RepId
   static bool IsMeshKind(const Kind theKind)
   {
     return theKind == Kind::Triangulation || theKind == Kind::Polygon3D
-        || theKind == Kind::Polygon2D     || theKind == Kind::PolygonOnTri;
+           || theKind == Kind::Polygon2D || theKind == Kind::PolygonOnTri;
   }
 
   Kind RepKind;
@@ -68,32 +68,45 @@ struct BRepGraph_RepId
   //! Default: invalid RepId (Index = -1).
   //! RepKind is set to Kind::Surface but is meaningless when !IsValid().
   BRepGraph_RepId()
-    : RepKind(Kind::Surface), Index(-1) {}
+      : RepKind(Kind::Surface),
+        Index(-1)
+  {
+  }
 
   BRepGraph_RepId(const Kind theKind, const int theIdx)
-    : RepKind(theKind), Index(theIdx) {}
+      : RepKind(theKind),
+        Index(theIdx)
+  {
+  }
 
   //! True if this id points to an allocated representation slot.
   bool IsValid() const { return Index >= 0; }
 
   //! @name Static factory methods for readable RepId construction.
-  static BRepGraph_RepId Surface(const int theIdx)       { return {Kind::Surface, theIdx}; }
-  static BRepGraph_RepId Curve3D(const int theIdx)       { return {Kind::Curve3D, theIdx}; }
-  static BRepGraph_RepId Curve2D(const int theIdx)       { return {Kind::Curve2D, theIdx}; }
+  static BRepGraph_RepId Surface(const int theIdx) { return {Kind::Surface, theIdx}; }
+
+  static BRepGraph_RepId Curve3D(const int theIdx) { return {Kind::Curve3D, theIdx}; }
+
+  static BRepGraph_RepId Curve2D(const int theIdx) { return {Kind::Curve2D, theIdx}; }
+
   static BRepGraph_RepId Triangulation(const int theIdx) { return {Kind::Triangulation, theIdx}; }
-  static BRepGraph_RepId Polygon3D(const int theIdx)     { return {Kind::Polygon3D, theIdx}; }
-  static BRepGraph_RepId Polygon2D(const int theIdx)     { return {Kind::Polygon2D, theIdx}; }
-  static BRepGraph_RepId PolygonOnTri(const int theIdx)  { return {Kind::PolygonOnTri, theIdx}; }
+
+  static BRepGraph_RepId Polygon3D(const int theIdx) { return {Kind::Polygon3D, theIdx}; }
+
+  static BRepGraph_RepId Polygon2D(const int theIdx) { return {Kind::Polygon2D, theIdx}; }
+
+  static BRepGraph_RepId PolygonOnTri(const int theIdx) { return {Kind::PolygonOnTri, theIdx}; }
 
   bool operator==(const BRepGraph_RepId& theOther) const
-  { return RepKind == theOther.RepKind && Index == theOther.Index; }
+  {
+    return RepKind == theOther.RepKind && Index == theOther.Index;
+  }
 
-  bool operator!=(const BRepGraph_RepId& theOther) const
-  { return !(*this == theOther); }
+  bool operator!=(const BRepGraph_RepId& theOther) const { return !(*this == theOther); }
 };
 
 //! std::hash specialization for NCollection_DefaultHasher support.
-template<>
+template <>
 struct std::hash<BRepGraph_RepId>
 {
   size_t operator()(const BRepGraph_RepId& theId) const noexcept

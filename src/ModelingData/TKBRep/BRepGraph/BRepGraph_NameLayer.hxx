@@ -26,11 +26,12 @@ class BRepGraph_NameLayer : public BRepGraph_Layer
 {
 public:
   //! Set a display name for a node.
-  Standard_EXPORT void SetNodeName(const BRepGraph_NodeId              theNode,
+  Standard_EXPORT void SetNodeName(const BRepGraph_NodeId            theNode,
                                    const TCollection_ExtendedString& theName);
 
   //! Find the display name for a node. Returns nullptr if not set.
-  Standard_EXPORT const TCollection_ExtendedString* FindNodeName(const BRepGraph_NodeId theNode) const;
+  Standard_EXPORT const TCollection_ExtendedString* FindNodeName(
+    const BRepGraph_NodeId theNode) const;
 
   //! Remove the display name for a node.
   Standard_EXPORT void RemoveNodeName(const BRepGraph_NodeId theNode);

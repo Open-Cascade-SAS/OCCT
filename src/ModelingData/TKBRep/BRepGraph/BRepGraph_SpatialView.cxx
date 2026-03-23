@@ -62,7 +62,7 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::FacesOfEdge(
   const BRepGraph_NodeId theEdgeDef) const
 {
   NCollection_Vector<BRepGraph_NodeId> aResult;
-  const NCollection_Vector<int>* aFaces =
+  const NCollection_Vector<int>*       aFaces =
     myGraph->myData->myIncStorage.ReverseIndex().FacesOfEdge(theEdgeDef.Index);
   if (aFaces != nullptr)
   {
@@ -83,9 +83,8 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::SharedEdges(
   const BRepGraph_TopoNode::FaceDef& aFaceDefA = myGraph->myData->myIncStorage.Face(theFaceA.Index);
 
   NCollection_PackedMap<int> aEdgesA;
-  auto collectWireEdges = [&](int theWireDefIdx) {
-    const BRepGraph_TopoNode::WireDef& aWireDef =
-      myGraph->myData->myIncStorage.Wire(theWireDefIdx);
+  auto                       collectWireEdges = [&](int theWireDefIdx) {
+    const BRepGraph_TopoNode::WireDef& aWireDef = myGraph->myData->myIncStorage.Wire(theWireDefIdx);
     for (int aCoEdgeIdx = 0; aCoEdgeIdx < aWireDef.CoEdgeRefs.Length(); ++aCoEdgeIdx)
     {
       const BRepGraphInc::CoEdgeEntity& aCoEdge =
@@ -99,9 +98,8 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::SharedEdges(
   const BRepGraph_TopoNode::FaceDef& aFaceDefB = myGraph->myData->myIncStorage.Face(theFaceB.Index);
 
   NCollection_PackedMap<int> aAdded;
-  auto checkWireEdges = [&](int theWireDefIdx) {
-    const BRepGraph_TopoNode::WireDef& aWireDef =
-      myGraph->myData->myIncStorage.Wire(theWireDefIdx);
+  auto                       checkWireEdges = [&](int theWireDefIdx) {
+    const BRepGraph_TopoNode::WireDef& aWireDef = myGraph->myData->myIncStorage.Wire(theWireDefIdx);
     for (int aCoEdgeIdx = 0; aCoEdgeIdx < aWireDef.CoEdgeRefs.Length(); ++aCoEdgeIdx)
     {
       const BRepGraphInc::CoEdgeEntity& aCoEdge =
@@ -133,15 +131,14 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::AdjacentFaces(
   const BRepGraphInc_ReverseIndex& aRevIdx = myGraph->myData->myIncStorage.ReverseIndex();
   for (int aWireRefIdx = 0; aWireRefIdx < aFaceDef.WireRefs.Length(); ++aWireRefIdx)
   {
-    const int aWireDefIdx = aFaceDef.WireRefs.Value(aWireRefIdx).WireIdx;
-    const BRepGraph_TopoNode::WireDef& aWireDef =
-      myGraph->myData->myIncStorage.Wire(aWireDefIdx);
+    const int                          aWireDefIdx = aFaceDef.WireRefs.Value(aWireRefIdx).WireIdx;
+    const BRepGraph_TopoNode::WireDef& aWireDef = myGraph->myData->myIncStorage.Wire(aWireDefIdx);
     for (int aCoEdgeIdx = 0; aCoEdgeIdx < aWireDef.CoEdgeRefs.Length(); ++aCoEdgeIdx)
     {
       const BRepGraphInc::CoEdgeEntity& aCoEdge =
         myGraph->myData->myIncStorage.CoEdge(aWireDef.CoEdgeRefs.Value(aCoEdgeIdx).CoEdgeIdx);
-      const int anEdgeDefIdx = aCoEdge.EdgeIdx;
-      const NCollection_Vector<int>* aFaces = aRevIdx.FacesOfEdge(anEdgeDefIdx);
+      const int                      anEdgeDefIdx = aCoEdge.EdgeIdx;
+      const NCollection_Vector<int>* aFaces       = aRevIdx.FacesOfEdge(anEdgeDefIdx);
       if (aFaces != nullptr)
       {
         for (int aFIdx = 0; aFIdx < aFaces->Length(); ++aFIdx)
@@ -168,13 +165,13 @@ TopLoc_Location BRepGraph::SpatialView::GlobalPlacement(const int theOccurrenceI
   // Compose placements from leaf to root via ParentOccurrenceIdx tree.
   // global = ancestor_placement * ... * parent_placement * leaf_placement.
   // Pre-multiplying each ancestor's placement accumulates the correct transform.
-  TopLoc_Location aGlobal = aStorage.Occurrence(theOccurrenceIdx).Placement;
-  int aParentOccIdx = aStorage.Occurrence(theOccurrenceIdx).ParentOccurrenceIdx;
+  TopLoc_Location aGlobal       = aStorage.Occurrence(theOccurrenceIdx).Placement;
+  int             aParentOccIdx = aStorage.Occurrence(theOccurrenceIdx).ParentOccurrenceIdx;
 
   // In a valid tree, the chain length cannot exceed NbOccurrences.
   // This naturally guards against cycles in malformed graphs.
   const int aNbOccurrences = aStorage.NbOccurrences();
-  int aSteps = 0;
+  int       aSteps         = 0;
 
   while (aParentOccIdx >= 0 && aParentOccIdx < aNbOccurrences && aSteps < aNbOccurrences)
   {
@@ -182,7 +179,7 @@ TopLoc_Location BRepGraph::SpatialView::GlobalPlacement(const int theOccurrenceI
     const BRepGraphInc::OccurrenceEntity& aParentOcc = aStorage.Occurrence(aParentOccIdx);
     if (aParentOcc.IsRemoved)
       break;
-    aGlobal = aParentOcc.Placement * aGlobal;
+    aGlobal       = aParentOcc.Placement * aGlobal;
     aParentOccIdx = aParentOcc.ParentOccurrenceIdx;
   }
 

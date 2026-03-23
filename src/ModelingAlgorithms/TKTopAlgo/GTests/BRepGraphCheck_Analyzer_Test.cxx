@@ -49,8 +49,7 @@
 // ---------------------------------------------------------------------------
 // Helper: check if a specific status code is present in the report
 // ---------------------------------------------------------------------------
-static bool hasIssueWithStatus(const BRepGraphCheck_Report& theReport,
-                               BRepCheck_Status             theStatus)
+static bool hasIssueWithStatus(const BRepGraphCheck_Report& theReport, BRepCheck_Status theStatus)
 {
   const NCollection_Vector<BRepGraphCheck_Issue>& anIssues = theReport.Issues();
   for (int anIter = 0; anIter < anIssues.Length(); ++anIter)
@@ -76,9 +75,8 @@ TEST(BRepGraphCheck_AnalyzerTest, ValidBox_NoIssues)
   BRepGraphCheck_Analyzer anAnalyzer(aGraph);
   anAnalyzer.Perform();
 
-  EXPECT_TRUE(anAnalyzer.IsValid())
-    << "Valid box should have no errors. Found " << anAnalyzer.Report().Issues().Length()
-    << " issues.";
+  EXPECT_TRUE(anAnalyzer.IsValid()) << "Valid box should have no errors. Found "
+                                    << anAnalyzer.Report().Issues().Length() << " issues.";
 }
 
 TEST(BRepGraphCheck_AnalyzerTest, ValidCylinder_NoIssues)
@@ -91,9 +89,8 @@ TEST(BRepGraphCheck_AnalyzerTest, ValidCylinder_NoIssues)
 
   BRepGraphCheck_Analyzer anAnalyzer(aGraph);
   anAnalyzer.Perform();
-  EXPECT_TRUE(anAnalyzer.IsValid())
-    << "Valid cylinder should have no errors. Found " << anAnalyzer.Report().Issues().Length()
-    << " issues.";
+  EXPECT_TRUE(anAnalyzer.IsValid()) << "Valid cylinder should have no errors. Found "
+                                    << anAnalyzer.Report().Issues().Length() << " issues.";
 }
 
 TEST(BRepGraphCheck_AnalyzerTest, ValidSphere_NoIssues)
@@ -107,16 +104,15 @@ TEST(BRepGraphCheck_AnalyzerTest, ValidSphere_NoIssues)
   BRepGraphCheck_Analyzer anAnalyzer(aGraph);
   anAnalyzer.Perform();
 
-  EXPECT_TRUE(anAnalyzer.IsValid())
-    << "Valid sphere should have no errors. Found " << anAnalyzer.Report().Issues().Length()
-    << " issues.";
+  EXPECT_TRUE(anAnalyzer.IsValid()) << "Valid sphere should have no errors. Found "
+                                    << anAnalyzer.Report().Issues().Length() << " issues.";
 }
 
 TEST(BRepGraphCheck_AnalyzerTest, ValidFusedBoxes_NoIssues)
 {
   const TopoDS_Shape aBox1 = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
   const TopoDS_Shape aBox2 = BRepPrimAPI_MakeBox(gp_Pnt(5.0, 0.0, 0.0), 10.0, 10.0, 10.0).Shape();
-  BRepAlgoAPI_Fuse aFuser(aBox1, aBox2);
+  BRepAlgoAPI_Fuse   aFuser(aBox1, aBox2);
   ASSERT_TRUE(aFuser.IsDone());
   const TopoDS_Shape& aFused = aFuser.Shape();
 
@@ -127,9 +123,8 @@ TEST(BRepGraphCheck_AnalyzerTest, ValidFusedBoxes_NoIssues)
   BRepGraphCheck_Analyzer anAnalyzer(aGraph);
   anAnalyzer.Perform();
 
-  EXPECT_TRUE(anAnalyzer.IsValid())
-    << "Fused boxes should have no errors. Found " << anAnalyzer.Report().Issues().Length()
-    << " issues.";
+  EXPECT_TRUE(anAnalyzer.IsValid()) << "Fused boxes should have no errors. Found "
+                                    << anAnalyzer.Report().Issues().Length() << " issues.";
 }
 
 // ---------------------------------------------------------------------------
@@ -310,9 +305,8 @@ TEST(BRepGraphCheck_AnalyzerTest, ParallelPerform_ValidBox_NoIssues)
   anAnalyzer.SetParallel(true);
   anAnalyzer.Perform();
 
-  EXPECT_TRUE(anAnalyzer.IsValid())
-    << "Parallel check on valid box should have no errors. Found "
-    << anAnalyzer.Report().Issues().Length() << " issues.";
+  EXPECT_TRUE(anAnalyzer.IsValid()) << "Parallel check on valid box should have no errors. Found "
+                                    << anAnalyzer.Report().Issues().Length() << " issues.";
 }
 
 // ---------------------------------------------------------------------------
@@ -346,7 +340,7 @@ TEST(BRepGraphCheck_AnalyzerTest, Consistency_VsBRepCheck_Box)
 
   // Legacy check.
   BRepCheck_Analyzer aLegacy(aBox);
-  const bool aLegacyValid = aLegacy.IsValid();
+  const bool         aLegacyValid = aLegacy.IsValid();
 
   // Graph check.
   BRepGraph aGraph;
@@ -365,7 +359,7 @@ TEST(BRepGraphCheck_AnalyzerTest, Consistency_VsBRepCheck_Cylinder)
   const TopoDS_Shape aCyl = BRepPrimAPI_MakeCylinder(5.0, 20.0).Shape();
 
   BRepCheck_Analyzer aLegacy(aCyl);
-  const bool aLegacyValid = aLegacy.IsValid();
+  const bool         aLegacyValid = aLegacy.IsValid();
 
   BRepGraph aGraph;
   aGraph.Build(aCyl);
@@ -383,7 +377,7 @@ TEST(BRepGraphCheck_AnalyzerTest, Consistency_VsBRepCheck_Sphere)
   const TopoDS_Shape aSphere = BRepPrimAPI_MakeSphere(10.0).Shape();
 
   BRepCheck_Analyzer aLegacy(aSphere);
-  const bool aLegacyValid = aLegacy.IsValid();
+  const bool         aLegacyValid = aLegacy.IsValid();
 
   BRepGraph aGraph;
   aGraph.Build(aSphere);
@@ -593,21 +587,22 @@ TEST(BRepGraphCheck_AnalyzerTest, DisplacedVertex_DetectsInvalidPointOnCurve)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Find the edge and its vertices, check for InvalidPointOnCurve.
-  const BRepGraph::DefsView aDefs = aGraph.Defs();
-  bool aHasInvalidPoint = false;
+  const BRepGraph::DefsView aDefs            = aGraph.Defs();
+  bool                      aHasInvalidPoint = false;
   for (int anEdgeIter = 0; anEdgeIter < aDefs.NbEdges(); ++anEdgeIter)
   {
-    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(anEdgeIter);
+    const BRepGraph_TopoNode::EdgeDef&       anEdgeDef = aDefs.Edge(anEdgeIter);
     NCollection_Vector<BRepGraphCheck_Issue> aIssues;
     if (anEdgeDef.StartVertexDefId().IsValid())
     {
-      BRepGraphCheck::CheckVertexOnEdge(aGraph, anEdgeDef.StartVertex.VertexIdx,
-                                        anEdgeIter, aIssues);
+      BRepGraphCheck::CheckVertexOnEdge(aGraph,
+                                        anEdgeDef.StartVertex.VertexIdx,
+                                        anEdgeIter,
+                                        aIssues);
     }
     if (anEdgeDef.EndVertexDefId().IsValid())
     {
-      BRepGraphCheck::CheckVertexOnEdge(aGraph, anEdgeDef.EndVertex.VertexIdx,
-                                        anEdgeIter, aIssues);
+      BRepGraphCheck::CheckVertexOnEdge(aGraph, anEdgeDef.EndVertex.VertexIdx, anEdgeIter, aIssues);
     }
     for (int anIssueIter = 0; anIssueIter < aIssues.Length(); ++anIssueIter)
     {
@@ -617,8 +612,7 @@ TEST(BRepGraphCheck_AnalyzerTest, DisplacedVertex_DetectsInvalidPointOnCurve)
     if (aHasInvalidPoint)
       break;
   }
-  EXPECT_TRUE(aHasInvalidPoint)
-    << "Displaced vertex should report InvalidPointOnCurve.";
+  EXPECT_TRUE(aHasInvalidPoint) << "Displaced vertex should report InvalidPointOnCurve.";
 }
 
 // ---------------------------------------------------------------------------

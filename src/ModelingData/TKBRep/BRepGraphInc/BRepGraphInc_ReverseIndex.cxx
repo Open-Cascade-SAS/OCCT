@@ -73,10 +73,10 @@ void BRepGraphInc_ReverseIndex::Build(
   // Pre-size all outer vectors to their known key range.
   // Pass allocator so inner vectors use IncAllocator for O(1) alloc/free.
   preSize(myVertexToEdges, aMaxVertexIdx + 1, myAllocator);
-  preSize(myEdgeToWires,   theEdges.Length(),  myAllocator);
-  preSize(myEdgeToFaces,   theEdges.Length(),  myAllocator);
-  preSize(myWireToFaces,   theWires.Length(),  myAllocator);
-  preSize(myFaceToShells,  theFaces.Length(),  myAllocator);
+  preSize(myEdgeToWires, theEdges.Length(), myAllocator);
+  preSize(myEdgeToFaces, theEdges.Length(), myAllocator);
+  preSize(myWireToFaces, theWires.Length(), myAllocator);
+  preSize(myFaceToShells, theFaces.Length(), myAllocator);
   preSize(myShellToSolids, theShells.Length(), myAllocator);
 
   // Vertex -> Edges: scan edge entities for start/end vertex indices.
@@ -88,7 +88,8 @@ void BRepGraphInc_ReverseIndex::Build(
       continue;
     if (anEdge.StartVertex.VertexIdx >= 0)
       appendDirect(myVertexToEdges, anEdge.StartVertex.VertexIdx, anEdgeIdx);
-    if (anEdge.EndVertex.VertexIdx >= 0 && anEdge.EndVertex.VertexIdx != anEdge.StartVertex.VertexIdx)
+    if (anEdge.EndVertex.VertexIdx >= 0
+        && anEdge.EndVertex.VertexIdx != anEdge.StartVertex.VertexIdx)
       appendDirect(myVertexToEdges, anEdge.EndVertex.VertexIdx, anEdgeIdx);
   }
 
@@ -131,7 +132,7 @@ void BRepGraphInc_ReverseIndex::Build(
 
     // Collect face indices from coedges (stack-allocated for small counts).
     NCollection_LocalArray<int, 8> aFaces(aNbCE);
-    int aNbFaces = 0;
+    int                            aNbFaces = 0;
     for (int i = 0; i < aNbCE; ++i)
     {
       const BRepGraphInc::CoEdgeEntity& aCoEdge = theCoEdges.Value(aCoEdgeIdxs->Value(i));
@@ -145,7 +146,7 @@ void BRepGraphInc_ReverseIndex::Build(
     for (int i = 1; i < aNbFaces; ++i)
     {
       const int aKey = aFaces[i];
-      int j = i - 1;
+      int       j    = i - 1;
       while (j >= 0 && aFaces[j] > aKey)
       {
         aFaces[j + 1] = aFaces[j];
@@ -220,11 +221,11 @@ void BRepGraphInc_ReverseIndex::BuildDelta(
   const NCollection_Vector<BRepGraphInc::FaceEntity>&   theFaces,
   const NCollection_Vector<BRepGraphInc::ShellEntity>&  theShells,
   const NCollection_Vector<BRepGraphInc::SolidEntity>&  theSolids,
-  const int theOldNbEdges,
-  const int theOldNbWires,
-  const int theOldNbFaces,
-  const int theOldNbShells,
-  const int theOldNbSolids)
+  const int                                             theOldNbEdges,
+  const int                                             theOldNbWires,
+  const int                                             theOldNbFaces,
+  const int                                             theOldNbShells,
+  const int                                             theOldNbSolids)
 {
   // Scan new edges for max vertex index to possibly extend myVertexToEdges.
   int aMaxVertexIdx = myVertexToEdges.Length() - 1;
@@ -255,11 +256,11 @@ void BRepGraphInc_ReverseIndex::BuildDelta(
     }
   };
   extendTable(myVertexToEdges, aMaxVertexIdx + 1);
-  extendTable(myEdgeToWires,   theEdges.Length());
-  extendTable(myEdgeToFaces,   theEdges.Length());
+  extendTable(myEdgeToWires, theEdges.Length());
+  extendTable(myEdgeToFaces, theEdges.Length());
   extendTable(myEdgeToCoEdges, theEdges.Length());
-  extendTable(myWireToFaces,   theWires.Length());
-  extendTable(myFaceToShells,  theFaces.Length());
+  extendTable(myWireToFaces, theWires.Length());
+  extendTable(myFaceToShells, theFaces.Length());
   extendTable(myShellToSolids, theShells.Length());
 
   // Vertex -> Edges: only new edges.
@@ -270,7 +271,8 @@ void BRepGraphInc_ReverseIndex::BuildDelta(
       continue;
     if (anEdge.StartVertex.VertexIdx >= 0)
       appendUnique(myVertexToEdges, anEdge.StartVertex.VertexIdx, anEdgeIdx);
-    if (anEdge.EndVertex.VertexIdx >= 0 && anEdge.EndVertex.VertexIdx != anEdge.StartVertex.VertexIdx)
+    if (anEdge.EndVertex.VertexIdx >= 0
+        && anEdge.EndVertex.VertexIdx != anEdge.StartVertex.VertexIdx)
       appendUnique(myVertexToEdges, anEdge.EndVertex.VertexIdx, anEdgeIdx);
   }
 
@@ -310,7 +312,7 @@ void BRepGraphInc_ReverseIndex::BuildDelta(
     const int aNbCE = aCoEdgeIdxs->Length();
 
     NCollection_LocalArray<int, 8> aFaces(aNbCE);
-    int aNbFaces = 0;
+    int                            aNbFaces = 0;
     for (int i = 0; i < aNbCE; ++i)
     {
       const BRepGraphInc::CoEdgeEntity& aCoEdge = theCoEdges.Value(aCoEdgeIdxs->Value(i));
@@ -323,7 +325,7 @@ void BRepGraphInc_ReverseIndex::BuildDelta(
     for (int i = 1; i < aNbFaces; ++i)
     {
       const int aKey = aFaces[i];
-      int j = i - 1;
+      int       j    = i - 1;
       while (j >= 0 && aFaces[j] > aKey)
       {
         aFaces[j + 1] = aFaces[j];
@@ -425,8 +427,8 @@ void BRepGraphInc_ReverseIndex::ReplaceEdgeInWireMap(const int theOldEdgeIdx,
 
 //=================================================================================================
 
-void BRepGraphInc_ReverseIndex::preSize(IndexTable&                               theIdx,
-                                        const int                                 theSize,
+void BRepGraphInc_ReverseIndex::preSize(IndexTable&                                   theIdx,
+                                        const int                                     theSize,
                                         const occ::handle<NCollection_BaseAllocator>& theAlloc)
 {
   theIdx.Clear();
@@ -512,9 +514,8 @@ void BRepGraphInc_ReverseIndex::BindEdgeToCoEdge(const int theEdgeIdx, const int
 void BRepGraphInc_ReverseIndex::BindEdgeToFace(const int theEdgeIdx, const int theFaceIdx)
 {
   // Detect new binding by checking vector size before/after appendUnique.
-  const int aSizeBefore = (theEdgeIdx < myEdgeToFaces.Length())
-                            ? myEdgeToFaces.Value(theEdgeIdx).Length()
-                            : 0;
+  const int aSizeBefore =
+    (theEdgeIdx < myEdgeToFaces.Length()) ? myEdgeToFaces.Value(theEdgeIdx).Length() : 0;
   appendUnique(myEdgeToFaces, theEdgeIdx, theFaceIdx);
   const int aSizeAfter = myEdgeToFaces.Value(theEdgeIdx).Length();
 
@@ -539,7 +540,7 @@ void BRepGraphInc_ReverseIndex::UnbindEdgeFromFace(const int theEdgeIdx, const i
   if (theEdgeIdx < 0 || theEdgeIdx >= myEdgeToFaces.Length())
     return;
   Standard_ASSERT_VOID(myEdgeFaceCount.Length() == myEdgeToFaces.Length(),
-                        "UnbindEdgeFromFace: myEdgeFaceCount out of sync with myEdgeToFaces");
+                       "UnbindEdgeFromFace: myEdgeFaceCount out of sync with myEdgeToFaces");
   NCollection_Vector<int>& aFaces = myEdgeToFaces.ChangeValue(theEdgeIdx);
   for (int i = 0; i < aFaces.Length(); ++i)
   {
@@ -551,7 +552,7 @@ void BRepGraphInc_ReverseIndex::UnbindEdgeFromFace(const int theEdgeIdx, const i
         aFaces.ChangeValue(i) = aFaces.Value(aFaces.Length() - 1);
       aFaces.EraseLast();
       Standard_ASSERT_VOID(myEdgeFaceCount.Value(theEdgeIdx) > 0,
-                            "UnbindEdgeFromFace: face count underflow");
+                           "UnbindEdgeFromFace: face count underflow");
       myEdgeFaceCount.ChangeValue(theEdgeIdx) -= 1;
       break;
     }
@@ -569,8 +570,7 @@ bool BRepGraphInc_ReverseIndex::Validate(
   const NCollection_Vector<BRepGraphInc::SolidEntity>&  theSolids) const
 {
   // Helper: check that theVal appears in the vector at theKey in theIdx.
-  auto containsVal = [](const IndexTable& theIdx, int theKey, int theVal) -> bool
-  {
+  auto containsVal = [](const IndexTable& theIdx, int theKey, int theVal) -> bool {
     const NCollection_Vector<int>* aVec = seekVec(theIdx, theKey);
     if (aVec == nullptr)
       return false;
@@ -610,7 +610,8 @@ bool BRepGraphInc_ReverseIndex::Validate(
       if (!containsVal(myVertexToEdges, anEdge.StartVertex.VertexIdx, anEdgeIdx))
         return false;
     }
-    if (anEdge.EndVertex.VertexIdx >= 0 && anEdge.EndVertex.VertexIdx != anEdge.StartVertex.VertexIdx)
+    if (anEdge.EndVertex.VertexIdx >= 0
+        && anEdge.EndVertex.VertexIdx != anEdge.StartVertex.VertexIdx)
     {
       if (!containsVal(myVertexToEdges, anEdge.EndVertex.VertexIdx, anEdgeIdx))
         return false;
@@ -676,7 +677,7 @@ bool BRepGraphInc_ReverseIndex::Validate(
 
 void BRepGraphInc_ReverseIndex::BuildProductOccurrences(
   const NCollection_Vector<BRepGraphInc::OccurrenceEntity>& theOccurrences,
-  const int theNbProducts)
+  const int                                                 theNbProducts)
 {
   myProductToOccurrences.Clear();
   preSize(myProductToOccurrences, theNbProducts, myAllocator);

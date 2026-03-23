@@ -41,11 +41,13 @@ public:
   Standard_EXPORT BRepClass_Edge(const TopoDS_Edge& E, const TopoDS_Face& F);
 
   //! Returns the current Edge
-  TopoDS_Edge&       Edge()       { return myEdge; }
+  TopoDS_Edge& Edge() { return myEdge; }
+
   const TopoDS_Edge& Edge() const { return myEdge; }
 
   //! Returns the Face for the current Edge
-  TopoDS_Face&       Face()       { return myFace; }
+  TopoDS_Face& Face() { return myFace; }
+
   const TopoDS_Face& Face() const { return myFace; }
 
   //! Returns the next Edge

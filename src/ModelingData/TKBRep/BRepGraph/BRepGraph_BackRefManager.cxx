@@ -17,9 +17,9 @@
 
 //=================================================================================================
 
-int BRepGraph_BackRefManager::AddRelEdge(BRepGraph&                theGraph,
-                                         const BRepGraph_NodeId    theFrom,
-                                         const BRepGraph_NodeId    theTo,
+int BRepGraph_BackRefManager::AddRelEdge(BRepGraph&                    theGraph,
+                                         const BRepGraph_NodeId        theFrom,
+                                         const BRepGraph_NodeId        theTo,
                                          const BRepGraph_RelEdge::Kind theKind)
 {
   BRepGraph_RelEdge anEdge;
@@ -42,9 +42,9 @@ int BRepGraph_BackRefManager::AddRelEdge(BRepGraph&                theGraph,
 
 //=================================================================================================
 
-void BRepGraph_BackRefManager::RemoveRelEdges(BRepGraph&                theGraph,
-                                              const BRepGraph_NodeId    theFrom,
-                                              const BRepGraph_NodeId    theTo,
+void BRepGraph_BackRefManager::RemoveRelEdges(BRepGraph&                    theGraph,
+                                              const BRepGraph_NodeId        theFrom,
+                                              const BRepGraph_NodeId        theTo,
                                               const BRepGraph_RelEdge::Kind theKind)
 {
   NCollection_Vector<BRepGraph_RelEdge>* anOutVec =
@@ -63,8 +63,7 @@ void BRepGraph_BackRefManager::RemoveRelEdges(BRepGraph&                theGraph
     }
   }
 
-  NCollection_Vector<BRepGraph_RelEdge>* anInVec =
-    theGraph.myData->myInRelEdges.ChangeSeek(theTo);
+  NCollection_Vector<BRepGraph_RelEdge>* anInVec = theGraph.myData->myInRelEdges.ChangeSeek(theTo);
   if (anInVec != nullptr)
   {
     for (int anIdx = anInVec->Length() - 1; anIdx >= 0; --anIdx)
@@ -82,8 +81,7 @@ void BRepGraph_BackRefManager::RemoveRelEdges(BRepGraph&                theGraph
 
 //=================================================================================================
 
-void BRepGraph_BackRefManager::ClearRelEdges(BRepGraph&             theGraph,
-                                             const BRepGraph_NodeId theNode)
+void BRepGraph_BackRefManager::ClearRelEdges(BRepGraph& theGraph, const BRepGraph_NodeId theNode)
 {
   theGraph.myData->myOutRelEdges.UnBind(theNode);
   theGraph.myData->myInRelEdges.UnBind(theNode);

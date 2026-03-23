@@ -45,15 +45,18 @@ struct BRepGraph_NodeId
     Compound   = 6,  //!< TopoDS_Compound container
     CompSolid  = 7,  //!< TopoDS_CompSolid container
     CoEdge     = 8,  //!< Use of an edge on a face (owns PCurve data)
-    Product    = 10,  //!< Reusable shape definition (part or assembly)
-    Occurrence = 11   //!< Placed instance of a product within a parent product
+    Product    = 10, //!< Reusable shape definition (part or assembly)
+    Occurrence = 11  //!< Placed instance of a product within a parent product
   };
 
   //! True if the kind is a core topology kind (Solid..CoEdge).
   static bool IsTopologyKind(const Kind theKind) { return static_cast<int>(theKind) <= 8; }
 
   //! True if the kind is an assembly kind (Product or Occurrence).
-  static bool IsAssemblyKind(const Kind theKind) { return theKind == Kind::Product || theKind == Kind::Occurrence; }
+  static bool IsAssemblyKind(const Kind theKind)
+  {
+    return theKind == Kind::Product || theKind == Kind::Occurrence;
+  }
 
   Kind NodeKind;
   int  Index;
@@ -61,36 +64,53 @@ struct BRepGraph_NodeId
   //! Default: invalid NodeId (Index = -1).
   //! NodeKind is set to Kind::Solid but is meaningless when !IsValid().
   BRepGraph_NodeId()
-    : NodeKind(Kind::Solid), Index(-1) {}
+      : NodeKind(Kind::Solid),
+        Index(-1)
+  {
+  }
 
   BRepGraph_NodeId(const Kind theKind, const int theIdx)
-    : NodeKind(theKind), Index(theIdx) {}
+      : NodeKind(theKind),
+        Index(theIdx)
+  {
+  }
 
   //! True if this id points to an allocated node slot.
   bool IsValid() const { return Index >= 0; }
 
   //! @name Static factory methods for readable NodeId construction.
-  static BRepGraph_NodeId Solid(const int theIdx)      { return {Kind::Solid, theIdx}; }
-  static BRepGraph_NodeId Shell(const int theIdx)      { return {Kind::Shell, theIdx}; }
-  static BRepGraph_NodeId Face(const int theIdx)       { return {Kind::Face, theIdx}; }
-  static BRepGraph_NodeId Wire(const int theIdx)       { return {Kind::Wire, theIdx}; }
-  static BRepGraph_NodeId Edge(const int theIdx)       { return {Kind::Edge, theIdx}; }
-  static BRepGraph_NodeId Vertex(const int theIdx)     { return {Kind::Vertex, theIdx}; }
-  static BRepGraph_NodeId Compound(const int theIdx)    { return {Kind::Compound, theIdx}; }
-  static BRepGraph_NodeId CompSolid(const int theIdx)   { return {Kind::CompSolid, theIdx}; }
-  static BRepGraph_NodeId CoEdge(const int theIdx)      { return {Kind::CoEdge, theIdx}; }
-  static BRepGraph_NodeId Product(const int theIdx)     { return {Kind::Product, theIdx}; }
-  static BRepGraph_NodeId Occurrence(const int theIdx)  { return {Kind::Occurrence, theIdx}; }
+  static BRepGraph_NodeId Solid(const int theIdx) { return {Kind::Solid, theIdx}; }
+
+  static BRepGraph_NodeId Shell(const int theIdx) { return {Kind::Shell, theIdx}; }
+
+  static BRepGraph_NodeId Face(const int theIdx) { return {Kind::Face, theIdx}; }
+
+  static BRepGraph_NodeId Wire(const int theIdx) { return {Kind::Wire, theIdx}; }
+
+  static BRepGraph_NodeId Edge(const int theIdx) { return {Kind::Edge, theIdx}; }
+
+  static BRepGraph_NodeId Vertex(const int theIdx) { return {Kind::Vertex, theIdx}; }
+
+  static BRepGraph_NodeId Compound(const int theIdx) { return {Kind::Compound, theIdx}; }
+
+  static BRepGraph_NodeId CompSolid(const int theIdx) { return {Kind::CompSolid, theIdx}; }
+
+  static BRepGraph_NodeId CoEdge(const int theIdx) { return {Kind::CoEdge, theIdx}; }
+
+  static BRepGraph_NodeId Product(const int theIdx) { return {Kind::Product, theIdx}; }
+
+  static BRepGraph_NodeId Occurrence(const int theIdx) { return {Kind::Occurrence, theIdx}; }
 
   bool operator==(const BRepGraph_NodeId& theOther) const
-  { return NodeKind == theOther.NodeKind && Index == theOther.Index; }
+  {
+    return NodeKind == theOther.NodeKind && Index == theOther.Index;
+  }
 
-  bool operator!=(const BRepGraph_NodeId& theOther) const
-  { return !(*this == theOther); }
+  bool operator!=(const BRepGraph_NodeId& theOther) const { return !(*this == theOther); }
 };
 
 //! std::hash specialization for NCollection_DefaultHasher support.
-template<>
+template <>
 struct std::hash<BRepGraph_NodeId>
 {
   size_t operator()(const BRepGraph_NodeId& theId) const noexcept

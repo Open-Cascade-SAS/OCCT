@@ -39,12 +39,12 @@ public:
   //! @param[in] theSplitParam      parameter on the 3D curve at the split point
   //! @param[out] theSubA           sub-edge: StartVertex -> SplitVertex
   //! @param[out] theSubB           sub-edge: SplitVertex -> EndVertex
-  static Standard_EXPORT void SplitEdge(BRepGraph&              theGraph,
-                                        const BRepGraph_NodeId  theEdgeDef,
-                                        const BRepGraph_NodeId  theSplitVertex,
-                                        const double            theSplitParam,
-                                        BRepGraph_NodeId&       theSubA,
-                                        BRepGraph_NodeId&       theSubB);
+  static Standard_EXPORT void SplitEdge(BRepGraph&             theGraph,
+                                        const BRepGraph_NodeId theEdgeDef,
+                                        const BRepGraph_NodeId theSplitVertex,
+                                        const double           theSplitParam,
+                                        BRepGraph_NodeId&      theSubA,
+                                        BRepGraph_NodeId&      theSubB);
 
   //! Replace one edge with another in a wire definition.
   //! Updates the CoEdge's EdgeIdx to point to the new edge, adjusts orientation

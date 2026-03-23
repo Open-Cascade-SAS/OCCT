@@ -44,8 +44,7 @@ public:
   //! @param[in] theCopyGeom if true (default), geometry handles are deep-copied;
   //!                        if false, geometry is shared (only topology is duplicated)
   //! @return a new BRepGraph with IsDone() == true on success
-  Standard_EXPORT static BRepGraph Perform(const BRepGraph& theGraph,
-                                           bool             theCopyGeom = true);
+  Standard_EXPORT static BRepGraph Perform(const BRepGraph& theGraph, bool theCopyGeom = true);
 
   //! Copy a single face sub-graph.
   //! @param[in] theGraph    a pre-built BRepGraph

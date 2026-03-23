@@ -124,7 +124,8 @@ static int pointsForOBB(const BRepGraph&            theGraph,
       continue;
     }
 
-    const GeomAdaptor_TransformedSurface aGAS = BRepGraph_Tool::Face::SurfaceAdaptor(theGraph, aFaceIdx);
+    const GeomAdaptor_TransformedSurface aGAS =
+      BRepGraph_Tool::Face::SurfaceAdaptor(theGraph, aFaceIdx);
     if (!isPlanar(aGAS))
     {
       if (!theIsTriangulationUsed)
@@ -137,16 +138,18 @@ static int pointsForOBB(const BRepGraph&            theGraph,
       // Planar face: check if all edges are linear.
       bool                               hasNonLinearEdge = false;
       const BRepGraph_TopoNode::FaceDef& aFaceDef         = theGraph.Defs().Face(aFaceIdx);
-      for (int aWireRefIdx = 0; aWireRefIdx < aFaceDef.WireRefs.Length() && !hasNonLinearEdge; ++aWireRefIdx)
+      for (int aWireRefIdx = 0; aWireRefIdx < aFaceDef.WireRefs.Length() && !hasNonLinearEdge;
+           ++aWireRefIdx)
       {
-        const BRepGraphInc::WireRef& aWR = aFaceDef.WireRefs.Value(aWireRefIdx);
+        const BRepGraphInc::WireRef&       aWR      = aFaceDef.WireRefs.Value(aWireRefIdx);
         const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.Defs().Wire(aWR.WireIdx);
         for (int anIdx = 0; anIdx < aWireDef.CoEdgeRefs.Length(); ++anIdx)
         {
-          const BRepGraphInc::CoEdgeRef& aCR = aWireDef.CoEdgeRefs.Value(anIdx);
-          const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Defs().CoEdge(aCR.CoEdgeIdx);
-          const int anEdgeIdx = aCoEdge.EdgeIdx;
-          if (BRepGraph_Tool::Edge::Degenerated(theGraph, anEdgeIdx) || !BRepGraph_Tool::Edge::HasCurve(theGraph, anEdgeIdx))
+          const BRepGraphInc::CoEdgeRef&       aCR       = aWireDef.CoEdgeRefs.Value(anIdx);
+          const BRepGraph_TopoNode::CoEdgeDef& aCoEdge   = theGraph.Defs().CoEdge(aCR.CoEdgeIdx);
+          const int                            anEdgeIdx = aCoEdge.EdgeIdx;
+          if (BRepGraph_Tool::Edge::Degenerated(theGraph, anEdgeIdx)
+              || !BRepGraph_Tool::Edge::HasCurve(theGraph, anEdgeIdx))
           {
             continue;
           }
@@ -207,12 +210,14 @@ static int pointsForOBB(const BRepGraph&            theGraph,
     {
       continue; // Edge is in a face, already handled.
     }
-    if (BRepGraph_Tool::Edge::Degenerated(theGraph, i) || !BRepGraph_Tool::Edge::HasCurve(theGraph, i))
+    if (BRepGraph_Tool::Edge::Degenerated(theGraph, i)
+        || !BRepGraph_Tool::Edge::HasCurve(theGraph, i))
     {
       continue;
     }
 
-    const GeomAdaptor_TransformedCurve aCurveAdaptor = BRepGraph_Tool::Edge::CurveAdaptor(theGraph, i);
+    const GeomAdaptor_TransformedCurve aCurveAdaptor =
+      BRepGraph_Tool::Edge::CurveAdaptor(theGraph, i);
     if (isLinear(aCurveAdaptor))
     {
       // Skip linear edge - vertices already added.

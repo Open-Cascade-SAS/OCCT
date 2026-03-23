@@ -38,12 +38,20 @@ Geom2dHatch_FClass2dOfClassifier::Geom2dHatch_FClass2dOfClassifier()
 
 //=================================================================================================
 
-void Geom2dHatch_FClass2dOfClassifier::Reset(const gp_Lin2d& L,
-                                             const double    P,
-                                             const double    Tol)
+void Geom2dHatch_FClass2dOfClassifier::Reset(const gp_Lin2d& L, const double P, const double Tol)
 {
-  TopClass_Classifier2d::Reset(myLin, myParam, myTolerance, myState, myFirstCompare, myFirstTrans,
-                               myClosest, myIsSet, myIsHeadOrEnd, L, P, Tol);
+  TopClass_Classifier2d::Reset(myLin,
+                               myParam,
+                               myTolerance,
+                               myState,
+                               myFirstCompare,
+                               myFirstTrans,
+                               myClosest,
+                               myIsSet,
+                               myIsHeadOrEnd,
+                               L,
+                               P,
+                               Tol);
 }
 
 //=================================================================================================
@@ -51,6 +59,16 @@ void Geom2dHatch_FClass2dOfClassifier::Reset(const gp_Lin2d& L,
 void Geom2dHatch_FClass2dOfClassifier::Compare(const Geom2dAdaptor_Curve& E,
                                                const TopAbs_Orientation   Or)
 {
-  TopClass_Classifier2d::Compare(myClosest, myIntersector, myLin, myParam, myTolerance, myState,
-                                 myFirstCompare, myFirstTrans, myTrans, myIsHeadOrEnd, E, Or);
+  TopClass_Classifier2d::Compare(myClosest,
+                                 myIntersector,
+                                 myLin,
+                                 myParam,
+                                 myTolerance,
+                                 myState,
+                                 myFirstCompare,
+                                 myFirstTrans,
+                                 myTrans,
+                                 myIsHeadOrEnd,
+                                 E,
+                                 Or);
 }

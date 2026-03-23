@@ -29,8 +29,8 @@ struct Geom2dHash_LineHasher
 
   Geom2dHash_LineHasher(double theCompTolerance = Precision::Angular(),
                         double theHashTolerance = Precision::Confusion())
-    : CompTolerance(theCompTolerance),
-      HashTolerance(theHashTolerance)
+      : CompTolerance(theCompTolerance),
+        HashTolerance(theHashTolerance)
   {
   }
 

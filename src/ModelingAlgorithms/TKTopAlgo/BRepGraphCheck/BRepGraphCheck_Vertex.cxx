@@ -22,13 +22,12 @@
 
 //=================================================================================================
 
-void BRepGraphCheck::CheckVertexOnEdge(
-  const BRepGraph&                         theGraph,
-  int                                      theVertexDefIdx,
-  int                                      theEdgeDefIdx,
-  NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
+void BRepGraphCheck::CheckVertexOnEdge(const BRepGraph&                          theGraph,
+                                       int                                       theVertexDefIdx,
+                                       int                                       theEdgeDefIdx,
+                                       NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
 {
-  const BRepGraph::DefsView aDefs = theGraph.Defs();
+  const BRepGraph::DefsView            aDefs     = theGraph.Defs();
   const BRepGraph_TopoNode::VertexDef& aVtxDef   = aDefs.Vertex(theVertexDefIdx);
   const BRepGraph_TopoNode::EdgeDef&   anEdgeDef = aDefs.Edge(theEdgeDefIdx);
 
@@ -42,13 +41,11 @@ void BRepGraphCheck::CheckVertexOnEdge(
 
   // Determine parameter for this vertex on the curve.
   double aParam = 0.0;
-  if (anEdgeDef.StartVertexDefId().IsValid()
-      && anEdgeDef.StartVertex.VertexIdx == theVertexDefIdx)
+  if (anEdgeDef.StartVertexDefId().IsValid() && anEdgeDef.StartVertex.VertexIdx == theVertexDefIdx)
   {
     aParam = anEdgeDef.ParamFirst;
   }
-  else if (anEdgeDef.EndVertexDefId().IsValid()
-           && anEdgeDef.EndVertex.VertexIdx == theVertexDefIdx)
+  else if (anEdgeDef.EndVertexDefId().IsValid() && anEdgeDef.EndVertex.VertexIdx == theVertexDefIdx)
   {
     aParam = anEdgeDef.ParamLast;
   }
@@ -77,14 +74,13 @@ void BRepGraphCheck::CheckVertexOnEdge(
 
 //=================================================================================================
 
-void BRepGraphCheck::CheckVertexOnFace(
-  const BRepGraph&                         theGraph,
-  int                                      theVertexDefIdx,
-  int                                      theFaceDefIdx,
-  NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
+void BRepGraphCheck::CheckVertexOnFace(const BRepGraph&                          theGraph,
+                                       int                                       theVertexDefIdx,
+                                       int                                       theFaceDefIdx,
+                                       NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
 {
-  const BRepGraph::DefsView aDefs = theGraph.Defs();
-  const BRepGraph_TopoNode::VertexDef& aVtxDef  = aDefs.Vertex(theVertexDefIdx);
+  const BRepGraph::DefsView            aDefs   = theGraph.Defs();
+  const BRepGraph_TopoNode::VertexDef& aVtxDef = aDefs.Vertex(theVertexDefIdx);
 
   if (!BRepGraph_Tool::Face::HasSurface(theGraph, theFaceDefIdx))
     return;
@@ -96,20 +92,20 @@ void BRepGraphCheck::CheckVertexOnFace(
   {
     const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(anEdgeIter);
 
-    bool aIsEndpoint = false;
-    double aParam = 0.0;
+    bool   aIsEndpoint = false;
+    double aParam      = 0.0;
 
     if (anEdgeDef.StartVertexDefId().IsValid()
         && anEdgeDef.StartVertex.VertexIdx == theVertexDefIdx)
     {
       aIsEndpoint = true;
-      aParam = anEdgeDef.ParamFirst;
+      aParam      = anEdgeDef.ParamFirst;
     }
     else if (anEdgeDef.EndVertexDefId().IsValid()
              && anEdgeDef.EndVertex.VertexIdx == theVertexDefIdx)
     {
       aIsEndpoint = true;
-      aParam = anEdgeDef.ParamLast;
+      aParam      = anEdgeDef.ParamLast;
     }
 
     if (!aIsEndpoint)
@@ -127,15 +123,15 @@ void BRepGraphCheck::CheckVertexOnFace(
     const occ::handle<Geom2d_Curve>& aVtxPCurve =
       BRepGraph_Tool::CoEdge::PCurve(theGraph, *aPCurve);
     // Evaluate PCurve at parameter to get UV, then evaluate surface (geometry at identity).
-    const gp_Pnt2d aUV = aVtxPCurve->Value(aParam);
+    const gp_Pnt2d                       aUV = aVtxPCurve->Value(aParam);
     const GeomAdaptor_TransformedSurface aSurfAdaptor =
       BRepGraph_Tool::Face::SurfaceAdaptor(theGraph, theFaceDefIdx);
     const gp_Pnt aSurfPnt = aSurfAdaptor.Value(aUV.X(), aUV.Y());
 
-    const gp_Pnt  aVtxPnt = BRepGraph_Tool::Vertex::Pnt(theGraph, theVertexDefIdx);
-    const double  aDist   = aVtxPnt.Distance(aSurfPnt);
-    const double  aVtxTol = BRepGraph_Tool::Vertex::Tolerance(theGraph, theVertexDefIdx);
-    const double  aEdgTol = BRepGraph_Tool::Edge::Tolerance(theGraph, anEdgeIter);
+    const gp_Pnt aVtxPnt = BRepGraph_Tool::Vertex::Pnt(theGraph, theVertexDefIdx);
+    const double aDist   = aVtxPnt.Distance(aSurfPnt);
+    const double aVtxTol = BRepGraph_Tool::Vertex::Tolerance(theGraph, theVertexDefIdx);
+    const double aEdgTol = BRepGraph_Tool::Edge::Tolerance(theGraph, anEdgeIter);
     if (aDist > aVtxTol + aEdgTol)
     {
       BRepGraphCheck_Issue anIssue;

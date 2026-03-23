@@ -29,8 +29,8 @@ struct Geom2dHash_ParabolaHasher
 
   Geom2dHash_ParabolaHasher(double theCompTolerance = Precision::Angular(),
                             double theHashTolerance = Precision::Confusion())
-    : CompTolerance(theCompTolerance),
-      HashTolerance(theHashTolerance)
+      : CompTolerance(theCompTolerance),
+        HashTolerance(theHashTolerance)
   {
   }
 

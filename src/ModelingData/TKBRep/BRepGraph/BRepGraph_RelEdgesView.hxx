@@ -59,9 +59,9 @@ public:
   //! @param[in] theKind    relation kind to filter by
   //! @param[in] theCallback callback receiving each matching BRepGraph_RelEdge
   template <typename Func>
-  void ForEachOutOfKind(const BRepGraph_NodeId  theNodeId,
+  void ForEachOutOfKind(const BRepGraph_NodeId        theNodeId,
                         const BRepGraph_RelEdge::Kind theKind,
-                        const Func&       theCallback) const
+                        const Func&                   theCallback) const
   {
     const NCollection_Vector<BRepGraph_RelEdge>* aEdges = OutOf(theNodeId);
     if (aEdges == nullptr)
@@ -79,9 +79,9 @@ public:
   //! @param[in] theKind    relation kind to filter by
   //! @param[in] theCallback callback receiving each matching BRepGraph_RelEdge
   template <typename Func>
-  void ForEachInOfKind(const BRepGraph_NodeId  theNodeId,
+  void ForEachInOfKind(const BRepGraph_NodeId        theNodeId,
                        const BRepGraph_RelEdge::Kind theKind,
-                       const Func&       theCallback) const
+                       const Func&                   theCallback) const
   {
     const NCollection_Vector<BRepGraph_RelEdge>* aEdges = InOf(theNodeId);
     if (aEdges == nullptr)
@@ -96,10 +96,18 @@ public:
 
 private:
   friend class BRepGraph;
-  explicit RelEdgesView(const BRepGraph* theGraph) : myGraph(theGraph) {}
+
+  explicit RelEdgesView(const BRepGraph* theGraph)
+      : myGraph(theGraph)
+  {
+  }
+
   const BRepGraph* myGraph;
 };
 
-inline BRepGraph::RelEdgesView BRepGraph::RelEdges() const { return RelEdgesView(this); }
+inline BRepGraph::RelEdgesView BRepGraph::RelEdges() const
+{
+  return RelEdgesView(this);
+}
 
 #endif // _BRepGraph_RelEdgesView_HeaderFile

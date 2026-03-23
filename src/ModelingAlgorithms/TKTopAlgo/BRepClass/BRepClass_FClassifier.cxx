@@ -47,12 +47,17 @@ BRepClass_FClassifier::BRepClass_FClassifier(BRepClass_FaceExplorer& F,
 
 //=================================================================================================
 
-void BRepClass_FClassifier::Perform(BRepClass_FaceExplorer& F,
-                                    const gp_Pnt2d&         P,
-                                    const double            Tol)
+void BRepClass_FClassifier::Perform(BRepClass_FaceExplorer& F, const gp_Pnt2d& P, const double Tol)
 {
-  TopClass_FaceClassifier::Perform(rejected, nowires, myClassifier, myEdge, myPosition,
-                                   myEdgeParameter, F, P, Tol);
+  TopClass_FaceClassifier::Perform(rejected,
+                                   nowires,
+                                   myClassifier,
+                                   myEdge,
+                                   myPosition,
+                                   myEdgeParameter,
+                                   F,
+                                   P,
+                                   Tol);
 }
 
 //=================================================================================================
