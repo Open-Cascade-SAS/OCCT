@@ -47,8 +47,9 @@ void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
       aSurf.Surface->Transform(theTrsf);
       aSurf.SurfaceLocation = TopLoc_Location();
     }
-    // Invalidate triangulation — mesh is no longer valid after geometry transform.
-    aSurf.Triangulation.Nullify();
+    // Invalidate triangulations — meshes are no longer valid after geometry transform.
+    aSurf.Triangulations.Clear();
+    aSurf.ActiveTriangulationIndex = -1;
   }
 
   // Transform curve geometry handles directly and reset locations.

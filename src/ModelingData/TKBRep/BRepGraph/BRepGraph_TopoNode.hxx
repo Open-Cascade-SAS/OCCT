@@ -18,6 +18,7 @@
 #include <BRepGraph_UsageId.hxx>
 #include <BRepGraph_NodeCache.hxx>
 
+#include <GeomAbs_Shape.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <gp_Pnt.hxx>
@@ -137,6 +138,37 @@ struct EdgeDef : public BaseDef
   //! True if the PCurve parameter range equals the 3D curve parameter range.
   bool SameRange = false;
 
+  //! Optional 3D polygon discretization.
+  BRepGraph_NodeId Polygon3DNodeId;
+
+  //! Polygon-on-surface entries, one per (edge, face) context.
+  struct PolyOnSurfEntry
+  {
+    BRepGraph_NodeId   PolyOnSurfNodeId;
+    BRepGraph_NodeId   FaceDefId;
+    TopAbs_Orientation EdgeOrientation = TopAbs_FORWARD;
+  };
+  NCollection_Vector<PolyOnSurfEntry> PolygonsOnSurf;
+
+  //! Polygon-on-triangulation entries, one per (edge, face, triangulation) context.
+  struct PolyOnTriEntry
+  {
+    BRepGraph_NodeId   PolyOnTriNodeId;
+    BRepGraph_NodeId   FaceDefId;
+    int                TriangulationIndex = 0;
+    TopAbs_Orientation EdgeOrientation = TopAbs_FORWARD;
+  };
+  NCollection_Vector<PolyOnTriEntry> PolygonsOnTri;
+
+  //! Edge regularity (continuity) between adjacent face pairs.
+  struct RegularityEntry
+  {
+    BRepGraph_NodeId FaceDef1;
+    BRepGraph_NodeId FaceDef2;
+    GeomAbs_Shape    Continuity = GeomAbs_C0;
+  };
+  NCollection_Vector<RegularityEntry> Regularities;
+
   //! Return the start vertex adjusted for orientation in wire context.
   //! FORWARD -> StartVertexDefId, REVERSED -> EndVertexDefId, other -> invalid.
   BRepGraph_NodeId OrientedStartVertex(TopAbs_Orientation theOri) const
@@ -163,6 +195,35 @@ struct VertexDef : public BaseDef
 
   //! Tolerance from BRep_TVertex.
   double Tolerance = 0.0;
+
+  //! Vertex parameter on a 3D curve.
+  struct PointOnCurveEntry
+  {
+    double          Parameter = 0.0;
+    BRepGraph_NodeId CurveNodeId;
+    TopLoc_Location Location;
+  };
+  NCollection_Vector<PointOnCurveEntry> PointsOnCurve;
+
+  //! Vertex parameter on a surface (U, V).
+  struct PointOnSurfaceEntry
+  {
+    double          ParameterU = 0.0;
+    double          ParameterV = 0.0;
+    BRepGraph_NodeId SurfNodeId;
+    TopLoc_Location Location;
+  };
+  NCollection_Vector<PointOnSurfaceEntry> PointsOnSurface;
+
+  //! Vertex parameter on a PCurve on a surface.
+  struct PointOnPCurveEntry
+  {
+    double          Parameter = 0.0;
+    BRepGraph_NodeId PCurveNodeId;
+    BRepGraph_NodeId SurfNodeId;
+    TopLoc_Location Location;
+  };
+  NCollection_Vector<PointOnPCurveEntry> PointsOnPCurve;
 };
 
 // =========================================================================

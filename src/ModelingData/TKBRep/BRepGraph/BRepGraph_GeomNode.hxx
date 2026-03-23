@@ -20,8 +20,13 @@
 #include <Geom_Curve.hxx>
 #include <Geom2d_Curve.hxx>
 #include <GeomAbs_Shape.hxx>
+#include <Poly_Polygon2D.hxx>
+#include <Poly_Polygon3D.hxx>
+#include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_Triangulation.hxx>
+#include <TopAbs_Orientation.hxx>
 #include <TopLoc_Location.hxx>
+#include <gp_Pnt2d.hxx>
 
 #include <NCollection_Vector.hxx>
 
@@ -42,10 +47,21 @@ namespace BRepGraph_GeomNode
 //! "same domain" relationship.  FaceDefUsers enables reverse queries.
 struct Surf
 {
-  BRepGraph_NodeId           Id;
-  Handle(Geom_Surface)       Surface;         //!< The raw TFace geometry (not location-applied)
-  Handle(Poly_Triangulation) Triangulation;   //!< Optional cached mesh
-  TopLoc_Location            SurfaceLocation; //!< Location from BRep_Tool::Surface(face, loc)
+  BRepGraph_NodeId     Id;
+  Handle(Geom_Surface) Surface;         //!< The raw TFace geometry (not location-applied)
+  TopLoc_Location      SurfaceLocation; //!< Location from BRep_Tool::Surface(face, loc)
+
+  //! All triangulations attached to this face (may be empty).
+  NCollection_Vector<Handle(Poly_Triangulation)> Triangulations;
+  int ActiveTriangulationIndex = -1; //!< Index into Triangulations, -1 = none active
+
+  //! Convenience: return the active triangulation handle, or null if none.
+  Handle(Poly_Triangulation) ActiveTriangulation() const
+  {
+    if (ActiveTriangulationIndex >= 0 && ActiveTriangulationIndex < Triangulations.Length())
+      return Triangulations.Value(ActiveTriangulationIndex);
+    return Handle(Poly_Triangulation)();
+  }
 
   //! Back-references: all Face definitions realized by this surface.
   NCollection_Vector<BRepGraph_NodeId> FaceDefUsers;
@@ -86,6 +102,42 @@ struct PCurve
   //! Geometric continuity across face pairs sharing this edge.
   //! Populated during Build() via BRep_Tool::Continuity().
   GeomAbs_Shape Continuity = GeomAbs_C0;
+
+  //! Cached UV points at parameter extremities.
+  gp_Pnt2d UV1; //!< UV at ParamFirst
+  gp_Pnt2d UV2; //!< UV at ParamLast
+};
+
+//! Graph node representing a 3D polygon discretization on an edge.
+struct Poly3D
+{
+  BRepGraph_NodeId         Id;
+  Handle(Poly_Polygon3D)   Polygon;
+  TopLoc_Location          PolyLocation;
+
+  //! Back-references: all Edge definitions using this polygon.
+  NCollection_Vector<BRepGraph_NodeId> EdgeDefUsers;
+};
+
+//! Graph node representing a 2D polygon on a surface for an edge.
+struct PolyOnSurf
+{
+  BRepGraph_NodeId         Id;
+  Handle(Poly_Polygon2D)   Polygon2D;
+  BRepGraph_NodeId         EdgeContext;  //!< Edge def this polygon belongs to
+  BRepGraph_NodeId         FaceContext;  //!< Face def whose surface UV space it lives in
+  TopAbs_Orientation       EdgeOrientation = TopAbs_FORWARD; //!< For seam edges
+};
+
+//! Graph node representing a polygon on a triangulation for an edge.
+struct PolyOnTri
+{
+  BRepGraph_NodeId                        Id;
+  Handle(Poly_PolygonOnTriangulation)     Polygon;
+  BRepGraph_NodeId                        EdgeContext;  //!< Edge def this polygon belongs to
+  BRepGraph_NodeId                        FaceContext;  //!< Face def whose triangulation it references
+  int                                     TriangulationIndex = 0; //!< Index into Surf::Triangulations
+  TopAbs_Orientation                      EdgeOrientation = TopAbs_FORWARD; //!< For seam edges
 };
 
 } // namespace BRepGraph_GeomNode

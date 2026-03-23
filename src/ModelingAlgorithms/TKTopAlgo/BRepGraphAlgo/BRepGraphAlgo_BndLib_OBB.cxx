@@ -204,27 +204,28 @@ static int pointsForOBB(const BRepGraph&            theGraph,
       }
     }
 
-    // Use triangulation of the face.
-    if (aSurf->Triangulation.IsNull())
+    // Use active triangulation of the face.
+    const Handle(Poly_Triangulation) aTriangulation = aSurf->ActiveTriangulation();
+    if (aTriangulation.IsNull())
     {
       return 0;
     }
 
     const TopLoc_Location aLoc   = obbFaceGlobalLocation(theGraph, aFaceIdx);
     const gp_Trsf         aTrsf  = aLoc;
-    const int             aCNode = aSurf->Triangulation->NbNodes();
+    const int             aCNode = aTriangulation->NbNodes();
     for (int i = 1; i <= aCNode; ++i)
     {
       if (thePts != nullptr)
       {
         const gp_Pnt aP    = aTrsf.Form() == gp_Identity
-                               ? aSurf->Triangulation->Node(i)
-                               : aSurf->Triangulation->Node(i).Transformed(aTrsf);
+                               ? aTriangulation->Node(i)
+                               : aTriangulation->Node(i).Transformed(aTrsf);
         (*thePts)(aRetVal) = aP;
       }
       if (theArrOfToler != nullptr)
       {
-        (*theArrOfToler)(aRetVal) = aSurf->Triangulation->Deflection();
+        (*theArrOfToler)(aRetVal) = aTriangulation->Deflection();
       }
       ++aRetVal;
     }

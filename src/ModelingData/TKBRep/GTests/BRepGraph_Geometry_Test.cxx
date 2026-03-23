@@ -310,7 +310,7 @@ TEST(BRepGraphGeometry, Surf_Triangulation_NullForAnalyticNoCrash)
   for (int i = 0; i < aGraph.Geom().NbSurfaces(); ++i)
   {
     const BRepGraph_GeomNode::Surf& aSurf = aGraph.Geom().Surface(i);
-    EXPECT_TRUE(aSurf.Triangulation.IsNull())
+    EXPECT_TRUE(aSurf.ActiveTriangulation().IsNull())
       << "Surface " << i << " unexpectedly has a triangulation";
   }
 }

@@ -46,7 +46,10 @@ struct BRepGraph_NodeId
     CompSolid = 7,  //!< TopoDS_CompSolid container
     Surface   = 10,
     Curve     = 11,
-    PCurve    = 12
+    PCurve    = 12,
+    Polygon3D = 13,
+    PolyOnSurf = 14,
+    PolyOnTri  = 15
   };
 
   Kind NodeKind;
@@ -72,7 +75,10 @@ struct BRepGraph_NodeId
   static BRepGraph_NodeId CompSolid(int theIdx)  { return {Kind::CompSolid, theIdx}; }
   static BRepGraph_NodeId SurfNode(int theIdx)   { return {Kind::Surface, theIdx}; }
   static BRepGraph_NodeId CurveNode(int theIdx)  { return {Kind::Curve, theIdx}; }
-  static BRepGraph_NodeId PCurveNode(int theIdx) { return {Kind::PCurve, theIdx}; }
+  static BRepGraph_NodeId PCurveNode(int theIdx)    { return {Kind::PCurve, theIdx}; }
+  static BRepGraph_NodeId Polygon3DNode(int theIdx) { return {Kind::Polygon3D, theIdx}; }
+  static BRepGraph_NodeId PolyOnSurfNode(int theIdx) { return {Kind::PolyOnSurf, theIdx}; }
+  static BRepGraph_NodeId PolyOnTriNode(int theIdx)  { return {Kind::PolyOnTri, theIdx}; }
 
   bool operator==(const BRepGraph_NodeId& theOther) const
   { return NodeKind == theOther.NodeKind && Index == theOther.Index; }

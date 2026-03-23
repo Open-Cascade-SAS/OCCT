@@ -302,7 +302,8 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
     if (aSurfNode.FaceDefUsers.IsEmpty() && !aSurfNode.Surface.IsNull())
     {
       aSurfNode.Surface.Nullify();
-      aSurfNode.Triangulation.Nullify();
+      aSurfNode.Triangulations.Clear();
+      aSurfNode.ActiveTriangulationIndex = -1;
       ++aResult.NbNullifiedSurfaces;
 
       NCollection_Vector<BRepGraph_NodeId> aEmptyRepl;

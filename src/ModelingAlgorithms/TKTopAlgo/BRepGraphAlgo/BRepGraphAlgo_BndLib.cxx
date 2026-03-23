@@ -96,12 +96,13 @@ static void addFaceBox(const BRepGraph& theGraph, int theFaceIdx, Bnd_Box& theBo
   }
 
   // Triangulation path (fast, common).
-  if ((theUseTri || aSurf->Surface.IsNull()) && !aSurf->Triangulation.IsNull())
+  const Handle(Poly_Triangulation) aTri = aSurf->ActiveTriangulation();
+  if ((theUseTri || aSurf->Surface.IsNull()) && !aTri.IsNull())
   {
     const TopLoc_Location aLoc = faceGlobalLocation(theGraph, theFaceIdx);
-    if (aSurf->Triangulation->MinMax(theBox, aLoc))
+    if (aTri->MinMax(theBox, aLoc))
     {
-      theBox.Enlarge(aSurf->Triangulation->Deflection() + aFaceDef.Tolerance);
+      theBox.Enlarge(aTri->Deflection() + aFaceDef.Tolerance);
       return;
     }
   }
@@ -445,13 +446,14 @@ static void addFaceBoxOptimal(const BRepGraph& theGraph,
   }
 
   // Triangulation path.
-  if (theUseTri && !aSurf->Triangulation.IsNull())
+  const Handle(Poly_Triangulation) aTri = aSurf->ActiveTriangulation();
+  if (theUseTri && !aTri.IsNull())
   {
     Bnd_Box               aLocBox;
     const TopLoc_Location aLoc = faceGlobalLocation(theGraph, theFaceIdx);
-    if (aSurf->Triangulation->MinMax(aLocBox, aLoc))
+    if (aTri->MinMax(aLocBox, aLoc))
     {
-      aLocBox.Enlarge(aSurf->Triangulation->Deflection() + aFaceDef.Tolerance);
+      aLocBox.Enlarge(aTri->Deflection() + aFaceDef.Tolerance);
       double xmin, ymin, zmin, xmax, ymax, zmax;
       aLocBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
       theBox.Update(xmin, ymin, zmin, xmax, ymax, zmax);

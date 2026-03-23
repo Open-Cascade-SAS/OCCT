@@ -194,8 +194,9 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
   {
     const BRepGraph_GeomNode::Surf& aSrcSurf = theGraph.Geom().Surface(anIdx);
     BRepGraph_GeomNode::Surf& aDstSurf       = aResult.Mut().SurfNode(anIdx);
-    aDstSurf.Triangulation                    = aSrcSurf.Triangulation;
-    aDstSurf.SurfaceLocation                  = aSrcSurf.SurfaceLocation;
+    aDstSurf.Triangulations          = aSrcSurf.Triangulations;
+    aDstSurf.ActiveTriangulationIndex = aSrcSurf.ActiveTriangulationIndex;
+    aDstSurf.SurfaceLocation          = aSrcSurf.SurfaceLocation;
   }
 
   // Transfer curve locations from source geometry nodes.
@@ -512,8 +513,9 @@ BRepGraph BRepGraphAlgo_Copy::CopyFace(const BRepGraph& theGraph,
     const BRepGraph_GeomNode::Surf& aSrcSurf =
       theGraph.Geom().Surface(aFaceDef.SurfNodeId.Index);
     BRepGraph_GeomNode::Surf& aDstSurf = aResult.Mut().SurfNode(0);
-    aDstSurf.Triangulation             = aSrcSurf.Triangulation;
-    aDstSurf.SurfaceLocation           = aSrcSurf.SurfaceLocation;
+    aDstSurf.Triangulations          = aSrcSurf.Triangulations;
+    aDstSurf.ActiveTriangulationIndex = aSrcSurf.ActiveTriangulationIndex;
+    aDstSurf.SurfaceLocation          = aSrcSurf.SurfaceLocation;
   }
 
   // Transfer curve locations for edges in this face.

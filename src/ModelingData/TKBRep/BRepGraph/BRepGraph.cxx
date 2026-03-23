@@ -109,11 +109,15 @@ BRepGraph_NodeId BRepGraph::registerSurface(const Handle(Geom_Surface)&       th
 
   BRepGraph_GeomNode::Surf& aSurfNode = myData->mySurfaces.Nodes.Appended();
   const int                 aSurfIdx  = myData->mySurfaces.Nodes.Length() - 1;
-  aSurfNode.Id                        = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Surface, aSurfIdx);
-  aSurfNode.Surface                   = theSurf;
-  aSurfNode.Triangulation             = theTri;
-  aSurfNode.SurfaceLocation           = theLoc;
-  aSurfNode.IsMultiLocated            = false;
+  aSurfNode.Id              = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Surface, aSurfIdx);
+  aSurfNode.Surface         = theSurf;
+  aSurfNode.SurfaceLocation = theLoc;
+  aSurfNode.IsMultiLocated  = false;
+  if (!theTri.IsNull())
+  {
+    aSurfNode.Triangulations.Append(theTri);
+    aSurfNode.ActiveTriangulationIndex = 0;
+  }
   allocateUID(aSurfNode.Id);
 
   myData->mySurfRegistry.Add(aKey, aSurfIdx);
@@ -170,6 +174,70 @@ BRepGraph_NodeId BRepGraph::createPCurveNode(const Handle(Geom2d_Curve)& theCrv2
 
 //=================================================================================================
 
+BRepGraph_NodeId BRepGraph::registerPolygon3D(const Handle(Poly_Polygon3D)& thePoly,
+                                               const TopLoc_Location&        theLoc)
+{
+  if (thePoly.IsNull())
+    return BRepGraph_NodeId();
+
+  BRepGraph_GeomNode::Poly3D& aNode = myData->myPolygons3D.Nodes.Appended();
+  const int                   aIdx  = myData->myPolygons3D.Nodes.Length() - 1;
+  aNode.Id           = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Polygon3D, aIdx);
+  aNode.Polygon      = thePoly;
+  aNode.PolyLocation = theLoc;
+  allocateUID(aNode.Id);
+
+  return aNode.Id;
+}
+
+//=================================================================================================
+
+BRepGraph_NodeId BRepGraph::createPolyOnSurfNode(const Handle(Poly_Polygon2D)& thePoly2D,
+                                                  BRepGraph_NodeId              theEdgeDef,
+                                                  BRepGraph_NodeId              theFaceDef,
+                                                  TopAbs_Orientation            theEdgeOri)
+{
+  if (thePoly2D.IsNull())
+    return BRepGraph_NodeId();
+
+  BRepGraph_GeomNode::PolyOnSurf& aNode = myData->myPolygonsOnSurf.Nodes.Appended();
+  const int                       aIdx  = myData->myPolygonsOnSurf.Nodes.Length() - 1;
+  aNode.Id              = BRepGraph_NodeId(BRepGraph_NodeId::Kind::PolyOnSurf, aIdx);
+  aNode.Polygon2D       = thePoly2D;
+  aNode.EdgeContext      = theEdgeDef;
+  aNode.FaceContext      = theFaceDef;
+  aNode.EdgeOrientation  = theEdgeOri;
+  allocateUID(aNode.Id);
+
+  return aNode.Id;
+}
+
+//=================================================================================================
+
+BRepGraph_NodeId BRepGraph::createPolyOnTriNode(const Handle(Poly_PolygonOnTriangulation)& thePoly,
+                                                 BRepGraph_NodeId   theEdgeDef,
+                                                 BRepGraph_NodeId   theFaceDef,
+                                                 int                theTriIndex,
+                                                 TopAbs_Orientation theEdgeOri)
+{
+  if (thePoly.IsNull())
+    return BRepGraph_NodeId();
+
+  BRepGraph_GeomNode::PolyOnTri& aNode = myData->myPolygonsOnTri.Nodes.Appended();
+  const int                      aIdx  = myData->myPolygonsOnTri.Nodes.Length() - 1;
+  aNode.Id                 = BRepGraph_NodeId(BRepGraph_NodeId::Kind::PolyOnTri, aIdx);
+  aNode.Polygon            = thePoly;
+  aNode.EdgeContext         = theEdgeDef;
+  aNode.FaceContext         = theFaceDef;
+  aNode.TriangulationIndex  = theTriIndex;
+  aNode.EdgeOrientation     = theEdgeOri;
+  allocateUID(aNode.Id);
+
+  return aNode.Id;
+}
+
+//=================================================================================================
+
 BRepGraph_UID BRepGraph::allocateUID(BRepGraph_NodeId theNodeId)
 {
   const size_t  aCounter = myData->myNextUIDCounter.fetch_add(1, std::memory_order_relaxed);
@@ -189,6 +257,9 @@ BRepGraph_UID BRepGraph::allocateUID(BRepGraph_NodeId theNodeId)
     case BRepGraph_NodeId::Kind::Surface:   myData->mySurfaces.UIDs.Append(aUID);   break;
     case BRepGraph_NodeId::Kind::Curve:     myData->myCurves.UIDs.Append(aUID);     break;
     case BRepGraph_NodeId::Kind::PCurve:    myData->myPCurves.UIDs.Append(aUID);    break;
+    case BRepGraph_NodeId::Kind::Polygon3D:  myData->myPolygons3D.UIDs.Append(aUID);    break;
+    case BRepGraph_NodeId::Kind::PolyOnSurf: myData->myPolygonsOnSurf.UIDs.Append(aUID); break;
+    case BRepGraph_NodeId::Kind::PolyOnTri:  myData->myPolygonsOnTri.UIDs.Append(aUID);  break;
     default: break;
   }
 
@@ -459,22 +530,28 @@ void BRepGraph::SetAllocator(const Handle(NCollection_BaseAllocator)& theAlloc)
   using TopoVertex    = BRepGraph_Data::TopoKindData<BRepGraph_TopoNode::VertexDef, BRepGraph_TopoNode::VertexUsage>;
   using TopoCompound  = BRepGraph_Data::TopoKindData<BRepGraph_TopoNode::CompoundDef, BRepGraph_TopoNode::CompoundUsage>;
   using TopoCompSolid = BRepGraph_Data::TopoKindData<BRepGraph_TopoNode::CompSolidDef, BRepGraph_TopoNode::CompSolidUsage>;
-  using GeomSurf      = BRepGraph_Data::GeomKindData<BRepGraph_GeomNode::Surf>;
-  using GeomCurve     = BRepGraph_Data::GeomKindData<BRepGraph_GeomNode::Curve>;
-  using GeomPCurve    = BRepGraph_Data::GeomKindData<BRepGraph_GeomNode::PCurve>;
+  using GeomSurf       = BRepGraph_Data::GeomKindData<BRepGraph_GeomNode::Surf>;
+  using GeomCurve      = BRepGraph_Data::GeomKindData<BRepGraph_GeomNode::Curve>;
+  using GeomPCurve     = BRepGraph_Data::GeomKindData<BRepGraph_GeomNode::PCurve>;
+  using GeomPoly3D     = BRepGraph_Data::GeomKindData<BRepGraph_GeomNode::Poly3D>;
+  using GeomPolyOnSurf = BRepGraph_Data::GeomKindData<BRepGraph_GeomNode::PolyOnSurf>;
+  using GeomPolyOnTri  = BRepGraph_Data::GeomKindData<BRepGraph_GeomNode::PolyOnTri>;
 
   const auto& anAlloc = myData->myAllocator;
-  myData->mySolids     = TopoSolid(16, 16, anAlloc);
-  myData->myShells     = TopoShell(16, 16, anAlloc);
-  myData->myFaces      = TopoFace(128, 128, anAlloc);
-  myData->myWires      = TopoWire(128, 128, anAlloc);
-  myData->myEdges      = TopoEdge(256, 256, anAlloc);
-  myData->myVertices   = TopoVertex(256, 256, anAlloc);
-  myData->myCompounds  = TopoCompound(8, 8, anAlloc);
-  myData->myCompSolids = TopoCompSolid(8, 8, anAlloc);
-  myData->mySurfaces   = GeomSurf(64, anAlloc);
-  myData->myCurves     = GeomCurve(64, anAlloc);
-  myData->myPCurves    = GeomPCurve(128, anAlloc);
+  myData->mySolids         = TopoSolid(16, 16, anAlloc);
+  myData->myShells         = TopoShell(16, 16, anAlloc);
+  myData->myFaces          = TopoFace(128, 128, anAlloc);
+  myData->myWires          = TopoWire(128, 128, anAlloc);
+  myData->myEdges          = TopoEdge(256, 256, anAlloc);
+  myData->myVertices       = TopoVertex(256, 256, anAlloc);
+  myData->myCompounds      = TopoCompound(8, 8, anAlloc);
+  myData->myCompSolids     = TopoCompSolid(8, 8, anAlloc);
+  myData->mySurfaces       = GeomSurf(64, anAlloc);
+  myData->myCurves         = GeomCurve(64, anAlloc);
+  myData->myPCurves        = GeomPCurve(128, anAlloc);
+  myData->myPolygons3D     = GeomPoly3D(64, anAlloc);
+  myData->myPolygonsOnSurf = GeomPolyOnSurf(128, anAlloc);
+  myData->myPolygonsOnTri  = GeomPolyOnTri(128, anAlloc);
   myData->mySurfRegistry  = NCollection_IndexedDataMap<const Geom_Surface*, int>(100, anAlloc);
   myData->myCurveRegistry = NCollection_IndexedDataMap<const Geom_Curve*, int>(100, anAlloc);
   myData->myTShapeToDefId = NCollection_DataMap<const TopoDS_TShape*, BRepGraph_NodeId>(100, anAlloc);
