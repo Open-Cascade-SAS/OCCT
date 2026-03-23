@@ -18,6 +18,7 @@
 #include <BRepGraph_Analyze.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <Geom2d_Line.hxx>
+#include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Pnt.hxx>
@@ -403,7 +404,8 @@ TEST_F(BRepGraphTest, ReconstructFace_EachBoxFace_SameSubShapeCounts)
 {
   for (int aFaceIdx = 0; aFaceIdx < myGraph.NbFaces(); ++aFaceIdx)
   {
-    const TopoDS_Shape& anOrigFace = myGraph.Face(aFaceIdx).OriginalShape;
+    BRepGraph_NodeId aFaceId(BRepGraph_NodeKind::Face, aFaceIdx);
+    const TopoDS_Shape& anOrigFace = myGraph.OriginalOf(aFaceId);
     const TopoDS_Shape  aReconstructed = myGraph.ReconstructFace(aFaceIdx);
 
     NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> anOrigVerts, anOrigEdges, anOrigWires;
@@ -444,27 +446,35 @@ TEST_F(BRepGraphTest, ReconstructFace_AfterEdgeReplace_ContainsNewEdge)
   int aNewIdx = (anOldEdgeId.Index + 1) % myGraph.NbEdges();
   BRepGraph_NodeId aNewEdgeId(BRepGraph_NodeKind::Edge, aNewIdx);
 
+  // Get 3D curve handles from graph for old/new edges.
+  const BRepGraph_TopoNode::Edge& aNewEdgeNode = myGraph.Edge(aNewIdx);
+  const BRepGraph_TopoNode::Edge& anOldEdgeNode = myGraph.Edge(anOldEdgeId.Index);
+  Handle(Geom_Curve) aNewCurve = aNewEdgeNode.CurveNodeId.IsValid()
+    ? myGraph.Curve(aNewEdgeNode.CurveNodeId.Index).CurveGeom : nullptr;
+  Handle(Geom_Curve) anOldCurve = anOldEdgeNode.CurveNodeId.IsValid()
+    ? myGraph.Curve(anOldEdgeNode.CurveNodeId.Index).CurveGeom : nullptr;
+
   myGraph.ReplaceEdgeInWire(0, anOldEdgeId, aNewEdgeId, false);
 
   // Reconstruct the face owning this wire.
   int aFaceIdx = aWire.OwnerFaceId.Index;
   const TopoDS_Shape aReconstructed = myGraph.ReconstructFace(aFaceIdx);
 
-  // Collect TShapes from reconstructed face.
-  const TopoDS_Shape& aNewEdgeShape = myGraph.Edge(aNewIdx).OriginalShape;
-  const TopoDS_Shape& anOldEdgeShape = myGraph.Edge(anOldEdgeId.Index).OriginalShape;
-
+  // Check via 3D curve handle identity (reconstructed edges have new TShapes).
   bool isNewFound = false;
   bool isOldFound = false;
   for (TopExp_Explorer anExp(aReconstructed, TopAbs_EDGE); anExp.More(); anExp.Next())
   {
-    if (anExp.Current().TShape() == aNewEdgeShape.TShape())
+    TopLoc_Location aLoc;
+    double aFirst, aLast;
+    Handle(Geom_Curve) aCurve = BRep_Tool::Curve(TopoDS::Edge(anExp.Current()), aLoc, aFirst, aLast);
+    if (!aCurve.IsNull() && !aNewCurve.IsNull() && aCurve.get() == aNewCurve.get())
       isNewFound = true;
-    if (anExp.Current().TShape() == anOldEdgeShape.TShape())
+    if (!aCurve.IsNull() && !anOldCurve.IsNull() && aCurve.get() == anOldCurve.get())
       isOldFound = true;
   }
-  EXPECT_TRUE(isNewFound) << "New edge TShape not found in reconstructed face";
-  EXPECT_FALSE(isOldFound) << "Old edge TShape still present in reconstructed face";
+  EXPECT_TRUE(isNewFound) << "New edge curve not found in reconstructed face";
+  EXPECT_FALSE(isOldFound) << "Old edge curve still present in reconstructed face";
 }
 
 TEST_F(BRepGraphTest, ReconstructShape_SolidRoot_SameFaceCount)
@@ -482,10 +492,135 @@ TEST_F(BRepGraphTest, ReconstructShape_FaceRoot_ReturnsSameShape)
 {
   BRepGraph_NodeId aFaceId(BRepGraph_NodeKind::Face, 0);
   const TopoDS_Shape aReconstructed = myGraph.ReconstructShape(aFaceId);
-  const TopoDS_Shape& anOriginal = myGraph.Face(0).OriginalShape;
+  const TopoDS_Shape& anOriginal = myGraph.OriginalOf(aFaceId);
 
-  // Face root returns OriginalShape directly.
-  EXPECT_TRUE(aReconstructed.IsSame(anOriginal));
+  // Reconstructed face should have the same surface handle.
+  const TopoDS_Face& anOrigF = TopoDS::Face(anOriginal);
+  const TopoDS_Face& aReconF = TopoDS::Face(aReconstructed);
+  TopLoc_Location aLoc1, aLoc2;
+  const Handle(Geom_Surface)& aSurf1 = BRep_Tool::Surface(anOrigF, aLoc1);
+  const Handle(Geom_Surface)& aSurf2 = BRep_Tool::Surface(aReconF, aLoc2);
+  EXPECT_EQ(aSurf1.get(), aSurf2.get());
+}
+
+TEST_F(BRepGraphTest, Shape_Unmodified_ReturnsSameShape)
+{
+  BRepGraph_NodeId aFaceId(BRepGraph_NodeKind::Face, 0);
+  TopoDS_Shape aShape = myGraph.Shape(aFaceId);
+  const TopoDS_Shape& anOrig = myGraph.OriginalOf(aFaceId);
+  EXPECT_TRUE(aShape.IsSame(anOrig));
+}
+
+TEST_F(BRepGraphTest, Shape_AfterReplaceEdge_DiffersFromOriginal)
+{
+  const BRepGraph_TopoNode::Wire& aWire = myGraph.Wire(0);
+  ASSERT_GE(aWire.OrderedEdges.Length(), 1);
+  BRepGraph_NodeId anOldEdgeId = aWire.OrderedEdges.Value(0).EdgeId;
+  int aNewIdx = (anOldEdgeId.Index + 1) % myGraph.NbEdges();
+  BRepGraph_NodeId aNewEdgeId(BRepGraph_NodeKind::Edge, aNewIdx);
+
+  myGraph.ReplaceEdgeInWire(0, anOldEdgeId, aNewEdgeId, false);
+
+  BRepGraph_NodeId aFaceId(BRepGraph_NodeKind::Face, aWire.OwnerFaceId.Index);
+  TopoDS_Shape aShape = myGraph.Shape(aFaceId);
+  const TopoDS_Shape& anOrig = myGraph.OriginalOf(aFaceId);
+  EXPECT_FALSE(aShape.IsSame(anOrig));
+}
+
+TEST_F(BRepGraphTest, Shape_WireKind_Valid)
+{
+  BRepGraph_NodeId aWireId(BRepGraph_NodeKind::Wire, 0);
+  TopoDS_Shape aShape = myGraph.Shape(aWireId);
+  EXPECT_FALSE(aShape.IsNull());
+  EXPECT_EQ(aShape.ShapeType(), TopAbs_WIRE);
+}
+
+TEST_F(BRepGraphTest, Shape_EdgeKind_Valid)
+{
+  BRepGraph_NodeId anEdgeId(BRepGraph_NodeKind::Edge, 0);
+  TopoDS_Shape aShape = myGraph.Shape(anEdgeId);
+  EXPECT_FALSE(aShape.IsNull());
+  EXPECT_EQ(aShape.ShapeType(), TopAbs_EDGE);
+}
+
+TEST_F(BRepGraphTest, Shape_VertexKind_Valid)
+{
+  BRepGraph_NodeId aVtxId(BRepGraph_NodeKind::Vertex, 0);
+  TopoDS_Shape aShape = myGraph.Shape(aVtxId);
+  EXPECT_FALSE(aShape.IsNull());
+  EXPECT_EQ(aShape.ShapeType(), TopAbs_VERTEX);
+}
+
+TEST_F(BRepGraphTest, IsModified_MutableEdge_PropagatesUp)
+{
+  EXPECT_FALSE(myGraph.Edge(0).IsModified);
+
+  myGraph.MutableEdge(0);
+
+  EXPECT_TRUE(myGraph.Edge(0).IsModified);
+
+  // Check propagation up to parent wire and face.
+  const BRepGraph_TopoNode::Edge& anEdge = myGraph.Edge(0);
+  if (anEdge.Id.IsValid())
+  {
+    // Find a wire containing this edge.
+    const NCollection_Vector<int>& aWires = myGraph.WiresOfEdge(0);
+    if (aWires.Length() > 0)
+    {
+      EXPECT_TRUE(myGraph.Wire(aWires.Value(0)).IsModified);
+      const BRepGraph_TopoNode::Wire& aWireNode = myGraph.Wire(aWires.Value(0));
+      if (aWireNode.OwnerFaceId.IsValid())
+      {
+        EXPECT_TRUE(myGraph.Face(aWireNode.OwnerFaceId.Index).IsModified);
+      }
+    }
+  }
+}
+
+TEST_F(BRepGraphTest, ReconstructShape_WireKind_NoThrow)
+{
+  BRepGraph_NodeId aWireId(BRepGraph_NodeKind::Wire, 0);
+  TopoDS_Shape aShape;
+  EXPECT_NO_THROW(aShape = myGraph.ReconstructShape(aWireId));
+  EXPECT_FALSE(aShape.IsNull());
+}
+
+TEST_F(BRepGraphTest, HasOriginalShape_AfterBuild_True)
+{
+  for (int aFaceIdx = 0; aFaceIdx < myGraph.NbFaces(); ++aFaceIdx)
+  {
+    BRepGraph_NodeId aFaceId(BRepGraph_NodeKind::Face, aFaceIdx);
+    EXPECT_TRUE(myGraph.HasOriginalShape(aFaceId))
+      << "Face " << aFaceIdx << " should have original shape after Build()";
+  }
+  for (int anEdgeIdx = 0; anEdgeIdx < myGraph.NbEdges(); ++anEdgeIdx)
+  {
+    BRepGraph_NodeId anEdgeId(BRepGraph_NodeKind::Edge, anEdgeIdx);
+    EXPECT_TRUE(myGraph.HasOriginalShape(anEdgeId))
+      << "Edge " << anEdgeIdx << " should have original shape after Build()";
+  }
+}
+
+TEST_F(BRepGraphTest, Shape_CachedOnSecondCall)
+{
+  BRepGraph_NodeId aVtxId(BRepGraph_NodeKind::Vertex, 0);
+  TopoDS_Shape aFirst = myGraph.Shape(aVtxId);
+  TopoDS_Shape aSecond = myGraph.Shape(aVtxId);
+  EXPECT_TRUE(aFirst.IsSame(aSecond));
+}
+
+TEST_F(BRepGraphTest, Shape_InvalidatedAfterMutation)
+{
+  BRepGraph_NodeId anEdgeId(BRepGraph_NodeKind::Edge, 0);
+  TopoDS_Shape aBefore = myGraph.Shape(anEdgeId);
+  EXPECT_FALSE(aBefore.IsNull());
+
+  myGraph.MutableEdge(0).Tolerance = 0.123;
+  TopoDS_Shape anAfter = myGraph.Shape(anEdgeId);
+  EXPECT_FALSE(anAfter.IsNull());
+
+  // After mutation, Shape() reconstructs a new edge — different TShape.
+  EXPECT_FALSE(aBefore.IsSame(anAfter));
 }
 
 // ===================================================================

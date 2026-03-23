@@ -293,10 +293,23 @@ public:
     std::function<NCollection_Vector<BRepGraph_NodeId>(BRepGraph&, BRepGraph_NodeId)> theModifier,
     const TCollection_AsciiString&                                                      theOpLabel);
 
+  // --- Shape access ---
+
+  //! Returns the current TopoDS_Shape for a node.
+  //! If unmodified and an original exists, returns it.
+  //! If modified or no original exists, reconstructs from graph state and caches.
+  Standard_EXPORT TopoDS_Shape Shape(BRepGraph_NodeId theNode) const;
+
+  //! True if an original shape was stored during Build().
+  Standard_EXPORT bool HasOriginalShape(BRepGraph_NodeId theNode) const;
+
+  //! Returns the original shape from Build(). Throws if none.
+  Standard_EXPORT const TopoDS_Shape& OriginalOf(BRepGraph_NodeId theNode) const;
+
   // --- Reconstruction ---
 
   //! Rebuild a TopoDS_Shape tree from current graph state.
-  //! @param theRoot  Must be Solid, Shell, or Face kind.
+  //! Supports all topology kinds: Solid, Shell, Face, Wire, Edge, Vertex.
   Standard_EXPORT TopoDS_Shape ReconstructShape(BRepGraph_NodeId theRoot) const;
 
   //! Reconstruct a TopoDS_Face by rebuilding its wires from current graph state.
@@ -431,6 +444,22 @@ private:
   BRepGraph_UID allocateUID(BRepGraph_NodeId theNodeId);
 
   BRepGraph_NodeCache* mutableCache(BRepGraph_NodeId theNode);
+
+  //! Propagate IsModified up the Parent chain and invalidate myCurrentShapes.
+  void markModified(BRepGraph_NodeId theNode);
+
+  //! Reconstruct a TopoDS_Shape from graph fields only (no cache/original lookup).
+  TopoDS_Shape reconstructNode(BRepGraph_NodeId theNode) const;
+
+  //! Shapes from Build() — read-only after build.
+  //! Empty if graph was constructed algorithmically.
+  NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape,
+                      BRepGraph_NodeId::Hasher> myOriginalShapes;
+
+  //! Lazily-cached current shapes.
+  //! Populated on first Shape() call, invalidated when IsModified is set.
+  mutable NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape,
+                              BRepGraph_NodeId::Hasher> myCurrentShapes;
 };
 
 #endif // _BRepGraph_HeaderFile

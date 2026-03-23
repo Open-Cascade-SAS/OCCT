@@ -108,7 +108,7 @@ TopoDS_Face buildCopiedFace(const BRepGraph&                           theGraph,
           theCurveCopies.IsBound(anEdgeNode.CurveNodeId.Index)
             ? theCurveCopies.Find(anEdgeNode.CurveNodeId.Index)
             : aCurveNode.CurveGeom;
-        aBB.MakeEdge(aNewEdge, aNewCurve, anEdgeNode.OriginalShape.Location(),
+        aBB.MakeEdge(aNewEdge, aNewCurve, anEdgeNode.LocalLocation,
                      anEdgeNode.Tolerance);
       }
       else

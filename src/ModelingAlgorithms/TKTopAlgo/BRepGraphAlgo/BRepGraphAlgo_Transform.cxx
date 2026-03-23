@@ -70,7 +70,7 @@ TopoDS_Shape BRepGraphAlgo_Transform::Perform(const BRepGraph& theGraph,
       aBB.MakeCompound(aComp);
       for (int aFaceIdx = 0; aFaceIdx < theGraph.NbFaces(); ++aFaceIdx)
       {
-        aBB.Add(aComp, theGraph.Face(aFaceIdx).OriginalShape);
+        aBB.Add(aComp, theGraph.Shape(BRepGraph_NodeId(BRepGraph_NodeKind::Face, aFaceIdx)));
       }
       aReconstructed = aComp;
     }
@@ -110,7 +110,7 @@ TopoDS_Shape BRepGraphAlgo_Transform::TransformFace(const BRepGraph& theGraph,
   }
   else
   {
-    aFace = theGraph.Face(theFaceIdx).OriginalShape;
+    aFace = theGraph.Shape(BRepGraph_NodeId(BRepGraph_NodeKind::Face, theFaceIdx));
   }
 
   if (aFace.IsNull())

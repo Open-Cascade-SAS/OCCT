@@ -342,17 +342,16 @@ TEST(BRepGraphAlgo_SewingTest, SewAllSixFaces_AreaPreserved)
   const TopoDS_Shape& aResult = aSewer.Result();
   ASSERT_FALSE(aResult.IsNull());
 
-  // Sum area face-by-face (compound of faces, BRepGProp on compound may not work reliably).
+  // Sum absolute area face-by-face. Use std::abs because REVERSED-oriented faces
+  // yield negative mass from BRepGProp, which is correct shell behavior.
   double aTotalArea = 0.0;
   for (TopExp_Explorer anExp(aResult, TopAbs_FACE); anExp.More(); anExp.Next())
   {
     GProp_GProps aProps;
     BRepGProp::SurfaceProperties(anExp.Current(), aProps);
-    aTotalArea += aProps.Mass();
+    aTotalArea += std::abs(aProps.Mass());
   }
-  // Area should be positive and substantial. Some faces may have reduced area
-  // due to reconstruction creating new face geometry from graph state.
-  // Full 2*(10*20 + 10*30 + 20*30) = 2200, but allow partial coverage.
+  // Full 2*(10*20 + 10*30 + 20*30) = 2200.
   EXPECT_GT(aTotalArea, 1000.0);
   EXPECT_LE(aTotalArea, 2300.0);
 }

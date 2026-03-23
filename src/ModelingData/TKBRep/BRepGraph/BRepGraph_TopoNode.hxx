@@ -38,7 +38,6 @@ struct Base
 {
   BRepGraph_NodeId Id;  //!< Typed address: (kind + per-kind index)
 
-  TopoDS_Shape    OriginalShape;  //!< The TopoDS_Shape this node was built from
   TopLoc_Location LocalLocation;  //!< Location stored on this specific shape
   TopLoc_Location GlobalLocation; //!< Accumulated transform from root to here
 
@@ -48,6 +47,10 @@ struct Base
 
   //! Lazily-computed derived quantities + extensible user attributes.
   BRepGraph_NodeCache Cache;
+
+  //! True when this node or a descendant has been mutated since Build().
+  //! Used by Shape() to decide whether to return the original or reconstruct.
+  bool IsModified = false;
 };
 
 struct Solid : public Base

@@ -619,7 +619,7 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> BRepGraphAlgo_
       if (anEdgeANode.IsDegenerate)
         return;
 
-      const TopoDS_Edge&     anEdgeAShape = TopoDS::Edge(anEdgeANode.OriginalShape);
+      const TopoDS_Edge&     anEdgeAShape = TopoDS::Edge(myGraph.OriginalOf(anIdA));
       BRepAdaptor_Curve      aCurveA(anEdgeAShape);
       constexpr int          THE_NB_SAMPLES = 5;
       GCPnts_UniformAbscissa aSamplerA(aCurveA, THE_NB_SAMPLES);
@@ -751,8 +751,8 @@ void BRepGraphAlgo_Sewing::mergeMatchedEdges(
       theAffectedFaces.Add(aRemoveEdge.PCurves.Value(aPCurveIter).FaceNodeId.Index);
     }
 
-    const TopoDS_Edge& aKeepTopoEdge   = TopoDS::Edge(myGraph.Edge(anIdA.Index).OriginalShape);
-    const TopoDS_Edge& aRemoveTopoEdge = TopoDS::Edge(aRemoveEdge.OriginalShape);
+    const TopoDS_Edge& aKeepTopoEdge   = TopoDS::Edge(myGraph.OriginalOf(anIdA));
+    const TopoDS_Edge& aRemoveTopoEdge = TopoDS::Edge(myGraph.OriginalOf(anIdB));
 
     // Transfer pcurves from remove-edge to keep-edge.
     for (int aPCurveIter = 0; aPCurveIter < aRemoveEdge.PCurves.Length(); ++aPCurveIter)
@@ -888,7 +888,7 @@ void BRepGraphAlgo_Sewing::reconstructResult(const NCollection_Map<int>& theAffe
       if (theAffectedFaces.Contains(theFaceIdx))
         aFaceShapes.SetValue(theFaceIdx, myGraph.ReconstructFace(theFaceIdx));
       else
-        aFaceShapes.SetValue(theFaceIdx, myGraph.Face(theFaceIdx).OriginalShape);
+        aFaceShapes.SetValue(theFaceIdx, myGraph.Shape(BRepGraph_NodeId(BRepGraph_NodeKind::Face, theFaceIdx)));
     },
     !myIsParallel);
 
@@ -965,8 +965,8 @@ bool BRepGraphAlgo_Sewing::areEdgesSewable(BRepGraph_NodeId theEdgeA,
   const BRepGraph_TopoNode::Edge& aNodeA = myGraph.Edge(theEdgeA.Index);
   const BRepGraph_TopoNode::Edge& aNodeB = myGraph.Edge(theEdgeB.Index);
 
-  const TopoDS_Edge& anEdgeA = TopoDS::Edge(aNodeA.OriginalShape);
-  const TopoDS_Edge& anEdgeB = TopoDS::Edge(aNodeB.OriginalShape);
+  const TopoDS_Edge& anEdgeA = TopoDS::Edge(myGraph.OriginalOf(theEdgeA));
+  const TopoDS_Edge& anEdgeB = TopoDS::Edge(myGraph.OriginalOf(theEdgeB));
 
   if (aNodeA.IsDegenerate || aNodeB.IsDegenerate)
   {
@@ -1144,7 +1144,7 @@ bool BRepGraphAlgo_Sewing::areEdgesSewable(BRepGraph_NodeId                  the
 
   // Build adaptor for edgeB and re-initialize the reusable forward projector
   // (avoids repeated Extrema_GGExtPC construction/destruction per candidate pair).
-  const TopoDS_Edge& anEdgeB = TopoDS::Edge(aNodeB.OriginalShape);
+  const TopoDS_Edge& anEdgeB = TopoDS::Edge(myGraph.OriginalOf(theEdgeB));
   BRepAdaptor_Curve  aCurveB(anEdgeB);
 
   theProjectorFwdB.Initialize(aCurveB,

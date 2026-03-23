@@ -230,9 +230,9 @@ void BRepGraph::Build(const TopoDS_Shape& theShape, bool theParallel)
     BRepGraph_TopoNode::Solid& aSolidNode = mySolids.Appended();
     const int                  aSolidIdx  = mySolids.Length() - 1;
     aSolidNode.Id                         = BRepGraph_NodeId(BRepGraph_NodeKind::Solid, aSolidIdx);
-    aSolidNode.OriginalShape              = aSolid;
     aSolidNode.LocalLocation              = aSolid.Location();
     aSolidNode.GlobalLocation             = aSolid.Location();
+    myOriginalShapes.Bind(aSolidNode.Id, aSolid);
     allocateUID(aSolidNode.Id);
 
     for (TopoDS_Iterator aShellIt(aSolid); aShellIt.More(); aShellIt.Next())
@@ -245,10 +245,10 @@ void BRepGraph::Build(const TopoDS_Shape& theShape, bool theParallel)
       BRepGraph_TopoNode::Shell& aShellNode = myShells.Appended();
       const int                  aShellIdx  = myShells.Length() - 1;
       aShellNode.Id             = BRepGraph_NodeId(BRepGraph_NodeKind::Shell, aShellIdx);
-      aShellNode.OriginalShape  = aShell;
       aShellNode.LocalLocation  = aShell.Location();
       aShellNode.GlobalLocation = aSolidNode.GlobalLocation * aShell.Location();
       aShellNode.Parent         = aSolidNode.Id;
+      myOriginalShapes.Bind(aShellNode.Id, aShell);
       allocateUID(aShellNode.Id);
 
       aSolidNode.Shells.Append(aShellNode.Id);
@@ -277,9 +277,9 @@ void BRepGraph::Build(const TopoDS_Shape& theShape, bool theParallel)
       BRepGraph_TopoNode::Shell& aShellNode = myShells.Appended();
       const int                  aShellIdx  = myShells.Length() - 1;
       aShellNode.Id             = BRepGraph_NodeId(BRepGraph_NodeKind::Shell, aShellIdx);
-      aShellNode.OriginalShape  = aShell;
       aShellNode.LocalLocation  = aShell.Location();
       aShellNode.GlobalLocation = aShell.Location();
+      myOriginalShapes.Bind(aShellNode.Id, aShell);
       allocateUID(aShellNode.Id);
 
       for (TopoDS_Iterator aFaceIt(aShell); aFaceIt.More(); aFaceIt.Next())
@@ -331,12 +331,12 @@ void BRepGraph::Build(const TopoDS_Shape& theShape, bool theParallel)
     BRepGraph_TopoNode::Face& aFaceNode = myFaces.Appended();
     const int                 aFaceIdx  = myFaces.Length() - 1;
     aFaceNode.Id                        = BRepGraph_NodeId(BRepGraph_NodeKind::Face, aFaceIdx);
-    aFaceNode.OriginalShape             = aCurFace;
     aFaceNode.LocalLocation             = aCurFace.Location();
     aFaceNode.GlobalLocation            = aData.ParentGlobalLoc * aCurFace.Location();
     aFaceNode.Orientation               = aData.Orientation;
     aFaceNode.Tolerance                 = aData.Tolerance;
     aFaceNode.Parent                    = aData.ParentShellId;
+    myOriginalShapes.Bind(aFaceNode.Id, aCurFace);
     allocateUID(aFaceNode.Id);
 
     myTShapeToNodeId.Bind(aCurFace.TShape().get(), aFaceNode.Id);
@@ -364,11 +364,11 @@ void BRepGraph::Build(const TopoDS_Shape& theShape, bool theParallel)
       BRepGraph_TopoNode::Wire& aWireNode = myWires.Appended();
       const int                 aWireIdx  = myWires.Length() - 1;
       aWireNode.Id                        = BRepGraph_NodeId(BRepGraph_NodeKind::Wire, aWireIdx);
-      aWireNode.OriginalShape             = aWireData.Shape;
       aWireNode.LocalLocation             = aWireData.Shape.Location();
       aWireNode.GlobalLocation            = aFaceNode.GlobalLocation * aWireData.Shape.Location();
       aWireNode.OwnerFaceId               = aFaceNode.Id;
       aWireNode.Parent                    = aFaceNode.Id;
+      myOriginalShapes.Bind(aWireNode.Id, aWireData.Shape);
       allocateUID(aWireNode.Id);
 
       // Wire relationship stored via direct Face fields (no OuterWire/InnerWire RelEdge).
@@ -409,13 +409,13 @@ void BRepGraph::Build(const TopoDS_Shape& theShape, bool theParallel)
           BRepGraph_TopoNode::Edge& anEdgeNode = myEdges.Appended();
           const int                 anEdgeIdx  = myEdges.Length() - 1;
           anEdgeNode.Id             = BRepGraph_NodeId(BRepGraph_NodeKind::Edge, anEdgeIdx);
-          anEdgeNode.OriginalShape  = anEdge;
           anEdgeNode.LocalLocation  = anEdge.Location();
           anEdgeNode.GlobalLocation = aWireNode.GlobalLocation * anEdge.Location();
           anEdgeNode.Tolerance      = anEdgeData.Tolerance;
           anEdgeNode.IsDegenerate   = anEdgeData.IsDegenerate;
           anEdgeNode.ParamFirst     = anEdgeData.ParamFirst;
           anEdgeNode.ParamLast      = anEdgeData.ParamLast;
+          myOriginalShapes.Bind(anEdgeNode.Id, anEdge);
           allocateUID(anEdgeNode.Id);
 
           if (!anEdgeData.Curve3d.IsNull())
@@ -442,12 +442,12 @@ void BRepGraph::Build(const TopoDS_Shape& theShape, bool theParallel)
             BRepGraph_TopoNode::Vertex& aVtxNode = myVertices.Appended();
             const int                   aVtxIdx  = myVertices.Length() - 1;
             aVtxNode.Id             = BRepGraph_NodeId(BRepGraph_NodeKind::Vertex, aVtxIdx);
-            aVtxNode.OriginalShape  = theVtxData.Shape;
             aVtxNode.LocalLocation  = theVtxData.Shape.Location();
             aVtxNode.GlobalLocation = anEdgeNode.GlobalLocation * theVtxData.Shape.Location();
             aVtxNode.Point          = theVtxData.Point;
             aVtxNode.Tolerance      = theVtxData.Tolerance;
             aVtxNode.Parent         = anEdgeNode.Id;
+            myOriginalShapes.Bind(aVtxNode.Id, theVtxData.Shape);
             allocateUID(aVtxNode.Id);
 
             myTShapeToNodeId.Bind(aVTShapeKey, aVtxNode.Id);
@@ -1016,10 +1016,14 @@ Bnd_Box BRepGraph::BoundingBox(BRepGraph_NodeId theNode) const
 
   return aBase->Cache.BoundingBox.Get([&]() -> Bnd_Box {
     Bnd_Box aBox;
-    for (TopExp_Explorer anExp(aBase->OriginalShape, TopAbs_VERTEX); anExp.More(); anExp.Next())
+    TopoDS_Shape aShape = Shape(theNode);
+    if (!aShape.IsNull())
     {
-      const TopoDS_Vertex& aVtx = TopoDS::Vertex(anExp.Current());
-      aBox.Add(BRep_Tool::Pnt(aVtx));
+      for (TopExp_Explorer anExp(aShape, TopAbs_VERTEX); anExp.More(); anExp.Next())
+      {
+        const TopoDS_Vertex& aVtx = TopoDS::Vertex(anExp.Current());
+        aBox.Add(BRep_Tool::Pnt(aVtx));
+      }
     }
     return aBox;
   });
@@ -1232,94 +1236,21 @@ void BRepGraph::ApplyModification(
 
 TopoDS_Shape BRepGraph::ReconstructShape(BRepGraph_NodeId theRoot) const
 {
-  BRep_Builder aBuilder;
-
-  switch (theRoot.Kind)
-  {
-    case BRepGraph_NodeKind::Solid: {
-      const BRepGraph_TopoNode::Solid& aSolid = mySolids.Value(theRoot.Index);
-      TopoDS_Solid                     aNewSolid;
-      aBuilder.MakeSolid(aNewSolid);
-      for (int aShellIter = 0; aShellIter < aSolid.Shells.Length(); ++aShellIter)
-      {
-        TopoDS_Shape aShellShape = ReconstructShape(aSolid.Shells.Value(aShellIter));
-        aBuilder.Add(aNewSolid, aShellShape);
-      }
-      return aNewSolid;
-    }
-    case BRepGraph_NodeKind::Shell: {
-      const BRepGraph_TopoNode::Shell& aShell = myShells.Value(theRoot.Index);
-      TopoDS_Shell                     aNewShell;
-      aBuilder.MakeShell(aNewShell);
-      for (int aFaceIter = 0; aFaceIter < aShell.Faces.Length(); ++aFaceIter)
-      {
-        TopoDS_Shape aFaceShape = ReconstructShape(aShell.Faces.Value(aFaceIter));
-        aBuilder.Add(aNewShell, aFaceShape);
-      }
-      return aNewShell;
-    }
-    case BRepGraph_NodeKind::Face: {
-      const BRepGraph_TopoNode::Face& aFaceNode = myFaces.Value(theRoot.Index);
-      return aFaceNode.OriginalShape;
-    }
-    default: {
-      throw Standard_ProgramError(
-        "BRepGraph::ReconstructShape() -- root must be Solid, Shell, or Face kind.");
-    }
-  }
+  return reconstructNode(theRoot);
 }
 
 //=================================================================================================
 
 TopoDS_Shape BRepGraph::ReconstructFace(int theFaceIdx) const
 {
-  const BRepGraph_TopoNode::Face& aFaceNode = myFaces.Value(theFaceIdx);
-  const BRepGraph_GeomNode::Surf& aSurfNode = mySurfaces.Value(aFaceNode.SurfNodeId.Index);
-
-  BRep_Builder aBB;
-
-  auto buildWireFromGraph = [&](BRepGraph_NodeId theWireId) -> TopoDS_Wire {
-    TopoDS_Wire aNewWire;
-    aBB.MakeWire(aNewWire);
-
-    const BRepGraph_TopoNode::Wire& aWireNode = myWires.Value(theWireId.Index);
-    for (int anEdgeIdx = 0; anEdgeIdx < aWireNode.OrderedEdges.Length(); ++anEdgeIdx)
-    {
-      const BRepGraph_TopoNode::Wire::EdgeEntry& anEntry = aWireNode.OrderedEdges.Value(anEdgeIdx);
-      const BRepGraph_TopoNode::Edge&            anEdgeNode = myEdges.Value(anEntry.EdgeId.Index);
-      TopoDS_Shape anEdge = anEdgeNode.OriginalShape.Oriented(anEntry.OrientationInWire);
-      aBB.Add(aNewWire, anEdge);
-    }
-
-    if (aWireNode.IsClosed)
-      aNewWire.Closed(true);
-
-    return aNewWire;
-  };
-
-  TopoDS_Face aNewFace;
-  aBB.MakeFace(aNewFace, aSurfNode.Surface, aFaceNode.GlobalLocation, aFaceNode.Tolerance);
-
-  if (aFaceNode.OuterWireId.IsValid())
-  {
-    TopoDS_Wire anOuterWire = buildWireFromGraph(aFaceNode.OuterWireId);
-    aBB.Add(aNewFace, anOuterWire);
-  }
-
-  for (int aWireIdx = 0; aWireIdx < aFaceNode.InnerWireIds.Length(); ++aWireIdx)
-  {
-    TopoDS_Wire anInnerWire = buildWireFromGraph(aFaceNode.InnerWireIds.Value(aWireIdx));
-    aBB.Add(aNewFace, anInnerWire);
-  }
-
-  aNewFace.Orientation(aFaceNode.Orientation);
-  return aNewFace;
+  return reconstructNode(BRepGraph_NodeId(BRepGraph_NodeKind::Face, theFaceIdx));
 }
 
 //=================================================================================================
 
 BRepGraph_TopoNode::Edge& BRepGraph::MutableEdge(int theIdx)
 {
+  markModified(BRepGraph_NodeId(BRepGraph_NodeKind::Edge, theIdx));
   return myEdges.ChangeValue(theIdx);
 }
 
@@ -1327,6 +1258,7 @@ BRepGraph_TopoNode::Edge& BRepGraph::MutableEdge(int theIdx)
 
 BRepGraph_TopoNode::Wire& BRepGraph::MutableWire(int theIdx)
 {
+  markModified(BRepGraph_NodeId(BRepGraph_NodeKind::Wire, theIdx));
   return myWires.ChangeValue(theIdx);
 }
 
@@ -1334,6 +1266,7 @@ BRepGraph_TopoNode::Wire& BRepGraph::MutableWire(int theIdx)
 
 BRepGraph_TopoNode::Vertex& BRepGraph::MutableVertex(int theIdx)
 {
+  markModified(BRepGraph_NodeId(BRepGraph_NodeKind::Vertex, theIdx));
   return myVertices.ChangeValue(theIdx);
 }
 
@@ -1353,6 +1286,7 @@ BRepGraph_NodeId BRepGraph::AddPCurveToEdge(BRepGraph_NodeId            theEdge,
   aNewEntry.FaceNodeId   = theFace;
   anEdge.PCurves.Append(aNewEntry);
 
+  markModified(theEdge);
   return aPCId;
 }
 
@@ -1395,6 +1329,7 @@ void BRepGraph::ReplaceEdgeInWire(int              theWireIdx,
       myEdgeToWires.ChangeFind(theNewEdge.Index).Append(theWireIdx);
     }
   }
+  markModified(BRepGraph_NodeId(BRepGraph_NodeKind::Wire, theWireIdx));
 }
 
 //=================================================================================================
@@ -1495,4 +1430,280 @@ void BRepGraph::SetHistoryEnabled(bool theVal)
 bool BRepGraph::IsHistoryEnabled() const
 {
   return myIsHistoryEnabled;
+}
+
+//=================================================================================================
+
+void BRepGraph::markModified(BRepGraph_NodeId theNode)
+{
+  BRepGraph_NodeId aCurrent = theNode;
+  while (aCurrent.IsValid())
+  {
+    const BRepGraph_TopoNode::Base* aBase = TopoNode(aCurrent);
+    if (aBase == nullptr)
+      break;
+
+    // Use const_cast to set IsModified on the node (markModified is non-const).
+    const_cast<BRepGraph_TopoNode::Base*>(aBase)->IsModified = true;
+    myCurrentShapes.UnBind(aCurrent);
+
+    // For edges, Parent may not be set — use edge-to-wire reverse index instead.
+    if (aCurrent.Kind == BRepGraph_NodeKind::Edge)
+    {
+      const NCollection_Vector<int>* aWires = myEdgeToWires.Seek(aCurrent.Index);
+      if (aWires != nullptr)
+      {
+        for (int aWIdx = 0; aWIdx < aWires->Length(); ++aWIdx)
+          markModified(BRepGraph_NodeId(BRepGraph_NodeKind::Wire, aWires->Value(aWIdx)));
+      }
+      break;
+    }
+    // For vertices, Parent may point to an edge — propagate through it.
+    aCurrent = aBase->Parent;
+  }
+}
+
+//=================================================================================================
+
+TopoDS_Shape BRepGraph::Shape(BRepGraph_NodeId theNode) const
+{
+  if (!theNode.IsValid())
+    return TopoDS_Shape();
+
+  // 1. Check current shape cache.
+  const TopoDS_Shape* aCached = myCurrentShapes.Seek(theNode);
+  if (aCached != nullptr)
+    return *aCached;
+
+  // 2. If unmodified and original exists, cache and return it.
+  const BRepGraph_TopoNode::Base* aBase = TopoNode(theNode);
+  if (aBase != nullptr && !aBase->IsModified)
+  {
+    const TopoDS_Shape* anOrig = myOriginalShapes.Seek(theNode);
+    if (anOrig != nullptr)
+    {
+      myCurrentShapes.Bind(theNode, *anOrig);
+      return *anOrig;
+    }
+  }
+
+  // 3. Reconstruct from graph fields, cache and return.
+  TopoDS_Shape aReconstructed = reconstructNode(theNode);
+  if (!aReconstructed.IsNull())
+    myCurrentShapes.Bind(theNode, aReconstructed);
+  return aReconstructed;
+}
+
+//=================================================================================================
+
+bool BRepGraph::HasOriginalShape(BRepGraph_NodeId theNode) const
+{
+  return myOriginalShapes.IsBound(theNode);
+}
+
+//=================================================================================================
+
+const TopoDS_Shape& BRepGraph::OriginalOf(BRepGraph_NodeId theNode) const
+{
+  const TopoDS_Shape* aShape = myOriginalShapes.Seek(theNode);
+  if (aShape == nullptr)
+    throw Standard_ProgramError("BRepGraph::OriginalOf() -- no original shape for this node.");
+  return *aShape;
+}
+
+//=================================================================================================
+
+TopoDS_Shape BRepGraph::reconstructNode(BRepGraph_NodeId theNode) const
+{
+  if (!theNode.IsValid())
+    return TopoDS_Shape();
+
+  BRep_Builder aBB;
+
+  switch (theNode.Kind)
+  {
+    case BRepGraph_NodeKind::Vertex: {
+      const BRepGraph_TopoNode::Vertex& aVtxNode = myVertices.Value(theNode.Index);
+      TopoDS_Vertex aNewVtx;
+      aBB.MakeVertex(aNewVtx, aVtxNode.Point, aVtxNode.Tolerance);
+      return aNewVtx;
+    }
+    case BRepGraph_NodeKind::Edge: {
+      const BRepGraph_TopoNode::Edge& anEdgeNode = myEdges.Value(theNode.Index);
+      TopoDS_Edge aNewEdge;
+      if (anEdgeNode.IsDegenerate)
+      {
+        aBB.MakeEdge(aNewEdge);
+        aBB.Degenerated(aNewEdge, true);
+      }
+      else if (anEdgeNode.CurveNodeId.IsValid())
+      {
+        const BRepGraph_GeomNode::Curve& aCurveNode =
+          myCurves.Value(anEdgeNode.CurveNodeId.Index);
+        aBB.MakeEdge(aNewEdge, aCurveNode.CurveGeom, anEdgeNode.LocalLocation,
+                     anEdgeNode.Tolerance);
+      }
+      else
+      {
+        aBB.MakeEdge(aNewEdge);
+      }
+      aBB.Range(aNewEdge, anEdgeNode.ParamFirst, anEdgeNode.ParamLast);
+
+      // Attach vertices.
+      if (anEdgeNode.StartVertexId.IsValid())
+      {
+        TopoDS_Shape aStartVtx = Shape(anEdgeNode.StartVertexId);
+        if (!aStartVtx.IsNull())
+          aBB.Add(aNewEdge, aStartVtx.Oriented(TopAbs_FORWARD));
+      }
+      if (anEdgeNode.EndVertexId.IsValid())
+      {
+        TopoDS_Shape anEndVtx = Shape(anEdgeNode.EndVertexId);
+        if (!anEndVtx.IsNull())
+          aBB.Add(aNewEdge, anEndVtx.Oriented(TopAbs_REVERSED));
+      }
+      // Note: PCurves are NOT attached here — they are face-context-specific.
+      return aNewEdge;
+    }
+    case BRepGraph_NodeKind::Wire: {
+      const BRepGraph_TopoNode::Wire& aWireNode = myWires.Value(theNode.Index);
+      TopoDS_Wire aNewWire;
+      aBB.MakeWire(aNewWire);
+      for (int anEdgeIdx = 0; anEdgeIdx < aWireNode.OrderedEdges.Length(); ++anEdgeIdx)
+      {
+        const BRepGraph_TopoNode::Wire::EdgeEntry& anEntry =
+          aWireNode.OrderedEdges.Value(anEdgeIdx);
+        TopoDS_Shape anEdge = Shape(anEntry.EdgeId);
+        if (!anEdge.IsNull())
+        {
+          anEdge.Orientation(anEntry.OrientationInWire);
+          aBB.Add(aNewWire, anEdge);
+        }
+      }
+      if (aWireNode.IsClosed)
+        aNewWire.Closed(true);
+      return aNewWire;
+    }
+    case BRepGraph_NodeKind::Face: {
+      const BRepGraph_TopoNode::Face& aFaceNode = myFaces.Value(theNode.Index);
+      if (!aFaceNode.SurfNodeId.IsValid())
+        return TopoDS_Shape();
+      const BRepGraph_GeomNode::Surf& aSurfNode = mySurfaces.Value(aFaceNode.SurfNodeId.Index);
+
+      TopoDS_Face aNewFace;
+      aBB.MakeFace(aNewFace, aSurfNode.Surface, aFaceNode.GlobalLocation, aFaceNode.Tolerance);
+
+      // Lambda to build a wire with PCurve attachment for this face context.
+      auto buildWireForFace = [&](BRepGraph_NodeId theWireId) -> TopoDS_Wire {
+        TopoDS_Wire aNewWire;
+        aBB.MakeWire(aNewWire);
+
+        const BRepGraph_TopoNode::Wire& aWireNode = myWires.Value(theWireId.Index);
+        for (int anEdgeIdx = 0; anEdgeIdx < aWireNode.OrderedEdges.Length(); ++anEdgeIdx)
+        {
+          const BRepGraph_TopoNode::Wire::EdgeEntry& anEntry =
+            aWireNode.OrderedEdges.Value(anEdgeIdx);
+          const BRepGraph_TopoNode::Edge& anEdgeNode = myEdges.Value(anEntry.EdgeId.Index);
+
+          // Reconstruct edge (without PCurves).
+          TopoDS_Edge anEdge;
+          if (anEdgeNode.IsDegenerate)
+          {
+            aBB.MakeEdge(anEdge);
+            aBB.Degenerated(anEdge, true);
+          }
+          else if (anEdgeNode.CurveNodeId.IsValid())
+          {
+            const BRepGraph_GeomNode::Curve& aCurveNode =
+              myCurves.Value(anEdgeNode.CurveNodeId.Index);
+            aBB.MakeEdge(anEdge, aCurveNode.CurveGeom, anEdgeNode.LocalLocation,
+                         anEdgeNode.Tolerance);
+          }
+          else
+          {
+            aBB.MakeEdge(anEdge);
+          }
+          aBB.Range(anEdge, anEdgeNode.ParamFirst, anEdgeNode.ParamLast);
+
+          // Attach vertices.
+          if (anEdgeNode.StartVertexId.IsValid())
+          {
+            TopoDS_Shape aStartVtx = Shape(anEdgeNode.StartVertexId);
+            if (!aStartVtx.IsNull())
+              aBB.Add(anEdge, aStartVtx.Oriented(TopAbs_FORWARD));
+          }
+          if (anEdgeNode.EndVertexId.IsValid())
+          {
+            TopoDS_Shape anEndVtx = Shape(anEdgeNode.EndVertexId);
+            if (!anEndVtx.IsNull())
+              aBB.Add(anEdge, anEndVtx.Oriented(TopAbs_REVERSED));
+          }
+
+          // Attach PCurve for THIS face context.
+          for (int aPCIdx = 0; aPCIdx < anEdgeNode.PCurves.Length(); ++aPCIdx)
+          {
+            const BRepGraph_TopoNode::Edge::PCurveEntry& aPCEntry =
+              anEdgeNode.PCurves.Value(aPCIdx);
+            if (aPCEntry.FaceNodeId == aFaceNode.Id)
+            {
+              const BRepGraph_GeomNode::PCurve& aPCNode =
+                myPCurves.Value(aPCEntry.PCurveNodeId.Index);
+              if (!aPCNode.Curve2d.IsNull())
+              {
+                aBB.UpdateEdge(anEdge, aPCNode.Curve2d,
+                               aSurfNode.Surface, aFaceNode.GlobalLocation,
+                               anEdgeNode.Tolerance);
+                // Set PCurve range explicitly — UpdateEdge creates a new
+                // BRep_CurveOnSurface with range (0,0), so we must set it
+                // after attachment to avoid 0-area faces during integration.
+                aBB.Range(anEdge, aSurfNode.Surface, aFaceNode.GlobalLocation,
+                          aPCNode.ParamFirst, aPCNode.ParamLast);
+              }
+              break;
+            }
+          }
+
+          anEdge.Orientation(anEntry.OrientationInWire);
+          aBB.Add(aNewWire, anEdge);
+        }
+
+        if (aWireNode.IsClosed)
+          aNewWire.Closed(true);
+        return aNewWire;
+      };
+
+      if (aFaceNode.OuterWireId.IsValid())
+        aBB.Add(aNewFace, buildWireForFace(aFaceNode.OuterWireId));
+
+      for (int aWireIdx = 0; aWireIdx < aFaceNode.InnerWireIds.Length(); ++aWireIdx)
+        aBB.Add(aNewFace, buildWireForFace(aFaceNode.InnerWireIds.Value(aWireIdx)));
+
+      aNewFace.Orientation(aFaceNode.Orientation);
+      return aNewFace;
+    }
+    case BRepGraph_NodeKind::Shell: {
+      const BRepGraph_TopoNode::Shell& aShell = myShells.Value(theNode.Index);
+      TopoDS_Shell aNewShell;
+      aBB.MakeShell(aNewShell);
+      for (int aFaceIter = 0; aFaceIter < aShell.Faces.Length(); ++aFaceIter)
+      {
+        TopoDS_Shape aFaceShape = reconstructNode(aShell.Faces.Value(aFaceIter));
+        aBB.Add(aNewShell, aFaceShape);
+      }
+      return aNewShell;
+    }
+    case BRepGraph_NodeKind::Solid: {
+      const BRepGraph_TopoNode::Solid& aSolid = mySolids.Value(theNode.Index);
+      TopoDS_Solid aNewSolid;
+      aBB.MakeSolid(aNewSolid);
+      for (int aShellIter = 0; aShellIter < aSolid.Shells.Length(); ++aShellIter)
+      {
+        TopoDS_Shape aShellShape = reconstructNode(aSolid.Shells.Value(aShellIter));
+        aBB.Add(aNewSolid, aShellShape);
+      }
+      return aNewSolid;
+    }
+    default:
+      return TopoDS_Shape();
+  }
 }
