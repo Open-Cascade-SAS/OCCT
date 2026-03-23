@@ -18,16 +18,27 @@
 #include <Geom_Line.hxx>
 #include <GeomHash_PointHasher.pxx>
 #include <GeomHash_DirectionHasher.pxx>
+#include <Precision.hxx>
 
 //! OCCT-style hasher for Geom_Line (3D line).
 //! Used for geometry deduplication.
 struct GeomHash_LineHasher
 {
+  double CompTolerance;
+  double HashTolerance;
+
+  GeomHash_LineHasher(double theCompTolerance = Precision::Angular(),
+                      double theHashTolerance = Precision::Confusion())
+      : CompTolerance(theCompTolerance),
+        HashTolerance(theHashTolerance)
+  {
+  }
+
   // Hashes the line by its location and direction.
   std::size_t operator()(const occ::handle<Geom_Line>& theLine) const noexcept
   {
-    const GeomHash_PointHasher     aPointHasher;
-    const GeomHash_DirectionHasher aDirHasher;
+    const GeomHash_PointHasher     aPointHasher(CompTolerance, HashTolerance);
+    const GeomHash_DirectionHasher aDirHasher(CompTolerance, HashTolerance);
 
     const std::size_t aHashes[2] = {aPointHasher(theLine->Position().Location()),
                                     aDirHasher(theLine->Position().Direction())};
@@ -38,8 +49,8 @@ struct GeomHash_LineHasher
   bool operator()(const occ::handle<Geom_Line>& theLine1,
                   const occ::handle<Geom_Line>& theLine2) const noexcept
   {
-    const GeomHash_PointHasher     aPointHasher;
-    const GeomHash_DirectionHasher aDirHasher;
+    const GeomHash_PointHasher     aPointHasher(CompTolerance, HashTolerance);
+    const GeomHash_DirectionHasher aDirHasher(CompTolerance, HashTolerance);
 
     return aPointHasher(theLine1->Position().Location(), theLine2->Position().Location())
            && aDirHasher(theLine1->Position().Direction(), theLine2->Position().Direction());

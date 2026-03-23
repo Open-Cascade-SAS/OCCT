@@ -41,6 +41,14 @@
 
 //=================================================================================================
 
+GeomHash_SurfaceHasher::GeomHash_SurfaceHasher(double theCompTolerance, double theHashTolerance)
+    : CompTolerance(theCompTolerance),
+      HashTolerance(theHashTolerance)
+{
+}
+
+//=================================================================================================
+
 std::size_t GeomHash_SurfaceHasher::operator()(
   const occ::handle<Geom_Surface>& theSurface) const noexcept
 {
@@ -49,59 +57,66 @@ std::size_t GeomHash_SurfaceHasher::operator()(
     return 0;
   }
 
-  // Dispatch based on actual surface type
-  if (occ::handle<Geom_Plane> aPlane = occ::down_cast<Geom_Plane>(theSurface))
+  // Dispatch based on actual surface type using DynamicType check first (cheaper than down_cast)
+  const Handle(Standard_Type)& aType = theSurface->DynamicType();
+  if (aType == STANDARD_TYPE(Geom_Plane))
   {
-    return GeomHash_PlaneHasher{}(aPlane);
+    return GeomHash_PlaneHasher{CompTolerance,
+                                HashTolerance}(occ::down_cast<Geom_Plane>(theSurface));
   }
-  if (occ::handle<Geom_CylindricalSurface> aCylinder =
-        occ::down_cast<Geom_CylindricalSurface>(theSurface))
+  else if (aType == STANDARD_TYPE(Geom_CylindricalSurface))
   {
-    return GeomHash_CylindricalSurfaceHasher{}(aCylinder);
+    return GeomHash_CylindricalSurfaceHasher{CompTolerance, HashTolerance}(
+      occ::down_cast<Geom_CylindricalSurface>(theSurface));
   }
-  if (occ::handle<Geom_ConicalSurface> aCone = occ::down_cast<Geom_ConicalSurface>(theSurface))
+  else if (aType == STANDARD_TYPE(Geom_ConicalSurface))
   {
-    return GeomHash_ConicalSurfaceHasher{}(aCone);
+    return GeomHash_ConicalSurfaceHasher{CompTolerance, HashTolerance}(
+      occ::down_cast<Geom_ConicalSurface>(theSurface));
   }
-  if (occ::handle<Geom_SphericalSurface> aSphere =
-        occ::down_cast<Geom_SphericalSurface>(theSurface))
+  else if (aType == STANDARD_TYPE(Geom_SphericalSurface))
   {
-    return GeomHash_SphericalSurfaceHasher{}(aSphere);
+    return GeomHash_SphericalSurfaceHasher{CompTolerance, HashTolerance}(
+      occ::down_cast<Geom_SphericalSurface>(theSurface));
   }
-  if (occ::handle<Geom_ToroidalSurface> aTorus = occ::down_cast<Geom_ToroidalSurface>(theSurface))
+  else if (aType == STANDARD_TYPE(Geom_ToroidalSurface))
   {
-    return GeomHash_ToroidalSurfaceHasher{}(aTorus);
+    return GeomHash_ToroidalSurfaceHasher{CompTolerance, HashTolerance}(
+      occ::down_cast<Geom_ToroidalSurface>(theSurface));
   }
-  if (occ::handle<Geom_SurfaceOfRevolution> aRevol =
-        occ::down_cast<Geom_SurfaceOfRevolution>(theSurface))
+  else if (aType == STANDARD_TYPE(Geom_SurfaceOfRevolution))
   {
-    return GeomHash_SurfaceOfRevolutionHasher{}(aRevol);
+    return GeomHash_SurfaceOfRevolutionHasher{CompTolerance, HashTolerance}(
+      occ::down_cast<Geom_SurfaceOfRevolution>(theSurface));
   }
-  if (occ::handle<Geom_SurfaceOfLinearExtrusion> aExtr =
-        occ::down_cast<Geom_SurfaceOfLinearExtrusion>(theSurface))
+  else if (aType == STANDARD_TYPE(Geom_SurfaceOfLinearExtrusion))
   {
-    return GeomHash_SurfaceOfLinearExtrusionHasher{}(aExtr);
+    return GeomHash_SurfaceOfLinearExtrusionHasher{CompTolerance, HashTolerance}(
+      occ::down_cast<Geom_SurfaceOfLinearExtrusion>(theSurface));
   }
-  if (occ::handle<Geom_BezierSurface> aBezier = occ::down_cast<Geom_BezierSurface>(theSurface))
+  else if (aType == STANDARD_TYPE(Geom_BezierSurface))
   {
-    return GeomHash_BezierSurfaceHasher{}(aBezier);
+    return GeomHash_BezierSurfaceHasher{CompTolerance, HashTolerance}(
+      occ::down_cast<Geom_BezierSurface>(theSurface));
   }
-  if (occ::handle<Geom_BSplineSurface> aBSpline = occ::down_cast<Geom_BSplineSurface>(theSurface))
+  else if (aType == STANDARD_TYPE(Geom_BSplineSurface))
   {
-    return GeomHash_BSplineSurfaceHasher{}(aBSpline);
+    return GeomHash_BSplineSurfaceHasher{CompTolerance, HashTolerance}(
+      occ::down_cast<Geom_BSplineSurface>(theSurface));
   }
-  if (occ::handle<Geom_RectangularTrimmedSurface> aTrimmed =
-        occ::down_cast<Geom_RectangularTrimmedSurface>(theSurface))
+  else if (aType == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
   {
-    return GeomHash_RectangularTrimmedSurfaceHasher{}(aTrimmed);
+    return GeomHash_RectangularTrimmedSurfaceHasher{CompTolerance, HashTolerance}(
+      occ::down_cast<Geom_RectangularTrimmedSurface>(theSurface));
   }
-  if (occ::handle<Geom_OffsetSurface> aOffset = occ::down_cast<Geom_OffsetSurface>(theSurface))
+  else if (aType == STANDARD_TYPE(Geom_OffsetSurface))
   {
-    return GeomHash_OffsetSurfaceHasher{}(aOffset);
+    return GeomHash_OffsetSurfaceHasher{CompTolerance, HashTolerance}(
+      occ::down_cast<Geom_OffsetSurface>(theSurface));
   }
 
   // Unknown surface type - hash the type name
-  return Standard_CStringHasher{}(theSurface->DynamicType()->Name());
+  return Standard_CStringHasher{}(aType->Name());
 }
 
 //=================================================================================================
@@ -125,66 +140,73 @@ bool GeomHash_SurfaceHasher::operator()(const occ::handle<Geom_Surface>& theSurf
     return false;
   }
 
-  // Dispatch based on actual surface type
-  if (occ::handle<Geom_Plane> aPlane1 = occ::down_cast<Geom_Plane>(theSurface1))
+  // Dispatch based on actual surface type using DynamicType check (already confirmed types match)
+  const Handle(Standard_Type)& aType = theSurface1->DynamicType();
+  if (aType == STANDARD_TYPE(Geom_Plane))
   {
-    return GeomHash_PlaneHasher{}(aPlane1, occ::down_cast<Geom_Plane>(theSurface2));
+    return GeomHash_PlaneHasher{CompTolerance,
+                                HashTolerance}(occ::down_cast<Geom_Plane>(theSurface1),
+                                               occ::down_cast<Geom_Plane>(theSurface2));
   }
-  if (occ::handle<Geom_CylindricalSurface> aCyl1 =
-        occ::down_cast<Geom_CylindricalSurface>(theSurface1))
+  else if (aType == STANDARD_TYPE(Geom_CylindricalSurface))
   {
-    return GeomHash_CylindricalSurfaceHasher{}(
-      aCyl1,
+    return GeomHash_CylindricalSurfaceHasher{CompTolerance, HashTolerance}(
+      occ::down_cast<Geom_CylindricalSurface>(theSurface1),
       occ::down_cast<Geom_CylindricalSurface>(theSurface2));
   }
-  if (occ::handle<Geom_ConicalSurface> aCone1 = occ::down_cast<Geom_ConicalSurface>(theSurface1))
+  else if (aType == STANDARD_TYPE(Geom_ConicalSurface))
   {
-    return GeomHash_ConicalSurfaceHasher{}(aCone1,
-                                           occ::down_cast<Geom_ConicalSurface>(theSurface2));
+    return GeomHash_ConicalSurfaceHasher{CompTolerance, HashTolerance}(
+      occ::down_cast<Geom_ConicalSurface>(theSurface1),
+      occ::down_cast<Geom_ConicalSurface>(theSurface2));
   }
-  if (occ::handle<Geom_SphericalSurface> aSph1 = occ::down_cast<Geom_SphericalSurface>(theSurface1))
+  else if (aType == STANDARD_TYPE(Geom_SphericalSurface))
   {
-    return GeomHash_SphericalSurfaceHasher{}(aSph1,
-                                             occ::down_cast<Geom_SphericalSurface>(theSurface2));
+    return GeomHash_SphericalSurfaceHasher{CompTolerance, HashTolerance}(
+      occ::down_cast<Geom_SphericalSurface>(theSurface1),
+      occ::down_cast<Geom_SphericalSurface>(theSurface2));
   }
-  if (occ::handle<Geom_ToroidalSurface> aTor1 = occ::down_cast<Geom_ToroidalSurface>(theSurface1))
+  else if (aType == STANDARD_TYPE(Geom_ToroidalSurface))
   {
-    return GeomHash_ToroidalSurfaceHasher{}(aTor1,
-                                            occ::down_cast<Geom_ToroidalSurface>(theSurface2));
+    return GeomHash_ToroidalSurfaceHasher{CompTolerance, HashTolerance}(
+      occ::down_cast<Geom_ToroidalSurface>(theSurface1),
+      occ::down_cast<Geom_ToroidalSurface>(theSurface2));
   }
-  if (occ::handle<Geom_SurfaceOfRevolution> aRev1 =
-        occ::down_cast<Geom_SurfaceOfRevolution>(theSurface1))
+  else if (aType == STANDARD_TYPE(Geom_SurfaceOfRevolution))
   {
-    return GeomHash_SurfaceOfRevolutionHasher{}(
-      aRev1,
+    return GeomHash_SurfaceOfRevolutionHasher{CompTolerance, HashTolerance}(
+      occ::down_cast<Geom_SurfaceOfRevolution>(theSurface1),
       occ::down_cast<Geom_SurfaceOfRevolution>(theSurface2));
   }
-  if (occ::handle<Geom_SurfaceOfLinearExtrusion> aExt1 =
-        occ::down_cast<Geom_SurfaceOfLinearExtrusion>(theSurface1))
+  else if (aType == STANDARD_TYPE(Geom_SurfaceOfLinearExtrusion))
   {
-    return GeomHash_SurfaceOfLinearExtrusionHasher{}(
-      aExt1,
+    return GeomHash_SurfaceOfLinearExtrusionHasher{CompTolerance, HashTolerance}(
+      occ::down_cast<Geom_SurfaceOfLinearExtrusion>(theSurface1),
       occ::down_cast<Geom_SurfaceOfLinearExtrusion>(theSurface2));
   }
-  if (occ::handle<Geom_BezierSurface> aBez1 = occ::down_cast<Geom_BezierSurface>(theSurface1))
+  else if (aType == STANDARD_TYPE(Geom_BezierSurface))
   {
-    return GeomHash_BezierSurfaceHasher{}(aBez1, occ::down_cast<Geom_BezierSurface>(theSurface2));
+    return GeomHash_BezierSurfaceHasher{CompTolerance, HashTolerance}(
+      occ::down_cast<Geom_BezierSurface>(theSurface1),
+      occ::down_cast<Geom_BezierSurface>(theSurface2));
   }
-  if (occ::handle<Geom_BSplineSurface> aBSpl1 = occ::down_cast<Geom_BSplineSurface>(theSurface1))
+  else if (aType == STANDARD_TYPE(Geom_BSplineSurface))
   {
-    return GeomHash_BSplineSurfaceHasher{}(aBSpl1,
-                                           occ::down_cast<Geom_BSplineSurface>(theSurface2));
+    return GeomHash_BSplineSurfaceHasher{CompTolerance, HashTolerance}(
+      occ::down_cast<Geom_BSplineSurface>(theSurface1),
+      occ::down_cast<Geom_BSplineSurface>(theSurface2));
   }
-  if (occ::handle<Geom_RectangularTrimmedSurface> aTrim1 =
-        occ::down_cast<Geom_RectangularTrimmedSurface>(theSurface1))
+  else if (aType == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
   {
-    return GeomHash_RectangularTrimmedSurfaceHasher{}(
-      aTrim1,
+    return GeomHash_RectangularTrimmedSurfaceHasher{CompTolerance, HashTolerance}(
+      occ::down_cast<Geom_RectangularTrimmedSurface>(theSurface1),
       occ::down_cast<Geom_RectangularTrimmedSurface>(theSurface2));
   }
-  if (occ::handle<Geom_OffsetSurface> aOff1 = occ::down_cast<Geom_OffsetSurface>(theSurface1))
+  else if (aType == STANDARD_TYPE(Geom_OffsetSurface))
   {
-    return GeomHash_OffsetSurfaceHasher{}(aOff1, occ::down_cast<Geom_OffsetSurface>(theSurface2));
+    return GeomHash_OffsetSurfaceHasher{CompTolerance, HashTolerance}(
+      occ::down_cast<Geom_OffsetSurface>(theSurface1),
+      occ::down_cast<Geom_OffsetSurface>(theSurface2));
   }
 
   // Unknown surface type - compare by pointer

@@ -18,18 +18,28 @@
 #include <Geom_SphericalSurface.hxx>
 #include <GeomHash_AxisPlacement.pxx>
 #include <cmath>
+#include <Precision.hxx>
 
 //! OCCT-style hasher for Geom_SphericalSurface.
 //! Used for geometry deduplication.
 struct GeomHash_SphericalSurfaceHasher
 {
+  double CompTolerance;
+  double HashTolerance;
+
+  GeomHash_SphericalSurfaceHasher(double theCompTolerance = Precision::Angular(),
+                                  double theHashTolerance = Precision::Confusion())
+      : CompTolerance(theCompTolerance),
+        HashTolerance(theHashTolerance)
+  {
+  }
+
   // Hashes the sphere by its position and radius.
   std::size_t operator()(const occ::handle<Geom_SphericalSurface>& theSphere) const noexcept
   {
-    constexpr double aTolerance = 1e-12;
-    constexpr double aFactor    = 1.0 / aTolerance;
+    const double aFactor = 1.0 / HashTolerance;
 
-    const GeomHash_AxisPlacement anAxisHasher;
+    const GeomHash_AxisPlacement anAxisHasher(CompTolerance, HashTolerance);
     const std::size_t            aHashes[2] = {
       anAxisHasher(theSphere->Position().Ax2()),
       opencascade::hash(static_cast<int64_t>(std::round(theSphere->Radius() * aFactor)))};
@@ -40,10 +50,9 @@ struct GeomHash_SphericalSurfaceHasher
   bool operator()(const occ::handle<Geom_SphericalSurface>& theSphere1,
                   const occ::handle<Geom_SphericalSurface>& theSphere2) const noexcept
   {
-    constexpr double             aTolerance = 1e-12;
-    const GeomHash_AxisPlacement anAxisHasher;
+    const GeomHash_AxisPlacement anAxisHasher(CompTolerance, HashTolerance);
     return anAxisHasher(theSphere1->Position().Ax2(), theSphere2->Position().Ax2())
-           && std::abs(theSphere1->Radius() - theSphere2->Radius()) <= aTolerance;
+           && std::abs(theSphere1->Radius() - theSphere2->Radius()) <= CompTolerance;
   }
 };
 

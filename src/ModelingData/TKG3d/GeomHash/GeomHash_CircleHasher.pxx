@@ -18,18 +18,28 @@
 #include <Geom_Circle.hxx>
 #include <GeomHash_AxisPlacement.pxx>
 #include <cmath>
+#include <Precision.hxx>
 
 //! OCCT-style hasher for Geom_Circle (3D circle).
 //! Used for geometry deduplication.
 struct GeomHash_CircleHasher
 {
+  double CompTolerance;
+  double HashTolerance;
+
+  GeomHash_CircleHasher(double theCompTolerance = Precision::Angular(),
+                        double theHashTolerance = Precision::Confusion())
+      : CompTolerance(theCompTolerance),
+        HashTolerance(theHashTolerance)
+  {
+  }
+
   // Hashes the circle by its position and radius.
   std::size_t operator()(const occ::handle<Geom_Circle>& theCircle) const noexcept
   {
-    constexpr double aTolerance = 1e-12;
-    constexpr double aFactor    = 1.0 / aTolerance;
+    const double aFactor = 1.0 / HashTolerance;
 
-    const GeomHash_AxisPlacement anAxisHasher;
+    const GeomHash_AxisPlacement anAxisHasher(CompTolerance, HashTolerance);
     const std::size_t            aHashes[2] = {
       anAxisHasher(theCircle->Position()),
       opencascade::hash(static_cast<int64_t>(std::round(theCircle->Radius() * aFactor)))};
@@ -40,11 +50,10 @@ struct GeomHash_CircleHasher
   bool operator()(const occ::handle<Geom_Circle>& theCircle1,
                   const occ::handle<Geom_Circle>& theCircle2) const noexcept
   {
-    constexpr double             aTolerance = 1e-12;
-    const GeomHash_AxisPlacement anAxisHasher;
+    const GeomHash_AxisPlacement anAxisHasher(CompTolerance, HashTolerance);
 
     return anAxisHasher(theCircle1->Position(), theCircle2->Position())
-           && std::abs(theCircle1->Radius() - theCircle2->Radius()) <= aTolerance;
+           && std::abs(theCircle1->Radius() - theCircle2->Radius()) <= CompTolerance;
   }
 };
 

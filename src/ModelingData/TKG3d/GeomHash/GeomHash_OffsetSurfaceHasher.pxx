@@ -18,18 +18,28 @@
 #include <Geom_OffsetSurface.hxx>
 #include <GeomHash_SurfaceHasher.hxx>
 #include <cmath>
+#include <Precision.hxx>
 
 //! OCCT-style hasher for Geom_OffsetSurface.
 //! Used for geometry deduplication.
 struct GeomHash_OffsetSurfaceHasher
 {
+  double CompTolerance;
+  double HashTolerance;
+
+  GeomHash_OffsetSurfaceHasher(double theCompTolerance = Precision::Angular(),
+                               double theHashTolerance = Precision::Confusion())
+      : CompTolerance(theCompTolerance),
+        HashTolerance(theHashTolerance)
+  {
+  }
+
   // Hashes the offset surface by its offset distance and basis surface.
   std::size_t operator()(const occ::handle<Geom_OffsetSurface>& theSurface) const noexcept
   {
-    constexpr double aTolerance = 1e-12;
-    constexpr double aFactor    = 1.0 / aTolerance;
+    const double aFactor = 1.0 / HashTolerance;
 
-    const GeomHash_SurfaceHasher aSurfaceHasher;
+    const GeomHash_SurfaceHasher aSurfaceHasher{CompTolerance, HashTolerance};
     const std::size_t            aHashes[2] = {
       aSurfaceHasher(theSurface->BasisSurface()),
       opencascade::hash(static_cast<int64_t>(std::round(theSurface->Offset() * aFactor)))};
@@ -40,12 +50,10 @@ struct GeomHash_OffsetSurfaceHasher
   bool operator()(const occ::handle<Geom_OffsetSurface>& theSurface1,
                   const occ::handle<Geom_OffsetSurface>& theSurface2) const noexcept
   {
-    constexpr double aTolerance = 1e-12;
-
-    const GeomHash_SurfaceHasher aSurfaceHasher;
+    const GeomHash_SurfaceHasher aSurfaceHasher{CompTolerance, HashTolerance};
 
     return aSurfaceHasher(theSurface1->BasisSurface(), theSurface2->BasisSurface())
-           && std::abs(theSurface1->Offset() - theSurface2->Offset()) <= aTolerance;
+           && std::abs(theSurface1->Offset() - theSurface2->Offset()) <= CompTolerance;
   }
 };
 

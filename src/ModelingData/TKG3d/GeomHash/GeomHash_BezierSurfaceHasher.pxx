@@ -18,12 +18,23 @@
 #include <Geom_BezierSurface.hxx>
 #include <GeomHash_PointHasher.pxx>
 #include <cmath>
+#include <Precision.hxx>
 
 //! OCCT-style hasher for Geom_BezierSurface.
 //! Used for geometry deduplication.
 //! Hashes only metadata (degrees, pole counts, rationality) for efficiency.
 struct GeomHash_BezierSurfaceHasher
 {
+  double CompTolerance;
+  double HashTolerance;
+
+  GeomHash_BezierSurfaceHasher(double theCompTolerance = Precision::Angular(),
+                               double theHashTolerance = Precision::Confusion())
+      : CompTolerance(theCompTolerance),
+        HashTolerance(theHashTolerance)
+  {
+  }
+
   // Hashes the Bezier surface metadata only.
   std::size_t operator()(const occ::handle<Geom_BezierSurface>& theSurface) const noexcept
   {
@@ -41,8 +52,6 @@ struct GeomHash_BezierSurfaceHasher
   bool operator()(const occ::handle<Geom_BezierSurface>& theSurface1,
                   const occ::handle<Geom_BezierSurface>& theSurface2) const noexcept
   {
-    constexpr double aTolerance = 1e-12;
-
     // Compare degrees
     if (theSurface1->UDegree() != theSurface2->UDegree()
         || theSurface1->VDegree() != theSurface2->VDegree())
@@ -57,7 +66,7 @@ struct GeomHash_BezierSurfaceHasher
       return false;
     }
 
-    const GeomHash_PointHasher aPointHasher;
+    const GeomHash_PointHasher aPointHasher(CompTolerance, HashTolerance);
 
     // Compare poles
     for (int i = 1; i <= theSurface1->NbUPoles(); ++i)
@@ -78,7 +87,7 @@ struct GeomHash_BezierSurfaceHasher
       {
         for (int j = 1; j <= theSurface1->NbVPoles(); ++j)
         {
-          if (std::abs(theSurface1->Weight(i, j) - theSurface2->Weight(i, j)) > aTolerance)
+          if (std::abs(theSurface1->Weight(i, j) - theSurface2->Weight(i, j)) > CompTolerance)
           {
             return false;
           }
