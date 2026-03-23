@@ -16,7 +16,6 @@
 #include <BRepBndLib.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_Analyze.hxx>
-#include <BRepGraph_CacheView.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_RelEdge.hxx>
@@ -599,8 +598,8 @@ TEST_F(BRepGraphAnalyzeTest, InvalidateSubgraph_PropagatesUpToSolid)
   const Bnd_Box aSolidBoxBefore = BRepGraphAlgo_BndLib::AddCached(myGraph, aSolidId);
   ASSERT_FALSE(aSolidBoxBefore.IsVoid());
 
-  // Invalidate from a vertex upward.
-  myGraph.Cache().InvalidateSubgraph(aVertId);
+  // Invalidate from a vertex upward via a no-op mutation (triggers markModified).
+  { auto aMut = myGraph.MutVertex(aVertId.Index); }
 
   // Recompute. Since no actual mutation occurred, the result should be the same.
   const Bnd_Box aSolidBoxAfter = BRepGraphAlgo_BndLib::AddCached(myGraph, aSolidId);

@@ -48,7 +48,6 @@
 
 #include <BRepGraph_Analyze.hxx>
 #include <BRepGraph_BuilderView.hxx>
-#include <BRepGraph_CacheView.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_MutationGuard.hxx>

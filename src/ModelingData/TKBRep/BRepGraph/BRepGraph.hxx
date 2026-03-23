@@ -124,7 +124,6 @@ public:
   class UIDsView;
   class RelEdgesView;
   class SpatialView;
-  class CacheView;
   class AttrsView;
   class ShapesView;
   class MutView;
@@ -139,8 +138,6 @@ public:
   RelEdgesView RelEdges() const;
   //! Access spatial and adjacency queries.
   SpatialView  Spatial()  const;
-  //! Access cached spatial properties.
-  CacheView    Cache()    const;
   //! Access user attributes.
   AttrsView    Attrs();
   //! Access shape reconstruction.

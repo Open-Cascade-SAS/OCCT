@@ -17,7 +17,6 @@
 #include <BRepGraph_AnalyzeView.hxx>
 #include <BRepGraph_AttrsView.hxx>
 #include <BRepGraph_BuilderView.hxx>
-#include <BRepGraph_CacheView.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_MutView.hxx>
@@ -181,9 +180,9 @@ TEST_F(BRepGraphViewsTest, SpatialView_FacesOfEdge_TwoPerBoxEdge)
   EXPECT_EQ(aResult.Length(), 2);
 }
 
-// ---------- CacheView ----------
+// ---------- BndLib ----------
 
-TEST_F(BRepGraphViewsTest, CacheView_BoundingBox_NonVoid)
+TEST_F(BRepGraphViewsTest, BndLib_BoundingBox_NonVoid)
 {
   BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
   Bnd_Box aBox;
@@ -191,7 +190,7 @@ TEST_F(BRepGraphViewsTest, CacheView_BoundingBox_NonVoid)
   EXPECT_FALSE(aBox.IsVoid());
 }
 
-TEST_F(BRepGraphViewsTest, CacheView_Centroid_InsideBBox)
+TEST_F(BRepGraphViewsTest, BndLib_Centroid_InsideBBox)
 {
   BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
   gp_Pnt aCentroid = bboxCenter(myGraph, aFaceId);

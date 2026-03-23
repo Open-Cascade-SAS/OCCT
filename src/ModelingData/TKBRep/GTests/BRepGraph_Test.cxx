@@ -19,7 +19,6 @@
 #include <BRepGraph_Analyze.hxx>
 #include <BRepGraph_AttrsView.hxx>
 #include <BRepGraph_BuilderView.hxx>
-#include <BRepGraph_CacheView.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_MutView.hxx>
@@ -1018,8 +1017,8 @@ TEST_F(BRepGraphTest, InvalidateSubgraph_Face_ConsistentAfter)
   Bnd_Box anEdgeBox1 = BRepGraphAlgo_BndLib::AddCached(myGraph, anEdgeId);
   ASSERT_FALSE(anEdgeBox1.IsVoid());
 
-  // Invalidate subgraph from face.
-  myGraph.Cache().InvalidateSubgraph(aFaceId);
+  // Invalidate subgraph from face via a no-op mutation (triggers markModified).
+  { auto aMut = myGraph.MutFace(aFaceId.Index); }
 
   // Recompute: should not crash and should produce same values.
   Bnd_Box aFaceBox2 = BRepGraphAlgo_BndLib::AddCached(myGraph, aFaceId);
