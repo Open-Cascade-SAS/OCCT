@@ -31,7 +31,7 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
                                   BRepGraph_NodeId& theSubB)
 {
   // Copy all data from the original EdgeDef before appending to vectors (which may reallocate).
-  const BRepGraph_TopoNode::EdgeDef& anOrig = theGraph.myData->myEdgeDefs.Value(theEdgeDef.Index);
+  const BRepGraph_TopoNode::EdgeDef& anOrig = theGraph.myData->myEdges.Defs.Value(theEdgeDef.Index);
 
   const BRepGraph_NodeId aOrigCurveNodeId      = anOrig.CurveNodeId;
   const double           aOrigTolerance        = anOrig.Tolerance;
@@ -49,20 +49,20 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
   const NCollection_Vector<int>  aOrigWires    = aOrigWiresPtr != nullptr ? *aOrigWiresPtr : NCollection_Vector<int>();
 
   // Allocate SubA slot.
-  BRepGraph_TopoNode::EdgeDef& aSubADef = theGraph.myData->myEdgeDefs.Appended();
-  const int                    aSubAIdx = theGraph.myData->myEdgeDefs.Length() - 1;
+  BRepGraph_TopoNode::EdgeDef& aSubADef = theGraph.myData->myEdges.Defs.Appended();
+  const int                    aSubAIdx = theGraph.myData->myEdges.Defs.Length() - 1;
   aSubADef.Id = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, aSubAIdx);
   theSubA     = aSubADef.Id;
 
   // Allocate SubB slot (note: Appended() may invalidate aSubADef reference -- use index).
-  BRepGraph_TopoNode::EdgeDef& aSubBDef = theGraph.myData->myEdgeDefs.Appended();
-  const int                    aSubBIdx = theGraph.myData->myEdgeDefs.Length() - 1;
+  BRepGraph_TopoNode::EdgeDef& aSubBDef = theGraph.myData->myEdges.Defs.Appended();
+  const int                    aSubBIdx = theGraph.myData->myEdges.Defs.Length() - 1;
   aSubBDef.Id = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, aSubBIdx);
   theSubB     = aSubBDef.Id;
 
   // Set SubA: StartVertex -> SplitVertex, [ParamFirst, theSplitParam].
   {
-    BRepGraph_TopoNode::EdgeDef& aSubA = theGraph.myData->myEdgeDefs.ChangeValue(aSubAIdx);
+    BRepGraph_TopoNode::EdgeDef& aSubA = theGraph.myData->myEdges.Defs.ChangeValue(aSubAIdx);
     aSubA.CurveNodeId      = aOrigCurveNodeId;
     aSubA.Tolerance        = aOrigTolerance;
     aSubA.SameParameter    = aOrigSameParameter;
@@ -76,7 +76,7 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
 
   // Set SubB: SplitVertex -> EndVertex, [theSplitParam, ParamLast].
   {
-    BRepGraph_TopoNode::EdgeDef& aSubB = theGraph.myData->myEdgeDefs.ChangeValue(aSubBIdx);
+    BRepGraph_TopoNode::EdgeDef& aSubB = theGraph.myData->myEdges.Defs.ChangeValue(aSubBIdx);
     aSubB.CurveNodeId      = aOrigCurveNodeId;
     aSubB.Tolerance        = aOrigTolerance;
     aSubB.SameParameter    = aOrigSameParameter;
@@ -104,7 +104,7 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
   {
     const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCEntry = aOrigPCurves.Value(aPCIdx);
     const BRepGraph_GeomNode::PCurve& aPCNode =
-      theGraph.myData->myPCurves.Value(aPCEntry.PCurveNodeId.Index);
+      theGraph.myData->myPCurves.Nodes.Value(aPCEntry.PCurveNodeId.Index);
 
     // Compute 2D split parameter.
     double aPCSplit;
@@ -129,7 +129,7 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
     aPCSubAEntry.PCurveNodeId    = aPCSubAId;
     aPCSubAEntry.FaceDefId       = aPCEntry.FaceDefId;
     aPCSubAEntry.EdgeOrientation = aPCEntry.EdgeOrientation;
-    theGraph.myData->myEdgeDefs.ChangeValue(aSubAIdx).PCurves.Append(aPCSubAEntry);
+    theGraph.myData->myEdges.Defs.ChangeValue(aSubAIdx).PCurves.Append(aPCSubAEntry);
 
     // PCurve for SubB: [aPCSplit, PCLast].
     const BRepGraph_NodeId aPCSubBId = theGraph.createPCurveNode(
@@ -138,14 +138,14 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
     aPCSubBEntry.PCurveNodeId    = aPCSubBId;
     aPCSubBEntry.FaceDefId       = aPCEntry.FaceDefId;
     aPCSubBEntry.EdgeOrientation = aPCEntry.EdgeOrientation;
-    theGraph.myData->myEdgeDefs.ChangeValue(aSubBIdx).PCurves.Append(aPCSubBEntry);
+    theGraph.myData->myEdges.Defs.ChangeValue(aSubBIdx).PCurves.Append(aPCSubBEntry);
   }
 
   // Register TopoDS shapes for sub-edges so OriginalOf() works in downstream algorithms.
   if (aOrigCurveNodeId.IsValid())
   {
     const BRepGraph_GeomNode::Curve& aCurveNode =
-      theGraph.myData->myCurves.Value(aOrigCurveNodeId.Index);
+      theGraph.myData->myCurves.Nodes.Value(aOrigCurveNodeId.Index);
     BRep_Builder aBB;
 
     const TopoDS_Shape aStartVShape = theGraph.Shapes().Shape( aOrigStartVertexDefId);
@@ -171,7 +171,7 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
   for (int aWIdx = 0; aWIdx < aOrigWires.Length(); ++aWIdx)
   {
     const int aWireIdx = aOrigWires.Value(aWIdx);
-    BRepGraph_TopoNode::WireDef& aWireDef = theGraph.myData->myWireDefs.ChangeValue(aWireIdx);
+    BRepGraph_TopoNode::WireDef& aWireDef = theGraph.myData->myWires.Defs.ChangeValue(aWireIdx);
 
     // Rebuild OrderedEdges replacing the original entry with SubA + SubB (or SubB + SubA).
     NCollection_Vector<BRepGraph_TopoNode::WireDef::EdgeEntry> aNewEdges;
@@ -231,7 +231,7 @@ void BRepGraph_Mutator::ReplaceEdgeInWire(BRepGraph&       theGraph,
                                           BRepGraph_NodeId theNewEdgeDef,
                                           bool             theReversed)
 {
-  BRepGraph_TopoNode::WireDef& aWireDef = theGraph.myData->myWireDefs.ChangeValue(theWireDefIdx);
+  BRepGraph_TopoNode::WireDef& aWireDef = theGraph.myData->myWires.Defs.ChangeValue(theWireDefIdx);
   for (int anEdgeIdx = 0; anEdgeIdx < aWireDef.OrderedEdges.Length(); ++anEdgeIdx)
   {
     BRepGraph_TopoNode::WireDef::EdgeEntry& anEntry =

@@ -17,101 +17,101 @@
 
 //=================================================================================================
 
-int BRepGraph::DefsView::NbSolids() const { return myGraph->myData->mySolidDefs.Length(); }
+int BRepGraph::DefsView::NbSolids() const { return myGraph->myData->mySolids.Defs.Length(); }
 
 //=================================================================================================
 
-int BRepGraph::DefsView::NbShells() const { return myGraph->myData->myShellDefs.Length(); }
+int BRepGraph::DefsView::NbShells() const { return myGraph->myData->myShells.Defs.Length(); }
 
 //=================================================================================================
 
-int BRepGraph::DefsView::NbFaces() const { return myGraph->myData->myFaceDefs.Length(); }
+int BRepGraph::DefsView::NbFaces() const { return myGraph->myData->myFaces.Defs.Length(); }
 
 //=================================================================================================
 
-int BRepGraph::DefsView::NbWires() const { return myGraph->myData->myWireDefs.Length(); }
+int BRepGraph::DefsView::NbWires() const { return myGraph->myData->myWires.Defs.Length(); }
 
 //=================================================================================================
 
-int BRepGraph::DefsView::NbEdges() const { return myGraph->myData->myEdgeDefs.Length(); }
+int BRepGraph::DefsView::NbEdges() const { return myGraph->myData->myEdges.Defs.Length(); }
 
 //=================================================================================================
 
-int BRepGraph::DefsView::NbVertices() const { return myGraph->myData->myVertexDefs.Length(); }
+int BRepGraph::DefsView::NbVertices() const { return myGraph->myData->myVertices.Defs.Length(); }
 
 //=================================================================================================
 
-int BRepGraph::DefsView::NbCompounds() const { return myGraph->myData->myCompoundDefs.Length(); }
+int BRepGraph::DefsView::NbCompounds() const { return myGraph->myData->myCompounds.Defs.Length(); }
 
 //=================================================================================================
 
-int BRepGraph::DefsView::NbCompSolids() const { return myGraph->myData->myCompSolidDefs.Length(); }
+int BRepGraph::DefsView::NbCompSolids() const { return myGraph->myData->myCompSolids.Defs.Length(); }
 
 //=================================================================================================
 
 const BRepGraph_TopoNode::SolidDef& BRepGraph::DefsView::Solid(int theIdx) const
 {
-  return myGraph->myData->mySolidDefs.Value(theIdx);
+  return myGraph->myData->mySolids.Defs.Value(theIdx);
 }
 
 //=================================================================================================
 
 const BRepGraph_TopoNode::ShellDef& BRepGraph::DefsView::Shell(int theIdx) const
 {
-  return myGraph->myData->myShellDefs.Value(theIdx);
+  return myGraph->myData->myShells.Defs.Value(theIdx);
 }
 
 //=================================================================================================
 
 const BRepGraph_TopoNode::FaceDef& BRepGraph::DefsView::Face(int theIdx) const
 {
-  return myGraph->myData->myFaceDefs.Value(theIdx);
+  return myGraph->myData->myFaces.Defs.Value(theIdx);
 }
 
 //=================================================================================================
 
 const BRepGraph_TopoNode::WireDef& BRepGraph::DefsView::Wire(int theIdx) const
 {
-  return myGraph->myData->myWireDefs.Value(theIdx);
+  return myGraph->myData->myWires.Defs.Value(theIdx);
 }
 
 //=================================================================================================
 
 const BRepGraph_TopoNode::EdgeDef& BRepGraph::DefsView::Edge(int theIdx) const
 {
-  return myGraph->myData->myEdgeDefs.Value(theIdx);
+  return myGraph->myData->myEdges.Defs.Value(theIdx);
 }
 
 //=================================================================================================
 
 const BRepGraph_TopoNode::VertexDef& BRepGraph::DefsView::Vertex(int theIdx) const
 {
-  return myGraph->myData->myVertexDefs.Value(theIdx);
+  return myGraph->myData->myVertices.Defs.Value(theIdx);
 }
 
 //=================================================================================================
 
 const BRepGraph_TopoNode::CompoundDef& BRepGraph::DefsView::Compound(int theIdx) const
 {
-  return myGraph->myData->myCompoundDefs.Value(theIdx);
+  return myGraph->myData->myCompounds.Defs.Value(theIdx);
 }
 
 //=================================================================================================
 
 const BRepGraph_TopoNode::CompSolidDef& BRepGraph::DefsView::CompSolid(int theIdx) const
 {
-  return myGraph->myData->myCompSolidDefs.Value(theIdx);
+  return myGraph->myData->myCompSolids.Defs.Value(theIdx);
 }
 
 //=================================================================================================
 
 int BRepGraph::DefsView::NbShellFaces(int theShellDefIdx) const
 {
-  const BRepGraph_TopoNode::ShellDef& aShellDef = myGraph->myData->myShellDefs.Value(theShellDefIdx);
+  const BRepGraph_TopoNode::ShellDef& aShellDef = myGraph->myData->myShells.Defs.Value(theShellDefIdx);
   if (aShellDef.Usages.IsEmpty())
     return 0;
   const BRepGraph_TopoNode::ShellUsage& aSU =
-    myGraph->myData->myShellUsages.Value(aShellDef.Usages.Value(0).Index);
+    myGraph->myData->myShells.Usages.Value(aShellDef.Usages.Value(0).Index);
   return aSU.FaceUsages.Length();
 }
 
@@ -119,11 +119,11 @@ int BRepGraph::DefsView::NbShellFaces(int theShellDefIdx) const
 
 BRepGraph_NodeId BRepGraph::DefsView::ShellFaceDef(int theShellDefIdx, int theFaceIdx) const
 {
-  const BRepGraph_TopoNode::ShellDef& aShellDef = myGraph->myData->myShellDefs.Value(theShellDefIdx);
+  const BRepGraph_TopoNode::ShellDef& aShellDef = myGraph->myData->myShells.Defs.Value(theShellDefIdx);
   if (aShellDef.Usages.IsEmpty())
     return BRepGraph_NodeId();
   const BRepGraph_TopoNode::ShellUsage& aSU =
-    myGraph->myData->myShellUsages.Value(aShellDef.Usages.Value(0).Index);
+    myGraph->myData->myShells.Usages.Value(aShellDef.Usages.Value(0).Index);
   if (theFaceIdx < 0 || theFaceIdx >= aSU.FaceUsages.Length())
     return BRepGraph_NodeId();
   return myGraph->DefOf(aSU.FaceUsages.Value(theFaceIdx));
@@ -140,15 +140,15 @@ const BRepGraph_TopoNode::BaseDef* BRepGraph::DefsView::TopoDef(BRepGraph_NodeId
 
 size_t BRepGraph::DefsView::NbNodes() const
 {
-  return static_cast<size_t>(myGraph->myData->mySolidDefs.Length())
-         + static_cast<size_t>(myGraph->myData->myShellDefs.Length())
-         + static_cast<size_t>(myGraph->myData->myFaceDefs.Length())
-         + static_cast<size_t>(myGraph->myData->myWireDefs.Length())
-         + static_cast<size_t>(myGraph->myData->myEdgeDefs.Length())
-         + static_cast<size_t>(myGraph->myData->myVertexDefs.Length())
-         + static_cast<size_t>(myGraph->myData->myCompoundDefs.Length())
-         + static_cast<size_t>(myGraph->myData->myCompSolidDefs.Length())
-         + static_cast<size_t>(myGraph->myData->mySurfaces.Length())
-         + static_cast<size_t>(myGraph->myData->myCurves.Length())
-         + static_cast<size_t>(myGraph->myData->myPCurves.Length());
+  return static_cast<size_t>(myGraph->myData->mySolids.Defs.Length())
+         + static_cast<size_t>(myGraph->myData->myShells.Defs.Length())
+         + static_cast<size_t>(myGraph->myData->myFaces.Defs.Length())
+         + static_cast<size_t>(myGraph->myData->myWires.Defs.Length())
+         + static_cast<size_t>(myGraph->myData->myEdges.Defs.Length())
+         + static_cast<size_t>(myGraph->myData->myVertices.Defs.Length())
+         + static_cast<size_t>(myGraph->myData->myCompounds.Defs.Length())
+         + static_cast<size_t>(myGraph->myData->myCompSolids.Defs.Length())
+         + static_cast<size_t>(myGraph->myData->mySurfaces.Nodes.Length())
+         + static_cast<size_t>(myGraph->myData->myCurves.Nodes.Length())
+         + static_cast<size_t>(myGraph->myData->myPCurves.Nodes.Length());
 }

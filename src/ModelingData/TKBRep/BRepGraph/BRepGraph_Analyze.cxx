@@ -104,9 +104,9 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph_Analyze::ToleranceConflicts(
 {
   NCollection_Vector<BRepGraph_NodeId> aResult;
 
-  for (int aCurveIdx = 0; aCurveIdx < theGraph.myData->myCurves.Length(); ++aCurveIdx)
+  for (int aCurveIdx = 0; aCurveIdx < theGraph.myData->myCurves.Nodes.Length(); ++aCurveIdx)
   {
-    const BRepGraph_GeomNode::Curve& aCurve = theGraph.myData->myCurves.Value(aCurveIdx);
+    const BRepGraph_GeomNode::Curve& aCurve = theGraph.myData->myCurves.Nodes.Value(aCurveIdx);
     if (aCurve.EdgeDefUsers.Length() <= 1)
       continue;
 
@@ -114,7 +114,7 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph_Analyze::ToleranceConflicts(
     double aMaxTol = -1.0;
     for (int anIdx = 0; anIdx < aCurve.EdgeDefUsers.Length(); ++anIdx)
     {
-      const double aTol = theGraph.myData->myEdgeDefs.Value(aCurve.EdgeDefUsers.Value(anIdx).Index).Tolerance;
+      const double aTol = theGraph.myData->myEdges.Defs.Value(aCurve.EdgeDefUsers.Value(anIdx).Index).Tolerance;
       if (aTol < aMinTol)
         aMinTol = aTol;
       if (aTol > aMaxTol)

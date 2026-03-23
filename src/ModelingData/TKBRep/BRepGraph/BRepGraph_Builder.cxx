@@ -240,8 +240,8 @@ void BRepGraph_Builder::registerFaceData(BRepGraph& theGraph, const FaceDataVec&
     }
     else
     {
-      BRepGraph_TopoNode::FaceDef& aFaceDef    = theGraph.myData->myFaceDefs.Appended();
-      const int                    aFaceDefIdx = theGraph.myData->myFaceDefs.Length() - 1;
+      BRepGraph_TopoNode::FaceDef& aFaceDef    = theGraph.myData->myFaces.Defs.Appended();
+      const int                    aFaceDefIdx = theGraph.myData->myFaces.Defs.Length() - 1;
       aFaceDef.Id                 = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, aFaceDefIdx);
       aFaceDef.Tolerance          = aData.Tolerance;
       aFaceDef.NaturalRestriction = aData.NaturalRestriction;
@@ -261,20 +261,20 @@ void BRepGraph_Builder::registerFaceData(BRepGraph& theGraph, const FaceDataVec&
     }
 
     // Always create FaceUsage.
-    BRepGraph_TopoNode::FaceUsage& aFaceUsage    = theGraph.myData->myFaceUsages.Appended();
-    const int                      aFaceUsageIdx = theGraph.myData->myFaceUsages.Length() - 1;
+    BRepGraph_TopoNode::FaceUsage& aFaceUsage    = theGraph.myData->myFaces.Usages.Appended();
+    const int                      aFaceUsageIdx = theGraph.myData->myFaces.Usages.Length() - 1;
     aFaceUsage.UsageId        = BRepGraph_UsageId(BRepGraph_NodeId::Kind::Face, aFaceUsageIdx);
     aFaceUsage.DefId          = aFaceDefId;
     aFaceUsage.LocalLocation  = aCurFace.Location();
     aFaceUsage.GlobalLocation = aData.ParentGlobalLoc * aCurFace.Location();
     aFaceUsage.Orientation    = aData.Orientation;
     aFaceUsage.ParentUsage    = aData.ParentShellUsage;
-    theGraph.myData->myFaceDefs.ChangeValue(aFaceDefId.Index).Usages.Append(aFaceUsage.UsageId);
+    theGraph.myData->myFaces.Defs.ChangeValue(aFaceDefId.Index).Usages.Append(aFaceUsage.UsageId);
 
     // Link to parent shell usage.
     if (aData.ParentShellUsage.IsValid())
     {
-      theGraph.myData->myShellUsages.ChangeValue(aData.ParentShellUsage.Index)
+      theGraph.myData->myShells.Usages.ChangeValue(aData.ParentShellUsage.Index)
         .FaceUsages.Append(aFaceUsage.UsageId);
     }
 
@@ -299,8 +299,8 @@ void BRepGraph_Builder::registerFaceData(BRepGraph& theGraph, const FaceDataVec&
       }
       else
       {
-        BRepGraph_TopoNode::WireDef& aWireDef = theGraph.myData->myWireDefs.Appended();
-        aWireDefIdx                           = theGraph.myData->myWireDefs.Length() - 1;
+        BRepGraph_TopoNode::WireDef& aWireDef = theGraph.myData->myWires.Defs.Appended();
+        aWireDefIdx                           = theGraph.myData->myWires.Defs.Length() - 1;
         aWireDef.Id = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Wire, aWireDefIdx);
         theGraph.allocateUID(aWireDef.Id);
         theGraph.myData->myOriginalShapes.Bind(aWireDef.Id, aWireData.Shape);
@@ -309,8 +309,8 @@ void BRepGraph_Builder::registerFaceData(BRepGraph& theGraph, const FaceDataVec&
         aIsNewWireDef = true;
       }
 
-      BRepGraph_TopoNode::WireUsage& aWireUsage    = theGraph.myData->myWireUsages.Appended();
-      const int                      aWireUsageIdx = theGraph.myData->myWireUsages.Length() - 1;
+      BRepGraph_TopoNode::WireUsage& aWireUsage    = theGraph.myData->myWires.Usages.Appended();
+      const int                      aWireUsageIdx = theGraph.myData->myWires.Usages.Length() - 1;
       aWireUsage.UsageId        = BRepGraph_UsageId(BRepGraph_NodeId::Kind::Wire, aWireUsageIdx);
       aWireUsage.DefId          = aWireDefId;
       aWireUsage.LocalLocation  = aWireData.Shape.Location();
@@ -318,7 +318,7 @@ void BRepGraph_Builder::registerFaceData(BRepGraph& theGraph, const FaceDataVec&
       aWireUsage.Orientation    = aWireData.Shape.Orientation();
       aWireUsage.ParentUsage    = aFaceUsage.UsageId;
       aWireUsage.OwnerFaceUsage = aFaceUsage.UsageId;
-      theGraph.myData->myWireDefs.ChangeValue(aWireDefIdx).Usages.Append(aWireUsage.UsageId);
+      theGraph.myData->myWires.Defs.ChangeValue(aWireDefIdx).Usages.Append(aWireUsage.UsageId);
 
       if (aWireData.IsOuter)
       {
@@ -350,8 +350,8 @@ void BRepGraph_Builder::registerFaceData(BRepGraph& theGraph, const FaceDataVec&
         }
         else
         {
-          BRepGraph_TopoNode::EdgeDef& anEdgeDef    = theGraph.myData->myEdgeDefs.Appended();
-          const int                    anEdgeDefIdx = theGraph.myData->myEdgeDefs.Length() - 1;
+          BRepGraph_TopoNode::EdgeDef& anEdgeDef    = theGraph.myData->myEdges.Defs.Appended();
+          const int                    anEdgeDefIdx = theGraph.myData->myEdges.Defs.Length() - 1;
           anEdgeDef.Id            = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, anEdgeDefIdx);
           anEdgeDef.Tolerance     = anEdgeData.Tolerance;
           anEdgeDef.IsDegenerate  = anEdgeData.IsDegenerate;
@@ -384,8 +384,8 @@ void BRepGraph_Builder::registerFaceData(BRepGraph& theGraph, const FaceDataVec&
             if (anExistingVtx != nullptr)
               return *anExistingVtx;
 
-            BRepGraph_TopoNode::VertexDef& aVtxDef    = theGraph.myData->myVertexDefs.Appended();
-            const int                      aVtxDefIdx = theGraph.myData->myVertexDefs.Length() - 1;
+            BRepGraph_TopoNode::VertexDef& aVtxDef    = theGraph.myData->myVertices.Defs.Appended();
+            const int                      aVtxDefIdx = theGraph.myData->myVertices.Defs.Length() - 1;
             aVtxDef.Id        = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Vertex, aVtxDefIdx);
             aVtxDef.Point     = theVtxData.Point;
             aVtxDef.Tolerance = theVtxData.Tolerance;
@@ -404,15 +404,15 @@ void BRepGraph_Builder::registerFaceData(BRepGraph& theGraph, const FaceDataVec&
         }
 
         // Always create EdgeUsage.
-        BRepGraph_TopoNode::EdgeUsage& anEdgeUsage    = theGraph.myData->myEdgeUsages.Appended();
-        const int                      anEdgeUsageIdx = theGraph.myData->myEdgeUsages.Length() - 1;
+        BRepGraph_TopoNode::EdgeUsage& anEdgeUsage    = theGraph.myData->myEdges.Usages.Appended();
+        const int                      anEdgeUsageIdx = theGraph.myData->myEdges.Usages.Length() - 1;
         anEdgeUsage.UsageId       = BRepGraph_UsageId(BRepGraph_NodeId::Kind::Edge, anEdgeUsageIdx);
         anEdgeUsage.DefId         = anEdgeDefId;
         anEdgeUsage.LocalLocation = anEdge.Location();
         anEdgeUsage.GlobalLocation = aWireUsage.GlobalLocation * anEdge.Location();
         anEdgeUsage.Orientation    = anEdgeData.OrientationInWire;
         anEdgeUsage.ParentUsage    = aWireUsage.UsageId;
-        theGraph.myData->myEdgeDefs.ChangeValue(anEdgeDefId.Index)
+        theGraph.myData->myEdges.Defs.ChangeValue(anEdgeDefId.Index)
           .Usages.Append(anEdgeUsage.UsageId);
 
         // Create VertexUsages for this edge usage.
@@ -422,8 +422,8 @@ void BRepGraph_Builder::registerFaceData(BRepGraph& theGraph, const FaceDataVec&
           if (!theVtxDefId.IsValid())
             return BRepGraph_UsageId();
 
-          BRepGraph_TopoNode::VertexUsage& aVtxUsage = theGraph.myData->myVertexUsages.Appended();
-          const int aVtxUsageIdx                     = theGraph.myData->myVertexUsages.Length() - 1;
+          BRepGraph_TopoNode::VertexUsage& aVtxUsage = theGraph.myData->myVertices.Usages.Appended();
+          const int aVtxUsageIdx                     = theGraph.myData->myVertices.Usages.Length() - 1;
           aVtxUsage.UsageId       = BRepGraph_UsageId(BRepGraph_NodeId::Kind::Vertex, aVtxUsageIdx);
           aVtxUsage.DefId         = theVtxDefId;
           aVtxUsage.LocalLocation = theVtxData.Shape.Location();
@@ -431,13 +431,13 @@ void BRepGraph_Builder::registerFaceData(BRepGraph& theGraph, const FaceDataVec&
           aVtxUsage.Orientation      = theVtxData.Shape.Orientation();
           aVtxUsage.ParentUsage      = anEdgeUsage.UsageId;
           aVtxUsage.TransformedPoint = theVtxData.Point;
-          theGraph.myData->myVertexDefs.ChangeValue(theVtxDefId.Index)
+          theGraph.myData->myVertices.Defs.ChangeValue(theVtxDefId.Index)
             .Usages.Append(aVtxUsage.UsageId);
           return aVtxUsage.UsageId;
         };
 
         const BRepGraph_TopoNode::EdgeDef& anEdgeDefRef =
-          theGraph.myData->myEdgeDefs.Value(anEdgeDefId.Index);
+          theGraph.myData->myEdges.Defs.Value(anEdgeDefId.Index);
         anEdgeUsage.StartVertexUsage = createVertexUsage(anEdgeDefRef.StartVertexDefId,
                                                          anEdgeData.StartVertex,
                                                          anEdgeUsage.GlobalLocation);
@@ -461,7 +461,7 @@ void BRepGraph_Builder::registerFaceData(BRepGraph& theGraph, const FaceDataVec&
           aPCEntry.PCurveNodeId    = aPCurveId;
           aPCEntry.FaceDefId       = aFaceDefId;
           aPCEntry.EdgeOrientation = TopAbs_FORWARD;
-          theGraph.myData->myEdgeDefs.ChangeValue(anEdgeDefId.Index).PCurves.Append(aPCEntry);
+          theGraph.myData->myEdges.Defs.ChangeValue(anEdgeDefId.Index).PCurves.Append(aPCEntry);
         }
 
         // Second PCurve for seam edges.
@@ -478,7 +478,7 @@ void BRepGraph_Builder::registerFaceData(BRepGraph& theGraph, const FaceDataVec&
           aPCEntry2.PCurveNodeId    = aPCurveId2;
           aPCEntry2.FaceDefId       = aFaceDefId;
           aPCEntry2.EdgeOrientation = TopAbs_REVERSED;
-          theGraph.myData->myEdgeDefs.ChangeValue(anEdgeDefId.Index).PCurves.Append(aPCEntry2);
+          theGraph.myData->myEdges.Defs.ChangeValue(anEdgeDefId.Index).PCurves.Append(aPCEntry2);
         }
 
         if (aIsNewWireDef)
@@ -487,7 +487,7 @@ void BRepGraph_Builder::registerFaceData(BRepGraph& theGraph, const FaceDataVec&
           BRepGraph_TopoNode::WireDef::EdgeEntry aWEEntry;
           aWEEntry.EdgeDefId         = anEdgeDefId;
           aWEEntry.OrientationInWire = anEdgeData.OrientationInWire;
-          theGraph.myData->myWireDefs.ChangeValue(aWireDefIdx).OrderedEdges.Append(aWEEntry);
+          theGraph.myData->myWires.Defs.ChangeValue(aWireDefIdx).OrderedEdges.Append(aWEEntry);
 
           // Populate edge-to-wire reverse index.
           BRepGraph_BackRefManager::BindEdgeToWire(theGraph, anEdgeDefId.Index, aWireDefIdx);
@@ -512,7 +512,7 @@ void BRepGraph_Builder::registerFaceData(BRepGraph& theGraph, const FaceDataVec&
       if (aIsNewWireDef)
       {
         // Set wire closure.
-        theGraph.myData->myWireDefs.ChangeValue(aWireDefIdx).IsClosed =
+        theGraph.myData->myWires.Defs.ChangeValue(aWireDefIdx).IsClosed =
           aFirstVertexDefId.IsValid() && aLastVertexDefId.IsValid()
           && aFirstVertexDefId == aLastVertexDefId;
       }
@@ -525,9 +525,9 @@ void BRepGraph_Builder::registerFaceData(BRepGraph& theGraph, const FaceDataVec&
 void BRepGraph_Builder::computeMultiLocatedFlags(BRepGraph& theGraph)
 {
   // A surface is multi-located only when its face usages have *different* GlobalLocations.
-  for (int aSurfIdx = 0; aSurfIdx < theGraph.myData->mySurfaces.Length(); ++aSurfIdx)
+  for (int aSurfIdx = 0; aSurfIdx < theGraph.myData->mySurfaces.Nodes.Length(); ++aSurfIdx)
   {
-    BRepGraph_GeomNode::Surf& aSurf = theGraph.myData->mySurfaces.ChangeValue(aSurfIdx);
+    BRepGraph_GeomNode::Surf& aSurf = theGraph.myData->mySurfaces.Nodes.ChangeValue(aSurfIdx);
     if (aSurf.FaceDefUsers.Length() <= 1)
     {
       aSurf.IsMultiLocated = false;
@@ -539,11 +539,11 @@ void BRepGraph_Builder::computeMultiLocatedFlags(BRepGraph& theGraph)
     for (int aFDIdx = 0; aFDIdx < aSurf.FaceDefUsers.Length() && !aIsMultiLocated; ++aFDIdx)
     {
       const BRepGraph_TopoNode::FaceDef& aFaceDef =
-        theGraph.myData->myFaceDefs.Value(aSurf.FaceDefUsers.Value(aFDIdx).Index);
+        theGraph.myData->myFaces.Defs.Value(aSurf.FaceDefUsers.Value(aFDIdx).Index);
       for (int aUIdx = 0; aUIdx < aFaceDef.Usages.Length() && !aIsMultiLocated; ++aUIdx)
       {
         const TopLoc_Location& aLoc =
-          theGraph.myData->myFaceUsages.Value(aFaceDef.Usages.Value(aUIdx).Index).GlobalLocation;
+          theGraph.myData->myFaces.Usages.Value(aFaceDef.Usages.Value(aUIdx).Index).GlobalLocation;
         if (!aFoundFirst)
         {
           aFirstLoc   = aLoc;
@@ -558,9 +558,9 @@ void BRepGraph_Builder::computeMultiLocatedFlags(BRepGraph& theGraph)
     aSurf.IsMultiLocated = aIsMultiLocated;
   }
   // Similarly for curves.
-  for (int aCurveIdx = 0; aCurveIdx < theGraph.myData->myCurves.Length(); ++aCurveIdx)
+  for (int aCurveIdx = 0; aCurveIdx < theGraph.myData->myCurves.Nodes.Length(); ++aCurveIdx)
   {
-    BRepGraph_GeomNode::Curve& aCurve = theGraph.myData->myCurves.ChangeValue(aCurveIdx);
+    BRepGraph_GeomNode::Curve& aCurve = theGraph.myData->myCurves.Nodes.ChangeValue(aCurveIdx);
     if (aCurve.EdgeDefUsers.Length() <= 1)
     {
       aCurve.IsMultiLocated = false;
@@ -572,11 +572,11 @@ void BRepGraph_Builder::computeMultiLocatedFlags(BRepGraph& theGraph)
     for (int aEDIdx = 0; aEDIdx < aCurve.EdgeDefUsers.Length() && !aIsMultiLocated; ++aEDIdx)
     {
       const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
-        theGraph.myData->myEdgeDefs.Value(aCurve.EdgeDefUsers.Value(aEDIdx).Index);
+        theGraph.myData->myEdges.Defs.Value(aCurve.EdgeDefUsers.Value(aEDIdx).Index);
       for (int aUIdx = 0; aUIdx < anEdgeDef.Usages.Length() && !aIsMultiLocated; ++aUIdx)
       {
         const TopLoc_Location& aLoc =
-          theGraph.myData->myEdgeUsages.Value(anEdgeDef.Usages.Value(aUIdx).Index).GlobalLocation;
+          theGraph.myData->myEdges.Usages.Value(anEdgeDef.Usages.Value(aUIdx).Index).GlobalLocation;
         if (!aFoundFirst)
         {
           aFirstLoc   = aLoc;
@@ -601,39 +601,20 @@ void BRepGraph_Builder::Perform(BRepGraph& theGraph, const TopoDS_Shape& theShap
   // geometry back-refs) via centralized BackRefManager.
   BRepGraph_BackRefManager::ClearAll(theGraph);
 
-  theGraph.myData->mySolidDefs.Clear();
-  theGraph.myData->myShellDefs.Clear();
-  theGraph.myData->myFaceDefs.Clear();
-  theGraph.myData->myWireDefs.Clear();
-  theGraph.myData->myEdgeDefs.Clear();
-  theGraph.myData->myVertexDefs.Clear();
-  theGraph.myData->myCompoundDefs.Clear();
-  theGraph.myData->myCompSolidDefs.Clear();
-  theGraph.myData->mySolidUsages.Clear();
-  theGraph.myData->myShellUsages.Clear();
-  theGraph.myData->myFaceUsages.Clear();
-  theGraph.myData->myWireUsages.Clear();
-  theGraph.myData->myEdgeUsages.Clear();
-  theGraph.myData->myVertexUsages.Clear();
-  theGraph.myData->myCompoundUsages.Clear();
-  theGraph.myData->myCompSolidUsages.Clear();
+  theGraph.myData->mySolids.Clear();
+  theGraph.myData->myShells.Clear();
+  theGraph.myData->myFaces.Clear();
+  theGraph.myData->myWires.Clear();
+  theGraph.myData->myEdges.Clear();
+  theGraph.myData->myVertices.Clear();
+  theGraph.myData->myCompounds.Clear();
+  theGraph.myData->myCompSolids.Clear();
   theGraph.myData->mySurfaces.Clear();
   theGraph.myData->myCurves.Clear();
   theGraph.myData->myPCurves.Clear();
   theGraph.myData->mySurfRegistry.Clear();
   theGraph.myData->myCurveRegistry.Clear();
   theGraph.myData->myTShapeToDefId.Clear();
-  theGraph.myData->mySolidUIDs.Clear();
-  theGraph.myData->myShellUIDs.Clear();
-  theGraph.myData->myFaceUIDs.Clear();
-  theGraph.myData->myWireUIDs.Clear();
-  theGraph.myData->myEdgeUIDs.Clear();
-  theGraph.myData->myVertexUIDs.Clear();
-  theGraph.myData->myCompoundUIDs.Clear();
-  theGraph.myData->myCompSolidUIDs.Clear();
-  theGraph.myData->mySurfaceUIDs.Clear();
-  theGraph.myData->myCurveUIDs.Clear();
-  theGraph.myData->myPCurveUIDs.Clear();
   theGraph.myData->myHistoryLog.Clear();
   theGraph.myData->myOriginalShapes.Clear();
   theGraph.myData->myCurrentShapes.Clear();
@@ -662,15 +643,15 @@ void BRepGraph_Builder::Perform(BRepGraph& theGraph, const TopoDS_Shape& theShap
       case TopAbs_COMPOUND: {
         const TopoDS_Compound& aCompound = TopoDS::Compound(theCurrentShape);
 
-        BRepGraph_TopoNode::CompoundDef& aCompDef    = theGraph.myData->myCompoundDefs.Appended();
-        const int                        aCompDefIdx = theGraph.myData->myCompoundDefs.Length() - 1;
+        BRepGraph_TopoNode::CompoundDef& aCompDef    = theGraph.myData->myCompounds.Defs.Appended();
+        const int                        aCompDefIdx = theGraph.myData->myCompounds.Defs.Length() - 1;
         aCompDef.Id = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Compound, aCompDefIdx);
         theGraph.allocateUID(aCompDef.Id);
         theGraph.myData->myOriginalShapes.Bind(aCompDef.Id, aCompound);
 
         BRepGraph_TopoNode::CompoundUsage& aCompUsage =
-          theGraph.myData->myCompoundUsages.Appended();
-        const int aCompUsageIdx = theGraph.myData->myCompoundUsages.Length() - 1;
+          theGraph.myData->myCompounds.Usages.Appended();
+        const int aCompUsageIdx = theGraph.myData->myCompounds.Usages.Length() - 1;
         aCompUsage.UsageId = BRepGraph_UsageId(BRepGraph_NodeId::Kind::Compound, aCompUsageIdx);
         aCompUsage.DefId   = aCompDef.Id;
         aCompUsage.LocalLocation  = aCompound.Location();
@@ -688,9 +669,9 @@ void BRepGraph_Builder::Perform(BRepGraph& theGraph, const TopoDS_Shape& theShap
             traverseShape(aChildIt.Value(), aCompUsageId, aCompGlobalLoc);
           if (aChildUsage.IsValid())
           {
-            theGraph.myData->myCompoundUsages.ChangeValue(aCompUsageIdx)
+            theGraph.myData->myCompounds.Usages.ChangeValue(aCompUsageIdx)
               .ChildUsages.Append(aChildUsage);
-            theGraph.myData->myCompoundDefs.ChangeValue(aCompDefIdx)
+            theGraph.myData->myCompounds.Defs.ChangeValue(aCompDefIdx)
               .ChildDefIds.Append(theGraph.DefOf(aChildUsage));
           }
         }
@@ -701,15 +682,15 @@ void BRepGraph_Builder::Perform(BRepGraph& theGraph, const TopoDS_Shape& theShap
       case TopAbs_COMPSOLID: {
         const TopoDS_CompSolid& aCompSolid = TopoDS::CompSolid(theCurrentShape);
 
-        BRepGraph_TopoNode::CompSolidDef& aCSolidDef = theGraph.myData->myCompSolidDefs.Appended();
-        const int aCSolidDefIdx = theGraph.myData->myCompSolidDefs.Length() - 1;
+        BRepGraph_TopoNode::CompSolidDef& aCSolidDef = theGraph.myData->myCompSolids.Defs.Appended();
+        const int aCSolidDefIdx = theGraph.myData->myCompSolids.Defs.Length() - 1;
         aCSolidDef.Id = BRepGraph_NodeId(BRepGraph_NodeId::Kind::CompSolid, aCSolidDefIdx);
         theGraph.allocateUID(aCSolidDef.Id);
         theGraph.myData->myOriginalShapes.Bind(aCSolidDef.Id, aCompSolid);
 
         BRepGraph_TopoNode::CompSolidUsage& aCSolidUsage =
-          theGraph.myData->myCompSolidUsages.Appended();
-        const int aCSolidUsageIdx = theGraph.myData->myCompSolidUsages.Length() - 1;
+          theGraph.myData->myCompSolids.Usages.Appended();
+        const int aCSolidUsageIdx = theGraph.myData->myCompSolids.Usages.Length() - 1;
         aCSolidUsage.UsageId =
           BRepGraph_UsageId(BRepGraph_NodeId::Kind::CompSolid, aCSolidUsageIdx);
         aCSolidUsage.DefId          = aCSolidDef.Id;
@@ -730,9 +711,9 @@ void BRepGraph_Builder::Perform(BRepGraph& theGraph, const TopoDS_Shape& theShap
             traverseShape(aChildIt.Value(), aCSolidUsageId, aCSolidGlobalLoc);
           if (aChildUsage.IsValid())
           {
-            theGraph.myData->myCompSolidUsages.ChangeValue(aCSolidUsageIdx)
+            theGraph.myData->myCompSolids.Usages.ChangeValue(aCSolidUsageIdx)
               .SolidUsages.Append(aChildUsage);
-            theGraph.myData->myCompSolidDefs.ChangeValue(aCSolidDefIdx)
+            theGraph.myData->myCompSolids.Defs.ChangeValue(aCSolidDefIdx)
               .SolidDefIds.Append(theGraph.DefOf(aChildUsage));
           }
         }
@@ -743,13 +724,13 @@ void BRepGraph_Builder::Perform(BRepGraph& theGraph, const TopoDS_Shape& theShap
       case TopAbs_SOLID: {
         const TopoDS_Solid& aSolid = TopoDS::Solid(theCurrentShape);
 
-        BRepGraph_TopoNode::SolidDef& aSolidDef    = theGraph.myData->mySolidDefs.Appended();
-        const int                     aSolidDefIdx = theGraph.myData->mySolidDefs.Length() - 1;
+        BRepGraph_TopoNode::SolidDef& aSolidDef    = theGraph.myData->mySolids.Defs.Appended();
+        const int                     aSolidDefIdx = theGraph.myData->mySolids.Defs.Length() - 1;
         aSolidDef.Id = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Solid, aSolidDefIdx);
         theGraph.allocateUID(aSolidDef.Id);
 
-        BRepGraph_TopoNode::SolidUsage& aSolidUsage = theGraph.myData->mySolidUsages.Appended();
-        const int aSolidUsageIdx                    = theGraph.myData->mySolidUsages.Length() - 1;
+        BRepGraph_TopoNode::SolidUsage& aSolidUsage = theGraph.myData->mySolids.Usages.Appended();
+        const int aSolidUsageIdx                    = theGraph.myData->mySolids.Usages.Length() - 1;
         aSolidUsage.UsageId = BRepGraph_UsageId(BRepGraph_NodeId::Kind::Solid, aSolidUsageIdx);
         aSolidUsage.DefId   = aSolidDef.Id;
         aSolidUsage.LocalLocation  = aSolid.Location();
@@ -769,7 +750,7 @@ void BRepGraph_Builder::Perform(BRepGraph& theGraph, const TopoDS_Shape& theShap
           BRepGraph_UsageId aShellUsageId =
             traverseShape(aShellIt.Value(), aSolidUsageId, aSolidGlobalLoc);
           if (aShellUsageId.IsValid())
-            theGraph.myData->mySolidUsages.ChangeValue(aSolidUsageIdx)
+            theGraph.myData->mySolids.Usages.ChangeValue(aSolidUsageIdx)
               .ShellUsages.Append(aShellUsageId);
         }
 
@@ -779,13 +760,13 @@ void BRepGraph_Builder::Perform(BRepGraph& theGraph, const TopoDS_Shape& theShap
       case TopAbs_SHELL: {
         const TopoDS_Shell& aShell = TopoDS::Shell(theCurrentShape);
 
-        BRepGraph_TopoNode::ShellDef& aShellDef    = theGraph.myData->myShellDefs.Appended();
-        const int                     aShellDefIdx = theGraph.myData->myShellDefs.Length() - 1;
+        BRepGraph_TopoNode::ShellDef& aShellDef    = theGraph.myData->myShells.Defs.Appended();
+        const int                     aShellDefIdx = theGraph.myData->myShells.Defs.Length() - 1;
         aShellDef.Id = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Shell, aShellDefIdx);
         theGraph.allocateUID(aShellDef.Id);
 
-        BRepGraph_TopoNode::ShellUsage& aShellUsage = theGraph.myData->myShellUsages.Appended();
-        const int aShellUsageIdx                    = theGraph.myData->myShellUsages.Length() - 1;
+        BRepGraph_TopoNode::ShellUsage& aShellUsage = theGraph.myData->myShells.Usages.Appended();
+        const int aShellUsageIdx                    = theGraph.myData->myShells.Usages.Length() - 1;
         aShellUsage.UsageId = BRepGraph_UsageId(BRepGraph_NodeId::Kind::Shell, aShellUsageIdx);
         aShellUsage.DefId   = aShellDef.Id;
         aShellUsage.LocalLocation  = aShell.Location();

@@ -21,7 +21,7 @@ void BRepGraph_BackRefManager::BindFaceToSurface(BRepGraph&       theGraph,
                                                   BRepGraph_NodeId theFaceDefId,
                                                   int              theSurfIdx)
 {
-  theGraph.myData->mySurfaces.ChangeValue(theSurfIdx).FaceDefUsers.Append(theFaceDefId);
+  theGraph.myData->mySurfaces.Nodes.ChangeValue(theSurfIdx).FaceDefUsers.Append(theFaceDefId);
 }
 
 //=================================================================================================
@@ -31,7 +31,7 @@ void BRepGraph_BackRefManager::UnbindFaceFromSurface(BRepGraph&       theGraph,
                                                       int              theSurfIdx)
 {
   NCollection_Vector<BRepGraph_NodeId>& anUsers =
-    theGraph.myData->mySurfaces.ChangeValue(theSurfIdx).FaceDefUsers;
+    theGraph.myData->mySurfaces.Nodes.ChangeValue(theSurfIdx).FaceDefUsers;
   for (int anIdx = anUsers.Length() - 1; anIdx >= 0; --anIdx)
   {
     if (anUsers.Value(anIdx) == theFaceDefId)
@@ -61,7 +61,7 @@ void BRepGraph_BackRefManager::BindEdgeToCurve(BRepGraph&       theGraph,
                                                 BRepGraph_NodeId theEdgeDefId,
                                                 int              theCurveIdx)
 {
-  theGraph.myData->myCurves.ChangeValue(theCurveIdx).EdgeDefUsers.Append(theEdgeDefId);
+  theGraph.myData->myCurves.Nodes.ChangeValue(theCurveIdx).EdgeDefUsers.Append(theEdgeDefId);
 }
 
 //=================================================================================================
@@ -71,7 +71,7 @@ void BRepGraph_BackRefManager::UnbindEdgeFromCurve(BRepGraph&       theGraph,
                                                     int              theCurveIdx)
 {
   NCollection_Vector<BRepGraph_NodeId>& anUsers =
-    theGraph.myData->myCurves.ChangeValue(theCurveIdx).EdgeDefUsers;
+    theGraph.myData->myCurves.Nodes.ChangeValue(theCurveIdx).EdgeDefUsers;
   for (int anIdx = anUsers.Length() - 1; anIdx >= 0; --anIdx)
   {
     if (anUsers.Value(anIdx) == theEdgeDefId)
@@ -218,11 +218,11 @@ void BRepGraph_BackRefManager::ClearRelEdges(BRepGraph&       theGraph,
 void BRepGraph_BackRefManager::ClearAll(BRepGraph& theGraph)
 {
   // Clear geometry back-refs.
-  for (int aSurfIdx = 0; aSurfIdx < theGraph.myData->mySurfaces.Length(); ++aSurfIdx)
-    theGraph.myData->mySurfaces.ChangeValue(aSurfIdx).FaceDefUsers.Clear();
+  for (int aSurfIdx = 0; aSurfIdx < theGraph.myData->mySurfaces.Nodes.Length(); ++aSurfIdx)
+    theGraph.myData->mySurfaces.Nodes.ChangeValue(aSurfIdx).FaceDefUsers.Clear();
 
-  for (int aCurveIdx = 0; aCurveIdx < theGraph.myData->myCurves.Length(); ++aCurveIdx)
-    theGraph.myData->myCurves.ChangeValue(aCurveIdx).EdgeDefUsers.Clear();
+  for (int aCurveIdx = 0; aCurveIdx < theGraph.myData->myCurves.Nodes.Length(); ++aCurveIdx)
+    theGraph.myData->myCurves.Nodes.ChangeValue(aCurveIdx).EdgeDefUsers.Clear();
 
   // Clear edge-to-wire reverse index.
   theGraph.myData->myEdgeToWires.Clear();
@@ -237,36 +237,36 @@ void BRepGraph_BackRefManager::ClearAll(BRepGraph& theGraph)
 void BRepGraph_BackRefManager::RebuildAll(BRepGraph& theGraph)
 {
   // Clear all existing back-references.
-  for (int aSurfIdx = 0; aSurfIdx < theGraph.myData->mySurfaces.Length(); ++aSurfIdx)
-    theGraph.myData->mySurfaces.ChangeValue(aSurfIdx).FaceDefUsers.Clear();
+  for (int aSurfIdx = 0; aSurfIdx < theGraph.myData->mySurfaces.Nodes.Length(); ++aSurfIdx)
+    theGraph.myData->mySurfaces.Nodes.ChangeValue(aSurfIdx).FaceDefUsers.Clear();
 
-  for (int aCurveIdx = 0; aCurveIdx < theGraph.myData->myCurves.Length(); ++aCurveIdx)
-    theGraph.myData->myCurves.ChangeValue(aCurveIdx).EdgeDefUsers.Clear();
+  for (int aCurveIdx = 0; aCurveIdx < theGraph.myData->myCurves.Nodes.Length(); ++aCurveIdx)
+    theGraph.myData->myCurves.Nodes.ChangeValue(aCurveIdx).EdgeDefUsers.Clear();
 
   theGraph.myData->myEdgeToWires.Clear();
 
   // Rebuild surface back-refs from FaceDefs.
-  for (int aFaceIdx = 0; aFaceIdx < theGraph.myData->myFaceDefs.Length(); ++aFaceIdx)
+  for (int aFaceIdx = 0; aFaceIdx < theGraph.myData->myFaces.Defs.Length(); ++aFaceIdx)
   {
-    const BRepGraph_TopoNode::FaceDef& aFaceDef = theGraph.myData->myFaceDefs.Value(aFaceIdx);
+    const BRepGraph_TopoNode::FaceDef& aFaceDef = theGraph.myData->myFaces.Defs.Value(aFaceIdx);
     if (aFaceDef.SurfNodeId.IsValid())
-      theGraph.myData->mySurfaces.ChangeValue(aFaceDef.SurfNodeId.Index)
+      theGraph.myData->mySurfaces.Nodes.ChangeValue(aFaceDef.SurfNodeId.Index)
         .FaceDefUsers.Append(aFaceDef.Id);
   }
 
   // Rebuild curve back-refs from EdgeDefs.
-  for (int anEdgeIdx = 0; anEdgeIdx < theGraph.myData->myEdgeDefs.Length(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < theGraph.myData->myEdges.Defs.Length(); ++anEdgeIdx)
   {
-    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = theGraph.myData->myEdgeDefs.Value(anEdgeIdx);
+    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = theGraph.myData->myEdges.Defs.Value(anEdgeIdx);
     if (anEdgeDef.CurveNodeId.IsValid())
-      theGraph.myData->myCurves.ChangeValue(anEdgeDef.CurveNodeId.Index)
+      theGraph.myData->myCurves.Nodes.ChangeValue(anEdgeDef.CurveNodeId.Index)
         .EdgeDefUsers.Append(anEdgeDef.Id);
   }
 
   // Rebuild edge-to-wire map from WireDefs.
-  for (int aWireIdx = 0; aWireIdx < theGraph.myData->myWireDefs.Length(); ++aWireIdx)
+  for (int aWireIdx = 0; aWireIdx < theGraph.myData->myWires.Defs.Length(); ++aWireIdx)
   {
-    const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.myData->myWireDefs.Value(aWireIdx);
+    const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.myData->myWires.Defs.Value(aWireIdx);
     for (int anEdgeIdx = 0; anEdgeIdx < aWireDef.OrderedEdges.Length(); ++anEdgeIdx)
     {
       const int anEdgeDefIdx = aWireDef.OrderedEdges.Value(anEdgeIdx).EdgeDefId.Index;

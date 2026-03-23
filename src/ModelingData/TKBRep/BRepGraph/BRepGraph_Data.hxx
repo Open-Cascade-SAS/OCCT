@@ -42,32 +42,54 @@
 //! by code outside BRepGraph and its friend classes.
 struct BRepGraph_Data
 {
+  //! Groups definition, usage, and UID vectors for a single topology kind.
+  template <typename DefT, typename UsageT>
+  struct TopoKindData
+  {
+    NCollection_Vector<DefT>          Defs;
+    NCollection_Vector<UsageT>        Usages;
+    NCollection_Vector<BRepGraph_UID> UIDs;
+
+    TopoKindData(int theDefCap, int theUsageCap,
+                 const Handle(NCollection_BaseAllocator)& theAlloc)
+        : Defs(theDefCap, theAlloc),
+          Usages(theUsageCap, theAlloc),
+          UIDs(theDefCap, theAlloc) {}
+
+    void Clear() { Defs.Clear(); Usages.Clear(); UIDs.Clear(); }
+  };
+
+  //! Groups node and UID vectors for a single geometry kind.
+  template <typename NodeT>
+  struct GeomKindData
+  {
+    NCollection_Vector<NodeT>         Nodes;
+    NCollection_Vector<BRepGraph_UID> UIDs;
+
+    GeomKindData(int theCap,
+                 const Handle(NCollection_BaseAllocator)& theAlloc)
+        : Nodes(theCap, theAlloc),
+          UIDs(theCap, theAlloc) {}
+
+    void Clear() { Nodes.Clear(); UIDs.Clear(); }
+  };
+
   Handle(NCollection_BaseAllocator) myAllocator;
 
-  //! Definition vectors (indexed by BRepGraph_NodeId.Index).
-  NCollection_Vector<BRepGraph_TopoNode::SolidDef>     mySolidDefs;
-  NCollection_Vector<BRepGraph_TopoNode::ShellDef>     myShellDefs;
-  NCollection_Vector<BRepGraph_TopoNode::FaceDef>      myFaceDefs;
-  NCollection_Vector<BRepGraph_TopoNode::WireDef>      myWireDefs;
-  NCollection_Vector<BRepGraph_TopoNode::EdgeDef>      myEdgeDefs;
-  NCollection_Vector<BRepGraph_TopoNode::VertexDef>    myVertexDefs;
-  NCollection_Vector<BRepGraph_TopoNode::CompoundDef>  myCompoundDefs;
-  NCollection_Vector<BRepGraph_TopoNode::CompSolidDef> myCompSolidDefs;
+  //! Topology kind data (8 kinds), each grouping Defs, Usages, and UIDs.
+  TopoKindData<BRepGraph_TopoNode::SolidDef, BRepGraph_TopoNode::SolidUsage>         mySolids;
+  TopoKindData<BRepGraph_TopoNode::ShellDef, BRepGraph_TopoNode::ShellUsage>         myShells;
+  TopoKindData<BRepGraph_TopoNode::FaceDef, BRepGraph_TopoNode::FaceUsage>           myFaces;
+  TopoKindData<BRepGraph_TopoNode::WireDef, BRepGraph_TopoNode::WireUsage>           myWires;
+  TopoKindData<BRepGraph_TopoNode::EdgeDef, BRepGraph_TopoNode::EdgeUsage>           myEdges;
+  TopoKindData<BRepGraph_TopoNode::VertexDef, BRepGraph_TopoNode::VertexUsage>       myVertices;
+  TopoKindData<BRepGraph_TopoNode::CompoundDef, BRepGraph_TopoNode::CompoundUsage>   myCompounds;
+  TopoKindData<BRepGraph_TopoNode::CompSolidDef, BRepGraph_TopoNode::CompSolidUsage> myCompSolids;
 
-  //! Usage vectors (indexed by BRepGraph_UsageId.Index).
-  NCollection_Vector<BRepGraph_TopoNode::SolidUsage>     mySolidUsages;
-  NCollection_Vector<BRepGraph_TopoNode::ShellUsage>     myShellUsages;
-  NCollection_Vector<BRepGraph_TopoNode::FaceUsage>      myFaceUsages;
-  NCollection_Vector<BRepGraph_TopoNode::WireUsage>      myWireUsages;
-  NCollection_Vector<BRepGraph_TopoNode::EdgeUsage>      myEdgeUsages;
-  NCollection_Vector<BRepGraph_TopoNode::VertexUsage>    myVertexUsages;
-  NCollection_Vector<BRepGraph_TopoNode::CompoundUsage>  myCompoundUsages;
-  NCollection_Vector<BRepGraph_TopoNode::CompSolidUsage> myCompSolidUsages;
-
-  //! Geometry node vectors.
-  NCollection_Vector<BRepGraph_GeomNode::Surf>   mySurfaces;
-  NCollection_Vector<BRepGraph_GeomNode::Curve>  myCurves;
-  NCollection_Vector<BRepGraph_GeomNode::PCurve> myPCurves;
+  //! Geometry kind data (3 kinds), each grouping Nodes and UIDs.
+  GeomKindData<BRepGraph_GeomNode::Surf>   mySurfaces;
+  GeomKindData<BRepGraph_GeomNode::Curve>  myCurves;
+  GeomKindData<BRepGraph_GeomNode::PCurve> myPCurves;
 
   //! Map-based RelEdge storage.
   NCollection_DataMap<BRepGraph_NodeId,
@@ -87,18 +109,6 @@ struct BRepGraph_Data
   //! Reverse map: single DataMap built lazily on first NodeIdFrom()/Has().
   std::atomic<size_t> myNextUIDCounter{0};
   uint32_t            myGeneration{0};
-
-  NCollection_Vector<BRepGraph_UID> mySolidUIDs;
-  NCollection_Vector<BRepGraph_UID> myShellUIDs;
-  NCollection_Vector<BRepGraph_UID> myFaceUIDs;
-  NCollection_Vector<BRepGraph_UID> myWireUIDs;
-  NCollection_Vector<BRepGraph_UID> myEdgeUIDs;
-  NCollection_Vector<BRepGraph_UID> myVertexUIDs;
-  NCollection_Vector<BRepGraph_UID> myCompoundUIDs;
-  NCollection_Vector<BRepGraph_UID> myCompSolidUIDs;
-  NCollection_Vector<BRepGraph_UID> mySurfaceUIDs;
-  NCollection_Vector<BRepGraph_UID> myCurveUIDs;
-  NCollection_Vector<BRepGraph_UID> myPCurveUIDs;
 
   //! Reverse index: edge def index -> wire def indices containing that edge.
   NCollection_DataMap<int, NCollection_Vector<int>> myEdgeToWires;
@@ -120,39 +130,20 @@ struct BRepGraph_Data
   //! Default constructor with standard capacities.
   BRepGraph_Data()
       : myAllocator(NCollection_BaseAllocator::CommonBaseAllocator()),
-        mySolidDefs(16, myAllocator),
-        myShellDefs(16, myAllocator),
-        myFaceDefs(128, myAllocator),
-        myWireDefs(128, myAllocator),
-        myEdgeDefs(256, myAllocator),
-        myVertexDefs(256, myAllocator),
-        myCompoundDefs(16, myAllocator),
-        myCompSolidDefs(16, myAllocator),
-        mySolidUsages(16, myAllocator),
-        myShellUsages(16, myAllocator),
-        myFaceUsages(128, myAllocator),
-        myWireUsages(128, myAllocator),
-        myEdgeUsages(256, myAllocator),
-        myVertexUsages(256, myAllocator),
-        myCompoundUsages(16, myAllocator),
-        myCompSolidUsages(16, myAllocator),
+        mySolids(16, 16, myAllocator),
+        myShells(16, 16, myAllocator),
+        myFaces(128, 128, myAllocator),
+        myWires(128, 128, myAllocator),
+        myEdges(256, 256, myAllocator),
+        myVertices(256, 256, myAllocator),
+        myCompounds(16, 16, myAllocator),
+        myCompSolids(16, 16, myAllocator),
         mySurfaces(64, myAllocator),
         myCurves(64, myAllocator),
         myPCurves(128, myAllocator),
         mySurfRegistry(100, myAllocator),
         myCurveRegistry(100, myAllocator),
-        myTShapeToDefId(100, myAllocator),
-        mySolidUIDs(16, myAllocator),
-        myShellUIDs(16, myAllocator),
-        myFaceUIDs(128, myAllocator),
-        myWireUIDs(128, myAllocator),
-        myEdgeUIDs(256, myAllocator),
-        myVertexUIDs(256, myAllocator),
-        myCompoundUIDs(16, myAllocator),
-        myCompSolidUIDs(16, myAllocator),
-        mySurfaceUIDs(64, myAllocator),
-        myCurveUIDs(64, myAllocator),
-        myPCurveUIDs(128, myAllocator)
+        myTShapeToDefId(100, myAllocator)
   {
   }
 
@@ -160,39 +151,20 @@ struct BRepGraph_Data
   explicit BRepGraph_Data(const Handle(NCollection_BaseAllocator)& theAlloc)
       : myAllocator(!theAlloc.IsNull() ? theAlloc
                                        : NCollection_BaseAllocator::CommonBaseAllocator()),
-        mySolidDefs(16, myAllocator),
-        myShellDefs(16, myAllocator),
-        myFaceDefs(128, myAllocator),
-        myWireDefs(128, myAllocator),
-        myEdgeDefs(256, myAllocator),
-        myVertexDefs(256, myAllocator),
-        myCompoundDefs(16, myAllocator),
-        myCompSolidDefs(16, myAllocator),
-        mySolidUsages(16, myAllocator),
-        myShellUsages(16, myAllocator),
-        myFaceUsages(128, myAllocator),
-        myWireUsages(128, myAllocator),
-        myEdgeUsages(256, myAllocator),
-        myVertexUsages(256, myAllocator),
-        myCompoundUsages(16, myAllocator),
-        myCompSolidUsages(16, myAllocator),
+        mySolids(16, 16, myAllocator),
+        myShells(16, 16, myAllocator),
+        myFaces(128, 128, myAllocator),
+        myWires(128, 128, myAllocator),
+        myEdges(256, 256, myAllocator),
+        myVertices(256, 256, myAllocator),
+        myCompounds(16, 16, myAllocator),
+        myCompSolids(16, 16, myAllocator),
         mySurfaces(64, myAllocator),
         myCurves(64, myAllocator),
         myPCurves(128, myAllocator),
         mySurfRegistry(100, myAllocator),
         myCurveRegistry(100, myAllocator),
-        myTShapeToDefId(100, myAllocator),
-        mySolidUIDs(16, myAllocator),
-        myShellUIDs(16, myAllocator),
-        myFaceUIDs(128, myAllocator),
-        myWireUIDs(128, myAllocator),
-        myEdgeUIDs(256, myAllocator),
-        myVertexUIDs(256, myAllocator),
-        myCompoundUIDs(16, myAllocator),
-        myCompSolidUIDs(16, myAllocator),
-        mySurfaceUIDs(64, myAllocator),
-        myCurveUIDs(64, myAllocator),
-        myPCurveUIDs(128, myAllocator)
+        myTShapeToDefId(100, myAllocator)
   {
   }
 };

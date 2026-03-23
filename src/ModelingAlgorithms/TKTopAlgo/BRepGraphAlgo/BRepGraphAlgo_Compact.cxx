@@ -563,17 +563,17 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
     }
   };
 
-  transferUIDs(aVertexMap,    theGraph.myData->myVertexUIDs,    aNewGraph.myData->myVertexUIDs);
-  transferUIDs(anEdgeMap,     theGraph.myData->myEdgeUIDs,      aNewGraph.myData->myEdgeUIDs);
-  transferUIDs(aWireMap,      theGraph.myData->myWireUIDs,      aNewGraph.myData->myWireUIDs);
-  transferUIDs(aFaceMap,      theGraph.myData->myFaceUIDs,      aNewGraph.myData->myFaceUIDs);
-  transferUIDs(aShellMap,     theGraph.myData->myShellUIDs,     aNewGraph.myData->myShellUIDs);
-  transferUIDs(aSolidMap,     theGraph.myData->mySolidUIDs,     aNewGraph.myData->mySolidUIDs);
-  transferUIDs(aCompoundMap,  theGraph.myData->myCompoundUIDs,  aNewGraph.myData->myCompoundUIDs);
-  transferUIDs(aCompSolidMap, theGraph.myData->myCompSolidUIDs, aNewGraph.myData->myCompSolidUIDs);
-  transferUIDs(aSurfMap,      theGraph.myData->mySurfaceUIDs,   aNewGraph.myData->mySurfaceUIDs);
-  transferUIDs(aCurveMap,     theGraph.myData->myCurveUIDs,     aNewGraph.myData->myCurveUIDs);
-  transferUIDs(aPCurveMap,    theGraph.myData->myPCurveUIDs,    aNewGraph.myData->myPCurveUIDs);
+  transferUIDs(aVertexMap,    theGraph.myData->myVertices.UIDs,    aNewGraph.myData->myVertices.UIDs);
+  transferUIDs(anEdgeMap,     theGraph.myData->myEdges.UIDs,      aNewGraph.myData->myEdges.UIDs);
+  transferUIDs(aWireMap,      theGraph.myData->myWires.UIDs,      aNewGraph.myData->myWires.UIDs);
+  transferUIDs(aFaceMap,      theGraph.myData->myFaces.UIDs,      aNewGraph.myData->myFaces.UIDs);
+  transferUIDs(aShellMap,     theGraph.myData->myShells.UIDs,     aNewGraph.myData->myShells.UIDs);
+  transferUIDs(aSolidMap,     theGraph.myData->mySolids.UIDs,     aNewGraph.myData->mySolids.UIDs);
+  transferUIDs(aCompoundMap,  theGraph.myData->myCompounds.UIDs,  aNewGraph.myData->myCompounds.UIDs);
+  transferUIDs(aCompSolidMap, theGraph.myData->myCompSolids.UIDs, aNewGraph.myData->myCompSolids.UIDs);
+  transferUIDs(aSurfMap,      theGraph.myData->mySurfaces.UIDs,   aNewGraph.myData->mySurfaces.UIDs);
+  transferUIDs(aCurveMap,     theGraph.myData->myCurves.UIDs,     aNewGraph.myData->myCurves.UIDs);
+  transferUIDs(aPCurveMap,    theGraph.myData->myPCurves.UIDs,    aNewGraph.myData->myPCurves.UIDs);
 
   aNewGraph.myData->myNextUIDCounter.store(
     theGraph.myData->myNextUIDCounter.load(std::memory_order_relaxed),

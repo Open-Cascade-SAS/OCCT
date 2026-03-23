@@ -59,11 +59,11 @@ int BRepGraph::RelEdgesView::FaceCountForEdge(int theEdgeDefIdx) const
   for (int aWIdx = 0; aWIdx < aWires.Length(); ++aWIdx)
   {
     const BRepGraph_TopoNode::WireDef& aWireDef =
-      myGraph->myData->myWireDefs.Value(aWires.Value(aWIdx));
+      myGraph->myData->myWires.Defs.Value(aWires.Value(aWIdx));
     for (int aUsIdx = 0; aUsIdx < aWireDef.Usages.Length(); ++aUsIdx)
     {
       const BRepGraph_TopoNode::WireUsage& aWireUsage =
-        myGraph->myData->myWireUsages.Value(aWireDef.Usages.Value(aUsIdx).Index);
+        myGraph->myData->myWires.Usages.Value(aWireDef.Usages.Value(aUsIdx).Index);
       if (aWireUsage.OwnerFaceUsage.IsValid())
       {
         BRepGraph_NodeId aFaceDefId = myGraph->DefOf(aWireUsage.OwnerFaceUsage);
