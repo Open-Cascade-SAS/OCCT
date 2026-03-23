@@ -63,8 +63,8 @@ void transferUserAttributes(const BRepGraph_NodeCache& theSrc,
   NCollection_Vector<int> aKeys = theSrc.UserAttributeKeys();
   for (int anIdx = 0; anIdx < aKeys.Length(); ++anIdx)
   {
-    BRepGraph_UserAttrPtr anAttr = theSrc.GetUserAttribute(aKeys.Value(anIdx));
-    if (anAttr)
+    Handle(BRepGraph_UserAttribute) anAttr = theSrc.GetUserAttribute(aKeys.Value(anIdx));
+    if (!anAttr.IsNull())
       theDst.SetUserAttribute(aKeys.Value(anIdx), anAttr);
   }
 }

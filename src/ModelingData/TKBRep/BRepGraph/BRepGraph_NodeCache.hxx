@@ -18,6 +18,8 @@
 
 #include <NCollection_DataMap.hxx>
 
+class BRepGraph_UserAttribute;
+
 //! Per-node cache bundle.
 //!
 //! Provides an extensible map of **user attributes** keyed by integer.
@@ -54,7 +56,7 @@ struct BRepGraph_NodeCache
       for (auto anIter = myUserAttributes.cbegin();
            anIter != myUserAttributes.cend(); ++anIter)
       {
-        if (*anIter)
+        if (!(*anIter).IsNull())
           (*anIter)->Invalidate();
       }
     }
@@ -63,24 +65,23 @@ struct BRepGraph_NodeCache
   //! Invalidate only a specific user attribute by key.
   void InvalidateUserAttribute(int theKey)
   {
-    const BRepGraph_UserAttrPtr* aPtr = myUserAttributes.Seek(theKey);
-    if (aPtr != nullptr && *aPtr)
+    const Handle(BRepGraph_UserAttribute)* aPtr = myUserAttributes.Seek(theKey);
+    if (aPtr != nullptr && !(*aPtr).IsNull())
       (*aPtr)->Invalidate();
   }
 
   //! Attach a user attribute.  Replaces any existing attribute at the same key.
-  void SetUserAttribute(int                          theKey,
-                        const BRepGraph_UserAttrPtr& theAttr)
+  void SetUserAttribute(int                                   theKey,
+                        const Handle(BRepGraph_UserAttribute)& theAttr)
   {
     myUserAttributes.Bind(theKey, theAttr);
   }
 
-  //! Retrieve a user attribute by key.  Returns nullptr if absent.
-  BRepGraph_UserAttrPtr
-    GetUserAttribute(int theKey) const
+  //! Retrieve a user attribute by key.  Returns null handle if absent.
+  Handle(BRepGraph_UserAttribute) GetUserAttribute(int theKey) const
   {
-    const BRepGraph_UserAttrPtr* aPtr = myUserAttributes.Seek(theKey);
-    return (aPtr != nullptr) ? *aPtr : nullptr;
+    const Handle(BRepGraph_UserAttribute)* aPtr = myUserAttributes.Seek(theKey);
+    return (aPtr != nullptr) ? *aPtr : Handle(BRepGraph_UserAttribute)();
   }
 
   //! Remove a user attribute by key.  Returns true if something was removed.
@@ -99,7 +100,7 @@ struct BRepGraph_NodeCache
   NCollection_Vector<int> UserAttributeKeys() const
   {
     NCollection_Vector<int> aKeys;
-    for (NCollection_DataMap<int, BRepGraph_UserAttrPtr>::Iterator anIter(myUserAttributes);
+    for (NCollection_DataMap<int, Handle(BRepGraph_UserAttribute)>::Iterator anIter(myUserAttributes);
          anIter.More(); anIter.Next())
     {
       aKeys.Append(anIter.Key());
@@ -109,7 +110,7 @@ struct BRepGraph_NodeCache
 
 private:
   //! User attributes map (empty until first SetUserAttribute).
-  NCollection_DataMap<int, BRepGraph_UserAttrPtr> myUserAttributes;
+  NCollection_DataMap<int, Handle(BRepGraph_UserAttribute)> myUserAttributes;
 };
 
 #endif // _BRepGraph_NodeCache_HeaderFile

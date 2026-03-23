@@ -17,18 +17,17 @@
 #include <BRepGraph_AttrRegistry.hxx>
 
 #include <Standard_GUID.hxx>
+#include <Standard_Transient.hxx>
 
 #include <shared_mutex>
 #include <atomic>
 #include <functional>
-#include <memory>
 
 //! Abstract base for user-defined per-node cached attributes.
 //!
-//! This is a plain C++ polymorphic base -- NOT a Standard_Transient subclass.
-//! The graph stores attributes via std::shared_ptr<BRepGraph_UserAttribute>,
-//! which gives straightforward ownership without pulling in OCCT Handle<>
-//! machinery for types that are entirely internal to BRepGraph.
+//! Inherits from Standard_Transient, stored via Handle(BRepGraph_UserAttribute).
+//! This uses OCCT's embedded refcount (zero extra allocation) and is consistent
+//! with the Handle pattern used throughout the codebase.
 //!
 //! Each attribute kind is identified by an int key for fast runtime lookups.
 //! Keys can be obtained via GUID-based registration (recommended for public
@@ -42,7 +41,7 @@
 //!   // Anonymous:
 //!   static const int KEY = BRepGraph_UserAttribute::AllocateKey();
 //! @endcode
-class BRepGraph_UserAttribute
+class BRepGraph_UserAttribute : public Standard_Transient
 {
 public:
   //! Allocate an anonymous integer key (no GUID association).
@@ -60,9 +59,6 @@ public:
     return BRepGraph_AttrRegistry::Register(theGUID);
   }
 
-  //! Virtual destructor -- enables RTTI for dynamic_cast.
-  virtual ~BRepGraph_UserAttribute() = default;
-
   //! Mark the attribute as needing recomputation.  Lock-free.
   void Invalidate() { myDirty.store(true, std::memory_order_release); }
 
@@ -70,9 +66,7 @@ public:
   bool IsDirty() const
   { return myDirty.load(std::memory_order_acquire); }
 
-  //! Non-copyable, non-movable (held via shared_ptr only).
-  BRepGraph_UserAttribute(const BRepGraph_UserAttribute&) = delete;
-  BRepGraph_UserAttribute& operator=(const BRepGraph_UserAttribute&) = delete;
+  DEFINE_STANDARD_RTTI_INLINE(BRepGraph_UserAttribute, Standard_Transient)
 
 protected:
   BRepGraph_UserAttribute() : myDirty(true) {}
@@ -86,8 +80,5 @@ protected:
 private:
   std::atomic<bool> myDirty;
 };
-
-//! Shared pointer type alias for convenience.
-using BRepGraph_UserAttrPtr = std::shared_ptr<BRepGraph_UserAttribute>;
 
 #endif // _BRepGraph_UserAttribute_HeaderFile

@@ -245,15 +245,16 @@ TEST_F(BRepGraphTest, UserAttribute_SetGet)
 {
   BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
 
-  const int aKey   = BRepGraph_UserAttribute::AllocateKey();
-  auto      anAttr = std::make_shared<BRepGraph_TypedAttribute<double>>(3.14);
+  const int aKey = BRepGraph_UserAttribute::AllocateKey();
+  Handle(BRepGraph_TypedAttribute<double>) anAttr = new BRepGraph_TypedAttribute<double>(3.14);
   myGraph.Attrs().Set(aFaceId, aKey, anAttr);
 
-  BRepGraph_UserAttrPtr aRetrieved = myGraph.Attrs().Get(aFaceId, aKey);
-  ASSERT_NE(aRetrieved, nullptr);
+  Handle(BRepGraph_UserAttribute) aRetrieved = myGraph.Attrs().Get(aFaceId, aKey);
+  ASSERT_FALSE(aRetrieved.IsNull());
 
-  auto aTyped = std::dynamic_pointer_cast<BRepGraph_TypedAttribute<double>>(aRetrieved);
-  ASSERT_NE(aTyped, nullptr);
+  Handle(BRepGraph_TypedAttribute<double>) aTyped =
+    Handle(BRepGraph_TypedAttribute<double>)::DownCast(aRetrieved);
+  ASSERT_FALSE(aTyped.IsNull());
   EXPECT_NEAR(aTyped->UncheckedValue(), 3.14, 1.0e-10);
 }
 
@@ -1168,13 +1169,13 @@ TEST_F(BRepGraphTest, RemoveUserAttribute_AfterSet_ReturnsNull)
 {
   BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
   const int aKey = BRepGraph_UserAttribute::AllocateKey();
-  auto anAttr = std::make_shared<BRepGraph_TypedAttribute<int>>(42);
+  Handle(BRepGraph_UserAttribute) anAttr = new BRepGraph_TypedAttribute<int>(42);
 
   myGraph.Attrs().Set(aFaceId, aKey, anAttr);
-  ASSERT_NE(myGraph.Attrs().Get(aFaceId, aKey), nullptr);
+  ASSERT_FALSE(myGraph.Attrs().Get(aFaceId, aKey).IsNull());
 
   myGraph.Attrs().Remove(aFaceId, aKey);
-  EXPECT_EQ(myGraph.Attrs().Get(aFaceId, aKey), nullptr);
+  EXPECT_TRUE(myGraph.Attrs().Get(aFaceId, aKey).IsNull());
 }
 
 TEST(BRepGraphErrorTest, Build_EmptyCompound_IsDoneZeroCounts)
@@ -1497,53 +1498,53 @@ TEST_F(BRepGraphTest, MultipleUserAttributes_SameNode_Independent)
   const int aKey2 = BRepGraph_UserAttribute::AllocateKey();
   EXPECT_NE(aKey1, aKey2);
 
-  auto anAttr1 = std::make_shared<BRepGraph_TypedAttribute<int>>(100);
-  auto anAttr2 = std::make_shared<BRepGraph_TypedAttribute<double>>(2.718);
+  Handle(BRepGraph_TypedAttribute<int>) anAttr1 = new BRepGraph_TypedAttribute<int>(100);
+  Handle(BRepGraph_TypedAttribute<double>) anAttr2 = new BRepGraph_TypedAttribute<double>(2.718);
 
   myGraph.Attrs().Set(aFaceId, aKey1, anAttr1);
   myGraph.Attrs().Set(aFaceId, aKey2, anAttr2);
 
-  auto aRetrieved1 = std::dynamic_pointer_cast<BRepGraph_TypedAttribute<int>>(
-    myGraph.Attrs().Get(aFaceId, aKey1));
-  auto aRetrieved2 = std::dynamic_pointer_cast<BRepGraph_TypedAttribute<double>>(
-    myGraph.Attrs().Get(aFaceId, aKey2));
+  Handle(BRepGraph_TypedAttribute<int>) aRetrieved1 =
+    Handle(BRepGraph_TypedAttribute<int>)::DownCast(myGraph.Attrs().Get(aFaceId, aKey1));
+  Handle(BRepGraph_TypedAttribute<double>) aRetrieved2 =
+    Handle(BRepGraph_TypedAttribute<double>)::DownCast(myGraph.Attrs().Get(aFaceId, aKey2));
 
-  ASSERT_NE(aRetrieved1, nullptr);
-  ASSERT_NE(aRetrieved2, nullptr);
+  ASSERT_FALSE(aRetrieved1.IsNull());
+  ASSERT_FALSE(aRetrieved2.IsNull());
   EXPECT_EQ(aRetrieved1->UncheckedValue(), 100);
   EXPECT_NEAR(aRetrieved2->UncheckedValue(), 2.718, 1.0e-10);
 
   // Remove one; the other should remain.
   myGraph.Attrs().Remove(aFaceId, aKey1);
-  EXPECT_EQ(myGraph.Attrs().Get(aFaceId, aKey1), nullptr);
-  EXPECT_NE(myGraph.Attrs().Get(aFaceId, aKey2), nullptr);
+  EXPECT_TRUE(myGraph.Attrs().Get(aFaceId, aKey1).IsNull());
+  EXPECT_FALSE(myGraph.Attrs().Get(aFaceId, aKey2).IsNull());
 }
 
 TEST_F(BRepGraphTest, InvalidateUserAttribute_SpecificKey)
 {
   BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
   const int aKey = BRepGraph_UserAttribute::AllocateKey();
-  auto anAttr = std::make_shared<BRepGraph_TypedAttribute<int>>(42);
+  Handle(BRepGraph_TypedAttribute<int>) anAttr = new BRepGraph_TypedAttribute<int>(42);
   myGraph.Attrs().Set(aFaceId, aKey, anAttr);
 
   // Invalidate should not remove, just mark dirty.
   myGraph.Attrs().Invalidate(aFaceId, aKey);
 
-  BRepGraph_UserAttrPtr aRetrieved = myGraph.Attrs().Get(aFaceId, aKey);
-  EXPECT_NE(aRetrieved, nullptr); // still present
+  Handle(BRepGraph_UserAttribute) aRetrieved = myGraph.Attrs().Get(aFaceId, aKey);
+  EXPECT_FALSE(aRetrieved.IsNull()); // still present
 }
 
 TEST_F(BRepGraphTest, UserAttribute_OnEdgeNode)
 {
   BRepGraph_NodeId anEdgeId(BRepGraph_NodeId::Kind::Edge, 0);
   const int aKey = BRepGraph_UserAttribute::AllocateKey();
-  auto anAttr = std::make_shared<BRepGraph_TypedAttribute<double>>(1.5);
+  Handle(BRepGraph_TypedAttribute<double>) anAttr = new BRepGraph_TypedAttribute<double>(1.5);
 
   myGraph.Attrs().Set(anEdgeId, aKey, anAttr);
 
-  auto aRetrieved = std::dynamic_pointer_cast<BRepGraph_TypedAttribute<double>>(
-    myGraph.Attrs().Get(anEdgeId, aKey));
-  ASSERT_NE(aRetrieved, nullptr);
+  Handle(BRepGraph_TypedAttribute<double>) aRetrieved =
+    Handle(BRepGraph_TypedAttribute<double>)::DownCast(myGraph.Attrs().Get(anEdgeId, aKey));
+  ASSERT_FALSE(aRetrieved.IsNull());
   EXPECT_NEAR(aRetrieved->UncheckedValue(), 1.5, 1.0e-10);
 }
 

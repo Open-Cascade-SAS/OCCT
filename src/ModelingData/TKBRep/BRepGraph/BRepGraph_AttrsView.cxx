@@ -17,9 +17,9 @@
 
 //=================================================================================================
 
-void BRepGraph::AttrsView::Set(BRepGraph_NodeId             theNode,
-                               int                          theKey,
-                               const BRepGraph_UserAttrPtr& theAttr)
+void BRepGraph::AttrsView::Set(BRepGraph_NodeId                       theNode,
+                               int                                    theKey,
+                               const Handle(BRepGraph_UserAttribute)& theAttr)
 {
   BRepGraph_NodeCache* aCache = myGraph->mutableCache(theNode);
   if (aCache != nullptr)
@@ -28,11 +28,11 @@ void BRepGraph::AttrsView::Set(BRepGraph_NodeId             theNode,
 
 //=================================================================================================
 
-BRepGraph_UserAttrPtr BRepGraph::AttrsView::Get(BRepGraph_NodeId theNode, int theKey) const
+Handle(BRepGraph_UserAttribute) BRepGraph::AttrsView::Get(BRepGraph_NodeId theNode, int theKey) const
 {
   const BRepGraph_TopoNode::BaseDef* aDef = myGraph->TopoDef(theNode);
   if (aDef == nullptr)
-    return nullptr;
+    return Handle(BRepGraph_UserAttribute)();
   return aDef->Cache.GetUserAttribute(theKey);
 }
 

@@ -24,16 +24,16 @@ public:
   //! Attach a user attribute to a node.
   //! @param[in] theNode node identifier
   //! @param[in] theKey  attribute key
-  //! @param[in] theAttr shared pointer to the attribute
-  Standard_EXPORT void Set(BRepGraph_NodeId             theNode,
-                           int                          theKey,
-                           const BRepGraph_UserAttrPtr& theAttr);
+  //! @param[in] theAttr handle to the attribute
+  Standard_EXPORT void Set(BRepGraph_NodeId                       theNode,
+                           int                                    theKey,
+                           const Handle(BRepGraph_UserAttribute)& theAttr);
 
   //! Retrieve a user attribute from a node.
   //! @param[in] theNode node identifier
   //! @param[in] theKey  attribute key
-  //! @return shared pointer to the attribute, or nullptr if not set
-  Standard_EXPORT BRepGraph_UserAttrPtr Get(BRepGraph_NodeId theNode, int theKey) const;
+  //! @return handle to the attribute, or null handle if not set
+  Standard_EXPORT Handle(BRepGraph_UserAttribute) Get(BRepGraph_NodeId theNode, int theKey) const;
 
   //! Remove a user attribute from a node.
   //! @param[in] theNode node identifier

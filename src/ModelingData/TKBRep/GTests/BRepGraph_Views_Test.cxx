@@ -38,6 +38,7 @@ namespace
   class TestUserAttribute : public BRepGraph_UserAttribute
   {
   public:
+    DEFINE_STANDARD_RTTI_INLINE(TestUserAttribute, BRepGraph_UserAttribute)
     TestUserAttribute() = default;
   };
 
@@ -213,20 +214,20 @@ TEST_F(BRepGraphViewsTest, AttrsView_SetGet_RoundTrip)
 {
   BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
   const int aKey = 42;
-  BRepGraph_UserAttrPtr anAttr = std::make_shared<TestUserAttribute>();
+  Handle(BRepGraph_UserAttribute) anAttr = new TestUserAttribute();
   myGraph.Attrs().Set(aFaceId, aKey, anAttr);
-  BRepGraph_UserAttrPtr aRetrieved = myGraph.Attrs().Get(aFaceId, aKey);
-  EXPECT_EQ(aRetrieved.get(), anAttr.get());
+  Handle(BRepGraph_UserAttribute) aRetrieved = myGraph.Attrs().Get(aFaceId, aKey);
+  EXPECT_EQ(aRetrieved, anAttr);
 }
 
 TEST_F(BRepGraphViewsTest, AttrsView_Remove_Works)
 {
   BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
   const int aKey = 99;
-  BRepGraph_UserAttrPtr anAttr = std::make_shared<TestUserAttribute>();
+  Handle(BRepGraph_UserAttribute) anAttr = new TestUserAttribute();
   myGraph.Attrs().Set(aFaceId, aKey, anAttr);
   EXPECT_TRUE(myGraph.Attrs().Remove(aFaceId, aKey));
-  EXPECT_EQ(myGraph.Attrs().Get(aFaceId, aKey), nullptr);
+  EXPECT_TRUE(myGraph.Attrs().Get(aFaceId, aKey).IsNull());
 }
 
 // ---------- ShapesView ----------

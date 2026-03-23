@@ -42,9 +42,9 @@ namespace
 static const int THE_COLOR_KEY = BRepGraph_UserAttribute::AllocateKey();
 static const int THE_LABEL_KEY = BRepGraph_UserAttribute::AllocateKey();
 
-BRepGraph_UserAttrPtr makeIntAttr(int theValue)
+Handle(BRepGraph_UserAttribute) makeIntAttr(int theValue)
 {
-  return std::make_shared<BRepGraph_TypedAttribute<int>>(theValue);
+  return new BRepGraph_TypedAttribute<int>(theValue);
 }
 
 //! Find two adjacent faces from a shape (sharing a common edge).
@@ -276,9 +276,9 @@ TEST(BRepGraphAlgo_AttrTransferTest, AttrTransfer_NoOverwrite)
   EXPECT_EQ(aResult.NbTransferred, 0);
 
   // Target still has its original value.
-  auto aTargetAttr = std::dynamic_pointer_cast<BRepGraph_TypedAttribute<int>>(
-    aGraph.Attrs().Get(aFace1, THE_COLOR_KEY));
-  ASSERT_NE(aTargetAttr, nullptr);
+  Handle(BRepGraph_TypedAttribute<int>) aTargetAttr =
+    Handle(BRepGraph_TypedAttribute<int>)::DownCast(aGraph.Attrs().Get(aFace1, THE_COLOR_KEY));
+  ASSERT_FALSE(aTargetAttr.IsNull());
   EXPECT_EQ(aTargetAttr->UncheckedValue(), 200);
 }
 
@@ -311,9 +311,9 @@ TEST(BRepGraphAlgo_AttrTransferTest, AttrTransfer_Overwrite)
   EXPECT_EQ(aResult.NbSkipped, 0);
 
   // Target now has the source value.
-  auto aTargetAttr = std::dynamic_pointer_cast<BRepGraph_TypedAttribute<int>>(
-    aGraph.Attrs().Get(aFace1, THE_COLOR_KEY));
-  ASSERT_NE(aTargetAttr, nullptr);
+  Handle(BRepGraph_TypedAttribute<int>) aTargetAttr =
+    Handle(BRepGraph_TypedAttribute<int>)::DownCast(aGraph.Attrs().Get(aFace1, THE_COLOR_KEY));
+  ASSERT_FALSE(aTargetAttr.IsNull());
   EXPECT_EQ(aTargetAttr->UncheckedValue(), 100);
 }
 
@@ -339,12 +339,12 @@ TEST(BRepGraphAlgo_AttrTransferTest, AttrTransfer_MultipleKeys)
   const BRepGraphAlgo_AttrTransfer::Result aResult = BRepGraphAlgo_AttrTransfer::Perform(aGraph);
   EXPECT_EQ(aResult.NbTransferred, 2);
 
-  auto aColorAttr = std::dynamic_pointer_cast<BRepGraph_TypedAttribute<int>>(
-    aGraph.Attrs().Get(aFace1, THE_COLOR_KEY));
-  auto aLabelAttr = std::dynamic_pointer_cast<BRepGraph_TypedAttribute<int>>(
-    aGraph.Attrs().Get(aFace1, THE_LABEL_KEY));
-  ASSERT_NE(aColorAttr, nullptr);
-  ASSERT_NE(aLabelAttr, nullptr);
+  Handle(BRepGraph_TypedAttribute<int>) aColorAttr =
+    Handle(BRepGraph_TypedAttribute<int>)::DownCast(aGraph.Attrs().Get(aFace1, THE_COLOR_KEY));
+  Handle(BRepGraph_TypedAttribute<int>) aLabelAttr =
+    Handle(BRepGraph_TypedAttribute<int>)::DownCast(aGraph.Attrs().Get(aFace1, THE_LABEL_KEY));
+  ASSERT_FALSE(aColorAttr.IsNull());
+  ASSERT_FALSE(aLabelAttr.IsNull());
   EXPECT_EQ(aColorAttr->UncheckedValue(), 10);
   EXPECT_EQ(aLabelAttr->UncheckedValue(), 20);
 }
@@ -383,9 +383,9 @@ TEST(BRepGraphAlgo_AttrTransferTest, AttrTransfer_GeometryHistorySkipped)
   EXPECT_EQ(aResult.NbTransferred, 0);
 
   // The face still has its attribute.
-  auto aRetrieved = std::dynamic_pointer_cast<BRepGraph_TypedAttribute<int>>(
-    aGraph.Attrs().Get(aFaceNode, THE_COLOR_KEY));
-  ASSERT_NE(aRetrieved, nullptr);
+  Handle(BRepGraph_TypedAttribute<int>) aRetrieved =
+    Handle(BRepGraph_TypedAttribute<int>)::DownCast(aGraph.Attrs().Get(aFaceNode, THE_COLOR_KEY));
+  ASSERT_FALSE(aRetrieved.IsNull());
   EXPECT_EQ(aRetrieved->UncheckedValue(), 42);
 }
 

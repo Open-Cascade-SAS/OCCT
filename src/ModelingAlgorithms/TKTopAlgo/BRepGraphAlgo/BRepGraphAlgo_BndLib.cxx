@@ -825,6 +825,7 @@ static const Standard_GUID THE_BNDBOX_GUID("b7e3a1f0-4c82-4d5e-9a1b-3f8e2d7c6a05
 class BRepGraphAlgo_BndBoxAttribute : public BRepGraph_UserAttribute
 {
 public:
+  DEFINE_STANDARD_RTTI_INLINE(BRepGraphAlgo_BndBoxAttribute, BRepGraph_UserAttribute)
   BRepGraphAlgo_BndBoxAttribute() = default;
 
   //! Return cached data if its precision is sufficient for the request.
@@ -892,14 +893,14 @@ bool BRepGraphAlgo_BndLib::GetCached(const BRepGraph&                  theGraph,
     return false;
   }
 
-  BRepGraph_UserAttrPtr anAttr = aDef->Cache.GetUserAttribute(aKey);
+  Handle(BRepGraph_UserAttribute) anAttr = aDef->Cache.GetUserAttribute(aKey);
   if (!anAttr)
   {
     return false;
   }
 
-  auto* aBndAttr = dynamic_cast<BRepGraphAlgo_BndBoxAttribute*>(anAttr.get());
-  if (aBndAttr == nullptr)
+  Handle(BRepGraphAlgo_BndBoxAttribute) aBndAttr = Handle(BRepGraphAlgo_BndBoxAttribute)::DownCast(anAttr);
+  if (aBndAttr.IsNull())
   {
     return false;
   }
@@ -920,11 +921,11 @@ Bnd_Box BRepGraphAlgo_BndLib::AddCached(BRepGraph&                      theGraph
   BRepGraph_NodeCache* aCache = theGraph.mutableCache(theNode);
   if (aCache != nullptr)
   {
-    BRepGraph_UserAttrPtr anExisting = aCache->GetUserAttribute(aKey);
+    Handle(BRepGraph_UserAttribute) anExisting = aCache->GetUserAttribute(aKey);
     if (anExisting)
     {
-      auto* aBndAttr = dynamic_cast<BRepGraphAlgo_BndBoxAttribute*>(anExisting.get());
-      if (aBndAttr != nullptr)
+      Handle(BRepGraphAlgo_BndBoxAttribute) aBndAttr = Handle(BRepGraphAlgo_BndBoxAttribute)::DownCast(anExisting);
+      if (!aBndAttr.IsNull())
       {
         BRepGraphAlgo_BndLib::CachedData aData;
         if (aBndAttr->GetIfSufficient(thePrecision, aData))
@@ -958,18 +959,18 @@ Bnd_Box BRepGraphAlgo_BndLib::AddCached(BRepGraph&                      theGraph
 
   if (aCache != nullptr)
   {
-    BRepGraph_UserAttrPtr anExisting = aCache->GetUserAttribute(aKey);
+    Handle(BRepGraph_UserAttribute) anExisting = aCache->GetUserAttribute(aKey);
     if (anExisting)
     {
-      auto* aBndAttr = dynamic_cast<BRepGraphAlgo_BndBoxAttribute*>(anExisting.get());
-      if (aBndAttr != nullptr)
+      Handle(BRepGraphAlgo_BndBoxAttribute) aBndAttr = Handle(BRepGraphAlgo_BndBoxAttribute)::DownCast(anExisting);
+      if (!aBndAttr.IsNull())
       {
         aBndAttr->SetData(aData);
         return aBox;
       }
     }
 
-    auto aNewAttr = std::make_shared<BRepGraphAlgo_BndBoxAttribute>();
+    Handle(BRepGraphAlgo_BndBoxAttribute) aNewAttr = new BRepGraphAlgo_BndBoxAttribute();
     aNewAttr->SetData(aData);
     aCache->SetUserAttribute(aKey, aNewAttr);
   }
@@ -999,18 +1000,18 @@ void BRepGraphAlgo_BndLib::SetCached(BRepGraph&       theGraph,
   aData.UsedTriangulation  = theUsedTriangulation;
   aData.UsedShapeTolerance = theUsedShapeTolerance;
 
-  BRepGraph_UserAttrPtr anExisting = aCache->GetUserAttribute(aKey);
+  Handle(BRepGraph_UserAttribute) anExisting = aCache->GetUserAttribute(aKey);
   if (anExisting)
   {
-    auto* aBndAttr = dynamic_cast<BRepGraphAlgo_BndBoxAttribute*>(anExisting.get());
-    if (aBndAttr != nullptr)
+    Handle(BRepGraphAlgo_BndBoxAttribute) aBndAttr = Handle(BRepGraphAlgo_BndBoxAttribute)::DownCast(anExisting);
+    if (!aBndAttr.IsNull())
     {
       aBndAttr->SetData(aData);
       return;
     }
   }
 
-  auto aNewAttr = std::make_shared<BRepGraphAlgo_BndBoxAttribute>();
+  Handle(BRepGraphAlgo_BndBoxAttribute) aNewAttr = new BRepGraphAlgo_BndBoxAttribute();
   aNewAttr->SetData(aData);
   aCache->SetUserAttribute(aKey, aNewAttr);
 }

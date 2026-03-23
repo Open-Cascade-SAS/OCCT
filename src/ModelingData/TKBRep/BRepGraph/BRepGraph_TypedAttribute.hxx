@@ -69,8 +69,4 @@ private:
   mutable T myValue{};
 };
 
-//! Convenience alias for the most common typed attribute.
-template <typename T>
-using BRepGraph_TypedAttrPtr = std::shared_ptr<BRepGraph_TypedAttribute<T>>;
-
 #endif // _BRepGraph_TypedAttribute_HeaderFile

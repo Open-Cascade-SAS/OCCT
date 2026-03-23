@@ -35,6 +35,7 @@ static const Standard_GUID THE_UVBOUNDS_GUID("d4a2e8f1-6b73-4c9d-a5e2-8f1c3d7b9a
 class BRepGraphAlgo_UVBoundsAttribute : public BRepGraph_UserAttribute
 {
 public:
+  DEFINE_STANDARD_RTTI_INLINE(BRepGraphAlgo_UVBoundsAttribute, BRepGraph_UserAttribute)
   BRepGraphAlgo_UVBoundsAttribute() = default;
 
   //! Return cached data if available (not dirty).
@@ -490,14 +491,12 @@ int BRepGraphAlgo_UVBounds::CacheKey()
 //=================================================================================================
 
 //! Helper: retrieve existing UV attribute from a cache, or nullptr.
-static BRepGraphAlgo_UVBoundsAttribute* findUVAttr(const BRepGraph_NodeCache& theCache, int theKey)
+static Handle(BRepGraphAlgo_UVBoundsAttribute) findUVAttr(const BRepGraph_NodeCache& theCache, int theKey)
 {
-  BRepGraph_UserAttrPtr anAttr = theCache.GetUserAttribute(theKey);
-  if (!anAttr)
-  {
-    return nullptr;
-  }
-  return dynamic_cast<BRepGraphAlgo_UVBoundsAttribute*>(anAttr.get());
+  Handle(BRepGraph_UserAttribute) anAttr = theCache.GetUserAttribute(theKey);
+  if (anAttr.IsNull())
+    return Handle(BRepGraphAlgo_UVBoundsAttribute)();
+  return Handle(BRepGraphAlgo_UVBoundsAttribute)::DownCast(anAttr);
 }
 
 //! Helper: store CachedData into a cache — reuses existing attribute or creates a new one.
@@ -505,14 +504,14 @@ static void storeUVAttr(BRepGraph_NodeCache&                      theCache,
                         int                                       theKey,
                         const BRepGraphAlgo_UVBounds::CachedData& theData)
 {
-  BRepGraphAlgo_UVBoundsAttribute* anExisting = findUVAttr(theCache, theKey);
-  if (anExisting != nullptr)
+  Handle(BRepGraphAlgo_UVBoundsAttribute) anExisting = findUVAttr(theCache, theKey);
+  if (!anExisting.IsNull())
   {
     anExisting->SetData(theData);
     return;
   }
 
-  auto aNewAttr = std::make_shared<BRepGraphAlgo_UVBoundsAttribute>();
+  Handle(BRepGraphAlgo_UVBoundsAttribute) aNewAttr = new BRepGraphAlgo_UVBoundsAttribute();
   aNewAttr->SetData(theData);
   theCache.SetUserAttribute(theKey, aNewAttr);
 }
@@ -532,8 +531,8 @@ bool BRepGraphAlgo_UVBounds::GetCached(const BRepGraph& theGraph,
     return false;
   }
 
-  BRepGraphAlgo_UVBoundsAttribute* aUVAttr = findUVAttr(aDef->Cache, CacheKey());
-  return aUVAttr != nullptr && aUVAttr->Get(theData);
+  Handle(BRepGraphAlgo_UVBoundsAttribute) aUVAttr = findUVAttr(aDef->Cache, CacheKey());
+  return !aUVAttr.IsNull() && aUVAttr->Get(theData);
 }
 
 //=================================================================================================
@@ -554,8 +553,8 @@ BRepGraphAlgo_UVBounds::CachedData BRepGraphAlgo_UVBounds::AddCached(BRepGraph& 
   }
 
   // Try cache hit.
-  BRepGraphAlgo_UVBoundsAttribute* anExisting = findUVAttr(*aCache, aKey);
-  if (anExisting != nullptr)
+  Handle(BRepGraphAlgo_UVBoundsAttribute) anExisting = findUVAttr(*aCache, aKey);
+  if (!anExisting.IsNull())
   {
     CachedData aData;
     if (anExisting->Get(aData))
