@@ -26,14 +26,11 @@ TopoDS_Shape BRepGraph::ShapesView::Shape(BRepGraph_NodeId theNode) const
   if (!theNode.IsValid())
     return TopoDS_Shape();
 
-  // Fast path: check unmodified originals — first from incidence storage, then mutation map.
+  // Fast path: check unmodified originals in Storage.
   const BRepGraph_TopoNode::BaseDef* aDef = myGraph->TopoDef(theNode);
   if (aDef != nullptr && !aDef->IsModified)
   {
     const TopoDS_Shape* anOrig = myGraph->myData->myIncStorage.OriginalShapes.Seek(theNode);
-    if (anOrig != nullptr)
-      return *anOrig;
-    anOrig = myGraph->myData->myMutationOriginals.Seek(theNode);
     if (anOrig != nullptr)
       return *anOrig;
   }
@@ -46,7 +43,7 @@ TopoDS_Shape BRepGraph::ShapesView::Shape(BRepGraph_NodeId theNode) const
       return *aCached;
   }
 
-  // Reconstruct from incidence storage (sole source of truth for all entities).
+  // Reconstruct from incidence storage.
   TopoDS_Shape aReconstructed =
     BRepGraphInc_Reconstruct::Node(myGraph->myData->myIncStorage, theNode);
 
@@ -65,7 +62,7 @@ TopoDS_Shape BRepGraph::ShapesView::Shape(BRepGraph_NodeId theNode) const
     if (!myGraph->myData->myCurrentShapes.IsBound(theNode))
     {
       myGraph->myData->myCurrentShapes.Bind(theNode, aReconstructed);
-      myGraph->myData->myReconstructedTShapeToDefId.Bind(aReconstructed.TShape().get(), theNode);
+      myGraph->myData->myIncStorage.TShapeToNodeId.Bind(aReconstructed.TShape().get(), theNode);
     }
   }
   return aReconstructed;
@@ -75,8 +72,7 @@ TopoDS_Shape BRepGraph::ShapesView::Shape(BRepGraph_NodeId theNode) const
 
 bool BRepGraph::ShapesView::HasOriginal(BRepGraph_NodeId theNode) const
 {
-  return myGraph->myData->myIncStorage.OriginalShapes.IsBound(theNode)
-      || myGraph->myData->myMutationOriginals.IsBound(theNode);
+  return myGraph->myData->myIncStorage.OriginalShapes.IsBound(theNode);
 }
 
 //=================================================================================================
@@ -84,12 +80,9 @@ bool BRepGraph::ShapesView::HasOriginal(BRepGraph_NodeId theNode) const
 const TopoDS_Shape& BRepGraph::ShapesView::OriginalOf(BRepGraph_NodeId theNode) const
 {
   const TopoDS_Shape* aShape = myGraph->myData->myIncStorage.OriginalShapes.Seek(theNode);
-  if (aShape != nullptr)
-    return *aShape;
-  aShape = myGraph->myData->myMutationOriginals.Seek(theNode);
-  if (aShape != nullptr)
-    return *aShape;
-  throw Standard_ProgramError("BRepGraph::ShapesView::OriginalOf() -- no original shape.");
+  if (aShape == nullptr)
+    throw Standard_ProgramError("BRepGraph::ShapesView::OriginalOf() -- no original shape.");
+  return *aShape;
 }
 
 //=================================================================================================
@@ -125,7 +118,6 @@ TopoDS_Shape BRepGraph::ShapesView::ReconstructFromNode(BRepGraph_NodeId theNode
   if (aShape.IsNull() || !theNode.IsValid())
     return aShape;
 
-  // Apply per-node location if stored.
   const TopLoc_Location* aNodeLoc = myGraph->myData->myNodeLocations.Seek(theNode);
   if (aNodeLoc != nullptr && !aNodeLoc->IsIdentity())
     aShape.Location(*aNodeLoc);
@@ -140,12 +132,8 @@ BRepGraph_NodeId BRepGraph::ShapesView::FindNode(const TopoDS_Shape& theShape) c
   if (theShape.IsNull())
     return BRepGraph_NodeId();
 
-  const TopoDS_TShape* aTShapeKey = theShape.TShape().get();
-  // Check incidence storage first (Build-time shapes), then reconstructed cache.
-  const BRepGraph_NodeId* aNodeId = myGraph->myData->myIncStorage.TShapeToNodeId.Seek(aTShapeKey);
-  if (aNodeId != nullptr)
-    return *aNodeId;
-  aNodeId = myGraph->myData->myReconstructedTShapeToDefId.Seek(aTShapeKey);
+  const BRepGraph_NodeId* aNodeId =
+    myGraph->myData->myIncStorage.TShapeToNodeId.Seek(theShape.TShape().get());
   if (aNodeId != nullptr)
     return *aNodeId;
   return BRepGraph_NodeId();
@@ -158,7 +146,5 @@ bool BRepGraph::ShapesView::HasNode(const TopoDS_Shape& theShape) const
   if (theShape.IsNull())
     return false;
 
-  const TopoDS_TShape* aTShapeKey = theShape.TShape().get();
-  return myGraph->myData->myIncStorage.TShapeToNodeId.IsBound(aTShapeKey)
-      || myGraph->myData->myReconstructedTShapeToDefId.IsBound(aTShapeKey);
+  return myGraph->myData->myIncStorage.TShapeToNodeId.IsBound(theShape.TShape().get());
 }

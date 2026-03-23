@@ -451,14 +451,14 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
     }
   };
 
-  transferUIDs(aVertexMap,    theGraph.myData->myVertexUIDs,    aNewGraph.myData->myVertexUIDs);
-  transferUIDs(anEdgeMap,     theGraph.myData->myEdgeUIDs,      aNewGraph.myData->myEdgeUIDs);
-  transferUIDs(aWireMap,      theGraph.myData->myWireUIDs,      aNewGraph.myData->myWireUIDs);
-  transferUIDs(aFaceMap,      theGraph.myData->myFaceUIDs,      aNewGraph.myData->myFaceUIDs);
-  transferUIDs(aShellMap,     theGraph.myData->myShellUIDs,     aNewGraph.myData->myShellUIDs);
-  transferUIDs(aSolidMap,     theGraph.myData->mySolidUIDs,     aNewGraph.myData->mySolidUIDs);
-  transferUIDs(aCompoundMap,  theGraph.myData->myCompoundUIDs,  aNewGraph.myData->myCompoundUIDs);
-  transferUIDs(aCompSolidMap, theGraph.myData->myCompSolidUIDs, aNewGraph.myData->myCompSolidUIDs);
+  transferUIDs(aVertexMap,    theGraph.myData->myIncStorage.VertexUIDs,    aNewGraph.myData->myIncStorage.VertexUIDs);
+  transferUIDs(anEdgeMap,     theGraph.myData->myIncStorage.EdgeUIDs,      aNewGraph.myData->myIncStorage.EdgeUIDs);
+  transferUIDs(aWireMap,      theGraph.myData->myIncStorage.WireUIDs,      aNewGraph.myData->myIncStorage.WireUIDs);
+  transferUIDs(aFaceMap,      theGraph.myData->myIncStorage.FaceUIDs,      aNewGraph.myData->myIncStorage.FaceUIDs);
+  transferUIDs(aShellMap,     theGraph.myData->myIncStorage.ShellUIDs,     aNewGraph.myData->myIncStorage.ShellUIDs);
+  transferUIDs(aSolidMap,     theGraph.myData->myIncStorage.SolidUIDs,     aNewGraph.myData->myIncStorage.SolidUIDs);
+  transferUIDs(aCompoundMap,  theGraph.myData->myIncStorage.CompoundUIDs,  aNewGraph.myData->myIncStorage.CompoundUIDs);
+  transferUIDs(aCompSolidMap, theGraph.myData->myIncStorage.CompSolidUIDs, aNewGraph.myData->myIncStorage.CompSolidUIDs);
 
   aNewGraph.myData->myNextUIDCounter.store(
     theGraph.myData->myNextUIDCounter.load(std::memory_order_relaxed),

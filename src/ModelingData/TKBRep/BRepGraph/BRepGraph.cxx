@@ -102,17 +102,18 @@ BRepGraph_UID BRepGraph::allocateUID(BRepGraph_NodeId theNodeId)
   const size_t  aCounter = myData->myNextUIDCounter.fetch_add(1, std::memory_order_relaxed);
   BRepGraph_UID aUID(theNodeId.NodeKind, aCounter, myData->myGeneration);
 
-  // Append to per-kind forward vector (O(1) amortized, no hashing).
+  // Append to per-kind forward vector in Storage (O(1) amortized).
+  BRepGraphInc_Storage& aStorage = myData->myIncStorage;
   switch (theNodeId.NodeKind)
   {
-    case BRepGraph_NodeId::Kind::Solid:     myData->mySolidUIDs.Append(aUID);     break;
-    case BRepGraph_NodeId::Kind::Shell:     myData->myShellUIDs.Append(aUID);     break;
-    case BRepGraph_NodeId::Kind::Face:      myData->myFaceUIDs.Append(aUID);      break;
-    case BRepGraph_NodeId::Kind::Wire:      myData->myWireUIDs.Append(aUID);      break;
-    case BRepGraph_NodeId::Kind::Edge:      myData->myEdgeUIDs.Append(aUID);      break;
-    case BRepGraph_NodeId::Kind::Vertex:    myData->myVertexUIDs.Append(aUID);    break;
-    case BRepGraph_NodeId::Kind::Compound:  myData->myCompoundUIDs.Append(aUID);  break;
-    case BRepGraph_NodeId::Kind::CompSolid: myData->myCompSolidUIDs.Append(aUID); break;
+    case BRepGraph_NodeId::Kind::Solid:     aStorage.SolidUIDs.Append(aUID);     break;
+    case BRepGraph_NodeId::Kind::Shell:     aStorage.ShellUIDs.Append(aUID);     break;
+    case BRepGraph_NodeId::Kind::Face:      aStorage.FaceUIDs.Append(aUID);      break;
+    case BRepGraph_NodeId::Kind::Wire:      aStorage.WireUIDs.Append(aUID);      break;
+    case BRepGraph_NodeId::Kind::Edge:      aStorage.EdgeUIDs.Append(aUID);      break;
+    case BRepGraph_NodeId::Kind::Vertex:    aStorage.VertexUIDs.Append(aUID);    break;
+    case BRepGraph_NodeId::Kind::Compound:  aStorage.CompoundUIDs.Append(aUID);  break;
+    case BRepGraph_NodeId::Kind::CompSolid: aStorage.CompSolidUIDs.Append(aUID); break;
     default: break;
   }
 

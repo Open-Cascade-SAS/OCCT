@@ -28,6 +28,14 @@ void BRepGraphInc_Storage::Clear()
   ReverseIdx.Clear();
   TShapeToNodeId.Clear();
   OriginalShapes.Clear();
+  VertexUIDs.Clear();
+  EdgeUIDs.Clear();
+  WireUIDs.Clear();
+  FaceUIDs.Clear();
+  ShellUIDs.Clear();
+  SolidUIDs.Clear();
+  CompoundUIDs.Clear();
+  CompSolidUIDs.Clear();
   IsDone = false;
 }
 

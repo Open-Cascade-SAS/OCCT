@@ -103,7 +103,6 @@ void BRepGraphAlgo_Transform::applyLocationTransform(BRepGraph& theGraph, const 
 
   // Invalidate cached reconstructed shapes.
   theGraph.myData->myCurrentShapes.Clear();
-  theGraph.myData->myMutationOriginals.Clear();
 }
 
 //=================================================================================================

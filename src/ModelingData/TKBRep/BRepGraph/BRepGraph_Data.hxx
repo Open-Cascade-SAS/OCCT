@@ -37,34 +37,21 @@
 
 //! @brief Internal storage for BRepGraph (PIMPL).
 //!
-//! All topology definition data lives in myIncStorage entity vectors.
+//! All topology definition data and UIDs live in myIncStorage.
 //! Access via myIncStorage.Edges, myIncStorage.Faces, etc.
 struct BRepGraph_Data
 {
   Handle(NCollection_BaseAllocator) myAllocator;
 
-  //! Incidence-table storage — sole source of truth for all topology data.
+  //! Incidence-table storage — sole source of truth for all topology data,
+  //! original shapes, TShape→NodeId mapping, and UIDs.
   BRepGraphInc_Storage myIncStorage;
-
-  //! Per-kind UID vectors (parallel to incidence entity vectors).
-  NCollection_Vector<BRepGraph_UID> mySolidUIDs;
-  NCollection_Vector<BRepGraph_UID> myShellUIDs;
-  NCollection_Vector<BRepGraph_UID> myFaceUIDs;
-  NCollection_Vector<BRepGraph_UID> myWireUIDs;
-  NCollection_Vector<BRepGraph_UID> myEdgeUIDs;
-  NCollection_Vector<BRepGraph_UID> myVertexUIDs;
-  NCollection_Vector<BRepGraph_UID> myCompoundUIDs;
-  NCollection_Vector<BRepGraph_UID> myCompSolidUIDs;
 
   //! Map-based RelEdge storage.
   NCollection_DataMap<BRepGraph_NodeId,
                       NCollection_Vector<BRepGraph_RelEdge>> myOutRelEdges;
   NCollection_DataMap<BRepGraph_NodeId,
                       NCollection_Vector<BRepGraph_RelEdge>> myInRelEdges;
-
-  //! TShape -> Definition NodeId reverse lookup for reconstructed shapes only.
-  //! Shapes from Build() are looked up in myIncStorage.TShapeToNodeId.
-  NCollection_DataMap<const TopoDS_TShape*, BRepGraph_NodeId> myReconstructedTShapeToDefId;
 
   //! UID system.
   std::atomic<size_t> myNextUIDCounter{0};
@@ -78,25 +65,20 @@ struct BRepGraph_Data
 
   bool myIsDone = false;
 
-  //! Original shapes created by mutation (SplitEdge sub-edges, etc.).
-  //! Shapes from Build() are looked up in myIncStorage.OriginalShapes.
-  NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape> myMutationOriginals;
-
+  //! Thread-safe cache of reconstructed shapes.
   mutable NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape> myCurrentShapes;
   mutable std::shared_mutex myCurrentShapesMutex;
 
   using ReconstructCache = NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape>;
 
   BRepGraph_Data()
-      : myAllocator(NCollection_BaseAllocator::CommonBaseAllocator()),
-        myReconstructedTShapeToDefId(100, myAllocator)
+      : myAllocator(NCollection_BaseAllocator::CommonBaseAllocator())
   {
   }
 
   explicit BRepGraph_Data(const Handle(NCollection_BaseAllocator)& theAlloc)
       : myAllocator(!theAlloc.IsNull() ? theAlloc
-                                       : NCollection_BaseAllocator::CommonBaseAllocator()),
-        myReconstructedTShapeToDefId(100, myAllocator)
+                                       : NCollection_BaseAllocator::CommonBaseAllocator())
   {
   }
 };

@@ -64,34 +64,15 @@ void BRepGraphInc_ReverseIndex::Build(
   }
 
   // Edge -> Faces: derive from inline PCurve entries on each edge.
-  // Seam edges produce two PCurve entries with the same FaceDefId but opposite
-  // orientations; deduplicate by checking the already-built vector for this edge.
-  // No extra allocation needed — the output vector itself serves as the seen-set.
+  // Seam edges produce two PCurve entries with same FaceDefId but opposite
+  // orientations; appendUnique deduplicates (1-4 entries per edge, O(1) in practice).
   for (int anEdgeIdx = 0; anEdgeIdx < theEdges.Length(); ++anEdgeIdx)
   {
     const BRepGraphInc::EdgeEntity& anEdge = theEdges.Value(anEdgeIdx);
     if (anEdge.IsRemoved)
       continue;
     for (int aPCIdx = 0; aPCIdx < anEdge.PCurves.Length(); ++aPCIdx)
-    {
-      const int aFaceIdx = anEdge.PCurves.Value(aPCIdx).FaceDefId.Index;
-      // Check if this face is already recorded for this edge.
-      const NCollection_Vector<int>* aExisting = myEdgeToFaces.Seek(anEdgeIdx);
-      bool aAlreadySeen = false;
-      if (aExisting != nullptr)
-      {
-        for (int j = 0; j < aExisting->Length(); ++j)
-        {
-          if (aExisting->Value(j) == aFaceIdx)
-          {
-            aAlreadySeen = true;
-            break;
-          }
-        }
-      }
-      if (!aAlreadySeen)
-        appendDirect(myEdgeToFaces, anEdgeIdx, aFaceIdx);
-    }
+      appendUnique(myEdgeToFaces, anEdgeIdx, anEdge.PCurves.Value(aPCIdx).FaceDefId.Index);
   }
 
   // Wire -> Faces: scan face entities for their wire refs.

@@ -15,6 +15,7 @@
 #define _BRepGraphInc_Storage_HeaderFile
 
 #include <BRepGraph_NodeId.hxx>
+#include <BRepGraph_UID.hxx>
 #include <BRepGraphInc_Entity.hxx>
 #include <BRepGraphInc_ReverseIndex.hxx>
 
@@ -55,6 +56,17 @@ struct BRepGraphInc_Storage
   // ------ Original shapes from Build() input ------
 
   NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape> OriginalShapes;
+
+  // ------ UID vectors (parallel to entity vectors) ------
+
+  NCollection_Vector<BRepGraph_UID> VertexUIDs;
+  NCollection_Vector<BRepGraph_UID> EdgeUIDs;
+  NCollection_Vector<BRepGraph_UID> WireUIDs;
+  NCollection_Vector<BRepGraph_UID> FaceUIDs;
+  NCollection_Vector<BRepGraph_UID> ShellUIDs;
+  NCollection_Vector<BRepGraph_UID> SolidUIDs;
+  NCollection_Vector<BRepGraph_UID> CompoundUIDs;
+  NCollection_Vector<BRepGraph_UID> CompSolidUIDs;
 
   // ------ Population status ------
 

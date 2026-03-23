@@ -21,16 +21,17 @@ namespace
 const NCollection_Vector<BRepGraph_UID>* uidVecForKind(const BRepGraph_Data&  theData,
                                                        BRepGraph_NodeId::Kind theKind)
 {
+  const BRepGraphInc_Storage& aStorage = theData.myIncStorage;
   switch (theKind)
   {
-    case BRepGraph_NodeId::Kind::Solid:     return &theData.mySolidUIDs;
-    case BRepGraph_NodeId::Kind::Shell:     return &theData.myShellUIDs;
-    case BRepGraph_NodeId::Kind::Face:      return &theData.myFaceUIDs;
-    case BRepGraph_NodeId::Kind::Wire:      return &theData.myWireUIDs;
-    case BRepGraph_NodeId::Kind::Edge:      return &theData.myEdgeUIDs;
-    case BRepGraph_NodeId::Kind::Vertex:    return &theData.myVertexUIDs;
-    case BRepGraph_NodeId::Kind::Compound:  return &theData.myCompoundUIDs;
-    case BRepGraph_NodeId::Kind::CompSolid: return &theData.myCompSolidUIDs;
+    case BRepGraph_NodeId::Kind::Solid:     return &aStorage.SolidUIDs;
+    case BRepGraph_NodeId::Kind::Shell:     return &aStorage.ShellUIDs;
+    case BRepGraph_NodeId::Kind::Face:      return &aStorage.FaceUIDs;
+    case BRepGraph_NodeId::Kind::Wire:      return &aStorage.WireUIDs;
+    case BRepGraph_NodeId::Kind::Edge:      return &aStorage.EdgeUIDs;
+    case BRepGraph_NodeId::Kind::Vertex:    return &aStorage.VertexUIDs;
+    case BRepGraph_NodeId::Kind::Compound:  return &aStorage.CompoundUIDs;
+    case BRepGraph_NodeId::Kind::CompSolid: return &aStorage.CompSolidUIDs;
     default: return nullptr;
   }
 }
