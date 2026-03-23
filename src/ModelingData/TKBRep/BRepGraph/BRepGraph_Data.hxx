@@ -83,11 +83,22 @@ struct BRepGraph_Data
   NCollection_DataMap<const TopoDS_TShape*, BRepGraph_NodeId> myTShapeToDefId;
 
   //! UID system (always enabled).
+  //! Forward maps: per-kind vectors populated eagerly in allocateUID().
+  //! Reverse map: single DataMap built lazily on first NodeIdFrom()/Has().
   std::atomic<size_t> myNextUIDCounter{0};
   uint32_t            myGeneration{0};
 
-  NCollection_DataMap<BRepGraph_NodeId, BRepGraph_UID> myNodeToUID;
-  NCollection_DataMap<BRepGraph_UID, BRepGraph_NodeId> myUIDToNodeId;
+  NCollection_Vector<BRepGraph_UID> mySolidUIDs;
+  NCollection_Vector<BRepGraph_UID> myShellUIDs;
+  NCollection_Vector<BRepGraph_UID> myFaceUIDs;
+  NCollection_Vector<BRepGraph_UID> myWireUIDs;
+  NCollection_Vector<BRepGraph_UID> myEdgeUIDs;
+  NCollection_Vector<BRepGraph_UID> myVertexUIDs;
+  NCollection_Vector<BRepGraph_UID> myCompoundUIDs;
+  NCollection_Vector<BRepGraph_UID> myCompSolidUIDs;
+  NCollection_Vector<BRepGraph_UID> mySurfaceUIDs;
+  NCollection_Vector<BRepGraph_UID> myCurveUIDs;
+  NCollection_Vector<BRepGraph_UID> myPCurveUIDs;
 
   //! Reverse index: edge def index -> wire def indices containing that edge.
   NCollection_DataMap<int, NCollection_Vector<int>> myEdgeToWires;
@@ -131,8 +142,17 @@ struct BRepGraph_Data
         mySurfRegistry(100, myAllocator),
         myCurveRegistry(100, myAllocator),
         myTShapeToDefId(100, myAllocator),
-        myNodeToUID(100, myAllocator),
-        myUIDToNodeId(100, myAllocator)
+        mySolidUIDs(16, myAllocator),
+        myShellUIDs(16, myAllocator),
+        myFaceUIDs(128, myAllocator),
+        myWireUIDs(128, myAllocator),
+        myEdgeUIDs(256, myAllocator),
+        myVertexUIDs(256, myAllocator),
+        myCompoundUIDs(16, myAllocator),
+        myCompSolidUIDs(16, myAllocator),
+        mySurfaceUIDs(64, myAllocator),
+        myCurveUIDs(64, myAllocator),
+        myPCurveUIDs(128, myAllocator)
   {
   }
 
@@ -162,8 +182,17 @@ struct BRepGraph_Data
         mySurfRegistry(100, myAllocator),
         myCurveRegistry(100, myAllocator),
         myTShapeToDefId(100, myAllocator),
-        myNodeToUID(100, myAllocator),
-        myUIDToNodeId(100, myAllocator)
+        mySolidUIDs(16, myAllocator),
+        myShellUIDs(16, myAllocator),
+        myFaceUIDs(128, myAllocator),
+        myWireUIDs(128, myAllocator),
+        myEdgeUIDs(256, myAllocator),
+        myVertexUIDs(256, myAllocator),
+        myCompoundUIDs(16, myAllocator),
+        myCompSolidUIDs(16, myAllocator),
+        mySurfaceUIDs(64, myAllocator),
+        myCurveUIDs(64, myAllocator),
+        myPCurveUIDs(128, myAllocator)
   {
   }
 };

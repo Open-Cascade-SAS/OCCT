@@ -285,22 +285,31 @@ TEST(BRepGraphReBuildTest, ReBuild_UIDMonotonic)
 
   BRepGraph aGraph;
   aGraph.Build(aBox);
-  const size_t   aCountAfterFirst = aGraph.Defs().NbNodes();
-  const uint32_t aGen1            = aGraph.UIDs().Generation();
+  const uint32_t aGen1 = aGraph.UIDs().Generation();
+
+  // Access a UID from the first build to verify it works.
+  ASSERT_GT(aGraph.Defs().NbFaces(), 0);
+  const BRepGraph_NodeId aFirstFace(BRepGraph_NodeId::Kind::Face, 0);
+  const BRepGraph_UID    aFirstUID = aGraph.UIDs().Of(aFirstFace);
+  EXPECT_TRUE(aFirstUID.IsValid());
+  EXPECT_EQ(aFirstUID.Generation(), aGen1);
 
   aGraph.Build(aBox);
   const uint32_t aGen2 = aGraph.UIDs().Generation();
 
   EXPECT_GT(aGen2, aGen1);
 
-  size_t aMinCounter = SIZE_MAX;
+  // Verify all face UIDs in second build are valid and have new generation.
   for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
   {
     BRepGraph_NodeId aNodeId(BRepGraph_NodeId::Kind::Face, aFaceIdx);
-    if (aGraph.UIDs().Of(aNodeId).Counter() < aMinCounter)
-      aMinCounter = aGraph.UIDs().Of(aNodeId).Counter();
+    BRepGraph_UID    aUID = aGraph.UIDs().Of(aNodeId);
+    EXPECT_TRUE(aUID.IsValid()) << "Face " << aFaceIdx << " should have a valid UID";
+    EXPECT_EQ(aUID.Generation(), aGen2) << "Face " << aFaceIdx << " UID should have new generation";
   }
-  EXPECT_GE(aMinCounter, aCountAfterFirst);
+
+  // First build's UID should no longer be valid in the new generation.
+  EXPECT_FALSE(aGraph.UIDs().Has(aFirstUID));
 }
 
 TEST_F(BRepGraphTest, DetectMissingPCurves_ValidBox_Empty)

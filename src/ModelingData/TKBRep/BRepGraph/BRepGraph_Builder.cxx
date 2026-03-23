@@ -623,8 +623,17 @@ void BRepGraph_Builder::Perform(BRepGraph& theGraph, const TopoDS_Shape& theShap
   theGraph.myData->mySurfRegistry.Clear();
   theGraph.myData->myCurveRegistry.Clear();
   theGraph.myData->myTShapeToDefId.Clear();
-  theGraph.myData->myNodeToUID.Clear();
-  theGraph.myData->myUIDToNodeId.Clear();
+  theGraph.myData->mySolidUIDs.Clear();
+  theGraph.myData->myShellUIDs.Clear();
+  theGraph.myData->myFaceUIDs.Clear();
+  theGraph.myData->myWireUIDs.Clear();
+  theGraph.myData->myEdgeUIDs.Clear();
+  theGraph.myData->myVertexUIDs.Clear();
+  theGraph.myData->myCompoundUIDs.Clear();
+  theGraph.myData->myCompSolidUIDs.Clear();
+  theGraph.myData->mySurfaceUIDs.Clear();
+  theGraph.myData->myCurveUIDs.Clear();
+  theGraph.myData->myPCurveUIDs.Clear();
   theGraph.myData->myHistoryLog.Clear();
   theGraph.myData->myOriginalShapes.Clear();
   theGraph.myData->myCurrentShapes.Clear();
@@ -821,12 +830,10 @@ void BRepGraph_Builder::Perform(BRepGraph& theGraph, const TopoDS_Shape& theShap
     [&](int theIndex) { extractFaceData(aFaceData.ChangeValue(theIndex)); },
     !theParallel);
 
-  // Pre-size maps.
+  // Pre-size TShape dedup map.
   const int aNbFacesEst   = aFaceData.Length();
   const int anEstEntities = aNbFacesEst * 10;
   theGraph.myData->myTShapeToDefId.ReSize(anEstEntities);
-  theGraph.myData->myNodeToUID.ReSize(anEstEntities);
-  theGraph.myData->myUIDToNodeId.ReSize(anEstEntities);
 
   // Phase 3 (sequential): Register definitions and usages from pre-extracted data.
   registerFaceData(theGraph, aFaceData);

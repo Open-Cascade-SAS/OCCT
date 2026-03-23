@@ -206,6 +206,7 @@ private:
 
   Standard_EXPORT void invalidateSubgraphImpl(BRepGraph_NodeId theNode);
   Standard_EXPORT BRepGraph_UID allocateUID(BRepGraph_NodeId theNodeId);
+
   Standard_EXPORT BRepGraph_NodeCache* mutableCache(BRepGraph_NodeId theNode);
   Standard_EXPORT void markModified(BRepGraph_NodeId theDefId);
 

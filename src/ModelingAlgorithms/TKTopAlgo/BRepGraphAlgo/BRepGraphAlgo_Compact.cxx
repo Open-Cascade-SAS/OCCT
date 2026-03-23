@@ -547,43 +547,38 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
                          + aNewGraph.Geom().NbSurfaces() + aNewGraph.Geom().NbCurves()
                          + aNewGraph.Geom().NbPCurves();
 
-  // Transfer all UIDs from old graph to new graph using index remap maps.
-  // UID equality ignores generation, so we clear first to avoid collisions.
-  aNewGraph.myData->myNodeToUID.Clear();
-  aNewGraph.myData->myUIDToNodeId.Clear();
-
-  auto transferUIDs = [&](const NCollection_DataMap<int, int>& theMap,
-                          BRepGraph_NodeId::Kind               theKind) {
+  // Transfer per-kind UID vectors from old graph to new graph using index remap maps.
+  // Each new graph's UID vector[newIdx] = old graph's UID vector[oldIdx].
+  auto transferUIDs = [&](const NCollection_DataMap<int, int>&      theMap,
+                          const NCollection_Vector<BRepGraph_UID>&  theOldVec,
+                          NCollection_Vector<BRepGraph_UID>&        theNewVec) {
+    // New vector was already populated by BuilderView during reconstruction.
+    // Overwrite entries that have a mapping from the old graph.
     for (const auto& [anOldIdx, aNewIdx] : theMap.Items())
     {
-      const BRepGraph_NodeId anOldId(theKind, anOldIdx);
-      const BRepGraph_NodeId aNewId(theKind, aNewIdx);
-      const BRepGraph_UID*   anOldUID = theGraph.myData->myNodeToUID.Seek(anOldId);
-      if (anOldUID != nullptr && anOldUID->IsValid())
+      if (anOldIdx < theOldVec.Length() && theOldVec.Value(anOldIdx).IsValid())
       {
-        aNewGraph.myData->myNodeToUID.Bind(aNewId, *anOldUID);
-        aNewGraph.myData->myUIDToNodeId.Bind(*anOldUID, aNewId);
+        theNewVec.ChangeValue(aNewIdx) = theOldVec.Value(anOldIdx);
       }
     }
   };
 
-  transferUIDs(aVertexMap,    BRepGraph_NodeId::Kind::Vertex);
-  transferUIDs(anEdgeMap,     BRepGraph_NodeId::Kind::Edge);
-  transferUIDs(aWireMap,      BRepGraph_NodeId::Kind::Wire);
-  transferUIDs(aFaceMap,      BRepGraph_NodeId::Kind::Face);
-  transferUIDs(aShellMap,     BRepGraph_NodeId::Kind::Shell);
-  transferUIDs(aSolidMap,     BRepGraph_NodeId::Kind::Solid);
-  transferUIDs(aCompoundMap,  BRepGraph_NodeId::Kind::Compound);
-  transferUIDs(aCompSolidMap, BRepGraph_NodeId::Kind::CompSolid);
-  transferUIDs(aSurfMap,      BRepGraph_NodeId::Kind::Surface);
-  transferUIDs(aCurveMap,     BRepGraph_NodeId::Kind::Curve);
-  transferUIDs(aPCurveMap,    BRepGraph_NodeId::Kind::PCurve);
+  transferUIDs(aVertexMap,    theGraph.myData->myVertexUIDs,    aNewGraph.myData->myVertexUIDs);
+  transferUIDs(anEdgeMap,     theGraph.myData->myEdgeUIDs,      aNewGraph.myData->myEdgeUIDs);
+  transferUIDs(aWireMap,      theGraph.myData->myWireUIDs,      aNewGraph.myData->myWireUIDs);
+  transferUIDs(aFaceMap,      theGraph.myData->myFaceUIDs,      aNewGraph.myData->myFaceUIDs);
+  transferUIDs(aShellMap,     theGraph.myData->myShellUIDs,     aNewGraph.myData->myShellUIDs);
+  transferUIDs(aSolidMap,     theGraph.myData->mySolidUIDs,     aNewGraph.myData->mySolidUIDs);
+  transferUIDs(aCompoundMap,  theGraph.myData->myCompoundUIDs,  aNewGraph.myData->myCompoundUIDs);
+  transferUIDs(aCompSolidMap, theGraph.myData->myCompSolidUIDs, aNewGraph.myData->myCompSolidUIDs);
+  transferUIDs(aSurfMap,      theGraph.myData->mySurfaceUIDs,   aNewGraph.myData->mySurfaceUIDs);
+  transferUIDs(aCurveMap,     theGraph.myData->myCurveUIDs,     aNewGraph.myData->myCurveUIDs);
+  transferUIDs(aPCurveMap,    theGraph.myData->myPCurveUIDs,    aNewGraph.myData->myPCurveUIDs);
 
   aNewGraph.myData->myNextUIDCounter.store(
     theGraph.myData->myNextUIDCounter.load(std::memory_order_relaxed),
     std::memory_order_relaxed);
   aNewGraph.myData->myGeneration = theGraph.myData->myGeneration;
-
   // Swap.
   theGraph = std::move(aNewGraph);
 

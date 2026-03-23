@@ -174,8 +174,24 @@ BRepGraph_UID BRepGraph::allocateUID(BRepGraph_NodeId theNodeId)
 {
   const size_t  aCounter = myData->myNextUIDCounter.fetch_add(1, std::memory_order_relaxed);
   BRepGraph_UID aUID(theNodeId.NodeKind, aCounter, myData->myGeneration);
-  myData->myNodeToUID.Bind(theNodeId, aUID);
-  myData->myUIDToNodeId.Bind(aUID, theNodeId);
+
+  // Append to per-kind forward vector (O(1) amortized, no hashing).
+  switch (theNodeId.NodeKind)
+  {
+    case BRepGraph_NodeId::Kind::Solid:     myData->mySolidUIDs.Append(aUID);     break;
+    case BRepGraph_NodeId::Kind::Shell:     myData->myShellUIDs.Append(aUID);     break;
+    case BRepGraph_NodeId::Kind::Face:      myData->myFaceUIDs.Append(aUID);      break;
+    case BRepGraph_NodeId::Kind::Wire:      myData->myWireUIDs.Append(aUID);      break;
+    case BRepGraph_NodeId::Kind::Edge:      myData->myEdgeUIDs.Append(aUID);      break;
+    case BRepGraph_NodeId::Kind::Vertex:    myData->myVertexUIDs.Append(aUID);    break;
+    case BRepGraph_NodeId::Kind::Compound:  myData->myCompoundUIDs.Append(aUID);  break;
+    case BRepGraph_NodeId::Kind::CompSolid: myData->myCompSolidUIDs.Append(aUID); break;
+    case BRepGraph_NodeId::Kind::Surface:   myData->mySurfaceUIDs.Append(aUID);   break;
+    case BRepGraph_NodeId::Kind::Curve:     myData->myCurveUIDs.Append(aUID);     break;
+    case BRepGraph_NodeId::Kind::PCurve:    myData->myPCurveUIDs.Append(aUID);    break;
+    default: break;
+  }
+
   return aUID;
 }
 
@@ -457,8 +473,17 @@ void BRepGraph::SetAllocator(const Handle(NCollection_BaseAllocator)& theAlloc)
   myData->mySurfRegistry   = NCollection_IndexedDataMap<const Geom_Surface*, int>(100, myData->myAllocator);
   myData->myCurveRegistry  = NCollection_IndexedDataMap<const Geom_Curve*, int>(100, myData->myAllocator);
   myData->myTShapeToDefId  = NCollection_DataMap<const TopoDS_TShape*, BRepGraph_NodeId>(100, myData->myAllocator);
-  myData->myNodeToUID      = NCollection_DataMap<BRepGraph_NodeId, BRepGraph_UID>(100, myData->myAllocator);
-  myData->myUIDToNodeId    = NCollection_DataMap<BRepGraph_UID, BRepGraph_NodeId>(100, myData->myAllocator);
+  myData->mySolidUIDs      = NCollection_Vector<BRepGraph_UID>(16, myData->myAllocator);
+  myData->myShellUIDs      = NCollection_Vector<BRepGraph_UID>(16, myData->myAllocator);
+  myData->myFaceUIDs       = NCollection_Vector<BRepGraph_UID>(128, myData->myAllocator);
+  myData->myWireUIDs       = NCollection_Vector<BRepGraph_UID>(128, myData->myAllocator);
+  myData->myEdgeUIDs       = NCollection_Vector<BRepGraph_UID>(256, myData->myAllocator);
+  myData->myVertexUIDs     = NCollection_Vector<BRepGraph_UID>(256, myData->myAllocator);
+  myData->myCompoundUIDs   = NCollection_Vector<BRepGraph_UID>(16, myData->myAllocator);
+  myData->myCompSolidUIDs  = NCollection_Vector<BRepGraph_UID>(16, myData->myAllocator);
+  myData->mySurfaceUIDs    = NCollection_Vector<BRepGraph_UID>(64, myData->myAllocator);
+  myData->myCurveUIDs      = NCollection_Vector<BRepGraph_UID>(64, myData->myAllocator);
+  myData->myPCurveUIDs     = NCollection_Vector<BRepGraph_UID>(128, myData->myAllocator);
   myData->myEdgeToWires = NCollection_DataMap<int, NCollection_Vector<int>>(100, myData->myAllocator);
 }
 
