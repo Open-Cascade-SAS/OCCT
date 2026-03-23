@@ -48,7 +48,7 @@ namespace BRepGraphInc
 
 //! Helper: reinitialize a vector member with the given allocator and block size.
 template <typename T>
-inline void BRepGraphInc_InitVec(NCollection_Vector<T>&                        theVec,
+inline void InitVec(NCollection_Vector<T>&                        theVec,
                                  const occ::handle<NCollection_BaseAllocator>& theAlloc,
                                  const int                                     theBlockSize = 4)
 {
@@ -159,9 +159,9 @@ struct VertexEntity : public BaseEntity
   //! Reinitialize inner vectors with the given allocator.
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
-    BRepGraphInc_InitVec(PointsOnCurve, theAlloc, 2); // typically 1-2 per vertex
-    BRepGraphInc_InitVec(PointsOnSurface, theAlloc, 2);
-    BRepGraphInc_InitVec(PointsOnPCurve, theAlloc, 2);
+    InitVec(PointsOnCurve, theAlloc, 2); // typically 1-2 per vertex
+    InitVec(PointsOnSurface, theAlloc, 2);
+    InitVec(PointsOnPCurve, theAlloc, 2);
   }
 };
 
@@ -231,8 +231,8 @@ struct EdgeEntity : public BaseEntity
   //! Reinitialize inner vectors with the given allocator.
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
-    BRepGraphInc_InitVec(Regularities, theAlloc, 2);     // typically 0-2
-    BRepGraphInc_InitVec(InternalVertices, theAlloc, 2); // typically 0
+    InitVec(Regularities, theAlloc, 2);     // typically 0-2
+    InitVec(InternalVertices, theAlloc, 2); // typically 0
   }
 
   //! Return the start vertex adjusted for orientation in wire context.
@@ -290,7 +290,7 @@ struct CoEdgeEntity : public BaseEntity
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
-    BRepGraphInc_InitVec(PolygonOnTriRepIdxs, theAlloc, 2);
+    InitVec(PolygonOnTriRepIdxs, theAlloc, 2);
   }
 };
 
@@ -302,7 +302,7 @@ struct WireEntity : public BaseEntity
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
-    BRepGraphInc_InitVec(CoEdgeRefs, theAlloc, 8); // typically 3-8 coedges per wire
+    InitVec(CoEdgeRefs, theAlloc, 8); // typically 3-8 coedges per wire
   }
 };
 
@@ -332,9 +332,9 @@ struct FaceEntity : public BaseEntity
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
-    BRepGraphInc_InitVec(TriangulationRepIdxs, theAlloc, 2); // typically 1
-    BRepGraphInc_InitVec(WireRefs, theAlloc, 2);             // typically 1-2 (outer + holes)
-    BRepGraphInc_InitVec(VertexRefs, theAlloc, 2);           // typically 0
+    InitVec(TriangulationRepIdxs, theAlloc, 2); // typically 1
+    InitVec(WireRefs, theAlloc, 2);             // typically 1-2 (outer + holes)
+    InitVec(VertexRefs, theAlloc, 2);           // typically 0
   }
 
   //! Return index of the outer wire, or -1 if none.
@@ -358,7 +358,8 @@ struct ShellEntity : public BaseEntity
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
-    BRepGraphInc_InitVec(FaceRefs, theAlloc, 8); // typically 4-8 faces per shell
+    InitVec(FaceRefs, theAlloc, 8);      // typically 4-8 faces per shell
+    InitVec(FreeChildRefs, theAlloc, 2);  // typically 0
   }
 };
 
@@ -370,7 +371,8 @@ struct SolidEntity : public BaseEntity
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
-    BRepGraphInc_InitVec(ShellRefs, theAlloc, 2); // typically 1
+    InitVec(ShellRefs, theAlloc, 2);      // typically 1
+    InitVec(FreeChildRefs, theAlloc, 2);  // typically 0
   }
 };
 
@@ -381,7 +383,7 @@ struct CompoundEntity : public BaseEntity
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
-    BRepGraphInc_InitVec(ChildRefs, theAlloc, 4); // varies
+    InitVec(ChildRefs, theAlloc, 4); // varies
   }
 };
 
@@ -392,7 +394,7 @@ struct CompSolidEntity : public BaseEntity
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
-    BRepGraphInc_InitVec(SolidRefs, theAlloc, 2); // typically 1-2
+    InitVec(SolidRefs, theAlloc, 2); // typically 1-2
   }
 };
 
@@ -414,7 +416,7 @@ struct ProductEntity : public BaseEntity
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
-    BRepGraphInc_InitVec(OccurrenceRefs, theAlloc, 4);
+    InitVec(OccurrenceRefs, theAlloc, 4);
   }
 };
 

@@ -58,6 +58,8 @@ struct BRepGraph_NodeId
   Kind NodeKind;
   int  Index;
 
+  //! Default: invalid NodeId (Index = -1).
+  //! NodeKind is set to Kind::Solid but is meaningless when !IsValid().
   BRepGraph_NodeId()
     : NodeKind(Kind::Solid), Index(-1) {}
 

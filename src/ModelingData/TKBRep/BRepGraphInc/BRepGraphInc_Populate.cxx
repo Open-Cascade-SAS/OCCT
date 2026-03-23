@@ -34,6 +34,25 @@
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Iterator.hxx>
 
+// Population pipeline overview:
+//
+// Phase 1 (sequential): Recursively traverse the TopoDS hierarchy
+//   (Compound → CompSolid → Solid → Shell), collecting face contexts
+//   into a flat FaceLocalData vector. Registers container entities
+//   (Compound, CompSolid, Solid, Shell) with TShape deduplication.
+//
+// Phase 2 (parallel): Per-face geometry extraction via OSD_Parallel.
+//   Extracts surface, triangulations, wires, edges (with PCurves,
+//   polygons, vertices) into ExtractedEdge/ExtractedWire/FaceLocalData
+//   structs. No storage writes — thread-safe read-only access to TopoDS.
+//
+// Phase 3 (sequential): Register extracted data into BRepGraphInc_Storage.
+//   Creates Face, Wire, Edge, CoEdge, Vertex entities with TShape dedup
+//   and representation dedup (getOrCreate*Rep). Also runs optional
+//   post-passes: edge regularities (3b) and vertex point reps (3c).
+//
+// Phase 4 (sequential): Build reverse indices for O(1) upward navigation.
+
 namespace
 {
 
@@ -119,7 +138,14 @@ struct FaceLocalData
 //!   Pass 1: exact (Surface, Location) match via IsCurveOnSurface(S, L)
 //!   Pass 2: surface-handle-only fallback for TopLoc_Location structural equality bug
 //!           (only when a unique CR matches the surface — prevents wrong-context selection)
+//!   Pass 3: original (pre-transform) surface handle match when face surface
+//!           was transformed via applyRepresentationLocation
 //! For seam edges (IsCurveOnClosedSurface), extracts both PCurves + continuity.
+//!
+//! WARNING: Passes 2-3 are workarounds for TopLoc_Location structural equality
+//! issues where an explicit identity datum does not compare equal to a default
+//! empty identity. If the upstream TopLoc_Location comparison is fixed, passes
+//! 2-3 may become redundant but should remain harmless (pass 1 will match first).
 //! @param[in]  theEdge      edge with context orientation and location
 //! @param[in]  theFace      face with context location
 //! @param[out] thePCurve    primary PCurve (or null)
@@ -190,7 +216,6 @@ bool extractStoredPCurves(const TopoDS_Edge&                theEdge,
       continue;
     return extractFromCR(aCR);
   }
-
 
   // Pass 3: match by the original (pre-transform) surface handle.
   // When applyRepresentationLocation creates a new surface via Transformed(),
@@ -957,7 +982,6 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
         theStorage.ChangeFace(aFaceIdx).WireRefs.Append(aWireRef);
       }
 
-
       for (int anEdgeIter = 0; anEdgeIter < aWireData.Edges.Length(); ++anEdgeIter)
       {
         const ExtractedEdge& anEdgeData = aWireData.Edges.Value(anEdgeIter);
@@ -1025,16 +1049,10 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
           aCoEdgeRef.LocalLocation  = anEdgeData.Shape.Location();
           theStorage.ChangeWire(aWireIdx).CoEdgeRefs.Append(aCoEdgeRef);
 
-          // For seam edges, add the reversed coedge ref too.
-          if (aSeamCoEdgeIdx >= 0)
-          {
-            BRepGraphInc::CoEdgeRef aSeamRef;
-            aSeamRef.CoEdgeIdx = aSeamCoEdgeIdx;
-            // Note: seam coedge is NOT added to wire CoEdgeRefs — it shares the same wire position
-            // as the forward coedge. The seam pair is accessible via SeamPairIdx.
-            // Only the forward coedge ref is in the wire's ordered list.
-            (void)aSeamRef;
-          }
+          // Note: seam coedge (if any) is NOT added to wire CoEdgeRefs —
+          // it shares the same wire position as the forward coedge.
+          // The seam pair is accessible via SeamPairIdx on the CoEdgeEntity.
+          // Only the forward coedge ref is in the wire's ordered list.
         }
 
         // Polygon3D (once per edge).

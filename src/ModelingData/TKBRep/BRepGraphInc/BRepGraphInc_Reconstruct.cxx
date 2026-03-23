@@ -208,41 +208,15 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage& theStora
       for (int i = 0; i < aSolid.ShellRefs.Length(); ++i)
       {
         const BRepGraphInc::ShellRef& aShellRef = aSolid.ShellRefs.Value(i);
-        const BRepGraphInc::ShellEntity& aShell = theStorage.Shell(aShellRef.ShellIdx);
-        TopoDS_Shell aNewShell;
-        aBB.MakeShell(aNewShell);
-        for (int j = 0; j < aShell.FaceRefs.Length(); ++j)
+        TopoDS_Shape aShell =
+          Node(theStorage, BRepGraph_NodeId::Shell(aShellRef.ShellIdx), theCache);
+        if (!aShell.IsNull())
         {
-          const BRepGraphInc::FaceRef& aFaceRef = aShell.FaceRefs.Value(j);
-          TopoDS_Shape aFace = FaceWithCache(theStorage, aFaceRef.FaceIdx, theCache);
-          if (!aFace.IsNull())
-          {
-            aFace.Orientation(aFaceRef.Orientation);
-            if (!aFaceRef.LocalLocation.IsIdentity())
-              aFace.Location(aFaceRef.LocalLocation);
-            aBB.Add(aNewShell, aFace);
-          }
+          aShell.Orientation(aShellRef.Orientation);
+          if (!aShellRef.LocalLocation.IsIdentity())
+            aShell.Location(aShellRef.LocalLocation);
+          aBB.Add(aNewSolid, aShell);
         }
-        // Free children of the shell (wires, edges).
-        for (int j = 0; j < aShell.FreeChildRefs.Length(); ++j)
-        {
-          const BRepGraphInc::ChildRef& aCR = aShell.FreeChildRefs.Value(j);
-          BRepGraph_NodeId aChildId(static_cast<BRepGraph_NodeId::Kind>(aCR.Kind), aCR.ChildIdx);
-          TopoDS_Shape aChild = Node(theStorage, aChildId, theCache);
-          if (!aChild.IsNull())
-          {
-            aChild.Orientation(aCR.Orientation);
-            if (!aCR.LocalLocation.IsIdentity())
-              aChild.Location(aCR.LocalLocation);
-            aBB.Add(aNewShell, aChild);
-          }
-        }
-        if (aShell.IsClosed)
-          aNewShell.Closed(true);
-        aNewShell.Orientation(aShellRef.Orientation);
-        if (!aShellRef.LocalLocation.IsIdentity())
-          aNewShell.Location(aShellRef.LocalLocation);
-        aBB.Add(aNewSolid, aNewShell);
       }
       // Free children of the solid (edges, vertices).
       for (int i = 0; i < aSolid.FreeChildRefs.Length(); ++i)
@@ -304,7 +278,11 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage& theStora
       break;
     }
 
-    default:
+    // CoEdge is not a standalone TopoDS shape — it is an edge-face binding.
+    // Product and Occurrence are assembly-level entities without direct TopoDS equivalents.
+    case BRepGraph_NodeId::Kind::CoEdge:
+    case BRepGraph_NodeId::Kind::Product:
+    case BRepGraph_NodeId::Kind::Occurrence:
       return TopoDS_Shape();
   }
 

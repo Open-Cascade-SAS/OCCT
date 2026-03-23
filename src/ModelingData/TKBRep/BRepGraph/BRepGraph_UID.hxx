@@ -29,7 +29,7 @@
 //! Generation is NOT part of identity; it indicates which Build() cycle
 //! produced this UID (for stale-reference detection).
 //!
-//! 24 bytes on 64-bit (4 + 8 + 4 + 1 + 7 padding).  Trivially copyable, cheap to pass by value.
+//! Trivially copyable, cheap to pass by value.
 struct BRepGraph_UID
 {
   //! Default: invalid UID.

@@ -50,8 +50,22 @@ class BRepGraph_Mutator;
 
 //! @brief Topology-geometry graph over TopoDS / BRep.
 //!
-//! Definition types are aliases to incidence entity types.
+//! Stores B-Rep topology as flat entity vectors (incidence-table model) with
+//! integer cross-references, enabling cache-friendly traversal, O(1) upward
+//! navigation via reverse indices, and parallel face-level geometry extraction.
+//!
+//! Key design concepts:
+//! - **NodeId** (Kind + Index): lightweight typed address into per-kind vectors.
+//! - **UID** (Kind + Counter): persistent identity surviving compaction/reorder.
+//! - **RepId** (RepKind + Index): separate geometry/mesh addressing (Surface,
+//!   Curve3D, Curve2D, Triangulation, Polygon) decoupled from topology nodes.
+//! - **CoEdge**: half-edge entity owning PCurve data for each edge-face binding;
+//!   seam edges use paired CoEdges with opposite Sense (Parasolid convention).
+//! - **Lifecycle**: Build() populates from TopoDS_Shape; Mut*() guards provide
+//!   RAII-scoped mutation with automatic cache invalidation and upward propagation.
+//!
 //! Per-occurrence data (orientation, location) lives on incidence refs.
+//! Definition types are aliases to BRepGraphInc entity structs.
 //!
 //! ## Grouped View API
 //! Related methods are grouped behind lightweight view objects.

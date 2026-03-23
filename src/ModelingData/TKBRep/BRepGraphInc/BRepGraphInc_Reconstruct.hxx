@@ -24,8 +24,9 @@ class BRepGraphInc_Storage;
 
 //! @brief Reconstruct TopoDS shapes from incidence-table storage.
 //!
-//! Mirrors BRepGraph_Reconstruct but reads from BRepGraphInc_Storage
-//! entity structs and EdgeFaceGeom rows instead of Def/Usage objects.
+//! Converts BRepGraphInc_Storage entity data back into TopoDS shapes.
+//! Supports single-node and cached multi-face reconstruction with
+//! shared edge/vertex reuse via the Cache map.
 class BRepGraphInc_Reconstruct
 {
 public:
