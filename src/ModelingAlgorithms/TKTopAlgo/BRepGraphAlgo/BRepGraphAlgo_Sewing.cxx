@@ -54,10 +54,11 @@
 
 namespace
 {
-constexpr int    THE_NB_EDGE_MATCH_SAMPLES = 5;    // sample count for edge geometric matching
-constexpr double THE_MAX_CHORD_RATIO       = 2.0;  // maximum chord-length ratio for sewable edges
-constexpr double THE_HIGH_CONFIDENCE_RATIO = 0.01; // forward-distance threshold to skip reverse pass
-constexpr int    THE_INIT_VECTOR_CAPACITY  = 256;  // initial capacity for scratch vectors
+constexpr int    THE_NB_EDGE_MATCH_SAMPLES = 5;   // sample count for edge geometric matching
+constexpr double THE_MAX_CHORD_RATIO       = 2.0; // maximum chord-length ratio for sewable edges
+constexpr double THE_HIGH_CONFIDENCE_RATIO =
+  0.01;                                       // forward-distance threshold to skip reverse pass
+constexpr int THE_INIT_VECTOR_CAPACITY = 256; // initial capacity for scratch vectors
 } // anonymous namespace
 
 //=================================================================================================
@@ -312,9 +313,9 @@ void BRepGraphAlgo_Sewing::assembleVertices(const Handle(NCollection_IncAllocato
 
   // Collect all unique vertex indices from free edges.
   // Each free edge has 2 vertices; estimate unique count ~ number of free edges.
-  const int                 aNbFreeEdges = myFreeEdgesBefore.Length();
+  const int               aNbFreeEdges = myFreeEdgesBefore.Length();
   NCollection_Vector<int> aFreeVertexIndices(THE_INIT_VECTOR_CAPACITY, theTmpAlloc);
-  NCollection_Map<int>      aFreeVertexSet(aNbFreeEdges, theTmpAlloc);
+  NCollection_Map<int>    aFreeVertexSet(aNbFreeEdges, theTmpAlloc);
   for (int aFreeEdgeIter = 1; aFreeEdgeIter <= myFreeEdgesBefore.Length(); ++aFreeEdgeIter)
   {
     const BRepGraph_TopoNode::EdgeDef& anEdge =
@@ -404,7 +405,7 @@ void BRepGraphAlgo_Sewing::assembleVertices(const Handle(NCollection_IncAllocato
       if (aVertexMerge.IsBound(aTarget))
       {
         anIt.ChangeValue() = aVertexMerge.Find(aTarget);
-        aChanged = true;
+        aChanged           = true;
       }
     }
   }
@@ -416,13 +417,13 @@ void BRepGraphAlgo_Sewing::assembleVertices(const Handle(NCollection_IncAllocato
       myGraph.Mut().EdgeDef(myFreeEdgesBefore.Value(aFreeEdgeIter).Index);
     if (anEdge.StartVertexDefId.IsValid() && aVertexMerge.IsBound(anEdge.StartVertexDefId.Index))
     {
-      anEdge.StartVertexDefId =
-        BRepGraph_NodeId(BRepGraph_NodeKind::Vertex, aVertexMerge.Find(anEdge.StartVertexDefId.Index));
+      anEdge.StartVertexDefId = BRepGraph_NodeId(BRepGraph_NodeKind::Vertex,
+                                                 aVertexMerge.Find(anEdge.StartVertexDefId.Index));
     }
     if (anEdge.EndVertexDefId.IsValid() && aVertexMerge.IsBound(anEdge.EndVertexDefId.Index))
     {
-      anEdge.EndVertexDefId =
-        BRepGraph_NodeId(BRepGraph_NodeKind::Vertex, aVertexMerge.Find(anEdge.EndVertexDefId.Index));
+      anEdge.EndVertexDefId = BRepGraph_NodeId(BRepGraph_NodeKind::Vertex,
+                                               aVertexMerge.Find(anEdge.EndVertexDefId.Index));
     }
   }
 }
@@ -491,7 +492,8 @@ void BRepGraphAlgo_Sewing::detectCandidates(const Handle(NCollection_IncAllocato
   // and tighter than 2 * max_halfDiag for small edges.
   // In parallel mode, each thread writes to its own slot to avoid mutex contention.
   // In sequential mode, append directly to the result sequence (zero overhead).
-  NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> aPairs(THE_INIT_VECTOR_CAPACITY, theTmpAlloc);
+  NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> aPairs(THE_INIT_VECTOR_CAPACITY,
+                                                                           theTmpAlloc);
 
   // Common lambda for the KDTree search + BBox refinement per edge.
   const auto aSearchFn =
@@ -503,7 +505,7 @@ void BRepGraphAlgo_Sewing::detectCandidates(const Handle(NCollection_IncAllocato
         return;
       }
 
-      const double aHalfDiagI    = aHalfDiags.Value(theIdxI);
+      const double aHalfDiagI     = aHalfDiags.Value(theIdxI);
       const double aSearchRadiusI = aHalfDiagI + aMaxHalfDiag;
 
       const gp_Pnt&                    aCenterI   = aCenters.Value(theIdxI);
@@ -577,8 +579,7 @@ void BRepGraphAlgo_Sewing::detectCandidates(const Handle(NCollection_IncAllocato
 
 //=================================================================================================
 
-void BRepGraphAlgo_Sewing::cutAtIntersections(
-  const Handle(NCollection_IncAllocator)& theTmpAlloc)
+void BRepGraphAlgo_Sewing::cutAtIntersections(const Handle(NCollection_IncAllocator)& theTmpAlloc)
 {
   const int aNbFreeEdges = myFreeEdgesBefore.Length();
   if (aNbFreeEdges == 0)
@@ -617,8 +618,8 @@ void BRepGraphAlgo_Sewing::cutAtIntersections(
   };
 
   // aSubEdgeChains[i] holds sub-edge chain for free edge (i+1); empty means no split.
-  NCollection_Vector<NCollection_Vector<BRepGraph_NodeId>> aSubEdgeChains(
-    THE_INIT_VECTOR_CAPACITY, theTmpAlloc);
+  NCollection_Vector<NCollection_Vector<BRepGraph_NodeId>> aSubEdgeChains(THE_INIT_VECTOR_CAPACITY,
+                                                                          theTmpAlloc);
   for (int anIdx = 0; anIdx < aNbFreeEdges; ++anIdx)
     aSubEdgeChains.Append(NCollection_Vector<BRepGraph_NodeId>());
 
@@ -635,7 +636,7 @@ void BRepGraphAlgo_Sewing::cutAtIntersections(
 
     // Own endpoint indices to exclude from T-vertex candidates.
     const int aStartIdx = anEdge.StartVertexDefId.IsValid() ? anEdge.StartVertexDefId.Index : -1;
-    const int aEndIdx   = anEdge.EndVertexDefId.IsValid()   ? anEdge.EndVertexDefId.Index   : -1;
+    const int aEndIdx   = anEdge.EndVertexDefId.IsValid() ? anEdge.EndVertexDefId.Index : -1;
 
     // Build curve adaptor directly from graph geometry (no TopoDS roundtrip).
     GeomAdaptor_TransformedCurve aCurve = myGraph.Geom().CurveAdaptor(anEdgeId);
@@ -647,7 +648,7 @@ void BRepGraphAlgo_Sewing::cutAtIntersections(
       continue;
     aEdgeBBox.Enlarge(myTolerance);
 
-    const double aTolSq     = myTolerance * myTolerance;
+    const double aTolSq      = myTolerance * myTolerance;
     const double aParamFirst = aCurve.FirstParameter();
     const double aParamLast  = aCurve.LastParameter();
     const double aParamEps   = Precision::Confusion();
@@ -666,27 +667,19 @@ void BRepGraphAlgo_Sewing::cutAtIntersections(
       if (aEdgeBBox.IsOut(aVtxPnt))
         continue;
 
-      const ExtremaPC::Result& aRes = anExtPC.Perform(aVtxPnt, Precision::Confusion());
-      if (!aRes.IsDone())
+      const ExtremaPC::Result& aRes =
+        anExtPC.Perform(aVtxPnt, Precision::Confusion(), ExtremaPC::SearchMode::Min);
+      if (!aRes.IsDone() || aRes.NbExt() == 0)
         continue;
 
       // Find closest extremal point.
-      double aMinSqDist = RealLast();
-      double aMinParam  = 0.0;
-      for (int aExtIdx = 0; aExtIdx < aRes.NbExt(); ++aExtIdx)
-      {
-        const double aSqDist = aRes[aExtIdx].SquareDistance;
-        if (aSqDist < aMinSqDist)
-        {
-          aMinSqDist = aSqDist;
-          aMinParam  = aRes[aExtIdx].Parameter;
-        }
-      }
+      const int    aMinIdx    = aRes.MinIndex();
+      const double aMinSqDist = aRes[aMinIdx].SquareDistance;
+      const double aMinParam  = aRes[aMinIdx].Parameter;
 
       // Accept if within tolerance AND strictly inside the parameter range.
-      if (aMinSqDist <= aTolSq
-          && aMinParam > aParamFirst + aParamEps
-          && aMinParam < aParamLast  - aParamEps)
+      if (aMinSqDist <= aTolSq && aMinParam > aParamFirst + aParamEps
+          && aMinParam < aParamLast - aParamEps)
       {
         SplitCandidate aCand;
         aCand.Param  = aMinParam;
@@ -699,7 +692,7 @@ void BRepGraphAlgo_Sewing::cutAtIntersections(
       continue;
 
     // Sort candidates by parameter (ascending).
-    const int aNbSplits = aSplits.Length();
+    const int                          aNbSplits = aSplits.Length();
     NCollection_Array1<SplitCandidate> aSortedSplits(0, aNbSplits - 1);
     for (int aSplitIter = 0; aSplitIter < aNbSplits; ++aSplitIter)
       aSortedSplits.SetValue(aSplitIter, aSplits.Value(aSplitIter));
@@ -726,19 +719,19 @@ void BRepGraphAlgo_Sewing::cutAtIntersections(
       continue;
 
     // Apply splits: chain SplitEdge calls along the edge.
-    anySplits = true;
+    anySplits                                    = true;
     NCollection_Vector<BRepGraph_NodeId>& aChain = aSubEdgeChains.ChangeValue(aFreeEdgeIter - 1);
-    BRepGraph_NodeId aCurrentEdge = anEdgeId;
+    BRepGraph_NodeId                      aCurrentEdge = anEdgeId;
     for (int aSplitIter = 0; aSplitIter < aUniqueSplits.Length(); ++aSplitIter)
     {
-      const SplitCandidate& aCand = aUniqueSplits.Value(aSplitIter);
+      const SplitCandidate&  aCand = aUniqueSplits.Value(aSplitIter);
       const BRepGraph_NodeId aVtxNodeId(BRepGraph_NodeKind::Vertex, aCand.VtxIdx);
       BRepGraph_NodeId       aSubA, aSubB;
       myGraph.Mut().SplitEdge(aCurrentEdge, aVtxNodeId, aCand.Param, aSubA, aSubB);
       aChain.Append(aSubA);
       aCurrentEdge = aSubB;
     }
-    aChain.Append(aCurrentEdge);  // final sub-edge (last SubB)
+    aChain.Append(aCurrentEdge); // final sub-edge (last SubB)
   }
 
   if (!anySplits)
@@ -748,8 +741,7 @@ void BRepGraphAlgo_Sewing::cutAtIntersections(
   NCollection_Vector<BRepGraph_NodeId> aNewFreeVec(THE_INIT_VECTOR_CAPACITY, theTmpAlloc);
   for (int aFreeEdgeIter = 1; aFreeEdgeIter <= aNbFreeEdges; ++aFreeEdgeIter)
   {
-    const NCollection_Vector<BRepGraph_NodeId>& aChain =
-      aSubEdgeChains.Value(aFreeEdgeIter - 1);
+    const NCollection_Vector<BRepGraph_NodeId>& aChain = aSubEdgeChains.Value(aFreeEdgeIter - 1);
     if (aChain.IsEmpty())
     {
       // No splits: keep original free edge.
@@ -764,7 +756,7 @@ void BRepGraphAlgo_Sewing::cutAtIntersections(
   }
 
   // Convert to Array1 for thread-safe random access in subsequent phases.
-  const int aNbNewFree = aNewFreeVec.Length();
+  const int                            aNbNewFree = aNewFreeVec.Length();
   NCollection_Array1<BRepGraph_NodeId> aNewFreeArray(1, aNbNewFree);
   for (int anIdx = 0; anIdx < aNbNewFree; ++anIdx)
     aNewFreeArray.SetValue(anIdx + 1, aNewFreeVec.Value(anIdx));
@@ -832,28 +824,31 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> BRepGraphAlgo_
       const gp_Pnt& aEndA   = myGraph.Defs().Vertex(anEdgeANode.EndVertexDefId.Index).Point;
       const double  aChordA = aStartA.Distance(aEndA);
 
-      myGraph.RelEdges().ForEachOutOfKind(anIdA, BRepGraph_RelKind::UserDefined, [&](const BRepGraph_RelEdge& aRelEdge) {
-        const BRepGraph_NodeId   anIdB    = aRelEdge.Target;
+      myGraph.RelEdges().ForEachOutOfKind(
+        anIdA,
+        BRepGraph_RelKind::UserDefined,
+        [&](const BRepGraph_RelEdge& aRelEdge) {
+          const BRepGraph_NodeId anIdB = aRelEdge.Target;
 
-        if (!aFreeEdgeIndices.Contains(anIdB.Index))
-          return;
+          if (!aFreeEdgeIndices.Contains(anIdB.Index))
+            return;
 
-        // Full geometric validation using cached edgeA data.
-        if (areEdgesSewable(anIdA, anIdB, aSamplePtsA, anExtPCRevA, aChordA))
-        {
-          const BRepGraph_TopoNode::EdgeDef& anEdgeB = myGraph.Defs().Edge(anIdB.Index);
-          const gp_Pnt& aStartB = myGraph.Defs().Vertex(anEdgeB.StartVertexDefId.Index).Point;
-          const gp_Pnt& aEndB   = myGraph.Defs().Vertex(anEdgeB.EndVertexDefId.Index).Point;
-
-          double aScore = std::min(aStartA.Distance(aStartB) + aEndA.Distance(aEndB),
-                                   aStartA.Distance(aEndB) + aEndA.Distance(aStartB));
-          if (aScore < aMatch.BestScore)
+          // Full geometric validation using cached edgeA data.
+          if (areEdgesSewable(anIdA, anIdB, aSamplePtsA, anExtPCRevA, aChordA))
           {
-            aMatch.BestScore = aScore;
-            aMatch.BestMatch = anIdB;
+            const BRepGraph_TopoNode::EdgeDef& anEdgeB = myGraph.Defs().Edge(anIdB.Index);
+            const gp_Pnt& aStartB = myGraph.Defs().Vertex(anEdgeB.StartVertexDefId.Index).Point;
+            const gp_Pnt& aEndB   = myGraph.Defs().Vertex(anEdgeB.EndVertexDefId.Index).Point;
+
+            double aScore = std::min(aStartA.Distance(aStartB) + aEndA.Distance(aEndB),
+                                     aStartA.Distance(aEndB) + aEndA.Distance(aStartB));
+            if (aScore < aMatch.BestScore)
+            {
+              aMatch.BestScore = aScore;
+              aMatch.BestMatch = anIdB;
+            }
           }
-        }
-      });
+        });
     },
     !myIsParallel);
 
@@ -917,8 +912,8 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> BRepGraphAlgo_
 
 void BRepGraphAlgo_Sewing::mergeMatchedEdges(
   const NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>>& thePairs,
-  NCollection_Map<int>&                                                      theAffectedFaces,
-  NCollection_Map<int>&                                                      theSewnEdgeIndices)
+  NCollection_Map<int>&                                                    theAffectedFaces,
+  NCollection_Map<int>&                                                    theSewnEdgeIndices)
 {
   BRep_Builder aBB;
 
@@ -945,35 +940,33 @@ void BRepGraphAlgo_Sewing::mergeMatchedEdges(
     {
       const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCEntry =
         aRemoveEdge.PCurves.Value(aPCurveIter);
-      const BRepGraph_GeomNode::PCurve& aPCNode   = myGraph.Geom().PCurve(aPCEntry.PCurveNodeId.Index);
-      const BRepGraph_TopoNode::FaceDef&   aFaceNode = myGraph.Defs().Face(aPCEntry.FaceDefId.Index);
+      const BRepGraph_GeomNode::PCurve& aPCNode =
+        myGraph.Geom().PCurve(aPCEntry.PCurveNodeId.Index);
+      const BRepGraph_TopoNode::FaceDef& aFaceNode = myGraph.Defs().Face(aPCEntry.FaceDefId.Index);
 
       if (!aPCNode.Curve2d.IsNull())
       {
-        const BRepGraph_GeomNode::Surf& aSurfNode = myGraph.Geom().Surface(aFaceNode.SurfNodeId.Index);
-        double                          aMergedTol =
+        const BRepGraph_GeomNode::Surf& aSurfNode =
+          myGraph.Geom().Surface(aFaceNode.SurfNodeId.Index);
+        double aMergedTol =
           std::max(BRep_Tool::Tolerance(aKeepTopoEdge), BRep_Tool::Tolerance(aRemoveTopoEdge));
         TopLoc_Location aFaceLoc(myGraph.Spatial().GlobalTransform(aPCEntry.FaceDefId));
-        aBB.UpdateEdge(aKeepTopoEdge,
-                       aPCNode.Curve2d,
-                       aSurfNode.Surface,
-                       aFaceLoc,
-                       aMergedTol);
+        aBB.UpdateEdge(aKeepTopoEdge, aPCNode.Curve2d, aSurfNode.Surface, aFaceLoc, aMergedTol);
 
         // Add PCurve entry to keep-edge via graph API; preserve original edge orientation
         // so that seam edges (REVERSED orientation) are correctly reconstructed as C2.
         myGraph.Mut().AddPCurveToEdge(anIdA,
-                                aPCEntry.FaceDefId,
-                                aPCNode.Curve2d,
-                                aPCNode.ParamFirst,
-                                aPCNode.ParamLast,
-                                aPCEntry.EdgeOrientation);
+                                      aPCEntry.FaceDefId,
+                                      aPCNode.Curve2d,
+                                      aPCNode.ParamFirst,
+                                      aPCNode.ParamLast,
+                                      aPCEntry.EdgeOrientation);
       }
     }
 
     // Determine direction correspondence from vertex positions.
     const BRepGraph_TopoNode::EdgeDef& aKeepEdge = myGraph.Defs().Edge(anIdA.Index);
-    const gp_Pnt& aKeepStart                  = myGraph.Defs().Vertex(aKeepEdge.StartVertexDefId.Index).Point;
+    const gp_Pnt& aKeepStart   = myGraph.Defs().Vertex(aKeepEdge.StartVertexDefId.Index).Point;
     const gp_Pnt& aRemoveStart = myGraph.Defs().Vertex(aRemoveEdge.StartVertexDefId.Index).Point;
     const bool    isReversed   = aKeepStart.Distance(aRemoveStart) > myTolerance;
 
@@ -1041,7 +1034,7 @@ void BRepGraphAlgo_Sewing::processEdges(const NCollection_Map<int>& theSewnEdgeI
     0,
     aNbSewn,
     [&](int theIdx) {
-      const int                       anEdgeIdx = aSewnIndices.Value(theIdx);
+      const int                          anEdgeIdx = aSewnIndices.Value(theIdx);
       const BRepGraph_TopoNode::EdgeDef& anEdge    = myGraph.Defs().Edge(anEdgeIdx);
       if (anEdge.IsDegenerate)
         return;
@@ -1049,9 +1042,11 @@ void BRepGraphAlgo_Sewing::processEdges(const NCollection_Map<int>& theSewnEdgeI
       // Ensure edge tolerance is at least as large as its vertex tolerances.
       double aMaxVtxTol = 0.0;
       if (anEdge.StartVertexDefId.IsValid())
-        aMaxVtxTol = std::max(aMaxVtxTol, myGraph.Defs().Vertex(anEdge.StartVertexDefId.Index).Tolerance);
+        aMaxVtxTol =
+          std::max(aMaxVtxTol, myGraph.Defs().Vertex(anEdge.StartVertexDefId.Index).Tolerance);
       if (anEdge.EndVertexDefId.IsValid())
-        aMaxVtxTol = std::max(aMaxVtxTol, myGraph.Defs().Vertex(anEdge.EndVertexDefId.Index).Tolerance);
+        aMaxVtxTol =
+          std::max(aMaxVtxTol, myGraph.Defs().Vertex(anEdge.EndVertexDefId.Index).Tolerance);
 
       if (aMaxVtxTol > anEdge.Tolerance)
       {
@@ -1078,17 +1073,18 @@ void BRepGraphAlgo_Sewing::reconstructResult(const NCollection_Map<int>& theAffe
       if (theAffectedFaces.Contains(theFaceIdx))
         aFaceShapes.SetValue(theFaceIdx, myGraph.Shapes().ReconstructFace(theFaceIdx));
       else
-        aFaceShapes.SetValue(theFaceIdx, myGraph.Shapes().Shape(BRepGraph_NodeId(BRepGraph_NodeKind::Face, theFaceIdx)));
+        aFaceShapes.SetValue(
+          theFaceIdx,
+          myGraph.Shapes().Shape(BRepGraph_NodeId(BRepGraph_NodeKind::Face, theFaceIdx)));
     },
     !myIsParallel);
 
   // Step 2 (sequential): Reassemble preserving the original hierarchy.
   // Helper lambda: build a shell from its face usages using reconstructed faces.
   BRep_Builder aBB;
-  auto buildShell = [&](int theShellUsageIdx) -> TopoDS_Shell
-  {
+  auto         buildShell = [&](int theShellUsageIdx) -> TopoDS_Shell {
     const BRepGraph_TopoNode::ShellUsage& aShellUsage = myGraph.Usages().Shell(theShellUsageIdx);
-    TopoDS_Shell aNewShell;
+    TopoDS_Shell                          aNewShell;
     aBB.MakeShell(aNewShell);
     for (int aFaceIter = 0; aFaceIter < aShellUsage.FaceUsages.Length(); ++aFaceIter)
     {
@@ -1101,10 +1097,9 @@ void BRepGraphAlgo_Sewing::reconstructResult(const NCollection_Map<int>& theAffe
   };
 
   // Helper lambda: build a solid from its shell usages.
-  auto buildSolid = [&](int theSolidUsageIdx) -> TopoDS_Solid
-  {
+  auto buildSolid = [&](int theSolidUsageIdx) -> TopoDS_Solid {
     const BRepGraph_TopoNode::SolidUsage& aSolidUsage = myGraph.Usages().Solid(theSolidUsageIdx);
-    TopoDS_Solid aNewSolid;
+    TopoDS_Solid                          aNewSolid;
     aBB.MakeSolid(aNewSolid);
     for (int aShellIter = 0; aShellIter < aSolidUsage.ShellUsages.Length(); ++aShellIter)
     {
@@ -1117,9 +1112,9 @@ void BRepGraphAlgo_Sewing::reconstructResult(const NCollection_Map<int>& theAffe
 
   // Recursive lambda: build a compound from its child usages.
   std::function<TopoDS_Compound(int)> buildCompound;
-  buildCompound = [&](int theCompUsageIdx) -> TopoDS_Compound
-  {
-    const BRepGraph_TopoNode::CompoundUsage& aCompUsage = myGraph.Usages().Compound(theCompUsageIdx);
+  buildCompound = [&](int theCompUsageIdx) -> TopoDS_Compound {
+    const BRepGraph_TopoNode::CompoundUsage& aCompUsage =
+      myGraph.Usages().Compound(theCompUsageIdx);
     TopoDS_Compound aNewCompound;
     aBB.MakeCompound(aNewCompound);
     for (int aChildIter = 0; aChildIter < aCompUsage.ChildUsages.Length(); ++aChildIter)
@@ -1130,9 +1125,9 @@ void BRepGraphAlgo_Sewing::reconstructResult(const NCollection_Map<int>& theAffe
         case BRepGraph_NodeKind::Compound:
           aBB.Add(aNewCompound, buildCompound(aChildId.Index));
           break;
-        case BRepGraph_NodeKind::CompSolid:
-        {
-          const BRepGraph_TopoNode::CompSolidUsage& aCSUsage = myGraph.Usages().CompSolid(aChildId.Index);
+        case BRepGraph_NodeKind::CompSolid: {
+          const BRepGraph_TopoNode::CompSolidUsage& aCSUsage =
+            myGraph.Usages().CompSolid(aChildId.Index);
           TopoDS_CompSolid aNewCS;
           aBB.MakeCompSolid(aNewCS);
           for (int aSolIter = 0; aSolIter < aCSUsage.SolidUsages.Length(); ++aSolIter)
@@ -1149,8 +1144,7 @@ void BRepGraphAlgo_Sewing::reconstructResult(const NCollection_Map<int>& theAffe
         case BRepGraph_NodeKind::Shell:
           aBB.Add(aNewCompound, buildShell(aChildId.Index));
           break;
-        case BRepGraph_NodeKind::Face:
-        {
+        case BRepGraph_NodeKind::Face: {
           const int aFaceDefIdx = myGraph.Usages().Face(aChildId.Index).DefId.Index;
           aBB.Add(aNewCompound, aFaceShapes.Value(aFaceDefIdx));
           break;
@@ -1219,7 +1213,7 @@ void BRepGraphAlgo_Sewing::reconstructResult(const NCollection_Map<int>& theAffe
     if (myGraph.Usages().NbCompSolids() == 1)
     {
       const BRepGraph_TopoNode::CompSolidUsage& aCSUsage = myGraph.Usages().CompSolid(0);
-      TopoDS_CompSolid aNewCS;
+      TopoDS_CompSolid                          aNewCS;
       aBB.MakeCompSolid(aNewCS);
       for (int aSolIter = 0; aSolIter < aCSUsage.SolidUsages.Length(); ++aSolIter)
       {
@@ -1235,7 +1229,7 @@ void BRepGraphAlgo_Sewing::reconstructResult(const NCollection_Map<int>& theAffe
       for (int aCSIdx = 0; aCSIdx < myGraph.Usages().NbCompSolids(); ++aCSIdx)
       {
         const BRepGraph_TopoNode::CompSolidUsage& aCSUsage = myGraph.Usages().CompSolid(aCSIdx);
-        TopoDS_CompSolid aNewCS;
+        TopoDS_CompSolid                          aNewCS;
         aBB.MakeCompSolid(aNewCS);
         for (int aSolIter = 0; aSolIter < aCSUsage.SolidUsages.Length(); ++aSolIter)
         {
@@ -1416,21 +1410,14 @@ bool BRepGraphAlgo_Sewing::areEdgesSewable(BRepGraph_NodeId theEdgeA,
   {
     const gp_Pnt aPntA = aCurveA.EvalD0(aSamplerA.Parameter(aSampleIter));
 
-    const ExtremaPC::Result& aRes = anExtPCB.Perform(aPntA, Precision::Confusion());
+    const ExtremaPC::Result& aRes =
+      anExtPCB.Perform(aPntA, Precision::Confusion(), ExtremaPC::SearchMode::Min);
     if (!aRes.IsDone() || aRes.NbExt() == 0)
     {
       return false;
     }
 
-    double aMinSqDist = RealLast();
-    for (int anExtIter = 0; anExtIter < aRes.NbExt(); ++anExtIter)
-    {
-      const double aSqDist = aRes[anExtIter].SquareDistance;
-      if (aSqDist < aMinSqDist)
-      {
-        aMinSqDist = aSqDist;
-      }
-    }
+    const double aMinSqDist = aRes.MinSquareDistance();
 
     if (aMinSqDist > aTolSq)
     {
@@ -1460,21 +1447,14 @@ bool BRepGraphAlgo_Sewing::areEdgesSewable(BRepGraph_NodeId theEdgeA,
   {
     const gp_Pnt aPntB = aCurveB.EvalD0(aSamplerB.Parameter(aSampleIter));
 
-    const ExtremaPC::Result& aRes = anExtPCRevA.Perform(aPntB, Precision::Confusion());
+    const ExtremaPC::Result& aRes =
+      anExtPCRevA.Perform(aPntB, Precision::Confusion(), ExtremaPC::SearchMode::Min);
     if (!aRes.IsDone() || aRes.NbExt() == 0)
     {
       return false;
     }
 
-    double aMinSqDist = RealLast();
-    for (int anExtIter = 0; anExtIter < aRes.NbExt(); ++anExtIter)
-    {
-      const double aSqDist = aRes[anExtIter].SquareDistance;
-      if (aSqDist < aMinSqDist)
-      {
-        aMinSqDist = aSqDist;
-      }
-    }
+    const double aMinSqDist = aRes.MinSquareDistance();
 
     if (aMinSqDist > aTolSq)
     {
@@ -1538,21 +1518,14 @@ bool BRepGraphAlgo_Sewing::areEdgesSewable(BRepGraph_NodeId                  the
   {
     const gp_Pnt& aPntA = theSamplePtsA.Value(aSampleIter);
 
-    const ExtremaPC::Result& aRes = anExtPCB.Perform(aPntA, Precision::Confusion());
+    const ExtremaPC::Result& aRes =
+      anExtPCB.Perform(aPntA, Precision::Confusion(), ExtremaPC::SearchMode::Min);
     if (!aRes.IsDone() || aRes.NbExt() == 0)
     {
       return false;
     }
 
-    double aMinSqDist = RealLast();
-    for (int anExtIter = 0; anExtIter < aRes.NbExt(); ++anExtIter)
-    {
-      const double aSqDist = aRes[anExtIter].SquareDistance;
-      if (aSqDist < aMinSqDist)
-      {
-        aMinSqDist = aSqDist;
-      }
-    }
+    const double aMinSqDist = aRes.MinSquareDistance();
 
     if (aMinSqDist > aTolSq)
     {
@@ -1579,23 +1552,14 @@ bool BRepGraphAlgo_Sewing::areEdgesSewable(BRepGraph_NodeId                  the
   {
     const gp_Pnt aPntB = aCurveB.EvalD0(aSamplerB.Parameter(aSampleIter));
 
-    const ExtremaPC::Result& aRes = theExtPCRevA.Perform(aPntB, Precision::Confusion());
+    const ExtremaPC::Result& aRes =
+      theExtPCRevA.Perform(aPntB, Precision::Confusion(), ExtremaPC::SearchMode::Min);
     if (!aRes.IsDone() || aRes.NbExt() == 0)
     {
       return false;
     }
 
-    double aMinSqDist = RealLast();
-    for (int anExtIter = 0; anExtIter < aRes.NbExt(); ++anExtIter)
-    {
-      const double aSqDist = aRes[anExtIter].SquareDistance;
-      if (aSqDist < aMinSqDist)
-      {
-        aMinSqDist = aSqDist;
-      }
-    }
-
-    if (aMinSqDist > aTolSq)
+    if (aRes.MinSquareDistance() > aTolSq)
     {
       return false;
     }
