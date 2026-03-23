@@ -246,13 +246,10 @@ TEST(BRepGraphAlgo_ValidateTest, CorruptedPCurve_FaceDefIdOutOfBounds)
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Defs().NbEdges(), 0);
 
-  // Corrupt a PCurve's FaceDefId to an out-of-range value.
-  BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdgeDef = aGraph.Mut().EdgeDef(0);
-  if (anEdgeDef->PCurves.Length() > 0)
-  {
-    anEdgeDef->PCurves.ChangeValue(0).FaceDefId =
-      BRepGraph_NodeId::Face(aGraph.Defs().NbFaces() + 999);
-  }
+  // Corrupt a CoEdge's FaceDefId to an out-of-range value.
+  ASSERT_GT(aGraph.Defs().NbCoEdges(), 0);
+  BRepGraph_MutRef<BRepGraph_TopoNode::CoEdgeDef> aCoEdgeDef = aGraph.MutCoEdge(0);
+  aCoEdgeDef->FaceDefId = BRepGraph_NodeId::Face(aGraph.Defs().NbFaces() + 999);
 
   const BRepGraphAlgo_Validate::Result aValResult = BRepGraphAlgo_Validate::Perform(aGraph);
   EXPECT_FALSE(aValResult.IsValid());

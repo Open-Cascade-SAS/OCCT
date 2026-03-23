@@ -387,6 +387,8 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
         // Transfer PCurves (skip duplicates).
         // When the old edge is reversed relative to canonical, invert EdgeOrientation
         // so duplicate detection matches correctly against the canonical's PCurves.
+        // Note: we read from edge.PCurves here rather than CoEdge data because
+        // CoEdge entries may be incomplete for edges in shared wire definitions.
         for (int aPCIdx = 0; aPCIdx < anOldEdge.PCurves.Length(); ++aPCIdx)
         {
           const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCEntry =

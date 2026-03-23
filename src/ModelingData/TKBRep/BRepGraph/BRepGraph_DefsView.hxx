@@ -67,6 +67,10 @@ public:
   //! @param[in] theEdgeDefIdx zero-based edge definition index
   Standard_EXPORT int FaceCountOfEdge(int theEdgeDefIdx) const;
 
+  //! Return coedge indices referencing the given edge (safe reference, never null).
+  //! @param[in] theEdgeDefIdx zero-based edge definition index
+  Standard_EXPORT const NCollection_Vector<int>& CoEdgesOfEdge(int theEdgeDefIdx) const;
+
   //! Access solid definition by index.
   //! @param[in] theIdx zero-based definition index
   Standard_EXPORT const BRepGraph_TopoNode::SolidDef& Solid(int theIdx) const;

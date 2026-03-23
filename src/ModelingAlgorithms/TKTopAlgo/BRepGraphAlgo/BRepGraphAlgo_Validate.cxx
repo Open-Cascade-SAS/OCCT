@@ -81,15 +81,27 @@ void checkCrossReferenceBounds(const BRepGraph&                                 
                              anEdge.Id,
                              "EdgeDef.EndVertexDefId out of bounds"});
     }
-    for (int aPCIdx = 0; aPCIdx < anEdge.PCurves.Length(); ++aPCIdx)
+  }
+
+  // Check CoEdgeDef references.
+  for (int aCoEdgeIdx = 0; aCoEdgeIdx < theGraph.Defs().NbCoEdges(); ++aCoEdgeIdx)
+  {
+    const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Defs().CoEdge(aCoEdgeIdx);
+    if (aCoEdge.IsRemoved)
+      continue;
+
+    if (aCoEdge.FaceDefId.IsValid() && !isValidNodeId(theGraph, aCoEdge.FaceDefId))
     {
-      const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCEntry = anEdge.PCurves.Value(aPCIdx);
-      if (aPCEntry.FaceDefId.IsValid() && !isValidNodeId(theGraph, aPCEntry.FaceDefId))
-      {
-        theIssues.Append(Issue{Severity::Error,
-                               anEdge.Id,
-                               "EdgeDef.PCurveEntry.FaceDefId out of bounds"});
-      }
+      theIssues.Append(Issue{Severity::Error,
+                             aCoEdge.Id,
+                             "CoEdgeDef.FaceDefId out of bounds"});
+    }
+    const BRepGraph_NodeId anEdgeId = BRepGraph_NodeId::Edge(aCoEdge.EdgeIdx);
+    if (anEdgeId.IsValid() && !isValidNodeId(theGraph, anEdgeId))
+    {
+      theIssues.Append(Issue{Severity::Error,
+                             aCoEdge.Id,
+                             "CoEdgeDef.EdgeIdx out of bounds"});
     }
   }
 
@@ -375,16 +387,20 @@ void checkGeometryReferences(const BRepGraph&                                   
                              "Non-degenerate EdgeDef has null Curve3d handle"});
     }
 
-    // Check inline PCurve data.
-    for (int aPCIdx = 0; aPCIdx < anEdge.PCurves.Length(); ++aPCIdx)
+  }
+
+  // Check CoEdge PCurve data.
+  for (int aCoEdgeIdx = 0; aCoEdgeIdx < theGraph.Defs().NbCoEdges(); ++aCoEdgeIdx)
+  {
+    const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Defs().CoEdge(aCoEdgeIdx);
+    if (aCoEdge.IsRemoved)
+      continue;
+
+    if (aCoEdge.FaceDefId.IsValid() && aCoEdge.Curve2d.IsNull())
     {
-      const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCEntry = anEdge.PCurves.Value(aPCIdx);
-      if (aPCEntry.Curve2d.IsNull())
-      {
-        theIssues.Append(Issue{Severity::Error,
-                               anEdge.Id,
-                               "EdgeDef.PCurveEntry has null Curve2d handle"});
-      }
+      theIssues.Append(Issue{Severity::Error,
+                             aCoEdge.Id,
+                             "CoEdgeDef has null Curve2d handle"});
     }
   }
 }

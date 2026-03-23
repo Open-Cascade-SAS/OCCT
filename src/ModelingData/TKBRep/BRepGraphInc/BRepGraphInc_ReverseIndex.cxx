@@ -23,6 +23,7 @@ void BRepGraphInc_ReverseIndex::Clear()
 {
   myEdgeToWires.Clear();
   myEdgeToFaces.Clear();
+  myEdgeToCoEdges.Clear();
   myVertexToEdges.Clear();
   myWireToFaces.Clear();
   myFaceToShells.Clear();
@@ -105,25 +106,43 @@ void BRepGraphInc_ReverseIndex::Build(
     }
   }
 
-  // Edge -> Faces: derive from inline PCurve entries on each edge.
-  // Seam edges produce two PCurve entries with same FaceDefId but opposite
-  // orientations. Collect, sort, and deduplicate per edge to avoid linear scans.
+  // Edge -> CoEdges: derive from CoEdge.EdgeIdx field.
+  preSize(myEdgeToCoEdges, theEdges.Length(), myAllocator);
+  for (int aCoEdgeIdx = 0; aCoEdgeIdx < theCoEdges.Length(); ++aCoEdgeIdx)
+  {
+    const BRepGraphInc::CoEdgeEntity& aCoEdge = theCoEdges.Value(aCoEdgeIdx);
+    if (aCoEdge.IsRemoved)
+      continue;
+    if (aCoEdge.EdgeIdx >= 0)
+      appendDirect(myEdgeToCoEdges, aCoEdge.EdgeIdx, aCoEdgeIdx);
+  }
+
+  // Edge -> Faces: derive from CoEdge.FaceDefId (replaces legacy PCurve-based derivation).
+  // Seam edges have two CoEdges with same FaceDefId but opposite Sense.
+  // Deduplicate per edge using the edge→coedges index built above.
   for (int anEdgeIdx = 0; anEdgeIdx < theEdges.Length(); ++anEdgeIdx)
   {
-    const BRepGraphInc::EdgeEntity& anEdge = theEdges.Value(anEdgeIdx);
-    if (anEdge.IsRemoved)
+    if (theEdges.Value(anEdgeIdx).IsRemoved)
       continue;
-    const int aNbPC = anEdge.PCurves.Length();
-    if (aNbPC == 0)
+    const NCollection_Vector<int>* aCoEdgeIdxs = seekVec(myEdgeToCoEdges, anEdgeIdx);
+    if (aCoEdgeIdxs == nullptr)
       continue;
+    const int aNbCE = aCoEdgeIdxs->Length();
 
-    // Collect face indices into local array (stack-allocated for small counts).
-    NCollection_LocalArray<int, 8> aFaces(aNbPC);
-    for (int i = 0; i < aNbPC; ++i)
-      aFaces[i] = anEdge.PCurves.Value(i).FaceDefId.Index;
+    // Collect face indices from coedges (stack-allocated for small counts).
+    NCollection_LocalArray<int, 8> aFaces(aNbCE);
+    int aNbFaces = 0;
+    for (int i = 0; i < aNbCE; ++i)
+    {
+      const BRepGraphInc::CoEdgeEntity& aCoEdge = theCoEdges.Value(aCoEdgeIdxs->Value(i));
+      if (aCoEdge.FaceDefId.IsValid())
+        aFaces[aNbFaces++] = aCoEdge.FaceDefId.Index;
+    }
+    if (aNbFaces == 0)
+      continue;
 
     // Insertion sort (optimal for small N).
-    for (int i = 1; i < aNbPC; ++i)
+    for (int i = 1; i < aNbFaces; ++i)
     {
       const int aKey = aFaces[i];
       int j = i - 1;
@@ -137,7 +156,7 @@ void BRepGraphInc_ReverseIndex::Build(
 
     // Append unique sorted values.
     int aPrev = -1;
-    for (int i = 0; i < aNbPC; ++i)
+    for (int i = 0; i < aNbFaces; ++i)
     {
       if (aFaces[i] != aPrev)
       {
@@ -238,6 +257,7 @@ void BRepGraphInc_ReverseIndex::BuildDelta(
   extendTable(myVertexToEdges, aMaxVertexIdx + 1);
   extendTable(myEdgeToWires,   theEdges.Length());
   extendTable(myEdgeToFaces,   theEdges.Length());
+  extendTable(myEdgeToCoEdges, theEdges.Length());
   extendTable(myWireToFaces,   theWires.Length());
   extendTable(myFaceToShells,  theFaces.Length());
   extendTable(myShellToSolids, theShells.Length());
@@ -268,21 +288,39 @@ void BRepGraphInc_ReverseIndex::BuildDelta(
     }
   }
 
-  // Edge -> Faces: only new edges (derive from their PCurves).
+  // Edge -> CoEdges: scan ALL coedges (new coedges may reference old edges).
+  // We appendUnique to handle incremental additions correctly.
+  for (int aCoEdgeIdx = 0; aCoEdgeIdx < theCoEdges.Length(); ++aCoEdgeIdx)
+  {
+    const BRepGraphInc::CoEdgeEntity& aCoEdge = theCoEdges.Value(aCoEdgeIdx);
+    if (aCoEdge.IsRemoved)
+      continue;
+    if (aCoEdge.EdgeIdx >= 0)
+      appendUnique(myEdgeToCoEdges, aCoEdge.EdgeIdx, aCoEdgeIdx);
+  }
+
+  // Edge -> Faces: derive from CoEdge.FaceDefId for new edges.
   for (int anEdgeIdx = theOldNbEdges; anEdgeIdx < theEdges.Length(); ++anEdgeIdx)
   {
-    const BRepGraphInc::EdgeEntity& anEdge = theEdges.Value(anEdgeIdx);
-    if (anEdge.IsRemoved)
+    if (theEdges.Value(anEdgeIdx).IsRemoved)
       continue;
-    const int aNbPC = anEdge.PCurves.Length();
-    if (aNbPC == 0)
+    const NCollection_Vector<int>* aCoEdgeIdxs = seekVec(myEdgeToCoEdges, anEdgeIdx);
+    if (aCoEdgeIdxs == nullptr)
+      continue;
+    const int aNbCE = aCoEdgeIdxs->Length();
+
+    NCollection_LocalArray<int, 8> aFaces(aNbCE);
+    int aNbFaces = 0;
+    for (int i = 0; i < aNbCE; ++i)
+    {
+      const BRepGraphInc::CoEdgeEntity& aCoEdge = theCoEdges.Value(aCoEdgeIdxs->Value(i));
+      if (aCoEdge.FaceDefId.IsValid())
+        aFaces[aNbFaces++] = aCoEdge.FaceDefId.Index;
+    }
+    if (aNbFaces == 0)
       continue;
 
-    NCollection_LocalArray<int, 8> aFaces(aNbPC);
-    for (int i = 0; i < aNbPC; ++i)
-      aFaces[i] = anEdge.PCurves.Value(i).FaceDefId.Index;
-
-    for (int i = 1; i < aNbPC; ++i)
+    for (int i = 1; i < aNbFaces; ++i)
     {
       const int aKey = aFaces[i];
       int j = i - 1;
@@ -295,7 +333,7 @@ void BRepGraphInc_ReverseIndex::BuildDelta(
     }
 
     int aPrev = -1;
-    for (int i = 0; i < aNbPC; ++i)
+    for (int i = 0; i < aNbFaces; ++i)
     {
       if (aFaces[i] != aPrev)
       {
@@ -572,18 +610,14 @@ bool BRepGraphInc_ReverseIndex::Validate(
     }
   }
 
-  // Check: for each edge's PCurves, edge->face reverse entry must exist.
-  for (int anEdgeIdx = 0; anEdgeIdx < theEdges.Length(); ++anEdgeIdx)
+  // Check: for each edge's CoEdges with valid FaceDefId, edge->face reverse entry must exist.
+  for (int aCoEdgeIdx = 0; aCoEdgeIdx < theCoEdges.Length(); ++aCoEdgeIdx)
   {
-    const BRepGraphInc::EdgeEntity& anEdge = theEdges.Value(anEdgeIdx);
-    if (anEdge.IsRemoved)
+    const BRepGraphInc::CoEdgeEntity& aCoEdge = theCoEdges.Value(aCoEdgeIdx);
+    if (aCoEdge.IsRemoved || !aCoEdge.FaceDefId.IsValid())
       continue;
-    for (int aPCIdx = 0; aPCIdx < anEdge.PCurves.Length(); ++aPCIdx)
-    {
-      const int aFaceIdx = anEdge.PCurves.Value(aPCIdx).FaceDefId.Index;
-      if (!containsVal(myEdgeToFaces, anEdgeIdx, aFaceIdx))
-        return false;
-    }
+    if (!containsVal(myEdgeToFaces, aCoEdge.EdgeIdx, aCoEdge.FaceDefId.Index))
+      return false;
   }
 
   // Check: for each face's WireRefs, wire->face reverse entry must exist.

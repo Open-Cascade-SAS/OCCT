@@ -728,12 +728,11 @@ void BRepGraphAlgo_BndLib::Add(const BRepGraph& theGraph, Bnd_Box& theBox, bool 
     addFaceBox(theGraph, i, theBox, theUseTriangulation);
   }
 
-  // Add free edges (edges not in any face, identified by having no PCurves).
+  // Add free edges (edges not in any face, identified by having no CoEdges with a face).
   const int aNbEdges = theGraph.Defs().NbEdges();
   for (int i = 0; i < aNbEdges; ++i)
   {
-    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = theGraph.Defs().Edge(i);
-    if (anEdgeDef.PCurves.IsEmpty())
+    if (theGraph.Defs().FaceCountOfEdge(i) == 0)
     {
       addEdgeBox(theGraph, i, theBox);
     }
@@ -772,12 +771,11 @@ void BRepGraphAlgo_BndLib::AddOptimal(const BRepGraph& theGraph,
     addFaceBoxOptimal(theGraph, i, theBox, theUseTriangulation, theUseShapeTolerance);
   }
 
-  // Add free edges.
+  // Add free edges (edges not in any face).
   const int aNbEdges = theGraph.Defs().NbEdges();
   for (int i = 0; i < aNbEdges; ++i)
   {
-    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = theGraph.Defs().Edge(i);
-    if (anEdgeDef.PCurves.IsEmpty())
+    if (theGraph.Defs().FaceCountOfEdge(i) == 0)
     {
       Bnd_Box aLocBox;
       addEdgeBoxOptimal(theGraph, i, aLocBox, theUseShapeTolerance);

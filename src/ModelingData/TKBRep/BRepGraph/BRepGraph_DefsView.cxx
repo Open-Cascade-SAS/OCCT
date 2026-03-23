@@ -150,6 +150,13 @@ int BRepGraph::DefsView::FaceCountOfEdge(int theEdgeDefIdx) const
 
 //=================================================================================================
 
+const NCollection_Vector<int>& BRepGraph::DefsView::CoEdgesOfEdge(int theEdgeDefIdx) const
+{
+  return myGraph->myData->myIncStorage.ReverseIndex().CoEdgesOfEdgeRef(theEdgeDefIdx);
+}
+
+//=================================================================================================
+
 const BRepGraph_TopoNode::SolidDef& BRepGraph::DefsView::Solid(int theIdx) const
 {
   return myGraph->myData->myIncStorage.Solid(theIdx);
@@ -545,21 +552,32 @@ static GeomAdaptor_TransformedCurve buildCurveAdaptorFromDef(
                                         gp_Trsf());
   }
 
-  if (!theEdge.PCurves.IsEmpty())
+  // Fall back to curve-on-surface from the first CoEdge with a valid PCurve.
+  const NCollection_Vector<int>* aCoEdgeIdxs =
+    theData.myIncStorage.ReverseIndex().CoEdgesOfEdge(theEdge.Id.Index);
+  if (aCoEdgeIdxs != nullptr)
   {
-    const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCE = theEdge.PCurves.First();
-    const occ::handle<Geom2d_Curve>& aPC = aPCE.Curve2d;
-    const occ::handle<Geom_Surface>& aSurf =
-      theData.myIncStorage.Face(aPCE.FaceDefId.Index).Surface;
+    for (int anIter = 0; anIter < aCoEdgeIdxs->Length(); ++anIter)
+    {
+      const BRepGraphInc::CoEdgeEntity& aCoEdge =
+        theData.myIncStorage.CoEdge(aCoEdgeIdxs->Value(anIter));
+      if (aCoEdge.Curve2d.IsNull() || !aCoEdge.FaceDefId.IsValid())
+        continue;
 
-    occ::handle<Geom2dAdaptor_Curve> aHC2d =
-      new Geom2dAdaptor_Curve(aPC, theEdge.ParamFirst, theEdge.ParamLast);
-    occ::handle<GeomAdaptor_Surface>      aHS  = new GeomAdaptor_Surface(aSurf);
-    occ::handle<Adaptor3d_CurveOnSurface> aCOS = new Adaptor3d_CurveOnSurface(aHC2d, aHS);
+      const occ::handle<Geom_Surface>& aSurf =
+        theData.myIncStorage.Face(aCoEdge.FaceDefId.Index).Surface;
+      if (aSurf.IsNull())
+        continue;
 
-    GeomAdaptor_TransformedCurve aResult;
-    aResult.LoadCurveOnSurface(aCOS);
-    return aResult;
+      occ::handle<Geom2dAdaptor_Curve> aHC2d =
+        new Geom2dAdaptor_Curve(aCoEdge.Curve2d, theEdge.ParamFirst, theEdge.ParamLast);
+      occ::handle<GeomAdaptor_Surface>      aHS  = new GeomAdaptor_Surface(aSurf);
+      occ::handle<Adaptor3d_CurveOnSurface> aCOS = new Adaptor3d_CurveOnSurface(aHC2d, aHS);
+
+      GeomAdaptor_TransformedCurve aResult;
+      aResult.LoadCurveOnSurface(aCOS);
+      return aResult;
+    }
   }
 
   return GeomAdaptor_TransformedCurve();

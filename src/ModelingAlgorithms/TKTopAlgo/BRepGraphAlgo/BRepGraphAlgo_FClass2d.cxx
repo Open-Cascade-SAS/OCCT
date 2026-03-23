@@ -78,53 +78,6 @@ bool isDegenerated(const occ::handle<Geom_Curve>& theCurve,
 
 //=================================================================================================
 
-// Finds PCurve entry for a given edge definition on a given face.
-// For seam edges (two PCurves on the same face), matches by edge orientation.
-const BRepGraph_TopoNode::EdgeDef::PCurveEntry*
-findPCurveForFace(const BRepGraph_TopoNode::EdgeDef& theEdgeDef,
-                  const BRepGraph_NodeId             theFaceDefId,
-                  const TopAbs_Orientation           theEdgeOri)
-{
-  const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aResult = nullptr;
-  for (int i = 0; i < theEdgeDef.PCurves.Length(); ++i)
-  {
-    const BRepGraph_TopoNode::EdgeDef::PCurveEntry& anEntry = theEdgeDef.PCurves(i);
-    if (anEntry.FaceDefId == theFaceDefId)
-    {
-      if (aResult == nullptr)
-      {
-        aResult = &anEntry;
-        if (anEntry.EdgeOrientation == theEdgeOri)
-          return aResult;
-      }
-      else
-      {
-        // Seam edge: pick the PCurve matching orientation.
-        if (anEntry.EdgeOrientation == theEdgeOri)
-          return &anEntry;
-      }
-    }
-  }
-  return aResult;
-}
-
-//=================================================================================================
-
-// Checks if an edge has two PCurves on the same face (i.e. is a seam/closed edge).
-bool isClosedOnFace(const BRepGraph_TopoNode::EdgeDef& theEdgeDef,
-                    const BRepGraph_NodeId             theFaceDefId)
-{
-  int aCount = 0;
-  for (int i = 0; i < theEdgeDef.PCurves.Length(); ++i)
-  {
-    if (theEdgeDef.PCurves(i).FaceDefId == theFaceDefId)
-      ++aCount;
-  }
-  return aCount >= 2;
-}
-
-//=================================================================================================
-
 // Updates max deflection (sagitta) from the last 3 points in the vector.
 // theNbPnts is the 1-based count of points; the vector is 0-based.
 void updateDeflection(const NCollection_Vector<gp_Pnt2d>& thePnts,
@@ -192,8 +145,7 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
       myGraph(&theGraph),
       myFaceDefIdx(theFaceDefIdx)
 {
-  const BRepGraph_TopoNode::FaceDef& aFaceDef    = theGraph.Defs().Face(theFaceDefIdx);
-  const BRepGraph_NodeId             aFaceNodeId = aFaceDef.Id;
+  const BRepGraph_TopoNode::FaceDef& aFaceDef = theGraph.Defs().Face(theFaceDefIdx);
 
   // Surface type and periodicity.
   // Geometry is stored at identity; location offsets are absorbed into usages.
@@ -280,18 +232,13 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
       if (anOri != TopAbs_FORWARD && anOri != TopAbs_REVERSED)
         continue;
 
-      // PCurve lookup.
-      const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurveEntry =
-        findPCurveForFace(anEdgeDef, aFaceNodeId, anOri);
-      if (aPCurveEntry == nullptr)
-        return;
-
-      const occ::handle<Geom2d_Curve>& aCurve2d = aPCurveEntry->Curve2d;
+      // PCurve data from CoEdge.
+      const occ::handle<Geom2d_Curve>& aCurve2d = aCoEdgeDef.Curve2d;
       if (aCurve2d.IsNull())
         return;
 
-      double aParamFirst = aPCurveEntry->ParamFirst;
-      double aParamLast  = aPCurveEntry->ParamLast;
+      double aParamFirst = aCoEdgeDef.ParamFirst;
+      double aParamLast  = aCoEdgeDef.ParamLast;
 
       if (std::abs(aParamLast - aParamFirst) < 1.e-9)
         continue;
@@ -301,7 +248,7 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
       if (anEdgeDef.IsDegenerate)
         anIsDegenerated = true;
 
-      if (isClosedOnFace(anEdgeDef, aFaceNodeId))
+      if (aCoEdgeDef.SeamPairIdx >= 0)
         anIsDegenerated = true;
 
       if (!anEdgeDef.StartVertexDefId().IsValid() || !anEdgeDef.EndVertexDefId().IsValid())
@@ -421,24 +368,20 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
             const BRepGraphInc::CoEdgeRef& aCoEdgeRef2 = anOrderedRefs.Value(anEdgeIdx);
             const BRepGraph_TopoNode::CoEdgeDef& aCoEdgeDef2 =
               theGraph.Defs().CoEdge(aCoEdgeRef2.CoEdgeIdx);
-            const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
-              theGraph.Defs().Edge(aCoEdgeDef2.EdgeIdx);
             const TopAbs_Orientation anOri = aCoEdgeDef2.Sense;
 
             if (anOri != TopAbs_FORWARD && anOri != TopAbs_REVERSED)
               continue;
 
-            const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurveEntry =
-              findPCurveForFace(anEdgeDef, aFaceNodeId, anOri);
-            if (aPCurveEntry == nullptr)
+            if (aCoEdgeDef2.Curve2d.IsNull())
               continue;
 
-            double aParamFirst = aPCurveEntry->ParamFirst;
-            double aParamLast  = aPCurveEntry->ParamLast;
+            double aParamFirst = aCoEdgeDef2.ParamFirst;
+            double aParamLast  = aCoEdgeDef2.ParamLast;
             if (std::abs(aParamLast - aParamFirst) < 1.e-9)
               continue;
 
-            Geom2dAdaptor_Curve           aC(aPCurveEntry->Curve2d, aParamFirst, aParamLast);
+            Geom2dAdaptor_Curve           aC(aCoEdgeDef2.Curve2d, aParamFirst, aParamLast);
             GCPnts_QuasiUniformDeflection aDiscr(aC, aDiscrDefl);
             if (!aDiscr.IsDone())
               break;

@@ -833,6 +833,15 @@ BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> BRepGraph::MutEdge(int theIdx)
 
 //=================================================================================================
 
+BRepGraph_MutRef<BRepGraph_TopoNode::CoEdgeDef> BRepGraph::MutCoEdge(int theIdx)
+{
+  return BRepGraph_MutRef<BRepGraph_TopoNode::CoEdgeDef>(
+    this, &myData->myIncStorage.ChangeCoEdge(theIdx),
+    BRepGraph_NodeId(BRepGraph_NodeId::Kind::CoEdge, theIdx));
+}
+
+//=================================================================================================
+
 BRepGraph_MutRef<BRepGraph_TopoNode::VertexDef> BRepGraph::MutVertex(int theIdx)
 {
   return BRepGraph_MutRef<BRepGraph_TopoNode::VertexDef>(

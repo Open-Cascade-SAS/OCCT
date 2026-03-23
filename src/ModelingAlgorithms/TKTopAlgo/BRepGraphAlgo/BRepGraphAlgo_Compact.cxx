@@ -340,30 +340,35 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
     aNewFace->ActiveTriangulationIndex = anOldFace.ActiveTriangulationIndex;
   }
 
-  // Add PCurves to edges in the new graph.
+  // Add PCurves to edges in the new graph via CoEdge data.
+  const BRepGraphInc_ReverseIndex& aCompactRevIdx = theGraph.myData->myIncStorage.ReverseIndex();
   for (int anIdx = 0; anIdx < theGraph.Defs().NbEdges(); ++anIdx)
   {
     if (!anEdgeMap.IsBound(anIdx))
       continue;
-    const BRepGraph_TopoNode::EdgeDef& anOldEdge   = theGraph.Defs().Edge(anIdx);
-    const int                          aNewEdgeIdx = anEdgeMap.Find(anIdx);
+    const int aNewEdgeIdx = anEdgeMap.Find(anIdx);
 
-    for (int aPCIdx = 0; aPCIdx < anOldEdge.PCurves.Length(); ++aPCIdx)
+    const NCollection_Vector<int>* aCoEdgeIdxs = aCompactRevIdx.CoEdgesOfEdge(anIdx);
+    if (aCoEdgeIdxs == nullptr)
+      continue;
+
+    for (int aCEIter = 0; aCEIter < aCoEdgeIdxs->Length(); ++aCEIter)
     {
-      const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCEntry = anOldEdge.PCurves.Value(aPCIdx);
-      if (aPCEntry.Curve2d.IsNull())
+      const BRepGraph_TopoNode::CoEdgeDef& aCoEdge =
+        theGraph.Defs().CoEdge(aCoEdgeIdxs->Value(aCEIter));
+      if (aCoEdge.Curve2d.IsNull())
         continue;
 
-      const BRepGraph_NodeId aNewFaceId = remapId(aPCEntry.FaceDefId);
+      const BRepGraph_NodeId aNewFaceId = remapId(aCoEdge.FaceDefId);
       if (!aNewFaceId.IsValid())
         continue;
 
       aNewGraph.Mut().AddPCurveToEdge(BRepGraph_NodeId::Edge(aNewEdgeIdx),
                                       aNewFaceId,
-                                      aPCEntry.Curve2d,
-                                      aPCEntry.ParamFirst,
-                                      aPCEntry.ParamLast,
-                                      aPCEntry.EdgeOrientation);
+                                      aCoEdge.Curve2d,
+                                      aCoEdge.ParamFirst,
+                                      aCoEdge.ParamLast,
+                                      aCoEdge.Sense);
     }
   }
 

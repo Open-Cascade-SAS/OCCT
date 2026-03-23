@@ -188,7 +188,7 @@ bool isClosedByIsos(const occ::handle<Geom_Surface>& theSurf,
 
 bool isSurfaceClosedForEdge(const BRepGraph&                           theGraph,
                             int                                        theFaceDefIdx,
-                            const BRepGraph_TopoNode::EdgeDef::PCurveEntry& thePCEntry,
+                            const BRepGraph_TopoNode::CoEdgeDef&       theCoEdge,
                             bool                                       theCheckU)
 {
   const BRepGraph_TopoNode::FaceDef& aFace = theGraph.Defs().Face(theFaceDefIdx);
@@ -203,38 +203,36 @@ bool isSurfaceClosedForEdge(const BRepGraph&                           theGraph,
     return true;
   }
   // Isocurve fallback: check if isocurves at PCurve endpoints form closed loops.
-  if (!thePCEntry.Curve2d.IsNull())
+  if (!theCoEdge.Curve2d.IsNull())
   {
-    return isClosedByIsos(aBasis, thePCEntry.Curve2d, thePCEntry.ParamFirst,
-                          thePCEntry.ParamLast, !theCheckU);
+    return isClosedByIsos(aBasis, theCoEdge.Curve2d, theCoEdge.ParamFirst,
+                          theCoEdge.ParamLast, !theCheckU);
   }
   return false;
 }
 
 // ---------------------------------------------------------------------------
-// Seam edge detection: edge is on a UV-closed surface and has 2 PCurves.
-// A seam can ONLY exist on a closed surface. This eliminates false positives
-// from non-seam edges on planar/non-closed surfaces.
+// Seam edge detection: edge is on a UV-closed surface and has 2 CoEdges
+// with SeamPairIdx >= 0. A seam can ONLY exist on a closed surface.
+// This eliminates false positives from non-seam edges on planar/non-closed surfaces.
 // ---------------------------------------------------------------------------
 
 bool isSeamEdge(const BRepGraph& theGraph, int theEdgeIdx)
 {
-  const BRepGraph_TopoNode::EdgeDef& anEdge = theGraph.Defs().Edge(theEdgeIdx);
-  // Collect unique FaceDefIds and count PCurve entries per face.
-  for (int i = 0; i < anEdge.PCurves.Length(); ++i)
+  // Scan all coedges to find those referencing this edge with a seam pair.
+  const int aNbCoEdges = theGraph.Defs().NbCoEdges();
+  for (int i = 0; i < aNbCoEdges; ++i)
   {
-    const int aFaceId = anEdge.PCurves.Value(i).FaceDefId.Index;
-    for (int j = i + 1; j < anEdge.PCurves.Length(); ++j)
+    const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Defs().CoEdge(i);
+    if (aCoEdge.EdgeIdx != theEdgeIdx)
+      continue;
+    if (aCoEdge.SeamPairIdx >= 0 && aCoEdge.FaceDefId.IsValid())
     {
-      if (anEdge.PCurves.Value(j).FaceDefId.Index == aFaceId)
+      // Seam coedge found — verify the surface is actually U or V closed.
+      if (isSurfaceClosedForEdge(theGraph, aCoEdge.FaceDefId.Index, aCoEdge, true)
+          || isSurfaceClosedForEdge(theGraph, aCoEdge.FaceDefId.Index, aCoEdge, false))
       {
-        // Two PCurve entries on the same face — this is a seam candidate.
-        // Verify the surface is actually U or V closed.
-        if (isSurfaceClosedForEdge(theGraph, aFaceId, anEdge.PCurves.Value(i), true)
-            || isSurfaceClosedForEdge(theGraph, aFaceId, anEdge.PCurves.Value(i), false))
-        {
-          return true;
-        }
+        return true;
       }
     }
   }
@@ -1388,6 +1386,8 @@ int mergeMatchedEdges(
     theGraph.Mut().EdgeDef(anIdA.Index)->Tolerance = aMergedTol;
 
     // 2. PCurve transfer from remove-edge to keep-edge.
+    // Note: we read from edge.PCurves here rather than CoEdge data because
+    // CoEdge entries may be incomplete for edges in shared wire definitions.
     for (int aPCurveIter = 0; aPCurveIter < aRemoveEdge.PCurves.Length(); ++aPCurveIter)
     {
       const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCEntry =
@@ -1680,13 +1680,24 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
 
   // Precompute face index per free-edge position (Opt 2).
   // Free edges have exactly 1 face; floating edges have 0 (-1 sentinel).
+  // Look up the face via the first CoEdge referencing each edge.
   const int aNbFreeEdgesForMap = aFreeEdges.Length();
+  const int aTotalCoEdges      = theGraph.Defs().NbCoEdges();
   NCollection_Array1<int> aFaceOfPos(1, aNbFreeEdgesForMap);
   for (int aFreeIdx = 1; aFreeIdx <= aNbFreeEdgesForMap; ++aFreeIdx)
   {
-    const BRepGraph_TopoNode::EdgeDef& anEdge =
-      theGraph.Defs().Edge(aFreeEdges.Value(aFreeIdx).Index);
-    aFaceOfPos(aFreeIdx) = anEdge.PCurves.IsEmpty() ? -1 : anEdge.PCurves.Value(0).FaceDefId.Index;
+    const int anEdgeIdx = aFreeEdges.Value(aFreeIdx).Index;
+    int aFaceIdx = -1;
+    for (int aCEIdx = 0; aCEIdx < aTotalCoEdges; ++aCEIdx)
+    {
+      const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Defs().CoEdge(aCEIdx);
+      if (aCoEdge.EdgeIdx == anEdgeIdx && aCoEdge.FaceDefId.IsValid())
+      {
+        aFaceIdx = aCoEdge.FaceDefId.Index;
+        break;
+      }
+    }
+    aFaceOfPos(aFreeIdx) = aFaceIdx;
   }
 
   // Phase 4: Detect sewing candidates (returns local adjacency, no RelEdge storage).

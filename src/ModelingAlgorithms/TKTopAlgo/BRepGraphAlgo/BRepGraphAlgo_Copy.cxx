@@ -161,23 +161,27 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
     transferUserAttributes(aFace.Cache, aNewFace->Cache);
   }
 
-  // PCurves (after edges and faces are created).
+  // PCurves via CoEdge data (after edges and faces are created).
+  const BRepGraphInc_ReverseIndex& aRevIdx = theGraph.myData->myIncStorage.ReverseIndex();
   for (int anIdx = 0; anIdx < theGraph.Defs().NbEdges(); ++anIdx)
   {
-    const BRepGraph_TopoNode::EdgeDef& anEdge = theGraph.Defs().Edge(anIdx);
-    for (int aPCIdx = 0; aPCIdx < anEdge.PCurves.Length(); ++aPCIdx)
+    const NCollection_Vector<int>* aCoEdgeIdxs = aRevIdx.CoEdgesOfEdge(anIdx);
+    if (aCoEdgeIdxs == nullptr)
+      continue;
+    for (int aCEIter = 0; aCEIter < aCoEdgeIdxs->Length(); ++aCEIter)
     {
-      const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCEntry = anEdge.PCurves.Value(aPCIdx);
-      if (aPCEntry.Curve2d.IsNull())
+      const BRepGraph_TopoNode::CoEdgeDef& aCoEdge =
+        theGraph.Defs().CoEdge(aCoEdgeIdxs->Value(aCEIter));
+      if (aCoEdge.Curve2d.IsNull())
         continue;
 
-      occ::handle<Geom2d_Curve> aNewPC = copyPCurve(aPCEntry.Curve2d, theCopyGeom);
+      occ::handle<Geom2d_Curve> aNewPC = copyPCurve(aCoEdge.Curve2d, theCopyGeom);
       aResult.Mut().AddPCurveToEdge(BRepGraph_NodeId::Edge(anIdx),
-                                    aPCEntry.FaceDefId,
+                                    aCoEdge.FaceDefId,
                                     aNewPC,
-                                    aPCEntry.ParamFirst,
-                                    aPCEntry.ParamLast,
-                                    aPCEntry.EdgeOrientation);
+                                    aCoEdge.ParamFirst,
+                                    aCoEdge.ParamLast,
+                                    aCoEdge.Sense);
     }
   }
 
@@ -414,28 +418,32 @@ BRepGraph BRepGraphAlgo_Copy::CopyFace(const BRepGraph& theGraph,
   aNewFace->ActiveTriangulationIndex = aFaceDef.ActiveTriangulationIndex;
   transferUserAttributes(aFaceDef.Cache, aNewFace->Cache);
 
-  // PCurves for edges in this face.
+  // PCurves for edges in this face via CoEdge data.
+  const BRepGraphInc_ReverseIndex& aFaceRevIdx = theGraph.myData->myIncStorage.ReverseIndex();
   for (int anIdx = 1; anIdx <= anEdgeSet.Extent(); ++anIdx)
   {
     const int anOldEdgeIdx = anEdgeSet.FindKey(anIdx);
     const int aNewEdgeIdx  = anIdx - 1;
-    const BRepGraph_TopoNode::EdgeDef& anEdge = theGraph.Defs().Edge(anOldEdgeIdx);
-    for (int aPCIdx = 0; aPCIdx < anEdge.PCurves.Length(); ++aPCIdx)
+    const NCollection_Vector<int>* aCoEdgeIdxs = aFaceRevIdx.CoEdgesOfEdge(anOldEdgeIdx);
+    if (aCoEdgeIdxs == nullptr)
+      continue;
+    for (int aCEIter = 0; aCEIter < aCoEdgeIdxs->Length(); ++aCEIter)
     {
-      const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCEntry = anEdge.PCurves.Value(aPCIdx);
-      // Only copy PCurves belonging to this face.
-      if (aPCEntry.FaceDefId.Index != theFaceIdx)
+      const BRepGraph_TopoNode::CoEdgeDef& aCoEdge =
+        theGraph.Defs().CoEdge(aCoEdgeIdxs->Value(aCEIter));
+      // Only copy CoEdges belonging to this face.
+      if (aCoEdge.FaceDefId.Index != theFaceIdx)
         continue;
-      if (aPCEntry.Curve2d.IsNull())
+      if (aCoEdge.Curve2d.IsNull())
         continue;
 
-      occ::handle<Geom2d_Curve> aNewPC = copyPCurve(aPCEntry.Curve2d, theCopyGeom);
+      occ::handle<Geom2d_Curve> aNewPC = copyPCurve(aCoEdge.Curve2d, theCopyGeom);
       aResult.Mut().AddPCurveToEdge(BRepGraph_NodeId::Edge(aNewEdgeIdx),
                                     BRepGraph_NodeId::Face(0),
                                     aNewPC,
-                                    aPCEntry.ParamFirst,
-                                    aPCEntry.ParamLast,
-                                    aPCEntry.EdgeOrientation);
+                                    aCoEdge.ParamFirst,
+                                    aCoEdge.ParamLast,
+                                    aCoEdge.Sense);
     }
   }
 

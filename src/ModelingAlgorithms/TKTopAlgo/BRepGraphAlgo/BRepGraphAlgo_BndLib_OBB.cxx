@@ -214,7 +214,7 @@ static int pointsForOBB(const BRepGraph&            theGraph,
   for (int i = 0; i < aNbEdges; ++i)
   {
     const BRepGraph_TopoNode::EdgeDef& anEdgeDef = theGraph.Defs().Edge(i);
-    if (!anEdgeDef.PCurves.IsEmpty())
+    if (theGraph.Defs().FaceCountOfEdge(i) > 0)
     {
       continue; // Edge is in a face, already handled.
     }

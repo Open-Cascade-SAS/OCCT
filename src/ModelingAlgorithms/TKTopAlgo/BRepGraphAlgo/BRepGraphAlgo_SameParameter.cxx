@@ -233,7 +233,9 @@ bool enforceImpl(BRepGraph&       theGraph,
   // even on early returns, due to RAII.
   BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aMutEdge = theGraph.MutEdge(theEdgeId.Index);
   const BRepGraph_TopoNode::EdgeDef& anEdge = *aMutEdge;
-  if (anEdge.Curve3d.IsNull() || anEdge.PCurves.IsEmpty())
+  const NCollection_Vector<int>& aCoEdgeIdxs =
+    theGraph.Defs().CoEdgesOfEdge(theEdgeId.Index);
+  if (anEdge.Curve3d.IsNull() || aCoEdgeIdxs.IsEmpty())
   {
     aMutEdge->SameParameter = true;
     return true;
@@ -290,15 +292,20 @@ bool enforceImpl(BRepGraph&       theGraph,
   double aMaxDist   = 0.0;
   bool   hasYaPCu   = false;
 
-  for (int aPCIdx = 0; aPCIdx < anEdge.PCurves.Length(); ++aPCIdx)
+  for (int aCEIter = 0; aCEIter < aCoEdgeIdxs.Length(); ++aCEIter)
   {
-    const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPC = anEdge.PCurves.Value(aPCIdx);
-    if (aPC.Curve2d.IsNull())
+    const int aCoEdgeIdx = aCoEdgeIdxs.Value(aCEIter);
+    const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Defs().CoEdge(aCoEdgeIdx);
+    if (aCoEdge.Curve2d.IsNull())
+    {
+      continue;
+    }
+    if (!aCoEdge.FaceDefId.IsValid())
     {
       continue;
     }
 
-    const BRepGraph_TopoNode::FaceDef& aFace = theGraph.Defs().Face(aPC.FaceDefId.Index);
+    const BRepGraph_TopoNode::FaceDef& aFace = theGraph.Defs().Face(aCoEdge.FaceDefId.Index);
     if (aFace.Surface.IsNull())
     {
       continue;
@@ -307,7 +314,7 @@ bool enforceImpl(BRepGraph&       theGraph,
     hasYaPCu = true;
 
     // Load surface (apply face transform if non-identity).
-    GeomAdaptor_TransformedSurface aTransSurf = theGraph.Defs().SurfaceAdaptor(aPC.FaceDefId);
+    GeomAdaptor_TransformedSurface aTransSurf = theGraph.Defs().SurfaceAdaptor(aCoEdge.FaceDefId);
     occ::handle<Geom_Surface>           aSurf      = aFace.Surface;
     const gp_Trsf&                 aSrfTrsf   = aTransSurf.Trsf();
     if (aSrfTrsf.Form() != gp_Identity)
@@ -316,7 +323,7 @@ bool enforceImpl(BRepGraph&       theGraph,
     }
     aGAS.Load(aSurf);
 
-    occ::handle<Geom2d_Curve> aCurPC    = aPC.Curve2d;
+    occ::handle<Geom2d_Curve> aCurPC    = aCoEdge.Curve2d;
     bool                 aUpdatePC = false;
 
     // SameRange check.
@@ -325,13 +332,13 @@ bool enforceImpl(BRepGraph&       theGraph,
     {
       occ::handle<Geom2d_Curve> aNewPC;
       GeomLib::SameRange(aTolSameRange,
-                         aPC.Curve2d,
-                         aPC.ParamFirst,
-                         aPC.ParamLast,
+                         aCoEdge.Curve2d,
+                         aCoEdge.ParamFirst,
+                         aCoEdge.ParamLast,
                          aF3d,
                          aL3d,
                          aNewPC);
-      if (!aNewPC.IsNull() && aNewPC != aPC.Curve2d)
+      if (!aNewPC.IsNull() && aNewPC != aCoEdge.Curve2d)
       {
         aCurPC    = aNewPC;
         aUpdatePC = true;
@@ -373,7 +380,7 @@ bool enforceImpl(BRepGraph&       theGraph,
           aMaxDist = std::max(aMaxDist, std::max(aMaxAnalErr, Precision::Confusion()));
           if (aUpdatePC)
           {
-            aMutEdge->PCurves.ChangeValue(aPCIdx).Curve2d = aCurPC;
+            theGraph.MutCoEdge(aCoEdgeIdx)->Curve2d = aCurPC;
           }
           continue;
         }
@@ -621,7 +628,7 @@ bool enforceImpl(BRepGraph&       theGraph,
         aMaxDist = std::max(aMaxDist, aSameP.TolReached());
         if (aUpdatePC)
         {
-          aMutEdge->PCurves.ChangeValue(aPCIdx).Curve2d = aCurPC;
+          theGraph.MutCoEdge(aCoEdgeIdx)->Curve2d = aCurPC;
         }
       }
       else if (aSameP.IsDone())
@@ -639,7 +646,7 @@ bool enforceImpl(BRepGraph&       theGraph,
         }
         if (aUpdatePC)
         {
-          aMutEdge->PCurves.ChangeValue(aPCIdx).Curve2d = aCurPC;
+          theGraph.MutCoEdge(aCoEdgeIdx)->Curve2d = aCurPC;
         }
       }
       else
@@ -648,15 +655,15 @@ bool enforceImpl(BRepGraph&       theGraph,
         ++theFlags.NbApproxFallbacks;
         occ::handle<Geom2d_Curve> aFallbackPC;
         GeomLib::SameRange(aTolSameRange,
-                           aPC.Curve2d,
-                           aPC.ParamFirst,
-                           aPC.ParamLast,
+                           aCoEdge.Curve2d,
+                           aCoEdge.ParamFirst,
+                           aCoEdge.ParamLast,
                            aF3d,
                            aL3d,
                            aFallbackPC);
         if (!aFallbackPC.IsNull())
         {
-          aMutEdge->PCurves.ChangeValue(aPCIdx).Curve2d = aFallbackPC;
+          theGraph.MutCoEdge(aCoEdgeIdx)->Curve2d = aFallbackPC;
         }
         isAllSameP = false;
       }

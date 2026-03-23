@@ -15,6 +15,7 @@
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_Data.hxx>
 #include <BRepGraph_Mutator.hxx>
+#include <BRepGraphInc_Storage.hxx>
 
 #include <Geom2d_Curve.hxx>
 
@@ -27,8 +28,10 @@ void BRepGraph::MutView::AddPCurveToEdge(BRepGraph_NodeId            theEdgeDef,
                                           double                      theLast,
                                           TopAbs_Orientation          theEdgeOrientation)
 {
-  BRepGraph_TopoNode::EdgeDef& anEdgeDef =
-    myGraph->myData->myIncStorage.ChangeEdge(theEdgeDef.Index);
+  BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  BRepGraph_TopoNode::EdgeDef& anEdgeDef = aStorage.ChangeEdge(theEdgeDef.Index);
+
+  // Legacy: append to edge.PCurves (kept during migration).
   BRepGraph_TopoNode::EdgeDef::PCurveEntry aNewEntry;
   aNewEntry.Curve2d         = theCurve2d;
   aNewEntry.FaceDefId       = theFaceDef;
@@ -37,9 +40,19 @@ void BRepGraph::MutView::AddPCurveToEdge(BRepGraph_NodeId            theEdgeDef,
   aNewEntry.EdgeOrientation = theEdgeOrientation;
   anEdgeDef.PCurves.Append(aNewEntry);
 
-  // Update edge-to-face reverse index so FaceCountOfEdge stays in sync.
-  myGraph->myData->myIncStorage.ChangeReverseIndex().BindEdgeToFace(
-    theEdgeDef.Index, theFaceDef.Index);
+  // Create CoEdge entity for the new PCurve binding.
+  BRepGraphInc::CoEdgeEntity& aCoEdge = aStorage.AppendCoEdge();
+  const int aCoEdgeIdx = aStorage.NbCoEdges() - 1;
+  aCoEdge.Id        = BRepGraph_NodeId::CoEdge(aCoEdgeIdx);
+  aCoEdge.EdgeIdx   = theEdgeDef.Index;
+  aCoEdge.FaceDefId = theFaceDef;
+  aCoEdge.Sense     = theEdgeOrientation;
+  aCoEdge.Curve2d   = theCurve2d;
+  aCoEdge.ParamFirst = theFirst;
+  aCoEdge.ParamLast  = theLast;
+
+  // Update reverse indices.
+  aStorage.ChangeReverseIndex().BindEdgeToFace(theEdgeDef.Index, theFaceDef.Index);
 
   myGraph->markModified(theEdgeDef);
 }

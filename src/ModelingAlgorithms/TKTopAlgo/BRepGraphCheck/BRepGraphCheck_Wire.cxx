@@ -239,7 +239,7 @@ void BRepGraphCheck::CheckWireOnFace(
   const BRepGraph_TopoNode::FaceDef& aFaceDef = aDefs.Face(theFaceDefIdx);
 
   // 2D parametric closure check: verify UV endpoints of first and last edges meet.
-  // Skip for wires containing seam edges (edges with 2 PCurves on the same face),
+  // Skip for wires containing seam edges (coedges with a seam pair on the same face),
   // because their UV closure works through periodic surface wrapping and the
   // vertex-degree closure check above is sufficient for such wires.
   bool aHasSeamEdge = false;
@@ -247,14 +247,7 @@ void BRepGraphCheck::CheckWireOnFace(
   {
     const BRepGraphInc::CoEdgeRef& aCR = aWireDef.CoEdgeRefs.Value(anEdgeIter);
     const BRepGraph_TopoNode::CoEdgeDef& aCoEdgeDef = aDefs.CoEdge(aCR.CoEdgeIdx);
-    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(aCoEdgeDef.EdgeIdx);
-    int aNbPCOnFace = 0;
-    for (int aPCIdx = 0; aPCIdx < anEdgeDef.PCurves.Length(); ++aPCIdx)
-    {
-      if (anEdgeDef.PCurves.Value(aPCIdx).FaceDefId == aFaceNodeId)
-        ++aNbPCOnFace;
-    }
-    if (aNbPCOnFace >= 2)
+    if (aCoEdgeDef.SeamPairIdx >= 0)
       aHasSeamEdge = true;
   }
   if (aWireDef.IsClosed && aNbEdges > 1 && !aFaceDef.Surface.IsNull() && !aHasSeamEdge)

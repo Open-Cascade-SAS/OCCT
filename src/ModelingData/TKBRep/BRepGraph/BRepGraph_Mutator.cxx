@@ -46,8 +46,6 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
   const BRepGraph_NodeId aOrigEndVertexDefId   = anOrig.EndVertexDefId();
   const bool             aOrigSameRange        = anOrig.SameRange;
 
-  // Copy PCurve entries before any mutation.
-  NCollection_Vector<BRepGraph_TopoNode::EdgeDef::PCurveEntry> aOrigPCurves = anOrig.PCurves;
   // Copy wire indices: ReverseIdx may be rebuilt below.
   const NCollection_Vector<int>* aOrigWiresPtr =
     theGraph.myData->myIncStorage.ReverseIndex().WiresOfEdge(theEdgeDef.Index);
@@ -144,11 +142,23 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
       theGraph.myData->myIncStorage.ChangeEdge(theEdgeDef.Index).IsRemoved = true;
   }
 
-  // Split PCurve entries for each PCurve in original (inline data, no separate PCurve nodes).
-  const double aParamRange = aOrigParamLast - aOrigParamFirst;
-  for (int aPCIdx = 0; aPCIdx < aOrigPCurves.Length(); ++aPCIdx)
+  // Split PCurve entries for each CoEdge referencing the original edge.
+  // Copy CoEdge data before mutation (vector may reallocate).
+  NCollection_Vector<BRepGraphInc::CoEdgeEntity> aOrigCoEdges;
   {
-    const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCEntry = aOrigPCurves.Value(aPCIdx);
+    const NCollection_Vector<int>* aCoEdgeIdxs =
+      theGraph.myData->myIncStorage.ReverseIndex().CoEdgesOfEdge(theEdgeDef.Index);
+    if (aCoEdgeIdxs != nullptr)
+    {
+      for (int i = 0; i < aCoEdgeIdxs->Length(); ++i)
+        aOrigCoEdges.Append(theGraph.myData->myIncStorage.CoEdge(aCoEdgeIdxs->Value(i)));
+    }
+  }
+
+  const double aParamRange = aOrigParamLast - aOrigParamFirst;
+  for (int aCEIdx = 0; aCEIdx < aOrigCoEdges.Length(); ++aCEIdx)
+  {
+    const BRepGraphInc::CoEdgeEntity& aCE = aOrigCoEdges.Value(aCEIdx);
 
     // Compute 2D split parameter.
     double aPCSplit;
@@ -158,33 +168,56 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
     }
     else
     {
-      const double aPCRange = aPCEntry.ParamLast - aPCEntry.ParamFirst;
+      const double aPCRange = aCE.ParamLast - aCE.ParamFirst;
       if (aParamRange > 0.0)
-        aPCSplit = aPCEntry.ParamFirst
+        aPCSplit = aCE.ParamFirst
                    + ((theSplitParam - aOrigParamFirst) / aParamRange) * aPCRange;
       else
-        aPCSplit = 0.5 * (aPCEntry.ParamFirst + aPCEntry.ParamLast);
+        aPCSplit = 0.5 * (aCE.ParamFirst + aCE.ParamLast);
     }
 
-    // PCurve for SubA: [PCFirst, aPCSplit].
+    // Legacy: append to edge.PCurves (kept during migration).
     BRepGraph_TopoNode::EdgeDef::PCurveEntry aPCSubAEntry;
-    aPCSubAEntry.Curve2d         = aPCEntry.Curve2d;
-    aPCSubAEntry.FaceDefId       = aPCEntry.FaceDefId;
-    aPCSubAEntry.ParamFirst      = aPCEntry.ParamFirst;
+    aPCSubAEntry.Curve2d         = aCE.Curve2d;
+    aPCSubAEntry.FaceDefId       = aCE.FaceDefId;
+    aPCSubAEntry.ParamFirst      = aCE.ParamFirst;
     aPCSubAEntry.ParamLast       = aPCSplit;
-    aPCSubAEntry.Continuity      = aPCEntry.Continuity;
-    aPCSubAEntry.EdgeOrientation = aPCEntry.EdgeOrientation;
+    aPCSubAEntry.Continuity      = aCE.Continuity;
+    aPCSubAEntry.EdgeOrientation = aCE.Sense;
     theGraph.myData->myIncStorage.ChangeEdge(aSubAIdx).PCurves.Append(aPCSubAEntry);
 
-    // PCurve for SubB: [aPCSplit, PCLast].
     BRepGraph_TopoNode::EdgeDef::PCurveEntry aPCSubBEntry;
-    aPCSubBEntry.Curve2d         = aPCEntry.Curve2d;
-    aPCSubBEntry.FaceDefId       = aPCEntry.FaceDefId;
+    aPCSubBEntry.Curve2d         = aCE.Curve2d;
+    aPCSubBEntry.FaceDefId       = aCE.FaceDefId;
     aPCSubBEntry.ParamFirst      = aPCSplit;
-    aPCSubBEntry.ParamLast       = aPCEntry.ParamLast;
-    aPCSubBEntry.Continuity      = aPCEntry.Continuity;
-    aPCSubBEntry.EdgeOrientation = aPCEntry.EdgeOrientation;
+    aPCSubBEntry.ParamLast       = aCE.ParamLast;
+    aPCSubBEntry.Continuity      = aCE.Continuity;
+    aPCSubBEntry.EdgeOrientation = aCE.Sense;
     theGraph.myData->myIncStorage.ChangeEdge(aSubBIdx).PCurves.Append(aPCSubBEntry);
+
+    // Create CoEdge for SubA.
+    BRepGraphInc::CoEdgeEntity& aCoEdgeSubA = theGraph.myData->myIncStorage.AppendCoEdge();
+    const int aCoEdgeSubAIdx = theGraph.myData->myIncStorage.NbCoEdges() - 1;
+    aCoEdgeSubA.Id         = BRepGraph_NodeId::CoEdge(aCoEdgeSubAIdx);
+    aCoEdgeSubA.EdgeIdx    = aSubAIdx;
+    aCoEdgeSubA.FaceDefId  = aCE.FaceDefId;
+    aCoEdgeSubA.Sense      = aCE.Sense;
+    aCoEdgeSubA.Curve2d    = aCE.Curve2d;
+    aCoEdgeSubA.ParamFirst = aCE.ParamFirst;
+    aCoEdgeSubA.ParamLast  = aPCSplit;
+    aCoEdgeSubA.Continuity = aCE.Continuity;
+
+    // Create CoEdge for SubB.
+    BRepGraphInc::CoEdgeEntity& aCoEdgeSubB = theGraph.myData->myIncStorage.AppendCoEdge();
+    const int aCoEdgeSubBIdx = theGraph.myData->myIncStorage.NbCoEdges() - 1;
+    aCoEdgeSubB.Id         = BRepGraph_NodeId::CoEdge(aCoEdgeSubBIdx);
+    aCoEdgeSubB.EdgeIdx    = aSubBIdx;
+    aCoEdgeSubB.FaceDefId  = aCE.FaceDefId;
+    aCoEdgeSubB.Sense      = aCE.Sense;
+    aCoEdgeSubB.Curve2d    = aCE.Curve2d;
+    aCoEdgeSubB.ParamFirst = aPCSplit;
+    aCoEdgeSubB.ParamLast  = aCE.ParamLast;
+    aCoEdgeSubB.Continuity = aCE.Continuity;
   }
 
   // Register TopoDS shapes for sub-edges so OriginalOf() works in downstream algorithms.
@@ -243,11 +276,16 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
     if (aOrigEndVertexDefId.IsValid())
       aRevIdxMut.UnbindVertexFromEdge(aOrigEndVertexDefId.Index, theEdgeDef.Index);
 
-    // Edge-to-face: derive from PCurves on sub-edges.
-    for (int aPCIdx = 0; aPCIdx < aSubAEnt.PCurves.Length(); ++aPCIdx)
-      aRevIdxMut.BindEdgeToFace(aSubAIdx, aSubAEnt.PCurves.Value(aPCIdx).FaceDefId.Index);
-    for (int aPCIdx = 0; aPCIdx < aSubBEnt.PCurves.Length(); ++aPCIdx)
-      aRevIdxMut.BindEdgeToFace(aSubBIdx, aSubBEnt.PCurves.Value(aPCIdx).FaceDefId.Index);
+    // Edge-to-face: derive from original edge's CoEdges (same faces apply to both sub-edges).
+    for (int aCEIdx = 0; aCEIdx < aOrigCoEdges.Length(); ++aCEIdx)
+    {
+      const BRepGraphInc::CoEdgeEntity& aCE = aOrigCoEdges.Value(aCEIdx);
+      if (aCE.FaceDefId.IsValid())
+      {
+        aRevIdxMut.BindEdgeToFace(aSubAIdx, aCE.FaceDefId.Index);
+        aRevIdxMut.BindEdgeToFace(aSubBIdx, aCE.FaceDefId.Index);
+      }
+    }
   }
 
   theGraph.markModified(theEdgeDef);

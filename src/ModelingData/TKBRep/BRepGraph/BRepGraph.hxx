@@ -177,6 +177,10 @@ public:
   //! @param[in] theIdx zero-based compound definition index
   Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::CompoundDef> MutCompound(int theIdx);
 
+  //! Return scoped mutable coedge definition guard.
+  //! @param[in] theIdx zero-based coedge definition index
+  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::CoEdgeDef> MutCoEdge(int theIdx);
+
   //! Return scoped mutable comp-solid definition guard.
   //! @param[in] theIdx zero-based comp-solid definition index
   Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::CompSolidDef> MutCompSolid(int theIdx);

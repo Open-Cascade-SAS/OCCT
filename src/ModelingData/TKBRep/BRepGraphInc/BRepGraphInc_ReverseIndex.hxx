@@ -101,6 +101,12 @@ public:
     return seekVec(myEdgeToFaces, theEdgeIdx);
   }
 
+  //! Return coedge indices referencing the given edge.
+  const NCollection_Vector<int>* CoEdgesOfEdge(int theEdgeIdx) const
+  {
+    return seekVec(myEdgeToCoEdges, theEdgeIdx);
+  }
+
   //! Return cached face count for an edge — O(1).
   //! Populated during Build() and updated incrementally by BindEdgeToFace().
   int FaceCountOfEdge(int theEdgeIdx) const
@@ -152,6 +158,12 @@ public:
   const NCollection_Vector<int>& FacesOfEdgeRef(int theEdgeIdx) const
   {
     return seekRef(myEdgeToFaces, theEdgeIdx);
+  }
+
+  //! Return coedge indices referencing the given edge (safe reference, never null).
+  const NCollection_Vector<int>& CoEdgesOfEdgeRef(int theEdgeIdx) const
+  {
+    return seekRef(myEdgeToCoEdges, theEdgeIdx);
   }
 
   //! Return face indices containing the given wire (safe reference, never null).
@@ -234,6 +246,7 @@ private:
 
   IndexTable myEdgeToWires;
   IndexTable myEdgeToFaces;
+  IndexTable myEdgeToCoEdges;
   IndexTable myVertexToEdges;
   IndexTable myWireToFaces;
   IndexTable myFaceToShells;
