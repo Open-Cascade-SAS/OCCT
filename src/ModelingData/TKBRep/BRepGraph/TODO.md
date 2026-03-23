@@ -131,12 +131,14 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 - Binary or JSON format
 
 ### Assembly model extension [Arch] ★★★★
-- Location-aware compound/component refs for product structure
-- Extend CompoundEntity's shell/solid refs with `TopLoc_Location` per ref
-- Assembly = Compound where each ref has a non-identity location; Instance = ref to shape def + location
+- **Full design**: [TODO_Assembly.md](TODO_Assembly.md) — see for complete implementation details
+- Foundation: `Kind::Product = 10`, `Kind::Occurrence = 11` as first-class node kinds
+- Plugin: `BRepGraph_AssemblyLayer` with query API (RootProducts, GlobalPlacement, etc.)
+- Product→Occurrence→Product DAG; each occurrence carries `TopLoc_Location`
 - Replaces XCAFDoc_ShapeTool's Shape/Reference/Component model
-- Required for full DE serialization (assemblies with placed instances)
-- Start with Option A (extend existing entities), evolve to dedicated AssemblyEntity if needed
+- XDE bridge (`BRepGraphDE_PopulateAssembly`) in DataExchange module (no TKXCAF dependency in TKBRep)
+- Phase 3 also fixes OnCompact signature: unified `DataMap<NodeId, NodeId>` replaces 6-argument maps
+- 7 phases: Phase 1: Data Model → Phase 2: AssemblyLayer → Phase 3: OnCompact Signature Fix → Phase 4: XDE Population Bridge → Phase 5: Reconstruction → Phase 6: DE Metadata Layers → Phase 7: Testing
 
 ### Compact remapping in history [Arch] ★★★
 - Record old→new index maps as history entries during Compact
