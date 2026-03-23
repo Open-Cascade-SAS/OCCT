@@ -25,7 +25,6 @@ struct WireEntity;
 struct FaceEntity;
 struct ShellEntity;
 struct SolidEntity;
-struct EdgeFaceGeom;
 }
 
 //! @brief Reverse incidence indices for O(1) upward navigation.
@@ -41,19 +40,18 @@ public:
   //! Clear all indices.
   Standard_EXPORT void Clear();
 
-  //! Rebuild all reverse indices from the entity tables and relationship rows.
-  //! @param[in] theEdges          edge entity vector (for vertex-to-edge)
-  //! @param[in] theWires          wire entity vector (for edge-to-wire)
-  //! @param[in] theFaces          face entity vector (for wire-to-face)
-  //! @param[in] theShells         shell entity vector (for face-to-shell)
-  //! @param[in] theSolids         solid entity vector (for shell-to-solid)
-  //! @param[in] theEdgeFaceGeoms  relationship geometry rows (for edge-to-face)
-  Standard_EXPORT void Build(const NCollection_Vector<BRepGraphInc::EdgeEntity>&   theEdges,
-                             const NCollection_Vector<BRepGraphInc::WireEntity>&   theWires,
-                             const NCollection_Vector<BRepGraphInc::FaceEntity>&   theFaces,
-                             const NCollection_Vector<BRepGraphInc::ShellEntity>&  theShells,
-                             const NCollection_Vector<BRepGraphInc::SolidEntity>&  theSolids,
-                             const NCollection_Vector<BRepGraphInc::EdgeFaceGeom>& theEdgeFaceGeoms);
+  //! Rebuild all reverse indices from the entity tables.
+  //! Edge-to-face index is derived from inline PCurve entries on EdgeEntity.
+  //! @param[in] theEdges   edge entity vector (for vertex-to-edge, edge-to-face)
+  //! @param[in] theWires   wire entity vector (for edge-to-wire)
+  //! @param[in] theFaces   face entity vector (for wire-to-face)
+  //! @param[in] theShells  shell entity vector (for face-to-shell)
+  //! @param[in] theSolids  solid entity vector (for shell-to-solid)
+  Standard_EXPORT void Build(const NCollection_Vector<BRepGraphInc::EdgeEntity>&  theEdges,
+                             const NCollection_Vector<BRepGraphInc::WireEntity>&  theWires,
+                             const NCollection_Vector<BRepGraphInc::FaceEntity>&  theFaces,
+                             const NCollection_Vector<BRepGraphInc::ShellEntity>& theShells,
+                             const NCollection_Vector<BRepGraphInc::SolidEntity>& theSolids);
 
   //! Return wire indices containing the given edge.
   const NCollection_Vector<int>* WiresOfEdge(int theEdgeIdx) const
@@ -105,6 +103,11 @@ public:
 private:
   //! Add theVal to the vector at theKey, creating if needed.  Skips duplicates.
   static void appendUnique(NCollection_DataMap<int, NCollection_Vector<int>>& theMap,
+                           int theKey, int theVal);
+
+  //! Add theVal to the vector at theKey unconditionally (no duplicate check).
+  //! Used during Build() where freshly-cleared indices guarantee no duplicates.
+  static void appendDirect(NCollection_DataMap<int, NCollection_Vector<int>>& theMap,
                            int theKey, int theVal);
 
   NCollection_DataMap<int, NCollection_Vector<int>> myEdgeToWires;

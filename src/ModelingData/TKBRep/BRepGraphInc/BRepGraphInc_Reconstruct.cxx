@@ -328,35 +328,35 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
       const BRepGraphInc::EdgeRef& aEdgeRef = aWire.EdgeRefs.Value(i);
       TopoDS_Edge anEdge = getOrBuildEdge(aEdgeRef.EdgeIdx);
 
-      // Attach PCurve(s) for THIS face context from EdgeFaceGeom rows.
+      // Attach PCurve(s) for THIS face context from inline PCurve entries.
+      const BRepGraphInc::EdgeEntity& anEdgeEnt = theStorage.Edges.Value(aEdgeRef.EdgeIdx);
       Handle(Geom2d_Curve) aPC1, aPC2;
       double aPCFirst = 0.0, aPCLast = 0.0;
-      for (int aGeomIdx = 0; aGeomIdx < theStorage.EdgeFaceGeoms.Length(); ++aGeomIdx)
+      for (int aPCIdx = 0; aPCIdx < anEdgeEnt.PCurves.Length(); ++aPCIdx)
       {
-        const BRepGraphInc::EdgeFaceGeom& aGeom = theStorage.EdgeFaceGeoms.Value(aGeomIdx);
-        if (aGeom.EdgeIdx != aEdgeRef.EdgeIdx || aGeom.FaceIdx != theFaceIdx)
+        const BRepGraphInc::EdgeEntity::PCurveEntry& aPCEntry = anEdgeEnt.PCurves.Value(aPCIdx);
+        if (aPCEntry.FaceDefId.Index != theFaceIdx)
           continue;
-        if (aGeom.PCurve.IsNull())
+        if (aPCEntry.Curve2d.IsNull())
           continue;
 
-        if (aGeom.EdgeOrientation == TopAbs_FORWARD)
+        if (aPCEntry.EdgeOrientation == TopAbs_FORWARD)
         {
-          aPC1     = aGeom.PCurve;
-          aPCFirst = aGeom.ParamFirst;
-          aPCLast  = aGeom.ParamLast;
+          aPC1     = aPCEntry.Curve2d;
+          aPCFirst = aPCEntry.ParamFirst;
+          aPCLast  = aPCEntry.ParamLast;
         }
         else
         {
-          aPC2 = aGeom.PCurve;
+          aPC2 = aPCEntry.Curve2d;
           if (aPC1.IsNull())
           {
-            aPCFirst = aGeom.ParamFirst;
-            aPCLast  = aGeom.ParamLast;
+            aPCFirst = aPCEntry.ParamFirst;
+            aPCLast  = aPCEntry.ParamLast;
           }
         }
       }
 
-      const BRepGraphInc::EdgeEntity& anEdgeEnt = theStorage.Edges.Value(aEdgeRef.EdgeIdx);
       if (!aPC1.IsNull() && !aPC2.IsNull())
       {
         aBB.UpdateEdge(anEdge, aPC1, aPC2,
@@ -376,30 +376,32 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
         aBB.Range(anEdge, aFace.Surface, TopLoc_Location(), aPCFirst, aPCLast);
       }
 
-      // Attach PolygonOnSurface from EdgeFaceGeom rows.
-      for (int aGeomIdx = 0; aGeomIdx < theStorage.EdgeFaceGeoms.Length(); ++aGeomIdx)
+      // Attach PolygonOnSurface from inline vectors.
+      for (int aPolyIdx = 0; aPolyIdx < anEdgeEnt.PolygonsOnSurf.Length(); ++aPolyIdx)
       {
-        const BRepGraphInc::EdgeFaceGeom& aGeom = theStorage.EdgeFaceGeoms.Value(aGeomIdx);
-        if (aGeom.EdgeIdx != aEdgeRef.EdgeIdx || aGeom.FaceIdx != theFaceIdx)
+        const BRepGraphInc::EdgeEntity::PolyOnSurfEntry& aPolyEntry =
+          anEdgeEnt.PolygonsOnSurf.Value(aPolyIdx);
+        if (aPolyEntry.FaceDefId.Index != theFaceIdx)
           continue;
-        if (!aGeom.PolyOnSurf.IsNull())
-          aBB.UpdateEdge(anEdge, aGeom.PolyOnSurf, aFace.Surface, TopLoc_Location());
+        if (!aPolyEntry.Polygon2D.IsNull())
+          aBB.UpdateEdge(anEdge, aPolyEntry.Polygon2D, aFace.Surface, TopLoc_Location());
       }
 
-      // Attach PolygonOnTriangulation from EdgeFaceTriGeom rows.
-      for (int aTriGeomIdx = 0; aTriGeomIdx < theStorage.EdgeFaceTriGeoms.Length(); ++aTriGeomIdx)
+      // Attach PolygonOnTriangulation from inline vectors.
+      for (int aPolyTriIdx = 0; aPolyTriIdx < anEdgeEnt.PolygonsOnTri.Length(); ++aPolyTriIdx)
       {
-        const BRepGraphInc::EdgeFaceTriGeom& aTriGeom = theStorage.EdgeFaceTriGeoms.Value(aTriGeomIdx);
-        if (aTriGeom.EdgeIdx != aEdgeRef.EdgeIdx || aTriGeom.FaceIdx != theFaceIdx)
+        const BRepGraphInc::EdgeEntity::PolyOnTriEntry& aPolyTriEntry =
+          anEdgeEnt.PolygonsOnTri.Value(aPolyTriIdx);
+        if (aPolyTriEntry.FaceDefId.Index != theFaceIdx)
           continue;
-        if (aTriGeom.PolyOnTri.IsNull())
+        if (aPolyTriEntry.Polygon.IsNull())
           continue;
-        if (aTriGeom.TriangulationIndex < aFace.Triangulations.Length())
+        if (aPolyTriEntry.TriangulationIndex < aFace.Triangulations.Length())
         {
           const Handle(Poly_Triangulation)& aTri =
-            aFace.Triangulations.Value(aTriGeom.TriangulationIndex);
+            aFace.Triangulations.Value(aPolyTriEntry.TriangulationIndex);
           if (!aTri.IsNull())
-            aBB.UpdateEdge(anEdge, aTriGeom.PolyOnTri, aTri, TopLoc_Location());
+            aBB.UpdateEdge(anEdge, aPolyTriEntry.Polygon, aTri, TopLoc_Location());
         }
       }
 

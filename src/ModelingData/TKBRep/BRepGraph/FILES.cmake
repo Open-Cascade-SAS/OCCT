@@ -15,7 +15,6 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_Builder.hxx
   BRepGraph_BuilderView.cxx
   BRepGraph_BuilderView.hxx
-  BRepGraph_CachedValue.hxx
   BRepGraph_CacheView.cxx
   BRepGraph_CacheView.hxx
   BRepGraph_Data.hxx

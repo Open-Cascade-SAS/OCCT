@@ -189,14 +189,14 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
     aBB.Range(aSubAEdge, aOrigParamFirst, theSplitParam);
     if (!aStartVShape.IsNull()) aBB.Add(aSubAEdge, aStartVShape.Oriented(TopAbs_FORWARD));
     if (!aSplitVShape.IsNull()) aBB.Add(aSubAEdge, aSplitVShape.Oriented(TopAbs_REVERSED));
-    theGraph.myData->myOriginalShapes.Bind(theSubA, aSubAEdge);
+    theGraph.myData->myMutationOriginals.Bind(theSubA, aSubAEdge);
 
     TopoDS_Edge aSubBEdge;
     aBB.MakeEdge(aSubBEdge, aOrigCurve3d, TopLoc_Location(), aOrigTolerance);
     aBB.Range(aSubBEdge, theSplitParam, aOrigParamLast);
     if (!aSplitVShape.IsNull()) aBB.Add(aSubBEdge, aSplitVShape.Oriented(TopAbs_FORWARD));
     if (!aEndVShape.IsNull())   aBB.Add(aSubBEdge, aEndVShape.Oriented(TopAbs_REVERSED));
-    theGraph.myData->myOriginalShapes.Bind(theSubB, aSubBEdge);
+    theGraph.myData->myMutationOriginals.Bind(theSubB, aSubBEdge);
   }
 
   // Update edge-to-wire reverse index incrementally.

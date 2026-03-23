@@ -13,7 +13,6 @@
 
 #include <BRepGraphInc_ReverseIndex.hxx>
 #include <BRepGraphInc_Entity.hxx>
-#include <BRepGraphInc_RelGeom.hxx>
 
 //=================================================================================================
 
@@ -30,25 +29,26 @@ void BRepGraphInc_ReverseIndex::Clear()
 //=================================================================================================
 
 void BRepGraphInc_ReverseIndex::Build(
-  const NCollection_Vector<BRepGraphInc::EdgeEntity>&   theEdges,
-  const NCollection_Vector<BRepGraphInc::WireEntity>&   theWires,
-  const NCollection_Vector<BRepGraphInc::FaceEntity>&   theFaces,
-  const NCollection_Vector<BRepGraphInc::ShellEntity>&  theShells,
-  const NCollection_Vector<BRepGraphInc::SolidEntity>&  theSolids,
-  const NCollection_Vector<BRepGraphInc::EdgeFaceGeom>& theEdgeFaceGeoms)
+  const NCollection_Vector<BRepGraphInc::EdgeEntity>&  theEdges,
+  const NCollection_Vector<BRepGraphInc::WireEntity>&  theWires,
+  const NCollection_Vector<BRepGraphInc::FaceEntity>&  theFaces,
+  const NCollection_Vector<BRepGraphInc::ShellEntity>& theShells,
+  const NCollection_Vector<BRepGraphInc::SolidEntity>& theSolids)
 {
   Clear();
 
   // Vertex -> Edges: scan edge entities for start/end vertex indices.
+  // Closed edges have StartVertexIdx == EndVertexIdx, so use appendUnique
+  // to avoid recording the same edge twice for the same vertex.
   for (int anEdgeIdx = 0; anEdgeIdx < theEdges.Length(); ++anEdgeIdx)
   {
     const BRepGraphInc::EdgeEntity& anEdge = theEdges.Value(anEdgeIdx);
     if (anEdge.IsRemoved)
       continue;
     if (anEdge.StartVertexIdx >= 0)
-      appendUnique(myVertexToEdges, anEdge.StartVertexIdx, anEdgeIdx);
-    if (anEdge.EndVertexIdx >= 0)
-      appendUnique(myVertexToEdges, anEdge.EndVertexIdx, anEdgeIdx);
+      appendDirect(myVertexToEdges, anEdge.StartVertexIdx, anEdgeIdx);
+    if (anEdge.EndVertexIdx >= 0 && anEdge.EndVertexIdx != anEdge.StartVertexIdx) // skip duplicate for closed edges
+      appendDirect(myVertexToEdges, anEdge.EndVertexIdx, anEdgeIdx);
   }
 
   // Edge -> Wires: scan wire entities for their edge refs.
@@ -59,15 +59,39 @@ void BRepGraphInc_ReverseIndex::Build(
       continue;
     for (int i = 0; i < aWire.EdgeRefs.Length(); ++i)
     {
-      appendUnique(myEdgeToWires, aWire.EdgeRefs.Value(i).EdgeIdx, aWireIdx);
+      appendDirect(myEdgeToWires, aWire.EdgeRefs.Value(i).EdgeIdx, aWireIdx);
     }
   }
 
-  // Edge -> Faces: scan EdgeFaceGeom rows.
-  for (int i = 0; i < theEdgeFaceGeoms.Length(); ++i)
+  // Edge -> Faces: derive from inline PCurve entries on each edge.
+  // Seam edges produce two PCurve entries with the same FaceDefId but opposite
+  // orientations; deduplicate by checking the already-built vector for this edge.
+  // No extra allocation needed — the output vector itself serves as the seen-set.
+  for (int anEdgeIdx = 0; anEdgeIdx < theEdges.Length(); ++anEdgeIdx)
   {
-    const BRepGraphInc::EdgeFaceGeom& aRow = theEdgeFaceGeoms.Value(i);
-    appendUnique(myEdgeToFaces, aRow.EdgeIdx, aRow.FaceIdx);
+    const BRepGraphInc::EdgeEntity& anEdge = theEdges.Value(anEdgeIdx);
+    if (anEdge.IsRemoved)
+      continue;
+    for (int aPCIdx = 0; aPCIdx < anEdge.PCurves.Length(); ++aPCIdx)
+    {
+      const int aFaceIdx = anEdge.PCurves.Value(aPCIdx).FaceDefId.Index;
+      // Check if this face is already recorded for this edge.
+      const NCollection_Vector<int>* aExisting = myEdgeToFaces.Seek(anEdgeIdx);
+      bool aAlreadySeen = false;
+      if (aExisting != nullptr)
+      {
+        for (int j = 0; j < aExisting->Length(); ++j)
+        {
+          if (aExisting->Value(j) == aFaceIdx)
+          {
+            aAlreadySeen = true;
+            break;
+          }
+        }
+      }
+      if (!aAlreadySeen)
+        appendDirect(myEdgeToFaces, anEdgeIdx, aFaceIdx);
+    }
   }
 
   // Wire -> Faces: scan face entities for their wire refs.
@@ -78,7 +102,7 @@ void BRepGraphInc_ReverseIndex::Build(
       continue;
     for (int i = 0; i < aFace.WireRefs.Length(); ++i)
     {
-      appendUnique(myWireToFaces, aFace.WireRefs.Value(i).WireIdx, aFaceIdx);
+      appendDirect(myWireToFaces, aFace.WireRefs.Value(i).WireIdx, aFaceIdx);
     }
   }
 
@@ -90,7 +114,7 @@ void BRepGraphInc_ReverseIndex::Build(
       continue;
     for (int i = 0; i < aShell.FaceRefs.Length(); ++i)
     {
-      appendUnique(myFaceToShells, aShell.FaceRefs.Value(i).FaceIdx, aShellIdx);
+      appendDirect(myFaceToShells, aShell.FaceRefs.Value(i).FaceIdx, aShellIdx);
     }
   }
 
@@ -102,7 +126,7 @@ void BRepGraphInc_ReverseIndex::Build(
       continue;
     for (int i = 0; i < aSolid.ShellRefs.Length(); ++i)
     {
-      appendUnique(myShellToSolids, aSolid.ShellRefs.Value(i).ShellIdx, aSolidIdx);
+      appendDirect(myShellToSolids, aSolid.ShellRefs.Value(i).ShellIdx, aSolidIdx);
     }
   }
 }
@@ -157,6 +181,25 @@ void BRepGraphInc_ReverseIndex::appendUnique(
       if (aVec->Value(i) == theVal)
         return;
     }
+    aVec->Append(theVal);
+  }
+  else
+  {
+    NCollection_Vector<int> aNewVec;
+    aNewVec.Append(theVal);
+    theMap.Bind(theKey, aNewVec);
+  }
+}
+
+//=================================================================================================
+
+void BRepGraphInc_ReverseIndex::appendDirect(
+  NCollection_DataMap<int, NCollection_Vector<int>>& theMap,
+  int theKey, int theVal)
+{
+  NCollection_Vector<int>* aVec = theMap.ChangeSeek(theKey);
+  if (aVec != nullptr)
+  {
     aVec->Append(theVal);
   }
   else

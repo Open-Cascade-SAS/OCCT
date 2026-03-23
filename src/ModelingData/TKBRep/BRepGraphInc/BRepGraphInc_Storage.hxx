@@ -15,9 +15,7 @@
 #define _BRepGraphInc_Storage_HeaderFile
 
 #include <BRepGraph_NodeId.hxx>
-#include <BRepGraph_UID.hxx>
 #include <BRepGraphInc_Entity.hxx>
-#include <BRepGraphInc_RelGeom.hxx>
 #include <BRepGraphInc_ReverseIndex.hxx>
 
 #include <NCollection_DataMap.hxx>
@@ -28,9 +26,9 @@
 
 //! @brief Central storage for the incidence-table model.
 //!
-//! Holds all entity vectors, relationship-geometry rows, reverse indices,
-//! and TShape deduplication maps.  This struct is the physical backing
-//! for BRepGraphInc_Populate and BRepGraphInc_Reconstruct.
+//! Holds all entity vectors, reverse indices, and TShape deduplication maps.
+//! This struct is the physical backing for BRepGraphInc_Populate and
+//! BRepGraphInc_Reconstruct.
 struct BRepGraphInc_Storage
 {
   DEFINE_STANDARD_ALLOC
@@ -46,11 +44,6 @@ struct BRepGraphInc_Storage
   NCollection_Vector<BRepGraphInc::CompoundEntity>  Compounds;
   NCollection_Vector<BRepGraphInc::CompSolidEntity> CompSolids;
 
-  // ------ Relationship geometry ------
-
-  NCollection_Vector<BRepGraphInc::EdgeFaceGeom>    EdgeFaceGeoms;
-  NCollection_Vector<BRepGraphInc::EdgeFaceTriGeom> EdgeFaceTriGeoms;
-
   // ------ Reverse indices ------
 
   BRepGraphInc_ReverseIndex ReverseIdx;
@@ -62,17 +55,6 @@ struct BRepGraphInc_Storage
   // ------ Original shapes from Build() input ------
 
   NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape> OriginalShapes;
-
-  // ------ UID vectors (parallel to entity vectors) ------
-
-  NCollection_Vector<BRepGraph_UID> VertexUIDs;
-  NCollection_Vector<BRepGraph_UID> EdgeUIDs;
-  NCollection_Vector<BRepGraph_UID> WireUIDs;
-  NCollection_Vector<BRepGraph_UID> FaceUIDs;
-  NCollection_Vector<BRepGraph_UID> ShellUIDs;
-  NCollection_Vector<BRepGraph_UID> SolidUIDs;
-  NCollection_Vector<BRepGraph_UID> CompoundUIDs;
-  NCollection_Vector<BRepGraph_UID> CompSolidUIDs;
 
   // ------ Population status ------
 

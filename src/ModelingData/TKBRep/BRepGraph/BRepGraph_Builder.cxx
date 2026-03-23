@@ -65,9 +65,9 @@ void BRepGraph_Builder::Perform(BRepGraph& theGraph, const TopoDS_Shape& theShap
   theGraph.myData->myVertexUIDs.Clear();
   theGraph.myData->myCompoundUIDs.Clear();
   theGraph.myData->myCompSolidUIDs.Clear();
-  theGraph.myData->myTShapeToDefId.Clear();
+  theGraph.myData->myReconstructedTShapeToDefId.Clear();
   theGraph.myData->myHistoryLog.Clear();
-  theGraph.myData->myOriginalShapes.Clear();
+  theGraph.myData->myMutationOriginals.Clear();
   theGraph.myData->myCurrentShapes.Clear();
   ++theGraph.myData->myGeneration;
   theGraph.myData->myIsDone = false;
@@ -83,23 +83,7 @@ void BRepGraph_Builder::Perform(BRepGraph& theGraph, const TopoDS_Shape& theShap
     return;
   }
 
-  // Phase 2: Copy unified TShape->NodeId and OriginalShapes from incidence storage.
-  const BRepGraphInc_Storage& aStorage = theGraph.myData->myIncStorage;
-  theGraph.myData->myTShapeToDefId.ReSize(aStorage.TShapeToNodeId.Extent());
-  for (NCollection_DataMap<const TopoDS_TShape*, BRepGraph_NodeId>::Iterator
-         anIter(aStorage.TShapeToNodeId);
-       anIter.More(); anIter.Next())
-  {
-    theGraph.myData->myTShapeToDefId.Bind(anIter.Key(), anIter.Value());
-  }
-  for (NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape>::Iterator
-         anIter(aStorage.OriginalShapes);
-       anIter.More(); anIter.Next())
-  {
-    theGraph.myData->myOriginalShapes.Bind(anIter.Key(), anIter.Value());
-  }
-
-  // Phase 3: Allocate UIDs for all incidence entities.
+  // Phase 2: Allocate UIDs for all incidence entities.
   populateUIDs(theGraph);
 
   theGraph.myData->myIsDone = true;
@@ -124,23 +108,9 @@ void BRepGraph_Builder::Append(BRepGraph& theGraph, const TopoDS_Shape& theShape
   theGraph.myData->myVertexUIDs.Clear();
   theGraph.myData->myCompoundUIDs.Clear();
   theGraph.myData->myCompSolidUIDs.Clear();
-  // Re-copy TShape->NodeId and OriginalShapes.
-  BRepGraphInc_Storage& aStorage = theGraph.myData->myIncStorage;
-  theGraph.myData->myTShapeToDefId.Clear();
-  theGraph.myData->myTShapeToDefId.ReSize(aStorage.TShapeToNodeId.Extent());
-  for (NCollection_DataMap<const TopoDS_TShape*, BRepGraph_NodeId>::Iterator
-         anIter(aStorage.TShapeToNodeId);
-       anIter.More(); anIter.Next())
-  {
-    theGraph.myData->myTShapeToDefId.Bind(anIter.Key(), anIter.Value());
-  }
-  theGraph.myData->myOriginalShapes.Clear();
-  for (NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape>::Iterator
-         anIter(aStorage.OriginalShapes);
-       anIter.More(); anIter.Next())
-  {
-    theGraph.myData->myOriginalShapes.Bind(anIter.Key(), anIter.Value());
-  }
+  // Clear reconstruction caches (stale after append).
+  theGraph.myData->myReconstructedTShapeToDefId.Clear();
+  theGraph.myData->myMutationOriginals.Clear();
 
   populateUIDs(theGraph);
 

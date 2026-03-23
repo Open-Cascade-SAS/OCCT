@@ -369,10 +369,10 @@ TEST(BRepGraphIncTest, Compound_RoundTrip_SubShapeCounts)
 }
 
 // ============================================================
-// EdgeFaceGeom row count consistency
+// PCurve entry count consistency (inline on EdgeEntity)
 // ============================================================
 
-TEST(BRepGraphIncTest, Box_EdgeFaceGeomCount)
+TEST(BRepGraphIncTest, Box_PCurveEntryCount)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -381,9 +381,12 @@ TEST(BRepGraphIncTest, Box_EdgeFaceGeomCount)
   BRepGraphInc_Populate::Perform(aStorage, aBox, false);
   ASSERT_TRUE(aStorage.IsDone);
 
-  // A box has 12 edges, each shared by 2 faces => 24 EdgeFaceGeom rows.
+  // A box has 12 edges, each shared by 2 faces => 24 PCurve entries total.
   // (No seam edges on a box.)
-  EXPECT_EQ(aStorage.EdgeFaceGeoms.Length(), 24);
+  int aPCurveCount = 0;
+  for (int i = 0; i < aStorage.Edges.Length(); ++i)
+    aPCurveCount += aStorage.Edges.Value(i).PCurves.Length();
+  EXPECT_EQ(aPCurveCount, 24);
 }
 
 TEST(BRepGraphIncTest, Cylinder_HasSeamEdges)
@@ -395,27 +398,58 @@ TEST(BRepGraphIncTest, Cylinder_HasSeamEdges)
   BRepGraphInc_Populate::Perform(aStorage, aCyl, false);
   ASSERT_TRUE(aStorage.IsDone);
 
-  // A cylinder has seam edges: EdgeFaceGeom rows with same (edgeIdx,faceIdx)
-  // but opposite orientation.  Count distinct seam pairs.
+  // A cylinder has seam edges: two PCurve entries on the same edge with the
+  // same FaceDefId but opposite orientations.
   int aSeamPairCount = 0;
-  for (int i = 0; i < aStorage.EdgeFaceGeoms.Length(); ++i)
+  for (int anEdgeIdx = 0; anEdgeIdx < aStorage.Edges.Length(); ++anEdgeIdx)
   {
-    const BRepGraphInc::EdgeFaceGeom& aRow1 = aStorage.EdgeFaceGeoms.Value(i);
-    if (aRow1.EdgeOrientation != TopAbs_FORWARD)
-      continue;
-    for (int j = i + 1; j < aStorage.EdgeFaceGeoms.Length(); ++j)
+    const BRepGraphInc::EdgeEntity& anEdge = aStorage.Edges.Value(anEdgeIdx);
+    for (int i = 0; i < anEdge.PCurves.Length(); ++i)
     {
-      const BRepGraphInc::EdgeFaceGeom& aRow2 = aStorage.EdgeFaceGeoms.Value(j);
-      if (aRow1.EdgeIdx == aRow2.EdgeIdx && aRow1.FaceIdx == aRow2.FaceIdx
-          && aRow2.EdgeOrientation == TopAbs_REVERSED)
+      const auto& aPC1 = anEdge.PCurves.Value(i);
+      if (aPC1.EdgeOrientation != TopAbs_FORWARD)
+        continue;
+      for (int j = i + 1; j < anEdge.PCurves.Length(); ++j)
       {
-        ++aSeamPairCount;
-        break;
+        const auto& aPC2 = anEdge.PCurves.Value(j);
+        if (aPC1.FaceDefId.Index == aPC2.FaceDefId.Index
+            && aPC2.EdgeOrientation == TopAbs_REVERSED)
+        {
+          ++aSeamPairCount;
+          break;
+        }
       }
     }
   }
   // A cylinder has 1 seam edge on its lateral face.
   EXPECT_GE(aSeamPairCount, 1) << "Cylinder should have at least 1 seam edge pair";
+}
+
+TEST(BRepGraphIncTest, Cylinder_SeamEdge_ReverseIndex_NoDuplicateFace)
+{
+  BRepPrimAPI_MakeCylinder aCylMaker(5.0, 15.0);
+  const TopoDS_Shape&      aCyl = aCylMaker.Shape();
+
+  BRepGraphInc_Storage aStorage;
+  BRepGraphInc_Populate::Perform(aStorage, aCyl, false);
+  ASSERT_TRUE(aStorage.IsDone);
+
+  // For seam edges (two PCurve entries with the same FaceDefId but opposite
+  // orientations), the reverse index must contain each face only once.
+  for (int anEdgeIdx = 0; anEdgeIdx < aStorage.Edges.Length(); ++anEdgeIdx)
+  {
+    const NCollection_Vector<int>* aFaces = aStorage.ReverseIdx.FacesOfEdge(anEdgeIdx);
+    if (aFaces == nullptr)
+      continue;
+    for (int i = 0; i < aFaces->Length(); ++i)
+    {
+      for (int j = i + 1; j < aFaces->Length(); ++j)
+      {
+        EXPECT_NE(aFaces->Value(i), aFaces->Value(j))
+          << "Duplicate face " << aFaces->Value(i) << " in FacesOfEdge(" << anEdgeIdx << ")";
+      }
+    }
+  }
 }
 
 // ============================================================

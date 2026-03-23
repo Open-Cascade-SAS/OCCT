@@ -25,19 +25,9 @@ void BRepGraphInc_Storage::Clear()
   Solids.Clear();
   Compounds.Clear();
   CompSolids.Clear();
-  EdgeFaceGeoms.Clear();
-  EdgeFaceTriGeoms.Clear();
   ReverseIdx.Clear();
   TShapeToNodeId.Clear();
   OriginalShapes.Clear();
-  VertexUIDs.Clear();
-  EdgeUIDs.Clear();
-  WireUIDs.Clear();
-  FaceUIDs.Clear();
-  ShellUIDs.Clear();
-  SolidUIDs.Clear();
-  CompoundUIDs.Clear();
-  CompSolidUIDs.Clear();
   IsDone = false;
 }
 
@@ -45,5 +35,5 @@ void BRepGraphInc_Storage::Clear()
 
 void BRepGraphInc_Storage::BuildReverseIndex()
 {
-  ReverseIdx.Build(Edges, Wires, Faces, Shells, Solids, EdgeFaceGeoms);
+  ReverseIdx.Build(Edges, Wires, Faces, Shells, Solids);
 }
