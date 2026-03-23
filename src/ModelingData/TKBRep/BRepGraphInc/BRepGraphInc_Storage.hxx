@@ -79,15 +79,16 @@ public:
   BRepGraphInc::CompSolidEntity& ChangeCompSolid(int theIdx) { return myCompSolids.ChangeValue(theIdx); }
 
   // ------ Append (returns mutable ref to newly created entity) ------
+  // Inner vectors of each entity are initialized with the storage allocator.
 
-  BRepGraphInc::VertexEntity&    AppendVertex()    { return myVertices.Appended(); }
-  BRepGraphInc::EdgeEntity&      AppendEdge()      { return myEdges.Appended(); }
-  BRepGraphInc::WireEntity&      AppendWire()      { return myWires.Appended(); }
-  BRepGraphInc::FaceEntity&      AppendFace()      { return myFaces.Appended(); }
-  BRepGraphInc::ShellEntity&     AppendShell()     { return myShells.Appended(); }
-  BRepGraphInc::SolidEntity&     AppendSolid()     { return mySolids.Appended(); }
-  BRepGraphInc::CompoundEntity&  AppendCompound()  { return myCompounds.Appended(); }
-  BRepGraphInc::CompSolidEntity& AppendCompSolid() { return myCompSolids.Appended(); }
+  BRepGraphInc::VertexEntity&    AppendVertex()    { auto& e = myVertices.Appended();   e.InitVectors(myAllocator); return e; }
+  BRepGraphInc::EdgeEntity&      AppendEdge()      { auto& e = myEdges.Appended();      e.InitVectors(myAllocator); return e; }
+  BRepGraphInc::WireEntity&      AppendWire()      { auto& e = myWires.Appended();      e.InitVectors(myAllocator); return e; }
+  BRepGraphInc::FaceEntity&      AppendFace()      { auto& e = myFaces.Appended();      e.InitVectors(myAllocator); return e; }
+  BRepGraphInc::ShellEntity&     AppendShell()     { auto& e = myShells.Appended();     e.InitVectors(myAllocator); return e; }
+  BRepGraphInc::SolidEntity&     AppendSolid()     { auto& e = mySolids.Appended();     e.InitVectors(myAllocator); return e; }
+  BRepGraphInc::CompoundEntity&  AppendCompound()  { auto& e = myCompounds.Appended();  e.InitVectors(myAllocator); return e; }
+  BRepGraphInc::CompSolidEntity& AppendCompSolid() { auto& e = myCompSolids.Appended(); e.InitVectors(myAllocator); return e; }
 
   // ------ UID access (Kind-dispatched, eliminates 8-way switches in consumers) ------
 

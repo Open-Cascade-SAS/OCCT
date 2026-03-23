@@ -30,7 +30,17 @@
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 
+#include <NCollection_BaseAllocator.hxx>
 #include <NCollection_Vector.hxx>
+
+//! Helper: reinitialize a vector member with the given allocator and block size.
+template <typename T>
+inline void BRepGraphInc_InitVec(NCollection_Vector<T>& theVec,
+                                 const Handle(NCollection_BaseAllocator)& theAlloc,
+                                 int theBlockSize = 4)
+{
+  theVec = NCollection_Vector<T>(theBlockSize, theAlloc);
+}
 
 //! Entity structs for the incidence-table model.
 //!
@@ -82,6 +92,14 @@ struct VertexEntity : public BaseEntity
     BRepGraph_NodeId FaceDefId; //!< Face definition owning the surface
   };
   NCollection_Vector<PointOnPCurveEntry> PointsOnPCurve;
+
+  //! Reinitialize inner vectors with the given allocator.
+  void InitVectors(const Handle(NCollection_BaseAllocator)& theAlloc)
+  {
+    BRepGraphInc_InitVec(PointsOnCurve, theAlloc, 2);    // typically 1-2 per vertex
+    BRepGraphInc_InitVec(PointsOnSurface, theAlloc, 2);
+    BRepGraphInc_InitVec(PointsOnPCurve, theAlloc, 2);
+  }
 };
 
 //! Edge entity: 3D curve, parameter range, boundary vertices, flags, polygon.
@@ -171,6 +189,15 @@ struct EdgeEntity : public BaseEntity
   };
   NCollection_Vector<RegularityEntry> Regularities;
 
+  //! Reinitialize inner vectors with the given allocator.
+  void InitVectors(const Handle(NCollection_BaseAllocator)& theAlloc)
+  {
+    BRepGraphInc_InitVec(PCurves, theAlloc, 4);         // typically 1-4 (seam edges have 2)
+    BRepGraphInc_InitVec(PolygonsOnSurf, theAlloc, 2);  // typically 0-2
+    BRepGraphInc_InitVec(PolygonsOnTri, theAlloc, 2);   // typically 0-2
+    BRepGraphInc_InitVec(Regularities, theAlloc, 2);    // typically 0-2
+  }
+
   //! Return the start vertex adjusted for orientation in wire context.
   //! FORWARD -> StartVertexDefId(), REVERSED -> EndVertexDefId(), other -> invalid.
   BRepGraph_NodeId OrientedStartVertex(TopAbs_Orientation theOri) const
@@ -195,6 +222,11 @@ struct WireEntity : public BaseEntity
 {
   bool IsClosed = false;
   NCollection_Vector<EdgeRef> EdgeRefs;  //!< Ordered edge references
+
+  void InitVectors(const Handle(NCollection_BaseAllocator)& theAlloc)
+  {
+    BRepGraphInc_InitVec(EdgeRefs, theAlloc, 8);        // typically 3-8 edges per wire
+  }
 };
 
 //! Face entity: surface, triangulations, wires.
@@ -217,6 +249,12 @@ struct FaceEntity : public BaseEntity
   //! Wire references: outer wire first (if present), then inner wires.
   NCollection_Vector<WireRef> WireRefs;
 
+  void InitVectors(const Handle(NCollection_BaseAllocator)& theAlloc)
+  {
+    BRepGraphInc_InitVec(Triangulations, theAlloc, 2);  // typically 1
+    BRepGraphInc_InitVec(WireRefs, theAlloc, 2);        // typically 1-2 (outer + holes)
+  }
+
   //! Return index of the outer wire, or -1 if none.
   int OuterWireIdx() const
   {
@@ -233,24 +271,44 @@ struct FaceEntity : public BaseEntity
 struct ShellEntity : public BaseEntity
 {
   NCollection_Vector<FaceRef> FaceRefs;
+
+  void InitVectors(const Handle(NCollection_BaseAllocator)& theAlloc)
+  {
+    BRepGraphInc_InitVec(FaceRefs, theAlloc, 8);        // typically 4-8 faces per shell
+  }
 };
 
 //! Solid entity: ordered shell references with local locations.
 struct SolidEntity : public BaseEntity
 {
   NCollection_Vector<ShellRef> ShellRefs;
+
+  void InitVectors(const Handle(NCollection_BaseAllocator)& theAlloc)
+  {
+    BRepGraphInc_InitVec(ShellRefs, theAlloc, 2);       // typically 1
+  }
 };
 
 //! Compound entity: heterogeneous child references.
 struct CompoundEntity : public BaseEntity
 {
   NCollection_Vector<ChildRef> ChildRefs;
+
+  void InitVectors(const Handle(NCollection_BaseAllocator)& theAlloc)
+  {
+    BRepGraphInc_InitVec(ChildRefs, theAlloc, 4);       // varies
+  }
 };
 
 //! Comp-solid entity: ordered solid references.
 struct CompSolidEntity : public BaseEntity
 {
   NCollection_Vector<SolidRef> SolidRefs;
+
+  void InitVectors(const Handle(NCollection_BaseAllocator)& theAlloc)
+  {
+    BRepGraphInc_InitVec(SolidRefs, theAlloc, 2);       // typically 1-2
+  }
 };
 
 } // namespace BRepGraphInc
