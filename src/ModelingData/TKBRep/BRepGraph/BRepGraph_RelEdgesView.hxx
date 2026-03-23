@@ -58,7 +58,15 @@ public:
                         BRepGraph_RelKind theKind,
                         const Func&       theCallback) const
   {
-    myGraph->ForEachOutEdgeOfKind(theNodeId, theKind, theCallback);
+    const NCollection_Vector<BRepGraph_RelEdge>* aEdges = OutOf(theNodeId);
+    if (aEdges == nullptr)
+      return;
+    for (int anIdx = 0; anIdx < aEdges->Length(); ++anIdx)
+    {
+      const BRepGraph_RelEdge& anEdge = aEdges->Value(anIdx);
+      if (anEdge.Kind == theKind)
+        theCallback(anEdge);
+    }
   }
 
   //! Invoke a callback for each incoming RelEdge of a given kind.
@@ -70,7 +78,15 @@ public:
                        BRepGraph_RelKind theKind,
                        const Func&       theCallback) const
   {
-    myGraph->ForEachInEdgeOfKind(theNodeId, theKind, theCallback);
+    const NCollection_Vector<BRepGraph_RelEdge>* aEdges = InOf(theNodeId);
+    if (aEdges == nullptr)
+      return;
+    for (int anIdx = 0; anIdx < aEdges->Length(); ++anIdx)
+    {
+      const BRepGraph_RelEdge& anEdge = aEdges->Value(anIdx);
+      if (anEdge.Kind == theKind)
+        theCallback(anEdge);
+    }
   }
 
 private:

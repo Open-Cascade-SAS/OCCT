@@ -14,6 +14,7 @@
 #include <BRepGraph_Reconstruct.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_Data.hxx>
+#include <BRepGraph_ShapesView.hxx>
 
 #include <BRep_Builder.hxx>
 #include <TopoDS.hxx>
@@ -61,13 +62,13 @@ TopoDS_Shape BRepGraph_Reconstruct::Node(const BRepGraph& theGraph,
 
       if (anEdgeDef.StartVertexDefId.IsValid())
       {
-        TopoDS_Shape aStartVtx = theGraph.Shape(anEdgeDef.StartVertexDefId);
+        TopoDS_Shape aStartVtx = theGraph.Shapes().Shape(anEdgeDef.StartVertexDefId);
         if (!aStartVtx.IsNull())
           aBB.Add(aNewEdge, aStartVtx.Oriented(TopAbs_FORWARD));
       }
       if (anEdgeDef.EndVertexDefId.IsValid())
       {
-        TopoDS_Shape anEndVtx = theGraph.Shape(anEdgeDef.EndVertexDefId);
+        TopoDS_Shape anEndVtx = theGraph.Shapes().Shape(anEdgeDef.EndVertexDefId);
         if (!anEndVtx.IsNull())
           aBB.Add(aNewEdge, anEndVtx.Oriented(TopAbs_REVERSED));
       }
@@ -81,7 +82,7 @@ TopoDS_Shape BRepGraph_Reconstruct::Node(const BRepGraph& theGraph,
       {
         const BRepGraph_TopoNode::WireDef::EdgeEntry& anEntry =
           aWireDef.OrderedEdges.Value(anEdgeIdx);
-        TopoDS_Shape anEdge = theGraph.Shape(anEntry.EdgeDefId);
+        TopoDS_Shape anEdge = theGraph.Shapes().Shape(anEntry.EdgeDefId);
         if (!anEdge.IsNull())
         {
           anEdge.Orientation(anEntry.OrientationInWire);
@@ -150,13 +151,13 @@ TopoDS_Shape BRepGraph_Reconstruct::Node(const BRepGraph& theGraph,
 
           if (anEdgeDef.StartVertexDefId.IsValid())
           {
-            TopoDS_Shape aStartVtx = theGraph.Shape(anEdgeDef.StartVertexDefId);
+            TopoDS_Shape aStartVtx = theGraph.Shapes().Shape(anEdgeDef.StartVertexDefId);
             if (!aStartVtx.IsNull())
               aBB.Add(anEdge, aStartVtx.Oriented(TopAbs_FORWARD));
           }
           if (anEdgeDef.EndVertexDefId.IsValid())
           {
-            TopoDS_Shape anEndVtx = theGraph.Shape(anEdgeDef.EndVertexDefId);
+            TopoDS_Shape anEndVtx = theGraph.Shapes().Shape(anEdgeDef.EndVertexDefId);
             if (!anEndVtx.IsNull())
               aBB.Add(anEdge, anEndVtx.Oriented(TopAbs_REVERSED));
           }
@@ -373,7 +374,7 @@ TopoDS_Shape BRepGraph_Reconstruct::FaceWithCache(
         aStartVtx = *aVtxCached;
       else
       {
-        aStartVtx = theGraph.Shape(anEdgeDef.StartVertexDefId);
+        aStartVtx = theGraph.Shapes().Shape(anEdgeDef.StartVertexDefId);
         if (!aStartVtx.IsNull())
           theEdgeCache.Bind(anEdgeDef.StartVertexDefId, aStartVtx);
       }
@@ -388,7 +389,7 @@ TopoDS_Shape BRepGraph_Reconstruct::FaceWithCache(
         anEndVtx = *aVtxCached;
       else
       {
-        anEndVtx = theGraph.Shape(anEdgeDef.EndVertexDefId);
+        anEndVtx = theGraph.Shapes().Shape(anEdgeDef.EndVertexDefId);
         if (!anEndVtx.IsNull())
           theEdgeCache.Bind(anEdgeDef.EndVertexDefId, anEndVtx);
       }

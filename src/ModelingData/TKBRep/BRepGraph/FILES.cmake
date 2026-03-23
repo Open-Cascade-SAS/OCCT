@@ -7,15 +7,20 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_Analyze.hxx
   BRepGraph_AnalyzeView.hxx
   BRepGraph_AttrRegistry.hxx
+  BRepGraph_AttrsView.cxx
   BRepGraph_AttrsView.hxx
   BRepGraph_Builder.cxx
   BRepGraph_Builder.hxx
+  BRepGraph_BuilderView.cxx
   BRepGraph_BuilderView.hxx
   BRepGraph_CachedValue.hxx
+  BRepGraph_CacheView.cxx
   BRepGraph_CacheView.hxx
   BRepGraph_Data.hxx
+  BRepGraph_DefsView.cxx
   BRepGraph_DefsView.hxx
   BRepGraph_GeomNode.hxx
+  BRepGraph_GeomView.cxx
   BRepGraph_GeomView.hxx
   BRepGraph_History.cxx
   BRepGraph_History.hxx
@@ -23,21 +28,26 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_Iterator.hxx
   BRepGraph_Mutator.cxx
   BRepGraph_Mutator.hxx
+  BRepGraph_MutView.cxx
   BRepGraph_MutView.hxx
   BRepGraph_NodeCache.hxx
   BRepGraph_NodeId.hxx
   BRepGraph_Reconstruct.cxx
   BRepGraph_Reconstruct.hxx
   BRepGraph_RelEdge.hxx
+  BRepGraph_RelEdgesView.cxx
   BRepGraph_RelEdgesView.hxx
+  BRepGraph_ShapesView.cxx
   BRepGraph_ShapesView.hxx
+  BRepGraph_SpatialView.cxx
   BRepGraph_SpatialView.hxx
   BRepGraph_SubGraph.hxx
   BRepGraph_TopoNode.hxx
   BRepGraph_UID.hxx
+  BRepGraph_UIDsView.cxx
   BRepGraph_UIDsView.hxx
   BRepGraph_UsageId.hxx
+  BRepGraph_UsagesView.cxx
   BRepGraph_UsagesView.hxx
   BRepGraph_UserAttribute.hxx
-  BRepGraph_Views.cxx
 )

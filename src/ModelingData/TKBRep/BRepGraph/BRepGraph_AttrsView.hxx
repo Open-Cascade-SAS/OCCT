@@ -25,38 +25,26 @@ public:
   //! @param[in] theNode node identifier
   //! @param[in] theKey  attribute key
   //! @param[in] theAttr shared pointer to the attribute
-  void Set(BRepGraph_NodeId             theNode,
-           int                          theKey,
-           const BRepGraph_UserAttrPtr& theAttr)
-  {
-    myGraph->SetUserAttribute(theNode, theKey, theAttr);
-  }
+  Standard_EXPORT void Set(BRepGraph_NodeId             theNode,
+                           int                          theKey,
+                           const BRepGraph_UserAttrPtr& theAttr);
 
   //! Retrieve a user attribute from a node.
   //! @param[in] theNode node identifier
   //! @param[in] theKey  attribute key
   //! @return shared pointer to the attribute, or nullptr if not set
-  BRepGraph_UserAttrPtr Get(BRepGraph_NodeId theNode, int theKey) const
-  {
-    return myGraph->GetUserAttribute(theNode, theKey);
-  }
+  Standard_EXPORT BRepGraph_UserAttrPtr Get(BRepGraph_NodeId theNode, int theKey) const;
 
   //! Remove a user attribute from a node.
   //! @param[in] theNode node identifier
   //! @param[in] theKey  attribute key
   //! @return true if the attribute was found and removed
-  bool Remove(BRepGraph_NodeId theNode, int theKey)
-  {
-    return myGraph->RemoveUserAttribute(theNode, theKey);
-  }
+  Standard_EXPORT bool Remove(BRepGraph_NodeId theNode, int theKey);
 
   //! Invalidate (but do not remove) a user attribute on a node.
   //! @param[in] theNode node identifier
   //! @param[in] theKey  attribute key
-  void Invalidate(BRepGraph_NodeId theNode, int theKey)
-  {
-    myGraph->InvalidateUserAttribute(theNode, theKey);
-  }
+  Standard_EXPORT void Invalidate(BRepGraph_NodeId theNode, int theKey);
 
 private:
   friend class BRepGraph;

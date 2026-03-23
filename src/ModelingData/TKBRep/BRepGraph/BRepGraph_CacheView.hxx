@@ -25,20 +25,20 @@ public:
   //! Compute or return cached axis-aligned bounding box for a node.
   //! @param[in] theNode node identifier
   //! @return bounding box of the node
-  Bnd_Box BoundingBox(BRepGraph_NodeId theNode) const { return myGraph->BoundingBox(theNode); }
+  Standard_EXPORT Bnd_Box BoundingBox(BRepGraph_NodeId theNode) const;
 
   //! Compute or return cached centroid for a node.
   //! @param[in] theNode node identifier
   //! @return centroid point
-  gp_Pnt Centroid(BRepGraph_NodeId theNode) const { return myGraph->Centroid(theNode); }
+  Standard_EXPORT gp_Pnt Centroid(BRepGraph_NodeId theNode) const;
 
   //! Invalidate cached values (bounding box, centroid) for a single node.
   //! @param[in] theNode node to invalidate
-  void Invalidate(BRepGraph_NodeId theNode) const { myGraph->Invalidate(theNode); }
+  Standard_EXPORT void Invalidate(BRepGraph_NodeId theNode) const;
 
   //! Invalidate cached values for a node and all its descendants.
   //! @param[in] theNode root node to invalidate
-  void InvalidateSubgraph(BRepGraph_NodeId theNode) const { myGraph->InvalidateSubgraph(theNode); }
+  Standard_EXPORT void InvalidateSubgraph(BRepGraph_NodeId theNode) const;
 
 private:
   friend class BRepGraph;

@@ -24,45 +24,33 @@ public:
   //! Return or reconstruct a TopoDS_Shape for a node.
   //! @param[in] theNode node identifier
   //! @return corresponding TopoDS_Shape
-  TopoDS_Shape Shape(BRepGraph_NodeId theNode) const { return myGraph->Shape(theNode); }
+  Standard_EXPORT TopoDS_Shape Shape(BRepGraph_NodeId theNode) const;
 
   //! Check if the node has an original shape from Build().
   //! @param[in] theNode node identifier
   //! @return true if an original shape exists
-  bool HasOriginal(BRepGraph_NodeId theNode) const { return myGraph->HasOriginalShape(theNode); }
+  Standard_EXPORT bool HasOriginal(BRepGraph_NodeId theNode) const;
 
   //! Return the original TopoDS_Shape stored during Build().
   //! @param[in] theNode node identifier
   //! @return reference to the original shape
   //! @exception Standard_ProgramError if no original shape exists
-  const TopoDS_Shape& OriginalOf(BRepGraph_NodeId theNode) const
-  {
-    return myGraph->OriginalOf(theNode);
-  }
+  Standard_EXPORT const TopoDS_Shape& OriginalOf(BRepGraph_NodeId theNode) const;
 
   //! Reconstruct a TopoDS_Shape from a definition node.
   //! @param[in] theRoot definition node identifier
   //! @return reconstructed shape
-  TopoDS_Shape Reconstruct(BRepGraph_NodeId theRoot) const
-  {
-    return myGraph->ReconstructShape(theRoot);
-  }
+  Standard_EXPORT TopoDS_Shape Reconstruct(BRepGraph_NodeId theRoot) const;
 
   //! Reconstruct a TopoDS_Face from a face definition index.
   //! @param[in] theFaceDefIdx zero-based face definition index
   //! @return reconstructed face shape
-  TopoDS_Shape ReconstructFace(int theFaceDefIdx) const
-  {
-    return myGraph->ReconstructFace(theFaceDefIdx);
-  }
+  Standard_EXPORT TopoDS_Shape ReconstructFace(int theFaceDefIdx) const;
 
   //! Reconstruct a TopoDS_Shape from a usage node.
   //! @param[in] theRoot usage identifier
   //! @return reconstructed shape
-  TopoDS_Shape ReconstructFromUsage(BRepGraph_UsageId theRoot) const
-  {
-    return myGraph->ReconstructFromUsage(theRoot);
-  }
+  Standard_EXPORT TopoDS_Shape ReconstructFromUsage(BRepGraph_UsageId theRoot) const;
 
 private:
   friend class BRepGraph;

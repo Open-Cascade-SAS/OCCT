@@ -14,6 +14,7 @@
 #include <BRepGraph_Mutator.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_Data.hxx>
+#include <BRepGraph_ShapesView.hxx>
 
 #include <BRep_Builder.hxx>
 #include <TopAbs.hxx>
@@ -42,7 +43,9 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
 
   // Copy PCurve entries and wire list before any mutation.
   NCollection_Vector<BRepGraph_TopoNode::EdgeDef::PCurveEntry> aOrigPCurves = anOrig.PCurves;
-  NCollection_Vector<int> aOrigWires = theGraph.WiresOfEdge(theEdgeDef.Index);
+  // Copy required: the loop below mutates myEdgeToWires (same key + new Bind calls can rehash).
+  const NCollection_Vector<int>* aOrigWiresPtr = theGraph.myData->myEdgeToWires.Seek(theEdgeDef.Index);
+  const NCollection_Vector<int>  aOrigWires    = aOrigWiresPtr != nullptr ? *aOrigWiresPtr : NCollection_Vector<int>();
 
   // Get location from first usage (for sub-edge TopoDS shape registration).
   TopLoc_Location aEdgeLoc;
@@ -149,9 +152,9 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
       theGraph.myData->myCurves.Value(aOrigCurveNodeId.Index);
     BRep_Builder aBB;
 
-    const TopoDS_Shape aStartVShape = theGraph.Shape(aOrigStartVertexDefId);
-    const TopoDS_Shape aSplitVShape = theGraph.Shape(theSplitVertex);
-    const TopoDS_Shape aEndVShape   = theGraph.Shape(aOrigEndVertexDefId);
+    const TopoDS_Shape aStartVShape = theGraph.Shapes().Shape( aOrigStartVertexDefId);
+    const TopoDS_Shape aSplitVShape = theGraph.Shapes().Shape( theSplitVertex);
+    const TopoDS_Shape aEndVShape   = theGraph.Shapes().Shape( aOrigEndVertexDefId);
 
     TopoDS_Edge aSubAEdge;
     aBB.MakeEdge(aSubAEdge, aCurveNode.CurveGeom, aEdgeLoc, aOrigTolerance);
