@@ -5,6 +5,8 @@ set(OCCT_BRepGraph_FILES
   BRepGraph.hxx
   BRepGraph_Analyze.cxx
   BRepGraph_Analyze.hxx
+  BRepGraph_BackRefManager.cxx
+  BRepGraph_BackRefManager.hxx
   BRepGraph_AnalyzeView.hxx
   BRepGraph_AttrRegistry.hxx
   BRepGraph_AttrsView.cxx

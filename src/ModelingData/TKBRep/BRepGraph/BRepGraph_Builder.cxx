@@ -11,6 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <BRepGraph_BackRefManager.hxx>
 #include <BRepGraph_Builder.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_Data.hxx>
@@ -250,8 +251,8 @@ void BRepGraph_Builder::registerFaceData(BRepGraph& theGraph, const FaceDataVec&
         theGraph.registerSurface(aData.Surface, aData.Triangulation, aData.SurfaceLocation);
       if (aFaceDef.SurfNodeId.IsValid())
       {
-        theGraph.myData->mySurfaces.ChangeValue(aFaceDef.SurfNodeId.Index)
-          .FaceDefUsers.Append(aFaceDef.Id);
+        BRepGraph_BackRefManager::BindFaceToSurface(theGraph, aFaceDef.Id,
+                                                     aFaceDef.SurfNodeId.Index);
       }
 
       theGraph.myData->myTShapeToDefId.Bind(aFaceTShapeKey, aFaceDef.Id);
@@ -367,8 +368,8 @@ void BRepGraph_Builder::registerFaceData(BRepGraph& theGraph, const FaceDataVec&
               theGraph.registerCurve(anEdgeData.Curve3d, anEdgeData.CurveLocation);
             if (anEdgeDef.CurveNodeId.IsValid())
             {
-              theGraph.myData->myCurves.ChangeValue(anEdgeDef.CurveNodeId.Index)
-                .EdgeDefUsers.Append(anEdgeDef.Id);
+              BRepGraph_BackRefManager::BindEdgeToCurve(theGraph, anEdgeDef.Id,
+                                                         anEdgeDef.CurveNodeId.Index);
             }
           }
 
@@ -489,8 +490,7 @@ void BRepGraph_Builder::registerFaceData(BRepGraph& theGraph, const FaceDataVec&
           theGraph.myData->myWireDefs.ChangeValue(aWireDefIdx).OrderedEdges.Append(aWEEntry);
 
           // Populate edge-to-wire reverse index.
-          theGraph.myData->myEdgeToWires.TryBind(anEdgeDefId.Index, NCollection_Vector<int>());
-          theGraph.myData->myEdgeToWires.ChangeFind(anEdgeDefId.Index).Append(aWireDefIdx);
+          BRepGraph_BackRefManager::BindEdgeToWire(theGraph, anEdgeDefId.Index, aWireDefIdx);
 
           // Track first/last vertex for closure check.
           if (!aFirstVertexDefId.IsValid())
@@ -597,6 +597,10 @@ void BRepGraph_Builder::computeMultiLocatedFlags(BRepGraph& theGraph)
 void BRepGraph_Builder::Perform(BRepGraph& theGraph, const TopoDS_Shape& theShape, bool theParallel)
 {
   // Phase 0: Clear all storage, increment generation.
+  // Clear all back-reference containers first (rel-edges, edge-to-wires,
+  // geometry back-refs) via centralized BackRefManager.
+  BRepGraph_BackRefManager::ClearAll(theGraph);
+
   theGraph.myData->mySolidDefs.Clear();
   theGraph.myData->myShellDefs.Clear();
   theGraph.myData->myFaceDefs.Clear();
@@ -616,14 +620,11 @@ void BRepGraph_Builder::Perform(BRepGraph& theGraph, const TopoDS_Shape& theShap
   theGraph.myData->mySurfaces.Clear();
   theGraph.myData->myCurves.Clear();
   theGraph.myData->myPCurves.Clear();
-  theGraph.myData->myOutRelEdges.Clear();
-  theGraph.myData->myInRelEdges.Clear();
   theGraph.myData->mySurfRegistry.Clear();
   theGraph.myData->myCurveRegistry.Clear();
   theGraph.myData->myTShapeToDefId.Clear();
   theGraph.myData->myNodeToUID.Clear();
   theGraph.myData->myUIDToNodeId.Clear();
-  theGraph.myData->myEdgeToWires.Clear();
   theGraph.myData->myHistoryLog.Clear();
   theGraph.myData->myOriginalShapes.Clear();
   theGraph.myData->myCurrentShapes.Clear();

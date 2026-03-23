@@ -11,6 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <BRepGraph_BackRefManager.hxx>
 #include <BRepGraph_Mutator.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_Data.hxx>
@@ -93,8 +94,8 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
   // Register curve back-references for sub-edges.
   if (aOrigCurveNodeId.IsValid())
   {
-    theGraph.myData->myCurves.ChangeValue(aOrigCurveNodeId.Index).EdgeDefUsers.Append(theSubA);
-    theGraph.myData->myCurves.ChangeValue(aOrigCurveNodeId.Index).EdgeDefUsers.Append(theSubB);
+    BRepGraph_BackRefManager::BindEdgeToCurve(theGraph, theSubA, aOrigCurveNodeId.Index);
+    BRepGraph_BackRefManager::BindEdgeToCurve(theGraph, theSubB, aOrigCurveNodeId.Index);
   }
 
   // Split PCurve nodes for each PCurve entry in original.
@@ -210,27 +211,9 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
     aWireDef.OrderedEdges = std::move(aNewEdges);
 
     // Update myEdgeToWires: remove this wire from orig, register for SubA and SubB.
-    NCollection_Vector<int>* anOrigWireRefsPtr =
-      theGraph.myData->myEdgeToWires.ChangeSeek(theEdgeDef.Index);
-    if (anOrigWireRefsPtr != nullptr)
-    {
-      NCollection_Vector<int>& anOrigWireRefs = *anOrigWireRefsPtr;
-      for (int aWI = 0; aWI < anOrigWireRefs.Length(); ++aWI)
-      {
-        if (anOrigWireRefs.Value(aWI) == aWireIdx)
-        {
-          if (aWI < anOrigWireRefs.Length() - 1)
-            anOrigWireRefs.ChangeValue(aWI) = anOrigWireRefs.Value(anOrigWireRefs.Length() - 1);
-          anOrigWireRefs.EraseLast();
-          break;
-        }
-      }
-    }
-    theGraph.myData->myEdgeToWires.TryBind(aSubAIdx, NCollection_Vector<int>());
-    theGraph.myData->myEdgeToWires.ChangeFind(aSubAIdx).Append(aWireIdx);
-
-    theGraph.myData->myEdgeToWires.TryBind(aSubBIdx, NCollection_Vector<int>());
-    theGraph.myData->myEdgeToWires.ChangeFind(aSubBIdx).Append(aWireIdx);
+    BRepGraph_BackRefManager::UnbindEdgeFromWire(theGraph, theEdgeDef.Index, aWireIdx);
+    BRepGraph_BackRefManager::BindEdgeToWire(theGraph, aSubAIdx, aWireIdx);
+    BRepGraph_BackRefManager::BindEdgeToWire(theGraph, aSubBIdx, aWireIdx);
 
     theGraph.markModified(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Wire, aWireIdx));
   }
@@ -262,24 +245,8 @@ void BRepGraph_Mutator::ReplaceEdgeInWire(BRepGraph&       theGraph,
       }
 
       // Update edge-to-wire reverse index.
-      NCollection_Vector<int>* anOldWiresPtr =
-        theGraph.myData->myEdgeToWires.ChangeSeek(theOldEdgeDef.Index);
-      if (anOldWiresPtr != nullptr)
-      {
-        NCollection_Vector<int>& anOldWires = *anOldWiresPtr;
-        for (int aWIdx = 0; aWIdx < anOldWires.Length(); ++aWIdx)
-        {
-          if (anOldWires.Value(aWIdx) == theWireDefIdx)
-          {
-            if (aWIdx < anOldWires.Length() - 1)
-              anOldWires.ChangeValue(aWIdx) = anOldWires.Value(anOldWires.Length() - 1);
-            anOldWires.EraseLast();
-            break;
-          }
-        }
-      }
-      theGraph.myData->myEdgeToWires.TryBind(theNewEdgeDef.Index, NCollection_Vector<int>());
-      theGraph.myData->myEdgeToWires.ChangeFind(theNewEdgeDef.Index).Append(theWireDefIdx);
+      BRepGraph_BackRefManager::ReplaceEdgeInWireMap(theGraph, theOldEdgeDef.Index,
+                                                      theNewEdgeDef.Index, theWireDefIdx);
     }
   }
   theGraph.markModified(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Wire, theWireDefIdx));

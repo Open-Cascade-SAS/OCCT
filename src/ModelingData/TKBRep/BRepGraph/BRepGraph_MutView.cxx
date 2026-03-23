@@ -11,6 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <BRepGraph_BackRefManager.hxx>
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_Data.hxx>
 #include <BRepGraph_Mutator.hxx>
@@ -155,21 +156,7 @@ int BRepGraph::MutView::AddRelEdge(BRepGraph_NodeId  theFrom,
                                    BRepGraph_NodeId  theTo,
                                    BRepGraph_RelEdge::Kind theKind)
 {
-  BRepGraph_RelEdge anEdge;
-  anEdge.RelKind   = theKind;
-  anEdge.Source = theFrom;
-  anEdge.Target = theTo;
-
-  myGraph->myData->myOutRelEdges.TryBind(theFrom, NCollection_Vector<BRepGraph_RelEdge>());
-  myGraph->myData->myInRelEdges.TryBind(theTo, NCollection_Vector<BRepGraph_RelEdge>());
-
-  NCollection_Vector<BRepGraph_RelEdge>& anOutVec = myGraph->myData->myOutRelEdges.ChangeFind(theFrom);
-  anOutVec.Append(anEdge);
-  const int anIdx = anOutVec.Length() - 1;
-
-  myGraph->myData->myInRelEdges.ChangeFind(theTo).Append(anEdge);
-
-  return anIdx;
+  return BRepGraph_BackRefManager::AddRelEdge(*myGraph, theFrom, theTo, theKind);
 }
 
 //=================================================================================================
@@ -178,35 +165,5 @@ void BRepGraph::MutView::RemoveRelEdges(BRepGraph_NodeId  theFrom,
                                         BRepGraph_NodeId  theTo,
                                         BRepGraph_RelEdge::Kind theKind)
 {
-  NCollection_Vector<BRepGraph_RelEdge>* anOutVec =
-    myGraph->myData->myOutRelEdges.ChangeSeek(theFrom);
-  if (anOutVec != nullptr)
-  {
-    for (int anIdx = anOutVec->Length() - 1; anIdx >= 0; --anIdx)
-    {
-      const BRepGraph_RelEdge& anEdge = anOutVec->Value(anIdx);
-      if (anEdge.RelKind == theKind && anEdge.Target == theTo)
-      {
-        if (anIdx < anOutVec->Length() - 1)
-          anOutVec->ChangeValue(anIdx) = anOutVec->Value(anOutVec->Length() - 1);
-        anOutVec->EraseLast();
-      }
-    }
-  }
-
-  NCollection_Vector<BRepGraph_RelEdge>* anInVec =
-    myGraph->myData->myInRelEdges.ChangeSeek(theTo);
-  if (anInVec != nullptr)
-  {
-    for (int anIdx = anInVec->Length() - 1; anIdx >= 0; --anIdx)
-    {
-      const BRepGraph_RelEdge& anEdge = anInVec->Value(anIdx);
-      if (anEdge.RelKind == theKind && anEdge.Source == theFrom)
-      {
-        if (anIdx < anInVec->Length() - 1)
-          anInVec->ChangeValue(anIdx) = anInVec->Value(anInVec->Length() - 1);
-        anInVec->EraseLast();
-      }
-    }
-  }
+  BRepGraph_BackRefManager::RemoveRelEdges(*myGraph, theFrom, theTo, theKind);
 }

@@ -13,6 +13,7 @@
 
 #include <BRepGraphAlgo_Deduplicate.hxx>
 
+#include <BRepGraph_BackRefManager.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_GeomView.hxx>
@@ -218,21 +219,8 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
     aResult.AffectedFaceDefs.Append(aFaceDef.Id);
 
     // Fix back-references: remove from old surface, add to canonical surface.
-    {
-      NCollection_Vector<BRepGraph_NodeId>& anOldUsers =
-        theGraph.Mut().SurfNode(anOldSurfId.Index).FaceDefUsers;
-      for (int anIdx = anOldUsers.Length() - 1; anIdx >= 0; --anIdx)
-      {
-        if (anOldUsers.Value(anIdx) == aFaceDef.Id)
-        {
-          if (anIdx < anOldUsers.Length() - 1)
-            anOldUsers.ChangeValue(anIdx) = anOldUsers.Value(anOldUsers.Length() - 1);
-          anOldUsers.EraseLast();
-          break;
-        }
-      }
-      theGraph.Mut().SurfNode(*aCanonSurf).FaceDefUsers.Append(aFaceDef.Id);
-    }
+    BRepGraph_BackRefManager::RewriteFaceSurface(theGraph, aFaceDef.Id,
+                                                  anOldSurfId.Index, *aCanonSurf);
 
     if (!aRecordedSurfaceHistory.Contains(anOldSurfId.Index))
     {
@@ -260,21 +248,8 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
         aResult.AffectedEdgeDefs.Append(anEdgeDef.Id);
 
         // Fix back-references: remove from old curve, add to canonical curve.
-        {
-          NCollection_Vector<BRepGraph_NodeId>& anOldUsers =
-            theGraph.Mut().CurveNode(anOldCurveId.Index).EdgeDefUsers;
-          for (int anIdx = anOldUsers.Length() - 1; anIdx >= 0; --anIdx)
-          {
-            if (anOldUsers.Value(anIdx) == anEdgeDef.Id)
-            {
-              if (anIdx < anOldUsers.Length() - 1)
-                anOldUsers.ChangeValue(anIdx) = anOldUsers.Value(anOldUsers.Length() - 1);
-              anOldUsers.EraseLast();
-              break;
-            }
-          }
-          theGraph.Mut().CurveNode(*aCanonCurve).EdgeDefUsers.Append(anEdgeDef.Id);
-        }
+        BRepGraph_BackRefManager::RewriteEdgeCurve(theGraph, anEdgeDef.Id,
+                                                    anOldCurveId.Index, *aCanonCurve);
 
         if (!aRecordedCurveHistory.Contains(anOldCurveId.Index))
         {

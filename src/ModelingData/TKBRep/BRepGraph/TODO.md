@@ -117,7 +117,7 @@ graph TD
     T1_3["T1.3 Benchmarks<br/><b>S</b> | ✅ done"]
     T1_4["T1.4 PCurve Continuity<br/><b>S</b> | ✅ done"]
     T1_5["T1.5 Cached UV Bounds<br/><b>M</b> | ✅ done"]
-    T1_1["T1.1 Back-Ref Automation<br/><b>M</b> | foundation"]
+    T1_1["T1.1 Back-Ref Automation<br/><b>M</b> | ✅ done"]
     T1_2["T1.2 Mandatory UID<br/><b>M</b> | foundation"]
     T2_1["T2.1 Transactions<br/><b>L</b>"]
     T2_2["T2.2 Mutation Primitives<br/><b>L</b>"]
@@ -197,7 +197,11 @@ graph LR
     style BRM fill:#2d6a2d,color:#fff
 ```
 
-**Files:** `BRepGraph_Data.hxx`, `BRepGraph_MutView.cxx`, `BRepGraph_Mutator.cxx`, `BRepGraph_BuilderView.cxx`, `BRepGraphAlgo_Deduplicate.cxx`
+**Files:** New `BRepGraph_BackRefManager.hxx/.cxx`, modified `BRepGraph_Builder.cxx`, `BRepGraph_BuilderView.cxx`, `BRepGraph_Mutator.cxx`, `BRepGraphAlgo_Deduplicate.cxx`, `BRepGraph.hxx` (friend)
+
+**Implementation notes:** Static-only class `BRepGraph_BackRefManager` (deleted constructor, friend of `BRepGraph`). Provides `Bind/Unbind/Rewrite` for all three back-ref categories: `Surf.FaceDefUsers`, `Curve.EdgeDefUsers`, `myEdgeToWires`. Includes `RebuildAll()` for bulk reconstruction from forward links. All 12 manual back-ref sites across 4 files replaced. 7 new tests in `BRepGraph_BackRefManager_Test.cxx` covering forward-link consistency, RebuildAll equivalence, surface/curve rewrite, SplitEdge back-refs, and ReplaceEdgeInWireMap.
+
+**Status:** ✅ DONE
 
 **Complexity:** M | **Dependencies:** None
 
@@ -539,7 +543,7 @@ graph TB
 | 1 | T1.3 Benchmarks | 1 | S | Measure before changing — **done** |
 | 2 | T1.4 PCurve Continuity | 1 | S | **Done** — uses `BRep_Tool::MaxContinuity` |
 | 2b | T1.5 Cached UV Bounds | 1 | M | **Done** — `BRepGraphAlgo_UVBounds` with GUID caching |
-| 3 | T1.1 Back-Ref Automation | 1 | M | Biggest risk-reducer |
+| 3 | T1.1 Back-Ref Automation | 1 | M | **Done** — `BRepGraph_BackRefManager` centralizes all back-ref updates |
 | 4 | T1.2 Mandatory UID | 1 | M | Enables stable identity |
 | 5 | T2.1 Transactions | 2 | L | Enables safe multi-step mutations |
 | 6 | T2.3 Observers | 2 | M | Transaction-aware events and cache invalidation |

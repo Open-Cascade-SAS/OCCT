@@ -172,6 +172,7 @@ private:
   friend class BRepGraph_Analyze;
   friend class BRepGraph_Reconstruct;
   friend class BRepGraph_Mutator;
+  friend class BRepGraph_BackRefManager;
   friend class BRepGraphAlgo_BndLib;
   friend class BRepGraphAlgo_UVBounds;
 

@@ -11,6 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <BRepGraph_BackRefManager.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_Data.hxx>
 #include <BRepGraph_Builder.hxx>
@@ -60,8 +61,8 @@ BRepGraph_NodeId BRepGraph::BuilderView::AddEdgeDef(BRepGraph_NodeId          th
   {
     anEdgeDef.CurveNodeId = myGraph->registerCurve(theCurve);
     if (anEdgeDef.CurveNodeId.IsValid())
-      myGraph->myData->myCurves.ChangeValue(anEdgeDef.CurveNodeId.Index)
-        .EdgeDefUsers.Append(anEdgeDef.Id);
+      BRepGraph_BackRefManager::BindEdgeToCurve(*myGraph, anEdgeDef.Id,
+                                                 anEdgeDef.CurveNodeId.Index);
   }
 
   return anEdgeDef.Id;
@@ -82,8 +83,7 @@ BRepGraph_NodeId BRepGraph::BuilderView::AddWireDef(
     aWireDef.OrderedEdges.Append(theEdges.Value(anEdgeIdx));
 
     const int anEdgeDefIdx = theEdges.Value(anEdgeIdx).EdgeDefId.Index;
-    myGraph->myData->myEdgeToWires.TryBind(anEdgeDefIdx, NCollection_Vector<int>());
-    myGraph->myData->myEdgeToWires.ChangeFind(anEdgeDefIdx).Append(aIdx);
+    BRepGraph_BackRefManager::BindEdgeToWire(*myGraph, anEdgeDefIdx, aIdx);
   }
 
   // Check closure: first edge start == last edge end.
@@ -125,8 +125,8 @@ BRepGraph_NodeId BRepGraph::BuilderView::AddFaceDef(
   aFaceDef.SurfNodeId =
     myGraph->registerSurface(theSurface, Handle(Poly_Triangulation)());
   if (aFaceDef.SurfNodeId.IsValid())
-    myGraph->myData->mySurfaces.ChangeValue(aFaceDef.SurfNodeId.Index)
-      .FaceDefUsers.Append(aFaceDef.Id);
+    BRepGraph_BackRefManager::BindFaceToSurface(*myGraph, aFaceDef.Id,
+                                                 aFaceDef.SurfNodeId.Index);
 
   BRepGraph_TopoNode::FaceUsage& aFaceUsage = myGraph->myData->myFaceUsages.Appended();
   const int                      aFaceUsageIdx = myGraph->myData->myFaceUsages.Length() - 1;
@@ -358,8 +358,7 @@ void BRepGraph::BuilderView::RemoveNode(BRepGraph_NodeId theNode)
 
   aDef->IsRemoved = true;
 
-  myGraph->myData->myOutRelEdges.UnBind(theNode);
-  myGraph->myData->myInRelEdges.UnBind(theNode);
+  BRepGraph_BackRefManager::ClearRelEdges(*myGraph, theNode);
 
   BRepGraph_NodeCache* aCache = myGraph->mutableCache(theNode);
   if (aCache != nullptr)
