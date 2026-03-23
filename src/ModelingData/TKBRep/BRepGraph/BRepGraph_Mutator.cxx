@@ -16,6 +16,7 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_Data.hxx>
 #include <BRepGraph_ShapesView.hxx>
+#include <BRepGraphInc_ReverseIndex.hxx>
 #include <BRepGraphInc_Storage.hxx>
 
 #include <BRep_Builder.hxx>
@@ -46,9 +47,11 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
 
   // Copy PCurve entries before any mutation.
   NCollection_Vector<BRepGraph_TopoNode::EdgeDef::PCurveEntry> aOrigPCurves = anOrig.PCurves;
-  // Copy required: the loop below mutates myEdgeToWires (same key + new Bind calls can rehash).
-  const NCollection_Vector<int>* aOrigWiresPtr = theGraph.myData->myEdgeToWires.Seek(theEdgeDef.Index);
-  const NCollection_Vector<int>  aOrigWires    = aOrigWiresPtr != nullptr ? *aOrigWiresPtr : NCollection_Vector<int>();
+  // Copy wire indices: ReverseIdx may be rebuilt below.
+  const NCollection_Vector<int>* aOrigWiresPtr =
+    theGraph.myData->myIncStorage.ReverseIdx.WiresOfEdge(theEdgeDef.Index);
+  const NCollection_Vector<int> aOrigWires =
+    aOrigWiresPtr != nullptr ? *aOrigWiresPtr : NCollection_Vector<int>();
 
   // Allocate SubA slot.
   BRepGraph_TopoNode::EdgeDef& aSubADef = theGraph.myData->myIncStorage.Edges.Appended();
@@ -196,17 +199,15 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
     theGraph.myData->myOriginalShapes.Bind(theSubB, aSubBEdge);
   }
 
-  // Update edge-to-wire reverse index for the containing wires.
+  // Update edge-to-wire reverse index incrementally.
+  BRepGraphInc_ReverseIndex& aRevIdx = theGraph.myData->myIncStorage.ReverseIdx;
   for (int aWIdx = 0; aWIdx < aOrigWires.Length(); ++aWIdx)
   {
     const int aWireIdx = aOrigWires.Value(aWIdx);
-
-    // Update myEdgeToWires: remove this wire from orig, register for SubA and SubB.
-    BRepGraph_BackRefManager::UnbindEdgeFromWire(theGraph, theEdgeDef.Index, aWireIdx);
-    BRepGraph_BackRefManager::BindEdgeToWire(theGraph, aSubAIdx, aWireIdx);
-    BRepGraph_BackRefManager::BindEdgeToWire(theGraph, aSubBIdx, aWireIdx);
-
-    theGraph.markModified(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Wire, aWireIdx));
+    aRevIdx.UnbindEdgeFromWire(theEdgeDef.Index, aWireIdx);
+    aRevIdx.BindEdgeToWire(aSubAIdx, aWireIdx);
+    aRevIdx.BindEdgeToWire(aSubBIdx, aWireIdx);
+    theGraph.markModified(BRepGraph_NodeId::Wire(aWireIdx));
   }
 
   theGraph.markModified(theEdgeDef);
@@ -237,9 +238,9 @@ void BRepGraph_Mutator::ReplaceEdgeInWire(BRepGraph&       theGraph,
       if (theReversed)
         aER.Orientation = TopAbs::Reverse(aER.Orientation);
 
-      // Update edge-to-wire reverse index.
-      BRepGraph_BackRefManager::ReplaceEdgeInWireMap(theGraph, theOldEdgeDef.Index,
-                                                      theNewEdgeDef.Index, theWireDefIdx);
+      // Update edge-to-wire reverse index incrementally.
+      theGraph.myData->myIncStorage.ReverseIdx.ReplaceEdgeInWireMap(
+        theOldEdgeDef.Index, theNewEdgeDef.Index, theWireDefIdx);
     }
   }
 

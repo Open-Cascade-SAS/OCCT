@@ -62,8 +62,8 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::FacesOfEdge(
 {
   NCollection_Vector<BRepGraph_NodeId> aResult;
   static const NCollection_Vector<int> THE_EMPTY;
-  const NCollection_Vector<int>*       aWiresPtr =
-    myGraph->myData->myEdgeToWires.Seek(theEdgeDef.Index);
+  const NCollection_Vector<int>* aWiresPtr =
+    myGraph->myData->myIncStorage.ReverseIdx.WiresOfEdge(theEdgeDef.Index);
   const NCollection_Vector<int>& aWires = aWiresPtr != nullptr ? *aWiresPtr : THE_EMPTY;
 
   NCollection_PackedMap<int> aFaceSet;

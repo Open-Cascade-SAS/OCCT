@@ -220,8 +220,11 @@ TEST(BRepGraphBackRefManagerTest, ReplaceEdgeInWireMap_UpdatesCorrectly)
     Handle(Geom_Curve)(), anOldEdge.ParamFirst, anOldEdge.ParamLast, anOldEdge.Tolerance);
   ASSERT_TRUE(aNewEdgeId.IsValid());
 
-  // Replace in wire map.
-  BRepGraph_BackRefManager::ReplaceEdgeInWireMap(aGraph, anOldEdgeIdx, aNewEdgeId.Index, aWireDefIdx);
+  // Replace edge in wire via MutView (updates EdgeRefs and rebuilds reverse index).
+  aGraph.Mut().ReplaceEdgeInWire(aWireDefIdx,
+                                 BRepGraph_NodeId::Edge(anOldEdgeIdx),
+                                 aNewEdgeId,
+                                 false);
 
   // Old edge should no longer reference this wire.
   const NCollection_Vector<int>& anOldWires = aGraph.RelEdges().WiresOfEdge(anOldEdgeIdx);

@@ -47,9 +47,9 @@ public:
                                      bool                theParallel);
 
 private:
-  //! Populate Usage objects and bridge fields (PCurves, ChildDefIds, etc.)
-  //! on incidence entities after BRepGraphInc_Populate has filled the storage.
-  static void populateUsagesAndBridgeFields(BRepGraph& theGraph);
+  //! Allocate UIDs for all incidence entities after BRepGraphInc_Populate
+  //! has filled the storage.
+  static void populateUIDs(BRepGraph& theGraph);
 
   BRepGraph_Builder() = delete;
 };

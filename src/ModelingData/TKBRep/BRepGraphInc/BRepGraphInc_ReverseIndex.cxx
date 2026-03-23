@@ -109,6 +109,42 @@ void BRepGraphInc_ReverseIndex::Build(
 
 //=================================================================================================
 
+void BRepGraphInc_ReverseIndex::BindEdgeToWire(int theEdgeIdx, int theWireIdx)
+{
+  appendUnique(myEdgeToWires, theEdgeIdx, theWireIdx);
+}
+
+//=================================================================================================
+
+void BRepGraphInc_ReverseIndex::UnbindEdgeFromWire(int theEdgeIdx, int theWireIdx)
+{
+  NCollection_Vector<int>* aWires = myEdgeToWires.ChangeSeek(theEdgeIdx);
+  if (aWires == nullptr)
+    return;
+  for (int i = 0; i < aWires->Length(); ++i)
+  {
+    if (aWires->Value(i) == theWireIdx)
+    {
+      if (i < aWires->Length() - 1)
+        aWires->ChangeValue(i) = aWires->Value(aWires->Length() - 1);
+      aWires->EraseLast();
+      break;
+    }
+  }
+}
+
+//=================================================================================================
+
+void BRepGraphInc_ReverseIndex::ReplaceEdgeInWireMap(int theOldEdgeIdx,
+                                                     int theNewEdgeIdx,
+                                                     int theWireIdx)
+{
+  UnbindEdgeFromWire(theOldEdgeIdx, theWireIdx);
+  BindEdgeToWire(theNewEdgeIdx, theWireIdx);
+}
+
+//=================================================================================================
+
 void BRepGraphInc_ReverseIndex::appendUnique(
   NCollection_DataMap<int, NCollection_Vector<int>>& theMap,
   int theKey, int theVal)

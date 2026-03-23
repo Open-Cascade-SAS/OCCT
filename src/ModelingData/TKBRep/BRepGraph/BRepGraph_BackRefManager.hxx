@@ -22,42 +22,12 @@ class BRepGraph;
 
 //! @brief Centralized back-reference maintenance for BRepGraph.
 //!
-//! Manages reverse-index updates (myEdgeToWires, relation edges).
-//! Geometry back-references (surface/curve) are not stored; queries
-//! scan definitions on demand.
+//! Manages relation edges. Edge-to-wire reverse mapping is provided
+//! by BRepGraphInc_ReverseIndex (rebuilt after mutation).
 class BRepGraph_BackRefManager
 {
 public:
   DEFINE_STANDARD_ALLOC
-
-  // --- Edge-to-wire back-refs ---
-
-  //! Register an edge definition as belonging to a wire definition.
-  //! @param[in,out] theGraph     graph to update
-  //! @param[in] theEdgeDefIdx    edge definition index
-  //! @param[in] theWireDefIdx    wire definition index
-  static Standard_EXPORT void BindEdgeToWire(BRepGraph& theGraph,
-                                              int        theEdgeDefIdx,
-                                              int        theWireDefIdx);
-
-  //! Remove a wire from the list of wires containing a given edge.
-  //! @param[in,out] theGraph     graph to update
-  //! @param[in] theEdgeDefIdx    edge definition index
-  //! @param[in] theWireDefIdx    wire definition index to remove
-  static Standard_EXPORT void UnbindEdgeFromWire(BRepGraph& theGraph,
-                                                  int        theEdgeDefIdx,
-                                                  int        theWireDefIdx);
-
-  //! Replace an edge in the edge-to-wire reverse map for a specific wire.
-  //! Removes theOldEdgeIdx -> theWireDefIdx and adds theNewEdgeIdx -> theWireDefIdx.
-  //! @param[in,out] theGraph     graph to update
-  //! @param[in] theOldEdgeIdx    old edge definition index
-  //! @param[in] theNewEdgeIdx    new edge definition index
-  //! @param[in] theWireDefIdx    wire definition index
-  static Standard_EXPORT void ReplaceEdgeInWireMap(BRepGraph& theGraph,
-                                                    int        theOldEdgeIdx,
-                                                    int        theNewEdgeIdx,
-                                                    int        theWireDefIdx);
 
   // --- RelEdge back-refs ---
 

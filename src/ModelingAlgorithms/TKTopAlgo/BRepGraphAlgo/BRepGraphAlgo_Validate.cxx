@@ -249,7 +249,7 @@ void checkReverseIndexConsistency(const BRepGraph&                              
     {
       theIssues.Append(Issue{Severity::Error,
                              anEdge.Id,
-                             "Reverse index myEdgeToWires size mismatch"});
+                             "Reverse index ReverseIdx.WiresOfEdge size mismatch"});
       continue;
     }
 
@@ -261,7 +261,7 @@ void checkReverseIndexConsistency(const BRepGraph&                              
         {
           theIssues.Append(Issue{Severity::Error,
                                  anEdge.Id,
-                                 "Reverse index myEdgeToWires missing wire entry"});
+                                 "Reverse index ReverseIdx.WiresOfEdge missing wire entry"});
           break;
         }
       }

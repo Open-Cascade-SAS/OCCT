@@ -17,50 +17,6 @@
 
 //=================================================================================================
 
-void BRepGraph_BackRefManager::BindEdgeToWire(BRepGraph& theGraph,
-                                               int        theEdgeDefIdx,
-                                               int        theWireDefIdx)
-{
-  theGraph.myData->myEdgeToWires.TryBind(theEdgeDefIdx, NCollection_Vector<int>());
-  theGraph.myData->myEdgeToWires.ChangeFind(theEdgeDefIdx).Append(theWireDefIdx);
-}
-
-//=================================================================================================
-
-void BRepGraph_BackRefManager::UnbindEdgeFromWire(BRepGraph& theGraph,
-                                                   int        theEdgeDefIdx,
-                                                   int        theWireDefIdx)
-{
-  NCollection_Vector<int>* aWiresPtr = theGraph.myData->myEdgeToWires.ChangeSeek(theEdgeDefIdx);
-  if (aWiresPtr == nullptr)
-    return;
-
-  NCollection_Vector<int>& aWires = *aWiresPtr;
-  for (int aWIdx = 0; aWIdx < aWires.Length(); ++aWIdx)
-  {
-    if (aWires.Value(aWIdx) == theWireDefIdx)
-    {
-      if (aWIdx < aWires.Length() - 1)
-        aWires.ChangeValue(aWIdx) = aWires.Value(aWires.Length() - 1);
-      aWires.EraseLast();
-      break;
-    }
-  }
-}
-
-//=================================================================================================
-
-void BRepGraph_BackRefManager::ReplaceEdgeInWireMap(BRepGraph& theGraph,
-                                                     int        theOldEdgeIdx,
-                                                     int        theNewEdgeIdx,
-                                                     int        theWireDefIdx)
-{
-  UnbindEdgeFromWire(theGraph, theOldEdgeIdx, theWireDefIdx);
-  BindEdgeToWire(theGraph, theNewEdgeIdx, theWireDefIdx);
-}
-
-//=================================================================================================
-
 int BRepGraph_BackRefManager::AddRelEdge(BRepGraph&          theGraph,
                                          BRepGraph_NodeId    theFrom,
                                          BRepGraph_NodeId    theTo,
@@ -137,8 +93,8 @@ void BRepGraph_BackRefManager::ClearRelEdges(BRepGraph&       theGraph,
 
 void BRepGraph_BackRefManager::ClearAll(BRepGraph& theGraph)
 {
-  // Clear edge-to-wire reverse index.
-  theGraph.myData->myEdgeToWires.Clear();
+  // Clear incidence reverse indices (edge-to-wire, etc.).
+  theGraph.myData->myIncStorage.ReverseIdx.Clear();
 
   // Clear relation edge maps.
   theGraph.myData->myOutRelEdges.Clear();
@@ -149,18 +105,6 @@ void BRepGraph_BackRefManager::ClearAll(BRepGraph& theGraph)
 
 void BRepGraph_BackRefManager::RebuildAll(BRepGraph& theGraph)
 {
-  // Clear edge-to-wire reverse index.
-  theGraph.myData->myEdgeToWires.Clear();
-
-  // Rebuild edge-to-wire map from WireEntity EdgeRefs.
-  for (int aWireIdx = 0; aWireIdx < theGraph.myData->myIncStorage.Wires.Length(); ++aWireIdx)
-  {
-    const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.myData->myIncStorage.Wires.Value(aWireIdx);
-    for (int anEdgeIdx = 0; anEdgeIdx < aWireDef.EdgeRefs.Length(); ++anEdgeIdx)
-    {
-      const int anEdgeDefIdx = aWireDef.EdgeRefs.Value(anEdgeIdx).EdgeIdx;
-      theGraph.myData->myEdgeToWires.TryBind(anEdgeDefIdx, NCollection_Vector<int>());
-      theGraph.myData->myEdgeToWires.ChangeFind(anEdgeDefIdx).Append(aWireIdx);
-    }
-  }
+  // Rebuild incidence reverse index after mutation.
+  theGraph.myData->myIncStorage.BuildReverseIndex();
 }

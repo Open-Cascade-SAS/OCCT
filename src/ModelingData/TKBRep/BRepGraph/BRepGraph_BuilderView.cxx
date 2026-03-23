@@ -85,7 +85,7 @@ BRepGraph_NodeId BRepGraph::BuilderView::AddWireDef(
     anEdgeRef.Orientation = anOri;
     myGraph->myData->myIncStorage.Wires.ChangeValue(aIdx).EdgeRefs.Append(anEdgeRef);
 
-    BRepGraph_BackRefManager::BindEdgeToWire(*myGraph, anEdgeDefId.Index, aIdx);
+    myGraph->myData->myIncStorage.ReverseIdx.BindEdgeToWire(anEdgeDefId.Index, aIdx);
   }
 
   // Check closure.

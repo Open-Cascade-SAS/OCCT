@@ -231,8 +231,8 @@ void BRepGraph::markModified(BRepGraph_NodeId theDefId)
       // Vertex modifications don't propagate.
       break;
     case BRepGraph_NodeId::Kind::Edge: {
-      // Edge -> Wire (via edge-to-wire reverse index).
-      const NCollection_Vector<int>* aWires = myData->myEdgeToWires.Seek(theDefId.Index);
+      // Edge -> Wire (via incidence reverse index).
+      const NCollection_Vector<int>* aWires = aRevIdx.WiresOfEdge(theDefId.Index);
       if (aWires != nullptr)
         for (int i = 0; i < aWires->Length(); ++i)
           markModified(BRepGraph_NodeId::Wire(aWires->Value(i)));

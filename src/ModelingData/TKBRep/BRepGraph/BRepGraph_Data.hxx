@@ -70,9 +70,6 @@ struct BRepGraph_Data
   std::atomic<size_t> myNextUIDCounter{0};
   uint32_t            myGeneration{0};
 
-  //! Reverse index: edge def index -> wire def indices containing that edge.
-  NCollection_DataMap<int, NCollection_Vector<int>> myEdgeToWires;
-
   //! Per-node location applied by Transform (identity by default).
   NCollection_DataMap<BRepGraph_NodeId, TopLoc_Location> myNodeLocations;
 

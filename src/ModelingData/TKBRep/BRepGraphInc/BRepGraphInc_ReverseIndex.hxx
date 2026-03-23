@@ -91,6 +91,17 @@ public:
     return myShellToSolids.Seek(theShellIdx);
   }
 
+  // --- Incremental mutation ---
+
+  //! Register an edge as belonging to a wire (O(1) amortized).
+  Standard_EXPORT void BindEdgeToWire(int theEdgeIdx, int theWireIdx);
+
+  //! Remove a wire from the edge-to-wire index for a given edge.
+  Standard_EXPORT void UnbindEdgeFromWire(int theEdgeIdx, int theWireIdx);
+
+  //! Replace an edge in the edge-to-wire index for a specific wire.
+  Standard_EXPORT void ReplaceEdgeInWireMap(int theOldEdgeIdx, int theNewEdgeIdx, int theWireIdx);
+
 private:
   //! Add theVal to the vector at theKey, creating if needed.  Skips duplicates.
   static void appendUnique(NCollection_DataMap<int, NCollection_Vector<int>>& theMap,

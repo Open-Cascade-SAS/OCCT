@@ -21,7 +21,7 @@
 
 //=================================================================================================
 
-void BRepGraph_Builder::populateUsagesAndBridgeFields(BRepGraph& theGraph)
+void BRepGraph_Builder::populateUIDs(BRepGraph& theGraph)
 {
   BRepGraph_Data&       aData    = *theGraph.myData;
   BRepGraphInc_Storage& aStorage = aData.myIncStorage;
@@ -46,17 +46,6 @@ void BRepGraph_Builder::populateUsagesAndBridgeFields(BRepGraph& theGraph)
     theGraph.allocateUID(aStorage.Compounds.Value(i).Id);
   for (int i = 0; i < aStorage.CompSolids.Length(); ++i)
     theGraph.allocateUID(aStorage.CompSolids.Value(i).Id);
-
-  // --- Wires: build edge-to-wire reverse index ---
-  for (int i = 0; i < aStorage.Wires.Length(); ++i)
-  {
-    const BRepGraphInc::WireEntity& aWireDef = aStorage.Wires.Value(i);
-    for (int e = 0; e < aWireDef.EdgeRefs.Length(); ++e)
-    {
-      const BRepGraphInc::EdgeRef& aER = aWireDef.EdgeRefs.Value(e);
-      BRepGraph_BackRefManager::BindEdgeToWire(theGraph, aER.EdgeIdx, i);
-    }
-  }
 
 }
 
@@ -110,8 +99,8 @@ void BRepGraph_Builder::Perform(BRepGraph& theGraph, const TopoDS_Shape& theShap
     theGraph.myData->myOriginalShapes.Bind(anIter.Key(), anIter.Value());
   }
 
-  // Phase 3: Populate bridge fields on incidence entities (UIDs, PCurves, etc.).
-  populateUsagesAndBridgeFields(theGraph);
+  // Phase 3: Allocate UIDs for all incidence entities.
+  populateUIDs(theGraph);
 
   theGraph.myData->myIsDone = true;
 }
@@ -135,8 +124,6 @@ void BRepGraph_Builder::Append(BRepGraph& theGraph, const TopoDS_Shape& theShape
   theGraph.myData->myVertexUIDs.Clear();
   theGraph.myData->myCompoundUIDs.Clear();
   theGraph.myData->myCompSolidUIDs.Clear();
-  theGraph.myData->myEdgeToWires.Clear();
-
   // Re-copy TShape->NodeId and OriginalShapes.
   BRepGraphInc_Storage& aStorage = theGraph.myData->myIncStorage;
   theGraph.myData->myTShapeToDefId.Clear();
@@ -155,7 +142,7 @@ void BRepGraph_Builder::Append(BRepGraph& theGraph, const TopoDS_Shape& theShape
     theGraph.myData->myOriginalShapes.Bind(anIter.Key(), anIter.Value());
   }
 
-  populateUsagesAndBridgeFields(theGraph);
+  populateUIDs(theGraph);
 
   theGraph.myData->myIsDone = true;
 }
