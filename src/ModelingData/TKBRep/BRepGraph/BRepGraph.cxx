@@ -87,9 +87,15 @@ void extractFaceData(FaceLocalData& theData)
   theData.Tolerance     = BRep_Tool::Tolerance(aFace);
   theData.Orientation   = aFace.Orientation();
 
-  const TopoDS_Wire anOuterWire = BRepTools::OuterWire(aFace);
+  // Use a FORWARD-oriented face for wire/edge iteration so that edge orientations
+  // and traversal order are stored relative to the face TShape, not composed with
+  // the face's orientation in the parent shell/solid.  During reconstruction the
+  // face orientation is re-applied, so storing TShape-relative data avoids
+  // double-composition.
+  const TopoDS_Face aForwardFace = TopoDS::Face(aFace.Oriented(TopAbs_FORWARD));
+  const TopoDS_Wire anOuterWire  = BRepTools::OuterWire(aForwardFace);
 
-  for (TopoDS_Iterator aWireIt(aFace); aWireIt.More(); aWireIt.Next())
+  for (TopoDS_Iterator aWireIt(aForwardFace); aWireIt.More(); aWireIt.Next())
   {
     if (aWireIt.Value().ShapeType() != TopAbs_WIRE)
       continue;
@@ -99,7 +105,7 @@ void extractFaceData(FaceLocalData& theData)
     aWireData.Shape   = aWire;
     aWireData.IsOuter = aWire.IsSame(anOuterWire);
 
-    for (BRepTools_WireExplorer anEdgeExp(aWire, aFace); anEdgeExp.More(); anEdgeExp.Next())
+    for (BRepTools_WireExplorer anEdgeExp(aWire, aForwardFace); anEdgeExp.More(); anEdgeExp.Next())
     {
       const TopoDS_Edge& anEdge = anEdgeExp.Current();
 
@@ -131,7 +137,7 @@ void extractFaceData(FaceLocalData& theData)
       }
 
       double aPCFirst = 0.0, aPCLast = 0.0;
-      anEdgeData.PCurve2d = BRep_Tool::CurveOnSurface(anEdge, aFace, aPCFirst, aPCLast);
+      anEdgeData.PCurve2d = BRep_Tool::CurveOnSurface(anEdge, aForwardFace, aPCFirst, aPCLast);
       anEdgeData.PCFirst  = aPCFirst;
       anEdgeData.PCLast   = aPCLast;
 
@@ -235,6 +241,10 @@ void BRepGraph::Build(const TopoDS_Shape& theShape, bool theParallel)
   myCurrentShapes.Clear();
   ++myGeneration;
   myIsDone = false;
+
+  // Early exit for null shapes.
+  if (theShape.IsNull())
+    return;
 
   // Phase 1 (sequential): Explore hierarchy, create Solid/Shell defs + usages,
   // collect face contexts for parallel extraction.
@@ -573,8 +583,9 @@ void BRepGraph::Build(const TopoDS_Shape& theShape, bool theParallel)
                                                         anEdgeData.PCLast);
 
           BRepGraph_TopoNode::EdgeDef::PCurveEntry aPCEntry;
-          aPCEntry.PCurveNodeId = aPCurveId;
-          aPCEntry.FaceDefId    = aFaceDefId;
+          aPCEntry.PCurveNodeId    = aPCurveId;
+          aPCEntry.FaceDefId       = aFaceDefId;
+          aPCEntry.EdgeOrientation = anEdgeData.OrientationInWire;
           myEdgeDefs.ChangeValue(anEdgeDefId.Index).PCurves.Append(aPCEntry);
         }
 
@@ -1765,7 +1776,12 @@ TopoDS_Shape BRepGraph::reconstructNode(BRepGraph_NodeId theNode) const
               aBB.Add(anEdge, anEndVtx.Oriented(TopAbs_REVERSED));
           }
 
-          // Attach PCurve for THIS face context.
+          // Attach PCurve(s) for THIS face context.
+          // Seam edges have two PCurves on the same face — one for FORWARD,
+          // one for REVERSED edge orientation.  Use EdgeOrientation to assign
+          // C1 (FORWARD) and C2 (REVERSED) correctly.
+          Handle(Geom2d_Curve) aPC1, aPC2;
+          double aPCFirst = 0.0, aPCLast = 0.0;
           for (int aPCIdx = 0; aPCIdx < anEdgeDef.PCurves.Length(); ++aPCIdx)
           {
             const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCEntry =
@@ -1776,14 +1792,47 @@ TopoDS_Shape BRepGraph::reconstructNode(BRepGraph_NodeId theNode) const
                 myPCurves.Value(aPCEntry.PCurveNodeId.Index);
               if (!aPCNode.Curve2d.IsNull())
               {
-                aBB.UpdateEdge(anEdge, aPCNode.Curve2d,
-                               aSurfNode.Surface, aFaceGlobalLoc,
-                               anEdgeDef.Tolerance);
-                aBB.Range(anEdge, aSurfNode.Surface, aFaceGlobalLoc,
-                          aPCNode.ParamFirst, aPCNode.ParamLast);
+                if (aPCEntry.EdgeOrientation == TopAbs_FORWARD)
+                {
+                  aPC1 = aPCNode.Curve2d;
+                  aPCFirst = aPCNode.ParamFirst;
+                  aPCLast  = aPCNode.ParamLast;
+                }
+                else
+                {
+                  aPC2 = aPCNode.Curve2d;
+                  if (aPC1.IsNull())
+                  {
+                    aPCFirst = aPCNode.ParamFirst;
+                    aPCLast  = aPCNode.ParamLast;
+                  }
+                }
               }
-              break;
             }
+          }
+          if (!aPC1.IsNull() && !aPC2.IsNull())
+          {
+            aBB.UpdateEdge(anEdge, aPC1, aPC2,
+                           aSurfNode.Surface, aFaceGlobalLoc,
+                           anEdgeDef.Tolerance);
+            aBB.Range(anEdge, aSurfNode.Surface, aFaceGlobalLoc,
+                      aPCFirst, aPCLast);
+          }
+          else if (!aPC1.IsNull())
+          {
+            aBB.UpdateEdge(anEdge, aPC1,
+                           aSurfNode.Surface, aFaceGlobalLoc,
+                           anEdgeDef.Tolerance);
+            aBB.Range(anEdge, aSurfNode.Surface, aFaceGlobalLoc,
+                      aPCFirst, aPCLast);
+          }
+          else if (!aPC2.IsNull())
+          {
+            aBB.UpdateEdge(anEdge, aPC2,
+                           aSurfNode.Surface, aFaceGlobalLoc,
+                           anEdgeDef.Tolerance);
+            aBB.Range(anEdge, aSurfNode.Surface, aFaceGlobalLoc,
+                      aPCFirst, aPCLast);
           }
 
           anEdge.Orientation(anEntry.OrientationInWire);
@@ -1823,12 +1872,13 @@ TopoDS_Shape BRepGraph::reconstructNode(BRepGraph_NodeId theNode) const
       aBB.MakeShell(aNewShell);
       if (!aShellDef.Usages.IsEmpty())
       {
+        ReconstructCache anEdgeCache;
         const BRepGraph_TopoNode::ShellUsage& aShellUsage =
           myShellUsages.Value(aShellDef.Usages.Value(0).Index);
         for (int aFaceIter = 0; aFaceIter < aShellUsage.FaceUsages.Length(); ++aFaceIter)
         {
           BRepGraph_NodeId aFaceDefId = DefOf(aShellUsage.FaceUsages.Value(aFaceIter));
-          TopoDS_Shape aFaceShape = reconstructNode(aFaceDefId);
+          TopoDS_Shape aFaceShape = reconstructFaceWithCache(aFaceDefId, anEdgeCache);
           aBB.Add(aNewShell, aFaceShape);
         }
       }
@@ -1840,13 +1890,27 @@ TopoDS_Shape BRepGraph::reconstructNode(BRepGraph_NodeId theNode) const
       aBB.MakeSolid(aNewSolid);
       if (!aSolidDef.Usages.IsEmpty())
       {
+        ReconstructCache anEdgeCache;
         const BRepGraph_TopoNode::SolidUsage& aSolidUsage =
           mySolidUsages.Value(aSolidDef.Usages.Value(0).Index);
         for (int aShellIter = 0; aShellIter < aSolidUsage.ShellUsages.Length(); ++aShellIter)
         {
           BRepGraph_NodeId aShellDefId = DefOf(aSolidUsage.ShellUsages.Value(aShellIter));
-          TopoDS_Shape aShellShape = reconstructNode(aShellDefId);
-          aBB.Add(aNewSolid, aShellShape);
+          const BRepGraph_TopoNode::ShellDef& aShellDef2 = myShellDefs.Value(aShellDefId.Index);
+          TopoDS_Shell aNewShell2;
+          aBB.MakeShell(aNewShell2);
+          if (!aShellDef2.Usages.IsEmpty())
+          {
+            const BRepGraph_TopoNode::ShellUsage& aShellUsage =
+              myShellUsages.Value(aShellDef2.Usages.Value(0).Index);
+            for (int aFaceIter = 0; aFaceIter < aShellUsage.FaceUsages.Length(); ++aFaceIter)
+            {
+              BRepGraph_NodeId aFaceDefId = DefOf(aShellUsage.FaceUsages.Value(aFaceIter));
+              TopoDS_Shape aFaceShape = reconstructFaceWithCache(aFaceDefId, anEdgeCache);
+              aBB.Add(aNewShell2, aFaceShape);
+            }
+          }
+          aBB.Add(aNewSolid, aNewShell2);
         }
       }
       return aNewSolid;
@@ -1854,6 +1918,197 @@ TopoDS_Shape BRepGraph::reconstructNode(BRepGraph_NodeId theNode) const
     default:
       return TopoDS_Shape();
   }
+}
+
+//=================================================================================================
+
+TopoDS_Shape BRepGraph::reconstructFaceWithCache(BRepGraph_NodeId  theNode,
+                                                  ReconstructCache& theEdgeCache) const
+{
+  if (!theNode.IsValid() || theNode.Kind != BRepGraph_NodeKind::Face)
+    return reconstructNode(theNode);
+
+  BRep_Builder aBB;
+  const BRepGraph_TopoNode::FaceDef& aFaceDef = myFaceDefs.Value(theNode.Index);
+  if (!aFaceDef.SurfNodeId.IsValid())
+    return TopoDS_Shape();
+  const BRepGraph_GeomNode::Surf& aSurfNode = mySurfaces.Value(aFaceDef.SurfNodeId.Index);
+
+  TopLoc_Location aFaceGlobalLoc;
+  TopAbs_Orientation aFaceOri = TopAbs_FORWARD;
+  if (!aFaceDef.Usages.IsEmpty())
+  {
+    const BRepGraph_TopoNode::FaceUsage& aFaceUsage =
+      myFaceUsages.Value(aFaceDef.Usages.Value(0).Index);
+    aFaceGlobalLoc = aFaceUsage.GlobalLocation;
+    aFaceOri = aFaceUsage.Orientation;
+  }
+
+  TopoDS_Face aNewFace;
+  aBB.MakeFace(aNewFace, aSurfNode.Surface, aFaceGlobalLoc, aFaceDef.Tolerance);
+
+  auto getOrBuildEdge = [&](BRepGraph_NodeId theEdgeDefId) -> TopoDS_Edge {
+    const TopoDS_Shape* aCached = theEdgeCache.Seek(theEdgeDefId);
+    if (aCached != nullptr)
+      return TopoDS::Edge(*aCached);
+
+    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = myEdgeDefs.Value(theEdgeDefId.Index);
+    TopoDS_Edge anEdge;
+    if (anEdgeDef.IsDegenerate)
+    {
+      aBB.MakeEdge(anEdge);
+      aBB.Degenerated(anEdge, true);
+    }
+    else if (anEdgeDef.CurveNodeId.IsValid())
+    {
+      const BRepGraph_GeomNode::Curve& aCurveNode =
+        myCurves.Value(anEdgeDef.CurveNodeId.Index);
+      TopLoc_Location aEdgeLoc;
+      if (!anEdgeDef.Usages.IsEmpty())
+        aEdgeLoc = myEdgeUsages.Value(anEdgeDef.Usages.Value(0).Index).LocalLocation;
+      aBB.MakeEdge(anEdge, aCurveNode.CurveGeom, aEdgeLoc, anEdgeDef.Tolerance);
+    }
+    else
+    {
+      aBB.MakeEdge(anEdge);
+    }
+    aBB.Range(anEdge, anEdgeDef.ParamFirst, anEdgeDef.ParamLast);
+
+    // Add vertices (also cached).
+    if (anEdgeDef.StartVertexDefId.IsValid())
+    {
+      const TopoDS_Shape* aVtxCached = theEdgeCache.Seek(anEdgeDef.StartVertexDefId);
+      TopoDS_Shape aStartVtx;
+      if (aVtxCached != nullptr)
+        aStartVtx = *aVtxCached;
+      else
+      {
+        aStartVtx = Shape(anEdgeDef.StartVertexDefId);
+        if (!aStartVtx.IsNull())
+          theEdgeCache.Bind(anEdgeDef.StartVertexDefId, aStartVtx);
+      }
+      if (!aStartVtx.IsNull())
+        aBB.Add(anEdge, aStartVtx.Oriented(TopAbs_FORWARD));
+    }
+    if (anEdgeDef.EndVertexDefId.IsValid())
+    {
+      const TopoDS_Shape* aVtxCached = theEdgeCache.Seek(anEdgeDef.EndVertexDefId);
+      TopoDS_Shape anEndVtx;
+      if (aVtxCached != nullptr)
+        anEndVtx = *aVtxCached;
+      else
+      {
+        anEndVtx = Shape(anEdgeDef.EndVertexDefId);
+        if (!anEndVtx.IsNull())
+          theEdgeCache.Bind(anEdgeDef.EndVertexDefId, anEndVtx);
+      }
+      if (!anEndVtx.IsNull())
+        aBB.Add(anEdge, anEndVtx.Oriented(TopAbs_REVERSED));
+    }
+
+    theEdgeCache.Bind(theEdgeDefId, anEdge);
+    return anEdge;
+  };
+
+  auto buildWireForFace = [&](BRepGraph_NodeId theWireDefId) -> TopoDS_Wire {
+    TopoDS_Wire aNewWire;
+    aBB.MakeWire(aNewWire);
+
+    const BRepGraph_TopoNode::WireDef& aWireDef = myWireDefs.Value(theWireDefId.Index);
+    for (int anEdgeIdx = 0; anEdgeIdx < aWireDef.OrderedEdges.Length(); ++anEdgeIdx)
+    {
+      const BRepGraph_TopoNode::WireDef::EdgeEntry& anEntry =
+        aWireDef.OrderedEdges.Value(anEdgeIdx);
+      TopoDS_Edge anEdge = getOrBuildEdge(anEntry.EdgeDefId);
+
+      // Attach PCurve(s) for THIS face context.
+      // Seam edges have two PCurves on the same face — one for FORWARD,
+      // one for REVERSED edge orientation.
+      const BRepGraph_TopoNode::EdgeDef& anEdgeDef = myEdgeDefs.Value(anEntry.EdgeDefId.Index);
+      Handle(Geom2d_Curve) aPC1, aPC2;
+      double aPCFirst = 0.0, aPCLast = 0.0;
+      for (int aPCIdx = 0; aPCIdx < anEdgeDef.PCurves.Length(); ++aPCIdx)
+      {
+        const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCEntry =
+          anEdgeDef.PCurves.Value(aPCIdx);
+        if (aPCEntry.FaceDefId == aFaceDef.Id)
+        {
+          const BRepGraph_GeomNode::PCurve& aPCNode =
+            myPCurves.Value(aPCEntry.PCurveNodeId.Index);
+          if (!aPCNode.Curve2d.IsNull())
+          {
+            if (aPCEntry.EdgeOrientation == TopAbs_FORWARD)
+            {
+              aPC1 = aPCNode.Curve2d;
+              aPCFirst = aPCNode.ParamFirst;
+              aPCLast  = aPCNode.ParamLast;
+            }
+            else
+            {
+              aPC2 = aPCNode.Curve2d;
+              if (aPC1.IsNull())
+              {
+                aPCFirst = aPCNode.ParamFirst;
+                aPCLast  = aPCNode.ParamLast;
+              }
+            }
+          }
+        }
+      }
+      if (!aPC1.IsNull() && !aPC2.IsNull())
+      {
+        aBB.UpdateEdge(anEdge, aPC1, aPC2,
+                       aSurfNode.Surface, aFaceGlobalLoc,
+                       anEdgeDef.Tolerance);
+        aBB.Range(anEdge, aSurfNode.Surface, aFaceGlobalLoc,
+                  aPCFirst, aPCLast);
+      }
+      else if (!aPC1.IsNull())
+      {
+        aBB.UpdateEdge(anEdge, aPC1,
+                       aSurfNode.Surface, aFaceGlobalLoc,
+                       anEdgeDef.Tolerance);
+        aBB.Range(anEdge, aSurfNode.Surface, aFaceGlobalLoc,
+                  aPCFirst, aPCLast);
+      }
+      else if (!aPC2.IsNull())
+      {
+        aBB.UpdateEdge(anEdge, aPC2,
+                       aSurfNode.Surface, aFaceGlobalLoc,
+                       anEdgeDef.Tolerance);
+        aBB.Range(anEdge, aSurfNode.Surface, aFaceGlobalLoc,
+                  aPCFirst, aPCLast);
+      }
+
+      anEdge.Orientation(anEntry.OrientationInWire);
+      aBB.Add(aNewWire, anEdge);
+    }
+
+    if (aWireDef.IsClosed)
+      aNewWire.Closed(true);
+    return aNewWire;
+  };
+
+  if (!aFaceDef.Usages.IsEmpty())
+  {
+    const BRepGraph_TopoNode::FaceUsage& aFaceUsage =
+      myFaceUsages.Value(aFaceDef.Usages.Value(0).Index);
+
+    if (aFaceUsage.OuterWireUsage.IsValid())
+    {
+      BRepGraph_NodeId aWireDefId = DefOf(aFaceUsage.OuterWireUsage);
+      aBB.Add(aNewFace, buildWireForFace(aWireDefId));
+    }
+
+    for (int aWireIdx = 0; aWireIdx < aFaceUsage.InnerWireUsages.Length(); ++aWireIdx)
+    {
+      BRepGraph_NodeId aWireDefId = DefOf(aFaceUsage.InnerWireUsages.Value(aWireIdx));
+      aBB.Add(aNewFace, buildWireForFace(aWireDefId));
+    }
+  }
+
+  aNewFace.Orientation(aFaceOri);
+  return aNewFace;
 }
 
 //=================================================================================================

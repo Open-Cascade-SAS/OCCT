@@ -373,7 +373,13 @@ private:
   BRepGraph_UID allocateUID(BRepGraph_NodeId theNodeId);
   BRepGraph_NodeCache* mutableCache(BRepGraph_NodeId theNode);
   void markModified(BRepGraph_NodeId theDefId);
+  //! Shared cache for edge/vertex shapes during multi-face reconstruction.
+  using ReconstructCache = NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape,
+                                               BRepGraph_NodeId::Hasher>;
+
   TopoDS_Shape reconstructNode(BRepGraph_NodeId theNode) const;
+  TopoDS_Shape reconstructFaceWithCache(BRepGraph_NodeId theNode,
+                                        ReconstructCache& theEdgeCache) const;
   TopoDS_Shape reconstructUsage(BRepGraph_UsageId theUsage) const;
 
   //! Shapes from Build().

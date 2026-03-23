@@ -86,10 +86,13 @@ struct EdgeDef : public BaseDef
   BRepGraph_NodeId CurveNodeId;
 
   //! PCurve entries, one per (edge, face) context.
+  //! For seam edges there are two entries with the same FaceDefId,
+  //! distinguished by EdgeOrientation (FORWARD vs REVERSED).
   struct PCurveEntry
   {
-    BRepGraph_NodeId PCurveNodeId;
-    BRepGraph_NodeId FaceDefId;
+    BRepGraph_NodeId    PCurveNodeId;
+    BRepGraph_NodeId    FaceDefId;
+    TopAbs_Orientation  EdgeOrientation = TopAbs_FORWARD; //!< Edge orientation when this PCurve was extracted.
   };
 
   NCollection_Vector<PCurveEntry> PCurves;
