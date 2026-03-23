@@ -322,7 +322,8 @@ TEST(BRepGraphAlgo_DeduplicateTest, CanonicalizeSurfaces_RewritesAndRecordsHisto
 
   EXPECT_EQ(aRes.NbSurfaceRewrites, 1);
   EXPECT_EQ(nbUniqueFaceSurfaceDefs(aGraph), 1);
-  EXPECT_EQ(aGraph.History().NbRecords(), aHistoryBefore + 5);
+  // 5 canonicalize + 1 nullify surface + 4 nullify curves = 10.
+  EXPECT_EQ(aGraph.History().NbRecords(), aHistoryBefore + 10);
 }
 
 TEST(BRepGraphAlgo_DeduplicateTest, CanonicalizeCurves_RewritesAndReducesUnique)
@@ -384,7 +385,8 @@ TEST(BRepGraphAlgo_DeduplicateTest, DefaultOverload_PerformWorks)
   EXPECT_EQ(aRes.NbCanonicalSurfaces, 1);
   EXPECT_EQ(aRes.NbSurfaceRewrites, 1);
   EXPECT_EQ(aRes.NbCurveRewrites, 4);
-  EXPECT_EQ(aRes.NbHistoryRecords, 5);
+  // 5 canonicalize + 1 nullify surface + 4 nullify curves = 10.
+  EXPECT_EQ(aRes.NbHistoryRecords, 10);
   EXPECT_FALSE(aRes.IsDefMergeApplied);
 }
 
@@ -470,6 +472,9 @@ TEST(BRepGraphAlgo_DeduplicateTest, NotDoneGraph_ReturnsEmptyResult)
   EXPECT_EQ(aRes.NbSurfaceRewrites, 0);
   EXPECT_EQ(aRes.NbCurveRewrites, 0);
   EXPECT_EQ(aRes.NbPCurveRewrites, 0);
+  EXPECT_EQ(aRes.NbNullifiedSurfaces, 0);
+  EXPECT_EQ(aRes.NbNullifiedCurves, 0);
+  EXPECT_EQ(aRes.NbNullifiedPCurves, 0);
   EXPECT_EQ(aRes.NbHistoryRecords, 0);
   EXPECT_FALSE(aRes.IsDefMergeApplied);
 }
@@ -580,7 +585,8 @@ TEST(BRepGraphAlgo_DeduplicateTest, MixedGeometry_OnlyIdenticalDeduped)
   EXPECT_EQ(aRes.NbCanonicalCurves, 7);
   EXPECT_EQ(aRes.NbSurfaceRewrites, 1);
   EXPECT_EQ(aRes.NbCurveRewrites, 4);
-  EXPECT_EQ(aRes.NbHistoryRecords, 7);
+  // 7 canonicalize + 1 nullify surface + 4 nullify curves + 2 nullify PCurves = 14.
+  EXPECT_EQ(aRes.NbHistoryRecords, 14);
   EXPECT_EQ(nbUniqueFaceSurfaceDefs(aGraph), 2);
   EXPECT_EQ(nbUniqueEdgeCurveDefs(aGraph), 7);
 }
@@ -617,20 +623,26 @@ TEST(BRepGraphAlgo_DeduplicateTest, HistoryRecordNames_MatchExpectedOps)
   anOpts.HistoryMode = true;
 
   const BRepGraphAlgo_Deduplicate::Result aRes = BRepGraphAlgo_Deduplicate::Perform(aGraph, anOpts);
-  ASSERT_EQ(aRes.NbHistoryRecords, 5);
+  ASSERT_EQ(aRes.NbHistoryRecords, 10);
 
-  // TwoCopiedFaces: 1 surface + 4 curve dedups = 5 history records.
+  // TwoCopiedFaces: 1 surface + 4 curve canonicalizations + 1 nullify surface + 4 nullify curves.
   const int aNbSurfOps =
     countHistoryRecordsByOp(aGraph, TCollection_AsciiString("Dedup:CanonicalizeSurface"));
   const int aNbCurveOps =
     countHistoryRecordsByOp(aGraph, TCollection_AsciiString("Dedup:CanonicalizeCurve"));
   const int aNbPCurveOps =
     countHistoryRecordsByOp(aGraph, TCollection_AsciiString("Dedup:CanonicalizePCurve"));
+  const int aNbNullSurfOps =
+    countHistoryRecordsByOp(aGraph, TCollection_AsciiString("Dedup:NullifyOrphanSurface"));
+  const int aNbNullCurveOps =
+    countHistoryRecordsByOp(aGraph, TCollection_AsciiString("Dedup:NullifyOrphanCurve"));
 
   EXPECT_EQ(aNbSurfOps, 1);
   EXPECT_EQ(aNbCurveOps, 4);
   EXPECT_EQ(aNbPCurveOps, 0);
-  EXPECT_EQ(aNbSurfOps + aNbCurveOps + aNbPCurveOps, 5);
+  EXPECT_EQ(aNbNullSurfOps, 1);
+  EXPECT_EQ(aNbNullCurveOps, 4);
+  EXPECT_EQ(aNbSurfOps + aNbCurveOps + aNbPCurveOps + aNbNullSurfOps + aNbNullCurveOps, 10);
 }
 
 TEST(BRepGraphAlgo_DeduplicateTest, AnalyzeOnly_CurveAndPCurveCountsReported)
@@ -678,6 +690,9 @@ TEST(BRepGraphAlgo_DeduplicateTest, DefaultResultStruct_AllZeroed)
   EXPECT_EQ(aRes.NbSurfaceRewrites, 0);
   EXPECT_EQ(aRes.NbCurveRewrites, 0);
   EXPECT_EQ(aRes.NbPCurveRewrites, 0);
+  EXPECT_EQ(aRes.NbNullifiedSurfaces, 0);
+  EXPECT_EQ(aRes.NbNullifiedCurves, 0);
+  EXPECT_EQ(aRes.NbNullifiedPCurves, 0);
   EXPECT_EQ(aRes.NbHistoryRecords, 0);
   EXPECT_FALSE(aRes.IsDefMergeApplied);
 }
@@ -718,7 +733,8 @@ TEST(BRepGraphAlgo_DeduplicateTest, NestedCompound_AllCopiesDeduped)
   EXPECT_EQ(aRes.NbSurfaceRewrites, 2);
   EXPECT_EQ(aRes.NbCurveRewrites, 8);
   EXPECT_EQ(aRes.NbPCurveRewrites, 0);
-  EXPECT_EQ(aRes.NbHistoryRecords, 10);
+  // 10 canonicalize + 2 nullify surfaces + 8 nullify curves = 20.
+  EXPECT_EQ(aRes.NbHistoryRecords, 20);
   EXPECT_EQ(nbUniqueFaceSurfaceDefs(aGraph), 1);
   EXPECT_EQ(nbUniqueEdgeCurveDefs(aGraph), 4);
 }
@@ -761,7 +777,8 @@ TEST(BRepGraphAlgo_DeduplicateTest, TwoIdenticalBoxes_SurfacesAndCurvesDeduped)
   EXPECT_EQ(aRes.NbSurfaceRewrites, 6);
   EXPECT_EQ(aRes.NbCurveRewrites, 12);
   EXPECT_EQ(aRes.NbPCurveRewrites, 0);
-  EXPECT_EQ(aRes.NbHistoryRecords, 18);
+  // 18 canonicalize + 6 nullify surfaces + 12 nullify curves = 36.
+  EXPECT_EQ(aRes.NbHistoryRecords, 36);
   EXPECT_EQ(nbUniqueFaceSurfaceDefs(aGraph), 6);
   EXPECT_EQ(nbUniqueEdgeCurveDefs(aGraph), 12);
 }
@@ -879,9 +896,9 @@ TEST(BRepGraphAlgo_DeduplicateTest, HistoryFindOriginal_TracesBackToCanonical)
   anOpts.HistoryMode = true;
 
   const BRepGraphAlgo_Deduplicate::Result aRes = BRepGraphAlgo_Deduplicate::Perform(aGraph, anOpts);
-  ASSERT_EQ(aRes.NbHistoryRecords, 5);
+  ASSERT_EQ(aRes.NbHistoryRecords, 10);
 
-  // For each surface history record, FindOriginal on the replacement should trace back.
+  // For each history record, FindOriginal on the replacement should trace back.
   for (int aRecIdx = 0; aRecIdx < aGraph.History().NbRecords(); ++aRecIdx)
   {
     const BRepGraph_HistoryRecord& aRec = aGraph.History().Record(aRecIdx);
@@ -915,10 +932,12 @@ TEST(BRepGraphAlgo_DeduplicateTest, HistoryFindDerived_ContainsCanonicalNode)
   anOpts.HistoryMode = true;
 
   const BRepGraphAlgo_Deduplicate::Result aRes = BRepGraphAlgo_Deduplicate::Perform(aGraph, anOpts);
-  ASSERT_EQ(aRes.NbHistoryRecords, 5);
+  ASSERT_EQ(aRes.NbHistoryRecords, 10);
 
   // For each history record, FindDerived on the original should contain the replacements.
-  int aTotalMappings = 0;
+  // Canonicalize records have 1 replacement; nullify records have 0.
+  int aNbCanonMappings = 0;
+  int aNbNullifyMappings = 0;
   for (int aRecIdx = 0; aRecIdx < aGraph.History().NbRecords(); ++aRecIdx)
   {
     const BRepGraph_HistoryRecord& aRec = aGraph.History().Record(aRecIdx);
@@ -930,11 +949,20 @@ TEST(BRepGraphAlgo_DeduplicateTest, HistoryFindDerived_ContainsCanonicalNode)
       const BRepGraph_NodeId&                    anOriginal = aMapIter.Key();
       const NCollection_Vector<BRepGraph_NodeId> aDerived =
         aGraph.History().FindDerived(anOriginal);
-      EXPECT_EQ(aDerived.Length(), 1);
-      ++aTotalMappings;
+      if (aMapIter.Value().IsEmpty())
+      {
+        // Nullify record — no derived nodes.
+        ++aNbNullifyMappings;
+      }
+      else
+      {
+        EXPECT_EQ(aDerived.Length(), 1);
+        ++aNbCanonMappings;
+      }
     }
   }
-  EXPECT_EQ(aTotalMappings, 5);
+  EXPECT_EQ(aNbCanonMappings, 5);
+  EXPECT_EQ(aNbNullifyMappings, 5);
 }
 
 TEST(BRepGraphAlgo_DeduplicateTest, HistoryRecordSequenceNumbers_AreMonotonic)
@@ -967,7 +995,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, HistoryOff_NbRecordsUnchanged)
   BRepGraphAlgo_Deduplicate::Options anOpts1;
   anOpts1.HistoryMode = true;
   (void)BRepGraphAlgo_Deduplicate::Perform(aGraph, anOpts1);
-  EXPECT_EQ(aGraph.History().NbRecords(), 5);
+  EXPECT_EQ(aGraph.History().NbRecords(), 10);
 
   // Fresh graph, run with history off — no records should be added.
   BRepGraph aGraph2;
@@ -1350,7 +1378,8 @@ TEST(BRepGraphAlgo_DeduplicateTest, TwoCopiedSphereFaces_Deduped)
   EXPECT_EQ(aRes.NbSurfaceRewrites, 1);
   EXPECT_EQ(aRes.NbCurveRewrites, 1);
   EXPECT_EQ(aRes.NbPCurveRewrites, 4);
-  EXPECT_EQ(aRes.NbHistoryRecords, 6);
+  // 6 canonicalize + 1 nullify surface + 1 nullify curve + 4 nullify PCurves = 12.
+  EXPECT_EQ(aRes.NbHistoryRecords, 12);
 }
 
 TEST(BRepGraphAlgo_DeduplicateTest, TwoCopiedCylinderFaces_Deduped)
@@ -1386,7 +1415,8 @@ TEST(BRepGraphAlgo_DeduplicateTest, TwoCopiedCylinderFaces_Deduped)
   EXPECT_EQ(aRes.NbSurfaceRewrites, 1);
   EXPECT_EQ(aRes.NbCurveRewrites, 3);
   EXPECT_EQ(aRes.NbPCurveRewrites, 4);
-  EXPECT_EQ(aRes.NbHistoryRecords, 8);
+  // 8 canonicalize + 1 nullify surface + 3 nullify curves + 4 nullify PCurves = 16.
+  EXPECT_EQ(aRes.NbHistoryRecords, 16);
 }
 
 TEST(BRepGraphAlgo_DeduplicateTest, PCurveContext_WorksAsDataMapKey)
@@ -1451,5 +1481,213 @@ TEST(BRepGraphAlgo_DeduplicateTest, DifferentSizedCylinders_NotDeduped)
   EXPECT_EQ(aRes.NbCurveRewrites, 0);
   // PCurve dedup still happens within context groups.
   EXPECT_EQ(aRes.NbPCurveRewrites, 4);
-  EXPECT_EQ(aRes.NbHistoryRecords, 4);
+  // 4 canonicalize PCurves + 4 nullify PCurves = 8.
+  EXPECT_EQ(aRes.NbHistoryRecords, 8);
+}
+
+// ---------------------------------------------------------------------------
+// Back-reference and orphan nullification tests
+// ---------------------------------------------------------------------------
+
+TEST(BRepGraphAlgo_DeduplicateTest, BackRefs_SurfaceRewrite_UpdatesFaceDefUsers)
+{
+  BRepGraph aGraph;
+  aGraph.Build(makeTwoCopiedIdenticalFaces());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  // Before dedup: each surface has exactly 1 FaceDefUser.
+  ASSERT_EQ(aGraph.Geom().NbSurfaces(), 2);
+  ASSERT_EQ(aGraph.Geom().Surface(0).FaceDefUsers.Length(), 1);
+  ASSERT_EQ(aGraph.Geom().Surface(1).FaceDefUsers.Length(), 1);
+
+  (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
+
+  // After dedup: canonical surface has 2 users, orphan surface has 0.
+  // Find which is canonical (the one with users).
+  int aCanonIdx = -1;
+  int anOrphanIdx = -1;
+  for (int aSurfIdx = 0; aSurfIdx < aGraph.Geom().NbSurfaces(); ++aSurfIdx)
+  {
+    if (aGraph.Geom().Surface(aSurfIdx).FaceDefUsers.Length() == 2)
+      aCanonIdx = aSurfIdx;
+    else if (aGraph.Geom().Surface(aSurfIdx).FaceDefUsers.IsEmpty())
+      anOrphanIdx = aSurfIdx;
+  }
+  EXPECT_GE(aCanonIdx, 0);
+  EXPECT_GE(anOrphanIdx, 0);
+  EXPECT_NE(aCanonIdx, anOrphanIdx);
+}
+
+TEST(BRepGraphAlgo_DeduplicateTest, BackRefs_CurveRewrite_UpdatesEdgeDefUsers)
+{
+  BRepGraph aGraph;
+  aGraph.Build(makeTwoCopiedIdenticalFaces());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  // Before dedup: 8 curves, each with 1 EdgeDefUser.
+  ASSERT_EQ(aGraph.Geom().NbCurves(), 8);
+  for (int aCurveIdx = 0; aCurveIdx < aGraph.Geom().NbCurves(); ++aCurveIdx)
+  {
+    ASSERT_EQ(aGraph.Geom().Curve(aCurveIdx).EdgeDefUsers.Length(), 1);
+  }
+
+  (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
+
+  // After dedup: 4 canonical curves should have 2 users each, 4 orphans have 0.
+  int aNbCanonical = 0;
+  int aNbOrphan = 0;
+  for (int aCurveIdx = 0; aCurveIdx < aGraph.Geom().NbCurves(); ++aCurveIdx)
+  {
+    const int aNbUsers = aGraph.Geom().Curve(aCurveIdx).EdgeDefUsers.Length();
+    if (aNbUsers == 2)
+      ++aNbCanonical;
+    else if (aNbUsers == 0)
+      ++aNbOrphan;
+  }
+  EXPECT_EQ(aNbCanonical, 4);
+  EXPECT_EQ(aNbOrphan, 4);
+}
+
+TEST(BRepGraphAlgo_DeduplicateTest, FacesOnSurface_AfterDedup_ReturnsCorrectDefs)
+{
+  BRepGraph aGraph;
+  aGraph.Build(makeTwoCopiedIdenticalFaces());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
+
+  // After dedup, all face defs point to one canonical surface.
+  // FacesOnSurface for the canonical should return both face defs.
+  for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
+  {
+    const BRepGraph_TopoNode::FaceDef& aFaceDef = aGraph.Defs().Face(aFaceIdx);
+    if (!aFaceDef.SurfNodeId.IsValid())
+    {
+      continue;
+    }
+    const NCollection_Vector<BRepGraph_NodeId>& aFacesOnSurf =
+      aGraph.Geom().FacesOnSurface(aFaceDef.SurfNodeId);
+    EXPECT_EQ(aFacesOnSurf.Length(), 2);
+  }
+}
+
+TEST(BRepGraphAlgo_DeduplicateTest, Nullify_OrphanedSurface_HandleIsNull)
+{
+  BRepGraph aGraph;
+  aGraph.Build(makeTwoCopiedIdenticalFaces());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  const BRepGraphAlgo_Deduplicate::Result aRes = BRepGraphAlgo_Deduplicate::Perform(aGraph);
+  EXPECT_EQ(aRes.NbNullifiedSurfaces, 1);
+
+  // Find the orphaned surface and verify its handle is null.
+  int aNbNullSurfs = 0;
+  int aNbLiveSurfs = 0;
+  for (int aSurfIdx = 0; aSurfIdx < aGraph.Geom().NbSurfaces(); ++aSurfIdx)
+  {
+    const BRepGraph_GeomNode::Surf& aSurf = aGraph.Geom().Surface(aSurfIdx);
+    if (aSurf.Surface.IsNull())
+      ++aNbNullSurfs;
+    else
+      ++aNbLiveSurfs;
+  }
+  EXPECT_EQ(aNbNullSurfs, 1);
+  EXPECT_EQ(aNbLiveSurfs, 1);
+}
+
+TEST(BRepGraphAlgo_DeduplicateTest, Nullify_OrphanedCurve_HandleIsNull)
+{
+  BRepGraph aGraph;
+  aGraph.Build(makeTwoCopiedIdenticalFaces());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  const BRepGraphAlgo_Deduplicate::Result aRes = BRepGraphAlgo_Deduplicate::Perform(aGraph);
+  EXPECT_EQ(aRes.NbNullifiedCurves, 4);
+
+  // Canonical curves should be non-null, orphaned curves should be null.
+  int aNbNullCurves = 0;
+  for (int aCurveIdx = 0; aCurveIdx < aGraph.Geom().NbCurves(); ++aCurveIdx)
+  {
+    if (aGraph.Geom().Curve(aCurveIdx).CurveGeom.IsNull())
+      ++aNbNullCurves;
+  }
+  EXPECT_EQ(aNbNullCurves, 4);
+}
+
+TEST(BRepGraphAlgo_DeduplicateTest, Nullify_OrphanedPCurve_HandleIsNull)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+  TopExp_Explorer     anExp(aBoxMaker.Shape(), TopAbs_FACE);
+  BRepBuilderAPI_Copy aCopy(anExp.Current(), true);
+
+  BRepGraph aGraph;
+  aGraph.Build(aCopy.Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  const int aDupCount = addDuplicatePCurvesToAllEdges(aGraph);
+  ASSERT_GT(aDupCount, 0);
+
+  const int aTotalPCurves = aGraph.Geom().NbPCurves();
+
+  const BRepGraphAlgo_Deduplicate::Result aRes = BRepGraphAlgo_Deduplicate::Perform(aGraph);
+  EXPECT_GT(aRes.NbPCurveRewrites, 0);
+  EXPECT_GT(aRes.NbNullifiedPCurves, 0);
+
+  // Orphaned PCurve handles should be null.
+  int aNbNullPCurves = 0;
+  for (int aPCIdx = 0; aPCIdx < aTotalPCurves; ++aPCIdx)
+  {
+    if (aGraph.Geom().PCurve(aPCIdx).Curve2d.IsNull())
+      ++aNbNullPCurves;
+  }
+  EXPECT_EQ(aNbNullPCurves, aRes.NbNullifiedPCurves);
+}
+
+TEST(BRepGraphAlgo_DeduplicateTest, AnalyzeOnly_NoBackRefChangesOrNullification)
+{
+  BRepGraph aGraph;
+  aGraph.Build(makeTwoCopiedIdenticalFaces());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  // Snapshot back-refs before.
+  NCollection_Vector<int> aSurfUserCounts;
+  for (int aSurfIdx = 0; aSurfIdx < aGraph.Geom().NbSurfaces(); ++aSurfIdx)
+  {
+    aSurfUserCounts.Append(aGraph.Geom().Surface(aSurfIdx).FaceDefUsers.Length());
+  }
+  NCollection_Vector<int> aCurveUserCounts;
+  for (int aCurveIdx = 0; aCurveIdx < aGraph.Geom().NbCurves(); ++aCurveIdx)
+  {
+    aCurveUserCounts.Append(aGraph.Geom().Curve(aCurveIdx).EdgeDefUsers.Length());
+  }
+
+  BRepGraphAlgo_Deduplicate::Options anOpts;
+  anOpts.AnalyzeOnly = true;
+
+  const BRepGraphAlgo_Deduplicate::Result aRes = BRepGraphAlgo_Deduplicate::Perform(aGraph, anOpts);
+  EXPECT_EQ(aRes.NbNullifiedSurfaces, 0);
+  EXPECT_EQ(aRes.NbNullifiedCurves, 0);
+  EXPECT_EQ(aRes.NbNullifiedPCurves, 0);
+
+  // Back-refs unchanged.
+  for (int aSurfIdx = 0; aSurfIdx < aGraph.Geom().NbSurfaces(); ++aSurfIdx)
+  {
+    EXPECT_EQ(aGraph.Geom().Surface(aSurfIdx).FaceDefUsers.Length(),
+              aSurfUserCounts.Value(aSurfIdx));
+  }
+  for (int aCurveIdx = 0; aCurveIdx < aGraph.Geom().NbCurves(); ++aCurveIdx)
+  {
+    EXPECT_EQ(aGraph.Geom().Curve(aCurveIdx).EdgeDefUsers.Length(),
+              aCurveUserCounts.Value(aCurveIdx));
+  }
+
+  // All handles still non-null.
+  for (int aSurfIdx = 0; aSurfIdx < aGraph.Geom().NbSurfaces(); ++aSurfIdx)
+  {
+    EXPECT_FALSE(aGraph.Geom().Surface(aSurfIdx).Surface.IsNull());
+  }
+  for (int aCurveIdx = 0; aCurveIdx < aGraph.Geom().NbCurves(); ++aCurveIdx)
+  {
+    EXPECT_FALSE(aGraph.Geom().Curve(aCurveIdx).CurveGeom.IsNull());
+  }
 }

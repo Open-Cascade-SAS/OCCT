@@ -207,6 +207,23 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
     aFaceDef.SurfNodeId = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Surface, *aCanonSurf);
     ++aResult.NbSurfaceRewrites;
 
+    // Fix back-references: remove from old surface, add to canonical surface.
+    {
+      NCollection_Vector<BRepGraph_NodeId>& anOldUsers =
+        theGraph.Mut().SurfNode(anOldSurfId.Index).FaceDefUsers;
+      for (int anIdx = anOldUsers.Length() - 1; anIdx >= 0; --anIdx)
+      {
+        if (anOldUsers.Value(anIdx) == aFaceDef.Id)
+        {
+          if (anIdx < anOldUsers.Length() - 1)
+            anOldUsers.ChangeValue(anIdx) = anOldUsers.Value(anOldUsers.Length() - 1);
+          anOldUsers.EraseLast();
+          break;
+        }
+      }
+      theGraph.Mut().SurfNode(*aCanonSurf).FaceDefUsers.Append(aFaceDef.Id);
+    }
+
     if (!aRecordedSurfaceHistory.Contains(anOldSurfId.Index))
     {
       NCollection_Vector<BRepGraph_NodeId> aRepl;
@@ -230,6 +247,23 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
         const BRepGraph_NodeId anOldCurveId = anEdgeDef.CurveNodeId;
         anEdgeDef.CurveNodeId = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Curve, *aCanonCurve);
         ++aResult.NbCurveRewrites;
+
+        // Fix back-references: remove from old curve, add to canonical curve.
+        {
+          NCollection_Vector<BRepGraph_NodeId>& anOldUsers =
+            theGraph.Mut().CurveNode(anOldCurveId.Index).EdgeDefUsers;
+          for (int anIdx = anOldUsers.Length() - 1; anIdx >= 0; --anIdx)
+          {
+            if (anOldUsers.Value(anIdx) == anEdgeDef.Id)
+            {
+              if (anIdx < anOldUsers.Length() - 1)
+                anOldUsers.ChangeValue(anIdx) = anOldUsers.Value(anOldUsers.Length() - 1);
+              anOldUsers.EraseLast();
+              break;
+            }
+          }
+          theGraph.Mut().CurveNode(*aCanonCurve).EdgeDefUsers.Append(anEdgeDef.Id);
+        }
 
         if (!aRecordedCurveHistory.Contains(anOldCurveId.Index))
         {
@@ -270,6 +304,78 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
                                   anOldPCurveId,
                                   aRepl);
         aRecordedPCurveHistory.Add(anOldPCurveId.Index);
+        ++aResult.NbHistoryRecords;
+      }
+    }
+  }
+
+  // Nullify orphaned geometry handles to free memory.
+  for (int aSurfIdx = 0; aSurfIdx < theGraph.Geom().NbSurfaces(); ++aSurfIdx)
+  {
+    BRepGraph_GeomNode::Surf& aSurfNode = theGraph.Mut().SurfNode(aSurfIdx);
+    if (aSurfNode.FaceDefUsers.IsEmpty() && !aSurfNode.Surface.IsNull())
+    {
+      aSurfNode.Surface.Nullify();
+      aSurfNode.Triangulation.Nullify();
+      ++aResult.NbNullifiedSurfaces;
+
+      NCollection_Vector<BRepGraph_NodeId> aEmptyRepl;
+      theGraph.History().Record(TCollection_AsciiString("Dedup:NullifyOrphanSurface"),
+                                aSurfNode.Id,
+                                aEmptyRepl);
+      ++aResult.NbHistoryRecords;
+    }
+  }
+
+  for (int aCurveIdx = 0; aCurveIdx < theGraph.Geom().NbCurves(); ++aCurveIdx)
+  {
+    BRepGraph_GeomNode::Curve& aCurveNode = theGraph.Mut().CurveNode(aCurveIdx);
+    if (aCurveNode.EdgeDefUsers.IsEmpty() && !aCurveNode.CurveGeom.IsNull())
+    {
+      aCurveNode.CurveGeom.Nullify();
+      ++aResult.NbNullifiedCurves;
+
+      NCollection_Vector<BRepGraph_NodeId> aEmptyRepl;
+      theGraph.History().Record(TCollection_AsciiString("Dedup:NullifyOrphanCurve"),
+                                aCurveNode.Id,
+                                aEmptyRepl);
+      ++aResult.NbHistoryRecords;
+    }
+  }
+
+  {
+    NCollection_Map<int> aReferencedPCurves(std::max(1, theGraph.Geom().NbPCurves() * 2), aTmpAlloc);
+    for (int anEdgeIdx = 0; anEdgeIdx < theGraph.Defs().NbEdges(); ++anEdgeIdx)
+    {
+      const BRepGraph_TopoNode::EdgeDef& anEdgeDef = theGraph.Defs().Edge(anEdgeIdx);
+      for (int aPCIter = 0; aPCIter < anEdgeDef.PCurves.Length(); ++aPCIter)
+      {
+        const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCEntry =
+          anEdgeDef.PCurves.Value(aPCIter);
+        if (aPCEntry.PCurveNodeId.IsValid())
+        {
+          aReferencedPCurves.Add(aPCEntry.PCurveNodeId.Index);
+        }
+      }
+    }
+
+    for (int aPCIdx = 0; aPCIdx < theGraph.Geom().NbPCurves(); ++aPCIdx)
+    {
+      if (aReferencedPCurves.Contains(aPCIdx))
+      {
+        continue;
+      }
+
+      BRepGraph_GeomNode::PCurve& aPCNode = theGraph.Mut().PCurveNode(aPCIdx);
+      if (!aPCNode.Curve2d.IsNull())
+      {
+        aPCNode.Curve2d.Nullify();
+        ++aResult.NbNullifiedPCurves;
+
+        NCollection_Vector<BRepGraph_NodeId> aEmptyRepl;
+        theGraph.History().Record(TCollection_AsciiString("Dedup:NullifyOrphanPCurve"),
+                                  aPCNode.Id,
+                                  aEmptyRepl);
         ++aResult.NbHistoryRecords;
       }
     }

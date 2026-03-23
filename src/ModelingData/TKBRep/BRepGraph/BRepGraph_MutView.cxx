@@ -83,6 +83,27 @@ BRepGraph_TopoNode::CompSolidDef& BRepGraph::MutView::CompSolidDef(int theIdx)
 
 //=================================================================================================
 
+BRepGraph_GeomNode::Surf& BRepGraph::MutView::SurfNode(int theIdx)
+{
+  return myGraph->myData->mySurfaces.ChangeValue(theIdx);
+}
+
+//=================================================================================================
+
+BRepGraph_GeomNode::Curve& BRepGraph::MutView::CurveNode(int theIdx)
+{
+  return myGraph->myData->myCurves.ChangeValue(theIdx);
+}
+
+//=================================================================================================
+
+BRepGraph_GeomNode::PCurve& BRepGraph::MutView::PCurveNode(int theIdx)
+{
+  return myGraph->myData->myPCurves.ChangeValue(theIdx);
+}
+
+//=================================================================================================
+
 BRepGraph_NodeId BRepGraph::MutView::AddPCurveToEdge(BRepGraph_NodeId            theEdgeDef,
                                                      BRepGraph_NodeId            theFaceDef,
                                                      const Handle(Geom2d_Curve)& theCurve2d,
