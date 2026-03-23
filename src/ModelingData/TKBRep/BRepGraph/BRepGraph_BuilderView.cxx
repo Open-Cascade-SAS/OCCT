@@ -410,8 +410,5 @@ int BRepGraph::BuilderView::FaceCountForEdge(int theEdgeDefIdx) const
 
 const NCollection_Vector<int>& BRepGraph::BuilderView::WiresOfEdge(int theEdgeDefIdx) const
 {
-  static const NCollection_Vector<int> THE_EMPTY;
-  const NCollection_Vector<int>* aResult =
-    myGraph->myData->myIncStorage.ReverseIndex().WiresOfEdge(theEdgeDefIdx);
-  return aResult != nullptr ? *aResult : THE_EMPTY;
+  return myGraph->myData->myIncStorage.ReverseIndex().WiresOfEdgeRef(theEdgeDefIdx);
 }

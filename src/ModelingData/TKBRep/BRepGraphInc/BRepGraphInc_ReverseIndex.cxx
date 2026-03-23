@@ -15,6 +15,8 @@
 #include <BRepGraphInc_Entity.hxx>
 #include <NCollection_LocalArray.hxx>
 
+const NCollection_Vector<int> BRepGraphInc_ReverseIndex::THE_EMPTY_VEC;
+
 //=================================================================================================
 
 void BRepGraphInc_ReverseIndex::Clear()

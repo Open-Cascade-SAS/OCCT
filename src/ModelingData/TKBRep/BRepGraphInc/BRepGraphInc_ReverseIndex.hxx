@@ -88,6 +88,26 @@ public:
     return seekVec(myShellToSolids, theShellIdx);
   }
 
+  // --- Safe reference accessors (return empty vector instead of nullptr) ---
+
+  //! Return wire indices containing the given edge (safe reference, never null).
+  const NCollection_Vector<int>& WiresOfEdgeRef(int theEdgeIdx) const
+  {
+    return seekRef(myEdgeToWires, theEdgeIdx);
+  }
+
+  //! Return face indices containing the given edge (safe reference, never null).
+  const NCollection_Vector<int>& FacesOfEdgeRef(int theEdgeIdx) const
+  {
+    return seekRef(myEdgeToFaces, theEdgeIdx);
+  }
+
+  //! Return face indices containing the given wire (safe reference, never null).
+  const NCollection_Vector<int>& FacesOfWireRef(int theWireIdx) const
+  {
+    return seekRef(myWireToFaces, theWireIdx);
+  }
+
   //! Verify reverse index consistency against forward entity tables.
   //! For each forward ref (e.g., wire->edge), checks that the corresponding
   //! reverse entry exists (edge->wire). Intended for debug validation.
@@ -131,6 +151,15 @@ private:
     const NCollection_Vector<int>& aVec = theIdx.Value(theKey);
     return aVec.IsEmpty() ? nullptr : &aVec;
   }
+
+  //! Bounds-checked lookup returning a const reference (empty vector for missing keys).
+  static const NCollection_Vector<int>& seekRef(const IndexTable& theIdx, int theKey)
+  {
+    const NCollection_Vector<int>* aPtr = seekVec(theIdx, theKey);
+    return aPtr != nullptr ? *aPtr : THE_EMPTY_VEC;
+  }
+
+  static const NCollection_Vector<int> THE_EMPTY_VEC; //!< Shared empty vector for safe ref returns.
 
   //! Ensure theIdx has at least theSize slots (pre-sizing with empty vectors).
   static void preSize(IndexTable& theIdx, int theSize);
