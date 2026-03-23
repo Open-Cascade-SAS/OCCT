@@ -150,6 +150,36 @@ Assembly functionality is distributed across existing views:
 
 `Build(shape)` always creates one root Product. For a single solid, the root product's `ShapeRootId` points to `Solid(0)`. For a compound, it points to `Compound(0)`. This means `Defs().NbProducts() >= 1` after any successful build.
 
+## Extensibility: Layers vs UserAttributes
+
+BRepGraph provides two distinct extensibility mechanisms:
+
+### Layers (`BRepGraph_Layer`)
+
+Graph-wide named metadata collections with full lifecycle management. Registered on BRepGraph via `RegisterLayer()` and automatically notified on structural changes.
+
+- **Purpose**: persistent domain metadata (colors, materials, names, layer groups)
+- **Storage**: internal maps keyed by NodeId, owned by the layer
+- **Lifecycle**: `OnNodeRemoved(old, replacement)` migrates data during sewing/deduplicate; `OnCompact(remapMap)` remaps after compaction; `OnNodeModified`/`OnNodesModified` for mutation tracking
+- **Survives mutations**: yes — data migrates automatically
+- **Example**: `BRepGraph_NameLayer` (per-node string names)
+
+### UserAttributes (`BRepGraph_UserAttribute`)
+
+Per-node cached computations embedded in each entity's `NodeCache`. Lazily evaluated and automatically invalidated when the node is modified.
+
+- **Purpose**: ephemeral computed caches (bounding boxes, UV bounds, FClass2d results)
+- **Storage**: `shared_ptr` in `BaseEntity.Cache` (map keyed by int)
+- **Lifecycle**: `Invalidate()` marks dirty; recomputed on next `Get()`; auto-invalidated by `markModified()`
+- **Survives mutations**: no — invalidated, then recomputed on demand
+- **Example**: `BRepGraph_TypedAttribute<Bnd_Box>` for cached bounding boxes
+
+### When to use which
+
+- Data that must persist and migrate across graph mutations → **Layer**
+- Computed values that can be recomputed from entity state → **UserAttribute**
+- A Layer can internally use UserAttributes for caching its own computed results
+
 ## Mutation and History
 
 Primary mutation entry points are exposed via MutView and helper mutator logic.

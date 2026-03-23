@@ -80,7 +80,9 @@ Guideline:
 - intrinsic data lives on entities,
 - topology occurrence context (orientation/location) lives on refs,
 - assembly placement lives on OccurrenceEntity (TopLoc_Location),
-- ParentOccurrenceIdx forms a tree for unambiguous placement chain traversal in DAGs.
+- ParentOccurrenceIdx forms a tree for unambiguous placement chain traversal in DAGs,
+- each entity carries a `NodeCache` for extensible per-node caching (UserAttributes),
+- graph-wide metadata (colors, names, materials) lives in `BRepGraph_Layer` instances, not on entities.
 
 ## 4) Build Flow
 
