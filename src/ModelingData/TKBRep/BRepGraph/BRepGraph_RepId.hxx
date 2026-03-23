@@ -29,6 +29,9 @@
 //! reverse index, or parent-child relationships.
 //!
 //! RepId is a value type: cheap to copy, compare, hash.
+//! Fields are intentionally public (unlike BRepGraph_UID) because RepId
+//! has no validity invariant — any (RepKind, Index) combination is valid
+//! as a POD-like address, similar to BRepGraph_NodeId.
 struct BRepGraph_RepId
 {
   //! Categories of representation data.
