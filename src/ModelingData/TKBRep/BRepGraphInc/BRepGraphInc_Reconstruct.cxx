@@ -368,7 +368,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
         if (aPCEntry.Curve2d.IsNull())
           continue;
 
-        if (aPCEntry.EdgeOrientation == TopAbs_FORWARD)
+        if (aPCEntry.EdgeOrientation == aEdgeRef.Orientation)
         {
           aPC1     = aPCEntry.Curve2d;
           aPCFirst = aPCEntry.ParamFirst;

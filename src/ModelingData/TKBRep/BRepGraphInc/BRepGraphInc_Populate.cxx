@@ -28,6 +28,7 @@
 #include <Poly_Polygon2D.hxx>
 #include <Poly_Polygon3D.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
+#include <TopAbs.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_CompSolid.hxx>
 #include <TopoDS_Compound.hxx>
@@ -411,7 +412,7 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
           aPCEntry.Continuity      = anEdgeData.PCurveContinuity;
           aPCEntry.UV1             = anEdgeData.PCUV1;
           aPCEntry.UV2             = anEdgeData.PCUV2;
-          aPCEntry.EdgeOrientation = TopAbs_FORWARD;
+          aPCEntry.EdgeOrientation = anEdgeData.OrientationInWire;
           anEdgeMutPC.PCurves.Append(aPCEntry);
 
           if (!anEdgeData.PolyOnSurf.IsNull())
@@ -419,7 +420,7 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
             BRepGraphInc::EdgeEntity::PolyOnSurfEntry aPolyEntry;
             aPolyEntry.Polygon2D       = anEdgeData.PolyOnSurf;
             aPolyEntry.FaceDefId       = BRepGraph_NodeId::Face(aFaceIdx);
-            aPolyEntry.EdgeOrientation = TopAbs_FORWARD;
+            aPolyEntry.EdgeOrientation = anEdgeData.OrientationInWire;
             anEdgeMutPC.PolygonsOnSurf.Append(aPolyEntry);
           }
         }
@@ -434,7 +435,7 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
           aPCEntry.ParamFirst      = anEdgeData.PCFirstReversed;
           aPCEntry.ParamLast       = anEdgeData.PCLastReversed;
           aPCEntry.Continuity      = anEdgeData.PCurveContinuity;
-          aPCEntry.EdgeOrientation = TopAbs_REVERSED;
+          aPCEntry.EdgeOrientation = TopAbs::Reverse(anEdgeData.OrientationInWire);
           anEdgeMutPC.PCurves.Append(aPCEntry);
 
           if (!anEdgeData.PolyOnSurfReversed.IsNull())
@@ -442,7 +443,7 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
             BRepGraphInc::EdgeEntity::PolyOnSurfEntry aPolyEntry;
             aPolyEntry.Polygon2D       = anEdgeData.PolyOnSurfReversed;
             aPolyEntry.FaceDefId       = BRepGraph_NodeId::Face(aFaceIdx);
-            aPolyEntry.EdgeOrientation = TopAbs_REVERSED;
+            aPolyEntry.EdgeOrientation = TopAbs::Reverse(anEdgeData.OrientationInWire);
             anEdgeMutPC.PolygonsOnSurf.Append(aPolyEntry);
           }
         }
