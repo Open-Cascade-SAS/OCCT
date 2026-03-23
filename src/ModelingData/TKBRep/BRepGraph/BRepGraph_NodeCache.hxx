@@ -33,28 +33,21 @@
 //!    Downstream algorithms register a unique key via
 //!    BRepGraph_UserAttribute::AllocateKey() and attach
 //!    BRepGraph_TypedAttribute<T> instances.
-//!    The map is allocated lazily on first SetUserAttribute() to save
-//!    ~48-64 bytes for the majority of nodes that never use attributes.
+//!    The map is kept as a value member and remains empty until first bind.
 struct BRepGraph_NodeCache
 {
   //! Fixed cached fields.
   BRepGraph_CachedValue<Bnd_Box> BoundingBox;
   BRepGraph_CachedValue<gp_Pnt>  Centroid;
 
-  ~BRepGraph_NodeCache()
-  {
-    delete myUserAttributes;
-  }
+  ~BRepGraph_NodeCache() = default;
 
   BRepGraph_NodeCache() = default;
 
   //! Copy constructor: creates fresh (dirty) cache slots, copies user attributes.
   BRepGraph_NodeCache(const BRepGraph_NodeCache& theOther)
-      : myUserAttributes(nullptr)
+      : myUserAttributes(theOther.myUserAttributes)
   {
-    if (theOther.myUserAttributes != nullptr)
-      myUserAttributes =
-        new NCollection_DataMap<int, BRepGraph_UserAttrPtr>(*theOther.myUserAttributes);
   }
 
   BRepGraph_NodeCache& operator=(const BRepGraph_NodeCache& theOther)
@@ -63,11 +56,7 @@ struct BRepGraph_NodeCache
     {
       BoundingBox.Invalidate();
       Centroid.Invalidate();
-      delete myUserAttributes;
-      myUserAttributes = nullptr;
-      if (theOther.myUserAttributes != nullptr)
-        myUserAttributes =
-          new NCollection_DataMap<int, BRepGraph_UserAttrPtr>(*theOther.myUserAttributes);
+      myUserAttributes = theOther.myUserAttributes;
     }
     return *this;
   }
@@ -79,10 +68,10 @@ struct BRepGraph_NodeCache
     BoundingBox.Invalidate();
     Centroid.Invalidate();
 
-    if (myUserAttributes != nullptr)
+    if (!myUserAttributes.IsEmpty())
     {
-      for (auto anIter = myUserAttributes->cbegin();
-           anIter != myUserAttributes->cend(); ++anIter)
+      for (auto anIter = myUserAttributes.cbegin();
+           anIter != myUserAttributes.cend(); ++anIter)
       {
         if (*anIter)
           (*anIter)->Invalidate();
@@ -93,9 +82,7 @@ struct BRepGraph_NodeCache
   //! Invalidate only a specific user attribute by key.
   void InvalidateUserAttribute(int theKey)
   {
-    if (myUserAttributes == nullptr)
-      return;
-    const BRepGraph_UserAttrPtr* aPtr = myUserAttributes->Seek(theKey);
+    const BRepGraph_UserAttrPtr* aPtr = myUserAttributes.Seek(theKey);
     if (aPtr != nullptr && *aPtr)
       (*aPtr)->Invalidate();
   }
@@ -104,38 +91,32 @@ struct BRepGraph_NodeCache
   void SetUserAttribute(int                          theKey,
                         const BRepGraph_UserAttrPtr& theAttr)
   {
-    if (myUserAttributes == nullptr)
-      myUserAttributes = new NCollection_DataMap<int, BRepGraph_UserAttrPtr>();
-    myUserAttributes->Bind(theKey, theAttr);
+    myUserAttributes.Bind(theKey, theAttr);
   }
 
   //! Retrieve a user attribute by key.  Returns nullptr if absent.
   BRepGraph_UserAttrPtr
     GetUserAttribute(int theKey) const
   {
-    if (myUserAttributes == nullptr)
-      return nullptr;
-    const BRepGraph_UserAttrPtr* aPtr = myUserAttributes->Seek(theKey);
+    const BRepGraph_UserAttrPtr* aPtr = myUserAttributes.Seek(theKey);
     return (aPtr != nullptr) ? *aPtr : nullptr;
   }
 
   //! Remove a user attribute by key.  Returns true if something was removed.
   bool RemoveUserAttribute(int theKey)
   {
-    if (myUserAttributes == nullptr)
-      return false;
-    return myUserAttributes->UnBind(theKey);
+    return myUserAttributes.UnBind(theKey);
   }
 
   //! True if any user attributes are registered on this node.
   bool HasUserAttributes() const
   {
-    return myUserAttributes != nullptr && !myUserAttributes->IsEmpty();
+    return !myUserAttributes.IsEmpty();
   }
 
 private:
-  //! Lazily-allocated user attributes map (nullptr until first SetUserAttribute).
-  NCollection_DataMap<int, BRepGraph_UserAttrPtr>* myUserAttributes = nullptr;
+  //! User attributes map (empty until first SetUserAttribute).
+  NCollection_DataMap<int, BRepGraph_UserAttrPtr> myUserAttributes;
 };
 
 #endif // _BRepGraph_NodeCache_HeaderFile

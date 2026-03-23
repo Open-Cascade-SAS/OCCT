@@ -20,7 +20,7 @@
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_DataMap.hxx>
+#include <NCollection_OrderedDataMap.hxx>
 #include <OSD_Parallel.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
@@ -68,9 +68,11 @@ Handle(Geom2d_Curve) copyPCurve(const Handle(Geom2d_Curve)& theCrv, bool theCopy
 TopoDS_Face buildCopiedFace(const BRepGraph&                                     theGraph,
                             int                                                  theFaceUsageIdx,
                             bool                                                 theCopyGeom,
-                            const NCollection_DataMap<int, Handle(Geom_Surface)>& theSurfCopies,
-                            const NCollection_DataMap<int, Handle(Geom_Curve)>&   theCurveCopies,
-                            const NCollection_DataMap<int, TopoDS_Vertex>&        theVertexCopies)
+                            const NCollection_OrderedDataMap<int, Handle(Geom_Surface)>&
+                              theSurfCopies,
+                            const NCollection_OrderedDataMap<int, Handle(Geom_Curve)>&
+                              theCurveCopies,
+                            const NCollection_OrderedDataMap<int, TopoDS_Vertex>& theVertexCopies)
 {
   const auto& aFaceUsage = theGraph.Usages().Face(theFaceUsageIdx);
   const BRepGraph_TopoNode::FaceDef& aFaceDef = theGraph.Defs().Face(aFaceUsage.DefId.Index);
@@ -212,14 +214,14 @@ TopoDS_Shape BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
     return TopoDS_Shape();
 
   // Phase 1: Copy unique geometry handles.
-  NCollection_DataMap<int, Handle(Geom_Surface)> aSurfCopies;
+  NCollection_OrderedDataMap<int, Handle(Geom_Surface)> aSurfCopies;
   for (int aSurfIdx = 0; aSurfIdx < theGraph.Geom().NbSurfaces(); ++aSurfIdx)
   {
     const BRepGraph_GeomNode::Surf& aSurfNode = theGraph.Geom().Surface(aSurfIdx);
     aSurfCopies.Bind(aSurfIdx, copySurface(aSurfNode.Surface, theCopyGeom));
   }
 
-  NCollection_DataMap<int, Handle(Geom_Curve)> aCurveCopies;
+  NCollection_OrderedDataMap<int, Handle(Geom_Curve)> aCurveCopies;
   for (int aCurveIdx = 0; aCurveIdx < theGraph.Geom().NbCurves(); ++aCurveIdx)
   {
     const BRepGraph_GeomNode::Curve& aCurveNode = theGraph.Geom().Curve(aCurveIdx);
@@ -227,7 +229,7 @@ TopoDS_Shape BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
   }
 
   // Phase 2a: Build vertices (keyed by vertex def index for sharing).
-  NCollection_DataMap<int, TopoDS_Vertex> aVertexCopies;
+  NCollection_OrderedDataMap<int, TopoDS_Vertex> aVertexCopies;
   BRep_Builder aBB;
   for (int aVtxIdx = 0; aVtxIdx < theGraph.Defs().NbVertices(); ++aVtxIdx)
   {
@@ -326,15 +328,15 @@ TopoDS_Shape BRepGraphAlgo_Copy::CopyFace(const BRepGraph& theGraph,
   const int aFaceUsageIdx = aFaceDef.Usages.First().Index;
 
   // Copy geometry needed by this face.
-  NCollection_DataMap<int, Handle(Geom_Surface)> aSurfCopies;
+  NCollection_OrderedDataMap<int, Handle(Geom_Surface)> aSurfCopies;
   if (aFaceDef.SurfNodeId.IsValid())
   {
     const BRepGraph_GeomNode::Surf& aSurfNode = theGraph.Geom().Surface(aFaceDef.SurfNodeId.Index);
     aSurfCopies.Bind(aFaceDef.SurfNodeId.Index, copySurface(aSurfNode.Surface, theCopyGeom));
   }
 
-  NCollection_DataMap<int, Handle(Geom_Curve)> aCurveCopies;
-  NCollection_DataMap<int, TopoDS_Vertex> aVertexCopies;
+  NCollection_OrderedDataMap<int, Handle(Geom_Curve)> aCurveCopies;
+  NCollection_OrderedDataMap<int, TopoDS_Vertex> aVertexCopies;
   BRep_Builder aBB;
 
   // Collect edges and vertices from all wires of this face's usage.

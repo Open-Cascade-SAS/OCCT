@@ -18,8 +18,8 @@
 
 #include <NCollection_Array1.hxx>
 #include <NCollection_IncAllocator.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <NCollection_KDTree.hxx>
-#include <NCollection_Map.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <TopoDS_Shape.hxx>
 #include <gp_Pnt.hxx>
@@ -185,16 +185,16 @@ private:
   //! @param[out] theSewnEdgeIndices indices of surviving (keep) edges
   void mergeMatchedEdges(
     const NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>>& thePairs,
-    NCollection_Map<int>&                                                      theAffectedFaces,
-    NCollection_Map<int>&                                                      theSewnEdgeIndices);
+    NCollection_IndexedMap<int>&                                               theAffectedFaces,
+    NCollection_IndexedMap<int>&                                               theSewnEdgeIndices);
 
   //! Phase 6: Process sewn edges (tolerance, pcurve consistency).
   //! @param[in] theSewnEdgeIndices indices of edges that were sewn
-  void processEdges(const NCollection_Map<int>& theSewnEdgeIndices);
+  void processEdges(const NCollection_IndexedMap<int>& theSewnEdgeIndices);
 
   //! Phase 7: Reconstruct result shape from graph state.
   //! @param[in] theAffectedFaces set of face indices that were modified
-  void reconstructResult(const NCollection_Map<int>& theAffectedFaces);
+  void reconstructResult(const NCollection_IndexedMap<int>& theAffectedFaces);
 
   //! Phase 8: Set edge regularity on sewn edges.
   void setEdgeRegularity();

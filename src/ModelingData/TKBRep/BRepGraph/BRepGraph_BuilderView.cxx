@@ -17,7 +17,7 @@
 
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
-#include <NCollection_Map.hxx>
+#include <NCollection_PackedMap.hxx>
 #include <Poly_Triangulation.hxx>
 
 #include <shared_mutex>
@@ -471,7 +471,7 @@ bool BRepGraph::BuilderView::IsRemoved(BRepGraph_NodeId theNode) const
 int BRepGraph::BuilderView::FaceCountForEdge(int theEdgeDefIdx) const
 {
   const NCollection_Vector<int>& aWires = WiresOfEdge(theEdgeDefIdx);
-  NCollection_Map<int>           aFaceSet;
+  NCollection_PackedMap<int>     aFaceSet;
   for (int aWIdx = 0; aWIdx < aWires.Length(); ++aWIdx)
   {
     const BRepGraph_TopoNode::WireDef& aWireDef =

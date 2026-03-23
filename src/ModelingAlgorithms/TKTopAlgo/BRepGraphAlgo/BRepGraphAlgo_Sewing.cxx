@@ -23,10 +23,12 @@
 #include <Geom_Surface.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_LocalArray.hxx>
-#include <NCollection_DataMap.hxx>
 #include <NCollection_DynamicArray.hxx>
 #include <NCollection_IncAllocator.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <NCollection_KDTree.hxx>
+#include <NCollection_Map.hxx>
+#include <NCollection_OrderedDataMap.hxx>
 #include <OSD_Parallel.hxx>
 #include <Precision.hxx>
 #include <TopLoc_Location.hxx>
@@ -241,9 +243,9 @@ void BRepGraphAlgo_Sewing::Perform()
 
   // Phase 5b: Merge matched edge pairs.
   // Estimate: affected faces ~ matched pairs, sewn edge indices ~ matched pairs.
-  const int            aNbPairs = aMatchedPairs.Length();
-  NCollection_Map<int> anAffectedFaces(aNbPairs, anAllocator);
-  NCollection_Map<int> aSewnEdgeIndices(aNbPairs, anAllocator);
+  const int                   aNbPairs = aMatchedPairs.Length();
+  NCollection_IndexedMap<int> anAffectedFaces(aNbPairs, anAllocator);
+  NCollection_IndexedMap<int> aSewnEdgeIndices(aNbPairs, anAllocator);
   mergeMatchedEdges(aMatchedPairs, anAffectedFaces, aSewnEdgeIndices);
 
   // Phase 6: Process sewn edges only (O(sewn) instead of O(all_edges × all_faces)).
@@ -309,8 +311,6 @@ void BRepGraphAlgo_Sewing::assembleVertices(const Handle(NCollection_IncAllocato
 {
   // Merge coincident free-edge vertices within tolerance using KDTree spatial indexing.
   // Build a map: vertex index -> representative vertex index.
-  // Uses default allocator since IsBound() lookups are needed.
-  NCollection_DataMap<int, int> aVertexMerge;
 
   // Collect all unique vertex indices from free edges.
   // Each free edge has 2 vertices; estimate unique count ~ number of free edges.
@@ -336,6 +336,8 @@ void BRepGraphAlgo_Sewing::assembleVertices(const Handle(NCollection_IncAllocato
   {
     return;
   }
+
+  NCollection_OrderedDataMap<int, int> aVertexMerge(aNbVertices, theTmpAlloc);
 
   // Build point array and index mapping for the KDTree.
   // aVertexPoints uses 0-based indexing; aGraphIndices maps array position -> graph vertex index.
@@ -400,7 +402,7 @@ void BRepGraphAlgo_Sewing::assembleVertices(const Handle(NCollection_IncAllocato
   while (aChanged)
   {
     aChanged = false;
-    for (NCollection_DataMap<int, int>::Iterator anIt(aVertexMerge); anIt.More(); anIt.Next())
+    for (NCollection_OrderedDataMap<int, int>::Iterator anIt(aVertexMerge); anIt.More(); anIt.Next())
     {
       int aTarget = anIt.Value();
       if (aVertexMerge.IsBound(aTarget))
@@ -920,8 +922,8 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> BRepGraphAlgo_
 
 void BRepGraphAlgo_Sewing::mergeMatchedEdges(
   const NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>>& thePairs,
-  NCollection_Map<int>&                                                    theAffectedFaces,
-  NCollection_Map<int>&                                                    theSewnEdgeIndices)
+  NCollection_IndexedMap<int>&                                             theAffectedFaces,
+  NCollection_IndexedMap<int>&                                             theSewnEdgeIndices)
 {
   BRep_Builder aBB;
 
@@ -1025,27 +1027,19 @@ void BRepGraphAlgo_Sewing::mergeMatchedEdges(
 
 //=================================================================================================
 
-void BRepGraphAlgo_Sewing::processEdges(const NCollection_Map<int>& theSewnEdgeIndices)
+void BRepGraphAlgo_Sewing::processEdges(const NCollection_IndexedMap<int>& theSewnEdgeIndices)
 {
   // Verify and fix tolerance consistency on sewn edges.
   // Only process edges that were actually sewn (shared by 2+ faces).
-  // Convert the set to an array for parallel-friendly indexed access.
   const int aNbSewn = theSewnEdgeIndices.Extent();
   if (aNbSewn == 0)
     return;
-
-  NCollection_Array1<int> aSewnIndices(0, aNbSewn - 1);
-  int                     anArrayIdx = 0;
-  for (NCollection_Map<int>::Iterator anIt(theSewnEdgeIndices); anIt.More(); anIt.Next())
-  {
-    aSewnIndices.SetValue(anArrayIdx++, anIt.Value());
-  }
 
   OSD_Parallel::For(
     0,
     aNbSewn,
     [&](int theIdx) {
-      const int                          anEdgeIdx = aSewnIndices.Value(theIdx);
+      const int                          anEdgeIdx = theSewnEdgeIndices.FindKey(theIdx + 1);
       const BRepGraph_TopoNode::EdgeDef& anEdge    = myGraph.Defs().Edge(anEdgeIdx);
       if (anEdge.IsDegenerate)
         return;
@@ -1070,7 +1064,7 @@ void BRepGraphAlgo_Sewing::processEdges(const NCollection_Map<int>& theSewnEdgeI
 
 //=================================================================================================
 
-void BRepGraphAlgo_Sewing::reconstructResult(const NCollection_Map<int>& theAffectedFaces)
+void BRepGraphAlgo_Sewing::reconstructResult(const NCollection_IndexedMap<int>& theAffectedFaces)
 {
   const int aNbFaces = myGraph.Defs().NbFaces();
 

@@ -14,7 +14,7 @@
 #include <BRepGraph_RelEdgesView.hxx>
 #include <BRepGraph_Data.hxx>
 
-#include <NCollection_Map.hxx>
+#include <NCollection_PackedMap.hxx>
 
 //=================================================================================================
 
@@ -55,7 +55,7 @@ const NCollection_Vector<BRepGraph_RelEdge>* BRepGraph::RelEdgesView::InOf(
 int BRepGraph::RelEdgesView::FaceCountForEdge(int theEdgeDefIdx) const
 {
   const NCollection_Vector<int>& aWires = WiresOfEdge(theEdgeDefIdx);
-  NCollection_Map<int>           aFaceSet;
+  NCollection_PackedMap<int>     aFaceSet;
   for (int aWIdx = 0; aWIdx < aWires.Length(); ++aWIdx)
   {
     const BRepGraph_TopoNode::WireDef& aWireDef =

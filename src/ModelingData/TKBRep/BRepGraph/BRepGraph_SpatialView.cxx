@@ -14,7 +14,7 @@
 #include <BRepGraph_SpatialView.hxx>
 #include <BRepGraph_Data.hxx>
 
-#include <NCollection_Map.hxx>
+#include <NCollection_PackedMap.hxx>
 
 //=================================================================================================
 
@@ -90,7 +90,7 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::FacesOfEdge(
     myGraph->myData->myEdgeToWires.Seek(theEdgeDef.Index);
   const NCollection_Vector<int>& aWires = aWiresPtr != nullptr ? *aWiresPtr : THE_EMPTY;
 
-  NCollection_Map<int> aFaceSet;
+  NCollection_PackedMap<int> aFaceSet;
   for (int aWIdx = 0; aWIdx < aWires.Length(); ++aWIdx)
   {
     const BRepGraph_TopoNode::WireDef& aWireDef =
@@ -118,7 +118,7 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::SharedEdges(
 {
   NCollection_Vector<BRepGraph_NodeId> aResult;
 
-  NCollection_Map<int> aEdgesA;
+  NCollection_PackedMap<int> aEdgesA;
   for (int aUsIdx = 0;
        aUsIdx < myGraph->myData->myFaceDefs.Value(theFaceA.Index).Usages.Length();
        ++aUsIdx)
@@ -139,7 +139,7 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::SharedEdges(
       collectWireEdges(aFaceUsage.InnerWireUsages.Value(aWIdx));
   }
 
-  NCollection_Map<int> aAdded;
+  NCollection_PackedMap<int> aAdded;
   for (int aUsIdx = 0;
        aUsIdx < myGraph->myData->myFaceDefs.Value(theFaceB.Index).Usages.Length();
        ++aUsIdx)
@@ -173,7 +173,7 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::AdjacentFaces(
   BRepGraph_NodeId theFaceDef) const
 {
   NCollection_Vector<BRepGraph_NodeId> aResult;
-  NCollection_Map<int>                 aFaceSet;
+  NCollection_PackedMap<int>           aFaceSet;
 
   for (int aUsIdx = 0;
        aUsIdx < myGraph->myData->myFaceDefs.Value(theFaceDef.Index).Usages.Length();
