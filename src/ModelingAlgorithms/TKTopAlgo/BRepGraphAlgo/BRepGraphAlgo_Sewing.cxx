@@ -277,8 +277,8 @@ bool canSewSameFaceEdges(const BRepGraph& theGraph,
   const BRepGraph_NodeId anEdgeIdA(BRepGraph_NodeId::Kind::Edge, theEdgeA);
   const BRepGraph_NodeId anEdgeIdB(BRepGraph_NodeId::Kind::Edge, theEdgeB);
   const BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, theSharedFace);
-  const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCEntryA = theGraph.Defs().FindPCurve(anEdgeIdA, aFaceId);
-  const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCEntryB = theGraph.Defs().FindPCurve(anEdgeIdB, aFaceId);
+  const BRepGraphInc::CoEdgeEntity* aPCEntryA = theGraph.Defs().FindPCurve(anEdgeIdA, aFaceId);
+  const BRepGraphInc::CoEdgeEntity* aPCEntryB = theGraph.Defs().FindPCurve(anEdgeIdB, aFaceId);
   if (aPCEntryA == nullptr || aPCEntryB == nullptr
       || aPCEntryA->Curve2d.IsNull() || aPCEntryB->Curve2d.IsNull())
   {
@@ -1385,24 +1385,22 @@ int mergeMatchedEdges(
     theSewnEdgeIndices.Add(anIdA.Index);
     theGraph.Mut().EdgeDef(anIdA.Index)->Tolerance = aMergedTol;
 
-    // 2. PCurve transfer from remove-edge to keep-edge.
-    // Note: we read from edge.PCurves here rather than CoEdge data because
-    // CoEdge entries may be incomplete for edges in shared wire definitions.
-    for (int aPCurveIter = 0; aPCurveIter < aRemoveEdge.PCurves.Length(); ++aPCurveIter)
+    // 2. PCurve transfer from remove-edge to keep-edge via CoEdge data.
+    const NCollection_Vector<int>& aRemoveCoEdges = theGraph.Defs().CoEdgesOfEdge(anIdB.Index);
+    for (int aCEIter = 0; aCEIter < aRemoveCoEdges.Length(); ++aCEIter)
     {
-      const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCEntry =
-        aRemoveEdge.PCurves.Value(aPCurveIter);
-
-      if (!aPCEntry.Curve2d.IsNull())
+      const BRepGraphInc::CoEdgeEntity& aRemoveCE =
+        theGraph.Defs().CoEdge(aRemoveCoEdges.Value(aCEIter));
+      if (!aRemoveCE.Curve2d.IsNull())
       {
-        // Add PCurve entry to keep-edge via graph API; preserve original edge orientation
+        // Add PCurve entry to keep-edge via graph API; preserve original orientation
         // so that seam edges (REVERSED orientation) are correctly reconstructed as C2.
         theGraph.Mut().AddPCurveToEdge(anIdA,
-                                       aPCEntry.FaceDefId,
-                                       aPCEntry.Curve2d,
-                                       aPCEntry.ParamFirst,
-                                       aPCEntry.ParamLast,
-                                       aPCEntry.EdgeOrientation);
+                                       aRemoveCE.FaceDefId,
+                                       aRemoveCE.Curve2d,
+                                       aRemoveCE.ParamFirst,
+                                       aRemoveCE.ParamLast,
+                                       aRemoveCE.Sense);
       }
     }
 

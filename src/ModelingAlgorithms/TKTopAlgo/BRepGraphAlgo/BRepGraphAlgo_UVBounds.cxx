@@ -302,7 +302,7 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph& theGraph, int theFaceIdx, 
         const BRepGraphInc::CoEdgeRef& aCR = aWireDef.CoEdgeRefs.Value(anIdx);
         const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Defs().CoEdge(aCR.CoEdgeIdx);
         const BRepGraph_NodeId anEdgeDefId = BRepGraph_NodeId::Edge(aCoEdge.EdgeIdx);
-        const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurve =
+        const BRepGraphInc::CoEdgeEntity* aPCurve =
           theGraph.Defs().FindPCurve(anEdgeDefId, aFaceDef.Id);
         if (aPCurve == nullptr || aPCurve->Curve2d.IsNull())
         {
@@ -400,7 +400,7 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph& theGraph, int theFaceIdx, 
       const BRepGraphInc::CoEdgeRef& aCR = aWireDef.CoEdgeRefs.Value(anIdx);
       const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Defs().CoEdge(aCR.CoEdgeIdx);
       const BRepGraph_NodeId anEdgeDefId = BRepGraph_NodeId::Edge(aCoEdge.EdgeIdx);
-      const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurve =
+      const BRepGraphInc::CoEdgeEntity* aPCurve =
         theGraph.Defs().FindPCurve(anEdgeDefId, aFaceDef.Id);
       if (aPCurve == nullptr || aPCurve->Curve2d.IsNull())
       {

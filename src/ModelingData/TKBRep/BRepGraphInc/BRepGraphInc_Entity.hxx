@@ -168,23 +168,6 @@ struct EdgeEntity : public BaseEntity
   //! Representation index into Storage::myCurves3D (-1 if no 3D curve).
   int Curve3DRepIdx = -1;
 
-  //! PCurve entries, one per (edge, face) context.
-  //! For seam edges there are two entries with the same FaceDefId,
-  //! distinguished by EdgeOrientation (FORWARD vs REVERSED).
-  struct PCurveEntry
-  {
-    occ::handle<Geom2d_Curve> Curve2d;          //!< 2D parametric curve on the face surface
-    BRepGraph_NodeId     FaceDefId;
-    double               ParamFirst = 0.0;
-    double               ParamLast  = 0.0;
-    GeomAbs_Shape        Continuity = GeomAbs_C0; //!< Geometric continuity across face pairs
-    gp_Pnt2d             UV1;              //!< UV at ParamFirst
-    gp_Pnt2d             UV2;              //!< UV at ParamLast
-    TopAbs_Orientation   EdgeOrientation = TopAbs_FORWARD; //!< Edge orientation when this PCurve was extracted.
-    GeomAbs_Shape        SeamContinuity = GeomAbs_C0; //!< Continuity between seam PCurve pair (for REVERSED entry)
-  };
-  NCollection_Vector<PCurveEntry> PCurves;
-
   //! Curve parameter range.
   double ParamFirst = 0.0;
   double ParamLast  = 0.0;
@@ -228,25 +211,6 @@ struct EdgeEntity : public BaseEntity
   //! Representation index into Storage::myPolygons3D (-1 if no polygon).
   int Polygon3DRepIdx = -1;
 
-  //! Polygon-on-surface entries, one per (edge, face) context.
-  struct PolyOnSurfEntry
-  {
-    occ::handle<Poly_Polygon2D> Polygon2D;
-    BRepGraph_NodeId       FaceDefId;
-    TopAbs_Orientation     EdgeOrientation = TopAbs_FORWARD;
-  };
-  NCollection_Vector<PolyOnSurfEntry> PolygonsOnSurf;
-
-  //! Polygon-on-triangulation entries, one per (edge, face, triangulation) context.
-  struct PolyOnTriEntry
-  {
-    occ::handle<Poly_PolygonOnTriangulation> Polygon;
-    BRepGraph_NodeId                    FaceDefId;
-    int                                 TriangulationIndex = 0;
-    TopAbs_Orientation                  EdgeOrientation = TopAbs_FORWARD;
-  };
-  NCollection_Vector<PolyOnTriEntry> PolygonsOnTri;
-
   //! Edge regularity (continuity) between adjacent face pairs.
   struct RegularityEntry
   {
@@ -259,9 +223,6 @@ struct EdgeEntity : public BaseEntity
   //! Reinitialize inner vectors with the given allocator.
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
-    BRepGraphInc_InitVec(PCurves, theAlloc, 4);           // typically 1-4 (seam edges have 2)
-    BRepGraphInc_InitVec(PolygonsOnSurf, theAlloc, 2);   // typically 0-2
-    BRepGraphInc_InitVec(PolygonsOnTri, theAlloc, 2);    // typically 0-2
     BRepGraphInc_InitVec(Regularities, theAlloc, 2);     // typically 0-2
     BRepGraphInc_InitVec(InternalVertices, theAlloc, 2); // typically 0
   }

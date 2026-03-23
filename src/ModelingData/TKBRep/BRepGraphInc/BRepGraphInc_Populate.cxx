@@ -381,105 +381,6 @@ int getOrCreatePolygonOnTriRep(BRepGraphInc_Storage&                            
   return anIdx;
 }
 
-//! Append a PCurve entry and optional PolyOnSurf entry to an edge entity.
-//! Does nothing if theCurve2d is null.
-//! For reversed seam entries, theUV1/theUV2 are typically default (0,0)
-//! because BRep_Tool::UVPoints is only called for the forward orientation.
-//! Reconstruction reads UVs only from the forward-matching entry.
-void appendPCurveAndPolyEntry(BRepGraphInc::EdgeEntity&          theEdge,
-                              const occ::handle<Geom2d_Curve>&   theCurve2d,
-                              int                                theFaceIdx,
-                              double                             theFirst,
-                              double                             theLast,
-                              GeomAbs_Shape                      theContinuity,
-                              const gp_Pnt2d&                    theUV1,
-                              const gp_Pnt2d&                    theUV2,
-                              TopAbs_Orientation                 theEdgeOri,
-                              const occ::handle<Poly_Polygon2D>& thePolyOnSurf)
-{
-  if (theCurve2d.IsNull())
-    return;
-
-  BRepGraphInc::EdgeEntity::PCurveEntry aPCEntry;
-  aPCEntry.Curve2d         = theCurve2d;
-  aPCEntry.FaceDefId       = BRepGraph_NodeId::Face(theFaceIdx);
-  aPCEntry.ParamFirst      = theFirst;
-  aPCEntry.ParamLast       = theLast;
-  aPCEntry.Continuity      = theContinuity;
-  aPCEntry.UV1             = theUV1;
-  aPCEntry.UV2             = theUV2;
-  aPCEntry.EdgeOrientation = theEdgeOri;
-  theEdge.PCurves.Append(aPCEntry);
-
-  if (!thePolyOnSurf.IsNull())
-  {
-    BRepGraphInc::EdgeEntity::PolyOnSurfEntry aPolyEntry;
-    aPolyEntry.Polygon2D       = thePolyOnSurf;
-    aPolyEntry.FaceDefId       = BRepGraph_NodeId::Face(theFaceIdx);
-    aPolyEntry.EdgeOrientation = theEdgeOri;
-    theEdge.PolygonsOnSurf.Append(aPolyEntry);
-  }
-}
-
-//! Append polygon-on-triangulation entries for one edge in one face context.
-//! Handles transformed triangulation copies and seam detection.
-void appendPolyOnTriEntries(BRepGraphInc_Storage&     theStorage,
-                            BRepGraphInc::EdgeEntity& theEdge,
-                            const TopoDS_Edge&        theEdgeShape,
-                            int                       theFaceIdx,
-                            int                       theNbOrigTris)
-{
-  const BRepGraphInc::FaceEntity& aFaceDef = theStorage.Face(theFaceIdx);
-  for (int aTriIdx = 0; aTriIdx < theNbOrigTris; ++aTriIdx)
-  {
-    const occ::handle<Poly_Triangulation>& aTri = aFaceDef.Triangulations.Value(aTriIdx);
-    if (aTri.IsNull())
-      continue;
-
-    TopLoc_Location                          aPolyTriLoc;
-    occ::handle<Poly_PolygonOnTriangulation> aPolyOnTri =
-      BRep_Tool::PolygonOnTriangulation(theEdgeShape, aTri, aPolyTriLoc);
-    if (aPolyOnTri.IsNull())
-      continue;
-
-    int aEffTriIdx = aTriIdx;
-    if (!aPolyTriLoc.IsIdentity())
-    {
-      const TopLoc_Location aRepLoc = theEdgeShape.Location().Inverted() * aPolyTriLoc;
-      if (!aRepLoc.IsIdentity())
-      {
-        occ::handle<Poly_Triangulation> aTriCopy = aTri->Copy();
-        const gp_Trsf&                  aTrsf    = aRepLoc.Transformation();
-        for (int aNodeIdx = 1; aNodeIdx <= aTriCopy->NbNodes(); ++aNodeIdx)
-          aTriCopy->SetNode(aNodeIdx, aTriCopy->Node(aNodeIdx).Transformed(aTrsf));
-        aEffTriIdx = theStorage.ChangeFace(theFaceIdx).Triangulations.Length();
-        theStorage.ChangeFace(theFaceIdx).Triangulations.Append(aTriCopy);
-      }
-    }
-
-    BRepGraphInc::EdgeEntity::PolyOnTriEntry aPolyTriEntry;
-    aPolyTriEntry.Polygon            = aPolyOnTri;
-    aPolyTriEntry.FaceDefId          = BRepGraph_NodeId::Face(theFaceIdx);
-    aPolyTriEntry.TriangulationIndex = aEffTriIdx;
-    aPolyTriEntry.EdgeOrientation    = TopAbs_FORWARD;
-    theEdge.PolygonsOnTri.Append(aPolyTriEntry);
-
-    // Check for seam polygon-on-triangulation.
-    TopoDS_Edge                              aRevEdge = TopoDS::Edge(theEdgeShape.Reversed());
-    occ::handle<Poly_PolygonOnTriangulation> aPolyOnTriRev =
-      BRep_Tool::PolygonOnTriangulation(aRevEdge, aTri, aPolyTriLoc);
-    if (!aPolyOnTriRev.IsNull() && aPolyOnTriRev != aPolyOnTri)
-    {
-      BRepGraphInc::EdgeEntity::PolyOnTriEntry aPolyTriRevEntry;
-      aPolyTriRevEntry.Polygon            = aPolyOnTriRev;
-      aPolyTriRevEntry.FaceDefId          = BRepGraph_NodeId::Face(theFaceIdx);
-      aPolyTriRevEntry.TriangulationIndex = aEffTriIdx;
-      aPolyTriRevEntry.EdgeOrientation    = TopAbs_REVERSED;
-      theEdge.PolygonsOnTri.Append(aPolyTriRevEntry);
-    }
-  }
-}
-
 //! Register an edge entity from pre-extracted data, with TShape dedup.
 //! Creates the entity (with vertices) if new, returns the index in both cases.
 int registerExtractedEdge(BRepGraphInc_Storage& theStorage,
@@ -950,40 +851,6 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
           }
         }
 
-        // PCurve: first (always stored as FORWARD, orientation-independent).
-        // Keep EdgeEntity.PCurves populated for backward compatibility (Phase 4 removal).
-        appendPCurveAndPolyEntry(anEdgeMut,
-                                 anEdgeData.PCurve2d,
-                                 aFaceIdx,
-                                 anEdgeData.PCFirst,
-                                 anEdgeData.PCLast,
-                                 anEdgeData.PCurveContinuity,
-                                 anEdgeData.PCUV1,
-                                 anEdgeData.PCUV2,
-                                 TopAbs_FORWARD,
-                                 anEdgeData.PolyOnSurf);
-
-        // PCurve: second (seam, always stored as REVERSED).
-        appendPCurveAndPolyEntry(anEdgeMut,
-                                 anEdgeData.PCurve2dReversed,
-                                 aFaceIdx,
-                                 anEdgeData.PCFirstReversed,
-                                 anEdgeData.PCLastReversed,
-                                 anEdgeData.PCurveContinuity,
-                                 gp_Pnt2d(),
-                                 gp_Pnt2d(),
-                                 TopAbs_REVERSED,
-                                 anEdgeData.PolyOnSurfReversed);
-
-        // Store seam continuity on the reversed entry.
-        if (!anEdgeData.PCurve2dReversed.IsNull()
-            && anEdgeData.SeamContinuity != GeomAbs_C0
-            && !anEdgeMut.PCurves.IsEmpty())
-        {
-          anEdgeMut.PCurves.ChangeValue(anEdgeMut.PCurves.Length() - 1).SeamContinuity =
-            anEdgeData.SeamContinuity;
-        }
-
         // Polygon3D (once per edge).
         if (!anEdgeData.Polygon3D.IsNull() && anEdgeMut.Polygon3D.IsNull())
         {
@@ -992,46 +859,67 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
                                                               anEdgeData.Polygon3D);
         }
 
-        // Polygon-on-triangulation (forward + seam reversed).
-        appendPolyOnTriEntries(theStorage,
-                               anEdgeMut,
-                               anEdgeData.Shape,
-                               aFaceIdx,
-                               aFaceDef.Triangulations.Length());
-
-        // Copy PolyOnTri entries matching this face from EdgeEntity to CoEdge.
+        // Polygon-on-triangulation: extract directly into CoEdge entities.
         if (aFwdCoEdgeIdx >= 0)
         {
-          for (int aPTIdx = 0; aPTIdx < anEdgeMut.PolygonsOnTri.Length(); ++aPTIdx)
+          const int aNbOrigTris = aFaceDef.Triangulations.Length();
+          for (int aTriIdx = 0; aTriIdx < aNbOrigTris; ++aTriIdx)
           {
-            const BRepGraphInc::EdgeEntity::PolyOnTriEntry& aPTEntry =
-              anEdgeMut.PolygonsOnTri.Value(aPTIdx);
-            if (aPTEntry.FaceDefId.Index != aFaceIdx)
+            const occ::handle<Poly_Triangulation>& aTri = aFaceDef.Triangulations.Value(aTriIdx);
+            if (aTri.IsNull())
               continue;
 
-            BRepGraphInc::CoEdgeEntity::PolyOnTriEntry aCoEdgePTEntry;
-            aCoEdgePTEntry.Polygon            = aPTEntry.Polygon;
-            aCoEdgePTEntry.TriangulationIndex = aPTEntry.TriangulationIndex;
+            TopLoc_Location                          aPolyTriLoc;
+            occ::handle<Poly_PolygonOnTriangulation> aPolyOnTri =
+              BRep_Tool::PolygonOnTriangulation(anEdgeData.Shape, aTri, aPolyTriLoc);
+            if (aPolyOnTri.IsNull())
+              continue;
 
-            // Resolve face-local TriangulationIndex to global TriangulationRepIdx.
+            int aEffTriIdx = aTriIdx;
+            if (!aPolyTriLoc.IsIdentity())
+            {
+              const TopLoc_Location aRepLoc = anEdgeData.Shape.Location().Inverted() * aPolyTriLoc;
+              if (!aRepLoc.IsIdentity())
+              {
+                occ::handle<Poly_Triangulation> aTriCopy = aTri->Copy();
+                const gp_Trsf&                  aTrsf    = aRepLoc.Transformation();
+                for (int aNodeIdx = 1; aNodeIdx <= aTriCopy->NbNodes(); ++aNodeIdx)
+                  aTriCopy->SetNode(aNodeIdx, aTriCopy->Node(aNodeIdx).Transformed(aTrsf));
+                aEffTriIdx = theStorage.ChangeFace(aFaceIdx).Triangulations.Length();
+                theStorage.ChangeFace(aFaceIdx).Triangulations.Append(aTriCopy);
+              }
+            }
+
+            // Resolve face-local tri index to global TriangulationRepIdx.
+            // Re-fetch face since Triangulations may have grown.
+            const BRepGraphInc::FaceEntity& aFaceRef = theStorage.Face(aFaceIdx);
             int aTriRepIdx = -1;
-            if (aPTEntry.TriangulationIndex >= 0
-                && aPTEntry.TriangulationIndex < aFaceDef.TriangulationRepIdxs.Length())
-            {
-              aTriRepIdx = aFaceDef.TriangulationRepIdxs.Value(aPTEntry.TriangulationIndex);
-            }
-            const int aPolyOnTriRepIdx = getOrCreatePolygonOnTriRep(
-              theStorage, theRepDedup, aPTEntry.Polygon, aTriRepIdx);
+            if (aEffTriIdx >= 0 && aEffTriIdx < aFaceRef.TriangulationRepIdxs.Length())
+              aTriRepIdx = aFaceRef.TriangulationRepIdxs.Value(aEffTriIdx);
 
-            if (aPTEntry.EdgeOrientation == TopAbs_FORWARD)
+            BRepGraphInc::CoEdgeEntity::PolyOnTriEntry aCoEdgePTEntry;
+            aCoEdgePTEntry.Polygon            = aPolyOnTri;
+            aCoEdgePTEntry.TriangulationIndex = aEffTriIdx;
+            const int aPolyOnTriRepIdx = getOrCreatePolygonOnTriRep(
+              theStorage, theRepDedup, aPolyOnTri, aTriRepIdx);
+
+            theStorage.ChangeCoEdge(aFwdCoEdgeIdx).PolygonsOnTri.Append(aCoEdgePTEntry);
+            theStorage.ChangeCoEdge(aFwdCoEdgeIdx).PolygonOnTriRepIdxs.Append(aPolyOnTriRepIdx);
+
+            // Seam polygon-on-triangulation.
+            TopoDS_Edge                              aRevEdge = TopoDS::Edge(anEdgeData.Shape.Reversed());
+            occ::handle<Poly_PolygonOnTriangulation> aPolyOnTriRev =
+              BRep_Tool::PolygonOnTriangulation(aRevEdge, aTri, aPolyTriLoc);
+            if (!aPolyOnTriRev.IsNull() && aPolyOnTriRev != aPolyOnTri && aSeamCoEdgeIdx >= 0)
             {
-              theStorage.ChangeCoEdge(aFwdCoEdgeIdx).PolygonsOnTri.Append(aCoEdgePTEntry);
-              theStorage.ChangeCoEdge(aFwdCoEdgeIdx).PolygonOnTriRepIdxs.Append(aPolyOnTriRepIdx);
-            }
-            else if (aSeamCoEdgeIdx >= 0)
-            {
-              theStorage.ChangeCoEdge(aSeamCoEdgeIdx).PolygonsOnTri.Append(aCoEdgePTEntry);
-              theStorage.ChangeCoEdge(aSeamCoEdgeIdx).PolygonOnTriRepIdxs.Append(aPolyOnTriRepIdx);
+              BRepGraphInc::CoEdgeEntity::PolyOnTriEntry aSeamPTEntry;
+              aSeamPTEntry.Polygon            = aPolyOnTriRev;
+              aSeamPTEntry.TriangulationIndex = aEffTriIdx;
+              const int aSeamPolyRepIdx = getOrCreatePolygonOnTriRep(
+                theStorage, theRepDedup, aPolyOnTriRev, aTriRepIdx);
+
+              theStorage.ChangeCoEdge(aSeamCoEdgeIdx).PolygonsOnTri.Append(aSeamPTEntry);
+              theStorage.ChangeCoEdge(aSeamCoEdgeIdx).PolygonOnTriRepIdxs.Append(aSeamPolyRepIdx);
             }
           }
         }

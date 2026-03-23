@@ -502,6 +502,13 @@ void BRepGraphInc_ReverseIndex::UnbindVertexFromEdge(int theVertexIdx, int theEd
 
 //=================================================================================================
 
+void BRepGraphInc_ReverseIndex::BindEdgeToCoEdge(int theEdgeIdx, int theCoEdgeIdx)
+{
+  appendUnique(myEdgeToCoEdges, theEdgeIdx, theCoEdgeIdx);
+}
+
+//=================================================================================================
+
 void BRepGraphInc_ReverseIndex::BindEdgeToFace(int theEdgeIdx, int theFaceIdx)
 {
   // Detect new binding by checking vector size before/after appendUnique.

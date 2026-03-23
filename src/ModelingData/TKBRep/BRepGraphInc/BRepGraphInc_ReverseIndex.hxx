@@ -201,6 +201,9 @@ public:
   //! Remove an edge from the vertex-to-edge index for a given vertex.
   Standard_EXPORT void UnbindVertexFromEdge(int theVertexIdx, int theEdgeIdx);
 
+  //! Register a coedge as referencing an edge (O(1) amortized).
+  Standard_EXPORT void BindEdgeToCoEdge(int theEdgeIdx, int theCoEdgeIdx);
+
   //! Register an edge as belonging to a face (O(1) amortized, deduplicates).
   Standard_EXPORT void BindEdgeToFace(int theEdgeIdx, int theFaceIdx);
 

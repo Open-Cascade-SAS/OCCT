@@ -151,7 +151,7 @@ TEST_F(BRepGraphConvenienceTest, FindPCurve_ValidPair)
     for (int anEdgeIter = 0; anEdgeIter < aDefs.NbEdges(); ++anEdgeIter)
     {
       const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(anEdgeIter);
-      const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurve =
+      const BRepGraphInc::CoEdgeEntity* aPCurve =
         aDefs.FindPCurve(anEdgeDef.Id, aFaceNodeId);
       if (aPCurve != nullptr)
       {
@@ -209,34 +209,31 @@ TEST(BRepGraphConvenienceCylinderTest, FindPCurve_WithOrientation_SeamEdge)
 
   const BRepGraph::DefsView aDefs = aGraph.Defs();
 
-  // Look for seam edges (two PCurves on same face).
+  // Look for seam edges (coedge with SeamPairIdx >= 0).
   for (int anEdgeIter = 0; anEdgeIter < aDefs.NbEdges(); ++anEdgeIter)
   {
     const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(anEdgeIter);
-    if (anEdgeDef.PCurves.Length() < 2)
-      continue;
+    const NCollection_Vector<int>& aCoEdgeIdxs = aDefs.CoEdgesOfEdge(anEdgeIter);
 
-    // Check if two PCurves share same face.
-    for (int aPCI = 0; aPCI < anEdgeDef.PCurves.Length(); ++aPCI)
+    for (int aCEI = 0; aCEI < aCoEdgeIdxs.Length(); ++aCEI)
     {
-      for (int aPCJ = aPCI + 1; aPCJ < anEdgeDef.PCurves.Length(); ++aPCJ)
+      const BRepGraphInc::CoEdgeEntity& aCE = aDefs.CoEdge(aCoEdgeIdxs.Value(aCEI));
+      if (aCE.SeamPairIdx < 0)
+        continue;
+
+      // Found seam edge -- verify FindPCurve returns distinct entries for each orientation.
+      const BRepGraph_NodeId aFaceDefId = aCE.FaceDefId;
+      const BRepGraphInc::CoEdgeEntity* aPCF =
+        aDefs.FindPCurve(anEdgeDef.Id, aFaceDefId, TopAbs_FORWARD);
+      const BRepGraphInc::CoEdgeEntity* aPCR =
+        aDefs.FindPCurve(anEdgeDef.Id, aFaceDefId, TopAbs_REVERSED);
+      EXPECT_NE(aPCF, nullptr);
+      EXPECT_NE(aPCR, nullptr);
+      if (aPCF != nullptr && aPCR != nullptr)
       {
-        if (anEdgeDef.PCurves.Value(aPCI).FaceDefId == anEdgeDef.PCurves.Value(aPCJ).FaceDefId)
-        {
-          const BRepGraph_NodeId aFaceDefId = anEdgeDef.PCurves.Value(aPCI).FaceDefId;
-          const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCF =
-            aDefs.FindPCurve(anEdgeDef.Id, aFaceDefId, TopAbs_FORWARD);
-          const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCR =
-            aDefs.FindPCurve(anEdgeDef.Id, aFaceDefId, TopAbs_REVERSED);
-          EXPECT_NE(aPCF, nullptr);
-          EXPECT_NE(aPCR, nullptr);
-          if (aPCF != nullptr && aPCR != nullptr)
-          {
-            EXPECT_NE(aPCF, aPCR);
-          }
-          return;
-        }
+        EXPECT_NE(aPCF, aPCR);
       }
+      return;
     }
   }
 }

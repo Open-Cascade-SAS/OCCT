@@ -82,7 +82,7 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>>
         if (anEdge.IsDegenerate)
           continue;
 
-        const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurve = aDefs.FindPCurve(anEdgeDefId, aFaceDefId);
+        const BRepGraphInc::CoEdgeEntity* aPCurve = aDefs.FindPCurve(anEdgeDefId, aFaceDefId);
         if (aPCurve == nullptr)
           aResult.Append(std::make_pair(anEdgeDefId, aFaceDefId));
       }

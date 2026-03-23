@@ -651,7 +651,7 @@ TEST(BRepGraphCheck_AnalyzerTest, MissingPCurve_DetectsNoCurveOnSurface)
     // Check if this edge has a PCurve on face 0.
     const BRepGraph_NodeId aEdgeNodeId(BRepGraph_NodeId::Kind::Edge, anEdgeIter);
     const BRepGraph_NodeId aFaceNodeId(BRepGraph_NodeId::Kind::Face, 0);
-    const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCEntry =
+    const BRepGraphInc::CoEdgeEntity* aPCEntry =
       aGraph.Defs().FindPCurve(aEdgeNodeId, aFaceNodeId);
     if (aPCEntry != nullptr)
       continue; // This edge has a PCurve on face 0, skip it.

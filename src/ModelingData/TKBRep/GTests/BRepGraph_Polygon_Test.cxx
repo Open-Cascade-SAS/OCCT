@@ -137,25 +137,33 @@ TEST(BRepGraph_PolygonTest, PolyOnTri_Captured_AfterMesh)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  // Count PolygonOnTriangulation entries on edges.
+  // Count PolygonOnTriangulation entries on coedges.
   int aNbPolyOnTri = 0;
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(anEdgeIdx);
-    aNbPolyOnTri += anEdge.PolygonsOnTri.Length();
+    const NCollection_Vector<int>& aCoEdgeIdxs = aGraph.Defs().CoEdgesOfEdge(anEdgeIdx);
+    for (int aCEIdx = 0; aCEIdx < aCoEdgeIdxs.Length(); ++aCEIdx)
+    {
+      const BRepGraphInc::CoEdgeEntity& aCE = aGraph.Defs().CoEdge(aCoEdgeIdxs.Value(aCEIdx));
+      aNbPolyOnTri += aCE.PolygonsOnTri.Length();
+    }
   }
   EXPECT_GT(aNbPolyOnTri, 0) << "Meshed box edges should have PolygonOnTriangulation";
 
   // Verify PolyOnTri entries have valid context references.
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(anEdgeIdx);
-    for (int aPolyIdx = 0; aPolyIdx < anEdge.PolygonsOnTri.Length(); ++aPolyIdx)
+    const NCollection_Vector<int>& aCoEdgeIdxs = aGraph.Defs().CoEdgesOfEdge(anEdgeIdx);
+    for (int aCEIdx = 0; aCEIdx < aCoEdgeIdxs.Length(); ++aCEIdx)
     {
-      const BRepGraph_TopoNode::EdgeDef::PolyOnTriEntry& aEntry =
-        anEdge.PolygonsOnTri.Value(aPolyIdx);
-      EXPECT_FALSE(aEntry.Polygon.IsNull());
-      EXPECT_TRUE(aEntry.FaceDefId.IsValid());
+      const BRepGraphInc::CoEdgeEntity& aCE = aGraph.Defs().CoEdge(aCoEdgeIdxs.Value(aCEIdx));
+      for (int aPolyIdx = 0; aPolyIdx < aCE.PolygonsOnTri.Length(); ++aPolyIdx)
+      {
+        const BRepGraphInc::CoEdgeEntity::PolyOnTriEntry& aEntry =
+          aCE.PolygonsOnTri.Value(aPolyIdx);
+        EXPECT_FALSE(aEntry.Polygon.IsNull());
+      }
+      EXPECT_TRUE(aCE.FaceDefId.IsValid());
     }
   }
 }
@@ -213,22 +221,22 @@ TEST(BRepGraph_PolygonTest, UVPoints_Captured_OnPCurves)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  // At least some inline PCurve entries should have non-origin UV points.
+  // At least some CoEdge entries should have non-origin UV points.
   int aNbNonOriginUV = 0;
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(anEdgeIdx);
-    for (int aPCIdx = 0; aPCIdx < anEdge.PCurves.Length(); ++aPCIdx)
+    const NCollection_Vector<int>& aCoEdgeIdxs = aGraph.Defs().CoEdgesOfEdge(anEdgeIdx);
+    for (int aCEIdx = 0; aCEIdx < aCoEdgeIdxs.Length(); ++aCEIdx)
     {
-      const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPC = anEdge.PCurves.Value(aPCIdx);
-      if (aPC.UV1.Distance(gp_Pnt2d(0, 0)) > Precision::Confusion()
-          || aPC.UV2.Distance(gp_Pnt2d(0, 0)) > Precision::Confusion())
+      const BRepGraphInc::CoEdgeEntity& aCE = aGraph.Defs().CoEdge(aCoEdgeIdxs.Value(aCEIdx));
+      if (aCE.UV1.Distance(gp_Pnt2d(0, 0)) > Precision::Confusion()
+          || aCE.UV2.Distance(gp_Pnt2d(0, 0)) > Precision::Confusion())
       {
         ++aNbNonOriginUV;
       }
     }
   }
-  EXPECT_GT(aNbNonOriginUV, 0) << "Box PCurves should have non-origin UV points";
+  EXPECT_GT(aNbNonOriginUV, 0) << "Box CoEdges should have non-origin UV points";
 }
 
 // ============================================================
@@ -327,12 +335,13 @@ TEST(BRepGraph_PolygonTest, SeamEdge_PolyOnTri_TwoEntries)
   bool aFoundSeam = false;
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(anEdgeIdx);
-    // Count PolyOnTri entries per face.
+    const NCollection_Vector<int>& aCoEdgeIdxs = aGraph.Defs().CoEdgesOfEdge(anEdgeIdx);
+    // Count PolyOnTri entries per face via coedges.
     NCollection_DataMap<int, int> aFaceCounts;
-    for (int aPolyIdx = 0; aPolyIdx < anEdge.PolygonsOnTri.Length(); ++aPolyIdx)
+    for (int aCEIdx = 0; aCEIdx < aCoEdgeIdxs.Length(); ++aCEIdx)
     {
-      const int aFaceIdx = anEdge.PolygonsOnTri.Value(aPolyIdx).FaceDefId.Index;
+      const BRepGraphInc::CoEdgeEntity& aCE = aGraph.Defs().CoEdge(aCoEdgeIdxs.Value(aCEIdx));
+      const int aFaceIdx = aCE.FaceDefId.Index;
       if (!aFaceCounts.IsBound(aFaceIdx))
         aFaceCounts.Bind(aFaceIdx, 0);
       aFaceCounts.ChangeFind(aFaceIdx) += 1;

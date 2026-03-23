@@ -154,7 +154,7 @@ void BRepGraphCheck::CheckEdgeOnFace(
   const BRepGraph_NodeId aFaceNodeId = BRepGraph_NodeId::Face(theFaceDefIdx);
 
   // Check PCurve existence.
-  const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurve =
+  const BRepGraphInc::CoEdgeEntity* aPCurve =
     aDefs.FindPCurve(aEdgeNodeId, aFaceNodeId);
   if (aPCurve == nullptr)
   {
@@ -187,9 +187,9 @@ void BRepGraphCheck::CheckEdgeOnFace(
   // Seam edge check: for edges on closed surfaces, validate both PCurves.
   // A seam edge has two PCurves on the same face (FORWARD and REVERSED).
   {
-    const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurveF =
+    const BRepGraphInc::CoEdgeEntity* aPCurveF =
       aDefs.FindPCurve(aEdgeNodeId, aFaceNodeId, TopAbs_FORWARD);
-    const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurveR =
+    const BRepGraphInc::CoEdgeEntity* aPCurveR =
       aDefs.FindPCurve(aEdgeNodeId, aFaceNodeId, TopAbs_REVERSED);
     if (aPCurveF != nullptr && aPCurveR != nullptr && aPCurveF != aPCurveR)
     {

@@ -270,9 +270,9 @@ void BRepGraphCheck::CheckWireOnFace(
     const BRepGraph_TopoNode::EdgeDef& aLastEdge  = aDefs.Edge(aLastCoEdge.EdgeIdx);
 
     // Get PCurves for first and last edges (orientation-specific for seam edges).
-    const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aFirstPC =
+    const BRepGraphInc::CoEdgeEntity* aFirstPC =
       aDefs.FindPCurve(aFirstEdge.Id, aFaceNodeId, aFirstCoEdge.Sense);
-    const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aLastPC =
+    const BRepGraphInc::CoEdgeEntity* aLastPC =
       aDefs.FindPCurve(aLastEdge.Id, aFaceNodeId, aLastCoEdge.Sense);
 
     if (aFirstPC != nullptr && aLastPC != nullptr)
@@ -355,7 +355,7 @@ void BRepGraphCheck::CheckWireOnFace(
       continue;
     }
 
-    const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurve =
+    const BRepGraphInc::CoEdgeEntity* aPCurve =
       aDefs.FindPCurve(anEdgeDef.Id, aFaceNodeId);
     if (aPCurve == nullptr)
     {

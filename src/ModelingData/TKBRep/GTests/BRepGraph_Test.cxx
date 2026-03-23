@@ -158,7 +158,7 @@ TEST_F(BRepGraphTest, FindPCurve_ValidPair)
       const BRepGraph_TopoNode::EdgeDef& anEdge = myGraph.Defs().Edge(aCoEdge.EdgeIdx);
       if (anEdge.IsDegenerate)
         continue;
-      const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurveEntry =
+      const BRepGraphInc::CoEdgeEntity* aPCurveEntry =
         myGraph.Defs().FindPCurve(anEdgeId, aFaceId);
       EXPECT_NE(aPCurveEntry, nullptr)
         << "Missing PCurve for edge " << aCoEdge.EdgeIdx << " on face " << aFaceIdx;
@@ -856,7 +856,7 @@ TEST_F(BRepGraphTest, AddPCurveToEdge_NewPCurve_RetrievableViaFindPCurve)
   occ::handle<Geom2d_Line> aCurve2d = new Geom2d_Line(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0));
   myGraph.Mut().AddPCurveToEdge(anEdgeId, aFaceId, aCurve2d, 0.0, 1.0);
 
-  const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aRetrieved =
+  const BRepGraphInc::CoEdgeEntity* aRetrieved =
     myGraph.Defs().FindPCurve(anEdgeId, aFaceId);
   EXPECT_NE(aRetrieved, nullptr);
   if (aRetrieved != nullptr)

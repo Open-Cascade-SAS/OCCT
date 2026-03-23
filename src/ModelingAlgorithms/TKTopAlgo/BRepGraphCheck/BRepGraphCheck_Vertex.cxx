@@ -114,7 +114,7 @@ void BRepGraphCheck::CheckVertexOnFace(
 
     // Look for PCurve of this edge on this face.
     const BRepGraph_NodeId aFaceNodeId = BRepGraph_NodeId::Face(theFaceDefIdx);
-    const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurve =
+    const BRepGraphInc::CoEdgeEntity* aPCurve =
       aDefs.FindPCurve(anEdgeDef.Id, aFaceNodeId);
     if (aPCurve == nullptr)
       continue;

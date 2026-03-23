@@ -210,25 +210,25 @@ public:
 
   // -- Geometry query methods --
 
-  //! Find the PCurveEntry for an edge on a given face, or nullptr if none exists.
+  //! Find the CoEdge for an edge on a given face, or nullptr if none exists.
   //! @param[in] theEdgeDef edge definition NodeId
   //! @param[in] theFaceDef face definition NodeId
-  Standard_EXPORT const BRepGraph_TopoNode::EdgeDef::PCurveEntry* FindPCurve(
+  Standard_EXPORT const BRepGraphInc::CoEdgeEntity* FindPCurve(
     BRepGraph_NodeId theEdgeDef,
     BRepGraph_NodeId theFaceDef) const;
 
-  //! Find the PCurveEntry for an edge/face/orientation triple (seam edge support).
+  //! Find the CoEdge for an edge/face/orientation triple (seam edge support).
   //! @param[in] theEdgeDef           edge definition NodeId
   //! @param[in] theFaceDef           face definition NodeId
   //! @param[in] theEdgeOrientation   edge orientation on the face
-  Standard_EXPORT const BRepGraph_TopoNode::EdgeDef::PCurveEntry* FindPCurve(
+  Standard_EXPORT const BRepGraphInc::CoEdgeEntity* FindPCurve(
     BRepGraph_NodeId   theEdgeDef,
     BRepGraph_NodeId   theFaceDef,
     TopAbs_Orientation theEdgeOrientation) const;
 
-  //! Find the PCurveEntry for a given PCurve context.
+  //! Find the CoEdge for a given PCurve context.
   //! @param[in] theContext  composite key identifying edge, face and orientation
-  Standard_EXPORT const BRepGraph_TopoNode::EdgeDef::PCurveEntry* FindPCurve(
+  Standard_EXPORT const BRepGraphInc::CoEdgeEntity* FindPCurve(
     const BRepGraph_PCurveContext& theContext) const;
 
   //! Build a GeomAdaptor_TransformedCurve for an edge definition.

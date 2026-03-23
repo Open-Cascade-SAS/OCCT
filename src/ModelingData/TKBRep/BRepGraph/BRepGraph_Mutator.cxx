@@ -176,25 +176,6 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
         aPCSplit = 0.5 * (aCE.ParamFirst + aCE.ParamLast);
     }
 
-    // Legacy: append to edge.PCurves (kept during migration).
-    BRepGraph_TopoNode::EdgeDef::PCurveEntry aPCSubAEntry;
-    aPCSubAEntry.Curve2d         = aCE.Curve2d;
-    aPCSubAEntry.FaceDefId       = aCE.FaceDefId;
-    aPCSubAEntry.ParamFirst      = aCE.ParamFirst;
-    aPCSubAEntry.ParamLast       = aPCSplit;
-    aPCSubAEntry.Continuity      = aCE.Continuity;
-    aPCSubAEntry.EdgeOrientation = aCE.Sense;
-    theGraph.myData->myIncStorage.ChangeEdge(aSubAIdx).PCurves.Append(aPCSubAEntry);
-
-    BRepGraph_TopoNode::EdgeDef::PCurveEntry aPCSubBEntry;
-    aPCSubBEntry.Curve2d         = aCE.Curve2d;
-    aPCSubBEntry.FaceDefId       = aCE.FaceDefId;
-    aPCSubBEntry.ParamFirst      = aPCSplit;
-    aPCSubBEntry.ParamLast       = aCE.ParamLast;
-    aPCSubBEntry.Continuity      = aCE.Continuity;
-    aPCSubBEntry.EdgeOrientation = aCE.Sense;
-    theGraph.myData->myIncStorage.ChangeEdge(aSubBIdx).PCurves.Append(aPCSubBEntry);
-
     // Create CoEdge for SubA.
     BRepGraphInc::CoEdgeEntity& aCoEdgeSubA = theGraph.myData->myIncStorage.AppendCoEdge();
     const int aCoEdgeSubAIdx = theGraph.myData->myIncStorage.NbCoEdges() - 1;

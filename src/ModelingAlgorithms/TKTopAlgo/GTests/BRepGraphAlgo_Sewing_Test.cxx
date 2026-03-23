@@ -1951,12 +1951,13 @@ TEST(BRepGraphAlgo_SameParameterTest, Enforce_AfterSewing_SewnEdgesAreValid)
   ASSERT_TRUE(aResult.IsDone);
   EXPECT_EQ(aResult.NbSewnEdges, 12);
 
-  // All edges that have PCurves should now be SameParameter.
+  // All edges that have coedges should now be SameParameter.
   int aNbSameParam = 0;
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
     const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(anEdgeIdx);
-    if (!anEdge.PCurves.IsEmpty() && !anEdge.Curve3d.IsNull())
+    const NCollection_Vector<int>& aCoEdgeIdxs = aGraph.Defs().CoEdgesOfEdge(anEdgeIdx);
+    if (!aCoEdgeIdxs.IsEmpty() && !anEdge.Curve3d.IsNull())
     {
       if (anEdge.SameParameter)
         ++aNbSameParam;
@@ -2203,23 +2204,23 @@ TEST(BRepGraphAlgo_SewingTest, NonManifoldMode_ThreeFacesShareEdge)
     EXPECT_EQ(aRes.NbSewnEdges, 2);
     EXPECT_EQ(aRes.SewnEdgePairs.Length(), 2);
 
-    // Each keep-edge should have gained at least 1 extra PCurve from the merge.
-    // Verify PCurves reference valid, distinct faces with non-null 2D curves.
+    // Each keep-edge should have gained at least 1 extra coedge from the merge.
+    // Verify coedges reference valid, distinct faces with non-null 2D curves.
     for (int i = 0; i < aRes.SewnEdgePairs.Length(); ++i)
     {
       const int aKeepIdx = aRes.SewnEdgePairs.Value(i).Index;
-      const BRepGraph_TopoNode::EdgeDef& aKeepEdge = aGraph.Defs().Edge(aKeepIdx);
-      EXPECT_GE(aKeepEdge.PCurves.Length(), 2);
+      const NCollection_Vector<int>& aCoEdgeIdxs = aGraph.Defs().CoEdgesOfEdge(aKeepIdx);
+      EXPECT_GE(aCoEdgeIdxs.Length(), 2);
 
       NCollection_Map<int> aFaceIds;
-      for (int j = 0; j < aKeepEdge.PCurves.Length(); ++j)
+      for (int j = 0; j < aCoEdgeIdxs.Length(); ++j)
       {
-        const auto& aPCEntry = aKeepEdge.PCurves.Value(j);
-        EXPECT_FALSE(aPCEntry.Curve2d.IsNull());
-        EXPECT_TRUE(aPCEntry.FaceDefId.IsValid());
-        aFaceIds.Add(aPCEntry.FaceDefId.Index);
+        const BRepGraphInc::CoEdgeEntity& aCE = aGraph.Defs().CoEdge(aCoEdgeIdxs.Value(j));
+        EXPECT_FALSE(aCE.Curve2d.IsNull());
+        EXPECT_TRUE(aCE.FaceDefId.IsValid());
+        aFaceIds.Add(aCE.FaceDefId.Index);
       }
-      // PCurves should reference distinct faces (each merged from a different face).
+      // CoEdges should reference distinct faces (each merged from a different face).
       EXPECT_GE(aFaceIds.Extent(), 2);
     }
   }

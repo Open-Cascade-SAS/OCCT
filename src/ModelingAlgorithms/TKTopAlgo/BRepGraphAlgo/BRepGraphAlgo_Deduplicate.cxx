@@ -384,21 +384,19 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
           theGraph.Mut().ReplaceEdgeInWire(aWires.Value(aWireIter), anOldId, aCanonId, isReversed);
         }
 
-        // Transfer PCurves (skip duplicates).
-        // When the old edge is reversed relative to canonical, invert EdgeOrientation
-        // so duplicate detection matches correctly against the canonical's PCurves.
-        // Note: we read from edge.PCurves here rather than CoEdge data because
-        // CoEdge entries may be incomplete for edges in shared wire definitions.
-        for (int aPCIdx = 0; aPCIdx < anOldEdge.PCurves.Length(); ++aPCIdx)
+        // Transfer PCurves via CoEdges (skip duplicates).
+        // When the old edge is reversed relative to canonical, invert orientation
+        // so duplicate detection matches correctly against the canonical's CoEdges.
+        const NCollection_Vector<int>& aOldCoEdges = theGraph.Defs().CoEdgesOfEdge(anOldIdx);
+        const NCollection_Vector<int>& aCanonCoEdges = theGraph.Defs().CoEdgesOfEdge(aCanonId.Index);
+        for (int aCEIdx = 0; aCEIdx < aOldCoEdges.Length(); ++aCEIdx)
         {
-          const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCEntry =
-            anOldEdge.PCurves.Value(aPCIdx);
-          if (aPCEntry.Curve2d.IsNull())
-          {
+          const BRepGraphInc::CoEdgeEntity& aOldCE =
+            theGraph.Defs().CoEdge(aOldCoEdges.Value(aCEIdx));
+          if (aOldCE.Curve2d.IsNull())
             continue;
-          }
 
-          TopAbs_Orientation aTransferOri = aPCEntry.EdgeOrientation;
+          TopAbs_Orientation aTransferOri = aOldCE.Sense;
           if (isReversed)
           {
             if (aTransferOri == TopAbs_FORWARD)
@@ -407,14 +405,14 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
               aTransferOri = TopAbs_FORWARD;
           }
 
-          // Check if canonical edge already has a PCurve for this face+orientation.
+          // Check if canonical edge already has a CoEdge for this face+orientation.
           bool aAlreadyHas = false;
-          for (int aCanonPCIdx = 0; aCanonPCIdx < aCanonEdge.PCurves.Length(); ++aCanonPCIdx)
+          for (int aCanonCEIdx = 0; aCanonCEIdx < aCanonCoEdges.Length(); ++aCanonCEIdx)
           {
-            const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aCanonPC =
-              aCanonEdge.PCurves.Value(aCanonPCIdx);
-            if (aCanonPC.FaceDefId == aPCEntry.FaceDefId
-                && aCanonPC.EdgeOrientation == aTransferOri)
+            const BRepGraphInc::CoEdgeEntity& aCanonCE =
+              theGraph.Defs().CoEdge(aCanonCoEdges.Value(aCanonCEIdx));
+            if (aCanonCE.FaceDefId == aOldCE.FaceDefId
+                && aCanonCE.Sense == aTransferOri)
             {
               aAlreadyHas = true;
               break;
@@ -424,10 +422,10 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
           if (!aAlreadyHas)
           {
             theGraph.Mut().AddPCurveToEdge(aCanonId,
-                                           aPCEntry.FaceDefId,
-                                           aPCEntry.Curve2d,
-                                           aPCEntry.ParamFirst,
-                                           aPCEntry.ParamLast,
+                                           aOldCE.FaceDefId,
+                                           aOldCE.Curve2d,
+                                           aOldCE.ParamFirst,
+                                           aOldCE.ParamLast,
                                            aTransferOri);
           }
         }

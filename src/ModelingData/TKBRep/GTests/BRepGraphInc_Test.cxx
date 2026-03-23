@@ -498,10 +498,10 @@ TEST(BRepGraphIncTest, Compound_RoundTrip_SubShapeCounts)
 }
 
 // ============================================================
-// PCurve entry count consistency (inline on EdgeEntity)
+// CoEdge count consistency (PCurve data lives on CoEdgeEntity)
 // ============================================================
 
-TEST(BRepGraphIncTest, Box_PCurveEntryCount)
+TEST(BRepGraphIncTest, Box_CoEdgeCount)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -510,12 +510,17 @@ TEST(BRepGraphIncTest, Box_PCurveEntryCount)
   BRepGraphInc_Populate::Perform(aStorage, aBox, false);
   ASSERT_TRUE(aStorage.GetIsDone());
 
-  // A box has 12 edges, each shared by 2 faces => 24 PCurve entries total.
+  // A box has 12 edges, each shared by 2 faces => 24 CoEdge entries total.
   // (No seam edges on a box.)
-  int aPCurveCount = 0;
-  for (int i = 0; i < aStorage.NbEdges(); ++i)
-    aPCurveCount += aStorage.Edge(i).PCurves.Length();
-  EXPECT_EQ(aPCurveCount, 24);
+  int aCoEdgeCount = 0;
+  for (int anEdgeIdx = 0; anEdgeIdx < aStorage.NbEdges(); ++anEdgeIdx)
+  {
+    const NCollection_Vector<int>* aCoEdgeIdxs =
+      aStorage.ReverseIndex().CoEdgesOfEdge(anEdgeIdx);
+    if (aCoEdgeIdxs != nullptr)
+      aCoEdgeCount += aCoEdgeIdxs->Length();
+  }
+  EXPECT_EQ(aCoEdgeCount, 24);
 }
 
 TEST(BRepGraphIncTest, Cylinder_HasSeamEdges)
@@ -527,26 +532,20 @@ TEST(BRepGraphIncTest, Cylinder_HasSeamEdges)
   BRepGraphInc_Populate::Perform(aStorage, aCyl, false);
   ASSERT_TRUE(aStorage.GetIsDone());
 
-  // A cylinder has seam edges: two PCurve entries on the same edge with the
-  // same FaceDefId but opposite orientations.
+  // A cylinder has seam edges: coedges with SeamPairIdx >= 0.
   int aSeamPairCount = 0;
   for (int anEdgeIdx = 0; anEdgeIdx < aStorage.NbEdges(); ++anEdgeIdx)
   {
-    const BRepGraphInc::EdgeEntity& anEdge = aStorage.Edge(anEdgeIdx);
-    for (int i = 0; i < anEdge.PCurves.Length(); ++i)
+    const NCollection_Vector<int>* aCoEdgeIdxs =
+      aStorage.ReverseIndex().CoEdgesOfEdge(anEdgeIdx);
+    if (aCoEdgeIdxs == nullptr)
+      continue;
+    for (int i = 0; i < aCoEdgeIdxs->Length(); ++i)
     {
-      const auto& aPC1 = anEdge.PCurves.Value(i);
-      if (aPC1.EdgeOrientation != TopAbs_FORWARD)
-        continue;
-      for (int j = i + 1; j < anEdge.PCurves.Length(); ++j)
+      const BRepGraphInc::CoEdgeEntity& aCE = aStorage.CoEdge(aCoEdgeIdxs->Value(i));
+      if (aCE.Sense == TopAbs_FORWARD && aCE.SeamPairIdx >= 0)
       {
-        const auto& aPC2 = anEdge.PCurves.Value(j);
-        if (aPC1.FaceDefId.Index == aPC2.FaceDefId.Index
-            && aPC2.EdgeOrientation == TopAbs_REVERSED)
-        {
-          ++aSeamPairCount;
-          break;
-        }
+        ++aSeamPairCount;
       }
     }
   }

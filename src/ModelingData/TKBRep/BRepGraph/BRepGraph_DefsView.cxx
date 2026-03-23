@@ -483,26 +483,28 @@ const BRepGraphInc::PolygonOnTriRep& BRepGraph::DefsView::PolygonOnTriRep(int th
 
 //=================================================================================================
 
-const BRepGraph_TopoNode::EdgeDef::PCurveEntry* BRepGraph::DefsView::FindPCurve(
+const BRepGraphInc::CoEdgeEntity* BRepGraph::DefsView::FindPCurve(
   BRepGraph_NodeId theEdgeDef,
   BRepGraph_NodeId theFaceDef) const
 {
   if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge || !theEdgeDef.IsValid())
     return nullptr;
 
-  const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
-    myGraph->myData->myIncStorage.Edge(theEdgeDef.Index);
-  for (int aPCurveIter = 0; aPCurveIter < anEdgeDef.PCurves.Length(); ++aPCurveIter)
+  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  const NCollection_Vector<int>& aCoEdgeIdxs =
+    aStorage.ReverseIndex().CoEdgesOfEdgeRef(theEdgeDef.Index);
+  for (int anIter = 0; anIter < aCoEdgeIdxs.Length(); ++anIter)
   {
-    if (anEdgeDef.PCurves.Value(aPCurveIter).FaceDefId == theFaceDef)
-      return &anEdgeDef.PCurves.Value(aPCurveIter);
+    const BRepGraphInc::CoEdgeEntity& aCoEdge = aStorage.CoEdge(aCoEdgeIdxs.Value(anIter));
+    if (aCoEdge.EdgeIdx == theEdgeDef.Index && aCoEdge.FaceDefId == theFaceDef)
+      return &aCoEdge;
   }
   return nullptr;
 }
 
 //=================================================================================================
 
-const BRepGraph_TopoNode::EdgeDef::PCurveEntry* BRepGraph::DefsView::FindPCurve(
+const BRepGraphInc::CoEdgeEntity* BRepGraph::DefsView::FindPCurve(
   BRepGraph_NodeId   theEdgeDef,
   BRepGraph_NodeId   theFaceDef,
   TopAbs_Orientation theEdgeOrientation) const
@@ -510,27 +512,28 @@ const BRepGraph_TopoNode::EdgeDef::PCurveEntry* BRepGraph::DefsView::FindPCurve(
   if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge || !theEdgeDef.IsValid())
     return nullptr;
 
-  const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
-    myGraph->myData->myIncStorage.Edge(theEdgeDef.Index);
-  // For non-seam edges (1 PCurve per face), return the only match.
-  // For seam edges (2 PCurves per face), prefer exact orientation match.
-  const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aFirstMatch = nullptr;
-  for (int aPCurveIter = 0; aPCurveIter < anEdgeDef.PCurves.Length(); ++aPCurveIter)
+  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  const NCollection_Vector<int>& aCoEdgeIdxs =
+    aStorage.ReverseIndex().CoEdgesOfEdgeRef(theEdgeDef.Index);
+  // For non-seam edges (1 CoEdge per face), return the only match.
+  // For seam edges (2 CoEdges per face), prefer exact orientation match.
+  const BRepGraphInc::CoEdgeEntity* aFirstMatch = nullptr;
+  for (int anIter = 0; anIter < aCoEdgeIdxs.Length(); ++anIter)
   {
-    const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCEntry = anEdgeDef.PCurves.Value(aPCurveIter);
-    if (aPCEntry.FaceDefId != theFaceDef)
+    const BRepGraphInc::CoEdgeEntity& aCoEdge = aStorage.CoEdge(aCoEdgeIdxs.Value(anIter));
+    if (aCoEdge.EdgeIdx != theEdgeDef.Index || aCoEdge.FaceDefId != theFaceDef)
       continue;
     if (aFirstMatch == nullptr)
-      aFirstMatch = &aPCEntry;
-    if (aPCEntry.EdgeOrientation == theEdgeOrientation)
-      return &aPCEntry;
+      aFirstMatch = &aCoEdge;
+    if (aCoEdge.Sense == theEdgeOrientation)
+      return &aCoEdge;
   }
   return aFirstMatch;
 }
 
 //=================================================================================================
 
-const BRepGraph_TopoNode::EdgeDef::PCurveEntry* BRepGraph::DefsView::FindPCurve(
+const BRepGraphInc::CoEdgeEntity* BRepGraph::DefsView::FindPCurve(
   const BRepGraph_PCurveContext& theContext) const
 {
   return FindPCurve(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, theContext.EdgeDefIndex),
@@ -622,15 +625,15 @@ occ::handle<Adaptor3d_CurveOnSurface> BRepGraph::DefsView::CurveOnSurfaceAdaptor
     myGraph->myData->myIncStorage.Edge(theEdgeDef.Index);
   const BRepGraph_TopoNode::FaceDef& aFaceDef = myGraph->myData->myIncStorage.Face(theFaceDef.Index);
 
-  const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCEntry = FindPCurve(theEdgeDef, theFaceDef);
-  if (aPCEntry == nullptr || aPCEntry->Curve2d.IsNull())
+  const BRepGraphInc::CoEdgeEntity* aCoEdge = FindPCurve(theEdgeDef, theFaceDef);
+  if (aCoEdge == nullptr || aCoEdge->Curve2d.IsNull())
     return occ::handle<Adaptor3d_CurveOnSurface>();
 
   if (aFaceDef.Surface.IsNull())
     return occ::handle<Adaptor3d_CurveOnSurface>();
 
   occ::handle<Geom2dAdaptor_Curve> aHC2d =
-    new Geom2dAdaptor_Curve(aPCEntry->Curve2d, anEdgeDef.ParamFirst, anEdgeDef.ParamLast);
+    new Geom2dAdaptor_Curve(aCoEdge->Curve2d, anEdgeDef.ParamFirst, anEdgeDef.ParamLast);
   occ::handle<GeomAdaptor_Surface> aHS = new GeomAdaptor_Surface(aFaceDef.Surface);
 
   return new Adaptor3d_CurveOnSurface(aHC2d, aHS);
@@ -652,16 +655,16 @@ occ::handle<Adaptor3d_CurveOnSurface> BRepGraph::DefsView::CurveOnSurfaceAdaptor
     myGraph->myData->myIncStorage.Edge(theEdgeDef.Index);
   const BRepGraph_TopoNode::FaceDef& aFaceDef = myGraph->myData->myIncStorage.Face(theFaceDef.Index);
 
-  const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCEntry =
+  const BRepGraphInc::CoEdgeEntity* aCoEdge =
     FindPCurve(theEdgeDef, theFaceDef, theEdgeOrientation);
-  if (aPCEntry == nullptr || aPCEntry->Curve2d.IsNull())
+  if (aCoEdge == nullptr || aCoEdge->Curve2d.IsNull())
     return occ::handle<Adaptor3d_CurveOnSurface>();
 
   if (aFaceDef.Surface.IsNull())
     return occ::handle<Adaptor3d_CurveOnSurface>();
 
   occ::handle<Geom2dAdaptor_Curve> aHC2d =
-    new Geom2dAdaptor_Curve(aPCEntry->Curve2d, anEdgeDef.ParamFirst, anEdgeDef.ParamLast);
+    new Geom2dAdaptor_Curve(aCoEdge->Curve2d, anEdgeDef.ParamFirst, anEdgeDef.ParamLast);
   occ::handle<GeomAdaptor_Surface> aHS = new GeomAdaptor_Surface(aFaceDef.Surface);
 
   return new Adaptor3d_CurveOnSurface(aHC2d, aHS);
