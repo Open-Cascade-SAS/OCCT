@@ -107,6 +107,14 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage& theStora
         if (!aVtx.IsNull())
           aBB.Add(aNewEdge, aVtx.Oriented(aVR.Orientation));
       }
+      // Attach Polygon3D discretization.
+      if (anEdge.Polygon3DRepIdx >= 0)
+      {
+        const occ::handle<Poly_Polygon3D>& aPolygon3D =
+          theStorage.Polygon3DRep(anEdge.Polygon3DRepIdx).Polygon;
+        if (!aPolygon3D.IsNull())
+          aBB.UpdateEdge(aNewEdge, aPolygon3D, TopLoc_Location());
+      }
       aResult = aNewEdge;
       break;
     }

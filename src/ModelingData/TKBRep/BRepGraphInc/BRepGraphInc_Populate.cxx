@@ -970,8 +970,8 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&                       
         if (findExistingNode(theStorage, aCompound, BRepGraph_NodeId::Kind::Compound))
           break;
 
-        BRepGraphInc::CompoundEntity& aCompEnt = theStorage.myCompounds.Appended();
-        int                           aCompIdx = theStorage.myCompounds.Length() - 1;
+        BRepGraphInc::CompoundEntity& aCompEnt = theStorage.AppendCompound();
+        int                           aCompIdx = theStorage.NbCompounds() - 1;
         aCompEnt.Id = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Compound, aCompIdx);
         theStorage.BindTShapeToNode(aCompound.TShape().get(), aCompEnt.Id);
         theStorage.BindOriginal(aCompEnt.Id, aCompound);
@@ -1014,8 +1014,8 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&                       
         if (findExistingNode(theStorage, aCompSolid, BRepGraph_NodeId::Kind::CompSolid))
           break;
 
-        BRepGraphInc::CompSolidEntity& aCSolidEnt = theStorage.myCompSolids.Appended();
-        int                            aCSolidIdx = theStorage.myCompSolids.Length() - 1;
+        BRepGraphInc::CompSolidEntity& aCSolidEnt = theStorage.AppendCompSolid();
+        int                            aCSolidIdx = theStorage.NbCompSolids() - 1;
         aCSolidEnt.Id = BRepGraph_NodeId(BRepGraph_NodeId::Kind::CompSolid, aCSolidIdx);
         theStorage.BindTShapeToNode(aCompSolid.TShape().get(), aCSolidEnt.Id);
         theStorage.BindOriginal(aCSolidEnt.Id, aCompSolid);
@@ -1047,8 +1047,8 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&                       
         if (findExistingNode(theStorage, aSolid, BRepGraph_NodeId::Kind::Solid))
           break;
 
-        BRepGraphInc::SolidEntity& aSolidEnt = theStorage.mySolids.Appended();
-        int                        aSolidIdx = theStorage.mySolids.Length() - 1;
+        BRepGraphInc::SolidEntity& aSolidEnt = theStorage.AppendSolid();
+        int                        aSolidIdx = theStorage.NbSolids() - 1;
         aSolidEnt.Id = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Solid, aSolidIdx);
         theStorage.BindTShapeToNode(aSolid.TShape().get(), aSolidEnt.Id);
         theStorage.BindOriginal(aSolidEnt.Id, aSolid);
@@ -1088,8 +1088,8 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&                       
         if (findExistingNode(theStorage, aShell, BRepGraph_NodeId::Kind::Shell))
           break;
 
-        BRepGraphInc::ShellEntity& aShellEnt = theStorage.myShells.Appended();
-        int                        aShellIdx = theStorage.myShells.Length() - 1;
+        BRepGraphInc::ShellEntity& aShellEnt = theStorage.AppendShell();
+        int                        aShellIdx = theStorage.NbShells() - 1;
         aShellEnt.Id = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Shell, aShellIdx);
         theStorage.BindTShapeToNode(aShell.TShape().get(), aShellEnt.Id);
         theStorage.BindOriginal(aShellEnt.Id, aShell);

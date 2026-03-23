@@ -103,6 +103,45 @@ void checkCrossReferenceBounds(const BRepGraph&                                 
                              aCoEdge.Id,
                              "CoEdgeDef.EdgeIdx out of bounds"});
     }
+    // SeamPairIdx consistency.
+    if (aCoEdge.SeamPairIdx >= 0)
+    {
+      if (aCoEdge.SeamPairIdx >= theGraph.Defs().NbCoEdges())
+      {
+        theIssues.Append(Issue{Severity::Error,
+                               aCoEdge.Id,
+                               "CoEdgeDef.SeamPairIdx out of bounds"});
+      }
+      else if (aCoEdge.SeamPairIdx == aCoEdgeIdx)
+      {
+        theIssues.Append(Issue{Severity::Error,
+                               aCoEdge.Id,
+                               "CoEdgeDef.SeamPairIdx is self-reference"});
+      }
+      else
+      {
+        const BRepGraph_TopoNode::CoEdgeDef& aPair = theGraph.Defs().CoEdge(aCoEdge.SeamPairIdx);
+        if (aPair.SeamPairIdx != aCoEdgeIdx)
+        {
+          theIssues.Append(Issue{Severity::Error,
+                                 aCoEdge.Id,
+                                 "CoEdgeDef.SeamPairIdx not bidirectional"});
+        }
+        if (aPair.FaceDefId != aCoEdge.FaceDefId)
+        {
+          theIssues.Append(Issue{Severity::Error,
+                                 aCoEdge.Id,
+                                 "CoEdgeDef seam pair has different FaceDefId"});
+        }
+      }
+    }
+    // Rep index bounds.
+    if (aCoEdge.Curve2DRepIdx >= theGraph.Defs().NbCurves2D())
+    {
+      theIssues.Append(Issue{Severity::Error,
+                             aCoEdge.Id,
+                             "CoEdgeDef.Curve2DRepIdx out of bounds"});
+    }
   }
 
   // Check FaceDef references.
@@ -386,7 +425,42 @@ void checkGeometryReferences(const BRepGraph&                                   
                              anEdge.Id,
                              "Non-degenerate EdgeDef has no Curve3D representation"});
     }
+    if (anEdge.Curve3DRepIdx >= theGraph.Defs().NbCurves3D())
+    {
+      theIssues.Append(Issue{Severity::Error,
+                             anEdge.Id,
+                             "EdgeDef.Curve3DRepIdx out of bounds"});
+    }
+    if (anEdge.Polygon3DRepIdx >= theGraph.Defs().NbPolygons3D())
+    {
+      theIssues.Append(Issue{Severity::Error,
+                             anEdge.Id,
+                             "EdgeDef.Polygon3DRepIdx out of bounds"});
+    }
+  }
 
+  // Check face rep indices.
+  for (int aFaceIdx = 0; aFaceIdx < theGraph.Defs().NbFaces(); ++aFaceIdx)
+  {
+    const BRepGraph_TopoNode::FaceDef& aFace = theGraph.Defs().Face(aFaceIdx);
+    if (aFace.IsRemoved)
+      continue;
+    if (aFace.SurfaceRepIdx >= theGraph.Defs().NbSurfaces())
+    {
+      theIssues.Append(Issue{Severity::Error,
+                             aFace.Id,
+                             "FaceDef.SurfaceRepIdx out of bounds"});
+    }
+    for (int aTriIdx = 0; aTriIdx < aFace.TriangulationRepIdxs.Length(); ++aTriIdx)
+    {
+      if (aFace.TriangulationRepIdxs.Value(aTriIdx) >= theGraph.Defs().NbTriangulations())
+      {
+        theIssues.Append(Issue{Severity::Error,
+                               aFace.Id,
+                               "FaceDef.TriangulationRepIdx out of bounds"});
+        break;
+      }
+    }
   }
 
   // Check CoEdge PCurve data.
