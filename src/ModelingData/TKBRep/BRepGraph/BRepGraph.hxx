@@ -16,34 +16,34 @@
 
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_UsageId.hxx>
-#include <BRepGraph_RelEdge.hxx>
 #include <BRepGraph_UID.hxx>
-#include <BRepGraph_AttrRegistry.hxx>
-#include <BRepGraph_CachedValue.hxx>
-#include <BRepGraph_UserAttribute.hxx>
-#include <BRepGraph_NodeCache.hxx>
 #include <BRepGraph_TopoNode.hxx>
 #include <BRepGraph_GeomNode.hxx>
-#include <BRepGraph_History.hxx>
+#include <BRepGraph_RelEdge.hxx>
 #include <BRepGraph_HistoryRecord.hxx>
 #include <BRepGraph_SubGraph.hxx>
+#include <BRepGraph_UserAttribute.hxx>
 
 #include <Standard_DefineAlloc.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_TShape.hxx>
 #include <gp_Trsf.hxx>
 #include <Bnd_Box.hxx>
 #include <gp_Pnt.hxx>
 
 #include <NCollection_Vector.hxx>
-#include <NCollection_IndexedDataMap.hxx>
 #include <NCollection_DataMap.hxx>
-#include <NCollection_BaseAllocator.hxx>
 
 #include <functional>
-#include <atomic>
-#include <shared_mutex>
+#include <memory>
+#include <utility>
+
+struct BRepGraph_Data;
+class NCollection_BaseAllocator;
+class TCollection_AsciiString;
+class Geom_Surface;
+class Geom_Curve;
+class Geom2d_Curve;
+class Poly_Triangulation;
 
 class BRepGraph_Builder;
 class BRepGraph_History;
@@ -71,6 +71,9 @@ public:
 
   Standard_EXPORT BRepGraph();
   Standard_EXPORT explicit BRepGraph(const Handle(NCollection_BaseAllocator)& theAlloc);
+  Standard_EXPORT ~BRepGraph();
+  Standard_EXPORT BRepGraph(BRepGraph&&) noexcept;
+  Standard_EXPORT BRepGraph& operator=(BRepGraph&&) noexcept;
 
   //! Build the full graph from a TopoDS_Shape.
   Standard_EXPORT void Build(const TopoDS_Shape& theShape, bool theParallel = false);
@@ -164,12 +167,20 @@ public:
   Standard_EXPORT int NbRelEdgesFrom(BRepGraph_NodeId theNode) const;
   Standard_EXPORT int NbRelEdgesTo(BRepGraph_NodeId theNode) const;
 
+  //! Access outgoing RelEdge vector for a node (returns nullptr if none).
+  Standard_EXPORT const NCollection_Vector<BRepGraph_RelEdge>* OutRelEdgesOf(
+    BRepGraph_NodeId theNode) const;
+
+  //! Access incoming RelEdge vector for a node (returns nullptr if none).
+  Standard_EXPORT const NCollection_Vector<BRepGraph_RelEdge>* InRelEdgesOf(
+    BRepGraph_NodeId theNode) const;
+
   template <typename Func>
   void ForEachOutEdgeOfKind(BRepGraph_NodeId  theNodeId,
                             BRepGraph_RelKind theKind,
                             const Func&       theCallback) const
   {
-    const NCollection_Vector<BRepGraph_RelEdge>* aEdges = myOutRelEdges.Seek(theNodeId);
+    const NCollection_Vector<BRepGraph_RelEdge>* aEdges = OutRelEdgesOf(theNodeId);
     if (aEdges == nullptr)
       return;
     for (int anIdx = 0; anIdx < aEdges->Length(); ++anIdx)
@@ -185,7 +196,7 @@ public:
                            BRepGraph_RelKind theKind,
                            const Func&       theCallback) const
   {
-    const NCollection_Vector<BRepGraph_RelEdge>* aEdges = myInRelEdges.Seek(theNodeId);
+    const NCollection_Vector<BRepGraph_RelEdge>* aEdges = InRelEdgesOf(theNodeId);
     if (aEdges == nullptr)
       return;
     for (int anIdx = 0; anIdx < aEdges->Length(); ++anIdx)
@@ -262,20 +273,6 @@ public:
   Standard_EXPORT bool RemoveUserAttribute(BRepGraph_NodeId theNode, int theKey);
   Standard_EXPORT void InvalidateUserAttribute(BRepGraph_NodeId theNode, int theKey);
 
-  template <typename T>
-  T UserAttributeValue(BRepGraph_NodeId          theNode,
-                       int                       theKey,
-                       const std::function<T()>& theComputer) const
-  {
-    BRepGraph_UserAttrPtr aBase = GetUserAttribute(theNode, theKey);
-    if (!aBase)
-      return T{};
-    auto aTyped = std::dynamic_pointer_cast<BRepGraph_TypedAttribute<T>>(aBase);
-    if (!aTyped)
-      return T{};
-    return aTyped->Get(theComputer);
-  }
-
   // --- History ---
 
   Standard_EXPORT int NbHistoryRecords() const;
@@ -332,8 +329,8 @@ public:
   //! @param theEdgeDef      edge to split (must not be degenerate)
   //! @param theSplitVertex  vertex definition at the split point (already in graph)
   //! @param theSplitParam   parameter on the 3D curve at the split point
-  //! @param[out] theSubA    sub-edge: StartVertex → SplitVertex, [First, SplitParam]
-  //! @param[out] theSubB    sub-edge: SplitVertex → EndVertex,   [SplitParam, Last]
+  //! @param[out] theSubA    sub-edge: StartVertex -> SplitVertex, [First, SplitParam]
+  //! @param[out] theSubB    sub-edge: SplitVertex -> EndVertex,   [SplitParam, Last]
   Standard_EXPORT void SplitEdge(BRepGraph_NodeId  theEdgeDef,
                                   BRepGraph_NodeId  theSplitVertex,
                                   double            theSplitParam,
@@ -460,6 +457,10 @@ public:
   Standard_EXPORT void SetHistoryEnabled(bool theVal);
   Standard_EXPORT bool IsHistoryEnabled() const;
 
+public:
+  //! Shared cache for edge/vertex shapes during multi-face reconstruction.
+  using ReconstructCache = NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape>;
+
 private:
   friend class BRepGraph_Builder;
   friend class BRepGraph_History;
@@ -467,61 +468,7 @@ private:
   friend class BRepGraph_Reconstruct;
   friend class BRepGraph_Mutator;
 
-  Handle(NCollection_BaseAllocator) myAllocator;
-
-  //! Definition vectors (indexed by BRepGraph_NodeId.Index).
-  NCollection_Vector<BRepGraph_TopoNode::SolidDef>    mySolidDefs;
-  NCollection_Vector<BRepGraph_TopoNode::ShellDef>    myShellDefs;
-  NCollection_Vector<BRepGraph_TopoNode::FaceDef>     myFaceDefs;
-  NCollection_Vector<BRepGraph_TopoNode::WireDef>     myWireDefs;
-  NCollection_Vector<BRepGraph_TopoNode::EdgeDef>     myEdgeDefs;
-  NCollection_Vector<BRepGraph_TopoNode::VertexDef>   myVertexDefs;
-  NCollection_Vector<BRepGraph_TopoNode::CompoundDef>  myCompoundDefs;
-  NCollection_Vector<BRepGraph_TopoNode::CompSolidDef> myCompSolidDefs;
-
-  //! Usage vectors (indexed by BRepGraph_UsageId.Index).
-  NCollection_Vector<BRepGraph_TopoNode::SolidUsage>    mySolidUsages;
-  NCollection_Vector<BRepGraph_TopoNode::ShellUsage>    myShellUsages;
-  NCollection_Vector<BRepGraph_TopoNode::FaceUsage>     myFaceUsages;
-  NCollection_Vector<BRepGraph_TopoNode::WireUsage>     myWireUsages;
-  NCollection_Vector<BRepGraph_TopoNode::EdgeUsage>     myEdgeUsages;
-  NCollection_Vector<BRepGraph_TopoNode::VertexUsage>   myVertexUsages;
-  NCollection_Vector<BRepGraph_TopoNode::CompoundUsage>  myCompoundUsages;
-  NCollection_Vector<BRepGraph_TopoNode::CompSolidUsage> myCompSolidUsages;
-
-  //! Geometry node vectors.
-  NCollection_Vector<BRepGraph_GeomNode::Surf>   mySurfaces;
-  NCollection_Vector<BRepGraph_GeomNode::Curve>  myCurves;
-  NCollection_Vector<BRepGraph_GeomNode::PCurve> myPCurves;
-
-  //! Map-based RelEdge storage.
-  NCollection_DataMap<BRepGraph_NodeId,
-                      NCollection_Vector<BRepGraph_RelEdge>> myOutRelEdges;
-  NCollection_DataMap<BRepGraph_NodeId,
-                      NCollection_Vector<BRepGraph_RelEdge>> myInRelEdges;
-
-  //! Geometry deduplication registries.
-  NCollection_IndexedDataMap<const Geom_Surface*, int> mySurfRegistry;
-  NCollection_IndexedDataMap<const Geom_Curve*, int>   myCurveRegistry;
-
-  //! TShape -> Definition NodeId reverse lookup.
-  NCollection_DataMap<const TopoDS_TShape*, BRepGraph_NodeId> myTShapeToDefId;
-
-  //! Opt-in UID system.
-  bool                myUIDEnabled = false;
-  std::atomic<size_t> myNextUIDCounter{0};
-  uint32_t            myGeneration{0};
-
-  NCollection_DataMap<BRepGraph_NodeId, BRepGraph_UID> myNodeToUID;
-  NCollection_DataMap<BRepGraph_UID, BRepGraph_NodeId> myUIDToNodeId;
-
-  //! Reverse index: edge def index -> wire def indices containing that edge.
-  NCollection_DataMap<int, NCollection_Vector<int>> myEdgeToWires;
-
-  //! History subsystem (records, reverse maps, enable/disable toggle).
-  BRepGraph_History myHistoryLog;
-
-  bool myIsDone;
+  std::unique_ptr<BRepGraph_Data> myData;
 
   //! Internal build helpers.
   BRepGraph_NodeId registerSurface(const Handle(Geom_Surface)&       theSurf,
@@ -539,56 +486,16 @@ private:
   BRepGraph_NodeCache* mutableCache(BRepGraph_NodeId theNode);
   void markModified(BRepGraph_NodeId theDefId);
 
-public:
-  //! Shared cache for edge/vertex shapes during multi-face reconstruction.
-  using ReconstructCache = NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape>;
-private:
-
-  //! Shapes from Build().
-  NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape> myOriginalShapes;
-
-  mutable NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape> myCurrentShapes;
-  mutable std::shared_mutex myCurrentShapesMutex;
-
   //! Dispatch a callback on the def vector matching theNode.Kind.
-  //! Returns the callback result, or a default-constructed value for unhandled kinds.
-  //! Usage: `auto result = dispatchDef(nodeId, [](auto& defVec, int idx) { ... });`
+  //! Defined in BRepGraph.cxx (only used internally).
   template <typename Func>
   auto dispatchDef(BRepGraph_NodeId theNode, Func&& theFunc) const
-    -> decltype(theFunc(mySolidDefs, 0))
-  {
-    switch (theNode.Kind)
-    {
-      case BRepGraph_NodeKind::Solid:     return theFunc(mySolidDefs, theNode.Index);
-      case BRepGraph_NodeKind::Shell:     return theFunc(myShellDefs, theNode.Index);
-      case BRepGraph_NodeKind::Face:      return theFunc(myFaceDefs, theNode.Index);
-      case BRepGraph_NodeKind::Wire:      return theFunc(myWireDefs, theNode.Index);
-      case BRepGraph_NodeKind::Edge:      return theFunc(myEdgeDefs, theNode.Index);
-      case BRepGraph_NodeKind::Vertex:    return theFunc(myVertexDefs, theNode.Index);
-      case BRepGraph_NodeKind::Compound:  return theFunc(myCompoundDefs, theNode.Index);
-      case BRepGraph_NodeKind::CompSolid: return theFunc(myCompSolidDefs, theNode.Index);
-      default: return decltype(theFunc(mySolidDefs, 0)){};
-    }
-  }
+    -> decltype(theFunc(std::declval<const NCollection_Vector<BRepGraph_TopoNode::SolidDef>&>(), 0));
 
   //! Non-const overload of dispatchDef for mutable access.
   template <typename Func>
   auto dispatchDef(BRepGraph_NodeId theNode, Func&& theFunc)
-    -> decltype(theFunc(mySolidDefs, 0))
-  {
-    switch (theNode.Kind)
-    {
-      case BRepGraph_NodeKind::Solid:     return theFunc(mySolidDefs, theNode.Index);
-      case BRepGraph_NodeKind::Shell:     return theFunc(myShellDefs, theNode.Index);
-      case BRepGraph_NodeKind::Face:      return theFunc(myFaceDefs, theNode.Index);
-      case BRepGraph_NodeKind::Wire:      return theFunc(myWireDefs, theNode.Index);
-      case BRepGraph_NodeKind::Edge:      return theFunc(myEdgeDefs, theNode.Index);
-      case BRepGraph_NodeKind::Vertex:    return theFunc(myVertexDefs, theNode.Index);
-      case BRepGraph_NodeKind::Compound:  return theFunc(myCompoundDefs, theNode.Index);
-      case BRepGraph_NodeKind::CompSolid: return theFunc(myCompSolidDefs, theNode.Index);
-      default: return decltype(theFunc(mySolidDefs, 0)){};
-    }
-  }
+    -> decltype(theFunc(std::declval<NCollection_Vector<BRepGraph_TopoNode::SolidDef>&>(), 0));
 };
 
 #endif // _BRepGraph_HeaderFile

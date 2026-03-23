@@ -14,6 +14,7 @@
 #include <BRepGraph_Analyze.hxx>
 
 #include <BRepGraph.hxx>
+#include <BRepGraph_Data.hxx>
 #include <NCollection_Map.hxx>
 #include <OSD_Parallel.hxx>
 
@@ -84,9 +85,9 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph_Analyze::ToleranceConflicts(
 {
   NCollection_Vector<BRepGraph_NodeId> aResult;
 
-  for (int aCurveIdx = 0; aCurveIdx < theGraph.myCurves.Length(); ++aCurveIdx)
+  for (int aCurveIdx = 0; aCurveIdx < theGraph.myData->myCurves.Length(); ++aCurveIdx)
   {
-    const BRepGraph_GeomNode::Curve& aCurve = theGraph.myCurves.Value(aCurveIdx);
+    const BRepGraph_GeomNode::Curve& aCurve = theGraph.myData->myCurves.Value(aCurveIdx);
     if (aCurve.EdgeDefUsers.Length() <= 1)
       continue;
 
@@ -94,7 +95,7 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph_Analyze::ToleranceConflicts(
     double aMaxTol = -1.0;
     for (int anIdx = 0; anIdx < aCurve.EdgeDefUsers.Length(); ++anIdx)
     {
-      const double aTol = theGraph.myEdgeDefs.Value(aCurve.EdgeDefUsers.Value(anIdx).Index).Tolerance;
+      const double aTol = theGraph.myData->myEdgeDefs.Value(aCurve.EdgeDefUsers.Value(anIdx).Index).Tolerance;
       if (aTol < aMinTol)
         aMinTol = aTol;
       if (aTol > aMaxTol)

@@ -9,6 +9,7 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_Builder.cxx
   BRepGraph_Builder.hxx
   BRepGraph_CachedValue.hxx
+  BRepGraph_Data.hxx
   BRepGraph_GeomNode.hxx
   BRepGraph_History.cxx
   BRepGraph_History.hxx

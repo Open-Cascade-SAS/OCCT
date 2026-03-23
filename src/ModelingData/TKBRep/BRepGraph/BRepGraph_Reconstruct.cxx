@@ -13,6 +13,7 @@
 
 #include <BRepGraph_Reconstruct.hxx>
 #include <BRepGraph.hxx>
+#include <BRepGraph_Data.hxx>
 
 #include <BRep_Builder.hxx>
 #include <TopoDS.hxx>
@@ -30,13 +31,13 @@ TopoDS_Shape BRepGraph_Reconstruct::Node(const BRepGraph& theGraph,
   switch (theNode.Kind)
   {
     case BRepGraph_NodeKind::Vertex: {
-      const BRepGraph_TopoNode::VertexDef& aVtxDef = theGraph.myVertexDefs.Value(theNode.Index);
+      const BRepGraph_TopoNode::VertexDef& aVtxDef = theGraph.myData->myVertexDefs.Value(theNode.Index);
       TopoDS_Vertex aNewVtx;
       aBB.MakeVertex(aNewVtx, aVtxDef.Point, aVtxDef.Tolerance);
       return aNewVtx;
     }
     case BRepGraph_NodeKind::Edge: {
-      const BRepGraph_TopoNode::EdgeDef& anEdgeDef = theGraph.myEdgeDefs.Value(theNode.Index);
+      const BRepGraph_TopoNode::EdgeDef& anEdgeDef = theGraph.myData->myEdgeDefs.Value(theNode.Index);
       TopoDS_Edge aNewEdge;
       if (anEdgeDef.IsDegenerate)
       {
@@ -46,10 +47,10 @@ TopoDS_Shape BRepGraph_Reconstruct::Node(const BRepGraph& theGraph,
       else if (anEdgeDef.CurveNodeId.IsValid())
       {
         const BRepGraph_GeomNode::Curve& aCurveNode =
-          theGraph.myCurves.Value(anEdgeDef.CurveNodeId.Index);
+          theGraph.myData->myCurves.Value(anEdgeDef.CurveNodeId.Index);
         TopLoc_Location aEdgeLoc;
         if (!anEdgeDef.Usages.IsEmpty())
-          aEdgeLoc = theGraph.myEdgeUsages.Value(anEdgeDef.Usages.Value(0).Index).LocalLocation;
+          aEdgeLoc = theGraph.myData->myEdgeUsages.Value(anEdgeDef.Usages.Value(0).Index).LocalLocation;
         aBB.MakeEdge(aNewEdge, aCurveNode.CurveGeom, aEdgeLoc, anEdgeDef.Tolerance);
       }
       else
@@ -73,7 +74,7 @@ TopoDS_Shape BRepGraph_Reconstruct::Node(const BRepGraph& theGraph,
       return aNewEdge;
     }
     case BRepGraph_NodeKind::Wire: {
-      const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.myWireDefs.Value(theNode.Index);
+      const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.myData->myWireDefs.Value(theNode.Index);
       TopoDS_Wire aNewWire;
       aBB.MakeWire(aNewWire);
       for (int anEdgeIdx = 0; anEdgeIdx < aWireDef.OrderedEdges.Length(); ++anEdgeIdx)
@@ -92,18 +93,18 @@ TopoDS_Shape BRepGraph_Reconstruct::Node(const BRepGraph& theGraph,
       return aNewWire;
     }
     case BRepGraph_NodeKind::Face: {
-      const BRepGraph_TopoNode::FaceDef& aFaceDef = theGraph.myFaceDefs.Value(theNode.Index);
+      const BRepGraph_TopoNode::FaceDef& aFaceDef = theGraph.myData->myFaceDefs.Value(theNode.Index);
       if (!aFaceDef.SurfNodeId.IsValid())
         return TopoDS_Shape();
       const BRepGraph_GeomNode::Surf& aSurfNode =
-        theGraph.mySurfaces.Value(aFaceDef.SurfNodeId.Index);
+        theGraph.myData->mySurfaces.Value(aFaceDef.SurfNodeId.Index);
 
       TopLoc_Location aFaceGlobalLoc;
       TopAbs_Orientation aFaceOri = TopAbs_FORWARD;
       if (!aFaceDef.Usages.IsEmpty())
       {
         const BRepGraph_TopoNode::FaceUsage& aFaceUsage =
-          theGraph.myFaceUsages.Value(aFaceDef.Usages.Value(0).Index);
+          theGraph.myData->myFaceUsages.Value(aFaceDef.Usages.Value(0).Index);
         aFaceGlobalLoc = aFaceUsage.GlobalLocation;
         aFaceOri = aFaceUsage.Orientation;
       }
@@ -116,13 +117,13 @@ TopoDS_Shape BRepGraph_Reconstruct::Node(const BRepGraph& theGraph,
         aBB.MakeWire(aNewWire);
 
         const BRepGraph_TopoNode::WireDef& aWireDef =
-          theGraph.myWireDefs.Value(theWireDefId.Index);
+          theGraph.myData->myWireDefs.Value(theWireDefId.Index);
         for (int anEdgeIdx = 0; anEdgeIdx < aWireDef.OrderedEdges.Length(); ++anEdgeIdx)
         {
           const BRepGraph_TopoNode::WireDef::EdgeEntry& anEntry =
             aWireDef.OrderedEdges.Value(anEdgeIdx);
           const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
-            theGraph.myEdgeDefs.Value(anEntry.EdgeDefId.Index);
+            theGraph.myData->myEdgeDefs.Value(anEntry.EdgeDefId.Index);
 
           TopoDS_Edge anEdge;
           if (anEdgeDef.IsDegenerate)
@@ -133,10 +134,10 @@ TopoDS_Shape BRepGraph_Reconstruct::Node(const BRepGraph& theGraph,
           else if (anEdgeDef.CurveNodeId.IsValid())
           {
             const BRepGraph_GeomNode::Curve& aCurveNode =
-              theGraph.myCurves.Value(anEdgeDef.CurveNodeId.Index);
+              theGraph.myData->myCurves.Value(anEdgeDef.CurveNodeId.Index);
             TopLoc_Location aEdgeLoc;
             if (!anEdgeDef.Usages.IsEmpty())
-              aEdgeLoc = theGraph.myEdgeUsages.Value(anEdgeDef.Usages.Value(0).Index).LocalLocation;
+              aEdgeLoc = theGraph.myData->myEdgeUsages.Value(anEdgeDef.Usages.Value(0).Index).LocalLocation;
             aBB.MakeEdge(anEdge, aCurveNode.CurveGeom, aEdgeLoc, anEdgeDef.Tolerance);
           }
           else
@@ -170,7 +171,7 @@ TopoDS_Shape BRepGraph_Reconstruct::Node(const BRepGraph& theGraph,
             if (aPCEntry.FaceDefId == aFaceDef.Id)
             {
               const BRepGraph_GeomNode::PCurve& aPCNode =
-                theGraph.myPCurves.Value(aPCEntry.PCurveNodeId.Index);
+                theGraph.myData->myPCurves.Value(aPCEntry.PCurveNodeId.Index);
               if (!aPCNode.Curve2d.IsNull())
               {
                 if (aPCEntry.EdgeOrientation == TopAbs_FORWARD)
@@ -228,7 +229,7 @@ TopoDS_Shape BRepGraph_Reconstruct::Node(const BRepGraph& theGraph,
       if (!aFaceDef.Usages.IsEmpty())
       {
         const BRepGraph_TopoNode::FaceUsage& aFaceUsage =
-          theGraph.myFaceUsages.Value(aFaceDef.Usages.Value(0).Index);
+          theGraph.myData->myFaceUsages.Value(aFaceDef.Usages.Value(0).Index);
 
         if (aFaceUsage.OuterWireUsage.IsValid())
         {
@@ -250,14 +251,14 @@ TopoDS_Shape BRepGraph_Reconstruct::Node(const BRepGraph& theGraph,
       return aNewFace;
     }
     case BRepGraph_NodeKind::Shell: {
-      const BRepGraph_TopoNode::ShellDef& aShellDef = theGraph.myShellDefs.Value(theNode.Index);
+      const BRepGraph_TopoNode::ShellDef& aShellDef = theGraph.myData->myShellDefs.Value(theNode.Index);
       TopoDS_Shell aNewShell;
       aBB.MakeShell(aNewShell);
       if (!aShellDef.Usages.IsEmpty())
       {
         BRepGraph::ReconstructCache anEdgeCache;
         const BRepGraph_TopoNode::ShellUsage& aShellUsage =
-          theGraph.myShellUsages.Value(aShellDef.Usages.Value(0).Index);
+          theGraph.myData->myShellUsages.Value(aShellDef.Usages.Value(0).Index);
         for (int aFaceIter = 0; aFaceIter < aShellUsage.FaceUsages.Length(); ++aFaceIter)
         {
           BRepGraph_NodeId aFaceDefId = theGraph.DefOf(aShellUsage.FaceUsages.Value(aFaceIter));
@@ -268,25 +269,25 @@ TopoDS_Shape BRepGraph_Reconstruct::Node(const BRepGraph& theGraph,
       return aNewShell;
     }
     case BRepGraph_NodeKind::Solid: {
-      const BRepGraph_TopoNode::SolidDef& aSolidDef = theGraph.mySolidDefs.Value(theNode.Index);
+      const BRepGraph_TopoNode::SolidDef& aSolidDef = theGraph.myData->mySolidDefs.Value(theNode.Index);
       TopoDS_Solid aNewSolid;
       aBB.MakeSolid(aNewSolid);
       if (!aSolidDef.Usages.IsEmpty())
       {
         BRepGraph::ReconstructCache anEdgeCache;
         const BRepGraph_TopoNode::SolidUsage& aSolidUsage =
-          theGraph.mySolidUsages.Value(aSolidDef.Usages.Value(0).Index);
+          theGraph.myData->mySolidUsages.Value(aSolidDef.Usages.Value(0).Index);
         for (int aShellIter = 0; aShellIter < aSolidUsage.ShellUsages.Length(); ++aShellIter)
         {
           BRepGraph_NodeId aShellDefId = theGraph.DefOf(aSolidUsage.ShellUsages.Value(aShellIter));
           const BRepGraph_TopoNode::ShellDef& aShellDef2 =
-            theGraph.myShellDefs.Value(aShellDefId.Index);
+            theGraph.myData->myShellDefs.Value(aShellDefId.Index);
           TopoDS_Shell aNewShell2;
           aBB.MakeShell(aNewShell2);
           if (!aShellDef2.Usages.IsEmpty())
           {
             const BRepGraph_TopoNode::ShellUsage& aShellUsage =
-              theGraph.myShellUsages.Value(aShellDef2.Usages.Value(0).Index);
+              theGraph.myData->myShellUsages.Value(aShellDef2.Usages.Value(0).Index);
             for (int aFaceIter = 0; aFaceIter < aShellUsage.FaceUsages.Length(); ++aFaceIter)
             {
               BRepGraph_NodeId aFaceDefId =
@@ -316,18 +317,18 @@ TopoDS_Shape BRepGraph_Reconstruct::FaceWithCache(
     return Node(theGraph, theNode);
 
   BRep_Builder aBB;
-  const BRepGraph_TopoNode::FaceDef& aFaceDef = theGraph.myFaceDefs.Value(theNode.Index);
+  const BRepGraph_TopoNode::FaceDef& aFaceDef = theGraph.myData->myFaceDefs.Value(theNode.Index);
   if (!aFaceDef.SurfNodeId.IsValid())
     return TopoDS_Shape();
   const BRepGraph_GeomNode::Surf& aSurfNode =
-    theGraph.mySurfaces.Value(aFaceDef.SurfNodeId.Index);
+    theGraph.myData->mySurfaces.Value(aFaceDef.SurfNodeId.Index);
 
   TopLoc_Location aFaceGlobalLoc;
   TopAbs_Orientation aFaceOri = TopAbs_FORWARD;
   if (!aFaceDef.Usages.IsEmpty())
   {
     const BRepGraph_TopoNode::FaceUsage& aFaceUsage =
-      theGraph.myFaceUsages.Value(aFaceDef.Usages.Value(0).Index);
+      theGraph.myData->myFaceUsages.Value(aFaceDef.Usages.Value(0).Index);
     aFaceGlobalLoc = aFaceUsage.GlobalLocation;
     aFaceOri = aFaceUsage.Orientation;
   }
@@ -341,7 +342,7 @@ TopoDS_Shape BRepGraph_Reconstruct::FaceWithCache(
       return TopoDS::Edge(*aCached);
 
     const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
-      theGraph.myEdgeDefs.Value(theEdgeDefId.Index);
+      theGraph.myData->myEdgeDefs.Value(theEdgeDefId.Index);
     TopoDS_Edge anEdge;
     if (anEdgeDef.IsDegenerate)
     {
@@ -351,10 +352,10 @@ TopoDS_Shape BRepGraph_Reconstruct::FaceWithCache(
     else if (anEdgeDef.CurveNodeId.IsValid())
     {
       const BRepGraph_GeomNode::Curve& aCurveNode =
-        theGraph.myCurves.Value(anEdgeDef.CurveNodeId.Index);
+        theGraph.myData->myCurves.Value(anEdgeDef.CurveNodeId.Index);
       TopLoc_Location aEdgeLoc;
       if (!anEdgeDef.Usages.IsEmpty())
-        aEdgeLoc = theGraph.myEdgeUsages.Value(anEdgeDef.Usages.Value(0).Index).LocalLocation;
+        aEdgeLoc = theGraph.myData->myEdgeUsages.Value(anEdgeDef.Usages.Value(0).Index).LocalLocation;
       aBB.MakeEdge(anEdge, aCurveNode.CurveGeom, aEdgeLoc, anEdgeDef.Tolerance);
     }
     else
@@ -404,7 +405,7 @@ TopoDS_Shape BRepGraph_Reconstruct::FaceWithCache(
     aBB.MakeWire(aNewWire);
 
     const BRepGraph_TopoNode::WireDef& aWireDef =
-      theGraph.myWireDefs.Value(theWireDefId.Index);
+      theGraph.myData->myWireDefs.Value(theWireDefId.Index);
     for (int anEdgeIdx = 0; anEdgeIdx < aWireDef.OrderedEdges.Length(); ++anEdgeIdx)
     {
       const BRepGraph_TopoNode::WireDef::EdgeEntry& anEntry =
@@ -413,7 +414,7 @@ TopoDS_Shape BRepGraph_Reconstruct::FaceWithCache(
 
       // Attach PCurve(s) for THIS face context.
       const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
-        theGraph.myEdgeDefs.Value(anEntry.EdgeDefId.Index);
+        theGraph.myData->myEdgeDefs.Value(anEntry.EdgeDefId.Index);
       Handle(Geom2d_Curve) aPC1, aPC2;
       double aPCFirst = 0.0, aPCLast = 0.0;
       for (int aPCIdx = 0; aPCIdx < anEdgeDef.PCurves.Length(); ++aPCIdx)
@@ -423,7 +424,7 @@ TopoDS_Shape BRepGraph_Reconstruct::FaceWithCache(
         if (aPCEntry.FaceDefId == aFaceDef.Id)
         {
           const BRepGraph_GeomNode::PCurve& aPCNode =
-            theGraph.myPCurves.Value(aPCEntry.PCurveNodeId.Index);
+            theGraph.myData->myPCurves.Value(aPCEntry.PCurveNodeId.Index);
           if (!aPCNode.Curve2d.IsNull())
           {
             if (aPCEntry.EdgeOrientation == TopAbs_FORWARD)
@@ -481,7 +482,7 @@ TopoDS_Shape BRepGraph_Reconstruct::FaceWithCache(
   if (!aFaceDef.Usages.IsEmpty())
   {
     const BRepGraph_TopoNode::FaceUsage& aFaceUsage =
-      theGraph.myFaceUsages.Value(aFaceDef.Usages.Value(0).Index);
+      theGraph.myData->myFaceUsages.Value(aFaceDef.Usages.Value(0).Index);
 
     if (aFaceUsage.OuterWireUsage.IsValid())
     {
