@@ -43,7 +43,6 @@ class TCollection_AsciiString;
 class BRepGraph_Builder;
 class BRepGraph_History;
 class BRepGraph_Analyze;
-class BRepGraph_Reconstruct;
 class BRepGraph_Mutator;
 
 //! @brief Bidirectional topology-geometry graph over TopoDS / BRep.
@@ -159,7 +158,6 @@ private:
   friend class BRepGraph_Builder;
   friend class BRepGraph_History;
   friend class BRepGraph_Analyze;
-  friend class BRepGraph_Reconstruct;
   friend class BRepGraph_Mutator;
   friend class BRepGraph_BackRefManager;
   friend class BRepGraphAlgo_BndLib;

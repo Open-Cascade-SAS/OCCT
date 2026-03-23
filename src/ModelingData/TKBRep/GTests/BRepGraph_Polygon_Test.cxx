@@ -17,7 +17,7 @@
 #include <BRep_Tool.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_DefsView.hxx>
-#include <BRepGraph_Reconstruct.hxx>
+#include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_TopoNode.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -65,7 +65,7 @@ TEST(BRepGraph_PolygonTest, MultiTriangulation_Roundtrip_PreservesAll)
   for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
   {
     const BRepGraph_TopoNode::FaceDef& aFaceDef = aGraph.Defs().Face(aFaceIdx);
-    TopoDS_Shape aReconFace                     = BRepGraph_Reconstruct::Node(aGraph, aFaceDef.Id);
+    TopoDS_Shape aReconFace                     = aGraph.Shapes().Reconstruct( aFaceDef.Id);
     ASSERT_FALSE(aReconFace.IsNull());
 
     TopLoc_Location                  aLoc;
@@ -116,7 +116,7 @@ TEST(BRepGraph_PolygonTest, Polygon3D_Captured_WhenPresent)
     const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(anEdgeIdx);
     if (anEdge.Polygon3D.IsNull())
       continue;
-    TopoDS_Shape aReconEdge = BRepGraph_Reconstruct::Node(aGraph, anEdge.Id);
+    TopoDS_Shape aReconEdge = aGraph.Shapes().Reconstruct( anEdge.Id);
     ASSERT_FALSE(aReconEdge.IsNull());
     TopLoc_Location        aPolyLoc;
     Handle(Poly_Polygon3D) aPoly = BRep_Tool::Polygon3D(TopoDS::Edge(aReconEdge), aPolyLoc);
@@ -175,7 +175,7 @@ TEST(BRepGraph_PolygonTest, PolyOnTri_Roundtrip_PreservedOnReconstruct)
 
   // Reconstruct solid and verify polygon-on-triangulation is re-attached.
   BRepGraph_NodeId aSolidDefId = BRepGraph_NodeId::Solid(0);
-  TopoDS_Shape     aReconSolid = BRepGraph_Reconstruct::Node(aGraph, aSolidDefId);
+  TopoDS_Shape     aReconSolid = aGraph.Shapes().Reconstruct( aSolidDefId);
   ASSERT_FALSE(aReconSolid.IsNull());
 
   int aNbReconPolyOnTri = 0;
