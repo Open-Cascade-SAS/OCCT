@@ -60,20 +60,6 @@ static int countUnique(const TopoDS_Shape& theShape, TopAbs_ShapeEnum theType)
 }
 
 // =============================================================================
-// Helper: count total (non-unique) sub-shape occurrences via TopExp_Explorer
-// =============================================================================
-
-static int countNonUnique(const TopoDS_Shape& theShape, TopAbs_ShapeEnum theType)
-{
-  int aCount = 0;
-  for (TopExp_Explorer anExp(theShape, theType); anExp.More(); anExp.Next())
-  {
-    ++aCount;
-  }
-  return aCount;
-}
-
-// =============================================================================
 // Sphere tests
 // =============================================================================
 

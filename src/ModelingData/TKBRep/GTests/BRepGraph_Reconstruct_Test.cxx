@@ -226,7 +226,6 @@ TEST(BRepGraphReconstructTest, Edge_HasCurve_NonNull)
 
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.Defs().Edge(anEdgeIdx);
     if (BRepGraph_Tool::Edge::Degenerated(aGraph, anEdgeIdx))
       continue;
 
@@ -402,7 +401,6 @@ TEST(BRepGraphReconstructTest, Reconstruct_Edge_ValidShape)
   // Find a non-degenerate edge.
   for (int anIdx = 0; anIdx < aGraph.Defs().NbEdges(); ++anIdx)
   {
-    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.Defs().Edge(anIdx);
     if (BRepGraph_Tool::Edge::Degenerated(aGraph, anIdx))
       continue;
 

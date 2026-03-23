@@ -156,7 +156,6 @@ TEST_F(BRepGraphTest, FindPCurve_ValidPair)
       const BRepGraphInc::CoEdgeRef&       aCR     = aWireDef.CoEdgeRefs.Value(aCoEdgeIter);
       const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = myGraph.Defs().CoEdge(aCR.CoEdgeIdx);
       BRepGraph_NodeId                     anEdgeId(BRepGraph_NodeId::Kind::Edge, aCoEdge.EdgeIdx);
-      const BRepGraph_TopoNode::EdgeDef&   anEdge = myGraph.Defs().Edge(aCoEdge.EdgeIdx);
       if (BRepGraph_Tool::Edge::Degenerated(myGraph, aCoEdge.EdgeIdx))
         continue;
       const BRepGraphInc::CoEdgeEntity* aPCurveEntry =
@@ -483,9 +482,7 @@ TEST_F(BRepGraphTest, ReconstructFace_AfterEdgeReplace_ContainsNewEdge)
   BRepGraph_NodeId aNewEdgeId(BRepGraph_NodeId::Kind::Edge, aNewIdx);
 
   // Get 3D curve handles from graph for old/new edges.
-  const BRepGraph_TopoNode::EdgeDef& aNewEdgeNode  = myGraph.Defs().Edge(aNewIdx);
-  const BRepGraph_TopoNode::EdgeDef& anOldEdgeNode = myGraph.Defs().Edge(anOldEdgeId.Index);
-  occ::handle<Geom_Curve>            aNewCurve     = BRepGraph_Tool::Edge::Curve(myGraph, aNewIdx);
+  occ::handle<Geom_Curve> aNewCurve  = BRepGraph_Tool::Edge::Curve(myGraph, aNewIdx);
   occ::handle<Geom_Curve> anOldCurve = BRepGraph_Tool::Edge::Curve(myGraph, anOldEdgeId.Index);
 
   myGraph.Mut().ReplaceEdgeInWire(0, anOldEdgeId, aNewEdgeId, false);
