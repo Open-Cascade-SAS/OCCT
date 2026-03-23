@@ -19,6 +19,7 @@
 #include <BRepFill_PipeShell.hxx>
 #include <BRepFill_TransitionStyle.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopExp_Explorer.hxx>
 #include <NCollection_List.hxx>
 #include <BOPAlgo_Tools.hxx>
 #include <BRepLib_FindSurface.hxx>
@@ -456,8 +457,7 @@ void BRepFill_AdvancedEvolved::Perform(const TopoDS_Wire& theSpine,
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aMFLids;
   TopExp::MapShapes(myTopBottom, TopAbs_FACE, aMFLids);
 
-  TopExp_Explorer anExp(myResult, TopAbs_FACE);
-  for (; anExp.More(); anExp.Next())
+  for (TopExp_Explorer anExp(myResult, TopAbs_FACE); anExp.More(); anExp.Next())
   {
     BRep_Builder aBB;
     if (aShell.IsNull())
