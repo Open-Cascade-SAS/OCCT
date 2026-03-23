@@ -128,35 +128,35 @@ double BiTgte_CurveOnVertex::Period() const
 
 //=================================================================================================
 
-gp_Pnt BiTgte_CurveOnVertex::EvalD0(double) const
+gp_Pnt BiTgte_CurveOnVertex::EvalD0(const double) const
 {
   return myPnt;
 }
 
 //=================================================================================================
 
-Geom_Curve::ResD1 BiTgte_CurveOnVertex::EvalD1(double) const
+Geom_Curve::ResD1 BiTgte_CurveOnVertex::EvalD1(const double) const
 {
   throw Standard_NotImplemented("BiTgte_CurveOnVertex");
 }
 
 //=================================================================================================
 
-Geom_Curve::ResD2 BiTgte_CurveOnVertex::EvalD2(double) const
+Geom_Curve::ResD2 BiTgte_CurveOnVertex::EvalD2(const double) const
 {
   throw Standard_NotImplemented("BiTgte_CurveOnVertex");
 }
 
 //=================================================================================================
 
-Geom_Curve::ResD3 BiTgte_CurveOnVertex::EvalD3(double) const
+Geom_Curve::ResD3 BiTgte_CurveOnVertex::EvalD3(const double) const
 {
   throw Standard_NotImplemented("BiTgte_CurveOnVertex");
 }
 
 //=================================================================================================
 
-gp_Vec BiTgte_CurveOnVertex::EvalDN(double, int) const
+gp_Vec BiTgte_CurveOnVertex::EvalDN(const double, const int) const
 {
   throw Standard_NotImplemented("BiTgte_CurveOnVertex");
 }

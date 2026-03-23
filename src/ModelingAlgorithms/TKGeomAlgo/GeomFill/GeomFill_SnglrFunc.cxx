@@ -97,20 +97,20 @@ double GeomFill_SnglrFunc::Period() const
   return myHCurve->Period();
 }
 
-gp_Pnt GeomFill_SnglrFunc::EvalD0(double theU) const
+gp_Pnt GeomFill_SnglrFunc::EvalD0(const double theU) const
 {
   const Geom_Curve::ResD2 aRes = myHCurve->EvalD2(theU);
   return gp_Pnt((aRes.D1 * ratio).Crossed(aRes.D2).XYZ());
 }
 
-Geom_Curve::ResD1 GeomFill_SnglrFunc::EvalD1(double theU) const
+Geom_Curve::ResD1 GeomFill_SnglrFunc::EvalD1(const double theU) const
 {
   const Geom_Curve::ResD3 aRes = myHCurve->EvalD3(theU);
   const gp_Vec            aDC  = aRes.D1 * ratio;
   return {gp_Pnt(aDC.Crossed(aRes.D2).XYZ()), aDC.Crossed(aRes.D3)};
 }
 
-Geom_Curve::ResD2 GeomFill_SnglrFunc::EvalD2(double theU) const
+Geom_Curve::ResD2 GeomFill_SnglrFunc::EvalD2(const double theU) const
 {
   const Geom_Curve::ResD3 aRes = myHCurve->EvalD3(theU);
   const gp_Vec            aD4  = myHCurve->EvalDN(theU, 4);
@@ -119,7 +119,7 @@ Geom_Curve::ResD2 GeomFill_SnglrFunc::EvalD2(double theU) const
           (aRes.D2.Crossed(aRes.D3) + aRes.D1.Crossed(aD4)) * ratio};
 }
 
-Geom_Curve::ResD3 GeomFill_SnglrFunc::EvalD3(double theU) const
+Geom_Curve::ResD3 GeomFill_SnglrFunc::EvalD3(const double theU) const
 {
   const Geom_Curve::ResD3 aRes = myHCurve->EvalD3(theU);
   const gp_Vec            aD4  = myHCurve->EvalDN(theU, 4);
@@ -130,7 +130,7 @@ Geom_Curve::ResD3 GeomFill_SnglrFunc::EvalD3(double theU) const
           (aRes.D1.Crossed(aD5) + aRes.D2.Crossed(aD4) * 2) * ratio};
 }
 
-gp_Vec GeomFill_SnglrFunc::EvalDN(double theU, int theN) const
+gp_Vec GeomFill_SnglrFunc::EvalDN(const double theU, const int theN) const
 {
   Standard_RangeError_Raise_if(theN < 1, "Exception: Geom2d_OffsetCurve::DN(). N<1.");
 

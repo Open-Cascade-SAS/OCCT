@@ -262,7 +262,7 @@ int Adaptor2d_Curve2d::NbSamples() const
 
 //=================================================================================================
 
-gp_Pnt2d Adaptor2d_Curve2d::EvalD0(double theU) const
+gp_Pnt2d Adaptor2d_Curve2d::EvalD0(const double theU) const
 {
   gp_Pnt2d aP;
   D0(theU, aP);
@@ -271,7 +271,7 @@ gp_Pnt2d Adaptor2d_Curve2d::EvalD0(double theU) const
 
 //=================================================================================================
 
-Geom2d_Curve::ResD1 Adaptor2d_Curve2d::EvalD1(double theU) const
+Geom2d_Curve::ResD1 Adaptor2d_Curve2d::EvalD1(const double theU) const
 {
   Geom2d_Curve::ResD1 aResult;
   D1(theU, aResult.Point, aResult.D1);
@@ -280,7 +280,7 @@ Geom2d_Curve::ResD1 Adaptor2d_Curve2d::EvalD1(double theU) const
 
 //=================================================================================================
 
-Geom2d_Curve::ResD2 Adaptor2d_Curve2d::EvalD2(double theU) const
+Geom2d_Curve::ResD2 Adaptor2d_Curve2d::EvalD2(const double theU) const
 {
   Geom2d_Curve::ResD2 aResult;
   D2(theU, aResult.Point, aResult.D1, aResult.D2);
@@ -289,7 +289,7 @@ Geom2d_Curve::ResD2 Adaptor2d_Curve2d::EvalD2(double theU) const
 
 //=================================================================================================
 
-Geom2d_Curve::ResD3 Adaptor2d_Curve2d::EvalD3(double theU) const
+Geom2d_Curve::ResD3 Adaptor2d_Curve2d::EvalD3(const double theU) const
 {
   Geom2d_Curve::ResD3 aResult;
   D3(theU, aResult.Point, aResult.D1, aResult.D2, aResult.D3);
@@ -298,7 +298,7 @@ Geom2d_Curve::ResD3 Adaptor2d_Curve2d::EvalD3(double theU) const
 
 //=================================================================================================
 
-gp_Vec2d Adaptor2d_Curve2d::EvalDN(double theU, int theN) const
+gp_Vec2d Adaptor2d_Curve2d::EvalDN(const double theU, const int theN) const
 {
   return DN(theU, theN);
 }

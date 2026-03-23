@@ -154,23 +154,23 @@ public:
 
   //! Computes the point of parameter U on the curve.
   //! Raises an exception on failure.
-  [[nodiscard]] Standard_EXPORT virtual gp_Pnt2d EvalD0(double U) const;
+  [[nodiscard]] Standard_EXPORT virtual gp_Pnt2d EvalD0(const double theU) const;
 
   //! Computes the point and first derivative at parameter U.
   //! Raises an exception on failure.
-  [[nodiscard]] Standard_EXPORT virtual Geom2d_Curve::ResD1 EvalD1(double U) const;
+  [[nodiscard]] Standard_EXPORT virtual Geom2d_Curve::ResD1 EvalD1(const double theU) const;
 
   //! Computes the point and first two derivatives at parameter U.
   //! Raises an exception on failure.
-  [[nodiscard]] Standard_EXPORT virtual Geom2d_Curve::ResD2 EvalD2(double U) const;
+  [[nodiscard]] Standard_EXPORT virtual Geom2d_Curve::ResD2 EvalD2(const double theU) const;
 
   //! Computes the point and first three derivatives at parameter U.
   //! Raises an exception on failure.
-  [[nodiscard]] Standard_EXPORT virtual Geom2d_Curve::ResD3 EvalD3(double U) const;
+  [[nodiscard]] Standard_EXPORT virtual Geom2d_Curve::ResD3 EvalD3(const double theU) const;
 
   //! Computes the Nth derivative at parameter U.
   //! Raises an exception on failure.
-  [[nodiscard]] Standard_EXPORT virtual gp_Vec2d EvalDN(double U, int N) const;
+  [[nodiscard]] Standard_EXPORT virtual gp_Vec2d EvalDN(const double theU, const int theN) const;
 
   Standard_EXPORT ~Adaptor2d_Curve2d() override;
 };

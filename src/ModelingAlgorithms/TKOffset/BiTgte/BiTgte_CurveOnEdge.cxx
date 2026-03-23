@@ -168,7 +168,7 @@ double BiTgte_CurveOnEdge::Period() const
 
 //=================================================================================================
 
-gp_Pnt BiTgte_CurveOnEdge::EvalD0(double theU) const
+gp_Pnt BiTgte_CurveOnEdge::EvalD0(const double theU) const
 {
   GeomAPI_ProjectPointOnCurve aProjector;
   gp_Pnt                      aP = myConF->Value(theU);
@@ -178,28 +178,28 @@ gp_Pnt BiTgte_CurveOnEdge::EvalD0(double theU) const
 
 //=================================================================================================
 
-Geom_Curve::ResD1 BiTgte_CurveOnEdge::EvalD1(double) const
+Geom_Curve::ResD1 BiTgte_CurveOnEdge::EvalD1(const double) const
 {
   throw Standard_NotImplemented("BiTgte_CurveOnEdge");
 }
 
 //=================================================================================================
 
-Geom_Curve::ResD2 BiTgte_CurveOnEdge::EvalD2(double) const
+Geom_Curve::ResD2 BiTgte_CurveOnEdge::EvalD2(const double) const
 {
   throw Standard_NotImplemented("BiTgte_CurveOnEdge");
 }
 
 //=================================================================================================
 
-Geom_Curve::ResD3 BiTgte_CurveOnEdge::EvalD3(double) const
+Geom_Curve::ResD3 BiTgte_CurveOnEdge::EvalD3(const double) const
 {
   throw Standard_NotImplemented("BiTgte_CurveOnEdge");
 }
 
 //=================================================================================================
 
-gp_Vec BiTgte_CurveOnEdge::EvalDN(double, int) const
+gp_Vec BiTgte_CurveOnEdge::EvalDN(const double, const int) const
 {
   throw Standard_NotImplemented("BiTgte_CurveOnEdge");
 }

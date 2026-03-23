@@ -200,7 +200,7 @@ occ::handle<Geom_OffsetCurve> GeomAdaptor_TransformedCurve::OffsetCurve() const
 
 //==================================================================================================
 
-gp_Pnt GeomAdaptor_TransformedCurve::EvalD0(double theU) const
+gp_Pnt GeomAdaptor_TransformedCurve::EvalD0(const double theU) const
 {
   gp_Pnt aP;
   if (myConSurf.IsNull())
@@ -213,7 +213,7 @@ gp_Pnt GeomAdaptor_TransformedCurve::EvalD0(double theU) const
 
 //==================================================================================================
 
-Geom_Curve::ResD1 GeomAdaptor_TransformedCurve::EvalD1(double theU) const
+Geom_Curve::ResD1 GeomAdaptor_TransformedCurve::EvalD1(const double theU) const
 {
   Geom_Curve::ResD1 aRes;
   if (myConSurf.IsNull())
@@ -227,7 +227,7 @@ Geom_Curve::ResD1 GeomAdaptor_TransformedCurve::EvalD1(double theU) const
 
 //==================================================================================================
 
-Geom_Curve::ResD2 GeomAdaptor_TransformedCurve::EvalD2(double theU) const
+Geom_Curve::ResD2 GeomAdaptor_TransformedCurve::EvalD2(const double theU) const
 {
   Geom_Curve::ResD2 aRes;
   if (myConSurf.IsNull())
@@ -242,7 +242,7 @@ Geom_Curve::ResD2 GeomAdaptor_TransformedCurve::EvalD2(double theU) const
 
 //==================================================================================================
 
-Geom_Curve::ResD3 GeomAdaptor_TransformedCurve::EvalD3(double theU) const
+Geom_Curve::ResD3 GeomAdaptor_TransformedCurve::EvalD3(const double theU) const
 {
   Geom_Curve::ResD3 aRes;
   if (myConSurf.IsNull())
@@ -258,7 +258,7 @@ Geom_Curve::ResD3 GeomAdaptor_TransformedCurve::EvalD3(double theU) const
 
 //==================================================================================================
 
-gp_Vec GeomAdaptor_TransformedCurve::EvalDN(double theU, int theN) const
+gp_Vec GeomAdaptor_TransformedCurve::EvalDN(const double theU, const int theN) const
 {
   gp_Vec aV;
   if (myConSurf.IsNull())

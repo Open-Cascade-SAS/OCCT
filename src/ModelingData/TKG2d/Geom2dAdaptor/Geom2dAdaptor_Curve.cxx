@@ -688,8 +688,9 @@ void Geom2dAdaptor_Curve::D0(const double U, gp_Pnt2d& P) const
 
 //=================================================================================================
 
-gp_Pnt2d Geom2dAdaptor_Curve::EvalD0(double U) const
+gp_Pnt2d Geom2dAdaptor_Curve::EvalD0(const double theU) const
 {
+  const double U = theU;
   gp_Pnt2d P;
   switch (myTypeCurve)
   {
@@ -777,8 +778,9 @@ void Geom2dAdaptor_Curve::D1(const double U, gp_Pnt2d& P, gp_Vec2d& V) const
 
 //=================================================================================================
 
-Geom2d_Curve::ResD1 Geom2dAdaptor_Curve::EvalD1(double U) const
+Geom2d_Curve::ResD1 Geom2dAdaptor_Curve::EvalD1(const double theU) const
 {
+  const double U = theU;
   Geom2d_Curve::ResD1 aResult;
   switch (myTypeCurve)
   {
@@ -868,8 +870,9 @@ void Geom2dAdaptor_Curve::D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d
 
 //=================================================================================================
 
-Geom2d_Curve::ResD2 Geom2dAdaptor_Curve::EvalD2(double U) const
+Geom2d_Curve::ResD2 Geom2dAdaptor_Curve::EvalD2(const double theU) const
 {
+  const double U = theU;
   Geom2d_Curve::ResD2 aResult;
   switch (myTypeCurve)
   {
@@ -966,8 +969,9 @@ void Geom2dAdaptor_Curve::D3(const double U,
 
 //=================================================================================================
 
-Geom2d_Curve::ResD3 Geom2dAdaptor_Curve::EvalD3(double U) const
+Geom2d_Curve::ResD3 Geom2dAdaptor_Curve::EvalD3(const double theU) const
 {
+  const double U = theU;
   Geom2d_Curve::ResD3 aResult;
   switch (myTypeCurve)
   {
@@ -1075,8 +1079,10 @@ gp_Vec2d Geom2dAdaptor_Curve::DN(const double U, const int N) const
 
 //=================================================================================================
 
-gp_Vec2d Geom2dAdaptor_Curve::EvalDN(double U, int N) const
+gp_Vec2d Geom2dAdaptor_Curve::EvalDN(const double theU, const int theN) const
 {
+  const double U = theU;
+  const int    N = theN;
   switch (myTypeCurve)
   {
     case GeomAbs_Line:

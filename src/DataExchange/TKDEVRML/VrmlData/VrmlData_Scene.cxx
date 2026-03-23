@@ -200,7 +200,7 @@ VrmlData_ErrorStatus VrmlData_Scene::readLine(VrmlData_InBuffer& theBuffer)
     // Clear the error.
     // We will fix it here below.
     theBuffer.Input.clear();
-    size_t anInd = aNbChars - 1;
+    std::streamsize anInd = aNbChars - 1;
     for (; anInd > 0; anInd--)
     {
       char aChar = theBuffer.Line[anInd];
@@ -219,14 +219,14 @@ VrmlData_ErrorStatus VrmlData_Scene::readLine(VrmlData_InBuffer& theBuffer)
 
   // Check the reading status.
   theBuffer.LineCount++;
-  const int stat = theBuffer.Input.rdstate();
-  if (stat & std::ios::badbit)
+  const std::ios::iostate aState = theBuffer.Input.rdstate();
+  if (aState & std::ios::badbit)
   {
     aStatus = VrmlData_UnrecoverableError;
   }
-  else if (stat & std::ios::failbit)
+  else if (aState & std::ios::failbit)
   {
-    if (stat & std::ios::eofbit)
+    if (aState & std::ios::eofbit)
     {
       aStatus = VrmlData_EndOfFile;
     }
