@@ -7,7 +7,6 @@ set(OCCT_BRepTopAdaptor_FILES
   BRepTopAdaptor_FClass2d.hxx
   BRepTopAdaptor_HVertex.cxx
   BRepTopAdaptor_HVertex.hxx
-  BRepTopAdaptor_HVertex.lxx
 
   BRepTopAdaptor_Tool.cxx
   BRepTopAdaptor_Tool.hxx
