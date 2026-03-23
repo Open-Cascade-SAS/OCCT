@@ -13,6 +13,10 @@
 
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
+#include <BRepCheck_Analyzer.hxx>
+#include <BRepGraphCheck_Analyzer.hxx>
+
+#include <chrono>
 #include <BRepBuilderAPI_Copy.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_DefsView.hxx>
@@ -1929,6 +1933,122 @@ TEST(BRepGraphAlgo_DeduplicateTest, Pump_FullDedup_BackRefsAndNullify)
   EXPECT_TRUE(isWritten) << "Failed to write " << anOutPath;
 
   std::cout << "  Written deduped shape to: " << anOutPath << "\n";
+
+  // -------------------------------------------------------------------------
+  // Analyzer comparison: BRepCheck_Analyzer vs BRepGraphCheck_Analyzer
+  // Run on both original and deduped shapes; compare validity and timing.
+  // -------------------------------------------------------------------------
+
+  // --- BRepCheck_Analyzer (legacy) on original shape ---
+  auto aLegacyOrigStart = std::chrono::high_resolution_clock::now();
+  BRepCheck_Analyzer aLegacyOrig(aShape, true);
+  auto aLegacyOrigEnd = std::chrono::high_resolution_clock::now();
+  const bool aLegacyOrigValid = aLegacyOrig.IsValid();
+  const double aLegacyOrigMs =
+    std::chrono::duration<double, std::milli>(aLegacyOrigEnd - aLegacyOrigStart).count();
+
+  // --- BRepCheck_Analyzer (legacy) on deduped shape ---
+  auto aLegacyDedupStart = std::chrono::high_resolution_clock::now();
+  BRepCheck_Analyzer aLegacyDedup(aFinalShape, true);
+  auto aLegacyDedupEnd = std::chrono::high_resolution_clock::now();
+  const bool aLegacyDedupValid = aLegacyDedup.IsValid();
+  const double aLegacyDedupMs =
+    std::chrono::duration<double, std::milli>(aLegacyDedupEnd - aLegacyDedupStart).count();
+
+  // --- BRepGraphCheck_Analyzer on original shape (serial) ---
+  BRepGraph aGraphOrig;
+  aGraphOrig.Build(aShape);
+  ASSERT_TRUE(aGraphOrig.IsDone());
+
+  auto aGraphOrigStart = std::chrono::high_resolution_clock::now();
+  BRepGraphCheck_Analyzer aGraphCheckOrig(aGraphOrig);
+  aGraphCheckOrig.SetGeometricControls(true);
+  aGraphCheckOrig.Perform();
+  auto aGraphOrigEnd = std::chrono::high_resolution_clock::now();
+  const bool aGraphOrigValid = aGraphCheckOrig.IsValid();
+  const double aGraphOrigMs =
+    std::chrono::duration<double, std::milli>(aGraphOrigEnd - aGraphOrigStart).count();
+
+  // --- BRepGraphCheck_Analyzer on original shape (parallel) ---
+  auto aGraphOrigParStart = std::chrono::high_resolution_clock::now();
+  BRepGraphCheck_Analyzer aGraphCheckOrigPar(aGraphOrig);
+  aGraphCheckOrigPar.SetGeometricControls(true);
+  aGraphCheckOrigPar.SetParallel(true);
+  aGraphCheckOrigPar.Perform();
+  auto aGraphOrigParEnd = std::chrono::high_resolution_clock::now();
+  const bool aGraphOrigParValid = aGraphCheckOrigPar.IsValid();
+  const double aGraphOrigParMs =
+    std::chrono::duration<double, std::milli>(aGraphOrigParEnd - aGraphOrigParStart).count();
+
+  // --- BRepGraphCheck_Analyzer on deduped shape (serial, reuse aGraph2) ---
+  auto aGraphDedupStart = std::chrono::high_resolution_clock::now();
+  BRepGraphCheck_Analyzer aGraphCheckDedup(aGraph2);
+  aGraphCheckDedup.SetGeometricControls(true);
+  aGraphCheckDedup.Perform();
+  auto aGraphDedupEnd = std::chrono::high_resolution_clock::now();
+  const bool aGraphDedupValid = aGraphCheckDedup.IsValid();
+  const double aGraphDedupMs =
+    std::chrono::duration<double, std::milli>(aGraphDedupEnd - aGraphDedupStart).count();
+
+  // --- BRepGraphCheck_Analyzer on deduped shape (parallel) ---
+  auto aGraphDedupParStart = std::chrono::high_resolution_clock::now();
+  BRepGraphCheck_Analyzer aGraphCheckDedupPar(aGraph2);
+  aGraphCheckDedupPar.SetGeometricControls(true);
+  aGraphCheckDedupPar.SetParallel(true);
+  aGraphCheckDedupPar.Perform();
+  auto aGraphDedupParEnd = std::chrono::high_resolution_clock::now();
+  const bool aGraphDedupParValid = aGraphCheckDedupPar.IsValid();
+  const double aGraphDedupParMs =
+    std::chrono::duration<double, std::milli>(aGraphDedupParEnd - aGraphDedupParStart).count();
+
+  // Print comparison table.
+  std::cout << "\n  === Analyzer comparison ===\n"
+            << "                                  Valid    Time (ms)\n"
+            << "  BRepCheck       (original):      " << (aLegacyOrigValid ? "yes" : "no ")
+            << "    " << aLegacyOrigMs << "\n"
+            << "  BRepCheck       (deduped):       " << (aLegacyDedupValid ? "yes" : "no ")
+            << "    " << aLegacyDedupMs << "\n"
+            << "  BRepGraph serial  (original):    " << (aGraphOrigValid ? "yes" : "no ")
+            << "    " << aGraphOrigMs << "\n"
+            << "  BRepGraph parallel (original):   " << (aGraphOrigParValid ? "yes" : "no ")
+            << "    " << aGraphOrigParMs << "\n"
+            << "  BRepGraph serial  (deduped):     " << (aGraphDedupValid ? "yes" : "no ")
+            << "    " << aGraphDedupMs << "\n"
+            << "  BRepGraph parallel (deduped):    " << (aGraphDedupParValid ? "yes" : "no ")
+            << "    " << aGraphDedupParMs << "\n"
+            << "  Speedup vs BRepCheck (serial):   "
+            << (aGraphOrigMs > 0.0 ? aLegacyOrigMs / aGraphOrigMs : 0.0) << "x\n"
+            << "  Speedup vs BRepCheck (parallel): "
+            << (aGraphOrigParMs > 0.0 ? aLegacyOrigMs / aGraphOrigParMs : 0.0) << "x\n"
+            << "  Parallel speedup (orig):         "
+            << (aGraphOrigParMs > 0.0 ? aGraphOrigMs / aGraphOrigParMs : 0.0) << "x\n"
+            << "  Parallel speedup (dedup):        "
+            << (aGraphDedupParMs > 0.0 ? aGraphDedupMs / aGraphDedupParMs : 0.0) << "x\n"
+            << "==========================\n";
+
+  // Validity must agree across all variants.
+  EXPECT_EQ(aGraphOrigValid, aLegacyOrigValid)
+    << "BRepGraphCheck serial and BRepCheck should agree on original shape";
+  EXPECT_EQ(aGraphOrigParValid, aLegacyOrigValid)
+    << "BRepGraphCheck parallel and BRepCheck should agree on original shape";
+  EXPECT_EQ(aGraphDedupValid, aLegacyDedupValid)
+    << "BRepGraphCheck serial and BRepCheck should agree on deduped shape";
+  EXPECT_EQ(aGraphDedupParValid, aLegacyDedupValid)
+    << "BRepGraphCheck parallel and BRepCheck should agree on deduped shape";
+
+  // Parallel must produce same validity as serial.
+  EXPECT_EQ(aGraphOrigParValid, aGraphOrigValid)
+    << "Parallel and serial must agree on original shape";
+  EXPECT_EQ(aGraphDedupParValid, aGraphDedupValid)
+    << "Parallel and serial must agree on deduped shape";
+
+  // Dedup must not introduce new invalidity.
+  EXPECT_EQ(aLegacyDedupValid, aLegacyOrigValid)
+    << "Dedup must not invalidate the shape (BRepCheck)";
+  EXPECT_EQ(aGraphDedupValid, aGraphOrigValid)
+    << "Dedup must not invalidate the shape (BRepGraphCheck serial)";
+  EXPECT_EQ(aGraphDedupParValid, aGraphOrigParValid)
+    << "Dedup must not invalidate the shape (BRepGraphCheck parallel)";
 }
 
 // ---------------------------------------------------------------------------
