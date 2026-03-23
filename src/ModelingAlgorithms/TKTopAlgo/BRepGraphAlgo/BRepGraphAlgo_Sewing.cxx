@@ -30,6 +30,8 @@
 #include <NCollection_LocalArray.hxx>
 #include <NCollection_Map.hxx>
 #include <NCollection_OrderedDataMap.hxx>
+#include <NCollection_UBTree.hxx>
+#include <NCollection_UBTreeFiller.hxx>
 #include <NCollection_Vector.hxx>
 #include <OSD_Parallel.hxx>
 #include <Precision.hxx>
@@ -57,6 +59,35 @@ constexpr double THE_MAX_CHORD_RATIO       = 2.0; // maximum chord-length ratio 
 constexpr double THE_HIGH_CONFIDENCE_RATIO =
   0.01;                                       // forward-distance threshold to skip reverse pass
 constexpr int THE_INIT_VECTOR_CAPACITY = 256; // initial capacity for scratch vectors
+
+// ---------------------------------------------------------------------------
+// UBTree selector for vertex bounding boxes (used in cutAtIntersections).
+// Each thread creates its own instance, so this is safe in parallel loops.
+// ---------------------------------------------------------------------------
+
+class VtxBoxSelector : public NCollection_UBTree<int, Bnd_Box>::Selector
+{
+public:
+  void SetCurrentBox(const Bnd_Box& theBox)
+  {
+    myBox = theBox;
+    myResults.Clear();
+  }
+
+  bool Reject(const Bnd_Box& theBox) const override { return myBox.IsOut(theBox); }
+
+  bool Accept(const int& theIdx) override
+  {
+    myResults.Append(theIdx);
+    return true;
+  }
+
+  const NCollection_Vector<int>& Results() const { return myResults; }
+
+private:
+  Bnd_Box                 myBox;
+  NCollection_Vector<int> myResults;
+};
 
 // ---------------------------------------------------------------------------
 // Union-Find with path compression: O(n * alpha(n)) ~ O(n).
@@ -108,10 +139,10 @@ NCollection_Array1<BRepGraph_NodeId> findFreeEdges(const BRepGraph& theGraph)
 // Phase 2: Merge coincident free-edge vertices.
 // ---------------------------------------------------------------------------
 
-void assembleVertices(BRepGraph&                              theGraph,
+void assembleVertices(BRepGraph&                                  theGraph,
                       const NCollection_Array1<BRepGraph_NodeId>& theFreeEdges,
-                      double                                  theTolerance,
-                      const Handle(NCollection_IncAllocator)& theTmpAlloc)
+                      double                                      theTolerance,
+                      const Handle(NCollection_IncAllocator)&     theTmpAlloc)
 {
   const int               aNbFreeEdges = theFreeEdges.Length();
   NCollection_Vector<int> aFreeVertexIndices(THE_INIT_VECTOR_CAPACITY, theTmpAlloc);
@@ -227,10 +258,10 @@ void assembleVertices(BRepGraph&                              theGraph,
 // Phase 3 (optional): Cut edges at T-vertex intersections.
 // ---------------------------------------------------------------------------
 
-void cutAtIntersections(BRepGraph&                               theGraph,
-                        NCollection_Array1<BRepGraph_NodeId>&    theFreeEdges,
-                        const BRepGraphAlgo_Sewing::Options&     theOptions,
-                        const Handle(NCollection_IncAllocator)&  theTmpAlloc)
+void cutAtIntersections(BRepGraph&                              theGraph,
+                        NCollection_Array1<BRepGraph_NodeId>&   theFreeEdges,
+                        const BRepGraphAlgo_Sewing::Options&    theOptions,
+                        const Handle(NCollection_IncAllocator)& theTmpAlloc)
 {
   const int aNbFreeEdges = theFreeEdges.Length();
   if (aNbFreeEdges == 0)
@@ -269,6 +300,20 @@ void cutAtIntersections(BRepGraph&                               theGraph,
     aVtxPoints.SetValue(aVtxIter, theGraph.Defs().Vertex(aVtxIdx).Point);
   }
 
+  // Build UBTree on vertex point-boxes (no enlargement).
+  // Edge BBoxes are already enlarged by tolerance before querying, so the tree overlap
+  // test (edgeBox vs vtxPointBox) is equivalent to the original point-in-box test.
+  // O(N log N) construction; replaces the O(E*V) brute-force inner loop.
+  NCollection_UBTree<int, Bnd_Box>       aVtxTree;
+  NCollection_UBTreeFiller<int, Bnd_Box> aTreeFiller(aVtxTree);
+  for (int aVtxIter = 0; aVtxIter < aNbVtx; ++aVtxIter)
+  {
+    Bnd_Box aVtxBox;
+    aVtxBox.Set(aVtxPoints.Value(aVtxIter));
+    aTreeFiller.Add(aVtxIter, aVtxBox);
+  }
+  aTreeFiller.Fill();
+
   struct SplitCandidate
   {
     double Param;
@@ -276,6 +321,7 @@ void cutAtIntersections(BRepGraph&                               theGraph,
   };
 
   // Step 2a (parallel): Find T-vertex split candidates per edge.
+  // Each thread creates its own VtxBoxSelector (UBTree::Select is const).
   NCollection_Array1<NCollection_Vector<SplitCandidate>> aPerEdgeSplits(1, aNbFreeEdges);
 
   OSD_Parallel::For(
@@ -312,20 +358,22 @@ void cutAtIntersections(BRepGraph&                               theGraph,
 
       NCollection_Vector<SplitCandidate> aSplits;
 
-      for (int aVtxIter = 0; aVtxIter < aNbVtx; ++aVtxIter)
+      // Query UBTree for vertices whose boxes overlap the edge box — O(log V).
+      VtxBoxSelector aSelector;
+      aSelector.SetCurrentBox(aEdgeBBox);
+      aVtxTree.Select(aSelector);
+
+      const NCollection_Vector<int>& aCandidates = aSelector.Results();
+      for (int aCandIter = 0; aCandIter < aCandidates.Length(); ++aCandIter)
       {
-        const int aVtxIdx = aFreeVtxList.Value(aVtxIter);
+        const int aVtxIter = aCandidates.Value(aCandIter);
+        const int aVtxIdx  = aFreeVtxList.Value(aVtxIter);
         if (aVtxIdx == aStartIdx || aVtxIdx == aEndIdx)
         {
           continue;
         }
 
         const gp_Pnt& aVtxPnt = aVtxPoints.Value(aVtxIter);
-
-        if (aEdgeBBox.IsOut(aVtxPnt))
-        {
-          continue;
-        }
 
         const ExtremaPC::Result& aRes =
           anExtPC.Perform(aVtxPnt, Precision::Confusion(), ExtremaPC::SearchMode::Min);
@@ -448,10 +496,10 @@ void cutAtIntersections(BRepGraph&                               theGraph,
 // Phase 4: Detect sewing candidates via BBox overlap.
 // ---------------------------------------------------------------------------
 
-void detectCandidates(BRepGraph&                                   theGraph,
-                      const NCollection_Array1<BRepGraph_NodeId>&  theFreeEdges,
-                      const BRepGraphAlgo_Sewing::Options&         theOptions,
-                      const Handle(NCollection_IncAllocator)&      theTmpAlloc)
+void detectCandidates(BRepGraph&                                  theGraph,
+                      const NCollection_Array1<BRepGraph_NodeId>& theFreeEdges,
+                      const BRepGraphAlgo_Sewing::Options&        theOptions,
+                      const Handle(NCollection_IncAllocator)&     theTmpAlloc)
 {
   const int aNbFreeEdges = theFreeEdges.Length();
   if (aNbFreeEdges == 0)
@@ -821,10 +869,10 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> matchFreeEdges
 // ---------------------------------------------------------------------------
 
 int mergeMatchedEdges(
-  BRepGraph&                                                                 theGraph,
-  const NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>>&   thePairs,
-  const BRepGraphAlgo_Sewing::Options&                                       theOptions,
-  NCollection_IndexedMap<int>&                                               theSewnEdgeIndices)
+  BRepGraph&                                                               theGraph,
+  const NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>>& thePairs,
+  const BRepGraphAlgo_Sewing::Options&                                     theOptions,
+  NCollection_IndexedMap<int>&                                             theSewnEdgeIndices)
 {
   int aSewnCount = 0;
 
@@ -876,9 +924,10 @@ int mergeMatchedEdges(
     }
 
     // 5. Record history.
+    static const TCollection_AsciiString THE_MERGE_LABEL("Sewing:MergeEdge");
     aReplacement.Clear();
     aReplacement.Append(anIdA);
-    theGraph.History().Record("Sewing:MergeEdge", anIdB, aReplacement);
+    theGraph.History().Record(THE_MERGE_LABEL, anIdB, aReplacement);
 
     ++aSewnCount;
   }
@@ -899,8 +948,8 @@ int mergeMatchedEdges(
 // Phase 7: Process sewn edges (tolerance consistency).
 // ---------------------------------------------------------------------------
 
-void processEdges(BRepGraph&                         theGraph,
-                  const NCollection_IndexedMap<int>& theSewnEdgeIndices,
+void processEdges(BRepGraph&                           theGraph,
+                  const NCollection_IndexedMap<int>&   theSewnEdgeIndices,
                   const BRepGraphAlgo_Sewing::Options& theOptions)
 {
   const int aNbSewn = theSewnEdgeIndices.Extent();
@@ -924,13 +973,11 @@ void processEdges(BRepGraph&                         theGraph,
       double aMaxVtxTol = 0.0;
       if (anEdge.StartVertexIdx >= 0)
       {
-        aMaxVtxTol =
-          std::max(aMaxVtxTol, theGraph.Defs().Vertex(anEdge.StartVertexIdx).Tolerance);
+        aMaxVtxTol = std::max(aMaxVtxTol, theGraph.Defs().Vertex(anEdge.StartVertexIdx).Tolerance);
       }
       if (anEdge.EndVertexIdx >= 0)
       {
-        aMaxVtxTol =
-          std::max(aMaxVtxTol, theGraph.Defs().Vertex(anEdge.EndVertexIdx).Tolerance);
+        aMaxVtxTol = std::max(aMaxVtxTol, theGraph.Defs().Vertex(anEdge.EndVertexIdx).Tolerance);
       }
 
       if (aMaxVtxTol > anEdge.Tolerance)
@@ -1014,11 +1061,11 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
 
   // Phase 1: Find free edges.
   NCollection_Array1<BRepGraph_NodeId> aFreeEdges = findFreeEdges(theGraph);
-  aResult.NbFreeEdgesBefore = aFreeEdges.Length();
+  aResult.NbFreeEdgesBefore                       = aFreeEdges.Length();
 
   if (aFreeEdges.IsEmpty())
   {
-    aResult.IsDone          = true;
+    aResult.IsDone           = true;
     aResult.NbFreeEdgesAfter = 0;
     return aResult;
   }
@@ -1083,7 +1130,7 @@ TopoDS_Shape BRepGraphAlgo_Sewing::Sew(const TopoDS_Shape& theShape, const Optio
     return TopoDS_Shape();
   }
 
-  BRepGraph aGraph;
+  BRepGraph                        aGraph;
   Handle(NCollection_IncAllocator) anAllocator = new NCollection_IncAllocator;
   aGraph.SetAllocator(anAllocator);
   aGraph.Build(theShape, theOptions.Parallel);
