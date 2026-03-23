@@ -17,18 +17,19 @@
 #include <BRepGraph.hxx>
 
 #include <Standard_DefineAlloc.hxx>
-#include <TopoDS_Shape.hxx>
 #include <gp_Trsf.hxx>
 
-//! @brief Graph-based shape transformation.
+//! @brief Graph-to-graph transformation.
 //!
-//! Applies a geometric transformation to a shape using pre-built BRepGraph
-//! data. Two modes:
-//! - theCopyGeom = false: applies transform as TopLoc_Location change (cheapest)
-//! - theCopyGeom = true: deep-copies geometry first, then transforms in-place
+//! Produces a new BRepGraph by copying and then applying a geometric
+//! transformation to vertex points and geometry node locations.
 //!
-//! This avoids the 5-7 traversals of BRepTools_Modifier used by
-//! BRepBuilderAPI_Transform.
+//! Two modes (matching BRepBuilderAPI_Transform semantics):
+//! - theCopyGeom = true  (geometry-level): deep-copy geometry, transform handles
+//!   in-place via Geom_Surface::Transform() etc., reset locations to identity.
+//!   Triangulations are invalidated.
+//! - theCopyGeom = false (root-level): light-copy with shared geometry, apply
+//!   transform via location modification only. Triangulations remain valid.
 //!
 //! ## Typical usage
 //! @code
@@ -36,35 +37,39 @@
 //!   aGraph.Build(myShape);
 //!   gp_Trsf aTrsf;
 //!   aTrsf.SetTranslation(gp_Vec(10.0, 0.0, 0.0));
-//!   TopoDS_Shape aTransformed = BRepGraphAlgo_Transform::Perform(aGraph, aTrsf);
+//!   BRepGraph aTransformed = BRepGraphAlgo_Transform::Perform(aGraph, aTrsf);
+//!   TopoDS_Shape aShape = aTransformed.Shapes().Shape();
 //! @endcode
 class BRepGraphAlgo_Transform
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Transform the entire shape represented by the graph.
+  //! Transform the entire graph.
   //! @param[in] theGraph    a pre-built BRepGraph (must have IsDone() == true)
   //! @param[in] theTrsf     the transformation to apply
   //! @param[in] theCopyGeom if true, geometry is deep-copied before transforming;
-  //!                        if false, transform is applied via TopLoc_Location only
-  //! @return the transformed shape
-  Standard_EXPORT static TopoDS_Shape Perform(const BRepGraph& theGraph,
-                                              const gp_Trsf&   theTrsf,
-                                              bool             theCopyGeom = true);
+  //!                        if false, light-copy then transform locations/points only
+  //! @return a new BRepGraph with the transformation applied
+  Standard_EXPORT static BRepGraph Perform(const BRepGraph& theGraph,
+                                           const gp_Trsf&   theTrsf,
+                                           bool             theCopyGeom = true);
 
-  //! Transform a single face from the graph.
+  //! Transform a single face sub-graph.
   //! @param[in] theGraph    a pre-built BRepGraph
-  //! @param[in] theFaceIdx  face index in the graph
+  //! @param[in] theFaceIdx  face definition index in the graph
   //! @param[in] theTrsf     the transformation to apply
   //! @param[in] theCopyGeom if true, geometry is deep-copied before transforming
-  //! @return the transformed face
-  Standard_EXPORT static TopoDS_Shape TransformFace(const BRepGraph& theGraph,
-                                                    int              theFaceIdx,
-                                                    const gp_Trsf&   theTrsf,
-                                                    bool             theCopyGeom = true);
+  //! @return a new BRepGraph containing only the specified face, transformed
+  Standard_EXPORT static BRepGraph TransformFace(const BRepGraph& theGraph,
+                                                 int              theFaceIdx,
+                                                 const gp_Trsf&   theTrsf,
+                                                 bool             theCopyGeom = true);
 
 private:
+  //! Apply location-only transform by multiplying into usage GlobalLocations.
+  static void applyLocationTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf);
+
   BRepGraphAlgo_Transform() = delete;
 };
 

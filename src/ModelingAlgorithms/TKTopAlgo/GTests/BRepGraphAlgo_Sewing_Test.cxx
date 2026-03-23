@@ -20,6 +20,7 @@
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepGProp.hxx>
 #include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraphAlgo_Copy.hxx>
 #include <BRepGraphAlgo_Sewing.hxx>
@@ -818,11 +819,11 @@ NCollection_Sequence<TopoDS_Shape> buildFaceGrid(int    theNx,
 
       if (aTemplateGraph.IsDone() && aTemplateGraph.Defs().NbFaces() > 0)
       {
-        TopoDS_Shape aResult =
+        BRepGraph aTransGraph =
           BRepGraphAlgo_Transform::TransformFace(aTemplateGraph, 0, aTrsf, true);
-        if (!aResult.IsNull())
+        if (aTransGraph.IsDone())
         {
-          aFaces.Append(aResult);
+          aFaces.Append(aTransGraph.Shapes().ReconstructFace(0));
           continue;
         }
       }
@@ -1699,10 +1700,10 @@ TEST(BRepGraphAlgo_SewingTest, SewSolidInput_PreservesHierarchy)
 }
 
 // ============================================================
-// Task 1C: Parallel Copy Test
+// Task 1C: Deep vs Light Copy Test
 // ============================================================
 
-TEST(BRepGraphAlgo_CopyTest, ParallelCopy_MatchesSequential)
+TEST(BRepGraphAlgo_CopyTest, DeepAndLightCopy_MatchNodeCounts)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -1711,27 +1712,16 @@ TEST(BRepGraphAlgo_CopyTest, ParallelCopy_MatchesSequential)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  // Sequential copy.
-  TopoDS_Shape aSeqCopy = BRepGraphAlgo_Copy::Perform(aGraph, true, false);
-  ASSERT_FALSE(aSeqCopy.IsNull());
+  // Deep copy (geometry cloned).
+  BRepGraph aDeepCopy = BRepGraphAlgo_Copy::Perform(aGraph, true);
+  ASSERT_TRUE(aDeepCopy.IsDone());
 
-  // Parallel copy.
-  TopoDS_Shape aParCopy = BRepGraphAlgo_Copy::Perform(aGraph, true, true);
-  ASSERT_FALSE(aParCopy.IsNull());
+  // Light copy (geometry shared).
+  BRepGraph aLightCopy = BRepGraphAlgo_Copy::Perform(aGraph, false);
+  ASSERT_TRUE(aLightCopy.IsDone());
 
-  // Compare face counts.
-  int aSeqFaces = 0, aParFaces = 0;
-  for (TopExp_Explorer anExp(aSeqCopy, TopAbs_FACE); anExp.More(); anExp.Next())
-    ++aSeqFaces;
-  for (TopExp_Explorer anExp(aParCopy, TopAbs_FACE); anExp.More(); anExp.Next())
-    ++aParFaces;
-  EXPECT_EQ(aSeqFaces, aParFaces);
-
-  // Compare surface areas.
-  GProp_GProps aSeqProps, aParProps;
-  BRepGProp::SurfaceProperties(aSeqCopy, aSeqProps);
-  BRepGProp::SurfaceProperties(aParCopy, aParProps);
-  EXPECT_NEAR(std::abs(aSeqProps.Mass()),
-              std::abs(aParProps.Mass()),
-              std::abs(aSeqProps.Mass()) * 0.01);
+  // Compare node counts.
+  EXPECT_EQ(aDeepCopy.Defs().NbFaces(), aLightCopy.Defs().NbFaces());
+  EXPECT_EQ(aDeepCopy.Defs().NbEdges(), aLightCopy.Defs().NbEdges());
+  EXPECT_EQ(aDeepCopy.Defs().NbVertices(), aLightCopy.Defs().NbVertices());
 }

@@ -16,6 +16,9 @@
 #include <BRepGProp.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_GeomView.hxx>
+#include <BRepGraph_ShapesView.hxx>
+#include <BRepGraph_UIDsView.hxx>
 #include <BRepGraphAlgo_Copy.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
@@ -42,7 +45,13 @@ TEST(BRepGraphAlgo_CopyTest, CopyBox_FaceCount)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  TopoDS_Shape aCopy = BRepGraphAlgo_Copy::Perform(aGraph, true);
+  BRepGraph aCopyGraph = BRepGraphAlgo_Copy::Perform(aGraph, true);
+  ASSERT_TRUE(aCopyGraph.IsDone());
+  EXPECT_EQ(aCopyGraph.Defs().NbFaces(), 6);
+  EXPECT_EQ(aCopyGraph.Defs().NbFaces(), aGraph.Defs().NbFaces());
+
+  // Verify reconstructed shape has correct face count.
+  TopoDS_Shape aCopy = aCopyGraph.Shapes().Reconstruct(BRepGraph_NodeId::Solid(0));
   ASSERT_FALSE(aCopy.IsNull());
 
   int aNbFaces = 0;
@@ -64,7 +73,10 @@ TEST(BRepGraphAlgo_CopyTest, CopyBox_AreaPreserved)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  TopoDS_Shape aCopy = BRepGraphAlgo_Copy::Perform(aGraph, true);
+  BRepGraph aCopyGraph = BRepGraphAlgo_Copy::Perform(aGraph, true);
+  ASSERT_TRUE(aCopyGraph.IsDone());
+
+  TopoDS_Shape aCopy = aCopyGraph.Shapes().Reconstruct(BRepGraph_NodeId::Solid(0));
   ASSERT_FALSE(aCopy.IsNull());
 
   // Sum face areas since result may be a compound.
@@ -88,16 +100,14 @@ TEST(BRepGraphAlgo_CopyTest, CopyBox_GeometryIsIndependent)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  TopoDS_Shape aCopy = BRepGraphAlgo_Copy::Perform(aGraph, true);
-  ASSERT_FALSE(aCopy.IsNull());
+  BRepGraph aCopyGraph = BRepGraphAlgo_Copy::Perform(aGraph, true);
+  ASSERT_TRUE(aCopyGraph.IsDone());
 
-  // Verify that the copy has independent geometry (different TShape pointers).
-  TopExp_Explorer anOrigExp(aBox, TopAbs_FACE);
-  TopExp_Explorer aCopyExp(aCopy, TopAbs_FACE);
-  ASSERT_TRUE(anOrigExp.More());
-  ASSERT_TRUE(aCopyExp.More());
-  // The TShapes should be different objects.
-  EXPECT_NE(anOrigExp.Current().TShape().get(), aCopyExp.Current().TShape().get());
+  // Deep copy: surface handles must be different objects.
+  ASSERT_GT(aGraph.Geom().NbSurfaces(), 0);
+  ASSERT_GT(aCopyGraph.Geom().NbSurfaces(), 0);
+  EXPECT_NE(aCopyGraph.Geom().Surface(0).Surface.get(),
+            aGraph.Geom().Surface(0).Surface.get());
 }
 
 TEST(BRepGraphAlgo_CopyTest, CopyBox_SharedGeometry)
@@ -110,13 +120,15 @@ TEST(BRepGraphAlgo_CopyTest, CopyBox_SharedGeometry)
   ASSERT_TRUE(aGraph.IsDone());
 
   // theCopyGeom = false: geometry is shared.
-  TopoDS_Shape aCopy = BRepGraphAlgo_Copy::Perform(aGraph, false);
-  ASSERT_FALSE(aCopy.IsNull());
+  BRepGraph aCopyGraph = BRepGraphAlgo_Copy::Perform(aGraph, false);
+  ASSERT_TRUE(aCopyGraph.IsDone());
+  EXPECT_EQ(aCopyGraph.Defs().NbFaces(), 6);
 
-  int aNbFaces = 0;
-  for (TopExp_Explorer anExp(aCopy, TopAbs_FACE); anExp.More(); anExp.Next())
-    ++aNbFaces;
-  EXPECT_EQ(aNbFaces, 6);
+  // Light copy: surface handles must be the same objects.
+  ASSERT_GT(aGraph.Geom().NbSurfaces(), 0);
+  ASSERT_GT(aCopyGraph.Geom().NbSurfaces(), 0);
+  EXPECT_EQ(aCopyGraph.Geom().Surface(0).Surface.get(),
+            aGraph.Geom().Surface(0).Surface.get());
 }
 
 TEST(BRepGraphAlgo_CopyTest, CopyCylinder_FaceCount)
@@ -128,15 +140,9 @@ TEST(BRepGraphAlgo_CopyTest, CopyCylinder_FaceCount)
   aGraph.Build(aCyl);
   ASSERT_TRUE(aGraph.IsDone());
 
-  TopoDS_Shape aCopy = BRepGraphAlgo_Copy::Perform(aGraph, true);
-  ASSERT_FALSE(aCopy.IsNull());
-
-  int anOrigFaces = 0, aCopyFaces = 0;
-  for (TopExp_Explorer anExp(aCyl, TopAbs_FACE); anExp.More(); anExp.Next())
-    ++anOrigFaces;
-  for (TopExp_Explorer anExp(aCopy, TopAbs_FACE); anExp.More(); anExp.Next())
-    ++aCopyFaces;
-  EXPECT_EQ(aCopyFaces, anOrigFaces);
+  BRepGraph aCopyGraph = BRepGraphAlgo_Copy::Perform(aGraph, true);
+  ASSERT_TRUE(aCopyGraph.IsDone());
+  EXPECT_EQ(aCopyGraph.Defs().NbFaces(), aGraph.Defs().NbFaces());
 }
 
 TEST(BRepGraphAlgo_CopyTest, CopySingleFace)
@@ -149,7 +155,20 @@ TEST(BRepGraphAlgo_CopyTest, CopySingleFace)
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Defs().NbFaces(), 0);
 
-  TopoDS_Shape aCopiedFace = BRepGraphAlgo_Copy::CopyFace(aGraph, 0, true);
+  BRepGraph aCopyGraph = BRepGraphAlgo_Copy::CopyFace(aGraph, 0, true);
+  ASSERT_TRUE(aCopyGraph.IsDone());
+  EXPECT_EQ(aCopyGraph.Defs().NbFaces(), 1);
+
+  // A box face has 1 wire with 4 edges and 4 vertices.
+  EXPECT_GT(aCopyGraph.Defs().NbVertices(), 0);
+  EXPECT_GT(aCopyGraph.Defs().NbEdges(), 0);
+  EXPECT_GT(aCopyGraph.Defs().NbWires(), 0);
+
+  // No shells/solids in a single-face sub-graph.
+  EXPECT_EQ(aCopyGraph.Defs().NbShells(), 0);
+  EXPECT_EQ(aCopyGraph.Defs().NbSolids(), 0);
+
+  TopoDS_Shape aCopiedFace = aCopyGraph.Shapes().ReconstructFace(0);
   ASSERT_FALSE(aCopiedFace.IsNull());
   EXPECT_EQ(aCopiedFace.ShapeType(), TopAbs_FACE);
 
@@ -180,13 +199,11 @@ TEST(BRepGraphAlgo_CopyTest, CopyFacesOnly_Compound)
   ASSERT_EQ(aGraph.Defs().NbSolids(), 0);
   ASSERT_EQ(aGraph.Defs().NbShells(), 0);
 
-  TopoDS_Shape aCopy = BRepGraphAlgo_Copy::Perform(aGraph, true);
-  ASSERT_FALSE(aCopy.IsNull());
-
-  int aNbFaces = 0;
-  for (TopExp_Explorer anExp(aCopy, TopAbs_FACE); anExp.More(); anExp.Next())
-    ++aNbFaces;
-  EXPECT_EQ(aNbFaces, 6);
+  BRepGraph aCopyGraph = BRepGraphAlgo_Copy::Perform(aGraph, true);
+  ASSERT_TRUE(aCopyGraph.IsDone());
+  EXPECT_EQ(aCopyGraph.Defs().NbFaces(), 6);
+  EXPECT_EQ(aCopyGraph.Defs().NbSolids(), 0);
+  EXPECT_EQ(aCopyGraph.Defs().NbShells(), 0);
 }
 
 // ============================================================
@@ -201,17 +218,17 @@ TEST(BRepGraphAlgo_CopyTest, CopyBox_SameParameter_Preserved)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  const TopoDS_Shape aCopy = BRepGraphAlgo_Copy::Perform(aGraph, true);
-  ASSERT_FALSE(aCopy.IsNull());
+  BRepGraph aCopyGraph = BRepGraphAlgo_Copy::Perform(aGraph, true);
+  ASSERT_TRUE(aCopyGraph.IsDone());
 
-  // All edges in the copied shape must preserve SameParameter = true.
-  for (TopExp_Explorer anExp(aCopy, TopAbs_EDGE); anExp.More(); anExp.Next())
+  // All edges in the copied graph must preserve SameParameter = true.
+  for (int anIdx = 0; anIdx < aCopyGraph.Defs().NbEdges(); ++anIdx)
   {
-    const TopoDS_Edge& anEdge = TopoDS::Edge(anExp.Current());
-    EXPECT_TRUE(BRep_Tool::SameParameter(anEdge))
-        << "Copied edge lost SameParameter flag";
-    EXPECT_TRUE(BRep_Tool::SameRange(anEdge))
-        << "Copied edge lost SameRange flag";
+    const BRepGraph_TopoNode::EdgeDef& anEdge = aCopyGraph.Defs().Edge(anIdx);
+    EXPECT_TRUE(anEdge.SameParameter)
+        << "Copied edge " << anIdx << " lost SameParameter flag";
+    EXPECT_TRUE(anEdge.SameRange)
+        << "Copied edge " << anIdx << " lost SameRange flag";
   }
 }
 
@@ -222,7 +239,7 @@ TEST(BRepGraphAlgo_CopyTest, CopyBox_SameParameter_Preserved)
 TEST(BRepGraphAlgo_CopyTest, FusedBoxes_Regularity_AreaPreserved)
 {
   // Fuse two adjacent boxes to produce a shape with regularity edges.
-  // Verify that the copy preserves area (geometry integrity after EncodeRegularity call).
+  // Verify that the copy preserves area (geometry integrity).
   TopoDS_Shape aBox1 = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
   TopoDS_Shape aBox2 = BRepPrimAPI_MakeBox(gp_Pnt(10.0, 0.0, 0.0), 10.0, 10.0, 10.0).Shape();
   BRepAlgoAPI_Fuse aFuser(aBox1, aBox2);
@@ -237,26 +254,64 @@ TEST(BRepGraphAlgo_CopyTest, FusedBoxes_Regularity_AreaPreserved)
   aGraph.Build(aFused);
   ASSERT_TRUE(aGraph.IsDone());
 
-  const TopoDS_Shape aCopy = BRepGraphAlgo_Copy::Perform(aGraph, true);
-  ASSERT_FALSE(aCopy.IsNull());
+  BRepGraph aCopyGraph = BRepGraphAlgo_Copy::Perform(aGraph, true);
+  ASSERT_TRUE(aCopyGraph.IsDone());
 
-  // Verify face count is the same.
-  int anOrigFaces = 0, aCopyFaces = 0;
-  for (TopExp_Explorer anExp(aFused, TopAbs_FACE); anExp.More(); anExp.Next())
-    ++anOrigFaces;
-  for (TopExp_Explorer anExp(aCopy, TopAbs_FACE); anExp.More(); anExp.Next())
-    ++aCopyFaces;
-  EXPECT_EQ(aCopyFaces, anOrigFaces);
+  // Verify node counts match.
+  EXPECT_EQ(aCopyGraph.Defs().NbFaces(), aGraph.Defs().NbFaces());
+  EXPECT_EQ(aCopyGraph.Defs().NbEdges(), aGraph.Defs().NbEdges());
 
-  // Verify area is preserved.
+  // Verify area is preserved by summing individual face areas.
   double aCopyArea = 0.0;
-  for (TopExp_Explorer anExp(aCopy, TopAbs_FACE); anExp.More(); anExp.Next())
+  for (int aFaceIdx = 0; aFaceIdx < aCopyGraph.Defs().NbFaces(); ++aFaceIdx)
   {
+    TopoDS_Shape aFace = aCopyGraph.Shapes().ReconstructFace(aFaceIdx);
     GProp_GProps aProps;
-    BRepGProp::SurfaceProperties(anExp.Current(), aProps);
+    BRepGProp::SurfaceProperties(aFace, aProps);
     aCopyArea += std::abs(aProps.Mass());
   }
   EXPECT_NEAR(aCopyArea, anOrigArea, anOrigArea * 0.01);
+}
+
+// ============================================================
+// UID preservation
+// ============================================================
+
+TEST(BRepGraphAlgo_CopyTest, CopyBox_UIDsPreserved)
+{
+  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
+
+  BRepGraph aGraph;
+  aGraph.Build(aBox);
+  ASSERT_TRUE(aGraph.IsDone());
+
+  BRepGraph aCopyGraph = BRepGraphAlgo_Copy::Perform(aGraph, true);
+  ASSERT_TRUE(aCopyGraph.IsDone());
+
+  // Helper to check UIDs for a given node kind.
+  auto checkUIDs = [&](BRepGraph_NodeId::Kind theKind, int theCount, const char* theLabel) {
+    for (int anIdx = 0; anIdx < theCount; ++anIdx)
+    {
+      BRepGraph_NodeId aNodeId(theKind, anIdx);
+      BRepGraph_UID anOrigUID = aGraph.UIDs().Of(aNodeId);
+      BRepGraph_UID aCopyUID  = aCopyGraph.UIDs().Of(aNodeId);
+      EXPECT_EQ(aCopyUID.IsValid(), anOrigUID.IsValid())
+          << "UID validity mismatch at " << theLabel << " " << anIdx;
+      if (anOrigUID.IsValid())
+        EXPECT_EQ(aCopyUID, anOrigUID) << "UID mismatch at " << theLabel << " " << anIdx;
+    }
+  };
+
+  // Verify UIDs for all topology and geometry node types.
+  checkUIDs(BRepGraph_NodeId::Kind::Vertex, aGraph.Defs().NbVertices(), "vertex");
+  checkUIDs(BRepGraph_NodeId::Kind::Edge, aGraph.Defs().NbEdges(), "edge");
+  checkUIDs(BRepGraph_NodeId::Kind::Wire, aGraph.Defs().NbWires(), "wire");
+  checkUIDs(BRepGraph_NodeId::Kind::Face, aGraph.Defs().NbFaces(), "face");
+  checkUIDs(BRepGraph_NodeId::Kind::Shell, aGraph.Defs().NbShells(), "shell");
+  checkUIDs(BRepGraph_NodeId::Kind::Solid, aGraph.Defs().NbSolids(), "solid");
+  checkUIDs(BRepGraph_NodeId::Kind::Surface, aGraph.Geom().NbSurfaces(), "surface");
+  checkUIDs(BRepGraph_NodeId::Kind::Curve, aGraph.Geom().NbCurves(), "curve");
+  checkUIDs(BRepGraph_NodeId::Kind::PCurve, aGraph.Geom().NbPCurves(), "pcurve");
 }
 
 // ============================================================
@@ -279,7 +334,7 @@ TEST(BRepGraphAlgo_CopyTest, Performance_VsLegacy)
   aGraphTimer.Start();
   for (int anIter = 0; anIter < THE_NB_ITERS; ++anIter)
   {
-    TopoDS_Shape aCopy = BRepGraphAlgo_Copy::Perform(aGraph, true);
+    BRepGraph aCopy = BRepGraphAlgo_Copy::Perform(aGraph, true);
     (void)aCopy;
   }
   aGraphTimer.Stop();

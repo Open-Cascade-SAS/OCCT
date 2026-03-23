@@ -172,6 +172,8 @@ private:
   friend class BRepGraph_BackRefManager;
   friend class BRepGraphAlgo_BndLib;
   friend class BRepGraphAlgo_Compact;
+  friend class BRepGraphAlgo_Copy;
+  friend class BRepGraphAlgo_Transform;
   friend class BRepGraphAlgo_UVBounds;
 
   // -- History flat methods (used internally by History subsystem) --

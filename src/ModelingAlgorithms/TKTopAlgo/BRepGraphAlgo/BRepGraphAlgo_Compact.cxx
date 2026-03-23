@@ -579,6 +579,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
     theGraph.myData->myNextUIDCounter.load(std::memory_order_relaxed),
     std::memory_order_relaxed);
   aNewGraph.myData->myGeneration = theGraph.myData->myGeneration;
+  aNewGraph.myData->myIsDone = true;
   // Swap.
   theGraph = std::move(aNewGraph);
 

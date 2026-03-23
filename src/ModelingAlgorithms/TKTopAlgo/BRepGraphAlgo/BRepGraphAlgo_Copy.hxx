@@ -15,56 +15,46 @@
 #define _BRepGraphAlgo_Copy_HeaderFile
 
 #include <BRepGraph.hxx>
-#include <BRepGraph_DefsView.hxx>
-#include <BRepGraph_GeomView.hxx>
-#include <BRepGraph_ShapesView.hxx>
-#include <BRepGraph_SpatialView.hxx>
-#include <BRepGraph_UsagesView.hxx>
 
 #include <Standard_DefineAlloc.hxx>
-#include <TopoDS_Shape.hxx>
 
-//! @brief Graph-based deep copy of a TopoDS_Shape.
+//! @brief Graph-to-graph deep copy.
 //!
-//! Performs a complete deep copy of a shape using pre-built BRepGraph data
-//! in a single bottom-up pass, avoiding the 5-7 traversals of
-//! BRepTools_Modifier used by BRepBuilderAPI_Copy.
+//! Produces a new BRepGraph from an existing one in a single bottom-up pass,
+//! avoiding the 5-7 traversals of BRepTools_Modifier used by BRepBuilderAPI_Copy.
 //!
-//! ## Algorithm
-//! Phase 1: Copy unique geometry handles (surfaces, 3D curves, 2D curves).
-//! Phase 2: Bottom-up topology rebuild: Vertex -> Edge -> Wire -> Face -> Shell -> Solid.
+//! Two modes:
+//! - theCopyGeom = true  (deep): geometry handles are cloned, result is fully independent.
+//! - theCopyGeom = false (light): geometry handles are shared, only topology is duplicated.
 //!
 //! ## Typical usage
 //! @code
 //!   BRepGraph aGraph;
 //!   aGraph.Build(myShape);
-//!   TopoDS_Shape aCopy = BRepGraphAlgo_Copy::Perform(aGraph);
+//!   BRepGraph aCopy = BRepGraphAlgo_Copy::Perform(aGraph);
+//!   TopoDS_Shape aShape = aCopy.Shapes().Shape();
 //! @endcode
 class BRepGraphAlgo_Copy
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Deep-copy the entire shape represented by the graph.
+  //! Copy the entire graph.
   //! @param[in] theGraph    a pre-built BRepGraph (must have IsDone() == true)
   //! @param[in] theCopyGeom if true (default), geometry handles are deep-copied;
   //!                        if false, geometry is shared (only topology is duplicated)
-  //! @param[in] theParallel if true, face building is parallelized
-  //! @return the deep-copied shape
-  Standard_EXPORT static TopoDS_Shape Perform(const BRepGraph& theGraph,
-                                              bool             theCopyGeom = true,
-                                              bool             theParallel = false);
+  //! @return a new BRepGraph with IsDone() == true on success
+  Standard_EXPORT static BRepGraph Perform(const BRepGraph& theGraph,
+                                           bool             theCopyGeom = true);
 
-  //! Deep-copy a single face from the graph.
+  //! Copy a single face sub-graph.
   //! @param[in] theGraph    a pre-built BRepGraph
-  //! @param[in] theFaceIdx  face index in the graph
+  //! @param[in] theFaceIdx  face definition index in the graph
   //! @param[in] theCopyGeom if true, geometry is deep-copied
-  //! @param[in] theParallel if true, face building is parallelized (unused for single face)
-  //! @return the deep-copied face
-  Standard_EXPORT static TopoDS_Shape CopyFace(const BRepGraph& theGraph,
-                                               int              theFaceIdx,
-                                               bool             theCopyGeom = true,
-                                               bool             theParallel = false);
+  //! @return a new BRepGraph containing only the specified face and its dependencies
+  Standard_EXPORT static BRepGraph CopyFace(const BRepGraph& theGraph,
+                                            int              theFaceIdx,
+                                            bool             theCopyGeom = true);
 
 private:
   BRepGraphAlgo_Copy() = delete;
