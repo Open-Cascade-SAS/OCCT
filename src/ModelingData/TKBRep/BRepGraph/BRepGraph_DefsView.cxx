@@ -483,6 +483,57 @@ const BRepGraphInc::PolygonOnTriRep& BRepGraph::DefsView::PolygonOnTriRep(int th
 
 //=================================================================================================
 
+static const occ::handle<Geom_Surface>        THE_NULL_SURFACE;
+static const occ::handle<Geom_Curve>          THE_NULL_CURVE;
+static const occ::handle<Geom2d_Curve>        THE_NULL_CURVE2D;
+static const occ::handle<Poly_Triangulation>  THE_NULL_TRIANGULATION;
+static const occ::handle<Poly_Polygon3D>      THE_NULL_POLYGON3D;
+
+const occ::handle<Geom_Surface>& BRepGraph::DefsView::FaceSurface(int theFaceIdx) const
+{
+  const BRepGraphInc_Storage& aS = myGraph->myData->myIncStorage;
+  const int aRepIdx = aS.Face(theFaceIdx).SurfaceRepIdx;
+  return aRepIdx >= 0 ? aS.SurfaceRep(aRepIdx).Surface : THE_NULL_SURFACE;
+}
+
+//=================================================================================================
+
+const occ::handle<Geom_Curve>& BRepGraph::DefsView::EdgeCurve3D(int theEdgeIdx) const
+{
+  const BRepGraphInc_Storage& aS = myGraph->myData->myIncStorage;
+  const int aRepIdx = aS.Edge(theEdgeIdx).Curve3DRepIdx;
+  return aRepIdx >= 0 ? aS.Curve3DRep(aRepIdx).Curve : THE_NULL_CURVE;
+}
+
+//=================================================================================================
+
+const occ::handle<Geom2d_Curve>& BRepGraph::DefsView::CoEdgeCurve2D(int theCoEdgeIdx) const
+{
+  const BRepGraphInc_Storage& aS = myGraph->myData->myIncStorage;
+  const int aRepIdx = aS.CoEdge(theCoEdgeIdx).Curve2DRepIdx;
+  return aRepIdx >= 0 ? aS.Curve2DRep(aRepIdx).Curve : THE_NULL_CURVE2D;
+}
+
+//=================================================================================================
+
+const occ::handle<Poly_Triangulation>& BRepGraph::DefsView::FaceActiveTriangulation(int theFaceIdx) const
+{
+  const BRepGraphInc_Storage& aS = myGraph->myData->myIncStorage;
+  const int aTriRepIdx = aS.Face(theFaceIdx).ActiveTriangulationRepIdx();
+  return aTriRepIdx >= 0 ? aS.TriangulationRep(aTriRepIdx).Triangulation : THE_NULL_TRIANGULATION;
+}
+
+//=================================================================================================
+
+const occ::handle<Poly_Polygon3D>& BRepGraph::DefsView::EdgePolygon3D(int theEdgeIdx) const
+{
+  const BRepGraphInc_Storage& aS = myGraph->myData->myIncStorage;
+  const int aRepIdx = aS.Edge(theEdgeIdx).Polygon3DRepIdx;
+  return aRepIdx >= 0 ? aS.Polygon3DRep(aRepIdx).Polygon : THE_NULL_POLYGON3D;
+}
+
+//=================================================================================================
+
 const BRepGraphInc::CoEdgeEntity* BRepGraph::DefsView::FindPCurve(
   BRepGraph_NodeId theEdgeDef,
   BRepGraph_NodeId theFaceDef) const

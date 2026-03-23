@@ -208,6 +208,28 @@ public:
   //! Access polygon-on-triangulation representation by index.
   Standard_EXPORT const BRepGraphInc::PolygonOnTriRep& PolygonOnTriRep(int theIdx) const;
 
+  // -- Convenience geometry accessors (resolve rep index in one call) --
+
+  //! Return the surface handle for a face, or null if no surface.
+  //! @param[in] theFaceIdx zero-based face definition index
+  Standard_EXPORT const occ::handle<Geom_Surface>& FaceSurface(int theFaceIdx) const;
+
+  //! Return the 3D curve handle for an edge, or null if no curve.
+  //! @param[in] theEdgeIdx zero-based edge definition index
+  Standard_EXPORT const occ::handle<Geom_Curve>& EdgeCurve3D(int theEdgeIdx) const;
+
+  //! Return the PCurve handle for a coedge, or null if no PCurve.
+  //! @param[in] theCoEdgeIdx zero-based coedge definition index
+  Standard_EXPORT const occ::handle<Geom2d_Curve>& CoEdgeCurve2D(int theCoEdgeIdx) const;
+
+  //! Return the active triangulation handle for a face, or null if none.
+  //! @param[in] theFaceIdx zero-based face definition index
+  Standard_EXPORT const occ::handle<Poly_Triangulation>& FaceActiveTriangulation(int theFaceIdx) const;
+
+  //! Return the 3D polygon handle for an edge, or null if no polygon.
+  //! @param[in] theEdgeIdx zero-based edge definition index
+  Standard_EXPORT const occ::handle<Poly_Polygon3D>& EdgePolygon3D(int theEdgeIdx) const;
+
   // -- Geometry query methods --
 
   //! Find the CoEdge for an edge on a given face, or nullptr if none exists.
