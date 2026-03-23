@@ -18,6 +18,9 @@
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepGraph.hxx>
+#include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_GeomView.hxx>
+#include <BRepGraph_UsagesView.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCone.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
@@ -92,12 +95,12 @@ TEST(BRepGraphBuildTest, Sphere_DefCounts_MatchTopExp)
   aGraph.Build(aShape);
   ASSERT_TRUE(aGraph.IsDone());
 
-  EXPECT_EQ(aGraph.NbSolidDefs(),  countUnique(aShape, TopAbs_SOLID));
-  EXPECT_EQ(aGraph.NbShellDefs(),  countUnique(aShape, TopAbs_SHELL));
-  EXPECT_EQ(aGraph.NbFaceDefs(),   countUnique(aShape, TopAbs_FACE));
-  EXPECT_EQ(aGraph.NbWireDefs(),   countUnique(aShape, TopAbs_WIRE));
-  EXPECT_EQ(aGraph.NbEdgeDefs(),   countUnique(aShape, TopAbs_EDGE));
-  EXPECT_EQ(aGraph.NbVertexDefs(), countUnique(aShape, TopAbs_VERTEX));
+  EXPECT_EQ(aGraph.Defs().NbSolids(),  countUnique(aShape, TopAbs_SOLID));
+  EXPECT_EQ(aGraph.Defs().NbShells(),  countUnique(aShape, TopAbs_SHELL));
+  EXPECT_EQ(aGraph.Defs().NbFaces(),   countUnique(aShape, TopAbs_FACE));
+  EXPECT_EQ(aGraph.Defs().NbWires(),   countUnique(aShape, TopAbs_WIRE));
+  EXPECT_EQ(aGraph.Defs().NbEdges(),   countUnique(aShape, TopAbs_EDGE));
+  EXPECT_EQ(aGraph.Defs().NbVertices(), countUnique(aShape, TopAbs_VERTEX));
 }
 
 TEST(BRepGraphBuildTest, Sphere_SurfaceType)
@@ -108,12 +111,12 @@ TEST(BRepGraphBuildTest, Sphere_SurfaceType)
   BRepGraph aGraph;
   aGraph.Build(aShape);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GE(aGraph.NbSurfaces(), 1);
+  ASSERT_GE(aGraph.Geom().NbSurfaces(), 1);
 
   bool aHasSpherical = false;
-  for (int anIdx = 0; anIdx < aGraph.NbSurfaces(); ++anIdx)
+  for (int anIdx = 0; anIdx < aGraph.Geom().NbSurfaces(); ++anIdx)
   {
-    const Handle(Geom_Surface)& aSurf = aGraph.SurfNode(anIdx).Surface;
+    const Handle(Geom_Surface)& aSurf = aGraph.Geom().Surface(anIdx).Surface;
     if (!aSurf.IsNull() && aSurf->DynamicType() == STANDARD_TYPE(Geom_SphericalSurface))
     {
       aHasSpherical = true;
@@ -133,9 +136,9 @@ TEST(BRepGraphBuildTest, Sphere_HasDegenerateEdges)
 
   // A sphere has degenerate edges at poles.
   int aDegCount = 0;
-  for (int anIdx = 0; anIdx < aGraph.NbEdgeDefs(); ++anIdx)
+  for (int anIdx = 0; anIdx < aGraph.Defs().NbEdges(); ++anIdx)
   {
-    if (aGraph.EdgeDefinition(anIdx).IsDegenerate)
+    if (aGraph.Defs().Edge(anIdx).IsDegenerate)
     {
       ++aDegCount;
     }
@@ -167,9 +170,9 @@ TEST(BRepGraphBuildTest, Cylinder_DefCounts_MatchTopExp)
   aGraph.Build(aShape);
   ASSERT_TRUE(aGraph.IsDone());
 
-  EXPECT_EQ(aGraph.NbFaceDefs(),   countUnique(aShape, TopAbs_FACE));
-  EXPECT_EQ(aGraph.NbEdgeDefs(),   countUnique(aShape, TopAbs_EDGE));
-  EXPECT_EQ(aGraph.NbVertexDefs(), countUnique(aShape, TopAbs_VERTEX));
+  EXPECT_EQ(aGraph.Defs().NbFaces(),   countUnique(aShape, TopAbs_FACE));
+  EXPECT_EQ(aGraph.Defs().NbEdges(),   countUnique(aShape, TopAbs_EDGE));
+  EXPECT_EQ(aGraph.Defs().NbVertices(), countUnique(aShape, TopAbs_VERTEX));
 }
 
 TEST(BRepGraphBuildTest, Cylinder_SurfaceType)
@@ -182,9 +185,9 @@ TEST(BRepGraphBuildTest, Cylinder_SurfaceType)
   ASSERT_TRUE(aGraph.IsDone());
 
   bool aHasCylindrical = false;
-  for (int anIdx = 0; anIdx < aGraph.NbSurfaces(); ++anIdx)
+  for (int anIdx = 0; anIdx < aGraph.Geom().NbSurfaces(); ++anIdx)
   {
-    const Handle(Geom_Surface)& aSurf = aGraph.SurfNode(anIdx).Surface;
+    const Handle(Geom_Surface)& aSurf = aGraph.Geom().Surface(anIdx).Surface;
     if (!aSurf.IsNull() && aSurf->DynamicType() == STANDARD_TYPE(Geom_CylindricalSurface))
     {
       aHasCylindrical = true;
@@ -217,9 +220,9 @@ TEST(BRepGraphBuildTest, Cone_DefCounts_MatchTopExp)
   aGraph.Build(aShape);
   ASSERT_TRUE(aGraph.IsDone());
 
-  EXPECT_EQ(aGraph.NbFaceDefs(),   countUnique(aShape, TopAbs_FACE));
-  EXPECT_EQ(aGraph.NbEdgeDefs(),   countUnique(aShape, TopAbs_EDGE));
-  EXPECT_EQ(aGraph.NbVertexDefs(), countUnique(aShape, TopAbs_VERTEX));
+  EXPECT_EQ(aGraph.Defs().NbFaces(),   countUnique(aShape, TopAbs_FACE));
+  EXPECT_EQ(aGraph.Defs().NbEdges(),   countUnique(aShape, TopAbs_EDGE));
+  EXPECT_EQ(aGraph.Defs().NbVertices(), countUnique(aShape, TopAbs_VERTEX));
 }
 
 TEST(BRepGraphBuildTest, Cone_SurfaceType)
@@ -232,9 +235,9 @@ TEST(BRepGraphBuildTest, Cone_SurfaceType)
   ASSERT_TRUE(aGraph.IsDone());
 
   bool aHasConical = false;
-  for (int anIdx = 0; anIdx < aGraph.NbSurfaces(); ++anIdx)
+  for (int anIdx = 0; anIdx < aGraph.Geom().NbSurfaces(); ++anIdx)
   {
-    const Handle(Geom_Surface)& aSurf = aGraph.SurfNode(anIdx).Surface;
+    const Handle(Geom_Surface)& aSurf = aGraph.Geom().Surface(anIdx).Surface;
     if (!aSurf.IsNull() && aSurf->DynamicType() == STANDARD_TYPE(Geom_ConicalSurface))
     {
       aHasConical = true;
@@ -254,9 +257,9 @@ TEST(BRepGraphBuildTest, Cone_HasDegenerateEdge)
   ASSERT_TRUE(aGraph.IsDone());
 
   int aDegCount = 0;
-  for (int anIdx = 0; anIdx < aGraph.NbEdgeDefs(); ++anIdx)
+  for (int anIdx = 0; anIdx < aGraph.Defs().NbEdges(); ++anIdx)
   {
-    if (aGraph.EdgeDefinition(anIdx).IsDegenerate)
+    if (aGraph.Defs().Edge(anIdx).IsDegenerate)
     {
       ++aDegCount;
     }
@@ -288,9 +291,9 @@ TEST(BRepGraphBuildTest, Torus_DefCounts_MatchTopExp)
   aGraph.Build(aShape);
   ASSERT_TRUE(aGraph.IsDone());
 
-  EXPECT_EQ(aGraph.NbFaceDefs(),   countUnique(aShape, TopAbs_FACE));
-  EXPECT_EQ(aGraph.NbEdgeDefs(),   countUnique(aShape, TopAbs_EDGE));
-  EXPECT_EQ(aGraph.NbVertexDefs(), countUnique(aShape, TopAbs_VERTEX));
+  EXPECT_EQ(aGraph.Defs().NbFaces(),   countUnique(aShape, TopAbs_FACE));
+  EXPECT_EQ(aGraph.Defs().NbEdges(),   countUnique(aShape, TopAbs_EDGE));
+  EXPECT_EQ(aGraph.Defs().NbVertices(), countUnique(aShape, TopAbs_VERTEX));
 }
 
 TEST(BRepGraphBuildTest, Torus_SurfaceType)
@@ -303,9 +306,9 @@ TEST(BRepGraphBuildTest, Torus_SurfaceType)
   ASSERT_TRUE(aGraph.IsDone());
 
   bool aHasToroidal = false;
-  for (int anIdx = 0; anIdx < aGraph.NbSurfaces(); ++anIdx)
+  for (int anIdx = 0; anIdx < aGraph.Geom().NbSurfaces(); ++anIdx)
   {
-    const Handle(Geom_Surface)& aSurf = aGraph.SurfNode(anIdx).Surface;
+    const Handle(Geom_Surface)& aSurf = aGraph.Geom().Surface(anIdx).Surface;
     if (!aSurf.IsNull() && aSurf->DynamicType() == STANDARD_TYPE(Geom_ToroidalSurface))
     {
       aHasToroidal = true;
@@ -338,12 +341,12 @@ TEST(BRepGraphBuildTest, Wedge_DefCounts_MatchTopExp)
   aGraph.Build(aShape);
   ASSERT_TRUE(aGraph.IsDone());
 
-  EXPECT_EQ(aGraph.NbSolidDefs(),  countUnique(aShape, TopAbs_SOLID));
-  EXPECT_EQ(aGraph.NbShellDefs(),  countUnique(aShape, TopAbs_SHELL));
-  EXPECT_EQ(aGraph.NbFaceDefs(),   countUnique(aShape, TopAbs_FACE));
-  EXPECT_EQ(aGraph.NbWireDefs(),   countUnique(aShape, TopAbs_WIRE));
-  EXPECT_EQ(aGraph.NbEdgeDefs(),   countUnique(aShape, TopAbs_EDGE));
-  EXPECT_EQ(aGraph.NbVertexDefs(), countUnique(aShape, TopAbs_VERTEX));
+  EXPECT_EQ(aGraph.Defs().NbSolids(),  countUnique(aShape, TopAbs_SOLID));
+  EXPECT_EQ(aGraph.Defs().NbShells(),  countUnique(aShape, TopAbs_SHELL));
+  EXPECT_EQ(aGraph.Defs().NbFaces(),   countUnique(aShape, TopAbs_FACE));
+  EXPECT_EQ(aGraph.Defs().NbWires(),   countUnique(aShape, TopAbs_WIRE));
+  EXPECT_EQ(aGraph.Defs().NbEdges(),   countUnique(aShape, TopAbs_EDGE));
+  EXPECT_EQ(aGraph.Defs().NbVertices(), countUnique(aShape, TopAbs_VERTEX));
 }
 
 TEST(BRepGraphBuildTest, Wedge_AllPlanarSurfaces)
@@ -355,9 +358,9 @@ TEST(BRepGraphBuildTest, Wedge_AllPlanarSurfaces)
   aGraph.Build(aShape);
   ASSERT_TRUE(aGraph.IsDone());
 
-  for (int anIdx = 0; anIdx < aGraph.NbSurfaces(); ++anIdx)
+  for (int anIdx = 0; anIdx < aGraph.Geom().NbSurfaces(); ++anIdx)
   {
-    const Handle(Geom_Surface)& aSurf = aGraph.SurfNode(anIdx).Surface;
+    const Handle(Geom_Surface)& aSurf = aGraph.Geom().Surface(anIdx).Surface;
     ASSERT_FALSE(aSurf.IsNull());
     EXPECT_TRUE(aSurf->DynamicType() == STANDARD_TYPE(Geom_Plane))
       << "Surface index " << anIdx << " is not a Geom_Plane";
@@ -378,9 +381,9 @@ TEST(BRepGraphBuildTest, Sphere_UsageCounts_MatchDefCounts)
   ASSERT_TRUE(aGraph.IsDone());
 
   // For a single solid, usages >= defs (usages count occurrences in hierarchy).
-  EXPECT_GE(aGraph.NbFaceUsages(),   aGraph.NbFaceDefs());
-  EXPECT_GE(aGraph.NbEdgeUsages(),   aGraph.NbEdgeDefs());
-  EXPECT_GE(aGraph.NbVertexUsages(), aGraph.NbVertexDefs());
+  EXPECT_GE(aGraph.Usages().NbFaces(),   aGraph.Defs().NbFaces());
+  EXPECT_GE(aGraph.Usages().NbEdges(),   aGraph.Defs().NbEdges());
+  EXPECT_GE(aGraph.Usages().NbVertices(), aGraph.Defs().NbVertices());
 }
 
 TEST(BRepGraphBuildTest, Cylinder_UsageCounts_MatchNonUniqueTopExp)
@@ -392,9 +395,9 @@ TEST(BRepGraphBuildTest, Cylinder_UsageCounts_MatchNonUniqueTopExp)
   aGraph.Build(aShape);
   ASSERT_TRUE(aGraph.IsDone());
 
-  EXPECT_EQ(aGraph.NbFaceUsages(),   countNonUnique(aShape, TopAbs_FACE));
-  EXPECT_EQ(aGraph.NbEdgeUsages(),   countNonUnique(aShape, TopAbs_EDGE));
-  EXPECT_EQ(aGraph.NbVertexUsages(), countNonUnique(aShape, TopAbs_VERTEX));
+  EXPECT_EQ(aGraph.Usages().NbFaces(),   countNonUnique(aShape, TopAbs_FACE));
+  EXPECT_EQ(aGraph.Usages().NbEdges(),   countNonUnique(aShape, TopAbs_EDGE));
+  EXPECT_EQ(aGraph.Usages().NbVertices(), countNonUnique(aShape, TopAbs_VERTEX));
 }
 
 // =============================================================================
@@ -438,9 +441,9 @@ TEST(BRepGraphBuildTest, Compound_TwoPrimitives_DefCountsAddUp)
   aGraph.Build(aCompound);
   ASSERT_TRUE(aGraph.IsDone());
 
-  EXPECT_EQ(aGraph.NbFaceDefs(),   countUnique(aCompound, TopAbs_FACE));
-  EXPECT_EQ(aGraph.NbEdgeDefs(),   countUnique(aCompound, TopAbs_EDGE));
-  EXPECT_EQ(aGraph.NbVertexDefs(), countUnique(aCompound, TopAbs_VERTEX));
+  EXPECT_EQ(aGraph.Defs().NbFaces(),   countUnique(aCompound, TopAbs_FACE));
+  EXPECT_EQ(aGraph.Defs().NbEdges(),   countUnique(aCompound, TopAbs_EDGE));
+  EXPECT_EQ(aGraph.Defs().NbVertices(), countUnique(aCompound, TopAbs_VERTEX));
 }
 
 TEST(BRepGraphBuildTest, Compound_ThreeBoxes_DefCounts)
@@ -460,9 +463,9 @@ TEST(BRepGraphBuildTest, Compound_ThreeBoxes_DefCounts)
   aGraph.Build(aCompound);
   ASSERT_TRUE(aGraph.IsDone());
 
-  EXPECT_EQ(aGraph.NbSolidDefs(), countUnique(aCompound, TopAbs_SOLID));
-  EXPECT_EQ(aGraph.NbFaceDefs(),  countUnique(aCompound, TopAbs_FACE));
-  EXPECT_EQ(aGraph.NbEdgeDefs(),  countUnique(aCompound, TopAbs_EDGE));
+  EXPECT_EQ(aGraph.Defs().NbSolids(), countUnique(aCompound, TopAbs_SOLID));
+  EXPECT_EQ(aGraph.Defs().NbFaces(),  countUnique(aCompound, TopAbs_FACE));
+  EXPECT_EQ(aGraph.Defs().NbEdges(),  countUnique(aCompound, TopAbs_EDGE));
 }
 
 TEST(BRepGraphBuildTest, Compound_Nested_DefCounts)
@@ -487,9 +490,9 @@ TEST(BRepGraphBuildTest, Compound_Nested_DefCounts)
   aGraph.Build(anOuter);
   ASSERT_TRUE(aGraph.IsDone());
 
-  EXPECT_EQ(aGraph.NbFaceDefs(),   countUnique(anOuter, TopAbs_FACE));
-  EXPECT_EQ(aGraph.NbEdgeDefs(),   countUnique(anOuter, TopAbs_EDGE));
-  EXPECT_EQ(aGraph.NbVertexDefs(), countUnique(anOuter, TopAbs_VERTEX));
+  EXPECT_EQ(aGraph.Defs().NbFaces(),   countUnique(anOuter, TopAbs_FACE));
+  EXPECT_EQ(aGraph.Defs().NbEdges(),   countUnique(anOuter, TopAbs_EDGE));
+  EXPECT_EQ(aGraph.Defs().NbVertices(), countUnique(anOuter, TopAbs_VERTEX));
 }
 
 // =============================================================================
@@ -517,13 +520,13 @@ TEST(BRepGraphBuildTest, SinglePlanarFace_Counts)
   aGraph.Build(aShape);
   ASSERT_TRUE(aGraph.IsDone());
 
-  EXPECT_EQ(aGraph.NbFaceDefs(), 1);
-  EXPECT_EQ(aGraph.NbSolidDefs(), 0);
-  EXPECT_EQ(aGraph.NbShellDefs(), 0);
-  EXPECT_GE(aGraph.NbSurfaces(), 1);
+  EXPECT_EQ(aGraph.Defs().NbFaces(), 1);
+  EXPECT_EQ(aGraph.Defs().NbSolids(), 0);
+  EXPECT_EQ(aGraph.Defs().NbShells(), 0);
+  EXPECT_GE(aGraph.Geom().NbSurfaces(), 1);
 
   // Verify surface is a plane.
-  const Handle(Geom_Surface)& aSurf = aGraph.SurfNode(0).Surface;
+  const Handle(Geom_Surface)& aSurf = aGraph.Geom().Surface(0).Surface;
   ASSERT_FALSE(aSurf.IsNull());
   EXPECT_TRUE(aSurf->DynamicType() == STANDARD_TYPE(Geom_Plane));
 }
@@ -539,8 +542,8 @@ TEST(BRepGraphBuildTest, SingleEdge_HandlesGracefully)
 
   // BRepGraph is face-level; standalone edges may produce zero counts.
   // Verify it does not crash and returns consistent state.
-  EXPECT_EQ(aGraph.NbFaceDefs(), 0);
-  EXPECT_EQ(aGraph.NbSolidDefs(), 0);
+  EXPECT_EQ(aGraph.Defs().NbFaces(), 0);
+  EXPECT_EQ(aGraph.Defs().NbSolids(), 0);
 }
 
 TEST(BRepGraphBuildTest, SingleVertex_HandlesGracefully)
@@ -552,8 +555,8 @@ TEST(BRepGraphBuildTest, SingleVertex_HandlesGracefully)
   aGraph.Build(aShape);
 
   // BRepGraph is face-level; standalone vertices may produce zero counts.
-  EXPECT_EQ(aGraph.NbFaceDefs(), 0);
-  EXPECT_EQ(aGraph.NbEdgeDefs(), 0);
+  EXPECT_EQ(aGraph.Defs().NbFaces(), 0);
+  EXPECT_EQ(aGraph.Defs().NbEdges(), 0);
 }
 
 // =============================================================================
@@ -569,8 +572,8 @@ TEST(BRepGraphBuildTest, Box_FaceDefCount_MatchesTopExp)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  EXPECT_EQ(aGraph.NbFaceDefs(), countUnique(aBox, TopAbs_FACE));
-  EXPECT_EQ(aGraph.NbFaceDefs(), 6);
+  EXPECT_EQ(aGraph.Defs().NbFaces(), countUnique(aBox, TopAbs_FACE));
+  EXPECT_EQ(aGraph.Defs().NbFaces(), 6);
 }
 
 TEST(BRepGraphBuildTest, Box_EdgeDefCount_MatchesTopExp)
@@ -582,8 +585,8 @@ TEST(BRepGraphBuildTest, Box_EdgeDefCount_MatchesTopExp)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  EXPECT_EQ(aGraph.NbEdgeDefs(), countUnique(aBox, TopAbs_EDGE));
-  EXPECT_EQ(aGraph.NbEdgeDefs(), 12);
+  EXPECT_EQ(aGraph.Defs().NbEdges(), countUnique(aBox, TopAbs_EDGE));
+  EXPECT_EQ(aGraph.Defs().NbEdges(), 12);
 }
 
 TEST(BRepGraphBuildTest, Box_VertexDefCount_MatchesTopExp)
@@ -595,8 +598,8 @@ TEST(BRepGraphBuildTest, Box_VertexDefCount_MatchesTopExp)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  EXPECT_EQ(aGraph.NbVertexDefs(), countUnique(aBox, TopAbs_VERTEX));
-  EXPECT_EQ(aGraph.NbVertexDefs(), 8);
+  EXPECT_EQ(aGraph.Defs().NbVertices(), countUnique(aBox, TopAbs_VERTEX));
+  EXPECT_EQ(aGraph.Defs().NbVertices(), 8);
 }
 
 TEST(BRepGraphBuildTest, Box_VertexPoints_MatchBRepTool)
@@ -612,12 +615,12 @@ TEST(BRepGraphBuildTest, Box_VertexPoints_MatchBRepTool)
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aVertexMap;
   TopExp::MapShapes(aBox, TopAbs_VERTEX, aVertexMap);
 
-  ASSERT_EQ(aGraph.NbVertexDefs(), aVertexMap.Extent());
+  ASSERT_EQ(aGraph.Defs().NbVertices(), aVertexMap.Extent());
 
   // For each graph vertex, verify that a matching TopExp vertex exists.
-  for (int anIdx = 0; anIdx < aGraph.NbVertexDefs(); ++anIdx)
+  for (int anIdx = 0; anIdx < aGraph.Defs().NbVertices(); ++anIdx)
   {
-    const gp_Pnt& aGraphPnt = aGraph.VertexDefinition(anIdx).Point;
+    const gp_Pnt& aGraphPnt = aGraph.Defs().Vertex(anIdx).Point;
     bool aFound = false;
     for (int aMapIdx = 1; aMapIdx <= aVertexMap.Extent(); ++aMapIdx)
     {
@@ -648,9 +651,9 @@ TEST(BRepGraphBuildTest, Box_FaceTolerances_MatchBRepTool)
   TopExp::MapShapes(aBox, TopAbs_FACE, aFaceMap);
 
   // Verify that each graph face tolerance appears in the TopExp set.
-  for (int anIdx = 0; anIdx < aGraph.NbFaceDefs(); ++anIdx)
+  for (int anIdx = 0; anIdx < aGraph.Defs().NbFaces(); ++anIdx)
   {
-    const double aGraphTol = aGraph.FaceDefinition(anIdx).Tolerance;
+    const double aGraphTol = aGraph.Defs().Face(anIdx).Tolerance;
     bool aFound = false;
     for (int aMapIdx = 1; aMapIdx <= aFaceMap.Extent(); ++aMapIdx)
     {
@@ -679,9 +682,9 @@ TEST(BRepGraphBuildTest, Box_EdgeTolerances_MatchBRepTool)
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> anEdgeMap;
   TopExp::MapShapes(aBox, TopAbs_EDGE, anEdgeMap);
 
-  for (int anIdx = 0; anIdx < aGraph.NbEdgeDefs(); ++anIdx)
+  for (int anIdx = 0; anIdx < aGraph.Defs().NbEdges(); ++anIdx)
   {
-    const double aGraphTol = aGraph.EdgeDefinition(anIdx).Tolerance;
+    const double aGraphTol = aGraph.Defs().Edge(anIdx).Tolerance;
     bool aFound = false;
     for (int aMapIdx = 1; aMapIdx <= anEdgeMap.Extent(); ++aMapIdx)
     {
@@ -710,7 +713,7 @@ TEST(BRepGraphBuildTest, Box_EdgeUsageCount_MatchesNonUniqueTopExp)
   // Count total non-unique edge occurrences across all wires in all faces.
   const int aNonUniqueEdges = countNonUnique(aBox, TopAbs_EDGE);
 
-  EXPECT_EQ(aGraph.NbEdgeUsages(), aNonUniqueEdges);
+  EXPECT_EQ(aGraph.Usages().NbEdges(), aNonUniqueEdges);
 }
 
 TEST(BRepGraphBuildTest, Box_VertexUsageCount_MatchesNonUniqueTopExp)
@@ -724,7 +727,7 @@ TEST(BRepGraphBuildTest, Box_VertexUsageCount_MatchesNonUniqueTopExp)
 
   const int aNonUniqueVertices = countNonUnique(aBox, TopAbs_VERTEX);
 
-  EXPECT_EQ(aGraph.NbVertexUsages(), aNonUniqueVertices);
+  EXPECT_EQ(aGraph.Usages().NbVertices(), aNonUniqueVertices);
 }
 
 TEST(BRepGraphBuildTest, Box_AllSurfacesArePlanes)
@@ -736,10 +739,10 @@ TEST(BRepGraphBuildTest, Box_AllSurfacesArePlanes)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  ASSERT_EQ(aGraph.NbSurfaces(), 6);
-  for (int anIdx = 0; anIdx < aGraph.NbSurfaces(); ++anIdx)
+  ASSERT_EQ(aGraph.Geom().NbSurfaces(), 6);
+  for (int anIdx = 0; anIdx < aGraph.Geom().NbSurfaces(); ++anIdx)
   {
-    const Handle(Geom_Surface)& aSurf = aGraph.SurfNode(anIdx).Surface;
+    const Handle(Geom_Surface)& aSurf = aGraph.Geom().Surface(anIdx).Surface;
     ASSERT_FALSE(aSurf.IsNull());
     EXPECT_TRUE(aSurf->DynamicType() == STANDARD_TYPE(Geom_Plane))
       << "Surface " << anIdx << " is not Geom_Plane";
@@ -755,9 +758,9 @@ TEST(BRepGraphBuildTest, Box_NoDegenerateEdges)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  for (int anIdx = 0; anIdx < aGraph.NbEdgeDefs(); ++anIdx)
+  for (int anIdx = 0; anIdx < aGraph.Defs().NbEdges(); ++anIdx)
   {
-    EXPECT_FALSE(aGraph.EdgeDefinition(anIdx).IsDegenerate)
+    EXPECT_FALSE(aGraph.Defs().Edge(anIdx).IsDegenerate)
       << "Box edge " << anIdx << " is degenerate unexpectedly";
   }
 }
@@ -771,9 +774,9 @@ TEST(BRepGraphBuildTest, Box_EdgeVertexDefsAreValid)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  for (int anIdx = 0; anIdx < aGraph.NbEdgeDefs(); ++anIdx)
+  for (int anIdx = 0; anIdx < aGraph.Defs().NbEdges(); ++anIdx)
   {
-    const auto& anEdge = aGraph.EdgeDefinition(anIdx);
+    const auto& anEdge = aGraph.Defs().Edge(anIdx);
     EXPECT_TRUE(anEdge.StartVertexDefId.IsValid())
       << "Edge " << anIdx << " has invalid start vertex";
     EXPECT_TRUE(anEdge.EndVertexDefId.IsValid())
@@ -792,14 +795,14 @@ TEST(BRepGraphBuildTest, Box_FaceSurfNodeIdsAreValid)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  for (int anIdx = 0; anIdx < aGraph.NbFaceDefs(); ++anIdx)
+  for (int anIdx = 0; anIdx < aGraph.Defs().NbFaces(); ++anIdx)
   {
-    const auto& aFace = aGraph.FaceDefinition(anIdx);
+    const auto& aFace = aGraph.Defs().Face(anIdx);
     EXPECT_TRUE(aFace.SurfNodeId.IsValid())
       << "Face " << anIdx << " has invalid SurfNodeId";
     EXPECT_EQ(aFace.SurfNodeId.Kind, BRepGraph_NodeKind::Surface);
     EXPECT_GE(aFace.SurfNodeId.Index, 0);
-    EXPECT_LT(aFace.SurfNodeId.Index, aGraph.NbSurfaces());
+    EXPECT_LT(aFace.SurfNodeId.Index, aGraph.Geom().NbSurfaces());
   }
 }
 
@@ -812,9 +815,9 @@ TEST(BRepGraphBuildTest, Box_EdgeParamRange_IsNonDegenerate)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  for (int anIdx = 0; anIdx < aGraph.NbEdgeDefs(); ++anIdx)
+  for (int anIdx = 0; anIdx < aGraph.Defs().NbEdges(); ++anIdx)
   {
-    const auto& anEdge = aGraph.EdgeDefinition(anIdx);
+    const auto& anEdge = aGraph.Defs().Edge(anIdx);
     EXPECT_LT(anEdge.ParamFirst, anEdge.ParamLast)
       << "Edge " << anIdx << " has invalid parameter range ["
       << anEdge.ParamFirst << ", " << anEdge.ParamLast << "]";

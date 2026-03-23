@@ -13,6 +13,8 @@
 
 #include <BRep_Builder.hxx>
 #include <BRepGraph.hxx>
+#include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_UsagesView.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
@@ -47,10 +49,10 @@ protected:
 TEST_F(BRepGraphSharingTest, EdgeDef_EachHasExactlyTwoUsages)
 {
   ASSERT_TRUE(myGraph.IsDone());
-  EXPECT_EQ(myGraph.NbEdgeDefs(), 12);
-  for (int anIdx = 0; anIdx < myGraph.NbEdgeDefs(); ++anIdx)
+  EXPECT_EQ(myGraph.Defs().NbEdges(), 12);
+  for (int anIdx = 0; anIdx < myGraph.Defs().NbEdges(); ++anIdx)
   {
-    const BRepGraph_TopoNode::EdgeDef& aDef = myGraph.EdgeDefinition(anIdx);
+    const BRepGraph_TopoNode::EdgeDef& aDef = myGraph.Defs().Edge(anIdx);
     EXPECT_EQ(aDef.Usages.Length(), 2)
       << "Edge def " << anIdx << " expected 2 usages, got " << aDef.Usages.Length();
   }
@@ -59,10 +61,10 @@ TEST_F(BRepGraphSharingTest, EdgeDef_EachHasExactlyTwoUsages)
 TEST_F(BRepGraphSharingTest, VertexDef_EachHasSixUsages)
 {
   ASSERT_TRUE(myGraph.IsDone());
-  EXPECT_EQ(myGraph.NbVertexDefs(), 8);
-  for (int anIdx = 0; anIdx < myGraph.NbVertexDefs(); ++anIdx)
+  EXPECT_EQ(myGraph.Defs().NbVertices(), 8);
+  for (int anIdx = 0; anIdx < myGraph.Defs().NbVertices(); ++anIdx)
   {
-    const BRepGraph_TopoNode::VertexDef& aDef = myGraph.VertexDefinition(anIdx);
+    const BRepGraph_TopoNode::VertexDef& aDef = myGraph.Defs().Vertex(anIdx);
     // Each vertex is shared by 3 edges, and each edge has 2 usages (one per adjacent face),
     // so each vertex gets 3*2=6 vertex usages.
     EXPECT_EQ(aDef.Usages.Length(), 6)
@@ -73,10 +75,10 @@ TEST_F(BRepGraphSharingTest, VertexDef_EachHasSixUsages)
 TEST_F(BRepGraphSharingTest, FaceDef_EachHasExactlyOneUsage)
 {
   ASSERT_TRUE(myGraph.IsDone());
-  EXPECT_EQ(myGraph.NbFaceDefs(), 6);
-  for (int anIdx = 0; anIdx < myGraph.NbFaceDefs(); ++anIdx)
+  EXPECT_EQ(myGraph.Defs().NbFaces(), 6);
+  for (int anIdx = 0; anIdx < myGraph.Defs().NbFaces(); ++anIdx)
   {
-    const BRepGraph_TopoNode::FaceDef& aDef = myGraph.FaceDefinition(anIdx);
+    const BRepGraph_TopoNode::FaceDef& aDef = myGraph.Defs().Face(anIdx);
     EXPECT_EQ(aDef.Usages.Length(), 1)
       << "Face def " << anIdx << " expected 1 usage, got " << aDef.Usages.Length();
   }
@@ -85,16 +87,16 @@ TEST_F(BRepGraphSharingTest, FaceDef_EachHasExactlyOneUsage)
 TEST_F(BRepGraphSharingTest, SolidDef_HasExactlyOneUsage)
 {
   ASSERT_TRUE(myGraph.IsDone());
-  EXPECT_EQ(myGraph.NbSolidDefs(), 1);
-  const BRepGraph_TopoNode::SolidDef& aDef = myGraph.SolidDefinition(0);
+  EXPECT_EQ(myGraph.Defs().NbSolids(), 1);
+  const BRepGraph_TopoNode::SolidDef& aDef = myGraph.Defs().Solid(0);
   EXPECT_EQ(aDef.Usages.Length(), 1);
 }
 
 TEST_F(BRepGraphSharingTest, ShellDef_HasExactlyOneUsage)
 {
   ASSERT_TRUE(myGraph.IsDone());
-  EXPECT_EQ(myGraph.NbShellDefs(), 1);
-  const BRepGraph_TopoNode::ShellDef& aDef = myGraph.ShellDefinition(0);
+  EXPECT_EQ(myGraph.Defs().NbShells(), 1);
+  const BRepGraph_TopoNode::ShellDef& aDef = myGraph.Defs().Shell(0);
   EXPECT_EQ(aDef.Usages.Length(), 1);
 }
 
@@ -105,9 +107,9 @@ TEST_F(BRepGraphSharingTest, ShellDef_HasExactlyOneUsage)
 TEST_F(BRepGraphSharingTest, DefOf_EachEdgeUsage_RoundTrips)
 {
   ASSERT_TRUE(myGraph.IsDone());
-  for (int anIdx = 0; anIdx < myGraph.NbEdgeDefs(); ++anIdx)
+  for (int anIdx = 0; anIdx < myGraph.Defs().NbEdges(); ++anIdx)
   {
-    const BRepGraph_TopoNode::EdgeDef& aDef = myGraph.EdgeDefinition(anIdx);
+    const BRepGraph_TopoNode::EdgeDef& aDef = myGraph.Defs().Edge(anIdx);
     for (int aUsIdx = 0; aUsIdx < aDef.Usages.Length(); ++aUsIdx)
     {
       const BRepGraph_UsageId& aUsageId = aDef.Usages.Value(aUsIdx);
@@ -121,9 +123,9 @@ TEST_F(BRepGraphSharingTest, DefOf_EachEdgeUsage_RoundTrips)
 TEST_F(BRepGraphSharingTest, DefOf_EachFaceUsage_RoundTrips)
 {
   ASSERT_TRUE(myGraph.IsDone());
-  for (int anIdx = 0; anIdx < myGraph.NbFaceDefs(); ++anIdx)
+  for (int anIdx = 0; anIdx < myGraph.Defs().NbFaces(); ++anIdx)
   {
-    const BRepGraph_TopoNode::FaceDef& aDef = myGraph.FaceDefinition(anIdx);
+    const BRepGraph_TopoNode::FaceDef& aDef = myGraph.Defs().Face(anIdx);
     for (int aUsIdx = 0; aUsIdx < aDef.Usages.Length(); ++aUsIdx)
     {
       const BRepGraph_UsageId& aUsageId = aDef.Usages.Value(aUsIdx);
@@ -137,9 +139,9 @@ TEST_F(BRepGraphSharingTest, DefOf_EachFaceUsage_RoundTrips)
 TEST_F(BRepGraphSharingTest, DefOf_EachVertexUsage_RoundTrips)
 {
   ASSERT_TRUE(myGraph.IsDone());
-  for (int anIdx = 0; anIdx < myGraph.NbVertexDefs(); ++anIdx)
+  for (int anIdx = 0; anIdx < myGraph.Defs().NbVertices(); ++anIdx)
   {
-    const BRepGraph_TopoNode::VertexDef& aDef = myGraph.VertexDefinition(anIdx);
+    const BRepGraph_TopoNode::VertexDef& aDef = myGraph.Defs().Vertex(anIdx);
     for (int aUsIdx = 0; aUsIdx < aDef.Usages.Length(); ++aUsIdx)
     {
       const BRepGraph_UsageId& aUsageId = aDef.Usages.Value(aUsIdx);
@@ -157,29 +159,29 @@ TEST_F(BRepGraphSharingTest, DefOf_EachVertexUsage_RoundTrips)
 TEST_F(BRepGraphSharingTest, SolidUsage_ContainsOneShellUsage)
 {
   ASSERT_TRUE(myGraph.IsDone());
-  EXPECT_EQ(myGraph.NbSolidUsages(), 1);
-  const BRepGraph_TopoNode::SolidUsage& aSolidUsage = myGraph.SolidUsageNode(0);
+  EXPECT_EQ(myGraph.Usages().NbSolids(), 1);
+  const BRepGraph_TopoNode::SolidUsage& aSolidUsage = myGraph.Usages().Solid(0);
   EXPECT_EQ(aSolidUsage.ShellUsages.Length(), 1);
 }
 
 TEST_F(BRepGraphSharingTest, ShellUsage_ContainsSixFaceUsages)
 {
   ASSERT_TRUE(myGraph.IsDone());
-  EXPECT_EQ(myGraph.NbShellUsages(), 1);
-  const BRepGraph_TopoNode::ShellUsage& aShellUsage = myGraph.ShellUsageNode(0);
+  EXPECT_EQ(myGraph.Usages().NbShells(), 1);
+  const BRepGraph_TopoNode::ShellUsage& aShellUsage = myGraph.Usages().Shell(0);
   EXPECT_EQ(aShellUsage.FaceUsages.Length(), 6);
 }
 
 TEST_F(BRepGraphSharingTest, FaceUsage_OuterWireUsage_BackRef)
 {
   ASSERT_TRUE(myGraph.IsDone());
-  for (int anIdx = 0; anIdx < myGraph.NbFaceUsages(); ++anIdx)
+  for (int anIdx = 0; anIdx < myGraph.Usages().NbFaces(); ++anIdx)
   {
-    const BRepGraph_TopoNode::FaceUsage& aFaceUsage = myGraph.FaceUsageNode(anIdx);
+    const BRepGraph_TopoNode::FaceUsage& aFaceUsage = myGraph.Usages().Face(anIdx);
     ASSERT_TRUE(aFaceUsage.OuterWireUsage.IsValid())
       << "Face usage " << anIdx << " has no outer wire usage";
     const BRepGraph_TopoNode::WireUsage& aWireUsage =
-      myGraph.WireUsageNode(aFaceUsage.OuterWireUsage.Index);
+      myGraph.Usages().Wire(aFaceUsage.OuterWireUsage.Index);
     EXPECT_EQ(aWireUsage.OwnerFaceUsage.Index, aFaceUsage.UsageId.Index)
       << "Outer wire usage of face " << anIdx << " does not back-reference the face";
   }
@@ -188,11 +190,11 @@ TEST_F(BRepGraphSharingTest, FaceUsage_OuterWireUsage_BackRef)
 TEST_F(BRepGraphSharingTest, WireUsage_EdgeUsagesCount_MatchesOrderedEdges)
 {
   ASSERT_TRUE(myGraph.IsDone());
-  for (int anIdx = 0; anIdx < myGraph.NbWireUsages(); ++anIdx)
+  for (int anIdx = 0; anIdx < myGraph.Usages().NbWires(); ++anIdx)
   {
-    const BRepGraph_TopoNode::WireUsage& aWireUsage = myGraph.WireUsageNode(anIdx);
+    const BRepGraph_TopoNode::WireUsage& aWireUsage = myGraph.Usages().Wire(anIdx);
     BRepGraph_NodeId aWireDefId = myGraph.DefOf(aWireUsage.UsageId);
-    const BRepGraph_TopoNode::WireDef& aWireDef = myGraph.WireDefinition(aWireDefId.Index);
+    const BRepGraph_TopoNode::WireDef& aWireDef = myGraph.Defs().Wire(aWireDefId.Index);
     EXPECT_EQ(aWireUsage.EdgeUsages.Length(), aWireDef.OrderedEdges.Length())
       << "Wire usage " << anIdx << " edge usages count does not match ordered edges count";
     // Box face wires have 4 edges
@@ -204,9 +206,9 @@ TEST_F(BRepGraphSharingTest, WireUsage_EdgeUsagesCount_MatchesOrderedEdges)
 TEST_F(BRepGraphSharingTest, EdgeUsage_VertexUsages_BothValid)
 {
   ASSERT_TRUE(myGraph.IsDone());
-  for (int anIdx = 0; anIdx < myGraph.NbEdgeUsages(); ++anIdx)
+  for (int anIdx = 0; anIdx < myGraph.Usages().NbEdges(); ++anIdx)
   {
-    const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage = myGraph.EdgeUsageNode(anIdx);
+    const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage = myGraph.Usages().Edge(anIdx);
     EXPECT_TRUE(anEdgeUsage.StartVertexUsage.IsValid())
       << "Edge usage " << anIdx << " has invalid start vertex usage";
     EXPECT_TRUE(anEdgeUsage.EndVertexUsage.IsValid())
@@ -222,15 +224,15 @@ TEST_F(BRepGraphSharingTest, SharedEdge_TwoUsages_DifferentOrientation)
 {
   ASSERT_TRUE(myGraph.IsDone());
   int aDiffOrientCount = 0;
-  for (int anIdx = 0; anIdx < myGraph.NbEdgeDefs(); ++anIdx)
+  for (int anIdx = 0; anIdx < myGraph.Defs().NbEdges(); ++anIdx)
   {
-    const BRepGraph_TopoNode::EdgeDef& aDef = myGraph.EdgeDefinition(anIdx);
+    const BRepGraph_TopoNode::EdgeDef& aDef = myGraph.Defs().Edge(anIdx);
     if (aDef.Usages.Length() != 2)
       continue;
     const BRepGraph_TopoNode::EdgeUsage& aUsage0 =
-      myGraph.EdgeUsageNode(aDef.Usages.Value(0).Index);
+      myGraph.Usages().Edge(aDef.Usages.Value(0).Index);
     const BRepGraph_TopoNode::EdgeUsage& aUsage1 =
-      myGraph.EdgeUsageNode(aDef.Usages.Value(1).Index);
+      myGraph.Usages().Edge(aDef.Usages.Value(1).Index);
     if (aUsage0.Orientation != aUsage1.Orientation)
     {
       ++aDiffOrientCount;
@@ -245,9 +247,9 @@ TEST_F(BRepGraphSharingTest, SharedEdge_TwoUsages_DifferentOrientation)
 TEST_F(BRepGraphSharingTest, NonClosedEdge_StartEnd_Different)
 {
   ASSERT_TRUE(myGraph.IsDone());
-  for (int anIdx = 0; anIdx < myGraph.NbEdgeDefs(); ++anIdx)
+  for (int anIdx = 0; anIdx < myGraph.Defs().NbEdges(); ++anIdx)
   {
-    const BRepGraph_TopoNode::EdgeDef& aDef = myGraph.EdgeDefinition(anIdx);
+    const BRepGraph_TopoNode::EdgeDef& aDef = myGraph.Defs().Edge(anIdx);
     if (aDef.IsDegenerate)
       continue;
     // Box edges are not closed, so start and end vertex defs must differ
@@ -260,11 +262,11 @@ TEST_F(BRepGraphSharingTest, NonClosedEdge_StartEnd_Different)
 TEST_F(BRepGraphSharingTest, VertexUsage_TransformedPoint_MatchesDefForIdentityLoc)
 {
   ASSERT_TRUE(myGraph.IsDone());
-  for (int anIdx = 0; anIdx < myGraph.NbVertexUsages(); ++anIdx)
+  for (int anIdx = 0; anIdx < myGraph.Usages().NbVertices(); ++anIdx)
   {
-    const BRepGraph_TopoNode::VertexUsage& aUsage = myGraph.VertexUsageNode(anIdx);
+    const BRepGraph_TopoNode::VertexUsage& aUsage = myGraph.Usages().Vertex(anIdx);
     BRepGraph_NodeId aDefId = myGraph.DefOf(aUsage.UsageId);
-    const BRepGraph_TopoNode::VertexDef& aDef = myGraph.VertexDefinition(aDefId.Index);
+    const BRepGraph_TopoNode::VertexDef& aDef = myGraph.Defs().Vertex(aDefId.Index);
     // For a simple box without additional locations, transformed point should match def point
     if (aUsage.GlobalLocation.IsIdentity())
     {
@@ -296,18 +298,18 @@ TEST(BRepGraphSharingCompoundTest, CompoundTwoIdenticalBoxes)
 
   // Same TShape added twice to compound: each occurrence creates a separate solid def,
   // but sub-shapes (faces, edges, vertices) are shared at the TShape level.
-  EXPECT_EQ(aGraph.NbSolidDefs(), 2);
-  EXPECT_EQ(aGraph.NbSolidUsages(), 2);
+  EXPECT_EQ(aGraph.Defs().NbSolids(), 2);
+  EXPECT_EQ(aGraph.Usages().NbSolids(), 2);
 
   // Face/edge/vertex defs are shared (same TShape), so counts stay at single-box levels.
-  EXPECT_EQ(aGraph.NbFaceDefs(), 6);
-  EXPECT_EQ(aGraph.NbEdgeDefs(), 12);
-  EXPECT_EQ(aGraph.NbVertexDefs(), 8);
+  EXPECT_EQ(aGraph.Defs().NbFaces(), 6);
+  EXPECT_EQ(aGraph.Defs().NbEdges(), 12);
+  EXPECT_EQ(aGraph.Defs().NbVertices(), 8);
 
   // Usages must exceed defs since each compound child creates its own usages.
-  EXPECT_GT(aGraph.NbFaceUsages(), aGraph.NbFaceDefs());
-  EXPECT_GT(aGraph.NbEdgeUsages(), aGraph.NbEdgeDefs());
-  EXPECT_GT(aGraph.NbVertexUsages(), aGraph.NbVertexDefs());
+  EXPECT_GT(aGraph.Usages().NbFaces(), aGraph.Defs().NbFaces());
+  EXPECT_GT(aGraph.Usages().NbEdges(), aGraph.Defs().NbEdges());
+  EXPECT_GT(aGraph.Usages().NbVertices(), aGraph.Defs().NbVertices());
 }
 
 TEST(BRepGraphSharingCompoundTest, CompoundTwoDistinctBoxes)
@@ -329,16 +331,16 @@ TEST(BRepGraphSharingCompoundTest, CompoundTwoDistinctBoxes)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Two different TShapes: no sharing, definitions are independent
-  EXPECT_EQ(aGraph.NbSolidDefs(), 2);
-  EXPECT_EQ(aGraph.NbFaceDefs(), 12);
-  EXPECT_EQ(aGraph.NbEdgeDefs(), 24);
-  EXPECT_EQ(aGraph.NbVertexDefs(), 16);
+  EXPECT_EQ(aGraph.Defs().NbSolids(), 2);
+  EXPECT_EQ(aGraph.Defs().NbFaces(), 12);
+  EXPECT_EQ(aGraph.Defs().NbEdges(), 24);
+  EXPECT_EQ(aGraph.Defs().NbVertices(), 16);
 
   // Each solid def has exactly 1 usage
-  EXPECT_EQ(aGraph.NbSolidUsages(), 2);
-  for (int anIdx = 0; anIdx < aGraph.NbSolidDefs(); ++anIdx)
+  EXPECT_EQ(aGraph.Usages().NbSolids(), 2);
+  for (int anIdx = 0; anIdx < aGraph.Defs().NbSolids(); ++anIdx)
   {
-    EXPECT_EQ(aGraph.SolidDefinition(anIdx).Usages.Length(), 1);
+    EXPECT_EQ(aGraph.Defs().Solid(anIdx).Usages.Length(), 1);
   }
 }
 
@@ -362,14 +364,14 @@ TEST(BRepGraphSharingCompoundTest, CompoundWithLocation_MoreUsagesThanDefs)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Same TShape with different locations: defs are shared, usages are doubled
-  EXPECT_EQ(aGraph.NbFaceDefs(), 6);
-  EXPECT_EQ(aGraph.NbEdgeDefs(), 12);
-  EXPECT_EQ(aGraph.NbVertexDefs(), 8);
+  EXPECT_EQ(aGraph.Defs().NbFaces(), 6);
+  EXPECT_EQ(aGraph.Defs().NbEdges(), 12);
+  EXPECT_EQ(aGraph.Defs().NbVertices(), 8);
 
   // Usages must exceed defs since each occurrence creates its own usage
-  EXPECT_GT(aGraph.NbFaceUsages(), aGraph.NbFaceDefs());
-  EXPECT_GT(aGraph.NbEdgeUsages(), aGraph.NbEdgeDefs());
-  EXPECT_GT(aGraph.NbVertexUsages(), aGraph.NbVertexDefs());
+  EXPECT_GT(aGraph.Usages().NbFaces(), aGraph.Defs().NbFaces());
+  EXPECT_GT(aGraph.Usages().NbEdges(), aGraph.Defs().NbEdges());
+  EXPECT_GT(aGraph.Usages().NbVertices(), aGraph.Defs().NbVertices());
 }
 
 TEST(BRepGraphSharingCompoundTest, TranslatedCopy_SameTShape_SharedDefs)
@@ -393,16 +395,16 @@ TEST(BRepGraphSharingCompoundTest, TranslatedCopy_SameTShape_SharedDefs)
 
   // Moved() preserves TShape, so sub-shape definitions are shared,
   // but each solid occurrence in the compound creates a separate solid def.
-  EXPECT_EQ(aGraph.NbSolidDefs(), 2);
-  EXPECT_EQ(aGraph.NbSolidUsages(), 2);
+  EXPECT_EQ(aGraph.Defs().NbSolids(), 2);
+  EXPECT_EQ(aGraph.Usages().NbSolids(), 2);
 
   // Face/edge/vertex defs are shared (same TShape).
-  EXPECT_EQ(aGraph.NbFaceDefs(), 6);
-  EXPECT_EQ(aGraph.NbEdgeDefs(), 12);
-  EXPECT_EQ(aGraph.NbVertexDefs(), 8);
+  EXPECT_EQ(aGraph.Defs().NbFaces(), 6);
+  EXPECT_EQ(aGraph.Defs().NbEdges(), 12);
+  EXPECT_EQ(aGraph.Defs().NbVertices(), 8);
 
   // Usages must exceed defs since each occurrence creates its own usages.
-  EXPECT_GT(aGraph.NbFaceUsages(), aGraph.NbFaceDefs());
-  EXPECT_GT(aGraph.NbEdgeUsages(), aGraph.NbEdgeDefs());
-  EXPECT_GT(aGraph.NbVertexUsages(), aGraph.NbVertexDefs());
+  EXPECT_GT(aGraph.Usages().NbFaces(), aGraph.Defs().NbFaces());
+  EXPECT_GT(aGraph.Usages().NbEdges(), aGraph.Defs().NbEdges());
+  EXPECT_GT(aGraph.Usages().NbVertices(), aGraph.Defs().NbVertices());
 }

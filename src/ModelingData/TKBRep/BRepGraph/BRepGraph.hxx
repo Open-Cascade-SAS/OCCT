@@ -61,7 +61,7 @@ class BRepGraph_Mutator;
 //! Related methods are grouped behind lightweight view objects returned by
 //! value.  Each view is a zero-cost inner class holding a single pointer.
 //! Include the corresponding header (e.g. BRepGraph_DefsView.hxx) to use.
-//! All 92 flat methods remain available unchanged.
+//! Views are the primary public API for querying and mutating the graph.
 //!
 //! ## Thread safety
 //! All const query methods (including lazy cache Gets) are thread-safe.
@@ -87,138 +87,8 @@ public:
   //! Return true if the graph was successfully built.
   Standard_EXPORT bool IsDone() const;
 
-  //! Number of solid definitions in the graph.
-  Standard_EXPORT int NbSolidDefs() const;
-
-  //! Number of shell definitions in the graph.
-  Standard_EXPORT int NbShellDefs() const;
-
-  //! Number of face definitions in the graph.
-  Standard_EXPORT int NbFaceDefs() const;
-
-  //! Number of wire definitions in the graph.
-  Standard_EXPORT int NbWireDefs() const;
-
-  //! Number of edge definitions in the graph.
-  Standard_EXPORT int NbEdgeDefs() const;
-
-  //! Number of vertex definitions in the graph.
-  Standard_EXPORT int NbVertexDefs() const;
-
-  //! Number of compound definitions in the graph.
-  Standard_EXPORT int NbCompoundDefs() const;
-
-  //! Number of compsolid definitions in the graph.
-  Standard_EXPORT int NbCompSolidDefs() const;
-
-  //! Number of surface geometry nodes in the graph.
-  Standard_EXPORT int NbSurfaces() const;
-
-  //! Number of 3D curve geometry nodes in the graph.
-  Standard_EXPORT int NbCurves() const;
-
-  //! Number of 2D PCurve geometry nodes in the graph.
-  Standard_EXPORT int NbPCurves() const;
-
-  //! Number of solid usage nodes in the graph.
-  Standard_EXPORT int NbSolidUsages() const;
-
-  //! Number of shell usage nodes in the graph.
-  Standard_EXPORT int NbShellUsages() const;
-
-  //! Number of face usage nodes in the graph.
-  Standard_EXPORT int NbFaceUsages() const;
-
-  //! Number of wire usage nodes in the graph.
-  Standard_EXPORT int NbWireUsages() const;
-
-  //! Number of edge usage nodes in the graph.
-  Standard_EXPORT int NbEdgeUsages() const;
-
-  //! Number of vertex usage nodes in the graph.
-  Standard_EXPORT int NbVertexUsages() const;
-
-  //! Number of compound usage nodes in the graph.
-  Standard_EXPORT int NbCompoundUsages() const;
-
-  //! Number of compsolid usage nodes in the graph.
-  Standard_EXPORT int NbCompSolidUsages() const;
-
-  //! Access solid definition by index.
-  //! @param[in] theIdx zero-based definition index
-  Standard_EXPORT const BRepGraph_TopoNode::SolidDef& SolidDefinition(int theIdx) const;
-
-  //! Access shell definition by index.
-  //! @param[in] theIdx zero-based definition index
-  Standard_EXPORT const BRepGraph_TopoNode::ShellDef& ShellDefinition(int theIdx) const;
-
-  //! Access face definition by index.
-  //! @param[in] theIdx zero-based definition index
-  Standard_EXPORT const BRepGraph_TopoNode::FaceDef& FaceDefinition(int theIdx) const;
-
-  //! Access wire definition by index.
-  //! @param[in] theIdx zero-based definition index
-  Standard_EXPORT const BRepGraph_TopoNode::WireDef& WireDefinition(int theIdx) const;
-
-  //! Access edge definition by index.
-  //! @param[in] theIdx zero-based definition index
-  Standard_EXPORT const BRepGraph_TopoNode::EdgeDef& EdgeDefinition(int theIdx) const;
-
-  //! Access vertex definition by index.
-  //! @param[in] theIdx zero-based definition index
-  Standard_EXPORT const BRepGraph_TopoNode::VertexDef& VertexDefinition(int theIdx) const;
-
-  //! Access compound definition by index.
-  //! @param[in] theIdx zero-based definition index
-  Standard_EXPORT const BRepGraph_TopoNode::CompoundDef& CompoundDefinition(int theIdx) const;
-
-  //! Access compsolid definition by index.
-  //! @param[in] theIdx zero-based definition index
-  Standard_EXPORT const BRepGraph_TopoNode::CompSolidDef& CompSolidDefinition(int theIdx) const;
-
-  //! Access surface geometry node by index.
-  //! @param[in] theIdx zero-based surface index
-  Standard_EXPORT const BRepGraph_GeomNode::Surf& SurfNode(int theIdx) const;
-
-  //! Access 3D curve geometry node by index.
-  //! @param[in] theIdx zero-based curve index
-  Standard_EXPORT const BRepGraph_GeomNode::Curve& CurveNode(int theIdx) const;
-
-  //! Access PCurve geometry node by index.
-  //! @param[in] theIdx zero-based PCurve index
-  Standard_EXPORT const BRepGraph_GeomNode::PCurve& PCurveNode(int theIdx) const;
-
-  //! Access solid usage node by index.
-  //! @param[in] theIdx zero-based usage index
-  Standard_EXPORT const BRepGraph_TopoNode::SolidUsage& SolidUsageNode(int theIdx) const;
-
-  //! Access shell usage node by index.
-  //! @param[in] theIdx zero-based usage index
-  Standard_EXPORT const BRepGraph_TopoNode::ShellUsage& ShellUsageNode(int theIdx) const;
-
-  //! Access face usage node by index.
-  //! @param[in] theIdx zero-based usage index
-  Standard_EXPORT const BRepGraph_TopoNode::FaceUsage& FaceUsageNode(int theIdx) const;
-
-  //! Access wire usage node by index.
-  //! @param[in] theIdx zero-based usage index
-  Standard_EXPORT const BRepGraph_TopoNode::WireUsage& WireUsageNode(int theIdx) const;
-
-  //! Access edge usage node by index.
-  //! @param[in] theIdx zero-based usage index
-  Standard_EXPORT const BRepGraph_TopoNode::EdgeUsage& EdgeUsageNode(int theIdx) const;
-
-  //! Access vertex usage node by index.
-  //! @param[in] theIdx zero-based usage index
-  Standard_EXPORT const BRepGraph_TopoNode::VertexUsage& VertexUsageNode(int theIdx) const;
-
-  //! Access compound usage node by index.
-  //! @param[in] theIdx zero-based usage index
-  Standard_EXPORT const BRepGraph_TopoNode::CompoundUsage& CompoundUsageNode(int theIdx) const;
-
-  //! Access compsolid usage node by index.
-  //! @param[in] theIdx zero-based usage index
-  Standard_EXPORT const BRepGraph_TopoNode::CompSolidUsage& CompSolidUsageNode(int theIdx) const;
+  //! Enable or disable UID generation for newly created nodes.
+  Standard_EXPORT void SetUIDEnabled(bool theVal);
 
   //! Return all usages of a given definition.
   Standard_EXPORT const NCollection_Vector<BRepGraph_UsageId>& UsagesOf(
@@ -226,389 +96,6 @@ public:
 
   //! Return the definition NodeId for a given usage.
   Standard_EXPORT BRepGraph_NodeId DefOf(BRepGraph_UsageId theUsageId) const;
-
-  //! Generic topology definition lookup by NodeId.
-  //! @return pointer to BaseDef or nullptr if invalid
-  Standard_EXPORT const BRepGraph_TopoNode::BaseDef* TopoDef(BRepGraph_NodeId theId) const;
-
-  //! Total number of nodes in the graph (all kinds).
-  Standard_EXPORT size_t NbNodes() const;
-
-  //! Enable or disable UID generation for newly created nodes.
-  Standard_EXPORT void SetUIDEnabled(bool theVal);
-
-  //! Check if UID generation is enabled.
-  Standard_EXPORT bool IsUIDEnabled() const;
-
-  //! Return the UID assigned to a node (empty if UIDs are disabled).
-  Standard_EXPORT BRepGraph_UID UIDOf(BRepGraph_NodeId theNode) const;
-
-  //! Resolve a UID back to a NodeId.
-  Standard_EXPORT BRepGraph_NodeId NodeIdFromUID(const BRepGraph_UID& theUID) const;
-
-  //! Check if a UID is valid and exists in this graph generation.
-  Standard_EXPORT bool HasUID(const BRepGraph_UID& theUID) const;
-
-  //! Current generation counter (incremented on each Build).
-  Standard_EXPORT uint32_t Generation() const;
-
-  //! Add a directed relation edge between two nodes.
-  //! @return index of the new edge in the outgoing vector of theFrom
-  Standard_EXPORT int AddRelEdge(BRepGraph_NodeId  theFrom,
-                                 BRepGraph_NodeId  theTo,
-                                 BRepGraph_RelKind theKind);
-
-  //! Remove all relation edges of a given kind between two nodes.
-  Standard_EXPORT void RemoveRelEdges(BRepGraph_NodeId  theFrom,
-                                      BRepGraph_NodeId  theTo,
-                                      BRepGraph_RelKind theKind);
-
-  //! Number of outgoing relation edges from a node.
-  Standard_EXPORT int NbRelEdgesFrom(BRepGraph_NodeId theNode) const;
-
-  //! Number of incoming relation edges to a node.
-  Standard_EXPORT int NbRelEdgesTo(BRepGraph_NodeId theNode) const;
-
-  //! Access outgoing RelEdge vector for a node.
-  //! @return pointer to the vector or nullptr if none
-  Standard_EXPORT const NCollection_Vector<BRepGraph_RelEdge>* OutRelEdgesOf(
-    BRepGraph_NodeId theNode) const;
-
-  //! Access incoming RelEdge vector for a node.
-  //! @return pointer to the vector or nullptr if none
-  Standard_EXPORT const NCollection_Vector<BRepGraph_RelEdge>* InRelEdgesOf(
-    BRepGraph_NodeId theNode) const;
-
-  //! Invoke a callback for each outgoing RelEdge of a given kind.
-  //! @param[in] theNodeId source node
-  //! @param[in] theKind   relation kind to filter by
-  //! @param[in] theCallback callback receiving each matching BRepGraph_RelEdge
-  template <typename Func>
-  void ForEachOutEdgeOfKind(BRepGraph_NodeId  theNodeId,
-                            BRepGraph_RelKind theKind,
-                            const Func&       theCallback) const
-  {
-    const NCollection_Vector<BRepGraph_RelEdge>* aEdges = OutRelEdgesOf(theNodeId);
-    if (aEdges == nullptr)
-      return;
-    for (int anIdx = 0; anIdx < aEdges->Length(); ++anIdx)
-    {
-      const BRepGraph_RelEdge& anEdge = aEdges->Value(anIdx);
-      if (anEdge.Kind == theKind)
-        theCallback(anEdge);
-    }
-  }
-
-  //! Invoke a callback for each incoming RelEdge of a given kind.
-  //! @param[in] theNodeId target node
-  //! @param[in] theKind   relation kind to filter by
-  //! @param[in] theCallback callback receiving each matching BRepGraph_RelEdge
-  template <typename Func>
-  void ForEachInEdgeOfKind(BRepGraph_NodeId  theNodeId,
-                           BRepGraph_RelKind theKind,
-                           const Func&       theCallback) const
-  {
-    const NCollection_Vector<BRepGraph_RelEdge>* aEdges = InRelEdgesOf(theNodeId);
-    if (aEdges == nullptr)
-      return;
-    for (int anIdx = 0; anIdx < aEdges->Length(); ++anIdx)
-    {
-      const BRepGraph_RelEdge& anEdge = aEdges->Value(anIdx);
-      if (anEdge.Kind == theKind)
-        theCallback(anEdge);
-    }
-  }
-
-  //! Return the surface definition NodeId for a face definition.
-  Standard_EXPORT BRepGraph_NodeId SurfaceOf(BRepGraph_NodeId theFaceDef) const;
-
-  //! Return all face definitions that reference a given surface.
-  Standard_EXPORT const NCollection_Vector<BRepGraph_NodeId>& FacesOnSurface(
-    BRepGraph_NodeId theSurf) const;
-
-  //! Return the 3D curve definition NodeId for an edge definition.
-  Standard_EXPORT BRepGraph_NodeId CurveOf(BRepGraph_NodeId theEdgeDef) const;
-
-  //! Return all edge definitions that reference a given 3D curve.
-  Standard_EXPORT const NCollection_Vector<BRepGraph_NodeId>& EdgesOnCurve(
-    BRepGraph_NodeId theCurve) const;
-
-  //! Return the PCurve NodeId for an edge on a given face.
-  Standard_EXPORT BRepGraph_NodeId PCurveOf(BRepGraph_NodeId theEdgeDef,
-                                            BRepGraph_NodeId theFaceDef) const;
-
-  //! Return the PCurve NodeId for an edge/face/orientation triple.
-  //! For seam edges two PCurve nodes share the same FaceDefId but differ in orientation;
-  //! use this overload to distinguish FORWARD (C1) from REVERSED (C2).
-  Standard_EXPORT BRepGraph_NodeId PCurveOf(BRepGraph_NodeId   theEdgeDef,
-                                            BRepGraph_NodeId   theFaceDef,
-                                            TopAbs_Orientation theEdgeOrientation) const;
-
-  //! Accumulated global transform for a usage.
-  Standard_EXPORT gp_Trsf GlobalTransform(BRepGraph_UsageId theUsage) const;
-
-  //! Accumulated global transform for a definition (from first usage).
-  Standard_EXPORT gp_Trsf GlobalTransform(BRepGraph_NodeId theDefId) const;
-
-  //! Return all face definitions sharing the same surface as the given face.
-  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> SameDomainFaces(
-    BRepGraph_NodeId theFaceDef) const;
-
-  //! Return all face definition NodeIds that reference this edge (via their wires).
-  //! @param[in] theEdgeDef edge definition NodeId
-  //! @return vector of face definition NodeIds
-  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> FacesOfEdge(
-    BRepGraph_NodeId theEdgeDef) const;
-
-  //! Return all edges shared between two faces.
-  //! @param[in] theFaceA first face definition NodeId
-  //! @param[in] theFaceB second face definition NodeId
-  //! @return vector of edge definition NodeIds
-  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> SharedEdges(
-    BRepGraph_NodeId theFaceA,
-    BRepGraph_NodeId theFaceB) const;
-
-  //! Return all faces adjacent to a face (sharing at least one edge).
-  //! @param[in] theFaceDef face definition NodeId
-  //! @return vector of adjacent face definition NodeIds
-  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> AdjacentFaces(
-    BRepGraph_NodeId theFaceDef) const;
-
-  //! Compute or return cached axis-aligned bounding box for a node.
-  Standard_EXPORT Bnd_Box BoundingBox(BRepGraph_NodeId theNode) const;
-
-  //! Compute or return cached centroid for a node.
-  Standard_EXPORT gp_Pnt Centroid(BRepGraph_NodeId theNode) const;
-
-  //! Invalidate cached values (bounding box, centroid) for a single node.
-  Standard_EXPORT void Invalidate(BRepGraph_NodeId theNode);
-
-  //! Invalidate cached values for a node and all its descendants.
-  Standard_EXPORT void InvalidateSubgraph(BRepGraph_NodeId theNode);
-
-  //! Attach a user attribute to a node.
-  Standard_EXPORT void SetUserAttribute(BRepGraph_NodeId             theNode,
-                                        int                          theKey,
-                                        const BRepGraph_UserAttrPtr& theAttr);
-
-  //! Retrieve a user attribute from a node.
-  //! @return shared pointer to the attribute, or nullptr if not set
-  Standard_EXPORT BRepGraph_UserAttrPtr GetUserAttribute(BRepGraph_NodeId theNode,
-                                                         int              theKey) const;
-
-  //! Remove a user attribute from a node.
-  //! @return true if the attribute was found and removed
-  Standard_EXPORT bool RemoveUserAttribute(BRepGraph_NodeId theNode, int theKey);
-
-  //! Invalidate (but do not remove) a user attribute on a node.
-  Standard_EXPORT void InvalidateUserAttribute(BRepGraph_NodeId theNode, int theKey);
-
-  //! Number of history records stored in the graph.
-  Standard_EXPORT int NbHistoryRecords() const;
-
-  //! Access a history record by index.
-  Standard_EXPORT const BRepGraph_HistoryRecord& HistoryRecord(int theIdx) const;
-
-  //! Find the original node that was modified to produce the given node.
-  Standard_EXPORT BRepGraph_NodeId FindOriginal(BRepGraph_NodeId theModified) const;
-
-  //! Find all nodes transitively derived from an original node.
-  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> FindDerived(
-    BRepGraph_NodeId theOriginal) const;
-
-  //! Apply a modification operation and record history.
-  //! @param[in] theTarget node to modify
-  //! @param[in] theModifier callback that performs the modification and returns replacements
-  //! @param[in] theOpLabel label for the history record
-  Standard_EXPORT void ApplyModification(
-    BRepGraph_NodeId                                                                    theTarget,
-    std::function<NCollection_Vector<BRepGraph_NodeId>(BRepGraph&, BRepGraph_NodeId)> theModifier,
-    const TCollection_AsciiString&                                                      theOpLabel);
-
-  //! Return or reconstruct a TopoDS_Shape for a node.
-  Standard_EXPORT TopoDS_Shape Shape(BRepGraph_NodeId theNode) const;
-
-  //! Check if the node has an original shape from Build().
-  Standard_EXPORT bool HasOriginalShape(BRepGraph_NodeId theNode) const;
-
-  //! Return the original TopoDS_Shape stored during Build().
-  //! @exception Standard_ProgramError if no original shape exists
-  Standard_EXPORT const TopoDS_Shape& OriginalOf(BRepGraph_NodeId theNode) const;
-
-  //! Reconstruct a TopoDS_Shape from a definition node.
-  Standard_EXPORT TopoDS_Shape ReconstructShape(BRepGraph_NodeId theRoot) const;
-
-  //! Reconstruct a TopoDS_Face from a face definition index.
-  Standard_EXPORT TopoDS_Shape ReconstructFace(int theFaceDefIdx) const;
-
-  //! Reconstruct a TopoDS_Shape from a usage node.
-  Standard_EXPORT TopoDS_Shape ReconstructFromUsage(BRepGraph_UsageId theRoot) const;
-
-  //! Return mutable edge definition (marks node as modified).
-  Standard_EXPORT BRepGraph_TopoNode::EdgeDef& MutableEdgeDefinition(int theIdx);
-
-  //! Return mutable wire definition (marks node as modified).
-  Standard_EXPORT BRepGraph_TopoNode::WireDef& MutableWireDefinition(int theIdx);
-
-  //! Return mutable vertex definition (marks node as modified).
-  Standard_EXPORT BRepGraph_TopoNode::VertexDef& MutableVertexDefinition(int theIdx);
-
-  //! Return mutable face definition (marks node as modified).
-  Standard_EXPORT BRepGraph_TopoNode::FaceDef& MutableFaceDefinition(int theIdx);
-
-  //! Return mutable shell definition (marks node as modified).
-  Standard_EXPORT BRepGraph_TopoNode::ShellDef& MutableShellDefinition(int theIdx);
-
-  //! Return mutable solid definition (marks node as modified).
-  Standard_EXPORT BRepGraph_TopoNode::SolidDef& MutableSolidDefinition(int theIdx);
-
-  //! Return mutable compound definition (marks node as modified).
-  Standard_EXPORT BRepGraph_TopoNode::CompoundDef& MutableCompoundDefinition(int theIdx);
-
-  //! Return mutable compsolid definition (marks node as modified).
-  Standard_EXPORT BRepGraph_TopoNode::CompSolidDef& MutableCompSolidDefinition(int theIdx);
-
-  //! Attach a PCurve to an edge for a given face context.
-  //! @return NodeId of the newly created PCurve node
-  Standard_EXPORT BRepGraph_NodeId AddPCurveToEdge(
-    BRepGraph_NodeId            theEdgeDef,
-    BRepGraph_NodeId            theFaceDef,
-    const Handle(Geom2d_Curve)& theCurve2d,
-    double                      theFirst,
-    double                      theLast,
-    TopAbs_Orientation          theEdgeOrientation = TopAbs_FORWARD);
-
-  //! Replace an edge in a wire definition.
-  Standard_EXPORT void ReplaceEdgeInWire(int              theWireDefIdx,
-                                         BRepGraph_NodeId theOldEdgeDef,
-                                         BRepGraph_NodeId theNewEdgeDef,
-                                         bool             theReversed);
-
-  //! Split a single edge definition at a vertex and 3D-curve parameter.
-  //! Creates two new EdgeDef slots, splits all PCurve nodes at the corresponding
-  //! 2D parameter, and updates every wire that contained the original edge
-  //! (inserting the two sub-edges in traversal order).
-  //! The original EdgeDef index remains valid but is no longer referenced by any wire.
-  //! @param[in]  theEdgeDef      edge to split (must not be degenerate)
-  //! @param[in]  theSplitVertex  vertex definition at the split point (already in graph)
-  //! @param[in]  theSplitParam   parameter on the 3D curve at the split point
-  //! @param[out] theSubA    sub-edge: StartVertex -> SplitVertex, [First, SplitParam]
-  //! @param[out] theSubB    sub-edge: SplitVertex -> EndVertex,   [SplitParam, Last]
-  Standard_EXPORT void SplitEdge(BRepGraph_NodeId  theEdgeDef,
-                                  BRepGraph_NodeId  theSplitVertex,
-                                  double            theSplitParam,
-                                  BRepGraph_NodeId& theSubA,
-                                  BRepGraph_NodeId& theSubB);
-
-  //! Number of distinct faces referencing a given edge definition.
-  Standard_EXPORT int FaceCountForEdge(int theEdgeDefIdx) const;
-
-  //! Return all wire definition indices that contain a given edge.
-  Standard_EXPORT const NCollection_Vector<int>& WiresOfEdge(int theEdgeDefIdx) const;
-
-  //! Record a history entry mapping an original node to its replacements.
-  Standard_EXPORT void RecordHistory(const TCollection_AsciiString&                theOpLabel,
-                                     BRepGraph_NodeId                              theOriginal,
-                                     const NCollection_Vector<BRepGraph_NodeId>& theReplacements);
-
-  //! Add a vertex definition to the graph.
-  //! @param[in] thePoint     3D coordinates
-  //! @param[in] theTolerance vertex tolerance
-  //! @return NodeId of the new vertex definition
-  Standard_EXPORT BRepGraph_NodeId AddVertexDef(const gp_Pnt& thePoint,
-                                                double        theTolerance);
-
-  //! Add an edge definition to the graph.
-  //! @param[in] theStartVtx  start vertex def NodeId
-  //! @param[in] theEndVtx    end vertex def NodeId
-  //! @param[in] theCurve     3D curve (may be null for degenerate edges)
-  //! @param[in] theFirst     first curve parameter
-  //! @param[in] theLast      last curve parameter
-  //! @param[in] theTolerance edge tolerance
-  //! @return NodeId of the new edge definition
-  Standard_EXPORT BRepGraph_NodeId AddEdgeDef(BRepGraph_NodeId          theStartVtx,
-                                              BRepGraph_NodeId          theEndVtx,
-                                              const Handle(Geom_Curve)& theCurve,
-                                              double                    theFirst,
-                                              double                    theLast,
-                                              double                    theTolerance);
-
-  //! Add a wire definition to the graph.
-  //! @param[in] theEdges ordered edge entries
-  //! @return NodeId of the new wire definition
-  Standard_EXPORT BRepGraph_NodeId AddWireDef(
-    const NCollection_Vector<BRepGraph_TopoNode::WireDef::EdgeEntry>& theEdges);
-
-  //! Add a face definition to the graph.
-  //! @param[in] theSurface    surface geometry
-  //! @param[in] theOuterWire  outer wire def NodeId
-  //! @param[in] theInnerWires inner wire def NodeIds
-  //! @param[in] theTolerance  face tolerance
-  //! @return NodeId of the new face definition
-  Standard_EXPORT BRepGraph_NodeId AddFaceDef(const Handle(Geom_Surface)&              theSurface,
-                                              BRepGraph_NodeId                         theOuterWire,
-                                              const NCollection_Vector<BRepGraph_NodeId>& theInnerWires,
-                                              double                                   theTolerance);
-
-  //! Add an empty shell definition to the graph.
-  //! @return NodeId of the new shell definition
-  Standard_EXPORT BRepGraph_NodeId AddShellDef();
-
-  //! Add an empty solid definition to the graph.
-  //! @return NodeId of the new solid definition
-  Standard_EXPORT BRepGraph_NodeId AddSolidDef();
-
-  //! Link a face to a shell (creates FaceUsage under the ShellUsage).
-  //! @param[in] theShellDef  shell definition NodeId
-  //! @param[in] theFaceDef   face definition NodeId
-  //! @param[in] theOri       orientation of the face in the shell
-  //! @return UsageId of the created FaceUsage
-  Standard_EXPORT BRepGraph_UsageId AddFaceToShell(BRepGraph_NodeId   theShellDef,
-                                                   BRepGraph_NodeId   theFaceDef,
-                                                   TopAbs_Orientation theOri = TopAbs_FORWARD);
-
-  //! Link a shell to a solid (creates ShellUsage under the SolidUsage).
-  //! @param[in] theSolidDef  solid definition NodeId
-  //! @param[in] theShellDef  shell definition NodeId
-  //! @param[in] theOri       orientation of the shell in the solid
-  //! @return UsageId of the created ShellUsage
-  Standard_EXPORT BRepGraph_UsageId AddShellToSolid(BRepGraph_NodeId   theSolidDef,
-                                                    BRepGraph_NodeId   theShellDef,
-                                                    TopAbs_Orientation theOri = TopAbs_FORWARD);
-
-  //! Add a compound definition with child definitions.
-  //! @param[in] theChildDefs child definition NodeIds
-  //! @return NodeId of the new compound definition
-  Standard_EXPORT BRepGraph_NodeId AddCompoundDef(
-    const NCollection_Vector<BRepGraph_NodeId>& theChildDefs);
-
-  //! Add a compsolid definition with child solid definitions.
-  //! @param[in] theSolidDefs child solid definition NodeIds
-  //! @return NodeId of the new compsolid definition
-  Standard_EXPORT BRepGraph_NodeId AddCompSolidDef(
-    const NCollection_Vector<BRepGraph_NodeId>& theSolidDefs);
-
-  //! Append a shape to the existing graph without clearing.
-  //! Uses existing deduplication maps to avoid re-registering shared entities.
-  //! @param[in] theShape   shape to add
-  //! @param[in] theParallel if true, per-face geometry extraction is parallel
-  Standard_EXPORT void AppendShape(const TopoDS_Shape& theShape,
-                                   bool                theParallel = false);
-
-  //! Mark a node as removed (soft deletion).
-  //! The node remains in storage but is skipped by iterators and queries.
-  //! @param[in] theNode node to remove
-  Standard_EXPORT void RemoveNode(BRepGraph_NodeId theNode);
-
-  //! Mark a node and all its descendants as removed (cascading soft deletion).
-  //! Walks the definition/usage hierarchy and marks all children as removed.
-  //! @param[in] theNode root node to remove
-  Standard_EXPORT void RemoveSubgraph(BRepGraph_NodeId theNode);
-
-  //! Check if a node has been soft-removed.
-  //! @param[in] theNode node to check
-  //! @return true if the node was marked as removed
-  Standard_EXPORT bool IsRemoved(BRepGraph_NodeId theNode) const;
 
   //! Replace the internal allocator and re-create all storage with new allocator.
   Standard_EXPORT void SetAllocator(const Handle(NCollection_BaseAllocator)& theAlloc);
@@ -621,6 +108,15 @@ public:
 
   //! Check if history recording is enabled.
   Standard_EXPORT bool IsHistoryEnabled() const;
+
+  //! Apply a modification operation and record history.
+  //! @param[in] theTarget node to modify
+  //! @param[in] theModifier callback that performs the modification and returns replacements
+  //! @param[in] theOpLabel label for the history record
+  Standard_EXPORT void ApplyModification(
+    BRepGraph_NodeId                                                                    theTarget,
+    std::function<NCollection_Vector<BRepGraph_NodeId>(BRepGraph&, BRepGraph_NodeId)> theModifier,
+    const TCollection_AsciiString&                                                      theOpLabel);
 
 public:
   //! Shared cache for edge/vertex shapes during multi-face reconstruction.
@@ -677,9 +173,226 @@ private:
   friend class BRepGraph_Reconstruct;
   friend class BRepGraph_Mutator;
 
+  // -- Flat methods (accessible through views, friend classes, and nested views) --
+
+  Standard_EXPORT int NbSolidDefs() const;
+  Standard_EXPORT int NbShellDefs() const;
+  Standard_EXPORT int NbFaceDefs() const;
+  Standard_EXPORT int NbWireDefs() const;
+  Standard_EXPORT int NbEdgeDefs() const;
+  Standard_EXPORT int NbVertexDefs() const;
+  Standard_EXPORT int NbCompoundDefs() const;
+  Standard_EXPORT int NbCompSolidDefs() const;
+
+  Standard_EXPORT int NbSurfaces() const;
+  Standard_EXPORT int NbCurves() const;
+  Standard_EXPORT int NbPCurves() const;
+
+  Standard_EXPORT int NbSolidUsages() const;
+  Standard_EXPORT int NbShellUsages() const;
+  Standard_EXPORT int NbFaceUsages() const;
+  Standard_EXPORT int NbWireUsages() const;
+  Standard_EXPORT int NbEdgeUsages() const;
+  Standard_EXPORT int NbVertexUsages() const;
+  Standard_EXPORT int NbCompoundUsages() const;
+  Standard_EXPORT int NbCompSolidUsages() const;
+
+  Standard_EXPORT const BRepGraph_TopoNode::SolidDef& SolidDefinition(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::ShellDef& ShellDefinition(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::FaceDef& FaceDefinition(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::WireDef& WireDefinition(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::EdgeDef& EdgeDefinition(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::VertexDef& VertexDefinition(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::CompoundDef& CompoundDefinition(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::CompSolidDef& CompSolidDefinition(int theIdx) const;
+
+  Standard_EXPORT const BRepGraph_GeomNode::Surf& SurfNode(int theIdx) const;
+  Standard_EXPORT const BRepGraph_GeomNode::Curve& CurveNode(int theIdx) const;
+  Standard_EXPORT const BRepGraph_GeomNode::PCurve& PCurveNode(int theIdx) const;
+
+  Standard_EXPORT const BRepGraph_TopoNode::SolidUsage& SolidUsageNode(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::ShellUsage& ShellUsageNode(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::FaceUsage& FaceUsageNode(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::WireUsage& WireUsageNode(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::EdgeUsage& EdgeUsageNode(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::VertexUsage& VertexUsageNode(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::CompoundUsage& CompoundUsageNode(int theIdx) const;
+  Standard_EXPORT const BRepGraph_TopoNode::CompSolidUsage& CompSolidUsageNode(int theIdx) const;
+
+  Standard_EXPORT const BRepGraph_TopoNode::BaseDef* TopoDef(BRepGraph_NodeId theId) const;
+  Standard_EXPORT size_t NbNodes() const;
+
+  Standard_EXPORT bool IsUIDEnabled() const;
+  Standard_EXPORT BRepGraph_UID UIDOf(BRepGraph_NodeId theNode) const;
+  Standard_EXPORT BRepGraph_NodeId NodeIdFromUID(const BRepGraph_UID& theUID) const;
+  Standard_EXPORT bool HasUID(const BRepGraph_UID& theUID) const;
+  Standard_EXPORT uint32_t Generation() const;
+
+  Standard_EXPORT int AddRelEdge(BRepGraph_NodeId  theFrom,
+                                 BRepGraph_NodeId  theTo,
+                                 BRepGraph_RelKind theKind);
+  Standard_EXPORT void RemoveRelEdges(BRepGraph_NodeId  theFrom,
+                                      BRepGraph_NodeId  theTo,
+                                      BRepGraph_RelKind theKind);
+  Standard_EXPORT int NbRelEdgesFrom(BRepGraph_NodeId theNode) const;
+  Standard_EXPORT int NbRelEdgesTo(BRepGraph_NodeId theNode) const;
+  Standard_EXPORT const NCollection_Vector<BRepGraph_RelEdge>* OutRelEdgesOf(
+    BRepGraph_NodeId theNode) const;
+  Standard_EXPORT const NCollection_Vector<BRepGraph_RelEdge>* InRelEdgesOf(
+    BRepGraph_NodeId theNode) const;
+
+  template <typename Func>
+  void ForEachOutEdgeOfKind(BRepGraph_NodeId  theNodeId,
+                            BRepGraph_RelKind theKind,
+                            const Func&       theCallback) const
+  {
+    const NCollection_Vector<BRepGraph_RelEdge>* aEdges = OutRelEdgesOf(theNodeId);
+    if (aEdges == nullptr)
+      return;
+    for (int anIdx = 0; anIdx < aEdges->Length(); ++anIdx)
+    {
+      const BRepGraph_RelEdge& anEdge = aEdges->Value(anIdx);
+      if (anEdge.Kind == theKind)
+        theCallback(anEdge);
+    }
+  }
+
+  template <typename Func>
+  void ForEachInEdgeOfKind(BRepGraph_NodeId  theNodeId,
+                           BRepGraph_RelKind theKind,
+                           const Func&       theCallback) const
+  {
+    const NCollection_Vector<BRepGraph_RelEdge>* aEdges = InRelEdgesOf(theNodeId);
+    if (aEdges == nullptr)
+      return;
+    for (int anIdx = 0; anIdx < aEdges->Length(); ++anIdx)
+    {
+      const BRepGraph_RelEdge& anEdge = aEdges->Value(anIdx);
+      if (anEdge.Kind == theKind)
+        theCallback(anEdge);
+    }
+  }
+
+  Standard_EXPORT BRepGraph_NodeId SurfaceOf(BRepGraph_NodeId theFaceDef) const;
+  Standard_EXPORT const NCollection_Vector<BRepGraph_NodeId>& FacesOnSurface(
+    BRepGraph_NodeId theSurf) const;
+  Standard_EXPORT BRepGraph_NodeId CurveOf(BRepGraph_NodeId theEdgeDef) const;
+  Standard_EXPORT const NCollection_Vector<BRepGraph_NodeId>& EdgesOnCurve(
+    BRepGraph_NodeId theCurve) const;
+  Standard_EXPORT BRepGraph_NodeId PCurveOf(BRepGraph_NodeId theEdgeDef,
+                                            BRepGraph_NodeId theFaceDef) const;
+  Standard_EXPORT BRepGraph_NodeId PCurveOf(BRepGraph_NodeId   theEdgeDef,
+                                            BRepGraph_NodeId   theFaceDef,
+                                            TopAbs_Orientation theEdgeOrientation) const;
+
+  Standard_EXPORT gp_Trsf GlobalTransform(BRepGraph_UsageId theUsage) const;
+  Standard_EXPORT gp_Trsf GlobalTransform(BRepGraph_NodeId theDefId) const;
+
+  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> SameDomainFaces(
+    BRepGraph_NodeId theFaceDef) const;
+  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> FacesOfEdge(
+    BRepGraph_NodeId theEdgeDef) const;
+  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> SharedEdges(
+    BRepGraph_NodeId theFaceA,
+    BRepGraph_NodeId theFaceB) const;
+  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> AdjacentFaces(
+    BRepGraph_NodeId theFaceDef) const;
+
+  Standard_EXPORT Bnd_Box BoundingBox(BRepGraph_NodeId theNode) const;
+  Standard_EXPORT gp_Pnt Centroid(BRepGraph_NodeId theNode) const;
+  Standard_EXPORT void Invalidate(BRepGraph_NodeId theNode);
+  Standard_EXPORT void InvalidateSubgraph(BRepGraph_NodeId theNode);
+
+  Standard_EXPORT void SetUserAttribute(BRepGraph_NodeId             theNode,
+                                        int                          theKey,
+                                        const BRepGraph_UserAttrPtr& theAttr);
+  Standard_EXPORT BRepGraph_UserAttrPtr GetUserAttribute(BRepGraph_NodeId theNode,
+                                                         int              theKey) const;
+  Standard_EXPORT bool RemoveUserAttribute(BRepGraph_NodeId theNode, int theKey);
+  Standard_EXPORT void InvalidateUserAttribute(BRepGraph_NodeId theNode, int theKey);
+
+  Standard_EXPORT int NbHistoryRecords() const;
+  Standard_EXPORT const BRepGraph_HistoryRecord& HistoryRecord(int theIdx) const;
+  Standard_EXPORT BRepGraph_NodeId FindOriginal(BRepGraph_NodeId theModified) const;
+  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> FindDerived(
+    BRepGraph_NodeId theOriginal) const;
+
+  Standard_EXPORT TopoDS_Shape Shape(BRepGraph_NodeId theNode) const;
+  Standard_EXPORT bool HasOriginalShape(BRepGraph_NodeId theNode) const;
+  Standard_EXPORT const TopoDS_Shape& OriginalOf(BRepGraph_NodeId theNode) const;
+  Standard_EXPORT TopoDS_Shape ReconstructShape(BRepGraph_NodeId theRoot) const;
+  Standard_EXPORT TopoDS_Shape ReconstructFace(int theFaceDefIdx) const;
+  Standard_EXPORT TopoDS_Shape ReconstructFromUsage(BRepGraph_UsageId theRoot) const;
+
+  Standard_EXPORT BRepGraph_TopoNode::EdgeDef& MutableEdgeDefinition(int theIdx);
+  Standard_EXPORT BRepGraph_TopoNode::WireDef& MutableWireDefinition(int theIdx);
+  Standard_EXPORT BRepGraph_TopoNode::VertexDef& MutableVertexDefinition(int theIdx);
+  Standard_EXPORT BRepGraph_TopoNode::FaceDef& MutableFaceDefinition(int theIdx);
+  Standard_EXPORT BRepGraph_TopoNode::ShellDef& MutableShellDefinition(int theIdx);
+  Standard_EXPORT BRepGraph_TopoNode::SolidDef& MutableSolidDefinition(int theIdx);
+  Standard_EXPORT BRepGraph_TopoNode::CompoundDef& MutableCompoundDefinition(int theIdx);
+  Standard_EXPORT BRepGraph_TopoNode::CompSolidDef& MutableCompSolidDefinition(int theIdx);
+
+  Standard_EXPORT BRepGraph_NodeId AddPCurveToEdge(
+    BRepGraph_NodeId            theEdgeDef,
+    BRepGraph_NodeId            theFaceDef,
+    const Handle(Geom2d_Curve)& theCurve2d,
+    double                      theFirst,
+    double                      theLast,
+    TopAbs_Orientation          theEdgeOrientation = TopAbs_FORWARD);
+  Standard_EXPORT void ReplaceEdgeInWire(int              theWireDefIdx,
+                                         BRepGraph_NodeId theOldEdgeDef,
+                                         BRepGraph_NodeId theNewEdgeDef,
+                                         bool             theReversed);
+  Standard_EXPORT void SplitEdge(BRepGraph_NodeId  theEdgeDef,
+                                  BRepGraph_NodeId  theSplitVertex,
+                                  double            theSplitParam,
+                                  BRepGraph_NodeId& theSubA,
+                                  BRepGraph_NodeId& theSubB);
+
+  Standard_EXPORT int FaceCountForEdge(int theEdgeDefIdx) const;
+  Standard_EXPORT const NCollection_Vector<int>& WiresOfEdge(int theEdgeDefIdx) const;
+
+  Standard_EXPORT void RecordHistory(const TCollection_AsciiString&                theOpLabel,
+                                     BRepGraph_NodeId                              theOriginal,
+                                     const NCollection_Vector<BRepGraph_NodeId>& theReplacements);
+
+  Standard_EXPORT BRepGraph_NodeId AddVertexDef(const gp_Pnt& thePoint,
+                                                double        theTolerance);
+  Standard_EXPORT BRepGraph_NodeId AddEdgeDef(BRepGraph_NodeId          theStartVtx,
+                                              BRepGraph_NodeId          theEndVtx,
+                                              const Handle(Geom_Curve)& theCurve,
+                                              double                    theFirst,
+                                              double                    theLast,
+                                              double                    theTolerance);
+  Standard_EXPORT BRepGraph_NodeId AddWireDef(
+    const NCollection_Vector<BRepGraph_TopoNode::WireDef::EdgeEntry>& theEdges);
+  Standard_EXPORT BRepGraph_NodeId AddFaceDef(const Handle(Geom_Surface)&              theSurface,
+                                              BRepGraph_NodeId                         theOuterWire,
+                                              const NCollection_Vector<BRepGraph_NodeId>& theInnerWires,
+                                              double                                   theTolerance);
+  Standard_EXPORT BRepGraph_NodeId AddShellDef();
+  Standard_EXPORT BRepGraph_NodeId AddSolidDef();
+  Standard_EXPORT BRepGraph_UsageId AddFaceToShell(BRepGraph_NodeId   theShellDef,
+                                                   BRepGraph_NodeId   theFaceDef,
+                                                   TopAbs_Orientation theOri = TopAbs_FORWARD);
+  Standard_EXPORT BRepGraph_UsageId AddShellToSolid(BRepGraph_NodeId   theSolidDef,
+                                                    BRepGraph_NodeId   theShellDef,
+                                                    TopAbs_Orientation theOri = TopAbs_FORWARD);
+  Standard_EXPORT BRepGraph_NodeId AddCompoundDef(
+    const NCollection_Vector<BRepGraph_NodeId>& theChildDefs);
+  Standard_EXPORT BRepGraph_NodeId AddCompSolidDef(
+    const NCollection_Vector<BRepGraph_NodeId>& theSolidDefs);
+  Standard_EXPORT void AppendShape(const TopoDS_Shape& theShape,
+                                   bool                theParallel = false);
+  Standard_EXPORT void RemoveNode(BRepGraph_NodeId theNode);
+  Standard_EXPORT void RemoveSubgraph(BRepGraph_NodeId theNode);
+  Standard_EXPORT bool IsRemoved(BRepGraph_NodeId theNode) const;
+
+  // -- Internal build and utility helpers --
+
   std::unique_ptr<BRepGraph_Data> myData;
 
-  //! Internal build helpers.
   BRepGraph_NodeId registerSurface(const Handle(Geom_Surface)&       theSurf,
                                    const Handle(Poly_Triangulation)& theTri);
   BRepGraph_NodeId registerCurve(const Handle(Geom_Curve)& theCrv);

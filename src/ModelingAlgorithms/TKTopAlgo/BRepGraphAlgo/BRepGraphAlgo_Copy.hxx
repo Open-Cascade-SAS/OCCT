@@ -15,6 +15,11 @@
 #define _BRepGraphAlgo_Copy_HeaderFile
 
 #include <BRepGraph.hxx>
+#include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_GeomView.hxx>
+#include <BRepGraph_ShapesView.hxx>
+#include <BRepGraph_SpatialView.hxx>
+#include <BRepGraph_UsagesView.hxx>
 
 #include <Standard_DefineAlloc.hxx>
 #include <TopoDS_Shape.hxx>

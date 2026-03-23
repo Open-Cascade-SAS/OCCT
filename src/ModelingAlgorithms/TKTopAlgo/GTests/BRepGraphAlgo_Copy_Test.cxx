@@ -15,6 +15,7 @@
 #include <BRepBuilderAPI_Copy.hxx>
 #include <BRepGProp.hxx>
 #include <BRepGraph.hxx>
+#include <BRepGraph_DefsView.hxx>
 #include <BRepGraphAlgo_Copy.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
@@ -146,7 +147,7 @@ TEST(BRepGraphAlgo_CopyTest, CopySingleFace)
   BRepGraph aGraph;
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.NbFaceDefs(), 0);
+  ASSERT_GT(aGraph.Defs().NbFaces(), 0);
 
   TopoDS_Shape aCopiedFace = BRepGraphAlgo_Copy::CopyFace(aGraph, 0, true);
   ASSERT_FALSE(aCopiedFace.IsNull());
@@ -175,9 +176,9 @@ TEST(BRepGraphAlgo_CopyTest, CopyFacesOnly_Compound)
   BRepGraph aGraph;
   aGraph.Build(aCompound);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_EQ(aGraph.NbFaceDefs(), 6);
-  ASSERT_EQ(aGraph.NbSolidDefs(), 0);
-  ASSERT_EQ(aGraph.NbShellDefs(), 0);
+  ASSERT_EQ(aGraph.Defs().NbFaces(), 6);
+  ASSERT_EQ(aGraph.Defs().NbSolids(), 0);
+  ASSERT_EQ(aGraph.Defs().NbShells(), 0);
 
   TopoDS_Shape aCopy = BRepGraphAlgo_Copy::Perform(aGraph, true);
   ASSERT_FALSE(aCopy.IsNull());

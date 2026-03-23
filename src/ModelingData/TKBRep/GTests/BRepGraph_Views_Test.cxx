@@ -59,160 +59,167 @@ protected:
 
 // ---------- DefsView ----------
 
-TEST_F(BRepGraphViewsTest, DefsView_NbFaces_MatchesFlat)
+TEST_F(BRepGraphViewsTest, DefsView_NbFaces)
 {
-  EXPECT_EQ(myGraph.Defs().NbFaces(), myGraph.NbFaceDefs());
   EXPECT_EQ(myGraph.Defs().NbFaces(), 6);
 }
 
-TEST_F(BRepGraphViewsTest, DefsView_NbSolids_MatchesFlat)
+TEST_F(BRepGraphViewsTest, DefsView_NbSolids)
 {
-  EXPECT_EQ(myGraph.Defs().NbSolids(), myGraph.NbSolidDefs());
+  EXPECT_EQ(myGraph.Defs().NbSolids(), 1);
 }
 
-TEST_F(BRepGraphViewsTest, DefsView_NbShells_MatchesFlat)
+TEST_F(BRepGraphViewsTest, DefsView_NbShells)
 {
-  EXPECT_EQ(myGraph.Defs().NbShells(), myGraph.NbShellDefs());
+  EXPECT_EQ(myGraph.Defs().NbShells(), 1);
 }
 
-TEST_F(BRepGraphViewsTest, DefsView_NbWires_MatchesFlat)
+TEST_F(BRepGraphViewsTest, DefsView_NbWires)
 {
-  EXPECT_EQ(myGraph.Defs().NbWires(), myGraph.NbWireDefs());
+  EXPECT_EQ(myGraph.Defs().NbWires(), 6);
 }
 
-TEST_F(BRepGraphViewsTest, DefsView_NbEdges_MatchesFlat)
+TEST_F(BRepGraphViewsTest, DefsView_NbEdges)
 {
-  EXPECT_EQ(myGraph.Defs().NbEdges(), myGraph.NbEdgeDefs());
   EXPECT_EQ(myGraph.Defs().NbEdges(), 12);
 }
 
-TEST_F(BRepGraphViewsTest, DefsView_NbVertices_MatchesFlat)
+TEST_F(BRepGraphViewsTest, DefsView_NbVertices)
 {
-  EXPECT_EQ(myGraph.Defs().NbVertices(), myGraph.NbVertexDefs());
   EXPECT_EQ(myGraph.Defs().NbVertices(), 8);
 }
 
-TEST_F(BRepGraphViewsTest, DefsView_FaceAccessor_MatchesFlat)
+TEST_F(BRepGraphViewsTest, DefsView_FaceAccessor_Valid)
 {
-  for (int anIdx = 0; anIdx < myGraph.NbFaceDefs(); ++anIdx)
+  for (int anIdx = 0; anIdx < myGraph.Defs().NbFaces(); ++anIdx)
   {
-    EXPECT_EQ(&myGraph.Defs().Face(anIdx), &myGraph.FaceDefinition(anIdx));
+    const BRepGraph_TopoNode::FaceDef& aFace = myGraph.Defs().Face(anIdx);
+    EXPECT_TRUE(aFace.Id.IsValid()) << "Face " << anIdx << " has invalid Id";
   }
 }
 
-TEST_F(BRepGraphViewsTest, DefsView_TopoDef_MatchesFlat)
+TEST_F(BRepGraphViewsTest, DefsView_TopoDef_Valid)
 {
   BRepGraph_NodeId aFaceId(BRepGraph_NodeKind::Face, 0);
-  EXPECT_EQ(myGraph.Defs().TopoDef(aFaceId), myGraph.TopoDef(aFaceId));
+  const BRepGraph_TopoNode::BaseDef* aBase = myGraph.Defs().TopoDef(aFaceId);
+  ASSERT_NE(aBase, nullptr);
+  EXPECT_EQ(aBase->Id, myGraph.Defs().Face(0).Id);
 }
 
-TEST_F(BRepGraphViewsTest, DefsView_NbNodes_MatchesFlat)
+TEST_F(BRepGraphViewsTest, DefsView_NbNodes_Positive)
 {
-  EXPECT_EQ(myGraph.Defs().NbNodes(), myGraph.NbNodes());
+  EXPECT_GT(myGraph.Defs().NbNodes(), 0u);
 }
 
 // ---------- UsagesView ----------
 
-TEST_F(BRepGraphViewsTest, UsagesView_NbFaces_MatchesFlat)
+TEST_F(BRepGraphViewsTest, UsagesView_NbFaces)
 {
-  EXPECT_EQ(myGraph.Usages().NbFaces(), myGraph.NbFaceUsages());
+  EXPECT_EQ(myGraph.Usages().NbFaces(), 6);
 }
 
-TEST_F(BRepGraphViewsTest, UsagesView_FaceAccessor_MatchesFlat)
+TEST_F(BRepGraphViewsTest, UsagesView_FaceAccessor_Valid)
 {
-  for (int anIdx = 0; anIdx < myGraph.NbFaceUsages(); ++anIdx)
+  for (int anIdx = 0; anIdx < myGraph.Usages().NbFaces(); ++anIdx)
   {
-    EXPECT_EQ(&myGraph.Usages().Face(anIdx), &myGraph.FaceUsageNode(anIdx));
+    const BRepGraph_TopoNode::FaceUsage& aUsage = myGraph.Usages().Face(anIdx);
+    EXPECT_TRUE(aUsage.UsageId.IsValid()) << "Face usage " << anIdx << " has invalid UsageId";
   }
 }
 
 // ---------- GeomView ----------
 
-TEST_F(BRepGraphViewsTest, GeomView_NbSurfaces_MatchesFlat)
+TEST_F(BRepGraphViewsTest, GeomView_NbSurfaces)
 {
-  EXPECT_EQ(myGraph.Geom().NbSurfaces(), myGraph.NbSurfaces());
   EXPECT_EQ(myGraph.Geom().NbSurfaces(), 6);
 }
 
-TEST_F(BRepGraphViewsTest, GeomView_NbCurves_MatchesFlat)
+TEST_F(BRepGraphViewsTest, GeomView_NbCurves)
 {
-  EXPECT_EQ(myGraph.Geom().NbCurves(), myGraph.NbCurves());
+  EXPECT_GT(myGraph.Geom().NbCurves(), 0);
 }
 
-TEST_F(BRepGraphViewsTest, GeomView_SurfaceOf_MatchesFlat)
+TEST_F(BRepGraphViewsTest, GeomView_SurfaceOf_Valid)
 {
   BRepGraph_NodeId aFaceId(BRepGraph_NodeKind::Face, 0);
-  EXPECT_EQ(myGraph.Geom().SurfaceOf(aFaceId), myGraph.SurfaceOf(aFaceId));
+  BRepGraph_NodeId aSurfId = myGraph.Geom().SurfaceOf(aFaceId);
+  EXPECT_TRUE(aSurfId.IsValid());
 }
 
-TEST_F(BRepGraphViewsTest, GeomView_CurveOf_MatchesFlat)
+TEST_F(BRepGraphViewsTest, GeomView_CurveOf_Valid)
 {
   BRepGraph_NodeId anEdgeId(BRepGraph_NodeKind::Edge, 0);
-  EXPECT_EQ(myGraph.Geom().CurveOf(anEdgeId), myGraph.CurveOf(anEdgeId));
+  BRepGraph_NodeId aCurveId = myGraph.Geom().CurveOf(anEdgeId);
+  EXPECT_TRUE(aCurveId.IsValid());
 }
 
-TEST_F(BRepGraphViewsTest, GeomView_PCurveOf_MatchesFlat)
+TEST_F(BRepGraphViewsTest, GeomView_PCurveOf_Valid)
 {
   BRepGraph_NodeId anEdgeId(BRepGraph_NodeKind::Edge, 0);
   BRepGraph_NodeId aFaceId(BRepGraph_NodeKind::Face, 0);
-  EXPECT_EQ(myGraph.Geom().PCurveOf(anEdgeId, aFaceId),
-            myGraph.PCurveOf(anEdgeId, aFaceId));
+  // PCurveOf may or may not be valid for an arbitrary edge/face pair.
+  // Just verify it does not crash.
+  myGraph.Geom().PCurveOf(anEdgeId, aFaceId);
 }
 
 // ---------- UIDsView ----------
 
-TEST_F(BRepGraphViewsTest, UIDsView_IsEnabled_MatchesFlat)
+TEST_F(BRepGraphViewsTest, UIDsView_IsEnabled)
 {
-  EXPECT_EQ(myGraph.UIDs().IsEnabled(), myGraph.IsUIDEnabled());
   EXPECT_TRUE(myGraph.UIDs().IsEnabled());
 }
 
-TEST_F(BRepGraphViewsTest, UIDsView_Of_MatchesFlat)
+TEST_F(BRepGraphViewsTest, UIDsView_Of_Valid)
 {
   BRepGraph_NodeId aFaceId(BRepGraph_NodeKind::Face, 0);
-  EXPECT_EQ(myGraph.UIDs().Of(aFaceId), myGraph.UIDOf(aFaceId));
+  const BRepGraph_UID& aUID = myGraph.UIDs().Of(aFaceId);
+  EXPECT_TRUE(aUID.IsValid());
 }
 
-TEST_F(BRepGraphViewsTest, UIDsView_Generation_MatchesFlat)
+TEST_F(BRepGraphViewsTest, UIDsView_Generation_Positive)
 {
-  EXPECT_EQ(myGraph.UIDs().Generation(), myGraph.Generation());
+  EXPECT_GT(myGraph.UIDs().Generation(), 0u);
 }
 
 // ---------- SpatialView ----------
 
-TEST_F(BRepGraphViewsTest, SpatialView_AdjacentFaces_MatchesFlat)
+TEST_F(BRepGraphViewsTest, SpatialView_AdjacentFaces_FourPerBoxFace)
 {
   BRepGraph_NodeId aFaceId(BRepGraph_NodeKind::Face, 0);
-  NCollection_Vector<BRepGraph_NodeId> aViewResult   = myGraph.Spatial().AdjacentFaces(aFaceId);
-  NCollection_Vector<BRepGraph_NodeId> aFlatResult   = myGraph.AdjacentFaces(aFaceId);
-  EXPECT_EQ(aViewResult.Length(), aFlatResult.Length());
+  NCollection_Vector<BRepGraph_NodeId> aResult = myGraph.Spatial().AdjacentFaces(aFaceId);
+  EXPECT_EQ(aResult.Length(), 4);
 }
 
-TEST_F(BRepGraphViewsTest, SpatialView_FacesOfEdge_MatchesFlat)
+TEST_F(BRepGraphViewsTest, SpatialView_FacesOfEdge_TwoPerBoxEdge)
 {
   BRepGraph_NodeId anEdgeId(BRepGraph_NodeKind::Edge, 0);
-  NCollection_Vector<BRepGraph_NodeId> aViewResult = myGraph.Spatial().FacesOfEdge(anEdgeId);
-  NCollection_Vector<BRepGraph_NodeId> aFlatResult = myGraph.FacesOfEdge(anEdgeId);
-  EXPECT_EQ(aViewResult.Length(), aFlatResult.Length());
+  NCollection_Vector<BRepGraph_NodeId> aResult = myGraph.Spatial().FacesOfEdge(anEdgeId);
+  EXPECT_EQ(aResult.Length(), 2);
 }
 
 // ---------- CacheView ----------
 
-TEST_F(BRepGraphViewsTest, CacheView_BoundingBox_MatchesFlat)
+TEST_F(BRepGraphViewsTest, CacheView_BoundingBox_NonVoid)
 {
   BRepGraph_NodeId aFaceId(BRepGraph_NodeKind::Face, 0);
-  Bnd_Box aViewBox = myGraph.Cache().BoundingBox(aFaceId);
-  Bnd_Box aFlatBox = myGraph.BoundingBox(aFaceId);
-  EXPECT_FALSE(aViewBox.IsVoid());
-  EXPECT_FALSE(aFlatBox.IsVoid());
+  Bnd_Box aBox = myGraph.Cache().BoundingBox(aFaceId);
+  EXPECT_FALSE(aBox.IsVoid());
 }
 
-TEST_F(BRepGraphViewsTest, CacheView_Centroid_MatchesFlat)
+TEST_F(BRepGraphViewsTest, CacheView_Centroid_InsideBBox)
 {
   BRepGraph_NodeId aFaceId(BRepGraph_NodeKind::Face, 0);
-  gp_Pnt aViewPnt = myGraph.Cache().Centroid(aFaceId);
-  gp_Pnt aFlatPnt = myGraph.Centroid(aFaceId);
-  EXPECT_NEAR(aViewPnt.Distance(aFlatPnt), 0.0, Precision::Confusion());
+  gp_Pnt aCentroid = myGraph.Cache().Centroid(aFaceId);
+  Bnd_Box aBox = myGraph.Cache().BoundingBox(aFaceId);
+  ASSERT_FALSE(aBox.IsVoid());
+
+  double aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
+  aBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
+  const double aTol = 1.0;
+  EXPECT_GE(aCentroid.X(), aXmin - aTol);
+  EXPECT_LE(aCentroid.X(), aXmax + aTol);
+  EXPECT_GE(aCentroid.Y(), aYmin - aTol);
+  EXPECT_LE(aCentroid.Y(), aYmax + aTol);
 }
 
 // ---------- AttrsView ----------
@@ -239,39 +246,40 @@ TEST_F(BRepGraphViewsTest, AttrsView_Remove_Works)
 
 // ---------- ShapesView ----------
 
-TEST_F(BRepGraphViewsTest, ShapesView_Shape_MatchesFlat)
+TEST_F(BRepGraphViewsTest, ShapesView_Shape_NonNull)
 {
   BRepGraph_NodeId aFaceId(BRepGraph_NodeKind::Face, 0);
   EXPECT_FALSE(myGraph.Shapes().Shape(aFaceId).IsNull());
 }
 
-TEST_F(BRepGraphViewsTest, ShapesView_HasOriginal_MatchesFlat)
+TEST_F(BRepGraphViewsTest, ShapesView_HasOriginal_True)
 {
   BRepGraph_NodeId aFaceId(BRepGraph_NodeKind::Face, 0);
-  EXPECT_EQ(myGraph.Shapes().HasOriginal(aFaceId), myGraph.HasOriginalShape(aFaceId));
+  EXPECT_TRUE(myGraph.Shapes().HasOriginal(aFaceId));
 }
 
 // ---------- MutView ----------
 
-TEST_F(BRepGraphViewsTest, MutView_EdgeDef_MatchesFlat)
+TEST_F(BRepGraphViewsTest, MutView_EdgeDef_MarksModified)
 {
-  EXPECT_EQ(&myGraph.Mut().EdgeDef(0), &myGraph.MutableEdgeDefinition(0));
+  BRepGraph_TopoNode::EdgeDef& anEdge = myGraph.Mut().EdgeDef(0);
+  EXPECT_TRUE(anEdge.IsModified);
 }
 
 // ---------- BuilderView ----------
 
 TEST_F(BRepGraphViewsTest, BuilderView_AddVertexDef_Works)
 {
-  const int aNbBefore = myGraph.NbVertexDefs();
+  const int aNbBefore = myGraph.Defs().NbVertices();
   BRepGraph_NodeId aVtx = myGraph.Builder().AddVertexDef(gp_Pnt(1, 2, 3), 0.001);
   EXPECT_TRUE(aVtx.IsValid());
-  EXPECT_EQ(myGraph.NbVertexDefs(), aNbBefore + 1);
+  EXPECT_EQ(myGraph.Defs().NbVertices(), aNbBefore + 1);
 }
 
-TEST_F(BRepGraphViewsTest, BuilderView_IsRemoved_MatchesFlat)
+TEST_F(BRepGraphViewsTest, BuilderView_IsRemoved_False)
 {
   BRepGraph_NodeId aFaceId(BRepGraph_NodeKind::Face, 0);
-  EXPECT_EQ(myGraph.Builder().IsRemoved(aFaceId), myGraph.IsRemoved(aFaceId));
+  EXPECT_FALSE(myGraph.Builder().IsRemoved(aFaceId));
 }
 
 // ---------- AnalyzeView ----------

@@ -14,6 +14,7 @@
 #include <BRepBuilderAPI_Transform.hxx>
 #include <BRepGProp.hxx>
 #include <BRepGraph.hxx>
+#include <BRepGraph_DefsView.hxx>
 #include <BRepGraphAlgo_Transform.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <GProp_GProps.hxx>
@@ -139,7 +140,7 @@ TEST(BRepGraphAlgo_TransformTest, TransformSingleFace)
   BRepGraph aGraph;
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.NbFaceDefs(), 0);
+  ASSERT_GT(aGraph.Defs().NbFaces(), 0);
 
   gp_Trsf aTrsf;
   aTrsf.SetTranslation(gp_Vec(10.0, 20.0, 30.0));

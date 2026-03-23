@@ -15,7 +15,14 @@
 #include <BRep_Tool.hxx>
 #include <BRepBuilderAPI_Copy.hxx>
 #include <BRepGraph.hxx>
+#include <BRepGraph_BuilderView.hxx>
+#include <BRepGraph_CacheView.hxx>
+#include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_GeomView.hxx>
 #include <BRepGraph_Iterator.hxx>
+#include <BRepGraph_MutView.hxx>
+#include <BRepGraph_SpatialView.hxx>
+#include <BRepGraph_UsagesView.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
@@ -44,7 +51,7 @@ TEST(BRepGraphAPI_BoundingBoxTest, Box_MatchesTopoDSBox)
 
   // Get bounding box from graph.
   BRepGraph_NodeId aSolidId(BRepGraph_NodeKind::Solid, 0);
-  Bnd_Box aGraphBox = aGraph.BoundingBox(aSolidId);
+  Bnd_Box aGraphBox = aGraph.Cache().BoundingBox(aSolidId);
   ASSERT_FALSE(aGraphBox.IsVoid());
 
   double aGXmin, aGYmin, aGZmin, aGXmax, aGYmax, aGZmax;
@@ -69,7 +76,7 @@ TEST(BRepGraphAPI_BoundingBoxTest, Sphere_NonVoid)
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_NodeId aSolidId(BRepGraph_NodeKind::Solid, 0);
-  Bnd_Box aGraphBox = aGraph.BoundingBox(aSolidId);
+  Bnd_Box aGraphBox = aGraph.Cache().BoundingBox(aSolidId);
   EXPECT_FALSE(aGraphBox.IsVoid());
 }
 
@@ -83,7 +90,7 @@ TEST(BRepGraphAPI_BoundingBoxTest, Cylinder_NonVoid)
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_NodeId aSolidId(BRepGraph_NodeKind::Solid, 0);
-  Bnd_Box aGraphBox = aGraph.BoundingBox(aSolidId);
+  Bnd_Box aGraphBox = aGraph.Cache().BoundingBox(aSolidId);
   EXPECT_FALSE(aGraphBox.IsVoid());
 }
 
@@ -95,10 +102,10 @@ TEST(BRepGraphAPI_BoundingBoxTest, SingleFace_MatchesVertices)
   BRepGraph aGraph;
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.NbFaceDefs(), 0);
+  ASSERT_GT(aGraph.Defs().NbFaces(), 0);
 
   BRepGraph_NodeId aFaceId(BRepGraph_NodeKind::Face, 0);
-  Bnd_Box aGraphBox = aGraph.BoundingBox(aFaceId);
+  Bnd_Box aGraphBox = aGraph.Cache().BoundingBox(aFaceId);
   EXPECT_FALSE(aGraphBox.IsVoid());
 }
 
@@ -112,7 +119,7 @@ TEST(BRepGraphAPI_CentroidTest, Box_CentroidNearCenter)
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_NodeId aSolidId(BRepGraph_NodeKind::Solid, 0);
-  gp_Pnt aCentroid = aGraph.Centroid(aSolidId);
+  gp_Pnt aCentroid = aGraph.Cache().Centroid(aSolidId);
 
   // Centroid should be near the center of the box.
   EXPECT_NEAR(aCentroid.X(), 5.0, 1.0);
@@ -127,12 +134,12 @@ TEST(BRepGraphAPI_CentroidTest, Box_CentroidNearCenter)
 TEST(BRepGraphAPI_AddNodeTest, AddVertexDef_ReturnsValidId)
 {
   BRepGraph aGraph;
-  BRepGraph_NodeId aVtxId = aGraph.AddVertexDef(gp_Pnt(1.0, 2.0, 3.0), 0.001);
+  BRepGraph_NodeId aVtxId = aGraph.Builder().AddVertexDef(gp_Pnt(1.0, 2.0, 3.0), 0.001);
   EXPECT_TRUE(aVtxId.IsValid());
   EXPECT_EQ(aVtxId.Kind, BRepGraph_NodeKind::Vertex);
   EXPECT_EQ(aVtxId.Index, 0);
 
-  const BRepGraph_TopoNode::VertexDef& aVtxDef = aGraph.VertexDefinition(0);
+  const BRepGraph_TopoNode::VertexDef& aVtxDef = aGraph.Defs().Vertex(0);
   EXPECT_NEAR(aVtxDef.Point.X(), 1.0, Precision::Confusion());
   EXPECT_NEAR(aVtxDef.Point.Y(), 2.0, Precision::Confusion());
   EXPECT_NEAR(aVtxDef.Point.Z(), 3.0, Precision::Confusion());
@@ -142,16 +149,16 @@ TEST(BRepGraphAPI_AddNodeTest, AddVertexDef_ReturnsValidId)
 TEST(BRepGraphAPI_AddNodeTest, AddEdgeDef_WithCurve)
 {
   BRepGraph aGraph;
-  BRepGraph_NodeId aV1 = aGraph.AddVertexDef(gp_Pnt(0.0, 0.0, 0.0), 0.001);
-  BRepGraph_NodeId aV2 = aGraph.AddVertexDef(gp_Pnt(10.0, 0.0, 0.0), 0.001);
+  BRepGraph_NodeId aV1 = aGraph.Builder().AddVertexDef(gp_Pnt(0.0, 0.0, 0.0), 0.001);
+  BRepGraph_NodeId aV2 = aGraph.Builder().AddVertexDef(gp_Pnt(10.0, 0.0, 0.0), 0.001);
 
   Handle(Geom_Line) aLine = new Geom_Line(gp_Lin(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)));
-  BRepGraph_NodeId anEdgeId = aGraph.AddEdgeDef(aV1, aV2, aLine, 0.0, 10.0, 0.001);
+  BRepGraph_NodeId anEdgeId = aGraph.Builder().AddEdgeDef(aV1, aV2, aLine, 0.0, 10.0, 0.001);
 
   EXPECT_TRUE(anEdgeId.IsValid());
   EXPECT_EQ(anEdgeId.Kind, BRepGraph_NodeKind::Edge);
 
-  const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.EdgeDefinition(0);
+  const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.Defs().Edge(0);
   EXPECT_EQ(anEdgeDef.StartVertexDefId, aV1);
   EXPECT_EQ(anEdgeDef.EndVertexDefId, aV2);
   EXPECT_TRUE(anEdgeDef.CurveNodeId.IsValid());
@@ -162,20 +169,20 @@ TEST(BRepGraphAPI_AddNodeTest, AddEdgeDef_WithCurve)
 TEST(BRepGraphAPI_AddNodeTest, AddWireDef_ClosedRectangle)
 {
   BRepGraph aGraph;
-  BRepGraph_NodeId aV0 = aGraph.AddVertexDef(gp_Pnt(0, 0, 0), 0.001);
-  BRepGraph_NodeId aV1 = aGraph.AddVertexDef(gp_Pnt(10, 0, 0), 0.001);
-  BRepGraph_NodeId aV2 = aGraph.AddVertexDef(gp_Pnt(10, 10, 0), 0.001);
-  BRepGraph_NodeId aV3 = aGraph.AddVertexDef(gp_Pnt(0, 10, 0), 0.001);
+  BRepGraph_NodeId aV0 = aGraph.Builder().AddVertexDef(gp_Pnt(0, 0, 0), 0.001);
+  BRepGraph_NodeId aV1 = aGraph.Builder().AddVertexDef(gp_Pnt(10, 0, 0), 0.001);
+  BRepGraph_NodeId aV2 = aGraph.Builder().AddVertexDef(gp_Pnt(10, 10, 0), 0.001);
+  BRepGraph_NodeId aV3 = aGraph.Builder().AddVertexDef(gp_Pnt(0, 10, 0), 0.001);
 
   Handle(Geom_Line) aL0 = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   Handle(Geom_Line) aL1 = new Geom_Line(gp_Pnt(10, 0, 0), gp_Dir(0, 1, 0));
   Handle(Geom_Line) aL2 = new Geom_Line(gp_Pnt(10, 10, 0), gp_Dir(-1, 0, 0));
   Handle(Geom_Line) aL3 = new Geom_Line(gp_Pnt(0, 10, 0), gp_Dir(0, -1, 0));
 
-  BRepGraph_NodeId aE0 = aGraph.AddEdgeDef(aV0, aV1, aL0, 0.0, 10.0, 0.001);
-  BRepGraph_NodeId aE1 = aGraph.AddEdgeDef(aV1, aV2, aL1, 0.0, 10.0, 0.001);
-  BRepGraph_NodeId aE2 = aGraph.AddEdgeDef(aV2, aV3, aL2, 0.0, 10.0, 0.001);
-  BRepGraph_NodeId aE3 = aGraph.AddEdgeDef(aV3, aV0, aL3, 0.0, 10.0, 0.001);
+  BRepGraph_NodeId aE0 = aGraph.Builder().AddEdgeDef(aV0, aV1, aL0, 0.0, 10.0, 0.001);
+  BRepGraph_NodeId aE1 = aGraph.Builder().AddEdgeDef(aV1, aV2, aL1, 0.0, 10.0, 0.001);
+  BRepGraph_NodeId aE2 = aGraph.Builder().AddEdgeDef(aV2, aV3, aL2, 0.0, 10.0, 0.001);
+  BRepGraph_NodeId aE3 = aGraph.Builder().AddEdgeDef(aV3, aV0, aL3, 0.0, 10.0, 0.001);
 
   NCollection_Vector<BRepGraph_TopoNode::WireDef::EdgeEntry> aEdges;
   BRepGraph_TopoNode::WireDef::EdgeEntry anEntry;
@@ -186,11 +193,11 @@ TEST(BRepGraphAPI_AddNodeTest, AddWireDef_ClosedRectangle)
   anEntry.EdgeDefId = aE2; aEdges.Append(anEntry);
   anEntry.EdgeDefId = aE3; aEdges.Append(anEntry);
 
-  BRepGraph_NodeId aWireId = aGraph.AddWireDef(aEdges);
+  BRepGraph_NodeId aWireId = aGraph.Builder().AddWireDef(aEdges);
   EXPECT_TRUE(aWireId.IsValid());
   EXPECT_EQ(aWireId.Kind, BRepGraph_NodeKind::Wire);
 
-  const BRepGraph_TopoNode::WireDef& aWireDef = aGraph.WireDefinition(0);
+  const BRepGraph_TopoNode::WireDef& aWireDef = aGraph.Defs().Wire(0);
   EXPECT_EQ(aWireDef.OrderedEdges.Length(), 4);
   EXPECT_TRUE(aWireDef.IsClosed);
 }
@@ -200,20 +207,20 @@ TEST(BRepGraphAPI_AddNodeTest, AddFaceDef_WithSurface)
   BRepGraph aGraph;
 
   // Build a simple rectangular face programmatically.
-  BRepGraph_NodeId aV0 = aGraph.AddVertexDef(gp_Pnt(0, 0, 0), 0.001);
-  BRepGraph_NodeId aV1 = aGraph.AddVertexDef(gp_Pnt(10, 0, 0), 0.001);
-  BRepGraph_NodeId aV2 = aGraph.AddVertexDef(gp_Pnt(10, 10, 0), 0.001);
-  BRepGraph_NodeId aV3 = aGraph.AddVertexDef(gp_Pnt(0, 10, 0), 0.001);
+  BRepGraph_NodeId aV0 = aGraph.Builder().AddVertexDef(gp_Pnt(0, 0, 0), 0.001);
+  BRepGraph_NodeId aV1 = aGraph.Builder().AddVertexDef(gp_Pnt(10, 0, 0), 0.001);
+  BRepGraph_NodeId aV2 = aGraph.Builder().AddVertexDef(gp_Pnt(10, 10, 0), 0.001);
+  BRepGraph_NodeId aV3 = aGraph.Builder().AddVertexDef(gp_Pnt(0, 10, 0), 0.001);
 
   Handle(Geom_Line) aL0 = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   Handle(Geom_Line) aL1 = new Geom_Line(gp_Pnt(10, 0, 0), gp_Dir(0, 1, 0));
   Handle(Geom_Line) aL2 = new Geom_Line(gp_Pnt(10, 10, 0), gp_Dir(-1, 0, 0));
   Handle(Geom_Line) aL3 = new Geom_Line(gp_Pnt(0, 10, 0), gp_Dir(0, -1, 0));
 
-  BRepGraph_NodeId aE0 = aGraph.AddEdgeDef(aV0, aV1, aL0, 0.0, 10.0, 0.001);
-  BRepGraph_NodeId aE1 = aGraph.AddEdgeDef(aV1, aV2, aL1, 0.0, 10.0, 0.001);
-  BRepGraph_NodeId aE2 = aGraph.AddEdgeDef(aV2, aV3, aL2, 0.0, 10.0, 0.001);
-  BRepGraph_NodeId aE3 = aGraph.AddEdgeDef(aV3, aV0, aL3, 0.0, 10.0, 0.001);
+  BRepGraph_NodeId aE0 = aGraph.Builder().AddEdgeDef(aV0, aV1, aL0, 0.0, 10.0, 0.001);
+  BRepGraph_NodeId aE1 = aGraph.Builder().AddEdgeDef(aV1, aV2, aL1, 0.0, 10.0, 0.001);
+  BRepGraph_NodeId aE2 = aGraph.Builder().AddEdgeDef(aV2, aV3, aL2, 0.0, 10.0, 0.001);
+  BRepGraph_NodeId aE3 = aGraph.Builder().AddEdgeDef(aV3, aV0, aL3, 0.0, 10.0, 0.001);
 
   NCollection_Vector<BRepGraph_TopoNode::WireDef::EdgeEntry> aEdges;
   BRepGraph_TopoNode::WireDef::EdgeEntry anEntry;
@@ -223,29 +230,29 @@ TEST(BRepGraphAPI_AddNodeTest, AddFaceDef_WithSurface)
   anEntry.EdgeDefId = aE2; aEdges.Append(anEntry);
   anEntry.EdgeDefId = aE3; aEdges.Append(anEntry);
 
-  BRepGraph_NodeId aWireId = aGraph.AddWireDef(aEdges);
+  BRepGraph_NodeId aWireId = aGraph.Builder().AddWireDef(aEdges);
 
   Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pln());
   NCollection_Vector<BRepGraph_NodeId> aInnerWires;
-  BRepGraph_NodeId aFaceId = aGraph.AddFaceDef(aPlane, aWireId, aInnerWires, 0.001);
+  BRepGraph_NodeId aFaceId = aGraph.Builder().AddFaceDef(aPlane, aWireId, aInnerWires, 0.001);
 
   EXPECT_TRUE(aFaceId.IsValid());
   EXPECT_EQ(aFaceId.Kind, BRepGraph_NodeKind::Face);
-  EXPECT_EQ(aGraph.NbFaceDefs(), 1);
-  EXPECT_EQ(aGraph.NbSurfaces(), 1);
+  EXPECT_EQ(aGraph.Defs().NbFaces(), 1);
+  EXPECT_EQ(aGraph.Geom().NbSurfaces(), 1);
 
-  const BRepGraph_TopoNode::FaceDef& aFaceDef = aGraph.FaceDefinition(0);
+  const BRepGraph_TopoNode::FaceDef& aFaceDef = aGraph.Defs().Face(0);
   EXPECT_TRUE(aFaceDef.SurfNodeId.IsValid());
 }
 
 TEST(BRepGraphAPI_AddNodeTest, AddShellAndSolid)
 {
   BRepGraph aGraph;
-  BRepGraph_NodeId aShellId = aGraph.AddShellDef();
+  BRepGraph_NodeId aShellId = aGraph.Builder().AddShellDef();
   EXPECT_TRUE(aShellId.IsValid());
   EXPECT_EQ(aShellId.Kind, BRepGraph_NodeKind::Shell);
 
-  BRepGraph_NodeId aSolidId = aGraph.AddSolidDef();
+  BRepGraph_NodeId aSolidId = aGraph.Builder().AddSolidDef();
   EXPECT_TRUE(aSolidId.IsValid());
   EXPECT_EQ(aSolidId.Kind, BRepGraph_NodeKind::Solid);
 }
@@ -272,11 +279,11 @@ TEST(BRepGraphAPI_AppendShapeTest, AppendTwoBoxFaces)
   BRepGraph aGraph;
   aGraph.Build(aCopy1.Shape());
   ASSERT_TRUE(aGraph.IsDone());
-  EXPECT_EQ(aGraph.NbFaceDefs(), 1);
+  EXPECT_EQ(aGraph.Defs().NbFaces(), 1);
 
   // Append second face.
-  aGraph.AppendShape(aCopy2.Shape());
-  EXPECT_EQ(aGraph.NbFaceDefs(), 2);
+  aGraph.Builder().AppendShape(aCopy2.Shape());
+  EXPECT_EQ(aGraph.Defs().NbFaces(), 2);
   EXPECT_TRUE(aGraph.IsDone());
 }
 
@@ -287,11 +294,11 @@ TEST(BRepGraphAPI_AppendShapeTest, AppendTwoBoxFaces)
 TEST(BRepGraphAPI_RemoveNodeTest, RemoveVertex_IsRemoved)
 {
   BRepGraph aGraph;
-  BRepGraph_NodeId aVtxId = aGraph.AddVertexDef(gp_Pnt(1.0, 2.0, 3.0), 0.001);
-  EXPECT_FALSE(aGraph.IsRemoved(aVtxId));
+  BRepGraph_NodeId aVtxId = aGraph.Builder().AddVertexDef(gp_Pnt(1.0, 2.0, 3.0), 0.001);
+  EXPECT_FALSE(aGraph.Builder().IsRemoved(aVtxId));
 
-  aGraph.RemoveNode(aVtxId);
-  EXPECT_TRUE(aGraph.IsRemoved(aVtxId));
+  aGraph.Builder().RemoveNode(aVtxId);
+  EXPECT_TRUE(aGraph.Builder().IsRemoved(aVtxId));
 }
 
 TEST(BRepGraphAPI_RemoveNodeTest, RemoveFaceFromBox)
@@ -302,18 +309,18 @@ TEST(BRepGraphAPI_RemoveNodeTest, RemoveFaceFromBox)
   BRepGraph aGraph;
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_EQ(aGraph.NbFaceDefs(), 6);
+  ASSERT_EQ(aGraph.Defs().NbFaces(), 6);
 
   BRepGraph_NodeId aFaceId(BRepGraph_NodeKind::Face, 0);
-  EXPECT_FALSE(aGraph.IsRemoved(aFaceId));
+  EXPECT_FALSE(aGraph.Builder().IsRemoved(aFaceId));
 
-  aGraph.RemoveNode(aFaceId);
-  EXPECT_TRUE(aGraph.IsRemoved(aFaceId));
+  aGraph.Builder().RemoveNode(aFaceId);
+  EXPECT_TRUE(aGraph.Builder().IsRemoved(aFaceId));
 
   // Other faces should not be removed.
-  for (int aFaceIdx = 1; aFaceIdx < aGraph.NbFaceDefs(); ++aFaceIdx)
+  for (int aFaceIdx = 1; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
   {
-    EXPECT_FALSE(aGraph.IsRemoved(BRepGraph_NodeId(BRepGraph_NodeKind::Face, aFaceIdx)));
+    EXPECT_FALSE(aGraph.Builder().IsRemoved(BRepGraph_NodeId(BRepGraph_NodeKind::Face, aFaceIdx)));
   }
 }
 
@@ -321,8 +328,8 @@ TEST(BRepGraphAPI_RemoveNodeTest, RemoveInvalidNode_NoError)
 {
   BRepGraph aGraph;
   BRepGraph_NodeId anInvalidId;
-  EXPECT_FALSE(aGraph.IsRemoved(anInvalidId));
-  aGraph.RemoveNode(anInvalidId); // Should not crash.
+  EXPECT_FALSE(aGraph.Builder().IsRemoved(anInvalidId));
+  aGraph.Builder().RemoveNode(anInvalidId); // Should not crash.
 }
 
 // ============================================================
@@ -334,20 +341,20 @@ TEST(BRepGraphAPI_ConstructionTest, AddFaceToShell_CreatesUsage)
   BRepGraph aGraph;
 
   // Build a face programmatically.
-  BRepGraph_NodeId aV0 = aGraph.AddVertexDef(gp_Pnt(0, 0, 0), 0.001);
-  BRepGraph_NodeId aV1 = aGraph.AddVertexDef(gp_Pnt(10, 0, 0), 0.001);
-  BRepGraph_NodeId aV2 = aGraph.AddVertexDef(gp_Pnt(10, 10, 0), 0.001);
-  BRepGraph_NodeId aV3 = aGraph.AddVertexDef(gp_Pnt(0, 10, 0), 0.001);
+  BRepGraph_NodeId aV0 = aGraph.Builder().AddVertexDef(gp_Pnt(0, 0, 0), 0.001);
+  BRepGraph_NodeId aV1 = aGraph.Builder().AddVertexDef(gp_Pnt(10, 0, 0), 0.001);
+  BRepGraph_NodeId aV2 = aGraph.Builder().AddVertexDef(gp_Pnt(10, 10, 0), 0.001);
+  BRepGraph_NodeId aV3 = aGraph.Builder().AddVertexDef(gp_Pnt(0, 10, 0), 0.001);
 
   Handle(Geom_Line) aL0 = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   Handle(Geom_Line) aL1 = new Geom_Line(gp_Pnt(10, 0, 0), gp_Dir(0, 1, 0));
   Handle(Geom_Line) aL2 = new Geom_Line(gp_Pnt(10, 10, 0), gp_Dir(-1, 0, 0));
   Handle(Geom_Line) aL3 = new Geom_Line(gp_Pnt(0, 10, 0), gp_Dir(0, -1, 0));
 
-  BRepGraph_NodeId aE0 = aGraph.AddEdgeDef(aV0, aV1, aL0, 0.0, 10.0, 0.001);
-  BRepGraph_NodeId aE1 = aGraph.AddEdgeDef(aV1, aV2, aL1, 0.0, 10.0, 0.001);
-  BRepGraph_NodeId aE2 = aGraph.AddEdgeDef(aV2, aV3, aL2, 0.0, 10.0, 0.001);
-  BRepGraph_NodeId aE3 = aGraph.AddEdgeDef(aV3, aV0, aL3, 0.0, 10.0, 0.001);
+  BRepGraph_NodeId aE0 = aGraph.Builder().AddEdgeDef(aV0, aV1, aL0, 0.0, 10.0, 0.001);
+  BRepGraph_NodeId aE1 = aGraph.Builder().AddEdgeDef(aV1, aV2, aL1, 0.0, 10.0, 0.001);
+  BRepGraph_NodeId aE2 = aGraph.Builder().AddEdgeDef(aV2, aV3, aL2, 0.0, 10.0, 0.001);
+  BRepGraph_NodeId aE3 = aGraph.Builder().AddEdgeDef(aV3, aV0, aL3, 0.0, 10.0, 0.001);
 
   NCollection_Vector<BRepGraph_TopoNode::WireDef::EdgeEntry> aEdges;
   BRepGraph_TopoNode::WireDef::EdgeEntry anEntry;
@@ -357,21 +364,21 @@ TEST(BRepGraphAPI_ConstructionTest, AddFaceToShell_CreatesUsage)
   anEntry.EdgeDefId = aE2; aEdges.Append(anEntry);
   anEntry.EdgeDefId = aE3; aEdges.Append(anEntry);
 
-  BRepGraph_NodeId aWireId = aGraph.AddWireDef(aEdges);
+  BRepGraph_NodeId aWireId = aGraph.Builder().AddWireDef(aEdges);
   Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pln());
   NCollection_Vector<BRepGraph_NodeId> aInnerWires;
-  BRepGraph_NodeId aFaceId = aGraph.AddFaceDef(aPlane, aWireId, aInnerWires, 0.001);
+  BRepGraph_NodeId aFaceId = aGraph.Builder().AddFaceDef(aPlane, aWireId, aInnerWires, 0.001);
 
   // Create shell and link face to it.
-  BRepGraph_NodeId aShellId = aGraph.AddShellDef();
-  BRepGraph_UsageId aFaceUsage = aGraph.AddFaceToShell(aShellId, aFaceId);
+  BRepGraph_NodeId aShellId = aGraph.Builder().AddShellDef();
+  BRepGraph_UsageId aFaceUsage = aGraph.Builder().AddFaceToShell(aShellId, aFaceId);
   EXPECT_TRUE(aFaceUsage.IsValid());
   EXPECT_EQ(aFaceUsage.Kind, BRepGraph_NodeKind::Face);
-  EXPECT_EQ(aGraph.NbShellUsages(), 1);
-  EXPECT_GE(aGraph.NbFaceUsages(), 2); // Initial + shell-linked
+  EXPECT_EQ(aGraph.Usages().NbShells(), 1);
+  EXPECT_GE(aGraph.Usages().NbFaces(), 2); // Initial + shell-linked
 
   // Verify shell usage has a face usage.
-  const BRepGraph_TopoNode::ShellUsage& aShellUsage = aGraph.ShellUsageNode(0);
+  const BRepGraph_TopoNode::ShellUsage& aShellUsage = aGraph.Usages().Shell(0);
   EXPECT_EQ(aShellUsage.FaceUsages.Length(), 1);
 }
 
@@ -379,15 +386,15 @@ TEST(BRepGraphAPI_ConstructionTest, AddShellToSolid_CreatesUsage)
 {
   BRepGraph aGraph;
 
-  BRepGraph_NodeId aShellId = aGraph.AddShellDef();
-  BRepGraph_NodeId aSolidId = aGraph.AddSolidDef();
+  BRepGraph_NodeId aShellId = aGraph.Builder().AddShellDef();
+  BRepGraph_NodeId aSolidId = aGraph.Builder().AddSolidDef();
 
-  BRepGraph_UsageId aShellUsage = aGraph.AddShellToSolid(aSolidId, aShellId);
+  BRepGraph_UsageId aShellUsage = aGraph.Builder().AddShellToSolid(aSolidId, aShellId);
   EXPECT_TRUE(aShellUsage.IsValid());
   EXPECT_EQ(aShellUsage.Kind, BRepGraph_NodeKind::Shell);
-  EXPECT_EQ(aGraph.NbSolidUsages(), 1);
+  EXPECT_EQ(aGraph.Usages().NbSolids(), 1);
 
-  const BRepGraph_TopoNode::SolidUsage& aSolidUsage = aGraph.SolidUsageNode(0);
+  const BRepGraph_TopoNode::SolidUsage& aSolidUsage = aGraph.Usages().Solid(0);
   EXPECT_EQ(aSolidUsage.ShellUsages.Length(), 1);
 }
 
@@ -395,19 +402,19 @@ TEST(BRepGraphAPI_ConstructionTest, AddCompoundDef_WithChildren)
 {
   BRepGraph aGraph;
 
-  BRepGraph_NodeId aSolid1 = aGraph.AddSolidDef();
-  BRepGraph_NodeId aSolid2 = aGraph.AddSolidDef();
+  BRepGraph_NodeId aSolid1 = aGraph.Builder().AddSolidDef();
+  BRepGraph_NodeId aSolid2 = aGraph.Builder().AddSolidDef();
 
   NCollection_Vector<BRepGraph_NodeId> aChildren;
   aChildren.Append(aSolid1);
   aChildren.Append(aSolid2);
 
-  BRepGraph_NodeId aCompId = aGraph.AddCompoundDef(aChildren);
+  BRepGraph_NodeId aCompId = aGraph.Builder().AddCompoundDef(aChildren);
   EXPECT_TRUE(aCompId.IsValid());
   EXPECT_EQ(aCompId.Kind, BRepGraph_NodeKind::Compound);
-  EXPECT_EQ(aGraph.NbCompoundDefs(), 1);
+  EXPECT_EQ(aGraph.Defs().NbCompounds(), 1);
 
-  const BRepGraph_TopoNode::CompoundDef& aCompDef = aGraph.CompoundDefinition(0);
+  const BRepGraph_TopoNode::CompoundDef& aCompDef = aGraph.Defs().Compound(0);
   EXPECT_EQ(aCompDef.ChildDefIds.Length(), 2);
 }
 
@@ -415,19 +422,19 @@ TEST(BRepGraphAPI_ConstructionTest, AddCompSolidDef_WithSolids)
 {
   BRepGraph aGraph;
 
-  BRepGraph_NodeId aSolid1 = aGraph.AddSolidDef();
-  BRepGraph_NodeId aSolid2 = aGraph.AddSolidDef();
+  BRepGraph_NodeId aSolid1 = aGraph.Builder().AddSolidDef();
+  BRepGraph_NodeId aSolid2 = aGraph.Builder().AddSolidDef();
 
   NCollection_Vector<BRepGraph_NodeId> aSolids;
   aSolids.Append(aSolid1);
   aSolids.Append(aSolid2);
 
-  BRepGraph_NodeId aCSolId = aGraph.AddCompSolidDef(aSolids);
+  BRepGraph_NodeId aCSolId = aGraph.Builder().AddCompSolidDef(aSolids);
   EXPECT_TRUE(aCSolId.IsValid());
   EXPECT_EQ(aCSolId.Kind, BRepGraph_NodeKind::CompSolid);
-  EXPECT_EQ(aGraph.NbCompSolidDefs(), 1);
+  EXPECT_EQ(aGraph.Defs().NbCompSolids(), 1);
 
-  const BRepGraph_TopoNode::CompSolidDef& aCSolDef = aGraph.CompSolidDefinition(0);
+  const BRepGraph_TopoNode::CompSolidDef& aCSolDef = aGraph.Defs().CompSolid(0);
   EXPECT_EQ(aCSolDef.SolidDefIds.Length(), 2);
 }
 
@@ -436,20 +443,20 @@ TEST(BRepGraphAPI_ConstructionTest, FullSolid_ProgrammaticConstruction)
   BRepGraph aGraph;
 
   // Build a single-face shell solid.
-  BRepGraph_NodeId aV0 = aGraph.AddVertexDef(gp_Pnt(0, 0, 0), 0.001);
-  BRepGraph_NodeId aV1 = aGraph.AddVertexDef(gp_Pnt(10, 0, 0), 0.001);
-  BRepGraph_NodeId aV2 = aGraph.AddVertexDef(gp_Pnt(10, 10, 0), 0.001);
-  BRepGraph_NodeId aV3 = aGraph.AddVertexDef(gp_Pnt(0, 10, 0), 0.001);
+  BRepGraph_NodeId aV0 = aGraph.Builder().AddVertexDef(gp_Pnt(0, 0, 0), 0.001);
+  BRepGraph_NodeId aV1 = aGraph.Builder().AddVertexDef(gp_Pnt(10, 0, 0), 0.001);
+  BRepGraph_NodeId aV2 = aGraph.Builder().AddVertexDef(gp_Pnt(10, 10, 0), 0.001);
+  BRepGraph_NodeId aV3 = aGraph.Builder().AddVertexDef(gp_Pnt(0, 10, 0), 0.001);
 
   Handle(Geom_Line) aL0 = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   Handle(Geom_Line) aL1 = new Geom_Line(gp_Pnt(10, 0, 0), gp_Dir(0, 1, 0));
   Handle(Geom_Line) aL2 = new Geom_Line(gp_Pnt(10, 10, 0), gp_Dir(-1, 0, 0));
   Handle(Geom_Line) aL3 = new Geom_Line(gp_Pnt(0, 10, 0), gp_Dir(0, -1, 0));
 
-  BRepGraph_NodeId aE0 = aGraph.AddEdgeDef(aV0, aV1, aL0, 0.0, 10.0, 0.001);
-  BRepGraph_NodeId aE1 = aGraph.AddEdgeDef(aV1, aV2, aL1, 0.0, 10.0, 0.001);
-  BRepGraph_NodeId aE2 = aGraph.AddEdgeDef(aV2, aV3, aL2, 0.0, 10.0, 0.001);
-  BRepGraph_NodeId aE3 = aGraph.AddEdgeDef(aV3, aV0, aL3, 0.0, 10.0, 0.001);
+  BRepGraph_NodeId aE0 = aGraph.Builder().AddEdgeDef(aV0, aV1, aL0, 0.0, 10.0, 0.001);
+  BRepGraph_NodeId aE1 = aGraph.Builder().AddEdgeDef(aV1, aV2, aL1, 0.0, 10.0, 0.001);
+  BRepGraph_NodeId aE2 = aGraph.Builder().AddEdgeDef(aV2, aV3, aL2, 0.0, 10.0, 0.001);
+  BRepGraph_NodeId aE3 = aGraph.Builder().AddEdgeDef(aV3, aV0, aL3, 0.0, 10.0, 0.001);
 
   NCollection_Vector<BRepGraph_TopoNode::WireDef::EdgeEntry> aEdges;
   BRepGraph_TopoNode::WireDef::EdgeEntry anEntry;
@@ -459,25 +466,25 @@ TEST(BRepGraphAPI_ConstructionTest, FullSolid_ProgrammaticConstruction)
   anEntry.EdgeDefId = aE2; aEdges.Append(anEntry);
   anEntry.EdgeDefId = aE3; aEdges.Append(anEntry);
 
-  BRepGraph_NodeId aWireId = aGraph.AddWireDef(aEdges);
+  BRepGraph_NodeId aWireId = aGraph.Builder().AddWireDef(aEdges);
   Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pln());
   NCollection_Vector<BRepGraph_NodeId> aInnerWires;
-  BRepGraph_NodeId aFaceId = aGraph.AddFaceDef(aPlane, aWireId, aInnerWires, 0.001);
+  BRepGraph_NodeId aFaceId = aGraph.Builder().AddFaceDef(aPlane, aWireId, aInnerWires, 0.001);
 
-  BRepGraph_NodeId aShellId = aGraph.AddShellDef();
-  aGraph.AddFaceToShell(aShellId, aFaceId);
+  BRepGraph_NodeId aShellId = aGraph.Builder().AddShellDef();
+  aGraph.Builder().AddFaceToShell(aShellId, aFaceId);
 
-  BRepGraph_NodeId aSolidId = aGraph.AddSolidDef();
-  aGraph.AddShellToSolid(aSolidId, aShellId);
+  BRepGraph_NodeId aSolidId = aGraph.Builder().AddSolidDef();
+  aGraph.Builder().AddShellToSolid(aSolidId, aShellId);
 
   // Verify the hierarchy.
-  EXPECT_EQ(aGraph.NbSolidDefs(), 1);
-  EXPECT_EQ(aGraph.NbShellDefs(), 1);
-  EXPECT_EQ(aGraph.NbFaceDefs(), 1);
-  EXPECT_EQ(aGraph.NbSolidUsages(), 1);
-  EXPECT_GE(aGraph.NbShellUsages(), 1);
+  EXPECT_EQ(aGraph.Defs().NbSolids(), 1);
+  EXPECT_EQ(aGraph.Defs().NbShells(), 1);
+  EXPECT_EQ(aGraph.Defs().NbFaces(), 1);
+  EXPECT_EQ(aGraph.Usages().NbSolids(), 1);
+  EXPECT_GE(aGraph.Usages().NbShells(), 1);
 
-  const BRepGraph_TopoNode::SolidUsage& aSolidUs = aGraph.SolidUsageNode(0);
+  const BRepGraph_TopoNode::SolidUsage& aSolidUs = aGraph.Usages().Solid(0);
   EXPECT_EQ(aSolidUs.ShellUsages.Length(), 1);
 }
 
@@ -493,13 +500,13 @@ TEST(BRepGraphAPI_MutableDefTest, MutableFaceDefinition_ChangesTolerance)
   BRepGraph aGraph;
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.NbFaceDefs(), 0);
+  ASSERT_GT(aGraph.Defs().NbFaces(), 0);
 
-  const double anOrigTol = aGraph.FaceDefinition(0).Tolerance;
-  BRepGraph_TopoNode::FaceDef& aFaceDef = aGraph.MutableFaceDefinition(0);
+  const double anOrigTol = aGraph.Defs().Face(0).Tolerance;
+  BRepGraph_TopoNode::FaceDef& aFaceDef = aGraph.Mut().FaceDef(0);
   aFaceDef.Tolerance = 0.5;
-  EXPECT_NEAR(aGraph.FaceDefinition(0).Tolerance, 0.5, 1e-10);
-  EXPECT_TRUE(aGraph.FaceDefinition(0).IsModified);
+  EXPECT_NEAR(aGraph.Defs().Face(0).Tolerance, 0.5, 1e-10);
+  EXPECT_TRUE(aGraph.Defs().Face(0).IsModified);
   (void)anOrigTol;
 }
 
@@ -511,9 +518,9 @@ TEST(BRepGraphAPI_MutableDefTest, MutableShellDefinition)
   BRepGraph aGraph;
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.NbShellDefs(), 0);
+  ASSERT_GT(aGraph.Defs().NbShells(), 0);
 
-  BRepGraph_TopoNode::ShellDef& aShellDef = aGraph.MutableShellDefinition(0);
+  BRepGraph_TopoNode::ShellDef& aShellDef = aGraph.Mut().ShellDef(0);
   EXPECT_TRUE(aShellDef.IsModified);
 }
 
@@ -525,9 +532,9 @@ TEST(BRepGraphAPI_MutableDefTest, MutableSolidDefinition)
   BRepGraph aGraph;
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.NbSolidDefs(), 0);
+  ASSERT_GT(aGraph.Defs().NbSolids(), 0);
 
-  BRepGraph_TopoNode::SolidDef& aSolidDef = aGraph.MutableSolidDefinition(0);
+  BRepGraph_TopoNode::SolidDef& aSolidDef = aGraph.Mut().SolidDef(0);
   EXPECT_TRUE(aSolidDef.IsModified);
 }
 
@@ -535,10 +542,10 @@ TEST(BRepGraphAPI_MutableDefTest, MutableCompoundDefinition)
 {
   BRepGraph aGraph;
   NCollection_Vector<BRepGraph_NodeId> aChildren;
-  aGraph.AddCompoundDef(aChildren);
-  ASSERT_EQ(aGraph.NbCompoundDefs(), 1);
+  aGraph.Builder().AddCompoundDef(aChildren);
+  ASSERT_EQ(aGraph.Defs().NbCompounds(), 1);
 
-  BRepGraph_TopoNode::CompoundDef& aCompDef = aGraph.MutableCompoundDefinition(0);
+  BRepGraph_TopoNode::CompoundDef& aCompDef = aGraph.Mut().CompoundDef(0);
   EXPECT_TRUE(aCompDef.IsModified);
 }
 
@@ -546,10 +553,10 @@ TEST(BRepGraphAPI_MutableDefTest, MutableCompSolidDefinition)
 {
   BRepGraph aGraph;
   NCollection_Vector<BRepGraph_NodeId> aSolids;
-  aGraph.AddCompSolidDef(aSolids);
-  ASSERT_EQ(aGraph.NbCompSolidDefs(), 1);
+  aGraph.Builder().AddCompSolidDef(aSolids);
+  ASSERT_EQ(aGraph.Defs().NbCompSolids(), 1);
 
-  BRepGraph_TopoNode::CompSolidDef& aCSolDef = aGraph.MutableCompSolidDefinition(0);
+  BRepGraph_TopoNode::CompSolidDef& aCSolDef = aGraph.Mut().CompSolidDef(0);
   EXPECT_TRUE(aCSolDef.IsModified);
 }
 
@@ -565,11 +572,11 @@ TEST(BRepGraphAPI_IteratorTest, SkipsRemovedFaces)
   BRepGraph aGraph;
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_EQ(aGraph.NbFaceDefs(), 6);
+  ASSERT_EQ(aGraph.Defs().NbFaces(), 6);
 
   // Remove 2 faces.
-  aGraph.RemoveNode(BRepGraph_NodeId(BRepGraph_NodeKind::Face, 0));
-  aGraph.RemoveNode(BRepGraph_NodeId(BRepGraph_NodeKind::Face, 3));
+  aGraph.Builder().RemoveNode(BRepGraph_NodeId(BRepGraph_NodeKind::Face, 0));
+  aGraph.Builder().RemoveNode(BRepGraph_NodeId(BRepGraph_NodeKind::Face, 3));
 
   int aCount = 0;
   for (BRepGraph_Iterator<BRepGraph_TopoNode::FaceDef> anIt(aGraph);
@@ -589,10 +596,10 @@ TEST(BRepGraphAPI_IteratorTest, SkipsRemovedEdges)
   BRepGraph aGraph;
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  const int aNbEdges = aGraph.NbEdgeDefs();
+  const int aNbEdges = aGraph.Defs().NbEdges();
   ASSERT_GT(aNbEdges, 0);
 
-  aGraph.RemoveNode(BRepGraph_NodeId(BRepGraph_NodeKind::Edge, 0));
+  aGraph.Builder().RemoveNode(BRepGraph_NodeId(BRepGraph_NodeKind::Edge, 0));
 
   int aCount = 0;
   for (BRepGraph_Iterator<BRepGraph_TopoNode::EdgeDef> anIt(aGraph);
@@ -607,12 +614,12 @@ TEST(BRepGraphAPI_IteratorTest, SkipsRemovedEdges)
 TEST(BRepGraphAPI_IteratorTest, SkipsFirstNode)
 {
   BRepGraph aGraph;
-  aGraph.AddVertexDef(gp_Pnt(0, 0, 0), 0.001);
-  aGraph.AddVertexDef(gp_Pnt(1, 0, 0), 0.001);
-  aGraph.AddVertexDef(gp_Pnt(2, 0, 0), 0.001);
+  aGraph.Builder().AddVertexDef(gp_Pnt(0, 0, 0), 0.001);
+  aGraph.Builder().AddVertexDef(gp_Pnt(1, 0, 0), 0.001);
+  aGraph.Builder().AddVertexDef(gp_Pnt(2, 0, 0), 0.001);
 
   // Remove the first vertex.
-  aGraph.RemoveNode(BRepGraph_NodeId(BRepGraph_NodeKind::Vertex, 0));
+  aGraph.Builder().RemoveNode(BRepGraph_NodeId(BRepGraph_NodeKind::Vertex, 0));
 
   int aCount = 0;
   for (BRepGraph_Iterator<BRepGraph_TopoNode::VertexDef> anIt(aGraph);
@@ -632,20 +639,20 @@ TEST(BRepGraphAPI_RemoveSubgraphTest, RemoveFace_RemovesWiresAndEdges)
 {
   BRepGraph aGraph;
 
-  BRepGraph_NodeId aV0 = aGraph.AddVertexDef(gp_Pnt(0, 0, 0), 0.001);
-  BRepGraph_NodeId aV1 = aGraph.AddVertexDef(gp_Pnt(10, 0, 0), 0.001);
-  BRepGraph_NodeId aV2 = aGraph.AddVertexDef(gp_Pnt(10, 10, 0), 0.001);
-  BRepGraph_NodeId aV3 = aGraph.AddVertexDef(gp_Pnt(0, 10, 0), 0.001);
+  BRepGraph_NodeId aV0 = aGraph.Builder().AddVertexDef(gp_Pnt(0, 0, 0), 0.001);
+  BRepGraph_NodeId aV1 = aGraph.Builder().AddVertexDef(gp_Pnt(10, 0, 0), 0.001);
+  BRepGraph_NodeId aV2 = aGraph.Builder().AddVertexDef(gp_Pnt(10, 10, 0), 0.001);
+  BRepGraph_NodeId aV3 = aGraph.Builder().AddVertexDef(gp_Pnt(0, 10, 0), 0.001);
 
   Handle(Geom_Line) aL0 = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   Handle(Geom_Line) aL1 = new Geom_Line(gp_Pnt(10, 0, 0), gp_Dir(0, 1, 0));
   Handle(Geom_Line) aL2 = new Geom_Line(gp_Pnt(10, 10, 0), gp_Dir(-1, 0, 0));
   Handle(Geom_Line) aL3 = new Geom_Line(gp_Pnt(0, 10, 0), gp_Dir(0, -1, 0));
 
-  BRepGraph_NodeId aE0 = aGraph.AddEdgeDef(aV0, aV1, aL0, 0.0, 10.0, 0.001);
-  BRepGraph_NodeId aE1 = aGraph.AddEdgeDef(aV1, aV2, aL1, 0.0, 10.0, 0.001);
-  BRepGraph_NodeId aE2 = aGraph.AddEdgeDef(aV2, aV3, aL2, 0.0, 10.0, 0.001);
-  BRepGraph_NodeId aE3 = aGraph.AddEdgeDef(aV3, aV0, aL3, 0.0, 10.0, 0.001);
+  BRepGraph_NodeId aE0 = aGraph.Builder().AddEdgeDef(aV0, aV1, aL0, 0.0, 10.0, 0.001);
+  BRepGraph_NodeId aE1 = aGraph.Builder().AddEdgeDef(aV1, aV2, aL1, 0.0, 10.0, 0.001);
+  BRepGraph_NodeId aE2 = aGraph.Builder().AddEdgeDef(aV2, aV3, aL2, 0.0, 10.0, 0.001);
+  BRepGraph_NodeId aE3 = aGraph.Builder().AddEdgeDef(aV3, aV0, aL3, 0.0, 10.0, 0.001);
 
   NCollection_Vector<BRepGraph_TopoNode::WireDef::EdgeEntry> aEdges;
   BRepGraph_TopoNode::WireDef::EdgeEntry anEntry;
@@ -655,24 +662,24 @@ TEST(BRepGraphAPI_RemoveSubgraphTest, RemoveFace_RemovesWiresAndEdges)
   anEntry.EdgeDefId = aE2; aEdges.Append(anEntry);
   anEntry.EdgeDefId = aE3; aEdges.Append(anEntry);
 
-  BRepGraph_NodeId aWireId = aGraph.AddWireDef(aEdges);
+  BRepGraph_NodeId aWireId = aGraph.Builder().AddWireDef(aEdges);
   Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pln());
   NCollection_Vector<BRepGraph_NodeId> aInnerWires;
-  BRepGraph_NodeId aFaceId = aGraph.AddFaceDef(aPlane, aWireId, aInnerWires, 0.001);
+  BRepGraph_NodeId aFaceId = aGraph.Builder().AddFaceDef(aPlane, aWireId, aInnerWires, 0.001);
 
   // Remove the face subgraph.
-  aGraph.RemoveSubgraph(aFaceId);
+  aGraph.Builder().RemoveSubgraph(aFaceId);
 
-  EXPECT_TRUE(aGraph.IsRemoved(aFaceId));
-  EXPECT_TRUE(aGraph.IsRemoved(aWireId));
-  EXPECT_TRUE(aGraph.IsRemoved(aE0));
-  EXPECT_TRUE(aGraph.IsRemoved(aE1));
-  EXPECT_TRUE(aGraph.IsRemoved(aE2));
-  EXPECT_TRUE(aGraph.IsRemoved(aE3));
-  EXPECT_TRUE(aGraph.IsRemoved(aV0));
-  EXPECT_TRUE(aGraph.IsRemoved(aV1));
-  EXPECT_TRUE(aGraph.IsRemoved(aV2));
-  EXPECT_TRUE(aGraph.IsRemoved(aV3));
+  EXPECT_TRUE(aGraph.Builder().IsRemoved(aFaceId));
+  EXPECT_TRUE(aGraph.Builder().IsRemoved(aWireId));
+  EXPECT_TRUE(aGraph.Builder().IsRemoved(aE0));
+  EXPECT_TRUE(aGraph.Builder().IsRemoved(aE1));
+  EXPECT_TRUE(aGraph.Builder().IsRemoved(aE2));
+  EXPECT_TRUE(aGraph.Builder().IsRemoved(aE3));
+  EXPECT_TRUE(aGraph.Builder().IsRemoved(aV0));
+  EXPECT_TRUE(aGraph.Builder().IsRemoved(aV1));
+  EXPECT_TRUE(aGraph.Builder().IsRemoved(aV2));
+  EXPECT_TRUE(aGraph.Builder().IsRemoved(aV3));
 }
 
 TEST(BRepGraphAPI_RemoveSubgraphTest, RemoveSolid_CascadesToFaces)
@@ -685,17 +692,17 @@ TEST(BRepGraphAPI_RemoveSubgraphTest, RemoveSolid_CascadesToFaces)
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_NodeId aSolidId(BRepGraph_NodeKind::Solid, 0);
-  aGraph.RemoveSubgraph(aSolidId);
+  aGraph.Builder().RemoveSubgraph(aSolidId);
 
-  EXPECT_TRUE(aGraph.IsRemoved(aSolidId));
+  EXPECT_TRUE(aGraph.Builder().IsRemoved(aSolidId));
 
   // All shells should be removed.
-  for (int aIdx = 0; aIdx < aGraph.NbShellDefs(); ++aIdx)
-    EXPECT_TRUE(aGraph.IsRemoved(BRepGraph_NodeId(BRepGraph_NodeKind::Shell, aIdx)));
+  for (int aIdx = 0; aIdx < aGraph.Defs().NbShells(); ++aIdx)
+    EXPECT_TRUE(aGraph.Builder().IsRemoved(BRepGraph_NodeId(BRepGraph_NodeKind::Shell, aIdx)));
 
   // All faces should be removed.
-  for (int aIdx = 0; aIdx < aGraph.NbFaceDefs(); ++aIdx)
-    EXPECT_TRUE(aGraph.IsRemoved(BRepGraph_NodeId(BRepGraph_NodeKind::Face, aIdx)));
+  for (int aIdx = 0; aIdx < aGraph.Defs().NbFaces(); ++aIdx)
+    EXPECT_TRUE(aGraph.Builder().IsRemoved(BRepGraph_NodeId(BRepGraph_NodeKind::Face, aIdx)));
 }
 
 // ============================================================
@@ -712,10 +719,10 @@ TEST(BRepGraphAPI_AdjacencyTest, FacesOfEdge_BoxSharedEdge)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Every edge in a box is shared by exactly 2 faces.
-  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.NbEdgeDefs(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
     BRepGraph_NodeId anEdgeId(BRepGraph_NodeKind::Edge, anEdgeIdx);
-    NCollection_Vector<BRepGraph_NodeId> aFaces = aGraph.FacesOfEdge(anEdgeId);
+    NCollection_Vector<BRepGraph_NodeId> aFaces = aGraph.Spatial().FacesOfEdge(anEdgeId);
     EXPECT_EQ(aFaces.Length(), 2) << "Edge " << anEdgeIdx << " has " << aFaces.Length() << " faces";
   }
 }
@@ -728,15 +735,15 @@ TEST(BRepGraphAPI_AdjacencyTest, SharedEdges_AdjacentBoxFaces)
   BRepGraph aGraph;
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_EQ(aGraph.NbFaceDefs(), 6);
+  ASSERT_EQ(aGraph.Defs().NbFaces(), 6);
 
   // Count total shared edge pairs across all face pairs.
   int aSharingPairs = 0;
-  for (int aFaceA = 0; aFaceA < aGraph.NbFaceDefs(); ++aFaceA)
+  for (int aFaceA = 0; aFaceA < aGraph.Defs().NbFaces(); ++aFaceA)
   {
-    for (int aFaceB = aFaceA + 1; aFaceB < aGraph.NbFaceDefs(); ++aFaceB)
+    for (int aFaceB = aFaceA + 1; aFaceB < aGraph.Defs().NbFaces(); ++aFaceB)
     {
-      NCollection_Vector<BRepGraph_NodeId> aShared = aGraph.SharedEdges(
+      NCollection_Vector<BRepGraph_NodeId> aShared = aGraph.Spatial().SharedEdges(
         BRepGraph_NodeId(BRepGraph_NodeKind::Face, aFaceA),
         BRepGraph_NodeId(BRepGraph_NodeKind::Face, aFaceB));
       if (!aShared.IsEmpty())
@@ -755,13 +762,13 @@ TEST(BRepGraphAPI_AdjacencyTest, AdjacentFaces_BoxFace)
   BRepGraph aGraph;
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_EQ(aGraph.NbFaceDefs(), 6);
+  ASSERT_EQ(aGraph.Defs().NbFaces(), 6);
 
   // Each face of a box is adjacent to 4 other faces.
-  for (int aFaceIdx = 0; aFaceIdx < aGraph.NbFaceDefs(); ++aFaceIdx)
+  for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
   {
     BRepGraph_NodeId aFaceId(BRepGraph_NodeKind::Face, aFaceIdx);
-    NCollection_Vector<BRepGraph_NodeId> aAdj = aGraph.AdjacentFaces(aFaceId);
+    NCollection_Vector<BRepGraph_NodeId> aAdj = aGraph.Spatial().AdjacentFaces(aFaceId);
     EXPECT_EQ(aAdj.Length(), 4) << "Face " << aFaceIdx << " has " << aAdj.Length() << " adjacent faces";
   }
 }
@@ -769,13 +776,13 @@ TEST(BRepGraphAPI_AdjacencyTest, AdjacentFaces_BoxFace)
 TEST(BRepGraphAPI_AdjacencyTest, FacesOfEdge_NoFaces_Programmatic)
 {
   BRepGraph aGraph;
-  BRepGraph_NodeId aV0 = aGraph.AddVertexDef(gp_Pnt(0, 0, 0), 0.001);
-  BRepGraph_NodeId aV1 = aGraph.AddVertexDef(gp_Pnt(10, 0, 0), 0.001);
+  BRepGraph_NodeId aV0 = aGraph.Builder().AddVertexDef(gp_Pnt(0, 0, 0), 0.001);
+  BRepGraph_NodeId aV1 = aGraph.Builder().AddVertexDef(gp_Pnt(10, 0, 0), 0.001);
 
   Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
-  BRepGraph_NodeId anEdgeId = aGraph.AddEdgeDef(aV0, aV1, aLine, 0.0, 10.0, 0.001);
+  BRepGraph_NodeId anEdgeId = aGraph.Builder().AddEdgeDef(aV0, aV1, aLine, 0.0, 10.0, 0.001);
 
   // Edge not in any face => empty result.
-  NCollection_Vector<BRepGraph_NodeId> aFaces = aGraph.FacesOfEdge(anEdgeId);
+  NCollection_Vector<BRepGraph_NodeId> aFaces = aGraph.Spatial().FacesOfEdge(anEdgeId);
   EXPECT_EQ(aFaces.Length(), 0);
 }
