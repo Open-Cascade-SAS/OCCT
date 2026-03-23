@@ -19,9 +19,6 @@
 #include <BRep_Builder.hxx>
 #include <BRep_TFace.hxx>
 #include <NCollection_List.hxx>
-#include <Poly_Polygon2D.hxx>
-#include <Poly_Polygon3D.hxx>
-#include <Poly_PolygonOnTriangulation.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_CompSolid.hxx>
 #include <TopoDS_Compound.hxx>
@@ -469,13 +466,8 @@ TopoDS_Shape BRepGraph_Reconstruct::FaceWithCache(
     }
 
     // Attach Polygon3D.
-    if (anEdgeDef.Polygon3DNodeId.IsValid())
-    {
-      const BRepGraph_GeomNode::Poly3D& aPoly3DNode =
-        theGraph.myData->myPolygons3D.Nodes.Value(anEdgeDef.Polygon3DNodeId.Index);
-      if (!aPoly3DNode.Polygon.IsNull())
-        aBB.UpdateEdge(anEdge, aPoly3DNode.Polygon, aPoly3DNode.PolyLocation);
-    }
+    if (!anEdgeDef.Polygon3D.IsNull())
+      aBB.UpdateEdge(anEdge, anEdgeDef.Polygon3D, anEdgeDef.Poly3DLocation);
 
     // Attach Regularities.
     for (int aRegIdx = 0; aRegIdx < anEdgeDef.Regularities.Length(); ++aRegIdx)
@@ -573,15 +565,10 @@ TopoDS_Shape BRepGraph_Reconstruct::FaceWithCache(
       {
         const BRepGraph_TopoNode::EdgeDef::PolyOnSurfEntry& aPolyEntry =
           anEdgeDef.PolygonsOnSurf.Value(aPolyIdx);
-        if (aPolyEntry.FaceDefId != aFaceDef.Id || !aPolyEntry.PolyOnSurfNodeId.IsValid())
+        if (aPolyEntry.FaceDefId != aFaceDef.Id || aPolyEntry.Polygon2D.IsNull())
           continue;
-        const BRepGraph_GeomNode::PolyOnSurf& aPolyNode =
-          theGraph.myData->myPolygonsOnSurf.Nodes.Value(aPolyEntry.PolyOnSurfNodeId.Index);
-        if (!aPolyNode.Polygon2D.IsNull())
-        {
-          aBB.UpdateEdge(anEdge, aPolyNode.Polygon2D,
-                         aSurfNode.Surface, aSurfNode.SurfaceLocation);
-        }
+        aBB.UpdateEdge(anEdge, aPolyEntry.Polygon2D,
+                       aSurfNode.Surface, aSurfNode.SurfaceLocation);
       }
 
       // Attach PolygonOnTriangulation for this face context.
@@ -589,19 +576,14 @@ TopoDS_Shape BRepGraph_Reconstruct::FaceWithCache(
       {
         const BRepGraph_TopoNode::EdgeDef::PolyOnTriEntry& aPolyEntry =
           anEdgeDef.PolygonsOnTri.Value(aPolyIdx);
-        if (aPolyEntry.FaceDefId != aFaceDef.Id || !aPolyEntry.PolyOnTriNodeId.IsValid())
+        if (aPolyEntry.FaceDefId != aFaceDef.Id || aPolyEntry.Polygon.IsNull())
           continue;
-        const BRepGraph_GeomNode::PolyOnTri& aPolyNode =
-          theGraph.myData->myPolygonsOnTri.Nodes.Value(aPolyEntry.PolyOnTriNodeId.Index);
-        if (!aPolyNode.Polygon.IsNull()
-            && aPolyEntry.TriangulationIndex < aSurfNode.Triangulations.Length())
+        if (aPolyEntry.TriangulationIndex < aSurfNode.Triangulations.Length())
         {
           const Handle(Poly_Triangulation)& aTri =
             aSurfNode.Triangulations.Value(aPolyEntry.TriangulationIndex);
           if (!aTri.IsNull())
-          {
-            aBB.UpdateEdge(anEdge, aPolyNode.Polygon, aTri, aSurfNode.SurfaceLocation);
-          }
+            aBB.UpdateEdge(anEdge, aPolyEntry.Polygon, aTri, aSurfNode.SurfaceLocation);
         }
       }
 

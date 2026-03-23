@@ -224,9 +224,6 @@ void BRepGraph_BackRefManager::ClearAll(BRepGraph& theGraph)
   for (int aCurveIdx = 0; aCurveIdx < theGraph.myData->myCurves.Nodes.Length(); ++aCurveIdx)
     theGraph.myData->myCurves.Nodes.ChangeValue(aCurveIdx).EdgeDefUsers.Clear();
 
-  for (int aPolyIdx = 0; aPolyIdx < theGraph.myData->myPolygons3D.Nodes.Length(); ++aPolyIdx)
-    theGraph.myData->myPolygons3D.Nodes.ChangeValue(aPolyIdx).EdgeDefUsers.Clear();
-
   // Clear edge-to-wire reverse index.
   theGraph.myData->myEdgeToWires.Clear();
 
@@ -246,9 +243,6 @@ void BRepGraph_BackRefManager::RebuildAll(BRepGraph& theGraph)
   for (int aCurveIdx = 0; aCurveIdx < theGraph.myData->myCurves.Nodes.Length(); ++aCurveIdx)
     theGraph.myData->myCurves.Nodes.ChangeValue(aCurveIdx).EdgeDefUsers.Clear();
 
-  for (int aPolyIdx = 0; aPolyIdx < theGraph.myData->myPolygons3D.Nodes.Length(); ++aPolyIdx)
-    theGraph.myData->myPolygons3D.Nodes.ChangeValue(aPolyIdx).EdgeDefUsers.Clear();
-
   theGraph.myData->myEdgeToWires.Clear();
 
   // Rebuild surface back-refs from FaceDefs.
@@ -266,9 +260,6 @@ void BRepGraph_BackRefManager::RebuildAll(BRepGraph& theGraph)
     const BRepGraph_TopoNode::EdgeDef& anEdgeDef = theGraph.myData->myEdges.Defs.Value(anEdgeIdx);
     if (anEdgeDef.CurveNodeId.IsValid())
       theGraph.myData->myCurves.Nodes.ChangeValue(anEdgeDef.CurveNodeId.Index)
-        .EdgeDefUsers.Append(anEdgeDef.Id);
-    if (anEdgeDef.Polygon3DNodeId.IsValid())
-      theGraph.myData->myPolygons3D.Nodes.ChangeValue(anEdgeDef.Polygon3DNodeId.Index)
         .EdgeDefUsers.Append(anEdgeDef.Id);
   }
 

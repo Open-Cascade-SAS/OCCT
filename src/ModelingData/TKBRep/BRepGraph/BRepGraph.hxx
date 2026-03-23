@@ -43,9 +43,6 @@ class TCollection_AsciiString;
 class Geom_Surface;
 class Geom_Curve;
 class Geom2d_Curve;
-class Poly_Polygon2D;
-class Poly_Polygon3D;
-class Poly_PolygonOnTriangulation;
 class Poly_Triangulation;
 
 class BRepGraph_Builder;
@@ -208,18 +205,6 @@ private:
                                                     double                      theFirst,
                                                     double                      theLast,
                                                     GeomAbs_Shape               theContinuity = GeomAbs_C0);
-
-  Standard_EXPORT BRepGraph_NodeId registerPolygon3D(const Handle(Poly_Polygon3D)& thePoly,
-                                                      const TopLoc_Location&        theLoc);
-  Standard_EXPORT BRepGraph_NodeId createPolyOnSurfNode(const Handle(Poly_Polygon2D)& thePoly2D,
-                                                         BRepGraph_NodeId              theEdgeDef,
-                                                         BRepGraph_NodeId              theFaceDef,
-                                                         TopAbs_Orientation            theEdgeOri);
-  Standard_EXPORT BRepGraph_NodeId createPolyOnTriNode(const Handle(Poly_PolygonOnTriangulation)& thePoly,
-                                                        BRepGraph_NodeId   theEdgeDef,
-                                                        BRepGraph_NodeId   theFaceDef,
-                                                        int                theTriIndex,
-                                                        TopAbs_Orientation theEdgeOri);
 
   Standard_EXPORT void invalidateSubgraphImpl(BRepGraph_NodeId theNode);
   Standard_EXPORT BRepGraph_UID allocateUID(BRepGraph_NodeId theNodeId);

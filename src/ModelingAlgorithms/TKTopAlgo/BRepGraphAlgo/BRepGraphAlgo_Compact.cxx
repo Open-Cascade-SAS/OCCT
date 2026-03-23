@@ -82,11 +82,6 @@ BRepGraph_NodeId remapNodeId(const BRepGraph_NodeId&              theId,
     case BRepGraph_NodeId::Kind::PCurve:
       aMap = &thePCurveMap;
       break;
-    case BRepGraph_NodeId::Kind::Polygon3D:
-    case BRepGraph_NodeId::Kind::PolyOnSurf:
-    case BRepGraph_NodeId::Kind::PolyOnTri:
-      // Polygon kinds are not remapped by Compact (they follow their edge defs).
-      return theId;
   }
 
   if (aMap == nullptr)

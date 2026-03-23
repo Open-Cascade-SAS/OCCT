@@ -585,55 +585,39 @@ void BRepGraph_Builder::registerFaceData(BRepGraph& theGraph, const FaceDataVec&
           }
         }
 
-        // Polygon3D (register once per edge).
+        // Polygon3D (store inline on edge, once per edge).
         if (!anEdgeData.Polygon3D.IsNull())
         {
           BRepGraph_TopoNode::EdgeDef& anEdgeDefMut =
             theGraph.myData->myEdges.Defs.ChangeValue(anEdgeDefId.Index);
-          if (!anEdgeDefMut.Polygon3DNodeId.IsValid())
+          if (anEdgeDefMut.Polygon3D.IsNull())
           {
-            anEdgeDefMut.Polygon3DNodeId =
-              theGraph.registerPolygon3D(anEdgeData.Polygon3D, anEdgeData.Poly3DLocation);
-            if (anEdgeDefMut.Polygon3DNodeId.IsValid())
-            {
-              theGraph.myData->myPolygons3D.Nodes
-                .ChangeValue(anEdgeDefMut.Polygon3DNodeId.Index)
-                .EdgeDefUsers.Append(anEdgeDefId);
-            }
+            anEdgeDefMut.Polygon3D      = anEdgeData.Polygon3D;
+            anEdgeDefMut.Poly3DLocation = anEdgeData.Poly3DLocation;
           }
         }
 
-        // PolygonOnSurface (per face context).
+        // PolygonOnSurface (per face context, stored inline).
         if (!anEdgeData.PolyOnSurf.IsNull())
         {
-          BRepGraph_NodeId aPolyId = theGraph.createPolyOnSurfNode(
-            anEdgeData.PolyOnSurf, anEdgeDefId, aFaceDefId, TopAbs_FORWARD);
-          if (aPolyId.IsValid())
-          {
-            BRepGraph_TopoNode::EdgeDef::PolyOnSurfEntry aPolyEntry;
-            aPolyEntry.PolyOnSurfNodeId = aPolyId;
-            aPolyEntry.FaceDefId        = aFaceDefId;
-            aPolyEntry.EdgeOrientation  = TopAbs_FORWARD;
-            theGraph.myData->myEdges.Defs.ChangeValue(anEdgeDefId.Index)
-              .PolygonsOnSurf.Append(aPolyEntry);
-          }
+          BRepGraph_TopoNode::EdgeDef::PolyOnSurfEntry aPolyEntry;
+          aPolyEntry.Polygon2D       = anEdgeData.PolyOnSurf;
+          aPolyEntry.FaceDefId       = aFaceDefId;
+          aPolyEntry.EdgeOrientation = TopAbs_FORWARD;
+          theGraph.myData->myEdges.Defs.ChangeValue(anEdgeDefId.Index)
+            .PolygonsOnSurf.Append(aPolyEntry);
         }
         if (!anEdgeData.PolyOnSurfReversed.IsNull())
         {
-          BRepGraph_NodeId aPolyId = theGraph.createPolyOnSurfNode(
-            anEdgeData.PolyOnSurfReversed, anEdgeDefId, aFaceDefId, TopAbs_REVERSED);
-          if (aPolyId.IsValid())
-          {
-            BRepGraph_TopoNode::EdgeDef::PolyOnSurfEntry aPolyEntry;
-            aPolyEntry.PolyOnSurfNodeId = aPolyId;
-            aPolyEntry.FaceDefId        = aFaceDefId;
-            aPolyEntry.EdgeOrientation  = TopAbs_REVERSED;
-            theGraph.myData->myEdges.Defs.ChangeValue(anEdgeDefId.Index)
-              .PolygonsOnSurf.Append(aPolyEntry);
-          }
+          BRepGraph_TopoNode::EdgeDef::PolyOnSurfEntry aPolyEntry;
+          aPolyEntry.Polygon2D       = anEdgeData.PolyOnSurfReversed;
+          aPolyEntry.FaceDefId       = aFaceDefId;
+          aPolyEntry.EdgeOrientation = TopAbs_REVERSED;
+          theGraph.myData->myEdges.Defs.ChangeValue(anEdgeDefId.Index)
+            .PolygonsOnSurf.Append(aPolyEntry);
         }
 
-        // PolygonOnTriangulation (per face triangulation context).
+        // PolygonOnTriangulation (per face triangulation context, stored inline).
         {
           const BRepGraph_TopoNode::FaceDef& aFaceDefRef =
             theGraph.myData->myFaces.Defs.Value(aFaceDefId.Index);
@@ -652,18 +636,13 @@ void BRepGraph_Builder::registerFaceData(BRepGraph& theGraph, const FaceDataVec&
                 BRep_Tool::PolygonOnTriangulation(anEdgeData.Shape, aTri, aPolyTriLoc);
               if (!aPolyOnTri.IsNull())
               {
-                BRepGraph_NodeId aPolyTriId = theGraph.createPolyOnTriNode(
-                  aPolyOnTri, anEdgeDefId, aFaceDefId, aTriIdx, TopAbs_FORWARD);
-                if (aPolyTriId.IsValid())
-                {
-                  BRepGraph_TopoNode::EdgeDef::PolyOnTriEntry aPolyTriEntry;
-                  aPolyTriEntry.PolyOnTriNodeId    = aPolyTriId;
-                  aPolyTriEntry.FaceDefId          = aFaceDefId;
-                  aPolyTriEntry.TriangulationIndex = aTriIdx;
-                  aPolyTriEntry.EdgeOrientation    = TopAbs_FORWARD;
-                  theGraph.myData->myEdges.Defs.ChangeValue(anEdgeDefId.Index)
-                    .PolygonsOnTri.Append(aPolyTriEntry);
-                }
+                BRepGraph_TopoNode::EdgeDef::PolyOnTriEntry aPolyTriEntry;
+                aPolyTriEntry.Polygon            = aPolyOnTri;
+                aPolyTriEntry.FaceDefId          = aFaceDefId;
+                aPolyTriEntry.TriangulationIndex = aTriIdx;
+                aPolyTriEntry.EdgeOrientation    = TopAbs_FORWARD;
+                theGraph.myData->myEdges.Defs.ChangeValue(anEdgeDefId.Index)
+                  .PolygonsOnTri.Append(aPolyTriEntry);
 
                 // Check for closed polygon on triangulation (seam edge).
                 TopoDS_Edge aRevEdge = TopoDS::Edge(anEdgeData.Shape.Reversed());
@@ -671,18 +650,13 @@ void BRepGraph_Builder::registerFaceData(BRepGraph& theGraph, const FaceDataVec&
                   BRep_Tool::PolygonOnTriangulation(aRevEdge, aTri, aPolyTriLoc);
                 if (!aPolyOnTriRev.IsNull() && aPolyOnTriRev != aPolyOnTri)
                 {
-                  BRepGraph_NodeId aPolyTriIdRev = theGraph.createPolyOnTriNode(
-                    aPolyOnTriRev, anEdgeDefId, aFaceDefId, aTriIdx, TopAbs_REVERSED);
-                  if (aPolyTriIdRev.IsValid())
-                  {
-                    BRepGraph_TopoNode::EdgeDef::PolyOnTriEntry aPolyTriEntryRev;
-                    aPolyTriEntryRev.PolyOnTriNodeId    = aPolyTriIdRev;
-                    aPolyTriEntryRev.FaceDefId          = aFaceDefId;
-                    aPolyTriEntryRev.TriangulationIndex = aTriIdx;
-                    aPolyTriEntryRev.EdgeOrientation    = TopAbs_REVERSED;
-                    theGraph.myData->myEdges.Defs.ChangeValue(anEdgeDefId.Index)
-                      .PolygonsOnTri.Append(aPolyTriEntryRev);
-                  }
+                  BRepGraph_TopoNode::EdgeDef::PolyOnTriEntry aPolyTriEntryRev;
+                  aPolyTriEntryRev.Polygon            = aPolyOnTriRev;
+                  aPolyTriEntryRev.FaceDefId          = aFaceDefId;
+                  aPolyTriEntryRev.TriangulationIndex = aTriIdx;
+                  aPolyTriEntryRev.EdgeOrientation    = TopAbs_REVERSED;
+                  theGraph.myData->myEdges.Defs.ChangeValue(anEdgeDefId.Index)
+                    .PolygonsOnTri.Append(aPolyTriEntryRev);
                 }
               }
             }
@@ -820,9 +794,6 @@ void BRepGraph_Builder::Perform(BRepGraph& theGraph, const TopoDS_Shape& theShap
   theGraph.myData->mySurfaces.Clear();
   theGraph.myData->myCurves.Clear();
   theGraph.myData->myPCurves.Clear();
-  theGraph.myData->myPolygons3D.Clear();
-  theGraph.myData->myPolygonsOnSurf.Clear();
-  theGraph.myData->myPolygonsOnTri.Clear();
   theGraph.myData->mySurfRegistry.Clear();
   theGraph.myData->myCurveRegistry.Clear();
   theGraph.myData->myTShapeToDefId.Clear();

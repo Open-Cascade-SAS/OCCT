@@ -19,6 +19,9 @@
 #include <BRepGraph_NodeCache.hxx>
 
 #include <GeomAbs_Shape.hxx>
+#include <Poly_Polygon2D.hxx>
+#include <Poly_Polygon3D.hxx>
+#include <Poly_PolygonOnTriangulation.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <gp_Pnt.hxx>
@@ -138,25 +141,26 @@ struct EdgeDef : public BaseDef
   //! True if the PCurve parameter range equals the 3D curve parameter range.
   bool SameRange = false;
 
-  //! Optional 3D polygon discretization.
-  BRepGraph_NodeId Polygon3DNodeId;
+  //! Optional 3D polygon discretization (stored inline, not as a graph node).
+  Handle(Poly_Polygon3D) Polygon3D;
+  TopLoc_Location        Poly3DLocation;
 
   //! Polygon-on-surface entries, one per (edge, face) context.
   struct PolyOnSurfEntry
   {
-    BRepGraph_NodeId   PolyOnSurfNodeId;
-    BRepGraph_NodeId   FaceDefId;
-    TopAbs_Orientation EdgeOrientation = TopAbs_FORWARD;
+    Handle(Poly_Polygon2D) Polygon2D;
+    BRepGraph_NodeId       FaceDefId;
+    TopAbs_Orientation     EdgeOrientation = TopAbs_FORWARD;
   };
   NCollection_Vector<PolyOnSurfEntry> PolygonsOnSurf;
 
   //! Polygon-on-triangulation entries, one per (edge, face, triangulation) context.
   struct PolyOnTriEntry
   {
-    BRepGraph_NodeId   PolyOnTriNodeId;
-    BRepGraph_NodeId   FaceDefId;
-    int                TriangulationIndex = 0;
-    TopAbs_Orientation EdgeOrientation = TopAbs_FORWARD;
+    Handle(Poly_PolygonOnTriangulation) Polygon;
+    BRepGraph_NodeId                    FaceDefId;
+    int                                 TriangulationIndex = 0;
+    TopAbs_Orientation                  EdgeOrientation = TopAbs_FORWARD;
   };
   NCollection_Vector<PolyOnTriEntry> PolygonsOnTri;
 

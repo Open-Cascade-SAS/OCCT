@@ -86,13 +86,10 @@ struct BRepGraph_Data
   TopoKindData<BRepGraph_TopoNode::CompoundDef, BRepGraph_TopoNode::CompoundUsage>   myCompounds;
   TopoKindData<BRepGraph_TopoNode::CompSolidDef, BRepGraph_TopoNode::CompSolidUsage> myCompSolids;
 
-  //! Geometry kind data (6 kinds), each grouping Nodes and UIDs.
+  //! Geometry kind data (3 kinds), each grouping Nodes and UIDs.
   GeomKindData<BRepGraph_GeomNode::Surf>      mySurfaces;
   GeomKindData<BRepGraph_GeomNode::Curve>     myCurves;
   GeomKindData<BRepGraph_GeomNode::PCurve>    myPCurves;
-  GeomKindData<BRepGraph_GeomNode::Poly3D>    myPolygons3D;
-  GeomKindData<BRepGraph_GeomNode::PolyOnSurf> myPolygonsOnSurf;
-  GeomKindData<BRepGraph_GeomNode::PolyOnTri>  myPolygonsOnTri;
 
   //! Map-based RelEdge storage.
   NCollection_DataMap<BRepGraph_NodeId,
@@ -144,9 +141,6 @@ struct BRepGraph_Data
         mySurfaces(64, myAllocator),
         myCurves(64, myAllocator),
         myPCurves(128, myAllocator),
-        myPolygons3D(64, myAllocator),
-        myPolygonsOnSurf(128, myAllocator),
-        myPolygonsOnTri(128, myAllocator),
         mySurfRegistry(100, myAllocator),
         myCurveRegistry(100, myAllocator),
         myTShapeToDefId(100, myAllocator)
@@ -168,9 +162,6 @@ struct BRepGraph_Data
         mySurfaces(64, myAllocator),
         myCurves(64, myAllocator),
         myPCurves(128, myAllocator),
-        myPolygons3D(64, myAllocator),
-        myPolygonsOnSurf(128, myAllocator),
-        myPolygonsOnTri(128, myAllocator),
         mySurfRegistry(100, myAllocator),
         myCurveRegistry(100, myAllocator),
         myTShapeToDefId(100, myAllocator)

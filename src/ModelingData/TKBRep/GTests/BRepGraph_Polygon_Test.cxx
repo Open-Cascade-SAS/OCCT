@@ -100,7 +100,7 @@ TEST(BRepGraph_PolygonTest, Polygon3D_Captured_WhenPresent)
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
     const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(anEdgeIdx);
-    if (anEdge.Polygon3DNodeId.IsValid())
+    if (!anEdge.Polygon3D.IsNull())
       ++aNbPoly3DGraph;
   }
   for (TopExp_Explorer anExp(aBox, TopAbs_EDGE); anExp.More(); anExp.Next())
@@ -116,7 +116,7 @@ TEST(BRepGraph_PolygonTest, Polygon3D_Captured_WhenPresent)
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
     const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(anEdgeIdx);
-    if (!anEdge.Polygon3DNodeId.IsValid())
+    if (anEdge.Polygon3D.IsNull())
       continue;
     TopoDS_Shape aReconEdge = BRepGraph_Reconstruct::Node(aGraph, anEdge.Id);
     ASSERT_FALSE(aReconEdge.IsNull());
@@ -156,7 +156,7 @@ TEST(BRepGraph_PolygonTest, PolyOnTri_Captured_AfterMesh)
     {
       const BRepGraph_TopoNode::EdgeDef::PolyOnTriEntry& aEntry =
         anEdge.PolygonsOnTri.Value(aPolyIdx);
-      EXPECT_TRUE(aEntry.PolyOnTriNodeId.IsValid());
+      EXPECT_FALSE(aEntry.Polygon.IsNull());
       EXPECT_TRUE(aEntry.FaceDefId.IsValid());
     }
   }
