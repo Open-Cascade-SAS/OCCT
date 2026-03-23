@@ -4,12 +4,10 @@ set(OCCT_BRepClass_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_BRepClass_FILES
   BRepClass_Edge.cxx
   BRepClass_Edge.hxx
-  BRepClass_Edge.lxx
   BRepClass_FaceClassifier.cxx
   BRepClass_FaceClassifier.hxx
   BRepClass_FaceExplorer.cxx
   BRepClass_FaceExplorer.hxx
-  BRepClass_FaceExplorer.lxx
   BRepClass_FacePassiveClassifier.cxx
   BRepClass_FacePassiveClassifier.hxx
   BRepClass_FClass2dOfFClassifier.cxx

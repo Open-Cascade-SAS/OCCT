@@ -41,12 +41,12 @@ public:
   Standard_EXPORT BRepClass_Edge(const TopoDS_Edge& E, const TopoDS_Face& F);
 
   //! Returns the current Edge
-  TopoDS_Edge&       Edge();
-  const TopoDS_Edge& Edge() const;
+  TopoDS_Edge&       Edge()       { return myEdge; }
+  const TopoDS_Edge& Edge() const { return myEdge; }
 
   //! Returns the Face for the current Edge
-  TopoDS_Face&       Face();
-  const TopoDS_Face& Face() const;
+  TopoDS_Face&       Face()       { return myFace; }
+  const TopoDS_Face& Face() const { return myFace; }
 
   //! Returns the next Edge
   const TopoDS_Edge& NextEdge() const { return myNextEdge; }
@@ -79,7 +79,5 @@ private:
   double      myMaxTolerance;
   bool        myUseBndBox;
 };
-
-#include <BRepClass_Edge.lxx>
 
 #endif // _BRepClass_Edge_HeaderFile

@@ -51,24 +51,24 @@ public:
   Standard_EXPORT void Compare(const Geom2dAdaptor_Curve& E, const TopAbs_Orientation Or);
 
   //! Returns the current value of the parameter.
-  double Parameter() const;
+  double Parameter() const { return myParam; }
 
   //! Returns the intersecting algorithm.
-  Geom2dHatch_Intersector& Intersector();
+  Geom2dHatch_Intersector& Intersector() { return myIntersector; }
 
   //! Returns 0 if the last compared edge had no
   //! relevant intersection. Else returns the index of
   //! this intersection in the last intersection
   //! algorithm.
-  int ClosestIntersection() const;
+  int ClosestIntersection() const { return myClosest; }
 
   //! Returns the current state of the point.
-  TopAbs_State State() const;
+  TopAbs_State State() const { return myState; }
 
   //! Returns the true if the closest intersection point
   //! represents head or end of the edge. Returns false
   //! otherwise.
-  bool IsHeadOrEnd() const;
+  bool IsHeadOrEnd() const { return myIsHeadOrEnd; }
 
 private:
   bool                     myIsSet;
@@ -83,40 +83,5 @@ private:
   TopAbs_State             myState;
   bool                     myIsHeadOrEnd;
 };
-
-//=================================================================================================
-
-inline double Geom2dHatch_FClass2dOfClassifier::Parameter() const
-{
-  return myParam;
-}
-
-//=================================================================================================
-
-inline Geom2dHatch_Intersector& Geom2dHatch_FClass2dOfClassifier::Intersector()
-{
-  return myIntersector;
-}
-
-//=================================================================================================
-
-inline int Geom2dHatch_FClass2dOfClassifier::ClosestIntersection() const
-{
-  return myClosest;
-}
-
-//=================================================================================================
-
-inline TopAbs_State Geom2dHatch_FClass2dOfClassifier::State() const
-{
-  return myState;
-}
-
-//=================================================================================================
-
-inline bool Geom2dHatch_FClass2dOfClassifier::IsHeadOrEnd() const
-{
-  return myIsHeadOrEnd;
-}
 
 #endif // _Geom2dHatch_FClass2dOfClassifier_HeaderFile

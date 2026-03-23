@@ -50,24 +50,24 @@ public:
   Standard_EXPORT void Compare(const BRepClass_Edge& E, const TopAbs_Orientation Or);
 
   //! Returns the current value of the parameter.
-  double Parameter() const;
+  double Parameter() const { return myParam; }
 
   //! Returns the intersecting algorithm.
-  BRepClass_Intersector& Intersector();
+  BRepClass_Intersector& Intersector() { return myIntersector; }
 
   //! Returns 0 if the last compared edge had no
   //! relevant intersection. Else returns the index of
   //! this intersection in the last intersection
   //! algorithm.
-  int ClosestIntersection() const;
+  int ClosestIntersection() const { return myClosest; }
 
   //! Returns the current state of the point.
-  TopAbs_State State() const;
+  TopAbs_State State() const { return myState; }
 
   //! Returns the true if the closest intersection point
   //! represents head or end of the edge. Returns false
   //! otherwise.
-  bool IsHeadOrEnd() const;
+  bool IsHeadOrEnd() const { return myIsHeadOrEnd; }
 
 private:
   bool                     myIsSet;
@@ -82,40 +82,5 @@ private:
   TopAbs_State             myState;
   bool                     myIsHeadOrEnd;
 };
-
-//=================================================================================================
-
-inline double BRepClass_FClass2dOfFClassifier::Parameter() const
-{
-  return myParam;
-}
-
-//=================================================================================================
-
-inline BRepClass_Intersector& BRepClass_FClass2dOfFClassifier::Intersector()
-{
-  return myIntersector;
-}
-
-//=================================================================================================
-
-inline int BRepClass_FClass2dOfFClassifier::ClosestIntersection() const
-{
-  return myClosest;
-}
-
-//=================================================================================================
-
-inline TopAbs_State BRepClass_FClass2dOfFClassifier::State() const
-{
-  return myState;
-}
-
-//=================================================================================================
-
-inline bool BRepClass_FClass2dOfFClassifier::IsHeadOrEnd() const
-{
-  return myIsHeadOrEnd;
-}
 
 #endif // _BRepClass_FClass2dOfFClassifier_HeaderFile

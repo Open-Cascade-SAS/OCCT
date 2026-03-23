@@ -54,11 +54,11 @@ public:
 
   //! Returns True when the state was computed by a
   //! rejection. The state is OUT.
-  bool Rejected() const;
+  bool Rejected() const { return rejected; }
 
   //! Returns True if the face contains no wire.
   //! The state is IN.
-  bool NoWires() const;
+  bool NoWires() const { return nowires; }
 
   //! Returns the Edge used to determine the
   //! classification. When the State is ON this is the
@@ -71,7 +71,7 @@ public:
 
   //! Returns the position of the point on the edge
   //! returned by Edge.
-  IntRes2d_Position Position() const;
+  IntRes2d_Position Position() const { return myPosition; }
 
 protected:
   Geom2dHatch_FClass2dOfClassifier myClassifier;
@@ -81,26 +81,5 @@ protected:
   bool                             rejected;
   bool                             nowires;
 };
-
-//=================================================================================================
-
-inline bool Geom2dHatch_Classifier::Rejected() const
-{
-  return rejected;
-}
-
-//=================================================================================================
-
-inline bool Geom2dHatch_Classifier::NoWires() const
-{
-  return nowires;
-}
-
-//=================================================================================================
-
-inline IntRes2d_Position Geom2dHatch_Classifier::Position() const
-{
-  return myPosition;
-}
 
 #endif // _Geom2dHatch_Classifier_HeaderFile
