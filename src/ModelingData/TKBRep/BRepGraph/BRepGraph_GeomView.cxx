@@ -14,6 +14,10 @@
 #include <BRepGraph_GeomView.hxx>
 #include <BRepGraph_Data.hxx>
 
+#include <Adaptor3d_CurveOnSurface.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <GeomAdaptor_Surface.hxx>
+
 //=================================================================================================
 
 int BRepGraph::GeomView::NbSurfaces() const { return myGraph->myData->mySurfaces.Length(); }
@@ -126,4 +130,70 @@ BRepGraph_NodeId BRepGraph::GeomView::PCurveOf(BRepGraph_NodeId   theEdgeDef,
       return aPCEntry.PCurveNodeId;
   }
   return BRepGraph_NodeId();
+}
+
+//=================================================================================================
+
+static GeomAdaptor_TransformedCurve buildCurveAdaptor(const BRepGraph_Data&              theData,
+                                                      const BRepGraph_TopoNode::EdgeDef& theEdge)
+{
+  // The graph stores curves from BRep_Tool::Curve(E, first, last) (3-arg),
+  // which returns the curve already transformed to global coordinates.
+  // No additional transform is needed.
+
+  // 3D curve available.
+  if (theEdge.CurveNodeId.IsValid())
+  {
+    const Handle(Geom_Curve)& aCurve =
+      theData.myCurves.Value(theEdge.CurveNodeId.Index).CurveGeom;
+    return GeomAdaptor_TransformedCurve(aCurve, theEdge.ParamFirst, theEdge.ParamLast, gp_Trsf());
+  }
+
+  // Pcurve-only fallback: compose pcurve + surface.
+  // The graph stores pcurves and surfaces from BRep_Tool convenience methods
+  // which also include location transforms, so identity Trsf is correct.
+  if (!theEdge.PCurves.IsEmpty())
+  {
+    const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCE = theEdge.PCurves.First();
+    const Handle(Geom2d_Curve)& aPC =
+      theData.myPCurves.Value(aPCE.PCurveNodeId.Index).Curve2d;
+    const BRepGraph_NodeId aSurfNodeId =
+      theData.myFaceDefs.Value(aPCE.FaceDefId.Index).SurfNodeId;
+    const Handle(Geom_Surface)& aSurf =
+      theData.mySurfaces.Value(aSurfNodeId.Index).Surface;
+
+    Handle(Geom2dAdaptor_Curve)       aHC2d = new Geom2dAdaptor_Curve(aPC, theEdge.ParamFirst, theEdge.ParamLast);
+    Handle(GeomAdaptor_Surface)       aHS   = new GeomAdaptor_Surface(aSurf);
+    Handle(Adaptor3d_CurveOnSurface)  aCOS  = new Adaptor3d_CurveOnSurface(aHC2d, aHS);
+
+    GeomAdaptor_TransformedCurve aResult;
+    aResult.LoadCurveOnSurface(aCOS);
+    return aResult;
+  }
+
+  return GeomAdaptor_TransformedCurve(); // empty, edge has no geometry
+}
+
+//=================================================================================================
+
+GeomAdaptor_TransformedCurve BRepGraph::GeomView::CurveAdaptor(BRepGraph_NodeId theEdgeDef) const
+{
+  if (theEdgeDef.Kind != BRepGraph_NodeKind::Edge || !theEdgeDef.IsValid())
+    return GeomAdaptor_TransformedCurve();
+
+  const BRepGraph_TopoNode::EdgeDef& anEdge = myGraph->myData->myEdgeDefs.Value(theEdgeDef.Index);
+  return buildCurveAdaptor(*myGraph->myData, anEdge);
+}
+
+//=================================================================================================
+
+GeomAdaptor_TransformedCurve BRepGraph::GeomView::CurveAdaptor(BRepGraph_NodeId  theEdgeDef,
+                                                                BRepGraph_UsageId theEdgeUsage) const
+{
+  (void)theEdgeUsage; // reserved for future use with per-usage location override
+  if (theEdgeDef.Kind != BRepGraph_NodeKind::Edge || !theEdgeDef.IsValid())
+    return GeomAdaptor_TransformedCurve();
+
+  const BRepGraph_TopoNode::EdgeDef& anEdge = myGraph->myData->myEdgeDefs.Value(theEdgeDef.Index);
+  return buildCurveAdaptor(*myGraph->myData, anEdge);
 }

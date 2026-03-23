@@ -127,26 +127,16 @@ ExtremaPC_Curve::ExtremaPC_Curve(const GeomAdaptor_TransformedCurve& theCurve,
 void ExtremaPC_Curve::initFromTransformedCurve(const GeomAdaptor_TransformedCurve&       theCurve,
                                                const std::optional<ExtremaPC::Domain1D>& theDomain)
 {
-  // Identity transform: delegate to existing GeomAdaptor_Curve path
-  if (theCurve.Trsf().Form() == gp_Identity)
+  // Identity transform on a 3D curve: delegate to the faster GeomAdaptor_Curve path
+  // which avoids transform overhead in evaluators.
+  // Skipped for CurveOnSurface since its myCurve member is empty.
+  if (theCurve.Is3DCurve() && theCurve.Trsf().Form() == gp_Identity)
   {
     const GeomAdaptor_Curve& aCurve = theCurve.Curve();
     ExtremaPC::Domain1D      aDomain =
       theDomain.has_value() ? theDomain.value()
                                  : ExtremaPC::Domain1D(aCurve.FirstParameter(), aCurve.LastParameter());
     initFromAdaptor(aCurve, aDomain);
-    return;
-  }
-
-  // CurveOnSurface: use OtherCurve path with non-owning pointer
-  if (theCurve.IsCurveOnSurface())
-  {
-    myAdaptorRef = &theCurve;
-    ExtremaPC::Domain1D aDomain =
-      theDomain.has_value()
-        ? theDomain.value()
-        : ExtremaPC::Domain1D(theCurve.FirstParameter(), theCurve.LastParameter());
-    myEvaluator = ExtremaPC_OtherCurve(*myAdaptorRef, aDomain);
     return;
   }
 
@@ -180,15 +170,28 @@ void ExtremaPC_Curve::initFromTransformedCurve(const GeomAdaptor_TransformedCurv
       myEvaluator = ExtremaPC_Parabola(theCurve.Parabola(), aDomain);
       break;
 
-    // BSpline/Bezier: use untransformed handle, set up inverse-transform path
+    // BSpline/Bezier: use untransformed handle, set up inverse-transform path.
+    // For CurveOnSurface the underlying myCurve is empty, so fall through to OtherCurve.
     case GeomAbs_BSplineCurve:
-      myEvaluator = ExtremaPC_BSplineCurve(theCurve.Curve().BSpline(), aDomain);
-      myTrsf      = theCurve.Trsf();
+      if (theCurve.Is3DCurve())
+      {
+        myEvaluator = ExtremaPC_BSplineCurve(theCurve.Curve().BSpline(), aDomain);
+        myTrsf      = theCurve.Trsf();
+        break;
+      }
+      myAdaptorRef = &theCurve;
+      myEvaluator  = ExtremaPC_OtherCurve(*myAdaptorRef, aDomain);
       break;
 
     case GeomAbs_BezierCurve:
-      myEvaluator = ExtremaPC_BezierCurve(theCurve.Curve().Bezier(), aDomain);
-      myTrsf      = theCurve.Trsf();
+      if (theCurve.Is3DCurve())
+      {
+        myEvaluator = ExtremaPC_BezierCurve(theCurve.Curve().Bezier(), aDomain);
+        myTrsf      = theCurve.Trsf();
+        break;
+      }
+      myAdaptorRef = &theCurve;
+      myEvaluator  = ExtremaPC_OtherCurve(*myAdaptorRef, aDomain);
       break;
 
     // Offset/Other: use non-owning pointer to caller's TransformedCurve

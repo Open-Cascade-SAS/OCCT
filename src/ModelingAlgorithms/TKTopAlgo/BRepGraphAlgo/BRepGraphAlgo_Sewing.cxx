@@ -16,9 +16,8 @@
 #include <Bnd_Box.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepAdaptor_Curve.hxx>
 #include <BRepLib.hxx>
-#include <Extrema_ExtPC.hxx>
+#include <ExtremaPC_Curve.hxx>
 #include <GCPnts_UniformAbscissa.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom_Surface.hxx>
@@ -633,22 +632,14 @@ void BRepGraphAlgo_Sewing::cutAtIntersections(
 
     if (anEdge.IsDegenerate || !anEdge.CurveNodeId.IsValid())
       continue;
-    if (!myGraph.Shapes().HasOriginal(anEdgeId))
-      continue;
 
     // Own endpoint indices to exclude from T-vertex candidates.
     const int aStartIdx = anEdge.StartVertexDefId.IsValid() ? anEdge.StartVertexDefId.Index : -1;
     const int aEndIdx   = anEdge.EndVertexDefId.IsValid()   ? anEdge.EndVertexDefId.Index   : -1;
 
-    // Build BRepAdaptor_Curve on the original edge for projection.
-    const TopoDS_Edge& anEdgeShape = TopoDS::Edge(myGraph.Shapes().OriginalOf(anEdgeId));
-    BRepAdaptor_Curve  aCurve(anEdgeShape);
-
-    Extrema_ExtPC aProjector;
-    aProjector.Initialize(aCurve,
-                          aCurve.FirstParameter(),
-                          aCurve.LastParameter(),
-                          Precision::Confusion());
+    // Build curve adaptor directly from graph geometry (no TopoDS roundtrip).
+    GeomAdaptor_TransformedCurve aCurve = myGraph.Geom().CurveAdaptor(anEdgeId);
+    ExtremaPC_Curve              anExtPC(aCurve);
 
     // Get edge bounding box (enlarged by tolerance) for candidate pre-filtering.
     Bnd_Box aEdgeBBox = myGraph.Cache().BoundingBox(anEdgeId);
@@ -675,20 +666,20 @@ void BRepGraphAlgo_Sewing::cutAtIntersections(
       if (aEdgeBBox.IsOut(aVtxPnt))
         continue;
 
-      aProjector.Perform(aVtxPnt);
-      if (!aProjector.IsDone())
+      const ExtremaPC::Result& aRes = anExtPC.Perform(aVtxPnt, Precision::Confusion());
+      if (!aRes.IsDone())
         continue;
 
       // Find closest extremal point.
       double aMinSqDist = RealLast();
       double aMinParam  = 0.0;
-      for (int aExtIdx = 1; aExtIdx <= aProjector.NbExt(); ++aExtIdx)
+      for (int aExtIdx = 0; aExtIdx < aRes.NbExt(); ++aExtIdx)
       {
-        const double aSqDist = aProjector.SquareDistance(aExtIdx);
+        const double aSqDist = aRes[aExtIdx].SquareDistance;
         if (aSqDist < aMinSqDist)
         {
           aMinSqDist = aSqDist;
-          aMinParam  = aProjector.Point(aExtIdx).Parameter();
+          aMinParam  = aRes[aExtIdx].Parameter;
         }
       }
 
@@ -822,9 +813,8 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> BRepGraphAlgo_
       if (anEdgeANode.IsDegenerate)
         return;
 
-      const TopoDS_Edge&     anEdgeAShape = TopoDS::Edge(myGraph.Shapes().OriginalOf(anIdA));
-      BRepAdaptor_Curve      aCurveA(anEdgeAShape);
-      GCPnts_UniformAbscissa aSamplerA(aCurveA, THE_NB_EDGE_MATCH_SAMPLES);
+      GeomAdaptor_TransformedCurve aCurveA = myGraph.Geom().CurveAdaptor(anIdA);
+      GCPnts_UniformAbscissa       aSamplerA(aCurveA, THE_NB_EDGE_MATCH_SAMPLES);
       if (!aSamplerA.IsDone() || aSamplerA.NbPoints() < 2)
         return;
 
@@ -832,17 +822,11 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> BRepGraphAlgo_
       NCollection_Array1<gp_Pnt> aSamplePtsA(1, aSamplerA.NbPoints());
       for (int aSmpIter = 1; aSmpIter <= aSamplerA.NbPoints(); ++aSmpIter)
       {
-        aSamplePtsA.SetValue(aSmpIter, aCurveA.Value(aSamplerA.Parameter(aSmpIter)));
+        aSamplePtsA.SetValue(aSmpIter, aCurveA.EvalD0(aSamplerA.Parameter(aSmpIter)));
       }
 
-      // Pre-initialize projectors (reused across all edgeB candidates to avoid
-      // repeated Extrema_GGExtPC construction/destruction which dominates runtime).
-      Extrema_ExtPC aProjectorFwdB; // re-initialized per edgeB inside areEdgesSewable
-      Extrema_ExtPC aProjectorRev;
-      aProjectorRev.Initialize(aCurveA,
-                               aCurveA.FirstParameter(),
-                               aCurveA.LastParameter(),
-                               Precision::Confusion());
+      // Pre-initialize reverse projector on curveA (reused across all edgeB candidates).
+      ExtremaPC_Curve anExtPCRevA(aCurveA);
 
       const gp_Pnt& aStartA = myGraph.Defs().Vertex(anEdgeANode.StartVertexDefId.Index).Point;
       const gp_Pnt& aEndA   = myGraph.Defs().Vertex(anEdgeANode.EndVertexDefId.Index).Point;
@@ -855,7 +839,7 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> BRepGraphAlgo_
           return;
 
         // Full geometric validation using cached edgeA data.
-        if (areEdgesSewable(anIdA, anIdB, aSamplePtsA, aProjectorFwdB, aProjectorRev, aChordA))
+        if (areEdgesSewable(anIdA, anIdB, aSamplePtsA, anExtPCRevA, aChordA))
         {
           const BRepGraph_TopoNode::EdgeDef& anEdgeB = myGraph.Defs().Edge(anIdB.Index);
           const gp_Pnt& aStartB = myGraph.Defs().Vertex(anEdgeB.StartVertexDefId.Index).Point;
@@ -1374,10 +1358,11 @@ bool BRepGraphAlgo_Sewing::areEdgesSewable(BRepGraph_NodeId theEdgeA,
   const BRepGraph_TopoNode::EdgeDef& aNodeA = myGraph.Defs().Edge(theEdgeA.Index);
   const BRepGraph_TopoNode::EdgeDef& aNodeB = myGraph.Defs().Edge(theEdgeB.Index);
 
-  const TopoDS_Edge& anEdgeA = TopoDS::Edge(myGraph.Shapes().OriginalOf(theEdgeA));
-  const TopoDS_Edge& anEdgeB = TopoDS::Edge(myGraph.Shapes().OriginalOf(theEdgeB));
-
   if (aNodeA.IsDegenerate || aNodeB.IsDegenerate)
+  {
+    return false;
+  }
+  if (!aNodeA.CurveNodeId.IsValid() || !aNodeB.CurveNodeId.IsValid())
   {
     return false;
   }
@@ -1410,8 +1395,8 @@ bool BRepGraphAlgo_Sewing::areEdgesSewable(BRepGraph_NodeId theEdgeA,
   }
 
   // Detailed geometric comparison: sample points along edgeA, project onto edgeB.
-  BRepAdaptor_Curve aCurveA(anEdgeA);
-  BRepAdaptor_Curve aCurveB(anEdgeB);
+  GeomAdaptor_TransformedCurve aCurveA = myGraph.Geom().CurveAdaptor(theEdgeA);
+  GeomAdaptor_TransformedCurve aCurveB = myGraph.Geom().CurveAdaptor(theEdgeB);
 
   // Tier 2: Use 5 samples instead of 8 -- sufficient for edge matching.
   GCPnts_UniformAbscissa aSamplerA(aCurveA, THE_NB_EDGE_MATCH_SAMPLES);
@@ -1421,11 +1406,7 @@ bool BRepGraphAlgo_Sewing::areEdgesSewable(BRepGraph_NodeId theEdgeA,
   }
 
   // Initialize projector on curveB.
-  Extrema_ExtPC aProjector;
-  aProjector.Initialize(aCurveB,
-                        aCurveB.FirstParameter(),
-                        aCurveB.LastParameter(),
-                        Precision::Confusion());
+  ExtremaPC_Curve anExtPCB(aCurveB);
 
   const double aTolSq = myTolerance * myTolerance;
 
@@ -1433,18 +1414,18 @@ bool BRepGraphAlgo_Sewing::areEdgesSewable(BRepGraph_NodeId theEdgeA,
   double aMaxFwdDistSq = 0.0;
   for (int aSampleIter = 1; aSampleIter <= aSamplerA.NbPoints(); ++aSampleIter)
   {
-    gp_Pnt aPntA = aCurveA.Value(aSamplerA.Parameter(aSampleIter));
+    const gp_Pnt aPntA = aCurveA.EvalD0(aSamplerA.Parameter(aSampleIter));
 
-    aProjector.Perform(aPntA);
-    if (!aProjector.IsDone() || aProjector.NbExt() == 0)
+    const ExtremaPC::Result& aRes = anExtPCB.Perform(aPntA, Precision::Confusion());
+    if (!aRes.IsDone() || aRes.NbExt() == 0)
     {
       return false;
     }
 
     double aMinSqDist = RealLast();
-    for (int anExtIter = 1; anExtIter <= aProjector.NbExt(); ++anExtIter)
+    for (int anExtIter = 0; anExtIter < aRes.NbExt(); ++anExtIter)
     {
-      double aSqDist = aProjector.SquareDistance(anExtIter);
+      const double aSqDist = aRes[anExtIter].SquareDistance;
       if (aSqDist < aMinSqDist)
       {
         aMinSqDist = aSqDist;
@@ -1473,26 +1454,22 @@ bool BRepGraphAlgo_Sewing::areEdgesSewable(BRepGraph_NodeId theEdgeA,
     return false;
   }
 
-  Extrema_ExtPC aProjectorRev;
-  aProjectorRev.Initialize(aCurveA,
-                           aCurveA.FirstParameter(),
-                           aCurveA.LastParameter(),
-                           Precision::Confusion());
+  ExtremaPC_Curve anExtPCRevA(aCurveA);
 
   for (int aSampleIter = 1; aSampleIter <= aSamplerB.NbPoints(); ++aSampleIter)
   {
-    gp_Pnt aPntB = aCurveB.Value(aSamplerB.Parameter(aSampleIter));
+    const gp_Pnt aPntB = aCurveB.EvalD0(aSamplerB.Parameter(aSampleIter));
 
-    aProjectorRev.Perform(aPntB);
-    if (!aProjectorRev.IsDone() || aProjectorRev.NbExt() == 0)
+    const ExtremaPC::Result& aRes = anExtPCRevA.Perform(aPntB, Precision::Confusion());
+    if (!aRes.IsDone() || aRes.NbExt() == 0)
     {
       return false;
     }
 
     double aMinSqDist = RealLast();
-    for (int anExtIter = 1; anExtIter <= aProjectorRev.NbExt(); ++anExtIter)
+    for (int anExtIter = 0; anExtIter < aRes.NbExt(); ++anExtIter)
     {
-      double aSqDist = aProjectorRev.SquareDistance(anExtIter);
+      const double aSqDist = aRes[anExtIter].SquareDistance;
       if (aSqDist < aMinSqDist)
       {
         aMinSqDist = aSqDist;
@@ -1513,8 +1490,7 @@ bool BRepGraphAlgo_Sewing::areEdgesSewable(BRepGraph_NodeId theEdgeA,
 bool BRepGraphAlgo_Sewing::areEdgesSewable(BRepGraph_NodeId                  theEdgeA,
                                            BRepGraph_NodeId                  theEdgeB,
                                            const NCollection_Array1<gp_Pnt>& theSamplePtsA,
-                                           Extrema_ExtPC&                    theProjectorFwdB,
-                                           Extrema_ExtPC&                    theProjectorRevA,
+                                           const ExtremaPC_Curve&            theExtPCRevA,
                                            double                            theChordA) const
 {
   const BRepGraph_TopoNode::EdgeDef& aNodeA = myGraph.Defs().Edge(theEdgeA.Index);
@@ -1550,15 +1526,9 @@ bool BRepGraphAlgo_Sewing::areEdgesSewable(BRepGraph_NodeId                  the
       return false;
   }
 
-  // Build adaptor for edgeB and re-initialize the reusable forward projector
-  // (avoids repeated Extrema_GGExtPC construction/destruction per candidate pair).
-  const TopoDS_Edge& anEdgeB = TopoDS::Edge(myGraph.Shapes().OriginalOf(theEdgeB));
-  BRepAdaptor_Curve  aCurveB(anEdgeB);
-
-  theProjectorFwdB.Initialize(aCurveB,
-                              aCurveB.FirstParameter(),
-                              aCurveB.LastParameter(),
-                              Precision::Confusion());
+  // Build curve adaptor for edgeB directly from graph geometry.
+  GeomAdaptor_TransformedCurve aCurveB = myGraph.Geom().CurveAdaptor(theEdgeB);
+  ExtremaPC_Curve              anExtPCB(aCurveB);
 
   const double aTolSq = myTolerance * myTolerance;
 
@@ -1568,16 +1538,16 @@ bool BRepGraphAlgo_Sewing::areEdgesSewable(BRepGraph_NodeId                  the
   {
     const gp_Pnt& aPntA = theSamplePtsA.Value(aSampleIter);
 
-    theProjectorFwdB.Perform(aPntA);
-    if (!theProjectorFwdB.IsDone() || theProjectorFwdB.NbExt() == 0)
+    const ExtremaPC::Result& aRes = anExtPCB.Perform(aPntA, Precision::Confusion());
+    if (!aRes.IsDone() || aRes.NbExt() == 0)
     {
       return false;
     }
 
     double aMinSqDist = RealLast();
-    for (int anExtIter = 1; anExtIter <= theProjectorFwdB.NbExt(); ++anExtIter)
+    for (int anExtIter = 0; anExtIter < aRes.NbExt(); ++anExtIter)
     {
-      double aSqDist = theProjectorFwdB.SquareDistance(anExtIter);
+      const double aSqDist = aRes[anExtIter].SquareDistance;
       if (aSqDist < aMinSqDist)
       {
         aMinSqDist = aSqDist;
@@ -1607,18 +1577,18 @@ bool BRepGraphAlgo_Sewing::areEdgesSewable(BRepGraph_NodeId                  the
 
   for (int aSampleIter = 1; aSampleIter <= aSamplerB.NbPoints(); ++aSampleIter)
   {
-    gp_Pnt aPntB = aCurveB.Value(aSamplerB.Parameter(aSampleIter));
+    const gp_Pnt aPntB = aCurveB.EvalD0(aSamplerB.Parameter(aSampleIter));
 
-    theProjectorRevA.Perform(aPntB);
-    if (!theProjectorRevA.IsDone() || theProjectorRevA.NbExt() == 0)
+    const ExtremaPC::Result& aRes = theExtPCRevA.Perform(aPntB, Precision::Confusion());
+    if (!aRes.IsDone() || aRes.NbExt() == 0)
     {
       return false;
     }
 
     double aMinSqDist = RealLast();
-    for (int anExtIter = 1; anExtIter <= theProjectorRevA.NbExt(); ++anExtIter)
+    for (int anExtIter = 0; anExtIter < aRes.NbExt(); ++anExtIter)
     {
-      double aSqDist = theProjectorRevA.SquareDistance(anExtIter);
+      const double aSqDist = aRes[anExtIter].SquareDistance;
       if (aSqDist < aMinSqDist)
       {
         aMinSqDist = aSqDist;

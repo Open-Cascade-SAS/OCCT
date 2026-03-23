@@ -22,8 +22,9 @@
 #include <NCollection_Map.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <TopoDS_Shape.hxx>
-#include <Extrema_ExtPC.hxx>
 #include <gp_Pnt.hxx>
+
+class ExtremaPC_Curve;
 
 #include <utility>
 
@@ -206,20 +207,18 @@ private:
   bool areEdgesSewable(BRepGraph_NodeId theEdgeA, BRepGraph_NodeId theEdgeB) const;
 
   //! Cached variant of areEdgesSewable that reuses pre-computed edgeA data.
-  //! This avoids redundant BRepAdaptor_Curve / GCPnts_UniformAbscissa / Extrema_ExtPC
+  //! This avoids redundant curve adaptor / GCPnts_UniformAbscissa / ExtremaPC_Curve
   //! construction when the same edgeA is compared against multiple edgeB candidates.
   //! @param[in] theEdgeA       first edge node id
   //! @param[in] theEdgeB       second edge node id
   //! @param[in] theSamplePtsA  pre-sampled points on edgeA
-  //! @param[in,out] theProjectorFwdB reusable Extrema_ExtPC (re-initialized on curveB per call)
-  //! @param[in,out] theProjectorRevA Extrema_ExtPC initialized on curveA (reused for reverse pass)
+  //! @param[in] theExtPCRevA   ExtremaPC_Curve initialized on curveA (reused for reverse pass)
   //! @param[in] theChordA      chord length of edgeA (start-to-end distance)
   //! @return true if edges are geometrically compatible
   bool areEdgesSewable(BRepGraph_NodeId                  theEdgeA,
                        BRepGraph_NodeId                  theEdgeB,
                        const NCollection_Array1<gp_Pnt>& theSamplePtsA,
-                       Extrema_ExtPC&                    theProjectorFwdB,
-                       Extrema_ExtPC&                    theProjectorRevA,
+                       const ExtremaPC_Curve&            theExtPCRevA,
                        double                            theChordA) const;
 };
 

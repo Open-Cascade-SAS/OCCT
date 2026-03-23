@@ -15,6 +15,7 @@
 #define _BRepGraph_GeomView_HeaderFile
 
 #include <BRepGraph.hxx>
+#include <GeomAdaptor_TransformedCurve.hxx>
 #include <TopAbs_Orientation.hxx>
 
 //! Lightweight const view over geometry nodes of a BRepGraph.
@@ -76,6 +77,21 @@ public:
   Standard_EXPORT BRepGraph_NodeId PCurveOf(BRepGraph_NodeId   theEdgeDef,
                                             BRepGraph_NodeId   theFaceDef,
                                             TopAbs_Orientation theEdgeOrientation) const;
+
+  //! Build a GeomAdaptor_TransformedCurve for an edge definition.
+  //! Uses the edge's 3D curve if available; falls back to pcurve-on-surface.
+  //! The transform comes from the edge's first usage GlobalLocation.
+  //! @param[in] theEdgeDef edge definition NodeId
+  //! @return curve adaptor ready for evaluation, sampling, or projection
+  Standard_EXPORT GeomAdaptor_TransformedCurve CurveAdaptor(BRepGraph_NodeId theEdgeDef) const;
+
+  //! Build a GeomAdaptor_TransformedCurve for a specific edge usage.
+  //! Uses the usage's GlobalLocation as the transform.
+  //! @param[in] theEdgeDef   edge definition NodeId
+  //! @param[in] theEdgeUsage edge usage id (determines the transform)
+  //! @return curve adaptor ready for evaluation
+  Standard_EXPORT GeomAdaptor_TransformedCurve CurveAdaptor(BRepGraph_NodeId  theEdgeDef,
+                                                            BRepGraph_UsageId theEdgeUsage) const;
 
 private:
   friend class BRepGraph;
