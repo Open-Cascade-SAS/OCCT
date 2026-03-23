@@ -47,11 +47,6 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
   const NCollection_Vector<int>* aOrigWiresPtr = theGraph.myData->myEdgeToWires.Seek(theEdgeDef.Index);
   const NCollection_Vector<int>  aOrigWires    = aOrigWiresPtr != nullptr ? *aOrigWiresPtr : NCollection_Vector<int>();
 
-  // Get location from first usage (for sub-edge TopoDS shape registration).
-  TopLoc_Location aEdgeLoc;
-  if (!anOrig.Usages.IsEmpty())
-    aEdgeLoc = theGraph.myData->myEdgeUsages.Value(anOrig.Usages.Value(0).Index).LocalLocation;
-
   // Allocate SubA slot.
   BRepGraph_TopoNode::EdgeDef& aSubADef = theGraph.myData->myEdgeDefs.Appended();
   const int                    aSubAIdx = theGraph.myData->myEdgeDefs.Length() - 1;
@@ -157,14 +152,14 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
     const TopoDS_Shape aEndVShape   = theGraph.Shapes().Shape( aOrigEndVertexDefId);
 
     TopoDS_Edge aSubAEdge;
-    aBB.MakeEdge(aSubAEdge, aCurveNode.CurveGeom, aEdgeLoc, aOrigTolerance);
+    aBB.MakeEdge(aSubAEdge, aCurveNode.CurveGeom, aCurveNode.CurveLocation, aOrigTolerance);
     aBB.Range(aSubAEdge, aOrigParamFirst, theSplitParam);
     if (!aStartVShape.IsNull()) aBB.Add(aSubAEdge, aStartVShape.Oriented(TopAbs_FORWARD));
     if (!aSplitVShape.IsNull()) aBB.Add(aSubAEdge, aSplitVShape.Oriented(TopAbs_REVERSED));
     theGraph.myData->myOriginalShapes.Bind(theSubA, aSubAEdge);
 
     TopoDS_Edge aSubBEdge;
-    aBB.MakeEdge(aSubBEdge, aCurveNode.CurveGeom, aEdgeLoc, aOrigTolerance);
+    aBB.MakeEdge(aSubBEdge, aCurveNode.CurveGeom, aCurveNode.CurveLocation, aOrigTolerance);
     aBB.Range(aSubBEdge, theSplitParam, aOrigParamLast);
     if (!aSplitVShape.IsNull()) aBB.Add(aSubBEdge, aSplitVShape.Oriented(TopAbs_FORWARD));
     if (!aEndVShape.IsNull())   aBB.Add(aSubBEdge, aEndVShape.Oriented(TopAbs_REVERSED));

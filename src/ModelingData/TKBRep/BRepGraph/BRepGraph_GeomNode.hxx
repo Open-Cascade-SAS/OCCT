@@ -21,6 +21,7 @@
 #include <Geom2d_Curve.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Poly_Triangulation.hxx>
+#include <TopLoc_Location.hxx>
 
 #include <NCollection_Vector.hxx>
 
@@ -42,8 +43,9 @@ namespace BRepGraph_GeomNode
 struct Surf
 {
   BRepGraph_NodeId           Id;
-  Handle(Geom_Surface)       Surface;        //!< The shared geometry
-  Handle(Poly_Triangulation) Triangulation;  //!< Optional cached mesh
+  Handle(Geom_Surface)       Surface;          //!< The raw TFace geometry (not location-applied)
+  Handle(Poly_Triangulation) Triangulation;    //!< Optional cached mesh
+  TopLoc_Location            SurfaceLocation;  //!< Location from BRep_Tool::Surface(face, loc)
 
   //! Back-references: all Face definitions realized by this surface.
   NCollection_Vector<BRepGraph_NodeId> FaceDefUsers;
@@ -56,7 +58,8 @@ struct Surf
 struct Curve
 {
   BRepGraph_NodeId           Id;
-  Handle(Geom_Curve)         CurveGeom;
+  Handle(Geom_Curve)         CurveGeom;         //!< The raw TEdge geometry (not location-applied)
+  TopLoc_Location            CurveLocation;     //!< Location from BRep_Tool::Curve(edge, loc, f, l)
 
   //! Back-references: all Edge definitions realized by this curve.
   NCollection_Vector<BRepGraph_NodeId> EdgeDefUsers;

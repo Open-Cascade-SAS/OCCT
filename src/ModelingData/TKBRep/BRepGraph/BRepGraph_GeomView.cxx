@@ -146,21 +146,21 @@ BRepGraph_NodeId BRepGraph::GeomView::PCurveOf(const BRepGraph_PCurveContext& th
 static GeomAdaptor_TransformedCurve buildCurveAdaptor(const BRepGraph_Data&              theData,
                                                       const BRepGraph_TopoNode::EdgeDef& theEdge)
 {
-  // The graph stores curves from BRep_Tool::Curve(E, first, last) (3-arg),
-  // which returns the curve already transformed to global coordinates.
-  // No additional transform is needed.
+  // The graph stores raw curves from BRep_Tool::Curve(E, loc, first, last) (4-arg).
+  // The curve location must be applied as a transform.
 
   // 3D curve available.
   if (theEdge.CurveNodeId.IsValid())
   {
-    const Handle(Geom_Curve)& aCurve =
-      theData.myCurves.Value(theEdge.CurveNodeId.Index).CurveGeom;
-    return GeomAdaptor_TransformedCurve(aCurve, theEdge.ParamFirst, theEdge.ParamLast, gp_Trsf());
+    const BRepGraph_GeomNode::Curve& aCurveNode =
+      theData.myCurves.Value(theEdge.CurveNodeId.Index);
+    const gp_Trsf aTrsf = aCurveNode.CurveLocation.IsIdentity()
+                             ? gp_Trsf()
+                             : aCurveNode.CurveLocation.Transformation();
+    return GeomAdaptor_TransformedCurve(aCurveNode.CurveGeom, theEdge.ParamFirst, theEdge.ParamLast, aTrsf);
   }
 
   // Pcurve-only fallback: compose pcurve + surface.
-  // The graph stores pcurves and surfaces from BRep_Tool convenience methods
-  // which also include location transforms, so identity Trsf is correct.
   if (!theEdge.PCurves.IsEmpty())
   {
     const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCE = theEdge.PCurves.First();

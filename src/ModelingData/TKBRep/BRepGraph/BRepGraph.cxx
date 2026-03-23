@@ -96,7 +96,8 @@ void BRepGraph::Build(const TopoDS_Shape& theShape, bool theParallel)
 //=================================================================================================
 
 BRepGraph_NodeId BRepGraph::registerSurface(const Handle(Geom_Surface)&       theSurf,
-                                            const Handle(Poly_Triangulation)& theTri)
+                                            const Handle(Poly_Triangulation)& theTri,
+                                            const TopLoc_Location&            theLoc)
 {
   if (theSurf.IsNull())
     return BRepGraph_NodeId();
@@ -111,6 +112,7 @@ BRepGraph_NodeId BRepGraph::registerSurface(const Handle(Geom_Surface)&       th
   aSurfNode.Id                        = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Surface, aSurfIdx);
   aSurfNode.Surface                   = theSurf;
   aSurfNode.Triangulation             = theTri;
+  aSurfNode.SurfaceLocation           = theLoc;
   aSurfNode.IsMultiLocated            = false;
   allocateUID(aSurfNode.Id);
 
@@ -120,7 +122,8 @@ BRepGraph_NodeId BRepGraph::registerSurface(const Handle(Geom_Surface)&       th
 
 //=================================================================================================
 
-BRepGraph_NodeId BRepGraph::registerCurve(const Handle(Geom_Curve)& theCrv)
+BRepGraph_NodeId BRepGraph::registerCurve(const Handle(Geom_Curve)& theCrv,
+                                          const TopLoc_Location&    theLoc)
 {
   if (theCrv.IsNull())
     return BRepGraph_NodeId();
@@ -134,6 +137,7 @@ BRepGraph_NodeId BRepGraph::registerCurve(const Handle(Geom_Curve)& theCrv)
   const int                  aCurveIdx  = myData->myCurves.Length() - 1;
   aCurveNode.Id                         = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Curve, aCurveIdx);
   aCurveNode.CurveGeom                  = theCrv;
+  aCurveNode.CurveLocation              = theLoc;
   aCurveNode.IsMultiLocated             = false;
   allocateUID(aCurveNode.Id);
 

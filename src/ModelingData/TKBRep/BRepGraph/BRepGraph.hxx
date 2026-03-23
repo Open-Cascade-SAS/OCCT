@@ -192,8 +192,10 @@ private:
   // -- Internal build and utility helpers (called by views and friend classes) --
 
   Standard_EXPORT BRepGraph_NodeId registerSurface(const Handle(Geom_Surface)&       theSurf,
-                                                   const Handle(Poly_Triangulation)& theTri);
-  Standard_EXPORT BRepGraph_NodeId registerCurve(const Handle(Geom_Curve)& theCrv);
+                                                   const Handle(Poly_Triangulation)& theTri,
+                                                   const TopLoc_Location&            theLoc = TopLoc_Location());
+  Standard_EXPORT BRepGraph_NodeId registerCurve(const Handle(Geom_Curve)&  theCrv,
+                                                 const TopLoc_Location&     theLoc = TopLoc_Location());
   Standard_EXPORT BRepGraph_NodeId createPCurveNode(const Handle(Geom2d_Curve)& theCrv2d,
                                                     BRepGraph_NodeId            theEdgeDef,
                                                     BRepGraph_NodeId            theFaceDef,

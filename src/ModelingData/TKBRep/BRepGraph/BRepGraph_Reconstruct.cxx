@@ -51,10 +51,7 @@ TopoDS_Shape BRepGraph_Reconstruct::Node(const BRepGraph& theGraph,
       {
         const BRepGraph_GeomNode::Curve& aCurveNode =
           theGraph.myData->myCurves.Value(anEdgeDef.CurveNodeId.Index);
-        TopLoc_Location aEdgeLoc;
-        if (!anEdgeDef.Usages.IsEmpty())
-          aEdgeLoc = theGraph.myData->myEdgeUsages.Value(anEdgeDef.Usages.Value(0).Index).LocalLocation;
-        aBB.MakeEdge(aNewEdge, aCurveNode.CurveGeom, aEdgeLoc, anEdgeDef.Tolerance);
+        aBB.MakeEdge(aNewEdge, aCurveNode.CurveGeom, aCurveNode.CurveLocation, anEdgeDef.Tolerance);
       }
       else
       {
@@ -104,18 +101,16 @@ TopoDS_Shape BRepGraph_Reconstruct::Node(const BRepGraph& theGraph,
       const BRepGraph_GeomNode::Surf& aSurfNode =
         theGraph.myData->mySurfaces.Value(aFaceDef.SurfNodeId.Index);
 
-      TopLoc_Location aFaceGlobalLoc;
       TopAbs_Orientation aFaceOri = TopAbs_FORWARD;
       if (!aFaceDef.Usages.IsEmpty())
       {
         const BRepGraph_TopoNode::FaceUsage& aFaceUsage =
           theGraph.myData->myFaceUsages.Value(aFaceDef.Usages.Value(0).Index);
-        aFaceGlobalLoc = aFaceUsage.GlobalLocation;
         aFaceOri = aFaceUsage.Orientation;
       }
 
       TopoDS_Face aNewFace;
-      aBB.MakeFace(aNewFace, aSurfNode.Surface, aFaceGlobalLoc, aFaceDef.Tolerance);
+      aBB.MakeFace(aNewFace, aSurfNode.Surface, aSurfNode.SurfaceLocation, aFaceDef.Tolerance);
 
       auto buildWireForFace = [&](BRepGraph_NodeId theWireDefId) -> TopoDS_Wire {
         TopoDS_Wire aNewWire;
@@ -140,10 +135,7 @@ TopoDS_Shape BRepGraph_Reconstruct::Node(const BRepGraph& theGraph,
           {
             const BRepGraph_GeomNode::Curve& aCurveNode =
               theGraph.myData->myCurves.Value(anEdgeDef.CurveNodeId.Index);
-            TopLoc_Location aEdgeLoc;
-            if (!anEdgeDef.Usages.IsEmpty())
-              aEdgeLoc = theGraph.myData->myEdgeUsages.Value(anEdgeDef.Usages.Value(0).Index).LocalLocation;
-            aBB.MakeEdge(anEdge, aCurveNode.CurveGeom, aEdgeLoc, anEdgeDef.Tolerance);
+            aBB.MakeEdge(anEdge, aCurveNode.CurveGeom, aCurveNode.CurveLocation, anEdgeDef.Tolerance);
           }
           else
           {
@@ -200,25 +192,25 @@ TopoDS_Shape BRepGraph_Reconstruct::Node(const BRepGraph& theGraph,
           if (!aPC1.IsNull() && !aPC2.IsNull())
           {
             aBB.UpdateEdge(anEdge, aPC1, aPC2,
-                           aSurfNode.Surface, aFaceGlobalLoc,
+                           aSurfNode.Surface, aSurfNode.SurfaceLocation,
                            anEdgeDef.Tolerance);
-            aBB.Range(anEdge, aSurfNode.Surface, aFaceGlobalLoc,
+            aBB.Range(anEdge, aSurfNode.Surface, aSurfNode.SurfaceLocation,
                       aPCFirst, aPCLast);
           }
           else if (!aPC1.IsNull())
           {
             aBB.UpdateEdge(anEdge, aPC1,
-                           aSurfNode.Surface, aFaceGlobalLoc,
+                           aSurfNode.Surface, aSurfNode.SurfaceLocation,
                            anEdgeDef.Tolerance);
-            aBB.Range(anEdge, aSurfNode.Surface, aFaceGlobalLoc,
+            aBB.Range(anEdge, aSurfNode.Surface, aSurfNode.SurfaceLocation,
                       aPCFirst, aPCLast);
           }
           else if (!aPC2.IsNull())
           {
             aBB.UpdateEdge(anEdge, aPC2,
-                           aSurfNode.Surface, aFaceGlobalLoc,
+                           aSurfNode.Surface, aSurfNode.SurfaceLocation,
                            anEdgeDef.Tolerance);
-            aBB.Range(anEdge, aSurfNode.Surface, aFaceGlobalLoc,
+            aBB.Range(anEdge, aSurfNode.Surface, aSurfNode.SurfaceLocation,
                       aPCFirst, aPCLast);
           }
 
@@ -366,18 +358,16 @@ TopoDS_Shape BRepGraph_Reconstruct::FaceWithCache(
   const BRepGraph_GeomNode::Surf& aSurfNode =
     theGraph.myData->mySurfaces.Value(aFaceDef.SurfNodeId.Index);
 
-  TopLoc_Location aFaceGlobalLoc;
   TopAbs_Orientation aFaceOri = TopAbs_FORWARD;
   if (!aFaceDef.Usages.IsEmpty())
   {
     const BRepGraph_TopoNode::FaceUsage& aFaceUsage =
       theGraph.myData->myFaceUsages.Value(aFaceDef.Usages.Value(0).Index);
-    aFaceGlobalLoc = aFaceUsage.GlobalLocation;
     aFaceOri = aFaceUsage.Orientation;
   }
 
   TopoDS_Face aNewFace;
-  aBB.MakeFace(aNewFace, aSurfNode.Surface, aFaceGlobalLoc, aFaceDef.Tolerance);
+  aBB.MakeFace(aNewFace, aSurfNode.Surface, aSurfNode.SurfaceLocation, aFaceDef.Tolerance);
 
   auto getOrBuildEdge = [&](BRepGraph_NodeId theEdgeDefId) -> TopoDS_Edge {
     const TopoDS_Shape* aCached = theEdgeCache.Seek(theEdgeDefId);
@@ -396,10 +386,7 @@ TopoDS_Shape BRepGraph_Reconstruct::FaceWithCache(
     {
       const BRepGraph_GeomNode::Curve& aCurveNode =
         theGraph.myData->myCurves.Value(anEdgeDef.CurveNodeId.Index);
-      TopLoc_Location aEdgeLoc;
-      if (!anEdgeDef.Usages.IsEmpty())
-        aEdgeLoc = theGraph.myData->myEdgeUsages.Value(anEdgeDef.Usages.Value(0).Index).LocalLocation;
-      aBB.MakeEdge(anEdge, aCurveNode.CurveGeom, aEdgeLoc, anEdgeDef.Tolerance);
+      aBB.MakeEdge(anEdge, aCurveNode.CurveGeom, aCurveNode.CurveLocation, anEdgeDef.Tolerance);
     }
     else
     {
@@ -493,25 +480,25 @@ TopoDS_Shape BRepGraph_Reconstruct::FaceWithCache(
       if (!aPC1.IsNull() && !aPC2.IsNull())
       {
         aBB.UpdateEdge(anEdge, aPC1, aPC2,
-                       aSurfNode.Surface, aFaceGlobalLoc,
+                       aSurfNode.Surface, aSurfNode.SurfaceLocation,
                        anEdgeDef.Tolerance);
-        aBB.Range(anEdge, aSurfNode.Surface, aFaceGlobalLoc,
+        aBB.Range(anEdge, aSurfNode.Surface, aSurfNode.SurfaceLocation,
                   aPCFirst, aPCLast);
       }
       else if (!aPC1.IsNull())
       {
         aBB.UpdateEdge(anEdge, aPC1,
-                       aSurfNode.Surface, aFaceGlobalLoc,
+                       aSurfNode.Surface, aSurfNode.SurfaceLocation,
                        anEdgeDef.Tolerance);
-        aBB.Range(anEdge, aSurfNode.Surface, aFaceGlobalLoc,
+        aBB.Range(anEdge, aSurfNode.Surface, aSurfNode.SurfaceLocation,
                   aPCFirst, aPCLast);
       }
       else if (!aPC2.IsNull())
       {
         aBB.UpdateEdge(anEdge, aPC2,
-                       aSurfNode.Surface, aFaceGlobalLoc,
+                       aSurfNode.Surface, aSurfNode.SurfaceLocation,
                        anEdgeDef.Tolerance);
-        aBB.Range(anEdge, aSurfNode.Surface, aFaceGlobalLoc,
+        aBB.Range(anEdge, aSurfNode.Surface, aSurfNode.SurfaceLocation,
                   aPCFirst, aPCLast);
       }
 

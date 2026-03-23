@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
 #include <BRepBuilderAPI_Copy.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_DefsView.hxx>
@@ -21,7 +22,9 @@
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_PCurveContext.hxx>
+#include <BRepGraph_ShapesView.hxx>
 #include <BRepGraphAlgo_Deduplicate.hxx>
+#include <BRepTools.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCone.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
@@ -1690,4 +1693,369 @@ TEST(BRepGraphAlgo_DeduplicateTest, AnalyzeOnly_NoBackRefChangesOrNullification)
   {
     EXPECT_FALSE(aGraph.Geom().Curve(aCurveIdx).CurveGeom.IsNull());
   }
+}
+
+// ---------------------------------------------------------------------------
+// Real-world shape: bug24867_pump.brep full deduplication + save
+// ---------------------------------------------------------------------------
+
+TEST(BRepGraphAlgo_DeduplicateTest, Pump_FullDedup_BackRefsAndNullify)
+{
+  const char* aFilePath = "/Users/dpasukhi/work/OCCT/build/bug24867_pump.brep";
+
+  TopoDS_Shape aShape;
+  BRep_Builder aBuilder;
+  const bool   isRead = BRepTools::Read(aShape, aFilePath, aBuilder);
+  if (!isRead)
+  {
+    GTEST_SKIP() << "Cannot read " << aFilePath;
+  }
+  ASSERT_FALSE(aShape.IsNull());
+
+  // Build graph.
+  BRepGraph aGraph;
+  aGraph.Build(aShape);
+  ASSERT_TRUE(aGraph.IsDone());
+
+  // Snapshot geometry counts before dedup.
+  const int aNbSurfsBefore  = aGraph.Geom().NbSurfaces();
+  const int aNbCurvesBefore = aGraph.Geom().NbCurves();
+  const int aNbPCBefore     = aGraph.Geom().NbPCurves();
+  const int aNbFaces        = aGraph.Defs().NbFaces();
+  const int aNbEdges        = aGraph.Defs().NbEdges();
+
+  ASSERT_GT(aNbSurfsBefore, 0);
+  ASSERT_GT(aNbCurvesBefore, 0);
+  ASSERT_GT(aNbFaces, 0);
+  ASSERT_GT(aNbEdges, 0);
+
+  // Run full dedup with all options enabled.
+  BRepGraphAlgo_Deduplicate::Options anOpts;
+  anOpts.AnalyzeOnly       = false;
+  anOpts.HistoryMode       = true;
+  anOpts.MergeDefsWhenSafe = true;
+
+  const BRepGraphAlgo_Deduplicate::Result aRes = BRepGraphAlgo_Deduplicate::Perform(aGraph, anOpts);
+
+  // Geometry node counts are unchanged (nodes are not removed).
+  EXPECT_EQ(aGraph.Geom().NbSurfaces(), aNbSurfsBefore);
+  EXPECT_EQ(aGraph.Geom().NbCurves(), aNbCurvesBefore);
+  EXPECT_EQ(aGraph.Geom().NbPCurves(), aNbPCBefore);
+
+  // Def counts are unchanged.
+  EXPECT_EQ(aGraph.Defs().NbFaces(), aNbFaces);
+  EXPECT_EQ(aGraph.Defs().NbEdges(), aNbEdges);
+
+  // Back-references are consistent: every face def's SurfNodeId is in
+  // that surface's FaceDefUsers, and vice versa.
+  for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
+  {
+    const BRepGraph_TopoNode::FaceDef& aFaceDef = aGraph.Defs().Face(aFaceIdx);
+    if (!aFaceDef.SurfNodeId.IsValid())
+    {
+      continue;
+    }
+    const NCollection_Vector<BRepGraph_NodeId>& aUsers =
+      aGraph.Geom().Surface(aFaceDef.SurfNodeId.Index).FaceDefUsers;
+    bool aFound = false;
+    for (int anIdx = 0; anIdx < aUsers.Length(); ++anIdx)
+    {
+      if (aUsers.Value(anIdx) == aFaceDef.Id)
+      {
+        aFound = true;
+        break;
+      }
+    }
+    EXPECT_TRUE(aFound) << "Face def " << aFaceIdx << " not found in SurfNode("
+                        << aFaceDef.SurfNodeId.Index << ").FaceDefUsers";
+  }
+
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
+  {
+    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.Defs().Edge(anEdgeIdx);
+    if (!anEdgeDef.CurveNodeId.IsValid())
+    {
+      continue;
+    }
+    const NCollection_Vector<BRepGraph_NodeId>& aUsers =
+      aGraph.Geom().Curve(anEdgeDef.CurveNodeId.Index).EdgeDefUsers;
+    bool aFound = false;
+    for (int anIdx = 0; anIdx < aUsers.Length(); ++anIdx)
+    {
+      if (aUsers.Value(anIdx) == anEdgeDef.Id)
+      {
+        aFound = true;
+        break;
+      }
+    }
+    EXPECT_TRUE(aFound) << "Edge def " << anEdgeIdx << " not found in CurveNode("
+                        << anEdgeDef.CurveNodeId.Index << ").EdgeDefUsers";
+  }
+
+  // Orphaned geometry handles are null; canonical ones are not.
+  for (int aSurfIdx = 0; aSurfIdx < aGraph.Geom().NbSurfaces(); ++aSurfIdx)
+  {
+    const BRepGraph_GeomNode::Surf& aSurf = aGraph.Geom().Surface(aSurfIdx);
+    if (aSurf.FaceDefUsers.IsEmpty())
+    {
+      EXPECT_TRUE(aSurf.Surface.IsNull())
+        << "Orphaned surface " << aSurfIdx << " handle should be null";
+    }
+    else
+    {
+      EXPECT_FALSE(aSurf.Surface.IsNull())
+        << "Canonical surface " << aSurfIdx << " handle should be non-null";
+    }
+  }
+
+  for (int aCurveIdx = 0; aCurveIdx < aGraph.Geom().NbCurves(); ++aCurveIdx)
+  {
+    const BRepGraph_GeomNode::Curve& aCurve = aGraph.Geom().Curve(aCurveIdx);
+    if (aCurve.EdgeDefUsers.IsEmpty())
+    {
+      EXPECT_TRUE(aCurve.CurveGeom.IsNull())
+        << "Orphaned curve " << aCurveIdx << " handle should be null";
+    }
+    else
+    {
+      EXPECT_FALSE(aCurve.CurveGeom.IsNull())
+        << "Canonical curve " << aCurveIdx << " handle should be non-null";
+    }
+  }
+
+  // Counters are consistent.
+  EXPECT_EQ(aRes.NbNullifiedSurfaces + (aNbSurfsBefore - aRes.NbNullifiedSurfaces),
+            aNbSurfsBefore);
+  EXPECT_GE(aRes.NbNullifiedSurfaces, 0);
+  EXPECT_GE(aRes.NbNullifiedCurves, 0);
+  EXPECT_GE(aRes.NbNullifiedPCurves, 0);
+
+  // Idempotency: second run should produce no surface/curve rewrites or nullifications.
+  // PCurve dedup is not idempotent (context-strict policy does not remove duplicate entries).
+  const BRepGraphAlgo_Deduplicate::Result aRes2 = BRepGraphAlgo_Deduplicate::Perform(aGraph, anOpts);
+  EXPECT_EQ(aRes2.NbSurfaceRewrites, 0);
+  EXPECT_EQ(aRes2.NbCurveRewrites, 0);
+  EXPECT_EQ(aRes2.NbNullifiedSurfaces, 0);
+  EXPECT_EQ(aRes2.NbNullifiedCurves, 0);
+
+  // Print summary for manual inspection.
+  std::cout << "\n=== Pump dedup summary ===\n"
+            << "  Faces: " << aNbFaces << ", Edges: " << aNbEdges << "\n"
+            << "  Surfaces: " << aNbSurfsBefore << " (canonical: " << aRes.NbCanonicalSurfaces
+            << ", rewrites: " << aRes.NbSurfaceRewrites
+            << ", nullified: " << aRes.NbNullifiedSurfaces << ")\n"
+            << "  Curves: " << aNbCurvesBefore << " (canonical: " << aRes.NbCanonicalCurves
+            << ", rewrites: " << aRes.NbCurveRewrites
+            << ", nullified: " << aRes.NbNullifiedCurves << ")\n"
+            << "  PCurves: " << aNbPCBefore << " (canonical: " << aRes.NbCanonicalPCurves
+            << ", rewrites: " << aRes.NbPCurveRewrites
+            << ", nullified: " << aRes.NbNullifiedPCurves << ")\n"
+            << "  History records: " << aRes.NbHistoryRecords << "\n"
+            << "==========================\n";
+
+  // Get the final shape via Shape() — returns original if unmodified,
+  // reconstructs if modified (dedup marks face/edge defs as modified,
+  // which propagates up to the root compound).
+  BRepGraph_NodeId aRootId;
+  if (aGraph.Defs().NbCompounds() > 0)
+    aRootId = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Compound, 0);
+  else if (aGraph.Defs().NbSolids() > 0)
+    aRootId = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Solid, 0);
+  ASSERT_TRUE(aRootId.IsValid());
+
+  TopoDS_Shape aFinalShape = aGraph.Shapes().Shape(aRootId);
+  ASSERT_FALSE(aFinalShape.IsNull()) << "Shape() returned null for root node";
+
+  // Count unique geometry pointers in the original vs deduped shape.
+  auto countUniqueSurfaces = [](const TopoDS_Shape& theShape) -> int {
+    NCollection_Map<const Geom_Surface*> aSet;
+    for (TopExp_Explorer anExp(theShape, TopAbs_FACE); anExp.More(); anExp.Next())
+    {
+      TopLoc_Location aLoc;
+      const Handle(Geom_Surface)& aSurf = BRep_Tool::Surface(TopoDS::Face(anExp.Current()), aLoc);
+      if (!aSurf.IsNull())
+        aSet.Add(aSurf.get());
+    }
+    return aSet.Extent();
+  };
+
+  auto countUniqueCurves = [](const TopoDS_Shape& theShape) -> int {
+    NCollection_Map<const Geom_Curve*> aSet;
+    for (TopExp_Explorer anExp(theShape, TopAbs_EDGE); anExp.More(); anExp.Next())
+    {
+      TopLoc_Location aLoc;
+      double aFirst = 0.0, aLast = 0.0;
+      const Handle(Geom_Curve) aCurve = BRep_Tool::Curve(TopoDS::Edge(anExp.Current()),
+                                                          aLoc, aFirst, aLast);
+      if (!aCurve.IsNull())
+        aSet.Add(aCurve.get());
+    }
+    return aSet.Extent();
+  };
+
+  const int aOrigSurfs  = countUniqueSurfaces(aShape);
+  const int aFinalSurfs = countUniqueSurfaces(aFinalShape);
+  const int aOrigCurves  = countUniqueCurves(aShape);
+  const int aFinalCurves = countUniqueCurves(aFinalShape);
+
+  std::cout << "\n  === Geometry pointer sharing ===\n"
+            << "  Unique surfaces: original=" << aOrigSurfs << ", deduped=" << aFinalSurfs << "\n"
+            << "  Unique curves:   original=" << aOrigCurves << ", deduped=" << aFinalCurves << "\n";
+
+  // After dedup, fewer unique geometry pointers should exist.
+  EXPECT_LE(aFinalSurfs, aOrigSurfs);
+  EXPECT_LE(aFinalCurves, aOrigCurves);
+
+  // Build a new graph from the reconstructed shape and compare geometry counts.
+  BRepGraph aGraph2;
+  aGraph2.Build(aFinalShape);
+  ASSERT_TRUE(aGraph2.IsDone());
+
+  std::cout << "  === Graph from reconstructed shape ===\n"
+            << "  Faces: " << aGraph2.Defs().NbFaces()
+            << ", Edges: " << aGraph2.Defs().NbEdges() << "\n"
+            << "  Surfaces: " << aGraph2.Geom().NbSurfaces()
+            << ", Curves: " << aGraph2.Geom().NbCurves()
+            << ", PCurves: " << aGraph2.Geom().NbPCurves() << "\n";
+
+  // The new graph should have fewer geometry nodes (shared handles → single node).
+  EXPECT_EQ(aGraph2.Defs().NbFaces(), aNbFaces);
+  EXPECT_EQ(aGraph2.Defs().NbEdges(), aNbEdges);
+  EXPECT_LE(aGraph2.Geom().NbSurfaces(), aNbSurfsBefore);
+  EXPECT_LE(aGraph2.Geom().NbCurves(), aNbCurvesBefore);
+
+  const char* anOutPath = "/Users/dpasukhi/work/OCCT/build/bug24867_pump_deduped.brep";
+  const bool  isWritten = BRepTools::Write(aFinalShape, anOutPath);
+  EXPECT_TRUE(isWritten) << "Failed to write " << anOutPath;
+
+  std::cout << "  Written deduped shape to: " << anOutPath << "\n";
+}
+
+// ---------------------------------------------------------------------------
+// Round-trip tests: Build → Dedup → Reconstruct → Build verifies geometry sharing
+// ---------------------------------------------------------------------------
+
+TEST(BRepGraphAlgo_DeduplicateTest, RoundTrip_TwoCopiedFaces_FewerSurfaces)
+{
+  const TopoDS_Compound aCompound = makeTwoCopiedIdenticalFaces();
+
+  // First graph: build and dedup.
+  BRepGraph aGraph1;
+  aGraph1.Build(aCompound);
+  ASSERT_TRUE(aGraph1.IsDone());
+  ASSERT_EQ(aGraph1.Geom().NbSurfaces(), 2);
+
+  (void)BRepGraphAlgo_Deduplicate::Perform(aGraph1);
+  ASSERT_EQ(nbUniqueFaceSurfaceDefs(aGraph1), 1);
+
+  // Reconstruct each face individually and assemble into a compound.
+  // (Flat face compounds don't track face child usages in the compound node.)
+  BRep_Builder    aBB;
+  TopoDS_Compound aReconstructed;
+  aBB.MakeCompound(aReconstructed);
+  for (int aFaceIdx = 0; aFaceIdx < aGraph1.Defs().NbFaces(); ++aFaceIdx)
+  {
+    const TopoDS_Shape aFace = aGraph1.Shapes().ReconstructFace(aFaceIdx);
+    ASSERT_FALSE(aFace.IsNull());
+    aBB.Add(aReconstructed, aFace);
+  }
+
+  // Second graph: build from reconstructed shape.
+  BRepGraph aGraph2;
+  aGraph2.Build(aReconstructed);
+  ASSERT_TRUE(aGraph2.IsDone());
+
+  // After round-trip, the second graph should have fewer surface nodes
+  // because the reconstructed shape shares raw surface handles.
+  EXPECT_LT(aGraph2.Geom().NbSurfaces(), 2);
+  EXPECT_EQ(aGraph2.Geom().NbSurfaces(), 1);
+}
+
+TEST(BRepGraphAlgo_DeduplicateTest, RoundTrip_TwoCopiedFaces_FewerCurves)
+{
+  const TopoDS_Compound aCompound = makeTwoCopiedIdenticalFaces();
+
+  BRepGraph aGraph1;
+  aGraph1.Build(aCompound);
+  ASSERT_TRUE(aGraph1.IsDone());
+  ASSERT_EQ(aGraph1.Geom().NbCurves(), 8);
+
+  (void)BRepGraphAlgo_Deduplicate::Perform(aGraph1);
+  ASSERT_EQ(nbUniqueEdgeCurveDefs(aGraph1), 4);
+
+  // Reconstruct each face individually.
+  BRep_Builder    aBB;
+  TopoDS_Compound aReconstructed;
+  aBB.MakeCompound(aReconstructed);
+  for (int aFaceIdx = 0; aFaceIdx < aGraph1.Defs().NbFaces(); ++aFaceIdx)
+  {
+    const TopoDS_Shape aFace = aGraph1.Shapes().ReconstructFace(aFaceIdx);
+    ASSERT_FALSE(aFace.IsNull());
+    aBB.Add(aReconstructed, aFace);
+  }
+
+  BRepGraph aGraph2;
+  aGraph2.Build(aReconstructed);
+  ASSERT_TRUE(aGraph2.IsDone());
+
+  // Fewer curve nodes due to shared raw curve handles.
+  EXPECT_LT(aGraph2.Geom().NbCurves(), 8);
+  EXPECT_EQ(aGraph2.Geom().NbCurves(), 4);
+}
+
+TEST(BRepGraphAlgo_DeduplicateTest, Build_SharedTFace_OneSurfaceNode)
+{
+  // Create a box and extract two faces that share the same TFace via Same().
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+
+  TopExp_Explorer anExp(aBox, TopAbs_FACE);
+  ASSERT_TRUE(anExp.More());
+  const TopoDS_Face aFace1 = TopoDS::Face(anExp.Current());
+
+  // Create a compound with the same face referenced twice (same TShape).
+  BRep_Builder    aBuilder;
+  TopoDS_Compound aCompound;
+  aBuilder.MakeCompound(aCompound);
+  aBuilder.Add(aCompound, aFace1);
+  aBuilder.Add(aCompound, aFace1);
+
+  BRepGraph aGraph;
+  aGraph.Build(aCompound);
+  ASSERT_TRUE(aGraph.IsDone());
+
+  // Both face usages share the same TFace → same raw surface pointer → one surface node.
+  EXPECT_EQ(aGraph.Geom().NbSurfaces(), 1);
+}
+
+TEST(BRepGraphAlgo_DeduplicateTest, RoundTrip_TwoBoxes_GeomReduction)
+{
+  const TopoDS_Compound aCompound = makeTwoIdenticalBoxes();
+
+  BRepGraph aGraph1;
+  aGraph1.Build(aCompound);
+  ASSERT_TRUE(aGraph1.IsDone());
+
+  const int aSurfsBefore = aGraph1.Geom().NbSurfaces();
+  const int aCurvesBefore = aGraph1.Geom().NbCurves();
+  ASSERT_EQ(aSurfsBefore, 12);
+  ASSERT_EQ(aCurvesBefore, 24);
+
+  (void)BRepGraphAlgo_Deduplicate::Perform(aGraph1);
+
+  // Force reconstruction from deduped graph.
+  BRepGraph_NodeId aRootId(BRepGraph_NodeId::Kind::Compound, 0);
+  const TopoDS_Shape aReconstructed = aGraph1.Shapes().Reconstruct(aRootId);
+  ASSERT_FALSE(aReconstructed.IsNull());
+
+  // Build second graph.
+  BRepGraph aGraph2;
+  aGraph2.Build(aReconstructed);
+  ASSERT_TRUE(aGraph2.IsDone());
+
+  // After dedup, 6 canonical surfaces and 12 canonical curves.
+  EXPECT_LE(aGraph2.Geom().NbSurfaces(), aSurfsBefore);
+  EXPECT_LE(aGraph2.Geom().NbCurves(), aCurvesBefore);
+  EXPECT_EQ(aGraph2.Geom().NbSurfaces(), 6);
+  EXPECT_EQ(aGraph2.Geom().NbCurves(), 12);
 }

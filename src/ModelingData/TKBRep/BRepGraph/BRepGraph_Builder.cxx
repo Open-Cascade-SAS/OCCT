@@ -41,6 +41,7 @@ struct ExtractedEdge
 {
   TopoDS_Edge          Shape;
   Handle(Geom_Curve)   Curve3d;
+  TopLoc_Location      CurveLocation;
   double               ParamFirst   = 0.0;
   double               ParamLast    = 0.0;
   double               Tolerance    = 0.0;
@@ -76,6 +77,7 @@ struct FaceLocalData
 
   // Geometry extracted in Phase 2 (parallel).
   Handle(Geom_Surface)                Surface;
+  TopLoc_Location                     SurfaceLocation;
   Handle(Poly_Triangulation)          Triangulation;
   double                              Tolerance          = 0.0;
   TopAbs_Orientation                  Orientation        = TopAbs_FORWARD;
@@ -88,7 +90,7 @@ void extractFaceData(FaceLocalData& theData)
 {
   const TopoDS_Face& aFace = theData.Face;
 
-  theData.Surface            = BRep_Tool::Surface(aFace);
+  theData.Surface            = BRep_Tool::Surface(aFace, theData.SurfaceLocation);
   TopLoc_Location aFaceLoc;
   theData.Triangulation      = BRep_Tool::Triangulation(aFace, aFaceLoc);
   theData.Tolerance          = BRep_Tool::Tolerance(aFace);
@@ -121,7 +123,7 @@ void extractFaceData(FaceLocalData& theData)
       anEdgeData.OrientationInWire = anEdge.Orientation();
 
       double aFirst = 0.0, aLast = 0.0;
-      anEdgeData.Curve3d    = BRep_Tool::Curve(anEdge, aFirst, aLast);
+      anEdgeData.Curve3d    = BRep_Tool::Curve(anEdge, anEdgeData.CurveLocation, aFirst, aLast);
       anEdgeData.ParamFirst = aFirst;
       anEdgeData.ParamLast  = aLast;
 
@@ -199,7 +201,7 @@ void BRepGraph_Builder::registerFaceData(BRepGraph&          theGraph,
       aFaceDef.NaturalRestriction = aData.NaturalRestriction;
       theGraph.allocateUID(aFaceDef.Id);
 
-      aFaceDef.SurfNodeId = theGraph.registerSurface(aData.Surface, aData.Triangulation);
+      aFaceDef.SurfNodeId = theGraph.registerSurface(aData.Surface, aData.Triangulation, aData.SurfaceLocation);
       if (aFaceDef.SurfNodeId.IsValid())
       {
         theGraph.myData->mySurfaces.ChangeValue(aFaceDef.SurfNodeId.Index).FaceDefUsers.Append(aFaceDef.Id);
@@ -312,7 +314,7 @@ void BRepGraph_Builder::registerFaceData(BRepGraph&          theGraph,
 
           if (!anEdgeData.Curve3d.IsNull())
           {
-            anEdgeDef.CurveNodeId = theGraph.registerCurve(anEdgeData.Curve3d);
+            anEdgeDef.CurveNodeId = theGraph.registerCurve(anEdgeData.Curve3d, anEdgeData.CurveLocation);
             if (anEdgeDef.CurveNodeId.IsValid())
             {
               theGraph.myData->myCurves.ChangeValue(anEdgeDef.CurveNodeId.Index)
