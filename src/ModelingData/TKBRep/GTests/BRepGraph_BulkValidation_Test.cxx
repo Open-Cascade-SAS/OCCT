@@ -210,9 +210,15 @@ TEST_P(BRepGraphBulkValidation, RoundTrip)
   ASSERT_GE(aDefs.NbProducts(), 1) << "No products: " << aFilePath;
   const BRepGraph_NodeId aRootId = aDefs.Product(0).ShapeRootId;
 
-  // Step 7: Reconstruct
-  const TopoDS_Shape aReconShape = aGraph.Shapes().Reconstruct(aRootId);
+  // Step 7: Reconstruct and apply root orientation/location from Product
+  TopoDS_Shape aReconShape = aGraph.Shapes().Reconstruct(aRootId);
   ASSERT_FALSE(aReconShape.IsNull()) << "Reconstruct returned null: " << aFilePath;
+  {
+    const auto& aProduct = aDefs.Product(0);
+    aReconShape.Orientation(aProduct.RootOrientation);
+    if (!aProduct.RootLocation.IsIdentity())
+      aReconShape.Location(aProduct.RootLocation);
+  }
 
   // Step 8: Count unique elements on the reconstructed shape
   const TopoCounts aReconCounts = countAll(aReconShape);
@@ -240,6 +246,37 @@ TEST_P(BRepGraphBulkValidation, RoundTrip)
     << ", origInvalidityTypes=[" << anOrigInvalidityTypes
     << "], reconInvalidityTypes=[" << aReconInvalidityTypes
     << "): " << aFilePath;
+
+  // Debug: dump shape structure comparison
+  if (isReconValid != isOrigValid)
+  {
+    // Dump shape tree with orientations
+    std::function<void(const TopoDS_Shape&, int, std::ostream&)> dumpTree;
+    dumpTree = [&dumpTree](const TopoDS_Shape& s, int depth, std::ostream& os) {
+      const char* types[] = {"Co","CS","So","Sh","Fa","Wi","Ed","Ve","??"};
+      const char* oris[]  = {"F","R","I","E"};
+      std::string indent(depth * 2, ' ');
+      os << indent << types[std::min((int)s.ShapeType(), 8)]
+         << " o=" << oris[s.Orientation()]
+         << " cl=" << s.Closed()
+         << (s.Location().IsIdentity() ? "" : " LOC")
+         << " @" << s.TShape().get() << "\n";
+      for (TopoDS_Iterator it(s, false, false); it.More(); it.Next())
+        dumpTree(it.Value(), depth + 1, os);
+    };
+    std::ostringstream anOrigTree, aReconTree;
+    dumpTree(anOrigShape, 0, anOrigTree);
+    dumpTree(aReconShape, 0, aReconTree);
+    if (anOrigTree.str() != aReconTree.str())
+    {
+      std::cerr << "\n[ORIG TREE]\n" << anOrigTree.str()
+                << "\n[RECON TREE]\n" << aReconTree.str();
+    }
+    else
+    {
+      std::cerr << "\n[DEBUG] Shape trees are IDENTICAL — difference is in geometry/representation\n";
+    }
+  }
 }
 
 // Generate a short test name from the file path (just the filename without extension)

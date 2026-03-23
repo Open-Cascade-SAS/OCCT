@@ -130,6 +130,8 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage& theStora
         if (!aPolygon3D.IsNull())
           aBB.UpdateEdge(aNewEdge, aPolygon3D, TopLoc_Location());
       }
+      if (anEdge.IsClosed)
+        aNewEdge.Closed(true);
       aResult = aNewEdge;
       break;
     }
@@ -193,6 +195,8 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage& theStora
           aBB.Add(aNewShell, aChild);
         }
       }
+      if (aShell.IsClosed)
+        aNewShell.Closed(true);
       aResult = aNewShell;
       break;
     }
@@ -233,6 +237,8 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage& theStora
             aBB.Add(aNewShell, aChild);
           }
         }
+        if (aShell.IsClosed)
+          aNewShell.Closed(true);
         aNewShell.Orientation(aShellRef.Orientation);
         if (!aShellRef.LocalLocation.IsIdentity())
           aNewShell.Location(aShellRef.LocalLocation);
@@ -470,6 +476,9 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
       }
     }
 
+    if (anEdge.IsClosed)
+      aNewEdge.Closed(true);
+
     theCache.Bind(anEdgeId, aNewEdge);
     return aNewEdge;
   };
@@ -525,7 +534,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
       bool          aHasUV = false;
       GeomAbs_Shape aSeamContinuity = GeomAbs_C0;
 
-      if (aCoEdge.Curve2DRepIdx >= 0)
+      if (aCoEdge.Curve2DRepIdx >= 0 && !aCoEdge.IsPCurveComputed)
       {
         aPC1     = theStorage.Curve2DRep(aCoEdge.Curve2DRepIdx).Curve;
         aPCFirst = aCoEdge.ParamFirst;

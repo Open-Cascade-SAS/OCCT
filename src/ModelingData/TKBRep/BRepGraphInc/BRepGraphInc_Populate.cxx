@@ -70,6 +70,7 @@ struct ExtractedEdge
   NCollection_Vector<ExtractedInternalVertex> InternalVertices;
   TopAbs_Orientation                          OrientationInWire = TopAbs_FORWARD;
   occ::handle<Geom2d_Curve>                   PCurve2d;
+  bool                                        IsPCurveComputed = false;
   double                                      PCFirst = 0.0;
   double                                      PCLast  = 0.0;
   occ::handle<Geom2d_Curve>                   PCurve2dReversed;
@@ -408,6 +409,7 @@ int registerExtractedEdge(BRepGraphInc_Storage& theStorage,
   anEdgeEnt.IsDegenerate              = theEdgeData.IsDegenerate;
   anEdgeEnt.SameParameter             = theEdgeData.SameParameter;
   anEdgeEnt.SameRange                 = theEdgeData.SameRange;
+  anEdgeEnt.IsClosed                  = theEdgeData.Shape.Closed();
   anEdgeEnt.ParamFirst                = theEdgeData.ParamFirst;
   anEdgeEnt.ParamLast                 = theEdgeData.ParamLast;
 
@@ -516,10 +518,9 @@ void edgeVertices(const TopoDS_Edge&                           theEdge,
       theInternal.Append(anIntVtx);
     }
   }
-  if (theFirst.IsNull())
-    theFirst = theLast;
-  if (theLast.IsNull())
-    theLast = theFirst;
+  // Note: do NOT copy theFirst↔theLast when one is null.
+  // Single-vertex edges (e.g., infinite edges) legitimately have only one vertex.
+  // Closed edges already have both FORWARD and REVERSED vertices in the iterator.
 }
 
 //! Extract edge geometry and parametric data in a face context.
@@ -573,7 +574,10 @@ void extractEdgeInFace(ExtractedEdge&                    theEdgeData,
   {
     const TopoDS_Edge aFwdEdge = TopoDS::Edge(theEdge.Oriented(TopAbs_FORWARD));
     double aPCFirst = 0.0, aPCLast = 0.0;
-    theEdgeData.PCurve2d = BRep_Tool::CurveOnSurface(aFwdEdge, theForwardFace, aPCFirst, aPCLast);
+    bool   aIsStored = false;
+    theEdgeData.PCurve2d = BRep_Tool::CurveOnSurface(aFwdEdge, theForwardFace,
+                                                      aPCFirst, aPCLast, &aIsStored);
+    theEdgeData.IsPCurveComputed = !aIsStored && !theEdgeData.PCurve2d.IsNull();
     theEdgeData.PCFirst  = aPCFirst;
     theEdgeData.PCLast   = aPCLast;
     theEdgeData.PCurveContinuity = BRep_Tool::MaxContinuity(theEdge);
@@ -729,13 +733,15 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
     const BRepGraph_NodeId* anExistingFace =
       findExistingNode(theStorage, aCurFace, BRepGraph_NodeId::Kind::Face);
 
-    int aFaceIdx = -1;
+    int  aFaceIdx      = -1;
+    bool aIsNewFaceDef = false;
     if (anExistingFace != nullptr)
     {
       aFaceIdx = anExistingFace->Index;
     }
     else
     {
+      aIsNewFaceDef = true;
       BRepGraphInc::FaceEntity& aFace = theStorage.AppendFace();
       aFaceIdx                        = theStorage.NbFaces() - 1;
       aFace.Id                        = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, aFaceIdx);
@@ -768,7 +774,12 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
     // Pre-fetch face entity for triangulation access in edge loop.
     const BRepGraphInc::FaceEntity& aFaceDef = theStorage.Face(aFaceIdx);
 
-    // Process wires.
+    // Process wires — only for newly created face definitions.
+    // Shared faces (same TShape referenced multiple times in a shell) must NOT
+    // duplicate wire/edge/coedge data on the single FaceEntity.
+    if (!aIsNewFaceDef)
+      continue;
+
     for (int aWireIter = 0; aWireIter < aData.Wires.Length(); ++aWireIter)
     {
       const ExtractedWire& aWireData = aData.Wires.Value(aWireIter);
@@ -831,8 +842,9 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
           // Populate CoEdge with PCurve and polygon data for this face context.
           if (!anEdgeData.PCurve2d.IsNull())
           {
-            aCoEdge.Curve2DRepIdx = getOrCreateCurve2DRep(theStorage, theRepDedup,
-                                                          anEdgeData.PCurve2d);
+            aCoEdge.Curve2DRepIdx    = getOrCreateCurve2DRep(theStorage, theRepDedup,
+                                                             anEdgeData.PCurve2d);
+            aCoEdge.IsPCurveComputed = anEdgeData.IsPCurveComputed;
             aCoEdge.ParamFirst = anEdgeData.PCFirst;
             aCoEdge.ParamLast  = anEdgeData.PCLast;
             aCoEdge.Continuity = anEdgeData.PCurveContinuity;
@@ -1131,7 +1143,8 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&                       
 
         BRepGraphInc::ShellEntity& aShellEnt = theStorage.AppendShell();
         int                        aShellIdx = theStorage.NbShells() - 1;
-        aShellEnt.Id = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Shell, aShellIdx);
+        aShellEnt.Id       = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Shell, aShellIdx);
+        aShellEnt.IsClosed = aShell.Closed();
         theStorage.BindTShapeToNode(aShell.TShape().get(), aShellEnt.Id);
         theStorage.BindOriginal(aShellEnt.Id, aShell);
 
@@ -1222,6 +1235,7 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&                       
         anEdgeEnt.IsDegenerate  = BRep_Tool::Degenerated(anEdge);
         anEdgeEnt.SameParameter = BRep_Tool::SameParameter(anEdge);
         anEdgeEnt.SameRange     = BRep_Tool::SameRange(anEdge);
+        anEdgeEnt.IsClosed      = anEdge.Closed();
 
         // Extract 3D curve with representation location applied to definition frame.
         {

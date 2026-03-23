@@ -181,6 +181,9 @@ struct EdgeEntity : public BaseEntity
   //! True if the PCurve parameter range equals the 3D curve parameter range.
   bool SameRange     = false;
 
+  //! True if StartVertex == EndVertex (topological loop, e.g. circle edge).
+  bool IsClosed      = false;
+
   //! Boundary vertex references (carry Location for shared vertices).
   //! For closed edges, StartVertex.VertexIdx == EndVertex.VertexIdx.
   //! StartVertex.Orientation is always FORWARD, EndVertex.Orientation is always REVERSED.
@@ -256,6 +259,9 @@ struct CoEdgeEntity : public BaseEntity
 
   //! Representation index into Storage::myCurves2D (-1 for free-wire coedges).
   int Curve2DRepIdx = -1;
+  //! True if PCurve was computed on-the-fly (projected onto plane), not stored in original BRep.
+  //! Computed PCurves are kept for graph algorithms but skipped during Reconstruct.
+  bool IsPCurveComputed = false;
   double               ParamFirst = 0.0;
   double               ParamLast  = 0.0;
   GeomAbs_Shape        Continuity = GeomAbs_C0; //!< Geometric continuity across face pairs
@@ -336,6 +342,7 @@ struct FaceEntity : public BaseEntity
 //! Shell entity: ordered face references with local locations.
 struct ShellEntity : public BaseEntity
 {
+  bool IsClosed = false;  //!< True if shell forms a watertight (closed) boundary.
   NCollection_Vector<FaceRef> FaceRefs;
   NCollection_Vector<ChildRef> FreeChildRefs; //!< Non-face children (wires, edges)
 
@@ -390,7 +397,9 @@ struct OccurrenceRef
 //! An assembly has an invalid ShapeRootId and owns child occurrences.
 struct ProductEntity : public BaseEntity
 {
-  BRepGraph_NodeId ShapeRootId;  //!< Root topology for parts; invalid for assemblies
+  BRepGraph_NodeId    ShapeRootId;        //!< Root topology for parts; invalid for assemblies
+  TopAbs_Orientation  RootOrientation = TopAbs_FORWARD; //!< Orientation of the root shape
+  TopLoc_Location     RootLocation;       //!< Location of the root shape
   NCollection_Vector<OccurrenceRef> OccurrenceRefs;
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
