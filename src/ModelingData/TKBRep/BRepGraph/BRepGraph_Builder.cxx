@@ -15,6 +15,7 @@
 #include <BRepGraph_Builder.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_Data.hxx>
+#include <BRepGraph_Layer.hxx>
 #include <BRepGraphInc_Populate.hxx>
 #include <BRepGraphInc_Storage.hxx>
 #include <NCollection_IncAllocator.hxx>
@@ -68,6 +69,13 @@ void BRepGraph_Builder::Perform(BRepGraph&                            theGraph,
   ++theGraph.myData->myGeneration;
   theGraph.myData->myIsDone = false;
 
+  // Notify registered layers that graph data is being cleared.
+  for (NCollection_DataMap<TCollection_AsciiString, Handle(BRepGraph_Layer)>::Iterator
+         anIter(theGraph.myLayers); anIter.More(); anIter.Next())
+  {
+    anIter.Value()->Clear();
+  }
+
   if (theShape.IsNull())
     return;
 
@@ -107,6 +115,9 @@ void BRepGraph_Builder::Append(BRepGraph& theGraph, const TopoDS_Shape& theShape
 
   Handle(NCollection_IncAllocator) aTmpAlloc = new NCollection_IncAllocator;
   BRepGraphInc_Populate::Append(aStorage, theShape, theParallel, aTmpAlloc);
+
+  if (!aStorage.GetIsDone())
+    return;
 
   theGraph.myData->myCurrentShapes.Clear();
 

@@ -1419,7 +1419,8 @@ int mergeMatchedEdges(
     }
 
     // Remove the old edge properly — decrements NbActiveEdges, clears cache/RelEdges.
-    theGraph.Builder().RemoveNode(anIdB);
+    // Pass replacement (anIdA) so layers can migrate data from remove-edge to keep-edge.
+    theGraph.Builder().RemoveNode(anIdB, anIdA);
 
     // 5. Accumulate for batch history recording.
     aHistOriginals.Append(anIdB);

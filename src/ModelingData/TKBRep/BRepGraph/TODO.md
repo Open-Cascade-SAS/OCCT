@@ -29,24 +29,26 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 
 ## Phase 1: High-ROI (1 week)
 
-### Named Attribute Layers [Arch] ★★★★★
+### ~~Named Attribute Layers (Infrastructure)~~ — DONE (2026-03-20)
 - `BRepGraph_Layer` abstract base class with lifecycle callbacks:
-  - `Name()`, `InvalidateAll()`, `OnNodeRemoved(nodeId)`, `OnNodeReplaced(oldId, newId)`, `OnCompact(oldToNewMap)`
-- Registration: `BRepGraph::RegisterLayer()`, access: `BRepGraph::Layer(name)`
-- Layers notified by existing mutation paths (RemoveNode, CommitMutation, Compact swap)
-- Built on existing UserAttribute/AttrRegistry infrastructure — layers add grouping, bulk ops, and lifecycle on top
-- Read-only layers (analysis) can skip mutex entirely
-- **Built-in layers for algorithms**: `AnalysisLayer` (BndLib, UVBounds, FClass2d caches), `SewingLayer` (candidates, merge state)
-- **Built-in layers for DataExchange** (replaces XCAFDoc_*Tool pattern — metadata directly on topology nodes):
+  - `Name()`, `OnNodeRemoved(nodeId, replacement)`, `OnCompact(maps)`, `InvalidateAll()`, `Clear()`
+- Registration: `BRepGraph::RegisterLayer()`, `FindLayer()`, `UnregisterLayer()`
+- `RemoveNode(NodeId, NodeId replacement)` overload dispatches `OnNodeRemoved` to all layers
+- Compact saves/restores layers around graph swap, dispatches `OnCompact` with remap maps
+- Sewing and Deduplicate pass replacement NodeId to RemoveNode for data migration
+- `BRepGraph_NameLayer` proof-of-concept: TCollection_ExtendedString per node with full lifecycle
+
+### Named Attribute Layers (DE Layers) [Arch] ★★★★
+- Built-in layers for DataExchange (replaces XCAFDoc_*Tool pattern):
   - `ColorLayer` → replaces XCAFDoc_ColorTool: Quantity_ColorRGBA per node (Gen/Surf/Curv types)
   - `MaterialLayer` → replaces XCAFDoc_MaterialTool: name, density, description per node
   - `VisMaterialLayer` → replaces XCAFDoc_VisMaterialTool: PBR/Common material per node
-  - `NameLayer` → replaces TDataStd_Name: TCollection_ExtendedString per node
   - `LayerGroupLayer` → replaces XCAFDoc_LayerTool: layer membership + visibility per node
   - `DimTolLayer` → replaces XCAFDoc_DimTolTool: GD&T annotations per node
   - `ValidationLayer` → replaces XCAFDoc_Volume/Area/Centroid: computed properties per node
-- **Why**: foundation for OCAF-free DataExchange pipeline. Current OCAF approach requires shape-to-label lookup + TDataStd_TreeNode reference chains. BRepGraph stores metadata directly on topology nodes with O(1) access. Automatic migration during Sew/Compact/Deduplicate via layer callbacks eliminates manual attribute transfer.
-- **What it enables**: DE providers (STEP, IGES, etc.) reading into BRepGraph + layers instead of OCAF document; third-party attribute plugins; serializable attribute groups
+- Built-in layers for algorithms: `AnalysisLayer` (BndLib, UVBounds, FClass2d caches)
+- **Why**: foundation for OCAF-free DataExchange pipeline
+- **Depends on**: Named Layers infrastructure (done)
 
 ### ~~Incremental reverse-index delta~~ — DONE (2026-03-19)
 - `Populate::Append` now uses `BuildDeltaReverseIndex` instead of full `BuildReverseIndex`

@@ -15,6 +15,7 @@
 
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_Data.hxx>
+#include <BRepGraph_Layer.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_Mutator.hxx>
@@ -466,8 +467,21 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
     std::memory_order_relaxed);
   aNewGraph.myData->myGeneration = theGraph.myData->myGeneration;
   aNewGraph.myData->myIsDone = true;
+
+  // Save layers before swap (default move would transfer empty layers from aNewGraph).
+  NCollection_DataMap<TCollection_AsciiString, Handle(BRepGraph_Layer)> aSavedLayers;
+  aSavedLayers = std::move(theGraph.myLayers);
+
   // Swap.
   theGraph = std::move(aNewGraph);
+
+  // Restore layers and notify about index remapping.
+  theGraph.myLayers = std::move(aSavedLayers);
+  for (NCollection_DataMap<TCollection_AsciiString, Handle(BRepGraph_Layer)>::Iterator
+         anIter(theGraph.myLayers); anIter.More(); anIter.Next())
+  {
+    anIter.Value()->OnCompact(aVertexMap, anEdgeMap, aWireMap, aFaceMap, aShellMap, aSolidMap);
+  }
 
   BRepGraph_Mutator::CommitMutation(theGraph);
   theGraph.SetHistoryEnabled(wasHistoryEnabled);

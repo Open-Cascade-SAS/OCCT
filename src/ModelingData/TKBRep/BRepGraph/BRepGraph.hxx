@@ -37,6 +37,7 @@
 #include <utility>
 
 struct BRepGraph_Data;
+class BRepGraph_Layer;
 class NCollection_BaseAllocator;
 class TCollection_AsciiString;
 
@@ -153,6 +154,15 @@ public:
   Standard_EXPORT BRepGraph_History&       History();
   Standard_EXPORT const BRepGraph_History& History() const;
 
+  //! Register a named layer. Replaces existing layer with same name.
+  Standard_EXPORT void RegisterLayer(const Handle(BRepGraph_Layer)& theLayer);
+
+  //! Find a layer by name. Returns null handle if not found.
+  Standard_EXPORT Handle(BRepGraph_Layer) FindLayer(const TCollection_AsciiString& theName) const;
+
+  //! Remove a layer by name.
+  Standard_EXPORT void UnregisterLayer(const TCollection_AsciiString& theName);
+
 private:
   friend class BRepGraph_Builder;
   friend class BRepGraph_History;
@@ -177,6 +187,12 @@ private:
                                      const NCollection_Vector<BRepGraph_NodeId>& theReplacements);
 
   std::unique_ptr<BRepGraph_Data> myData;
+
+  //! Named layers (stored on BRepGraph, not BRepGraph_Data, to survive Compact swap).
+  NCollection_DataMap<TCollection_AsciiString, Handle(BRepGraph_Layer)> myLayers;
+
+  //! Dispatch OnNodeRemoved to all registered layers.
+  void dispatchLayerOnNodeRemoved(BRepGraph_NodeId theNode, BRepGraph_NodeId theReplacement);
 
   Standard_EXPORT void invalidateSubgraphImpl(BRepGraph_NodeId theNode);
   Standard_EXPORT BRepGraph_UID allocateUID(BRepGraph_NodeId theNodeId);

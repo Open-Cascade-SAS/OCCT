@@ -276,12 +276,18 @@ void BRepGraph::BuilderView::AppendShape(const TopoDS_Shape& theShape, bool theP
 
 void BRepGraph::BuilderView::RemoveNode(BRepGraph_NodeId theNode)
 {
+  RemoveNode(theNode, BRepGraph_NodeId());
+}
+
+//=================================================================================================
+
+void BRepGraph::BuilderView::RemoveNode(BRepGraph_NodeId theNode, BRepGraph_NodeId theReplacement)
+{
   if (!theNode.IsValid())
     return;
 
   // Mark removed on the entity (which is the sole definition store).
-  BRepGraph_TopoNode::BaseDef* aDef =
-    const_cast<BRepGraph_TopoNode::BaseDef*>(myGraph->TopoDef(theNode));
+  BRepGraph_TopoNode::BaseDef* aDef = myGraph->ChangeTopoDef(theNode);
   if (aDef != nullptr && !aDef->IsRemoved)
   {
     aDef->IsRemoved = true;
@@ -298,6 +304,9 @@ void BRepGraph::BuilderView::RemoveNode(BRepGraph_NodeId theNode)
     std::unique_lock<std::shared_mutex> aWriteLock(myGraph->myData->myCurrentShapesMutex);
     myGraph->myData->myCurrentShapes.UnBind(theNode);
   }
+
+  // Notify registered layers.
+  myGraph->dispatchLayerOnNodeRemoved(theNode, theReplacement);
 }
 
 //=================================================================================================

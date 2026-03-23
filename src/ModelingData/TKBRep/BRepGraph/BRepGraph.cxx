@@ -13,6 +13,7 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_Data.hxx>
+#include <BRepGraph_Layer.hxx>
 
 #include <BRepGraph_Builder.hxx>
 #include <BRepGraphInc_ReverseIndex.hxx>
@@ -513,3 +514,38 @@ bool BRepGraph::IsHistoryEnabled() const { return myData->myHistoryLog.IsEnabled
 
 BRepGraph_History& BRepGraph::History() { return myData->myHistoryLog; }
 const BRepGraph_History& BRepGraph::History() const { return myData->myHistoryLog; }
+
+//=================================================================================================
+
+void BRepGraph::RegisterLayer(const Handle(BRepGraph_Layer)& theLayer)
+{
+  if (!theLayer.IsNull())
+    myLayers.Bind(theLayer->Name(), theLayer);
+}
+
+//=================================================================================================
+
+Handle(BRepGraph_Layer) BRepGraph::FindLayer(const TCollection_AsciiString& theName) const
+{
+  const Handle(BRepGraph_Layer)* aPtr = myLayers.Seek(theName);
+  return aPtr != nullptr ? *aPtr : Handle(BRepGraph_Layer)();
+}
+
+//=================================================================================================
+
+void BRepGraph::UnregisterLayer(const TCollection_AsciiString& theName)
+{
+  myLayers.UnBind(theName);
+}
+
+//=================================================================================================
+
+void BRepGraph::dispatchLayerOnNodeRemoved(BRepGraph_NodeId theNode,
+                                           BRepGraph_NodeId theReplacement)
+{
+  for (NCollection_DataMap<TCollection_AsciiString, Handle(BRepGraph_Layer)>::Iterator
+         anIter(myLayers); anIter.More(); anIter.Next())
+  {
+    anIter.Value()->OnNodeRemoved(theNode, theReplacement);
+  }
+}

@@ -112,6 +112,12 @@ public:
   //! @param[in] theNode node to remove
   Standard_EXPORT void RemoveNode(BRepGraph_NodeId theNode);
 
+  //! Mark a node as removed with a known replacement (sewing/deduplicate).
+  //! Layers are notified with both old and replacement NodeIds for data migration.
+  //! @param[in] theNode        node to remove
+  //! @param[in] theReplacement node that replaces theNode
+  Standard_EXPORT void RemoveNode(BRepGraph_NodeId theNode, BRepGraph_NodeId theReplacement);
+
   //! Mark a node and all its descendants as removed (cascading soft deletion).
   //! @param[in] theNode root node to remove
   Standard_EXPORT void RemoveSubgraph(BRepGraph_NodeId theNode);

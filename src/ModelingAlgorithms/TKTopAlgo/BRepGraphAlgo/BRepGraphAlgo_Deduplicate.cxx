@@ -254,7 +254,7 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
         }
 
         // Mark non-canonical as removed.
-        theGraph.Builder().RemoveNode(anOldId);
+        theGraph.Builder().RemoveNode(anOldId, aCanonId);
 
         NCollection_Vector<BRepGraph_NodeId> aRepl;
         aRepl.Append(aCanonId);
@@ -418,7 +418,7 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
           }
         }
 
-        theGraph.Builder().RemoveNode(anOldId);
+        theGraph.Builder().RemoveNode(anOldId, aCanonId);
 
         NCollection_Vector<BRepGraph_NodeId> aRepl;
         aRepl.Append(aCanonId);
@@ -521,7 +521,7 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
         const BRepGraph_NodeId anOldId  = BRepGraph_NodeId::Wire(anOldIdx);
         const BRepGraph_NodeId aCanonId = BRepGraph_NodeId::Wire(aCanonicalIdx);
 
-        theGraph.Builder().RemoveNode(anOldId);
+        theGraph.Builder().RemoveNode(anOldId, aCanonId);
 
         NCollection_Vector<BRepGraph_NodeId> aRepl;
         aRepl.Append(aCanonId);
@@ -641,7 +641,7 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
         const BRepGraph_NodeId anOldId  = BRepGraph_NodeId::Face(anOldIdx);
         const BRepGraph_NodeId aCanonId = BRepGraph_NodeId::Face(aCanonicalIdx);
 
-        theGraph.Builder().RemoveNode(anOldId);
+        theGraph.Builder().RemoveNode(anOldId, aCanonId);
 
         NCollection_Vector<BRepGraph_NodeId> aRepl;
         aRepl.Append(aCanonId);
