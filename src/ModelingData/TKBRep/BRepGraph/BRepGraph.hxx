@@ -259,6 +259,13 @@ private:
   //! when the caller already holds a mutable reference to the definition.
   Standard_EXPORT void markModified(BRepGraph_NodeId theDefId, BRepGraph_TopoNode::BaseDef& theDef);
 
+  //! Mark a parent node as transitively modified (IsModified only, no MutationGen increment).
+  //! Skips if already modified. Clears caches, dispatches events, and continues propagation.
+  Standard_EXPORT void markParentModified(BRepGraph_NodeId theParentId);
+
+  //! Propagate IsModified upward through reverse indices without incrementing MutationGen.
+  Standard_EXPORT void propagateModified(BRepGraph_NodeId theDefId);
+
   //! Generic topology definition lookup by NodeId (const).
   Standard_EXPORT const BRepGraph_TopoNode::BaseDef* TopoDef(BRepGraph_NodeId theId) const;
 

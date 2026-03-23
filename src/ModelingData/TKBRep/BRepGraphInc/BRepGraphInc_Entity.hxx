@@ -55,6 +55,8 @@ struct BaseEntity
 {
   BRepGraph_NodeId   Id;            //!< Typed address (kind + per-kind index)
   BRepGraph_NodeCache Cache;        //!< Lazily-computed derived quantities + user attributes
+  uint32_t           MutationGen = 0;    //!< Per-node mutation counter, incremented by markModified().
+                                        //!< Wraps on overflow; callers compare via difference, not absolute value.
   bool               IsModified = false; //!< True when mutated since Build()
   bool               IsRemoved = false;  //!< Soft-removal flag
 };

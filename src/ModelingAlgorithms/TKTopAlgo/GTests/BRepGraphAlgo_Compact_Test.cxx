@@ -25,6 +25,7 @@
 #include <BRepGraph_UID.hxx>
 #include <BRepGraph_UIDsView.hxx>
 #include <NCollection_Map.hxx>
+#include <Precision.hxx>
 #include <BRepGraphAlgo_Compact.hxx>
 #include <BRepGraphAlgo_Deduplicate.hxx>
 #include <BRepGraphAlgo_Validate.hxx>
@@ -268,4 +269,39 @@ TEST(BRepGraphAlgo_CompactTest, Compact_PreservesTopologyUIDs)
              "CompSolid");
 
   // Geometry is now stored inline on defs; no separate geometry UIDs to verify.
+}
+
+TEST(BRepGraphAlgo_CompactTest, MutationGen_SurvivesCompact)
+{
+  constexpr double   THE_MUTATED_EDGE_TOLERANCE = 0.2;
+  constexpr uint32_t THE_EXPECTED_MUTATION_GEN  = 2;
+
+  BRepGraph aGraph;
+  aGraph.Build(makeTwoCopiedFaces());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  // Mutate edge 0 twice so MutationGen == THE_EXPECTED_MUTATION_GEN.
+  aGraph.Mut().EdgeDef(0)->Tolerance = 0.1;
+  aGraph.Mut().EdgeDef(0)->Tolerance = THE_MUTATED_EDGE_TOLERANCE;
+  ASSERT_EQ(aGraph.Defs().Edge(0).MutationGen, THE_EXPECTED_MUTATION_GEN);
+
+  // Run dedup + compact.
+  BRepGraphAlgo_Deduplicate::Perform(aGraph);
+  BRepGraphAlgo_Compact::Perform(aGraph);
+
+  // Edge 0 may have been remapped. Find the edge that carries the mutated
+  // tolerance and verify both the tolerance value and MutationGen are preserved.
+  bool aFound = false;
+  for (int anIdx = 0; anIdx < aGraph.Defs().NbEdges(); ++anIdx)
+  {
+    const auto& anEdge = aGraph.Defs().Edge(anIdx);
+    if (std::abs(anEdge.Tolerance - THE_MUTATED_EDGE_TOLERANCE) < Precision::Confusion())
+    {
+      EXPECT_EQ(anEdge.MutationGen, THE_EXPECTED_MUTATION_GEN)
+        << "Edge " << anIdx << " has mutated tolerance but wrong MutationGen";
+      aFound = true;
+      break;
+    }
+  }
+  EXPECT_TRUE(aFound) << "No edge with mutated tolerance found after compact";
 }

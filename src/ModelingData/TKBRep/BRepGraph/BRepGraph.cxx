@@ -228,6 +228,7 @@ void BRepGraph::markModified(BRepGraph_NodeId theDefId)
     return;
 
   aDef->IsModified = true;
+  ++aDef->MutationGen; // Track direct mutations even in deferred mode.
 
   // In deferred mode: skip mutex and upward propagation.
   if (myData->myDeferredMode)
@@ -243,53 +244,12 @@ void BRepGraph::markModified(BRepGraph_NodeId theDefId)
   if (aCache != nullptr)
     aCache->InvalidateAll();
 
-  // Propagate upward via reverse indices.
-  const BRepGraphInc_ReverseIndex& aRevIdx = myData->myIncStorage.ReverseIndex();
-  switch (theDefId.NodeKind)
-  {
-    case BRepGraph_NodeId::Kind::Vertex:
-      // Vertex modifications don't propagate.
-      break;
-    case BRepGraph_NodeId::Kind::Edge: {
-      // Edge -> Wire (via incidence reverse index).
-      const NCollection_Vector<int>* aWires = aRevIdx.WiresOfEdge(theDefId.Index);
-      if (aWires != nullptr)
-        for (int i = 0; i < aWires->Length(); ++i)
-          markModified(BRepGraph_NodeId::Wire(aWires->Value(i)));
-      break;
-    }
-    case BRepGraph_NodeId::Kind::Wire: {
-      // Wire -> Face (via wire-to-face reverse index).
-      const NCollection_Vector<int>* aFaces = aRevIdx.FacesOfWire(theDefId.Index);
-      if (aFaces != nullptr)
-        for (int i = 0; i < aFaces->Length(); ++i)
-          markModified(BRepGraph_NodeId::Face(aFaces->Value(i)));
-      break;
-    }
-    case BRepGraph_NodeId::Kind::Face: {
-      // Face -> Shell (via face-to-shell reverse index).
-      const NCollection_Vector<int>* aShells = aRevIdx.ShellsOfFace(theDefId.Index);
-      if (aShells != nullptr)
-        for (int i = 0; i < aShells->Length(); ++i)
-          markModified(BRepGraph_NodeId::Shell(aShells->Value(i)));
-      break;
-    }
-    case BRepGraph_NodeId::Kind::Shell: {
-      // Shell -> Solid (via shell-to-solid reverse index).
-      const NCollection_Vector<int>* aSolids = aRevIdx.SolidsOfShell(theDefId.Index);
-      if (aSolids != nullptr)
-        for (int i = 0; i < aSolids->Length(); ++i)
-          markModified(BRepGraph_NodeId::Solid(aSolids->Value(i)));
-      break;
-    }
-    default:
-      // Solid/Compound/CompSolid modifications don't propagate further.
-      break;
-  }
-
-  // Dispatch modification event to subscribing layers.
+  // Dispatch modification event for the directly mutated node.
   if (myHasModificationSubscribers)
     dispatchNodeModified(theDefId);
+
+  // Propagate IsModified upward without incrementing MutationGen on parents.
+  propagateModified(theDefId);
 }
 
 //=================================================================================================
@@ -297,6 +257,7 @@ void BRepGraph::markModified(BRepGraph_NodeId theDefId)
 void BRepGraph::markModified(BRepGraph_NodeId theDefId, BRepGraph_TopoNode::BaseDef& theDef)
 {
   theDef.IsModified = true;
+  ++theDef.MutationGen; // Track direct mutations even in deferred mode.
 
   // In deferred mode: skip mutex and upward propagation.
   if (myData->myDeferredMode)
@@ -310,7 +271,43 @@ void BRepGraph::markModified(BRepGraph_NodeId theDefId, BRepGraph_TopoNode::Base
   // Invalidate UserAttribute caches (UVBounds, BndLib, etc.).
   theDef.Cache.InvalidateAll();
 
-  // Propagate upward via reverse indices.
+  // Dispatch modification event for the directly mutated node.
+  if (myHasModificationSubscribers)
+    dispatchNodeModified(theDefId);
+
+  // Propagate IsModified upward without incrementing MutationGen on parents.
+  propagateModified(theDefId);
+}
+
+//=================================================================================================
+
+void BRepGraph::markParentModified(BRepGraph_NodeId theParentId)
+{
+  BRepGraph_TopoNode::BaseDef* aParent = ChangeTopoDef(theParentId);
+  if (aParent == nullptr || aParent->IsModified)
+    return;
+
+  aParent->IsModified = true;
+
+  {
+    std::unique_lock<std::shared_mutex> aWriteLock(myData->myCurrentShapesMutex);
+    myData->myCurrentShapes.UnBind(theParentId);
+  }
+
+  BRepGraph_NodeCache* aCache = mutableCache(theParentId);
+  if (aCache != nullptr)
+    aCache->InvalidateAll();
+
+  if (myHasModificationSubscribers)
+    dispatchNodeModified(theParentId);
+
+  propagateModified(theParentId);
+}
+
+//=================================================================================================
+
+void BRepGraph::propagateModified(BRepGraph_NodeId theDefId)
+{
   const BRepGraphInc_ReverseIndex& aRevIdx = myData->myIncStorage.ReverseIndex();
   switch (theDefId.NodeKind)
   {
@@ -318,45 +315,37 @@ void BRepGraph::markModified(BRepGraph_NodeId theDefId, BRepGraph_TopoNode::Base
       // Vertex modifications don't propagate.
       break;
     case BRepGraph_NodeId::Kind::Edge: {
-      // Edge -> Wire (via incidence reverse index).
       const NCollection_Vector<int>* aWires = aRevIdx.WiresOfEdge(theDefId.Index);
       if (aWires != nullptr)
         for (int i = 0; i < aWires->Length(); ++i)
-          markModified(BRepGraph_NodeId::Wire(aWires->Value(i)));
+          markParentModified(BRepGraph_NodeId::Wire(aWires->Value(i)));
       break;
     }
     case BRepGraph_NodeId::Kind::Wire: {
-      // Wire -> Face (via wire-to-face reverse index).
       const NCollection_Vector<int>* aFaces = aRevIdx.FacesOfWire(theDefId.Index);
       if (aFaces != nullptr)
         for (int i = 0; i < aFaces->Length(); ++i)
-          markModified(BRepGraph_NodeId::Face(aFaces->Value(i)));
+          markParentModified(BRepGraph_NodeId::Face(aFaces->Value(i)));
       break;
     }
     case BRepGraph_NodeId::Kind::Face: {
-      // Face -> Shell (via face-to-shell reverse index).
       const NCollection_Vector<int>* aShells = aRevIdx.ShellsOfFace(theDefId.Index);
       if (aShells != nullptr)
         for (int i = 0; i < aShells->Length(); ++i)
-          markModified(BRepGraph_NodeId::Shell(aShells->Value(i)));
+          markParentModified(BRepGraph_NodeId::Shell(aShells->Value(i)));
       break;
     }
     case BRepGraph_NodeId::Kind::Shell: {
-      // Shell -> Solid (via shell-to-solid reverse index).
       const NCollection_Vector<int>* aSolids = aRevIdx.SolidsOfShell(theDefId.Index);
       if (aSolids != nullptr)
         for (int i = 0; i < aSolids->Length(); ++i)
-          markModified(BRepGraph_NodeId::Solid(aSolids->Value(i)));
+          markParentModified(BRepGraph_NodeId::Solid(aSolids->Value(i)));
       break;
     }
     default:
       // Solid/Compound/CompSolid modifications don't propagate further.
       break;
   }
-
-  // Dispatch modification event to subscribing layers.
-  if (myHasModificationSubscribers)
-    dispatchNodeModified(theDefId);
 }
 
 //=================================================================================================

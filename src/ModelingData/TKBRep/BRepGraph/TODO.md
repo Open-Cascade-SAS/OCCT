@@ -126,9 +126,11 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 
 ## Phase 3: Production Readiness
 
-### Per-node MutationGeneration [Arch] ★★★★
-- Add `uint32_t MutationGen` to `BaseEntity`, incremented by `markModified()`
+### ~~Per-node MutationGeneration~~ — DONE (2026-03-20)
+- `uint32_t MutationGen` added to `BaseEntity`, incremented by `markModified()`
 - Enables per-node change detection across serialization boundaries
+- Propagated-modified parents do NOT get MutationGen incremented (only directly mutated nodes)
+- Survives Compact (carried with BaseEntity fields)
 - Prerequisite for efficient delta-based Save/Load and parametric history
 
 ### Versioned Persistent Schema [Arch] ★★★★
