@@ -77,9 +77,12 @@ private:
 //! @param[in] theVmax    surface V maximum
 //! @return true if the surface is geometrically U-periodic
 static bool isBSplinePseudoPeriodicU(const Handle(Geom_Surface)& theSurface,
-                                     double theXmin, double theXmax,
-                                     double theUmin, double theUmax,
-                                     double theVmin, double theVmax)
+                                     double                      theXmin,
+                                     double                      theXmax,
+                                     double                      theUmin,
+                                     double                      theUmax,
+                                     double                      theVmin,
+                                     double                      theVmax)
 {
   if (theSurface->DynamicType() != STANDARD_TYPE(Geom_BSplineSurface))
   {
@@ -90,9 +93,9 @@ static bool isBSplinePseudoPeriodicU(const Handle(Geom_Surface)& theSurface,
     return false;
   }
 
-  constexpr double aTol2 = 100 * Precision::Confusion() * Precision::Confusion();
-  bool isUPeriodic = true;
-  gp_Pnt P1, P2;
+  constexpr double aTol2       = 100 * Precision::Confusion() * Precision::Confusion();
+  bool             isUPeriodic = true;
+  gp_Pnt           P1, P2;
 
   // Verify that the surface is U-closed.
   if (!theSurface->IsUClosed())
@@ -158,9 +161,12 @@ static bool isBSplinePseudoPeriodicU(const Handle(Geom_Surface)& theSurface,
 //! @param[in] theVmax    surface V maximum
 //! @return true if the surface is geometrically V-periodic
 static bool isBSplinePseudoPeriodicV(const Handle(Geom_Surface)& theSurface,
-                                     double theYmin, double theYmax,
-                                     double theUmin, double theUmax,
-                                     double theVmin, double theVmax)
+                                     double                      theYmin,
+                                     double                      theYmax,
+                                     double                      theUmin,
+                                     double                      theUmax,
+                                     double                      theVmin,
+                                     double                      theVmax)
 {
   if (theSurface->DynamicType() != STANDARD_TYPE(Geom_BSplineSurface))
   {
@@ -171,9 +177,9 @@ static bool isBSplinePseudoPeriodicV(const Handle(Geom_Surface)& theSurface,
     return false;
   }
 
-  constexpr double aTol2 = 100 * Precision::Confusion() * Precision::Confusion();
-  bool isVPeriodic = true;
-  gp_Pnt P1, P2;
+  constexpr double aTol2       = 100 * Precision::Confusion() * Precision::Confusion();
+  bool             isVPeriodic = true;
+  gp_Pnt           P1, P2;
 
   // Verify that the surface is V-closed.
   if (!theSurface->IsVClosed())
@@ -232,9 +238,7 @@ static bool isBSplinePseudoPeriodicV(const Handle(Geom_Surface)& theSurface,
 
 //=================================================================================================
 
-void BRepGraphAlgo_UVBounds::Compute(const BRepGraph& theGraph,
-                                     int              theFaceIdx,
-                                     CachedData&      theData)
+void BRepGraphAlgo_UVBounds::Compute(const BRepGraph& theGraph, int theFaceIdx, CachedData& theData)
 {
   theData = CachedData();
 
@@ -245,9 +249,9 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph& theGraph,
     return;
   }
 
-  theData.IsValid             = true;
+  theData.IsValid              = true;
   theData.IsNaturalRestriction = aFaceDef.NaturalRestriction;
-  theData.ComputeMethod       = Method::PCurve;
+  theData.ComputeMethod        = Method::PCurve;
 
   GeomAdaptor_Surface aGAS(aSurf->Surface);
 
@@ -442,8 +446,12 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph& theGraph,
     // BSpline pseudo-periodicity check: surface may be geometrically periodic
     // even though IsUPeriodic() returns false.
     if (!isBSplinePseudoPeriodicU(aBasisSurf,
-                                  theData.UMin, theData.UMax,
-                                  aSUmin, aSUmax, aSVmin, aSVmax))
+                                  theData.UMin,
+                                  theData.UMax,
+                                  aSUmin,
+                                  aSUmax,
+                                  aSVmin,
+                                  aSVmax))
     {
       theData.UMin = std::max(aSUmin, theData.UMin);
       theData.UMax = std::min(aSUmax, theData.UMax);
@@ -463,8 +471,12 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph& theGraph,
   {
     // BSpline pseudo-periodicity check for V direction.
     if (!isBSplinePseudoPeriodicV(aBasisSurf,
-                                  theData.VMin, theData.VMax,
-                                  aSUmin, aSUmax, aSVmin, aSVmax))
+                                  theData.VMin,
+                                  theData.VMax,
+                                  aSUmin,
+                                  aSUmax,
+                                  aSVmin,
+                                  aSVmax))
     {
       theData.VMin = std::max(aSVmin, theData.VMin);
       theData.VMax = std::min(aSVmax, theData.VMax);
@@ -492,7 +504,7 @@ int BRepGraphAlgo_UVBounds::CacheKey()
 //=================================================================================================
 
 //! Helper: retrieve existing UV attribute from a cache, or nullptr.
-static BRepGraphAlgo_UVBoundsAttribute* findUVAttr(BRepGraph_NodeCache& theCache, int theKey)
+static BRepGraphAlgo_UVBoundsAttribute* findUVAttr(const BRepGraph_NodeCache& theCache, int theKey)
 {
   BRepGraph_UserAttrPtr anAttr = theCache.GetUserAttribute(theKey);
   if (!anAttr)
@@ -503,9 +515,9 @@ static BRepGraphAlgo_UVBoundsAttribute* findUVAttr(BRepGraph_NodeCache& theCache
 }
 
 //! Helper: store CachedData into a cache — reuses existing attribute or creates a new one.
-static void storeUVAttr(BRepGraph_NodeCache&                       theCache,
-                        int                                        theKey,
-                        const BRepGraphAlgo_UVBounds::CachedData&  theData)
+static void storeUVAttr(BRepGraph_NodeCache&                      theCache,
+                        int                                       theKey,
+                        const BRepGraphAlgo_UVBounds::CachedData& theData)
 {
   BRepGraphAlgo_UVBoundsAttribute* anExisting = findUVAttr(theCache, theKey);
   if (anExisting != nullptr)
@@ -534,8 +546,7 @@ bool BRepGraphAlgo_UVBounds::GetCached(const BRepGraph& theGraph,
     return false;
   }
 
-  BRepGraphAlgo_UVBoundsAttribute* aUVAttr = findUVAttr(const_cast<BRepGraph_NodeCache&>(aDef->Cache),
-                                                         CacheKey());
+  BRepGraphAlgo_UVBoundsAttribute* aUVAttr = findUVAttr(aDef->Cache, CacheKey());
   return aUVAttr != nullptr && aUVAttr->Get(theData);
 }
 
