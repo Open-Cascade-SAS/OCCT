@@ -20,62 +20,61 @@
 #include <GeomAdaptor_Surface.hxx>
 
 //=================================================================================================
-// Count methods read from legacy Def vectors.  These are always maintained:
-// - After Build(): populated by deriveLegacyFromIncidence()
-// - After Add*Def(): directly appended by BuilderView methods
+// Count methods read directly from incidence storage.
+// Both Build() and BuilderView::Add*() write to incidence, so counts are always in sync.
 
 int BRepGraph::DefsView::NbSolids() const
 {
-  return myGraph->myData->mySolids.Defs.Length();
+  return myGraph->myData->myIncStorage.Solids.Length();
 }
 
 //=================================================================================================
 
 int BRepGraph::DefsView::NbShells() const
 {
-  return myGraph->myData->myShells.Defs.Length();
+  return myGraph->myData->myIncStorage.Shells.Length();
 }
 
 //=================================================================================================
 
 int BRepGraph::DefsView::NbFaces() const
 {
-  return myGraph->myData->myFaces.Defs.Length();
+  return myGraph->myData->myIncStorage.Faces.Length();
 }
 
 //=================================================================================================
 
 int BRepGraph::DefsView::NbWires() const
 {
-  return myGraph->myData->myWires.Defs.Length();
+  return myGraph->myData->myIncStorage.Wires.Length();
 }
 
 //=================================================================================================
 
 int BRepGraph::DefsView::NbEdges() const
 {
-  return myGraph->myData->myEdges.Defs.Length();
+  return myGraph->myData->myIncStorage.Edges.Length();
 }
 
 //=================================================================================================
 
 int BRepGraph::DefsView::NbVertices() const
 {
-  return myGraph->myData->myVertices.Defs.Length();
+  return myGraph->myData->myIncStorage.Vertices.Length();
 }
 
 //=================================================================================================
 
 int BRepGraph::DefsView::NbCompounds() const
 {
-  return myGraph->myData->myCompounds.Defs.Length();
+  return myGraph->myData->myIncStorage.Compounds.Length();
 }
 
 //=================================================================================================
 
 int BRepGraph::DefsView::NbCompSolids() const
 {
-  return myGraph->myData->myCompSolids.Defs.Length();
+  return myGraph->myData->myIncStorage.CompSolids.Length();
 }
 
 //=================================================================================================
@@ -168,14 +167,15 @@ const BRepGraph_TopoNode::BaseDef* BRepGraph::DefsView::TopoDef(BRepGraph_NodeId
 
 size_t BRepGraph::DefsView::NbNodes() const
 {
-  return static_cast<size_t>(myGraph->myData->mySolids.Defs.Length())
-         + static_cast<size_t>(myGraph->myData->myShells.Defs.Length())
-         + static_cast<size_t>(myGraph->myData->myFaces.Defs.Length())
-         + static_cast<size_t>(myGraph->myData->myWires.Defs.Length())
-         + static_cast<size_t>(myGraph->myData->myEdges.Defs.Length())
-         + static_cast<size_t>(myGraph->myData->myVertices.Defs.Length())
-         + static_cast<size_t>(myGraph->myData->myCompounds.Defs.Length())
-         + static_cast<size_t>(myGraph->myData->myCompSolids.Defs.Length());
+  const BRepGraphInc_Storage& aS = myGraph->myData->myIncStorage;
+  return static_cast<size_t>(aS.Solids.Length())
+         + static_cast<size_t>(aS.Shells.Length())
+         + static_cast<size_t>(aS.Faces.Length())
+         + static_cast<size_t>(aS.Wires.Length())
+         + static_cast<size_t>(aS.Edges.Length())
+         + static_cast<size_t>(aS.Vertices.Length())
+         + static_cast<size_t>(aS.Compounds.Length())
+         + static_cast<size_t>(aS.CompSolids.Length());
 }
 
 //=================================================================================================

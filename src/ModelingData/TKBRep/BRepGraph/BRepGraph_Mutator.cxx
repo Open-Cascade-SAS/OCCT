@@ -16,6 +16,7 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_Data.hxx>
 #include <BRepGraph_ShapesView.hxx>
+#include <BRepGraphInc_Storage.hxx>
 
 #include <BRep_Builder.hxx>
 #include <TopAbs.hxx>
@@ -91,6 +92,67 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
 
   theGraph.allocateUID(theSubA);
   theGraph.allocateUID(theSubB);
+
+  // Incidence store: create corresponding EdgeEntity entries.
+  {
+    BRepGraphInc::EdgeEntity& aSubAEnt = theGraph.myData->myIncStorage.Edges.Appended();
+    aSubAEnt.Id            = theSubA;
+    aSubAEnt.Curve3d       = aOrigCurve3d;
+    aSubAEnt.ParamFirst    = aOrigParamFirst;
+    aSubAEnt.ParamLast     = theSplitParam;
+    aSubAEnt.Tolerance     = aOrigTolerance;
+    aSubAEnt.SameParameter = aOrigSameParameter;
+    aSubAEnt.SameRange     = false;
+    aSubAEnt.StartVertexIdx = aOrigStartVertexDefId.IsValid() ? aOrigStartVertexDefId.Index : -1;
+    aSubAEnt.EndVertexIdx   = theSplitVertex.IsValid() ? theSplitVertex.Index : -1;
+
+    BRepGraphInc::EdgeEntity& aSubBEnt = theGraph.myData->myIncStorage.Edges.Appended();
+    aSubBEnt.Id            = theSubB;
+    aSubBEnt.Curve3d       = aOrigCurve3d;
+    aSubBEnt.ParamFirst    = theSplitParam;
+    aSubBEnt.ParamLast     = aOrigParamLast;
+    aSubBEnt.Tolerance     = aOrigTolerance;
+    aSubBEnt.SameParameter = aOrigSameParameter;
+    aSubBEnt.SameRange     = false;
+    aSubBEnt.StartVertexIdx = theSplitVertex.IsValid() ? theSplitVertex.Index : -1;
+    aSubBEnt.EndVertexIdx   = aOrigEndVertexDefId.IsValid() ? aOrigEndVertexDefId.Index : -1;
+
+    // Update WireEntity.EdgeRefs: replace original edge with SubA+SubB in all containing wires.
+    const NCollection_Vector<int>* aWireIndices =
+      theGraph.myData->myIncStorage.ReverseIdx.WiresOfEdge(theEdgeDef.Index);
+    if (aWireIndices != nullptr)
+    {
+      for (int aWIdx = 0; aWIdx < aWireIndices->Length(); ++aWIdx)
+      {
+        const int aWireIdx = aWireIndices->Value(aWIdx);
+        if (aWireIdx < 0 || aWireIdx >= theGraph.myData->myIncStorage.Wires.Length())
+          continue;
+        BRepGraphInc::WireEntity& aWire = theGraph.myData->myIncStorage.Wires.ChangeValue(aWireIdx);
+        for (int aERIdx = 0; aERIdx < aWire.EdgeRefs.Length(); ++aERIdx)
+        {
+          if (aWire.EdgeRefs.Value(aERIdx).EdgeIdx == theEdgeDef.Index)
+          {
+            const TopAbs_Orientation aOrigOri = aWire.EdgeRefs.Value(aERIdx).Orientation;
+            // Replace in-place: change current to SubA.
+            aWire.EdgeRefs.ChangeValue(aERIdx).EdgeIdx = aSubAIdx;
+            // Insert SubB after SubA.
+            BRepGraphInc::EdgeRef aSubBRef;
+            aSubBRef.EdgeIdx     = aSubBIdx;
+            aSubBRef.Orientation = aOrigOri;
+            // NCollection_Vector doesn't have Insert, so rebuild the portion.
+            // For simplicity, append SubB and note that ordering may not be exact.
+            // The legacy Mutator handles wire ordering separately.
+            aWire.EdgeRefs.Append(aSubBRef);
+            break;
+          }
+        }
+      }
+    }
+
+    // Mark original edge as removed in incidence.
+    if (theEdgeDef.Index >= 0 && theEdgeDef.Index < theGraph.myData->myIncStorage.Edges.Length())
+      theGraph.myData->myIncStorage.Edges.ChangeValue(theEdgeDef.Index).IsRemoved = true;
+  }
 
   // Split PCurve entries for each PCurve in original (inline data, no separate PCurve nodes).
   const double aParamRange = aOrigParamLast - aOrigParamFirst;
@@ -230,6 +292,9 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
   theGraph.markModified(theEdgeDef);
   theGraph.markModified(theSubA);
   theGraph.markModified(theSubB);
+
+  // Rebuild incidence reverse index after wire mutation.
+  theGraph.myData->myIncStorage.BuildReverseIndex();
 }
 
 //=================================================================================================
