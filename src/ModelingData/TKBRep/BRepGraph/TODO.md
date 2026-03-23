@@ -8,12 +8,12 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 
 ## Phase 0: Immediate (2 days)
 
-### Batch cache invalidation [Perf] ★★★★★
-- `markModified` in SameParameter::Enforce: 125M (1.1%) — acquires `shared_mutex` per edge in parallel loop
-- Add `BRepGraph::BatchInvalidation` RAII guard: during scope, `markModified` only sets `IsModified` flag without mutex or upward propagation
-- On scope exit: batch-process all accumulated nodes, single mutex acquisition, single upward propagation pass
-- Apply in: SameParameter::Perform, Sewing::processEdges, any future parallel mutators
-- **Expected impact**: eliminate 125M contention, enable true parallel SameParameter
+### ~~Batch cache invalidation~~ — DONE (2026-03-19)
+- `BeginDeferredInvalidation()` / `EndDeferredInvalidation()` API on BRepGraph
+- `markModified()` in deferred mode only sets `IsModified` flag — no mutex, no upward propagation
+- `EndDeferredInvalidation()` bulk-clears shape cache + single upward propagation pass
+- Applied in: SameParameter::Perform, Sewing::processEdges
+- **Result**: Sewing 2500 faces parallel -25%, 1200 faces parallel -21%
 
 ### CommitMutation guardrails [Stab] ★★★
 - Add `Mutator::CommitMutation` calls in Sewing, Compact, Deduplicate
