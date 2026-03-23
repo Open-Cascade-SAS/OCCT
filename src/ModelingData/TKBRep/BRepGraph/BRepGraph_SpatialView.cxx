@@ -86,9 +86,11 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::SharedEdges(
   auto collectWireEdges = [&](int theWireDefIdx) {
     const BRepGraph_TopoNode::WireDef& aWireDef =
       myGraph->myData->myIncStorage.Wire(theWireDefIdx);
-    for (int anEdgeIdx = 0; anEdgeIdx < aWireDef.EdgeRefs.Length(); ++anEdgeIdx)
+    for (int aCoEdgeIdx = 0; aCoEdgeIdx < aWireDef.CoEdgeRefs.Length(); ++aCoEdgeIdx)
     {
-      aEdgesA.Add(aWireDef.EdgeRefs.Value(anEdgeIdx).EdgeIdx);
+      const BRepGraphInc::CoEdgeEntity& aCoEdge =
+        myGraph->myData->myIncStorage.CoEdge(aWireDef.CoEdgeRefs.Value(aCoEdgeIdx).CoEdgeIdx);
+      aEdgesA.Add(aCoEdge.EdgeIdx);
     }
   };
   for (int aWIdx = 0; aWIdx < aFaceDefA.WireRefs.Length(); ++aWIdx)
@@ -100,9 +102,11 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::SharedEdges(
   auto checkWireEdges = [&](int theWireDefIdx) {
     const BRepGraph_TopoNode::WireDef& aWireDef =
       myGraph->myData->myIncStorage.Wire(theWireDefIdx);
-    for (int anEdgeIdx = 0; anEdgeIdx < aWireDef.EdgeRefs.Length(); ++anEdgeIdx)
+    for (int aCoEdgeIdx = 0; aCoEdgeIdx < aWireDef.CoEdgeRefs.Length(); ++aCoEdgeIdx)
     {
-      const int anEdgeDefIdx = aWireDef.EdgeRefs.Value(anEdgeIdx).EdgeIdx;
+      const BRepGraphInc::CoEdgeEntity& aCoEdge =
+        myGraph->myData->myIncStorage.CoEdge(aWireDef.CoEdgeRefs.Value(aCoEdgeIdx).CoEdgeIdx);
+      const int anEdgeDefIdx = aCoEdge.EdgeIdx;
       if (aEdgesA.Contains(anEdgeDefIdx) && aAdded.Add(anEdgeDefIdx))
       {
         aResult.Append(myGraph->myData->myIncStorage.Edge(anEdgeDefIdx).Id);
@@ -132,9 +136,11 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::AdjacentFaces(
     const int aWireDefIdx = aFaceDef.WireRefs.Value(aWireRefIdx).WireIdx;
     const BRepGraph_TopoNode::WireDef& aWireDef =
       myGraph->myData->myIncStorage.Wire(aWireDefIdx);
-    for (int anEdgeIdx = 0; anEdgeIdx < aWireDef.EdgeRefs.Length(); ++anEdgeIdx)
+    for (int aCoEdgeIdx = 0; aCoEdgeIdx < aWireDef.CoEdgeRefs.Length(); ++aCoEdgeIdx)
     {
-      const int anEdgeDefIdx = aWireDef.EdgeRefs.Value(anEdgeIdx).EdgeIdx;
+      const BRepGraphInc::CoEdgeEntity& aCoEdge =
+        myGraph->myData->myIncStorage.CoEdge(aWireDef.CoEdgeRefs.Value(aCoEdgeIdx).CoEdgeIdx);
+      const int anEdgeDefIdx = aCoEdge.EdgeIdx;
       const NCollection_Vector<int>* aFaces = aRevIdx.FacesOfEdge(anEdgeDefIdx);
       if (aFaces != nullptr)
       {

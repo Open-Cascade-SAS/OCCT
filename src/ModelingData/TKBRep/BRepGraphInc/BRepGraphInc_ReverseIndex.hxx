@@ -21,6 +21,7 @@
 namespace BRepGraphInc
 {
 struct EdgeEntity;
+struct CoEdgeEntity;
 struct WireEntity;
 struct FaceEntity;
 struct ShellEntity;
@@ -55,11 +56,12 @@ public:
   //! @param[in] theFaces   face entity vector (for wire-to-face)
   //! @param[in] theShells  shell entity vector (for face-to-shell)
   //! @param[in] theSolids  solid entity vector (for shell-to-solid)
-  Standard_EXPORT void Build(const NCollection_Vector<BRepGraphInc::EdgeEntity>&  theEdges,
-                             const NCollection_Vector<BRepGraphInc::WireEntity>&  theWires,
-                             const NCollection_Vector<BRepGraphInc::FaceEntity>&  theFaces,
-                             const NCollection_Vector<BRepGraphInc::ShellEntity>& theShells,
-                             const NCollection_Vector<BRepGraphInc::SolidEntity>& theSolids);
+  Standard_EXPORT void Build(const NCollection_Vector<BRepGraphInc::EdgeEntity>&   theEdges,
+                             const NCollection_Vector<BRepGraphInc::CoEdgeEntity>& theCoEdges,
+                             const NCollection_Vector<BRepGraphInc::WireEntity>&   theWires,
+                             const NCollection_Vector<BRepGraphInc::FaceEntity>&   theFaces,
+                             const NCollection_Vector<BRepGraphInc::ShellEntity>&  theShells,
+                             const NCollection_Vector<BRepGraphInc::SolidEntity>&  theSolids);
 
   //! Incrementally update reverse indices for entities appended after a previous Build().
   //! Only processes entities from the old counts to the current vector lengths.
@@ -68,11 +70,12 @@ public:
   //! @param[in] theOldNbFaces   face count before the append operation
   //! @param[in] theOldNbShells  shell count before the append operation
   //! @param[in] theOldNbSolids  solid count before the append operation
-  Standard_EXPORT void BuildDelta(const NCollection_Vector<BRepGraphInc::EdgeEntity>&  theEdges,
-                                  const NCollection_Vector<BRepGraphInc::WireEntity>&  theWires,
-                                  const NCollection_Vector<BRepGraphInc::FaceEntity>&  theFaces,
-                                  const NCollection_Vector<BRepGraphInc::ShellEntity>& theShells,
-                                  const NCollection_Vector<BRepGraphInc::SolidEntity>& theSolids,
+  Standard_EXPORT void BuildDelta(const NCollection_Vector<BRepGraphInc::EdgeEntity>&   theEdges,
+                                  const NCollection_Vector<BRepGraphInc::CoEdgeEntity>& theCoEdges,
+                                  const NCollection_Vector<BRepGraphInc::WireEntity>&   theWires,
+                                  const NCollection_Vector<BRepGraphInc::FaceEntity>&   theFaces,
+                                  const NCollection_Vector<BRepGraphInc::ShellEntity>&  theShells,
+                                  const NCollection_Vector<BRepGraphInc::SolidEntity>&  theSolids,
                                   int theOldNbEdges,
                                   int theOldNbWires,
                                   int theOldNbFaces,
@@ -162,11 +165,12 @@ public:
   //! reverse entry exists (edge->wire). Intended for debug validation.
   //! @return true if all forward refs have matching reverse entries
   Standard_EXPORT bool Validate(
-    const NCollection_Vector<BRepGraphInc::EdgeEntity>&  theEdges,
-    const NCollection_Vector<BRepGraphInc::WireEntity>&  theWires,
-    const NCollection_Vector<BRepGraphInc::FaceEntity>&  theFaces,
-    const NCollection_Vector<BRepGraphInc::ShellEntity>& theShells,
-    const NCollection_Vector<BRepGraphInc::SolidEntity>& theSolids) const;
+    const NCollection_Vector<BRepGraphInc::EdgeEntity>&   theEdges,
+    const NCollection_Vector<BRepGraphInc::CoEdgeEntity>& theCoEdges,
+    const NCollection_Vector<BRepGraphInc::WireEntity>&   theWires,
+    const NCollection_Vector<BRepGraphInc::FaceEntity>&   theFaces,
+    const NCollection_Vector<BRepGraphInc::ShellEntity>&  theShells,
+    const NCollection_Vector<BRepGraphInc::SolidEntity>&  theSolids) const;
 
   // --- Incremental mutation ---
 

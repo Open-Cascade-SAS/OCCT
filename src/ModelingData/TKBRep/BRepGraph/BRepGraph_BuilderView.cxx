@@ -79,11 +79,17 @@ BRepGraph_NodeId BRepGraph::BuilderView::AddWireDef(
     const BRepGraph_NodeId     anEdgeDefId = theEdges.Value(anEdgeIdx).first;
     const TopAbs_Orientation   anOri       = theEdges.Value(anEdgeIdx).second;
 
-    // EdgeRef on WireEntity.
-    BRepGraphInc::EdgeRef anEdgeRef;
-    anEdgeRef.EdgeIdx     = anEdgeDefId.Index;
-    anEdgeRef.Orientation = anOri;
-    myGraph->myData->myIncStorage.ChangeWire(aIdx).EdgeRefs.Append(anEdgeRef);
+    // Create CoEdge entity for this edge-wire binding.
+    BRepGraphInc::CoEdgeEntity& aCoEdge = myGraph->myData->myIncStorage.AppendCoEdge();
+    const int aCoEdgeIdx = myGraph->myData->myIncStorage.NbCoEdges() - 1;
+    aCoEdge.Id      = BRepGraph_NodeId(BRepGraph_NodeId::Kind::CoEdge, aCoEdgeIdx);
+    aCoEdge.EdgeIdx = anEdgeDefId.Index;
+    aCoEdge.Sense   = anOri;
+
+    // CoEdgeRef on WireEntity.
+    BRepGraphInc::CoEdgeRef aCoEdgeRef;
+    aCoEdgeRef.CoEdgeIdx = aCoEdgeIdx;
+    myGraph->myData->myIncStorage.ChangeWire(aIdx).CoEdgeRefs.Append(aCoEdgeRef);
 
     myGraph->myData->myIncStorage.ChangeReverseIndex().BindEdgeToWire(anEdgeDefId.Index, aIdx);
   }
@@ -462,8 +468,12 @@ void BRepGraph::BuilderView::RemoveSubgraph(BRepGraph_NodeId theNode)
       {
         const BRepGraphInc::WireEntity& aWire =
           myGraph->myData->myIncStorage.Wire(theNode.Index);
-        for (int i = 0; i < aWire.EdgeRefs.Length(); ++i)
-          RemoveSubgraph(BRepGraph_NodeId::Edge(aWire.EdgeRefs.Value(i).EdgeIdx));
+        for (int i = 0; i < aWire.CoEdgeRefs.Length(); ++i)
+        {
+          const BRepGraphInc::CoEdgeEntity& aCoEdge =
+            myGraph->myData->myIncStorage.CoEdge(aWire.CoEdgeRefs.Value(i).CoEdgeIdx);
+          RemoveSubgraph(BRepGraph_NodeId::Edge(aCoEdge.EdgeIdx));
+        }
       }
       break;
     }

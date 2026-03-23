@@ -136,10 +136,11 @@ void BRepGraphCheck::CheckShellClosed(
       const BRepGraphInc::WireRef& aWR = aFaceDef.WireRefs.Value(aWireIter);
       const BRepGraph_TopoNode::WireDef& aWireDef = aDefs.Wire(aWR.WireIdx);
 
-      for (int anEdgeIter = 0; anEdgeIter < aWireDef.EdgeRefs.Length(); ++anEdgeIter)
+      for (int aCoEdgeIter = 0; aCoEdgeIter < aWireDef.CoEdgeRefs.Length(); ++aCoEdgeIter)
       {
-        const BRepGraphInc::EdgeRef& anEdgeRef = aWireDef.EdgeRefs.Value(anEdgeIter);
-        const int anEdgeIdx = anEdgeRef.EdgeIdx;
+        const BRepGraphInc::CoEdgeRef& aCR = aWireDef.CoEdgeRefs.Value(aCoEdgeIter);
+        const BRepGraph_TopoNode::CoEdgeDef& aCoEdgeDef = aDefs.CoEdge(aCR.CoEdgeIdx);
+        const int anEdgeIdx = aCoEdgeDef.EdgeIdx;
         const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(anEdgeIdx);
 
         // Skip degenerate edges.
@@ -211,13 +212,14 @@ void BRepGraphCheck::CheckShellOrientation(
       const BRepGraphInc::WireRef& aWR = aFaceDef.WireRefs.Value(aWireIter);
       const BRepGraph_TopoNode::WireDef& aWireDef = aDefs.Wire(aWR.WireIdx);
 
-      for (int anEdgeIter = 0; anEdgeIter < aWireDef.EdgeRefs.Length(); ++anEdgeIter)
+      for (int aCoEdgeIter = 0; aCoEdgeIter < aWireDef.CoEdgeRefs.Length(); ++aCoEdgeIter)
       {
-        const BRepGraphInc::EdgeRef& anEdgeRef = aWireDef.EdgeRefs.Value(anEdgeIter);
-        const int anEdgeIdx = anEdgeRef.EdgeIdx;
+        const BRepGraphInc::CoEdgeRef& aCR = aWireDef.CoEdgeRefs.Value(aCoEdgeIter);
+        const BRepGraph_TopoNode::CoEdgeDef& aCoEdgeDef = aDefs.CoEdge(aCR.CoEdgeIdx);
+        const int anEdgeIdx = aCoEdgeDef.EdgeIdx;
 
-        // Compose edge orientation: edge ⊕ wire ⊕ face orientation.
-        TopAbs_Orientation aCompOri = anEdgeRef.Orientation;
+        // Compose edge orientation: coedge sense ⊕ wire ⊕ face orientation.
+        TopAbs_Orientation aCompOri = aCoEdgeDef.Sense;
         if (aWR.Orientation == TopAbs_REVERSED)
         {
           if (aCompOri == TopAbs_FORWARD)

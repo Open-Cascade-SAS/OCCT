@@ -716,16 +716,73 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
         // Safe: no new edges are appended within this scope.
         BRepGraphInc::EdgeEntity& anEdgeMut = theStorage.ChangeEdge(anEdgeIdx);
 
-        // Edge -> Wire: add edge ref to wire (only for new wire defs).
+        // Create CoEdge entity for this edge-face binding and add CoEdgeRef to wire.
+        int aFwdCoEdgeIdx  = -1;
+        int aSeamCoEdgeIdx = -1;
         if (aIsNewWireDef)
         {
-          BRepGraphInc::EdgeRef anEdgeRef;
-          anEdgeRef.EdgeIdx     = anEdgeIdx;
-          anEdgeRef.Orientation = anEdgeData.OrientationInWire;
-          theStorage.ChangeWire(aWireIdx).EdgeRefs.Append(anEdgeRef);
+          // Create the forward CoEdge.
+          BRepGraphInc::CoEdgeEntity& aCoEdge = theStorage.AppendCoEdge();
+          aFwdCoEdgeIdx = theStorage.NbCoEdges() - 1;
+          const int aCoEdgeIdx = aFwdCoEdgeIdx;
+          aCoEdge.Id        = BRepGraph_NodeId::CoEdge(aCoEdgeIdx);
+          aCoEdge.EdgeIdx   = anEdgeIdx;
+          aCoEdge.FaceDefId = BRepGraph_NodeId::Face(aFaceIdx);
+          aCoEdge.Sense     = anEdgeData.OrientationInWire;
+
+          // Populate CoEdge with PCurve and polygon data for this face context.
+          if (!anEdgeData.PCurve2d.IsNull())
+          {
+            aCoEdge.Curve2d    = anEdgeData.PCurve2d;
+            aCoEdge.ParamFirst = anEdgeData.PCFirst;
+            aCoEdge.ParamLast  = anEdgeData.PCLast;
+            aCoEdge.Continuity = anEdgeData.PCurveContinuity;
+            aCoEdge.UV1        = anEdgeData.PCUV1;
+            aCoEdge.UV2        = anEdgeData.PCUV2;
+          }
+          aCoEdge.PolygonOnSurf = anEdgeData.PolyOnSurf;
+
+          // Handle seam edge: create a second CoEdge for the reversed sense.
+          if (!anEdgeData.PCurve2dReversed.IsNull())
+          {
+            BRepGraphInc::CoEdgeEntity& aSeamCoEdge = theStorage.AppendCoEdge();
+            aSeamCoEdgeIdx = theStorage.NbCoEdges() - 1;
+            aSeamCoEdge.Id        = BRepGraph_NodeId::CoEdge(aSeamCoEdgeIdx);
+            aSeamCoEdge.EdgeIdx   = anEdgeIdx;
+            aSeamCoEdge.FaceDefId = BRepGraph_NodeId::Face(aFaceIdx);
+            aSeamCoEdge.Sense     = TopAbs_REVERSED;
+            aSeamCoEdge.Curve2d    = anEdgeData.PCurve2dReversed;
+            aSeamCoEdge.ParamFirst = anEdgeData.PCFirstReversed;
+            aSeamCoEdge.ParamLast  = anEdgeData.PCLastReversed;
+            aSeamCoEdge.Continuity = anEdgeData.PCurveContinuity;
+            aSeamCoEdge.SeamContinuity = anEdgeData.SeamContinuity;
+            aSeamCoEdge.PolygonOnSurf = anEdgeData.PolyOnSurfReversed;
+
+            // Link seam pair.
+            // Note: aCoEdge ref may be invalidated by AppendCoEdge, re-fetch.
+            theStorage.ChangeCoEdge(aCoEdgeIdx).SeamPairIdx = aSeamCoEdgeIdx;
+            aSeamCoEdge.SeamPairIdx = aCoEdgeIdx;
+          }
+
+          // Add CoEdgeRef to wire.
+          BRepGraphInc::CoEdgeRef aCoEdgeRef;
+          aCoEdgeRef.CoEdgeIdx = aCoEdgeIdx;
+          theStorage.ChangeWire(aWireIdx).CoEdgeRefs.Append(aCoEdgeRef);
+
+          // For seam edges, add the reversed coedge ref too.
+          if (aSeamCoEdgeIdx >= 0)
+          {
+            BRepGraphInc::CoEdgeRef aSeamRef;
+            aSeamRef.CoEdgeIdx = aSeamCoEdgeIdx;
+            // Note: seam coedge is NOT added to wire CoEdgeRefs — it shares the same wire position
+            // as the forward coedge. The seam pair is accessible via SeamPairIdx.
+            // Only the forward coedge ref is in the wire's ordered list.
+            (void)aSeamRef;
+          }
         }
 
         // PCurve: first (always stored as FORWARD, orientation-independent).
+        // Keep EdgeEntity.PCurves populated for backward compatibility (Phase 4 removal).
         appendPCurveAndPolyEntry(anEdgeMut,
                                  anEdgeData.PCurve2d,
                                  aFaceIdx,
@@ -768,6 +825,27 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
                                anEdgeData.Shape,
                                aFaceIdx,
                                aFaceDef.Triangulations.Length());
+
+        // Copy PolyOnTri entries matching this face from EdgeEntity to CoEdge.
+        if (aFwdCoEdgeIdx >= 0)
+        {
+          for (int aPTIdx = 0; aPTIdx < anEdgeMut.PolygonsOnTri.Length(); ++aPTIdx)
+          {
+            const BRepGraphInc::EdgeEntity::PolyOnTriEntry& aPTEntry =
+              anEdgeMut.PolygonsOnTri.Value(aPTIdx);
+            if (aPTEntry.FaceDefId.Index != aFaceIdx)
+              continue;
+
+            BRepGraphInc::CoEdgeEntity::PolyOnTriEntry aCoEdgePTEntry;
+            aCoEdgePTEntry.Polygon            = aPTEntry.Polygon;
+            aCoEdgePTEntry.TriangulationIndex = aPTEntry.TriangulationIndex;
+
+            if (aPTEntry.EdgeOrientation == TopAbs_FORWARD)
+              theStorage.ChangeCoEdge(aFwdCoEdgeIdx).PolygonsOnTri.Append(aCoEdgePTEntry);
+            else if (aSeamCoEdgeIdx >= 0)
+              theStorage.ChangeCoEdge(aSeamCoEdgeIdx).PolygonsOnTri.Append(aCoEdgePTEntry);
+          }
+        }
 
       }
 
@@ -1014,10 +1092,18 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&                       
           const BRepGraph_NodeId* anEdgeNodeId = theStorage.FindNodeByTShape(anEdge.TShape().get());
           if (anEdgeNodeId != nullptr && anEdgeNodeId->NodeKind == BRepGraph_NodeId::Kind::Edge)
           {
-            BRepGraphInc::EdgeRef anEdgeRef;
-            anEdgeRef.EdgeIdx     = anEdgeNodeId->Index;
-            anEdgeRef.Orientation = anEdge.Orientation();
-            theStorage.ChangeWire(aWireIdx).EdgeRefs.Append(anEdgeRef);
+            // Create CoEdge for free wire (no face context).
+            BRepGraphInc::CoEdgeEntity& aCoEdge = theStorage.AppendCoEdge();
+            const int aCoEdgeIdx = theStorage.NbCoEdges() - 1;
+            aCoEdge.Id      = BRepGraph_NodeId::CoEdge(aCoEdgeIdx);
+            aCoEdge.EdgeIdx = anEdgeNodeId->Index;
+            aCoEdge.Sense   = anEdge.Orientation();
+            // FaceDefId left invalid for free wires.
+            // Curve2d left null for free wires.
+
+            BRepGraphInc::CoEdgeRef aCoEdgeRef;
+            aCoEdgeRef.CoEdgeIdx = aCoEdgeIdx;
+            theStorage.ChangeWire(aWireIdx).CoEdgeRefs.Append(aCoEdgeRef);
           }
         }
         break;

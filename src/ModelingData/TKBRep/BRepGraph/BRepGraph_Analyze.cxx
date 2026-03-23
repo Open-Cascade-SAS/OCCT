@@ -71,11 +71,13 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>>
     {
       const int aWireDefIdx = aFaceDef.WireRefs.Value(aWireRefIdx).WireIdx;
       const BRepGraph_TopoNode::WireDef& aWireDef = aDefs.Wire(aWireDefIdx);
-      for (int anEdgeIdx = 0; anEdgeIdx < aWireDef.EdgeRefs.Length(); ++anEdgeIdx)
+      for (int aCoEdgeIdx = 0; aCoEdgeIdx < aWireDef.CoEdgeRefs.Length(); ++aCoEdgeIdx)
       {
-        const int                        anEdgeDefIdx = aWireDef.EdgeRefs.Value(anEdgeIdx).EdgeIdx;
-        const BRepGraph_TopoNode::EdgeDef& anEdge     = aDefs.Edge(anEdgeDefIdx);
-        const BRepGraph_NodeId             anEdgeDefId = anEdge.Id;
+        const BRepGraphInc::CoEdgeEntity& aCoEdge =
+          theGraph.myData->myIncStorage.CoEdge(aWireDef.CoEdgeRefs.Value(aCoEdgeIdx).CoEdgeIdx);
+        const int                          anEdgeDefIdx = aCoEdge.EdgeIdx;
+        const BRepGraph_TopoNode::EdgeDef& anEdge       = aDefs.Edge(anEdgeDefIdx);
+        const BRepGraph_NodeId             anEdgeDefId  = anEdge.Id;
 
         if (anEdge.IsDegenerate)
           continue;
@@ -148,8 +150,8 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph_Analyze::DegenerateWires(const BR
   {
     const BRepGraph_TopoNode::WireDef& aWire = aDefs.Wire(aWireDefIdx);
 
-    // Wire with < 2 edges (check via incidence EdgeRefs).
-    const int aNbEdgesInWire = aWire.EdgeRefs.Length();
+    // Wire with < 2 edges (check via incidence CoEdgeRefs).
+    const int aNbEdgesInWire = aWire.CoEdgeRefs.Length();
     if (aNbEdgesInWire < 2)
     {
       aResult.Append(aWire.Id);
@@ -204,9 +206,11 @@ NCollection_Vector<BRepGraph_SubGraph> BRepGraph_Analyze::Decompose(const BRepGr
       const BRepGraph_TopoNode::WireDef& aWireDef = aDefs.Wire(aWireDefIdx);
       theSub.myWireDefIndices.Append(aWireDefIdx);
 
-      for (int anEdgeIdx = 0; anEdgeIdx < aWireDef.EdgeRefs.Length(); ++anEdgeIdx)
+      for (int aCoEdgeIdx = 0; aCoEdgeIdx < aWireDef.CoEdgeRefs.Length(); ++aCoEdgeIdx)
       {
-        const int anEdgeDefIdx = aWireDef.EdgeRefs.Value(anEdgeIdx).EdgeIdx;
+        const BRepGraphInc::CoEdgeEntity& aCoEdge =
+          theGraph.myData->myIncStorage.CoEdge(aWireDef.CoEdgeRefs.Value(aCoEdgeIdx).CoEdgeIdx);
+        const int anEdgeDefIdx = aCoEdge.EdgeIdx;
         theSub.myEdgeDefIndices.Append(anEdgeDefIdx);
 
         const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(anEdgeDefIdx);

@@ -49,6 +49,7 @@ public:
 
   int NbVertices()   const { return myVertices.Length(); }
   int NbEdges()      const { return myEdges.Length(); }
+  int NbCoEdges()    const { return myCoEdges.Length(); }
   int NbWires()      const { return myWires.Length(); }
   int NbFaces()      const { return myFaces.Length(); }
   int NbShells()     const { return myShells.Length(); }
@@ -62,6 +63,7 @@ public:
 
   int NbActiveVertices()   const { return myNbActiveVertices; }
   int NbActiveEdges()      const { return myNbActiveEdges; }
+  int NbActiveCoEdges()    const { return myNbActiveCoEdges; }
   int NbActiveWires()      const { return myNbActiveWires; }
   int NbActiveFaces()      const { return myNbActiveFaces; }
   int NbActiveShells()     const { return myNbActiveShells; }
@@ -78,6 +80,7 @@ public:
 
   const BRepGraphInc::VertexEntity&    Vertex(int theIdx)    const { return myVertices.Value(theIdx); }
   const BRepGraphInc::EdgeEntity&      Edge(int theIdx)      const { return myEdges.Value(theIdx); }
+  const BRepGraphInc::CoEdgeEntity&    CoEdge(int theIdx)    const { return myCoEdges.Value(theIdx); }
   const BRepGraphInc::WireEntity&      Wire(int theIdx)      const { return myWires.Value(theIdx); }
   const BRepGraphInc::FaceEntity&      Face(int theIdx)      const { return myFaces.Value(theIdx); }
   const BRepGraphInc::ShellEntity&     Shell(int theIdx)     const { return myShells.Value(theIdx); }
@@ -91,6 +94,7 @@ public:
 
   BRepGraphInc::VertexEntity&    ChangeVertex(int theIdx)    { return myVertices.ChangeValue(theIdx); }
   BRepGraphInc::EdgeEntity&      ChangeEdge(int theIdx)      { return myEdges.ChangeValue(theIdx); }
+  BRepGraphInc::CoEdgeEntity&    ChangeCoEdge(int theIdx)    { return myCoEdges.ChangeValue(theIdx); }
   BRepGraphInc::WireEntity&      ChangeWire(int theIdx)      { return myWires.ChangeValue(theIdx); }
   BRepGraphInc::FaceEntity&      ChangeFace(int theIdx)      { return myFaces.ChangeValue(theIdx); }
   BRepGraphInc::ShellEntity&     ChangeShell(int theIdx)     { return myShells.ChangeValue(theIdx); }
@@ -105,6 +109,7 @@ public:
 
   BRepGraphInc::VertexEntity&    AppendVertex()    { ++myNbActiveVertices;   auto& e = myVertices.Appended();   e.InitVectors(myAllocator); return e; }
   BRepGraphInc::EdgeEntity&      AppendEdge()      { ++myNbActiveEdges;      auto& e = myEdges.Appended();      e.InitVectors(myAllocator); return e; }
+  BRepGraphInc::CoEdgeEntity&    AppendCoEdge()    { ++myNbActiveCoEdges;    auto& e = myCoEdges.Appended();    e.InitVectors(myAllocator); return e; }
   BRepGraphInc::WireEntity&      AppendWire()      { ++myNbActiveWires;      auto& e = myWires.Appended();      e.InitVectors(myAllocator); return e; }
   BRepGraphInc::FaceEntity&      AppendFace()      { ++myNbActiveFaces;      auto& e = myFaces.Appended();      e.InitVectors(myAllocator); return e; }
   BRepGraphInc::ShellEntity&     AppendShell()     { ++myNbActiveShells;     auto& e = myShells.Appended();     e.InitVectors(myAllocator); return e; }
@@ -204,6 +209,7 @@ private:
 
   NCollection_Vector<BRepGraphInc::VertexEntity>    myVertices;
   NCollection_Vector<BRepGraphInc::EdgeEntity>      myEdges;
+  NCollection_Vector<BRepGraphInc::CoEdgeEntity>    myCoEdges;
   NCollection_Vector<BRepGraphInc::WireEntity>      myWires;
   NCollection_Vector<BRepGraphInc::FaceEntity>      myFaces;
   NCollection_Vector<BRepGraphInc::ShellEntity>     myShells;
@@ -220,6 +226,7 @@ private:
 
   NCollection_Vector<BRepGraph_UID> myVertexUIDs;
   NCollection_Vector<BRepGraph_UID> myEdgeUIDs;
+  NCollection_Vector<BRepGraph_UID> myCoEdgeUIDs;
   NCollection_Vector<BRepGraph_UID> myWireUIDs;
   NCollection_Vector<BRepGraph_UID> myFaceUIDs;
   NCollection_Vector<BRepGraph_UID> myShellUIDs;
@@ -233,6 +240,7 @@ private:
 
   int myNbActiveVertices   = 0;
   int myNbActiveEdges      = 0;
+  int myNbActiveCoEdges    = 0;
   int myNbActiveWires      = 0;
   int myNbActiveFaces      = 0;
   int myNbActiveShells     = 0;

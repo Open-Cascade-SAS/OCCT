@@ -447,19 +447,20 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
 
   // Phase 3: Wire Merging.
   {
-    // Hash wire by its ordered edge sequence (EdgeRef EdgeIdx, Orientation).
+    // Hash wire by its ordered coedge sequence (edge index + sense from CoEdgeEntity).
     struct WireHash
     {
       size_t operator()(int theWireIdx, const BRepGraph& theGraph) const
       {
         const BRepGraph_TopoNode::WireDef& aWire = theGraph.Defs().Wire(theWireIdx);
         size_t aHash = 0;
-        for (int anIdx = 0; anIdx < aWire.EdgeRefs.Length(); ++anIdx)
+        for (int anIdx = 0; anIdx < aWire.CoEdgeRefs.Length(); ++anIdx)
         {
-          const BRepGraphInc::EdgeRef& aER = aWire.EdgeRefs.Value(anIdx);
+          const BRepGraphInc::CoEdgeRef& aCR = aWire.CoEdgeRefs.Value(anIdx);
+          const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Defs().CoEdge(aCR.CoEdgeIdx);
           size_t aEntryHash[2];
-          aEntryHash[0] = opencascade::hash(aER.EdgeIdx);
-          aEntryHash[1] = opencascade::hash(static_cast<int>(aER.Orientation));
+          aEntryHash[0] = opencascade::hash(aCoEdge.EdgeIdx);
+          aEntryHash[1] = opencascade::hash(static_cast<int>(aCoEdge.Sense));
           aHash ^= opencascade::hashBytes(aEntryHash, sizeof(aEntryHash)) + 0x9e3779b9 + (aHash << 6) + (aHash >> 2);
         }
         return aHash;
@@ -470,13 +471,15 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
     {
       const BRepGraph_TopoNode::WireDef& aWireA = theGraph.Defs().Wire(theA);
       const BRepGraph_TopoNode::WireDef& aWireB = theGraph.Defs().Wire(theB);
-      if (aWireA.EdgeRefs.Length() != aWireB.EdgeRefs.Length())
+      if (aWireA.CoEdgeRefs.Length() != aWireB.CoEdgeRefs.Length())
         return false;
-      for (int anIdx = 0; anIdx < aWireA.EdgeRefs.Length(); ++anIdx)
+      for (int anIdx = 0; anIdx < aWireA.CoEdgeRefs.Length(); ++anIdx)
       {
-        const BRepGraphInc::EdgeRef& anA = aWireA.EdgeRefs.Value(anIdx);
-        const BRepGraphInc::EdgeRef& aB = aWireB.EdgeRefs.Value(anIdx);
-        if (anA.EdgeIdx != aB.EdgeIdx || anA.Orientation != aB.Orientation)
+        const BRepGraphInc::CoEdgeRef& aCRA = aWireA.CoEdgeRefs.Value(anIdx);
+        const BRepGraphInc::CoEdgeRef& aCRB = aWireB.CoEdgeRefs.Value(anIdx);
+        const BRepGraph_TopoNode::CoEdgeDef& aCoEdgeA = theGraph.Defs().CoEdge(aCRA.CoEdgeIdx);
+        const BRepGraph_TopoNode::CoEdgeDef& aCoEdgeB = theGraph.Defs().CoEdge(aCRB.CoEdgeIdx);
+        if (aCoEdgeA.EdgeIdx != aCoEdgeB.EdgeIdx || aCoEdgeA.Sense != aCoEdgeB.Sense)
           return false;
       }
       return true;

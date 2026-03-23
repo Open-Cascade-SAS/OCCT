@@ -226,15 +226,57 @@ struct EdgeEntity : public BaseEntity
   }
 };
 
-//! Wire entity: ordered edges with orientations, closure flag.
-struct WireEntity : public BaseEntity
+//! CoEdge entity: use of an edge on a specific face, owns PCurve data.
+//!
+//! Follows the Parasolid COEDGE pattern (Weiler half-edge literature).
+//! Each coedge represents one edge-face binding with its parametric curve.
+//! Wires reference coedges rather than edges directly.
+//! For seam edges, two coedges exist on the same face with opposite Sense,
+//! linked by SeamPairIdx.
+struct CoEdgeEntity : public BaseEntity
 {
-  bool IsClosed = false;
-  NCollection_Vector<EdgeRef> EdgeRefs;  //!< Ordered edge references
+  int                EdgeIdx = -1;           //!< Parent edge index
+  BRepGraph_NodeId   FaceDefId;              //!< Face this coedge belongs to (invalid for free wires)
+  TopAbs_Orientation Sense = TopAbs_FORWARD; //!< Orientation relative to parent edge
+
+  //! PCurve data (null for free-wire coedges without face context).
+  occ::handle<Geom2d_Curve> Curve2d;
+  double               ParamFirst = 0.0;
+  double               ParamLast  = 0.0;
+  GeomAbs_Shape        Continuity = GeomAbs_C0; //!< Geometric continuity across face pairs
+  gp_Pnt2d             UV1;                     //!< UV at ParamFirst
+  gp_Pnt2d             UV2;                     //!< UV at ParamLast
+
+  //! Seam pairing: index of the paired coedge (-1 if non-seam).
+  int                  SeamPairIdx = -1;
+  GeomAbs_Shape        SeamContinuity = GeomAbs_C0; //!< Continuity between seam pair
+
+  //! Polygon-on-surface for this face context.
+  occ::handle<Poly_Polygon2D> PolygonOnSurf;
+
+  //! Polygon-on-triangulation entries for this face context.
+  struct PolyOnTriEntry
+  {
+    occ::handle<Poly_PolygonOnTriangulation> Polygon;
+    int                                 TriangulationIndex = 0;
+  };
+  NCollection_Vector<PolyOnTriEntry> PolygonsOnTri;
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
-    BRepGraphInc_InitVec(EdgeRefs, theAlloc, 8);        // typically 3-8 edges per wire
+    BRepGraphInc_InitVec(PolygonsOnTri, theAlloc, 2);
+  }
+};
+
+//! Wire entity: ordered coedge references with closure flag.
+struct WireEntity : public BaseEntity
+{
+  bool IsClosed = false;
+  NCollection_Vector<CoEdgeRef> CoEdgeRefs;  //!< Ordered coedge references
+
+  void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
+  {
+    BRepGraphInc_InitVec(CoEdgeRefs, theAlloc, 8);      // typically 3-8 coedges per wire
   }
 };
 

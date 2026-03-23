@@ -34,11 +34,12 @@ void BRepGraphInc_ReverseIndex::Clear()
 //=================================================================================================
 
 void BRepGraphInc_ReverseIndex::Build(
-  const NCollection_Vector<BRepGraphInc::EdgeEntity>&  theEdges,
-  const NCollection_Vector<BRepGraphInc::WireEntity>&  theWires,
-  const NCollection_Vector<BRepGraphInc::FaceEntity>&  theFaces,
-  const NCollection_Vector<BRepGraphInc::ShellEntity>& theShells,
-  const NCollection_Vector<BRepGraphInc::SolidEntity>& theSolids)
+  const NCollection_Vector<BRepGraphInc::EdgeEntity>&   theEdges,
+  const NCollection_Vector<BRepGraphInc::CoEdgeEntity>& theCoEdges,
+  const NCollection_Vector<BRepGraphInc::WireEntity>&   theWires,
+  const NCollection_Vector<BRepGraphInc::FaceEntity>&   theFaces,
+  const NCollection_Vector<BRepGraphInc::ShellEntity>&  theShells,
+  const NCollection_Vector<BRepGraphInc::SolidEntity>&  theSolids)
 {
   // Reconstruct outer index tables with allocator if set.
   if (!myAllocator.IsNull())
@@ -90,15 +91,17 @@ void BRepGraphInc_ReverseIndex::Build(
       appendDirect(myVertexToEdges, anEdge.EndVertexIdx, anEdgeIdx);
   }
 
-  // Edge -> Wires: scan wire entities for their edge refs.
+  // Edge -> Wires: scan wire entities for their coedge refs, resolve edge index.
   for (int aWireIdx = 0; aWireIdx < theWires.Length(); ++aWireIdx)
   {
     const BRepGraphInc::WireEntity& aWire = theWires.Value(aWireIdx);
     if (aWire.IsRemoved)
       continue;
-    for (int i = 0; i < aWire.EdgeRefs.Length(); ++i)
+    for (int i = 0; i < aWire.CoEdgeRefs.Length(); ++i)
     {
-      appendDirect(myEdgeToWires, aWire.EdgeRefs.Value(i).EdgeIdx, aWireIdx);
+      const int aCoEdgeIdx = aWire.CoEdgeRefs.Value(i).CoEdgeIdx;
+      if (aCoEdgeIdx >= 0 && aCoEdgeIdx < theCoEdges.Length())
+        appendDirect(myEdgeToWires, theCoEdges.Value(aCoEdgeIdx).EdgeIdx, aWireIdx);
     }
   }
 
@@ -192,11 +195,12 @@ void BRepGraphInc_ReverseIndex::Build(
 //=================================================================================================
 
 void BRepGraphInc_ReverseIndex::BuildDelta(
-  const NCollection_Vector<BRepGraphInc::EdgeEntity>&  theEdges,
-  const NCollection_Vector<BRepGraphInc::WireEntity>&  theWires,
-  const NCollection_Vector<BRepGraphInc::FaceEntity>&  theFaces,
-  const NCollection_Vector<BRepGraphInc::ShellEntity>& theShells,
-  const NCollection_Vector<BRepGraphInc::SolidEntity>& theSolids,
+  const NCollection_Vector<BRepGraphInc::EdgeEntity>&   theEdges,
+  const NCollection_Vector<BRepGraphInc::CoEdgeEntity>& theCoEdges,
+  const NCollection_Vector<BRepGraphInc::WireEntity>&   theWires,
+  const NCollection_Vector<BRepGraphInc::FaceEntity>&   theFaces,
+  const NCollection_Vector<BRepGraphInc::ShellEntity>&  theShells,
+  const NCollection_Vector<BRepGraphInc::SolidEntity>&  theSolids,
   int theOldNbEdges,
   int theOldNbWires,
   int theOldNbFaces,
@@ -256,9 +260,11 @@ void BRepGraphInc_ReverseIndex::BuildDelta(
     const BRepGraphInc::WireEntity& aWire = theWires.Value(aWireIdx);
     if (aWire.IsRemoved)
       continue;
-    for (int i = 0; i < aWire.EdgeRefs.Length(); ++i)
+    for (int i = 0; i < aWire.CoEdgeRefs.Length(); ++i)
     {
-      appendUnique(myEdgeToWires, aWire.EdgeRefs.Value(i).EdgeIdx, aWireIdx);
+      const int aCoEdgeIdx = aWire.CoEdgeRefs.Value(i).CoEdgeIdx;
+      if (aCoEdgeIdx >= 0 && aCoEdgeIdx < theCoEdges.Length())
+        appendUnique(myEdgeToWires, theCoEdges.Value(aCoEdgeIdx).EdgeIdx, aWireIdx);
     }
   }
 
@@ -510,11 +516,12 @@ void BRepGraphInc_ReverseIndex::UnbindEdgeFromFace(int theEdgeIdx, int theFaceId
 //=================================================================================================
 
 bool BRepGraphInc_ReverseIndex::Validate(
-  const NCollection_Vector<BRepGraphInc::EdgeEntity>&  theEdges,
-  const NCollection_Vector<BRepGraphInc::WireEntity>&  theWires,
-  const NCollection_Vector<BRepGraphInc::FaceEntity>&  theFaces,
-  const NCollection_Vector<BRepGraphInc::ShellEntity>& theShells,
-  const NCollection_Vector<BRepGraphInc::SolidEntity>& theSolids) const
+  const NCollection_Vector<BRepGraphInc::EdgeEntity>&   theEdges,
+  const NCollection_Vector<BRepGraphInc::CoEdgeEntity>& theCoEdges,
+  const NCollection_Vector<BRepGraphInc::WireEntity>&   theWires,
+  const NCollection_Vector<BRepGraphInc::FaceEntity>&   theFaces,
+  const NCollection_Vector<BRepGraphInc::ShellEntity>&  theShells,
+  const NCollection_Vector<BRepGraphInc::SolidEntity>&  theSolids) const
 {
   // Helper: check that theVal appears in the vector at theKey in theIdx.
   auto containsVal = [](const IndexTable& theIdx, int theKey, int theVal) -> bool
@@ -530,15 +537,18 @@ bool BRepGraphInc_ReverseIndex::Validate(
     return false;
   };
 
-  // Check: for each wire's EdgeRefs, edge->wire reverse entry must exist.
+  // Check: for each wire's CoEdgeRefs, edge->wire reverse entry must exist.
   for (int aWireIdx = 0; aWireIdx < theWires.Length(); ++aWireIdx)
   {
     const BRepGraphInc::WireEntity& aWire = theWires.Value(aWireIdx);
     if (aWire.IsRemoved)
       continue;
-    for (int i = 0; i < aWire.EdgeRefs.Length(); ++i)
+    for (int i = 0; i < aWire.CoEdgeRefs.Length(); ++i)
     {
-      const int anEdgeIdx = aWire.EdgeRefs.Value(i).EdgeIdx;
+      const int aCoEdgeIdx = aWire.CoEdgeRefs.Value(i).CoEdgeIdx;
+      if (aCoEdgeIdx < 0 || aCoEdgeIdx >= theCoEdges.Length())
+        return false;
+      const int anEdgeIdx = theCoEdges.Value(aCoEdgeIdx).EdgeIdx;
       if (!containsVal(myEdgeToWires, anEdgeIdx, aWireIdx))
         return false;
     }

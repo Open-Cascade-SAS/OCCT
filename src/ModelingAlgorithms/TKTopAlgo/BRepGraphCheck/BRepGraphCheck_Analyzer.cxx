@@ -107,10 +107,11 @@ void BRepGraphCheck_Analyzer::Perform()
 
         // Edge-in-face checks for each edge in this wire.
         const BRepGraph_TopoNode::WireDef& aWireDef = aLocalDefs.Wire(aWireDefIdx);
-        for (int anEdgeIter = 0; anEdgeIter < aWireDef.EdgeRefs.Length(); ++anEdgeIter)
+        for (int aCoEdgeIter = 0; aCoEdgeIter < aWireDef.CoEdgeRefs.Length(); ++aCoEdgeIter)
         {
-          const BRepGraphInc::EdgeRef& anEdgeRef = aWireDef.EdgeRefs.Value(anEdgeIter);
-          const int anEdgeDefIdx = anEdgeRef.EdgeIdx;
+          const BRepGraphInc::CoEdgeRef& aCoEdgeRef = aWireDef.CoEdgeRefs.Value(aCoEdgeIter);
+          const BRepGraph_TopoNode::CoEdgeDef& aCoEdgeDef = aLocalDefs.CoEdge(aCoEdgeRef.CoEdgeIdx);
+          const int anEdgeDefIdx = aCoEdgeDef.EdgeIdx;
 
           BRepGraphCheck::CheckEdgeOnFace(*myGraph, anEdgeDefIdx, theFaceIdx,
                                           anIsExact, aLocal);

@@ -556,10 +556,11 @@ TEST_F(BRepGraphHistoryTest, SplitEdge_RewritesAllContainingWires)
     bool hasSubA = false;
     bool hasSubB = false;
 
-    for (int anIdx = 0; anIdx < aWireDef.EdgeRefs.Length(); ++anIdx)
+    for (int anIdx = 0; anIdx < aWireDef.CoEdgeRefs.Length(); ++anIdx)
     {
-      const BRepGraphInc::EdgeRef& anEdgeRef = aWireDef.EdgeRefs.Value(anIdx);
-      const BRepGraph_NodeId anId(BRepGraph_NodeId::Kind::Edge, anEdgeRef.EdgeIdx);
+      const BRepGraphInc::CoEdgeRef& aCR = aWireDef.CoEdgeRefs.Value(anIdx);
+      const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = myGraph.Defs().CoEdge(aCR.CoEdgeIdx);
+      const BRepGraph_NodeId anId(BRepGraph_NodeId::Kind::Edge, aCoEdge.EdgeIdx);
       if (anId == anEdgeId)
       {
         hasOld = true;

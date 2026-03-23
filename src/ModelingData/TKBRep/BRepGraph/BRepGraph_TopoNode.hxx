@@ -27,6 +27,7 @@ namespace BRepGraph_TopoNode
 using BaseDef      = BRepGraphInc::BaseEntity;
 using VertexDef    = BRepGraphInc::VertexEntity;
 using EdgeDef      = BRepGraphInc::EdgeEntity;
+using CoEdgeDef    = BRepGraphInc::CoEdgeEntity;
 using WireDef      = BRepGraphInc::WireEntity;
 using FaceDef      = BRepGraphInc::FaceEntity;
 using ShellDef     = BRepGraphInc::ShellEntity;

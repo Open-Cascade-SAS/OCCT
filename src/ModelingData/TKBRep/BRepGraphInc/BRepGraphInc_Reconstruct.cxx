@@ -110,14 +110,15 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage& theStora
       const BRepGraphInc::WireEntity& aWire = theStorage.Wire(theNode.Index);
       TopoDS_Wire aNewWire;
       aBB.MakeWire(aNewWire);
-      for (int i = 0; i < aWire.EdgeRefs.Length(); ++i)
+      for (int i = 0; i < aWire.CoEdgeRefs.Length(); ++i)
       {
-        const BRepGraphInc::EdgeRef& aRef = aWire.EdgeRefs.Value(i);
+        const BRepGraphInc::CoEdgeEntity& aCoEdge =
+          theStorage.CoEdge(aWire.CoEdgeRefs.Value(i).CoEdgeIdx);
         TopoDS_Shape anEdge =
-          Node(theStorage, BRepGraph_NodeId::Edge(aRef.EdgeIdx), theCache);
+          Node(theStorage, BRepGraph_NodeId::Edge(aCoEdge.EdgeIdx), theCache);
         if (!anEdge.IsNull())
         {
-          anEdge.Orientation(aRef.Orientation);
+          anEdge.Orientation(aCoEdge.Sense);
           aBB.Add(aNewWire, anEdge);
         }
       }
@@ -425,11 +426,12 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
     {
       aBB.MakeWire(aNewWire);
       // Add edges in original storage order (preserving input shape order).
-      for (int anEdgeIter = 0; anEdgeIter < aWire.EdgeRefs.Length(); ++anEdgeIter)
+      for (int anEdgeIter = 0; anEdgeIter < aWire.CoEdgeRefs.Length(); ++anEdgeIter)
       {
-        const BRepGraphInc::EdgeRef& aER = aWire.EdgeRefs.Value(anEdgeIter);
-        TopoDS_Edge anEdge = getOrBuildEdge(aER.EdgeIdx);
-        anEdge.Orientation(aER.Orientation);
+        const BRepGraphInc::CoEdgeEntity& aCoEdge =
+          theStorage.CoEdge(aWire.CoEdgeRefs.Value(anEdgeIter).CoEdgeIdx);
+        TopoDS_Edge anEdge = getOrBuildEdge(aCoEdge.EdgeIdx);
+        anEdge.Orientation(aCoEdge.Sense);
         aBB.Add(aNewWire, anEdge);
       }
       theCache.Bind(aWireNodeId, aNewWire);
@@ -441,48 +443,43 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
     }
 
     // Attach PCurves/polygons for THIS face context onto shared edge TShapes.
-    // Safe: FaceWithCache caches by face NodeId, so each (wire, face) pair
-    // is processed exactly once. BRep_Builder::UpdateEdge adds PCurve entries
-    // keyed by (Surface, Location), so per-face entries coexist without conflict.
-    for (int i = 0; i < aWire.EdgeRefs.Length(); ++i)
+    // Each CoEdge carries its PCurve directly — no need to scan edge.PCurves by face.
+    for (int i = 0; i < aWire.CoEdgeRefs.Length(); ++i)
     {
-      const BRepGraphInc::EdgeRef& aEdgeRef = aWire.EdgeRefs.Value(i);
-      TopoDS_Edge anEdge = getOrBuildEdge(aEdgeRef.EdgeIdx);
+      const int aCoEdgeEntIdx = aWire.CoEdgeRefs.Value(i).CoEdgeIdx;
+      const BRepGraphInc::CoEdgeEntity& aCoEdge = theStorage.CoEdge(aCoEdgeEntIdx);
+      TopoDS_Edge anEdge = getOrBuildEdge(aCoEdge.EdgeIdx);
+      const BRepGraphInc::EdgeEntity& anEdgeEnt = theStorage.Edge(aCoEdge.EdgeIdx);
 
-      // Attach PCurve(s) for THIS face context from inline PCurve entries.
-      const BRepGraphInc::EdgeEntity& anEdgeEnt = theStorage.Edge(aEdgeRef.EdgeIdx);
+      // Collect PCurve(s): primary from this coedge, seam from paired coedge.
       occ::handle<Geom2d_Curve> aPC1, aPC2;
       double        aPCFirst = 0.0, aPCLast = 0.0;
       gp_Pnt2d      aUV1, aUV2;
       bool          aHasUV = false;
       GeomAbs_Shape aSeamContinuity = GeomAbs_C0;
-      for (int aPCIdx = 0; aPCIdx < anEdgeEnt.PCurves.Length(); ++aPCIdx)
-      {
-        const BRepGraphInc::EdgeEntity::PCurveEntry& aPCEntry = anEdgeEnt.PCurves.Value(aPCIdx);
-        if (aPCEntry.FaceDefId.Index != theFaceIdx)
-          continue;
-        if (aPCEntry.Curve2d.IsNull())
-          continue;
 
-        // PCurves are stored orientation-independently:
-        // FORWARD = first PCurve (PCurve()), REVERSED = second (PCurve2()).
-        if (aPCEntry.EdgeOrientation == TopAbs_FORWARD)
+      if (!aCoEdge.Curve2d.IsNull())
+      {
+        aPC1     = aCoEdge.Curve2d;
+        aPCFirst = aCoEdge.ParamFirst;
+        aPCLast  = aCoEdge.ParamLast;
+        aUV1     = aCoEdge.UV1;
+        aUV2     = aCoEdge.UV2;
+        aHasUV   = true;
+      }
+
+      // For seam edges, get the paired coedge's PCurve.
+      if (aCoEdge.SeamPairIdx >= 0)
+      {
+        const BRepGraphInc::CoEdgeEntity& aSeamCoEdge = theStorage.CoEdge(aCoEdge.SeamPairIdx);
+        if (!aSeamCoEdge.Curve2d.IsNull())
         {
-          aPC1     = aPCEntry.Curve2d;
-          aPCFirst = aPCEntry.ParamFirst;
-          aPCLast  = aPCEntry.ParamLast;
-          aUV1     = aPCEntry.UV1;
-          aUV2     = aPCEntry.UV2;
-          aHasUV   = true;
-        }
-        else
-        {
-          aPC2 = aPCEntry.Curve2d;
-          aSeamContinuity = aPCEntry.SeamContinuity;
+          aPC2 = aSeamCoEdge.Curve2d;
+          aSeamContinuity = aSeamCoEdge.SeamContinuity;
           if (aPC1.IsNull())
           {
-            aPCFirst = aPCEntry.ParamFirst;
-            aPCLast  = aPCEntry.ParamLast;
+            aPCFirst = aSeamCoEdge.ParamFirst;
+            aPCLast  = aSeamCoEdge.ParamLast;
           }
         }
       }
@@ -535,24 +532,15 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
         aBB.Range(anEdge, aFace.Surface, TopLoc_Location(), aPCFirst, aPCLast);
       }
 
-      // Attach PolygonOnSurface from inline vectors.
-      for (int aPolyIdx = 0; aPolyIdx < anEdgeEnt.PolygonsOnSurf.Length(); ++aPolyIdx)
-      {
-        const BRepGraphInc::EdgeEntity::PolyOnSurfEntry& aPolyEntry =
-          anEdgeEnt.PolygonsOnSurf.Value(aPolyIdx);
-        if (aPolyEntry.FaceDefId.Index != theFaceIdx)
-          continue;
-        if (!aPolyEntry.Polygon2D.IsNull())
-          aBB.UpdateEdge(anEdge, aPolyEntry.Polygon2D, aFace.Surface, TopLoc_Location());
-      }
+      // Attach PolygonOnSurface from CoEdge.
+      if (!aCoEdge.PolygonOnSurf.IsNull())
+        aBB.UpdateEdge(anEdge, aCoEdge.PolygonOnSurf, aFace.Surface, TopLoc_Location());
 
-      // Attach PolygonOnTriangulation from inline vectors.
-      for (int aPolyTriIdx = 0; aPolyTriIdx < anEdgeEnt.PolygonsOnTri.Length(); ++aPolyTriIdx)
+      // Attach PolygonOnTriangulation from CoEdge.
+      for (int aPolyTriIdx = 0; aPolyTriIdx < aCoEdge.PolygonsOnTri.Length(); ++aPolyTriIdx)
       {
-        const BRepGraphInc::EdgeEntity::PolyOnTriEntry& aPolyTriEntry =
-          anEdgeEnt.PolygonsOnTri.Value(aPolyTriIdx);
-        if (aPolyTriEntry.FaceDefId.Index != theFaceIdx)
-          continue;
+        const BRepGraphInc::CoEdgeEntity::PolyOnTriEntry& aPolyTriEntry =
+          aCoEdge.PolygonsOnTri.Value(aPolyTriIdx);
         if (aPolyTriEntry.Polygon.IsNull())
           continue;
         if (aPolyTriEntry.TriangulationIndex < aFace.Triangulations.Length())
@@ -622,9 +610,11 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
   for (int aWireRefIdx = 0; aWireRefIdx < aFace.WireRefs.Length(); ++aWireRefIdx)
   {
     const BRepGraphInc::WireEntity& aWire = theStorage.Wire(aFace.WireRefs.Value(aWireRefIdx).WireIdx);
-    for (int anEdgeRefIdx = 0; anEdgeRefIdx < aWire.EdgeRefs.Length(); ++anEdgeRefIdx)
+    for (int aCoEdgeRefIdx = 0; aCoEdgeRefIdx < aWire.CoEdgeRefs.Length(); ++aCoEdgeRefIdx)
     {
-      const BRepGraphInc::EdgeEntity& anEdgeEnt = theStorage.Edge(aWire.EdgeRefs.Value(anEdgeRefIdx).EdgeIdx);
+      const BRepGraphInc::CoEdgeEntity& aCoEdge =
+        theStorage.CoEdge(aWire.CoEdgeRefs.Value(aCoEdgeRefIdx).CoEdgeIdx);
+      const BRepGraphInc::EdgeEntity& anEdgeEnt = theStorage.Edge(aCoEdge.EdgeIdx);
       auto restoreVertexPointReps = [&](int theVtxIdx) {
         if (theVtxIdx < 0)
           return;

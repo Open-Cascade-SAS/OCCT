@@ -80,6 +80,13 @@ int BRepGraph::DefsView::NbCompSolids() const
 
 //=================================================================================================
 
+int BRepGraph::DefsView::NbCoEdges() const
+{
+  return myGraph->myData->myIncStorage.NbCoEdges();
+}
+
+//=================================================================================================
+
 int BRepGraph::DefsView::NbActiveVertices() const
 {
   return myGraph->myData->myIncStorage.NbActiveVertices();
@@ -195,6 +202,13 @@ const BRepGraph_TopoNode::CompoundDef& BRepGraph::DefsView::Compound(int theIdx)
 const BRepGraph_TopoNode::CompSolidDef& BRepGraph::DefsView::CompSolid(int theIdx) const
 {
   return myGraph->myData->myIncStorage.CompSolid(theIdx);
+}
+
+//=================================================================================================
+
+const BRepGraph_TopoNode::CoEdgeDef& BRepGraph::DefsView::CoEdge(int theIdx) const
+{
+  return myGraph->myData->myIncStorage.CoEdge(theIdx);
 }
 
 //=================================================================================================
@@ -353,6 +367,7 @@ size_t BRepGraph::DefsView::NbNodes() const
          + static_cast<size_t>(aS.NbShells())
          + static_cast<size_t>(aS.NbFaces())
          + static_cast<size_t>(aS.NbWires())
+         + static_cast<size_t>(aS.NbCoEdges())
          + static_cast<size_t>(aS.NbEdges())
          + static_cast<size_t>(aS.NbVertices())
          + static_cast<size_t>(aS.NbCompounds())

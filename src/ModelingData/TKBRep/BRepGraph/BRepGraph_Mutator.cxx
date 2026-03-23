@@ -97,9 +97,9 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
   theGraph.allocateUID(theSubA);
   theGraph.allocateUID(theSubB);
 
-  // Update incidence: wire EdgeRefs and mark original as removed.
+  // Update incidence: wire CoEdgeRefs and mark original as removed.
   {
-    // Update WireEntity.EdgeRefs: replace original edge with SubA+SubB in all containing wires.
+    // Update WireEntity.CoEdgeRefs: replace original edge's coedge with SubA+SubB coedges.
     const NCollection_Vector<int>* aWireIndices =
       theGraph.myData->myIncStorage.ReverseIndex().WiresOfEdge(theEdgeDef.Index);
     if (aWireIndices != nullptr)
@@ -110,18 +110,29 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
         if (aWireIdx < 0 || aWireIdx >= theGraph.myData->myIncStorage.NbWires())
           continue;
         BRepGraphInc::WireEntity& aWire = theGraph.myData->myIncStorage.ChangeWire(aWireIdx);
-        for (int aERIdx = 0; aERIdx < aWire.EdgeRefs.Length(); ++aERIdx)
+        for (int aCERIdx = 0; aCERIdx < aWire.CoEdgeRefs.Length(); ++aCERIdx)
         {
-          if (aWire.EdgeRefs.Value(aERIdx).EdgeIdx == theEdgeDef.Index)
+          const int aOldCoEdgeIdx = aWire.CoEdgeRefs.Value(aCERIdx).CoEdgeIdx;
+          const BRepGraphInc::CoEdgeEntity& aOldCoEdge =
+            theGraph.myData->myIncStorage.CoEdge(aOldCoEdgeIdx);
+          if (aOldCoEdge.EdgeIdx == theEdgeDef.Index)
           {
-            const TopAbs_Orientation aOrigOri = aWire.EdgeRefs.Value(aERIdx).Orientation;
-            // Replace in-place: change current to SubA.
-            aWire.EdgeRefs.ChangeValue(aERIdx).EdgeIdx = aSubAIdx;
-            // Insert SubB right after SubA to maintain traversal order.
-            BRepGraphInc::EdgeRef aSubBRef;
-            aSubBRef.EdgeIdx     = aSubBIdx;
-            aSubBRef.Orientation = aOrigOri;
-            aWire.EdgeRefs.InsertAfter(aERIdx, aSubBRef);
+            const TopAbs_Orientation aOrigOri = aOldCoEdge.Sense;
+
+            // Replace in-place: update existing coedge to point to SubA.
+            theGraph.myData->myIncStorage.ChangeCoEdge(aOldCoEdgeIdx).EdgeIdx = aSubAIdx;
+
+            // Create a new coedge for SubB and insert after SubA.
+            BRepGraphInc::CoEdgeEntity& aSubBCoEdge = theGraph.myData->myIncStorage.AppendCoEdge();
+            const int aSubBCoEdgeIdx = theGraph.myData->myIncStorage.NbCoEdges() - 1;
+            aSubBCoEdge.Id      = BRepGraph_NodeId::CoEdge(aSubBCoEdgeIdx);
+            aSubBCoEdge.EdgeIdx = aSubBIdx;
+            aSubBCoEdge.Sense   = aOrigOri;
+            aSubBCoEdge.FaceDefId = aOldCoEdge.FaceDefId;
+
+            BRepGraphInc::CoEdgeRef aSubBRef;
+            aSubBRef.CoEdgeIdx = aSubBCoEdgeIdx;
+            aWire.CoEdgeRefs.InsertAfter(aCERIdx, aSubBRef);
             break;
           }
         }
@@ -257,15 +268,16 @@ void BRepGraph_Mutator::ReplaceEdgeInWire(BRepGraph&       theGraph,
 {
   BRepGraph_TopoNode::WireDef& aWireDef = theGraph.myData->myIncStorage.ChangeWire(theWireDefIdx);
 
-  // Update incidence EdgeRefs on the WireEntity.
-  for (int anEdgeIdx = 0; anEdgeIdx < aWireDef.EdgeRefs.Length(); ++anEdgeIdx)
+  // Update incidence CoEdgeRefs on the WireEntity.
+  for (int aCoEdgeIdx = 0; aCoEdgeIdx < aWireDef.CoEdgeRefs.Length(); ++aCoEdgeIdx)
   {
-    BRepGraphInc::EdgeRef& aER = aWireDef.EdgeRefs.ChangeValue(anEdgeIdx);
-    if (aER.EdgeIdx == theOldEdgeDef.Index)
+    const int aCoEdgeEntIdx = aWireDef.CoEdgeRefs.Value(aCoEdgeIdx).CoEdgeIdx;
+    BRepGraphInc::CoEdgeEntity& aCoEdge = theGraph.myData->myIncStorage.ChangeCoEdge(aCoEdgeEntIdx);
+    if (aCoEdge.EdgeIdx == theOldEdgeDef.Index)
     {
-      aER.EdgeIdx = theNewEdgeDef.Index;
+      aCoEdge.EdgeIdx = theNewEdgeDef.Index;
       if (theReversed)
-        aER.Orientation = TopAbs::Reverse(aER.Orientation);
+        aCoEdge.Sense = TopAbs::Reverse(aCoEdge.Sense);
 
       // Update edge-to-wire reverse index incrementally.
       BRepGraphInc_ReverseIndex& aRevIdx = theGraph.myData->myIncStorage.ChangeReverseIndex();

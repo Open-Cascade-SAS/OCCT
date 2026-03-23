@@ -121,7 +121,7 @@ TEST(BRepGraphAlgo_ValidateTest, WireConnectivity_DisconnectedEdges)
   int aTargetWire = -1;
   for (int aWireIdx = 0; aWireIdx < aGraph.Defs().NbWires(); ++aWireIdx)
   {
-    if (aGraph.Defs().Wire(aWireIdx).EdgeRefs.Length() >= 2)
+    if (aGraph.Defs().Wire(aWireIdx).CoEdgeRefs.Length() >= 2)
     {
       aTargetWire = aWireIdx;
       break;
@@ -131,8 +131,9 @@ TEST(BRepGraphAlgo_ValidateTest, WireConnectivity_DisconnectedEdges)
 
   // Get the first edge in the wire and corrupt its end vertex.
   const BRepGraph_TopoNode::WireDef& aWireDef = aGraph.Defs().Wire(aTargetWire);
-  const BRepGraphInc::EdgeRef& aFirstEdgeRef = aWireDef.EdgeRefs.Value(0);
-  const BRepGraph_NodeId aFirstEdgeId(BRepGraph_NodeId::Kind::Edge, aFirstEdgeRef.EdgeIdx);
+  const BRepGraphInc::CoEdgeRef& aFirstCR = aWireDef.CoEdgeRefs.Value(0);
+  const BRepGraph_TopoNode::CoEdgeDef& aFirstCoEdge = aGraph.Defs().CoEdge(aFirstCR.CoEdgeIdx);
+  const BRepGraph_NodeId aFirstEdgeId(BRepGraph_NodeId::Kind::Edge, aFirstCoEdge.EdgeIdx);
   ASSERT_TRUE(aFirstEdgeId.IsValid());
 
   BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aFirstEdge = aGraph.Mut().EdgeDef(aFirstEdgeId.Index);

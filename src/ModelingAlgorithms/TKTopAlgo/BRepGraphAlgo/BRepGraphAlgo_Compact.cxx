@@ -292,12 +292,13 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
     const BRepGraph_TopoNode::WireDef& anOldWire = theGraph.Defs().Wire(anIdx);
 
     NCollection_Vector<std::pair<BRepGraph_NodeId, TopAbs_Orientation>> aNewEntries;
-    for (int anEntryIdx = 0; anEntryIdx < anOldWire.EdgeRefs.Length(); ++anEntryIdx)
+    for (int aCoEdgeIter = 0; aCoEdgeIter < anOldWire.CoEdgeRefs.Length(); ++aCoEdgeIter)
     {
-      const BRepGraphInc::EdgeRef& aER = anOldWire.EdgeRefs.Value(anEntryIdx);
-      const BRepGraph_NodeId aNewEdgeDefId = remapId(BRepGraph_NodeId::Edge(aER.EdgeIdx));
+      const BRepGraphInc::CoEdgeRef& aCR = anOldWire.CoEdgeRefs.Value(aCoEdgeIter);
+      const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Defs().CoEdge(aCR.CoEdgeIdx);
+      const BRepGraph_NodeId aNewEdgeDefId = remapId(BRepGraph_NodeId::Edge(aCoEdge.EdgeIdx));
       if (aNewEdgeDefId.IsValid())
-        aNewEntries.Append(std::make_pair(aNewEdgeDefId, aER.Orientation));
+        aNewEntries.Append(std::make_pair(aNewEdgeDefId, aCoEdge.Sense));
     }
     aNewGraph.Builder().AddWireDef(aNewEntries);
   }

@@ -88,6 +88,7 @@ BRepGraph_NodeCache* BRepGraph::mutableCache(BRepGraph_NodeId theNode)
     case BRepGraph_NodeId::Kind::Face:       return &aStorage.ChangeFace(theNode.Index).Cache;
     case BRepGraph_NodeId::Kind::Wire:       return &aStorage.ChangeWire(theNode.Index).Cache;
     case BRepGraph_NodeId::Kind::Edge:       return &aStorage.ChangeEdge(theNode.Index).Cache;
+    case BRepGraph_NodeId::Kind::CoEdge:     return &aStorage.ChangeCoEdge(theNode.Index).Cache;
     case BRepGraph_NodeId::Kind::Vertex:     return &aStorage.ChangeVertex(theNode.Index).Cache;
     case BRepGraph_NodeId::Kind::Compound:   return &aStorage.ChangeCompound(theNode.Index).Cache;
     case BRepGraph_NodeId::Kind::CompSolid:  return &aStorage.ChangeCompSolid(theNode.Index).Cache;
@@ -123,6 +124,8 @@ const BRepGraph_TopoNode::BaseDef* BRepGraph::TopoDef(BRepGraph_NodeId theId) co
       return theId.Index < aStorage.NbWires() ? &aStorage.Wire(theId.Index) : nullptr;
     case BRepGraph_NodeId::Kind::Edge:
       return theId.Index < aStorage.NbEdges() ? &aStorage.Edge(theId.Index) : nullptr;
+    case BRepGraph_NodeId::Kind::CoEdge:
+      return theId.Index < aStorage.NbCoEdges() ? &aStorage.CoEdge(theId.Index) : nullptr;
     case BRepGraph_NodeId::Kind::Vertex:
       return theId.Index < aStorage.NbVertices() ? &aStorage.Vertex(theId.Index) : nullptr;
     case BRepGraph_NodeId::Kind::Compound:
@@ -156,6 +159,8 @@ BRepGraph_TopoNode::BaseDef* BRepGraph::ChangeTopoDef(BRepGraph_NodeId theId)
       return theId.Index < aStorage.NbWires() ? &aStorage.ChangeWire(theId.Index) : nullptr;
     case BRepGraph_NodeId::Kind::Edge:
       return theId.Index < aStorage.NbEdges() ? &aStorage.ChangeEdge(theId.Index) : nullptr;
+    case BRepGraph_NodeId::Kind::CoEdge:
+      return theId.Index < aStorage.NbCoEdges() ? &aStorage.ChangeCoEdge(theId.Index) : nullptr;
     case BRepGraph_NodeId::Kind::Vertex:
       return theId.Index < aStorage.NbVertices() ? &aStorage.ChangeVertex(theId.Index) : nullptr;
     case BRepGraph_NodeId::Kind::Compound:
@@ -201,8 +206,12 @@ void BRepGraph::invalidateSubgraphImpl(BRepGraph_NodeId theNode)
     }
     case BRepGraph_NodeId::Kind::Wire: {
       const BRepGraph_TopoNode::WireDef& aWireDef = myData->myIncStorage.Wire(theNode.Index);
-      for (int e = 0; e < aWireDef.EdgeRefs.Length(); ++e)
-        invalidateSubgraphImpl(BRepGraph_NodeId::Edge(aWireDef.EdgeRefs.Value(e).EdgeIdx));
+      for (int e = 0; e < aWireDef.CoEdgeRefs.Length(); ++e)
+      {
+        const BRepGraphInc::CoEdgeEntity& aCoEdge =
+          myData->myIncStorage.CoEdge(aWireDef.CoEdgeRefs.Value(e).CoEdgeIdx);
+        invalidateSubgraphImpl(BRepGraph_NodeId::Edge(aCoEdge.EdgeIdx));
+      }
       break;
     }
     case BRepGraph_NodeId::Kind::Edge: {

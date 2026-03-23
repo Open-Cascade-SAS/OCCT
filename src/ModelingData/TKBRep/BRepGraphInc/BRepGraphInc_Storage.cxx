@@ -19,6 +19,7 @@ BRepGraphInc_Storage::BRepGraphInc_Storage(
   const occ::handle<NCollection_BaseAllocator>& theAlloc)
   : myVertices(256, theAlloc),
     myEdges(256, theAlloc),
+    myCoEdges(256, theAlloc),
     myWires(256, theAlloc),
     myFaces(256, theAlloc),
     myShells(256, theAlloc),
@@ -31,6 +32,7 @@ BRepGraphInc_Storage::BRepGraphInc_Storage(
     myOriginalShapes(1, theAlloc),
     myVertexUIDs(256, theAlloc),
     myEdgeUIDs(256, theAlloc),
+    myCoEdgeUIDs(256, theAlloc),
     myWireUIDs(256, theAlloc),
     myFaceUIDs(256, theAlloc),
     myShellUIDs(256, theAlloc),
@@ -53,6 +55,7 @@ const NCollection_Vector<BRepGraph_UID>& BRepGraphInc_Storage::UIDs(
   {
     case BRepGraph_NodeId::Kind::Vertex:     return myVertexUIDs;
     case BRepGraph_NodeId::Kind::Edge:       return myEdgeUIDs;
+    case BRepGraph_NodeId::Kind::CoEdge:     return myCoEdgeUIDs;
     case BRepGraph_NodeId::Kind::Wire:       return myWireUIDs;
     case BRepGraph_NodeId::Kind::Face:       return myFaceUIDs;
     case BRepGraph_NodeId::Kind::Shell:      return myShellUIDs;
@@ -75,6 +78,7 @@ NCollection_Vector<BRepGraph_UID>& BRepGraphInc_Storage::ChangeUIDs(
   {
     case BRepGraph_NodeId::Kind::Vertex:     return myVertexUIDs;
     case BRepGraph_NodeId::Kind::Edge:       return myEdgeUIDs;
+    case BRepGraph_NodeId::Kind::CoEdge:     return myCoEdgeUIDs;
     case BRepGraph_NodeId::Kind::Wire:       return myWireUIDs;
     case BRepGraph_NodeId::Kind::Face:       return myFaceUIDs;
     case BRepGraph_NodeId::Kind::Shell:      return myShellUIDs;
@@ -94,6 +98,7 @@ void BRepGraphInc_Storage::ResetAllUIDs()
 {
   myVertexUIDs.Clear();
   myEdgeUIDs.Clear();
+  myCoEdgeUIDs.Clear();
   myWireUIDs.Clear();
   myFaceUIDs.Clear();
   myShellUIDs.Clear();
@@ -110,6 +115,7 @@ void BRepGraphInc_Storage::Clear()
 {
   myVertices.Clear();
   myEdges.Clear();
+  myCoEdges.Clear();
   myWires.Clear();
   myFaces.Clear();
   myShells.Clear();
@@ -124,6 +130,7 @@ void BRepGraphInc_Storage::Clear()
   ResetAllUIDs();
   myNbActiveVertices    = 0;
   myNbActiveEdges       = 0;
+  myNbActiveCoEdges     = 0;
   myNbActiveWires       = 0;
   myNbActiveFaces       = 0;
   myNbActiveShells      = 0;
@@ -145,6 +152,7 @@ void BRepGraphInc_Storage::DecrementActiveCount(BRepGraph_NodeId::Kind theKind)
   {
     case BRepGraph_NodeId::Kind::Vertex:     Standard_ASSERT_VOID(myNbActiveVertices    > 0, "DecrementActiveCount: underflow"); --myNbActiveVertices;    break;
     case BRepGraph_NodeId::Kind::Edge:       Standard_ASSERT_VOID(myNbActiveEdges       > 0, "DecrementActiveCount: underflow"); --myNbActiveEdges;       break;
+    case BRepGraph_NodeId::Kind::CoEdge:     Standard_ASSERT_VOID(myNbActiveCoEdges     > 0, "DecrementActiveCount: underflow"); --myNbActiveCoEdges;     break;
     case BRepGraph_NodeId::Kind::Wire:       Standard_ASSERT_VOID(myNbActiveWires       > 0, "DecrementActiveCount: underflow"); --myNbActiveWires;       break;
     case BRepGraph_NodeId::Kind::Face:       Standard_ASSERT_VOID(myNbActiveFaces       > 0, "DecrementActiveCount: underflow"); --myNbActiveFaces;       break;
     case BRepGraph_NodeId::Kind::Shell:      Standard_ASSERT_VOID(myNbActiveShells      > 0, "DecrementActiveCount: underflow"); --myNbActiveShells;      break;
@@ -161,13 +169,14 @@ void BRepGraphInc_Storage::DecrementActiveCount(BRepGraph_NodeId::Kind theKind)
 void BRepGraphInc_Storage::BuildReverseIndex()
 {
   myReverseIdx.SetAllocator(myAllocator);
-  myReverseIdx.Build(myEdges, myWires, myFaces, myShells, mySolids);
+  myReverseIdx.Build(myEdges, myCoEdges, myWires, myFaces, myShells, mySolids);
   myReverseIdx.BuildProductOccurrences(myOccurrences, myProducts.Length());
 
   // Recount active entities to sync counters after Build.
   // Populate may have set IsRemoved on some entities without going through RemoveNode.
   myNbActiveVertices    = 0;
   myNbActiveEdges       = 0;
+  myNbActiveCoEdges     = 0;
   myNbActiveWires       = 0;
   myNbActiveFaces       = 0;
   myNbActiveShells      = 0;
@@ -180,6 +189,8 @@ void BRepGraphInc_Storage::BuildReverseIndex()
     if (!myVertices.Value(i).IsRemoved) ++myNbActiveVertices;
   for (int i = 0; i < myEdges.Length(); ++i)
     if (!myEdges.Value(i).IsRemoved) ++myNbActiveEdges;
+  for (int i = 0; i < myCoEdges.Length(); ++i)
+    if (!myCoEdges.Value(i).IsRemoved) ++myNbActiveCoEdges;
   for (int i = 0; i < myWires.Length(); ++i)
     if (!myWires.Value(i).IsRemoved) ++myNbActiveWires;
   for (int i = 0; i < myFaces.Length(); ++i)
@@ -206,7 +217,7 @@ void BRepGraphInc_Storage::BuildDeltaReverseIndex(int theOldNbEdges,
                                                    int theOldNbShells,
                                                    int theOldNbSolids)
 {
-  myReverseIdx.BuildDelta(myEdges, myWires, myFaces, myShells, mySolids,
+  myReverseIdx.BuildDelta(myEdges, myCoEdges, myWires, myFaces, myShells, mySolids,
                           theOldNbEdges, theOldNbWires, theOldNbFaces,
                           theOldNbShells, theOldNbSolids);
 }
@@ -215,5 +226,5 @@ void BRepGraphInc_Storage::BuildDeltaReverseIndex(int theOldNbEdges,
 
 bool BRepGraphInc_Storage::ValidateReverseIndex() const
 {
-  return myReverseIdx.Validate(myEdges, myWires, myFaces, myShells, mySolids);
+  return myReverseIdx.Validate(myEdges, myCoEdges, myWires, myFaces, myShells, mySolids);
 }

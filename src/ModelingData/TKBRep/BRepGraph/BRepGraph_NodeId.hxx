@@ -44,12 +44,13 @@ struct BRepGraph_NodeId
     Vertex     = 5,
     Compound   = 6,  //!< TopoDS_Compound container
     CompSolid  = 7,  //!< TopoDS_CompSolid container
+    CoEdge     = 8,  //!< Use of an edge on a face (owns PCurve data)
     Product    = 10,  //!< Reusable shape definition (part or assembly)
     Occurrence = 11   //!< Placed instance of a product within a parent product
   };
 
-  //! True if the kind is a core topology kind (Solid..CompSolid).
-  static bool IsTopologyKind(Kind theKind) { return static_cast<int>(theKind) <= 7; }
+  //! True if the kind is a core topology kind (Solid..CoEdge).
+  static bool IsTopologyKind(Kind theKind) { return static_cast<int>(theKind) <= 8; }
 
   //! True if the kind is an assembly kind (Product or Occurrence).
   static bool IsAssemblyKind(Kind theKind) { return theKind == Kind::Product || theKind == Kind::Occurrence; }
@@ -75,6 +76,7 @@ struct BRepGraph_NodeId
   static BRepGraph_NodeId Vertex(int theIdx)     { return {Kind::Vertex, theIdx}; }
   static BRepGraph_NodeId Compound(int theIdx)    { return {Kind::Compound, theIdx}; }
   static BRepGraph_NodeId CompSolid(int theIdx)   { return {Kind::CompSolid, theIdx}; }
+  static BRepGraph_NodeId CoEdge(int theIdx)      { return {Kind::CoEdge, theIdx}; }
   static BRepGraph_NodeId Product(int theIdx)     { return {Kind::Product, theIdx}; }
   static BRepGraph_NodeId Occurrence(int theIdx)  { return {Kind::Occurrence, theIdx}; }
 

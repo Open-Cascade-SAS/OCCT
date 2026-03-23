@@ -211,7 +211,7 @@ TEST(BRepGraphAPI_AddNodeTest, AddWireDef_ClosedRectangle)
   EXPECT_EQ(aWireId.NodeKind, BRepGraph_NodeId::Kind::Wire);
 
   const BRepGraph_TopoNode::WireDef& aWireDef = aGraph.Defs().Wire(0);
-  EXPECT_EQ(aWireDef.EdgeRefs.Length(), 4);
+  EXPECT_EQ(aWireDef.CoEdgeRefs.Length(), 4);
   EXPECT_TRUE(aWireDef.IsClosed);
 }
 

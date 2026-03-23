@@ -252,8 +252,11 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
     auto edgeLookup = [&theGraph](int theIdx) -> const BRepGraphInc::EdgeEntity& {
       return theGraph.Defs().Edge(theIdx);
     };
-    BRepGraphInc_WireExplorer aWireExp(aWireDef.EdgeRefs, edgeLookup);
-    const NCollection_Vector<BRepGraphInc::EdgeRef>& anOrderedRefs = aWireExp.OrderedRefs();
+    auto coedgeLookup = [&theGraph](int theIdx) -> const BRepGraphInc::CoEdgeEntity& {
+      return theGraph.Defs().CoEdge(theIdx);
+    };
+    BRepGraphInc_WireExplorer aWireExp(aWireDef.CoEdgeRefs, coedgeLookup, edgeLookup);
+    const NCollection_Vector<BRepGraphInc::CoEdgeRef>& anOrderedRefs = aWireExp.OrderedRefs();
 
     const int aNbEdgeRefs = anOrderedRefs.Length();
     const int aNbE        = aNbEdgeRefs;
@@ -264,13 +267,15 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
     gp_Pnt aOldPnt3d(0, 0, 0);
     bool   anOldPnt3dInit = false;
 
-    // Iterate edge refs in connection order.
+    // Iterate coedge refs in connection order.
     for (int anEdgeIdx = 0; anEdgeIdx < aNbEdgeRefs; ++anEdgeIdx)
     {
-      const BRepGraphInc::EdgeRef& anEdgeRef = anOrderedRefs.Value(anEdgeIdx);
+      const BRepGraphInc::CoEdgeRef& aCoEdgeRef = anOrderedRefs.Value(anEdgeIdx);
+      const BRepGraph_TopoNode::CoEdgeDef& aCoEdgeDef =
+        theGraph.Defs().CoEdge(aCoEdgeRef.CoEdgeIdx);
       const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
-        theGraph.Defs().Edge(anEdgeRef.EdgeIdx);
-      const TopAbs_Orientation anOri = anEdgeRef.Orientation;
+        theGraph.Defs().Edge(aCoEdgeDef.EdgeIdx);
+      const TopAbs_Orientation anOri = aCoEdgeDef.Sense;
 
       if (anOri != TopAbs_FORWARD && anOri != TopAbs_REVERSED)
         continue;
@@ -413,10 +418,12 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
 
           for (int anEdgeIdx = 0; anEdgeIdx < aNbEdgeRefs; ++anEdgeIdx)
           {
-            const BRepGraphInc::EdgeRef& anEdgeRef2 = anOrderedRefs.Value(anEdgeIdx);
+            const BRepGraphInc::CoEdgeRef& aCoEdgeRef2 = anOrderedRefs.Value(anEdgeIdx);
+            const BRepGraph_TopoNode::CoEdgeDef& aCoEdgeDef2 =
+              theGraph.Defs().CoEdge(aCoEdgeRef2.CoEdgeIdx);
             const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
-              theGraph.Defs().Edge(anEdgeRef2.EdgeIdx);
-            const TopAbs_Orientation anOri = anEdgeRef2.Orientation;
+              theGraph.Defs().Edge(aCoEdgeDef2.EdgeIdx);
+            const TopAbs_Orientation anOri = aCoEdgeDef2.Sense;
 
             if (anOri != TopAbs_FORWARD && anOri != TopAbs_REVERSED)
               continue;

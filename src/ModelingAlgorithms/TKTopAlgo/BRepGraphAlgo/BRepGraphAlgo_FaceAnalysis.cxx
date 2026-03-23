@@ -114,9 +114,10 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(
       const int                          aWireIdx = aFace.WireRefs.Value(aWireRefIdx).WireIdx;
       const BRepGraph_TopoNode::WireDef& aWire    = aDefs.Wire(aWireIdx);
 
-      for (int anEdgeRefIdx = 0; anEdgeRefIdx < aWire.EdgeRefs.Length(); ++anEdgeRefIdx)
+      for (int aCoEdgeRefIdx = 0; aCoEdgeRefIdx < aWire.CoEdgeRefs.Length(); ++aCoEdgeRefIdx)
       {
-        const int                          anEdgeIdx = aWire.EdgeRefs.Value(anEdgeRefIdx).EdgeIdx;
+        const BRepGraphInc::CoEdgeRef& aCR = aWire.CoEdgeRefs.Value(aCoEdgeRefIdx);
+        const int                          anEdgeIdx = aDefs.CoEdge(aCR.CoEdgeIdx).EdgeIdx;
         const BRepGraph_TopoNode::EdgeDef& anEdge    = aDefs.Edge(anEdgeIdx);
         ++aNbEdges;
 

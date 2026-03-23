@@ -50,6 +50,9 @@ public:
   //! Number of compsolid definitions.
   Standard_EXPORT int NbCompSolids() const;
 
+  //! Number of coedge definitions.
+  Standard_EXPORT int NbCoEdges() const;
+
   //! Number of active (non-removed) definitions per kind.
   Standard_EXPORT int NbActiveVertices() const;
   Standard_EXPORT int NbActiveEdges() const;
@@ -95,6 +98,10 @@ public:
   //! Access compsolid definition by index.
   //! @param[in] theIdx zero-based definition index
   Standard_EXPORT const BRepGraph_TopoNode::CompSolidDef& CompSolid(int theIdx) const;
+
+  //! Access coedge definition by index.
+  //! @param[in] theIdx zero-based definition index
+  Standard_EXPORT const BRepGraph_TopoNode::CoEdgeDef& CoEdge(int theIdx) const;
 
   //! Generic topology definition lookup by NodeId.
   //! @param[in] theId node identifier

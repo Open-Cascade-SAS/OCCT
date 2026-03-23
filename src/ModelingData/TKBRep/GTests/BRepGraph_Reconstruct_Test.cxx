@@ -447,10 +447,11 @@ TEST(BRepGraphReconstructTest, AfterVertexMutation_ModifiedFlagAndPointChanged)
   ASSERT_GE(anOuterWireIdx, 0);
 
   const BRepGraph_TopoNode::WireDef& aWireDef = aGraph.Defs().Wire(anOuterWireIdx);
-  ASSERT_GT(aWireDef.EdgeRefs.Length(), 0);
+  ASSERT_GT(aWireDef.CoEdgeRefs.Length(), 0);
 
-  const BRepGraphInc::EdgeRef& aFirstEdgeRef = aWireDef.EdgeRefs.First();
-  const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.Defs().Edge(aFirstEdgeRef.EdgeIdx);
+  const BRepGraphInc::CoEdgeRef& aFirstCR = aWireDef.CoEdgeRefs.First();
+  const BRepGraph_TopoNode::CoEdgeDef& aFirstCoEdge = aGraph.Defs().CoEdge(aFirstCR.CoEdgeIdx);
+  const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.Defs().Edge(aFirstCoEdge.EdgeIdx);
   const int aVertIdx = anEdgeDef.StartVertexIdx;
   ASSERT_GE(aVertIdx, 0);
 

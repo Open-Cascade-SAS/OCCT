@@ -499,10 +499,11 @@ TEST_F(BRepGraphAnalyzeTest, BoundingBox_Edge_SubsetOfOwningFace)
   const BRepGraph_TopoNode::WireDef& aWireDef = myGraph.Defs().Wire(0);
   const double aTol = Precision::Confusion();
 
-  for (int anEdgeIter = 0; anEdgeIter < aWireDef.EdgeRefs.Length(); ++anEdgeIter)
+  for (int aCoEdgeIter = 0; aCoEdgeIter < aWireDef.CoEdgeRefs.Length(); ++aCoEdgeIter)
   {
-    const BRepGraphInc::EdgeRef& anEdgeRef = aWireDef.EdgeRefs.Value(anEdgeIter);
-    const BRepGraph_NodeId anEdgeId(BRepGraph_NodeId::Kind::Edge, anEdgeRef.EdgeIdx);
+    const BRepGraphInc::CoEdgeRef& aCR = aWireDef.CoEdgeRefs.Value(aCoEdgeIter);
+    const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = myGraph.Defs().CoEdge(aCR.CoEdgeIdx);
+    const BRepGraph_NodeId anEdgeId(BRepGraph_NodeId::Kind::Edge, aCoEdge.EdgeIdx);
     Bnd_Box anEdgeBox;
     BRepGraphAlgo_BndLib::Add(myGraph, anEdgeId, anEdgeBox);
     if (anEdgeBox.IsVoid())

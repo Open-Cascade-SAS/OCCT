@@ -83,9 +83,10 @@ TEST(BRepGraphBackRefManagerTest, Build_EdgeToWiresMatchForwardLinks)
   for (int aWireIdx = 0; aWireIdx < aGraph.Defs().NbWires(); ++aWireIdx)
   {
     const BRepGraph_TopoNode::WireDef& aWireDef = aGraph.Defs().Wire(aWireIdx);
-    for (int anEdgeIdx = 0; anEdgeIdx < aWireDef.EdgeRefs.Length(); ++anEdgeIdx)
+    for (int aCoEdgeIdx = 0; aCoEdgeIdx < aWireDef.CoEdgeRefs.Length(); ++aCoEdgeIdx)
     {
-      const int anEdgeDefIdx = aWireDef.EdgeRefs.Value(anEdgeIdx).EdgeIdx;
+      const BRepGraphInc::CoEdgeRef& aCR = aWireDef.CoEdgeRefs.Value(aCoEdgeIdx);
+      const int anEdgeDefIdx = aGraph.Defs().CoEdge(aCR.CoEdgeIdx).EdgeIdx;
       const NCollection_Vector<int>& aWires = aGraph.RelEdges().WiresOfEdge(anEdgeDefIdx);
       bool aFound = false;
       for (int aW = 0; aW < aWires.Length(); ++aW)

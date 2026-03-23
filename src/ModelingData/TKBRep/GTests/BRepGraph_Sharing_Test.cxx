@@ -119,17 +119,17 @@ TEST_F(BRepGraphSharingTest, FaceDef_OuterWireIdx_Valid)
   }
 }
 
-TEST_F(BRepGraphSharingTest, WireDef_EdgeRefsCount_FourPerBoxFace)
+TEST_F(BRepGraphSharingTest, WireDef_CoEdgeRefsCount_FourPerBoxFace)
 {
   ASSERT_TRUE(myGraph.IsDone());
   for (int anIdx = 0; anIdx < myGraph.Defs().NbWires(); ++anIdx)
   {
     const BRepGraph_TopoNode::WireDef& aWireDef = myGraph.Defs().Wire(anIdx);
-    EXPECT_GT(aWireDef.EdgeRefs.Length(), 0)
-      << "Wire def " << anIdx << " has no edge refs";
+    EXPECT_GT(aWireDef.CoEdgeRefs.Length(), 0)
+      << "Wire def " << anIdx << " has no coedge refs";
     // Box face wires have 4 edges
-    EXPECT_EQ(aWireDef.EdgeRefs.Length(), 4)
-      << "Wire def " << anIdx << " expected 4 edge refs for box face";
+    EXPECT_EQ(aWireDef.CoEdgeRefs.Length(), 4)
+      << "Wire def " << anIdx << " expected 4 coedge refs for box face";
   }
 }
 
