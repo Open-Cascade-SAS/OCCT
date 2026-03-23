@@ -207,6 +207,28 @@ bool extractStoredPCurves(const TopoDS_Edge&                theEdge,
       return extractFromCR(aCR);
   }
 
+  // Pass 1b: match using raw TFace.Location (preserves datum pointers).
+  // When Pass 1 fails due to TopLoc_Location structural inequality (the composed
+  // face.Location() * TFace.Location() creates a chain with different structure
+  // than what was used during CR creation), retry with JUST TFace.Location().
+  // The TFace.Location is a fixed TShape property whose datum pointers are shared
+  // with the CR's stored location chain, enabling structural match to succeed.
+  {
+    const TopLoc_Location& aTFaceLoc =
+      static_cast<const BRep_TFace*>(theFace.TShape().get())->Location();
+    if (!aTFaceLoc.IsIdentity())
+    {
+      const TopLoc_Location aRawExpectedLoc = aTFaceLoc.Predivided(theEdge.Location());
+      for (const auto& aCR : aTEdge->Curves())
+      {
+        if (!aCR->IsCurveOnSurface())
+          continue;
+        if (aCR->IsCurveOnSurface(aSurf, aRawExpectedLoc))
+          return extractFromCR(aCR);
+      }
+    }
+  }
+
   // Pass 2: fallback to surface-handle-only match.
   // Handles the TopLoc_Location structural equality bug where
   // an explicit identity datum does not compare equal to a default empty identity.
@@ -232,6 +254,22 @@ bool extractStoredPCurves(const TopoDS_Edge&                theEdge,
         continue;
       if (aCR->IsCurveOnSurface(theOrigSurface, aExpectedLoc))
         return extractFromCR(aCR);
+    }
+    // Pass 3a.5: raw TFace.Location match on original surface.
+    {
+      const TopLoc_Location& aTFaceLoc =
+        static_cast<const BRep_TFace*>(theFace.TShape().get())->Location();
+      if (!aTFaceLoc.IsIdentity())
+      {
+        const TopLoc_Location aRawExpectedLoc = aTFaceLoc.Predivided(theEdge.Location());
+        for (const auto& aCR : aTEdge->Curves())
+        {
+          if (!aCR->IsCurveOnSurface())
+            continue;
+          if (aCR->IsCurveOnSurface(theOrigSurface, aRawExpectedLoc))
+            return extractFromCR(aCR);
+        }
+      }
     }
     // Pass 3b: original surface handle-only match (location structural equality fallback).
     for (const auto& aCR : aTEdge->Curves())
