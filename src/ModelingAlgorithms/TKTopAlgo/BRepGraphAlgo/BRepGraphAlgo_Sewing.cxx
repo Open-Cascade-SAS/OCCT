@@ -822,10 +822,18 @@ NCollection_Array1<NCollection_Vector<int>> detectCandidates(
   const NCollection_Array1<BRepGraph_NodeId>&        theFreeEdges,
   const NCollection_Array1<int>&                     theFaceOfPos,
   const BRepGraphAlgo_Sewing::Options&               theOptions,
-  const Handle(NCollection_IncAllocator)&             theTmpAlloc)
+  const Handle(NCollection_IncAllocator)&             theTmpAlloc,
+  const Handle(NCollection_BaseAllocator)&            theGraphAlloc)
 {
   const int aNbFreeEdges = theFreeEdges.Length();
   NCollection_Array1<NCollection_Vector<int>> anAdj(1, aNbFreeEdges);
+  if (!theGraphAlloc.IsNull())
+  {
+    for (int i = 1; i <= aNbFreeEdges; ++i)
+    {
+      anAdj.ChangeValue(i) = NCollection_Vector<int>(256, theGraphAlloc);
+    }
+  }
   if (aNbFreeEdges == 0)
   {
     return anAdj;
@@ -1687,7 +1695,7 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
 
   // Phase 4: Detect sewing candidates (returns local adjacency, no RelEdge storage).
   NCollection_Array1<NCollection_Vector<int>> aAdjacency =
-    detectCandidates(theGraph, aFreeEdges, aFaceOfPos, theOptions, aTmpAllocator);
+    detectCandidates(theGraph, aFreeEdges, aFaceOfPos, theOptions, aTmpAllocator, anAllocator);
   aTmpAllocator->Reset(false);
 
   // Phase 5: Match free edge pairs (uses local adjacency + inline union-find).

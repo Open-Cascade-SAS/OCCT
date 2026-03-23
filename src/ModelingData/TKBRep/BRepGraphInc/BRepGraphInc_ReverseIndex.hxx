@@ -196,7 +196,10 @@ private:
   static const NCollection_Vector<int> THE_EMPTY_VEC; //!< Shared empty vector for safe ref returns.
 
   //! Ensure theIdx has at least theSize slots (pre-sizing with empty vectors).
-  static void preSize(IndexTable& theIdx, int theSize);
+  //! If theAlloc is non-null, inner vectors are constructed with it.
+  static void preSize(IndexTable&                               theIdx,
+                      int                                       theSize,
+                      const Handle(NCollection_BaseAllocator)& theAlloc = Handle(NCollection_BaseAllocator)());
 
   //! Add theVal to the vector at theKey, creating if needed.  Skips duplicates.
   static void appendUnique(IndexTable& theIdx, int theKey, int theVal);

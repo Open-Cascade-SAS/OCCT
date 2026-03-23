@@ -68,12 +68,13 @@ void BRepGraphInc_ReverseIndex::Build(
   }
 
   // Pre-size all outer vectors to their known key range.
-  preSize(myVertexToEdges, aMaxVertexIdx + 1);
-  preSize(myEdgeToWires,   theEdges.Length());
-  preSize(myEdgeToFaces,   theEdges.Length());
-  preSize(myWireToFaces,   theWires.Length());
-  preSize(myFaceToShells,  theFaces.Length());
-  preSize(myShellToSolids, theShells.Length());
+  // Pass allocator so inner vectors use IncAllocator for O(1) alloc/free.
+  preSize(myVertexToEdges, aMaxVertexIdx + 1, myAllocator);
+  preSize(myEdgeToWires,   theEdges.Length(),  myAllocator);
+  preSize(myEdgeToFaces,   theEdges.Length(),  myAllocator);
+  preSize(myWireToFaces,   theWires.Length(),  myAllocator);
+  preSize(myFaceToShells,  theFaces.Length(),  myAllocator);
+  preSize(myShellToSolids, theShells.Length(), myAllocator);
 
   // Vertex -> Edges: scan edge entities for start/end vertex indices.
   // Closed edges have StartVertexIdx == EndVertexIdx, so skip duplicate.
@@ -371,11 +372,19 @@ void BRepGraphInc_ReverseIndex::ReplaceEdgeInWireMap(int theOldEdgeIdx,
 
 //=================================================================================================
 
-void BRepGraphInc_ReverseIndex::preSize(IndexTable& theIdx, int theSize)
+void BRepGraphInc_ReverseIndex::preSize(IndexTable&                               theIdx,
+                                        int                                       theSize,
+                                        const Handle(NCollection_BaseAllocator)& theAlloc)
 {
   theIdx.Clear();
   for (int i = 0; i < theSize; ++i)
-    theIdx.Appended();
+  {
+    NCollection_Vector<int>& aVec = theIdx.Appended();
+    if (!theAlloc.IsNull())
+    {
+      aVec = NCollection_Vector<int>(256, theAlloc);
+    }
+  }
 }
 
 //=================================================================================================
