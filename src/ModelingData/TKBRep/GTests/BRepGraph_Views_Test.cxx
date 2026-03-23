@@ -128,8 +128,8 @@ TEST_F(BRepGraphViewsTest, DefsView_FaceSurface_NonNull)
 {
   for (int anIdx = 0; anIdx < myGraph.Defs().NbFaces(); ++anIdx)
   {
-    EXPECT_FALSE(myGraph.Defs().Face(anIdx).Surface.IsNull())
-      << "Face " << anIdx << " has null Surface";
+    EXPECT_GE(myGraph.Defs().Face(anIdx).SurfaceRepIdx, 0)
+      << "Face " << anIdx << " has no surface representation";
   }
 }
 
@@ -137,8 +137,8 @@ TEST_F(BRepGraphViewsTest, DefsView_EdgeCurve3d_NonNull)
 {
   for (int anIdx = 0; anIdx < myGraph.Defs().NbEdges(); ++anIdx)
   {
-    EXPECT_FALSE(myGraph.Defs().Edge(anIdx).Curve3d.IsNull())
-      << "Edge " << anIdx << " has null Curve3d";
+    EXPECT_GE(myGraph.Defs().Edge(anIdx).Curve3DRepIdx, 0)
+      << "Edge " << anIdx << " has no Curve3D representation";
   }
 }
 

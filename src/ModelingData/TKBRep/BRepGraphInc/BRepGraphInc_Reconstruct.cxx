@@ -68,9 +68,14 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage& theStora
         aBB.MakeEdge(aNewEdge);
         aBB.Degenerated(aNewEdge, true);
       }
-      else if (!anEdge.Curve3d.IsNull())
+      else if (anEdge.Curve3DRepIdx >= 0)
       {
-        aBB.MakeEdge(aNewEdge, anEdge.Curve3d, TopLoc_Location(), anEdge.Tolerance);
+        const occ::handle<Geom_Curve>& aCurve3d =
+          theStorage.Curve3DRep(anEdge.Curve3DRepIdx).Curve;
+        if (!aCurve3d.IsNull())
+          aBB.MakeEdge(aNewEdge, aCurve3d, TopLoc_Location(), anEdge.Tolerance);
+        else
+          aBB.MakeEdge(aNewEdge);
       }
       else
       {
@@ -293,20 +298,29 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
 
   BRep_Builder aBB;
   const BRepGraphInc::FaceEntity& aFace = theStorage.Face(theFaceIdx);
-  if (aFace.Surface.IsNull())
+  if (aFace.SurfaceRepIdx < 0)
+    return TopoDS_Shape();
+
+  const occ::handle<Geom_Surface>& aFaceSurface =
+    theStorage.SurfaceRep(aFace.SurfaceRepIdx).Surface;
+  if (aFaceSurface.IsNull())
     return TopoDS_Shape();
 
   TopoDS_Face aNewFace;
-  aBB.MakeFace(aNewFace, aFace.Surface, TopLoc_Location(), aFace.Tolerance);
+  aBB.MakeFace(aNewFace, aFaceSurface, TopLoc_Location(), aFace.Tolerance);
 
   // Attach triangulations.
-  if (!aFace.Triangulations.IsEmpty())
+  if (!aFace.TriangulationRepIdxs.IsEmpty())
   {
     NCollection_List<occ::handle<Poly_Triangulation>> aTriList;
     occ::handle<Poly_Triangulation> anActiveTri;
-    for (int aTriIdx = 0; aTriIdx < aFace.Triangulations.Length(); ++aTriIdx)
+    for (int aTriIdx = 0; aTriIdx < aFace.TriangulationRepIdxs.Length(); ++aTriIdx)
     {
-      const occ::handle<Poly_Triangulation>& aTri = aFace.Triangulations.Value(aTriIdx);
+      const int aTriRepIdx = aFace.TriangulationRepIdxs.Value(aTriIdx);
+      if (aTriRepIdx < 0)
+        continue;
+      const occ::handle<Poly_Triangulation>& aTri =
+        theStorage.TriangulationRep(aTriRepIdx).Triangulation;
       if (!aTri.IsNull())
       {
         aTriList.Append(aTri);
@@ -336,9 +350,14 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
       aBB.MakeEdge(aNewEdge);
       aBB.Degenerated(aNewEdge, true);
     }
-    else if (!anEdge.Curve3d.IsNull())
+    else if (anEdge.Curve3DRepIdx >= 0)
     {
-      aBB.MakeEdge(aNewEdge, anEdge.Curve3d, TopLoc_Location(), anEdge.Tolerance);
+      const occ::handle<Geom_Curve>& aCurve3d =
+        theStorage.Curve3DRep(anEdge.Curve3DRepIdx).Curve;
+      if (!aCurve3d.IsNull())
+        aBB.MakeEdge(aNewEdge, aCurve3d, TopLoc_Location(), anEdge.Tolerance);
+      else
+        aBB.MakeEdge(aNewEdge);
     }
     else
     {
@@ -384,8 +403,13 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
     }
 
     // Polygon3D.
-    if (!anEdge.Polygon3D.IsNull())
-      aBB.UpdateEdge(aNewEdge, anEdge.Polygon3D, TopLoc_Location());
+    if (anEdge.Polygon3DRepIdx >= 0)
+    {
+      const occ::handle<Poly_Polygon3D>& aPolygon3D =
+        theStorage.Polygon3DRep(anEdge.Polygon3DRepIdx).Polygon;
+      if (!aPolygon3D.IsNull())
+        aBB.UpdateEdge(aNewEdge, aPolygon3D, TopLoc_Location());
+    }
 
     // Regularities.
     for (int aRegIdx = 0; aRegIdx < anEdge.Regularities.Length(); ++aRegIdx)
@@ -458,9 +482,9 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
       bool          aHasUV = false;
       GeomAbs_Shape aSeamContinuity = GeomAbs_C0;
 
-      if (!aCoEdge.Curve2d.IsNull())
+      if (aCoEdge.Curve2DRepIdx >= 0)
       {
-        aPC1     = aCoEdge.Curve2d;
+        aPC1     = theStorage.Curve2DRep(aCoEdge.Curve2DRepIdx).Curve;
         aPCFirst = aCoEdge.ParamFirst;
         aPCLast  = aCoEdge.ParamLast;
         aUV1     = aCoEdge.UV1;
@@ -472,9 +496,9 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
       if (aCoEdge.SeamPairIdx >= 0)
       {
         const BRepGraphInc::CoEdgeEntity& aSeamCoEdge = theStorage.CoEdge(aCoEdge.SeamPairIdx);
-        if (!aSeamCoEdge.Curve2d.IsNull())
+        if (aSeamCoEdge.Curve2DRepIdx >= 0)
         {
-          aPC2 = aSeamCoEdge.Curve2d;
+          aPC2 = theStorage.Curve2DRep(aSeamCoEdge.Curve2DRepIdx).Curve;
           aSeamContinuity = aSeamCoEdge.SeamContinuity;
           if (aPC1.IsNull())
           {
@@ -488,12 +512,12 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
       {
         if (aHasUV)
           aBB.UpdateEdge(anEdge, aPC1, aPC2,
-                         aFace.Surface, TopLoc_Location(), anEdgeEnt.Tolerance,
+                         aFaceSurface, TopLoc_Location(), anEdgeEnt.Tolerance,
                          aUV1, aUV2);
         else
           aBB.UpdateEdge(anEdge, aPC1, aPC2,
-                         aFace.Surface, TopLoc_Location(), anEdgeEnt.Tolerance);
-        aBB.Range(anEdge, aFace.Surface, TopLoc_Location(), aPCFirst, aPCLast);
+                         aFaceSurface, TopLoc_Location(), anEdgeEnt.Tolerance);
+        aBB.Range(anEdge, aFaceSurface, TopLoc_Location(), aPCFirst, aPCLast);
 
         // Restore seam continuity (UpdateEdge creates CurveOnClosedSurface with C0).
         if (aSeamContinuity != GeomAbs_C0)
@@ -505,7 +529,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
             for (occ::handle<BRep_CurveRepresentation>& aCR : aTEdge->ChangeCurves())
             {
               if (!aCR.IsNull() && aCR->IsCurveOnClosedSurface()
-                  && aCR->IsCurveOnSurface(aFace.Surface, TopLoc_Location()))
+                  && aCR->IsCurveOnSurface(aFaceSurface, TopLoc_Location()))
               {
                 occ::down_cast<BRep_CurveOnClosedSurface>(aCR)->Continuity(aSeamContinuity);
                 break;
@@ -518,38 +542,43 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
       {
         if (aHasUV)
           aBB.UpdateEdge(anEdge, aPC1,
-                         aFace.Surface, TopLoc_Location(), anEdgeEnt.Tolerance,
+                         aFaceSurface, TopLoc_Location(), anEdgeEnt.Tolerance,
                          aUV1, aUV2);
         else
           aBB.UpdateEdge(anEdge, aPC1,
-                         aFace.Surface, TopLoc_Location(), anEdgeEnt.Tolerance);
-        aBB.Range(anEdge, aFace.Surface, TopLoc_Location(), aPCFirst, aPCLast);
+                         aFaceSurface, TopLoc_Location(), anEdgeEnt.Tolerance);
+        aBB.Range(anEdge, aFaceSurface, TopLoc_Location(), aPCFirst, aPCLast);
       }
       else if (!aPC2.IsNull())
       {
         aBB.UpdateEdge(anEdge, aPC2,
-                       aFace.Surface, TopLoc_Location(), anEdgeEnt.Tolerance);
-        aBB.Range(anEdge, aFace.Surface, TopLoc_Location(), aPCFirst, aPCLast);
+                       aFaceSurface, TopLoc_Location(), anEdgeEnt.Tolerance);
+        aBB.Range(anEdge, aFaceSurface, TopLoc_Location(), aPCFirst, aPCLast);
       }
 
       // Attach PolygonOnSurface from CoEdge.
-      if (!aCoEdge.PolygonOnSurf.IsNull())
-        aBB.UpdateEdge(anEdge, aCoEdge.PolygonOnSurf, aFace.Surface, TopLoc_Location());
+      if (aCoEdge.Polygon2DRepIdx >= 0)
+      {
+        const occ::handle<Poly_Polygon2D>& aPolyOnSurf =
+          theStorage.Polygon2DRep(aCoEdge.Polygon2DRepIdx).Polygon;
+        if (!aPolyOnSurf.IsNull())
+          aBB.UpdateEdge(anEdge, aPolyOnSurf, aFaceSurface, TopLoc_Location());
+      }
 
       // Attach PolygonOnTriangulation from CoEdge.
-      for (int aPolyTriIdx = 0; aPolyTriIdx < aCoEdge.PolygonsOnTri.Length(); ++aPolyTriIdx)
+      for (int aPolyTriIdx = 0; aPolyTriIdx < aCoEdge.PolygonOnTriRepIdxs.Length(); ++aPolyTriIdx)
       {
-        const BRepGraphInc::CoEdgeEntity::PolyOnTriEntry& aPolyTriEntry =
-          aCoEdge.PolygonsOnTri.Value(aPolyTriIdx);
-        if (aPolyTriEntry.Polygon.IsNull())
+        const int aPolyOnTriRepIdx = aCoEdge.PolygonOnTriRepIdxs.Value(aPolyTriIdx);
+        if (aPolyOnTriRepIdx < 0)
           continue;
-        if (aPolyTriEntry.TriangulationIndex < aFace.Triangulations.Length())
-        {
-          const occ::handle<Poly_Triangulation>& aTri =
-            aFace.Triangulations.Value(aPolyTriEntry.TriangulationIndex);
-          if (!aTri.IsNull())
-            aBB.UpdateEdge(anEdge, aPolyTriEntry.Polygon, aTri, TopLoc_Location());
-        }
+        const BRepGraphInc::PolygonOnTriRep& aPolyOnTriRep =
+          theStorage.PolygonOnTriRep(aPolyOnTriRepIdx);
+        if (aPolyOnTriRep.Polygon.IsNull() || aPolyOnTriRep.TriangulationRepIdx < 0)
+          continue;
+        const occ::handle<Poly_Triangulation>& aTri =
+          theStorage.TriangulationRep(aPolyOnTriRep.TriangulationRepIdx).Triangulation;
+        if (!aTri.IsNull())
+          aBB.UpdateEdge(anEdge, aPolyOnTriRep.Polygon, aTri, TopLoc_Location());
       }
 
     }

@@ -181,6 +181,13 @@ public:
   //! @param[in] theIdx zero-based coedge definition index
   Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::CoEdgeDef> MutCoEdge(int theIdx);
 
+  //! Create a new Curve2DRep in storage and return its index.
+  //! Use this when assigning a new PCurve to an existing CoEdge entity
+  //! via MutCoEdge().
+  //! @param[in] theCurve2d the 2D parametric curve handle
+  //! @return index into Curve2DRep storage, or -1 if the curve is null
+  Standard_EXPORT int CreateCurve2DRep(const occ::handle<Geom2d_Curve>& theCurve2d);
+
   //! Return scoped mutable comp-solid definition guard.
   //! @param[in] theIdx zero-based comp-solid definition index
   Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::CompSolidDef> MutCompSolid(int theIdx);

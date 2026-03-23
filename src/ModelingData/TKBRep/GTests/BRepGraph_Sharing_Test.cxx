@@ -67,8 +67,8 @@ TEST_F(BRepGraphSharingTest, FaceDef_EachHasValidSurface)
   for (int anIdx = 0; anIdx < myGraph.Defs().NbFaces(); ++anIdx)
   {
     const BRepGraph_TopoNode::FaceDef& aDef = myGraph.Defs().Face(anIdx);
-    EXPECT_FALSE(aDef.Surface.IsNull())
-      << "Face def " << anIdx << " has null surface";
+    EXPECT_GE(aDef.SurfaceRepIdx, 0)
+      << "Face def " << anIdx << " has no surface rep";
   }
 }
 

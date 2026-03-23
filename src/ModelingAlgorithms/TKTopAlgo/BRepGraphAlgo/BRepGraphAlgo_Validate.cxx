@@ -380,11 +380,11 @@ void checkGeometryReferences(const BRepGraph&                                   
     if (anEdge.IsRemoved)
       continue;
 
-    if (!anEdge.IsDegenerate && anEdge.Curve3d.IsNull())
+    if (!anEdge.IsDegenerate && anEdge.Curve3DRepIdx < 0)
     {
       theIssues.Append(Issue{Severity::Error,
                              anEdge.Id,
-                             "Non-degenerate EdgeDef has null Curve3d handle"});
+                             "Non-degenerate EdgeDef has no Curve3D representation"});
     }
 
   }
@@ -396,11 +396,11 @@ void checkGeometryReferences(const BRepGraph&                                   
     if (aCoEdge.IsRemoved)
       continue;
 
-    if (aCoEdge.FaceDefId.IsValid() && aCoEdge.Curve2d.IsNull())
+    if (aCoEdge.FaceDefId.IsValid() && aCoEdge.Curve2DRepIdx < 0)
     {
       theIssues.Append(Issue{Severity::Error,
                              aCoEdge.Id,
-                             "CoEdgeDef has null Curve2d handle"});
+                             "CoEdgeDef has no Curve2D representation"});
     }
   }
 }

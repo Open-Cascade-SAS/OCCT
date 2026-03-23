@@ -50,11 +50,16 @@ TEST(BRepGraphGeometry, Sphere_AllFaces_SameSurface)
 
   // All face defs of a sphere share the same surface handle.
   ASSERT_GE(aGraph.Defs().NbFaces(), 1);
-  const occ::handle<Geom_Surface>& aFirstSurf = aGraph.Defs().Face(0).Surface;
+  const auto& aFirstFace = aGraph.Defs().Face(0);
+  ASSERT_GE(aFirstFace.SurfaceRepIdx, 0);
+  const occ::handle<Geom_Surface>& aFirstSurf =
+    aGraph.Defs().SurfaceRep(aFirstFace.SurfaceRepIdx).Surface;
   EXPECT_FALSE(aFirstSurf.IsNull());
   for (int i = 1; i < aGraph.Defs().NbFaces(); ++i)
   {
-    EXPECT_EQ(aGraph.Defs().Face(i).Surface.get(), aFirstSurf.get());
+    const auto& aFace = aGraph.Defs().Face(i);
+    ASSERT_GE(aFace.SurfaceRepIdx, 0);
+    EXPECT_EQ(aGraph.Defs().SurfaceRep(aFace.SurfaceRepIdx).Surface.get(), aFirstSurf.get());
   }
 }
 
@@ -65,12 +70,17 @@ TEST(BRepGraphGeometry, Sphere_AllFacesShareSurface)
   ASSERT_TRUE(aGraph.IsDone());
 
   // All faces of a sphere share the same surface pointer.
-  const occ::handle<Geom_Surface>& aFirstSurf = aGraph.Defs().Face(0).Surface;
+  const auto& aFirstFace2 = aGraph.Defs().Face(0);
+  ASSERT_GE(aFirstFace2.SurfaceRepIdx, 0);
+  const occ::handle<Geom_Surface>& aFirstSurf =
+    aGraph.Defs().SurfaceRep(aFirstFace2.SurfaceRepIdx).Surface;
   EXPECT_FALSE(aFirstSurf.IsNull());
   int aSameCount = 0;
   for (int i = 0; i < aGraph.Defs().NbFaces(); ++i)
   {
-    if (aGraph.Defs().Face(i).Surface.get() == aFirstSurf.get())
+    const auto& aFace = aGraph.Defs().Face(i);
+    if (aFace.SurfaceRepIdx >= 0
+        && aGraph.Defs().SurfaceRep(aFace.SurfaceRepIdx).Surface.get() == aFirstSurf.get())
       ++aSameCount;
   }
   EXPECT_EQ(aSameCount, aGraph.Defs().NbFaces());
@@ -85,7 +95,7 @@ TEST(BRepGraphGeometry, Box_Curve3d_ValidForAll12Edges)
 
   for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
   {
-    EXPECT_FALSE(aGraph.Defs().Edge(i).Curve3d.IsNull())
+    EXPECT_FALSE(aGraph.Defs().Edge(i).Curve3DRepIdx < 0)
       << "Edge def " << i << " has no valid curve";
   }
 }
@@ -98,7 +108,7 @@ TEST(BRepGraphGeometry, Box_AllEdgesHaveCurve3d)
 
   for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
   {
-    EXPECT_FALSE(aGraph.Defs().Edge(i).Curve3d.IsNull())
+    EXPECT_FALSE(aGraph.Defs().Edge(i).Curve3DRepIdx < 0)
       << "Edge " << i << " has no curve";
   }
 }
@@ -200,7 +210,7 @@ TEST(BRepGraphGeometry, FaceDef_Surface_IsNotNull)
 
   for (int i = 0; i < aGraph.Defs().NbFaces(); ++i)
   {
-    EXPECT_FALSE(aGraph.Defs().Face(i).Surface.IsNull())
+    EXPECT_FALSE(aGraph.Defs().Face(i).SurfaceRepIdx < 0)
       << "Face " << i << " has null Surface handle";
   }
 }
@@ -213,7 +223,7 @@ TEST(BRepGraphGeometry, EdgeDef_Curve3d_IsNotNull)
 
   for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
   {
-    EXPECT_FALSE(aGraph.Defs().Edge(i).Curve3d.IsNull())
+    EXPECT_FALSE(aGraph.Defs().Edge(i).Curve3DRepIdx < 0)
       << "Edge " << i << " has null Curve3d handle";
   }
 }
@@ -286,7 +296,10 @@ TEST(BRepGraphGeometry, FaceDef_Triangulation_NullForAnalyticNoCrash)
   for (int i = 0; i < aGraph.Defs().NbFaces(); ++i)
   {
     const BRepGraph_TopoNode::FaceDef& aFaceDef = aGraph.Defs().Face(i);
-    EXPECT_TRUE(aFaceDef.ActiveTriangulation().IsNull())
+    const int anActiveTriIdx = aFaceDef.ActiveTriangulationRepIdx();
+    const bool hasActiveTri = anActiveTriIdx >= 0
+      && !aGraph.Defs().TriangulationRep(anActiveTriIdx).Triangulation.IsNull();
+    EXPECT_FALSE(hasActiveTri)
       << "Face " << i << " unexpectedly has a triangulation";
   }
 }
@@ -409,7 +422,7 @@ TEST(BRepGraphIterator, FaceDef_AllSurfacesNonNull)
   int aCount = 0;
   for (BRepGraph_Iterator<BRepGraph_TopoNode::FaceDef> anIt(aGraph); anIt.More(); anIt.Next())
   {
-    EXPECT_FALSE(anIt.Current().Surface.IsNull());
+    EXPECT_GE(anIt.Current().SurfaceRepIdx, 0);
     ++aCount;
   }
   EXPECT_EQ(aCount, aGraph.Defs().NbFaces());
@@ -425,7 +438,7 @@ TEST(BRepGraphIterator, EdgeDef_AllCurves3dNonNull)
   for (BRepGraph_Iterator<BRepGraph_TopoNode::EdgeDef> anIt(aGraph); anIt.More(); anIt.Next())
   {
     if (!anIt.Current().IsDegenerate)
-      EXPECT_FALSE(anIt.Current().Curve3d.IsNull());
+      EXPECT_GE(anIt.Current().Curve3DRepIdx, 0);
     ++aCount;
   }
   EXPECT_EQ(aCount, aGraph.Defs().NbEdges());
@@ -444,7 +457,7 @@ TEST(BRepGraphIterator, AllCoEdgesHaveCurve2d)
     for (int j = 0; j < aCoEdgeIdxs.Length(); ++j)
     {
       const BRepGraphInc::CoEdgeEntity& aCE = aGraph.Defs().CoEdge(aCoEdgeIdxs.Value(j));
-      EXPECT_FALSE(aCE.Curve2d.IsNull());
+      EXPECT_GE(aCE.Curve2DRepIdx, 0);
       ++aCount;
     }
   }
@@ -734,18 +747,16 @@ TEST(BRepGraphRepresentations, Box_RepCounts_MatchTopology)
     EXPECT_GE(aFace.SurfaceRepIdx, 0) << "Face " << i << " has no SurfaceRepIdx";
     const auto& aSurfRep = aGraph.Defs().SurfaceRep(aFace.SurfaceRepIdx);
     EXPECT_FALSE(aSurfRep.Surface.IsNull());
-    EXPECT_EQ(aSurfRep.Surface.get(), aFace.Surface.get());
   }
 
   // Every non-degenerate edge has a valid Curve3DRepIdx.
   for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
   {
     const auto& anEdge = aGraph.Defs().Edge(i);
-    if (!anEdge.IsDegenerate && !anEdge.Curve3d.IsNull())
+    if (!anEdge.IsDegenerate && anEdge.Curve3DRepIdx >= 0)
     {
-      EXPECT_GE(anEdge.Curve3DRepIdx, 0) << "Edge " << i << " has no Curve3DRepIdx";
       const auto& aCurveRep = aGraph.Defs().Curve3DRep(anEdge.Curve3DRepIdx);
-      EXPECT_EQ(aCurveRep.Curve.get(), anEdge.Curve3d.get());
+      EXPECT_FALSE(aCurveRep.Curve.IsNull());
     }
   }
 
@@ -753,11 +764,10 @@ TEST(BRepGraphRepresentations, Box_RepCounts_MatchTopology)
   for (int i = 0; i < aGraph.Defs().NbCoEdges(); ++i)
   {
     const auto& aCoEdge = aGraph.Defs().CoEdge(i);
-    if (!aCoEdge.Curve2d.IsNull())
+    if (aCoEdge.Curve2DRepIdx >= 0)
     {
-      EXPECT_GE(aCoEdge.Curve2DRepIdx, 0) << "CoEdge " << i << " has no Curve2DRepIdx";
       const auto& aCurve2DRep = aGraph.Defs().Curve2DRep(aCoEdge.Curve2DRepIdx);
-      EXPECT_EQ(aCurve2DRep.Curve.get(), aCoEdge.Curve2d.get());
+      EXPECT_FALSE(aCurve2DRep.Curve.IsNull());
     }
   }
 }
@@ -789,16 +799,14 @@ TEST(BRepGraphRepresentations, Cylinder_TriangulationReps_Populated)
   for (int i = 0; i < aGraph.Defs().NbFaces(); ++i)
   {
     const auto& aFace = aGraph.Defs().Face(i);
-    if (!aFace.Triangulations.IsEmpty())
+    if (!aFace.TriangulationRepIdxs.IsEmpty())
     {
-      EXPECT_EQ(aFace.TriangulationRepIdxs.Length(), aFace.Triangulations.Length())
-        << "TriangulationRepIdxs count should match Triangulations count for face " << i;
       for (int j = 0; j < aFace.TriangulationRepIdxs.Length(); ++j)
       {
         const int aRepIdx = aFace.TriangulationRepIdxs.Value(j);
         EXPECT_GE(aRepIdx, 0);
         const auto& aTriRep = aGraph.Defs().TriangulationRep(aRepIdx);
-        EXPECT_EQ(aTriRep.Triangulation.get(), aFace.Triangulations.Value(j).get());
+        EXPECT_FALSE(aTriRep.Triangulation.IsNull());
       }
     }
   }
@@ -848,9 +856,9 @@ TEST(BRepGraphRepresentations, Compound_TwoBoxes_SurfaceDedup)
   for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
   {
     const auto& anEdge = aGraph.Defs().Edge(i);
-    if (!anEdge.IsDegenerate && !anEdge.Curve3d.IsNull())
+    if (!anEdge.IsDegenerate && anEdge.Curve3DRepIdx >= 0)
     {
-      EXPECT_GE(anEdge.Curve3DRepIdx, 0);
+      EXPECT_FALSE(aGraph.Defs().Curve3DRep(anEdge.Curve3DRepIdx).Curve.IsNull());
     }
   }
 }
@@ -861,25 +869,22 @@ TEST(BRepGraphRepresentations, Box_Polygon2DRep_MatchesInline)
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  // Every coedge with a PolygonOnSurf has a matching Polygon2DRepIdx.
+  // Every coedge with a Polygon2DRepIdx has a valid polygon rep.
   for (int i = 0; i < aGraph.Defs().NbCoEdges(); ++i)
   {
     const auto& aCoEdge = aGraph.Defs().CoEdge(i);
-    if (!aCoEdge.PolygonOnSurf.IsNull())
+    if (aCoEdge.Polygon2DRepIdx >= 0)
     {
-      EXPECT_GE(aCoEdge.Polygon2DRepIdx, 0) << "CoEdge " << i << " has PolygonOnSurf but no rep";
       const auto& aRep = aGraph.Defs().Polygon2DRep(aCoEdge.Polygon2DRepIdx);
-      EXPECT_EQ(aRep.Polygon.get(), aCoEdge.PolygonOnSurf.get());
+      EXPECT_FALSE(aRep.Polygon.IsNull()) << "CoEdge " << i << " has Polygon2DRepIdx but null polygon";
     }
-    // PolygonOnTriRepIdxs count must match PolygonsOnTri count.
-    EXPECT_EQ(aCoEdge.PolygonOnTriRepIdxs.Length(), aCoEdge.PolygonsOnTri.Length())
-      << "CoEdge " << i << " PolygonOnTriRepIdxs/PolygonsOnTri length mismatch";
+    // PolygonOnTriRepIdxs should have valid rep entries.
     for (int j = 0; j < aCoEdge.PolygonOnTriRepIdxs.Length(); ++j)
     {
       const int aRepIdx = aCoEdge.PolygonOnTriRepIdxs.Value(j);
       EXPECT_GE(aRepIdx, 0);
       const auto& aRep = aGraph.Defs().PolygonOnTriRep(aRepIdx);
-      EXPECT_EQ(aRep.Polygon.get(), aCoEdge.PolygonsOnTri.Value(j).Polygon.get());
+      EXPECT_FALSE(aRep.Polygon.IsNull());
       // TriangulationRepIdx should be valid (global index).
       EXPECT_GE(aRep.TriangulationRepIdx, 0);
     }

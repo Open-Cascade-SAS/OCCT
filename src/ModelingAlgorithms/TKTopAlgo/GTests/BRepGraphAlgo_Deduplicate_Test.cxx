@@ -75,9 +75,9 @@ int nbUniqueFaceSurfaceDefs(const BRepGraph& theGraph)
   for (int aFaceIdx = 0; aFaceIdx < theGraph.Defs().NbFaces(); ++aFaceIdx)
   {
     const BRepGraph_TopoNode::FaceDef& aFaceDef = theGraph.Defs().Face(aFaceIdx);
-    if (!aFaceDef.Surface.IsNull())
+    if (aFaceDef.SurfaceRepIdx >= 0)
     {
-      aSurfSet.Add(aFaceDef.Surface.get());
+      aSurfSet.Add(theGraph.Defs().SurfaceRep(aFaceDef.SurfaceRepIdx).Surface.get());
     }
   }
   return aSurfSet.Extent();
@@ -91,9 +91,9 @@ int nbUniqueEdgeCurveDefs(const BRepGraph& theGraph)
   for (int anEdgeIdx = 0; anEdgeIdx < theGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
     const BRepGraph_TopoNode::EdgeDef& anEdgeDef = theGraph.Defs().Edge(anEdgeIdx);
-    if (!anEdgeDef.Curve3d.IsNull())
+    if (anEdgeDef.Curve3DRepIdx >= 0)
     {
-      aCurveSet.Add(anEdgeDef.Curve3d.get());
+      aCurveSet.Add(theGraph.Defs().Curve3DRep(anEdgeDef.Curve3DRepIdx).Curve.get());
     }
   }
   return aCurveSet.Extent();
@@ -259,14 +259,16 @@ int addDuplicatePCurvesToAllEdges(BRepGraph& theGraph)
     }
 
     const BRepGraphInc::CoEdgeEntity& aCE = theGraph.Defs().CoEdge(aCoEdgeIdxs.Value(0));
-    if (aCE.Curve2d.IsNull())
+    if (aCE.Curve2DRepIdx < 0)
     {
       continue;
     }
 
+    const occ::handle<Geom2d_Curve>& aDupPCurve =
+      theGraph.Defs().Curve2DRep(aCE.Curve2DRepIdx).Curve;
     theGraph.Mut().AddPCurveToEdge(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, anEdgeIdx),
                                    aCE.FaceDefId,
-                                   aCE.Curve2d,
+                                   aDupPCurve,
                                    aCE.ParamFirst,
                                    aCE.ParamLast,
                                    aCE.Sense);
@@ -561,9 +563,9 @@ TEST(BRepGraphAlgo_DeduplicateTest, AfterDedup_AllCopiedFacesShareCanonicalSurfa
   for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
   {
     const BRepGraph_TopoNode::FaceDef& aFaceDef = aGraph.Defs().Face(aFaceIdx);
-    if (!aFaceDef.Surface.IsNull())
+    if (aFaceDef.SurfaceRepIdx >= 0)
     {
-      aSurfIds.Add(aFaceDef.Surface.get());
+      aSurfIds.Add(aGraph.Defs().SurfaceRep(aFaceDef.SurfaceRepIdx).Surface.get());
     }
   }
   EXPECT_EQ(aSurfIds.Extent(), 1);
@@ -958,7 +960,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, AfterDedup_AllSurfacesValid)
   for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
   {
     const BRepGraph_TopoNode::FaceDef& aFaceDef = aGraph.Defs().Face(aFaceIdx);
-    EXPECT_FALSE(aFaceDef.Surface.IsNull())
+    EXPECT_FALSE(aFaceDef.SurfaceRepIdx < 0)
       << "Face " << aFaceIdx << " has null Surface after dedup";
   }
 }
@@ -976,7 +978,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, AfterDedup_AllCurve3dsValid)
     const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.Defs().Edge(anEdgeIdx);
     if (!anEdgeDef.IsDegenerate)
     {
-      EXPECT_FALSE(anEdgeDef.Curve3d.IsNull())
+      EXPECT_FALSE(anEdgeDef.Curve3DRepIdx < 0)
         << "Edge " << anEdgeIdx << " has null Curve3d after dedup";
     }
   }
@@ -1001,7 +1003,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, AfterDedup_AllInlinePCurvesHaveCurve2d)
     for (int aCEIter = 0; aCEIter < aCoEdgeIdxs.Length(); ++aCEIter)
     {
       const BRepGraphInc::CoEdgeEntity& aCE = aGraph.Defs().CoEdge(aCoEdgeIdxs.Value(aCEIter));
-      EXPECT_FALSE(aCE.Curve2d.IsNull())
+      EXPECT_FALSE(aCE.Curve2DRepIdx < 0)
         << "Edge " << anEdgeIdx << " CoEdge " << aCEIter << " has null Curve2d after dedup";
     }
   }
@@ -1019,7 +1021,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, AfterDedup_CanonicalSurfaceGeomNotNull)
   for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
   {
     const BRepGraph_TopoNode::FaceDef& aFaceDef = aGraph.Defs().Face(aFaceIdx);
-    EXPECT_FALSE(aFaceDef.Surface.IsNull())
+    EXPECT_FALSE(aFaceDef.SurfaceRepIdx < 0)
       << "Face " << aFaceIdx << " has null Surface after dedup";
   }
 }
@@ -1037,7 +1039,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, AfterDedup_CanonicalCurveGeomNotNull)
     const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.Defs().Edge(anEdgeIdx);
     if (!anEdgeDef.IsDegenerate)
     {
-      EXPECT_FALSE(anEdgeDef.Curve3d.IsNull())
+      EXPECT_FALSE(anEdgeDef.Curve3DRepIdx < 0)
         << "Edge " << anEdgeIdx << " has null Curve3d after dedup";
     }
   }
@@ -1306,7 +1308,8 @@ TEST(BRepGraphAlgo_DeduplicateTest, TwoCopiedSphereFaces_Deduped)
   EXPECT_EQ(aRes.NbCanonicalSurfaces, 1);
   EXPECT_EQ(aRes.NbSurfaceRewrites, 1);
   // After dedup, both sphere faces share the same surface pointer.
-  EXPECT_EQ(aGraph.Defs().Face(0).Surface.get(), aGraph.Defs().Face(1).Surface.get());
+  EXPECT_EQ(aGraph.Defs().SurfaceRep(aGraph.Defs().Face(0).SurfaceRepIdx).Surface.get(),
+            aGraph.Defs().SurfaceRep(aGraph.Defs().Face(1).SurfaceRepIdx).Surface.get());
   EXPECT_GT(aRes.NbHistoryRecords, 0);
 }
 
@@ -1422,12 +1425,14 @@ TEST(BRepGraphAlgo_DeduplicateTest, BackRefs_SurfaceRewrite_UpdatesFaceDefUsers)
 
   // Before dedup: each face has its own surface handle.
   ASSERT_EQ(aGraph.Defs().NbFaces(), 2);
-  EXPECT_NE(aGraph.Defs().Face(0).Surface.get(), aGraph.Defs().Face(1).Surface.get());
+  EXPECT_NE(aGraph.Defs().SurfaceRep(aGraph.Defs().Face(0).SurfaceRepIdx).Surface.get(),
+            aGraph.Defs().SurfaceRep(aGraph.Defs().Face(1).SurfaceRepIdx).Surface.get());
 
   (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
 
   // After dedup: both faces share the same canonical surface pointer.
-  EXPECT_EQ(aGraph.Defs().Face(0).Surface.get(), aGraph.Defs().Face(1).Surface.get());
+  EXPECT_EQ(aGraph.Defs().SurfaceRep(aGraph.Defs().Face(0).SurfaceRepIdx).Surface.get(),
+            aGraph.Defs().SurfaceRep(aGraph.Defs().Face(1).SurfaceRepIdx).Surface.get());
 }
 
 TEST(BRepGraphAlgo_DeduplicateTest, BackRefs_CurveRewrite_UpdatesEdgeDefUsers)
@@ -1446,7 +1451,11 @@ TEST(BRepGraphAlgo_DeduplicateTest, BackRefs_CurveRewrite_UpdatesEdgeDefUsers)
   NCollection_Map<const Geom_Curve*> aDistinctCurves;
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    const occ::handle<Geom_Curve>& aCurve = aGraph.Defs().Edge(anEdgeIdx).Curve3d;
+    const auto& anEdgeDedupDef = aGraph.Defs().Edge(anEdgeIdx);
+    const occ::handle<Geom_Curve> aCurve =
+      anEdgeDedupDef.Curve3DRepIdx >= 0
+        ? aGraph.Defs().Curve3DRep(anEdgeDedupDef.Curve3DRepIdx).Curve
+        : occ::handle<Geom_Curve>();
     if (!aCurve.IsNull())
       aDistinctCurves.Add(aCurve.get());
   }
@@ -1464,9 +1473,10 @@ TEST(BRepGraphAlgo_DeduplicateTest, FacesOnSurface_AfterDedup_ReturnsCorrectDefs
 
   // After dedup, all face defs point to the same canonical surface.
   ASSERT_EQ(aGraph.Defs().NbFaces(), 2);
-  EXPECT_FALSE(aGraph.Defs().Face(0).Surface.IsNull());
-  EXPECT_FALSE(aGraph.Defs().Face(1).Surface.IsNull());
-  EXPECT_EQ(aGraph.Defs().Face(0).Surface.get(), aGraph.Defs().Face(1).Surface.get());
+  EXPECT_GE(aGraph.Defs().Face(0).SurfaceRepIdx, 0);
+  EXPECT_GE(aGraph.Defs().Face(1).SurfaceRepIdx, 0);
+  EXPECT_EQ(aGraph.Defs().SurfaceRep(aGraph.Defs().Face(0).SurfaceRepIdx).Surface.get(),
+            aGraph.Defs().SurfaceRep(aGraph.Defs().Face(1).SurfaceRepIdx).Surface.get());
 }
 
 TEST(BRepGraphAlgo_DeduplicateTest, Nullify_OrphanedSurface_HandleIsNull)
@@ -1482,7 +1492,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, Nullify_OrphanedSurface_HandleIsNull)
   // After dedup, both faces share the same canonical surface; all surfaces non-null.
   for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
   {
-    EXPECT_FALSE(aGraph.Defs().Face(aFaceIdx).Surface.IsNull())
+    EXPECT_FALSE(aGraph.Defs().Face(aFaceIdx).SurfaceRepIdx < 0)
       << "Face " << aFaceIdx << " has null Surface after dedup";
   }
 }
@@ -1503,7 +1513,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, Nullify_OrphanedCurve_HandleIsNull)
   {
     if (!aGraph.Defs().Edge(anEdgeIdx).IsDegenerate)
     {
-      EXPECT_FALSE(aGraph.Defs().Edge(anEdgeIdx).Curve3d.IsNull())
+      EXPECT_FALSE(aGraph.Defs().Edge(anEdgeIdx).Curve3DRepIdx < 0)
         << "Edge " << anEdgeIdx << " has null Curve3d after dedup";
     }
   }
@@ -1539,10 +1549,10 @@ TEST(BRepGraphAlgo_DeduplicateTest, AnalyzeOnly_NoBackRefChangesOrNullification)
   // Snapshot surface/curve pointers before.
   NCollection_Vector<const Geom_Surface*> aSurfPtrs;
   for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
-    aSurfPtrs.Append(aGraph.Defs().Face(aFaceIdx).Surface.get());
+    aSurfPtrs.Append(aGraph.Defs().SurfaceRep(aGraph.Defs().Face(aFaceIdx).SurfaceRepIdx).Surface.get());
   NCollection_Vector<const Geom_Curve*> aCurvePtrs;
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
-    aCurvePtrs.Append(aGraph.Defs().Edge(anEdgeIdx).Curve3d.get());
+    aCurvePtrs.Append(aGraph.Defs().Curve3DRep(aGraph.Defs().Edge(anEdgeIdx).Curve3DRepIdx).Curve.get());
 
   BRepGraphAlgo_Deduplicate::Options anOpts;
   anOpts.AnalyzeOnly = true;
@@ -1554,22 +1564,22 @@ TEST(BRepGraphAlgo_DeduplicateTest, AnalyzeOnly_NoBackRefChangesOrNullification)
   // Surface/curve pointers unchanged (analyze only, no rewriting).
   for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
   {
-    EXPECT_EQ(aGraph.Defs().Face(aFaceIdx).Surface.get(), aSurfPtrs.Value(aFaceIdx));
+    EXPECT_EQ(aGraph.Defs().SurfaceRep(aGraph.Defs().Face(aFaceIdx).SurfaceRepIdx).Surface.get(), aSurfPtrs.Value(aFaceIdx));
   }
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    EXPECT_EQ(aGraph.Defs().Edge(anEdgeIdx).Curve3d.get(), aCurvePtrs.Value(anEdgeIdx));
+    EXPECT_EQ(aGraph.Defs().Curve3DRep(aGraph.Defs().Edge(anEdgeIdx).Curve3DRepIdx).Curve.get(), aCurvePtrs.Value(anEdgeIdx));
   }
 
   // All handles still non-null.
   for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
   {
-    EXPECT_FALSE(aGraph.Defs().Face(aFaceIdx).Surface.IsNull());
+    EXPECT_FALSE(aGraph.Defs().Face(aFaceIdx).SurfaceRepIdx < 0);
   }
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
     if (!aGraph.Defs().Edge(anEdgeIdx).IsDegenerate)
-      EXPECT_FALSE(aGraph.Defs().Edge(anEdgeIdx).Curve3d.IsNull());
+      EXPECT_FALSE(aGraph.Defs().Edge(anEdgeIdx).Curve3DRepIdx < 0);
   }
 }
 
@@ -1630,7 +1640,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, Pump_FullDedup_BackRefsAndNullify)
   // After dedup, all face surfaces should be non-null.
   for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
   {
-    EXPECT_FALSE(aGraph.Defs().Face(aFaceIdx).Surface.IsNull())
+    EXPECT_FALSE(aGraph.Defs().Face(aFaceIdx).SurfaceRepIdx < 0)
       << "Face " << aFaceIdx << " has null Surface after dedup";
   }
 
@@ -1639,7 +1649,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, Pump_FullDedup_BackRefsAndNullify)
   {
     if (!aGraph.Defs().Edge(anEdgeIdx).IsDegenerate)
     {
-      EXPECT_FALSE(aGraph.Defs().Edge(anEdgeIdx).Curve3d.IsNull())
+      EXPECT_FALSE(aGraph.Defs().Edge(anEdgeIdx).Curve3DRepIdx < 0)
         << "Edge " << anEdgeIdx << " has null Curve3d after dedup";
     }
   }

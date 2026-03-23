@@ -124,7 +124,7 @@ TEST_F(BRepGraphConvenienceTest, FaceSurface_Valid)
 {
   const BRepGraph::DefsView aDefs = myGraph.Defs();
   ASSERT_GT(aDefs.NbFaces(), 0);
-  EXPECT_FALSE(aDefs.Face(0).Surface.IsNull());
+  EXPECT_GE(aDefs.Face(0).SurfaceRepIdx, 0);
 }
 
 TEST_F(BRepGraphConvenienceTest, FaceSurface_AllBoxFaces)
@@ -132,7 +132,7 @@ TEST_F(BRepGraphConvenienceTest, FaceSurface_AllBoxFaces)
   const BRepGraph::DefsView aDefs = myGraph.Defs();
   for (int aFaceIter = 0; aFaceIter < aDefs.NbFaces(); ++aFaceIter)
   {
-    EXPECT_FALSE(aDefs.Face(aFaceIter).Surface.IsNull())
+    EXPECT_GE(aDefs.Face(aFaceIter).SurfaceRepIdx, 0)
       << "Face " << aFaceIter << " has no surface";
   }
 }
@@ -155,7 +155,7 @@ TEST_F(BRepGraphConvenienceTest, FindPCurve_ValidPair)
         aDefs.FindPCurve(anEdgeDef.Id, aFaceNodeId);
       if (aPCurve != nullptr)
       {
-        EXPECT_FALSE(aPCurve->Curve2d.IsNull());
+        EXPECT_GE(aPCurve->Curve2DRepIdx, 0);
         return;
       }
     }

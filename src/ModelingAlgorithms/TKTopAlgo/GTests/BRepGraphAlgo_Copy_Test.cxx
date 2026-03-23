@@ -105,8 +105,8 @@ TEST(BRepGraphAlgo_CopyTest, CopyBox_GeometryIsIndependent)
   // Deep copy: surface handles must be different objects.
   ASSERT_GT(aGraph.Defs().NbFaces(), 0);
   ASSERT_GT(aCopyGraph.Defs().NbFaces(), 0);
-  EXPECT_NE(aCopyGraph.Defs().Face(0).Surface.get(),
-            aGraph.Defs().Face(0).Surface.get());
+  EXPECT_NE(aCopyGraph.Defs().SurfaceRep(aCopyGraph.Defs().Face(0).SurfaceRepIdx).Surface.get(),
+            aGraph.Defs().SurfaceRep(aGraph.Defs().Face(0).SurfaceRepIdx).Surface.get());
 }
 
 TEST(BRepGraphAlgo_CopyTest, CopyBox_SharedGeometry)
@@ -126,8 +126,8 @@ TEST(BRepGraphAlgo_CopyTest, CopyBox_SharedGeometry)
   // Light copy: surface handles must be the same objects.
   ASSERT_GT(aGraph.Defs().NbFaces(), 0);
   ASSERT_GT(aCopyGraph.Defs().NbFaces(), 0);
-  EXPECT_EQ(aCopyGraph.Defs().Face(0).Surface.get(),
-            aGraph.Defs().Face(0).Surface.get());
+  EXPECT_EQ(aCopyGraph.Defs().SurfaceRep(aCopyGraph.Defs().Face(0).SurfaceRepIdx).Surface.get(),
+            aGraph.Defs().SurfaceRep(aGraph.Defs().Face(0).SurfaceRepIdx).Surface.get());
 }
 
 TEST(BRepGraphAlgo_CopyTest, CopyCylinder_FaceCount)

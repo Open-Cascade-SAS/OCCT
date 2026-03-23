@@ -158,14 +158,11 @@ struct VertexEntity : public BaseEntity
   }
 };
 
-//! Edge entity: 3D curve, parameter range, boundary vertices, flags, polygon.
-//! PCurve, polygon-on-surface/triangulation, and regularity entries stored inline.
+//! Edge entity: parameter range, boundary vertices, flags.
+//! Geometry (curve, polygon) accessed via rep indices into Storage vectors.
 struct EdgeEntity : public BaseEntity
 {
-  //! 3D curve geometry (direct handle, null for degenerate edges).
-  occ::handle<Geom_Curve> Curve3d;
-
-  //! Representation index into Storage::myCurves3D (-1 if no 3D curve).
+  //! Representation index into Storage::myCurves3D (-1 for degenerate edges).
   int Curve3DRepIdx = -1;
 
   //! Curve parameter range.
@@ -204,9 +201,6 @@ struct EdgeEntity : public BaseEntity
   {
     return EndVertexIdx >= 0 ? BRepGraph_NodeId::Vertex(EndVertexIdx) : BRepGraph_NodeId();
   }
-
-  //! Optional 3D polygon discretization (stored inline, not as a graph node).
-  occ::handle<Poly_Polygon3D> Polygon3D;
 
   //! Representation index into Storage::myPolygons3D (-1 if no polygon).
   int Polygon3DRepIdx = -1;
@@ -259,10 +253,7 @@ struct CoEdgeEntity : public BaseEntity
   BRepGraph_NodeId   FaceDefId;              //!< Face this coedge belongs to (invalid for free wires)
   TopAbs_Orientation Sense = TopAbs_FORWARD; //!< Orientation relative to parent edge
 
-  //! PCurve data (null for free-wire coedges without face context).
-  occ::handle<Geom2d_Curve> Curve2d;
-
-  //! Representation index into Storage::myCurves2D (-1 if no PCurve).
+  //! Representation index into Storage::myCurves2D (-1 for free-wire coedges).
   int Curve2DRepIdx = -1;
   double               ParamFirst = 0.0;
   double               ParamLast  = 0.0;
@@ -274,26 +265,14 @@ struct CoEdgeEntity : public BaseEntity
   int                  SeamPairIdx = -1;
   GeomAbs_Shape        SeamContinuity = GeomAbs_C0; //!< Continuity between seam pair
 
-  //! Polygon-on-surface for this face context.
-  occ::handle<Poly_Polygon2D> PolygonOnSurf;
-
   //! Representation index into Storage::myPolygons2D (-1 if no polygon-on-surface).
   int Polygon2DRepIdx = -1;
-
-  //! Polygon-on-triangulation entries for this face context.
-  struct PolyOnTriEntry
-  {
-    occ::handle<Poly_PolygonOnTriangulation> Polygon;
-    int                                 TriangulationIndex = 0;
-  };
-  NCollection_Vector<PolyOnTriEntry> PolygonsOnTri;
 
   //! Representation indices into Storage::myPolygonsOnTri.
   NCollection_Vector<int> PolygonOnTriRepIdxs;
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
-    BRepGraphInc_InitVec(PolygonsOnTri, theAlloc, 2);
     BRepGraphInc_InitVec(PolygonOnTriRepIdxs, theAlloc, 2);
   }
 };
@@ -313,13 +292,9 @@ struct WireEntity : public BaseEntity
 //! Face entity: surface, triangulations, wires.
 struct FaceEntity : public BaseEntity
 {
-  occ::handle<Geom_Surface> Surface;
-  NCollection_Vector<occ::handle<Poly_Triangulation>> Triangulations;
-  int    ActiveTriangulationIndex = -1;
-
-  //! Representation indices into Storage rep vectors.
   int SurfaceRepIdx = -1;                       //!< Index into mySurfaces
   NCollection_Vector<int> TriangulationRepIdxs;  //!< Indices into myTriangulations
+  int    ActiveTriangulationIndex = -1;
 
   //! Convenience: active triangulation rep index, or -1.
   int ActiveTriangulationRepIdx() const
@@ -332,14 +307,6 @@ struct FaceEntity : public BaseEntity
   double Tolerance = 0.0;
   bool   NaturalRestriction = false;
 
-  //! Convenience: return the active triangulation handle, or null if none.
-  occ::handle<Poly_Triangulation> ActiveTriangulation() const
-  {
-    if (ActiveTriangulationIndex >= 0 && ActiveTriangulationIndex < Triangulations.Length())
-      return Triangulations.Value(ActiveTriangulationIndex);
-    return occ::handle<Poly_Triangulation>();
-  }
-
   //! Wire references: outer wire first (if present), then inner wires.
   NCollection_Vector<WireRef> WireRefs;
 
@@ -348,7 +315,6 @@ struct FaceEntity : public BaseEntity
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
-    BRepGraphInc_InitVec(Triangulations, theAlloc, 2);        // typically 1
     BRepGraphInc_InitVec(TriangulationRepIdxs, theAlloc, 2);  // typically 1
     BRepGraphInc_InitVec(WireRefs, theAlloc, 2);              // typically 1-2 (outer + holes)
     BRepGraphInc_InitVec(VertexRefs, theAlloc, 2);            // typically 0

@@ -37,7 +37,7 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
   // Copy all data from the original EdgeDef before appending to vectors (which may reallocate).
   const BRepGraph_TopoNode::EdgeDef& anOrig = theGraph.myData->myIncStorage.Edge(theEdgeDef.Index);
 
-  const occ::handle<Geom_Curve> aOrigCurve3d        = anOrig.Curve3d;
+  const int              aOrigCurve3DRepIdx    = anOrig.Curve3DRepIdx;
   const double           aOrigTolerance        = anOrig.Tolerance;
   const bool             aOrigSameParameter    = anOrig.SameParameter;
   const double           aOrigParamFirst       = anOrig.ParamFirst;
@@ -67,7 +67,7 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
   // Set SubA: StartVertex -> SplitVertex, [ParamFirst, theSplitParam].
   {
     BRepGraph_TopoNode::EdgeDef& aSubA = theGraph.myData->myIncStorage.ChangeEdge(aSubAIdx);
-    aSubA.Curve3d          = aOrigCurve3d;
+    aSubA.Curve3DRepIdx    = aOrigCurve3DRepIdx;
     aSubA.Tolerance        = aOrigTolerance;
     aSubA.SameParameter    = aOrigSameParameter;
     aSubA.SameRange        = false;
@@ -81,7 +81,7 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
   // Set SubB: SplitVertex -> EndVertex, [theSplitParam, ParamLast].
   {
     BRepGraph_TopoNode::EdgeDef& aSubB = theGraph.myData->myIncStorage.ChangeEdge(aSubBIdx);
-    aSubB.Curve3d          = aOrigCurve3d;
+    aSubB.Curve3DRepIdx    = aOrigCurve3DRepIdx;
     aSubB.Tolerance        = aOrigTolerance;
     aSubB.SameParameter    = aOrigSameParameter;
     aSubB.SameRange        = false;
@@ -183,7 +183,7 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
     aCoEdgeSubA.EdgeIdx    = aSubAIdx;
     aCoEdgeSubA.FaceDefId  = aCE.FaceDefId;
     aCoEdgeSubA.Sense      = aCE.Sense;
-    aCoEdgeSubA.Curve2d    = aCE.Curve2d;
+    aCoEdgeSubA.Curve2DRepIdx = aCE.Curve2DRepIdx;
     aCoEdgeSubA.ParamFirst = aCE.ParamFirst;
     aCoEdgeSubA.ParamLast  = aPCSplit;
     aCoEdgeSubA.Continuity = aCE.Continuity;
@@ -195,34 +195,39 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
     aCoEdgeSubB.EdgeIdx    = aSubBIdx;
     aCoEdgeSubB.FaceDefId  = aCE.FaceDefId;
     aCoEdgeSubB.Sense      = aCE.Sense;
-    aCoEdgeSubB.Curve2d    = aCE.Curve2d;
+    aCoEdgeSubB.Curve2DRepIdx = aCE.Curve2DRepIdx;
     aCoEdgeSubB.ParamFirst = aPCSplit;
     aCoEdgeSubB.ParamLast  = aCE.ParamLast;
     aCoEdgeSubB.Continuity = aCE.Continuity;
   }
 
   // Register TopoDS shapes for sub-edges so OriginalOf() works in downstream algorithms.
-  if (!aOrigCurve3d.IsNull())
+  if (aOrigCurve3DRepIdx >= 0)
   {
-    BRep_Builder aBB;
+    const occ::handle<Geom_Curve>& aOrigCurve3d =
+      theGraph.myData->myIncStorage.Curve3DRep(aOrigCurve3DRepIdx).Curve;
+    if (!aOrigCurve3d.IsNull())
+    {
+      BRep_Builder aBB;
 
-    const TopoDS_Shape aStartVShape = theGraph.Shapes().Shape( aOrigStartVertexDefId);
-    const TopoDS_Shape aSplitVShape = theGraph.Shapes().Shape( theSplitVertex);
-    const TopoDS_Shape aEndVShape   = theGraph.Shapes().Shape( aOrigEndVertexDefId);
+      const TopoDS_Shape aStartVShape = theGraph.Shapes().Shape(aOrigStartVertexDefId);
+      const TopoDS_Shape aSplitVShape = theGraph.Shapes().Shape(theSplitVertex);
+      const TopoDS_Shape aEndVShape   = theGraph.Shapes().Shape(aOrigEndVertexDefId);
 
-    TopoDS_Edge aSubAEdge;
-    aBB.MakeEdge(aSubAEdge, aOrigCurve3d, TopLoc_Location(), aOrigTolerance);
-    aBB.Range(aSubAEdge, aOrigParamFirst, theSplitParam);
-    if (!aStartVShape.IsNull()) aBB.Add(aSubAEdge, aStartVShape.Oriented(TopAbs_FORWARD));
-    if (!aSplitVShape.IsNull()) aBB.Add(aSubAEdge, aSplitVShape.Oriented(TopAbs_REVERSED));
-    theGraph.myData->myIncStorage.BindOriginal(theSubA, aSubAEdge);
+      TopoDS_Edge aSubAEdge;
+      aBB.MakeEdge(aSubAEdge, aOrigCurve3d, TopLoc_Location(), aOrigTolerance);
+      aBB.Range(aSubAEdge, aOrigParamFirst, theSplitParam);
+      if (!aStartVShape.IsNull()) aBB.Add(aSubAEdge, aStartVShape.Oriented(TopAbs_FORWARD));
+      if (!aSplitVShape.IsNull()) aBB.Add(aSubAEdge, aSplitVShape.Oriented(TopAbs_REVERSED));
+      theGraph.myData->myIncStorage.BindOriginal(theSubA, aSubAEdge);
 
-    TopoDS_Edge aSubBEdge;
-    aBB.MakeEdge(aSubBEdge, aOrigCurve3d, TopLoc_Location(), aOrigTolerance);
-    aBB.Range(aSubBEdge, theSplitParam, aOrigParamLast);
-    if (!aSplitVShape.IsNull()) aBB.Add(aSubBEdge, aSplitVShape.Oriented(TopAbs_FORWARD));
-    if (!aEndVShape.IsNull())   aBB.Add(aSubBEdge, aEndVShape.Oriented(TopAbs_REVERSED));
-    theGraph.myData->myIncStorage.BindOriginal(theSubB, aSubBEdge);
+      TopoDS_Edge aSubBEdge;
+      aBB.MakeEdge(aSubBEdge, aOrigCurve3d, TopLoc_Location(), aOrigTolerance);
+      aBB.Range(aSubBEdge, theSplitParam, aOrigParamLast);
+      if (!aSplitVShape.IsNull()) aBB.Add(aSubBEdge, aSplitVShape.Oriented(TopAbs_FORWARD));
+      if (!aEndVShape.IsNull())   aBB.Add(aSubBEdge, aEndVShape.Oriented(TopAbs_REVERSED));
+      theGraph.myData->myIncStorage.BindOriginal(theSubB, aSubBEdge);
+    }
   }
 
   // Update edge-to-wire reverse index incrementally.

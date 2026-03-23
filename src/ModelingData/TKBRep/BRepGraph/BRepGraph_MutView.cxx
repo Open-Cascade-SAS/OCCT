@@ -37,7 +37,14 @@ void BRepGraph::MutView::AddPCurveToEdge(BRepGraph_NodeId            theEdgeDef,
   aCoEdge.EdgeIdx   = theEdgeDef.Index;
   aCoEdge.FaceDefId = theFaceDef;
   aCoEdge.Sense     = theEdgeOrientation;
-  aCoEdge.Curve2d   = theCurve2d;
+  if (!theCurve2d.IsNull())
+  {
+    BRepGraphInc::Curve2DRep& aCurve2DRep = aStorage.AppendCurve2DRep();
+    const int aCurve2DRepIdx = aStorage.NbCurves2D() - 1;
+    aCurve2DRep.Id    = BRepGraph_RepId::Curve2D(aCurve2DRepIdx);
+    aCurve2DRep.Curve = theCurve2d;
+    aCoEdge.Curve2DRepIdx = aCurve2DRepIdx;
+  }
   aCoEdge.ParamFirst = theFirst;
   aCoEdge.ParamLast  = theLast;
 

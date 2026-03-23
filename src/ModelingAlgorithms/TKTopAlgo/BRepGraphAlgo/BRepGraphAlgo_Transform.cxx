@@ -37,29 +37,35 @@ void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
     theGraph.Mut().VertexDef(anIdx)->Point.Transform(theTrsf);
   }
 
-  // Transform surface geometry handles directly on face defs.
+  // Transform surface geometry handles directly on surface reps.
   // Use visited set to avoid transforming shared handles twice.
-  NCollection_Map<const Geom_Surface*> aVisitedSurfaces;
+  NCollection_Map<int> aVisitedSurfReps;
   for (int anIdx = 0; anIdx < theGraph.Defs().NbFaces(); ++anIdx)
   {
     BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aFace = theGraph.Mut().FaceDef(anIdx);
-    if (!aFace->Surface.IsNull() && aVisitedSurfaces.Add(aFace->Surface.get()))
+    if (aFace->SurfaceRepIdx >= 0 && aVisitedSurfReps.Add(aFace->SurfaceRepIdx))
     {
-      aFace->Surface->Transform(theTrsf);
+      const occ::handle<Geom_Surface>& aSurf =
+        theGraph.Defs().SurfaceRep(aFace->SurfaceRepIdx).Surface;
+      if (!aSurf.IsNull())
+        aSurf->Transform(theTrsf);
     }
     // Invalidate triangulations -- meshes are no longer valid after geometry transform.
-    aFace->Triangulations.Clear();
+    aFace->TriangulationRepIdxs.Clear();
     aFace->ActiveTriangulationIndex = -1;
   }
 
-  // Transform curve geometry handles directly on edge defs.
-  NCollection_Map<const Geom_Curve*> aVisitedCurves;
+  // Transform curve geometry handles directly on curve reps.
+  NCollection_Map<int> aVisitedCurveReps;
   for (int anIdx = 0; anIdx < theGraph.Defs().NbEdges(); ++anIdx)
   {
     BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge = theGraph.Mut().EdgeDef(anIdx);
-    if (!anEdge->Curve3d.IsNull() && aVisitedCurves.Add(anEdge->Curve3d.get()))
+    if (anEdge->Curve3DRepIdx >= 0 && aVisitedCurveReps.Add(anEdge->Curve3DRepIdx))
     {
-      anEdge->Curve3d->Transform(theTrsf);
+      const occ::handle<Geom_Curve>& aCurve3d =
+        theGraph.Defs().Curve3DRep(anEdge->Curve3DRepIdx).Curve;
+      if (!aCurve3d.IsNull())
+        aCurve3d->Transform(theTrsf);
     }
   }
   // PCurves are in UV space -- they are not affected by 3D transforms.

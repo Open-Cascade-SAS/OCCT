@@ -251,16 +251,19 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph& theGraph, int theFaceIdx, 
   theData = CachedData();
 
   const BRepGraph_TopoNode::FaceDef& aFaceDef = theGraph.Defs().Face(theFaceIdx);
-  if (aFaceDef.Surface.IsNull())
+  if (aFaceDef.SurfaceRepIdx < 0)
   {
     return;
   }
+
+  const occ::handle<Geom_Surface>& aFaceSurf =
+    theGraph.Defs().SurfaceRep(aFaceDef.SurfaceRepIdx).Surface;
 
   theData.IsValid              = true;
   theData.IsNaturalRestriction = aFaceDef.NaturalRestriction;
   theData.ComputeMethod        = Method::PCurve;
 
-  GeomAdaptor_Surface aGAS(aFaceDef.Surface);
+  GeomAdaptor_Surface aGAS(aFaceSurf);
 
   theData.UMin = aGAS.FirstUParameter();
   theData.UMax = aGAS.LastUParameter();
@@ -304,7 +307,14 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph& theGraph, int theFaceIdx, 
         const BRepGraph_NodeId anEdgeDefId = BRepGraph_NodeId::Edge(aCoEdge.EdgeIdx);
         const BRepGraphInc::CoEdgeEntity* aPCurve =
           theGraph.Defs().FindPCurve(anEdgeDefId, aFaceDef.Id);
-        if (aPCurve == nullptr || aPCurve->Curve2d.IsNull())
+        if (aPCurve == nullptr || aPCurve->Curve2DRepIdx < 0)
+        {
+          isAborted = true;
+          return;
+        }
+        const occ::handle<Geom2d_Curve>& aPCurve2d =
+          theGraph.Defs().Curve2DRep(aPCurve->Curve2DRepIdx).Curve;
+        if (aPCurve2d.IsNull())
         {
           isAborted = true;
           return;
@@ -312,7 +322,7 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph& theGraph, int theFaceIdx, 
         gp_Pnt2d     aP;
         gp_Vec2d     aV;
         const double aMidParam = (aPCurve->ParamFirst + aPCurve->ParamLast) / 2.;
-        aPCurve->Curve2d->D1(aMidParam, aP, aV);
+        aPCurve2d->D1(aMidParam, aP, aV);
         const double aMagn = aV.SquareMagnitude();
         if (aMagn < gp::Resolution())
         {
@@ -402,11 +412,13 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph& theGraph, int theFaceIdx, 
       const BRepGraph_NodeId anEdgeDefId = BRepGraph_NodeId::Edge(aCoEdge.EdgeIdx);
       const BRepGraphInc::CoEdgeEntity* aPCurve =
         theGraph.Defs().FindPCurve(anEdgeDefId, aFaceDef.Id);
-      if (aPCurve == nullptr || aPCurve->Curve2d.IsNull())
-      {
+      if (aPCurve == nullptr || aPCurve->Curve2DRepIdx < 0)
         continue;
-      }
-      BndLib_Add2dCurve::AddOptimal(aPCurve->Curve2d,
+      const occ::handle<Geom2d_Curve>& aBndPC2d =
+        theGraph.Defs().Curve2DRep(aPCurve->Curve2DRepIdx).Curve;
+      if (aBndPC2d.IsNull())
+        continue;
+      BndLib_Add2dCurve::AddOptimal(aBndPC2d,
                                     aPCurve->ParamFirst,
                                     aPCurve->ParamLast,
                                     aTolUV,
@@ -421,16 +433,16 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph& theGraph, int theFaceIdx, 
 
   // Clamp to surface bounds, handle periodicity.
   // Unwrap RectangularTrimmedSurface to get the basis surface for periodicity checks.
-  occ::handle<Geom_Surface> aBasisSurf = aFaceDef.Surface;
+  occ::handle<Geom_Surface> aBasisSurf = aFaceSurf;
   if (aBasisSurf->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
   {
     aBasisSurf = occ::down_cast<Geom_RectangularTrimmedSurface>(aBasisSurf)->BasisSurface();
   }
 
   double aSUmin, aSUmax, aSVmin, aSVmax;
-  aFaceDef.Surface->Bounds(aSUmin, aSUmax, aSVmin, aSVmax);
+  aFaceSurf->Bounds(aSUmin, aSUmax, aSVmin, aSVmax);
 
-  if (!aFaceDef.Surface->IsUPeriodic())
+  if (!aFaceSurf->IsUPeriodic())
   {
     // BSpline pseudo-periodicity check: surface may be geometrically periodic
     // even though IsUPeriodic() returns false.
@@ -448,15 +460,15 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph& theGraph, int theFaceIdx, 
   }
   else
   {
-    if (theData.UMax - theData.UMin > aFaceDef.Surface->UPeriod())
+    if (theData.UMax - theData.UMin > aFaceSurf->UPeriod())
     {
-      const double delta = theData.UMax - theData.UMin - aFaceDef.Surface->UPeriod();
+      const double delta = theData.UMax - theData.UMin - aFaceSurf->UPeriod();
       theData.UMin += delta / 2.;
       theData.UMax -= delta / 2.;
     }
   }
 
-  if (!aFaceDef.Surface->IsVPeriodic())
+  if (!aFaceSurf->IsVPeriodic())
   {
     // BSpline pseudo-periodicity check for V direction.
     if (!isBSplinePseudoPeriodicV(aBasisSurf,
@@ -473,9 +485,9 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph& theGraph, int theFaceIdx, 
   }
   else
   {
-    if (theData.VMax - theData.VMin > aFaceDef.Surface->VPeriod())
+    if (theData.VMax - theData.VMin > aFaceSurf->VPeriod())
     {
-      const double delta = theData.VMax - theData.VMin - aFaceDef.Surface->VPeriod();
+      const double delta = theData.VMax - theData.VMin - aFaceSurf->VPeriod();
       theData.VMin += delta / 2.;
       theData.VMax -= delta / 2.;
     }

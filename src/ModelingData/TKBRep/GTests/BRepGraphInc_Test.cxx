@@ -601,7 +601,7 @@ TEST(BRepGraphIncTest, Sphere_DegenerateEdges_Preserved)
     if (anEdge.IsDegenerate)
     {
       ++aDegenerateCount;
-      EXPECT_TRUE(anEdge.Curve3d.IsNull()) << "Degenerate edge " << i << " should have no 3D curve";
+      EXPECT_LT(anEdge.Curve3DRepIdx, 0) << "Degenerate edge " << i << " should have no 3D curve";
     }
   }
   EXPECT_GE(aDegenerateCount, 2) << "Sphere should have at least 2 degenerate edges (poles)";

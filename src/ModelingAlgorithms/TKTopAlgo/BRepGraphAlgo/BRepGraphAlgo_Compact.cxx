@@ -265,7 +265,10 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
     const BRepGraph_NodeId aNewEnd   = remapId(anOldEdge.EndVertexDefId());
 
     // Get the curve handle if available.
-    occ::handle<Geom_Curve> aCurve = anOldEdge.Curve3d;
+    occ::handle<Geom_Curve> aCurve =
+      anOldEdge.Curve3DRepIdx >= 0
+        ? theGraph.Defs().Curve3DRep(anOldEdge.Curve3DRepIdx).Curve
+        : occ::handle<Geom_Curve>();
 
     BRepGraph_NodeId aNewEdgeId = aNewGraph.Builder().AddEdgeDef(aNewStart,
                                                                  aNewEnd,
@@ -310,7 +313,10 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
       continue;
     const BRepGraph_TopoNode::FaceDef& anOldFace = theGraph.Defs().Face(anIdx);
 
-    occ::handle<Geom_Surface> aSurf = anOldFace.Surface;
+    occ::handle<Geom_Surface> aSurf =
+      anOldFace.SurfaceRepIdx >= 0
+        ? theGraph.Defs().SurfaceRep(anOldFace.SurfaceRepIdx).Surface
+        : occ::handle<Geom_Surface>();
 
     // Find outer wire from incidence refs.
     BRepGraph_NodeId                     aNewOuterWire;
@@ -336,7 +342,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
 
     // Copy triangulations from old FaceDef to new FaceDef.
     BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aNewFace = aNewGraph.Mut().FaceDef(aFaceMap.Find(anIdx));
-    aNewFace->Triangulations          = anOldFace.Triangulations;
+    aNewFace->TriangulationRepIdxs     = anOldFace.TriangulationRepIdxs;
     aNewFace->ActiveTriangulationIndex = anOldFace.ActiveTriangulationIndex;
   }
 
@@ -356,16 +362,18 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
     {
       const BRepGraph_TopoNode::CoEdgeDef& aCoEdge =
         theGraph.Defs().CoEdge(aCoEdgeIdxs->Value(aCEIter));
-      if (aCoEdge.Curve2d.IsNull())
+      if (aCoEdge.Curve2DRepIdx < 0)
         continue;
 
       const BRepGraph_NodeId aNewFaceId = remapId(aCoEdge.FaceDefId);
       if (!aNewFaceId.IsValid())
         continue;
 
+      const occ::handle<Geom2d_Curve>& aCompactPCurve =
+        theGraph.Defs().Curve2DRep(aCoEdge.Curve2DRepIdx).Curve;
       aNewGraph.Mut().AddPCurveToEdge(BRepGraph_NodeId::Edge(aNewEdgeIdx),
                                       aNewFaceId,
-                                      aCoEdge.Curve2d,
+                                      aCompactPCurve,
                                       aCoEdge.ParamFirst,
                                       aCoEdge.ParamLast,
                                       aCoEdge.Sense);

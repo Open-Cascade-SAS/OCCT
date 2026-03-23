@@ -33,13 +33,15 @@ constexpr int THE_COMPACTNESS_SAMPLES = 5; // sampling points for edge compactne
 // Ported from BRepBuilderAPI_Sewing::FaceAnalysis().
 // ---------------------------------------------------------------------------
 
-bool isSmallEdge(const BRepGraph_TopoNode::EdgeDef& theEdge, double theMinTol)
+bool isSmallEdge(const BRepGraph_TopoNode::EdgeDef&  theEdge,
+                 const occ::handle<Geom_Curve>& theCurve3d,
+                 double                         theMinTol)
 {
   if (theEdge.IsDegenerate)
   {
     return true;
   }
-  if (theEdge.Curve3d.IsNull())
+  if (theCurve3d.IsNull())
   {
     return true;
   }
@@ -49,8 +51,8 @@ bool isSmallEdge(const BRepGraph_TopoNode::EdgeDef& theEdge, double theMinTol)
   const double aDelta = (aLast - aFirst) / (THE_COMPACTNESS_SAMPLES - 1);
 
   // Compute midpoint of start/end.
-  const gp_Pnt aPFirst = theEdge.Curve3d->Value(aFirst);
-  const gp_Pnt aPLast  = theEdge.Curve3d->Value(aLast);
+  const gp_Pnt aPFirst = theCurve3d->Value(aFirst);
+  const gp_Pnt aPLast  = theCurve3d->Value(aLast);
   const gp_Pnt aMid((aPFirst.XYZ() + aPLast.XYZ()) * 0.5);
 
   // Measure max distance from midpoint to sampled points.
@@ -58,7 +60,7 @@ bool isSmallEdge(const BRepGraph_TopoNode::EdgeDef& theEdge, double theMinTol)
   for (int anIdx = 0; anIdx < THE_COMPACTNESS_SAMPLES; ++anIdx)
   {
     const double aParam = aFirst + anIdx * aDelta;
-    const double aDist  = aMid.Distance(theEdge.Curve3d->Value(aParam));
+    const double aDist  = aMid.Distance(theCurve3d->Value(aParam));
     if (aDist > aMaxDist)
     {
       aMaxDist = aDist;
@@ -133,15 +135,19 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(
           continue;
         }
 
-        if (isSmallEdge(anEdge, aMinTol))
+        const occ::handle<Geom_Curve> aEdgeCurve3d =
+          anEdge.Curve3DRepIdx >= 0
+            ? aDefs.Curve3DRep(anEdge.Curve3DRepIdx).Curve
+            : occ::handle<Geom_Curve>();
+        if (isSmallEdge(anEdge, aEdgeCurve3d, aMinTol))
         {
           aSmallEdgeSet.Add(anEdgeIdx);
           ++aNbSmall;
 
           // Mark edge as degenerate.
           BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aMutEdge = theGraph.MutEdge(anEdgeIdx);
-          aMutEdge->IsDegenerate                  = true;
-          aMutEdge->Curve3d.Nullify();
+          aMutEdge->IsDegenerate  = true;
+          aMutEdge->Curve3DRepIdx = -1;
           aResult.DegeneratedEdges.Append(
             BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, anEdgeIdx));
 

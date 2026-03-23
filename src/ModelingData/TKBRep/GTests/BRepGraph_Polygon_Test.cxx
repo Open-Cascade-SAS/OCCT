@@ -50,13 +50,15 @@ TEST(BRepGraph_PolygonTest, MultiTriangulation_Roundtrip_PreservesAll)
   for (int aFaceDefIdx = 0; aFaceDefIdx < aGraph.Defs().NbFaces(); ++aFaceDefIdx)
   {
     const BRepGraph_TopoNode::FaceDef& aFaceDef = aGraph.Defs().Face(aFaceDefIdx);
-    if (!aFaceDef.Triangulations.IsEmpty())
+    if (!aFaceDef.TriangulationRepIdxs.IsEmpty())
     {
       aHasTriangulations = true;
       EXPECT_GE(aFaceDef.ActiveTriangulationIndex, 0)
         << "Active triangulation index should be valid for meshed face";
-      EXPECT_LT(aFaceDef.ActiveTriangulationIndex, aFaceDef.Triangulations.Length());
-      EXPECT_FALSE(aFaceDef.ActiveTriangulation().IsNull());
+      EXPECT_LT(aFaceDef.ActiveTriangulationIndex, aFaceDef.TriangulationRepIdxs.Length());
+      const int anActiveRepIdx = aFaceDef.ActiveTriangulationRepIdx();
+      EXPECT_GE(anActiveRepIdx, 0);
+      EXPECT_FALSE(aGraph.Defs().TriangulationRep(anActiveRepIdx).Triangulation.IsNull());
     }
   }
   EXPECT_TRUE(aHasTriangulations) << "Meshed box should have triangulations";
@@ -98,7 +100,7 @@ TEST(BRepGraph_PolygonTest, Polygon3D_Captured_WhenPresent)
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
     const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(anEdgeIdx);
-    if (!anEdge.Polygon3D.IsNull())
+    if (anEdge.Polygon3DRepIdx >= 0)
       ++aNbPoly3DGraph;
   }
   for (TopExp_Explorer anExp(aBox, TopAbs_EDGE); anExp.More(); anExp.Next())
@@ -114,7 +116,7 @@ TEST(BRepGraph_PolygonTest, Polygon3D_Captured_WhenPresent)
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
     const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(anEdgeIdx);
-    if (anEdge.Polygon3D.IsNull())
+    if (anEdge.Polygon3DRepIdx < 0)
       continue;
     TopoDS_Shape aReconEdge = aGraph.Shapes().Reconstruct( anEdge.Id);
     ASSERT_FALSE(aReconEdge.IsNull());
@@ -145,7 +147,7 @@ TEST(BRepGraph_PolygonTest, PolyOnTri_Captured_AfterMesh)
     for (int aCEIdx = 0; aCEIdx < aCoEdgeIdxs.Length(); ++aCEIdx)
     {
       const BRepGraphInc::CoEdgeEntity& aCE = aGraph.Defs().CoEdge(aCoEdgeIdxs.Value(aCEIdx));
-      aNbPolyOnTri += aCE.PolygonsOnTri.Length();
+      aNbPolyOnTri += aCE.PolygonOnTriRepIdxs.Length();
     }
   }
   EXPECT_GT(aNbPolyOnTri, 0) << "Meshed box edges should have PolygonOnTriangulation";
@@ -157,11 +159,11 @@ TEST(BRepGraph_PolygonTest, PolyOnTri_Captured_AfterMesh)
     for (int aCEIdx = 0; aCEIdx < aCoEdgeIdxs.Length(); ++aCEIdx)
     {
       const BRepGraphInc::CoEdgeEntity& aCE = aGraph.Defs().CoEdge(aCoEdgeIdxs.Value(aCEIdx));
-      for (int aPolyIdx = 0; aPolyIdx < aCE.PolygonsOnTri.Length(); ++aPolyIdx)
+      for (int aPolyIdx = 0; aPolyIdx < aCE.PolygonOnTriRepIdxs.Length(); ++aPolyIdx)
       {
-        const BRepGraphInc::CoEdgeEntity::PolyOnTriEntry& aEntry =
-          aCE.PolygonsOnTri.Value(aPolyIdx);
-        EXPECT_FALSE(aEntry.Polygon.IsNull());
+        const int aPoTRepIdx = aCE.PolygonOnTriRepIdxs.Value(aPolyIdx);
+        EXPECT_GE(aPoTRepIdx, 0);
+        EXPECT_FALSE(aGraph.Defs().PolygonOnTriRep(aPoTRepIdx).Polygon.IsNull());
       }
       EXPECT_TRUE(aCE.FaceDefId.IsValid());
     }

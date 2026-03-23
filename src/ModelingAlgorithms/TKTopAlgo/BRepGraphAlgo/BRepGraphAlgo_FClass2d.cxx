@@ -149,9 +149,11 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
 
   // Surface type and periodicity.
   // Geometry is stored at identity; location offsets are absorbed into usages.
-  if (aFaceDef.Surface.IsNull())
+  if (aFaceDef.SurfaceRepIdx < 0)
     return;
-  GeomAdaptor_TransformedSurface aSurfAdaptor(aFaceDef.Surface, gp_Trsf());
+  const occ::handle<Geom_Surface>& aFaceSurf =
+    theGraph.Defs().SurfaceRep(aFaceDef.SurfaceRepIdx).Surface;
+  GeomAdaptor_TransformedSurface aSurfAdaptor(aFaceSurf, gp_Trsf());
 
   myIsUPer  = aSurfAdaptor.IsUPeriodic();
   myIsVPer  = aSurfAdaptor.IsVPeriodic();
@@ -232,10 +234,17 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
       if (anOri != TopAbs_FORWARD && anOri != TopAbs_REVERSED)
         continue;
 
+      // Resolve 3D curve from rep index.
+      const occ::handle<Geom_Curve> anEdgeCurve3d =
+        anEdgeDef.Curve3DRepIdx >= 0
+          ? theGraph.Defs().Curve3DRep(anEdgeDef.Curve3DRepIdx).Curve
+          : occ::handle<Geom_Curve>();
+
       // PCurve data from CoEdge.
-      const occ::handle<Geom2d_Curve>& aCurve2d = aCoEdgeDef.Curve2d;
-      if (aCurve2d.IsNull())
+      if (aCoEdgeDef.Curve2DRepIdx < 0)
         return;
+      const occ::handle<Geom2d_Curve>& aCurve2d =
+        theGraph.Defs().Curve2DRep(aCoEdgeDef.Curve2DRepIdx).Curve;
 
       double aParamFirst = aCoEdgeDef.ParamFirst;
       double aParamLast  = aCoEdgeDef.ParamLast;
@@ -255,9 +264,11 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
         anIsDegenerated = true;
 
       // Check 3D curve degeneration if not already flagged.
-      if (!anIsDegenerated && !anEdgeDef.Curve3d.IsNull())
+      if (!anIsDegenerated && anEdgeDef.Curve3DRepIdx >= 0)
       {
-        anIsDegenerated = isDegenerated(anEdgeDef.Curve3d,
+        const occ::handle<Geom_Curve>& aEdgeCurve3d =
+          theGraph.Defs().Curve3DRep(anEdgeDef.Curve3DRepIdx).Curve;
+        anIsDegenerated = isDegenerated(aEdgeCurve3d,
                                         TopLoc_Location(),
                                         anEdgeDef.ParamFirst,
                                         anEdgeDef.ParamLast);
@@ -296,18 +307,18 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
 
         double aDist3dOld = 1e+20;
         gp_Pnt aP3d;
-        if (!anIsDegenerated && !anEdgeDef.Curve3d.IsNull())
+        if (!anIsDegenerated && !anEdgeCurve3d.IsNull())
         {
-          aP3d = anEdgeDef.Curve3d->Value(aU);
+          aP3d = anEdgeCurve3d->Value(aU);
           if (aNbPnts > 1 && anOldPnt3dInit)
             aDist3dOld = aP3d.Distance(aOldPnt3d);
         }
         bool anIsRealCurve3d = true;
         if (aDist3dOld < Precision::Confusion())
         {
-          if (!anIsDegenerated && !anEdgeDef.Curve3d.IsNull())
+          if (!anIsDegenerated && !anEdgeCurve3d.IsNull())
           {
-            gp_Pnt aMidP3d = anEdgeDef.Curve3d->Value(aU - aDu / 2.0);
+            gp_Pnt aMidP3d = anEdgeCurve3d->Value(aU - aDu / 2.0);
             if (aP3d.Distance(aMidP3d) < Precision::Confusion())
               anIsRealCurve3d = false;
           }
@@ -373,15 +384,17 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
             if (anOri != TopAbs_FORWARD && anOri != TopAbs_REVERSED)
               continue;
 
-            if (aCoEdgeDef2.Curve2d.IsNull())
+            if (aCoEdgeDef2.Curve2DRepIdx < 0)
               continue;
 
+            const occ::handle<Geom2d_Curve>& aCurve2d2 =
+              theGraph.Defs().Curve2DRep(aCoEdgeDef2.Curve2DRepIdx).Curve;
             double aParamFirst = aCoEdgeDef2.ParamFirst;
             double aParamLast  = aCoEdgeDef2.ParamLast;
             if (std::abs(aParamLast - aParamFirst) < 1.e-9)
               continue;
 
-            Geom2dAdaptor_Curve           aC(aCoEdgeDef2.Curve2d, aParamFirst, aParamLast);
+            Geom2dAdaptor_Curve           aC(aCurve2d2, aParamFirst, aParamLast);
             GCPnts_QuasiUniformDeflection aDiscr(aC, aDiscrDefl);
             if (!aDiscr.IsDone())
               break;

@@ -192,20 +192,24 @@ bool isSurfaceClosedForEdge(const BRepGraph&                           theGraph,
                             bool                                       theCheckU)
 {
   const BRepGraph_TopoNode::FaceDef& aFace = theGraph.Defs().Face(theFaceDefIdx);
-  if (aFace.Surface.IsNull())
+  if (aFace.SurfaceRepIdx < 0)
   {
     return false;
   }
-  const occ::handle<Geom_Surface> aBasis = basisSurface(aFace.Surface);
+  const occ::handle<Geom_Surface>& aFaceSurf =
+    theGraph.Defs().SurfaceRep(aFace.SurfaceRepIdx).Surface;
+  const occ::handle<Geom_Surface> aBasis = basisSurface(aFaceSurf);
   const bool isClosed = theCheckU ? aBasis->IsUClosed() : aBasis->IsVClosed();
   if (isClosed)
   {
     return true;
   }
   // Isocurve fallback: check if isocurves at PCurve endpoints form closed loops.
-  if (!theCoEdge.Curve2d.IsNull())
+  if (theCoEdge.Curve2DRepIdx >= 0)
   {
-    return isClosedByIsos(aBasis, theCoEdge.Curve2d, theCoEdge.ParamFirst,
+    const occ::handle<Geom2d_Curve>& aCoEdgePCurve =
+      theGraph.Defs().Curve2DRep(theCoEdge.Curve2DRepIdx).Curve;
+    return isClosedByIsos(aBasis, aCoEdgePCurve, theCoEdge.ParamFirst,
                           theCoEdge.ParamLast, !theCheckU);
   }
   return false;
@@ -261,11 +265,13 @@ bool canSewSameFaceEdges(const BRepGraph& theGraph,
     return false;
   }
   const BRepGraph_TopoNode::FaceDef& aFace = theGraph.Defs().Face(theSharedFace);
-  if (aFace.Surface.IsNull())
+  if (aFace.SurfaceRepIdx < 0)
   {
     return false;
   }
-  const occ::handle<Geom_Surface> aBasis = basisSurface(aFace.Surface);
+  const occ::handle<Geom_Surface>& aFaceSurf2 =
+    theGraph.Defs().SurfaceRep(aFace.SurfaceRepIdx).Surface;
+  const occ::handle<Geom_Surface> aBasis = basisSurface(aFaceSurf2);
   const bool                 isUClosed = aBasis->IsUClosed();
   const bool                 isVClosed = aBasis->IsVClosed();
   if (!isUClosed && !isVClosed)
@@ -280,15 +286,22 @@ bool canSewSameFaceEdges(const BRepGraph& theGraph,
   const BRepGraphInc::CoEdgeEntity* aPCEntryA = theGraph.Defs().FindPCurve(anEdgeIdA, aFaceId);
   const BRepGraphInc::CoEdgeEntity* aPCEntryB = theGraph.Defs().FindPCurve(anEdgeIdB, aFaceId);
   if (aPCEntryA == nullptr || aPCEntryB == nullptr
-      || aPCEntryA->Curve2d.IsNull() || aPCEntryB->Curve2d.IsNull())
+      || aPCEntryA->Curve2DRepIdx < 0 || aPCEntryB->Curve2DRepIdx < 0)
   {
     return false;
   }
 
+  const occ::handle<Geom2d_Curve>& aCurve2dA =
+    theGraph.Defs().Curve2DRep(aPCEntryA->Curve2DRepIdx).Curve;
+  const occ::handle<Geom2d_Curve>& aCurve2dB =
+    theGraph.Defs().Curve2DRep(aPCEntryB->Curve2DRepIdx).Curve;
+  if (aCurve2dA.IsNull() || aCurve2dB.IsNull())
+    return false;
+
   // Compute 2D bounding boxes.
   Bnd_Box2d aBBox1, aBBox2;
-  Geom2dAdaptor_Curve anAdapt1(aPCEntryA->Curve2d);
-  Geom2dAdaptor_Curve anAdapt2(aPCEntryB->Curve2d);
+  Geom2dAdaptor_Curve anAdapt1(aCurve2dA);
+  Geom2dAdaptor_Curve anAdapt2(aCurve2dB);
   BndLib_Add2dCurve::Add(anAdapt1, aPCEntryA->ParamFirst, aPCEntryA->ParamLast,
                          Precision::PConfusion(), aBBox1);
   BndLib_Add2dCurve::Add(anAdapt2, aPCEntryB->ParamFirst, aPCEntryB->ParamLast,
@@ -316,8 +329,8 @@ bool canSewSameFaceEdges(const BRepGraph& theGraph,
   // or edges near the seam line; midpoint UV separation is definitive.
   const double aMidParam1 = 0.5 * (aPCEntryA->ParamFirst + aPCEntryA->ParamLast);
   const double aMidParam2 = 0.5 * (aPCEntryB->ParamFirst + aPCEntryB->ParamLast);
-  const gp_Pnt2d aMid1 = aPCEntryA->Curve2d->EvalD0(aMidParam1);
-  const gp_Pnt2d aMid2 = aPCEntryB->Curve2d->EvalD0(aMidParam2);
+  const gp_Pnt2d aMid1 = aCurve2dA->Value(aMidParam1);
+  const gp_Pnt2d aMid2 = aCurve2dB->Value(aMidParam2);
 
   // U-closed surface: two V-long edges on opposite U-sides.
   if (isUClosed && isVLong1 && isVLong2)
@@ -648,7 +661,7 @@ void cutAtIntersections(BRepGraph&                               theGraph,
       const BRepGraph_NodeId             anEdgeId      = theFreeEdges.Value(aFreeEdgeIter);
       const BRepGraph_TopoNode::EdgeDef& anEdge        = theGraph.Defs().Edge(anEdgeId.Index);
 
-      if (anEdge.IsDegenerate || anEdge.Curve3d.IsNull())
+      if (anEdge.IsDegenerate || anEdge.Curve3DRepIdx < 0)
       {
         return;
       }
@@ -1391,13 +1404,15 @@ int mergeMatchedEdges(
     {
       const BRepGraphInc::CoEdgeEntity& aRemoveCE =
         theGraph.Defs().CoEdge(aRemoveCoEdges.Value(aCEIter));
-      if (!aRemoveCE.Curve2d.IsNull())
+      if (aRemoveCE.Curve2DRepIdx >= 0)
       {
+        const occ::handle<Geom2d_Curve>& aRemovePCurve =
+          theGraph.Defs().Curve2DRep(aRemoveCE.Curve2DRepIdx).Curve;
         // Add PCurve entry to keep-edge via graph API; preserve original orientation
         // so that seam edges (REVERSED orientation) are correctly reconstructed as C2.
         theGraph.Mut().AddPCurveToEdge(anIdA,
                                        aRemoveCE.FaceDefId,
-                                       aRemoveCE.Curve2d,
+                                       aRemovePCurve,
                                        aRemoveCE.ParamFirst,
                                        aRemoveCE.ParamLast,
                                        aRemoveCE.Sense);
@@ -1530,15 +1545,17 @@ void convertDegenerateEdges(BRepGraph&                   theGraph,
     const BRepGraph_NodeId             anEdgeId = aFreeEdges.Value(aFreeIter);
     const BRepGraph_TopoNode::EdgeDef& anEdge   = theGraph.Defs().Edge(anEdgeId.Index);
 
-    if (anEdge.IsDegenerate || anEdge.Curve3d.IsNull())
+    if (anEdge.IsDegenerate || anEdge.Curve3DRepIdx < 0)
     {
       continue;
     }
 
     // Compute edge chord length via 3-point check (start, mid, end).
-    const gp_Pnt aPtFirst = anEdge.Curve3d->EvalD0(anEdge.ParamFirst);
-    const gp_Pnt aPtLast  = anEdge.Curve3d->EvalD0(anEdge.ParamLast);
-    const gp_Pnt aPtMid   = anEdge.Curve3d->EvalD0((anEdge.ParamFirst + anEdge.ParamLast) * 0.5);
+    const occ::handle<Geom_Curve>& anEdgeCurve3d =
+      theGraph.Defs().Curve3DRep(anEdge.Curve3DRepIdx).Curve;
+    const gp_Pnt aPtFirst = anEdgeCurve3d->EvalD0(anEdge.ParamFirst);
+    const gp_Pnt aPtLast  = anEdgeCurve3d->EvalD0(anEdge.ParamLast);
+    const gp_Pnt aPtMid   = anEdgeCurve3d->EvalD0((anEdge.ParamFirst + anEdge.ParamLast) * 0.5);
 
     double aLength = 0.0;
     if (aPtFirst.Distance(aPtLast) > aPtFirst.Distance(aPtMid))
@@ -1578,7 +1595,7 @@ void convertDegenerateEdges(BRepGraph&                   theGraph,
       // Mark as degenerate: clear 3D curve, merge vertices to midpoint.
       BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aMutEdge = theGraph.MutEdge(anEdgeId.Index);
       aMutEdge->IsDegenerate                  = true;
-      aMutEdge->Curve3d.Nullify();
+      aMutEdge->Curve3DRepIdx = -1;
 
       // Merge start/end vertices if they differ.
       if (anEdge.StartVertexIdx >= 0 && anEdge.EndVertexIdx >= 0

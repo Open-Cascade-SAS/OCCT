@@ -105,9 +105,13 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph_Analyze::ToleranceConflicts(
   for (int anEdgeIdx = 0; anEdgeIdx < theGraph.myData->myIncStorage.NbEdges(); ++anEdgeIdx)
   {
     const BRepGraph_TopoNode::EdgeDef& anEdgeDef = theGraph.myData->myIncStorage.Edge(anEdgeIdx);
-    if (anEdgeDef.Curve3d.IsNull())
+    if (anEdgeDef.Curve3DRepIdx < 0)
       continue;
-    const Geom_Curve* aCurveKey = anEdgeDef.Curve3d.get();
+    const occ::handle<Geom_Curve>& aCurve3d =
+      theGraph.myData->myIncStorage.Curve3DRep(anEdgeDef.Curve3DRepIdx).Curve;
+    if (aCurve3d.IsNull())
+      continue;
+    const Geom_Curve* aCurveKey = aCurve3d.get();
     aCurveToEdges.TryBind(aCurveKey, NCollection_Vector<BRepGraph_NodeId>());
     aCurveToEdges.ChangeFind(aCurveKey).Append(anEdgeDef.Id);
   }
@@ -407,7 +411,7 @@ bool BRepGraph_Analyze::AreEdgesCompatibleSampled(const BRepGraph& theGraph,
   {
     return false;
   }
-  if (aNodeA.Curve3d.IsNull() || aNodeB.Curve3d.IsNull())
+  if (aNodeA.Curve3DRepIdx < 0 || aNodeB.Curve3DRepIdx < 0)
   {
     return false;
   }

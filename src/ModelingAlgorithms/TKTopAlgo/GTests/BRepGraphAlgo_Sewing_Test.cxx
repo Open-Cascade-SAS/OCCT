@@ -1915,7 +1915,7 @@ TEST(BRepGraphAlgo_SameParameterTest, Enforce_NoCurve3d_SetsFlag)
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
     const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(anEdgeIdx);
-    if (anEdge.IsDegenerate || anEdge.Curve3d.IsNull())
+    if (anEdge.IsDegenerate || anEdge.Curve3DRepIdx < 0)
     {
       aGraph.Mut().EdgeDef(anEdgeIdx)->SameParameter = false;
       const BRepGraph_NodeId anEdgeId(BRepGraph_NodeId::Kind::Edge, anEdgeIdx);
@@ -1957,7 +1957,7 @@ TEST(BRepGraphAlgo_SameParameterTest, Enforce_AfterSewing_SewnEdgesAreValid)
   {
     const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(anEdgeIdx);
     const NCollection_Vector<int>& aCoEdgeIdxs = aGraph.Defs().CoEdgesOfEdge(anEdgeIdx);
-    if (!aCoEdgeIdxs.IsEmpty() && !anEdge.Curve3d.IsNull())
+    if (!aCoEdgeIdxs.IsEmpty() && anEdge.Curve3DRepIdx >= 0)
     {
       if (anEdge.SameParameter)
         ++aNbSameParam;
@@ -2216,7 +2216,7 @@ TEST(BRepGraphAlgo_SewingTest, NonManifoldMode_ThreeFacesShareEdge)
       for (int j = 0; j < aCoEdgeIdxs.Length(); ++j)
       {
         const BRepGraphInc::CoEdgeEntity& aCE = aGraph.Defs().CoEdge(aCoEdgeIdxs.Value(j));
-        EXPECT_FALSE(aCE.Curve2d.IsNull());
+        EXPECT_GE(aCE.Curve2DRepIdx, 0);
         EXPECT_TRUE(aCE.FaceDefId.IsValid());
         aFaceIds.Add(aCE.FaceDefId.Index);
       }

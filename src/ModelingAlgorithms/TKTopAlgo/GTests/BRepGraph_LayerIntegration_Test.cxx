@@ -385,7 +385,7 @@ TEST(BRepGraph_LayerIntegrationTest, SplitEdge_OriginalEdgeRemoved)
   for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
   {
     const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(i);
-    if (!anEdge.IsDegenerate && !anEdge.Curve3d.IsNull()
+    if (!anEdge.IsDegenerate && anEdge.Curve3DRepIdx >= 0
         && anEdge.StartVertexIdx >= 0 && anEdge.EndVertexIdx >= 0)
     {
       aSplitEdgeIdx = i;
@@ -400,7 +400,7 @@ TEST(BRepGraph_LayerIntegrationTest, SplitEdge_OriginalEdgeRemoved)
   // Create a split vertex.
   const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(aSplitEdgeIdx);
   const double aMidParam = 0.5 * (anEdge.ParamFirst + anEdge.ParamLast);
-  const gp_Pnt aMidPnt = anEdge.Curve3d->EvalD0(aMidParam);
+  const gp_Pnt aMidPnt = aGraph.Defs().Curve3DRep(anEdge.Curve3DRepIdx).Curve->EvalD0(aMidParam);
   const BRepGraph_NodeId aSplitVtx = aGraph.Builder().AddVertexDef(aMidPnt, Precision::Confusion());
 
   // Split the edge.

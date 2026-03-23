@@ -127,12 +127,14 @@ static int pointsForOBB(const BRepGraph&            theGraph,
   for (int aFaceIdx = 0; aFaceIdx < aNbFaces; ++aFaceIdx)
   {
     const BRepGraph_TopoNode::FaceDef& aFaceDefSurf = theGraph.Defs().Face(aFaceIdx);
-    if (aFaceDefSurf.Surface.IsNull())
+    if (aFaceDefSurf.SurfaceRepIdx < 0)
     {
       continue;
     }
 
-    GeomAdaptor_Surface aGAS(aFaceDefSurf.Surface);
+    const occ::handle<Geom_Surface>& aFaceSurf =
+      theGraph.Defs().SurfaceRep(aFaceDefSurf.SurfaceRepIdx).Surface;
+    GeomAdaptor_Surface aGAS(aFaceSurf);
     if (!isPlanar(aGAS))
     {
       if (!theIsTriangulationUsed)
@@ -155,7 +157,7 @@ static int pointsForOBB(const BRepGraph&            theGraph,
           const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Defs().CoEdge(aCR.CoEdgeIdx);
           const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
             theGraph.Defs().Edge(aCoEdge.EdgeIdx);
-          if (anEdgeDef.IsDegenerate || anEdgeDef.Curve3d.IsNull())
+          if (anEdgeDef.IsDegenerate || anEdgeDef.Curve3DRepIdx < 0)
           {
             continue;
           }
@@ -183,7 +185,10 @@ static int pointsForOBB(const BRepGraph&            theGraph,
 
     // Use active triangulation of the face.
     const BRepGraph_TopoNode::FaceDef& aFaceDefTri = theGraph.Defs().Face(aFaceIdx);
-    const occ::handle<Poly_Triangulation> aTriangulation = aFaceDefTri.ActiveTriangulation();
+    const int anActiveTriRepIdx2 = aFaceDefTri.ActiveTriangulationRepIdx();
+    const occ::handle<Poly_Triangulation> aTriangulation =
+      anActiveTriRepIdx2 >= 0 ? theGraph.Defs().TriangulationRep(anActiveTriRepIdx2).Triangulation
+                              : occ::handle<Poly_Triangulation>();
     if (aTriangulation.IsNull())
     {
       return 0;
@@ -218,7 +223,7 @@ static int pointsForOBB(const BRepGraph&            theGraph,
     {
       continue; // Edge is in a face, already handled.
     }
-    if (anEdgeDef.IsDegenerate || anEdgeDef.Curve3d.IsNull())
+    if (anEdgeDef.IsDegenerate || anEdgeDef.Curve3DRepIdx < 0)
     {
       continue;
     }

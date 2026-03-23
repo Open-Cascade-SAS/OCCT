@@ -59,7 +59,12 @@ static double computeWireSignedArea(const BRepGraph&                           t
     if (aPCurve == nullptr)
       continue;
 
-    if (aPCurve->Curve2d.IsNull())
+    if (aPCurve->Curve2DRepIdx < 0)
+      continue;
+
+    const occ::handle<Geom2d_Curve>& aPCurve2d =
+      aDefs.Curve2DRep(aPCurve->Curve2DRepIdx).Curve;
+    if (aPCurve2d.IsNull())
       continue;
 
     const double aFirst = aPCurve->ParamFirst;
@@ -74,7 +79,7 @@ static double computeWireSignedArea(const BRepGraph&                           t
       else
         aT = aFirst + (aLast - aFirst) * aSampleIter / THE_NB_SAMPLES;
 
-      const gp_Pnt2d aCurrPnt = aPCurve->Curve2d->Value(aT);
+      const gp_Pnt2d aCurrPnt = aPCurve2d->Value(aT);
       if (aHasPrev)
       {
         anArea += (aPrevPnt.X() * aCurrPnt.Y() - aCurrPnt.X() * aPrevPnt.Y());
@@ -134,7 +139,15 @@ static void collectWirePCurves(const BRepGraph&                   theGraph,
       continue;
     }
 
-    if (aPCurve->Curve2d.IsNull())
+    if (aPCurve->Curve2DRepIdx < 0)
+    {
+      theResult.Edges.Append(WirePCurveSet::EdgeData());
+      continue;
+    }
+
+    const occ::handle<Geom2d_Curve>& aCollectedPC2d =
+      aDefs.Curve2DRep(aPCurve->Curve2DRepIdx).Curve;
+    if (aCollectedPC2d.IsNull())
     {
       theResult.Edges.Append(WirePCurveSet::EdgeData());
       continue;
@@ -144,7 +157,7 @@ static void collectWirePCurves(const BRepGraph&                   theGraph,
     aData.StartVtxId = anEdgeDef.OrientedStartVertex(aCoEdgeDef.Sense);
     aData.EndVtxId   = anEdgeDef.OrientedEndVertex(aCoEdgeDef.Sense);
 
-    aData.Adaptor = new Geom2dAdaptor_Curve(aPCurve->Curve2d, aPCurve->ParamFirst, aPCurve->ParamLast);
+    aData.Adaptor = new Geom2dAdaptor_Curve(aCollectedPC2d, aPCurve->ParamFirst, aPCurve->ParamLast);
     BndLib_Add2dCurve::Add(*aData.Adaptor, Precision::PConfusion(), aData.Box);
 
     theResult.Edges.Append(aData);
@@ -162,7 +175,7 @@ void BRepGraphCheck::CheckFaceMinimum(
   const BRepGraph_TopoNode::FaceDef& aFaceDef = aDefs.Face(theFaceDefIdx);
 
   // Face must have a surface.
-  if (aFaceDef.Surface.IsNull())
+  if (aFaceDef.SurfaceRepIdx < 0)
   {
     BRepGraphCheck_Issue anIssue;
     anIssue.NodeId        = aFaceDef.Id;

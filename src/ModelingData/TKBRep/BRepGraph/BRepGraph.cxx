@@ -842,6 +842,19 @@ BRepGraph_MutRef<BRepGraph_TopoNode::CoEdgeDef> BRepGraph::MutCoEdge(int theIdx)
 
 //=================================================================================================
 
+int BRepGraph::CreateCurve2DRep(const occ::handle<Geom2d_Curve>& theCurve2d)
+{
+  if (theCurve2d.IsNull())
+    return -1;
+  BRepGraphInc::Curve2DRep& aRep = myData->myIncStorage.AppendCurve2DRep();
+  const int anIdx = myData->myIncStorage.NbCurves2D() - 1;
+  aRep.Id    = BRepGraph_RepId::Curve2D(anIdx);
+  aRep.Curve = theCurve2d;
+  return anIdx;
+}
+
+//=================================================================================================
+
 BRepGraph_MutRef<BRepGraph_TopoNode::VertexDef> BRepGraph::MutVertex(int theIdx)
 {
   return BRepGraph_MutRef<BRepGraph_TopoNode::VertexDef>(

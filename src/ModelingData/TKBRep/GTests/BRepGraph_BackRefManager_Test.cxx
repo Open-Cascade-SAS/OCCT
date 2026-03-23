@@ -53,8 +53,8 @@ TEST(BRepGraphBackRefManagerTest, Build_FaceDefsHaveValidSurfaces)
   for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
   {
     const BRepGraph_TopoNode::FaceDef& aFaceDef = aGraph.Defs().Face(aFaceIdx);
-    EXPECT_FALSE(aFaceDef.Surface.IsNull())
-      << "FaceDef " << aFaceIdx << " has null Surface";
+    EXPECT_GE(aFaceDef.SurfaceRepIdx, 0)
+      << "FaceDef " << aFaceIdx << " has no surface representation";
   }
 }
 
@@ -69,8 +69,8 @@ TEST(BRepGraphBackRefManagerTest, Build_EdgeDefsHaveValidCurves)
     const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.Defs().Edge(anEdgeIdx);
     if (anEdgeDef.IsDegenerate)
       continue;
-    EXPECT_FALSE(anEdgeDef.Curve3d.IsNull())
-      << "EdgeDef " << anEdgeIdx << " has null Curve3d";
+    EXPECT_GE(anEdgeDef.Curve3DRepIdx, 0)
+      << "EdgeDef " << anEdgeIdx << " has no Curve3D representation";
   }
 }
 
@@ -121,8 +121,8 @@ TEST(BRepGraphBackRefManagerTest, RebuildAll_ProducesIdenticalResults)
   // Verify face surfaces are still valid.
   for (int aFIdx = 0; aFIdx < aGraph.Defs().NbFaces(); ++aFIdx)
   {
-    EXPECT_FALSE(aGraph.Defs().Face(aFIdx).Surface.IsNull())
-      << "Face " << aFIdx << " lost Surface after RebuildAll";
+    EXPECT_GE(aGraph.Defs().Face(aFIdx).SurfaceRepIdx, 0)
+      << "Face " << aFIdx << " lost surface rep after RebuildAll";
   }
 
   // Verify edge curves are still valid.
@@ -130,8 +130,8 @@ TEST(BRepGraphBackRefManagerTest, RebuildAll_ProducesIdenticalResults)
   {
     if (!aGraph.Defs().Edge(aEIdx).IsDegenerate)
     {
-      EXPECT_FALSE(aGraph.Defs().Edge(aEIdx).Curve3d.IsNull())
-        << "Edge " << aEIdx << " lost Curve3d after RebuildAll";
+      EXPECT_GE(aGraph.Defs().Edge(aEIdx).Curve3DRepIdx, 0)
+        << "Edge " << aEIdx << " lost Curve3D rep after RebuildAll";
     }
   }
 }
@@ -151,7 +151,7 @@ TEST(BRepGraphBackRefManagerTest, SplitEdge_CurveGetsSubEdgeRefs)
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
     const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(anEdgeIdx);
-    if (!anEdge.Curve3d.IsNull() && !anEdge.IsDegenerate
+    if (anEdge.Curve3DRepIdx >= 0 && !anEdge.IsDegenerate
         && anEdge.StartVertexDefId().IsValid() && anEdge.EndVertexDefId().IsValid())
     {
       aTargetEdgeIdx = anEdgeIdx;
@@ -161,7 +161,7 @@ TEST(BRepGraphBackRefManagerTest, SplitEdge_CurveGetsSubEdgeRefs)
   ASSERT_GE(aTargetEdgeIdx, 0) << "No suitable edge found for splitting";
 
   const BRepGraph_TopoNode::EdgeDef& anOrigEdge = aGraph.Defs().Edge(aTargetEdgeIdx);
-  ASSERT_FALSE(anOrigEdge.Curve3d.IsNull());
+  ASSERT_GE(anOrigEdge.Curve3DRepIdx, 0);
 
   // Create split vertex.
   const double aMidParam = 0.5 * (anOrigEdge.ParamFirst + anOrigEdge.ParamLast);
@@ -180,10 +180,10 @@ TEST(BRepGraphBackRefManagerTest, SplitEdge_CurveGetsSubEdgeRefs)
                                 aSplitVtx, aMidParam, aSubA, aSubB);
 
   // SubA and SubB should inherit the same curve.
-  EXPECT_FALSE(aGraph.Defs().Edge(aSubA.Index).Curve3d.IsNull())
-    << "SubA has no Curve3d";
-  EXPECT_FALSE(aGraph.Defs().Edge(aSubB.Index).Curve3d.IsNull())
-    << "SubB has no Curve3d";
+  EXPECT_GE(aGraph.Defs().Edge(aSubA.Index).Curve3DRepIdx, 0)
+    << "SubA has no Curve3D rep";
+  EXPECT_GE(aGraph.Defs().Edge(aSubB.Index).Curve3DRepIdx, 0)
+    << "SubB has no Curve3D rep";
 
   // Verify edge-to-wire was updated: SubA and SubB should be in wires.
   const NCollection_Vector<int>& aWiresA = aGraph.RelEdges().WiresOfEdge(aSubA.Index);

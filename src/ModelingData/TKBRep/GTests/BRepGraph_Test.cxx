@@ -101,7 +101,7 @@ TEST_F(BRepGraphTest, Face_Surface_IsValid)
   for (int aFaceIdx = 0; aFaceIdx < myGraph.Defs().NbFaces(); ++aFaceIdx)
   {
     const BRepGraph_TopoNode::FaceDef& aFace = myGraph.Defs().Face(aFaceIdx);
-    EXPECT_FALSE(aFace.Surface.IsNull()) << "Face " << aFaceIdx << " has null Surface";
+    EXPECT_GE(aFace.SurfaceRepIdx, 0) << "Face " << aFaceIdx << " has no surface rep";
   }
 }
 
@@ -112,8 +112,8 @@ TEST_F(BRepGraphTest, Edge_CurveAndVertices_AreValid)
     const BRepGraph_TopoNode::EdgeDef& anEdge = myGraph.Defs().Edge(anEdgeIdx);
     if (!anEdge.IsDegenerate)
     {
-      EXPECT_FALSE(anEdge.Curve3d.IsNull())
-        << "Edge " << anEdgeIdx << " has null Curve3d";
+      EXPECT_GE(anEdge.Curve3DRepIdx, 0)
+        << "Edge " << anEdgeIdx << " has no Curve3D rep";
     }
     EXPECT_TRUE(anEdge.StartVertexDefId().IsValid())
       << "Edge " << anEdgeIdx << " has invalid StartVertexId";
@@ -135,8 +135,8 @@ TEST_F(BRepGraphTest, FaceDef_HasValidSurface)
   for (int aFaceIdx = 0; aFaceIdx < myGraph.Defs().NbFaces(); ++aFaceIdx)
   {
     const BRepGraph_TopoNode::FaceDef& aFace = myGraph.Defs().Face(aFaceIdx);
-    EXPECT_FALSE(aFace.Surface.IsNull())
-      << "Face " << aFaceIdx << " has no surface";
+    EXPECT_GE(aFace.SurfaceRepIdx, 0)
+      << "Face " << aFaceIdx << " has no surface rep";
   }
 }
 
@@ -474,10 +474,10 @@ TEST_F(BRepGraphTest, ReconstructFace_AfterEdgeReplace_ContainsNewEdge)
   // Get 3D curve handles from graph for old/new edges.
   const BRepGraph_TopoNode::EdgeDef& aNewEdgeNode = myGraph.Defs().Edge(aNewIdx);
   const BRepGraph_TopoNode::EdgeDef& anOldEdgeNode = myGraph.Defs().Edge(anOldEdgeId.Index);
-  occ::handle<Geom_Curve> aNewCurve = !aNewEdgeNode.Curve3d.IsNull()
-    ? aNewEdgeNode.Curve3d : occ::handle<Geom_Curve>();
-  occ::handle<Geom_Curve> anOldCurve = !anOldEdgeNode.Curve3d.IsNull()
-    ? anOldEdgeNode.Curve3d : occ::handle<Geom_Curve>();
+  occ::handle<Geom_Curve> aNewCurve = aNewEdgeNode.Curve3DRepIdx >= 0
+    ? myGraph.Defs().Curve3DRep(aNewEdgeNode.Curve3DRepIdx).Curve : occ::handle<Geom_Curve>();
+  occ::handle<Geom_Curve> anOldCurve = anOldEdgeNode.Curve3DRepIdx >= 0
+    ? myGraph.Defs().Curve3DRep(anOldEdgeNode.Curve3DRepIdx).Curve : occ::handle<Geom_Curve>();
 
   myGraph.Mut().ReplaceEdgeInWire(0, anOldEdgeId, aNewEdgeId, false);
 
@@ -861,7 +861,7 @@ TEST_F(BRepGraphTest, AddPCurveToEdge_NewPCurve_RetrievableViaFindPCurve)
   EXPECT_NE(aRetrieved, nullptr);
   if (aRetrieved != nullptr)
   {
-    EXPECT_FALSE(aRetrieved->Curve2d.IsNull());
+    EXPECT_GE(aRetrieved->Curve2DRepIdx, 0);
   }
 }
 
@@ -972,8 +972,8 @@ TEST_F(BRepGraphTest, EdgeDef_HasValidCurve3d)
     if (anEdge.IsDegenerate)
       continue;
 
-    EXPECT_FALSE(anEdge.Curve3d.IsNull())
-      << "Edge " << anEdgeIdx << " has no Curve3d";
+    EXPECT_GE(anEdge.Curve3DRepIdx, 0)
+      << "Edge " << anEdgeIdx << " has no Curve3D rep";
   }
 }
 
@@ -1141,15 +1141,15 @@ TEST_F(BRepGraphTest, DetectToleranceConflicts_ManualConflict_Detected)
   for (int anEdgeIdx = 0; anEdgeIdx < myGraph.Defs().NbEdges() && !isConflictSetUp; ++anEdgeIdx)
   {
     const BRepGraph_TopoNode::EdgeDef& anEdge = myGraph.Defs().Edge(anEdgeIdx);
-    if (anEdge.IsDegenerate || anEdge.Curve3d.IsNull())
+    if (anEdge.IsDegenerate || anEdge.Curve3DRepIdx < 0)
       continue;
 
     for (int anOtherIdx = anEdgeIdx + 1; anOtherIdx < myGraph.Defs().NbEdges(); ++anOtherIdx)
     {
       const BRepGraph_TopoNode::EdgeDef& anOther = myGraph.Defs().Edge(anOtherIdx);
-      if (anOther.IsDegenerate || anOther.Curve3d.IsNull())
+      if (anOther.IsDegenerate || anOther.Curve3DRepIdx < 0)
         continue;
-      if (anEdge.Curve3d.get() != anOther.Curve3d.get())
+      if (anEdge.Curve3DRepIdx != anOther.Curve3DRepIdx)
         continue;
 
       // Set very different tolerances on two edges sharing the same curve.

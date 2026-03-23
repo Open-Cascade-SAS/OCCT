@@ -177,7 +177,7 @@ TEST(BRepGraphAPI_AddNodeTest, AddEdgeDef_WithCurve)
   const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.Defs().Edge(0);
   EXPECT_EQ(anEdgeDef.StartVertexDefId(), aV1);
   EXPECT_EQ(anEdgeDef.EndVertexDefId(), aV2);
-  EXPECT_FALSE(anEdgeDef.Curve3d.IsNull());
+  EXPECT_GE(anEdgeDef.Curve3DRepIdx, 0);
   EXPECT_NEAR(anEdgeDef.ParamFirst, 0.0, 1e-10);
   EXPECT_NEAR(anEdgeDef.ParamLast, 10.0, 1e-10);
 }
@@ -253,7 +253,7 @@ TEST(BRepGraphAPI_AddNodeTest, AddFaceDef_WithSurface)
   EXPECT_EQ(aGraph.Defs().NbFaces(), 1);
 
   const BRepGraph_TopoNode::FaceDef& aFaceDef = aGraph.Defs().Face(0);
-  EXPECT_FALSE(aFaceDef.Surface.IsNull());
+  EXPECT_GE(aFaceDef.SurfaceRepIdx, 0);
 }
 
 TEST(BRepGraphAPI_AddNodeTest, AddShellAndSolid)

@@ -59,7 +59,13 @@ BRepGraph_NodeId BRepGraph::BuilderView::AddEdgeDef(BRepGraph_NodeId          th
   myGraph->allocateUID(anEdgeDef.Id);
 
   if (!theCurve.IsNull())
-    anEdgeDef.Curve3d = theCurve;
+  {
+    BRepGraphInc::Curve3DRep& aCurveRep = myGraph->myData->myIncStorage.AppendCurve3DRep();
+    const int aCurveRepIdx = myGraph->myData->myIncStorage.NbCurves3D() - 1;
+    aCurveRep.Id    = BRepGraph_RepId::Curve3D(aCurveRepIdx);
+    aCurveRep.Curve = theCurve;
+    anEdgeDef.Curve3DRepIdx = aCurveRepIdx;
+  }
 
   return anEdgeDef.Id;
 }
@@ -134,7 +140,14 @@ BRepGraph_NodeId BRepGraph::BuilderView::AddFaceDef(
   aFaceDef.Id        = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, aIdx);
   aFaceDef.Tolerance = theTolerance;
   myGraph->allocateUID(aFaceDef.Id);
-  aFaceDef.Surface = theSurface;
+  if (!theSurface.IsNull())
+  {
+    BRepGraphInc::SurfaceRep& aSurfRep = myGraph->myData->myIncStorage.AppendSurfaceRep();
+    const int aSurfRepIdx = myGraph->myData->myIncStorage.NbSurfaces() - 1;
+    aSurfRep.Id      = BRepGraph_RepId::Surface(aSurfRepIdx);
+    aSurfRep.Surface = theSurface;
+    aFaceDef.SurfaceRepIdx = aSurfRepIdx;
+  }
 
   // Link wire refs.
   if (theOuterWire.IsValid())

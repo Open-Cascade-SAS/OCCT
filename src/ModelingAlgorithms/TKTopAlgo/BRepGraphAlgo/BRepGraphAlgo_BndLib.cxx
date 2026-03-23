@@ -70,7 +70,7 @@ static void addVertexBox(const BRepGraph& theGraph, int theVertIdx, Bnd_Box& the
 static void addEdgeBox(const BRepGraph& theGraph, int theEdgeIdx, Bnd_Box& theBox)
 {
   const BRepGraph_TopoNode::EdgeDef& anEdgeDef = theGraph.Defs().Edge(theEdgeIdx);
-  if (anEdgeDef.IsDegenerate || anEdgeDef.Curve3d.IsNull())
+  if (anEdgeDef.IsDegenerate || anEdgeDef.Curve3DRepIdx < 0)
   {
     return;
   }
@@ -85,8 +85,11 @@ static void addFaceBox(const BRepGraph& theGraph, int theFaceIdx, Bnd_Box& theBo
   const BRepGraph_TopoNode::FaceDef& aFaceDef = theGraph.Defs().Face(theFaceIdx);
 
   // Triangulation path (fast, common).
-  const occ::handle<Poly_Triangulation> aTri = aFaceDef.ActiveTriangulation();
-  if ((theUseTri || aFaceDef.Surface.IsNull()) && !aTri.IsNull())
+  const int anActiveTriRepIdx = aFaceDef.ActiveTriangulationRepIdx();
+  const occ::handle<Poly_Triangulation> aTri =
+    anActiveTriRepIdx >= 0 ? theGraph.Defs().TriangulationRep(anActiveTriRepIdx).Triangulation
+                           : occ::handle<Poly_Triangulation>();
+  if ((theUseTri || aFaceDef.SurfaceRepIdx < 0) && !aTri.IsNull())
   {
     const TopLoc_Location aLoc = faceGlobalLocation(theGraph, theFaceIdx);
     if (aTri->MinMax(theBox, aLoc))
@@ -97,14 +100,15 @@ static void addFaceBox(const BRepGraph& theGraph, int theFaceIdx, Bnd_Box& theBo
   }
 
   // Geometry path.
-  if (aFaceDef.Surface.IsNull())
+  if (aFaceDef.SurfaceRepIdx < 0)
   {
     return;
   }
 
   // Check surface type (location-invariant).
   const BRepGraph_NodeId aFaceDefId(BRepGraph_NodeId::Kind::Face, theFaceIdx);
-  GeomAdaptor_Surface    aGAS(aFaceDef.Surface);
+  const occ::handle<Geom_Surface>& aSurf = theGraph.Defs().SurfaceRep(aFaceDef.SurfaceRepIdx).Surface;
+  GeomAdaptor_Surface    aGAS(aSurf);
   if (aGAS.GetType() != GeomAbs_Plane)
   {
     // Non-plane: use SurfaceAdaptor with UV bounds from PCurves (avoids face reconstruction).
@@ -129,7 +133,7 @@ static void addFaceBox(const BRepGraph& theGraph, int theFaceIdx, Bnd_Box& theBo
         const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Defs().CoEdge(aCR.CoEdgeIdx);
         const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
           theGraph.Defs().Edge(aCoEdge.EdgeIdx);
-        if (anEdgeDef.IsDegenerate || anEdgeDef.Curve3d.IsNull())
+        if (anEdgeDef.IsDegenerate || anEdgeDef.Curve3DRepIdx < 0)
         {
           continue;
         }
@@ -397,7 +401,7 @@ static void addEdgeBoxOptimal(const BRepGraph& theGraph,
                               bool             theUseShapeTol)
 {
   const BRepGraph_TopoNode::EdgeDef& anEdgeDef = theGraph.Defs().Edge(theEdgeIdx);
-  if (anEdgeDef.IsDegenerate || anEdgeDef.Curve3d.IsNull())
+  if (anEdgeDef.IsDegenerate || anEdgeDef.Curve3DRepIdx < 0)
   {
     return;
   }
@@ -416,7 +420,10 @@ static void addFaceBoxOptimal(const BRepGraph& theGraph,
   const BRepGraph_TopoNode::FaceDef& aFaceDef = theGraph.Defs().Face(theFaceIdx);
 
   // Triangulation path.
-  const occ::handle<Poly_Triangulation> aTri = aFaceDef.ActiveTriangulation();
+  const int anActiveTriRepIdx = aFaceDef.ActiveTriangulationRepIdx();
+  const occ::handle<Poly_Triangulation> aTri =
+    anActiveTriRepIdx >= 0 ? theGraph.Defs().TriangulationRep(anActiveTriRepIdx).Triangulation
+                           : occ::handle<Poly_Triangulation>();
   if (theUseTri && !aTri.IsNull())
   {
     Bnd_Box               aLocBox;
@@ -432,7 +439,7 @@ static void addFaceBoxOptimal(const BRepGraph& theGraph,
   }
 
   // Geometry path.
-  if (aFaceDef.Surface.IsNull())
+  if (aFaceDef.SurfaceRepIdx < 0)
   {
     return;
   }
@@ -457,7 +464,7 @@ static void addFaceBoxOptimal(const BRepGraph& theGraph,
         const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Defs().CoEdge(aCR.CoEdgeIdx);
         const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
           theGraph.Defs().Edge(aCoEdge.EdgeIdx);
-        if (anEdgeDef.IsDegenerate || anEdgeDef.Curve3d.IsNull())
+        if (anEdgeDef.IsDegenerate || anEdgeDef.Curve3DRepIdx < 0)
         {
           continue;
         }
@@ -501,7 +508,7 @@ static void addFaceBoxOptimal(const BRepGraph& theGraph,
           const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Defs().CoEdge(aCR.CoEdgeIdx);
           const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
             theGraph.Defs().Edge(aCoEdge.EdgeIdx);
-          if (anEdgeDef.IsDegenerate || anEdgeDef.Curve3d.IsNull())
+          if (anEdgeDef.IsDegenerate || anEdgeDef.Curve3DRepIdx < 0)
           {
             continue;
           }

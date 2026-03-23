@@ -250,7 +250,7 @@ void BRepGraphCheck::CheckWireOnFace(
     if (aCoEdgeDef.SeamPairIdx >= 0)
       aHasSeamEdge = true;
   }
-  if (aWireDef.IsClosed && aNbEdges > 1 && !aFaceDef.Surface.IsNull() && !aHasSeamEdge)
+  if (aWireDef.IsClosed && aNbEdges > 1 && aFaceDef.SurfaceRepIdx >= 0 && !aHasSeamEdge)
   {
     auto edgeLookup = [&aDefs](int theIdx) -> const BRepGraphInc::EdgeEntity& {
       return aDefs.Edge(theIdx);
@@ -277,8 +277,12 @@ void BRepGraphCheck::CheckWireOnFace(
 
     if (aFirstPC != nullptr && aLastPC != nullptr)
     {
-      if (!aFirstPC->Curve2d.IsNull() && !aLastPC->Curve2d.IsNull())
+      if (aFirstPC->Curve2DRepIdx >= 0 && aLastPC->Curve2DRepIdx >= 0)
       {
+        const occ::handle<Geom2d_Curve>& aFirstPCCurve =
+          aDefs.Curve2DRep(aFirstPC->Curve2DRepIdx).Curve;
+        const occ::handle<Geom2d_Curve>& aLastPCCurve =
+          aDefs.Curve2DRep(aLastPC->Curve2DRepIdx).Curve;
         // Evaluate UV at wire-start of first edge and wire-end of last edge.
         const double aFirstParam = (aFirstCoEdge.Sense == TopAbs_FORWARD)
                                      ? aFirstPC->ParamFirst
@@ -287,13 +291,15 @@ void BRepGraphCheck::CheckWireOnFace(
                                     ? aLastPC->ParamLast
                                     : aLastPC->ParamFirst;
 
-        const gp_Pnt2d aFirstUV = aFirstPC->Curve2d->Value(aFirstParam);
-        const gp_Pnt2d aLastUV  = aLastPC->Curve2d->Value(aLastParam);
+        const gp_Pnt2d aFirstUV = aFirstPCCurve->Value(aFirstParam);
+        const gp_Pnt2d aLastUV  = aLastPCCurve->Value(aLastParam);
 
         // Convert 3D tolerance to UV tolerance using surface adaptor.
         {
           const double aTol3d = Precision::Confusion();
-          GeomAdaptor_Surface aSurfAdaptor(aFaceDef.Surface);
+          const occ::handle<Geom_Surface>& aWireSurf =
+            aDefs.SurfaceRep(aFaceDef.SurfaceRepIdx).Surface;
+          GeomAdaptor_Surface aSurfAdaptor(aWireSurf);
           const double aUTol = aSurfAdaptor.UResolution(aTol3d);
           const double aVTol = aSurfAdaptor.VResolution(aTol3d);
 
@@ -301,15 +307,15 @@ void BRepGraphCheck::CheckWireOnFace(
           double aDeltaV = std::abs(aFirstUV.Y() - aLastUV.Y());
 
           // Account for period wrapping on periodic surfaces.
-          if (aFaceDef.Surface->IsUPeriodic())
+          if (aWireSurf->IsUPeriodic())
           {
-            const double aUPeriod = aFaceDef.Surface->UPeriod();
+            const double aUPeriod = aWireSurf->UPeriod();
             if (aDeltaU > aUPeriod * 0.5)
               aDeltaU = aUPeriod - aDeltaU;
           }
-          if (aFaceDef.Surface->IsVPeriodic())
+          if (aWireSurf->IsVPeriodic())
           {
-            const double aVPeriod = aFaceDef.Surface->VPeriod();
+            const double aVPeriod = aWireSurf->VPeriod();
             if (aDeltaV > aVPeriod * 0.5)
               aDeltaV = aVPeriod - aDeltaV;
           }
@@ -328,7 +334,7 @@ void BRepGraphCheck::CheckWireOnFace(
     }
   }
 
-  if (aFaceDef.Surface.IsNull())
+  if (aFaceDef.SurfaceRepIdx < 0)
     return;
 
   // Collect PCurve adaptors and bounding boxes for each edge in the wire.
@@ -363,7 +369,15 @@ void BRepGraphCheck::CheckWireOnFace(
       continue;
     }
 
-    if (aPCurve->Curve2d.IsNull())
+    if (aPCurve->Curve2DRepIdx < 0)
+    {
+      aPCurveData.Append(EdgePCurveData());
+      continue;
+    }
+
+    const occ::handle<Geom2d_Curve>& aWirePC2d =
+      aDefs.Curve2DRep(aPCurve->Curve2DRepIdx).Curve;
+    if (aWirePC2d.IsNull())
     {
       aPCurveData.Append(EdgePCurveData());
       continue;
@@ -377,7 +391,7 @@ void BRepGraphCheck::CheckWireOnFace(
 
     const double aFirst = aPCurve->ParamFirst;
     const double aLast  = aPCurve->ParamLast;
-    aData.Adaptor = new Geom2dAdaptor_Curve(aPCurve->Curve2d, aFirst, aLast);
+    aData.Adaptor = new Geom2dAdaptor_Curve(aWirePC2d, aFirst, aLast);
 
     BndLib_Add2dCurve::Add(*aData.Adaptor, Precision::PConfusion(), aData.Box);
 

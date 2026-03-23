@@ -547,12 +547,17 @@ static GeomAdaptor_TransformedCurve buildCurveAdaptorFromDef(
   const BRepGraph_Data&              theData,
   const BRepGraph_TopoNode::EdgeDef& theEdge)
 {
-  if (!theEdge.Curve3d.IsNull())
+  if (theEdge.Curve3DRepIdx >= 0)
   {
-    return GeomAdaptor_TransformedCurve(theEdge.Curve3d,
-                                        theEdge.ParamFirst,
-                                        theEdge.ParamLast,
-                                        gp_Trsf());
+    const occ::handle<Geom_Curve>& aCurve3d =
+      theData.myIncStorage.Curve3DRep(theEdge.Curve3DRepIdx).Curve;
+    if (!aCurve3d.IsNull())
+    {
+      return GeomAdaptor_TransformedCurve(aCurve3d,
+                                          theEdge.ParamFirst,
+                                          theEdge.ParamLast,
+                                          gp_Trsf());
+    }
   }
 
   // Fall back to curve-on-surface from the first CoEdge with a valid PCurve.
@@ -564,16 +569,25 @@ static GeomAdaptor_TransformedCurve buildCurveAdaptorFromDef(
     {
       const BRepGraphInc::CoEdgeEntity& aCoEdge =
         theData.myIncStorage.CoEdge(aCoEdgeIdxs->Value(anIter));
-      if (aCoEdge.Curve2d.IsNull() || !aCoEdge.FaceDefId.IsValid())
+      if (aCoEdge.Curve2DRepIdx < 0 || !aCoEdge.FaceDefId.IsValid())
         continue;
 
+      const BRepGraphInc::FaceEntity& aFaceEnt =
+        theData.myIncStorage.Face(aCoEdge.FaceDefId.Index);
+      if (aFaceEnt.SurfaceRepIdx < 0)
+        continue;
       const occ::handle<Geom_Surface>& aSurf =
-        theData.myIncStorage.Face(aCoEdge.FaceDefId.Index).Surface;
+        theData.myIncStorage.SurfaceRep(aFaceEnt.SurfaceRepIdx).Surface;
       if (aSurf.IsNull())
         continue;
 
+      const occ::handle<Geom2d_Curve>& aCurve2d =
+        theData.myIncStorage.Curve2DRep(aCoEdge.Curve2DRepIdx).Curve;
+      if (aCurve2d.IsNull())
+        continue;
+
       occ::handle<Geom2dAdaptor_Curve> aHC2d =
-        new Geom2dAdaptor_Curve(aCoEdge.Curve2d, theEdge.ParamFirst, theEdge.ParamLast);
+        new Geom2dAdaptor_Curve(aCurve2d, theEdge.ParamFirst, theEdge.ParamLast);
       occ::handle<GeomAdaptor_Surface>      aHS  = new GeomAdaptor_Surface(aSurf);
       occ::handle<Adaptor3d_CurveOnSurface> aCOS = new Adaptor3d_CurveOnSurface(aHC2d, aHS);
 
@@ -626,15 +640,22 @@ occ::handle<Adaptor3d_CurveOnSurface> BRepGraph::DefsView::CurveOnSurfaceAdaptor
   const BRepGraph_TopoNode::FaceDef& aFaceDef = myGraph->myData->myIncStorage.Face(theFaceDef.Index);
 
   const BRepGraphInc::CoEdgeEntity* aCoEdge = FindPCurve(theEdgeDef, theFaceDef);
-  if (aCoEdge == nullptr || aCoEdge->Curve2d.IsNull())
+  if (aCoEdge == nullptr || aCoEdge->Curve2DRepIdx < 0)
     return occ::handle<Adaptor3d_CurveOnSurface>();
 
-  if (aFaceDef.Surface.IsNull())
+  if (aFaceDef.SurfaceRepIdx < 0)
+    return occ::handle<Adaptor3d_CurveOnSurface>();
+
+  const occ::handle<Geom2d_Curve>& aCurve2d =
+    myGraph->myData->myIncStorage.Curve2DRep(aCoEdge->Curve2DRepIdx).Curve;
+  const occ::handle<Geom_Surface>& aSurf =
+    myGraph->myData->myIncStorage.SurfaceRep(aFaceDef.SurfaceRepIdx).Surface;
+  if (aCurve2d.IsNull() || aSurf.IsNull())
     return occ::handle<Adaptor3d_CurveOnSurface>();
 
   occ::handle<Geom2dAdaptor_Curve> aHC2d =
-    new Geom2dAdaptor_Curve(aCoEdge->Curve2d, anEdgeDef.ParamFirst, anEdgeDef.ParamLast);
-  occ::handle<GeomAdaptor_Surface> aHS = new GeomAdaptor_Surface(aFaceDef.Surface);
+    new Geom2dAdaptor_Curve(aCurve2d, anEdgeDef.ParamFirst, anEdgeDef.ParamLast);
+  occ::handle<GeomAdaptor_Surface> aHS = new GeomAdaptor_Surface(aSurf);
 
   return new Adaptor3d_CurveOnSurface(aHC2d, aHS);
 }
@@ -657,15 +678,22 @@ occ::handle<Adaptor3d_CurveOnSurface> BRepGraph::DefsView::CurveOnSurfaceAdaptor
 
   const BRepGraphInc::CoEdgeEntity* aCoEdge =
     FindPCurve(theEdgeDef, theFaceDef, theEdgeOrientation);
-  if (aCoEdge == nullptr || aCoEdge->Curve2d.IsNull())
+  if (aCoEdge == nullptr || aCoEdge->Curve2DRepIdx < 0)
     return occ::handle<Adaptor3d_CurveOnSurface>();
 
-  if (aFaceDef.Surface.IsNull())
+  if (aFaceDef.SurfaceRepIdx < 0)
+    return occ::handle<Adaptor3d_CurveOnSurface>();
+
+  const occ::handle<Geom2d_Curve>& aCurve2d =
+    myGraph->myData->myIncStorage.Curve2DRep(aCoEdge->Curve2DRepIdx).Curve;
+  const occ::handle<Geom_Surface>& aSurf =
+    myGraph->myData->myIncStorage.SurfaceRep(aFaceDef.SurfaceRepIdx).Surface;
+  if (aCurve2d.IsNull() || aSurf.IsNull())
     return occ::handle<Adaptor3d_CurveOnSurface>();
 
   occ::handle<Geom2dAdaptor_Curve> aHC2d =
-    new Geom2dAdaptor_Curve(aCoEdge->Curve2d, anEdgeDef.ParamFirst, anEdgeDef.ParamLast);
-  occ::handle<GeomAdaptor_Surface> aHS = new GeomAdaptor_Surface(aFaceDef.Surface);
+    new Geom2dAdaptor_Curve(aCurve2d, anEdgeDef.ParamFirst, anEdgeDef.ParamLast);
+  occ::handle<GeomAdaptor_Surface> aHS = new GeomAdaptor_Surface(aSurf);
 
   return new Adaptor3d_CurveOnSurface(aHC2d, aHS);
 }
@@ -679,10 +707,15 @@ GeomAdaptor_TransformedSurface BRepGraph::DefsView::SurfaceAdaptor(
     return GeomAdaptor_TransformedSurface();
 
   const BRepGraph_TopoNode::FaceDef& aFaceDef = myGraph->myData->myIncStorage.Face(theFaceDef.Index);
-  if (aFaceDef.Surface.IsNull())
+  if (aFaceDef.SurfaceRepIdx < 0)
     return GeomAdaptor_TransformedSurface();
 
-  return GeomAdaptor_TransformedSurface(aFaceDef.Surface, gp_Trsf());
+  const occ::handle<Geom_Surface>& aSurf =
+    myGraph->myData->myIncStorage.SurfaceRep(aFaceDef.SurfaceRepIdx).Surface;
+  if (aSurf.IsNull())
+    return GeomAdaptor_TransformedSurface();
+
+  return GeomAdaptor_TransformedSurface(aSurf, gp_Trsf());
 }
 
 //=================================================================================================
@@ -697,10 +730,15 @@ GeomAdaptor_TransformedSurface BRepGraph::DefsView::SurfaceAdaptor(BRepGraph_Nod
     return GeomAdaptor_TransformedSurface();
 
   const BRepGraph_TopoNode::FaceDef& aFaceDef = myGraph->myData->myIncStorage.Face(theFaceDef.Index);
-  if (aFaceDef.Surface.IsNull())
+  if (aFaceDef.SurfaceRepIdx < 0)
     return GeomAdaptor_TransformedSurface();
 
-  return GeomAdaptor_TransformedSurface(aFaceDef.Surface,
+  const occ::handle<Geom_Surface>& aSurf =
+    myGraph->myData->myIncStorage.SurfaceRep(aFaceDef.SurfaceRepIdx).Surface;
+  if (aSurf.IsNull())
+    return GeomAdaptor_TransformedSurface();
+
+  return GeomAdaptor_TransformedSurface(aSurf,
                                         theUFirst, theULast,
                                         theVFirst, theVLast,
                                         gp_Trsf());

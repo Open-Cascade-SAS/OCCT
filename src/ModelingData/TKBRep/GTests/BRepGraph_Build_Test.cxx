@@ -117,7 +117,11 @@ TEST(BRepGraphBuildTest, Sphere_SurfaceType)
   bool aHasSpherical = false;
   for (int anIdx = 0; anIdx < aGraph.Defs().NbFaces(); ++anIdx)
   {
-    const occ::handle<Geom_Surface>& aSurf = aGraph.Defs().Face(anIdx).Surface;
+    const auto& aBldFace = aGraph.Defs().Face(anIdx);
+    const occ::handle<Geom_Surface> aSurf =
+      aBldFace.SurfaceRepIdx >= 0
+        ? aGraph.Defs().SurfaceRep(aBldFace.SurfaceRepIdx).Surface
+        : occ::handle<Geom_Surface>();
     if (!aSurf.IsNull() && aSurf->DynamicType() == STANDARD_TYPE(Geom_SphericalSurface))
     {
       aHasSpherical = true;
@@ -188,7 +192,11 @@ TEST(BRepGraphBuildTest, Cylinder_SurfaceType)
   bool aHasCylindrical = false;
   for (int anIdx = 0; anIdx < aGraph.Defs().NbFaces(); ++anIdx)
   {
-    const occ::handle<Geom_Surface>& aSurf = aGraph.Defs().Face(anIdx).Surface;
+    const auto& aBldFace = aGraph.Defs().Face(anIdx);
+    const occ::handle<Geom_Surface> aSurf =
+      aBldFace.SurfaceRepIdx >= 0
+        ? aGraph.Defs().SurfaceRep(aBldFace.SurfaceRepIdx).Surface
+        : occ::handle<Geom_Surface>();
     if (!aSurf.IsNull() && aSurf->DynamicType() == STANDARD_TYPE(Geom_CylindricalSurface))
     {
       aHasCylindrical = true;
@@ -238,7 +246,11 @@ TEST(BRepGraphBuildTest, Cone_SurfaceType)
   bool aHasConical = false;
   for (int anIdx = 0; anIdx < aGraph.Defs().NbFaces(); ++anIdx)
   {
-    const occ::handle<Geom_Surface>& aSurf = aGraph.Defs().Face(anIdx).Surface;
+    const auto& aBldFace = aGraph.Defs().Face(anIdx);
+    const occ::handle<Geom_Surface> aSurf =
+      aBldFace.SurfaceRepIdx >= 0
+        ? aGraph.Defs().SurfaceRep(aBldFace.SurfaceRepIdx).Surface
+        : occ::handle<Geom_Surface>();
     if (!aSurf.IsNull() && aSurf->DynamicType() == STANDARD_TYPE(Geom_ConicalSurface))
     {
       aHasConical = true;
@@ -309,7 +321,11 @@ TEST(BRepGraphBuildTest, Torus_SurfaceType)
   bool aHasToroidal = false;
   for (int anIdx = 0; anIdx < aGraph.Defs().NbFaces(); ++anIdx)
   {
-    const occ::handle<Geom_Surface>& aSurf = aGraph.Defs().Face(anIdx).Surface;
+    const auto& aBldFace = aGraph.Defs().Face(anIdx);
+    const occ::handle<Geom_Surface> aSurf =
+      aBldFace.SurfaceRepIdx >= 0
+        ? aGraph.Defs().SurfaceRep(aBldFace.SurfaceRepIdx).Surface
+        : occ::handle<Geom_Surface>();
     if (!aSurf.IsNull() && aSurf->DynamicType() == STANDARD_TYPE(Geom_ToroidalSurface))
     {
       aHasToroidal = true;
@@ -361,7 +377,11 @@ TEST(BRepGraphBuildTest, Wedge_AllPlanarSurfaces)
 
   for (int anIdx = 0; anIdx < aGraph.Defs().NbFaces(); ++anIdx)
   {
-    const occ::handle<Geom_Surface>& aSurf = aGraph.Defs().Face(anIdx).Surface;
+    const auto& aBldFace = aGraph.Defs().Face(anIdx);
+    const occ::handle<Geom_Surface> aSurf =
+      aBldFace.SurfaceRepIdx >= 0
+        ? aGraph.Defs().SurfaceRep(aBldFace.SurfaceRepIdx).Surface
+        : occ::handle<Geom_Surface>();
     ASSERT_FALSE(aSurf.IsNull());
     EXPECT_TRUE(aSurf->DynamicType() == STANDARD_TYPE(Geom_Plane))
       << "Face " << anIdx << " surface is not a Geom_Plane";
@@ -494,7 +514,9 @@ TEST(BRepGraphBuildTest, SinglePlanarFace_Counts)
   EXPECT_GE(aGraph.Defs().NbFaces(), 1);
 
   // Verify surface is a plane.
-  const occ::handle<Geom_Surface>& aSurf = aGraph.Defs().Face(0).Surface;
+  ASSERT_GE(aGraph.Defs().Face(0).SurfaceRepIdx, 0);
+  const occ::handle<Geom_Surface>& aSurf =
+    aGraph.Defs().SurfaceRep(aGraph.Defs().Face(0).SurfaceRepIdx).Surface;
   ASSERT_FALSE(aSurf.IsNull());
   EXPECT_TRUE(aSurf->DynamicType() == STANDARD_TYPE(Geom_Plane));
 }
@@ -681,7 +703,11 @@ TEST(BRepGraphBuildTest, Box_AllSurfacesArePlanes)
   ASSERT_EQ(aGraph.Defs().NbFaces(), 6);
   for (int anIdx = 0; anIdx < aGraph.Defs().NbFaces(); ++anIdx)
   {
-    const occ::handle<Geom_Surface>& aSurf = aGraph.Defs().Face(anIdx).Surface;
+    const auto& aBldFace = aGraph.Defs().Face(anIdx);
+    const occ::handle<Geom_Surface> aSurf =
+      aBldFace.SurfaceRepIdx >= 0
+        ? aGraph.Defs().SurfaceRep(aBldFace.SurfaceRepIdx).Surface
+        : occ::handle<Geom_Surface>();
     ASSERT_FALSE(aSurf.IsNull());
     EXPECT_TRUE(aSurf->DynamicType() == STANDARD_TYPE(Geom_Plane))
       << "Face " << anIdx << " surface is not Geom_Plane";
@@ -737,8 +763,8 @@ TEST(BRepGraphBuildTest, Box_FaceSurfacesAreValid)
   for (int anIdx = 0; anIdx < aGraph.Defs().NbFaces(); ++anIdx)
   {
     const auto& aFace = aGraph.Defs().Face(anIdx);
-    EXPECT_FALSE(aFace.Surface.IsNull())
-      << "Face " << anIdx << " has null Surface";
+    EXPECT_GE(aFace.SurfaceRepIdx, 0)
+      << "Face " << anIdx << " has no surface rep";
   }
 }
 

@@ -185,7 +185,7 @@ TEST(BRepGraphAlgo_ValidateTest, BoundsCheck_InvalidIndex)
 
   // Corrupt edge's Curve3d to null.
   BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge = aGraph.Mut().EdgeDef(0);
-  anEdge->Curve3d.Nullify();
+  anEdge->Curve3DRepIdx = -1;
 
   const BRepGraphAlgo_Validate::Result aResult = BRepGraphAlgo_Validate::Perform(aGraph);
   EXPECT_FALSE(aResult.IsValid());
@@ -208,7 +208,7 @@ TEST(BRepGraphAlgo_ValidateTest, AfterSplitEdge_ProducesSubEdges)
   for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
   {
     const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.Defs().Edge(i);
-    if (!anEdgeDef.IsDegenerate && !anEdgeDef.Curve3d.IsNull()
+    if (!anEdgeDef.IsDegenerate && anEdgeDef.Curve3DRepIdx >= 0
         && anEdgeDef.StartVertexDefId().IsValid() && anEdgeDef.EndVertexDefId().IsValid())
     {
       anEdgeId    = BRepGraph_NodeId::Edge(i);
@@ -221,7 +221,7 @@ TEST(BRepGraphAlgo_ValidateTest, AfterSplitEdge_ProducesSubEdges)
   // Create a split vertex at the midpoint.
   const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.Defs().Edge(anEdgeId.Index);
   gp_Pnt aMidPt;
-  anEdgeDef.Curve3d->D0(aSplitParam, aMidPt);
+  aGraph.Defs().Curve3DRep(anEdgeDef.Curve3DRepIdx).Curve->D0(aSplitParam, aMidPt);
   BRepGraph_NodeId aSplitVtx = aGraph.Builder().AddVertexDef(aMidPt, anEdgeDef.Tolerance);
 
   BRepGraph_NodeId aSubA, aSubB;
