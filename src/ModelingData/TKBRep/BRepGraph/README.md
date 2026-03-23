@@ -268,6 +268,20 @@ This avoids redundant edge recreation across multi-face reconstruction and helps
   - returns non-owning `BRepGraph_SubGraph` components,
   - partition roots prefer solid usages; fallback to shell usages; then to faces.
 
+- `RelationClusters(nodes, kind)`
+  - computes connected components over a provided node subset,
+  - connectivity is defined by relation edges of the requested kind,
+  - useful for algorithm-level partitioning (for example, sewing candidate groups).
+
+- `AreEdgesCompatibleSampled(...)`
+  - reusable sampled geometric compatibility check for edge pairs,
+  - supports direct and cached variants (cached sample points/projector),
+  - intended for pair-matching workflows in sewing and other graph-based algorithms.
+
+- `EdgeEndpointPairScore(edgeA, edgeB)`
+  - computes endpoint correspondence score used for pair ranking,
+  - lower score means better endpoint alignment.
+
 - `ParallelForEachFace()` / `ParallelForEachEdge()`
   - utility parallel iteration over a subgraph index set.
 
@@ -355,6 +369,8 @@ From public contract and implementation:
 | shape recovery from graph | `ShapesView` / `BRepGraph_Reconstruct` |
 | mutation | `MutView` + `BRepGraph_Mutator` |
 | diagnostics | `AnalyzeView` / `BRepGraph_Analyze` |
+| relation clustering on subset | `BRepGraph_Analyze::RelationClusters` |
+| reusable edge compatibility / pair score | `BRepGraph_Analyze::AreEdgesCompatibleSampled`, `BRepGraph_Analyze::EdgeEndpointPairScore` |
 | lineage tracking | `History()` / `BRepGraph_History` |
 | stable ids across one generation | `UIDsView` |
 | user metadata attachment | `AttrsView` |
