@@ -42,7 +42,7 @@ struct VertexRef
 //! referential: Sense is intrinsically bound to the CoEdge's PCurve, parametric
 //! range, and UV endpoints.  Seam edges rely on two CoEdgeEntities with opposite
 //! Sense sharing a SeamPairIdx, each owning its own PCurve — moving Sense here
-//! would break that coupling.  Follows Parasolid COEDGE convention.
+//! would break that coupling.
 struct CoEdgeRef
 {
   int             CoEdgeIdx = -1;

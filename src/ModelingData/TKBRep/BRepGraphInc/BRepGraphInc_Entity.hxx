@@ -260,7 +260,6 @@ struct EdgeEntity : public BaseEntity
 
 //! CoEdge entity: use of an edge on a specific face, owns PCurve data.
 //!
-//! Follows the Parasolid COEDGE pattern (Weiler half-edge literature).
 //! Each coedge represents one edge-face binding with its parametric curve.
 //! Wires reference coedges rather than edges directly.
 //! For seam edges, two coedges exist on the same face with opposite Sense,

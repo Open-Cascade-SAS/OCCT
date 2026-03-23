@@ -381,7 +381,7 @@ graph TD
    pitfalls (computed PCurves via `CurveOnPlane`, `TopLoc_Location` structural
    equality bug).
 
-3. **CoEdge entity**: Follows Parasolid COEDGE / Weiler half-edge pattern.
+3. **CoEdge entity**: Follows Weiler half-edge pattern.
    Each edge-face binding gets its own CoEdge with PCurve, polygon, and parameters.
 
 4. **Handle-pointer deduplication for geometry reps**: Two geometrically identical
