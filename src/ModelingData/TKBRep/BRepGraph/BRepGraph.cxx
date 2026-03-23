@@ -15,6 +15,7 @@
 #include <BRepGraph_Data.hxx>
 
 #include <BRepGraph_Builder.hxx>
+#include <BRepGraphInc_ReverseIndex.hxx>
 
 #include <NCollection_Map.hxx>
 #include <Standard_ProgramError.hxx>
@@ -254,43 +255,48 @@ void BRepGraph::markModified(BRepGraph_NodeId theDefId)
     myData->myCurrentShapes.UnBind(theDefId);
   }
 
-  // Propagate upward via usages' parent chain.
-  for (int aUsIdx = 0; aUsIdx < aDef->Usages.Length(); ++aUsIdx)
+  // Propagate upward via reverse indices (no Usage dependency).
+  const BRepGraphInc_ReverseIndex& aRevIdx = myData->myIncStorage.ReverseIdx;
+  switch (theDefId.NodeKind)
   {
-    BRepGraph_UsageId aParent;
-    switch (theDefId.NodeKind)
-    {
-      case BRepGraph_NodeId::Kind::Edge: {
-        const NCollection_Vector<int>* aWires = myData->myEdgeToWires.Seek(theDefId.Index);
-        if (aWires != nullptr)
-        {
-          for (int aWIdx = 0; aWIdx < aWires->Length(); ++aWIdx)
-            markModified(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Wire, aWires->Value(aWIdx)));
-        }
-        return;
-      }
-      case BRepGraph_NodeId::Kind::Vertex: {
-        return;
-      }
-      default: {
-        const BRepGraph_UsageId& aUsageId = aDef->Usages.Value(aUsIdx);
-        switch (aUsageId.NodeKind)
-        {
-          case BRepGraph_NodeId::Kind::Solid:  aParent = myData->mySolids.Usages.Value(aUsageId.Index).ParentUsage; break;
-          case BRepGraph_NodeId::Kind::Shell:  aParent = myData->myShells.Usages.Value(aUsageId.Index).ParentUsage; break;
-          case BRepGraph_NodeId::Kind::Face:   aParent = myData->myFaces.Usages.Value(aUsageId.Index).ParentUsage; break;
-          case BRepGraph_NodeId::Kind::Wire: {
-            const BRepGraph_TopoNode::WireUsage& aWu = myData->myWires.Usages.Value(aUsageId.Index);
-            if (aWu.OwnerFaceUsage.IsValid())
-              markModified(DefOf(aWu.OwnerFaceUsage));
-            continue;
-          }
-          default: continue;
-        }
-        if (aParent.IsValid())
-          markModified(DefOf(aParent));
-      }
+    case BRepGraph_NodeId::Kind::Vertex:
+      // Vertex modifications don't propagate.
+      break;
+    case BRepGraph_NodeId::Kind::Edge: {
+      // Edge → Wire (via edge-to-wire reverse index).
+      const NCollection_Vector<int>* aWires = myData->myEdgeToWires.Seek(theDefId.Index);
+      if (aWires != nullptr)
+        for (int i = 0; i < aWires->Length(); ++i)
+          markModified(BRepGraph_NodeId::Wire(aWires->Value(i)));
+      break;
     }
+    case BRepGraph_NodeId::Kind::Wire: {
+      // Wire → Face (via wire-to-face reverse index).
+      const NCollection_Vector<int>* aFaces = aRevIdx.FacesOfWire(theDefId.Index);
+      if (aFaces != nullptr)
+        for (int i = 0; i < aFaces->Length(); ++i)
+          markModified(BRepGraph_NodeId::Face(aFaces->Value(i)));
+      break;
+    }
+    case BRepGraph_NodeId::Kind::Face: {
+      // Face → Shell (via face-to-shell reverse index).
+      const NCollection_Vector<int>* aShells = aRevIdx.ShellsOfFace(theDefId.Index);
+      if (aShells != nullptr)
+        for (int i = 0; i < aShells->Length(); ++i)
+          markModified(BRepGraph_NodeId::Shell(aShells->Value(i)));
+      break;
+    }
+    case BRepGraph_NodeId::Kind::Shell: {
+      // Shell → Solid (via shell-to-solid reverse index).
+      const NCollection_Vector<int>* aSolids = aRevIdx.SolidsOfShell(theDefId.Index);
+      if (aSolids != nullptr)
+        for (int i = 0; i < aSolids->Length(); ++i)
+          markModified(BRepGraph_NodeId::Solid(aSolids->Value(i)));
+      break;
+    }
+    default:
+      // Solid/Compound/CompSolid modifications don't propagate further.
+      break;
   }
 }
 

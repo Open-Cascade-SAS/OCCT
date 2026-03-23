@@ -23,6 +23,8 @@ void BRepGraphInc_ReverseIndex::Clear()
   myEdgeToFaces.Clear();
   myVertexToEdges.Clear();
   myWireToFaces.Clear();
+  myFaceToShells.Clear();
+  myShellToSolids.Clear();
 }
 
 //=================================================================================================
@@ -31,6 +33,8 @@ void BRepGraphInc_ReverseIndex::Build(
   const NCollection_Vector<BRepGraphInc::EdgeEntity>&   theEdges,
   const NCollection_Vector<BRepGraphInc::WireEntity>&   theWires,
   const NCollection_Vector<BRepGraphInc::FaceEntity>&   theFaces,
+  const NCollection_Vector<BRepGraphInc::ShellEntity>&  theShells,
+  const NCollection_Vector<BRepGraphInc::SolidEntity>&  theSolids,
   const NCollection_Vector<BRepGraphInc::EdgeFaceGeom>& theEdgeFaceGeoms)
 {
   Clear();
@@ -75,6 +79,30 @@ void BRepGraphInc_ReverseIndex::Build(
     for (int i = 0; i < aFace.WireRefs.Length(); ++i)
     {
       appendUnique(myWireToFaces, aFace.WireRefs.Value(i).WireIdx, aFaceIdx);
+    }
+  }
+
+  // Face -> Shells: scan shell entities for their face refs.
+  for (int aShellIdx = 0; aShellIdx < theShells.Length(); ++aShellIdx)
+  {
+    const BRepGraphInc::ShellEntity& aShell = theShells.Value(aShellIdx);
+    if (aShell.IsRemoved)
+      continue;
+    for (int i = 0; i < aShell.FaceRefs.Length(); ++i)
+    {
+      appendUnique(myFaceToShells, aShell.FaceRefs.Value(i).FaceIdx, aShellIdx);
+    }
+  }
+
+  // Shell -> Solids: scan solid entities for their shell refs.
+  for (int aSolidIdx = 0; aSolidIdx < theSolids.Length(); ++aSolidIdx)
+  {
+    const BRepGraphInc::SolidEntity& aSolid = theSolids.Value(aSolidIdx);
+    if (aSolid.IsRemoved)
+      continue;
+    for (int i = 0; i < aSolid.ShellRefs.Length(); ++i)
+    {
+      appendUnique(myShellToSolids, aSolid.ShellRefs.Value(i).ShellIdx, aSolidIdx);
     }
   }
 }

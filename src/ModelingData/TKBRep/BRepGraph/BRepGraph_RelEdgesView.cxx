@@ -56,21 +56,13 @@ int BRepGraph::RelEdgesView::FaceCountForEdge(int theEdgeDefIdx) const
 {
   const NCollection_Vector<int>& aWires = WiresOfEdge(theEdgeDefIdx);
   NCollection_PackedMap<int>     aFaceSet;
+  const BRepGraphInc_ReverseIndex& aRevIdx = myGraph->myData->myIncStorage.ReverseIdx;
   for (int aWIdx = 0; aWIdx < aWires.Length(); ++aWIdx)
   {
-    const BRepGraph_TopoNode::WireDef& aWireDef =
-      myGraph->myData->myWires.Defs.Value(aWires.Value(aWIdx));
-    for (int aUsIdx = 0; aUsIdx < aWireDef.Usages.Length(); ++aUsIdx)
-    {
-      const BRepGraph_TopoNode::WireUsage& aWireUsage =
-        myGraph->myData->myWires.Usages.Value(aWireDef.Usages.Value(aUsIdx).Index);
-      if (aWireUsage.OwnerFaceUsage.IsValid())
-      {
-        BRepGraph_NodeId aFaceDefId = myGraph->DefOf(aWireUsage.OwnerFaceUsage);
-        if (aFaceDefId.IsValid())
-          aFaceSet.Add(aFaceDefId.Index);
-      }
-    }
+    const NCollection_Vector<int>* aFaces = aRevIdx.FacesOfWire(aWires.Value(aWIdx));
+    if (aFaces != nullptr)
+      for (int aFIdx = 0; aFIdx < aFaces->Length(); ++aFIdx)
+        aFaceSet.Add(aFaces->Value(aFIdx));
   }
   return aFaceSet.Extent();
 }

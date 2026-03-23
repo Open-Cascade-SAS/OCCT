@@ -45,5 +45,5 @@ void BRepGraphInc_Storage::Clear()
 
 void BRepGraphInc_Storage::BuildReverseIndex()
 {
-  ReverseIdx.Build(Edges, Wires, Faces, EdgeFaceGeoms);
+  ReverseIdx.Build(Edges, Wires, Faces, Shells, Solids, EdgeFaceGeoms);
 }

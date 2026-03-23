@@ -23,6 +23,8 @@ namespace BRepGraphInc
 struct EdgeEntity;
 struct WireEntity;
 struct FaceEntity;
+struct ShellEntity;
+struct SolidEntity;
 struct EdgeFaceGeom;
 }
 
@@ -40,13 +42,17 @@ public:
   Standard_EXPORT void Clear();
 
   //! Rebuild all reverse indices from the entity tables and relationship rows.
-  //! @param[in] theEdges     edge entity vector (for vertex-to-edge)
-  //! @param[in] theWires     wire entity vector (for edge-to-wire)
-  //! @param[in] theFaces     face entity vector (for wire-to-face)
+  //! @param[in] theEdges          edge entity vector (for vertex-to-edge)
+  //! @param[in] theWires          wire entity vector (for edge-to-wire)
+  //! @param[in] theFaces          face entity vector (for wire-to-face)
+  //! @param[in] theShells         shell entity vector (for face-to-shell)
+  //! @param[in] theSolids         solid entity vector (for shell-to-solid)
   //! @param[in] theEdgeFaceGeoms  relationship geometry rows (for edge-to-face)
   Standard_EXPORT void Build(const NCollection_Vector<BRepGraphInc::EdgeEntity>&   theEdges,
                              const NCollection_Vector<BRepGraphInc::WireEntity>&   theWires,
                              const NCollection_Vector<BRepGraphInc::FaceEntity>&   theFaces,
+                             const NCollection_Vector<BRepGraphInc::ShellEntity>&  theShells,
+                             const NCollection_Vector<BRepGraphInc::SolidEntity>&  theSolids,
                              const NCollection_Vector<BRepGraphInc::EdgeFaceGeom>& theEdgeFaceGeoms);
 
   //! Return wire indices containing the given edge.
@@ -73,6 +79,18 @@ public:
     return myWireToFaces.Seek(theWireIdx);
   }
 
+  //! Return shell indices containing the given face.
+  const NCollection_Vector<int>* ShellsOfFace(int theFaceIdx) const
+  {
+    return myFaceToShells.Seek(theFaceIdx);
+  }
+
+  //! Return solid indices containing the given shell.
+  const NCollection_Vector<int>* SolidsOfShell(int theShellIdx) const
+  {
+    return myShellToSolids.Seek(theShellIdx);
+  }
+
 private:
   //! Add theVal to the vector at theKey, creating if needed.  Skips duplicates.
   static void appendUnique(NCollection_DataMap<int, NCollection_Vector<int>>& theMap,
@@ -82,6 +100,8 @@ private:
   NCollection_DataMap<int, NCollection_Vector<int>> myEdgeToFaces;
   NCollection_DataMap<int, NCollection_Vector<int>> myVertexToEdges;
   NCollection_DataMap<int, NCollection_Vector<int>> myWireToFaces;
+  NCollection_DataMap<int, NCollection_Vector<int>> myFaceToShells;
+  NCollection_DataMap<int, NCollection_Vector<int>> myShellToSolids;
 };
 
 #endif // _BRepGraphInc_ReverseIndex_HeaderFile

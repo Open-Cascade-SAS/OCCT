@@ -143,8 +143,7 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph_Analyze::DegenerateWires(const BR
 {
   NCollection_Vector<BRepGraph_NodeId> aResult;
 
-  const BRepGraph::DefsView   aDefs   = theGraph.Defs();
-  const BRepGraph::UsagesView aUsages = theGraph.Usages();
+  const BRepGraph::DefsView aDefs = theGraph.Defs();
 
   for (int aWireDefIdx = 0; aWireDefIdx < aDefs.NbWires(); ++aWireDefIdx)
   {
@@ -162,23 +161,26 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph_Analyze::DegenerateWires(const BR
     const bool aIsClosed = aWire.IsClosed;
     if (!aIsClosed)
     {
-      // Check if any usage of this wire is the outer wire of its face (backward traversal).
-      for (int aUsageIdx = 0; aUsageIdx < aWire.Usages.Length(); ++aUsageIdx)
-      {
-        const BRepGraph_UsageId& aWireUsageId = aWire.Usages.Value(aUsageIdx);
-        const BRepGraph_TopoNode::WireUsage& aWireUsage =
-          aUsages.Wire(aWireUsageId.Index);
-        if (aWireUsage.OwnerFaceUsage.IsValid())
+      // Check if this wire is the outer wire of any face (via reverse index).
+      auto isOuterWireOfAnyFace = [&]() -> bool {
+        const NCollection_Vector<int>* aFaces =
+          theGraph.myData->myIncStorage.ReverseIdx.FacesOfWire(aWireDefIdx);
+        if (aFaces == nullptr)
+          return false;
+        for (int aFIdx = 0; aFIdx < aFaces->Length(); ++aFIdx)
         {
-          const BRepGraph_TopoNode::FaceUsage& aFaceUsage =
-            aUsages.Face(aWireUsage.OwnerFaceUsage.Index);
-          if (aFaceUsage.OuterWireUsage == aWireUsageId)
+          const BRepGraph_TopoNode::FaceDef& aFaceDef = aDefs.Face(aFaces->Value(aFIdx));
+          for (int aWRIdx = 0; aWRIdx < aFaceDef.WireRefs.Length(); ++aWRIdx)
           {
-            aResult.Append(aWire.Id);
-            break;
+            const BRepGraphInc::WireRef& aWR = aFaceDef.WireRefs.Value(aWRIdx);
+            if (aWR.WireIdx == aWireDefIdx && aWR.IsOuter)
+              return true;
           }
         }
-      }
+        return false;
+      };
+      if (isOuterWireOfAnyFace())
+        aResult.Append(aWire.Id);
     }
   }
 
