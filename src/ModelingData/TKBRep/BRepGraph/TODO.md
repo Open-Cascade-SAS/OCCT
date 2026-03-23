@@ -73,9 +73,12 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 - Catches same-side false positives where bounding box inner/outer distance was inconclusive
 - Ported from legacy `BRepBuilderAPI_Sewing::SameParameterEdge` UV-distance check pattern
 
-### UVBounds/BndLib automatic invalidation [Stab] ★★★
-- Hook invalidation into `CacheView::InvalidateSubgraph` (or layer events once available)
-- Currently manual invalidation — algorithms must remember to invalidate caches
+### ~~UVBounds/BndLib automatic invalidation~~ — DONE (2026-03-20)
+- `markModified()` now calls `InvalidateAll()` on node cache alongside shape-cache clearing
+- `EndDeferredInvalidation()` sweeps all modified entities (all 8 kinds) and invalidates caches
+- Removed redundant manual `Cache().Invalidate()` in Sewing::processEdges
+- UVBounds/BndLib caches auto-invalidate when topology is mutated via `Mut()` API
+- **Result**: zero manual invalidation needed; no measurable performance impact
 
 ### Incremental modes for Deduplicate/Compact [Perf] ★★★
 - `AnalyzeOnly`, `DeltaOnly`, `Incremental` flags
