@@ -4,7 +4,7 @@
 
 BRepGraph is a bidirectional topology-geometry graph layered over OCCT's TopoDS/BRep model. It provides efficient read-only queries, parallel analysis, and utility algorithms (sewing, copy, transform, deduplication, validation, compaction). However, it has architectural gaps that limit its use for mutation-heavy workflows (booleans, fillets, local operations). This roadmap defines improvements to make BRepGraph a robust, future-proof foundation for CAD algorithm development.
 
-**Current state (2026-03-17):** 12 view classes, 10 algorithms (BRepGraphAlgo), BRepGraphCheck validation, optional UID system, append-only history, user attribute system with GUID registry. 601 passing tests.
+**Current state (2026-03-17):** 12 view classes, 11 algorithms (BRepGraphAlgo), BRepGraphCheck validation, optional UID system, append-only history, user attribute system with GUID registry. Cached UV bounds (`BRepGraphAlgo_UVBounds`) and bounding boxes (`BRepGraphAlgo_BndLib`) use per-node user attributes. PCurve continuity populated via `BRep_Tool::MaxContinuity`. 225+ passing tests.
 
 ---
 
@@ -23,6 +23,7 @@ graph TB
         A8[BRepGraphAlgo_Compact]
         A9[BRepGraphAlgo_AttrTransfer]
         A10[BRepGraphCheck_Analyzer]
+        A11[BRepGraphAlgo_UVBounds]
     end
 
     subgraph "View API Layer"
@@ -56,7 +57,7 @@ graph TB
         S2[Geom_Surface / Geom_Curve / Geom2d_Curve]
     end
 
-    A1 & A2 & A3 & A4 & A5 & A6 & A7 & A8 & A9 & A10 --> V1 & V2 & V3 & V4 & V5 & V6 & V7 & V8 & V9 & V10 & V11 & V12
+    A1 & A2 & A3 & A4 & A5 & A6 & A7 & A8 & A9 & A10 & A11 --> V1 & V2 & V3 & V4 & V5 & V6 & V7 & V8 & V9 & V10 & V11 & V12
     V1 & V2 & V3 & V4 & V5 & V6 & V7 & V8 & V9 & V10 & V11 & V12 --> D1
     D1 --> D2 & D3 & D4 & D5 & D6 & D7 & D8
     D1 -.->|Build/Reconstruct| S1 & S2
@@ -114,7 +115,8 @@ graph LR
 ```mermaid
 graph TD
     T1_3["T1.3 Benchmarks<br/><b>S</b> | ⏳ in progress"]
-    T1_4["T1.4 PCurve Continuity<br/><b>S/M</b> | ✅ done"]
+    T1_4["T1.4 PCurve Continuity<br/><b>S</b> | ✅ done"]
+    T1_5["T1.5 Cached UV Bounds<br/><b>M</b> | ✅ done"]
     T1_1["T1.1 Back-Ref Automation<br/><b>M</b> | foundation"]
     T1_2["T1.2 Mandatory UID<br/><b>M</b> | foundation"]
     T2_1["T2.1 Transactions<br/><b>L</b>"]
@@ -144,11 +146,13 @@ graph TD
     T1_2 --> T4_3
     T2_1 --> T4_3
     T1_4 -.->|benefits| T3_2
+    T1_5 -.->|benefits| T3_3
 
     style T1_1 fill:#1a5276,color:#fff
     style T1_2 fill:#1a5276,color:#fff
     style T1_3 fill:#1a5276,color:#fff
     style T1_4 fill:#1a5276,color:#fff
+    style T1_5 fill:#1a5276,color:#fff
     style T2_1 fill:#6c3483,color:#fff
     style T2_2 fill:#6c3483,color:#fff
     style T2_3 fill:#6c3483,color:#fff
@@ -241,15 +245,31 @@ graph LR
 
 ### T1.4: Populate PCurve.Continuity ✅ DONE
 
-**What:** During `Build()`, compute `PCurve.Continuity` from `BRep_Tool::Continuity()` for each (Edge, Face) pair.
+**What:** During `Build()`, compute `PCurve.Continuity` from `BRep_Tool::MaxContinuity()` for each edge.
 
-**Why:** Field declared in `BRepGraph_GeomNode::PCurve` (line 88) but always `GeomAbs_C0`. Future fillet/offset algorithms need correct data.
+**Why:** Field declared in `BRepGraph_GeomNode::PCurve` but always `GeomAbs_C0`. Future fillet/offset algorithms need correct data.
 
 **Files:** `BRepGraph_Builder.cxx`, `BRepGraph.cxx`, `BRepGraph.hxx`
 
-**Implementation notes:** Required building an edge-to-face map (`buildEdgeFaceMap`) in a sequential pre-pass before parallel Phase 2, plus a helper `edgeContinuityOnFace()` that computes the maximum continuity across all face pairs sharing an edge. The `createPCurveNode()` signature was extended with a `theContinuity` parameter (default `GeomAbs_C0` for backward compatibility). Tests added in `BRepGraph_Geometry_Test.cxx`.
+**Implementation notes:** Uses `BRep_Tool::MaxContinuity(edge)` inline during parallel Phase 2 — zero overhead (reads edge's own regularity records). The `createPCurveNode()` signature was extended with a `theContinuity` parameter (default `GeomAbs_C0` for backward compatibility). Also replaced `TopExp::Vertices()` with a local `edgeVertices()` that filters non-vertex children. Tests added in `BRepGraph_Geometry_Test.cxx`.
 
-**Complexity:** S/M (originally estimated S, actual scope slightly larger due to edge-face map infrastructure) | **Dependencies:** None
+**Complexity:** S | **Dependencies:** None
+
+---
+
+### T1.5: Cached UV Bounds for Faces ✅ DONE
+
+**What:** `BRepGraphAlgo_UVBounds` class with GUID-based caching on face nodes, computing UV parametric bounds from face PCurves with natural-restriction detection, periodicity clamping, BSpline pseudo-periodicity handling, and `RectangularTrimmedSurface` unwrapping.
+
+**Why:** UV bounds were recomputed on every call in `BRepGraphAlgo_BndLib` (3 call sites), and lacked the BSpline pseudo-periodicity check from `BRepTools::AddUVBounds`. Caching avoids redundant work for future algorithms.
+
+**Files:** New `BRepGraphAlgo_UVBounds.hxx/.cxx`, modified `BRepGraphAlgo_BndLib.cxx` (thin wrapper), `BRepGraph.hxx` (friend), `FILES.cmake`
+
+**Consumers:**
+- `BRepGraphAlgo_BndLib` — face bounding box computation (3 call sites via `findExactUVBounds`)
+- `BRepGraphCheck_Solid` — candidate for improvement (currently uses raw `Surface->Bounds()` with ±1e6 clamping instead of face-specific UV domain)
+
+**Complexity:** M | **Dependencies:** None
 
 ---
 
@@ -517,7 +537,8 @@ graph TB
 | # | Item | Tier | Complexity | Rationale |
 |---|------|------|-----------|-----------|
 | 1 | T1.3 Benchmarks | 1 | S | Measure before changing — **in progress** |
-| 2 | T1.4 PCurve Continuity | 1 | S/M | **Done** — required edge-face map infrastructure |
+| 2 | T1.4 PCurve Continuity | 1 | S | **Done** — uses `BRep_Tool::MaxContinuity` |
+| 2b | T1.5 Cached UV Bounds | 1 | M | **Done** — `BRepGraphAlgo_UVBounds` with GUID caching |
 | 3 | T1.1 Back-Ref Automation | 1 | M | Biggest risk-reducer |
 | 4 | T1.2 Mandatory UID | 1 | M | Enables stable identity |
 | 5 | T2.1 Transactions | 2 | L | Enables safe multi-step mutations |

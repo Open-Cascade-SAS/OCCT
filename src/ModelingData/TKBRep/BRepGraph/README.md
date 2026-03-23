@@ -536,6 +536,7 @@ Algorithm files (in `BRepGraphAlgo` package):
 - `BRepGraphAlgo_FClass2d.hxx` / `.cxx`: 2D face classification on graph nodes.
 - `BRepGraphAlgo_Sewing.hxx` / `.cxx`: edge sewing on disconnected faces.
 - `BRepGraphAlgo_Transform.hxx` / `.cxx`: graph-based shape transformation.
+- `BRepGraphAlgo_UVBounds.hxx` / `.cxx`: cached UV parametric bounds for faces.
 - `BRepGraphAlgo_Validate.hxx` / `.cxx`: structural validation of graph invariants.
 
 Validation/check files (in `BRepGraphCheck` package):
