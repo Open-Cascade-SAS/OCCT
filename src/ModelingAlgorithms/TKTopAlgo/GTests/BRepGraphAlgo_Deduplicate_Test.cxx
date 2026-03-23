@@ -106,6 +106,8 @@ int nbPCurveEntries(const BRepGraph& theGraph)
   int aCount = 0;
   for (int anEdgeIdx = 0; anEdgeIdx < theGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
+    if (theGraph.Defs().Edge(anEdgeIdx).IsRemoved)
+      continue;
     aCount += theGraph.Defs().Edge(anEdgeIdx).PCurves.Length();
   }
   return aCount;

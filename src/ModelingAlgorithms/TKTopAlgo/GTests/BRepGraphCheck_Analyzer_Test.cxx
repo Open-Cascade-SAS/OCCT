@@ -90,7 +90,6 @@ TEST(BRepGraphCheck_AnalyzerTest, ValidCylinder_NoIssues)
 
   BRepGraphCheck_Analyzer anAnalyzer(aGraph);
   anAnalyzer.Perform();
-
   EXPECT_TRUE(anAnalyzer.IsValid())
     << "Valid cylinder should have no errors. Found " << anAnalyzer.Report().Issues().Length()
     << " issues.";

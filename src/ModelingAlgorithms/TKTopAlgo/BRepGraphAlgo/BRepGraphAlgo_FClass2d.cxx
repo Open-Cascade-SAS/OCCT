@@ -19,6 +19,7 @@
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_TopoNode.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
+#include <BRepGraphInc_WireExplorer.hxx>
 #include <CSLib_Class2d.hxx>
 #include <ElCLib.hxx>
 #include <GCPnts_QuasiUniformDeflection.hxx>
@@ -247,7 +248,14 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
     double aFlecheV        = 0.0;
     bool   aWireIsNotEmpty = false;
 
-    const int aNbEdgeRefs = aWireDef.EdgeRefs.Length();
+    // Build connection-ordered edge sequence using WireExplorer.
+    auto edgeLookup = [&theGraph](int theIdx) -> const BRepGraphInc::EdgeEntity& {
+      return theGraph.Defs().Edge(theIdx);
+    };
+    BRepGraphInc_WireExplorer aWireExp(aWireDef.EdgeRefs, edgeLookup);
+    const NCollection_Vector<BRepGraphInc::EdgeRef>& anOrderedRefs = aWireExp.OrderedRefs();
+
+    const int aNbEdgeRefs = anOrderedRefs.Length();
     const int aNbE        = aNbEdgeRefs;
 
     // Edge count mismatch detection.
@@ -256,10 +264,10 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
     gp_Pnt aOldPnt3d(0, 0, 0);
     bool   anOldPnt3dInit = false;
 
-    // Iterate edge refs.
+    // Iterate edge refs in connection order.
     for (int anEdgeIdx = 0; anEdgeIdx < aNbEdgeRefs; ++anEdgeIdx)
     {
-      const BRepGraphInc::EdgeRef& anEdgeRef = aWireDef.EdgeRefs.Value(anEdgeIdx);
+      const BRepGraphInc::EdgeRef& anEdgeRef = anOrderedRefs.Value(anEdgeIdx);
       const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
         theGraph.Defs().Edge(anEdgeRef.EdgeIdx);
       const TopAbs_Orientation anOri = anEdgeRef.Orientation;
@@ -405,7 +413,7 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
 
           for (int anEdgeIdx = 0; anEdgeIdx < aNbEdgeRefs; ++anEdgeIdx)
           {
-            const BRepGraphInc::EdgeRef& anEdgeRef2 = aWireDef.EdgeRefs.Value(anEdgeIdx);
+            const BRepGraphInc::EdgeRef& anEdgeRef2 = anOrderedRefs.Value(anEdgeIdx);
             const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
               theGraph.Defs().Edge(anEdgeRef2.EdgeIdx);
             const TopAbs_Orientation anOri = anEdgeRef2.Orientation;

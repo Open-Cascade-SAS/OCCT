@@ -216,8 +216,15 @@ void BRepGraphCheck::CheckShellOrientation(
         const BRepGraphInc::EdgeRef& anEdgeRef = aWireDef.EdgeRefs.Value(anEdgeIter);
         const int anEdgeIdx = anEdgeRef.EdgeIdx;
 
-        // Compose edge orientation: wire orientation XOR face orientation.
+        // Compose edge orientation: edge ⊕ wire ⊕ face orientation.
         TopAbs_Orientation aCompOri = anEdgeRef.Orientation;
+        if (aWR.Orientation == TopAbs_REVERSED)
+        {
+          if (aCompOri == TopAbs_FORWARD)
+            aCompOri = TopAbs_REVERSED;
+          else if (aCompOri == TopAbs_REVERSED)
+            aCompOri = TopAbs_FORWARD;
+        }
         if (aFaceOri == TopAbs_REVERSED)
         {
           if (aCompOri == TopAbs_FORWARD)

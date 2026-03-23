@@ -13,6 +13,7 @@
 
 #include <BRepGraphCheck.hxx>
 
+#include <BRepGraphInc_WireExplorer.hxx>
 #include <Bnd_Box2d.hxx>
 #include <BndLib_Add2dCurve.hxx>
 #include <BRepGraph_DefsView.hxx>
@@ -40,9 +41,13 @@ static double computeWireSignedArea(const BRepGraph&                           t
   gp_Pnt2d      aPrevPnt;
   bool          aHasPrev = false;
 
-  for (int anEdgeIter = 0; anEdgeIter < theWireDef.EdgeRefs.Length(); ++anEdgeIter)
+  auto edgeLookup = [&aDefs](int theIdx) -> const BRepGraphInc::EdgeEntity& {
+    return aDefs.Edge(theIdx);
+  };
+  for (BRepGraphInc_WireExplorer anExp(theWireDef.EdgeRefs, edgeLookup);
+       anExp.More(); anExp.Next())
   {
-    const BRepGraphInc::EdgeRef& anEdgeRef = theWireDef.EdgeRefs.Value(anEdgeIter);
+    const BRepGraphInc::EdgeRef& anEdgeRef = anExp.CurrentRef();
     const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(anEdgeRef.EdgeIdx);
 
     const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurve =
@@ -98,9 +103,13 @@ static void collectWirePCurves(const BRepGraph&                   theGraph,
 {
   const BRepGraph::DefsView aDefs = theGraph.Defs();
 
-  for (int anEdgeIter = 0; anEdgeIter < theWireDef.EdgeRefs.Length(); ++anEdgeIter)
+  auto edgeLookup = [&aDefs](int theIdx) -> const BRepGraphInc::EdgeEntity& {
+    return aDefs.Edge(theIdx);
+  };
+  for (BRepGraphInc_WireExplorer anExp(theWireDef.EdgeRefs, edgeLookup);
+       anExp.More(); anExp.Next())
   {
-    const BRepGraphInc::EdgeRef& anEdgeRef = theWireDef.EdgeRefs.Value(anEdgeIter);
+    const BRepGraphInc::EdgeRef& anEdgeRef = anExp.CurrentRef();
     const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(anEdgeRef.EdgeIdx);
 
     if (anEdgeDef.IsDegenerate)

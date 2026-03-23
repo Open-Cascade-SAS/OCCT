@@ -392,13 +392,20 @@ const BRepGraph_TopoNode::EdgeDef::PCurveEntry* BRepGraph::DefsView::FindPCurve(
 
   const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
     myGraph->myData->myIncStorage.Edge(theEdgeDef.Index);
+  // For non-seam edges (1 PCurve per face), return the only match.
+  // For seam edges (2 PCurves per face), prefer exact orientation match.
+  const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aFirstMatch = nullptr;
   for (int aPCurveIter = 0; aPCurveIter < anEdgeDef.PCurves.Length(); ++aPCurveIter)
   {
     const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCEntry = anEdgeDef.PCurves.Value(aPCurveIter);
-    if (aPCEntry.FaceDefId == theFaceDef && aPCEntry.EdgeOrientation == theEdgeOrientation)
+    if (aPCEntry.FaceDefId != theFaceDef)
+      continue;
+    if (aFirstMatch == nullptr)
+      aFirstMatch = &aPCEntry;
+    if (aPCEntry.EdgeOrientation == theEdgeOrientation)
       return &aPCEntry;
   }
-  return nullptr;
+  return aFirstMatch;
 }
 
 //=================================================================================================

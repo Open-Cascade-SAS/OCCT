@@ -13,6 +13,7 @@
 
 #include <BRepGraphCheck.hxx>
 
+#include <BRepGraphInc_WireExplorer.hxx>
 #include <Bnd_Box2d.hxx>
 #include <BndLib_Add2dCurve.hxx>
 #include <BRepGraph_DefsView.hxx>
@@ -22,6 +23,8 @@
 #include <Geom2dInt_GInter.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
+#include <NCollection_DataMap.hxx>
+#include <NCollection_List.hxx>
 #include <NCollection_Map.hxx>
 #include <Precision.hxx>
 
@@ -118,22 +121,79 @@ void BRepGraphCheck::CheckWireOnFace(
   if (aWireDef.EdgeRefs.IsEmpty())
     return;
 
-  // Connectivity check: adjacent edges must share a vertex.
+  // Connectivity check: verify all edges are reachable via vertex adjacency.
+  // Uses the same approach as BRepCheck_Wire::Closed() — build a vertex-to-edge
+  // adjacency map, then propagate from the first edge to check all are reachable.
+  // This works regardless of EdgeRefs ordering.
   const int aNbEdges = aWireDef.EdgeRefs.Length();
-  for (int anEdgeIter = 0; anEdgeIter < aNbEdges - 1; ++anEdgeIter)
   {
-    const BRepGraphInc::EdgeRef& aCurrEdgeRef = aWireDef.EdgeRefs.Value(anEdgeIter);
-    const BRepGraphInc::EdgeRef& aNextEdgeRef = aWireDef.EdgeRefs.Value(anEdgeIter + 1);
+    // Build vertex → edge-indices map (using oriented vertices).
+    NCollection_DataMap<int, NCollection_Vector<int>> aVtxToEdgeIndices;
+    for (int anEdgeIter = 0; anEdgeIter < aNbEdges; ++anEdgeIter)
+    {
+      const BRepGraphInc::EdgeRef& anER = aWireDef.EdgeRefs.Value(anEdgeIter);
+      const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(anER.EdgeIdx);
+      const BRepGraph_NodeId aStartVtx = anEdgeDef.OrientedStartVertex(anER.Orientation);
+      const BRepGraph_NodeId anEndVtx  = anEdgeDef.OrientedEndVertex(anER.Orientation);
+      if (aStartVtx.IsValid())
+      {
+        if (!aVtxToEdgeIndices.IsBound(aStartVtx.Index))
+          aVtxToEdgeIndices.Bind(aStartVtx.Index, NCollection_Vector<int>());
+        aVtxToEdgeIndices.ChangeFind(aStartVtx.Index).Append(anEdgeIter);
+      }
+      if (anEndVtx.IsValid())
+      {
+        if (!aVtxToEdgeIndices.IsBound(anEndVtx.Index))
+          aVtxToEdgeIndices.Bind(anEndVtx.Index, NCollection_Vector<int>());
+        aVtxToEdgeIndices.ChangeFind(anEndVtx.Index).Append(anEdgeIter);
+      }
+    }
 
-    const BRepGraph_TopoNode::EdgeDef& aCurrEdge = aDefs.Edge(aCurrEdgeRef.EdgeIdx);
-    const BRepGraph_TopoNode::EdgeDef& aNextEdge = aDefs.Edge(aNextEdgeRef.EdgeIdx);
+    // Propagate from edge 0: mark all reachable edges via shared vertices.
+    NCollection_Vector<bool> aVisited(aNbEdges);
+    for (int i = 0; i < aNbEdges; ++i)
+      aVisited.SetValue(i, false);
 
-    // Determine the end vertex of current edge and start vertex of next edge
-    // based on orientation in the wire.
-    const BRepGraph_NodeId aCurrEndVtx   = aCurrEdge.OrientedEndVertex(aCurrEdgeRef.Orientation);
-    const BRepGraph_NodeId aNextStartVtx = aNextEdge.OrientedStartVertex(aNextEdgeRef.Orientation);
+    NCollection_List<int> aQueue;
+    aQueue.Append(0);
+    aVisited.SetValue(0, true);
+    int aNbVisited = 1;
 
-    if (aCurrEndVtx.IsValid() && aNextStartVtx.IsValid() && aCurrEndVtx != aNextStartVtx)
+    while (!aQueue.IsEmpty())
+    {
+      const int aCurrIdx = aQueue.First();
+      aQueue.RemoveFirst();
+
+      const BRepGraphInc::EdgeRef& aCurrER = aWireDef.EdgeRefs.Value(aCurrIdx);
+      const BRepGraph_TopoNode::EdgeDef& aCurrEdge = aDefs.Edge(aCurrER.EdgeIdx);
+      const BRepGraph_NodeId aStartVtx = aCurrEdge.OrientedStartVertex(aCurrER.Orientation);
+      const BRepGraph_NodeId anEndVtx  = aCurrEdge.OrientedEndVertex(aCurrER.Orientation);
+
+      // Visit neighbors via both vertices.
+      for (int aVtxPass = 0; aVtxPass < 2; ++aVtxPass)
+      {
+        const int aVtxIdx = (aVtxPass == 0 && aStartVtx.IsValid()) ? aStartVtx.Index
+                          : (aVtxPass == 1 && anEndVtx.IsValid())   ? anEndVtx.Index
+                                                                     : -1;
+        if (aVtxIdx < 0)
+          continue;
+        const NCollection_Vector<int>* aNeighbors = aVtxToEdgeIndices.Seek(aVtxIdx);
+        if (aNeighbors == nullptr)
+          continue;
+        for (int i = 0; i < aNeighbors->Length(); ++i)
+        {
+          const int aNeighIdx = aNeighbors->Value(i);
+          if (!aVisited.Value(aNeighIdx))
+          {
+            aVisited.SetValue(aNeighIdx, true);
+            ++aNbVisited;
+            aQueue.Append(aNeighIdx);
+          }
+        }
+      }
+    }
+
+    if (aNbVisited < aNbEdges)
     {
       BRepGraphCheck_Issue anIssue;
       anIssue.NodeId        = aWireNodeId;
@@ -141,32 +201,31 @@ void BRepGraphCheck::CheckWireOnFace(
       anIssue.Status        = BRepCheck_NotConnected;
       anIssue.IssueSeverity = BRepGraphCheck_Issue::Severity::Error;
       theIssues.Append(anIssue);
-      break; // Report once per wire.
     }
-  }
 
-  // Closure check for closed wires: first start == last end.
-  if (aNbEdges > 1)
-  {
-    const BRepGraphInc::EdgeRef& aFirstEdgeRef = aWireDef.EdgeRefs.Value(0);
-    const BRepGraphInc::EdgeRef& aLastEdgeRef  = aWireDef.EdgeRefs.Value(aNbEdges - 1);
-
-    const BRepGraph_TopoNode::EdgeDef& aFirstEdge = aDefs.Edge(aFirstEdgeRef.EdgeIdx);
-    const BRepGraph_TopoNode::EdgeDef& aLastEdge  = aDefs.Edge(aLastEdgeRef.EdgeIdx);
-
-    const BRepGraph_NodeId aFirstStartVtx = aFirstEdge.OrientedStartVertex(aFirstEdgeRef.Orientation);
-    const BRepGraph_NodeId aLastEndVtx    = aLastEdge.OrientedEndVertex(aLastEdgeRef.Orientation);
-
-    // If the wire is expected to be closed but vertices don't match.
-    if (aWireDef.IsClosed && aFirstStartVtx.IsValid() && aLastEndVtx.IsValid()
-        && aFirstStartVtx != aLastEndVtx)
+    // Closure check: each vertex must appear exactly twice (once as start, once as end).
+    // For closed wires, every vertex should have even degree.
+    if (aWireDef.IsClosed && aNbEdges > 1)
     {
-      BRepGraphCheck_Issue anIssue;
-      anIssue.NodeId        = aWireNodeId;
-      anIssue.ContextNodeId = aFaceNodeId;
-      anIssue.Status        = BRepCheck_NotClosed;
-      anIssue.IssueSeverity = BRepGraphCheck_Issue::Severity::Error;
-      theIssues.Append(anIssue);
+      bool aIsClosed = true;
+      for (NCollection_DataMap<int, NCollection_Vector<int>>::Iterator aVtxIt(aVtxToEdgeIndices);
+           aVtxIt.More(); aVtxIt.Next())
+      {
+        if (aVtxIt.Value().Length() % 2 != 0)
+        {
+          aIsClosed = false;
+          break;
+        }
+      }
+      if (!aIsClosed)
+      {
+        BRepGraphCheck_Issue anIssue;
+        anIssue.NodeId        = aWireNodeId;
+        anIssue.ContextNodeId = aFaceNodeId;
+        anIssue.Status        = BRepCheck_NotClosed;
+        anIssue.IssueSeverity = BRepGraphCheck_Issue::Severity::Error;
+        theIssues.Append(anIssue);
+      }
     }
   }
 
@@ -177,19 +236,42 @@ void BRepGraphCheck::CheckWireOnFace(
   const BRepGraph_TopoNode::FaceDef& aFaceDef = aDefs.Face(theFaceDefIdx);
 
   // 2D parametric closure check: verify UV endpoints of first and last edges meet.
-  if (aWireDef.IsClosed && aNbEdges > 1 && !aFaceDef.Surface.IsNull())
+  // Skip for wires containing seam edges (edges with 2 PCurves on the same face),
+  // because their UV closure works through periodic surface wrapping and the
+  // vertex-degree closure check above is sufficient for such wires.
+  bool aHasSeamEdge = false;
+  for (int anEdgeIter = 0; anEdgeIter < aNbEdges && !aHasSeamEdge; ++anEdgeIter)
   {
-    const BRepGraphInc::EdgeRef& aFirstER = aWireDef.EdgeRefs.Value(0);
-    const BRepGraphInc::EdgeRef& aLastER  = aWireDef.EdgeRefs.Value(aNbEdges - 1);
+    const BRepGraphInc::EdgeRef& anER = aWireDef.EdgeRefs.Value(anEdgeIter);
+    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(anER.EdgeIdx);
+    int aNbPCOnFace = 0;
+    for (int aPCIdx = 0; aPCIdx < anEdgeDef.PCurves.Length(); ++aPCIdx)
+    {
+      if (anEdgeDef.PCurves.Value(aPCIdx).FaceDefId == aFaceNodeId)
+        ++aNbPCOnFace;
+    }
+    if (aNbPCOnFace >= 2)
+      aHasSeamEdge = true;
+  }
+  if (aWireDef.IsClosed && aNbEdges > 1 && !aFaceDef.Surface.IsNull() && !aHasSeamEdge)
+  {
+    auto edgeLookup = [&aDefs](int theIdx) -> const BRepGraphInc::EdgeEntity& {
+      return aDefs.Edge(theIdx);
+    };
+    BRepGraphInc_WireExplorer aWireExp(aWireDef.EdgeRefs, edgeLookup);
+    BRepGraphInc::EdgeRef aFirstER = aWireExp.CurrentRef();
+    BRepGraphInc::EdgeRef aLastER  = aFirstER;
+    for (; aWireExp.More(); aWireExp.Next())
+      aLastER = aWireExp.CurrentRef();
 
     const BRepGraph_TopoNode::EdgeDef& aFirstEdge = aDefs.Edge(aFirstER.EdgeIdx);
     const BRepGraph_TopoNode::EdgeDef& aLastEdge  = aDefs.Edge(aLastER.EdgeIdx);
 
-    // Get PCurves for first and last edges.
+    // Get PCurves for first and last edges (orientation-specific for seam edges).
     const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aFirstPC =
-      aDefs.FindPCurve(aFirstEdge.Id, aFaceNodeId);
+      aDefs.FindPCurve(aFirstEdge.Id, aFaceNodeId, aFirstER.Orientation);
     const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aLastPC =
-      aDefs.FindPCurve(aLastEdge.Id, aFaceNodeId);
+      aDefs.FindPCurve(aLastEdge.Id, aFaceNodeId, aLastER.Orientation);
 
     if (aFirstPC != nullptr && aLastPC != nullptr)
     {

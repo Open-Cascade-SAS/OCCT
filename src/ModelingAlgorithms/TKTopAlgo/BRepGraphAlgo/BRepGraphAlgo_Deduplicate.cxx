@@ -385,6 +385,8 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
         }
 
         // Transfer PCurves (skip duplicates).
+        // When the old edge is reversed relative to canonical, invert EdgeOrientation
+        // so duplicate detection matches correctly against the canonical's PCurves.
         for (int aPCIdx = 0; aPCIdx < anOldEdge.PCurves.Length(); ++aPCIdx)
         {
           const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCEntry =
@@ -394,6 +396,15 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
             continue;
           }
 
+          TopAbs_Orientation aTransferOri = aPCEntry.EdgeOrientation;
+          if (isReversed)
+          {
+            if (aTransferOri == TopAbs_FORWARD)
+              aTransferOri = TopAbs_REVERSED;
+            else if (aTransferOri == TopAbs_REVERSED)
+              aTransferOri = TopAbs_FORWARD;
+          }
+
           // Check if canonical edge already has a PCurve for this face+orientation.
           bool aAlreadyHas = false;
           for (int aCanonPCIdx = 0; aCanonPCIdx < aCanonEdge.PCurves.Length(); ++aCanonPCIdx)
@@ -401,7 +412,7 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
             const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aCanonPC =
               aCanonEdge.PCurves.Value(aCanonPCIdx);
             if (aCanonPC.FaceDefId == aPCEntry.FaceDefId
-                && aCanonPC.EdgeOrientation == aPCEntry.EdgeOrientation)
+                && aCanonPC.EdgeOrientation == aTransferOri)
             {
               aAlreadyHas = true;
               break;
@@ -415,7 +426,7 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
                                            aPCEntry.Curve2d,
                                            aPCEntry.ParamFirst,
                                            aPCEntry.ParamLast,
-                                           aPCEntry.EdgeOrientation);
+                                           aTransferOri);
           }
         }
 

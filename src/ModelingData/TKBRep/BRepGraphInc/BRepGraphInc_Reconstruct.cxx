@@ -424,11 +424,12 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
     else
     {
       aBB.MakeWire(aNewWire);
-      for (int i = 0; i < aWire.EdgeRefs.Length(); ++i)
+      // Add edges in original storage order (preserving input shape order).
+      for (int anEdgeIter = 0; anEdgeIter < aWire.EdgeRefs.Length(); ++anEdgeIter)
       {
-        const BRepGraphInc::EdgeRef& aEdgeRef = aWire.EdgeRefs.Value(i);
-        TopoDS_Edge anEdge = getOrBuildEdge(aEdgeRef.EdgeIdx);
-        anEdge.Orientation(aEdgeRef.Orientation);
+        const BRepGraphInc::EdgeRef& aER = aWire.EdgeRefs.Value(anEdgeIter);
+        TopoDS_Edge anEdge = getOrBuildEdge(aER.EdgeIdx);
+        anEdge.Orientation(aER.Orientation);
         aBB.Add(aNewWire, anEdge);
       }
       theCache.Bind(aWireNodeId, aNewWire);

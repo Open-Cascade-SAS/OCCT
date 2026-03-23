@@ -16,6 +16,7 @@
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_RelEdgesView.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
+#include <BRepGraphInc_WireExplorer.hxx>
 
 #include <NCollection_Map.hxx>
 
@@ -431,13 +432,17 @@ void checkRemovedNodeIsolation(const BRepGraph&                                 
 }
 
 // -----------------------------------------------------------------------
-// Pass 6: Wire connectivity
+// Pass 6: Wire connectivity (order-independent via WireExplorer)
 // -----------------------------------------------------------------------
-void checkWireConnectivity(const BRepGraph&                                      theGraph,
+void checkWireConnectivity(const BRepGraph&                                   theGraph,
                            NCollection_Vector<BRepGraphAlgo_Validate::Issue>& theIssues)
 {
   using Issue    = BRepGraphAlgo_Validate::Issue;
   using Severity = BRepGraphAlgo_Validate::Severity;
+
+  auto edgeLookup = [&theGraph](int theIdx) -> const BRepGraphInc::EdgeEntity& {
+    return theGraph.Defs().Edge(theIdx);
+  };
 
   for (int aWireIdx = 0; aWireIdx < theGraph.Defs().NbWires(); ++aWireIdx)
   {
@@ -445,27 +450,36 @@ void checkWireConnectivity(const BRepGraph&                                     
     if (aWire.IsRemoved)
       continue;
 
-    if (aWire.EdgeRefs.Length() < 2)
+    const int aNbEdges = aWire.EdgeRefs.Length();
+    if (aNbEdges < 2)
       continue;
 
-    for (int anIdx = 0; anIdx < aWire.EdgeRefs.Length() - 1; ++anIdx)
+    // Validate all edge indices first.
+    bool aAllValid = true;
+    for (int anIdx = 0; anIdx < aNbEdges; ++anIdx)
     {
-      const BRepGraphInc::EdgeRef& aCurrER = aWire.EdgeRefs.Value(anIdx);
-      const BRepGraphInc::EdgeRef& aNextER = aWire.EdgeRefs.Value(anIdx + 1);
+      const BRepGraph_NodeId anEdgeId = BRepGraph_NodeId::Edge(aWire.EdgeRefs.Value(anIdx).EdgeIdx);
+      if (!anEdgeId.IsValid() || !isValidNodeId(theGraph, anEdgeId))
+      {
+        aAllValid = false;
+        break;
+      }
+    }
+    if (!aAllValid)
+      continue;
 
-      const BRepGraph_NodeId aCurrEdgeId = BRepGraph_NodeId::Edge(aCurrER.EdgeIdx);
-      const BRepGraph_NodeId aNextEdgeId = BRepGraph_NodeId::Edge(aNextER.EdgeIdx);
+    // Build connection-ordered sequence via WireExplorer, then check
+    // that all consecutive pairs in the ordered sequence are connected.
+    BRepGraphInc_WireExplorer anExp(aWire.EdgeRefs, edgeLookup);
+    const NCollection_Vector<BRepGraphInc::EdgeRef>& anOrdered = anExp.OrderedRefs();
 
-      if (!aCurrEdgeId.IsValid() || !aNextEdgeId.IsValid())
-        continue;
-      if (!isValidNodeId(theGraph, aCurrEdgeId)
-          || !isValidNodeId(theGraph, aNextEdgeId))
-        continue;
+    for (int anIdx = 0; anIdx < anOrdered.Length() - 1; ++anIdx)
+    {
+      const BRepGraphInc::EdgeRef& aCurrER = anOrdered.Value(anIdx);
+      const BRepGraphInc::EdgeRef& aNextER = anOrdered.Value(anIdx + 1);
 
-      const BRepGraph_TopoNode::EdgeDef& aCurrEdge =
-        theGraph.Defs().Edge(aCurrER.EdgeIdx);
-      const BRepGraph_TopoNode::EdgeDef& aNextEdge =
-        theGraph.Defs().Edge(aNextER.EdgeIdx);
+      const BRepGraph_TopoNode::EdgeDef& aCurrEdge = theGraph.Defs().Edge(aCurrER.EdgeIdx);
+      const BRepGraph_TopoNode::EdgeDef& aNextEdge = theGraph.Defs().Edge(aNextER.EdgeIdx);
 
       const BRepGraph_NodeId aCurrEnd   = aCurrEdge.OrientedEndVertex(aCurrER.Orientation);
       const BRepGraph_NodeId aNextStart = aNextEdge.OrientedStartVertex(aNextER.Orientation);
