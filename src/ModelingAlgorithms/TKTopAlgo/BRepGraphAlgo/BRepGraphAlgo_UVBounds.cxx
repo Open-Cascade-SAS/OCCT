@@ -23,7 +23,6 @@
 #include <Bnd_Box2d.hxx>
 #include <BndLib_Add2dCurve.hxx>
 #include <ElCLib.hxx>
-#include <Geom_BSplineSurface.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <Precision.hxx>
@@ -84,7 +83,9 @@ static bool isBSplinePseudoPeriodicU(const Handle(Geom_Surface)& theSurface,
                                      double                      theVmin,
                                      double                      theVmax)
 {
-  if (theSurface->DynamicType() != STANDARD_TYPE(Geom_BSplineSurface))
+  const GeomAdaptor_Surface aSurfAdaptor(theSurface);
+  const GeomAdaptor_Surface aExtAdaptor(theSurface);
+  if (aSurfAdaptor.GetType() != GeomAbs_BSplineSurface)
   {
     return false;
   }
@@ -95,17 +96,20 @@ static bool isBSplinePseudoPeriodicU(const Handle(Geom_Surface)& theSurface,
 
   constexpr double aTol2       = 100 * Precision::Confusion() * Precision::Confusion();
   bool             isUPeriodic = true;
-  gp_Pnt           P1, P2;
 
   // Verify that the surface is U-closed.
-  if (!theSurface->IsUClosed())
+  if (!aSurfAdaptor.IsUClosed())
   {
-    double aVStep = theVmax - theVmin;
+    const double aVStep = theVmax - theVmin;
+    if (aVStep < Precision::Confusion())
+    {
+      return false;
+    }
     for (double aV = theVmin; aV <= theVmax; aV += aVStep)
     {
-      P1 = theSurface->Value(theUmin, aV);
-      P2 = theSurface->Value(theUmax, aV);
-      if (P1.SquareDistance(P2) > aTol2)
+      const gp_Pnt aP1 = aSurfAdaptor.EvalD0(theUmin, aV);
+      const gp_Pnt aP2 = aSurfAdaptor.EvalD0(theUmax, aV);
+      if (aP1.SquareDistance(aP2) > aTol2)
       {
         return false;
       }
@@ -139,9 +143,9 @@ static bool isBSplinePseudoPeriodicU(const Handle(Geom_Surface)& theSurface,
   }
   for (int anInd = 0; anInd < aNbPnt; anInd++)
   {
-    P1 = theSurface->Value(aU[anInd], aV);
-    P2 = theSurface->Value(aUpp[anInd], aV);
-    if (P1.SquareDistance(P2) > aTol2)
+    const gp_Pnt aP1 = aExtAdaptor.EvalD0(aU[anInd], aV);
+    const gp_Pnt aP2 = aSurfAdaptor.EvalD0(aUpp[anInd], aV);
+    if (aP1.SquareDistance(aP2) > aTol2)
     {
       isUPeriodic = false;
       break;
@@ -168,7 +172,9 @@ static bool isBSplinePseudoPeriodicV(const Handle(Geom_Surface)& theSurface,
                                      double                      theVmin,
                                      double                      theVmax)
 {
-  if (theSurface->DynamicType() != STANDARD_TYPE(Geom_BSplineSurface))
+  const GeomAdaptor_Surface aSurfAdaptor(theSurface);
+  const GeomAdaptor_Surface aExtAdaptor(theSurface);
+  if (aSurfAdaptor.GetType() != GeomAbs_BSplineSurface)
   {
     return false;
   }
@@ -179,17 +185,20 @@ static bool isBSplinePseudoPeriodicV(const Handle(Geom_Surface)& theSurface,
 
   constexpr double aTol2       = 100 * Precision::Confusion() * Precision::Confusion();
   bool             isVPeriodic = true;
-  gp_Pnt           P1, P2;
 
   // Verify that the surface is V-closed.
-  if (!theSurface->IsVClosed())
+  if (!aSurfAdaptor.IsVClosed())
   {
-    double aUStep = theUmax - theUmin;
+    const double aUStep = theUmax - theUmin;
+    if (aUStep < Precision::Confusion())
+    {
+      return false;
+    }
     for (double aU = theUmin; aU <= theUmax; aU += aUStep)
     {
-      P1 = theSurface->Value(aU, theVmin);
-      P2 = theSurface->Value(aU, theVmax);
-      if (P1.SquareDistance(P2) > aTol2)
+      const gp_Pnt aP1 = aSurfAdaptor.EvalD0(aU, theVmin);
+      const gp_Pnt aP2 = aSurfAdaptor.EvalD0(aU, theVmax);
+      if (aP1.SquareDistance(aP2) > aTol2)
       {
         return false;
       }
@@ -223,9 +232,9 @@ static bool isBSplinePseudoPeriodicV(const Handle(Geom_Surface)& theSurface,
   }
   for (int anInd = 0; anInd < aNbPnt; anInd++)
   {
-    P1 = theSurface->Value(aU, aV[anInd]);
-    P2 = theSurface->Value(aU, aVpp[anInd]);
-    if (P1.SquareDistance(P2) > aTol2)
+    const gp_Pnt aP1 = aExtAdaptor.EvalD0(aU, aV[anInd]);
+    const gp_Pnt aP2 = aSurfAdaptor.EvalD0(aU, aVpp[anInd]);
+    if (aP1.SquareDistance(aP2) > aTol2)
     {
       isVPeriodic = false;
       break;
