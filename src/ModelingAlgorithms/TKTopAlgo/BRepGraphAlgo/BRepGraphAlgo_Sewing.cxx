@@ -52,7 +52,6 @@
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_MutView.hxx>
-#include <BRepGraph_RelEdgesView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_SpatialView.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
@@ -1396,6 +1395,9 @@ int mergeMatchedEdges(
       theGraph.Mut().ReplaceEdgeInWire(aWires.Value(aWIdx), anIdB, anIdA, isReversed);
     }
 
+    // Mark the remove-edge as removed so FaceCountOfEdge/FreeEdges skip it.
+    theGraph.Mut().EdgeDef(anIdB.Index).IsRemoved = true;
+
     // 5. Accumulate for batch history recording.
     aHistOriginals.Append(anIdB);
     aHistReplacements.Append(anIdA);
@@ -1730,8 +1732,7 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
   aResult.NbFreeEdgesAfter = aResult.FreeEdges.Length();
 
   // Detect multiple edges (shared by >2 faces).
-  const BRepGraph::DefsView     aDefs     = theGraph.Defs();
-  const BRepGraph::RelEdgesView aRelEdges = theGraph.RelEdges();
+  const BRepGraph::DefsView aDefs = theGraph.Defs();
   for (int anEdgeIdx = 0; anEdgeIdx < aDefs.NbEdges(); ++anEdgeIdx)
   {
     const BRepGraph_TopoNode::EdgeDef& anEdge = aDefs.Edge(anEdgeIdx);
@@ -1739,7 +1740,7 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
     {
       continue;
     }
-    if (aRelEdges.FaceCountForEdge(anEdgeIdx) > 2)
+    if (aDefs.FaceCountOfEdge(anEdgeIdx) > 2)
     {
       aResult.MultipleEdges.Append(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, anEdgeIdx));
     }

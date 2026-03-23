@@ -173,6 +173,9 @@ public:
   //! Register an edge as belonging to a face (O(1) amortized, deduplicates).
   Standard_EXPORT void BindEdgeToFace(int theEdgeIdx, int theFaceIdx);
 
+  //! Remove a face from the edge-to-face index for a given edge.
+  Standard_EXPORT void UnbindEdgeFromFace(int theEdgeIdx, int theFaceIdx);
+
 private:
   //! Dense vector type: outer index = entity key, inner vector = adjacency list.
   using IndexTable = NCollection_Vector<NCollection_Vector<int>>;

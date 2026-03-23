@@ -101,6 +101,10 @@ void BRepGraph::MutView::AddPCurveToEdge(BRepGraph_NodeId            theEdgeDef,
   aNewEntry.EdgeOrientation = theEdgeOrientation;
   anEdgeDef.PCurves.Append(aNewEntry);
 
+  // Update edge-to-face reverse index so FaceCountOfEdge stays in sync.
+  myGraph->myData->myIncStorage.ChangeReverseIndex().BindEdgeToFace(
+    theEdgeDef.Index, theFaceDef.Index);
+
   myGraph->markModified(theEdgeDef);
 }
 

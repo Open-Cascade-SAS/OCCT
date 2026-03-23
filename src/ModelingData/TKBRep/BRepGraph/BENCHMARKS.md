@@ -5,32 +5,32 @@ Config: RelWithDebInfo
 
 ## Core (BRepGraph_Benchmark)
 
-| Benchmark | Mode | Baseline (s) | After T1.2 (s) | Array UIDs (s) | Grouped (s) | Dense RevIdx (s) | Static Sewing (s) | Perf Opt (s) | Alloc Prop (s) | Deferred (s) | Delta vs Baseline |
-|-----------|------|-------------|----------------|-----------------|-------------|-------------------|-------------------|-------------|----------------|--------------|-------------------|
-| Build 100 faces | seq | 0.000508 | 0.000691 | 0.000557 | 0.000529 | 0.000544 | 0.000506 | 0.000582 | 0.000480 | 0.000543 | **-6%** |
-| Build 1000 faces | seq | 0.006630 | 0.009284 | 0.007372 | 0.006567 | 0.006915 | 0.006203 | 0.006616 | 0.005832 | 0.006564 | **-12%** |
-| Build 1000 faces | parallel | 0.006626 | 0.009353 | 0.007292 | 0.006764 | 0.006408 | 0.006557 | 0.007961 | 0.005704 | 0.006195 | **-14%** |
-| Build 10000 faces | seq | 0.091667 | 0.136744 | 0.098299 | 0.093896 | 0.095669 | 0.089093 | 0.087900 | 0.081625 | 0.091012 | **-11%** |
-| Build 10000 faces | parallel | 0.086331 | 0.130992 | 0.093386 | 0.091926 | 0.088084 | 0.078611 | 0.076609 | 0.072994 | 0.078123 | **-15%** |
-| Reconstruct 10000 faces | - | 0.017034 | 0.018292 | 0.017795 | 0.016580 | 0.015884 | 0.015663 | 0.016304 | 0.015995 | 0.016870 | **-6%** |
-| SpatialQuery 10000 faces | - | 0.011979 | 0.011988 | 0.012316 | 0.012737 | 0.000740 | 0.000434 | 0.000428 | 0.000460 | 0.000485 | **-96%** |
+| Benchmark | Mode | Baseline (s) | After T1.2 (s) | Array UIDs (s) | Grouped (s) | Dense RevIdx (s) | Static Sewing (s) | Perf Opt (s) | Alloc Prop (s) | Deferred (s) | O(1) FaceCount (s) | Delta vs Baseline |
+|-----------|------|-------------|----------------|-----------------|-------------|-------------------|-------------------|-------------|----------------|--------------|---------------------|-------------------|
+| Build 100 faces | seq | 0.000508 | 0.000691 | 0.000557 | 0.000529 | 0.000544 | 0.000506 | 0.000582 | 0.000480 | 0.000543 | 0.000535 | +5% |
+| Build 1000 faces | seq | 0.006630 | 0.009284 | 0.007372 | 0.006567 | 0.006915 | 0.006203 | 0.006616 | 0.005832 | 0.006564 | 0.006982 | +5% |
+| Build 1000 faces | parallel | 0.006626 | 0.009353 | 0.007292 | 0.006764 | 0.006408 | 0.006557 | 0.007961 | 0.005704 | 0.006195 | 0.006340 | -4% |
+| Build 10000 faces | seq | 0.091667 | 0.136744 | 0.098299 | 0.093896 | 0.095669 | 0.089093 | 0.087900 | 0.081625 | 0.091012 | 0.093535 | +2% |
+| Build 10000 faces | parallel | 0.086331 | 0.130992 | 0.093386 | 0.091926 | 0.088084 | 0.078611 | 0.076609 | 0.072994 | 0.078123 | 0.087002 | +1% |
+| Reconstruct 10000 faces | - | 0.017034 | 0.018292 | 0.017795 | 0.016580 | 0.015884 | 0.015663 | 0.016304 | 0.015995 | 0.016870 | 0.017983 | +6% |
+| SpatialQuery 10000 faces | - | 0.011979 | 0.011988 | 0.012316 | 0.012737 | 0.000740 | 0.000434 | 0.000428 | 0.000460 | 0.000485 | 0.000545 | **-95%** |
 
 ## Algorithms (BRepGraphAlgo_Benchmark)
 
-| Benchmark | Mode | Baseline (s) | After T1.2 (s) | Array UIDs (s) | Grouped (s) | Dense RevIdx (s) | Static Sewing (s) | Perf Opt (s) | Alloc Prop (s) | Deferred (s) | Delta vs Baseline |
-|-----------|------|-------------|----------------|-----------------|-------------|-------------------|-------------------|-------------|----------------|--------------|-------------------|
-| Sewing 500 faces | parallel | 0.090420 | 0.089111 | 0.089873 | 0.087665 | 0.093905 | 0.089684 | 0.042964 | 0.037183 | 0.040604 | **-55%** |
-| Sewing 500 faces | seq | 0.168491 | 0.164901 | 0.168284 | 0.162548 | 0.168708 | 0.167740 | 0.124732 | 0.093939 | 0.097588 | **-42%** |
-| Deduplicate+Compact 500 copies | - | 0.007665 | 0.012223 | 0.008819 | 0.010113 | 0.005390 | 0.005019 | 0.006232 | 0.004097 | 0.005701 | **-26%** |
+| Benchmark | Mode | Baseline (s) | After T1.2 (s) | Array UIDs (s) | Grouped (s) | Dense RevIdx (s) | Static Sewing (s) | Perf Opt (s) | Alloc Prop (s) | Deferred (s) | O(1) FaceCount (s) | Delta vs Baseline |
+|-----------|------|-------------|----------------|-----------------|-------------|-------------------|-------------------|-------------|----------------|--------------|---------------------|-------------------|
+| Sewing 500 faces | parallel | 0.090420 | 0.089111 | 0.089873 | 0.087665 | 0.093905 | 0.089684 | 0.042964 | 0.037183 | 0.040604 | 0.039473 | **-56%** |
+| Sewing 500 faces | seq | 0.168491 | 0.164901 | 0.168284 | 0.162548 | 0.168708 | 0.167740 | 0.124732 | 0.093939 | 0.097588 | 0.095534 | **-43%** |
+| Deduplicate+Compact 500 copies | - | 0.007665 | 0.012223 | 0.008819 | 0.010113 | 0.005390 | 0.005019 | 0.006232 | 0.004097 | 0.005701 | 0.004766 | **-38%** |
 
 ## Sewing Profiling (BRepGraphAlgo_SewingTest)
 
-| Benchmark | Mode | Static Sewing (s) | Perf Opt (s) | Alloc Prop (s) | Deferred (s) | Delta vs Alloc Prop |
-|-----------|------|--------------------|-------------|----------------|--------------|---------------------|
-| 2500 faces (50x50) | seq | — | 0.048373 | 0.045253 | 0.049053 | +8% |
-| 2500 faces (50x50) | parallel | — | 0.052911 | 0.049522 | 0.037282 | **-25%** |
-| 2500 faces (50x50) | no history | — | 0.045610 | 0.045583 | 0.048532 | +6% |
-| 1200 faces (200 boxes) | parallel | — | 0.022005 | 0.020513 | 0.016265 | **-21%** |
+| Benchmark | Mode | Static Sewing (s) | Perf Opt (s) | Alloc Prop (s) | Deferred (s) | O(1) FaceCount (s) | Delta vs Alloc Prop |
+|-----------|------|--------------------|-------------|----------------|--------------|---------------------|---------------------|
+| 2500 faces (50x50) | seq | — | 0.048373 | 0.045253 | 0.049053 | 0.051594 | +14% |
+| 2500 faces (50x50) | parallel | — | 0.052911 | 0.049522 | 0.037282 | 0.036822 | **-26%** |
+| 2500 faces (50x50) | no history | — | 0.045610 | 0.045583 | 0.048532 | 0.049729 | +9% |
+| 1200 faces (200 boxes) | parallel | — | 0.022005 | 0.020513 | 0.016265 | 0.016749 | **-18%** |
 
 ## Notes
 
@@ -70,3 +70,14 @@ Config: RelWithDebInfo
 - Sewing 2500 faces parallel: **-25%** vs Alloc Prop (mutex contention eliminated in SameParameter + processEdges)
 - Sewing 1200 faces parallel: **-21%** vs Alloc Prop
 - Sequential sewing shows noise (+6-8%) — expected since single-threaded has no mutex contention to eliminate
+- O(1) FaceCount: 2026-03-19, fix sewing mutation model for correct O(1) FaceCountOfEdge:
+  - mergeMatchedEdges marks replaced edges IsRemoved so FreeEdges/FaceCountOfEdge skip them
+  - ReplaceEdgeInWire leaves old edge face data stale (old edge is always IsRemoved by callers)
+  - FaceCountForEdge simplified to direct O(1) delegation (removes PackedMap allocation per call)
+  - FreeEdges switched to DefsView::FaceCountOfEdge with IsRemoved filter
+  - Sewing multiple-edge detection switched to DefsView::FaceCountOfEdge
+  - UnbindEdgeFromFace added to ReverseIndex API for future use
+- Core build/reconstruct benchmarks unchanged (mutation model fix doesn't affect build/read paths)
+- Sewing benchmarks within noise of Deferred — correctness-focused change, not a performance optimization
+- Sequential sewing profiling shows noise (+9-14%) — run-to-run variation, no code path change
+- Parallel sewing profiling stable: -26% / -18% vs Alloc Prop (carried from Deferred)

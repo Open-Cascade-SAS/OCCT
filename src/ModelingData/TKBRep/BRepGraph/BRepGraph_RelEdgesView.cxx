@@ -14,8 +14,6 @@
 #include <BRepGraph_RelEdgesView.hxx>
 #include <BRepGraph_Data.hxx>
 
-#include <NCollection_PackedMap.hxx>
-
 //=================================================================================================
 
 int BRepGraph::RelEdgesView::NbFrom(BRepGraph_NodeId theNode) const
@@ -54,20 +52,7 @@ const NCollection_Vector<BRepGraph_RelEdge>* BRepGraph::RelEdgesView::InOf(
 
 int BRepGraph::RelEdgesView::FaceCountForEdge(int theEdgeDefIdx) const
 {
-  // Use the wire-based (topological) path: edge -> wires -> faces.
-  // After sewing, removed edges lose their wires (via ReplaceEdgeInWire) but retain
-  // PCurves, so the PCurve-based cached count would be stale for replaced edges.
-  // For pre-mutation O(1) queries, use DefsView::FaceCountOfEdge() instead.
-  const BRepGraphInc_ReverseIndex& aRevIdx = myGraph->myData->myIncStorage.ReverseIndex();
-  const NCollection_Vector<int>& aWires = aRevIdx.WiresOfEdgeRef(theEdgeDefIdx);
-  NCollection_PackedMap<int> aFaceSet;
-  for (int aWIdx = 0; aWIdx < aWires.Length(); ++aWIdx)
-  {
-    const NCollection_Vector<int>& aFaces = aRevIdx.FacesOfWireRef(aWires.Value(aWIdx));
-    for (int aFIdx = 0; aFIdx < aFaces.Length(); ++aFIdx)
-      aFaceSet.Add(aFaces.Value(aFIdx));
-  }
-  return aFaceSet.Extent();
+  return myGraph->myData->myIncStorage.ReverseIndex().FaceCountOfEdge(theEdgeDefIdx);
 }
 
 //=================================================================================================

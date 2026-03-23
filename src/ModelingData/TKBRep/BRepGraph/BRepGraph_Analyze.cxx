@@ -39,16 +39,15 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph_Analyze::FreeEdges(const BRepGrap
 {
   NCollection_Vector<BRepGraph_NodeId> aResult;
 
-  const BRepGraph::DefsView     aDefs     = theGraph.Defs();
-  const BRepGraph::RelEdgesView aRelEdges = theGraph.RelEdges();
+  const BRepGraph::DefsView aDefs = theGraph.Defs();
 
   for (int anEdgeIdx = 0; anEdgeIdx < aDefs.NbEdges(); ++anEdgeIdx)
   {
     const BRepGraph_TopoNode::EdgeDef& anEdge = aDefs.Edge(anEdgeIdx);
-    if (anEdge.IsDegenerate)
+    if (anEdge.IsRemoved || anEdge.IsDegenerate)
       continue;
 
-    if (aRelEdges.FaceCountForEdge(anEdgeIdx) == 1)
+    if (aDefs.FaceCountOfEdge(anEdgeIdx) == 1)
       aResult.Append(anEdge.Id);
   }
   return aResult;

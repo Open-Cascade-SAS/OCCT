@@ -268,8 +268,20 @@ void BRepGraph_Mutator::ReplaceEdgeInWire(BRepGraph&       theGraph,
         aER.Orientation = TopAbs::Reverse(aER.Orientation);
 
       // Update edge-to-wire reverse index incrementally.
-      theGraph.myData->myIncStorage.ChangeReverseIndex().ReplaceEdgeInWireMap(
-        theOldEdgeDef.Index, theNewEdgeDef.Index, theWireDefIdx);
+      BRepGraphInc_ReverseIndex& aRevIdx = theGraph.myData->myIncStorage.ChangeReverseIndex();
+      aRevIdx.ReplaceEdgeInWireMap(theOldEdgeDef.Index, theNewEdgeDef.Index, theWireDefIdx);
+
+      // Update edge-to-face: bind new edge, unbind old edge for all faces of this wire.
+      const NCollection_Vector<int>* aFaces = aRevIdx.FacesOfWire(theWireDefIdx);
+      if (aFaces != nullptr)
+      {
+        for (int aFIdx = 0; aFIdx < aFaces->Length(); ++aFIdx)
+        {
+          const int aFaceIdx = aFaces->Value(aFIdx);
+          aRevIdx.BindEdgeToFace(theNewEdgeDef.Index, aFaceIdx);
+          aRevIdx.UnbindEdgeFromFace(theOldEdgeDef.Index, aFaceIdx);
+        }
+      }
     }
   }
 

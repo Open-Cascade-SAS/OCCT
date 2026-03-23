@@ -482,6 +482,32 @@ void BRepGraphInc_ReverseIndex::BindEdgeToFace(int theEdgeIdx, int theFaceIdx)
 
 //=================================================================================================
 
+void BRepGraphInc_ReverseIndex::UnbindEdgeFromFace(int theEdgeIdx, int theFaceIdx)
+{
+  if (theEdgeIdx < 0 || theEdgeIdx >= myEdgeToFaces.Length())
+    return;
+  Standard_ASSERT_VOID(myEdgeFaceCount.Length() == myEdgeToFaces.Length(),
+                        "UnbindEdgeFromFace: myEdgeFaceCount out of sync with myEdgeToFaces");
+  NCollection_Vector<int>& aFaces = myEdgeToFaces.ChangeValue(theEdgeIdx);
+  for (int i = 0; i < aFaces.Length(); ++i)
+  {
+    if (aFaces.Value(i) == theFaceIdx)
+    {
+      // Swap-remove: overwrite found entry with the last element, then erase the last.
+      // O(1) removal without shifting; adjacency list order is not significant.
+      if (i < aFaces.Length() - 1)
+        aFaces.ChangeValue(i) = aFaces.Value(aFaces.Length() - 1);
+      aFaces.EraseLast();
+      Standard_ASSERT_VOID(myEdgeFaceCount.Value(theEdgeIdx) > 0,
+                            "UnbindEdgeFromFace: face count underflow");
+      myEdgeFaceCount.ChangeValue(theEdgeIdx) -= 1;
+      break;
+    }
+  }
+}
+
+//=================================================================================================
+
 bool BRepGraphInc_ReverseIndex::Validate(
   const NCollection_Vector<BRepGraphInc::EdgeEntity>&  theEdges,
   const NCollection_Vector<BRepGraphInc::WireEntity>&  theWires,

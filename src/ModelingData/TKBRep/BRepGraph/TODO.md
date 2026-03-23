@@ -37,14 +37,17 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 - **Why**: current UserAttribute system works but lacks bulk operations, layer isolation, and event-driven invalidation. Algorithms manually invalidate individual attributes — error-prone and hard to extend
 - **What it enables**: third-party attribute plugins, automatic invalidation on mutation, serializable attribute groups
 
-### Incremental reverse-index delta [Perf] ★★★★
-- After `Append` operations, update reverse index incrementally instead of full rebuild
-- Currently `ReverseIndex::Build` is O(N) — `BuildDelta` exists but full rebuild still used in some paths
-- **Profile context**: BuildReverseIndex is 286M (2.5%)
+### ~~Incremental reverse-index delta~~ — DONE (2026-03-19)
+- `Populate::Append` now uses `BuildDeltaReverseIndex` instead of full `BuildReverseIndex`
+- Captures entity counts before append, only processes new entities
+- **Result**: O(delta) instead of O(N) for append operations
 
-### Remove wire-based fallback in FaceCountForEdge [Perf] ★★★
-- `RelEdgesView::FaceCountForEdge` creates PackedMap per call (130M, 1.2% in profile)
-- Use PCurve-based `BuilderView::FaceCountForEdge` (O(1) reverse index)
+### ~~FaceCountForEdge fast path~~ — PARTIAL (2026-03-19)
+- `RelEdgesView::FaceCountForEdge` optimized with single-wire fast path (avoids PackedMap for 95%+ common case)
+- `AddPCurveToEdge` now calls `BindEdgeToFace` to keep `myEdgeFaceCount` in sync
+- `ReplaceEdgeInWire` now calls `BindEdgeToFace` for new edge to keep edge-to-face index in sync
+- Wire-based path retained: full O(1) switch requires sewing to mark replaced edges `IsRemoved` and decrement `myEdgeFaceCount` when edges lose wires
+- **Remaining**: Add `UnbindEdgeFromFace` to ReverseIndex, mark replaced edges `IsRemoved` in sewing
 
 ### Seam detection strengthening [Stab] ★★★
 - `canSewSameFaceEdges` uses bounding-box heuristics

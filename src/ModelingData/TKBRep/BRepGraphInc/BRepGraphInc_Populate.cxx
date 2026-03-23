@@ -960,6 +960,13 @@ void BRepGraphInc_Populate::Append(
     !theTmpAlloc.IsNull() ? theTmpAlloc
                           : NCollection_BaseAllocator::CommonBaseAllocator();
 
+  // Snapshot entity counts before appending, for incremental reverse-index update.
+  const int anOldNbEdges  = theStorage.NbEdges();
+  const int anOldNbWires  = theStorage.NbWires();
+  const int anOldNbFaces  = theStorage.NbFaces();
+  const int anOldNbShells = theStorage.NbShells();
+  const int anOldNbSolids = theStorage.NbSolids();
+
   // Collect face contexts by flattening hierarchy.
   NCollection_Vector<FaceLocalData> aFaceData(256, aTmpAlloc);
 
@@ -1006,8 +1013,9 @@ void BRepGraphInc_Populate::Append(
   // Sequential registration (reuses existing dedup maps).
   registerFaceData(theStorage, aFaceData);
 
-  // Rebuild reverse indices.
-  theStorage.BuildReverseIndex();
+  // Incrementally update reverse indices for newly appended entities only.
+  theStorage.BuildDeltaReverseIndex(anOldNbEdges, anOldNbWires, anOldNbFaces,
+                                    anOldNbShells, anOldNbSolids);
 
   theStorage.myIsDone = true;
 }
