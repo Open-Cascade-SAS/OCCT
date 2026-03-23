@@ -791,7 +791,7 @@ void BRepGraph_Builder::Append(BRepGraph&          theGraph,
     return;
 
   // Phase 1 (sequential): Collect face contexts using simplified traversal.
-  // Note: Append() intentionally flattens hierarchy to face level only —
+  // Note: Append() intentionally flattens hierarchy to face level only --
   // no Solid/Shell/Compound defs are created. This is by design for
   // incremental face-level operations (e.g. sewing).
   NCollection_Vector<FaceLocalData> aFaceData(128, theGraph.myData->myAllocator);

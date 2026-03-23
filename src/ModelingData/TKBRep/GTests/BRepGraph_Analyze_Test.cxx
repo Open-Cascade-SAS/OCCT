@@ -519,7 +519,7 @@ TEST_F(BRepGraphAnalyzeTest, BoundingBox_AfterMutation_CacheInvalidated)
   const Bnd_Box aBoxBefore = myGraph.Cache().BoundingBox(aVertId);
   ASSERT_FALSE(aBoxBefore.IsVoid());
 
-  // Mutate vertex — this should invalidate the cache via markModified.
+  // Mutate vertex -- this should invalidate the cache via markModified.
   myGraph.Mut().VertexDef(0);
 
   // Verify that after mutation, recomputing still produces a valid bbox.
@@ -653,7 +653,7 @@ TEST_F(BRepGraphAnalyzeTest, Centroid_AfterMutation_CacheInvalidated)
   // Mutate vertex (marks modified, invalidates cache).
   myGraph.Mut().VertexDef(0);
 
-  // Centroid recomputes from original shape — result stays consistent.
+  // Centroid recomputes from original shape -- result stays consistent.
   const gp_Pnt aCentroidAfter = myGraph.Cache().Centroid(aVertId);
 
   // Since the underlying shape hasn't changed (only graph data), centroids match.

@@ -248,7 +248,7 @@ void BRepGraphAlgo_Sewing::Perform()
   NCollection_IndexedMap<int> aSewnEdgeIndices(aNbPairs, anAllocator);
   mergeMatchedEdges(aMatchedPairs, anAffectedFaces, aSewnEdgeIndices);
 
-  // Phase 6: Process sewn edges only (O(sewn) instead of O(all_edges × all_faces)).
+  // Phase 6: Process sewn edges only (O(sewn) instead of O(all_edges x all_faces)).
   processEdges(aSewnEdgeIndices);
 
   // Phase 7: Reconstruct result.

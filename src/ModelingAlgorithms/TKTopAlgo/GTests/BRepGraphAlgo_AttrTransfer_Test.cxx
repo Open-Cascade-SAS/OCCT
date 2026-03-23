@@ -426,7 +426,7 @@ TEST(BRepGraphAlgo_AttrTransferTest, FindNode_ReconstructedShape)
   // Run dedup to mark faces as modified.
   BRepGraphAlgo_Deduplicate::Perform(aGraph);
 
-  // Reconstruct face 0 — this creates a new TShape.
+  // Reconstruct face 0 -- this creates a new TShape.
   const BRepGraph_NodeId aFaceNode(BRepGraph_NodeId::Kind::Face, 0);
   const TopoDS_Shape aReconstructed = aGraph.Shapes().Shape(aFaceNode);
   ASSERT_FALSE(aReconstructed.IsNull());

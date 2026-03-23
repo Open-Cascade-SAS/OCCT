@@ -299,7 +299,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, AnalyzeOnly_ReportsCanonicalCandidates)
   anOpts.AnalyzeOnly = true;
 
   const BRepGraphAlgo_Deduplicate::Result aRes = BRepGraphAlgo_Deduplicate::Perform(aGraph, anOpts);
-  // TwoCopiedFaces: 2 surfaces → 1 canonical, 8 curves → 4 canonical, 8 PCurves → 8 canonical.
+  // TwoCopiedFaces: 2 surfaces -> 1 canonical, 8 curves -> 4 canonical, 8 PCurves -> 8 canonical.
   EXPECT_EQ(aRes.NbCanonicalSurfaces, 1);
   EXPECT_EQ(aRes.NbCanonicalCurves, 4);
   EXPECT_EQ(aRes.NbCanonicalPCurves, 8);
@@ -465,7 +465,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, CanonicalizePCurves_ContextStrict)
 TEST(BRepGraphAlgo_DeduplicateTest, NotDoneGraph_ReturnsEmptyResult)
 {
   BRepGraph aGraph;
-  // Do not call Build() — graph is not done.
+  // Do not call Build() -- graph is not done.
   ASSERT_FALSE(aGraph.IsDone());
 
   const BRepGraphAlgo_Deduplicate::Result aRes = BRepGraphAlgo_Deduplicate::Perform(aGraph);
@@ -508,7 +508,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, FullBox_AllSurfacesUnique)
   ASSERT_TRUE(aGraph.IsDone());
 
   // A box has 6 faces with 6 distinct Geom_Plane instances (different origins/normals).
-  // No surface dedup should occur — all 6 are canonical.
+  // No surface dedup should occur -- all 6 are canonical.
   const BRepGraphAlgo_Deduplicate::Result aRes = BRepGraphAlgo_Deduplicate::Perform(aGraph);
   EXPECT_EQ(aRes.NbCanonicalSurfaces, 6);
   EXPECT_EQ(aRes.NbSurfaceRewrites, 0);
@@ -710,7 +710,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, MergeDefsWhenSafe_NotAppliedYet)
   anOpts.MergeDefsWhenSafe = true;
 
   const BRepGraphAlgo_Deduplicate::Result aRes = BRepGraphAlgo_Deduplicate::Perform(aGraph, anOpts);
-  // MergeDefsWhenSafe is reserved — should never report true.
+  // MergeDefsWhenSafe is reserved -- should never report true.
   EXPECT_FALSE(aRes.IsDefMergeApplied);
 }
 
@@ -796,7 +796,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, CurveRewriteCount_MatchesDuplicateEdgeCurves
   aGraph.Build(makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
-  // TwoCopiedFaces: 8 geom curves, 4 canonical → 4 duplicates.
+  // TwoCopiedFaces: 8 geom curves, 4 canonical -> 4 duplicates.
   ASSERT_EQ(aGraph.Geom().NbCurves(), 8);
 
   BRepGraphAlgo_Deduplicate::Options anAnalyze;
@@ -806,7 +806,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, CurveRewriteCount_MatchesDuplicateEdgeCurves
   EXPECT_EQ(anAnalysis.NbCanonicalCurves, 4);
 
   const BRepGraphAlgo_Deduplicate::Result aRes = BRepGraphAlgo_Deduplicate::Perform(aGraph);
-  // 4 duplicate curve nodes → exactly 4 edge curve rewrites.
+  // 4 duplicate curve nodes -> exactly 4 edge curve rewrites.
   EXPECT_EQ(aRes.NbCurveRewrites, 4);
 }
 
@@ -916,7 +916,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, HistoryFindOriginal_TracesBackToCanonical)
       {
         const BRepGraph_NodeId aTraced =
           aGraph.History().FindOriginal(aReplacements.Value(aReplIdx));
-        // FindOriginal should eventually reach a root — the canonical node.
+        // FindOriginal should eventually reach a root -- the canonical node.
         EXPECT_TRUE(aTraced.IsValid());
         // The original node from the record should match one of the trace results.
         EXPECT_TRUE(anOriginal.IsValid());
@@ -954,7 +954,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, HistoryFindDerived_ContainsCanonicalNode)
         aGraph.History().FindDerived(anOriginal);
       if (aMapIter.Value().IsEmpty())
       {
-        // Nullify record — no derived nodes.
+        // Nullify record -- no derived nodes.
         ++aNbNullifyMappings;
       }
       else
@@ -1000,7 +1000,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, HistoryOff_NbRecordsUnchanged)
   (void)BRepGraphAlgo_Deduplicate::Perform(aGraph, anOpts1);
   EXPECT_EQ(aGraph.History().NbRecords(), 10);
 
-  // Fresh graph, run with history off — no records should be added.
+  // Fresh graph, run with history off -- no records should be added.
   BRepGraph aGraph2;
   aGraph2.Build(makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph2.IsDone());
@@ -1477,7 +1477,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, DifferentSizedCylinders_NotDeduped)
   ASSERT_EQ(aGraph.Geom().NbCurves(), 6);
 
   const BRepGraphAlgo_Deduplicate::Result aRes = BRepGraphAlgo_Deduplicate::Perform(aGraph);
-  // Different radii → different cylindrical surfaces → no surface/curve dedup.
+  // Different radii -> different cylindrical surfaces -> no surface/curve dedup.
   EXPECT_EQ(aRes.NbCanonicalSurfaces, 2);
   EXPECT_EQ(aRes.NbCanonicalCurves, 6);
   EXPECT_EQ(aRes.NbSurfaceRewrites, 0);
@@ -1853,7 +1853,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, Pump_FullDedup_BackRefsAndNullify)
             << "  History records: " << aRes.NbHistoryRecords << "\n"
             << "==========================\n";
 
-  // Get the final shape via Shape() — returns original if unmodified,
+  // Get the final shape via Shape() -- returns original if unmodified,
   // reconstructs if modified (dedup marks face/edge defs as modified,
   // which propagates up to the root compound).
   BRepGraph_NodeId aRootId;
@@ -1918,7 +1918,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, Pump_FullDedup_BackRefsAndNullify)
             << ", Curves: " << aGraph2.Geom().NbCurves()
             << ", PCurves: " << aGraph2.Geom().NbPCurves() << "\n";
 
-  // The new graph should have fewer geometry nodes (shared handles → single node).
+  // The new graph should have fewer geometry nodes (shared handles -> single node).
   EXPECT_EQ(aGraph2.Defs().NbFaces(), aNbFaces);
   EXPECT_EQ(aGraph2.Defs().NbEdges(), aNbEdges);
   EXPECT_LE(aGraph2.Geom().NbSurfaces(), aNbSurfsBefore);
@@ -1932,7 +1932,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, Pump_FullDedup_BackRefsAndNullify)
 }
 
 // ---------------------------------------------------------------------------
-// Round-trip tests: Build → Dedup → Reconstruct → Build verifies geometry sharing
+// Round-trip tests: Build -> Dedup -> Reconstruct -> Build verifies geometry sharing
 // ---------------------------------------------------------------------------
 
 TEST(BRepGraphAlgo_DeduplicateTest, RoundTrip_TwoCopiedFaces_FewerSurfaces)
@@ -2024,7 +2024,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, Build_SharedTFace_OneSurfaceNode)
   aGraph.Build(aCompound);
   ASSERT_TRUE(aGraph.IsDone());
 
-  // Both face usages share the same TFace → same raw surface pointer → one surface node.
+  // Both face usages share the same TFace -> same raw surface pointer -> one surface node.
   EXPECT_EQ(aGraph.Geom().NbSurfaces(), 1);
 }
 

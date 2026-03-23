@@ -64,7 +64,7 @@ BRepGraphAlgo_AttrTransfer::Result BRepGraphAlgo_AttrTransfer::Perform(
     {
       const BRepGraph_NodeId& anOriginal = aMapIter.Key();
 
-      // Skip geometry nodes — they have no Cache / user attributes.
+      // Skip geometry nodes -- they have no Cache / user attributes.
       if (isGeometryKind(anOriginal.NodeKind))
         continue;
 

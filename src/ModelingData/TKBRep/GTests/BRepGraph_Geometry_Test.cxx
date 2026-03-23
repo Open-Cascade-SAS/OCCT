@@ -634,7 +634,7 @@ TEST(BRepGraphGeometry, Cylinder_SeamEdge_PCurveOf_WithOrientation)
         if (anEdge.PCurves.Value(j).FaceDefId != anEdge.PCurves.Value(k).FaceDefId)
           continue;
 
-        // This is a seam edge — test oriented overload.
+        // This is a seam edge -- test oriented overload.
         const BRepGraph_NodeId aFaceId = anEdge.PCurves.Value(j).FaceDefId;
         const BRepGraph_NodeId aPC_Fwd =
           aGraph.Geom().PCurveOf(anEdgeDefId, aFaceId, TopAbs_FORWARD);

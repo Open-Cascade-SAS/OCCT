@@ -1557,7 +1557,7 @@ TEST(BRepGraphAlgo_SewingTest, CutAtIntersections_TVertex)
   //    | Face2 |(1,0,0)| Face3 |
   //  (0,-1,0)-(1,-1,0)-(2,-1,0)
   //
-  // Without cutting: Face1's edge (0,0,0)→(2,0,0) can't sew with Face2/3's half-length
+  // Without cutting: Face1's edge (0,0,0)->(2,0,0) can't sew with Face2/3's half-length
   // edges because the vertex proximity check fails (endpoints don't coincide).
   // With cutting: the long edge is split at (1,0,0) and each half is sewn correctly.
 
@@ -1570,7 +1570,7 @@ TEST(BRepGraphAlgo_SewingTest, CutAtIntersections_TVertex)
   const gp_Pnt aP1m1(1, -1, 0);
   const gp_Pnt aP2m1(2, -1, 0);
 
-  // Face1: rectangle [0,2] x [0,1] — bottom edge (0,0,0)→(2,0,0) is the long free edge.
+  // Face1: rectangle [0,2] x [0,1] -- bottom edge (0,0,0)->(2,0,0) is the long free edge.
   TopoDS_Face aF1;
   {
     BRepBuilderAPI_MakeWire aMW;
@@ -1581,7 +1581,7 @@ TEST(BRepGraphAlgo_SewingTest, CutAtIntersections_TVertex)
     aF1 = BRepBuilderAPI_MakeFace(aMW.Wire(), true);
   }
 
-  // Face2: rectangle [0,1] x [-1,0] — top edge (0,0,0)→(1,0,0) is the left half free edge.
+  // Face2: rectangle [0,1] x [-1,0] -- top edge (0,0,0)->(1,0,0) is the left half free edge.
   TopoDS_Face aF2;
   {
     BRepBuilderAPI_MakeWire aMW;
@@ -1592,7 +1592,7 @@ TEST(BRepGraphAlgo_SewingTest, CutAtIntersections_TVertex)
     aF2 = BRepBuilderAPI_MakeFace(aMW.Wire(), true);
   }
 
-  // Face3: rectangle [1,2] x [-1,0] — top edge (1,0,0)→(2,0,0) is the right half free edge.
+  // Face3: rectangle [1,2] x [-1,0] -- top edge (1,0,0)->(2,0,0) is the right half free edge.
   TopoDS_Face aF3;
   {
     BRepBuilderAPI_MakeWire aMW;

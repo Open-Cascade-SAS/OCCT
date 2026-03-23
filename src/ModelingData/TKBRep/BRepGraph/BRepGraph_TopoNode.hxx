@@ -32,7 +32,7 @@ namespace BRepGraph_TopoNode
 {
 
 // =========================================================================
-// Layer 1: Definitions — one per unique TShape
+// Layer 1: Definitions -- one per unique TShape
 // =========================================================================
 
 //! Fields shared by every topology definition.
@@ -148,7 +148,7 @@ struct VertexDef : public BaseDef
 };
 
 // =========================================================================
-// Layer 2: Usages — one per occurrence in the containment hierarchy
+// Layer 2: Usages -- one per occurrence in the containment hierarchy
 // =========================================================================
 
 //! Fields shared by every topology usage.

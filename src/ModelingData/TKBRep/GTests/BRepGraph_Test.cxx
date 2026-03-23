@@ -643,7 +643,7 @@ TEST_F(BRepGraphTest, Shape_InvalidatedAfterMutation)
   TopoDS_Shape anAfter = myGraph.Shapes().Shape(anEdgeId);
   EXPECT_FALSE(anAfter.IsNull());
 
-  // After mutation, Shape() reconstructs a new edge — different TShape.
+  // After mutation, Shape() reconstructs a new edge -- different TShape.
   EXPECT_FALSE(aBefore.IsSame(anAfter));
 }
 

@@ -53,7 +53,7 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
   aSubADef.Id = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, aSubAIdx);
   theSubA     = aSubADef.Id;
 
-  // Allocate SubB slot (note: Appended() may invalidate aSubADef reference — use index).
+  // Allocate SubB slot (note: Appended() may invalidate aSubADef reference -- use index).
   BRepGraph_TopoNode::EdgeDef& aSubBDef = theGraph.myData->myEdgeDefs.Appended();
   const int                    aSubBIdx = theGraph.myData->myEdgeDefs.Length() - 1;
   aSubBDef.Id = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, aSubBIdx);
