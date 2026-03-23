@@ -17,7 +17,7 @@
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_TopoNode.hxx>
-#include <BRepGraph_UsagesView.hxx>
+#include <BRepGraphInc_IncidenceRef.hxx>
 #include <BRepGProp.hxx>
 
 #include <Bnd_Box.hxx>
@@ -86,14 +86,10 @@ static bool isPlanar(const Adaptor3d_Surface& theS)
 }
 
 //! Get the face usage's GlobalLocation for triangulation transform.
-static TopLoc_Location obbFaceGlobalLocation(const BRepGraph& theGraph, int theFaceIdx)
+static TopLoc_Location obbFaceGlobalLocation(const BRepGraph& /*theGraph*/, int /*theFaceIdx*/)
 {
-  const BRepGraph_TopoNode::FaceDef& aFaceDef = theGraph.Defs().Face(theFaceIdx);
-  if (aFaceDef.Usages.IsEmpty())
-  {
-    return TopLoc_Location();
-  }
-  return theGraph.Usages().Face(aFaceDef.Usages.First().Index).GlobalLocation;
+  // Incidence model stores geometry at identity; location offsets are not needed.
+  return TopLoc_Location();
 }
 
 //! Collect points for OBB construction from graph data.
@@ -149,43 +145,25 @@ static int pointsForOBB(const BRepGraph&            theGraph,
       // Planar face: check if all edges are linear.
       bool                               hasNonLinearEdge = false;
       const BRepGraph_TopoNode::FaceDef& aFaceDef         = theGraph.Defs().Face(aFaceIdx);
-      if (!aFaceDef.Usages.IsEmpty())
+      for (int aWireRefIdx = 0; aWireRefIdx < aFaceDef.WireRefs.Length() && !hasNonLinearEdge; ++aWireRefIdx)
       {
-        const BRepGraph_TopoNode::FaceUsage& aFaceUsage =
-          theGraph.Usages().Face(aFaceDef.Usages.First().Index);
-
-        auto checkWireEdges = [&](BRepGraph_UsageId theWireUsageId) {
-          const BRepGraph_TopoNode::WireUsage& aWireUsage =
-            theGraph.Usages().Wire(theWireUsageId.Index);
-          for (int anIdx = 0; anIdx < aWireUsage.EdgeUsages.Length(); ++anIdx)
+        const BRepGraphInc::WireRef& aWR = aFaceDef.WireRefs.Value(aWireRefIdx);
+        const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.Defs().Wire(aWR.WireIdx);
+        for (int anIdx = 0; anIdx < aWireDef.EdgeRefs.Length(); ++anIdx)
+        {
+          const BRepGraphInc::EdgeRef& aER = aWireDef.EdgeRefs.Value(anIdx);
+          const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
+            theGraph.Defs().Edge(aER.EdgeIdx);
+          if (anEdgeDef.IsDegenerate || anEdgeDef.Curve3d.IsNull())
           {
-            const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage =
-              theGraph.Usages().Edge(aWireUsage.EdgeUsages.Value(anIdx).Index);
-            const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
-              theGraph.Defs().Edge(anEdgeUsage.DefId.Index);
-            if (anEdgeDef.IsDegenerate || anEdgeDef.Curve3d.IsNull())
-            {
-              continue;
-            }
-            const GeomAdaptor_TransformedCurve aCurveAdaptor =
-              theGraph.Defs().CurveAdaptor(anEdgeDef.Id);
-            if (!isLinear(aCurveAdaptor))
-            {
-              hasNonLinearEdge = true;
-              return;
-            }
+            continue;
           }
-        };
-
-        if (aFaceUsage.OuterWireUsage.IsValid())
-        {
-          checkWireEdges(aFaceUsage.OuterWireUsage);
-        }
-        if (!hasNonLinearEdge)
-        {
-          for (int i = 0; i < aFaceUsage.InnerWireUsages.Length() && !hasNonLinearEdge; ++i)
+          const GeomAdaptor_TransformedCurve aCurveAdaptor =
+            theGraph.Defs().CurveAdaptor(anEdgeDef.Id);
+          if (!isLinear(aCurveAdaptor))
           {
-            checkWireEdges(aFaceUsage.InnerWireUsages.Value(i));
+            hasNonLinearEdge = true;
+            break;
           }
         }
       }

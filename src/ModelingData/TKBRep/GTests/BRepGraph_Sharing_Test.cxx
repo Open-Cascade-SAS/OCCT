@@ -15,6 +15,7 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_UsagesView.hxx>
+#include <BRepGraphInc_IncidenceRef.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
@@ -156,20 +157,20 @@ TEST_F(BRepGraphSharingTest, DefOf_EachVertexUsage_RoundTrips)
 // Containment hierarchy
 // =========================================================================
 
-TEST_F(BRepGraphSharingTest, SolidUsage_ContainsOneShellUsage)
+TEST_F(BRepGraphSharingTest, SolidDef_ContainsOneShellRef)
 {
   ASSERT_TRUE(myGraph.IsDone());
-  EXPECT_EQ(myGraph.Usages().NbSolids(), 1);
-  const BRepGraph_TopoNode::SolidUsage& aSolidUsage = myGraph.Usages().Solid(0);
-  EXPECT_EQ(aSolidUsage.ShellUsages.Length(), 1);
+  EXPECT_EQ(myGraph.Defs().NbSolids(), 1);
+  const BRepGraph_TopoNode::SolidDef& aSolidDef = myGraph.Defs().Solid(0);
+  EXPECT_EQ(aSolidDef.ShellRefs.Length(), 1);
 }
 
-TEST_F(BRepGraphSharingTest, ShellUsage_ContainsSixFaceUsages)
+TEST_F(BRepGraphSharingTest, ShellDef_ContainsSixFaceRefs)
 {
   ASSERT_TRUE(myGraph.IsDone());
-  EXPECT_EQ(myGraph.Usages().NbShells(), 1);
-  const BRepGraph_TopoNode::ShellUsage& aShellUsage = myGraph.Usages().Shell(0);
-  EXPECT_EQ(aShellUsage.FaceUsages.Length(), 6);
+  EXPECT_EQ(myGraph.Defs().NbShells(), 1);
+  const BRepGraph_TopoNode::ShellDef& aShellDef = myGraph.Defs().Shell(0);
+  EXPECT_EQ(aShellDef.FaceRefs.Length(), 6);
 }
 
 TEST_F(BRepGraphSharingTest, FaceUsage_OuterWireUsage_BackRef)
@@ -187,17 +188,17 @@ TEST_F(BRepGraphSharingTest, FaceUsage_OuterWireUsage_BackRef)
   }
 }
 
-TEST_F(BRepGraphSharingTest, WireUsage_EdgeUsagesCount_FourPerBoxFace)
+TEST_F(BRepGraphSharingTest, WireDef_EdgeRefsCount_FourPerBoxFace)
 {
   ASSERT_TRUE(myGraph.IsDone());
-  for (int anIdx = 0; anIdx < myGraph.Usages().NbWires(); ++anIdx)
+  for (int anIdx = 0; anIdx < myGraph.Defs().NbWires(); ++anIdx)
   {
-    const BRepGraph_TopoNode::WireUsage& aWireUsage = myGraph.Usages().Wire(anIdx);
-    EXPECT_GT(aWireUsage.EdgeUsages.Length(), 0)
-      << "Wire usage " << anIdx << " has no edge usages";
+    const BRepGraph_TopoNode::WireDef& aWireDef = myGraph.Defs().Wire(anIdx);
+    EXPECT_GT(aWireDef.EdgeRefs.Length(), 0)
+      << "Wire def " << anIdx << " has no edge refs";
     // Box face wires have 4 edges
-    EXPECT_EQ(aWireUsage.EdgeUsages.Length(), 4)
-      << "Wire usage " << anIdx << " expected 4 edge usages for box face";
+    EXPECT_EQ(aWireDef.EdgeRefs.Length(), 4)
+      << "Wire def " << anIdx << " expected 4 edge refs for box face";
   }
 }
 

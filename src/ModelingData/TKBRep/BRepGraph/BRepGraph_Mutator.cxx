@@ -289,6 +289,20 @@ void BRepGraph_Mutator::ReplaceEdgeInWire(BRepGraph&       theGraph,
                                           bool             theReversed)
 {
   BRepGraph_TopoNode::WireDef& aWireDef = theGraph.myData->myWires.Defs.ChangeValue(theWireDefIdx);
+
+  // Update incidence EdgeRefs on the WireEntity.
+  for (int anEdgeIdx = 0; anEdgeIdx < aWireDef.EdgeRefs.Length(); ++anEdgeIdx)
+  {
+    BRepGraphInc::EdgeRef& aER = aWireDef.EdgeRefs.ChangeValue(anEdgeIdx);
+    if (aER.EdgeIdx == theOldEdgeDef.Index)
+    {
+      aER.EdgeIdx = theNewEdgeDef.Index;
+      if (theReversed)
+        aER.Orientation = TopAbs::Reverse(aER.Orientation);
+    }
+  }
+
+  // Update legacy WireUsage EdgeUsages.
   if (!aWireDef.Usages.IsEmpty())
   {
     BRepGraph_TopoNode::WireUsage& aWireUsage =
@@ -301,9 +315,7 @@ void BRepGraph_Mutator::ReplaceEdgeInWire(BRepGraph&       theGraph,
       {
         anEdgeUsage.DefId = theNewEdgeDef;
         if (theReversed)
-        {
           anEdgeUsage.Orientation = TopAbs::Reverse(anEdgeUsage.Orientation);
-        }
 
         // Update edge-to-wire reverse index.
         BRepGraph_BackRefManager::ReplaceEdgeInWireMap(theGraph, theOldEdgeDef.Index,

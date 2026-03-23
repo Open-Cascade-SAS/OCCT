@@ -16,7 +16,7 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_TopoNode.hxx>
-#include <BRepGraph_UsagesView.hxx>
+#include <BRepGraphInc_IncidenceRef.hxx>
 
 #include <Bnd_Box2d.hxx>
 #include <BndLib_Add2dCurve.hxx>
@@ -273,7 +273,7 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph& theGraph, int theFaceIdx, 
 
   // Check by comparing PCurves and surface boundaries (the 4-edge natural restriction check).
   const double theTol = aFaceDef.Tolerance;
-  if (!aFaceDef.Usages.IsEmpty())
+  if (!aFaceDef.WireRefs.IsEmpty())
   {
     const bool     isUperiodic = aGAS.IsUPeriodic();
     const bool     isVperiodic = aGAS.IsVPeriodic();
@@ -283,18 +283,14 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph& theGraph, int theFaceIdx, 
     const gp_Vec2d Du(1, 0), Dv(0, 1);
     bool           isAborted = false;
 
-    const BRepGraph_TopoNode::FaceUsage& aFaceUsage =
-      theGraph.Usages().Face(aFaceDef.Usages.First().Index);
-
     // Collect all wire edges for the 4-edge check.
-    auto checkWireEdges = [&](BRepGraph_UsageId theWireUsageId) {
+    auto checkWireEdges = [&](int theWireIdx) {
       if (isAborted)
       {
         return;
       }
-      const BRepGraph_TopoNode::WireUsage& aWireUsage =
-        theGraph.Usages().Wire(theWireUsageId.Index);
-      for (int anIdx = 0; anIdx < aWireUsage.EdgeUsages.Length() && !isAborted; ++anIdx)
+      const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.Defs().Wire(theWireIdx);
+      for (int anIdx = 0; anIdx < aWireDef.EdgeRefs.Length() && !isAborted; ++anIdx)
       {
         NbEdges++;
         if (NbEdges > 4)
@@ -302,10 +298,10 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph& theGraph, int theFaceIdx, 
           isAborted = true;
           return;
         }
-        const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage =
-          theGraph.Usages().Edge(aWireUsage.EdgeUsages.Value(anIdx).Index);
+        const BRepGraphInc::EdgeRef& aER = aWireDef.EdgeRefs.Value(anIdx);
+        const BRepGraph_NodeId anEdgeDefId = BRepGraph_NodeId::Edge(aER.EdgeIdx);
         const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurve =
-          theGraph.Defs().FindPCurve(anEdgeUsage.DefId, aFaceDef.Id);
+          theGraph.Defs().FindPCurve(anEdgeDefId, aFaceDef.Id);
         if (aPCurve == nullptr || aPCurve->Curve2d.IsNull())
         {
           isAborted = true;
@@ -375,13 +371,9 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph& theGraph, int theFaceIdx, 
       }
     };
 
-    if (aFaceUsage.OuterWireUsage.IsValid())
+    for (int aWireRefIdx = 0; aWireRefIdx < aFaceDef.WireRefs.Length() && !isAborted; ++aWireRefIdx)
     {
-      checkWireEdges(aFaceUsage.OuterWireUsage);
-    }
-    for (int i = 0; i < aFaceUsage.InnerWireUsages.Length() && !isAborted; ++i)
-    {
-      checkWireEdges(aFaceUsage.InnerWireUsages.Value(i));
+      checkWireEdges(aFaceDef.WireRefs.Value(aWireRefIdx).WireIdx);
     }
 
     if (!isAborted && Nu == 2 && Nv == 2)
@@ -397,39 +389,25 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph& theGraph, int theFaceIdx, 
   const double aTolUV = std::max(aTolU, aTolV);
 
   Bnd_Box2d aBox;
-  if (!aFaceDef.Usages.IsEmpty())
+  for (int aWireRefIdx = 0; aWireRefIdx < aFaceDef.WireRefs.Length(); ++aWireRefIdx)
   {
-    const BRepGraph_TopoNode::FaceUsage& aFaceUsage =
-      theGraph.Usages().Face(aFaceDef.Usages.First().Index);
-
-    auto addWirePCurves = [&](BRepGraph_UsageId theWireUsageId) {
-      const BRepGraph_TopoNode::WireUsage& aWireUsage =
-        theGraph.Usages().Wire(theWireUsageId.Index);
-      for (int anIdx = 0; anIdx < aWireUsage.EdgeUsages.Length(); ++anIdx)
+    const BRepGraphInc::WireRef& aWR = aFaceDef.WireRefs.Value(aWireRefIdx);
+    const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.Defs().Wire(aWR.WireIdx);
+    for (int anIdx = 0; anIdx < aWireDef.EdgeRefs.Length(); ++anIdx)
+    {
+      const BRepGraphInc::EdgeRef& aER = aWireDef.EdgeRefs.Value(anIdx);
+      const BRepGraph_NodeId anEdgeDefId = BRepGraph_NodeId::Edge(aER.EdgeIdx);
+      const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurve =
+        theGraph.Defs().FindPCurve(anEdgeDefId, aFaceDef.Id);
+      if (aPCurve == nullptr || aPCurve->Curve2d.IsNull())
       {
-        const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage =
-          theGraph.Usages().Edge(aWireUsage.EdgeUsages.Value(anIdx).Index);
-        const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurve =
-          theGraph.Defs().FindPCurve(anEdgeUsage.DefId, aFaceDef.Id);
-        if (aPCurve == nullptr || aPCurve->Curve2d.IsNull())
-        {
-          continue;
-        }
-        BndLib_Add2dCurve::AddOptimal(aPCurve->Curve2d,
-                                      aPCurve->ParamFirst,
-                                      aPCurve->ParamLast,
-                                      aTolUV,
-                                      aBox);
+        continue;
       }
-    };
-
-    if (aFaceUsage.OuterWireUsage.IsValid())
-    {
-      addWirePCurves(aFaceUsage.OuterWireUsage);
-    }
-    for (int i = 0; i < aFaceUsage.InnerWireUsages.Length(); ++i)
-    {
-      addWirePCurves(aFaceUsage.InnerWireUsages.Value(i));
+      BndLib_Add2dCurve::AddOptimal(aPCurve->Curve2d,
+                                    aPCurve->ParamFirst,
+                                    aPCurve->ParamLast,
+                                    aTolUV,
+                                    aBox);
     }
   }
 

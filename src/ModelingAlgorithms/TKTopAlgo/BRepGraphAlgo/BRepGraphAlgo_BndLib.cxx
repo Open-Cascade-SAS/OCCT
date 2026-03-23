@@ -16,7 +16,7 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_TopoNode.hxx>
-#include <BRepGraph_UsagesView.hxx>
+#include <BRepGraphInc_IncidenceRef.hxx>
 #include <BRepGraphAlgo_FClass2d.hxx>
 #include <BRepGraphAlgo_UVBounds.hxx>
 
@@ -52,14 +52,10 @@ static void findExactUVBounds(const BRepGraph& theGraph,
 
 //! Get the face usage's GlobalLocation for triangulation transform.
 //! Returns identity if no usages exist.
-static TopLoc_Location faceGlobalLocation(const BRepGraph& theGraph, int theFaceIdx)
+static TopLoc_Location faceGlobalLocation(const BRepGraph& /*theGraph*/, int /*theFaceIdx*/)
 {
-  const BRepGraph_TopoNode::FaceDef& aFaceDef = theGraph.Defs().Face(theFaceIdx);
-  if (aFaceDef.Usages.IsEmpty())
-  {
-    return TopLoc_Location();
-  }
-  return theGraph.Usages().Face(aFaceDef.Usages.First().Index).GlobalLocation;
+  // Incidence model stores geometry at identity; location offsets are not needed.
+  return TopLoc_Location();
 }
 
 //! Add vertex point + tolerance to the bounding box.
@@ -123,38 +119,23 @@ static void addFaceBox(const BRepGraph& theGraph, int theFaceIdx, Bnd_Box& theBo
   {
     // Plane: use edge 3D curves directly from the graph.
     bool hasEdges = false;
-    if (!aFaceDef.Usages.IsEmpty())
+    for (int aWireRefIdx = 0; aWireRefIdx < aFaceDef.WireRefs.Length(); ++aWireRefIdx)
     {
-      const BRepGraph_TopoNode::FaceUsage& aFaceUsage =
-        theGraph.Usages().Face(aFaceDef.Usages.First().Index);
-
-      auto addWireEdges = [&](BRepGraph_UsageId theWireUsageId) {
-        const BRepGraph_TopoNode::WireUsage& aWireUsage =
-          theGraph.Usages().Wire(theWireUsageId.Index);
-        for (int anIdx = 0; anIdx < aWireUsage.EdgeUsages.Length(); ++anIdx)
+      const BRepGraphInc::WireRef& aWR = aFaceDef.WireRefs.Value(aWireRefIdx);
+      const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.Defs().Wire(aWR.WireIdx);
+      for (int anIdx = 0; anIdx < aWireDef.EdgeRefs.Length(); ++anIdx)
+      {
+        const BRepGraphInc::EdgeRef& aER = aWireDef.EdgeRefs.Value(anIdx);
+        const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
+          theGraph.Defs().Edge(aER.EdgeIdx);
+        if (anEdgeDef.IsDegenerate || anEdgeDef.Curve3d.IsNull())
         {
-          const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage =
-            theGraph.Usages().Edge(aWireUsage.EdgeUsages.Value(anIdx).Index);
-          const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
-            theGraph.Defs().Edge(anEdgeUsage.DefId.Index);
-          if (anEdgeDef.IsDegenerate || anEdgeDef.Curve3d.IsNull())
-          {
-            continue;
-          }
-          const GeomAdaptor_TransformedCurve aCurveAdaptor =
-            theGraph.Defs().CurveAdaptor(anEdgeDef.Id);
-          BndLib_Add3dCurve::Add(aCurveAdaptor, anEdgeDef.Tolerance, theBox);
-          hasEdges = true;
+          continue;
         }
-      };
-
-      if (aFaceUsage.OuterWireUsage.IsValid())
-      {
-        addWireEdges(aFaceUsage.OuterWireUsage);
-      }
-      for (int i = 0; i < aFaceUsage.InnerWireUsages.Length(); ++i)
-      {
-        addWireEdges(aFaceUsage.InnerWireUsages.Value(i));
+        const GeomAdaptor_TransformedCurve aCurveAdaptor =
+          theGraph.Defs().CurveAdaptor(anEdgeDef.Id);
+        BndLib_Add3dCurve::Add(aCurveAdaptor, anEdgeDef.Tolerance, theBox);
+        hasEdges = true;
       }
     }
 
@@ -465,41 +446,26 @@ static void addFaceBoxOptimal(const BRepGraph& theGraph,
   {
     // Edge-based path: iterate wire edges.
     bool hasEdges = false;
-    if (!aFaceDef.Usages.IsEmpty())
+    for (int aWireRefIdx = 0; aWireRefIdx < aFaceDef.WireRefs.Length(); ++aWireRefIdx)
     {
-      const BRepGraph_TopoNode::FaceUsage& aFaceUsage =
-        theGraph.Usages().Face(aFaceDef.Usages.First().Index);
-
-      auto addWireEdgesOptimal = [&](BRepGraph_UsageId theWireUsageId) {
-        const BRepGraph_TopoNode::WireUsage& aWireUsage =
-          theGraph.Usages().Wire(theWireUsageId.Index);
-        for (int anIdx = 0; anIdx < aWireUsage.EdgeUsages.Length(); ++anIdx)
+      const BRepGraphInc::WireRef& aWR = aFaceDef.WireRefs.Value(aWireRefIdx);
+      const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.Defs().Wire(aWR.WireIdx);
+      for (int anIdx = 0; anIdx < aWireDef.EdgeRefs.Length(); ++anIdx)
+      {
+        const BRepGraphInc::EdgeRef& aER = aWireDef.EdgeRefs.Value(anIdx);
+        const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
+          theGraph.Defs().Edge(aER.EdgeIdx);
+        if (anEdgeDef.IsDegenerate || anEdgeDef.Curve3d.IsNull())
         {
-          const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage =
-            theGraph.Usages().Edge(aWireUsage.EdgeUsages.Value(anIdx).Index);
-          const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
-            theGraph.Defs().Edge(anEdgeUsage.DefId.Index);
-          if (anEdgeDef.IsDegenerate || anEdgeDef.Curve3d.IsNull())
-          {
-            continue;
-          }
-          Bnd_Box                            anEBox;
-          const GeomAdaptor_TransformedCurve aCurveAdaptor =
-            theGraph.Defs().CurveAdaptor(anEdgeDef.Id);
-          const double aTol = theUseShapeTol ? anEdgeDef.Tolerance : 0.;
-          BndLib_Add3dCurve::AddOptimal(aCurveAdaptor, aTol, anEBox);
-          aLocBox.Add(anEBox);
-          hasEdges = true;
+          continue;
         }
-      };
-
-      if (aFaceUsage.OuterWireUsage.IsValid())
-      {
-        addWireEdgesOptimal(aFaceUsage.OuterWireUsage);
-      }
-      for (int i = 0; i < aFaceUsage.InnerWireUsages.Length(); ++i)
-      {
-        addWireEdgesOptimal(aFaceUsage.InnerWireUsages.Value(i));
+        Bnd_Box                            anEBox;
+        const GeomAdaptor_TransformedCurve aCurveAdaptor =
+          theGraph.Defs().CurveAdaptor(anEdgeDef.Id);
+        const double aTol = theUseShapeTol ? anEdgeDef.Tolerance : 0.;
+        BndLib_Add3dCurve::AddOptimal(aCurveAdaptor, aTol, anEBox);
+        aLocBox.Add(anEBox);
+        hasEdges = true;
       }
     }
 
@@ -523,40 +489,25 @@ static void addFaceBoxOptimal(const BRepGraph& theGraph,
     {
       // Build edge box for adjustment.
       Bnd_Box aEBox;
-      if (!aFaceDef.Usages.IsEmpty())
+      for (int aWireRefIdx = 0; aWireRefIdx < aFaceDef.WireRefs.Length(); ++aWireRefIdx)
       {
-        const BRepGraph_TopoNode::FaceUsage& aFaceUsage =
-          theGraph.Usages().Face(aFaceDef.Usages.First().Index);
-
-        auto addWireEdgesForAdjust = [&](BRepGraph_UsageId theWireUsageId) {
-          const BRepGraph_TopoNode::WireUsage& aWireUsage =
-            theGraph.Usages().Wire(theWireUsageId.Index);
-          for (int anIdx = 0; anIdx < aWireUsage.EdgeUsages.Length(); ++anIdx)
+        const BRepGraphInc::WireRef& aWR = aFaceDef.WireRefs.Value(aWireRefIdx);
+        const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.Defs().Wire(aWR.WireIdx);
+        for (int anIdx = 0; anIdx < aWireDef.EdgeRefs.Length(); ++anIdx)
+        {
+          const BRepGraphInc::EdgeRef& aER = aWireDef.EdgeRefs.Value(anIdx);
+          const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
+            theGraph.Defs().Edge(aER.EdgeIdx);
+          if (anEdgeDef.IsDegenerate || anEdgeDef.Curve3d.IsNull())
           {
-            const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage =
-              theGraph.Usages().Edge(aWireUsage.EdgeUsages.Value(anIdx).Index);
-            const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
-              theGraph.Defs().Edge(anEdgeUsage.DefId.Index);
-            if (anEdgeDef.IsDegenerate || anEdgeDef.Curve3d.IsNull())
-            {
-              continue;
-            }
-            Bnd_Box                            anEBox;
-            const GeomAdaptor_TransformedCurve aCurveAdaptor =
-              theGraph.Defs().CurveAdaptor(anEdgeDef.Id);
-            const double aTol = theUseShapeTol ? anEdgeDef.Tolerance : 0.;
-            BndLib_Add3dCurve::AddOptimal(aCurveAdaptor, aTol, anEBox);
-            aEBox.Add(anEBox);
+            continue;
           }
-        };
-
-        if (aFaceUsage.OuterWireUsage.IsValid())
-        {
-          addWireEdgesForAdjust(aFaceUsage.OuterWireUsage);
-        }
-        for (int i = 0; i < aFaceUsage.InnerWireUsages.Length(); ++i)
-        {
-          addWireEdgesForAdjust(aFaceUsage.InnerWireUsages.Value(i));
+          Bnd_Box                            anEBox;
+          const GeomAdaptor_TransformedCurve aCurveAdaptor =
+            theGraph.Defs().CurveAdaptor(anEdgeDef.Id);
+          const double aTol = theUseShapeTol ? anEdgeDef.Tolerance : 0.;
+          BndLib_Add3dCurve::AddOptimal(aCurveAdaptor, aTol, anEBox);
+          aEBox.Add(anEBox);
         }
       }
       adjustFaceBox(theGraph,
@@ -603,16 +554,10 @@ static void addNodeBox(const BRepGraph& theGraph,
     }
     case BRepGraph_NodeId::Kind::Wire: {
       const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.Defs().Wire(theNode.Index);
-      if (!aWireDef.Usages.IsEmpty())
+      for (int anIdx = 0; anIdx < aWireDef.EdgeRefs.Length(); ++anIdx)
       {
-        const BRepGraph_TopoNode::WireUsage& aWireUsage =
-          theGraph.Usages().Wire(aWireDef.Usages.Value(0).Index);
-        for (int anIdx = 0; anIdx < aWireUsage.EdgeUsages.Length(); ++anIdx)
-        {
-          const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage =
-            theGraph.Usages().Edge(aWireUsage.EdgeUsages.Value(anIdx).Index);
-          addNodeBox(theGraph, anEdgeUsage.DefId, theBox, theUseTri);
-        }
+        const BRepGraphInc::EdgeRef& aER = aWireDef.EdgeRefs.Value(anIdx);
+        addNodeBox(theGraph, BRepGraph_NodeId::Edge(aER.EdgeIdx), theBox, theUseTri);
       }
       break;
     }
@@ -631,16 +576,10 @@ static void addNodeBox(const BRepGraph& theGraph,
     }
     case BRepGraph_NodeId::Kind::Solid: {
       const BRepGraph_TopoNode::SolidDef& aSolidDef = theGraph.Defs().Solid(theNode.Index);
-      if (aSolidDef.Usages.IsEmpty())
+      for (int anIdx = 0; anIdx < aSolidDef.ShellRefs.Length(); ++anIdx)
       {
-        break;
-      }
-      const BRepGraph_TopoNode::SolidUsage& aSolidUsage =
-        theGraph.Usages().Solid(aSolidDef.Usages.First().Index);
-      for (int anIdx = 0; anIdx < aSolidUsage.ShellUsages.Length(); ++anIdx)
-      {
-        const BRepGraph_NodeId aShellDefId = theGraph.DefOf(aSolidUsage.ShellUsages.Value(anIdx));
-        addNodeBox(theGraph, aShellDefId, theBox, theUseTri);
+        const BRepGraphInc::ShellRef& aSR = aSolidDef.ShellRefs.Value(anIdx);
+        addNodeBox(theGraph, BRepGraph_NodeId::Shell(aSR.ShellIdx), theBox, theUseTri);
       }
       break;
     }
@@ -703,20 +642,14 @@ static void addNodeBoxOptimal(const BRepGraph& theGraph,
     }
     case BRepGraph_NodeId::Kind::Wire: {
       const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.Defs().Wire(theNode.Index);
-      if (!aWireDef.Usages.IsEmpty())
+      for (int anIdx = 0; anIdx < aWireDef.EdgeRefs.Length(); ++anIdx)
       {
-        const BRepGraph_TopoNode::WireUsage& aWireUsage =
-          theGraph.Usages().Wire(aWireDef.Usages.Value(0).Index);
-        for (int anIdx = 0; anIdx < aWireUsage.EdgeUsages.Length(); ++anIdx)
-        {
-          const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage =
-            theGraph.Usages().Edge(aWireUsage.EdgeUsages.Value(anIdx).Index);
-          addNodeBoxOptimal(theGraph,
-                            anEdgeUsage.DefId,
-                            theBox,
-                            theUseTri,
-                            theUseShapeTol);
-        }
+        const BRepGraphInc::EdgeRef& aER = aWireDef.EdgeRefs.Value(anIdx);
+        addNodeBoxOptimal(theGraph,
+                          BRepGraph_NodeId::Edge(aER.EdgeIdx),
+                          theBox,
+                          theUseTri,
+                          theUseShapeTol);
       }
       break;
     }
@@ -735,16 +668,10 @@ static void addNodeBoxOptimal(const BRepGraph& theGraph,
     }
     case BRepGraph_NodeId::Kind::Solid: {
       const BRepGraph_TopoNode::SolidDef& aSolidDef = theGraph.Defs().Solid(theNode.Index);
-      if (aSolidDef.Usages.IsEmpty())
+      for (int anIdx = 0; anIdx < aSolidDef.ShellRefs.Length(); ++anIdx)
       {
-        break;
-      }
-      const BRepGraph_TopoNode::SolidUsage& aSolidUsage =
-        theGraph.Usages().Solid(aSolidDef.Usages.First().Index);
-      for (int anIdx = 0; anIdx < aSolidUsage.ShellUsages.Length(); ++anIdx)
-      {
-        const BRepGraph_NodeId aShellDefId = theGraph.DefOf(aSolidUsage.ShellUsages.Value(anIdx));
-        addNodeBoxOptimal(theGraph, aShellDefId, theBox, theUseTri, theUseShapeTol);
+        const BRepGraphInc::ShellRef& aSR = aSolidDef.ShellRefs.Value(anIdx);
+        addNodeBoxOptimal(theGraph, BRepGraph_NodeId::Shell(aSR.ShellIdx), theBox, theUseTri, theUseShapeTol);
       }
       break;
     }

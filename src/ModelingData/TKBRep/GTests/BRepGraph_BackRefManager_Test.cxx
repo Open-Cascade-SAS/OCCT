@@ -19,6 +19,7 @@
 #include <BRepGraph_Mutator.hxx>
 #include <BRepGraph_RelEdgesView.hxx>
 #include <BRepGraph_UsagesView.hxx>
+#include <BRepGraphInc_IncidenceRef.hxx>
 
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <Geom_Line.hxx>
@@ -83,12 +84,9 @@ TEST(BRepGraphBackRefManagerTest, Build_EdgeToWiresMatchForwardLinks)
   for (int aWireIdx = 0; aWireIdx < aGraph.Defs().NbWires(); ++aWireIdx)
   {
     const BRepGraph_TopoNode::WireDef& aWireDef = aGraph.Defs().Wire(aWireIdx);
-    ASSERT_FALSE(aWireDef.Usages.IsEmpty());
-    const BRepGraph_TopoNode::WireUsage& aWireUsage = aGraph.Usages().Wire(aWireDef.Usages.Value(0).Index);
-    for (int anEdgeIdx = 0; anEdgeIdx < aWireUsage.EdgeUsages.Length(); ++anEdgeIdx)
+    for (int anEdgeIdx = 0; anEdgeIdx < aWireDef.EdgeRefs.Length(); ++anEdgeIdx)
     {
-      const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage = aGraph.Usages().Edge(aWireUsage.EdgeUsages.Value(anEdgeIdx).Index);
-      const int anEdgeDefIdx = anEdgeUsage.DefId.Index;
+      const int anEdgeDefIdx = aWireDef.EdgeRefs.Value(anEdgeIdx).EdgeIdx;
       const NCollection_Vector<int>& aWires = aGraph.RelEdges().WiresOfEdge(anEdgeDefIdx);
       bool aFound = false;
       for (int aW = 0; aW < aWires.Length(); ++aW)

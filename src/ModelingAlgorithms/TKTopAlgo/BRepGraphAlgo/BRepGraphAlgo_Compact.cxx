@@ -20,7 +20,7 @@
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_RelEdgesView.hxx>
 #include <BRepGraph_UID.hxx>
-#include <BRepGraph_UsagesView.hxx>
+#include <BRepGraphInc_IncidenceRef.hxx>
 
 #include <NCollection_DataMap.hxx>
 
@@ -285,18 +285,12 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
     const BRepGraph_TopoNode::WireDef& anOldWire = theGraph.Defs().Wire(anIdx);
 
     NCollection_Vector<std::pair<BRepGraph_NodeId, TopAbs_Orientation>> aNewEntries;
-    if (!anOldWire.Usages.IsEmpty())
+    for (int anEntryIdx = 0; anEntryIdx < anOldWire.EdgeRefs.Length(); ++anEntryIdx)
     {
-      const BRepGraph_TopoNode::WireUsage& anOldWireUsage =
-        theGraph.Usages().Wire(anOldWire.Usages.Value(0).Index);
-      for (int anEntryIdx = 0; anEntryIdx < anOldWireUsage.EdgeUsages.Length(); ++anEntryIdx)
-      {
-        const BRepGraph_TopoNode::EdgeUsage& anOldEdgeUsage =
-          theGraph.Usages().Edge(anOldWireUsage.EdgeUsages.Value(anEntryIdx).Index);
-        const BRepGraph_NodeId aNewEdgeDefId = remapId(anOldEdgeUsage.DefId);
-        if (aNewEdgeDefId.IsValid())
-          aNewEntries.Append(std::make_pair(aNewEdgeDefId, anOldEdgeUsage.Orientation));
-      }
+      const BRepGraphInc::EdgeRef& aER = anOldWire.EdgeRefs.Value(anEntryIdx);
+      const BRepGraph_NodeId aNewEdgeDefId = remapId(BRepGraph_NodeId::Edge(aER.EdgeIdx));
+      if (aNewEdgeDefId.IsValid())
+        aNewEntries.Append(std::make_pair(aNewEdgeDefId, aER.Orientation));
     }
     aNewGraph.Builder().AddWireDef(aNewEntries);
   }
@@ -310,36 +304,23 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
 
     Handle(Geom_Surface) aSurf = anOldFace.Surface;
 
-    // Find outer wire from usages.
+    // Find outer wire from incidence refs.
     BRepGraph_NodeId                     aNewOuterWire;
     NCollection_Vector<BRepGraph_NodeId> aNewInnerWires;
 
-    if (!anOldFace.Usages.IsEmpty())
+    for (int aWireRefIdx = 0; aWireRefIdx < anOldFace.WireRefs.Length(); ++aWireRefIdx)
     {
-      const BRepGraph_UsageId& aFirstUsage = anOldFace.Usages.Value(0);
-      if (aFirstUsage.IsValid() && aFirstUsage.NodeKind == BRepGraph_NodeId::Kind::Face
-          && aFirstUsage.Index < theGraph.Usages().NbFaces())
+      const BRepGraphInc::WireRef& aWR = anOldFace.WireRefs.Value(aWireRefIdx);
+      const BRepGraph_NodeId aRemapped = remapId(BRepGraph_NodeId::Wire(aWR.WireIdx));
+      if (!aRemapped.IsValid())
+        continue;
+      if (aWR.IsOuter)
       {
-        const BRepGraph_TopoNode::FaceUsage& aFaceUs = theGraph.Usages().Face(aFirstUsage.Index);
-        if (aFaceUs.OuterWireUsage.IsValid()
-            && aFaceUs.OuterWireUsage.Index < theGraph.Usages().NbWires())
-        {
-          const BRepGraph_TopoNode::WireUsage& aWireUs =
-            theGraph.Usages().Wire(aFaceUs.OuterWireUsage.Index);
-          aNewOuterWire = remapId(aWireUs.DefId);
-        }
-        for (int aInnerIdx = 0; aInnerIdx < aFaceUs.InnerWireUsages.Length(); ++aInnerIdx)
-        {
-          const BRepGraph_UsageId& aInnerWireUsId = aFaceUs.InnerWireUsages.Value(aInnerIdx);
-          if (aInnerWireUsId.IsValid() && aInnerWireUsId.Index < theGraph.Usages().NbWires())
-          {
-            const BRepGraph_TopoNode::WireUsage& aInnerWireUs =
-              theGraph.Usages().Wire(aInnerWireUsId.Index);
-            BRepGraph_NodeId aRemapped = remapId(aInnerWireUs.DefId);
-            if (aRemapped.IsValid())
-              aNewInnerWires.Append(aRemapped);
-          }
-        }
+        aNewOuterWire = aRemapped;
+      }
+      else
+      {
+        aNewInnerWires.Append(aRemapped);
       }
     }
 
@@ -386,25 +367,14 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
 
     BRepGraph_NodeId aNewShellId = aNewGraph.Builder().AddShellDef();
 
-    // Add faces to shell via usages.
+    // Add faces to shell via incidence refs.
     const BRepGraph_TopoNode::ShellDef& anOldShell = theGraph.Defs().Shell(anIdx);
-    if (!anOldShell.Usages.IsEmpty())
+    for (int aFaceRefIdx = 0; aFaceRefIdx < anOldShell.FaceRefs.Length(); ++aFaceRefIdx)
     {
-      const BRepGraph_UsageId& aFirstUsage = anOldShell.Usages.Value(0);
-      if (aFirstUsage.IsValid() && aFirstUsage.Index < theGraph.Usages().NbShells())
-      {
-        const BRepGraph_TopoNode::ShellUsage& aShellUs = theGraph.Usages().Shell(aFirstUsage.Index);
-        for (int aFaceUsIdx = 0; aFaceUsIdx < aShellUs.FaceUsages.Length(); ++aFaceUsIdx)
-        {
-          const BRepGraph_UsageId& aFaceUsId = aShellUs.FaceUsages.Value(aFaceUsIdx);
-          if (!aFaceUsId.IsValid() || aFaceUsId.Index >= theGraph.Usages().NbFaces())
-            continue;
-          const BRepGraph_TopoNode::FaceUsage& aFaceUs  = theGraph.Usages().Face(aFaceUsId.Index);
-          const BRepGraph_NodeId               aNewFace = remapId(aFaceUs.DefId);
-          if (aNewFace.IsValid())
-            aNewGraph.Builder().AddFaceToShell(aNewShellId, aNewFace, aFaceUs.Orientation);
-        }
-      }
+      const BRepGraphInc::FaceRef& aFR = anOldShell.FaceRefs.Value(aFaceRefIdx);
+      const BRepGraph_NodeId aNewFace = remapId(BRepGraph_NodeId::Face(aFR.FaceIdx));
+      if (aNewFace.IsValid())
+        aNewGraph.Builder().AddFaceToShell(aNewShellId, aNewFace, aFR.Orientation);
     }
   }
 
@@ -417,24 +387,12 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
     BRepGraph_NodeId aNewSolidId = aNewGraph.Builder().AddSolidDef();
 
     const BRepGraph_TopoNode::SolidDef& anOldSolid = theGraph.Defs().Solid(anIdx);
-    if (!anOldSolid.Usages.IsEmpty())
+    for (int aShellRefIdx = 0; aShellRefIdx < anOldSolid.ShellRefs.Length(); ++aShellRefIdx)
     {
-      const BRepGraph_UsageId& aFirstUsage = anOldSolid.Usages.Value(0);
-      if (aFirstUsage.IsValid() && aFirstUsage.Index < theGraph.Usages().NbSolids())
-      {
-        const BRepGraph_TopoNode::SolidUsage& aSolidUs = theGraph.Usages().Solid(aFirstUsage.Index);
-        for (int aShellUsIdx = 0; aShellUsIdx < aSolidUs.ShellUsages.Length(); ++aShellUsIdx)
-        {
-          const BRepGraph_UsageId& aShellUsId = aSolidUs.ShellUsages.Value(aShellUsIdx);
-          if (!aShellUsId.IsValid() || aShellUsId.Index >= theGraph.Usages().NbShells())
-            continue;
-          const BRepGraph_TopoNode::ShellUsage& aShellUs =
-            theGraph.Usages().Shell(aShellUsId.Index);
-          const BRepGraph_NodeId aNewShell = remapId(aShellUs.DefId);
-          if (aNewShell.IsValid())
-            aNewGraph.Builder().AddShellToSolid(aNewSolidId, aNewShell, aShellUs.Orientation);
-        }
-      }
+      const BRepGraphInc::ShellRef& aSR = anOldSolid.ShellRefs.Value(aShellRefIdx);
+      const BRepGraph_NodeId aNewShell = remapId(BRepGraph_NodeId::Shell(aSR.ShellIdx));
+      if (aNewShell.IsValid())
+        aNewGraph.Builder().AddShellToSolid(aNewSolidId, aNewShell, aSR.Orientation);
     }
   }
 

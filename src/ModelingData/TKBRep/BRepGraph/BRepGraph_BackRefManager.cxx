@@ -152,20 +152,15 @@ void BRepGraph_BackRefManager::RebuildAll(BRepGraph& theGraph)
   // Clear edge-to-wire reverse index.
   theGraph.myData->myEdgeToWires.Clear();
 
-  // Rebuild edge-to-wire map from WireUsage EdgeUsages.
+  // Rebuild edge-to-wire map from WireEntity EdgeRefs.
   for (int aWireIdx = 0; aWireIdx < theGraph.myData->myWires.Defs.Length(); ++aWireIdx)
   {
     const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.myData->myWires.Defs.Value(aWireIdx);
-    if (aWireDef.Usages.IsEmpty())
-      continue;
-    const BRepGraph_TopoNode::WireUsage& aWireUsage =
-      theGraph.myData->myWires.Usages.Value(aWireDef.Usages.Value(0).Index);
-    for (int anEdgeIdx = 0; anEdgeIdx < aWireUsage.EdgeUsages.Length(); ++anEdgeIdx)
+    for (int anEdgeIdx = 0; anEdgeIdx < aWireDef.EdgeRefs.Length(); ++anEdgeIdx)
     {
-      const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage =
-        theGraph.myData->myEdges.Usages.Value(aWireUsage.EdgeUsages.Value(anEdgeIdx).Index);
-      theGraph.myData->myEdgeToWires.TryBind(anEdgeUsage.DefId.Index, NCollection_Vector<int>());
-      theGraph.myData->myEdgeToWires.ChangeFind(anEdgeUsage.DefId.Index).Append(aWireIdx);
+      const int anEdgeDefIdx = aWireDef.EdgeRefs.Value(anEdgeIdx).EdgeIdx;
+      theGraph.myData->myEdgeToWires.TryBind(anEdgeDefIdx, NCollection_Vector<int>());
+      theGraph.myData->myEdgeToWires.ChangeFind(anEdgeDefIdx).Append(aWireIdx);
     }
   }
 }

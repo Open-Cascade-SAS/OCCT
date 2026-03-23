@@ -22,6 +22,7 @@
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_SpatialView.hxx>
 #include <BRepGraph_UsagesView.hxx>
+#include <BRepGraphInc_IncidenceRef.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
@@ -211,10 +212,8 @@ TEST(BRepGraphAPI_AddNodeTest, AddWireDef_ClosedRectangle)
   EXPECT_EQ(aWireId.NodeKind, BRepGraph_NodeId::Kind::Wire);
 
   const BRepGraph_TopoNode::WireDef& aWireDef = aGraph.Defs().Wire(0);
-  ASSERT_FALSE(aWireDef.Usages.IsEmpty());
-  const BRepGraph_TopoNode::WireUsage& aWireUsage = aGraph.Usages().Wire(aWireDef.Usages.Value(0).Index);
-  EXPECT_EQ(aWireUsage.EdgeUsages.Length(), 4);
-  EXPECT_TRUE(aWireUsage.IsClosed);
+  EXPECT_EQ(aWireDef.EdgeRefs.Length(), 4);
+  EXPECT_TRUE(aWireDef.IsClosed);
 }
 
 TEST(BRepGraphAPI_AddNodeTest, AddFaceDef_WithSurface)
@@ -388,9 +387,9 @@ TEST(BRepGraphAPI_ConstructionTest, AddFaceToShell_CreatesUsage)
   EXPECT_EQ(aGraph.Usages().NbShells(), 1);
   EXPECT_GE(aGraph.Usages().NbFaces(), 2); // Initial + shell-linked
 
-  // Verify shell usage has a face usage.
-  const BRepGraph_TopoNode::ShellUsage& aShellUsage = aGraph.Usages().Shell(0);
-  EXPECT_EQ(aShellUsage.FaceUsages.Length(), 1);
+  // Verify shell has a face ref.
+  const BRepGraph_TopoNode::ShellDef& aShellDef = aGraph.Defs().Shell(0);
+  EXPECT_EQ(aShellDef.FaceRefs.Length(), 1);
 }
 
 TEST(BRepGraphAPI_ConstructionTest, AddShellToSolid_CreatesUsage)
@@ -405,8 +404,8 @@ TEST(BRepGraphAPI_ConstructionTest, AddShellToSolid_CreatesUsage)
   EXPECT_EQ(aShellUsage.NodeKind, BRepGraph_NodeId::Kind::Shell);
   EXPECT_EQ(aGraph.Usages().NbSolids(), 1);
 
-  const BRepGraph_TopoNode::SolidUsage& aSolidUsage = aGraph.Usages().Solid(0);
-  EXPECT_EQ(aSolidUsage.ShellUsages.Length(), 1);
+  const BRepGraph_TopoNode::SolidDef& aSolidDef = aGraph.Defs().Solid(0);
+  EXPECT_EQ(aSolidDef.ShellRefs.Length(), 1);
 }
 
 TEST(BRepGraphAPI_ConstructionTest, AddCompoundDef_WithChildren)
@@ -493,8 +492,8 @@ TEST(BRepGraphAPI_ConstructionTest, FullSolid_ProgrammaticConstruction)
   EXPECT_EQ(aGraph.Usages().NbSolids(), 1);
   EXPECT_GE(aGraph.Usages().NbShells(), 1);
 
-  const BRepGraph_TopoNode::SolidUsage& aSolidUs = aGraph.Usages().Solid(0);
-  EXPECT_EQ(aSolidUs.ShellUsages.Length(), 1);
+  const BRepGraph_TopoNode::SolidDef& aSolidDefUs = aGraph.Defs().Solid(0);
+  EXPECT_EQ(aSolidDefUs.ShellRefs.Length(), 1);
 }
 
 // ============================================================

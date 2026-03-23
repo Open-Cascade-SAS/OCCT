@@ -18,7 +18,7 @@
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_RelEdgesView.hxx>
-#include <BRepGraph_UsagesView.hxx>
+#include <BRepGraphInc_IncidenceRef.hxx>
 
 #include <GeomHash_CurveHasher.hxx>
 #include <GeomHash_SurfaceHasher.hxx>
@@ -456,32 +456,19 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
 
   // Phase 3: Wire Merging.
   {
-    // Hash wire by its ordered edge sequence (EdgeUsage DefId.Index, Orientation).
-    // Helper to get WireUsage from WireDef.
-    auto getWireUsage = [&](int theWireIdx) -> const BRepGraph_TopoNode::WireUsage* {
-      const BRepGraph_TopoNode::WireDef& aWire = theGraph.Defs().Wire(theWireIdx);
-      if (aWire.Usages.IsEmpty())
-        return nullptr;
-      return &theGraph.Usages().Wire(aWire.Usages.Value(0).Index);
-    };
-
+    // Hash wire by its ordered edge sequence (EdgeRef EdgeIdx, Orientation).
     struct WireHash
     {
       size_t operator()(int theWireIdx, const BRepGraph& theGraph) const
       {
         const BRepGraph_TopoNode::WireDef& aWire = theGraph.Defs().Wire(theWireIdx);
-        if (aWire.Usages.IsEmpty())
-          return 0;
-        const BRepGraph_TopoNode::WireUsage& aWireUsage =
-          theGraph.Usages().Wire(aWire.Usages.Value(0).Index);
         size_t aHash = 0;
-        for (int anIdx = 0; anIdx < aWireUsage.EdgeUsages.Length(); ++anIdx)
+        for (int anIdx = 0; anIdx < aWire.EdgeRefs.Length(); ++anIdx)
         {
-          const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage =
-            theGraph.Usages().Edge(aWireUsage.EdgeUsages.Value(anIdx).Index);
+          const BRepGraphInc::EdgeRef& aER = aWire.EdgeRefs.Value(anIdx);
           size_t aEntryHash[2];
-          aEntryHash[0] = opencascade::hash(anEdgeUsage.DefId.Index);
-          aEntryHash[1] = opencascade::hash(static_cast<int>(anEdgeUsage.Orientation));
+          aEntryHash[0] = opencascade::hash(aER.EdgeIdx);
+          aEntryHash[1] = opencascade::hash(static_cast<int>(aER.Orientation));
           aHash ^= opencascade::hashBytes(aEntryHash, sizeof(aEntryHash)) + 0x9e3779b9 + (aHash << 6) + (aHash >> 2);
         }
         return aHash;
@@ -490,19 +477,15 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
 
     auto wiresEqual = [&](int theA, int theB) -> bool
     {
-      const BRepGraph_TopoNode::WireUsage* aWireUsageA = getWireUsage(theA);
-      const BRepGraph_TopoNode::WireUsage* aWireUsageB = getWireUsage(theB);
-      if (aWireUsageA == nullptr || aWireUsageB == nullptr)
-        return aWireUsageA == aWireUsageB;
-      if (aWireUsageA->EdgeUsages.Length() != aWireUsageB->EdgeUsages.Length())
+      const BRepGraph_TopoNode::WireDef& aWireA = theGraph.Defs().Wire(theA);
+      const BRepGraph_TopoNode::WireDef& aWireB = theGraph.Defs().Wire(theB);
+      if (aWireA.EdgeRefs.Length() != aWireB.EdgeRefs.Length())
         return false;
-      for (int anIdx = 0; anIdx < aWireUsageA->EdgeUsages.Length(); ++anIdx)
+      for (int anIdx = 0; anIdx < aWireA.EdgeRefs.Length(); ++anIdx)
       {
-        const BRepGraph_TopoNode::EdgeUsage& anA =
-          theGraph.Usages().Edge(aWireUsageA->EdgeUsages.Value(anIdx).Index);
-        const BRepGraph_TopoNode::EdgeUsage& aB =
-          theGraph.Usages().Edge(aWireUsageB->EdgeUsages.Value(anIdx).Index);
-        if (anA.DefId != aB.DefId || anA.Orientation != aB.Orientation)
+        const BRepGraphInc::EdgeRef& anA = aWireA.EdgeRefs.Value(anIdx);
+        const BRepGraphInc::EdgeRef& aB = aWireB.EdgeRefs.Value(anIdx);
+        if (anA.EdgeIdx != aB.EdgeIdx || anA.Orientation != aB.Orientation)
           return false;
       }
       return true;
@@ -559,14 +542,6 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
         const BRepGraph_NodeId anOldId  = BRepGraph_NodeId::Wire(anOldIdx);
         const BRepGraph_NodeId aCanonId = BRepGraph_NodeId::Wire(aCanonicalIdx);
 
-        // Update face usages referencing the old wire.
-        for (int aFaceUsIdx = 0; aFaceUsIdx < theGraph.Usages().NbFaces(); ++aFaceUsIdx)
-        {
-          // We cannot mutate usages through public API easily; wire merge
-          // is only effective when the graph is later compacted.
-          // For now, just transfer usages and mark removed.
-        }
-
         BRepGraph_TopoNode::WireDef& aCanonWire = theGraph.Mut().WireDef(aCanonicalIdx);
         const BRepGraph_TopoNode::WireDef& anOldWire = theGraph.Defs().Wire(anOldIdx);
         for (int anUsIdx = 0; anUsIdx < anOldWire.Usages.Length(); ++anUsIdx)
@@ -618,34 +593,20 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
 
     auto faceWireHash = [&](int theFaceIdx) -> size_t
     {
-      // Collect wire def ids used by this face (via first usage).
+      // Collect wire def ids used by this face (via incidence refs).
       const BRepGraph_TopoNode::FaceDef& aFace = theGraph.Defs().Face(theFaceIdx);
-      if (aFace.Usages.IsEmpty())
-        return 0;
-
-      const BRepGraph_UsageId& aFirstUsage = aFace.Usages.Value(0);
-      if (!aFirstUsage.IsValid() || aFirstUsage.Index >= theGraph.Usages().NbFaces())
-        return 0;
-
-      const BRepGraph_TopoNode::FaceUsage& aFaceUs = theGraph.Usages().Face(aFirstUsage.Index);
       size_t aHash = 0;
 
-      if (aFaceUs.OuterWireUsage.IsValid()
-          && aFaceUs.OuterWireUsage.Index < theGraph.Usages().NbWires())
+      for (int anIdx = 0; anIdx < aFace.WireRefs.Length(); ++anIdx)
       {
-        const BRepGraph_TopoNode::WireUsage& aWireUs =
-          theGraph.Usages().Wire(aFaceUs.OuterWireUsage.Index);
-        aHash ^= opencascade::hash(aWireUs.DefId.Index);
-      }
-
-      for (int anIdx = 0; anIdx < aFaceUs.InnerWireUsages.Length(); ++anIdx)
-      {
-        const BRepGraph_UsageId& aInnerId = aFaceUs.InnerWireUsages.Value(anIdx);
-        if (aInnerId.IsValid() && aInnerId.Index < theGraph.Usages().NbWires())
+        const BRepGraphInc::WireRef& aWR = aFace.WireRefs.Value(anIdx);
+        if (aWR.IsOuter)
         {
-          const BRepGraph_TopoNode::WireUsage& aInnerWireUs =
-            theGraph.Usages().Wire(aInnerId.Index);
-          aHash ^= opencascade::hash(aInnerWireUs.DefId.Index) + 0x9e3779b9;
+          aHash ^= opencascade::hash(aWR.WireIdx);
+        }
+        else
+        {
+          aHash ^= opencascade::hash(aWR.WireIdx) + 0x9e3779b9;
         }
       }
       return aHash;

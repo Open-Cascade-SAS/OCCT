@@ -189,58 +189,31 @@ void BRepGraph::invalidateSubgraphImpl(BRepGraph_NodeId theNode)
   if (aCache != nullptr)
     aCache->InvalidateAll();
 
+  // Forward traversal via incidence refs (no Usage indirection).
   switch (theNode.NodeKind)
   {
     case BRepGraph_NodeId::Kind::Solid: {
       const BRepGraph_TopoNode::SolidDef& aSolidDef = myData->mySolids.Defs.Value(theNode.Index);
-      for (int aUsIdx = 0; aUsIdx < aSolidDef.Usages.Length(); ++aUsIdx)
-      {
-        const BRepGraph_TopoNode::SolidUsage& aUsage =
-          myData->mySolids.Usages.Value(aSolidDef.Usages.Value(aUsIdx).Index);
-        for (int aShellIter = 0; aShellIter < aUsage.ShellUsages.Length(); ++aShellIter)
-        {
-          BRepGraph_NodeId aShellDefId = DefOf(aUsage.ShellUsages.Value(aShellIter));
-          invalidateSubgraphImpl(aShellDefId);
-        }
-      }
+      for (int s = 0; s < aSolidDef.ShellRefs.Length(); ++s)
+        invalidateSubgraphImpl(BRepGraph_NodeId::Shell(aSolidDef.ShellRefs.Value(s).ShellIdx));
       break;
     }
     case BRepGraph_NodeId::Kind::Shell: {
       const BRepGraph_TopoNode::ShellDef& aShellDef = myData->myShells.Defs.Value(theNode.Index);
-      for (int aUsIdx = 0; aUsIdx < aShellDef.Usages.Length(); ++aUsIdx)
-      {
-        const BRepGraph_TopoNode::ShellUsage& aUsage =
-          myData->myShells.Usages.Value(aShellDef.Usages.Value(aUsIdx).Index);
-        for (int aFaceIter = 0; aFaceIter < aUsage.FaceUsages.Length(); ++aFaceIter)
-        {
-          BRepGraph_NodeId aFaceDefId = DefOf(aUsage.FaceUsages.Value(aFaceIter));
-          invalidateSubgraphImpl(aFaceDefId);
-        }
-      }
+      for (int f = 0; f < aShellDef.FaceRefs.Length(); ++f)
+        invalidateSubgraphImpl(BRepGraph_NodeId::Face(aShellDef.FaceRefs.Value(f).FaceIdx));
       break;
     }
     case BRepGraph_NodeId::Kind::Face: {
       const BRepGraph_TopoNode::FaceDef& aFaceDef = myData->myFaces.Defs.Value(theNode.Index);
-      for (int aUsIdx = 0; aUsIdx < aFaceDef.Usages.Length(); ++aUsIdx)
-      {
-        const BRepGraph_TopoNode::FaceUsage& aUsage =
-          myData->myFaces.Usages.Value(aFaceDef.Usages.Value(aUsIdx).Index);
-        if (aUsage.OuterWireUsage.IsValid())
-          invalidateSubgraphImpl(DefOf(aUsage.OuterWireUsage));
-        for (int aWireIter = 0; aWireIter < aUsage.InnerWireUsages.Length(); ++aWireIter)
-          invalidateSubgraphImpl(DefOf(aUsage.InnerWireUsages.Value(aWireIter)));
-      }
+      for (int w = 0; w < aFaceDef.WireRefs.Length(); ++w)
+        invalidateSubgraphImpl(BRepGraph_NodeId::Wire(aFaceDef.WireRefs.Value(w).WireIdx));
       break;
     }
     case BRepGraph_NodeId::Kind::Wire: {
       const BRepGraph_TopoNode::WireDef& aWireDef = myData->myWires.Defs.Value(theNode.Index);
-      if (!aWireDef.Usages.IsEmpty())
-      {
-        const BRepGraph_TopoNode::WireUsage& aWireUsage =
-          myData->myWires.Usages.Value(aWireDef.Usages.Value(0).Index);
-        for (int anEdgeIdx = 0; anEdgeIdx < aWireUsage.EdgeUsages.Length(); ++anEdgeIdx)
-          invalidateSubgraphImpl(DefOf(aWireUsage.EdgeUsages.Value(anEdgeIdx)));
-      }
+      for (int e = 0; e < aWireDef.EdgeRefs.Length(); ++e)
+        invalidateSubgraphImpl(BRepGraph_NodeId::Edge(aWireDef.EdgeRefs.Value(e).EdgeIdx));
       break;
     }
     case BRepGraph_NodeId::Kind::Edge: {

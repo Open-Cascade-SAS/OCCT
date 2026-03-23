@@ -19,6 +19,7 @@
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_UsagesView.hxx>
+#include <BRepGraphInc_IncidenceRef.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
@@ -442,16 +443,14 @@ TEST(BRepGraphReconstructTest, AfterVertexMutation_ModifiedFlagAndPointChanged)
 
   // Find a vertex belonging to face 0 and move it significantly.
   const BRepGraph_TopoNode::FaceDef& aFaceDef = aGraph.Defs().Face(0);
-  ASSERT_FALSE(aFaceDef.Usages.IsEmpty());
-  const BRepGraph_TopoNode::FaceUsage& aFaceUsage = aGraph.Usages().Face(aFaceDef.Usages.First().Index);
-  ASSERT_TRUE(aFaceUsage.OuterWireUsage.IsValid());
+  const int anOuterWireIdx = aFaceDef.OuterWireIdx();
+  ASSERT_GE(anOuterWireIdx, 0);
 
-  const BRepGraph_TopoNode::WireUsage& aWireUsage = aGraph.Usages().Wire(aFaceUsage.OuterWireUsage.Index);
-  ASSERT_GT(aWireUsage.EdgeUsages.Length(), 0);
+  const BRepGraph_TopoNode::WireDef& aWireDef = aGraph.Defs().Wire(anOuterWireIdx);
+  ASSERT_GT(aWireDef.EdgeRefs.Length(), 0);
 
-  const BRepGraph_TopoNode::EdgeUsage& anFirstEdgeUsage = aGraph.Usages().Edge(aWireUsage.EdgeUsages.First().Index);
-  const BRepGraph_NodeId anEdgeDefId = anFirstEdgeUsage.DefId;
-  const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.Defs().Edge(anEdgeDefId.Index);
+  const BRepGraphInc::EdgeRef& aFirstEdgeRef = aWireDef.EdgeRefs.First();
+  const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.Defs().Edge(aFirstEdgeRef.EdgeIdx);
   const int aVertIdx = anEdgeDef.StartVertexDefId.Index;
   ASSERT_GE(aVertIdx, 0);
 
