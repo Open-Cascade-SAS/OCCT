@@ -31,20 +31,20 @@
 //! Default-constructed UsageId has Index = -1 (invalid).
 struct BRepGraph_UsageId
 {
-  BRepGraph_NodeKind Kind;
-  int                Index;
+  BRepGraph_NodeId::Kind NodeKind;
+  int                    Index;
 
   BRepGraph_UsageId()
-    : Kind(BRepGraph_NodeKind::Solid), Index(-1) {}
+    : NodeKind(BRepGraph_NodeId::Kind::Solid), Index(-1) {}
 
-  BRepGraph_UsageId(BRepGraph_NodeKind theKind, int theIdx)
-    : Kind(theKind), Index(theIdx) {}
+  BRepGraph_UsageId(BRepGraph_NodeId::Kind theKind, int theIdx)
+    : NodeKind(theKind), Index(theIdx) {}
 
   //! True if this id points to an allocated usage slot.
   bool IsValid() const { return Index >= 0; }
 
   bool operator==(const BRepGraph_UsageId& theOther) const
-  { return Kind == theOther.Kind && Index == theOther.Index; }
+  { return NodeKind == theOther.NodeKind && Index == theOther.Index; }
 
   bool operator!=(const BRepGraph_UsageId& theOther) const
   { return !(*this == theOther); }
@@ -57,7 +57,7 @@ struct std::hash<BRepGraph_UsageId>
   size_t operator()(const BRepGraph_UsageId& theId) const noexcept
   {
     size_t aCombination[2];
-    aCombination[0] = opencascade::hash(static_cast<int>(theId.Kind));
+    aCombination[0] = opencascade::hash(static_cast<int>(theId.NodeKind));
     aCombination[1] = opencascade::hash(theId.Index);
     return opencascade::hashBytes(aCombination, sizeof(aCombination));
   }

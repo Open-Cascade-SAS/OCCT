@@ -418,12 +418,12 @@ void BRepGraphAlgo_Sewing::assembleVertices(const Handle(NCollection_IncAllocato
       myGraph.Mut().EdgeDef(myFreeEdgesBefore.Value(aFreeEdgeIter).Index);
     if (anEdge.StartVertexDefId.IsValid() && aVertexMerge.IsBound(anEdge.StartVertexDefId.Index))
     {
-      anEdge.StartVertexDefId = BRepGraph_NodeId(BRepGraph_NodeKind::Vertex,
+      anEdge.StartVertexDefId = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Vertex,
                                                  aVertexMerge.Find(anEdge.StartVertexDefId.Index));
     }
     if (anEdge.EndVertexDefId.IsValid() && aVertexMerge.IsBound(anEdge.EndVertexDefId.Index))
     {
-      anEdge.EndVertexDefId = BRepGraph_NodeId(BRepGraph_NodeKind::Vertex,
+      anEdge.EndVertexDefId = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Vertex,
                                                aVertexMerge.Find(anEdge.EndVertexDefId.Index));
     }
   }
@@ -573,8 +573,8 @@ void BRepGraphAlgo_Sewing::detectCandidates(const Handle(NCollection_IncAllocato
   for (int aPairIdx = 0; aPairIdx < aPairs.Length(); ++aPairIdx)
   {
     const auto& [anIdI, anIdJ] = aPairs.Value(aPairIdx);
-    myGraph.Mut().AddRelEdge(anIdI, anIdJ, BRepGraph_RelKind::UserDefined);
-    myGraph.Mut().AddRelEdge(anIdJ, anIdI, BRepGraph_RelKind::UserDefined);
+    myGraph.Mut().AddRelEdge(anIdI, anIdJ, BRepGraph_RelEdge::Kind::UserDefined);
+    myGraph.Mut().AddRelEdge(anIdJ, anIdI, BRepGraph_RelEdge::Kind::UserDefined);
   }
 }
 
@@ -731,7 +731,7 @@ void BRepGraphAlgo_Sewing::cutAtIntersections(const Handle(NCollection_IncAlloca
     for (int aSplitIter = 0; aSplitIter < aUniqueSplits.Length(); ++aSplitIter)
     {
       const SplitCandidate&  aCand = aUniqueSplits.Value(aSplitIter);
-      const BRepGraph_NodeId aVtxNodeId(BRepGraph_NodeKind::Vertex, aCand.VtxIdx);
+      const BRepGraph_NodeId aVtxNodeId(BRepGraph_NodeId::Kind::Vertex, aCand.VtxIdx);
       BRepGraph_NodeId       aSubA, aSubB;
       myGraph.Mut().SplitEdge(aCurrentEdge, aVtxNodeId, aCand.Param, aSubA, aSubB);
       aChain.Append(aSubA);
@@ -833,7 +833,7 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> BRepGraphAlgo_
 
       myGraph.RelEdges().ForEachOutOfKind(
         anIdA,
-        BRepGraph_RelKind::UserDefined,
+        BRepGraph_RelEdge::Kind::UserDefined,
         [&](const BRepGraph_RelEdge& aRelEdge) {
           const BRepGraph_NodeId anIdB = aRelEdge.Target;
 
@@ -1062,7 +1062,7 @@ void BRepGraphAlgo_Sewing::processEdges(const NCollection_Map<int>& theSewnEdgeI
       if (aMaxVtxTol > anEdge.Tolerance)
       {
         myGraph.Mut().EdgeDef(anEdgeIdx).Tolerance = aMaxVtxTol;
-        myGraph.Cache().Invalidate(BRepGraph_NodeId(BRepGraph_NodeKind::Edge, anEdgeIdx));
+        myGraph.Cache().Invalidate(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, anEdgeIdx));
       }
     },
     !myIsParallel);
@@ -1086,7 +1086,7 @@ void BRepGraphAlgo_Sewing::reconstructResult(const NCollection_Map<int>& theAffe
       else
         aFaceShapes.SetValue(
           theFaceIdx,
-          myGraph.Shapes().Shape(BRepGraph_NodeId(BRepGraph_NodeKind::Face, theFaceIdx)));
+          myGraph.Shapes().Shape(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, theFaceIdx)));
     },
     !myIsParallel);
 
@@ -1131,12 +1131,12 @@ void BRepGraphAlgo_Sewing::reconstructResult(const NCollection_Map<int>& theAffe
     for (int aChildIter = 0; aChildIter < aCompUsage.ChildUsages.Length(); ++aChildIter)
     {
       const BRepGraph_UsageId& aChildId = aCompUsage.ChildUsages.Value(aChildIter);
-      switch (aChildId.Kind)
+      switch (aChildId.NodeKind)
       {
-        case BRepGraph_NodeKind::Compound:
+        case BRepGraph_NodeId::Kind::Compound:
           aBB.Add(aNewCompound, buildCompound(aChildId.Index));
           break;
-        case BRepGraph_NodeKind::CompSolid: {
+        case BRepGraph_NodeId::Kind::CompSolid: {
           const BRepGraph_TopoNode::CompSolidUsage& aCSUsage =
             myGraph.Usages().CompSolid(aChildId.Index);
           TopoDS_CompSolid aNewCS;
@@ -1149,13 +1149,13 @@ void BRepGraphAlgo_Sewing::reconstructResult(const NCollection_Map<int>& theAffe
           aBB.Add(aNewCompound, aNewCS);
           break;
         }
-        case BRepGraph_NodeKind::Solid:
+        case BRepGraph_NodeId::Kind::Solid:
           aBB.Add(aNewCompound, buildSolid(aChildId.Index));
           break;
-        case BRepGraph_NodeKind::Shell:
+        case BRepGraph_NodeId::Kind::Shell:
           aBB.Add(aNewCompound, buildShell(aChildId.Index));
           break;
-        case BRepGraph_NodeKind::Face: {
+        case BRepGraph_NodeId::Kind::Face: {
           const int aFaceDefIdx = myGraph.Usages().Face(aChildId.Index).DefId.Index;
           aBB.Add(aNewCompound, aFaceShapes.Value(aFaceDefIdx));
           break;

@@ -44,7 +44,7 @@ protected:
 TEST_F(BRepGraphHistoryTest, FindOriginal_ChainABC_ReturnsA)
 {
   // Build a chain: edge0 -> edge1 -> edge2 via two ApplyModification calls.
-  const BRepGraph_NodeId anEdge0(BRepGraph_NodeKind::Edge, 0);
+  const BRepGraph_NodeId anEdge0(BRepGraph_NodeId::Kind::Edge, 0);
   BRepGraph_NodeId       anEdge1;
   BRepGraph_NodeId       anEdge2;
 
@@ -52,7 +52,7 @@ TEST_F(BRepGraphHistoryTest, FindOriginal_ChainABC_ReturnsA)
     anEdge0,
     [&](BRepGraph& theGraph, BRepGraph_NodeId /*theTarget*/) -> NCollection_Vector<BRepGraph_NodeId> {
       // Simulate producing a new edge node at index NbEdgeDefs.
-      anEdge1 = BRepGraph_NodeId(BRepGraph_NodeKind::Edge, theGraph.Defs().NbEdges());
+      anEdge1 = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, theGraph.Defs().NbEdges());
       NCollection_Vector<BRepGraph_NodeId> aResult;
       aResult.Append(anEdge1);
       return aResult;
@@ -62,7 +62,7 @@ TEST_F(BRepGraphHistoryTest, FindOriginal_ChainABC_ReturnsA)
   myGraph.ApplyModification(
     anEdge1,
     [&](BRepGraph& theGraph, BRepGraph_NodeId /*theTarget*/) -> NCollection_Vector<BRepGraph_NodeId> {
-      anEdge2 = BRepGraph_NodeId(BRepGraph_NodeKind::Edge, theGraph.Defs().NbEdges());
+      anEdge2 = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, theGraph.Defs().NbEdges());
       NCollection_Vector<BRepGraph_NodeId> aResult;
       aResult.Append(anEdge2);
       return aResult;
@@ -76,14 +76,14 @@ TEST_F(BRepGraphHistoryTest, FindOriginal_ChainABC_ReturnsA)
 
 TEST_F(BRepGraphHistoryTest, FindDerived_ChainABC_ContainsBAndC)
 {
-  const BRepGraph_NodeId anEdge0(BRepGraph_NodeKind::Edge, 0);
+  const BRepGraph_NodeId anEdge0(BRepGraph_NodeId::Kind::Edge, 0);
   BRepGraph_NodeId       anEdge1;
   BRepGraph_NodeId       anEdge2;
 
   myGraph.ApplyModification(
     anEdge0,
     [&](BRepGraph& theGraph, BRepGraph_NodeId) -> NCollection_Vector<BRepGraph_NodeId> {
-      anEdge1 = BRepGraph_NodeId(BRepGraph_NodeKind::Edge, theGraph.Defs().NbEdges());
+      anEdge1 = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, theGraph.Defs().NbEdges());
       NCollection_Vector<BRepGraph_NodeId> aResult;
       aResult.Append(anEdge1);
       return aResult;
@@ -93,7 +93,7 @@ TEST_F(BRepGraphHistoryTest, FindDerived_ChainABC_ContainsBAndC)
   myGraph.ApplyModification(
     anEdge1,
     [&](BRepGraph& theGraph, BRepGraph_NodeId) -> NCollection_Vector<BRepGraph_NodeId> {
-      anEdge2 = BRepGraph_NodeId(BRepGraph_NodeKind::Edge, theGraph.Defs().NbEdges());
+      anEdge2 = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, theGraph.Defs().NbEdges());
       NCollection_Vector<BRepGraph_NodeId> aResult;
       aResult.Append(anEdge2);
       return aResult;
@@ -117,7 +117,7 @@ TEST_F(BRepGraphHistoryTest, FindDerived_ChainABC_ContainsBAndC)
 TEST_F(BRepGraphHistoryTest, FindOriginal_UnmodifiedNode_ReturnsSelf)
 {
   // FindOriginal returns the node itself when it is not derived from anything.
-  const BRepGraph_NodeId aFace(BRepGraph_NodeKind::Face, 0);
+  const BRepGraph_NodeId aFace(BRepGraph_NodeId::Kind::Face, 0);
   const BRepGraph_NodeId anOriginal = myGraph.History().FindOriginal(aFace);
   EXPECT_TRUE(anOriginal.IsValid());
   EXPECT_EQ(anOriginal, aFace);
@@ -125,7 +125,7 @@ TEST_F(BRepGraphHistoryTest, FindOriginal_UnmodifiedNode_ReturnsSelf)
 
 TEST_F(BRepGraphHistoryTest, FindDerived_UnmodifiedNode_ReturnsEmpty)
 {
-  const BRepGraph_NodeId aFace(BRepGraph_NodeKind::Face, 0);
+  const BRepGraph_NodeId aFace(BRepGraph_NodeId::Kind::Face, 0);
   const NCollection_Vector<BRepGraph_NodeId> aDerived = myGraph.History().FindDerived(aFace);
   EXPECT_EQ(aDerived.Length(), 0);
 }
@@ -135,9 +135,9 @@ TEST_F(BRepGraphHistoryTest, Disabled_RecordHistory_NoRecordStored)
   const int aNbBefore = myGraph.History().NbRecords();
   myGraph.SetHistoryEnabled(false);
 
-  const BRepGraph_NodeId anEdge0(BRepGraph_NodeKind::Edge, 0);
+  const BRepGraph_NodeId anEdge0(BRepGraph_NodeId::Kind::Edge, 0);
   NCollection_Vector<BRepGraph_NodeId> aReplacements;
-  aReplacements.Append(BRepGraph_NodeId(BRepGraph_NodeKind::Edge, 1));
+  aReplacements.Append(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, 1));
   myGraph.History().Record("Disabled", anEdge0, aReplacements);
 
   EXPECT_EQ(myGraph.History().NbRecords(), aNbBefore);
@@ -148,7 +148,7 @@ TEST_F(BRepGraphHistoryTest, Disabled_ApplyModification_ModifierStillRuns)
   myGraph.SetHistoryEnabled(false);
   bool aModifierRan = false;
 
-  const BRepGraph_NodeId anEdge0(BRepGraph_NodeKind::Edge, 0);
+  const BRepGraph_NodeId anEdge0(BRepGraph_NodeId::Kind::Edge, 0);
   myGraph.ApplyModification(
     anEdge0,
     [&](BRepGraph&, BRepGraph_NodeId) -> NCollection_Vector<BRepGraph_NodeId> {
@@ -169,9 +169,9 @@ TEST_F(BRepGraphHistoryTest, ReEnabled_RecordsAfterReEnable)
   EXPECT_TRUE(myGraph.IsHistoryEnabled());
 
   const int aNbBefore = myGraph.History().NbRecords();
-  const BRepGraph_NodeId anEdge0(BRepGraph_NodeKind::Edge, 0);
+  const BRepGraph_NodeId anEdge0(BRepGraph_NodeId::Kind::Edge, 0);
   NCollection_Vector<BRepGraph_NodeId> aReplacements;
-  aReplacements.Append(BRepGraph_NodeId(BRepGraph_NodeKind::Edge, 1));
+  aReplacements.Append(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, 1));
   myGraph.History().Record("ReEnabled", anEdge0, aReplacements);
 
   EXPECT_EQ(myGraph.History().NbRecords(), aNbBefore + 1);
@@ -179,7 +179,7 @@ TEST_F(BRepGraphHistoryTest, ReEnabled_RecordsAfterReEnable)
 
 TEST_F(BRepGraphHistoryTest, ApplyModification_EmptyReplacements)
 {
-  const BRepGraph_NodeId anEdge0(BRepGraph_NodeKind::Edge, 0);
+  const BRepGraph_NodeId anEdge0(BRepGraph_NodeId::Kind::Edge, 0);
   const int aNbBefore = myGraph.History().NbRecords();
 
   myGraph.ApplyModification(
@@ -196,7 +196,7 @@ TEST_F(BRepGraphHistoryTest, ApplyModification_EmptyReplacements)
 
 TEST_F(BRepGraphHistoryTest, ApplyModification_MultipleReplacements)
 {
-  const BRepGraph_NodeId anEdge0(BRepGraph_NodeKind::Edge, 0);
+  const BRepGraph_NodeId anEdge0(BRepGraph_NodeId::Kind::Edge, 0);
   BRepGraph_NodeId       aNew1;
   BRepGraph_NodeId       aNew2;
 
@@ -204,8 +204,8 @@ TEST_F(BRepGraphHistoryTest, ApplyModification_MultipleReplacements)
     anEdge0,
     [&](BRepGraph& theGraph, BRepGraph_NodeId) -> NCollection_Vector<BRepGraph_NodeId> {
       const int aBase = theGraph.Defs().NbEdges();
-      aNew1 = BRepGraph_NodeId(BRepGraph_NodeKind::Edge, aBase);
-      aNew2 = BRepGraph_NodeId(BRepGraph_NodeKind::Edge, aBase + 1);
+      aNew1 = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, aBase);
+      aNew2 = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, aBase + 1);
       NCollection_Vector<BRepGraph_NodeId> aResult;
       aResult.Append(aNew1);
       aResult.Append(aNew2);
@@ -230,7 +230,7 @@ TEST_F(BRepGraphHistoryTest, ApplyModification_MultipleReplacements)
 TEST_F(BRepGraphHistoryTest, RecordHistory_EmptyReplacements_Stored)
 {
   const int aNbBefore = myGraph.History().NbRecords();
-  const BRepGraph_NodeId anEdge0(BRepGraph_NodeKind::Edge, 0);
+  const BRepGraph_NodeId anEdge0(BRepGraph_NodeId::Kind::Edge, 0);
   NCollection_Vector<BRepGraph_NodeId> anEmpty;
   myGraph.History().Record("Erase", anEdge0, anEmpty);
 
@@ -239,9 +239,9 @@ TEST_F(BRepGraphHistoryTest, RecordHistory_EmptyReplacements_Stored)
 
 TEST_F(BRepGraphHistoryTest, HistoryRecord_SequenceNumber_Monotonic)
 {
-  const BRepGraph_NodeId anEdge0(BRepGraph_NodeKind::Edge, 0);
-  const BRepGraph_NodeId anEdge1(BRepGraph_NodeKind::Edge, 1);
-  const BRepGraph_NodeId anEdge2(BRepGraph_NodeKind::Edge, 2);
+  const BRepGraph_NodeId anEdge0(BRepGraph_NodeId::Kind::Edge, 0);
+  const BRepGraph_NodeId anEdge1(BRepGraph_NodeId::Kind::Edge, 1);
+  const BRepGraph_NodeId anEdge2(BRepGraph_NodeId::Kind::Edge, 2);
 
   NCollection_Vector<BRepGraph_NodeId> aRepl;
   aRepl.Append(anEdge1);
@@ -260,9 +260,9 @@ TEST_F(BRepGraphHistoryTest, HistoryRecord_SequenceNumber_Monotonic)
 
 TEST_F(BRepGraphHistoryTest, HistoryRecord_OperationName_Stored)
 {
-  const BRepGraph_NodeId anEdge0(BRepGraph_NodeKind::Edge, 0);
+  const BRepGraph_NodeId anEdge0(BRepGraph_NodeId::Kind::Edge, 0);
   NCollection_Vector<BRepGraph_NodeId> aRepl;
-  aRepl.Append(BRepGraph_NodeId(BRepGraph_NodeKind::Edge, 1));
+  aRepl.Append(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, 1));
   myGraph.History().Record("MyCustomOp", anEdge0, aRepl);
 
   const BRepGraph_HistoryRecord& aRec = myGraph.History().Record(myGraph.History().NbRecords() - 1);
@@ -273,9 +273,9 @@ TEST_F(BRepGraphHistoryTest, NbHistoryRecords_AfterMultipleOps_Correct)
 {
   const int aNbBefore = myGraph.History().NbRecords();
 
-  const BRepGraph_NodeId anEdge0(BRepGraph_NodeKind::Edge, 0);
+  const BRepGraph_NodeId anEdge0(BRepGraph_NodeId::Kind::Edge, 0);
   NCollection_Vector<BRepGraph_NodeId> aRepl;
-  aRepl.Append(BRepGraph_NodeId(BRepGraph_NodeKind::Edge, 1));
+  aRepl.Append(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, 1));
 
   myGraph.History().Record("A", anEdge0, aRepl);
   myGraph.History().Record("B", anEdge0, aRepl);
@@ -286,14 +286,14 @@ TEST_F(BRepGraphHistoryTest, NbHistoryRecords_AfterMultipleOps_Correct)
 
 TEST_F(BRepGraphHistoryTest, FindOriginal_TwoApply_TransitiveTrace)
 {
-  const BRepGraph_NodeId aVtx0(BRepGraph_NodeKind::Vertex, 0);
+  const BRepGraph_NodeId aVtx0(BRepGraph_NodeId::Kind::Vertex, 0);
   BRepGraph_NodeId       aVtx1;
   BRepGraph_NodeId       aVtx2;
 
   myGraph.ApplyModification(
     aVtx0,
     [&](BRepGraph& theGraph, BRepGraph_NodeId) -> NCollection_Vector<BRepGraph_NodeId> {
-      aVtx1 = BRepGraph_NodeId(BRepGraph_NodeKind::Vertex, theGraph.Defs().NbVertices());
+      aVtx1 = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Vertex, theGraph.Defs().NbVertices());
       NCollection_Vector<BRepGraph_NodeId> aResult;
       aResult.Append(aVtx1);
       return aResult;
@@ -303,7 +303,7 @@ TEST_F(BRepGraphHistoryTest, FindOriginal_TwoApply_TransitiveTrace)
   myGraph.ApplyModification(
     aVtx1,
     [&](BRepGraph& theGraph, BRepGraph_NodeId) -> NCollection_Vector<BRepGraph_NodeId> {
-      aVtx2 = BRepGraph_NodeId(BRepGraph_NodeKind::Vertex, theGraph.Defs().NbVertices());
+      aVtx2 = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Vertex, theGraph.Defs().NbVertices());
       NCollection_Vector<BRepGraph_NodeId> aResult;
       aResult.Append(aVtx2);
       return aResult;
@@ -327,14 +327,14 @@ TEST_F(BRepGraphHistoryTest, FindOriginal_TwoApply_TransitiveTrace)
 
 TEST_F(BRepGraphHistoryTest, RelEdge_AddAndQuery_FoundViaForEachOut)
 {
-  const BRepGraph_NodeId aFace0(BRepGraph_NodeKind::Face, 0);
-  const BRepGraph_NodeId aFace1(BRepGraph_NodeKind::Face, 1);
+  const BRepGraph_NodeId aFace0(BRepGraph_NodeId::Kind::Face, 0);
+  const BRepGraph_NodeId aFace1(BRepGraph_NodeId::Kind::Face, 1);
 
-  myGraph.Mut().AddRelEdge(aFace0, aFace1, BRepGraph_RelKind::SameDomain);
+  myGraph.Mut().AddRelEdge(aFace0, aFace1, BRepGraph_RelEdge::Kind::SameDomain);
 
   bool aFound = false;
   myGraph.RelEdges().ForEachOutOfKind(
-    aFace0, BRepGraph_RelKind::SameDomain, [&](const BRepGraph_RelEdge& theEdge) {
+    aFace0, BRepGraph_RelEdge::Kind::SameDomain, [&](const BRepGraph_RelEdge& theEdge) {
       if (theEdge.Target == aFace1)
         aFound = true;
     });
@@ -343,14 +343,14 @@ TEST_F(BRepGraphHistoryTest, RelEdge_AddAndQuery_FoundViaForEachOut)
 
 TEST_F(BRepGraphHistoryTest, RelEdge_AddAndQuery_FoundViaForEachIn)
 {
-  const BRepGraph_NodeId aFace0(BRepGraph_NodeKind::Face, 0);
-  const BRepGraph_NodeId aFace1(BRepGraph_NodeKind::Face, 1);
+  const BRepGraph_NodeId aFace0(BRepGraph_NodeId::Kind::Face, 0);
+  const BRepGraph_NodeId aFace1(BRepGraph_NodeId::Kind::Face, 1);
 
-  myGraph.Mut().AddRelEdge(aFace0, aFace1, BRepGraph_RelKind::SameDomain);
+  myGraph.Mut().AddRelEdge(aFace0, aFace1, BRepGraph_RelEdge::Kind::SameDomain);
 
   bool aFound = false;
   myGraph.RelEdges().ForEachInOfKind(
-    aFace1, BRepGraph_RelKind::SameDomain, [&](const BRepGraph_RelEdge& theEdge) {
+    aFace1, BRepGraph_RelEdge::Kind::SameDomain, [&](const BRepGraph_RelEdge& theEdge) {
       if (theEdge.Source == aFace0)
         aFound = true;
     });
@@ -359,22 +359,22 @@ TEST_F(BRepGraphHistoryTest, RelEdge_AddAndQuery_FoundViaForEachIn)
 
 TEST_F(BRepGraphHistoryTest, RelEdge_Remove_GoneFromBothDirections)
 {
-  const BRepGraph_NodeId aFace0(BRepGraph_NodeKind::Face, 0);
-  const BRepGraph_NodeId aFace1(BRepGraph_NodeKind::Face, 1);
+  const BRepGraph_NodeId aFace0(BRepGraph_NodeId::Kind::Face, 0);
+  const BRepGraph_NodeId aFace1(BRepGraph_NodeId::Kind::Face, 1);
 
-  myGraph.Mut().AddRelEdge(aFace0, aFace1, BRepGraph_RelKind::UserDefined);
-  myGraph.Mut().RemoveRelEdges(aFace0, aFace1, BRepGraph_RelKind::UserDefined);
+  myGraph.Mut().AddRelEdge(aFace0, aFace1, BRepGraph_RelEdge::Kind::UserDefined);
+  myGraph.Mut().RemoveRelEdges(aFace0, aFace1, BRepGraph_RelEdge::Kind::UserDefined);
 
   bool aFoundOut = false;
   myGraph.RelEdges().ForEachOutOfKind(
-    aFace0, BRepGraph_RelKind::UserDefined, [&](const BRepGraph_RelEdge&) {
+    aFace0, BRepGraph_RelEdge::Kind::UserDefined, [&](const BRepGraph_RelEdge&) {
       aFoundOut = true;
     });
   EXPECT_FALSE(aFoundOut);
 
   bool aFoundIn = false;
   myGraph.RelEdges().ForEachInOfKind(
-    aFace1, BRepGraph_RelKind::UserDefined, [&](const BRepGraph_RelEdge&) {
+    aFace1, BRepGraph_RelEdge::Kind::UserDefined, [&](const BRepGraph_RelEdge&) {
       aFoundIn = true;
     });
   EXPECT_FALSE(aFoundIn);
@@ -382,42 +382,42 @@ TEST_F(BRepGraphHistoryTest, RelEdge_Remove_GoneFromBothDirections)
 
 TEST_F(BRepGraphHistoryTest, RelEdge_NbRelEdgesFrom_IncrementsAfterAdd)
 {
-  const BRepGraph_NodeId aFace0(BRepGraph_NodeKind::Face, 0);
-  const BRepGraph_NodeId aFace1(BRepGraph_NodeKind::Face, 1);
+  const BRepGraph_NodeId aFace0(BRepGraph_NodeId::Kind::Face, 0);
+  const BRepGraph_NodeId aFace1(BRepGraph_NodeId::Kind::Face, 1);
 
   const int aNbBefore = myGraph.RelEdges().NbFrom(aFace0);
-  myGraph.Mut().AddRelEdge(aFace0, aFace1, BRepGraph_RelKind::UserDefined);
+  myGraph.Mut().AddRelEdge(aFace0, aFace1, BRepGraph_RelEdge::Kind::UserDefined);
   EXPECT_EQ(myGraph.RelEdges().NbFrom(aFace0), aNbBefore + 1);
 }
 
 TEST_F(BRepGraphHistoryTest, RelEdge_NbRelEdgesTo_IncrementsAfterAdd)
 {
-  const BRepGraph_NodeId aFace0(BRepGraph_NodeKind::Face, 0);
-  const BRepGraph_NodeId aFace1(BRepGraph_NodeKind::Face, 1);
+  const BRepGraph_NodeId aFace0(BRepGraph_NodeId::Kind::Face, 0);
+  const BRepGraph_NodeId aFace1(BRepGraph_NodeId::Kind::Face, 1);
 
   const int aNbBefore = myGraph.RelEdges().NbTo(aFace1);
-  myGraph.Mut().AddRelEdge(aFace0, aFace1, BRepGraph_RelKind::UserDefined);
+  myGraph.Mut().AddRelEdge(aFace0, aFace1, BRepGraph_RelEdge::Kind::UserDefined);
   EXPECT_EQ(myGraph.RelEdges().NbTo(aFace1), aNbBefore + 1);
 }
 
 TEST_F(BRepGraphHistoryTest, RelEdge_MultipleKinds_SameSourceTarget_BothFound)
 {
-  const BRepGraph_NodeId aFace0(BRepGraph_NodeKind::Face, 0);
-  const BRepGraph_NodeId aFace1(BRepGraph_NodeKind::Face, 1);
+  const BRepGraph_NodeId aFace0(BRepGraph_NodeId::Kind::Face, 0);
+  const BRepGraph_NodeId aFace1(BRepGraph_NodeId::Kind::Face, 1);
 
-  myGraph.Mut().AddRelEdge(aFace0, aFace1, BRepGraph_RelKind::UserDefined);
-  myGraph.Mut().AddRelEdge(aFace0, aFace1, BRepGraph_RelKind::SameDomain);
+  myGraph.Mut().AddRelEdge(aFace0, aFace1, BRepGraph_RelEdge::Kind::UserDefined);
+  myGraph.Mut().AddRelEdge(aFace0, aFace1, BRepGraph_RelEdge::Kind::SameDomain);
 
   bool aFoundUser = false;
   myGraph.RelEdges().ForEachOutOfKind(
-    aFace0, BRepGraph_RelKind::UserDefined, [&](const BRepGraph_RelEdge& theEdge) {
+    aFace0, BRepGraph_RelEdge::Kind::UserDefined, [&](const BRepGraph_RelEdge& theEdge) {
       if (theEdge.Target == aFace1)
         aFoundUser = true;
     });
 
   bool aFoundSame = false;
   myGraph.RelEdges().ForEachOutOfKind(
-    aFace0, BRepGraph_RelKind::SameDomain, [&](const BRepGraph_RelEdge& theEdge) {
+    aFace0, BRepGraph_RelEdge::Kind::SameDomain, [&](const BRepGraph_RelEdge& theEdge) {
       if (theEdge.Target == aFace1)
         aFoundSame = true;
     });
@@ -428,25 +428,25 @@ TEST_F(BRepGraphHistoryTest, RelEdge_MultipleKinds_SameSourceTarget_BothFound)
 
 TEST_F(BRepGraphHistoryTest, RelEdge_RemoveSpecificKind_OtherRemains)
 {
-  const BRepGraph_NodeId aFace0(BRepGraph_NodeKind::Face, 0);
-  const BRepGraph_NodeId aFace1(BRepGraph_NodeKind::Face, 1);
+  const BRepGraph_NodeId aFace0(BRepGraph_NodeId::Kind::Face, 0);
+  const BRepGraph_NodeId aFace1(BRepGraph_NodeId::Kind::Face, 1);
 
-  myGraph.Mut().AddRelEdge(aFace0, aFace1, BRepGraph_RelKind::UserDefined);
-  myGraph.Mut().AddRelEdge(aFace0, aFace1, BRepGraph_RelKind::SameDomain);
+  myGraph.Mut().AddRelEdge(aFace0, aFace1, BRepGraph_RelEdge::Kind::UserDefined);
+  myGraph.Mut().AddRelEdge(aFace0, aFace1, BRepGraph_RelEdge::Kind::SameDomain);
 
   // Remove only UserDefined.
-  myGraph.Mut().RemoveRelEdges(aFace0, aFace1, BRepGraph_RelKind::UserDefined);
+  myGraph.Mut().RemoveRelEdges(aFace0, aFace1, BRepGraph_RelEdge::Kind::UserDefined);
 
   bool aFoundUser = false;
   myGraph.RelEdges().ForEachOutOfKind(
-    aFace0, BRepGraph_RelKind::UserDefined, [&](const BRepGraph_RelEdge&) {
+    aFace0, BRepGraph_RelEdge::Kind::UserDefined, [&](const BRepGraph_RelEdge&) {
       aFoundUser = true;
     });
   EXPECT_FALSE(aFoundUser);
 
   bool aFoundSame = false;
   myGraph.RelEdges().ForEachOutOfKind(
-    aFace0, BRepGraph_RelKind::SameDomain, [&](const BRepGraph_RelEdge& theEdge) {
+    aFace0, BRepGraph_RelEdge::Kind::SameDomain, [&](const BRepGraph_RelEdge& theEdge) {
       if (theEdge.Target == aFace1)
         aFoundSame = true;
     });

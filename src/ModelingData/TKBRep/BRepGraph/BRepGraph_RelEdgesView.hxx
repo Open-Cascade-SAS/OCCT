@@ -55,7 +55,7 @@ public:
   //! @param[in] theCallback callback receiving each matching BRepGraph_RelEdge
   template <typename Func>
   void ForEachOutOfKind(BRepGraph_NodeId  theNodeId,
-                        BRepGraph_RelKind theKind,
+                        BRepGraph_RelEdge::Kind theKind,
                         const Func&       theCallback) const
   {
     const NCollection_Vector<BRepGraph_RelEdge>* aEdges = OutOf(theNodeId);
@@ -64,7 +64,7 @@ public:
     for (int anIdx = 0; anIdx < aEdges->Length(); ++anIdx)
     {
       const BRepGraph_RelEdge& anEdge = aEdges->Value(anIdx);
-      if (anEdge.Kind == theKind)
+      if (anEdge.RelKind == theKind)
         theCallback(anEdge);
     }
   }
@@ -75,7 +75,7 @@ public:
   //! @param[in] theCallback callback receiving each matching BRepGraph_RelEdge
   template <typename Func>
   void ForEachInOfKind(BRepGraph_NodeId  theNodeId,
-                       BRepGraph_RelKind theKind,
+                       BRepGraph_RelEdge::Kind theKind,
                        const Func&       theCallback) const
   {
     const NCollection_Vector<BRepGraph_RelEdge>* aEdges = InOf(theNodeId);
@@ -84,7 +84,7 @@ public:
     for (int anIdx = 0; anIdx < aEdges->Length(); ++anIdx)
     {
       const BRepGraph_RelEdge& anEdge = aEdges->Value(anIdx);
-      if (anEdge.Kind == theKind)
+      if (anEdge.RelKind == theKind)
         theCallback(anEdge);
     }
   }

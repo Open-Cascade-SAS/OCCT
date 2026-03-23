@@ -85,7 +85,7 @@ TopoDS_Shape BRepGraph::ShapesView::Reconstruct(BRepGraph_NodeId theRoot) const
 TopoDS_Shape BRepGraph::ShapesView::ReconstructFace(int theFaceDefIdx) const
 {
   return BRepGraph_Reconstruct::Node(
-    *myGraph, BRepGraph_NodeId(BRepGraph_NodeKind::Face, theFaceDefIdx));
+    *myGraph, BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, theFaceDefIdx));
 }
 
 //=================================================================================================

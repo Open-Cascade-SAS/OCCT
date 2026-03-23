@@ -55,13 +55,13 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
   // Allocate SubA slot.
   BRepGraph_TopoNode::EdgeDef& aSubADef = theGraph.myData->myEdgeDefs.Appended();
   const int                    aSubAIdx = theGraph.myData->myEdgeDefs.Length() - 1;
-  aSubADef.Id = BRepGraph_NodeId(BRepGraph_NodeKind::Edge, aSubAIdx);
+  aSubADef.Id = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, aSubAIdx);
   theSubA     = aSubADef.Id;
 
   // Allocate SubB slot (note: Appended() may invalidate aSubADef reference — use index).
   BRepGraph_TopoNode::EdgeDef& aSubBDef = theGraph.myData->myEdgeDefs.Appended();
   const int                    aSubBIdx = theGraph.myData->myEdgeDefs.Length() - 1;
-  aSubBDef.Id = BRepGraph_NodeId(BRepGraph_NodeKind::Edge, aSubBIdx);
+  aSubBDef.Id = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, aSubBIdx);
   theSubB     = aSubBDef.Id;
 
   // Set SubA: StartVertex -> SplitVertex, [ParamFirst, theSplitParam].
@@ -238,7 +238,7 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
       theGraph.myData->myEdgeToWires.Bind(aSubBIdx, NCollection_Vector<int>());
     theGraph.myData->myEdgeToWires.ChangeFind(aSubBIdx).Append(aWireIdx);
 
-    theGraph.markModified(BRepGraph_NodeId(BRepGraph_NodeKind::Wire, aWireIdx));
+    theGraph.markModified(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Wire, aWireIdx));
   }
 
   theGraph.markModified(theEdgeDef);
@@ -288,5 +288,5 @@ void BRepGraph_Mutator::ReplaceEdgeInWire(BRepGraph&       theGraph,
       theGraph.myData->myEdgeToWires.ChangeFind(theNewEdgeDef.Index).Append(theWireDefIdx);
     }
   }
-  theGraph.markModified(BRepGraph_NodeId(BRepGraph_NodeKind::Wire, theWireDefIdx));
+  theGraph.markModified(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Wire, theWireDefIdx));
 }

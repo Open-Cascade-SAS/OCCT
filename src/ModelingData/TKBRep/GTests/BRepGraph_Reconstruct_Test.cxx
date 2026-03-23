@@ -82,7 +82,7 @@ TEST(BRepGraphReconstructTest, Box_Area_Preserved)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  TopoDS_Shape aRecon = aGraph.Shapes().Reconstruct(BRepGraph_NodeId(BRepGraph_NodeKind::Solid, 0));
+  TopoDS_Shape aRecon = aGraph.Shapes().Reconstruct(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Solid, 0));
   const double aReconArea = computeArea(aRecon);
 
   EXPECT_NEAR(aReconArea, anOrigArea, anOrigArea * 0.01);
@@ -98,7 +98,7 @@ TEST(BRepGraphReconstructTest, Box_Volume_Preserved)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  TopoDS_Shape aRecon = aGraph.Shapes().Reconstruct(BRepGraph_NodeId(BRepGraph_NodeKind::Solid, 0));
+  TopoDS_Shape aRecon = aGraph.Shapes().Reconstruct(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Solid, 0));
   const double aReconVol = computeVolume(aRecon);
 
   EXPECT_NEAR(aReconVol, anOrigVol, anOrigVol * 0.01);
@@ -114,7 +114,7 @@ TEST(BRepGraphReconstructTest, Sphere_Area_Preserved)
   aGraph.Build(aSphere);
   ASSERT_TRUE(aGraph.IsDone());
 
-  TopoDS_Shape aRecon = aGraph.Shapes().Reconstruct(BRepGraph_NodeId(BRepGraph_NodeKind::Solid, 0));
+  TopoDS_Shape aRecon = aGraph.Shapes().Reconstruct(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Solid, 0));
   const double aReconArea = computeArea(aRecon);
 
   EXPECT_NEAR(aReconArea, anOrigArea, anOrigArea * 0.01);
@@ -130,7 +130,7 @@ TEST(BRepGraphReconstructTest, Sphere_Volume_Preserved)
   aGraph.Build(aSphere);
   ASSERT_TRUE(aGraph.IsDone());
 
-  TopoDS_Shape aRecon = aGraph.Shapes().Reconstruct(BRepGraph_NodeId(BRepGraph_NodeKind::Solid, 0));
+  TopoDS_Shape aRecon = aGraph.Shapes().Reconstruct(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Solid, 0));
   const double aReconVol = computeVolume(aRecon);
 
   EXPECT_NEAR(aReconVol, anOrigVol, anOrigVol * 0.01);
@@ -146,7 +146,7 @@ TEST(BRepGraphReconstructTest, Cylinder_Area_Preserved)
   aGraph.Build(aCyl);
   ASSERT_TRUE(aGraph.IsDone());
 
-  TopoDS_Shape aRecon = aGraph.Shapes().Reconstruct(BRepGraph_NodeId(BRepGraph_NodeKind::Solid, 0));
+  TopoDS_Shape aRecon = aGraph.Shapes().Reconstruct(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Solid, 0));
   const double aReconArea = computeArea(aRecon);
 
   EXPECT_NEAR(aReconArea, anOrigArea, anOrigArea * 0.01);
@@ -162,7 +162,7 @@ TEST(BRepGraphReconstructTest, Cylinder_Volume_Preserved)
   aGraph.Build(aCyl);
   ASSERT_TRUE(aGraph.IsDone());
 
-  TopoDS_Shape aRecon = aGraph.Shapes().Reconstruct(BRepGraph_NodeId(BRepGraph_NodeKind::Solid, 0));
+  TopoDS_Shape aRecon = aGraph.Shapes().Reconstruct(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Solid, 0));
   const double aReconVol = computeVolume(aRecon);
 
   EXPECT_NEAR(aReconVol, anOrigVol, anOrigVol * 0.01);
@@ -182,7 +182,7 @@ TEST(BRepGraphReconstructTest, Shell_FaceCount_MatchesOriginal)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  TopoDS_Shape aReconShell = aGraph.Shapes().Reconstruct(BRepGraph_NodeId(BRepGraph_NodeKind::Shell, 0));
+  TopoDS_Shape aReconShell = aGraph.Shapes().Reconstruct(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Shell, 0));
   const int aReconFaceCount = countSubShapes(aReconShell, TopAbs_FACE);
 
   EXPECT_EQ(aReconFaceCount, anOrigFaceCount);
@@ -201,7 +201,7 @@ TEST(BRepGraphReconstructTest, Wire_EdgeCount_FourPerBoxFace)
   for (int aWireIdx = 0; aWireIdx < aGraph.Defs().NbWires(); ++aWireIdx)
   {
     TopoDS_Shape aReconWire = aGraph.Shapes().Reconstruct(
-      BRepGraph_NodeId(BRepGraph_NodeKind::Wire, aWireIdx));
+      BRepGraph_NodeId(BRepGraph_NodeId::Kind::Wire, aWireIdx));
     const int anEdgeCount = countSubShapes(aReconWire, TopAbs_EDGE);
     EXPECT_EQ(anEdgeCount, 4) << "Wire " << aWireIdx << " has " << anEdgeCount << " edges";
   }
@@ -223,7 +223,7 @@ TEST(BRepGraphReconstructTest, Edge_HasCurve_NonNull)
       continue;
 
     TopoDS_Shape aReconEdge = aGraph.Shapes().Reconstruct(
-      BRepGraph_NodeId(BRepGraph_NodeKind::Edge, anEdgeIdx));
+      BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, anEdgeIdx));
     TopLoc_Location aLoc;
     double aFirst = 0.0;
     double aLast  = 0.0;
@@ -248,7 +248,7 @@ TEST(BRepGraphReconstructTest, Edge_ParameterRange_Preserved)
       continue;
 
     TopoDS_Shape aReconEdge = aGraph.Shapes().Reconstruct(
-      BRepGraph_NodeId(BRepGraph_NodeKind::Edge, anEdgeIdx));
+      BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, anEdgeIdx));
     TopLoc_Location aLoc;
     double aFirst = 0.0;
     double aLast  = 0.0;
@@ -275,7 +275,7 @@ TEST(BRepGraphReconstructTest, Vertex_Point_MatchesDefPoint)
     const BRepGraph_TopoNode::VertexDef& aVertDef = aGraph.Defs().Vertex(aVertIdx);
 
     TopoDS_Shape aReconVtx = aGraph.Shapes().Reconstruct(
-      BRepGraph_NodeId(BRepGraph_NodeKind::Vertex, aVertIdx));
+      BRepGraph_NodeId(BRepGraph_NodeId::Kind::Vertex, aVertIdx));
     const gp_Pnt aReconPt = BRep_Tool::Pnt(TopoDS::Vertex(aReconVtx));
 
     EXPECT_NEAR(aReconPt.X(), aVertDef.Point.X(), Precision::Confusion())
@@ -332,7 +332,7 @@ TEST(BRepGraphReconstructTest, Face_OrientationPreserved)
     const TopAbs_Orientation anExpectedOri = aFaceUsage.Orientation;
 
     TopoDS_Shape aReconFace = aGraph.Shapes().ReconstructFromUsage(
-      BRepGraph_UsageId(BRepGraph_NodeKind::Face, aFaceIdx));
+      BRepGraph_UsageId(BRepGraph_NodeId::Kind::Face, aFaceIdx));
     ASSERT_FALSE(aReconFace.IsNull()) << "ReconstructFromUsage returned null for face usage " << aFaceIdx;
 
     EXPECT_EQ(aReconFace.Orientation(), anExpectedOri)
@@ -354,7 +354,7 @@ TEST(BRepGraphReconstructTest, Shape_UnmodifiedGraph_SameAsOriginalOf)
   ASSERT_TRUE(aGraph.IsDone());
 
   // For an unmodified graph, Shape(id) should be the same TShape as OriginalOf(id).
-  BRepGraph_NodeId aSolidId(BRepGraph_NodeKind::Solid, 0);
+  BRepGraph_NodeId aSolidId(BRepGraph_NodeId::Kind::Solid, 0);
   ASSERT_TRUE(aGraph.Shapes().HasOriginal(aSolidId));
 
   TopoDS_Shape aShapeResult = aGraph.Shapes().Shape(aSolidId);
@@ -373,7 +373,7 @@ TEST(BRepGraphReconstructTest, ReconstructFromUsage_Face_ValidShape)
   ASSERT_GT(aGraph.Usages().NbFaces(), 0);
 
   TopoDS_Shape aRecon = aGraph.Shapes().ReconstructFromUsage(
-    BRepGraph_UsageId(BRepGraph_NodeKind::Face, 0));
+    BRepGraph_UsageId(BRepGraph_NodeId::Kind::Face, 0));
   EXPECT_FALSE(aRecon.IsNull());
   EXPECT_EQ(aRecon.ShapeType(), TopAbs_FACE);
 }
@@ -397,7 +397,7 @@ TEST(BRepGraphReconstructTest, ReconstructFromUsage_Edge_ValidShape)
       continue;
 
     TopoDS_Shape aRecon = aGraph.Shapes().ReconstructFromUsage(
-      BRepGraph_UsageId(BRepGraph_NodeKind::Edge, anIdx));
+      BRepGraph_UsageId(BRepGraph_NodeId::Kind::Edge, anIdx));
     EXPECT_FALSE(aRecon.IsNull());
     EXPECT_EQ(aRecon.ShapeType(), TopAbs_EDGE);
     return;
@@ -419,7 +419,7 @@ TEST(BRepGraphReconstructTest, ReconstructFromUsage_Vertex_CorrectPoint)
   const gp_Pnt& anExpectedPt = aVtxUsage.TransformedPoint;
 
   TopoDS_Shape aRecon = aGraph.Shapes().ReconstructFromUsage(
-    BRepGraph_UsageId(BRepGraph_NodeKind::Vertex, 0));
+    BRepGraph_UsageId(BRepGraph_NodeId::Kind::Vertex, 0));
   ASSERT_FALSE(aRecon.IsNull());
   ASSERT_EQ(aRecon.ShapeType(), TopAbs_VERTEX);
 
@@ -479,7 +479,7 @@ TEST(BRepGraphReconstructTest, AfterToleranceMutation_NewTShape)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  BRepGraph_NodeId anEdgeId(BRepGraph_NodeKind::Edge, 0);
+  BRepGraph_NodeId anEdgeId(BRepGraph_NodeId::Kind::Edge, 0);
   TopoDS_Shape aShapeBefore = aGraph.Shapes().Shape(anEdgeId);
 
   // Mutate tolerance.
@@ -515,8 +515,8 @@ TEST(BRepGraphReconstructTest, CompoundRoot_TwoSolids_Preserved)
   const double anOrigVol1 = computeVolume(aBox1);
   const double anOrigVol2 = computeVolume(aBox2);
 
-  TopoDS_Shape aRecon1 = aGraph.Shapes().Reconstruct(BRepGraph_NodeId(BRepGraph_NodeKind::Solid, 0));
-  TopoDS_Shape aRecon2 = aGraph.Shapes().Reconstruct(BRepGraph_NodeId(BRepGraph_NodeKind::Solid, 1));
+  TopoDS_Shape aRecon1 = aGraph.Shapes().Reconstruct(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Solid, 0));
+  TopoDS_Shape aRecon2 = aGraph.Shapes().Reconstruct(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Solid, 1));
 
   const double aReconVol1 = computeVolume(aRecon1);
   const double aReconVol2 = computeVolume(aRecon2);

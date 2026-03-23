@@ -76,7 +76,7 @@ TEST(BRepGraphGeometry, Box_CurveOf_ValidForAll12Edges)
 
   for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
   {
-    const BRepGraph_NodeId aEdgeDefId(BRepGraph_NodeKind::Edge, i);
+    const BRepGraph_NodeId aEdgeDefId(BRepGraph_NodeId::Kind::Edge, i);
     const BRepGraph_NodeId aCurveId = aGraph.Geom().CurveOf(aEdgeDefId);
     EXPECT_TRUE(aCurveId.IsValid()) << "Edge def " << i << " has no valid curve";
   }
@@ -90,7 +90,7 @@ TEST(BRepGraphGeometry, Box_EdgesOnCurve_AtLeastOnePerCurve)
 
   for (int i = 0; i < aGraph.Geom().NbCurves(); ++i)
   {
-    const BRepGraph_NodeId aCurveId(BRepGraph_NodeKind::Curve, i);
+    const BRepGraph_NodeId aCurveId(BRepGraph_NodeId::Kind::Curve, i);
     const NCollection_Vector<BRepGraph_NodeId>& aEdges = aGraph.Geom().EdgesOnCurve(aCurveId);
     EXPECT_GE(aEdges.Length(), 1) << "Curve " << i << " has no edge users";
   }
@@ -106,7 +106,7 @@ TEST(BRepGraphGeometry, Box_PCurveOf_AllEdgeFacePairs_Valid)
   for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
   {
     const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(i);
-    const BRepGraph_NodeId aEdgeDefId(BRepGraph_NodeKind::Edge, i);
+    const BRepGraph_NodeId aEdgeDefId(BRepGraph_NodeId::Kind::Edge, i);
     for (int j = 0; j < anEdge.PCurves.Length(); ++j)
     {
       const BRepGraph_NodeId aFaceDefId = anEdge.PCurves.Value(j).FaceDefId;
@@ -129,8 +129,8 @@ TEST(BRepGraphGeometry, PCurve_ContextNodes_MatchEdgeFace)
     const BRepGraph_GeomNode::PCurve& aPCurve = aGraph.Geom().PCurve(i);
     EXPECT_TRUE(aPCurve.EdgeContext.IsValid()) << "PCurve " << i << " has invalid edge context";
     EXPECT_TRUE(aPCurve.FaceContext.IsValid()) << "PCurve " << i << " has invalid face context";
-    EXPECT_EQ(aPCurve.EdgeContext.Kind, BRepGraph_NodeKind::Edge);
-    EXPECT_EQ(aPCurve.FaceContext.Kind, BRepGraph_NodeKind::Face);
+    EXPECT_EQ(aPCurve.EdgeContext.NodeKind, BRepGraph_NodeId::Kind::Edge);
+    EXPECT_EQ(aPCurve.FaceContext.NodeKind, BRepGraph_NodeId::Kind::Face);
   }
 }
 
@@ -181,7 +181,7 @@ TEST(BRepGraphGeometry, SurfaceOf_InvalidNodeKind_ReturnsInvalid)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Pass an edge def id to SurfaceOf -- expects invalid result.
-  const BRepGraph_NodeId anEdgeDefId(BRepGraph_NodeKind::Edge, 0);
+  const BRepGraph_NodeId anEdgeDefId(BRepGraph_NodeId::Kind::Edge, 0);
   const BRepGraph_NodeId aResult = aGraph.Geom().SurfaceOf(anEdgeDefId);
   EXPECT_FALSE(aResult.IsValid());
 }
@@ -195,7 +195,7 @@ TEST(BRepGraphGeometry, SameDomainFaces_SimpleBox_Empty)
   // For a simple box each face has a unique surface, so SameDomainFaces is empty.
   for (int i = 0; i < aGraph.Defs().NbFaces(); ++i)
   {
-    const BRepGraph_NodeId aFaceDefId(BRepGraph_NodeKind::Face, i);
+    const BRepGraph_NodeId aFaceDefId(BRepGraph_NodeId::Kind::Face, i);
     const NCollection_Vector<BRepGraph_NodeId> aSameDomain = aGraph.Spatial().SameDomainFaces(aFaceDefId);
     EXPECT_EQ(aSameDomain.Length(), 0) << "Face def " << i << " has unexpected same-domain faces";
   }
@@ -208,7 +208,7 @@ TEST(BRepGraphGeometry, GlobalTransform_DefId_MatchesFirstUsage)
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Defs().NbFaces(), 0);
 
-  const BRepGraph_NodeId aFaceDefId(BRepGraph_NodeKind::Face, 0);
+  const BRepGraph_NodeId aFaceDefId(BRepGraph_NodeId::Kind::Face, 0);
   const gp_Trsf aDefTrsf = aGraph.Spatial().GlobalTransform(aFaceDefId);
 
   // The first usage of this face should give the same transform.
@@ -251,7 +251,7 @@ TEST(BRepGraphGeometry, GlobalTransform_CompoundWithLocation_NonIdentity)
   for (int i = 0; i < aGraph.Usages().NbFaces(); ++i)
   {
     const gp_Trsf aGlobalTrsf = aGraph.Spatial().GlobalTransform(
-        BRepGraph_UsageId(BRepGraph_NodeKind::Face, i));
+        BRepGraph_UsageId(BRepGraph_NodeId::Kind::Face, i));
     if (aGlobalTrsf.IsNegative() || aGlobalTrsf.IsNegative() == false)
     {
       // Check if translation component is non-zero.
@@ -624,7 +624,7 @@ TEST(BRepGraphGeometry, Cylinder_SeamEdge_PCurveOf_WithOrientation)
   for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
   {
     const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(i);
-    const BRepGraph_NodeId anEdgeDefId(BRepGraph_NodeKind::Edge, i);
+    const BRepGraph_NodeId anEdgeDefId(BRepGraph_NodeId::Kind::Edge, i);
 
     for (int j = 0; j < anEdge.PCurves.Length(); ++j)
     {

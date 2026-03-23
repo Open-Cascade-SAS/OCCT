@@ -19,29 +19,9 @@
 #include <cstddef>
 #include <functional>
 
-//! Enumeration of node kinds within a BRepGraph.
-//!
-//! Topology kinds 0-5 cover core hierarchy; Compound(6)/CompSolid(7)
-//! are container kinds.  Note: ordering does NOT match TopAbs_ShapeEnum.
-//! Geometry kinds start at 10, leaving room for future topology extensions.
-enum class BRepGraph_NodeKind : int
-{
-  Solid     = 0,
-  Shell     = 1,
-  Face      = 2,
-  Wire      = 3,
-  Edge      = 4,
-  Vertex    = 5,
-  Compound  = 6,  //!< TopoDS_Compound container
-  CompSolid = 7,  //!< TopoDS_CompSolid container
-  Surface   = 10,
-  Curve     = 11,
-  PCurve    = 12
-};
-
 //! Lightweight typed index into a per-kind node vector inside BRepGraph.
 //!
-//! The pair (Kind, Index) forms a unique node identifier within one graph
+//! The pair (NodeKind, Index) forms a unique node identifier within one graph
 //! instance.  Default-constructed NodeId has Index = -1 (invalid).
 //!
 //! NodeId is a value type: cheap to copy, compare, hash.  It carries no
@@ -49,20 +29,40 @@ enum class BRepGraph_NodeKind : int
 //! it with the correct BRepGraph instance.
 struct BRepGraph_NodeId
 {
-  BRepGraph_NodeKind Kind;
-  int                Index;
+  //! Enumeration of node kinds within a BRepGraph.
+  //!
+  //! Topology kinds 0-5 cover core hierarchy; Compound(6)/CompSolid(7)
+  //! are container kinds.  Note: ordering does NOT match TopAbs_ShapeEnum.
+  //! Geometry kinds start at 10, leaving room for future topology extensions.
+  enum class Kind : int
+  {
+    Solid     = 0,
+    Shell     = 1,
+    Face      = 2,
+    Wire      = 3,
+    Edge      = 4,
+    Vertex    = 5,
+    Compound  = 6,  //!< TopoDS_Compound container
+    CompSolid = 7,  //!< TopoDS_CompSolid container
+    Surface   = 10,
+    Curve     = 11,
+    PCurve    = 12
+  };
+
+  Kind NodeKind;
+  int  Index;
 
   BRepGraph_NodeId()
-    : Kind(BRepGraph_NodeKind::Solid), Index(-1) {}
+    : NodeKind(Kind::Solid), Index(-1) {}
 
-  BRepGraph_NodeId(BRepGraph_NodeKind theKind, int theIdx)
-    : Kind(theKind), Index(theIdx) {}
+  BRepGraph_NodeId(Kind theKind, int theIdx)
+    : NodeKind(theKind), Index(theIdx) {}
 
   //! True if this id points to an allocated node slot.
   bool IsValid() const { return Index >= 0; }
 
   bool operator==(const BRepGraph_NodeId& theOther) const
-  { return Kind == theOther.Kind && Index == theOther.Index; }
+  { return NodeKind == theOther.NodeKind && Index == theOther.Index; }
 
   bool operator!=(const BRepGraph_NodeId& theOther) const
   { return !(*this == theOther); }
@@ -75,7 +75,7 @@ struct std::hash<BRepGraph_NodeId>
   size_t operator()(const BRepGraph_NodeId& theId) const noexcept
   {
     size_t aCombination[2];
-    aCombination[0] = opencascade::hash(static_cast<int>(theId.Kind));
+    aCombination[0] = opencascade::hash(static_cast<int>(theId.NodeKind));
     aCombination[1] = opencascade::hash(theId.Index);
     return opencascade::hashBytes(aCombination, sizeof(aCombination));
   }

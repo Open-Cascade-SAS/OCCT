@@ -173,7 +173,7 @@ TEST(BRepGraphEdgeCasesTest, Build_TwiceOnSameGraph_OldUIDsInvalidated)
   EXPECT_NE(aFirstGen, aSecondGen);
 
   // After rebuild, UIDs on the new nodes carry the new generation.
-  const BRepGraph_NodeId aSolidId(BRepGraph_NodeKind::Solid, 0);
+  const BRepGraph_NodeId aSolidId(BRepGraph_NodeId::Kind::Solid, 0);
   const BRepGraph_UID aUID = aGraph.UIDs().Of(aSolidId);
   EXPECT_TRUE(aUID.IsValid());
   EXPECT_EQ(aUID.Generation(), aSecondGen);
@@ -233,7 +233,7 @@ TEST(BRepGraphEdgeCasesTest, UID_WhenDisabled_UIDOfReturnsInvalid)
   aGraph.Build(aBoxMaker.Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  const BRepGraph_NodeId aSolidId(BRepGraph_NodeKind::Solid, 0);
+  const BRepGraph_NodeId aSolidId(BRepGraph_NodeId::Kind::Solid, 0);
   const BRepGraph_UID aUID = aGraph.UIDs().Of(aSolidId);
   EXPECT_FALSE(aUID.IsValid());
 }

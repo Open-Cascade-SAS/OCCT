@@ -34,11 +34,11 @@ struct BRepGraph_UID
 {
   //! Default: invalid UID.
   BRepGraph_UID()
-    : myKind(BRepGraph_NodeKind::Solid), myCounter(0),
+    : myKind(BRepGraph_NodeId::Kind::Solid), myCounter(0),
       myGeneration(0), myValid(false) {}
 
   //! Construct a valid UID.  Called internally by BRepGraph::allocateUID().
-  BRepGraph_UID(BRepGraph_NodeKind theKind,
+  BRepGraph_UID(BRepGraph_NodeId::Kind theKind,
                 size_t             theCounter,
                 uint32_t           theGeneration)
     : myKind(theKind), myCounter(theCounter),
@@ -48,7 +48,7 @@ struct BRepGraph_UID
   static BRepGraph_UID Invalid() { return BRepGraph_UID(); }
 
   bool               IsValid()    const { return myValid; }
-  BRepGraph_NodeKind Kind()       const { return myKind; }
+  BRepGraph_NodeId::Kind Kind()       const { return myKind; }
   size_t             Counter()    const { return myCounter; }
   uint32_t           Generation() const { return myGeneration; }
 
@@ -84,7 +84,7 @@ struct BRepGraph_UID
   }
 
 private:
-  BRepGraph_NodeKind myKind;
+  BRepGraph_NodeId::Kind myKind;
   size_t             myCounter;
   uint32_t           myGeneration;
   bool               myValid;

@@ -209,7 +209,7 @@ private:
   //! Generic topology definition lookup by NodeId (internal helper).
   Standard_EXPORT const BRepGraph_TopoNode::BaseDef* TopoDef(BRepGraph_NodeId theId) const;
 
-  //! Dispatch a callback on the def vector matching theNode.Kind.
+  //! Dispatch a callback on the def vector matching theNode.NodeKind.
   //! Defined in BRepGraph.cxx (only used internally).
   template <typename Func>
   auto dispatchDef(BRepGraph_NodeId theNode, Func&& theFunc) const

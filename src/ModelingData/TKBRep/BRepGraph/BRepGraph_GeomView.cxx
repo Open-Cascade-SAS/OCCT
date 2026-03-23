@@ -55,7 +55,7 @@ const BRepGraph_GeomNode::PCurve& BRepGraph::GeomView::PCurve(int theIdx) const
 
 BRepGraph_NodeId BRepGraph::GeomView::SurfaceOf(BRepGraph_NodeId theFaceDef) const
 {
-  if (theFaceDef.Kind != BRepGraph_NodeKind::Face || !theFaceDef.IsValid())
+  if (theFaceDef.NodeKind != BRepGraph_NodeId::Kind::Face || !theFaceDef.IsValid())
     return BRepGraph_NodeId();
   return myGraph->myData->myFaceDefs.Value(theFaceDef.Index).SurfNodeId;
 }
@@ -66,7 +66,7 @@ const NCollection_Vector<BRepGraph_NodeId>& BRepGraph::GeomView::FacesOnSurface(
   BRepGraph_NodeId theSurf) const
 {
   static const NCollection_Vector<BRepGraph_NodeId> THE_EMPTY_VEC;
-  if (theSurf.Kind != BRepGraph_NodeKind::Surface || !theSurf.IsValid()
+  if (theSurf.NodeKind != BRepGraph_NodeId::Kind::Surface || !theSurf.IsValid()
       || theSurf.Index >= myGraph->myData->mySurfaces.Length())
     return THE_EMPTY_VEC;
   return myGraph->myData->mySurfaces.Value(theSurf.Index).FaceDefUsers;
@@ -76,7 +76,7 @@ const NCollection_Vector<BRepGraph_NodeId>& BRepGraph::GeomView::FacesOnSurface(
 
 BRepGraph_NodeId BRepGraph::GeomView::CurveOf(BRepGraph_NodeId theEdgeDef) const
 {
-  if (theEdgeDef.Kind != BRepGraph_NodeKind::Edge || !theEdgeDef.IsValid())
+  if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge || !theEdgeDef.IsValid())
     return BRepGraph_NodeId();
   return myGraph->myData->myEdgeDefs.Value(theEdgeDef.Index).CurveNodeId;
 }
@@ -87,7 +87,7 @@ const NCollection_Vector<BRepGraph_NodeId>& BRepGraph::GeomView::EdgesOnCurve(
   BRepGraph_NodeId theCurve) const
 {
   static const NCollection_Vector<BRepGraph_NodeId> THE_EMPTY_VEC;
-  if (theCurve.Kind != BRepGraph_NodeKind::Curve || !theCurve.IsValid()
+  if (theCurve.NodeKind != BRepGraph_NodeId::Kind::Curve || !theCurve.IsValid()
       || theCurve.Index >= myGraph->myData->myCurves.Length())
     return THE_EMPTY_VEC;
   return myGraph->myData->myCurves.Value(theCurve.Index).EdgeDefUsers;
@@ -98,7 +98,7 @@ const NCollection_Vector<BRepGraph_NodeId>& BRepGraph::GeomView::EdgesOnCurve(
 BRepGraph_NodeId BRepGraph::GeomView::PCurveOf(BRepGraph_NodeId theEdgeDef,
                                                BRepGraph_NodeId theFaceDef) const
 {
-  if (theEdgeDef.Kind != BRepGraph_NodeKind::Edge || !theEdgeDef.IsValid())
+  if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge || !theEdgeDef.IsValid())
     return BRepGraph_NodeId();
 
   const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
@@ -117,7 +117,7 @@ BRepGraph_NodeId BRepGraph::GeomView::PCurveOf(BRepGraph_NodeId   theEdgeDef,
                                                BRepGraph_NodeId   theFaceDef,
                                                TopAbs_Orientation theEdgeOrientation) const
 {
-  if (theEdgeDef.Kind != BRepGraph_NodeKind::Edge || !theEdgeDef.IsValid())
+  if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge || !theEdgeDef.IsValid())
     return BRepGraph_NodeId();
 
   const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
@@ -178,7 +178,7 @@ static GeomAdaptor_TransformedCurve buildCurveAdaptor(const BRepGraph_Data&     
 
 GeomAdaptor_TransformedCurve BRepGraph::GeomView::CurveAdaptor(BRepGraph_NodeId theEdgeDef) const
 {
-  if (theEdgeDef.Kind != BRepGraph_NodeKind::Edge || !theEdgeDef.IsValid())
+  if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge || !theEdgeDef.IsValid())
     return GeomAdaptor_TransformedCurve();
 
   const BRepGraph_TopoNode::EdgeDef& anEdge = myGraph->myData->myEdgeDefs.Value(theEdgeDef.Index);
@@ -191,7 +191,7 @@ GeomAdaptor_TransformedCurve BRepGraph::GeomView::CurveAdaptor(BRepGraph_NodeId 
                                                                 BRepGraph_UsageId theEdgeUsage) const
 {
   (void)theEdgeUsage; // reserved for future use with per-usage location override
-  if (theEdgeDef.Kind != BRepGraph_NodeKind::Edge || !theEdgeDef.IsValid())
+  if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge || !theEdgeDef.IsValid())
     return GeomAdaptor_TransformedCurve();
 
   const BRepGraph_TopoNode::EdgeDef& anEdge = myGraph->myData->myEdgeDefs.Value(theEdgeDef.Index);

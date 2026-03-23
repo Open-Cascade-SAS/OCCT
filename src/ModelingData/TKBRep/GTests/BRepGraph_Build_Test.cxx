@@ -781,8 +781,8 @@ TEST(BRepGraphBuildTest, Box_EdgeVertexDefsAreValid)
       << "Edge " << anIdx << " has invalid start vertex";
     EXPECT_TRUE(anEdge.EndVertexDefId.IsValid())
       << "Edge " << anIdx << " has invalid end vertex";
-    EXPECT_EQ(anEdge.StartVertexDefId.Kind, BRepGraph_NodeKind::Vertex);
-    EXPECT_EQ(anEdge.EndVertexDefId.Kind, BRepGraph_NodeKind::Vertex);
+    EXPECT_EQ(anEdge.StartVertexDefId.NodeKind, BRepGraph_NodeId::Kind::Vertex);
+    EXPECT_EQ(anEdge.EndVertexDefId.NodeKind, BRepGraph_NodeId::Kind::Vertex);
   }
 }
 
@@ -800,7 +800,7 @@ TEST(BRepGraphBuildTest, Box_FaceSurfNodeIdsAreValid)
     const auto& aFace = aGraph.Defs().Face(anIdx);
     EXPECT_TRUE(aFace.SurfNodeId.IsValid())
       << "Face " << anIdx << " has invalid SurfNodeId";
-    EXPECT_EQ(aFace.SurfNodeId.Kind, BRepGraph_NodeKind::Surface);
+    EXPECT_EQ(aFace.SurfNodeId.NodeKind, BRepGraph_NodeId::Kind::Surface);
     EXPECT_GE(aFace.SurfNodeId.Index, 0);
     EXPECT_LT(aFace.SurfNodeId.Index, aGraph.Geom().NbSurfaces());
   }

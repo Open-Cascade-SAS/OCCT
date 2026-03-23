@@ -289,7 +289,7 @@ TEST_F(BRepGraphAnalyzeTest, BoundingBox_Box_MatchesBRepBndLib)
   double aRefXmin, aRefYmin, aRefZmin, aRefXmax, aRefYmax, aRefZmax;
   aRefBox.Get(aRefXmin, aRefYmin, aRefZmin, aRefXmax, aRefYmax, aRefZmax);
 
-  const BRepGraph_NodeId aSolidId(BRepGraph_NodeKind::Solid, 0);
+  const BRepGraph_NodeId aSolidId(BRepGraph_NodeId::Kind::Solid, 0);
   const Bnd_Box aGraphBox = myGraph.Cache().BoundingBox(aSolidId);
   ASSERT_FALSE(aGraphBox.IsVoid());
 
@@ -317,7 +317,7 @@ TEST(BRepGraphAnalyze, BoundingBox_Sphere_NonVoid)
   // Verify face-level bounding boxes are valid.
   for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
   {
-    const BRepGraph_NodeId aFaceId(BRepGraph_NodeKind::Face, aFaceIdx);
+    const BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, aFaceIdx);
     const Bnd_Box aFaceBox = aGraph.Cache().BoundingBox(aFaceId);
     EXPECT_FALSE(aFaceBox.IsVoid()) << "Face " << aFaceIdx << " bbox is void";
   }
@@ -335,7 +335,7 @@ TEST(BRepGraphAnalyze, BoundingBox_Cylinder_FacesNonVoid)
   // Verify all face-level bounding boxes are valid.
   for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
   {
-    const BRepGraph_NodeId aFaceId(BRepGraph_NodeKind::Face, aFaceIdx);
+    const BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, aFaceIdx);
     const Bnd_Box aFaceBox = aGraph.Cache().BoundingBox(aFaceId);
     EXPECT_FALSE(aFaceBox.IsVoid()) << "Face " << aFaceIdx << " bbox is void";
   }
@@ -343,7 +343,7 @@ TEST(BRepGraphAnalyze, BoundingBox_Cylinder_FacesNonVoid)
 
 TEST_F(BRepGraphAnalyzeTest, BoundingBox_FaceSubsetOfShell)
 {
-  const BRepGraph_NodeId aShellId(BRepGraph_NodeKind::Shell, 0);
+  const BRepGraph_NodeId aShellId(BRepGraph_NodeId::Kind::Shell, 0);
   const Bnd_Box aShellBox = myGraph.Cache().BoundingBox(aShellId);
   ASSERT_FALSE(aShellBox.IsVoid());
 
@@ -354,7 +354,7 @@ TEST_F(BRepGraphAnalyzeTest, BoundingBox_FaceSubsetOfShell)
 
   for (int aFaceIdx = 0; aFaceIdx < myGraph.Defs().NbFaces(); ++aFaceIdx)
   {
-    const BRepGraph_NodeId aFaceId(BRepGraph_NodeKind::Face, aFaceIdx);
+    const BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, aFaceIdx);
     const Bnd_Box aFaceBox = myGraph.Cache().BoundingBox(aFaceId);
     if (aFaceBox.IsVoid())
       continue;
@@ -373,14 +373,14 @@ TEST_F(BRepGraphAnalyzeTest, BoundingBox_FaceSubsetOfShell)
 
 TEST_F(BRepGraphAnalyzeTest, BoundingBox_ShellSubsetOfSolid)
 {
-  const BRepGraph_NodeId aSolidId(BRepGraph_NodeKind::Solid, 0);
+  const BRepGraph_NodeId aSolidId(BRepGraph_NodeId::Kind::Solid, 0);
   const Bnd_Box aSolidBox = myGraph.Cache().BoundingBox(aSolidId);
   ASSERT_FALSE(aSolidBox.IsVoid());
 
   double aSOXmin, aSOYmin, aSOZmin, aSOXmax, aSOYmax, aSOZmax;
   aSolidBox.Get(aSOXmin, aSOYmin, aSOZmin, aSOXmax, aSOYmax, aSOZmax);
 
-  const BRepGraph_NodeId aShellId(BRepGraph_NodeKind::Shell, 0);
+  const BRepGraph_NodeId aShellId(BRepGraph_NodeId::Kind::Shell, 0);
   const Bnd_Box aShellBox = myGraph.Cache().BoundingBox(aShellId);
   ASSERT_FALSE(aShellBox.IsVoid());
 
@@ -400,7 +400,7 @@ TEST_F(BRepGraphAnalyzeTest, BoundingBox_Edge_SubsetOfOwningFace)
 {
   // Take first face and check that each of its edges' bounding boxes
   // fit within the face bounding box.
-  const BRepGraph_NodeId aFaceId(BRepGraph_NodeKind::Face, 0);
+  const BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
   const Bnd_Box aFaceBox = myGraph.Cache().BoundingBox(aFaceId);
   ASSERT_FALSE(aFaceBox.IsVoid());
 
@@ -434,7 +434,7 @@ TEST_F(BRepGraphAnalyzeTest, BoundingBox_Vertex_SinglePoint)
 {
   for (int aVertIdx = 0; aVertIdx < myGraph.Defs().NbVertices(); ++aVertIdx)
   {
-    const BRepGraph_NodeId aVertId(BRepGraph_NodeKind::Vertex, aVertIdx);
+    const BRepGraph_NodeId aVertId(BRepGraph_NodeId::Kind::Vertex, aVertIdx);
     const Bnd_Box aVertBox = myGraph.Cache().BoundingBox(aVertId);
     ASSERT_FALSE(aVertBox.IsVoid()) << "Vertex " << aVertIdx << " has void bbox";
 
@@ -451,7 +451,7 @@ TEST_F(BRepGraphAnalyzeTest, BoundingBox_Vertex_SinglePoint)
 
 TEST_F(BRepGraphAnalyzeTest, BoundingBox_AfterMutation_CacheInvalidated)
 {
-  const BRepGraph_NodeId aVertId(BRepGraph_NodeKind::Vertex, 0);
+  const BRepGraph_NodeId aVertId(BRepGraph_NodeId::Kind::Vertex, 0);
 
   // Get initial bounding box.
   const Bnd_Box aBoxBefore = myGraph.Cache().BoundingBox(aVertId);
@@ -471,7 +471,7 @@ TEST_F(BRepGraphAnalyzeTest, BoundingBox_AfterMutation_CacheInvalidated)
 
 TEST_F(BRepGraphAnalyzeTest, Invalidate_ThenRecompute_SameResult)
 {
-  const BRepGraph_NodeId aFaceId(BRepGraph_NodeKind::Face, 0);
+  const BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
 
   // Compute bounding box, then invalidate, then recompute. Results should match.
   const Bnd_Box aBoxFirst = myGraph.Cache().BoundingBox(aFaceId);
@@ -498,8 +498,8 @@ TEST_F(BRepGraphAnalyzeTest, Invalidate_ThenRecompute_SameResult)
 
 TEST_F(BRepGraphAnalyzeTest, InvalidateSubgraph_PropagatesUpToSolid)
 {
-  const BRepGraph_NodeId aSolidId(BRepGraph_NodeKind::Solid, 0);
-  const BRepGraph_NodeId aVertId(BRepGraph_NodeKind::Vertex, 0);
+  const BRepGraph_NodeId aSolidId(BRepGraph_NodeId::Kind::Solid, 0);
+  const BRepGraph_NodeId aVertId(BRepGraph_NodeId::Kind::Vertex, 0);
 
   // Compute solid bounding box first (populates cache).
   const Bnd_Box aSolidBoxBefore = myGraph.Cache().BoundingBox(aSolidId);
@@ -533,7 +533,7 @@ TEST_F(BRepGraphAnalyzeTest, InvalidateSubgraph_PropagatesUpToSolid)
 TEST_F(BRepGraphAnalyzeTest, Centroid_Box_AtCenter)
 {
   // 10x20x30 box at origin: centroid near (5, 10, 15).
-  const BRepGraph_NodeId aSolidId(BRepGraph_NodeKind::Solid, 0);
+  const BRepGraph_NodeId aSolidId(BRepGraph_NodeId::Kind::Solid, 0);
   const gp_Pnt aCentroid = myGraph.Cache().Centroid(aSolidId);
 
   EXPECT_NEAR(aCentroid.X(), 5.0, 1.0);
@@ -550,7 +550,7 @@ TEST(BRepGraphAnalyze, Centroid_Sphere_AtOrigin)
   aGraph.Build(aSphere);
   ASSERT_TRUE(aGraph.IsDone());
 
-  const BRepGraph_NodeId aSolidId(BRepGraph_NodeKind::Solid, 0);
+  const BRepGraph_NodeId aSolidId(BRepGraph_NodeId::Kind::Solid, 0);
   const gp_Pnt aCentroid = aGraph.Cache().Centroid(aSolidId);
 
   EXPECT_NEAR(aCentroid.X(), 0.0, 2.0);
@@ -562,7 +562,7 @@ TEST_F(BRepGraphAnalyzeTest, Centroid_Face_InsideFaceBBox)
 {
   for (int aFaceIdx = 0; aFaceIdx < myGraph.Defs().NbFaces(); ++aFaceIdx)
   {
-    const BRepGraph_NodeId aFaceId(BRepGraph_NodeKind::Face, aFaceIdx);
+    const BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, aFaceIdx);
     const gp_Pnt aCentroid = myGraph.Cache().Centroid(aFaceId);
     const Bnd_Box aFaceBox = myGraph.Cache().BoundingBox(aFaceId);
 
@@ -584,7 +584,7 @@ TEST_F(BRepGraphAnalyzeTest, Centroid_Face_InsideFaceBBox)
 
 TEST_F(BRepGraphAnalyzeTest, Centroid_AfterMutation_CacheInvalidated)
 {
-  const BRepGraph_NodeId aVertId(BRepGraph_NodeKind::Vertex, 0);
+  const BRepGraph_NodeId aVertId(BRepGraph_NodeId::Kind::Vertex, 0);
 
   const gp_Pnt aCentroidBefore = myGraph.Cache().Centroid(aVertId);
 

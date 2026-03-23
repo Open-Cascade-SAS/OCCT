@@ -17,19 +17,6 @@
 #include <BRepGraph_NodeId.hxx>
 #include <TCollection_AsciiString.hxx>
 
-//! Semantic kind of a directed relationship edge in the graph.
-enum class BRepGraph_RelKind : int
-{
-  Contains        = 0,   //!< Parent -> child in TopoDS hierarchy
-  OuterWire       = 1,   //!< FaceNode -> its outer WireNode
-  InnerWire       = 2,   //!< FaceNode -> a hole WireNode
-  RealizedBy      = 3,   //!< TopoNode -> geometry node (Face->Surf, Edge->Curve)
-  ParameterizedBy = 4,   //!< EdgeNode -> PCurveNode (with FaceNode context)
-  SameDomain      = 5,   //!< FaceNode <-> FaceNode sharing identical Surface Handle
-  DerivedFrom     = 6,   //!< History: new node -> original node, with op label
-  UserDefined     = 100  //!< Algorithm-specific edges (sewing candidates, etc.)
-};
-
 //! A single directed relationship between two graph nodes.
 //!
 //! @param ContextNode valid only for ParameterizedBy (holds the FaceNode
@@ -37,7 +24,20 @@ enum class BRepGraph_RelKind : int
 //! @param Label valid only for DerivedFrom (operation name string).
 struct BRepGraph_RelEdge
 {
-  BRepGraph_RelKind       Kind = BRepGraph_RelKind::Contains;
+  //! Semantic kind of a directed relationship edge in the graph.
+  enum class Kind : int
+  {
+    Contains        = 0,   //!< Parent -> child in TopoDS hierarchy
+    OuterWire       = 1,   //!< FaceNode -> its outer WireNode
+    InnerWire       = 2,   //!< FaceNode -> a hole WireNode
+    RealizedBy      = 3,   //!< TopoNode -> geometry node (Face->Surf, Edge->Curve)
+    ParameterizedBy = 4,   //!< EdgeNode -> PCurveNode (with FaceNode context)
+    SameDomain      = 5,   //!< FaceNode <-> FaceNode sharing identical Surface Handle
+    DerivedFrom     = 6,   //!< History: new node -> original node, with op label
+    UserDefined     = 100  //!< Algorithm-specific edges (sewing candidates, etc.)
+  };
+
+  Kind                    RelKind = Kind::Contains;
   BRepGraph_NodeId        Source;
   BRepGraph_NodeId        Target;
   BRepGraph_NodeId        ContextNode;  //!< ParameterizedBy only

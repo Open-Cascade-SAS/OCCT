@@ -114,7 +114,7 @@ TEST_F(BRepGraphSharingTest, DefOf_EachEdgeUsage_RoundTrips)
     {
       const BRepGraph_UsageId& aUsageId = aDef.Usages.Value(aUsIdx);
       BRepGraph_NodeId aResolvedDef = myGraph.DefOf(aUsageId);
-      EXPECT_EQ(aResolvedDef.Kind, aDef.Id.Kind);
+      EXPECT_EQ(aResolvedDef.NodeKind, aDef.Id.NodeKind);
       EXPECT_EQ(aResolvedDef.Index, aDef.Id.Index);
     }
   }
@@ -130,7 +130,7 @@ TEST_F(BRepGraphSharingTest, DefOf_EachFaceUsage_RoundTrips)
     {
       const BRepGraph_UsageId& aUsageId = aDef.Usages.Value(aUsIdx);
       BRepGraph_NodeId aResolvedDef = myGraph.DefOf(aUsageId);
-      EXPECT_EQ(aResolvedDef.Kind, aDef.Id.Kind);
+      EXPECT_EQ(aResolvedDef.NodeKind, aDef.Id.NodeKind);
       EXPECT_EQ(aResolvedDef.Index, aDef.Id.Index);
     }
   }
@@ -146,7 +146,7 @@ TEST_F(BRepGraphSharingTest, DefOf_EachVertexUsage_RoundTrips)
     {
       const BRepGraph_UsageId& aUsageId = aDef.Usages.Value(aUsIdx);
       BRepGraph_NodeId aResolvedDef = myGraph.DefOf(aUsageId);
-      EXPECT_EQ(aResolvedDef.Kind, aDef.Id.Kind);
+      EXPECT_EQ(aResolvedDef.NodeKind, aDef.Id.NodeKind);
       EXPECT_EQ(aResolvedDef.Index, aDef.Id.Index);
     }
   }

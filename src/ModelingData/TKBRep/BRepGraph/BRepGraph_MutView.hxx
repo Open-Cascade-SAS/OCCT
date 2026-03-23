@@ -98,12 +98,12 @@ public:
   //! @return index of the new edge in the outgoing vector of theFrom
   Standard_EXPORT int AddRelEdge(BRepGraph_NodeId  theFrom,
                                  BRepGraph_NodeId  theTo,
-                                 BRepGraph_RelKind theKind);
+                                 BRepGraph_RelEdge::Kind theKind);
 
   //! Remove all relation edges of a given kind between two nodes.
   Standard_EXPORT void RemoveRelEdges(BRepGraph_NodeId  theFrom,
                                       BRepGraph_NodeId  theTo,
-                                      BRepGraph_RelKind theKind);
+                                      BRepGraph_RelEdge::Kind theKind);
 
 private:
   friend class BRepGraph;

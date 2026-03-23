@@ -21,7 +21,7 @@
 
 BRepGraph_TopoNode::EdgeDef& BRepGraph::MutView::EdgeDef(int theIdx)
 {
-  myGraph->markModified(BRepGraph_NodeId(BRepGraph_NodeKind::Edge, theIdx));
+  myGraph->markModified(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, theIdx));
   return myGraph->myData->myEdgeDefs.ChangeValue(theIdx);
 }
 
@@ -29,7 +29,7 @@ BRepGraph_TopoNode::EdgeDef& BRepGraph::MutView::EdgeDef(int theIdx)
 
 BRepGraph_TopoNode::WireDef& BRepGraph::MutView::WireDef(int theIdx)
 {
-  myGraph->markModified(BRepGraph_NodeId(BRepGraph_NodeKind::Wire, theIdx));
+  myGraph->markModified(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Wire, theIdx));
   return myGraph->myData->myWireDefs.ChangeValue(theIdx);
 }
 
@@ -37,7 +37,7 @@ BRepGraph_TopoNode::WireDef& BRepGraph::MutView::WireDef(int theIdx)
 
 BRepGraph_TopoNode::VertexDef& BRepGraph::MutView::VertexDef(int theIdx)
 {
-  myGraph->markModified(BRepGraph_NodeId(BRepGraph_NodeKind::Vertex, theIdx));
+  myGraph->markModified(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Vertex, theIdx));
   return myGraph->myData->myVertexDefs.ChangeValue(theIdx);
 }
 
@@ -45,7 +45,7 @@ BRepGraph_TopoNode::VertexDef& BRepGraph::MutView::VertexDef(int theIdx)
 
 BRepGraph_TopoNode::FaceDef& BRepGraph::MutView::FaceDef(int theIdx)
 {
-  myGraph->markModified(BRepGraph_NodeId(BRepGraph_NodeKind::Face, theIdx));
+  myGraph->markModified(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, theIdx));
   return myGraph->myData->myFaceDefs.ChangeValue(theIdx);
 }
 
@@ -53,7 +53,7 @@ BRepGraph_TopoNode::FaceDef& BRepGraph::MutView::FaceDef(int theIdx)
 
 BRepGraph_TopoNode::ShellDef& BRepGraph::MutView::ShellDef(int theIdx)
 {
-  myGraph->markModified(BRepGraph_NodeId(BRepGraph_NodeKind::Shell, theIdx));
+  myGraph->markModified(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Shell, theIdx));
   return myGraph->myData->myShellDefs.ChangeValue(theIdx);
 }
 
@@ -61,7 +61,7 @@ BRepGraph_TopoNode::ShellDef& BRepGraph::MutView::ShellDef(int theIdx)
 
 BRepGraph_TopoNode::SolidDef& BRepGraph::MutView::SolidDef(int theIdx)
 {
-  myGraph->markModified(BRepGraph_NodeId(BRepGraph_NodeKind::Solid, theIdx));
+  myGraph->markModified(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Solid, theIdx));
   return myGraph->myData->mySolidDefs.ChangeValue(theIdx);
 }
 
@@ -69,7 +69,7 @@ BRepGraph_TopoNode::SolidDef& BRepGraph::MutView::SolidDef(int theIdx)
 
 BRepGraph_TopoNode::CompoundDef& BRepGraph::MutView::CompoundDef(int theIdx)
 {
-  myGraph->markModified(BRepGraph_NodeId(BRepGraph_NodeKind::Compound, theIdx));
+  myGraph->markModified(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Compound, theIdx));
   return myGraph->myData->myCompoundDefs.ChangeValue(theIdx);
 }
 
@@ -77,7 +77,7 @@ BRepGraph_TopoNode::CompoundDef& BRepGraph::MutView::CompoundDef(int theIdx)
 
 BRepGraph_TopoNode::CompSolidDef& BRepGraph::MutView::CompSolidDef(int theIdx)
 {
-  myGraph->markModified(BRepGraph_NodeId(BRepGraph_NodeKind::CompSolid, theIdx));
+  myGraph->markModified(BRepGraph_NodeId(BRepGraph_NodeId::Kind::CompSolid, theIdx));
   return myGraph->myData->myCompSolidDefs.ChangeValue(theIdx);
 }
 
@@ -132,10 +132,10 @@ void BRepGraph::MutView::SplitEdge(BRepGraph_NodeId  theEdgeDef,
 
 int BRepGraph::MutView::AddRelEdge(BRepGraph_NodeId  theFrom,
                                    BRepGraph_NodeId  theTo,
-                                   BRepGraph_RelKind theKind)
+                                   BRepGraph_RelEdge::Kind theKind)
 {
   BRepGraph_RelEdge anEdge;
-  anEdge.Kind   = theKind;
+  anEdge.RelKind   = theKind;
   anEdge.Source = theFrom;
   anEdge.Target = theTo;
 
@@ -157,7 +157,7 @@ int BRepGraph::MutView::AddRelEdge(BRepGraph_NodeId  theFrom,
 
 void BRepGraph::MutView::RemoveRelEdges(BRepGraph_NodeId  theFrom,
                                         BRepGraph_NodeId  theTo,
-                                        BRepGraph_RelKind theKind)
+                                        BRepGraph_RelEdge::Kind theKind)
 {
   NCollection_Vector<BRepGraph_RelEdge>* anOutVec =
     myGraph->myData->myOutRelEdges.ChangeSeek(theFrom);
@@ -166,7 +166,7 @@ void BRepGraph::MutView::RemoveRelEdges(BRepGraph_NodeId  theFrom,
     for (int anIdx = anOutVec->Length() - 1; anIdx >= 0; --anIdx)
     {
       const BRepGraph_RelEdge& anEdge = anOutVec->Value(anIdx);
-      if (anEdge.Kind == theKind && anEdge.Target == theTo)
+      if (anEdge.RelKind == theKind && anEdge.Target == theTo)
       {
         if (anIdx < anOutVec->Length() - 1)
           anOutVec->ChangeValue(anIdx) = anOutVec->Value(anOutVec->Length() - 1);
@@ -182,7 +182,7 @@ void BRepGraph::MutView::RemoveRelEdges(BRepGraph_NodeId  theFrom,
     for (int anIdx = anInVec->Length() - 1; anIdx >= 0; --anIdx)
     {
       const BRepGraph_RelEdge& anEdge = anInVec->Value(anIdx);
-      if (anEdge.Kind == theKind && anEdge.Source == theFrom)
+      if (anEdge.RelKind == theKind && anEdge.Source == theFrom)
       {
         if (anIdx < anInVec->Length() - 1)
           anInVec->ChangeValue(anIdx) = anInVec->Value(anInVec->Length() - 1);
