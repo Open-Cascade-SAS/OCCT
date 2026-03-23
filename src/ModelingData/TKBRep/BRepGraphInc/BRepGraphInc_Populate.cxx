@@ -532,18 +532,25 @@ int registerExtractedEdge(BRepGraphInc_Storage& theStorage,
   }
 
   // Vertex registration (boundary vertices use VertexRef with Location).
-  anEdgeEnt.StartVertex.VertexIdx = registerOrReuseVertex(theStorage,
-                                                          theEdgeData.StartVertex.Shape,
-                                                          theEdgeData.StartVertex.Point,
-                                                          theEdgeData.StartVertex.Tolerance);
-  anEdgeEnt.StartVertex.Orientation   = TopAbs_FORWARD;
-  anEdgeEnt.StartVertex.LocalLocation = theEdgeData.StartVertex.Shape.Location();
-  anEdgeEnt.EndVertex.VertexIdx = registerOrReuseVertex(theStorage,
-                                                        theEdgeData.EndVertex.Shape,
-                                                        theEdgeData.EndVertex.Point,
-                                                        theEdgeData.EndVertex.Tolerance);
-  anEdgeEnt.EndVertex.Orientation   = TopAbs_REVERSED;
-  anEdgeEnt.EndVertex.LocalLocation = theEdgeData.EndVertex.Shape.Location();
+  // Vertices may be null for infinite edges or degenerate topology.
+  if (!theEdgeData.StartVertex.Shape.IsNull())
+  {
+    anEdgeEnt.StartVertex.VertexIdx = registerOrReuseVertex(theStorage,
+                                                            theEdgeData.StartVertex.Shape,
+                                                            theEdgeData.StartVertex.Point,
+                                                            theEdgeData.StartVertex.Tolerance);
+    anEdgeEnt.StartVertex.Orientation   = TopAbs_FORWARD;
+    anEdgeEnt.StartVertex.LocalLocation = theEdgeData.StartVertex.Shape.Location();
+  }
+  if (!theEdgeData.EndVertex.Shape.IsNull())
+  {
+    anEdgeEnt.EndVertex.VertexIdx = registerOrReuseVertex(theStorage,
+                                                          theEdgeData.EndVertex.Shape,
+                                                          theEdgeData.EndVertex.Point,
+                                                          theEdgeData.EndVertex.Tolerance);
+    anEdgeEnt.EndVertex.Orientation   = TopAbs_REVERSED;
+    anEdgeEnt.EndVertex.LocalLocation = theEdgeData.EndVertex.Shape.Location();
+  }
 
   // Register internal/external vertices.
   for (int anIntIdx = 0; anIntIdx < theEdgeData.InternalVertices.Length(); ++anIntIdx)
@@ -1390,16 +1397,23 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&                       
         edgeVertices(anEdge, aVFirst, aVLast, anInternalVerts);
 
         // Register vertices (using definition-frame points; Location stored on VertexRef).
-        anEdgeEnt.StartVertex.VertexIdx =
-          registerOrReuseVertex(theStorage, aVFirst,
-                                rawVertexPoint(aVFirst), BRep_Tool::Tolerance(aVFirst));
-        anEdgeEnt.StartVertex.Orientation   = TopAbs_FORWARD;
-        anEdgeEnt.StartVertex.LocalLocation = aVFirst.Location();
-        anEdgeEnt.EndVertex.VertexIdx =
-          registerOrReuseVertex(theStorage, aVLast,
-                                rawVertexPoint(aVLast), BRep_Tool::Tolerance(aVLast));
-        anEdgeEnt.EndVertex.Orientation   = TopAbs_REVERSED;
-        anEdgeEnt.EndVertex.LocalLocation = aVLast.Location();
+        // Vertices may be null for infinite edges or degenerate topology.
+        if (!aVFirst.IsNull())
+        {
+          anEdgeEnt.StartVertex.VertexIdx =
+            registerOrReuseVertex(theStorage, aVFirst,
+                                  rawVertexPoint(aVFirst), BRep_Tool::Tolerance(aVFirst));
+          anEdgeEnt.StartVertex.Orientation   = TopAbs_FORWARD;
+          anEdgeEnt.StartVertex.LocalLocation = aVFirst.Location();
+        }
+        if (!aVLast.IsNull())
+        {
+          anEdgeEnt.EndVertex.VertexIdx =
+            registerOrReuseVertex(theStorage, aVLast,
+                                  rawVertexPoint(aVLast), BRep_Tool::Tolerance(aVLast));
+          anEdgeEnt.EndVertex.Orientation   = TopAbs_REVERSED;
+          anEdgeEnt.EndVertex.LocalLocation = aVLast.Location();
+        }
 
         for (int anIntIdx = 0; anIntIdx < anInternalVerts.Length(); ++anIntIdx)
         {
