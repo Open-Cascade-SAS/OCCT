@@ -368,6 +368,24 @@ public:
     return aResult;
   }
 
+  //! Calls theFunctor for each point within theRadius of theQuery.
+  //! Zero-allocation alternative to RangeSearch — avoids DynamicArray overhead.
+  //! Indices passed to theFunctor are 1-based (same convention as RangeSearch).
+  //! @tparam Functor callable with signature void(size_t theIndex)
+  //! @param[in] theQuery   query point
+  //! @param[in] theRadius  search radius
+  //! @param[in] theFunctor callback invoked for each found 1-based index
+  template <typename Functor>
+  void ForEachInRange(const ThePointType& theQuery, double theRadius, Functor theFunctor) const
+  {
+    if (IsEmpty() || theRadius < 0.0)
+    {
+      return;
+    }
+    const double aRadiusSq = theRadius * theRadius;
+    forEachInRangeRecursive(theQuery, aRadiusSq, 1, static_cast<int>(mySize), 0, theFunctor);
+  }
+
   //! Finds all points within the axis-aligned bounding box [theMin, theMax].
   //! @param[in] theMin minimum corner of the box
   //! @param[in] theMax maximum corner of the box
@@ -921,6 +939,64 @@ private:
       if (aDiff * aDiff <= theRadiusSq)
       {
         rangeSearchRecursive(theQuery, theRadiusSq, theLo, theMid - 1, theDepth + 1, theIndices);
+      }
+    }
+  }
+
+  //! Recursive range search (sphere) with callback — zero-allocation variant.
+  template <typename Functor>
+  void forEachInRangeRecursive(const ThePointType& theQuery,
+                               double              theRadiusSq,
+                               int                 theLo,
+                               int                 theHi,
+                               int                 theDepth,
+                               Functor&            theFunctor) const
+  {
+    if (theLo > theHi)
+    {
+      return;
+    }
+    if (theHi - theLo + 1 <= THE_LEAF_SIZE)
+    {
+      for (int i = theLo; i <= theHi; ++i)
+      {
+        const size_t anIdx   = myIndices.Value(i);
+        const double aSqDist = squareDistance(theQuery, myPoints.Value(static_cast<int>(anIdx)));
+        if (aSqDist <= theRadiusSq)
+        {
+          theFunctor(anIdx);
+        }
+      }
+      return;
+    }
+    const int           aMid       = (theLo + theHi) / 2;
+    const size_t        aNodeIndex = myIndices.Value(aMid);
+    const ThePointType& aNodePoint = myPoints.Value(static_cast<int>(aNodeIndex));
+    const double        aSqDist    = squareDistance(theQuery, aNodePoint);
+    if (aSqDist <= theRadiusSq)
+    {
+      theFunctor(aNodeIndex);
+    }
+    if (theLo == theHi)
+    {
+      return;
+    }
+    const int    aAxis = theDepth % TheDimension;
+    const double aDiff = theQuery.Coord(aAxis + 1) - aNodePoint.Coord(aAxis + 1);
+    if (aDiff <= 0.0)
+    {
+      forEachInRangeRecursive(theQuery, theRadiusSq, theLo, aMid - 1, theDepth + 1, theFunctor);
+      if (aDiff * aDiff <= theRadiusSq)
+      {
+        forEachInRangeRecursive(theQuery, theRadiusSq, aMid + 1, theHi, theDepth + 1, theFunctor);
+      }
+    }
+    else
+    {
+      forEachInRangeRecursive(theQuery, theRadiusSq, aMid + 1, theHi, theDepth + 1, theFunctor);
+      if (aDiff * aDiff <= theRadiusSq)
+      {
+        forEachInRangeRecursive(theQuery, theRadiusSq, theLo, aMid - 1, theDepth + 1, theFunctor);
       }
     }
   }

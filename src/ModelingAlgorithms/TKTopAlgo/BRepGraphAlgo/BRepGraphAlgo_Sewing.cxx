@@ -484,21 +484,23 @@ void assembleVertices(BRepGraph&                                  theGraph,
       continue;
     }
 
-    const gp_Pnt&                    aPntI      = aVertexPoints.Value(aVtxIter);
-    NCollection_DynamicArray<size_t> aNeighbors = aTree.RangeSearch(aPntI, theTolerance);
-
-    for (int aNbrIter = 0; aNbrIter < aNeighbors.Length(); ++aNbrIter)
-    {
-      const int anArrayIdx = static_cast<int>(aNeighbors[aNbrIter]) - 1;
+    const gp_Pnt& aPntI = aVertexPoints.Value(aVtxIter);
+    bool          aMergedSelf = false;
+    aTree.ForEachInRange(aPntI, theTolerance, [&](size_t theResultIdx) {
+      if (aMergedSelf)
+      {
+        return;
+      }
+      const int anArrayIdx = static_cast<int>(theResultIdx) - 1;
       if (anArrayIdx == aVtxIter)
       {
-        continue;
+        return;
       }
 
       const int anIdxJ = aGraphIndices.Value(anArrayIdx);
       if (aVertexMerge.IsBound(anIdxJ))
       {
-        continue;
+        return;
       }
 
       // Merge: keep vertex with smaller tolerance.
@@ -507,13 +509,13 @@ void assembleVertices(BRepGraph&                                  theGraph,
       if (aTolJ < aTolI)
       {
         aVertexMerge.Bind(anIdxI, anIdxJ);
-        break;
+        aMergedSelf = true;
       }
       else
       {
         aVertexMerge.Bind(anIdxJ, anIdxI);
       }
-    }
+    });
   }
 
   // Union-find collapse with path compression.
@@ -890,23 +892,20 @@ NCollection_Array1<NCollection_Vector<int>> detectCandidates(
       const double aHalfDiagI     = aHalfDiags.Value(theIdxI);
       const double aSearchRadiusI = aHalfDiagI + aMaxHalfDiag;
 
-      const gp_Pnt&                    aCenterI   = aCenters.Value(theIdxI);
-      NCollection_DynamicArray<size_t> aNeighbors = aTree.RangeSearch(aCenterI, aSearchRadiusI);
-
-      for (int aNbrIter = 0; aNbrIter < aNeighbors.Length(); ++aNbrIter)
-      {
-        const int anArrayIdx = static_cast<int>(aNeighbors[aNbrIter]) - 1;
+      const gp_Pnt& aCenterI = aCenters.Value(theIdxI);
+      aTree.ForEachInRange(aCenterI, aSearchRadiusI, [&](size_t theResultIdx) {
+        const int anArrayIdx = static_cast<int>(theResultIdx) - 1;
         const int anJ        = anArrayIdx + 1;
 
         if (anJ <= anI)
         {
-          continue;
+          return;
         }
 
         const Bnd_Box& aBoxJ = aBBoxes.Value(anJ);
         if (aBoxJ.IsVoid())
         {
-          continue;
+          return;
         }
 
         if (!aBoxI.IsOut(aBoxJ))
@@ -921,13 +920,13 @@ NCollection_Array1<NCollection_Vector<int>> detectCandidates(
                                      theFreeEdges.Value(anJ).Index,
                                      aFaceI))
             {
-              continue;
+              return;
             }
           }
 
           thePairs.Append({anI, anJ});
         }
-      }
+      });
     };
 
   if (theOptions.Parallel)
