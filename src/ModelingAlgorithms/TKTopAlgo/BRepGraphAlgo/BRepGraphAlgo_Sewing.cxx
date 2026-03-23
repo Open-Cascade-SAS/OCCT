@@ -41,6 +41,7 @@
 #include <NCollection_UBTreeFiller.hxx>
 #include <NCollection_Vector.hxx>
 #include <OSD_Parallel.hxx>
+#include <Standard_ErrorHandler.hxx>
 #include <Precision.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
@@ -1468,8 +1469,18 @@ void convertDegenerateEdges(BRepGraph&                   theGraph,
     else
     {
       // Curved edge shorter than chord — use full arc length.
-      GeomAdaptor_TransformedCurve aCurve = theGraph.Defs().CurveAdaptor(anEdgeId);
-      aLength = GCPnts_AbscissaPoint::Length(aCurve);
+      try
+      {
+        OCC_CATCH_SIGNALS
+        GeomAdaptor_TransformedCurve aCurve = theGraph.Defs().CurveAdaptor(anEdgeId);
+        aLength = GCPnts_AbscissaPoint::Length(aCurve);
+      }
+      catch (const Standard_Failure&)
+      {
+        // Fallback to chord length: safe because we only compare against vertex tolerance
+        // sum, and chord length is always <= arc length (triangle inequality).
+        aLength = aPtFirst.Distance(aPtLast);
+      }
     }
 
     // Sum vertex tolerances.

@@ -19,7 +19,6 @@
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraphAlgo_FaceAnalysis.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
-#include <Geom_Circle.hxx>
 #include <Precision.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -30,7 +29,7 @@
 
 TEST(BRepGraphAlgo_FaceAnalysisTest, NormalFace_Unaffected)
 {
-  // A normal box face should not be altered.
+  // A normal box should not be altered.
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
@@ -50,20 +49,18 @@ TEST(BRepGraphAlgo_FaceAnalysisTest, NormalFace_Unaffected)
   EXPECT_EQ(aResult.NbDeletedFaces, 0);
   EXPECT_EQ(aResult.DegeneratedEdges.Length(), 0);
   EXPECT_EQ(aResult.DeletedFaces.Length(), 0);
-
-  // Edge and face counts unchanged.
   EXPECT_EQ(aGraph.Defs().NbEdges(), aNbEdgesBefore);
   EXPECT_EQ(aGraph.Defs().NbFaces(), aNbFacesBefore);
 }
 
 TEST(BRepGraphAlgo_FaceAnalysisTest, SmallEdge_Detection)
 {
-  // Create a face with one small edge (shorter than MinTolerance but above Precision::Confusion).
-  // Quadrilateral with a tiny bottom edge (1e-5 units long).
+  // Quadrilateral with a tiny bottom edge (1e-5 units long, 3 normal edges ~10 units).
+  // With MinTolerance = 1e-2, only the tiny edge is detected as small.
   const gp_Pnt aP1(0, 0, 0);
   const gp_Pnt aP2(10, 0, 0);
   const gp_Pnt aP3(10, 10, 0);
-  const gp_Pnt aP4(0, 1.0e-5, 0); // tiny edge aP1->aP4
+  const gp_Pnt aP4(0, 1.0e-5, 0);
 
   BRepBuilderAPI_MakeWire aMW;
   aMW.Add(BRepBuilderAPI_MakeEdge(aP1, aP2).Edge());
@@ -80,19 +77,19 @@ TEST(BRepGraphAlgo_FaceAnalysisTest, SmallEdge_Detection)
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraphAlgo_FaceAnalysis::Options aOpts;
-  aOpts.MinTolerance = 1.0e-2; // large enough to catch the 1e-5 edge
+  aOpts.MinTolerance = 1.0e-2;
   BRepGraphAlgo_FaceAnalysis::Result aResult = BRepGraphAlgo_FaceAnalysis::Perform(aGraph, aOpts);
 
   EXPECT_TRUE(aResult.IsDone);
-  // The tiny edge aP4->aP1 should be detected as small.
-  EXPECT_GE(aResult.NbSmallEdges, 1);
-  EXPECT_GE(aResult.DegeneratedEdges.Length(), 1);
+  EXPECT_EQ(aResult.NbSmallEdges, 1);
+  EXPECT_EQ(aResult.DegeneratedEdges.Length(), 1);
+  EXPECT_EQ(aResult.NbDeletedFaces, 0);
 }
 
 TEST(BRepGraphAlgo_FaceAnalysisTest, SmallFace_Removal)
 {
-  // Create a face where ALL edges are tiny — face should be removed.
-  // Use edges small enough to be detected but above Precision::Confusion.
+  // A face where ALL 4 edges are tiny (1e-5 units) + a normal box face.
+  // With MinTolerance = 1e-2, all tiny edges are small → face removed.
   const double aTiny = 1.0e-5;
   const gp_Pnt aP1(0, 0, 0);
   const gp_Pnt aP2(aTiny, 0, 0);
@@ -106,7 +103,6 @@ TEST(BRepGraphAlgo_FaceAnalysisTest, SmallFace_Removal)
   aMW.Add(BRepBuilderAPI_MakeEdge(aP4, aP1).Edge());
   ASSERT_TRUE(aMW.IsDone());
 
-  // Also add a normal face so we have a compound.
   TopoDS_Face aTinyFace = BRepBuilderAPI_MakeFace(aMW.Wire(), true);
   ASSERT_FALSE(aTinyFace.IsNull());
 
@@ -129,22 +125,34 @@ TEST(BRepGraphAlgo_FaceAnalysisTest, SmallFace_Removal)
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraphAlgo_FaceAnalysis::Options aOpts;
-  aOpts.MinTolerance = 1.0e-2; // large enough to catch 1e-5 edges
+  aOpts.MinTolerance = 1.0e-2;
   BRepGraphAlgo_FaceAnalysis::Result aResult = BRepGraphAlgo_FaceAnalysis::Perform(aGraph, aOpts);
 
   EXPECT_TRUE(aResult.IsDone);
-  // The tiny face should be removed.
-  EXPECT_GE(aResult.NbDeletedFaces, 1);
-  EXPECT_GE(aResult.DeletedFaces.Length(), 1);
+  EXPECT_EQ(aResult.NbDeletedFaces, 1);
+  EXPECT_EQ(aResult.DeletedFaces.Length(), 1);
+  EXPECT_EQ(aResult.NbSmallEdges, 4);
+
+  // Verify the normal face is NOT removed.
+  int aNbRemainingFaces = 0;
+  for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
+  {
+    if (!aGraph.Defs().Face(aFaceIdx).IsRemoved)
+    {
+      ++aNbRemainingFaces;
+    }
+  }
+  EXPECT_EQ(aNbRemainingFaces, 1);
 }
 
 TEST(BRepGraphAlgo_FaceAnalysisTest, VertexGluing_AveragedCoordinates)
 {
-  // Create a face with a small edge; verify vertices are merged.
+  // A face with 1 small edge (aP4->aP1, 1e-5 long). After analysis, that edge's
+  // vertices should be merged (StartVertexIdx == EndVertexIdx).
   const gp_Pnt aP1(0, 0, 0);
   const gp_Pnt aP2(10, 0, 0);
   const gp_Pnt aP3(10, 10, 0);
-  const gp_Pnt aP4(0, 1.0e-5, 0); // small edge aP4->aP1
+  const gp_Pnt aP4(0, 1.0e-5, 0);
 
   BRepBuilderAPI_MakeWire aMW;
   aMW.Add(BRepBuilderAPI_MakeEdge(aP1, aP2).Edge());
@@ -165,15 +173,12 @@ TEST(BRepGraphAlgo_FaceAnalysisTest, VertexGluing_AveragedCoordinates)
   BRepGraphAlgo_FaceAnalysis::Result aResult = BRepGraphAlgo_FaceAnalysis::Perform(aGraph, aOpts);
 
   EXPECT_TRUE(aResult.IsDone);
-  EXPECT_GE(aResult.NbSmallEdges, 1);
+  EXPECT_EQ(aResult.NbSmallEdges, 1);
+  EXPECT_EQ(aResult.DegeneratedEdges.Length(), 1);
 
-  // After merging, the small edge's start and end vertices should point to the same index.
-  for (int i = 0; i < aResult.DegeneratedEdges.Length(); ++i)
-  {
-    const int anEdgeIdx = aResult.DegeneratedEdges.Value(i).Index;
-    const auto& anEdge = aGraph.Defs().Edge(anEdgeIdx);
-    EXPECT_TRUE(anEdge.IsDegenerate);
-    // Vertices merged: start == end.
-    EXPECT_EQ(anEdge.StartVertexIdx, anEdge.EndVertexIdx);
-  }
+  // The degenerated edge's vertices should be merged.
+  const int  anEdgeIdx = aResult.DegeneratedEdges.Value(0).Index;
+  const auto& anEdge    = aGraph.Defs().Edge(anEdgeIdx);
+  EXPECT_TRUE(anEdge.IsDegenerate);
+  EXPECT_EQ(anEdge.StartVertexIdx, anEdge.EndVertexIdx);
 }
