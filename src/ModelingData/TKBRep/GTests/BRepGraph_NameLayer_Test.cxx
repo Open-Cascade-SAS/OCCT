@@ -288,12 +288,8 @@ class BRepGraph_TestCounterLayer : public BRepGraph_Layer
 public:
   const TCollection_AsciiString& Name() const override { return myName; }
   void OnNodeRemoved(BRepGraph_NodeId, BRepGraph_NodeId) override { ++myRemoveCount; }
-  void OnCompact(const NCollection_DataMap<int, int>&,
-                 const NCollection_DataMap<int, int>&,
-                 const NCollection_DataMap<int, int>&,
-                 const NCollection_DataMap<int, int>&,
-                 const NCollection_DataMap<int, int>&,
-                 const NCollection_DataMap<int, int>&) override { ++myCompactCount; }
+  void OnCompact(
+    const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>&) override { ++myCompactCount; }
   void InvalidateAll() override {}
   void Clear() override {}
 
@@ -363,12 +359,12 @@ TEST(BRepGraph_NameLayerTest, OnCompact_RemapsNodeIds)
   aLayer->SetNodeName(BRepGraph_NodeId::Edge(3), "EdgeC");
   EXPECT_EQ(aLayer->NbNames(), 3);
 
-  NCollection_DataMap<int, int> aVertexMap, aEdgeMap, aWireMap, aFaceMap, aShellMap, aSolidMap;
-  aFaceMap.Bind(1, 0);
-  aFaceMap.Bind(2, 1);
-  aEdgeMap.Bind(3, 0);
+  NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId> aRemapMap;
+  aRemapMap.Bind(BRepGraph_NodeId::Face(1), BRepGraph_NodeId::Face(0));
+  aRemapMap.Bind(BRepGraph_NodeId::Face(2), BRepGraph_NodeId::Face(1));
+  aRemapMap.Bind(BRepGraph_NodeId::Edge(3), BRepGraph_NodeId::Edge(0));
 
-  aLayer->OnCompact(aVertexMap, aEdgeMap, aWireMap, aFaceMap, aShellMap, aSolidMap);
+  aLayer->OnCompact(aRemapMap);
 
   EXPECT_EQ(aLayer->NbNames(), 3);
   EXPECT_TRUE(aLayer->FindNodeName(BRepGraph_NodeId::Face(0))->IsEqual("FaceA"));
@@ -388,11 +384,11 @@ TEST(BRepGraph_NameLayerTest, OnCompact_RemovedNodesDropped)
   aLayer->SetNodeName(BRepGraph_NodeId::Face(1), "SurvivingFace");
   EXPECT_EQ(aLayer->NbNames(), 2);
 
-  NCollection_DataMap<int, int> aVertexMap, aEdgeMap, aWireMap, aFaceMap, aShellMap, aSolidMap;
+  NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId> aRemapMap;
   // Face 0 not in map = removed during compact. Face 1 remapped to 0.
-  aFaceMap.Bind(1, 0);
+  aRemapMap.Bind(BRepGraph_NodeId::Face(1), BRepGraph_NodeId::Face(0));
 
-  aLayer->OnCompact(aVertexMap, aEdgeMap, aWireMap, aFaceMap, aShellMap, aSolidMap);
+  aLayer->OnCompact(aRemapMap);
 
   EXPECT_EQ(aLayer->NbNames(), 1);
   EXPECT_TRUE(aLayer->FindNodeName(BRepGraph_NodeId::Face(0))->IsEqual("SurvivingFace"));
@@ -402,10 +398,10 @@ TEST(BRepGraph_NameLayerTest, OnCompact_EmptyLayer)
 {
   Handle(BRepGraph_NameLayer) aLayer = new BRepGraph_NameLayer();
 
-  NCollection_DataMap<int, int> aVertexMap, aEdgeMap, aWireMap, aFaceMap, aShellMap, aSolidMap;
-  aFaceMap.Bind(0, 0);
+  NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId> aRemapMap;
+  aRemapMap.Bind(BRepGraph_NodeId::Face(0), BRepGraph_NodeId::Face(0));
 
-  aLayer->OnCompact(aVertexMap, aEdgeMap, aWireMap, aFaceMap, aShellMap, aSolidMap);
+  aLayer->OnCompact(aRemapMap);
   EXPECT_EQ(aLayer->NbNames(), 0);
 }
 
@@ -420,15 +416,15 @@ TEST(BRepGraph_NameLayerTest, OnCompact_MixedEntityKinds)
   aLayer->SetNodeName(BRepGraph_NodeId::Shell(0),  "Sh0");
   aLayer->SetNodeName(BRepGraph_NodeId::Solid(0),  "So0");
 
-  NCollection_DataMap<int, int> aVertexMap, aEdgeMap, aWireMap, aFaceMap, aShellMap, aSolidMap;
-  aVertexMap.Bind(5, 2);
-  aEdgeMap.Bind(3, 1);
-  aWireMap.Bind(2, 0);
-  aFaceMap.Bind(1, 0);
-  aShellMap.Bind(0, 0);
-  aSolidMap.Bind(0, 0);
+  NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId> aRemapMap;
+  aRemapMap.Bind(BRepGraph_NodeId::Vertex(5), BRepGraph_NodeId::Vertex(2));
+  aRemapMap.Bind(BRepGraph_NodeId::Edge(3),   BRepGraph_NodeId::Edge(1));
+  aRemapMap.Bind(BRepGraph_NodeId::Wire(2),   BRepGraph_NodeId::Wire(0));
+  aRemapMap.Bind(BRepGraph_NodeId::Face(1),   BRepGraph_NodeId::Face(0));
+  aRemapMap.Bind(BRepGraph_NodeId::Shell(0),  BRepGraph_NodeId::Shell(0));
+  aRemapMap.Bind(BRepGraph_NodeId::Solid(0),  BRepGraph_NodeId::Solid(0));
 
-  aLayer->OnCompact(aVertexMap, aEdgeMap, aWireMap, aFaceMap, aShellMap, aSolidMap);
+  aLayer->OnCompact(aRemapMap);
 
   EXPECT_EQ(aLayer->NbNames(), 6);
   EXPECT_TRUE(aLayer->FindNodeName(BRepGraph_NodeId::Vertex(2))->IsEqual("V5"));
@@ -437,6 +433,28 @@ TEST(BRepGraph_NameLayerTest, OnCompact_MixedEntityKinds)
   EXPECT_TRUE(aLayer->FindNodeName(BRepGraph_NodeId::Face(0))->IsEqual("F1"));
   EXPECT_TRUE(aLayer->FindNodeName(BRepGraph_NodeId::Shell(0))->IsEqual("Sh0"));
   EXPECT_TRUE(aLayer->FindNodeName(BRepGraph_NodeId::Solid(0))->IsEqual("So0"));
+}
+
+TEST(BRepGraph_NameLayerTest, OnCompact_CompoundNodesRemapped)
+{
+  Handle(BRepGraph_NameLayer) aLayer = new BRepGraph_NameLayer();
+
+  aLayer->SetNodeName(BRepGraph_NodeId::Compound(2), "MyCompound");
+  aLayer->SetNodeName(BRepGraph_NodeId::CompSolid(1), "MyCompSolid");
+  EXPECT_EQ(aLayer->NbNames(), 2);
+
+  NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId> aRemapMap;
+  aRemapMap.Bind(BRepGraph_NodeId::Compound(2), BRepGraph_NodeId::Compound(0));
+  aRemapMap.Bind(BRepGraph_NodeId::CompSolid(1), BRepGraph_NodeId::CompSolid(0));
+
+  aLayer->OnCompact(aRemapMap);
+
+  EXPECT_EQ(aLayer->NbNames(), 2);
+  EXPECT_TRUE(aLayer->FindNodeName(BRepGraph_NodeId::Compound(0))->IsEqual("MyCompound"));
+  EXPECT_TRUE(aLayer->FindNodeName(BRepGraph_NodeId::CompSolid(0))->IsEqual("MyCompSolid"));
+  // Old IDs dropped.
+  EXPECT_EQ(aLayer->FindNodeName(BRepGraph_NodeId::Compound(2)), nullptr);
+  EXPECT_EQ(aLayer->FindNodeName(BRepGraph_NodeId::CompSolid(1)), nullptr);
 }
 
 // ============================================================

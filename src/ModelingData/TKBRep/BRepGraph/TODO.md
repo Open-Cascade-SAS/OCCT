@@ -101,6 +101,13 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 - Zero-cost: `myHasModificationSubscribers` flag skips all dispatch when no layer subscribes
 - **Result**: Layers can now react to geometry mutations, not just structural changes (OnNodeRemoved)
 
+### ~~OnCompact Unified Remap Map~~ — DONE (2026-03-20)
+- Replaced 6-argument `OnCompact(vertexMap, edgeMap, wireMap, faceMap, shellMap, solidMap)` with single `DataMap<BRepGraph_NodeId, BRepGraph_NodeId>`
+- Fixed data-loss bug: Compound/CompSolid remaps were built by Compact but never passed to layers
+- `BRepGraph_NameLayer::OnCompact` simplified from per-kind switch to single map lookup
+- Unified map built in `BRepGraphAlgo_Compact` from all 8 per-kind maps, extensible for future kinds
+- **Result**: All 8 node kinds correctly remapped for layers; simpler layer implementation
+
 ### Core/Extension RelEdge split [Arch] ★★★
 - Keep only fundamental relations in main graph
 - Move algorithm-specific relations to named `BRepGraph_RelationStore` via `ExtensionView`
@@ -140,7 +147,7 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 - `BRepGraph_AssemblyQuery` utility for complex queries (ResolveAttribute, LeafParts, OccurrencePath)
 - Replaces XCAFDoc_ShapeTool's Shape/Reference/Component model
 - XDE bridge (`BRepGraphDE_PopulateAssembly`) lives in DataExchange/TKXCAF (uses TKXCAF internally; TKBRep itself has no TKXCAF dependency)
-- Phase 3 fixes OnCompact signature: `DataMap<BRepGraph_NodeId, BRepGraph_NodeId>` unified remap map replaces 6 per-kind `DataMap<int, int>` arguments
+- ~~Phase 3 OnCompact signature fix~~ — DONE: `DataMap<BRepGraph_NodeId, BRepGraph_NodeId>` unified remap map
 - 7 phases: Phase 1: Data Model → Phase 2: Core API Integration → Phase 3: OnCompact Signature Fix → Phase 4: XDE Population Bridge → Phase 5: Reconstruction → Phase 6: DE Metadata on Assembly Nodes → Phase 7: Testing
 
 ### Compact remapping in history [Arch] ★★★

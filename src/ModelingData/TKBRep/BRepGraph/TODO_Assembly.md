@@ -365,7 +365,7 @@ Extend `Build()` to process product/occurrence vectors for the forward direction
 
 ---
 
-## Phase 3: OnCompact Signature Unification
+## Phase 3: OnCompact Signature Unification — DONE (2026-03-20)
 
 ### 3.1 Problem
 

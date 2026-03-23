@@ -533,32 +533,16 @@ public:
     myData.UnBind(theNode);
   }
 
-  void OnCompact(const NCollection_DataMap<int, int>& theVertexMap,
-                 const NCollection_DataMap<int, int>& theEdgeMap,
-                 const NCollection_DataMap<int, int>& theWireMap,
-                 const NCollection_DataMap<int, int>& theFaceMap,
-                 const NCollection_DataMap<int, int>& theShellMap,
-                 const NCollection_DataMap<int, int>& theSolidMap) override
+  void OnCompact(
+    const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap) override
   {
     NCollection_DataMap<BRepGraph_NodeId, int> aRemapped;
     for (NCollection_DataMap<BRepGraph_NodeId, int>::Iterator
            anIter(myData); anIter.More(); anIter.Next())
     {
-      const BRepGraph_NodeId& anOldId = anIter.Key();
-      const NCollection_DataMap<int, int>* aMap = nullptr;
-      switch (anOldId.NodeKind)
-      {
-        case BRepGraph_NodeId::Kind::Vertex: aMap = &theVertexMap; break;
-        case BRepGraph_NodeId::Kind::Edge:   aMap = &theEdgeMap;   break;
-        case BRepGraph_NodeId::Kind::Wire:   aMap = &theWireMap;   break;
-        case BRepGraph_NodeId::Kind::Face:   aMap = &theFaceMap;   break;
-        case BRepGraph_NodeId::Kind::Shell:  aMap = &theShellMap;  break;
-        case BRepGraph_NodeId::Kind::Solid:  aMap = &theSolidMap;  break;
-        default: continue;
-      }
-      const int* aNewIdx = aMap->Seek(anOldId.Index);
-      if (aNewIdx != nullptr)
-        aRemapped.Bind(BRepGraph_NodeId(anOldId.NodeKind, *aNewIdx), anIter.Value());
+      const BRepGraph_NodeId* aNewId = theRemapMap.Seek(anIter.Key());
+      if (aNewId != nullptr)
+        aRemapped.Bind(*aNewId, anIter.Value());
     }
     myData = std::move(aRemapped);
   }

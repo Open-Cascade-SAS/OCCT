@@ -54,20 +54,14 @@ public:
   virtual void OnNodeRemoved(BRepGraph_NodeId theNode,
                              BRepGraph_NodeId theReplacement) = 0;
 
-  //! Called after Compact with per-kind old->new index maps.
-  //! Layer must remap all internal NodeId references.
-  //! @param[in] theVertexMap vertex old->new index map
-  //! @param[in] theEdgeMap   edge old->new index map
-  //! @param[in] theWireMap   wire old->new index map
-  //! @param[in] theFaceMap   face old->new index map
-  //! @param[in] theShellMap  shell old->new index map
-  //! @param[in] theSolidMap  solid old->new index map
-  virtual void OnCompact(const NCollection_DataMap<int, int>& theVertexMap,
-                         const NCollection_DataMap<int, int>& theEdgeMap,
-                         const NCollection_DataMap<int, int>& theWireMap,
-                         const NCollection_DataMap<int, int>& theFaceMap,
-                         const NCollection_DataMap<int, int>& theShellMap,
-                         const NCollection_DataMap<int, int>& theSolidMap) = 0;
+  //! Called after Compact with a unified old->new remap map.
+  //! Layer must remap all internal NodeId references using this map.
+  //! The map covers all node kinds (Vertex through CompSolid and future extensions).
+  //! Nodes absent from the map were removed during compaction — layers should
+  //! drop data associated with those nodes.
+  //! @param[in] theRemapMap maps old NodeId to new NodeId for all surviving nodes
+  virtual void OnCompact(
+    const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap) = 0;
 
   //! Mark all cached values dirty (bulk invalidation).
   virtual void InvalidateAll() = 0;

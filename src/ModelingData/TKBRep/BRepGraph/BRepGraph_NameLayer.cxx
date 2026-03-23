@@ -65,34 +65,16 @@ void BRepGraph_NameLayer::OnNodeRemoved(BRepGraph_NodeId theNode,
 
 //=================================================================================================
 
-void BRepGraph_NameLayer::OnCompact(const NCollection_DataMap<int, int>& theVertexMap,
-                                    const NCollection_DataMap<int, int>& theEdgeMap,
-                                    const NCollection_DataMap<int, int>& theWireMap,
-                                    const NCollection_DataMap<int, int>& theFaceMap,
-                                    const NCollection_DataMap<int, int>& theShellMap,
-                                    const NCollection_DataMap<int, int>& theSolidMap)
+void BRepGraph_NameLayer::OnCompact(
+  const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap)
 {
   NCollection_DataMap<BRepGraph_NodeId, TCollection_ExtendedString> aRemapped;
   for (NCollection_DataMap<BRepGraph_NodeId, TCollection_ExtendedString>::Iterator
          anIter(myNames); anIter.More(); anIter.Next())
   {
-    const BRepGraph_NodeId& anOldId = anIter.Key();
-    BRepGraph_NodeId aNewId;
-    switch (anOldId.NodeKind)
-    {
-      case BRepGraph_NodeId::Kind::Vertex:    aNewId = remapNodeId(anOldId, theVertexMap); break;
-      case BRepGraph_NodeId::Kind::Edge:      aNewId = remapNodeId(anOldId, theEdgeMap);   break;
-      case BRepGraph_NodeId::Kind::Wire:      aNewId = remapNodeId(anOldId, theWireMap);   break;
-      case BRepGraph_NodeId::Kind::Face:      aNewId = remapNodeId(anOldId, theFaceMap);   break;
-      case BRepGraph_NodeId::Kind::Shell:     aNewId = remapNodeId(anOldId, theShellMap);  break;
-      case BRepGraph_NodeId::Kind::Solid:     aNewId = remapNodeId(anOldId, theSolidMap);  break;
-      case BRepGraph_NodeId::Kind::Compound:  break;
-      case BRepGraph_NodeId::Kind::CompSolid: break;
-    }
-    if (aNewId.IsValid())
-    {
-      aRemapped.Bind(aNewId, anIter.Value());
-    }
+    const BRepGraph_NodeId* aNewId = theRemapMap.Seek(anIter.Key());
+    if (aNewId != nullptr)
+      aRemapped.Bind(*aNewId, anIter.Value());
   }
   myNames = std::move(aRemapped);
 }
@@ -109,15 +91,4 @@ void BRepGraph_NameLayer::InvalidateAll()
 void BRepGraph_NameLayer::Clear()
 {
   myNames.Clear();
-}
-
-//=================================================================================================
-
-BRepGraph_NodeId BRepGraph_NameLayer::remapNodeId(BRepGraph_NodeId                     theId,
-                                                  const NCollection_DataMap<int, int>& theMap)
-{
-  const int* aNewIdx = theMap.Seek(theId.Index);
-  if (aNewIdx == nullptr)
-    return BRepGraph_NodeId();
-  return BRepGraph_NodeId(theId.NodeKind, *aNewIdx);
 }

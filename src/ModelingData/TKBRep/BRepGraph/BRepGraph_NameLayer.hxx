@@ -45,12 +45,8 @@ public:
   Standard_EXPORT void OnNodeRemoved(BRepGraph_NodeId theNode,
                                      BRepGraph_NodeId theReplacement) override;
 
-  Standard_EXPORT void OnCompact(const NCollection_DataMap<int, int>& theVertexMap,
-                                 const NCollection_DataMap<int, int>& theEdgeMap,
-                                 const NCollection_DataMap<int, int>& theWireMap,
-                                 const NCollection_DataMap<int, int>& theFaceMap,
-                                 const NCollection_DataMap<int, int>& theShellMap,
-                                 const NCollection_DataMap<int, int>& theSolidMap) override;
+  Standard_EXPORT void OnCompact(
+    const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap) override;
 
   Standard_EXPORT void InvalidateAll() override;
 
@@ -59,11 +55,6 @@ public:
   DEFINE_STANDARD_RTTIEXT(BRepGraph_NameLayer, BRepGraph_Layer)
 
 private:
-  //! Remap a single NodeId through a per-kind index map.
-  //! @return remapped NodeId, or invalid if not in map (removed during compact).
-  static BRepGraph_NodeId remapNodeId(BRepGraph_NodeId                  theId,
-                                      const NCollection_DataMap<int, int>& theMap);
-
   NCollection_DataMap<BRepGraph_NodeId, TCollection_ExtendedString> myNames;
 };
 

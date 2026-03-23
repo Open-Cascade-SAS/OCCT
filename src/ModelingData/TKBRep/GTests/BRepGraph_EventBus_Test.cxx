@@ -47,12 +47,8 @@ public:
 
   void OnNodeRemoved(BRepGraph_NodeId /*theNode*/, BRepGraph_NodeId /*theReplacement*/) override {}
 
-  void OnCompact(const NCollection_DataMap<int, int>& /*theVertexMap*/,
-                 const NCollection_DataMap<int, int>& /*theEdgeMap*/,
-                 const NCollection_DataMap<int, int>& /*theWireMap*/,
-                 const NCollection_DataMap<int, int>& /*theFaceMap*/,
-                 const NCollection_DataMap<int, int>& /*theShellMap*/,
-                 const NCollection_DataMap<int, int>& /*theSolidMap*/) override {}
+  void OnCompact(
+    const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& /*theRemapMap*/) override {}
 
   void InvalidateAll() override {}
   void Clear() override

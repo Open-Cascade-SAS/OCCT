@@ -478,10 +478,30 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
 
   // Restore layers and notify about index remapping.
   theGraph.myLayers = std::move(aSavedLayers);
+
+  // Build unified remap map covering all 8 topology kinds.
+  NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId> aRemapMap;
+  for (NCollection_DataMap<int, int>::Iterator it(aVertexMap); it.More(); it.Next())
+    aRemapMap.Bind(BRepGraph_NodeId::Vertex(it.Key()), BRepGraph_NodeId::Vertex(it.Value()));
+  for (NCollection_DataMap<int, int>::Iterator it(anEdgeMap); it.More(); it.Next())
+    aRemapMap.Bind(BRepGraph_NodeId::Edge(it.Key()), BRepGraph_NodeId::Edge(it.Value()));
+  for (NCollection_DataMap<int, int>::Iterator it(aWireMap); it.More(); it.Next())
+    aRemapMap.Bind(BRepGraph_NodeId::Wire(it.Key()), BRepGraph_NodeId::Wire(it.Value()));
+  for (NCollection_DataMap<int, int>::Iterator it(aFaceMap); it.More(); it.Next())
+    aRemapMap.Bind(BRepGraph_NodeId::Face(it.Key()), BRepGraph_NodeId::Face(it.Value()));
+  for (NCollection_DataMap<int, int>::Iterator it(aShellMap); it.More(); it.Next())
+    aRemapMap.Bind(BRepGraph_NodeId::Shell(it.Key()), BRepGraph_NodeId::Shell(it.Value()));
+  for (NCollection_DataMap<int, int>::Iterator it(aSolidMap); it.More(); it.Next())
+    aRemapMap.Bind(BRepGraph_NodeId::Solid(it.Key()), BRepGraph_NodeId::Solid(it.Value()));
+  for (NCollection_DataMap<int, int>::Iterator it(aCompoundMap); it.More(); it.Next())
+    aRemapMap.Bind(BRepGraph_NodeId::Compound(it.Key()), BRepGraph_NodeId::Compound(it.Value()));
+  for (NCollection_DataMap<int, int>::Iterator it(aCompSolidMap); it.More(); it.Next())
+    aRemapMap.Bind(BRepGraph_NodeId::CompSolid(it.Key()), BRepGraph_NodeId::CompSolid(it.Value()));
+
   for (NCollection_DataMap<TCollection_AsciiString, Handle(BRepGraph_Layer)>::Iterator
          anIter(theGraph.myLayers); anIter.More(); anIter.Next())
   {
-    anIter.Value()->OnCompact(aVertexMap, anEdgeMap, aWireMap, aFaceMap, aShellMap, aSolidMap);
+    anIter.Value()->OnCompact(aRemapMap);
   }
 
   BRepGraph_Mutator::CommitMutation(theGraph);
