@@ -280,9 +280,9 @@ void BRepGraphCheck::CheckWireOnFace(
       if (aFirstPC->Curve2DRepIdx >= 0 && aLastPC->Curve2DRepIdx >= 0)
       {
         const occ::handle<Geom2d_Curve>& aFirstPCCurve =
-          aDefs.Curve2DRep(aFirstPC->Curve2DRepIdx).Curve;
+          BRepGraph_Tool::PCurve(theGraph, *aFirstPC);
         const occ::handle<Geom2d_Curve>& aLastPCCurve =
-          aDefs.Curve2DRep(aLastPC->Curve2DRepIdx).Curve;
+          BRepGraph_Tool::PCurve(theGraph, *aLastPC);
         // Evaluate UV at wire-start of first edge and wire-end of last edge.
         const double aFirstParam = (aFirstCoEdge.Sense == TopAbs_FORWARD)
                                      ? aFirstPC->ParamFirst
@@ -375,7 +375,7 @@ void BRepGraphCheck::CheckWireOnFace(
     }
 
     const occ::handle<Geom2d_Curve>& aWirePC2d =
-      aDefs.Curve2DRep(aPCurve->Curve2DRepIdx).Curve;
+      BRepGraph_Tool::PCurve(theGraph, *aPCurve);
     if (aWirePC2d.IsNull())
     {
       aPCurveData.Append(EdgePCurveData());

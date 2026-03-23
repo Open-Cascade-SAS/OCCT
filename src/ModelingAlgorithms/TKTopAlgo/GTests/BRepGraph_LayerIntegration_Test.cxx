@@ -21,6 +21,7 @@
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_Layer.hxx>
+#include <BRepGraph_Tool.hxx>
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_NameLayer.hxx>
 #include <BRepGraphAlgo_Compact.hxx>
@@ -398,9 +399,9 @@ TEST(BRepGraph_LayerIntegrationTest, SplitEdge_OriginalEdgeRemoved)
   aLayer->SetNodeName(aSplitEdgeId, "OriginalEdge");
 
   // Create a split vertex.
-  const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(aSplitEdgeIdx);
-  const double aMidParam = 0.5 * (anEdge.ParamFirst + anEdge.ParamLast);
-  const gp_Pnt aMidPnt = aGraph.Defs().Curve3DRep(anEdge.Curve3DRepIdx).Curve->EvalD0(aMidParam);
+  const auto [aEdgeFirst, aEdgeLast] = BRepGraph_Tool::Range(aGraph, aSplitEdgeIdx);
+  const double aMidParam = 0.5 * (aEdgeFirst + aEdgeLast);
+  const gp_Pnt aMidPnt = BRepGraph_Tool::Curve(aGraph, aSplitEdgeIdx)->EvalD0(aMidParam);
   const BRepGraph_NodeId aSplitVtx = aGraph.Builder().AddVertexDef(aMidPnt, Precision::Confusion());
 
   // Split the edge.

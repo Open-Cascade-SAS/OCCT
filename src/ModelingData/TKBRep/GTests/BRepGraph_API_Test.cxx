@@ -21,6 +21,7 @@
 #include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_SpatialView.hxx>
+#include <BRepGraph_Tool.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
@@ -500,12 +501,12 @@ TEST(BRepGraphAPI_MutableDefTest, MutableFaceDefinition_ChangesTolerance)
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Defs().NbFaces(), 0);
 
-  const double anOrigTol = aGraph.Defs().Face(0).Tolerance;
+  const double anOrigTol = BRepGraph_Tool::ToleranceFace(aGraph, 0);
   {
     BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aFaceDef = aGraph.Mut().FaceDef(0);
     aFaceDef->Tolerance = 0.5;
   }
-  EXPECT_NEAR(aGraph.Defs().Face(0).Tolerance, 0.5, 1e-10);
+  EXPECT_NEAR(BRepGraph_Tool::ToleranceFace(aGraph, 0), 0.5, 1e-10);
   EXPECT_TRUE(aGraph.Defs().Face(0).IsModified);
   (void)anOrigTol;
 }

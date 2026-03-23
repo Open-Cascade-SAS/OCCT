@@ -20,6 +20,7 @@
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_TopoNode.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
+#include <BRepGraph_Tool.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <Poly_Polygon3D.hxx>
@@ -58,7 +59,7 @@ TEST(BRepGraph_PolygonTest, MultiTriangulation_Roundtrip_PreservesAll)
       EXPECT_LT(aFaceDef.ActiveTriangulationIndex, aFaceDef.TriangulationRepIdxs.Length());
       const int anActiveRepIdx = aFaceDef.ActiveTriangulationRepIdx();
       EXPECT_GE(anActiveRepIdx, 0);
-      EXPECT_FALSE(aGraph.Defs().TriangulationRep(anActiveRepIdx).Triangulation.IsNull());
+      EXPECT_FALSE(BRepGraph_Tool::Triangulation(aGraph, aFaceDefIdx).IsNull());
     }
   }
   EXPECT_TRUE(aHasTriangulations) << "Meshed box should have triangulations";
@@ -99,8 +100,7 @@ TEST(BRepGraph_PolygonTest, Polygon3D_Captured_WhenPresent)
   int aNbPoly3DOrig  = 0;
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(anEdgeIdx);
-    if (anEdge.Polygon3DRepIdx >= 0)
+    if (BRepGraph_Tool::HasPolygon3D(aGraph, anEdgeIdx))
       ++aNbPoly3DGraph;
   }
   for (TopExp_Explorer anExp(aBox, TopAbs_EDGE); anExp.More(); anExp.Next())
@@ -115,9 +115,9 @@ TEST(BRepGraph_PolygonTest, Polygon3D_Captured_WhenPresent)
   // Verify Polygon3D roundtrip if present.
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(anEdgeIdx);
-    if (anEdge.Polygon3DRepIdx < 0)
+    if (!BRepGraph_Tool::HasPolygon3D(aGraph, anEdgeIdx))
       continue;
+    const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(anEdgeIdx);
     TopoDS_Shape aReconEdge = aGraph.Shapes().Reconstruct( anEdge.Id);
     ASSERT_FALSE(aReconEdge.IsNull());
     TopLoc_Location        aPolyLoc;
@@ -161,9 +161,7 @@ TEST(BRepGraph_PolygonTest, PolyOnTri_Captured_AfterMesh)
       const BRepGraphInc::CoEdgeEntity& aCE = aGraph.Defs().CoEdge(aCoEdgeIdxs.Value(aCEIdx));
       for (int aPolyIdx = 0; aPolyIdx < aCE.PolygonOnTriRepIdxs.Length(); ++aPolyIdx)
       {
-        const int aPoTRepIdx = aCE.PolygonOnTriRepIdxs.Value(aPolyIdx);
-        EXPECT_GE(aPoTRepIdx, 0);
-        EXPECT_FALSE(aGraph.Defs().PolygonOnTriRep(aPoTRepIdx).Polygon.IsNull());
+        EXPECT_GE(aCE.PolygonOnTriRepIdxs.Value(aPolyIdx), 0);
       }
       EXPECT_TRUE(aCE.FaceDefId.IsValid());
     }

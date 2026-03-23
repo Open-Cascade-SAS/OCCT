@@ -21,6 +21,7 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_TopoNode.hxx>
+#include <BRepGraph_Tool.hxx>
 #include <BRepGraphCheck.hxx>
 #include <BRepGraphCheck_Analyzer.hxx>
 #include <BRepGraphCheck_Issue.hxx>
@@ -644,15 +645,12 @@ TEST(BRepGraphCheck_AnalyzerTest, MissingPCurve_DetectsNoCurveOnSurface)
   bool aHasNoCurveOnSurface = false;
   for (int anEdgeIter = 0; anEdgeIter < aDefs.NbEdges(); ++anEdgeIter)
   {
-    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(anEdgeIter);
-    if (anEdgeDef.IsDegenerate)
+    if (BRepGraph_Tool::Degenerated(aGraph, anEdgeIter))
       continue;
 
     // Check if this edge has a PCurve on face 0.
-    const BRepGraph_NodeId aEdgeNodeId(BRepGraph_NodeId::Kind::Edge, anEdgeIter);
-    const BRepGraph_NodeId aFaceNodeId(BRepGraph_NodeId::Kind::Face, 0);
     const BRepGraphInc::CoEdgeEntity* aPCEntry =
-      aGraph.Defs().FindPCurve(aEdgeNodeId, aFaceNodeId);
+      BRepGraph_Tool::FindPCurve(aGraph, anEdgeIter, 0);
     if (aPCEntry != nullptr)
       continue; // This edge has a PCurve on face 0, skip it.
 

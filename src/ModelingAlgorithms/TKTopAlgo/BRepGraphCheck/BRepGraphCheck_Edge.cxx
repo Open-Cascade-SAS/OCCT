@@ -241,7 +241,7 @@ void BRepGraphCheck::CheckEdgeOnFace(
     return;
 
   const occ::handle<Geom2d_Curve>& aPCurve2d =
-    aDefs.Curve2DRep(aPCurve->Curve2DRepIdx).Curve;
+    BRepGraph_Tool::PCurve(theGraph, *aPCurve);
   if (aPCurve2d.IsNull())
     return;
 

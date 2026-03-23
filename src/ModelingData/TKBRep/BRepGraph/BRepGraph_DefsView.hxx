@@ -181,54 +181,11 @@ public:
   //! Number of 3D polygon representations.
   Standard_EXPORT int NbPolygons3D() const;
 
-  //! Access surface representation by index.
-  Standard_EXPORT const BRepGraphInc::SurfaceRep& SurfaceRep(int theIdx) const;
-
-  //! Access 3D curve representation by index.
-  Standard_EXPORT const BRepGraphInc::Curve3DRep& Curve3DRep(int theIdx) const;
-
-  //! Access 2D curve representation by index.
-  Standard_EXPORT const BRepGraphInc::Curve2DRep& Curve2DRep(int theIdx) const;
-
-  //! Access triangulation representation by index.
-  Standard_EXPORT const BRepGraphInc::TriangulationRep& TriangulationRep(int theIdx) const;
-
-  //! Access 3D polygon representation by index.
-  Standard_EXPORT const BRepGraphInc::Polygon3DRep& Polygon3DRep(int theIdx) const;
-
   //! Number of 2D polygon representations.
   Standard_EXPORT int NbPolygons2D() const;
 
   //! Number of polygon-on-triangulation representations.
   Standard_EXPORT int NbPolygonsOnTri() const;
-
-  //! Access 2D polygon representation by index.
-  Standard_EXPORT const BRepGraphInc::Polygon2DRep& Polygon2DRep(int theIdx) const;
-
-  //! Access polygon-on-triangulation representation by index.
-  Standard_EXPORT const BRepGraphInc::PolygonOnTriRep& PolygonOnTriRep(int theIdx) const;
-
-  // -- Convenience geometry accessors (resolve rep index in one call) --
-
-  //! Return the surface handle for a face, or null if no surface.
-  //! @param[in] theFaceIdx zero-based face definition index
-  Standard_EXPORT const occ::handle<Geom_Surface>& FaceSurface(int theFaceIdx) const;
-
-  //! Return the 3D curve handle for an edge, or null if no curve.
-  //! @param[in] theEdgeIdx zero-based edge definition index
-  Standard_EXPORT const occ::handle<Geom_Curve>& EdgeCurve3D(int theEdgeIdx) const;
-
-  //! Return the PCurve handle for a coedge, or null if no PCurve.
-  //! @param[in] theCoEdgeIdx zero-based coedge definition index
-  Standard_EXPORT const occ::handle<Geom2d_Curve>& CoEdgeCurve2D(int theCoEdgeIdx) const;
-
-  //! Return the active triangulation handle for a face, or null if none.
-  //! @param[in] theFaceIdx zero-based face definition index
-  Standard_EXPORT const occ::handle<Poly_Triangulation>& FaceActiveTriangulation(int theFaceIdx) const;
-
-  //! Return the 3D polygon handle for an edge, or null if no polygon.
-  //! @param[in] theEdgeIdx zero-based edge definition index
-  Standard_EXPORT const occ::handle<Poly_Polygon3D>& EdgePolygon3D(int theEdgeIdx) const;
 
   // -- Geometry query methods --
 
@@ -253,50 +210,31 @@ public:
   Standard_EXPORT const BRepGraphInc::CoEdgeEntity* FindPCurve(
     const BRepGraph_PCurveContext& theContext) const;
 
-  //! Build a GeomAdaptor_TransformedCurve for an edge definition.
-  //! @param[in] theEdgeDef edge definition NodeId
-  Standard_EXPORT GeomAdaptor_TransformedCurve CurveAdaptor(BRepGraph_NodeId theEdgeDef) const;
-
-  //! Build a GeomAdaptor_TransformedCurve for a specific edge node.
-  //! @param[in] theEdgeDef   edge definition NodeId
-  //! @param[in] theEdgeNode  edge node id (reserved for per-node transform)
-  Standard_EXPORT GeomAdaptor_TransformedCurve CurveAdaptor(BRepGraph_NodeId  theEdgeDef,
-                                                            BRepGraph_NodeId  theEdgeNode) const;
-
-  //! Build a curve-on-surface adaptor from edge's inline PCurve on a face.
-  //! @param[in] theEdgeDef edge definition NodeId
-  //! @param[in] theFaceDef face definition NodeId
-  Standard_EXPORT occ::handle<Adaptor3d_CurveOnSurface>
-    CurveOnSurfaceAdaptor(BRepGraph_NodeId theEdgeDef,
-                          BRepGraph_NodeId theFaceDef) const;
-
-  //! Overload with explicit edge orientation for seam edges.
-  //! @param[in] theEdgeDef           edge definition NodeId
-  //! @param[in] theFaceDef           face definition NodeId
-  //! @param[in] theEdgeOrientation   edge orientation on the face
-  Standard_EXPORT occ::handle<Adaptor3d_CurveOnSurface>
-    CurveOnSurfaceAdaptor(BRepGraph_NodeId   theEdgeDef,
-                          BRepGraph_NodeId   theFaceDef,
-                          TopAbs_Orientation theEdgeOrientation) const;
-
-  //! Build a GeomAdaptor_TransformedSurface for a face definition.
-  //! @param[in] theFaceDef face definition NodeId
-  Standard_EXPORT GeomAdaptor_TransformedSurface SurfaceAdaptor(BRepGraph_NodeId theFaceDef) const;
-
-  //! Build a GeomAdaptor_TransformedSurface with explicit UV bounds.
-  //! @param[in] theFaceDef face definition NodeId
-  //! @param[in] theUFirst  minimum U parameter
-  //! @param[in] theULast   maximum U parameter
-  //! @param[in] theVFirst  minimum V parameter
-  //! @param[in] theVLast   maximum V parameter
-  Standard_EXPORT GeomAdaptor_TransformedSurface SurfaceAdaptor(BRepGraph_NodeId theFaceDef,
-                                                                double           theUFirst,
-                                                                double           theULast,
-                                                                double           theVFirst,
-                                                                double           theVLast) const;
-
 private:
   friend class BRepGraph;
+  friend class BRepGraph_Tool;
+
+  //! Access surface representation by index.
+  Standard_EXPORT const BRepGraphInc::SurfaceRep& SurfaceRep(int theIdx) const;
+
+  //! Access 3D curve representation by index.
+  Standard_EXPORT const BRepGraphInc::Curve3DRep& Curve3DRep(int theIdx) const;
+
+  //! Access 2D curve representation by index.
+  Standard_EXPORT const BRepGraphInc::Curve2DRep& Curve2DRep(int theIdx) const;
+
+  //! Access triangulation representation by index.
+  Standard_EXPORT const BRepGraphInc::TriangulationRep& TriangulationRep(int theIdx) const;
+
+  //! Access 3D polygon representation by index.
+  Standard_EXPORT const BRepGraphInc::Polygon3DRep& Polygon3DRep(int theIdx) const;
+
+  //! Access 2D polygon representation by index.
+  Standard_EXPORT const BRepGraphInc::Polygon2DRep& Polygon2DRep(int theIdx) const;
+
+  //! Access polygon-on-triangulation representation by index.
+  Standard_EXPORT const BRepGraphInc::PolygonOnTriRep& PolygonOnTriRep(int theIdx) const;
+
   explicit DefsView(const BRepGraph* theGraph) : myGraph(theGraph) {}
   const BRepGraph* myGraph;
 };

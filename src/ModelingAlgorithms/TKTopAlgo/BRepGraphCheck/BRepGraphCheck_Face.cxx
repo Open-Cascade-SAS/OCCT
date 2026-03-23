@@ -64,7 +64,7 @@ static double computeWireSignedArea(const BRepGraph&                           t
       continue;
 
     const occ::handle<Geom2d_Curve>& aPCurve2d =
-      aDefs.Curve2DRep(aPCurve->Curve2DRepIdx).Curve;
+      BRepGraph_Tool::PCurve(theGraph, *aPCurve);
     if (aPCurve2d.IsNull())
       continue;
 
@@ -148,7 +148,7 @@ static void collectWirePCurves(const BRepGraph&                   theGraph,
     }
 
     const occ::handle<Geom2d_Curve>& aCollectedPC2d =
-      aDefs.Curve2DRep(aPCurve->Curve2DRepIdx).Curve;
+      BRepGraph_Tool::PCurve(theGraph, *aPCurve);
     if (aCollectedPC2d.IsNull())
     {
       theResult.Edges.Append(WirePCurveSet::EdgeData());

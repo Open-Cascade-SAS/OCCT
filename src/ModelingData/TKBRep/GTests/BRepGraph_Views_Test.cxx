@@ -26,6 +26,7 @@
 #include <BRepGraph_UIDsView.hxx>
 #include <BRepGraphAlgo_BndLib.hxx>
 
+#include <BRepGraph_Tool.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <Precision.hxx>
 #include <gp_Pnt.hxx>
@@ -128,7 +129,7 @@ TEST_F(BRepGraphViewsTest, DefsView_FaceSurface_NonNull)
 {
   for (int anIdx = 0; anIdx < myGraph.Defs().NbFaces(); ++anIdx)
   {
-    EXPECT_GE(myGraph.Defs().Face(anIdx).SurfaceRepIdx, 0)
+    EXPECT_TRUE(BRepGraph_Tool::HasSurface(myGraph, anIdx))
       << "Face " << anIdx << " has no surface representation";
   }
 }
@@ -137,18 +138,16 @@ TEST_F(BRepGraphViewsTest, DefsView_EdgeCurve3d_NonNull)
 {
   for (int anIdx = 0; anIdx < myGraph.Defs().NbEdges(); ++anIdx)
   {
-    EXPECT_GE(myGraph.Defs().Edge(anIdx).Curve3DRepIdx, 0)
+    EXPECT_TRUE(BRepGraph_Tool::HasCurve(myGraph, anIdx))
       << "Edge " << anIdx << " has no Curve3D representation";
   }
 }
 
 TEST_F(BRepGraphViewsTest, DefsView_FindPCurve_NoCrash)
 {
-  BRepGraph_NodeId anEdgeId(BRepGraph_NodeId::Kind::Edge, 0);
-  BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
   // FindPCurve may or may not return a non-null pointer for an arbitrary edge/face pair.
   // Just verify it does not crash.
-  myGraph.Defs().FindPCurve(anEdgeId, aFaceId);
+  BRepGraph_Tool::FindPCurve(myGraph, 0, 0);
 }
 
 // ---------- UIDsView ----------

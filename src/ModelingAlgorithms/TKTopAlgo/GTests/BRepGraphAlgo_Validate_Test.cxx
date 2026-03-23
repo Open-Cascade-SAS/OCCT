@@ -17,6 +17,7 @@
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_MutView.hxx>
+#include <BRepGraph_Tool.hxx>
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
@@ -219,10 +220,9 @@ TEST(BRepGraphAlgo_ValidateTest, AfterSplitEdge_ProducesSubEdges)
   ASSERT_TRUE(anEdgeId.IsValid());
 
   // Create a split vertex at the midpoint.
-  const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.Defs().Edge(anEdgeId.Index);
   gp_Pnt aMidPt;
-  aGraph.Defs().Curve3DRep(anEdgeDef.Curve3DRepIdx).Curve->D0(aSplitParam, aMidPt);
-  BRepGraph_NodeId aSplitVtx = aGraph.Builder().AddVertexDef(aMidPt, anEdgeDef.Tolerance);
+  BRepGraph_Tool::Curve(aGraph, anEdgeId.Index)->D0(aSplitParam, aMidPt);
+  BRepGraph_NodeId aSplitVtx = aGraph.Builder().AddVertexDef(aMidPt, BRepGraph_Tool::ToleranceEdge(aGraph, anEdgeId.Index));
 
   BRepGraph_NodeId aSubA, aSubB;
   aGraph.Mut().SplitEdge(anEdgeId, aSplitVtx, aSplitParam, aSubA, aSubB);

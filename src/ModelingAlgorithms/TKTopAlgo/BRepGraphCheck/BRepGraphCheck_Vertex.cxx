@@ -125,7 +125,7 @@ void BRepGraphCheck::CheckVertexOnFace(
       continue;
 
     const occ::handle<Geom2d_Curve>& aVtxPCurve =
-      aDefs.Curve2DRep(aPCurve->Curve2DRepIdx).Curve;
+      BRepGraph_Tool::PCurve(theGraph, *aPCurve);
     // Evaluate PCurve at parameter to get UV, then evaluate surface (geometry at identity).
     const gp_Pnt2d aUV = aVtxPCurve->Value(aParam);
     const GeomAdaptor_TransformedSurface aSurfAdaptor =
