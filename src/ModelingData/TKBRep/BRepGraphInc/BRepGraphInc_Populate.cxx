@@ -45,6 +45,15 @@ struct ExtractedVertex
   double        Tolerance = 0.0;
 };
 
+//! Internal/external vertex extracted from an edge.
+struct ExtractedInternalVertex
+{
+  TopoDS_Vertex      Shape;
+  gp_Pnt             Point;
+  double             Tolerance = 0.0;
+  TopAbs_Orientation Orientation = TopAbs_INTERNAL;
+};
+
 //! Per-edge data extracted from TopoDS in parallel phase.
 struct ExtractedEdge
 {
@@ -58,6 +67,7 @@ struct ExtractedEdge
   bool                 SameRange     = false;
   ExtractedVertex      StartVertex;
   ExtractedVertex      EndVertex;
+  NCollection_Vector<ExtractedInternalVertex> InternalVertices;
   TopAbs_Orientation   OrientationInWire = TopAbs_FORWARD;
   Handle(Geom2d_Curve) PCurve2d;
   double               PCFirst = 0.0;
@@ -97,10 +107,14 @@ struct FaceLocalData
   TopAbs_Orientation Orientation        = TopAbs_FORWARD;
   bool               NaturalRestriction = false;
   NCollection_Vector<ExtractedWire> Wires;
+  NCollection_Vector<ExtractedInternalVertex> DirectVertices; //!< INTERNAL/EXTERNAL vertex children
 };
 
-//! Extract first and last vertices from an edge.
-void edgeVertices(const TopoDS_Edge& theEdge, TopoDS_Vertex& theFirst, TopoDS_Vertex& theLast)
+//! Extract first, last, and internal/external vertices from an edge.
+void edgeVertices(const TopoDS_Edge&                        theEdge,
+                  TopoDS_Vertex&                            theFirst,
+                  TopoDS_Vertex&                            theLast,
+                  NCollection_Vector<ExtractedInternalVertex>& theInternal)
 {
   for (TopoDS_Iterator aVIt(theEdge, false); aVIt.More(); aVIt.Next())
   {
@@ -111,10 +125,15 @@ void edgeVertices(const TopoDS_Edge& theEdge, TopoDS_Vertex& theFirst, TopoDS_Ve
       theFirst = aVertex;
     else if (aVertex.Orientation() == TopAbs_REVERSED)
       theLast = aVertex;
-    else if (theFirst.IsNull())
-      theFirst = aVertex;
-    else if (theLast.IsNull())
-      theLast = aVertex;
+    else
+    {
+      ExtractedInternalVertex anIntVtx;
+      anIntVtx.Shape       = aVertex;
+      anIntVtx.Point       = BRep_Tool::Pnt(aVertex);
+      anIntVtx.Tolerance   = BRep_Tool::Tolerance(aVertex);
+      anIntVtx.Orientation = aVertex.Orientation();
+      theInternal.Append(anIntVtx);
+    }
   }
   if (theFirst.IsNull())
     theFirst = theLast;
@@ -157,11 +176,22 @@ void extractFaceData(FaceLocalData& theData)
   const TopoDS_Face aForwardFace = TopoDS::Face(aFace.Oriented(TopAbs_FORWARD));
   const TopoDS_Wire anOuterWire  = BRepTools::OuterWire(aForwardFace);
 
-  for (TopoDS_Iterator aWireIt(aForwardFace); aWireIt.More(); aWireIt.Next())
+  for (TopoDS_Iterator aChildIt(aForwardFace); aChildIt.More(); aChildIt.Next())
   {
-    if (aWireIt.Value().ShapeType() != TopAbs_WIRE)
+    if (aChildIt.Value().ShapeType() == TopAbs_VERTEX)
+    {
+      const TopoDS_Vertex& aVertex = TopoDS::Vertex(aChildIt.Value());
+      ExtractedInternalVertex aVtxData;
+      aVtxData.Shape       = aVertex;
+      aVtxData.Point       = BRep_Tool::Pnt(aVertex);
+      aVtxData.Tolerance   = BRep_Tool::Tolerance(aVertex);
+      aVtxData.Orientation = aVertex.Orientation();
+      theData.DirectVertices.Append(aVtxData);
       continue;
-    const TopoDS_Wire& aWire = TopoDS::Wire(aWireIt.Value());
+    }
+    if (aChildIt.Value().ShapeType() != TopAbs_WIRE)
+      continue;
+    const TopoDS_Wire& aWire = TopoDS::Wire(aChildIt.Value());
 
     ExtractedWire aWireData;
     aWireData.Shape   = aWire;
@@ -186,7 +216,7 @@ void extractFaceData(FaceLocalData& theData)
       anEdgeData.ParamLast  = aLast;
 
       TopoDS_Vertex aVFirst, aVLast;
-      edgeVertices(anEdge, aVFirst, aVLast);
+      edgeVertices(anEdge, aVFirst, aVLast, anEdgeData.InternalVertices);
 
       if (!aVFirst.IsNull())
       {
@@ -387,6 +417,24 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
           anEdgeEnt.StartVertexIdx = processVertex(anEdgeData.StartVertex);
           anEdgeEnt.EndVertexIdx   = processVertex(anEdgeData.EndVertex);
 
+          // Register internal/external vertices.
+          for (int anIntIdx = 0; anIntIdx < anEdgeData.InternalVertices.Length(); ++anIntIdx)
+          {
+            const ExtractedInternalVertex& anIntVtx = anEdgeData.InternalVertices.Value(anIntIdx);
+            ExtractedVertex anExtVtx;
+            anExtVtx.Shape     = anIntVtx.Shape;
+            anExtVtx.Point     = anIntVtx.Point;
+            anExtVtx.Tolerance = anIntVtx.Tolerance;
+            int anIntVtxIdx = processVertex(anExtVtx);
+            if (anIntVtxIdx >= 0)
+            {
+              BRepGraphInc::VertexRef aVR;
+              aVR.VertexIdx   = anIntVtxIdx;
+              aVR.Orientation = anIntVtx.Orientation;
+              anEdgeEnt.InternalVertices.Append(aVR);
+            }
+          }
+
           theStorage.BindTShapeToNode(anEdgeTShapeKey, anEdgeEnt.Id);
           theStorage.BindOriginal(anEdgeEnt.Id, anEdge);
         }
@@ -516,6 +564,34 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
         theStorage.ChangeWire(aWireIdx).IsClosed =
           aFirstVertexIdx >= 0 && aLastVertexIdx >= 0 && aFirstVertexIdx == aLastVertexIdx;
       }
+    }
+
+    // Register direct vertex children of the face (INTERNAL/EXTERNAL).
+    for (int aDVIdx = 0; aDVIdx < aData.DirectVertices.Length(); ++aDVIdx)
+    {
+      const ExtractedInternalVertex& aDirVtx = aData.DirectVertices.Value(aDVIdx);
+      const TopoDS_TShape*    aVTShapeKey   = aDirVtx.Shape.TShape().get();
+      const BRepGraph_NodeId* anExistingVtx = theStorage.FindNodeByTShape(aVTShapeKey);
+      int aVtxIdx = -1;
+      if (anExistingVtx != nullptr
+          && anExistingVtx->NodeKind == BRepGraph_NodeId::Kind::Vertex)
+      {
+        aVtxIdx = anExistingVtx->Index;
+      }
+      else
+      {
+        BRepGraphInc::VertexEntity& aVtxEnt = theStorage.AppendVertex();
+        aVtxIdx = theStorage.NbVertices() - 1;
+        aVtxEnt.Id        = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Vertex, aVtxIdx);
+        aVtxEnt.Point     = aDirVtx.Point;
+        aVtxEnt.Tolerance = aDirVtx.Tolerance;
+        theStorage.BindTShapeToNode(aVTShapeKey, aVtxEnt.Id);
+        theStorage.BindOriginal(aVtxEnt.Id, aDirVtx.Shape);
+      }
+      BRepGraphInc::VertexRef aVR;
+      aVR.VertexIdx   = aVtxIdx;
+      aVR.Orientation = aDirVtx.Orientation;
+      theStorage.ChangeFace(aFaceIdx).VertexRefs.Append(aVR);
     }
   }
 }

@@ -91,6 +91,14 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage& theStora
         if (!anEndVtx.IsNull())
           aBB.Add(aNewEdge, anEndVtx.Oriented(TopAbs_REVERSED));
       }
+      for (int i = 0; i < anEdge.InternalVertices.Length(); ++i)
+      {
+        const BRepGraphInc::VertexRef& aVR = anEdge.InternalVertices.Value(i);
+        TopoDS_Shape aVtx =
+          Node(theStorage, BRepGraph_NodeId::Vertex(aVR.VertexIdx), theCache);
+        if (!aVtx.IsNull())
+          aBB.Add(aNewEdge, aVtx.Oriented(aVR.Orientation));
+      }
       aResult = aNewEdge;
       break;
     }
@@ -318,6 +326,13 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
       if (!anEndVtx.IsNull())
         aBB.Add(aNewEdge, anEndVtx.Oriented(TopAbs_REVERSED));
     }
+    for (int anIntIdx = 0; anIntIdx < anEdge.InternalVertices.Length(); ++anIntIdx)
+    {
+      const BRepGraphInc::VertexRef& aVR = anEdge.InternalVertices.Value(anIntIdx);
+      TopoDS_Shape aVtx = getOrBuildVertex(aVR.VertexIdx);
+      if (!aVtx.IsNull())
+        aBB.Add(aNewEdge, aVtx.Oriented(aVR.Orientation));
+    }
 
     // Polygon3D.
     if (!anEdge.Polygon3D.IsNull())
@@ -457,6 +472,30 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
     const BRepGraphInc::WireRef& aWireRef = aFace.WireRefs.Value(i);
     if (!aWireRef.IsOuter)
       aBB.Add(aNewFace, buildWireForFace(aWireRef.WireIdx));
+  }
+
+  // Add direct INTERNAL/EXTERNAL vertex children.
+  for (int i = 0; i < aFace.VertexRefs.Length(); ++i)
+  {
+    const BRepGraphInc::VertexRef& aVR = aFace.VertexRefs.Value(i);
+    if (aVR.VertexIdx < 0)
+      continue;
+    const BRepGraphInc::VertexEntity& aVtxEnt = theStorage.Vertex(aVR.VertexIdx);
+    BRepGraph_NodeId aVtxId = BRepGraph_NodeId::Vertex(aVR.VertexIdx);
+    const TopoDS_Shape* aVtxCached = theCache.Seek(aVtxId);
+    TopoDS_Shape aVtxShape;
+    if (aVtxCached != nullptr)
+    {
+      aVtxShape = *aVtxCached;
+    }
+    else
+    {
+      TopoDS_Vertex aNewVtx;
+      aBB.MakeVertex(aNewVtx, aVtxEnt.Point, aVtxEnt.Tolerance);
+      theCache.Bind(aVtxId, aNewVtx);
+      aVtxShape = aNewVtx;
+    }
+    aBB.Add(aNewFace, aVtxShape.Oriented(aVR.Orientation));
   }
 
   aNewFace.Orientation(TopAbs_FORWARD);

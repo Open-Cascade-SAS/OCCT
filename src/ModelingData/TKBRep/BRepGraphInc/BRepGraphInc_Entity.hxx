@@ -146,6 +146,10 @@ struct EdgeEntity : public BaseEntity
   int StartVertexIdx = -1;
   int EndVertexIdx   = -1;
 
+  //! Additional vertices with INTERNAL or EXTERNAL orientation.
+  //! Edges with only FORWARD/REVERSED boundary vertices leave this empty.
+  NCollection_Vector<VertexRef> InternalVertices;
+
   //! Convenience: start vertex NodeId from index.
   BRepGraph_NodeId StartVertexDefId() const
   {
@@ -192,10 +196,11 @@ struct EdgeEntity : public BaseEntity
   //! Reinitialize inner vectors with the given allocator.
   void InitVectors(const Handle(NCollection_BaseAllocator)& theAlloc)
   {
-    BRepGraphInc_InitVec(PCurves, theAlloc, 4);         // typically 1-4 (seam edges have 2)
-    BRepGraphInc_InitVec(PolygonsOnSurf, theAlloc, 2);  // typically 0-2
-    BRepGraphInc_InitVec(PolygonsOnTri, theAlloc, 2);   // typically 0-2
-    BRepGraphInc_InitVec(Regularities, theAlloc, 2);    // typically 0-2
+    BRepGraphInc_InitVec(PCurves, theAlloc, 4);           // typically 1-4 (seam edges have 2)
+    BRepGraphInc_InitVec(PolygonsOnSurf, theAlloc, 2);   // typically 0-2
+    BRepGraphInc_InitVec(PolygonsOnTri, theAlloc, 2);    // typically 0-2
+    BRepGraphInc_InitVec(Regularities, theAlloc, 2);     // typically 0-2
+    BRepGraphInc_InitVec(InternalVertices, theAlloc, 2); // typically 0
   }
 
   //! Return the start vertex adjusted for orientation in wire context.
@@ -249,10 +254,14 @@ struct FaceEntity : public BaseEntity
   //! Wire references: outer wire first (if present), then inner wires.
   NCollection_Vector<WireRef> WireRefs;
 
+  //! Direct INTERNAL/EXTERNAL vertex children (not inside wires).
+  NCollection_Vector<VertexRef> VertexRefs;
+
   void InitVectors(const Handle(NCollection_BaseAllocator)& theAlloc)
   {
     BRepGraphInc_InitVec(Triangulations, theAlloc, 2);  // typically 1
     BRepGraphInc_InitVec(WireRefs, theAlloc, 2);        // typically 1-2 (outer + holes)
+    BRepGraphInc_InitVec(VertexRefs, theAlloc, 2);      // typically 0
   }
 
   //! Return index of the outer wire, or -1 if none.

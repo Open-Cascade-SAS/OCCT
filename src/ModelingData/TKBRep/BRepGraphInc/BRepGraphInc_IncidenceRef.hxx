@@ -25,6 +25,13 @@
 namespace BRepGraphInc
 {
 
+//! Reference from an edge or face to a vertex with INTERNAL/EXTERNAL orientation.
+struct VertexRef
+{
+  int                VertexIdx = -1;
+  TopAbs_Orientation Orientation = TopAbs_INTERNAL;
+};
+
 //! Reference from a wire to one of its edges.
 struct EdgeRef
 {
