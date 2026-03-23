@@ -231,6 +231,28 @@ public:
   Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> SameDomainFaces(
     BRepGraph_NodeId theFaceDef) const;
 
+  // --- Edge adjacency queries ---
+
+  //! Return all face definition NodeIds that reference this edge (via their wires).
+  //! @param[in] theEdgeDef edge definition NodeId
+  //! @return vector of face definition NodeIds
+  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> FacesOfEdge(
+    BRepGraph_NodeId theEdgeDef) const;
+
+  //! Return all edges shared between two faces.
+  //! @param[in] theFaceA first face definition NodeId
+  //! @param[in] theFaceB second face definition NodeId
+  //! @return vector of edge definition NodeIds
+  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> SharedEdges(
+    BRepGraph_NodeId theFaceA,
+    BRepGraph_NodeId theFaceB) const;
+
+  //! Return all faces adjacent to a face (sharing at least one edge).
+  //! @param[in] theFaceDef face definition NodeId
+  //! @return vector of adjacent face definition NodeIds
+  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> AdjacentFaces(
+    BRepGraph_NodeId theFaceDef) const;
+
   // --- Cache ---
 
   Standard_EXPORT Bnd_Box BoundingBox(BRepGraph_NodeId theNode) const;
@@ -291,6 +313,11 @@ public:
   Standard_EXPORT BRepGraph_TopoNode::EdgeDef& MutableEdgeDefinition(int theIdx);
   Standard_EXPORT BRepGraph_TopoNode::WireDef& MutableWireDefinition(int theIdx);
   Standard_EXPORT BRepGraph_TopoNode::VertexDef& MutableVertexDefinition(int theIdx);
+  Standard_EXPORT BRepGraph_TopoNode::FaceDef& MutableFaceDefinition(int theIdx);
+  Standard_EXPORT BRepGraph_TopoNode::ShellDef& MutableShellDefinition(int theIdx);
+  Standard_EXPORT BRepGraph_TopoNode::SolidDef& MutableSolidDefinition(int theIdx);
+  Standard_EXPORT BRepGraph_TopoNode::CompoundDef& MutableCompoundDefinition(int theIdx);
+  Standard_EXPORT BRepGraph_TopoNode::CompSolidDef& MutableCompSolidDefinition(int theIdx);
 
   Standard_EXPORT BRepGraph_NodeId AddPCurveToEdge(
     BRepGraph_NodeId            theEdgeDef,
@@ -377,6 +404,36 @@ public:
   //! @return NodeId of the new solid definition
   Standard_EXPORT BRepGraph_NodeId AddSolidDef();
 
+  //! Link a face to a shell (creates FaceUsage under the ShellUsage).
+  //! @param[in] theShellDef  shell definition NodeId
+  //! @param[in] theFaceDef   face definition NodeId
+  //! @param[in] theOri       orientation of the face in the shell
+  //! @return UsageId of the created FaceUsage
+  Standard_EXPORT BRepGraph_UsageId AddFaceToShell(BRepGraph_NodeId   theShellDef,
+                                                   BRepGraph_NodeId   theFaceDef,
+                                                   TopAbs_Orientation theOri = TopAbs_FORWARD);
+
+  //! Link a shell to a solid (creates ShellUsage under the SolidUsage).
+  //! @param[in] theSolidDef  solid definition NodeId
+  //! @param[in] theShellDef  shell definition NodeId
+  //! @param[in] theOri       orientation of the shell in the solid
+  //! @return UsageId of the created ShellUsage
+  Standard_EXPORT BRepGraph_UsageId AddShellToSolid(BRepGraph_NodeId   theSolidDef,
+                                                    BRepGraph_NodeId   theShellDef,
+                                                    TopAbs_Orientation theOri = TopAbs_FORWARD);
+
+  //! Add a compound definition with child definitions.
+  //! @param[in] theChildDefs child definition NodeIds
+  //! @return NodeId of the new compound definition
+  Standard_EXPORT BRepGraph_NodeId AddCompoundDef(
+    const NCollection_Vector<BRepGraph_NodeId>& theChildDefs);
+
+  //! Add a compsolid definition with child solid definitions.
+  //! @param[in] theSolidDefs child solid definition NodeIds
+  //! @return NodeId of the new compsolid definition
+  Standard_EXPORT BRepGraph_NodeId AddCompSolidDef(
+    const NCollection_Vector<BRepGraph_NodeId>& theSolidDefs);
+
   // --- Incremental build ---
 
   //! Append a shape to the existing graph without clearing.
@@ -392,6 +449,11 @@ public:
   //! The node remains in storage but is skipped by iterators and queries.
   //! @param[in] theNode node to remove
   Standard_EXPORT void RemoveNode(BRepGraph_NodeId theNode);
+
+  //! Mark a node and all its descendants as removed (cascading soft deletion).
+  //! Walks the definition/usage hierarchy and marks all children as removed.
+  //! @param[in] theNode root node to remove
+  Standard_EXPORT void RemoveSubgraph(BRepGraph_NodeId theNode);
 
   //! Check if a node has been soft-removed.
   //! @param[in] theNode node to check

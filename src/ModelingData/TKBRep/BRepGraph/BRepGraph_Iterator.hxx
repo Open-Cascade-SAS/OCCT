@@ -29,6 +29,16 @@
 //!     const BRepGraph_TopoNode::FaceDef& aFace = anIt.Current();
 //!   }
 //! @endcode
+namespace BRepGraph_IteratorDetail
+{
+  //! SFINAE helper: detect whether NodeType has an IsRemoved member (BaseDef types do).
+  template <typename T, typename = void>
+  struct HasIsRemoved : std::false_type {};
+
+  template <typename T>
+  struct HasIsRemoved<T, std::void_t<decltype(std::declval<T>().IsRemoved)>> : std::true_type {};
+}
+
 template <typename NodeType>
 class BRepGraph_Iterator
 {
@@ -36,9 +46,25 @@ public:
   BRepGraph_Iterator(const BRepGraph& theGraph);
 
   bool More() const { return myIndex < myLength; }
-  void Next() { ++myIndex; }
+
+  void Next()
+  {
+    ++myIndex;
+    skipRemoved();
+  }
+
   const NodeType& Current() const;
   int Index() const { return myIndex; }
+
+  //! Advance past any nodes marked as removed.
+  void skipRemoved()
+  {
+    if constexpr (BRepGraph_IteratorDetail::HasIsRemoved<NodeType>::value)
+    {
+      while (myIndex < myLength && Current().IsRemoved)
+        ++myIndex;
+    }
+  }
 
 private:
   const BRepGraph& myGraph;
@@ -52,27 +78,27 @@ private:
 
 template <>
 inline BRepGraph_Iterator<BRepGraph_TopoNode::SolidDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
-    : myGraph(theGraph), myLength(theGraph.NbSolidDefs()) {}
+    : myGraph(theGraph), myLength(theGraph.NbSolidDefs()) { skipRemoved(); }
 
 template <>
 inline BRepGraph_Iterator<BRepGraph_TopoNode::ShellDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
-    : myGraph(theGraph), myLength(theGraph.NbShellDefs()) {}
+    : myGraph(theGraph), myLength(theGraph.NbShellDefs()) { skipRemoved(); }
 
 template <>
 inline BRepGraph_Iterator<BRepGraph_TopoNode::FaceDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
-    : myGraph(theGraph), myLength(theGraph.NbFaceDefs()) {}
+    : myGraph(theGraph), myLength(theGraph.NbFaceDefs()) { skipRemoved(); }
 
 template <>
 inline BRepGraph_Iterator<BRepGraph_TopoNode::WireDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
-    : myGraph(theGraph), myLength(theGraph.NbWireDefs()) {}
+    : myGraph(theGraph), myLength(theGraph.NbWireDefs()) { skipRemoved(); }
 
 template <>
 inline BRepGraph_Iterator<BRepGraph_TopoNode::EdgeDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
-    : myGraph(theGraph), myLength(theGraph.NbEdgeDefs()) {}
+    : myGraph(theGraph), myLength(theGraph.NbEdgeDefs()) { skipRemoved(); }
 
 template <>
 inline BRepGraph_Iterator<BRepGraph_TopoNode::VertexDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
-    : myGraph(theGraph), myLength(theGraph.NbVertexDefs()) {}
+    : myGraph(theGraph), myLength(theGraph.NbVertexDefs()) { skipRemoved(); }
 
 // ---------------------------------------------------------------------------
 // Usage iterators: constructors
