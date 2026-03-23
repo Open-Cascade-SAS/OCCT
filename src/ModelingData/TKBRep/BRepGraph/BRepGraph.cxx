@@ -22,7 +22,8 @@
 #include <shared_mutex>
 
 //=================================================================================================
-// dispatchDef template implementations (only used in this TU).
+// dispatchDef template implementations.
+// Defs is a reference to incidence storage, so this accesses incidence data directly.
 
 template <typename Func>
 auto BRepGraph::dispatchDef(BRepGraph_NodeId theNode, Func&& theFunc) const
@@ -378,26 +379,9 @@ void BRepGraph::SetAllocator(const Handle(NCollection_BaseAllocator)& theAlloc)
 {
   myData->myAllocator = !theAlloc.IsNull() ? theAlloc : NCollection_BaseAllocator::CommonBaseAllocator();
 
-  using TopoSolid     = BRepGraph_Data::TopoKindData<BRepGraph_TopoNode::SolidDef, BRepGraph_TopoNode::SolidUsage>;
-  using TopoShell     = BRepGraph_Data::TopoKindData<BRepGraph_TopoNode::ShellDef, BRepGraph_TopoNode::ShellUsage>;
-  using TopoFace      = BRepGraph_Data::TopoKindData<BRepGraph_TopoNode::FaceDef, BRepGraph_TopoNode::FaceUsage>;
-  using TopoWire      = BRepGraph_Data::TopoKindData<BRepGraph_TopoNode::WireDef, BRepGraph_TopoNode::WireUsage>;
-  using TopoEdge      = BRepGraph_Data::TopoKindData<BRepGraph_TopoNode::EdgeDef, BRepGraph_TopoNode::EdgeUsage>;
-  using TopoVertex    = BRepGraph_Data::TopoKindData<BRepGraph_TopoNode::VertexDef, BRepGraph_TopoNode::VertexUsage>;
-  using TopoCompound  = BRepGraph_Data::TopoKindData<BRepGraph_TopoNode::CompoundDef, BRepGraph_TopoNode::CompoundUsage>;
-  using TopoCompSolid = BRepGraph_Data::TopoKindData<BRepGraph_TopoNode::CompSolidDef, BRepGraph_TopoNode::CompSolidUsage>;
-
-  const auto& anAlloc = myData->myAllocator;
-  myData->mySolids         = TopoSolid(16, 16, anAlloc);
-  myData->myShells         = TopoShell(16, 16, anAlloc);
-  myData->myFaces          = TopoFace(128, 128, anAlloc);
-  myData->myWires          = TopoWire(128, 128, anAlloc);
-  myData->myEdges          = TopoEdge(256, 256, anAlloc);
-  myData->myVertices       = TopoVertex(256, 256, anAlloc);
-  myData->myCompounds      = TopoCompound(8, 8, anAlloc);
-  myData->myCompSolids     = TopoCompSolid(8, 8, anAlloc);
-  myData->myTShapeToDefId = NCollection_DataMap<const TopoDS_TShape*, BRepGraph_NodeId>(100, anAlloc);
-  myData->myEdgeToWires   = NCollection_DataMap<int, NCollection_Vector<int>>(100, anAlloc);
+  // Recreate the entire data object with the new allocator.
+  // TopoKindData has reference members that can't be reassigned.
+  myData = std::make_unique<BRepGraph_Data>(myData->myAllocator);
 }
 
 const Handle(NCollection_BaseAllocator)& BRepGraph::Allocator() const { return myData->myAllocator; }

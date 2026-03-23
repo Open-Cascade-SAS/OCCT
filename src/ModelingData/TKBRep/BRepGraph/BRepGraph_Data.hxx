@@ -40,28 +40,40 @@
 //! This struct holds all private data members of BRepGraph.
 //! It is not part of the public API and must not be included
 //! by code outside BRepGraph and its friend classes.
+//!
+//! Definition data lives in myIncStorage (incidence-table entity vectors).
+//! The Defs reference in each TopoKindData points directly to the
+//! corresponding incidence entity vector — no separate copy.
 struct BRepGraph_Data
 {
-  //! Groups definition, usage, and UID vectors for a single topology kind.
+  //! Groups definition reference, usage, and UID vectors for a single topology kind.
+  //! Defs is a reference to the incidence storage vector (sole source of truth).
   template <typename DefT, typename UsageT>
   struct TopoKindData
   {
-    NCollection_Vector<DefT>          Defs;
+    NCollection_Vector<DefT>&         Defs;     //!< Reference to incidence entity vector
     NCollection_Vector<UsageT>        Usages;
     NCollection_Vector<BRepGraph_UID> UIDs;
 
-    TopoKindData(int theDefCap, int theUsageCap,
+    TopoKindData(NCollection_Vector<DefT>&                  theDefsRef,
+                 int                                        theUsageCap,
                  const Handle(NCollection_BaseAllocator)& theAlloc)
-        : Defs(theDefCap, theAlloc),
+        : Defs(theDefsRef),
           Usages(theUsageCap, theAlloc),
-          UIDs(theDefCap, theAlloc) {}
+          UIDs(theUsageCap, theAlloc) {}
 
-    void Clear() { Defs.Clear(); Usages.Clear(); UIDs.Clear(); }
+    //! Clear usage and UID vectors. Defs (reference to incidence storage) is not
+    //! cleared here — incidence storage owns the entity vectors and clears them separately.
+    void Clear() { Usages.Clear(); UIDs.Clear(); }
   };
 
   Handle(NCollection_BaseAllocator) myAllocator;
 
-  //! Topology kind data (8 kinds), each grouping Defs, Usages, and UIDs.
+  //! Incidence-table storage — sole source of truth for definition data.
+  //! MUST be declared before TopoKindData members so references are valid.
+  BRepGraphInc_Storage myIncStorage;
+
+  //! Topology kind data (8 kinds). Defs reference incidence storage vectors.
   TopoKindData<BRepGraph_TopoNode::SolidDef, BRepGraph_TopoNode::SolidUsage>         mySolids;
   TopoKindData<BRepGraph_TopoNode::ShellDef, BRepGraph_TopoNode::ShellUsage>         myShells;
   TopoKindData<BRepGraph_TopoNode::FaceDef, BRepGraph_TopoNode::FaceUsage>           myFaces;
@@ -94,9 +106,6 @@ struct BRepGraph_Data
 
   bool myIsDone = false;
 
-  //! Incidence-table storage (Phase 1 dual-write, authoritative in later phases).
-  BRepGraphInc_Storage myIncStorage;
-
   //! Shapes from Build().
   NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape> myOriginalShapes;
 
@@ -109,14 +118,14 @@ struct BRepGraph_Data
   //! Default constructor with standard capacities.
   BRepGraph_Data()
       : myAllocator(NCollection_BaseAllocator::CommonBaseAllocator()),
-        mySolids(16, 16, myAllocator),
-        myShells(16, 16, myAllocator),
-        myFaces(128, 128, myAllocator),
-        myWires(128, 128, myAllocator),
-        myEdges(256, 256, myAllocator),
-        myVertices(256, 256, myAllocator),
-        myCompounds(16, 16, myAllocator),
-        myCompSolids(16, 16, myAllocator),
+        mySolids(myIncStorage.Solids, 16, myAllocator),
+        myShells(myIncStorage.Shells, 16, myAllocator),
+        myFaces(myIncStorage.Faces, 128, myAllocator),
+        myWires(myIncStorage.Wires, 128, myAllocator),
+        myEdges(myIncStorage.Edges, 256, myAllocator),
+        myVertices(myIncStorage.Vertices, 256, myAllocator),
+        myCompounds(myIncStorage.Compounds, 16, myAllocator),
+        myCompSolids(myIncStorage.CompSolids, 16, myAllocator),
         myTShapeToDefId(100, myAllocator)
   {
   }
@@ -125,14 +134,14 @@ struct BRepGraph_Data
   explicit BRepGraph_Data(const Handle(NCollection_BaseAllocator)& theAlloc)
       : myAllocator(!theAlloc.IsNull() ? theAlloc
                                        : NCollection_BaseAllocator::CommonBaseAllocator()),
-        mySolids(16, 16, myAllocator),
-        myShells(16, 16, myAllocator),
-        myFaces(128, 128, myAllocator),
-        myWires(128, 128, myAllocator),
-        myEdges(256, 256, myAllocator),
-        myVertices(256, 256, myAllocator),
-        myCompounds(16, 16, myAllocator),
-        myCompSolids(16, 16, myAllocator),
+        mySolids(myIncStorage.Solids, 16, myAllocator),
+        myShells(myIncStorage.Shells, 16, myAllocator),
+        myFaces(myIncStorage.Faces, 128, myAllocator),
+        myWires(myIncStorage.Wires, 128, myAllocator),
+        myEdges(myIncStorage.Edges, 256, myAllocator),
+        myVertices(myIncStorage.Vertices, 256, myAllocator),
+        myCompounds(myIncStorage.Compounds, 16, myAllocator),
+        myCompSolids(myIncStorage.CompSolids, 16, myAllocator),
         myTShapeToDefId(100, myAllocator)
   {
   }

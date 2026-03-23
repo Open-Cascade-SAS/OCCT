@@ -16,14 +16,20 @@
 
 #include <BRepGraph_NodeCache.hxx>
 #include <BRepGraph_NodeId.hxx>
+#include <BRepGraph_UsageId.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
 
+#include <Geom2d_Curve.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
+#include <Poly_Polygon2D.hxx>
 #include <Poly_Polygon3D.hxx>
+#include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_Triangulation.hxx>
+#include <TopAbs_Orientation.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 
 #include <NCollection_Vector.hxx>
 
@@ -42,56 +48,141 @@ struct BaseEntity
   BRepGraph_NodeCache Cache;        //!< Lazily-computed derived quantities + user attributes
   bool               IsModified = false; //!< True when mutated since Build()
   bool               IsRemoved = false;  //!< Soft-removal flag
+
+  //! All usages of this definition in the containment tree.
+  //! Bridge field for Phase A migration — will be removed in Phase D.
+  NCollection_Vector<BRepGraph_UsageId> Usages;
 };
 
 //! Vertex entity: 3D point + tolerance.
 struct VertexEntity : public BaseEntity
 {
+  //! 3D point in global coordinates (from BRep_Tool::Pnt, which applies vertex location).
   gp_Pnt Point;
+
+  //! Tolerance from BRep_TVertex.
   double Tolerance = 0.0;
+
+  //! Vertex parameter on a 3D curve.
+  struct PointOnCurveEntry
+  {
+    double           Parameter = 0.0;
+    BRepGraph_NodeId EdgeDefId; //!< Edge definition owning the curve
+  };
+  NCollection_Vector<PointOnCurveEntry> PointsOnCurve;
+
+  //! Vertex parameter on a surface (U, V).
+  struct PointOnSurfaceEntry
+  {
+    double           ParameterU = 0.0;
+    double           ParameterV = 0.0;
+    BRepGraph_NodeId FaceDefId; //!< Face definition owning the surface
+  };
+  NCollection_Vector<PointOnSurfaceEntry> PointsOnSurface;
+
+  //! Vertex parameter on a PCurve on a surface.
+  struct PointOnPCurveEntry
+  {
+    double           Parameter = 0.0;
+    BRepGraph_NodeId FaceDefId; //!< Face definition owning the surface
+  };
+  NCollection_Vector<PointOnPCurveEntry> PointsOnPCurve;
 };
 
 //! Edge entity: 3D curve, parameter range, boundary vertices, flags, polygon.
-//! Regularity entries stored inline.
+//! PCurve, polygon-on-surface/triangulation, and regularity entries stored inline.
 struct EdgeEntity : public BaseEntity
 {
-  Handle(Geom_Curve) Curve3d;         //!< Null for degenerate edges
-  double             ParamFirst = 0.0;
-  double             ParamLast = 0.0;
-  double             Tolerance = 0.0;
+  //! 3D curve geometry (direct handle, null for degenerate edges).
+  Handle(Geom_Curve) Curve3d;
 
+  //! PCurve entries, one per (edge, face) context.
+  //! For seam edges there are two entries with the same FaceDefId,
+  //! distinguished by EdgeOrientation (FORWARD vs REVERSED).
+  struct PCurveEntry
+  {
+    Handle(Geom2d_Curve) Curve2d;          //!< 2D parametric curve on the face surface
+    BRepGraph_NodeId     FaceDefId;
+    double               ParamFirst = 0.0;
+    double               ParamLast  = 0.0;
+    GeomAbs_Shape        Continuity = GeomAbs_C0; //!< Geometric continuity across face pairs
+    gp_Pnt2d             UV1;              //!< UV at ParamFirst
+    gp_Pnt2d             UV2;              //!< UV at ParamLast
+    TopAbs_Orientation   EdgeOrientation = TopAbs_FORWARD; //!< Edge orientation when this PCurve was extracted.
+  };
+  NCollection_Vector<PCurveEntry> PCurves;
+
+  //! Boundary vertex definitions.  For closed edges, Start == End.
+  BRepGraph_NodeId StartVertexDefId;
+  BRepGraph_NodeId EndVertexDefId;
+
+  //! Curve parameter range.
+  double ParamFirst = 0.0;
+  double ParamLast  = 0.0;
+
+  //! Tolerance from BRep_TEdge.
+  double Tolerance = 0.0;
+
+  //! True if this edge collapses to a point on the surface.
   bool IsDegenerate  = false;
+
+  //! True if all PCurves are reparametrized to the same range as the 3D curve.
   bool SameParameter = false;
+
+  //! True if the PCurve parameter range equals the 3D curve parameter range.
   bool SameRange     = false;
 
-  int StartVertexIdx = -1;            //!< Index into VertexEntity vector
-  int EndVertexIdx   = -1;            //!< Index into VertexEntity vector
+  //! Index into VertexEntity vector (internal incidence model use).
+  int StartVertexIdx = -1;
+  int EndVertexIdx   = -1;
 
-  Handle(Poly_Polygon3D) Polygon3D;   //!< Optional 3D polygon discretization
+  //! Optional 3D polygon discretization (stored inline, not as a graph node).
+  Handle(Poly_Polygon3D) Polygon3D;
 
-  //! Edge regularity between adjacent face pairs.
+  //! Polygon-on-surface entries, one per (edge, face) context.
+  struct PolyOnSurfEntry
+  {
+    Handle(Poly_Polygon2D) Polygon2D;
+    BRepGraph_NodeId       FaceDefId;
+    TopAbs_Orientation     EdgeOrientation = TopAbs_FORWARD;
+  };
+  NCollection_Vector<PolyOnSurfEntry> PolygonsOnSurf;
+
+  //! Polygon-on-triangulation entries, one per (edge, face, triangulation) context.
+  struct PolyOnTriEntry
+  {
+    Handle(Poly_PolygonOnTriangulation) Polygon;
+    BRepGraph_NodeId                    FaceDefId;
+    int                                 TriangulationIndex = 0;
+    TopAbs_Orientation                  EdgeOrientation = TopAbs_FORWARD;
+  };
+  NCollection_Vector<PolyOnTriEntry> PolygonsOnTri;
+
+  //! Edge regularity (continuity) between adjacent face pairs.
   struct RegularityEntry
   {
-    int           FaceIdx1 = -1;
-    int           FaceIdx2 = -1;
-    GeomAbs_Shape Continuity = GeomAbs_C0;
+    BRepGraph_NodeId FaceDef1;
+    BRepGraph_NodeId FaceDef2;
+    GeomAbs_Shape    Continuity = GeomAbs_C0;
   };
   NCollection_Vector<RegularityEntry> Regularities;
 
-  //! Return start vertex index adjusted for orientation.
-  int OrientedStartVertex(TopAbs_Orientation theOri) const
+  //! Return the start vertex adjusted for orientation in wire context.
+  //! FORWARD -> StartVertexDefId, REVERSED -> EndVertexDefId, other -> invalid.
+  BRepGraph_NodeId OrientedStartVertex(TopAbs_Orientation theOri) const
   {
-    if (theOri == TopAbs_FORWARD)  return StartVertexIdx;
-    if (theOri == TopAbs_REVERSED) return EndVertexIdx;
-    return -1;
+    if (theOri == TopAbs_FORWARD)  return StartVertexDefId;
+    if (theOri == TopAbs_REVERSED) return EndVertexDefId;
+    return BRepGraph_NodeId();
   }
 
-  //! Return end vertex index adjusted for orientation.
-  int OrientedEndVertex(TopAbs_Orientation theOri) const
+  //! Return the end vertex adjusted for orientation in wire context.
+  //! FORWARD -> EndVertexDefId, REVERSED -> StartVertexDefId, other -> invalid.
+  BRepGraph_NodeId OrientedEndVertex(TopAbs_Orientation theOri) const
   {
-    if (theOri == TopAbs_FORWARD)  return EndVertexIdx;
-    if (theOri == TopAbs_REVERSED) return StartVertexIdx;
-    return -1;
+    if (theOri == TopAbs_FORWARD)  return EndVertexDefId;
+    if (theOri == TopAbs_REVERSED) return StartVertexDefId;
+    return BRepGraph_NodeId();
   }
 };
 
@@ -150,12 +241,20 @@ struct SolidEntity : public BaseEntity
 struct CompoundEntity : public BaseEntity
 {
   NCollection_Vector<ChildRef> ChildRefs;
+
+  //! Child definition NodeIds (Compound, CompSolid, Solid, Shell, or Face kinds).
+  //! Derived from ChildRefs; populated during legacy derivation.
+  NCollection_Vector<BRepGraph_NodeId> ChildDefIds;
 };
 
 //! Comp-solid entity: ordered solid references.
 struct CompSolidEntity : public BaseEntity
 {
   NCollection_Vector<SolidRef> SolidRefs;
+
+  //! Child solid definition NodeIds.
+  //! Derived from SolidRefs; populated during legacy derivation.
+  NCollection_Vector<BRepGraph_NodeId> SolidDefIds;
 };
 
 } // namespace BRepGraphInc

@@ -72,6 +72,8 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
     aSubA.IsDegenerate     = false;
     aSubA.StartVertexDefId = aOrigStartVertexDefId;
     aSubA.EndVertexDefId   = theSplitVertex;
+    aSubA.StartVertexIdx   = aOrigStartVertexDefId.IsValid() ? aOrigStartVertexDefId.Index : -1;
+    aSubA.EndVertexIdx     = theSplitVertex.IsValid() ? theSplitVertex.Index : -1;
     aSubA.ParamFirst       = aOrigParamFirst;
     aSubA.ParamLast        = theSplitParam;
   }
@@ -86,6 +88,8 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
     aSubB.IsDegenerate     = false;
     aSubB.StartVertexDefId = theSplitVertex;
     aSubB.EndVertexDefId   = aOrigEndVertexDefId;
+    aSubB.StartVertexIdx   = theSplitVertex.IsValid() ? theSplitVertex.Index : -1;
+    aSubB.EndVertexIdx     = aOrigEndVertexDefId.IsValid() ? aOrigEndVertexDefId.Index : -1;
     aSubB.ParamFirst       = theSplitParam;
     aSubB.ParamLast        = aOrigParamLast;
   }
@@ -93,30 +97,9 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
   theGraph.allocateUID(theSubA);
   theGraph.allocateUID(theSubB);
 
-  // Incidence store: create corresponding EdgeEntity entries.
+  // Update incidence: wire EdgeRefs and mark original as removed.
+  // (SubA/SubB edge entities already exist in Defs, which IS myIncStorage.Edges.)
   {
-    BRepGraphInc::EdgeEntity& aSubAEnt = theGraph.myData->myIncStorage.Edges.Appended();
-    aSubAEnt.Id            = theSubA;
-    aSubAEnt.Curve3d       = aOrigCurve3d;
-    aSubAEnt.ParamFirst    = aOrigParamFirst;
-    aSubAEnt.ParamLast     = theSplitParam;
-    aSubAEnt.Tolerance     = aOrigTolerance;
-    aSubAEnt.SameParameter = aOrigSameParameter;
-    aSubAEnt.SameRange     = false;
-    aSubAEnt.StartVertexIdx = aOrigStartVertexDefId.IsValid() ? aOrigStartVertexDefId.Index : -1;
-    aSubAEnt.EndVertexIdx   = theSplitVertex.IsValid() ? theSplitVertex.Index : -1;
-
-    BRepGraphInc::EdgeEntity& aSubBEnt = theGraph.myData->myIncStorage.Edges.Appended();
-    aSubBEnt.Id            = theSubB;
-    aSubBEnt.Curve3d       = aOrigCurve3d;
-    aSubBEnt.ParamFirst    = theSplitParam;
-    aSubBEnt.ParamLast     = aOrigParamLast;
-    aSubBEnt.Tolerance     = aOrigTolerance;
-    aSubBEnt.SameParameter = aOrigSameParameter;
-    aSubBEnt.SameRange     = false;
-    aSubBEnt.StartVertexIdx = theSplitVertex.IsValid() ? theSplitVertex.Index : -1;
-    aSubBEnt.EndVertexIdx   = aOrigEndVertexDefId.IsValid() ? aOrigEndVertexDefId.Index : -1;
-
     // Update WireEntity.EdgeRefs: replace original edge with SubA+SubB in all containing wires.
     const NCollection_Vector<int>* aWireIndices =
       theGraph.myData->myIncStorage.ReverseIdx.WiresOfEdge(theEdgeDef.Index);

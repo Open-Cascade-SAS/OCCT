@@ -47,9 +47,9 @@ public:
                                      bool                theParallel);
 
 private:
-  //! Derive legacy Def/Usage stores from incidence-table storage.
-  //! Temporary compatibility layer until all consumers migrate to incidence types.
-  static void deriveLegacyFromIncidence(BRepGraph& theGraph);
+  //! Populate Usage objects and bridge fields (PCurves, ChildDefIds, etc.)
+  //! on incidence entities after BRepGraphInc_Populate has filled the storage.
+  static void populateUsagesAndBridgeFields(BRepGraph& theGraph);
 
   BRepGraph_Builder() = delete;
 };

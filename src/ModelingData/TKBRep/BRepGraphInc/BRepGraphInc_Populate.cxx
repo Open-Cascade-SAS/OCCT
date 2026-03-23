@@ -382,6 +382,13 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
           anEdgeEnt.StartVertexIdx = processVertex(anEdgeData.StartVertex);
           anEdgeEnt.EndVertexIdx   = processVertex(anEdgeData.EndVertex);
 
+          // Derive NodeId-based vertex references from integer indices with bounds validation.
+          const int aNbVtx = theStorage.Vertices.Length();
+          if (anEdgeEnt.StartVertexIdx >= 0 && anEdgeEnt.StartVertexIdx < aNbVtx)
+            anEdgeEnt.StartVertexDefId = BRepGraph_NodeId::Vertex(anEdgeEnt.StartVertexIdx);
+          if (anEdgeEnt.EndVertexIdx >= 0 && anEdgeEnt.EndVertexIdx < aNbVtx)
+            anEdgeEnt.EndVertexDefId = BRepGraph_NodeId::Vertex(anEdgeEnt.EndVertexIdx);
+
           theStorage.TShapeToNodeId.Bind(anEdgeTShapeKey, anEdgeEnt.Id);
           theStorage.OriginalShapes.Bind(anEdgeEnt.Id, anEdge);
         }
@@ -724,8 +731,8 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage& theStorage,
         continue;
 
       BRepGraphInc::EdgeEntity::RegularityEntry aRegEntry;
-      aRegEntry.FaceIdx1   = *aFaceIdx1;
-      aRegEntry.FaceIdx2   = *aFaceIdx2;
+      aRegEntry.FaceDef1   = BRepGraph_NodeId::Face(*aFaceIdx1);
+      aRegEntry.FaceDef2   = BRepGraph_NodeId::Face(*aFaceIdx2);
       aRegEntry.Continuity = aCon2S->Continuity();
       anEdgeEnt.Regularities.Append(aRegEntry);
     }

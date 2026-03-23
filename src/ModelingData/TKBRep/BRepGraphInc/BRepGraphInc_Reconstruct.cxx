@@ -300,8 +300,8 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
     {
       const BRepGraphInc::EdgeEntity::RegularityEntry& aRegEntry =
         anEdge.Regularities.Value(aRegIdx);
-      BRepGraph_NodeId aFaceId1 = BRepGraph_NodeId::Face(aRegEntry.FaceIdx1);
-      BRepGraph_NodeId aFaceId2 = BRepGraph_NodeId::Face(aRegEntry.FaceIdx2);
+      const BRepGraph_NodeId& aFaceId1 = aRegEntry.FaceDef1;
+      const BRepGraph_NodeId& aFaceId2 = aRegEntry.FaceDef2;
       const TopoDS_Shape* aFaceShape1 = theCache.Seek(aFaceId1);
       const TopoDS_Shape* aFaceShape2 = theCache.Seek(aFaceId2);
       if (aFaceShape1 != nullptr && aFaceShape2 != nullptr)
