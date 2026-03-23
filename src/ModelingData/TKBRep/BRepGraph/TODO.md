@@ -80,9 +80,10 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 - UVBounds/BndLib caches auto-invalidate when topology is mutated via `Mut()` API
 - **Result**: zero manual invalidation needed; no measurable performance impact
 
-### Incremental modes for Deduplicate/Compact [Perf] ★★★
-- `AnalyzeOnly`, `DeltaOnly`, `Incremental` flags
-- O(changed nodes) instead of O(N)
+### ~~Incremental modes for Deduplicate/Compact~~ — DEFERRED
+- Re-sewing after sewing is a rare workflow; premature optimization
+- Compact already exits early when nothing removed
+- Revisit if iterative Build→Append→Dedup pipelines become common
 
 ### O(1) UID reverse lookup [Perf] ★★★
 - `UIDsView::NodeIdFrom` / `Has` currently do linear scan over per-kind UID vector
