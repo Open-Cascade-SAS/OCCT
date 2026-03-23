@@ -53,6 +53,9 @@ struct ExtractedEdge
   Handle(Geom2d_Curve) PCurve2d;
   double               PCFirst = 0.0;
   double               PCLast  = 0.0;
+  Handle(Geom2d_Curve) PCurve2dReversed;  //!< Second PCurve for seam edges
+  double               PCFirstReversed = 0.0;
+  double               PCLastReversed  = 0.0;
 };
 
 //! Per-wire data extracted from TopoDS in Phase 2 (parallel).
@@ -143,6 +146,21 @@ void extractFaceData(FaceLocalData& theData)
       anEdgeData.PCFirst  = aPCFirst;
       anEdgeData.PCLast   = aPCLast;
 
+      // Extract second PCurve for seam edges (reversed orientation).
+      if (!anEdgeData.PCurve2d.IsNull())
+      {
+        double aPCFirstRev = 0.0, aPCLastRev = 0.0;
+        TopoDS_Edge aReversedEdge = TopoDS::Edge(anEdge.Reversed());
+        Handle(Geom2d_Curve) aPC2 =
+          BRep_Tool::CurveOnSurface(aReversedEdge, aForwardFace, aPCFirstRev, aPCLastRev);
+        if (!aPC2.IsNull() && aPC2 != anEdgeData.PCurve2d)
+        {
+          anEdgeData.PCurve2dReversed = aPC2;
+          anEdgeData.PCFirstReversed  = aPCFirstRev;
+          anEdgeData.PCLastReversed   = aPCLastRev;
+        }
+      }
+
       aWireData.Edges.Append(anEdgeData);
     }
 
@@ -215,22 +233,41 @@ void BRepGraph_Builder::registerFaceData(BRepGraph&          theGraph,
     {
       const ExtractedWire& aWireData = aData.Wires.Value(aWireIter);
 
-      BRepGraph_TopoNode::WireDef& aWireDef = theGraph.myData->myWireDefs.Appended();
-      const int aWireDefIdx = theGraph.myData->myWireDefs.Length() - 1;
-      aWireDef.Id = BRepGraph_NodeId(BRepGraph_NodeKind::Wire, aWireDefIdx);
-      theGraph.allocateUID(aWireDef.Id);
-      theGraph.myData->myOriginalShapes.Bind(aWireDef.Id, aWireData.Shape);
+      // Dedup wire definition by TShape.
+      const TopoDS_TShape*    aWireTShapeKey    = aWireData.Shape.TShape().get();
+      const BRepGraph_NodeId* anExistingWireDef = theGraph.myData->myTShapeToDefId.Seek(aWireTShapeKey);
+
+      BRepGraph_NodeId aWireDefId;
+      int              aWireDefIdx = -1;
+      bool             aIsNewWireDef = false;
+
+      if (anExistingWireDef != nullptr)
+      {
+        aWireDefId  = *anExistingWireDef;
+        aWireDefIdx = aWireDefId.Index;
+      }
+      else
+      {
+        BRepGraph_TopoNode::WireDef& aWireDef = theGraph.myData->myWireDefs.Appended();
+        aWireDefIdx = theGraph.myData->myWireDefs.Length() - 1;
+        aWireDef.Id = BRepGraph_NodeId(BRepGraph_NodeKind::Wire, aWireDefIdx);
+        theGraph.allocateUID(aWireDef.Id);
+        theGraph.myData->myOriginalShapes.Bind(aWireDef.Id, aWireData.Shape);
+        theGraph.myData->myTShapeToDefId.Bind(aWireTShapeKey, aWireDef.Id);
+        aWireDefId   = aWireDef.Id;
+        aIsNewWireDef = true;
+      }
 
       BRepGraph_TopoNode::WireUsage& aWireUsage = theGraph.myData->myWireUsages.Appended();
       const int aWireUsageIdx = theGraph.myData->myWireUsages.Length() - 1;
       aWireUsage.UsageId        = BRepGraph_UsageId(BRepGraph_NodeKind::Wire, aWireUsageIdx);
-      aWireUsage.DefId          = aWireDef.Id;
+      aWireUsage.DefId          = aWireDefId;
       aWireUsage.LocalLocation  = aWireData.Shape.Location();
       aWireUsage.GlobalLocation = aFaceUsage.GlobalLocation * aWireData.Shape.Location();
       aWireUsage.Orientation    = aWireData.Shape.Orientation();
       aWireUsage.ParentUsage    = aFaceUsage.UsageId;
       aWireUsage.OwnerFaceUsage = aFaceUsage.UsageId;
-      aWireDef.Usages.Append(aWireUsage.UsageId);
+      theGraph.myData->myWireDefs.ChangeValue(aWireDefIdx).Usages.Append(aWireUsage.UsageId);
 
       if (aWireData.IsOuter)
       {
@@ -363,41 +400,61 @@ void BRepGraph_Builder::registerFaceData(BRepGraph&          theGraph,
           BRepGraph_TopoNode::EdgeDef::PCurveEntry aPCEntry;
           aPCEntry.PCurveNodeId    = aPCurveId;
           aPCEntry.FaceDefId       = aFaceDefId;
-          aPCEntry.EdgeOrientation = anEdgeData.OrientationInWire;
+          aPCEntry.EdgeOrientation = TopAbs_FORWARD;
           theGraph.myData->myEdgeDefs.ChangeValue(anEdgeDefId.Index).PCurves.Append(aPCEntry);
         }
 
-        // WireDef::EdgeEntry.
-        BRepGraph_TopoNode::WireDef::EdgeEntry aWEEntry;
-        aWEEntry.EdgeDefId         = anEdgeDefId;
-        aWEEntry.OrientationInWire = anEdgeData.OrientationInWire;
-        aWireDef.OrderedEdges.Append(aWEEntry);
-
-        // Populate edge-to-wire reverse index.
-        if (!theGraph.myData->myEdgeToWires.IsBound(anEdgeDefId.Index))
-          theGraph.myData->myEdgeToWires.Bind(anEdgeDefId.Index, NCollection_Vector<int>());
-        theGraph.myData->myEdgeToWires.ChangeFind(anEdgeDefId.Index).Append(aWireDefIdx);
-
-        // Track first/last vertex for closure check.
-        if (!aFirstVertexDefId.IsValid())
+        // Second PCurve for seam edges.
+        if (!anEdgeData.PCurve2dReversed.IsNull())
         {
-          if (anEdgeData.OrientationInWire == TopAbs_FORWARD)
-            aFirstVertexDefId = anEdgeDefRef.StartVertexDefId;
-          else
-            aFirstVertexDefId = anEdgeDefRef.EndVertexDefId;
+          BRepGraph_NodeId aPCurveId2 = theGraph.createPCurveNode(
+            anEdgeData.PCurve2dReversed, anEdgeDefId, aFaceDefId,
+            anEdgeData.PCFirstReversed, anEdgeData.PCLastReversed);
+
+          BRepGraph_TopoNode::EdgeDef::PCurveEntry aPCEntry2;
+          aPCEntry2.PCurveNodeId    = aPCurveId2;
+          aPCEntry2.FaceDefId       = aFaceDefId;
+          aPCEntry2.EdgeOrientation = TopAbs_REVERSED;
+          theGraph.myData->myEdgeDefs.ChangeValue(anEdgeDefId.Index).PCurves.Append(aPCEntry2);
         }
+
+        if (aIsNewWireDef)
         {
-          if (anEdgeData.OrientationInWire == TopAbs_FORWARD)
-            aLastVertexDefId = anEdgeDefRef.EndVertexDefId;
-          else
-            aLastVertexDefId = anEdgeDefRef.StartVertexDefId;
+          // WireDef::EdgeEntry.
+          BRepGraph_TopoNode::WireDef::EdgeEntry aWEEntry;
+          aWEEntry.EdgeDefId         = anEdgeDefId;
+          aWEEntry.OrientationInWire = anEdgeData.OrientationInWire;
+          theGraph.myData->myWireDefs.ChangeValue(aWireDefIdx).OrderedEdges.Append(aWEEntry);
+
+          // Populate edge-to-wire reverse index.
+          if (!theGraph.myData->myEdgeToWires.IsBound(anEdgeDefId.Index))
+            theGraph.myData->myEdgeToWires.Bind(anEdgeDefId.Index, NCollection_Vector<int>());
+          theGraph.myData->myEdgeToWires.ChangeFind(anEdgeDefId.Index).Append(aWireDefIdx);
+
+          // Track first/last vertex for closure check.
+          if (!aFirstVertexDefId.IsValid())
+          {
+            if (anEdgeData.OrientationInWire == TopAbs_FORWARD)
+              aFirstVertexDefId = anEdgeDefRef.StartVertexDefId;
+            else
+              aFirstVertexDefId = anEdgeDefRef.EndVertexDefId;
+          }
+          {
+            if (anEdgeData.OrientationInWire == TopAbs_FORWARD)
+              aLastVertexDefId = anEdgeDefRef.EndVertexDefId;
+            else
+              aLastVertexDefId = anEdgeDefRef.StartVertexDefId;
+          }
         }
       }
 
-      // Set wire closure.
-      aWireDef.IsClosed =
-        aFirstVertexDefId.IsValid() && aLastVertexDefId.IsValid()
-        && aFirstVertexDefId == aLastVertexDefId;
+      if (aIsNewWireDef)
+      {
+        // Set wire closure.
+        theGraph.myData->myWireDefs.ChangeValue(aWireDefIdx).IsClosed =
+          aFirstVertexDefId.IsValid() && aLastVertexDefId.IsValid()
+          && aFirstVertexDefId == aLastVertexDefId;
+      }
     }
   }
 }
@@ -562,7 +619,11 @@ void BRepGraph_Builder::Perform(BRepGraph&          theGraph,
           BRepGraph_UsageId aChildUsage = traverseShape(
             aChildIt.Value(), aCompUsageId, aCompGlobalLoc);
           if (aChildUsage.IsValid())
+          {
             theGraph.myData->myCompoundUsages.ChangeValue(aCompUsageIdx).ChildUsages.Append(aChildUsage);
+            theGraph.myData->myCompoundDefs.ChangeValue(aCompDefIdx).ChildDefIds.Append(
+              theGraph.DefOf(aChildUsage));
+          }
         }
 
         return aCompUsageId;
@@ -598,7 +659,11 @@ void BRepGraph_Builder::Perform(BRepGraph&          theGraph,
           BRepGraph_UsageId aChildUsage = traverseShape(
             aChildIt.Value(), aCSolidUsageId, aCSolidGlobalLoc);
           if (aChildUsage.IsValid())
+          {
             theGraph.myData->myCompSolidUsages.ChangeValue(aCSolidUsageIdx).SolidUsages.Append(aChildUsage);
+            theGraph.myData->myCompSolidDefs.ChangeValue(aCSolidDefIdx).SolidDefIds.Append(
+              theGraph.DefOf(aChildUsage));
+          }
         }
 
         return aCSolidUsageId;
@@ -725,6 +790,9 @@ void BRepGraph_Builder::Append(BRepGraph&          theGraph,
     return;
 
   // Phase 1 (sequential): Collect face contexts using simplified traversal.
+  // Note: Append() intentionally flattens hierarchy to face level only —
+  // no Solid/Shell/Compound defs are created. This is by design for
+  // incremental face-level operations (e.g. sewing).
   NCollection_Vector<FaceLocalData> aFaceData(128, theGraph.myData->myAllocator);
 
   std::function<void(const TopoDS_Shape&, BRepGraph_UsageId, const TopLoc_Location&)>

@@ -21,8 +21,8 @@
 
 //! Enumeration of node kinds within a BRepGraph.
 //!
-//! Numeric ordering: topology kinds 0-7 match TopoDS hierarchy depth
-//! (Solid = outermost container, Vertex = leaf).
+//! Topology kinds 0-5 cover core hierarchy; Compound(6)/CompSolid(7)
+//! are container kinds.  Note: ordering does NOT match TopAbs_ShapeEnum.
 //! Geometry kinds start at 10, leaving room for future topology extensions.
 enum class BRepGraph_NodeKind : int
 {

@@ -18,6 +18,8 @@
 
 #include <BRep_Builder.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_CompSolid.hxx>
+#include <TopoDS_Compound.hxx>
 
 //=================================================================================================
 
@@ -59,6 +61,8 @@ TopoDS_Shape BRepGraph_Reconstruct::Node(const BRepGraph& theGraph,
         aBB.MakeEdge(aNewEdge);
       }
       aBB.Range(aNewEdge, anEdgeDef.ParamFirst, anEdgeDef.ParamLast);
+      aBB.SameParameter(aNewEdge, anEdgeDef.SameParameter);
+      aBB.SameRange(aNewEdge, anEdgeDef.SameRange);
 
       if (anEdgeDef.StartVertexDefId.IsValid())
       {
@@ -302,6 +306,44 @@ TopoDS_Shape BRepGraph_Reconstruct::Node(const BRepGraph& theGraph,
       }
       return aNewSolid;
     }
+    case BRepGraph_NodeKind::Compound: {
+      const BRepGraph_TopoNode::CompoundDef& aCompDef =
+        theGraph.myData->myCompoundDefs.Value(theNode.Index);
+      TopoDS_Compound aNewCompound;
+      aBB.MakeCompound(aNewCompound);
+      if (!aCompDef.Usages.IsEmpty())
+      {
+        const BRepGraph_TopoNode::CompoundUsage& aCompUsage =
+          theGraph.myData->myCompoundUsages.Value(aCompDef.Usages.Value(0).Index);
+        for (int aChildIdx = 0; aChildIdx < aCompUsage.ChildUsages.Length(); ++aChildIdx)
+        {
+          BRepGraph_NodeId aChildDefId = theGraph.DefOf(aCompUsage.ChildUsages.Value(aChildIdx));
+          TopoDS_Shape aChildShape = Node(theGraph, aChildDefId);
+          if (!aChildShape.IsNull())
+            aBB.Add(aNewCompound, aChildShape);
+        }
+      }
+      return aNewCompound;
+    }
+    case BRepGraph_NodeKind::CompSolid: {
+      const BRepGraph_TopoNode::CompSolidDef& aCSolidDef =
+        theGraph.myData->myCompSolidDefs.Value(theNode.Index);
+      TopoDS_CompSolid aNewCompSolid;
+      aBB.MakeCompSolid(aNewCompSolid);
+      if (!aCSolidDef.Usages.IsEmpty())
+      {
+        const BRepGraph_TopoNode::CompSolidUsage& aCSolidUsage =
+          theGraph.myData->myCompSolidUsages.Value(aCSolidDef.Usages.Value(0).Index);
+        for (int aSolidIdx = 0; aSolidIdx < aCSolidUsage.SolidUsages.Length(); ++aSolidIdx)
+        {
+          BRepGraph_NodeId aSolidDefId = theGraph.DefOf(aCSolidUsage.SolidUsages.Value(aSolidIdx));
+          TopoDS_Shape aSolidShape = Node(theGraph, aSolidDefId);
+          if (!aSolidShape.IsNull())
+            aBB.Add(aNewCompSolid, aSolidShape);
+        }
+      }
+      return aNewCompSolid;
+    }
     default:
       return TopoDS_Shape();
   }
@@ -364,6 +406,8 @@ TopoDS_Shape BRepGraph_Reconstruct::FaceWithCache(
       aBB.MakeEdge(anEdge);
     }
     aBB.Range(anEdge, anEdgeDef.ParamFirst, anEdgeDef.ParamLast);
+    aBB.SameParameter(anEdge, anEdgeDef.SameParameter);
+    aBB.SameRange(anEdge, anEdgeDef.SameRange);
 
     // Add vertices (also cached).
     if (anEdgeDef.StartVertexDefId.IsValid())
@@ -511,5 +555,76 @@ TopoDS_Shape BRepGraph_Reconstruct::Usage(const BRepGraph&  theGraph,
     return TopoDS_Shape();
 
   BRepGraph_NodeId aDefId = theGraph.DefOf(theUsage);
-  return Node(theGraph, aDefId);
+  TopoDS_Shape aShape = Node(theGraph, aDefId);
+  if (aShape.IsNull())
+    return aShape;
+
+  // Apply usage-specific location and orientation.
+  TopLoc_Location    aUsageLoc;
+  TopAbs_Orientation aUsageOri = TopAbs_FORWARD;
+  switch (theUsage.Kind)
+  {
+    case BRepGraph_NodeKind::Vertex:
+    {
+      const BRepGraph_TopoNode::VertexUsage& aVU = theGraph.myData->myVertexUsages.Value(theUsage.Index);
+      aUsageLoc = aVU.GlobalLocation;
+      aUsageOri = aVU.Orientation;
+      break;
+    }
+    case BRepGraph_NodeKind::Edge:
+    {
+      const BRepGraph_TopoNode::EdgeUsage& aEU = theGraph.myData->myEdgeUsages.Value(theUsage.Index);
+      aUsageLoc = aEU.GlobalLocation;
+      aUsageOri = aEU.Orientation;
+      break;
+    }
+    case BRepGraph_NodeKind::Wire:
+    {
+      const BRepGraph_TopoNode::WireUsage& aWU = theGraph.myData->myWireUsages.Value(theUsage.Index);
+      aUsageLoc = aWU.GlobalLocation;
+      aUsageOri = aWU.Orientation;
+      break;
+    }
+    case BRepGraph_NodeKind::Face:
+    {
+      const BRepGraph_TopoNode::FaceUsage& aFU = theGraph.myData->myFaceUsages.Value(theUsage.Index);
+      aUsageLoc = aFU.GlobalLocation;
+      aUsageOri = aFU.Orientation;
+      break;
+    }
+    case BRepGraph_NodeKind::Shell:
+    {
+      const BRepGraph_TopoNode::ShellUsage& aSU = theGraph.myData->myShellUsages.Value(theUsage.Index);
+      aUsageLoc = aSU.GlobalLocation;
+      aUsageOri = aSU.Orientation;
+      break;
+    }
+    case BRepGraph_NodeKind::Solid:
+    {
+      const BRepGraph_TopoNode::SolidUsage& aSU = theGraph.myData->mySolidUsages.Value(theUsage.Index);
+      aUsageLoc = aSU.GlobalLocation;
+      aUsageOri = aSU.Orientation;
+      break;
+    }
+    case BRepGraph_NodeKind::Compound:
+    {
+      const BRepGraph_TopoNode::CompoundUsage& aCU = theGraph.myData->myCompoundUsages.Value(theUsage.Index);
+      aUsageLoc = aCU.GlobalLocation;
+      aUsageOri = aCU.Orientation;
+      break;
+    }
+    case BRepGraph_NodeKind::CompSolid:
+    {
+      const BRepGraph_TopoNode::CompSolidUsage& aCU = theGraph.myData->myCompSolidUsages.Value(theUsage.Index);
+      aUsageLoc = aCU.GlobalLocation;
+      aUsageOri = aCU.Orientation;
+      break;
+    }
+    default:
+      break;
+  }
+
+  aShape.Location(aUsageLoc);
+  aShape.Orientation(aUsageOri);
+  return aShape;
 }

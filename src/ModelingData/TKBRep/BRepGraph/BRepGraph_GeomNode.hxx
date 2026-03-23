@@ -80,8 +80,8 @@ struct PCurve
   double                     ParamFirst = 0.0;
   double                     ParamLast  = 0.0;
 
-  //! Geometric continuity across the edge (from BRep_CurveOnClosedSurface).
-  //! GeomAbs_C0 for most edges; higher values encode G1/G2 continuity.
+  //! Geometric continuity.  Default GeomAbs_C0.
+  //! Not populated during Build(); reserved for future use.
   GeomAbs_Shape              Continuity = GeomAbs_C0;
 };
 

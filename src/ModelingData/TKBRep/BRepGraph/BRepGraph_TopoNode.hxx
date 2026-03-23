@@ -78,8 +78,8 @@ struct FaceDef : public BaseDef
   //! Tolerance from BRep_TFace.
   double Tolerance = 0.0;
 
-  //! True if the face boundary is exactly the parametric domain of the surface
-  //! (UMin/UMax/VMin/VMax) and no wire topology is stored.
+  //! True if face boundary coincides with the surface's natural parametric
+  //! domain.  Wire topology is still stored.
   bool NaturalRestriction = false;
 };
 
@@ -140,7 +140,7 @@ struct EdgeDef : public BaseDef
 
 struct VertexDef : public BaseDef
 {
-  //! 3D point in TShape-local coordinates (NOT pre-transformed).
+  //! 3D point in global coordinates (from BRep_Tool::Pnt, which applies vertex location).
   gp_Pnt Point;
 
   //! Tolerance from BRep_TVertex.
