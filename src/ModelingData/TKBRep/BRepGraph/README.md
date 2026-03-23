@@ -389,21 +389,24 @@ From public contract and implementation:
 - `FindNode(theShape)`: returns the definition `NodeId` for a shape that was part of the `Build()` input, using `TShape` pointer comparison (`IsSame()` semantics). Returns invalid `NodeId` if the shape is unknown.
 - `HasNode(theShape)`: returns `true` if the shape has a corresponding definition node.
 
-These enable workflows where external code holds `TopoDS_Shape` references and needs to operate on the graph:
+These work for both original shapes from `Build()` and reconstructed post-operation shapes. When `Shape()` reconstructs a modified node, it automatically registers the new TShape in the reverse lookup map so that `FindNode()` resolves it back.
 
 ```cpp
 BRepGraph aGraph;
 aGraph.Build(myShape);
 
-for (TopExp_Explorer anExp(myShape, TopAbs_FACE); anExp.More(); anExp.Next())
-{
-  BRepGraph_NodeId aNodeId = aGraph.Shapes().FindNode(anExp.Current());
-  if (aNodeId.IsValid())
-  {
-    // attach attributes, query adjacency, etc.
-  }
-}
+// Works for original shapes:
+BRepGraph_NodeId aNodeId = aGraph.Shapes().FindNode(originalFace);
+
+// After a graph-modifying operation:
+BRepGraphAlgo_Deduplicate::Perform(aGraph);
+
+// Reconstruct and look up the new shape:
+TopoDS_Shape aNewFace = aGraph.Shapes().Shape(aNodeId);
+BRepGraph_NodeId aFound = aGraph.Shapes().FindNode(aNewFace); // == aNodeId
 ```
+
+This enables bidirectional tracking: original shape → NodeId → operation → reconstructed shape → NodeId, without needing attributes or dummy markers.
 
 ## User Attributes and Transfer
 
