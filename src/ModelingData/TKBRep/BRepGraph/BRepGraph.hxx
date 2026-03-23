@@ -21,6 +21,7 @@
 #include <BRepGraph_HistoryRecord.hxx>
 #include <BRepGraph_SubGraph.hxx>
 #include <BRepGraph_UserAttribute.hxx>
+#include <BRepGraphInc_Populate.hxx>
 
 #include <Standard_DefineAlloc.hxx>
 #include <TopoDS_Shape.hxx>
@@ -72,6 +73,11 @@ public:
 
   //! Build the full graph from a TopoDS_Shape.
   Standard_EXPORT void Build(const TopoDS_Shape& theShape, bool theParallel = false);
+
+  //! Build the full graph with explicit post-pass control.
+  Standard_EXPORT void Build(const TopoDS_Shape& theShape,
+                             bool                                     theParallel,
+                             const BRepGraphInc_Populate::Options&    theOptions);
 
   //! Return true if the graph was successfully built.
   Standard_EXPORT bool IsDone() const;

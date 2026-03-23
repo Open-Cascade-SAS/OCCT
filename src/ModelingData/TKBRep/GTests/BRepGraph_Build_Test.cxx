@@ -20,6 +20,8 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_UIDsView.hxx>
+#include <BRepGraphInc_Populate.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCone.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
@@ -823,4 +825,61 @@ TEST(BRepGraphBuildTest, AppendShape_AppendedFaceHasNoParentShell)
   ASSERT_EQ(aGraph.Defs().NbFaces(), 1);
   // Appended face should not be part of any shell.
   EXPECT_EQ(aGraph.Defs().NbShells(), 0);
+}
+
+TEST(BRepGraphBuildTest, AppendShape_PreservesExistingUIDs)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+
+  BRepGraph aGraph;
+  aGraph.Build(aBox);
+  ASSERT_TRUE(aGraph.IsDone());
+  ASSERT_GT(aGraph.Defs().NbEdges(), 0);
+
+  // Record UID of the first edge before append.
+  const BRepGraph_UID anOrigUID = aGraph.UIDs().Of(BRepGraph_NodeId::Edge(0));
+  ASSERT_TRUE(anOrigUID.IsValid());
+
+  // Append a sphere.
+  BRepPrimAPI_MakeSphere aSphereMaker(5.0);
+  const TopoDS_Shape& aSphere = aSphereMaker.Shape();
+  aGraph.Builder().AppendShape(aSphere);
+  ASSERT_TRUE(aGraph.IsDone());
+
+  // Verify original edge UID is unchanged.
+  const BRepGraph_UID aPostUID = aGraph.UIDs().Of(BRepGraph_NodeId::Edge(0));
+  EXPECT_EQ(anOrigUID, aPostUID);
+}
+
+TEST(BRepGraphBuildTest, Build_WithoutPostPasses_BasicQueriesWork)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+
+  BRepGraphInc_Populate::Options anOpts;
+  anOpts.ExtractRegularities    = false;
+  anOpts.ExtractVertexPointReps = false;
+
+  BRepGraph aGraph;
+  aGraph.Build(aBox, false, anOpts);
+  ASSERT_TRUE(aGraph.IsDone());
+
+  EXPECT_EQ(aGraph.Defs().NbFaces(), 6);
+  EXPECT_EQ(aGraph.Defs().NbEdges(), 12);
+  EXPECT_EQ(aGraph.Defs().NbVertices(), 8);
+
+  // Regularities should be empty.
+  for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
+  {
+    EXPECT_EQ(aGraph.Defs().Edge(i).Regularities.Length(), 0);
+  }
+
+  // Vertex point reps should be empty.
+  for (int i = 0; i < aGraph.Defs().NbVertices(); ++i)
+  {
+    EXPECT_EQ(aGraph.Defs().Vertex(i).PointsOnCurve.Length(), 0);
+    EXPECT_EQ(aGraph.Defs().Vertex(i).PointsOnSurface.Length(), 0);
+    EXPECT_EQ(aGraph.Defs().Vertex(i).PointsOnPCurve.Length(), 0);
+  }
 }

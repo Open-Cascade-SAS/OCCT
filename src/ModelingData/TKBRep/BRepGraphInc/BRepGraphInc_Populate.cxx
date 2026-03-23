@@ -526,7 +526,8 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
 
 void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage& theStorage,
                                     const TopoDS_Shape&   theShape,
-                                    bool                  theParallel)
+                                    bool                  theParallel,
+                                    const Options&        theOptions)
 {
   theStorage.Clear();
 
@@ -727,57 +728,61 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage& theStorage,
     }
   }
 
-  // Phase 3b: Edge regularities.
-  NCollection_DataMap<const Geom_Surface*, int> aSurfToFaceIdx;
-  for (int i = 0; i < theStorage.myFaces.Length(); ++i)
+  // Edge regularities.
+  if (theOptions.ExtractRegularities)
   {
-    const BRepGraphInc::FaceEntity& aFace = theStorage.myFaces.Value(i);
-    if (!aFace.Surface.IsNull())
-      aSurfToFaceIdx.TryBind(aFace.Surface.get(), i);
-  }
-
-  for (int anEdgeIdx = 0; anEdgeIdx < theStorage.myEdges.Length(); ++anEdgeIdx)
-  {
-    BRepGraphInc::EdgeEntity& anEdgeEnt = theStorage.myEdges.ChangeValue(anEdgeIdx);
-
-    // Find original shape via OriginalShapes map.
-    const TopoDS_Shape* anOrigShape = theStorage.myOriginalShapes.Seek(anEdgeEnt.Id);
-    if (anOrigShape == nullptr || anOrigShape->IsNull())
-      continue;
-
-    const TopoDS_Edge& anEdge = TopoDS::Edge(*anOrigShape);
-    const Handle(BRep_TEdge) aTEdge = Handle(BRep_TEdge)::DownCast(anEdge.TShape());
-    if (aTEdge.IsNull())
-      continue;
-
-    for (const Handle(BRep_CurveRepresentation)& aCRep : aTEdge->Curves())
+    NCollection_DataMap<const Geom_Surface*, int> aSurfToFaceIdx;
+    for (int i = 0; i < theStorage.myFaces.Length(); ++i)
     {
-      if (aCRep.IsNull())
-        continue;
-      const Handle(BRep_CurveOn2Surfaces) aCon2S =
-        Handle(BRep_CurveOn2Surfaces)::DownCast(aCRep);
-      if (aCon2S.IsNull())
-        continue;
-
-      const Geom_Surface* aSurf1Ptr = aCon2S->Surface().get();
-      const Geom_Surface* aSurf2Ptr = aCon2S->Surface2().get();
-      if (aSurf1Ptr == nullptr || aSurf2Ptr == nullptr)
-        continue;
-
-      const int* aFaceIdx1 = aSurfToFaceIdx.Seek(aSurf1Ptr);
-      const int* aFaceIdx2 = aSurfToFaceIdx.Seek(aSurf2Ptr);
-      if (aFaceIdx1 == nullptr || aFaceIdx2 == nullptr)
-        continue;
-
-      BRepGraphInc::EdgeEntity::RegularityEntry aRegEntry;
-      aRegEntry.FaceDef1   = BRepGraph_NodeId::Face(*aFaceIdx1);
-      aRegEntry.FaceDef2   = BRepGraph_NodeId::Face(*aFaceIdx2);
-      aRegEntry.Continuity = aCon2S->Continuity();
-      anEdgeEnt.Regularities.Append(aRegEntry);
+      const BRepGraphInc::FaceEntity& aFace = theStorage.myFaces.Value(i);
+      if (!aFace.Surface.IsNull())
+        aSurfToFaceIdx.TryBind(aFace.Surface.get(), i);
     }
+
+    for (int anEdgeIdx = 0; anEdgeIdx < theStorage.myEdges.Length(); ++anEdgeIdx)
+    {
+      BRepGraphInc::EdgeEntity& anEdgeEnt = theStorage.myEdges.ChangeValue(anEdgeIdx);
+
+      const TopoDS_Shape* anOrigShape = theStorage.myOriginalShapes.Seek(anEdgeEnt.Id);
+      if (anOrigShape == nullptr || anOrigShape->IsNull())
+        continue;
+
+      const TopoDS_Edge& anEdge = TopoDS::Edge(*anOrigShape);
+      const Handle(BRep_TEdge) aTEdge = Handle(BRep_TEdge)::DownCast(anEdge.TShape());
+      if (aTEdge.IsNull())
+        continue;
+
+      for (const Handle(BRep_CurveRepresentation)& aCRep : aTEdge->Curves())
+      {
+        if (aCRep.IsNull())
+          continue;
+        const Handle(BRep_CurveOn2Surfaces) aCon2S =
+          Handle(BRep_CurveOn2Surfaces)::DownCast(aCRep);
+        if (aCon2S.IsNull())
+          continue;
+
+        const Geom_Surface* aSurf1Ptr = aCon2S->Surface().get();
+        const Geom_Surface* aSurf2Ptr = aCon2S->Surface2().get();
+        if (aSurf1Ptr == nullptr || aSurf2Ptr == nullptr)
+          continue;
+
+        const int* aFaceIdx1 = aSurfToFaceIdx.Seek(aSurf1Ptr);
+        const int* aFaceIdx2 = aSurfToFaceIdx.Seek(aSurf2Ptr);
+        if (aFaceIdx1 == nullptr || aFaceIdx2 == nullptr)
+          continue;
+
+        BRepGraphInc::EdgeEntity::RegularityEntry aRegEntry;
+        aRegEntry.FaceDef1   = BRepGraph_NodeId::Face(*aFaceIdx1);
+        aRegEntry.FaceDef2   = BRepGraph_NodeId::Face(*aFaceIdx2);
+        aRegEntry.Continuity = aCon2S->Continuity();
+        anEdgeEnt.Regularities.Append(aRegEntry);
+      }
+    }
+    theStorage.myHasRegularities = true;
   }
 
-  // Phase 3c: Vertex point representations.
+  // Vertex point representations.
+  if (theOptions.ExtractVertexPointReps)
   {
     NCollection_DataMap<const Geom_Curve*, BRepGraph_NodeId> aCurveToEdgeDef;
     for (int i = 0; i < theStorage.myEdges.Length(); ++i)
@@ -846,9 +851,10 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage& theStorage,
         }
       }
     }
+    theStorage.myHasVertexPointReps = true;
   }
 
-  // Phase 4: Build reverse indices.
+  // Build reverse indices.
   theStorage.BuildReverseIndex();
 
   theStorage.myIsDone = true;

@@ -35,16 +35,28 @@ class BRepGraphInc_Populate
 public:
   DEFINE_STANDARD_ALLOC
 
+  //! Options controlling which post-passes are executed during population.
+  struct Options
+  {
+    bool ExtractRegularities;    //!< Phase 3b: edge regularities
+    bool ExtractVertexPointReps; //!< Phase 3c: vertex point representations
+
+    Options() : ExtractRegularities(true), ExtractVertexPointReps(true) {}
+  };
+
   //! Build incidence storage from a TopoDS_Shape.
   //! @param[out] theStorage  storage to populate (cleared first)
   //! @param[in]  theShape    root shape
   //! @param[in]  theParallel if true, face-level extraction runs in parallel
+  //! @param[in]  theOptions  optional post-pass controls
   static Standard_EXPORT void Perform(BRepGraphInc_Storage& theStorage,
                                       const TopoDS_Shape&   theShape,
-                                      bool                  theParallel);
+                                      bool                  theParallel,
+                                      const Options&        theOptions = Options());
 
   //! Extend existing storage with additional shapes (no clear).
   //! Flattens hierarchy to face level only (no Solid/Shell/Compound entities created).
+  //! Does not run post-passes (regularities, vertex point representations).
   //! @param[in,out] theStorage  storage to extend
   //! @param[in]     theShape    shape to append
   //! @param[in]     theParallel if true, face-level extraction runs in parallel

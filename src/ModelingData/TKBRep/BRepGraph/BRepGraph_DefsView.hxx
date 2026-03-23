@@ -99,7 +99,7 @@ public:
   //! Total number of nodes in the graph (all topology kinds).
   Standard_EXPORT size_t NbNodes() const;
 
-  // -- Geometry query methods (moved from GeomView) --
+  // -- Geometry query methods --
 
   //! Find the PCurveEntry for an edge on a given face, or nullptr if none exists.
   //! @param[in] theEdgeDef edge definition NodeId

@@ -140,12 +140,22 @@ public:
   bool GetIsDone() const { return myIsDone; }
   void SetIsDone(bool theVal) { myIsDone = theVal; }
 
+  //! True if edge regularities were extracted during population.
+  bool HasRegularities() const { return myHasRegularities; }
+
+  //! True if vertex point representations were extracted during population.
+  bool HasVertexPointReps() const { return myHasVertexPointReps; }
+
   //! Clear all storage.
   Standard_EXPORT void Clear();
 
   //! Build reverse indices from entity and relationship tables.
   //! Call after population is complete.
   Standard_EXPORT void BuildReverseIndex();
+
+  //! Debug: verify reverse index consistency against entity tables.
+  //! @return true if all forward refs have matching reverse entries
+  Standard_EXPORT bool ValidateReverseIndex() const;
 
 private:
   friend class BRepGraphInc_Populate;
@@ -173,7 +183,9 @@ private:
   NCollection_Vector<BRepGraph_UID> myCompoundUIDs;
   NCollection_Vector<BRepGraph_UID> myCompSolidUIDs;
 
-  bool myIsDone = false;
+  bool myIsDone              = false;
+  bool myHasRegularities     = false;
+  bool myHasVertexPointReps  = false;
 };
 
 #endif // _BRepGraphInc_Storage_HeaderFile

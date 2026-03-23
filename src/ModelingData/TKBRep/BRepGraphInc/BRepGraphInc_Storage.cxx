@@ -83,7 +83,9 @@ void BRepGraphInc_Storage::Clear()
   myTShapeToNodeId.Clear();
   myOriginalShapes.Clear();
   ResetAllUIDs();
-  myIsDone = false;
+  myIsDone             = false;
+  myHasRegularities    = false;
+  myHasVertexPointReps = false;
 }
 
 //=================================================================================================
@@ -91,4 +93,11 @@ void BRepGraphInc_Storage::Clear()
 void BRepGraphInc_Storage::BuildReverseIndex()
 {
   myReverseIdx.Build(myEdges, myWires, myFaces, myShells, mySolids);
+}
+
+//=================================================================================================
+
+bool BRepGraphInc_Storage::ValidateReverseIndex() const
+{
+  return myReverseIdx.Validate(myEdges, myWires, myFaces, myShells, mySolids);
 }

@@ -20,6 +20,7 @@
 #include <BRepGraphInc_Storage.hxx>
 
 #include <BRep_Builder.hxx>
+#include <Standard_Assert.hxx>
 #include <TopAbs.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopLoc_Location.hxx>
@@ -241,6 +242,9 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
   theGraph.markModified(theEdgeDef);
   theGraph.markModified(theSubA);
   theGraph.markModified(theSubB);
+
+  Standard_ASSERT_VOID(theGraph.myData->myIncStorage.ValidateReverseIndex(),
+                        "SplitEdge: post-mutation reverse index inconsistency");
 }
 
 //=================================================================================================
@@ -270,4 +274,7 @@ void BRepGraph_Mutator::ReplaceEdgeInWire(BRepGraph&       theGraph,
   }
 
   theGraph.markModified(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Wire, theWireDefIdx));
+
+  Standard_ASSERT_VOID(theGraph.myData->myIncStorage.ValidateReverseIndex(),
+                        "ReplaceEdgeInWire: post-mutation reverse index inconsistency");
 }

@@ -14,6 +14,7 @@
 #ifndef _BRepGraph_Builder_HeaderFile
 #define _BRepGraph_Builder_HeaderFile
 
+#include <BRepGraphInc_Populate.hxx>
 #include <Standard_DefineAlloc.hxx>
 
 class BRepGraph;
@@ -37,6 +38,12 @@ public:
                                       const TopoDS_Shape& theShape,
                                       bool                theParallel);
 
+  //! Build the full graph with explicit post-pass control.
+  static Standard_EXPORT void Perform(BRepGraph&                            theGraph,
+                                      const TopoDS_Shape&                   theShape,
+                                      bool                                  theParallel,
+                                      const BRepGraphInc_Populate::Options& theOptions);
+
   //! Append a shape to the existing graph without clearing.
   //! Uses existing deduplication maps to avoid re-registering shared entities.
   //! @param[in,out] theGraph   graph to extend
@@ -50,6 +57,14 @@ private:
   //! Allocate UIDs for all incidence entities after BRepGraphInc_Populate
   //! has filled the storage.
   static void populateUIDs(BRepGraph& theGraph);
+
+  //! Allocate UIDs only for entities in range [theOld, current) per kind.
+  //! Used by Append() to avoid re-walking existing entities.
+  static void populateUIDsIncremental(BRepGraph& theGraph,
+                                       int theOldVtx,   int theOldEdge,
+                                       int theOldWire,  int theOldFace,
+                                       int theOldShell, int theOldSolid,
+                                       int theOldComp,  int theOldCS);
 
   BRepGraph_Builder() = delete;
 };

@@ -106,6 +106,21 @@ History records lineage for downstream attribute transfer and diagnostics.
 - Build supports internal parallel extraction.
 - Mutation must be externally serialized.
 
+## Build Options
+
+`Build()` accepts optional `BRepGraphInc_Populate::Options` to control post-passes:
+
+- `ExtractRegularities` (default true): edge continuity across face pairs.
+- `ExtractVertexPointReps` (default true): vertex parameter representations on curves/surfaces.
+
+Algorithms that do not need regularities or point reps can skip them for faster population.
+
+## Debug Validation
+
+`BRepGraphInc_ReverseIndex::Validate()` checks all reverse index maps against forward entity refs. Called automatically via `Standard_ASSERT_VOID` after `SplitEdge` and `ReplaceEdgeInWire` in debug builds.
+
+`Append()` now allocates UIDs incrementally (only for new entities), preserving existing UIDs.
+
 ## Practical Guidance
 
 1. Treat BRepGraph as API boundary and BRepGraphInc as implementation backend.
@@ -118,4 +133,3 @@ History records lineage for downstream attribute transfer and diagnostics.
 - API facade and views: src/ModelingData/TKBRep/BRepGraph/
 - Backend storage and pipelines: src/ModelingData/TKBRep/BRepGraphInc/
 - Backend deep dive: src/ModelingData/TKBRep/BRepGraphInc/README.md
-- Architecture review and TODO plan: BRepGraph_Architecture_Deep_Analysis_2026-03-19.md

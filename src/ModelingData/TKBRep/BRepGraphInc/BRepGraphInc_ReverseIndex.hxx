@@ -89,6 +89,17 @@ public:
     return myShellToSolids.Seek(theShellIdx);
   }
 
+  //! Verify reverse index consistency against forward entity tables.
+  //! For each forward ref (e.g., wire->edge), checks that the corresponding
+  //! reverse entry exists (edge->wire). Intended for debug validation.
+  //! @return true if all forward refs have matching reverse entries
+  Standard_EXPORT bool Validate(
+    const NCollection_Vector<BRepGraphInc::EdgeEntity>&  theEdges,
+    const NCollection_Vector<BRepGraphInc::WireEntity>&  theWires,
+    const NCollection_Vector<BRepGraphInc::FaceEntity>&  theFaces,
+    const NCollection_Vector<BRepGraphInc::ShellEntity>& theShells,
+    const NCollection_Vector<BRepGraphInc::SolidEntity>& theSolids) const;
+
   // --- Incremental mutation ---
 
   //! Register an edge as belonging to a wire (O(1) amortized).

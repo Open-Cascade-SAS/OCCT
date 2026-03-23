@@ -58,6 +58,15 @@ void BRepGraph::Build(const TopoDS_Shape& theShape, bool theParallel)
 
 //=================================================================================================
 
+void BRepGraph::Build(const TopoDS_Shape&                   theShape,
+                      bool                                  theParallel,
+                      const BRepGraphInc_Populate::Options& theOptions)
+{
+  BRepGraph_Builder::Perform(*this, theShape, theParallel, theOptions);
+}
+
+//=================================================================================================
+
 BRepGraph_UID BRepGraph::allocateUID(BRepGraph_NodeId theNodeId)
 {
   const size_t  aCounter = myData->myNextUIDCounter.fetch_add(1, std::memory_order_relaxed);

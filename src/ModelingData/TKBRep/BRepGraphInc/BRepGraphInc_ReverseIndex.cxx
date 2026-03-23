@@ -13,6 +13,7 @@
 
 #include <BRepGraphInc_ReverseIndex.hxx>
 #include <BRepGraphInc_Entity.hxx>
+#include <NCollection_LocalArray.hxx>
 
 //=================================================================================================
 
@@ -65,14 +66,44 @@ void BRepGraphInc_ReverseIndex::Build(
 
   // Edge -> Faces: derive from inline PCurve entries on each edge.
   // Seam edges produce two PCurve entries with same FaceDefId but opposite
-  // orientations; appendUnique deduplicates (1-4 entries per edge, O(1) in practice).
+  // orientations. Collect, sort, and deduplicate per edge to avoid linear scans.
   for (int anEdgeIdx = 0; anEdgeIdx < theEdges.Length(); ++anEdgeIdx)
   {
     const BRepGraphInc::EdgeEntity& anEdge = theEdges.Value(anEdgeIdx);
     if (anEdge.IsRemoved)
       continue;
-    for (int aPCIdx = 0; aPCIdx < anEdge.PCurves.Length(); ++aPCIdx)
-      appendUnique(myEdgeToFaces, anEdgeIdx, anEdge.PCurves.Value(aPCIdx).FaceDefId.Index);
+    const int aNbPC = anEdge.PCurves.Length();
+    if (aNbPC == 0)
+      continue;
+
+    // Collect face indices into local array (stack-allocated for small counts).
+    NCollection_LocalArray<int, 8> aFaces(aNbPC);
+    for (int i = 0; i < aNbPC; ++i)
+      aFaces[i] = anEdge.PCurves.Value(i).FaceDefId.Index;
+
+    // Insertion sort (optimal for small N).
+    for (int i = 1; i < aNbPC; ++i)
+    {
+      const int aKey = aFaces[i];
+      int j = i - 1;
+      while (j >= 0 && aFaces[j] > aKey)
+      {
+        aFaces[j + 1] = aFaces[j];
+        --j;
+      }
+      aFaces[j + 1] = aKey;
+    }
+
+    // Append unique sorted values.
+    int aPrev = -1;
+    for (int i = 0; i < aNbPC; ++i)
+    {
+      if (aFaces[i] != aPrev)
+      {
+        appendDirect(myEdgeToFaces, anEdgeIdx, aFaces[i]);
+        aPrev = aFaces[i];
+      }
+    }
   }
 
   // Wire -> Faces: scan face entities for their wire refs.
@@ -222,4 +253,119 @@ void BRepGraphInc_ReverseIndex::UnbindVertexFromEdge(int theVertexIdx, int theEd
 void BRepGraphInc_ReverseIndex::BindEdgeToFace(int theEdgeIdx, int theFaceIdx)
 {
   appendUnique(myEdgeToFaces, theEdgeIdx, theFaceIdx);
+}
+
+//=================================================================================================
+
+bool BRepGraphInc_ReverseIndex::Validate(
+  const NCollection_Vector<BRepGraphInc::EdgeEntity>&  theEdges,
+  const NCollection_Vector<BRepGraphInc::WireEntity>&  theWires,
+  const NCollection_Vector<BRepGraphInc::FaceEntity>&  theFaces,
+  const NCollection_Vector<BRepGraphInc::ShellEntity>& theShells,
+  const NCollection_Vector<BRepGraphInc::SolidEntity>& theSolids) const
+{
+  // Helper: check that theVal appears in the vector at theKey in theMap.
+  auto containsVal = [](const NCollection_DataMap<int, NCollection_Vector<int>>& theMap,
+                        int theKey, int theVal) -> bool
+  {
+    const NCollection_Vector<int>* aVec = theMap.Seek(theKey);
+    if (aVec == nullptr)
+      return false;
+    for (int i = 0; i < aVec->Length(); ++i)
+    {
+      if (aVec->Value(i) == theVal)
+        return true;
+    }
+    return false;
+  };
+
+  // Check: for each wire's EdgeRefs, edge->wire reverse entry must exist.
+  for (int aWireIdx = 0; aWireIdx < theWires.Length(); ++aWireIdx)
+  {
+    const BRepGraphInc::WireEntity& aWire = theWires.Value(aWireIdx);
+    if (aWire.IsRemoved)
+      continue;
+    for (int i = 0; i < aWire.EdgeRefs.Length(); ++i)
+    {
+      const int anEdgeIdx = aWire.EdgeRefs.Value(i).EdgeIdx;
+      if (!containsVal(myEdgeToWires, anEdgeIdx, aWireIdx))
+        return false;
+    }
+  }
+
+  // Check: for each edge's start/end vertex, vertex->edge reverse entry must exist.
+  for (int anEdgeIdx = 0; anEdgeIdx < theEdges.Length(); ++anEdgeIdx)
+  {
+    const BRepGraphInc::EdgeEntity& anEdge = theEdges.Value(anEdgeIdx);
+    if (anEdge.IsRemoved)
+      continue;
+    if (anEdge.StartVertexIdx >= 0)
+    {
+      if (!containsVal(myVertexToEdges, anEdge.StartVertexIdx, anEdgeIdx))
+        return false;
+    }
+    if (anEdge.EndVertexIdx >= 0 && anEdge.EndVertexIdx != anEdge.StartVertexIdx)
+    {
+      if (!containsVal(myVertexToEdges, anEdge.EndVertexIdx, anEdgeIdx))
+        return false;
+    }
+  }
+
+  // Check: for each edge's PCurves, edge->face reverse entry must exist.
+  for (int anEdgeIdx = 0; anEdgeIdx < theEdges.Length(); ++anEdgeIdx)
+  {
+    const BRepGraphInc::EdgeEntity& anEdge = theEdges.Value(anEdgeIdx);
+    if (anEdge.IsRemoved)
+      continue;
+    for (int aPCIdx = 0; aPCIdx < anEdge.PCurves.Length(); ++aPCIdx)
+    {
+      const int aFaceIdx = anEdge.PCurves.Value(aPCIdx).FaceDefId.Index;
+      if (!containsVal(myEdgeToFaces, anEdgeIdx, aFaceIdx))
+        return false;
+    }
+  }
+
+  // Check: for each face's WireRefs, wire->face reverse entry must exist.
+  for (int aFaceIdx = 0; aFaceIdx < theFaces.Length(); ++aFaceIdx)
+  {
+    const BRepGraphInc::FaceEntity& aFace = theFaces.Value(aFaceIdx);
+    if (aFace.IsRemoved)
+      continue;
+    for (int i = 0; i < aFace.WireRefs.Length(); ++i)
+    {
+      const int aWireIdx = aFace.WireRefs.Value(i).WireIdx;
+      if (!containsVal(myWireToFaces, aWireIdx, aFaceIdx))
+        return false;
+    }
+  }
+
+  // Check: for each shell's FaceRefs, face->shell reverse entry must exist.
+  for (int aShellIdx = 0; aShellIdx < theShells.Length(); ++aShellIdx)
+  {
+    const BRepGraphInc::ShellEntity& aShell = theShells.Value(aShellIdx);
+    if (aShell.IsRemoved)
+      continue;
+    for (int i = 0; i < aShell.FaceRefs.Length(); ++i)
+    {
+      const int aFaceIdx = aShell.FaceRefs.Value(i).FaceIdx;
+      if (!containsVal(myFaceToShells, aFaceIdx, aShellIdx))
+        return false;
+    }
+  }
+
+  // Check: for each solid's ShellRefs, shell->solid reverse entry must exist.
+  for (int aSolidIdx = 0; aSolidIdx < theSolids.Length(); ++aSolidIdx)
+  {
+    const BRepGraphInc::SolidEntity& aSolid = theSolids.Value(aSolidIdx);
+    if (aSolid.IsRemoved)
+      continue;
+    for (int i = 0; i < aSolid.ShellRefs.Length(); ++i)
+    {
+      const int aShellIdx = aSolid.ShellRefs.Value(i).ShellIdx;
+      if (!containsVal(myShellToSolids, aShellIdx, aSolidIdx))
+        return false;
+    }
+  }
+
+  return true;
 }

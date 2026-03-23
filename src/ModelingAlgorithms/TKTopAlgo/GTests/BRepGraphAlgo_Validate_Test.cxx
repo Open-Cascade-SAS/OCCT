@@ -18,10 +18,13 @@
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_NodeId.hxx>
+#include <BRepGraph_ShapesView.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
+#include <BRepGraphInc_Storage.hxx>
 #include <BRepGraphAlgo_Deduplicate.hxx>
 #include <BRepGraphAlgo_Validate.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
+#include <BRepPrimAPI_MakeSphere.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -186,4 +189,70 @@ TEST(BRepGraphAlgo_ValidateTest, BoundsCheck_InvalidIndex)
   const BRepGraphAlgo_Validate::Result aResult = BRepGraphAlgo_Validate::Perform(aGraph);
   EXPECT_FALSE(aResult.IsValid());
   EXPECT_GT(aResult.NbIssues(BRepGraphAlgo_Validate::Severity::Error), 0);
+}
+
+TEST(BRepGraphAlgo_ValidateTest, AfterSplitEdge_ProducesSubEdges)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+
+  BRepGraph aGraph;
+  aGraph.Build(aBox);
+  ASSERT_TRUE(aGraph.IsDone());
+  const int anOrigEdgeCount = aGraph.Defs().NbEdges();
+
+  // Find a non-degenerate edge with valid vertices to split.
+  BRepGraph_NodeId anEdgeId;
+  double aSplitParam = 0.0;
+  for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
+  {
+    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.Defs().Edge(i);
+    if (!anEdgeDef.IsDegenerate && !anEdgeDef.Curve3d.IsNull()
+        && anEdgeDef.StartVertexDefId().IsValid() && anEdgeDef.EndVertexDefId().IsValid())
+    {
+      anEdgeId    = BRepGraph_NodeId::Edge(i);
+      aSplitParam = 0.5 * (anEdgeDef.ParamFirst + anEdgeDef.ParamLast);
+      break;
+    }
+  }
+  ASSERT_TRUE(anEdgeId.IsValid());
+
+  // Create a split vertex at the midpoint.
+  const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.Defs().Edge(anEdgeId.Index);
+  gp_Pnt aMidPt;
+  anEdgeDef.Curve3d->D0(aSplitParam, aMidPt);
+  BRepGraph_NodeId aSplitVtx = aGraph.Builder().AddVertexDef(aMidPt, anEdgeDef.Tolerance);
+
+  BRepGraph_NodeId aSubA, aSubB;
+  aGraph.Mut().SplitEdge(anEdgeId, aSplitVtx, aSplitParam, aSubA, aSubB);
+
+  // Two new sub-edges should have been created.
+  EXPECT_EQ(aGraph.Defs().NbEdges(), anOrigEdgeCount + 2);
+  EXPECT_TRUE(aSubA.IsValid());
+  EXPECT_TRUE(aSubB.IsValid());
+
+  // Original edge should be marked removed.
+  EXPECT_TRUE(aGraph.Defs().Edge(anEdgeId.Index).IsRemoved);
+}
+
+TEST(BRepGraphAlgo_ValidateTest, CorruptedPCurve_FaceDefIdOutOfBounds)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+
+  BRepGraph aGraph;
+  aGraph.Build(aBox);
+  ASSERT_TRUE(aGraph.IsDone());
+  ASSERT_GT(aGraph.Defs().NbEdges(), 0);
+
+  // Corrupt a PCurve's FaceDefId to an out-of-range value.
+  BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.Mut().EdgeDef(0);
+  if (anEdgeDef.PCurves.Length() > 0)
+  {
+    anEdgeDef.PCurves.ChangeValue(0).FaceDefId =
+      BRepGraph_NodeId::Face(aGraph.Defs().NbFaces() + 999);
+  }
+
+  const BRepGraphAlgo_Validate::Result aValResult = BRepGraphAlgo_Validate::Perform(aGraph);
+  EXPECT_FALSE(aValResult.IsValid());
 }

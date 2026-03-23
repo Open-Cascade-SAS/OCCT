@@ -146,10 +146,12 @@ flowchart LR
 	P5 --> D[Storage IsDone]
 ```
 
-Build post-passes currently include:
+Build post-passes (controlled by `BRepGraphInc_Populate::Options`):
 
-- edge regularities
-- vertex point representations
+- edge regularities (`ExtractRegularities`, default on)
+- vertex point representations (`ExtractVertexPointReps`, default on)
+
+Storage flags `HasRegularities()` and `HasVertexPointReps()` indicate which passes ran.
 
 ## Reconstruction Pipeline
 
@@ -200,24 +202,14 @@ These are critical for adjacency-heavy algorithms like sewing and healing.
 
 5. Mutation boundary invariant
 - after each mutator operation: entities, reverse indices, cache invalidation, and history are coherent
+- `ReverseIndex::Validate()` checks all 6 reverse maps against forward refs (used in debug assertions after SplitEdge/ReplaceEdgeInWire)
 
-## Performance Priorities
+## Performance Notes
 
-Primary:
-
-- reverse-index maintenance strategy
-- append-mode UID update policy
-- populate post-pass overhead
-
-Secondary in many workloads:
-
-- edge-face context cardinality (often 1-4 pcurve rows per edge)
-
-All optimization decisions should be profiling-driven.
+- Edge-to-face reverse index build uses sort-dedup (stack-allocated for typical 1-4 PCurves per edge)
+- `Append()` allocates UIDs incrementally (only for new entities, O(M) instead of O(N+M))
+- Post-passes are optional via `BRepGraphInc_Populate::Options`
 
 ## Related Docs
 
 - src/ModelingData/TKBRep/BRepGraph/README.md
-- BRepGraph_Architecture_Deep_Analysis_2026-03-19.md
-- src/ModelingData/TKBRep/BRepGraphInc/ARCHITECTURE.md
-- src/ModelingData/TKBRep/BRepGraphInc/TODO_PLAN.md
