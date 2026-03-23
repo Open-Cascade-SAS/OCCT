@@ -256,13 +256,13 @@ TEST(BRepGraph_PolygonTest, VertexPointRepresentations_StructurallyValid)
     aNbPointsOnSurface += aVtx.PointsOnSurface.Length();
     aNbPointsOnPCurve += aVtx.PointsOnPCurve.Length();
 
-    // Validate that any captured entries have valid node references.
+    // Validate that any captured entries have valid def references.
     for (int i = 0; i < aVtx.PointsOnCurve.Length(); ++i)
-      EXPECT_FALSE(aVtx.PointsOnCurve.Value(i).Curve.IsNull());
+      EXPECT_TRUE(aVtx.PointsOnCurve.Value(i).EdgeDefId.IsValid());
     for (int i = 0; i < aVtx.PointsOnSurface.Length(); ++i)
-      EXPECT_FALSE(aVtx.PointsOnSurface.Value(i).Surface.IsNull());
+      EXPECT_TRUE(aVtx.PointsOnSurface.Value(i).FaceDefId.IsValid());
     for (int i = 0; i < aVtx.PointsOnPCurve.Length(); ++i)
-      EXPECT_FALSE(aVtx.PointsOnPCurve.Value(i).Surface.IsNull());
+      EXPECT_TRUE(aVtx.PointsOnPCurve.Value(i).FaceDefId.IsValid());
   }
 
   // Just verify we can query — exact count depends on shape.

@@ -226,28 +226,28 @@ struct VertexDef : public BaseDef
   //! Vertex parameter on a 3D curve.
   struct PointOnCurveEntry
   {
-    double             Parameter = 0.0;
-    Handle(Geom_Curve) Curve;
-    TopLoc_Location    Location;
+    double           Parameter = 0.0;
+    BRepGraph_NodeId EdgeDefId; //!< Edge definition owning the curve
+    TopLoc_Location  Location;
   };
   NCollection_Vector<PointOnCurveEntry> PointsOnCurve;
 
   //! Vertex parameter on a surface (U, V).
   struct PointOnSurfaceEntry
   {
-    double               ParameterU = 0.0;
-    double               ParameterV = 0.0;
-    Handle(Geom_Surface) Surface;
-    TopLoc_Location      Location;
+    double           ParameterU = 0.0;
+    double           ParameterV = 0.0;
+    BRepGraph_NodeId FaceDefId; //!< Face definition owning the surface
+    TopLoc_Location  Location;
   };
   NCollection_Vector<PointOnSurfaceEntry> PointsOnSurface;
 
   //! Vertex parameter on a PCurve on a surface.
   struct PointOnPCurveEntry
   {
-    double               Parameter = 0.0;
-    Handle(Geom_Surface) Surface;
-    TopLoc_Location      Location;
+    double           Parameter = 0.0;
+    BRepGraph_NodeId FaceDefId; //!< Face definition owning the surface
+    TopLoc_Location  Location;
   };
   NCollection_Vector<PointOnPCurveEntry> PointsOnPCurve;
 };
