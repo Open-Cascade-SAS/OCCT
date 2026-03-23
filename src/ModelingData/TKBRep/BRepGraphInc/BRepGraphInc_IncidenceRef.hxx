@@ -36,7 +36,13 @@ struct VertexRef
 };
 
 //! Reference from a wire to one of its coedges.
-//! Orientation lives on the CoEdgeEntity's Sense field (Parasolid convention).
+//!
+//! Unlike other Ref types, CoEdgeRef intentionally carries no Orientation field.
+//! Orientation (Sense) lives on CoEdgeEntity because it is definitional, not
+//! referential: Sense is intrinsically bound to the CoEdge's PCurve, parametric
+//! range, and UV endpoints.  Seam edges rely on two CoEdgeEntities with opposite
+//! Sense sharing a SeamPairIdx, each owning its own PCurve — moving Sense here
+//! would break that coupling.  Follows Parasolid COEDGE convention.
 struct CoEdgeRef
 {
   int             CoEdgeIdx = -1;
