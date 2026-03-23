@@ -700,13 +700,42 @@ BRepCheck_Status BRepCheck_Edge::CheckPolygonOnTriangulation(const TopoDS_Edge& 
 {
   NCollection_List<occ::handle<BRep_CurveRepresentation>>& aListOfCR =
     (*((occ::handle<BRep_TEdge>*)&theEdge.TShape()))->ChangeCurves();
-  NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator anITCR(aListOfCR);
+  bool aHasPolygonOnTriangulation = false;
+  bool aHasCurve3D                = false;
+  for (NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator anITCR(aListOfCR);
+       anITCR.More();
+       anITCR.Next())
+  {
+    const occ::handle<BRep_CurveRepresentation>& aCR = anITCR.Value();
+    if (aCR->IsPolygonOnTriangulation())
+    {
+      aHasPolygonOnTriangulation = true;
+    }
+    if (aCR->IsCurve3D() && !aCR->Curve3D().IsNull())
+    {
+      aHasCurve3D = true;
+    }
+
+    if (aHasPolygonOnTriangulation && aHasCurve3D)
+    {
+      break;
+    }
+  }
+
+  if (!aHasPolygonOnTriangulation || !aHasCurve3D)
+  {
+    return BRepCheck_NoError;
+  }
 
   BRepAdaptor_Curve aBC;
   aBC.Initialize(theEdge);
 
   if (!aBC.Is3DCurve())
+  {
     return BRepCheck_NoError;
+  }
+
+  NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator anITCR(aListOfCR);
 
   while (anITCR.More())
   {
