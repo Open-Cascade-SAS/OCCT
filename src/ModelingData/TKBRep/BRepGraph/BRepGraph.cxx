@@ -65,6 +65,13 @@ struct ExtractedWire
   NCollection_Vector<ExtractedEdge> Edges;
 };
 
+// Initial capacities for BRepGraph internal storage vectors and maps.
+constexpr int THE_INIT_CAPACITY_SMALL    = 16;  // solids, shells
+constexpr int THE_INIT_CAPACITY_MEDIUM   = 128; // faces, wires, pcurves
+constexpr int THE_INIT_CAPACITY_LARGE    = 256; // edges, vertices, history
+constexpr int THE_INIT_CAPACITY_SURFACES = 64;  // surface and curve storage
+constexpr int THE_INIT_CAPACITY_REGISTRY = 100; // registries and hash maps
+
 //! All data extracted from a single face -- filled in parallel, consumed sequentially.
 struct FaceLocalData
 {
@@ -163,26 +170,26 @@ void extractFaceData(FaceLocalData& theData)
 
 BRepGraph::BRepGraph()
     : myAllocator(NCollection_BaseAllocator::CommonBaseAllocator()),
-      mySolidDefs(16, myAllocator),
-      myShellDefs(16, myAllocator),
-      myFaceDefs(128, myAllocator),
-      myWireDefs(128, myAllocator),
-      myEdgeDefs(256, myAllocator),
-      myVertexDefs(256, myAllocator),
-      mySolidUsages(16, myAllocator),
-      myShellUsages(16, myAllocator),
-      myFaceUsages(128, myAllocator),
-      myWireUsages(128, myAllocator),
-      myEdgeUsages(256, myAllocator),
-      myVertexUsages(256, myAllocator),
-      mySurfaces(64, myAllocator),
-      myCurves(64, myAllocator),
-      myPCurves(128, myAllocator),
-      mySurfRegistry(100, myAllocator),
-      myCurveRegistry(100, myAllocator),
-      myTShapeToDefId(100, myAllocator),
-      myUIDToNodeId(BRepGraph_UID::Hasher(), 100, myAllocator),
-      myHistory(256, myAllocator),
+      mySolidDefs(THE_INIT_CAPACITY_SMALL, myAllocator),
+      myShellDefs(THE_INIT_CAPACITY_SMALL, myAllocator),
+      myFaceDefs(THE_INIT_CAPACITY_MEDIUM, myAllocator),
+      myWireDefs(THE_INIT_CAPACITY_MEDIUM, myAllocator),
+      myEdgeDefs(THE_INIT_CAPACITY_LARGE, myAllocator),
+      myVertexDefs(THE_INIT_CAPACITY_LARGE, myAllocator),
+      mySolidUsages(THE_INIT_CAPACITY_SMALL, myAllocator),
+      myShellUsages(THE_INIT_CAPACITY_SMALL, myAllocator),
+      myFaceUsages(THE_INIT_CAPACITY_MEDIUM, myAllocator),
+      myWireUsages(THE_INIT_CAPACITY_MEDIUM, myAllocator),
+      myEdgeUsages(THE_INIT_CAPACITY_LARGE, myAllocator),
+      myVertexUsages(THE_INIT_CAPACITY_LARGE, myAllocator),
+      mySurfaces(THE_INIT_CAPACITY_SURFACES, myAllocator),
+      myCurves(THE_INIT_CAPACITY_SURFACES, myAllocator),
+      myPCurves(THE_INIT_CAPACITY_MEDIUM, myAllocator),
+      mySurfRegistry(THE_INIT_CAPACITY_REGISTRY, myAllocator),
+      myCurveRegistry(THE_INIT_CAPACITY_REGISTRY, myAllocator),
+      myTShapeToDefId(THE_INIT_CAPACITY_REGISTRY, myAllocator),
+      myUIDToNodeId(BRepGraph_UID::Hasher(), THE_INIT_CAPACITY_REGISTRY, myAllocator),
+      myHistory(THE_INIT_CAPACITY_LARGE, myAllocator),
       myIsDone(false)
 {
 }
@@ -191,26 +198,26 @@ BRepGraph::BRepGraph()
 
 BRepGraph::BRepGraph(const Handle(NCollection_BaseAllocator)& theAlloc)
     : myAllocator(!theAlloc.IsNull() ? theAlloc : NCollection_BaseAllocator::CommonBaseAllocator()),
-      mySolidDefs(16, myAllocator),
-      myShellDefs(16, myAllocator),
-      myFaceDefs(128, myAllocator),
-      myWireDefs(128, myAllocator),
-      myEdgeDefs(256, myAllocator),
-      myVertexDefs(256, myAllocator),
-      mySolidUsages(16, myAllocator),
-      myShellUsages(16, myAllocator),
-      myFaceUsages(128, myAllocator),
-      myWireUsages(128, myAllocator),
-      myEdgeUsages(256, myAllocator),
-      myVertexUsages(256, myAllocator),
-      mySurfaces(64, myAllocator),
-      myCurves(64, myAllocator),
-      myPCurves(128, myAllocator),
-      mySurfRegistry(100, myAllocator),
-      myCurveRegistry(100, myAllocator),
-      myTShapeToDefId(100, myAllocator),
-      myUIDToNodeId(BRepGraph_UID::Hasher(), 100, myAllocator),
-      myHistory(256, myAllocator),
+      mySolidDefs(THE_INIT_CAPACITY_SMALL, myAllocator),
+      myShellDefs(THE_INIT_CAPACITY_SMALL, myAllocator),
+      myFaceDefs(THE_INIT_CAPACITY_MEDIUM, myAllocator),
+      myWireDefs(THE_INIT_CAPACITY_MEDIUM, myAllocator),
+      myEdgeDefs(THE_INIT_CAPACITY_LARGE, myAllocator),
+      myVertexDefs(THE_INIT_CAPACITY_LARGE, myAllocator),
+      mySolidUsages(THE_INIT_CAPACITY_SMALL, myAllocator),
+      myShellUsages(THE_INIT_CAPACITY_SMALL, myAllocator),
+      myFaceUsages(THE_INIT_CAPACITY_MEDIUM, myAllocator),
+      myWireUsages(THE_INIT_CAPACITY_MEDIUM, myAllocator),
+      myEdgeUsages(THE_INIT_CAPACITY_LARGE, myAllocator),
+      myVertexUsages(THE_INIT_CAPACITY_LARGE, myAllocator),
+      mySurfaces(THE_INIT_CAPACITY_SURFACES, myAllocator),
+      myCurves(THE_INIT_CAPACITY_SURFACES, myAllocator),
+      myPCurves(THE_INIT_CAPACITY_MEDIUM, myAllocator),
+      mySurfRegistry(THE_INIT_CAPACITY_REGISTRY, myAllocator),
+      myCurveRegistry(THE_INIT_CAPACITY_REGISTRY, myAllocator),
+      myTShapeToDefId(THE_INIT_CAPACITY_REGISTRY, myAllocator),
+      myUIDToNodeId(BRepGraph_UID::Hasher(), THE_INIT_CAPACITY_REGISTRY, myAllocator),
+      myHistory(THE_INIT_CAPACITY_LARGE, myAllocator),
       myIsDone(false)
 {
 }
@@ -1619,6 +1626,226 @@ void BRepGraph::ReplaceEdgeInWire(int              theWireDefIdx,
     }
   }
   markModified(BRepGraph_NodeId(BRepGraph_NodeKind::Wire, theWireDefIdx));
+}
+
+//=================================================================================================
+
+void BRepGraph::SplitEdge(BRepGraph_NodeId  theEdgeDef,
+                           BRepGraph_NodeId  theSplitVertex,
+                           double            theSplitParam,
+                           BRepGraph_NodeId& theSubA,
+                           BRepGraph_NodeId& theSubB)
+{
+  // Copy all data from the original EdgeDef before appending to vectors (which may reallocate).
+  const BRepGraph_TopoNode::EdgeDef& anOrig = myEdgeDefs.Value(theEdgeDef.Index);
+
+  const BRepGraph_NodeId aOrigCurveNodeId      = anOrig.CurveNodeId;
+  const double           aOrigTolerance        = anOrig.Tolerance;
+  const bool             aOrigSameParameter    = anOrig.SameParameter;
+  const double           aOrigParamFirst       = anOrig.ParamFirst;
+  const double           aOrigParamLast        = anOrig.ParamLast;
+  const BRepGraph_NodeId aOrigStartVertexDefId = anOrig.StartVertexDefId;
+  const BRepGraph_NodeId aOrigEndVertexDefId   = anOrig.EndVertexDefId;
+  const bool             aOrigSameRange        = anOrig.SameRange;
+
+  // Copy PCurve entries and wire list before any mutation.
+  NCollection_Vector<BRepGraph_TopoNode::EdgeDef::PCurveEntry> aOrigPCurves = anOrig.PCurves;
+  NCollection_Vector<int> aOrigWires = WiresOfEdge(theEdgeDef.Index);
+
+  // Get location from first usage (for sub-edge TopoDS shape registration).
+  TopLoc_Location aEdgeLoc;
+  if (!anOrig.Usages.IsEmpty())
+    aEdgeLoc = myEdgeUsages.Value(anOrig.Usages.Value(0).Index).LocalLocation;
+
+  // Allocate SubA slot.
+  BRepGraph_TopoNode::EdgeDef& aSubADef = myEdgeDefs.Appended();
+  const int                    aSubAIdx = myEdgeDefs.Length() - 1;
+  aSubADef.Id = BRepGraph_NodeId(BRepGraph_NodeKind::Edge, aSubAIdx);
+  theSubA     = aSubADef.Id;
+
+  // Allocate SubB slot (note: Appended() may invalidate aSubADef reference — use index).
+  BRepGraph_TopoNode::EdgeDef& aSubBDef = myEdgeDefs.Appended();
+  const int                    aSubBIdx = myEdgeDefs.Length() - 1;
+  aSubBDef.Id = BRepGraph_NodeId(BRepGraph_NodeKind::Edge, aSubBIdx);
+  theSubB     = aSubBDef.Id;
+
+  // Set SubA: StartVertex → SplitVertex, [ParamFirst, theSplitParam].
+  {
+    BRepGraph_TopoNode::EdgeDef& aSubA = myEdgeDefs.ChangeValue(aSubAIdx);
+    aSubA.CurveNodeId      = aOrigCurveNodeId;
+    aSubA.Tolerance        = aOrigTolerance;
+    aSubA.SameParameter    = aOrigSameParameter;
+    aSubA.SameRange        = false;
+    aSubA.IsDegenerate     = false;
+    aSubA.StartVertexDefId = aOrigStartVertexDefId;
+    aSubA.EndVertexDefId   = theSplitVertex;
+    aSubA.ParamFirst       = aOrigParamFirst;
+    aSubA.ParamLast        = theSplitParam;
+  }
+
+  // Set SubB: SplitVertex → EndVertex, [theSplitParam, ParamLast].
+  {
+    BRepGraph_TopoNode::EdgeDef& aSubB = myEdgeDefs.ChangeValue(aSubBIdx);
+    aSubB.CurveNodeId      = aOrigCurveNodeId;
+    aSubB.Tolerance        = aOrigTolerance;
+    aSubB.SameParameter    = aOrigSameParameter;
+    aSubB.SameRange        = false;
+    aSubB.IsDegenerate     = false;
+    aSubB.StartVertexDefId = theSplitVertex;
+    aSubB.EndVertexDefId   = aOrigEndVertexDefId;
+    aSubB.ParamFirst       = theSplitParam;
+    aSubB.ParamLast        = aOrigParamLast;
+  }
+
+  allocateUID(theSubA);
+  allocateUID(theSubB);
+
+  // Register curve back-references for sub-edges.
+  if (aOrigCurveNodeId.IsValid())
+  {
+    myCurves.ChangeValue(aOrigCurveNodeId.Index).EdgeDefUsers.Append(theSubA);
+    myCurves.ChangeValue(aOrigCurveNodeId.Index).EdgeDefUsers.Append(theSubB);
+  }
+
+  // Split PCurve nodes for each PCurve entry in original.
+  const double aParamRange = aOrigParamLast - aOrigParamFirst;
+  for (int aPCIdx = 0; aPCIdx < aOrigPCurves.Length(); ++aPCIdx)
+  {
+    const BRepGraph_TopoNode::EdgeDef::PCurveEntry& aPCEntry = aOrigPCurves.Value(aPCIdx);
+    const BRepGraph_GeomNode::PCurve& aPCNode = myPCurves.Value(aPCEntry.PCurveNodeId.Index);
+
+    // Compute 2D split parameter.
+    double aPCSplit;
+    if (aOrigSameRange)
+    {
+      // PCurve range matches 3D range — use split param directly.
+      aPCSplit = theSplitParam;
+    }
+    else
+    {
+      // Proportional interpolation within PCurve's [PCFirst, PCLast].
+      const double aPCRange = aPCNode.ParamLast - aPCNode.ParamFirst;
+      if (aParamRange > 0.0)
+        aPCSplit = aPCNode.ParamFirst + ((theSplitParam - aOrigParamFirst) / aParamRange) * aPCRange;
+      else
+        aPCSplit = 0.5 * (aPCNode.ParamFirst + aPCNode.ParamLast);
+    }
+
+    // PCurve for SubA: [PCFirst, aPCSplit].
+    const BRepGraph_NodeId aPCSubAId =
+      createPCurveNode(aPCNode.Curve2d, theSubA, aPCEntry.FaceDefId, aPCNode.ParamFirst, aPCSplit);
+    BRepGraph_TopoNode::EdgeDef::PCurveEntry aPCSubAEntry;
+    aPCSubAEntry.PCurveNodeId    = aPCSubAId;
+    aPCSubAEntry.FaceDefId       = aPCEntry.FaceDefId;
+    aPCSubAEntry.EdgeOrientation = aPCEntry.EdgeOrientation;
+    myEdgeDefs.ChangeValue(aSubAIdx).PCurves.Append(aPCSubAEntry);
+
+    // PCurve for SubB: [aPCSplit, PCLast].
+    const BRepGraph_NodeId aPCSubBId =
+      createPCurveNode(aPCNode.Curve2d, theSubB, aPCEntry.FaceDefId, aPCSplit, aPCNode.ParamLast);
+    BRepGraph_TopoNode::EdgeDef::PCurveEntry aPCSubBEntry;
+    aPCSubBEntry.PCurveNodeId    = aPCSubBId;
+    aPCSubBEntry.FaceDefId       = aPCEntry.FaceDefId;
+    aPCSubBEntry.EdgeOrientation = aPCEntry.EdgeOrientation;
+    myEdgeDefs.ChangeValue(aSubBIdx).PCurves.Append(aPCSubBEntry);
+  }
+
+  // Register TopoDS shapes for sub-edges so OriginalOf() works in downstream algorithms.
+  if (aOrigCurveNodeId.IsValid())
+  {
+    const BRepGraph_GeomNode::Curve& aCurveNode = myCurves.Value(aOrigCurveNodeId.Index);
+    BRep_Builder aBB;
+
+    const TopoDS_Shape aStartVShape = Shape(aOrigStartVertexDefId);
+    const TopoDS_Shape aSplitVShape = Shape(theSplitVertex);
+    const TopoDS_Shape aEndVShape   = Shape(aOrigEndVertexDefId);
+
+    TopoDS_Edge aSubAEdge;
+    aBB.MakeEdge(aSubAEdge, aCurveNode.CurveGeom, aEdgeLoc, aOrigTolerance);
+    aBB.Range(aSubAEdge, aOrigParamFirst, theSplitParam);
+    if (!aStartVShape.IsNull()) aBB.Add(aSubAEdge, aStartVShape.Oriented(TopAbs_FORWARD));
+    if (!aSplitVShape.IsNull()) aBB.Add(aSubAEdge, aSplitVShape.Oriented(TopAbs_REVERSED));
+    myOriginalShapes.Bind(theSubA, aSubAEdge);
+
+    TopoDS_Edge aSubBEdge;
+    aBB.MakeEdge(aSubBEdge, aCurveNode.CurveGeom, aEdgeLoc, aOrigTolerance);
+    aBB.Range(aSubBEdge, theSplitParam, aOrigParamLast);
+    if (!aSplitVShape.IsNull()) aBB.Add(aSubBEdge, aSplitVShape.Oriented(TopAbs_FORWARD));
+    if (!aEndVShape.IsNull())   aBB.Add(aSubBEdge, aEndVShape.Oriented(TopAbs_REVERSED));
+    myOriginalShapes.Bind(theSubB, aSubBEdge);
+  }
+
+  // Update wire OrderedEdges: replace original entry with two sub-entries.
+  for (int aWIdx = 0; aWIdx < aOrigWires.Length(); ++aWIdx)
+  {
+    const int aWireIdx = aOrigWires.Value(aWIdx);
+    BRepGraph_TopoNode::WireDef& aWireDef = myWireDefs.ChangeValue(aWireIdx);
+
+    // Rebuild OrderedEdges replacing the original entry with SubA + SubB (or SubB + SubA).
+    NCollection_Vector<BRepGraph_TopoNode::WireDef::EdgeEntry> aNewEdges;
+    for (int aEIdx = 0; aEIdx < aWireDef.OrderedEdges.Length(); ++aEIdx)
+    {
+      const BRepGraph_TopoNode::WireDef::EdgeEntry& anEntry = aWireDef.OrderedEdges.Value(aEIdx);
+      if (anEntry.EdgeDefId != theEdgeDef)
+      {
+        aNewEdges.Append(anEntry);
+      }
+      else if (anEntry.OrientationInWire != TopAbs_REVERSED)
+      {
+        // Forward traversal: Start → SplitVtx (SubA), SplitVtx → End (SubB).
+        BRepGraph_TopoNode::WireDef::EdgeEntry aEntA;
+        aEntA.EdgeDefId         = theSubA;
+        aEntA.OrientationInWire = TopAbs_FORWARD;
+        aNewEdges.Append(aEntA);
+        BRepGraph_TopoNode::WireDef::EdgeEntry aEntB;
+        aEntB.EdgeDefId         = theSubB;
+        aEntB.OrientationInWire = TopAbs_FORWARD;
+        aNewEdges.Append(aEntB);
+      }
+      else
+      {
+        // Reversed traversal: End → SplitVtx (SubB rev), SplitVtx → Start (SubA rev).
+        BRepGraph_TopoNode::WireDef::EdgeEntry aEntB;
+        aEntB.EdgeDefId         = theSubB;
+        aEntB.OrientationInWire = TopAbs_REVERSED;
+        aNewEdges.Append(aEntB);
+        BRepGraph_TopoNode::WireDef::EdgeEntry aEntA;
+        aEntA.EdgeDefId         = theSubA;
+        aEntA.OrientationInWire = TopAbs_REVERSED;
+        aNewEdges.Append(aEntA);
+      }
+    }
+    aWireDef.OrderedEdges = std::move(aNewEdges);
+
+    // Update myEdgeToWires: remove this wire from orig, register for SubA and SubB.
+    if (myEdgeToWires.IsBound(theEdgeDef.Index))
+    {
+      NCollection_Vector<int>& anOrigWireRefs = myEdgeToWires.ChangeFind(theEdgeDef.Index);
+      for (int aWI = 0; aWI < anOrigWireRefs.Length(); ++aWI)
+      {
+        if (anOrigWireRefs.Value(aWI) == aWireIdx)
+        {
+          if (aWI < anOrigWireRefs.Length() - 1)
+            anOrigWireRefs.ChangeValue(aWI) = anOrigWireRefs.Value(anOrigWireRefs.Length() - 1);
+          anOrigWireRefs.EraseLast();
+          break;
+        }
+      }
+    }
+    if (!myEdgeToWires.IsBound(aSubAIdx))
+      myEdgeToWires.Bind(aSubAIdx, NCollection_Vector<int>());
+    myEdgeToWires.ChangeFind(aSubAIdx).Append(aWireIdx);
+
+    if (!myEdgeToWires.IsBound(aSubBIdx))
+      myEdgeToWires.Bind(aSubBIdx, NCollection_Vector<int>());
+    myEdgeToWires.ChangeFind(aSubBIdx).Append(aWireIdx);
+
+    markModified(BRepGraph_NodeId(BRepGraph_NodeKind::Wire, aWireIdx));
+  }
+
+  markModified(theEdgeDef);
+  markModified(theSubA);
+  markModified(theSubB);
 }
 
 //=================================================================================================

@@ -305,6 +305,22 @@ public:
                                          BRepGraph_NodeId theNewEdgeDef,
                                          bool             theReversed);
 
+  //! Split a single edge definition at a vertex and 3D-curve parameter.
+  //! Creates two new EdgeDef slots, splits all PCurve nodes at the corresponding
+  //! 2D parameter, and updates every wire that contained the original edge
+  //! (inserting the two sub-edges in traversal order).
+  //! The original EdgeDef index remains valid but is no longer referenced by any wire.
+  //! @param theEdgeDef      edge to split (must not be degenerate)
+  //! @param theSplitVertex  vertex definition at the split point (already in graph)
+  //! @param theSplitParam   parameter on the 3D curve at the split point
+  //! @param[out] theSubA    sub-edge: StartVertex → SplitVertex, [First, SplitParam]
+  //! @param[out] theSubB    sub-edge: SplitVertex → EndVertex,   [SplitParam, Last]
+  Standard_EXPORT void SplitEdge(BRepGraph_NodeId  theEdgeDef,
+                                  BRepGraph_NodeId  theSplitVertex,
+                                  double            theSplitParam,
+                                  BRepGraph_NodeId& theSubA,
+                                  BRepGraph_NodeId& theSubB);
+
   Standard_EXPORT int FaceCountForEdge(int theEdgeDefIdx) const;
   Standard_EXPORT const NCollection_Vector<int>& WiresOfEdge(int theEdgeDefIdx) const;
 

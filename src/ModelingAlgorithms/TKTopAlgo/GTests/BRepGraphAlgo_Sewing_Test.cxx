@@ -12,6 +12,9 @@
 // commercial license or contractual agreement.
 
 #include <BRepBuilderAPI_Copy.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepBuilderAPI_Sewing.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
 #include <BRepCheck_Analyzer.hxx>
@@ -1503,4 +1506,89 @@ TEST(BRepGraphAlgo_SewingTest, NoNestedParallel_SequentialInsideParallel)
 
   std::cout << "[  INFO   ] No-nested-parallel test: " << aFaces.Length() << " faces, "
             << aSewer.NbSewnEdges() << " sewn (no deadlock)" << std::endl;
+}
+
+TEST(BRepGraphAlgo_SewingTest, CutAtIntersections_TVertex)
+{
+  // Three planar rectangular faces forming a T-junction:
+  //
+  //  (0,1,0)-------(2,1,0)
+  //    |     Face1     |
+  //  (0,0,0)-------(2,0,0)   <- long free edge, to be split at (1,0,0)
+  //    | Face2 |(1,0,0)| Face3 |
+  //  (0,-1,0)-(1,-1,0)-(2,-1,0)
+  //
+  // Without cutting: Face1's edge (0,0,0)→(2,0,0) can't sew with Face2/3's half-length
+  // edges because the vertex proximity check fails (endpoints don't coincide).
+  // With cutting: the long edge is split at (1,0,0) and each half is sewn correctly.
+
+  const gp_Pnt aP00(0, 0, 0);
+  const gp_Pnt aP20(2, 0, 0);
+  const gp_Pnt aP01(0, 1, 0);
+  const gp_Pnt aP21(2, 1, 0);
+  const gp_Pnt aP10(1, 0, 0);   // T-vertex (midpoint)
+  const gp_Pnt aP0m1(0, -1, 0);
+  const gp_Pnt aP1m1(1, -1, 0);
+  const gp_Pnt aP2m1(2, -1, 0);
+
+  // Face1: rectangle [0,2] x [0,1] — bottom edge (0,0,0)→(2,0,0) is the long free edge.
+  TopoDS_Face aF1;
+  {
+    BRepBuilderAPI_MakeWire aMW;
+    aMW.Add(BRepBuilderAPI_MakeEdge(aP00, aP20).Edge());
+    aMW.Add(BRepBuilderAPI_MakeEdge(aP20, aP21).Edge());
+    aMW.Add(BRepBuilderAPI_MakeEdge(aP21, aP01).Edge());
+    aMW.Add(BRepBuilderAPI_MakeEdge(aP01, aP00).Edge());
+    aF1 = BRepBuilderAPI_MakeFace(aMW.Wire(), true);
+  }
+
+  // Face2: rectangle [0,1] x [-1,0] — top edge (0,0,0)→(1,0,0) is the left half free edge.
+  TopoDS_Face aF2;
+  {
+    BRepBuilderAPI_MakeWire aMW;
+    aMW.Add(BRepBuilderAPI_MakeEdge(aP00, aP10).Edge());
+    aMW.Add(BRepBuilderAPI_MakeEdge(aP10, aP1m1).Edge());
+    aMW.Add(BRepBuilderAPI_MakeEdge(aP1m1, aP0m1).Edge());
+    aMW.Add(BRepBuilderAPI_MakeEdge(aP0m1, aP00).Edge());
+    aF2 = BRepBuilderAPI_MakeFace(aMW.Wire(), true);
+  }
+
+  // Face3: rectangle [1,2] x [-1,0] — top edge (1,0,0)→(2,0,0) is the right half free edge.
+  TopoDS_Face aF3;
+  {
+    BRepBuilderAPI_MakeWire aMW;
+    aMW.Add(BRepBuilderAPI_MakeEdge(aP10, aP20).Edge());
+    aMW.Add(BRepBuilderAPI_MakeEdge(aP20, aP2m1).Edge());
+    aMW.Add(BRepBuilderAPI_MakeEdge(aP2m1, aP1m1).Edge());
+    aMW.Add(BRepBuilderAPI_MakeEdge(aP1m1, aP10).Edge());
+    aF3 = BRepBuilderAPI_MakeFace(aMW.Wire(), true);
+  }
+
+  ASSERT_FALSE(aF1.IsNull());
+  ASSERT_FALSE(aF2.IsNull());
+  ASSERT_FALSE(aF3.IsNull());
+
+  // Sew with cutting enabled: the long edge of Face1 should be split at (1,0,0).
+  BRepGraphAlgo_Sewing aSewer(1.0e-4);
+  aSewer.SetCutting(true);
+  aSewer.Add(aF1);
+  aSewer.Add(aF2);
+  aSewer.Add(aF3);
+  aSewer.Perform();
+
+  ASSERT_TRUE(aSewer.IsDone());
+  // At minimum the two T-junction edge pairs must be sewn.
+  EXPECT_GE(aSewer.NbSewnEdges(), 2);
+
+  // Verify that cutting is required: without it, the long edge can't match the short ones.
+  BRepGraphAlgo_Sewing aSewerNoCut(1.0e-4);
+  aSewerNoCut.SetCutting(false);
+  aSewerNoCut.Add(aF1);
+  aSewerNoCut.Add(aF2);
+  aSewerNoCut.Add(aF3);
+  aSewerNoCut.Perform();
+
+  ASSERT_TRUE(aSewerNoCut.IsDone());
+  // Without cutting the T-junction edges should NOT be matched (0 sewn along that boundary).
+  EXPECT_LT(aSewerNoCut.NbSewnEdges(), aSewer.NbSewnEdges());
 }

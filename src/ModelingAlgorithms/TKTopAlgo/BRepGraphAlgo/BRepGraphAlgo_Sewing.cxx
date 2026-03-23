@@ -39,6 +39,14 @@
 
 #include <algorithm>
 
+namespace
+{
+constexpr int    THE_NB_EDGE_MATCH_SAMPLES = 5;    // sample count for edge geometric matching
+constexpr double THE_MAX_CHORD_RATIO       = 2.0;  // maximum chord-length ratio for sewable edges
+constexpr double THE_HIGH_CONFIDENCE_RATIO = 0.01; // forward-distance threshold to skip reverse pass
+constexpr int    THE_INIT_VECTOR_CAPACITY  = 256;  // initial capacity for scratch vectors
+} // anonymous namespace
+
 //=================================================================================================
 
 BRepGraphAlgo_Sewing::BRepGraphAlgo_Sewing(double theTolerance)
@@ -184,15 +192,17 @@ void BRepGraphAlgo_Sewing::Perform()
   assembleVertices(aTmpAllocator);
   aTmpAllocator->Reset(false);
 
-  // Phase 4a: Detect sewing candidates via BBox overlap.
-  detectCandidates(aTmpAllocator);
-  aTmpAllocator->Reset(false);
-
-  // Phase 4b: Cut edges at intersections (if enabled).
+  // Phase 4a: Cut edges at intersections (if enabled).
+  // Run BEFORE detectCandidates so sub-edges get proper candidate rel-edges.
   if (myCutting)
   {
-    cutAtIntersections();
+    cutAtIntersections(aTmpAllocator);
+    aTmpAllocator->Reset(false);
   }
+
+  // Phase 4b: Detect sewing candidates via BBox overlap.
+  detectCandidates(aTmpAllocator);
+  aTmpAllocator->Reset(false);
 
   // Phase 5a: Match free edge pairs.
   NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> aMatchedPairs =
@@ -290,7 +300,7 @@ void BRepGraphAlgo_Sewing::assembleVertices(const Handle(NCollection_IncAllocato
   // Collect all unique vertex indices from free edges.
   // Each free edge has 2 vertices; estimate unique count ~ number of free edges.
   const int                 aNbFreeEdges = myFreeEdgesBefore.Length();
-  NCollection_Vector<int> aFreeVertexIndices(256, theTmpAlloc);
+  NCollection_Vector<int> aFreeVertexIndices(THE_INIT_VECTOR_CAPACITY, theTmpAlloc);
   NCollection_Map<int>      aFreeVertexSet(aNbFreeEdges, theTmpAlloc);
   for (int aFreeEdgeIter = 1; aFreeEdgeIter <= myFreeEdgesBefore.Length(); ++aFreeEdgeIter)
   {
@@ -443,8 +453,6 @@ void BRepGraphAlgo_Sewing::detectCandidates(const Handle(NCollection_IncAllocato
     const Bnd_Box& aBox = aBBoxes.Value(anEdgeIter);
     if (aBox.IsVoid())
     {
-      aCenters.SetValue(anEdgeIter - 1, gp_Pnt(0.0, 0.0, 0.0));
-      aHalfDiags.SetValue(anEdgeIter - 1, -1.0); // mark as void
       continue;
     }
     double aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
@@ -470,7 +478,7 @@ void BRepGraphAlgo_Sewing::detectCandidates(const Handle(NCollection_IncAllocato
   // and tighter than 2 * max_halfDiag for small edges.
   // In parallel mode, each thread writes to its own slot to avoid mutex contention.
   // In sequential mode, append directly to the result sequence (zero overhead).
-  NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> aPairs(256, theTmpAlloc);
+  NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> aPairs(THE_INIT_VECTOR_CAPACITY, theTmpAlloc);
 
   // Common lambda for the KDTree search + BBox refinement per edge.
   const auto aSearchFn =
@@ -482,9 +490,7 @@ void BRepGraphAlgo_Sewing::detectCandidates(const Handle(NCollection_IncAllocato
         return;
       }
 
-      const double aHalfDiagI = aHalfDiags.Value(theIdxI);
-      if (aHalfDiagI < 0.0)
-        return; // void BBox
+      const double aHalfDiagI    = aHalfDiags.Value(theIdxI);
       const double aSearchRadiusI = aHalfDiagI + aMaxHalfDiag;
 
       const gp_Pnt&                    aCenterI   = aCenters.Value(theIdxI);
@@ -558,40 +564,206 @@ void BRepGraphAlgo_Sewing::detectCandidates(const Handle(NCollection_IncAllocato
 
 //=================================================================================================
 
-void BRepGraphAlgo_Sewing::cutAtIntersections()
+void BRepGraphAlgo_Sewing::cutAtIntersections(
+  const Handle(NCollection_IncAllocator)& theTmpAlloc)
 {
-  // Cutting phase: split edges that partially overlap (share vertices but
-  // aren't fully coincident) at intersection parameters.
-  // For edges connected via UserDefined BBox-overlap edges, check if they
-  // share one vertex but not both -- this indicates partial overlap.
-  // Currently handles the common case; more complex intersection detection
-  // (e.g., mid-edge crossings) can be added in future iterations.
-  for (int aFreeEdgeIter = 1; aFreeEdgeIter <= myFreeEdgesBefore.Length(); ++aFreeEdgeIter)
+  const int aNbFreeEdges = myFreeEdgesBefore.Length();
+  if (aNbFreeEdges == 0)
+    return;
+
+  // Step 1: Collect all unique free-edge endpoint vertex indices.
+  NCollection_Map<int>    aFreeVtxSet(aNbFreeEdges * 2, theTmpAlloc);
+  NCollection_Vector<int> aFreeVtxList(THE_INIT_VECTOR_CAPACITY, theTmpAlloc);
+  for (int aFreeEdgeIter = 1; aFreeEdgeIter <= aNbFreeEdges; ++aFreeEdgeIter)
   {
-    const BRepGraph_NodeId          anIdA  = myFreeEdgesBefore.Value(aFreeEdgeIter);
-    const BRepGraph_TopoNode::EdgeDef& aNodeA = myGraph.EdgeDefinition(anIdA.Index);
-
-    myGraph.ForEachOutEdgeOfKind(anIdA, BRepGraph_RelKind::UserDefined, [&](const BRepGraph_RelEdge& aRelEdge) {
-      const BRepGraph_NodeId          anIdB    = aRelEdge.Target;
-      const BRepGraph_TopoNode::EdgeDef& aNodeB   = myGraph.EdgeDefinition(anIdB.Index);
-
-      if (aNodeA.IsDegenerate || aNodeB.IsDegenerate)
-        return;
-
-      // Count shared vertices between the two edges.
-      int aNbShared = 0;
-      if (aNodeA.StartVertexDefId == aNodeB.StartVertexDefId
-          || aNodeA.StartVertexDefId == aNodeB.EndVertexDefId)
-        ++aNbShared;
-      if (aNodeA.EndVertexDefId == aNodeB.StartVertexDefId || aNodeA.EndVertexDefId == aNodeB.EndVertexDefId)
-        ++aNbShared;
-
-      // Partial overlap: one shared vertex but not both.
-      // Full edge splitting requires ShapeAnalysis_Curve parameter computation
-      // and BRepBuilderAPI_MakeEdge -- reserved for future enhancement.
-      (void)aNbShared;
-    });
+    const BRepGraph_TopoNode::EdgeDef& anEdge =
+      myGraph.EdgeDefinition(myFreeEdgesBefore.Value(aFreeEdgeIter).Index);
+    if (anEdge.StartVertexDefId.IsValid() && aFreeVtxSet.Add(anEdge.StartVertexDefId.Index))
+      aFreeVtxList.Append(anEdge.StartVertexDefId.Index);
+    if (anEdge.EndVertexDefId.IsValid() && aFreeVtxSet.Add(anEdge.EndVertexDefId.Index))
+      aFreeVtxList.Append(anEdge.EndVertexDefId.Index);
   }
+
+  const int aNbVtx = aFreeVtxList.Length();
+  if (aNbVtx == 0)
+    return;
+
+  // Pre-compute vertex points for fast access.
+  NCollection_Array1<gp_Pnt> aVtxPoints(0, aNbVtx - 1);
+  for (int aVtxIter = 0; aVtxIter < aNbVtx; ++aVtxIter)
+  {
+    const int aVtxIdx = aFreeVtxList.Value(aVtxIter);
+    aVtxPoints.SetValue(aVtxIter, myGraph.VertexDefinition(aVtxIdx).Point);
+  }
+
+  // Per-edge result: list of sub-edge node ids after splitting (empty = no split).
+  struct SplitCandidate
+  {
+    double Param;
+    int    VtxIdx;
+  };
+
+  // aSubEdgeChains[i] holds sub-edge chain for free edge (i+1); empty means no split.
+  NCollection_Vector<NCollection_Vector<BRepGraph_NodeId>> aSubEdgeChains(
+    THE_INIT_VECTOR_CAPACITY, theTmpAlloc);
+  for (int anIdx = 0; anIdx < aNbFreeEdges; ++anIdx)
+    aSubEdgeChains.Append(NCollection_Vector<BRepGraph_NodeId>());
+
+  bool anySplits = false;
+
+  // Step 2: For each free edge, find T-vertex split candidates.
+  for (int aFreeEdgeIter = 1; aFreeEdgeIter <= aNbFreeEdges; ++aFreeEdgeIter)
+  {
+    const BRepGraph_NodeId             anEdgeId = myFreeEdgesBefore.Value(aFreeEdgeIter);
+    const BRepGraph_TopoNode::EdgeDef& anEdge   = myGraph.EdgeDefinition(anEdgeId.Index);
+
+    if (anEdge.IsDegenerate || !anEdge.CurveNodeId.IsValid())
+      continue;
+    if (!myGraph.HasOriginalShape(anEdgeId))
+      continue;
+
+    // Own endpoint indices to exclude from T-vertex candidates.
+    const int aStartIdx = anEdge.StartVertexDefId.IsValid() ? anEdge.StartVertexDefId.Index : -1;
+    const int aEndIdx   = anEdge.EndVertexDefId.IsValid()   ? anEdge.EndVertexDefId.Index   : -1;
+
+    // Build BRepAdaptor_Curve on the original edge for projection.
+    const TopoDS_Edge& anEdgeShape = TopoDS::Edge(myGraph.OriginalOf(anEdgeId));
+    BRepAdaptor_Curve  aCurve(anEdgeShape);
+
+    Extrema_ExtPC aProjector;
+    aProjector.Initialize(aCurve,
+                          aCurve.FirstParameter(),
+                          aCurve.LastParameter(),
+                          Precision::Confusion());
+
+    // Get edge bounding box (enlarged by tolerance) for candidate pre-filtering.
+    Bnd_Box aEdgeBBox = myGraph.BoundingBox(anEdgeId);
+    if (aEdgeBBox.IsVoid())
+      continue;
+    aEdgeBBox.Enlarge(myTolerance);
+
+    const double aTolSq     = myTolerance * myTolerance;
+    const double aParamFirst = aCurve.FirstParameter();
+    const double aParamLast  = aCurve.LastParameter();
+    const double aParamEps   = Precision::Confusion();
+
+    NCollection_Vector<SplitCandidate> aSplits(4, theTmpAlloc);
+
+    for (int aVtxIter = 0; aVtxIter < aNbVtx; ++aVtxIter)
+    {
+      const int aVtxIdx = aFreeVtxList.Value(aVtxIter);
+      if (aVtxIdx == aStartIdx || aVtxIdx == aEndIdx)
+        continue;
+
+      const gp_Pnt& aVtxPnt = aVtxPoints.Value(aVtxIter);
+
+      // Quick pre-check: vertex must be inside the enlarged edge bbox.
+      if (aEdgeBBox.IsOut(aVtxPnt))
+        continue;
+
+      aProjector.Perform(aVtxPnt);
+      if (!aProjector.IsDone())
+        continue;
+
+      // Find closest extremal point.
+      double aMinSqDist = RealLast();
+      double aMinParam  = 0.0;
+      for (int aExtIdx = 1; aExtIdx <= aProjector.NbExt(); ++aExtIdx)
+      {
+        const double aSqDist = aProjector.SquareDistance(aExtIdx);
+        if (aSqDist < aMinSqDist)
+        {
+          aMinSqDist = aSqDist;
+          aMinParam  = aProjector.Point(aExtIdx).Parameter();
+        }
+      }
+
+      // Accept if within tolerance AND strictly inside the parameter range.
+      if (aMinSqDist <= aTolSq
+          && aMinParam > aParamFirst + aParamEps
+          && aMinParam < aParamLast  - aParamEps)
+      {
+        SplitCandidate aCand;
+        aCand.Param  = aMinParam;
+        aCand.VtxIdx = aVtxIdx;
+        aSplits.Append(aCand);
+      }
+    }
+
+    if (aSplits.IsEmpty())
+      continue;
+
+    // Sort candidates by parameter (ascending).
+    const int aNbSplits = aSplits.Length();
+    NCollection_Array1<SplitCandidate> aSortedSplits(0, aNbSplits - 1);
+    for (int aSplitIter = 0; aSplitIter < aNbSplits; ++aSplitIter)
+      aSortedSplits.SetValue(aSplitIter, aSplits.Value(aSplitIter));
+    std::sort(&aSortedSplits.ChangeFirst(),
+              &aSortedSplits.ChangeFirst() + aNbSplits,
+              [](const SplitCandidate& theA, const SplitCandidate& theB) {
+                return theA.Param < theB.Param;
+              });
+
+    // Deduplicate: remove candidates with parameters too close together.
+    NCollection_Vector<SplitCandidate> aUniqueSplits(4, theTmpAlloc);
+    double                             aPrevParam = aParamFirst - 1.0;
+    for (int aSplitIter = 0; aSplitIter < aNbSplits; ++aSplitIter)
+    {
+      const SplitCandidate& aCand = aSortedSplits.Value(aSplitIter);
+      if (std::abs(aCand.Param - aPrevParam) > aParamEps)
+      {
+        aUniqueSplits.Append(aCand);
+        aPrevParam = aCand.Param;
+      }
+    }
+
+    if (aUniqueSplits.IsEmpty())
+      continue;
+
+    // Apply splits: chain SplitEdge calls along the edge.
+    anySplits = true;
+    NCollection_Vector<BRepGraph_NodeId>& aChain = aSubEdgeChains.ChangeValue(aFreeEdgeIter - 1);
+    BRepGraph_NodeId aCurrentEdge = anEdgeId;
+    for (int aSplitIter = 0; aSplitIter < aUniqueSplits.Length(); ++aSplitIter)
+    {
+      const SplitCandidate& aCand = aUniqueSplits.Value(aSplitIter);
+      const BRepGraph_NodeId aVtxNodeId(BRepGraph_NodeKind::Vertex, aCand.VtxIdx);
+      BRepGraph_NodeId       aSubA, aSubB;
+      myGraph.SplitEdge(aCurrentEdge, aVtxNodeId, aCand.Param, aSubA, aSubB);
+      aChain.Append(aSubA);
+      aCurrentEdge = aSubB;
+    }
+    aChain.Append(aCurrentEdge);  // final sub-edge (last SubB)
+  }
+
+  if (!anySplits)
+    return;
+
+  // Step 3: Rebuild myFreeEdgesBefore with sub-edge chains replacing split edges.
+  NCollection_Vector<BRepGraph_NodeId> aNewFreeVec(THE_INIT_VECTOR_CAPACITY, theTmpAlloc);
+  for (int aFreeEdgeIter = 1; aFreeEdgeIter <= aNbFreeEdges; ++aFreeEdgeIter)
+  {
+    const NCollection_Vector<BRepGraph_NodeId>& aChain =
+      aSubEdgeChains.Value(aFreeEdgeIter - 1);
+    if (aChain.IsEmpty())
+    {
+      // No splits: keep original free edge.
+      aNewFreeVec.Append(myFreeEdgesBefore.Value(aFreeEdgeIter));
+    }
+    else
+    {
+      // Replace with sub-edge chain.
+      for (int aSubIter = 0; aSubIter < aChain.Length(); ++aSubIter)
+        aNewFreeVec.Append(aChain.Value(aSubIter));
+    }
+  }
+
+  // Convert to Array1 for thread-safe random access in subsequent phases.
+  const int aNbNewFree = aNewFreeVec.Length();
+  NCollection_Array1<BRepGraph_NodeId> aNewFreeArray(1, aNbNewFree);
+  for (int anIdx = 0; anIdx < aNbNewFree; ++anIdx)
+    aNewFreeArray.SetValue(anIdx + 1, aNewFreeVec.Value(anIdx));
+  myFreeEdgesBefore = std::move(aNewFreeArray);
 }
 
 //=================================================================================================
@@ -638,8 +810,7 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> BRepGraphAlgo_
 
       const TopoDS_Edge&     anEdgeAShape = TopoDS::Edge(myGraph.OriginalOf(anIdA));
       BRepAdaptor_Curve      aCurveA(anEdgeAShape);
-      constexpr int          THE_NB_SAMPLES = 5;
-      GCPnts_UniformAbscissa aSamplerA(aCurveA, THE_NB_SAMPLES);
+      GCPnts_UniformAbscissa aSamplerA(aCurveA, THE_NB_EDGE_MATCH_SAMPLES);
       if (!aSamplerA.IsDone() || aSamplerA.NbPoints() < 2)
         return;
 
@@ -1017,7 +1188,7 @@ bool BRepGraphAlgo_Sewing::areEdgesSewable(BRepGraph_NodeId theEdgeA,
   if (aChordA > Precision::Confusion() && aChordB > Precision::Confusion())
   {
     const double aChordRatio = aChordA > aChordB ? aChordA / aChordB : aChordB / aChordA;
-    if (aChordRatio > 2.0)
+    if (aChordRatio > THE_MAX_CHORD_RATIO)
       return false;
   }
 
@@ -1026,8 +1197,7 @@ bool BRepGraphAlgo_Sewing::areEdgesSewable(BRepGraph_NodeId theEdgeA,
   BRepAdaptor_Curve aCurveB(anEdgeB);
 
   // Tier 2: Use 5 samples instead of 8 -- sufficient for edge matching.
-  constexpr int          THE_NB_SAMPLES = 5;
-  GCPnts_UniformAbscissa aSamplerA(aCurveA, THE_NB_SAMPLES);
+  GCPnts_UniformAbscissa aSamplerA(aCurveA, THE_NB_EDGE_MATCH_SAMPLES);
   if (!aSamplerA.IsDone() || aSamplerA.NbPoints() < 2)
   {
     return false;
@@ -1076,11 +1246,11 @@ bool BRepGraphAlgo_Sewing::areEdgesSewable(BRepGraph_NodeId theEdgeA,
 
   // Tier 3: Skip reverse pass when forward passes with high confidence.
   // If all forward distances are < 1% of tolerance squared, edges are clearly coincident.
-  if (aMaxFwdDistSq < 0.01 * aTolSq)
+  if (aMaxFwdDistSq < THE_HIGH_CONFIDENCE_RATIO * aTolSq)
     return true;
 
   // Reverse direction: sample B -> project on A (bidirectional validation).
-  GCPnts_UniformAbscissa aSamplerB(aCurveB, THE_NB_SAMPLES);
+  GCPnts_UniformAbscissa aSamplerB(aCurveB, THE_NB_EDGE_MATCH_SAMPLES);
   if (!aSamplerB.IsDone() || aSamplerB.NbPoints() < 2)
   {
     return false;
@@ -1159,7 +1329,7 @@ bool BRepGraphAlgo_Sewing::areEdgesSewable(BRepGraph_NodeId                  the
   if (theChordA > Precision::Confusion() && aChordB > Precision::Confusion())
   {
     const double aChordRatio = theChordA > aChordB ? theChordA / aChordB : aChordB / theChordA;
-    if (aChordRatio > 2.0)
+    if (aChordRatio > THE_MAX_CHORD_RATIO)
       return false;
   }
 
@@ -1208,12 +1378,11 @@ bool BRepGraphAlgo_Sewing::areEdgesSewable(BRepGraph_NodeId                  the
   }
 
   // Tier 3: Skip reverse pass when forward passes with high confidence.
-  if (aMaxFwdDistSq < 0.01 * aTolSq)
+  if (aMaxFwdDistSq < THE_HIGH_CONFIDENCE_RATIO * aTolSq)
     return true;
 
   // Reverse direction: sample B -> project on A using pre-initialized projector.
-  constexpr int          THE_NB_SAMPLES = 5;
-  GCPnts_UniformAbscissa aSamplerB(aCurveB, THE_NB_SAMPLES);
+  GCPnts_UniformAbscissa aSamplerB(aCurveB, THE_NB_EDGE_MATCH_SAMPLES);
   if (!aSamplerB.IsDone() || aSamplerB.NbPoints() < 2)
   {
     return false;

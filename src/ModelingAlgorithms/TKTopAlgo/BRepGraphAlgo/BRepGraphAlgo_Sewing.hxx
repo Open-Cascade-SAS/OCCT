@@ -169,7 +169,8 @@ private:
   void detectCandidates(const Handle(NCollection_IncAllocator)& theTmpAlloc);
 
   //! Phase 4b: Cut edges at intersection points (if myCutting enabled).
-  void cutAtIntersections();
+  //! @param[in] theTmpAlloc temporary IncAllocator for scratch collections
+  void cutAtIntersections(const Handle(NCollection_IncAllocator)& theTmpAlloc);
 
   //! Phase 5a: Match free-edge pairs using BBox pre-filter + geometric validation.
   //! @param[in] theTmpAlloc temporary IncAllocator for scratch collections
