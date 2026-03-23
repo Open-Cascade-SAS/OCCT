@@ -12,7 +12,10 @@
 // commercial license or contractual agreement.
 
 #include <BRep_Builder.hxx>
+#include <BRepCheck.hxx>
 #include <BRepCheck_Analyzer.hxx>
+#include <BRepCheck_Result.hxx>
+#include <BRepCheck_Status.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_ShapesView.hxx>
@@ -22,6 +25,7 @@
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
+#include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
 
 #include <gtest/gtest.h>
@@ -30,6 +34,7 @@
 #include <cctype>
 #include <cstdlib>
 #include <filesystem>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -111,6 +116,51 @@ TopoCounts countAll(const TopoDS_Shape& theShape)
   return aCounts;
 }
 
+void collectInvalidityStatuses(const BRepCheck_Analyzer& theAnalyzer,
+                              const TopoDS_Shape&       theShape,
+                              NCollection_IndexedMap<int>& theStatuses)
+{
+  const occ::handle<BRepCheck_Result>& aResult = theAnalyzer.Result(theShape);
+  if (!aResult.IsNull())
+  {
+    NCollection_List<BRepCheck_Status>::Iterator aStatusIt;
+    for (aStatusIt.Initialize(aResult->Status()); aStatusIt.More(); aStatusIt.Next())
+    {
+      if (aStatusIt.Value() != BRepCheck_NoError)
+      {
+        theStatuses.Add(static_cast<int>(aStatusIt.Value()));
+      }
+    }
+  }
+
+  for (TopoDS_Iterator anIt(theShape); anIt.More(); anIt.Next())
+  {
+    collectInvalidityStatuses(theAnalyzer, anIt.Value(), theStatuses);
+  }
+}
+
+std::string invalidityTypesToString(const BRepCheck_Analyzer& theAnalyzer,
+                                    const TopoDS_Shape&       theShape)
+{
+  NCollection_IndexedMap<int> aStatuses;
+  collectInvalidityStatuses(theAnalyzer, theShape, aStatuses);
+  if (aStatuses.IsEmpty())
+  {
+    return "none";
+  }
+
+  std::ostringstream aStream;
+  for (int anIdx = 1; anIdx <= aStatuses.Extent(); ++anIdx)
+  {
+    if (anIdx > 1)
+    {
+      aStream << "; ";
+    }
+    BRepCheck::Print(static_cast<BRepCheck_Status>(aStatuses.FindKey(anIdx)), aStream);
+  }
+  return aStream.str();
+}
+
 } // namespace
 
 class BRepGraphBulkValidation : public testing::TestWithParam<std::string>
@@ -182,8 +232,14 @@ TEST_P(BRepGraphBulkValidation, RoundTrip)
 
   // Step 10: BRepCheck on reconstructed — expect same validity as original
   BRepCheck_Analyzer aReconChecker(aReconShape);
-  EXPECT_EQ(aReconChecker.IsValid(), isOrigValid)
-    << "Validity mismatch (orig=" << isOrigValid << "): " << aFilePath;
+  const bool         isReconValid = aReconChecker.IsValid();
+  const std::string  anOrigInvalidityTypes = invalidityTypesToString(anOrigChecker, anOrigShape);
+  const std::string  aReconInvalidityTypes = invalidityTypesToString(aReconChecker, aReconShape);
+  EXPECT_EQ(isReconValid, isOrigValid)
+    << "Validity mismatch (orig=" << isOrigValid << ", recon=" << isReconValid
+    << ", origInvalidityTypes=[" << anOrigInvalidityTypes
+    << "], reconInvalidityTypes=[" << aReconInvalidityTypes
+    << "): " << aFilePath;
 }
 
 // Generate a short test name from the file path (just the filename without extension)

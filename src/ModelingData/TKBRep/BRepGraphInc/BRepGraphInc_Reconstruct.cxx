@@ -105,7 +105,12 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage& theStora
         TopoDS_Shape aVtx =
           Node(theStorage, BRepGraph_NodeId::Vertex(aVR.VertexIdx), theCache);
         if (!aVtx.IsNull())
-          aBB.Add(aNewEdge, aVtx.Oriented(aVR.Orientation));
+        {
+          aVtx.Orientation(aVR.Orientation);
+          if (!aVR.LocalLocation.IsIdentity())
+            aVtx.Location(aVR.LocalLocation);
+          aBB.Add(aNewEdge, aVtx);
+        }
       }
       // Attach Polygon3D discretization.
       if (anEdge.Polygon3DRepIdx >= 0)
@@ -125,13 +130,15 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage& theStora
       aBB.MakeWire(aNewWire);
       for (int i = 0; i < aWire.CoEdgeRefs.Length(); ++i)
       {
-        const BRepGraphInc::CoEdgeEntity& aCoEdge =
-          theStorage.CoEdge(aWire.CoEdgeRefs.Value(i).CoEdgeIdx);
+        const BRepGraphInc::CoEdgeRef& aCoEdgeRef = aWire.CoEdgeRefs.Value(i);
+        const BRepGraphInc::CoEdgeEntity& aCoEdge = theStorage.CoEdge(aCoEdgeRef.CoEdgeIdx);
         TopoDS_Shape anEdge =
           Node(theStorage, BRepGraph_NodeId::Edge(aCoEdge.EdgeIdx), theCache);
         if (!anEdge.IsNull())
         {
           anEdge.Orientation(aCoEdge.Sense);
+          if (!aCoEdgeRef.LocalLocation.IsIdentity())
+            anEdge.Location(aCoEdgeRef.LocalLocation);
           aBB.Add(aNewWire, anEdge);
         }
       }
@@ -408,7 +415,12 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
       const BRepGraphInc::VertexRef& aVR = anEdge.InternalVertices.Value(anIntIdx);
       TopoDS_Shape aVtx = getOrBuildVertex(aVR.VertexIdx);
       if (!aVtx.IsNull())
-        aBB.Add(aNewEdge, aVtx.Oriented(aVR.Orientation));
+      {
+        aVtx.Orientation(aVR.Orientation);
+        if (!aVR.LocalLocation.IsIdentity())
+          aVtx.Location(aVR.LocalLocation);
+        aBB.Add(aNewEdge, aVtx);
+      }
     }
 
     // Polygon3D.
@@ -461,10 +473,12 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
       // Add edges in original storage order (preserving input shape order).
       for (int anEdgeIter = 0; anEdgeIter < aWire.CoEdgeRefs.Length(); ++anEdgeIter)
       {
-        const BRepGraphInc::CoEdgeEntity& aCoEdge =
-          theStorage.CoEdge(aWire.CoEdgeRefs.Value(anEdgeIter).CoEdgeIdx);
+        const BRepGraphInc::CoEdgeRef& aCoEdgeRef = aWire.CoEdgeRefs.Value(anEdgeIter);
+        const BRepGraphInc::CoEdgeEntity& aCoEdge = theStorage.CoEdge(aCoEdgeRef.CoEdgeIdx);
         TopoDS_Edge anEdge = getOrBuildEdge(aCoEdge.EdgeIdx);
         anEdge.Orientation(aCoEdge.Sense);
+        if (!aCoEdgeRef.LocalLocation.IsIdentity())
+          anEdge.Location(aCoEdgeRef.LocalLocation);
         aBB.Add(aNewWire, anEdge);
       }
       theCache.Bind(aWireNodeId, aNewWire);
@@ -604,6 +618,8 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
     {
       TopoDS_Wire aWire = buildWireForFace(aWireRef.WireIdx);
       aWire.Orientation(aWireRef.Orientation);
+      if (!aWireRef.LocalLocation.IsIdentity())
+        aWire.Location(aWireRef.LocalLocation);
       aBB.Add(aNewFace, aWire);
       break;
     }
@@ -615,6 +631,8 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
     {
       TopoDS_Wire aWire = buildWireForFace(aWireRef.WireIdx);
       aWire.Orientation(aWireRef.Orientation);
+      if (!aWireRef.LocalLocation.IsIdentity())
+        aWire.Location(aWireRef.LocalLocation);
       aBB.Add(aNewFace, aWire);
     }
   }
@@ -640,14 +658,18 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
       theCache.Bind(aVtxId, aNewVtx);
       aVtxShape = aNewVtx;
     }
-    aBB.Add(aNewFace, aVtxShape.Oriented(aVR.Orientation));
+    aVtxShape.Orientation(aVR.Orientation);
+    if (!aVR.LocalLocation.IsIdentity())
+      aVtxShape.Location(aVR.LocalLocation);
+    aBB.Add(aNewFace, aVtxShape);
   }
 
   // Restore vertex point representations now that all edges and this face are cached.
   // UpdateVertex modifies TShape in-place, so cached vertex shapes are updated.
   for (int aWireRefIdx = 0; aWireRefIdx < aFace.WireRefs.Length(); ++aWireRefIdx)
   {
-    const BRepGraphInc::WireEntity& aWire = theStorage.Wire(aFace.WireRefs.Value(aWireRefIdx).WireIdx);
+    const BRepGraphInc::WireEntity& aWire =
+      theStorage.Wire(aFace.WireRefs.Value(aWireRefIdx).WireIdx);
     for (int aCoEdgeRefIdx = 0; aCoEdgeRefIdx < aWire.CoEdgeRefs.Length(); ++aCoEdgeRefIdx)
     {
       const BRepGraphInc::CoEdgeEntity& aCoEdge =
@@ -696,3 +718,4 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
   theCache.Bind(aFaceNodeId, aNewFace);
   return aNewFace;
 }
+

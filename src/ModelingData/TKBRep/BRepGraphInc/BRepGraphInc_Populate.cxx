@@ -111,6 +111,15 @@ struct FaceLocalData
   NCollection_Vector<ExtractedInternalVertex> DirectVertices; //!< INTERNAL/EXTERNAL vertex children
 };
 
+//! Get the raw BRep_TVertex point without applying vertex Location.
+//! Stores the point in the TShape-local (definition) frame, consistent
+//! with how edge curves and face surfaces are stored after
+//! applyRepresentationLocation.
+gp_Pnt rawVertexPoint(const TopoDS_Vertex& theVertex)
+{
+  return static_cast<const BRep_TVertex*>(theVertex.TShape().get())->Pnt();
+}
+
 //! Map TopAbs_ShapeEnum to BRepGraph_NodeId::Kind.
 //! Returns -1 for TopAbs_SHAPE (unknown/unhandled).
 int shapeTypeToNodeKind(TopAbs_ShapeEnum theType)
@@ -185,7 +194,7 @@ int registerOrReuseVertex(BRepGraphInc_Storage& theStorage, const TopoDS_Vertex&
     return -1;
   return registerOrReuseVertex(theStorage,
                                theVertex,
-                               BRep_Tool::Pnt(theVertex),
+                               rawVertexPoint(theVertex),
                                BRep_Tool::Tolerance(theVertex));
 }
 
@@ -426,8 +435,9 @@ int registerExtractedEdge(BRepGraphInc_Storage& theStorage,
     if (anIntVtxIdx >= 0)
     {
       BRepGraphInc::VertexRef aVR;
-      aVR.VertexIdx   = anIntVtxIdx;
-      aVR.Orientation = anIntVtx.Orientation;
+      aVR.VertexIdx      = anIntVtxIdx;
+      aVR.Orientation    = anIntVtx.Orientation;
+      aVR.LocalLocation  = anIntVtx.Shape.Location();
       anEdgeEnt.InternalVertices.Append(aVR);
     }
   }
@@ -459,15 +469,39 @@ void edgeVertices(const TopoDS_Edge&                           theEdge,
                   TopoDS_Vertex&                               theLast,
                   NCollection_Vector<ExtractedInternalVertex>& theInternal)
 {
-  for (TopoDS_Iterator aVIt(theEdge, false); aVIt.More(); aVIt.Next())
+  for (TopoDS_Iterator aVIt(theEdge, false, false); aVIt.More(); aVIt.Next())
   {
     if (aVIt.Value().ShapeType() != TopAbs_VERTEX)
       continue;
     const TopoDS_Vertex aVertex = TopoDS::Vertex(aVIt.Value());
     if (aVertex.Orientation() == TopAbs_FORWARD)
+    {
+      if (!theFirst.IsNull())
+      {
+        // Preserve previous FORWARD vertex in internal list.
+        ExtractedInternalVertex anIntVtx;
+        anIntVtx.Shape       = theFirst;
+        anIntVtx.Point       = BRep_Tool::Pnt(theFirst);
+        anIntVtx.Tolerance   = BRep_Tool::Tolerance(theFirst);
+        anIntVtx.Orientation = TopAbs_FORWARD;
+        theInternal.Append(anIntVtx);
+      }
       theFirst = aVertex;
+    }
     else if (aVertex.Orientation() == TopAbs_REVERSED)
+    {
+      if (!theLast.IsNull())
+      {
+        // Preserve previous REVERSED vertex in internal list.
+        ExtractedInternalVertex anIntVtx;
+        anIntVtx.Shape       = theLast;
+        anIntVtx.Point       = BRep_Tool::Pnt(theLast);
+        anIntVtx.Tolerance   = BRep_Tool::Tolerance(theLast);
+        anIntVtx.Orientation = TopAbs_REVERSED;
+        theInternal.Append(anIntVtx);
+      }
       theLast = aVertex;
+    }
     else
     {
       ExtractedInternalVertex anIntVtx;
@@ -641,14 +675,14 @@ void extractFaceData(FaceLocalData& theData)
   const TopoDS_Face aForwardFace = TopoDS::Face(aFace.Oriented(TopAbs_FORWARD));
   const TopoDS_Wire anOuterWire  = BRepTools::OuterWire(aForwardFace);
 
-  for (TopoDS_Iterator aChildIt(aForwardFace); aChildIt.More(); aChildIt.Next())
+  for (TopoDS_Iterator aChildIt(aForwardFace, false, false); aChildIt.More(); aChildIt.Next())
   {
     if (aChildIt.Value().ShapeType() == TopAbs_VERTEX)
     {
       const TopoDS_Vertex&    aVertex = TopoDS::Vertex(aChildIt.Value());
       ExtractedInternalVertex aVtxData;
       aVtxData.Shape       = aVertex;
-      aVtxData.Point       = BRep_Tool::Pnt(aVertex);
+      aVtxData.Point       = rawVertexPoint(aVertex);
       aVtxData.Tolerance   = BRep_Tool::Tolerance(aVertex);
       aVtxData.Orientation = aVertex.Orientation();
       theData.DirectVertices.Append(aVtxData);
@@ -759,9 +793,10 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
       // Link wire to face.
       {
         BRepGraphInc::WireRef aWireRef;
-        aWireRef.WireIdx     = aWireIdx;
-        aWireRef.IsOuter     = aWireData.IsOuter;
-        aWireRef.Orientation = aWireData.Shape.Orientation();
+        aWireRef.WireIdx       = aWireIdx;
+        aWireRef.IsOuter       = aWireData.IsOuter;
+        aWireRef.Orientation   = aWireData.Shape.Orientation();
+        aWireRef.LocalLocation = aWireData.Shape.Location();
         theStorage.ChangeFace(aFaceIdx).WireRefs.Append(aWireRef);
       }
 
@@ -787,7 +822,7 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
           aCoEdge.Id        = BRepGraph_NodeId::CoEdge(aCoEdgeIdx);
           aCoEdge.EdgeIdx   = anEdgeIdx;
           aCoEdge.FaceDefId = BRepGraph_NodeId::Face(aFaceIdx);
-          aCoEdge.Sense     = anEdgeData.OrientationInWire;
+          aCoEdge.Sense         = anEdgeData.OrientationInWire;
 
           // Populate CoEdge with PCurve and polygon data for this face context.
           if (!anEdgeData.PCurve2d.IsNull())
@@ -827,9 +862,10 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
             aSeamCoEdge.SeamPairIdx = aCoEdgeIdx;
           }
 
-          // Add CoEdgeRef to wire.
+          // Add CoEdgeRef to wire with edge-in-wire Location.
           BRepGraphInc::CoEdgeRef aCoEdgeRef;
-          aCoEdgeRef.CoEdgeIdx = aCoEdgeIdx;
+          aCoEdgeRef.CoEdgeIdx      = aCoEdgeIdx;
+          aCoEdgeRef.LocalLocation  = anEdgeData.Shape.Location();
           theStorage.ChangeWire(aWireIdx).CoEdgeRefs.Append(aCoEdgeRef);
 
           // For seam edges, add the reversed coedge ref too.
@@ -923,8 +959,9 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
       if (aVtxIdx >= 0)
       {
         BRepGraphInc::VertexRef aVR;
-        aVR.VertexIdx   = aVtxIdx;
-        aVR.Orientation = aDirVtx.Orientation;
+        aVR.VertexIdx      = aVtxIdx;
+        aVR.Orientation    = aDirVtx.Orientation;
+        aVR.LocalLocation  = aDirVtx.Shape.Location();
         theStorage.ChangeFace(aFaceIdx).VertexRefs.Append(aVR);
       }
     }
@@ -978,7 +1015,7 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&                       
 
         const TopLoc_Location aGlobalLoc = theParentGlobalLoc * aCompound.Location();
 
-        for (TopoDS_Iterator aChildIt(aCompound); aChildIt.More(); aChildIt.Next())
+        for (TopoDS_Iterator aChildIt(aCompound, false, false); aChildIt.More(); aChildIt.Next())
         {
           const TopoDS_Shape& aChild     = aChildIt.Value();
           int                 aChildKind = shapeTypeToNodeKind(aChild.ShapeType());
@@ -1022,7 +1059,7 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&                       
 
         const TopLoc_Location aGlobalLoc = theParentGlobalLoc * aCompSolid.Location();
 
-        for (TopoDS_Iterator aChildIt(aCompSolid); aChildIt.More(); aChildIt.Next())
+        for (TopoDS_Iterator aChildIt(aCompSolid, false, false); aChildIt.More(); aChildIt.Next())
         {
           if (aChildIt.Value().ShapeType() != TopAbs_SOLID)
             continue;
@@ -1055,7 +1092,7 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&                       
 
         const TopLoc_Location aGlobalLoc = theParentGlobalLoc * aSolid.Location();
 
-        for (TopoDS_Iterator aChildIt(aSolid); aChildIt.More(); aChildIt.Next())
+        for (TopoDS_Iterator aChildIt(aSolid, false, false); aChildIt.More(); aChildIt.Next())
         {
           const TopoDS_Shape& aChild = aChildIt.Value();
           traverseShape(aChild, -1, aGlobalLoc);
@@ -1096,7 +1133,7 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&                       
 
         const TopLoc_Location aGlobalLoc = theParentGlobalLoc * aShell.Location();
 
-        for (TopoDS_Iterator aChildIt(aShell); aChildIt.More(); aChildIt.Next())
+        for (TopoDS_Iterator aChildIt(aShell, false, false); aChildIt.More(); aChildIt.Next())
         {
           const TopoDS_Shape& aChild = aChildIt.Value();
           if (aChild.ShapeType() == TopAbs_FACE)
@@ -1161,7 +1198,8 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&                       
             // Curve2d left null for free wires.
 
             BRepGraphInc::CoEdgeRef aCoEdgeRef;
-            aCoEdgeRef.CoEdgeIdx = aCoEdgeIdx;
+            aCoEdgeRef.CoEdgeIdx     = aCoEdgeIdx;
+            aCoEdgeRef.LocalLocation = anEdge.Location();
             theStorage.ChangeWire(aWireIdx).CoEdgeRefs.Append(aCoEdgeRef);
           }
         }
@@ -1199,19 +1237,25 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&                       
         NCollection_Vector<ExtractedInternalVertex> anInternalVerts;
         edgeVertices(anEdge, aVFirst, aVLast, anInternalVerts);
 
-        // Register vertices.
-        anEdgeEnt.StartVertexIdx = registerOrReuseVertex(theStorage, aVFirst);
-        anEdgeEnt.EndVertexIdx   = registerOrReuseVertex(theStorage, aVLast);
+        // Register vertices (using definition-frame points from edgeVertices with cumLoc=false).
+        anEdgeEnt.StartVertexIdx =
+          registerOrReuseVertex(theStorage, aVFirst,
+                                BRep_Tool::Pnt(aVFirst), BRep_Tool::Tolerance(aVFirst));
+        anEdgeEnt.EndVertexIdx =
+          registerOrReuseVertex(theStorage, aVLast,
+                                BRep_Tool::Pnt(aVLast), BRep_Tool::Tolerance(aVLast));
 
         for (int anIntIdx = 0; anIntIdx < anInternalVerts.Length(); ++anIntIdx)
         {
           const ExtractedInternalVertex& anIntVtx = anInternalVerts.Value(anIntIdx);
-          int anIntVtxIdx = registerOrReuseVertex(theStorage, anIntVtx.Shape);
+          int anIntVtxIdx =
+            registerOrReuseVertex(theStorage, anIntVtx.Shape, anIntVtx.Point, anIntVtx.Tolerance);
           if (anIntVtxIdx >= 0)
           {
             BRepGraphInc::VertexRef aVR;
-            aVR.VertexIdx   = anIntVtxIdx;
-            aVR.Orientation = anIntVtx.Orientation;
+            aVR.VertexIdx     = anIntVtxIdx;
+            aVR.Orientation   = anIntVtx.Orientation;
+            aVR.LocalLocation = anIntVtx.Shape.Location();
             anEdgeEnt.InternalVertices.Append(aVR);
           }
         }
@@ -1264,7 +1308,7 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&                       
       continue;
 
     int aCRIdx = 0;
-    for (TopoDS_Iterator aChildIt(*aCompOrig); aChildIt.More(); aChildIt.Next())
+    for (TopoDS_Iterator aChildIt(*aCompOrig, false, false); aChildIt.More(); aChildIt.Next())
     {
       if (aCRIdx >= aComp.ChildRefs.Length())
         break;
@@ -1480,7 +1524,7 @@ void BRepGraphInc_Populate::Append(BRepGraphInc_Storage&                        
       case TopAbs_COMPSOLID:
       case TopAbs_SOLID:
       case TopAbs_SHELL: {
-        for (TopoDS_Iterator aChildIt(theCurrentShape); aChildIt.More(); aChildIt.Next())
+        for (TopoDS_Iterator aChildIt(theCurrentShape, false, false); aChildIt.More(); aChildIt.Next())
         {
           traverseShape(aChildIt.Value(), theParentGlobalLoc * theCurrentShape.Location());
         }

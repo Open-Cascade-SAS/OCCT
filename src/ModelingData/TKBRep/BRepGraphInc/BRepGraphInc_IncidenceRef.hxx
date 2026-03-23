@@ -30,20 +30,15 @@ struct VertexRef
 {
   int                VertexIdx = -1;
   TopAbs_Orientation Orientation = TopAbs_INTERNAL;
-};
-
-//! Reference from a wire to one of its edges (legacy, used by free wires without face context).
-struct EdgeRef
-{
-  int                EdgeIdx = -1;
-  TopAbs_Orientation Orientation = TopAbs_FORWARD;
+  TopLoc_Location    LocalLocation;
 };
 
 //! Reference from a wire to one of its coedges.
 //! Orientation lives on the CoEdgeEntity's Sense field (Parasolid convention).
 struct CoEdgeRef
 {
-  int CoEdgeIdx = -1;
+  int             CoEdgeIdx = -1;
+  TopLoc_Location LocalLocation;
 };
 
 //! Reference from a face to one of its wires.
@@ -52,6 +47,7 @@ struct WireRef
   int                WireIdx = -1;
   bool               IsOuter = false;
   TopAbs_Orientation Orientation = TopAbs_FORWARD;
+  TopLoc_Location    LocalLocation;
 };
 
 //! Reference from a shell to one of its faces.
