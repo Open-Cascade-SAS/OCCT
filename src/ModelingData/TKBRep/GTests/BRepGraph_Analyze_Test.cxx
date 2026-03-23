@@ -18,6 +18,7 @@
 #include <BRepGraph_CacheView.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_MutView.hxx>
+#include <BRepGraph_RelEdge.hxx>
 #include <BRepGraph_SubGraph.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
@@ -128,6 +129,67 @@ TEST(BRepGraphAnalyze, FreeEdges_Sphere_SeamEdgesAreFree)
   // so they are detected as free by the FreeEdges algorithm (FaceCountForEdge == 1).
   // Degenerate edges at poles are excluded.
   EXPECT_GE(aFreeEdges.Length(), 0);
+}
+
+TEST(BRepGraphAnalyze, RelationClusters_UserDefined_TwoClusters)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+
+  TopExp_Explorer anExp(aBox, TopAbs_FACE);
+  const TopoDS_Shape aFace = anExp.Current();
+
+  BRepGraph aGraph;
+  aGraph.Build(aFace);
+  ASSERT_TRUE(aGraph.IsDone());
+
+  const NCollection_Vector<BRepGraph_NodeId> aFreeEdges = BRepGraph_Analyze::FreeEdges(aGraph);
+  ASSERT_EQ(aFreeEdges.Length(), 4);
+
+  // Build two disconnected relation clusters: (0,1) and (2,3).
+  aGraph.Mut().AddRelEdge(aFreeEdges.Value(0), aFreeEdges.Value(1), BRepGraph_RelEdge::Kind::UserDefined);
+  aGraph.Mut().AddRelEdge(aFreeEdges.Value(1), aFreeEdges.Value(0), BRepGraph_RelEdge::Kind::UserDefined);
+  aGraph.Mut().AddRelEdge(aFreeEdges.Value(2), aFreeEdges.Value(3), BRepGraph_RelEdge::Kind::UserDefined);
+  aGraph.Mut().AddRelEdge(aFreeEdges.Value(3), aFreeEdges.Value(2), BRepGraph_RelEdge::Kind::UserDefined);
+
+  NCollection_Array1<BRepGraph_NodeId> aNodeArray(1, aFreeEdges.Length());
+  for (int anIdx = 0; anIdx < aFreeEdges.Length(); ++anIdx)
+  {
+    aNodeArray.SetValue(anIdx + 1, aFreeEdges.Value(anIdx));
+  }
+
+  const NCollection_Vector<NCollection_Vector<BRepGraph_NodeId>> aClusters =
+    BRepGraph_Analyze::RelationClusters(aGraph, aNodeArray, BRepGraph_RelEdge::Kind::UserDefined);
+
+  ASSERT_EQ(aClusters.Length(), 2);
+  EXPECT_EQ(aClusters.Value(0).Length() + aClusters.Value(1).Length(), 4);
+}
+
+TEST(BRepGraphAnalyze, EdgeCompatibilityAndScore_SingleFace)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+
+  TopExp_Explorer anExp(aBox, TopAbs_FACE);
+  const TopoDS_Shape aFace = anExp.Current();
+
+  BRepGraph aGraph;
+  aGraph.Build(aFace);
+  ASSERT_TRUE(aGraph.IsDone());
+
+  const NCollection_Vector<BRepGraph_NodeId> aFreeEdges = BRepGraph_Analyze::FreeEdges(aGraph);
+  ASSERT_EQ(aFreeEdges.Length(), 4);
+
+  const BRepGraph_NodeId aEdge0 = aFreeEdges.Value(0);
+  const BRepGraph_NodeId aEdge1 = aFreeEdges.Value(1);
+  const BRepGraph_NodeId aEdge2 = aFreeEdges.Value(2);
+
+  EXPECT_TRUE(BRepGraph_Analyze::AreEdgesCompatibleSampled(aGraph, aEdge0, aEdge0, 1.0e-6));
+  EXPECT_FALSE(BRepGraph_Analyze::AreEdgesCompatibleSampled(aGraph, aEdge0, aEdge1, 1.0e-6));
+
+  const double aScoreSame = BRepGraph_Analyze::EdgeEndpointPairScore(aGraph, aEdge0, aEdge0);
+  const double aScoreFar  = BRepGraph_Analyze::EdgeEndpointPairScore(aGraph, aEdge0, aEdge2);
+  EXPECT_LE(aScoreSame, aScoreFar);
 }
 
 // ============================================================

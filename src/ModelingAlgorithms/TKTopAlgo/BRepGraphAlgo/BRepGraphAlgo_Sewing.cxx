@@ -784,22 +784,55 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> BRepGraphAlgo_
   NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> aResult;
   const int aNbFreeEdges = myFreeEdgesBefore.Length();
   if (aNbFreeEdges == 0)
-    return aResult;
-
-  // myFreeEdgesBefore is NCollection_Array1 -- safe for concurrent random access.
-  NCollection_Map<int> aFreeEdgeIndices(aNbFreeEdges, theTmpAlloc);
-  for (int aFreeEdgeIter = 1; aFreeEdgeIter <= aNbFreeEdges; ++aFreeEdgeIter)
   {
-    aFreeEdgeIndices.Add(myFreeEdgesBefore.Value(aFreeEdgeIter).Index);
+    return aResult;
   }
 
-  // Step 1 (parallel): For each free edge, find its best candidate via geometric validation.
-  // areEdgesSewable() is const and uses only read-only graph data, so it is thread-safe.
-  // Store per-edge best match and score.
+  // Build edge-index -> position map for fast subset membership checks.
+  NCollection_DataMap<int, int> aFreePosByEdgeIdx(aNbFreeEdges, theTmpAlloc);
+  for (int aFreeEdgeIter = 1; aFreeEdgeIter <= aNbFreeEdges; ++aFreeEdgeIter)
+  {
+    aFreePosByEdgeIdx.Bind(myFreeEdgesBefore.Value(aFreeEdgeIter).Index, aFreeEdgeIter);
+  }
+
+  const NCollection_Vector<NCollection_Vector<BRepGraph_NodeId>> aClusters =
+    BRepGraph_Analyze::RelationClusters(myGraph, myFreeEdgesBefore, BRepGraph_RelEdge::Kind::UserDefined);
+  const int aNbComponents = aClusters.Length();
+
+  NCollection_Array1<int> aCompByPos(1, aNbFreeEdges);
+  for (int aPosIter = 1; aPosIter <= aNbFreeEdges; ++aPosIter)
+  {
+    aCompByPos.ChangeValue(aPosIter) = 0;
+  }
+
+  for (int aCompIter = 0; aCompIter < aNbComponents; ++aCompIter)
+  {
+    const int                                   aCompId  = aCompIter + 1;
+    const NCollection_Vector<BRepGraph_NodeId>& aCluster = aClusters.Value(aCompIter);
+    for (int aNodeIter = 0; aNodeIter < aCluster.Length(); ++aNodeIter)
+    {
+      const BRepGraph_NodeId aNodeId = aCluster.Value(aNodeIter);
+      const int* aPosPtr = aFreePosByEdgeIdx.Seek(aNodeId.Index);
+      if (aPosPtr != nullptr)
+      {
+        aCompByPos.ChangeValue(*aPosPtr) = aCompId;
+      }
+    }
+  }
+
+  // Step 1: Per-edge matching with geometric validation.
+  // Keep this per-edge parallel even if relation graph collapses into one large component.
   struct MatchResult
   {
     BRepGraph_NodeId BestMatch;
     double           BestScore = RealLast();
+  };
+
+  struct ScoredPair
+  {
+    BRepGraph_NodeId EdgeA;
+    BRepGraph_NodeId EdgeB;
+    double           Score;
   };
 
   NCollection_Array1<MatchResult> aPerEdgeMatch(1, aNbFreeEdges);
@@ -810,20 +843,23 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> BRepGraphAlgo_
     [&](int theIdx) {
       const int              anI   = theIdx + 1;
       const BRepGraph_NodeId anIdA = myFreeEdgesBefore.Value(anI);
+      const int              aComp = aCompByPos.Value(anI);
 
       MatchResult& aMatch = aPerEdgeMatch.ChangeValue(anI);
 
-      // Build per-edgeA cache: adaptor, sample points, parameters.
       const BRepGraph_TopoNode::EdgeDef& anEdgeANode = myGraph.Defs().Edge(anIdA.Index);
       if (anEdgeANode.IsDegenerate)
+      {
         return;
+      }
 
       GeomAdaptor_TransformedCurve aCurveA = myGraph.Geom().CurveAdaptor(anIdA);
       GCPnts_UniformAbscissa       aSamplerA(aCurveA, THE_NB_EDGE_MATCH_SAMPLES);
       if (!aSamplerA.IsDone() || aSamplerA.NbPoints() < 2)
+      {
         return;
+      }
 
-      // Pre-sample points on edgeA (reused across all edgeB candidates).
       NCollection_LocalArray<gp_Pnt, 8> aSamplePtsABuf(aSamplerA.NbPoints());
       NCollection_Array1<gp_Pnt>        aSamplePtsA(aSamplePtsABuf[0], 1, aSamplerA.NbPoints());
       for (int aSmpIter = 1; aSmpIter <= aSamplerA.NbPoints(); ++aSmpIter)
@@ -831,7 +867,6 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> BRepGraphAlgo_
         aSamplePtsA.SetValue(aSmpIter, aCurveA.EvalD0(aSamplerA.Parameter(aSmpIter)));
       }
 
-      // Pre-initialize reverse projector on curveA (reused across all edgeB candidates).
       ExtremaPC_Curve anExtPCRevA(aCurveA);
 
       const gp_Pnt& aStartA = myGraph.Defs().Vertex(anEdgeANode.StartVertexDefId.Index).Point;
@@ -841,21 +876,30 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> BRepGraphAlgo_
       myGraph.RelEdges().ForEachOutOfKind(
         anIdA,
         BRepGraph_RelEdge::Kind::UserDefined,
-        [&](const BRepGraph_RelEdge& aRelEdge) {
-          const BRepGraph_NodeId anIdB = aRelEdge.Target;
-
-          if (!aFreeEdgeIndices.Contains(anIdB.Index))
-            return;
-
-          // Full geometric validation using cached edgeA data.
-          if (areEdgesSewable(anIdA, anIdB, aSamplePtsA, anExtPCRevA, aChordA))
+        [&](const BRepGraph_RelEdge& theRelEdge) {
+          const int* aPosBPtr = aFreePosByEdgeIdx.Seek(theRelEdge.Target.Index);
+          if (aPosBPtr == nullptr)
           {
-            const BRepGraph_TopoNode::EdgeDef& anEdgeB = myGraph.Defs().Edge(anIdB.Index);
-            const gp_Pnt& aStartB = myGraph.Defs().Vertex(anEdgeB.StartVertexDefId.Index).Point;
-            const gp_Pnt& aEndB   = myGraph.Defs().Vertex(anEdgeB.EndVertexDefId.Index).Point;
+            return;
+          }
+          if (aCompByPos.Value(*aPosBPtr) != aComp)
+          {
+            return;
+          }
 
-            double aScore = std::min(aStartA.Distance(aStartB) + aEndA.Distance(aEndB),
-                                     aStartA.Distance(aEndB) + aEndA.Distance(aStartB));
+          const BRepGraph_NodeId anIdB = theRelEdge.Target;
+          if (BRepGraph_Analyze::AreEdgesCompatibleSampled(myGraph,
+                                                           anIdA,
+                                                           anIdB,
+                                                           aSamplePtsA,
+                                                           anExtPCRevA,
+                                                           aChordA,
+                                                           myTolerance,
+                                                           THE_NB_EDGE_MATCH_SAMPLES,
+                                                           THE_MAX_CHORD_RATIO,
+                                                           THE_HIGH_CONFIDENCE_RATIO))
+          {
+            const double aScore = BRepGraph_Analyze::EdgeEndpointPairScore(myGraph, anIdA, anIdB);
             if (aScore < aMatch.BestScore)
             {
               aMatch.BestScore = aScore;
@@ -866,57 +910,92 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> BRepGraphAlgo_
     },
     !myIsParallel);
 
-  // Step 2 (sequential): Sorted greedy pairing -- process best matches first
-  // to avoid suboptimal pairings from input-order bias.
-  struct ScoredPair
-  {
-    BRepGraph_NodeId EdgeA;
-    BRepGraph_NodeId EdgeB;
-    double           Score;
-  };
-
-  // Collect all valid (edgeA, edgeB, score) tuples.
-  NCollection_Vector<ScoredPair> aScoredPairs;
+  NCollection_Array1<NCollection_Vector<ScoredPair>> aCompScoredPairs(1, aNbComponents);
   for (int aEdgeIter = 1; aEdgeIter <= aNbFreeEdges; ++aEdgeIter)
   {
     const MatchResult& aMatch = aPerEdgeMatch.Value(aEdgeIter);
     if (!aMatch.BestMatch.IsValid())
+    {
       continue;
+    }
+
+    const int aComp = aCompByPos.Value(aEdgeIter);
+    if (aComp <= 0)
+    {
+      continue;
+    }
+
     ScoredPair aPair;
     aPair.EdgeA = myFreeEdgesBefore.Value(aEdgeIter);
     aPair.EdgeB = aMatch.BestMatch;
     aPair.Score = aMatch.BestScore;
-    aScoredPairs.Append(aPair);
+    aCompScoredPairs.ChangeValue(aComp).Append(aPair);
   }
 
-  // Sort by ascending score (best matches first). Use array for std::sort.
-  const int aNbScored = aScoredPairs.Length();
-  if (aNbScored > 0)
+  NCollection_Array1<NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>>> aCompPairs(
+    1,
+    aNbComponents);
+
+  OSD_Parallel::For(
+    0,
+    aNbComponents,
+    [&](int theCompIdx) {
+      const int                         aComp = theCompIdx + 1;
+      NCollection_Vector<ScoredPair>& aScoredPairs = aCompScoredPairs.ChangeValue(aComp);
+      const int                       aNbScored    = aScoredPairs.Length();
+      if (aNbScored <= 0)
+      {
+        return;
+      }
+
+      NCollection_LocalArray<ScoredPair, 64> aSortedPairsBuf(aNbScored);
+      NCollection_Array1<ScoredPair>         aSortedPairs(aSortedPairsBuf[0], 0, aNbScored - 1);
+      for (int anIdx = 0; anIdx < aNbScored; ++anIdx)
+      {
+        aSortedPairs.SetValue(anIdx, aScoredPairs.Value(anIdx));
+      }
+
+      std::sort(&aSortedPairs.ChangeFirst(),
+                &aSortedPairs.ChangeFirst() + aNbScored,
+                [](const ScoredPair& theA, const ScoredPair& theB) {
+                  if (theA.Score < theB.Score)
+                  {
+                    return true;
+                  }
+                  if (theA.Score > theB.Score)
+                  {
+                    return false;
+                  }
+                  if (theA.EdgeA.Index != theB.EdgeA.Index)
+                  {
+                    return theA.EdgeA.Index < theB.EdgeA.Index;
+                  }
+                  return theA.EdgeB.Index < theB.EdgeB.Index;
+                });
+
+      NCollection_Map<int> aConsumed;
+      for (int anIdx = 0; anIdx < aNbScored; ++anIdx)
+      {
+        const ScoredPair& aPair = aSortedPairs.Value(anIdx);
+        if (aConsumed.Contains(aPair.EdgeA.Index) || aConsumed.Contains(aPair.EdgeB.Index))
+        {
+          continue;
+        }
+
+        aCompPairs.ChangeValue(aComp).Append({aPair.EdgeA, aPair.EdgeB});
+        aConsumed.Add(aPair.EdgeA.Index);
+        aConsumed.Add(aPair.EdgeB.Index);
+      }
+    },
+    !myIsParallel);
+
+  for (int aCompIter = 1; aCompIter <= aNbComponents; ++aCompIter)
   {
-    NCollection_LocalArray<ScoredPair, 64> aSortedPairsBuf(aNbScored);
-    NCollection_Array1<ScoredPair>         aSortedPairs(aSortedPairsBuf[0], 0, aNbScored - 1);
-    for (int anIdx = 0; anIdx < aNbScored; ++anIdx)
+    const NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>>& aPairs =
+      aCompPairs.Value(aCompIter);
+    for (int aPairIter = 0; aPairIter < aPairs.Length(); ++aPairIter)
     {
-      aSortedPairs.SetValue(anIdx, aScoredPairs.Value(anIdx));
-    }
-    std::sort(
-      &aSortedPairs.ChangeFirst(),
-      &aSortedPairs.ChangeFirst() + aNbScored,
-      [](const ScoredPair& theA, const ScoredPair& theB) { return theA.Score < theB.Score; });
-
-    // Greedily consume from best to worst.
-    NCollection_Map<int> aConsumed(aNbFreeEdges, theTmpAlloc);
-    for (int anIdx = 0; anIdx < aNbScored; ++anIdx)
-    {
-      const ScoredPair& aPair = aSortedPairs.Value(anIdx);
-      if (aConsumed.Contains(aPair.EdgeA.Index))
-        continue;
-      if (aConsumed.Contains(aPair.EdgeB.Index))
-        continue;
-
-      aResult.Append({aPair.EdgeA, aPair.EdgeB});
-      aConsumed.Add(aPair.EdgeA.Index);
-      aConsumed.Add(aPair.EdgeB.Index);
+      aResult.Append(aPairs.Value(aPairIter));
     }
   }
 
@@ -1356,224 +1435,3 @@ int BRepGraphAlgo_Sewing::NbSewnEdges() const
 
 //=================================================================================================
 
-bool BRepGraphAlgo_Sewing::areEdgesSewable(BRepGraph_NodeId theEdgeA,
-                                           BRepGraph_NodeId theEdgeB) const
-{
-  const BRepGraph_TopoNode::EdgeDef& aNodeA = myGraph.Defs().Edge(theEdgeA.Index);
-  const BRepGraph_TopoNode::EdgeDef& aNodeB = myGraph.Defs().Edge(theEdgeB.Index);
-
-  if (aNodeA.IsDegenerate || aNodeB.IsDegenerate)
-  {
-    return false;
-  }
-  if (!aNodeA.CurveNodeId.IsValid() || !aNodeB.CurveNodeId.IsValid())
-  {
-    return false;
-  }
-
-  // Check vertex proximity first (fast rejection via graph vertex data).
-  const gp_Pnt& aStartA = myGraph.Defs().Vertex(aNodeA.StartVertexDefId.Index).Point;
-  const gp_Pnt& aEndA   = myGraph.Defs().Vertex(aNodeA.EndVertexDefId.Index).Point;
-  const gp_Pnt& aStartB = myGraph.Defs().Vertex(aNodeB.StartVertexDefId.Index).Point;
-  const gp_Pnt& aEndB   = myGraph.Defs().Vertex(aNodeB.EndVertexDefId.Index).Point;
-
-  const bool isSameDir =
-    aStartA.Distance(aStartB) <= myTolerance && aEndA.Distance(aEndB) <= myTolerance;
-  const bool isReversed =
-    aStartA.Distance(aEndB) <= myTolerance && aEndA.Distance(aStartB) <= myTolerance;
-
-  if (!isSameDir && !isReversed)
-  {
-    return false;
-  }
-
-  // Tier 1: Chord length pre-filter -- reject if endpoint-to-endpoint chord
-  // lengths differ by more than 2x (curves with very different arc lengths).
-  const double aChordA = aStartA.Distance(aEndA);
-  const double aChordB = aStartB.Distance(aEndB);
-  if (aChordA > Precision::Confusion() && aChordB > Precision::Confusion())
-  {
-    const double aChordRatio = aChordA > aChordB ? aChordA / aChordB : aChordB / aChordA;
-    if (aChordRatio > THE_MAX_CHORD_RATIO)
-      return false;
-  }
-
-  // Detailed geometric comparison: sample points along edgeA, project onto edgeB.
-  GeomAdaptor_TransformedCurve aCurveA = myGraph.Geom().CurveAdaptor(theEdgeA);
-  GeomAdaptor_TransformedCurve aCurveB = myGraph.Geom().CurveAdaptor(theEdgeB);
-
-  // Tier 2: Use 5 samples instead of 8 -- sufficient for edge matching.
-  GCPnts_UniformAbscissa aSamplerA(aCurveA, THE_NB_EDGE_MATCH_SAMPLES);
-  if (!aSamplerA.IsDone() || aSamplerA.NbPoints() < 2)
-  {
-    return false;
-  }
-
-  // Initialize projector on curveB.
-  ExtremaPC_Curve anExtPCB(aCurveB);
-
-  const double aTolSq = myTolerance * myTolerance;
-
-  // Forward direction: sample A -> project on B. Track max distance for Tier 3 skip.
-  double aMaxFwdDistSq = 0.0;
-  for (int aSampleIter = 1; aSampleIter <= aSamplerA.NbPoints(); ++aSampleIter)
-  {
-    const gp_Pnt aPntA = aCurveA.EvalD0(aSamplerA.Parameter(aSampleIter));
-
-    const ExtremaPC::Result& aRes =
-      anExtPCB.Perform(aPntA, Precision::Confusion(), ExtremaPC::SearchMode::Min);
-    if (!aRes.IsDone() || aRes.NbExt() == 0)
-    {
-      return false;
-    }
-
-    const double aMinSqDist = aRes.MinSquareDistance();
-
-    if (aMinSqDist > aTolSq)
-    {
-      return false;
-    }
-    if (aMinSqDist > aMaxFwdDistSq)
-    {
-      aMaxFwdDistSq = aMinSqDist;
-    }
-  }
-
-  // Tier 3: Skip reverse pass when forward passes with high confidence.
-  // If all forward distances are < 1% of tolerance squared, edges are clearly coincident.
-  if (aMaxFwdDistSq < THE_HIGH_CONFIDENCE_RATIO * aTolSq)
-    return true;
-
-  // Reverse direction: sample B -> project on A (bidirectional validation).
-  GCPnts_UniformAbscissa aSamplerB(aCurveB, THE_NB_EDGE_MATCH_SAMPLES);
-  if (!aSamplerB.IsDone() || aSamplerB.NbPoints() < 2)
-  {
-    return false;
-  }
-
-  ExtremaPC_Curve anExtPCRevA(aCurveA);
-
-  for (int aSampleIter = 1; aSampleIter <= aSamplerB.NbPoints(); ++aSampleIter)
-  {
-    const gp_Pnt aPntB = aCurveB.EvalD0(aSamplerB.Parameter(aSampleIter));
-
-    const ExtremaPC::Result& aRes =
-      anExtPCRevA.Perform(aPntB, Precision::Confusion(), ExtremaPC::SearchMode::Min);
-    if (!aRes.IsDone() || aRes.NbExt() == 0)
-    {
-      return false;
-    }
-
-    const double aMinSqDist = aRes.MinSquareDistance();
-
-    if (aMinSqDist > aTolSq)
-    {
-      return false;
-    }
-  }
-
-  return true;
-}
-
-//=================================================================================================
-
-bool BRepGraphAlgo_Sewing::areEdgesSewable(BRepGraph_NodeId                  theEdgeA,
-                                           BRepGraph_NodeId                  theEdgeB,
-                                           const NCollection_Array1<gp_Pnt>& theSamplePtsA,
-                                           const ExtremaPC_Curve&            theExtPCRevA,
-                                           double                            theChordA) const
-{
-  const BRepGraph_TopoNode::EdgeDef& aNodeA = myGraph.Defs().Edge(theEdgeA.Index);
-  const BRepGraph_TopoNode::EdgeDef& aNodeB = myGraph.Defs().Edge(theEdgeB.Index);
-
-  if (aNodeA.IsDegenerate || aNodeB.IsDegenerate)
-  {
-    return false;
-  }
-
-  // Check vertex proximity first (fast rejection via graph vertex data).
-  const gp_Pnt& aStartA = myGraph.Defs().Vertex(aNodeA.StartVertexDefId.Index).Point;
-  const gp_Pnt& aEndA   = myGraph.Defs().Vertex(aNodeA.EndVertexDefId.Index).Point;
-  const gp_Pnt& aStartB = myGraph.Defs().Vertex(aNodeB.StartVertexDefId.Index).Point;
-  const gp_Pnt& aEndB   = myGraph.Defs().Vertex(aNodeB.EndVertexDefId.Index).Point;
-
-  const bool isSameDir =
-    aStartA.Distance(aStartB) <= myTolerance && aEndA.Distance(aEndB) <= myTolerance;
-  const bool isReversed =
-    aStartA.Distance(aEndB) <= myTolerance && aEndA.Distance(aStartB) <= myTolerance;
-
-  if (!isSameDir && !isReversed)
-  {
-    return false;
-  }
-
-  // Tier 1: Chord length pre-filter.
-  const double aChordB = aStartB.Distance(aEndB);
-  if (theChordA > Precision::Confusion() && aChordB > Precision::Confusion())
-  {
-    const double aChordRatio = theChordA > aChordB ? theChordA / aChordB : aChordB / theChordA;
-    if (aChordRatio > THE_MAX_CHORD_RATIO)
-      return false;
-  }
-
-  // Build curve adaptor for edgeB directly from graph geometry.
-  GeomAdaptor_TransformedCurve aCurveB = myGraph.Geom().CurveAdaptor(theEdgeB);
-  ExtremaPC_Curve              anExtPCB(aCurveB);
-
-  const double aTolSq = myTolerance * myTolerance;
-
-  // Forward direction: cached sample points A -> project on B.
-  double aMaxFwdDistSq = 0.0;
-  for (int aSampleIter = theSamplePtsA.Lower(); aSampleIter <= theSamplePtsA.Upper(); ++aSampleIter)
-  {
-    const gp_Pnt& aPntA = theSamplePtsA.Value(aSampleIter);
-
-    const ExtremaPC::Result& aRes =
-      anExtPCB.Perform(aPntA, Precision::Confusion(), ExtremaPC::SearchMode::Min);
-    if (!aRes.IsDone() || aRes.NbExt() == 0)
-    {
-      return false;
-    }
-
-    const double aMinSqDist = aRes.MinSquareDistance();
-
-    if (aMinSqDist > aTolSq)
-    {
-      return false;
-    }
-    if (aMinSqDist > aMaxFwdDistSq)
-    {
-      aMaxFwdDistSq = aMinSqDist;
-    }
-  }
-
-  // Tier 3: Skip reverse pass when forward passes with high confidence.
-  if (aMaxFwdDistSq < THE_HIGH_CONFIDENCE_RATIO * aTolSq)
-    return true;
-
-  // Reverse direction: sample B -> project on A using pre-initialized projector.
-  GCPnts_UniformAbscissa aSamplerB(aCurveB, THE_NB_EDGE_MATCH_SAMPLES);
-  if (!aSamplerB.IsDone() || aSamplerB.NbPoints() < 2)
-  {
-    return false;
-  }
-
-  for (int aSampleIter = 1; aSampleIter <= aSamplerB.NbPoints(); ++aSampleIter)
-  {
-    const gp_Pnt aPntB = aCurveB.EvalD0(aSamplerB.Parameter(aSampleIter));
-
-    const ExtremaPC::Result& aRes =
-      theExtPCRevA.Perform(aPntB, Precision::Confusion(), ExtremaPC::SearchMode::Min);
-    if (!aRes.IsDone() || aRes.NbExt() == 0)
-    {
-      return false;
-    }
-
-    if (aRes.MinSquareDistance() > aTolSq)
-    {
-      return false;
-    }
-  }
-
-  return true;
-}

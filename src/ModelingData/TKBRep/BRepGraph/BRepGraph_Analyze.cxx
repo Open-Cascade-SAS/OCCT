@@ -21,8 +21,14 @@
 #include <BRepGraph_UsagesView.hxx>
 #include <BRepGraph_AnalyzeView.hxx>
 
+#include <ExtremaPC_Curve.hxx>
+#include <GCPnts_UniformAbscissa.hxx>
+#include <GeomAdaptor_TransformedCurve.hxx>
+#include <NCollection_DataMap.hxx>
+#include <NCollection_LocalArray.hxx>
 #include <NCollection_Map.hxx>
 #include <OSD_Parallel.hxx>
+#include <Precision.hxx>
 
 #include <functional>
 
@@ -303,6 +309,281 @@ NCollection_Vector<BRepGraph_SubGraph> BRepGraph_Analyze::Decompose(const BRepGr
   }
 
   return aResult;
+}
+
+//==================================================================================================
+
+NCollection_Vector<NCollection_Vector<BRepGraph_NodeId>> BRepGraph_Analyze::RelationClusters(
+  const BRepGraph&                        theGraph,
+  const NCollection_Array1<BRepGraph_NodeId>& theNodes,
+  BRepGraph_RelEdge::Kind                theKind)
+{
+  NCollection_Vector<NCollection_Vector<BRepGraph_NodeId>> aClusters;
+  if (theNodes.IsEmpty())
+  {
+    return aClusters;
+  }
+
+  NCollection_DataMap<int, int> aNodePosByEdgeIdx(theNodes.Length(), theGraph.Allocator());
+  for (int aNodeIter = theNodes.Lower(); aNodeIter <= theNodes.Upper(); ++aNodeIter)
+  {
+    const BRepGraph_NodeId aNodeId = theNodes.Value(aNodeIter);
+    aNodePosByEdgeIdx.Bind(aNodeId.Index, aNodeIter - theNodes.Lower() + 1);
+  }
+
+  NCollection_Array1<int> aCompOfPos(1, theNodes.Length());
+  for (int aPosIter = aCompOfPos.Lower(); aPosIter <= aCompOfPos.Upper(); ++aPosIter)
+  {
+    aCompOfPos.ChangeValue(aPosIter) = 0;
+  }
+
+  int aNbComps = 0;
+  for (int aStartPos = aCompOfPos.Lower(); aStartPos <= aCompOfPos.Upper(); ++aStartPos)
+  {
+    if (aCompOfPos.Value(aStartPos) != 0)
+    {
+      continue;
+    }
+
+    ++aNbComps;
+    NCollection_Vector<int> aQueue;
+    aQueue.Append(aStartPos);
+    aCompOfPos.ChangeValue(aStartPos) = aNbComps;
+
+    for (int aQueueIter = 0; aQueueIter < aQueue.Length(); ++aQueueIter)
+    {
+      const int              aCurPos = aQueue.Value(aQueueIter);
+      const BRepGraph_NodeId aCurId  = theNodes.Value(theNodes.Lower() + aCurPos - 1);
+
+      theGraph.RelEdges().ForEachOutOfKind(
+        aCurId,
+        theKind,
+        [&](const BRepGraph_RelEdge& theRelEdge) {
+          const int* aNbrPosPtr = aNodePosByEdgeIdx.Seek(theRelEdge.Target.Index);
+          if (aNbrPosPtr == nullptr)
+          {
+            return;
+          }
+
+          const int aNbrPos = *aNbrPosPtr;
+          if (aCompOfPos.Value(aNbrPos) != 0)
+          {
+            return;
+          }
+
+          aCompOfPos.ChangeValue(aNbrPos) = aNbComps;
+          aQueue.Append(aNbrPos);
+        });
+    }
+  }
+
+  NCollection_Array1<NCollection_Vector<BRepGraph_NodeId>> aCompNodes(1, aNbComps);
+  for (int aPosIter = aCompOfPos.Lower(); aPosIter <= aCompOfPos.Upper(); ++aPosIter)
+  {
+    const BRepGraph_NodeId aNodeId = theNodes.Value(theNodes.Lower() + aPosIter - 1);
+    aCompNodes.ChangeValue(aCompOfPos.Value(aPosIter)).Append(aNodeId);
+  }
+
+  for (int aCompIter = aCompNodes.Lower(); aCompIter <= aCompNodes.Upper(); ++aCompIter)
+  {
+    aClusters.Append(aCompNodes.Value(aCompIter));
+  }
+
+  return aClusters;
+}
+
+//==================================================================================================
+
+double BRepGraph_Analyze::EdgeEndpointPairScore(const BRepGraph& theGraph,
+                                                BRepGraph_NodeId  theEdgeA,
+                                                BRepGraph_NodeId  theEdgeB)
+{
+  const BRepGraph_TopoNode::EdgeDef& aEdgeA = theGraph.Defs().Edge(theEdgeA.Index);
+  const BRepGraph_TopoNode::EdgeDef& aEdgeB = theGraph.Defs().Edge(theEdgeB.Index);
+
+  const gp_Pnt& aStartA = theGraph.Defs().Vertex(aEdgeA.StartVertexDefId.Index).Point;
+  const gp_Pnt& aEndA   = theGraph.Defs().Vertex(aEdgeA.EndVertexDefId.Index).Point;
+  const gp_Pnt& aStartB = theGraph.Defs().Vertex(aEdgeB.StartVertexDefId.Index).Point;
+  const gp_Pnt& aEndB   = theGraph.Defs().Vertex(aEdgeB.EndVertexDefId.Index).Point;
+
+  return std::min(aStartA.Distance(aStartB) + aEndA.Distance(aEndB),
+                  aStartA.Distance(aEndB) + aEndA.Distance(aStartB));
+}
+
+//==================================================================================================
+
+bool BRepGraph_Analyze::AreEdgesCompatibleSampled(const BRepGraph& theGraph,
+                                                  BRepGraph_NodeId  theEdgeA,
+                                                  BRepGraph_NodeId  theEdgeB,
+                                                  double            theTolerance,
+                                                  int               theNbSamples,
+                                                  double            theMaxChordRatio,
+                                                  double            theHighConfidenceRatio)
+{
+  const BRepGraph_TopoNode::EdgeDef& aNodeA = theGraph.Defs().Edge(theEdgeA.Index);
+  const BRepGraph_TopoNode::EdgeDef& aNodeB = theGraph.Defs().Edge(theEdgeB.Index);
+
+  if (aNodeA.IsDegenerate || aNodeB.IsDegenerate)
+  {
+    return false;
+  }
+  if (!aNodeA.CurveNodeId.IsValid() || !aNodeB.CurveNodeId.IsValid())
+  {
+    return false;
+  }
+
+  const gp_Pnt& aStartA = theGraph.Defs().Vertex(aNodeA.StartVertexDefId.Index).Point;
+  const gp_Pnt& aEndA   = theGraph.Defs().Vertex(aNodeA.EndVertexDefId.Index).Point;
+  const gp_Pnt& aStartB = theGraph.Defs().Vertex(aNodeB.StartVertexDefId.Index).Point;
+  const gp_Pnt& aEndB   = theGraph.Defs().Vertex(aNodeB.EndVertexDefId.Index).Point;
+
+  const bool isSameDir =
+    aStartA.Distance(aStartB) <= theTolerance && aEndA.Distance(aEndB) <= theTolerance;
+  const bool isReversed =
+    aStartA.Distance(aEndB) <= theTolerance && aEndA.Distance(aStartB) <= theTolerance;
+  if (!isSameDir && !isReversed)
+  {
+    return false;
+  }
+
+  const double aChordA = aStartA.Distance(aEndA);
+  const double aChordB = aStartB.Distance(aEndB);
+  if (aChordA > Precision::Confusion() && aChordB > Precision::Confusion())
+  {
+    const double aChordRatio = aChordA > aChordB ? aChordA / aChordB : aChordB / aChordA;
+    if (aChordRatio > theMaxChordRatio)
+    {
+      return false;
+    }
+  }
+
+  GeomAdaptor_TransformedCurve aCurveA = theGraph.Geom().CurveAdaptor(theEdgeA);
+  GeomAdaptor_TransformedCurve aCurveB = theGraph.Geom().CurveAdaptor(theEdgeB);
+
+  GCPnts_UniformAbscissa aSamplerA(aCurveA, theNbSamples);
+  if (!aSamplerA.IsDone() || aSamplerA.NbPoints() < 2)
+  {
+    return false;
+  }
+
+  NCollection_LocalArray<gp_Pnt, 8> aSamplePtsABuf(aSamplerA.NbPoints());
+  NCollection_Array1<gp_Pnt>        aSamplePtsA(aSamplePtsABuf[0], 1, aSamplerA.NbPoints());
+  for (int aSmpIter = 1; aSmpIter <= aSamplerA.NbPoints(); ++aSmpIter)
+  {
+    aSamplePtsA.SetValue(aSmpIter, aCurveA.EvalD0(aSamplerA.Parameter(aSmpIter)));
+  }
+
+  ExtremaPC_Curve anExtPCRevA(aCurveA);
+  return AreEdgesCompatibleSampled(theGraph,
+                                   theEdgeA,
+                                   theEdgeB,
+                                   aSamplePtsA,
+                                   anExtPCRevA,
+                                   aChordA,
+                                   theTolerance,
+                                   theNbSamples,
+                                   theMaxChordRatio,
+                                   theHighConfidenceRatio);
+}
+
+//==================================================================================================
+
+bool BRepGraph_Analyze::AreEdgesCompatibleSampled(const BRepGraph&            theGraph,
+                                                  BRepGraph_NodeId             theEdgeA,
+                                                  BRepGraph_NodeId             theEdgeB,
+                                                  const NCollection_Array1<gp_Pnt>& theSamplePtsA,
+                                                  const ExtremaPC_Curve&       theExtPCRevA,
+                                                  double                       theChordA,
+                                                  double                       theTolerance,
+                                                  int                          theNbSamples,
+                                                  double                       theMaxChordRatio,
+                                                  double                       theHighConfidenceRatio)
+{
+  const BRepGraph_TopoNode::EdgeDef& aNodeA = theGraph.Defs().Edge(theEdgeA.Index);
+  const BRepGraph_TopoNode::EdgeDef& aNodeB = theGraph.Defs().Edge(theEdgeB.Index);
+
+  if (aNodeA.IsDegenerate || aNodeB.IsDegenerate)
+  {
+    return false;
+  }
+
+  const gp_Pnt& aStartA = theGraph.Defs().Vertex(aNodeA.StartVertexDefId.Index).Point;
+  const gp_Pnt& aEndA   = theGraph.Defs().Vertex(aNodeA.EndVertexDefId.Index).Point;
+  const gp_Pnt& aStartB = theGraph.Defs().Vertex(aNodeB.StartVertexDefId.Index).Point;
+  const gp_Pnt& aEndB   = theGraph.Defs().Vertex(aNodeB.EndVertexDefId.Index).Point;
+
+  const bool isSameDir =
+    aStartA.Distance(aStartB) <= theTolerance && aEndA.Distance(aEndB) <= theTolerance;
+  const bool isReversed =
+    aStartA.Distance(aEndB) <= theTolerance && aEndA.Distance(aStartB) <= theTolerance;
+  if (!isSameDir && !isReversed)
+  {
+    return false;
+  }
+
+  const double aChordB = aStartB.Distance(aEndB);
+  if (theChordA > Precision::Confusion() && aChordB > Precision::Confusion())
+  {
+    const double aChordRatio = theChordA > aChordB ? theChordA / aChordB : aChordB / theChordA;
+    if (aChordRatio > theMaxChordRatio)
+    {
+      return false;
+    }
+  }
+
+  GeomAdaptor_TransformedCurve aCurveB = theGraph.Geom().CurveAdaptor(theEdgeB);
+  ExtremaPC_Curve              anExtPCB(aCurveB);
+
+  const double aTolSq = theTolerance * theTolerance;
+  double       aMaxFwdDistSq = 0.0;
+  for (int aSampleIter = theSamplePtsA.Lower(); aSampleIter <= theSamplePtsA.Upper(); ++aSampleIter)
+  {
+    const gp_Pnt& aPntA = theSamplePtsA.Value(aSampleIter);
+    const ExtremaPC::Result& aRes =
+      anExtPCB.Perform(aPntA, Precision::Confusion(), ExtremaPC::SearchMode::Min);
+    if (!aRes.IsDone() || aRes.NbExt() == 0)
+    {
+      return false;
+    }
+
+    const double aMinSqDist = aRes.MinSquareDistance();
+    if (aMinSqDist > aTolSq)
+    {
+      return false;
+    }
+    if (aMinSqDist > aMaxFwdDistSq)
+    {
+      aMaxFwdDistSq = aMinSqDist;
+    }
+  }
+
+  if (aMaxFwdDistSq < theHighConfidenceRatio * aTolSq)
+  {
+    return true;
+  }
+
+  GCPnts_UniformAbscissa aSamplerB(aCurveB, theNbSamples);
+  if (!aSamplerB.IsDone() || aSamplerB.NbPoints() < 2)
+  {
+    return false;
+  }
+
+  for (int aSampleIter = 1; aSampleIter <= aSamplerB.NbPoints(); ++aSampleIter)
+  {
+    const gp_Pnt aPntB = aCurveB.EvalD0(aSamplerB.Parameter(aSampleIter));
+    const ExtremaPC::Result& aRes =
+      theExtPCRevA.Perform(aPntB, Precision::Confusion(), ExtremaPC::SearchMode::Min);
+    if (!aRes.IsDone() || aRes.NbExt() == 0)
+    {
+      return false;
+    }
+    if (aRes.MinSquareDistance() > aTolSq)
+    {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 //==================================================================================================

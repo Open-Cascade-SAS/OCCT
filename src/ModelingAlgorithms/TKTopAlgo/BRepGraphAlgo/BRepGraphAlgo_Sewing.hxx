@@ -199,27 +199,6 @@ private:
   //! Phase 8: Set edge regularity on sewn edges.
   void setEdgeRegularity();
 
-  //! Geometric test: can these two edges be merged within tolerance?
-  //! Uses 5-point sampling with bidirectional projection.
-  //! @param[in] theEdgeA first edge node id
-  //! @param[in] theEdgeB second edge node id
-  //! @return true if edges are geometrically compatible
-  bool areEdgesSewable(BRepGraph_NodeId theEdgeA, BRepGraph_NodeId theEdgeB) const;
-
-  //! Cached variant of areEdgesSewable that reuses pre-computed edgeA data.
-  //! This avoids redundant curve adaptor / GCPnts_UniformAbscissa / ExtremaPC_Curve
-  //! construction when the same edgeA is compared against multiple edgeB candidates.
-  //! @param[in] theEdgeA       first edge node id
-  //! @param[in] theEdgeB       second edge node id
-  //! @param[in] theSamplePtsA  pre-sampled points on edgeA
-  //! @param[in] theExtPCRevA   ExtremaPC_Curve initialized on curveA (reused for reverse pass)
-  //! @param[in] theChordA      chord length of edgeA (start-to-end distance)
-  //! @return true if edges are geometrically compatible
-  bool areEdgesSewable(BRepGraph_NodeId                  theEdgeA,
-                       BRepGraph_NodeId                  theEdgeB,
-                       const NCollection_Array1<gp_Pnt>& theSamplePtsA,
-                       const ExtremaPC_Curve&            theExtPCRevA,
-                       double                            theChordA) const;
 };
 
 #endif // _BRepGraphAlgo_Sewing_HeaderFile
