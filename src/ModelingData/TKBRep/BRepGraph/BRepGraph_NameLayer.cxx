@@ -26,7 +26,7 @@ const TCollection_AsciiString& BRepGraph_NameLayer::Name() const
 
 //=================================================================================================
 
-void BRepGraph_NameLayer::SetNodeName(BRepGraph_NodeId                    theNode,
+void BRepGraph_NameLayer::SetNodeName(const BRepGraph_NodeId              theNode,
                                       const TCollection_ExtendedString& theName)
 {
   myNames.Bind(theNode, theName);
@@ -34,22 +34,22 @@ void BRepGraph_NameLayer::SetNodeName(BRepGraph_NodeId                    theNod
 
 //=================================================================================================
 
-const TCollection_ExtendedString* BRepGraph_NameLayer::FindNodeName(BRepGraph_NodeId theNode) const
+const TCollection_ExtendedString* BRepGraph_NameLayer::FindNodeName(const BRepGraph_NodeId theNode) const
 {
   return myNames.Seek(theNode);
 }
 
 //=================================================================================================
 
-void BRepGraph_NameLayer::RemoveNodeName(BRepGraph_NodeId theNode)
+void BRepGraph_NameLayer::RemoveNodeName(const BRepGraph_NodeId theNode)
 {
   myNames.UnBind(theNode);
 }
 
 //=================================================================================================
 
-void BRepGraph_NameLayer::OnNodeRemoved(BRepGraph_NodeId theNode,
-                                        BRepGraph_NodeId theReplacement)
+void BRepGraph_NameLayer::OnNodeRemoved(const BRepGraph_NodeId theNode,
+                                        const BRepGraph_NodeId theReplacement)
 {
   if (theReplacement.IsValid())
   {

@@ -38,9 +38,9 @@ struct BRepGraph_UID
       myGeneration(0), myValid(false) {}
 
   //! Construct a valid UID.  Called internally by BRepGraph::allocateUID().
-  BRepGraph_UID(BRepGraph_NodeId::Kind theKind,
-                size_t             theCounter,
-                uint32_t           theGeneration)
+  BRepGraph_UID(const BRepGraph_NodeId::Kind theKind,
+                const size_t                theCounter,
+                const uint32_t              theGeneration)
     : myKind(theKind), myCounter(theCounter),
       myGeneration(theGeneration), myValid(true) {}
 

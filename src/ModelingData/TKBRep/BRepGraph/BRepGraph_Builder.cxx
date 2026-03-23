@@ -50,7 +50,7 @@ void BRepGraph_Builder::populateUIDs(BRepGraph& theGraph)
 
 //=================================================================================================
 
-void BRepGraph_Builder::Perform(BRepGraph& theGraph, const TopoDS_Shape& theShape, bool theParallel)
+void BRepGraph_Builder::Perform(BRepGraph& theGraph, const TopoDS_Shape& theShape, const bool theParallel)
 {
   Perform(theGraph, theShape, theParallel, BRepGraphInc_Populate::Options());
 }
@@ -59,7 +59,7 @@ void BRepGraph_Builder::Perform(BRepGraph& theGraph, const TopoDS_Shape& theShap
 
 void BRepGraph_Builder::Perform(BRepGraph&                            theGraph,
                                 const TopoDS_Shape&                   theShape,
-                                bool                                  theParallel,
+                                const bool                            theParallel,
                                 const BRepGraphInc_Populate::Options& theOptions)
 {
   BRepGraph_BackRefManager::ClearAll(theGraph);
@@ -125,7 +125,7 @@ void BRepGraph_Builder::Perform(BRepGraph&                            theGraph,
 
 //=================================================================================================
 
-void BRepGraph_Builder::Append(BRepGraph& theGraph, const TopoDS_Shape& theShape, bool theParallel)
+void BRepGraph_Builder::Append(BRepGraph& theGraph, const TopoDS_Shape& theShape, const bool theParallel)
 {
   if (theShape.IsNull())
     return;
@@ -157,11 +157,11 @@ void BRepGraph_Builder::Append(BRepGraph& theGraph, const TopoDS_Shape& theShape
 
 //=================================================================================================
 
-void BRepGraph_Builder::populateUIDsIncremental(BRepGraph& theGraph,
-                                                 int theOldVtx,   int theOldEdge,
-                                                 int theOldWire,  int theOldFace,
-                                                 int theOldShell, int theOldSolid,
-                                                 int theOldComp,  int theOldCS)
+void BRepGraph_Builder::populateUIDsIncremental(BRepGraph&  theGraph,
+                                                 const int theOldVtx,   const int theOldEdge,
+                                                 const int theOldWire,  const int theOldFace,
+                                                 const int theOldShell, const int theOldSolid,
+                                                 const int theOldComp,  const int theOldCS)
 {
   BRepGraphInc_Storage& aStorage = theGraph.myData->myIncStorage;
 

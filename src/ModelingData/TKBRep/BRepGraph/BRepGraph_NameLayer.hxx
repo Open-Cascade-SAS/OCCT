@@ -26,14 +26,14 @@ class BRepGraph_NameLayer : public BRepGraph_Layer
 {
 public:
   //! Set a display name for a node.
-  Standard_EXPORT void SetNodeName(BRepGraph_NodeId                    theNode,
+  Standard_EXPORT void SetNodeName(const BRepGraph_NodeId              theNode,
                                    const TCollection_ExtendedString& theName);
 
   //! Find the display name for a node. Returns nullptr if not set.
-  Standard_EXPORT const TCollection_ExtendedString* FindNodeName(BRepGraph_NodeId theNode) const;
+  Standard_EXPORT const TCollection_ExtendedString* FindNodeName(const BRepGraph_NodeId theNode) const;
 
   //! Remove the display name for a node.
-  Standard_EXPORT void RemoveNodeName(BRepGraph_NodeId theNode);
+  Standard_EXPORT void RemoveNodeName(const BRepGraph_NodeId theNode);
 
   //! Return the number of named nodes.
   int NbNames() const { return myNames.Extent(); }
@@ -42,8 +42,8 @@ public:
 
   Standard_EXPORT const TCollection_AsciiString& Name() const override;
 
-  Standard_EXPORT void OnNodeRemoved(BRepGraph_NodeId theNode,
-                                     BRepGraph_NodeId theReplacement) override;
+  Standard_EXPORT void OnNodeRemoved(const BRepGraph_NodeId theNode,
+                                     const BRepGraph_NodeId theReplacement) override;
 
   Standard_EXPORT void OnCompact(
     const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap) override;

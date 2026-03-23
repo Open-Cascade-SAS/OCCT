@@ -19,7 +19,7 @@
 
 //=================================================================================================
 
-gp_Trsf BRepGraph::SpatialView::GlobalTransform(BRepGraph_NodeId theDefId) const
+gp_Trsf BRepGraph::SpatialView::GlobalTransform(const BRepGraph_NodeId theDefId) const
 {
   if (!theDefId.IsValid())
     return gp_Trsf();
@@ -35,7 +35,7 @@ gp_Trsf BRepGraph::SpatialView::GlobalTransform(BRepGraph_NodeId theDefId) const
 //=================================================================================================
 
 NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::SameDomainFaces(
-  BRepGraph_NodeId theFaceDef) const
+  const BRepGraph_NodeId theFaceDef) const
 {
   NCollection_Vector<BRepGraph_NodeId> aResult;
   if (theFaceDef.NodeKind != BRepGraph_NodeId::Kind::Face || !theFaceDef.IsValid())
@@ -59,7 +59,7 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::SameDomainFaces(
 //=================================================================================================
 
 NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::FacesOfEdge(
-  BRepGraph_NodeId theEdgeDef) const
+  const BRepGraph_NodeId theEdgeDef) const
 {
   NCollection_Vector<BRepGraph_NodeId> aResult;
   const NCollection_Vector<int>* aFaces =
@@ -75,8 +75,8 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::FacesOfEdge(
 //=================================================================================================
 
 NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::SharedEdges(
-  BRepGraph_NodeId theFaceA,
-  BRepGraph_NodeId theFaceB) const
+  const BRepGraph_NodeId theFaceA,
+  const BRepGraph_NodeId theFaceB) const
 {
   NCollection_Vector<BRepGraph_NodeId> aResult;
 
@@ -122,7 +122,7 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::SharedEdges(
 //=================================================================================================
 
 NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::AdjacentFaces(
-  BRepGraph_NodeId theFaceDef) const
+  const BRepGraph_NodeId theFaceDef) const
 {
   NCollection_Vector<BRepGraph_NodeId> aResult;
   NCollection_PackedMap<int>           aFaceSet;
@@ -159,7 +159,7 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::AdjacentFaces(
 
 //=================================================================================================
 
-TopLoc_Location BRepGraph::SpatialView::GlobalPlacement(int theOccurrenceIdx) const
+TopLoc_Location BRepGraph::SpatialView::GlobalPlacement(const int theOccurrenceIdx) const
 {
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
   if (theOccurrenceIdx < 0 || theOccurrenceIdx >= aStorage.NbOccurrences())

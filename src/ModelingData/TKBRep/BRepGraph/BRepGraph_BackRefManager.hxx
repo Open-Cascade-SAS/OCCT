@@ -38,26 +38,26 @@ public:
   //! @param[in] theTo            target node
   //! @param[in] theKind          semantic kind of the relation edge
   //! @return index of the new edge in the outgoing vector
-  static Standard_EXPORT int AddRelEdge(BRepGraph&          theGraph,
-                                        BRepGraph_NodeId    theFrom,
-                                        BRepGraph_NodeId    theTo,
-                                        BRepGraph_RelEdge::Kind theKind);
+  static Standard_EXPORT int AddRelEdge(BRepGraph&                theGraph,
+                                        const BRepGraph_NodeId    theFrom,
+                                        const BRepGraph_NodeId    theTo,
+                                        const BRepGraph_RelEdge::Kind theKind);
 
   //! Remove all relation edges of a given kind between two nodes.
   //! @param[in,out] theGraph     graph to update
   //! @param[in] theFrom          source node
   //! @param[in] theTo            target node
   //! @param[in] theKind          semantic kind to match
-  static Standard_EXPORT void RemoveRelEdges(BRepGraph&          theGraph,
-                                             BRepGraph_NodeId    theFrom,
-                                             BRepGraph_NodeId    theTo,
-                                             BRepGraph_RelEdge::Kind theKind);
+  static Standard_EXPORT void RemoveRelEdges(BRepGraph&                theGraph,
+                                             const BRepGraph_NodeId    theFrom,
+                                             const BRepGraph_NodeId    theTo,
+                                             const BRepGraph_RelEdge::Kind theKind);
 
   //! Remove all relation edges (both outgoing and incoming) for a node.
   //! @param[in,out] theGraph     graph to update
   //! @param[in] theNode          node to clear
-  static Standard_EXPORT void ClearRelEdges(BRepGraph& theGraph,
-                                            BRepGraph_NodeId theNode);
+  static Standard_EXPORT void ClearRelEdges(BRepGraph&             theGraph,
+                                            const BRepGraph_NodeId theNode);
 
   // --- Bulk ---
 

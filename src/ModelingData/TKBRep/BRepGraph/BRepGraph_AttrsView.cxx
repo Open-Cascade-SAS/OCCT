@@ -17,8 +17,8 @@
 
 //=================================================================================================
 
-void BRepGraph::AttrsView::Set(BRepGraph_NodeId                       theNode,
-                               int                                    theKey,
+void BRepGraph::AttrsView::Set(const BRepGraph_NodeId                       theNode,
+                               const int                                    theKey,
                                const occ::handle<BRepGraph_UserAttribute>& theAttr)
 {
   BRepGraph_NodeCache* aCache = myGraph->mutableCache(theNode);
@@ -28,7 +28,7 @@ void BRepGraph::AttrsView::Set(BRepGraph_NodeId                       theNode,
 
 //=================================================================================================
 
-occ::handle<BRepGraph_UserAttribute> BRepGraph::AttrsView::Get(BRepGraph_NodeId theNode, int theKey) const
+occ::handle<BRepGraph_UserAttribute> BRepGraph::AttrsView::Get(const BRepGraph_NodeId theNode, const int theKey) const
 {
   const BRepGraph_TopoNode::BaseDef* aDef = myGraph->TopoDef(theNode);
   if (aDef == nullptr)
@@ -38,7 +38,7 @@ occ::handle<BRepGraph_UserAttribute> BRepGraph::AttrsView::Get(BRepGraph_NodeId 
 
 //=================================================================================================
 
-bool BRepGraph::AttrsView::Remove(BRepGraph_NodeId theNode, int theKey)
+bool BRepGraph::AttrsView::Remove(const BRepGraph_NodeId theNode, const int theKey)
 {
   BRepGraph_NodeCache* aCache = myGraph->mutableCache(theNode);
   if (aCache == nullptr)
@@ -48,7 +48,7 @@ bool BRepGraph::AttrsView::Remove(BRepGraph_NodeId theNode, int theKey)
 
 //=================================================================================================
 
-void BRepGraph::AttrsView::Invalidate(BRepGraph_NodeId theNode, int theKey)
+void BRepGraph::AttrsView::Invalidate(const BRepGraph_NodeId theNode, const int theKey)
 {
   BRepGraph_NodeCache* aCache = myGraph->mutableCache(theNode);
   if (aCache != nullptr)
@@ -57,7 +57,7 @@ void BRepGraph::AttrsView::Invalidate(BRepGraph_NodeId theNode, int theKey)
 
 //=================================================================================================
 
-NCollection_Vector<int> BRepGraph::AttrsView::AttributeKeys(BRepGraph_NodeId theNode) const
+NCollection_Vector<int> BRepGraph::AttrsView::AttributeKeys(const BRepGraph_NodeId theNode) const
 {
   const BRepGraph_TopoNode::BaseDef* aDef = myGraph->TopoDef(theNode);
   if (aDef == nullptr)

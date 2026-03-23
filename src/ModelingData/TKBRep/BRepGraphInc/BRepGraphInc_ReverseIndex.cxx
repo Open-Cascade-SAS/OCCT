@@ -220,11 +220,11 @@ void BRepGraphInc_ReverseIndex::BuildDelta(
   const NCollection_Vector<BRepGraphInc::FaceEntity>&   theFaces,
   const NCollection_Vector<BRepGraphInc::ShellEntity>&  theShells,
   const NCollection_Vector<BRepGraphInc::SolidEntity>&  theSolids,
-  int theOldNbEdges,
-  int theOldNbWires,
-  int theOldNbFaces,
-  int theOldNbShells,
-  int theOldNbSolids)
+  const int theOldNbEdges,
+  const int theOldNbWires,
+  const int theOldNbFaces,
+  const int theOldNbShells,
+  const int theOldNbSolids)
 {
   // Scan new edges for max vertex index to possibly extend myVertexToEdges.
   int aMaxVertexIdx = myVertexToEdges.Length() - 1;
@@ -389,14 +389,14 @@ void BRepGraphInc_ReverseIndex::BuildDelta(
 
 //=================================================================================================
 
-void BRepGraphInc_ReverseIndex::BindEdgeToWire(int theEdgeIdx, int theWireIdx)
+void BRepGraphInc_ReverseIndex::BindEdgeToWire(const int theEdgeIdx, const int theWireIdx)
 {
   appendUnique(myEdgeToWires, theEdgeIdx, theWireIdx);
 }
 
 //=================================================================================================
 
-void BRepGraphInc_ReverseIndex::UnbindEdgeFromWire(int theEdgeIdx, int theWireIdx)
+void BRepGraphInc_ReverseIndex::UnbindEdgeFromWire(const int theEdgeIdx, const int theWireIdx)
 {
   if (theEdgeIdx < 0 || theEdgeIdx >= myEdgeToWires.Length())
     return;
@@ -415,9 +415,9 @@ void BRepGraphInc_ReverseIndex::UnbindEdgeFromWire(int theEdgeIdx, int theWireId
 
 //=================================================================================================
 
-void BRepGraphInc_ReverseIndex::ReplaceEdgeInWireMap(int theOldEdgeIdx,
-                                                     int theNewEdgeIdx,
-                                                     int theWireIdx)
+void BRepGraphInc_ReverseIndex::ReplaceEdgeInWireMap(const int theOldEdgeIdx,
+                                                     const int theNewEdgeIdx,
+                                                     const int theWireIdx)
 {
   UnbindEdgeFromWire(theOldEdgeIdx, theWireIdx);
   BindEdgeToWire(theNewEdgeIdx, theWireIdx);
@@ -426,7 +426,7 @@ void BRepGraphInc_ReverseIndex::ReplaceEdgeInWireMap(int theOldEdgeIdx,
 //=================================================================================================
 
 void BRepGraphInc_ReverseIndex::preSize(IndexTable&                               theIdx,
-                                        int                                       theSize,
+                                        const int                                 theSize,
                                         const occ::handle<NCollection_BaseAllocator>& theAlloc)
 {
   theIdx.Clear();
@@ -445,7 +445,7 @@ void BRepGraphInc_ReverseIndex::preSize(IndexTable&                             
 
 //=================================================================================================
 
-void BRepGraphInc_ReverseIndex::appendUnique(IndexTable& theIdx, int theKey, int theVal)
+void BRepGraphInc_ReverseIndex::appendUnique(IndexTable& theIdx, const int theKey, const int theVal)
 {
   Standard_ASSERT_RETURN(theKey >= 0, "appendUnique: negative key", );
   // Grow if needed for incremental mutation after Build().
@@ -463,7 +463,7 @@ void BRepGraphInc_ReverseIndex::appendUnique(IndexTable& theIdx, int theKey, int
 
 //=================================================================================================
 
-void BRepGraphInc_ReverseIndex::appendDirect(IndexTable& theIdx, int theKey, int theVal)
+void BRepGraphInc_ReverseIndex::appendDirect(IndexTable& theIdx, const int theKey, const int theVal)
 {
   Standard_ASSERT_RETURN(theKey >= 0, "appendDirect: negative key", );
   // During Build(), outer vector is pre-sized so theKey < Length().
@@ -476,14 +476,14 @@ void BRepGraphInc_ReverseIndex::appendDirect(IndexTable& theIdx, int theKey, int
 
 //=================================================================================================
 
-void BRepGraphInc_ReverseIndex::BindVertexToEdge(int theVertexIdx, int theEdgeIdx)
+void BRepGraphInc_ReverseIndex::BindVertexToEdge(const int theVertexIdx, const int theEdgeIdx)
 {
   appendUnique(myVertexToEdges, theVertexIdx, theEdgeIdx);
 }
 
 //=================================================================================================
 
-void BRepGraphInc_ReverseIndex::UnbindVertexFromEdge(int theVertexIdx, int theEdgeIdx)
+void BRepGraphInc_ReverseIndex::UnbindVertexFromEdge(const int theVertexIdx, const int theEdgeIdx)
 {
   if (theVertexIdx < 0 || theVertexIdx >= myVertexToEdges.Length())
     return;
@@ -502,14 +502,14 @@ void BRepGraphInc_ReverseIndex::UnbindVertexFromEdge(int theVertexIdx, int theEd
 
 //=================================================================================================
 
-void BRepGraphInc_ReverseIndex::BindEdgeToCoEdge(int theEdgeIdx, int theCoEdgeIdx)
+void BRepGraphInc_ReverseIndex::BindEdgeToCoEdge(const int theEdgeIdx, const int theCoEdgeIdx)
 {
   appendUnique(myEdgeToCoEdges, theEdgeIdx, theCoEdgeIdx);
 }
 
 //=================================================================================================
 
-void BRepGraphInc_ReverseIndex::BindEdgeToFace(int theEdgeIdx, int theFaceIdx)
+void BRepGraphInc_ReverseIndex::BindEdgeToFace(const int theEdgeIdx, const int theFaceIdx)
 {
   // Detect new binding by checking vector size before/after appendUnique.
   const int aSizeBefore = (theEdgeIdx < myEdgeToFaces.Length())
@@ -534,7 +534,7 @@ void BRepGraphInc_ReverseIndex::BindEdgeToFace(int theEdgeIdx, int theFaceIdx)
 
 //=================================================================================================
 
-void BRepGraphInc_ReverseIndex::UnbindEdgeFromFace(int theEdgeIdx, int theFaceIdx)
+void BRepGraphInc_ReverseIndex::UnbindEdgeFromFace(const int theEdgeIdx, const int theFaceIdx)
 {
   if (theEdgeIdx < 0 || theEdgeIdx >= myEdgeToFaces.Length())
     return;
@@ -676,7 +676,7 @@ bool BRepGraphInc_ReverseIndex::Validate(
 
 void BRepGraphInc_ReverseIndex::BuildProductOccurrences(
   const NCollection_Vector<BRepGraphInc::OccurrenceEntity>& theOccurrences,
-  int theNbProducts)
+  const int theNbProducts)
 {
   myProductToOccurrences.Clear();
   preSize(myProductToOccurrences, theNbProducts, myAllocator);

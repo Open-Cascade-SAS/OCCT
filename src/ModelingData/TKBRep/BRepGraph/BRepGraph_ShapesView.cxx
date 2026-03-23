@@ -21,7 +21,7 @@
 
 //=================================================================================================
 
-TopoDS_Shape BRepGraph::ShapesView::Shape(BRepGraph_NodeId theNode) const
+TopoDS_Shape BRepGraph::ShapesView::Shape(const BRepGraph_NodeId theNode) const
 {
   if (!theNode.IsValid())
     return TopoDS_Shape();
@@ -70,14 +70,14 @@ TopoDS_Shape BRepGraph::ShapesView::Shape(BRepGraph_NodeId theNode) const
 
 //=================================================================================================
 
-bool BRepGraph::ShapesView::HasOriginal(BRepGraph_NodeId theNode) const
+bool BRepGraph::ShapesView::HasOriginal(const BRepGraph_NodeId theNode) const
 {
   return myGraph->myData->myIncStorage.HasOriginal(theNode);
 }
 
 //=================================================================================================
 
-const TopoDS_Shape& BRepGraph::ShapesView::OriginalOf(BRepGraph_NodeId theNode) const
+const TopoDS_Shape& BRepGraph::ShapesView::OriginalOf(const BRepGraph_NodeId theNode) const
 {
   const TopoDS_Shape* aShape = myGraph->myData->myIncStorage.FindOriginal(theNode);
   if (aShape == nullptr)
@@ -87,7 +87,7 @@ const TopoDS_Shape& BRepGraph::ShapesView::OriginalOf(BRepGraph_NodeId theNode) 
 
 //=================================================================================================
 
-TopoDS_Shape BRepGraph::ShapesView::Reconstruct(BRepGraph_NodeId theRoot) const
+TopoDS_Shape BRepGraph::ShapesView::Reconstruct(const BRepGraph_NodeId theRoot) const
 {
   TopoDS_Shape aShape = BRepGraphInc_Reconstruct::Node(myGraph->myData->myIncStorage, theRoot);
 
@@ -103,7 +103,7 @@ TopoDS_Shape BRepGraph::ShapesView::Reconstruct(BRepGraph_NodeId theRoot) const
 
 //=================================================================================================
 
-TopoDS_Shape BRepGraph::ShapesView::ReconstructFace(int theFaceDefIdx) const
+TopoDS_Shape BRepGraph::ShapesView::ReconstructFace(const int theFaceDefIdx) const
 {
   BRepGraphInc_Reconstruct::Cache aCache;
   return BRepGraphInc_Reconstruct::FaceWithCache(
@@ -112,7 +112,7 @@ TopoDS_Shape BRepGraph::ShapesView::ReconstructFace(int theFaceDefIdx) const
 
 //=================================================================================================
 
-TopoDS_Shape BRepGraph::ShapesView::ReconstructFromNode(BRepGraph_NodeId theNode) const
+TopoDS_Shape BRepGraph::ShapesView::ReconstructFromNode(const BRepGraph_NodeId theNode) const
 {
   TopoDS_Shape aShape = BRepGraphInc_Reconstruct::Node(myGraph->myData->myIncStorage, theNode);
   if (aShape.IsNull() || !theNode.IsValid())

@@ -56,7 +56,7 @@ BRepGraphInc_Storage::BRepGraphInc_Storage(
 //=================================================================================================
 
 const NCollection_Vector<BRepGraph_UID>& BRepGraphInc_Storage::UIDs(
-  BRepGraph_NodeId::Kind theKind) const
+  const BRepGraph_NodeId::Kind theKind) const
 {
   switch (theKind)
   {
@@ -79,7 +79,7 @@ const NCollection_Vector<BRepGraph_UID>& BRepGraphInc_Storage::UIDs(
 //=================================================================================================
 
 NCollection_Vector<BRepGraph_UID>& BRepGraphInc_Storage::ChangeUIDs(
-  BRepGraph_NodeId::Kind theKind)
+  const BRepGraph_NodeId::Kind theKind)
 {
   switch (theKind)
   {
@@ -167,7 +167,7 @@ void BRepGraphInc_Storage::Clear()
 
 //=================================================================================================
 
-void BRepGraphInc_Storage::DecrementActiveCount(BRepGraph_NodeId::Kind theKind)
+void BRepGraphInc_Storage::DecrementActiveCount(const BRepGraph_NodeId::Kind theKind)
 {
   switch (theKind)
   {
@@ -232,11 +232,11 @@ void BRepGraphInc_Storage::BuildReverseIndex()
 
 //=================================================================================================
 
-void BRepGraphInc_Storage::BuildDeltaReverseIndex(int theOldNbEdges,
-                                                   int theOldNbWires,
-                                                   int theOldNbFaces,
-                                                   int theOldNbShells,
-                                                   int theOldNbSolids)
+void BRepGraphInc_Storage::BuildDeltaReverseIndex(const int theOldNbEdges,
+                                                   const int theOldNbWires,
+                                                   const int theOldNbFaces,
+                                                   const int theOldNbShells,
+                                                   const int theOldNbSolids)
 {
   myReverseIdx.BuildDelta(myEdges, myCoEdges, myWires, myFaces, myShells, mySolids,
                           theOldNbEdges, theOldNbWires, theOldNbFaces,

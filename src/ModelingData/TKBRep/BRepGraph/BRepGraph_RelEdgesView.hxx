@@ -28,39 +28,39 @@ class BRepGraph::RelEdgesView
 public:
   //! Number of outgoing relation edges from a node.
   //! @param[in] theNode source node
-  Standard_EXPORT int NbFrom(BRepGraph_NodeId theNode) const;
+  Standard_EXPORT int NbFrom(const BRepGraph_NodeId theNode) const;
 
   //! Number of incoming relation edges to a node.
   //! @param[in] theNode target node
-  Standard_EXPORT int NbTo(BRepGraph_NodeId theNode) const;
+  Standard_EXPORT int NbTo(const BRepGraph_NodeId theNode) const;
 
   //! Access outgoing RelEdge vector for a node.
   //! @param[in] theNode source node
   //! @return pointer to the vector or nullptr if none
   Standard_EXPORT const NCollection_Vector<BRepGraph_RelEdge>* OutOf(
-    BRepGraph_NodeId theNode) const;
+    const BRepGraph_NodeId theNode) const;
 
   //! Access incoming RelEdge vector for a node.
   //! @param[in] theNode target node
   //! @return pointer to the vector or nullptr if none
   Standard_EXPORT const NCollection_Vector<BRepGraph_RelEdge>* InOf(
-    BRepGraph_NodeId theNode) const;
+    const BRepGraph_NodeId theNode) const;
 
   //! Number of distinct faces referencing a given edge definition.
   //! @param[in] theEdgeDefIdx zero-based edge definition index
-  Standard_EXPORT int FaceCountForEdge(int theEdgeDefIdx) const;
+  Standard_EXPORT int FaceCountForEdge(const int theEdgeDefIdx) const;
 
   //! Return all wire definition indices that contain a given edge.
   //! @param[in] theEdgeDefIdx zero-based edge definition index
-  Standard_EXPORT const NCollection_Vector<int>& WiresOfEdge(int theEdgeDefIdx) const;
+  Standard_EXPORT const NCollection_Vector<int>& WiresOfEdge(const int theEdgeDefIdx) const;
 
   //! Invoke a callback for each outgoing RelEdge of a given kind.
   //! @param[in] theNodeId  source node
   //! @param[in] theKind    relation kind to filter by
   //! @param[in] theCallback callback receiving each matching BRepGraph_RelEdge
   template <typename Func>
-  void ForEachOutOfKind(BRepGraph_NodeId  theNodeId,
-                        BRepGraph_RelEdge::Kind theKind,
+  void ForEachOutOfKind(const BRepGraph_NodeId  theNodeId,
+                        const BRepGraph_RelEdge::Kind theKind,
                         const Func&       theCallback) const
   {
     const NCollection_Vector<BRepGraph_RelEdge>* aEdges = OutOf(theNodeId);
@@ -79,8 +79,8 @@ public:
   //! @param[in] theKind    relation kind to filter by
   //! @param[in] theCallback callback receiving each matching BRepGraph_RelEdge
   template <typename Func>
-  void ForEachInOfKind(BRepGraph_NodeId  theNodeId,
-                       BRepGraph_RelEdge::Kind theKind,
+  void ForEachInOfKind(const BRepGraph_NodeId  theNodeId,
+                       const BRepGraph_RelEdge::Kind theKind,
                        const Func&       theCallback) const
   {
     const NCollection_Vector<BRepGraph_RelEdge>* aEdges = InOf(theNodeId);

@@ -97,7 +97,7 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>>
 
 NCollection_Vector<BRepGraph_NodeId> BRepGraph_Analyze::ToleranceConflicts(
   const BRepGraph& theGraph,
-  double           theThreshold)
+  const double     theThreshold)
 {
   NCollection_Vector<BRepGraph_NodeId> aResult;
 
@@ -299,7 +299,7 @@ NCollection_Vector<BRepGraph_SubGraph> BRepGraph_Analyze::Decompose(const BRepGr
 NCollection_Vector<NCollection_Vector<BRepGraph_NodeId>> BRepGraph_Analyze::RelationClusters(
   const BRepGraph&                        theGraph,
   const NCollection_Array1<BRepGraph_NodeId>& theNodes,
-  BRepGraph_RelEdge::Kind                theKind)
+  const BRepGraph_RelEdge::Kind                theKind)
 {
   NCollection_Vector<NCollection_Vector<BRepGraph_NodeId>> aClusters;
   if (theNodes.IsEmpty())
@@ -379,9 +379,9 @@ NCollection_Vector<NCollection_Vector<BRepGraph_NodeId>> BRepGraph_Analyze::Rela
 
 //==================================================================================================
 
-double BRepGraph_Analyze::EdgeEndpointPairScore(const BRepGraph& theGraph,
-                                                BRepGraph_NodeId  theEdgeA,
-                                                BRepGraph_NodeId  theEdgeB)
+double BRepGraph_Analyze::EdgeEndpointPairScore(const BRepGraph&      theGraph,
+                                                const BRepGraph_NodeId  theEdgeA,
+                                                const BRepGraph_NodeId  theEdgeB)
 {
   const BRepGraph_TopoNode::EdgeDef& aEdgeA = theGraph.Defs().Edge(theEdgeA.Index);
   const BRepGraph_TopoNode::EdgeDef& aEdgeB = theGraph.Defs().Edge(theEdgeB.Index);
@@ -397,13 +397,13 @@ double BRepGraph_Analyze::EdgeEndpointPairScore(const BRepGraph& theGraph,
 
 //==================================================================================================
 
-bool BRepGraph_Analyze::AreEdgesCompatibleSampled(const BRepGraph& theGraph,
-                                                  BRepGraph_NodeId  theEdgeA,
-                                                  BRepGraph_NodeId  theEdgeB,
-                                                  double            theTolerance,
-                                                  int               theNbSamples,
-                                                  double            theMaxChordRatio,
-                                                  double            theHighConfidenceRatio)
+bool BRepGraph_Analyze::AreEdgesCompatibleSampled(const BRepGraph&       theGraph,
+                                                  const BRepGraph_NodeId  theEdgeA,
+                                                  const BRepGraph_NodeId  theEdgeB,
+                                                  const double            theTolerance,
+                                                  const int               theNbSamples,
+                                                  const double            theMaxChordRatio,
+                                                  const double            theHighConfidenceRatio)
 {
   const BRepGraph_TopoNode::EdgeDef& aNodeA = theGraph.Defs().Edge(theEdgeA.Index);
   const BRepGraph_TopoNode::EdgeDef& aNodeB = theGraph.Defs().Edge(theEdgeB.Index);
@@ -474,15 +474,15 @@ bool BRepGraph_Analyze::AreEdgesCompatibleSampled(const BRepGraph& theGraph,
 //==================================================================================================
 
 bool BRepGraph_Analyze::AreEdgesCompatibleSampled(const BRepGraph&            theGraph,
-                                                  BRepGraph_NodeId             theEdgeA,
-                                                  BRepGraph_NodeId             theEdgeB,
+                                                  const BRepGraph_NodeId             theEdgeA,
+                                                  const BRepGraph_NodeId             theEdgeB,
                                                   const NCollection_Array1<gp_Pnt>& theSamplePtsA,
                                                   const ExtremaPC_Curve&       theExtPCRevA,
-                                                  double                       theChordA,
-                                                  double                       theTolerance,
-                                                  int                          theNbSamples,
-                                                  double                       theMaxChordRatio,
-                                                  double                       theHighConfidenceRatio)
+                                                  const double                       theChordA,
+                                                  const double                       theTolerance,
+                                                  const int                          theNbSamples,
+                                                  const double                       theMaxChordRatio,
+                                                  const double                       theHighConfidenceRatio)
 {
   const BRepGraph_TopoNode::EdgeDef& aNodeA = theGraph.Defs().Edge(theEdgeA.Index);
   const BRepGraph_TopoNode::EdgeDef& aNodeB = theGraph.Defs().Edge(theEdgeB.Index);
@@ -621,7 +621,7 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>>
 //=================================================================================================
 
 NCollection_Vector<BRepGraph_NodeId>
-  BRepGraph::AnalyzeView::ToleranceConflicts(double theThreshold) const
+  BRepGraph::AnalyzeView::ToleranceConflicts(const double theThreshold) const
 { return BRepGraph_Analyze::ToleranceConflicts(*myGraph, theThreshold); }
 
 //=================================================================================================

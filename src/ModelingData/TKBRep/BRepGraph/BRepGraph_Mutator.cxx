@@ -27,12 +27,12 @@
 
 //=================================================================================================
 
-void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
-                                  BRepGraph_NodeId  theEdgeDef,
-                                  BRepGraph_NodeId  theSplitVertex,
-                                  double            theSplitParam,
-                                  BRepGraph_NodeId& theSubA,
-                                  BRepGraph_NodeId& theSubB)
+void BRepGraph_Mutator::SplitEdge(BRepGraph&              theGraph,
+                                  const BRepGraph_NodeId  theEdgeDef,
+                                  const BRepGraph_NodeId  theSplitVertex,
+                                  const double            theSplitParam,
+                                  BRepGraph_NodeId&       theSubA,
+                                  BRepGraph_NodeId&       theSubB)
 {
   // Copy all data from the original EdgeDef before appending to vectors (which may reallocate).
   const BRepGraph_TopoNode::EdgeDef& anOrig = theGraph.myData->myIncStorage.Edge(theEdgeDef.Index);
@@ -288,11 +288,11 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&        theGraph,
 
 //=================================================================================================
 
-void BRepGraph_Mutator::ReplaceEdgeInWire(BRepGraph&       theGraph,
-                                          int              theWireDefIdx,
-                                          BRepGraph_NodeId theOldEdgeDef,
-                                          BRepGraph_NodeId theNewEdgeDef,
-                                          bool             theReversed)
+void BRepGraph_Mutator::ReplaceEdgeInWire(BRepGraph&             theGraph,
+                                          const int              theWireDefIdx,
+                                          const BRepGraph_NodeId theOldEdgeDef,
+                                          const BRepGraph_NodeId theNewEdgeDef,
+                                          const bool             theReversed)
 {
   BRepGraph_TopoNode::WireDef& aWireDef = theGraph.myData->myIncStorage.ChangeWire(theWireDefIdx);
 

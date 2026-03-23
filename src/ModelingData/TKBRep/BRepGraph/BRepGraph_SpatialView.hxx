@@ -28,33 +28,33 @@ class BRepGraph::SpatialView
 public:
   //! Accumulated global transform for a definition (from per-node location).
   //! @param[in] theDefId definition node identifier
-  Standard_EXPORT gp_Trsf GlobalTransform(BRepGraph_NodeId theDefId) const;
+  Standard_EXPORT gp_Trsf GlobalTransform(const BRepGraph_NodeId theDefId) const;
 
   //! Compute the global placement of an occurrence by walking the parent chain.
   //! @param[in] theOccurrenceIdx zero-based occurrence definition index
-  Standard_EXPORT TopLoc_Location GlobalPlacement(int theOccurrenceIdx) const;
+  Standard_EXPORT TopLoc_Location GlobalPlacement(const int theOccurrenceIdx) const;
 
   //! Return all face definitions sharing the same surface as the given face.
   //! @param[in] theFaceDef face definition NodeId
   Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> SameDomainFaces(
-    BRepGraph_NodeId theFaceDef) const;
+    const BRepGraph_NodeId theFaceDef) const;
 
   //! Return all face definition NodeIds that reference this edge (via PCurve associations).
   //! @param[in] theEdgeDef edge definition NodeId
   Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> FacesOfEdge(
-    BRepGraph_NodeId theEdgeDef) const;
+    const BRepGraph_NodeId theEdgeDef) const;
 
   //! Return all edges shared between two faces.
   //! @param[in] theFaceA first face definition NodeId
   //! @param[in] theFaceB second face definition NodeId
   Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> SharedEdges(
-    BRepGraph_NodeId theFaceA,
-    BRepGraph_NodeId theFaceB) const;
+    const BRepGraph_NodeId theFaceA,
+    const BRepGraph_NodeId theFaceB) const;
 
   //! Return all faces adjacent to a face (sharing at least one edge).
   //! @param[in] theFaceDef face definition NodeId
   Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> AdjacentFaces(
-    BRepGraph_NodeId theFaceDef) const;
+    const BRepGraph_NodeId theFaceDef) const;
 
 private:
   friend class BRepGraph;

@@ -63,7 +63,7 @@ struct BRepGraph_NodeCache
   }
 
   //! Invalidate only a specific user attribute by key.
-  void InvalidateUserAttribute(int theKey)
+  void InvalidateUserAttribute(const int theKey)
   {
     const occ::handle<BRepGraph_UserAttribute>* aPtr = myUserAttributes.Seek(theKey);
     if (aPtr != nullptr && !(*aPtr).IsNull())
@@ -71,21 +71,21 @@ struct BRepGraph_NodeCache
   }
 
   //! Attach a user attribute.  Replaces any existing attribute at the same key.
-  void SetUserAttribute(int                                   theKey,
+  void SetUserAttribute(const int                             theKey,
                         const occ::handle<BRepGraph_UserAttribute>& theAttr)
   {
     myUserAttributes.Bind(theKey, theAttr);
   }
 
   //! Retrieve a user attribute by key.  Returns null handle if absent.
-  occ::handle<BRepGraph_UserAttribute> GetUserAttribute(int theKey) const
+  occ::handle<BRepGraph_UserAttribute> GetUserAttribute(const int theKey) const
   {
     const occ::handle<BRepGraph_UserAttribute>* aPtr = myUserAttributes.Seek(theKey);
     return (aPtr != nullptr) ? *aPtr : occ::handle<BRepGraph_UserAttribute>();
   }
 
   //! Remove a user attribute by key.  Returns true if something was removed.
-  bool RemoveUserAttribute(int theKey)
+  bool RemoveUserAttribute(const int theKey)
   {
     return myUserAttributes.UnBind(theKey);
   }

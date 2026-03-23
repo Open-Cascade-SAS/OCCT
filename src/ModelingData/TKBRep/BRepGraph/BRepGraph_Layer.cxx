@@ -24,7 +24,7 @@ int BRepGraph_Layer::SubscribedKinds() const
 
 //=================================================================================================
 
-void BRepGraph_Layer::OnNodeModified(BRepGraph_NodeId /*theNode*/)
+void BRepGraph_Layer::OnNodeModified(const BRepGraph_NodeId /*theNode*/)
 {
 }
 

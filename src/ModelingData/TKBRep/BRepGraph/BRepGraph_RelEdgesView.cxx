@@ -16,7 +16,7 @@
 
 //=================================================================================================
 
-int BRepGraph::RelEdgesView::NbFrom(BRepGraph_NodeId theNode) const
+int BRepGraph::RelEdgesView::NbFrom(const BRepGraph_NodeId theNode) const
 {
   const NCollection_Vector<BRepGraph_RelEdge>* aEdges =
     myGraph->myData->myOutRelEdges.Seek(theNode);
@@ -25,7 +25,7 @@ int BRepGraph::RelEdgesView::NbFrom(BRepGraph_NodeId theNode) const
 
 //=================================================================================================
 
-int BRepGraph::RelEdgesView::NbTo(BRepGraph_NodeId theNode) const
+int BRepGraph::RelEdgesView::NbTo(const BRepGraph_NodeId theNode) const
 {
   const NCollection_Vector<BRepGraph_RelEdge>* aEdges =
     myGraph->myData->myInRelEdges.Seek(theNode);
@@ -35,7 +35,7 @@ int BRepGraph::RelEdgesView::NbTo(BRepGraph_NodeId theNode) const
 //=================================================================================================
 
 const NCollection_Vector<BRepGraph_RelEdge>* BRepGraph::RelEdgesView::OutOf(
-  BRepGraph_NodeId theNode) const
+  const BRepGraph_NodeId theNode) const
 {
   return myGraph->myData->myOutRelEdges.Seek(theNode);
 }
@@ -43,21 +43,21 @@ const NCollection_Vector<BRepGraph_RelEdge>* BRepGraph::RelEdgesView::OutOf(
 //=================================================================================================
 
 const NCollection_Vector<BRepGraph_RelEdge>* BRepGraph::RelEdgesView::InOf(
-  BRepGraph_NodeId theNode) const
+  const BRepGraph_NodeId theNode) const
 {
   return myGraph->myData->myInRelEdges.Seek(theNode);
 }
 
 //=================================================================================================
 
-int BRepGraph::RelEdgesView::FaceCountForEdge(int theEdgeDefIdx) const
+int BRepGraph::RelEdgesView::FaceCountForEdge(const int theEdgeDefIdx) const
 {
   return myGraph->myData->myIncStorage.ReverseIndex().FaceCountOfEdge(theEdgeDefIdx);
 }
 
 //=================================================================================================
 
-const NCollection_Vector<int>& BRepGraph::RelEdgesView::WiresOfEdge(int theEdgeDefIdx) const
+const NCollection_Vector<int>& BRepGraph::RelEdgesView::WiresOfEdge(const int theEdgeDefIdx) const
 {
   return myGraph->myData->myIncStorage.ReverseIndex().WiresOfEdgeRef(theEdgeDefIdx);
 }

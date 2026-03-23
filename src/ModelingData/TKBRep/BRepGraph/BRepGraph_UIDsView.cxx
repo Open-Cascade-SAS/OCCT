@@ -16,7 +16,7 @@
 
 //=================================================================================================
 
-BRepGraph_UID BRepGraph::UIDsView::Of(BRepGraph_NodeId theNode) const
+BRepGraph_UID BRepGraph::UIDsView::Of(const BRepGraph_NodeId theNode) const
 {
   if (!theNode.IsValid())
     return BRepGraph_UID();

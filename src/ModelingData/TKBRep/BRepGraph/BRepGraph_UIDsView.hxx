@@ -28,7 +28,7 @@ class BRepGraph::UIDsView
 public:
   //! Return the UID assigned to a node.
   //! @param[in] theNode node identifier
-  Standard_EXPORT BRepGraph_UID Of(BRepGraph_NodeId theNode) const;
+  Standard_EXPORT BRepGraph_UID Of(const BRepGraph_NodeId theNode) const;
 
   //! Resolve a UID back to a NodeId.
   //! @param[in] theUID unique identifier to resolve

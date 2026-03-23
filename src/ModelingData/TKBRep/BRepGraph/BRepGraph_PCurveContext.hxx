@@ -35,7 +35,7 @@ struct BRepGraph_PCurveContext
   BRepGraph_PCurveContext()
     : EdgeDefIndex(-1), FaceDefIndex(-1), Orientation(TopAbs_FORWARD) {}
 
-  BRepGraph_PCurveContext(int theEdge, int theFace, TopAbs_Orientation theOri)
+  BRepGraph_PCurveContext(const int theEdge, const int theFace, const TopAbs_Orientation theOri)
     : EdgeDefIndex(theEdge), FaceDefIndex(theFace), Orientation(theOri) {}
 
   bool operator==(const BRepGraph_PCurveContext& theOther) const

@@ -39,12 +39,12 @@ public:
   //! @param[in] theSplitParam      parameter on the 3D curve at the split point
   //! @param[out] theSubA           sub-edge: StartVertex -> SplitVertex
   //! @param[out] theSubB           sub-edge: SplitVertex -> EndVertex
-  static Standard_EXPORT void SplitEdge(BRepGraph&        theGraph,
-                                        BRepGraph_NodeId  theEdgeDef,
-                                        BRepGraph_NodeId  theSplitVertex,
-                                        double            theSplitParam,
-                                        BRepGraph_NodeId& theSubA,
-                                        BRepGraph_NodeId& theSubB);
+  static Standard_EXPORT void SplitEdge(BRepGraph&              theGraph,
+                                        const BRepGraph_NodeId  theEdgeDef,
+                                        const BRepGraph_NodeId  theSplitVertex,
+                                        const double            theSplitParam,
+                                        BRepGraph_NodeId&       theSubA,
+                                        BRepGraph_NodeId&       theSubB);
 
   //! Replace one edge with another in a wire definition.
   //! @param[in,out] theGraph       graph to mutate
@@ -52,11 +52,11 @@ public:
   //! @param[in] theOldEdgeDef      edge to replace
   //! @param[in] theNewEdgeDef      replacement edge
   //! @param[in] theReversed        if true, reverse the orientation of the replacement
-  static Standard_EXPORT void ReplaceEdgeInWire(BRepGraph&       theGraph,
-                                                int              theWireDefIdx,
-                                                BRepGraph_NodeId theOldEdgeDef,
-                                                BRepGraph_NodeId theNewEdgeDef,
-                                                bool             theReversed);
+  static Standard_EXPORT void ReplaceEdgeInWire(BRepGraph&             theGraph,
+                                                const int              theWireDefIdx,
+                                                const BRepGraph_NodeId theOldEdgeDef,
+                                                const BRepGraph_NodeId theNewEdgeDef,
+                                                const bool             theReversed);
 
   //! Finalize a batch of mutations: validate reverse index consistency
   //! and assert active entity counts match actual entity state.

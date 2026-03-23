@@ -53,7 +53,7 @@ public:
   static Standard_EXPORT void Perform(
     BRepGraphInc_Storage&                    theStorage,
     const TopoDS_Shape&                      theShape,
-    bool                                     theParallel,
+    const bool                               theParallel,
     const Options&                           theOptions = Options(),
     const occ::handle<NCollection_BaseAllocator>& theTmpAlloc = occ::handle<NCollection_BaseAllocator>());
 
@@ -67,7 +67,7 @@ public:
   static Standard_EXPORT void Append(
     BRepGraphInc_Storage&                    theStorage,
     const TopoDS_Shape&                      theShape,
-    bool                                     theParallel,
+    const bool                               theParallel,
     const occ::handle<NCollection_BaseAllocator>& theTmpAlloc = occ::handle<NCollection_BaseAllocator>());
 
 private:

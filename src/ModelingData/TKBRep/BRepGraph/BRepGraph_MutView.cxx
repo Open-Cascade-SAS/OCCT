@@ -21,12 +21,12 @@
 
 //=================================================================================================
 
-void BRepGraph::MutView::AddPCurveToEdge(BRepGraph_NodeId            theEdgeDef,
-                                          BRepGraph_NodeId            theFaceDef,
+void BRepGraph::MutView::AddPCurveToEdge(const BRepGraph_NodeId            theEdgeDef,
+                                          const BRepGraph_NodeId            theFaceDef,
                                           const occ::handle<Geom2d_Curve>& theCurve2d,
-                                          double                      theFirst,
-                                          double                      theLast,
-                                          TopAbs_Orientation          theEdgeOrientation)
+                                          const double                      theFirst,
+                                          const double                      theLast,
+                                          const TopAbs_Orientation          theEdgeOrientation)
 {
   BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
 
@@ -57,10 +57,10 @@ void BRepGraph::MutView::AddPCurveToEdge(BRepGraph_NodeId            theEdgeDef,
 
 //=================================================================================================
 
-void BRepGraph::MutView::ReplaceEdgeInWire(int              theWireDefIdx,
-                                           BRepGraph_NodeId theOldEdgeDef,
-                                           BRepGraph_NodeId theNewEdgeDef,
-                                           bool             theReversed)
+void BRepGraph::MutView::ReplaceEdgeInWire(const int              theWireDefIdx,
+                                           const BRepGraph_NodeId theOldEdgeDef,
+                                           const BRepGraph_NodeId theNewEdgeDef,
+                                           const bool             theReversed)
 {
   BRepGraph_Mutator::ReplaceEdgeInWire(
     *myGraph, theWireDefIdx, theOldEdgeDef, theNewEdgeDef, theReversed);
@@ -68,11 +68,11 @@ void BRepGraph::MutView::ReplaceEdgeInWire(int              theWireDefIdx,
 
 //=================================================================================================
 
-void BRepGraph::MutView::SplitEdge(BRepGraph_NodeId  theEdgeDef,
-                                   BRepGraph_NodeId  theSplitVertex,
-                                   double            theSplitParam,
-                                   BRepGraph_NodeId& theSubA,
-                                   BRepGraph_NodeId& theSubB)
+void BRepGraph::MutView::SplitEdge(const BRepGraph_NodeId  theEdgeDef,
+                                   const BRepGraph_NodeId  theSplitVertex,
+                                   const double            theSplitParam,
+                                   BRepGraph_NodeId&       theSubA,
+                                   BRepGraph_NodeId&       theSubB)
 {
   BRepGraph_Mutator::SplitEdge(
     *myGraph, theEdgeDef, theSplitVertex, theSplitParam, theSubA, theSubB);
@@ -80,18 +80,18 @@ void BRepGraph::MutView::SplitEdge(BRepGraph_NodeId  theEdgeDef,
 
 //=================================================================================================
 
-int BRepGraph::MutView::AddRelEdge(BRepGraph_NodeId  theFrom,
-                                   BRepGraph_NodeId  theTo,
-                                   BRepGraph_RelEdge::Kind theKind)
+int BRepGraph::MutView::AddRelEdge(const BRepGraph_NodeId  theFrom,
+                                   const BRepGraph_NodeId  theTo,
+                                   const BRepGraph_RelEdge::Kind theKind)
 {
   return BRepGraph_BackRefManager::AddRelEdge(*myGraph, theFrom, theTo, theKind);
 }
 
 //=================================================================================================
 
-void BRepGraph::MutView::RemoveRelEdges(BRepGraph_NodeId  theFrom,
-                                        BRepGraph_NodeId  theTo,
-                                        BRepGraph_RelEdge::Kind theKind)
+void BRepGraph::MutView::RemoveRelEdges(const BRepGraph_NodeId  theFrom,
+                                        const BRepGraph_NodeId  theTo,
+                                        const BRepGraph_RelEdge::Kind theKind)
 {
   BRepGraph_BackRefManager::RemoveRelEdges(*myGraph, theFrom, theTo, theKind);
 }

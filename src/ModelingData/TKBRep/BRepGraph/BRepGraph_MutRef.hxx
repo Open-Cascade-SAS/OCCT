@@ -42,7 +42,7 @@ public:
   //! @param[in] theGraph  owning graph (used for markModified on destruction)
   //! @param[in] theDef    pointer to the mutable definition
   //! @param[in] theId     node identity for markModified
-  BRepGraph_MutRef(BRepGraph* theGraph, DefT* theDef, BRepGraph_NodeId theId)
+  BRepGraph_MutRef(BRepGraph* theGraph, DefT* theDef, const BRepGraph_NodeId theId)
     : myGraph(theGraph),
       myDef(theDef),
       myId(theId)

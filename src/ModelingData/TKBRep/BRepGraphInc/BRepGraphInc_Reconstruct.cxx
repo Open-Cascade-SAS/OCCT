@@ -27,7 +27,7 @@
 //=================================================================================================
 
 TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage& theStorage,
-                                            BRepGraph_NodeId            theNode)
+                                            const BRepGraph_NodeId      theNode)
 {
   Cache aCache;
   return Node(theStorage, theNode, aCache);
@@ -36,7 +36,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage& theStora
 //=================================================================================================
 
 TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage& theStorage,
-                                            BRepGraph_NodeId            theNode,
+                                            const BRepGraph_NodeId      theNode,
                                             Cache&                      theCache)
 {
   if (!theNode.IsValid())
@@ -315,7 +315,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage& theStora
 //=================================================================================================
 
 TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage& theStorage,
-                                                     int                         theFaceIdx,
+                                                     const int                   theFaceIdx,
                                                      Cache&                      theCache)
 {
   if (theFaceIdx < 0 || theFaceIdx >= theStorage.NbFaces())

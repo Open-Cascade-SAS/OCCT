@@ -529,7 +529,7 @@ public:
     return THE_NAME;
   }
 
-  void OnNodeRemoved(BRepGraph_NodeId theNode, BRepGraph_NodeId) override
+  void OnNodeRemoved(const BRepGraph_NodeId theNode, const BRepGraph_NodeId) override
   {
     myData.UnBind(theNode);
   }

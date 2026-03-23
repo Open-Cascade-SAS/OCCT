@@ -1131,7 +1131,7 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
 
 void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&                         theStorage,
                                     const TopoDS_Shape&                           theShape,
-                                    bool                                          theParallel,
+                                    const bool                                    theParallel,
                                     const Options&                                theOptions,
                                     const occ::handle<NCollection_BaseAllocator>& theTmpAlloc)
 {
@@ -1661,7 +1661,7 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&                       
 
 void BRepGraphInc_Populate::Append(BRepGraphInc_Storage&                         theStorage,
                                    const TopoDS_Shape&                           theShape,
-                                   bool                                          theParallel,
+                                   const bool                                    theParallel,
                                    const occ::handle<NCollection_BaseAllocator>& theTmpAlloc)
 {
   if (theShape.IsNull())

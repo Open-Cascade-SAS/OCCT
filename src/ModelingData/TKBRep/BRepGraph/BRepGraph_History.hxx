@@ -42,7 +42,7 @@ public:
   //! @param[in] theOriginal     node id before the operation
   //! @param[in] theReplacements node ids after the operation
   Standard_EXPORT void Record(const TCollection_AsciiString&              theOpLabel,
-                              BRepGraph_NodeId                            theOriginal,
+                              const BRepGraph_NodeId                      theOriginal,
                               const NCollection_Vector<BRepGraph_NodeId>& theReplacements);
 
   //! Record a batch of 1-to-1 modifications in a single history event.
@@ -62,13 +62,13 @@ public:
   //! Follows the reverse map recursively until a root is reached.
   //! @param[in] theModified node id to trace back
   //! @return the root original node id, or theModified itself if not found
-  Standard_EXPORT BRepGraph_NodeId FindOriginal(BRepGraph_NodeId theModified) const;
+  Standard_EXPORT BRepGraph_NodeId FindOriginal(const BRepGraph_NodeId theModified) const;
 
   //! Walk forwards from an original node to all derived nodes.
   //! Follows the forward map recursively, collecting all leaves.
   //! @param[in] theOriginal node id to trace forward
   //! @return all transitively derived node ids
-  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> FindDerived(BRepGraph_NodeId theOriginal) const;
+  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> FindDerived(const BRepGraph_NodeId theOriginal) const;
 
   //! Number of recorded history events.
   //! @return record count
@@ -77,11 +77,11 @@ public:
   //! Access a record by index (0-based).
   //! @param[in] theRecordIdx zero-based index into the records vector
   //! @return the history record at the given index
-  Standard_EXPORT const BRepGraph_HistoryRecord& Record(int theRecordIdx) const;
+  Standard_EXPORT const BRepGraph_HistoryRecord& Record(const int theRecordIdx) const;
 
   //! Enable or disable history recording.
   //! @param[in] theVal true to enable, false to disable
-  Standard_EXPORT void SetEnabled(bool theVal);
+  Standard_EXPORT void SetEnabled(const bool theVal);
 
   //! Query whether history recording is enabled.
   //! @return true if recording is active

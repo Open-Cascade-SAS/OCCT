@@ -96,27 +96,27 @@ public:
   int NbActiveOccurrences() const { return myNbActiveOccurrences; }
 
   //! Decrement the active count for the given node kind.
-  void DecrementActiveCount(BRepGraph_NodeId::Kind theKind);
+  void DecrementActiveCount(const BRepGraph_NodeId::Kind theKind);
 
   //! @name Const representation access
 
-  const BRepGraphInc::SurfaceRep&       SurfaceRep(int theRepIdx)       const { return mySurfaces.Value(theRepIdx); }
-  const BRepGraphInc::Curve3DRep&       Curve3DRep(int theRepIdx)       const { return myCurves3D.Value(theRepIdx); }
-  const BRepGraphInc::Curve2DRep&       Curve2DRep(int theRepIdx)       const { return myCurves2D.Value(theRepIdx); }
-  const BRepGraphInc::TriangulationRep& TriangulationRep(int theRepIdx) const { return myTriangulationsRep.Value(theRepIdx); }
-  const BRepGraphInc::Polygon3DRep&     Polygon3DRep(int theRepIdx)     const { return myPolygons3D.Value(theRepIdx); }
-  const BRepGraphInc::Polygon2DRep&     Polygon2DRep(int theRepIdx)     const { return myPolygons2D.Value(theRepIdx); }
-  const BRepGraphInc::PolygonOnTriRep&  PolygonOnTriRep(int theRepIdx)  const { return myPolygonsOnTri.Value(theRepIdx); }
+  const BRepGraphInc::SurfaceRep&       SurfaceRep(const int theRepIdx)       const { return mySurfaces.Value(theRepIdx); }
+  const BRepGraphInc::Curve3DRep&       Curve3DRep(const int theRepIdx)       const { return myCurves3D.Value(theRepIdx); }
+  const BRepGraphInc::Curve2DRep&       Curve2DRep(const int theRepIdx)       const { return myCurves2D.Value(theRepIdx); }
+  const BRepGraphInc::TriangulationRep& TriangulationRep(const int theRepIdx) const { return myTriangulationsRep.Value(theRepIdx); }
+  const BRepGraphInc::Polygon3DRep&     Polygon3DRep(const int theRepIdx)     const { return myPolygons3D.Value(theRepIdx); }
+  const BRepGraphInc::Polygon2DRep&     Polygon2DRep(const int theRepIdx)     const { return myPolygons2D.Value(theRepIdx); }
+  const BRepGraphInc::PolygonOnTriRep&  PolygonOnTriRep(const int theRepIdx)  const { return myPolygonsOnTri.Value(theRepIdx); }
 
   //! @name Mutable representation access
 
-  BRepGraphInc::SurfaceRep&       ChangeSurfaceRep(int theRepIdx)       { return mySurfaces.ChangeValue(theRepIdx); }
-  BRepGraphInc::Curve3DRep&       ChangeCurve3DRep(int theRepIdx)       { return myCurves3D.ChangeValue(theRepIdx); }
-  BRepGraphInc::Curve2DRep&       ChangeCurve2DRep(int theRepIdx)       { return myCurves2D.ChangeValue(theRepIdx); }
-  BRepGraphInc::TriangulationRep& ChangeTriangulationRep(int theRepIdx) { return myTriangulationsRep.ChangeValue(theRepIdx); }
-  BRepGraphInc::Polygon3DRep&     ChangePolygon3DRep(int theRepIdx)     { return myPolygons3D.ChangeValue(theRepIdx); }
-  BRepGraphInc::Polygon2DRep&     ChangePolygon2DRep(int theRepIdx)     { return myPolygons2D.ChangeValue(theRepIdx); }
-  BRepGraphInc::PolygonOnTriRep&  ChangePolygonOnTriRep(int theRepIdx)  { return myPolygonsOnTri.ChangeValue(theRepIdx); }
+  BRepGraphInc::SurfaceRep&       ChangeSurfaceRep(const int theRepIdx)       { return mySurfaces.ChangeValue(theRepIdx); }
+  BRepGraphInc::Curve3DRep&       ChangeCurve3DRep(const int theRepIdx)       { return myCurves3D.ChangeValue(theRepIdx); }
+  BRepGraphInc::Curve2DRep&       ChangeCurve2DRep(const int theRepIdx)       { return myCurves2D.ChangeValue(theRepIdx); }
+  BRepGraphInc::TriangulationRep& ChangeTriangulationRep(const int theRepIdx) { return myTriangulationsRep.ChangeValue(theRepIdx); }
+  BRepGraphInc::Polygon3DRep&     ChangePolygon3DRep(const int theRepIdx)     { return myPolygons3D.ChangeValue(theRepIdx); }
+  BRepGraphInc::Polygon2DRep&     ChangePolygon2DRep(const int theRepIdx)     { return myPolygons2D.ChangeValue(theRepIdx); }
+  BRepGraphInc::PolygonOnTriRep&  ChangePolygonOnTriRep(const int theRepIdx)  { return myPolygonsOnTri.ChangeValue(theRepIdx); }
 
   //! @name Append representation entities
 
@@ -130,31 +130,31 @@ public:
 
   //! @name Const entity access
 
-  const BRepGraphInc::VertexEntity&    Vertex(int theVertexIdx)        const { return myVertices.Value(theVertexIdx); }
-  const BRepGraphInc::EdgeEntity&      Edge(int theEdgeIdx)            const { return myEdges.Value(theEdgeIdx); }
-  const BRepGraphInc::CoEdgeEntity&    CoEdge(int theCoEdgeIdx)        const { return myCoEdges.Value(theCoEdgeIdx); }
-  const BRepGraphInc::WireEntity&      Wire(int theWireIdx)            const { return myWires.Value(theWireIdx); }
-  const BRepGraphInc::FaceEntity&      Face(int theFaceIdx)            const { return myFaces.Value(theFaceIdx); }
-  const BRepGraphInc::ShellEntity&     Shell(int theShellIdx)          const { return myShells.Value(theShellIdx); }
-  const BRepGraphInc::SolidEntity&     Solid(int theSolidIdx)          const { return mySolids.Value(theSolidIdx); }
-  const BRepGraphInc::CompoundEntity&   Compound(int theCompoundIdx)    const { return myCompounds.Value(theCompoundIdx); }
-  const BRepGraphInc::CompSolidEntity&  CompSolid(int theCompSolidIdx)  const { return myCompSolids.Value(theCompSolidIdx); }
-  const BRepGraphInc::ProductEntity&    Product(int theProductIdx)      const { return myProducts.Value(theProductIdx); }
-  const BRepGraphInc::OccurrenceEntity& Occurrence(int theOccurrenceIdx) const { return myOccurrences.Value(theOccurrenceIdx); }
+  const BRepGraphInc::VertexEntity&    Vertex(const int theVertexIdx)        const { return myVertices.Value(theVertexIdx); }
+  const BRepGraphInc::EdgeEntity&      Edge(const int theEdgeIdx)            const { return myEdges.Value(theEdgeIdx); }
+  const BRepGraphInc::CoEdgeEntity&    CoEdge(const int theCoEdgeIdx)        const { return myCoEdges.Value(theCoEdgeIdx); }
+  const BRepGraphInc::WireEntity&      Wire(const int theWireIdx)            const { return myWires.Value(theWireIdx); }
+  const BRepGraphInc::FaceEntity&      Face(const int theFaceIdx)            const { return myFaces.Value(theFaceIdx); }
+  const BRepGraphInc::ShellEntity&     Shell(const int theShellIdx)          const { return myShells.Value(theShellIdx); }
+  const BRepGraphInc::SolidEntity&     Solid(const int theSolidIdx)          const { return mySolids.Value(theSolidIdx); }
+  const BRepGraphInc::CompoundEntity&   Compound(const int theCompoundIdx)    const { return myCompounds.Value(theCompoundIdx); }
+  const BRepGraphInc::CompSolidEntity&  CompSolid(const int theCompSolidIdx)  const { return myCompSolids.Value(theCompSolidIdx); }
+  const BRepGraphInc::ProductEntity&    Product(const int theProductIdx)      const { return myProducts.Value(theProductIdx); }
+  const BRepGraphInc::OccurrenceEntity& Occurrence(const int theOccurrenceIdx) const { return myOccurrences.Value(theOccurrenceIdx); }
 
   //! @name Mutable entity access
 
-  BRepGraphInc::VertexEntity&    ChangeVertex(int theVertexIdx)        { return myVertices.ChangeValue(theVertexIdx); }
-  BRepGraphInc::EdgeEntity&      ChangeEdge(int theEdgeIdx)            { return myEdges.ChangeValue(theEdgeIdx); }
-  BRepGraphInc::CoEdgeEntity&    ChangeCoEdge(int theCoEdgeIdx)        { return myCoEdges.ChangeValue(theCoEdgeIdx); }
-  BRepGraphInc::WireEntity&      ChangeWire(int theWireIdx)            { return myWires.ChangeValue(theWireIdx); }
-  BRepGraphInc::FaceEntity&      ChangeFace(int theFaceIdx)            { return myFaces.ChangeValue(theFaceIdx); }
-  BRepGraphInc::ShellEntity&     ChangeShell(int theShellIdx)          { return myShells.ChangeValue(theShellIdx); }
-  BRepGraphInc::SolidEntity&     ChangeSolid(int theSolidIdx)          { return mySolids.ChangeValue(theSolidIdx); }
-  BRepGraphInc::CompoundEntity&   ChangeCompound(int theCompoundIdx)    { return myCompounds.ChangeValue(theCompoundIdx); }
-  BRepGraphInc::CompSolidEntity&  ChangeCompSolid(int theCompSolidIdx)  { return myCompSolids.ChangeValue(theCompSolidIdx); }
-  BRepGraphInc::ProductEntity&    ChangeProduct(int theProductIdx)      { return myProducts.ChangeValue(theProductIdx); }
-  BRepGraphInc::OccurrenceEntity& ChangeOccurrence(int theOccurrenceIdx) { return myOccurrences.ChangeValue(theOccurrenceIdx); }
+  BRepGraphInc::VertexEntity&    ChangeVertex(const int theVertexIdx)        { return myVertices.ChangeValue(theVertexIdx); }
+  BRepGraphInc::EdgeEntity&      ChangeEdge(const int theEdgeIdx)            { return myEdges.ChangeValue(theEdgeIdx); }
+  BRepGraphInc::CoEdgeEntity&    ChangeCoEdge(const int theCoEdgeIdx)        { return myCoEdges.ChangeValue(theCoEdgeIdx); }
+  BRepGraphInc::WireEntity&      ChangeWire(const int theWireIdx)            { return myWires.ChangeValue(theWireIdx); }
+  BRepGraphInc::FaceEntity&      ChangeFace(const int theFaceIdx)            { return myFaces.ChangeValue(theFaceIdx); }
+  BRepGraphInc::ShellEntity&     ChangeShell(const int theShellIdx)          { return myShells.ChangeValue(theShellIdx); }
+  BRepGraphInc::SolidEntity&     ChangeSolid(const int theSolidIdx)          { return mySolids.ChangeValue(theSolidIdx); }
+  BRepGraphInc::CompoundEntity&   ChangeCompound(const int theCompoundIdx)    { return myCompounds.ChangeValue(theCompoundIdx); }
+  BRepGraphInc::CompSolidEntity&  ChangeCompSolid(const int theCompSolidIdx)  { return myCompSolids.ChangeValue(theCompSolidIdx); }
+  BRepGraphInc::ProductEntity&    ChangeProduct(const int theProductIdx)      { return myProducts.ChangeValue(theProductIdx); }
+  BRepGraphInc::OccurrenceEntity& ChangeOccurrence(const int theOccurrenceIdx) { return myOccurrences.ChangeValue(theOccurrenceIdx); }
 
   //! @name Append entity (returns mutable ref to newly created entity)
   // Inner vectors of each entity are initialized with the storage allocator.
@@ -174,10 +174,10 @@ public:
   //! @name UID access
 
   //! Return the per-kind UID vector for a given Kind.
-  const NCollection_Vector<BRepGraph_UID>& UIDs(BRepGraph_NodeId::Kind theKind) const;
+  const NCollection_Vector<BRepGraph_UID>& UIDs(const BRepGraph_NodeId::Kind theKind) const;
 
   //! Return the per-kind UID vector for a given Kind (mutable).
-  NCollection_Vector<BRepGraph_UID>& ChangeUIDs(BRepGraph_NodeId::Kind theKind);
+  NCollection_Vector<BRepGraph_UID>& ChangeUIDs(const BRepGraph_NodeId::Kind theKind);
 
   //! Clear all UID vectors (reset lengths to 0).
   void ResetAllUIDs();
@@ -199,29 +199,29 @@ public:
     return myTShapeToNodeId.IsBound(theTShape);
   }
 
-  void BindTShapeToNode(const TopoDS_TShape* theTShape, BRepGraph_NodeId theNodeId)
+  void BindTShapeToNode(const TopoDS_TShape* theTShape, const BRepGraph_NodeId theNodeId)
   {
     myTShapeToNodeId.Bind(theTShape, theNodeId);
   }
 
   //! @name Original shapes
 
-  const TopoDS_Shape* FindOriginal(BRepGraph_NodeId theNodeId) const
+  const TopoDS_Shape* FindOriginal(const BRepGraph_NodeId theNodeId) const
   {
     return myOriginalShapes.Seek(theNodeId);
   }
 
-  bool HasOriginal(BRepGraph_NodeId theNodeId) const
+  bool HasOriginal(const BRepGraph_NodeId theNodeId) const
   {
     return myOriginalShapes.IsBound(theNodeId);
   }
 
-  void BindOriginal(BRepGraph_NodeId theNodeId, const TopoDS_Shape& theShape)
+  void BindOriginal(const BRepGraph_NodeId theNodeId, const TopoDS_Shape& theShape)
   {
     myOriginalShapes.Bind(theNodeId, theShape);
   }
 
-  void UnBindOriginal(BRepGraph_NodeId theNodeId)
+  void UnBindOriginal(const BRepGraph_NodeId theNodeId)
   {
     myOriginalShapes.UnBind(theNodeId);
   }
@@ -229,7 +229,7 @@ public:
   //! @name Population status
 
   bool GetIsDone() const { return myIsDone; }
-  void SetIsDone(bool theVal) { myIsDone = theVal; }
+  void SetIsDone(const bool theVal) { myIsDone = theVal; }
 
   //! True if edge regularities were extracted during population.
   bool HasRegularities() const { return myHasRegularities; }
@@ -246,11 +246,11 @@ public:
 
   //! Incrementally update reverse indices for entities appended after a previous Build.
   //! Only processes entities from the old counts to the current vector lengths.
-  Standard_EXPORT void BuildDeltaReverseIndex(int theOldNbEdges,
-                                              int theOldNbWires,
-                                              int theOldNbFaces,
-                                              int theOldNbShells,
-                                              int theOldNbSolids);
+  Standard_EXPORT void BuildDeltaReverseIndex(const int theOldNbEdges,
+                                              const int theOldNbWires,
+                                              const int theOldNbFaces,
+                                              const int theOldNbShells,
+                                              const int theOldNbSolids);
 
   //! Debug: verify reverse index consistency against entity tables.
   //! @return true if all forward refs have matching reverse entries

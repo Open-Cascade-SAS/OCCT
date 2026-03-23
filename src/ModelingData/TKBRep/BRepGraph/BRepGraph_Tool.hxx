@@ -63,13 +63,13 @@ public:
     //! @param[in] theGraph     source graph
     //! @param[in] theVertexIdx zero-based vertex definition index
     //! @return 3D point in definition frame
-    Standard_EXPORT static gp_Pnt Pnt(const BRepGraph& theGraph, int theVertexIdx);
+    Standard_EXPORT static gp_Pnt Pnt(const BRepGraph& theGraph, const int theVertexIdx);
 
     //! Returns the vertex tolerance.
     //! @param[in] theGraph     source graph
     //! @param[in] theVertexIdx zero-based vertex definition index
     //! @return tolerance value
-    Standard_EXPORT static double Tolerance(const BRepGraph& theGraph, int theVertexIdx);
+    Standard_EXPORT static double Tolerance(const BRepGraph& theGraph, const int theVertexIdx);
 
     //! Returns the vertex parameter on an edge's 3D curve.
     //! @param[in] theGraph     source graph
@@ -78,8 +78,8 @@ public:
     //! @return curve parameter
     //! @throws Standard_NoSuchObject if vertex has no PointOnCurve for this edge
     Standard_EXPORT static double Parameter(const BRepGraph& theGraph,
-                                            int              theVertexIdx,
-                                            int              theEdgeIdx);
+                                            const int        theVertexIdx,
+                                            const int        theEdgeIdx);
 
     //! Returns the vertex (U,V) parameters on a face surface.
     //! @param[in] theGraph     source graph
@@ -88,8 +88,8 @@ public:
     //! @return 2D point with (U,V) parameters
     //! @throws Standard_NoSuchObject if vertex has no PointOnSurface for this face
     Standard_EXPORT static gp_Pnt2d Parameters(const BRepGraph& theGraph,
-                                               int              theVertexIdx,
-                                               int              theFaceIdx);
+                                               const int        theVertexIdx,
+                                               const int        theFaceIdx);
   };
 
   //! @brief Edge geometry, curve, polygon, and continuity accessors.
@@ -107,45 +107,45 @@ public:
     //! @param[in] theGraph   source graph
     //! @param[in] theEdgeIdx zero-based edge definition index
     //! @return tolerance value
-    Standard_EXPORT static double Tolerance(const BRepGraph& theGraph, int theEdgeIdx);
+    Standard_EXPORT static double Tolerance(const BRepGraph& theGraph, const int theEdgeIdx);
 
     //! Returns true if the edge is degenerate (collapses to a point on surface).
     //! @param[in] theGraph   source graph
     //! @param[in] theEdgeIdx zero-based edge definition index
     //! @return true if degenerate
-    Standard_EXPORT static bool Degenerated(const BRepGraph& theGraph, int theEdgeIdx);
+    Standard_EXPORT static bool Degenerated(const BRepGraph& theGraph, const int theEdgeIdx);
 
     //! Returns the SameParameter flag.
     //! @param[in] theGraph   source graph
     //! @param[in] theEdgeIdx zero-based edge definition index
     //! @return true if all PCurves are reparametrized to the same range as the 3D curve
-    Standard_EXPORT static bool SameParameter(const BRepGraph& theGraph, int theEdgeIdx);
+    Standard_EXPORT static bool SameParameter(const BRepGraph& theGraph, const int theEdgeIdx);
 
     //! Returns the SameRange flag.
     //! @param[in] theGraph   source graph
     //! @param[in] theEdgeIdx zero-based edge definition index
     //! @return true if PCurve parameter range equals the 3D curve range
-    Standard_EXPORT static bool SameRange(const BRepGraph& theGraph, int theEdgeIdx);
+    Standard_EXPORT static bool SameRange(const BRepGraph& theGraph, const int theEdgeIdx);
 
     //! Returns the 3D curve parameter range as (first, last).
     //! @param[in] theGraph   source graph
     //! @param[in] theEdgeIdx zero-based edge definition index
     //! @return pair of (first, last) parameters
-    Standard_EXPORT static std::pair<double, double> Range(const BRepGraph& theGraph, int theEdgeIdx);
+    Standard_EXPORT static std::pair<double, double> Range(const BRepGraph& theGraph, const int theEdgeIdx);
 
     //! Returns the start vertex reference (carries Location and Orientation).
     //! @param[in] theGraph   source graph
     //! @param[in] theEdgeIdx zero-based edge definition index
     //! @return const reference to the start VertexRef
     Standard_EXPORT static const BRepGraphInc::VertexRef& StartVertex(const BRepGraph& theGraph,
-                                                                      int              theEdgeIdx);
+                                                                      const int        theEdgeIdx);
 
     //! Returns the end vertex reference (carries Location and Orientation).
     //! @param[in] theGraph   source graph
     //! @param[in] theEdgeIdx zero-based edge definition index
     //! @return const reference to the end VertexRef
     Standard_EXPORT static const BRepGraphInc::VertexRef& EndVertex(const BRepGraph& theGraph,
-                                                                    int              theEdgeIdx);
+                                                                    const int        theEdgeIdx);
 
     //! @name 3D Curve
 
@@ -153,14 +153,14 @@ public:
     //! @param[in] theGraph   source graph
     //! @param[in] theEdgeIdx zero-based edge definition index
     //! @return true if edge has a 3D curve
-    Standard_EXPORT static bool HasCurve(const BRepGraph& theGraph, int theEdgeIdx);
+    Standard_EXPORT static bool HasCurve(const BRepGraph& theGraph, const int theEdgeIdx);
 
     //! Returns the raw 3D curve handle (definition frame, no copy).
     //! @param[in] theGraph   source graph
     //! @param[in] theEdgeIdx zero-based edge definition index
     //! @return curve handle, or null handle if no curve
     Standard_EXPORT static const occ::handle<Geom_Curve>& Curve(const BRepGraph& theGraph,
-                                                                int              theEdgeIdx);
+                                                                const int        theEdgeIdx);
 
     //! Returns the transformed 3D curve handle via CoEdgeRef (applies Location, may copy).
     //! @param[in] theGraph source graph
@@ -174,7 +174,7 @@ public:
     //! @param[in] theEdgeIdx zero-based edge definition index
     //! @return curve adaptor, or empty adaptor if no curve
     Standard_EXPORT static GeomAdaptor_TransformedCurve CurveAdaptor(const BRepGraph& theGraph,
-                                                                     int              theEdgeIdx);
+                                                                     const int        theEdgeIdx);
 
     //! Returns the 3D curve adaptor via CoEdgeRef (applies edge-in-wire Location in Trsf).
     //! Falls back to CurveOnSurface when no 3D curve exists.
@@ -191,14 +191,14 @@ public:
     //! @param[in] theGraph   source graph
     //! @param[in] theEdgeIdx zero-based edge definition index
     //! @return true if edge has a polygon
-    Standard_EXPORT static bool HasPolygon3D(const BRepGraph& theGraph, int theEdgeIdx);
+    Standard_EXPORT static bool HasPolygon3D(const BRepGraph& theGraph, const int theEdgeIdx);
 
     //! Returns the 3D polygon handle (definition frame).
     //! @param[in] theGraph   source graph
     //! @param[in] theEdgeIdx zero-based edge definition index
     //! @return polygon handle, or null handle if no polygon
     Standard_EXPORT static const occ::handle<Poly_Polygon3D>& Polygon3D(const BRepGraph& theGraph,
-                                                                        int              theEdgeIdx);
+                                                                        const int        theEdgeIdx);
 
     //! @name Continuity
 
@@ -209,9 +209,9 @@ public:
     //! @param[in] theFaceIdx2 zero-based second face definition index
     //! @return true if continuity is recorded
     Standard_EXPORT static bool HasContinuity(const BRepGraph& theGraph,
-                                              int              theEdgeIdx,
-                                              int              theFaceIdx1,
-                                              int              theFaceIdx2);
+                                              const int        theEdgeIdx,
+                                              const int        theFaceIdx1,
+                                              const int        theFaceIdx2);
 
     //! Returns the geometric continuity between two adjacent faces.
     //! @param[in] theGraph    source graph
@@ -220,15 +220,15 @@ public:
     //! @param[in] theFaceIdx2 zero-based second face definition index
     //! @return continuity order (GeomAbs_C0 if not found)
     Standard_EXPORT static GeomAbs_Shape Continuity(const BRepGraph& theGraph,
-                                                    int              theEdgeIdx,
-                                                    int              theFaceIdx1,
-                                                    int              theFaceIdx2);
+                                                    const int        theEdgeIdx,
+                                                    const int        theFaceIdx1,
+                                                    const int        theFaceIdx2);
 
     //! Returns the maximum continuity across all face pairs for this edge.
     //! @param[in] theGraph   source graph
     //! @param[in] theEdgeIdx zero-based edge definition index
     //! @return maximum continuity order
-    Standard_EXPORT static GeomAbs_Shape MaxContinuity(const BRepGraph& theGraph, int theEdgeIdx);
+    Standard_EXPORT static GeomAbs_Shape MaxContinuity(const BRepGraph& theGraph, const int theEdgeIdx);
 
     //! @name PCurve lookup (edge-face context)
 
@@ -238,8 +238,8 @@ public:
     //! @param[in] theFaceIdx zero-based face definition index
     //! @return true if the edge is a seam on this face
     Standard_EXPORT static bool IsClosedOnFace(const BRepGraph& theGraph,
-                                               int              theEdgeIdx,
-                                               int              theFaceIdx);
+                                               const int        theEdgeIdx,
+                                               const int        theFaceIdx);
 
     //! Finds the CoEdge entity for an edge on a face.
     //! @param[in] theGraph   source graph
@@ -247,8 +247,8 @@ public:
     //! @param[in] theFaceIdx zero-based face definition index
     //! @return pointer to CoEdgeEntity, or nullptr if not found
     Standard_EXPORT static const BRepGraphInc::CoEdgeEntity* FindPCurve(const BRepGraph& theGraph,
-                                                                        int              theEdgeIdx,
-                                                                        int              theFaceIdx);
+                                                                        const int        theEdgeIdx,
+                                                                        const int        theFaceIdx);
 
     //! Finds the CoEdge entity with specific orientation (for seam edges).
     //! @param[in] theGraph   source graph
@@ -256,10 +256,10 @@ public:
     //! @param[in] theFaceIdx zero-based face definition index
     //! @param[in] theOri     edge orientation on the face
     //! @return pointer to CoEdgeEntity, or nullptr if not found
-    Standard_EXPORT static const BRepGraphInc::CoEdgeEntity* FindPCurve(const BRepGraph& theGraph,
-                                                                        int              theEdgeIdx,
-                                                                        int              theFaceIdx,
-                                                                        TopAbs_Orientation theOri);
+    Standard_EXPORT static const BRepGraphInc::CoEdgeEntity* FindPCurve(const BRepGraph&         theGraph,
+                                                                        const int                theEdgeIdx,
+                                                                        const int                theFaceIdx,
+                                                                        const TopAbs_Orientation theOri);
 
     //! @name CurveOnSurface
 
@@ -271,7 +271,7 @@ public:
     Standard_EXPORT static occ::handle<Adaptor3d_CurveOnSurface> CurveOnSurface(
       const BRepGraph&               theGraph,
       const BRepGraphInc::CoEdgeRef& theRef,
-      int                            theFaceIdx);
+      const int                      theFaceIdx);
   };
 
   //! @brief CoEdge (half-edge) parametric curve and polygon accessors.
@@ -286,14 +286,14 @@ public:
     //! @param[in] theGraph     source graph
     //! @param[in] theCoEdgeIdx zero-based coedge definition index
     //! @return true if PCurve exists
-    Standard_EXPORT static bool HasPCurve(const BRepGraph& theGraph, int theCoEdgeIdx);
+    Standard_EXPORT static bool HasPCurve(const BRepGraph& theGraph, const int theCoEdgeIdx);
 
     //! Returns the raw PCurve handle by coedge index (no Location — UV space).
     //! @param[in] theGraph     source graph
     //! @param[in] theCoEdgeIdx zero-based coedge definition index
     //! @return curve handle, or null handle if no PCurve
     Standard_EXPORT static const occ::handle<Geom2d_Curve>& PCurve(const BRepGraph& theGraph,
-                                                                   int              theCoEdgeIdx);
+                                                                   const int        theCoEdgeIdx);
 
     //! Returns the raw PCurve handle from a CoEdgeEntity (no Location — UV space).
     //! @param[in] theGraph  source graph
@@ -308,7 +308,7 @@ public:
     //! @param[in] theCoEdgeIdx zero-based coedge definition index
     //! @return 2D curve adaptor, or empty adaptor if no PCurve
     Standard_EXPORT static Geom2dAdaptor_Curve PCurveAdaptor(const BRepGraph& theGraph,
-                                                             int              theCoEdgeIdx);
+                                                             const int        theCoEdgeIdx);
 
     //! Returns a PCurve adaptor from a CoEdgeRef.
     //! @param[in] theGraph source graph
@@ -322,20 +322,20 @@ public:
     //! @param[in] theCoEdgeIdx zero-based coedge definition index
     //! @return pair of 2D points at parameter first and last
     Standard_EXPORT static std::pair<gp_Pnt2d, gp_Pnt2d> UVPoints(const BRepGraph& theGraph,
-                                                                  int              theCoEdgeIdx);
+                                                                  const int        theCoEdgeIdx);
 
     //! Returns the PCurve parameter range as (first, last).
     //! @param[in] theGraph     source graph
     //! @param[in] theCoEdgeIdx zero-based coedge definition index
     //! @return pair of (first, last) parameters
     Standard_EXPORT static std::pair<double, double> Range(const BRepGraph& theGraph,
-                                                          int              theCoEdgeIdx);
+                                                          const int        theCoEdgeIdx);
 
     //! Returns true if the coedge has a polygon-on-surface representation.
     //! @param[in] theGraph     source graph
     //! @param[in] theCoEdgeIdx zero-based coedge definition index
     //! @return true if polygon exists
-    Standard_EXPORT static bool HasPolygonOnSurface(const BRepGraph& theGraph, int theCoEdgeIdx);
+    Standard_EXPORT static bool HasPolygonOnSurface(const BRepGraph& theGraph, const int theCoEdgeIdx);
 
     //! Returns the polygon-on-surface (2D) for the coedge.
     //! @param[in] theGraph     source graph
@@ -343,7 +343,7 @@ public:
     //! @return polygon handle, or null handle if no polygon
     Standard_EXPORT static const occ::handle<Poly_Polygon2D>& PolygonOnSurface(
       const BRepGraph& theGraph,
-      int              theCoEdgeIdx);
+      const int        theCoEdgeIdx);
   };
 
   //! @brief Face surface, triangulation, and property accessors.
@@ -358,46 +358,46 @@ public:
     //! @param[in] theGraph   source graph
     //! @param[in] theFaceIdx zero-based face definition index
     //! @return tolerance value
-    Standard_EXPORT static double Tolerance(const BRepGraph& theGraph, int theFaceIdx);
+    Standard_EXPORT static double Tolerance(const BRepGraph& theGraph, const int theFaceIdx);
 
     //! Returns the NaturalRestriction flag.
     //! @param[in] theGraph   source graph
     //! @param[in] theFaceIdx zero-based face definition index
     //! @return true if face has natural restriction
-    Standard_EXPORT static bool NaturalRestriction(const BRepGraph& theGraph, int theFaceIdx);
+    Standard_EXPORT static bool NaturalRestriction(const BRepGraph& theGraph, const int theFaceIdx);
 
     //! Returns true if the face has a surface representation.
     //! @param[in] theGraph   source graph
     //! @param[in] theFaceIdx zero-based face definition index
     //! @return true if surface exists
-    Standard_EXPORT static bool HasSurface(const BRepGraph& theGraph, int theFaceIdx);
+    Standard_EXPORT static bool HasSurface(const BRepGraph& theGraph, const int theFaceIdx);
 
     //! Returns true if the face has an active triangulation.
     //! @param[in] theGraph   source graph
     //! @param[in] theFaceIdx zero-based face definition index
     //! @return true if triangulation exists
-    Standard_EXPORT static bool HasTriangulation(const BRepGraph& theGraph, int theFaceIdx);
+    Standard_EXPORT static bool HasTriangulation(const BRepGraph& theGraph, const int theFaceIdx);
 
     //! Returns the outer wire reference, or nullptr if none.
     //! @param[in] theGraph   source graph
     //! @param[in] theFaceIdx zero-based face definition index
     //! @return pointer to the outer WireRef, or nullptr
     Standard_EXPORT static const BRepGraphInc::WireRef* OuterWire(const BRepGraph& theGraph,
-                                                                  int              theFaceIdx);
+                                                                  const int        theFaceIdx);
 
     //! Returns the raw surface handle (definition frame, no copy).
     //! @param[in] theGraph   source graph
     //! @param[in] theFaceIdx zero-based face definition index
     //! @return surface handle, or null handle if no surface
     Standard_EXPORT static const occ::handle<Geom_Surface>& Surface(const BRepGraph& theGraph,
-                                                                    int              theFaceIdx);
+                                                                    const int        theFaceIdx);
 
     //! Returns a surface adaptor in definition frame.
     //! @param[in] theGraph   source graph
     //! @param[in] theFaceIdx zero-based face definition index
     //! @return surface adaptor, or empty adaptor if no surface
     Standard_EXPORT static GeomAdaptor_TransformedSurface SurfaceAdaptor(const BRepGraph& theGraph,
-                                                                         int              theFaceIdx);
+                                                                         const int        theFaceIdx);
 
     //! Returns a surface adaptor with explicit UV bounds.
     //! @param[in] theGraph   source graph
@@ -408,11 +408,11 @@ public:
     //! @param[in] theVLast   last V parameter
     //! @return surface adaptor with bounds, or empty adaptor if no surface
     Standard_EXPORT static GeomAdaptor_TransformedSurface SurfaceAdaptor(const BRepGraph& theGraph,
-                                                                         int              theFaceIdx,
-                                                                         double           theUFirst,
-                                                                         double           theULast,
-                                                                         double           theVFirst,
-                                                                         double           theVLast);
+                                                                         const int        theFaceIdx,
+                                                                         const double     theUFirst,
+                                                                         const double     theULast,
+                                                                         const double     theVFirst,
+                                                                         const double     theVLast);
 
     //! Returns the active triangulation for the face (definition frame).
     //! @param[in] theGraph   source graph
@@ -420,7 +420,7 @@ public:
     //! @return triangulation handle, or null handle if none
     Standard_EXPORT static const occ::handle<Poly_Triangulation>& Triangulation(
       const BRepGraph& theGraph,
-      int              theFaceIdx);
+      const int        theFaceIdx);
   };
 
   //! @brief Wire property accessors.
@@ -433,7 +433,7 @@ public:
     //! @param[in] theGraph   source graph
     //! @param[in] theWireIdx zero-based wire definition index
     //! @return true if closed
-    Standard_EXPORT static bool IsClosed(const BRepGraph& theGraph, int theWireIdx);
+    Standard_EXPORT static bool IsClosed(const BRepGraph& theGraph, const int theWireIdx);
   };
 
 private:

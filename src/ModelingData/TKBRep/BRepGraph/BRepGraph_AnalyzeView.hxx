@@ -40,7 +40,7 @@ public:
   //! Nodes with tolerance conflicts across shared geometry.
   //! @param[in] theThreshold maximum allowed tolerance spread
   Standard_EXPORT NCollection_Vector<BRepGraph_NodeId>
-    ToleranceConflicts(double theThreshold) const;
+    ToleranceConflicts(const double theThreshold) const;
 
   //! WireNodes with < 2 edges or non-closed outer wires.
   Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> DegenerateWires() const;

@@ -35,7 +35,7 @@ void BRepGraph_History::SetAllocator(const occ::handle<NCollection_BaseAllocator
 //=================================================================================================
 
 void BRepGraph_History::Record(const TCollection_AsciiString&              theOpLabel,
-                               BRepGraph_NodeId                            theOriginal,
+                               const BRepGraph_NodeId                      theOriginal,
                                const NCollection_Vector<BRepGraph_NodeId>& theReplacements)
 {
   if (!myEnabled)
@@ -162,7 +162,7 @@ void BRepGraph_History::RecordBatch(const TCollection_AsciiString&              
 
 //=================================================================================================
 
-BRepGraph_NodeId BRepGraph_History::FindOriginal(BRepGraph_NodeId theModified) const
+BRepGraph_NodeId BRepGraph_History::FindOriginal(const BRepGraph_NodeId theModified) const
 {
   // Walk the reverse map iteratively until a root node is reached.
   // Limit iterations to the map extent to protect against cycles.
@@ -182,7 +182,7 @@ BRepGraph_NodeId BRepGraph_History::FindOriginal(BRepGraph_NodeId theModified) c
 
 //=================================================================================================
 
-NCollection_Vector<BRepGraph_NodeId> BRepGraph_History::FindDerived(BRepGraph_NodeId theOriginal) const
+NCollection_Vector<BRepGraph_NodeId> BRepGraph_History::FindDerived(const BRepGraph_NodeId theOriginal) const
 {
   // Collect all transitively derived nodes using iterative BFS.
   NCollection_Vector<BRepGraph_NodeId> aResult;
@@ -228,14 +228,14 @@ int BRepGraph_History::NbRecords() const
 
 //=================================================================================================
 
-const BRepGraph_HistoryRecord& BRepGraph_History::Record(int theRecordIdx) const
+const BRepGraph_HistoryRecord& BRepGraph_History::Record(const int theRecordIdx) const
 {
   return myRecords.Value(theRecordIdx);
 }
 
 //=================================================================================================
 
-void BRepGraph_History::SetEnabled(bool theVal)
+void BRepGraph_History::SetEnabled(const bool theVal)
 {
   myEnabled = theVal;
 }

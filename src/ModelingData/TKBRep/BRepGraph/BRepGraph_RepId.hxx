@@ -55,20 +55,20 @@ struct BRepGraph_RepId
   BRepGraph_RepId()
     : Kind(RepKind::Surface), Index(-1) {}
 
-  BRepGraph_RepId(RepKind theKind, int theIdx)
+  BRepGraph_RepId(const RepKind theKind, const int theIdx)
     : Kind(theKind), Index(theIdx) {}
 
   //! True if this id points to an allocated representation slot.
   bool IsValid() const { return Index >= 0; }
 
   //! @name Static factory methods for readable RepId construction.
-  static BRepGraph_RepId Surface(int theIdx)       { return {RepKind::Surface, theIdx}; }
-  static BRepGraph_RepId Curve3D(int theIdx)       { return {RepKind::Curve3D, theIdx}; }
-  static BRepGraph_RepId Curve2D(int theIdx)       { return {RepKind::Curve2D, theIdx}; }
-  static BRepGraph_RepId Triangulation(int theIdx) { return {RepKind::Triangulation, theIdx}; }
-  static BRepGraph_RepId Polygon3D(int theIdx)     { return {RepKind::Polygon3D, theIdx}; }
-  static BRepGraph_RepId Polygon2D(int theIdx)     { return {RepKind::Polygon2D, theIdx}; }
-  static BRepGraph_RepId PolygonOnTri(int theIdx)  { return {RepKind::PolygonOnTri, theIdx}; }
+  static BRepGraph_RepId Surface(const int theIdx)       { return {RepKind::Surface, theIdx}; }
+  static BRepGraph_RepId Curve3D(const int theIdx)       { return {RepKind::Curve3D, theIdx}; }
+  static BRepGraph_RepId Curve2D(const int theIdx)       { return {RepKind::Curve2D, theIdx}; }
+  static BRepGraph_RepId Triangulation(const int theIdx) { return {RepKind::Triangulation, theIdx}; }
+  static BRepGraph_RepId Polygon3D(const int theIdx)     { return {RepKind::Polygon3D, theIdx}; }
+  static BRepGraph_RepId Polygon2D(const int theIdx)     { return {RepKind::Polygon2D, theIdx}; }
+  static BRepGraph_RepId PolygonOnTri(const int theIdx)  { return {RepKind::PolygonOnTri, theIdx}; }
 
   bool operator==(const BRepGraph_RepId& theOther) const
   { return Kind == theOther.Kind && Index == theOther.Index; }

@@ -36,12 +36,12 @@ public:
   //! @param[in] theParallel    if true, face-level construction runs in parallel
   static Standard_EXPORT void Perform(BRepGraph&          theGraph,
                                       const TopoDS_Shape& theShape,
-                                      bool                theParallel);
+                                      const bool          theParallel);
 
   //! Build the full graph with explicit post-pass control.
   static Standard_EXPORT void Perform(BRepGraph&                            theGraph,
                                       const TopoDS_Shape&                   theShape,
-                                      bool                                  theParallel,
+                                      const bool                            theParallel,
                                       const BRepGraphInc_Populate::Options& theOptions);
 
   //! Append a shape to the existing graph without clearing.
@@ -51,7 +51,7 @@ public:
   //! @param[in] theParallel    if true, per-face geometry extraction is parallel
   static Standard_EXPORT void Append(BRepGraph&          theGraph,
                                      const TopoDS_Shape& theShape,
-                                     bool                theParallel);
+                                     const bool          theParallel);
 
 private:
   //! Allocate UIDs for all incidence entities after BRepGraphInc_Populate
@@ -60,11 +60,11 @@ private:
 
   //! Allocate UIDs only for entities in range [theOld, current) per kind.
   //! Used by Append() to avoid re-walking existing entities.
-  static void populateUIDsIncremental(BRepGraph& theGraph,
-                                       int theOldVtx,   int theOldEdge,
-                                       int theOldWire,  int theOldFace,
-                                       int theOldShell, int theOldSolid,
-                                       int theOldComp,  int theOldCS);
+  static void populateUIDsIncremental(BRepGraph&  theGraph,
+                                       const int theOldVtx,   const int theOldEdge,
+                                       const int theOldWire,  const int theOldFace,
+                                       const int theOldShell, const int theOldSolid,
+                                       const int theOldComp,  const int theOldCS);
 
   BRepGraph_Builder() = delete;
 };

@@ -34,7 +34,7 @@ public:
 
   int SubscribedKinds() const override { return mySubscribedKinds; }
 
-  void OnNodeModified(BRepGraph_NodeId theNode) override
+  void OnNodeModified(const BRepGraph_NodeId theNode) override
   {
     myImmediateEvents.Append(theNode);
   }
@@ -45,7 +45,7 @@ public:
     ++myBatchCallCount;
   }
 
-  void OnNodeRemoved(BRepGraph_NodeId /*theNode*/, BRepGraph_NodeId /*theReplacement*/) override {}
+  void OnNodeRemoved(const BRepGraph_NodeId /*theNode*/, const BRepGraph_NodeId /*theReplacement*/) override {}
 
   void OnCompact(
     const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& /*theRemapMap*/) override {}

@@ -39,7 +39,7 @@
 template <typename T>
 inline void BRepGraphInc_InitVec(NCollection_Vector<T>& theVec,
                                  const occ::handle<NCollection_BaseAllocator>& theAlloc,
-                                 int theBlockSize = 4)
+                                 const int theBlockSize = 4)
 {
   theVec = NCollection_Vector<T>(theBlockSize, theAlloc);
 }

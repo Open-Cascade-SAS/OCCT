@@ -37,7 +37,7 @@ public:
   //! @param[in] thePoint     3D coordinates
   //! @param[in] theTolerance vertex tolerance
   //! @return NodeId of the new vertex definition
-  Standard_EXPORT BRepGraph_NodeId AddVertexDef(const gp_Pnt& thePoint, double theTolerance);
+  Standard_EXPORT BRepGraph_NodeId AddVertexDef(const gp_Pnt& thePoint, const double theTolerance);
 
   //! Add an edge definition to the graph.
   //! @param[in] theStartVtx  start vertex def NodeId
@@ -47,12 +47,12 @@ public:
   //! @param[in] theLast      last curve parameter
   //! @param[in] theTolerance edge tolerance
   //! @return NodeId of the new edge definition
-  Standard_EXPORT BRepGraph_NodeId AddEdgeDef(BRepGraph_NodeId          theStartVtx,
-                                              BRepGraph_NodeId          theEndVtx,
+  Standard_EXPORT BRepGraph_NodeId AddEdgeDef(const BRepGraph_NodeId          theStartVtx,
+                                              const BRepGraph_NodeId          theEndVtx,
                                               const occ::handle<Geom_Curve>& theCurve,
-                                              double                    theFirst,
-                                              double                    theLast,
-                                              double                    theTolerance);
+                                              const double                    theFirst,
+                                              const double                    theLast,
+                                              const double                    theTolerance);
 
   //! Add a wire definition to the graph.
   //! Each pair is (EdgeDefId, OrientationInWire).
@@ -69,9 +69,9 @@ public:
   //! @return NodeId of the new face definition
   Standard_EXPORT BRepGraph_NodeId AddFaceDef(
     const occ::handle<Geom_Surface>&                 theSurface,
-    BRepGraph_NodeId                            theOuterWire,
+    const BRepGraph_NodeId                            theOuterWire,
     const NCollection_Vector<BRepGraph_NodeId>& theInnerWires,
-    double                                      theTolerance);
+    const double                                      theTolerance);
 
   //! Add an empty shell definition to the graph.
   //! @return NodeId of the new shell definition
@@ -85,17 +85,17 @@ public:
   //! @param[in] theShellDef  shell definition NodeId
   //! @param[in] theFaceDef   face definition NodeId
   //! @param[in] theOri       orientation of the face in the shell
-  Standard_EXPORT void AddFaceToShell(BRepGraph_NodeId   theShellDef,
-                                      BRepGraph_NodeId   theFaceDef,
-                                      TopAbs_Orientation theOri = TopAbs_FORWARD);
+  Standard_EXPORT void AddFaceToShell(const BRepGraph_NodeId   theShellDef,
+                                      const BRepGraph_NodeId   theFaceDef,
+                                      const TopAbs_Orientation theOri = TopAbs_FORWARD);
 
   //! Link a shell to a solid (appends ShellRef to solid entity).
   //! @param[in] theSolidDef  solid definition NodeId
   //! @param[in] theShellDef  shell definition NodeId
   //! @param[in] theOri       orientation of the shell in the solid
-  Standard_EXPORT void AddShellToSolid(BRepGraph_NodeId   theSolidDef,
-                                       BRepGraph_NodeId   theShellDef,
-                                       TopAbs_Orientation theOri = TopAbs_FORWARD);
+  Standard_EXPORT void AddShellToSolid(const BRepGraph_NodeId   theSolidDef,
+                                       const BRepGraph_NodeId   theShellDef,
+                                       const TopAbs_Orientation theOri = TopAbs_FORWARD);
 
   //! Add a compound definition with child definitions.
   //! @param[in] theChildDefs child definition NodeIds
@@ -112,7 +112,7 @@ public:
   //! Add a part product with a root shape node.
   //! @param[in] theShapeRoot root topology NodeId for the part
   //! @return NodeId of the new product definition
-  Standard_EXPORT BRepGraph_NodeId AddProduct(BRepGraph_NodeId theShapeRoot);
+  Standard_EXPORT BRepGraph_NodeId AddProduct(const BRepGraph_NodeId theShapeRoot);
 
   //! Add an assembly product (no root shape, has child occurrences).
   //! @return NodeId of the new product definition
@@ -124,8 +124,8 @@ public:
   //! @param[in] theReferencedProduct  child product being instantiated
   //! @param[in] thePlacement          local placement relative to parent
   //! @return NodeId of the new occurrence definition
-  Standard_EXPORT BRepGraph_NodeId AddOccurrence(BRepGraph_NodeId        theParentProduct,
-                                                  BRepGraph_NodeId        theReferencedProduct,
+  Standard_EXPORT BRepGraph_NodeId AddOccurrence(const BRepGraph_NodeId        theParentProduct,
+                                                  const BRepGraph_NodeId        theReferencedProduct,
                                                   const TopLoc_Location& thePlacement);
 
   //! Add an occurrence with an explicit parent occurrence for nested assembly chains.
@@ -136,42 +136,42 @@ public:
   //! @param[in] thePlacement          local placement relative to parent
   //! @param[in] theParentOccurrence   the occurrence that placed the parent product
   //! @return NodeId of the new occurrence definition
-  Standard_EXPORT BRepGraph_NodeId AddOccurrence(BRepGraph_NodeId        theParentProduct,
-                                                  BRepGraph_NodeId        theReferencedProduct,
+  Standard_EXPORT BRepGraph_NodeId AddOccurrence(const BRepGraph_NodeId        theParentProduct,
+                                                  const BRepGraph_NodeId        theReferencedProduct,
                                                   const TopLoc_Location& thePlacement,
-                                                  BRepGraph_NodeId        theParentOccurrence);
+                                                  const BRepGraph_NodeId        theParentOccurrence);
 
   //! Append a shape to the existing graph without clearing.
   //! @param[in] theShape   shape to add
   //! @param[in] theParallel if true, per-face geometry extraction is parallel
-  Standard_EXPORT void AppendShape(const TopoDS_Shape& theShape, bool theParallel = false);
+  Standard_EXPORT void AppendShape(const TopoDS_Shape& theShape, const bool theParallel = false);
 
   //! Mark a node as removed (soft deletion).
   //! @param[in] theNode node to remove
-  Standard_EXPORT void RemoveNode(BRepGraph_NodeId theNode);
+  Standard_EXPORT void RemoveNode(const BRepGraph_NodeId theNode);
 
   //! Mark a node as removed with a known replacement (sewing/deduplicate).
   //! Layers are notified with both old and replacement NodeIds for data migration.
   //! @param[in] theNode        node to remove
   //! @param[in] theReplacement node that replaces theNode
-  Standard_EXPORT void RemoveNode(BRepGraph_NodeId theNode, BRepGraph_NodeId theReplacement);
+  Standard_EXPORT void RemoveNode(const BRepGraph_NodeId theNode, const BRepGraph_NodeId theReplacement);
 
   //! Mark a node and all its descendants as removed (cascading soft deletion).
   //! @param[in] theNode root node to remove
-  Standard_EXPORT void RemoveSubgraph(BRepGraph_NodeId theNode);
+  Standard_EXPORT void RemoveSubgraph(const BRepGraph_NodeId theNode);
 
   //! Check if a node has been soft-removed.
   //! @param[in] theNode node to check
   //! @return true if the node was marked as removed
-  Standard_EXPORT bool IsRemoved(BRepGraph_NodeId theNode) const;
+  Standard_EXPORT bool IsRemoved(const BRepGraph_NodeId theNode) const;
 
   //! Number of distinct faces referencing a given edge definition.
   //! @param[in] theEdgeDefIdx zero-based edge definition index
-  Standard_EXPORT int FaceCountForEdge(int theEdgeDefIdx) const;
+  Standard_EXPORT int FaceCountForEdge(const int theEdgeDefIdx) const;
 
   //! Return all wire definition indices that contain a given edge.
   //! @param[in] theEdgeDefIdx zero-based edge definition index
-  Standard_EXPORT const NCollection_Vector<int>& WiresOfEdge(int theEdgeDefIdx) const;
+  Standard_EXPORT const NCollection_Vector<int>& WiresOfEdge(const int theEdgeDefIdx) const;
 
 private:
   friend class BRepGraph;

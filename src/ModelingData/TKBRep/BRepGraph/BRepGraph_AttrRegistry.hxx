@@ -52,13 +52,13 @@ public:
   //! @param theKey   Integer key from Register().
   //! @param theGUID  [out] The GUID, if found.
   //! @return         True if the key is registered.
-  static bool Find(int theKey, Standard_GUID& theGUID);
+  static bool Find(const int theKey, Standard_GUID& theGUID);
 
   //! Check whether a GUID has been registered.
   static bool Contains(const Standard_GUID& theGUID);
 
   //! Check whether an integer key has been registered.
-  static bool Contains(int theKey);
+  static bool Contains(const int theKey);
 
   //! Total number of registered attribute kinds.
   static int NbRegistered();
@@ -139,7 +139,7 @@ inline bool BRepGraph_AttrRegistry::Find(const Standard_GUID& theGUID, int& theK
   return true;
 }
 
-inline bool BRepGraph_AttrRegistry::Find(int theKey, Standard_GUID& theGUID)
+inline bool BRepGraph_AttrRegistry::Find(const int theKey, Standard_GUID& theGUID)
 {
   std::shared_lock<std::shared_mutex> aLock(mutex());
   const Standard_GUID*                aPtr = intToGuid().Seek(theKey);

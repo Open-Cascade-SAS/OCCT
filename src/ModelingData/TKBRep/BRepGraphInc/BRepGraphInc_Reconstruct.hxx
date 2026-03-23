@@ -41,7 +41,7 @@ public:
   //! @param[in] theNode     entity node id
   //! @return reconstructed shape
   static Standard_EXPORT TopoDS_Shape Node(const BRepGraphInc_Storage& theStorage,
-                                           BRepGraph_NodeId            theNode);
+                                           const BRepGraph_NodeId      theNode);
 
   //! Reconstruct a TopoDS_Shape with a shared cache for sub-shape reuse.
   //! Vertices and edges already in theCache are returned directly.
@@ -50,7 +50,7 @@ public:
   //! @param[in,out] theCache    shared cache for vertex/edge/face shapes
   //! @return reconstructed shape
   static Standard_EXPORT TopoDS_Shape Node(const BRepGraphInc_Storage& theStorage,
-                                           BRepGraph_NodeId            theNode,
+                                           const BRepGraph_NodeId      theNode,
                                            Cache&                      theCache);
 
   //! Reconstruct a face with shared edge/vertex cache for multi-face contexts.
@@ -59,7 +59,7 @@ public:
   //! @param[in,out] theCache  shared cache for edge and vertex shapes
   //! @return reconstructed face shape
   static Standard_EXPORT TopoDS_Shape FaceWithCache(const BRepGraphInc_Storage& theStorage,
-                                                    int                         theFaceIdx,
+                                                    const int                   theFaceIdx,
                                                     Cache&                      theCache);
 
 private:

@@ -76,40 +76,40 @@ public:
                                   const NCollection_Vector<BRepGraphInc::FaceEntity>&   theFaces,
                                   const NCollection_Vector<BRepGraphInc::ShellEntity>&  theShells,
                                   const NCollection_Vector<BRepGraphInc::SolidEntity>&  theSolids,
-                                  int theOldNbEdges,
-                                  int theOldNbWires,
-                                  int theOldNbFaces,
-                                  int theOldNbShells,
-                                  int theOldNbSolids);
+                                  const int theOldNbEdges,
+                                  const int theOldNbWires,
+                                  const int theOldNbFaces,
+                                  const int theOldNbShells,
+                                  const int theOldNbSolids);
 
   //! Build product-to-occurrences reverse index.
   //! @param[in] theOccurrences occurrence entity vector
   //! @param[in] theNbProducts  total number of products (for pre-sizing)
   Standard_EXPORT void BuildProductOccurrences(
     const NCollection_Vector<BRepGraphInc::OccurrenceEntity>& theOccurrences,
-    int theNbProducts);
+    const int theNbProducts);
 
   //! Return wire indices containing the given edge.
-  const NCollection_Vector<int>* WiresOfEdge(int theEdgeIdx) const
+  const NCollection_Vector<int>* WiresOfEdge(const int theEdgeIdx) const
   {
     return seekVec(myEdgeToWires, theEdgeIdx);
   }
 
   //! Return face indices containing the given edge (from EdgeFaceGeom rows).
-  const NCollection_Vector<int>* FacesOfEdge(int theEdgeIdx) const
+  const NCollection_Vector<int>* FacesOfEdge(const int theEdgeIdx) const
   {
     return seekVec(myEdgeToFaces, theEdgeIdx);
   }
 
   //! Return coedge indices referencing the given edge.
-  const NCollection_Vector<int>* CoEdgesOfEdge(int theEdgeIdx) const
+  const NCollection_Vector<int>* CoEdgesOfEdge(const int theEdgeIdx) const
   {
     return seekVec(myEdgeToCoEdges, theEdgeIdx);
   }
 
   //! Return cached face count for an edge — O(1).
   //! Populated during Build() and updated incrementally by BindEdgeToFace().
-  int FaceCountOfEdge(int theEdgeIdx) const
+  int FaceCountOfEdge(const int theEdgeIdx) const
   {
     if (theEdgeIdx < 0 || theEdgeIdx >= myEdgeFaceCount.Length())
       return 0;
@@ -117,31 +117,31 @@ public:
   }
 
   //! Return edge indices incident to the given vertex.
-  const NCollection_Vector<int>* EdgesOfVertex(int theVertexIdx) const
+  const NCollection_Vector<int>* EdgesOfVertex(const int theVertexIdx) const
   {
     return seekVec(myVertexToEdges, theVertexIdx);
   }
 
   //! Return face indices containing the given wire.
-  const NCollection_Vector<int>* FacesOfWire(int theWireIdx) const
+  const NCollection_Vector<int>* FacesOfWire(const int theWireIdx) const
   {
     return seekVec(myWireToFaces, theWireIdx);
   }
 
   //! Return shell indices containing the given face.
-  const NCollection_Vector<int>* ShellsOfFace(int theFaceIdx) const
+  const NCollection_Vector<int>* ShellsOfFace(const int theFaceIdx) const
   {
     return seekVec(myFaceToShells, theFaceIdx);
   }
 
   //! Return solid indices containing the given shell.
-  const NCollection_Vector<int>* SolidsOfShell(int theShellIdx) const
+  const NCollection_Vector<int>* SolidsOfShell(const int theShellIdx) const
   {
     return seekVec(myShellToSolids, theShellIdx);
   }
 
   //! Return occurrence indices that reference the given product.
-  const NCollection_Vector<int>* OccurrencesOfProduct(int theProductIdx) const
+  const NCollection_Vector<int>* OccurrencesOfProduct(const int theProductIdx) const
   {
     return seekVec(myProductToOccurrences, theProductIdx);
   }
@@ -149,25 +149,25 @@ public:
   // --- Safe reference accessors (return empty vector instead of nullptr) ---
 
   //! Return wire indices containing the given edge (safe reference, never null).
-  const NCollection_Vector<int>& WiresOfEdgeRef(int theEdgeIdx) const
+  const NCollection_Vector<int>& WiresOfEdgeRef(const int theEdgeIdx) const
   {
     return seekRef(myEdgeToWires, theEdgeIdx);
   }
 
   //! Return face indices containing the given edge (safe reference, never null).
-  const NCollection_Vector<int>& FacesOfEdgeRef(int theEdgeIdx) const
+  const NCollection_Vector<int>& FacesOfEdgeRef(const int theEdgeIdx) const
   {
     return seekRef(myEdgeToFaces, theEdgeIdx);
   }
 
   //! Return coedge indices referencing the given edge (safe reference, never null).
-  const NCollection_Vector<int>& CoEdgesOfEdgeRef(int theEdgeIdx) const
+  const NCollection_Vector<int>& CoEdgesOfEdgeRef(const int theEdgeIdx) const
   {
     return seekRef(myEdgeToCoEdges, theEdgeIdx);
   }
 
   //! Return face indices containing the given wire (safe reference, never null).
-  const NCollection_Vector<int>& FacesOfWireRef(int theWireIdx) const
+  const NCollection_Vector<int>& FacesOfWireRef(const int theWireIdx) const
   {
     return seekRef(myWireToFaces, theWireIdx);
   }
@@ -187,35 +187,35 @@ public:
   // --- Incremental mutation ---
 
   //! Register an edge as belonging to a wire (O(1) amortized).
-  Standard_EXPORT void BindEdgeToWire(int theEdgeIdx, int theWireIdx);
+  Standard_EXPORT void BindEdgeToWire(const int theEdgeIdx, const int theWireIdx);
 
   //! Remove a wire from the edge-to-wire index for a given edge.
-  Standard_EXPORT void UnbindEdgeFromWire(int theEdgeIdx, int theWireIdx);
+  Standard_EXPORT void UnbindEdgeFromWire(const int theEdgeIdx, const int theWireIdx);
 
   //! Replace an edge in the edge-to-wire index for a specific wire.
-  Standard_EXPORT void ReplaceEdgeInWireMap(int theOldEdgeIdx, int theNewEdgeIdx, int theWireIdx);
+  Standard_EXPORT void ReplaceEdgeInWireMap(const int theOldEdgeIdx, const int theNewEdgeIdx, const int theWireIdx);
 
   //! Register a vertex as incident to an edge (O(1) amortized, deduplicates).
-  Standard_EXPORT void BindVertexToEdge(int theVertexIdx, int theEdgeIdx);
+  Standard_EXPORT void BindVertexToEdge(const int theVertexIdx, const int theEdgeIdx);
 
   //! Remove an edge from the vertex-to-edge index for a given vertex.
-  Standard_EXPORT void UnbindVertexFromEdge(int theVertexIdx, int theEdgeIdx);
+  Standard_EXPORT void UnbindVertexFromEdge(const int theVertexIdx, const int theEdgeIdx);
 
   //! Register a coedge as referencing an edge (O(1) amortized).
-  Standard_EXPORT void BindEdgeToCoEdge(int theEdgeIdx, int theCoEdgeIdx);
+  Standard_EXPORT void BindEdgeToCoEdge(const int theEdgeIdx, const int theCoEdgeIdx);
 
   //! Register an edge as belonging to a face (O(1) amortized, deduplicates).
-  Standard_EXPORT void BindEdgeToFace(int theEdgeIdx, int theFaceIdx);
+  Standard_EXPORT void BindEdgeToFace(const int theEdgeIdx, const int theFaceIdx);
 
   //! Remove a face from the edge-to-face index for a given edge.
-  Standard_EXPORT void UnbindEdgeFromFace(int theEdgeIdx, int theFaceIdx);
+  Standard_EXPORT void UnbindEdgeFromFace(const int theEdgeIdx, const int theFaceIdx);
 
 private:
   //! Dense vector type: outer index = entity key, inner vector = adjacency list.
   using IndexTable = NCollection_Vector<NCollection_Vector<int>>;
 
   //! Bounds-checked lookup returning nullptr for out-of-range or empty slots.
-  static const NCollection_Vector<int>* seekVec(const IndexTable& theIdx, int theKey)
+  static const NCollection_Vector<int>* seekVec(const IndexTable& theIdx, const int theKey)
   {
     if (theKey < 0 || theKey >= theIdx.Length())
       return nullptr;
@@ -224,7 +224,7 @@ private:
   }
 
   //! Bounds-checked lookup returning a const reference (empty vector for missing keys).
-  static const NCollection_Vector<int>& seekRef(const IndexTable& theIdx, int theKey)
+  static const NCollection_Vector<int>& seekRef(const IndexTable& theIdx, const int theKey)
   {
     const NCollection_Vector<int>* aPtr = seekVec(theIdx, theKey);
     return aPtr != nullptr ? *aPtr : THE_EMPTY_VEC;
@@ -235,15 +235,15 @@ private:
   //! Ensure theIdx has at least theSize slots (pre-sizing with empty vectors).
   //! If theAlloc is non-null, inner vectors are constructed with it.
   static void preSize(IndexTable&                               theIdx,
-                      int                                       theSize,
+                      const int                                 theSize,
                       const occ::handle<NCollection_BaseAllocator>& theAlloc = occ::handle<NCollection_BaseAllocator>());
 
   //! Add theVal to the vector at theKey, creating if needed.  Skips duplicates.
-  static void appendUnique(IndexTable& theIdx, int theKey, int theVal);
+  static void appendUnique(IndexTable& theIdx, const int theKey, const int theVal);
 
   //! Add theVal to the vector at theKey unconditionally (no duplicate check).
   //! Used during Build() where freshly-cleared indices guarantee no duplicates.
-  static void appendDirect(IndexTable& theIdx, int theKey, int theVal);
+  static void appendDirect(IndexTable& theIdx, const int theKey, const int theVal);
 
   occ::handle<NCollection_BaseAllocator> myAllocator;
 
