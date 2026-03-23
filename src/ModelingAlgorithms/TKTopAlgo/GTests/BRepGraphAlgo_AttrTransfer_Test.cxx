@@ -223,15 +223,25 @@ TEST(BRepGraphAlgo_AttrTransferTest, AttrTransfer_NoOverwrite)
   BRepBuilderAPI_Copy aCopy1(aOrigF1, true);
   BRepBuilderAPI_Copy aCopy2(aOrigF2, true);
 
-  BRepGraphAlgo_Sewing aSewer(1.0e-04);
-  aSewer.Add(aCopy1.Shape());
-  aSewer.Add(aCopy2.Shape());
-  aSewer.Perform();
-  ASSERT_TRUE(aSewer.IsDone());
+  BRep_Builder    aBB;
+  TopoDS_Compound aSewCompound;
+  aBB.MakeCompound(aSewCompound);
+  aBB.Add(aSewCompound, aCopy1.Shape());
+  aBB.Add(aSewCompound, aCopy2.Shape());
+
+  BRepGraphAlgo_Sewing::Options aSewOpts;
+  aSewOpts.Tolerance = 1.0e-04;
+
+  BRepGraph aSewGraph;
+  aSewGraph.Build(aSewCompound);
+  ASSERT_TRUE(aSewGraph.IsDone());
+
+  BRepGraphAlgo_Sewing::Result aSewResult = BRepGraphAlgo_Sewing::Perform(aSewGraph, aSewOpts);
+  ASSERT_TRUE(aSewResult.IsDone);
 
   // Get graph from sewing result and check history is not empty.
   // The sewing graph merges edges, producing history records.
-  const int aNbRecords = aSewer.Graph().History().NbRecords();
+  const int aNbRecords = aSewGraph.History().NbRecords();
   if (aNbRecords == 0)
   {
     // If no history records, transfer is trivially empty.

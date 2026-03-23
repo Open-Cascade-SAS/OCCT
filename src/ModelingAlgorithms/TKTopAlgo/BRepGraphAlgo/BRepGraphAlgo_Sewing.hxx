@@ -16,189 +16,96 @@
 
 #include <BRepGraph.hxx>
 
-#include <NCollection_Array1.hxx>
-#include <NCollection_IncAllocator.hxx>
-#include <NCollection_IndexedMap.hxx>
-#include <NCollection_KDTree.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <TopoDS_Shape.hxx>
-#include <gp_Pnt.hxx>
 
-class ExtremaPC_Curve;
-
-#include <utility>
-
-//! @brief Graph-based edge sewing algorithm.
+//! @brief Graph-based edge sewing algorithm (static API).
 //!
-//! BRepGraphAlgo_Sewing takes one or more disconnected shapes (typically
-//! individual faces), builds a BRepGraph over them, detects free (boundary)
-//! edges, matches geometrically coincident free-edge pairs within the
-//! given tolerance, and merges them using BRepGraph generic mutation APIs.
+//! BRepGraphAlgo_Sewing detects free (boundary) edges on a pre-built BRepGraph,
+//! matches geometrically coincident free-edge pairs within the given tolerance,
+//! and merges them in-place using BRepGraph mutation APIs.
 //!
-//! The algorithm follows these phases (matching BRepBuilderAPI_Sewing logic):
-//! 1. Face Analysis -- build graph, detect degenerate edges
-//! 2. Find Free Edges -- boundary edge detection via face-reference counting
-//! 3. Vertex Assembling -- merge coincident free-edge vertices
-//! 4. Edge Matching -- BBox pre-filter + geometric validation
-//! 5. Edge Merging -- pcurve transfer, wire updates, history recording
-//! 6. Edge Processing -- tolerance and pcurve consistency
-//! 7. Shape Reconstruction -- rebuild affected faces from graph state
-//! 8. Edge Regularity -- set continuity on sewn edges
+//! The algorithm follows these phases:
+//! 1. Find Free Edges -- boundary edge detection via face-reference counting
+//! 2. Vertex Assembling -- merge coincident free-edge vertices (union-find)
+//! 3. Edge Cutting (optional) -- split edges at T-vertex intersections
+//! 4. Candidate Detection -- BBox pre-filter + KDTree overlap detection
+//! 5. Edge Matching -- geometric validation + greedy best-score pairing
+//! 6. Edge Merging -- PCurve transfer, wire updates, tolerance merge
+//! 7. SameParameter (optional) -- enforce SameParameter on sewn edges
+//! 8. Edge Processing -- tolerance consistency check
 //!
-//! ## Typical usage
+//! ## Typical usage (graph-level)
 //! @code
-//!   BRepGraphAlgo_Sewing aSewer(1.0e-06);
-//!   aSewer.Add(face1);
-//!   aSewer.Add(face2);
-//!   aSewer.Perform();
-//!   if (aSewer.IsDone())
+//!   BRepGraph aGraph;
+//!   aGraph.Build(aCompound);
+//!   auto aResult = BRepGraphAlgo_Sewing::Perform(aGraph, {.Tolerance = 1.0e-04});
+//!   if (aResult.IsDone)
 //!   {
-//!     const TopoDS_Shape& aResult = aSewer.Result();
+//!     // graph is modified in-place; reconstruct shape if needed
 //!   }
+//! @endcode
+//!
+//! ## Convenience usage (shape-level)
+//! @code
+//!   TopoDS_Shape aResult = BRepGraphAlgo_Sewing::Sew(aShape, {.Tolerance = 1.0e-04});
 //! @endcode
 class BRepGraphAlgo_Sewing
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Construct with a sewing tolerance.
-  //! @param[in] theTolerance maximum distance for edge matching (default 1.0e-06)
-  Standard_EXPORT explicit BRepGraphAlgo_Sewing(double theTolerance = 1.0e-06);
+  //! Configuration parameters for sewing.
+  struct Options
+  {
+    double Tolerance         = 1.0e-06; //!< Maximum distance for edge matching.
+    bool   Cutting           = true;    //!< Cut edges at T-vertex intersections.
+    bool   SameParameterMode = true;    //!< Enforce SameParameter on sewn edges.
+    bool   NonManifoldMode   = false;   //!< Allow >2 faces per edge.
+    bool   Parallel          = false;   //!< Enable parallel execution.
+    bool   HistoryMode       = true;    //!< Record history in the graph.
+  };
 
-  //! Add a shape to be sewn.
-  //! @param[in] theShape shape to include (Face, Shell, Compound, etc.)
-  Standard_EXPORT void Add(const TopoDS_Shape& theShape);
+  //! Diagnostic result from a sewing operation.
+  struct Result
+  {
+    bool IsDone            = false; //!< True if sewing completed successfully.
+    int  NbFreeEdgesBefore = 0;     //!< Free edges detected before sewing.
+    int  NbFreeEdgesAfter  = 0;     //!< Free edges remaining after sewing.
+    int  NbSewnEdges       = 0;     //!< Edge pairs that were successfully sewn.
+  };
 
-  // --- Configuration ---
+  //! Primary API: sew free edges on a pre-built graph (in-place).
+  //! Graph must be built (IsDone() == true). Uses default options.
+  //! @param[in,out] theGraph the graph to modify
+  //! @return result with diagnostics
+  static Standard_EXPORT Result Perform(BRepGraph& theGraph);
 
-  //! Enable/disable face analysis phase.
-  Standard_EXPORT void SetFaceAnalysis(bool theVal);
+  //! Primary API: sew free edges on a pre-built graph (in-place).
+  //! Graph must be built (IsDone() == true).
+  //! @param[in,out] theGraph   the graph to modify
+  //! @param[in]     theOptions sewing parameters
+  //! @return result with diagnostics
+  static Standard_EXPORT Result Perform(BRepGraph&     theGraph,
+                                        const Options& theOptions);
 
-  //! Enable/disable edge cutting at intersection points.
-  Standard_EXPORT void SetCutting(bool theVal);
+  //! Convenience: sew a shape, return the result shape.
+  //! Builds graph internally, calls Perform(), reconstructs, encodes regularity.
+  //! Uses default options.
+  //! @param[in] theShape root shape (Face, Shell, Compound, etc.)
+  //! @return sewn result shape (empty if failed)
+  static Standard_EXPORT TopoDS_Shape Sew(const TopoDS_Shape& theShape);
 
-  //! Enable/disable same-parameter mode on sewn edges.
-  Standard_EXPORT void SetSameParameterMode(bool theVal);
-
-  //! Enable/disable non-manifold mode (allow >2 faces per edge).
-  Standard_EXPORT void SetNonManifoldMode(bool theVal);
-
-  //! Enable/disable parallel execution.
-  Standard_EXPORT void SetParallel(bool theVal);
-
-  //! Query face analysis mode.
-  Standard_EXPORT bool FaceAnalysis() const;
-
-  //! Query cutting mode.
-  Standard_EXPORT bool Cutting() const;
-
-  //! Query same-parameter mode.
-  Standard_EXPORT bool SameParameterMode() const;
-
-  //! Query non-manifold mode.
-  Standard_EXPORT bool NonManifoldMode() const;
-
-  //! Query parallel mode.
-  Standard_EXPORT bool IsParallel() const;
-
-  //! Enable/disable history recording during sewing.
-  //! Forwards to BRepGraph::SetHistoryEnabled().
-  Standard_EXPORT void SetHistoryMode(bool theVal);
-
-  //! Query history recording mode.
-  Standard_EXPORT bool HistoryMode() const;
-
-  // --- Execution ---
-
-  //! Run the sewing algorithm.
-  Standard_EXPORT void Perform();
-
-  //! True after successful Perform().
-  Standard_EXPORT bool IsDone() const;
-
-  // --- Results ---
-
-  //! The sewn result shape.
-  Standard_EXPORT const TopoDS_Shape& Result() const;
-
-  //! Access the internal graph (valid after Perform()).
-  Standard_EXPORT const BRepGraph& Graph() const;
-
-  //! Number of free (boundary) edges detected before sewing.
-  Standard_EXPORT int NbFreeEdgesBefore() const;
-
-  //! Number of free (boundary) edges remaining after sewing.
-  Standard_EXPORT int NbFreeEdgesAfter() const;
-
-  //! Number of edge pairs that were successfully sewn.
-  Standard_EXPORT int NbSewnEdges() const;
+  //! Convenience: sew a shape, return the result shape.
+  //! Builds graph internally, calls Perform(), reconstructs, encodes regularity.
+  //! @param[in] theShape   root shape (Face, Shell, Compound, etc.)
+  //! @param[in] theOptions sewing parameters
+  //! @return sewn result shape (empty if failed)
+  static Standard_EXPORT TopoDS_Shape Sew(const TopoDS_Shape& theShape,
+                                          const Options&       theOptions);
 
 private:
-  // Configuration.
-  double myTolerance;
-  bool   myFaceAnalysis  = true;
-  bool   myCutting       = true;
-  bool   mySameParameter = true;
-  bool   myNonManifold   = false;
-  bool   myIsParallel    = false;
-  bool   myHistoryMode   = true;
-
-  // State.
-  bool                                 myIsDone = false;
-  BRepGraph                            myGraph;
-  TopoDS_Shape                         myResult;
-  NCollection_Vector<TopoDS_Shape>     myInputShapes;
-  NCollection_Array1<BRepGraph_NodeId> myFreeEdgesBefore;
-  int                                  myFreeEdgesAfter = 0;
-  int                                  mySewnCount      = 0;
-
-  // Per-phase methods.
-
-  //! Phase 1: Build graph and analyze faces.
-  //! @param[in] theAllocator arena allocator to propagate into the graph
-  void analyzeFaces(const Handle(NCollection_IncAllocator)& theAllocator);
-
-  //! Phase 2: Detect free (boundary) edges.
-  void findFreeEdges();
-
-  //! Phase 3: Merge coincident free-edge vertices.
-  //! @param[in] theTmpAlloc temporary IncAllocator for scratch collections
-  void assembleVertices(const Handle(NCollection_IncAllocator)& theTmpAlloc);
-
-  //! Phase 4a: Detect sewing candidates via BBox overlap.
-  //! @param[in] theTmpAlloc temporary IncAllocator for scratch collections
-  void detectCandidates(const Handle(NCollection_IncAllocator)& theTmpAlloc);
-
-  //! Phase 4b: Cut edges at intersection points (if myCutting enabled).
-  //! @param[in] theTmpAlloc temporary IncAllocator for scratch collections
-  void cutAtIntersections(const Handle(NCollection_IncAllocator)& theTmpAlloc);
-
-  //! Phase 5a: Match free-edge pairs using BBox pre-filter + geometric validation.
-  //! @param[in] theTmpAlloc temporary IncAllocator for scratch collections
-  //! @return sequence of matched (keepEdge, removeEdge) node-id pairs
-  NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> matchFreeEdges(
-    const Handle(NCollection_IncAllocator)& theTmpAlloc);
-
-  //! Phase 5b: Merge matched edge pairs in the graph.
-  //! @param[in] thePairs matched edge pairs
-  //! @param[out] theAffectedFaces set of face indices that need reconstruction
-  //! @param[out] theSewnEdgeIndices indices of surviving (keep) edges
-  void mergeMatchedEdges(
-    const NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>>& thePairs,
-    NCollection_IndexedMap<int>&                                               theAffectedFaces,
-    NCollection_IndexedMap<int>&                                               theSewnEdgeIndices);
-
-  //! Phase 6: Process sewn edges (tolerance, pcurve consistency).
-  //! @param[in] theSewnEdgeIndices indices of edges that were sewn
-  void processEdges(const NCollection_IndexedMap<int>& theSewnEdgeIndices);
-
-  //! Phase 7: Reconstruct result shape from graph state.
-  //! @param[in] theAffectedFaces set of face indices that were modified
-  void reconstructResult(const NCollection_IndexedMap<int>& theAffectedFaces);
-
-  //! Phase 8: Set edge regularity on sewn edges.
-  void setEdgeRegularity();
-
+  BRepGraphAlgo_Sewing() = delete;
 };
 
 #endif // _BRepGraphAlgo_Sewing_HeaderFile

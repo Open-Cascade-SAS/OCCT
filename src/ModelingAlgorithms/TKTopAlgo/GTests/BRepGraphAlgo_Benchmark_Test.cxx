@@ -120,15 +120,20 @@ TEST(BRepGraphAlgo_Benchmark, DISABLED_Sewing_Throughput_500Faces)
 {
   const NCollection_Sequence<TopoDS_Shape> aFaces = makeFaceList(500);
 
+  BRep_Builder    aBB;
+  TopoDS_Compound aCompound;
+  aBB.MakeCompound(aCompound);
+  for (int anIdx = 1; anIdx <= aFaces.Length(); ++anIdx)
+    aBB.Add(aCompound, aFaces.Value(anIdx));
+
   const double aAvg = runBenchmark("Sewing throughput 500 faces", [&]() {
-    BRepGraphAlgo_Sewing aSewer(1.0e-04);
-    aSewer.SetParallel(true);
-    for (int anIdx = 1; anIdx <= aFaces.Length(); ++anIdx)
-    {
-      aSewer.Add(aFaces.Value(anIdx));
-    }
-    aSewer.Perform();
-    EXPECT_TRUE(aSewer.IsDone());
+    BRepGraphAlgo_Sewing::Options aOpts;
+    aOpts.Tolerance = 1.0e-04;
+    aOpts.Parallel  = true;
+    BRepGraph aGraph;
+    aGraph.Build(aCompound, true);
+    BRepGraphAlgo_Sewing::Result aResult = BRepGraphAlgo_Sewing::Perform(aGraph, aOpts);
+    EXPECT_TRUE(aResult.IsDone);
   });
 
   EXPECT_GT(aAvg, 0.0);
@@ -138,15 +143,20 @@ TEST(BRepGraphAlgo_Benchmark, DISABLED_Sewing_Throughput_500Faces_Sequential)
 {
   const NCollection_Sequence<TopoDS_Shape> aFaces = makeFaceList(500);
 
+  BRep_Builder    aBB;
+  TopoDS_Compound aCompound;
+  aBB.MakeCompound(aCompound);
+  for (int anIdx = 1; anIdx <= aFaces.Length(); ++anIdx)
+    aBB.Add(aCompound, aFaces.Value(anIdx));
+
   const double aAvg = runBenchmark("Sewing throughput 500 faces sequential", [&]() {
-    BRepGraphAlgo_Sewing aSewer(1.0e-04);
-    aSewer.SetParallel(false);
-    for (int anIdx = 1; anIdx <= aFaces.Length(); ++anIdx)
-    {
-      aSewer.Add(aFaces.Value(anIdx));
-    }
-    aSewer.Perform();
-    EXPECT_TRUE(aSewer.IsDone());
+    BRepGraphAlgo_Sewing::Options aOpts;
+    aOpts.Tolerance = 1.0e-04;
+    aOpts.Parallel  = false;
+    BRepGraph aGraph;
+    aGraph.Build(aCompound);
+    BRepGraphAlgo_Sewing::Result aResult = BRepGraphAlgo_Sewing::Perform(aGraph, aOpts);
+    EXPECT_TRUE(aResult.IsDone);
   });
 
   EXPECT_GT(aAvg, 0.0);
