@@ -501,8 +501,10 @@ TEST(BRepGraphAPI_MutableDefTest, MutableFaceDefinition_ChangesTolerance)
   ASSERT_GT(aGraph.Defs().NbFaces(), 0);
 
   const double anOrigTol = aGraph.Defs().Face(0).Tolerance;
-  BRepGraph_TopoNode::FaceDef& aFaceDef = aGraph.Mut().FaceDef(0);
-  aFaceDef.Tolerance = 0.5;
+  {
+    BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aFaceDef = aGraph.Mut().FaceDef(0);
+    aFaceDef->Tolerance = 0.5;
+  }
   EXPECT_NEAR(aGraph.Defs().Face(0).Tolerance, 0.5, 1e-10);
   EXPECT_TRUE(aGraph.Defs().Face(0).IsModified);
   (void)anOrigTol;
@@ -518,8 +520,8 @@ TEST(BRepGraphAPI_MutableDefTest, MutableShellDefinition)
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Defs().NbShells(), 0);
 
-  BRepGraph_TopoNode::ShellDef& aShellDef = aGraph.Mut().ShellDef(0);
-  EXPECT_TRUE(aShellDef.IsModified);
+  { BRepGraph_MutRef<BRepGraph_TopoNode::ShellDef> aShellDef = aGraph.Mut().ShellDef(0); }
+  EXPECT_TRUE(aGraph.Defs().Shell(0).IsModified);
 }
 
 TEST(BRepGraphAPI_MutableDefTest, MutableSolidDefinition)
@@ -532,8 +534,8 @@ TEST(BRepGraphAPI_MutableDefTest, MutableSolidDefinition)
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Defs().NbSolids(), 0);
 
-  BRepGraph_TopoNode::SolidDef& aSolidDef = aGraph.Mut().SolidDef(0);
-  EXPECT_TRUE(aSolidDef.IsModified);
+  { BRepGraph_MutRef<BRepGraph_TopoNode::SolidDef> aSolidDef = aGraph.Mut().SolidDef(0); }
+  EXPECT_TRUE(aGraph.Defs().Solid(0).IsModified);
 }
 
 TEST(BRepGraphAPI_MutableDefTest, MutableCompoundDefinition)
@@ -543,8 +545,8 @@ TEST(BRepGraphAPI_MutableDefTest, MutableCompoundDefinition)
   aGraph.Builder().AddCompoundDef(aChildren);
   ASSERT_EQ(aGraph.Defs().NbCompounds(), 1);
 
-  BRepGraph_TopoNode::CompoundDef& aCompDef = aGraph.Mut().CompoundDef(0);
-  EXPECT_TRUE(aCompDef.IsModified);
+  { BRepGraph_MutRef<BRepGraph_TopoNode::CompoundDef> aCompDef = aGraph.Mut().CompoundDef(0); }
+  EXPECT_TRUE(aGraph.Defs().Compound(0).IsModified);
 }
 
 TEST(BRepGraphAPI_MutableDefTest, MutableCompSolidDefinition)
@@ -554,8 +556,8 @@ TEST(BRepGraphAPI_MutableDefTest, MutableCompSolidDefinition)
   aGraph.Builder().AddCompSolidDef(aSolids);
   ASSERT_EQ(aGraph.Defs().NbCompSolids(), 1);
 
-  BRepGraph_TopoNode::CompSolidDef& aCSolDef = aGraph.Mut().CompSolidDef(0);
-  EXPECT_TRUE(aCSolDef.IsModified);
+  { BRepGraph_MutRef<BRepGraph_TopoNode::CompSolidDef> aCSolDef = aGraph.Mut().CompSolidDef(0); }
+  EXPECT_TRUE(aGraph.Defs().CompSolid(0).IsModified);
 }
 
 // ============================================================

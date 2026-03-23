@@ -88,7 +88,7 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
   {
     const BRepGraph_TopoNode::VertexDef& aVtx = theGraph.Defs().Vertex(anIdx);
     aResult.Builder().AddVertexDef(aVtx.Point, aVtx.Tolerance);
-    transferUserAttributes(aVtx.Cache, aResult.Mut().VertexDef(anIdx).Cache);
+    transferUserAttributes(aVtx.Cache, aResult.Mut().VertexDef(anIdx)->Cache);
   }
 
   // Edges.
@@ -123,7 +123,7 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
       aWireEdges.Append(std::make_pair(BRepGraph_NodeId::Edge(aER.EdgeIdx), aER.Orientation));
     }
     aResult.Builder().AddWireDef(aWireEdges);
-    transferUserAttributes(aWire.Cache, aResult.Mut().WireDef(anIdx).Cache);
+    transferUserAttributes(aWire.Cache, aResult.Mut().WireDef(anIdx)->Cache);
   }
 
   // Faces.
@@ -186,7 +186,7 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
     BRepGraph_NodeId aNewShellId = aResult.Builder().AddShellDef();
 
     const BRepGraph_TopoNode::ShellDef& aShell = theGraph.Defs().Shell(anIdx);
-    transferUserAttributes(aShell.Cache, aResult.Mut().ShellDef(anIdx).Cache);
+    transferUserAttributes(aShell.Cache, aResult.Mut().ShellDef(anIdx)->Cache);
 
     for (int aFaceRefIdx = 0; aFaceRefIdx < aShell.FaceRefs.Length(); ++aFaceRefIdx)
     {
@@ -202,7 +202,7 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
     BRepGraph_NodeId aNewSolidId = aResult.Builder().AddSolidDef();
 
     const BRepGraph_TopoNode::SolidDef& aSolid = theGraph.Defs().Solid(anIdx);
-    transferUserAttributes(aSolid.Cache, aResult.Mut().SolidDef(anIdx).Cache);
+    transferUserAttributes(aSolid.Cache, aResult.Mut().SolidDef(anIdx)->Cache);
 
     for (int aShellRefIdx = 0; aShellRefIdx < aSolid.ShellRefs.Length(); ++aShellRefIdx)
     {
@@ -223,7 +223,7 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
       aChildNodeIds.Append(BRepGraph_NodeId(static_cast<BRepGraph_NodeId::Kind>(aCR.Kind), aCR.ChildIdx));
     }
     aResult.Builder().AddCompoundDef(aChildNodeIds);
-    transferUserAttributes(aComp.Cache, aResult.Mut().CompoundDef(anIdx).Cache);
+    transferUserAttributes(aComp.Cache, aResult.Mut().CompoundDef(anIdx)->Cache);
   }
 
   // CompSolids.
@@ -234,7 +234,7 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
     for (int aSI = 0; aSI < aCS.SolidRefs.Length(); ++aSI)
       aSolidNodeIds.Append(BRepGraph_NodeId::Solid(aCS.SolidRefs.Value(aSI).SolidIdx));
     aResult.Builder().AddCompSolidDef(aSolidNodeIds);
-    transferUserAttributes(aCS.Cache, aResult.Mut().CompSolidDef(anIdx).Cache);
+    transferUserAttributes(aCS.Cache, aResult.Mut().CompSolidDef(anIdx)->Cache);
   }
 
   // Phase 3: Transfer UIDs (identity mapping - direct vector copy).
@@ -327,7 +327,7 @@ BRepGraph BRepGraphAlgo_Copy::CopyFace(const BRepGraph& theGraph,
     const int anOldIdx = aVertexSet.FindKey(anIdx);
     const BRepGraph_TopoNode::VertexDef& aVtx = theGraph.Defs().Vertex(anOldIdx);
     aResult.Builder().AddVertexDef(aVtx.Point, aVtx.Tolerance);
-    transferUserAttributes(aVtx.Cache, aResult.Mut().VertexDef(anIdx - 1).Cache);
+    transferUserAttributes(aVtx.Cache, aResult.Mut().VertexDef(anIdx - 1)->Cache);
   }
 
   // Add edges in deterministic order.
@@ -379,7 +379,7 @@ BRepGraph BRepGraphAlgo_Copy::CopyFace(const BRepGraph& theGraph,
         std::make_pair(BRepGraph_NodeId::Edge(*aNewEdgeIdx), aER.Orientation));
     }
     aResult.Builder().AddWireDef(aNewEntries);
-    transferUserAttributes(aWire.Cache, aResult.Mut().WireDef(anIdx - 1).Cache);
+    transferUserAttributes(aWire.Cache, aResult.Mut().WireDef(anIdx - 1)->Cache);
   }
 
   // Add the face.

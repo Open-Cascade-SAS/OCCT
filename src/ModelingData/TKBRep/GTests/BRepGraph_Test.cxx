@@ -306,9 +306,9 @@ TEST_F(BRepGraphTest, DetectDegenerateWires_ValidBox_Empty)
 
 TEST_F(BRepGraphTest, MutableEdge_ModifyTolerance)
 {
-  double                    anOrigTol = myGraph.Defs().Edge(0).Tolerance;
-  BRepGraph_TopoNode::EdgeDef& anEdge    = myGraph.Mut().EdgeDef(0);
-  anEdge.Tolerance                    = anOrigTol * 2.0;
+  double                                            anOrigTol = myGraph.Defs().Edge(0).Tolerance;
+  BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge    = myGraph.Mut().EdgeDef(0);
+  anEdge->Tolerance                    = anOrigTol * 2.0;
   EXPECT_NEAR(myGraph.Defs().Edge(0).Tolerance, anOrigTol * 2.0, 1.0e-15);
 }
 
@@ -652,7 +652,7 @@ TEST_F(BRepGraphTest, Shape_InvalidatedAfterMutation)
   TopoDS_Shape aBefore = myGraph.Shapes().Shape(anEdgeId);
   EXPECT_FALSE(aBefore.IsNull());
 
-  myGraph.Mut().EdgeDef(0).Tolerance = 0.123;
+  myGraph.Mut().EdgeDef(0)->Tolerance = 0.123;
   TopoDS_Shape anAfter = myGraph.Shapes().Shape(anEdgeId);
   EXPECT_FALSE(anAfter.IsNull());
 
@@ -888,8 +888,8 @@ TEST_F(BRepGraphTest, ReplaceEdgeInWire_Reversed_OrientationFlipped)
 
 TEST_F(BRepGraphTest, MutableVertex_ChangePoint_Verified)
 {
-  BRepGraph_TopoNode::VertexDef& aMutVert = myGraph.Mut().VertexDef(0);
-  aMutVert.Point = gp_Pnt(99.0, 99.0, 99.0);
+  BRepGraph_MutRef<BRepGraph_TopoNode::VertexDef> aMutVert = myGraph.Mut().VertexDef(0);
+  aMutVert->Point = gp_Pnt(99.0, 99.0, 99.0);
 
   const BRepGraph_TopoNode::VertexDef& aVert = myGraph.Defs().Vertex(0);
   EXPECT_NEAR(aVert.Point.X(), 99.0, Precision::Confusion());
@@ -1145,8 +1145,8 @@ TEST_F(BRepGraphTest, DetectToleranceConflicts_ManualConflict_Detected)
         continue;
 
       // Set very different tolerances on two edges sharing the same curve.
-      myGraph.Mut().EdgeDef(anEdgeIdx).Tolerance = 0.001;
-      myGraph.Mut().EdgeDef(anOtherIdx).Tolerance = 1.0;
+      myGraph.Mut().EdgeDef(anEdgeIdx)->Tolerance = 0.001;
+      myGraph.Mut().EdgeDef(anOtherIdx)->Tolerance = 1.0;
 
       isConflictSetUp = true;
       break;
@@ -1477,14 +1477,14 @@ TEST_F(BRepGraphTest, Centroid_Face_InsideBBox)
 
 TEST_F(BRepGraphTest, MutableWireDef_ModifyClosure_Verified)
 {
-  BRepGraph_TopoNode::WireDef& aMutWD = myGraph.Mut().WireDef(0);
-  bool anOrigClosed = aMutWD.IsClosed;
-  aMutWD.IsClosed = !anOrigClosed;
+  BRepGraph_MutRef<BRepGraph_TopoNode::WireDef> aMutWD = myGraph.Mut().WireDef(0);
+  bool anOrigClosed = aMutWD->IsClosed;
+  aMutWD->IsClosed = !anOrigClosed;
 
   EXPECT_EQ(myGraph.Defs().Wire(0).IsClosed, !anOrigClosed);
 
   // Restore original state.
-  myGraph.Mut().WireDef(0).IsClosed = anOrigClosed;
+  myGraph.Mut().WireDef(0)->IsClosed = anOrigClosed;
   EXPECT_EQ(myGraph.Defs().Wire(0).IsClosed, anOrigClosed);
 }
 

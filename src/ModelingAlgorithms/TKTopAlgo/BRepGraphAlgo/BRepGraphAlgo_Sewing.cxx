@@ -554,19 +554,19 @@ void assembleVertices(BRepGraph&                                  theGraph,
   // Apply vertex merges to free edges.
   for (int aFreeEdgeIter = 1; aFreeEdgeIter <= aNbFreeEdges; ++aFreeEdgeIter)
   {
-    BRepGraph_TopoNode::EdgeDef& anEdge =
+    BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge =
       theGraph.Mut().EdgeDef(theFreeEdges.Value(aFreeEdgeIter).Index);
     const int* aMergedStart =
-      anEdge.StartVertexIdx >= 0 ? aVertexMerge.Seek(anEdge.StartVertexIdx) : nullptr;
+      anEdge->StartVertexIdx >= 0 ? aVertexMerge.Seek(anEdge->StartVertexIdx) : nullptr;
     if (aMergedStart != nullptr)
     {
-      anEdge.StartVertexIdx = *aMergedStart;
+      anEdge->StartVertexIdx = *aMergedStart;
     }
     const int* aMergedEnd =
-      anEdge.EndVertexIdx >= 0 ? aVertexMerge.Seek(anEdge.EndVertexIdx) : nullptr;
+      anEdge->EndVertexIdx >= 0 ? aVertexMerge.Seek(anEdge->EndVertexIdx) : nullptr;
     if (aMergedEnd != nullptr)
     {
-      anEdge.EndVertexIdx = *aMergedEnd;
+      anEdge->EndVertexIdx = *aMergedEnd;
     }
   }
 }
@@ -1386,7 +1386,7 @@ int mergeMatchedEdges(
     }
 
     theSewnEdgeIndices.Add(anIdA.Index);
-    theGraph.Mut().EdgeDef(anIdA.Index).Tolerance = aMergedTol;
+    theGraph.Mut().EdgeDef(anIdA.Index)->Tolerance = aMergedTol;
 
     // 2. PCurve transfer from remove-edge to keep-edge.
     for (int aPCurveIter = 0; aPCurveIter < aRemoveEdge.PCurves.Length(); ++aPCurveIter)

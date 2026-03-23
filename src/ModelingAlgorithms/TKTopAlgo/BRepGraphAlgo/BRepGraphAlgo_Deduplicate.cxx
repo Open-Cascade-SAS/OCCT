@@ -16,6 +16,7 @@
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_History.hxx>
+#include <BRepGraph_MutRef.hxx>
 #include <BRepGraph_Mutator.hxx>
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_RelEdgesView.hxx>
@@ -132,16 +133,16 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
   {
     const int aFaceIdx       = anIt.Key();
     const int aCanonFaceIdx  = anIt.Value();
-    BRepGraph_TopoNode::FaceDef& aFaceDef = theGraph.Mut().FaceDef(aFaceIdx);
+    BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aFaceDef = theGraph.Mut().FaceDef(aFaceIdx);
     const Handle(Geom_Surface)& aCanonSurf = theGraph.Defs().Face(aCanonFaceIdx).Surface;
-    aFaceDef.Surface = aCanonSurf;
+    aFaceDef->Surface = aCanonSurf;
     ++aResult.NbSurfaceRewrites;
-    aResult.AffectedFaceDefs.Append(aFaceDef.Id);
+    aResult.AffectedFaceDefs.Append(aFaceDef->Id);
 
     NCollection_Vector<BRepGraph_NodeId> aRepl;
     aRepl.Append(BRepGraph_NodeId::Face(aCanonFaceIdx));
     theGraph.History().Record(TCollection_AsciiString("Dedup:CanonicalizeSurface"),
-                              aFaceDef.Id,
+                              aFaceDef->Id,
                               aRepl);
     ++aResult.NbHistoryRecords;
   }
@@ -151,16 +152,16 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
   {
     const int anEdgeIdx      = anIt.Key();
     const int aCanonEdgeIdx  = anIt.Value();
-    BRepGraph_TopoNode::EdgeDef& anEdgeDef = theGraph.Mut().EdgeDef(anEdgeIdx);
+    BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdgeDef = theGraph.Mut().EdgeDef(anEdgeIdx);
     const Handle(Geom_Curve)& aCanonCurve = theGraph.Defs().Edge(aCanonEdgeIdx).Curve3d;
-    anEdgeDef.Curve3d = aCanonCurve;
+    anEdgeDef->Curve3d = aCanonCurve;
     ++aResult.NbCurveRewrites;
-    aResult.AffectedEdgeDefs.Append(anEdgeDef.Id);
+    aResult.AffectedEdgeDefs.Append(anEdgeDef->Id);
 
     NCollection_Vector<BRepGraph_NodeId> aRepl;
     aRepl.Append(BRepGraph_NodeId::Edge(aCanonEdgeIdx));
     theGraph.History().Record(TCollection_AsciiString("Dedup:CanonicalizeCurve"),
-                              anEdgeDef.Id,
+                              anEdgeDef->Id,
                               aRepl);
     ++aResult.NbHistoryRecords;
   }
@@ -244,13 +245,13 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
         // Update edges referencing the old vertex.
         for (int anEdgeIdx = 0; anEdgeIdx < theGraph.Defs().NbEdges(); ++anEdgeIdx)
         {
-          BRepGraph_TopoNode::EdgeDef& anEdge = theGraph.Mut().EdgeDef(anEdgeIdx);
-          if (anEdge.IsRemoved)
+          BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge = theGraph.Mut().EdgeDef(anEdgeIdx);
+          if (anEdge->IsRemoved)
             continue;
-          if (anEdge.StartVertexDefId() == anOldId)
-            anEdge.StartVertexIdx = aCanonId.Index;
-          if (anEdge.EndVertexDefId() == anOldId)
-            anEdge.EndVertexIdx = aCanonId.Index;
+          if (anEdge->StartVertexDefId() == anOldId)
+            anEdge->StartVertexIdx = aCanonId.Index;
+          if (anEdge->EndVertexDefId() == anOldId)
+            anEdge->EndVertexIdx = aCanonId.Index;
         }
 
         // Mark non-canonical as removed.

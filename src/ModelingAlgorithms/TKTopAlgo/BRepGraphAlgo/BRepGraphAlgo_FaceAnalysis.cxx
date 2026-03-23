@@ -178,7 +178,7 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(
     // Remove face if all edges are small/degenerate.
     if (aNbEdges > 0 && aNbSmall == aNbEdges)
     {
-      theGraph.Mut().FaceDef(aFaceIdx).IsRemoved = true;
+      theGraph.Mut().FaceDef(aFaceIdx)->IsRemoved = true;
       aResult.DeletedFaces.Append(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, aFaceIdx));
     }
   }

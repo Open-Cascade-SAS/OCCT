@@ -456,8 +456,10 @@ TEST(BRepGraphReconstructTest, AfterVertexMutation_ModifiedFlagAndPointChanged)
 
   // Mutate: move vertex by 5 units in Z.
   const gp_Pnt anOldPt = aGraph.Defs().Vertex(aVertIdx).Point;
-  BRepGraph_TopoNode::VertexDef& aMutVtx = aGraph.Mut().VertexDef(aVertIdx);
-  aMutVtx.Point = gp_Pnt(anOldPt.X(), anOldPt.Y(), anOldPt.Z() + 5.0);
+  {
+    BRepGraph_MutRef<BRepGraph_TopoNode::VertexDef> aMutVtx = aGraph.Mut().VertexDef(aVertIdx);
+    aMutVtx->Point = gp_Pnt(anOldPt.X(), anOldPt.Y(), anOldPt.Z() + 5.0);
+  }
 
   // Verify the modification flag is set on the vertex def.
   EXPECT_TRUE(aGraph.Defs().Vertex(aVertIdx).IsModified)
@@ -482,8 +484,10 @@ TEST(BRepGraphReconstructTest, AfterToleranceMutation_NewTShape)
   TopoDS_Shape aShapeBefore = aGraph.Shapes().Shape(anEdgeId);
 
   // Mutate tolerance.
-  BRepGraph_TopoNode::EdgeDef& aMutEdge = aGraph.Mut().EdgeDef(0);
-  aMutEdge.Tolerance = aMutEdge.Tolerance + 1.0;
+  {
+    BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aMutEdge = aGraph.Mut().EdgeDef(0);
+    aMutEdge->Tolerance = aMutEdge->Tolerance + 1.0;
+  }
 
   // After mutation, Shape() should return a reconstructed shape with a different TShape.
   TopoDS_Shape aShapeAfter = aGraph.Shapes().Shape(anEdgeId);

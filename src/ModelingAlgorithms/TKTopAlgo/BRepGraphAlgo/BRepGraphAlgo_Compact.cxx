@@ -330,9 +330,9 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
     aNewGraph.Builder().AddFaceDef(aSurf, aNewOuterWire, aNewInnerWires, anOldFace.Tolerance);
 
     // Copy triangulations from old FaceDef to new FaceDef.
-    BRepGraph_TopoNode::FaceDef& aNewFace = aNewGraph.Mut().FaceDef(aFaceMap.Find(anIdx));
-    aNewFace.Triangulations          = anOldFace.Triangulations;
-    aNewFace.ActiveTriangulationIndex = anOldFace.ActiveTriangulationIndex;
+    BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aNewFace = aNewGraph.Mut().FaceDef(aFaceMap.Find(anIdx));
+    aNewFace->Triangulations          = anOldFace.Triangulations;
+    aNewFace->ActiveTriangulationIndex = anOldFace.ActiveTriangulationIndex;
   }
 
   // Add PCurves to edges in the new graph.

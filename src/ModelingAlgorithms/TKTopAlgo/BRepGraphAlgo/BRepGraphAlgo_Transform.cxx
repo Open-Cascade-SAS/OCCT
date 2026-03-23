@@ -17,6 +17,7 @@
 
 #include <BRepGraph_Data.hxx>
 #include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_MutRef.hxx>
 #include <BRepGraph_MutView.hxx>
 
 #include <NCollection_Map.hxx>
@@ -33,7 +34,7 @@ void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
   // Transform absolute vertex points.
   for (int anIdx = 0; anIdx < theGraph.Defs().NbVertices(); ++anIdx)
   {
-    theGraph.Mut().VertexDef(anIdx).Point.Transform(theTrsf);
+    theGraph.Mut().VertexDef(anIdx)->Point.Transform(theTrsf);
   }
 
   // Transform surface geometry handles directly on face defs.
@@ -41,24 +42,24 @@ void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
   NCollection_Map<const Geom_Surface*> aVisitedSurfaces;
   for (int anIdx = 0; anIdx < theGraph.Defs().NbFaces(); ++anIdx)
   {
-    BRepGraph_TopoNode::FaceDef& aFace = theGraph.Mut().FaceDef(anIdx);
-    if (!aFace.Surface.IsNull() && aVisitedSurfaces.Add(aFace.Surface.get()))
+    BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aFace = theGraph.Mut().FaceDef(anIdx);
+    if (!aFace->Surface.IsNull() && aVisitedSurfaces.Add(aFace->Surface.get()))
     {
-      aFace.Surface->Transform(theTrsf);
+      aFace->Surface->Transform(theTrsf);
     }
     // Invalidate triangulations -- meshes are no longer valid after geometry transform.
-    aFace.Triangulations.Clear();
-    aFace.ActiveTriangulationIndex = -1;
+    aFace->Triangulations.Clear();
+    aFace->ActiveTriangulationIndex = -1;
   }
 
   // Transform curve geometry handles directly on edge defs.
   NCollection_Map<const Geom_Curve*> aVisitedCurves;
   for (int anIdx = 0; anIdx < theGraph.Defs().NbEdges(); ++anIdx)
   {
-    BRepGraph_TopoNode::EdgeDef& anEdge = theGraph.Mut().EdgeDef(anIdx);
-    if (!anEdge.Curve3d.IsNull() && aVisitedCurves.Add(anEdge.Curve3d.get()))
+    BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge = theGraph.Mut().EdgeDef(anIdx);
+    if (!anEdge->Curve3d.IsNull() && aVisitedCurves.Add(anEdge->Curve3d.get()))
     {
-      anEdge.Curve3d->Transform(theTrsf);
+      anEdge->Curve3d->Transform(theTrsf);
     }
   }
   // PCurves are in UV space -- they are not affected by 3D transforms.

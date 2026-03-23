@@ -24,37 +24,16 @@ class Geom2d_Curve;
 class BRepGraph::MutView
 {
 public:
-  //! Return mutable edge definition (marks node as modified).
+  //! Return scoped mutable definition guard (defers markModified to scope exit).
   //! @param[in] theIdx zero-based definition index
-  Standard_EXPORT BRepGraph_TopoNode::EdgeDef& EdgeDef(int theIdx);
-
-  //! Return mutable wire definition (marks node as modified).
-  //! @param[in] theIdx zero-based definition index
-  Standard_EXPORT BRepGraph_TopoNode::WireDef& WireDef(int theIdx);
-
-  //! Return mutable vertex definition (marks node as modified).
-  //! @param[in] theIdx zero-based definition index
-  Standard_EXPORT BRepGraph_TopoNode::VertexDef& VertexDef(int theIdx);
-
-  //! Return mutable face definition (marks node as modified).
-  //! @param[in] theIdx zero-based definition index
-  Standard_EXPORT BRepGraph_TopoNode::FaceDef& FaceDef(int theIdx);
-
-  //! Return mutable shell definition (marks node as modified).
-  //! @param[in] theIdx zero-based definition index
-  Standard_EXPORT BRepGraph_TopoNode::ShellDef& ShellDef(int theIdx);
-
-  //! Return mutable solid definition (marks node as modified).
-  //! @param[in] theIdx zero-based definition index
-  Standard_EXPORT BRepGraph_TopoNode::SolidDef& SolidDef(int theIdx);
-
-  //! Return mutable compound definition (marks node as modified).
-  //! @param[in] theIdx zero-based definition index
-  Standard_EXPORT BRepGraph_TopoNode::CompoundDef& CompoundDef(int theIdx);
-
-  //! Return mutable compsolid definition (marks node as modified).
-  //! @param[in] theIdx zero-based definition index
-  Standard_EXPORT BRepGraph_TopoNode::CompSolidDef& CompSolidDef(int theIdx);
+  BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef>      EdgeDef(int theIdx)      { return myGraph->MutEdge(theIdx); }
+  BRepGraph_MutRef<BRepGraph_TopoNode::WireDef>      WireDef(int theIdx)      { return myGraph->MutWire(theIdx); }
+  BRepGraph_MutRef<BRepGraph_TopoNode::VertexDef>    VertexDef(int theIdx)    { return myGraph->MutVertex(theIdx); }
+  BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef>      FaceDef(int theIdx)      { return myGraph->MutFace(theIdx); }
+  BRepGraph_MutRef<BRepGraph_TopoNode::ShellDef>     ShellDef(int theIdx)     { return myGraph->MutShell(theIdx); }
+  BRepGraph_MutRef<BRepGraph_TopoNode::SolidDef>     SolidDef(int theIdx)     { return myGraph->MutSolid(theIdx); }
+  BRepGraph_MutRef<BRepGraph_TopoNode::CompoundDef>  CompoundDef(int theIdx)  { return myGraph->MutCompound(theIdx); }
+  BRepGraph_MutRef<BRepGraph_TopoNode::CompSolidDef> CompSolidDef(int theIdx) { return myGraph->MutCompSolid(theIdx); }
 
   //! Attach a PCurve to an edge for a given face context (stored inline on EdgeDef).
   //! @param[in] theEdgeDef           edge definition NodeId

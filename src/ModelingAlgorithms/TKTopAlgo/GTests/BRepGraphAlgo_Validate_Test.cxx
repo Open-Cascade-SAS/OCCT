@@ -135,21 +135,21 @@ TEST(BRepGraphAlgo_ValidateTest, WireConnectivity_DisconnectedEdges)
   const BRepGraph_NodeId aFirstEdgeId(BRepGraph_NodeId::Kind::Edge, aFirstEdgeRef.EdgeIdx);
   ASSERT_TRUE(aFirstEdgeId.IsValid());
 
-  BRepGraph_TopoNode::EdgeDef& aFirstEdge = aGraph.Mut().EdgeDef(aFirstEdgeId.Index);
+  BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aFirstEdge = aGraph.Mut().EdgeDef(aFirstEdgeId.Index);
 
   // Find a vertex different from the current end vertex.
-  BRepGraph_NodeId anOrigEnd = aFirstEdge.EndVertexDefId();
+  BRepGraph_NodeId anOrigEnd = aFirstEdge->EndVertexDefId();
   for (int aVtxIdx = 0; aVtxIdx < aGraph.Defs().NbVertices(); ++aVtxIdx)
   {
     if (BRepGraph_NodeId::Vertex(aVtxIdx) != anOrigEnd
-        && BRepGraph_NodeId::Vertex(aVtxIdx) != aFirstEdge.StartVertexDefId())
+        && BRepGraph_NodeId::Vertex(aVtxIdx) != aFirstEdge->StartVertexDefId())
     {
-      aFirstEdge.EndVertexIdx = aVtxIdx;
+      aFirstEdge->EndVertexIdx = aVtxIdx;
       break;
     }
   }
 
-  ASSERT_NE(aFirstEdge.EndVertexDefId(), anOrigEnd);
+  ASSERT_NE(aFirstEdge->EndVertexDefId(), anOrigEnd);
 
   const BRepGraphAlgo_Validate::Result aResult = BRepGraphAlgo_Validate::Perform(aGraph);
   EXPECT_FALSE(aResult.IsValid());
@@ -183,8 +183,8 @@ TEST(BRepGraphAlgo_ValidateTest, BoundsCheck_InvalidIndex)
   ASSERT_GT(aGraph.Defs().NbEdges(), 0);
 
   // Corrupt edge's Curve3d to null.
-  BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Mut().EdgeDef(0);
-  anEdge.Curve3d.Nullify();
+  BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge = aGraph.Mut().EdgeDef(0);
+  anEdge->Curve3d.Nullify();
 
   const BRepGraphAlgo_Validate::Result aResult = BRepGraphAlgo_Validate::Perform(aGraph);
   EXPECT_FALSE(aResult.IsValid());
@@ -246,10 +246,10 @@ TEST(BRepGraphAlgo_ValidateTest, CorruptedPCurve_FaceDefIdOutOfBounds)
   ASSERT_GT(aGraph.Defs().NbEdges(), 0);
 
   // Corrupt a PCurve's FaceDefId to an out-of-range value.
-  BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.Mut().EdgeDef(0);
-  if (anEdgeDef.PCurves.Length() > 0)
+  BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdgeDef = aGraph.Mut().EdgeDef(0);
+  if (anEdgeDef->PCurves.Length() > 0)
   {
-    anEdgeDef.PCurves.ChangeValue(0).FaceDefId =
+    anEdgeDef->PCurves.ChangeValue(0).FaceDefId =
       BRepGraph_NodeId::Face(aGraph.Defs().NbFaces() + 999);
   }
 
