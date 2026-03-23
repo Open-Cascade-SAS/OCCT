@@ -524,18 +524,26 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
 
 //=================================================================================================
 
-void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage& theStorage,
-                                    const TopoDS_Shape&   theShape,
-                                    bool                  theParallel,
-                                    const Options&        theOptions)
+void BRepGraphInc_Populate::Perform(
+  BRepGraphInc_Storage&                    theStorage,
+  const TopoDS_Shape&                      theShape,
+  bool                                     theParallel,
+  const Options&                           theOptions,
+  const Handle(NCollection_BaseAllocator)& theTmpAlloc)
 {
   theStorage.Clear();
 
   if (theShape.IsNull())
     return;
 
+  // Use temporary allocator if provided, else default.
+  // Must NOT use the storage's persistent allocator for scratch data.
+  const Handle(NCollection_BaseAllocator)& aTmpAlloc =
+    !theTmpAlloc.IsNull() ? theTmpAlloc
+                          : NCollection_BaseAllocator::CommonBaseAllocator();
+
   // Phase 1 (sequential): Recursively explore hierarchy, collecting face contexts.
-  NCollection_Vector<FaceLocalData> aFaceData;
+  NCollection_Vector<FaceLocalData> aFaceData(256, aTmpAlloc);
 
   std::function<void(const TopoDS_Shape&, int, const TopLoc_Location&)> traverseShape;
 
@@ -731,7 +739,7 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage& theStorage,
   // Edge regularities.
   if (theOptions.ExtractRegularities)
   {
-    NCollection_DataMap<const Geom_Surface*, int> aSurfToFaceIdx;
+    NCollection_DataMap<const Geom_Surface*, int> aSurfToFaceIdx(1, aTmpAlloc);
     for (int i = 0; i < theStorage.myFaces.Length(); ++i)
     {
       const BRepGraphInc::FaceEntity& aFace = theStorage.myFaces.Value(i);
@@ -784,7 +792,7 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage& theStorage,
   // Vertex point representations.
   if (theOptions.ExtractVertexPointReps)
   {
-    NCollection_DataMap<const Geom_Curve*, BRepGraph_NodeId> aCurveToEdgeDef;
+    NCollection_DataMap<const Geom_Curve*, BRepGraph_NodeId> aCurveToEdgeDef(1, aTmpAlloc);
     for (int i = 0; i < theStorage.myEdges.Length(); ++i)
     {
       const BRepGraphInc::EdgeEntity& anEdge = theStorage.myEdges.Value(i);
@@ -792,7 +800,7 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage& theStorage,
         aCurveToEdgeDef.TryBind(anEdge.Curve3d.get(), anEdge.Id);
     }
 
-    NCollection_DataMap<const Geom_Surface*, BRepGraph_NodeId> aSurfToFaceDefVtx;
+    NCollection_DataMap<const Geom_Surface*, BRepGraph_NodeId> aSurfToFaceDefVtx(1, aTmpAlloc);
     for (int i = 0; i < theStorage.myFaces.Length(); ++i)
     {
       const BRepGraphInc::FaceEntity& aFace = theStorage.myFaces.Value(i);
@@ -862,15 +870,23 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage& theStorage,
 
 //=================================================================================================
 
-void BRepGraphInc_Populate::Append(BRepGraphInc_Storage& theStorage,
-                                   const TopoDS_Shape&   theShape,
-                                   bool                  theParallel)
+void BRepGraphInc_Populate::Append(
+  BRepGraphInc_Storage&                    theStorage,
+  const TopoDS_Shape&                      theShape,
+  bool                                     theParallel,
+  const Handle(NCollection_BaseAllocator)& theTmpAlloc)
 {
   if (theShape.IsNull())
     return;
 
+  // Use temporary allocator if provided, else default.
+  // Must NOT use the storage's persistent allocator for scratch data.
+  const Handle(NCollection_BaseAllocator)& aTmpAlloc =
+    !theTmpAlloc.IsNull() ? theTmpAlloc
+                          : NCollection_BaseAllocator::CommonBaseAllocator();
+
   // Collect face contexts by flattening hierarchy.
-  NCollection_Vector<FaceLocalData> aFaceData;
+  NCollection_Vector<FaceLocalData> aFaceData(256, aTmpAlloc);
 
   std::function<void(const TopoDS_Shape&, const TopLoc_Location&)> traverseShape;
   traverseShape = [&](const TopoDS_Shape&    theCurrentShape,

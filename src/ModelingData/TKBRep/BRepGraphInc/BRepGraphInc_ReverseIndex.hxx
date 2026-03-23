@@ -14,6 +14,7 @@
 #ifndef _BRepGraphInc_ReverseIndex_HeaderFile
 #define _BRepGraphInc_ReverseIndex_HeaderFile
 
+#include <NCollection_BaseAllocator.hxx>
 #include <NCollection_Vector.hxx>
 #include <Standard_DefineAlloc.hxx>
 
@@ -35,6 +36,12 @@ class BRepGraphInc_ReverseIndex
 {
 public:
   DEFINE_STANDARD_ALLOC
+
+  //! Set allocator for internal index tables.
+  void SetAllocator(const Handle(NCollection_BaseAllocator)& theAlloc)
+  {
+    myAllocator = theAlloc;
+  }
 
   //! Clear all indices.
   Standard_EXPORT void Clear();
@@ -170,6 +177,8 @@ private:
   //! Add theVal to the vector at theKey unconditionally (no duplicate check).
   //! Used during Build() where freshly-cleared indices guarantee no duplicates.
   static void appendDirect(IndexTable& theIdx, int theKey, int theVal);
+
+  Handle(NCollection_BaseAllocator) myAllocator;
 
   IndexTable myEdgeToWires;
   IndexTable myEdgeToFaces;

@@ -19,6 +19,7 @@
 #include <BRepGraphInc_Entity.hxx>
 #include <BRepGraphInc_ReverseIndex.hxx>
 
+#include <NCollection_BaseAllocator.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_Vector.hxx>
 #include <Standard_DefineAlloc.hxx>
@@ -35,6 +36,14 @@ class BRepGraphInc_Storage
 {
 public:
   DEFINE_STANDARD_ALLOC
+
+  //! Construct with allocator for internal collections.
+  //! If null, uses CommonBaseAllocator.
+  Standard_EXPORT explicit BRepGraphInc_Storage(
+    const Handle(NCollection_BaseAllocator)& theAlloc = Handle(NCollection_BaseAllocator)());
+
+  //! Return the allocator used for internal collections.
+  const Handle(NCollection_BaseAllocator)& Allocator() const { return myAllocator; }
 
   // ------ Count accessors ------
 
@@ -182,6 +191,8 @@ private:
   NCollection_Vector<BRepGraph_UID> mySolidUIDs;
   NCollection_Vector<BRepGraph_UID> myCompoundUIDs;
   NCollection_Vector<BRepGraph_UID> myCompSolidUIDs;
+
+  Handle(NCollection_BaseAllocator) myAllocator;
 
   bool myIsDone              = false;
   bool myHasRegularities     = false;

@@ -32,6 +32,8 @@
 #include <NCollection_DataMap.hxx>
 #include <NCollection_BaseAllocator.hxx>
 
+#include <NCollection_IncAllocator.hxx>
+
 #include <atomic>
 #include <shared_mutex>
 
@@ -48,10 +50,8 @@ struct BRepGraph_Data
   BRepGraphInc_Storage myIncStorage;
 
   //! Map-based RelEdge storage.
-  NCollection_DataMap<BRepGraph_NodeId,
-                      NCollection_Vector<BRepGraph_RelEdge>> myOutRelEdges;
-  NCollection_DataMap<BRepGraph_NodeId,
-                      NCollection_Vector<BRepGraph_RelEdge>> myInRelEdges;
+  NCollection_DataMap<BRepGraph_NodeId, NCollection_Vector<BRepGraph_RelEdge>> myOutRelEdges;
+  NCollection_DataMap<BRepGraph_NodeId, NCollection_Vector<BRepGraph_RelEdge>> myInRelEdges;
 
   //! UID system.
   std::atomic<size_t> myNextUIDCounter{0};
@@ -67,18 +67,21 @@ struct BRepGraph_Data
 
   //! Thread-safe cache of reconstructed shapes.
   mutable NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape> myCurrentShapes;
-  mutable std::shared_mutex myCurrentShapesMutex;
+  mutable std::shared_mutex                                   myCurrentShapesMutex;
 
   using ReconstructCache = NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape>;
 
   BRepGraph_Data()
-      : myAllocator(NCollection_BaseAllocator::CommonBaseAllocator())
+      : myAllocator(new NCollection_IncAllocator),
+        myIncStorage(myAllocator)
   {
   }
 
   explicit BRepGraph_Data(const Handle(NCollection_BaseAllocator)& theAlloc)
-      : myAllocator(!theAlloc.IsNull() ? theAlloc
-                                       : NCollection_BaseAllocator::CommonBaseAllocator())
+      : myAllocator(!theAlloc.IsNull()
+                      ? theAlloc
+                      : Handle(NCollection_BaseAllocator)(new NCollection_IncAllocator)),
+        myIncStorage(myAllocator)
   {
   }
 };

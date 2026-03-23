@@ -15,6 +15,33 @@
 
 //=================================================================================================
 
+BRepGraphInc_Storage::BRepGraphInc_Storage(
+  const Handle(NCollection_BaseAllocator)& theAlloc)
+  : myVertices(256, theAlloc),
+    myEdges(256, theAlloc),
+    myWires(256, theAlloc),
+    myFaces(256, theAlloc),
+    myShells(256, theAlloc),
+    mySolids(256, theAlloc),
+    myCompounds(256, theAlloc),
+    myCompSolids(256, theAlloc),
+    myTShapeToNodeId(1, theAlloc),
+    myOriginalShapes(1, theAlloc),
+    myVertexUIDs(256, theAlloc),
+    myEdgeUIDs(256, theAlloc),
+    myWireUIDs(256, theAlloc),
+    myFaceUIDs(256, theAlloc),
+    myShellUIDs(256, theAlloc),
+    mySolidUIDs(256, theAlloc),
+    myCompoundUIDs(256, theAlloc),
+    myCompSolidUIDs(256, theAlloc),
+    myAllocator(theAlloc.IsNull()
+      ? NCollection_BaseAllocator::CommonBaseAllocator() : theAlloc)
+{
+}
+
+//=================================================================================================
+
 const NCollection_Vector<BRepGraph_UID>& BRepGraphInc_Storage::UIDs(
   BRepGraph_NodeId::Kind theKind) const
 {
@@ -92,6 +119,7 @@ void BRepGraphInc_Storage::Clear()
 
 void BRepGraphInc_Storage::BuildReverseIndex()
 {
+  myReverseIdx.SetAllocator(myAllocator);
   myReverseIdx.Build(myEdges, myWires, myFaces, myShells, mySolids);
 }
 

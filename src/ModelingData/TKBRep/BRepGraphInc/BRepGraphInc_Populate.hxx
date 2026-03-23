@@ -14,6 +14,7 @@
 #ifndef _BRepGraphInc_Populate_HeaderFile
 #define _BRepGraphInc_Populate_HeaderFile
 
+#include <NCollection_BaseAllocator.hxx>
 #include <Standard_DefineAlloc.hxx>
 
 class TopoDS_Shape;
@@ -49,10 +50,12 @@ public:
   //! @param[in]  theShape    root shape
   //! @param[in]  theParallel if true, face-level extraction runs in parallel
   //! @param[in]  theOptions  optional post-pass controls
-  static Standard_EXPORT void Perform(BRepGraphInc_Storage& theStorage,
-                                      const TopoDS_Shape&   theShape,
-                                      bool                  theParallel,
-                                      const Options&        theOptions = Options());
+  static Standard_EXPORT void Perform(
+    BRepGraphInc_Storage&                    theStorage,
+    const TopoDS_Shape&                      theShape,
+    bool                                     theParallel,
+    const Options&                           theOptions = Options(),
+    const Handle(NCollection_BaseAllocator)& theTmpAlloc = Handle(NCollection_BaseAllocator)());
 
   //! Extend existing storage with additional shapes (no clear).
   //! Flattens hierarchy to face level only (no Solid/Shell/Compound entities created).
@@ -60,9 +63,12 @@ public:
   //! @param[in,out] theStorage  storage to extend
   //! @param[in]     theShape    shape to append
   //! @param[in]     theParallel if true, face-level extraction runs in parallel
-  static Standard_EXPORT void Append(BRepGraphInc_Storage& theStorage,
-                                     const TopoDS_Shape&   theShape,
-                                     bool                  theParallel);
+  //! @param[in]     theTmpAlloc optional allocator for temporary scratch data
+  static Standard_EXPORT void Append(
+    BRepGraphInc_Storage&                    theStorage,
+    const TopoDS_Shape&                      theShape,
+    bool                                     theParallel,
+    const Handle(NCollection_BaseAllocator)& theTmpAlloc = Handle(NCollection_BaseAllocator)());
 
 private:
   BRepGraphInc_Populate() = delete;

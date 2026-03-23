@@ -38,7 +38,20 @@ void BRepGraphInc_ReverseIndex::Build(
   const NCollection_Vector<BRepGraphInc::ShellEntity>& theShells,
   const NCollection_Vector<BRepGraphInc::SolidEntity>& theSolids)
 {
-  Clear();
+  // Reconstruct outer index tables with allocator if set.
+  if (!myAllocator.IsNull())
+  {
+    myEdgeToWires   = IndexTable(256, myAllocator);
+    myEdgeToFaces   = IndexTable(256, myAllocator);
+    myVertexToEdges = IndexTable(256, myAllocator);
+    myWireToFaces   = IndexTable(256, myAllocator);
+    myFaceToShells  = IndexTable(256, myAllocator);
+    myShellToSolids = IndexTable(256, myAllocator);
+  }
+  else
+  {
+    Clear();
+  }
 
   // Scan edges for max vertex index to pre-size myVertexToEdges.
   int aMaxVertexIdx = -1;

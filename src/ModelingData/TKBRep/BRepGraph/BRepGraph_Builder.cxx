@@ -17,6 +17,7 @@
 #include <BRepGraph_Data.hxx>
 #include <BRepGraphInc_Populate.hxx>
 #include <BRepGraphInc_Storage.hxx>
+#include <NCollection_IncAllocator.hxx>
 
 //=================================================================================================
 
@@ -70,7 +71,11 @@ void BRepGraph_Builder::Perform(BRepGraph&                            theGraph,
   if (theShape.IsNull())
     return;
 
-  BRepGraphInc_Populate::Perform(theGraph.myData->myIncStorage, theShape, theParallel, theOptions);
+  // Temporary allocator for populate scratch data, discarded after build.
+  Handle(NCollection_IncAllocator) aTmpAlloc = new NCollection_IncAllocator;
+
+  BRepGraphInc_Populate::Perform(theGraph.myData->myIncStorage,
+                                 theShape, theParallel, theOptions, aTmpAlloc);
   if (!theGraph.myData->myIncStorage.GetIsDone())
   {
     theGraph.myData->myIncStorage.Clear();
@@ -100,7 +105,8 @@ void BRepGraph_Builder::Append(BRepGraph& theGraph, const TopoDS_Shape& theShape
   const int anOldComp  = aStorage.NbCompounds();
   const int anOldCS    = aStorage.NbCompSolids();
 
-  BRepGraphInc_Populate::Append(aStorage, theShape, theParallel);
+  Handle(NCollection_IncAllocator) aTmpAlloc = new NCollection_IncAllocator;
+  BRepGraphInc_Populate::Append(aStorage, theShape, theParallel, aTmpAlloc);
 
   theGraph.myData->myCurrentShapes.Clear();
 
