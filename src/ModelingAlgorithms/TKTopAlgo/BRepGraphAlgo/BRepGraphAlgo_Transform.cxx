@@ -19,6 +19,7 @@
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_MutRef.hxx>
 #include <BRepGraph_MutView.hxx>
+#include <BRepGraph_Tool.hxx>
 
 #include <NCollection_Map.hxx>
 
@@ -43,10 +44,9 @@ void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
   for (int anIdx = 0; anIdx < theGraph.Defs().NbFaces(); ++anIdx)
   {
     BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aFace = theGraph.Mut().FaceDef(anIdx);
-    if (aFace->SurfaceRepIdx >= 0 && aVisitedSurfReps.Add(aFace->SurfaceRepIdx))
+    if (BRepGraph_Tool::HasSurface(theGraph, anIdx) && aVisitedSurfReps.Add(aFace->SurfaceRepIdx))
     {
-      const occ::handle<Geom_Surface>& aSurf =
-        theGraph.Defs().SurfaceRep(aFace->SurfaceRepIdx).Surface;
+      const occ::handle<Geom_Surface>& aSurf = BRepGraph_Tool::Surface(theGraph, anIdx);
       if (!aSurf.IsNull())
         aSurf->Transform(theTrsf);
     }
@@ -60,10 +60,9 @@ void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
   for (int anIdx = 0; anIdx < theGraph.Defs().NbEdges(); ++anIdx)
   {
     BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge = theGraph.Mut().EdgeDef(anIdx);
-    if (anEdge->Curve3DRepIdx >= 0 && aVisitedCurveReps.Add(anEdge->Curve3DRepIdx))
+    if (BRepGraph_Tool::HasCurve(theGraph, anIdx) && aVisitedCurveReps.Add(anEdge->Curve3DRepIdx))
     {
-      const occ::handle<Geom_Curve>& aCurve3d =
-        theGraph.Defs().Curve3DRep(anEdge->Curve3DRepIdx).Curve;
+      const occ::handle<Geom_Curve>& aCurve3d = BRepGraph_Tool::Curve(theGraph, anIdx);
       if (!aCurve3d.IsNull())
         aCurve3d->Transform(theTrsf);
     }

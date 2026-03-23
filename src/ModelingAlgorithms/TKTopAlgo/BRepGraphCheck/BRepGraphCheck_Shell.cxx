@@ -16,6 +16,7 @@
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_RelEdgesView.hxx>
 #include <BRepGraph_SpatialView.hxx>
+#include <BRepGraph_Tool.hxx>
 #include <BRepGraph_TopoNode.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
 #include <NCollection_Map.hxx>
@@ -141,10 +142,9 @@ void BRepGraphCheck::CheckShellClosed(
         const BRepGraphInc::CoEdgeRef& aCR = aWireDef.CoEdgeRefs.Value(aCoEdgeIter);
         const BRepGraph_TopoNode::CoEdgeDef& aCoEdgeDef = aDefs.CoEdge(aCR.CoEdgeIdx);
         const int anEdgeIdx = aCoEdgeDef.EdgeIdx;
-        const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(anEdgeIdx);
 
         // Skip degenerate edges.
-        if (anEdgeDef.IsDegenerate)
+        if (BRepGraph_Tool::Degenerated(theGraph, anEdgeIdx))
           continue;
 
         if (!anEdgeFaceCounts.IsBound(anEdgeIdx))
@@ -258,8 +258,7 @@ void BRepGraphCheck::CheckShellOrientation(
       continue;
 
     // Skip degenerate edges.
-    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(anIter.Key());
-    if (anEdgeDef.IsDegenerate)
+    if (BRepGraph_Tool::Degenerated(theGraph, anIter.Key()))
       continue;
 
     const TopAbs_Orientation anOri0 = aEntries.Value(0).OrientationInWire;

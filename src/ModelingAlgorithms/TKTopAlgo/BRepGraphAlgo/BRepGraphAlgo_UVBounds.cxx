@@ -15,6 +15,7 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_Tool.hxx>
 #include <BRepGraph_TopoNode.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
 
@@ -251,16 +252,16 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph& theGraph, int theFaceIdx, 
   theData = CachedData();
 
   const BRepGraph_TopoNode::FaceDef& aFaceDef = theGraph.Defs().Face(theFaceIdx);
-  if (aFaceDef.SurfaceRepIdx < 0)
+  if (!BRepGraph_Tool::HasSurface(theGraph, theFaceIdx))
   {
     return;
   }
 
   const occ::handle<Geom_Surface>& aFaceSurf =
-    theGraph.Defs().SurfaceRep(aFaceDef.SurfaceRepIdx).Surface;
+    BRepGraph_Tool::Surface(theGraph, theFaceIdx);
 
   theData.IsValid              = true;
-  theData.IsNaturalRestriction = aFaceDef.NaturalRestriction;
+  theData.IsNaturalRestriction = BRepGraph_Tool::NaturalRestriction(theGraph, theFaceIdx);
   theData.ComputeMethod        = Method::PCurve;
 
   GeomAdaptor_Surface aGAS(aFaceSurf);
@@ -276,7 +277,7 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph& theGraph, int theFaceIdx, 
   }
 
   // Check by comparing PCurves and surface boundaries (the 4-edge natural restriction check).
-  const double theTol = aFaceDef.Tolerance;
+  const double theTol = BRepGraph_Tool::ToleranceFace(theGraph, theFaceIdx);
   if (!aFaceDef.WireRefs.IsEmpty())
   {
     const bool     isUperiodic = aGAS.IsUPeriodic();
@@ -304,16 +305,15 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph& theGraph, int theFaceIdx, 
         }
         const BRepGraphInc::CoEdgeRef& aCR = aWireDef.CoEdgeRefs.Value(anIdx);
         const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Defs().CoEdge(aCR.CoEdgeIdx);
-        const BRepGraph_NodeId anEdgeDefId = BRepGraph_NodeId::Edge(aCoEdge.EdgeIdx);
         const BRepGraphInc::CoEdgeEntity* aPCurve =
-          theGraph.Defs().FindPCurve(anEdgeDefId, aFaceDef.Id);
+          BRepGraph_Tool::FindPCurve(theGraph, aCoEdge.EdgeIdx, theFaceIdx);
         if (aPCurve == nullptr || aPCurve->Curve2DRepIdx < 0)
         {
           isAborted = true;
           return;
         }
         const occ::handle<Geom2d_Curve>& aPCurve2d =
-          theGraph.Defs().Curve2DRep(aPCurve->Curve2DRepIdx).Curve;
+          BRepGraph_Tool::PCurve(theGraph, *aPCurve);
         if (aPCurve2d.IsNull())
         {
           isAborted = true;
@@ -409,13 +409,12 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph& theGraph, int theFaceIdx, 
     {
       const BRepGraphInc::CoEdgeRef& aCR = aWireDef.CoEdgeRefs.Value(anIdx);
       const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Defs().CoEdge(aCR.CoEdgeIdx);
-      const BRepGraph_NodeId anEdgeDefId = BRepGraph_NodeId::Edge(aCoEdge.EdgeIdx);
       const BRepGraphInc::CoEdgeEntity* aPCurve =
-        theGraph.Defs().FindPCurve(anEdgeDefId, aFaceDef.Id);
+        BRepGraph_Tool::FindPCurve(theGraph, aCoEdge.EdgeIdx, theFaceIdx);
       if (aPCurve == nullptr || aPCurve->Curve2DRepIdx < 0)
         continue;
       const occ::handle<Geom2d_Curve>& aBndPC2d =
-        theGraph.Defs().Curve2DRep(aPCurve->Curve2DRepIdx).Curve;
+        BRepGraph_Tool::PCurve(theGraph, *aPCurve);
       if (aBndPC2d.IsNull())
         continue;
       BndLib_Add2dCurve::AddOptimal(aBndPC2d,

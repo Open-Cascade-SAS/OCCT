@@ -56,6 +56,7 @@
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_SpatialView.hxx>
+#include <BRepGraph_Tool.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
 
 #include <algorithm>
@@ -191,13 +192,12 @@ bool isSurfaceClosedForEdge(const BRepGraph&                           theGraph,
                             const BRepGraph_TopoNode::CoEdgeDef&       theCoEdge,
                             bool                                       theCheckU)
 {
-  const BRepGraph_TopoNode::FaceDef& aFace = theGraph.Defs().Face(theFaceDefIdx);
-  if (aFace.SurfaceRepIdx < 0)
+  if (!BRepGraph_Tool::HasSurface(theGraph, theFaceDefIdx))
   {
     return false;
   }
   const occ::handle<Geom_Surface>& aFaceSurf =
-    theGraph.Defs().SurfaceRep(aFace.SurfaceRepIdx).Surface;
+    BRepGraph_Tool::Surface(theGraph, theFaceDefIdx);
   const occ::handle<Geom_Surface> aBasis = basisSurface(aFaceSurf);
   const bool isClosed = theCheckU ? aBasis->IsUClosed() : aBasis->IsVClosed();
   if (isClosed)
@@ -208,7 +208,7 @@ bool isSurfaceClosedForEdge(const BRepGraph&                           theGraph,
   if (theCoEdge.Curve2DRepIdx >= 0)
   {
     const occ::handle<Geom2d_Curve>& aCoEdgePCurve =
-      theGraph.Defs().Curve2DRep(theCoEdge.Curve2DRepIdx).Curve;
+      BRepGraph_Tool::PCurve(theGraph, theCoEdge);
     return isClosedByIsos(aBasis, aCoEdgePCurve, theCoEdge.ParamFirst,
                           theCoEdge.ParamLast, !theCheckU);
   }
@@ -261,13 +261,12 @@ bool canSewSameFaceEdges(const BRepGraph& theGraph,
   {
     return false;
   }
-  const BRepGraph_TopoNode::FaceDef& aFace = theGraph.Defs().Face(theSharedFace);
-  if (aFace.SurfaceRepIdx < 0)
+  if (!BRepGraph_Tool::HasSurface(theGraph, theSharedFace))
   {
     return false;
   }
   const occ::handle<Geom_Surface>& aFaceSurf2 =
-    theGraph.Defs().SurfaceRep(aFace.SurfaceRepIdx).Surface;
+    BRepGraph_Tool::Surface(theGraph, theSharedFace);
   const occ::handle<Geom_Surface> aBasis = basisSurface(aFaceSurf2);
   const bool                 isUClosed = aBasis->IsUClosed();
   const bool                 isVClosed = aBasis->IsVClosed();
@@ -277,11 +276,8 @@ bool canSewSameFaceEdges(const BRepGraph& theGraph,
   }
 
   // Get PCurves for both edges on the shared face via graph lookup.
-  const BRepGraph_NodeId anEdgeIdA(BRepGraph_NodeId::Kind::Edge, theEdgeA);
-  const BRepGraph_NodeId anEdgeIdB(BRepGraph_NodeId::Kind::Edge, theEdgeB);
-  const BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, theSharedFace);
-  const BRepGraphInc::CoEdgeEntity* aPCEntryA = theGraph.Defs().FindPCurve(anEdgeIdA, aFaceId);
-  const BRepGraphInc::CoEdgeEntity* aPCEntryB = theGraph.Defs().FindPCurve(anEdgeIdB, aFaceId);
+  const BRepGraphInc::CoEdgeEntity* aPCEntryA = BRepGraph_Tool::FindPCurve(theGraph, theEdgeA, theSharedFace);
+  const BRepGraphInc::CoEdgeEntity* aPCEntryB = BRepGraph_Tool::FindPCurve(theGraph, theEdgeB, theSharedFace);
   if (aPCEntryA == nullptr || aPCEntryB == nullptr
       || aPCEntryA->Curve2DRepIdx < 0 || aPCEntryB->Curve2DRepIdx < 0)
   {
@@ -289,9 +285,9 @@ bool canSewSameFaceEdges(const BRepGraph& theGraph,
   }
 
   const occ::handle<Geom2d_Curve>& aCurve2dA =
-    theGraph.Defs().Curve2DRep(aPCEntryA->Curve2DRepIdx).Curve;
+    BRepGraph_Tool::PCurve(theGraph, *aPCEntryA);
   const occ::handle<Geom2d_Curve>& aCurve2dB =
-    theGraph.Defs().Curve2DRep(aPCEntryB->Curve2DRepIdx).Curve;
+    BRepGraph_Tool::PCurve(theGraph, *aPCEntryB);
   if (aCurve2dA.IsNull() || aCurve2dB.IsNull())
     return false;
 
@@ -416,7 +412,7 @@ NCollection_Array1<BRepGraph_NodeId> findFreeEdges(const BRepGraph& theGraph,
   for (int anEdgeIdx = 0; anEdgeIdx < aDefs.NbEdges(); ++anEdgeIdx)
   {
     const BRepGraph_TopoNode::EdgeDef& anEdge = aDefs.Edge(anEdgeIdx);
-    if (anEdge.IsDegenerate || anEdge.IsRemoved)
+    if (BRepGraph_Tool::Degenerated(theGraph, anEdgeIdx) || anEdge.IsRemoved)
     {
       continue;
     }
@@ -497,7 +493,7 @@ void assembleVertices(BRepGraph&                                  theGraph,
   for (int aVtxIter = 0; aVtxIter < aNbVertices; ++aVtxIter)
   {
     const int anIdx = aFreeVertexIndices.Value(aVtxIter);
-    aVertexPoints.SetValue(aVtxIter, theGraph.Defs().Vertex(anIdx).Point);
+    aVertexPoints.SetValue(aVtxIter, BRepGraph_Tool::Pnt(theGraph, anIdx));
     aGraphIndices.SetValue(aVtxIter, anIdx);
   }
 
@@ -534,8 +530,8 @@ void assembleVertices(BRepGraph&                                  theGraph,
       }
 
       // Merge: keep vertex with smaller tolerance.
-      const double aTolI = theGraph.Defs().Vertex(anIdxI).Tolerance;
-      const double aTolJ = theGraph.Defs().Vertex(anIdxJ).Tolerance;
+      const double aTolI = BRepGraph_Tool::Tolerance(theGraph, anIdxI);
+      const double aTolJ = BRepGraph_Tool::Tolerance(theGraph, anIdxJ);
       if (aTolJ < aTolI)
       {
         aVertexMerge.Bind(anIdxI, anIdxJ);
@@ -623,7 +619,7 @@ void cutAtIntersections(BRepGraph&                               theGraph,
   for (int aVtxIter = 0; aVtxIter < aNbVtx; ++aVtxIter)
   {
     const int aVtxIdx = aFreeVtxList.Value(aVtxIter);
-    aVtxPoints.SetValue(aVtxIter, theGraph.Defs().Vertex(aVtxIdx).Point);
+    aVtxPoints.SetValue(aVtxIter, BRepGraph_Tool::Pnt(theGraph, aVtxIdx));
   }
 
   // Build UBTree on vertex point-boxes (no enlargement).
@@ -658,7 +654,7 @@ void cutAtIntersections(BRepGraph&                               theGraph,
       const BRepGraph_NodeId             anEdgeId      = theFreeEdges.Value(aFreeEdgeIter);
       const BRepGraph_TopoNode::EdgeDef& anEdge        = theGraph.Defs().Edge(anEdgeId.Index);
 
-      if (anEdge.IsDegenerate || anEdge.Curve3DRepIdx < 0)
+      if (BRepGraph_Tool::Degenerated(theGraph, anEdgeId.Index) || !BRepGraph_Tool::HasCurve(theGraph, anEdgeId.Index))
       {
         return;
       }
@@ -672,7 +668,7 @@ void cutAtIntersections(BRepGraph&                               theGraph,
       const int aStartIdx = anEdge.StartVertexIdx >= 0 ? anEdge.StartVertexIdx : -1;
       const int aEndIdx   = anEdge.EndVertexIdx >= 0 ? anEdge.EndVertexIdx : -1;
 
-      GeomAdaptor_TransformedCurve aCurve = theGraph.Defs().CurveAdaptor(anEdgeId);
+      GeomAdaptor_TransformedCurve aCurve = BRepGraph_Tool::CurveAdaptor(theGraph, anEdgeId.Index);
 
       // Skip edges shorter than MinTolerance.
       if (theMinTol > 0.0)
@@ -1126,12 +1122,12 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> matchFreeEdges
       MatchResult& aMatch = aPerEdgeMatch.ChangeValue(anI);
 
       const BRepGraph_TopoNode::EdgeDef& anEdgeANode = theGraph.Defs().Edge(anIdA.Index);
-      if (anEdgeANode.IsDegenerate)
+      if (BRepGraph_Tool::Degenerated(theGraph, anIdA.Index))
       {
         return;
       }
 
-      GeomAdaptor_TransformedCurve aCurveA = theGraph.Defs().CurveAdaptor(anIdA);
+      GeomAdaptor_TransformedCurve aCurveA = BRepGraph_Tool::CurveAdaptor(theGraph, anIdA.Index);
 
       // Skip edges shorter than MinTolerance.
       if (theMinTol > 0.0)
@@ -1159,8 +1155,8 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> matchFreeEdges
 
       ExtremaPC_Curve anExtPCRevA(aCurveA);
 
-      const gp_Pnt& aStartA = theGraph.Defs().Vertex(anEdgeANode.StartVertexIdx).Point;
-      const gp_Pnt& aEndA   = theGraph.Defs().Vertex(anEdgeANode.EndVertexIdx).Point;
+      const gp_Pnt aStartA = BRepGraph_Tool::Pnt(theGraph, anEdgeANode.StartVertexIdx);
+      const gp_Pnt aEndA   = BRepGraph_Tool::Pnt(theGraph, anEdgeANode.EndVertexIdx);
       const double  aChordA = aStartA.Distance(aEndA);
 
       // Iterate candidates from local adjacency (replaces ForEachOutOfKind).
@@ -1190,8 +1186,8 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> matchFreeEdges
         double aWorkTol = theOptions.Tolerance;
         if (theOptions.LocalTolerancesMode)
         {
-          aWorkTol += theGraph.Defs().Edge(anIdA.Index).Tolerance
-                      + theGraph.Defs().Edge(anIdB.Index).Tolerance;
+          aWorkTol += BRepGraph_Tool::ToleranceEdge(theGraph, anIdA.Index)
+                      + BRepGraph_Tool::ToleranceEdge(theGraph, anIdB.Index);
         }
 
         if (BRepGraph_Analyze::AreEdgesCompatibleSampled(theGraph,
@@ -1291,24 +1287,24 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> matchFreeEdges
           try
           {
             OCC_CATCH_SIGNALS
-            GeomAdaptor_TransformedCurve aCrvA = theGraph.Defs().CurveAdaptor(aPair.EdgeA);
+            GeomAdaptor_TransformedCurve aCrvA = BRepGraph_Tool::CurveAdaptor(theGraph, aPair.EdgeA.Index);
             aLenA = GCPnts_AbscissaPoint::Length(aCrvA);
           }
           catch (const Standard_Failure&)
           {
-            aLenA = theGraph.Defs().Edge(aPair.EdgeA.Index).ParamLast
-                    - theGraph.Defs().Edge(aPair.EdgeA.Index).ParamFirst;
+            const auto [aFirstA, aLastA] = BRepGraph_Tool::Range(theGraph, aPair.EdgeA.Index);
+            aLenA = aLastA - aFirstA;
           }
           try
           {
             OCC_CATCH_SIGNALS
-            GeomAdaptor_TransformedCurve aCrvB = theGraph.Defs().CurveAdaptor(aPair.EdgeB);
+            GeomAdaptor_TransformedCurve aCrvB = BRepGraph_Tool::CurveAdaptor(theGraph, aPair.EdgeB.Index);
             aLenB = GCPnts_AbscissaPoint::Length(aCrvB);
           }
           catch (const Standard_Failure&)
           {
-            aLenB = theGraph.Defs().Edge(aPair.EdgeB.Index).ParamLast
-                    - theGraph.Defs().Edge(aPair.EdgeB.Index).ParamFirst;
+            const auto [aFirstB, aLastB] = BRepGraph_Tool::Range(theGraph, aPair.EdgeB.Index);
+            aLenB = aLastB - aFirstB;
           }
           if (aLenB > aLenA)
           {
@@ -1383,7 +1379,8 @@ int mergeMatchedEdges(
     const BRepGraph_TopoNode::EdgeDef& aKeepEdge   = theGraph.Defs().Edge(anIdA.Index);
 
     // 1. Tolerance merge (graph-only).
-    const double aMergedTol = std::max(aKeepEdge.Tolerance, aRemoveEdge.Tolerance);
+    const double aMergedTol = std::max(BRepGraph_Tool::ToleranceEdge(theGraph, anIdA.Index),
+                                       BRepGraph_Tool::ToleranceEdge(theGraph, anIdB.Index));
 
     // MaxTolerance guard: skip pair if merged tolerance exceeds upper bound.
     if (aMergedTol > theOptions.MaxTolerance)
@@ -1404,7 +1401,7 @@ int mergeMatchedEdges(
       if (aRemoveCE.Curve2DRepIdx >= 0)
       {
         const occ::handle<Geom2d_Curve>& aRemovePCurve =
-          theGraph.Defs().Curve2DRep(aRemoveCE.Curve2DRepIdx).Curve;
+          BRepGraph_Tool::PCurve(theGraph, aRemoveCoEdges.Value(aCEIter));
         // Add PCurve entry to keep-edge via graph API; preserve original orientation
         // so that seam edges (REVERSED orientation) are correctly reconstructed as C2.
         theGraph.Mut().AddPCurveToEdge(anIdA,
@@ -1417,8 +1414,8 @@ int mergeMatchedEdges(
     }
 
     // 3. Determine direction correspondence from vertex positions.
-    const gp_Pnt& aKeepStart   = theGraph.Defs().Vertex(aKeepEdge.StartVertexIdx).Point;
-    const gp_Pnt& aRemoveStart = theGraph.Defs().Vertex(aRemoveEdge.StartVertexIdx).Point;
+    const gp_Pnt aKeepStart   = BRepGraph_Tool::Pnt(theGraph, aKeepEdge.StartVertexIdx);
+    const gp_Pnt aRemoveStart = BRepGraph_Tool::Pnt(theGraph, aRemoveEdge.StartVertexIdx);
     const bool    isReversed   = aKeepStart.Distance(aRemoveStart) > theOptions.Tolerance;
 
     // 4. Update wire entries referencing the remove-edge.
@@ -1542,17 +1539,18 @@ void convertDegenerateEdges(BRepGraph&                   theGraph,
     const BRepGraph_NodeId             anEdgeId = aFreeEdges.Value(aFreeIter);
     const BRepGraph_TopoNode::EdgeDef& anEdge   = theGraph.Defs().Edge(anEdgeId.Index);
 
-    if (anEdge.IsDegenerate || anEdge.Curve3DRepIdx < 0)
+    if (BRepGraph_Tool::Degenerated(theGraph, anEdgeId.Index) || !BRepGraph_Tool::HasCurve(theGraph, anEdgeId.Index))
     {
       continue;
     }
 
     // Compute edge chord length via 3-point check (start, mid, end).
     const occ::handle<Geom_Curve>& anEdgeCurve3d =
-      theGraph.Defs().Curve3DRep(anEdge.Curve3DRepIdx).Curve;
-    const gp_Pnt aPtFirst = anEdgeCurve3d->EvalD0(anEdge.ParamFirst);
-    const gp_Pnt aPtLast  = anEdgeCurve3d->EvalD0(anEdge.ParamLast);
-    const gp_Pnt aPtMid   = anEdgeCurve3d->EvalD0((anEdge.ParamFirst + anEdge.ParamLast) * 0.5);
+      BRepGraph_Tool::Curve(theGraph, anEdgeId.Index);
+    const auto [aEdgeFirst, aEdgeLast] = BRepGraph_Tool::Range(theGraph, anEdgeId.Index);
+    const gp_Pnt aPtFirst = anEdgeCurve3d->EvalD0(aEdgeFirst);
+    const gp_Pnt aPtLast  = anEdgeCurve3d->EvalD0(aEdgeLast);
+    const gp_Pnt aPtMid   = anEdgeCurve3d->EvalD0((aEdgeFirst + aEdgeLast) * 0.5);
 
     double aLength = 0.0;
     if (aPtFirst.Distance(aPtLast) > aPtFirst.Distance(aPtMid))
@@ -1565,7 +1563,7 @@ void convertDegenerateEdges(BRepGraph&                   theGraph,
       try
       {
         OCC_CATCH_SIGNALS
-        GeomAdaptor_TransformedCurve aCurve = theGraph.Defs().CurveAdaptor(anEdgeId);
+        GeomAdaptor_TransformedCurve aCurve = BRepGraph_Tool::CurveAdaptor(theGraph, anEdgeId.Index);
         aLength = GCPnts_AbscissaPoint::Length(aCurve);
       }
       catch (const Standard_Failure&)
@@ -1580,11 +1578,11 @@ void convertDegenerateEdges(BRepGraph&                   theGraph,
     double aVertexTolSum = 0.0;
     if (anEdge.StartVertexIdx >= 0)
     {
-      aVertexTolSum += theGraph.Defs().Vertex(anEdge.StartVertexIdx).Tolerance;
+      aVertexTolSum += BRepGraph_Tool::Tolerance(theGraph, anEdge.StartVertexIdx);
     }
     if (anEdge.EndVertexIdx >= 0)
     {
-      aVertexTolSum += theGraph.Defs().Vertex(anEdge.EndVertexIdx).Tolerance;
+      aVertexTolSum += BRepGraph_Tool::Tolerance(theGraph, anEdge.EndVertexIdx);
     }
 
     if (aLength <= aVertexTolSum)
@@ -1598,8 +1596,8 @@ void convertDegenerateEdges(BRepGraph&                   theGraph,
       if (anEdge.StartVertexIdx >= 0 && anEdge.EndVertexIdx >= 0
           && anEdge.StartVertexIdx != anEdge.EndVertexIdx)
       {
-        const double aTolStart = theGraph.Defs().Vertex(anEdge.StartVertexIdx).Tolerance;
-        const double aTolEnd   = theGraph.Defs().Vertex(anEdge.EndVertexIdx).Tolerance;
+        const double aTolStart = BRepGraph_Tool::Tolerance(theGraph, anEdge.StartVertexIdx);
+        const double aTolEnd   = BRepGraph_Tool::Tolerance(theGraph, anEdge.EndVertexIdx);
         const double aD1       = aTolStart + aPtMid.Distance(aPtFirst);
         const double aD2       = aTolEnd + aPtMid.Distance(aPtLast);
         const double aNewTol   = std::max(aD1, aD2);
@@ -1751,7 +1749,7 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
   for (int anEdgeIdx = 0; anEdgeIdx < aDefs.NbEdges(); ++anEdgeIdx)
   {
     const BRepGraph_TopoNode::EdgeDef& anEdge = aDefs.Edge(anEdgeIdx);
-    if (anEdge.IsRemoved || anEdge.IsDegenerate)
+    if (anEdge.IsRemoved || BRepGraph_Tool::Degenerated(theGraph, anEdgeIdx))
     {
       continue;
     }

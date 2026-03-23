@@ -18,6 +18,7 @@
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_MutRef.hxx>
 #include <BRepGraph_MutView.hxx>
+#include <BRepGraph_Tool.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
 
 #include <Geom2d_Curve.hxx>
@@ -96,10 +97,7 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
   {
     const BRepGraph_TopoNode::EdgeDef& anEdge = theGraph.Defs().Edge(anIdx);
 
-    const occ::handle<Geom_Curve> anEdgeSrcCurve =
-      anEdge.Curve3DRepIdx >= 0
-        ? theGraph.Defs().Curve3DRep(anEdge.Curve3DRepIdx).Curve
-        : occ::handle<Geom_Curve>();
+    const occ::handle<Geom_Curve>& anEdgeSrcCurve = BRepGraph_Tool::Curve(theGraph, anIdx);
     occ::handle<Geom_Curve> aCurve = copyCurve(anEdgeSrcCurve, theCopyGeom);
 
     aResult.Builder().AddEdgeDef(anEdge.StartVertexDefId(),
@@ -136,10 +134,7 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
   {
     const BRepGraph_TopoNode::FaceDef& aFace = theGraph.Defs().Face(anIdx);
 
-    const occ::handle<Geom_Surface> aFaceSrcSurf =
-      aFace.SurfaceRepIdx >= 0
-        ? theGraph.Defs().SurfaceRep(aFace.SurfaceRepIdx).Surface
-        : occ::handle<Geom_Surface>();
+    const occ::handle<Geom_Surface>& aFaceSrcSurf = BRepGraph_Tool::Surface(theGraph, anIdx);
     occ::handle<Geom_Surface> aSurf = copySurface(aFaceSrcSurf, theCopyGeom);
 
     // Get outer/inner wire def NodeIds from incidence refs.
@@ -184,7 +179,7 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
         continue;
 
       const occ::handle<Geom2d_Curve>& aCoEdgeSrcPC =
-        theGraph.Defs().Curve2DRep(aCoEdge.Curve2DRepIdx).Curve;
+        BRepGraph_Tool::PCurve(theGraph, aCoEdgeIdxs->Value(aCEIter));
       occ::handle<Geom2d_Curve> aNewPC = copyPCurve(aCoEdgeSrcPC, theCopyGeom);
       aResult.Mut().AddPCurveToEdge(BRepGraph_NodeId::Edge(anIdx),
                                     aCoEdge.FaceDefId,
@@ -366,10 +361,7 @@ BRepGraph BRepGraphAlgo_Copy::CopyFace(const BRepGraph& theGraph,
         aNewEnd = BRepGraph_NodeId::Vertex(*aNewVtxIdx);
     }
 
-    const occ::handle<Geom_Curve> anEdgeSrcCurve2 =
-      anEdge.Curve3DRepIdx >= 0
-        ? theGraph.Defs().Curve3DRep(anEdge.Curve3DRepIdx).Curve
-        : occ::handle<Geom_Curve>();
+    const occ::handle<Geom_Curve>& anEdgeSrcCurve2 = BRepGraph_Tool::Curve(theGraph, anOldIdx);
     occ::handle<Geom_Curve> aCurve = copyCurve(anEdgeSrcCurve2, theCopyGeom);
 
     const int aNewEdgeIdx = anIdx - 1;
@@ -404,10 +396,7 @@ BRepGraph BRepGraphAlgo_Copy::CopyFace(const BRepGraph& theGraph,
   }
 
   // Add the face.
-  const occ::handle<Geom_Surface> aFaceSrcSurf2 =
-    aFaceDef.SurfaceRepIdx >= 0
-      ? theGraph.Defs().SurfaceRep(aFaceDef.SurfaceRepIdx).Surface
-      : occ::handle<Geom_Surface>();
+  const occ::handle<Geom_Surface>& aFaceSrcSurf2 = BRepGraph_Tool::Surface(theGraph, theFaceIdx);
   occ::handle<Geom_Surface> aSurf = copySurface(aFaceSrcSurf2, theCopyGeom);
 
   BRepGraph_NodeId anOuterWire;
@@ -456,7 +445,7 @@ BRepGraph BRepGraphAlgo_Copy::CopyFace(const BRepGraph& theGraph,
         continue;
 
       const occ::handle<Geom2d_Curve>& aCoEdgeSrcPC2 =
-        theGraph.Defs().Curve2DRep(aCoEdge.Curve2DRepIdx).Curve;
+        BRepGraph_Tool::PCurve(theGraph, aCoEdgeIdxs->Value(aCEIter));
       occ::handle<Geom2d_Curve> aNewPC = copyPCurve(aCoEdgeSrcPC2, theCopyGeom);
       aResult.Mut().AddPCurveToEdge(BRepGraph_NodeId::Edge(aNewEdgeIdx),
                                     BRepGraph_NodeId::Face(0),

@@ -17,6 +17,7 @@
 #include <Bnd_Box2d.hxx>
 #include <BndLib_Add2dCurve.hxx>
 #include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_Tool.hxx>
 #include <BRepGraph_TopoNode.hxx>
 #include <BRepGraphAlgo_FClass2d.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
@@ -52,10 +53,10 @@ static double computeWireSignedArea(const BRepGraph&                           t
   {
     const BRepGraphInc::CoEdgeRef& aCoEdgeRef = anExp.CurrentRef();
     const BRepGraph_TopoNode::CoEdgeDef& aCoEdgeDef = aDefs.CoEdge(aCoEdgeRef.CoEdgeIdx);
-    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(aCoEdgeDef.EdgeIdx);
 
     const BRepGraphInc::CoEdgeEntity* aPCurve =
-      aDefs.FindPCurve(anEdgeDef.Id, theFaceNodeId);
+      BRepGraph_Tool::FindPCurve(theGraph, aCoEdgeDef.EdgeIdx,
+                                 theFaceNodeId.Index);
     if (aPCurve == nullptr)
       continue;
 
@@ -125,14 +126,15 @@ static void collectWirePCurves(const BRepGraph&                   theGraph,
     const BRepGraph_TopoNode::CoEdgeDef& aCoEdgeDef = aDefs.CoEdge(aCoEdgeRef.CoEdgeIdx);
     const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(aCoEdgeDef.EdgeIdx);
 
-    if (anEdgeDef.IsDegenerate)
+    if (BRepGraph_Tool::Degenerated(theGraph, aCoEdgeDef.EdgeIdx))
     {
       theResult.Edges.Append(WirePCurveSet::EdgeData());
       continue;
     }
 
     const BRepGraphInc::CoEdgeEntity* aPCurve =
-      aDefs.FindPCurve(anEdgeDef.Id, theFaceNodeId);
+      BRepGraph_Tool::FindPCurve(theGraph, aCoEdgeDef.EdgeIdx,
+                                 theFaceNodeId.Index);
     if (aPCurve == nullptr)
     {
       theResult.Edges.Append(WirePCurveSet::EdgeData());
@@ -175,7 +177,7 @@ void BRepGraphCheck::CheckFaceMinimum(
   const BRepGraph_TopoNode::FaceDef& aFaceDef = aDefs.Face(theFaceDefIdx);
 
   // Face must have a surface.
-  if (aFaceDef.SurfaceRepIdx < 0)
+  if (!BRepGraph_Tool::HasSurface(theGraph, theFaceDefIdx))
   {
     BRepGraphCheck_Issue anIssue;
     anIssue.NodeId        = aFaceDef.Id;
@@ -186,7 +188,7 @@ void BRepGraphCheck::CheckFaceMinimum(
   }
 
   // Check tolerance value.
-  if (aFaceDef.Tolerance < 0.0)
+  if (BRepGraph_Tool::ToleranceFace(theGraph, theFaceDefIdx) < 0.0)
   {
     BRepGraphCheck_Issue anIssue;
     anIssue.NodeId        = aFaceDef.Id;
@@ -348,7 +350,8 @@ void BRepGraphCheck::CheckFaceWires(
   // and no inner wire should contain another.
   if (aWirePCurveSets.Length() > 1 && aHasOuterWire)
   {
-    BRepGraphAlgo_FClass2d aClassifier(theGraph, theFaceDefIdx, aFaceDef.Tolerance);
+    BRepGraphAlgo_FClass2d aClassifier(theGraph, theFaceDefIdx,
+                                      BRepGraph_Tool::ToleranceFace(theGraph, theFaceDefIdx));
 
     // For each inner wire, sample a midpoint on its first non-degenerate edge's PCurve.
     for (int anInnerIter = 1; anInnerIter < aWirePCurveSets.Length(); ++anInnerIter)

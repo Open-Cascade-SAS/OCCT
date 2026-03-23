@@ -14,6 +14,7 @@
 #include <BRepGraphCheck.hxx>
 
 #include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_Tool.hxx>
 #include <BRepGraph_TopoNode.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
@@ -28,19 +29,16 @@ void BRepGraphCheck::CheckVertexOnEdge(
   NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
 {
   const BRepGraph::DefsView aDefs = theGraph.Defs();
-  const BRepGraph_TopoNode::VertexDef& aVtxDef = aDefs.Vertex(theVertexDefIdx);
+  const BRepGraph_TopoNode::VertexDef& aVtxDef   = aDefs.Vertex(theVertexDefIdx);
   const BRepGraph_TopoNode::EdgeDef&   anEdgeDef = aDefs.Edge(theEdgeDefIdx);
 
   // Skip degenerate edges.
-  if (anEdgeDef.IsDegenerate)
+  if (BRepGraph_Tool::Degenerated(theGraph, theEdgeDefIdx))
     return;
 
   // No 3D curve — cannot check vertex position.
-  if (anEdgeDef.Curve3DRepIdx < 0)
+  if (!BRepGraph_Tool::HasCurve(theGraph, theEdgeDefIdx))
     return;
-
-  const occ::handle<Geom_Curve>& aEdgeCurve3d =
-    aDefs.Curve3DRep(anEdgeDef.Curve3DRepIdx).Curve;
 
   // Determine parameter for this vertex on the curve.
   double aParam = 0.0;
@@ -60,10 +58,13 @@ void BRepGraphCheck::CheckVertexOnEdge(
   }
 
   // Evaluate curve at parameter (geometry is stored at identity).
-  const gp_Pnt aCurvePnt = aEdgeCurve3d->Value(aParam);
+  const GeomAdaptor_TransformedCurve aCurveAdaptor =
+    BRepGraph_Tool::CurveAdaptor(theGraph, theEdgeDefIdx);
+  const gp_Pnt aCurvePnt = aCurveAdaptor.Value(aParam);
 
-  const double aDist = aVtxDef.Point.Distance(aCurvePnt);
-  if (aDist > anEdgeDef.Tolerance)
+  const gp_Pnt aVtxPnt = BRepGraph_Tool::Pnt(theGraph, theVertexDefIdx);
+  const double aDist   = aVtxPnt.Distance(aCurvePnt);
+  if (aDist > BRepGraph_Tool::ToleranceEdge(theGraph, theEdgeDefIdx))
   {
     BRepGraphCheck_Issue anIssue;
     anIssue.NodeId        = aVtxDef.Id;
@@ -84,9 +85,8 @@ void BRepGraphCheck::CheckVertexOnFace(
 {
   const BRepGraph::DefsView aDefs = theGraph.Defs();
   const BRepGraph_TopoNode::VertexDef& aVtxDef  = aDefs.Vertex(theVertexDefIdx);
-  const BRepGraph_TopoNode::FaceDef&   aFaceDef = aDefs.Face(theFaceDefIdx);
 
-  if (aFaceDef.SurfaceRepIdx < 0)
+  if (!BRepGraph_Tool::HasSurface(theGraph, theFaceDefIdx))
     return;
 
   // Check vertex through PCurve evaluation: find an edge of this face
@@ -116,9 +116,8 @@ void BRepGraphCheck::CheckVertexOnFace(
       continue;
 
     // Look for PCurve of this edge on this face.
-    const BRepGraph_NodeId aFaceNodeId = BRepGraph_NodeId::Face(theFaceDefIdx);
     const BRepGraphInc::CoEdgeEntity* aPCurve =
-      aDefs.FindPCurve(anEdgeDef.Id, aFaceNodeId);
+      BRepGraph_Tool::FindPCurve(theGraph, anEdgeIter, theFaceDefIdx);
     if (aPCurve == nullptr)
       continue;
 
@@ -127,18 +126,21 @@ void BRepGraphCheck::CheckVertexOnFace(
 
     const occ::handle<Geom2d_Curve>& aVtxPCurve =
       aDefs.Curve2DRep(aPCurve->Curve2DRepIdx).Curve;
-    const occ::handle<Geom_Surface>& aVtxSurf =
-      aDefs.SurfaceRep(aFaceDef.SurfaceRepIdx).Surface;
     // Evaluate PCurve at parameter to get UV, then evaluate surface (geometry at identity).
     const gp_Pnt2d aUV = aVtxPCurve->Value(aParam);
-    const gp_Pnt aSurfPnt = aVtxSurf->Value(aUV.X(), aUV.Y());
+    const GeomAdaptor_TransformedSurface aSurfAdaptor =
+      BRepGraph_Tool::SurfaceAdaptor(theGraph, theFaceDefIdx);
+    const gp_Pnt aSurfPnt = aSurfAdaptor.Value(aUV.X(), aUV.Y());
 
-    const double aDist = aVtxDef.Point.Distance(aSurfPnt);
-    if (aDist > aVtxDef.Tolerance + anEdgeDef.Tolerance)
+    const gp_Pnt  aVtxPnt = BRepGraph_Tool::Pnt(theGraph, theVertexDefIdx);
+    const double  aDist   = aVtxPnt.Distance(aSurfPnt);
+    const double  aVtxTol = BRepGraph_Tool::Tolerance(theGraph, theVertexDefIdx);
+    const double  aEdgTol = BRepGraph_Tool::ToleranceEdge(theGraph, anEdgeIter);
+    if (aDist > aVtxTol + aEdgTol)
     {
       BRepGraphCheck_Issue anIssue;
       anIssue.NodeId        = aVtxDef.Id;
-      anIssue.ContextNodeId = aFaceNodeId;
+      anIssue.ContextNodeId = BRepGraph_NodeId::Face(theFaceDefIdx);
       anIssue.Status        = BRepCheck_InvalidPointOnCurveOnSurface;
       anIssue.IssueSeverity = BRepGraphCheck_Issue::Severity::Error;
       theIssues.Append(anIssue);

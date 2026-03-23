@@ -16,6 +16,7 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_ShapesView.hxx>
+#include <BRepGraph_Tool.hxx>
 #include <BRepGraph_TopoNode.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
 #include <BRepGProp.hxx>
@@ -85,13 +86,6 @@ static bool isPlanar(const Adaptor3d_Surface& theS)
   return false;
 }
 
-//! Get the face usage's GlobalLocation for triangulation transform.
-static TopLoc_Location obbFaceGlobalLocation(const BRepGraph& /*theGraph*/, int /*theFaceIdx*/)
-{
-  // Incidence model stores geometry at identity; location offsets are not needed.
-  return TopLoc_Location();
-}
-
 //! Collect points for OBB construction from graph data.
 //! Returns number of points. If thePts is not null, fills the arrays.
 static int pointsForOBB(const BRepGraph&            theGraph,
@@ -105,14 +99,13 @@ static int pointsForOBB(const BRepGraph&            theGraph,
   const int aNbVerts = theGraph.Defs().NbVertices();
   for (int i = 0; i < aNbVerts; ++i)
   {
-    const BRepGraph_TopoNode::VertexDef& aVtxDef = theGraph.Defs().Vertex(i);
     if (thePts != nullptr)
     {
-      (*thePts)(aRetVal) = aVtxDef.Point;
+      (*thePts)(aRetVal) = BRepGraph_Tool::Pnt(theGraph, i);
     }
     if (theArrOfToler != nullptr)
     {
-      (*theArrOfToler)(aRetVal) = aVtxDef.Tolerance;
+      (*theArrOfToler)(aRetVal) = BRepGraph_Tool::Tolerance(theGraph, i);
     }
     ++aRetVal;
   }
@@ -126,15 +119,12 @@ static int pointsForOBB(const BRepGraph&            theGraph,
   const int aNbFaces = theGraph.Defs().NbFaces();
   for (int aFaceIdx = 0; aFaceIdx < aNbFaces; ++aFaceIdx)
   {
-    const BRepGraph_TopoNode::FaceDef& aFaceDefSurf = theGraph.Defs().Face(aFaceIdx);
-    if (aFaceDefSurf.SurfaceRepIdx < 0)
+    if (!BRepGraph_Tool::HasSurface(theGraph, aFaceIdx))
     {
       continue;
     }
 
-    const occ::handle<Geom_Surface>& aFaceSurf =
-      theGraph.Defs().SurfaceRep(aFaceDefSurf.SurfaceRepIdx).Surface;
-    GeomAdaptor_Surface aGAS(aFaceSurf);
+    const GeomAdaptor_TransformedSurface aGAS = BRepGraph_Tool::SurfaceAdaptor(theGraph, aFaceIdx);
     if (!isPlanar(aGAS))
     {
       if (!theIsTriangulationUsed)
@@ -155,14 +145,13 @@ static int pointsForOBB(const BRepGraph&            theGraph,
         {
           const BRepGraphInc::CoEdgeRef& aCR = aWireDef.CoEdgeRefs.Value(anIdx);
           const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Defs().CoEdge(aCR.CoEdgeIdx);
-          const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
-            theGraph.Defs().Edge(aCoEdge.EdgeIdx);
-          if (anEdgeDef.IsDegenerate || anEdgeDef.Curve3DRepIdx < 0)
+          const int anEdgeIdx = aCoEdge.EdgeIdx;
+          if (BRepGraph_Tool::Degenerated(theGraph, anEdgeIdx) || !BRepGraph_Tool::HasCurve(theGraph, anEdgeIdx))
           {
             continue;
           }
           const GeomAdaptor_TransformedCurve aCurveAdaptor =
-            theGraph.Defs().CurveAdaptor(anEdgeDef.Id);
+            BRepGraph_Tool::CurveAdaptor(theGraph, anEdgeIdx);
           if (!isLinear(aCurveAdaptor))
           {
             hasNonLinearEdge = true;
@@ -184,27 +173,23 @@ static int pointsForOBB(const BRepGraph&            theGraph,
     }
 
     // Use active triangulation of the face.
-    const BRepGraph_TopoNode::FaceDef& aFaceDefTri = theGraph.Defs().Face(aFaceIdx);
-    const int anActiveTriRepIdx2 = aFaceDefTri.ActiveTriangulationRepIdx();
-    const occ::handle<Poly_Triangulation> aTriangulation =
-      anActiveTriRepIdx2 >= 0 ? theGraph.Defs().TriangulationRep(anActiveTriRepIdx2).Triangulation
-                              : occ::handle<Poly_Triangulation>();
+    if (!BRepGraph_Tool::HasTriangulation(theGraph, aFaceIdx))
+    {
+      return 0;
+    }
+    const occ::handle<Poly_Triangulation>& aTriangulation =
+      BRepGraph_Tool::Triangulation(theGraph, aFaceIdx);
     if (aTriangulation.IsNull())
     {
       return 0;
     }
 
-    const TopLoc_Location aLoc   = obbFaceGlobalLocation(theGraph, aFaceIdx);
-    const gp_Trsf         aTrsf  = aLoc;
-    const int             aCNode = aTriangulation->NbNodes();
+    const int aCNode = aTriangulation->NbNodes();
     for (int i = 1; i <= aCNode; ++i)
     {
       if (thePts != nullptr)
       {
-        const gp_Pnt aP    = aTrsf.Form() == gp_Identity
-                               ? aTriangulation->Node(i)
-                               : aTriangulation->Node(i).Transformed(aTrsf);
-        (*thePts)(aRetVal) = aP;
+        (*thePts)(aRetVal) = aTriangulation->Node(i);
       }
       if (theArrOfToler != nullptr)
       {
@@ -218,17 +203,16 @@ static int pointsForOBB(const BRepGraph&            theGraph,
   const int aNbEdges = theGraph.Defs().NbEdges();
   for (int i = 0; i < aNbEdges; ++i)
   {
-    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = theGraph.Defs().Edge(i);
     if (theGraph.Defs().FaceCountOfEdge(i) > 0)
     {
       continue; // Edge is in a face, already handled.
     }
-    if (anEdgeDef.IsDegenerate || anEdgeDef.Curve3DRepIdx < 0)
+    if (BRepGraph_Tool::Degenerated(theGraph, i) || !BRepGraph_Tool::HasCurve(theGraph, i))
     {
       continue;
     }
 
-    const GeomAdaptor_TransformedCurve aCurveAdaptor = theGraph.Defs().CurveAdaptor(anEdgeDef.Id);
+    const GeomAdaptor_TransformedCurve aCurveAdaptor = BRepGraph_Tool::CurveAdaptor(theGraph, i);
     if (isLinear(aCurveAdaptor))
     {
       // Skip linear edge — vertices already added.
@@ -256,7 +240,7 @@ static int pointsForOBB(const BRepGraph&            theGraph,
       }
       if (theArrOfToler != nullptr)
       {
-        (*theArrOfToler)(aRetVal) = anEdgeDef.Tolerance;
+        (*theArrOfToler)(aRetVal) = BRepGraph_Tool::ToleranceEdge(theGraph, i);
       }
       ++aRetVal;
     }
@@ -348,8 +332,7 @@ static void computeProperties(const BRepGraph& theGraph, GProp_GProps& theGCommo
   const int aNbVerts = theGraph.Defs().NbVertices();
   for (int i = 0; i < aNbVerts; ++i)
   {
-    const BRepGraph_TopoNode::VertexDef& aVtxDef = theGraph.Defs().Vertex(i);
-    GProp_GProps                         aG(aVtxDef.Point);
+    GProp_GProps aG(BRepGraph_Tool::Pnt(theGraph, i));
     theGCommon.Add(aG);
   }
 }

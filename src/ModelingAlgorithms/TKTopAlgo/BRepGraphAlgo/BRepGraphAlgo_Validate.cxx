@@ -15,6 +15,7 @@
 
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_RelEdgesView.hxx>
+#include <BRepGraph_Tool.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
 #include <BRepGraphInc_WireExplorer.hxx>
 
@@ -419,7 +420,7 @@ void checkGeometryReferences(const BRepGraph&                                   
     if (anEdge.IsRemoved)
       continue;
 
-    if (!anEdge.IsDegenerate && anEdge.Curve3DRepIdx < 0)
+    if (!BRepGraph_Tool::Degenerated(theGraph, anEdgeIdx) && !BRepGraph_Tool::HasCurve(theGraph, anEdgeIdx))
     {
       theIssues.Append(Issue{Severity::Error,
                              anEdge.Id,
@@ -470,7 +471,7 @@ void checkGeometryReferences(const BRepGraph&                                   
     if (aCoEdge.IsRemoved)
       continue;
 
-    if (aCoEdge.FaceDefId.IsValid() && aCoEdge.Curve2DRepIdx < 0)
+    if (aCoEdge.FaceDefId.IsValid() && !BRepGraph_Tool::HasPCurve(theGraph, aCoEdgeIdx))
     {
       theIssues.Append(Issue{Severity::Error,
                              aCoEdge.Id,

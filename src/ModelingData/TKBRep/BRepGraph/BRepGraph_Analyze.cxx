@@ -16,6 +16,7 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_Data.hxx>
 #include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_Tool.hxx>
 #include <BRepGraph_RelEdgesView.hxx>
 #include <BRepGraph_AnalyzeView.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
@@ -385,10 +386,10 @@ double BRepGraph_Analyze::EdgeEndpointPairScore(const BRepGraph& theGraph,
   const BRepGraph_TopoNode::EdgeDef& aEdgeA = theGraph.Defs().Edge(theEdgeA.Index);
   const BRepGraph_TopoNode::EdgeDef& aEdgeB = theGraph.Defs().Edge(theEdgeB.Index);
 
-  const gp_Pnt& aStartA = theGraph.Defs().Vertex(aEdgeA.StartVertexIdx).Point;
-  const gp_Pnt& aEndA   = theGraph.Defs().Vertex(aEdgeA.EndVertexIdx).Point;
-  const gp_Pnt& aStartB = theGraph.Defs().Vertex(aEdgeB.StartVertexIdx).Point;
-  const gp_Pnt& aEndB   = theGraph.Defs().Vertex(aEdgeB.EndVertexIdx).Point;
+  const gp_Pnt& aStartA = BRepGraph_Tool::Pnt(theGraph, aEdgeA.StartVertexIdx);
+  const gp_Pnt& aEndA   = BRepGraph_Tool::Pnt(theGraph, aEdgeA.EndVertexIdx);
+  const gp_Pnt& aStartB = BRepGraph_Tool::Pnt(theGraph, aEdgeB.StartVertexIdx);
+  const gp_Pnt& aEndB   = BRepGraph_Tool::Pnt(theGraph, aEdgeB.EndVertexIdx);
 
   return std::min(aStartA.Distance(aStartB) + aEndA.Distance(aEndB),
                   aStartA.Distance(aEndB) + aEndA.Distance(aStartB));
@@ -416,10 +417,10 @@ bool BRepGraph_Analyze::AreEdgesCompatibleSampled(const BRepGraph& theGraph,
     return false;
   }
 
-  const gp_Pnt& aStartA = theGraph.Defs().Vertex(aNodeA.StartVertexIdx).Point;
-  const gp_Pnt& aEndA   = theGraph.Defs().Vertex(aNodeA.EndVertexIdx).Point;
-  const gp_Pnt& aStartB = theGraph.Defs().Vertex(aNodeB.StartVertexIdx).Point;
-  const gp_Pnt& aEndB   = theGraph.Defs().Vertex(aNodeB.EndVertexIdx).Point;
+  const gp_Pnt& aStartA = BRepGraph_Tool::Pnt(theGraph, aNodeA.StartVertexIdx);
+  const gp_Pnt& aEndA   = BRepGraph_Tool::Pnt(theGraph, aNodeA.EndVertexIdx);
+  const gp_Pnt& aStartB = BRepGraph_Tool::Pnt(theGraph, aNodeB.StartVertexIdx);
+  const gp_Pnt& aEndB   = BRepGraph_Tool::Pnt(theGraph, aNodeB.EndVertexIdx);
 
   const bool isSameDir =
     aStartA.Distance(aStartB) <= theTolerance && aEndA.Distance(aEndB) <= theTolerance;
@@ -441,8 +442,8 @@ bool BRepGraph_Analyze::AreEdgesCompatibleSampled(const BRepGraph& theGraph,
     }
   }
 
-  GeomAdaptor_TransformedCurve aCurveA = theGraph.Defs().CurveAdaptor(theEdgeA);
-  GeomAdaptor_TransformedCurve aCurveB = theGraph.Defs().CurveAdaptor(theEdgeB);
+  GeomAdaptor_TransformedCurve aCurveA = BRepGraph_Tool::CurveAdaptor(theGraph, theEdgeA.Index);
+  GeomAdaptor_TransformedCurve aCurveB = BRepGraph_Tool::CurveAdaptor(theGraph, theEdgeB.Index);
 
   GCPnts_UniformAbscissa aSamplerA(aCurveA, theNbSamples);
   if (!aSamplerA.IsDone() || aSamplerA.NbPoints() < 2)
@@ -491,10 +492,10 @@ bool BRepGraph_Analyze::AreEdgesCompatibleSampled(const BRepGraph&            th
     return false;
   }
 
-  const gp_Pnt& aStartA = theGraph.Defs().Vertex(aNodeA.StartVertexIdx).Point;
-  const gp_Pnt& aEndA   = theGraph.Defs().Vertex(aNodeA.EndVertexIdx).Point;
-  const gp_Pnt& aStartB = theGraph.Defs().Vertex(aNodeB.StartVertexIdx).Point;
-  const gp_Pnt& aEndB   = theGraph.Defs().Vertex(aNodeB.EndVertexIdx).Point;
+  const gp_Pnt& aStartA = BRepGraph_Tool::Pnt(theGraph, aNodeA.StartVertexIdx);
+  const gp_Pnt& aEndA   = BRepGraph_Tool::Pnt(theGraph, aNodeA.EndVertexIdx);
+  const gp_Pnt& aStartB = BRepGraph_Tool::Pnt(theGraph, aNodeB.StartVertexIdx);
+  const gp_Pnt& aEndB   = BRepGraph_Tool::Pnt(theGraph, aNodeB.EndVertexIdx);
 
   const bool isSameDir =
     aStartA.Distance(aStartB) <= theTolerance && aEndA.Distance(aEndB) <= theTolerance;
@@ -515,7 +516,7 @@ bool BRepGraph_Analyze::AreEdgesCompatibleSampled(const BRepGraph&            th
     }
   }
 
-  GeomAdaptor_TransformedCurve aCurveB = theGraph.Defs().CurveAdaptor(theEdgeB);
+  GeomAdaptor_TransformedCurve aCurveB = BRepGraph_Tool::CurveAdaptor(theGraph, theEdgeB.Index);
   ExtremaPC_Curve              anExtPCB(aCurveB);
 
   const double aTolSq = theTolerance * theTolerance;

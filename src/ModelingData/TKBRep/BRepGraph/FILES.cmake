@@ -44,6 +44,8 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_SpatialView.cxx
   BRepGraph_SpatialView.hxx
   BRepGraph_SubGraph.hxx
+  BRepGraph_Tool.cxx
+  BRepGraph_Tool.hxx
   BRepGraph_TopoNode.hxx
   BRepGraph_TypedAttribute.hxx
   BRepGraph_UID.hxx

@@ -16,6 +16,7 @@
 #include <BRepClass3d_SolidClassifier.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_ShapesView.hxx>
+#include <BRepGraph_Tool.hxx>
 #include <BRepGraph_TopoNode.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
 #include <NCollection_Map.hxx>
@@ -101,17 +102,17 @@ void BRepGraphCheck::CheckSolidMinimum(
 
     // Get a point from the first face of the inner shell.
     const BRepGraphInc::FaceRef& aFR = aShellDef.FaceRefs.Value(0);
-    const BRepGraph_NodeId aFaceDefId = BRepGraph_NodeId::Face(aFR.FaceIdx);
 
-    const BRepGraph_TopoNode::FaceDef& aFaceDef = aDefs.Face(aFR.FaceIdx);
-    if (aFaceDef.SurfaceRepIdx < 0)
+    if (!BRepGraph_Tool::HasSurface(theGraph, aFR.FaceIdx))
       continue;
 
-    const occ::handle<Geom_Surface>& aSolidSurf =
-      aDefs.SurfaceRep(aFaceDef.SurfaceRepIdx).Surface;
     // Use the surface midpoint as representative.
-    double aUMin = 0.0, aUMax = 0.0, aVMin = 0.0, aVMax = 0.0;
-    aSolidSurf->Bounds(aUMin, aUMax, aVMin, aVMax);
+    const GeomAdaptor_TransformedSurface aSurfAdaptor =
+      BRepGraph_Tool::SurfaceAdaptor(theGraph, aFR.FaceIdx);
+    double aUMin = aSurfAdaptor.FirstUParameter();
+    double aUMax = aSurfAdaptor.LastUParameter();
+    double aVMin = aSurfAdaptor.FirstVParameter();
+    double aVMax = aSurfAdaptor.LastVParameter();
     // Clamp infinite bounds.
     if (aUMin < -Precision::Infinite()) aUMin = -Precision::Infinite();
     if (aUMax >  Precision::Infinite()) aUMax =  Precision::Infinite();
@@ -119,7 +120,7 @@ void BRepGraphCheck::CheckSolidMinimum(
     if (aVMax >  Precision::Infinite()) aVMax =  Precision::Infinite();
 
     // Geometry is stored at identity, no location transform needed.
-    const gp_Pnt aRepPnt = aSolidSurf->Value(0.5 * (aUMin + aUMax), 0.5 * (aVMin + aVMax));
+    const gp_Pnt aRepPnt = aSurfAdaptor.Value(0.5 * (aUMin + aUMax), 0.5 * (aVMin + aVMax));
 
     aClassifier.Perform(aRepPnt, Precision::Confusion());
     const TopAbs_State aState = aClassifier.State();

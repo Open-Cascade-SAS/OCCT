@@ -17,6 +17,7 @@
 #include <BRepGraph_Data.hxx>
 #include <BRepGraph_Layer.hxx>
 #include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_Tool.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_Mutator.hxx>
 #include <BRepGraph_MutRef.hxx>
@@ -265,10 +266,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
     const BRepGraph_NodeId aNewEnd   = remapId(anOldEdge.EndVertexDefId());
 
     // Get the curve handle if available.
-    occ::handle<Geom_Curve> aCurve =
-      anOldEdge.Curve3DRepIdx >= 0
-        ? theGraph.Defs().Curve3DRep(anOldEdge.Curve3DRepIdx).Curve
-        : occ::handle<Geom_Curve>();
+    const occ::handle<Geom_Curve>& aCurve = BRepGraph_Tool::Curve(theGraph, anIdx);
 
     BRepGraph_NodeId aNewEdgeId = aNewGraph.Builder().AddEdgeDef(aNewStart,
                                                                  aNewEnd,
@@ -313,10 +311,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
       continue;
     const BRepGraph_TopoNode::FaceDef& anOldFace = theGraph.Defs().Face(anIdx);
 
-    occ::handle<Geom_Surface> aSurf =
-      anOldFace.SurfaceRepIdx >= 0
-        ? theGraph.Defs().SurfaceRep(anOldFace.SurfaceRepIdx).Surface
-        : occ::handle<Geom_Surface>();
+    const occ::handle<Geom_Surface>& aSurf = BRepGraph_Tool::Surface(theGraph, anIdx);
 
     // Find outer wire from incidence refs.
     BRepGraph_NodeId                     aNewOuterWire;
@@ -370,7 +365,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
         continue;
 
       const occ::handle<Geom2d_Curve>& aCompactPCurve =
-        theGraph.Defs().Curve2DRep(aCoEdge.Curve2DRepIdx).Curve;
+        BRepGraph_Tool::PCurve(theGraph, aCoEdgeIdxs->Value(aCEIter));
       aNewGraph.Mut().AddPCurveToEdge(BRepGraph_NodeId::Edge(aNewEdgeIdx),
                                       aNewFaceId,
                                       aCompactPCurve,
