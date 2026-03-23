@@ -14,6 +14,8 @@
 #include <BRepGraphAlgo_Sewing.hxx>
 
 #include <Bnd_Box.hxx>
+#include <Bnd_Box2d.hxx>
+#include <BndLib_Add2dCurve.hxx>
 #include <BRep_Builder.hxx>
 #include <BRepGraphAlgo_BndLib.hxx>
 #include <BRepGraphAlgo_FaceAnalysis.hxx>
@@ -22,6 +24,9 @@
 #include <ExtremaPC_Curve.hxx>
 #include <GCPnts_UniformAbscissa.hxx>
 #include <Geom2d_Curve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom_OffsetSurface.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_Surface.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_DynamicArray.hxx>
@@ -91,26 +96,138 @@ private:
 };
 
 // ---------------------------------------------------------------------------
-// Seam edge detection: edge has 2 PCurves on the same face (FORWARD+REVERSED).
+// Unwrap trimmed/offset surface to its basis surface.
+// Ported from BRepBuilderAPI_Sewing::IsUClosedSurface (recursive unwrapping).
+// ---------------------------------------------------------------------------
+
+Handle(Geom_Surface) basisSurface(const Handle(Geom_Surface)& theSurf)
+{
+  Handle(Geom_Surface) aSurf = theSurf;
+  for (;;)
+  {
+    if (aSurf->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
+    {
+      aSurf = Handle(Geom_RectangularTrimmedSurface)::DownCast(aSurf)->BasisSurface();
+    }
+    else if (aSurf->IsKind(STANDARD_TYPE(Geom_OffsetSurface)))
+    {
+      aSurf = Handle(Geom_OffsetSurface)::DownCast(aSurf)->BasisSurface();
+    }
+    else
+    {
+      return aSurf;
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Isocurve-based closure check. Ported from BRepBuilderAPI_Sewing::IsClosedByIsos.
+// Tests if two isocurves at the PCurve endpoints form closed loops.
+// ---------------------------------------------------------------------------
+
+bool isClosedByIsos(const Handle(Geom_Surface)& theSurf,
+                    const Handle(Geom2d_Curve)& thePCurve,
+                    double                       theFirst,
+                    double                       theLast,
+                    bool                         theUIsos)
+{
+  if (theSurf.IsNull() || thePCurve.IsNull())
+  {
+    return false;
+  }
+  const gp_Pnt2d aPSurf1 =
+    thePCurve->IsPeriodic()
+      ? thePCurve->Value(theFirst)
+      : thePCurve->Value(std::max(theFirst, thePCurve->FirstParameter()));
+  const gp_Pnt2d aPSurf2 =
+    thePCurve->IsPeriodic()
+      ? thePCurve->Value(theLast)
+      : thePCurve->Value(std::min(theLast, thePCurve->LastParameter()));
+
+  Handle(Geom_Curve) anIso1, anIso2;
+  if (theUIsos)
+  {
+    anIso1 = theSurf->UIso(aPSurf1.X());
+    anIso2 = theSurf->UIso(aPSurf2.X());
+  }
+  else
+  {
+    anIso1 = theSurf->VIso(aPSurf1.Y());
+    anIso2 = theSurf->VIso(aPSurf2.Y());
+  }
+  if (anIso1.IsNull() || anIso2.IsNull())
+  {
+    return false;
+  }
+
+  const double aFirst1 = anIso1->FirstParameter();
+  const double aLast1  = anIso1->LastParameter();
+  const double aFirst2 = anIso2->FirstParameter();
+  const double aLast2  = anIso2->LastParameter();
+  const gp_Pnt aPt1F = anIso1->EvalD0(aFirst1);
+  const gp_Pnt aPt1M = anIso1->EvalD0((aFirst1 + aLast1) * 0.5);
+  const gp_Pnt aPt1L = anIso1->EvalD0(aLast1);
+  const gp_Pnt aPt2F = anIso2->EvalD0(aFirst2);
+  const gp_Pnt aPt2M = anIso2->EvalD0((aFirst2 + aLast2) * 0.5);
+  const gp_Pnt aPt2L = anIso2->EvalD0(aLast2);
+  // Closed if endpoints are closer than midpoint distance for both isocurves.
+  return ((aPt1F.XYZ() - aPt1L.XYZ()).Modulus()
+            < (aPt1F.XYZ() - aPt1M.XYZ()).Modulus() - Precision::Confusion())
+         && ((aPt2F.XYZ() - aPt2L.XYZ()).Modulus()
+             < (aPt2F.XYZ() - aPt2M.XYZ()).Modulus() - Precision::Confusion());
+}
+
+// ---------------------------------------------------------------------------
+// Check if surface is U-closed or V-closed (with isocurve fallback).
+// Ported from BRepBuilderAPI_Sewing::IsUClosedSurface / IsVClosedSurface.
+// ---------------------------------------------------------------------------
+
+bool isSurfaceClosedForEdge(const BRepGraph&                           theGraph,
+                            int                                        theFaceDefIdx,
+                            const BRepGraph_TopoNode::EdgeDef::PCurveEntry& thePCEntry,
+                            bool                                       theCheckU)
+{
+  const BRepGraph_TopoNode::FaceDef& aFace = theGraph.Defs().Face(theFaceDefIdx);
+  if (aFace.Surface.IsNull())
+  {
+    return false;
+  }
+  const Handle(Geom_Surface) aBasis = basisSurface(aFace.Surface);
+  const bool isClosed = theCheckU ? aBasis->IsUClosed() : aBasis->IsVClosed();
+  if (isClosed)
+  {
+    return true;
+  }
+  // Isocurve fallback: check if isocurves at PCurve endpoints form closed loops.
+  if (!thePCEntry.Curve2d.IsNull())
+  {
+    return isClosedByIsos(aBasis, thePCEntry.Curve2d, thePCEntry.ParamFirst,
+                          thePCEntry.ParamLast, !theCheckU);
+  }
+  return false;
+}
+
+// ---------------------------------------------------------------------------
+// Seam edge detection: edge is on a UV-closed surface and has 2 PCurves.
+// A seam can ONLY exist on a closed surface. This eliminates false positives
+// from non-seam edges on planar/non-closed surfaces.
 // ---------------------------------------------------------------------------
 
 bool isSeamEdge(const BRepGraph& theGraph, int theEdgeIdx)
 {
   const BRepGraph_TopoNode::EdgeDef& anEdge = theGraph.Defs().Edge(theEdgeIdx);
-  // A seam edge has TWO distinct PCurve entries for the same face (different Geom2d_Curve
-  // handles representing opposite sides of a UV-closed surface). EdgeOrientation alone
-  // is NOT reliable: normal edges may store PCurves with both FORWARD and REVERSED
-  // orientations from different wire contexts, sharing the same Geom2d_Curve object.
+  // Collect unique FaceDefIds and count PCurve entries per face.
   for (int i = 0; i < anEdge.PCurves.Length(); ++i)
   {
-    const int                       aFaceId = anEdge.PCurves.Value(i).FaceDefId.Index;
-    const Handle(Geom2d_Curve)& aCurve1 = anEdge.PCurves.Value(i).Curve2d;
+    const int aFaceId = anEdge.PCurves.Value(i).FaceDefId.Index;
     for (int j = i + 1; j < anEdge.PCurves.Length(); ++j)
     {
       if (anEdge.PCurves.Value(j).FaceDefId.Index == aFaceId)
       {
-        const Handle(Geom2d_Curve)& aCurve2 = anEdge.PCurves.Value(j).Curve2d;
-        if (!aCurve1.IsNull() && !aCurve2.IsNull() && aCurve1 != aCurve2)
+        // Two PCurve entries on the same face — this is a seam candidate.
+        // Verify the surface is actually U or V closed.
+        if (isSurfaceClosedForEdge(theGraph, aFaceId, anEdge.PCurves.Value(i), true)
+            || isSurfaceClosedForEdge(theGraph, aFaceId, anEdge.PCurves.Value(i), false))
         {
           return true;
         }
@@ -149,36 +266,110 @@ bool edgesShareFace(const BRepGraph& theGraph,
 }
 
 // ---------------------------------------------------------------------------
-// Check if surface of a face is U-closed or V-closed.
-// ---------------------------------------------------------------------------
-
-bool isSurfaceClosed(const BRepGraph& theGraph, int theFaceDefIdx, bool theCheckU)
-{
-  const BRepGraph_TopoNode::FaceDef& aFace = theGraph.Defs().Face(theFaceDefIdx);
-  if (aFace.Surface.IsNull())
-  {
-    return false;
-  }
-  return theCheckU ? aFace.Surface->IsUClosed() : aFace.Surface->IsVClosed();
-}
-
-// ---------------------------------------------------------------------------
 // Check if two edges on the same face can be sewn (seam-like configuration).
 // Allowed only if the surface is UV-closed.
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// Check if two edges on the same UV-closed face are on opposite sides.
+// Ported from BRepBuilderAPI_Sewing::IsMergedClosed (lines 1354-1435).
+// Uses 2D bounding boxes of PCurves: on a U-closed surface, two V-long edges
+// are on opposite sides if their outer U-gap is smaller than their inner U-gap.
+// ---------------------------------------------------------------------------
+
 bool canSewSameFaceEdges(const BRepGraph& theGraph,
-                         int              /*theEdgeA*/,
-                         int              /*theEdgeB*/,
+                         int              theEdgeA,
+                         int              theEdgeB,
                          int              theSharedFace)
 {
   if (theSharedFace < 0)
   {
     return false;
   }
-  // Allow sewing only if surface is U-closed or V-closed.
-  return isSurfaceClosed(theGraph, theSharedFace, true)
-         || isSurfaceClosed(theGraph, theSharedFace, false);
+  const BRepGraph_TopoNode::FaceDef& aFace = theGraph.Defs().Face(theSharedFace);
+  if (aFace.Surface.IsNull())
+  {
+    return false;
+  }
+  const Handle(Geom_Surface) aBasis = basisSurface(aFace.Surface);
+  const bool                 isUClosed = aBasis->IsUClosed();
+  const bool                 isVClosed = aBasis->IsVClosed();
+  if (!isUClosed && !isVClosed)
+  {
+    return false;
+  }
+
+  // Get PCurves for both edges on the shared face via graph lookup.
+  const BRepGraph_NodeId anEdgeIdA(BRepGraph_NodeId::Kind::Edge, theEdgeA);
+  const BRepGraph_NodeId anEdgeIdB(BRepGraph_NodeId::Kind::Edge, theEdgeB);
+  const BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, theSharedFace);
+  const auto* aPCEntryA = theGraph.Defs().FindPCurve(anEdgeIdA, aFaceId);
+  const auto* aPCEntryB = theGraph.Defs().FindPCurve(anEdgeIdB, aFaceId);
+  if (aPCEntryA == nullptr || aPCEntryB == nullptr
+      || aPCEntryA->Curve2d.IsNull() || aPCEntryB->Curve2d.IsNull())
+  {
+    return false;
+  }
+
+  // Compute 2D bounding boxes.
+  Bnd_Box2d aBBox1, aBBox2;
+  Geom2dAdaptor_Curve anAdapt1(aPCEntryA->Curve2d);
+  Geom2dAdaptor_Curve anAdapt2(aPCEntryB->Curve2d);
+  BndLib_Add2dCurve::Add(anAdapt1, aPCEntryA->ParamFirst, aPCEntryA->ParamLast,
+                         Precision::PConfusion(), aBBox1);
+  BndLib_Add2dCurve::Add(anAdapt2, aPCEntryB->ParamFirst, aPCEntryB->ParamLast,
+                         Precision::PConfusion(), aBBox2);
+  double aC1Umin, aC1Vmin, aC1Umax, aC1Vmax;
+  double aC2Umin, aC2Vmin, aC2Umax, aC2Vmax;
+  aBBox1.Get(aC1Umin, aC1Vmin, aC1Umax, aC1Vmax);
+  aBBox2.Get(aC2Umin, aC2Vmin, aC2Umax, aC2Vmax);
+
+  // Determine curve elongation direction.
+  const double aDU1 = aC1Umax - aC1Umin;
+  const double aDV1 = aC1Vmax - aC1Vmin;
+  const double aDU2 = aC2Umax - aC2Umin;
+  const double aDV2 = aC2Vmax - aC2Vmin;
+  const bool   isVLong1 = (aDU1 <= aDV1);
+  const bool   isVLong2 = (aDU2 <= aDV2);
+  const bool   isULong1 = (aDV1 <= aDU1);
+  const bool   isULong2 = (aDV2 <= aDU2);
+
+  double aSUmin, aSUmax, aSVmin, aSVmax;
+  aBasis->Bounds(aSUmin, aSUmax, aSVmin, aSVmax);
+
+  // U-closed surface: two V-long edges on opposite U-sides.
+  if (isUClosed && isVLong1 && isVLong2)
+  {
+    const double aDistV = std::max(aC2Vmin - aC1Vmax, aC1Vmin - aC2Vmax);
+    if (aDistV < 0.0) // overlapping in V
+    {
+      const double aDistInner = std::max(aC2Umin - aC1Umax, aC1Umin - aC2Umax);
+      const double aDistOuter =
+        (aSUmax - aSUmin) - std::max(aC2Umax - aC1Umin, aC1Umax - aC2Umin);
+      if (aDistOuter <= aDistInner)
+      {
+        return true;
+      }
+    }
+  }
+
+  // V-closed surface: two U-long edges on opposite V-sides.
+  if (isVClosed && isULong1 && isULong2)
+  {
+    const double aDistU = std::max(aC2Umin - aC1Umax, aC1Umin - aC2Umax);
+    if (aDistU < 0.0) // overlapping in U
+    {
+      const double aDistInner = std::max(aC2Vmin - aC1Vmax, aC1Vmin - aC2Vmax);
+      const double aDistOuter =
+        (aSVmax - aSVmin) - std::max(aC2Vmax - aC1Vmin, aC1Vmax - aC2Vmin);
+      if (aDistOuter <= aDistInner)
+      {
+        return true;
+      }
+    }
+  }
+
+  return false;
 }
 
 // ---------------------------------------------------------------------------
@@ -229,18 +420,14 @@ NCollection_Array1<BRepGraph_NodeId> findFreeEdges(const BRepGraph& theGraph,
 
     const int aFaceCount = aRelEdges.FaceCountForEdge(anEdgeIdx);
 
-    // TODO: Exclude seam edges from free boundaries. A seam edge is on a UV-closed
-    //   surface (cylinder, sphere, torus) and has two distinct PCurves on the same face.
-    //   Current issue: BRepGraphInc_Populate stores PCurve2dReversed when Handle pointers
-    //   differ (line 269), which happens even for non-seam planar edges because
-    //   BRep_Tool::CurveOnSurface returns distinct Handle objects for FORWARD/REVERSED.
-    //   Fix options:
-    //   (a) Fix BRepGraphInc_Populate to use geometric comparison (not Handle pointer)
-    //       for PCurve2dReversed detection — e.g., compare curve values at endpoints.
-    //   (b) Check Surface->IsUClosed()/IsVClosed() before calling isSeamEdge().
-    //   (c) Port full IsClosedByIsos fallback from BRepBuilderAPI_Sewing lines 203-299.
-    //   Until fixed, seam edges on closed surfaces will appear as free and may be
-    //   incorrectly matched. This is non-critical for typical sewing inputs (flat faces).
+    // Exclude seam edges: on a UV-closed surface (cylinder, sphere, torus) with
+    // two PCurves on the same face. Surface closure is verified first via
+    // IsUClosed/IsVClosed + isocurve fallback, preventing false positives on
+    // non-closed surfaces (planar faces with duplicate PCurve handles).
+    if (aFaceCount == 1 && isSeamEdge(theGraph, anEdgeIdx))
+    {
+      continue;
+    }
 
     if (aFaceCount == 1)
     {

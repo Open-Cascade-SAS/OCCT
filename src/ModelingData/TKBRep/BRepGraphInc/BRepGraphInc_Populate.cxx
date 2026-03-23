@@ -259,14 +259,18 @@ void extractFaceData(FaceLocalData& theData)
         }
       }
 
-      // Second PCurve for seam edges.
-      if (!anEdgeData.PCurve2d.IsNull())
+      // Second PCurve for seam edges (edge closed on face = two distinct PCurves).
+      // Use BRep_Tool::IsClosed rather than Handle pointer comparison to avoid
+      // false positives: CurveOnSurface may return distinct Handle objects for
+      // FORWARD/REVERSED edges even on non-seam planar faces.
+      if (!anEdgeData.PCurve2d.IsNull()
+          && BRep_Tool::IsClosed(anEdge, aForwardFace))
       {
         double aPCFirstRev = 0.0, aPCLastRev = 0.0;
         TopoDS_Edge aReversedEdge = TopoDS::Edge(anEdge.Reversed());
         Handle(Geom2d_Curve) aPC2 =
           BRep_Tool::CurveOnSurface(aReversedEdge, aForwardFace, aPCFirstRev, aPCLastRev);
-        if (!aPC2.IsNull() && aPC2 != anEdgeData.PCurve2d)
+        if (!aPC2.IsNull())
         {
           anEdgeData.PCurve2dReversed = aPC2;
           anEdgeData.PCFirstReversed  = aPCFirstRev;
