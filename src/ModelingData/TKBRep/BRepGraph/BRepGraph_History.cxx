@@ -32,23 +32,33 @@ void BRepGraph_History::Record(const TCollection_AsciiString&              theOp
   myRecords.Append(aRecord);
 
   // Populate the bidirectional lookup maps.
+  // Skip self-referencing entries (aDerived == theOriginal) to avoid overwriting
+  // prior chain links in the reverse map.
+  NCollection_Vector<BRepGraph_NodeId> aFilteredReplacements;
   for (int anIdx = 0; anIdx < theReplacements.Length(); ++anIdx)
   {
     const BRepGraph_NodeId& aDerived = theReplacements.Value(anIdx);
-    myDerivedToOriginal.Bind(aDerived, theOriginal);
+    if (aDerived != theOriginal)
+    {
+      myDerivedToOriginal.Bind(aDerived, theOriginal);
+      aFilteredReplacements.Append(aDerived);
+    }
   }
+
+  if (aFilteredReplacements.IsEmpty())
+    return;
 
   if (myOriginalToDerived.IsBound(theOriginal))
   {
     NCollection_Vector<BRepGraph_NodeId>& aDerivedVec = myOriginalToDerived.ChangeFind(theOriginal);
-    for (int anIdx = 0; anIdx < theReplacements.Length(); ++anIdx)
+    for (int anIdx = 0; anIdx < aFilteredReplacements.Length(); ++anIdx)
     {
-      aDerivedVec.Append(theReplacements.Value(anIdx));
+      aDerivedVec.Append(aFilteredReplacements.Value(anIdx));
     }
   }
   else
   {
-    myOriginalToDerived.Bind(theOriginal, theReplacements);
+    myOriginalToDerived.Bind(theOriginal, aFilteredReplacements);
   }
 }
 

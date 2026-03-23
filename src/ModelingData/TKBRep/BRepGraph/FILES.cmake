@@ -14,8 +14,12 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_History.hxx
   BRepGraph_HistoryRecord.hxx
   BRepGraph_Iterator.hxx
+  BRepGraph_Mutator.cxx
+  BRepGraph_Mutator.hxx
   BRepGraph_NodeCache.hxx
   BRepGraph_NodeId.hxx
+  BRepGraph_Reconstruct.cxx
+  BRepGraph_Reconstruct.hxx
   BRepGraph_RelEdge.hxx
   BRepGraph_SubGraph.hxx
   BRepGraph_TopoNode.hxx

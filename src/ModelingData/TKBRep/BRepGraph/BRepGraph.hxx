@@ -24,6 +24,7 @@
 #include <BRepGraph_NodeCache.hxx>
 #include <BRepGraph_TopoNode.hxx>
 #include <BRepGraph_GeomNode.hxx>
+#include <BRepGraph_History.hxx>
 #include <BRepGraph_HistoryRecord.hxx>
 #include <BRepGraph_SubGraph.hxx>
 
@@ -47,6 +48,8 @@
 class BRepGraph_Builder;
 class BRepGraph_History;
 class BRepGraph_Analyze;
+class BRepGraph_Reconstruct;
+class BRepGraph_Mutator;
 
 //! Hasher for raw pointer keys (hashes by address).  Used internally by BRepGraph
 //! for typed-pointer map keys (replaces void* for type safety).
@@ -472,6 +475,8 @@ private:
   friend class BRepGraph_Builder;
   friend class BRepGraph_History;
   friend class BRepGraph_Analyze;
+  friend class BRepGraph_Reconstruct;
+  friend class BRepGraph_Mutator;
 
   Handle(NCollection_BaseAllocator) myAllocator;
 
@@ -532,19 +537,10 @@ private:
   //! Reverse index: edge def index -> wire def indices containing that edge.
   NCollection_DataMap<int, NCollection_Vector<int>> myEdgeToWires;
 
-  //! History log.
-  NCollection_Vector<BRepGraph_HistoryRecord> myHistory;
-
-  //! History reverse maps.
-  NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId, BRepGraph_NodeId::Hasher>
-    myDerivedToOriginal;
-  NCollection_DataMap<BRepGraph_NodeId,
-                      NCollection_Vector<BRepGraph_NodeId>,
-                      BRepGraph_NodeId::Hasher>
-    myOriginalToDerived;
+  //! History subsystem (records, reverse maps, enable/disable toggle).
+  BRepGraph_History myHistoryLog;
 
   bool myIsDone;
-  bool myIsHistoryEnabled = true;
 
   //! Internal build helpers.
   BRepGraph_NodeId registerSurface(const Handle(Geom_Surface)&       theSurf,
@@ -561,14 +557,12 @@ private:
   BRepGraph_UID allocateUID(BRepGraph_NodeId theNodeId);
   BRepGraph_NodeCache* mutableCache(BRepGraph_NodeId theNode);
   void markModified(BRepGraph_NodeId theDefId);
+
+public:
   //! Shared cache for edge/vertex shapes during multi-face reconstruction.
   using ReconstructCache = NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape,
                                                BRepGraph_NodeId::Hasher>;
-
-  TopoDS_Shape reconstructNode(BRepGraph_NodeId theNode) const;
-  TopoDS_Shape reconstructFaceWithCache(BRepGraph_NodeId theNode,
-                                        ReconstructCache& theEdgeCache) const;
-  TopoDS_Shape reconstructUsage(BRepGraph_UsageId theUsage) const;
+private:
 
   //! Shapes from Build().
   NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape,

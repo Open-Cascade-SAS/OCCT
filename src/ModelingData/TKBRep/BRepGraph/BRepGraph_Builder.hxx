@@ -29,13 +29,30 @@ class BRepGraph_Builder
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Build the full graph from a TopoDS_Shape.
+  //! Build the full graph from a TopoDS_Shape (clears existing data first).
   //! @param[in,out] theGraph   graph to populate
   //! @param[in] theShape       root shape
   //! @param[in] theParallel    if true, face-level construction runs in parallel
   static Standard_EXPORT void Perform(BRepGraph&          theGraph,
                                       const TopoDS_Shape& theShape,
                                       bool                theParallel);
+
+  //! Append a shape to the existing graph without clearing.
+  //! Uses existing deduplication maps to avoid re-registering shared entities.
+  //! @param[in,out] theGraph   graph to extend
+  //! @param[in] theShape       shape to add
+  //! @param[in] theParallel    if true, per-face geometry extraction is parallel
+  static Standard_EXPORT void Append(BRepGraph&          theGraph,
+                                     const TopoDS_Shape& theShape,
+                                     bool                theParallel);
+
+  //! Register pre-extracted face data into graph definitions and usages.
+  //! Shared by Perform() and Append().
+  template <typename FaceDataVec>
+  static void registerFaceData(BRepGraph& theGraph, const FaceDataVec& theFaceData);
+
+  //! Phase 4: Set IsMultiLocated flags on surfaces and curves.
+  static void computeMultiLocatedFlags(BRepGraph& theGraph);
 
 private:
   BRepGraph_Builder() = delete;
