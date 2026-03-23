@@ -10,6 +10,8 @@ set(OCCT_BRepGraphAlgo_FILES
   BRepGraphAlgo_Deduplicate.cxx
   BRepGraphAlgo_Sewing.hxx
   BRepGraphAlgo_Sewing.cxx
+  BRepGraphAlgo_FClass2d.hxx
+  BRepGraphAlgo_FClass2d.cxx
   BRepGraphAlgo_Transform.hxx
   BRepGraphAlgo_Transform.cxx
 )
