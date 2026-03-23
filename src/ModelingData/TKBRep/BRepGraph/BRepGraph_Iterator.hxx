@@ -100,6 +100,14 @@ template <>
 inline BRepGraph_Iterator<BRepGraph_TopoNode::VertexDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
     : myGraph(theGraph), myLength(theGraph.Defs().NbVertices()) { skipRemoved(); }
 
+template <>
+inline BRepGraph_Iterator<BRepGraph_TopoNode::ProductDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
+    : myGraph(theGraph), myLength(theGraph.Defs().NbProducts()) { skipRemoved(); }
+
+template <>
+inline BRepGraph_Iterator<BRepGraph_TopoNode::OccurrenceDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
+    : myGraph(theGraph), myLength(theGraph.Defs().NbOccurrences()) { skipRemoved(); }
+
 // ---------------------------------------------------------------------------
 // Definition iterators: Current()
 // ---------------------------------------------------------------------------
@@ -133,5 +141,15 @@ template <>
 inline const BRepGraph_TopoNode::VertexDef&
 BRepGraph_Iterator<BRepGraph_TopoNode::VertexDef>::Current() const
 { return myGraph.Defs().Vertex(myIndex); }
+
+template <>
+inline const BRepGraph_TopoNode::ProductDef&
+BRepGraph_Iterator<BRepGraph_TopoNode::ProductDef>::Current() const
+{ return myGraph.Defs().Product(myIndex); }
+
+template <>
+inline const BRepGraph_TopoNode::OccurrenceDef&
+BRepGraph_Iterator<BRepGraph_TopoNode::OccurrenceDef>::Current() const
+{ return myGraph.Defs().Occurrence(myIndex); }
 
 #endif // _BRepGraph_Iterator_HeaderFile

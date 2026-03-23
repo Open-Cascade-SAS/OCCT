@@ -36,15 +36,23 @@ struct BRepGraph_NodeId
   //! Geometry kinds start at 10, leaving room for future topology extensions.
   enum class Kind : int
   {
-    Solid     = 0,
-    Shell     = 1,
-    Face      = 2,
-    Wire      = 3,
-    Edge      = 4,
-    Vertex    = 5,
-    Compound  = 6,  //!< TopoDS_Compound container
-    CompSolid = 7   //!< TopoDS_CompSolid container
+    Solid      = 0,
+    Shell      = 1,
+    Face       = 2,
+    Wire       = 3,
+    Edge       = 4,
+    Vertex     = 5,
+    Compound   = 6,  //!< TopoDS_Compound container
+    CompSolid  = 7,  //!< TopoDS_CompSolid container
+    Product    = 10,  //!< Reusable shape definition (part or assembly)
+    Occurrence = 11   //!< Placed instance of a product within a parent product
   };
+
+  //! True if the kind is a core topology kind (Solid..CompSolid).
+  static bool IsTopologyKind(Kind theKind) { return static_cast<int>(theKind) <= 7; }
+
+  //! True if the kind is an assembly kind (Product or Occurrence).
+  static bool IsAssemblyKind(Kind theKind) { return theKind == Kind::Product || theKind == Kind::Occurrence; }
 
   Kind NodeKind;
   int  Index;
@@ -65,8 +73,10 @@ struct BRepGraph_NodeId
   static BRepGraph_NodeId Wire(int theIdx)       { return {Kind::Wire, theIdx}; }
   static BRepGraph_NodeId Edge(int theIdx)       { return {Kind::Edge, theIdx}; }
   static BRepGraph_NodeId Vertex(int theIdx)     { return {Kind::Vertex, theIdx}; }
-  static BRepGraph_NodeId Compound(int theIdx)   { return {Kind::Compound, theIdx}; }
-  static BRepGraph_NodeId CompSolid(int theIdx)  { return {Kind::CompSolid, theIdx}; }
+  static BRepGraph_NodeId Compound(int theIdx)    { return {Kind::Compound, theIdx}; }
+  static BRepGraph_NodeId CompSolid(int theIdx)   { return {Kind::CompSolid, theIdx}; }
+  static BRepGraph_NodeId Product(int theIdx)     { return {Kind::Product, theIdx}; }
+  static BRepGraph_NodeId Occurrence(int theIdx)  { return {Kind::Occurrence, theIdx}; }
 
   bool operator==(const BRepGraph_NodeId& theOther) const
   { return NodeKind == theOther.NodeKind && Index == theOther.Index; }

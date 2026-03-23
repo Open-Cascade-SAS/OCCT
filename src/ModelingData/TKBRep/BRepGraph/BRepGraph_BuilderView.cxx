@@ -267,6 +267,91 @@ BRepGraph_NodeId BRepGraph::BuilderView::AddCompSolidDef(
 
 //=================================================================================================
 
+BRepGraph_NodeId BRepGraph::BuilderView::AddProduct(BRepGraph_NodeId theShapeRoot)
+{
+  BRepGraph_TopoNode::ProductDef& aProductDef = myGraph->myData->myIncStorage.AppendProduct();
+  const int aIdx = myGraph->myData->myIncStorage.NbProducts() - 1;
+  aProductDef.Id = BRepGraph_NodeId::Product(aIdx);
+  aProductDef.ShapeRootId = theShapeRoot;
+  myGraph->allocateUID(aProductDef.Id);
+
+  return aProductDef.Id;
+}
+
+//=================================================================================================
+
+BRepGraph_NodeId BRepGraph::BuilderView::AddAssemblyProduct()
+{
+  BRepGraph_TopoNode::ProductDef& aProductDef = myGraph->myData->myIncStorage.AppendProduct();
+  const int aIdx = myGraph->myData->myIncStorage.NbProducts() - 1;
+  aProductDef.Id = BRepGraph_NodeId::Product(aIdx);
+  // ShapeRootId left invalid — this is an assembly.
+  myGraph->allocateUID(aProductDef.Id);
+
+  return aProductDef.Id;
+}
+
+//=================================================================================================
+
+BRepGraph_NodeId BRepGraph::BuilderView::AddOccurrence(BRepGraph_NodeId        theParentProduct,
+                                                        BRepGraph_NodeId        theReferencedProduct,
+                                                        const TopLoc_Location& thePlacement)
+{
+  // Delegate with no parent occurrence (top-level).
+  return AddOccurrence(theParentProduct, theReferencedProduct, thePlacement, BRepGraph_NodeId());
+}
+
+//=================================================================================================
+
+BRepGraph_NodeId BRepGraph::BuilderView::AddOccurrence(BRepGraph_NodeId        theParentProduct,
+                                                        BRepGraph_NodeId        theReferencedProduct,
+                                                        const TopLoc_Location& thePlacement,
+                                                        BRepGraph_NodeId        theParentOccurrence)
+{
+  BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+
+  // Validate that both arguments are active Product nodes with valid indices.
+  if (theParentProduct.NodeKind != BRepGraph_NodeId::Kind::Product
+      || theParentProduct.Index < 0
+      || theParentProduct.Index >= aStorage.NbProducts()
+      || aStorage.Product(theParentProduct.Index).IsRemoved)
+    return BRepGraph_NodeId();
+  if (theReferencedProduct.NodeKind != BRepGraph_NodeId::Kind::Product
+      || theReferencedProduct.Index < 0
+      || theReferencedProduct.Index >= aStorage.NbProducts()
+      || aStorage.Product(theReferencedProduct.Index).IsRemoved)
+    return BRepGraph_NodeId();
+  // Prevent self-referencing cycles in the assembly DAG.
+  if (theParentProduct.Index == theReferencedProduct.Index)
+    return BRepGraph_NodeId();
+  // Validate parent occurrence if provided.
+  // ParentOccurrenceIdx = -1 when theParentOccurrence is invalid (top-level).
+  if (theParentOccurrence.IsValid()
+      && (theParentOccurrence.NodeKind != BRepGraph_NodeId::Kind::Occurrence
+          || theParentOccurrence.Index < 0
+          || theParentOccurrence.Index >= aStorage.NbOccurrences()
+          || aStorage.Occurrence(theParentOccurrence.Index).IsRemoved))
+    return BRepGraph_NodeId();
+
+  BRepGraph_TopoNode::OccurrenceDef& anOccDef = aStorage.AppendOccurrence();
+  const int anOccIdx = aStorage.NbOccurrences() - 1;
+  anOccDef.Id = BRepGraph_NodeId::Occurrence(anOccIdx);
+  anOccDef.ProductIdx = theReferencedProduct.Index;
+  anOccDef.ParentProductIdx = theParentProduct.Index;
+  anOccDef.ParentOccurrenceIdx = theParentOccurrence.IsValid() ? theParentOccurrence.Index : -1;
+  anOccDef.Placement = thePlacement;
+  myGraph->allocateUID(anOccDef.Id);
+
+  // Add OccurrenceRef to the parent product.
+  BRepGraphInc::OccurrenceRef anOccRef;
+  anOccRef.OccurrenceIdx = anOccIdx;
+  aStorage.ChangeProduct(theParentProduct.Index).OccurrenceRefs.Append(anOccRef);
+
+  return anOccDef.Id;
+}
+
+//=================================================================================================
+
 void BRepGraph::BuilderView::AppendShape(const TopoDS_Shape& theShape, bool theParallel)
 {
   BRepGraph_Builder::Append(*myGraph, theShape, theParallel);
@@ -391,6 +476,46 @@ void BRepGraph::BuilderView::RemoveSubgraph(BRepGraph_NodeId theNode)
           RemoveNode(BRepGraph_NodeId::Vertex(anEdge.StartVertexIdx));
         if (anEdge.EndVertexIdx >= 0)
           RemoveNode(BRepGraph_NodeId::Vertex(anEdge.EndVertexIdx));
+      }
+      break;
+    }
+    case BRepGraph_NodeId::Kind::Product: {
+      if (theNode.Index >= 0 && theNode.Index < myGraph->myData->myIncStorage.NbProducts())
+      {
+        const BRepGraphInc::ProductEntity& aProduct =
+          myGraph->myData->myIncStorage.Product(theNode.Index);
+        // Snapshot occurrence indices before iterating, because RemoveSubgraph(Occurrence)
+        // modifies the parent's OccurrenceRefs via swap-remove.
+        NCollection_Vector<int> anOccIndices;
+        for (int i = 0; i < aProduct.OccurrenceRefs.Length(); ++i)
+          anOccIndices.Append(aProduct.OccurrenceRefs.Value(i).OccurrenceIdx);
+        for (int i = 0; i < anOccIndices.Length(); ++i)
+          RemoveSubgraph(BRepGraph_NodeId::Occurrence(anOccIndices.Value(i)));
+      }
+      break;
+    }
+    case BRepGraph_NodeId::Kind::Occurrence: {
+      // Remove from parent product's OccurrenceRefs.
+      if (theNode.Index >= 0 && theNode.Index < myGraph->myData->myIncStorage.NbOccurrences())
+      {
+        const BRepGraphInc::OccurrenceEntity& anOcc =
+          myGraph->myData->myIncStorage.Occurrence(theNode.Index);
+        if (anOcc.ParentProductIdx >= 0
+            && anOcc.ParentProductIdx < myGraph->myData->myIncStorage.NbProducts())
+        {
+          NCollection_Vector<BRepGraphInc::OccurrenceRef>& aRefs =
+            myGraph->myData->myIncStorage.ChangeProduct(anOcc.ParentProductIdx).OccurrenceRefs;
+          for (int i = 0; i < aRefs.Length(); ++i)
+          {
+            if (aRefs.Value(i).OccurrenceIdx == theNode.Index)
+            {
+              if (i < aRefs.Length() - 1)
+                aRefs.ChangeValue(i) = aRefs.Value(aRefs.Length() - 1);
+              aRefs.EraseLast();
+              break;
+            }
+          }
+        }
       }
       break;
     }

@@ -83,14 +83,16 @@ BRepGraph_NodeCache* BRepGraph::mutableCache(BRepGraph_NodeId theNode)
   BRepGraphInc_Storage& aStorage = myData->myIncStorage;
   switch (theNode.NodeKind)
   {
-    case BRepGraph_NodeId::Kind::Solid:     return &aStorage.ChangeSolid(theNode.Index).Cache;
-    case BRepGraph_NodeId::Kind::Shell:     return &aStorage.ChangeShell(theNode.Index).Cache;
-    case BRepGraph_NodeId::Kind::Face:      return &aStorage.ChangeFace(theNode.Index).Cache;
-    case BRepGraph_NodeId::Kind::Wire:      return &aStorage.ChangeWire(theNode.Index).Cache;
-    case BRepGraph_NodeId::Kind::Edge:      return &aStorage.ChangeEdge(theNode.Index).Cache;
-    case BRepGraph_NodeId::Kind::Vertex:    return &aStorage.ChangeVertex(theNode.Index).Cache;
-    case BRepGraph_NodeId::Kind::Compound:  return &aStorage.ChangeCompound(theNode.Index).Cache;
-    case BRepGraph_NodeId::Kind::CompSolid: return &aStorage.ChangeCompSolid(theNode.Index).Cache;
+    case BRepGraph_NodeId::Kind::Solid:      return &aStorage.ChangeSolid(theNode.Index).Cache;
+    case BRepGraph_NodeId::Kind::Shell:      return &aStorage.ChangeShell(theNode.Index).Cache;
+    case BRepGraph_NodeId::Kind::Face:       return &aStorage.ChangeFace(theNode.Index).Cache;
+    case BRepGraph_NodeId::Kind::Wire:       return &aStorage.ChangeWire(theNode.Index).Cache;
+    case BRepGraph_NodeId::Kind::Edge:       return &aStorage.ChangeEdge(theNode.Index).Cache;
+    case BRepGraph_NodeId::Kind::Vertex:     return &aStorage.ChangeVertex(theNode.Index).Cache;
+    case BRepGraph_NodeId::Kind::Compound:   return &aStorage.ChangeCompound(theNode.Index).Cache;
+    case BRepGraph_NodeId::Kind::CompSolid:  return &aStorage.ChangeCompSolid(theNode.Index).Cache;
+    case BRepGraph_NodeId::Kind::Product:    return &aStorage.ChangeProduct(theNode.Index).Cache;
+    case BRepGraph_NodeId::Kind::Occurrence: return &aStorage.ChangeOccurrence(theNode.Index).Cache;
     default: return nullptr;
   }
 }
@@ -127,6 +129,10 @@ const BRepGraph_TopoNode::BaseDef* BRepGraph::TopoDef(BRepGraph_NodeId theId) co
       return theId.Index < aStorage.NbCompounds() ? &aStorage.Compound(theId.Index) : nullptr;
     case BRepGraph_NodeId::Kind::CompSolid:
       return theId.Index < aStorage.NbCompSolids() ? &aStorage.CompSolid(theId.Index) : nullptr;
+    case BRepGraph_NodeId::Kind::Product:
+      return theId.Index < aStorage.NbProducts() ? &aStorage.Product(theId.Index) : nullptr;
+    case BRepGraph_NodeId::Kind::Occurrence:
+      return theId.Index < aStorage.NbOccurrences() ? &aStorage.Occurrence(theId.Index) : nullptr;
     default: return nullptr;
   }
 }
@@ -156,6 +162,10 @@ BRepGraph_TopoNode::BaseDef* BRepGraph::ChangeTopoDef(BRepGraph_NodeId theId)
       return theId.Index < aStorage.NbCompounds() ? &aStorage.ChangeCompound(theId.Index) : nullptr;
     case BRepGraph_NodeId::Kind::CompSolid:
       return theId.Index < aStorage.NbCompSolids() ? &aStorage.ChangeCompSolid(theId.Index) : nullptr;
+    case BRepGraph_NodeId::Kind::Product:
+      return theId.Index < aStorage.NbProducts() ? &aStorage.ChangeProduct(theId.Index) : nullptr;
+    case BRepGraph_NodeId::Kind::Occurrence:
+      return theId.Index < aStorage.NbOccurrences() ? &aStorage.ChangeOccurrence(theId.Index) : nullptr;
     default: return nullptr;
   }
 }
@@ -209,6 +219,20 @@ void BRepGraph::invalidateSubgraphImpl(BRepGraph_NodeId theNode)
         if (aVtxCache != nullptr)
           aVtxCache->InvalidateAll();
       }
+      break;
+    }
+    case BRepGraph_NodeId::Kind::Product: {
+      const BRepGraph_TopoNode::ProductDef& aProductDef = myData->myIncStorage.Product(theNode.Index);
+      if (aProductDef.ShapeRootId.IsValid())
+        invalidateSubgraphImpl(aProductDef.ShapeRootId);
+      for (int o = 0; o < aProductDef.OccurrenceRefs.Length(); ++o)
+        invalidateSubgraphImpl(BRepGraph_NodeId::Occurrence(aProductDef.OccurrenceRefs.Value(o).OccurrenceIdx));
+      break;
+    }
+    case BRepGraph_NodeId::Kind::Occurrence: {
+      const BRepGraph_TopoNode::OccurrenceDef& anOccDef = myData->myIncStorage.Occurrence(theNode.Index);
+      if (anOccDef.ProductIdx >= 0)
+        invalidateSubgraphImpl(BRepGraph_NodeId::Product(anOccDef.ProductIdx));
       break;
     }
     default:
@@ -342,8 +366,15 @@ void BRepGraph::propagateModified(BRepGraph_NodeId theDefId)
           markParentModified(BRepGraph_NodeId::Solid(aSolids->Value(i)));
       break;
     }
+    case BRepGraph_NodeId::Kind::Occurrence: {
+      // Occurrence modifications propagate to the parent product.
+      const BRepGraph_TopoNode::OccurrenceDef& anOccDef = myData->myIncStorage.Occurrence(theDefId.Index);
+      if (anOccDef.ParentProductIdx >= 0)
+        markParentModified(BRepGraph_NodeId::Product(anOccDef.ParentProductIdx));
+      break;
+    }
     default:
-      // Solid/Compound/CompSolid modifications don't propagate further.
+      // Solid/Compound/CompSolid/Product modifications don't propagate further.
       break;
   }
 }
@@ -852,4 +883,22 @@ BRepGraph_MutRef<BRepGraph_TopoNode::CompSolidDef> BRepGraph::MutCompSolid(int t
   return BRepGraph_MutRef<BRepGraph_TopoNode::CompSolidDef>(
     this, &myData->myIncStorage.ChangeCompSolid(theIdx),
     BRepGraph_NodeId(BRepGraph_NodeId::Kind::CompSolid, theIdx));
+}
+
+//=================================================================================================
+
+BRepGraph_MutRef<BRepGraph_TopoNode::ProductDef> BRepGraph::MutProduct(int theIdx)
+{
+  return BRepGraph_MutRef<BRepGraph_TopoNode::ProductDef>(
+    this, &myData->myIncStorage.ChangeProduct(theIdx),
+    BRepGraph_NodeId(BRepGraph_NodeId::Kind::Product, theIdx));
+}
+
+//=================================================================================================
+
+BRepGraph_MutRef<BRepGraph_TopoNode::OccurrenceDef> BRepGraph::MutOccurrence(int theIdx)
+{
+  return BRepGraph_MutRef<BRepGraph_TopoNode::OccurrenceDef>(
+    this, &myData->myIncStorage.ChangeOccurrence(theIdx),
+    BRepGraph_NodeId(BRepGraph_NodeId::Kind::Occurrence, theIdx));
 }

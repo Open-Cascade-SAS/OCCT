@@ -36,8 +36,10 @@ bool isValidNodeId(const BRepGraph& theGraph, BRepGraph_NodeId theId)
     case BRepGraph_NodeId::Kind::Wire:      return theId.Index < theGraph.Defs().NbWires();
     case BRepGraph_NodeId::Kind::Edge:      return theId.Index < theGraph.Defs().NbEdges();
     case BRepGraph_NodeId::Kind::Vertex:    return theId.Index < theGraph.Defs().NbVertices();
-    case BRepGraph_NodeId::Kind::Compound:  return theId.Index < theGraph.Defs().NbCompounds();
-    case BRepGraph_NodeId::Kind::CompSolid: return theId.Index < theGraph.Defs().NbCompSolids();
+    case BRepGraph_NodeId::Kind::Compound:   return theId.Index < theGraph.Defs().NbCompounds();
+    case BRepGraph_NodeId::Kind::CompSolid:  return theId.Index < theGraph.Defs().NbCompSolids();
+    case BRepGraph_NodeId::Kind::Product:    return theId.Index < theGraph.Defs().NbProducts();
+    case BRepGraph_NodeId::Kind::Occurrence: return theId.Index < theGraph.Defs().NbOccurrences();
   }
   return false;
 }

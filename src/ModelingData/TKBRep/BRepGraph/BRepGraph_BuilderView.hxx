@@ -16,6 +16,7 @@
 
 #include <BRepGraph.hxx>
 #include <TopAbs_Orientation.hxx>
+#include <TopLoc_Location.hxx>
 
 #include <utility>
 
@@ -102,6 +103,38 @@ public:
   //! @return NodeId of the new compsolid definition
   Standard_EXPORT BRepGraph_NodeId AddCompSolidDef(
     const NCollection_Vector<BRepGraph_NodeId>& theSolidDefs);
+
+  //! Add a part product with a root shape node.
+  //! @param[in] theShapeRoot root topology NodeId for the part
+  //! @return NodeId of the new product definition
+  Standard_EXPORT BRepGraph_NodeId AddProduct(BRepGraph_NodeId theShapeRoot);
+
+  //! Add an assembly product (no root shape, has child occurrences).
+  //! @return NodeId of the new product definition
+  Standard_EXPORT BRepGraph_NodeId AddAssemblyProduct();
+
+  //! Add an occurrence linking a parent product to a referenced (child) product.
+  //! ParentOccurrenceIdx is set to -1 (top-level).
+  //! @param[in] theParentProduct      parent assembly product NodeId
+  //! @param[in] theReferencedProduct  child product being instantiated
+  //! @param[in] thePlacement          local placement relative to parent
+  //! @return NodeId of the new occurrence definition
+  Standard_EXPORT BRepGraph_NodeId AddOccurrence(BRepGraph_NodeId        theParentProduct,
+                                                  BRepGraph_NodeId        theReferencedProduct,
+                                                  const TopLoc_Location& thePlacement);
+
+  //! Add an occurrence with an explicit parent occurrence for nested assembly chains.
+  //! This establishes a tree-structured placement path for unambiguous
+  //! GlobalPlacement computation even when products are shared (DAG).
+  //! @param[in] theParentProduct      parent assembly product NodeId
+  //! @param[in] theReferencedProduct  child product being instantiated
+  //! @param[in] thePlacement          local placement relative to parent
+  //! @param[in] theParentOccurrence   the occurrence that placed the parent product
+  //! @return NodeId of the new occurrence definition
+  Standard_EXPORT BRepGraph_NodeId AddOccurrence(BRepGraph_NodeId        theParentProduct,
+                                                  BRepGraph_NodeId        theReferencedProduct,
+                                                  const TopLoc_Location& thePlacement,
+                                                  BRepGraph_NodeId        theParentOccurrence);
 
   //! Append a shape to the existing graph without clearing.
   //! @param[in] theShape   shape to add

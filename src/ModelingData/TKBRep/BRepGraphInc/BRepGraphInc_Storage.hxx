@@ -53,8 +53,10 @@ public:
   int NbFaces()      const { return myFaces.Length(); }
   int NbShells()     const { return myShells.Length(); }
   int NbSolids()     const { return mySolids.Length(); }
-  int NbCompounds()  const { return myCompounds.Length(); }
-  int NbCompSolids() const { return myCompSolids.Length(); }
+  int NbCompounds()   const { return myCompounds.Length(); }
+  int NbCompSolids()  const { return myCompSolids.Length(); }
+  int NbProducts()    const { return myProducts.Length(); }
+  int NbOccurrences() const { return myOccurrences.Length(); }
 
   // ------ Active count accessors (excluding removed nodes) ------
 
@@ -64,8 +66,10 @@ public:
   int NbActiveFaces()      const { return myNbActiveFaces; }
   int NbActiveShells()     const { return myNbActiveShells; }
   int NbActiveSolids()     const { return myNbActiveSolids; }
-  int NbActiveCompounds()  const { return myNbActiveCompounds; }
-  int NbActiveCompSolids() const { return myNbActiveCompSolids; }
+  int NbActiveCompounds()   const { return myNbActiveCompounds; }
+  int NbActiveCompSolids()  const { return myNbActiveCompSolids; }
+  int NbActiveProducts()    const { return myNbActiveProducts; }
+  int NbActiveOccurrences() const { return myNbActiveOccurrences; }
 
   //! Decrement the active count for the given node kind.
   void DecrementActiveCount(BRepGraph_NodeId::Kind theKind);
@@ -78,8 +82,10 @@ public:
   const BRepGraphInc::FaceEntity&      Face(int theIdx)      const { return myFaces.Value(theIdx); }
   const BRepGraphInc::ShellEntity&     Shell(int theIdx)     const { return myShells.Value(theIdx); }
   const BRepGraphInc::SolidEntity&     Solid(int theIdx)     const { return mySolids.Value(theIdx); }
-  const BRepGraphInc::CompoundEntity&  Compound(int theIdx)  const { return myCompounds.Value(theIdx); }
-  const BRepGraphInc::CompSolidEntity& CompSolid(int theIdx) const { return myCompSolids.Value(theIdx); }
+  const BRepGraphInc::CompoundEntity&   Compound(int theIdx)   const { return myCompounds.Value(theIdx); }
+  const BRepGraphInc::CompSolidEntity&  CompSolid(int theIdx)  const { return myCompSolids.Value(theIdx); }
+  const BRepGraphInc::ProductEntity&    Product(int theIdx)    const { return myProducts.Value(theIdx); }
+  const BRepGraphInc::OccurrenceEntity& Occurrence(int theIdx) const { return myOccurrences.Value(theIdx); }
 
   // ------ Mutable entity access ------
 
@@ -89,8 +95,10 @@ public:
   BRepGraphInc::FaceEntity&      ChangeFace(int theIdx)      { return myFaces.ChangeValue(theIdx); }
   BRepGraphInc::ShellEntity&     ChangeShell(int theIdx)     { return myShells.ChangeValue(theIdx); }
   BRepGraphInc::SolidEntity&     ChangeSolid(int theIdx)     { return mySolids.ChangeValue(theIdx); }
-  BRepGraphInc::CompoundEntity&  ChangeCompound(int theIdx)  { return myCompounds.ChangeValue(theIdx); }
-  BRepGraphInc::CompSolidEntity& ChangeCompSolid(int theIdx) { return myCompSolids.ChangeValue(theIdx); }
+  BRepGraphInc::CompoundEntity&   ChangeCompound(int theIdx)   { return myCompounds.ChangeValue(theIdx); }
+  BRepGraphInc::CompSolidEntity&  ChangeCompSolid(int theIdx)  { return myCompSolids.ChangeValue(theIdx); }
+  BRepGraphInc::ProductEntity&    ChangeProduct(int theIdx)    { return myProducts.ChangeValue(theIdx); }
+  BRepGraphInc::OccurrenceEntity& ChangeOccurrence(int theIdx) { return myOccurrences.ChangeValue(theIdx); }
 
   // ------ Append (returns mutable ref to newly created entity) ------
   // Inner vectors of each entity are initialized with the storage allocator.
@@ -101,8 +109,10 @@ public:
   BRepGraphInc::FaceEntity&      AppendFace()      { ++myNbActiveFaces;      auto& e = myFaces.Appended();      e.InitVectors(myAllocator); return e; }
   BRepGraphInc::ShellEntity&     AppendShell()     { ++myNbActiveShells;     auto& e = myShells.Appended();     e.InitVectors(myAllocator); return e; }
   BRepGraphInc::SolidEntity&     AppendSolid()     { ++myNbActiveSolids;     auto& e = mySolids.Appended();     e.InitVectors(myAllocator); return e; }
-  BRepGraphInc::CompoundEntity&  AppendCompound()  { ++myNbActiveCompounds;  auto& e = myCompounds.Appended();  e.InitVectors(myAllocator); return e; }
-  BRepGraphInc::CompSolidEntity& AppendCompSolid() { ++myNbActiveCompSolids; auto& e = myCompSolids.Appended(); e.InitVectors(myAllocator); return e; }
+  BRepGraphInc::CompoundEntity&   AppendCompound()   { ++myNbActiveCompounds;   auto& e = myCompounds.Appended();   e.InitVectors(myAllocator); return e; }
+  BRepGraphInc::CompSolidEntity&  AppendCompSolid()  { ++myNbActiveCompSolids;  auto& e = myCompSolids.Appended();  e.InitVectors(myAllocator); return e; }
+  BRepGraphInc::ProductEntity&    AppendProduct()    { ++myNbActiveProducts;    auto& e = myProducts.Appended();    e.InitVectors(myAllocator); return e; }
+  BRepGraphInc::OccurrenceEntity& AppendOccurrence() { ++myNbActiveOccurrences; auto& e = myOccurrences.Appended(); return e; }
 
   // ------ UID access (Kind-dispatched, eliminates 8-way switches in consumers) ------
 
@@ -198,8 +208,10 @@ private:
   NCollection_Vector<BRepGraphInc::FaceEntity>      myFaces;
   NCollection_Vector<BRepGraphInc::ShellEntity>     myShells;
   NCollection_Vector<BRepGraphInc::SolidEntity>     mySolids;
-  NCollection_Vector<BRepGraphInc::CompoundEntity>  myCompounds;
-  NCollection_Vector<BRepGraphInc::CompSolidEntity> myCompSolids;
+  NCollection_Vector<BRepGraphInc::CompoundEntity>   myCompounds;
+  NCollection_Vector<BRepGraphInc::CompSolidEntity>  myCompSolids;
+  NCollection_Vector<BRepGraphInc::ProductEntity>    myProducts;
+  NCollection_Vector<BRepGraphInc::OccurrenceEntity> myOccurrences;
 
   BRepGraphInc_ReverseIndex myReverseIdx;
 
@@ -214,6 +226,8 @@ private:
   NCollection_Vector<BRepGraph_UID> mySolidUIDs;
   NCollection_Vector<BRepGraph_UID> myCompoundUIDs;
   NCollection_Vector<BRepGraph_UID> myCompSolidUIDs;
+  NCollection_Vector<BRepGraph_UID> myProductUIDs;
+  NCollection_Vector<BRepGraph_UID> myOccurrenceUIDs;
 
   Handle(NCollection_BaseAllocator) myAllocator;
 
@@ -223,8 +237,10 @@ private:
   int myNbActiveFaces      = 0;
   int myNbActiveShells     = 0;
   int myNbActiveSolids     = 0;
-  int myNbActiveCompounds  = 0;
-  int myNbActiveCompSolids = 0;
+  int myNbActiveCompounds   = 0;
+  int myNbActiveCompSolids  = 0;
+  int myNbActiveProducts    = 0;
+  int myNbActiveOccurrences = 0;
 
   bool myIsDone              = false;
   bool myHasRegularities     = false;

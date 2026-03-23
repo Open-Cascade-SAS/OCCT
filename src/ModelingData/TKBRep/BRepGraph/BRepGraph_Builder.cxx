@@ -19,6 +19,7 @@
 #include <BRepGraphInc_Populate.hxx>
 #include <BRepGraphInc_Storage.hxx>
 #include <NCollection_IncAllocator.hxx>
+#include <TopAbs_ShapeEnum.hxx>
 
 //=================================================================================================
 
@@ -91,6 +92,31 @@ void BRepGraph_Builder::Perform(BRepGraph&                            theGraph,
   }
 
   populateUIDs(theGraph);
+
+  // Auto-create a single root Product pointing to the top-level topology node.
+  // aTopologyRoot defaults to invalid (Index = -1); set only if topology exists.
+  {
+    BRepGraphInc_Storage& aStorage = theGraph.myData->myIncStorage;
+    BRepGraph_NodeId aTopologyRoot; // default: invalid (Index = -1)
+    switch (theShape.ShapeType())
+    {
+      case TopAbs_COMPOUND:  if (aStorage.NbCompounds()  > 0) aTopologyRoot = BRepGraph_NodeId::Compound(0);  break;
+      case TopAbs_COMPSOLID: if (aStorage.NbCompSolids() > 0) aTopologyRoot = BRepGraph_NodeId::CompSolid(0); break;
+      case TopAbs_SOLID:     if (aStorage.NbSolids()     > 0) aTopologyRoot = BRepGraph_NodeId::Solid(0);     break;
+      case TopAbs_SHELL:     if (aStorage.NbShells()     > 0) aTopologyRoot = BRepGraph_NodeId::Shell(0);     break;
+      case TopAbs_FACE:      if (aStorage.NbFaces()      > 0) aTopologyRoot = BRepGraph_NodeId::Face(0);      break;
+      case TopAbs_WIRE:      if (aStorage.NbWires()      > 0) aTopologyRoot = BRepGraph_NodeId::Wire(0);      break;
+      case TopAbs_EDGE:      if (aStorage.NbEdges()      > 0) aTopologyRoot = BRepGraph_NodeId::Edge(0);      break;
+      case TopAbs_VERTEX:    if (aStorage.NbVertices()    > 0) aTopologyRoot = BRepGraph_NodeId::Vertex(0);    break;
+      default: break;
+    }
+
+    BRepGraphInc::ProductEntity& aProduct = aStorage.AppendProduct();
+    const int aProductIdx = aStorage.NbProducts() - 1;
+    aProduct.Id = BRepGraph_NodeId::Product(aProductIdx);
+    aProduct.ShapeRootId = aTopologyRoot; // invalid if no topology matched
+    theGraph.allocateUID(aProduct.Id);
+  }
 
   theGraph.myData->myIsDone = true;
 }

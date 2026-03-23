@@ -28,6 +28,7 @@ void BRepGraphInc_ReverseIndex::Clear()
   myFaceToShells.Clear();
   myShellToSolids.Clear();
   myEdgeFaceCount.Clear();
+  myProductToOccurrences.Clear();
 }
 
 //=================================================================================================
@@ -618,4 +619,23 @@ bool BRepGraphInc_ReverseIndex::Validate(
   }
 
   return true;
+}
+
+//=================================================================================================
+
+void BRepGraphInc_ReverseIndex::BuildProductOccurrences(
+  const NCollection_Vector<BRepGraphInc::OccurrenceEntity>& theOccurrences,
+  int theNbProducts)
+{
+  myProductToOccurrences.Clear();
+  preSize(myProductToOccurrences, theNbProducts, myAllocator);
+
+  for (int anOccIdx = 0; anOccIdx < theOccurrences.Length(); ++anOccIdx)
+  {
+    const BRepGraphInc::OccurrenceEntity& anOcc = theOccurrences.Value(anOccIdx);
+    if (anOcc.IsRemoved)
+      continue;
+    if (anOcc.ProductIdx >= 0)
+      appendDirect(myProductToOccurrences, anOcc.ProductIdx, anOccIdx);
+  }
 }

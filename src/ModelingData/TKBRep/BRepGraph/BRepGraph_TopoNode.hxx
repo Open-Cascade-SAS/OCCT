@@ -31,8 +31,10 @@ using WireDef      = BRepGraphInc::WireEntity;
 using FaceDef      = BRepGraphInc::FaceEntity;
 using ShellDef     = BRepGraphInc::ShellEntity;
 using SolidDef     = BRepGraphInc::SolidEntity;
-using CompoundDef  = BRepGraphInc::CompoundEntity;
-using CompSolidDef = BRepGraphInc::CompSolidEntity;
+using CompoundDef   = BRepGraphInc::CompoundEntity;
+using CompSolidDef  = BRepGraphInc::CompSolidEntity;
+using ProductDef    = BRepGraphInc::ProductEntity;
+using OccurrenceDef = BRepGraphInc::OccurrenceEntity;
 
 } // namespace BRepGraph_TopoNode
 

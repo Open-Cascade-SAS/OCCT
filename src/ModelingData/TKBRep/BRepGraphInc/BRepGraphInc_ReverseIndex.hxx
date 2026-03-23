@@ -25,6 +25,8 @@ struct WireEntity;
 struct FaceEntity;
 struct ShellEntity;
 struct SolidEntity;
+struct ProductEntity;
+struct OccurrenceEntity;
 }
 
 //! @brief Reverse incidence indices for O(1) upward navigation.
@@ -77,6 +79,13 @@ public:
                                   int theOldNbShells,
                                   int theOldNbSolids);
 
+  //! Build product-to-occurrences reverse index.
+  //! @param[in] theOccurrences occurrence entity vector
+  //! @param[in] theNbProducts  total number of products (for pre-sizing)
+  Standard_EXPORT void BuildProductOccurrences(
+    const NCollection_Vector<BRepGraphInc::OccurrenceEntity>& theOccurrences,
+    int theNbProducts);
+
   //! Return wire indices containing the given edge.
   const NCollection_Vector<int>* WiresOfEdge(int theEdgeIdx) const
   {
@@ -120,6 +129,12 @@ public:
   const NCollection_Vector<int>* SolidsOfShell(int theShellIdx) const
   {
     return seekVec(myShellToSolids, theShellIdx);
+  }
+
+  //! Return occurrence indices that reference the given product.
+  const NCollection_Vector<int>* OccurrencesOfProduct(int theProductIdx) const
+  {
+    return seekVec(myProductToOccurrences, theProductIdx);
   }
 
   // --- Safe reference accessors (return empty vector instead of nullptr) ---
@@ -219,6 +234,7 @@ private:
   IndexTable myWireToFaces;
   IndexTable myFaceToShells;
   IndexTable myShellToSolids;
+  IndexTable myProductToOccurrences;
 
   NCollection_Vector<int> myEdgeFaceCount; //!< Cached face count per edge, O(1) lookup.
 };

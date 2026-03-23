@@ -73,6 +73,10 @@ BRepGraph_NodeId remapNodeId(const BRepGraph_NodeId&              theId,
     case BRepGraph_NodeId::Kind::CompSolid:
       aMap = &theCompSolidMap;
       break;
+    default:
+      // Product/Occurrence kinds are not compacted — they reference topology
+      // nodes which are remapped independently.
+      break;
   }
 
   if (aMap == nullptr)

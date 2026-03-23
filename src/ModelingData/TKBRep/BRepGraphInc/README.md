@@ -2,16 +2,17 @@
 
 BRepGraphInc is the incidence-table backend used by BRepGraph.
 
-It provides the runtime source of truth for topology entities, context references, reverse indices, reconstruction support, and identity mapping.
+It provides the runtime source of truth for topology entities, assembly entities, context references, reverse indices, reconstruction support, and identity mapping.
 
 ## What This Backend Owns
 
-- topology entity tables
+- topology entity tables (Vertex, Edge, Wire, Face, Shell, Solid, Compound, CompSolid)
+- assembly entity tables (Product, Occurrence)
 - context references with orientation and location
-- reverse adjacency indices
+- reverse adjacency indices (including product->occurrences)
 - TShape to NodeId mapping
 - original shape map
-- per-kind UID vectors
+- per-kind UID vectors (10 kinds: 8 topology + 2 assembly)
 
 ## High-Level Architecture
 
@@ -19,7 +20,8 @@ It provides the runtime source of truth for topology entities, context reference
 flowchart TB
 	F[BRepGraph facade] --> S[BRepGraphInc_Storage]
 
-	S --> E[Entity Tables]
+	S --> E[Topology Entity Tables]
+	S --> A[Assembly Entity Tables]
 	S --> R[Reverse Index]
 	S --> M[TShape to NodeId]
 	S --> O[Original Shapes]
@@ -33,7 +35,7 @@ flowchart TB
 
 ```mermaid
 flowchart LR
-	subgraph Entities
+	subgraph Topology Entities
 		V[VertexEntity]
 		E[EdgeEntity]
 		W[WireEntity]
@@ -42,6 +44,11 @@ flowchart LR
 		SO[SolidEntity]
 		CO[CompoundEntity]
 		CS[CompSolidEntity]
+	end
+
+	subgraph Assembly Entities
+		PR[ProductEntity]
+		OC[OccurrenceEntity]
 	end
 
 	F -->|WireRef| W
@@ -53,16 +60,24 @@ flowchart LR
 	CO -->|ChildRef| SH
 	CO -->|ChildRef| F
 	CS -->|SolidRef| SO
+
+	PR -->|OccurrenceRef| OC
+	PR -->|ShapeRootId| SO
+	OC -->|ProductIdx| PR
+	OC -->|ParentOccurrenceIdx| OC
 ```
 
 Notes:
 
-- Entity tables are canonical topology.
+- Topology entity tables are canonical topology.
+- Assembly entity tables store product definitions and placed instances.
 - Parent-context data belongs to refs, not separate usage objects.
 - Edge-face relation context is inline on EdgeEntity:
 	- PCurves
 	- PolygonsOnSurf
 	- PolygonsOnTri
+- ProductEntity: `ShapeRootId` (topology root for parts; invalid for assemblies), `OccurrenceRefs`
+- OccurrenceEntity: `ProductIdx`, `ParentProductIdx`, `ParentOccurrenceIdx` (tree-structured placement chain), `Placement` (TopLoc_Location)
 
 ## TopoDS vs GraphInc (Box)
 
@@ -118,10 +133,13 @@ For a full box-level graph with all 6 faces, 12 edges, and 8 vertices, see:
 | Wire->Edge links | 24 | `WireEntity.EdgeRefs` |
 | Edge endpoints | 24 | `EdgeEntity.StartVertexIdx/EndVertexIdx` |
 | Edge->Face reverse rows | 24 logical refs, 12 unique edges each used by 2 faces | `ReverseIndex edge -> faces` |
+| Product | 1 (auto root) | `ProductEntity` table |
+| Occurrence | 0 | `OccurrenceEntity` table |
 
 Interpretation:
 
 - Canonical topology lives in entity tables.
+- Assembly structure lives in product/occurrence tables.
 - Context and ordering live in refs.
 - Fast upward traversal lives in reverse index maps.
 
@@ -183,8 +201,9 @@ Current reverse maps:
 - wire -> faces
 - face -> shells
 - shell -> solids
+- product -> occurrences
 
-These are critical for adjacency-heavy algorithms like sewing and healing.
+Topology reverse maps are critical for adjacency-heavy algorithms like sewing and healing. The product->occurrences map is built during `BuildReverseIndex` via `BuildProductOccurrences`.
 
 ## Core Invariants
 
@@ -202,7 +221,13 @@ These are critical for adjacency-heavy algorithms like sewing and healing.
 
 5. Mutation boundary invariant
 - after each mutator operation: entities, reverse indices, cache invalidation, and history are coherent
-- `ReverseIndex::Validate()` checks all 6 reverse maps against forward refs (used in debug assertions after SplitEdge/ReplaceEdgeInWire)
+- `ReverseIndex::Validate()` checks all 6 topology reverse maps against forward refs (used in debug assertions after SplitEdge/ReplaceEdgeInWire)
+
+6. Assembly invariant
+- every successful Build produces at least one root Product
+- occurrence ProductIdx and ParentProductIdx must reference valid, non-removed products
+- self-referencing occurrences (parent == referenced) are rejected
+- ParentOccurrenceIdx forms a tree (not a DAG) for unambiguous placement chains
 
 ## Memory and Performance Notes
 

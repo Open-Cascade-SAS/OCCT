@@ -32,8 +32,10 @@ public:
   BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef>      FaceDef(int theIdx)      { return myGraph->MutFace(theIdx); }
   BRepGraph_MutRef<BRepGraph_TopoNode::ShellDef>     ShellDef(int theIdx)     { return myGraph->MutShell(theIdx); }
   BRepGraph_MutRef<BRepGraph_TopoNode::SolidDef>     SolidDef(int theIdx)     { return myGraph->MutSolid(theIdx); }
-  BRepGraph_MutRef<BRepGraph_TopoNode::CompoundDef>  CompoundDef(int theIdx)  { return myGraph->MutCompound(theIdx); }
-  BRepGraph_MutRef<BRepGraph_TopoNode::CompSolidDef> CompSolidDef(int theIdx) { return myGraph->MutCompSolid(theIdx); }
+  BRepGraph_MutRef<BRepGraph_TopoNode::CompoundDef>   CompoundDef(int theIdx)   { return myGraph->MutCompound(theIdx); }
+  BRepGraph_MutRef<BRepGraph_TopoNode::CompSolidDef>  CompSolidDef(int theIdx)  { return myGraph->MutCompSolid(theIdx); }
+  BRepGraph_MutRef<BRepGraph_TopoNode::ProductDef>    ProductDef(int theIdx)    { return myGraph->MutProduct(theIdx); }
+  BRepGraph_MutRef<BRepGraph_TopoNode::OccurrenceDef> OccurrenceDef(int theIdx) { return myGraph->MutOccurrence(theIdx); }
 
   //! Attach a PCurve to an edge for a given face context (stored inline on EdgeDef).
   //! @param[in] theEdgeDef           edge definition NodeId

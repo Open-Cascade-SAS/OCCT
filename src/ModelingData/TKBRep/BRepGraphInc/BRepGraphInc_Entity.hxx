@@ -27,6 +27,7 @@
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_Triangulation.hxx>
 #include <TopAbs_Orientation.hxx>
+#include <TopLoc_Location.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 
@@ -320,6 +321,37 @@ struct CompSolidEntity : public BaseEntity
   {
     BRepGraphInc_InitVec(SolidRefs, theAlloc, 2);       // typically 1-2
   }
+};
+
+//! Reference from a product to one of its child occurrences.
+struct OccurrenceRef
+{
+  int OccurrenceIdx = -1;
+};
+
+//! Product entity: reusable shape definition (part or assembly).
+//! A part has a valid ShapeRootId pointing to the root topology node.
+//! An assembly has an invalid ShapeRootId and owns child occurrences.
+struct ProductEntity : public BaseEntity
+{
+  BRepGraph_NodeId ShapeRootId;  //!< Root topology for parts; invalid for assemblies
+  NCollection_Vector<OccurrenceRef> OccurrenceRefs;
+
+  void InitVectors(const Handle(NCollection_BaseAllocator)& theAlloc)
+  {
+    BRepGraphInc_InitVec(OccurrenceRefs, theAlloc, 4);
+  }
+};
+
+//! Occurrence entity: placed instance of a product within a parent product.
+//! ParentOccurrenceIdx forms a tree-structured placement chain for
+//! unambiguous GlobalPlacement computation even when products are shared (DAG).
+struct OccurrenceEntity : public BaseEntity
+{
+  int             ProductIdx         = -1;  //!< Referenced product index
+  int             ParentProductIdx   = -1;  //!< Parent assembly product index
+  int             ParentOccurrenceIdx = -1; //!< Parent occurrence index (-1 for top-level)
+  TopLoc_Location Placement;                //!< Local placement relative to parent
 };
 
 } // namespace BRepGraphInc

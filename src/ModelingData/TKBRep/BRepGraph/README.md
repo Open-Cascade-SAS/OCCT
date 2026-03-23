@@ -20,6 +20,7 @@ BRepGraph provides a stable algorithm-facing API for:
 - adjacency and sharing queries,
 - controlled topology mutation,
 - shape reconstruction,
+- assembly structure (products, occurrences, placement),
 - history and UID tracking,
 - cached analysis helpers.
 
@@ -44,6 +45,7 @@ flowchart TB
   D --> R[Relation edge maps]
 
   S --> E[Entity tables]
+  S --> AS[Assembly tables]
   S --> X[Reverse index]
   S --> T[TShape to NodeId]
   S --> O[Original shapes]
@@ -54,9 +56,10 @@ flowchart TB
 
 - Node identity: BRepGraph_NodeId (kind + index)
 - Stable IDs: BRepGraph_UID (generation-aware)
-- Entities: Vertex, Edge, Wire, Face, Shell, Solid, Compound, CompSolid
-- Context refs: EdgeRef, WireRef, FaceRef, ShellRef, ChildRef, SolidRef
-- Reverse indices: edge->wire, edge->face, vertex->edge, wire->face, face->shell, shell->solid
+- Topology entities: Vertex, Edge, Wire, Face, Shell, Solid, Compound, CompSolid
+- Assembly entities: Product (part or assembly), Occurrence (placed instance)
+- Context refs: EdgeRef, WireRef, FaceRef, ShellRef, ChildRef, SolidRef, OccurrenceRef
+- Reverse indices: edge->wire, edge->face, vertex->edge, wire->face, face->shell, shell->solid, product->occurrences
 
 ## Core Pipelines
 
@@ -72,6 +75,10 @@ flowchart LR
   P5 --> D[IsDone]
 ```
 
+### Build (Auto Root Product)
+
+After topology population, `Build()` auto-creates a single root Product whose `ShapeRootId` points to the top-level topology node. This makes every BRepGraph intrinsically assembly-aware — no "is this an assembly?" branching needed.
+
 ### Reconstruct
 
 ```mermaid
@@ -85,6 +92,63 @@ flowchart TD
 ```
 
 Use cache-enabled reconstruction paths for multi-face/shell/solid rebuilds.
+
+## Assembly Model
+
+BRepGraph has intrinsic assembly support. Products and Occurrences are first-class node kinds alongside topology.
+
+### Node Kinds
+
+```
+Kind::Product    = 10   // Reusable shape definition (part or assembly)
+Kind::Occurrence = 11   // Placed instance of a product within a parent product
+```
+
+Helpers: `BRepGraph_NodeId::IsTopologyKind()`, `IsAssemblyKind()`, `Product(i)`, `Occurrence(i)`.
+
+### Data Model
+
+```mermaid
+flowchart LR
+  subgraph Assembly DAG
+    RP[Root Product]
+    P1[Part Product]
+    P2[Sub-Assembly Product]
+    O1[Occurrence 1]
+    O2[Occurrence 2]
+    O3[Occurrence 3]
+  end
+
+  RP -->|OccurrenceRef| O1
+  RP -->|OccurrenceRef| O2
+  O1 -->|ProductIdx| P1
+  O2 -->|ProductIdx| P2
+  P2 -->|OccurrenceRef| O3
+  O3 -->|ProductIdx| P1
+```
+
+- **ProductEntity**: `ShapeRootId` (topology root for parts; invalid for assemblies), `OccurrenceRefs` (child occurrences)
+- **OccurrenceEntity**: `ProductIdx` (referenced product), `ParentProductIdx` (parent assembly), `ParentOccurrenceIdx` (parent occurrence for tree-structured placement chains), `Placement` (TopLoc_Location)
+
+### Placement Composition
+
+`SpatialView::GlobalPlacement(occIdx)` walks `ParentOccurrenceIdx` from leaf to root, composing `Placement` transforms. This is DAG-safe: shared products placed at multiple locations have distinct occurrence paths, each yielding the correct global placement.
+
+### API Distribution
+
+Assembly functionality is distributed across existing views:
+
+| View | Methods |
+|------|---------|
+| **DefsView** | `NbProducts`, `NbOccurrences`, `Product(i)`, `Occurrence(i)`, `RootProducts`, `IsAssembly`, `IsPart`, `NbComponents`, `Component` |
+| **BuilderView** | `AddProduct`, `AddAssemblyProduct`, `AddOccurrence` (with optional parent occurrence), `RemoveSubgraph` (cascades to child occurrences) |
+| **MutView** | `ProductDef(i)`, `OccurrenceDef(i)` (RAII guards) |
+| **SpatialView** | `GlobalPlacement(occIdx)` |
+| **Iterator** | `BRepGraph_Iterator<ProductDef>`, `BRepGraph_Iterator<OccurrenceDef>` |
+
+### Auto Root Product
+
+`Build(shape)` always creates one root Product. For a single solid, the root product's `ShapeRootId` points to `Solid(0)`. For a compound, it points to `Compound(0)`. This means `Defs().NbProducts() >= 1` after any successful build.
 
 ## Mutation and History
 

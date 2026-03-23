@@ -21,7 +21,8 @@ BRepGraphInc is not a user-facing API. It is the runtime model that powers BRepG
 ```mermaid
 flowchart TB
   subgraph Storage[BRepGraphInc_Storage]
-    E[Entity Tables]
+    E[Topology Entity Tables]
+    AS[Assembly Entity Tables]
     RX[Reverse Index]
     TM[TShape to NodeId]
     OR[Original Shapes]
@@ -29,12 +30,14 @@ flowchart TB
   end
 
   E --> RX
+  AS --> RX
   E --> UID
+  AS --> UID
   E --> OR
   TM --> E
 ```
 
-Entity tables:
+Topology entity tables:
 
 - VertexEntity
 - EdgeEntity
@@ -45,23 +48,39 @@ Entity tables:
 - CompoundEntity
 - CompSolidEntity
 
+Assembly entity tables:
+
+- ProductEntity — reusable shape definition (part or assembly)
+- OccurrenceEntity — placed instance of a product within a parent product
+
 ## 3) Incidence Semantics
 
 ```mermaid
 flowchart LR
-  F[FaceEntity] -->|WireRef| W[WireEntity]
-  W -->|EdgeRef| E[EdgeEntity]
-  E -->|Start/End idx| V[VertexEntity]
-  SH[ShellEntity] -->|FaceRef| F
-  SO[SolidEntity] -->|ShellRef| SH
-  CO[CompoundEntity] -->|ChildRef| SO
-  CS[CompSolidEntity] -->|SolidRef| SO
+  subgraph Topology
+    F[FaceEntity] -->|WireRef| W[WireEntity]
+    W -->|EdgeRef| E[EdgeEntity]
+    E -->|Start/End idx| V[VertexEntity]
+    SH[ShellEntity] -->|FaceRef| F
+    SO[SolidEntity] -->|ShellRef| SH
+    CO[CompoundEntity] -->|ChildRef| SO
+    CS[CompSolidEntity] -->|SolidRef| SO
+  end
+
+  subgraph Assembly
+    PR[ProductEntity] -->|OccurrenceRef| OC[OccurrenceEntity]
+    PR -->|ShapeRootId| SO
+    OC -->|ProductIdx| PR
+    OC -.->|ParentOccurrenceIdx| OC
+  end
 ```
 
 Guideline:
 
 - intrinsic data lives on entities,
-- occurrence context (orientation/location) lives on refs.
+- topology occurrence context (orientation/location) lives on refs,
+- assembly placement lives on OccurrenceEntity (TopLoc_Location),
+- ParentOccurrenceIdx forms a tree for unambiguous placement chain traversal in DAGs.
 
 ## 4) Build Flow
 
@@ -112,10 +131,12 @@ Reverse index maps support upward adjacency queries:
 - wire -> faces
 - face -> shells
 - shell -> solids
+- product -> occurrences
 
 Contract:
 
 - any forward relation used by query code must have matching reverse rows.
+- product->occurrences is rebuilt during `BuildReverseIndex` via `BuildProductOccurrences`.
 
 ## 7) Mutation Contract
 
@@ -142,7 +163,8 @@ flowchart TD
   A[BRepGraph_Data.myAllocator] --> S[BRepGraphInc_Storage]
   A --> H[BRepGraph_History]
   A --> DM[DataMaps in BRepGraph_Data]
-  S --> E[Entity tables]
+  S --> E[Topology entity tables]
+  S --> AS[Assembly entity tables]
   S --> RI[ReverseIndex]
   RI --> IV[Inner vectors via preSize]
   H --> R[myRecords]
@@ -169,11 +191,27 @@ Secondary in common workloads:
 - reverse-index dedup strategy in build/maintenance paths,
 - populate post-pass costs.
 
-## 10) Validation Targets
+## 10) Assembly Model
+
+BRepGraphInc_Storage holds assembly entity tables alongside topology:
+
+- **ProductEntity**: `ShapeRootId` (root topology node for parts; invalid for assemblies), `OccurrenceRefs` (child occurrences)
+- **OccurrenceEntity**: `ProductIdx` (referenced product), `ParentProductIdx` (parent assembly product), `ParentOccurrenceIdx` (parent occurrence for tree-structured placement chains), `Placement` (TopLoc_Location)
+
+Key invariants:
+
+- `Build()` auto-creates one root Product pointing to the top-level topology node
+- Products may be shared (DAG): multiple occurrences can reference the same product
+- Each occurrence has a unique ParentOccurrenceIdx forming a tree (not DAG) for unambiguous GlobalPlacement
+- Self-referencing occurrences (parent product == referenced product) are rejected at creation time
+- Removed products cannot be referenced by new occurrences
+
+## 11) Validation Targets
 
 Debug-only validators should check:
 
 - entity id/kind consistency,
 - mapping consistency for TShape to NodeId,
 - reverse-index coherence with current refs,
-- removed-node filtering expectations.
+- removed-node filtering expectations,
+- assembly: every occurrence references a valid, non-removed product.

@@ -15,6 +15,7 @@
 #include <BRepGraph_Data.hxx>
 
 #include <NCollection_PackedMap.hxx>
+#include <TopLoc_Location.hxx>
 
 //=================================================================================================
 
@@ -148,4 +149,36 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::AdjacentFaces(
   }
 
   return aResult;
+}
+
+//=================================================================================================
+
+TopLoc_Location BRepGraph::SpatialView::GlobalPlacement(int theOccurrenceIdx) const
+{
+  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  if (theOccurrenceIdx < 0 || theOccurrenceIdx >= aStorage.NbOccurrences())
+    return TopLoc_Location();
+
+  // Compose placements from leaf to root via ParentOccurrenceIdx tree.
+  // global = ancestor_placement * ... * parent_placement * leaf_placement.
+  // Pre-multiplying each ancestor's placement accumulates the correct transform.
+  TopLoc_Location aGlobal = aStorage.Occurrence(theOccurrenceIdx).Placement;
+  int aParentOccIdx = aStorage.Occurrence(theOccurrenceIdx).ParentOccurrenceIdx;
+
+  // In a valid tree, the chain length cannot exceed NbOccurrences.
+  // This naturally guards against cycles in malformed graphs.
+  const int aNbOccurrences = aStorage.NbOccurrences();
+  int aSteps = 0;
+
+  while (aParentOccIdx >= 0 && aParentOccIdx < aNbOccurrences && aSteps < aNbOccurrences)
+  {
+    ++aSteps;
+    const BRepGraphInc::OccurrenceEntity& aParentOcc = aStorage.Occurrence(aParentOccIdx);
+    if (aParentOcc.IsRemoved)
+      break;
+    aGlobal = aParentOcc.Placement * aGlobal;
+    aParentOccIdx = aParentOcc.ParentOccurrenceIdx;
+  }
+
+  return aGlobal;
 }

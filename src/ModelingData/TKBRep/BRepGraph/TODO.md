@@ -140,18 +140,24 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 - Layer-aware: serialize only needed layers
 - Binary or JSON format
 
-### Assembly model extension [Arch] ★★★★
+### ~~Assembly model extension (Phases 1+2)~~ — DONE (2026-03-20)
 - **Full design**: [TODO_Assembly.md](TODO_Assembly.md) — see for complete implementation details
 - **Intrinsic architecture**: assembly is core, not a Layer plugin — every graph has a root Product
 - `Kind::Product = 10`, `Kind::Occurrence = 11` as first-class node kinds with UIDs, history, compact
 - API distributed across existing views: DefsView (queries, RootProducts, IsAssembly, IsPart), BuilderView (AddProduct, AddOccurrence, RemoveNode cascade), MutView (RAII guards), SpatialView (GlobalPlacement), Iterator (ProductDef, OccurrenceDef)
 - `Build(aBox)` auto-creates root Product; algorithms always see a uniform model
-- Product→Occurrence→Product DAG; each occurrence carries `TopLoc_Location`
+- Product→Occurrence→Product DAG; each occurrence carries `TopLoc_Location` + `ParentOccurrenceIdx` for tree-structured placement chains
+- Self-reference prevention, removed-product guards, DAG-safe GlobalPlacement via ParentOccurrenceIdx walk
+- 25 GTests covering data model, API, mutations, DAG sharing, deep nesting, error paths, cascading removal
+- ~~Phase 3 OnCompact signature fix~~ — DONE: `DataMap<BRepGraph_NodeId, BRepGraph_NodeId>` unified remap map
+
+### Assembly model extension (Remaining phases) [Arch] ★★★★
+- Phase 4: XDE Population Bridge — `BRepGraphDE_PopulateAssembly` in DataExchange/TKXCAF
+- Phase 5: Reconstruction — shape reconstruction from assembly graph
+- Phase 6: DE Metadata on Assembly Nodes — colors, materials, layers on assembly nodes
 - `BRepGraph_AssemblyQuery` utility for complex queries (ResolveAttribute, LeafParts, OccurrencePath)
 - Replaces XCAFDoc_ShapeTool's Shape/Reference/Component model
-- XDE bridge (`BRepGraphDE_PopulateAssembly`) lives in DataExchange/TKXCAF (uses TKXCAF internally; TKBRep itself has no TKXCAF dependency)
-- ~~Phase 3 OnCompact signature fix~~ — DONE: `DataMap<BRepGraph_NodeId, BRepGraph_NodeId>` unified remap map
-- 7 phases: Phase 1: Data Model → Phase 2: Core API Integration → Phase 3: OnCompact Signature Fix → Phase 4: XDE Population Bridge → Phase 5: Reconstruction → Phase 6: DE Metadata on Assembly Nodes → Phase 7: Testing
+- XDE bridge lives in DataExchange/TKXCAF (uses TKXCAF internally; TKBRep itself has no TKXCAF dependency)
 
 ### Compact remapping in history [Arch] ★★★
 - Record old→new index maps as history entries during Compact

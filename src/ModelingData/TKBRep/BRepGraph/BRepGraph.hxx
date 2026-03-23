@@ -183,6 +183,14 @@ public:
   //! Return scoped mutable comp-solid definition guard.
   //! @param[in] theIdx zero-based comp-solid definition index
   Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::CompSolidDef> MutCompSolid(int theIdx);
+
+  //! Return scoped mutable product definition guard.
+  //! @param[in] theIdx zero-based product definition index
+  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::ProductDef> MutProduct(int theIdx);
+
+  //! Return scoped mutable occurrence definition guard.
+  //! @param[in] theIdx zero-based occurrence definition index
+  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::OccurrenceDef> MutOccurrence(int theIdx);
   
   //! Access programmatic graph construction.
   BuilderView  Builder();

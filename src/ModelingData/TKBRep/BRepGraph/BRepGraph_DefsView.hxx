@@ -110,7 +110,47 @@ public:
   //! @param[in] theFaceIdx zero-based face index within the shell
   Standard_EXPORT BRepGraph_NodeId ShellFaceDef(int theShellDefIdx, int theFaceIdx) const;
 
-  //! Total number of nodes in the graph (all topology kinds).
+  //! Number of product definitions.
+  Standard_EXPORT int NbProducts() const;
+
+  //! Number of occurrence definitions.
+  Standard_EXPORT int NbOccurrences() const;
+
+  //! Number of active (non-removed) product definitions.
+  Standard_EXPORT int NbActiveProducts() const;
+
+  //! Number of active (non-removed) occurrence definitions.
+  Standard_EXPORT int NbActiveOccurrences() const;
+
+  //! Access product definition by index.
+  //! @param[in] theIdx zero-based definition index
+  Standard_EXPORT const BRepGraph_TopoNode::ProductDef& Product(int theIdx) const;
+
+  //! Access occurrence definition by index.
+  //! @param[in] theIdx zero-based definition index
+  Standard_EXPORT const BRepGraph_TopoNode::OccurrenceDef& Occurrence(int theIdx) const;
+
+  //! Return NodeIds of all root products (products that are not referenced by any occurrence).
+  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> RootProducts() const;
+
+  //! True if the product at theProductIdx is an assembly (has child occurrences, no ShapeRootId).
+  //! @param[in] theProductIdx zero-based product definition index
+  Standard_EXPORT bool IsAssembly(int theProductIdx) const;
+
+  //! True if the product at theProductIdx is a part (has a valid ShapeRootId).
+  //! @param[in] theProductIdx zero-based product definition index
+  Standard_EXPORT bool IsPart(int theProductIdx) const;
+
+  //! Number of child occurrences of a product.
+  //! @param[in] theProductIdx zero-based product definition index
+  Standard_EXPORT int NbComponents(int theProductIdx) const;
+
+  //! Return the i-th child occurrence NodeId of a product.
+  //! @param[in] theProductIdx zero-based product definition index
+  //! @param[in] theIdx zero-based occurrence index within the product
+  Standard_EXPORT BRepGraph_NodeId Component(int theProductIdx, int theIdx) const;
+
+  //! Total number of nodes in the graph (all topology + assembly kinds).
   Standard_EXPORT size_t NbNodes() const;
 
   // -- Geometry query methods --

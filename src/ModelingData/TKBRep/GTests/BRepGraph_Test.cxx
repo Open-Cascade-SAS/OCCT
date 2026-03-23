@@ -1214,7 +1214,7 @@ TEST_F(BRepGraphTest, TopoNode_GenericLookup_MatchesTypedAccess)
 
 TEST_F(BRepGraphTest, NbNodes_Box_TotalCount)
 {
-  // NbNodes should equal sum of all per-kind counts.
+  // NbNodes should equal sum of all per-kind counts (topology + assembly).
   size_t anExpected = static_cast<size_t>(myGraph.Defs().NbSolids())
                     + myGraph.Defs().NbShells()
                     + myGraph.Defs().NbFaces()
@@ -1222,7 +1222,9 @@ TEST_F(BRepGraphTest, NbNodes_Box_TotalCount)
                     + myGraph.Defs().NbEdges()
                     + myGraph.Defs().NbVertices()
                     + myGraph.Defs().NbCompounds()
-                    + myGraph.Defs().NbCompSolids();
+                    + myGraph.Defs().NbCompSolids()
+                    + myGraph.Defs().NbProducts()
+                    + myGraph.Defs().NbOccurrences();
   EXPECT_EQ(myGraph.Defs().NbNodes(), anExpected);
 }
 
