@@ -25,6 +25,8 @@
 #include <NCollection_DataMap.hxx>
 #include <NCollection_IndexedMap.hxx>
 
+#include <utility>
+
 namespace
 {
 
@@ -113,7 +115,19 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph,
   for (int anIdx = 0; anIdx < theGraph.Defs().NbWires(); ++anIdx)
   {
     const BRepGraph_TopoNode::WireDef& aWire = theGraph.Defs().Wire(anIdx);
-    aResult.Builder().AddWireDef(aWire.OrderedEdges);
+    NCollection_Vector<std::pair<BRepGraph_NodeId, TopAbs_Orientation>> aWireEdges;
+    if (!aWire.Usages.IsEmpty())
+    {
+      const BRepGraph_TopoNode::WireUsage& aWireUsage =
+        theGraph.Usages().Wire(aWire.Usages.Value(0).Index);
+      for (int anEdgeIter = 0; anEdgeIter < aWireUsage.EdgeUsages.Length(); ++anEdgeIter)
+      {
+        const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage =
+          theGraph.Usages().Edge(aWireUsage.EdgeUsages.Value(anEdgeIter).Index);
+        aWireEdges.Append(std::make_pair(anEdgeUsage.DefId, anEdgeUsage.Orientation));
+      }
+    }
+    aResult.Builder().AddWireDef(aWireEdges);
     transferUserAttributes(aWire.Cache, aResult.Mut().WireDef(anIdx).Cache);
   }
 
@@ -313,18 +327,15 @@ BRepGraph BRepGraphAlgo_Copy::CopyFace(const BRepGraph& theGraph,
     const int aWireDefIdx = aWireUs.DefId.Index;
     aWireSet.Add(aWireDefIdx);
 
-    if (aWireDefIdx >= theGraph.Defs().NbWires())
-      return;
-    const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.Defs().Wire(aWireDefIdx);
-    for (int anEdgeIter = 0; anEdgeIter < aWireDef.OrderedEdges.Length(); ++anEdgeIter)
+    for (int anEdgeIter = 0; anEdgeIter < aWireUs.EdgeUsages.Length(); ++anEdgeIter)
     {
-      const BRepGraph_TopoNode::WireDef::EdgeEntry& anEntry =
-        aWireDef.OrderedEdges.Value(anEdgeIter);
-      if (!anEntry.EdgeDefId.IsValid() || anEntry.EdgeDefId.Index >= theGraph.Defs().NbEdges())
+      const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage =
+        theGraph.Usages().Edge(aWireUs.EdgeUsages.Value(anEdgeIter).Index);
+      if (!anEdgeUsage.DefId.IsValid() || anEdgeUsage.DefId.Index >= theGraph.Defs().NbEdges())
         continue;
-      anEdgeSet.Add(anEntry.EdgeDefId.Index);
+      anEdgeSet.Add(anEdgeUsage.DefId.Index);
 
-      const BRepGraph_TopoNode::EdgeDef& anEdgeDef = theGraph.Defs().Edge(anEntry.EdgeDefId.Index);
+      const BRepGraph_TopoNode::EdgeDef& anEdgeDef = theGraph.Defs().Edge(anEdgeUsage.DefId.Index);
       if (anEdgeDef.StartVertexDefId.IsValid()
           && anEdgeDef.StartVertexDefId.Index < theGraph.Defs().NbVertices())
         aVertexSet.Add(anEdgeDef.StartVertexDefId.Index);
@@ -398,18 +409,21 @@ BRepGraph BRepGraphAlgo_Copy::CopyFace(const BRepGraph& theGraph,
   {
     const int anOldIdx = aWireSet.FindKey(anIdx);
     const BRepGraph_TopoNode::WireDef& aWire = theGraph.Defs().Wire(anOldIdx);
-    NCollection_Vector<BRepGraph_TopoNode::WireDef::EdgeEntry> aNewEntries;
-    for (int anEntryIdx = 0; anEntryIdx < aWire.OrderedEdges.Length(); ++anEntryIdx)
+    NCollection_Vector<std::pair<BRepGraph_NodeId, TopAbs_Orientation>> aNewEntries;
+    if (!aWire.Usages.IsEmpty())
     {
-      const BRepGraph_TopoNode::WireDef::EdgeEntry& anOldEntry =
-        aWire.OrderedEdges.Value(anEntryIdx);
-      const int* aNewEdgeIdx = anEdgeMap.Seek(anOldEntry.EdgeDefId.Index);
-      if (aNewEdgeIdx == nullptr)
-        continue;
-      BRepGraph_TopoNode::WireDef::EdgeEntry aNewEntry;
-      aNewEntry.EdgeDefId         = BRepGraph_NodeId::Edge(*aNewEdgeIdx);
-      aNewEntry.OrientationInWire = anOldEntry.OrientationInWire;
-      aNewEntries.Append(aNewEntry);
+      const BRepGraph_TopoNode::WireUsage& aOldWireUsage =
+        theGraph.Usages().Wire(aWire.Usages.Value(0).Index);
+      for (int anEntryIdx = 0; anEntryIdx < aOldWireUsage.EdgeUsages.Length(); ++anEntryIdx)
+      {
+        const BRepGraph_TopoNode::EdgeUsage& anOldEdgeUsage =
+          theGraph.Usages().Edge(aOldWireUsage.EdgeUsages.Value(anEntryIdx).Index);
+        const int* aNewEdgeIdx = anEdgeMap.Seek(anOldEdgeUsage.DefId.Index);
+        if (aNewEdgeIdx == nullptr)
+          continue;
+        aNewEntries.Append(
+          std::make_pair(BRepGraph_NodeId::Edge(*aNewEdgeIdx), anOldEdgeUsage.Orientation));
+      }
     }
     aResult.Builder().AddWireDef(aNewEntries);
     transferUserAttributes(aWire.Cache, aResult.Mut().WireDef(anIdx - 1).Cache);

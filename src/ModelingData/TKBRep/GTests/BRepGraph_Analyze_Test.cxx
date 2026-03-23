@@ -21,6 +21,7 @@
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_RelEdge.hxx>
 #include <BRepGraph_SubGraph.hxx>
+#include <BRepGraph_UsagesView.hxx>
 #include <BRepGraphAlgo_BndLib.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
@@ -495,13 +496,16 @@ TEST_F(BRepGraphAnalyzeTest, BoundingBox_Edge_SubsetOfOwningFace)
   double aFXmin, aFYmin, aFZmin, aFXmax, aFYmax, aFZmax;
   aFaceBox.Get(aFXmin, aFYmin, aFZmin, aFXmax, aFYmax, aFZmax);
 
-  // Get edges of the first wire of the first face.
+  // Get edges of the first wire of the first face via WireUsage.
   const BRepGraph_TopoNode::WireDef& aWire = myGraph.Defs().Wire(0);
+  ASSERT_FALSE(aWire.Usages.IsEmpty());
+  const BRepGraph_TopoNode::WireUsage& aWireUsage = myGraph.Usages().Wire(aWire.Usages.Value(0).Index);
   const double aTol = Precision::Confusion();
 
-  for (int anEdgeIter = 0; anEdgeIter < aWire.OrderedEdges.Length(); ++anEdgeIter)
+  for (int anEdgeIter = 0; anEdgeIter < aWireUsage.EdgeUsages.Length(); ++anEdgeIter)
   {
-    const BRepGraph_NodeId anEdgeId = aWire.OrderedEdges.Value(anEdgeIter).EdgeDefId;
+    const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage = myGraph.Usages().Edge(aWireUsage.EdgeUsages.Value(anEdgeIter).Index);
+    const BRepGraph_NodeId anEdgeId = anEdgeUsage.DefId;
     Bnd_Box anEdgeBox;
     BRepGraphAlgo_BndLib::Add(myGraph, anEdgeId, anEdgeBox);
     if (anEdgeBox.IsVoid())

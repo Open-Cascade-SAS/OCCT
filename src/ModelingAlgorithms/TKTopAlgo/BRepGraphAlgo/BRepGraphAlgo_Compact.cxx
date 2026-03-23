@@ -24,6 +24,8 @@
 
 #include <NCollection_DataMap.hxx>
 
+#include <utility>
+
 namespace
 {
 
@@ -282,16 +284,19 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
       continue;
     const BRepGraph_TopoNode::WireDef& anOldWire = theGraph.Defs().Wire(anIdx);
 
-    NCollection_Vector<BRepGraph_TopoNode::WireDef::EdgeEntry> aNewEntries;
-    for (int anEntryIdx = 0; anEntryIdx < anOldWire.OrderedEdges.Length(); ++anEntryIdx)
+    NCollection_Vector<std::pair<BRepGraph_NodeId, TopAbs_Orientation>> aNewEntries;
+    if (!anOldWire.Usages.IsEmpty())
     {
-      const BRepGraph_TopoNode::WireDef::EdgeEntry& anOldEntry =
-        anOldWire.OrderedEdges.Value(anEntryIdx);
-      BRepGraph_TopoNode::WireDef::EdgeEntry aNewEntry;
-      aNewEntry.EdgeDefId         = remapId(anOldEntry.EdgeDefId);
-      aNewEntry.OrientationInWire = anOldEntry.OrientationInWire;
-      if (aNewEntry.EdgeDefId.IsValid())
-        aNewEntries.Append(aNewEntry);
+      const BRepGraph_TopoNode::WireUsage& anOldWireUsage =
+        theGraph.Usages().Wire(anOldWire.Usages.Value(0).Index);
+      for (int anEntryIdx = 0; anEntryIdx < anOldWireUsage.EdgeUsages.Length(); ++anEntryIdx)
+      {
+        const BRepGraph_TopoNode::EdgeUsage& anOldEdgeUsage =
+          theGraph.Usages().Edge(anOldWireUsage.EdgeUsages.Value(anEntryIdx).Index);
+        const BRepGraph_NodeId aNewEdgeDefId = remapId(anOldEdgeUsage.DefId);
+        if (aNewEdgeDefId.IsValid())
+          aNewEntries.Append(std::make_pair(aNewEdgeDefId, anOldEdgeUsage.Orientation));
+      }
     }
     aNewGraph.Builder().AddWireDef(aNewEntries);
   }

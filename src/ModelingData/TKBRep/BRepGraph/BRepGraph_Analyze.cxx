@@ -73,11 +73,11 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>>
       if (!theWireUsageId.IsValid())
         return;
       const BRepGraph_TopoNode::WireUsage& aWireUsage = aUsages.Wire(theWireUsageId.Index);
-      const BRepGraph_TopoNode::WireDef&   aWireDef   = aDefs.Wire(aWireUsage.DefId.Index);
-      for (int anEdgeIdx = 0; anEdgeIdx < aWireDef.OrderedEdges.Length(); ++anEdgeIdx)
+      for (int anEdgeIdx = 0; anEdgeIdx < aWireUsage.EdgeUsages.Length(); ++anEdgeIdx)
       {
-        const BRepGraph_NodeId             anEdgeDefId = aWireDef.OrderedEdges.Value(anEdgeIdx).EdgeDefId;
-        const BRepGraph_TopoNode::EdgeDef& anEdge      = aDefs.Edge(anEdgeDefId.Index);
+        const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage = aUsages.Edge(aWireUsage.EdgeUsages.Value(anEdgeIdx).Index);
+        const BRepGraph_NodeId               anEdgeDefId = anEdgeUsage.DefId;
+        const BRepGraph_TopoNode::EdgeDef&   anEdge      = aDefs.Edge(anEdgeDefId.Index);
 
         if (anEdge.IsDegenerate)
           continue;
@@ -155,8 +155,14 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph_Analyze::DegenerateWires(const BR
   {
     const BRepGraph_TopoNode::WireDef& aWire = aDefs.Wire(aWireDefIdx);
 
-    // Wire with < 2 edges.
-    if (aWire.OrderedEdges.Length() < 2)
+    // Wire with < 2 edges (check via canonical WireUsage).
+    int aNbEdgesInWire = 0;
+    if (!aWire.Usages.IsEmpty())
+    {
+      const BRepGraph_TopoNode::WireUsage& aWireUsage = aUsages.Wire(aWire.Usages.Value(0).Index);
+      aNbEdgesInWire = aWireUsage.EdgeUsages.Length();
+    }
+    if (aNbEdgesInWire < 2)
     {
       aResult.Append(aWire.Id);
       continue;
@@ -208,27 +214,20 @@ NCollection_Vector<BRepGraph_SubGraph> BRepGraph_Analyze::Decompose(const BRepGr
         aUsages.Wire(theWireUsageId.Index);
       theSub.myWireDefIndices.Append(aWireUsage.DefId.Index);
       theSub.myWireUsageIndices.Append(theWireUsageId.Index);
-      const BRepGraph_TopoNode::WireDef& aWireDef =
-        aDefs.Wire(aWireUsage.DefId.Index);
-      for (int anEdgeIdx = 0; anEdgeIdx < aWireDef.OrderedEdges.Length(); ++anEdgeIdx)
+      for (int anEdgeIdx = 0; anEdgeIdx < aWireUsage.EdgeUsages.Length(); ++anEdgeIdx)
       {
-        const int anEdgeDefIdx = aWireDef.OrderedEdges.Value(anEdgeIdx).EdgeDefId.Index;
+        const BRepGraph_UsageId& anEdgeUsageId = aWireUsage.EdgeUsages.Value(anEdgeIdx);
+        const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage =
+          aUsages.Edge(anEdgeUsageId.Index);
+        const int anEdgeDefIdx = anEdgeUsage.DefId.Index;
         theSub.myEdgeDefIndices.Append(anEdgeDefIdx);
+        theSub.myEdgeUsageIndices.Append(anEdgeUsageId.Index);
 
-        // Also add edge usage indices from WireUsage.EdgeUsages if available.
-        if (anEdgeIdx < aWireUsage.EdgeUsages.Length())
-        {
-          const BRepGraph_UsageId& anEdgeUsageId = aWireUsage.EdgeUsages.Value(anEdgeIdx);
-          theSub.myEdgeUsageIndices.Append(anEdgeUsageId.Index);
-
-          // Get vertex usages from edge usage.
-          const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage =
-            aUsages.Edge(anEdgeUsageId.Index);
-          if (anEdgeUsage.StartVertexUsage.IsValid())
-            theSub.myVertexUsageIndices.Append(anEdgeUsage.StartVertexUsage.Index);
-          if (anEdgeUsage.EndVertexUsage.IsValid())
-            theSub.myVertexUsageIndices.Append(anEdgeUsage.EndVertexUsage.Index);
-        }
+        // Get vertex usages from edge usage.
+        if (anEdgeUsage.StartVertexUsage.IsValid())
+          theSub.myVertexUsageIndices.Append(anEdgeUsage.StartVertexUsage.Index);
+        if (anEdgeUsage.EndVertexUsage.IsValid())
+          theSub.myVertexUsageIndices.Append(anEdgeUsage.EndVertexUsage.Index);
 
         const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(anEdgeDefIdx);
         if (anEdgeDef.StartVertexDefId.IsValid())

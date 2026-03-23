@@ -73,7 +73,6 @@ struct ExtractedEdge
 
   //! Polygon3D (one per edge, not per face).
   Handle(Poly_Polygon3D) Polygon3D;
-  TopLoc_Location        Poly3DLocation;
 
   //! PolygonOnSurface entries.
   Handle(Poly_Polygon2D) PolyOnSurf;
@@ -245,7 +244,6 @@ void extractFaceData(FaceLocalData& theData)
       {
         TopLoc_Location aPoly3DLoc;
         anEdgeData.Polygon3D = BRep_Tool::Polygon3D(anEdge, aPoly3DLoc);
-        anEdgeData.Poly3DLocation = aPoly3DLoc;
       }
 
       // Extract PolygonOnSurface.
@@ -546,8 +544,7 @@ void BRepGraph_Builder::registerFaceData(BRepGraph& theGraph, const FaceDataVec&
             theGraph.myData->myEdges.Defs.ChangeValue(anEdgeDefId.Index);
           if (anEdgeDefMut.Polygon3D.IsNull())
           {
-            anEdgeDefMut.Polygon3D      = anEdgeData.Polygon3D;
-            anEdgeDefMut.Poly3DLocation = anEdgeData.Poly3DLocation;
+            anEdgeDefMut.Polygon3D = anEdgeData.Polygon3D;
           }
         }
 
@@ -614,12 +611,6 @@ void BRepGraph_Builder::registerFaceData(BRepGraph& theGraph, const FaceDataVec&
 
         if (aIsNewWireDef)
         {
-          // WireDef::EdgeEntry.
-          BRepGraph_TopoNode::WireDef::EdgeEntry aWEEntry;
-          aWEEntry.EdgeDefId         = anEdgeDefId;
-          aWEEntry.OrientationInWire = anEdgeData.OrientationInWire;
-          theGraph.myData->myWires.Defs.ChangeValue(aWireDefIdx).OrderedEdges.Append(aWEEntry);
-
           // Populate edge-to-wire reverse index.
           BRepGraph_BackRefManager::BindEdgeToWire(theGraph, anEdgeDefId.Index, aWireDefIdx);
 
@@ -915,7 +906,6 @@ void BRepGraph_Builder::Perform(BRepGraph& theGraph, const TopoDS_Shape& theShap
         BRepGraph_TopoNode::VertexDef::PointOnCurveEntry anEntry;
         anEntry.Parameter = aPOC->Parameter();
         anEntry.EdgeDefId = *anEdgeId;
-        anEntry.Location  = aPOC->Location();
         aVtxDef.PointsOnCurve.Append(anEntry);
       }
       else if (const Handle(BRep_PointOnCurveOnSurface) aPOCS =
@@ -927,7 +917,6 @@ void BRepGraph_Builder::Perform(BRepGraph& theGraph, const TopoDS_Shape& theShap
         BRepGraph_TopoNode::VertexDef::PointOnPCurveEntry anEntry;
         anEntry.Parameter = aPOCS->Parameter();
         anEntry.FaceDefId = *aFaceId;
-        anEntry.Location  = aPOCS->Location();
         aVtxDef.PointsOnPCurve.Append(anEntry);
       }
       else if (const Handle(BRep_PointOnSurface) aPOS =
@@ -940,7 +929,6 @@ void BRepGraph_Builder::Perform(BRepGraph& theGraph, const TopoDS_Shape& theShap
         anEntry.ParameterU = aPOS->Parameter();
         anEntry.ParameterV = aPOS->Parameter2();
         anEntry.FaceDefId  = *aFaceId;
-        anEntry.Location   = aPOS->Location();
         aVtxDef.PointsOnSurface.Append(anEntry);
       }
     }

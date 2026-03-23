@@ -292,9 +292,9 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph& theGraph, int theFaceIdx, 
       {
         return;
       }
-      const BRepGraph_NodeId             aWireDefId = theGraph.DefOf(theWireUsageId);
-      const BRepGraph_TopoNode::WireDef& aWireDef   = theGraph.Defs().Wire(aWireDefId.Index);
-      for (int anIdx = 0; anIdx < aWireDef.OrderedEdges.Length() && !isAborted; ++anIdx)
+      const BRepGraph_TopoNode::WireUsage& aWireUsage =
+        theGraph.Usages().Wire(theWireUsageId.Index);
+      for (int anIdx = 0; anIdx < aWireUsage.EdgeUsages.Length() && !isAborted; ++anIdx)
       {
         NbEdges++;
         if (NbEdges > 4)
@@ -302,9 +302,10 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph& theGraph, int theFaceIdx, 
           isAborted = true;
           return;
         }
-        const BRepGraph_TopoNode::WireDef::EdgeEntry& anEntry = aWireDef.OrderedEdges.Value(anIdx);
+        const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage =
+          theGraph.Usages().Edge(aWireUsage.EdgeUsages.Value(anIdx).Index);
         const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurve =
-          theGraph.Defs().FindPCurve(anEntry.EdgeDefId, aFaceDef.Id);
+          theGraph.Defs().FindPCurve(anEdgeUsage.DefId, aFaceDef.Id);
         if (aPCurve == nullptr || aPCurve->Curve2d.IsNull())
         {
           isAborted = true;
@@ -402,13 +403,14 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph& theGraph, int theFaceIdx, 
       theGraph.Usages().Face(aFaceDef.Usages.First().Index);
 
     auto addWirePCurves = [&](BRepGraph_UsageId theWireUsageId) {
-      const BRepGraph_NodeId             aWireDefId = theGraph.DefOf(theWireUsageId);
-      const BRepGraph_TopoNode::WireDef& aWireDef   = theGraph.Defs().Wire(aWireDefId.Index);
-      for (int anIdx = 0; anIdx < aWireDef.OrderedEdges.Length(); ++anIdx)
+      const BRepGraph_TopoNode::WireUsage& aWireUsage =
+        theGraph.Usages().Wire(theWireUsageId.Index);
+      for (int anIdx = 0; anIdx < aWireUsage.EdgeUsages.Length(); ++anIdx)
       {
-        const BRepGraph_TopoNode::WireDef::EdgeEntry& anEntry = aWireDef.OrderedEdges.Value(anIdx);
+        const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage =
+          theGraph.Usages().Edge(aWireUsage.EdgeUsages.Value(anIdx).Index);
         const BRepGraph_TopoNode::EdgeDef::PCurveEntry* aPCurve =
-          theGraph.Defs().FindPCurve(anEntry.EdgeDefId, aFaceDef.Id);
+          theGraph.Defs().FindPCurve(anEdgeUsage.DefId, aFaceDef.Id);
         if (aPCurve == nullptr || aPCurve->Curve2d.IsNull())
         {
           continue;

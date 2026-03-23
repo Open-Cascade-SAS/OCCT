@@ -128,11 +128,13 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::SharedEdges(
     auto collectWireEdges = [&](BRepGraph_UsageId theWireUsageId) {
       if (!theWireUsageId.IsValid())
         return;
-      BRepGraph_NodeId                   aWireDefId = myGraph->DefOf(theWireUsageId);
-      const BRepGraph_TopoNode::WireDef& aWireDef =
-        myGraph->myData->myWires.Defs.Value(aWireDefId.Index);
-      for (int anEdgeIdx = 0; anEdgeIdx < aWireDef.OrderedEdges.Length(); ++anEdgeIdx)
-        aEdgesA.Add(aWireDef.OrderedEdges.Value(anEdgeIdx).EdgeDefId.Index);
+      const BRepGraph_TopoNode::WireUsage& aWireUsage =
+        myGraph->myData->myWires.Usages.Value(theWireUsageId.Index);
+      for (int anEdgeIdx = 0; anEdgeIdx < aWireUsage.EdgeUsages.Length(); ++anEdgeIdx)
+      {
+        BRepGraph_NodeId anEdgeDefId = myGraph->DefOf(aWireUsage.EdgeUsages.Value(anEdgeIdx));
+        aEdgesA.Add(anEdgeDefId.Index);
+      }
     };
     collectWireEdges(aFaceUsage.OuterWireUsage);
     for (int aWIdx = 0; aWIdx < aFaceUsage.InnerWireUsages.Length(); ++aWIdx)
@@ -149,14 +151,13 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::SharedEdges(
     auto checkWireEdges = [&](BRepGraph_UsageId theWireUsageId) {
       if (!theWireUsageId.IsValid())
         return;
-      BRepGraph_NodeId                   aWireDefId = myGraph->DefOf(theWireUsageId);
-      const BRepGraph_TopoNode::WireDef& aWireDef =
-        myGraph->myData->myWires.Defs.Value(aWireDefId.Index);
-      for (int anEdgeIdx = 0; anEdgeIdx < aWireDef.OrderedEdges.Length(); ++anEdgeIdx)
+      const BRepGraph_TopoNode::WireUsage& aWireUsage =
+        myGraph->myData->myWires.Usages.Value(theWireUsageId.Index);
+      for (int anEdgeIdx = 0; anEdgeIdx < aWireUsage.EdgeUsages.Length(); ++anEdgeIdx)
       {
-        int anEdgeDefIdx = aWireDef.OrderedEdges.Value(anEdgeIdx).EdgeDefId.Index;
-        if (aEdgesA.Contains(anEdgeDefIdx) && aAdded.Add(anEdgeDefIdx))
-          aResult.Append(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, anEdgeDefIdx));
+        BRepGraph_NodeId anEdgeDefId = myGraph->DefOf(aWireUsage.EdgeUsages.Value(anEdgeIdx));
+        if (aEdgesA.Contains(anEdgeDefId.Index) && aAdded.Add(anEdgeDefId.Index))
+          aResult.Append(anEdgeDefId);
       }
     };
     checkWireEdges(aFaceUsage.OuterWireUsage);
@@ -184,12 +185,11 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::AdjacentFaces(
     auto processWire = [&](BRepGraph_UsageId theWireUsageId) {
       if (!theWireUsageId.IsValid())
         return;
-      BRepGraph_NodeId                   aWireDefId = myGraph->DefOf(theWireUsageId);
-      const BRepGraph_TopoNode::WireDef& aWireDef =
-        myGraph->myData->myWires.Defs.Value(aWireDefId.Index);
-      for (int anEdgeIdx = 0; anEdgeIdx < aWireDef.OrderedEdges.Length(); ++anEdgeIdx)
+      const BRepGraph_TopoNode::WireUsage& aWireUsage =
+        myGraph->myData->myWires.Usages.Value(theWireUsageId.Index);
+      for (int anEdgeIdx = 0; anEdgeIdx < aWireUsage.EdgeUsages.Length(); ++anEdgeIdx)
       {
-        BRepGraph_NodeId                     anEdgeDefId = aWireDef.OrderedEdges.Value(anEdgeIdx).EdgeDefId;
+        BRepGraph_NodeId                     anEdgeDefId = myGraph->DefOf(aWireUsage.EdgeUsages.Value(anEdgeIdx));
         NCollection_Vector<BRepGraph_NodeId> aFaces      = FacesOfEdge(anEdgeDefId);
         for (int aFIdx = 0; aFIdx < aFaces.Length(); ++aFIdx)
         {

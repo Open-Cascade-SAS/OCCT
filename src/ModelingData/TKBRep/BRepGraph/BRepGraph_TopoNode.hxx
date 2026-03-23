@@ -104,18 +104,10 @@ struct FaceDef : public BaseDef
   bool NaturalRestriction = false;
 };
 
-//! Wire definition holding edge winding order and closure status.
+//! Wire definition holding closure status.
+//! Edge ordering and orientation are stored on WireUsage::EdgeUsages.
 struct WireDef : public BaseDef
 {
-  //! One entry per edge, in topological winding order.
-  struct EdgeEntry
-  {
-    BRepGraph_NodeId   EdgeDefId;
-    TopAbs_Orientation OrientationInWire = TopAbs_FORWARD;
-  };
-
-  NCollection_Vector<EdgeEntry> OrderedEdges;
-
   //! True if first edge's start vertex == last edge's end vertex.
   bool IsClosed = false;
 };
@@ -166,7 +158,6 @@ struct EdgeDef : public BaseDef
 
   //! Optional 3D polygon discretization (stored inline, not as a graph node).
   Handle(Poly_Polygon3D) Polygon3D;
-  TopLoc_Location        Poly3DLocation;
 
   //! Polygon-on-surface entries, one per (edge, face) context.
   struct PolyOnSurfEntry
@@ -228,7 +219,6 @@ struct VertexDef : public BaseDef
   {
     double           Parameter = 0.0;
     BRepGraph_NodeId EdgeDefId; //!< Edge definition owning the curve
-    TopLoc_Location  Location;
   };
   NCollection_Vector<PointOnCurveEntry> PointsOnCurve;
 
@@ -238,7 +228,6 @@ struct VertexDef : public BaseDef
     double           ParameterU = 0.0;
     double           ParameterV = 0.0;
     BRepGraph_NodeId FaceDefId; //!< Face definition owning the surface
-    TopLoc_Location  Location;
   };
   NCollection_Vector<PointOnSurfaceEntry> PointsOnSurface;
 
@@ -247,7 +236,6 @@ struct VertexDef : public BaseDef
   {
     double           Parameter = 0.0;
     BRepGraph_NodeId FaceDefId; //!< Face definition owning the surface
-    TopLoc_Location  Location;
   };
   NCollection_Vector<PointOnPCurveEntry> PointsOnPCurve;
 };
@@ -314,7 +302,7 @@ struct FaceUsage : public BaseUsage
 struct WireUsage : public BaseUsage
 {
   BRepGraph_UsageId OwnerFaceUsage;
-  NCollection_Vector<BRepGraph_UsageId> EdgeUsages;  //!< Parallel to WireDef::OrderedEdges
+  NCollection_Vector<BRepGraph_UsageId> EdgeUsages;  //!< Ordered edge usages in topological winding order
 };
 
 struct EdgeUsage : public BaseUsage

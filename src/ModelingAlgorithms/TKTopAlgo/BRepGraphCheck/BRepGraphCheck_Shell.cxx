@@ -164,9 +164,15 @@ void BRepGraphCheck::CheckShellClosed(
         continue;
 
       const BRepGraph_TopoNode::WireDef& aWireDef = aDefs.Wire(aWireDefId.Index);
-      for (int anEdgeIter = 0; anEdgeIter < aWireDef.OrderedEdges.Length(); ++anEdgeIter)
+      if (aWireDef.Usages.IsEmpty())
+        continue;
+      const BRepGraph_TopoNode::WireUsage& aWireUsage =
+        aUsages.Wire(aWireDef.Usages.Value(0).Index);
+      for (int anEdgeIter = 0; anEdgeIter < aWireUsage.EdgeUsages.Length(); ++anEdgeIter)
       {
-        const int anEdgeIdx = aWireDef.OrderedEdges.Value(anEdgeIter).EdgeDefId.Index;
+        const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage =
+          aUsages.Edge(aWireUsage.EdgeUsages.Value(anEdgeIter).Index);
+        const int anEdgeIdx = anEdgeUsage.DefId.Index;
         const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(anEdgeIdx);
 
         // Skip degenerate edges.
@@ -252,14 +258,18 @@ void BRepGraphCheck::CheckShellOrientation(
         continue;
 
       const BRepGraph_TopoNode::WireDef& aWireDef = aDefs.Wire(aWireDefId.Index);
-      for (int anEdgeIter = 0; anEdgeIter < aWireDef.OrderedEdges.Length(); ++anEdgeIter)
+      if (aWireDef.Usages.IsEmpty())
+        continue;
+      const BRepGraph_TopoNode::WireUsage& aWireUsage2 =
+        aUsages.Wire(aWireDef.Usages.Value(0).Index);
+      for (int anEdgeIter = 0; anEdgeIter < aWireUsage2.EdgeUsages.Length(); ++anEdgeIter)
       {
-        const BRepGraph_TopoNode::WireDef::EdgeEntry& anEntry =
-          aWireDef.OrderedEdges.Value(anEdgeIter);
-        const int anEdgeIdx = anEntry.EdgeDefId.Index;
+        const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage =
+          aUsages.Edge(aWireUsage2.EdgeUsages.Value(anEdgeIter).Index);
+        const int anEdgeIdx = anEdgeUsage.DefId.Index;
 
         // Compose edge orientation: wire orientation XOR face orientation.
-        TopAbs_Orientation aCompOri = anEntry.OrientationInWire;
+        TopAbs_Orientation aCompOri = anEdgeUsage.Orientation;
         if (aFaceOri == TopAbs_REVERSED)
         {
           if (aCompOri == TopAbs_FORWARD)

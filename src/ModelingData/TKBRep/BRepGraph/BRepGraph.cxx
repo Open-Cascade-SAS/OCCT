@@ -233,8 +233,13 @@ void BRepGraph::invalidateSubgraphImpl(BRepGraph_NodeId theNode)
     }
     case BRepGraph_NodeId::Kind::Wire: {
       const BRepGraph_TopoNode::WireDef& aWireDef = myData->myWires.Defs.Value(theNode.Index);
-      for (int anEdgeIdx = 0; anEdgeIdx < aWireDef.OrderedEdges.Length(); ++anEdgeIdx)
-        invalidateSubgraphImpl(aWireDef.OrderedEdges.Value(anEdgeIdx).EdgeDefId);
+      if (!aWireDef.Usages.IsEmpty())
+      {
+        const BRepGraph_TopoNode::WireUsage& aWireUsage =
+          myData->myWires.Usages.Value(aWireDef.Usages.Value(0).Index);
+        for (int anEdgeIdx = 0; anEdgeIdx < aWireUsage.EdgeUsages.Length(); ++anEdgeIdx)
+          invalidateSubgraphImpl(DefOf(aWireUsage.EdgeUsages.Value(anEdgeIdx)));
+      }
       break;
     }
     case BRepGraph_NodeId::Kind::Edge: {

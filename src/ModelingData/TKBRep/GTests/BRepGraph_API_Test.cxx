@@ -33,6 +33,8 @@
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 
+#include <utility>
+
 #include <gtest/gtest.h>
 
 static gp_Pnt bboxCenter(BRepGraph& theGraph, BRepGraph_NodeId theNode)
@@ -198,21 +200,20 @@ TEST(BRepGraphAPI_AddNodeTest, AddWireDef_ClosedRectangle)
   BRepGraph_NodeId aE2 = aGraph.Builder().AddEdgeDef(aV2, aV3, aL2, 0.0, 10.0, 0.001);
   BRepGraph_NodeId aE3 = aGraph.Builder().AddEdgeDef(aV3, aV0, aL3, 0.0, 10.0, 0.001);
 
-  NCollection_Vector<BRepGraph_TopoNode::WireDef::EdgeEntry> aEdges;
-  BRepGraph_TopoNode::WireDef::EdgeEntry anEntry;
-  anEntry.OrientationInWire = TopAbs_FORWARD;
-
-  anEntry.EdgeDefId = aE0; aEdges.Append(anEntry);
-  anEntry.EdgeDefId = aE1; aEdges.Append(anEntry);
-  anEntry.EdgeDefId = aE2; aEdges.Append(anEntry);
-  anEntry.EdgeDefId = aE3; aEdges.Append(anEntry);
+  NCollection_Vector<std::pair<BRepGraph_NodeId, TopAbs_Orientation>> aEdges;
+  aEdges.Append({aE0, TopAbs_FORWARD});
+  aEdges.Append({aE1, TopAbs_FORWARD});
+  aEdges.Append({aE2, TopAbs_FORWARD});
+  aEdges.Append({aE3, TopAbs_FORWARD});
 
   BRepGraph_NodeId aWireId = aGraph.Builder().AddWireDef(aEdges);
   EXPECT_TRUE(aWireId.IsValid());
   EXPECT_EQ(aWireId.NodeKind, BRepGraph_NodeId::Kind::Wire);
 
   const BRepGraph_TopoNode::WireDef& aWireDef = aGraph.Defs().Wire(0);
-  EXPECT_EQ(aWireDef.OrderedEdges.Length(), 4);
+  ASSERT_FALSE(aWireDef.Usages.IsEmpty());
+  const BRepGraph_TopoNode::WireUsage& aWireUsage = aGraph.Usages().Wire(aWireDef.Usages.Value(0).Index);
+  EXPECT_EQ(aWireUsage.EdgeUsages.Length(), 4);
   EXPECT_TRUE(aWireDef.IsClosed);
 }
 
@@ -236,13 +237,11 @@ TEST(BRepGraphAPI_AddNodeTest, AddFaceDef_WithSurface)
   BRepGraph_NodeId aE2 = aGraph.Builder().AddEdgeDef(aV2, aV3, aL2, 0.0, 10.0, 0.001);
   BRepGraph_NodeId aE3 = aGraph.Builder().AddEdgeDef(aV3, aV0, aL3, 0.0, 10.0, 0.001);
 
-  NCollection_Vector<BRepGraph_TopoNode::WireDef::EdgeEntry> aEdges;
-  BRepGraph_TopoNode::WireDef::EdgeEntry anEntry;
-  anEntry.OrientationInWire = TopAbs_FORWARD;
-  anEntry.EdgeDefId = aE0; aEdges.Append(anEntry);
-  anEntry.EdgeDefId = aE1; aEdges.Append(anEntry);
-  anEntry.EdgeDefId = aE2; aEdges.Append(anEntry);
-  anEntry.EdgeDefId = aE3; aEdges.Append(anEntry);
+  NCollection_Vector<std::pair<BRepGraph_NodeId, TopAbs_Orientation>> aEdges;
+  aEdges.Append({aE0, TopAbs_FORWARD});
+  aEdges.Append({aE1, TopAbs_FORWARD});
+  aEdges.Append({aE2, TopAbs_FORWARD});
+  aEdges.Append({aE3, TopAbs_FORWARD});
 
   BRepGraph_NodeId aWireId = aGraph.Builder().AddWireDef(aEdges);
 
@@ -370,13 +369,11 @@ TEST(BRepGraphAPI_ConstructionTest, AddFaceToShell_CreatesUsage)
   BRepGraph_NodeId aE2 = aGraph.Builder().AddEdgeDef(aV2, aV3, aL2, 0.0, 10.0, 0.001);
   BRepGraph_NodeId aE3 = aGraph.Builder().AddEdgeDef(aV3, aV0, aL3, 0.0, 10.0, 0.001);
 
-  NCollection_Vector<BRepGraph_TopoNode::WireDef::EdgeEntry> aEdges;
-  BRepGraph_TopoNode::WireDef::EdgeEntry anEntry;
-  anEntry.OrientationInWire = TopAbs_FORWARD;
-  anEntry.EdgeDefId = aE0; aEdges.Append(anEntry);
-  anEntry.EdgeDefId = aE1; aEdges.Append(anEntry);
-  anEntry.EdgeDefId = aE2; aEdges.Append(anEntry);
-  anEntry.EdgeDefId = aE3; aEdges.Append(anEntry);
+  NCollection_Vector<std::pair<BRepGraph_NodeId, TopAbs_Orientation>> aEdges;
+  aEdges.Append({aE0, TopAbs_FORWARD});
+  aEdges.Append({aE1, TopAbs_FORWARD});
+  aEdges.Append({aE2, TopAbs_FORWARD});
+  aEdges.Append({aE3, TopAbs_FORWARD});
 
   BRepGraph_NodeId aWireId = aGraph.Builder().AddWireDef(aEdges);
   Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pln());
@@ -472,13 +469,11 @@ TEST(BRepGraphAPI_ConstructionTest, FullSolid_ProgrammaticConstruction)
   BRepGraph_NodeId aE2 = aGraph.Builder().AddEdgeDef(aV2, aV3, aL2, 0.0, 10.0, 0.001);
   BRepGraph_NodeId aE3 = aGraph.Builder().AddEdgeDef(aV3, aV0, aL3, 0.0, 10.0, 0.001);
 
-  NCollection_Vector<BRepGraph_TopoNode::WireDef::EdgeEntry> aEdges;
-  BRepGraph_TopoNode::WireDef::EdgeEntry anEntry;
-  anEntry.OrientationInWire = TopAbs_FORWARD;
-  anEntry.EdgeDefId = aE0; aEdges.Append(anEntry);
-  anEntry.EdgeDefId = aE1; aEdges.Append(anEntry);
-  anEntry.EdgeDefId = aE2; aEdges.Append(anEntry);
-  anEntry.EdgeDefId = aE3; aEdges.Append(anEntry);
+  NCollection_Vector<std::pair<BRepGraph_NodeId, TopAbs_Orientation>> aEdges;
+  aEdges.Append({aE0, TopAbs_FORWARD});
+  aEdges.Append({aE1, TopAbs_FORWARD});
+  aEdges.Append({aE2, TopAbs_FORWARD});
+  aEdges.Append({aE3, TopAbs_FORWARD});
 
   BRepGraph_NodeId aWireId = aGraph.Builder().AddWireDef(aEdges);
   Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pln());
@@ -668,13 +663,11 @@ TEST(BRepGraphAPI_RemoveSubgraphTest, RemoveFace_RemovesWiresAndEdges)
   BRepGraph_NodeId aE2 = aGraph.Builder().AddEdgeDef(aV2, aV3, aL2, 0.0, 10.0, 0.001);
   BRepGraph_NodeId aE3 = aGraph.Builder().AddEdgeDef(aV3, aV0, aL3, 0.0, 10.0, 0.001);
 
-  NCollection_Vector<BRepGraph_TopoNode::WireDef::EdgeEntry> aEdges;
-  BRepGraph_TopoNode::WireDef::EdgeEntry anEntry;
-  anEntry.OrientationInWire = TopAbs_FORWARD;
-  anEntry.EdgeDefId = aE0; aEdges.Append(anEntry);
-  anEntry.EdgeDefId = aE1; aEdges.Append(anEntry);
-  anEntry.EdgeDefId = aE2; aEdges.Append(anEntry);
-  anEntry.EdgeDefId = aE3; aEdges.Append(anEntry);
+  NCollection_Vector<std::pair<BRepGraph_NodeId, TopAbs_Orientation>> aEdges;
+  aEdges.Append({aE0, TopAbs_FORWARD});
+  aEdges.Append({aE1, TopAbs_FORWARD});
+  aEdges.Append({aE2, TopAbs_FORWARD});
+  aEdges.Append({aE3, TopAbs_FORWARD});
 
   BRepGraph_NodeId aWireId = aGraph.Builder().AddWireDef(aEdges);
   Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pln());

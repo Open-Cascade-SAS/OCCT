@@ -19,6 +19,7 @@
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_RelEdgesView.hxx>
 #include <BRepGraph_RelEdge.hxx>
+#include <BRepGraph_UsagesView.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <NCollection_Vector.hxx>
 #include <Standard_Failure.hxx>
@@ -550,14 +551,17 @@ TEST_F(BRepGraphHistoryTest, SplitEdge_RewritesAllContainingWires)
   for (int aWireIter = 0; aWireIter < aWireIndices.Length(); ++aWireIter)
   {
     const BRepGraph_TopoNode::WireDef& aWire = myGraph.Defs().Wire(aWireIndices.Value(aWireIter));
+    ASSERT_FALSE(aWire.Usages.IsEmpty());
+    const BRepGraph_TopoNode::WireUsage& aWireUsage = myGraph.Usages().Wire(aWire.Usages.Value(0).Index);
 
     bool hasOld = false;
     bool hasSubA = false;
     bool hasSubB = false;
 
-    for (int anIdx = 0; anIdx < aWire.OrderedEdges.Length(); ++anIdx)
+    for (int anIdx = 0; anIdx < aWireUsage.EdgeUsages.Length(); ++anIdx)
     {
-      const BRepGraph_NodeId anId = aWire.OrderedEdges.Value(anIdx).EdgeDefId;
+      const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage = myGraph.Usages().Edge(aWireUsage.EdgeUsages.Value(anIdx).Index);
+      const BRepGraph_NodeId anId = anEdgeUsage.DefId;
       if (anId == anEdgeId)
       {
         hasOld = true;

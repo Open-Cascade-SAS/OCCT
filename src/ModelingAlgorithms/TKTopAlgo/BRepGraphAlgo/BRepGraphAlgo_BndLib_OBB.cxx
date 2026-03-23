@@ -155,14 +155,14 @@ static int pointsForOBB(const BRepGraph&            theGraph,
           theGraph.Usages().Face(aFaceDef.Usages.First().Index);
 
         auto checkWireEdges = [&](BRepGraph_UsageId theWireUsageId) {
-          const BRepGraph_NodeId             aWireDefId = theGraph.DefOf(theWireUsageId);
-          const BRepGraph_TopoNode::WireDef& aWireDef   = theGraph.Defs().Wire(aWireDefId.Index);
-          for (int anIdx = 0; anIdx < aWireDef.OrderedEdges.Length(); ++anIdx)
+          const BRepGraph_TopoNode::WireUsage& aWireUsage =
+            theGraph.Usages().Wire(theWireUsageId.Index);
+          for (int anIdx = 0; anIdx < aWireUsage.EdgeUsages.Length(); ++anIdx)
           {
-            const BRepGraph_TopoNode::WireDef::EdgeEntry& anEntry =
-              aWireDef.OrderedEdges.Value(anIdx);
+            const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage =
+              theGraph.Usages().Edge(aWireUsage.EdgeUsages.Value(anIdx).Index);
             const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
-              theGraph.Defs().Edge(anEntry.EdgeDefId.Index);
+              theGraph.Defs().Edge(anEdgeUsage.DefId.Index);
             if (anEdgeDef.IsDegenerate || anEdgeDef.Curve3d.IsNull())
             {
               continue;

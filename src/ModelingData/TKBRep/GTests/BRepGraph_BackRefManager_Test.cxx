@@ -18,6 +18,7 @@
 #include <BRepGraph_MutView.hxx>
 #include <BRepGraph_Mutator.hxx>
 #include <BRepGraph_RelEdgesView.hxx>
+#include <BRepGraph_UsagesView.hxx>
 
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <Geom_Line.hxx>
@@ -73,7 +74,7 @@ TEST(BRepGraphBackRefManagerTest, Build_EdgeDefsHaveValidCurves)
   }
 }
 
-// Verify that after Build(), edge-to-wire reverse index matches wire OrderedEdges.
+// Verify that after Build(), edge-to-wire reverse index matches wire edge usages.
 TEST(BRepGraphBackRefManagerTest, Build_EdgeToWiresMatchForwardLinks)
 {
   BRepGraph aGraph = buildBoxGraph();
@@ -82,9 +83,12 @@ TEST(BRepGraphBackRefManagerTest, Build_EdgeToWiresMatchForwardLinks)
   for (int aWireIdx = 0; aWireIdx < aGraph.Defs().NbWires(); ++aWireIdx)
   {
     const BRepGraph_TopoNode::WireDef& aWireDef = aGraph.Defs().Wire(aWireIdx);
-    for (int anEdgeIdx = 0; anEdgeIdx < aWireDef.OrderedEdges.Length(); ++anEdgeIdx)
+    ASSERT_FALSE(aWireDef.Usages.IsEmpty());
+    const BRepGraph_TopoNode::WireUsage& aWireUsage = aGraph.Usages().Wire(aWireDef.Usages.Value(0).Index);
+    for (int anEdgeIdx = 0; anEdgeIdx < aWireUsage.EdgeUsages.Length(); ++anEdgeIdx)
     {
-      const int anEdgeDefIdx = aWireDef.OrderedEdges.Value(anEdgeIdx).EdgeDefId.Index;
+      const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage = aGraph.Usages().Edge(aWireUsage.EdgeUsages.Value(anEdgeIdx).Index);
+      const int anEdgeDefIdx = anEdgeUsage.DefId.Index;
       const NCollection_Vector<int>& aWires = aGraph.RelEdges().WiresOfEdge(anEdgeDefIdx);
       bool aFound = false;
       for (int aW = 0; aW < aWires.Length(); ++aW)

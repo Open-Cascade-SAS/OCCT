@@ -115,9 +115,15 @@ void BRepGraphCheck_Analyzer::Perform()
 
           // Edge-in-face checks for each edge in this wire.
           const BRepGraph_TopoNode::WireDef& aWireDef = aLocalDefs.Wire(aWireDefIdx);
-          for (int anEdgeIter = 0; anEdgeIter < aWireDef.OrderedEdges.Length(); ++anEdgeIter)
+          if (aWireDef.Usages.IsEmpty())
+            continue;
+          const BRepGraph_TopoNode::WireUsage& aLocalWireUsage =
+            myGraph->Usages().Wire(aWireDef.Usages.Value(0).Index);
+          for (int anEdgeIter = 0; anEdgeIter < aLocalWireUsage.EdgeUsages.Length(); ++anEdgeIter)
           {
-            const int anEdgeDefIdx = aWireDef.OrderedEdges.Value(anEdgeIter).EdgeDefId.Index;
+            const BRepGraph_TopoNode::EdgeUsage& anLocalEdgeUsage =
+              myGraph->Usages().Edge(aLocalWireUsage.EdgeUsages.Value(anEdgeIter).Index);
+            const int anEdgeDefIdx = anLocalEdgeUsage.DefId.Index;
 
             BRepGraphCheck::CheckEdgeOnFace(*myGraph, anEdgeDefIdx, theFaceIdx,
                                             anIsExact, aLocal);

@@ -17,6 +17,8 @@
 #include <BRepGraph.hxx>
 #include <TopAbs_Orientation.hxx>
 
+#include <utility>
+
 class Geom_Surface;
 class Geom_Curve;
 
@@ -47,10 +49,11 @@ public:
                                               double                    theTolerance);
 
   //! Add a wire definition to the graph.
+  //! Each pair is (EdgeDefId, OrientationInWire).
   //! @param[in] theEdges ordered edge entries
   //! @return NodeId of the new wire definition
   Standard_EXPORT BRepGraph_NodeId AddWireDef(
-    const NCollection_Vector<BRepGraph_TopoNode::WireDef::EdgeEntry>& theEdges);
+    const NCollection_Vector<std::pair<BRepGraph_NodeId, TopAbs_Orientation>>& theEdges);
 
   //! Add a face definition to the graph.
   //! @param[in] theSurface    surface geometry

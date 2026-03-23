@@ -187,16 +187,14 @@ TEST_F(BRepGraphSharingTest, FaceUsage_OuterWireUsage_BackRef)
   }
 }
 
-TEST_F(BRepGraphSharingTest, WireUsage_EdgeUsagesCount_MatchesOrderedEdges)
+TEST_F(BRepGraphSharingTest, WireUsage_EdgeUsagesCount_FourPerBoxFace)
 {
   ASSERT_TRUE(myGraph.IsDone());
   for (int anIdx = 0; anIdx < myGraph.Usages().NbWires(); ++anIdx)
   {
     const BRepGraph_TopoNode::WireUsage& aWireUsage = myGraph.Usages().Wire(anIdx);
-    BRepGraph_NodeId aWireDefId = myGraph.DefOf(aWireUsage.UsageId);
-    const BRepGraph_TopoNode::WireDef& aWireDef = myGraph.Defs().Wire(aWireDefId.Index);
-    EXPECT_EQ(aWireUsage.EdgeUsages.Length(), aWireDef.OrderedEdges.Length())
-      << "Wire usage " << anIdx << " edge usages count does not match ordered edges count";
+    EXPECT_GT(aWireUsage.EdgeUsages.Length(), 0)
+      << "Wire usage " << anIdx << " has no edge usages";
     // Box face wires have 4 edges
     EXPECT_EQ(aWireUsage.EdgeUsages.Length(), 4)
       << "Wire usage " << anIdx << " expected 4 edge usages for box face";

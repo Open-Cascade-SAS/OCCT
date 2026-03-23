@@ -456,20 +456,32 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
 
   // Phase 3: Wire Merging.
   {
-    // Hash wire by its ordered edge sequence (EdgeDefId.Index, Orientation).
+    // Hash wire by its ordered edge sequence (EdgeUsage DefId.Index, Orientation).
+    // Helper to get WireUsage from WireDef.
+    auto getWireUsage = [&](int theWireIdx) -> const BRepGraph_TopoNode::WireUsage* {
+      const BRepGraph_TopoNode::WireDef& aWire = theGraph.Defs().Wire(theWireIdx);
+      if (aWire.Usages.IsEmpty())
+        return nullptr;
+      return &theGraph.Usages().Wire(aWire.Usages.Value(0).Index);
+    };
+
     struct WireHash
     {
       size_t operator()(int theWireIdx, const BRepGraph& theGraph) const
       {
         const BRepGraph_TopoNode::WireDef& aWire = theGraph.Defs().Wire(theWireIdx);
+        if (aWire.Usages.IsEmpty())
+          return 0;
+        const BRepGraph_TopoNode::WireUsage& aWireUsage =
+          theGraph.Usages().Wire(aWire.Usages.Value(0).Index);
         size_t aHash = 0;
-        for (int anIdx = 0; anIdx < aWire.OrderedEdges.Length(); ++anIdx)
+        for (int anIdx = 0; anIdx < aWireUsage.EdgeUsages.Length(); ++anIdx)
         {
-          const BRepGraph_TopoNode::WireDef::EdgeEntry& anEntry =
-            aWire.OrderedEdges.Value(anIdx);
+          const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage =
+            theGraph.Usages().Edge(aWireUsage.EdgeUsages.Value(anIdx).Index);
           size_t aEntryHash[2];
-          aEntryHash[0] = opencascade::hash(anEntry.EdgeDefId.Index);
-          aEntryHash[1] = opencascade::hash(static_cast<int>(anEntry.OrientationInWire));
+          aEntryHash[0] = opencascade::hash(anEdgeUsage.DefId.Index);
+          aEntryHash[1] = opencascade::hash(static_cast<int>(anEdgeUsage.Orientation));
           aHash ^= opencascade::hashBytes(aEntryHash, sizeof(aEntryHash)) + 0x9e3779b9 + (aHash << 6) + (aHash >> 2);
         }
         return aHash;
@@ -478,15 +490,19 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
 
     auto wiresEqual = [&](int theA, int theB) -> bool
     {
-      const BRepGraph_TopoNode::WireDef& aWireA = theGraph.Defs().Wire(theA);
-      const BRepGraph_TopoNode::WireDef& aWireB = theGraph.Defs().Wire(theB);
-      if (aWireA.OrderedEdges.Length() != aWireB.OrderedEdges.Length())
+      const BRepGraph_TopoNode::WireUsage* aWireUsageA = getWireUsage(theA);
+      const BRepGraph_TopoNode::WireUsage* aWireUsageB = getWireUsage(theB);
+      if (aWireUsageA == nullptr || aWireUsageB == nullptr)
+        return aWireUsageA == aWireUsageB;
+      if (aWireUsageA->EdgeUsages.Length() != aWireUsageB->EdgeUsages.Length())
         return false;
-      for (int anIdx = 0; anIdx < aWireA.OrderedEdges.Length(); ++anIdx)
+      for (int anIdx = 0; anIdx < aWireUsageA->EdgeUsages.Length(); ++anIdx)
       {
-        const BRepGraph_TopoNode::WireDef::EdgeEntry& anA = aWireA.OrderedEdges.Value(anIdx);
-        const BRepGraph_TopoNode::WireDef::EdgeEntry& aB  = aWireB.OrderedEdges.Value(anIdx);
-        if (anA.EdgeDefId != aB.EdgeDefId || anA.OrientationInWire != aB.OrientationInWire)
+        const BRepGraph_TopoNode::EdgeUsage& anA =
+          theGraph.Usages().Edge(aWireUsageA->EdgeUsages.Value(anIdx).Index);
+        const BRepGraph_TopoNode::EdgeUsage& aB =
+          theGraph.Usages().Edge(aWireUsageB->EdgeUsages.Value(anIdx).Index);
+        if (anA.DefId != aB.DefId || anA.Orientation != aB.Orientation)
           return false;
       }
       return true;

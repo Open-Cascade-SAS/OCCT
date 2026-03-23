@@ -120,22 +120,27 @@ void checkCrossReferenceBounds(const BRepGraph&                                 
     // Surface handle is stored directly on FaceDef; no cross-reference to validate.
   }
 
-  // Check WireDef references.
+  // Check WireDef/WireUsage references.
   for (int aWireIdx = 0; aWireIdx < theGraph.Defs().NbWires(); ++aWireIdx)
   {
     const BRepGraph_TopoNode::WireDef& aWire = theGraph.Defs().Wire(aWireIdx);
     if (aWire.IsRemoved)
       continue;
 
-    for (int anEdgeEntryIdx = 0; anEdgeEntryIdx < aWire.OrderedEdges.Length(); ++anEdgeEntryIdx)
+    if (!aWire.Usages.IsEmpty())
     {
-      const BRepGraph_TopoNode::WireDef::EdgeEntry& anEntry =
-        aWire.OrderedEdges.Value(anEdgeEntryIdx);
-      if (anEntry.EdgeDefId.IsValid() && !isValidNodeId(theGraph, anEntry.EdgeDefId))
+      const BRepGraph_TopoNode::WireUsage& aWireUsage =
+        theGraph.Usages().Wire(aWire.Usages.Value(0).Index);
+      for (int anEdgeEntryIdx = 0; anEdgeEntryIdx < aWireUsage.EdgeUsages.Length(); ++anEdgeEntryIdx)
       {
-        theIssues.Append(Issue{Severity::Error,
-                               aWire.Id,
-                               "WireDef.OrderedEdges entry EdgeDefId out of bounds"});
+        const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage =
+          theGraph.Usages().Edge(aWireUsage.EdgeUsages.Value(anEdgeEntryIdx).Index);
+        if (anEdgeUsage.DefId.IsValid() && !isValidNodeId(theGraph, anEdgeUsage.DefId))
+        {
+          theIssues.Append(Issue{Severity::Error,
+                                 aWire.Id,
+                                 "WireUsage.EdgeUsage DefId out of bounds"});
+        }
       }
     }
   }
@@ -188,17 +193,21 @@ void checkReverseIndexConsistency(const BRepGraph&                              
   using Issue    = BRepGraphAlgo_Validate::Issue;
   using Severity = BRepGraphAlgo_Validate::Severity;
 
-  // Build expected edge->wires mapping from WireDefs.
+  // Build expected edge->wires mapping from WireUsages.
   NCollection_DataMap<int, NCollection_Map<int>> anExpected;
   for (int aWireIdx = 0; aWireIdx < theGraph.Defs().NbWires(); ++aWireIdx)
   {
     const BRepGraph_TopoNode::WireDef& aWire = theGraph.Defs().Wire(aWireIdx);
-    if (aWire.IsRemoved)
+    if (aWire.IsRemoved || aWire.Usages.IsEmpty())
       continue;
 
-    for (int anEntryIdx = 0; anEntryIdx < aWire.OrderedEdges.Length(); ++anEntryIdx)
+    const BRepGraph_TopoNode::WireUsage& aWireUsage =
+      theGraph.Usages().Wire(aWire.Usages.Value(0).Index);
+    for (int anEntryIdx = 0; anEntryIdx < aWireUsage.EdgeUsages.Length(); ++anEntryIdx)
     {
-      const BRepGraph_NodeId& anEdgeId = aWire.OrderedEdges.Value(anEntryIdx).EdgeDefId;
+      const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage =
+        theGraph.Usages().Edge(aWireUsage.EdgeUsages.Value(anEntryIdx).Index);
+      const BRepGraph_NodeId& anEdgeId = anEdgeUsage.DefId;
       if (!anEdgeId.IsValid())
         continue;
 
@@ -394,12 +403,16 @@ void checkRemovedNodeIsolation(const BRepGraph&                                 
   for (int aWireIdx = 0; aWireIdx < theGraph.Defs().NbWires(); ++aWireIdx)
   {
     const BRepGraph_TopoNode::WireDef& aWire = theGraph.Defs().Wire(aWireIdx);
-    if (aWire.IsRemoved)
+    if (aWire.IsRemoved || aWire.Usages.IsEmpty())
       continue;
 
-    for (int anEntryIdx = 0; anEntryIdx < aWire.OrderedEdges.Length(); ++anEntryIdx)
+    const BRepGraph_TopoNode::WireUsage& aWireUsage =
+      theGraph.Usages().Wire(aWire.Usages.Value(0).Index);
+    for (int anEntryIdx = 0; anEntryIdx < aWireUsage.EdgeUsages.Length(); ++anEntryIdx)
     {
-      const BRepGraph_NodeId& anEdgeId = aWire.OrderedEdges.Value(anEntryIdx).EdgeDefId;
+      const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage =
+        theGraph.Usages().Edge(aWireUsage.EdgeUsages.Value(anEntryIdx).Index);
+      const BRepGraph_NodeId& anEdgeId = anEdgeUsage.DefId;
       if (anEdgeId.IsValid() && isDefRemoved(theGraph, anEdgeId))
       {
         theIssues.Append(Issue{Severity::Error,
@@ -423,24 +436,34 @@ void checkWireConnectivity(const BRepGraph&                                     
   for (int aWireIdx = 0; aWireIdx < theGraph.Defs().NbWires(); ++aWireIdx)
   {
     const BRepGraph_TopoNode::WireDef& aWire = theGraph.Defs().Wire(aWireIdx);
-    if (aWire.IsRemoved || aWire.OrderedEdges.Length() < 2)
+    if (aWire.IsRemoved || aWire.Usages.IsEmpty())
       continue;
 
-    for (int anIdx = 0; anIdx < aWire.OrderedEdges.Length() - 1; ++anIdx)
+    const BRepGraph_TopoNode::WireUsage& aWireUsage =
+      theGraph.Usages().Wire(aWire.Usages.Value(0).Index);
+    if (aWireUsage.EdgeUsages.Length() < 2)
+      continue;
+
+    for (int anIdx = 0; anIdx < aWireUsage.EdgeUsages.Length() - 1; ++anIdx)
     {
-      const BRepGraph_TopoNode::WireDef::EdgeEntry& aCurr = aWire.OrderedEdges.Value(anIdx);
-      const BRepGraph_TopoNode::WireDef::EdgeEntry& aNext = aWire.OrderedEdges.Value(anIdx + 1);
+      const BRepGraph_TopoNode::EdgeUsage& aCurrEdgeUsage =
+        theGraph.Usages().Edge(aWireUsage.EdgeUsages.Value(anIdx).Index);
+      const BRepGraph_TopoNode::EdgeUsage& aNextEdgeUsage =
+        theGraph.Usages().Edge(aWireUsage.EdgeUsages.Value(anIdx + 1).Index);
 
-      if (!aCurr.EdgeDefId.IsValid() || !aNext.EdgeDefId.IsValid())
+      if (!aCurrEdgeUsage.DefId.IsValid() || !aNextEdgeUsage.DefId.IsValid())
         continue;
-      if (!isValidNodeId(theGraph, aCurr.EdgeDefId) || !isValidNodeId(theGraph, aNext.EdgeDefId))
+      if (!isValidNodeId(theGraph, aCurrEdgeUsage.DefId)
+          || !isValidNodeId(theGraph, aNextEdgeUsage.DefId))
         continue;
 
-      const BRepGraph_TopoNode::EdgeDef& aCurrEdge = theGraph.Defs().Edge(aCurr.EdgeDefId.Index);
-      const BRepGraph_TopoNode::EdgeDef& aNextEdge = theGraph.Defs().Edge(aNext.EdgeDefId.Index);
+      const BRepGraph_TopoNode::EdgeDef& aCurrEdge =
+        theGraph.Defs().Edge(aCurrEdgeUsage.DefId.Index);
+      const BRepGraph_TopoNode::EdgeDef& aNextEdge =
+        theGraph.Defs().Edge(aNextEdgeUsage.DefId.Index);
 
-      const BRepGraph_NodeId aCurrEnd   = aCurrEdge.OrientedEndVertex(aCurr.OrientationInWire);
-      const BRepGraph_NodeId aNextStart = aNextEdge.OrientedStartVertex(aNext.OrientationInWire);
+      const BRepGraph_NodeId aCurrEnd   = aCurrEdge.OrientedEndVertex(aCurrEdgeUsage.Orientation);
+      const BRepGraph_NodeId aNextStart = aNextEdge.OrientedStartVertex(aNextEdgeUsage.Orientation);
 
       if (aCurrEnd.IsValid() && aNextStart.IsValid() && aCurrEnd != aNextStart)
       {

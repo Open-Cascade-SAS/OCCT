@@ -153,11 +153,11 @@ TEST_F(BRepGraphTest, FindPCurve_ValidPair)
     const BRepGraph_TopoNode::FaceUsage& aFaceUsage = myGraph.Usages().Face(aFace.Usages.First().Index);
     if (!aFaceUsage.OuterWireUsage.IsValid())
       continue;
-    const BRepGraph_TopoNode::WireDef& aWire = myGraph.Defs().Wire(
-      myGraph.Usages().Wire(aFaceUsage.OuterWireUsage.Index).DefId.Index);
-    for (int anEdgeIter = 0; anEdgeIter < aWire.OrderedEdges.Length(); ++anEdgeIter)
+    const BRepGraph_TopoNode::WireUsage& aWireUsage = myGraph.Usages().Wire(aFaceUsage.OuterWireUsage.Index);
+    for (int anEdgeIter = 0; anEdgeIter < aWireUsage.EdgeUsages.Length(); ++anEdgeIter)
     {
-      BRepGraph_NodeId anEdgeId = aWire.OrderedEdges.Value(anEdgeIter).EdgeDefId;
+      const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage = myGraph.Usages().Edge(aWireUsage.EdgeUsages.Value(anEdgeIter).Index);
+      BRepGraph_NodeId anEdgeId = anEdgeUsage.DefId;
       const BRepGraph_TopoNode::EdgeDef& anEdge = myGraph.Defs().Edge(anEdgeId.Index);
       if (anEdge.IsDegenerate)
         continue;
@@ -360,18 +360,22 @@ TEST_F(BRepGraphTest, RecordHistory_BasicEntry)
 
 TEST_F(BRepGraphTest, ReplaceEdgeInWire_Substitution)
 {
-  // Get the first wire and its first edge.
+  // Get the first wire and its first edge via WireUsage.
   const BRepGraph_TopoNode::WireDef& aWire = myGraph.Defs().Wire(0);
-  ASSERT_GE(aWire.OrderedEdges.Length(), 1);
-  BRepGraph_NodeId anOldEdge = aWire.OrderedEdges.Value(0).EdgeDefId;
+  ASSERT_FALSE(aWire.Usages.IsEmpty());
+  const BRepGraph_TopoNode::WireUsage& aWireUsage = myGraph.Usages().Wire(aWire.Usages.Value(0).Index);
+  ASSERT_GE(aWireUsage.EdgeUsages.Length(), 1);
+  const BRepGraph_TopoNode::EdgeUsage& anOldEdgeUsage = myGraph.Usages().Edge(aWireUsage.EdgeUsages.Value(0).Index);
+  BRepGraph_NodeId anOldEdge = anOldEdgeUsage.DefId;
 
   // Pick a different edge to substitute.
   BRepGraph_NodeId aNewEdge(BRepGraph_NodeId::Kind::Edge, (anOldEdge.Index + 1) % myGraph.Defs().NbEdges());
 
   myGraph.Mut().ReplaceEdgeInWire(0, anOldEdge, aNewEdge, false);
 
-  // Verify the substitution.
-  EXPECT_EQ(myGraph.Defs().Wire(0).OrderedEdges.Value(0).EdgeDefId, aNewEdge);
+  // Verify the substitution via the updated wire usage.
+  const BRepGraph_TopoNode::EdgeUsage& aNewEdgeUsage = myGraph.Usages().Edge(aWireUsage.EdgeUsages.Value(0).Index);
+  EXPECT_EQ(aNewEdgeUsage.DefId, aNewEdge);
 }
 
 TEST(BRepGraphParallelTest, ParallelBuild_SameAsSequential)
@@ -460,8 +464,10 @@ TEST_F(BRepGraphTest, ReconstructFace_EachBoxFace_SameSubShapeCounts)
 TEST_F(BRepGraphTest, ReconstructFace_AfterEdgeReplace_ContainsNewEdge)
 {
   const BRepGraph_TopoNode::WireDef& aWire = myGraph.Defs().Wire(0);
-  ASSERT_GE(aWire.OrderedEdges.Length(), 1);
-  BRepGraph_NodeId anOldEdgeId = aWire.OrderedEdges.Value(0).EdgeDefId;
+  ASSERT_FALSE(aWire.Usages.IsEmpty());
+  const BRepGraph_TopoNode::WireUsage& aWireUsageForReplace = myGraph.Usages().Wire(aWire.Usages.Value(0).Index);
+  ASSERT_GE(aWireUsageForReplace.EdgeUsages.Length(), 1);
+  BRepGraph_NodeId anOldEdgeId = myGraph.Usages().Edge(aWireUsageForReplace.EdgeUsages.Value(0).Index).DefId;
 
   // Pick a different edge.
   int aNewIdx = (anOldEdgeId.Index + 1) % myGraph.Defs().NbEdges();
@@ -537,8 +543,10 @@ TEST_F(BRepGraphTest, Shape_Unmodified_ReturnsSameShape)
 TEST_F(BRepGraphTest, Shape_AfterReplaceEdge_DiffersFromOriginal)
 {
   const BRepGraph_TopoNode::WireDef& aWire = myGraph.Defs().Wire(0);
-  ASSERT_GE(aWire.OrderedEdges.Length(), 1);
-  BRepGraph_NodeId anOldEdgeId = aWire.OrderedEdges.Value(0).EdgeDefId;
+  ASSERT_FALSE(aWire.Usages.IsEmpty());
+  const BRepGraph_TopoNode::WireUsage& aWireUsageForDiff = myGraph.Usages().Wire(aWire.Usages.Value(0).Index);
+  ASSERT_GE(aWireUsageForDiff.EdgeUsages.Length(), 1);
+  BRepGraph_NodeId anOldEdgeId = myGraph.Usages().Edge(aWireUsageForDiff.EdgeUsages.Value(0).Index).DefId;
   int aNewIdx = (anOldEdgeId.Index + 1) % myGraph.Defs().NbEdges();
   BRepGraph_NodeId aNewEdgeId(BRepGraph_NodeId::Kind::Edge, aNewIdx);
 
@@ -855,11 +863,13 @@ TEST_F(BRepGraphTest, AddPCurveToEdge_NewPCurve_RetrievableViaFindPCurve)
 TEST_F(BRepGraphTest, ReplaceEdgeInWire_Reversed_OrientationFlipped)
 {
   const BRepGraph_TopoNode::WireDef& aWire = myGraph.Defs().Wire(0);
-  ASSERT_GE(aWire.OrderedEdges.Length(), 1);
+  ASSERT_FALSE(aWire.Usages.IsEmpty());
+  const BRepGraph_TopoNode::WireUsage& aWireUsageRev = myGraph.Usages().Wire(aWire.Usages.Value(0).Index);
+  ASSERT_GE(aWireUsageRev.EdgeUsages.Length(), 1);
 
-  const BRepGraph_TopoNode::WireDef::EdgeEntry& anOrigEntry = aWire.OrderedEdges.Value(0);
-  BRepGraph_NodeId anOldEdgeId = anOrigEntry.EdgeDefId;
-  TopAbs_Orientation anOrigOrientation = anOrigEntry.OrientationInWire;
+  const BRepGraph_TopoNode::EdgeUsage& anOrigEdgeUsage = myGraph.Usages().Edge(aWireUsageRev.EdgeUsages.Value(0).Index);
+  BRepGraph_NodeId anOldEdgeId = anOrigEdgeUsage.DefId;
+  TopAbs_Orientation anOrigOrientation = anOrigEdgeUsage.Orientation;
 
   // Pick a different edge.
   int aNewIdx = (anOldEdgeId.Index + 1) % myGraph.Defs().NbEdges();
@@ -867,14 +877,14 @@ TEST_F(BRepGraphTest, ReplaceEdgeInWire_Reversed_OrientationFlipped)
 
   myGraph.Mut().ReplaceEdgeInWire(0, anOldEdgeId, aNewEdgeId, true);
 
-  const BRepGraph_TopoNode::WireDef::EdgeEntry& aNewEntry = myGraph.Defs().Wire(0).OrderedEdges.Value(0);
-  EXPECT_EQ(aNewEntry.EdgeDefId, aNewEdgeId);
+  const BRepGraph_TopoNode::EdgeUsage& aNewEdgeUsage = myGraph.Usages().Edge(aWireUsageRev.EdgeUsages.Value(0).Index);
+  EXPECT_EQ(aNewEdgeUsage.DefId, aNewEdgeId);
 
   // Orientation should be flipped relative to original.
   TopAbs_Orientation anExpected = (anOrigOrientation == TopAbs_FORWARD)
                                     ? TopAbs_REVERSED
                                     : TopAbs_FORWARD;
-  EXPECT_EQ(aNewEntry.OrientationInWire, anExpected);
+  EXPECT_EQ(aNewEdgeUsage.Orientation, anExpected);
 }
 
 TEST_F(BRepGraphTest, MutableVertex_ChangePoint_Verified)
@@ -1003,10 +1013,9 @@ TEST_F(BRepGraphTest, InvalidateSubgraph_Face_ConsistentAfter)
   ASSERT_FALSE(aFace.Usages.IsEmpty());
   const BRepGraph_TopoNode::FaceUsage& aFaceUsage = myGraph.Usages().Face(aFace.Usages.First().Index);
   ASSERT_TRUE(aFaceUsage.OuterWireUsage.IsValid());
-  const BRepGraph_TopoNode::WireDef& aWire = myGraph.Defs().Wire(
-    myGraph.Usages().Wire(aFaceUsage.OuterWireUsage.Index).DefId.Index);
-  ASSERT_GE(aWire.OrderedEdges.Length(), 1);
-  BRepGraph_NodeId anEdgeId = aWire.OrderedEdges.Value(0).EdgeDefId;
+  const BRepGraph_TopoNode::WireUsage& aWireUsageInv = myGraph.Usages().Wire(aFaceUsage.OuterWireUsage.Index);
+  ASSERT_GE(aWireUsageInv.EdgeUsages.Length(), 1);
+  BRepGraph_NodeId anEdgeId = myGraph.Usages().Edge(aWireUsageInv.EdgeUsages.Value(0).Index).DefId;
 
   Bnd_Box anEdgeBox1 = BRepGraphAlgo_BndLib::AddCached(myGraph, anEdgeId);
   ASSERT_FALSE(anEdgeBox1.IsVoid());
@@ -1419,16 +1428,15 @@ TEST_F(BRepGraphTest, BoundingBox_Edge_SubsetOfFace)
   ASSERT_FALSE(aFace.Usages.IsEmpty());
   const BRepGraph_TopoNode::FaceUsage& aFaceUsage = myGraph.Usages().Face(aFace.Usages.First().Index);
   ASSERT_TRUE(aFaceUsage.OuterWireUsage.IsValid());
-  const BRepGraph_TopoNode::WireDef& aWire = myGraph.Defs().Wire(
-    myGraph.Usages().Wire(aFaceUsage.OuterWireUsage.Index).DefId.Index);
-  ASSERT_GE(aWire.OrderedEdges.Length(), 1);
+  const BRepGraph_TopoNode::WireUsage& aWireUsageBBox = myGraph.Usages().Wire(aFaceUsage.OuterWireUsage.Index);
+  ASSERT_GE(aWireUsageBBox.EdgeUsages.Length(), 1);
 
   BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
   Bnd_Box aFaceBox;
   BRepGraphAlgo_BndLib::Add(myGraph, aFaceId, aFaceBox);
   ASSERT_FALSE(aFaceBox.IsVoid());
 
-  BRepGraph_NodeId anEdgeId = aWire.OrderedEdges.Value(0).EdgeDefId;
+  BRepGraph_NodeId anEdgeId = myGraph.Usages().Edge(aWireUsageBBox.EdgeUsages.Value(0).Index).DefId;
   Bnd_Box anEdgeBox;
   BRepGraphAlgo_BndLib::Add(myGraph, anEdgeId, anEdgeBox);
   ASSERT_FALSE(anEdgeBox.IsVoid());
@@ -1657,7 +1665,7 @@ TEST_F(BRepGraphTest, Wire_OwnerFaceUsage_MatchesFaceOuterWire)
   }
 }
 
-TEST_F(BRepGraphTest, Wire_OrderedEdges_FourEdgesPerBoxFace)
+TEST_F(BRepGraphTest, Wire_EdgeUsages_FourEdgesPerBoxFace)
 {
   for (int aFaceIdx = 0; aFaceIdx < myGraph.Defs().NbFaces(); ++aFaceIdx)
   {
@@ -1665,10 +1673,9 @@ TEST_F(BRepGraphTest, Wire_OrderedEdges_FourEdgesPerBoxFace)
     ASSERT_FALSE(aFace.Usages.IsEmpty());
     const BRepGraph_TopoNode::FaceUsage& aFaceUsage = myGraph.Usages().Face(aFace.Usages.First().Index);
     ASSERT_TRUE(aFaceUsage.OuterWireUsage.IsValid());
-    const BRepGraph_TopoNode::WireDef& aWire = myGraph.Defs().Wire(
-      myGraph.Usages().Wire(aFaceUsage.OuterWireUsage.Index).DefId.Index);
-    EXPECT_EQ(aWire.OrderedEdges.Length(), 4)
-      << "Box face " << aFaceIdx << " should have 4 edges in its outer wire";
+    const BRepGraph_TopoNode::WireUsage& aWireUsage = myGraph.Usages().Wire(aFaceUsage.OuterWireUsage.Index);
+    EXPECT_EQ(aWireUsage.EdgeUsages.Length(), 4)
+      << "Box face " << aFaceIdx << " should have 4 edge usages in its outer wire";
   }
 }
 

@@ -230,9 +230,6 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
   {
     const BRepGraph_TopoNode::WireUsage& aWireUsage =
       theGraph.Usages().Wire(aWireUsageIds(aWireIdx).Index);
-    const BRepGraph_NodeId             aWireDefId = aWireUsage.DefId;
-    const BRepGraph_TopoNode::WireDef& aWireDef   = theGraph.Defs().Wire(aWireDefId.Index);
-
     int aNbPnts = 0;
     aPnt2dVec.Clear();
     int    aFirstPoint     = 1;
@@ -240,23 +237,23 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
     double aFlecheV        = 0.0;
     bool   aWireIsNotEmpty = false;
 
-    const int aNbOrderedEdges = aWireDef.OrderedEdges.Length();
-    const int aNbE            = aNbOrderedEdges;
+    const int aNbEdgeUsages = aWireUsage.EdgeUsages.Length();
+    const int aNbE          = aNbEdgeUsages;
 
     // Edge count mismatch detection.
-    const int aNbUsageEdges   = aWireUsage.EdgeUsages.Length();
-    const int aNbEdgeMismatch = aNbOrderedEdges - aNbUsageEdges;
+    const int aNbEdgeMismatch = 0; // EdgeUsages is the single source of truth now.
 
     gp_Pnt aOldPnt3d(0, 0, 0);
     bool   anOldPnt3dInit = false;
 
-    // Iterate ordered edges.
-    for (int anEdgeIdx = 0; anEdgeIdx < aNbOrderedEdges; ++anEdgeIdx)
+    // Iterate edge usages.
+    for (int anEdgeIdx = 0; anEdgeIdx < aNbEdgeUsages; ++anEdgeIdx)
     {
-      const BRepGraph_TopoNode::WireDef::EdgeEntry& anEdgeEntry = aWireDef.OrderedEdges(anEdgeIdx);
-      const BRepGraph_TopoNode::EdgeDef&            anEdgeDef =
-        theGraph.Defs().Edge(anEdgeEntry.EdgeDefId.Index);
-      const TopAbs_Orientation anOri = anEdgeEntry.OrientationInWire;
+      const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage =
+        theGraph.Usages().Edge(aWireUsage.EdgeUsages.Value(anEdgeIdx).Index);
+      const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
+        theGraph.Defs().Edge(anEdgeUsage.DefId.Index);
+      const TopAbs_Orientation anOri = anEdgeUsage.Orientation;
 
       if (anOri != TopAbs_FORWARD && anOri != TopAbs_REVERSED)
         continue;
@@ -397,13 +394,13 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
           aFlecheU = 0.0;
           aFlecheV = 0.0;
 
-          for (int anEdgeIdx = 0; anEdgeIdx < aNbOrderedEdges; ++anEdgeIdx)
+          for (int anEdgeIdx = 0; anEdgeIdx < aNbEdgeUsages; ++anEdgeIdx)
           {
-            const BRepGraph_TopoNode::WireDef::EdgeEntry& anEdgeEntry =
-              aWireDef.OrderedEdges(anEdgeIdx);
+            const BRepGraph_TopoNode::EdgeUsage& anEdgeUsage2 =
+              theGraph.Usages().Edge(aWireUsage.EdgeUsages.Value(anEdgeIdx).Index);
             const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
-              theGraph.Defs().Edge(anEdgeEntry.EdgeDefId.Index);
-            const TopAbs_Orientation anOri = anEdgeEntry.OrientationInWire;
+              theGraph.Defs().Edge(anEdgeUsage2.DefId.Index);
+            const TopAbs_Orientation anOri = anEdgeUsage2.Orientation;
 
             if (anOri != TopAbs_FORWARD && anOri != TopAbs_REVERSED)
               continue;
