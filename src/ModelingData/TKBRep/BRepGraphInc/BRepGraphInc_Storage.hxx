@@ -59,6 +59,26 @@ public:
   int NbProducts()    const { return myProducts.Length(); }
   int NbOccurrences() const { return myOccurrences.Length(); }
 
+  // ------ Representation count accessors ------
+
+  int NbSurfaces()       const { return mySurfaces.Length(); }
+  int NbCurves3D()       const { return myCurves3D.Length(); }
+  int NbCurves2D()       const { return myCurves2D.Length(); }
+  int NbTriangulations() const { return myTriangulationsRep.Length(); }
+  int NbPolygons3D()     const { return myPolygons3D.Length(); }
+  int NbPolygons2D()     const { return myPolygons2D.Length(); }
+  int NbPolygonsOnTri()  const { return myPolygonsOnTri.Length(); }
+
+  // ------ Representation active count accessors ------
+
+  int NbActiveSurfaces()       const { return myNbActiveSurfaces; }
+  int NbActiveCurves3D()       const { return myNbActiveCurves3D; }
+  int NbActiveCurves2D()       const { return myNbActiveCurves2D; }
+  int NbActiveTriangulations() const { return myNbActiveTriangulations; }
+  int NbActivePolygons3D()     const { return myNbActivePolygons3D; }
+  int NbActivePolygons2D()     const { return myNbActivePolygons2D; }
+  int NbActivePolygonsOnTri()  const { return myNbActivePolygonsOnTri; }
+
   // ------ Active count accessors (excluding removed nodes) ------
 
   int NbActiveVertices()   const { return myNbActiveVertices; }
@@ -75,6 +95,36 @@ public:
 
   //! Decrement the active count for the given node kind.
   void DecrementActiveCount(BRepGraph_NodeId::Kind theKind);
+
+  // ------ Const representation access ------
+
+  const BRepGraphInc::SurfaceRep&       SurfaceRep(int theIdx)       const { return mySurfaces.Value(theIdx); }
+  const BRepGraphInc::Curve3DRep&       Curve3DRep(int theIdx)       const { return myCurves3D.Value(theIdx); }
+  const BRepGraphInc::Curve2DRep&       Curve2DRep(int theIdx)       const { return myCurves2D.Value(theIdx); }
+  const BRepGraphInc::TriangulationRep& TriangulationRep(int theIdx) const { return myTriangulationsRep.Value(theIdx); }
+  const BRepGraphInc::Polygon3DRep&     Polygon3DRep(int theIdx)     const { return myPolygons3D.Value(theIdx); }
+  const BRepGraphInc::Polygon2DRep&     Polygon2DRep(int theIdx)     const { return myPolygons2D.Value(theIdx); }
+  const BRepGraphInc::PolygonOnTriRep&  PolygonOnTriRep(int theIdx)  const { return myPolygonsOnTri.Value(theIdx); }
+
+  // ------ Mutable representation access ------
+
+  BRepGraphInc::SurfaceRep&       ChangeSurfaceRep(int theIdx)       { return mySurfaces.ChangeValue(theIdx); }
+  BRepGraphInc::Curve3DRep&       ChangeCurve3DRep(int theIdx)       { return myCurves3D.ChangeValue(theIdx); }
+  BRepGraphInc::Curve2DRep&       ChangeCurve2DRep(int theIdx)       { return myCurves2D.ChangeValue(theIdx); }
+  BRepGraphInc::TriangulationRep& ChangeTriangulationRep(int theIdx) { return myTriangulationsRep.ChangeValue(theIdx); }
+  BRepGraphInc::Polygon3DRep&     ChangePolygon3DRep(int theIdx)     { return myPolygons3D.ChangeValue(theIdx); }
+  BRepGraphInc::Polygon2DRep&     ChangePolygon2DRep(int theIdx)     { return myPolygons2D.ChangeValue(theIdx); }
+  BRepGraphInc::PolygonOnTriRep&  ChangePolygonOnTriRep(int theIdx)  { return myPolygonsOnTri.ChangeValue(theIdx); }
+
+  // ------ Append representation entities ------
+
+  BRepGraphInc::SurfaceRep&       AppendSurfaceRep()       { ++myNbActiveSurfaces;       auto& e = mySurfaces.Appended();       return e; }
+  BRepGraphInc::Curve3DRep&       AppendCurve3DRep()       { ++myNbActiveCurves3D;       auto& e = myCurves3D.Appended();       return e; }
+  BRepGraphInc::Curve2DRep&       AppendCurve2DRep()       { ++myNbActiveCurves2D;       auto& e = myCurves2D.Appended();       return e; }
+  BRepGraphInc::TriangulationRep& AppendTriangulationRep() { ++myNbActiveTriangulations; auto& e = myTriangulationsRep.Appended(); return e; }
+  BRepGraphInc::Polygon3DRep&     AppendPolygon3DRep()     { ++myNbActivePolygons3D;     auto& e = myPolygons3D.Appended();     return e; }
+  BRepGraphInc::Polygon2DRep&     AppendPolygon2DRep()     { ++myNbActivePolygons2D;     auto& e = myPolygons2D.Appended();     return e; }
+  BRepGraphInc::PolygonOnTriRep&  AppendPolygonOnTriRep()  { ++myNbActivePolygonsOnTri;  auto& e = myPolygonsOnTri.Appended();  return e; }
 
   // ------ Const entity access ------
 
@@ -207,6 +257,16 @@ public:
 private:
   friend class BRepGraphInc_Populate;
 
+  // Representation entity vectors
+  NCollection_Vector<BRepGraphInc::SurfaceRep>       mySurfaces;
+  NCollection_Vector<BRepGraphInc::Curve3DRep>       myCurves3D;
+  NCollection_Vector<BRepGraphInc::Curve2DRep>       myCurves2D;
+  NCollection_Vector<BRepGraphInc::TriangulationRep> myTriangulationsRep;
+  NCollection_Vector<BRepGraphInc::Polygon3DRep>     myPolygons3D;
+  NCollection_Vector<BRepGraphInc::Polygon2DRep>     myPolygons2D;
+  NCollection_Vector<BRepGraphInc::PolygonOnTriRep>  myPolygonsOnTri;
+
+  // Topology entity vectors
   NCollection_Vector<BRepGraphInc::VertexEntity>    myVertices;
   NCollection_Vector<BRepGraphInc::EdgeEntity>      myEdges;
   NCollection_Vector<BRepGraphInc::CoEdgeEntity>    myCoEdges;
@@ -237,6 +297,14 @@ private:
   NCollection_Vector<BRepGraph_UID> myOccurrenceUIDs;
 
   occ::handle<NCollection_BaseAllocator> myAllocator;
+
+  int myNbActiveSurfaces       = 0;
+  int myNbActiveCurves3D       = 0;
+  int myNbActiveCurves2D       = 0;
+  int myNbActiveTriangulations = 0;
+  int myNbActivePolygons3D     = 0;
+  int myNbActivePolygons2D     = 0;
+  int myNbActivePolygonsOnTri  = 0;
 
   int myNbActiveVertices   = 0;
   int myNbActiveEdges      = 0;

@@ -16,6 +16,7 @@
 
 #include <BRepGraph_NodeCache.hxx>
 #include <BRepGraph_NodeId.hxx>
+#include <BRepGraph_RepId.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
 
 #include <Geom2d_Curve.hxx>
@@ -60,6 +61,58 @@ struct BaseEntity
                                         //!< Wraps on overflow; callers compare via difference, not absolute value.
   bool               IsModified = false; //!< True when mutated since Build()
   bool               IsRemoved = false;  //!< Soft-removal flag
+};
+
+//! Fields shared by every representation entity.
+struct BaseRep
+{
+  BRepGraph_RepId Id;            //!< Typed address (RepKind + per-kind index)
+  uint32_t        MutationGen = 0;    //!< Per-rep mutation counter
+  bool            IsRemoved = false;  //!< Soft-removal flag
+};
+
+//! Surface geometry representation for faces.
+struct SurfaceRep : public BaseRep
+{
+  occ::handle<Geom_Surface> Surface;  //!< The geometric surface
+};
+
+//! 3D curve geometry representation for edges.
+struct Curve3DRep : public BaseRep
+{
+  occ::handle<Geom_Curve> Curve;  //!< The 3D curve geometry
+};
+
+//! 2D parametric curve (PCurve) representation for coedges.
+struct Curve2DRep : public BaseRep
+{
+  occ::handle<Geom2d_Curve> Curve;  //!< The 2D parametric curve
+};
+
+//! Triangulation mesh representation for faces.
+struct TriangulationRep : public BaseRep
+{
+  occ::handle<Poly_Triangulation> Triangulation;  //!< The mesh
+};
+
+//! 3D polygon discretization for edges.
+struct Polygon3DRep : public BaseRep
+{
+  occ::handle<Poly_Polygon3D> Polygon;  //!< The 3D polygon
+};
+
+//! 2D polygon-on-surface discretization for coedges.
+struct Polygon2DRep : public BaseRep
+{
+  occ::handle<Poly_Polygon2D> Polygon;  //!< The 2D polygon on surface parametric space
+};
+
+//! Polygon-on-triangulation for coedges.
+//! Links a polygon to a specific triangulation rep (global index, not face-local).
+struct PolygonOnTriRep : public BaseRep
+{
+  occ::handle<Poly_PolygonOnTriangulation> Polygon;  //!< Polygon indices into triangulation
+  int TriangulationRepIdx = -1;  //!< Global index into myTriangulationsRep
 };
 
 //! Vertex entity: 3D point + tolerance.
@@ -111,6 +164,9 @@ struct EdgeEntity : public BaseEntity
 {
   //! 3D curve geometry (direct handle, null for degenerate edges).
   occ::handle<Geom_Curve> Curve3d;
+
+  //! Representation index into Storage::myCurves3D (-1 if no 3D curve).
+  int Curve3DRepIdx = -1;
 
   //! PCurve entries, one per (edge, face) context.
   //! For seam edges there are two entries with the same FaceDefId,
@@ -168,6 +224,9 @@ struct EdgeEntity : public BaseEntity
 
   //! Optional 3D polygon discretization (stored inline, not as a graph node).
   occ::handle<Poly_Polygon3D> Polygon3D;
+
+  //! Representation index into Storage::myPolygons3D (-1 if no polygon).
+  int Polygon3DRepIdx = -1;
 
   //! Polygon-on-surface entries, one per (edge, face) context.
   struct PolyOnSurfEntry
@@ -241,6 +300,9 @@ struct CoEdgeEntity : public BaseEntity
 
   //! PCurve data (null for free-wire coedges without face context).
   occ::handle<Geom2d_Curve> Curve2d;
+
+  //! Representation index into Storage::myCurves2D (-1 if no PCurve).
+  int Curve2DRepIdx = -1;
   double               ParamFirst = 0.0;
   double               ParamLast  = 0.0;
   GeomAbs_Shape        Continuity = GeomAbs_C0; //!< Geometric continuity across face pairs
@@ -254,6 +316,9 @@ struct CoEdgeEntity : public BaseEntity
   //! Polygon-on-surface for this face context.
   occ::handle<Poly_Polygon2D> PolygonOnSurf;
 
+  //! Representation index into Storage::myPolygons2D (-1 if no polygon-on-surface).
+  int Polygon2DRepIdx = -1;
+
   //! Polygon-on-triangulation entries for this face context.
   struct PolyOnTriEntry
   {
@@ -262,9 +327,13 @@ struct CoEdgeEntity : public BaseEntity
   };
   NCollection_Vector<PolyOnTriEntry> PolygonsOnTri;
 
+  //! Representation indices into Storage::myPolygonsOnTri.
+  NCollection_Vector<int> PolygonOnTriRepIdxs;
+
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
     BRepGraphInc_InitVec(PolygonsOnTri, theAlloc, 2);
+    BRepGraphInc_InitVec(PolygonOnTriRepIdxs, theAlloc, 2);
   }
 };
 
@@ -286,6 +355,19 @@ struct FaceEntity : public BaseEntity
   occ::handle<Geom_Surface> Surface;
   NCollection_Vector<occ::handle<Poly_Triangulation>> Triangulations;
   int    ActiveTriangulationIndex = -1;
+
+  //! Representation indices into Storage rep vectors.
+  int SurfaceRepIdx = -1;                       //!< Index into mySurfaces
+  NCollection_Vector<int> TriangulationRepIdxs;  //!< Indices into myTriangulations
+
+  //! Convenience: active triangulation rep index, or -1.
+  int ActiveTriangulationRepIdx() const
+  {
+    if (ActiveTriangulationIndex >= 0
+        && ActiveTriangulationIndex < TriangulationRepIdxs.Length())
+      return TriangulationRepIdxs.Value(ActiveTriangulationIndex);
+    return -1;
+  }
   double Tolerance = 0.0;
   bool   NaturalRestriction = false;
 
@@ -305,9 +387,10 @@ struct FaceEntity : public BaseEntity
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
-    BRepGraphInc_InitVec(Triangulations, theAlloc, 2);  // typically 1
-    BRepGraphInc_InitVec(WireRefs, theAlloc, 2);        // typically 1-2 (outer + holes)
-    BRepGraphInc_InitVec(VertexRefs, theAlloc, 2);      // typically 0
+    BRepGraphInc_InitVec(Triangulations, theAlloc, 2);        // typically 1
+    BRepGraphInc_InitVec(TriangulationRepIdxs, theAlloc, 2);  // typically 1
+    BRepGraphInc_InitVec(WireRefs, theAlloc, 2);              // typically 1-2 (outer + holes)
+    BRepGraphInc_InitVec(VertexRefs, theAlloc, 2);            // typically 0
   }
 
   //! Return index of the outer wire, or -1 if none.

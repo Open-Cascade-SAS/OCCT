@@ -160,6 +160,50 @@ public:
   //! Total number of nodes in the graph (all topology + assembly kinds).
   Standard_EXPORT size_t NbNodes() const;
 
+  // -- Representation count accessors --
+
+  //! Number of surface representations.
+  Standard_EXPORT int NbSurfaces() const;
+
+  //! Number of 3D curve representations.
+  Standard_EXPORT int NbCurves3D() const;
+
+  //! Number of 2D curve (PCurve) representations.
+  Standard_EXPORT int NbCurves2D() const;
+
+  //! Number of triangulation representations.
+  Standard_EXPORT int NbTriangulations() const;
+
+  //! Number of 3D polygon representations.
+  Standard_EXPORT int NbPolygons3D() const;
+
+  //! Access surface representation by index.
+  Standard_EXPORT const BRepGraphInc::SurfaceRep& SurfaceRep(int theIdx) const;
+
+  //! Access 3D curve representation by index.
+  Standard_EXPORT const BRepGraphInc::Curve3DRep& Curve3DRep(int theIdx) const;
+
+  //! Access 2D curve representation by index.
+  Standard_EXPORT const BRepGraphInc::Curve2DRep& Curve2DRep(int theIdx) const;
+
+  //! Access triangulation representation by index.
+  Standard_EXPORT const BRepGraphInc::TriangulationRep& TriangulationRep(int theIdx) const;
+
+  //! Access 3D polygon representation by index.
+  Standard_EXPORT const BRepGraphInc::Polygon3DRep& Polygon3DRep(int theIdx) const;
+
+  //! Number of 2D polygon representations.
+  Standard_EXPORT int NbPolygons2D() const;
+
+  //! Number of polygon-on-triangulation representations.
+  Standard_EXPORT int NbPolygonsOnTri() const;
+
+  //! Access 2D polygon representation by index.
+  Standard_EXPORT const BRepGraphInc::Polygon2DRep& Polygon2DRep(int theIdx) const;
+
+  //! Access polygon-on-triangulation representation by index.
+  Standard_EXPORT const BRepGraphInc::PolygonOnTriRep& PolygonOnTriRep(int theIdx) const;
+
   // -- Geometry query methods --
 
   //! Find the PCurveEntry for an edge on a given face, or nullptr if none exists.

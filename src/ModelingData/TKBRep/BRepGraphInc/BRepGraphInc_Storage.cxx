@@ -17,7 +17,14 @@
 
 BRepGraphInc_Storage::BRepGraphInc_Storage(
   const occ::handle<NCollection_BaseAllocator>& theAlloc)
-  : myVertices(256, theAlloc),
+  : mySurfaces(256, theAlloc),
+    myCurves3D(256, theAlloc),
+    myCurves2D(256, theAlloc),
+    myTriangulationsRep(256, theAlloc),
+    myPolygons3D(256, theAlloc),
+    myPolygons2D(256, theAlloc),
+    myPolygonsOnTri(256, theAlloc),
+    myVertices(256, theAlloc),
     myEdges(256, theAlloc),
     myCoEdges(256, theAlloc),
     myWires(256, theAlloc),
@@ -113,6 +120,13 @@ void BRepGraphInc_Storage::ResetAllUIDs()
 
 void BRepGraphInc_Storage::Clear()
 {
+  mySurfaces.Clear();
+  myCurves3D.Clear();
+  myCurves2D.Clear();
+  myTriangulationsRep.Clear();
+  myPolygons3D.Clear();
+  myPolygons2D.Clear();
+  myPolygonsOnTri.Clear();
   myVertices.Clear();
   myEdges.Clear();
   myCoEdges.Clear();
@@ -128,6 +142,13 @@ void BRepGraphInc_Storage::Clear()
   myTShapeToNodeId.Clear();
   myOriginalShapes.Clear();
   ResetAllUIDs();
+  myNbActiveSurfaces       = 0;
+  myNbActiveCurves3D       = 0;
+  myNbActiveCurves2D       = 0;
+  myNbActiveTriangulations = 0;
+  myNbActivePolygons3D     = 0;
+  myNbActivePolygons2D     = 0;
+  myNbActivePolygonsOnTri  = 0;
   myNbActiveVertices    = 0;
   myNbActiveEdges       = 0;
   myNbActiveCoEdges     = 0;

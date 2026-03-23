@@ -378,6 +378,104 @@ size_t BRepGraph::DefsView::NbNodes() const
 
 //=================================================================================================
 
+int BRepGraph::DefsView::NbSurfaces() const
+{
+  return myGraph->myData->myIncStorage.NbSurfaces();
+}
+
+//=================================================================================================
+
+int BRepGraph::DefsView::NbCurves3D() const
+{
+  return myGraph->myData->myIncStorage.NbCurves3D();
+}
+
+//=================================================================================================
+
+int BRepGraph::DefsView::NbCurves2D() const
+{
+  return myGraph->myData->myIncStorage.NbCurves2D();
+}
+
+//=================================================================================================
+
+int BRepGraph::DefsView::NbTriangulations() const
+{
+  return myGraph->myData->myIncStorage.NbTriangulations();
+}
+
+//=================================================================================================
+
+int BRepGraph::DefsView::NbPolygons3D() const
+{
+  return myGraph->myData->myIncStorage.NbPolygons3D();
+}
+
+//=================================================================================================
+
+const BRepGraphInc::SurfaceRep& BRepGraph::DefsView::SurfaceRep(int theIdx) const
+{
+  return myGraph->myData->myIncStorage.SurfaceRep(theIdx);
+}
+
+//=================================================================================================
+
+const BRepGraphInc::Curve3DRep& BRepGraph::DefsView::Curve3DRep(int theIdx) const
+{
+  return myGraph->myData->myIncStorage.Curve3DRep(theIdx);
+}
+
+//=================================================================================================
+
+const BRepGraphInc::Curve2DRep& BRepGraph::DefsView::Curve2DRep(int theIdx) const
+{
+  return myGraph->myData->myIncStorage.Curve2DRep(theIdx);
+}
+
+//=================================================================================================
+
+const BRepGraphInc::TriangulationRep& BRepGraph::DefsView::TriangulationRep(int theIdx) const
+{
+  return myGraph->myData->myIncStorage.TriangulationRep(theIdx);
+}
+
+//=================================================================================================
+
+const BRepGraphInc::Polygon3DRep& BRepGraph::DefsView::Polygon3DRep(int theIdx) const
+{
+  return myGraph->myData->myIncStorage.Polygon3DRep(theIdx);
+}
+
+//=================================================================================================
+
+int BRepGraph::DefsView::NbPolygons2D() const
+{
+  return myGraph->myData->myIncStorage.NbPolygons2D();
+}
+
+//=================================================================================================
+
+int BRepGraph::DefsView::NbPolygonsOnTri() const
+{
+  return myGraph->myData->myIncStorage.NbPolygonsOnTri();
+}
+
+//=================================================================================================
+
+const BRepGraphInc::Polygon2DRep& BRepGraph::DefsView::Polygon2DRep(int theIdx) const
+{
+  return myGraph->myData->myIncStorage.Polygon2DRep(theIdx);
+}
+
+//=================================================================================================
+
+const BRepGraphInc::PolygonOnTriRep& BRepGraph::DefsView::PolygonOnTriRep(int theIdx) const
+{
+  return myGraph->myData->myIncStorage.PolygonOnTriRep(theIdx);
+}
+
+//=================================================================================================
+
 const BRepGraph_TopoNode::EdgeDef::PCurveEntry* BRepGraph::DefsView::FindPCurve(
   BRepGraph_NodeId theEdgeDef,
   BRepGraph_NodeId theFaceDef) const

@@ -17,6 +17,7 @@
 #include <BRepGraph_Analyze.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_PCurveContext.hxx>
+#include <BRepGraph_RepId.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepGraph_SpatialView.hxx>
@@ -720,4 +721,177 @@ TEST(BRepGraphGeometry, Cylinder_SeamEdge_FindPCurve_Context_DistinguishesOrient
     }
   }
   GTEST_SKIP() << "No seam edge found; test inconclusive";
+}
+
+// ============================================================
+// Representation entity layer tests
+// ============================================================
+
+TEST(BRepGraphRepresentations, Box_RepCounts_MatchTopology)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  EXPECT_GT(aGraph.Defs().NbSurfaces(), 0);
+  EXPECT_GT(aGraph.Defs().NbCurves3D(), 0);
+  EXPECT_GT(aGraph.Defs().NbCurves2D(), 0);
+
+  // Every face has a valid SurfaceRepIdx with matching Surface handle.
+  for (int i = 0; i < aGraph.Defs().NbFaces(); ++i)
+  {
+    const auto& aFace = aGraph.Defs().Face(i);
+    EXPECT_GE(aFace.SurfaceRepIdx, 0) << "Face " << i << " has no SurfaceRepIdx";
+    const auto& aSurfRep = aGraph.Defs().SurfaceRep(aFace.SurfaceRepIdx);
+    EXPECT_FALSE(aSurfRep.Surface.IsNull());
+    EXPECT_EQ(aSurfRep.Surface.get(), aFace.Surface.get());
+  }
+
+  // Every non-degenerate edge has a valid Curve3DRepIdx.
+  for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
+  {
+    const auto& anEdge = aGraph.Defs().Edge(i);
+    if (!anEdge.IsDegenerate && !anEdge.Curve3d.IsNull())
+    {
+      EXPECT_GE(anEdge.Curve3DRepIdx, 0) << "Edge " << i << " has no Curve3DRepIdx";
+      const auto& aCurveRep = aGraph.Defs().Curve3DRep(anEdge.Curve3DRepIdx);
+      EXPECT_EQ(aCurveRep.Curve.get(), anEdge.Curve3d.get());
+    }
+  }
+
+  // Every coedge with a PCurve has a valid Curve2DRepIdx.
+  for (int i = 0; i < aGraph.Defs().NbCoEdges(); ++i)
+  {
+    const auto& aCoEdge = aGraph.Defs().CoEdge(i);
+    if (!aCoEdge.Curve2d.IsNull())
+    {
+      EXPECT_GE(aCoEdge.Curve2DRepIdx, 0) << "CoEdge " << i << " has no Curve2DRepIdx";
+      const auto& aCurve2DRep = aGraph.Defs().Curve2DRep(aCoEdge.Curve2DRepIdx);
+      EXPECT_EQ(aCurve2DRep.Curve.get(), aCoEdge.Curve2d.get());
+    }
+  }
+}
+
+TEST(BRepGraphRepresentations, Sphere_SurfaceDedup_SharedHandle)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeSphere(15.0).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  // All faces of a sphere share the same TShape -> same entity -> same SurfaceRepIdx.
+  if (aGraph.Defs().NbFaces() > 1)
+  {
+    const int aFirstRepIdx = aGraph.Defs().Face(0).SurfaceRepIdx;
+    for (int i = 1; i < aGraph.Defs().NbFaces(); ++i)
+    {
+      EXPECT_EQ(aGraph.Defs().Face(i).SurfaceRepIdx, aFirstRepIdx)
+        << "Faces sharing same surface should share SurfaceRepIdx";
+    }
+  }
+}
+
+TEST(BRepGraphRepresentations, Cylinder_TriangulationReps_Populated)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeCylinder(5.0, 10.0).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  for (int i = 0; i < aGraph.Defs().NbFaces(); ++i)
+  {
+    const auto& aFace = aGraph.Defs().Face(i);
+    if (!aFace.Triangulations.IsEmpty())
+    {
+      EXPECT_EQ(aFace.TriangulationRepIdxs.Length(), aFace.Triangulations.Length())
+        << "TriangulationRepIdxs count should match Triangulations count for face " << i;
+      for (int j = 0; j < aFace.TriangulationRepIdxs.Length(); ++j)
+      {
+        const int aRepIdx = aFace.TriangulationRepIdxs.Value(j);
+        EXPECT_GE(aRepIdx, 0);
+        const auto& aTriRep = aGraph.Defs().TriangulationRep(aRepIdx);
+        EXPECT_EQ(aTriRep.Triangulation.get(), aFace.Triangulations.Value(j).get());
+      }
+    }
+  }
+}
+
+TEST(BRepGraphRepresentations, RepId_FactoryMethods)
+{
+  const auto aSurfId = BRepGraph_RepId::Surface(42);
+  EXPECT_EQ(aSurfId.Kind, BRepGraph_RepId::RepKind::Surface);
+  EXPECT_EQ(aSurfId.Index, 42);
+  EXPECT_TRUE(aSurfId.IsValid());
+
+  const auto aCurve3DId = BRepGraph_RepId::Curve3D(7);
+  EXPECT_EQ(aCurve3DId.Kind, BRepGraph_RepId::RepKind::Curve3D);
+  EXPECT_EQ(aCurve3DId.Index, 7);
+
+  const auto aDefaultId = BRepGraph_RepId();
+  EXPECT_FALSE(aDefaultId.IsValid());
+
+  EXPECT_EQ(aSurfId, BRepGraph_RepId::Surface(42));
+  EXPECT_NE(aSurfId, aCurve3DId);
+}
+
+TEST(BRepGraphRepresentations, Compound_TwoBoxes_SurfaceDedup)
+{
+  TopoDS_Shape aBox1 = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
+  TopoDS_Shape aBox2 = BRepPrimAPI_MakeBox(20.0, 20.0, 20.0).Shape();
+
+  BRep_Builder aBuilder;
+  TopoDS_Compound aCompound;
+  aBuilder.MakeCompound(aCompound);
+  aBuilder.Add(aCompound, aBox1);
+  aBuilder.Add(aCompound, aBox2);
+
+  BRepGraph aGraph;
+  aGraph.Build(aCompound);
+  ASSERT_TRUE(aGraph.IsDone());
+
+  EXPECT_EQ(aGraph.Defs().NbFaces(), 12);
+  EXPECT_GT(aGraph.Defs().NbSurfaces(), 0);
+  EXPECT_LE(aGraph.Defs().NbSurfaces(), 12);
+
+  for (int i = 0; i < aGraph.Defs().NbFaces(); ++i)
+  {
+    EXPECT_GE(aGraph.Defs().Face(i).SurfaceRepIdx, 0);
+  }
+  for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
+  {
+    const auto& anEdge = aGraph.Defs().Edge(i);
+    if (!anEdge.IsDegenerate && !anEdge.Curve3d.IsNull())
+    {
+      EXPECT_GE(anEdge.Curve3DRepIdx, 0);
+    }
+  }
+}
+
+TEST(BRepGraphRepresentations, Box_Polygon2DRep_MatchesInline)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  // Every coedge with a PolygonOnSurf has a matching Polygon2DRepIdx.
+  for (int i = 0; i < aGraph.Defs().NbCoEdges(); ++i)
+  {
+    const auto& aCoEdge = aGraph.Defs().CoEdge(i);
+    if (!aCoEdge.PolygonOnSurf.IsNull())
+    {
+      EXPECT_GE(aCoEdge.Polygon2DRepIdx, 0) << "CoEdge " << i << " has PolygonOnSurf but no rep";
+      const auto& aRep = aGraph.Defs().Polygon2DRep(aCoEdge.Polygon2DRepIdx);
+      EXPECT_EQ(aRep.Polygon.get(), aCoEdge.PolygonOnSurf.get());
+    }
+    // PolygonOnTriRepIdxs count must match PolygonsOnTri count.
+    EXPECT_EQ(aCoEdge.PolygonOnTriRepIdxs.Length(), aCoEdge.PolygonsOnTri.Length())
+      << "CoEdge " << i << " PolygonOnTriRepIdxs/PolygonsOnTri length mismatch";
+    for (int j = 0; j < aCoEdge.PolygonOnTriRepIdxs.Length(); ++j)
+    {
+      const int aRepIdx = aCoEdge.PolygonOnTriRepIdxs.Value(j);
+      EXPECT_GE(aRepIdx, 0);
+      const auto& aRep = aGraph.Defs().PolygonOnTriRep(aRepIdx);
+      EXPECT_EQ(aRep.Polygon.get(), aCoEdge.PolygonsOnTri.Value(j).Polygon.get());
+      // TriangulationRepIdx should be valid (global index).
+      EXPECT_GE(aRep.TriangulationRepIdx, 0);
+    }
+  }
 }
