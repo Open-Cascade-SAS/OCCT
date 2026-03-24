@@ -387,8 +387,9 @@ double BRepGraph_Analyze::EdgeEndpointPairScore(const BRepGraph&       theGraph,
                                                 const BRepGraph_NodeId theEdgeA,
                                                 const BRepGraph_NodeId theEdgeB)
 {
-  const BRepGraph_TopoNode::EdgeDef& aEdgeA = theGraph.Defs().Edge(theEdgeA.Index);
-  const BRepGraph_TopoNode::EdgeDef& aEdgeB = theGraph.Defs().Edge(theEdgeB.Index);
+  const BRepGraph::DefsView          aDefs  = theGraph.Defs();
+  const BRepGraph_TopoNode::EdgeDef& aEdgeA = aDefs.Edge(theEdgeA.Index);
+  const BRepGraph_TopoNode::EdgeDef& aEdgeB = aDefs.Edge(theEdgeB.Index);
 
   const gp_Pnt aStartA = BRepGraph_Tool::Vertex::Pnt(theGraph, aEdgeA.StartVertex);
   const gp_Pnt aEndA   = BRepGraph_Tool::Vertex::Pnt(theGraph, aEdgeA.EndVertex);
@@ -409,8 +410,9 @@ bool BRepGraph_Analyze::AreEdgesCompatibleSampled(const BRepGraph&       theGrap
                                                   const double           theMaxChordRatio,
                                                   const double           theHighConfidenceRatio)
 {
-  const BRepGraph_TopoNode::EdgeDef& aNodeA = theGraph.Defs().Edge(theEdgeA.Index);
-  const BRepGraph_TopoNode::EdgeDef& aNodeB = theGraph.Defs().Edge(theEdgeB.Index);
+  const BRepGraph::DefsView          aDefs  = theGraph.Defs();
+  const BRepGraph_TopoNode::EdgeDef& aNodeA = aDefs.Edge(theEdgeA.Index);
+  const BRepGraph_TopoNode::EdgeDef& aNodeB = aDefs.Edge(theEdgeB.Index);
 
   if (aNodeA.IsDegenerate || aNodeB.IsDegenerate)
   {
@@ -490,8 +492,9 @@ bool BRepGraph_Analyze::AreEdgesCompatibleSampled(const BRepGraph&              
                                                   const double theMaxChordRatio,
                                                   const double theHighConfidenceRatio)
 {
-  const BRepGraph_TopoNode::EdgeDef& aNodeA = theGraph.Defs().Edge(theEdgeA.Index);
-  const BRepGraph_TopoNode::EdgeDef& aNodeB = theGraph.Defs().Edge(theEdgeB.Index);
+  const BRepGraph::DefsView          aDefs  = theGraph.Defs();
+  const BRepGraph_TopoNode::EdgeDef& aNodeA = aDefs.Edge(theEdgeA.Index);
+  const BRepGraph_TopoNode::EdgeDef& aNodeB = aDefs.Edge(theEdgeB.Index);
 
   if (aNodeA.IsDegenerate || aNodeB.IsDegenerate)
   {
