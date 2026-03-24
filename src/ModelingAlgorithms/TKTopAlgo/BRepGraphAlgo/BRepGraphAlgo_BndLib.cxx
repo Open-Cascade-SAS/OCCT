@@ -15,6 +15,7 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_DefsView.hxx>
+#include <Standard_Assert.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_TopoNode.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
@@ -969,6 +970,9 @@ Bnd_Box BRepGraphAlgo_BndLib::AddCached(BRepGraph&                      theGraph
     case Precision::Optimal:
       aUsedShapeTol = true;
       AddOptimal(theGraph, theNode, aBox, theUseTriangulation, true);
+      break;
+    default:
+      Standard_ASSERT_VOID(false, "AddCached: unhandled Precision value");
       break;
   }
 

@@ -71,13 +71,13 @@ protected:
   }
 
   //! Subclass calls after successful computation to clear the dirty flag.
-  void MarkClean() { myDirty.store(false, std::memory_order_release); }
+  void MarkClean() const { myDirty.store(false, std::memory_order_release); }
 
   //! Mutex for thread-safe Get() in subclasses.
   mutable std::shared_mutex myMutex;
 
 private:
-  std::atomic<bool> myDirty;
+  mutable std::atomic<bool> myDirty;
 };
 
 #endif // _BRepGraph_UserAttribute_HeaderFile

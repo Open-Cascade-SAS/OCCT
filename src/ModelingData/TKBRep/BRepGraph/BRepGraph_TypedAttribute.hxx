@@ -49,7 +49,7 @@ public:
     if (IsDirty())
     {
       myValue = theComputer();
-      const_cast<BRepGraph_TypedAttribute*>(this)->MarkClean();
+      MarkClean();
     }
     return myValue;
   }
