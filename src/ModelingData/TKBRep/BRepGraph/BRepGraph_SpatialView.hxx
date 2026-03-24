@@ -139,6 +139,9 @@ public:
   Standard_EXPORT NCollection_Vector<OccurrenceEntry> GetPrecomputed(
     BRepGraph_NodeId theRoot) const;
 
+  //! True if precomputed locations exist and are not stale for the given root.
+  Standard_EXPORT bool HasPrecomputed(BRepGraph_NodeId theRoot) const;
+
   //! Return the user attribute key for precomputed locations.
   Standard_EXPORT static int PrecomputeCacheKey();
 
@@ -196,25 +199,33 @@ private:
   //! Resolve the child entity after a step at the given parent entity.
   BRepGraph_NodeId resolveChild(const BRepGraph_NodeId theParent, int theRefIdx) const;
 
-  //! Reverse walk to build all occurrence entries for a node.
-  NCollection_Vector<OccurrenceEntry> reverseWalk(BRepGraph_NodeId theNode) const;
+  //! Reverse walk to discover all paths to a node (no location composition).
+  NCollection_Vector<BRepGraph_TopologyPath> reverseWalkPaths(BRepGraph_NodeId theNode) const;
 
-  //! Walk upward from an edge to all roots, building paths and composing locations.
-  void reverseWalkFromEdge(int theEdgeIdx, NCollection_Vector<OccurrenceEntry>& theResult) const;
+  //! Reverse walk with location/orientation composition (for NodeLocations).
+  NCollection_Vector<OccurrenceEntry> reverseWalkEntries(BRepGraph_NodeId theNode) const;
+
+  //! Walk upward from an edge to all roots, collecting paths.
+  void reverseWalkFromEdge(int theEdgeIdx,
+                           NCollection_Vector<BRepGraph_TopologyPath>& theResult) const;
 
   //! Walk upward from a face to all roots.
-  void reverseWalkFromFace(int theFaceIdx, NCollection_Vector<OccurrenceEntry>& theResult) const;
+  void reverseWalkFromFace(int theFaceIdx,
+                           NCollection_Vector<BRepGraph_TopologyPath>& theResult) const;
 
   //! Walk upward from a shell to all roots.
-  void reverseWalkFromShell(int theShellIdx, NCollection_Vector<OccurrenceEntry>& theResult) const;
+  void reverseWalkFromShell(int theShellIdx,
+                            NCollection_Vector<BRepGraph_TopologyPath>& theResult) const;
 
   //! Walk upward from a wire to all roots via faces.
-  void reverseWalkFromWire(int theWireIdx, NCollection_Vector<OccurrenceEntry>& theResult) const;
+  void reverseWalkFromWire(int theWireIdx,
+                           NCollection_Vector<BRepGraph_TopologyPath>& theResult) const;
 
   //! Walk upward from a vertex to all roots via edges.
-  void reverseWalkFromVertex(int theVertexIdx, NCollection_Vector<OccurrenceEntry>& theResult) const;
+  void reverseWalkFromVertex(int theVertexIdx,
+                             NCollection_Vector<BRepGraph_TopologyPath>& theResult) const;
 
-  //! Build occurrence entry from a complete path.
+  //! Build occurrence entry from a complete path (compose location + orientation).
   OccurrenceEntry buildEntry(const BRepGraph_TopologyPath& thePath) const;
 
   //! Find the ref index of a child in a parent's ref vector (linear scan).

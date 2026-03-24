@@ -493,6 +493,12 @@ TEST(BRepGraphSpatialView, PrecomputeLocations_StoredOnNode)
   NCollection_Vector<BRepGraph::SpatialView::OccurrenceEntry> aCached =
     aGraph.Spatial().GetPrecomputed(BRepGraph_NodeId::Solid(0));
   EXPECT_EQ(aCached.Length(), 6); // 6 faces in a box
+
+  // HasPrecomputed should return true after precomputation.
+  EXPECT_TRUE(aGraph.Spatial().HasPrecomputed(BRepGraph_NodeId::Solid(0)));
+
+  // HasPrecomputed should return false for a node that was not precomputed.
+  EXPECT_FALSE(aGraph.Spatial().HasPrecomputed(BRepGraph_NodeId::Face(0)));
 }
 
 TEST(BRepGraphSpatialView, NodeLocations_EdgeHasTwoOccurrences)

@@ -144,8 +144,8 @@ private:
   //! Ref index at step i (0-based, 0 = first descent from root).
   int stepAt(const int theIdx) const { return mySteps.Value(theIdx); }
 
-  BRepGraph_NodeId        myRoot;  //!< Root entity
-  NCollection_Vector<int> mySteps; //!< Ref indices at each descent level
+  BRepGraph_NodeId        myRoot;     //!< Root entity
+  NCollection_Vector<int> mySteps{8}; //!< Ref indices at each descent level (block size 8)
 };
 
 //! std::hash specialization for BRepGraph_TopologyPath.
@@ -158,9 +158,9 @@ struct std::hash<BRepGraph_TopologyPath>
   size_t operator()(const BRepGraph_TopologyPath& thePath) const noexcept
   {
     const int aDepth = thePath.mySteps.Length();
-    size_t aHash = opencascade::hash(static_cast<int>(thePath.myRoot.NodeKind));
-    aHash = opencascade::hash_combine(thePath.myRoot.Index, sizeof(int), aHash);
-    aHash = opencascade::hash_combine(aDepth, sizeof(int), aHash);
+    size_t    aHash  = opencascade::hash(static_cast<int>(thePath.myRoot.NodeKind));
+    aHash            = opencascade::hash_combine(thePath.myRoot.Index, sizeof(int), aHash);
+    aHash            = opencascade::hash_combine(aDepth, sizeof(int), aHash);
     for (int i = 0; i < aDepth; ++i)
       aHash = opencascade::hash_combine(thePath.mySteps.Value(i), sizeof(int), aHash);
     return aHash;

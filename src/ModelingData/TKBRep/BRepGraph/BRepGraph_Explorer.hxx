@@ -73,10 +73,10 @@ public:
   void Next() { ++myCurrent; }
 
   //! The full path from root to current entity occurrence.
-  const BRepGraph_TopologyPath& CurrentPath() const { return myResults.Value(myCurrent); }
+  const BRepGraph_TopologyPath& CurrentPath() const { return myResults.Value(myCurrent).Path; }
 
-  //! Definition NodeId at the path leaf.
-  Standard_EXPORT BRepGraph_NodeId Current() const;
+  //! Definition NodeId at the path leaf (cached, O(1)).
+  BRepGraph_NodeId Current() const { return myResults.Value(myCurrent).Leaf; }
 
   //! Composed location from the current path (all levels).
   Standard_EXPORT TopLoc_Location Location() const;
@@ -113,9 +113,16 @@ private:
                const BRepGraph_TopologyPath& thePath,
                int                           theDepthBudget);
 
-  const BRepGraph*                         myGraph = nullptr;
-  NCollection_Vector<BRepGraph_TopologyPath> myResults;
-  int                                        myCurrent = 0;
+  //! Result entry pairing a path with its pre-resolved leaf node.
+  struct ExplorerResult
+  {
+    BRepGraph_TopologyPath Path;
+    BRepGraph_NodeId       Leaf;
+  };
+
+  const BRepGraph*                    myGraph = nullptr;
+  NCollection_Vector<ExplorerResult>  myResults;
+  int                                 myCurrent = 0;
 };
 
 #endif // _BRepGraph_Explorer_HeaderFile

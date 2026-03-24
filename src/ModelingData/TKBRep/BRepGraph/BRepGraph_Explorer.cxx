@@ -60,13 +60,6 @@ void BRepGraph_Explorer::Init(const BRepGraph&       theGraph,
 
 //=================================================================================================
 
-BRepGraph_NodeId BRepGraph_Explorer::Current() const
-{
-  return myGraph->Spatial().LeafNode(CurrentPath());
-}
-
-//=================================================================================================
-
 TopLoc_Location BRepGraph_Explorer::Location() const
 {
   return myGraph->Spatial().GlobalLocation(CurrentPath());
@@ -132,7 +125,9 @@ void BRepGraph_Explorer::explore(const BRepGraph&              theGraph,
   // Check if current node matches target.
   if (theCurrentNode.NodeKind == theTargetKind)
   {
-    myResults.Append(thePath);
+    ExplorerResult& aResult = myResults.Appended();
+    aResult.Path = thePath;
+    aResult.Leaf = theCurrentNode;
     return;
   }
 
@@ -240,7 +235,11 @@ void BRepGraph_Explorer::explore(const BRepGraph&              theGraph,
         BRepGraph_NodeId aVtx = BRepGraph_NodeId::Vertex(aFace.VertexRefs.Value(i).VertexIdx);
         // Direct face vertex is already a vertex, check target.
         if (aVtx.NodeKind == theTargetKind)
-          myResults.Append(aChild);
+        {
+          ExplorerResult& aRes = myResults.Appended();
+          aRes.Path = aChild;
+          aRes.Leaf = aVtx;
+        }
       }
       break;
     }
@@ -280,7 +279,11 @@ void BRepGraph_Explorer::explore(const BRepGraph&              theGraph,
         aChild.pushStep(0);
         BRepGraph_NodeId aVtx = BRepGraph_NodeId::Vertex(anEdge.StartVertex.VertexIdx);
         if (aVtx.NodeKind == theTargetKind)
-          myResults.Append(aChild);
+        {
+          ExplorerResult& aRes = myResults.Appended();
+          aRes.Path = aChild;
+          aRes.Leaf = aVtx;
+        }
       }
       if (anEdge.EndVertex.VertexIdx >= 0
           && anEdge.EndVertex.VertexIdx != anEdge.StartVertex.VertexIdx)
@@ -289,7 +292,11 @@ void BRepGraph_Explorer::explore(const BRepGraph&              theGraph,
         aChild.pushStep(1);
         BRepGraph_NodeId aVtx = BRepGraph_NodeId::Vertex(anEdge.EndVertex.VertexIdx);
         if (aVtx.NodeKind == theTargetKind)
-          myResults.Append(aChild);
+        {
+          ExplorerResult& aRes = myResults.Appended();
+          aRes.Path = aChild;
+          aRes.Leaf = aVtx;
+        }
       }
       for (int i = 0; i < anEdge.InternalVertices.Length(); ++i)
       {
@@ -297,7 +304,11 @@ void BRepGraph_Explorer::explore(const BRepGraph&              theGraph,
         aChild.pushStep(2 + i);
         BRepGraph_NodeId aVtx = BRepGraph_NodeId::Vertex(anEdge.InternalVertices.Value(i).VertexIdx);
         if (aVtx.NodeKind == theTargetKind)
-          myResults.Append(aChild);
+        {
+          ExplorerResult& aRes = myResults.Appended();
+          aRes.Path = aChild;
+          aRes.Leaf = aVtx;
+        }
       }
       break;
     }
