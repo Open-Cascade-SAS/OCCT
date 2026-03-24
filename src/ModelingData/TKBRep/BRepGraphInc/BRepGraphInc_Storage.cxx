@@ -16,14 +16,7 @@
 //=================================================================================================
 
 BRepGraphInc_Storage::BRepGraphInc_Storage(const occ::handle<NCollection_BaseAllocator>& theAlloc)
-    : mySurfaces(256, theAlloc),
-      myCurves3D(256, theAlloc),
-      myCurves2D(256, theAlloc),
-      myTriangulationsRep(256, theAlloc),
-      myPolygons3D(256, theAlloc),
-      myPolygons2D(256, theAlloc),
-      myPolygonsOnTri(256, theAlloc),
-      myVertices(256, theAlloc),
+    : myVertices(256, theAlloc),
       myEdges(256, theAlloc),
       myCoEdges(256, theAlloc),
       myWires(256, theAlloc),
@@ -34,19 +27,15 @@ BRepGraphInc_Storage::BRepGraphInc_Storage(const occ::handle<NCollection_BaseAll
       myCompSolids(256, theAlloc),
       myProducts(256, theAlloc),
       myOccurrences(256, theAlloc),
+      mySurfaces(256, theAlloc),
+      myCurves3D(256, theAlloc),
+      myCurves2D(256, theAlloc),
+      myTriangulationsRep(256, theAlloc),
+      myPolygons3D(256, theAlloc),
+      myPolygons2D(256, theAlloc),
+      myPolygonsOnTri(256, theAlloc),
       myTShapeToNodeId(1, theAlloc),
       myOriginalShapes(1, theAlloc),
-      myVertexUIDs(256, theAlloc),
-      myEdgeUIDs(256, theAlloc),
-      myCoEdgeUIDs(256, theAlloc),
-      myWireUIDs(256, theAlloc),
-      myFaceUIDs(256, theAlloc),
-      myShellUIDs(256, theAlloc),
-      mySolidUIDs(256, theAlloc),
-      myCompoundUIDs(256, theAlloc),
-      myCompSolidUIDs(256, theAlloc),
-      myProductUIDs(256, theAlloc),
-      myOccurrenceUIDs(256, theAlloc),
       myAllocator(theAlloc.IsNull() ? NCollection_BaseAllocator::CommonBaseAllocator() : theAlloc)
 {
 }
@@ -59,27 +48,27 @@ const NCollection_Vector<BRepGraph_UID>& BRepGraphInc_Storage::UIDs(
   switch (theKind)
   {
     case BRepGraph_NodeId::Kind::Vertex:
-      return myVertexUIDs;
+      return myVertices.UIDs;
     case BRepGraph_NodeId::Kind::Edge:
-      return myEdgeUIDs;
+      return myEdges.UIDs;
     case BRepGraph_NodeId::Kind::CoEdge:
-      return myCoEdgeUIDs;
+      return myCoEdges.UIDs;
     case BRepGraph_NodeId::Kind::Wire:
-      return myWireUIDs;
+      return myWires.UIDs;
     case BRepGraph_NodeId::Kind::Face:
-      return myFaceUIDs;
+      return myFaces.UIDs;
     case BRepGraph_NodeId::Kind::Shell:
-      return myShellUIDs;
+      return myShells.UIDs;
     case BRepGraph_NodeId::Kind::Solid:
-      return mySolidUIDs;
+      return mySolids.UIDs;
     case BRepGraph_NodeId::Kind::Compound:
-      return myCompoundUIDs;
+      return myCompounds.UIDs;
     case BRepGraph_NodeId::Kind::CompSolid:
-      return myCompSolidUIDs;
+      return myCompSolids.UIDs;
     case BRepGraph_NodeId::Kind::Product:
-      return myProductUIDs;
+      return myProducts.UIDs;
     case BRepGraph_NodeId::Kind::Occurrence:
-      return myOccurrenceUIDs;
+      return myOccurrences.UIDs;
     default:
       break;
   }
@@ -96,60 +85,53 @@ NCollection_Vector<BRepGraph_UID>& BRepGraphInc_Storage::ChangeUIDs(
   switch (theKind)
   {
     case BRepGraph_NodeId::Kind::Vertex:
-      return myVertexUIDs;
+      return myVertices.UIDs;
     case BRepGraph_NodeId::Kind::Edge:
-      return myEdgeUIDs;
+      return myEdges.UIDs;
     case BRepGraph_NodeId::Kind::CoEdge:
-      return myCoEdgeUIDs;
+      return myCoEdges.UIDs;
     case BRepGraph_NodeId::Kind::Wire:
-      return myWireUIDs;
+      return myWires.UIDs;
     case BRepGraph_NodeId::Kind::Face:
-      return myFaceUIDs;
+      return myFaces.UIDs;
     case BRepGraph_NodeId::Kind::Shell:
-      return myShellUIDs;
+      return myShells.UIDs;
     case BRepGraph_NodeId::Kind::Solid:
-      return mySolidUIDs;
+      return mySolids.UIDs;
     case BRepGraph_NodeId::Kind::Compound:
-      return myCompoundUIDs;
+      return myCompounds.UIDs;
     case BRepGraph_NodeId::Kind::CompSolid:
-      return myCompSolidUIDs;
+      return myCompSolids.UIDs;
     case BRepGraph_NodeId::Kind::Product:
-      return myProductUIDs;
+      return myProducts.UIDs;
     case BRepGraph_NodeId::Kind::Occurrence:
-      return myOccurrenceUIDs;
+      return myOccurrences.UIDs;
   }
-  Standard_ASSERT_RETURN(false, "ChangeUIDs: invalid Kind value", myVertexUIDs);
-  return myVertexUIDs;
+  Standard_ASSERT_RETURN(false, "ChangeUIDs: invalid Kind value", myVertices.UIDs);
+  return myVertices.UIDs;
 }
 
 //=================================================================================================
 
 void BRepGraphInc_Storage::ResetAllUIDs()
 {
-  myVertexUIDs.Clear();
-  myEdgeUIDs.Clear();
-  myCoEdgeUIDs.Clear();
-  myWireUIDs.Clear();
-  myFaceUIDs.Clear();
-  myShellUIDs.Clear();
-  mySolidUIDs.Clear();
-  myCompoundUIDs.Clear();
-  myCompSolidUIDs.Clear();
-  myProductUIDs.Clear();
-  myOccurrenceUIDs.Clear();
+  myVertices.UIDs.Clear();
+  myEdges.UIDs.Clear();
+  myCoEdges.UIDs.Clear();
+  myWires.UIDs.Clear();
+  myFaces.UIDs.Clear();
+  myShells.UIDs.Clear();
+  mySolids.UIDs.Clear();
+  myCompounds.UIDs.Clear();
+  myCompSolids.UIDs.Clear();
+  myProducts.UIDs.Clear();
+  myOccurrences.UIDs.Clear();
 }
 
 //=================================================================================================
 
 void BRepGraphInc_Storage::Clear()
 {
-  mySurfaces.Clear();
-  myCurves3D.Clear();
-  myCurves2D.Clear();
-  myTriangulationsRep.Clear();
-  myPolygons3D.Clear();
-  myPolygons2D.Clear();
-  myPolygonsOnTri.Clear();
   myVertices.Clear();
   myEdges.Clear();
   myCoEdges.Clear();
@@ -161,31 +143,19 @@ void BRepGraphInc_Storage::Clear()
   myCompSolids.Clear();
   myProducts.Clear();
   myOccurrences.Clear();
+  mySurfaces.Clear();
+  myCurves3D.Clear();
+  myCurves2D.Clear();
+  myTriangulationsRep.Clear();
+  myPolygons3D.Clear();
+  myPolygons2D.Clear();
+  myPolygonsOnTri.Clear();
   myReverseIdx.Clear();
   myTShapeToNodeId.Clear();
   myOriginalShapes.Clear();
-  ResetAllUIDs();
-  myNbActiveSurfaces       = 0;
-  myNbActiveCurves3D       = 0;
-  myNbActiveCurves2D       = 0;
-  myNbActiveTriangulations = 0;
-  myNbActivePolygons3D     = 0;
-  myNbActivePolygons2D     = 0;
-  myNbActivePolygonsOnTri  = 0;
-  myNbActiveVertices       = 0;
-  myNbActiveEdges          = 0;
-  myNbActiveCoEdges        = 0;
-  myNbActiveWires          = 0;
-  myNbActiveFaces          = 0;
-  myNbActiveShells         = 0;
-  myNbActiveSolids         = 0;
-  myNbActiveCompounds      = 0;
-  myNbActiveCompSolids     = 0;
-  myNbActiveProducts       = 0;
-  myNbActiveOccurrences    = 0;
-  myIsDone                 = false;
-  myHasRegularities        = false;
-  myHasVertexPointReps     = false;
+  myIsDone             = false;
+  myHasRegularities    = false;
+  myHasVertexPointReps = false;
 }
 
 //=================================================================================================
@@ -195,48 +165,37 @@ void BRepGraphInc_Storage::DecrementActiveCount(const BRepGraph_NodeId::Kind the
   switch (theKind)
   {
     case BRepGraph_NodeId::Kind::Vertex:
-      Standard_ASSERT_VOID(myNbActiveVertices > 0, "DecrementActiveCount: underflow");
-      --myNbActiveVertices;
+      myVertices.DecrementActive();
       break;
     case BRepGraph_NodeId::Kind::Edge:
-      Standard_ASSERT_VOID(myNbActiveEdges > 0, "DecrementActiveCount: underflow");
-      --myNbActiveEdges;
+      myEdges.DecrementActive();
       break;
     case BRepGraph_NodeId::Kind::CoEdge:
-      Standard_ASSERT_VOID(myNbActiveCoEdges > 0, "DecrementActiveCount: underflow");
-      --myNbActiveCoEdges;
+      myCoEdges.DecrementActive();
       break;
     case BRepGraph_NodeId::Kind::Wire:
-      Standard_ASSERT_VOID(myNbActiveWires > 0, "DecrementActiveCount: underflow");
-      --myNbActiveWires;
+      myWires.DecrementActive();
       break;
     case BRepGraph_NodeId::Kind::Face:
-      Standard_ASSERT_VOID(myNbActiveFaces > 0, "DecrementActiveCount: underflow");
-      --myNbActiveFaces;
+      myFaces.DecrementActive();
       break;
     case BRepGraph_NodeId::Kind::Shell:
-      Standard_ASSERT_VOID(myNbActiveShells > 0, "DecrementActiveCount: underflow");
-      --myNbActiveShells;
+      myShells.DecrementActive();
       break;
     case BRepGraph_NodeId::Kind::Solid:
-      Standard_ASSERT_VOID(myNbActiveSolids > 0, "DecrementActiveCount: underflow");
-      --myNbActiveSolids;
+      mySolids.DecrementActive();
       break;
     case BRepGraph_NodeId::Kind::Compound:
-      Standard_ASSERT_VOID(myNbActiveCompounds > 0, "DecrementActiveCount: underflow");
-      --myNbActiveCompounds;
+      myCompounds.DecrementActive();
       break;
     case BRepGraph_NodeId::Kind::CompSolid:
-      Standard_ASSERT_VOID(myNbActiveCompSolids > 0, "DecrementActiveCount: underflow");
-      --myNbActiveCompSolids;
+      myCompSolids.DecrementActive();
       break;
     case BRepGraph_NodeId::Kind::Product:
-      Standard_ASSERT_VOID(myNbActiveProducts > 0, "DecrementActiveCount: underflow");
-      --myNbActiveProducts;
+      myProducts.DecrementActive();
       break;
     case BRepGraph_NodeId::Kind::Occurrence:
-      Standard_ASSERT_VOID(myNbActiveOccurrences > 0, "DecrementActiveCount: underflow");
-      --myNbActiveOccurrences;
+      myOccurrences.DecrementActive();
       break;
     default:
       Standard_ASSERT_VOID(false, "DecrementActiveCount: unhandled Kind");
@@ -249,56 +208,62 @@ void BRepGraphInc_Storage::DecrementActiveCount(const BRepGraph_NodeId::Kind the
 void BRepGraphInc_Storage::BuildReverseIndex()
 {
   myReverseIdx.SetAllocator(myAllocator);
-  myReverseIdx
-    .Build(myEdges, myCoEdges, myWires, myFaces, myShells, mySolids, myCompounds, myCompSolids);
-  myReverseIdx.BuildProductOccurrences(myOccurrences, myProducts.Length());
+  myReverseIdx.Build(myEdges.Entities,
+                     myCoEdges.Entities,
+                     myWires.Entities,
+                     myFaces.Entities,
+                     myShells.Entities,
+                     mySolids.Entities,
+                     myCompounds.Entities,
+                     myCompSolids.Entities);
+  myReverseIdx.BuildProductOccurrences(myOccurrences.Entities, myProducts.Nb());
 
   // Recount active entities to sync counters after Build.
   // Populate may have set IsRemoved on some entities without going through RemoveNode.
-  myNbActiveVertices    = 0;
-  myNbActiveEdges       = 0;
-  myNbActiveCoEdges     = 0;
-  myNbActiveWires       = 0;
-  myNbActiveFaces       = 0;
-  myNbActiveShells      = 0;
-  myNbActiveSolids      = 0;
-  myNbActiveCompounds   = 0;
-  myNbActiveCompSolids  = 0;
-  myNbActiveProducts    = 0;
-  myNbActiveOccurrences = 0;
-  for (int i = 0; i < myVertices.Length(); ++i)
-    if (!myVertices.Value(i).IsRemoved)
-      ++myNbActiveVertices;
-  for (int i = 0; i < myEdges.Length(); ++i)
-    if (!myEdges.Value(i).IsRemoved)
-      ++myNbActiveEdges;
-  for (int i = 0; i < myCoEdges.Length(); ++i)
-    if (!myCoEdges.Value(i).IsRemoved)
-      ++myNbActiveCoEdges;
-  for (int i = 0; i < myWires.Length(); ++i)
-    if (!myWires.Value(i).IsRemoved)
-      ++myNbActiveWires;
-  for (int i = 0; i < myFaces.Length(); ++i)
-    if (!myFaces.Value(i).IsRemoved)
-      ++myNbActiveFaces;
-  for (int i = 0; i < myShells.Length(); ++i)
-    if (!myShells.Value(i).IsRemoved)
-      ++myNbActiveShells;
-  for (int i = 0; i < mySolids.Length(); ++i)
-    if (!mySolids.Value(i).IsRemoved)
-      ++myNbActiveSolids;
-  for (int i = 0; i < myCompounds.Length(); ++i)
-    if (!myCompounds.Value(i).IsRemoved)
-      ++myNbActiveCompounds;
-  for (int i = 0; i < myCompSolids.Length(); ++i)
-    if (!myCompSolids.Value(i).IsRemoved)
-      ++myNbActiveCompSolids;
-  for (int i = 0; i < myProducts.Length(); ++i)
-    if (!myProducts.Value(i).IsRemoved)
-      ++myNbActiveProducts;
-  for (int i = 0; i < myOccurrences.Length(); ++i)
-    if (!myOccurrences.Value(i).IsRemoved)
-      ++myNbActiveOccurrences;
+  myVertices.NbActive    = 0;
+  myEdges.NbActive       = 0;
+  myCoEdges.NbActive     = 0;
+  myWires.NbActive       = 0;
+  myFaces.NbActive       = 0;
+  myShells.NbActive      = 0;
+  mySolids.NbActive      = 0;
+  myCompounds.NbActive   = 0;
+  myCompSolids.NbActive  = 0;
+  myProducts.NbActive    = 0;
+  myOccurrences.NbActive = 0;
+  for (int i = 0; i < myVertices.Nb(); ++i)
+    if (!myVertices.Get(i).IsRemoved)
+      ++myVertices.NbActive;
+  for (int i = 0; i < myEdges.Nb(); ++i)
+    if (!myEdges.Get(i).IsRemoved)
+      ++myEdges.NbActive;
+  for (int i = 0; i < myCoEdges.Nb(); ++i)
+    if (!myCoEdges.Get(i).IsRemoved)
+      ++myCoEdges.NbActive;
+  for (int i = 0; i < myWires.Nb(); ++i)
+    if (!myWires.Get(i).IsRemoved)
+      ++myWires.NbActive;
+  for (int i = 0; i < myFaces.Nb(); ++i)
+    if (!myFaces.Get(i).IsRemoved)
+      ++myFaces.NbActive;
+  for (int i = 0; i < myShells.Nb(); ++i)
+    if (!myShells.Get(i).IsRemoved)
+      ++myShells.NbActive;
+  for (int i = 0; i < mySolids.Nb(); ++i)
+    if (!mySolids.Get(i).IsRemoved)
+      ++mySolids.NbActive;
+  for (int i = 0; i < myCompounds.Nb(); ++i)
+    if (!myCompounds.Get(i).IsRemoved)
+      ++myCompounds.NbActive;
+  for (int i = 0; i < myCompSolids.Nb(); ++i)
+    if (!myCompSolids.Get(i).IsRemoved)
+      ++myCompSolids.NbActive;
+  for (int i = 0; i < myProducts.Nb(); ++i)
+    if (!myProducts.Get(i).IsRemoved)
+      ++myProducts.NbActive;
+  for (int i = 0; i < myOccurrences.Nb(); ++i)
+    if (!myOccurrences.Get(i).IsRemoved)
+      ++myOccurrences.NbActive;
 }
 
 //=================================================================================================
@@ -309,12 +274,12 @@ void BRepGraphInc_Storage::BuildDeltaReverseIndex(const int theOldNbEdges,
                                                   const int theOldNbShells,
                                                   const int theOldNbSolids)
 {
-  myReverseIdx.BuildDelta(myEdges,
-                          myCoEdges,
-                          myWires,
-                          myFaces,
-                          myShells,
-                          mySolids,
+  myReverseIdx.BuildDelta(myEdges.Entities,
+                          myCoEdges.Entities,
+                          myWires.Entities,
+                          myFaces.Entities,
+                          myShells.Entities,
+                          mySolids.Entities,
                           theOldNbEdges,
                           theOldNbWires,
                           theOldNbFaces,
@@ -326,5 +291,10 @@ void BRepGraphInc_Storage::BuildDeltaReverseIndex(const int theOldNbEdges,
 
 bool BRepGraphInc_Storage::ValidateReverseIndex() const
 {
-  return myReverseIdx.Validate(myEdges, myCoEdges, myWires, myFaces, myShells, mySolids);
+  return myReverseIdx.Validate(myEdges.Entities,
+                               myCoEdges.Entities,
+                               myWires.Entities,
+                               myFaces.Entities,
+                               myShells.Entities,
+                               mySolids.Entities);
 }

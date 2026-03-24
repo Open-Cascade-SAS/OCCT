@@ -429,6 +429,10 @@ struct OccurrenceEntity : public BaseEntity
   int             ParentProductIdx    = -1; //!< Parent assembly product index
   int             ParentOccurrenceIdx = -1; //!< Parent occurrence index (-1 for top-level)
   TopLoc_Location Placement;                //!< Local placement relative to parent
+
+  //! No-op: OccurrenceEntity has no inner vectors to reinitialize.
+  //! Present for uniform EntityStore<T>::Append() logic.
+  void InitVectors(const occ::handle<NCollection_BaseAllocator>&) {}
 };
 
 } // namespace BRepGraphInc

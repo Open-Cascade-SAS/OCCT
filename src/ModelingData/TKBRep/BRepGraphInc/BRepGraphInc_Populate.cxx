@@ -1574,9 +1574,9 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&                       
   // Phase 3a: Fix compound Face ChildRefs (face indices were unknown during Phase 1,
   // resolved now after registerFaceData). All other child types were resolved
   // immediately in traverseShape via FindNodeByTShape.
-  for (int aCompIdx = 0; aCompIdx < theStorage.myCompounds.Length(); ++aCompIdx)
+  for (int aCompIdx = 0; aCompIdx < theStorage.myCompounds.Nb(); ++aCompIdx)
   {
-    BRepGraphInc::CompoundEntity& aComp     = theStorage.myCompounds.ChangeValue(aCompIdx);
+    BRepGraphInc::CompoundEntity& aComp     = theStorage.myCompounds.Change(aCompIdx);
     const TopoDS_Shape*           aCompOrig = theStorage.myOriginalShapes.Seek(aComp.Id);
     if (aCompOrig == nullptr)
       continue;
@@ -1605,9 +1605,9 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&                       
     // BRep_CurveOn2Surfaces stores original raw surface pointers, so the lookup
     // must use the same pointers (not the transformed ones in the entity).
     NCollection_DataMap<const Geom_Surface*, int> aSurfToFaceIdx(1, aTmpAlloc);
-    for (int i = 0; i < theStorage.myFaces.Length(); ++i)
+    for (int i = 0; i < theStorage.myFaces.Nb(); ++i)
     {
-      const BRepGraphInc::FaceEntity& aFace      = theStorage.myFaces.Value(i);
+      const BRepGraphInc::FaceEntity& aFace      = theStorage.myFaces.Get(i);
       const TopoDS_Shape*             anOrigFace = theStorage.myOriginalShapes.Seek(aFace.Id);
       if (anOrigFace != nullptr && !anOrigFace->IsNull())
       {
@@ -1620,9 +1620,9 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&                       
 
     OSD_Parallel::For(
       0,
-      theStorage.myEdges.Length(),
+      theStorage.myEdges.Nb(),
       [&theStorage, &aSurfToFaceIdx](int anEdgeIdx) {
-        BRepGraphInc::EdgeEntity& anEdgeEnt = theStorage.myEdges.ChangeValue(anEdgeIdx);
+        BRepGraphInc::EdgeEntity& anEdgeEnt = theStorage.myEdges.Change(anEdgeIdx);
 
         const TopoDS_Shape* anOrigShape = theStorage.myOriginalShapes.Seek(anEdgeEnt.Id);
         if (anOrigShape == nullptr || anOrigShape->IsNull())
@@ -1670,9 +1670,9 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&                       
     // BRep_PointRepresentation stores original raw pointers, so the lookup
     // must use the same pointers (not the transformed ones in the entity).
     NCollection_DataMap<const Geom_Curve*, BRepGraph_NodeId> aCurveToEdgeDef(1, aTmpAlloc);
-    for (int i = 0; i < theStorage.myEdges.Length(); ++i)
+    for (int i = 0; i < theStorage.myEdges.Nb(); ++i)
     {
-      const BRepGraphInc::EdgeEntity& anEdgeEnt  = theStorage.myEdges.Value(i);
+      const BRepGraphInc::EdgeEntity& anEdgeEnt  = theStorage.myEdges.Get(i);
       const TopoDS_Shape*             anOrigEdge = theStorage.myOriginalShapes.Seek(anEdgeEnt.Id);
       if (anOrigEdge != nullptr && !anOrigEdge->IsNull())
       {
@@ -1686,9 +1686,9 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&                       
     }
 
     NCollection_DataMap<const Geom_Surface*, BRepGraph_NodeId> aSurfToFaceDefVtx(1, aTmpAlloc);
-    for (int i = 0; i < theStorage.myFaces.Length(); ++i)
+    for (int i = 0; i < theStorage.myFaces.Nb(); ++i)
     {
-      const BRepGraphInc::FaceEntity& aFaceEnt   = theStorage.myFaces.Value(i);
+      const BRepGraphInc::FaceEntity& aFaceEnt   = theStorage.myFaces.Get(i);
       const TopoDS_Shape*             anOrigFace = theStorage.myOriginalShapes.Seek(aFaceEnt.Id);
       if (anOrigFace != nullptr && !anOrigFace->IsNull())
       {
@@ -1701,9 +1701,9 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&                       
 
     OSD_Parallel::For(
       0,
-      theStorage.myVertices.Length(),
+      theStorage.myVertices.Nb(),
       [&theStorage, &aCurveToEdgeDef, &aSurfToFaceDefVtx](int aVtxIdx) {
-        BRepGraphInc::VertexEntity& aVtxDef   = theStorage.myVertices.ChangeValue(aVtxIdx);
+        BRepGraphInc::VertexEntity& aVtxDef   = theStorage.myVertices.Change(aVtxIdx);
         const TopoDS_Shape*         aVtxShape = theStorage.myOriginalShapes.Seek(aVtxDef.Id);
         if (aVtxShape == nullptr || aVtxShape->IsNull())
           return;
