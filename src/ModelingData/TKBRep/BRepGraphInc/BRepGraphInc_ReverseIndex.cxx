@@ -43,14 +43,14 @@ void BRepGraphInc_ReverseIndex::Clear()
 //=================================================================================================
 
 void BRepGraphInc_ReverseIndex::Build(
-  const NCollection_Vector<BRepGraphInc::EdgeEntity>&       theEdges,
-  const NCollection_Vector<BRepGraphInc::CoEdgeEntity>&     theCoEdges,
-  const NCollection_Vector<BRepGraphInc::WireEntity>&       theWires,
-  const NCollection_Vector<BRepGraphInc::FaceEntity>&       theFaces,
-  const NCollection_Vector<BRepGraphInc::ShellEntity>&      theShells,
-  const NCollection_Vector<BRepGraphInc::SolidEntity>&      theSolids,
-  const NCollection_Vector<BRepGraphInc::CompoundEntity>&   theCompounds,
-  const NCollection_Vector<BRepGraphInc::CompSolidEntity>&  theCompSolids)
+  const NCollection_Vector<BRepGraphInc::EdgeEntity>&      theEdges,
+  const NCollection_Vector<BRepGraphInc::CoEdgeEntity>&    theCoEdges,
+  const NCollection_Vector<BRepGraphInc::WireEntity>&      theWires,
+  const NCollection_Vector<BRepGraphInc::FaceEntity>&      theFaces,
+  const NCollection_Vector<BRepGraphInc::ShellEntity>&     theShells,
+  const NCollection_Vector<BRepGraphInc::SolidEntity>&     theSolids,
+  const NCollection_Vector<BRepGraphInc::CompoundEntity>&  theCompounds,
+  const NCollection_Vector<BRepGraphInc::CompSolidEntity>& theCompSolids)
 {
   // Reconstruct outer index tables with allocator if set.
   if (!myAllocator.IsNull())

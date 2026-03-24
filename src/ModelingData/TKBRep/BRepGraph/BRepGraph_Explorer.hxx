@@ -120,9 +120,9 @@ private:
     BRepGraph_NodeId       Leaf;
   };
 
-  const BRepGraph*                    myGraph = nullptr;
-  NCollection_Vector<ExplorerResult>  myResults;
-  int                                 myCurrent = 0;
+  const BRepGraph*                   myGraph = nullptr;
+  NCollection_Vector<ExplorerResult> myResults;
+  int                                myCurrent = 0;
 };
 
 #endif // _BRepGraph_Explorer_HeaderFile

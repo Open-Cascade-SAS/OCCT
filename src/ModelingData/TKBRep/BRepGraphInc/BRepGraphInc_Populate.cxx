@@ -1219,7 +1219,7 @@ void traverseHierarchy(BRepGraphInc_Storage&              theStorage,
 
       for (TopoDS_Iterator aChildIt(aCompound, false, false); aChildIt.More(); aChildIt.Next())
       {
-        const TopoDS_Shape& aChild     = aChildIt.Value();
+        const TopoDS_Shape&    aChild     = aChildIt.Value();
         BRepGraph_NodeId::Kind aChildKind = shapeTypeToNodeKind(aChild.ShapeType());
 
         traverseHierarchy(theStorage, theFaceData, theRepDedup, aChild, aGlobalLoc);

@@ -86,8 +86,8 @@ struct SolidRef
 //! Reference from a compound to a child of any kind.
 struct ChildRef
 {
-  BRepGraph_NodeId::Kind Kind     = BRepGraph_NodeId::Kind::Solid; //!< Child entity kind.
-  int                    ChildIdx = -1;                            //!< -1 = invalid.
+  BRepGraph_NodeId::Kind Kind        = BRepGraph_NodeId::Kind::Solid; //!< Child entity kind.
+  int                    ChildIdx    = -1;                            //!< -1 = invalid.
   TopAbs_Orientation     Orientation = TopAbs_FORWARD;
   TopLoc_Location        LocalLocation;
 };

@@ -203,8 +203,8 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
                        + aStorage.NbCompounds() + aStorage.NbCompSolids() + aStorage.NbProducts()
                        + aStorage.NbOccurrences();
   occ::handle<NCollection_IncAllocator> anAlloc = new NCollection_IncAllocator();
-  NCollection_Vector<BRepGraph_NodeId> aStack(64, anAlloc);
-  NCollection_Map<BRepGraph_NodeId>    aVisited(aNbNodes, anAlloc);
+  NCollection_Vector<BRepGraph_NodeId>  aStack(64, anAlloc);
+  NCollection_Map<BRepGraph_NodeId>     aVisited(aNbNodes, anAlloc);
   aStack.Append(theNode);
 
   while (!aStack.IsEmpty())

@@ -24,13 +24,12 @@
 #include <TopLoc_Location.hxx>
 
 //! GUID for precomputed locations cache attribute.
-static const Standard_GUID THE_PRECOMPUTED_LOCATIONS_GUID(
-  "b7e3a1f2-9c04-4d6b-8a5e-2f1d3c4b5a60");
+static const Standard_GUID THE_PRECOMPUTED_LOCATIONS_GUID("b7e3a1f2-9c04-4d6b-8a5e-2f1d3c4b5a60");
 
 //! Data stored in the precomputed locations attribute.
 struct PrecomputedLocationsData
 {
-  BRepGraph_NodeId::Kind                                         TargetKind;
+  BRepGraph_NodeId::Kind                                      TargetKind;
   NCollection_Vector<BRepGraph::SpatialView::OccurrenceEntry> Entries;
 };
 
@@ -38,8 +37,7 @@ struct PrecomputedLocationsData
 
 bool BRepGraph::SpatialView::is1to1(const BRepGraph_NodeId::Kind theKind)
 {
-  return theKind == BRepGraph_NodeId::Kind::Occurrence
-      || theKind == BRepGraph_NodeId::Kind::CoEdge;
+  return theKind == BRepGraph_NodeId::Kind::Occurrence || theKind == BRepGraph_NodeId::Kind::CoEdge;
   // Product(part) is also 1:1 but requires runtime check (ShapeRootId.IsValid()).
 }
 
@@ -47,11 +45,11 @@ bool BRepGraph::SpatialView::is1to1(const BRepGraph_NodeId::Kind theKind)
 
 TopLoc_Location BRepGraph::SpatialView::transitLocation(const BRepGraph_NodeId theNode) const
 {
-  using Kind = BRepGraph_NodeId::Kind;
+  using Kind                           = BRepGraph_NodeId::Kind;
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
 
-  if (theNode.NodeKind == Kind::Occurrence
-      && theNode.Index >= 0 && theNode.Index < aStorage.NbOccurrences())
+  if (theNode.NodeKind == Kind::Occurrence && theNode.Index >= 0
+      && theNode.Index < aStorage.NbOccurrences())
   {
     return aStorage.Occurrence(theNode.Index).Placement;
   }
@@ -63,11 +61,11 @@ TopLoc_Location BRepGraph::SpatialView::transitLocation(const BRepGraph_NodeId t
 
 TopAbs_Orientation BRepGraph::SpatialView::transitOrientation(const BRepGraph_NodeId theNode) const
 {
-  using Kind = BRepGraph_NodeId::Kind;
+  using Kind                           = BRepGraph_NodeId::Kind;
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
 
-  if (theNode.NodeKind == Kind::CoEdge
-      && theNode.Index >= 0 && theNode.Index < aStorage.NbCoEdges())
+  if (theNode.NodeKind == Kind::CoEdge && theNode.Index >= 0
+      && theNode.Index < aStorage.NbCoEdges())
   {
     return aStorage.CoEdge(theNode.Index).Sense;
   }
@@ -78,16 +76,16 @@ TopAbs_Orientation BRepGraph::SpatialView::transitOrientation(const BRepGraph_No
 
 BRepGraph_NodeId BRepGraph::SpatialView::transitChild(const BRepGraph_NodeId theNode) const
 {
-  using Kind = BRepGraph_NodeId::Kind;
+  using Kind                           = BRepGraph_NodeId::Kind;
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
 
-  if (theNode.NodeKind == Kind::Occurrence
-      && theNode.Index >= 0 && theNode.Index < aStorage.NbOccurrences())
+  if (theNode.NodeKind == Kind::Occurrence && theNode.Index >= 0
+      && theNode.Index < aStorage.NbOccurrences())
   {
     return BRepGraph_NodeId::Product(aStorage.Occurrence(theNode.Index).ProductIdx);
   }
-  if (theNode.NodeKind == Kind::CoEdge
-      && theNode.Index >= 0 && theNode.Index < aStorage.NbCoEdges())
+  if (theNode.NodeKind == Kind::CoEdge && theNode.Index >= 0
+      && theNode.Index < aStorage.NbCoEdges())
   {
     return BRepGraph_NodeId::Edge(aStorage.CoEdge(theNode.Index).EdgeIdx);
   }
@@ -97,9 +95,9 @@ BRepGraph_NodeId BRepGraph::SpatialView::transitChild(const BRepGraph_NodeId the
 //=================================================================================================
 
 TopLoc_Location BRepGraph::SpatialView::stepLocation(const BRepGraph_NodeId theParent,
-                                                     int theRefIdx) const
+                                                     int                    theRefIdx) const
 {
-  using Kind = BRepGraph_NodeId::Kind;
+  using Kind                           = BRepGraph_NodeId::Kind;
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
 
   switch (theParent.NodeKind)
@@ -196,9 +194,9 @@ TopLoc_Location BRepGraph::SpatialView::stepLocation(const BRepGraph_NodeId theP
 //=================================================================================================
 
 TopAbs_Orientation BRepGraph::SpatialView::stepOrientation(const BRepGraph_NodeId theParent,
-                                                           int theRefIdx) const
+                                                           int                    theRefIdx) const
 {
-  using Kind = BRepGraph_NodeId::Kind;
+  using Kind                           = BRepGraph_NodeId::Kind;
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
 
   switch (theParent.NodeKind)
@@ -286,9 +284,9 @@ TopAbs_Orientation BRepGraph::SpatialView::stepOrientation(const BRepGraph_NodeI
 //=================================================================================================
 
 BRepGraph_NodeId BRepGraph::SpatialView::resolveChild(const BRepGraph_NodeId theParent,
-                                                      int theRefIdx) const
+                                                      int                    theRefIdx) const
 {
-  using Kind = BRepGraph_NodeId::Kind;
+  using Kind                           = BRepGraph_NodeId::Kind;
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
 
   switch (theParent.NodeKind)
@@ -401,7 +399,8 @@ TopLoc_Location BRepGraph::SpatialView::composeToLevel(const BRepGraph_TopologyP
                                                        int theMaxSteps) const
 {
   Standard_ASSERT_VOID(thePath.IsValid(), "invalid path");
-  Standard_ASSERT_VOID(theMaxSteps >= 0 && theMaxSteps <= thePath.Depth(), "theMaxSteps out of range");
+  Standard_ASSERT_VOID(theMaxSteps >= 0 && theMaxSteps <= thePath.Depth(),
+                       "theMaxSteps out of range");
   if (!thePath.IsValid())
     return TopLoc_Location();
 
@@ -415,8 +414,8 @@ TopLoc_Location BRepGraph::SpatialView::composeToLevel(const BRepGraph_TopologyP
     if (is1to1(aCurrent.NodeKind))
     {
       BRepGraph_NodeId aPrev = aCurrent;
-      aResult  = aResult * transitLocation(aCurrent);
-      aCurrent = transitChild(aCurrent);
+      aResult                = aResult * transitLocation(aCurrent);
+      aCurrent               = transitChild(aCurrent);
       if (aCurrent == aPrev)
         break;
       continue;
@@ -435,15 +434,16 @@ TopLoc_Location BRepGraph::SpatialView::composeToLevel(const BRepGraph_TopologyP
     }
     // Normal step: consume one RefIdx.
     const int aRefIdx = thePath.stepAt(aStepIdx);
-    aResult  = aResult * stepLocation(aCurrent, aRefIdx);
-    aCurrent = resolveChild(aCurrent, aRefIdx);
+    aResult           = aResult * stepLocation(aCurrent, aRefIdx);
+    aCurrent          = resolveChild(aCurrent, aRefIdx);
     ++aStepIdx;
   }
 
   // Handle trailing 1:1 transitions after last step.
-  while (aCurrent.IsValid() && (is1to1(aCurrent.NodeKind)
-         || (aCurrent.NodeKind == BRepGraph_NodeId::Kind::Product
-             && myGraph->myData->myIncStorage.Product(aCurrent.Index).ShapeRootId.IsValid())))
+  while (aCurrent.IsValid()
+         && (is1to1(aCurrent.NodeKind)
+             || (aCurrent.NodeKind == BRepGraph_NodeId::Kind::Product
+                 && myGraph->myData->myIncStorage.Product(aCurrent.Index).ShapeRootId.IsValid())))
   {
     BRepGraph_NodeId aPrev = aCurrent;
     if (is1to1(aCurrent.NodeKind))
@@ -481,7 +481,7 @@ TopLoc_Location BRepGraph::SpatialView::GlobalLocation(const BRepGraph_TopologyP
 //=================================================================================================
 
 TopLoc_Location BRepGraph::SpatialView::LocationAt(const BRepGraph_TopologyPath& thePath,
-                                                   int theLevel) const
+                                                   int                           theLevel) const
 {
   return composeToLevel(thePath, theLevel + 1);
 }
@@ -492,7 +492,8 @@ BRepGraph_NodeId BRepGraph::SpatialView::resolveAtLevel(const BRepGraph_Topology
                                                         int theMaxSteps) const
 {
   Standard_ASSERT_VOID(thePath.IsValid(), "invalid path");
-  Standard_ASSERT_VOID(theMaxSteps >= 0 && theMaxSteps <= thePath.Depth(), "theMaxSteps out of range");
+  Standard_ASSERT_VOID(theMaxSteps >= 0 && theMaxSteps <= thePath.Depth(),
+                       "theMaxSteps out of range");
   if (!thePath.IsValid())
     return BRepGraph_NodeId();
 
@@ -504,7 +505,7 @@ BRepGraph_NodeId BRepGraph::SpatialView::resolveAtLevel(const BRepGraph_Topology
     if (is1to1(aCurrent.NodeKind))
     {
       BRepGraph_NodeId aPrev = aCurrent;
-      aCurrent = transitChild(aCurrent);
+      aCurrent               = transitChild(aCurrent);
       if (aCurrent == aPrev)
         break;
       continue;
@@ -520,16 +521,16 @@ BRepGraph_NodeId BRepGraph::SpatialView::resolveAtLevel(const BRepGraph_Topology
       }
     }
     const int aRefIdx = thePath.stepAt(aStepIdx);
-    aCurrent = resolveChild(aCurrent, aRefIdx);
+    aCurrent          = resolveChild(aCurrent, aRefIdx);
     ++aStepIdx;
   }
 
   // Trailing 1:1 transitions.
-  while (aCurrent.IsValid() && (is1to1(aCurrent.NodeKind)
-         || (aCurrent.NodeKind == BRepGraph_NodeId::Kind::Product
-             && aCurrent.Index >= 0
-             && aCurrent.Index < myGraph->myData->myIncStorage.NbProducts()
-             && myGraph->myData->myIncStorage.Product(aCurrent.Index).ShapeRootId.IsValid())))
+  while (aCurrent.IsValid()
+         && (is1to1(aCurrent.NodeKind)
+             || (aCurrent.NodeKind == BRepGraph_NodeId::Kind::Product && aCurrent.Index >= 0
+                 && aCurrent.Index < myGraph->myData->myIncStorage.NbProducts()
+                 && myGraph->myData->myIncStorage.Product(aCurrent.Index).ShapeRootId.IsValid())))
   {
     BRepGraph_NodeId aPrev = aCurrent;
     if (is1to1(aCurrent.NodeKind))
@@ -553,7 +554,7 @@ BRepGraph_NodeId BRepGraph::SpatialView::LeafNode(const BRepGraph_TopologyPath& 
 //=================================================================================================
 
 BRepGraph_NodeId BRepGraph::SpatialView::NodeAt(const BRepGraph_TopologyPath& thePath,
-                                                int theLevel) const
+                                                int                           theLevel) const
 {
   return resolveAtLevel(thePath, theLevel + 1);
 }
@@ -562,10 +563,11 @@ BRepGraph_NodeId BRepGraph::SpatialView::NodeAt(const BRepGraph_TopologyPath& th
 
 TopAbs_Orientation BRepGraph::SpatialView::composeOrientationToLevel(
   const BRepGraph_TopologyPath& thePath,
-  int theMaxSteps) const
+  int                           theMaxSteps) const
 {
   Standard_ASSERT_VOID(thePath.IsValid(), "invalid path");
-  Standard_ASSERT_VOID(theMaxSteps >= 0 && theMaxSteps <= thePath.Depth(), "theMaxSteps out of range");
+  Standard_ASSERT_VOID(theMaxSteps >= 0 && theMaxSteps <= thePath.Depth(),
+                       "theMaxSteps out of range");
   if (!thePath.IsValid())
     return TopAbs_FORWARD;
 
@@ -578,8 +580,8 @@ TopAbs_Orientation BRepGraph::SpatialView::composeOrientationToLevel(
     if (is1to1(aCurrent.NodeKind))
     {
       BRepGraph_NodeId aPrev = aCurrent;
-      aResult  = TopAbs::Compose(aResult, transitOrientation(aCurrent));
-      aCurrent = transitChild(aCurrent);
+      aResult                = TopAbs::Compose(aResult, transitOrientation(aCurrent));
+      aCurrent               = transitChild(aCurrent);
       if (aCurrent == aPrev)
         break;
       continue;
@@ -596,16 +598,15 @@ TopAbs_Orientation BRepGraph::SpatialView::composeOrientationToLevel(
       }
     }
     const int aRefIdx = thePath.stepAt(aStepIdx);
-    aResult  = TopAbs::Compose(aResult, stepOrientation(aCurrent, aRefIdx));
-    aCurrent = resolveChild(aCurrent, aRefIdx);
+    aResult           = TopAbs::Compose(aResult, stepOrientation(aCurrent, aRefIdx));
+    aCurrent          = resolveChild(aCurrent, aRefIdx);
     ++aStepIdx;
   }
 
   // Trailing 1:1 transitions (including Product(part) -> ShapeRoot).
   while (aCurrent.IsValid()
          && (is1to1(aCurrent.NodeKind)
-             || (aCurrent.NodeKind == BRepGraph_NodeId::Kind::Product
-                 && aCurrent.Index >= 0
+             || (aCurrent.NodeKind == BRepGraph_NodeId::Kind::Product && aCurrent.Index >= 0
                  && aCurrent.Index < myGraph->myData->myIncStorage.NbProducts()
                  && myGraph->myData->myIncStorage.Product(aCurrent.Index).ShapeRootId.IsValid())))
   {
@@ -617,8 +618,9 @@ TopAbs_Orientation BRepGraph::SpatialView::composeOrientationToLevel(
     }
     else
     {
-      aResult = TopAbs::Compose(
-        aResult, myGraph->myData->myIncStorage.Product(aCurrent.Index).RootOrientation);
+      aResult =
+        TopAbs::Compose(aResult,
+                        myGraph->myData->myIncStorage.Product(aCurrent.Index).RootOrientation);
       aCurrent = myGraph->myData->myIncStorage.Product(aCurrent.Index).ShapeRootId;
     }
     if (aCurrent == aPrev)
@@ -647,7 +649,7 @@ TopAbs_Orientation BRepGraph::SpatialView::OrientationAt(const BRepGraph_Topolog
 //=================================================================================================
 
 int BRepGraph::SpatialView::FindLevel(const BRepGraph_TopologyPath& thePath,
-                                      BRepGraph_NodeId::Kind theKind) const
+                                      BRepGraph_NodeId::Kind        theKind) const
 {
   if (!thePath.IsValid())
     return -1;
@@ -660,13 +662,12 @@ int BRepGraph::SpatialView::FindLevel(const BRepGraph_TopologyPath& thePath,
     if (is1to1(aCurrent.NodeKind))
     {
       BRepGraph_NodeId aPrev = aCurrent;
-      aCurrent = transitChild(aCurrent);
+      aCurrent               = transitChild(aCurrent);
       if (aCurrent == aPrev)
         break;
       continue;
     }
-    if (aCurrent.NodeKind == BRepGraph_NodeId::Kind::Product
-        && aCurrent.Index >= 0
+    if (aCurrent.NodeKind == BRepGraph_NodeId::Kind::Product && aCurrent.Index >= 0
         && aCurrent.Index < myGraph->myData->myIncStorage.NbProducts()
         && myGraph->myData->myIncStorage.Product(aCurrent.Index).ShapeRootId.IsValid())
     {
@@ -674,7 +675,7 @@ int BRepGraph::SpatialView::FindLevel(const BRepGraph_TopologyPath& thePath,
       continue;
     }
     const int aRefIdx = thePath.stepAt(aStepIdx);
-    aCurrent = resolveChild(aCurrent, aRefIdx);
+    aCurrent          = resolveChild(aCurrent, aRefIdx);
     if (aCurrent.IsValid() && aCurrent.NodeKind == theKind)
       return aStepIdx;
     ++aStepIdx;
@@ -688,7 +689,7 @@ BRepGraph_TopologyPath BRepGraph::SpatialView::Truncated(const BRepGraph_Topolog
                                                          int theLevel) const
 {
   BRepGraph_TopologyPath aResult(thePath.Root());
-  const int aLimit = theLevel < thePath.Depth() ? theLevel : thePath.Depth();
+  const int              aLimit = theLevel < thePath.Depth() ? theLevel : thePath.Depth();
   for (int i = 0; i < aLimit; ++i)
     aResult.pushStep(thePath.stepAt(i));
   return aResult;
@@ -698,17 +699,15 @@ BRepGraph_TopologyPath BRepGraph::SpatialView::Truncated(const BRepGraph_Topolog
 
 int BRepGraph::SpatialView::PrecomputeCacheKey()
 {
-  static const int THE_KEY =
-    BRepGraph_UserAttribute::AllocateKey(THE_PRECOMPUTED_LOCATIONS_GUID);
+  static const int THE_KEY = BRepGraph_UserAttribute::AllocateKey(THE_PRECOMPUTED_LOCATIONS_GUID);
   return THE_KEY;
 }
 
 //=================================================================================================
 
-void BRepGraph::SpatialView::PrecomputeLocations(
-  BRepGraph&             theGraph,
-  BRepGraph_NodeId       theRoot,
-  BRepGraph_NodeId::Kind theTargetKind)
+void BRepGraph::SpatialView::PrecomputeLocations(BRepGraph&             theGraph,
+                                                 BRepGraph_NodeId       theRoot,
+                                                 BRepGraph_NodeId::Kind theTargetKind)
 {
   const int aKey = PrecomputeCacheKey();
 
@@ -719,10 +718,10 @@ void BRepGraph::SpatialView::PrecomputeLocations(
   for (; anExp.More(); anExp.Next())
   {
     OccurrenceEntry anEntry;
-    anEntry.Path        = anExp.CurrentPath();
-    anEntry.Location    = theGraph.Spatial().composeToLevel(anEntry.Path, anEntry.Path.Depth());
-    anEntry.Orientation = theGraph.Spatial().composeOrientationToLevel(anEntry.Path,
-                                                                       anEntry.Path.Depth());
+    anEntry.Path     = anExp.CurrentPath();
+    anEntry.Location = theGraph.Spatial().composeToLevel(anEntry.Path, anEntry.Path.Depth());
+    anEntry.Orientation =
+      theGraph.Spatial().composeOrientationToLevel(anEntry.Path, anEntry.Path.Depth());
     aData.Entries.Append(anEntry);
   }
 
@@ -751,8 +750,8 @@ void BRepGraph::SpatialView::PrecomputeLocations(
 
 //=================================================================================================
 
-NCollection_Vector<BRepGraph::SpatialView::OccurrenceEntry>
-  BRepGraph::SpatialView::GetPrecomputed(BRepGraph_NodeId theRoot) const
+NCollection_Vector<BRepGraph::SpatialView::OccurrenceEntry> BRepGraph::SpatialView::GetPrecomputed(
+  BRepGraph_NodeId theRoot) const
 {
   const int aKey = PrecomputeCacheKey();
 
@@ -776,7 +775,7 @@ NCollection_Vector<BRepGraph::SpatialView::OccurrenceEntry>
 
 bool BRepGraph::SpatialView::HasPrecomputed(BRepGraph_NodeId theRoot) const
 {
-  const int aKey = PrecomputeCacheKey();
+  const int                          aKey = PrecomputeCacheKey();
   const BRepGraph_TopoNode::BaseDef* aDef = myGraph->TopoDef(theRoot);
   if (aDef == nullptr)
     return false;
@@ -920,7 +919,7 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::AdjacentFaces(
 //=================================================================================================
 
 bool BRepGraph::SpatialView::PathContains(const BRepGraph_TopologyPath& thePath,
-                                          BRepGraph_NodeId theNode) const
+                                          BRepGraph_NodeId              theNode) const
 {
   if (!thePath.IsValid() || !theNode.IsValid())
     return false;
@@ -936,15 +935,14 @@ bool BRepGraph::SpatialView::PathContains(const BRepGraph_TopologyPath& thePath,
     if (is1to1(aCurrent.NodeKind))
     {
       BRepGraph_NodeId aPrev = aCurrent;
-      aCurrent = transitChild(aCurrent);
+      aCurrent               = transitChild(aCurrent);
       if (aCurrent == aPrev)
         break; // no progress - malformed graph cycle
       if (aCurrent == theNode)
         return true;
       continue;
     }
-    if (aCurrent.NodeKind == BRepGraph_NodeId::Kind::Product
-        && aCurrent.Index >= 0
+    if (aCurrent.NodeKind == BRepGraph_NodeId::Kind::Product && aCurrent.Index >= 0
         && aCurrent.Index < myGraph->myData->myIncStorage.NbProducts()
         && myGraph->myData->myIncStorage.Product(aCurrent.Index).ShapeRootId.IsValid())
     {
@@ -954,7 +952,7 @@ bool BRepGraph::SpatialView::PathContains(const BRepGraph_TopologyPath& thePath,
       continue;
     }
     const int aRefIdx = thePath.stepAt(aStepIdx);
-    aCurrent = resolveChild(aCurrent, aRefIdx);
+    aCurrent          = resolveChild(aCurrent, aRefIdx);
     if (aCurrent == theNode)
       return true;
     ++aStepIdx;
@@ -966,7 +964,7 @@ bool BRepGraph::SpatialView::PathContains(const BRepGraph_TopologyPath& thePath,
 
 NCollection_Vector<BRepGraph_TopologyPath> BRepGraph::SpatialView::FilterByInclude(
   const NCollection_Vector<BRepGraph_TopologyPath>& thePaths,
-  BRepGraph_NodeId theNode) const
+  BRepGraph_NodeId                                  theNode) const
 {
   NCollection_Vector<BRepGraph_TopologyPath> aResult;
   for (int i = 0; i < thePaths.Length(); ++i)
@@ -981,7 +979,7 @@ NCollection_Vector<BRepGraph_TopologyPath> BRepGraph::SpatialView::FilterByInclu
 
 NCollection_Vector<BRepGraph_TopologyPath> BRepGraph::SpatialView::FilterByExclude(
   const NCollection_Vector<BRepGraph_TopologyPath>& thePaths,
-  BRepGraph_NodeId theNode) const
+  BRepGraph_NodeId                                  theNode) const
 {
   NCollection_Vector<BRepGraph_TopologyPath> aResult;
   for (int i = 0; i < thePaths.Length(); ++i)
@@ -1006,7 +1004,8 @@ NCollection_Vector<BRepGraph_TopologyPath> BRepGraph::SpatialView::PathsTo(
 //=================================================================================================
 
 NCollection_Vector<BRepGraph_TopologyPath> BRepGraph::SpatialView::PathsFromTo(
-  BRepGraph_NodeId theRoot, BRepGraph_NodeId theLeaf) const
+  BRepGraph_NodeId theRoot,
+  BRepGraph_NodeId theLeaf) const
 {
   NCollection_Vector<BRepGraph_TopologyPath> aResult;
   if (!theRoot.IsValid() || !theLeaf.IsValid())
@@ -1042,7 +1041,7 @@ BRepGraph::SpatialView::OccurrenceEntry BRepGraph::SpatialView::buildEntry(
 //=================================================================================================
 
 int BRepGraph::SpatialView::findShellRefIdx(const BRepGraphInc::SolidEntity& theSolid,
-                                             int theShellIdx)
+                                            int                              theShellIdx)
 {
   for (int i = 0; i < theSolid.ShellRefs.Length(); ++i)
     if (theSolid.ShellRefs.Value(i).ShellIdx == theShellIdx)
@@ -1053,7 +1052,7 @@ int BRepGraph::SpatialView::findShellRefIdx(const BRepGraphInc::SolidEntity& the
 //=================================================================================================
 
 int BRepGraph::SpatialView::findFaceRefIdx(const BRepGraphInc::ShellEntity& theShell,
-                                            int theFaceIdx)
+                                           int                              theFaceIdx)
 {
   for (int i = 0; i < theShell.FaceRefs.Length(); ++i)
     if (theShell.FaceRefs.Value(i).FaceIdx == theFaceIdx)
@@ -1063,8 +1062,7 @@ int BRepGraph::SpatialView::findFaceRefIdx(const BRepGraphInc::ShellEntity& theS
 
 //=================================================================================================
 
-int BRepGraph::SpatialView::findWireRefIdx(const BRepGraphInc::FaceEntity& theFace,
-                                            int theWireIdx)
+int BRepGraph::SpatialView::findWireRefIdx(const BRepGraphInc::FaceEntity& theFace, int theWireIdx)
 {
   for (int i = 0; i < theFace.WireRefs.Length(); ++i)
     if (theFace.WireRefs.Value(i).WireIdx == theWireIdx)
@@ -1075,7 +1073,7 @@ int BRepGraph::SpatialView::findWireRefIdx(const BRepGraphInc::FaceEntity& theFa
 //=================================================================================================
 
 int BRepGraph::SpatialView::findCoEdgeRefIdx(const BRepGraphInc::WireEntity& theWire,
-                                              int theCoEdgeIdx)
+                                             int                             theCoEdgeIdx)
 {
   for (int i = 0; i < theWire.CoEdgeRefs.Length(); ++i)
     if (theWire.CoEdgeRefs.Value(i).CoEdgeIdx == theCoEdgeIdx)
@@ -1086,7 +1084,8 @@ int BRepGraph::SpatialView::findCoEdgeRefIdx(const BRepGraphInc::WireEntity& the
 //=================================================================================================
 
 int BRepGraph::SpatialView::findChildRefIdx(const BRepGraphInc::CompoundEntity& theCompound,
-                                             BRepGraph_NodeId::Kind theKind, int theChildIdx)
+                                            BRepGraph_NodeId::Kind              theKind,
+                                            int                                 theChildIdx)
 {
   for (int i = 0; i < theCompound.ChildRefs.Length(); ++i)
   {
@@ -1100,7 +1099,7 @@ int BRepGraph::SpatialView::findChildRefIdx(const BRepGraphInc::CompoundEntity& 
 //=================================================================================================
 
 int BRepGraph::SpatialView::findSolidRefIdx(const BRepGraphInc::CompSolidEntity& theCS,
-                                             int theSolidIdx)
+                                            int                                  theSolidIdx)
 {
   for (int i = 0; i < theCS.SolidRefs.Length(); ++i)
     if (theCS.SolidRefs.Value(i).SolidIdx == theSolidIdx)
@@ -1125,7 +1124,7 @@ NCollection_Vector<BRepGraph_TopologyPath> BRepGraph::SpatialView::reverseWalkPa
   if (!theNode.IsValid())
     return aResult;
 
-  using Kind = BRepGraph_NodeId::Kind;
+  using Kind                           = BRepGraph_NodeId::Kind;
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
   switch (theNode.NodeKind)
   {
@@ -1145,8 +1144,8 @@ NCollection_Vector<BRepGraph_TopologyPath> BRepGraph::SpatialView::reverseWalkPa
       reverseWalkFromShell(theNode.Index, aResult);
       break;
     case Kind::Solid: {
-      const BRepGraphInc_ReverseIndex& aRevIdx = aStorage.ReverseIndex();
-      bool aHasParent = false;
+      const BRepGraphInc_ReverseIndex& aRevIdx    = aStorage.ReverseIndex();
+      bool                             aHasParent = false;
       // Walk up to CompSolid parents.
       const NCollection_Vector<int>* aCompSolids = aRevIdx.CompSolidsOfSolid(theNode.Index);
       if (aCompSolids != nullptr)
@@ -1164,8 +1163,8 @@ NCollection_Vector<BRepGraph_TopologyPath> BRepGraph::SpatialView::reverseWalkPa
             continue;
           aHasParent = true;
           // Recurse: CompSolid may itself be inside a Compound.
-          NCollection_Vector<BRepGraph_TopologyPath> aParentPaths = reverseWalkPaths(
-            BRepGraph_NodeId::CompSolid(aCSIdx));
+          NCollection_Vector<BRepGraph_TopologyPath> aParentPaths =
+            reverseWalkPaths(BRepGraph_NodeId::CompSolid(aCSIdx));
           for (int p = 0; p < aParentPaths.Length(); ++p)
           {
             BRepGraph_TopologyPath aPath = aParentPaths.Value(p);
@@ -1190,8 +1189,8 @@ NCollection_Vector<BRepGraph_TopologyPath> BRepGraph::SpatialView::reverseWalkPa
           if (aRefIdx < 0)
             continue;
           aHasParent = true;
-          NCollection_Vector<BRepGraph_TopologyPath> aParentPaths = reverseWalkPaths(
-            BRepGraph_NodeId::Compound(aCompIdx));
+          NCollection_Vector<BRepGraph_TopologyPath> aParentPaths =
+            reverseWalkPaths(BRepGraph_NodeId::Compound(aCompIdx));
           for (int p = 0; p < aParentPaths.Length(); ++p)
           {
             BRepGraph_TopologyPath aPath = aParentPaths.Value(p);
@@ -1205,8 +1204,8 @@ NCollection_Vector<BRepGraph_TopologyPath> BRepGraph::SpatialView::reverseWalkPa
       break;
     }
     case Kind::Compound: {
-      const BRepGraphInc_ReverseIndex& aRevIdx = aStorage.ReverseIndex();
-      const NCollection_Vector<int>* aParents = aRevIdx.CompoundsOfCompound(theNode.Index);
+      const BRepGraphInc_ReverseIndex& aRevIdx  = aStorage.ReverseIndex();
+      const NCollection_Vector<int>*   aParents = aRevIdx.CompoundsOfCompound(theNode.Index);
       if (aParents != nullptr && !aParents->IsEmpty())
       {
         for (int p = 0; p < aParents->Length(); ++p)
@@ -1220,8 +1219,8 @@ NCollection_Vector<BRepGraph_TopologyPath> BRepGraph::SpatialView::reverseWalkPa
           const int aRefIdx = findChildRefIdx(aParentComp, Kind::Compound, theNode.Index);
           if (aRefIdx < 0)
             continue;
-          NCollection_Vector<BRepGraph_TopologyPath> aGrandPaths = reverseWalkPaths(
-            BRepGraph_NodeId::Compound(aParentIdx));
+          NCollection_Vector<BRepGraph_TopologyPath> aGrandPaths =
+            reverseWalkPaths(BRepGraph_NodeId::Compound(aParentIdx));
           for (int g = 0; g < aGrandPaths.Length(); ++g)
           {
             BRepGraph_TopologyPath aPath = aGrandPaths.Value(g);
@@ -1237,8 +1236,8 @@ NCollection_Vector<BRepGraph_TopologyPath> BRepGraph::SpatialView::reverseWalkPa
       break;
     }
     case Kind::CompSolid: {
-      const BRepGraphInc_ReverseIndex& aRevIdx = aStorage.ReverseIndex();
-      const NCollection_Vector<int>* aParents = aRevIdx.CompoundsOfCompSolid(theNode.Index);
+      const BRepGraphInc_ReverseIndex& aRevIdx  = aStorage.ReverseIndex();
+      const NCollection_Vector<int>*   aParents = aRevIdx.CompoundsOfCompSolid(theNode.Index);
       if (aParents != nullptr && !aParents->IsEmpty())
       {
         for (int p = 0; p < aParents->Length(); ++p)
@@ -1252,8 +1251,8 @@ NCollection_Vector<BRepGraph_TopologyPath> BRepGraph::SpatialView::reverseWalkPa
           const int aRefIdx = findChildRefIdx(aComp, Kind::CompSolid, theNode.Index);
           if (aRefIdx < 0)
             continue;
-          NCollection_Vector<BRepGraph_TopologyPath> aCompPaths = reverseWalkPaths(
-            BRepGraph_NodeId::Compound(aCompIdx));
+          NCollection_Vector<BRepGraph_TopologyPath> aCompPaths =
+            reverseWalkPaths(BRepGraph_NodeId::Compound(aCompIdx));
           for (int g = 0; g < aCompPaths.Length(); ++g)
           {
             BRepGraph_TopologyPath aPath = aCompPaths.Value(g);
@@ -1276,11 +1275,11 @@ NCollection_Vector<BRepGraph_TopologyPath> BRepGraph::SpatialView::reverseWalkPa
 
 //=================================================================================================
 
-NCollection_Vector<BRepGraph::SpatialView::OccurrenceEntry> BRepGraph::SpatialView::reverseWalkEntries(
-  BRepGraph_NodeId theNode) const
+NCollection_Vector<BRepGraph::SpatialView::OccurrenceEntry> BRepGraph::SpatialView::
+  reverseWalkEntries(BRepGraph_NodeId theNode) const
 {
   NCollection_Vector<BRepGraph_TopologyPath> aPaths = reverseWalkPaths(theNode);
-  NCollection_Vector<OccurrenceEntry> aResult;
+  NCollection_Vector<OccurrenceEntry>        aResult;
   for (int i = 0; i < aPaths.Length(); ++i)
     aResult.Append(buildEntry(aPaths.Value(i)));
   return aResult;
@@ -1289,7 +1288,7 @@ NCollection_Vector<BRepGraph::SpatialView::OccurrenceEntry> BRepGraph::SpatialVi
 //=================================================================================================
 
 void BRepGraph::SpatialView::reverseWalkFromVertex(
-  int theVertexIdx,
+  int                                         theVertexIdx,
   NCollection_Vector<BRepGraph_TopologyPath>& theResult) const
 {
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
@@ -1304,8 +1303,8 @@ void BRepGraph::SpatialView::reverseWalkFromVertex(
 
   for (int e = 0; e < aEdges->Length(); ++e)
   {
-    const int anEdgeIdx = aEdges->Value(e);
-    const BRepGraphInc::EdgeEntity& anEdge = aStorage.Edge(anEdgeIdx);
+    const int                       anEdgeIdx = aEdges->Value(e);
+    const BRepGraphInc::EdgeEntity& anEdge    = aStorage.Edge(anEdgeIdx);
     if (anEdge.IsRemoved)
       continue;
 
@@ -1344,7 +1343,7 @@ void BRepGraph::SpatialView::reverseWalkFromVertex(
 //=================================================================================================
 
 void BRepGraph::SpatialView::reverseWalkFromEdge(
-  int theEdgeIdx,
+  int                                         theEdgeIdx,
   NCollection_Vector<BRepGraph_TopologyPath>& theResult) const
 {
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
@@ -1359,8 +1358,8 @@ void BRepGraph::SpatialView::reverseWalkFromEdge(
 
   for (int ce = 0; ce < aCoEdges->Length(); ++ce)
   {
-    const int aCoEdgeIdx = aCoEdges->Value(ce);
-    const BRepGraphInc::CoEdgeEntity& aCoEdge = aStorage.CoEdge(aCoEdgeIdx);
+    const int                         aCoEdgeIdx = aCoEdges->Value(ce);
+    const BRepGraphInc::CoEdgeEntity& aCoEdge    = aStorage.CoEdge(aCoEdgeIdx);
     if (aCoEdge.IsRemoved)
       continue;
 
@@ -1371,8 +1370,8 @@ void BRepGraph::SpatialView::reverseWalkFromEdge(
 
     for (int w = 0; w < aWires->Length(); ++w)
     {
-      const int aWireIdx = aWires->Value(w);
-      const BRepGraphInc::WireEntity& aWire = aStorage.Wire(aWireIdx);
+      const int                       aWireIdx = aWires->Value(w);
+      const BRepGraphInc::WireEntity& aWire    = aStorage.Wire(aWireIdx);
       if (aWire.IsRemoved)
         continue;
 
@@ -1397,7 +1396,7 @@ void BRepGraph::SpatialView::reverseWalkFromEdge(
 //=================================================================================================
 
 void BRepGraph::SpatialView::reverseWalkFromWire(
-  int theWireIdx,
+  int                                         theWireIdx,
   NCollection_Vector<BRepGraph_TopologyPath>& theResult) const
 {
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
@@ -1412,8 +1411,8 @@ void BRepGraph::SpatialView::reverseWalkFromWire(
 
   for (int f = 0; f < aFaces->Length(); ++f)
   {
-    const int aFaceIdx = aFaces->Value(f);
-    const BRepGraphInc::FaceEntity& aFace = aStorage.Face(aFaceIdx);
+    const int                       aFaceIdx = aFaces->Value(f);
+    const BRepGraphInc::FaceEntity& aFace    = aStorage.Face(aFaceIdx);
     if (aFace.IsRemoved)
       continue;
 
@@ -1435,7 +1434,7 @@ void BRepGraph::SpatialView::reverseWalkFromWire(
 //=================================================================================================
 
 void BRepGraph::SpatialView::reverseWalkFromFace(
-  int theFaceIdx,
+  int                                         theFaceIdx,
   NCollection_Vector<BRepGraph_TopologyPath>& theResult) const
 {
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
@@ -1449,8 +1448,8 @@ void BRepGraph::SpatialView::reverseWalkFromFace(
   {
     for (int s = 0; s < aShells->Length(); ++s)
     {
-      const int aShellIdx = aShells->Value(s);
-      const BRepGraphInc::ShellEntity& aShell = aStorage.Shell(aShellIdx);
+      const int                        aShellIdx = aShells->Value(s);
+      const BRepGraphInc::ShellEntity& aShell    = aStorage.Shell(aShellIdx);
       if (aShell.IsRemoved)
         continue;
 
@@ -1481,12 +1480,11 @@ void BRepGraph::SpatialView::reverseWalkFromFace(
       const BRepGraphInc::CompoundEntity& aComp = aStorage.Compound(aCompIdx);
       if (aComp.IsRemoved)
         continue;
-      const int aRefIdx = findChildRefIdx(
-        aComp, BRepGraph_NodeId::Kind::Face, theFaceIdx);
+      const int aRefIdx = findChildRefIdx(aComp, BRepGraph_NodeId::Kind::Face, theFaceIdx);
       if (aRefIdx < 0)
         continue;
-      NCollection_Vector<BRepGraph_TopologyPath> aCompPaths = reverseWalkPaths(
-        BRepGraph_NodeId::Compound(aCompIdx));
+      NCollection_Vector<BRepGraph_TopologyPath> aCompPaths =
+        reverseWalkPaths(BRepGraph_NodeId::Compound(aCompIdx));
       for (int i = 0; i < aCompPaths.Length(); ++i)
       {
         BRepGraph_TopologyPath aPath = aCompPaths.Value(i);
@@ -1500,7 +1498,7 @@ void BRepGraph::SpatialView::reverseWalkFromFace(
 //=================================================================================================
 
 void BRepGraph::SpatialView::reverseWalkFromShell(
-  int theShellIdx,
+  int                                         theShellIdx,
   NCollection_Vector<BRepGraph_TopologyPath>& theResult) const
 {
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
@@ -1516,8 +1514,8 @@ void BRepGraph::SpatialView::reverseWalkFromShell(
   {
     for (int s = 0; s < aSolids->Length(); ++s)
     {
-      const int aSolidIdx = aSolids->Value(s);
-      const BRepGraphInc::SolidEntity& aSolid = aStorage.Solid(aSolidIdx);
+      const int                        aSolidIdx = aSolids->Value(s);
+      const BRepGraphInc::SolidEntity& aSolid    = aStorage.Solid(aSolidIdx);
       if (aSolid.IsRemoved)
         continue;
 
@@ -1526,9 +1524,9 @@ void BRepGraph::SpatialView::reverseWalkFromShell(
         continue;
 
       aHasParent = true;
-      // Solid may have Compound/CompSolid parents — recurse.
-      NCollection_Vector<BRepGraph_TopologyPath> aSolidPaths = reverseWalkPaths(
-        BRepGraph_NodeId::Solid(aSolidIdx));
+      // Solid may have Compound/CompSolid parents - recurse.
+      NCollection_Vector<BRepGraph_TopologyPath> aSolidPaths =
+        reverseWalkPaths(BRepGraph_NodeId::Solid(aSolidIdx));
       for (int i = 0; i < aSolidPaths.Length(); ++i)
       {
         BRepGraph_TopologyPath aPath = aSolidPaths.Value(i);
@@ -1550,13 +1548,12 @@ void BRepGraph::SpatialView::reverseWalkFromShell(
       const BRepGraphInc::CompoundEntity& aComp = aStorage.Compound(aCompIdx);
       if (aComp.IsRemoved)
         continue;
-      const int aRefIdx = findChildRefIdx(
-        aComp, BRepGraph_NodeId::Kind::Shell, theShellIdx);
+      const int aRefIdx = findChildRefIdx(aComp, BRepGraph_NodeId::Kind::Shell, theShellIdx);
       if (aRefIdx < 0)
         continue;
       aHasParent = true;
-      NCollection_Vector<BRepGraph_TopologyPath> aCompPaths = reverseWalkPaths(
-        BRepGraph_NodeId::Compound(aCompIdx));
+      NCollection_Vector<BRepGraph_TopologyPath> aCompPaths =
+        reverseWalkPaths(BRepGraph_NodeId::Compound(aCompIdx));
       for (int i = 0; i < aCompPaths.Length(); ++i)
       {
         BRepGraph_TopologyPath aPath = aCompPaths.Value(i);

@@ -51,8 +51,7 @@ public:
   //! All occurrence entries for a node: paths, locations, orientations.
   //! Computed on demand via reverse index walk. No caching.
   //! @param[in] theNode entity to find all occurrences of
-  Standard_EXPORT NCollection_Vector<OccurrenceEntry> NodeLocations(
-    BRepGraph_NodeId theNode) const;
+  Standard_EXPORT NCollection_Vector<OccurrenceEntry> NodeLocations(BRepGraph_NodeId theNode) const;
 
   //! Global location at the leaf of the path (all levels composed).
   //! Handles assembly occurrences, compound containers, and topology uniformly.
@@ -75,46 +74,46 @@ public:
   //! @param[in] thePath  topology path
   //! @param[in] theLevel step index (0-based)
   Standard_EXPORT TopLoc_Location LocationAt(const BRepGraph_TopologyPath& thePath,
-                                             int theLevel) const;
+                                             int                           theLevel) const;
 
   //! Entity NodeId at step theLevel.
   //! @param[in] thePath  topology path
   //! @param[in] theLevel step index (0-based)
   Standard_EXPORT BRepGraph_NodeId NodeAt(const BRepGraph_TopologyPath& thePath,
-                                          int theLevel) const;
+                                          int                           theLevel) const;
 
   //! Orientation composed from root down to step theLevel.
   //! @param[in] thePath  topology path
   //! @param[in] theLevel step index (0-based)
   Standard_EXPORT TopAbs_Orientation OrientationAt(const BRepGraph_TopologyPath& thePath,
-                                                    int theLevel) const;
+                                                   int                           theLevel) const;
 
   //! Find the first step level where the resolved entity has the given kind.
   //! Returns -1 if no such level exists in the path.
   //! @param[in] thePath  topology path
   //! @param[in] theKind  entity kind to search for
   Standard_EXPORT int FindLevel(const BRepGraph_TopologyPath& thePath,
-                                BRepGraph_NodeId::Kind theKind) const;
+                                BRepGraph_NodeId::Kind        theKind) const;
 
   //! Truncate path to theLevel steps (returns new path addressing that entity).
   //! @param[in] thePath  topology path
   //! @param[in] theLevel number of steps to keep
   Standard_EXPORT BRepGraph_TopologyPath Truncated(const BRepGraph_TopologyPath& thePath,
-                                                    int theLevel) const;
+                                                   int                           theLevel) const;
 
   //! True if the path passes through the given entity at any level.
   Standard_EXPORT bool PathContains(const BRepGraph_TopologyPath& thePath,
-                                    BRepGraph_NodeId theNode) const;
+                                    BRepGraph_NodeId              theNode) const;
 
   //! Filter paths: keep only those that pass through theNode.
   Standard_EXPORT NCollection_Vector<BRepGraph_TopologyPath> FilterByInclude(
     const NCollection_Vector<BRepGraph_TopologyPath>& thePaths,
-    BRepGraph_NodeId theNode) const;
+    BRepGraph_NodeId                                  theNode) const;
 
   //! Filter paths: remove those that pass through theNode.
   Standard_EXPORT NCollection_Vector<BRepGraph_TopologyPath> FilterByExclude(
     const NCollection_Vector<BRepGraph_TopologyPath>& thePaths,
-    BRepGraph_NodeId theNode) const;
+    BRepGraph_NodeId                                  theNode) const;
 
   //! All paths from any root to the given entity.
   Standard_EXPORT NCollection_Vector<BRepGraph_TopologyPath> PathsTo(
@@ -122,7 +121,8 @@ public:
 
   //! All paths from a specific root to the given entity.
   Standard_EXPORT NCollection_Vector<BRepGraph_TopologyPath> PathsFromTo(
-    BRepGraph_NodeId theRoot, BRepGraph_NodeId theLeaf) const;
+    BRepGraph_NodeId theRoot,
+    BRepGraph_NodeId theLeaf) const;
 
   //! Eagerly compute and cache descendant locations under a root.
   //! @param[in] theGraph      non-const graph (for cache write)
@@ -185,7 +185,7 @@ private:
 
   //! Compose orientation from root through theMaxSteps steps.
   TopAbs_Orientation composeOrientationToLevel(const BRepGraph_TopologyPath& thePath,
-                                               int theMaxSteps) const;
+                                               int                           theMaxSteps) const;
 
   //! Resolve entity at theMaxSteps steps from root.
   BRepGraph_NodeId resolveAtLevel(const BRepGraph_TopologyPath& thePath, int theMaxSteps) const;
@@ -206,23 +206,23 @@ private:
   NCollection_Vector<OccurrenceEntry> reverseWalkEntries(BRepGraph_NodeId theNode) const;
 
   //! Walk upward from an edge to all roots, collecting paths.
-  void reverseWalkFromEdge(int theEdgeIdx,
+  void reverseWalkFromEdge(int                                         theEdgeIdx,
                            NCollection_Vector<BRepGraph_TopologyPath>& theResult) const;
 
   //! Walk upward from a face to all roots.
-  void reverseWalkFromFace(int theFaceIdx,
+  void reverseWalkFromFace(int                                         theFaceIdx,
                            NCollection_Vector<BRepGraph_TopologyPath>& theResult) const;
 
   //! Walk upward from a shell to all roots.
-  void reverseWalkFromShell(int theShellIdx,
+  void reverseWalkFromShell(int                                         theShellIdx,
                             NCollection_Vector<BRepGraph_TopologyPath>& theResult) const;
 
   //! Walk upward from a wire to all roots via faces.
-  void reverseWalkFromWire(int theWireIdx,
+  void reverseWalkFromWire(int                                         theWireIdx,
                            NCollection_Vector<BRepGraph_TopologyPath>& theResult) const;
 
   //! Walk upward from a vertex to all roots via edges.
-  void reverseWalkFromVertex(int theVertexIdx,
+  void reverseWalkFromVertex(int                                         theVertexIdx,
                              NCollection_Vector<BRepGraph_TopologyPath>& theResult) const;
 
   //! Build occurrence entry from a complete path (compose location + orientation).
@@ -234,7 +234,8 @@ private:
   static int findWireRefIdx(const BRepGraphInc::FaceEntity& theFace, int theWireIdx);
   static int findCoEdgeRefIdx(const BRepGraphInc::WireEntity& theWire, int theCoEdgeIdx);
   static int findChildRefIdx(const BRepGraphInc::CompoundEntity& theCompound,
-                             BRepGraph_NodeId::Kind theKind, int theChildIdx);
+                             BRepGraph_NodeId::Kind              theKind,
+                             int                                 theChildIdx);
   static int findSolidRefIdx(const BRepGraphInc::CompSolidEntity& theCS, int theSolidIdx);
 
   //! True if the entity kind has a 1:1 transition (no step consumed).
