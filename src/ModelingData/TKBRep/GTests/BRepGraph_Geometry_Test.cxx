@@ -237,24 +237,7 @@ TEST(BRepGraphGeometry, SameDomainFaces_SimpleBox_Empty)
   }
 }
 
-TEST(BRepGraphGeometry, NodeTransform_DefId_IsValid)
-{
-  BRepGraph aGraph;
-  aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
-  ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.Defs().NbFaces(), 0);
-
-  const BRepGraph_NodeId aFaceDefId(BRepGraph_NodeId::Kind::Face, 0);
-  const gp_Trsf          aDefTrsf = aGraph.Spatial().NodeTransform(aFaceDefId);
-
-  // For a simple box, the transform should be identity.
-  // Just verify the call does not crash and produces a valid transform.
-  EXPECT_NEAR(aDefTrsf.Value(1, 1), 1.0, Precision::Confusion());
-  EXPECT_NEAR(aDefTrsf.Value(2, 2), 1.0, Precision::Confusion());
-  EXPECT_NEAR(aDefTrsf.Value(3, 3), 1.0, Precision::Confusion());
-}
-
-TEST(BRepGraphGeometry, NodeTransform_CompoundWithLocation_NonIdentity)
+TEST(BRepGraphGeometry, CompoundWithMovedChild_SharedSolidDef)
 {
   const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
 

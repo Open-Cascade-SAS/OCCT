@@ -231,18 +231,6 @@ TEST(BRepGraphSpatialView, NodeAt_IntermediateDepths)
   EXPECT_EQ(aWire.NodeKind, BRepGraph_NodeId::Kind::Wire);
 }
 
-TEST(BRepGraphSpatialView, NodeTransform_NoTransform_Identity)
-{
-  BRepGraph aGraph;
-  aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
-  ASSERT_TRUE(aGraph.IsDone());
-
-  gp_Trsf aTrsf = aGraph.Spatial().NodeTransform(BRepGraph_NodeId::Face(0));
-  EXPECT_NEAR(aTrsf.Value(1, 4), 0.0, Precision::Confusion());
-  EXPECT_NEAR(aTrsf.Value(2, 4), 0.0, Precision::Confusion());
-  EXPECT_NEAR(aTrsf.Value(3, 4), 0.0, Precision::Confusion());
-}
-
 TEST(BRepGraphSpatialView, FindLevel_ByKind)
 {
   BRepGraph aGraph;

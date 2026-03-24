@@ -450,14 +450,6 @@ TopLoc_Location BRepGraph::SpatialView::composeToLevel(const BRepGraph_TopologyP
       break;
   }
 
-  // Per-node transform at the resolved leaf.
-  if (aCurrent.IsValid())
-  {
-    const TopLoc_Location* aNodeLoc = myGraph->myData->myNodeLocations.Seek(aCurrent);
-    if (aNodeLoc != nullptr)
-      aResult = *aNodeLoc * aResult;
-  }
-
   return aResult;
 }
 
@@ -683,20 +675,6 @@ BRepGraph_TopologyPath BRepGraph::SpatialView::Truncated(const BRepGraph_Topolog
   for (int i = 0; i < aLimit; ++i)
     aResult.pushStep(thePath.stepAt(i));
   return aResult;
-}
-
-//=================================================================================================
-
-gp_Trsf BRepGraph::SpatialView::NodeTransform(const BRepGraph_NodeId theDefId) const
-{
-  if (!theDefId.IsValid())
-    return gp_Trsf();
-
-  const TopLoc_Location* aNodeLoc = myGraph->myData->myNodeLocations.Seek(theDefId);
-  if (aNodeLoc != nullptr)
-    return aNodeLoc->Transformation();
-
-  return gp_Trsf();
 }
 
 //=================================================================================================

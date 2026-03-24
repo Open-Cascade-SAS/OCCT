@@ -143,11 +143,21 @@ TEST(BRepGraphAlgo_TransformTest, LocationOnly_NoCopyGeom)
       << "Vertex " << anIdx << " point should not be modified";
   }
 
-  // Verify reconstructed solid has correct translation.
+  // Verify the transform is stored on Product::RootLocation.
+  ASSERT_GT(aResultGraph.Defs().NbProducts(), 0);
+  const TopLoc_Location& aRootLoc = aResultGraph.Defs().Product(0).RootLocation;
+  EXPECT_FALSE(aRootLoc.IsIdentity());
+  const gp_Trsf aProductTrsf = aRootLoc.Transformation();
+  EXPECT_NEAR(aProductTrsf.Value(1, 4), aDx, Precision::Confusion());
+  EXPECT_NEAR(aProductTrsf.Value(2, 4), 0.0, Precision::Confusion());
+  EXPECT_NEAR(aProductTrsf.Value(3, 4), 0.0, Precision::Confusion());
+
+  // Verify that reconstructed solid + RootLocation produces correct geometry.
   ASSERT_GT(aResultGraph.Defs().NbSolids(), 0);
   TopoDS_Shape aTransSolid =
-    aResultGraph.Shapes().Reconstruct(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Solid, 0));
+    aResultGraph.Shapes().Reconstruct(BRepGraph_NodeId::Solid(0));
   ASSERT_FALSE(aTransSolid.IsNull());
+  aTransSolid.Location(aRootLoc);
 
   GProp_GProps aOrigProps;
   BRepGProp::SurfaceProperties(aBox, aOrigProps);

@@ -907,15 +907,6 @@ TEST_F(BRepGraphTest, Centroid_Box_ApproximateCenter)
   EXPECT_NEAR(aCentroid.Z(), 15.0, 0.5);
 }
 
-TEST_F(BRepGraphTest, NodeTransform_FaceInsideSolid_NonNull)
-{
-  BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
-  gp_Trsf          aTrsf = myGraph.Spatial().NodeTransform(aFaceId);
-
-  // For a box at origin the transform should not be negative.
-  EXPECT_FALSE(aTrsf.IsNegative());
-}
-
 TEST_F(BRepGraphTest, EdgeDef_HasValidCurve3d)
 {
   for (int anEdgeIdx = 0; anEdgeIdx < myGraph.Defs().NbEdges(); ++anEdgeIdx)

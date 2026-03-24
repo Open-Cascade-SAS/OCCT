@@ -47,14 +47,6 @@ TopoDS_Shape BRepGraph::ShapesView::Shape(const BRepGraph_NodeId theNode) const
   TopoDS_Shape aReconstructed =
     BRepGraphInc_Reconstruct::Node(myGraph->myData->myIncStorage, theNode);
 
-  // For modified nodes, apply per-node location if stored.
-  if (aDef != nullptr && aDef->IsModified && !aReconstructed.IsNull())
-  {
-    const TopLoc_Location* aNodeLoc = myGraph->myData->myNodeLocations.Seek(theNode);
-    if (aNodeLoc != nullptr && !aNodeLoc->IsIdentity())
-      aReconstructed.Location(*aNodeLoc);
-  }
-
   // Store under exclusive lock with double-check.
   if (!aReconstructed.IsNull())
   {
@@ -91,13 +83,6 @@ TopoDS_Shape BRepGraph::ShapesView::Reconstruct(const BRepGraph_NodeId theRoot) 
 {
   TopoDS_Shape aShape = BRepGraphInc_Reconstruct::Node(myGraph->myData->myIncStorage, theRoot);
 
-  // Apply per-node location if stored (e.g. from Transform).
-  if (!aShape.IsNull())
-  {
-    const TopLoc_Location* aNodeLoc = myGraph->myData->myNodeLocations.Seek(theRoot);
-    if (aNodeLoc != nullptr && !aNodeLoc->IsIdentity())
-      aShape.Location(*aNodeLoc);
-  }
   return aShape;
 }
 
@@ -115,15 +100,7 @@ TopoDS_Shape BRepGraph::ShapesView::ReconstructFace(const int theFaceDefIdx) con
 
 TopoDS_Shape BRepGraph::ShapesView::ReconstructFromNode(const BRepGraph_NodeId theNode) const
 {
-  TopoDS_Shape aShape = BRepGraphInc_Reconstruct::Node(myGraph->myData->myIncStorage, theNode);
-  if (aShape.IsNull() || !theNode.IsValid())
-    return aShape;
-
-  const TopLoc_Location* aNodeLoc = myGraph->myData->myNodeLocations.Seek(theNode);
-  if (aNodeLoc != nullptr && !aNodeLoc->IsIdentity())
-    aShape.Location(*aNodeLoc);
-
-  return aShape;
+  return BRepGraphInc_Reconstruct::Node(myGraph->myData->myIncStorage, theNode);
 }
 
 //=================================================================================================

@@ -20,8 +20,6 @@
 #include <BRepGraph_MutRef.hxx>
 #include <BRepGraph_Tool.hxx>
 
-#include <NCollection_Map.hxx>
-
 namespace
 {
 
@@ -79,34 +77,20 @@ void BRepGraphAlgo_Transform::applyLocationTransform(BRepGraph& theGraph, const 
 {
   const TopLoc_Location aLoc(theTrsf);
 
-  // Store the transform as a per-node location for all root-level nodes.
-  // Without the Usage layer, locations are stored in myData->myNodeLocations.
-  // Prepend the transform to any existing node location.
-  auto applyToKind = [&](BRepGraph_NodeId::Kind theKind, int theCount) {
-    for (int anIdx = 0; anIdx < theCount; ++anIdx)
-    {
-      const BRepGraph_NodeId aNodeId(theKind, anIdx);
-      const TopLoc_Location* anExisting = theGraph.myData->myNodeLocations.Seek(aNodeId);
-      if (anExisting != nullptr)
-      {
-        theGraph.myData->myNodeLocations.Bind(aNodeId, aLoc * (*anExisting));
-      }
-      else
-      {
-        theGraph.myData->myNodeLocations.Bind(aNodeId, aLoc);
-      }
-      theGraph.markModified(aNodeId);
-    }
-  };
-
-  applyToKind(BRepGraph_NodeId::Kind::Vertex, theGraph.Defs().NbVertices());
-  applyToKind(BRepGraph_NodeId::Kind::Edge, theGraph.Defs().NbEdges());
-  applyToKind(BRepGraph_NodeId::Kind::Wire, theGraph.Defs().NbWires());
-  applyToKind(BRepGraph_NodeId::Kind::Face, theGraph.Defs().NbFaces());
-  applyToKind(BRepGraph_NodeId::Kind::Shell, theGraph.Defs().NbShells());
-  applyToKind(BRepGraph_NodeId::Kind::Solid, theGraph.Defs().NbSolids());
-  applyToKind(BRepGraph_NodeId::Kind::Compound, theGraph.Defs().NbCompounds());
-  applyToKind(BRepGraph_NodeId::Kind::CompSolid, theGraph.Defs().NbCompSolids());
+  // Compose the transform into root Product RootLocations.
+  // RootProducts() returns products not referenced by any occurrence.
+  // Product::RootLocation participates in path composition
+  // (SpatialView::stepLocation, composeToLevel), so all descendant
+  // queries automatically include it.
+  const NCollection_Vector<BRepGraph_NodeId> aRoots = theGraph.Defs().RootProducts();
+  for (int anIdx = 0; anIdx < aRoots.Length(); ++anIdx)
+  {
+    const BRepGraph_NodeId aRootId = aRoots.Value(anIdx);
+    BRepGraphInc::ProductEntity& aProduct =
+      theGraph.myData->myIncStorage.ChangeProduct(aRootId.Index);
+    aProduct.RootLocation = aLoc * aProduct.RootLocation;
+    theGraph.markModified(aRootId);
+  }
 
   // Invalidate cached reconstructed shapes.
   theGraph.myData->myCurrentShapes.Clear();

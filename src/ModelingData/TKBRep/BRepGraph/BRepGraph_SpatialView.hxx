@@ -124,12 +124,6 @@ public:
     BRepGraph_NodeId theRoot,
     BRepGraph_NodeId theLeaf) const;
 
-  //! Per-node transform stored by BRepGraphAlgo_Transform (location-only mode).
-  //! This is NOT a composed global location.
-  //! @param[in] theDefId definition node identifier
-  //! @return the per-node transform, or identity
-  Standard_EXPORT gp_Trsf NodeTransform(const BRepGraph_NodeId theDefId) const;
-
   //! Compute the global placement of an occurrence by walking the parent chain.
   //! @param[in] theOccurrenceIdx zero-based occurrence definition index
   Standard_EXPORT TopLoc_Location GlobalPlacement(const int theOccurrenceIdx) const;

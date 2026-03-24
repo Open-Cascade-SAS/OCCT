@@ -245,6 +245,32 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph, bool theCopyGeo
     transferUserAttributes(aCS.Cache, aResult.MutCompSolid(anIdx)->Cache);
   }
 
+  // Products.
+  for (int anIdx = 0; anIdx < theGraph.myData->myIncStorage.NbProducts(); ++anIdx)
+  {
+    const BRepGraphInc::ProductEntity& aSrcProd = theGraph.myData->myIncStorage.Product(anIdx);
+    BRepGraphInc::ProductEntity&       aNewProd = aResult.myData->myIncStorage.AppendProduct();
+    aNewProd.Id              = BRepGraph_NodeId::Product(anIdx);
+    aNewProd.ShapeRootId     = aSrcProd.ShapeRootId;
+    aNewProd.RootOrientation = aSrcProd.RootOrientation;
+    aNewProd.RootLocation    = aSrcProd.RootLocation;
+    aNewProd.OccurrenceRefs  = aSrcProd.OccurrenceRefs;
+    aResult.allocateUID(aNewProd.Id);
+  }
+
+  // Occurrences.
+  for (int anIdx = 0; anIdx < theGraph.myData->myIncStorage.NbOccurrences(); ++anIdx)
+  {
+    const BRepGraphInc::OccurrenceEntity& aSrcOcc = theGraph.myData->myIncStorage.Occurrence(anIdx);
+    BRepGraphInc::OccurrenceEntity&       aNewOcc = aResult.myData->myIncStorage.AppendOccurrence();
+    aNewOcc.Id                  = BRepGraph_NodeId::Occurrence(anIdx);
+    aNewOcc.ProductIdx          = aSrcOcc.ProductIdx;
+    aNewOcc.ParentProductIdx    = aSrcOcc.ParentProductIdx;
+    aNewOcc.ParentOccurrenceIdx = aSrcOcc.ParentOccurrenceIdx;
+    aNewOcc.Placement           = aSrcOcc.Placement;
+    aResult.allocateUID(aNewOcc.Id);
+  }
+
   // Phase 3: Transfer UIDs (identity mapping - direct vector copy).
   auto copyUIDs = [](const NCollection_Vector<BRepGraph_UID>& theSrc,
                      NCollection_Vector<BRepGraph_UID>&       theDst) {
@@ -272,6 +298,10 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph, bool theCopyGeo
            aResult.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Compound));
   copyUIDs(theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::CompSolid),
            aResult.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::CompSolid));
+  copyUIDs(theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Product),
+           aResult.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Product));
+  copyUIDs(theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Occurrence),
+           aResult.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Occurrence));
 
   aResult.myData->myNextUIDCounter.store(
     theGraph.myData->myNextUIDCounter.load(std::memory_order_relaxed),

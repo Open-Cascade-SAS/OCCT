@@ -52,9 +52,6 @@ struct BRepGraph_Data
   std::atomic<size_t> myNextUIDCounter{0};
   uint32_t            myGeneration{0};
 
-  //! Per-node location applied by Transform (identity by default).
-  NCollection_DataMap<BRepGraph_NodeId, TopLoc_Location> myNodeLocations;
-
   //! History subsystem.
   BRepGraph_History myHistoryLog;
 
@@ -73,7 +70,6 @@ struct BRepGraph_Data
   BRepGraph_Data()
       : myAllocator(new NCollection_IncAllocator),
         myIncStorage(myAllocator),
-        myNodeLocations(1, myAllocator),
         myCurrentShapes(1, myAllocator)
   {
     myHistoryLog.SetAllocator(myAllocator);
@@ -84,7 +80,6 @@ struct BRepGraph_Data
                       ? theAlloc
                       : occ::handle<NCollection_BaseAllocator>(new NCollection_IncAllocator)),
         myIncStorage(myAllocator),
-        myNodeLocations(1, myAllocator),
         myCurrentShapes(1, myAllocator)
   {
     myHistoryLog.SetAllocator(myAllocator);
