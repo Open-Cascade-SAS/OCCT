@@ -18,6 +18,7 @@
 #include <BRepGraph_Builder.hxx>
 #include <BRepGraphInc_ReverseIndex.hxx>
 
+#include <NCollection_IncAllocator.hxx>
 #include <NCollection_Map.hxx>
 #include <Standard_ProgramError.hxx>
 
@@ -194,76 +195,110 @@ BRepGraph_TopoNode::BaseDef* BRepGraph::ChangeTopoDef(const BRepGraph_NodeId the
 
 void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
 {
-  BRepGraph_NodeCache* aCache = mutableCache(theNode);
-  if (aCache != nullptr)
-    aCache->InvalidateAll();
+  using Kind                           = BRepGraph_NodeId::Kind;
+  const BRepGraphInc_Storage& aStorage = myData->myIncStorage;
 
-  // Forward traversal via incidence refs.
-  switch (theNode.NodeKind)
+  const int aNbNodes = aStorage.NbSolids() + aStorage.NbShells() + aStorage.NbFaces()
+                       + aStorage.NbWires() + aStorage.NbEdges() + aStorage.NbVertices()
+                       + aStorage.NbCompounds() + aStorage.NbCompSolids() + aStorage.NbProducts()
+                       + aStorage.NbOccurrences();
+  Handle(NCollection_IncAllocator)     anAlloc = new NCollection_IncAllocator();
+  NCollection_Vector<BRepGraph_NodeId> aStack(64, anAlloc);
+  NCollection_Map<BRepGraph_NodeId>    aVisited(aNbNodes, anAlloc);
+  aStack.Append(theNode);
+
+  while (!aStack.IsEmpty())
   {
-    case BRepGraph_NodeId::Kind::Solid: {
-      const BRepGraph_TopoNode::SolidDef& aSolidDef = myData->myIncStorage.Solid(theNode.Index);
-      for (int s = 0; s < aSolidDef.ShellRefs.Length(); ++s)
-        invalidateSubgraphImpl(BRepGraph_NodeId::Shell(aSolidDef.ShellRefs.Value(s).ShellIdx));
-      break;
-    }
-    case BRepGraph_NodeId::Kind::Shell: {
-      const BRepGraph_TopoNode::ShellDef& aShellDef = myData->myIncStorage.Shell(theNode.Index);
-      for (int f = 0; f < aShellDef.FaceRefs.Length(); ++f)
-        invalidateSubgraphImpl(BRepGraph_NodeId::Face(aShellDef.FaceRefs.Value(f).FaceIdx));
-      break;
-    }
-    case BRepGraph_NodeId::Kind::Face: {
-      const BRepGraph_TopoNode::FaceDef& aFaceDef = myData->myIncStorage.Face(theNode.Index);
-      for (int w = 0; w < aFaceDef.WireRefs.Length(); ++w)
-        invalidateSubgraphImpl(BRepGraph_NodeId::Wire(aFaceDef.WireRefs.Value(w).WireIdx));
-      break;
-    }
-    case BRepGraph_NodeId::Kind::Wire: {
-      const BRepGraph_TopoNode::WireDef& aWireDef = myData->myIncStorage.Wire(theNode.Index);
-      for (int e = 0; e < aWireDef.CoEdgeRefs.Length(); ++e)
-      {
-        const BRepGraphInc::CoEdgeEntity& aCoEdge =
-          myData->myIncStorage.CoEdge(aWireDef.CoEdgeRefs.Value(e).CoEdgeIdx);
-        invalidateSubgraphImpl(BRepGraph_NodeId::Edge(aCoEdge.EdgeIdx));
+    const BRepGraph_NodeId aCurrent = aStack.Last();
+    aStack.EraseLast();
+
+    if (!aCurrent.IsValid() || !aVisited.Add(aCurrent))
+      continue;
+
+    BRepGraph_NodeCache* aCache = mutableCache(aCurrent);
+    if (aCache != nullptr)
+      aCache->InvalidateAll();
+
+    switch (aCurrent.NodeKind)
+    {
+      case Kind::Compound: {
+        const BRepGraphInc::CompoundEntity& aComp = aStorage.Compound(aCurrent.Index);
+        for (int i = 0; i < aComp.ChildRefs.Length(); ++i)
+        {
+          const BRepGraphInc::ChildRef& aRef = aComp.ChildRefs.Value(i);
+          aStack.Append(BRepGraph_NodeId(static_cast<Kind>(aRef.Kind), aRef.ChildIdx));
+        }
+        break;
       }
-      break;
-    }
-    case BRepGraph_NodeId::Kind::Edge: {
-      const BRepGraph_TopoNode::EdgeDef& anEdgeDef = myData->myIncStorage.Edge(theNode.Index);
-      if (anEdgeDef.StartVertexDefId().IsValid())
-      {
-        BRepGraph_NodeCache* aVtxCache = mutableCache(anEdgeDef.StartVertexDefId());
-        if (aVtxCache != nullptr)
-          aVtxCache->InvalidateAll();
+      case Kind::CompSolid: {
+        const BRepGraphInc::CompSolidEntity& aCS = aStorage.CompSolid(aCurrent.Index);
+        for (int i = 0; i < aCS.SolidRefs.Length(); ++i)
+          aStack.Append(BRepGraph_NodeId::Solid(aCS.SolidRefs.Value(i).SolidIdx));
+        break;
       }
-      if (anEdgeDef.EndVertexDefId().IsValid())
-      {
-        BRepGraph_NodeCache* aVtxCache = mutableCache(anEdgeDef.EndVertexDefId());
-        if (aVtxCache != nullptr)
-          aVtxCache->InvalidateAll();
+      case Kind::Solid: {
+        const BRepGraph_TopoNode::SolidDef& aSolid = aStorage.Solid(aCurrent.Index);
+        for (int i = 0; i < aSolid.ShellRefs.Length(); ++i)
+          aStack.Append(BRepGraph_NodeId::Shell(aSolid.ShellRefs.Value(i).ShellIdx));
+        for (int i = 0; i < aSolid.FreeChildRefs.Length(); ++i)
+        {
+          const BRepGraphInc::ChildRef& aRef = aSolid.FreeChildRefs.Value(i);
+          aStack.Append(BRepGraph_NodeId(static_cast<Kind>(aRef.Kind), aRef.ChildIdx));
+        }
+        break;
       }
-      break;
+      case Kind::Shell: {
+        const BRepGraph_TopoNode::ShellDef& aShell = aStorage.Shell(aCurrent.Index);
+        for (int i = 0; i < aShell.FaceRefs.Length(); ++i)
+          aStack.Append(BRepGraph_NodeId::Face(aShell.FaceRefs.Value(i).FaceIdx));
+        for (int i = 0; i < aShell.FreeChildRefs.Length(); ++i)
+        {
+          const BRepGraphInc::ChildRef& aRef = aShell.FreeChildRefs.Value(i);
+          aStack.Append(BRepGraph_NodeId(static_cast<Kind>(aRef.Kind), aRef.ChildIdx));
+        }
+        break;
+      }
+      case Kind::Face: {
+        const BRepGraph_TopoNode::FaceDef& aFace = aStorage.Face(aCurrent.Index);
+        for (int i = 0; i < aFace.WireRefs.Length(); ++i)
+          aStack.Append(BRepGraph_NodeId::Wire(aFace.WireRefs.Value(i).WireIdx));
+        break;
+      }
+      case Kind::Wire: {
+        const BRepGraph_TopoNode::WireDef& aWire = aStorage.Wire(aCurrent.Index);
+        for (int i = 0; i < aWire.CoEdgeRefs.Length(); ++i)
+        {
+          const int aCoEdgeIdx = aWire.CoEdgeRefs.Value(i).CoEdgeIdx;
+          if (aCoEdgeIdx >= 0 && aCoEdgeIdx < aStorage.NbCoEdges())
+            aStack.Append(BRepGraph_NodeId::Edge(aStorage.CoEdge(aCoEdgeIdx).EdgeIdx));
+        }
+        break;
+      }
+      case Kind::Edge: {
+        const BRepGraph_TopoNode::EdgeDef& anEdge = aStorage.Edge(aCurrent.Index);
+        if (anEdge.StartVertexDefId().IsValid())
+          aStack.Append(anEdge.StartVertexDefId());
+        if (anEdge.EndVertexDefId().IsValid())
+          aStack.Append(anEdge.EndVertexDefId());
+        break;
+      }
+      case Kind::Product: {
+        const BRepGraph_TopoNode::ProductDef& aProd = aStorage.Product(aCurrent.Index);
+        if (aProd.ShapeRootId.IsValid())
+          aStack.Append(aProd.ShapeRootId);
+        for (int i = 0; i < aProd.OccurrenceRefs.Length(); ++i)
+          aStack.Append(BRepGraph_NodeId::Occurrence(aProd.OccurrenceRefs.Value(i).OccurrenceIdx));
+        break;
+      }
+      case Kind::Occurrence: {
+        const BRepGraph_TopoNode::OccurrenceDef& anOcc = aStorage.Occurrence(aCurrent.Index);
+        if (anOcc.ProductIdx >= 0)
+          aStack.Append(BRepGraph_NodeId::Product(anOcc.ProductIdx));
+        break;
+      }
+      default:
+        break;
     }
-    case BRepGraph_NodeId::Kind::Product: {
-      const BRepGraph_TopoNode::ProductDef& aProductDef =
-        myData->myIncStorage.Product(theNode.Index);
-      if (aProductDef.ShapeRootId.IsValid())
-        invalidateSubgraphImpl(aProductDef.ShapeRootId);
-      for (int o = 0; o < aProductDef.OccurrenceRefs.Length(); ++o)
-        invalidateSubgraphImpl(
-          BRepGraph_NodeId::Occurrence(aProductDef.OccurrenceRefs.Value(o).OccurrenceIdx));
-      break;
-    }
-    case BRepGraph_NodeId::Kind::Occurrence: {
-      const BRepGraph_TopoNode::OccurrenceDef& anOccDef =
-        myData->myIncStorage.Occurrence(theNode.Index);
-      if (anOccDef.ProductIdx >= 0)
-        invalidateSubgraphImpl(BRepGraph_NodeId::Product(anOccDef.ProductIdx));
-      break;
-    }
-    default:
-      break;
   }
 }
 
