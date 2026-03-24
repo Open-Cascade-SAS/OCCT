@@ -26,6 +26,8 @@ struct WireEntity;
 struct FaceEntity;
 struct ShellEntity;
 struct SolidEntity;
+struct CompoundEntity;
+struct CompSolidEntity;
 struct ProductEntity;
 struct OccurrenceEntity;
 } // namespace BRepGraphInc
@@ -56,12 +58,14 @@ public:
   //! @param[in] theFaces   face entity vector (for wire-to-face)
   //! @param[in] theShells  shell entity vector (for face-to-shell)
   //! @param[in] theSolids  solid entity vector (for shell-to-solid)
-  Standard_EXPORT void Build(const NCollection_Vector<BRepGraphInc::EdgeEntity>&   theEdges,
-                             const NCollection_Vector<BRepGraphInc::CoEdgeEntity>& theCoEdges,
-                             const NCollection_Vector<BRepGraphInc::WireEntity>&   theWires,
-                             const NCollection_Vector<BRepGraphInc::FaceEntity>&   theFaces,
-                             const NCollection_Vector<BRepGraphInc::ShellEntity>&  theShells,
-                             const NCollection_Vector<BRepGraphInc::SolidEntity>&  theSolids);
+  Standard_EXPORT void Build(const NCollection_Vector<BRepGraphInc::EdgeEntity>&       theEdges,
+                             const NCollection_Vector<BRepGraphInc::CoEdgeEntity>&   theCoEdges,
+                             const NCollection_Vector<BRepGraphInc::WireEntity>&     theWires,
+                             const NCollection_Vector<BRepGraphInc::FaceEntity>&     theFaces,
+                             const NCollection_Vector<BRepGraphInc::ShellEntity>&    theShells,
+                             const NCollection_Vector<BRepGraphInc::SolidEntity>&    theSolids,
+                             const NCollection_Vector<BRepGraphInc::CompoundEntity>& theCompounds,
+                             const NCollection_Vector<BRepGraphInc::CompSolidEntity>& theCompSolids);
 
   //! Incrementally update reverse indices for entities appended after a previous Build().
   //! Only processes entities from the old counts to the current vector lengths.
@@ -138,6 +142,48 @@ public:
   const NCollection_Vector<int>* SolidsOfShell(const int theShellIdx) const
   {
     return seekVec(myShellToSolids, theShellIdx);
+  }
+
+  //! Return compound indices containing the given solid as a ChildRef.
+  const NCollection_Vector<int>* CompoundsOfSolid(const int theSolidIdx) const
+  {
+    return seekVec(myCompoundsOfSolid, theSolidIdx);
+  }
+
+  //! Return compsolid indices containing the given solid as a SolidRef.
+  const NCollection_Vector<int>* CompSolidsOfSolid(const int theSolidIdx) const
+  {
+    return seekVec(myCompSolidsOfSolid, theSolidIdx);
+  }
+
+  //! Return compound indices containing the given shell as a ChildRef.
+  const NCollection_Vector<int>* CompoundsOfShell(const int theShellIdx) const
+  {
+    return seekVec(myCompoundsOfShell, theShellIdx);
+  }
+
+  //! Return compound indices containing the given face as a ChildRef.
+  const NCollection_Vector<int>* CompoundsOfFace(const int theFaceIdx) const
+  {
+    return seekVec(myCompoundsOfFace, theFaceIdx);
+  }
+
+  //! Return compound indices containing the given compound as a ChildRef.
+  const NCollection_Vector<int>* CompoundsOfCompound(const int theCompoundIdx) const
+  {
+    return seekVec(myCompoundsOfCompound, theCompoundIdx);
+  }
+
+  //! Return compound indices containing the given compsolid as a ChildRef.
+  const NCollection_Vector<int>* CompoundsOfCompSolid(const int theCompSolidIdx) const
+  {
+    return seekVec(myCompoundsOfCompSolid, theCompSolidIdx);
+  }
+
+  //! Return wire indices containing the given coedge.
+  const NCollection_Vector<int>* WiresOfCoEdge(const int theCoEdgeIdx) const
+  {
+    return seekVec(myCoEdgeToWires, theCoEdgeIdx);
   }
 
   //! Return occurrence indices that reference the given product.
@@ -258,6 +304,14 @@ private:
   IndexTable myFaceToShells;
   IndexTable myShellToSolids;
   IndexTable myProductToOccurrences;
+
+  IndexTable myCompoundsOfSolid;    //!< Solid → parent Compound indices.
+  IndexTable myCompSolidsOfSolid;   //!< Solid → parent CompSolid indices.
+  IndexTable myCompoundsOfShell;    //!< Shell → parent Compound indices.
+  IndexTable myCompoundsOfFace;     //!< Face → parent Compound indices.
+  IndexTable myCompoundsOfCompound;  //!< Compound → parent Compound indices.
+  IndexTable myCompoundsOfCompSolid; //!< CompSolid → parent Compound indices.
+  IndexTable myCoEdgeToWires;        //!< CoEdge → parent Wire indices.
 
   NCollection_Vector<int> myEdgeFaceCount; //!< Cached face count per edge, O(1) lookup.
 };

@@ -18,6 +18,8 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_Data.hxx
   BRepGraph_DefsView.cxx
   BRepGraph_DefsView.hxx
+  BRepGraph_Explorer.cxx
+  BRepGraph_Explorer.hxx
   BRepGraph_History.cxx
   BRepGraph_History.hxx
   BRepGraph_HistoryRecord.hxx
@@ -44,6 +46,7 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_SpatialView.cxx
   BRepGraph_SpatialView.hxx
   BRepGraph_SubGraph.hxx
+  BRepGraph_TopologyPath.hxx
   BRepGraph_Tool.cxx
   BRepGraph_Tool.hxx
   BRepGraph_TopoNode.hxx

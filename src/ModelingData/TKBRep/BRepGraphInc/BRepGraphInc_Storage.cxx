@@ -243,7 +243,8 @@ void BRepGraphInc_Storage::DecrementActiveCount(const BRepGraph_NodeId::Kind the
 void BRepGraphInc_Storage::BuildReverseIndex()
 {
   myReverseIdx.SetAllocator(myAllocator);
-  myReverseIdx.Build(myEdges, myCoEdges, myWires, myFaces, myShells, mySolids);
+  myReverseIdx.Build(myEdges, myCoEdges, myWires, myFaces, myShells, mySolids,
+                     myCompounds, myCompSolids);
   myReverseIdx.BuildProductOccurrences(myOccurrences, myProducts.Length());
 
   // Recount active entities to sync counters after Build.

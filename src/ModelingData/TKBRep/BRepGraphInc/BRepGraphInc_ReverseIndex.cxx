@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <BRepGraphInc_ReverseIndex.hxx>
+#include <BRepGraph_NodeId.hxx>
 #include <BRepGraphInc_Entity.hxx>
 #include <NCollection_LocalArray.hxx>
 
@@ -28,6 +29,13 @@ void BRepGraphInc_ReverseIndex::Clear()
   myWireToFaces.Clear();
   myFaceToShells.Clear();
   myShellToSolids.Clear();
+  myCompoundsOfSolid.Clear();
+  myCompSolidsOfSolid.Clear();
+  myCompoundsOfShell.Clear();
+  myCompoundsOfFace.Clear();
+  myCompoundsOfCompound.Clear();
+  myCompoundsOfCompSolid.Clear();
+  myCoEdgeToWires.Clear();
   myEdgeFaceCount.Clear();
   myProductToOccurrences.Clear();
 }
@@ -35,12 +43,14 @@ void BRepGraphInc_ReverseIndex::Clear()
 //=================================================================================================
 
 void BRepGraphInc_ReverseIndex::Build(
-  const NCollection_Vector<BRepGraphInc::EdgeEntity>&   theEdges,
-  const NCollection_Vector<BRepGraphInc::CoEdgeEntity>& theCoEdges,
-  const NCollection_Vector<BRepGraphInc::WireEntity>&   theWires,
-  const NCollection_Vector<BRepGraphInc::FaceEntity>&   theFaces,
-  const NCollection_Vector<BRepGraphInc::ShellEntity>&  theShells,
-  const NCollection_Vector<BRepGraphInc::SolidEntity>&  theSolids)
+  const NCollection_Vector<BRepGraphInc::EdgeEntity>&       theEdges,
+  const NCollection_Vector<BRepGraphInc::CoEdgeEntity>&     theCoEdges,
+  const NCollection_Vector<BRepGraphInc::WireEntity>&       theWires,
+  const NCollection_Vector<BRepGraphInc::FaceEntity>&       theFaces,
+  const NCollection_Vector<BRepGraphInc::ShellEntity>&      theShells,
+  const NCollection_Vector<BRepGraphInc::SolidEntity>&      theSolids,
+  const NCollection_Vector<BRepGraphInc::CompoundEntity>&   theCompounds,
+  const NCollection_Vector<BRepGraphInc::CompSolidEntity>&  theCompSolids)
 {
   // Reconstruct outer index tables with allocator if set.
   if (!myAllocator.IsNull())
@@ -209,6 +219,55 @@ void BRepGraphInc_ReverseIndex::Build(
     {
       appendDirect(myShellToSolids, aSolid.ShellRefs.Value(i).ShellIdx, aSolidIdx);
     }
+  }
+
+  // Compound -> child reverse indices: scan compound ChildRefs by kind.
+  preSize(myCompoundsOfSolid, theSolids.Length(), myAllocator);
+  preSize(myCompoundsOfShell, theShells.Length(), myAllocator);
+  preSize(myCompoundsOfFace, theFaces.Length(), myAllocator);
+  preSize(myCompoundsOfCompound, theCompounds.Length(), myAllocator);
+  preSize(myCompoundsOfCompSolid, theCompSolids.Length(), myAllocator);
+  for (int aCompIdx = 0; aCompIdx < theCompounds.Length(); ++aCompIdx)
+  {
+    const BRepGraphInc::CompoundEntity& aComp = theCompounds.Value(aCompIdx);
+    if (aComp.IsRemoved)
+      continue;
+    for (int i = 0; i < aComp.ChildRefs.Length(); ++i)
+    {
+      const BRepGraphInc::ChildRef& aRef = aComp.ChildRefs.Value(i);
+      if (aRef.Kind == static_cast<int>(BRepGraph_NodeId::Kind::Solid))
+        appendDirect(myCompoundsOfSolid, aRef.ChildIdx, aCompIdx);
+      else if (aRef.Kind == static_cast<int>(BRepGraph_NodeId::Kind::Shell))
+        appendDirect(myCompoundsOfShell, aRef.ChildIdx, aCompIdx);
+      else if (aRef.Kind == static_cast<int>(BRepGraph_NodeId::Kind::Face))
+        appendDirect(myCompoundsOfFace, aRef.ChildIdx, aCompIdx);
+      else if (aRef.Kind == static_cast<int>(BRepGraph_NodeId::Kind::Compound))
+        appendDirect(myCompoundsOfCompound, aRef.ChildIdx, aCompIdx);
+      else if (aRef.Kind == static_cast<int>(BRepGraph_NodeId::Kind::CompSolid))
+        appendDirect(myCompoundsOfCompSolid, aRef.ChildIdx, aCompIdx);
+    }
+  }
+
+  // CompSolid -> Solid reverse index: scan compsolid SolidRefs.
+  preSize(myCompSolidsOfSolid, theSolids.Length(), myAllocator);
+  for (int aCSIdx = 0; aCSIdx < theCompSolids.Length(); ++aCSIdx)
+  {
+    const BRepGraphInc::CompSolidEntity& aCS = theCompSolids.Value(aCSIdx);
+    if (aCS.IsRemoved)
+      continue;
+    for (int i = 0; i < aCS.SolidRefs.Length(); ++i)
+      appendDirect(myCompSolidsOfSolid, aCS.SolidRefs.Value(i).SolidIdx, aCSIdx);
+  }
+
+  // CoEdge -> Wires: scan wire coedge refs.
+  preSize(myCoEdgeToWires, theCoEdges.Length(), myAllocator);
+  for (int aWireIdx = 0; aWireIdx < theWires.Length(); ++aWireIdx)
+  {
+    const BRepGraphInc::WireEntity& aWire = theWires.Value(aWireIdx);
+    if (aWire.IsRemoved)
+      continue;
+    for (int i = 0; i < aWire.CoEdgeRefs.Length(); ++i)
+      appendDirect(myCoEdgeToWires, aWire.CoEdgeRefs.Value(i).CoEdgeIdx, aWireIdx);
   }
 }
 
