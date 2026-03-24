@@ -14,7 +14,6 @@
 #include <BRepGraphCheck.hxx>
 
 #include <BRepGraph_DefsView.hxx>
-#include <BRepGraph_RelEdgesView.hxx>
 #include <BRepGraph_SpatialView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_TopoNode.hxx>

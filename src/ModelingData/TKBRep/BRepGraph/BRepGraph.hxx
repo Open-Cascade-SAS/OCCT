@@ -17,7 +17,6 @@
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_UID.hxx>
 #include <BRepGraph_TopoNode.hxx>
-#include <BRepGraph_RelEdge.hxx>
 #include <BRepGraph_HistoryRecord.hxx>
 #include <BRepGraph_SubGraph.hxx>
 #include <BRepGraph_UserAttribute.hxx>
@@ -137,11 +136,9 @@ public:
   //! @name Grouped View API
   class DefsView;
   class UIDsView;
-  class RelEdgesView;
   class SpatialView;
   class AttrsView;
   class ShapesView;
-  class MutView;
   class BuilderView;
   class AnalyzeView;
 
@@ -149,16 +146,15 @@ public:
   DefsView Defs() const;
   //! Access unique identifiers.
   UIDsView UIDs() const;
-  //! Access relation edges.
-  RelEdgesView RelEdges() const;
   //! Access spatial and adjacency queries.
   SpatialView Spatial() const;
   //! Access user attributes.
   AttrsView Attrs();
   //! Access shape reconstruction.
   ShapesView Shapes() const;
-  //! Access mutable definitions and mutation operations.
-  MutView Mut();
+
+
+
 
   //! @name Scoped mutable definition guards (RAII).
   //! Return a BRepGraph_MutRef that defers markModified() to scope exit.
@@ -243,7 +239,6 @@ private:
   friend class BRepGraph_History;
   friend class BRepGraph_Analyze;
   friend class BRepGraph_Mutator;
-  friend class BRepGraph_BackRefManager;
   friend class BRepGraphAlgo_BndLib;
   friend class BRepGraphAlgo_Compact;
   friend class BRepGraphAlgo_Copy;

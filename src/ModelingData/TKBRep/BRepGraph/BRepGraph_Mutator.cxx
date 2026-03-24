@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepGraph_BackRefManager.hxx>
 #include <BRepGraph_Mutator.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_Data.hxx>

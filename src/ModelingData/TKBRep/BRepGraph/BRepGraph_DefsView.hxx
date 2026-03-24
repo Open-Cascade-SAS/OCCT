@@ -72,6 +72,10 @@ public:
   //! @param[in] theEdgeDefIdx zero-based edge definition index
   Standard_EXPORT int FaceCountOfEdge(const int theEdgeDefIdx) const;
 
+  //! Return wire definition indices that contain a given edge (safe reference, never null).
+  //! @param[in] theEdgeDefIdx zero-based edge definition index
+  Standard_EXPORT const NCollection_Vector<int>& WiresOfEdge(const int theEdgeDefIdx) const;
+
   //! Return coedge indices referencing the given edge (safe reference, never null).
   //! @param[in] theEdgeDefIdx zero-based edge definition index
   Standard_EXPORT const NCollection_Vector<int>& CoEdgesOfEdge(const int theEdgeDefIdx) const;
@@ -172,6 +176,11 @@ public:
 
   //! Total number of nodes in the graph (all topology + assembly kinds).
   Standard_EXPORT size_t NbNodes() const;
+
+  //! Check if a node has been soft-removed.
+  //! @param[in] theNode node to check
+  //! @return true if the node was marked as removed
+  Standard_EXPORT bool IsRemoved(const BRepGraph_NodeId theNode) const;
 
   //! @name Representation count accessors
 

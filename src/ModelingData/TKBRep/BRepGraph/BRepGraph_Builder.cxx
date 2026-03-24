@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepGraph_BackRefManager.hxx>
 #include <BRepGraph_Builder.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_Data.hxx>
@@ -64,8 +63,6 @@ void BRepGraph_Builder::Perform(BRepGraph&                            theGraph,
                                 const bool                            theParallel,
                                 const BRepGraphInc_Populate::Options& theOptions)
 {
-  BRepGraph_BackRefManager::ClearAll(theGraph);
-
   theGraph.myData->myIncStorage.Clear();
   theGraph.myData->myHistoryLog.Clear();
   theGraph.myData->myCurrentShapes.Clear();

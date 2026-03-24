@@ -22,9 +22,8 @@
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_Tool.hxx>
-#include <BRepGraph_MutView.hxx>
+#include <BRepGraph_Mutator.hxx>
 #include <BRepGraph_TypedAttribute.hxx>
-#include <BRepGraph_RelEdgesView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_SpatialView.hxx>
 #include <BRepGraph_UIDsView.hxx>
@@ -314,19 +313,19 @@ TEST_F(BRepGraphTest, DetectDegenerateWires_ValidBox_Empty)
 TEST_F(BRepGraphTest, MutableEdge_ModifyTolerance)
 {
   double anOrigTol = BRepGraph_Tool::Edge::Tolerance(myGraph, 0);
-  BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge = myGraph.Mut().EdgeDef(0);
+  BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge = myGraph.MutEdge(0);
   anEdge->Tolerance                                    = anOrigTol * 2.0;
   EXPECT_NEAR(BRepGraph_Tool::Edge::Tolerance(myGraph, 0), anOrigTol * 2.0, 1.0e-15);
 }
 
-TEST_F(BRepGraphTest, FaceCountForEdge_SharedEdge)
+TEST_F(BRepGraphTest, FaceCountOfEdge_SharedEdge)
 {
   // In a box, each non-degenerate edge is shared by exactly 2 faces.
   for (int anEdgeIdx = 0; anEdgeIdx < myGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
     if (!BRepGraph_Tool::Edge::Degenerated(myGraph, anEdgeIdx))
     {
-      int aCount = myGraph.Builder().FaceCountForEdge(anEdgeIdx);
+      int aCount = myGraph.Defs().FaceCountOfEdge(anEdgeIdx);
       EXPECT_EQ(aCount, 2) << "Edge " << anEdgeIdx << " should be shared by 2 faces";
     }
   }
@@ -336,19 +335,6 @@ TEST_F(BRepGraphTest, FreeEdges_ClosedBox_Empty)
 {
   NCollection_Vector<BRepGraph_NodeId> aFree = BRepGraph_Analyze::FreeEdges(myGraph);
   EXPECT_EQ(aFree.Length(), 0);
-}
-
-TEST_F(BRepGraphTest, AddRelEdge_UserDefined)
-{
-  BRepGraph_NodeId anEdge0(BRepGraph_NodeId::Kind::Edge, 0);
-  BRepGraph_NodeId anEdge1(BRepGraph_NodeId::Kind::Edge, 1);
-
-  myGraph.Mut().AddRelEdge(anEdge0, anEdge1, BRepGraph_RelEdge::Kind::UserDefined);
-  int aCount = 0;
-  myGraph.RelEdges().ForEachOutOfKind(anEdge0,
-                                      BRepGraph_RelEdge::Kind::UserDefined,
-                                      [&](const BRepGraph_RelEdge&) { ++aCount; });
-  EXPECT_EQ(aCount, 1);
 }
 
 TEST_F(BRepGraphTest, RecordHistory_BasicEntry)
@@ -376,7 +362,7 @@ TEST_F(BRepGraphTest, ReplaceEdgeInWire_Substitution)
   BRepGraph_NodeId aNewEdge(BRepGraph_NodeId::Kind::Edge,
                             (anOldEdge.Index + 1) % myGraph.Defs().NbEdges());
 
-  myGraph.Mut().ReplaceEdgeInWire(0, anOldEdge, aNewEdge, false);
+  BRepGraph_Mutator::ReplaceEdgeInWire(myGraph, 0, anOldEdge, aNewEdge, false);
 
   // Verify the substitution via the updated incidence refs.
   const BRepGraph_TopoNode::WireDef&   aWireDefAfter = myGraph.Defs().Wire(0);
@@ -483,9 +469,9 @@ TEST_F(BRepGraphTest, ReconstructFace_AfterEdgeReplace_ContainsNewEdge)
 
   // Get 3D curve handles from graph for old/new edges.
   occ::handle<Geom_Curve> aNewCurve  = BRepGraph_Tool::Edge::Curve(myGraph, aNewIdx);
-  occ::handle<Geom_Curve> anOldCurve = BRepGraph_Tool::Edge::Curve(myGraph, anOldEdgeId.Index);
+  occ::handle<Geom_Curve> anOldCurve = BRepGraph_Tool::Edge::Curve(myGraph, anOldEdgeId);
 
-  myGraph.Mut().ReplaceEdgeInWire(0, anOldEdgeId, aNewEdgeId, false);
+  BRepGraph_Mutator::ReplaceEdgeInWire(myGraph, 0, anOldEdgeId, aNewEdgeId, false);
 
   // Reconstruct face 0 (the face owning wire 0).
   const int aFaceIdx = myGraph.Defs().Face(0).OuterWireIdx() == 0 ? 0 : -1;
@@ -554,7 +540,7 @@ TEST_F(BRepGraphTest, Shape_AfterReplaceEdge_DiffersFromOriginal)
   int                            aNewIdx = (anOldEdgeId.Index + 1) % myGraph.Defs().NbEdges();
   BRepGraph_NodeId               aNewEdgeId(BRepGraph_NodeId::Kind::Edge, aNewIdx);
 
-  myGraph.Mut().ReplaceEdgeInWire(0, anOldEdgeId, aNewEdgeId, false);
+  BRepGraph_Mutator::ReplaceEdgeInWire(myGraph, 0, anOldEdgeId, aNewEdgeId, false);
 
   // Find the face that owns wire 0.
   int aFaceDefIdx = -1;
@@ -601,7 +587,7 @@ TEST_F(BRepGraphTest, IsModified_MutableEdge_PropagatesUp)
 {
   EXPECT_FALSE(myGraph.Defs().Edge(0).IsModified);
 
-  myGraph.Mut().EdgeDef(0);
+  myGraph.MutEdge(0);
 
   EXPECT_TRUE(myGraph.Defs().Edge(0).IsModified);
 
@@ -610,7 +596,7 @@ TEST_F(BRepGraphTest, IsModified_MutableEdge_PropagatesUp)
   if (anEdge.Id.IsValid())
   {
     // Find a wire containing this edge.
-    const NCollection_Vector<int>& aWires = myGraph.Builder().WiresOfEdge(0);
+    const NCollection_Vector<int>& aWires = myGraph.Defs().WiresOfEdge(0);
     if (aWires.Length() > 0)
     {
       EXPECT_TRUE(myGraph.Defs().Wire(aWires.Value(0)).IsModified);
@@ -665,7 +651,7 @@ TEST_F(BRepGraphTest, Shape_InvalidatedAfterMutation)
   TopoDS_Shape     aBefore = myGraph.Shapes().Shape(anEdgeId);
   EXPECT_FALSE(aBefore.IsNull());
 
-  myGraph.Mut().EdgeDef(0)->Tolerance = 0.123;
+  myGraph.MutEdge(0)->Tolerance = 0.123;
   TopoDS_Shape anAfter                = myGraph.Shapes().Shape(anEdgeId);
   EXPECT_FALSE(anAfter.IsNull());
 
@@ -858,7 +844,7 @@ TEST_F(BRepGraphTest, AddPCurveToEdge_NewPCurve_RetrievableViaFindPCurve)
   BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
 
   occ::handle<Geom2d_Line> aCurve2d = new Geom2d_Line(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0));
-  myGraph.Mut().AddPCurveToEdge(anEdgeId, aFaceId, aCurve2d, 0.0, 1.0);
+  myGraph.Builder().AddPCurveToEdge(anEdgeId, aFaceId, aCurve2d, 0.0, 1.0);
 
   const BRepGraphInc::CoEdgeEntity* aRetrieved = myGraph.Defs().FindPCurve(anEdgeId, aFaceId);
   EXPECT_NE(aRetrieved, nullptr);
@@ -882,7 +868,7 @@ TEST_F(BRepGraphTest, ReplaceEdgeInWire_Reversed_OrientationFlipped)
   int              aNewIdx = (anOldEdgeId.Index + 1) % myGraph.Defs().NbEdges();
   BRepGraph_NodeId aNewEdgeId(BRepGraph_NodeId::Kind::Edge, aNewIdx);
 
-  myGraph.Mut().ReplaceEdgeInWire(0, anOldEdgeId, aNewEdgeId, true);
+  BRepGraph_Mutator::ReplaceEdgeInWire(myGraph, 0, anOldEdgeId, aNewEdgeId, true);
 
   const BRepGraph_TopoNode::WireDef&   aWireDefAfter = myGraph.Defs().Wire(0);
   const BRepGraphInc::CoEdgeRef&       aNewCR        = aWireDefAfter.CoEdgeRefs.Value(0);
@@ -897,52 +883,13 @@ TEST_F(BRepGraphTest, ReplaceEdgeInWire_Reversed_OrientationFlipped)
 
 TEST_F(BRepGraphTest, MutableVertex_ChangePoint_Verified)
 {
-  BRepGraph_MutRef<BRepGraph_TopoNode::VertexDef> aMutVert = myGraph.Mut().VertexDef(0);
+  BRepGraph_MutRef<BRepGraph_TopoNode::VertexDef> aMutVert = myGraph.MutVertex(0);
   aMutVert->Point                                          = gp_Pnt(99.0, 99.0, 99.0);
 
   const BRepGraph_TopoNode::VertexDef& aVert = myGraph.Defs().Vertex(0);
   EXPECT_NEAR(aVert.Point.X(), 99.0, Precision::Confusion());
   EXPECT_NEAR(aVert.Point.Y(), 99.0, Precision::Confusion());
   EXPECT_NEAR(aVert.Point.Z(), 99.0, Precision::Confusion());
-}
-
-TEST_F(BRepGraphTest, RemoveRelEdges_AddThenRemove_GoneFromOutEdges)
-{
-  BRepGraph_NodeId anEdge0(BRepGraph_NodeId::Kind::Edge, 0);
-  BRepGraph_NodeId anEdge1(BRepGraph_NodeId::Kind::Edge, 1);
-
-  myGraph.Mut().AddRelEdge(anEdge0, anEdge1, BRepGraph_RelEdge::Kind::UserDefined);
-
-  int aBefore = 0;
-  myGraph.RelEdges().ForEachOutOfKind(anEdge0,
-                                      BRepGraph_RelEdge::Kind::UserDefined,
-                                      [&](const BRepGraph_RelEdge&) { ++aBefore; });
-  EXPECT_GE(aBefore, 1);
-
-  myGraph.Mut().RemoveRelEdges(anEdge0, anEdge1, BRepGraph_RelEdge::Kind::UserDefined);
-
-  int anAfter = 0;
-  myGraph.RelEdges().ForEachOutOfKind(anEdge0,
-                                      BRepGraph_RelEdge::Kind::UserDefined,
-                                      [&](const BRepGraph_RelEdge&) { ++anAfter; });
-  EXPECT_EQ(anAfter, 0);
-}
-
-TEST_F(BRepGraphTest, InEdgesOfKind_UserDefined_ReverseLookup)
-{
-  BRepGraph_NodeId anEdgeA(BRepGraph_NodeId::Kind::Edge, 0);
-  BRepGraph_NodeId anEdgeB(BRepGraph_NodeId::Kind::Edge, 1);
-
-  myGraph.Mut().AddRelEdge(anEdgeA, anEdgeB, BRepGraph_RelEdge::Kind::UserDefined);
-
-  bool isFound = false;
-  myGraph.RelEdges().ForEachInOfKind(anEdgeB,
-                                     BRepGraph_RelEdge::Kind::UserDefined,
-                                     [&](const BRepGraph_RelEdge& theRelEdge) {
-                                       if (theRelEdge.Source == anEdgeA)
-                                         isFound = true;
-                                     });
-  EXPECT_TRUE(isFound) << "EdgeA not found as source in ForEachInEdgeOfKind(EdgeB)";
 }
 
 // ===================================================================
@@ -1158,8 +1105,8 @@ TEST_F(BRepGraphTest, DetectToleranceConflicts_ManualConflict_Detected)
         continue;
 
       // Set very different tolerances on two edges sharing the same curve.
-      myGraph.Mut().EdgeDef(anEdgeIdx)->Tolerance  = 0.001;
-      myGraph.Mut().EdgeDef(anOtherIdx)->Tolerance = 1.0;
+      myGraph.MutEdge(anEdgeIdx)->Tolerance  = 0.001;
+      myGraph.MutEdge(anOtherIdx)->Tolerance = 1.0;
 
       isConflictSetUp = true;
       break;
@@ -1487,14 +1434,14 @@ TEST_F(BRepGraphTest, Centroid_Face_InsideBBox)
 
 TEST_F(BRepGraphTest, MutableWireDef_ModifyClosure_Verified)
 {
-  BRepGraph_MutRef<BRepGraph_TopoNode::WireDef> aMutWD       = myGraph.Mut().WireDef(0);
+  BRepGraph_MutRef<BRepGraph_TopoNode::WireDef> aMutWD       = myGraph.MutWire(0);
   bool                                          anOrigClosed = aMutWD->IsClosed;
   aMutWD->IsClosed                                           = !anOrigClosed;
 
   EXPECT_EQ(myGraph.Defs().Wire(0).IsClosed, !anOrigClosed);
 
   // Restore original state.
-  myGraph.Mut().WireDef(0)->IsClosed = anOrigClosed;
+  myGraph.MutWire(0)->IsClosed = anOrigClosed;
   EXPECT_EQ(myGraph.Defs().Wire(0).IsClosed, anOrigClosed);
 }
 

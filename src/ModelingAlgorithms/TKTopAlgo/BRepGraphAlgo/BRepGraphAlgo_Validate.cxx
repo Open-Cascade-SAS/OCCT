@@ -14,7 +14,6 @@
 #include <BRepGraphAlgo_Validate.hxx>
 
 #include <BRepGraph_DefsView.hxx>
-#include <BRepGraph_RelEdgesView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
 #include <BRepGraphInc_WireExplorer.hxx>
@@ -284,14 +283,14 @@ void checkReverseIndexConsistency(const BRepGraph&                              
     }
   }
 
-  // Check that RelEdges WiresOfEdge matches expected.
+  // Check that Defs WiresOfEdge matches expected.
   for (int anEdgeIdx = 0; anEdgeIdx < theGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
     const BRepGraph_TopoNode::EdgeDef& anEdge = theGraph.Defs().Edge(anEdgeIdx);
     if (anEdge.IsRemoved)
       continue;
 
-    const NCollection_Vector<int>& aActualWires    = theGraph.RelEdges().WiresOfEdge(anEdgeIdx);
+    const NCollection_Vector<int>& aActualWires    = theGraph.Defs().WiresOfEdge(anEdgeIdx);
     const NCollection_Map<int>*    anExpectedWires = anExpected.Seek(anEdgeIdx);
 
     const int anExpectedCount = (anExpectedWires != nullptr) ? anExpectedWires->Extent() : 0;

@@ -15,7 +15,6 @@
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_Iterator.hxx>
-#include <BRepGraph_MutView.hxx>
 #include <BRepGraph_SpatialView.hxx>
 #include <BRepGraph_UIDsView.hxx>
 #include <BRepGraphInc_ReverseIndex.hxx>
@@ -223,7 +222,7 @@ TEST(BRepGraphAssemblyTest, RemoveOccurrence_UpdatesParent)
   // Remove the occurrence - should update parent's OccurrenceRefs.
   aGraph.Builder().RemoveSubgraph(anOccId);
 
-  EXPECT_TRUE(aGraph.Builder().IsRemoved(anOccId));
+  EXPECT_TRUE(aGraph.Defs().IsRemoved(anOccId));
   EXPECT_EQ(aGraph.Defs().Product(aAssemblyId.Index).OccurrenceRefs.Length(), 0);
 }
 
@@ -247,9 +246,9 @@ TEST(BRepGraphAssemblyTest, RemoveProduct_CascadeOccurrences)
   // Remove the assembly product - cascades to its child occurrences.
   aGraph.Builder().RemoveSubgraph(aAssemblyId);
 
-  EXPECT_TRUE(aGraph.Builder().IsRemoved(aAssemblyId));
-  EXPECT_TRUE(aGraph.Builder().IsRemoved(anOcc1));
-  EXPECT_TRUE(aGraph.Builder().IsRemoved(anOcc2));
+  EXPECT_TRUE(aGraph.Defs().IsRemoved(aAssemblyId));
+  EXPECT_TRUE(aGraph.Defs().IsRemoved(anOcc1));
+  EXPECT_TRUE(aGraph.Defs().IsRemoved(anOcc2));
 }
 
 // =============================================================================

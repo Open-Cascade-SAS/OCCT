@@ -19,7 +19,6 @@
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_HistoryRecord.hxx>
-#include <BRepGraph_MutView.hxx>
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_UID.hxx>
@@ -281,8 +280,8 @@ TEST(BRepGraphAlgo_CompactTest, MutationGen_SurvivesCompact)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Mutate edge 0 twice so MutationGen == THE_EXPECTED_MUTATION_GEN.
-  aGraph.Mut().EdgeDef(0)->Tolerance = 0.1;
-  aGraph.Mut().EdgeDef(0)->Tolerance = THE_MUTATED_EDGE_TOLERANCE;
+  aGraph.MutEdge(0)->Tolerance = 0.1;
+  aGraph.MutEdge(0)->Tolerance = THE_MUTATED_EDGE_TOLERANCE;
   ASSERT_EQ(aGraph.Defs().Edge(0).MutationGen, THE_EXPECTED_MUTATION_GEN);
 
   // Run dedup + compact.

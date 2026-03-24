@@ -21,8 +21,6 @@
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_Mutator.hxx>
 #include <BRepGraph_MutRef.hxx>
-#include <BRepGraph_MutView.hxx>
-#include <BRepGraph_RelEdgesView.hxx>
 #include <BRepGraph_UID.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
 
@@ -337,7 +335,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
 
     // Copy triangulations from old FaceDef to new FaceDef.
     BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aNewFace =
-      aNewGraph.Mut().FaceDef(aFaceMap.Find(anIdx));
+      aNewGraph.MutFace(aFaceMap.Find(anIdx));
     aNewFace->TriangulationRepIdxs     = anOldFace.TriangulationRepIdxs;
     aNewFace->ActiveTriangulationIndex = anOldFace.ActiveTriangulationIndex;
   }
@@ -367,12 +365,12 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
 
       const occ::handle<Geom2d_Curve>& aCompactPCurve =
         BRepGraph_Tool::CoEdge::PCurve(theGraph, aCoEdgeIdxs->Value(aCEIter));
-      aNewGraph.Mut().AddPCurveToEdge(BRepGraph_NodeId::Edge(aNewEdgeIdx),
-                                      aNewFaceId,
-                                      aCompactPCurve,
-                                      aCoEdge.ParamFirst,
-                                      aCoEdge.ParamLast,
-                                      aCoEdge.Sense);
+      aNewGraph.Builder().AddPCurveToEdge(BRepGraph_NodeId::Edge(aNewEdgeIdx),
+                                          aNewFaceId,
+                                          aCompactPCurve,
+                                          aCoEdge.ParamFirst,
+                                          aCoEdge.ParamLast,
+                                          aCoEdge.Sense);
     }
   }
 

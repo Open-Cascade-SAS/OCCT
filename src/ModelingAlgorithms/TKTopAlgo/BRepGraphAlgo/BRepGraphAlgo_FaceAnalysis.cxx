@@ -15,7 +15,6 @@
 
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_MutRef.hxx>
-#include <BRepGraph_MutView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_Map.hxx>
@@ -186,7 +185,7 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
     // Remove face if all edges are small/degenerate.
     if (aNbEdges > 0 && aNbSmall == aNbEdges)
     {
-      theGraph.Mut().FaceDef(aFaceIdx)->IsRemoved = true;
+      theGraph.MutFace(aFaceIdx)->IsRemoved = true;
       aResult.DeletedFaces.Append(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, aFaceIdx));
     }
   }

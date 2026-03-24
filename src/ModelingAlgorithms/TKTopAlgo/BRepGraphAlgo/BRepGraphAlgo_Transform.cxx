@@ -18,7 +18,6 @@
 #include <BRepGraph_Data.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_MutRef.hxx>
-#include <BRepGraph_MutView.hxx>
 #include <BRepGraph_Tool.hxx>
 
 #include <NCollection_Map.hxx>
@@ -35,7 +34,7 @@ void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
   // Transform absolute vertex points.
   for (int anIdx = 0; anIdx < theGraph.Defs().NbVertices(); ++anIdx)
   {
-    theGraph.Mut().VertexDef(anIdx)->Point.Transform(theTrsf);
+    theGraph.MutVertex(anIdx)->Point.Transform(theTrsf);
   }
 
   // Transform surface geometry handles directly on surface reps.
@@ -43,7 +42,7 @@ void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
   NCollection_Map<int> aVisitedSurfReps;
   for (int anIdx = 0; anIdx < theGraph.Defs().NbFaces(); ++anIdx)
   {
-    BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aFace = theGraph.Mut().FaceDef(anIdx);
+    BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aFace = theGraph.MutFace(anIdx);
     if (BRepGraph_Tool::Face::HasSurface(theGraph, anIdx)
         && aVisitedSurfReps.Add(aFace->SurfaceRepIdx))
     {
@@ -60,7 +59,7 @@ void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
   NCollection_Map<int> aVisitedCurveReps;
   for (int anIdx = 0; anIdx < theGraph.Defs().NbEdges(); ++anIdx)
   {
-    BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge = theGraph.Mut().EdgeDef(anIdx);
+    BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge = theGraph.MutEdge(anIdx);
     if (BRepGraph_Tool::Edge::HasCurve(theGraph, anIdx)
         && aVisitedCurveReps.Add(anEdge->Curve3DRepIdx))
     {

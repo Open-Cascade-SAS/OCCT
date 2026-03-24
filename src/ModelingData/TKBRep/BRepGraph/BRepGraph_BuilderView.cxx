@@ -11,11 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepGraph_BackRefManager.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_Data.hxx>
 #include <BRepGraph_Builder.hxx>
 
+#include <Geom2d_Curve.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
 #include <NCollection_PackedMap.hxx>
@@ -417,8 +417,6 @@ void BRepGraph::BuilderView::RemoveNode(const BRepGraph_NodeId theNode,
     myGraph->myData->myIncStorage.DecrementActiveCount(theNode.NodeKind);
   }
 
-  BRepGraph_BackRefManager::ClearRelEdges(*myGraph, theNode);
-
   BRepGraph_NodeCache* aCache = myGraph->mutableCache(theNode);
   if (aCache != nullptr)
     aCache->InvalidateAll();
@@ -565,27 +563,36 @@ void BRepGraph::BuilderView::RemoveSubgraph(const BRepGraph_NodeId theNode)
 
 //=================================================================================================
 
-bool BRepGraph::BuilderView::IsRemoved(const BRepGraph_NodeId theNode) const
+void BRepGraph::BuilderView::AddPCurveToEdge(const BRepGraph_NodeId           theEdgeDef,
+                                              const BRepGraph_NodeId           theFaceDef,
+                                              const occ::handle<Geom2d_Curve>& theCurve2d,
+                                              const double                     theFirst,
+                                              const double                     theLast,
+                                              const TopAbs_Orientation         theEdgeOrientation)
 {
-  const BRepGraph_TopoNode::BaseDef* aDef = myGraph->TopoDef(theNode);
-  if (aDef == nullptr)
-    return false;
-  return aDef->IsRemoved;
-}
+  BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
 
-//=================================================================================================
+  // Create CoEdge entity for the new PCurve binding.
+  BRepGraphInc::CoEdgeEntity& aCoEdge    = aStorage.AppendCoEdge();
+  const int                   aCoEdgeIdx = aStorage.NbCoEdges() - 1;
+  aCoEdge.Id                             = BRepGraph_NodeId::CoEdge(aCoEdgeIdx);
+  aCoEdge.EdgeIdx                        = theEdgeDef.Index;
+  aCoEdge.FaceDefId                      = theFaceDef;
+  aCoEdge.Sense                          = theEdgeOrientation;
+  if (!theCurve2d.IsNull())
+  {
+    BRepGraphInc::Curve2DRep& aCurve2DRep    = aStorage.AppendCurve2DRep();
+    const int                 aCurve2DRepIdx = aStorage.NbCurves2D() - 1;
+    aCurve2DRep.Id                           = BRepGraph_RepId::Curve2D(aCurve2DRepIdx);
+    aCurve2DRep.Curve                        = theCurve2d;
+    aCoEdge.Curve2DRepIdx                    = aCurve2DRepIdx;
+  }
+  aCoEdge.ParamFirst = theFirst;
+  aCoEdge.ParamLast  = theLast;
 
-int BRepGraph::BuilderView::FaceCountForEdge(const int theEdgeDefIdx) const
-{
-  // Direct PCurve-based path: valid during/after build when PCurves and wires are consistent.
-  const NCollection_Vector<int>* aFaces =
-    myGraph->myData->myIncStorage.ReverseIndex().FacesOfEdge(theEdgeDefIdx);
-  return aFaces != nullptr ? aFaces->Length() : 0;
-}
+  // Update reverse indices.
+  aStorage.ChangeReverseIndex().BindEdgeToCoEdge(theEdgeDef.Index, aCoEdgeIdx);
+  aStorage.ChangeReverseIndex().BindEdgeToFace(theEdgeDef.Index, theFaceDef.Index);
 
-//=================================================================================================
-
-const NCollection_Vector<int>& BRepGraph::BuilderView::WiresOfEdge(const int theEdgeDefIdx) const
-{
-  return myGraph->myData->myIncStorage.ReverseIndex().WiresOfEdgeRef(theEdgeDefIdx);
+  myGraph->markModified(theEdgeDef);
 }

@@ -56,7 +56,7 @@ static double computeWireSignedArea(const BRepGraph&                   theGraph,
     const BRepGraph_TopoNode::CoEdgeDef& aCoEdgeDef = aDefs.CoEdge(aCoEdgeRef.CoEdgeIdx);
 
     const BRepGraphInc::CoEdgeEntity* aPCurve =
-      BRepGraph_Tool::Edge::FindPCurve(theGraph, aCoEdgeDef.EdgeIdx, theFaceNodeId.Index);
+      BRepGraph_Tool::Edge::FindPCurve(theGraph, BRepGraph_NodeId::Edge(aCoEdgeDef.EdgeIdx), theFaceNodeId);
     if (aPCurve == nullptr)
       continue;
 
@@ -134,7 +134,7 @@ static void collectWirePCurves(const BRepGraph&                   theGraph,
     }
 
     const BRepGraphInc::CoEdgeEntity* aPCurve =
-      BRepGraph_Tool::Edge::FindPCurve(theGraph, aCoEdgeDef.EdgeIdx, theFaceNodeId.Index);
+      BRepGraph_Tool::Edge::FindPCurve(theGraph, BRepGraph_NodeId::Edge(aCoEdgeDef.EdgeIdx), theFaceNodeId);
     if (aPCurve == nullptr)
     {
       theResult.Edges.Append(WirePCurveSet::EdgeData());

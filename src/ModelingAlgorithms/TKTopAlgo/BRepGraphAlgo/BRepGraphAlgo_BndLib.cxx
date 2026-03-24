@@ -643,9 +643,9 @@ static void addNodeBoxOptimal(const BRepGraph& theGraph,
   {
     case BRepGraph_NodeId::Kind::Vertex: {
       Bnd_Box aLocBox;
-      aLocBox.Add(BRepGraph_Tool::Vertex::Pnt(theGraph, theNode.Index));
+      aLocBox.Add(BRepGraph_Tool::Vertex::Pnt(theGraph, theNode));
       const double aTol =
-        theUseShapeTol ? BRepGraph_Tool::Vertex::Tolerance(theGraph, theNode.Index) : 0.;
+        theUseShapeTol ? BRepGraph_Tool::Vertex::Tolerance(theGraph, theNode) : 0.;
       aLocBox.Enlarge(aTol);
       double xmin, ymin, zmin, xmax, ymax, zmax;
       aLocBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);

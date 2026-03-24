@@ -22,6 +22,7 @@
 
 class Geom_Surface;
 class Geom_Curve;
+class Geom2d_Curve;
 
 //! @brief Non-const view for programmatic graph construction.
 //!
@@ -146,6 +147,22 @@ public:
   //! @param[in] theParallel if true, per-face geometry extraction is parallel
   Standard_EXPORT void AppendShape(const TopoDS_Shape& theShape, const bool theParallel = false);
 
+  //! Attach a PCurve to an edge for a given face context.
+  //! Creates a new CoEdge entity with Curve2DRep and updates reverse indices.
+  //! @param[in] theEdgeDef           edge definition NodeId
+  //! @param[in] theFaceDef           face definition NodeId
+  //! @param[in] theCurve2d           2D curve geometry
+  //! @param[in] theFirst             first curve parameter
+  //! @param[in] theLast              last curve parameter
+  //! @param[in] theEdgeOrientation   edge orientation on the face
+  Standard_EXPORT void AddPCurveToEdge(
+    const BRepGraph_NodeId           theEdgeDef,
+    const BRepGraph_NodeId           theFaceDef,
+    const occ::handle<Geom2d_Curve>& theCurve2d,
+    const double                     theFirst,
+    const double                     theLast,
+    const TopAbs_Orientation         theEdgeOrientation = TopAbs_FORWARD);
+
   //! Mark a node as removed (soft deletion).
   //! @param[in] theNode node to remove
   Standard_EXPORT void RemoveNode(const BRepGraph_NodeId theNode);
@@ -163,19 +180,6 @@ public:
   //! Mark a node and all its descendants as removed (cascading soft deletion).
   //! @param[in] theNode root node to remove
   Standard_EXPORT void RemoveSubgraph(const BRepGraph_NodeId theNode);
-
-  //! Check if a node has been soft-removed.
-  //! @param[in] theNode node to check
-  //! @return true if the node was marked as removed
-  Standard_EXPORT bool IsRemoved(const BRepGraph_NodeId theNode) const;
-
-  //! Number of distinct faces referencing a given edge definition.
-  //! @param[in] theEdgeDefIdx zero-based edge definition index
-  Standard_EXPORT int FaceCountForEdge(const int theEdgeDefIdx) const;
-
-  //! Return all wire definition indices that contain a given edge.
-  //! @param[in] theEdgeDefIdx zero-based edge definition index
-  Standard_EXPORT const NCollection_Vector<int>& WiresOfEdge(const int theEdgeDefIdx) const;
 
 private:
   friend class BRepGraph;

@@ -19,7 +19,6 @@
 #include <BRepGraphAlgo_BndLib.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_Iterator.hxx>
-#include <BRepGraph_MutView.hxx>
 #include <BRepGraph_SpatialView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
@@ -307,10 +306,10 @@ TEST(BRepGraphAPI_RemoveNodeTest, RemoveVertex_IsRemoved)
 {
   BRepGraph        aGraph;
   BRepGraph_NodeId aVtxId = aGraph.Builder().AddVertexDef(gp_Pnt(1.0, 2.0, 3.0), 0.001);
-  EXPECT_FALSE(aGraph.Builder().IsRemoved(aVtxId));
+  EXPECT_FALSE(aGraph.Defs().IsRemoved(aVtxId));
 
   aGraph.Builder().RemoveNode(aVtxId);
-  EXPECT_TRUE(aGraph.Builder().IsRemoved(aVtxId));
+  EXPECT_TRUE(aGraph.Defs().IsRemoved(aVtxId));
 }
 
 TEST(BRepGraphAPI_RemoveNodeTest, RemoveFaceFromBox)
@@ -324,16 +323,16 @@ TEST(BRepGraphAPI_RemoveNodeTest, RemoveFaceFromBox)
   ASSERT_EQ(aGraph.Defs().NbFaces(), 6);
 
   BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
-  EXPECT_FALSE(aGraph.Builder().IsRemoved(aFaceId));
+  EXPECT_FALSE(aGraph.Defs().IsRemoved(aFaceId));
 
   aGraph.Builder().RemoveNode(aFaceId);
-  EXPECT_TRUE(aGraph.Builder().IsRemoved(aFaceId));
+  EXPECT_TRUE(aGraph.Defs().IsRemoved(aFaceId));
 
   // Other faces should not be removed.
   for (int aFaceIdx = 1; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
   {
     EXPECT_FALSE(
-      aGraph.Builder().IsRemoved(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, aFaceIdx)));
+      aGraph.Defs().IsRemoved(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, aFaceIdx)));
   }
 }
 
@@ -341,7 +340,7 @@ TEST(BRepGraphAPI_RemoveNodeTest, RemoveInvalidNode_NoError)
 {
   BRepGraph        aGraph;
   BRepGraph_NodeId anInvalidId;
-  EXPECT_FALSE(aGraph.Builder().IsRemoved(anInvalidId));
+  EXPECT_FALSE(aGraph.Defs().IsRemoved(anInvalidId));
   aGraph.Builder().RemoveNode(anInvalidId); // Should not crash.
 }
 
@@ -504,7 +503,7 @@ TEST(BRepGraphAPI_MutableDefTest, MutableFaceDefinition_ChangesTolerance)
 
   const double anOrigTol = BRepGraph_Tool::Face::Tolerance(aGraph, 0);
   {
-    BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aFaceDef = aGraph.Mut().FaceDef(0);
+    BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aFaceDef = aGraph.MutFace(0);
     aFaceDef->Tolerance                                    = 0.5;
   }
   EXPECT_NEAR(BRepGraph_Tool::Face::Tolerance(aGraph, 0), 0.5, 1e-10);
@@ -523,7 +522,7 @@ TEST(BRepGraphAPI_MutableDefTest, MutableShellDefinition)
   ASSERT_GT(aGraph.Defs().NbShells(), 0);
 
   {
-    BRepGraph_MutRef<BRepGraph_TopoNode::ShellDef> aShellDef = aGraph.Mut().ShellDef(0);
+    BRepGraph_MutRef<BRepGraph_TopoNode::ShellDef> aShellDef = aGraph.MutShell(0);
   }
   EXPECT_TRUE(aGraph.Defs().Shell(0).IsModified);
 }
@@ -539,7 +538,7 @@ TEST(BRepGraphAPI_MutableDefTest, MutableSolidDefinition)
   ASSERT_GT(aGraph.Defs().NbSolids(), 0);
 
   {
-    BRepGraph_MutRef<BRepGraph_TopoNode::SolidDef> aSolidDef = aGraph.Mut().SolidDef(0);
+    BRepGraph_MutRef<BRepGraph_TopoNode::SolidDef> aSolidDef = aGraph.MutSolid(0);
   }
   EXPECT_TRUE(aGraph.Defs().Solid(0).IsModified);
 }
@@ -552,7 +551,7 @@ TEST(BRepGraphAPI_MutableDefTest, MutableCompoundDefinition)
   ASSERT_EQ(aGraph.Defs().NbCompounds(), 1);
 
   {
-    BRepGraph_MutRef<BRepGraph_TopoNode::CompoundDef> aCompDef = aGraph.Mut().CompoundDef(0);
+    BRepGraph_MutRef<BRepGraph_TopoNode::CompoundDef> aCompDef = aGraph.MutCompound(0);
   }
   EXPECT_TRUE(aGraph.Defs().Compound(0).IsModified);
 }
@@ -565,7 +564,7 @@ TEST(BRepGraphAPI_MutableDefTest, MutableCompSolidDefinition)
   ASSERT_EQ(aGraph.Defs().NbCompSolids(), 1);
 
   {
-    BRepGraph_MutRef<BRepGraph_TopoNode::CompSolidDef> aCSolDef = aGraph.Mut().CompSolidDef(0);
+    BRepGraph_MutRef<BRepGraph_TopoNode::CompSolidDef> aCSolDef = aGraph.MutCompSolid(0);
   }
   EXPECT_TRUE(aGraph.Defs().CompSolid(0).IsModified);
 }
@@ -675,16 +674,16 @@ TEST(BRepGraphAPI_RemoveSubgraphTest, RemoveFace_RemovesWiresAndEdges)
   // Remove the face subgraph.
   aGraph.Builder().RemoveSubgraph(aFaceId);
 
-  EXPECT_TRUE(aGraph.Builder().IsRemoved(aFaceId));
-  EXPECT_TRUE(aGraph.Builder().IsRemoved(aWireId));
-  EXPECT_TRUE(aGraph.Builder().IsRemoved(aE0));
-  EXPECT_TRUE(aGraph.Builder().IsRemoved(aE1));
-  EXPECT_TRUE(aGraph.Builder().IsRemoved(aE2));
-  EXPECT_TRUE(aGraph.Builder().IsRemoved(aE3));
-  EXPECT_TRUE(aGraph.Builder().IsRemoved(aV0));
-  EXPECT_TRUE(aGraph.Builder().IsRemoved(aV1));
-  EXPECT_TRUE(aGraph.Builder().IsRemoved(aV2));
-  EXPECT_TRUE(aGraph.Builder().IsRemoved(aV3));
+  EXPECT_TRUE(aGraph.Defs().IsRemoved(aFaceId));
+  EXPECT_TRUE(aGraph.Defs().IsRemoved(aWireId));
+  EXPECT_TRUE(aGraph.Defs().IsRemoved(aE0));
+  EXPECT_TRUE(aGraph.Defs().IsRemoved(aE1));
+  EXPECT_TRUE(aGraph.Defs().IsRemoved(aE2));
+  EXPECT_TRUE(aGraph.Defs().IsRemoved(aE3));
+  EXPECT_TRUE(aGraph.Defs().IsRemoved(aV0));
+  EXPECT_TRUE(aGraph.Defs().IsRemoved(aV1));
+  EXPECT_TRUE(aGraph.Defs().IsRemoved(aV2));
+  EXPECT_TRUE(aGraph.Defs().IsRemoved(aV3));
 }
 
 TEST(BRepGraphAPI_RemoveSubgraphTest, RemoveSolid_CascadesToFaces)
@@ -699,15 +698,15 @@ TEST(BRepGraphAPI_RemoveSubgraphTest, RemoveSolid_CascadesToFaces)
   BRepGraph_NodeId aSolidId(BRepGraph_NodeId::Kind::Solid, 0);
   aGraph.Builder().RemoveSubgraph(aSolidId);
 
-  EXPECT_TRUE(aGraph.Builder().IsRemoved(aSolidId));
+  EXPECT_TRUE(aGraph.Defs().IsRemoved(aSolidId));
 
   // All shells should be removed.
   for (int aIdx = 0; aIdx < aGraph.Defs().NbShells(); ++aIdx)
-    EXPECT_TRUE(aGraph.Builder().IsRemoved(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Shell, aIdx)));
+    EXPECT_TRUE(aGraph.Defs().IsRemoved(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Shell, aIdx)));
 
   // All faces should be removed.
   for (int aIdx = 0; aIdx < aGraph.Defs().NbFaces(); ++aIdx)
-    EXPECT_TRUE(aGraph.Builder().IsRemoved(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, aIdx)));
+    EXPECT_TRUE(aGraph.Defs().IsRemoved(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, aIdx)));
 }
 
 // ============================================================

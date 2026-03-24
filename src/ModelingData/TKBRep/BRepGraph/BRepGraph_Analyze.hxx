@@ -15,7 +15,6 @@
 #define _BRepGraph_Analyze_HeaderFile
 
 #include <BRepGraph_NodeId.hxx>
-#include <BRepGraph_RelEdge.hxx>
 #include <BRepGraph_SubGraph.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Vector.hxx>
@@ -72,19 +71,6 @@ public:
   //! @return vector of SubGraph views over connected components
   Standard_EXPORT static NCollection_Vector<BRepGraph_SubGraph> Decompose(
     const BRepGraph& theGraph);
-
-  //! Build connected clusters over a subset of nodes using relation edges of a given kind.
-  //!
-  //! Nodes are considered connected if there is a path of directed relation edges
-  //! of the requested kind between them (traversed as undirected for clustering).
-  //! @param[in] theGraph source graph
-  //! @param[in] theNodes subset of nodes to cluster
-  //! @param[in] theKind relation kind used to define connectivity
-  //! @return vector of connected clusters (each cluster is a vector of NodeIds)
-  Standard_EXPORT static NCollection_Vector<NCollection_Vector<BRepGraph_NodeId>> RelationClusters(
-    const BRepGraph&                            theGraph,
-    const NCollection_Array1<BRepGraph_NodeId>& theNodes,
-    const BRepGraph_RelEdge::Kind               theKind);
 
   //! Compute endpoint-based matching score between two edges.
   //! Lower score means a better endpoint correspondence.

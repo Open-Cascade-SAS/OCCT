@@ -21,7 +21,6 @@
 #include <BRepGProp.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_History.hxx>
-#include <BRepGraph_MutView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraphAlgo_Copy.hxx>
@@ -1823,7 +1822,7 @@ TEST(BRepGraphAlgo_SameParameterTest, Enforce_BoxEdge_SetsSameParameter)
   // Clear SameParameter on all edges so we can test enforcement.
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    aGraph.Mut().EdgeDef(anEdgeIdx)->SameParameter = false;
+    aGraph.MutEdge(anEdgeIdx)->SameParameter = false;
   }
 
   // Enforce on each edge.
@@ -1848,7 +1847,7 @@ TEST(BRepGraphAlgo_SameParameterTest, Enforce_CylinderEdge_ToleranceReasonable)
 
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    aGraph.Mut().EdgeDef(anEdgeIdx)->SameParameter = false;
+    aGraph.MutEdge(anEdgeIdx)->SameParameter = false;
   }
 
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
@@ -1871,7 +1870,7 @@ TEST(BRepGraphAlgo_SameParameterTest, Perform_BatchParallel_MatchesSequential)
   aSeqGraph.Build(aBox);
   ASSERT_TRUE(aSeqGraph.IsDone());
   for (int anEdgeIdx = 0; anEdgeIdx < aSeqGraph.Defs().NbEdges(); ++anEdgeIdx)
-    aSeqGraph.Mut().EdgeDef(anEdgeIdx)->SameParameter = false;
+    aSeqGraph.MutEdge(anEdgeIdx)->SameParameter = false;
 
   NCollection_IndexedMap<int> anEdgeIndices;
   for (int anEdgeIdx = 0; anEdgeIdx < aSeqGraph.Defs().NbEdges(); ++anEdgeIdx)
@@ -1884,7 +1883,7 @@ TEST(BRepGraphAlgo_SameParameterTest, Perform_BatchParallel_MatchesSequential)
   aParGraph.Build(aBox);
   ASSERT_TRUE(aParGraph.IsDone());
   for (int anEdgeIdx = 0; anEdgeIdx < aParGraph.Defs().NbEdges(); ++anEdgeIdx)
-    aParGraph.Mut().EdgeDef(anEdgeIdx)->SameParameter = false;
+    aParGraph.MutEdge(anEdgeIdx)->SameParameter = false;
 
   BRepGraphAlgo_SameParameter::Perform(aParGraph, anEdgeIndices, 1.0e-04, true);
 
@@ -1917,7 +1916,7 @@ TEST(BRepGraphAlgo_SameParameterTest, Enforce_NoCurve3d_SetsFlag)
     if (BRepGraph_Tool::Edge::Degenerated(aGraph, anEdgeIdx)
         || !BRepGraph_Tool::Edge::HasCurve(aGraph, anEdgeIdx))
     {
-      aGraph.Mut().EdgeDef(anEdgeIdx)->SameParameter = false;
+      aGraph.MutEdge(anEdgeIdx)->SameParameter = false;
       const BRepGraph_NodeId anEdgeId(BRepGraph_NodeId::Kind::Edge, anEdgeIdx);
       const bool             isOk = BRepGraphAlgo_SameParameter::Enforce(aGraph, anEdgeId, 1.0e-04);
       EXPECT_TRUE(isOk);

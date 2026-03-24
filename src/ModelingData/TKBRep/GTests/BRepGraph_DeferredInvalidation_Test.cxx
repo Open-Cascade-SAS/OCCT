@@ -14,7 +14,6 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_DefsView.hxx>
-#include <BRepGraph_MutView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <OSD_Parallel.hxx>
@@ -41,7 +40,7 @@ TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_EdgeMutation_SetsIsModifi
   EXPECT_FALSE(myGraph.Defs().Edge(0).IsModified);
 
   myGraph.BeginDeferredInvalidation();
-  myGraph.Mut().EdgeDef(0)->Tolerance = 0.5;
+  myGraph.MutEdge(0)->Tolerance = 0.5;
   // In deferred mode, the entity's IsModified flag is set.
   EXPECT_TRUE(myGraph.Defs().Edge(0).IsModified);
   myGraph.EndDeferredInvalidation();
@@ -50,10 +49,10 @@ TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_EdgeMutation_SetsIsModifi
 TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_PropagatesUpOnFlush)
 {
   myGraph.BeginDeferredInvalidation();
-  myGraph.Mut().EdgeDef(0)->Tolerance = 0.5;
+  myGraph.MutEdge(0)->Tolerance = 0.5;
 
   // During deferred mode: edge is modified, but parent wire/face are NOT yet.
-  const NCollection_Vector<int>& aWires = myGraph.Builder().WiresOfEdge(0);
+  const NCollection_Vector<int>& aWires = myGraph.Defs().WiresOfEdge(0);
   ASSERT_GT(aWires.Length(), 0);
   EXPECT_FALSE(myGraph.Defs().Wire(aWires.Value(0)).IsModified);
 
@@ -80,7 +79,7 @@ TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_PropagatesUpOnFlush)
 TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_DirectFaceMutation_PropagatesUp)
 {
   myGraph.BeginDeferredInvalidation();
-  myGraph.Mut().FaceDef(0);
+  myGraph.MutFace(0);
 
   EXPECT_TRUE(myGraph.Defs().Face(0).IsModified);
   // Shell not yet propagated during deferred mode.
@@ -96,7 +95,7 @@ TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_DirectFaceMutation_Propag
 TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_DirectShellMutation_PropagatesUp)
 {
   myGraph.BeginDeferredInvalidation();
-  myGraph.Mut().ShellDef(0);
+  myGraph.MutShell(0);
 
   EXPECT_TRUE(myGraph.Defs().Shell(0).IsModified);
   EXPECT_FALSE(myGraph.Defs().Solid(0).IsModified);
@@ -113,7 +112,7 @@ TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_MultipleEdges_BatchPropag
   const int aNbEdges = myGraph.Defs().NbEdges();
   for (int anEdgeIdx = 0; anEdgeIdx < aNbEdges; ++anEdgeIdx)
   {
-    myGraph.Mut().EdgeDef(anEdgeIdx)->Tolerance = 0.1;
+    myGraph.MutEdge(anEdgeIdx)->Tolerance = 0.1;
   }
 
   // During deferred mode: all edges modified, but no parent propagation yet.
@@ -141,7 +140,7 @@ TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_ReconstructAfterFlush_Suc
 {
   // Modify an edge in deferred mode and verify reconstruction still works.
   myGraph.BeginDeferredInvalidation();
-  myGraph.Mut().EdgeDef(0)->Tolerance = 0.5;
+  myGraph.MutEdge(0)->Tolerance = 0.5;
   myGraph.EndDeferredInvalidation();
 
   // Reconstruction should succeed (shape cache was cleared on flush).
@@ -160,7 +159,7 @@ TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_ParallelMutation_NoDataRa
   OSD_Parallel::For(
     0,
     aNbEdges,
-    [&](int theIdx) { myGraph.Mut().EdgeDef(theIdx)->Tolerance = 0.1 + theIdx * 0.01; },
+    [&](int theIdx) { myGraph.MutEdge(theIdx)->Tolerance = 0.1 + theIdx * 0.01; },
     false);
   myGraph.EndDeferredInvalidation();
 
@@ -205,7 +204,7 @@ TEST_F(BRepGraphDeferredInvalidationTest, EndWithoutBegin_IsIdempotent)
 TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_DoubleEnd_IsIdempotent)
 {
   myGraph.BeginDeferredInvalidation();
-  myGraph.Mut().EdgeDef(0)->Tolerance = 0.5;
+  myGraph.MutEdge(0)->Tolerance = 0.5;
   myGraph.EndDeferredInvalidation();
 
   // Second End should be a safe no-op.
@@ -216,8 +215,8 @@ TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_DoubleEnd_IsIdempotent)
 TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_SameEdgeMutatedTwice)
 {
   myGraph.BeginDeferredInvalidation();
-  myGraph.Mut().EdgeDef(0)->Tolerance = 0.1;
-  myGraph.Mut().EdgeDef(0)->Tolerance = 0.5;
+  myGraph.MutEdge(0)->Tolerance = 0.1;
+  myGraph.MutEdge(0)->Tolerance = 0.5;
   myGraph.EndDeferredInvalidation();
 
   // Last write wins.
@@ -230,7 +229,7 @@ TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_SameEdgeMutatedTwice)
 TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_DirectWireMutation_PropagatesUp)
 {
   myGraph.BeginDeferredInvalidation();
-  myGraph.Mut().WireDef(0);
+  myGraph.MutWire(0);
 
   EXPECT_TRUE(myGraph.Defs().Wire(0).IsModified);
   EXPECT_FALSE(myGraph.Defs().Face(0).IsModified);

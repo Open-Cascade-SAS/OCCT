@@ -5,8 +5,6 @@ set(OCCT_BRepGraph_FILES
   BRepGraph.hxx
   BRepGraph_Analyze.cxx
   BRepGraph_Analyze.hxx
-  BRepGraph_BackRefManager.cxx
-  BRepGraph_BackRefManager.hxx
   BRepGraph_AnalyzeView.hxx
   BRepGraph_AttrRegistry.hxx
   BRepGraph_AttrsView.cxx
@@ -30,17 +28,12 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_MutRef.hxx
   BRepGraph_Mutator.cxx
   BRepGraph_Mutator.hxx
-  BRepGraph_MutView.cxx
-  BRepGraph_MutView.hxx
   BRepGraph_NameLayer.cxx
   BRepGraph_NameLayer.hxx
   BRepGraph_NodeCache.hxx
   BRepGraph_NodeId.hxx
   BRepGraph_RepId.hxx
   BRepGraph_PCurveContext.hxx
-  BRepGraph_RelEdge.hxx
-  BRepGraph_RelEdgesView.cxx
-  BRepGraph_RelEdgesView.hxx
   BRepGraph_ShapesView.cxx
   BRepGraph_ShapesView.hxx
   BRepGraph_SpatialView.cxx

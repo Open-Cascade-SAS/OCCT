@@ -150,6 +150,13 @@ int BRepGraph::DefsView::FaceCountOfEdge(const int theEdgeDefIdx) const
 
 //=================================================================================================
 
+const NCollection_Vector<int>& BRepGraph::DefsView::WiresOfEdge(const int theEdgeDefIdx) const
+{
+  return myGraph->myData->myIncStorage.ReverseIndex().WiresOfEdgeRef(theEdgeDefIdx);
+}
+
+//=================================================================================================
+
 const NCollection_Vector<int>& BRepGraph::DefsView::CoEdgesOfEdge(const int theEdgeDefIdx) const
 {
   return myGraph->myData->myIncStorage.ReverseIndex().CoEdgesOfEdgeRef(theEdgeDefIdx);
@@ -539,4 +546,14 @@ const BRepGraphInc::CoEdgeEntity* BRepGraph::DefsView::FindPCurve(
   return FindPCurve(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, theContext.EdgeDefIndex),
                     BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, theContext.FaceDefIndex),
                     theContext.Orientation);
+}
+
+//=================================================================================================
+
+bool BRepGraph::DefsView::IsRemoved(const BRepGraph_NodeId theNode) const
+{
+  const BRepGraph_TopoNode::BaseDef* aDef = myGraph->TopoDef(theNode);
+  if (aDef == nullptr)
+    return false;
+  return aDef->IsRemoved;
 }

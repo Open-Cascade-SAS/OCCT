@@ -8,7 +8,6 @@ set(OCCT_TKBRep_GTests_FILES
   BRepGraph_Assembly_Test.cxx
   BRepGraphInc_Test.cxx
   BRepGraph_API_Test.cxx
-  BRepGraph_BackRefManager_Test.cxx
   BRepGraph_Benchmark_Test.cxx
   BRepGraph_Build_Test.cxx
   BRepGraph_BulkValidation_Test.cxx

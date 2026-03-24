@@ -13,7 +13,6 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_DefsView.hxx>
-#include <BRepGraph_MutView.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 
 #include <gtest/gtest.h>
@@ -36,15 +35,15 @@ TEST_F(BRepGraphMutationGenTest, MutationGen_IncrementedOnMutation)
 {
   EXPECT_EQ(myGraph.Defs().Edge(0).MutationGen, 0u);
 
-  myGraph.Mut().EdgeDef(0)->Tolerance = 0.5;
+  myGraph.MutEdge(0)->Tolerance = 0.5;
 
   EXPECT_EQ(myGraph.Defs().Edge(0).MutationGen, 1u);
 }
 
 TEST_F(BRepGraphMutationGenTest, MutationGen_MultipleIncrements)
 {
-  myGraph.Mut().EdgeDef(0)->Tolerance = 0.1;
-  myGraph.Mut().EdgeDef(0)->Tolerance = 0.2;
+  myGraph.MutEdge(0)->Tolerance = 0.1;
+  myGraph.MutEdge(0)->Tolerance = 0.2;
 
   EXPECT_EQ(myGraph.Defs().Edge(0).MutationGen, 2u);
 }
@@ -52,7 +51,7 @@ TEST_F(BRepGraphMutationGenTest, MutationGen_MultipleIncrements)
 TEST_F(BRepGraphMutationGenTest, MutationGen_DeferredMode)
 {
   myGraph.BeginDeferredInvalidation();
-  myGraph.Mut().EdgeDef(0)->Tolerance = 0.5;
+  myGraph.MutEdge(0)->Tolerance = 0.5;
 
   // MutationGen is incremented even in deferred mode.
   EXPECT_EQ(myGraph.Defs().Edge(0).MutationGen, 1u);
@@ -72,7 +71,7 @@ TEST_F(BRepGraphMutationGenTest, MutationGen_PropagatedParent_NotIncremented)
   const int aNbShells = myGraph.Defs().NbShells();
   const int aNbSolids = myGraph.Defs().NbSolids();
 
-  myGraph.Mut().EdgeDef(0)->Tolerance = 0.5;
+  myGraph.MutEdge(0)->Tolerance = 0.5;
 
   EXPECT_EQ(myGraph.Defs().Edge(0).MutationGen, 1u);
 
@@ -91,7 +90,7 @@ TEST_F(BRepGraphMutationGenTest, MutationGen_DeferredPropagatedParent_NotIncreme
   // Same as above but in deferred mode - propagation on flush must not
   // increment MutationGen on parents.
   myGraph.BeginDeferredInvalidation();
-  myGraph.Mut().EdgeDef(0)->Tolerance = 0.5;
+  myGraph.MutEdge(0)->Tolerance = 0.5;
   myGraph.EndDeferredInvalidation();
 
   EXPECT_EQ(myGraph.Defs().Edge(0).MutationGen, 1u);

@@ -90,6 +90,32 @@ public:
     Standard_EXPORT static gp_Pnt2d Parameters(const BRepGraph& theGraph,
                                                const int        theVertexIdx,
                                                const int        theFaceIdx);
+
+    //! @name NodeId overloads
+
+    static gp_Pnt Pnt(const BRepGraph& theGraph, const BRepGraph_NodeId theVertex)
+    {
+      return Pnt(theGraph, theVertex.Index);
+    }
+
+    static double Tolerance(const BRepGraph& theGraph, const BRepGraph_NodeId theVertex)
+    {
+      return Tolerance(theGraph, theVertex.Index);
+    }
+
+    static double Parameter(const BRepGraph&       theGraph,
+                            const BRepGraph_NodeId theVertex,
+                            const BRepGraph_NodeId theEdge)
+    {
+      return Parameter(theGraph, theVertex.Index, theEdge.Index);
+    }
+
+    static gp_Pnt2d Parameters(const BRepGraph&       theGraph,
+                               const BRepGraph_NodeId theVertex,
+                               const BRepGraph_NodeId theFace)
+    {
+      return Parameters(theGraph, theVertex.Index, theFace.Index);
+    }
   };
 
   //! @brief Edge geometry, curve, polygon, and continuity accessors.
@@ -275,6 +301,124 @@ public:
       const BRepGraph&               theGraph,
       const BRepGraphInc::CoEdgeRef& theRef,
       const int                      theFaceIdx);
+
+    //! @name NodeId overloads
+
+    static double Tolerance(const BRepGraph& theGraph, const BRepGraph_NodeId theEdge)
+    {
+      return Tolerance(theGraph, theEdge.Index);
+    }
+
+    static bool Degenerated(const BRepGraph& theGraph, const BRepGraph_NodeId theEdge)
+    {
+      return Degenerated(theGraph, theEdge.Index);
+    }
+
+    static bool SameParameter(const BRepGraph& theGraph, const BRepGraph_NodeId theEdge)
+    {
+      return SameParameter(theGraph, theEdge.Index);
+    }
+
+    static bool SameRange(const BRepGraph& theGraph, const BRepGraph_NodeId theEdge)
+    {
+      return SameRange(theGraph, theEdge.Index);
+    }
+
+    static std::pair<double, double> Range(const BRepGraph& theGraph, const BRepGraph_NodeId theEdge)
+    {
+      return Range(theGraph, theEdge.Index);
+    }
+
+    static const BRepGraphInc::VertexRef& StartVertex(const BRepGraph&       theGraph,
+                                                       const BRepGraph_NodeId theEdge)
+    {
+      return StartVertex(theGraph, theEdge.Index);
+    }
+
+    static const BRepGraphInc::VertexRef& EndVertex(const BRepGraph&       theGraph,
+                                                     const BRepGraph_NodeId theEdge)
+    {
+      return EndVertex(theGraph, theEdge.Index);
+    }
+
+    static bool HasCurve(const BRepGraph& theGraph, const BRepGraph_NodeId theEdge)
+    {
+      return HasCurve(theGraph, theEdge.Index);
+    }
+
+    static const occ::handle<Geom_Curve>& Curve(const BRepGraph&       theGraph,
+                                                 const BRepGraph_NodeId theEdge)
+    {
+      return Curve(theGraph, theEdge.Index);
+    }
+
+    static GeomAdaptor_TransformedCurve CurveAdaptor(const BRepGraph&       theGraph,
+                                                      const BRepGraph_NodeId theEdge)
+    {
+      return CurveAdaptor(theGraph, theEdge.Index);
+    }
+
+    static bool HasPolygon3D(const BRepGraph& theGraph, const BRepGraph_NodeId theEdge)
+    {
+      return HasPolygon3D(theGraph, theEdge.Index);
+    }
+
+    static const occ::handle<Poly_Polygon3D>& Polygon3D(const BRepGraph&       theGraph,
+                                                         const BRepGraph_NodeId theEdge)
+    {
+      return Polygon3D(theGraph, theEdge.Index);
+    }
+
+    static bool HasContinuity(const BRepGraph&       theGraph,
+                              const BRepGraph_NodeId theEdge,
+                              const BRepGraph_NodeId theFace1,
+                              const BRepGraph_NodeId theFace2)
+    {
+      return HasContinuity(theGraph, theEdge.Index, theFace1.Index, theFace2.Index);
+    }
+
+    static GeomAbs_Shape Continuity(const BRepGraph&       theGraph,
+                                    const BRepGraph_NodeId theEdge,
+                                    const BRepGraph_NodeId theFace1,
+                                    const BRepGraph_NodeId theFace2)
+    {
+      return Continuity(theGraph, theEdge.Index, theFace1.Index, theFace2.Index);
+    }
+
+    static GeomAbs_Shape MaxContinuity(const BRepGraph& theGraph, const BRepGraph_NodeId theEdge)
+    {
+      return MaxContinuity(theGraph, theEdge.Index);
+    }
+
+    static bool IsClosedOnFace(const BRepGraph&       theGraph,
+                               const BRepGraph_NodeId theEdge,
+                               const BRepGraph_NodeId theFace)
+    {
+      return IsClosedOnFace(theGraph, theEdge.Index, theFace.Index);
+    }
+
+    static const BRepGraphInc::CoEdgeEntity* FindPCurve(const BRepGraph&       theGraph,
+                                                         const BRepGraph_NodeId theEdge,
+                                                         const BRepGraph_NodeId theFace)
+    {
+      return FindPCurve(theGraph, theEdge.Index, theFace.Index);
+    }
+
+    static const BRepGraphInc::CoEdgeEntity* FindPCurve(const BRepGraph&         theGraph,
+                                                         const BRepGraph_NodeId   theEdge,
+                                                         const BRepGraph_NodeId   theFace,
+                                                         const TopAbs_Orientation theOri)
+    {
+      return FindPCurve(theGraph, theEdge.Index, theFace.Index, theOri);
+    }
+
+    static occ::handle<Adaptor3d_CurveOnSurface> CurveOnSurface(
+      const BRepGraph&               theGraph,
+      const BRepGraphInc::CoEdgeRef& theRef,
+      const BRepGraph_NodeId         theFace)
+    {
+      return CurveOnSurface(theGraph, theRef, theFace.Index);
+    }
   };
 
   //! @brief CoEdge (half-edge) parametric curve and polygon accessors.
@@ -352,6 +496,48 @@ public:
     Standard_EXPORT static const occ::handle<Poly_Polygon2D>& PolygonOnSurface(
       const BRepGraph& theGraph,
       const int        theCoEdgeIdx);
+
+    //! @name NodeId overloads
+
+    static bool HasPCurve(const BRepGraph& theGraph, const BRepGraph_NodeId theCoEdge)
+    {
+      return HasPCurve(theGraph, theCoEdge.Index);
+    }
+
+    static const occ::handle<Geom2d_Curve>& PCurve(const BRepGraph&       theGraph,
+                                                    const BRepGraph_NodeId theCoEdge)
+    {
+      return PCurve(theGraph, theCoEdge.Index);
+    }
+
+    static Geom2dAdaptor_Curve PCurveAdaptor(const BRepGraph&       theGraph,
+                                              const BRepGraph_NodeId theCoEdge)
+    {
+      return PCurveAdaptor(theGraph, theCoEdge.Index);
+    }
+
+    static std::pair<gp_Pnt2d, gp_Pnt2d> UVPoints(const BRepGraph&       theGraph,
+                                                    const BRepGraph_NodeId theCoEdge)
+    {
+      return UVPoints(theGraph, theCoEdge.Index);
+    }
+
+    static std::pair<double, double> Range(const BRepGraph&       theGraph,
+                                            const BRepGraph_NodeId theCoEdge)
+    {
+      return Range(theGraph, theCoEdge.Index);
+    }
+
+    static bool HasPolygonOnSurface(const BRepGraph& theGraph, const BRepGraph_NodeId theCoEdge)
+    {
+      return HasPolygonOnSurface(theGraph, theCoEdge.Index);
+    }
+
+    static const occ::handle<Poly_Polygon2D>& PolygonOnSurface(const BRepGraph&       theGraph,
+                                                                const BRepGraph_NodeId theCoEdge)
+    {
+      return PolygonOnSurface(theGraph, theCoEdge.Index);
+    }
   };
 
   //! @brief Face surface, triangulation, and property accessors.
@@ -429,6 +615,62 @@ public:
     Standard_EXPORT static const occ::handle<Poly_Triangulation>& Triangulation(
       const BRepGraph& theGraph,
       const int        theFaceIdx);
+
+    //! @name NodeId overloads
+
+    static double Tolerance(const BRepGraph& theGraph, const BRepGraph_NodeId theFace)
+    {
+      return Tolerance(theGraph, theFace.Index);
+    }
+
+    static bool NaturalRestriction(const BRepGraph& theGraph, const BRepGraph_NodeId theFace)
+    {
+      return NaturalRestriction(theGraph, theFace.Index);
+    }
+
+    static bool HasSurface(const BRepGraph& theGraph, const BRepGraph_NodeId theFace)
+    {
+      return HasSurface(theGraph, theFace.Index);
+    }
+
+    static bool HasTriangulation(const BRepGraph& theGraph, const BRepGraph_NodeId theFace)
+    {
+      return HasTriangulation(theGraph, theFace.Index);
+    }
+
+    static const BRepGraphInc::WireRef* OuterWire(const BRepGraph&       theGraph,
+                                                   const BRepGraph_NodeId theFace)
+    {
+      return OuterWire(theGraph, theFace.Index);
+    }
+
+    static const occ::handle<Geom_Surface>& Surface(const BRepGraph&       theGraph,
+                                                     const BRepGraph_NodeId theFace)
+    {
+      return Surface(theGraph, theFace.Index);
+    }
+
+    static GeomAdaptor_TransformedSurface SurfaceAdaptor(const BRepGraph&       theGraph,
+                                                          const BRepGraph_NodeId theFace)
+    {
+      return SurfaceAdaptor(theGraph, theFace.Index);
+    }
+
+    static GeomAdaptor_TransformedSurface SurfaceAdaptor(const BRepGraph&       theGraph,
+                                                          const BRepGraph_NodeId theFace,
+                                                          const double           theUFirst,
+                                                          const double           theULast,
+                                                          const double           theVFirst,
+                                                          const double           theVLast)
+    {
+      return SurfaceAdaptor(theGraph, theFace.Index, theUFirst, theULast, theVFirst, theVLast);
+    }
+
+    static const occ::handle<Poly_Triangulation>& Triangulation(const BRepGraph&       theGraph,
+                                                                 const BRepGraph_NodeId theFace)
+    {
+      return Triangulation(theGraph, theFace.Index);
+    }
   };
 
   //! @brief Wire property accessors.
@@ -442,6 +684,13 @@ public:
     //! @param[in] theWireIdx zero-based wire definition index
     //! @return true if closed
     Standard_EXPORT static bool IsClosed(const BRepGraph& theGraph, const int theWireIdx);
+
+    //! @name NodeId overloads
+
+    static bool IsClosed(const BRepGraph& theGraph, const BRepGraph_NodeId theWire)
+    {
+      return IsClosed(theGraph, theWire.Index);
+    }
   };
 
 private:

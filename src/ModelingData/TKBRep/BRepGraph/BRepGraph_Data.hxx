@@ -15,7 +15,6 @@
 #define _BRepGraph_Data_HeaderFile
 
 #include <BRepGraph_NodeId.hxx>
-#include <BRepGraph_RelEdge.hxx>
 #include <BRepGraph_UID.hxx>
 #include <BRepGraph_AttrRegistry.hxx>
 #include <BRepGraph_NodeCache.hxx>
@@ -49,10 +48,6 @@ struct BRepGraph_Data
   //! original shapes, TShape->NodeId mapping, and UIDs.
   BRepGraphInc_Storage myIncStorage;
 
-  //! Map-based RelEdge storage.
-  NCollection_DataMap<BRepGraph_NodeId, NCollection_Vector<BRepGraph_RelEdge>> myOutRelEdges;
-  NCollection_DataMap<BRepGraph_NodeId, NCollection_Vector<BRepGraph_RelEdge>> myInRelEdges;
-
   //! UID system.
   std::atomic<size_t> myNextUIDCounter{0};
   uint32_t            myGeneration{0};
@@ -78,8 +73,6 @@ struct BRepGraph_Data
   BRepGraph_Data()
       : myAllocator(new NCollection_IncAllocator),
         myIncStorage(myAllocator),
-        myOutRelEdges(1, myAllocator),
-        myInRelEdges(1, myAllocator),
         myNodeLocations(1, myAllocator),
         myCurrentShapes(1, myAllocator)
   {
@@ -91,8 +84,6 @@ struct BRepGraph_Data
                       ? theAlloc
                       : occ::handle<NCollection_BaseAllocator>(new NCollection_IncAllocator)),
         myIncStorage(myAllocator),
-        myOutRelEdges(1, myAllocator),
-        myInRelEdges(1, myAllocator),
         myNodeLocations(1, myAllocator),
         myCurrentShapes(1, myAllocator)
   {

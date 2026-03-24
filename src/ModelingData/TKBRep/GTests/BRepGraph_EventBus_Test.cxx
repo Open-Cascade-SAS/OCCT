@@ -15,7 +15,6 @@
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_Layer.hxx>
-#include <BRepGraph_MutView.hxx>
 #include <BRepGraph_MutationGuard.hxx>
 #include <BRepGraph_NameLayer.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -205,9 +204,9 @@ TEST_F(BRepGraphEventBusTest, DeferredMode_BatchDispatch)
   myGraph.RegisterLayer(aLayer);
 
   myGraph.BeginDeferredInvalidation();
-  myGraph.Mut().EdgeDef(0)->Tolerance = 0.5;
-  myGraph.Mut().EdgeDef(1)->Tolerance = 0.6;
-  myGraph.Mut().EdgeDef(2)->Tolerance = 0.7;
+  myGraph.MutEdge(0)->Tolerance = 0.5;
+  myGraph.MutEdge(1)->Tolerance = 0.6;
+  myGraph.MutEdge(2)->Tolerance = 0.7;
   myGraph.EndDeferredInvalidation();
 
   // OnNodesModified called exactly once.
@@ -227,7 +226,7 @@ TEST_F(BRepGraphEventBusTest, DeferredMode_NoImmediateDispatch)
   myGraph.RegisterLayer(aLayer);
 
   myGraph.BeginDeferredInvalidation();
-  myGraph.Mut().EdgeDef(0)->Tolerance = 0.5;
+  myGraph.MutEdge(0)->Tolerance = 0.5;
 
   // During deferred mode: OnNodeModified must NOT be called.
   EXPECT_EQ(aLayer->myImmediateEvents.Length(), 0);
@@ -316,7 +315,7 @@ TEST_F(BRepGraphEventBusTest, MutationGuard_DispatchesOnDestruction)
 
   {
     BRepGraph_MutationGuard aGuard(myGraph);
-    myGraph.Mut().EdgeDef(0)->Tolerance = 0.5;
+    myGraph.MutEdge(0)->Tolerance = 0.5;
 
     // During guard scope: no batch dispatch yet.
     EXPECT_EQ(aLayer->myBatchCallCount, 0);

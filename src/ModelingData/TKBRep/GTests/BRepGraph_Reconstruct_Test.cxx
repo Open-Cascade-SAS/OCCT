@@ -16,7 +16,6 @@
 #include <BRepGProp.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_DefsView.hxx>
-#include <BRepGraph_MutView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
@@ -464,7 +463,7 @@ TEST(BRepGraphReconstructTest, AfterVertexMutation_ModifiedFlagAndPointChanged)
   // Mutate: move vertex by 5 units in Z.
   const gp_Pnt anOldPt = BRepGraph_Tool::Vertex::Pnt(aGraph, aVertIdx);
   {
-    BRepGraph_MutRef<BRepGraph_TopoNode::VertexDef> aMutVtx = aGraph.Mut().VertexDef(aVertIdx);
+    BRepGraph_MutRef<BRepGraph_TopoNode::VertexDef> aMutVtx = aGraph.MutVertex(aVertIdx);
     aMutVtx->Point = gp_Pnt(anOldPt.X(), anOldPt.Y(), anOldPt.Z() + 5.0);
   }
 
@@ -492,7 +491,7 @@ TEST(BRepGraphReconstructTest, AfterToleranceMutation_NewTShape)
 
   // Mutate tolerance.
   {
-    BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aMutEdge = aGraph.Mut().EdgeDef(0);
+    BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aMutEdge = aGraph.MutEdge(0);
     aMutEdge->Tolerance                                    = aMutEdge->Tolerance + 1.0;
   }
 

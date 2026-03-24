@@ -19,11 +19,11 @@
 #include <chrono>
 #include <BRepBuilderAPI_Copy.hxx>
 #include <BRepGraph.hxx>
+#include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_HistoryRecord.hxx>
-#include <BRepGraph_MutView.hxx>
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_PCurveContext.hxx>
 #include <BRepGraph_ShapesView.hxx>
@@ -266,12 +266,12 @@ int addDuplicatePCurvesToAllEdges(BRepGraph& theGraph)
     }
 
     const occ::handle<Geom2d_Curve>& aDupPCurve = BRepGraph_Tool::CoEdge::PCurve(theGraph, aCE);
-    theGraph.Mut().AddPCurveToEdge(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, anEdgeIdx),
-                                   aCE.FaceDefId,
-                                   aDupPCurve,
-                                   aCE.ParamFirst,
-                                   aCE.ParamLast,
-                                   aCE.Sense);
+    theGraph.Builder().AddPCurveToEdge(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, anEdgeIdx),
+                                       aCE.FaceDefId,
+                                       aDupPCurve,
+                                       aCE.ParamFirst,
+                                       aCE.ParamLast,
+                                       aCE.Sense);
     ++aDupCount;
   }
   return aDupCount;

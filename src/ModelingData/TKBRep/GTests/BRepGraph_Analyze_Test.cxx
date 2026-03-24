@@ -17,8 +17,6 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_Analyze.hxx>
 #include <BRepGraph_DefsView.hxx>
-#include <BRepGraph_MutView.hxx>
-#include <BRepGraph_RelEdge.hxx>
 #include <BRepGraph_SubGraph.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
 #include <BRepGraphAlgo_BndLib.hxx>
@@ -144,51 +142,9 @@ TEST(BRepGraphAnalyze, FreeEdges_Sphere_SeamEdgesAreFree)
 
   const NCollection_Vector<BRepGraph_NodeId> aFreeEdges = BRepGraph_Analyze::FreeEdges(aGraph);
   // A sphere has seam edges that are referenced by only 1 face (the single face),
-  // so they are detected as free by the FreeEdges algorithm (FaceCountForEdge == 1).
+  // so they are detected as free by the FreeEdges algorithm (FaceCountOfEdge == 1).
   // Degenerate edges at poles are excluded.
   EXPECT_GE(aFreeEdges.Length(), 0);
-}
-
-TEST(BRepGraphAnalyze, RelationClusters_UserDefined_TwoClusters)
-{
-  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-  const TopoDS_Shape& aBox = aBoxMaker.Shape();
-
-  TopExp_Explorer    anExp(aBox, TopAbs_FACE);
-  const TopoDS_Shape aFace = anExp.Current();
-
-  BRepGraph aGraph;
-  aGraph.Build(aFace);
-  ASSERT_TRUE(aGraph.IsDone());
-
-  const NCollection_Vector<BRepGraph_NodeId> aFreeEdges = BRepGraph_Analyze::FreeEdges(aGraph);
-  ASSERT_EQ(aFreeEdges.Length(), 4);
-
-  // Build two disconnected relation clusters: (0,1) and (2,3).
-  aGraph.Mut().AddRelEdge(aFreeEdges.Value(0),
-                          aFreeEdges.Value(1),
-                          BRepGraph_RelEdge::Kind::UserDefined);
-  aGraph.Mut().AddRelEdge(aFreeEdges.Value(1),
-                          aFreeEdges.Value(0),
-                          BRepGraph_RelEdge::Kind::UserDefined);
-  aGraph.Mut().AddRelEdge(aFreeEdges.Value(2),
-                          aFreeEdges.Value(3),
-                          BRepGraph_RelEdge::Kind::UserDefined);
-  aGraph.Mut().AddRelEdge(aFreeEdges.Value(3),
-                          aFreeEdges.Value(2),
-                          BRepGraph_RelEdge::Kind::UserDefined);
-
-  NCollection_Array1<BRepGraph_NodeId> aNodeArray(1, aFreeEdges.Length());
-  for (int anIdx = 0; anIdx < aFreeEdges.Length(); ++anIdx)
-  {
-    aNodeArray.SetValue(anIdx + 1, aFreeEdges.Value(anIdx));
-  }
-
-  const NCollection_Vector<NCollection_Vector<BRepGraph_NodeId>> aClusters =
-    BRepGraph_Analyze::RelationClusters(aGraph, aNodeArray, BRepGraph_RelEdge::Kind::UserDefined);
-
-  ASSERT_EQ(aClusters.Length(), 2);
-  EXPECT_EQ(aClusters.Value(0).Length() + aClusters.Value(1).Length(), 4);
 }
 
 TEST(BRepGraphAnalyze, EdgeCompatibilityAndScore_SingleFace)
@@ -551,7 +507,7 @@ TEST_F(BRepGraphAnalyzeTest, BoundingBox_AfterMutation_CacheInvalidated)
   ASSERT_FALSE(aBoxBefore.IsVoid());
 
   // Mutate vertex - this should invalidate the cache via markModified.
-  myGraph.Mut().VertexDef(0);
+  myGraph.MutVertex(0);
 
   // Verify that after mutation, recomputing still produces a valid bbox.
   // BoundingBox uses the original shape for computation, so results stay consistent.
@@ -686,7 +642,7 @@ TEST_F(BRepGraphAnalyzeTest, Centroid_AfterMutation_CacheInvalidated)
   const gp_Pnt aCentroidBefore = bboxCenter(myGraph, aVertId);
 
   // Mutate vertex (marks modified, invalidates cache).
-  myGraph.Mut().VertexDef(0);
+  myGraph.MutVertex(0);
 
   // Centroid recomputes from original shape - result stays consistent.
   const gp_Pnt aCentroidAfter = bboxCenter(myGraph, aVertId);

@@ -16,7 +16,7 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_DefsView.hxx>
-#include <BRepGraph_MutView.hxx>
+#include <BRepGraph_Mutator.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_ShapesView.hxx>
@@ -138,7 +138,7 @@ TEST(BRepGraphAlgo_ValidateTest, WireConnectivity_DisconnectedEdges)
   ASSERT_TRUE(aFirstEdgeId.IsValid());
 
   BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aFirstEdge =
-    aGraph.Mut().EdgeDef(aFirstEdgeId.Index);
+    aGraph.MutEdge(aFirstEdgeId.Index);
 
   // Find a vertex different from the current end vertex.
   BRepGraph_NodeId anOrigEnd = aFirstEdge->EndVertexDefId();
@@ -186,7 +186,7 @@ TEST(BRepGraphAlgo_ValidateTest, BoundsCheck_InvalidIndex)
   ASSERT_GT(aGraph.Defs().NbEdges(), 0);
 
   // Corrupt edge's Curve3d to null.
-  BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge = aGraph.Mut().EdgeDef(0);
+  BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge = aGraph.MutEdge(0);
   anEdge->Curve3DRepIdx                                = -1;
 
   const BRepGraphAlgo_Validate::Result aResult = BRepGraphAlgo_Validate::Perform(aGraph);
@@ -222,12 +222,12 @@ TEST(BRepGraphAlgo_ValidateTest, AfterSplitEdge_ProducesSubEdges)
 
   // Create a split vertex at the midpoint.
   gp_Pnt aMidPt;
-  BRepGraph_Tool::Edge::Curve(aGraph, anEdgeId.Index)->D0(aSplitParam, aMidPt);
+  BRepGraph_Tool::Edge::Curve(aGraph, anEdgeId)->D0(aSplitParam, aMidPt);
   BRepGraph_NodeId aSplitVtx =
-    aGraph.Builder().AddVertexDef(aMidPt, BRepGraph_Tool::Edge::Tolerance(aGraph, anEdgeId.Index));
+    aGraph.Builder().AddVertexDef(aMidPt, BRepGraph_Tool::Edge::Tolerance(aGraph, anEdgeId));
 
   BRepGraph_NodeId aSubA, aSubB;
-  aGraph.Mut().SplitEdge(anEdgeId, aSplitVtx, aSplitParam, aSubA, aSubB);
+  BRepGraph_Mutator::SplitEdge(aGraph, anEdgeId, aSplitVtx, aSplitParam, aSubA, aSubB);
 
   // Two new sub-edges should have been created.
   EXPECT_EQ(aGraph.Defs().NbEdges(), anOrigEdgeCount + 2);

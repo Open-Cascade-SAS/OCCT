@@ -121,7 +121,7 @@ TEST(BRepGraphGeometry, Box_FindPCurve_AllEdgeFacePairs_Valid)
     {
       const BRepGraphInc::CoEdgeEntity& aCE = aGraph.Defs().CoEdge(aCoEdgeIdxs.Value(j));
       const BRepGraphInc::CoEdgeEntity* aPCurveEntry =
-        BRepGraph_Tool::Edge::FindPCurve(aGraph, i, aCE.FaceDefId.Index);
+        BRepGraph_Tool::Edge::FindPCurve(aGraph, BRepGraph_NodeId::Edge(i), aCE.FaceDefId);
       EXPECT_NE(aPCurveEntry, nullptr);
       ++aPCurveCount;
     }
@@ -642,9 +642,9 @@ TEST(BRepGraphGeometry, Cylinder_SeamEdge_FindPCurve_WithOrientation)
       // This is a seam edge - test oriented overload.
       const BRepGraph_NodeId            aFaceId = aCE.FaceDefId;
       const BRepGraphInc::CoEdgeEntity* aPC_Fwd =
-        BRepGraph_Tool::Edge::FindPCurve(aGraph, i, aFaceId.Index, TopAbs_FORWARD);
+        BRepGraph_Tool::Edge::FindPCurve(aGraph, BRepGraph_NodeId::Edge(i), aFaceId, TopAbs_FORWARD);
       const BRepGraphInc::CoEdgeEntity* aPC_Rev =
-        BRepGraph_Tool::Edge::FindPCurve(aGraph, i, aFaceId.Index, TopAbs_REVERSED);
+        BRepGraph_Tool::Edge::FindPCurve(aGraph, BRepGraph_NodeId::Edge(i), aFaceId, TopAbs_REVERSED);
 
       EXPECT_NE(aPC_Fwd, nullptr) << "FindPCurve FORWARD returned null for seam edge";
       EXPECT_NE(aPC_Rev, nullptr) << "FindPCurve REVERSED returned null for seam edge";
@@ -673,7 +673,7 @@ TEST(BRepGraphGeometry, Box_FindPCurve_Context_MatchesThreeArgOverload)
 
       const BRepGraphInc::CoEdgeEntity* aFromCtx = aGraph.Defs().FindPCurve(aCtx);
       const BRepGraphInc::CoEdgeEntity* aFrom3Arg =
-        BRepGraph_Tool::Edge::FindPCurve(aGraph, i, aCE.FaceDefId.Index, aCE.Sense);
+        BRepGraph_Tool::Edge::FindPCurve(aGraph, BRepGraph_NodeId::Edge(i), aCE.FaceDefId, aCE.Sense);
 
       EXPECT_EQ(aFromCtx, aFrom3Arg);
       EXPECT_NE(aFromCtx, nullptr);

@@ -86,6 +86,23 @@ public:
   //! @param[in] theSolidDefIdx solid definition index
   Standard_EXPORT void CheckSolid(int theSolidDefIdx);
 
+  //! @name NodeId overloads
+
+  void CheckVertex(const BRepGraph_NodeId theVertex) { CheckVertex(theVertex.Index); }
+
+  void CheckEdge(const BRepGraph_NodeId theEdge) { CheckEdge(theEdge.Index); }
+
+  void CheckWire(const BRepGraph_NodeId theWire, const BRepGraph_NodeId theFace)
+  {
+    CheckWire(theWire.Index, theFace.Index);
+  }
+
+  void CheckFace(const BRepGraph_NodeId theFace) { CheckFace(theFace.Index); }
+
+  void CheckShell(const BRepGraph_NodeId theShell) { CheckShell(theShell.Index); }
+
+  void CheckSolid(const BRepGraph_NodeId theSolid) { CheckSolid(theSolid.Index); }
+
   //! True if no Error or Fatal issues exist.
   Standard_EXPORT bool IsValid() const;
 
