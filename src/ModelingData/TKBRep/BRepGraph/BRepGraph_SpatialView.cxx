@@ -23,16 +23,6 @@
 #include <TopAbs.hxx>
 #include <TopLoc_Location.hxx>
 
-//! GUID for precomputed locations cache attribute.
-static const Standard_GUID THE_PRECOMPUTED_LOCATIONS_GUID("b7e3a1f2-9c04-4d6b-8a5e-2f1d3c4b5a60");
-
-//! Data stored in the precomputed locations attribute.
-struct PrecomputedLocationsData
-{
-  BRepGraph_NodeId::Kind                                      TargetKind;
-  NCollection_Vector<BRepGraph::SpatialView::OccurrenceEntry> Entries;
-};
-
 //=================================================================================================
 
 bool BRepGraph::SpatialView::is1to1(const BRepGraph_NodeId::Kind theKind)
@@ -693,94 +683,6 @@ BRepGraph_TopologyPath BRepGraph::SpatialView::Truncated(const BRepGraph_Topolog
   for (int i = 0; i < aLimit; ++i)
     aResult.pushStep(thePath.stepAt(i));
   return aResult;
-}
-
-//=================================================================================================
-
-int BRepGraph::SpatialView::PrecomputeCacheKey()
-{
-  static const int THE_KEY = BRepGraph_UserAttribute::AllocateKey(THE_PRECOMPUTED_LOCATIONS_GUID);
-  return THE_KEY;
-}
-
-//=================================================================================================
-
-void BRepGraph::SpatialView::PrecomputeLocations(BRepGraph&             theGraph,
-                                                 BRepGraph_NodeId       theRoot,
-                                                 BRepGraph_NodeId::Kind theTargetKind)
-{
-  const int aKey = PrecomputeCacheKey();
-
-  // Compute all occurrence entries via Explorer.
-  PrecomputedLocationsData aData;
-  aData.TargetKind = theTargetKind;
-  BRepGraph_Explorer anExp(theGraph, theRoot, theTargetKind);
-  for (; anExp.More(); anExp.Next())
-  {
-    OccurrenceEntry anEntry;
-    anEntry.Path     = anExp.CurrentPath();
-    anEntry.Location = theGraph.Spatial().composeToLevel(anEntry.Path, anEntry.Path.Depth());
-    anEntry.Orientation =
-      theGraph.Spatial().composeOrientationToLevel(anEntry.Path, anEntry.Path.Depth());
-    aData.Entries.Append(anEntry);
-  }
-
-  // Store as TypedAttribute on root node's cache.
-  BRepGraph_NodeCache* aCache = theGraph.mutableCache(theRoot);
-  if (aCache == nullptr)
-    return;
-
-  occ::handle<BRepGraph_UserAttribute> anExisting = aCache->GetUserAttribute(aKey);
-  if (anExisting)
-  {
-    // Update existing attribute.
-    occ::handle<BRepGraph_TypedAttribute<PrecomputedLocationsData>> anAttr =
-      occ::down_cast<BRepGraph_TypedAttribute<PrecomputedLocationsData>>(anExisting);
-    if (!anAttr.IsNull())
-    {
-      anAttr->Set(aData);
-      return;
-    }
-  }
-  // Create new attribute.
-  occ::handle<BRepGraph_TypedAttribute<PrecomputedLocationsData>> aNewAttr =
-    new BRepGraph_TypedAttribute<PrecomputedLocationsData>(aData);
-  aCache->SetUserAttribute(aKey, aNewAttr);
-}
-
-//=================================================================================================
-
-NCollection_Vector<BRepGraph::SpatialView::OccurrenceEntry> BRepGraph::SpatialView::GetPrecomputed(
-  BRepGraph_NodeId theRoot) const
-{
-  const int aKey = PrecomputeCacheKey();
-
-  const BRepGraph_TopoNode::BaseDef* aDef = myGraph->TopoDef(theRoot);
-  if (aDef == nullptr)
-    return NCollection_Vector<OccurrenceEntry>();
-
-  occ::handle<BRepGraph_UserAttribute> anAttr = aDef->Cache.GetUserAttribute(aKey);
-  if (anAttr.IsNull() || anAttr->IsDirty())
-    return NCollection_Vector<OccurrenceEntry>();
-
-  occ::handle<BRepGraph_TypedAttribute<PrecomputedLocationsData>> aTyped =
-    occ::down_cast<BRepGraph_TypedAttribute<PrecomputedLocationsData>>(anAttr);
-  if (aTyped.IsNull())
-    return NCollection_Vector<OccurrenceEntry>();
-
-  return aTyped->UncheckedValue().Entries;
-}
-
-//=================================================================================================
-
-bool BRepGraph::SpatialView::HasPrecomputed(BRepGraph_NodeId theRoot) const
-{
-  const int                          aKey = PrecomputeCacheKey();
-  const BRepGraph_TopoNode::BaseDef* aDef = myGraph->TopoDef(theRoot);
-  if (aDef == nullptr)
-    return false;
-  occ::handle<BRepGraph_UserAttribute> anAttr = aDef->Cache.GetUserAttribute(aKey);
-  return !anAttr.IsNull() && !anAttr->IsDirty();
 }
 
 //=================================================================================================

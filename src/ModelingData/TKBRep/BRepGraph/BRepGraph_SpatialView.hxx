@@ -124,27 +124,6 @@ public:
     BRepGraph_NodeId theRoot,
     BRepGraph_NodeId theLeaf) const;
 
-  //! Eagerly compute and cache descendant locations under a root.
-  //! @param[in] theGraph      non-const graph (for cache write)
-  //! @param[in] theRoot       root entity
-  //! @param[in] theTargetKind kind of descendants to precompute
-  Standard_EXPORT static void PrecomputeLocations(
-    BRepGraph&             theGraph,
-    BRepGraph_NodeId       theRoot,
-    BRepGraph_NodeId::Kind theTargetKind = BRepGraph_NodeId::Kind::Vertex);
-
-  //! Read precomputed locations from cache.
-  //! @param[in] theRoot root entity
-  //! @return cached entries, or empty vector if not precomputed or stale
-  Standard_EXPORT NCollection_Vector<OccurrenceEntry> GetPrecomputed(
-    BRepGraph_NodeId theRoot) const;
-
-  //! True if precomputed locations exist and are not stale for the given root.
-  Standard_EXPORT bool HasPrecomputed(BRepGraph_NodeId theRoot) const;
-
-  //! Return the user attribute key for precomputed locations.
-  Standard_EXPORT static int PrecomputeCacheKey();
-
   //! Per-node transform stored by BRepGraphAlgo_Transform (location-only mode).
   //! This is NOT a composed global location.
   //! @param[in] theDefId definition node identifier
