@@ -253,7 +253,7 @@ BRepGraph_NodeId BRepGraph::BuilderView::AddCompoundDef(
   {
     const BRepGraph_NodeId& aChild = theChildDefs.Value(aChildIdx);
     BRepGraphInc::ChildRef  aCR;
-    aCR.Kind     = static_cast<int>(aChild.NodeKind);
+    aCR.Kind     = aChild.NodeKind;
     aCR.ChildIdx = aChild.Index;
     aCompDef.ChildRefs.Append(aCR);
   }

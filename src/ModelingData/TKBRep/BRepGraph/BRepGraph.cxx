@@ -202,7 +202,7 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
                        + aStorage.NbWires() + aStorage.NbEdges() + aStorage.NbVertices()
                        + aStorage.NbCompounds() + aStorage.NbCompSolids() + aStorage.NbProducts()
                        + aStorage.NbOccurrences();
-  Handle(NCollection_IncAllocator)     anAlloc = new NCollection_IncAllocator();
+  occ::handle<NCollection_IncAllocator> anAlloc = new NCollection_IncAllocator();
   NCollection_Vector<BRepGraph_NodeId> aStack(64, anAlloc);
   NCollection_Map<BRepGraph_NodeId>    aVisited(aNbNodes, anAlloc);
   aStack.Append(theNode);
@@ -226,7 +226,7 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
         for (int i = 0; i < aComp.ChildRefs.Length(); ++i)
         {
           const BRepGraphInc::ChildRef& aRef = aComp.ChildRefs.Value(i);
-          aStack.Append(BRepGraph_NodeId(static_cast<Kind>(aRef.Kind), aRef.ChildIdx));
+          aStack.Append(BRepGraph_NodeId(aRef.Kind, aRef.ChildIdx));
         }
         break;
       }
@@ -243,7 +243,7 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
         for (int i = 0; i < aSolid.FreeChildRefs.Length(); ++i)
         {
           const BRepGraphInc::ChildRef& aRef = aSolid.FreeChildRefs.Value(i);
-          aStack.Append(BRepGraph_NodeId(static_cast<Kind>(aRef.Kind), aRef.ChildIdx));
+          aStack.Append(BRepGraph_NodeId(aRef.Kind, aRef.ChildIdx));
         }
         break;
       }
@@ -254,7 +254,7 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
         for (int i = 0; i < aShell.FreeChildRefs.Length(); ++i)
         {
           const BRepGraphInc::ChildRef& aRef = aShell.FreeChildRefs.Value(i);
-          aStack.Append(BRepGraph_NodeId(static_cast<Kind>(aRef.Kind), aRef.ChildIdx));
+          aStack.Append(BRepGraph_NodeId(aRef.Kind, aRef.ChildIdx));
         }
         break;
       }

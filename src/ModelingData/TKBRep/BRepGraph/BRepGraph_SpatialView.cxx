@@ -311,7 +311,7 @@ BRepGraph_NodeId BRepGraph::SpatialView::resolveChild(const BRepGraph_NodeId the
         if (theRefIdx >= 0 && theRefIdx < aComp.ChildRefs.Length())
         {
           const BRepGraphInc::ChildRef& aRef = aComp.ChildRefs.Value(theRefIdx);
-          return BRepGraph_NodeId(static_cast<Kind>(aRef.Kind), aRef.ChildIdx);
+          return BRepGraph_NodeId(aRef.Kind, aRef.ChildIdx);
         }
       }
       return BRepGraph_NodeId();
@@ -335,7 +335,7 @@ BRepGraph_NodeId BRepGraph::SpatialView::resolveChild(const BRepGraph_NodeId the
         if (aFreeIdx >= 0 && aFreeIdx < aSolid.FreeChildRefs.Length())
         {
           const BRepGraphInc::ChildRef& aRef = aSolid.FreeChildRefs.Value(aFreeIdx);
-          return BRepGraph_NodeId(static_cast<Kind>(aRef.Kind), aRef.ChildIdx);
+          return BRepGraph_NodeId(aRef.Kind, aRef.ChildIdx);
         }
       }
       return BRepGraph_NodeId();
@@ -350,7 +350,7 @@ BRepGraph_NodeId BRepGraph::SpatialView::resolveChild(const BRepGraph_NodeId the
         if (aFreeIdx >= 0 && aFreeIdx < aShell.FreeChildRefs.Length())
         {
           const BRepGraphInc::ChildRef& aRef = aShell.FreeChildRefs.Value(aFreeIdx);
-          return BRepGraph_NodeId(static_cast<Kind>(aRef.Kind), aRef.ChildIdx);
+          return BRepGraph_NodeId(aRef.Kind, aRef.ChildIdx);
         }
       }
       return BRepGraph_NodeId();
@@ -1088,11 +1088,10 @@ int BRepGraph::SpatialView::findCoEdgeRefIdx(const BRepGraphInc::WireEntity& the
 int BRepGraph::SpatialView::findChildRefIdx(const BRepGraphInc::CompoundEntity& theCompound,
                                              BRepGraph_NodeId::Kind theKind, int theChildIdx)
 {
-  const int aKindInt = static_cast<int>(theKind);
   for (int i = 0; i < theCompound.ChildRefs.Length(); ++i)
   {
     const BRepGraphInc::ChildRef& aRef = theCompound.ChildRefs.Value(i);
-    if (aRef.Kind == aKindInt && aRef.ChildIdx == theChildIdx)
+    if (aRef.Kind == theKind && aRef.ChildIdx == theChildIdx)
       return i;
   }
   return -1;

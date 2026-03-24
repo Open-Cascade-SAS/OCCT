@@ -292,29 +292,30 @@ gp_Pnt rawVertexPoint(const TopoDS_Vertex& theVertex)
 }
 
 //! Map TopAbs_ShapeEnum to BRepGraph_NodeId::Kind.
-//! Returns -1 for TopAbs_SHAPE (unknown/unhandled).
-int shapeTypeToNodeKind(TopAbs_ShapeEnum theType)
+//! Asserts on unhandled ShapeEnum (e.g., TopAbs_SHAPE).
+BRepGraph_NodeId::Kind shapeTypeToNodeKind(TopAbs_ShapeEnum theType)
 {
   switch (theType)
   {
     case TopAbs_COMPOUND:
-      return static_cast<int>(BRepGraph_NodeId::Kind::Compound);
+      return BRepGraph_NodeId::Kind::Compound;
     case TopAbs_COMPSOLID:
-      return static_cast<int>(BRepGraph_NodeId::Kind::CompSolid);
+      return BRepGraph_NodeId::Kind::CompSolid;
     case TopAbs_SOLID:
-      return static_cast<int>(BRepGraph_NodeId::Kind::Solid);
+      return BRepGraph_NodeId::Kind::Solid;
     case TopAbs_SHELL:
-      return static_cast<int>(BRepGraph_NodeId::Kind::Shell);
+      return BRepGraph_NodeId::Kind::Shell;
     case TopAbs_FACE:
-      return static_cast<int>(BRepGraph_NodeId::Kind::Face);
+      return BRepGraph_NodeId::Kind::Face;
     case TopAbs_WIRE:
-      return static_cast<int>(BRepGraph_NodeId::Kind::Wire);
+      return BRepGraph_NodeId::Kind::Wire;
     case TopAbs_EDGE:
-      return static_cast<int>(BRepGraph_NodeId::Kind::Edge);
+      return BRepGraph_NodeId::Kind::Edge;
     case TopAbs_VERTEX:
-      return static_cast<int>(BRepGraph_NodeId::Kind::Vertex);
+      return BRepGraph_NodeId::Kind::Vertex;
     default:
-      return -1;
+      Standard_ASSERT_VOID(false, "shapeTypeToNodeKind: unhandled ShapeEnum");
+      return BRepGraph_NodeId::Kind::Solid; // unreachable in practice
   }
 }
 
@@ -644,7 +645,7 @@ bool makeFreeChildRef(const BRepGraphInc_Storage& theStorage,
   const BRepGraph_NodeId* aChildNodeId = theStorage.FindNodeByTShape(theChild.TShape().get());
   if (aChildNodeId == nullptr)
     return false;
-  theRef.Kind          = static_cast<int>(aChildNodeId->NodeKind);
+  theRef.Kind          = aChildNodeId->NodeKind;
   theRef.ChildIdx      = aChildNodeId->Index;
   theRef.Orientation   = theChild.Orientation();
   theRef.LocalLocation = theChild.Location();
@@ -1219,11 +1220,11 @@ void traverseHierarchy(BRepGraphInc_Storage&              theStorage,
       for (TopoDS_Iterator aChildIt(aCompound, false, false); aChildIt.More(); aChildIt.Next())
       {
         const TopoDS_Shape& aChild     = aChildIt.Value();
-        int                 aChildKind = shapeTypeToNodeKind(aChild.ShapeType());
+        BRepGraph_NodeId::Kind aChildKind = shapeTypeToNodeKind(aChild.ShapeType());
 
         traverseHierarchy(theStorage, theFaceData, theRepDedup, aChild, aGlobalLoc);
 
-        if (aChildKind >= 0)
+        if (aChild.ShapeType() != TopAbs_SHAPE)
         {
           // Resolve child index via TShape lookup (handles dedup correctly).
           // Face indices are deferred (-1) because faces are registered in Phase 3;
@@ -1590,7 +1591,7 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&                       
       {
         const BRepGraph_NodeId* aNodeId =
           theStorage.myTShapeToNodeId.Seek(aChildIt.Value().TShape().get());
-        if (aNodeId != nullptr && static_cast<int>(aNodeId->NodeKind) == aCR.Kind)
+        if (aNodeId != nullptr && aNodeId->NodeKind == aCR.Kind)
           aCR.ChildIdx = aNodeId->Index;
       }
       ++aCRIdx;

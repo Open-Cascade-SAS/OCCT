@@ -182,7 +182,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage& theStora
       for (int i = 0; i < aShell.FreeChildRefs.Length(); ++i)
       {
         const BRepGraphInc::ChildRef& aRef = aShell.FreeChildRefs.Value(i);
-        BRepGraph_NodeId aChildId(static_cast<BRepGraph_NodeId::Kind>(aRef.Kind), aRef.ChildIdx);
+        BRepGraph_NodeId aChildId(aRef.Kind, aRef.ChildIdx);
         TopoDS_Shape     aChild = Node(theStorage, aChildId, theCache);
         if (!aChild.IsNull())
         {
@@ -240,7 +240,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage& theStora
       for (int i = 0; i < aComp.ChildRefs.Length(); ++i)
       {
         const BRepGraphInc::ChildRef& aRef = aComp.ChildRefs.Value(i);
-        BRepGraph_NodeId aChildId(static_cast<BRepGraph_NodeId::Kind>(aRef.Kind), aRef.ChildIdx);
+        BRepGraph_NodeId aChildId(aRef.Kind, aRef.ChildIdx);
         TopoDS_Shape     aChild = Node(theStorage, aChildId, theCache);
         if (!aChild.IsNull())
         {

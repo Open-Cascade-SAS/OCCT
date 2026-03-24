@@ -235,15 +235,15 @@ void BRepGraphInc_ReverseIndex::Build(
     for (int i = 0; i < aComp.ChildRefs.Length(); ++i)
     {
       const BRepGraphInc::ChildRef& aRef = aComp.ChildRefs.Value(i);
-      if (aRef.Kind == static_cast<int>(BRepGraph_NodeId::Kind::Solid))
+      if (aRef.Kind == BRepGraph_NodeId::Kind::Solid)
         appendDirect(myCompoundsOfSolid, aRef.ChildIdx, aCompIdx);
-      else if (aRef.Kind == static_cast<int>(BRepGraph_NodeId::Kind::Shell))
+      else if (aRef.Kind == BRepGraph_NodeId::Kind::Shell)
         appendDirect(myCompoundsOfShell, aRef.ChildIdx, aCompIdx);
-      else if (aRef.Kind == static_cast<int>(BRepGraph_NodeId::Kind::Face))
+      else if (aRef.Kind == BRepGraph_NodeId::Kind::Face)
         appendDirect(myCompoundsOfFace, aRef.ChildIdx, aCompIdx);
-      else if (aRef.Kind == static_cast<int>(BRepGraph_NodeId::Kind::Compound))
+      else if (aRef.Kind == BRepGraph_NodeId::Kind::Compound)
         appendDirect(myCompoundsOfCompound, aRef.ChildIdx, aCompIdx);
-      else if (aRef.Kind == static_cast<int>(BRepGraph_NodeId::Kind::CompSolid))
+      else if (aRef.Kind == BRepGraph_NodeId::Kind::CompSolid)
         appendDirect(myCompoundsOfCompSolid, aRef.ChildIdx, aCompIdx);
     }
   }

@@ -144,7 +144,7 @@ void BRepGraph_Explorer::explore(const BRepGraph&              theGraph,
         const BRepGraphInc::ChildRef& aRef = aComp.ChildRefs.Value(i);
         BRepGraph_TopologyPath aChild = thePath;
         aChild.pushStep(i);
-        BRepGraph_NodeId aChildNode(static_cast<Kind>(aRef.Kind), aRef.ChildIdx);
+        BRepGraph_NodeId aChildNode(aRef.Kind, aRef.ChildIdx);
         explore(theGraph, theTargetKind, aChildNode, aChild, aChildBudget);
       }
       break;
@@ -183,7 +183,7 @@ void BRepGraph_Explorer::explore(const BRepGraph&              theGraph,
         const BRepGraphInc::ChildRef& aRef = aSolid.FreeChildRefs.Value(i);
         BRepGraph_TopologyPath aChild = thePath;
         aChild.pushStep(aShellCount + i);
-        BRepGraph_NodeId aChildNode(static_cast<Kind>(aRef.Kind), aRef.ChildIdx);
+        BRepGraph_NodeId aChildNode(aRef.Kind, aRef.ChildIdx);
         explore(theGraph, theTargetKind, aChildNode, aChild, aChildBudget);
       }
       break;
@@ -208,7 +208,7 @@ void BRepGraph_Explorer::explore(const BRepGraph&              theGraph,
         const BRepGraphInc::ChildRef& aRef = aShell.FreeChildRefs.Value(i);
         BRepGraph_TopologyPath aChild = thePath;
         aChild.pushStep(aFaceCount + i);
-        BRepGraph_NodeId aChildNode(static_cast<Kind>(aRef.Kind), aRef.ChildIdx);
+        BRepGraph_NodeId aChildNode(aRef.Kind, aRef.ChildIdx);
         explore(theGraph, theTargetKind, aChildNode, aChild, aChildBudget);
       }
       break;

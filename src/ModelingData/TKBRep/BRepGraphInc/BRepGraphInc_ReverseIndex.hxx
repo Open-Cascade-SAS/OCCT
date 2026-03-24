@@ -69,6 +69,8 @@ public:
 
   //! Incrementally update reverse indices for entities appended after a previous Build().
   //! Only processes entities from the old counts to the current vector lengths.
+  //! Compound/CompSolid reverse indices are not updated incrementally —
+  //! these containers are populated once during Build() and not mutated post-build.
   //! @param[in] theOldNbEdges   edge count before the append operation
   //! @param[in] theOldNbWires   wire count before the append operation
   //! @param[in] theOldNbFaces   face count before the append operation

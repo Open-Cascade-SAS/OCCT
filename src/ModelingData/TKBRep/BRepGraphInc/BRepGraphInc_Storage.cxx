@@ -80,7 +80,10 @@ const NCollection_Vector<BRepGraph_UID>& BRepGraphInc_Storage::UIDs(
       return myProductUIDs;
     case BRepGraph_NodeId::Kind::Occurrence:
       return myOccurrenceUIDs;
+    default:
+      break;
   }
+  Standard_ASSERT_VOID(false, "UIDs: unhandled Kind");
   static const NCollection_Vector<BRepGraph_UID> THE_EMPTY;
   return THE_EMPTY;
 }
@@ -234,6 +237,9 @@ void BRepGraphInc_Storage::DecrementActiveCount(const BRepGraph_NodeId::Kind the
     case BRepGraph_NodeId::Kind::Occurrence:
       Standard_ASSERT_VOID(myNbActiveOccurrences > 0, "DecrementActiveCount: underflow");
       --myNbActiveOccurrences;
+      break;
+    default:
+      Standard_ASSERT_VOID(false, "DecrementActiveCount: unhandled Kind");
       break;
   }
 }

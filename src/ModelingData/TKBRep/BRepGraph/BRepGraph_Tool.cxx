@@ -332,7 +332,7 @@ Geom2dAdaptor_Curve BRepGraph_Tool::CoEdge::PCurveAdaptor(const BRepGraph& theGr
     {
       const occ::handle<Geom_Surface>& aSurf =
         theGraph.Defs().SurfaceRep(aFace.SurfaceRepIdx).Surface;
-      const occ::handle<Geom_Plane> aPlane = Handle(Geom_Plane)::DownCast(aSurf);
+      const occ::handle<Geom_Plane> aPlane = occ::handle<Geom_Plane>::DownCast(aSurf);
       if (!aPlane.IsNull())
       {
         const BRepGraphInc::EdgeEntity& anEdge = theGraph.Defs().Edge(aCoEdge.EdgeIdx);
