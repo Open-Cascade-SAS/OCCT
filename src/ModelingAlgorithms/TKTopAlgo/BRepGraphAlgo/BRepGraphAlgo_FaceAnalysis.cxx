@@ -32,16 +32,16 @@ constexpr int THE_COMPACTNESS_SAMPLES = 5; // sampling points for edge compactne
 //! and verifying that the maximum distance from the first point stays
 //! within the tolerance. Degenerate edges are always considered small.
 //! @param[in] theGraph   source graph
-//! @param[in] theEdgeIdx edge definition index
+//! @param[in] theEdgeId edge definition identifier
 //! @param[in] theCurve3d edge 3D curve handle
 //! @param[in] theMinTol  maximum distance for compactness
 //! @return true if the edge is small
 bool isSmallEdge(const BRepGraph&               theGraph,
-                 int                            theEdgeIdx,
+                 const BRepGraph_EdgeId         theEdgeId,
                  const occ::handle<Geom_Curve>& theCurve3d,
                  double                         theMinTol)
 {
-  if (BRepGraph_Tool::Edge::Degenerated(theGraph, BRepGraph_EdgeId(theEdgeIdx)))
+  if (BRepGraph_Tool::Edge::Degenerated(theGraph, theEdgeId))
   {
     return true;
   }
@@ -50,7 +50,7 @@ bool isSmallEdge(const BRepGraph&               theGraph,
     return true;
   }
 
-  const auto [aFirst, aLast] = BRepGraph_Tool::Edge::Range(theGraph, BRepGraph_EdgeId(theEdgeIdx));
+  const auto [aFirst, aLast] = BRepGraph_Tool::Edge::Range(theGraph, theEdgeId);
   const double aDelta        = (aLast - aFirst) / (THE_COMPACTNESS_SAMPLES - 1);
 
   // Compute midpoint of start/end.
@@ -121,11 +121,12 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
       for (int aCoEdgeRefIdx = 0; aCoEdgeRefIdx < aWire.CoEdgeRefs.Length(); ++aCoEdgeRefIdx)
       {
         const BRepGraphInc::CoEdgeRef&     aCR       = aWire.CoEdgeRefs.Value(aCoEdgeRefIdx);
-        const int                          anEdgeIdx = aDefs.CoEdge(aCR.CoEdgeDefId).EdgeDefId.Index;
-        const BRepGraph_TopoNode::EdgeDef& anEdge    = aDefs.Edge(BRepGraph_EdgeId(anEdgeIdx));
+        const BRepGraph_EdgeId             anEdgeId  = aDefs.CoEdge(aCR.CoEdgeDefId).EdgeDefId;
+        const int                          anEdgeIdx = anEdgeId.Index;
+        const BRepGraph_TopoNode::EdgeDef& anEdge    = aDefs.Edge(anEdgeId);
         ++aNbEdges;
 
-        if (BRepGraph_Tool::Edge::Degenerated(theGraph, BRepGraph_EdgeId(anEdgeIdx)))
+        if (BRepGraph_Tool::Edge::Degenerated(theGraph, anEdgeId))
         {
           ++aNbSmall;
           continue;
@@ -138,14 +139,14 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
         }
 
         const occ::handle<Geom_Curve>& aEdgeCurve3d =
-          BRepGraph_Tool::Edge::Curve(theGraph, BRepGraph_EdgeId(anEdgeIdx));
-        if (isSmallEdge(theGraph, anEdgeIdx, aEdgeCurve3d, aMinTol))
+          BRepGraph_Tool::Edge::Curve(theGraph, anEdgeId);
+        if (isSmallEdge(theGraph, anEdgeId, aEdgeCurve3d, aMinTol))
         {
           aSmallEdgeSet.Add(anEdgeIdx);
           ++aNbSmall;
 
           // Mark edge as degenerate.
-          BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aMutEdge = theGraph.MutEdge(BRepGraph_EdgeId(anEdgeIdx));
+          BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aMutEdge = theGraph.MutEdge(anEdgeId);
           aMutEdge->IsDegenerate                                 = true;
           aMutEdge->Curve3DRepId                                 = BRepGraph_Curve3DRepId();
           aResult.DegeneratedEdges.Append(

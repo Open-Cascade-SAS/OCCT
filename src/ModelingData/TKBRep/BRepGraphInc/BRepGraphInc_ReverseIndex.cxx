@@ -16,6 +16,8 @@
 #include <BRepGraphInc_Entity.hxx>
 #include <NCollection_LocalArray.hxx>
 
+#include <type_traits>
+
 //=================================================================================================
 
 void BRepGraphInc_ReverseIndex::Clear()
@@ -299,68 +301,25 @@ void BRepGraphInc_ReverseIndex::BuildDelta(
 
   // Extend outer vectors if needed (pre-size for new key ranges).
   // Construct new inner vectors with allocator for O(1) alloc/free.
-  auto extendEdgeTable = [&](TypedIndexTable<BRepGraph_EdgeId>& theIdx, int theTargetSize) {
+  auto extendTable = [&](auto& theIdx, const int theTargetSize) {
+    using TableType = std::remove_reference_t<decltype(theIdx)>;
+    using VectorType = typename TableType::value_type;
     while (theIdx.Length() < theTargetSize)
     {
       if (!myAllocator.IsNull())
-        theIdx.Append(NCollection_Vector<BRepGraph_EdgeId>(16, myAllocator));
-      else
-        theIdx.Appended();
-    }
-  };
-  auto extendWireTable = [&](TypedIndexTable<BRepGraph_WireId>& theIdx, int theTargetSize) {
-    while (theIdx.Length() < theTargetSize)
-    {
-      if (!myAllocator.IsNull())
-        theIdx.Append(NCollection_Vector<BRepGraph_WireId>(16, myAllocator));
-      else
-        theIdx.Appended();
-    }
-  };
-  auto extendFaceTable = [&](TypedIndexTable<BRepGraph_FaceId>& theIdx, int theTargetSize) {
-    while (theIdx.Length() < theTargetSize)
-    {
-      if (!myAllocator.IsNull())
-        theIdx.Append(NCollection_Vector<BRepGraph_FaceId>(16, myAllocator));
-      else
-        theIdx.Appended();
-    }
-  };
-  auto extendCoEdgeTable = [&](TypedIndexTable<BRepGraph_CoEdgeId>& theIdx, int theTargetSize) {
-    while (theIdx.Length() < theTargetSize)
-    {
-      if (!myAllocator.IsNull())
-        theIdx.Append(NCollection_Vector<BRepGraph_CoEdgeId>(16, myAllocator));
-      else
-        theIdx.Appended();
-    }
-  };
-  auto extendShellTable = [&](TypedIndexTable<BRepGraph_ShellId>& theIdx, int theTargetSize) {
-    while (theIdx.Length() < theTargetSize)
-    {
-      if (!myAllocator.IsNull())
-        theIdx.Append(NCollection_Vector<BRepGraph_ShellId>(16, myAllocator));
-      else
-        theIdx.Appended();
-    }
-  };
-  auto extendSolidTable = [&](TypedIndexTable<BRepGraph_SolidId>& theIdx, int theTargetSize) {
-    while (theIdx.Length() < theTargetSize)
-    {
-      if (!myAllocator.IsNull())
-        theIdx.Append(NCollection_Vector<BRepGraph_SolidId>(16, myAllocator));
+        theIdx.Append(VectorType(16, myAllocator));
       else
         theIdx.Appended();
     }
   };
 
-  extendEdgeTable(myVertexToEdges, aMaxVertexIdx + 1);
-  extendWireTable(myEdgeToWires, theEdges.Length());
-  extendFaceTable(myEdgeToFaces, theEdges.Length());
-  extendCoEdgeTable(myEdgeToCoEdges, theEdges.Length());
-  extendFaceTable(myWireToFaces, theWires.Length());
-  extendShellTable(myFaceToShells, theFaces.Length());
-  extendSolidTable(myShellToSolids, theShells.Length());
+  extendTable(myVertexToEdges, aMaxVertexIdx + 1);
+  extendTable(myEdgeToWires, theEdges.Length());
+  extendTable(myEdgeToFaces, theEdges.Length());
+  extendTable(myEdgeToCoEdges, theEdges.Length());
+  extendTable(myWireToFaces, theWires.Length());
+  extendTable(myFaceToShells, theFaces.Length());
+  extendTable(myShellToSolids, theShells.Length());
 
   // Vertex -> Edges: only new edges.
   for (int anEdgeIdx = theOldNbEdges; anEdgeIdx < theEdges.Length(); ++anEdgeIdx)
@@ -625,52 +584,8 @@ bool BRepGraphInc_ReverseIndex::Validate(
   const NCollection_Vector<BRepGraphInc::SolidEntity>&  theSolids) const
 {
   // Helper: check that theVal appears in the vector at theKey in theIdx.
-  auto containsWire = [](const TypedIndexTable<BRepGraph_WireId>& theIdx, int theKey, int theVal) -> bool {
-    const NCollection_Vector<BRepGraph_WireId>* aVec = seekVec(theIdx, theKey);
-    if (aVec == nullptr)
-      return false;
-    for (int i = 0; i < aVec->Length(); ++i)
-    {
-      if (aVec->Value(i).Index == theVal)
-        return true;
-    }
-    return false;
-  };
-  auto containsEdge = [](const TypedIndexTable<BRepGraph_EdgeId>& theIdx, int theKey, int theVal) -> bool {
-    const NCollection_Vector<BRepGraph_EdgeId>* aVec = seekVec(theIdx, theKey);
-    if (aVec == nullptr)
-      return false;
-    for (int i = 0; i < aVec->Length(); ++i)
-    {
-      if (aVec->Value(i).Index == theVal)
-        return true;
-    }
-    return false;
-  };
-  auto containsFace = [](const TypedIndexTable<BRepGraph_FaceId>& theIdx, int theKey, int theVal) -> bool {
-    const NCollection_Vector<BRepGraph_FaceId>* aVec = seekVec(theIdx, theKey);
-    if (aVec == nullptr)
-      return false;
-    for (int i = 0; i < aVec->Length(); ++i)
-    {
-      if (aVec->Value(i).Index == theVal)
-        return true;
-    }
-    return false;
-  };
-  auto containsShell = [](const TypedIndexTable<BRepGraph_ShellId>& theIdx, int theKey, int theVal) -> bool {
-    const NCollection_Vector<BRepGraph_ShellId>* aVec = seekVec(theIdx, theKey);
-    if (aVec == nullptr)
-      return false;
-    for (int i = 0; i < aVec->Length(); ++i)
-    {
-      if (aVec->Value(i).Index == theVal)
-        return true;
-    }
-    return false;
-  };
-  auto containsSolid = [](const TypedIndexTable<BRepGraph_SolidId>& theIdx, int theKey, int theVal) -> bool {
-    const NCollection_Vector<BRepGraph_SolidId>* aVec = seekVec(theIdx, theKey);
+  auto contains = [](const auto& theIdx, const int theKey, const int theVal) -> bool {
+    const auto* aVec = seekVec(theIdx, theKey);
     if (aVec == nullptr)
       return false;
     for (int i = 0; i < aVec->Length(); ++i)
@@ -693,7 +608,7 @@ bool BRepGraphInc_ReverseIndex::Validate(
       if (aCoEdgeIdx < 0 || aCoEdgeIdx >= theCoEdges.Length())
         return false;
       const int anEdgeIdx = theCoEdges.Value(aCoEdgeIdx).EdgeDefId.Index;
-      if (!containsWire(myEdgeToWires, anEdgeIdx, aWireIdx))
+      if (!contains(myEdgeToWires, anEdgeIdx, aWireIdx))
         return false;
     }
   }
@@ -706,13 +621,13 @@ bool BRepGraphInc_ReverseIndex::Validate(
       continue;
     if (anEdge.StartVertex.VertexDefId.IsValid())
     {
-      if (!containsEdge(myVertexToEdges, anEdge.StartVertex.VertexDefId.Index, anEdgeIdx))
+      if (!contains(myVertexToEdges, anEdge.StartVertex.VertexDefId.Index, anEdgeIdx))
         return false;
     }
     if (anEdge.EndVertex.VertexDefId.IsValid()
         && anEdge.EndVertex.VertexDefId != anEdge.StartVertex.VertexDefId)
     {
-      if (!containsEdge(myVertexToEdges, anEdge.EndVertex.VertexDefId.Index, anEdgeIdx))
+      if (!contains(myVertexToEdges, anEdge.EndVertex.VertexDefId.Index, anEdgeIdx))
         return false;
     }
   }
@@ -723,7 +638,7 @@ bool BRepGraphInc_ReverseIndex::Validate(
     const BRepGraphInc::CoEdgeEntity& aCoEdge = theCoEdges.Value(aCoEdgeIdx);
     if (aCoEdge.IsRemoved || !aCoEdge.FaceDefId.IsValid())
       continue;
-    if (!containsFace(myEdgeToFaces, aCoEdge.EdgeDefId.Index, aCoEdge.FaceDefId.Index))
+    if (!contains(myEdgeToFaces, aCoEdge.EdgeDefId.Index, aCoEdge.FaceDefId.Index))
       return false;
   }
 
@@ -736,7 +651,7 @@ bool BRepGraphInc_ReverseIndex::Validate(
     for (int i = 0; i < aFace.WireRefs.Length(); ++i)
     {
       const int aWireIdx = aFace.WireRefs.Value(i).WireDefId.Index;
-      if (!containsFace(myWireToFaces, aWireIdx, aFaceIdx))
+      if (!contains(myWireToFaces, aWireIdx, aFaceIdx))
         return false;
     }
   }
@@ -750,7 +665,7 @@ bool BRepGraphInc_ReverseIndex::Validate(
     for (int i = 0; i < aShell.FaceRefs.Length(); ++i)
     {
       const int aFaceIdx = aShell.FaceRefs.Value(i).FaceDefId.Index;
-      if (!containsShell(myFaceToShells, aFaceIdx, aShellIdx))
+      if (!contains(myFaceToShells, aFaceIdx, aShellIdx))
         return false;
     }
   }
@@ -764,7 +679,7 @@ bool BRepGraphInc_ReverseIndex::Validate(
     for (int i = 0; i < aSolid.ShellRefs.Length(); ++i)
     {
       const int aShellIdx = aSolid.ShellRefs.Value(i).ShellDefId.Index;
-      if (!containsSolid(myShellToSolids, aShellIdx, aSolidIdx))
+      if (!contains(myShellToSolids, aShellIdx, aSolidIdx))
         return false;
     }
   }

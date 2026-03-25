@@ -85,16 +85,16 @@ public:
   Standard_EXPORT TopAbs_Orientation Orientation() const;
 
   //! Location composed from root to the first step matching theKind.
-  Standard_EXPORT TopLoc_Location LocationOf(BRepGraph_NodeId::Kind theKind) const;
+  Standard_EXPORT TopLoc_Location LocationOf(const BRepGraph_NodeId::Kind theKind) const;
 
   //! Entity at the first step matching theKind.
-  Standard_EXPORT BRepGraph_NodeId NodeOf(BRepGraph_NodeId::Kind theKind) const;
+  Standard_EXPORT BRepGraph_NodeId NodeOf(const BRepGraph_NodeId::Kind theKind) const;
 
   //! Location at step theLevel (0-based).
-  Standard_EXPORT TopLoc_Location LocationAt(int theLevel) const;
+  Standard_EXPORT TopLoc_Location LocationAt(const int theLevel) const;
 
   //! Entity at step theLevel.
-  Standard_EXPORT BRepGraph_NodeId NodeAt(int theLevel) const;
+  Standard_EXPORT BRepGraph_NodeId NodeAt(const int theLevel) const;
 
   //! Number of entity occurrences found.
   int NbFound() const { return myResults.Length(); }

@@ -51,14 +51,14 @@ public:
   //! if theReversed, and incrementally updates edge-to-wire, edge-to-face, and
   //! edge-to-coedge reverse indices.
   //! @param[in,out] theGraph       graph to mutate
-  //! @param[in] theWireDefIdx      wire definition index
+  //! @param[in] theWireDefId       wire definition identifier
   //! @param[in] theOldEdgeDef      edge to replace
   //! @param[in] theNewEdgeDef      replacement edge
   //! @param[in] theReversed        if true, reverse the orientation of the replacement
   static Standard_EXPORT void ReplaceEdgeInWire(BRepGraph&             theGraph,
-                                                const int              theWireDefIdx,
-                                                const BRepGraph_NodeId theOldEdgeDef,
-                                                const BRepGraph_NodeId theNewEdgeDef,
+                                                const BRepGraph_WireId theWireDefId,
+                                                const BRepGraph_EdgeId theOldEdgeDef,
+                                                const BRepGraph_EdgeId theNewEdgeDef,
                                                 const bool             theReversed);
 
   //! Finalize a batch of mutations: validate reverse index consistency

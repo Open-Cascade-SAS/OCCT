@@ -297,12 +297,12 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&             theGraph,
 //=================================================================================================
 
 void BRepGraph_Mutator::ReplaceEdgeInWire(BRepGraph&             theGraph,
-                                          const int              theWireDefIdx,
-                                          const BRepGraph_NodeId theOldEdgeDef,
-                                          const BRepGraph_NodeId theNewEdgeDef,
+                                          const BRepGraph_WireId theWireDefId,
+                                          const BRepGraph_EdgeId theOldEdgeDef,
+                                          const BRepGraph_EdgeId theNewEdgeDef,
                                           const bool             theReversed)
 {
-  BRepGraph_TopoNode::WireDef& aWireDef = theGraph.myData->myIncStorage.ChangeWire(BRepGraph_WireId(theWireDefIdx));
+  BRepGraph_TopoNode::WireDef& aWireDef = theGraph.myData->myIncStorage.ChangeWire(theWireDefId);
 
   // Update incidence CoEdgeRefs on the WireEntity.
   for (int aCoEdgeIdx = 0; aCoEdgeIdx < aWireDef.CoEdgeRefs.Length(); ++aCoEdgeIdx)
@@ -311,32 +311,32 @@ void BRepGraph_Mutator::ReplaceEdgeInWire(BRepGraph&             theGraph,
     BRepGraphInc::CoEdgeEntity& aCoEdge = theGraph.myData->myIncStorage.ChangeCoEdge(BRepGraph_CoEdgeId(aCoEdgeEntIdx));
     if (aCoEdge.EdgeDefId == theOldEdgeDef)
     {
-      aCoEdge.EdgeDefId = BRepGraph_EdgeId::FromNodeId(theNewEdgeDef);
+      aCoEdge.EdgeDefId = theNewEdgeDef;
       if (theReversed)
         aCoEdge.Sense = TopAbs::Reverse(aCoEdge.Sense);
 
       // Update reverse indices incrementally.
       BRepGraphInc_ReverseIndex& aRevIdx = theGraph.myData->myIncStorage.ChangeReverseIndex();
-      aRevIdx.ReplaceEdgeInWireMap(BRepGraph_EdgeId(theOldEdgeDef.Index), BRepGraph_EdgeId(theNewEdgeDef.Index), BRepGraph_WireId(theWireDefIdx));
-      aRevIdx.BindEdgeToCoEdge(BRepGraph_EdgeId(theNewEdgeDef.Index), BRepGraph_CoEdgeId(aCoEdgeEntIdx));
+      aRevIdx.ReplaceEdgeInWireMap(theOldEdgeDef, theNewEdgeDef, theWireDefId);
+      aRevIdx.BindEdgeToCoEdge(theNewEdgeDef, BRepGraph_CoEdgeId(aCoEdgeEntIdx));
 
       // Update edge-to-face: bind new edge, unbind old edge for all faces of this wire.
       // Wire-to-face mappings are built from FaceEntity.WireRefs during Build() and are
       // stable across edge mutations - only face-level operations modify them.
-      const NCollection_Vector<BRepGraph_FaceId>* aFaces = aRevIdx.FacesOfWire(BRepGraph_WireId(theWireDefIdx));
+      const NCollection_Vector<BRepGraph_FaceId>* aFaces = aRevIdx.FacesOfWire(theWireDefId);
       if (aFaces != nullptr)
       {
         for (int aFIdx = 0; aFIdx < aFaces->Length(); ++aFIdx)
         {
           const BRepGraph_FaceId aFaceId = aFaces->Value(aFIdx);
-          aRevIdx.BindEdgeToFace(BRepGraph_EdgeId(theNewEdgeDef.Index), aFaceId);
-          aRevIdx.UnbindEdgeFromFace(BRepGraph_EdgeId(theOldEdgeDef.Index), aFaceId);
+          aRevIdx.BindEdgeToFace(theNewEdgeDef, aFaceId);
+          aRevIdx.UnbindEdgeFromFace(theOldEdgeDef, aFaceId);
         }
       }
     }
   }
 
-  theGraph.markModified(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Wire, theWireDefIdx));
+  theGraph.markModified(BRepGraph_NodeId::Wire(theWireDefId.Index));
 
   Standard_ASSERT_VOID(theGraph.myData->myIncStorage.ValidateReverseIndex(),
                        "ReplaceEdgeInWire: post-mutation reverse index inconsistency");

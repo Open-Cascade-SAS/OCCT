@@ -191,17 +191,16 @@ bool isClosedByIsos(const occ::handle<Geom_Surface>& theSurf,
 //! @param[out] theIsVClosed set to true if closed in V
 //! @return true if closed in at least one direction
 bool isSurfaceClosedForEdge(const BRepGraph&                     theGraph,
-                            int                                  theFaceDefIdx,
+                            const BRepGraph_FaceId              theFaceDefId,
                             const BRepGraph_TopoNode::CoEdgeDef& theCoEdge,
                             bool                                 theCheckU)
 {
-  const BRepGraph_FaceId aFaceId(theFaceDefIdx);
-  if (!BRepGraph_Tool::Face::HasSurface(theGraph, aFaceId))
+  if (!theFaceDefId.IsValid() || !BRepGraph_Tool::Face::HasSurface(theGraph, theFaceDefId))
   {
     return false;
   }
   const occ::handle<Geom_Surface>& aFaceSurf =
-    BRepGraph_Tool::Face::Surface(theGraph, aFaceId);
+    BRepGraph_Tool::Face::Surface(theGraph, theFaceDefId);
   const occ::handle<Geom_Surface> aBasis   = basisSurface(aFaceSurf);
   const bool                      isClosed = theCheckU ? aBasis->IsUClosed() : aBasis->IsVClosed();
   if (isClosed)
@@ -226,19 +225,20 @@ bool isSurfaceClosedForEdge(const BRepGraph&                     theGraph,
 //! UV-closed face, linked via SeamPairId). Eliminates false positives from
 //! non-seam edges on non-closed surfaces.
 //! @param[in] theGraph   source graph
-//! @param[in] theEdgeIdx edge definition index
+//! @param[in] theEdgeId edge definition identifier
 //! @return true if edge is a seam
-bool isSeamEdge(const BRepGraph& theGraph, int theEdgeIdx)
+bool isSeamEdge(const BRepGraph& theGraph, const BRepGraph_EdgeId theEdgeId)
 {
   // Use reverse index for O(1) lookup instead of scanning all coedges.
-  const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs = theGraph.Defs().CoEdgesOfEdge(BRepGraph_EdgeId(theEdgeIdx));
+  const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
+    theGraph.Defs().CoEdgesOfEdge(theEdgeId);
   for (int i = 0; i < aCoEdgeIdxs.Length(); ++i)
   {
     const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Defs().CoEdge(aCoEdgeIdxs.Value(i));
     if (aCoEdge.SeamPairId.IsValid() && aCoEdge.FaceDefId.IsValid())
     {
-      if (isSurfaceClosedForEdge(theGraph, aCoEdge.FaceDefId.Index, aCoEdge, true)
-          || isSurfaceClosedForEdge(theGraph, aCoEdge.FaceDefId.Index, aCoEdge, false))
+      if (isSurfaceClosedForEdge(theGraph, aCoEdge.FaceDefId, aCoEdge, true)
+          || isSurfaceClosedForEdge(theGraph, aCoEdge.FaceDefId, aCoEdge, false))
       {
         return true;
       }
@@ -257,19 +257,21 @@ bool isSeamEdge(const BRepGraph& theGraph, int theEdgeIdx)
 //! @param[in] theEdgeB      second edge index
 //! @param[in] theSharedFace shared face index (-1 if none)
 //! @return true if the edges can be sewn on the shared face
-bool canSewSameFaceEdges(const BRepGraph& theGraph, int theEdgeA, int theEdgeB, int theSharedFace)
+bool canSewSameFaceEdges(const BRepGraph&       theGraph,
+                         const BRepGraph_EdgeId theEdgeA,
+                         const BRepGraph_EdgeId theEdgeB,
+                         const BRepGraph_FaceId theSharedFace)
 {
-  if (theSharedFace < 0)
+  if (!theSharedFace.IsValid())
   {
     return false;
   }
-  const BRepGraph_FaceId aSharedFaceId(theSharedFace);
-  if (!BRepGraph_Tool::Face::HasSurface(theGraph, aSharedFaceId))
+  if (!BRepGraph_Tool::Face::HasSurface(theGraph, theSharedFace))
   {
     return false;
   }
   const occ::handle<Geom_Surface>& aFaceSurf2 =
-    BRepGraph_Tool::Face::Surface(theGraph, aSharedFaceId);
+    BRepGraph_Tool::Face::Surface(theGraph, theSharedFace);
   const occ::handle<Geom_Surface> aBasis    = basisSurface(aFaceSurf2);
   const bool                      isUClosed = aBasis->IsUClosed();
   const bool                      isVClosed = aBasis->IsVClosed();
@@ -280,9 +282,9 @@ bool canSewSameFaceEdges(const BRepGraph& theGraph, int theEdgeA, int theEdgeB, 
 
   // Get PCurves for both edges on the shared face via graph lookup.
   const BRepGraphInc::CoEdgeEntity* aPCEntryA =
-    BRepGraph_Tool::Edge::FindPCurve(theGraph, BRepGraph_EdgeId(theEdgeA), aSharedFaceId);
+    BRepGraph_Tool::Edge::FindPCurve(theGraph, theEdgeA, theSharedFace);
   const BRepGraphInc::CoEdgeEntity* aPCEntryB =
-    BRepGraph_Tool::Edge::FindPCurve(theGraph, BRepGraph_EdgeId(theEdgeB), aSharedFaceId);
+    BRepGraph_Tool::Edge::FindPCurve(theGraph, theEdgeB, theSharedFace);
   if (aPCEntryA == nullptr || aPCEntryB == nullptr || !aPCEntryA->Curve2DRepId.IsValid()
       || !aPCEntryB->Curve2DRepId.IsValid())
   {
@@ -431,7 +433,7 @@ NCollection_Array1<BRepGraph_NodeId> findFreeEdges(const BRepGraph&      theGrap
     // two PCurves on the same face. Surface closure is verified first via
     // IsUClosed/IsVClosed + isocurve fallback, preventing false positives on
     // non-closed surfaces (planar faces with duplicate PCurve handles).
-    if (aFaceCount == 1 && isSeamEdge(theGraph, anEdgeIdx))
+    if (aFaceCount == 1 && isSeamEdge(theGraph, anEdgeId))
     {
       continue;
     }
@@ -975,9 +977,9 @@ NCollection_Array1<NCollection_Vector<int>> detectCandidates(
         if (aFaceI >= 0 && aFaceI == aFaceJ)
         {
           if (!canSewSameFaceEdges(theGraph,
-                                   theFreeEdges.Value(anI).Index,
-                                   theFreeEdges.Value(anJ).Index,
-                                   aFaceI))
+                                   BRepGraph_EdgeId(theFreeEdges.Value(anI).Index),
+                                   BRepGraph_EdgeId(theFreeEdges.Value(anJ).Index),
+                                   BRepGraph_FaceId(aFaceI)))
           {
             return;
           }
@@ -1205,7 +1207,10 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> matchFreeEdges
         const int aFaceB = theFaceOfPos(aPosB);
         if (aFaceA >= 0 && aFaceA == aFaceB)
         {
-          if (!canSewSameFaceEdges(theGraph, anIdA.Index, anIdB.Index, aFaceA))
+          if (!canSewSameFaceEdges(theGraph,
+                                   anEdgeA,
+                                   BRepGraph_EdgeId(anIdB.Index),
+                                   BRepGraph_FaceId(aFaceA)))
           {
             continue;
           }
@@ -1459,7 +1464,11 @@ int mergeMatchedEdges(
     const NCollection_Vector<BRepGraph_WireId> aWires = theGraph.Defs().WiresOfEdge(anEdgeIdB);
     for (int aWIdx = 0; aWIdx < aWires.Length(); ++aWIdx)
     {
-      BRepGraph_Mutator::ReplaceEdgeInWire(theGraph, aWires.Value(aWIdx).Index, anIdB, anIdA, isReversed);
+      BRepGraph_Mutator::ReplaceEdgeInWire(theGraph,
+                                           aWires.Value(aWIdx),
+                                           anEdgeIdB,
+                                           anEdgeIdA,
+                                           isReversed);
     }
 
     // Remove the old edge properly - decrements NbActiveEdges, clears cache.

@@ -1891,11 +1891,11 @@ TEST(BRepGraphAlgo_SameParameterTest, Perform_BatchParallel_MatchesSequential)
   for (int anEdgeIdx = 0; anEdgeIdx < aSeqGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
     const BRepGraph_EdgeId anEdgeId(anEdgeIdx);
-    EXPECT_EQ(BRepGraph_Tool::Edge::SameParameter(aSeqGraph, BRepGraph_EdgeId(anEdgeId)),
-              BRepGraph_Tool::Edge::SameParameter(aParGraph, BRepGraph_EdgeId(anEdgeId)))
+    EXPECT_EQ(BRepGraph_Tool::Edge::SameParameter(aSeqGraph, anEdgeId),
+              BRepGraph_Tool::Edge::SameParameter(aParGraph, anEdgeId))
       << "Edge " << anEdgeIdx << " SameParameter mismatch";
-    EXPECT_NEAR(BRepGraph_Tool::Edge::Tolerance(aSeqGraph, BRepGraph_EdgeId(anEdgeId)),
-                BRepGraph_Tool::Edge::Tolerance(aParGraph, BRepGraph_EdgeId(anEdgeId)),
+    EXPECT_NEAR(BRepGraph_Tool::Edge::Tolerance(aSeqGraph, anEdgeId),
+                BRepGraph_Tool::Edge::Tolerance(aParGraph, anEdgeId),
                 1.0e-10)
       << "Edge " << anEdgeIdx << " tolerance mismatch";
   }

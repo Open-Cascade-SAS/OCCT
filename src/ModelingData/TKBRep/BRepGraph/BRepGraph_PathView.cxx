@@ -1230,26 +1230,24 @@ void BRepGraph::PathView::reverseWalkFromShell(
 TopLoc_Location BRepGraph::PathView::OccurrenceLocation(
   const BRepGraph_OccurrenceId theOccurrence) const
 {
-  const BRepGraphInc_Storage& aStorage        = myGraph->myData->myIncStorage;
-  const int                   theOccurrenceIdx = theOccurrence.Index;
-  if (theOccurrenceIdx < 0 || theOccurrenceIdx >= aStorage.NbOccurrences())
+  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  if (!theOccurrence.IsValid() || theOccurrence.Index >= aStorage.NbOccurrences())
     return TopLoc_Location();
 
-  TopLoc_Location aGlobal       = aStorage.Occurrence(BRepGraph_OccurrenceId(theOccurrenceIdx)).Placement;
-  int             aParentOccIdx =
-    aStorage.Occurrence(BRepGraph_OccurrenceId(theOccurrenceIdx)).ParentOccurrenceDefId.Index;
+  TopLoc_Location         aGlobal      = aStorage.Occurrence(theOccurrence).Placement;
+  BRepGraph_OccurrenceId aParentOccId = aStorage.Occurrence(theOccurrence).ParentOccurrenceDefId;
 
   const int aNbOccurrences = aStorage.NbOccurrences();
   int       aSteps         = 0;
 
-  while (aParentOccIdx >= 0 && aParentOccIdx < aNbOccurrences && aSteps < aNbOccurrences)
+  while (aParentOccId.IsValid() && aParentOccId.Index < aNbOccurrences && aSteps < aNbOccurrences)
   {
     ++aSteps;
-    const BRepGraphInc::OccurrenceEntity& aParentOcc = aStorage.Occurrence(BRepGraph_OccurrenceId(aParentOccIdx));
+    const BRepGraphInc::OccurrenceEntity& aParentOcc = aStorage.Occurrence(aParentOccId);
     if (aParentOcc.IsRemoved)
       break;
     aGlobal       = aParentOcc.Placement * aGlobal;
-    aParentOccIdx = aParentOcc.ParentOccurrenceDefId.Index;
+    aParentOccId  = aParentOcc.ParentOccurrenceDefId;
   }
 
   return aGlobal;
