@@ -23,6 +23,7 @@
 #include <TopAbs.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopLoc_Location.hxx>
+#include <TopoDS_Edge.hxx>
 
 namespace
 {
