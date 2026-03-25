@@ -231,19 +231,23 @@ bool enforceImpl(BRepGraph&       theGraph,
 {
   // Single MutRef scope ensures markModified fires exactly once,
   // even on early returns, due to RAII.
-  BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aMutEdge = theGraph.MutEdge(BRepGraph_EdgeId(theEdgeId.Index));
-  const BRepGraph_TopoNode::EdgeDef&            anEdge   = *aMutEdge;
-  const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs = theGraph.Defs().CoEdgesOfEdge(BRepGraph_EdgeId(theEdgeId.Index));
-  if (!BRepGraph_Tool::Edge::HasCurve(theGraph, BRepGraph_EdgeId(theEdgeId.Index)) || aCoEdgeIdxs.IsEmpty())
+  BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aMutEdge =
+    theGraph.MutEdge(BRepGraph_EdgeId(theEdgeId.Index));
+  const BRepGraph_TopoNode::EdgeDef&            anEdge = *aMutEdge;
+  const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
+    theGraph.Defs().CoEdgesOfEdge(BRepGraph_EdgeId(theEdgeId.Index));
+  if (!BRepGraph_Tool::Edge::HasCurve(theGraph, BRepGraph_EdgeId(theEdgeId.Index))
+      || aCoEdgeIdxs.IsEmpty())
   {
     aMutEdge->SameParameter = true;
     return true;
   }
 
   // Build 3D curve adaptor from graph, handle periodicity/trimming like BRepLib.
-  occ::handle<Geom_Curve> aC3d = BRepGraph_Tool::Edge::Curve(theGraph, BRepGraph_EdgeId(theEdgeId.Index));
-  double                  aF3d = anEdge.ParamFirst;
-  double                  aL3d = anEdge.ParamLast;
+  occ::handle<Geom_Curve> aC3d =
+    BRepGraph_Tool::Edge::Curve(theGraph, BRepGraph_EdgeId(theEdgeId.Index));
+  double aF3d = anEdge.ParamFirst;
+  double aL3d = anEdge.ParamLast;
 
   bool isTrimmedPeriodical = false;
   if (aC3d->DynamicType() == STANDARD_TYPE(Geom_TrimmedCurve))
@@ -294,7 +298,7 @@ bool enforceImpl(BRepGraph&       theGraph,
 
   for (int aCEIter = 0; aCEIter < aCoEdgeIdxs.Length(); ++aCEIter)
   {
-    const BRepGraph_CoEdgeId              aCoEdgeIdx = aCoEdgeIdxs.Value(aCEIter);
+    const BRepGraph_CoEdgeId             aCoEdgeIdx = aCoEdgeIdxs.Value(aCEIter);
     const BRepGraph_TopoNode::CoEdgeDef& aCoEdge    = theGraph.Defs().CoEdge(aCoEdgeIdx);
     if (!aCoEdge.Curve2DRepId.IsValid())
     {
@@ -305,7 +309,8 @@ bool enforceImpl(BRepGraph&       theGraph,
       continue;
     }
 
-    if (!BRepGraph_Tool::Face::HasSurface(theGraph, BRepGraph_FaceId::FromNodeId(aCoEdge.FaceDefId)))
+    if (!BRepGraph_Tool::Face::HasSurface(theGraph,
+                                          BRepGraph_FaceId::FromNodeId(aCoEdge.FaceDefId)))
     {
       continue;
     }
@@ -313,12 +318,11 @@ bool enforceImpl(BRepGraph&       theGraph,
     hasYaPCu = true;
 
     // Load surface (apply face transform if non-identity).
-    const BRepGraph_FaceId aCoEdgeFaceId = BRepGraph_FaceId::FromNodeId(aCoEdge.FaceDefId);
+    const BRepGraph_FaceId         aCoEdgeFaceId = BRepGraph_FaceId::FromNodeId(aCoEdge.FaceDefId);
     GeomAdaptor_TransformedSurface aTransSurf =
       BRepGraph_Tool::Face::SurfaceAdaptor(theGraph, aCoEdgeFaceId);
-    occ::handle<Geom_Surface> aSurf =
-      BRepGraph_Tool::Face::Surface(theGraph, aCoEdgeFaceId);
-    const gp_Trsf& aSrfTrsf = aTransSurf.Trsf();
+    occ::handle<Geom_Surface> aSurf    = BRepGraph_Tool::Face::Surface(theGraph, aCoEdgeFaceId);
+    const gp_Trsf&            aSrfTrsf = aTransSurf.Trsf();
     if (aSrfTrsf.Form() != gp_Identity)
     {
       aSurf = occ::down_cast<Geom_Surface>(aSurf->Transformed(aSrfTrsf));
@@ -383,7 +387,8 @@ bool enforceImpl(BRepGraph&       theGraph,
           aMaxDist = std::max(aMaxDist, std::max(aMaxAnalErr, Precision::Confusion()));
           if (aUpdatePC)
           {
-            theGraph.MutCoEdge(BRepGraph_CoEdgeId(aCoEdgeIdx))->Curve2DRepId = theGraph.CreateCurve2DRep(aCurPC);
+            theGraph.MutCoEdge(BRepGraph_CoEdgeId(aCoEdgeIdx))->Curve2DRepId =
+              theGraph.CreateCurve2DRep(aCurPC);
           }
           continue;
         }
@@ -631,7 +636,8 @@ bool enforceImpl(BRepGraph&       theGraph,
         aMaxDist = std::max(aMaxDist, aSameP.TolReached());
         if (aUpdatePC)
         {
-          theGraph.MutCoEdge(BRepGraph_CoEdgeId(aCoEdgeIdx))->Curve2DRepId = theGraph.CreateCurve2DRep(aCurPC);
+          theGraph.MutCoEdge(BRepGraph_CoEdgeId(aCoEdgeIdx))->Curve2DRepId =
+            theGraph.CreateCurve2DRep(aCurPC);
         }
       }
       else if (aSameP.IsDone())
@@ -649,7 +655,8 @@ bool enforceImpl(BRepGraph&       theGraph,
         }
         if (aUpdatePC)
         {
-          theGraph.MutCoEdge(BRepGraph_CoEdgeId(aCoEdgeIdx))->Curve2DRepId = theGraph.CreateCurve2DRep(aCurPC);
+          theGraph.MutCoEdge(BRepGraph_CoEdgeId(aCoEdgeIdx))->Curve2DRepId =
+            theGraph.CreateCurve2DRep(aCurPC);
         }
       }
       else
@@ -666,7 +673,8 @@ bool enforceImpl(BRepGraph&       theGraph,
                            aFallbackPC);
         if (!aFallbackPC.IsNull())
         {
-          theGraph.MutCoEdge(BRepGraph_CoEdgeId(aCoEdgeIdx))->Curve2DRepId = theGraph.CreateCurve2DRep(aFallbackPC);
+          theGraph.MutCoEdge(BRepGraph_CoEdgeId(aCoEdgeIdx))->Curve2DRepId =
+            theGraph.CreateCurve2DRep(aFallbackPC);
         }
         isAllSameP = false;
       }
@@ -747,8 +755,8 @@ BRepGraphAlgo_SameParameter::Result BRepGraphAlgo_SameParameter::Perform(
       0,
       aNbEdges,
       [&](int theIdx) {
-        const BRepGraph_EdgeId anEdgeId  = anEdgeIdArr.Value(theIdx);
-        const BRepGraph_NodeId aNodeId   = static_cast<BRepGraph_NodeId>(anEdgeId);
+        const BRepGraph_EdgeId anEdgeId = anEdgeIdArr.Value(theIdx);
+        const BRepGraph_NodeId aNodeId  = static_cast<BRepGraph_NodeId>(anEdgeId);
         EnforceFlags           aFlags;
         enforceImpl(theGraph, aNodeId, theTolerance, aFlags);
         if (aFlags.NbC0Fallbacks > 0)

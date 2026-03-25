@@ -116,7 +116,7 @@ struct Polygon2DRep : public BaseRep
 struct PolygonOnTriRep : public BaseRep
 {
   occ::handle<Poly_PolygonOnTriangulation> Polygon; //!< Polygon indices into triangulation
-  BRepGraph_TriangulationRepId TriangulationRepId; //!< Typed id into myTriangulationsRep
+  BRepGraph_TriangulationRepId TriangulationRepId;  //!< Typed id into myTriangulationsRep
 };
 
 //! Vertex entity: 3D point + tolerance.
@@ -202,16 +202,10 @@ struct EdgeEntity : public BaseEntity
   NCollection_Vector<VertexRef> InternalVertices;
 
   //! Convenience: start vertex typed id from index.
-  BRepGraph_VertexId StartVertexDefId() const
-  {
-    return StartVertex.VertexDefId;
-  }
+  BRepGraph_VertexId StartVertexDefId() const { return StartVertex.VertexDefId; }
 
   //! Convenience: end vertex typed id from index.
-  BRepGraph_VertexId EndVertexDefId() const
-  {
-    return EndVertex.VertexDefId;
-  }
+  BRepGraph_VertexId EndVertexDefId() const { return EndVertex.VertexDefId; }
 
   //! Typed representation id into Storage::myPolygons3D (invalid if no polygon).
   BRepGraph_Polygon3DRepId Polygon3DRepId;
@@ -264,17 +258,17 @@ struct EdgeEntity : public BaseEntity
 //! linked by SeamPairIdx.
 struct CoEdgeEntity : public BaseEntity
 {
-  BRepGraph_EdgeId   EdgeDefId;    //!< Parent edge definition id
-  BRepGraph_FaceId   FaceDefId;    //!< Face this coedge belongs to (invalid for free wires)
+  BRepGraph_EdgeId   EdgeDefId; //!< Parent edge definition id
+  BRepGraph_FaceId   FaceDefId; //!< Face this coedge belongs to (invalid for free wires)
   TopAbs_Orientation Sense = TopAbs_FORWARD; //!< Orientation relative to parent edge
 
   //! Typed representation id into Storage::myCurves2D (invalid for free-wire coedges).
   BRepGraph_Curve2DRepId Curve2DRepId;
-  double                 ParamFirst  = 0.0;
-  double                 ParamLast   = 0.0;
-  GeomAbs_Shape          Continuity  = GeomAbs_C0; //!< Geometric continuity across face pairs
-  gp_Pnt2d               UV1;                      //!< UV at ParamFirst
-  gp_Pnt2d               UV2;                      //!< UV at ParamLast
+  double                 ParamFirst = 0.0;
+  double                 ParamLast  = 0.0;
+  GeomAbs_Shape          Continuity = GeomAbs_C0; //!< Geometric continuity across face pairs
+  gp_Pnt2d               UV1;                     //!< UV at ParamFirst
+  gp_Pnt2d               UV2;                     //!< UV at ParamLast
 
   //! Seam pairing: typed id of the paired coedge (invalid if non-seam).
   BRepGraph_CoEdgeId SeamPairId;
@@ -307,8 +301,9 @@ struct WireEntity : public BaseEntity
 //! Face entity: surface, triangulations, wires.
 struct FaceEntity : public BaseEntity
 {
-  BRepGraph_SurfaceRepId                        SurfaceRepId;        //!< Typed id into mySurfaces
-  NCollection_Vector<BRepGraph_TriangulationRepId> TriangulationRepIds; //!< Typed ids into myTriangulations
+  BRepGraph_SurfaceRepId SurfaceRepId; //!< Typed id into mySurfaces
+  NCollection_Vector<BRepGraph_TriangulationRepId>
+      TriangulationRepIds;           //!< Typed ids into myTriangulations
   int ActiveTriangulationIndex = -1; //!< Index into TriangulationRepIds array (NOT a rep id)
 
   //! Convenience: active triangulation rep id, or invalid.
@@ -331,8 +326,8 @@ struct FaceEntity : public BaseEntity
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
     InitVec(TriangulationRepIds, theAlloc, 2); // typically 1
-    InitVec(WireRefs, theAlloc, 2);             // typically 1-2 (outer + holes)
-    InitVec(VertexRefs, theAlloc, 2);           // typically 0
+    InitVec(WireRefs, theAlloc, 2);            // typically 1-2 (outer + holes)
+    InitVec(VertexRefs, theAlloc, 2);          // typically 0
   }
 
   //! Return the outer wire id, or invalid if none.

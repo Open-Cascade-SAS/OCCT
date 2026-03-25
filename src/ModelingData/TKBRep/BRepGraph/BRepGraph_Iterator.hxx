@@ -50,36 +50,43 @@ struct NodeIdType<BRepGraph_TopoNode::SolidDef>
 {
   using type = BRepGraph_SolidId;
 };
+
 template <>
 struct NodeIdType<BRepGraph_TopoNode::ShellDef>
 {
   using type = BRepGraph_ShellId;
 };
+
 template <>
 struct NodeIdType<BRepGraph_TopoNode::FaceDef>
 {
   using type = BRepGraph_FaceId;
 };
+
 template <>
 struct NodeIdType<BRepGraph_TopoNode::WireDef>
 {
   using type = BRepGraph_WireId;
 };
+
 template <>
 struct NodeIdType<BRepGraph_TopoNode::EdgeDef>
 {
   using type = BRepGraph_EdgeId;
 };
+
 template <>
 struct NodeIdType<BRepGraph_TopoNode::VertexDef>
 {
   using type = BRepGraph_VertexId;
 };
+
 template <>
 struct NodeIdType<BRepGraph_TopoNode::ProductDef>
 {
   using type = BRepGraph_ProductId;
 };
+
 template <>
 struct NodeIdType<BRepGraph_TopoNode::OccurrenceDef>
 {

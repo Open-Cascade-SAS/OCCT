@@ -260,7 +260,8 @@ TEST(BRepGraphReconstructTest, Edge_ParameterRange_Preserved)
     double          aLast  = 0.0;
     BRep_Tool::Curve(TopoDS::Edge(aReconEdge), aLoc, aFirst, aLast);
 
-    const auto [aDefFirst, aDefLast] = BRepGraph_Tool::Edge::Range(aGraph, BRepGraph_EdgeId(anEdgeIdx));
+    const auto [aDefFirst, aDefLast] =
+      BRepGraph_Tool::Edge::Range(aGraph, BRepGraph_EdgeId(anEdgeIdx));
     EXPECT_NEAR(aFirst, aDefFirst, Precision::Confusion())
       << "Edge " << anEdgeIdx << " ParamFirst mismatch";
     EXPECT_NEAR(aLast, aDefLast, Precision::Confusion())
@@ -451,19 +452,23 @@ TEST(BRepGraphReconstructTest, AfterVertexMutation_ModifiedFlagAndPointChanged)
   const int                          anOuterWireIdx = aFaceDef.OuterWireDefId().Index;
   ASSERT_GE(anOuterWireIdx, 0);
 
-  const BRepGraph_TopoNode::WireDef& aWireDef = aGraph.Defs().Wire(BRepGraph_WireId(anOuterWireIdx));
+  const BRepGraph_TopoNode::WireDef& aWireDef =
+    aGraph.Defs().Wire(BRepGraph_WireId(anOuterWireIdx));
   ASSERT_GT(aWireDef.CoEdgeRefs.Length(), 0);
 
-  const BRepGraphInc::CoEdgeRef&       aFirstCR     = aWireDef.CoEdgeRefs.First();
-  const BRepGraph_TopoNode::CoEdgeDef& aFirstCoEdge = aGraph.Defs().CoEdge(BRepGraph_CoEdgeId(aFirstCR.CoEdgeDefId));
-  const BRepGraph_TopoNode::EdgeDef&   anEdgeDef    = aGraph.Defs().Edge(BRepGraph_EdgeId(aFirstCoEdge.EdgeDefId));
-  const int                            aVertIdx     = anEdgeDef.StartVertex.VertexDefId.Index;
+  const BRepGraphInc::CoEdgeRef&       aFirstCR = aWireDef.CoEdgeRefs.First();
+  const BRepGraph_TopoNode::CoEdgeDef& aFirstCoEdge =
+    aGraph.Defs().CoEdge(BRepGraph_CoEdgeId(aFirstCR.CoEdgeDefId));
+  const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
+    aGraph.Defs().Edge(BRepGraph_EdgeId(aFirstCoEdge.EdgeDefId));
+  const int aVertIdx = anEdgeDef.StartVertex.VertexDefId.Index;
   ASSERT_GE(aVertIdx, 0);
 
   // Mutate: move vertex by 5 units in Z.
   const gp_Pnt anOldPt = BRepGraph_Tool::Vertex::Pnt(aGraph, BRepGraph_VertexId(aVertIdx));
   {
-    BRepGraph_MutRef<BRepGraph_TopoNode::VertexDef> aMutVtx = aGraph.MutVertex(BRepGraph_VertexId(aVertIdx));
+    BRepGraph_MutRef<BRepGraph_TopoNode::VertexDef> aMutVtx =
+      aGraph.MutVertex(BRepGraph_VertexId(aVertIdx));
     aMutVtx->Point = gp_Pnt(anOldPt.X(), anOldPt.Y(), anOldPt.Z() + 5.0);
   }
 

@@ -126,7 +126,8 @@ public:
   //! Compute the global placement of an occurrence by walking the parent chain.
   //! @param[in] theOccurrence typed occurrence identifier
   //! @return composed TopLoc_Location from root to the occurrence
-  Standard_EXPORT TopLoc_Location OccurrenceLocation(const BRepGraph_OccurrenceId theOccurrence) const;
+  Standard_EXPORT TopLoc_Location
+    OccurrenceLocation(const BRepGraph_OccurrenceId theOccurrence) const;
 
   //! Count entities of the given kind encountered along the path.
   //! @param[in] thePath  topology path
@@ -140,9 +141,9 @@ public:
   //! @param[in] thePath1  first path
   //! @param[in] thePath2  second path
   //! @return longest common prefix path, or invalid path if roots differ
-  Standard_EXPORT BRepGraph_TopologyPath CommonAncestor(
-    const BRepGraph_TopologyPath& thePath1,
-    const BRepGraph_TopologyPath& thePath2) const;
+  Standard_EXPORT BRepGraph_TopologyPath
+    CommonAncestor(const BRepGraph_TopologyPath& thePath1,
+                   const BRepGraph_TopologyPath& thePath2) const;
 
   //! Check if theAncestorPath is a prefix of theDescendantPath.
   //! @param[in] theAncestorPath    candidate ancestor path
@@ -215,27 +216,27 @@ private:
   //! Walk upward from an edge to all roots, collecting paths.
   void reverseWalkFromEdge(int                                         theEdgeIdx,
                            NCollection_Vector<BRepGraph_TopologyPath>& theResult,
-                           const int theDepthBudget) const;
+                           const int                                   theDepthBudget) const;
 
   //! Walk upward from a face to all roots.
   void reverseWalkFromFace(int                                         theFaceIdx,
                            NCollection_Vector<BRepGraph_TopologyPath>& theResult,
-                           const int theDepthBudget) const;
+                           const int                                   theDepthBudget) const;
 
   //! Walk upward from a shell to all roots.
   void reverseWalkFromShell(int                                         theShellIdx,
                             NCollection_Vector<BRepGraph_TopologyPath>& theResult,
-                            const int theDepthBudget) const;
+                            const int                                   theDepthBudget) const;
 
   //! Walk upward from a wire to all roots via faces.
   void reverseWalkFromWire(int                                         theWireIdx,
                            NCollection_Vector<BRepGraph_TopologyPath>& theResult,
-                           const int theDepthBudget) const;
+                           const int                                   theDepthBudget) const;
 
   //! Walk upward from a vertex to all roots via edges.
   void reverseWalkFromVertex(int                                         theVertexIdx,
                              NCollection_Vector<BRepGraph_TopologyPath>& theResult,
-                             const int theDepthBudget) const;
+                             const int                                   theDepthBudget) const;
 
   //! Find the ref index of a child in a parent's ref vector (linear scan).
   static int findShellRefIdx(const BRepGraphInc::SolidEntity& theSolid, const int theShellIdx);

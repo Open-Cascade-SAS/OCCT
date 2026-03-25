@@ -38,9 +38,9 @@ struct BRepGraph_PCurveContext
   {
   }
 
-  BRepGraph_PCurveContext(const BRepGraph_EdgeId     theEdge,
-                          const BRepGraph_FaceId     theFace,
-                          const TopAbs_Orientation   theOri)
+  BRepGraph_PCurveContext(const BRepGraph_EdgeId   theEdge,
+                          const BRepGraph_FaceId   theFace,
+                          const TopAbs_Orientation theOri)
       : EdgeDefId(theEdge),
         FaceDefId(theFace),
         Orientation(theOri)

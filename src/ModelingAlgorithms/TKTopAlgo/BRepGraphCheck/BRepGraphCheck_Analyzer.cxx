@@ -97,7 +97,7 @@ void BRepGraphCheck_Analyzer::Perform()
       aNbFaces,
       [&](int theFaceIdx) {
         NCollection_Vector<BRepGraphCheck_Issue>& aLocal = aPerThread.ChangeValue(theFaceIdx);
-        const BRepGraph_FaceId aFaceId(theFaceIdx);
+        const BRepGraph_FaceId                    aFaceId(theFaceIdx);
 
         // Face minimum check.
         BRepGraphCheck::CheckFaceMinimum(*myGraph, aFaceId, aLocal);
@@ -176,7 +176,7 @@ void BRepGraphCheck_Analyzer::Perform()
       aNbShells,
       [&](int theIdx) {
         NCollection_Vector<BRepGraphCheck_Issue>& aLocal = aPerThread.ChangeValue(theIdx);
-        const BRepGraph_ShellId aShellId(theIdx);
+        const BRepGraph_ShellId                   aShellId(theIdx);
         BRepGraphCheck::CheckShellMinimum(*myGraph, aShellId, aLocal);
         BRepGraphCheck::CheckShellClosed(*myGraph, aShellId, aLocal);
         BRepGraphCheck::CheckShellOrientation(*myGraph, aShellId, aLocal);
@@ -211,10 +211,8 @@ void BRepGraphCheck_Analyzer::CheckVertex(const BRepGraph_VertexId theVertex)
   {
     const BRepGraph_EdgeId             anEdgeId(anEdgeIter);
     const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(anEdgeId);
-    if ((anEdgeDef.StartVertexDefId().IsValid()
-         && anEdgeDef.StartVertex.VertexDefId == theVertex)
-        || (anEdgeDef.EndVertexDefId().IsValid()
-            && anEdgeDef.EndVertex.VertexDefId == theVertex))
+    if ((anEdgeDef.StartVertexDefId().IsValid() && anEdgeDef.StartVertex.VertexDefId == theVertex)
+        || (anEdgeDef.EndVertexDefId().IsValid() && anEdgeDef.EndVertex.VertexDefId == theVertex))
     {
       BRepGraphCheck::CheckVertexOnEdge(*myGraph, theVertex, anEdgeId, aLocal);
     }

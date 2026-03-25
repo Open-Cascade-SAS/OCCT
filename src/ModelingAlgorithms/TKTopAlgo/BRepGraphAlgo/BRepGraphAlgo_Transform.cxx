@@ -44,7 +44,8 @@ void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
     if (BRepGraph_Tool::Face::HasSurface(theGraph, BRepGraph_FaceId(anIdx))
         && aVisitedSurfReps.Add(aFace->SurfaceRepId.Index))
     {
-      const occ::handle<Geom_Surface>& aSurf = BRepGraph_Tool::Face::Surface(theGraph, BRepGraph_FaceId(anIdx));
+      const occ::handle<Geom_Surface>& aSurf =
+        BRepGraph_Tool::Face::Surface(theGraph, BRepGraph_FaceId(anIdx));
       if (!aSurf.IsNull())
         aSurf->Transform(theTrsf);
     }
@@ -57,11 +58,13 @@ void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
   NCollection_Map<int> aVisitedCurveReps;
   for (int anIdx = 0; anIdx < theGraph.Defs().NbEdges(); ++anIdx)
   {
-    BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge = theGraph.MutEdge(BRepGraph_EdgeId(anIdx));
+    BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge =
+      theGraph.MutEdge(BRepGraph_EdgeId(anIdx));
     if (BRepGraph_Tool::Edge::HasCurve(theGraph, BRepGraph_EdgeId(anIdx))
         && aVisitedCurveReps.Add(anEdge->Curve3DRepId.Index))
     {
-      const occ::handle<Geom_Curve>& aCurve3d = BRepGraph_Tool::Edge::Curve(theGraph, BRepGraph_EdgeId(anIdx));
+      const occ::handle<Geom_Curve>& aCurve3d =
+        BRepGraph_Tool::Edge::Curve(theGraph, BRepGraph_EdgeId(anIdx));
       if (!aCurve3d.IsNull())
         aCurve3d->Transform(theTrsf);
     }
@@ -85,7 +88,7 @@ void BRepGraphAlgo_Transform::applyLocationTransform(BRepGraph& theGraph, const 
   const NCollection_Vector<BRepGraph_NodeId> aRoots = theGraph.Defs().RootProducts();
   for (int anIdx = 0; anIdx < aRoots.Length(); ++anIdx)
   {
-    const BRepGraph_NodeId aRootId = aRoots.Value(anIdx);
+    const BRepGraph_NodeId       aRootId = aRoots.Value(anIdx);
     BRepGraphInc::ProductEntity& aProduct =
       theGraph.myData->myIncStorage.ChangeProduct(BRepGraph_ProductId(aRootId.Index));
     aProduct.RootLocation = aLoc * aProduct.RootLocation;

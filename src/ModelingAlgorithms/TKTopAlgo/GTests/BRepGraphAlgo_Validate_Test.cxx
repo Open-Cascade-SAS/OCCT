@@ -131,10 +131,11 @@ TEST(BRepGraphAlgo_ValidateTest, WireConnectivity_DisconnectedEdges)
   ASSERT_GE(aTargetWire, 0);
 
   // Get the first edge in the wire and corrupt its end vertex.
-  const BRepGraph_TopoNode::WireDef&   aWireDef     = aGraph.Defs().Wire(BRepGraph_WireId(aTargetWire));
-  const BRepGraphInc::CoEdgeRef&       aFirstCR     = aWireDef.CoEdgeRefs.Value(0);
-  const BRepGraph_TopoNode::CoEdgeDef& aFirstCoEdge = aGraph.Defs().CoEdge(BRepGraph_CoEdgeId(aFirstCR.CoEdgeDefId));
-  const BRepGraph_NodeId               aFirstEdgeId(aFirstCoEdge.EdgeDefId);
+  const BRepGraph_TopoNode::WireDef&   aWireDef = aGraph.Defs().Wire(BRepGraph_WireId(aTargetWire));
+  const BRepGraphInc::CoEdgeRef&       aFirstCR = aWireDef.CoEdgeRefs.Value(0);
+  const BRepGraph_TopoNode::CoEdgeDef& aFirstCoEdge =
+    aGraph.Defs().CoEdge(BRepGraph_CoEdgeId(aFirstCR.CoEdgeDefId));
+  const BRepGraph_NodeId aFirstEdgeId(aFirstCoEdge.EdgeDefId);
   ASSERT_TRUE(aFirstEdgeId.IsValid());
 
   BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aFirstEdge =
@@ -187,7 +188,7 @@ TEST(BRepGraphAlgo_ValidateTest, BoundsCheck_InvalidIndex)
 
   // Corrupt edge's Curve3d to null.
   BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge = aGraph.MutEdge(BRepGraph_EdgeId(0));
-  anEdge->Curve3DRepId                                  = BRepGraph_Curve3DRepId();
+  anEdge->Curve3DRepId                                 = BRepGraph_Curve3DRepId();
 
   const BRepGraphAlgo_Validate::Result aResult = BRepGraphAlgo_Validate::Perform(aGraph);
   EXPECT_FALSE(aResult.IsValid());
@@ -223,8 +224,9 @@ TEST(BRepGraphAlgo_ValidateTest, AfterSplitEdge_ProducesSubEdges)
   // Create a split vertex at the midpoint.
   gp_Pnt aMidPt;
   BRepGraph_Tool::Edge::Curve(aGraph, BRepGraph_EdgeId(anEdgeId.Index))->D0(aSplitParam, aMidPt);
-  BRepGraph_NodeId aSplitVtx =
-    aGraph.Builder().AddVertexDef(aMidPt, BRepGraph_Tool::Edge::Tolerance(aGraph, BRepGraph_EdgeId(anEdgeId.Index)));
+  BRepGraph_NodeId aSplitVtx = aGraph.Builder().AddVertexDef(
+    aMidPt,
+    BRepGraph_Tool::Edge::Tolerance(aGraph, BRepGraph_EdgeId(anEdgeId.Index)));
 
   BRepGraph_NodeId aSubA, aSubB;
   BRepGraph_Mutator::SplitEdge(aGraph, anEdgeId, aSplitVtx, aSplitParam, aSubA, aSubB);
@@ -250,7 +252,8 @@ TEST(BRepGraphAlgo_ValidateTest, CorruptedPCurve_FaceDefIdOutOfBounds)
 
   // Corrupt a CoEdge's FaceDefId to an out-of-range value.
   ASSERT_GT(aGraph.Defs().NbCoEdges(), 0);
-  BRepGraph_MutRef<BRepGraph_TopoNode::CoEdgeDef> aCoEdgeDef = aGraph.MutCoEdge(BRepGraph_CoEdgeId(0));
+  BRepGraph_MutRef<BRepGraph_TopoNode::CoEdgeDef> aCoEdgeDef =
+    aGraph.MutCoEdge(BRepGraph_CoEdgeId(0));
   aCoEdgeDef->FaceDefId = BRepGraph_NodeId::Face(aGraph.Defs().NbFaces() + 999);
 
   const BRepGraphAlgo_Validate::Result aValResult = BRepGraphAlgo_Validate::Perform(aGraph);

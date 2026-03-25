@@ -52,14 +52,14 @@ public:
   //! @param[in] theSub    SubGraph whose faces to iterate
   //! @param[in] theLambda callback invoked with each face typed id
   Standard_EXPORT void ParallelForEachFace(
-    const BRepGraph_SubGraph&                              theSub,
+    const BRepGraph_SubGraph&                          theSub,
     const std::function<void(const BRepGraph_FaceId)>& theLambda) const;
 
   //! Parallel iteration over EdgeNode indices in a SubGraph.
   //! @param[in] theSub    SubGraph whose edges to iterate
   //! @param[in] theLambda callback invoked with each edge typed id
   Standard_EXPORT void ParallelForEachEdge(
-    const BRepGraph_SubGraph&                              theSub,
+    const BRepGraph_SubGraph&                          theSub,
     const std::function<void(const BRepGraph_EdgeId)>& theLambda) const;
 
 private:

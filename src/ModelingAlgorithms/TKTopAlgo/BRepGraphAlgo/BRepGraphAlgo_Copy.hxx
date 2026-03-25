@@ -52,9 +52,9 @@ public:
   //! @param[in] theFace     face definition identifier in the graph
   //! @param[in] theCopyGeom if true, geometry is deep-copied
   //! @return a new BRepGraph containing only the specified face and its dependencies
-  Standard_EXPORT static BRepGraph CopyFace(const BRepGraph&     theGraph,
+  Standard_EXPORT static BRepGraph CopyFace(const BRepGraph&       theGraph,
                                             const BRepGraph_FaceId theFace,
-                                            const bool           theCopyGeom = true);
+                                            const bool             theCopyGeom = true);
 
 private:
   BRepGraphAlgo_Copy() = delete;

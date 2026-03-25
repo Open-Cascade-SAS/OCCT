@@ -128,8 +128,8 @@ public:
   //! @param[in] theSub    SubGraph whose faces to iterate
   //! @param[in] theLambda callback invoked with each face typed id
   Standard_EXPORT static void ParallelForEachFace(
-    const BRepGraph&                                       theGraph,
-    const BRepGraph_SubGraph&                              theSub,
+    const BRepGraph&                                   theGraph,
+    const BRepGraph_SubGraph&                          theSub,
     const std::function<void(const BRepGraph_FaceId)>& theLambda);
 
   //! Parallel iteration over EdgeNode indices in a SubGraph.
@@ -137,8 +137,8 @@ public:
   //! @param[in] theSub    SubGraph whose edges to iterate
   //! @param[in] theLambda callback invoked with each edge typed id
   Standard_EXPORT static void ParallelForEachEdge(
-    const BRepGraph&                                       theGraph,
-    const BRepGraph_SubGraph&                              theSub,
+    const BRepGraph&                                   theGraph,
+    const BRepGraph_SubGraph&                          theSub,
     const std::function<void(const BRepGraph_EdgeId)>& theLambda);
 
 private:

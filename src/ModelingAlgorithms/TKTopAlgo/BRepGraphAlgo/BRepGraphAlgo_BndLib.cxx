@@ -43,28 +43,26 @@ namespace
 {
 
 // Forward declaration: defined below addFaceBox.
-static void findExactUVBounds(const BRepGraph& theGraph,
+static void findExactUVBounds(const BRepGraph&       theGraph,
                               const BRepGraph_FaceId theFaceId,
-                              double&          theUmin,
-                              double&          theUmax,
-                              double&          theVmin,
-                              double&          theVmax,
-                              double           theTol,
-                              bool&            theIsNaturalRestriction);
+                              double&                theUmin,
+                              double&                theUmax,
+                              double&                theVmin,
+                              double&                theVmax,
+                              double                 theTol,
+                              bool&                  theIsNaturalRestriction);
 
 //! Add vertex point + tolerance to the bounding box.
-static void addVertexBox(const BRepGraph& theGraph,
+static void addVertexBox(const BRepGraph&         theGraph,
                          const BRepGraph_VertexId theVertId,
-                         Bnd_Box& theBox)
+                         Bnd_Box&                 theBox)
 {
   theBox.Add(BRepGraph_Tool::Vertex::Pnt(theGraph, theVertId));
   theBox.Enlarge(BRepGraph_Tool::Vertex::Tolerance(theGraph, theVertId));
 }
 
 //! Add edge curve bbox using the graph's CurveAdaptor.
-static void addEdgeBox(const BRepGraph& theGraph,
-                       const BRepGraph_EdgeId theEdgeId,
-                       Bnd_Box& theBox)
+static void addEdgeBox(const BRepGraph& theGraph, const BRepGraph_EdgeId theEdgeId, Bnd_Box& theBox)
 {
   if (BRepGraph_Tool::Edge::Degenerated(theGraph, theEdgeId)
       || !BRepGraph_Tool::Edge::HasCurve(theGraph, theEdgeId))
@@ -80,7 +78,7 @@ static void addEdgeBox(const BRepGraph& theGraph,
 }
 
 //! Add face bbox using triangulation or geometry.
-static void addFaceBox(const BRepGraph&      theGraph,
+static void addFaceBox(const BRepGraph&       theGraph,
                        const BRepGraph_FaceId theFaceId,
                        Bnd_Box&               theBox,
                        const bool             theUseTri)
@@ -134,8 +132,8 @@ static void addFaceBox(const BRepGraph&      theGraph,
       const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.Defs().Wire(aWR.WireDefId);
       for (int anIdx = 0; anIdx < aWireDef.CoEdgeRefs.Length(); ++anIdx)
       {
-        const BRepGraphInc::CoEdgeRef&       aCR       = aWireDef.CoEdgeRefs.Value(anIdx);
-        const BRepGraph_TopoNode::CoEdgeDef& aCoEdge   = theGraph.Defs().CoEdge(aCR.CoEdgeDefId);
+        const BRepGraphInc::CoEdgeRef&       aCR     = aWireDef.CoEdgeRefs.Value(anIdx);
+        const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Defs().CoEdge(aCR.CoEdgeDefId);
         const BRepGraph_EdgeId               anEdgeId(aCoEdge.EdgeDefId);
         if (BRepGraph_Tool::Edge::Degenerated(theGraph, anEdgeId)
             || !BRepGraph_Tool::Edge::HasCurve(theGraph, anEdgeId))
@@ -210,12 +208,12 @@ static bool canUseEdges(const Adaptor3d_Surface& theBS)
 
 //! Compute precise UV bounds from face PCurves.
 //! Delegates to BRepGraphAlgo_UVBounds::Compute().
-static void findExactUVBounds(const BRepGraph& theGraph,
+static void findExactUVBounds(const BRepGraph&       theGraph,
                               const BRepGraph_FaceId theFaceId,
-                              double&          theUmin,
-                              double&          theUmax,
-                              double&          theVmin,
-                              double&          theVmax,
+                              double&                theUmin,
+                              double&                theUmax,
+                              double&                theVmin,
+                              double&                theVmax,
                               double /*theTol*/,
                               bool& theIsNaturalRestriction)
 {
@@ -402,10 +400,10 @@ static void adjustFaceBox(const BRepGraph&         theGraph,
 }
 
 //! Add precise edge curve bbox.
-static void addEdgeBoxOptimal(const BRepGraph& theGraph,
+static void addEdgeBoxOptimal(const BRepGraph&       theGraph,
                               const BRepGraph_EdgeId theEdgeId,
-                              Bnd_Box&         theBox,
-                              const bool       theUseShapeTol)
+                              Bnd_Box&               theBox,
+                              const bool             theUseShapeTol)
 {
   if (BRepGraph_Tool::Edge::Degenerated(theGraph, theEdgeId)
       || !BRepGraph_Tool::Edge::HasCurve(theGraph, theEdgeId))
@@ -419,11 +417,11 @@ static void addEdgeBoxOptimal(const BRepGraph& theGraph,
 }
 
 //! Add precise face bbox (optimal path).
-static void addFaceBoxOptimal(const BRepGraph& theGraph,
+static void addFaceBoxOptimal(const BRepGraph&       theGraph,
                               const BRepGraph_FaceId theFaceId,
-                              Bnd_Box&         theBox,
-                              const bool       theUseTri,
-                              const bool       theUseShapeTol)
+                              Bnd_Box&               theBox,
+                              const bool             theUseTri,
+                              const bool             theUseShapeTol)
 {
   const BRepGraph_TopoNode::FaceDef& aFaceDef = theGraph.Defs().Face(theFaceId);
 
@@ -470,8 +468,8 @@ static void addFaceBoxOptimal(const BRepGraph& theGraph,
       const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.Defs().Wire(aWR.WireDefId);
       for (int anIdx = 0; anIdx < aWireDef.CoEdgeRefs.Length(); ++anIdx)
       {
-        const BRepGraphInc::CoEdgeRef&       aCR       = aWireDef.CoEdgeRefs.Value(anIdx);
-        const BRepGraph_TopoNode::CoEdgeDef& aCoEdge   = theGraph.Defs().CoEdge(aCR.CoEdgeDefId);
+        const BRepGraphInc::CoEdgeRef&       aCR     = aWireDef.CoEdgeRefs.Value(anIdx);
+        const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Defs().CoEdge(aCR.CoEdgeDefId);
         const BRepGraph_EdgeId               anEdgeId(aCoEdge.EdgeDefId);
         if (BRepGraph_Tool::Edge::Degenerated(theGraph, anEdgeId)
             || !BRepGraph_Tool::Edge::HasCurve(theGraph, anEdgeId))
@@ -515,8 +513,8 @@ static void addFaceBoxOptimal(const BRepGraph& theGraph,
         const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.Defs().Wire(aWR.WireDefId);
         for (int anIdx = 0; anIdx < aWireDef.CoEdgeRefs.Length(); ++anIdx)
         {
-          const BRepGraphInc::CoEdgeRef&       aCR       = aWireDef.CoEdgeRefs.Value(anIdx);
-          const BRepGraph_TopoNode::CoEdgeDef& aCoEdge   = theGraph.Defs().CoEdge(aCR.CoEdgeDefId);
+          const BRepGraphInc::CoEdgeRef&       aCR     = aWireDef.CoEdgeRefs.Value(anIdx);
+          const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Defs().CoEdge(aCR.CoEdgeDefId);
           const BRepGraph_EdgeId               anEdgeId(aCoEdge.EdgeDefId);
           if (BRepGraph_Tool::Edge::Degenerated(theGraph, anEdgeId)
               || !BRepGraph_Tool::Edge::HasCurve(theGraph, anEdgeId))
@@ -575,7 +573,8 @@ static void addNodeBox(const BRepGraph& theGraph,
       break;
     }
     case BRepGraph_NodeId::Kind::Wire: {
-      const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.Defs().Wire(BRepGraph_WireId(theNode.Index));
+      const BRepGraph_TopoNode::WireDef& aWireDef =
+        theGraph.Defs().Wire(BRepGraph_WireId(theNode.Index));
       for (int anIdx = 0; anIdx < aWireDef.CoEdgeRefs.Length(); ++anIdx)
       {
         const BRepGraphInc::CoEdgeRef&       aCR     = aWireDef.CoEdgeRefs.Value(anIdx);
@@ -590,7 +589,7 @@ static void addNodeBox(const BRepGraph& theGraph,
     }
     case BRepGraph_NodeId::Kind::Shell: {
       const BRepGraph_ShellId aShellId(theNode.Index);
-      const int aNbFaces = theGraph.Defs().NbShellFaces(aShellId);
+      const int               aNbFaces = theGraph.Defs().NbShellFaces(aShellId);
       for (int i = 0; i < aNbFaces; ++i)
       {
         const BRepGraph_NodeId aFaceDefId = theGraph.Defs().ShellFaceDef(aShellId, i);
@@ -599,7 +598,8 @@ static void addNodeBox(const BRepGraph& theGraph,
       break;
     }
     case BRepGraph_NodeId::Kind::Solid: {
-      const BRepGraph_TopoNode::SolidDef& aSolidDef = theGraph.Defs().Solid(BRepGraph_SolidId(theNode.Index));
+      const BRepGraph_TopoNode::SolidDef& aSolidDef =
+        theGraph.Defs().Solid(BRepGraph_SolidId(theNode.Index));
       for (int anIdx = 0; anIdx < aSolidDef.ShellRefs.Length(); ++anIdx)
       {
         const BRepGraphInc::ShellRef& aSR = aSolidDef.ShellRefs.Value(anIdx);
@@ -608,7 +608,8 @@ static void addNodeBox(const BRepGraph& theGraph,
       break;
     }
     case BRepGraph_NodeId::Kind::Compound: {
-      const BRepGraph_TopoNode::CompoundDef& aCompDef = theGraph.Defs().Compound(BRepGraph_CompoundId(theNode.Index));
+      const BRepGraph_TopoNode::CompoundDef& aCompDef =
+        theGraph.Defs().Compound(BRepGraph_CompoundId(theNode.Index));
       for (int anIdx = 0; anIdx < aCompDef.ChildRefs.Length(); ++anIdx)
       {
         const BRepGraphInc::ChildRef& aCR = aCompDef.ChildRefs.Value(anIdx);
@@ -617,7 +618,8 @@ static void addNodeBox(const BRepGraph& theGraph,
       break;
     }
     case BRepGraph_NodeId::Kind::CompSolid: {
-      const BRepGraph_TopoNode::CompSolidDef& aCSolDef = theGraph.Defs().CompSolid(BRepGraph_CompSolidId(theNode.Index));
+      const BRepGraph_TopoNode::CompSolidDef& aCSolDef =
+        theGraph.Defs().CompSolid(BRepGraph_CompSolidId(theNode.Index));
       for (int anIdx = 0; anIdx < aCSolDef.SolidRefs.Length(); ++anIdx)
       {
         addNodeBox(theGraph, aCSolDef.SolidRefs.Value(anIdx).SolidDefId, theBox, theUseTri);
@@ -644,7 +646,7 @@ static void addNodeBoxOptimal(const BRepGraph& theGraph,
   switch (theNode.NodeKind)
   {
     case BRepGraph_NodeId::Kind::Vertex: {
-      Bnd_Box aLocBox;
+      Bnd_Box                  aLocBox;
       const BRepGraph_VertexId aVertId(theNode.Index);
       aLocBox.Add(BRepGraph_Tool::Vertex::Pnt(theGraph, aVertId));
       const double aTol =
@@ -667,7 +669,8 @@ static void addNodeBoxOptimal(const BRepGraph& theGraph,
       break;
     }
     case BRepGraph_NodeId::Kind::Wire: {
-      const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.Defs().Wire(BRepGraph_WireId(theNode.Index));
+      const BRepGraph_TopoNode::WireDef& aWireDef =
+        theGraph.Defs().Wire(BRepGraph_WireId(theNode.Index));
       for (int anIdx = 0; anIdx < aWireDef.CoEdgeRefs.Length(); ++anIdx)
       {
         const BRepGraphInc::CoEdgeRef&       aCR     = aWireDef.CoEdgeRefs.Value(anIdx);
@@ -686,7 +689,7 @@ static void addNodeBoxOptimal(const BRepGraph& theGraph,
     }
     case BRepGraph_NodeId::Kind::Shell: {
       const BRepGraph_ShellId aShellId(theNode.Index);
-      const int aNbFaces = theGraph.Defs().NbShellFaces(aShellId);
+      const int               aNbFaces = theGraph.Defs().NbShellFaces(aShellId);
       for (int i = 0; i < aNbFaces; ++i)
       {
         const BRepGraph_NodeId aFaceDefId = theGraph.Defs().ShellFaceDef(aShellId, i);
@@ -699,7 +702,8 @@ static void addNodeBoxOptimal(const BRepGraph& theGraph,
       break;
     }
     case BRepGraph_NodeId::Kind::Solid: {
-      const BRepGraph_TopoNode::SolidDef& aSolidDef = theGraph.Defs().Solid(BRepGraph_SolidId(theNode.Index));
+      const BRepGraph_TopoNode::SolidDef& aSolidDef =
+        theGraph.Defs().Solid(BRepGraph_SolidId(theNode.Index));
       for (int anIdx = 0; anIdx < aSolidDef.ShellRefs.Length(); ++anIdx)
       {
         const BRepGraphInc::ShellRef& aSR = aSolidDef.ShellRefs.Value(anIdx);
@@ -708,7 +712,8 @@ static void addNodeBoxOptimal(const BRepGraph& theGraph,
       break;
     }
     case BRepGraph_NodeId::Kind::Compound: {
-      const BRepGraph_TopoNode::CompoundDef& aCompDef = theGraph.Defs().Compound(BRepGraph_CompoundId(theNode.Index));
+      const BRepGraph_TopoNode::CompoundDef& aCompDef =
+        theGraph.Defs().Compound(BRepGraph_CompoundId(theNode.Index));
       for (int anIdx = 0; anIdx < aCompDef.ChildRefs.Length(); ++anIdx)
       {
         const BRepGraphInc::ChildRef& aCR = aCompDef.ChildRefs.Value(anIdx);
@@ -717,7 +722,8 @@ static void addNodeBoxOptimal(const BRepGraph& theGraph,
       break;
     }
     case BRepGraph_NodeId::Kind::CompSolid: {
-      const BRepGraph_TopoNode::CompSolidDef& aCSolDef = theGraph.Defs().CompSolid(BRepGraph_CompSolidId(theNode.Index));
+      const BRepGraph_TopoNode::CompSolidDef& aCSolDef =
+        theGraph.Defs().CompSolid(BRepGraph_CompSolidId(theNode.Index));
       for (int anIdx = 0; anIdx < aCSolDef.SolidRefs.Length(); ++anIdx)
       {
         addNodeBoxOptimal(theGraph,
@@ -814,10 +820,11 @@ void BRepGraphAlgo_BndLib::AddOptimal(const BRepGraph& theGraph,
   const int aNbVerts = theGraph.Defs().NbVertices();
   for (int i = 0; i < aNbVerts; ++i)
   {
-    Bnd_Box aLocBox;
+    Bnd_Box                  aLocBox;
     const BRepGraph_VertexId aVertId(i);
     aLocBox.Add(BRepGraph_Tool::Vertex::Pnt(theGraph, aVertId));
-    const double aTol = theUseShapeTolerance ? BRepGraph_Tool::Vertex::Tolerance(theGraph, aVertId) : 0.;
+    const double aTol =
+      theUseShapeTolerance ? BRepGraph_Tool::Vertex::Tolerance(theGraph, aVertId) : 0.;
     aLocBox.Enlarge(aTol);
     double xmin, ymin, zmin, xmax, ymax, zmax;
     aLocBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);

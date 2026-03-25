@@ -93,17 +93,17 @@ private:
 
   NCollection_Vector<CSLib_Class2d> myWireClassifiers; //!< Per-wire polygon classifiers.
   NCollection_Vector<WireOrient>    myWireOrients;     //!< Per-wire orientation.
-  double                            myTolUV      = 0.0;
-  const BRepGraph*                  myGraph  = nullptr; //!< For fallback face reconstruction.
-  BRepGraph_FaceId                  myFaceId;            //!< For fallback face reconstruction.
-  double                            myUmin       = 0.0;
-  double                            myUmax       = 0.0;
-  double                            myVmin       = 0.0;
-  double                            myVmax       = 0.0;
-  bool                              myIsUPer     = false;
-  bool                              myIsVPer     = false;
-  double                            myUPeriod    = 0.0;
-  double                            myVPeriod    = 0.0;
+  double                            myTolUV = 0.0;
+  const BRepGraph*                  myGraph = nullptr; //!< For fallback face reconstruction.
+  BRepGraph_FaceId                  myFaceId;          //!< For fallback face reconstruction.
+  double                            myUmin    = 0.0;
+  double                            myUmax    = 0.0;
+  double                            myVmin    = 0.0;
+  double                            myVmax    = 0.0;
+  bool                              myIsUPer  = false;
+  bool                              myIsVPer  = false;
+  double                            myUPeriod = 0.0;
+  double                            myVPeriod = 0.0;
 };
 
 #endif // _BRepGraphAlgo_FClass2d_HeaderFile

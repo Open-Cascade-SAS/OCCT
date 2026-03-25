@@ -305,4 +305,3 @@ TEST_F(BRepGraphViewsTest, History_MutableAccessor)
   myGraph.History().SetEnabled(true);
   EXPECT_TRUE(myGraph.History().IsEnabled());
 }
-

@@ -57,10 +57,10 @@ public:
   //! @param[in]     theTolerance reference tolerance
   //! @param[in]     theParallel  enable parallel execution
   //! @return diagnostic counters
-  static Standard_EXPORT Result Perform(BRepGraph&                                    theGraph,
+  static Standard_EXPORT Result Perform(BRepGraph&                                      theGraph,
                                         const NCollection_IndexedMap<BRepGraph_EdgeId>& theEdgeIds,
-                                        const double                                  theTolerance,
-                                        const bool                                    theParallel);
+                                        const double theTolerance,
+                                        const bool   theParallel);
 
 private:
   BRepGraphAlgo_SameParameter() = delete;

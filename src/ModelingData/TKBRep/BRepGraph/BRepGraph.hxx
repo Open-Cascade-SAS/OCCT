@@ -157,36 +157,39 @@ public:
   //! Access shape reconstruction.
   ShapesView Shapes() const;
 
-
-
-
   //! @name Scoped mutable definition guards (RAII).
   //! Return a BRepGraph_MutRef that defers markModified() to scope exit.
   //! Use when modifying multiple fields on the same entity.
 
   //! Return scoped mutable edge definition guard.
   //! @param[in] theEdge typed edge identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> MutEdge(const BRepGraph_EdgeId theEdge);
+  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> MutEdge(
+    const BRepGraph_EdgeId theEdge);
 
   //! Return scoped mutable vertex definition guard.
   //! @param[in] theVertex typed vertex identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::VertexDef> MutVertex(const BRepGraph_VertexId theVertex);
+  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::VertexDef> MutVertex(
+    const BRepGraph_VertexId theVertex);
 
   //! Return scoped mutable wire definition guard.
   //! @param[in] theWire typed wire identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::WireDef> MutWire(const BRepGraph_WireId theWire);
+  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::WireDef> MutWire(
+    const BRepGraph_WireId theWire);
 
   //! Return scoped mutable face definition guard.
   //! @param[in] theFace typed face identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> MutFace(const BRepGraph_FaceId theFace);
+  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> MutFace(
+    const BRepGraph_FaceId theFace);
 
   //! Return scoped mutable shell definition guard.
   //! @param[in] theShell typed shell identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::ShellDef> MutShell(const BRepGraph_ShellId theShell);
+  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::ShellDef> MutShell(
+    const BRepGraph_ShellId theShell);
 
   //! Return scoped mutable solid definition guard.
   //! @param[in] theSolid typed solid identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::SolidDef> MutSolid(const BRepGraph_SolidId theSolid);
+  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::SolidDef> MutSolid(
+    const BRepGraph_SolidId theSolid);
 
   //! Return scoped mutable compound definition guard.
   //! @param[in] theCompound typed compound identifier
@@ -195,14 +198,16 @@ public:
 
   //! Return scoped mutable coedge definition guard.
   //! @param[in] theCoEdge typed coedge identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::CoEdgeDef> MutCoEdge(const BRepGraph_CoEdgeId theCoEdge);
+  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::CoEdgeDef> MutCoEdge(
+    const BRepGraph_CoEdgeId theCoEdge);
 
   //! Create a new Curve2DRep in storage and return its typed identifier.
   //! Use this when assigning a new PCurve to an existing CoEdge entity
   //! via MutCoEdge().
   //! @param[in] theCurve2d the 2D parametric curve handle
   //! @return typed Curve2DRep identifier, or invalid if the curve is null
-  Standard_EXPORT BRepGraph_Curve2DRepId CreateCurve2DRep(const occ::handle<Geom2d_Curve>& theCurve2d);
+  Standard_EXPORT BRepGraph_Curve2DRepId
+    CreateCurve2DRep(const occ::handle<Geom2d_Curve>& theCurve2d);
 
   //! Return scoped mutable comp-solid definition guard.
   //! @param[in] theCompSolid typed comp-solid identifier

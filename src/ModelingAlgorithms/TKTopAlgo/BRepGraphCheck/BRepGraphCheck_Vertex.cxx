@@ -45,8 +45,7 @@ void BRepGraphCheck::CheckVertexOnEdge(const BRepGraph&                         
   {
     aParam = anEdgeDef.ParamFirst;
   }
-  else if (anEdgeDef.EndVertexDefId().IsValid()
-           && anEdgeDef.EndVertex.VertexDefId == theVertex)
+  else if (anEdgeDef.EndVertexDefId().IsValid() && anEdgeDef.EndVertex.VertexDefId == theVertex)
   {
     aParam = anEdgeDef.ParamLast;
   }
@@ -97,14 +96,12 @@ void BRepGraphCheck::CheckVertexOnFace(const BRepGraph&                         
     bool   aIsEndpoint = false;
     double aParam      = 0.0;
 
-    if (anEdgeDef.StartVertexDefId().IsValid()
-        && anEdgeDef.StartVertex.VertexDefId == theVertex)
+    if (anEdgeDef.StartVertexDefId().IsValid() && anEdgeDef.StartVertex.VertexDefId == theVertex)
     {
       aIsEndpoint = true;
       aParam      = anEdgeDef.ParamFirst;
     }
-    else if (anEdgeDef.EndVertexDefId().IsValid()
-             && anEdgeDef.EndVertex.VertexDefId == theVertex)
+    else if (anEdgeDef.EndVertexDefId().IsValid() && anEdgeDef.EndVertex.VertexDefId == theVertex)
     {
       aIsEndpoint = true;
       aParam      = anEdgeDef.ParamLast;

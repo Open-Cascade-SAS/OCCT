@@ -110,7 +110,8 @@ public:
   }
 
   //! Return coedge indices referencing the given edge.
-  const NCollection_Vector<BRepGraph_CoEdgeId>* CoEdgesOfEdge(const BRepGraph_EdgeId theEdgeId) const
+  const NCollection_Vector<BRepGraph_CoEdgeId>* CoEdgesOfEdge(
+    const BRepGraph_EdgeId theEdgeId) const
   {
     return seekVec(myEdgeToCoEdges, theEdgeId.Index);
   }
@@ -125,7 +126,8 @@ public:
   }
 
   //! Return edge indices incident to the given vertex.
-  const NCollection_Vector<BRepGraph_EdgeId>* EdgesOfVertex(const BRepGraph_VertexId theVertexId) const
+  const NCollection_Vector<BRepGraph_EdgeId>* EdgesOfVertex(
+    const BRepGraph_VertexId theVertexId) const
   {
     return seekVec(myVertexToEdges, theVertexId.Index);
   }
@@ -143,7 +145,8 @@ public:
   }
 
   //! Return solid indices containing the given shell.
-  const NCollection_Vector<BRepGraph_SolidId>* SolidsOfShell(const BRepGraph_ShellId theShellId) const
+  const NCollection_Vector<BRepGraph_SolidId>* SolidsOfShell(
+    const BRepGraph_ShellId theShellId) const
   {
     return seekVec(myShellToSolids, theShellId.Index);
   }
@@ -307,8 +310,8 @@ private:
   //! Ensure theIdx has at least theSize slots (pre-sizing with empty vectors).
   //! If theAlloc is non-null, inner vectors are constructed with it.
   template <typename T>
-  static void preSize(TypedIndexTable<T>&                             theIdx,
-                      const int                                       theSize,
+  static void preSize(TypedIndexTable<T>&                           theIdx,
+                      const int                                     theSize,
                       const occ::handle<NCollection_BaseAllocator>& theAlloc =
                         occ::handle<NCollection_BaseAllocator>())
   {
@@ -360,22 +363,25 @@ private:
 
   occ::handle<NCollection_BaseAllocator> myAllocator;
 
-  TypedIndexTable<BRepGraph_WireId>        myEdgeToWires;
-  TypedIndexTable<BRepGraph_FaceId>        myEdgeToFaces;
-  TypedIndexTable<BRepGraph_CoEdgeId>      myEdgeToCoEdges;
-  TypedIndexTable<BRepGraph_EdgeId>        myVertexToEdges;
-  TypedIndexTable<BRepGraph_FaceId>        myWireToFaces;
-  TypedIndexTable<BRepGraph_ShellId>       myFaceToShells;
-  TypedIndexTable<BRepGraph_SolidId>       myShellToSolids;
-  TypedIndexTable<BRepGraph_OccurrenceId>  myProductToOccurrences;
+  TypedIndexTable<BRepGraph_WireId>       myEdgeToWires;
+  TypedIndexTable<BRepGraph_FaceId>       myEdgeToFaces;
+  TypedIndexTable<BRepGraph_CoEdgeId>     myEdgeToCoEdges;
+  TypedIndexTable<BRepGraph_EdgeId>       myVertexToEdges;
+  TypedIndexTable<BRepGraph_FaceId>       myWireToFaces;
+  TypedIndexTable<BRepGraph_ShellId>      myFaceToShells;
+  TypedIndexTable<BRepGraph_SolidId>      myShellToSolids;
+  TypedIndexTable<BRepGraph_OccurrenceId> myProductToOccurrences;
 
-  TypedIndexTable<BRepGraph_CompoundId>    myCompoundsOfSolid;     //!< Solid -> parent Compound indices.
-  TypedIndexTable<BRepGraph_CompSolidId>   myCompSolidsOfSolid;    //!< Solid -> parent CompSolid indices.
-  TypedIndexTable<BRepGraph_CompoundId>    myCompoundsOfShell;     //!< Shell -> parent Compound indices.
-  TypedIndexTable<BRepGraph_CompoundId>    myCompoundsOfFace;      //!< Face -> parent Compound indices.
-  TypedIndexTable<BRepGraph_CompoundId>    myCompoundsOfCompound;  //!< Compound -> parent Compound indices.
-  TypedIndexTable<BRepGraph_CompoundId>    myCompoundsOfCompSolid; //!< CompSolid -> parent Compound indices.
-  TypedIndexTable<BRepGraph_WireId>        myCoEdgeToWires;        //!< CoEdge -> parent Wire indices.
+  TypedIndexTable<BRepGraph_CompoundId> myCompoundsOfSolid; //!< Solid -> parent Compound indices.
+  TypedIndexTable<BRepGraph_CompSolidId>
+                                        myCompSolidsOfSolid; //!< Solid -> parent CompSolid indices.
+  TypedIndexTable<BRepGraph_CompoundId> myCompoundsOfShell;  //!< Shell -> parent Compound indices.
+  TypedIndexTable<BRepGraph_CompoundId> myCompoundsOfFace;   //!< Face -> parent Compound indices.
+  TypedIndexTable<BRepGraph_CompoundId>
+    myCompoundsOfCompound; //!< Compound -> parent Compound indices.
+  TypedIndexTable<BRepGraph_CompoundId>
+    myCompoundsOfCompSolid;                          //!< CompSolid -> parent Compound indices.
+  TypedIndexTable<BRepGraph_WireId> myCoEdgeToWires; //!< CoEdge -> parent Wire indices.
 
   NCollection_Vector<int> myEdgeFaceCount; //!< Cached face count per edge, O(1) lookup.
 };

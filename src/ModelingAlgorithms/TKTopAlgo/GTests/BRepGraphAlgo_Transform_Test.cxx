@@ -145,7 +145,8 @@ TEST(BRepGraphAlgo_TransformTest, LocationOnly_NoCopyGeom)
 
   // Verify the transform is stored on Product::RootLocation.
   ASSERT_GT(aResultGraph.Defs().NbProducts(), 0);
-  const TopLoc_Location& aRootLoc = aResultGraph.Defs().Product(BRepGraph_ProductId(0)).RootLocation;
+  const TopLoc_Location& aRootLoc =
+    aResultGraph.Defs().Product(BRepGraph_ProductId(0)).RootLocation;
   EXPECT_FALSE(aRootLoc.IsIdentity());
   const gp_Trsf aProductTrsf = aRootLoc.Transformation();
   EXPECT_NEAR(aProductTrsf.Value(1, 4), aDx, Precision::Confusion());
@@ -154,8 +155,7 @@ TEST(BRepGraphAlgo_TransformTest, LocationOnly_NoCopyGeom)
 
   // Verify that reconstructed solid + RootLocation produces correct geometry.
   ASSERT_GT(aResultGraph.Defs().NbSolids(), 0);
-  TopoDS_Shape aTransSolid =
-    aResultGraph.Shapes().Reconstruct(BRepGraph_NodeId::Solid(0));
+  TopoDS_Shape aTransSolid = aResultGraph.Shapes().Reconstruct(BRepGraph_NodeId::Solid(0));
   ASSERT_FALSE(aTransSolid.IsNull());
   aTransSolid.Location(aRootLoc);
 
@@ -180,7 +180,8 @@ TEST(BRepGraphAlgo_TransformTest, TransformSingleFace)
   gp_Trsf aTrsf;
   aTrsf.SetTranslation(gp_Vec(10.0, 20.0, 30.0));
 
-  BRepGraph aResultGraph = BRepGraphAlgo_Transform::TransformFace(aGraph, BRepGraph_FaceId(0), aTrsf, true);
+  BRepGraph aResultGraph =
+    BRepGraphAlgo_Transform::TransformFace(aGraph, BRepGraph_FaceId(0), aTrsf, true);
   ASSERT_TRUE(aResultGraph.IsDone());
   EXPECT_EQ(aResultGraph.Defs().NbFaces(), 1);
 }

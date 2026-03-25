@@ -64,8 +64,8 @@ public:
   //! @param[in] theGraph  pre-built graph
   //! @param[in] theEdge   typed edge definition identifier
   //! @param[out] theIssues issues appended here
-  Standard_EXPORT static void CheckEdgeMinimum(const BRepGraph&     theGraph,
-                                               const BRepGraph_EdgeId theEdge,
+  Standard_EXPORT static void CheckEdgeMinimum(const BRepGraph&                          theGraph,
+                                               const BRepGraph_EdgeId                    theEdge,
                                                NCollection_Vector<BRepGraphCheck_Issue>& theIssues);
 
   //! Check edge on a specific face: PCurve existence and SameParameter deviation.
@@ -74,10 +74,10 @@ public:
   //! @param[in] theFace    typed face definition identifier
   //! @param[in] theIsExact use exact method for BRepLib_ValidateEdge
   //! @param[out] theIssues issues appended here
-  Standard_EXPORT static void CheckEdgeOnFace(const BRepGraph&     theGraph,
-                                              const BRepGraph_EdgeId theEdge,
-                                              const BRepGraph_FaceId theFace,
-                                              const bool           theIsExact,
+  Standard_EXPORT static void CheckEdgeOnFace(const BRepGraph&                          theGraph,
+                                              const BRepGraph_EdgeId                    theEdge,
+                                              const BRepGraph_FaceId                    theFace,
+                                              const bool                                theIsExact,
                                               NCollection_Vector<BRepGraphCheck_Issue>& theIssues);
 
   //! Check edge connectivity within a shell: free edges and multi-connexity.
@@ -86,10 +86,10 @@ public:
   //! @param[in] theShell         typed shell definition identifier (context)
   //! @param[in] theEdgeFaceCount number of faces in this shell referencing the edge
   //! @param[out] theIssues       issues appended here
-  Standard_EXPORT static void CheckEdgeInShell(const BRepGraph&       theGraph,
-                                               const BRepGraph_EdgeId   theEdge,
-                                               const BRepGraph_ShellId  theShell,
-                                               const int              theEdgeFaceCount,
+  Standard_EXPORT static void CheckEdgeInShell(const BRepGraph&        theGraph,
+                                               const BRepGraph_EdgeId  theEdge,
+                                               const BRepGraph_ShellId theShell,
+                                               const int               theEdgeFaceCount,
                                                NCollection_Vector<BRepGraphCheck_Issue>& theIssues);
 
   // ---- Wire checks (BRepGraphCheck_Wire.cxx) ----
@@ -98,8 +98,8 @@ public:
   //! @param[in] theGraph pre-built graph
   //! @param[in] theWire  typed wire definition identifier
   //! @param[out] theIssues issues appended here
-  Standard_EXPORT static void CheckWireMinimum(const BRepGraph&       theGraph,
-                                               const BRepGraph_WireId theWire,
+  Standard_EXPORT static void CheckWireMinimum(const BRepGraph&                          theGraph,
+                                               const BRepGraph_WireId                    theWire,
                                                NCollection_Vector<BRepGraphCheck_Issue>& theIssues);
 
   //! Check wire on a face: connectivity, closure, and orientation.
@@ -120,8 +120,8 @@ public:
   //! @param[in] theGraph pre-built graph
   //! @param[in] theFace  typed face definition identifier
   //! @param[out] theIssues issues appended here
-  Standard_EXPORT static void CheckFaceMinimum(const BRepGraph&       theGraph,
-                                               const BRepGraph_FaceId theFace,
+  Standard_EXPORT static void CheckFaceMinimum(const BRepGraph&                          theGraph,
+                                               const BRepGraph_FaceId                    theFace,
                                                NCollection_Vector<BRepGraphCheck_Issue>& theIssues);
 
   //! Check face wires: intersections, imbrication, orientation consistency.
@@ -149,8 +149,8 @@ public:
   //! @param[in] theGraph pre-built graph
   //! @param[in] theShell typed shell definition identifier
   //! @param[out] theIssues issues appended here
-  Standard_EXPORT static void CheckShellClosed(const BRepGraph&        theGraph,
-                                               const BRepGraph_ShellId theShell,
+  Standard_EXPORT static void CheckShellClosed(const BRepGraph&                          theGraph,
+                                               const BRepGraph_ShellId                   theShell,
                                                NCollection_Vector<BRepGraphCheck_Issue>& theIssues);
 
   //! Check shell orientation: consistent edge orientation between adjacent faces.

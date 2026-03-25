@@ -47,7 +47,7 @@ struct VertexRef
 struct CoEdgeRef
 {
   BRepGraph_CoEdgeId CoEdgeDefId;
-  TopLoc_Location LocalLocation;
+  TopLoc_Location    LocalLocation;
 };
 
 //! Reference from a face to one of its wires.

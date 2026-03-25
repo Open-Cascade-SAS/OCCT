@@ -75,11 +75,13 @@ public:
 
   //! Return wire definition indices that contain a given edge (safe reference, never null).
   //! @param[in] theEdge typed edge definition identifier
-  Standard_EXPORT const NCollection_Vector<BRepGraph_WireId>& WiresOfEdge(const BRepGraph_EdgeId theEdge) const;
+  Standard_EXPORT const NCollection_Vector<BRepGraph_WireId>& WiresOfEdge(
+    const BRepGraph_EdgeId theEdge) const;
 
   //! Return coedge indices referencing the given edge (safe reference, never null).
   //! @param[in] theEdge typed edge definition identifier
-  Standard_EXPORT const NCollection_Vector<BRepGraph_CoEdgeId>& CoEdgesOfEdge(const BRepGraph_EdgeId theEdge) const;
+  Standard_EXPORT const NCollection_Vector<BRepGraph_CoEdgeId>& CoEdgesOfEdge(
+    const BRepGraph_EdgeId theEdge) const;
 
   //! Access solid definition by typed identifier.
   //! @param[in] theSolid typed solid definition identifier
@@ -134,7 +136,7 @@ public:
   //! @param[in] theShell typed shell definition identifier
   //! @param[in] theFaceIndex zero-based face index within the shell
   Standard_EXPORT BRepGraph_NodeId ShellFaceDef(const BRepGraph_ShellId theShell,
-                                                const int              theFaceIndex) const;
+                                                const int               theFaceIndex) const;
 
   //! Number of product definitions.
   Standard_EXPORT int NbProducts() const;
@@ -177,7 +179,7 @@ public:
   //! @param[in] theProduct typed product definition identifier
   //! @param[in] theComponentIdx zero-based occurrence index within the product
   Standard_EXPORT BRepGraph_NodeId Component(const BRepGraph_ProductId theProduct,
-                                             const int                theComponentIdx) const;
+                                             const int                 theComponentIdx) const;
 
   //! Total number of nodes in the graph (all topology + assembly kinds).
   Standard_EXPORT size_t NbNodes() const;

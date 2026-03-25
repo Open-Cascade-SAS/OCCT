@@ -129,7 +129,8 @@ TEST_F(BRepGraphConvenienceTest, FaceSurface_AllBoxFaces)
   const BRepGraph::DefsView aDefs = myGraph.Defs();
   for (int aFaceIter = 0; aFaceIter < aDefs.NbFaces(); ++aFaceIter)
   {
-    EXPECT_TRUE(aDefs.Face(BRepGraph_FaceId(aFaceIter)).SurfaceRepId.IsValid()) << "Face " << aFaceIter << " has no surface";
+    EXPECT_TRUE(aDefs.Face(BRepGraph_FaceId(aFaceIter)).SurfaceRepId.IsValid())
+      << "Face " << aFaceIter << " has no surface";
   }
 }
 
@@ -207,8 +208,9 @@ TEST(BRepGraphConvenienceCylinderTest, FindPCurve_WithOrientation_SeamEdge)
   // Look for seam edges (coedge with SeamPairId valid).
   for (int anEdgeIter = 0; anEdgeIter < aDefs.NbEdges(); ++anEdgeIter)
   {
-    const BRepGraph_TopoNode::EdgeDef& anEdgeDef   = aDefs.Edge(BRepGraph_EdgeId(anEdgeIter));
-    const NCollection_Vector<BRepGraph_CoEdgeId>&     aCoEdgeIdxs = aDefs.CoEdgesOfEdge(BRepGraph_EdgeId(anEdgeIter));
+    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(BRepGraph_EdgeId(anEdgeIter));
+    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
+      aDefs.CoEdgesOfEdge(BRepGraph_EdgeId(anEdgeIter));
 
     for (int aCEI = 0; aCEI < aCoEdgeIdxs.Length(); ++aCEI)
     {

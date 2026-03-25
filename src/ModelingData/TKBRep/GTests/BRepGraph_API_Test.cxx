@@ -331,8 +331,7 @@ TEST(BRepGraphAPI_RemoveNodeTest, RemoveFaceFromBox)
   // Other faces should not be removed.
   for (int aFaceIdx = 1; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
   {
-    EXPECT_FALSE(
-      aGraph.Defs().IsRemoved(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, aFaceIdx)));
+    EXPECT_FALSE(aGraph.Defs().IsRemoved(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, aFaceIdx)));
   }
 }
 
@@ -437,7 +436,8 @@ TEST(BRepGraphAPI_ConstructionTest, AddCompSolidDef_WithSolids)
   EXPECT_EQ(aCSolId.NodeKind, BRepGraph_NodeId::Kind::CompSolid);
   EXPECT_EQ(aGraph.Defs().NbCompSolids(), 1);
 
-  const BRepGraph_TopoNode::CompSolidDef& aCSolDef = aGraph.Defs().CompSolid(BRepGraph_CompSolidId(0));
+  const BRepGraph_TopoNode::CompSolidDef& aCSolDef =
+    aGraph.Defs().CompSolid(BRepGraph_CompSolidId(0));
   EXPECT_EQ(aCSolDef.SolidRefs.Length(), 2);
 }
 
@@ -522,7 +522,8 @@ TEST(BRepGraphAPI_MutableDefTest, MutableShellDefinition)
   ASSERT_GT(aGraph.Defs().NbShells(), 0);
 
   {
-    BRepGraph_MutRef<BRepGraph_TopoNode::ShellDef> aShellDef = aGraph.MutShell(BRepGraph_ShellId(0));
+    BRepGraph_MutRef<BRepGraph_TopoNode::ShellDef> aShellDef =
+      aGraph.MutShell(BRepGraph_ShellId(0));
   }
   EXPECT_TRUE(aGraph.Defs().Shell(BRepGraph_ShellId(0)).IsModified);
 }
@@ -538,7 +539,8 @@ TEST(BRepGraphAPI_MutableDefTest, MutableSolidDefinition)
   ASSERT_GT(aGraph.Defs().NbSolids(), 0);
 
   {
-    BRepGraph_MutRef<BRepGraph_TopoNode::SolidDef> aSolidDef = aGraph.MutSolid(BRepGraph_SolidId(0));
+    BRepGraph_MutRef<BRepGraph_TopoNode::SolidDef> aSolidDef =
+      aGraph.MutSolid(BRepGraph_SolidId(0));
   }
   EXPECT_TRUE(aGraph.Defs().Solid(BRepGraph_SolidId(0)).IsModified);
 }
@@ -551,7 +553,8 @@ TEST(BRepGraphAPI_MutableDefTest, MutableCompoundDefinition)
   ASSERT_EQ(aGraph.Defs().NbCompounds(), 1);
 
   {
-    BRepGraph_MutRef<BRepGraph_TopoNode::CompoundDef> aCompDef = aGraph.MutCompound(BRepGraph_CompoundId(0));
+    BRepGraph_MutRef<BRepGraph_TopoNode::CompoundDef> aCompDef =
+      aGraph.MutCompound(BRepGraph_CompoundId(0));
   }
   EXPECT_TRUE(aGraph.Defs().Compound(BRepGraph_CompoundId(0)).IsModified);
 }
@@ -564,7 +567,8 @@ TEST(BRepGraphAPI_MutableDefTest, MutableCompSolidDefinition)
   ASSERT_EQ(aGraph.Defs().NbCompSolids(), 1);
 
   {
-    BRepGraph_MutRef<BRepGraph_TopoNode::CompSolidDef> aCSolDef = aGraph.MutCompSolid(BRepGraph_CompSolidId(0));
+    BRepGraph_MutRef<BRepGraph_TopoNode::CompSolidDef> aCSolDef =
+      aGraph.MutCompSolid(BRepGraph_CompSolidId(0));
   }
   EXPECT_TRUE(aGraph.Defs().CompSolid(BRepGraph_CompSolidId(0)).IsModified);
 }
@@ -927,7 +931,7 @@ TEST(BRepGraphTypedNodeId, ImplicitConversion_PassToFunction)
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_FaceId aFace(0);
-  // AdjacentFaces takes BRepGraph_NodeId — implicit conversion works.
+  // AdjacentFaces takes BRepGraph_NodeId - implicit conversion works.
   NCollection_Vector<BRepGraph_NodeId> aAdj = aGraph.Spatial().AdjacentFaces(aFace);
   EXPECT_GT(aAdj.Length(), 0);
 }
@@ -967,8 +971,8 @@ TEST(BRepGraphTypedNodeId, Hash_ConsistentWithNodeId)
   BRepGraph_FaceId aFace(5);
   BRepGraph_NodeId aNodeId = aFace;
 
-  std::hash<BRepGraph_FaceId>  aTypedHash;
-  std::hash<BRepGraph_NodeId>  aNodeHash;
+  std::hash<BRepGraph_FaceId> aTypedHash;
+  std::hash<BRepGraph_NodeId> aNodeHash;
 
   EXPECT_EQ(aTypedHash(aFace), aNodeHash(aNodeId));
 }

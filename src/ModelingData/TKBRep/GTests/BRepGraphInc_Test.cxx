@@ -395,7 +395,8 @@ TEST(BRepGraphIncTest, Box_ReverseIndex_EdgesToWires)
   // Every edge must appear in at least one wire.
   for (int anEdgeIdx = 0; anEdgeIdx < aStorage.NbEdges(); ++anEdgeIdx)
   {
-    const NCollection_Vector<BRepGraph_WireId>* aWires = aStorage.ReverseIndex().WiresOfEdge(BRepGraph_EdgeId(anEdgeIdx));
+    const NCollection_Vector<BRepGraph_WireId>* aWires =
+      aStorage.ReverseIndex().WiresOfEdge(BRepGraph_EdgeId(anEdgeIdx));
     EXPECT_TRUE(aWires != nullptr) << "Edge " << anEdgeIdx << " not in any wire";
     if (aWires != nullptr)
       EXPECT_GE(aWires->Length(), 1);
@@ -416,7 +417,8 @@ TEST(BRepGraphIncTest, Box_ReverseIndex_EdgesToFaces)
   {
     if (aStorage.Edge(BRepGraph_EdgeId(anEdgeIdx)).IsDegenerate)
       continue;
-    const NCollection_Vector<BRepGraph_FaceId>* aFaces = aStorage.ReverseIndex().FacesOfEdge(BRepGraph_EdgeId(anEdgeIdx));
+    const NCollection_Vector<BRepGraph_FaceId>* aFaces =
+      aStorage.ReverseIndex().FacesOfEdge(BRepGraph_EdgeId(anEdgeIdx));
     EXPECT_TRUE(aFaces != nullptr) << "Edge " << anEdgeIdx << " not in any face";
     if (aFaces != nullptr)
       EXPECT_GE(aFaces->Length(), 1);
@@ -512,7 +514,8 @@ TEST(BRepGraphIncTest, Box_CoEdgeCount)
   int aCoEdgeCount = 0;
   for (int anEdgeIdx = 0; anEdgeIdx < aStorage.NbEdges(); ++anEdgeIdx)
   {
-    const NCollection_Vector<BRepGraph_CoEdgeId>* aCoEdgeIdxs = aStorage.ReverseIndex().CoEdgesOfEdge(BRepGraph_EdgeId(anEdgeIdx));
+    const NCollection_Vector<BRepGraph_CoEdgeId>* aCoEdgeIdxs =
+      aStorage.ReverseIndex().CoEdgesOfEdge(BRepGraph_EdgeId(anEdgeIdx));
     if (aCoEdgeIdxs != nullptr)
       aCoEdgeCount += aCoEdgeIdxs->Length();
   }
@@ -532,7 +535,8 @@ TEST(BRepGraphIncTest, Cylinder_HasSeamEdges)
   int aSeamPairCount = 0;
   for (int anEdgeIdx = 0; anEdgeIdx < aStorage.NbEdges(); ++anEdgeIdx)
   {
-    const NCollection_Vector<BRepGraph_CoEdgeId>* aCoEdgeIdxs = aStorage.ReverseIndex().CoEdgesOfEdge(BRepGraph_EdgeId(anEdgeIdx));
+    const NCollection_Vector<BRepGraph_CoEdgeId>* aCoEdgeIdxs =
+      aStorage.ReverseIndex().CoEdgesOfEdge(BRepGraph_EdgeId(anEdgeIdx));
     if (aCoEdgeIdxs == nullptr)
       continue;
     for (int i = 0; i < aCoEdgeIdxs->Length(); ++i)
@@ -561,7 +565,8 @@ TEST(BRepGraphIncTest, Cylinder_SeamEdge_ReverseIndex_NoDuplicateFace)
   // orientations), the reverse index must contain each face only once.
   for (int anEdgeIdx = 0; anEdgeIdx < aStorage.NbEdges(); ++anEdgeIdx)
   {
-    const NCollection_Vector<BRepGraph_FaceId>* aFaces = aStorage.ReverseIndex().FacesOfEdge(BRepGraph_EdgeId(anEdgeIdx));
+    const NCollection_Vector<BRepGraph_FaceId>* aFaces =
+      aStorage.ReverseIndex().FacesOfEdge(BRepGraph_EdgeId(anEdgeIdx));
     if (aFaces == nullptr)
       continue;
     for (int i = 0; i < aFaces->Length(); ++i)
@@ -596,7 +601,8 @@ TEST(BRepGraphIncTest, Sphere_DegenerateEdges_Preserved)
     if (anEdge.IsDegenerate)
     {
       ++aDegenerateCount;
-      EXPECT_FALSE(anEdge.Curve3DRepId.IsValid()) << "Degenerate edge " << i << " should have no 3D curve";
+      EXPECT_FALSE(anEdge.Curve3DRepId.IsValid())
+        << "Degenerate edge " << i << " should have no 3D curve";
     }
   }
   EXPECT_GE(aDegenerateCount, 2) << "Sphere should have at least 2 degenerate edges (poles)";
@@ -750,7 +756,7 @@ TEST(BRepGraphIncTest, EdgeInternalVertex_Captured)
       EXPECT_GE(anEdgeEnt.InternalVertices.Value(0).VertexDefId.Index, 0);
       EXPECT_EQ(anEdgeEnt.InternalVertices.Value(0).Orientation, TopAbs_INTERNAL);
       // Verify the vertex point.
-      int                               aVtxIdx = anEdgeEnt.InternalVertices.Value(0).VertexDefId.Index;
+      int aVtxIdx = anEdgeEnt.InternalVertices.Value(0).VertexDefId.Index;
       const BRepGraphInc::VertexEntity& aVtxEnt = aStorage.Vertex(BRepGraph_VertexId(aVtxIdx));
       EXPECT_NEAR(aVtxEnt.Point.X(), 5.0, Precision::Confusion());
       break;
@@ -1156,7 +1162,8 @@ TEST(BRepGraphIncTest, ParallelBuild_InternalVertices_SameAsSequential)
   }
   for (int i = 0; i < aSerial.NbFaces(); ++i)
   {
-    EXPECT_EQ(aParallel.Face(BRepGraph_FaceId(i)).VertexRefs.Length(), aSerial.Face(BRepGraph_FaceId(i)).VertexRefs.Length())
+    EXPECT_EQ(aParallel.Face(BRepGraph_FaceId(i)).VertexRefs.Length(),
+              aSerial.Face(BRepGraph_FaceId(i)).VertexRefs.Length())
       << "Face " << i << " direct vertex count mismatch";
   }
 }

@@ -273,10 +273,7 @@ void BRepGraphCheck::CheckWireOnFace(const BRepGraph&                          t
                                        theFace,
                                        aFirstCoEdge.Sense);
     const BRepGraphInc::CoEdgeEntity* aLastPC =
-      BRepGraph_Tool::Edge::FindPCurve(theGraph,
-                                       aLastCoEdge.EdgeDefId,
-                                       theFace,
-                                       aLastCoEdge.Sense);
+      BRepGraph_Tool::Edge::FindPCurve(theGraph, aLastCoEdge.EdgeDefId, theFace, aLastCoEdge.Sense);
 
     if (aFirstPC != nullptr && aLastPC != nullptr)
     {
@@ -363,7 +360,8 @@ void BRepGraphCheck::CheckWireOnFace(const BRepGraph&                          t
     }
 
     // Get PCurve adaptor - uses stored PCurve, or computes via CurveOnPlane for planar faces.
-    Geom2dAdaptor_Curve aPCAdaptor = BRepGraph_Tool::CoEdge::PCurveAdaptor(theGraph, aCR.CoEdgeDefId);
+    Geom2dAdaptor_Curve aPCAdaptor =
+      BRepGraph_Tool::CoEdge::PCurveAdaptor(theGraph, aCR.CoEdgeDefId);
     if (aPCAdaptor.Curve().IsNull())
     {
       aPCurveData.Append(EdgePCurveData());

@@ -75,7 +75,8 @@ int nbUniqueFaceSurfaceDefs(const BRepGraph& theGraph)
   NCollection_Map<const Geom_Surface*> aSurfSet;
   for (int aFaceIdx = 0; aFaceIdx < theGraph.Defs().NbFaces(); ++aFaceIdx)
   {
-    const occ::handle<Geom_Surface>& aSurf = BRepGraph_Tool::Face::Surface(theGraph, BRepGraph_FaceId(aFaceIdx));
+    const occ::handle<Geom_Surface>& aSurf =
+      BRepGraph_Tool::Face::Surface(theGraph, BRepGraph_FaceId(aFaceIdx));
     if (!aSurf.IsNull())
     {
       aSurfSet.Add(aSurf.get());
@@ -91,7 +92,8 @@ int nbUniqueEdgeCurveDefs(const BRepGraph& theGraph)
   NCollection_Map<const Geom_Curve*> aCurveSet;
   for (int anEdgeIdx = 0; anEdgeIdx < theGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    const occ::handle<Geom_Curve>& aCurve = BRepGraph_Tool::Edge::Curve(theGraph, BRepGraph_EdgeId(anEdgeIdx));
+    const occ::handle<Geom_Curve>& aCurve =
+      BRepGraph_Tool::Edge::Curve(theGraph, BRepGraph_EdgeId(anEdgeIdx));
     if (!aCurve.IsNull())
     {
       aCurveSet.Add(aCurve.get());
@@ -109,7 +111,8 @@ int nbPCurveEntries(const BRepGraph& theGraph)
   {
     if (theGraph.Defs().Edge(BRepGraph_EdgeId(anEdgeIdx)).IsRemoved)
       continue;
-    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs = theGraph.Defs().CoEdgesOfEdge(BRepGraph_EdgeId(anEdgeIdx));
+    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
+      theGraph.Defs().CoEdgesOfEdge(BRepGraph_EdgeId(anEdgeIdx));
     for (int i = 0; i < aCoEdgeIdxs.Length(); ++i)
     {
       const BRepGraphInc::CoEdgeEntity& aCE = theGraph.Defs().CoEdge(aCoEdgeIdxs.Value(i));
@@ -242,7 +245,8 @@ int nbUniquePCurveNodes(const BRepGraph& theGraph)
   int aCount = 0;
   for (int anEdgeIdx = 0; anEdgeIdx < theGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs = theGraph.Defs().CoEdgesOfEdge(BRepGraph_EdgeId(anEdgeIdx));
+    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
+      theGraph.Defs().CoEdgesOfEdge(BRepGraph_EdgeId(anEdgeIdx));
     aCount += aCoEdgeIdxs.Length();
   }
   return aCount;
@@ -253,7 +257,8 @@ int addDuplicatePCurvesToAllEdges(BRepGraph& theGraph)
   int aDupCount = 0;
   for (int anEdgeIdx = 0; anEdgeIdx < theGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs = theGraph.Defs().CoEdgesOfEdge(BRepGraph_EdgeId(anEdgeIdx));
+    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
+      theGraph.Defs().CoEdgesOfEdge(BRepGraph_EdgeId(anEdgeIdx));
     if (aCoEdgeIdxs.IsEmpty())
     {
       continue;
@@ -562,7 +567,8 @@ TEST(BRepGraphAlgo_DeduplicateTest, AfterDedup_AllCopiedFacesShareCanonicalSurfa
   NCollection_Map<const Geom_Surface*> aSurfIds;
   for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
   {
-    const occ::handle<Geom_Surface>& aSurf = BRepGraph_Tool::Face::Surface(aGraph, BRepGraph_FaceId(aFaceIdx));
+    const occ::handle<Geom_Surface>& aSurf =
+      BRepGraph_Tool::Face::Surface(aGraph, BRepGraph_FaceId(aFaceIdx));
     if (!aSurf.IsNull())
     {
       aSurfIds.Add(aSurf.get());
@@ -999,7 +1005,8 @@ TEST(BRepGraphAlgo_DeduplicateTest, AfterDedup_AllInlinePCurvesHaveCurve2d)
 
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs = aGraph.Defs().CoEdgesOfEdge(BRepGraph_EdgeId(anEdgeIdx));
+    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
+      aGraph.Defs().CoEdgesOfEdge(BRepGraph_EdgeId(anEdgeIdx));
     for (int aCEIter = 0; aCEIter < aCoEdgeIdxs.Length(); ++aCEIter)
     {
       const BRepGraphInc::CoEdgeEntity& aCE = aGraph.Defs().CoEdge(aCoEdgeIdxs.Value(aCEIter));
@@ -1451,7 +1458,8 @@ TEST(BRepGraphAlgo_DeduplicateTest, BackRefs_CurveRewrite_UpdatesEdgeDefUsers)
   NCollection_Map<const Geom_Curve*> aDistinctCurves;
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    const occ::handle<Geom_Curve>& aCurve = BRepGraph_Tool::Edge::Curve(aGraph, BRepGraph_EdgeId(anEdgeIdx));
+    const occ::handle<Geom_Curve>& aCurve =
+      BRepGraph_Tool::Edge::Curve(aGraph, BRepGraph_EdgeId(anEdgeIdx));
     if (!aCurve.IsNull())
       aDistinctCurves.Add(aCurve.get());
   }
@@ -1560,11 +1568,13 @@ TEST(BRepGraphAlgo_DeduplicateTest, AnalyzeOnly_NoBackRefChangesOrNullification)
   // Surface/curve pointers unchanged (analyze only, no rewriting).
   for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
   {
-    EXPECT_EQ(BRepGraph_Tool::Face::Surface(aGraph, BRepGraph_FaceId(aFaceIdx)).get(), aSurfPtrs.Value(aFaceIdx));
+    EXPECT_EQ(BRepGraph_Tool::Face::Surface(aGraph, BRepGraph_FaceId(aFaceIdx)).get(),
+              aSurfPtrs.Value(aFaceIdx));
   }
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    EXPECT_EQ(BRepGraph_Tool::Edge::Curve(aGraph, BRepGraph_EdgeId(anEdgeIdx)).get(), aCurvePtrs.Value(anEdgeIdx));
+    EXPECT_EQ(BRepGraph_Tool::Edge::Curve(aGraph, BRepGraph_EdgeId(anEdgeIdx)).get(),
+              aCurvePtrs.Value(anEdgeIdx));
   }
 
   // All handles still non-null.

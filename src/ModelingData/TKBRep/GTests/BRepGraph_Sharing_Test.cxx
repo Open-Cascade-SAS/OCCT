@@ -156,7 +156,8 @@ TEST_F(BRepGraphSharingTest, SharedEdge_IncidenceRefs_DifferentOrientation)
   int aMultiFaceEdgeCount = 0;
   for (int anIdx = 0; anIdx < myGraph.Defs().NbEdges(); ++anIdx)
   {
-    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs = myGraph.Defs().CoEdgesOfEdge(BRepGraph_EdgeId(anIdx));
+    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
+      myGraph.Defs().CoEdgesOfEdge(BRepGraph_EdgeId(anIdx));
     if (aCoEdgeIdxs.Length() < 2)
       continue;
     // Check if coedges reference different faces.

@@ -193,8 +193,9 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph&       theGraph,
 
   for (int aWireIdx = 0; aWireIdx < aNbWires && !anIsBadWire; ++aWireIdx)
   {
-    const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.Defs().Wire(BRepGraph_WireId(aWireDefIndices(aWireIdx)));
-    int                                aNbPnts  = 0;
+    const BRepGraph_TopoNode::WireDef& aWireDef =
+      theGraph.Defs().Wire(BRepGraph_WireId(aWireDefIndices(aWireIdx)));
+    int aNbPnts = 0;
     aPnt2dVec.Clear();
     int    aFirstPoint     = 1;
     double aFlecheU        = 0.0;

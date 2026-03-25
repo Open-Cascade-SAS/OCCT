@@ -52,7 +52,8 @@ TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_PropagatesUpOnFlush)
   myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
 
   // During deferred mode: edge is modified, but parent wire/face are NOT yet.
-  const NCollection_Vector<BRepGraph_WireId>& aWires = myGraph.Defs().WiresOfEdge(BRepGraph_EdgeId(0));
+  const NCollection_Vector<BRepGraph_WireId>& aWires =
+    myGraph.Defs().WiresOfEdge(BRepGraph_EdgeId(0));
   ASSERT_GT(aWires.Length(), 0);
   EXPECT_FALSE(myGraph.Defs().Wire(aWires.Value(0)).IsModified);
 

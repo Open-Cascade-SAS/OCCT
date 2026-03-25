@@ -264,7 +264,9 @@ TEST_F(BRepGraphAnalyzeTest, ParallelForEachFace_Box_VisitsAllSix)
 
   std::atomic<int> aCounter{0};
   BRepGraph_Analyze::ParallelForEachFace(
-    myGraph, aComponents.Value(0), [&aCounter](const BRepGraph_FaceId) { aCounter.fetch_add(1); });
+    myGraph,
+    aComponents.Value(0),
+    [&aCounter](const BRepGraph_FaceId) { aCounter.fetch_add(1); });
 
   EXPECT_EQ(aCounter.load(), 6);
 }
@@ -276,7 +278,9 @@ TEST_F(BRepGraphAnalyzeTest, ParallelForEachEdge_Box_VisitsAllTwelve)
 
   std::atomic<int> aCounter{0};
   BRepGraph_Analyze::ParallelForEachEdge(
-    myGraph, aComponents.Value(0), [&aCounter](const BRepGraph_EdgeId) { aCounter.fetch_add(1); });
+    myGraph,
+    aComponents.Value(0),
+    [&aCounter](const BRepGraph_EdgeId) { aCounter.fetch_add(1); });
 
   // Edges may be duplicated across wires in SubGraph; count unique via the graph.
   // A box has 12 unique edges, but SubGraph edge indices may contain duplicates
@@ -305,7 +309,9 @@ TEST(BRepGraphAnalyze, ParallelForEachFace_SubGraph_OnlyComponentFaces)
   // Iterate only over faces of the first component.
   std::atomic<int> aCounter{0};
   BRepGraph_Analyze::ParallelForEachFace(
-    aGraph, aComponents.Value(0), [&aCounter](const BRepGraph_FaceId) { aCounter.fetch_add(1); });
+    aGraph,
+    aComponents.Value(0),
+    [&aCounter](const BRepGraph_FaceId) { aCounter.fetch_add(1); });
 
   EXPECT_EQ(aCounter.load(), 6);
 }
@@ -454,10 +460,11 @@ TEST_F(BRepGraphAnalyzeTest, BoundingBox_Edge_SubsetOfOwningFace)
 
   for (int aCoEdgeIter = 0; aCoEdgeIter < aWireDef.CoEdgeRefs.Length(); ++aCoEdgeIter)
   {
-    const BRepGraphInc::CoEdgeRef&       aCR     = aWireDef.CoEdgeRefs.Value(aCoEdgeIter);
-    const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = myGraph.Defs().CoEdge(BRepGraph_CoEdgeId(aCR.CoEdgeDefId));
-    const BRepGraph_NodeId               anEdgeId = aCoEdge.EdgeDefId;
-    Bnd_Box                              anEdgeBox;
+    const BRepGraphInc::CoEdgeRef&       aCR = aWireDef.CoEdgeRefs.Value(aCoEdgeIter);
+    const BRepGraph_TopoNode::CoEdgeDef& aCoEdge =
+      myGraph.Defs().CoEdge(BRepGraph_CoEdgeId(aCR.CoEdgeDefId));
+    const BRepGraph_NodeId anEdgeId = aCoEdge.EdgeDefId;
+    Bnd_Box                anEdgeBox;
     BRepGraphAlgo_BndLib::Add(myGraph, anEdgeId, anEdgeBox);
     if (anEdgeBox.IsVoid())
       continue;

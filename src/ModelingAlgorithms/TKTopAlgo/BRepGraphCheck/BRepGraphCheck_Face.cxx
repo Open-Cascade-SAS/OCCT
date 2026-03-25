@@ -394,7 +394,8 @@ void BRepGraphCheck::CheckFaceWires(const BRepGraph&                          th
     // The face usage orientation (from parent shell) would flip this, but at the definition
     // level the face is always FORWARD.
     const TopAbs_Orientation aFaceOri = TopAbs_FORWARD;
-    const double anArea = computeWireSignedArea(theGraph, aDefs.Wire(BRepGraph_WireId(aOuterWireIdx)), theFace);
+    const double             anArea =
+      computeWireSignedArea(theGraph, aDefs.Wire(BRepGraph_WireId(aOuterWireIdx)), theFace);
     // For FORWARD face: outer wire should be CCW (positive area).
     // For REVERSED face: outer wire should be CW (negative area).
     const bool anExpectPositive = (aFaceOri != TopAbs_REVERSED);

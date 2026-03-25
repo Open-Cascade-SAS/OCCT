@@ -1955,8 +1955,10 @@ TEST(BRepGraphAlgo_SameParameterTest, Enforce_AfterSewing_SewnEdgesAreValid)
   int aNbSameParam = 0;
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs = aGraph.Defs().CoEdgesOfEdge(BRepGraph_EdgeId(anEdgeIdx));
-    if (!aCoEdgeIdxs.IsEmpty() && BRepGraph_Tool::Edge::HasCurve(aGraph, BRepGraph_EdgeId(anEdgeIdx)))
+    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
+      aGraph.Defs().CoEdgesOfEdge(BRepGraph_EdgeId(anEdgeIdx));
+    if (!aCoEdgeIdxs.IsEmpty()
+        && BRepGraph_Tool::Edge::HasCurve(aGraph, BRepGraph_EdgeId(anEdgeIdx)))
     {
       if (BRepGraph_Tool::Edge::SameParameter(aGraph, BRepGraph_EdgeId(anEdgeIdx)))
         ++aNbSameParam;
@@ -2207,8 +2209,9 @@ TEST(BRepGraphAlgo_SewingTest, NonManifoldMode_ThreeFacesShareEdge)
     // Verify coedges reference valid, distinct faces with non-null 2D curves.
     for (int i = 0; i < aRes.SewnEdgePairs.Length(); ++i)
     {
-      const int                      aKeepIdx    = aRes.SewnEdgePairs.Value(i).Index;
-      const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs = aGraph.Defs().CoEdgesOfEdge(BRepGraph_EdgeId(aKeepIdx));
+      const int                                     aKeepIdx = aRes.SewnEdgePairs.Value(i).Index;
+      const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
+        aGraph.Defs().CoEdgesOfEdge(BRepGraph_EdgeId(aKeepIdx));
       EXPECT_GE(aCoEdgeIdxs.Length(), 2);
 
       NCollection_Map<int> aFaceIds;

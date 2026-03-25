@@ -243,18 +243,16 @@ void BRepGraphCheck::CheckEdgeOnFace(const BRepGraph&                          t
     return;
 
   // Build 3D curve adaptor (raw handle needed for BRepLib_ValidateEdge).
-  const occ::handle<Geom_Curve>& aEdgeCurve3d =
-    BRepGraph_Tool::Edge::Curve(theGraph, theEdge);
+  const occ::handle<Geom_Curve>& aEdgeCurve3d = BRepGraph_Tool::Edge::Curve(theGraph, theEdge);
   occ::handle<GeomAdaptor_Curve> aRefCurve =
     new GeomAdaptor_Curve(aEdgeCurve3d, anEdgeFirst, anEdgeLast);
 
   // Build curve-on-surface adaptor from PCurve + Surface (raw handles needed).
   occ::handle<Geom2dAdaptor_Curve> aPC2d =
     new Geom2dAdaptor_Curve(aPCurve2d, anEdgeFirst, anEdgeLast);
-  const occ::handle<Geom_Surface>& aFaceSurface =
-    BRepGraph_Tool::Face::Surface(theGraph, theFace);
-  occ::handle<GeomAdaptor_Surface>      aHS  = new GeomAdaptor_Surface(aFaceSurface);
-  occ::handle<Adaptor3d_CurveOnSurface> aCOS = new Adaptor3d_CurveOnSurface(aPC2d, aHS);
+  const occ::handle<Geom_Surface>& aFaceSurface = BRepGraph_Tool::Face::Surface(theGraph, theFace);
+  occ::handle<GeomAdaptor_Surface> aHS          = new GeomAdaptor_Surface(aFaceSurface);
+  occ::handle<Adaptor3d_CurveOnSurface> aCOS    = new Adaptor3d_CurveOnSurface(aPC2d, aHS);
 
   const bool           anIsSameParam = BRepGraph_Tool::Edge::SameParameter(theGraph, theEdge);
   const double         anEdgeTol     = BRepGraph_Tool::Edge::Tolerance(theGraph, theEdge);

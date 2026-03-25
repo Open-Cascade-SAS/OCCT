@@ -307,8 +307,7 @@ public:
   }
 
   //! @param[in] theOccurrence typed occurrence id
-  const BRepGraphInc::OccurrenceEntity& Occurrence(
-    const BRepGraph_OccurrenceId theOccurrence) const
+  const BRepGraphInc::OccurrenceEntity& Occurrence(const BRepGraph_OccurrenceId theOccurrence) const
   {
     return myOccurrences.Get(theOccurrence.Index);
   }

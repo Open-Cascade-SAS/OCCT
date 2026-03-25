@@ -115,8 +115,8 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
     // Iterate over all wires of this face.
     for (int aWireRefIdx = 0; aWireRefIdx < aFace.WireRefs.Length(); ++aWireRefIdx)
     {
-      const int                          aWireIdx = aFace.WireRefs.Value(aWireRefIdx).WireDefId.Index;
-      const BRepGraph_TopoNode::WireDef& aWire    = aDefs.Wire(BRepGraph_WireId(aWireIdx));
+      const int aWireIdx                       = aFace.WireRefs.Value(aWireRefIdx).WireDefId.Index;
+      const BRepGraph_TopoNode::WireDef& aWire = aDefs.Wire(BRepGraph_WireId(aWireIdx));
 
       for (int aCoEdgeRefIdx = 0; aCoEdgeRefIdx < aWire.CoEdgeRefs.Length(); ++aCoEdgeRefIdx)
       {
@@ -174,10 +174,12 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
             if (aResolvedStart != aResolvedEnd)
             {
               // Keep vertex with smaller tolerance as target.
-              const double aTolStart = BRepGraph_Tool::Vertex::Tolerance(theGraph, BRepGraph_VertexId(aResolvedStart));
-              const double aTolEnd   = BRepGraph_Tool::Vertex::Tolerance(theGraph, BRepGraph_VertexId(aResolvedEnd));
-              const int    aKeep     = (aTolStart <= aTolEnd) ? aResolvedStart : aResolvedEnd;
-              const int    aRemove   = (aKeep == aResolvedStart) ? aResolvedEnd : aResolvedStart;
+              const double aTolStart =
+                BRepGraph_Tool::Vertex::Tolerance(theGraph, BRepGraph_VertexId(aResolvedStart));
+              const double aTolEnd =
+                BRepGraph_Tool::Vertex::Tolerance(theGraph, BRepGraph_VertexId(aResolvedEnd));
+              const int aKeep   = (aTolStart <= aTolEnd) ? aResolvedStart : aResolvedEnd;
+              const int aRemove = (aKeep == aResolvedStart) ? aResolvedEnd : aResolvedStart;
               aVertexMerge.Bind(aRemove, aKeep);
             }
           }
@@ -228,7 +230,8 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
     int    aNbPoints = 1;
     for (int aSrcIter = 0; aSrcIter < aSources.Length(); ++aSrcIter)
     {
-      aCoordSum += BRepGraph_Tool::Vertex::Pnt(theGraph, BRepGraph_VertexId(aSources.Value(aSrcIter))).XYZ();
+      aCoordSum +=
+        BRepGraph_Tool::Vertex::Pnt(theGraph, BRepGraph_VertexId(aSources.Value(aSrcIter))).XYZ();
       ++aNbPoints;
     }
 
@@ -237,8 +240,10 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
     // Compute tolerance = max(distance_to_centroid + original_tolerance).
     double aMaxTol = 0.0;
     {
-      const double aDist = aCentroid.Distance(BRepGraph_Tool::Vertex::Pnt(theGraph, BRepGraph_VertexId(aTargetIdx)));
-      const double aCombined = aDist + BRepGraph_Tool::Vertex::Tolerance(theGraph, BRepGraph_VertexId(aTargetIdx));
+      const double aDist =
+        aCentroid.Distance(BRepGraph_Tool::Vertex::Pnt(theGraph, BRepGraph_VertexId(aTargetIdx)));
+      const double aCombined =
+        aDist + BRepGraph_Tool::Vertex::Tolerance(theGraph, BRepGraph_VertexId(aTargetIdx));
       if (aCombined > aMaxTol)
       {
         aMaxTol = aCombined;
@@ -246,9 +251,11 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
     }
     for (int aSrcIter = 0; aSrcIter < aSources.Length(); ++aSrcIter)
     {
-      const int    aSrcIdx   = aSources.Value(aSrcIter);
-      const double aDist     = aCentroid.Distance(BRepGraph_Tool::Vertex::Pnt(theGraph, BRepGraph_VertexId(aSrcIdx)));
-      const double aCombined = aDist + BRepGraph_Tool::Vertex::Tolerance(theGraph, BRepGraph_VertexId(aSrcIdx));
+      const int    aSrcIdx = aSources.Value(aSrcIter);
+      const double aDist =
+        aCentroid.Distance(BRepGraph_Tool::Vertex::Pnt(theGraph, BRepGraph_VertexId(aSrcIdx)));
+      const double aCombined =
+        aDist + BRepGraph_Tool::Vertex::Tolerance(theGraph, BRepGraph_VertexId(aSrcIdx));
       if (aCombined > aMaxTol)
       {
         aMaxTol = aCombined;
@@ -256,9 +263,10 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
     }
 
     // Update target vertex.
-    BRepGraph_MutRef<BRepGraph_TopoNode::VertexDef> aTargetVtx = theGraph.MutVertex(BRepGraph_VertexId(aTargetIdx));
-    aTargetVtx->Point                                          = aCentroid;
-    aTargetVtx->Tolerance                                      = aMaxTol;
+    BRepGraph_MutRef<BRepGraph_TopoNode::VertexDef> aTargetVtx =
+      theGraph.MutVertex(BRepGraph_VertexId(aTargetIdx));
+    aTargetVtx->Point     = aCentroid;
+    aTargetVtx->Tolerance = aMaxTol;
   }
 
   // Apply vertex merges to all edges that reference merged vertices.
@@ -304,9 +312,10 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
 
       if (aNeedUpdate)
       {
-        BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aMutEdge = theGraph.MutEdge(BRepGraph_EdgeId(anEdgeIdx));
-        aMutEdge->StartVertex.VertexDefId                        = BRepGraph_VertexId(aNewStart);
-        aMutEdge->EndVertex.VertexDefId                          = BRepGraph_VertexId(aNewEnd);
+        BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aMutEdge =
+          theGraph.MutEdge(BRepGraph_EdgeId(anEdgeIdx));
+        aMutEdge->StartVertex.VertexDefId = BRepGraph_VertexId(aNewStart);
+        aMutEdge->EndVertex.VertexDefId   = BRepGraph_VertexId(aNewEnd);
       }
     }
   }

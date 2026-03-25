@@ -891,7 +891,7 @@ TEST(BRepGraphPathView, AllNodesOnPath_InvalidPath_Empty)
   aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  BRepGraph_TopologyPath anInvalid;
+  BRepGraph_TopologyPath               anInvalid;
   NCollection_Vector<BRepGraph_NodeId> aNodes = aGraph.Paths().AllNodesOnPath(anInvalid);
   EXPECT_EQ(aNodes.Length(), 0);
 }
