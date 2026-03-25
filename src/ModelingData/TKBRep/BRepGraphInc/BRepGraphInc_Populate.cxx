@@ -33,6 +33,7 @@
 #include <TopoDS_CompSolid.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Iterator.hxx>
+#include <TopoDS_Vertex.hxx>
 
 // Population pipeline overview:
 //
@@ -156,7 +157,7 @@ struct FaceLocalData
 //! @param[in]  theOrigSurface  pre-transform surface handle for fallback matching
 //!                             when the face's raw TFace surface differs from edge CRs
 //! @return true if a stored PCurve was found
-bool extractStoredPCurves(
+static bool extractStoredPCurves(
   const TopoDS_Edge&               theEdge,
   const TopoDS_Face&               theFace,
   occ::handle<Geom2d_Curve>&       thePCurve,
@@ -393,7 +394,7 @@ occ::handle<T> applyRepresentationLocation(const occ::handle<T>&  theGeom,
 }
 
 //! Apply representation location to a Polygon3D by transforming its nodes.
-occ::handle<Poly_Polygon3D> applyRepLocationToPolygon3D(
+static occ::handle<Poly_Polygon3D> applyRepLocationToPolygon3D(
   const occ::handle<Poly_Polygon3D>& thePolygon3D,
   const TopLoc_Location&             theShapeLoc,
   const TopLoc_Location&             theCombinedLoc)
@@ -655,7 +656,7 @@ bool makeFreeChildRef(const BRepGraphInc_Storage& theStorage,
 }
 
 //! Extract first, last, and internal/external vertices from an edge.
-void edgeVertices(const TopoDS_Edge&                           theEdge,
+static void edgeVertices(const TopoDS_Edge&                           theEdge,
                   TopoDS_Vertex&                               theFirst,
                   TopoDS_Vertex&                               theLast,
                   NCollection_Vector<ExtractedInternalVertex>& theInternal)
@@ -710,7 +711,7 @@ void edgeVertices(const TopoDS_Edge&                           theEdge,
 
 //! Extract edge geometry and parametric data in a face context.
 //! Fills theEdgeData with 3D curve, vertices, PCurves, and polygons.
-void extractEdgeInFace(ExtractedEdge&                   theEdgeData,
+static void extractEdgeInFace(ExtractedEdge&                   theEdgeData,
                        const TopoDS_Edge&               theEdge,
                        const TopoDS_Face&               theForwardFace,
                        const occ::handle<Geom_Surface>& theFaceSurface,
