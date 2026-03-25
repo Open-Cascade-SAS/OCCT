@@ -50,7 +50,7 @@ struct BRepGraph_Data
 
   //! UID system.
   std::atomic<size_t> myNextUIDCounter{0};
-  uint32_t            myGeneration{0};
+  std::atomic<uint32_t> myGeneration{0};
 
   //! History subsystem.
   BRepGraph_History myHistoryLog;

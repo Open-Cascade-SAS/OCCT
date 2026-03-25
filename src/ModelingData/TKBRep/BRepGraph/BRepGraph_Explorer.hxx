@@ -67,37 +67,37 @@ public:
                                      BRepGraph_NodeId::Kind    theTargetKind);
 
   //! Returns true if there are more entities to visit.
-  bool More() const { return myCurrent < myResults.Length(); }
+  [[nodiscard]] bool More() const { return myCurrent < myResults.Length(); }
 
   //! Advance to the next entity occurrence.
   void Next() { ++myCurrent; }
 
   //! The full path from root to current entity occurrence.
-  const BRepGraph_TopologyPath& CurrentPath() const { return myResults.Value(myCurrent).Path; }
+  [[nodiscard]] const BRepGraph_TopologyPath& CurrentPath() const { return myResults.Value(myCurrent).Path; }
 
   //! Definition NodeId at the path leaf (cached, O(1)).
-  BRepGraph_NodeId Current() const { return myResults.Value(myCurrent).Leaf; }
+  [[nodiscard]] BRepGraph_NodeId Current() const { return myResults.Value(myCurrent).Leaf; }
 
   //! Composed location from the current path (all levels).
-  Standard_EXPORT TopLoc_Location Location() const;
+  [[nodiscard]] Standard_EXPORT TopLoc_Location Location() const;
 
   //! Composed orientation from the current path (all levels).
-  Standard_EXPORT TopAbs_Orientation Orientation() const;
+  [[nodiscard]] Standard_EXPORT TopAbs_Orientation Orientation() const;
 
   //! Location composed from root to the first step matching theKind.
-  Standard_EXPORT TopLoc_Location LocationOf(const BRepGraph_NodeId::Kind theKind) const;
+  [[nodiscard]] Standard_EXPORT TopLoc_Location LocationOf(const BRepGraph_NodeId::Kind theKind) const;
 
   //! Entity at the first step matching theKind.
-  Standard_EXPORT BRepGraph_NodeId NodeOf(const BRepGraph_NodeId::Kind theKind) const;
+  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId NodeOf(const BRepGraph_NodeId::Kind theKind) const;
 
   //! Location at step theLevel (0-based).
-  Standard_EXPORT TopLoc_Location LocationAt(const int theLevel) const;
+  [[nodiscard]] Standard_EXPORT TopLoc_Location LocationAt(const int theLevel) const;
 
   //! Entity at step theLevel.
-  Standard_EXPORT BRepGraph_NodeId NodeAt(const int theLevel) const;
+  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId NodeAt(const int theLevel) const;
 
   //! Number of entity occurrences found.
-  int NbFound() const { return myResults.Length(); }
+  [[nodiscard]] int NbFound() const { return myResults.Length(); }
 
   //! Reinitialize with new root and target kind.
   Standard_EXPORT void Init(const BRepGraph&       theGraph,

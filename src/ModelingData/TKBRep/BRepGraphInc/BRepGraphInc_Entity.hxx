@@ -63,7 +63,9 @@ struct BaseEntity
   uint32_t            MutationGen =
     0; //!< Per-node mutation counter, incremented by markModified().
        //!< Wraps on overflow; callers compare via difference, not absolute value.
-  bool IsModified = false; //!< True when mutated since Build()
+  bool IsModified = false; //!< True when mutated since Build(). Monotonic within a Build() cycle.
+                           //!< Never cleared during mutation. Use MutationGen for granular checks;
+                           //!< cache consumers should invalidate when true.
   bool IsRemoved  = false; //!< Soft-removal flag
 };
 
@@ -202,10 +204,10 @@ struct EdgeEntity : public BaseEntity
   NCollection_Vector<VertexRef> InternalVertices;
 
   //! Convenience: start vertex typed id from index.
-  BRepGraph_VertexId StartVertexDefId() const { return StartVertex.VertexDefId; }
+  [[nodiscard]] BRepGraph_VertexId StartVertexDefId() const { return StartVertex.VertexDefId; }
 
   //! Convenience: end vertex typed id from index.
-  BRepGraph_VertexId EndVertexDefId() const { return EndVertex.VertexDefId; }
+  [[nodiscard]] BRepGraph_VertexId EndVertexDefId() const { return EndVertex.VertexDefId; }
 
   //! Typed representation id into Storage::myPolygons3D (invalid if no polygon).
   BRepGraph_Polygon3DRepId Polygon3DRepId;
@@ -229,7 +231,7 @@ struct EdgeEntity : public BaseEntity
 
   //! Return the start vertex adjusted for orientation in wire context.
   //! FORWARD -> StartVertexDefId(), REVERSED -> EndVertexDefId(), other -> invalid.
-  BRepGraph_VertexId OrientedStartVertex(TopAbs_Orientation theOri) const
+  [[nodiscard]] BRepGraph_VertexId OrientedStartVertex(TopAbs_Orientation theOri) const
   {
     if (theOri == TopAbs_FORWARD)
       return StartVertexDefId();
@@ -240,7 +242,7 @@ struct EdgeEntity : public BaseEntity
 
   //! Return the end vertex adjusted for orientation in wire context.
   //! FORWARD -> EndVertexDefId(), REVERSED -> StartVertexDefId(), other -> invalid.
-  BRepGraph_VertexId OrientedEndVertex(TopAbs_Orientation theOri) const
+  [[nodiscard]] BRepGraph_VertexId OrientedEndVertex(TopAbs_Orientation theOri) const
   {
     if (theOri == TopAbs_FORWARD)
       return EndVertexDefId();
@@ -307,7 +309,7 @@ struct FaceEntity : public BaseEntity
   int ActiveTriangulationIndex = -1; //!< Index into TriangulationRepIds array (NOT a rep id)
 
   //! Convenience: active triangulation rep id, or invalid.
-  BRepGraph_TriangulationRepId ActiveTriangulationRepId() const
+  [[nodiscard]] BRepGraph_TriangulationRepId ActiveTriangulationRepId() const
   {
     if (ActiveTriangulationIndex >= 0 && ActiveTriangulationIndex < TriangulationRepIds.Length())
       return TriangulationRepIds.Value(ActiveTriangulationIndex);
@@ -331,7 +333,7 @@ struct FaceEntity : public BaseEntity
   }
 
   //! Return the outer wire id, or invalid if none.
-  BRepGraph_WireId OuterWireDefId() const
+  [[nodiscard]] BRepGraph_WireId OuterWireDefId() const
   {
     for (int i = 0; i < WireRefs.Length(); ++i)
     {

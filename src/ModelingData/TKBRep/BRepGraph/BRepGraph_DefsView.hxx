@@ -33,110 +33,116 @@ class BRepGraph::DefsView
 {
 public:
   //! Number of solid definitions.
-  Standard_EXPORT int NbSolids() const;
+  [[nodiscard]] Standard_EXPORT int NbSolids() const;
 
   //! Number of shell definitions.
-  Standard_EXPORT int NbShells() const;
+  [[nodiscard]] Standard_EXPORT int NbShells() const;
 
   //! Number of face definitions.
-  Standard_EXPORT int NbFaces() const;
+  [[nodiscard]] Standard_EXPORT int NbFaces() const;
 
   //! Number of wire definitions.
-  Standard_EXPORT int NbWires() const;
+  [[nodiscard]] Standard_EXPORT int NbWires() const;
 
   //! Number of edge definitions.
-  Standard_EXPORT int NbEdges() const;
+  [[nodiscard]] Standard_EXPORT int NbEdges() const;
 
   //! Number of vertex definitions.
-  Standard_EXPORT int NbVertices() const;
+  [[nodiscard]] Standard_EXPORT int NbVertices() const;
 
   //! Number of compound definitions.
-  Standard_EXPORT int NbCompounds() const;
+  [[nodiscard]] Standard_EXPORT int NbCompounds() const;
 
   //! Number of compsolid definitions.
-  Standard_EXPORT int NbCompSolids() const;
+  [[nodiscard]] Standard_EXPORT int NbCompSolids() const;
 
   //! Number of coedge definitions.
-  Standard_EXPORT int NbCoEdges() const;
+  [[nodiscard]] Standard_EXPORT int NbCoEdges() const;
 
   //! Number of active (non-removed) definitions per kind.
-  Standard_EXPORT int NbActiveVertices() const;
-  Standard_EXPORT int NbActiveEdges() const;
-  Standard_EXPORT int NbActiveWires() const;
-  Standard_EXPORT int NbActiveFaces() const;
-  Standard_EXPORT int NbActiveShells() const;
-  Standard_EXPORT int NbActiveSolids() const;
-  Standard_EXPORT int NbActiveCompounds() const;
-  Standard_EXPORT int NbActiveCompSolids() const;
+  [[nodiscard]] Standard_EXPORT int NbActiveVertices() const;
+  [[nodiscard]] Standard_EXPORT int NbActiveEdges() const;
+  [[nodiscard]] Standard_EXPORT int NbActiveWires() const;
+  [[nodiscard]] Standard_EXPORT int NbActiveFaces() const;
+  [[nodiscard]] Standard_EXPORT int NbActiveShells() const;
+  [[nodiscard]] Standard_EXPORT int NbActiveSolids() const;
+  [[nodiscard]] Standard_EXPORT int NbActiveCompounds() const;
+  [[nodiscard]] Standard_EXPORT int NbActiveCompSolids() const;
 
   //! Return cached face count for an edge - O(1).
   //! @param[in] theEdge typed edge definition identifier
-  Standard_EXPORT int FaceCountOfEdge(const BRepGraph_EdgeId theEdge) const;
+  [[nodiscard]] Standard_EXPORT int FaceCountOfEdge(const BRepGraph_EdgeId theEdge) const;
 
   //! Return wire definition indices that contain a given edge (safe reference, never null).
   //! @param[in] theEdge typed edge definition identifier
-  Standard_EXPORT const NCollection_Vector<BRepGraph_WireId>& WiresOfEdge(
+  [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_WireId>& WiresOfEdge(
     const BRepGraph_EdgeId theEdge) const;
 
   //! Return coedge indices referencing the given edge (safe reference, never null).
   //! @param[in] theEdge typed edge definition identifier
-  Standard_EXPORT const NCollection_Vector<BRepGraph_CoEdgeId>& CoEdgesOfEdge(
+  [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_CoEdgeId>& CoEdgesOfEdge(
     const BRepGraph_EdgeId theEdge) const;
 
   //! Access solid definition by typed identifier.
   //! @param[in] theSolid typed solid definition identifier
-  Standard_EXPORT const BRepGraph_TopoNode::SolidDef& Solid(const BRepGraph_SolidId theSolid) const;
+  [[nodiscard]] Standard_EXPORT const BRepGraph_TopoNode::SolidDef& Solid(
+    const BRepGraph_SolidId theSolid) const;
 
   //! Access shell definition by typed identifier.
   //! @param[in] theShell typed shell definition identifier
-  Standard_EXPORT const BRepGraph_TopoNode::ShellDef& Shell(const BRepGraph_ShellId theShell) const;
+  [[nodiscard]] Standard_EXPORT const BRepGraph_TopoNode::ShellDef& Shell(
+    const BRepGraph_ShellId theShell) const;
 
   //! Access face definition by typed identifier.
   //! @param[in] theFace typed face definition identifier
-  Standard_EXPORT const BRepGraph_TopoNode::FaceDef& Face(const BRepGraph_FaceId theFace) const;
+  [[nodiscard]] Standard_EXPORT const BRepGraph_TopoNode::FaceDef& Face(
+    const BRepGraph_FaceId theFace) const;
 
   //! Access wire definition by typed identifier.
   //! @param[in] theWire typed wire definition identifier
-  Standard_EXPORT const BRepGraph_TopoNode::WireDef& Wire(const BRepGraph_WireId theWire) const;
+  [[nodiscard]] Standard_EXPORT const BRepGraph_TopoNode::WireDef& Wire(
+    const BRepGraph_WireId theWire) const;
 
   //! Access edge definition by typed identifier.
   //! @param[in] theEdge typed edge definition identifier
-  Standard_EXPORT const BRepGraph_TopoNode::EdgeDef& Edge(const BRepGraph_EdgeId theEdge) const;
+  [[nodiscard]] Standard_EXPORT const BRepGraph_TopoNode::EdgeDef& Edge(
+    const BRepGraph_EdgeId theEdge) const;
 
   //! Access vertex definition by typed identifier.
   //! @param[in] theVertex typed vertex definition identifier
-  Standard_EXPORT const BRepGraph_TopoNode::VertexDef& Vertex(
+  [[nodiscard]] Standard_EXPORT const BRepGraph_TopoNode::VertexDef& Vertex(
     const BRepGraph_VertexId theVertex) const;
 
   //! Access compound definition by typed identifier.
   //! @param[in] theCompound typed compound definition identifier
-  Standard_EXPORT const BRepGraph_TopoNode::CompoundDef& Compound(
+  [[nodiscard]] Standard_EXPORT const BRepGraph_TopoNode::CompoundDef& Compound(
     const BRepGraph_CompoundId theCompound) const;
 
   //! Access compsolid definition by typed identifier.
   //! @param[in] theCompSolid typed compsolid definition identifier
-  Standard_EXPORT const BRepGraph_TopoNode::CompSolidDef& CompSolid(
+  [[nodiscard]] Standard_EXPORT const BRepGraph_TopoNode::CompSolidDef& CompSolid(
     const BRepGraph_CompSolidId theCompSolid) const;
 
   //! Access coedge definition by typed identifier.
   //! @param[in] theCoEdge typed coedge definition identifier
-  Standard_EXPORT const BRepGraph_TopoNode::CoEdgeDef& CoEdge(
+  [[nodiscard]] Standard_EXPORT const BRepGraph_TopoNode::CoEdgeDef& CoEdge(
     const BRepGraph_CoEdgeId theCoEdge) const;
 
   //! Generic topology definition lookup by NodeId.
   //! @param[in] theId node identifier
   //! @return pointer to BaseDef or nullptr if invalid
-  Standard_EXPORT const BRepGraph_TopoNode::BaseDef* TopoDef(const BRepGraph_NodeId theId) const;
+  [[nodiscard]] Standard_EXPORT const BRepGraph_TopoNode::BaseDef* TopoDef(
+    const BRepGraph_NodeId theId) const;
 
   //! Number of face definitions in a shell (via first usage).
   //! @param[in] theShell typed shell definition identifier
-  Standard_EXPORT int NbShellFaces(const BRepGraph_ShellId theShell) const;
+  [[nodiscard]] Standard_EXPORT int NbShellFaces(const BRepGraph_ShellId theShell) const;
 
   //! Access face definition NodeId belonging to a shell by index.
   //! @param[in] theShell typed shell definition identifier
   //! @param[in] theFaceIndex zero-based face index within the shell
-  Standard_EXPORT BRepGraph_NodeId ShellFaceDef(const BRepGraph_ShellId theShell,
-                                                const int               theFaceIndex) const;
+  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId ShellFaceDef(const BRepGraph_ShellId theShell,
+                                                              const int theFaceIndex) const;
 
   //! Number of product definitions.
   Standard_EXPORT int NbProducts() const;
@@ -152,72 +158,72 @@ public:
 
   //! Access product definition by typed identifier.
   //! @param[in] theProduct typed product definition identifier
-  Standard_EXPORT const BRepGraph_TopoNode::ProductDef& Product(
+  [[nodiscard]] Standard_EXPORT const BRepGraph_TopoNode::ProductDef& Product(
     const BRepGraph_ProductId theProduct) const;
 
   //! Access occurrence definition by typed identifier.
   //! @param[in] theOccurrence typed occurrence definition identifier
-  Standard_EXPORT const BRepGraph_TopoNode::OccurrenceDef& Occurrence(
+  [[nodiscard]] Standard_EXPORT const BRepGraph_TopoNode::OccurrenceDef& Occurrence(
     const BRepGraph_OccurrenceId theOccurrence) const;
 
   //! Return NodeIds of all root products (products that are not referenced by any occurrence).
-  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> RootProducts() const;
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> RootProducts() const;
 
   //! True if the product is an assembly (has child occurrences, no ShapeRootId).
   //! @param[in] theProduct typed product definition identifier
-  Standard_EXPORT bool IsAssembly(const BRepGraph_ProductId theProduct) const;
+  [[nodiscard]] Standard_EXPORT bool IsAssembly(const BRepGraph_ProductId theProduct) const;
 
   //! True if the product is a part (has a valid ShapeRootId).
   //! @param[in] theProduct typed product definition identifier
-  Standard_EXPORT bool IsPart(const BRepGraph_ProductId theProduct) const;
+  [[nodiscard]] Standard_EXPORT bool IsPart(const BRepGraph_ProductId theProduct) const;
 
   //! Number of child occurrences of a product.
   //! @param[in] theProduct typed product definition identifier
-  Standard_EXPORT int NbComponents(const BRepGraph_ProductId theProduct) const;
+  [[nodiscard]] Standard_EXPORT int NbComponents(const BRepGraph_ProductId theProduct) const;
 
   //! Return the i-th child occurrence NodeId of a product.
   //! @param[in] theProduct typed product definition identifier
   //! @param[in] theComponentIdx zero-based occurrence index within the product
-  Standard_EXPORT BRepGraph_NodeId Component(const BRepGraph_ProductId theProduct,
-                                             const int                 theComponentIdx) const;
+  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId Component(const BRepGraph_ProductId theProduct,
+                                                           const int theComponentIdx) const;
 
   //! Total number of nodes in the graph (all topology + assembly kinds).
-  Standard_EXPORT size_t NbNodes() const;
+  [[nodiscard]] Standard_EXPORT size_t NbNodes() const;
 
   //! Check if a node has been soft-removed.
   //! @param[in] theNode node to check
   //! @return true if the node was marked as removed
-  Standard_EXPORT bool IsRemoved(const BRepGraph_NodeId theNode) const;
+  [[nodiscard]] Standard_EXPORT bool IsRemoved(const BRepGraph_NodeId theNode) const;
 
   //! @name Representation count accessors
 
   //! Number of surface representations.
-  Standard_EXPORT int NbSurfaces() const;
+  [[nodiscard]] Standard_EXPORT int NbSurfaces() const;
 
   //! Number of 3D curve representations.
-  Standard_EXPORT int NbCurves3D() const;
+  [[nodiscard]] Standard_EXPORT int NbCurves3D() const;
 
   //! Number of 2D curve (PCurve) representations.
-  Standard_EXPORT int NbCurves2D() const;
+  [[nodiscard]] Standard_EXPORT int NbCurves2D() const;
 
   //! Number of triangulation representations.
-  Standard_EXPORT int NbTriangulations() const;
+  [[nodiscard]] Standard_EXPORT int NbTriangulations() const;
 
   //! Number of 3D polygon representations.
-  Standard_EXPORT int NbPolygons3D() const;
+  [[nodiscard]] Standard_EXPORT int NbPolygons3D() const;
 
   //! Number of 2D polygon representations.
-  Standard_EXPORT int NbPolygons2D() const;
+  [[nodiscard]] Standard_EXPORT int NbPolygons2D() const;
 
   //! Number of polygon-on-triangulation representations.
-  Standard_EXPORT int NbPolygonsOnTri() const;
+  [[nodiscard]] Standard_EXPORT int NbPolygonsOnTri() const;
 
   //! @name Geometry query methods
 
   //! Find the CoEdge for an edge on a given face, or nullptr if none exists.
   //! @param[in] theEdgeDef edge definition NodeId
   //! @param[in] theFaceDef face definition NodeId
-  Standard_EXPORT const BRepGraphInc::CoEdgeEntity* FindPCurve(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::CoEdgeEntity* FindPCurve(
     const BRepGraph_NodeId theEdgeDef,
     const BRepGraph_NodeId theFaceDef) const;
 
@@ -225,14 +231,14 @@ public:
   //! @param[in] theEdgeDef           edge definition NodeId
   //! @param[in] theFaceDef           face definition NodeId
   //! @param[in] theEdgeOrientation   edge orientation on the face
-  Standard_EXPORT const BRepGraphInc::CoEdgeEntity* FindPCurve(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::CoEdgeEntity* FindPCurve(
     const BRepGraph_NodeId   theEdgeDef,
     const BRepGraph_NodeId   theFaceDef,
     const TopAbs_Orientation theEdgeOrientation) const;
 
   //! Find the CoEdge for a given PCurve context.
   //! @param[in] theContext  composite key identifying edge, face and orientation
-  Standard_EXPORT const BRepGraphInc::CoEdgeEntity* FindPCurve(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::CoEdgeEntity* FindPCurve(
     const BRepGraph_PCurveContext& theContext) const;
 
 private:
@@ -241,37 +247,37 @@ private:
 
   //! Access surface representation by typed identifier.
   //! @param[in] theRep typed surface representation identifier
-  Standard_EXPORT const BRepGraphInc::SurfaceRep& SurfaceRep(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::SurfaceRep& SurfaceRep(
     const BRepGraph_SurfaceRepId theRep) const;
 
   //! Access 3D curve representation by typed identifier.
   //! @param[in] theRep typed 3D curve representation identifier
-  Standard_EXPORT const BRepGraphInc::Curve3DRep& Curve3DRep(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::Curve3DRep& Curve3DRep(
     const BRepGraph_Curve3DRepId theRep) const;
 
   //! Access 2D curve representation by typed identifier.
   //! @param[in] theRep typed 2D curve representation identifier
-  Standard_EXPORT const BRepGraphInc::Curve2DRep& Curve2DRep(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::Curve2DRep& Curve2DRep(
     const BRepGraph_Curve2DRepId theRep) const;
 
   //! Access triangulation representation by typed identifier.
   //! @param[in] theRep typed triangulation representation identifier
-  Standard_EXPORT const BRepGraphInc::TriangulationRep& TriangulationRep(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::TriangulationRep& TriangulationRep(
     const BRepGraph_TriangulationRepId theRep) const;
 
   //! Access 3D polygon representation by typed identifier.
   //! @param[in] theRep typed 3D polygon representation identifier
-  Standard_EXPORT const BRepGraphInc::Polygon3DRep& Polygon3DRep(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::Polygon3DRep& Polygon3DRep(
     const BRepGraph_Polygon3DRepId theRep) const;
 
   //! Access 2D polygon representation by typed identifier.
   //! @param[in] theRep typed 2D polygon representation identifier
-  Standard_EXPORT const BRepGraphInc::Polygon2DRep& Polygon2DRep(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::Polygon2DRep& Polygon2DRep(
     const BRepGraph_Polygon2DRepId theRep) const;
 
   //! Access polygon-on-triangulation representation by typed identifier.
   //! @param[in] theRep typed polygon-on-triangulation representation identifier
-  Standard_EXPORT const BRepGraphInc::PolygonOnTriRep& PolygonOnTriRep(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::PolygonOnTriRep& PolygonOnTriRep(
     const BRepGraph_PolygonOnTriRepId theRep) const;
 
   explicit DefsView(const BRepGraph* theGraph)

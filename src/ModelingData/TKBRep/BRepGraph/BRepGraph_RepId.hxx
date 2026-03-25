@@ -89,7 +89,14 @@ struct BRepGraph_RepId
     }
 
     //! True if this id points to an allocated representation slot.
-    bool IsValid() const { return Index >= 0; }
+    [[nodiscard]] bool IsValid() const { return Index >= 0; }
+
+    //! True if this id points to an allocated slot within [0, theMaxCount).
+    [[nodiscard]] bool IsValid(const int theMaxCount) const
+    {
+      Standard_ASSERT_RETURN(theMaxCount >= 0, "max count must be non-negative", false);
+      return Index >= 0 && Index < theMaxCount;
+    }
 
     //! Implicit conversion to untyped RepId.
     operator BRepGraph_RepId() const { return BRepGraph_RepId(TheKind, Index); }
@@ -153,7 +160,14 @@ struct BRepGraph_RepId
   }
 
   //! True if this id points to an allocated representation slot.
-  bool IsValid() const { return Index >= 0; }
+  [[nodiscard]] bool IsValid() const { return Index >= 0; }
+
+  //! True if this id points to an allocated slot within [0, theMaxCount).
+  [[nodiscard]] bool IsValid(const int theMaxCount) const
+  {
+    Standard_ASSERT_RETURN(theMaxCount >= 0, "max count must be non-negative", false);
+    return Index >= 0 && Index < theMaxCount;
+  }
 
   //! @name Static factory methods returning typed RepIds.
   static Typed<Kind::Surface> Surface(const int theIdx) { return Typed<Kind::Surface>(theIdx); }

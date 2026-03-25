@@ -549,7 +549,7 @@ TEST(BRepGraphAPI_MutableDefTest, MutableCompoundDefinition)
 {
   BRepGraph                            aGraph;
   NCollection_Vector<BRepGraph_NodeId> aChildren;
-  aGraph.Builder().AddCompoundDef(aChildren);
+  (void)aGraph.Builder().AddCompoundDef(aChildren);
   ASSERT_EQ(aGraph.Defs().NbCompounds(), 1);
 
   {
@@ -563,7 +563,7 @@ TEST(BRepGraphAPI_MutableDefTest, MutableCompSolidDefinition)
 {
   BRepGraph                            aGraph;
   NCollection_Vector<BRepGraph_NodeId> aSolids;
-  aGraph.Builder().AddCompSolidDef(aSolids);
+  (void)aGraph.Builder().AddCompSolidDef(aSolids);
   ASSERT_EQ(aGraph.Defs().NbCompSolids(), 1);
 
   {
@@ -625,9 +625,9 @@ TEST(BRepGraphAPI_IteratorTest, SkipsRemovedEdges)
 TEST(BRepGraphAPI_IteratorTest, SkipsFirstNode)
 {
   BRepGraph aGraph;
-  aGraph.Builder().AddVertexDef(gp_Pnt(0, 0, 0), 0.001);
-  aGraph.Builder().AddVertexDef(gp_Pnt(1, 0, 0), 0.001);
-  aGraph.Builder().AddVertexDef(gp_Pnt(2, 0, 0), 0.001);
+  (void)aGraph.Builder().AddVertexDef(gp_Pnt(0, 0, 0), 0.001);
+  (void)aGraph.Builder().AddVertexDef(gp_Pnt(1, 0, 0), 0.001);
+  (void)aGraph.Builder().AddVertexDef(gp_Pnt(2, 0, 0), 0.001);
 
   // Remove the first vertex.
   aGraph.Builder().RemoveNode(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Vertex, 0));

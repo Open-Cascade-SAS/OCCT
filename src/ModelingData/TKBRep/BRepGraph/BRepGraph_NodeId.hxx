@@ -76,7 +76,14 @@ struct BRepGraph_NodeId
     }
 
     //! True if this id points to an allocated node slot.
-    bool IsValid() const { return Index >= 0; }
+    [[nodiscard]] bool IsValid() const { return Index >= 0; }
+
+    //! True if this id points to an allocated slot within [0, theMaxCount).
+    [[nodiscard]] bool IsValid(const int theMaxCount) const
+    {
+      Standard_ASSERT_RETURN(theMaxCount >= 0, "max count must be non-negative", false);
+      return Index >= 0 && Index < theMaxCount;
+    }
 
     //! Implicit conversion to untyped NodeId.
     operator BRepGraph_NodeId() const { return BRepGraph_NodeId(TheKind, Index); }
@@ -123,7 +130,10 @@ struct BRepGraph_NodeId
   };
 
   //! True if the kind is a core topology kind (Solid..CoEdge).
-  static bool IsTopologyKind(const Kind theKind) { return static_cast<int>(theKind) <= 8; }
+  static bool IsTopologyKind(const Kind theKind)
+  {
+    return static_cast<int>(theKind) <= 8;
+  }
 
   //! True if the kind is an assembly kind (Product or Occurrence).
   static bool IsAssemblyKind(const Kind theKind)
@@ -149,7 +159,14 @@ struct BRepGraph_NodeId
   }
 
   //! True if this id points to an allocated node slot.
-  bool IsValid() const { return Index >= 0; }
+  [[nodiscard]] bool IsValid() const { return Index >= 0; }
+
+  //! True if this id points to an allocated slot within [0, theMaxCount).
+  [[nodiscard]] bool IsValid(const int theMaxCount) const
+  {
+    Standard_ASSERT_RETURN(theMaxCount >= 0, "max count must be non-negative", false);
+    return Index >= 0 && Index < theMaxCount;
+  }
 
   //! @name Static factory methods returning typed NodeIds.
   static Typed<Kind::Solid> Solid(const int theIdx) { return Typed<Kind::Solid>(theIdx); }

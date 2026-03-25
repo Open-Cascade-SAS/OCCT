@@ -197,7 +197,7 @@ TEST(BRepGraphAssemblyTest, RootProducts_Query)
   // Add an assembly and make it instantiate the part product via occurrence.
   const BRepGraph_NodeId aPartId     = BRepGraph_NodeId::Product(0);
   const BRepGraph_NodeId aAssemblyId = aGraph.Builder().AddAssemblyProduct();
-  aGraph.Builder().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location());
+  (void)aGraph.Builder().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location());
 
   // Now only the assembly (which is not referenced by any occurrence) is a root.
   aRoots = aGraph.Defs().RootProducts();
@@ -358,7 +358,7 @@ TEST(BRepGraphAssemblyTest, NbNodes_IncludesAssembly)
 
   // Add assembly + occurrence.
   const BRepGraph_NodeId aAssemblyId = aGraph.Builder().AddAssemblyProduct();
-  aGraph.Builder().AddOccurrence(aAssemblyId, BRepGraph_NodeId::Product(0), TopLoc_Location());
+  (void)aGraph.Builder().AddOccurrence(aAssemblyId, BRepGraph_NodeId::Product(0), TopLoc_Location());
 
   const size_t aNbNodesAfterAssembly = aGraph.Defs().NbNodes();
   EXPECT_EQ(aNbNodesAfterAssembly, aNbNodesAfterBuild + 2); // +1 product, +1 occurrence
@@ -376,8 +376,8 @@ TEST(BRepGraphAssemblyTest, OccurrencesOfProduct_ReverseIndex)
 
   const BRepGraph_NodeId aPartId     = BRepGraph_NodeId::Product(0);
   const BRepGraph_NodeId aAssemblyId = aGraph.Builder().AddAssemblyProduct();
-  aGraph.Builder().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location());
-  aGraph.Builder().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location());
+  (void)aGraph.Builder().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location());
+  (void)aGraph.Builder().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location());
 
   // Build the product-occurrence reverse index manually.
   BRepGraphInc_ReverseIndex aRevIdx;
@@ -397,7 +397,7 @@ TEST(BRepGraphAssemblyTest, Iterator_Product)
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  aGraph.Builder().AddAssemblyProduct();
+  (void)aGraph.Builder().AddAssemblyProduct();
 
   int aCount = 0;
   for (BRepGraph_Iterator<BRepGraph_TopoNode::ProductDef> anIt(aGraph); anIt.More(); anIt.Next())
@@ -419,8 +419,8 @@ TEST(BRepGraphAssemblyTest, Iterator_Occurrence)
 
   const BRepGraph_NodeId aPartId     = BRepGraph_NodeId::Product(0);
   const BRepGraph_NodeId aAssemblyId = aGraph.Builder().AddAssemblyProduct();
-  aGraph.Builder().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location());
-  aGraph.Builder().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location());
+  (void)aGraph.Builder().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location());
+  (void)aGraph.Builder().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location());
 
   int aCount = 0;
   for (BRepGraph_Iterator<BRepGraph_TopoNode::OccurrenceDef> anIt(aGraph); anIt.More(); anIt.Next())
@@ -656,8 +656,8 @@ TEST(BRepGraphAssemblyTest, OccurrencesOfProduct_ViaReverseIndex)
 
   const BRepGraph_NodeId aPartId = BRepGraph_NodeId::Product(0);
   const BRepGraph_NodeId aAsmId  = aGraph.Builder().AddAssemblyProduct();
-  aGraph.Builder().AddOccurrence(aAsmId, aPartId, TopLoc_Location());
-  aGraph.Builder().AddOccurrence(aAsmId, aPartId, TopLoc_Location());
+  (void)aGraph.Builder().AddOccurrence(aAsmId, aPartId, TopLoc_Location());
+  (void)aGraph.Builder().AddOccurrence(aAsmId, aPartId, TopLoc_Location());
 
   // Rebuild reverse index to populate product->occurrences.
   // (BuildReverseIndex is called during Build, but not after Builder mutations.)

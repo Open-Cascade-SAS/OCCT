@@ -1502,8 +1502,7 @@ int mergeMatchedEdges(
   {
     BRepGraphAlgo_SameParameter::Perform(theGraph,
                                          theSewnEdgeIndices,
-                                         theOptions.Tolerance,
-                                         theOptions.Parallel);
+                                         theOptions.Tolerance);
   }
 
   return aSewnCount;

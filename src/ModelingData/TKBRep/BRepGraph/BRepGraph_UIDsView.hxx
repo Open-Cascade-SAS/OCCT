@@ -28,18 +28,18 @@ class BRepGraph::UIDsView
 public:
   //! Return the UID assigned to a node.
   //! @param[in] theNode node identifier
-  Standard_EXPORT BRepGraph_UID Of(const BRepGraph_NodeId theNode) const;
+  [[nodiscard]] Standard_EXPORT BRepGraph_UID Of(const BRepGraph_NodeId theNode) const;
 
   //! Resolve a UID back to a NodeId.
   //! @param[in] theUID unique identifier to resolve
-  Standard_EXPORT BRepGraph_NodeId NodeIdFrom(const BRepGraph_UID& theUID) const;
+  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId NodeIdFrom(const BRepGraph_UID& theUID) const;
 
   //! Check if a UID is valid and exists in this graph generation.
   //! @param[in] theUID unique identifier to check
-  Standard_EXPORT bool Has(const BRepGraph_UID& theUID) const;
+  [[nodiscard]] Standard_EXPORT bool Has(const BRepGraph_UID& theUID) const;
 
   //! Current generation counter (incremented on each Build).
-  Standard_EXPORT uint32_t Generation() const;
+  [[nodiscard]] Standard_EXPORT uint32_t Generation() const;
 
 private:
   friend class BRepGraph;

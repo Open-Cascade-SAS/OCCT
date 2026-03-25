@@ -145,7 +145,7 @@ TEST_F(BRepGraphViewsTest, DefsView_FindPCurve_NoCrash)
 {
   // FindPCurve may or may not return a non-null pointer for an arbitrary edge/face pair.
   // Just verify it does not crash.
-  BRepGraph_Tool::Edge::FindPCurve(myGraph, BRepGraph_EdgeId(0), BRepGraph_FaceId(0));
+  (void)BRepGraph_Tool::Edge::FindPCurve(myGraph, BRepGraph_EdgeId(0), BRepGraph_FaceId(0));
 }
 
 // ---------- UIDsView ----------

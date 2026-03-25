@@ -48,87 +48,87 @@ public:
       occ::handle<NCollection_BaseAllocator>());
 
   //! Return the allocator used for internal collections.
-  const occ::handle<NCollection_BaseAllocator>& Allocator() const { return myAllocator; }
+  [[nodiscard]] const occ::handle<NCollection_BaseAllocator>& Allocator() const { return myAllocator; }
 
   //! @name Count accessors (total including removed)
 
-  int NbVertices() const { return myVertices.Nb(); }
+  [[nodiscard]] int NbVertices() const { return myVertices.Nb(); }
 
-  int NbEdges() const { return myEdges.Nb(); }
+  [[nodiscard]] int NbEdges() const { return myEdges.Nb(); }
 
-  int NbCoEdges() const { return myCoEdges.Nb(); }
+  [[nodiscard]] int NbCoEdges() const { return myCoEdges.Nb(); }
 
-  int NbWires() const { return myWires.Nb(); }
+  [[nodiscard]] int NbWires() const { return myWires.Nb(); }
 
-  int NbFaces() const { return myFaces.Nb(); }
+  [[nodiscard]] int NbFaces() const { return myFaces.Nb(); }
 
-  int NbShells() const { return myShells.Nb(); }
+  [[nodiscard]] int NbShells() const { return myShells.Nb(); }
 
-  int NbSolids() const { return mySolids.Nb(); }
+  [[nodiscard]] int NbSolids() const { return mySolids.Nb(); }
 
-  int NbCompounds() const { return myCompounds.Nb(); }
+  [[nodiscard]] int NbCompounds() const { return myCompounds.Nb(); }
 
-  int NbCompSolids() const { return myCompSolids.Nb(); }
+  [[nodiscard]] int NbCompSolids() const { return myCompSolids.Nb(); }
 
-  int NbProducts() const { return myProducts.Nb(); }
+  [[nodiscard]] int NbProducts() const { return myProducts.Nb(); }
 
-  int NbOccurrences() const { return myOccurrences.Nb(); }
+  [[nodiscard]] int NbOccurrences() const { return myOccurrences.Nb(); }
 
   //! @name Representation count accessors
 
-  int NbSurfaces() const { return mySurfaces.Nb(); }
+  [[nodiscard]] int NbSurfaces() const { return mySurfaces.Nb(); }
 
-  int NbCurves3D() const { return myCurves3D.Nb(); }
+  [[nodiscard]] int NbCurves3D() const { return myCurves3D.Nb(); }
 
-  int NbCurves2D() const { return myCurves2D.Nb(); }
+  [[nodiscard]] int NbCurves2D() const { return myCurves2D.Nb(); }
 
-  int NbTriangulations() const { return myTriangulationsRep.Nb(); }
+  [[nodiscard]] int NbTriangulations() const { return myTriangulationsRep.Nb(); }
 
-  int NbPolygons3D() const { return myPolygons3D.Nb(); }
+  [[nodiscard]] int NbPolygons3D() const { return myPolygons3D.Nb(); }
 
-  int NbPolygons2D() const { return myPolygons2D.Nb(); }
+  [[nodiscard]] int NbPolygons2D() const { return myPolygons2D.Nb(); }
 
-  int NbPolygonsOnTri() const { return myPolygonsOnTri.Nb(); }
+  [[nodiscard]] int NbPolygonsOnTri() const { return myPolygonsOnTri.Nb(); }
 
   //! @name Representation active count accessors
 
-  int NbActiveSurfaces() const { return mySurfaces.NbActive; }
+  [[nodiscard]] int NbActiveSurfaces() const { return mySurfaces.NbActive; }
 
-  int NbActiveCurves3D() const { return myCurves3D.NbActive; }
+  [[nodiscard]] int NbActiveCurves3D() const { return myCurves3D.NbActive; }
 
-  int NbActiveCurves2D() const { return myCurves2D.NbActive; }
+  [[nodiscard]] int NbActiveCurves2D() const { return myCurves2D.NbActive; }
 
-  int NbActiveTriangulations() const { return myTriangulationsRep.NbActive; }
+  [[nodiscard]] int NbActiveTriangulations() const { return myTriangulationsRep.NbActive; }
 
-  int NbActivePolygons3D() const { return myPolygons3D.NbActive; }
+  [[nodiscard]] int NbActivePolygons3D() const { return myPolygons3D.NbActive; }
 
-  int NbActivePolygons2D() const { return myPolygons2D.NbActive; }
+  [[nodiscard]] int NbActivePolygons2D() const { return myPolygons2D.NbActive; }
 
-  int NbActivePolygonsOnTri() const { return myPolygonsOnTri.NbActive; }
+  [[nodiscard]] int NbActivePolygonsOnTri() const { return myPolygonsOnTri.NbActive; }
 
   //! @name Active count accessors (excluding removed nodes)
 
-  int NbActiveVertices() const { return myVertices.NbActive; }
+  [[nodiscard]] int NbActiveVertices() const { return myVertices.NbActive; }
 
-  int NbActiveEdges() const { return myEdges.NbActive; }
+  [[nodiscard]] int NbActiveEdges() const { return myEdges.NbActive; }
 
-  int NbActiveCoEdges() const { return myCoEdges.NbActive; }
+  [[nodiscard]] int NbActiveCoEdges() const { return myCoEdges.NbActive; }
 
-  int NbActiveWires() const { return myWires.NbActive; }
+  [[nodiscard]] int NbActiveWires() const { return myWires.NbActive; }
 
-  int NbActiveFaces() const { return myFaces.NbActive; }
+  [[nodiscard]] int NbActiveFaces() const { return myFaces.NbActive; }
 
-  int NbActiveShells() const { return myShells.NbActive; }
+  [[nodiscard]] int NbActiveShells() const { return myShells.NbActive; }
 
-  int NbActiveSolids() const { return mySolids.NbActive; }
+  [[nodiscard]] int NbActiveSolids() const { return mySolids.NbActive; }
 
-  int NbActiveCompounds() const { return myCompounds.NbActive; }
+  [[nodiscard]] int NbActiveCompounds() const { return myCompounds.NbActive; }
 
-  int NbActiveCompSolids() const { return myCompSolids.NbActive; }
+  [[nodiscard]] int NbActiveCompSolids() const { return myCompSolids.NbActive; }
 
-  int NbActiveProducts() const { return myProducts.NbActive; }
+  [[nodiscard]] int NbActiveProducts() const { return myProducts.NbActive; }
 
-  int NbActiveOccurrences() const { return myOccurrences.NbActive; }
+  [[nodiscard]] int NbActiveOccurrences() const { return myOccurrences.NbActive; }
 
   //! Decrement the active count for the given node kind.
   void DecrementActiveCount(const BRepGraph_NodeId::Kind theKind);
@@ -137,44 +137,44 @@ public:
   //! Each method returns a const reference to the representation entity at the given typed id.
 
   //! @param[in] theRep typed surface representation id
-  const BRepGraphInc::SurfaceRep& SurfaceRep(const BRepGraph_SurfaceRepId theRep) const
+  [[nodiscard]] const BRepGraphInc::SurfaceRep& SurfaceRep(const BRepGraph_SurfaceRepId theRep) const
   {
     return mySurfaces.Get(theRep.Index);
   }
 
   //! @param[in] theRep typed curve-3D representation id
-  const BRepGraphInc::Curve3DRep& Curve3DRep(const BRepGraph_Curve3DRepId theRep) const
+  [[nodiscard]] const BRepGraphInc::Curve3DRep& Curve3DRep(const BRepGraph_Curve3DRepId theRep) const
   {
     return myCurves3D.Get(theRep.Index);
   }
 
   //! @param[in] theRep typed curve-2D representation id
-  const BRepGraphInc::Curve2DRep& Curve2DRep(const BRepGraph_Curve2DRepId theRep) const
+  [[nodiscard]] const BRepGraphInc::Curve2DRep& Curve2DRep(const BRepGraph_Curve2DRepId theRep) const
   {
     return myCurves2D.Get(theRep.Index);
   }
 
   //! @param[in] theRep typed triangulation representation id
-  const BRepGraphInc::TriangulationRep& TriangulationRep(
+  [[nodiscard]] const BRepGraphInc::TriangulationRep& TriangulationRep(
     const BRepGraph_TriangulationRepId theRep) const
   {
     return myTriangulationsRep.Get(theRep.Index);
   }
 
   //! @param[in] theRep typed polygon-3D representation id
-  const BRepGraphInc::Polygon3DRep& Polygon3DRep(const BRepGraph_Polygon3DRepId theRep) const
+  [[nodiscard]] const BRepGraphInc::Polygon3DRep& Polygon3DRep(const BRepGraph_Polygon3DRepId theRep) const
   {
     return myPolygons3D.Get(theRep.Index);
   }
 
   //! @param[in] theRep typed polygon-2D representation id
-  const BRepGraphInc::Polygon2DRep& Polygon2DRep(const BRepGraph_Polygon2DRepId theRep) const
+  [[nodiscard]] const BRepGraphInc::Polygon2DRep& Polygon2DRep(const BRepGraph_Polygon2DRepId theRep) const
   {
     return myPolygons2D.Get(theRep.Index);
   }
 
   //! @param[in] theRep typed polygon-on-triangulation representation id
-  const BRepGraphInc::PolygonOnTriRep& PolygonOnTriRep(
+  [[nodiscard]] const BRepGraphInc::PolygonOnTriRep& PolygonOnTriRep(
     const BRepGraph_PolygonOnTriRepId theRep) const
   {
     return myPolygonsOnTri.Get(theRep.Index);
@@ -247,67 +247,67 @@ public:
   //! Each method returns a const reference to the entity at the given typed id.
 
   //! @param[in] theVertex typed vertex id
-  const BRepGraphInc::VertexEntity& Vertex(const BRepGraph_VertexId theVertex) const
+  [[nodiscard]] const BRepGraphInc::VertexEntity& Vertex(const BRepGraph_VertexId theVertex) const
   {
     return myVertices.Get(theVertex.Index);
   }
 
   //! @param[in] theEdge typed edge id
-  const BRepGraphInc::EdgeEntity& Edge(const BRepGraph_EdgeId theEdge) const
+  [[nodiscard]] const BRepGraphInc::EdgeEntity& Edge(const BRepGraph_EdgeId theEdge) const
   {
     return myEdges.Get(theEdge.Index);
   }
 
   //! @param[in] theCoEdge typed coedge id
-  const BRepGraphInc::CoEdgeEntity& CoEdge(const BRepGraph_CoEdgeId theCoEdge) const
+  [[nodiscard]] const BRepGraphInc::CoEdgeEntity& CoEdge(const BRepGraph_CoEdgeId theCoEdge) const
   {
     return myCoEdges.Get(theCoEdge.Index);
   }
 
   //! @param[in] theWire typed wire id
-  const BRepGraphInc::WireEntity& Wire(const BRepGraph_WireId theWire) const
+  [[nodiscard]] const BRepGraphInc::WireEntity& Wire(const BRepGraph_WireId theWire) const
   {
     return myWires.Get(theWire.Index);
   }
 
   //! @param[in] theFace typed face id
-  const BRepGraphInc::FaceEntity& Face(const BRepGraph_FaceId theFace) const
+  [[nodiscard]] const BRepGraphInc::FaceEntity& Face(const BRepGraph_FaceId theFace) const
   {
     return myFaces.Get(theFace.Index);
   }
 
   //! @param[in] theShell typed shell id
-  const BRepGraphInc::ShellEntity& Shell(const BRepGraph_ShellId theShell) const
+  [[nodiscard]] const BRepGraphInc::ShellEntity& Shell(const BRepGraph_ShellId theShell) const
   {
     return myShells.Get(theShell.Index);
   }
 
   //! @param[in] theSolid typed solid id
-  const BRepGraphInc::SolidEntity& Solid(const BRepGraph_SolidId theSolid) const
+  [[nodiscard]] const BRepGraphInc::SolidEntity& Solid(const BRepGraph_SolidId theSolid) const
   {
     return mySolids.Get(theSolid.Index);
   }
 
   //! @param[in] theCompound typed compound id
-  const BRepGraphInc::CompoundEntity& Compound(const BRepGraph_CompoundId theCompound) const
+  [[nodiscard]] const BRepGraphInc::CompoundEntity& Compound(const BRepGraph_CompoundId theCompound) const
   {
     return myCompounds.Get(theCompound.Index);
   }
 
   //! @param[in] theCompSolid typed comp-solid id
-  const BRepGraphInc::CompSolidEntity& CompSolid(const BRepGraph_CompSolidId theCompSolid) const
+  [[nodiscard]] const BRepGraphInc::CompSolidEntity& CompSolid(const BRepGraph_CompSolidId theCompSolid) const
   {
     return myCompSolids.Get(theCompSolid.Index);
   }
 
   //! @param[in] theProduct typed product id
-  const BRepGraphInc::ProductEntity& Product(const BRepGraph_ProductId theProduct) const
+  [[nodiscard]] const BRepGraphInc::ProductEntity& Product(const BRepGraph_ProductId theProduct) const
   {
     return myProducts.Get(theProduct.Index);
   }
 
   //! @param[in] theOccurrence typed occurrence id
-  const BRepGraphInc::OccurrenceEntity& Occurrence(const BRepGraph_OccurrenceId theOccurrence) const
+  [[nodiscard]] const BRepGraphInc::OccurrenceEntity& Occurrence(const BRepGraph_OccurrenceId theOccurrence) const
   {
     return myOccurrences.Get(theOccurrence.Index);
   }
@@ -411,7 +411,7 @@ public:
   //! @name UID access
 
   //! Return the per-kind UID vector for a given Kind.
-  Standard_EXPORT const NCollection_Vector<BRepGraph_UID>& UIDs(
+  [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_UID>& UIDs(
     const BRepGraph_NodeId::Kind theKind) const;
 
   //! Return the per-kind UID vector for a given Kind (mutable).
@@ -423,18 +423,18 @@ public:
 
   //! @name Reverse index
 
-  const BRepGraphInc_ReverseIndex& ReverseIndex() const { return myReverseIdx; }
+  [[nodiscard]] const BRepGraphInc_ReverseIndex& ReverseIndex() const { return myReverseIdx; }
 
   BRepGraphInc_ReverseIndex& ChangeReverseIndex() { return myReverseIdx; }
 
   //! @name TShape to NodeId map
 
-  const BRepGraph_NodeId* FindNodeByTShape(const TopoDS_TShape* theTShape) const
+  [[nodiscard]] const BRepGraph_NodeId* FindNodeByTShape(const TopoDS_TShape* theTShape) const
   {
     return myTShapeToNodeId.Seek(theTShape);
   }
 
-  bool HasTShapeBinding(const TopoDS_TShape* theTShape) const
+  [[nodiscard]] bool HasTShapeBinding(const TopoDS_TShape* theTShape) const
   {
     return myTShapeToNodeId.IsBound(theTShape);
   }
@@ -446,12 +446,12 @@ public:
 
   //! @name Original shapes
 
-  const TopoDS_Shape* FindOriginal(const BRepGraph_NodeId theNodeId) const
+  [[nodiscard]] const TopoDS_Shape* FindOriginal(const BRepGraph_NodeId theNodeId) const
   {
     return myOriginalShapes.Seek(theNodeId);
   }
 
-  bool HasOriginal(const BRepGraph_NodeId theNodeId) const
+  [[nodiscard]] bool HasOriginal(const BRepGraph_NodeId theNodeId) const
   {
     return myOriginalShapes.IsBound(theNodeId);
   }
@@ -465,15 +465,15 @@ public:
 
   //! @name Population status
 
-  bool GetIsDone() const { return myIsDone; }
+  [[nodiscard]] bool GetIsDone() const { return myIsDone; }
 
   void SetIsDone(const bool theVal) { myIsDone = theVal; }
 
   //! True if edge regularities were extracted during population.
-  bool HasRegularities() const { return myHasRegularities; }
+  [[nodiscard]] bool HasRegularities() const { return myHasRegularities; }
 
   //! True if vertex point representations were extracted during population.
-  bool HasVertexPointReps() const { return myHasVertexPointReps; }
+  [[nodiscard]] bool HasVertexPointReps() const { return myHasVertexPointReps; }
 
   //! Clear all storage.
   Standard_EXPORT void Clear();
@@ -573,6 +573,13 @@ private:
     void DecrementActive()
     {
       Standard_ASSERT_VOID(NbActive > 0, "RepStore::DecrementActive: underflow");
+      --NbActive;
+    }
+
+    void EraseLast()
+    {
+      Standard_ASSERT_VOID(NbActive > 0, "RepStore::EraseLast: underflow");
+      Entities.EraseLast();
       --NbActive;
     }
 

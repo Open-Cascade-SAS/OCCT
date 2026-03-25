@@ -28,60 +28,60 @@ class BRepGraph::SpatialView
 public:
   //! Return all face definitions sharing the same surface as the given face.
   //! @param[in] theFaceDef face definition NodeId
-  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> SameDomainFaces(
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> SameDomainFaces(
     const BRepGraph_NodeId theFaceDef) const;
 
   //! Return all face definition NodeIds that reference this edge.
   //! @param[in] theEdgeDef edge definition NodeId
-  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> FacesOfEdge(
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> FacesOfEdge(
     const BRepGraph_NodeId theEdgeDef) const;
 
   //! Return all edges shared between two faces.
   //! @param[in] theFaceA first face definition NodeId
   //! @param[in] theFaceB second face definition NodeId
-  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> SharedEdges(
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> SharedEdges(
     const BRepGraph_NodeId theFaceA,
     const BRepGraph_NodeId theFaceB) const;
 
   //! Return all faces adjacent to a face (sharing at least one edge).
   //! @param[in] theFaceDef face definition NodeId
-  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> AdjacentFaces(
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> AdjacentFaces(
     const BRepGraph_NodeId theFaceDef) const;
 
   //! Return all edge definitions in a face (collected from all wires via coedges).
   //! @param[in] theFaceDef face definition NodeId
   //! @return unique edge NodeIds (deduplicated)
-  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> EdgesOfFace(
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> EdgesOfFace(
     const BRepGraph_NodeId theFaceDef) const;
 
   //! Return all edge definitions incident to a vertex.
   //! @param[in] theVertexDef vertex definition NodeId
-  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> EdgesOfVertex(
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> EdgesOfVertex(
     const BRepGraph_NodeId theVertexDef) const;
 
   //! Return start, end, and internal vertex definitions for an edge.
   //! @param[in] theEdgeDef edge definition NodeId
-  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> VerticesOfEdge(
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> VerticesOfEdge(
     const BRepGraph_NodeId theEdgeDef) const;
 
   //! Return all edges sharing a vertex with the given edge (excluding itself).
   //! @param[in] theEdgeDef edge definition NodeId
-  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> AdjacentEdges(
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> AdjacentEdges(
     const BRepGraph_NodeId theEdgeDef) const;
 
   //! Return the number of distinct faces referencing this edge.
   //! 0 = free edge, 1 = boundary, 2 = manifold, 3+ = non-manifold.
   //! O(1) lookup via cached reverse index.
   //! @param[in] theEdgeDef edge definition NodeId
-  Standard_EXPORT int FaceCountOfEdge(const BRepGraph_NodeId theEdgeDef) const;
+  [[nodiscard]] Standard_EXPORT int FaceCountOfEdge(const BRepGraph_NodeId theEdgeDef) const;
 
   //! True if the edge is referenced by exactly one face (boundary edge).
   //! @param[in] theEdgeDef edge definition NodeId
-  Standard_EXPORT bool IsBoundaryEdge(const BRepGraph_NodeId theEdgeDef) const;
+  [[nodiscard]] Standard_EXPORT bool IsBoundaryEdge(const BRepGraph_NodeId theEdgeDef) const;
 
   //! True if the edge is referenced by exactly two faces (manifold interior edge).
   //! @param[in] theEdgeDef edge definition NodeId
-  Standard_EXPORT bool IsManifoldEdge(const BRepGraph_NodeId theEdgeDef) const;
+  [[nodiscard]] Standard_EXPORT bool IsManifoldEdge(const BRepGraph_NodeId theEdgeDef) const;
 
 private:
   friend class BRepGraph;

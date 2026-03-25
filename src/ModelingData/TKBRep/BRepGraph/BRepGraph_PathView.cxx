@@ -1261,7 +1261,7 @@ TopLoc_Location BRepGraph::PathView::OccurrenceLocation(
   const BRepGraph_OccurrenceId theOccurrence) const
 {
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
-  if (!theOccurrence.IsValid() || theOccurrence.Index >= aStorage.NbOccurrences())
+  if (!theOccurrence.IsValid(aStorage.NbOccurrences()))
     return TopLoc_Location();
 
   TopLoc_Location        aGlobal      = aStorage.Occurrence(theOccurrence).Placement;
@@ -1270,7 +1270,7 @@ TopLoc_Location BRepGraph::PathView::OccurrenceLocation(
   const int aNbOccurrences = aStorage.NbOccurrences();
   int       aSteps         = 0;
 
-  while (aParentOccId.IsValid() && aParentOccId.Index < aNbOccurrences && aSteps < aNbOccurrences)
+  while (aParentOccId.IsValid(aNbOccurrences) && aSteps < aNbOccurrences)
   {
     ++aSteps;
     const BRepGraphInc::OccurrenceEntity& aParentOcc = aStorage.Occurrence(aParentOccId);

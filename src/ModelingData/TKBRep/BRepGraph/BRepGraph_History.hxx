@@ -62,23 +62,23 @@ public:
   //! Follows the reverse map recursively until a root is reached.
   //! @param[in] theModified node id to trace back
   //! @return the root original node id, or theModified itself if not found
-  Standard_EXPORT BRepGraph_NodeId FindOriginal(const BRepGraph_NodeId theModified) const;
+  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId FindOriginal(const BRepGraph_NodeId theModified) const;
 
   //! Walk forwards from an original node to all derived nodes.
   //! Follows the forward map recursively, collecting all leaves.
   //! @param[in] theOriginal node id to trace forward
   //! @return all transitively derived node ids
-  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> FindDerived(
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> FindDerived(
     const BRepGraph_NodeId theOriginal) const;
 
   //! Number of recorded history events.
   //! @return record count
-  Standard_EXPORT int NbRecords() const;
+  [[nodiscard]] Standard_EXPORT int NbRecords() const;
 
   //! Access a record by index (0-based).
   //! @param[in] theRecordIdx zero-based index into the records vector
   //! @return the history record at the given index
-  Standard_EXPORT const BRepGraph_HistoryRecord& Record(const int theRecordIdx) const;
+  [[nodiscard]] Standard_EXPORT const BRepGraph_HistoryRecord& Record(const int theRecordIdx) const;
 
   //! Enable or disable history recording.
   //! @param[in] theVal true to enable, false to disable
@@ -86,7 +86,7 @@ public:
 
   //! Query whether history recording is enabled.
   //! @return true if recording is active
-  Standard_EXPORT bool IsEnabled() const;
+  [[nodiscard]] Standard_EXPORT bool IsEnabled() const;
 
   //! Clear all records and lookup maps.
   Standard_EXPORT void Clear();

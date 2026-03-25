@@ -76,20 +76,20 @@ struct BRepGraph_NodeCache
   }
 
   //! Retrieve a user attribute by key.  Returns null handle if absent.
-  occ::handle<BRepGraph_UserAttribute> GetUserAttribute(const int theKey) const
+  [[nodiscard]] occ::handle<BRepGraph_UserAttribute> GetUserAttribute(const int theKey) const
   {
     const occ::handle<BRepGraph_UserAttribute>* aPtr = myUserAttributes.Seek(theKey);
     return (aPtr != nullptr) ? *aPtr : occ::handle<BRepGraph_UserAttribute>();
   }
 
   //! Remove a user attribute by key.  Returns true if something was removed.
-  bool RemoveUserAttribute(const int theKey) { return myUserAttributes.UnBind(theKey); }
+  [[nodiscard]] bool RemoveUserAttribute(const int theKey) { return myUserAttributes.UnBind(theKey); }
 
   //! True if any user attributes are registered on this node.
-  bool HasUserAttributes() const { return !myUserAttributes.IsEmpty(); }
+  [[nodiscard]] bool HasUserAttributes() const { return !myUserAttributes.IsEmpty(); }
 
   //! Return all registered user attribute keys.
-  NCollection_Vector<int> UserAttributeKeys() const
+  [[nodiscard]] NCollection_Vector<int> UserAttributeKeys() const
   {
     NCollection_Vector<int> aKeys;
     for (NCollection_DataMap<int, occ::handle<BRepGraph_UserAttribute>>::Iterator anIter(

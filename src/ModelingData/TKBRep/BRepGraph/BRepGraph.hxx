@@ -34,7 +34,6 @@
 
 #include <functional>
 #include <memory>
-#include <utility>
 
 template <typename DefT>
 class BRepGraph_MutRef;
@@ -98,13 +97,13 @@ public:
                              const BRepGraphInc_Populate::Options& theOptions);
 
   //! Return true if the graph was successfully built.
-  Standard_EXPORT bool IsDone() const;
+  [[nodiscard]] Standard_EXPORT bool IsDone() const;
 
   //! Replace the internal allocator and re-create all storage.
   Standard_EXPORT void SetAllocator(const occ::handle<NCollection_BaseAllocator>& theAlloc);
 
   //! Return the current allocator.
-  Standard_EXPORT const occ::handle<NCollection_BaseAllocator>& Allocator() const;
+  [[nodiscard]] Standard_EXPORT const occ::handle<NCollection_BaseAllocator>& Allocator() const;
 
   //! Begin deferred invalidation mode.
   //! While active, markModified() only sets IsModified flags on entities
@@ -122,7 +121,7 @@ public:
   Standard_EXPORT void SetHistoryEnabled(const bool theVal);
 
   //! Check if history recording is enabled.
-  Standard_EXPORT bool IsHistoryEnabled() const;
+  [[nodiscard]] Standard_EXPORT bool IsHistoryEnabled() const;
 
   //! Apply a modification operation and record history.
   Standard_EXPORT void ApplyModification(
@@ -145,17 +144,17 @@ public:
   class PathView;
 
   //! Access topology definitions.
-  DefsView Defs() const;
+  [[nodiscard]] DefsView Defs() const;
   //! Access unique identifiers.
-  UIDsView UIDs() const;
+  [[nodiscard]] UIDsView UIDs() const;
   //! Access spatial and adjacency queries.
-  SpatialView Spatial() const;
+  [[nodiscard]] SpatialView Spatial() const;
   //! Access topology path resolution queries.
-  PathView Paths() const;
+  [[nodiscard]] PathView Paths() const;
   //! Access user attributes.
-  AttrsView Attrs();
+  [[nodiscard]] AttrsView Attrs();
   //! Access shape reconstruction.
-  ShapesView Shapes() const;
+  [[nodiscard]] ShapesView Shapes() const;
 
   //! @name Scoped mutable definition guards (RAII).
   //! Return a BRepGraph_MutRef that defers markModified() to scope exit.
@@ -206,7 +205,7 @@ public:
   //! via MutCoEdge().
   //! @param[in] theCurve2d the 2D parametric curve handle
   //! @return typed Curve2DRep identifier, or invalid if the curve is null
-  Standard_EXPORT BRepGraph_Curve2DRepId
+  [[nodiscard]] Standard_EXPORT BRepGraph_Curve2DRepId
     CreateCurve2DRep(const occ::handle<Geom2d_Curve>& theCurve2d);
 
   //! Return scoped mutable comp-solid definition guard.
@@ -225,19 +224,19 @@ public:
     const BRepGraph_OccurrenceId theOccurrence);
 
   //! Access programmatic graph construction.
-  BuilderView Builder();
+  [[nodiscard]] BuilderView Builder();
   //! Access analysis queries.
-  AnalyzeView Analyze() const;
+  [[nodiscard]] AnalyzeView Analyze() const;
 
   //! Access history subsystem directly.
-  Standard_EXPORT BRepGraph_History&       History();
-  Standard_EXPORT const BRepGraph_History& History() const;
+  [[nodiscard]] Standard_EXPORT BRepGraph_History&       History();
+  [[nodiscard]] Standard_EXPORT const BRepGraph_History& History() const;
 
   //! Register a named layer. Replaces existing layer with same name.
   Standard_EXPORT void RegisterLayer(const occ::handle<BRepGraph_Layer>& theLayer);
 
   //! Find a layer by name. Returns null handle if not found.
-  Standard_EXPORT occ::handle<BRepGraph_Layer> FindLayer(
+  [[nodiscard]] Standard_EXPORT occ::handle<BRepGraph_Layer> FindLayer(
     const TCollection_AsciiString& theName) const;
 
   //! Remove a layer by name.
@@ -315,14 +314,6 @@ private:
   //! Generic mutable topology definition lookup by NodeId.
   Standard_EXPORT BRepGraph_TopoNode::BaseDef* ChangeTopoDef(const BRepGraph_NodeId theId);
 
-  template <typename Func>
-  auto dispatchDef(const BRepGraph_NodeId theNode, Func&& theFunc) const
-    -> decltype(theFunc(std::declval<const NCollection_Vector<BRepGraph_TopoNode::SolidDef>&>(),
-                        0));
-
-  template <typename Func>
-  auto dispatchDef(const BRepGraph_NodeId theNode, Func&& theFunc)
-    -> decltype(theFunc(std::declval<NCollection_Vector<BRepGraph_TopoNode::SolidDef>&>(), 0));
 };
 
 // Included after BRepGraph is complete so the template body sees markModified().

@@ -55,17 +55,17 @@ struct BRepGraph_UID
   //! Factory: returns an explicitly invalid UID.
   static BRepGraph_UID Invalid() { return BRepGraph_UID(); }
 
-  bool IsValid() const { return myValid; }
+  [[nodiscard]] bool IsValid() const { return myValid; }
 
-  BRepGraph_NodeId::Kind Kind() const { return myKind; }
+  [[nodiscard]] BRepGraph_NodeId::Kind Kind() const { return myKind; }
 
-  size_t Counter() const { return myCounter; }
+  [[nodiscard]] size_t Counter() const { return myCounter; }
 
-  uint32_t Generation() const { return myGeneration; }
+  [[nodiscard]] uint32_t Generation() const { return myGeneration; }
 
-  bool IsTopology() const { return BRepGraph_NodeId::IsTopologyKind(myKind); }
+  [[nodiscard]] bool IsTopology() const { return BRepGraph_NodeId::IsTopologyKind(myKind); }
 
-  bool IsAssembly() const { return BRepGraph_NodeId::IsAssemblyKind(myKind); }
+  [[nodiscard]] bool IsAssembly() const { return BRepGraph_NodeId::IsAssemblyKind(myKind); }
 
   //! Equality: Identity = (Kind, Counter).  Generation excluded.
   bool operator==(const BRepGraph_UID& theOther) const
@@ -85,7 +85,7 @@ struct BRepGraph_UID
   }
 
   //! Hash value: f(Kind, Counter).
-  size_t HashValue() const
+  [[nodiscard]] size_t HashValue() const
   {
     size_t aCombination[2];
     aCombination[0] = opencascade::hash(static_cast<int>(myKind));

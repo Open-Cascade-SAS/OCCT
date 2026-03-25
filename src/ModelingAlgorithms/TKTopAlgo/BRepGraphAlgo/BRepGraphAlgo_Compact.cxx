@@ -251,7 +251,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
       continue;
     const BRepGraph_TopoNode::VertexDef& anOldVtx =
       theGraph.Defs().Vertex(BRepGraph_VertexId(anIdx));
-    aNewGraph.Builder().AddVertexDef(anOldVtx.Point, anOldVtx.Tolerance);
+    (void)aNewGraph.Builder().AddVertexDef(anOldVtx.Point, anOldVtx.Tolerance);
   }
 
   // Edges.
@@ -302,7 +302,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
       if (aNewEdgeDefId.IsValid())
         aNewEntries.Append(std::make_pair(aNewEdgeDefId, aCoEdge.Sense));
     }
-    aNewGraph.Builder().AddWireDef(aNewEntries);
+    (void)aNewGraph.Builder().AddWireDef(aNewEntries);
   }
 
   // Faces.
@@ -335,7 +335,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
       }
     }
 
-    aNewGraph.Builder().AddFaceDef(aSurf, aNewOuterWire, aNewInnerWires, anOldFace.Tolerance);
+    (void)aNewGraph.Builder().AddFaceDef(aSurf, aNewOuterWire, aNewInnerWires, anOldFace.Tolerance);
 
     // Copy triangulations from old FaceDef to new FaceDef.
     BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aNewFace =
@@ -434,7 +434,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
       if (aNewChild.IsValid())
         aNewChildren.Append(aNewChild);
     }
-    aNewGraph.Builder().AddCompoundDef(aNewChildren);
+    (void)aNewGraph.Builder().AddCompoundDef(aNewChildren);
   }
 
   // CompSolids.
@@ -452,7 +452,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
       if (aNewSolid.IsValid())
         aNewSolids.Append(aNewSolid);
     }
-    aNewGraph.Builder().AddCompSolidDef(aNewSolids);
+    (void)aNewGraph.Builder().AddCompSolidDef(aNewSolids);
   }
 
   aResult.NbNodesAfter = static_cast<int>(aNewGraph.Defs().NbNodes());
@@ -501,7 +501,9 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
   aNewGraph.myData->myNextUIDCounter.store(
     theGraph.myData->myNextUIDCounter.load(std::memory_order_relaxed),
     std::memory_order_relaxed);
-  aNewGraph.myData->myGeneration = theGraph.myData->myGeneration;
+  aNewGraph.myData->myGeneration.store(
+    theGraph.myData->myGeneration.load(std::memory_order_relaxed),
+    std::memory_order_relaxed);
   aNewGraph.myData->myIsDone     = true;
 
   // Save layers before swap (default move would transfer empty layers from aNewGraph).

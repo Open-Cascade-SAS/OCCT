@@ -238,7 +238,7 @@ const BRepGraph_TopoNode::CoEdgeDef& BRepGraph::DefsView::CoEdge(
 int BRepGraph::DefsView::NbShellFaces(const BRepGraph_ShellId theShell) const
 {
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
-  if (theShell.Index < 0 || theShell.Index >= aStorage.NbShells())
+  if (!theShell.IsValid(aStorage.NbShells()))
     return 0;
   return aStorage.Shell(theShell).FaceRefs.Length();
 }
@@ -249,7 +249,7 @@ BRepGraph_NodeId BRepGraph::DefsView::ShellFaceDef(const BRepGraph_ShellId theSh
                                                    const int               theFaceIndex) const
 {
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
-  if (theShell.Index < 0 || theShell.Index >= aStorage.NbShells())
+  if (!theShell.IsValid(aStorage.NbShells()))
     return BRepGraph_NodeId();
   const BRepGraphInc::ShellEntity& aShellEnt = aStorage.Shell(theShell);
   if (theFaceIndex < 0 || theFaceIndex >= aShellEnt.FaceRefs.Length())
@@ -344,7 +344,7 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::DefsView::RootProducts() const
 bool BRepGraph::DefsView::IsAssembly(const BRepGraph_ProductId theProduct) const
 {
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
-  if (theProduct.Index < 0 || theProduct.Index >= aStorage.NbProducts())
+  if (!theProduct.IsValid(aStorage.NbProducts()))
     return false;
   const BRepGraphInc::ProductEntity& aProductEnt = aStorage.Product(theProduct);
   return !aProductEnt.ShapeRootId.IsValid();
@@ -355,7 +355,7 @@ bool BRepGraph::DefsView::IsAssembly(const BRepGraph_ProductId theProduct) const
 bool BRepGraph::DefsView::IsPart(const BRepGraph_ProductId theProduct) const
 {
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
-  if (theProduct.Index < 0 || theProduct.Index >= aStorage.NbProducts())
+  if (!theProduct.IsValid(aStorage.NbProducts()))
     return false;
   const BRepGraphInc::ProductEntity& aProductEnt = aStorage.Product(theProduct);
   return aProductEnt.ShapeRootId.IsValid();
@@ -366,7 +366,7 @@ bool BRepGraph::DefsView::IsPart(const BRepGraph_ProductId theProduct) const
 int BRepGraph::DefsView::NbComponents(const BRepGraph_ProductId theProduct) const
 {
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
-  if (theProduct.Index < 0 || theProduct.Index >= aStorage.NbProducts())
+  if (!theProduct.IsValid(aStorage.NbProducts()))
     return 0;
   return aStorage.Product(theProduct).OccurrenceRefs.Length();
 }
@@ -377,7 +377,7 @@ BRepGraph_NodeId BRepGraph::DefsView::Component(const BRepGraph_ProductId thePro
                                                 const int                 theComponentIdx) const
 {
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
-  if (theProduct.Index < 0 || theProduct.Index >= aStorage.NbProducts())
+  if (!theProduct.IsValid(aStorage.NbProducts()))
     return BRepGraph_NodeId();
   const BRepGraphInc::ProductEntity& aProductEnt = aStorage.Product(theProduct);
   if (theComponentIdx < 0 || theComponentIdx >= aProductEnt.OccurrenceRefs.Length())
@@ -509,10 +509,11 @@ const BRepGraphInc::CoEdgeEntity* BRepGraph::DefsView::FindPCurve(
   const BRepGraph_NodeId theEdgeDef,
   const BRepGraph_NodeId theFaceDef) const
 {
-  if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge || !theEdgeDef.IsValid())
+  const BRepGraphInc_Storage&                   aStorage = myGraph->myData->myIncStorage;
+  if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge
+      || !theEdgeDef.IsValid(aStorage.NbEdges()))
     return nullptr;
 
-  const BRepGraphInc_Storage&                   aStorage = myGraph->myData->myIncStorage;
   const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
     aStorage.ReverseIndex().CoEdgesOfEdgeRef(BRepGraph_EdgeId(theEdgeDef.Index));
   for (int anIter = 0; anIter < aCoEdgeIdxs.Length(); ++anIter)
@@ -531,10 +532,11 @@ const BRepGraphInc::CoEdgeEntity* BRepGraph::DefsView::FindPCurve(
   const BRepGraph_NodeId   theFaceDef,
   const TopAbs_Orientation theEdgeOrientation) const
 {
-  if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge || !theEdgeDef.IsValid())
+  const BRepGraphInc_Storage&                   aStorage = myGraph->myData->myIncStorage;
+  if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge
+      || !theEdgeDef.IsValid(aStorage.NbEdges()))
     return nullptr;
 
-  const BRepGraphInc_Storage&                   aStorage = myGraph->myData->myIncStorage;
   const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
     aStorage.ReverseIndex().CoEdgesOfEdgeRef(BRepGraph_EdgeId(theEdgeDef.Index));
   // For non-seam edges (1 CoEdge per face), return the only match.

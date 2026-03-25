@@ -38,8 +38,9 @@ public:
   //! @param[in] theNode node identifier
   //! @param[in] theKey  attribute key
   //! @return handle to the attribute, or null handle if not set
-  Standard_EXPORT occ::handle<BRepGraph_UserAttribute> Get(const BRepGraph_NodeId theNode,
-                                                           const int              theKey) const;
+  [[nodiscard]] Standard_EXPORT occ::handle<BRepGraph_UserAttribute> Get(
+    const BRepGraph_NodeId theNode,
+    const int              theKey) const;
 
   //! Remove a user attribute from a node.
   //! @param[in] theNode node identifier
@@ -55,7 +56,8 @@ public:
   //! Return all user attribute keys on a node.
   //! @param[in] theNode node identifier
   //! @return vector of attribute keys (empty if node has no attributes or is a geometry node)
-  Standard_EXPORT NCollection_Vector<int> AttributeKeys(const BRepGraph_NodeId theNode) const;
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<int> AttributeKeys(
+    const BRepGraph_NodeId theNode) const;
 
 private:
   friend class BRepGraph;

@@ -31,22 +31,22 @@ class BRepGraph::AnalyzeView
 {
 public:
   //! Detect free (boundary) edges: edges referenced by exactly one face.
-  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> FreeEdges() const;
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> FreeEdges() const;
 
   //! All (Edge, Face) pairs missing a PCurveNode.
-  Standard_EXPORT NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> MissingPCurves()
-    const;
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>>
+    MissingPCurves() const;
 
   //! Nodes with tolerance conflicts across shared geometry.
   //! @param[in] theThreshold maximum allowed tolerance spread
-  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> ToleranceConflicts(
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> ToleranceConflicts(
     const double theThreshold) const;
 
   //! WireNodes with < 2 edges or non-closed outer wires.
-  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> DegenerateWires() const;
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> DegenerateWires() const;
 
   //! Split into connected components (non-owning SubGraph views).
-  Standard_EXPORT NCollection_Vector<BRepGraph_SubGraph> Decompose() const;
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_SubGraph> Decompose() const;
 
   //! Parallel iteration over FaceNode indices in a SubGraph.
   //! @param[in] theSub    SubGraph whose faces to iterate

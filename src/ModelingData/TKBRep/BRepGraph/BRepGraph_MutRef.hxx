@@ -85,10 +85,10 @@ public:
   BRepGraph_MutRef& operator=(const BRepGraph_MutRef&) = delete;
 
   //! Access the definition via pointer syntax.
-  DefT* operator->() { return myDef; }
+  [[nodiscard]] DefT* operator->() { return myDef; }
 
   //! Dereference to the definition.
-  DefT& operator*() { return *myDef; }
+  [[nodiscard]] DefT& operator*() { return *myDef; }
 
 private:
   BRepGraph*       myGraph; //!< Owning graph (nullptr after move).

@@ -51,7 +51,7 @@ bool BRepGraph::UIDsView::Has(const BRepGraph_UID& theUID) const
 {
   if (!theUID.IsValid())
     return false;
-  if (theUID.Generation() != myGraph->myData->myGeneration)
+  if (theUID.Generation() != myGraph->myData->myGeneration.load())
     return false;
 
   const NCollection_Vector<BRepGraph_UID>& aVec = myGraph->myData->myIncStorage.UIDs(theUID.Kind());
@@ -68,5 +68,5 @@ bool BRepGraph::UIDsView::Has(const BRepGraph_UID& theUID) const
 
 uint32_t BRepGraph::UIDsView::Generation() const
 {
-  return myGraph->myData->myGeneration;
+  return myGraph->myData->myGeneration.load();
 }

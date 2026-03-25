@@ -23,18 +23,19 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::SameDomainFaces(
   const BRepGraph_NodeId theFaceDef) const
 {
   NCollection_Vector<BRepGraph_NodeId> aResult;
-  if (theFaceDef.NodeKind != BRepGraph_NodeId::Kind::Face || !theFaceDef.IsValid())
+  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  if (theFaceDef.NodeKind != BRepGraph_NodeId::Kind::Face
+      || !theFaceDef.IsValid(aStorage.NbFaces()))
     return aResult;
 
   const BRepGraph_FaceId             aFaceDefId(theFaceDef.Index);
-  const BRepGraph_TopoNode::FaceDef& aFaceDef = myGraph->myData->myIncStorage.Face(aFaceDefId);
+  const BRepGraph_TopoNode::FaceDef& aFaceDef = aStorage.Face(aFaceDefId);
   if (!aFaceDef.SurfaceRepId.IsValid())
     return aResult;
 
-  for (int aFaceIdx = 0; aFaceIdx < myGraph->myData->myIncStorage.NbFaces(); ++aFaceIdx)
+  for (int aFaceIdx = 0; aFaceIdx < aStorage.NbFaces(); ++aFaceIdx)
   {
-    const BRepGraph_TopoNode::FaceDef& aOtherFace =
-      myGraph->myData->myIncStorage.Face(BRepGraph_FaceId(aFaceIdx));
+    const BRepGraph_TopoNode::FaceDef& aOtherFace = aStorage.Face(BRepGraph_FaceId(aFaceIdx));
     if (aOtherFace.SurfaceRepId == aFaceDef.SurfaceRepId && aOtherFace.Id != theFaceDef)
       aResult.Append(aOtherFace.Id);
   }
@@ -46,10 +47,14 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::SameDomainFaces(
 NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::FacesOfEdge(
   const BRepGraph_NodeId theEdgeDef) const
 {
-  NCollection_Vector<BRepGraph_NodeId>        aResult;
+  NCollection_Vector<BRepGraph_NodeId> aResult;
+  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge
+      || !theEdgeDef.IsValid(aStorage.NbEdges()))
+    return aResult;
+
   const BRepGraph_EdgeId                      anEdgeDefId(theEdgeDef.Index);
-  const NCollection_Vector<BRepGraph_FaceId>* aFaces =
-    myGraph->myData->myIncStorage.ReverseIndex().FacesOfEdge(anEdgeDefId);
+  const NCollection_Vector<BRepGraph_FaceId>* aFaces = aStorage.ReverseIndex().FacesOfEdge(anEdgeDefId);
   if (aFaces != nullptr)
   {
     for (int aFIdx = 0; aFIdx < aFaces->Length(); ++aFIdx)
@@ -65,38 +70,43 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::SharedEdges(
   const BRepGraph_NodeId theFaceB) const
 {
   NCollection_Vector<BRepGraph_NodeId> aResult;
+  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  if (theFaceA.NodeKind != BRepGraph_NodeId::Kind::Face
+      || !theFaceA.IsValid(aStorage.NbFaces()) || theFaceB.NodeKind != BRepGraph_NodeId::Kind::Face
+      || !theFaceB.IsValid(aStorage.NbFaces()))
+    return aResult;
 
   const BRepGraph_FaceId             aFaceDefAId(theFaceA.Index);
-  const BRepGraph_TopoNode::FaceDef& aFaceDefA = myGraph->myData->myIncStorage.Face(aFaceDefAId);
+  const BRepGraph_TopoNode::FaceDef& aFaceDefA = aStorage.Face(aFaceDefAId);
 
   NCollection_PackedMap<int> aEdgesA;
   for (int aWIdx = 0; aWIdx < aFaceDefA.WireRefs.Length(); ++aWIdx)
   {
     const BRepGraph_WireId             aWireDefId = aFaceDefA.WireRefs.Value(aWIdx).WireDefId;
-    const BRepGraph_TopoNode::WireDef& aWireDef   = myGraph->myData->myIncStorage.Wire(aWireDefId);
+    const BRepGraph_TopoNode::WireDef& aWireDef   = aStorage.Wire(aWireDefId);
     for (int aCoEdgeIdx = 0; aCoEdgeIdx < aWireDef.CoEdgeRefs.Length(); ++aCoEdgeIdx)
     {
-      const BRepGraphInc::CoEdgeEntity& aCoEdge = myGraph->myData->myIncStorage.CoEdge(
-        BRepGraph_CoEdgeId(aWireDef.CoEdgeRefs.Value(aCoEdgeIdx).CoEdgeDefId));
+      const BRepGraphInc::CoEdgeEntity& aCoEdge =
+        aStorage.CoEdge(BRepGraph_CoEdgeId(aWireDef.CoEdgeRefs.Value(aCoEdgeIdx).CoEdgeDefId));
       aEdgesA.Add(aCoEdge.EdgeDefId.Index);
     }
   }
 
   const BRepGraph_FaceId             aFaceDefBId(theFaceB.Index);
-  const BRepGraph_TopoNode::FaceDef& aFaceDefB = myGraph->myData->myIncStorage.Face(aFaceDefBId);
+  const BRepGraph_TopoNode::FaceDef& aFaceDefB = aStorage.Face(aFaceDefBId);
 
   NCollection_PackedMap<int> aAdded;
   for (int aWIdx = 0; aWIdx < aFaceDefB.WireRefs.Length(); ++aWIdx)
   {
     const BRepGraph_WireId             aWireDefId = aFaceDefB.WireRefs.Value(aWIdx).WireDefId;
-    const BRepGraph_TopoNode::WireDef& aWireDef   = myGraph->myData->myIncStorage.Wire(aWireDefId);
+    const BRepGraph_TopoNode::WireDef& aWireDef   = aStorage.Wire(aWireDefId);
     for (int aCoEdgeIdx = 0; aCoEdgeIdx < aWireDef.CoEdgeRefs.Length(); ++aCoEdgeIdx)
     {
-      const BRepGraphInc::CoEdgeEntity& aCoEdge = myGraph->myData->myIncStorage.CoEdge(
-        BRepGraph_CoEdgeId(aWireDef.CoEdgeRefs.Value(aCoEdgeIdx).CoEdgeDefId));
+      const BRepGraphInc::CoEdgeEntity& aCoEdge =
+        aStorage.CoEdge(BRepGraph_CoEdgeId(aWireDef.CoEdgeRefs.Value(aCoEdgeIdx).CoEdgeDefId));
       const BRepGraph_EdgeId anEdgeDefId = aCoEdge.EdgeDefId;
       if (aEdgesA.Contains(anEdgeDefId.Index) && aAdded.Add(anEdgeDefId.Index))
-        aResult.Append(myGraph->myData->myIncStorage.Edge(anEdgeDefId).Id);
+        aResult.Append(aStorage.Edge(anEdgeDefId).Id);
     }
   }
 
@@ -110,19 +120,23 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::AdjacentFaces(
 {
   NCollection_Vector<BRepGraph_NodeId> aResult;
   NCollection_PackedMap<int>           aFaceSet;
+  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  if (theFaceDef.NodeKind != BRepGraph_NodeId::Kind::Face
+      || !theFaceDef.IsValid(aStorage.NbFaces()))
+    return aResult;
 
   const BRepGraph_FaceId             aFaceDefId(theFaceDef.Index);
-  const BRepGraph_TopoNode::FaceDef& aFaceDef = myGraph->myData->myIncStorage.Face(aFaceDefId);
+  const BRepGraph_TopoNode::FaceDef& aFaceDef = aStorage.Face(aFaceDefId);
 
-  const BRepGraphInc_ReverseIndex& aRevIdx = myGraph->myData->myIncStorage.ReverseIndex();
+  const BRepGraphInc_ReverseIndex& aRevIdx = aStorage.ReverseIndex();
   for (int aWireRefIdx = 0; aWireRefIdx < aFaceDef.WireRefs.Length(); ++aWireRefIdx)
   {
     const BRepGraph_WireId             aWireDefId = aFaceDef.WireRefs.Value(aWireRefIdx).WireDefId;
-    const BRepGraph_TopoNode::WireDef& aWireDef   = myGraph->myData->myIncStorage.Wire(aWireDefId);
+    const BRepGraph_TopoNode::WireDef& aWireDef   = aStorage.Wire(aWireDefId);
     for (int aCoEdgeIdx = 0; aCoEdgeIdx < aWireDef.CoEdgeRefs.Length(); ++aCoEdgeIdx)
     {
-      const BRepGraphInc::CoEdgeEntity& aCoEdge = myGraph->myData->myIncStorage.CoEdge(
-        BRepGraph_CoEdgeId(aWireDef.CoEdgeRefs.Value(aCoEdgeIdx).CoEdgeDefId));
+      const BRepGraphInc::CoEdgeEntity& aCoEdge =
+        aStorage.CoEdge(BRepGraph_CoEdgeId(aWireDef.CoEdgeRefs.Value(aCoEdgeIdx).CoEdgeDefId));
       const BRepGraph_EdgeId                      anEdgeDefId = aCoEdge.EdgeDefId;
       const NCollection_Vector<BRepGraph_FaceId>* aFaces      = aRevIdx.FacesOfEdge(anEdgeDefId);
       if (aFaces != nullptr)
@@ -146,11 +160,9 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::EdgesOfFace(
   const BRepGraph_NodeId theFaceDef) const
 {
   NCollection_Vector<BRepGraph_NodeId> aResult;
-  if (theFaceDef.NodeKind != BRepGraph_NodeId::Kind::Face || !theFaceDef.IsValid())
-    return aResult;
-
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
-  if (theFaceDef.Index < 0 || theFaceDef.Index >= aStorage.NbFaces())
+  if (theFaceDef.NodeKind != BRepGraph_NodeId::Kind::Face
+      || !theFaceDef.IsValid(aStorage.NbFaces()))
     return aResult;
 
   const BRepGraph_FaceId          aFaceDefId(theFaceDef.Index);
@@ -178,7 +190,9 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::EdgesOfVertex(
   const BRepGraph_NodeId theVertexDef) const
 {
   NCollection_Vector<BRepGraph_NodeId> aResult;
-  if (theVertexDef.NodeKind != BRepGraph_NodeId::Kind::Vertex || !theVertexDef.IsValid())
+  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  if (theVertexDef.NodeKind != BRepGraph_NodeId::Kind::Vertex
+      || !theVertexDef.IsValid(aStorage.NbVertices()))
     return aResult;
 
   const BRepGraph_VertexId                    aVertexDefId(theVertexDef.Index);
@@ -198,11 +212,9 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::VerticesOfEdge(
   const BRepGraph_NodeId theEdgeDef) const
 {
   NCollection_Vector<BRepGraph_NodeId> aResult;
-  if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge || !theEdgeDef.IsValid())
-    return aResult;
-
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
-  if (theEdgeDef.Index < 0 || theEdgeDef.Index >= aStorage.NbEdges())
+  if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge
+      || !theEdgeDef.IsValid(aStorage.NbEdges()))
     return aResult;
 
   const BRepGraph_EdgeId          aEdgeDefId(theEdgeDef.Index);
@@ -222,11 +234,9 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::AdjacentEdges(
   const BRepGraph_NodeId theEdgeDef) const
 {
   NCollection_Vector<BRepGraph_NodeId> aResult;
-  if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge || !theEdgeDef.IsValid())
-    return aResult;
-
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
-  if (theEdgeDef.Index < 0 || theEdgeDef.Index >= aStorage.NbEdges())
+  if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge
+      || !theEdgeDef.IsValid(aStorage.NbEdges()))
     return aResult;
 
   const BRepGraph_EdgeId           aEdgeDefId(theEdgeDef.Index);
@@ -262,10 +272,12 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::AdjacentEdges(
 
 int BRepGraph::SpatialView::FaceCountOfEdge(const BRepGraph_NodeId theEdgeDef) const
 {
-  if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge || !theEdgeDef.IsValid())
+  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge
+      || !theEdgeDef.IsValid(aStorage.NbEdges()))
     return 0;
   const BRepGraph_EdgeId aEdgeDefId(theEdgeDef.Index);
-  return myGraph->myData->myIncStorage.ReverseIndex().FaceCountOfEdge(aEdgeDefId);
+  return aStorage.ReverseIndex().FaceCountOfEdge(aEdgeDefId);
 }
 
 //=================================================================================================

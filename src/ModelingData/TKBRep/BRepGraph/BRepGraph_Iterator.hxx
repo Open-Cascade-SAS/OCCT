@@ -103,7 +103,7 @@ public:
 
   BRepGraph_Iterator(const BRepGraph& theGraph);
 
-  bool More() const { return myIndex < myLength; }
+  [[nodiscard]] bool More() const { return myIndex < myLength; }
 
   void Next()
   {
@@ -111,12 +111,12 @@ public:
     skipRemoved();
   }
 
-  const NodeType& Current() const;
+  [[nodiscard]] const NodeType& Current() const;
 
   //! Current definition index as a typed NodeId.
-  TypedId CurrentId() const { return TypedId(myIndex); }
+  [[nodiscard]] TypedId CurrentId() const { return TypedId(myIndex); }
 
-  int Index() const { return myIndex; }
+  [[nodiscard]] int Index() const { return myIndex; }
 
   //! Advance past any nodes marked as removed.
   void skipRemoved()

@@ -44,7 +44,7 @@ class BRepGraph_Layer : public Standard_Transient
 {
 public:
   //! Layer identity (unique within a graph).
-  virtual const TCollection_AsciiString& Name() const = 0;
+  [[nodiscard]] virtual const TCollection_AsciiString& Name() const = 0;
 
   //! Called when a node is soft-removed.
   //! @param[in] theNode        the removed node
@@ -76,7 +76,7 @@ public:
   //! Default: 0 (no subscription - no modification events received).
   //! Override to receive OnNodeModified/OnNodesModified callbacks.
   //! The returned value must be constant for the lifetime of the layer.
-  Standard_EXPORT virtual int SubscribedKinds() const;
+  [[nodiscard]] Standard_EXPORT virtual int SubscribedKinds() const;
 
   //! Called in immediate (non-deferred) mode after a single node is modified.
   //! Only dispatched if the node's kind matches SubscribedKinds().

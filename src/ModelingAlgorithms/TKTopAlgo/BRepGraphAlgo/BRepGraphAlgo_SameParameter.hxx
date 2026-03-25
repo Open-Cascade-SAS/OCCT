@@ -50,17 +50,15 @@ public:
                                       BRepGraph_NodeId theEdgeId,
                                       double           theTolerance);
 
-  //! Enforce SameParameter on a set of edges, optionally in parallel.
-  //! Each edge is independent - safe for parallel execution.
+  //! Enforce SameParameter on a set of edges.
+  //! Each edge is independent; mutations are batched under a single MutationGuard.
   //! @param[in,out] theGraph     the graph containing the edges
   //! @param[in]     theEdgeIds   edge definition identifiers to process
   //! @param[in]     theTolerance reference tolerance
-  //! @param[in]     theParallel  enable parallel execution
   //! @return diagnostic counters
   static Standard_EXPORT Result Perform(BRepGraph&                                      theGraph,
                                         const NCollection_IndexedMap<BRepGraph_EdgeId>& theEdgeIds,
-                                        const double theTolerance,
-                                        const bool   theParallel);
+                                        const double theTolerance);
 
 private:
   BRepGraphAlgo_SameParameter() = delete;

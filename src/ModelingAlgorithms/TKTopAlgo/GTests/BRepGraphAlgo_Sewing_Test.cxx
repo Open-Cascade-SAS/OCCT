@@ -1860,44 +1860,32 @@ TEST(BRepGraphAlgo_SameParameterTest, Enforce_CylinderEdge_ToleranceReasonable)
   }
 }
 
-TEST(BRepGraphAlgo_SameParameterTest, Perform_BatchParallel_MatchesSequential)
+TEST(BRepGraphAlgo_SameParameterTest, Perform_BatchSetsFlags)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
-  // Sequential run.
-  BRepGraph aSeqGraph;
-  aSeqGraph.Build(aBox);
-  ASSERT_TRUE(aSeqGraph.IsDone());
-  for (int anEdgeIdx = 0; anEdgeIdx < aSeqGraph.Defs().NbEdges(); ++anEdgeIdx)
-    aSeqGraph.MutEdge(BRepGraph_EdgeId(anEdgeIdx))->SameParameter = false;
+  BRepGraph aGraph;
+  aGraph.Build(aBox);
+  ASSERT_TRUE(aGraph.IsDone());
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
+    aGraph.MutEdge(BRepGraph_EdgeId(anEdgeIdx))->SameParameter = false;
 
   NCollection_IndexedMap<BRepGraph_EdgeId> anEdgeIndices;
-  for (int anEdgeIdx = 0; anEdgeIdx < aSeqGraph.Defs().NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
     anEdgeIndices.Add(BRepGraph_EdgeId(anEdgeIdx));
 
-  BRepGraphAlgo_SameParameter::Perform(aSeqGraph, anEdgeIndices, 1.0e-04, false);
+  const double aTolerance    = 1.0e-04;
+  const double aMaxTolerance = 1.0; // Sanity upper bound for a 10x20x30 box.
+  BRepGraphAlgo_SameParameter::Perform(aGraph, anEdgeIndices, aTolerance);
 
-  // Parallel run.
-  BRepGraph aParGraph;
-  aParGraph.Build(aBox);
-  ASSERT_TRUE(aParGraph.IsDone());
-  for (int anEdgeIdx = 0; anEdgeIdx < aParGraph.Defs().NbEdges(); ++anEdgeIdx)
-    aParGraph.MutEdge(BRepGraph_EdgeId(anEdgeIdx))->SameParameter = false;
-
-  BRepGraphAlgo_SameParameter::Perform(aParGraph, anEdgeIndices, 1.0e-04, true);
-
-  // Both should set SameParameter and produce similar tolerances.
-  for (int anEdgeIdx = 0; anEdgeIdx < aSeqGraph.Defs().NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
     const BRepGraph_EdgeId anEdgeId(anEdgeIdx);
-    EXPECT_EQ(BRepGraph_Tool::Edge::SameParameter(aSeqGraph, anEdgeId),
-              BRepGraph_Tool::Edge::SameParameter(aParGraph, anEdgeId))
-      << "Edge " << anEdgeIdx << " SameParameter mismatch";
-    EXPECT_NEAR(BRepGraph_Tool::Edge::Tolerance(aSeqGraph, anEdgeId),
-                BRepGraph_Tool::Edge::Tolerance(aParGraph, anEdgeId),
-                1.0e-10)
-      << "Edge " << anEdgeIdx << " tolerance mismatch";
+    EXPECT_TRUE(BRepGraph_Tool::Edge::SameParameter(aGraph, anEdgeId))
+      << "Edge " << anEdgeIdx << " SameParameter not set";
+    EXPECT_LT(BRepGraph_Tool::Edge::Tolerance(aGraph, anEdgeId), aMaxTolerance)
+      << "Edge " << anEdgeIdx << " tolerance is unreasonably large";
   }
 }
 

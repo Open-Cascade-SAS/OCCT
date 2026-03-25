@@ -35,7 +35,6 @@
 #include <GeomAdaptor_TransformedSurface.hxx>
 #include <GeomLib.hxx>
 #include <NCollection_Array1.hxx>
-#include <OSD_Parallel.hxx>
 #include <Precision.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
@@ -43,7 +42,6 @@
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 
-#include <atomic>
 #include <cmath>
 
 namespace
@@ -729,8 +727,7 @@ bool BRepGraphAlgo_SameParameter::Enforce(BRepGraph&       theGraph,
 BRepGraphAlgo_SameParameter::Result BRepGraphAlgo_SameParameter::Perform(
   BRepGraph&                                      theGraph,
   const NCollection_IndexedMap<BRepGraph_EdgeId>& theEdgeIds,
-  const double                                    theTolerance,
-  const bool                                      theParallel)
+  const double                                    theTolerance)
 {
   Result    aResult;
   const int aNbEdges = theEdgeIds.Extent();
@@ -739,35 +736,30 @@ BRepGraphAlgo_SameParameter::Result BRepGraphAlgo_SameParameter::Perform(
     return aResult;
   }
 
-  // Copy edge ids to array for indexed parallel access.
+  // Copy edge ids to array for indexed access.
   NCollection_Array1<BRepGraph_EdgeId> anEdgeIdArr(0, aNbEdges - 1);
   for (int anIdx = 1; anIdx <= aNbEdges; ++anIdx)
   {
     anEdgeIdArr.SetValue(anIdx - 1, theEdgeIds.FindKey(anIdx));
   }
 
-  std::atomic<int> aNbC0(0);
-  std::atomic<int> aNbApprox(0);
+  int aNbC0     = 0;
+  int aNbApprox = 0;
 
   {
     BRepGraph_MutationGuard aGuard(theGraph);
-    OSD_Parallel::For(
-      0,
-      aNbEdges,
-      [&](int theIdx) {
-        const BRepGraph_EdgeId anEdgeId = anEdgeIdArr.Value(theIdx);
-        const BRepGraph_NodeId aNodeId  = static_cast<BRepGraph_NodeId>(anEdgeId);
-        EnforceFlags           aFlags;
-        enforceImpl(theGraph, aNodeId, theTolerance, aFlags);
-        if (aFlags.NbC0Fallbacks > 0)
-          aNbC0.fetch_add(aFlags.NbC0Fallbacks, std::memory_order_relaxed);
-        if (aFlags.NbApproxFallbacks > 0)
-          aNbApprox.fetch_add(aFlags.NbApproxFallbacks, std::memory_order_relaxed);
-      },
-      !theParallel);
+    for (int anEdgeIdx = 0; anEdgeIdx < aNbEdges; ++anEdgeIdx)
+    {
+      const BRepGraph_EdgeId anEdgeId = anEdgeIdArr.Value(anEdgeIdx);
+      const BRepGraph_NodeId aNodeId  = static_cast<BRepGraph_NodeId>(anEdgeId);
+      EnforceFlags           aFlags;
+      enforceImpl(theGraph, aNodeId, theTolerance, aFlags);
+      aNbC0 += aFlags.NbC0Fallbacks;
+      aNbApprox += aFlags.NbApproxFallbacks;
+    }
   }
 
-  aResult.NbC0Fallbacks     = aNbC0.load();
-  aResult.NbApproxFallbacks = aNbApprox.load();
+  aResult.NbC0Fallbacks     = aNbC0;
+  aResult.NbApproxFallbacks = aNbApprox;
   return aResult;
 }
