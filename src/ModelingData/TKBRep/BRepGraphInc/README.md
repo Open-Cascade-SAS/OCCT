@@ -59,7 +59,7 @@ flowchart LR
 
   F -->|WireRef| W
   W -->|CoEdgeRef| CE
-  CE -->|EdgeIdx| E
+  CE -->|EdgeDefId| E
   E -->|Start/End VertexRef| V
   SH -->|FaceRef| F
   SO -->|ShellRef| SH
@@ -70,8 +70,8 @@ flowchart LR
 
   PR -->|OccurrenceRef| OC
   PR -->|ShapeRootId| SO
-  OC -->|ProductIdx| PR
-  OC -.->|ParentOccurrenceIdx| OC
+  OC -->|ProductDefId| PR
+  OC -.->|ParentOccurrenceDefId| OC
 ```
 
 Notes:
@@ -79,7 +79,7 @@ Notes:
 - Intrinsic data lives on entities; occurrence context (orientation/location) lives on refs
 - CoEdge owns PCurve data for each edge-face binding (Weiler half-edge pattern)
 - ProductEntity: `ShapeRootId` (topology root for parts; invalid for assemblies), `OccurrenceRefs`
-- OccurrenceEntity: `ProductIdx`, `ParentProductIdx`, `ParentOccurrenceIdx` (tree-structured placement chain), `Placement`
+- OccurrenceEntity: `ProductDefId`, `ParentProductDefId`, `ParentOccurrenceDefId` (tree-structured placement chain), `Placement`
 
 ## Entity Hierarchy
 
@@ -92,13 +92,13 @@ graph TD
     Solid["SolidEntity<br/><i>ShellRefs[], FreeChildRefs[]</i>"]
     Shell["ShellEntity<br/><i>IsClosed, FaceRefs[], FreeChildRefs[]</i>"]
 
-    Face["FaceEntity<br/><i>SurfaceRepIdx, TriangulationRepIdxs,<br/>WireRefs[], VertexRefs[], Tolerance</i>"]
+    Face["FaceEntity<br/><i>SurfaceRepId, TriangulationRepIds,<br/>ActiveTriangulationIndex, WireRefs[],<br/>VertexRefs[], Tolerance, NaturalRestriction</i>"]
 
     Wire["WireEntity<br/><i>CoEdgeRefs[], IsClosed</i>"]
 
-    CoEdge["CoEdgeEntity<br/><i>EdgeIdx, FaceDefId, Sense,<br/>Curve2DRepIdx, Polygon2DRepIdx,<br/>ParamFirst/Last, UV1/UV2,<br/>SeamPairIdx, SeamContinuity</i>"]
+    CoEdge["CoEdgeEntity<br/><i>EdgeDefId, FaceDefId, Sense,<br/>Curve2DRepId, Polygon2DRepId,<br/>ParamFirst/Last, UV1/UV2,<br/>SeamPairId, SeamContinuity</i>"]
 
-    Edge["EdgeEntity<br/><i>Curve3DRepIdx, Polygon3DRepIdx,<br/>StartVertex, EndVertex,<br/>InternalVertices[],<br/>ParamFirst/Last, Tolerance,<br/>SameParameter, SameRange,<br/>IsDegenerate, IsClosed,<br/>Regularities[]</i>"]
+    Edge["EdgeEntity<br/><i>Curve3DRepId, Polygon3DRepId,<br/>StartVertex, EndVertex,<br/>InternalVertices[],<br/>ParamFirst/Last, Tolerance,<br/>SameParameter, SameRange,<br/>IsDegenerate, IsClosed,<br/>Regularities[]</i>"]
 
     Vertex["VertexEntity<br/><i>Point (def frame), Tolerance,<br/>PointsOnCurve[],<br/>PointsOnPCurve[],<br/>PointsOnSurface[]</i>"]
 
@@ -118,11 +118,11 @@ graph TD
     CoEdge -->|"EdgeIdx"| Edge
     Edge -->|"VertexRef"| Vertex
 
-    Face -.->|"SurfaceRepIdx"| SurfRep
-    Face -.->|"TriangulationRepIdxs"| TriRep
-    Edge -.->|"Curve3DRepIdx"| C3DRep
-    CoEdge -.->|"Curve2DRepIdx"| C2DRep
-    CoEdge -.->|"SeamPairIdx"| CoEdge
+    Face -.->|"SurfaceRepId"| SurfRep
+    Face -.->|"TriangulationRepIds"| TriRep
+    Edge -.->|"Curve3DRepId"| C3DRep
+    CoEdge -.->|"Curve2DRepId"| C2DRep
+    CoEdge -.->|"SeamPairId"| CoEdge
 ```
 
 ## Build Pipeline
@@ -236,10 +236,18 @@ anEdge.Location(Identity);                     // Reset after attachment
 | edge → wires | Wire membership |
 | edge → faces | Face adjacency (from CoEdge.FaceDefId) |
 | edge → coedges | CoEdge lookup by parent edge |
+| edge face count | Cached O(1) face count per edge |
 | vertex → edges | Vertex incidence |
+| coedge → wires | CoEdge-to-wire membership |
 | wire → faces | Wire-to-face membership |
 | face → shells | Face-to-shell membership |
 | shell → solids | Shell-to-solid membership |
+| solid → compounds | Compound parents of a solid |
+| solid → compsolids | CompSolid parents of a solid |
+| shell → compounds | Compound parents of a shell |
+| face → compounds | Compound parents of a face |
+| compound → compounds | Compound parents of a compound |
+| compsolid → compounds | Compound parents of a compsolid |
 | product → occurrences | Assembly references |
 
 ## Core Invariants
@@ -249,9 +257,16 @@ anEdge.Location(Identity);                     // Reset after attachment
 3. **Reverse-index**: required reverse rows must exist for forward refs used by query paths
 4. **Removal**: IsRemoved entities must be filtered from normal traversals
 5. **Mutation boundary**: entities, reverse indices, cache invalidation, and history are coherent after each operation
-6. **Assembly**: every Build produces at least one root Product; occurrence cross-references valid; self-referencing rejected; ParentOccurrenceIdx forms a tree
+6. **Assembly**: every Build produces at least one root Product; occurrence cross-references valid; self-referencing rejected; ParentOccurrenceDefId forms a tree
 
 ## Memory and Performance
+
+### Typed-Id API and EntityStore
+
+All public Storage accessors use strongly-typed ids (`BRepGraph_VertexId`, `BRepGraph_EdgeId`, `BRepGraph_FaceId`, etc.) instead of raw `int` for compile-time safety. Internally, Storage uses two template patterns:
+
+- **`EntityStore<T>`**: groups entity vector + per-kind UID vector + active count. Provides `Get()`, `Change()`, `Append()`, `DecrementActive()`.
+- **`RepStore<T>`**: groups representation vector + active count. Same accessor pattern, no UID vector.
 
 ### Allocator Propagation
 

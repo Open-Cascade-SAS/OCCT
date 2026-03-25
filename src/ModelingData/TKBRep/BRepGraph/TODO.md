@@ -85,6 +85,19 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 - Compact already exits early when nothing removed
 - Revisit if iterative Build→Append→Dedup pipelines become common
 
+### ~~BRepGraph_Tool (Centralized Geometry Access)~~ — DONE (2026-03-22)
+- `BRepGraph_Tool` with nested helpers: Vertex, Edge, CoEdge, Face, Wire
+- Analogue of `BRep_Tool` for BRepGraph: Pnt, Tolerance, Curve, Surface, PCurveGeometry, Range, EvalD0, etc.
+- Replaces raw DefsView geometry access; DefsView made private for geometry fields
+- ~50 files migrated (16 production + 32 test + 5 internal)
+
+### ~~Explorer / TopologyPath / PathView~~ — DONE (2026-03-25)
+- `BRepGraph_TopologyPath`: path from root to occurrence, uniform step model (assembly + topology)
+- `BRepGraph_Explorer`: context-preserving hierarchy walker visiting each occurrence (not just definitions)
+- `PathView` via `Paths()`: GlobalLocation, GlobalOrientation, PathsTo, NodeLocations, CommonAncestor, FilterByInclude/Exclude, IsAncestorOf, AllNodesOnPath
+- `BRepGraph_SubGraph`: non-owning view over connected component for parallel processing
+- `BRepGraph_PCurveContext`: composite key (Edge, Face, Orientation) for PCurve identification
+
 ### O(1) UID reverse lookup [Perf] ★★★
 - `UIDsView::NodeIdFrom` / `Has` currently do linear scan over per-kind UID vector
 - Add lazy `NCollection_DataMap<uint64_t, int>` per kind (counter → index), built on first access

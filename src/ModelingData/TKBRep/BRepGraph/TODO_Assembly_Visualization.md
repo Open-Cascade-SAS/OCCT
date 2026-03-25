@@ -23,9 +23,9 @@ graph TD
     P0 -->|OccurrenceRef| O1
     P0 -->|OccurrenceRef| O2
 
-    O0 -->|ProductIdx| P1
-    O1 -->|ProductIdx| P1
-    O2 -->|ProductIdx| P2
+    O0 -->|ProductDefId| P1
+    O1 -->|ProductDefId| P1
+    O2 -->|ProductDefId| P2
 
     S0["Solid(0)<br/>Bolt geometry"]
     S1["Solid(1)<br/>Plate geometry"]
@@ -68,15 +68,15 @@ graph TD
     Car -->|OccurrenceRef| OccWheel1
     Car -->|OccurrenceRef| OccWheel2
 
-    OccChassis -->|ProductIdx| Chassis
-    OccWheel1 -->|ProductIdx| Wheel
-    OccWheel2 -->|ProductIdx| Wheel
+    OccChassis -->|ProductDefId| Chassis
+    OccWheel1 -->|ProductDefId| Wheel
+    OccWheel2 -->|ProductDefId| Wheel
 
     Chassis -->|OccurrenceRef| OccAxle1
     Chassis -->|OccurrenceRef| OccAxle2
 
-    OccAxle1 -->|ProductIdx| Axle
-    OccAxle2 -->|ProductIdx| Axle
+    OccAxle1 -->|ProductDefId| Axle
+    OccAxle2 -->|ProductDefId| Axle
 
     style Car fill:#4a9eff,color:#fff
     style Chassis fill:#4a9eff,color:#fff
@@ -199,13 +199,14 @@ classDiagram
     }
 
     class OccurrenceEntity {
-        +int ProductIdx
-        +int ParentProductIdx
+        +BRepGraph_ProductId ProductDefId
+        +BRepGraph_ProductId ParentProductDefId
+        +BRepGraph_OccurrenceId ParentOccurrenceDefId
         +TopLoc_Location Placement
     }
 
     class OccurrenceRef {
-        +int OccurrenceIdx
+        +BRepGraph_OccurrenceId OccurrenceDefId
     }
 
     BaseEntity <|-- ProductEntity
@@ -265,7 +266,7 @@ flowchart LR
     style O2b fill:#2ecc71,color:#fff
 ```
 
-Cross-references (`ProductIdx`, `ParentProductIdx`, `ShapeRootId`, `OccurrenceRefs`)
+Cross-references (`ProductDefId`, `ParentProductDefId`, `ShapeRootId`, `OccurrenceRefs`)
 are remapped using `theRemapMap.Find()`.  Missing entries trigger an assertion.
 
 ---
@@ -359,9 +360,9 @@ flowchart TD
     Axle["Product: Axle (part)"]
 
     Root -->|OccurrenceRef| Occ1
-    Occ1 -->|ProductIdx| Chassis
+    Occ1 -->|ProductDefId| Chassis
     Chassis -->|OccurrenceRef| Occ2
-    Occ2 -->|ProductIdx| Axle
+    Occ2 -->|ProductDefId| Axle
 
     GlobalLoc["GlobalPlacement(Occ2) =<br/>T_chassis * T_front_axle"]
 
@@ -375,5 +376,5 @@ flowchart TD
     style GlobalLoc fill:#fff,stroke:#e74c3c,stroke-width:2px
 ```
 
-`SpatialView::GlobalPlacement(occIdx)` walks `ParentProductIdx` chain upward,
+`SpatialView::GlobalPlacement(occId)` walks `ParentOccurrenceDefId` chain upward,
 composing `TopLoc_Location` values from root to leaf.

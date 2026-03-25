@@ -24,7 +24,7 @@ The runtime model is incidence-first:
 - Orientation/location context is stored on incidence refs
 - No separate runtime Usage storage layer
 
-See backend details in `src/ModelingData/TKBRep/BRepGraphInc/README.md`.
+See backend details in `src/ModelingData/TKBRep/BRepGraphInc/ReadMe.md`.
 
 ## Architecture
 
@@ -33,9 +33,9 @@ flowchart TB
   A[Algorithms] --> G[BRepGraph facade]
 
   subgraph Views
-    V1[Defs / UIDs / RelEdges]
-    V2[Shapes / Spatial / Cache / Attrs]
-    V3[Mut / Builder / Analyze]
+    V1[Defs / UIDs / Shapes]
+    V2[Spatial / Attrs / Builder]
+    V3[Analyze / Paths]
   end
 
   G --> Views
@@ -51,6 +51,21 @@ flowchart TB
   S --> O[Original shapes]
   S --> U[UID vectors]
 ```
+
+## Views Reference
+
+All queries and mutations go through lightweight view objects obtained from a `BRepGraph` instance.
+
+| View | Accessor | Purpose |
+|------|----------|---------|
+| **DefsView** | `Defs()` | Const topology/assembly definition access, entity counts, RootProducts |
+| **UIDsView** | `UIDs()` | UID allocation, lookup, validity checking |
+| **ShapesView** | `Shapes()` | TopoDS reconstruction, FindNode/HasNode reverse lookup |
+| **SpatialView** | `Spatial()` | Adjacency queries (SharedEdges, AdjacentFaces, SameDomainFaces), GlobalPlacement |
+| **AttrsView** | `Attrs()` | Layer registration, lookup, unregistration |
+| **BuilderView** | `Builder()` | Mutations: AddProduct, AddOccurrence, RemoveNode, RemoveSubgraph |
+| **AnalyzeView** | `Analyze()` | Diagnostics: FreeEdges, MissingPCurves, ToleranceConflicts, Decompose |
+| **PathView** | `Paths()` | Path-based traversal: GlobalLocation, GlobalOrientation, PathsTo, NodeLocations, CommonAncestor |
 
 ## Main Data Concepts
 
@@ -120,18 +135,18 @@ flowchart LR
 
   RP -->|OccurrenceRef| O1
   RP -->|OccurrenceRef| O2
-  O1 -->|ProductIdx| P1
-  O2 -->|ProductIdx| P2
+  O1 -->|ProductDefId| P1
+  O2 -->|ProductDefId| P2
   P2 -->|OccurrenceRef| O3
-  O3 -->|ProductIdx| P1
+  O3 -->|ProductDefId| P1
 ```
 
 - **ProductEntity**: `ShapeRootId` (topology root for parts; invalid for assemblies), `RootOrientation`, `RootLocation`, `OccurrenceRefs` (child occurrences)
-- **OccurrenceEntity**: `ProductIdx` (referenced product), `ParentProductIdx` (parent assembly), `ParentOccurrenceIdx` (parent occurrence for tree-structured placement chains), `Placement` (TopLoc_Location)
+- **OccurrenceEntity**: `ProductDefId` (referenced product), `ParentProductDefId` (parent assembly), `ParentOccurrenceDefId` (parent occurrence for tree-structured placement chains), `Placement` (TopLoc_Location)
 
 ### Placement Composition
 
-`SpatialView::GlobalPlacement(occIdx)` walks `ParentOccurrenceIdx` from leaf to root, composing `Placement` transforms. DAG-safe: shared products placed at multiple locations have distinct occurrence paths.
+`SpatialView::GlobalPlacement(occId)` walks `ParentOccurrenceDefId` from leaf to root, composing `Placement` transforms. DAG-safe: shared products placed at multiple locations have distinct occurrence paths.
 
 ### API Distribution
 
@@ -146,6 +161,57 @@ flowchart LR
 ### Single-Shape Graph
 
 `Build(aBox)` creates one Product with `ShapeRootId = Solid(0)`, zero occurrences. Algorithms always see a uniform model.
+
+## Traversal
+
+BRepGraph provides a context-preserving traversal system for walking the hierarchy from any root down to entities of a target kind, producing full occurrence paths with composed locations and orientations.
+
+### TopologyPath
+
+`BRepGraph_TopologyPath` uniquely identifies one occurrence of an entity by encoding the root and a sequence of ref-index steps through the incidence hierarchy. The step model is uniform: assembly occurrences, compound containers, and topology entities are all just steps.
+
+### Explorer
+
+`BRepGraph_Explorer` visits each **occurrence** of an entity kind (not definitions). If Edge[5] is reachable through Face[0] and Face[1], it is visited twice with different paths:
+
+```cpp
+for (BRepGraph_Explorer anExp(aGraph, BRepGraph_NodeId::Solid(0),
+                               BRepGraph_NodeId::Kind::Edge);
+     anExp.More(); anExp.Next())
+{
+  BRepGraph_NodeId anEdge = anExp.Current();
+  TopLoc_Location  aLoc   = anExp.Location();
+}
+```
+
+Can also start from a Product to descend through assembly occurrences into topology.
+
+### PathView
+
+`PathView` (via `Paths()`) resolves topology paths:
+
+- `GlobalLocation(path)` / `GlobalOrientation(path)` — composed transforms
+- `PathsTo(node)` — all paths from any root to a given entity (reverse lookup)
+- `NodeLocations(node)` — all occurrence entries with paths, locations, orientations
+- `CommonAncestor(path1, path2)` — longest common prefix
+- `FilterByInclude` / `FilterByExclude` — path set filtering
+- `IsAncestorOf`, `AllNodesOnPath`, `DepthOfKind`
+
+### SubGraph
+
+`BRepGraph_SubGraph` is a non-owning view over a connected component, produced by `Analyze().Decompose()`. Stores per-kind typed definition id sets for parallel processing.
+
+## Geometry Access (BRepGraph_Tool)
+
+`BRepGraph_Tool` is the centralized geometry access API for BRepGraph, analogous to `BRep_Tool` for TopoDS. Nested helper classes provide typed, safe access:
+
+| Helper | Key Methods |
+|--------|-------------|
+| **Vertex** | `Pnt`, `Tolerance`, `Parameter` (on edge), `Parameters` (on surface) |
+| **Edge** | `Tolerance`, `Degenerated`, `SameParameter`, `SameRange`, `Range`, `StartVertex`, `EndVertex`, `Curve`, `Polygon`, `Continuity` |
+| **CoEdge** | `PCurveGeometry`, `PCurvePolygon`, `PCurveIsHandle` |
+| **Face** | `Surface`, `Tolerance`, `NaturalRestriction`, `Wires`, `BndLib`, `UVBounds`, `CurveOnPlane`, `EvalD0` |
+| **Wire** | `Edges` (traversal order via WireExplorer) |
 
 ## Extensibility: Layers vs UserAttributes
 
@@ -219,6 +285,22 @@ Benefits: O(1) allocation (bump-pointer), O(1) destruction (bulk page release). 
 2. Keep reverse index updates consistent with forward ref changes.
 3. Prefer incremental updates in mutators over full rebuilds.
 4. Use profiling before adding micro-optimizations.
+
+## File Map
+
+| Category | Files |
+|----------|-------|
+| **Core** | `BRepGraph.hxx/.cxx`, `BRepGraph_Data.hxx`, `BRepGraph_NodeId.hxx`, `BRepGraph_UID.hxx`, `BRepGraph_RepId.hxx`, `BRepGraph_TopoNode.hxx` |
+| **Views** | `BRepGraph_DefsView.hxx/.cxx`, `BRepGraph_UIDsView.hxx/.cxx`, `BRepGraph_ShapesView.hxx/.cxx`, `BRepGraph_SpatialView.hxx/.cxx`, `BRepGraph_AttrsView.hxx/.cxx`, `BRepGraph_BuilderView.hxx/.cxx`, `BRepGraph_AnalyzeView.hxx`, `BRepGraph_PathView.hxx/.cxx` |
+| **Traversal** | `BRepGraph_Explorer.hxx/.cxx`, `BRepGraph_TopologyPath.hxx`, `BRepGraph_SubGraph.hxx`, `BRepGraph_PCurveContext.hxx` |
+| **Geometry** | `BRepGraph_Tool.hxx/.cxx` |
+| **Mutation** | `BRepGraph_Mutator.hxx/.cxx`, `BRepGraph_MutRef.hxx`, `BRepGraph_MutationGuard.hxx` |
+| **Layers** | `BRepGraph_Layer.hxx/.cxx`, `BRepGraph_NameLayer.hxx/.cxx`, `BRepGraph_AttrRegistry.hxx` |
+| **Attributes** | `BRepGraph_UserAttribute.hxx`, `BRepGraph_TypedAttribute.hxx`, `BRepGraph_NodeCache.hxx` |
+| **Analysis** | `BRepGraph_Analyze.hxx/.cxx` |
+| **History** | `BRepGraph_History.hxx/.cxx`, `BRepGraph_HistoryRecord.hxx` |
+| **Iteration** | `BRepGraph_Iterator.hxx` |
+| **Build** | `BRepGraph_Builder.hxx/.cxx` |
 
 ## Documentation Map
 
