@@ -14,6 +14,7 @@
 #ifndef _BRepGraph_NodeId_HeaderFile
 #define _BRepGraph_NodeId_HeaderFile
 
+#include <Standard_Assert.hxx>
 #include <Standard_HashUtils.hxx>
 
 #include <cstddef>
@@ -49,6 +50,69 @@ struct BRepGraph_NodeId
     Occurrence = 11  //!< Placed instance of a product within a parent product
   };
 
+  //! @brief Compile-time typed wrapper around BRepGraph_NodeId.
+  //!
+  //! Provides compile-time kind safety: a Typed<Kind::Face>
+  //! cannot be accidentally used where a Typed<Kind::Edge> is expected.
+  //! Implicitly converts to BRepGraph_NodeId for backward compatibility.
+  //!
+  //! @tparam TheKind the BRepGraph_NodeId::Kind this typed id represents
+  template <Kind TheKind>
+  struct Typed
+  {
+    int Index;
+
+    //! Default: invalid (Index = -1).
+    Typed()
+        : Index(-1)
+    {
+    }
+
+    //! Construct from index.
+    explicit Typed(const int theIdx)
+        : Index(theIdx)
+    {
+    }
+
+    //! True if this id points to an allocated node slot.
+    bool IsValid() const { return Index >= 0; }
+
+    //! Implicit conversion to untyped NodeId.
+    operator BRepGraph_NodeId() const { return BRepGraph_NodeId(TheKind, Index); }
+
+    //! Explicit conversion from untyped NodeId.
+    //! Asserts that the Kind matches in debug builds.
+    //! @param[in] theId untyped NodeId to convert
+    static Typed FromNodeId(const BRepGraph_NodeId theId)
+    {
+      Standard_ASSERT_VOID(theId.NodeKind == TheKind, "NodeId kind mismatch");
+      return Typed(theId.Index);
+    }
+
+    bool operator==(const Typed& theOther) const { return Index == theOther.Index; }
+
+    bool operator!=(const Typed& theOther) const { return Index != theOther.Index; }
+
+    //! Comparison with untyped NodeId (checks both Kind and Index).
+    bool operator==(const BRepGraph_NodeId& theOther) const
+    {
+      return theOther.NodeKind == TheKind && theOther.Index == Index;
+    }
+
+    bool operator!=(const BRepGraph_NodeId& theOther) const { return !(*this == theOther); }
+
+    //! Allow reversed comparison: NodeId == Typed.
+    friend bool operator==(const BRepGraph_NodeId& theLhs, const Typed& theRhs)
+    {
+      return theRhs == theLhs;
+    }
+
+    friend bool operator!=(const BRepGraph_NodeId& theLhs, const Typed& theRhs)
+    {
+      return theRhs != theLhs;
+    }
+  };
+
   //! True if the kind is a core topology kind (Solid..CoEdge).
   static bool IsTopologyKind(const Kind theKind) { return static_cast<int>(theKind) <= 8; }
 
@@ -78,28 +142,34 @@ struct BRepGraph_NodeId
   //! True if this id points to an allocated node slot.
   bool IsValid() const { return Index >= 0; }
 
-  //! @name Static factory methods for readable NodeId construction.
-  static BRepGraph_NodeId Solid(const int theIdx) { return {Kind::Solid, theIdx}; }
+  //! @name Static factory methods returning typed NodeIds.
+  static Typed<Kind::Solid> Solid(const int theIdx) { return Typed<Kind::Solid>(theIdx); }
 
-  static BRepGraph_NodeId Shell(const int theIdx) { return {Kind::Shell, theIdx}; }
+  static Typed<Kind::Shell> Shell(const int theIdx) { return Typed<Kind::Shell>(theIdx); }
 
-  static BRepGraph_NodeId Face(const int theIdx) { return {Kind::Face, theIdx}; }
+  static Typed<Kind::Face> Face(const int theIdx) { return Typed<Kind::Face>(theIdx); }
 
-  static BRepGraph_NodeId Wire(const int theIdx) { return {Kind::Wire, theIdx}; }
+  static Typed<Kind::Wire> Wire(const int theIdx) { return Typed<Kind::Wire>(theIdx); }
 
-  static BRepGraph_NodeId Edge(const int theIdx) { return {Kind::Edge, theIdx}; }
+  static Typed<Kind::Edge> Edge(const int theIdx) { return Typed<Kind::Edge>(theIdx); }
 
-  static BRepGraph_NodeId Vertex(const int theIdx) { return {Kind::Vertex, theIdx}; }
+  static Typed<Kind::Vertex> Vertex(const int theIdx) { return Typed<Kind::Vertex>(theIdx); }
 
-  static BRepGraph_NodeId Compound(const int theIdx) { return {Kind::Compound, theIdx}; }
+  static Typed<Kind::Compound> Compound(const int theIdx) { return Typed<Kind::Compound>(theIdx); }
 
-  static BRepGraph_NodeId CompSolid(const int theIdx) { return {Kind::CompSolid, theIdx}; }
+  static Typed<Kind::CompSolid> CompSolid(const int theIdx)
+  {
+    return Typed<Kind::CompSolid>(theIdx);
+  }
 
-  static BRepGraph_NodeId CoEdge(const int theIdx) { return {Kind::CoEdge, theIdx}; }
+  static Typed<Kind::CoEdge> CoEdge(const int theIdx) { return Typed<Kind::CoEdge>(theIdx); }
 
-  static BRepGraph_NodeId Product(const int theIdx) { return {Kind::Product, theIdx}; }
+  static Typed<Kind::Product> Product(const int theIdx) { return Typed<Kind::Product>(theIdx); }
 
-  static BRepGraph_NodeId Occurrence(const int theIdx) { return {Kind::Occurrence, theIdx}; }
+  static Typed<Kind::Occurrence> Occurrence(const int theIdx)
+  {
+    return Typed<Kind::Occurrence>(theIdx);
+  }
 
   bool operator==(const BRepGraph_NodeId& theOther) const
   {
@@ -109,7 +179,20 @@ struct BRepGraph_NodeId
   bool operator!=(const BRepGraph_NodeId& theOther) const { return !(*this == theOther); }
 };
 
-//! std::hash specialization for NCollection_DefaultHasher support.
+//! @name Convenience type aliases for typed NodeIds.
+using BRepGraph_SolidId      = BRepGraph_NodeId::Typed<BRepGraph_NodeId::Kind::Solid>;
+using BRepGraph_ShellId      = BRepGraph_NodeId::Typed<BRepGraph_NodeId::Kind::Shell>;
+using BRepGraph_FaceId       = BRepGraph_NodeId::Typed<BRepGraph_NodeId::Kind::Face>;
+using BRepGraph_WireId       = BRepGraph_NodeId::Typed<BRepGraph_NodeId::Kind::Wire>;
+using BRepGraph_EdgeId       = BRepGraph_NodeId::Typed<BRepGraph_NodeId::Kind::Edge>;
+using BRepGraph_VertexId     = BRepGraph_NodeId::Typed<BRepGraph_NodeId::Kind::Vertex>;
+using BRepGraph_CompoundId   = BRepGraph_NodeId::Typed<BRepGraph_NodeId::Kind::Compound>;
+using BRepGraph_CompSolidId  = BRepGraph_NodeId::Typed<BRepGraph_NodeId::Kind::CompSolid>;
+using BRepGraph_CoEdgeId     = BRepGraph_NodeId::Typed<BRepGraph_NodeId::Kind::CoEdge>;
+using BRepGraph_ProductId    = BRepGraph_NodeId::Typed<BRepGraph_NodeId::Kind::Product>;
+using BRepGraph_OccurrenceId = BRepGraph_NodeId::Typed<BRepGraph_NodeId::Kind::Occurrence>;
+
+//! std::hash specialization for BRepGraph_NodeId.
 template <>
 struct std::hash<BRepGraph_NodeId>
 {
@@ -119,6 +202,16 @@ struct std::hash<BRepGraph_NodeId>
     aCombination[0] = opencascade::hash(static_cast<int>(theId.NodeKind));
     aCombination[1] = opencascade::hash(theId.Index);
     return opencascade::hashBytes(aCombination, sizeof(aCombination));
+  }
+};
+
+//! std::hash specialization for BRepGraph_NodeId::Typed.
+template <BRepGraph_NodeId::Kind TheKind>
+struct std::hash<BRepGraph_NodeId::Typed<TheKind>>
+{
+  size_t operator()(const BRepGraph_NodeId::Typed<TheKind>& theId) const noexcept
+  {
+    return std::hash<BRepGraph_NodeId>{}(static_cast<BRepGraph_NodeId>(theId));
   }
 };
 
