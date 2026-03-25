@@ -139,21 +139,21 @@ void computeAreaPerimeter(const NCollection_Vector<gp_Pnt2d>& thePnts,
 
 //=================================================================================================
 
-BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
-                                               const int        theFaceDefIdx,
-                                               const double     theTolUV)
+BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph&       theGraph,
+                                               const BRepGraph_FaceId theFace,
+                                               const double           theTolUV)
     : myTolUV(theTolUV),
       myGraph(&theGraph),
-      myFaceDefIdx(theFaceDefIdx)
+      myFaceId(theFace)
 {
-  const BRepGraph_TopoNode::FaceDef& aFaceDef = theGraph.Defs().Face(theFaceDefIdx);
+  const BRepGraph_TopoNode::FaceDef& aFaceDef = theGraph.Defs().Face(theFace);
 
   // Surface type and periodicity.
   // Geometry is stored at identity; location offsets are absorbed into usages.
-  if (!BRepGraph_Tool::Face::HasSurface(theGraph, theFaceDefIdx))
+  if (!BRepGraph_Tool::Face::HasSurface(theGraph, theFace))
     return;
   GeomAdaptor_TransformedSurface aSurfAdaptor =
-    BRepGraph_Tool::Face::SurfaceAdaptor(theGraph, theFaceDefIdx);
+    BRepGraph_Tool::Face::SurfaceAdaptor(theGraph, theFace);
 
   myIsUPer  = aSurfAdaptor.IsUPeriodic();
   myIsVPer  = aSurfAdaptor.IsVPeriodic();
@@ -173,7 +173,7 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
   {
     if (aFaceDef.WireRefs.Value(i).IsOuter)
     {
-      aWireDefIndices(aWireFillIdx++) = aFaceDef.WireRefs.Value(i).WireIdx;
+      aWireDefIndices(aWireFillIdx++) = aFaceDef.WireRefs.Value(i).WireDefId.Index;
       break;
     }
   }
@@ -181,7 +181,7 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
   for (int i = 0; i < aFaceDef.WireRefs.Length(); ++i)
   {
     if (!aFaceDef.WireRefs.Value(i).IsOuter)
-      aWireDefIndices(aWireFillIdx++) = aFaceDef.WireRefs.Value(i).WireIdx;
+      aWireDefIndices(aWireFillIdx++) = aFaceDef.WireRefs.Value(i).WireDefId.Index;
   }
 
   myUmin = myVmin = 0.0;
@@ -193,7 +193,7 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
 
   for (int aWireIdx = 0; aWireIdx < aNbWires && !anIsBadWire; ++aWireIdx)
   {
-    const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.Defs().Wire(aWireDefIndices(aWireIdx));
+    const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.Defs().Wire(BRepGraph_WireId(aWireDefIndices(aWireIdx)));
     int                                aNbPnts  = 0;
     aPnt2dVec.Clear();
     int    aFirstPoint     = 1;
@@ -203,10 +203,10 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
 
     // Build connection-ordered edge sequence using WireExplorer.
     auto edgeLookup = [&theGraph](int theIdx) -> const BRepGraphInc::EdgeEntity& {
-      return theGraph.Defs().Edge(theIdx);
+      return theGraph.Defs().Edge(BRepGraph_EdgeId(theIdx));
     };
     auto coedgeLookup = [&theGraph](int theIdx) -> const BRepGraphInc::CoEdgeEntity& {
-      return theGraph.Defs().CoEdge(theIdx);
+      return theGraph.Defs().CoEdge(BRepGraph_CoEdgeId(theIdx));
     };
     BRepGraphInc_WireExplorer aWireExp(aWireDef.CoEdgeRefs, coedgeLookup, edgeLookup);
     const NCollection_Vector<BRepGraphInc::CoEdgeRef>& anOrderedRefs = aWireExp.OrderedRefs();
@@ -225,8 +225,8 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
     {
       const BRepGraphInc::CoEdgeRef&       aCoEdgeRef = anOrderedRefs.Value(anEdgeIdx);
       const BRepGraph_TopoNode::CoEdgeDef& aCoEdgeDef =
-        theGraph.Defs().CoEdge(aCoEdgeRef.CoEdgeIdx);
-      const BRepGraph_TopoNode::EdgeDef& anEdgeDef = theGraph.Defs().Edge(aCoEdgeDef.EdgeIdx);
+        theGraph.Defs().CoEdge(aCoEdgeRef.CoEdgeDefId);
+      const BRepGraph_TopoNode::EdgeDef& anEdgeDef = theGraph.Defs().Edge(aCoEdgeDef.EdgeDefId);
       const TopAbs_Orientation           anOri     = aCoEdgeDef.Sense;
 
       if (anOri != TopAbs_FORWARD && anOri != TopAbs_REVERSED)
@@ -234,13 +234,13 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
 
       // Resolve 3D curve from rep index.
       const occ::handle<Geom_Curve>& anEdgeCurve3d =
-        BRepGraph_Tool::Edge::Curve(theGraph, aCoEdgeDef.EdgeIdx);
+        BRepGraph_Tool::Edge::Curve(theGraph, aCoEdgeDef.EdgeDefId);
 
       // PCurve data from CoEdge.
-      if (aCoEdgeDef.Curve2DRepIdx < 0)
+      if (!aCoEdgeDef.Curve2DRepId.IsValid())
         return;
       const occ::handle<Geom2d_Curve>& aCurve2d =
-        BRepGraph_Tool::CoEdge::PCurve(theGraph, aCoEdgeRef.CoEdgeIdx);
+        BRepGraph_Tool::CoEdge::PCurve(theGraph, aCoEdgeRef.CoEdgeDefId);
 
       double aParamFirst = aCoEdgeDef.ParamFirst;
       double aParamLast  = aCoEdgeDef.ParamLast;
@@ -250,22 +250,22 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
 
       // Edge degeneration check.
       bool anIsDegenerated = false;
-      if (BRepGraph_Tool::Edge::Degenerated(theGraph, aCoEdgeDef.EdgeIdx))
+      if (BRepGraph_Tool::Edge::Degenerated(theGraph, aCoEdgeDef.EdgeDefId))
         anIsDegenerated = true;
 
-      if (aCoEdgeDef.SeamPairIdx >= 0)
+      if (aCoEdgeDef.SeamPairId.IsValid())
         anIsDegenerated = true;
 
       if (!anEdgeDef.StartVertexDefId().IsValid() || !anEdgeDef.EndVertexDefId().IsValid())
         anIsDegenerated = true;
 
       // Check 3D curve degeneration if not already flagged.
-      if (!anIsDegenerated && BRepGraph_Tool::Edge::HasCurve(theGraph, aCoEdgeDef.EdgeIdx))
+      if (!anIsDegenerated && BRepGraph_Tool::Edge::HasCurve(theGraph, aCoEdgeDef.EdgeDefId))
       {
         const occ::handle<Geom_Curve>& aEdgeCurve3d =
-          BRepGraph_Tool::Edge::Curve(theGraph, aCoEdgeDef.EdgeIdx);
+          BRepGraph_Tool::Edge::Curve(theGraph, aCoEdgeDef.EdgeDefId);
         const auto [aEdgeParamFirst, aEdgeParamLast] =
-          BRepGraph_Tool::Edge::Range(theGraph, aCoEdgeDef.EdgeIdx);
+          BRepGraph_Tool::Edge::Range(theGraph, aCoEdgeDef.EdgeDefId);
         anIsDegenerated =
           isDegenerated(aEdgeCurve3d, TopLoc_Location(), aEdgeParamFirst, aEdgeParamLast);
       }
@@ -374,17 +374,17 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
           {
             const BRepGraphInc::CoEdgeRef&       aCoEdgeRef2 = anOrderedRefs.Value(anEdgeIdx);
             const BRepGraph_TopoNode::CoEdgeDef& aCoEdgeDef2 =
-              theGraph.Defs().CoEdge(aCoEdgeRef2.CoEdgeIdx);
+              theGraph.Defs().CoEdge(aCoEdgeRef2.CoEdgeDefId);
             const TopAbs_Orientation anOri = aCoEdgeDef2.Sense;
 
             if (anOri != TopAbs_FORWARD && anOri != TopAbs_REVERSED)
               continue;
 
-            if (aCoEdgeDef2.Curve2DRepIdx < 0)
+            if (!aCoEdgeDef2.Curve2DRepId.IsValid())
               continue;
 
             const occ::handle<Geom2d_Curve>& aCurve2d2 =
-              BRepGraph_Tool::CoEdge::PCurve(theGraph, aCoEdgeRef2.CoEdgeIdx);
+              BRepGraph_Tool::CoEdge::PCurve(theGraph, aCoEdgeRef2.CoEdgeDefId);
             double aParamFirst = aCoEdgeDef2.ParamFirst;
             double aParamLast  = aCoEdgeDef2.ParamLast;
             if (std::abs(aParamLast - aParamFirst) < 1.e-9)
@@ -600,7 +600,7 @@ TopAbs_State BRepGraphAlgo_FClass2d::classifyInternal(const gp_Pnt2d& thePntUV,
         else
         {
           // Uncertain - fallback to BRepClass_FaceClassifier via face reconstruction.
-          const TopoDS_Shape aReconstructed = myGraph->Shapes().ReconstructFace(myFaceDefIdx);
+          const TopoDS_Shape aReconstructed = myGraph->Shapes().ReconstructFace(myFaceId);
           if (!aReconstructed.IsNull())
           {
             BRepClass_FaceClassifier aClassifier;
@@ -621,7 +621,7 @@ TopAbs_State BRepGraphAlgo_FClass2d::classifyInternal(const gp_Pnt2d& thePntUV,
     else
     {
       // Bad wire - fallback to BRepClass_FaceClassifier.
-      const TopoDS_Shape aReconstructed = myGraph->Shapes().ReconstructFace(myFaceDefIdx);
+      const TopoDS_Shape aReconstructed = myGraph->Shapes().ReconstructFace(myFaceId);
       if (!aReconstructed.IsNull())
       {
         BRepClass_FaceClassifier aClassifier;

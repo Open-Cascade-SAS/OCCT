@@ -46,10 +46,10 @@ public:
   //! @return reconstructed shape
   Standard_EXPORT TopoDS_Shape Reconstruct(const BRepGraph_NodeId theRoot) const;
 
-  //! Reconstruct a TopoDS_Face from a face definition index.
-  //! @param[in] theFaceDefIdx zero-based face definition index
+  //! Reconstruct a TopoDS_Face from a face definition id.
+  //! @param[in] theFace typed face identifier
   //! @return reconstructed face shape
-  Standard_EXPORT TopoDS_Shape ReconstructFace(const int theFaceDefIdx) const;
+  Standard_EXPORT TopoDS_Shape ReconstructFace(const BRepGraph_FaceId theFace) const;
 
   //! Reconstruct a TopoDS_Shape from a definition node, applying per-node location.
   //! @param[in] theNode definition node identifier

@@ -29,11 +29,11 @@
 //=================================================================================================
 
 void BRepGraphCheck::CheckSolidMinimum(const BRepGraph&                          theGraph,
-                                       int                                       theSolidDefIdx,
+                                       const BRepGraph_SolidId                   theSolid,
                                        NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
 {
   const BRepGraph::DefsView           aDefs        = theGraph.Defs();
-  const BRepGraph_TopoNode::SolidDef& aSolidDef    = aDefs.Solid(theSolidDefIdx);
+  const BRepGraph_TopoNode::SolidDef& aSolidDef    = aDefs.Solid(theSolid);
   const BRepGraph_NodeId              aSolidNodeId = aSolidDef.Id;
 
   if (aSolidDef.ShellRefs.IsEmpty())
@@ -44,7 +44,7 @@ void BRepGraphCheck::CheckSolidMinimum(const BRepGraph&                         
   for (int aShellIter = 0; aShellIter < aSolidDef.ShellRefs.Length(); ++aShellIter)
   {
     const BRepGraphInc::ShellRef&       aSR       = aSolidDef.ShellRefs.Value(aShellIter);
-    const BRepGraph_TopoNode::ShellDef& aShellDef = aDefs.Shell(aSR.ShellIdx);
+    const BRepGraph_TopoNode::ShellDef& aShellDef = aDefs.Shell(aSR.ShellDefId);
 
     // Check shell orientation: shells in a solid should have FORWARD or REVERSED orientation.
     const TopAbs_Orientation aShellOri = aSR.Orientation;
@@ -61,9 +61,9 @@ void BRepGraphCheck::CheckSolidMinimum(const BRepGraph&                         
     for (int aFaceIter = 0; aFaceIter < aShellDef.FaceRefs.Length(); ++aFaceIter)
     {
       const BRepGraphInc::FaceRef& aFR        = aShellDef.FaceRefs.Value(aFaceIter);
-      const BRepGraph_NodeId       aFaceDefId = BRepGraph_NodeId::Face(aFR.FaceIdx);
+      const BRepGraph_NodeId       aFaceDefId = aFR.FaceDefId;
 
-      if (!aAllFaces.Add(aFR.FaceIdx))
+      if (!aAllFaces.Add(aFR.FaceDefId.Index))
       {
         // Face appears in multiple shells.
         BRepGraphCheck_Issue anIssue;
@@ -93,8 +93,8 @@ void BRepGraphCheck::CheckSolidMinimum(const BRepGraph&                         
   for (int aShellIter = 1; aShellIter < aSolidDef.ShellRefs.Length(); ++aShellIter)
   {
     const BRepGraphInc::ShellRef&       aSR         = aSolidDef.ShellRefs.Value(aShellIter);
-    const BRepGraph_NodeId              aShellDefId = BRepGraph_NodeId::Shell(aSR.ShellIdx);
-    const BRepGraph_TopoNode::ShellDef& aShellDef   = aDefs.Shell(aSR.ShellIdx);
+    const BRepGraph_NodeId              aShellDefId = aSR.ShellDefId;
+    const BRepGraph_TopoNode::ShellDef& aShellDef   = aDefs.Shell(aSR.ShellDefId);
 
     if (aShellDef.FaceRefs.IsEmpty())
       continue;
@@ -102,12 +102,12 @@ void BRepGraphCheck::CheckSolidMinimum(const BRepGraph&                         
     // Get a point from the first face of the inner shell.
     const BRepGraphInc::FaceRef& aFR = aShellDef.FaceRefs.Value(0);
 
-    if (!BRepGraph_Tool::Face::HasSurface(theGraph, aFR.FaceIdx))
+    if (!BRepGraph_Tool::Face::HasSurface(theGraph, aFR.FaceDefId))
       continue;
 
     // Use the surface midpoint as representative.
     const GeomAdaptor_TransformedSurface aSurfAdaptor =
-      BRepGraph_Tool::Face::SurfaceAdaptor(theGraph, aFR.FaceIdx);
+      BRepGraph_Tool::Face::SurfaceAdaptor(theGraph, aFR.FaceDefId);
     double aUMin = aSurfAdaptor.FirstUParameter();
     double aUMax = aSurfAdaptor.LastUParameter();
     double aVMin = aSurfAdaptor.FirstVParameter();

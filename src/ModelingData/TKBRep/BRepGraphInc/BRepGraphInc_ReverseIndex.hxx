@@ -14,6 +14,7 @@
 #ifndef _BRepGraphInc_ReverseIndex_HeaderFile
 #define _BRepGraphInc_ReverseIndex_HeaderFile
 
+#include <BRepGraph_NodeId.hxx>
 #include <NCollection_BaseAllocator.hxx>
 #include <NCollection_Vector.hxx>
 #include <Standard_DefineAlloc.hxx>
@@ -97,128 +98,137 @@ public:
     const int                                                 theNbProducts);
 
   //! Return wire indices containing the given edge.
-  const NCollection_Vector<int>* WiresOfEdge(const int theEdgeIdx) const
+  const NCollection_Vector<BRepGraph_WireId>* WiresOfEdge(const BRepGraph_EdgeId theEdgeId) const
   {
-    return seekVec(myEdgeToWires, theEdgeIdx);
+    return seekVec(myEdgeToWires, theEdgeId.Index);
   }
 
   //! Return face indices containing the given edge (from EdgeFaceGeom rows).
-  const NCollection_Vector<int>* FacesOfEdge(const int theEdgeIdx) const
+  const NCollection_Vector<BRepGraph_FaceId>* FacesOfEdge(const BRepGraph_EdgeId theEdgeId) const
   {
-    return seekVec(myEdgeToFaces, theEdgeIdx);
+    return seekVec(myEdgeToFaces, theEdgeId.Index);
   }
 
   //! Return coedge indices referencing the given edge.
-  const NCollection_Vector<int>* CoEdgesOfEdge(const int theEdgeIdx) const
+  const NCollection_Vector<BRepGraph_CoEdgeId>* CoEdgesOfEdge(const BRepGraph_EdgeId theEdgeId) const
   {
-    return seekVec(myEdgeToCoEdges, theEdgeIdx);
+    return seekVec(myEdgeToCoEdges, theEdgeId.Index);
   }
 
   //! Return cached face count for an edge - O(1).
   //! Populated during Build() and updated incrementally by BindEdgeToFace().
-  int FaceCountOfEdge(const int theEdgeIdx) const
+  int FaceCountOfEdge(const BRepGraph_EdgeId theEdgeId) const
   {
-    if (theEdgeIdx < 0 || theEdgeIdx >= myEdgeFaceCount.Length())
+    if (theEdgeId.Index < 0 || theEdgeId.Index >= myEdgeFaceCount.Length())
       return 0;
-    return myEdgeFaceCount.Value(theEdgeIdx);
+    return myEdgeFaceCount.Value(theEdgeId.Index);
   }
 
   //! Return edge indices incident to the given vertex.
-  const NCollection_Vector<int>* EdgesOfVertex(const int theVertexIdx) const
+  const NCollection_Vector<BRepGraph_EdgeId>* EdgesOfVertex(const BRepGraph_VertexId theVertexId) const
   {
-    return seekVec(myVertexToEdges, theVertexIdx);
+    return seekVec(myVertexToEdges, theVertexId.Index);
   }
 
   //! Return face indices containing the given wire.
-  const NCollection_Vector<int>* FacesOfWire(const int theWireIdx) const
+  const NCollection_Vector<BRepGraph_FaceId>* FacesOfWire(const BRepGraph_WireId theWireId) const
   {
-    return seekVec(myWireToFaces, theWireIdx);
+    return seekVec(myWireToFaces, theWireId.Index);
   }
 
   //! Return shell indices containing the given face.
-  const NCollection_Vector<int>* ShellsOfFace(const int theFaceIdx) const
+  const NCollection_Vector<BRepGraph_ShellId>* ShellsOfFace(const BRepGraph_FaceId theFaceId) const
   {
-    return seekVec(myFaceToShells, theFaceIdx);
+    return seekVec(myFaceToShells, theFaceId.Index);
   }
 
   //! Return solid indices containing the given shell.
-  const NCollection_Vector<int>* SolidsOfShell(const int theShellIdx) const
+  const NCollection_Vector<BRepGraph_SolidId>* SolidsOfShell(const BRepGraph_ShellId theShellId) const
   {
-    return seekVec(myShellToSolids, theShellIdx);
+    return seekVec(myShellToSolids, theShellId.Index);
   }
 
   //! Return compound indices containing the given solid as a ChildRef.
-  const NCollection_Vector<int>* CompoundsOfSolid(const int theSolidIdx) const
+  const NCollection_Vector<BRepGraph_CompoundId>* CompoundsOfSolid(
+    const BRepGraph_SolidId theSolidId) const
   {
-    return seekVec(myCompoundsOfSolid, theSolidIdx);
+    return seekVec(myCompoundsOfSolid, theSolidId.Index);
   }
 
   //! Return compsolid indices containing the given solid as a SolidRef.
-  const NCollection_Vector<int>* CompSolidsOfSolid(const int theSolidIdx) const
+  const NCollection_Vector<BRepGraph_CompSolidId>* CompSolidsOfSolid(
+    const BRepGraph_SolidId theSolidId) const
   {
-    return seekVec(myCompSolidsOfSolid, theSolidIdx);
+    return seekVec(myCompSolidsOfSolid, theSolidId.Index);
   }
 
   //! Return compound indices containing the given shell as a ChildRef.
-  const NCollection_Vector<int>* CompoundsOfShell(const int theShellIdx) const
+  const NCollection_Vector<BRepGraph_CompoundId>* CompoundsOfShell(
+    const BRepGraph_ShellId theShellId) const
   {
-    return seekVec(myCompoundsOfShell, theShellIdx);
+    return seekVec(myCompoundsOfShell, theShellId.Index);
   }
 
   //! Return compound indices containing the given face as a ChildRef.
-  const NCollection_Vector<int>* CompoundsOfFace(const int theFaceIdx) const
+  const NCollection_Vector<BRepGraph_CompoundId>* CompoundsOfFace(
+    const BRepGraph_FaceId theFaceId) const
   {
-    return seekVec(myCompoundsOfFace, theFaceIdx);
+    return seekVec(myCompoundsOfFace, theFaceId.Index);
   }
 
   //! Return compound indices containing the given compound as a ChildRef.
-  const NCollection_Vector<int>* CompoundsOfCompound(const int theCompoundIdx) const
+  const NCollection_Vector<BRepGraph_CompoundId>* CompoundsOfCompound(
+    const BRepGraph_CompoundId theCompoundId) const
   {
-    return seekVec(myCompoundsOfCompound, theCompoundIdx);
+    return seekVec(myCompoundsOfCompound, theCompoundId.Index);
   }
 
   //! Return compound indices containing the given compsolid as a ChildRef.
-  const NCollection_Vector<int>* CompoundsOfCompSolid(const int theCompSolidIdx) const
+  const NCollection_Vector<BRepGraph_CompoundId>* CompoundsOfCompSolid(
+    const BRepGraph_CompSolidId theCompSolidId) const
   {
-    return seekVec(myCompoundsOfCompSolid, theCompSolidIdx);
+    return seekVec(myCompoundsOfCompSolid, theCompSolidId.Index);
   }
 
   //! Return wire indices containing the given coedge.
-  const NCollection_Vector<int>* WiresOfCoEdge(const int theCoEdgeIdx) const
+  const NCollection_Vector<BRepGraph_WireId>* WiresOfCoEdge(
+    const BRepGraph_CoEdgeId theCoEdgeId) const
   {
-    return seekVec(myCoEdgeToWires, theCoEdgeIdx);
+    return seekVec(myCoEdgeToWires, theCoEdgeId.Index);
   }
 
   //! Return occurrence indices that reference the given product.
-  const NCollection_Vector<int>* OccurrencesOfProduct(const int theProductIdx) const
+  const NCollection_Vector<BRepGraph_OccurrenceId>* OccurrencesOfProduct(
+    const BRepGraph_ProductId theProductId) const
   {
-    return seekVec(myProductToOccurrences, theProductIdx);
+    return seekVec(myProductToOccurrences, theProductId.Index);
   }
 
   // --- Safe reference accessors (return empty vector instead of nullptr) ---
 
   //! Return wire indices containing the given edge (safe reference, never null).
-  const NCollection_Vector<int>& WiresOfEdgeRef(const int theEdgeIdx) const
+  const NCollection_Vector<BRepGraph_WireId>& WiresOfEdgeRef(const BRepGraph_EdgeId theEdgeId) const
   {
-    return seekRef(myEdgeToWires, theEdgeIdx);
+    return seekRef(myEdgeToWires, theEdgeId.Index);
   }
 
   //! Return face indices containing the given edge (safe reference, never null).
-  const NCollection_Vector<int>& FacesOfEdgeRef(const int theEdgeIdx) const
+  const NCollection_Vector<BRepGraph_FaceId>& FacesOfEdgeRef(const BRepGraph_EdgeId theEdgeId) const
   {
-    return seekRef(myEdgeToFaces, theEdgeIdx);
+    return seekRef(myEdgeToFaces, theEdgeId.Index);
   }
 
   //! Return coedge indices referencing the given edge (safe reference, never null).
-  const NCollection_Vector<int>& CoEdgesOfEdgeRef(const int theEdgeIdx) const
+  const NCollection_Vector<BRepGraph_CoEdgeId>& CoEdgesOfEdgeRef(
+    const BRepGraph_EdgeId theEdgeId) const
   {
-    return seekRef(myEdgeToCoEdges, theEdgeIdx);
+    return seekRef(myEdgeToCoEdges, theEdgeId.Index);
   }
 
   //! Return face indices containing the given wire (safe reference, never null).
-  const NCollection_Vector<int>& FacesOfWireRef(const int theWireIdx) const
+  const NCollection_Vector<BRepGraph_FaceId>& FacesOfWireRef(const BRepGraph_WireId theWireId) const
   {
-    return seekRef(myWireToFaces, theWireIdx);
+    return seekRef(myWireToFaces, theWireId.Index);
   }
 
   //! Verify reverse index consistency against forward entity tables.
@@ -236,85 +246,136 @@ public:
   // --- Incremental mutation ---
 
   //! Register an edge as belonging to a wire (O(1) amortized).
-  Standard_EXPORT void BindEdgeToWire(const int theEdgeIdx, const int theWireIdx);
+  Standard_EXPORT void BindEdgeToWire(const BRepGraph_EdgeId theEdgeId,
+                                      const BRepGraph_WireId theWireId);
 
   //! Remove a wire from the edge-to-wire index for a given edge.
-  Standard_EXPORT void UnbindEdgeFromWire(const int theEdgeIdx, const int theWireIdx);
+  Standard_EXPORT void UnbindEdgeFromWire(const BRepGraph_EdgeId theEdgeId,
+                                          const BRepGraph_WireId theWireId);
 
   //! Replace an edge in the edge-to-wire index for a specific wire.
-  Standard_EXPORT void ReplaceEdgeInWireMap(const int theOldEdgeIdx,
-                                            const int theNewEdgeIdx,
-                                            const int theWireIdx);
+  Standard_EXPORT void ReplaceEdgeInWireMap(const BRepGraph_EdgeId theOldEdgeId,
+                                            const BRepGraph_EdgeId theNewEdgeId,
+                                            const BRepGraph_WireId theWireId);
 
   //! Register a vertex as incident to an edge (O(1) amortized, deduplicates).
-  Standard_EXPORT void BindVertexToEdge(const int theVertexIdx, const int theEdgeIdx);
+  Standard_EXPORT void BindVertexToEdge(const BRepGraph_VertexId theVertexId,
+                                        const BRepGraph_EdgeId   theEdgeId);
 
   //! Remove an edge from the vertex-to-edge index for a given vertex.
-  Standard_EXPORT void UnbindVertexFromEdge(const int theVertexIdx, const int theEdgeIdx);
+  Standard_EXPORT void UnbindVertexFromEdge(const BRepGraph_VertexId theVertexId,
+                                            const BRepGraph_EdgeId   theEdgeId);
 
   //! Register a coedge as referencing an edge (O(1) amortized).
-  Standard_EXPORT void BindEdgeToCoEdge(const int theEdgeIdx, const int theCoEdgeIdx);
+  Standard_EXPORT void BindEdgeToCoEdge(const BRepGraph_EdgeId   theEdgeId,
+                                        const BRepGraph_CoEdgeId theCoEdgeId);
 
   //! Register an edge as belonging to a face (O(1) amortized, deduplicates).
-  Standard_EXPORT void BindEdgeToFace(const int theEdgeIdx, const int theFaceIdx);
+  Standard_EXPORT void BindEdgeToFace(const BRepGraph_EdgeId theEdgeId,
+                                      const BRepGraph_FaceId theFaceId);
 
   //! Remove a face from the edge-to-face index for a given edge.
-  Standard_EXPORT void UnbindEdgeFromFace(const int theEdgeIdx, const int theFaceIdx);
+  Standard_EXPORT void UnbindEdgeFromFace(const BRepGraph_EdgeId theEdgeId,
+                                          const BRepGraph_FaceId theFaceId);
 
 private:
-  //! Dense vector type: outer index = entity key, inner vector = adjacency list.
-  using IndexTable = NCollection_Vector<NCollection_Vector<int>>;
+  //! Dense vector type: outer index = entity key, inner vector = typed adjacency list.
+  template <typename T>
+  using TypedIndexTable = NCollection_Vector<NCollection_Vector<T>>;
 
   //! Bounds-checked lookup returning nullptr for out-of-range or empty slots.
-  static const NCollection_Vector<int>* seekVec(const IndexTable& theIdx, const int theKey)
+  template <typename T>
+  static const NCollection_Vector<T>* seekVec(const TypedIndexTable<T>& theIdx, const int theKey)
   {
     if (theKey < 0 || theKey >= theIdx.Length())
       return nullptr;
-    const NCollection_Vector<int>& aVec = theIdx.Value(theKey);
+    const NCollection_Vector<T>& aVec = theIdx.Value(theKey);
     return aVec.IsEmpty() ? nullptr : &aVec;
   }
 
   //! Bounds-checked lookup returning a const reference (empty vector for missing keys).
-  static const NCollection_Vector<int>& seekRef(const IndexTable& theIdx, const int theKey)
+  template <typename T>
+  static const NCollection_Vector<T>& seekRef(const TypedIndexTable<T>& theIdx, const int theKey)
   {
-    const NCollection_Vector<int>* aPtr = seekVec(theIdx, theKey);
-    return aPtr != nullptr ? *aPtr : THE_EMPTY_VEC;
+    const NCollection_Vector<T>* aPtr = seekVec(theIdx, theKey);
+    if (aPtr != nullptr)
+      return *aPtr;
+    static const NCollection_Vector<T> THE_EMPTY;
+    return THE_EMPTY;
   }
-
-  static const NCollection_Vector<int> THE_EMPTY_VEC; //!< Shared empty vector for safe ref returns.
 
   //! Ensure theIdx has at least theSize slots (pre-sizing with empty vectors).
   //! If theAlloc is non-null, inner vectors are constructed with it.
-  static void preSize(IndexTable&                                   theIdx,
-                      const int                                     theSize,
+  template <typename T>
+  static void preSize(TypedIndexTable<T>&                             theIdx,
+                      const int                                       theSize,
                       const occ::handle<NCollection_BaseAllocator>& theAlloc =
-                        occ::handle<NCollection_BaseAllocator>());
+                        occ::handle<NCollection_BaseAllocator>())
+  {
+    theIdx.Clear();
+    for (int i = 0; i < theSize; ++i)
+    {
+      if (!theAlloc.IsNull())
+      {
+        theIdx.Append(NCollection_Vector<T>(16, theAlloc));
+      }
+      else
+      {
+        theIdx.Appended();
+      }
+    }
+  }
 
   //! Add theVal to the vector at theKey, creating if needed.  Skips duplicates.
-  static void appendUnique(IndexTable& theIdx, const int theKey, const int theVal);
+  template <typename T>
+  static void appendUnique(TypedIndexTable<T>& theIdx, const int theKey, const T theVal)
+  {
+    Standard_ASSERT_RETURN(theKey >= 0, "appendUnique: negative key", );
+    // Grow if needed for incremental mutation after Build().
+    if (theKey >= theIdx.Length())
+      theIdx.SetValue(theKey, NCollection_Vector<T>());
+
+    NCollection_Vector<T>& aVec = theIdx.ChangeValue(theKey);
+    for (int i = 0; i < aVec.Length(); ++i)
+    {
+      if (aVec.Value(i) == theVal)
+        return;
+    }
+    aVec.Append(theVal);
+  }
 
   //! Add theVal to the vector at theKey unconditionally (no duplicate check).
   //! Used during Build() where freshly-cleared indices guarantee no duplicates.
-  static void appendDirect(IndexTable& theIdx, const int theKey, const int theVal);
+  template <typename T>
+  static void appendDirect(TypedIndexTable<T>& theIdx, const int theKey, const T theVal)
+  {
+    Standard_ASSERT_RETURN(theKey >= 0, "appendDirect: negative key", );
+    // During Build(), outer vector is pre-sized so theKey < Length().
+    // For safety, grow if somehow out of range.
+    if (theKey >= theIdx.Length())
+      theIdx.SetValue(theKey, NCollection_Vector<T>());
+
+    theIdx.ChangeValue(theKey).Append(theVal);
+  }
 
   occ::handle<NCollection_BaseAllocator> myAllocator;
 
-  IndexTable myEdgeToWires;
-  IndexTable myEdgeToFaces;
-  IndexTable myEdgeToCoEdges;
-  IndexTable myVertexToEdges;
-  IndexTable myWireToFaces;
-  IndexTable myFaceToShells;
-  IndexTable myShellToSolids;
-  IndexTable myProductToOccurrences;
+  TypedIndexTable<BRepGraph_WireId>        myEdgeToWires;
+  TypedIndexTable<BRepGraph_FaceId>        myEdgeToFaces;
+  TypedIndexTable<BRepGraph_CoEdgeId>      myEdgeToCoEdges;
+  TypedIndexTable<BRepGraph_EdgeId>        myVertexToEdges;
+  TypedIndexTable<BRepGraph_FaceId>        myWireToFaces;
+  TypedIndexTable<BRepGraph_ShellId>       myFaceToShells;
+  TypedIndexTable<BRepGraph_SolidId>       myShellToSolids;
+  TypedIndexTable<BRepGraph_OccurrenceId>  myProductToOccurrences;
 
-  IndexTable myCompoundsOfSolid;     //!< Solid -> parent Compound indices.
-  IndexTable myCompSolidsOfSolid;    //!< Solid -> parent CompSolid indices.
-  IndexTable myCompoundsOfShell;     //!< Shell -> parent Compound indices.
-  IndexTable myCompoundsOfFace;      //!< Face -> parent Compound indices.
-  IndexTable myCompoundsOfCompound;  //!< Compound -> parent Compound indices.
-  IndexTable myCompoundsOfCompSolid; //!< CompSolid -> parent Compound indices.
-  IndexTable myCoEdgeToWires;        //!< CoEdge -> parent Wire indices.
+  TypedIndexTable<BRepGraph_CompoundId>    myCompoundsOfSolid;     //!< Solid -> parent Compound indices.
+  TypedIndexTable<BRepGraph_CompSolidId>   myCompSolidsOfSolid;    //!< Solid -> parent CompSolid indices.
+  TypedIndexTable<BRepGraph_CompoundId>    myCompoundsOfShell;     //!< Shell -> parent Compound indices.
+  TypedIndexTable<BRepGraph_CompoundId>    myCompoundsOfFace;      //!< Face -> parent Compound indices.
+  TypedIndexTable<BRepGraph_CompoundId>    myCompoundsOfCompound;  //!< Compound -> parent Compound indices.
+  TypedIndexTable<BRepGraph_CompoundId>    myCompoundsOfCompSolid; //!< CompSolid -> parent Compound indices.
+  TypedIndexTable<BRepGraph_WireId>        myCoEdgeToWires;        //!< CoEdge -> parent Wire indices.
 
   NCollection_Vector<int> myEdgeFaceCount; //!< Cached face count per edge, O(1) lookup.
 };

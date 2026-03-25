@@ -15,6 +15,7 @@
 #define _BRepGraphAlgo_Copy_HeaderFile
 
 #include <BRepGraph.hxx>
+#include <BRepGraph_NodeId.hxx>
 
 #include <Standard_DefineAlloc.hxx>
 
@@ -48,12 +49,12 @@ public:
 
   //! Copy a single face sub-graph.
   //! @param[in] theGraph    a pre-built BRepGraph
-  //! @param[in] theFaceIdx  face definition index in the graph
+  //! @param[in] theFace     face definition identifier in the graph
   //! @param[in] theCopyGeom if true, geometry is deep-copied
   //! @return a new BRepGraph containing only the specified face and its dependencies
-  Standard_EXPORT static BRepGraph CopyFace(const BRepGraph& theGraph,
-                                            int              theFaceIdx,
-                                            bool             theCopyGeom = true);
+  Standard_EXPORT static BRepGraph CopyFace(const BRepGraph&     theGraph,
+                                            const BRepGraph_FaceId theFace,
+                                            const bool           theCopyGeom = true);
 
 private:
   BRepGraphAlgo_Copy() = delete;

@@ -15,6 +15,7 @@
 #define _BRepGraphInc_Storage_HeaderFile
 
 #include <BRepGraph_NodeId.hxx>
+#include <BRepGraph_RepId.hxx>
 #include <BRepGraph_UID.hxx>
 #include <BRepGraphInc_Entity.hxx>
 #include <BRepGraphInc_ReverseIndex.hxx>
@@ -133,81 +134,95 @@ public:
   void DecrementActiveCount(const BRepGraph_NodeId::Kind theKind);
 
   //! @name Const representation access
-  //! Each method returns a const reference to the representation entity at the given index.
-  //! @param[in] theRepIdx zero-based index into the corresponding representation vector
+  //! Each method returns a const reference to the representation entity at the given typed id.
 
-  const BRepGraphInc::SurfaceRep& SurfaceRep(const int theRepIdx) const
+  //! @param[in] theRep typed surface representation id
+  const BRepGraphInc::SurfaceRep& SurfaceRep(const BRepGraph_SurfaceRepId theRep) const
   {
-    return mySurfaces.Get(theRepIdx);
+    return mySurfaces.Get(theRep.Index);
   }
 
-  const BRepGraphInc::Curve3DRep& Curve3DRep(const int theRepIdx) const
+  //! @param[in] theRep typed curve-3D representation id
+  const BRepGraphInc::Curve3DRep& Curve3DRep(const BRepGraph_Curve3DRepId theRep) const
   {
-    return myCurves3D.Get(theRepIdx);
+    return myCurves3D.Get(theRep.Index);
   }
 
-  const BRepGraphInc::Curve2DRep& Curve2DRep(const int theRepIdx) const
+  //! @param[in] theRep typed curve-2D representation id
+  const BRepGraphInc::Curve2DRep& Curve2DRep(const BRepGraph_Curve2DRepId theRep) const
   {
-    return myCurves2D.Get(theRepIdx);
+    return myCurves2D.Get(theRep.Index);
   }
 
-  const BRepGraphInc::TriangulationRep& TriangulationRep(const int theRepIdx) const
+  //! @param[in] theRep typed triangulation representation id
+  const BRepGraphInc::TriangulationRep& TriangulationRep(
+    const BRepGraph_TriangulationRepId theRep) const
   {
-    return myTriangulationsRep.Get(theRepIdx);
+    return myTriangulationsRep.Get(theRep.Index);
   }
 
-  const BRepGraphInc::Polygon3DRep& Polygon3DRep(const int theRepIdx) const
+  //! @param[in] theRep typed polygon-3D representation id
+  const BRepGraphInc::Polygon3DRep& Polygon3DRep(const BRepGraph_Polygon3DRepId theRep) const
   {
-    return myPolygons3D.Get(theRepIdx);
+    return myPolygons3D.Get(theRep.Index);
   }
 
-  const BRepGraphInc::Polygon2DRep& Polygon2DRep(const int theRepIdx) const
+  //! @param[in] theRep typed polygon-2D representation id
+  const BRepGraphInc::Polygon2DRep& Polygon2DRep(const BRepGraph_Polygon2DRepId theRep) const
   {
-    return myPolygons2D.Get(theRepIdx);
+    return myPolygons2D.Get(theRep.Index);
   }
 
-  const BRepGraphInc::PolygonOnTriRep& PolygonOnTriRep(const int theRepIdx) const
+  //! @param[in] theRep typed polygon-on-triangulation representation id
+  const BRepGraphInc::PolygonOnTriRep& PolygonOnTriRep(
+    const BRepGraph_PolygonOnTriRepId theRep) const
   {
-    return myPolygonsOnTri.Get(theRepIdx);
+    return myPolygonsOnTri.Get(theRep.Index);
   }
 
   //! @name Mutable representation access
-  //! Each method returns a mutable reference to the representation entity at the given index.
-  //! @param[in] theRepIdx zero-based index into the corresponding representation vector
+  //! Each method returns a mutable reference to the representation entity at the given typed id.
 
-  BRepGraphInc::SurfaceRep& ChangeSurfaceRep(const int theRepIdx)
+  //! @param[in] theRep typed surface representation id
+  BRepGraphInc::SurfaceRep& ChangeSurfaceRep(const BRepGraph_SurfaceRepId theRep)
   {
-    return mySurfaces.Change(theRepIdx);
+    return mySurfaces.Change(theRep.Index);
   }
 
-  BRepGraphInc::Curve3DRep& ChangeCurve3DRep(const int theRepIdx)
+  //! @param[in] theRep typed curve-3D representation id
+  BRepGraphInc::Curve3DRep& ChangeCurve3DRep(const BRepGraph_Curve3DRepId theRep)
   {
-    return myCurves3D.Change(theRepIdx);
+    return myCurves3D.Change(theRep.Index);
   }
 
-  BRepGraphInc::Curve2DRep& ChangeCurve2DRep(const int theRepIdx)
+  //! @param[in] theRep typed curve-2D representation id
+  BRepGraphInc::Curve2DRep& ChangeCurve2DRep(const BRepGraph_Curve2DRepId theRep)
   {
-    return myCurves2D.Change(theRepIdx);
+    return myCurves2D.Change(theRep.Index);
   }
 
-  BRepGraphInc::TriangulationRep& ChangeTriangulationRep(const int theRepIdx)
+  //! @param[in] theRep typed triangulation representation id
+  BRepGraphInc::TriangulationRep& ChangeTriangulationRep(const BRepGraph_TriangulationRepId theRep)
   {
-    return myTriangulationsRep.Change(theRepIdx);
+    return myTriangulationsRep.Change(theRep.Index);
   }
 
-  BRepGraphInc::Polygon3DRep& ChangePolygon3DRep(const int theRepIdx)
+  //! @param[in] theRep typed polygon-3D representation id
+  BRepGraphInc::Polygon3DRep& ChangePolygon3DRep(const BRepGraph_Polygon3DRepId theRep)
   {
-    return myPolygons3D.Change(theRepIdx);
+    return myPolygons3D.Change(theRep.Index);
   }
 
-  BRepGraphInc::Polygon2DRep& ChangePolygon2DRep(const int theRepIdx)
+  //! @param[in] theRep typed polygon-2D representation id
+  BRepGraphInc::Polygon2DRep& ChangePolygon2DRep(const BRepGraph_Polygon2DRepId theRep)
   {
-    return myPolygons2D.Change(theRepIdx);
+    return myPolygons2D.Change(theRep.Index);
   }
 
-  BRepGraphInc::PolygonOnTriRep& ChangePolygonOnTriRep(const int theRepIdx)
+  //! @param[in] theRep typed polygon-on-triangulation representation id
+  BRepGraphInc::PolygonOnTriRep& ChangePolygonOnTriRep(const BRepGraph_PolygonOnTriRepId theRep)
   {
-    return myPolygonsOnTri.Change(theRepIdx);
+    return myPolygonsOnTri.Change(theRep.Index);
   }
 
   //! @name Append representation entities
@@ -229,132 +244,142 @@ public:
   BRepGraphInc::PolygonOnTriRep& AppendPolygonOnTriRep() { return myPolygonsOnTri.Append(); }
 
   //! @name Const entity access
-  //! Each method returns a const reference to the entity at the given per-kind index.
+  //! Each method returns a const reference to the entity at the given typed id.
 
-  //! @param[in] theVertexIdx zero-based vertex entity index
-  const BRepGraphInc::VertexEntity& Vertex(const int theVertexIdx) const
+  //! @param[in] theVertex typed vertex id
+  const BRepGraphInc::VertexEntity& Vertex(const BRepGraph_VertexId theVertex) const
   {
-    return myVertices.Get(theVertexIdx);
+    return myVertices.Get(theVertex.Index);
   }
 
-  //! @param[in] theEdgeIdx zero-based edge entity index
-  const BRepGraphInc::EdgeEntity& Edge(const int theEdgeIdx) const
+  //! @param[in] theEdge typed edge id
+  const BRepGraphInc::EdgeEntity& Edge(const BRepGraph_EdgeId theEdge) const
   {
-    return myEdges.Get(theEdgeIdx);
+    return myEdges.Get(theEdge.Index);
   }
 
-  //! @param[in] theCoEdgeIdx zero-based coedge entity index
-  const BRepGraphInc::CoEdgeEntity& CoEdge(const int theCoEdgeIdx) const
+  //! @param[in] theCoEdge typed coedge id
+  const BRepGraphInc::CoEdgeEntity& CoEdge(const BRepGraph_CoEdgeId theCoEdge) const
   {
-    return myCoEdges.Get(theCoEdgeIdx);
+    return myCoEdges.Get(theCoEdge.Index);
   }
 
-  //! @param[in] theWireIdx zero-based wire entity index
-  const BRepGraphInc::WireEntity& Wire(const int theWireIdx) const
+  //! @param[in] theWire typed wire id
+  const BRepGraphInc::WireEntity& Wire(const BRepGraph_WireId theWire) const
   {
-    return myWires.Get(theWireIdx);
+    return myWires.Get(theWire.Index);
   }
 
-  //! @param[in] theFaceIdx zero-based face entity index
-  const BRepGraphInc::FaceEntity& Face(const int theFaceIdx) const
+  //! @param[in] theFace typed face id
+  const BRepGraphInc::FaceEntity& Face(const BRepGraph_FaceId theFace) const
   {
-    return myFaces.Get(theFaceIdx);
+    return myFaces.Get(theFace.Index);
   }
 
-  //! @param[in] theShellIdx zero-based shell entity index
-  const BRepGraphInc::ShellEntity& Shell(const int theShellIdx) const
+  //! @param[in] theShell typed shell id
+  const BRepGraphInc::ShellEntity& Shell(const BRepGraph_ShellId theShell) const
   {
-    return myShells.Get(theShellIdx);
+    return myShells.Get(theShell.Index);
   }
 
-  //! @param[in] theSolidIdx zero-based solid entity index
-  const BRepGraphInc::SolidEntity& Solid(const int theSolidIdx) const
+  //! @param[in] theSolid typed solid id
+  const BRepGraphInc::SolidEntity& Solid(const BRepGraph_SolidId theSolid) const
   {
-    return mySolids.Get(theSolidIdx);
+    return mySolids.Get(theSolid.Index);
   }
 
-  //! @param[in] theCompoundIdx zero-based compound entity index
-  const BRepGraphInc::CompoundEntity& Compound(const int theCompoundIdx) const
+  //! @param[in] theCompound typed compound id
+  const BRepGraphInc::CompoundEntity& Compound(const BRepGraph_CompoundId theCompound) const
   {
-    return myCompounds.Get(theCompoundIdx);
+    return myCompounds.Get(theCompound.Index);
   }
 
-  //! @param[in] theCompSolidIdx zero-based comp-solid entity index
-  const BRepGraphInc::CompSolidEntity& CompSolid(const int theCompSolidIdx) const
+  //! @param[in] theCompSolid typed comp-solid id
+  const BRepGraphInc::CompSolidEntity& CompSolid(const BRepGraph_CompSolidId theCompSolid) const
   {
-    return myCompSolids.Get(theCompSolidIdx);
+    return myCompSolids.Get(theCompSolid.Index);
   }
 
-  //! @param[in] theProductIdx zero-based product entity index
-  const BRepGraphInc::ProductEntity& Product(const int theProductIdx) const
+  //! @param[in] theProduct typed product id
+  const BRepGraphInc::ProductEntity& Product(const BRepGraph_ProductId theProduct) const
   {
-    return myProducts.Get(theProductIdx);
+    return myProducts.Get(theProduct.Index);
   }
 
-  //! @param[in] theOccurrenceIdx zero-based occurrence entity index
-  const BRepGraphInc::OccurrenceEntity& Occurrence(const int theOccurrenceIdx) const
+  //! @param[in] theOccurrence typed occurrence id
+  const BRepGraphInc::OccurrenceEntity& Occurrence(
+    const BRepGraph_OccurrenceId theOccurrence) const
   {
-    return myOccurrences.Get(theOccurrenceIdx);
+    return myOccurrences.Get(theOccurrence.Index);
   }
 
   //! @name Mutable entity access
-  //! Each method returns a mutable reference to the entity at the given per-kind index.
+  //! Each method returns a mutable reference to the entity at the given typed id.
 
-  //! @param[in] theVertexIdx zero-based vertex entity index
-  BRepGraphInc::VertexEntity& ChangeVertex(const int theVertexIdx)
+  //! @param[in] theVertex typed vertex id
+  BRepGraphInc::VertexEntity& ChangeVertex(const BRepGraph_VertexId theVertex)
   {
-    return myVertices.Change(theVertexIdx);
+    return myVertices.Change(theVertex.Index);
   }
 
-  //! @param[in] theEdgeIdx zero-based edge entity index
-  BRepGraphInc::EdgeEntity& ChangeEdge(const int theEdgeIdx) { return myEdges.Change(theEdgeIdx); }
-
-  //! @param[in] theCoEdgeIdx zero-based coedge entity index
-  BRepGraphInc::CoEdgeEntity& ChangeCoEdge(const int theCoEdgeIdx)
+  //! @param[in] theEdge typed edge id
+  BRepGraphInc::EdgeEntity& ChangeEdge(const BRepGraph_EdgeId theEdge)
   {
-    return myCoEdges.Change(theCoEdgeIdx);
+    return myEdges.Change(theEdge.Index);
   }
 
-  //! @param[in] theWireIdx zero-based wire entity index
-  BRepGraphInc::WireEntity& ChangeWire(const int theWireIdx) { return myWires.Change(theWireIdx); }
-
-  //! @param[in] theFaceIdx zero-based face entity index
-  BRepGraphInc::FaceEntity& ChangeFace(const int theFaceIdx) { return myFaces.Change(theFaceIdx); }
-
-  //! @param[in] theShellIdx zero-based shell entity index
-  BRepGraphInc::ShellEntity& ChangeShell(const int theShellIdx)
+  //! @param[in] theCoEdge typed coedge id
+  BRepGraphInc::CoEdgeEntity& ChangeCoEdge(const BRepGraph_CoEdgeId theCoEdge)
   {
-    return myShells.Change(theShellIdx);
+    return myCoEdges.Change(theCoEdge.Index);
   }
 
-  //! @param[in] theSolidIdx zero-based solid entity index
-  BRepGraphInc::SolidEntity& ChangeSolid(const int theSolidIdx)
+  //! @param[in] theWire typed wire id
+  BRepGraphInc::WireEntity& ChangeWire(const BRepGraph_WireId theWire)
   {
-    return mySolids.Change(theSolidIdx);
+    return myWires.Change(theWire.Index);
   }
 
-  //! @param[in] theCompoundIdx zero-based compound entity index
-  BRepGraphInc::CompoundEntity& ChangeCompound(const int theCompoundIdx)
+  //! @param[in] theFace typed face id
+  BRepGraphInc::FaceEntity& ChangeFace(const BRepGraph_FaceId theFace)
   {
-    return myCompounds.Change(theCompoundIdx);
+    return myFaces.Change(theFace.Index);
   }
 
-  //! @param[in] theCompSolidIdx zero-based comp-solid entity index
-  BRepGraphInc::CompSolidEntity& ChangeCompSolid(const int theCompSolidIdx)
+  //! @param[in] theShell typed shell id
+  BRepGraphInc::ShellEntity& ChangeShell(const BRepGraph_ShellId theShell)
   {
-    return myCompSolids.Change(theCompSolidIdx);
+    return myShells.Change(theShell.Index);
   }
 
-  //! @param[in] theProductIdx zero-based product entity index
-  BRepGraphInc::ProductEntity& ChangeProduct(const int theProductIdx)
+  //! @param[in] theSolid typed solid id
+  BRepGraphInc::SolidEntity& ChangeSolid(const BRepGraph_SolidId theSolid)
   {
-    return myProducts.Change(theProductIdx);
+    return mySolids.Change(theSolid.Index);
   }
 
-  //! @param[in] theOccurrenceIdx zero-based occurrence entity index
-  BRepGraphInc::OccurrenceEntity& ChangeOccurrence(const int theOccurrenceIdx)
+  //! @param[in] theCompound typed compound id
+  BRepGraphInc::CompoundEntity& ChangeCompound(const BRepGraph_CompoundId theCompound)
   {
-    return myOccurrences.Change(theOccurrenceIdx);
+    return myCompounds.Change(theCompound.Index);
+  }
+
+  //! @param[in] theCompSolid typed comp-solid id
+  BRepGraphInc::CompSolidEntity& ChangeCompSolid(const BRepGraph_CompSolidId theCompSolid)
+  {
+    return myCompSolids.Change(theCompSolid.Index);
+  }
+
+  //! @param[in] theProduct typed product id
+  BRepGraphInc::ProductEntity& ChangeProduct(const BRepGraph_ProductId theProduct)
+  {
+    return myProducts.Change(theProduct.Index);
+  }
+
+  //! @param[in] theOccurrence typed occurrence id
+  BRepGraphInc::OccurrenceEntity& ChangeOccurrence(const BRepGraph_OccurrenceId theOccurrence)
+  {
+    return myOccurrences.Change(theOccurrence.Index);
   }
 
   //! @name Append entity (returns mutable ref to newly created entity)

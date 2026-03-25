@@ -73,7 +73,7 @@ TEST(BRepGraphAlgo_TransformTest, TranslateBox_AreaPreserved)
   double aTransArea = 0.0;
   for (int aFaceIdx = 0; aFaceIdx < aResultGraph.Defs().NbFaces(); ++aFaceIdx)
   {
-    TopoDS_Shape aFace = aResultGraph.Shapes().ReconstructFace(aFaceIdx);
+    TopoDS_Shape aFace = aResultGraph.Shapes().ReconstructFace(BRepGraph_FaceId(aFaceIdx));
     GProp_GProps aProps;
     BRepGProp::SurfaceProperties(aFace, aProps);
     aTransArea += std::abs(aProps.Mass());
@@ -103,8 +103,8 @@ TEST(BRepGraphAlgo_TransformTest, TranslateBox_VertexPointsShifted)
   // Verify that all vertices have been shifted.
   for (int anIdx = 0; anIdx < aGraph.Defs().NbVertices(); ++anIdx)
   {
-    const gp_Pnt anOrigPt = BRepGraph_Tool::Vertex::Pnt(aGraph, anIdx);
-    const gp_Pnt aTransPt = BRepGraph_Tool::Vertex::Pnt(aResultGraph, anIdx);
+    const gp_Pnt anOrigPt = BRepGraph_Tool::Vertex::Pnt(aGraph, BRepGraph_VertexId(anIdx));
+    const gp_Pnt aTransPt = BRepGraph_Tool::Vertex::Pnt(aResultGraph, BRepGraph_VertexId(anIdx));
     EXPECT_NEAR(aTransPt.X(), anOrigPt.X() + aDx, Precision::Confusion())
       << "Vertex " << anIdx << " X mismatch";
     EXPECT_NEAR(aTransPt.Y(), anOrigPt.Y() + aDy, Precision::Confusion())
@@ -137,15 +137,15 @@ TEST(BRepGraphAlgo_TransformTest, LocationOnly_NoCopyGeom)
   // Vertex definition points must NOT be modified (location-only mode).
   for (int anIdx = 0; anIdx < aGraph.Defs().NbVertices(); ++anIdx)
   {
-    const gp_Pnt anOrigPt = BRepGraph_Tool::Vertex::Pnt(aGraph, anIdx);
-    const gp_Pnt aGraphPt = BRepGraph_Tool::Vertex::Pnt(aResultGraph, anIdx);
+    const gp_Pnt anOrigPt = BRepGraph_Tool::Vertex::Pnt(aGraph, BRepGraph_VertexId(anIdx));
+    const gp_Pnt aGraphPt = BRepGraph_Tool::Vertex::Pnt(aResultGraph, BRepGraph_VertexId(anIdx));
     EXPECT_NEAR(aGraphPt.X(), anOrigPt.X(), Precision::Confusion())
       << "Vertex " << anIdx << " point should not be modified";
   }
 
   // Verify the transform is stored on Product::RootLocation.
   ASSERT_GT(aResultGraph.Defs().NbProducts(), 0);
-  const TopLoc_Location& aRootLoc = aResultGraph.Defs().Product(0).RootLocation;
+  const TopLoc_Location& aRootLoc = aResultGraph.Defs().Product(BRepGraph_ProductId(0)).RootLocation;
   EXPECT_FALSE(aRootLoc.IsIdentity());
   const gp_Trsf aProductTrsf = aRootLoc.Transformation();
   EXPECT_NEAR(aProductTrsf.Value(1, 4), aDx, Precision::Confusion());
@@ -180,7 +180,7 @@ TEST(BRepGraphAlgo_TransformTest, TransformSingleFace)
   gp_Trsf aTrsf;
   aTrsf.SetTranslation(gp_Vec(10.0, 20.0, 30.0));
 
-  BRepGraph aResultGraph = BRepGraphAlgo_Transform::TransformFace(aGraph, 0, aTrsf, true);
+  BRepGraph aResultGraph = BRepGraphAlgo_Transform::TransformFace(aGraph, BRepGraph_FaceId(0), aTrsf, true);
   ASSERT_TRUE(aResultGraph.IsDone());
   EXPECT_EQ(aResultGraph.Defs().NbFaces(), 1);
 }

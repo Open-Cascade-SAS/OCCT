@@ -69,7 +69,9 @@ void BRepGraphCheck_Analyzer::Perform()
       0,
       aNbEdges,
       [&](int theIdx) {
-        BRepGraphCheck::CheckEdgeMinimum(*myGraph, theIdx, aPerThread.ChangeValue(theIdx));
+        BRepGraphCheck::CheckEdgeMinimum(*myGraph,
+                                         BRepGraph_EdgeId(theIdx),
+                                         aPerThread.ChangeValue(theIdx));
       },
       aForceSingle);
 
@@ -95,63 +97,54 @@ void BRepGraphCheck_Analyzer::Perform()
       aNbFaces,
       [&](int theFaceIdx) {
         NCollection_Vector<BRepGraphCheck_Issue>& aLocal = aPerThread.ChangeValue(theFaceIdx);
+        const BRepGraph_FaceId aFaceId(theFaceIdx);
 
         // Face minimum check.
-        BRepGraphCheck::CheckFaceMinimum(*myGraph, theFaceIdx, aLocal);
+        BRepGraphCheck::CheckFaceMinimum(*myGraph, aFaceId, aLocal);
 
         // Face wire checks (redundant wire is always checked; geometric checks depend on flag).
-        BRepGraphCheck::CheckFaceWires(*myGraph, theFaceIdx, aGeomCtl, aLocal);
+        BRepGraphCheck::CheckFaceWires(*myGraph, aFaceId, aGeomCtl, aLocal);
 
         // Edge-in-face and vertex-in-face checks.
         const BRepGraph::DefsView          aLocalDefs = myGraph->Defs();
-        const BRepGraph_TopoNode::FaceDef& aFaceDef   = aLocalDefs.Face(theFaceIdx);
+        const BRepGraph_TopoNode::FaceDef& aFaceDef   = aLocalDefs.Face(aFaceId);
 
         // Iterate wires of this face through incidence refs.
         for (int aWireIter = 0; aWireIter < aFaceDef.WireRefs.Length(); ++aWireIter)
         {
-          const BRepGraphInc::WireRef& aWR         = aFaceDef.WireRefs.Value(aWireIter);
-          const int                    aWireDefIdx = aWR.WireIdx;
+          const BRepGraphInc::WireRef& aWR     = aFaceDef.WireRefs.Value(aWireIter);
+          const BRepGraph_WireId       aWireId = aWR.WireDefId;
 
           // Wire minimum check.
-          BRepGraphCheck::CheckWireMinimum(*myGraph, aWireDefIdx, aLocal);
+          BRepGraphCheck::CheckWireMinimum(*myGraph, aWireId, aLocal);
 
           // Wire-on-face check.
-          BRepGraphCheck::CheckWireOnFace(*myGraph, aWireDefIdx, theFaceIdx, aGeomCtl, aLocal);
+          BRepGraphCheck::CheckWireOnFace(*myGraph, aWireId, aFaceId, aGeomCtl, aLocal);
 
           // Edge-in-face checks for each edge in this wire.
-          const BRepGraph_TopoNode::WireDef& aWireDef = aLocalDefs.Wire(aWireDefIdx);
+          const BRepGraph_TopoNode::WireDef& aWireDef = aLocalDefs.Wire(aWireId);
           for (int aCoEdgeIter = 0; aCoEdgeIter < aWireDef.CoEdgeRefs.Length(); ++aCoEdgeIter)
           {
             const BRepGraphInc::CoEdgeRef& aCoEdgeRef = aWireDef.CoEdgeRefs.Value(aCoEdgeIter);
             const BRepGraph_TopoNode::CoEdgeDef& aCoEdgeDef =
-              aLocalDefs.CoEdge(aCoEdgeRef.CoEdgeIdx);
-            const int anEdgeDefIdx = aCoEdgeDef.EdgeIdx;
+              aLocalDefs.CoEdge(aCoEdgeRef.CoEdgeDefId);
+            const BRepGraph_EdgeId anEdgeId = aCoEdgeDef.EdgeDefId;
 
-            BRepGraphCheck::CheckEdgeOnFace(*myGraph, anEdgeDefIdx, theFaceIdx, anIsExact, aLocal);
+            BRepGraphCheck::CheckEdgeOnFace(*myGraph, anEdgeId, aFaceId, anIsExact, aLocal);
 
             // Vertex checks at edge endpoints.
-            const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aLocalDefs.Edge(anEdgeDefIdx);
+            const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aLocalDefs.Edge(anEdgeId);
             if (anEdgeDef.StartVertexDefId().IsValid())
             {
-              BRepGraphCheck::CheckVertexOnEdge(*myGraph,
-                                                anEdgeDef.StartVertex.VertexIdx,
-                                                anEdgeDefIdx,
-                                                aLocal);
-              BRepGraphCheck::CheckVertexOnFace(*myGraph,
-                                                anEdgeDef.StartVertex.VertexIdx,
-                                                theFaceIdx,
-                                                aLocal);
+              const BRepGraph_VertexId aStartVtxId = anEdgeDef.StartVertex.VertexDefId;
+              BRepGraphCheck::CheckVertexOnEdge(*myGraph, aStartVtxId, anEdgeId, aLocal);
+              BRepGraphCheck::CheckVertexOnFace(*myGraph, aStartVtxId, aFaceId, aLocal);
             }
             if (anEdgeDef.EndVertexDefId().IsValid())
             {
-              BRepGraphCheck::CheckVertexOnEdge(*myGraph,
-                                                anEdgeDef.EndVertex.VertexIdx,
-                                                anEdgeDefIdx,
-                                                aLocal);
-              BRepGraphCheck::CheckVertexOnFace(*myGraph,
-                                                anEdgeDef.EndVertex.VertexIdx,
-                                                theFaceIdx,
-                                                aLocal);
+              const BRepGraph_VertexId anEndVtxId = anEdgeDef.EndVertex.VertexDefId;
+              BRepGraphCheck::CheckVertexOnEdge(*myGraph, anEndVtxId, anEdgeId, aLocal);
+              BRepGraphCheck::CheckVertexOnFace(*myGraph, anEndVtxId, aFaceId, aLocal);
             }
           }
         }
@@ -183,9 +176,10 @@ void BRepGraphCheck_Analyzer::Perform()
       aNbShells,
       [&](int theIdx) {
         NCollection_Vector<BRepGraphCheck_Issue>& aLocal = aPerThread.ChangeValue(theIdx);
-        BRepGraphCheck::CheckShellMinimum(*myGraph, theIdx, aLocal);
-        BRepGraphCheck::CheckShellClosed(*myGraph, theIdx, aLocal);
-        BRepGraphCheck::CheckShellOrientation(*myGraph, theIdx, aLocal);
+        const BRepGraph_ShellId aShellId(theIdx);
+        BRepGraphCheck::CheckShellMinimum(*myGraph, aShellId, aLocal);
+        BRepGraphCheck::CheckShellClosed(*myGraph, aShellId, aLocal);
+        BRepGraphCheck::CheckShellOrientation(*myGraph, aShellId, aLocal);
       },
       aForceSingle);
 
@@ -199,14 +193,14 @@ void BRepGraphCheck_Analyzer::Perform()
   for (int aSolidIter = 0; aSolidIter < aNbSolids; ++aSolidIter)
   {
     NCollection_Vector<BRepGraphCheck_Issue> aLocal;
-    BRepGraphCheck::CheckSolidMinimum(*myGraph, aSolidIter, aLocal);
+    BRepGraphCheck::CheckSolidMinimum(*myGraph, BRepGraph_SolidId(aSolidIter), aLocal);
     myReport.AddIssues(aLocal);
   }
 }
 
 //=================================================================================================
 
-void BRepGraphCheck_Analyzer::CheckVertex(int theVertexDefIdx)
+void BRepGraphCheck_Analyzer::CheckVertex(const BRepGraph_VertexId theVertex)
 {
   // Check vertex against all edges that reference it.
   const BRepGraph::DefsView                aDefs    = myGraph->Defs();
@@ -215,13 +209,14 @@ void BRepGraphCheck_Analyzer::CheckVertex(int theVertexDefIdx)
 
   for (int anEdgeIter = 0; anEdgeIter < aNbEdges; ++anEdgeIter)
   {
-    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(anEdgeIter);
+    const BRepGraph_EdgeId             anEdgeId(anEdgeIter);
+    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(anEdgeId);
     if ((anEdgeDef.StartVertexDefId().IsValid()
-         && anEdgeDef.StartVertex.VertexIdx == theVertexDefIdx)
+         && anEdgeDef.StartVertex.VertexDefId == theVertex)
         || (anEdgeDef.EndVertexDefId().IsValid()
-            && anEdgeDef.EndVertex.VertexIdx == theVertexDefIdx))
+            && anEdgeDef.EndVertex.VertexDefId == theVertex))
     {
-      BRepGraphCheck::CheckVertexOnEdge(*myGraph, theVertexDefIdx, anEdgeIter, aLocal);
+      BRepGraphCheck::CheckVertexOnEdge(*myGraph, theVertex, anEdgeId, aLocal);
     }
   }
   myReport.AddIssues(aLocal);
@@ -229,53 +224,54 @@ void BRepGraphCheck_Analyzer::CheckVertex(int theVertexDefIdx)
 
 //=================================================================================================
 
-void BRepGraphCheck_Analyzer::CheckEdge(int theEdgeDefIdx)
+void BRepGraphCheck_Analyzer::CheckEdge(const BRepGraph_EdgeId theEdge)
 {
   NCollection_Vector<BRepGraphCheck_Issue> aLocal;
-  BRepGraphCheck::CheckEdgeMinimum(*myGraph, theEdgeDefIdx, aLocal);
+  BRepGraphCheck::CheckEdgeMinimum(*myGraph, theEdge, aLocal);
   myReport.AddIssues(aLocal);
 }
 
 //=================================================================================================
 
-void BRepGraphCheck_Analyzer::CheckWire(int theWireDefIdx, int theFaceDefIdx)
+void BRepGraphCheck_Analyzer::CheckWire(const BRepGraph_WireId theWire,
+                                        const BRepGraph_FaceId theFace)
 {
   NCollection_Vector<BRepGraphCheck_Issue> aLocal;
-  BRepGraphCheck::CheckWireMinimum(*myGraph, theWireDefIdx, aLocal);
-  if (theFaceDefIdx >= 0)
+  BRepGraphCheck::CheckWireMinimum(*myGraph, theWire, aLocal);
+  if (theFace.IsValid())
   {
-    BRepGraphCheck::CheckWireOnFace(*myGraph, theWireDefIdx, theFaceDefIdx, myGeomControls, aLocal);
+    BRepGraphCheck::CheckWireOnFace(*myGraph, theWire, theFace, myGeomControls, aLocal);
   }
   myReport.AddIssues(aLocal);
 }
 
 //=================================================================================================
 
-void BRepGraphCheck_Analyzer::CheckFace(int theFaceDefIdx)
+void BRepGraphCheck_Analyzer::CheckFace(const BRepGraph_FaceId theFace)
 {
   NCollection_Vector<BRepGraphCheck_Issue> aLocal;
-  BRepGraphCheck::CheckFaceMinimum(*myGraph, theFaceDefIdx, aLocal);
-  BRepGraphCheck::CheckFaceWires(*myGraph, theFaceDefIdx, myGeomControls, aLocal);
+  BRepGraphCheck::CheckFaceMinimum(*myGraph, theFace, aLocal);
+  BRepGraphCheck::CheckFaceWires(*myGraph, theFace, myGeomControls, aLocal);
   myReport.AddIssues(aLocal);
 }
 
 //=================================================================================================
 
-void BRepGraphCheck_Analyzer::CheckShell(int theShellDefIdx)
+void BRepGraphCheck_Analyzer::CheckShell(const BRepGraph_ShellId theShell)
 {
   NCollection_Vector<BRepGraphCheck_Issue> aLocal;
-  BRepGraphCheck::CheckShellMinimum(*myGraph, theShellDefIdx, aLocal);
-  BRepGraphCheck::CheckShellClosed(*myGraph, theShellDefIdx, aLocal);
-  BRepGraphCheck::CheckShellOrientation(*myGraph, theShellDefIdx, aLocal);
+  BRepGraphCheck::CheckShellMinimum(*myGraph, theShell, aLocal);
+  BRepGraphCheck::CheckShellClosed(*myGraph, theShell, aLocal);
+  BRepGraphCheck::CheckShellOrientation(*myGraph, theShell, aLocal);
   myReport.AddIssues(aLocal);
 }
 
 //=================================================================================================
 
-void BRepGraphCheck_Analyzer::CheckSolid(int theSolidDefIdx)
+void BRepGraphCheck_Analyzer::CheckSolid(const BRepGraph_SolidId theSolid)
 {
   NCollection_Vector<BRepGraphCheck_Issue> aLocal;
-  BRepGraphCheck::CheckSolidMinimum(*myGraph, theSolidDefIdx, aLocal);
+  BRepGraphCheck::CheckSolidMinimum(*myGraph, theSolid, aLocal);
   myReport.AddIssues(aLocal);
 }
 

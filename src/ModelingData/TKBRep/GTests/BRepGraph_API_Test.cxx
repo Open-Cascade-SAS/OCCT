@@ -155,7 +155,7 @@ TEST(BRepGraphAPI_AddNodeTest, AddVertexDef_ReturnsValidId)
   EXPECT_EQ(aVtxId.NodeKind, BRepGraph_NodeId::Kind::Vertex);
   EXPECT_EQ(aVtxId.Index, 0);
 
-  const BRepGraph_TopoNode::VertexDef& aVtxDef = aGraph.Defs().Vertex(0);
+  const BRepGraph_TopoNode::VertexDef& aVtxDef = aGraph.Defs().Vertex(BRepGraph_VertexId(0));
   EXPECT_NEAR(aVtxDef.Point.X(), 1.0, Precision::Confusion());
   EXPECT_NEAR(aVtxDef.Point.Y(), 2.0, Precision::Confusion());
   EXPECT_NEAR(aVtxDef.Point.Z(), 3.0, Precision::Confusion());
@@ -174,10 +174,10 @@ TEST(BRepGraphAPI_AddNodeTest, AddEdgeDef_WithCurve)
   EXPECT_TRUE(anEdgeId.IsValid());
   EXPECT_EQ(anEdgeId.NodeKind, BRepGraph_NodeId::Kind::Edge);
 
-  const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.Defs().Edge(0);
+  const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.Defs().Edge(BRepGraph_EdgeId(0));
   EXPECT_EQ(anEdgeDef.StartVertexDefId(), aV1);
   EXPECT_EQ(anEdgeDef.EndVertexDefId(), aV2);
-  EXPECT_GE(anEdgeDef.Curve3DRepIdx, 0);
+  EXPECT_TRUE(anEdgeDef.Curve3DRepId.IsValid());
   EXPECT_NEAR(anEdgeDef.ParamFirst, 0.0, 1e-10);
   EXPECT_NEAR(anEdgeDef.ParamLast, 10.0, 1e-10);
 }
@@ -210,7 +210,7 @@ TEST(BRepGraphAPI_AddNodeTest, AddWireDef_ClosedRectangle)
   EXPECT_TRUE(aWireId.IsValid());
   EXPECT_EQ(aWireId.NodeKind, BRepGraph_NodeId::Kind::Wire);
 
-  const BRepGraph_TopoNode::WireDef& aWireDef = aGraph.Defs().Wire(0);
+  const BRepGraph_TopoNode::WireDef& aWireDef = aGraph.Defs().Wire(BRepGraph_WireId(0));
   EXPECT_EQ(aWireDef.CoEdgeRefs.Length(), 4);
   EXPECT_TRUE(aWireDef.IsClosed);
 }
@@ -252,8 +252,8 @@ TEST(BRepGraphAPI_AddNodeTest, AddFaceDef_WithSurface)
   EXPECT_EQ(aGraph.Defs().NbFaces(), 1);
   EXPECT_EQ(aGraph.Defs().NbFaces(), 1);
 
-  const BRepGraph_TopoNode::FaceDef& aFaceDef = aGraph.Defs().Face(0);
-  EXPECT_GE(aFaceDef.SurfaceRepIdx, 0);
+  const BRepGraph_TopoNode::FaceDef& aFaceDef = aGraph.Defs().Face(BRepGraph_FaceId(0));
+  EXPECT_TRUE(aFaceDef.SurfaceRepId.IsValid());
 }
 
 TEST(BRepGraphAPI_AddNodeTest, AddShellAndSolid)
@@ -384,7 +384,7 @@ TEST(BRepGraphAPI_ConstructionTest, AddFaceToShell_CreatesUsage)
   aGraph.Builder().AddFaceToShell(aShellId, aFaceId);
 
   // Verify shell has a face ref.
-  const BRepGraph_TopoNode::ShellDef& aShellDef = aGraph.Defs().Shell(0);
+  const BRepGraph_TopoNode::ShellDef& aShellDef = aGraph.Defs().Shell(BRepGraph_ShellId(0));
   EXPECT_EQ(aShellDef.FaceRefs.Length(), 1);
 }
 
@@ -397,7 +397,7 @@ TEST(BRepGraphAPI_ConstructionTest, AddShellToSolid_CreatesUsage)
 
   aGraph.Builder().AddShellToSolid(aSolidId, aShellId);
 
-  const BRepGraph_TopoNode::SolidDef& aSolidDef = aGraph.Defs().Solid(0);
+  const BRepGraph_TopoNode::SolidDef& aSolidDef = aGraph.Defs().Solid(BRepGraph_SolidId(0));
   EXPECT_EQ(aSolidDef.ShellRefs.Length(), 1);
 }
 
@@ -417,7 +417,7 @@ TEST(BRepGraphAPI_ConstructionTest, AddCompoundDef_WithChildren)
   EXPECT_EQ(aCompId.NodeKind, BRepGraph_NodeId::Kind::Compound);
   EXPECT_EQ(aGraph.Defs().NbCompounds(), 1);
 
-  const BRepGraph_TopoNode::CompoundDef& aCompDef = aGraph.Defs().Compound(0);
+  const BRepGraph_TopoNode::CompoundDef& aCompDef = aGraph.Defs().Compound(BRepGraph_CompoundId(0));
   EXPECT_EQ(aCompDef.ChildRefs.Length(), 2);
 }
 
@@ -437,7 +437,7 @@ TEST(BRepGraphAPI_ConstructionTest, AddCompSolidDef_WithSolids)
   EXPECT_EQ(aCSolId.NodeKind, BRepGraph_NodeId::Kind::CompSolid);
   EXPECT_EQ(aGraph.Defs().NbCompSolids(), 1);
 
-  const BRepGraph_TopoNode::CompSolidDef& aCSolDef = aGraph.Defs().CompSolid(0);
+  const BRepGraph_TopoNode::CompSolidDef& aCSolDef = aGraph.Defs().CompSolid(BRepGraph_CompSolidId(0));
   EXPECT_EQ(aCSolDef.SolidRefs.Length(), 2);
 }
 
@@ -483,7 +483,7 @@ TEST(BRepGraphAPI_ConstructionTest, FullSolid_ProgrammaticConstruction)
   EXPECT_EQ(aGraph.Defs().NbShells(), 1);
   EXPECT_EQ(aGraph.Defs().NbFaces(), 1);
 
-  const BRepGraph_TopoNode::SolidDef& aSolidDefUs = aGraph.Defs().Solid(0);
+  const BRepGraph_TopoNode::SolidDef& aSolidDefUs = aGraph.Defs().Solid(BRepGraph_SolidId(0));
   EXPECT_EQ(aSolidDefUs.ShellRefs.Length(), 1);
 }
 
@@ -501,13 +501,13 @@ TEST(BRepGraphAPI_MutableDefTest, MutableFaceDefinition_ChangesTolerance)
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Defs().NbFaces(), 0);
 
-  const double anOrigTol = BRepGraph_Tool::Face::Tolerance(aGraph, 0);
+  const double anOrigTol = BRepGraph_Tool::Face::Tolerance(aGraph, BRepGraph_FaceId(0));
   {
-    BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aFaceDef = aGraph.MutFace(0);
+    BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aFaceDef = aGraph.MutFace(BRepGraph_FaceId(0));
     aFaceDef->Tolerance                                    = 0.5;
   }
-  EXPECT_NEAR(BRepGraph_Tool::Face::Tolerance(aGraph, 0), 0.5, 1e-10);
-  EXPECT_TRUE(aGraph.Defs().Face(0).IsModified);
+  EXPECT_NEAR(BRepGraph_Tool::Face::Tolerance(aGraph, BRepGraph_FaceId(0)), 0.5, 1e-10);
+  EXPECT_TRUE(aGraph.Defs().Face(BRepGraph_FaceId(0)).IsModified);
   (void)anOrigTol;
 }
 
@@ -522,9 +522,9 @@ TEST(BRepGraphAPI_MutableDefTest, MutableShellDefinition)
   ASSERT_GT(aGraph.Defs().NbShells(), 0);
 
   {
-    BRepGraph_MutRef<BRepGraph_TopoNode::ShellDef> aShellDef = aGraph.MutShell(0);
+    BRepGraph_MutRef<BRepGraph_TopoNode::ShellDef> aShellDef = aGraph.MutShell(BRepGraph_ShellId(0));
   }
-  EXPECT_TRUE(aGraph.Defs().Shell(0).IsModified);
+  EXPECT_TRUE(aGraph.Defs().Shell(BRepGraph_ShellId(0)).IsModified);
 }
 
 TEST(BRepGraphAPI_MutableDefTest, MutableSolidDefinition)
@@ -538,9 +538,9 @@ TEST(BRepGraphAPI_MutableDefTest, MutableSolidDefinition)
   ASSERT_GT(aGraph.Defs().NbSolids(), 0);
 
   {
-    BRepGraph_MutRef<BRepGraph_TopoNode::SolidDef> aSolidDef = aGraph.MutSolid(0);
+    BRepGraph_MutRef<BRepGraph_TopoNode::SolidDef> aSolidDef = aGraph.MutSolid(BRepGraph_SolidId(0));
   }
-  EXPECT_TRUE(aGraph.Defs().Solid(0).IsModified);
+  EXPECT_TRUE(aGraph.Defs().Solid(BRepGraph_SolidId(0)).IsModified);
 }
 
 TEST(BRepGraphAPI_MutableDefTest, MutableCompoundDefinition)
@@ -551,9 +551,9 @@ TEST(BRepGraphAPI_MutableDefTest, MutableCompoundDefinition)
   ASSERT_EQ(aGraph.Defs().NbCompounds(), 1);
 
   {
-    BRepGraph_MutRef<BRepGraph_TopoNode::CompoundDef> aCompDef = aGraph.MutCompound(0);
+    BRepGraph_MutRef<BRepGraph_TopoNode::CompoundDef> aCompDef = aGraph.MutCompound(BRepGraph_CompoundId(0));
   }
-  EXPECT_TRUE(aGraph.Defs().Compound(0).IsModified);
+  EXPECT_TRUE(aGraph.Defs().Compound(BRepGraph_CompoundId(0)).IsModified);
 }
 
 TEST(BRepGraphAPI_MutableDefTest, MutableCompSolidDefinition)
@@ -564,9 +564,9 @@ TEST(BRepGraphAPI_MutableDefTest, MutableCompSolidDefinition)
   ASSERT_EQ(aGraph.Defs().NbCompSolids(), 1);
 
   {
-    BRepGraph_MutRef<BRepGraph_TopoNode::CompSolidDef> aCSolDef = aGraph.MutCompSolid(0);
+    BRepGraph_MutRef<BRepGraph_TopoNode::CompSolidDef> aCSolDef = aGraph.MutCompSolid(BRepGraph_CompSolidId(0));
   }
-  EXPECT_TRUE(aGraph.Defs().CompSolid(0).IsModified);
+  EXPECT_TRUE(aGraph.Defs().CompSolid(BRepGraph_CompSolidId(0)).IsModified);
 }
 
 // ============================================================

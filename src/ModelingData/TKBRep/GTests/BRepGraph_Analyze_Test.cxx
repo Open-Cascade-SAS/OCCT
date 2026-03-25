@@ -235,7 +235,7 @@ TEST(BRepGraphAnalyze, Decompose_ThreeDisconnected_ThreeComponents)
   // Each component should contain 6 faces (one box).
   for (int anIdx = 0; anIdx < aComponents.Length(); ++anIdx)
   {
-    EXPECT_EQ(aComponents.Value(anIdx).FaceDefIndices().Length(), 6)
+    EXPECT_EQ(aComponents.Value(anIdx).FaceDefIds().Length(), 6)
       << "Component " << anIdx << " does not have 6 faces";
   }
 }
@@ -263,9 +263,8 @@ TEST_F(BRepGraphAnalyzeTest, ParallelForEachFace_Box_VisitsAllSix)
   ASSERT_EQ(aComponents.Length(), 1);
 
   std::atomic<int> aCounter{0};
-  BRepGraph_Analyze::ParallelForEachFace(myGraph, aComponents.Value(0), [&aCounter](int) {
-    aCounter.fetch_add(1);
-  });
+  BRepGraph_Analyze::ParallelForEachFace(
+    myGraph, aComponents.Value(0), [&aCounter](const BRepGraph_FaceId) { aCounter.fetch_add(1); });
 
   EXPECT_EQ(aCounter.load(), 6);
 }
@@ -276,9 +275,8 @@ TEST_F(BRepGraphAnalyzeTest, ParallelForEachEdge_Box_VisitsAllTwelve)
   ASSERT_EQ(aComponents.Length(), 1);
 
   std::atomic<int> aCounter{0};
-  BRepGraph_Analyze::ParallelForEachEdge(myGraph, aComponents.Value(0), [&aCounter](int) {
-    aCounter.fetch_add(1);
-  });
+  BRepGraph_Analyze::ParallelForEachEdge(
+    myGraph, aComponents.Value(0), [&aCounter](const BRepGraph_EdgeId) { aCounter.fetch_add(1); });
 
   // Edges may be duplicated across wires in SubGraph; count unique via the graph.
   // A box has 12 unique edges, but SubGraph edge indices may contain duplicates
@@ -306,9 +304,8 @@ TEST(BRepGraphAnalyze, ParallelForEachFace_SubGraph_OnlyComponentFaces)
 
   // Iterate only over faces of the first component.
   std::atomic<int> aCounter{0};
-  BRepGraph_Analyze::ParallelForEachFace(aGraph, aComponents.Value(0), [&aCounter](int) {
-    aCounter.fetch_add(1);
-  });
+  BRepGraph_Analyze::ParallelForEachFace(
+    aGraph, aComponents.Value(0), [&aCounter](const BRepGraph_FaceId) { aCounter.fetch_add(1); });
 
   EXPECT_EQ(aCounter.load(), 6);
 }
@@ -452,14 +449,14 @@ TEST_F(BRepGraphAnalyzeTest, BoundingBox_Edge_SubsetOfOwningFace)
   aFaceBox.Get(aFXmin, aFYmin, aFZmin, aFXmax, aFYmax, aFZmax);
 
   // Get edges of the first wire of the first face via incidence refs.
-  const BRepGraph_TopoNode::WireDef& aWireDef = myGraph.Defs().Wire(0);
+  const BRepGraph_TopoNode::WireDef& aWireDef = myGraph.Defs().Wire(BRepGraph_WireId(0));
   const double                       aTol     = Precision::Confusion();
 
   for (int aCoEdgeIter = 0; aCoEdgeIter < aWireDef.CoEdgeRefs.Length(); ++aCoEdgeIter)
   {
     const BRepGraphInc::CoEdgeRef&       aCR     = aWireDef.CoEdgeRefs.Value(aCoEdgeIter);
-    const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = myGraph.Defs().CoEdge(aCR.CoEdgeIdx);
-    const BRepGraph_NodeId               anEdgeId(BRepGraph_NodeId::Kind::Edge, aCoEdge.EdgeIdx);
+    const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = myGraph.Defs().CoEdge(BRepGraph_CoEdgeId(aCR.CoEdgeDefId));
+    const BRepGraph_NodeId               anEdgeId = aCoEdge.EdgeDefId;
     Bnd_Box                              anEdgeBox;
     BRepGraphAlgo_BndLib::Add(myGraph, anEdgeId, anEdgeBox);
     if (anEdgeBox.IsVoid())
@@ -507,7 +504,7 @@ TEST_F(BRepGraphAnalyzeTest, BoundingBox_AfterMutation_CacheInvalidated)
   ASSERT_FALSE(aBoxBefore.IsVoid());
 
   // Mutate vertex - this should invalidate the cache via markModified.
-  myGraph.MutVertex(0);
+  myGraph.MutVertex(BRepGraph_VertexId(0));
 
   // Verify that after mutation, recomputing still produces a valid bbox.
   // BoundingBox uses the original shape for computation, so results stay consistent.
@@ -516,7 +513,7 @@ TEST_F(BRepGraphAnalyzeTest, BoundingBox_AfterMutation_CacheInvalidated)
   ASSERT_FALSE(aBoxAfter.IsVoid());
 
   // Verify IsModified flag was set.
-  EXPECT_TRUE(myGraph.Defs().Vertex(0).IsModified);
+  EXPECT_TRUE(myGraph.Defs().Vertex(BRepGraph_VertexId(0)).IsModified);
 }
 
 TEST_F(BRepGraphAnalyzeTest, Invalidate_ThenRecompute_SameResult)
@@ -557,7 +554,7 @@ TEST_F(BRepGraphAnalyzeTest, InvalidateSubgraph_PropagatesUpToSolid)
 
   // Invalidate from a vertex upward via a no-op mutation (triggers markModified).
   {
-    auto aMut = myGraph.MutVertex(aVertId.Index);
+    auto aMut = myGraph.MutVertex(BRepGraph_VertexId(aVertId.Index));
   }
 
   // Recompute. Since no actual mutation occurred, the result should be the same.
@@ -642,7 +639,7 @@ TEST_F(BRepGraphAnalyzeTest, Centroid_AfterMutation_CacheInvalidated)
   const gp_Pnt aCentroidBefore = bboxCenter(myGraph, aVertId);
 
   // Mutate vertex (marks modified, invalidates cache).
-  myGraph.MutVertex(0);
+  myGraph.MutVertex(BRepGraph_VertexId(0));
 
   // Centroid recomputes from original shape - result stays consistent.
   const gp_Pnt aCentroidAfter = bboxCenter(myGraph, aVertId);
@@ -653,5 +650,5 @@ TEST_F(BRepGraphAnalyzeTest, Centroid_AfterMutation_CacheInvalidated)
   EXPECT_NEAR(aCentroidBefore.Z(), aCentroidAfter.Z(), Precision::Confusion());
 
   // Verify the modification flag was set.
-  EXPECT_TRUE(myGraph.Defs().Vertex(0).IsModified);
+  EXPECT_TRUE(myGraph.Defs().Vertex(BRepGraph_VertexId(0)).IsModified);
 }

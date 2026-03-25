@@ -15,6 +15,7 @@
 #define _BRepGraphAlgo_SameParameter_HeaderFile
 
 #include <BRepGraph.hxx>
+#include <BRepGraph_NodeId.hxx>
 
 #include <NCollection_IndexedMap.hxx>
 #include <Standard_DefineAlloc.hxx>
@@ -51,15 +52,15 @@ public:
 
   //! Enforce SameParameter on a set of edges, optionally in parallel.
   //! Each edge is independent - safe for parallel execution.
-  //! @param[in,out] theGraph       the graph containing the edges
-  //! @param[in]     theEdgeIndices edge definition indices to process
-  //! @param[in]     theTolerance   reference tolerance
-  //! @param[in]     theParallel    enable parallel execution
+  //! @param[in,out] theGraph     the graph containing the edges
+  //! @param[in]     theEdgeIds   edge definition identifiers to process
+  //! @param[in]     theTolerance reference tolerance
+  //! @param[in]     theParallel  enable parallel execution
   //! @return diagnostic counters
-  static Standard_EXPORT Result Perform(BRepGraph&                         theGraph,
-                                        const NCollection_IndexedMap<int>& theEdgeIndices,
-                                        double                             theTolerance,
-                                        bool                               theParallel);
+  static Standard_EXPORT Result Perform(BRepGraph&                                    theGraph,
+                                        const NCollection_IndexedMap<BRepGraph_EdgeId>& theEdgeIds,
+                                        const double                                  theTolerance,
+                                        const bool                                    theParallel);
 
 private:
   BRepGraphAlgo_SameParameter() = delete;

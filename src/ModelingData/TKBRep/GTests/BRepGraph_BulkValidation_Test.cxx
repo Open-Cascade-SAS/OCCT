@@ -406,13 +406,13 @@ TEST_P(BRepGraphBulkValidation, RoundTrip)
 
   // Step 6: Get root NodeId from Product(0)
   ASSERT_GE(aDefs.NbProducts(), 1) << "No products: " << aFilePath;
-  const BRepGraph_NodeId aRootId = aDefs.Product(0).ShapeRootId;
+  const BRepGraph_NodeId aRootId = aDefs.Product(BRepGraph_ProductId(0)).ShapeRootId;
 
   // Step 7: Reconstruct and apply root orientation/location from Product
   TopoDS_Shape aReconShape = aGraph.Shapes().Reconstruct(aRootId);
   ASSERT_FALSE(aReconShape.IsNull()) << "Reconstruct returned null: " << aFilePath;
   {
-    const auto& aProduct = aDefs.Product(0);
+    const auto& aProduct = aDefs.Product(BRepGraph_ProductId(0));
     aReconShape.Orientation(aProduct.RootOrientation);
     if (!aProduct.RootLocation.IsIdentity())
       aReconShape.Location(aProduct.RootLocation);

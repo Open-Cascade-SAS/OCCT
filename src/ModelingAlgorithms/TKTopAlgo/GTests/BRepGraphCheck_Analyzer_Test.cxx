@@ -20,6 +20,7 @@
 #include <BRepCheck_Status.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_TopoNode.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraphCheck.hxx>
@@ -140,7 +141,7 @@ TEST(BRepGraphCheck_AnalyzerTest, EdgeMinimum_ValidEdge_NoIssues)
   ASSERT_TRUE(aGraph.IsDone());
 
   NCollection_Vector<BRepGraphCheck_Issue> aIssues;
-  BRepGraphCheck::CheckEdgeMinimum(aGraph, 0, aIssues);
+  BRepGraphCheck::CheckEdgeMinimum(aGraph, BRepGraph_EdgeId(0), aIssues);
   EXPECT_TRUE(aIssues.IsEmpty()) << "Valid edge should have no minimum issues.";
 }
 
@@ -157,7 +158,7 @@ TEST(BRepGraphCheck_AnalyzerTest, FaceMinimum_ValidFace_NoIssues)
   ASSERT_TRUE(aGraph.IsDone());
 
   NCollection_Vector<BRepGraphCheck_Issue> aIssues;
-  BRepGraphCheck::CheckFaceMinimum(aGraph, 0, aIssues);
+  BRepGraphCheck::CheckFaceMinimum(aGraph, BRepGraph_FaceId(0), aIssues);
   EXPECT_TRUE(aIssues.IsEmpty()) << "Valid face should have no surface issues.";
 }
 
@@ -264,7 +265,7 @@ TEST(BRepGraphCheck_AnalyzerTest, IncrementalCheckEdge_ValidBox)
   BRepGraphCheck_Analyzer anAnalyzer(aGraph);
   for (int anEdgeIter = 0; anEdgeIter < aGraph.Defs().NbEdges(); ++anEdgeIter)
   {
-    anAnalyzer.CheckEdge(anEdgeIter);
+    anAnalyzer.CheckEdge(BRepGraph_EdgeId(anEdgeIter));
   }
 
   EXPECT_TRUE(anAnalyzer.IsValid())
@@ -282,7 +283,7 @@ TEST(BRepGraphCheck_AnalyzerTest, IncrementalCheckFace_ValidBox)
   BRepGraphCheck_Analyzer anAnalyzer(aGraph);
   for (int aFaceIter = 0; aFaceIter < aGraph.Defs().NbFaces(); ++aFaceIter)
   {
-    anAnalyzer.CheckFace(aFaceIter);
+    anAnalyzer.CheckFace(BRepGraph_FaceId(aFaceIter));
   }
 
   EXPECT_TRUE(anAnalyzer.IsValid())
@@ -323,7 +324,7 @@ TEST(BRepGraphCheck_AnalyzerTest, ShellChecks_ValidBox)
   ASSERT_GT(aGraph.Defs().NbShells(), 0);
 
   BRepGraphCheck_Analyzer anAnalyzer(aGraph);
-  anAnalyzer.CheckShell(0);
+  anAnalyzer.CheckShell(BRepGraph_ShellId(0));
 
   // Box shell should be closed with consistent orientation.
   // Only warnings (FreeEdge) are acceptable, not errors.
@@ -419,7 +420,7 @@ TEST(BRepGraphCheck_AnalyzerTest, OpenShell_DetectsNotClosed)
   ASSERT_GT(aGraph.Defs().NbShells(), 0);
 
   BRepGraphCheck_Analyzer anAnalyzer(aGraph);
-  anAnalyzer.CheckShell(0);
+  anAnalyzer.CheckShell(BRepGraph_ShellId(0));
   const BRepGraphCheck_Report& aReport = anAnalyzer.Report();
 
   EXPECT_TRUE(hasIssueWithStatus(aReport, BRepCheck_NotClosed))
@@ -459,7 +460,7 @@ TEST(BRepGraphCheck_AnalyzerTest, InconsistentShell_DetectsBadOrientation)
   ASSERT_GT(aGraph.Defs().NbShells(), 0);
 
   NCollection_Vector<BRepGraphCheck_Issue> aIssues;
-  BRepGraphCheck::CheckShellOrientation(aGraph, 0, aIssues);
+  BRepGraphCheck::CheckShellOrientation(aGraph, BRepGraph_ShellId(0), aIssues);
 
   bool aHasBadOrientation = false;
   for (int anIter = 0; anIter < aIssues.Length(); ++anIter)
@@ -496,7 +497,7 @@ TEST(BRepGraphCheck_AnalyzerTest, DisconnectedShell_DetectsNotConnected)
   ASSERT_GT(aGraph.Defs().NbShells(), 0);
 
   NCollection_Vector<BRepGraphCheck_Issue> aIssues;
-  BRepGraphCheck::CheckShellMinimum(aGraph, 0, aIssues);
+  BRepGraphCheck::CheckShellMinimum(aGraph, BRepGraph_ShellId(0), aIssues);
 
   bool aHasNotConnected = false;
   for (int anIter = 0; anIter < aIssues.Length(); ++anIter)
@@ -591,18 +592,22 @@ TEST(BRepGraphCheck_AnalyzerTest, DisplacedVertex_DetectsInvalidPointOnCurve)
   bool                      aHasInvalidPoint = false;
   for (int anEdgeIter = 0; anEdgeIter < aDefs.NbEdges(); ++anEdgeIter)
   {
-    const BRepGraph_TopoNode::EdgeDef&       anEdgeDef = aDefs.Edge(anEdgeIter);
+    const BRepGraph_EdgeId                   anEdgeId  = BRepGraph_EdgeId(anEdgeIter);
+    const BRepGraph_TopoNode::EdgeDef&       anEdgeDef = aDefs.Edge(anEdgeId);
     NCollection_Vector<BRepGraphCheck_Issue> aIssues;
     if (anEdgeDef.StartVertexDefId().IsValid())
     {
       BRepGraphCheck::CheckVertexOnEdge(aGraph,
-                                        anEdgeDef.StartVertex.VertexIdx,
-                                        anEdgeIter,
+                                        anEdgeDef.StartVertex.VertexDefId,
+                                        anEdgeId,
                                         aIssues);
     }
     if (anEdgeDef.EndVertexDefId().IsValid())
     {
-      BRepGraphCheck::CheckVertexOnEdge(aGraph, anEdgeDef.EndVertex.VertexIdx, anEdgeIter, aIssues);
+      BRepGraphCheck::CheckVertexOnEdge(aGraph,
+                                        anEdgeDef.EndVertex.VertexDefId,
+                                        anEdgeId,
+                                        aIssues);
     }
     for (int anIssueIter = 0; anIssueIter < aIssues.Length(); ++anIssueIter)
     {
@@ -639,18 +644,20 @@ TEST(BRepGraphCheck_AnalyzerTest, MissingPCurve_DetectsNoCurveOnSurface)
   bool aHasNoCurveOnSurface = false;
   for (int anEdgeIter = 0; anEdgeIter < aDefs.NbEdges(); ++anEdgeIter)
   {
-    if (BRepGraph_Tool::Edge::Degenerated(aGraph, anEdgeIter))
+    const BRepGraph_EdgeId anEdgeId(anEdgeIter);
+    if (BRepGraph_Tool::Edge::Degenerated(aGraph, BRepGraph_EdgeId(anEdgeId)))
       continue;
 
     // Check if this edge has a PCurve on face 0.
+    const BRepGraph_FaceId             aFaceId(0);
     const BRepGraphInc::CoEdgeEntity* aPCEntry =
-      BRepGraph_Tool::Edge::FindPCurve(aGraph, anEdgeIter, 0);
+      BRepGraph_Tool::Edge::FindPCurve(aGraph, BRepGraph_EdgeId(anEdgeId), aFaceId);
     if (aPCEntry != nullptr)
       continue; // This edge has a PCurve on face 0, skip it.
 
     // Found an edge without PCurve on face 0 - verify detection.
     NCollection_Vector<BRepGraphCheck_Issue> aIssues;
-    BRepGraphCheck::CheckEdgeOnFace(aGraph, anEdgeIter, 0, false, aIssues);
+    BRepGraphCheck::CheckEdgeOnFace(aGraph, anEdgeId, aFaceId, false, aIssues);
     for (int anIssueIter = 0; anIssueIter < aIssues.Length(); ++anIssueIter)
     {
       if (aIssues.Value(anIssueIter).Status == BRepCheck_NoCurveOnSurface)
@@ -742,7 +749,7 @@ TEST(BRepGraphCheck_AnalyzerTest, SharedFaceBetweenShells_DetectsImbrication)
   ASSERT_GT(aGraph.Defs().NbSolids(), 0);
 
   NCollection_Vector<BRepGraphCheck_Issue> aIssues;
-  BRepGraphCheck::CheckSolidMinimum(aGraph, 0, aIssues);
+  BRepGraphCheck::CheckSolidMinimum(aGraph, BRepGraph_SolidId(0), aIssues);
 
   bool aHasImbrication = false;
   for (int anIter = 0; anIter < aIssues.Length(); ++anIter)

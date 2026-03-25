@@ -41,14 +41,14 @@ TEST(BRepGraphAssemblyTest, Build_SingleSolid_AutoCreatesRootProduct)
   EXPECT_EQ(aGraph.Defs().NbProducts(), 1);
   EXPECT_EQ(aGraph.Defs().NbOccurrences(), 0);
 
-  const BRepGraph_TopoNode::ProductDef& aProduct = aGraph.Defs().Product(0);
+  const BRepGraph_TopoNode::ProductDef& aProduct = aGraph.Defs().Product(BRepGraph_ProductId(0));
   EXPECT_TRUE(aProduct.ShapeRootId.IsValid());
   EXPECT_EQ(aProduct.Id.NodeKind, BRepGraph_NodeId::Kind::Product);
   EXPECT_EQ(aProduct.Id.Index, 0);
 
   // The root product should be a part (has topology root).
-  EXPECT_TRUE(aGraph.Defs().IsPart(0));
-  EXPECT_FALSE(aGraph.Defs().IsAssembly(0));
+  EXPECT_TRUE(aGraph.Defs().IsPart(BRepGraph_ProductId(0)));
+  EXPECT_FALSE(aGraph.Defs().IsAssembly(BRepGraph_ProductId(0)));
 }
 
 // =============================================================================
@@ -70,7 +70,7 @@ TEST(BRepGraphAssemblyTest, Build_Compound_AutoCreatesRootProduct)
   EXPECT_EQ(aGraph.Defs().NbProducts(), 1);
   EXPECT_EQ(aGraph.Defs().NbOccurrences(), 0);
 
-  const BRepGraph_TopoNode::ProductDef& aProduct = aGraph.Defs().Product(0);
+  const BRepGraph_TopoNode::ProductDef& aProduct = aGraph.Defs().Product(BRepGraph_ProductId(0));
   EXPECT_TRUE(aProduct.ShapeRootId.IsValid());
   EXPECT_EQ(aProduct.ShapeRootId.NodeKind, BRepGraph_NodeId::Kind::Compound);
 }
@@ -91,8 +91,8 @@ TEST(BRepGraphAssemblyTest, AddProduct_IsPart)
 
   EXPECT_TRUE(aProductId.IsValid());
   EXPECT_EQ(aProductId.NodeKind, BRepGraph_NodeId::Kind::Product);
-  EXPECT_TRUE(aGraph.Defs().IsPart(aProductId.Index));
-  EXPECT_FALSE(aGraph.Defs().IsAssembly(aProductId.Index));
+  EXPECT_TRUE(aGraph.Defs().IsPart(BRepGraph_ProductId(aProductId.Index)));
+  EXPECT_FALSE(aGraph.Defs().IsAssembly(BRepGraph_ProductId(aProductId.Index)));
 }
 
 // =============================================================================
@@ -109,8 +109,8 @@ TEST(BRepGraphAssemblyTest, AddAssemblyProduct_IsAssembly)
 
   EXPECT_TRUE(aAssemblyId.IsValid());
   EXPECT_EQ(aAssemblyId.NodeKind, BRepGraph_NodeId::Kind::Product);
-  EXPECT_TRUE(aGraph.Defs().IsAssembly(aAssemblyId.Index));
-  EXPECT_FALSE(aGraph.Defs().IsPart(aAssemblyId.Index));
+  EXPECT_TRUE(aGraph.Defs().IsAssembly(BRepGraph_ProductId(aAssemblyId.Index)));
+  EXPECT_FALSE(aGraph.Defs().IsPart(BRepGraph_ProductId(aAssemblyId.Index)));
 }
 
 // =============================================================================
@@ -135,14 +135,14 @@ TEST(BRepGraphAssemblyTest, AddOccurrence_LinksCorrectly)
   EXPECT_TRUE(anOccId.IsValid());
   EXPECT_EQ(anOccId.NodeKind, BRepGraph_NodeId::Kind::Occurrence);
 
-  const BRepGraph_TopoNode::OccurrenceDef& anOcc = aGraph.Defs().Occurrence(anOccId.Index);
-  EXPECT_EQ(anOcc.ProductIdx, aPartId.Index);
-  EXPECT_EQ(anOcc.ParentProductIdx, aAssemblyId.Index);
+  const BRepGraph_TopoNode::OccurrenceDef& anOcc = aGraph.Defs().Occurrence(BRepGraph_OccurrenceId(anOccId.Index));
+  EXPECT_EQ(anOcc.ProductDefId.Index, aPartId.Index);
+  EXPECT_EQ(anOcc.ParentProductDefId.Index, aAssemblyId.Index);
 
   // Check that assembly product has the occurrence in OccurrenceRefs.
-  const BRepGraph_TopoNode::ProductDef& aAssembly = aGraph.Defs().Product(aAssemblyId.Index);
+  const BRepGraph_TopoNode::ProductDef& aAssembly = aGraph.Defs().Product(BRepGraph_ProductId(aAssemblyId.Index));
   EXPECT_EQ(aAssembly.OccurrenceRefs.Length(), 1);
-  EXPECT_EQ(aAssembly.OccurrenceRefs.Value(0).OccurrenceIdx, anOccId.Index);
+  EXPECT_EQ(aAssembly.OccurrenceRefs.Value(0).OccurrenceDefId.Index, anOccId.Index);
 }
 
 // =============================================================================
@@ -169,10 +169,10 @@ TEST(BRepGraphAssemblyTest, DAGSharing_MultipleOccurrencesSamePart)
     aGraph.Builder().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location(aTrsf2));
 
   EXPECT_NE(anOcc1, anOcc2);
-  EXPECT_EQ(aGraph.Defs().Occurrence(anOcc1.Index).ProductIdx,
-            aGraph.Defs().Occurrence(anOcc2.Index).ProductIdx);
+  EXPECT_EQ(aGraph.Defs().Occurrence(BRepGraph_OccurrenceId(anOcc1.Index)).ProductDefId,
+            aGraph.Defs().Occurrence(BRepGraph_OccurrenceId(anOcc2.Index)).ProductDefId);
 
-  const BRepGraph_TopoNode::ProductDef& aAssembly = aGraph.Defs().Product(aAssemblyId.Index);
+  const BRepGraph_TopoNode::ProductDef& aAssembly = aGraph.Defs().Product(BRepGraph_ProductId(aAssemblyId.Index));
   EXPECT_EQ(aAssembly.OccurrenceRefs.Length(), 2);
 }
 
@@ -217,13 +217,13 @@ TEST(BRepGraphAssemblyTest, RemoveOccurrence_UpdatesParent)
   const BRepGraph_NodeId anOccId =
     aGraph.Builder().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location());
 
-  EXPECT_EQ(aGraph.Defs().NbComponents(aAssemblyId.Index), 1);
+  EXPECT_EQ(aGraph.Defs().NbComponents(BRepGraph_ProductId(aAssemblyId.Index)), 1);
 
   // Remove the occurrence - should update parent's OccurrenceRefs.
   aGraph.Builder().RemoveSubgraph(anOccId);
 
   EXPECT_TRUE(aGraph.Defs().IsRemoved(anOccId));
-  EXPECT_EQ(aGraph.Defs().Product(aAssemblyId.Index).OccurrenceRefs.Length(), 0);
+  EXPECT_EQ(aGraph.Defs().Product(BRepGraph_ProductId(aAssemblyId.Index)).OccurrenceRefs.Length(), 0);
 }
 
 // =============================================================================
@@ -262,12 +262,12 @@ TEST(BRepGraphAssemblyTest, MutProduct_RAII)
   ASSERT_TRUE(aGraph.IsDone());
 
   {
-    BRepGraph_MutRef<BRepGraph_TopoNode::ProductDef> aMutProd = aGraph.MutProduct(0);
+    BRepGraph_MutRef<BRepGraph_TopoNode::ProductDef> aMutProd = aGraph.MutProduct(BRepGraph_ProductId(0));
     // Setting ShapeRootId to a different topology node.
     aMutProd->ShapeRootId = BRepGraph_NodeId::Solid(0);
   } // markModified fires here
 
-  EXPECT_TRUE(aGraph.Defs().Product(0).IsModified);
+  EXPECT_TRUE(aGraph.Defs().Product(BRepGraph_ProductId(0)).IsModified);
 }
 
 // =============================================================================
@@ -290,12 +290,12 @@ TEST(BRepGraphAssemblyTest, MutOccurrence_Placement)
 
   {
     BRepGraph_MutRef<BRepGraph_TopoNode::OccurrenceDef> aMutOcc =
-      aGraph.MutOccurrence(anOccId.Index);
+      aGraph.MutOccurrence(BRepGraph_OccurrenceId(anOccId.Index));
     aMutOcc->Placement = TopLoc_Location(aTrsf);
   } // markModified fires here
 
-  EXPECT_TRUE(aGraph.Defs().Occurrence(anOccId.Index).IsModified);
-  const gp_Trsf& aStoredTrsf = aGraph.Defs().Occurrence(anOccId.Index).Placement.Transformation();
+  EXPECT_TRUE(aGraph.Defs().Occurrence(BRepGraph_OccurrenceId(anOccId.Index)).IsModified);
+  const gp_Trsf& aStoredTrsf = aGraph.Defs().Occurrence(BRepGraph_OccurrenceId(anOccId.Index)).Placement.Transformation();
   EXPECT_NEAR(aStoredTrsf.TranslationPart().X(), 50.0, Precision::Confusion());
 }
 
@@ -328,8 +328,9 @@ TEST(BRepGraphAssemblyTest, GlobalPlacement_DeepNesting)
     aGraph.Builder().AddOccurrence(aSubAsmId, aPartId, TopLoc_Location(aTrsf1), anOccSubAsm);
 
   // Global placement of the part occurrence should be aTrsf2 * aTrsf1.
-  // ParentOccurrenceIdx chain: anOccPart -> anOccSubAsm -> -1 (root).
-  TopLoc_Location aGlobal = aGraph.Paths().OccurrenceLocation(anOccPart.Index);
+  // ParentOccurrenceDefId chain: anOccPart -> anOccSubAsm -> -1 (root).
+  TopLoc_Location aGlobal =
+    aGraph.Paths().OccurrenceLocation(BRepGraph_OccurrenceId::FromNodeId(anOccPart));
   const gp_Trsf&  aGTrsf  = aGlobal.Transformation();
   EXPECT_NEAR(aGTrsf.TranslationPart().X(), 100.0, Precision::Confusion());
   EXPECT_NEAR(aGTrsf.TranslationPart().Y(), 200.0, Precision::Confusion());
@@ -377,7 +378,7 @@ TEST(BRepGraphAssemblyTest, OccurrencesOfProduct_ReverseIndex)
   // We test the reverse index build via Storage's exposed reverse index.
   // Since BuildReverseIndex doesn't cover product/occurrences yet,
   // we test through the NbComponents API.
-  EXPECT_EQ(aGraph.Defs().NbComponents(aAssemblyId.Index), 2);
+  EXPECT_EQ(aGraph.Defs().NbComponents(BRepGraph_ProductId(aAssemblyId.Index)), 2);
 }
 
 // =============================================================================
@@ -559,8 +560,10 @@ TEST(BRepGraphAssemblyTest, GlobalPlacement_DAGSharing_DistinctPathsGiveDistinct
     aGraph.Builder().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location(aTrsf2));
 
   // Same part, different occurrences, different global placements.
-  TopLoc_Location aGlobal1 = aGraph.Paths().OccurrenceLocation(anOcc1.Index);
-  TopLoc_Location aGlobal2 = aGraph.Paths().OccurrenceLocation(anOcc2.Index);
+  TopLoc_Location aGlobal1 =
+    aGraph.Paths().OccurrenceLocation(BRepGraph_OccurrenceId::FromNodeId(anOcc1));
+  TopLoc_Location aGlobal2 =
+    aGraph.Paths().OccurrenceLocation(BRepGraph_OccurrenceId::FromNodeId(anOcc2));
 
   EXPECT_NEAR(aGlobal1.Transformation().TranslationPart().X(), 100.0, Precision::Confusion());
   EXPECT_NEAR(aGlobal1.Transformation().TranslationPart().Y(), 0.0, Precision::Confusion());
@@ -627,7 +630,8 @@ TEST(BRepGraphAssemblyTest, GlobalPlacement_ThreeLevelNesting)
     aGraph.Builder().AddOccurrence(aMidAsm, aLeafPart, TopLoc_Location(aT1), anOccMid);
 
   // Global of leaf = T3 * T2 * T1 => (1, 2, 3).
-  TopLoc_Location aGlobal = aGraph.Paths().OccurrenceLocation(anOccLeaf.Index);
+  TopLoc_Location aGlobal =
+    aGraph.Paths().OccurrenceLocation(BRepGraph_OccurrenceId::FromNodeId(anOccLeaf));
   const gp_XYZ&   aTransl = aGlobal.Transformation().TranslationPart();
   EXPECT_NEAR(aTransl.X(), 1.0, Precision::Confusion());
   EXPECT_NEAR(aTransl.Y(), 2.0, Precision::Confusion());
@@ -652,11 +656,11 @@ TEST(BRepGraphAssemblyTest, OccurrencesOfProduct_ViaReverseIndex)
   // Rebuild reverse index to populate product->occurrences.
   // (BuildReverseIndex is called during Build, but not after Builder mutations.)
   // Access via DefsView which uses forward OccurrenceRefs.
-  EXPECT_EQ(aGraph.Defs().NbComponents(aAsmId.Index), 2);
+  EXPECT_EQ(aGraph.Defs().NbComponents(BRepGraph_ProductId(aAsmId.Index)), 2);
 
   // The auto-created root product is not referenced by any occurrence.
   // (It IS the part being referenced, so OccurrencesOfProduct should have entries.)
-  EXPECT_EQ(aGraph.Defs().NbComponents(aPartId.Index), 0); // part has no child occurrences
+  EXPECT_EQ(aGraph.Defs().NbComponents(BRepGraph_ProductId(aPartId.Index)), 0); // part has no child occurrences
 }
 
 // =============================================================================
@@ -665,7 +669,7 @@ TEST(BRepGraphAssemblyTest, OccurrencesOfProduct_ViaReverseIndex)
 
 TEST(BRepGraphAssemblyTest, GlobalPlacement_CircularParentOccurrence_Terminates)
 {
-  // Manually create a circular ParentOccurrenceIdx via MutRef to simulate
+  // Manually create a circular ParentOccurrenceDefId via MutRef to simulate
   // a malformed graph. GlobalPlacement must terminate (THE_MAX_OCCURRENCE_DEPTH guard).
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
@@ -682,14 +686,15 @@ TEST(BRepGraphAssemblyTest, GlobalPlacement_CircularParentOccurrence_Terminates)
   const BRepGraph_NodeId anOcc2 =
     aGraph.Builder().AddOccurrence(aAsmId, aPartId, TopLoc_Location(aTrsf), anOcc1);
 
-  // Inject circular reference: occ1.ParentOccurrenceIdx = occ2 (creates cycle).
+  // Inject circular reference: occ1.ParentOccurrenceDefId = occ2 (creates cycle).
   {
-    BRepGraph_MutRef<BRepGraph_TopoNode::OccurrenceDef> aMut = aGraph.MutOccurrence(anOcc1.Index);
-    aMut->ParentOccurrenceIdx                                = anOcc2.Index;
+    BRepGraph_MutRef<BRepGraph_TopoNode::OccurrenceDef> aMut = aGraph.MutOccurrence(BRepGraph_OccurrenceId(anOcc1.Index));
+    aMut->ParentOccurrenceDefId                                = BRepGraph_OccurrenceId(anOcc2.Index);
   }
 
   // GlobalPlacement must terminate despite the cycle (depth guard).
-  TopLoc_Location aGlobal = aGraph.Paths().OccurrenceLocation(anOcc2.Index);
+  TopLoc_Location aGlobal =
+    aGraph.Paths().OccurrenceLocation(BRepGraph_OccurrenceId::FromNodeId(anOcc2));
   // We don't check the value - just that it doesn't hang.
   (void)aGlobal;
 }

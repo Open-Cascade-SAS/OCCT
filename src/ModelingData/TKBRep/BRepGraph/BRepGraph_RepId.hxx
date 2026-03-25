@@ -14,6 +14,7 @@
 #ifndef _BRepGraph_RepId_HeaderFile
 #define _BRepGraph_RepId_HeaderFile
 
+#include <Standard_Assert.hxx>
 #include <Standard_HashUtils.hxx>
 
 #include <cstddef>
@@ -62,6 +63,78 @@ struct BRepGraph_RepId
            || theKind == Kind::Polygon2D || theKind == Kind::PolygonOnTri;
   }
 
+  //! @brief Compile-time typed wrapper around BRepGraph_RepId.
+  //!
+  //! Provides compile-time kind safety: a Typed<Kind::Surface>
+  //! cannot be accidentally used where a Typed<Kind::Curve3D> is expected.
+  //! Implicitly converts to BRepGraph_RepId for backward compatibility.
+  //!
+  //! @tparam TheKind the BRepGraph_RepId::Kind this typed id represents
+  template <Kind TheKind>
+  struct Typed
+  {
+    int Index;
+
+    //! Default: invalid (Index = -1).
+    Typed()
+        : Index(-1)
+    {
+    }
+
+    //! Construct from index.
+    explicit Typed(const int theIdx)
+        : Index(theIdx)
+    {
+      Standard_ASSERT_VOID(theIdx >= -1, "index must be >= -1");
+    }
+
+    //! True if this id points to an allocated representation slot.
+    bool IsValid() const { return Index >= 0; }
+
+    //! Implicit conversion to untyped RepId.
+    operator BRepGraph_RepId() const { return BRepGraph_RepId(TheKind, Index); }
+
+    //! Explicit conversion from untyped RepId.
+    //! Asserts that the Kind matches in debug builds.
+    //! @param[in] theId untyped RepId to convert
+    static Typed FromRepId(const BRepGraph_RepId theId)
+    {
+      Standard_ASSERT_VOID(theId.RepKind == TheKind, "RepId kind mismatch");
+      return Typed(theId.Index);
+    }
+
+    bool operator==(const Typed& theOther) const { return Index == theOther.Index; }
+
+    bool operator!=(const Typed& theOther) const { return Index != theOther.Index; }
+
+    bool operator<(const Typed& theOther) const { return Index < theOther.Index; }
+
+    bool operator<=(const Typed& theOther) const { return Index <= theOther.Index; }
+
+    bool operator>(const Typed& theOther) const { return Index > theOther.Index; }
+
+    bool operator>=(const Typed& theOther) const { return Index >= theOther.Index; }
+
+    //! Comparison with untyped RepId (checks both Kind and Index).
+    bool operator==(const BRepGraph_RepId& theOther) const
+    {
+      return theOther.RepKind == TheKind && theOther.Index == Index;
+    }
+
+    bool operator!=(const BRepGraph_RepId& theOther) const { return !(*this == theOther); }
+
+    //! Allow reversed comparison: RepId == Typed.
+    friend bool operator==(const BRepGraph_RepId& theLhs, const Typed& theRhs)
+    {
+      return theRhs == theLhs;
+    }
+
+    friend bool operator!=(const BRepGraph_RepId& theLhs, const Typed& theRhs)
+    {
+      return theRhs != theLhs;
+    }
+  };
+
   Kind RepKind;
   int  Index;
 
@@ -82,20 +155,32 @@ struct BRepGraph_RepId
   //! True if this id points to an allocated representation slot.
   bool IsValid() const { return Index >= 0; }
 
-  //! @name Static factory methods for readable RepId construction.
-  static BRepGraph_RepId Surface(const int theIdx) { return {Kind::Surface, theIdx}; }
+  //! @name Static factory methods returning typed RepIds.
+  static Typed<Kind::Surface> Surface(const int theIdx) { return Typed<Kind::Surface>(theIdx); }
 
-  static BRepGraph_RepId Curve3D(const int theIdx) { return {Kind::Curve3D, theIdx}; }
+  static Typed<Kind::Curve3D> Curve3D(const int theIdx) { return Typed<Kind::Curve3D>(theIdx); }
 
-  static BRepGraph_RepId Curve2D(const int theIdx) { return {Kind::Curve2D, theIdx}; }
+  static Typed<Kind::Curve2D> Curve2D(const int theIdx) { return Typed<Kind::Curve2D>(theIdx); }
 
-  static BRepGraph_RepId Triangulation(const int theIdx) { return {Kind::Triangulation, theIdx}; }
+  static Typed<Kind::Triangulation> Triangulation(const int theIdx)
+  {
+    return Typed<Kind::Triangulation>(theIdx);
+  }
 
-  static BRepGraph_RepId Polygon3D(const int theIdx) { return {Kind::Polygon3D, theIdx}; }
+  static Typed<Kind::Polygon3D> Polygon3D(const int theIdx)
+  {
+    return Typed<Kind::Polygon3D>(theIdx);
+  }
 
-  static BRepGraph_RepId Polygon2D(const int theIdx) { return {Kind::Polygon2D, theIdx}; }
+  static Typed<Kind::Polygon2D> Polygon2D(const int theIdx)
+  {
+    return Typed<Kind::Polygon2D>(theIdx);
+  }
 
-  static BRepGraph_RepId PolygonOnTri(const int theIdx) { return {Kind::PolygonOnTri, theIdx}; }
+  static Typed<Kind::PolygonOnTri> PolygonOnTri(const int theIdx)
+  {
+    return Typed<Kind::PolygonOnTri>(theIdx);
+  }
 
   bool operator==(const BRepGraph_RepId& theOther) const
   {
@@ -103,7 +188,23 @@ struct BRepGraph_RepId
   }
 
   bool operator!=(const BRepGraph_RepId& theOther) const { return !(*this == theOther); }
+
+  bool operator<(const BRepGraph_RepId& theOther) const
+  {
+    if (RepKind != theOther.RepKind)
+      return static_cast<int>(RepKind) < static_cast<int>(theOther.RepKind);
+    return Index < theOther.Index;
+  }
 };
+
+//! @name Convenience type aliases for typed RepIds.
+using BRepGraph_SurfaceRepId       = BRepGraph_RepId::Typed<BRepGraph_RepId::Kind::Surface>;
+using BRepGraph_Curve3DRepId       = BRepGraph_RepId::Typed<BRepGraph_RepId::Kind::Curve3D>;
+using BRepGraph_Curve2DRepId       = BRepGraph_RepId::Typed<BRepGraph_RepId::Kind::Curve2D>;
+using BRepGraph_TriangulationRepId = BRepGraph_RepId::Typed<BRepGraph_RepId::Kind::Triangulation>;
+using BRepGraph_Polygon3DRepId     = BRepGraph_RepId::Typed<BRepGraph_RepId::Kind::Polygon3D>;
+using BRepGraph_Polygon2DRepId     = BRepGraph_RepId::Typed<BRepGraph_RepId::Kind::Polygon2D>;
+using BRepGraph_PolygonOnTriRepId  = BRepGraph_RepId::Typed<BRepGraph_RepId::Kind::PolygonOnTri>;
 
 //! std::hash specialization for NCollection_DefaultHasher support.
 template <>
@@ -115,6 +216,16 @@ struct std::hash<BRepGraph_RepId>
     aCombination[0] = opencascade::hash(static_cast<int>(theId.RepKind));
     aCombination[1] = opencascade::hash(theId.Index);
     return opencascade::hashBytes(aCombination, sizeof(aCombination));
+  }
+};
+
+//! std::hash specialization for BRepGraph_RepId::Typed.
+template <BRepGraph_RepId::Kind TheKind>
+struct std::hash<BRepGraph_RepId::Typed<TheKind>>
+{
+  size_t operator()(const BRepGraph_RepId::Typed<TheKind>& theId) const noexcept
+  {
+    return std::hash<BRepGraph_RepId>{}(static_cast<BRepGraph_RepId>(theId));
   }
 };
 

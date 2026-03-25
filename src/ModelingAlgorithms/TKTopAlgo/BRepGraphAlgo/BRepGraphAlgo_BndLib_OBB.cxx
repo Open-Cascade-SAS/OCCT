@@ -99,13 +99,14 @@ static int pointsForOBB(const BRepGraph&            theGraph,
   const int aNbVerts = theGraph.Defs().NbVertices();
   for (int i = 0; i < aNbVerts; ++i)
   {
+    const BRepGraph_VertexId aVertId(i);
     if (thePts != nullptr)
     {
-      (*thePts)(aRetVal) = BRepGraph_Tool::Vertex::Pnt(theGraph, i);
+      (*thePts)(aRetVal) = BRepGraph_Tool::Vertex::Pnt(theGraph, aVertId);
     }
     if (theArrOfToler != nullptr)
     {
-      (*theArrOfToler)(aRetVal) = BRepGraph_Tool::Vertex::Tolerance(theGraph, i);
+      (*theArrOfToler)(aRetVal) = BRepGraph_Tool::Vertex::Tolerance(theGraph, aVertId);
     }
     ++aRetVal;
   }
@@ -119,13 +120,14 @@ static int pointsForOBB(const BRepGraph&            theGraph,
   const int aNbFaces = theGraph.Defs().NbFaces();
   for (int aFaceIdx = 0; aFaceIdx < aNbFaces; ++aFaceIdx)
   {
-    if (!BRepGraph_Tool::Face::HasSurface(theGraph, aFaceIdx))
+    const BRepGraph_FaceId aFaceId(aFaceIdx);
+    if (!BRepGraph_Tool::Face::HasSurface(theGraph, aFaceId))
     {
       continue;
     }
 
     const GeomAdaptor_TransformedSurface aGAS =
-      BRepGraph_Tool::Face::SurfaceAdaptor(theGraph, aFaceIdx);
+      BRepGraph_Tool::Face::SurfaceAdaptor(theGraph, aFaceId);
     if (!isPlanar(aGAS))
     {
       if (!theIsTriangulationUsed)
@@ -137,24 +139,24 @@ static int pointsForOBB(const BRepGraph&            theGraph,
     {
       // Planar face: check if all edges are linear.
       bool                               hasNonLinearEdge = false;
-      const BRepGraph_TopoNode::FaceDef& aFaceDef         = theGraph.Defs().Face(aFaceIdx);
+      const BRepGraph_TopoNode::FaceDef& aFaceDef         = theGraph.Defs().Face(BRepGraph_FaceId(aFaceIdx));
       for (int aWireRefIdx = 0; aWireRefIdx < aFaceDef.WireRefs.Length() && !hasNonLinearEdge;
            ++aWireRefIdx)
       {
         const BRepGraphInc::WireRef&       aWR      = aFaceDef.WireRefs.Value(aWireRefIdx);
-        const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.Defs().Wire(aWR.WireIdx);
+        const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.Defs().Wire(aWR.WireDefId);
         for (int anIdx = 0; anIdx < aWireDef.CoEdgeRefs.Length(); ++anIdx)
         {
           const BRepGraphInc::CoEdgeRef&       aCR       = aWireDef.CoEdgeRefs.Value(anIdx);
-          const BRepGraph_TopoNode::CoEdgeDef& aCoEdge   = theGraph.Defs().CoEdge(aCR.CoEdgeIdx);
-          const int                            anEdgeIdx = aCoEdge.EdgeIdx;
-          if (BRepGraph_Tool::Edge::Degenerated(theGraph, anEdgeIdx)
-              || !BRepGraph_Tool::Edge::HasCurve(theGraph, anEdgeIdx))
+          const BRepGraph_TopoNode::CoEdgeDef& aCoEdge   = theGraph.Defs().CoEdge(aCR.CoEdgeDefId);
+          const BRepGraph_EdgeId               anEdgeId(aCoEdge.EdgeDefId);
+          if (BRepGraph_Tool::Edge::Degenerated(theGraph, anEdgeId)
+              || !BRepGraph_Tool::Edge::HasCurve(theGraph, anEdgeId))
           {
             continue;
           }
           const GeomAdaptor_TransformedCurve aCurveAdaptor =
-            BRepGraph_Tool::Edge::CurveAdaptor(theGraph, anEdgeIdx);
+            BRepGraph_Tool::Edge::CurveAdaptor(theGraph, anEdgeId);
           if (!isLinear(aCurveAdaptor))
           {
             hasNonLinearEdge = true;
@@ -176,12 +178,12 @@ static int pointsForOBB(const BRepGraph&            theGraph,
     }
 
     // Use active triangulation of the face.
-    if (!BRepGraph_Tool::Face::HasTriangulation(theGraph, aFaceIdx))
+    if (!BRepGraph_Tool::Face::HasTriangulation(theGraph, aFaceId))
     {
       return 0;
     }
     const occ::handle<Poly_Triangulation>& aTriangulation =
-      BRepGraph_Tool::Face::Triangulation(theGraph, aFaceIdx);
+      BRepGraph_Tool::Face::Triangulation(theGraph, aFaceId);
     if (aTriangulation.IsNull())
     {
       return 0;
@@ -206,18 +208,19 @@ static int pointsForOBB(const BRepGraph&            theGraph,
   const int aNbEdges = theGraph.Defs().NbEdges();
   for (int i = 0; i < aNbEdges; ++i)
   {
-    if (theGraph.Defs().FaceCountOfEdge(i) > 0)
+    const BRepGraph_EdgeId anEdgeId(i);
+    if (theGraph.Defs().FaceCountOfEdge(anEdgeId) > 0)
     {
       continue; // Edge is in a face, already handled.
     }
-    if (BRepGraph_Tool::Edge::Degenerated(theGraph, i)
-        || !BRepGraph_Tool::Edge::HasCurve(theGraph, i))
+    if (BRepGraph_Tool::Edge::Degenerated(theGraph, anEdgeId)
+        || !BRepGraph_Tool::Edge::HasCurve(theGraph, anEdgeId))
     {
       continue;
     }
 
     const GeomAdaptor_TransformedCurve aCurveAdaptor =
-      BRepGraph_Tool::Edge::CurveAdaptor(theGraph, i);
+      BRepGraph_Tool::Edge::CurveAdaptor(theGraph, anEdgeId);
     if (isLinear(aCurveAdaptor))
     {
       // Skip linear edge - vertices already added.
@@ -245,7 +248,7 @@ static int pointsForOBB(const BRepGraph&            theGraph,
       }
       if (theArrOfToler != nullptr)
       {
-        (*theArrOfToler)(aRetVal) = BRepGraph_Tool::Edge::Tolerance(theGraph, i);
+        (*theArrOfToler)(aRetVal) = BRepGraph_Tool::Edge::Tolerance(theGraph, anEdgeId);
       }
       ++aRetVal;
     }
@@ -327,7 +330,7 @@ static void computeProperties(const BRepGraph& theGraph, GProp_GProps& theGCommo
   const int aNbFaces = theGraph.Defs().NbFaces();
   for (int i = 0; i < aNbFaces; ++i)
   {
-    const TopoDS_Shape aFaceShape = theGraph.Shapes().ReconstructFace(i);
+    const TopoDS_Shape aFaceShape = theGraph.Shapes().ReconstructFace(BRepGraph_FaceId(i));
     GProp_GProps       aG;
     BRepGProp::SurfaceProperties(aFaceShape, aG, true);
     theGCommon.Add(aG);
@@ -337,7 +340,7 @@ static void computeProperties(const BRepGraph& theGraph, GProp_GProps& theGCommo
   const int aNbVerts = theGraph.Defs().NbVertices();
   for (int i = 0; i < aNbVerts; ++i)
   {
-    GProp_GProps aG(BRepGraph_Tool::Vertex::Pnt(theGraph, i));
+    GProp_GProps aG(BRepGraph_Tool::Vertex::Pnt(theGraph, BRepGraph_VertexId(i)));
     theGCommon.Add(aG);
   }
 }
@@ -406,7 +409,7 @@ static void computePCA(const BRepGraph& theGraph,
     }
     else if (theGraph.Defs().NbFaces() > 0)
     {
-      aRootShape = theGraph.Shapes().ReconstructFace(0);
+      aRootShape = theGraph.Shapes().ReconstructFace(BRepGraph_FaceId(0));
     }
 
     if (!aRootShape.IsNull())

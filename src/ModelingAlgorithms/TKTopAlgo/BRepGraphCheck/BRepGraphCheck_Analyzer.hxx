@@ -15,6 +15,7 @@
 #define _BRepGraphCheck_Analyzer_HeaderFile
 
 #include <BRepGraph.hxx>
+#include <BRepGraph_NodeId.hxx>
 #include <BRepGraphCheck_Report.hxx>
 #include <Standard_DefineAlloc.hxx>
 
@@ -62,46 +63,29 @@ public:
   Standard_EXPORT void Perform();
 
   //! Incremental: check a single vertex definition.
-  //! @param[in] theVertexDefIdx vertex definition index
-  Standard_EXPORT void CheckVertex(int theVertexDefIdx);
+  //! @param[in] theVertex typed vertex definition identifier
+  Standard_EXPORT void CheckVertex(const BRepGraph_VertexId theVertex);
 
   //! Incremental: check a single edge definition.
-  //! @param[in] theEdgeDefIdx edge definition index
-  Standard_EXPORT void CheckEdge(int theEdgeDefIdx);
+  //! @param[in] theEdge typed edge definition identifier
+  Standard_EXPORT void CheckEdge(const BRepGraph_EdgeId theEdge);
 
   //! Incremental: check a wire on a face.
-  //! @param[in] theWireDefIdx wire definition index
-  //! @param[in] theFaceDefIdx face definition index (-1 for standalone wire check)
-  Standard_EXPORT void CheckWire(int theWireDefIdx, int theFaceDefIdx);
+  //! @param[in] theWire typed wire definition identifier
+  //! @param[in] theFace typed face definition identifier (invalid for standalone wire check)
+  Standard_EXPORT void CheckWire(const BRepGraph_WireId theWire, const BRepGraph_FaceId theFace);
 
   //! Incremental: check a single face definition.
-  //! @param[in] theFaceDefIdx face definition index
-  Standard_EXPORT void CheckFace(int theFaceDefIdx);
+  //! @param[in] theFace typed face definition identifier
+  Standard_EXPORT void CheckFace(const BRepGraph_FaceId theFace);
 
   //! Incremental: check a single shell definition.
-  //! @param[in] theShellDefIdx shell definition index
-  Standard_EXPORT void CheckShell(int theShellDefIdx);
+  //! @param[in] theShell typed shell definition identifier
+  Standard_EXPORT void CheckShell(const BRepGraph_ShellId theShell);
 
   //! Incremental: check a single solid definition.
-  //! @param[in] theSolidDefIdx solid definition index
-  Standard_EXPORT void CheckSolid(int theSolidDefIdx);
-
-  //! @name NodeId overloads
-
-  void CheckVertex(const BRepGraph_NodeId theVertex) { CheckVertex(theVertex.Index); }
-
-  void CheckEdge(const BRepGraph_NodeId theEdge) { CheckEdge(theEdge.Index); }
-
-  void CheckWire(const BRepGraph_NodeId theWire, const BRepGraph_NodeId theFace)
-  {
-    CheckWire(theWire.Index, theFace.Index);
-  }
-
-  void CheckFace(const BRepGraph_NodeId theFace) { CheckFace(theFace.Index); }
-
-  void CheckShell(const BRepGraph_NodeId theShell) { CheckShell(theShell.Index); }
-
-  void CheckSolid(const BRepGraph_NodeId theSolid) { CheckSolid(theSolid.Index); }
+  //! @param[in] theSolid typed solid definition identifier
+  Standard_EXPORT void CheckSolid(const BRepGraph_SolidId theSolid);
 
   //! True if no Error or Fatal issues exist.
   Standard_EXPORT bool IsValid() const;

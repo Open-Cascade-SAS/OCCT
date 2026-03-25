@@ -33,33 +33,33 @@ protected:
 
 TEST_F(BRepGraphMutationGenTest, MutationGen_IncrementedOnMutation)
 {
-  EXPECT_EQ(myGraph.Defs().Edge(0).MutationGen, 0u);
+  EXPECT_EQ(myGraph.Defs().Edge(BRepGraph_EdgeId(0)).MutationGen, 0u);
 
-  myGraph.MutEdge(0)->Tolerance = 0.5;
+  myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
 
-  EXPECT_EQ(myGraph.Defs().Edge(0).MutationGen, 1u);
+  EXPECT_EQ(myGraph.Defs().Edge(BRepGraph_EdgeId(0)).MutationGen, 1u);
 }
 
 TEST_F(BRepGraphMutationGenTest, MutationGen_MultipleIncrements)
 {
-  myGraph.MutEdge(0)->Tolerance = 0.1;
-  myGraph.MutEdge(0)->Tolerance = 0.2;
+  myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.1;
+  myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.2;
 
-  EXPECT_EQ(myGraph.Defs().Edge(0).MutationGen, 2u);
+  EXPECT_EQ(myGraph.Defs().Edge(BRepGraph_EdgeId(0)).MutationGen, 2u);
 }
 
 TEST_F(BRepGraphMutationGenTest, MutationGen_DeferredMode)
 {
   myGraph.BeginDeferredInvalidation();
-  myGraph.MutEdge(0)->Tolerance = 0.5;
+  myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
 
   // MutationGen is incremented even in deferred mode.
-  EXPECT_EQ(myGraph.Defs().Edge(0).MutationGen, 1u);
+  EXPECT_EQ(myGraph.Defs().Edge(BRepGraph_EdgeId(0)).MutationGen, 1u);
 
   myGraph.EndDeferredInvalidation();
 
   // Still 1 after flush - flush doesn't re-increment.
-  EXPECT_EQ(myGraph.Defs().Edge(0).MutationGen, 1u);
+  EXPECT_EQ(myGraph.Defs().Edge(BRepGraph_EdgeId(0)).MutationGen, 1u);
 }
 
 TEST_F(BRepGraphMutationGenTest, MutationGen_PropagatedParent_NotIncremented)
@@ -71,18 +71,18 @@ TEST_F(BRepGraphMutationGenTest, MutationGen_PropagatedParent_NotIncremented)
   const int aNbShells = myGraph.Defs().NbShells();
   const int aNbSolids = myGraph.Defs().NbSolids();
 
-  myGraph.MutEdge(0)->Tolerance = 0.5;
+  myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
 
-  EXPECT_EQ(myGraph.Defs().Edge(0).MutationGen, 1u);
+  EXPECT_EQ(myGraph.Defs().Edge(BRepGraph_EdgeId(0)).MutationGen, 1u);
 
   for (int i = 0; i < aNbWires; ++i)
-    EXPECT_EQ(myGraph.Defs().Wire(i).MutationGen, 0u);
+    EXPECT_EQ(myGraph.Defs().Wire(BRepGraph_WireId(i)).MutationGen, 0u);
   for (int i = 0; i < aNbFaces; ++i)
-    EXPECT_EQ(myGraph.Defs().Face(i).MutationGen, 0u);
+    EXPECT_EQ(myGraph.Defs().Face(BRepGraph_FaceId(i)).MutationGen, 0u);
   for (int i = 0; i < aNbShells; ++i)
-    EXPECT_EQ(myGraph.Defs().Shell(i).MutationGen, 0u);
+    EXPECT_EQ(myGraph.Defs().Shell(BRepGraph_ShellId(i)).MutationGen, 0u);
   for (int i = 0; i < aNbSolids; ++i)
-    EXPECT_EQ(myGraph.Defs().Solid(i).MutationGen, 0u);
+    EXPECT_EQ(myGraph.Defs().Solid(BRepGraph_SolidId(i)).MutationGen, 0u);
 }
 
 TEST_F(BRepGraphMutationGenTest, MutationGen_DeferredPropagatedParent_NotIncremented)
@@ -90,17 +90,17 @@ TEST_F(BRepGraphMutationGenTest, MutationGen_DeferredPropagatedParent_NotIncreme
   // Same as above but in deferred mode - propagation on flush must not
   // increment MutationGen on parents.
   myGraph.BeginDeferredInvalidation();
-  myGraph.MutEdge(0)->Tolerance = 0.5;
+  myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
   myGraph.EndDeferredInvalidation();
 
-  EXPECT_EQ(myGraph.Defs().Edge(0).MutationGen, 1u);
+  EXPECT_EQ(myGraph.Defs().Edge(BRepGraph_EdgeId(0)).MutationGen, 1u);
 
   for (int i = 0; i < myGraph.Defs().NbWires(); ++i)
-    EXPECT_EQ(myGraph.Defs().Wire(i).MutationGen, 0u);
+    EXPECT_EQ(myGraph.Defs().Wire(BRepGraph_WireId(i)).MutationGen, 0u);
   for (int i = 0; i < myGraph.Defs().NbFaces(); ++i)
-    EXPECT_EQ(myGraph.Defs().Face(i).MutationGen, 0u);
+    EXPECT_EQ(myGraph.Defs().Face(BRepGraph_FaceId(i)).MutationGen, 0u);
   for (int i = 0; i < myGraph.Defs().NbShells(); ++i)
-    EXPECT_EQ(myGraph.Defs().Shell(i).MutationGen, 0u);
+    EXPECT_EQ(myGraph.Defs().Shell(BRepGraph_ShellId(i)).MutationGen, 0u);
   for (int i = 0; i < myGraph.Defs().NbSolids(); ++i)
-    EXPECT_EQ(myGraph.Defs().Solid(i).MutationGen, 0u);
+    EXPECT_EQ(myGraph.Defs().Solid(BRepGraph_SolidId(i)).MutationGen, 0u);
 }

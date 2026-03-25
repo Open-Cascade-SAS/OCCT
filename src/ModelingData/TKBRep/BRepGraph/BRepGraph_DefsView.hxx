@@ -16,6 +16,7 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_PCurveContext.hxx>
+#include <BRepGraph_RepId.hxx>
 #include <GeomAdaptor_TransformedCurve.hxx>
 #include <GeomAdaptor_TransformedSurface.hxx>
 
@@ -69,53 +70,56 @@ public:
   Standard_EXPORT int NbActiveCompSolids() const;
 
   //! Return cached face count for an edge - O(1).
-  //! @param[in] theEdgeDefIdx zero-based edge definition index
-  Standard_EXPORT int FaceCountOfEdge(const int theEdgeDefIdx) const;
+  //! @param[in] theEdge typed edge definition identifier
+  Standard_EXPORT int FaceCountOfEdge(const BRepGraph_EdgeId theEdge) const;
 
   //! Return wire definition indices that contain a given edge (safe reference, never null).
-  //! @param[in] theEdgeDefIdx zero-based edge definition index
-  Standard_EXPORT const NCollection_Vector<int>& WiresOfEdge(const int theEdgeDefIdx) const;
+  //! @param[in] theEdge typed edge definition identifier
+  Standard_EXPORT const NCollection_Vector<BRepGraph_WireId>& WiresOfEdge(const BRepGraph_EdgeId theEdge) const;
 
   //! Return coedge indices referencing the given edge (safe reference, never null).
-  //! @param[in] theEdgeDefIdx zero-based edge definition index
-  Standard_EXPORT const NCollection_Vector<int>& CoEdgesOfEdge(const int theEdgeDefIdx) const;
+  //! @param[in] theEdge typed edge definition identifier
+  Standard_EXPORT const NCollection_Vector<BRepGraph_CoEdgeId>& CoEdgesOfEdge(const BRepGraph_EdgeId theEdge) const;
 
-  //! Access solid definition by index.
-  //! @param[in] theSolidIdx zero-based solid definition index
-  Standard_EXPORT const BRepGraph_TopoNode::SolidDef& Solid(const int theSolidIdx) const;
+  //! Access solid definition by typed identifier.
+  //! @param[in] theSolid typed solid definition identifier
+  Standard_EXPORT const BRepGraph_TopoNode::SolidDef& Solid(const BRepGraph_SolidId theSolid) const;
 
-  //! Access shell definition by index.
-  //! @param[in] theShellIdx zero-based shell definition index
-  Standard_EXPORT const BRepGraph_TopoNode::ShellDef& Shell(const int theShellIdx) const;
+  //! Access shell definition by typed identifier.
+  //! @param[in] theShell typed shell definition identifier
+  Standard_EXPORT const BRepGraph_TopoNode::ShellDef& Shell(const BRepGraph_ShellId theShell) const;
 
-  //! Access face definition by index.
-  //! @param[in] theFaceIdx zero-based face definition index
-  Standard_EXPORT const BRepGraph_TopoNode::FaceDef& Face(const int theFaceIdx) const;
+  //! Access face definition by typed identifier.
+  //! @param[in] theFace typed face definition identifier
+  Standard_EXPORT const BRepGraph_TopoNode::FaceDef& Face(const BRepGraph_FaceId theFace) const;
 
-  //! Access wire definition by index.
-  //! @param[in] theWireIdx zero-based wire definition index
-  Standard_EXPORT const BRepGraph_TopoNode::WireDef& Wire(const int theWireIdx) const;
+  //! Access wire definition by typed identifier.
+  //! @param[in] theWire typed wire definition identifier
+  Standard_EXPORT const BRepGraph_TopoNode::WireDef& Wire(const BRepGraph_WireId theWire) const;
 
-  //! Access edge definition by index.
-  //! @param[in] theEdgeIdx zero-based edge definition index
-  Standard_EXPORT const BRepGraph_TopoNode::EdgeDef& Edge(const int theEdgeIdx) const;
+  //! Access edge definition by typed identifier.
+  //! @param[in] theEdge typed edge definition identifier
+  Standard_EXPORT const BRepGraph_TopoNode::EdgeDef& Edge(const BRepGraph_EdgeId theEdge) const;
 
-  //! Access vertex definition by index.
-  //! @param[in] theVertexIdx zero-based vertex definition index
-  Standard_EXPORT const BRepGraph_TopoNode::VertexDef& Vertex(const int theVertexIdx) const;
+  //! Access vertex definition by typed identifier.
+  //! @param[in] theVertex typed vertex definition identifier
+  Standard_EXPORT const BRepGraph_TopoNode::VertexDef& Vertex(
+    const BRepGraph_VertexId theVertex) const;
 
-  //! Access compound definition by index.
-  //! @param[in] theCompoundIdx zero-based compound definition index
-  Standard_EXPORT const BRepGraph_TopoNode::CompoundDef& Compound(const int theCompoundIdx) const;
+  //! Access compound definition by typed identifier.
+  //! @param[in] theCompound typed compound definition identifier
+  Standard_EXPORT const BRepGraph_TopoNode::CompoundDef& Compound(
+    const BRepGraph_CompoundId theCompound) const;
 
-  //! Access compsolid definition by index.
-  //! @param[in] theCompSolidIdx zero-based compsolid definition index
+  //! Access compsolid definition by typed identifier.
+  //! @param[in] theCompSolid typed compsolid definition identifier
   Standard_EXPORT const BRepGraph_TopoNode::CompSolidDef& CompSolid(
-    const int theCompSolidIdx) const;
+    const BRepGraph_CompSolidId theCompSolid) const;
 
-  //! Access coedge definition by index.
-  //! @param[in] theCoEdgeIdx zero-based coedge definition index
-  Standard_EXPORT const BRepGraph_TopoNode::CoEdgeDef& CoEdge(const int theCoEdgeIdx) const;
+  //! Access coedge definition by typed identifier.
+  //! @param[in] theCoEdge typed coedge definition identifier
+  Standard_EXPORT const BRepGraph_TopoNode::CoEdgeDef& CoEdge(
+    const BRepGraph_CoEdgeId theCoEdge) const;
 
   //! Generic topology definition lookup by NodeId.
   //! @param[in] theId node identifier
@@ -123,14 +127,14 @@ public:
   Standard_EXPORT const BRepGraph_TopoNode::BaseDef* TopoDef(const BRepGraph_NodeId theId) const;
 
   //! Number of face definitions in a shell (via first usage).
-  //! @param[in] theShellDefIdx zero-based shell definition index
-  Standard_EXPORT int NbShellFaces(const int theShellDefIdx) const;
+  //! @param[in] theShell typed shell definition identifier
+  Standard_EXPORT int NbShellFaces(const BRepGraph_ShellId theShell) const;
 
   //! Access face definition NodeId belonging to a shell by index.
-  //! @param[in] theShellDefIdx zero-based shell definition index
-  //! @param[in] theFaceIdx zero-based face index within the shell
-  Standard_EXPORT BRepGraph_NodeId ShellFaceDef(const int theShellDefIdx,
-                                                const int theFaceIdx) const;
+  //! @param[in] theShell typed shell definition identifier
+  //! @param[in] theFaceIndex zero-based face index within the shell
+  Standard_EXPORT BRepGraph_NodeId ShellFaceDef(const BRepGraph_ShellId theShell,
+                                                const int              theFaceIndex) const;
 
   //! Number of product definitions.
   Standard_EXPORT int NbProducts() const;
@@ -144,35 +148,36 @@ public:
   //! Number of active (non-removed) occurrence definitions.
   Standard_EXPORT int NbActiveOccurrences() const;
 
-  //! Access product definition by index.
-  //! @param[in] theProductIdx zero-based product definition index
-  Standard_EXPORT const BRepGraph_TopoNode::ProductDef& Product(const int theProductIdx) const;
+  //! Access product definition by typed identifier.
+  //! @param[in] theProduct typed product definition identifier
+  Standard_EXPORT const BRepGraph_TopoNode::ProductDef& Product(
+    const BRepGraph_ProductId theProduct) const;
 
-  //! Access occurrence definition by index.
-  //! @param[in] theOccurrenceIdx zero-based occurrence definition index
+  //! Access occurrence definition by typed identifier.
+  //! @param[in] theOccurrence typed occurrence definition identifier
   Standard_EXPORT const BRepGraph_TopoNode::OccurrenceDef& Occurrence(
-    const int theOccurrenceIdx) const;
+    const BRepGraph_OccurrenceId theOccurrence) const;
 
   //! Return NodeIds of all root products (products that are not referenced by any occurrence).
   Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> RootProducts() const;
 
-  //! True if the product at theProductIdx is an assembly (has child occurrences, no ShapeRootId).
-  //! @param[in] theProductIdx zero-based product definition index
-  Standard_EXPORT bool IsAssembly(const int theProductIdx) const;
+  //! True if the product is an assembly (has child occurrences, no ShapeRootId).
+  //! @param[in] theProduct typed product definition identifier
+  Standard_EXPORT bool IsAssembly(const BRepGraph_ProductId theProduct) const;
 
-  //! True if the product at theProductIdx is a part (has a valid ShapeRootId).
-  //! @param[in] theProductIdx zero-based product definition index
-  Standard_EXPORT bool IsPart(const int theProductIdx) const;
+  //! True if the product is a part (has a valid ShapeRootId).
+  //! @param[in] theProduct typed product definition identifier
+  Standard_EXPORT bool IsPart(const BRepGraph_ProductId theProduct) const;
 
   //! Number of child occurrences of a product.
-  //! @param[in] theProductIdx zero-based product definition index
-  Standard_EXPORT int NbComponents(const int theProductIdx) const;
+  //! @param[in] theProduct typed product definition identifier
+  Standard_EXPORT int NbComponents(const BRepGraph_ProductId theProduct) const;
 
   //! Return the i-th child occurrence NodeId of a product.
-  //! @param[in] theProductIdx zero-based product definition index
+  //! @param[in] theProduct typed product definition identifier
   //! @param[in] theComponentIdx zero-based occurrence index within the product
-  Standard_EXPORT BRepGraph_NodeId Component(const int theProductIdx,
-                                             const int theComponentIdx) const;
+  Standard_EXPORT BRepGraph_NodeId Component(const BRepGraph_ProductId theProduct,
+                                             const int                theComponentIdx) const;
 
   //! Total number of nodes in the graph (all topology + assembly kinds).
   Standard_EXPORT size_t NbNodes() const;
@@ -232,26 +237,40 @@ private:
   friend class BRepGraph;
   friend class BRepGraph_Tool;
 
-  //! Access surface representation by index.
-  Standard_EXPORT const BRepGraphInc::SurfaceRep& SurfaceRep(const int theRepIdx) const;
+  //! Access surface representation by typed identifier.
+  //! @param[in] theRep typed surface representation identifier
+  Standard_EXPORT const BRepGraphInc::SurfaceRep& SurfaceRep(
+    const BRepGraph_SurfaceRepId theRep) const;
 
-  //! Access 3D curve representation by index.
-  Standard_EXPORT const BRepGraphInc::Curve3DRep& Curve3DRep(const int theRepIdx) const;
+  //! Access 3D curve representation by typed identifier.
+  //! @param[in] theRep typed 3D curve representation identifier
+  Standard_EXPORT const BRepGraphInc::Curve3DRep& Curve3DRep(
+    const BRepGraph_Curve3DRepId theRep) const;
 
-  //! Access 2D curve representation by index.
-  Standard_EXPORT const BRepGraphInc::Curve2DRep& Curve2DRep(const int theRepIdx) const;
+  //! Access 2D curve representation by typed identifier.
+  //! @param[in] theRep typed 2D curve representation identifier
+  Standard_EXPORT const BRepGraphInc::Curve2DRep& Curve2DRep(
+    const BRepGraph_Curve2DRepId theRep) const;
 
-  //! Access triangulation representation by index.
-  Standard_EXPORT const BRepGraphInc::TriangulationRep& TriangulationRep(const int theRepIdx) const;
+  //! Access triangulation representation by typed identifier.
+  //! @param[in] theRep typed triangulation representation identifier
+  Standard_EXPORT const BRepGraphInc::TriangulationRep& TriangulationRep(
+    const BRepGraph_TriangulationRepId theRep) const;
 
-  //! Access 3D polygon representation by index.
-  Standard_EXPORT const BRepGraphInc::Polygon3DRep& Polygon3DRep(const int theRepIdx) const;
+  //! Access 3D polygon representation by typed identifier.
+  //! @param[in] theRep typed 3D polygon representation identifier
+  Standard_EXPORT const BRepGraphInc::Polygon3DRep& Polygon3DRep(
+    const BRepGraph_Polygon3DRepId theRep) const;
 
-  //! Access 2D polygon representation by index.
-  Standard_EXPORT const BRepGraphInc::Polygon2DRep& Polygon2DRep(const int theRepIdx) const;
+  //! Access 2D polygon representation by typed identifier.
+  //! @param[in] theRep typed 2D polygon representation identifier
+  Standard_EXPORT const BRepGraphInc::Polygon2DRep& Polygon2DRep(
+    const BRepGraph_Polygon2DRepId theRep) const;
 
-  //! Access polygon-on-triangulation representation by index.
-  Standard_EXPORT const BRepGraphInc::PolygonOnTriRep& PolygonOnTriRep(const int theRepIdx) const;
+  //! Access polygon-on-triangulation representation by typed identifier.
+  //! @param[in] theRep typed polygon-on-triangulation representation identifier
+  Standard_EXPORT const BRepGraphInc::PolygonOnTriRep& PolygonOnTriRep(
+    const BRepGraph_PolygonOnTriRepId theRep) const;
 
   explicit DefsView(const BRepGraph* theGraph)
       : myGraph(theGraph)

@@ -60,11 +60,11 @@ public:
 
   //! Explore from a Product (descends through assembly occurrences into topology).
   //! @param[in] theGraph      source graph
-  //! @param[in] theProductIdx zero-based product index
+  //! @param[in] theProduct    typed product identifier
   //! @param[in] theTargetKind kind of entities to visit
-  Standard_EXPORT BRepGraph_Explorer(const BRepGraph&       theGraph,
-                                     int                    theProductIdx,
-                                     BRepGraph_NodeId::Kind theTargetKind);
+  Standard_EXPORT BRepGraph_Explorer(const BRepGraph&          theGraph,
+                                     const BRepGraph_ProductId theProduct,
+                                     BRepGraph_NodeId::Kind    theTargetKind);
 
   //! Returns true if there are more entities to visit.
   bool More() const { return myCurrent < myResults.Length(); }

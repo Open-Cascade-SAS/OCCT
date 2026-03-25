@@ -116,7 +116,7 @@ struct Polygon2DRep : public BaseRep
 struct PolygonOnTriRep : public BaseRep
 {
   occ::handle<Poly_PolygonOnTriangulation> Polygon; //!< Polygon indices into triangulation
-  int TriangulationRepIdx = -1;                     //!< Global index into myTriangulationsRep
+  BRepGraph_TriangulationRepId TriangulationRepId; //!< Typed id into myTriangulationsRep
 };
 
 //! Vertex entity: 3D point + tolerance.
@@ -132,7 +132,7 @@ struct VertexEntity : public BaseEntity
   struct PointOnCurveEntry
   {
     double           Parameter = 0.0;
-    BRepGraph_NodeId EdgeDefId; //!< Edge definition owning the curve
+    BRepGraph_EdgeId EdgeDefId; //!< Edge definition owning the curve
   };
 
   NCollection_Vector<PointOnCurveEntry> PointsOnCurve;
@@ -142,7 +142,7 @@ struct VertexEntity : public BaseEntity
   {
     double           ParameterU = 0.0;
     double           ParameterV = 0.0;
-    BRepGraph_NodeId FaceDefId; //!< Face definition owning the surface
+    BRepGraph_FaceId FaceDefId; //!< Face definition owning the surface
   };
 
   NCollection_Vector<PointOnSurfaceEntry> PointsOnSurface;
@@ -151,7 +151,7 @@ struct VertexEntity : public BaseEntity
   struct PointOnPCurveEntry
   {
     double           Parameter = 0.0;
-    BRepGraph_NodeId FaceDefId; //!< Face definition owning the surface
+    BRepGraph_FaceId FaceDefId; //!< Face definition owning the surface
   };
 
   NCollection_Vector<PointOnPCurveEntry> PointsOnPCurve;
@@ -169,8 +169,8 @@ struct VertexEntity : public BaseEntity
 //! Geometry (curve, polygon) accessed via rep indices into Storage vectors.
 struct EdgeEntity : public BaseEntity
 {
-  //! Representation index into Storage::myCurves3D (-1 for degenerate edges).
-  int Curve3DRepIdx = -1;
+  //! Typed representation id into Storage::myCurves3D (invalid for degenerate edges).
+  BRepGraph_Curve3DRepId Curve3DRepId;
 
   //! Curve parameter range.
   double ParamFirst = 0.0;
@@ -192,7 +192,7 @@ struct EdgeEntity : public BaseEntity
   bool IsClosed = false;
 
   //! Boundary vertex references (carry Location for shared vertices).
-  //! For closed edges, StartVertex.VertexIdx == EndVertex.VertexIdx.
+  //! For closed edges, StartVertex.VertexDefId == EndVertex.VertexDefId.
   //! StartVertex.Orientation is always FORWARD, EndVertex.Orientation is always REVERSED.
   VertexRef StartVertex;
   VertexRef EndVertex;
@@ -201,28 +201,26 @@ struct EdgeEntity : public BaseEntity
   //! Edges with only FORWARD/REVERSED boundary vertices leave this empty.
   NCollection_Vector<VertexRef> InternalVertices;
 
-  //! Convenience: start vertex NodeId from index.
-  BRepGraph_NodeId StartVertexDefId() const
+  //! Convenience: start vertex typed id from index.
+  BRepGraph_VertexId StartVertexDefId() const
   {
-    return StartVertex.VertexIdx >= 0 ? BRepGraph_NodeId::Vertex(StartVertex.VertexIdx)
-                                      : BRepGraph_NodeId();
+    return StartVertex.VertexDefId;
   }
 
-  //! Convenience: end vertex NodeId from index.
-  BRepGraph_NodeId EndVertexDefId() const
+  //! Convenience: end vertex typed id from index.
+  BRepGraph_VertexId EndVertexDefId() const
   {
-    return EndVertex.VertexIdx >= 0 ? BRepGraph_NodeId::Vertex(EndVertex.VertexIdx)
-                                    : BRepGraph_NodeId();
+    return EndVertex.VertexDefId;
   }
 
-  //! Representation index into Storage::myPolygons3D (-1 if no polygon).
-  int Polygon3DRepIdx = -1;
+  //! Typed representation id into Storage::myPolygons3D (invalid if no polygon).
+  BRepGraph_Polygon3DRepId Polygon3DRepId;
 
   //! Edge regularity (continuity) between adjacent face pairs.
   struct RegularityEntry
   {
-    BRepGraph_NodeId FaceDef1;
-    BRepGraph_NodeId FaceDef2;
+    BRepGraph_FaceId FaceDef1;
+    BRepGraph_FaceId FaceDef2;
     GeomAbs_Shape    Continuity = GeomAbs_C0;
   };
 
@@ -237,24 +235,24 @@ struct EdgeEntity : public BaseEntity
 
   //! Return the start vertex adjusted for orientation in wire context.
   //! FORWARD -> StartVertexDefId(), REVERSED -> EndVertexDefId(), other -> invalid.
-  BRepGraph_NodeId OrientedStartVertex(TopAbs_Orientation theOri) const
+  BRepGraph_VertexId OrientedStartVertex(TopAbs_Orientation theOri) const
   {
     if (theOri == TopAbs_FORWARD)
       return StartVertexDefId();
     if (theOri == TopAbs_REVERSED)
       return EndVertexDefId();
-    return BRepGraph_NodeId();
+    return BRepGraph_VertexId();
   }
 
   //! Return the end vertex adjusted for orientation in wire context.
   //! FORWARD -> EndVertexDefId(), REVERSED -> StartVertexDefId(), other -> invalid.
-  BRepGraph_NodeId OrientedEndVertex(TopAbs_Orientation theOri) const
+  BRepGraph_VertexId OrientedEndVertex(TopAbs_Orientation theOri) const
   {
     if (theOri == TopAbs_FORWARD)
       return EndVertexDefId();
     if (theOri == TopAbs_REVERSED)
       return StartVertexDefId();
-    return BRepGraph_NodeId();
+    return BRepGraph_VertexId();
   }
 };
 
@@ -266,31 +264,31 @@ struct EdgeEntity : public BaseEntity
 //! linked by SeamPairIdx.
 struct CoEdgeEntity : public BaseEntity
 {
-  int                EdgeIdx = -1; //!< Parent edge index
-  BRepGraph_NodeId   FaceDefId;    //!< Face this coedge belongs to (invalid for free wires)
+  BRepGraph_EdgeId   EdgeDefId;    //!< Parent edge definition id
+  BRepGraph_FaceId   FaceDefId;    //!< Face this coedge belongs to (invalid for free wires)
   TopAbs_Orientation Sense = TopAbs_FORWARD; //!< Orientation relative to parent edge
 
-  //! Representation index into Storage::myCurves2D (-1 for free-wire coedges).
-  int           Curve2DRepIdx = -1;
-  double        ParamFirst    = 0.0;
-  double        ParamLast     = 0.0;
-  GeomAbs_Shape Continuity    = GeomAbs_C0; //!< Geometric continuity across face pairs
-  gp_Pnt2d      UV1;                        //!< UV at ParamFirst
-  gp_Pnt2d      UV2;                        //!< UV at ParamLast
+  //! Typed representation id into Storage::myCurves2D (invalid for free-wire coedges).
+  BRepGraph_Curve2DRepId Curve2DRepId;
+  double                 ParamFirst  = 0.0;
+  double                 ParamLast   = 0.0;
+  GeomAbs_Shape          Continuity  = GeomAbs_C0; //!< Geometric continuity across face pairs
+  gp_Pnt2d               UV1;                      //!< UV at ParamFirst
+  gp_Pnt2d               UV2;                      //!< UV at ParamLast
 
-  //! Seam pairing: index of the paired coedge (-1 if non-seam).
-  int           SeamPairIdx    = -1;
-  GeomAbs_Shape SeamContinuity = GeomAbs_C0; //!< Continuity between seam pair
+  //! Seam pairing: typed id of the paired coedge (invalid if non-seam).
+  BRepGraph_CoEdgeId SeamPairId;
+  GeomAbs_Shape      SeamContinuity = GeomAbs_C0; //!< Continuity between seam pair
 
-  //! Representation index into Storage::myPolygons2D (-1 if no polygon-on-surface).
-  int Polygon2DRepIdx = -1;
+  //! Typed representation id into Storage::myPolygons2D (invalid if no polygon-on-surface).
+  BRepGraph_Polygon2DRepId Polygon2DRepId;
 
-  //! Representation indices into Storage::myPolygonsOnTri.
-  NCollection_Vector<int> PolygonOnTriRepIdxs;
+  //! Typed representation ids into Storage::myPolygonsOnTri.
+  NCollection_Vector<BRepGraph_PolygonOnTriRepId> PolygonOnTriRepIds;
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
-    InitVec(PolygonOnTriRepIdxs, theAlloc, 2);
+    InitVec(PolygonOnTriRepIds, theAlloc, 2);
   }
 };
 
@@ -309,16 +307,16 @@ struct WireEntity : public BaseEntity
 //! Face entity: surface, triangulations, wires.
 struct FaceEntity : public BaseEntity
 {
-  int                     SurfaceRepIdx = -1;   //!< Index into mySurfaces
-  NCollection_Vector<int> TriangulationRepIdxs; //!< Indices into myTriangulations
-  int                     ActiveTriangulationIndex = -1;
+  BRepGraph_SurfaceRepId                        SurfaceRepId;        //!< Typed id into mySurfaces
+  NCollection_Vector<BRepGraph_TriangulationRepId> TriangulationRepIds; //!< Typed ids into myTriangulations
+  int ActiveTriangulationIndex = -1; //!< Index into TriangulationRepIds array (NOT a rep id)
 
-  //! Convenience: active triangulation rep index, or -1.
-  int ActiveTriangulationRepIdx() const
+  //! Convenience: active triangulation rep id, or invalid.
+  BRepGraph_TriangulationRepId ActiveTriangulationRepId() const
   {
-    if (ActiveTriangulationIndex >= 0 && ActiveTriangulationIndex < TriangulationRepIdxs.Length())
-      return TriangulationRepIdxs.Value(ActiveTriangulationIndex);
-    return -1;
+    if (ActiveTriangulationIndex >= 0 && ActiveTriangulationIndex < TriangulationRepIds.Length())
+      return TriangulationRepIds.Value(ActiveTriangulationIndex);
+    return BRepGraph_TriangulationRepId();
   }
 
   double Tolerance          = 0.0;
@@ -332,20 +330,20 @@ struct FaceEntity : public BaseEntity
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
-    InitVec(TriangulationRepIdxs, theAlloc, 2); // typically 1
+    InitVec(TriangulationRepIds, theAlloc, 2); // typically 1
     InitVec(WireRefs, theAlloc, 2);             // typically 1-2 (outer + holes)
     InitVec(VertexRefs, theAlloc, 2);           // typically 0
   }
 
-  //! Return index of the outer wire, or -1 if none.
-  int OuterWireIdx() const
+  //! Return the outer wire id, or invalid if none.
+  BRepGraph_WireId OuterWireDefId() const
   {
     for (int i = 0; i < WireRefs.Length(); ++i)
     {
       if (WireRefs.Value(i).IsOuter)
-        return WireRefs.Value(i).WireIdx;
+        return WireRefs.Value(i).WireDefId;
     }
-    return -1;
+    return BRepGraph_WireId();
   }
 };
 
@@ -401,7 +399,7 @@ struct CompSolidEntity : public BaseEntity
 //! Reference from a product to one of its child occurrences.
 struct OccurrenceRef
 {
-  int OccurrenceIdx = -1;
+  BRepGraph_OccurrenceId OccurrenceDefId;
 };
 
 //! Product entity: reusable shape definition (part or assembly).
@@ -425,10 +423,10 @@ struct ProductEntity : public BaseEntity
 //! unambiguous GlobalPlacement computation even when products are shared (DAG).
 struct OccurrenceEntity : public BaseEntity
 {
-  int             ProductIdx          = -1; //!< Referenced product index
-  int             ParentProductIdx    = -1; //!< Parent assembly product index
-  int             ParentOccurrenceIdx = -1; //!< Parent occurrence index (-1 for top-level)
-  TopLoc_Location Placement;                //!< Local placement relative to parent
+  BRepGraph_ProductId    ProductDefId;          //!< Referenced product definition id
+  BRepGraph_ProductId    ParentProductDefId;    //!< Parent assembly product definition id
+  BRepGraph_OccurrenceId ParentOccurrenceDefId; //!< Parent occurrence id (invalid for top-level)
+  TopLoc_Location        Placement;             //!< Local placement relative to parent
 
   //! No-op: OccurrenceEntity has no inner vectors to reinitialize.
   //! Present for uniform EntityStore<T>::Append() logic.

@@ -58,15 +58,15 @@ public:
     Method ComputeMethod        = Method::PCurve; //!< Method used for computation.
   };
 
-  //! Compute UV bounds for a face definition (by zero-based index).
+  //! Compute UV bounds for a face definition.
   //! Handles natural restriction, periodicity clamping, and BSpline
   //! pseudo-periodicity. Does not use caching.
-  //! @param[in]  theGraph    pre-built BRepGraph (IsDone() == true)
-  //! @param[in]  theFaceIdx  zero-based face definition index
-  //! @param[out] theData     computed UV bounds data
-  Standard_EXPORT static void Compute(const BRepGraph& theGraph,
-                                      int              theFaceIdx,
-                                      CachedData&      theData);
+  //! @param[in]  theGraph  pre-built BRepGraph (IsDone() == true)
+  //! @param[in]  theFace   face definition identifier
+  //! @param[out] theData   computed UV bounds data
+  Standard_EXPORT static void Compute(const BRepGraph&       theGraph,
+                                      const BRepGraph_FaceId theFace,
+                                      CachedData&            theData);
 
   // - Cached API --
   // Stores/retrieves UV bounds as user attributes on graph nodes.

@@ -72,6 +72,7 @@ struct BRepGraph_NodeId
     explicit Typed(const int theIdx)
         : Index(theIdx)
     {
+      Standard_ASSERT_VOID(theIdx >= -1, "index must be >= -1");
     }
 
     //! True if this id points to an allocated node slot.
@@ -92,6 +93,14 @@ struct BRepGraph_NodeId
     bool operator==(const Typed& theOther) const { return Index == theOther.Index; }
 
     bool operator!=(const Typed& theOther) const { return Index != theOther.Index; }
+
+    bool operator<(const Typed& theOther) const { return Index < theOther.Index; }
+
+    bool operator<=(const Typed& theOther) const { return Index <= theOther.Index; }
+
+    bool operator>(const Typed& theOther) const { return Index > theOther.Index; }
+
+    bool operator>=(const Typed& theOther) const { return Index >= theOther.Index; }
 
     //! Comparison with untyped NodeId (checks both Kind and Index).
     bool operator==(const BRepGraph_NodeId& theOther) const
@@ -177,6 +186,13 @@ struct BRepGraph_NodeId
   }
 
   bool operator!=(const BRepGraph_NodeId& theOther) const { return !(*this == theOther); }
+
+  bool operator<(const BRepGraph_NodeId& theOther) const
+  {
+    if (NodeKind != theOther.NodeKind)
+      return static_cast<int>(NodeKind) < static_cast<int>(theOther.NodeKind);
+    return Index < theOther.Index;
+  }
 };
 
 //! @name Convenience type aliases for typed NodeIds.

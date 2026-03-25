@@ -143,111 +143,117 @@ int BRepGraph::DefsView::NbActiveCompSolids() const
 
 //=================================================================================================
 
-int BRepGraph::DefsView::FaceCountOfEdge(const int theEdgeDefIdx) const
+int BRepGraph::DefsView::FaceCountOfEdge(const BRepGraph_EdgeId theEdge) const
 {
-  return myGraph->myData->myIncStorage.ReverseIndex().FaceCountOfEdge(theEdgeDefIdx);
+  return myGraph->myData->myIncStorage.ReverseIndex().FaceCountOfEdge(theEdge);
 }
 
 //=================================================================================================
 
-const NCollection_Vector<int>& BRepGraph::DefsView::WiresOfEdge(const int theEdgeDefIdx) const
+const NCollection_Vector<BRepGraph_WireId>& BRepGraph::DefsView::WiresOfEdge(const BRepGraph_EdgeId theEdge) const
 {
-  return myGraph->myData->myIncStorage.ReverseIndex().WiresOfEdgeRef(theEdgeDefIdx);
+  return myGraph->myData->myIncStorage.ReverseIndex().WiresOfEdgeRef(theEdge);
 }
 
 //=================================================================================================
 
-const NCollection_Vector<int>& BRepGraph::DefsView::CoEdgesOfEdge(const int theEdgeDefIdx) const
+const NCollection_Vector<BRepGraph_CoEdgeId>& BRepGraph::DefsView::CoEdgesOfEdge(
+  const BRepGraph_EdgeId theEdge) const
 {
-  return myGraph->myData->myIncStorage.ReverseIndex().CoEdgesOfEdgeRef(theEdgeDefIdx);
+  return myGraph->myData->myIncStorage.ReverseIndex().CoEdgesOfEdgeRef(theEdge);
 }
 
 //=================================================================================================
 
-const BRepGraph_TopoNode::SolidDef& BRepGraph::DefsView::Solid(const int theSolidIdx) const
+const BRepGraph_TopoNode::SolidDef& BRepGraph::DefsView::Solid(
+  const BRepGraph_SolidId theSolid) const
 {
-  return myGraph->myData->myIncStorage.Solid(theSolidIdx);
+  return myGraph->myData->myIncStorage.Solid(theSolid);
 }
 
 //=================================================================================================
 
-const BRepGraph_TopoNode::ShellDef& BRepGraph::DefsView::Shell(const int theShellIdx) const
+const BRepGraph_TopoNode::ShellDef& BRepGraph::DefsView::Shell(
+  const BRepGraph_ShellId theShell) const
 {
-  return myGraph->myData->myIncStorage.Shell(theShellIdx);
+  return myGraph->myData->myIncStorage.Shell(theShell);
 }
 
 //=================================================================================================
 
-const BRepGraph_TopoNode::FaceDef& BRepGraph::DefsView::Face(const int theFaceIdx) const
+const BRepGraph_TopoNode::FaceDef& BRepGraph::DefsView::Face(const BRepGraph_FaceId theFace) const
 {
-  return myGraph->myData->myIncStorage.Face(theFaceIdx);
+  return myGraph->myData->myIncStorage.Face(theFace);
 }
 
 //=================================================================================================
 
-const BRepGraph_TopoNode::WireDef& BRepGraph::DefsView::Wire(const int theWireIdx) const
+const BRepGraph_TopoNode::WireDef& BRepGraph::DefsView::Wire(const BRepGraph_WireId theWire) const
 {
-  return myGraph->myData->myIncStorage.Wire(theWireIdx);
+  return myGraph->myData->myIncStorage.Wire(theWire);
 }
 
 //=================================================================================================
 
-const BRepGraph_TopoNode::EdgeDef& BRepGraph::DefsView::Edge(const int theEdgeIdx) const
+const BRepGraph_TopoNode::EdgeDef& BRepGraph::DefsView::Edge(const BRepGraph_EdgeId theEdge) const
 {
-  return myGraph->myData->myIncStorage.Edge(theEdgeIdx);
+  return myGraph->myData->myIncStorage.Edge(theEdge);
 }
 
 //=================================================================================================
 
-const BRepGraph_TopoNode::VertexDef& BRepGraph::DefsView::Vertex(const int theVertexIdx) const
+const BRepGraph_TopoNode::VertexDef& BRepGraph::DefsView::Vertex(
+  const BRepGraph_VertexId theVertex) const
 {
-  return myGraph->myData->myIncStorage.Vertex(theVertexIdx);
+  return myGraph->myData->myIncStorage.Vertex(theVertex);
 }
 
 //=================================================================================================
 
-const BRepGraph_TopoNode::CompoundDef& BRepGraph::DefsView::Compound(const int theCompoundIdx) const
+const BRepGraph_TopoNode::CompoundDef& BRepGraph::DefsView::Compound(
+  const BRepGraph_CompoundId theCompound) const
 {
-  return myGraph->myData->myIncStorage.Compound(theCompoundIdx);
+  return myGraph->myData->myIncStorage.Compound(theCompound);
 }
 
 //=================================================================================================
 
 const BRepGraph_TopoNode::CompSolidDef& BRepGraph::DefsView::CompSolid(
-  const int theCompSolidIdx) const
+  const BRepGraph_CompSolidId theCompSolid) const
 {
-  return myGraph->myData->myIncStorage.CompSolid(theCompSolidIdx);
+  return myGraph->myData->myIncStorage.CompSolid(theCompSolid);
 }
 
 //=================================================================================================
 
-const BRepGraph_TopoNode::CoEdgeDef& BRepGraph::DefsView::CoEdge(const int theCoEdgeIdx) const
+const BRepGraph_TopoNode::CoEdgeDef& BRepGraph::DefsView::CoEdge(
+  const BRepGraph_CoEdgeId theCoEdge) const
 {
-  return myGraph->myData->myIncStorage.CoEdge(theCoEdgeIdx);
+  return myGraph->myData->myIncStorage.CoEdge(theCoEdge);
 }
 
 //=================================================================================================
 
-int BRepGraph::DefsView::NbShellFaces(const int theShellDefIdx) const
+int BRepGraph::DefsView::NbShellFaces(const BRepGraph_ShellId theShell) const
 {
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
-  if (theShellDefIdx < 0 || theShellDefIdx >= aStorage.NbShells())
+  if (theShell.Index < 0 || theShell.Index >= aStorage.NbShells())
     return 0;
-  return aStorage.Shell(theShellDefIdx).FaceRefs.Length();
+  return aStorage.Shell(theShell).FaceRefs.Length();
 }
 
 //=================================================================================================
 
-BRepGraph_NodeId BRepGraph::DefsView::ShellFaceDef(const int theShellDefIdx,
-                                                   const int theFaceIdx) const
+BRepGraph_NodeId BRepGraph::DefsView::ShellFaceDef(const BRepGraph_ShellId theShell,
+                                                   const int              theFaceIndex) const
 {
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
-  if (theShellDefIdx < 0 || theShellDefIdx >= aStorage.NbShells())
+  if (theShell.Index < 0 || theShell.Index >= aStorage.NbShells())
     return BRepGraph_NodeId();
-  const BRepGraphInc::ShellEntity& aShell = aStorage.Shell(theShellDefIdx);
-  if (theFaceIdx < 0 || theFaceIdx >= aShell.FaceRefs.Length())
+  const BRepGraphInc::ShellEntity& aShellEnt = aStorage.Shell(theShell);
+  if (theFaceIndex < 0 || theFaceIndex >= aShellEnt.FaceRefs.Length())
     return BRepGraph_NodeId();
-  return BRepGraph_NodeId::Face(aShell.FaceRefs.Value(theFaceIdx).FaceIdx);
+  return aShellEnt.FaceRefs.Value(theFaceIndex).FaceDefId;
 }
 
 //=================================================================================================
@@ -287,17 +293,18 @@ int BRepGraph::DefsView::NbActiveOccurrences() const
 
 //=================================================================================================
 
-const BRepGraph_TopoNode::ProductDef& BRepGraph::DefsView::Product(const int theProductIdx) const
+const BRepGraph_TopoNode::ProductDef& BRepGraph::DefsView::Product(
+  const BRepGraph_ProductId theProduct) const
 {
-  return myGraph->myData->myIncStorage.Product(theProductIdx);
+  return myGraph->myData->myIncStorage.Product(theProduct);
 }
 
 //=================================================================================================
 
 const BRepGraph_TopoNode::OccurrenceDef& BRepGraph::DefsView::Occurrence(
-  const int theOccurrenceIdx) const
+  const BRepGraph_OccurrenceId theOccurrence) const
 {
-  return myGraph->myData->myIncStorage.Occurrence(theOccurrenceIdx);
+  return myGraph->myData->myIncStorage.Occurrence(theOccurrence);
 }
 
 //=================================================================================================
@@ -313,15 +320,15 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::DefsView::RootProducts() const
   NCollection_Map<int> aReferencedProducts;
   for (int anOccIdx = 0; anOccIdx < aStorage.NbOccurrences(); ++anOccIdx)
   {
-    const BRepGraphInc::OccurrenceEntity& anOcc = aStorage.Occurrence(anOccIdx);
-    if (!anOcc.IsRemoved && anOcc.ProductIdx >= 0)
-      aReferencedProducts.Add(anOcc.ProductIdx);
+    const BRepGraphInc::OccurrenceEntity& anOcc = aStorage.Occurrence(BRepGraph_OccurrenceId(anOccIdx));
+    if (!anOcc.IsRemoved && anOcc.ProductDefId.IsValid())
+      aReferencedProducts.Add(anOcc.ProductDefId.Index);
   }
 
   NCollection_Vector<BRepGraph_NodeId> aRoots;
   for (int aProdIdx = 0; aProdIdx < aNbProducts; ++aProdIdx)
   {
-    const BRepGraphInc::ProductEntity& aProduct = aStorage.Product(aProdIdx);
+    const BRepGraphInc::ProductEntity& aProduct = aStorage.Product(BRepGraph_ProductId(aProdIdx));
     if (aProduct.IsRemoved)
       continue;
     if (!aReferencedProducts.Contains(aProdIdx))
@@ -332,48 +339,48 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::DefsView::RootProducts() const
 
 //=================================================================================================
 
-bool BRepGraph::DefsView::IsAssembly(const int theProductIdx) const
+bool BRepGraph::DefsView::IsAssembly(const BRepGraph_ProductId theProduct) const
 {
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
-  if (theProductIdx < 0 || theProductIdx >= aStorage.NbProducts())
+  if (theProduct.Index < 0 || theProduct.Index >= aStorage.NbProducts())
     return false;
-  const BRepGraphInc::ProductEntity& aProduct = aStorage.Product(theProductIdx);
-  return !aProduct.ShapeRootId.IsValid();
+  const BRepGraphInc::ProductEntity& aProductEnt = aStorage.Product(theProduct);
+  return !aProductEnt.ShapeRootId.IsValid();
 }
 
 //=================================================================================================
 
-bool BRepGraph::DefsView::IsPart(const int theProductIdx) const
+bool BRepGraph::DefsView::IsPart(const BRepGraph_ProductId theProduct) const
 {
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
-  if (theProductIdx < 0 || theProductIdx >= aStorage.NbProducts())
+  if (theProduct.Index < 0 || theProduct.Index >= aStorage.NbProducts())
     return false;
-  const BRepGraphInc::ProductEntity& aProduct = aStorage.Product(theProductIdx);
-  return aProduct.ShapeRootId.IsValid();
+  const BRepGraphInc::ProductEntity& aProductEnt = aStorage.Product(theProduct);
+  return aProductEnt.ShapeRootId.IsValid();
 }
 
 //=================================================================================================
 
-int BRepGraph::DefsView::NbComponents(const int theProductIdx) const
+int BRepGraph::DefsView::NbComponents(const BRepGraph_ProductId theProduct) const
 {
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
-  if (theProductIdx < 0 || theProductIdx >= aStorage.NbProducts())
+  if (theProduct.Index < 0 || theProduct.Index >= aStorage.NbProducts())
     return 0;
-  return aStorage.Product(theProductIdx).OccurrenceRefs.Length();
+  return aStorage.Product(theProduct).OccurrenceRefs.Length();
 }
 
 //=================================================================================================
 
-BRepGraph_NodeId BRepGraph::DefsView::Component(const int theProductIdx,
-                                                const int theComponentIdx) const
+BRepGraph_NodeId BRepGraph::DefsView::Component(const BRepGraph_ProductId theProduct,
+                                                const int                theComponentIdx) const
 {
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
-  if (theProductIdx < 0 || theProductIdx >= aStorage.NbProducts())
+  if (theProduct.Index < 0 || theProduct.Index >= aStorage.NbProducts())
     return BRepGraph_NodeId();
-  const BRepGraphInc::ProductEntity& aProduct = aStorage.Product(theProductIdx);
-  if (theComponentIdx < 0 || theComponentIdx >= aProduct.OccurrenceRefs.Length())
+  const BRepGraphInc::ProductEntity& aProductEnt = aStorage.Product(theProduct);
+  if (theComponentIdx < 0 || theComponentIdx >= aProductEnt.OccurrenceRefs.Length())
     return BRepGraph_NodeId();
-  return BRepGraph_NodeId::Occurrence(aProduct.OccurrenceRefs.Value(theComponentIdx).OccurrenceIdx);
+  return aProductEnt.OccurrenceRefs.Value(theComponentIdx).OccurrenceDefId;
 }
 
 //=================================================================================================
@@ -426,38 +433,42 @@ int BRepGraph::DefsView::NbPolygons3D() const
 
 //=================================================================================================
 
-const BRepGraphInc::SurfaceRep& BRepGraph::DefsView::SurfaceRep(const int theRepIdx) const
+const BRepGraphInc::SurfaceRep& BRepGraph::DefsView::SurfaceRep(
+  const BRepGraph_SurfaceRepId theRep) const
 {
-  return myGraph->myData->myIncStorage.SurfaceRep(theRepIdx);
+  return myGraph->myData->myIncStorage.SurfaceRep(theRep);
 }
 
 //=================================================================================================
 
-const BRepGraphInc::Curve3DRep& BRepGraph::DefsView::Curve3DRep(const int theRepIdx) const
+const BRepGraphInc::Curve3DRep& BRepGraph::DefsView::Curve3DRep(
+  const BRepGraph_Curve3DRepId theRep) const
 {
-  return myGraph->myData->myIncStorage.Curve3DRep(theRepIdx);
+  return myGraph->myData->myIncStorage.Curve3DRep(theRep);
 }
 
 //=================================================================================================
 
-const BRepGraphInc::Curve2DRep& BRepGraph::DefsView::Curve2DRep(const int theRepIdx) const
+const BRepGraphInc::Curve2DRep& BRepGraph::DefsView::Curve2DRep(
+  const BRepGraph_Curve2DRepId theRep) const
 {
-  return myGraph->myData->myIncStorage.Curve2DRep(theRepIdx);
+  return myGraph->myData->myIncStorage.Curve2DRep(theRep);
 }
 
 //=================================================================================================
 
 const BRepGraphInc::TriangulationRep& BRepGraph::DefsView::TriangulationRep(
-  const int theRepIdx) const
+  const BRepGraph_TriangulationRepId theRep) const
 {
-  return myGraph->myData->myIncStorage.TriangulationRep(theRepIdx);
+  return myGraph->myData->myIncStorage.TriangulationRep(theRep);
 }
 
 //=================================================================================================
 
-const BRepGraphInc::Polygon3DRep& BRepGraph::DefsView::Polygon3DRep(const int theRepIdx) const
+const BRepGraphInc::Polygon3DRep& BRepGraph::DefsView::Polygon3DRep(
+  const BRepGraph_Polygon3DRepId theRep) const
 {
-  return myGraph->myData->myIncStorage.Polygon3DRep(theRepIdx);
+  return myGraph->myData->myIncStorage.Polygon3DRep(theRep);
 }
 
 //=================================================================================================
@@ -476,16 +487,18 @@ int BRepGraph::DefsView::NbPolygonsOnTri() const
 
 //=================================================================================================
 
-const BRepGraphInc::Polygon2DRep& BRepGraph::DefsView::Polygon2DRep(const int theRepIdx) const
+const BRepGraphInc::Polygon2DRep& BRepGraph::DefsView::Polygon2DRep(
+  const BRepGraph_Polygon2DRepId theRep) const
 {
-  return myGraph->myData->myIncStorage.Polygon2DRep(theRepIdx);
+  return myGraph->myData->myIncStorage.Polygon2DRep(theRep);
 }
 
 //=================================================================================================
 
-const BRepGraphInc::PolygonOnTriRep& BRepGraph::DefsView::PolygonOnTriRep(const int theRepIdx) const
+const BRepGraphInc::PolygonOnTriRep& BRepGraph::DefsView::PolygonOnTriRep(
+  const BRepGraph_PolygonOnTriRepId theRep) const
 {
-  return myGraph->myData->myIncStorage.PolygonOnTriRep(theRepIdx);
+  return myGraph->myData->myIncStorage.PolygonOnTriRep(theRep);
 }
 
 //=================================================================================================
@@ -497,13 +510,13 @@ const BRepGraphInc::CoEdgeEntity* BRepGraph::DefsView::FindPCurve(
   if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge || !theEdgeDef.IsValid())
     return nullptr;
 
-  const BRepGraphInc_Storage&    aStorage = myGraph->myData->myIncStorage;
-  const NCollection_Vector<int>& aCoEdgeIdxs =
-    aStorage.ReverseIndex().CoEdgesOfEdgeRef(theEdgeDef.Index);
+  const BRepGraphInc_Storage&              aStorage = myGraph->myData->myIncStorage;
+  const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
+    aStorage.ReverseIndex().CoEdgesOfEdgeRef(BRepGraph_EdgeId(theEdgeDef.Index));
   for (int anIter = 0; anIter < aCoEdgeIdxs.Length(); ++anIter)
   {
     const BRepGraphInc::CoEdgeEntity& aCoEdge = aStorage.CoEdge(aCoEdgeIdxs.Value(anIter));
-    if (aCoEdge.EdgeIdx == theEdgeDef.Index && aCoEdge.FaceDefId == theFaceDef)
+    if (aCoEdge.EdgeDefId == theEdgeDef && aCoEdge.FaceDefId == theFaceDef)
       return &aCoEdge;
   }
   return nullptr;
@@ -519,16 +532,16 @@ const BRepGraphInc::CoEdgeEntity* BRepGraph::DefsView::FindPCurve(
   if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge || !theEdgeDef.IsValid())
     return nullptr;
 
-  const BRepGraphInc_Storage&    aStorage = myGraph->myData->myIncStorage;
-  const NCollection_Vector<int>& aCoEdgeIdxs =
-    aStorage.ReverseIndex().CoEdgesOfEdgeRef(theEdgeDef.Index);
+  const BRepGraphInc_Storage&              aStorage = myGraph->myData->myIncStorage;
+  const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
+    aStorage.ReverseIndex().CoEdgesOfEdgeRef(BRepGraph_EdgeId(theEdgeDef.Index));
   // For non-seam edges (1 CoEdge per face), return the only match.
   // For seam edges (2 CoEdges per face), prefer exact orientation match.
   const BRepGraphInc::CoEdgeEntity* aFirstMatch = nullptr;
   for (int anIter = 0; anIter < aCoEdgeIdxs.Length(); ++anIter)
   {
     const BRepGraphInc::CoEdgeEntity& aCoEdge = aStorage.CoEdge(aCoEdgeIdxs.Value(anIter));
-    if (aCoEdge.EdgeIdx != theEdgeDef.Index || aCoEdge.FaceDefId != theFaceDef)
+    if (aCoEdge.EdgeDefId != theEdgeDef || aCoEdge.FaceDefId != theFaceDef)
       continue;
     if (aFirstMatch == nullptr)
       aFirstMatch = &aCoEdge;
@@ -543,8 +556,8 @@ const BRepGraphInc::CoEdgeEntity* BRepGraph::DefsView::FindPCurve(
 const BRepGraphInc::CoEdgeEntity* BRepGraph::DefsView::FindPCurve(
   const BRepGraph_PCurveContext& theContext) const
 {
-  return FindPCurve(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, theContext.EdgeDefIndex),
-                    BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, theContext.FaceDefIndex),
+  return FindPCurve(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, theContext.EdgeDefId.Index),
+                    BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, theContext.FaceDefId.Index),
                     theContext.Orientation);
 }
 

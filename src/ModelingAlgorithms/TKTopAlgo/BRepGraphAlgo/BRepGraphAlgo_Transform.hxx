@@ -15,6 +15,7 @@
 #define _BRepGraphAlgo_Transform_HeaderFile
 
 #include <BRepGraph.hxx>
+#include <BRepGraph_NodeId.hxx>
 
 #include <Standard_DefineAlloc.hxx>
 #include <gp_Trsf.hxx>
@@ -57,14 +58,14 @@ public:
 
   //! Transform a single face sub-graph.
   //! @param[in] theGraph    a pre-built BRepGraph
-  //! @param[in] theFaceIdx  face definition index in the graph
+  //! @param[in] theFace     face definition identifier in the graph
   //! @param[in] theTrsf     the transformation to apply
   //! @param[in] theCopyGeom if true, geometry is deep-copied before transforming
   //! @return a new BRepGraph containing only the specified face, transformed
-  Standard_EXPORT static BRepGraph TransformFace(const BRepGraph& theGraph,
-                                                 int              theFaceIdx,
-                                                 const gp_Trsf&   theTrsf,
-                                                 bool             theCopyGeom = true);
+  Standard_EXPORT static BRepGraph TransformFace(const BRepGraph&     theGraph,
+                                                 const BRepGraph_FaceId theFace,
+                                                 const gp_Trsf&       theTrsf,
+                                                 const bool           theCopyGeom = true);
 
 private:
   //! Apply location-only transform by storing per-node locations.

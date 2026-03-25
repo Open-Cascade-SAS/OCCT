@@ -125,13 +125,13 @@ TEST(BRepGraphAlgo_CompactTest, IndexDensity_NoGaps)
 
   // After compaction, there should be no removed defs.
   for (int anIdx = 0; anIdx < aGraph.Defs().NbVertices(); ++anIdx)
-    EXPECT_FALSE(aGraph.Defs().Vertex(anIdx).IsRemoved);
+    EXPECT_FALSE(aGraph.Defs().Vertex(BRepGraph_VertexId(anIdx)).IsRemoved);
   for (int anIdx = 0; anIdx < aGraph.Defs().NbEdges(); ++anIdx)
-    EXPECT_FALSE(aGraph.Defs().Edge(anIdx).IsRemoved);
+    EXPECT_FALSE(aGraph.Defs().Edge(BRepGraph_EdgeId(anIdx)).IsRemoved);
   for (int anIdx = 0; anIdx < aGraph.Defs().NbFaces(); ++anIdx)
-    EXPECT_FALSE(aGraph.Defs().Face(anIdx).IsRemoved);
+    EXPECT_FALSE(aGraph.Defs().Face(BRepGraph_FaceId(anIdx)).IsRemoved);
   for (int anIdx = 0; anIdx < aGraph.Defs().NbWires(); ++anIdx)
-    EXPECT_FALSE(aGraph.Defs().Wire(anIdx).IsRemoved);
+    EXPECT_FALSE(aGraph.Defs().Wire(BRepGraph_WireId(anIdx)).IsRemoved);
 }
 
 TEST(BRepGraphAlgo_CompactTest, CrossReferences_Valid)
@@ -280,9 +280,9 @@ TEST(BRepGraphAlgo_CompactTest, MutationGen_SurvivesCompact)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Mutate edge 0 twice so MutationGen == THE_EXPECTED_MUTATION_GEN.
-  aGraph.MutEdge(0)->Tolerance = 0.1;
-  aGraph.MutEdge(0)->Tolerance = THE_MUTATED_EDGE_TOLERANCE;
-  ASSERT_EQ(aGraph.Defs().Edge(0).MutationGen, THE_EXPECTED_MUTATION_GEN);
+  aGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.1;
+  aGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = THE_MUTATED_EDGE_TOLERANCE;
+  ASSERT_EQ(aGraph.Defs().Edge(BRepGraph_EdgeId(0)).MutationGen, THE_EXPECTED_MUTATION_GEN);
 
   // Run dedup + compact.
   BRepGraphAlgo_Deduplicate::Perform(aGraph);
@@ -293,7 +293,7 @@ TEST(BRepGraphAlgo_CompactTest, MutationGen_SurvivesCompact)
   bool aFound = false;
   for (int anIdx = 0; anIdx < aGraph.Defs().NbEdges(); ++anIdx)
   {
-    const auto& anEdge = aGraph.Defs().Edge(anIdx);
+    const auto& anEdge = aGraph.Defs().Edge(BRepGraph_EdgeId(anIdx));
     if (std::abs(anEdge.Tolerance - THE_MUTATED_EDGE_TOLERANCE) < Precision::Confusion())
     {
       EXPECT_EQ(anEdge.MutationGen, THE_EXPECTED_MUTATION_GEN)

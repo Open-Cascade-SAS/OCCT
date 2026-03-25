@@ -88,11 +88,11 @@ TopoDS_Shape BRepGraph::ShapesView::Reconstruct(const BRepGraph_NodeId theRoot) 
 
 //=================================================================================================
 
-TopoDS_Shape BRepGraph::ShapesView::ReconstructFace(const int theFaceDefIdx) const
+TopoDS_Shape BRepGraph::ShapesView::ReconstructFace(const BRepGraph_FaceId theFace) const
 {
   BRepGraphInc_Reconstruct::Cache aCache;
   return BRepGraphInc_Reconstruct::FaceWithCache(myGraph->myData->myIncStorage,
-                                                 theFaceDefIdx,
+                                                 theFace.Index,
                                                  aCache);
 }
 

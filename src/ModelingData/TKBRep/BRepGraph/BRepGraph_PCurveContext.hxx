@@ -14,6 +14,7 @@
 #ifndef _BRepGraph_PCurveContext_HeaderFile
 #define _BRepGraph_PCurveContext_HeaderFile
 
+#include <BRepGraph_NodeId.hxx>
 #include <Standard_HashUtils.hxx>
 #include <TopAbs_Orientation.hxx>
 
@@ -21,34 +22,34 @@
 #include <functional>
 
 //! Lightweight typed composite key identifying the unique context of a PCurve
-//! within a BRepGraph: the (EdgeDef index, FaceDef index, Orientation) triple.
+//! within a BRepGraph: the (EdgeDef id, FaceDef id, Orientation) triple.
 //!
-//! PCurveContext is a value type: cheap to copy, compare, hash (12 bytes,
-//! zero heap allocation).  It is usable as an NCollection_DataMap key via
+//! PCurveContext is a value type: cheap to copy, compare, hash.
+//! It is usable as an NCollection_DataMap key via
 //! the std::hash specialization below.
 struct BRepGraph_PCurveContext
 {
-  int                EdgeDefIndex;
-  int                FaceDefIndex;
+  BRepGraph_EdgeId   EdgeDefId;
+  BRepGraph_FaceId   FaceDefId;
   TopAbs_Orientation Orientation;
 
   BRepGraph_PCurveContext()
-      : EdgeDefIndex(-1),
-        FaceDefIndex(-1),
-        Orientation(TopAbs_FORWARD)
+      : Orientation(TopAbs_FORWARD)
   {
   }
 
-  BRepGraph_PCurveContext(const int theEdge, const int theFace, const TopAbs_Orientation theOri)
-      : EdgeDefIndex(theEdge),
-        FaceDefIndex(theFace),
+  BRepGraph_PCurveContext(const BRepGraph_EdgeId     theEdge,
+                          const BRepGraph_FaceId     theFace,
+                          const TopAbs_Orientation   theOri)
+      : EdgeDefId(theEdge),
+        FaceDefId(theFace),
         Orientation(theOri)
   {
   }
 
   bool operator==(const BRepGraph_PCurveContext& theOther) const
   {
-    return EdgeDefIndex == theOther.EdgeDefIndex && FaceDefIndex == theOther.FaceDefIndex
+    return EdgeDefId == theOther.EdgeDefId && FaceDefId == theOther.FaceDefId
            && Orientation == theOther.Orientation;
   }
 
@@ -62,8 +63,8 @@ struct std::hash<BRepGraph_PCurveContext>
   size_t operator()(const BRepGraph_PCurveContext& theCtx) const noexcept
   {
     size_t aCombination[3];
-    aCombination[0] = opencascade::hash(theCtx.EdgeDefIndex);
-    aCombination[1] = opencascade::hash(theCtx.FaceDefIndex);
+    aCombination[0] = opencascade::hash(theCtx.EdgeDefId.Index);
+    aCombination[1] = opencascade::hash(theCtx.FaceDefId.Index);
     aCombination[2] = opencascade::hash(static_cast<int>(theCtx.Orientation));
     return opencascade::hashBytes(aCombination, sizeof(aCombination));
   }

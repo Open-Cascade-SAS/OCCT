@@ -103,7 +103,7 @@ TEST_F(BRepGraphViewsTest, DefsView_FaceAccessor_Valid)
 {
   for (int anIdx = 0; anIdx < myGraph.Defs().NbFaces(); ++anIdx)
   {
-    const BRepGraph_TopoNode::FaceDef& aFace = myGraph.Defs().Face(anIdx);
+    const BRepGraph_TopoNode::FaceDef& aFace = myGraph.Defs().Face(BRepGraph_FaceId(anIdx));
     EXPECT_TRUE(aFace.Id.IsValid()) << "Face " << anIdx << " has invalid Id";
   }
 }
@@ -113,7 +113,7 @@ TEST_F(BRepGraphViewsTest, DefsView_TopoDef_Valid)
   BRepGraph_NodeId                   aFaceId(BRepGraph_NodeId::Kind::Face, 0);
   const BRepGraph_TopoNode::BaseDef* aBase = myGraph.Defs().TopoDef(aFaceId);
   ASSERT_NE(aBase, nullptr);
-  EXPECT_EQ(aBase->Id, myGraph.Defs().Face(0).Id);
+  EXPECT_EQ(aBase->Id, myGraph.Defs().Face(BRepGraph_FaceId(0)).Id);
 }
 
 TEST_F(BRepGraphViewsTest, DefsView_NbNodes_Positive)
@@ -127,7 +127,7 @@ TEST_F(BRepGraphViewsTest, DefsView_FaceSurface_NonNull)
 {
   for (int anIdx = 0; anIdx < myGraph.Defs().NbFaces(); ++anIdx)
   {
-    EXPECT_TRUE(BRepGraph_Tool::Face::HasSurface(myGraph, anIdx))
+    EXPECT_TRUE(BRepGraph_Tool::Face::HasSurface(myGraph, BRepGraph_FaceId(anIdx)))
       << "Face " << anIdx << " has no surface representation";
   }
 }
@@ -136,7 +136,7 @@ TEST_F(BRepGraphViewsTest, DefsView_EdgeCurve3d_NonNull)
 {
   for (int anIdx = 0; anIdx < myGraph.Defs().NbEdges(); ++anIdx)
   {
-    EXPECT_TRUE(BRepGraph_Tool::Edge::HasCurve(myGraph, anIdx))
+    EXPECT_TRUE(BRepGraph_Tool::Edge::HasCurve(myGraph, BRepGraph_EdgeId(anIdx)))
       << "Edge " << anIdx << " has no Curve3D representation";
   }
 }
@@ -145,7 +145,7 @@ TEST_F(BRepGraphViewsTest, DefsView_FindPCurve_NoCrash)
 {
   // FindPCurve may or may not return a non-null pointer for an arbitrary edge/face pair.
   // Just verify it does not crash.
-  BRepGraph_Tool::Edge::FindPCurve(myGraph, 0, 0);
+  BRepGraph_Tool::Edge::FindPCurve(myGraph, BRepGraph_EdgeId(0), BRepGraph_FaceId(0));
 }
 
 // ---------- UIDsView ----------
@@ -246,9 +246,9 @@ TEST_F(BRepGraphViewsTest, ShapesView_HasOriginal_True)
 TEST_F(BRepGraphViewsTest, MutView_EdgeDef_MarksModified)
 {
   {
-    BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge = myGraph.MutEdge(0);
+    BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge = myGraph.MutEdge(BRepGraph_EdgeId(0));
   }
-  EXPECT_TRUE(myGraph.Defs().Edge(0).IsModified);
+  EXPECT_TRUE(myGraph.Defs().Edge(BRepGraph_EdgeId(0)).IsModified);
 }
 
 // ---------- BuilderView ----------

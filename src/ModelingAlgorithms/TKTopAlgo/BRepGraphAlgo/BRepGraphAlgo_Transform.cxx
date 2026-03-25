@@ -32,7 +32,7 @@ void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
   // Transform absolute vertex points.
   for (int anIdx = 0; anIdx < theGraph.Defs().NbVertices(); ++anIdx)
   {
-    theGraph.MutVertex(anIdx)->Point.Transform(theTrsf);
+    theGraph.MutVertex(BRepGraph_VertexId(anIdx))->Point.Transform(theTrsf);
   }
 
   // Transform surface geometry handles directly on surface reps.
@@ -40,16 +40,16 @@ void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
   NCollection_Map<int> aVisitedSurfReps;
   for (int anIdx = 0; anIdx < theGraph.Defs().NbFaces(); ++anIdx)
   {
-    BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aFace = theGraph.MutFace(anIdx);
-    if (BRepGraph_Tool::Face::HasSurface(theGraph, anIdx)
-        && aVisitedSurfReps.Add(aFace->SurfaceRepIdx))
+    BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aFace = theGraph.MutFace(BRepGraph_FaceId(anIdx));
+    if (BRepGraph_Tool::Face::HasSurface(theGraph, BRepGraph_FaceId(anIdx))
+        && aVisitedSurfReps.Add(aFace->SurfaceRepId.Index))
     {
-      const occ::handle<Geom_Surface>& aSurf = BRepGraph_Tool::Face::Surface(theGraph, anIdx);
+      const occ::handle<Geom_Surface>& aSurf = BRepGraph_Tool::Face::Surface(theGraph, BRepGraph_FaceId(anIdx));
       if (!aSurf.IsNull())
         aSurf->Transform(theTrsf);
     }
     // Invalidate triangulations - meshes are no longer valid after geometry transform.
-    aFace->TriangulationRepIdxs.Clear();
+    aFace->TriangulationRepIds.Clear();
     aFace->ActiveTriangulationIndex = -1;
   }
 
@@ -57,11 +57,11 @@ void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
   NCollection_Map<int> aVisitedCurveReps;
   for (int anIdx = 0; anIdx < theGraph.Defs().NbEdges(); ++anIdx)
   {
-    BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge = theGraph.MutEdge(anIdx);
-    if (BRepGraph_Tool::Edge::HasCurve(theGraph, anIdx)
-        && aVisitedCurveReps.Add(anEdge->Curve3DRepIdx))
+    BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge = theGraph.MutEdge(BRepGraph_EdgeId(anIdx));
+    if (BRepGraph_Tool::Edge::HasCurve(theGraph, BRepGraph_EdgeId(anIdx))
+        && aVisitedCurveReps.Add(anEdge->Curve3DRepId.Index))
     {
-      const occ::handle<Geom_Curve>& aCurve3d = BRepGraph_Tool::Edge::Curve(theGraph, anIdx);
+      const occ::handle<Geom_Curve>& aCurve3d = BRepGraph_Tool::Edge::Curve(theGraph, BRepGraph_EdgeId(anIdx));
       if (!aCurve3d.IsNull())
         aCurve3d->Transform(theTrsf);
     }
@@ -87,7 +87,7 @@ void BRepGraphAlgo_Transform::applyLocationTransform(BRepGraph& theGraph, const 
   {
     const BRepGraph_NodeId aRootId = aRoots.Value(anIdx);
     BRepGraphInc::ProductEntity& aProduct =
-      theGraph.myData->myIncStorage.ChangeProduct(aRootId.Index);
+      theGraph.myData->myIncStorage.ChangeProduct(BRepGraph_ProductId(aRootId.Index));
     aProduct.RootLocation = aLoc * aProduct.RootLocation;
     theGraph.markModified(aRootId);
   }
@@ -133,12 +133,12 @@ BRepGraph BRepGraphAlgo_Transform::Perform(const BRepGraph& theGraph,
 
 //=================================================================================================
 
-BRepGraph BRepGraphAlgo_Transform::TransformFace(const BRepGraph& theGraph,
-                                                 int              theFaceIdx,
-                                                 const gp_Trsf&   theTrsf,
-                                                 bool             theCopyGeom)
+BRepGraph BRepGraphAlgo_Transform::TransformFace(const BRepGraph&       theGraph,
+                                                 const BRepGraph_FaceId theFace,
+                                                 const gp_Trsf&         theTrsf,
+                                                 const bool             theCopyGeom)
 {
-  if (!theGraph.IsDone() || theFaceIdx < 0 || theFaceIdx >= theGraph.Defs().NbFaces())
+  if (!theGraph.IsDone() || theFace.Index < 0 || theFace.Index >= theGraph.Defs().NbFaces())
     return BRepGraph();
 
   const bool useGeomModif =
@@ -147,7 +147,7 @@ BRepGraph BRepGraphAlgo_Transform::TransformFace(const BRepGraph& theGraph,
 
   if (useGeomModif)
   {
-    BRepGraph aResult = BRepGraphAlgo_Copy::CopyFace(theGraph, theFaceIdx, true);
+    BRepGraph aResult = BRepGraphAlgo_Copy::CopyFace(theGraph, theFace, true);
     if (!aResult.IsDone())
       return aResult;
 
@@ -155,7 +155,7 @@ BRepGraph BRepGraphAlgo_Transform::TransformFace(const BRepGraph& theGraph,
     return aResult;
   }
 
-  BRepGraph aResult = BRepGraphAlgo_Copy::CopyFace(theGraph, theFaceIdx, false);
+  BRepGraph aResult = BRepGraphAlgo_Copy::CopyFace(theGraph, theFace, false);
   if (!aResult.IsDone())
     return aResult;
 

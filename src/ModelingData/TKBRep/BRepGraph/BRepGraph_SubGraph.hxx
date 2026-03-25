@@ -14,13 +14,14 @@
 #ifndef _BRepGraph_SubGraph_HeaderFile
 #define _BRepGraph_SubGraph_HeaderFile
 
+#include <BRepGraph_NodeId.hxx>
 #include <NCollection_Vector.hxx>
 
 class BRepGraph;
 
 //! @brief Non-owning view over a connected component of BRepGraph.
 //!
-//! Stores per-kind definition index sets referencing the parent graph's
+//! Stores per-kind typed definition id sets referencing the parent graph's
 //! entity vectors. Created by BRepGraph_Analyze::Decompose() to partition
 //! a graph into independent connected components for parallel processing.
 class BRepGraph_SubGraph
@@ -28,23 +29,23 @@ class BRepGraph_SubGraph
 public:
   const BRepGraph* ParentGraph() const { return myParent; }
 
-  //! Definition index sets.
-  const NCollection_Vector<int>& SolidDefIndices() const { return mySolidDefIndices; }
+  //! Typed definition id sets.
+  const NCollection_Vector<BRepGraph_SolidId>& SolidDefIds() const { return mySolidDefIds; }
 
-  const NCollection_Vector<int>& ShellDefIndices() const { return myShellDefIndices; }
+  const NCollection_Vector<BRepGraph_ShellId>& ShellDefIds() const { return myShellDefIds; }
 
-  const NCollection_Vector<int>& FaceDefIndices() const { return myFaceDefIndices; }
+  const NCollection_Vector<BRepGraph_FaceId>& FaceDefIds() const { return myFaceDefIds; }
 
-  const NCollection_Vector<int>& WireDefIndices() const { return myWireDefIndices; }
+  const NCollection_Vector<BRepGraph_WireId>& WireDefIds() const { return myWireDefIds; }
 
-  const NCollection_Vector<int>& EdgeDefIndices() const { return myEdgeDefIndices; }
+  const NCollection_Vector<BRepGraph_EdgeId>& EdgeDefIds() const { return myEdgeDefIds; }
 
-  const NCollection_Vector<int>& VertexDefIndices() const { return myVertexDefIndices; }
+  const NCollection_Vector<BRepGraph_VertexId>& VertexDefIds() const { return myVertexDefIds; }
 
   int NbTopoNodes() const
   {
-    return mySolidDefIndices.Length() + myShellDefIndices.Length() + myFaceDefIndices.Length()
-           + myWireDefIndices.Length() + myEdgeDefIndices.Length() + myVertexDefIndices.Length();
+    return mySolidDefIds.Length() + myShellDefIds.Length() + myFaceDefIds.Length()
+           + myWireDefIds.Length() + myEdgeDefIds.Length() + myVertexDefIds.Length();
   }
 
 private:
@@ -53,12 +54,12 @@ private:
 
   const BRepGraph* myParent = nullptr;
 
-  NCollection_Vector<int> mySolidDefIndices;
-  NCollection_Vector<int> myShellDefIndices;
-  NCollection_Vector<int> myFaceDefIndices;
-  NCollection_Vector<int> myWireDefIndices;
-  NCollection_Vector<int> myEdgeDefIndices;
-  NCollection_Vector<int> myVertexDefIndices;
+  NCollection_Vector<BRepGraph_SolidId>  mySolidDefIds;
+  NCollection_Vector<BRepGraph_ShellId>  myShellDefIds;
+  NCollection_Vector<BRepGraph_FaceId>   myFaceDefIds;
+  NCollection_Vector<BRepGraph_WireId>   myWireDefIds;
+  NCollection_Vector<BRepGraph_EdgeId>   myEdgeDefIds;
+  NCollection_Vector<BRepGraph_VertexId> myVertexDefIds;
 };
 
 #endif // _BRepGraph_SubGraph_HeaderFile

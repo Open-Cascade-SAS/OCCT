@@ -17,6 +17,7 @@
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_NodeId.hxx>
 #include <BRepGraphAlgo_FaceAnalysis.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <Precision.hxx>
@@ -137,7 +138,7 @@ TEST(BRepGraphAlgo_FaceAnalysisTest, SmallFace_Removal)
   int aNbRemainingFaces = 0;
   for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
   {
-    if (!aGraph.Defs().Face(aFaceIdx).IsRemoved)
+    if (!aGraph.Defs().Face(BRepGraph_FaceId(aFaceIdx)).IsRemoved)
     {
       ++aNbRemainingFaces;
     }
@@ -178,7 +179,7 @@ TEST(BRepGraphAlgo_FaceAnalysisTest, VertexGluing_AveragedCoordinates)
 
   // The degenerated edge's vertices should be merged.
   const int   anEdgeIdx = aResult.DegeneratedEdges.Value(0).Index;
-  const auto& anEdge    = aGraph.Defs().Edge(anEdgeIdx);
+  const auto& anEdge    = aGraph.Defs().Edge(BRepGraph_EdgeId(anEdgeIdx));
   EXPECT_TRUE(anEdge.IsDegenerate);
-  EXPECT_EQ(anEdge.StartVertex.VertexIdx, anEdge.EndVertex.VertexIdx);
+  EXPECT_EQ(anEdge.StartVertex.VertexDefId, anEdge.EndVertex.VertexDefId);
 }

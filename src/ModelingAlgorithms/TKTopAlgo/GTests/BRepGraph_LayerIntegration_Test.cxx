@@ -121,7 +121,7 @@ TEST(BRepGraph_LayerIntegrationTest, Sewing_NameMigratesToKeptEdge)
   // Core invariant: no name should reference a removed edge.
   for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
   {
-    const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(i);
+    const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(BRepGraph_EdgeId(i));
     if (anEdge.IsRemoved)
     {
       EXPECT_EQ(aLayer->FindNodeName(BRepGraph_NodeId::Edge(i)), nullptr)
@@ -133,7 +133,7 @@ TEST(BRepGraph_LayerIntegrationTest, Sewing_NameMigratesToKeptEdge)
   int aNbNamedKept = 0;
   for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
   {
-    if (!aGraph.Defs().Edge(i).IsRemoved
+    if (!aGraph.Defs().Edge(BRepGraph_EdgeId(i)).IsRemoved
         && aLayer->FindNodeName(BRepGraph_NodeId::Edge(i)) != nullptr)
       ++aNbNamedKept;
   }
@@ -227,7 +227,7 @@ TEST(BRepGraph_LayerIntegrationTest, Deduplicate_NameMigratesToCanonical)
     // No name should reference a removed vertex.
     for (int i = 0; i < aGraph.Defs().NbVertices(); ++i)
     {
-      if (aGraph.Defs().Vertex(i).IsRemoved)
+      if (aGraph.Defs().Vertex(BRepGraph_VertexId(i)).IsRemoved)
       {
         EXPECT_EQ(aLayer->FindNodeName(BRepGraph_NodeId::Vertex(i)), nullptr)
           << "Removed vertex " << i << " still has a name";
@@ -386,9 +386,9 @@ TEST(BRepGraph_LayerIntegrationTest, SplitEdge_OriginalEdgeRemoved)
   int aSplitEdgeIdx = -1;
   for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
   {
-    const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(i);
-    if (!anEdge.IsDegenerate && anEdge.Curve3DRepIdx >= 0 && anEdge.StartVertex.VertexIdx >= 0
-        && anEdge.EndVertex.VertexIdx >= 0)
+    const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(BRepGraph_EdgeId(i));
+    if (!anEdge.IsDegenerate && anEdge.Curve3DRepId.IsValid() && anEdge.StartVertexDefId().IsValid()
+        && anEdge.EndVertexDefId().IsValid())
     {
       aSplitEdgeIdx = i;
       break;
@@ -400,9 +400,9 @@ TEST(BRepGraph_LayerIntegrationTest, SplitEdge_OriginalEdgeRemoved)
   aLayer->SetNodeName(aSplitEdgeId, "OriginalEdge");
 
   // Create a split vertex.
-  const auto [aEdgeFirst, aEdgeLast] = BRepGraph_Tool::Edge::Range(aGraph, aSplitEdgeIdx);
+  const auto [aEdgeFirst, aEdgeLast] = BRepGraph_Tool::Edge::Range(aGraph, BRepGraph_EdgeId(aSplitEdgeIdx));
   const double aMidParam             = 0.5 * (aEdgeFirst + aEdgeLast);
-  const gp_Pnt aMidPnt = BRepGraph_Tool::Edge::Curve(aGraph, aSplitEdgeIdx)->EvalD0(aMidParam);
+  const gp_Pnt aMidPnt = BRepGraph_Tool::Edge::Curve(aGraph, BRepGraph_EdgeId(aSplitEdgeIdx))->EvalD0(aMidParam);
   const BRepGraph_NodeId aSplitVtx = aGraph.Builder().AddVertexDef(aMidPnt, Precision::Confusion());
 
   // Split the edge.
@@ -413,7 +413,7 @@ TEST(BRepGraph_LayerIntegrationTest, SplitEdge_OriginalEdgeRemoved)
   // so the layer callback is NOT triggered. Original name stays in the layer
   // but the edge is marked IsRemoved. This is a known limitation -
   // SplitEdge doesn't know the "replacement" (it creates 2 sub-edges).
-  EXPECT_TRUE(aGraph.Defs().Edge(aSplitEdgeIdx).IsRemoved);
+  EXPECT_TRUE(aGraph.Defs().Edge(BRepGraph_EdgeId(aSplitEdgeIdx)).IsRemoved);
 
   // Sub-edges should be valid.
   EXPECT_TRUE(aSubA.IsValid());
@@ -466,7 +466,7 @@ TEST(BRepGraph_LayerIntegrationTest, FullPipeline_NamesTrackThroughAllStages)
   const int aNbFacesAfter = aGraph.Defs().NbFaces();
   for (int i = 0; i < aNbFacesAfter; ++i)
   {
-    EXPECT_FALSE(aGraph.Defs().Face(i).IsRemoved)
+    EXPECT_FALSE(aGraph.Defs().Face(BRepGraph_FaceId(i)).IsRemoved)
       << "Face " << i << " is removed after compact - should have been eliminated";
   }
 }
@@ -604,6 +604,6 @@ TEST(BRepGraph_LayerIntegrationTest, TwoLayers_BothSurviveFullPipeline)
   const int aNbFaces = aGraph.Defs().NbFaces();
   for (int i = 0; i < aNbFaces; ++i)
   {
-    EXPECT_FALSE(aGraph.Defs().Face(i).IsRemoved);
+    EXPECT_FALSE(aGraph.Defs().Face(BRepGraph_FaceId(i)).IsRemoved);
   }
 }

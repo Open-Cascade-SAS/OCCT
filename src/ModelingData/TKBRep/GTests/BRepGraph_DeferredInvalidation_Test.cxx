@@ -37,22 +37,22 @@ protected:
 
 TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_EdgeMutation_SetsIsModified)
 {
-  EXPECT_FALSE(myGraph.Defs().Edge(0).IsModified);
+  EXPECT_FALSE(myGraph.Defs().Edge(BRepGraph_EdgeId(0)).IsModified);
 
   myGraph.BeginDeferredInvalidation();
-  myGraph.MutEdge(0)->Tolerance = 0.5;
+  myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
   // In deferred mode, the entity's IsModified flag is set.
-  EXPECT_TRUE(myGraph.Defs().Edge(0).IsModified);
+  EXPECT_TRUE(myGraph.Defs().Edge(BRepGraph_EdgeId(0)).IsModified);
   myGraph.EndDeferredInvalidation();
 }
 
 TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_PropagatesUpOnFlush)
 {
   myGraph.BeginDeferredInvalidation();
-  myGraph.MutEdge(0)->Tolerance = 0.5;
+  myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
 
   // During deferred mode: edge is modified, but parent wire/face are NOT yet.
-  const NCollection_Vector<int>& aWires = myGraph.Defs().WiresOfEdge(0);
+  const NCollection_Vector<BRepGraph_WireId>& aWires = myGraph.Defs().WiresOfEdge(BRepGraph_EdgeId(0));
   ASSERT_GT(aWires.Length(), 0);
   EXPECT_FALSE(myGraph.Defs().Wire(aWires.Value(0)).IsModified);
 
@@ -64,45 +64,45 @@ TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_PropagatesUpOnFlush)
   // Check propagation to face.
   for (int aFI = 0; aFI < myGraph.Defs().NbFaces(); ++aFI)
   {
-    if (myGraph.Defs().Face(aFI).OuterWireIdx() == aWires.Value(0))
+    if (myGraph.Defs().Face(BRepGraph_FaceId(aFI)).OuterWireDefId().Index == aWires.Value(0).Index)
     {
-      EXPECT_TRUE(myGraph.Defs().Face(aFI).IsModified);
+      EXPECT_TRUE(myGraph.Defs().Face(BRepGraph_FaceId(aFI)).IsModified);
       break;
     }
   }
 
   // Check propagation to shell and solid.
-  EXPECT_TRUE(myGraph.Defs().Shell(0).IsModified);
-  EXPECT_TRUE(myGraph.Defs().Solid(0).IsModified);
+  EXPECT_TRUE(myGraph.Defs().Shell(BRepGraph_ShellId(0)).IsModified);
+  EXPECT_TRUE(myGraph.Defs().Solid(BRepGraph_SolidId(0)).IsModified);
 }
 
 TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_DirectFaceMutation_PropagatesUp)
 {
   myGraph.BeginDeferredInvalidation();
-  myGraph.MutFace(0);
+  myGraph.MutFace(BRepGraph_FaceId(0));
 
-  EXPECT_TRUE(myGraph.Defs().Face(0).IsModified);
+  EXPECT_TRUE(myGraph.Defs().Face(BRepGraph_FaceId(0)).IsModified);
   // Shell not yet propagated during deferred mode.
-  EXPECT_FALSE(myGraph.Defs().Shell(0).IsModified);
+  EXPECT_FALSE(myGraph.Defs().Shell(BRepGraph_ShellId(0)).IsModified);
 
   myGraph.EndDeferredInvalidation();
 
   // After flush: shell and solid should be propagated.
-  EXPECT_TRUE(myGraph.Defs().Shell(0).IsModified);
-  EXPECT_TRUE(myGraph.Defs().Solid(0).IsModified);
+  EXPECT_TRUE(myGraph.Defs().Shell(BRepGraph_ShellId(0)).IsModified);
+  EXPECT_TRUE(myGraph.Defs().Solid(BRepGraph_SolidId(0)).IsModified);
 }
 
 TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_DirectShellMutation_PropagatesUp)
 {
   myGraph.BeginDeferredInvalidation();
-  myGraph.MutShell(0);
+  myGraph.MutShell(BRepGraph_ShellId(0));
 
-  EXPECT_TRUE(myGraph.Defs().Shell(0).IsModified);
-  EXPECT_FALSE(myGraph.Defs().Solid(0).IsModified);
+  EXPECT_TRUE(myGraph.Defs().Shell(BRepGraph_ShellId(0)).IsModified);
+  EXPECT_FALSE(myGraph.Defs().Solid(BRepGraph_SolidId(0)).IsModified);
 
   myGraph.EndDeferredInvalidation();
 
-  EXPECT_TRUE(myGraph.Defs().Solid(0).IsModified);
+  EXPECT_TRUE(myGraph.Defs().Solid(BRepGraph_SolidId(0)).IsModified);
 }
 
 TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_MultipleEdges_BatchPropagation)
@@ -112,13 +112,13 @@ TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_MultipleEdges_BatchPropag
   const int aNbEdges = myGraph.Defs().NbEdges();
   for (int anEdgeIdx = 0; anEdgeIdx < aNbEdges; ++anEdgeIdx)
   {
-    myGraph.MutEdge(anEdgeIdx)->Tolerance = 0.1;
+    myGraph.MutEdge(BRepGraph_EdgeId(anEdgeIdx))->Tolerance = 0.1;
   }
 
   // During deferred mode: all edges modified, but no parent propagation yet.
   for (int aWireIdx = 0; aWireIdx < myGraph.Defs().NbWires(); ++aWireIdx)
   {
-    EXPECT_FALSE(myGraph.Defs().Wire(aWireIdx).IsModified);
+    EXPECT_FALSE(myGraph.Defs().Wire(BRepGraph_WireId(aWireIdx)).IsModified);
   }
 
   myGraph.EndDeferredInvalidation();
@@ -126,21 +126,21 @@ TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_MultipleEdges_BatchPropag
   // After flush: all wires, faces, shells, solids should be modified.
   for (int aWireIdx = 0; aWireIdx < myGraph.Defs().NbWires(); ++aWireIdx)
   {
-    EXPECT_TRUE(myGraph.Defs().Wire(aWireIdx).IsModified);
+    EXPECT_TRUE(myGraph.Defs().Wire(BRepGraph_WireId(aWireIdx)).IsModified);
   }
   for (int aFaceIdx = 0; aFaceIdx < myGraph.Defs().NbFaces(); ++aFaceIdx)
   {
-    EXPECT_TRUE(myGraph.Defs().Face(aFaceIdx).IsModified);
+    EXPECT_TRUE(myGraph.Defs().Face(BRepGraph_FaceId(aFaceIdx)).IsModified);
   }
-  EXPECT_TRUE(myGraph.Defs().Shell(0).IsModified);
-  EXPECT_TRUE(myGraph.Defs().Solid(0).IsModified);
+  EXPECT_TRUE(myGraph.Defs().Shell(BRepGraph_ShellId(0)).IsModified);
+  EXPECT_TRUE(myGraph.Defs().Solid(BRepGraph_SolidId(0)).IsModified);
 }
 
 TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_ReconstructAfterFlush_Succeeds)
 {
   // Modify an edge in deferred mode and verify reconstruction still works.
   myGraph.BeginDeferredInvalidation();
-  myGraph.MutEdge(0)->Tolerance = 0.5;
+  myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
   myGraph.EndDeferredInvalidation();
 
   // Reconstruction should succeed (shape cache was cleared on flush).
@@ -159,22 +159,22 @@ TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_ParallelMutation_NoDataRa
   OSD_Parallel::For(
     0,
     aNbEdges,
-    [&](int theIdx) { myGraph.MutEdge(theIdx)->Tolerance = 0.1 + theIdx * 0.01; },
+    [&](int theIdx) { myGraph.MutEdge(BRepGraph_EdgeId(theIdx))->Tolerance = 0.1 + theIdx * 0.01; },
     false);
   myGraph.EndDeferredInvalidation();
 
   // All edges should be modified.
   for (int anEdgeIdx = 0; anEdgeIdx < aNbEdges; ++anEdgeIdx)
   {
-    EXPECT_TRUE(myGraph.Defs().Edge(anEdgeIdx).IsModified);
-    EXPECT_NEAR(myGraph.Defs().Edge(anEdgeIdx).Tolerance,
+    EXPECT_TRUE(myGraph.Defs().Edge(BRepGraph_EdgeId(anEdgeIdx)).IsModified);
+    EXPECT_NEAR(myGraph.Defs().Edge(BRepGraph_EdgeId(anEdgeIdx)).Tolerance,
                 0.1 + anEdgeIdx * 0.01,
                 Precision::Confusion());
   }
 
   // Propagation should have happened on flush.
-  EXPECT_TRUE(myGraph.Defs().Shell(0).IsModified);
-  EXPECT_TRUE(myGraph.Defs().Solid(0).IsModified);
+  EXPECT_TRUE(myGraph.Defs().Shell(BRepGraph_ShellId(0)).IsModified);
+  EXPECT_TRUE(myGraph.Defs().Solid(BRepGraph_SolidId(0)).IsModified);
 }
 
 TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_NoMutations_FlushIsSafe)
@@ -184,11 +184,11 @@ TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_NoMutations_FlushIsSafe)
   myGraph.EndDeferredInvalidation();
 
   // Nothing should be modified.
-  EXPECT_FALSE(myGraph.Defs().Edge(0).IsModified);
-  EXPECT_FALSE(myGraph.Defs().Wire(0).IsModified);
-  EXPECT_FALSE(myGraph.Defs().Face(0).IsModified);
-  EXPECT_FALSE(myGraph.Defs().Shell(0).IsModified);
-  EXPECT_FALSE(myGraph.Defs().Solid(0).IsModified);
+  EXPECT_FALSE(myGraph.Defs().Edge(BRepGraph_EdgeId(0)).IsModified);
+  EXPECT_FALSE(myGraph.Defs().Wire(BRepGraph_WireId(0)).IsModified);
+  EXPECT_FALSE(myGraph.Defs().Face(BRepGraph_FaceId(0)).IsModified);
+  EXPECT_FALSE(myGraph.Defs().Shell(BRepGraph_ShellId(0)).IsModified);
+  EXPECT_FALSE(myGraph.Defs().Solid(BRepGraph_SolidId(0)).IsModified);
 }
 
 TEST_F(BRepGraphDeferredInvalidationTest, EndWithoutBegin_IsIdempotent)
@@ -197,42 +197,42 @@ TEST_F(BRepGraphDeferredInvalidationTest, EndWithoutBegin_IsIdempotent)
   EXPECT_NO_THROW(myGraph.EndDeferredInvalidation());
 
   // Nothing should be modified or cleared.
-  EXPECT_FALSE(myGraph.Defs().Edge(0).IsModified);
-  EXPECT_FALSE(myGraph.Defs().Solid(0).IsModified);
+  EXPECT_FALSE(myGraph.Defs().Edge(BRepGraph_EdgeId(0)).IsModified);
+  EXPECT_FALSE(myGraph.Defs().Solid(BRepGraph_SolidId(0)).IsModified);
 }
 
 TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_DoubleEnd_IsIdempotent)
 {
   myGraph.BeginDeferredInvalidation();
-  myGraph.MutEdge(0)->Tolerance = 0.5;
+  myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
   myGraph.EndDeferredInvalidation();
 
   // Second End should be a safe no-op.
   EXPECT_NO_THROW(myGraph.EndDeferredInvalidation());
-  EXPECT_TRUE(myGraph.Defs().Edge(0).IsModified);
+  EXPECT_TRUE(myGraph.Defs().Edge(BRepGraph_EdgeId(0)).IsModified);
 }
 
 TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_SameEdgeMutatedTwice)
 {
   myGraph.BeginDeferredInvalidation();
-  myGraph.MutEdge(0)->Tolerance = 0.1;
-  myGraph.MutEdge(0)->Tolerance = 0.5;
+  myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.1;
+  myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
   myGraph.EndDeferredInvalidation();
 
   // Last write wins.
-  EXPECT_NEAR(myGraph.Defs().Edge(0).Tolerance, 0.5, Precision::Confusion());
-  EXPECT_TRUE(myGraph.Defs().Edge(0).IsModified);
-  EXPECT_TRUE(myGraph.Defs().Shell(0).IsModified);
-  EXPECT_TRUE(myGraph.Defs().Solid(0).IsModified);
+  EXPECT_NEAR(myGraph.Defs().Edge(BRepGraph_EdgeId(0)).Tolerance, 0.5, Precision::Confusion());
+  EXPECT_TRUE(myGraph.Defs().Edge(BRepGraph_EdgeId(0)).IsModified);
+  EXPECT_TRUE(myGraph.Defs().Shell(BRepGraph_ShellId(0)).IsModified);
+  EXPECT_TRUE(myGraph.Defs().Solid(BRepGraph_SolidId(0)).IsModified);
 }
 
 TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_DirectWireMutation_PropagatesUp)
 {
   myGraph.BeginDeferredInvalidation();
-  myGraph.MutWire(0);
+  myGraph.MutWire(BRepGraph_WireId(0));
 
-  EXPECT_TRUE(myGraph.Defs().Wire(0).IsModified);
-  EXPECT_FALSE(myGraph.Defs().Face(0).IsModified);
+  EXPECT_TRUE(myGraph.Defs().Wire(BRepGraph_WireId(0)).IsModified);
+  EXPECT_FALSE(myGraph.Defs().Face(BRepGraph_FaceId(0)).IsModified);
 
   myGraph.EndDeferredInvalidation();
 
@@ -240,13 +240,14 @@ TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_DirectWireMutation_Propag
   bool aFacePropagated = false;
   for (int aFI = 0; aFI < myGraph.Defs().NbFaces(); ++aFI)
   {
-    if (myGraph.Defs().Face(aFI).OuterWireIdx() == 0 && myGraph.Defs().Face(aFI).IsModified)
+    if (myGraph.Defs().Face(BRepGraph_FaceId(aFI)).OuterWireDefId().Index == 0
+        && myGraph.Defs().Face(BRepGraph_FaceId(aFI)).IsModified)
     {
       aFacePropagated = true;
       break;
     }
   }
   EXPECT_TRUE(aFacePropagated);
-  EXPECT_TRUE(myGraph.Defs().Shell(0).IsModified);
-  EXPECT_TRUE(myGraph.Defs().Solid(0).IsModified);
+  EXPECT_TRUE(myGraph.Defs().Shell(BRepGraph_ShellId(0)).IsModified);
+  EXPECT_TRUE(myGraph.Defs().Solid(BRepGraph_SolidId(0)).IsModified);
 }

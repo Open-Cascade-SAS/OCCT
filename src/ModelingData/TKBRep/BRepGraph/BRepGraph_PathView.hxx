@@ -124,9 +124,9 @@ public:
     BRepGraph_NodeId theLeaf) const;
 
   //! Compute the global placement of an occurrence by walking the parent chain.
-  //! @param[in] theOccurrenceIdx zero-based occurrence definition index
+  //! @param[in] theOccurrence typed occurrence identifier
   //! @return composed TopLoc_Location from root to the occurrence
-  Standard_EXPORT TopLoc_Location OccurrenceLocation(const int theOccurrenceIdx) const;
+  Standard_EXPORT TopLoc_Location OccurrenceLocation(const BRepGraph_OccurrenceId theOccurrence) const;
 
   //! Count entities of the given kind encountered along the path.
   //! @param[in] thePath  topology path

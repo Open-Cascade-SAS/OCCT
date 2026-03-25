@@ -50,13 +50,13 @@ TEST(BRepGraphGeometry, Sphere_AllFaces_SameSurface)
 
   // All face defs of a sphere share the same surface handle.
   ASSERT_GE(aGraph.Defs().NbFaces(), 1);
-  ASSERT_TRUE(BRepGraph_Tool::Face::HasSurface(aGraph, 0));
-  const occ::handle<Geom_Surface>& aFirstSurf = BRepGraph_Tool::Face::Surface(aGraph, 0);
+  ASSERT_TRUE(BRepGraph_Tool::Face::HasSurface(aGraph, BRepGraph_FaceId(0)));
+  const occ::handle<Geom_Surface>& aFirstSurf = BRepGraph_Tool::Face::Surface(aGraph, BRepGraph_FaceId(0));
   EXPECT_FALSE(aFirstSurf.IsNull());
   for (int i = 1; i < aGraph.Defs().NbFaces(); ++i)
   {
-    ASSERT_TRUE(BRepGraph_Tool::Face::HasSurface(aGraph, i));
-    EXPECT_EQ(BRepGraph_Tool::Face::Surface(aGraph, i).get(), aFirstSurf.get());
+    ASSERT_TRUE(BRepGraph_Tool::Face::HasSurface(aGraph, BRepGraph_FaceId(i)));
+    EXPECT_EQ(BRepGraph_Tool::Face::Surface(aGraph, BRepGraph_FaceId(i)).get(), aFirstSurf.get());
   }
 }
 
@@ -67,14 +67,14 @@ TEST(BRepGraphGeometry, Sphere_AllFacesShareSurface)
   ASSERT_TRUE(aGraph.IsDone());
 
   // All faces of a sphere share the same surface pointer.
-  ASSERT_TRUE(BRepGraph_Tool::Face::HasSurface(aGraph, 0));
-  const occ::handle<Geom_Surface>& aFirstSurf = BRepGraph_Tool::Face::Surface(aGraph, 0);
+  ASSERT_TRUE(BRepGraph_Tool::Face::HasSurface(aGraph, BRepGraph_FaceId(0)));
+  const occ::handle<Geom_Surface>& aFirstSurf = BRepGraph_Tool::Face::Surface(aGraph, BRepGraph_FaceId(0));
   EXPECT_FALSE(aFirstSurf.IsNull());
   int aSameCount = 0;
   for (int i = 0; i < aGraph.Defs().NbFaces(); ++i)
   {
-    if (BRepGraph_Tool::Face::HasSurface(aGraph, i)
-        && BRepGraph_Tool::Face::Surface(aGraph, i).get() == aFirstSurf.get())
+    if (BRepGraph_Tool::Face::HasSurface(aGraph, BRepGraph_FaceId(i))
+        && BRepGraph_Tool::Face::Surface(aGraph, BRepGraph_FaceId(i)).get() == aFirstSurf.get())
       ++aSameCount;
   }
   EXPECT_EQ(aSameCount, aGraph.Defs().NbFaces());
@@ -89,7 +89,7 @@ TEST(BRepGraphGeometry, Box_Curve3d_ValidForAll12Edges)
 
   for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
   {
-    EXPECT_TRUE(BRepGraph_Tool::Edge::HasCurve(aGraph, i))
+    EXPECT_TRUE(BRepGraph_Tool::Edge::HasCurve(aGraph, BRepGraph_EdgeId(i)))
       << "Edge def " << i << " has no valid curve";
   }
 }
@@ -102,7 +102,7 @@ TEST(BRepGraphGeometry, Box_AllEdgesHaveCurve3d)
 
   for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
   {
-    EXPECT_TRUE(BRepGraph_Tool::Edge::HasCurve(aGraph, i)) << "Edge " << i << " has no curve";
+    EXPECT_TRUE(BRepGraph_Tool::Edge::HasCurve(aGraph, BRepGraph_EdgeId(i))) << "Edge " << i << " has no curve";
   }
 }
 
@@ -116,12 +116,12 @@ TEST(BRepGraphGeometry, Box_FindPCurve_AllEdgeFacePairs_Valid)
   for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
   {
     const BRepGraph_NodeId         aEdgeDefId(BRepGraph_NodeId::Kind::Edge, i);
-    const NCollection_Vector<int>& aCoEdgeIdxs = aGraph.Defs().CoEdgesOfEdge(i);
+    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs = aGraph.Defs().CoEdgesOfEdge(BRepGraph_EdgeId(i));
     for (int j = 0; j < aCoEdgeIdxs.Length(); ++j)
     {
       const BRepGraphInc::CoEdgeEntity& aCE = aGraph.Defs().CoEdge(aCoEdgeIdxs.Value(j));
       const BRepGraphInc::CoEdgeEntity* aPCurveEntry =
-        BRepGraph_Tool::Edge::FindPCurve(aGraph, BRepGraph_NodeId::Edge(i), aCE.FaceDefId);
+        BRepGraph_Tool::Edge::FindPCurve(aGraph, BRepGraph_EdgeId(i), BRepGraph_FaceId(aCE.FaceDefId.Index));
       EXPECT_NE(aPCurveEntry, nullptr);
       ++aPCurveCount;
     }
@@ -137,13 +137,13 @@ TEST(BRepGraphGeometry, CoEdge_FaceDefIdValid)
 
   for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
   {
-    const NCollection_Vector<int>& aCoEdgeIdxs = aGraph.Defs().CoEdgesOfEdge(i);
+    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs = aGraph.Defs().CoEdgesOfEdge(BRepGraph_EdgeId(i));
     for (int j = 0; j < aCoEdgeIdxs.Length(); ++j)
     {
       const BRepGraphInc::CoEdgeEntity& aCE = aGraph.Defs().CoEdge(aCoEdgeIdxs.Value(j));
       EXPECT_TRUE(aCE.FaceDefId.IsValid())
         << "Edge " << i << " CoEdge " << j << " has invalid FaceDefId";
-      EXPECT_EQ(aCE.FaceDefId.NodeKind, BRepGraph_NodeId::Kind::Face);
+      EXPECT_EQ(BRepGraph_NodeId(aCE.FaceDefId).NodeKind, BRepGraph_NodeId::Kind::Face);
     }
   }
 }
@@ -157,7 +157,7 @@ TEST(BRepGraphGeometry, CoEdge_ParamRange_NonZero)
   int aCoEdgeCount = 0;
   for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
   {
-    const NCollection_Vector<int>& aCoEdgeIdxs = aGraph.Defs().CoEdgesOfEdge(i);
+    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs = aGraph.Defs().CoEdgesOfEdge(BRepGraph_EdgeId(i));
     for (int j = 0; j < aCoEdgeIdxs.Length(); ++j)
     {
       const BRepGraphInc::CoEdgeEntity& aCE    = aGraph.Defs().CoEdge(aCoEdgeIdxs.Value(j));
@@ -181,7 +181,7 @@ TEST(BRepGraphGeometry, CoEdge_Continuity_Valid)
   bool hasNonC0Continuity = false;
   for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
   {
-    const NCollection_Vector<int>& aCoEdgeIdxs = aGraph.Defs().CoEdgesOfEdge(i);
+    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs = aGraph.Defs().CoEdgesOfEdge(BRepGraph_EdgeId(i));
     for (int j = 0; j < aCoEdgeIdxs.Length(); ++j)
     {
       const BRepGraphInc::CoEdgeEntity& aCE = aGraph.Defs().CoEdge(aCoEdgeIdxs.Value(j));
@@ -203,7 +203,7 @@ TEST(BRepGraphGeometry, FaceDef_Surface_IsNotNull)
 
   for (int i = 0; i < aGraph.Defs().NbFaces(); ++i)
   {
-    EXPECT_TRUE(BRepGraph_Tool::Face::HasSurface(aGraph, i))
+    EXPECT_TRUE(BRepGraph_Tool::Face::HasSurface(aGraph, BRepGraph_FaceId(i)))
       << "Face " << i << " has null Surface handle";
   }
 }
@@ -216,7 +216,7 @@ TEST(BRepGraphGeometry, EdgeDef_Curve3d_IsNotNull)
 
   for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
   {
-    EXPECT_TRUE(BRepGraph_Tool::Edge::HasCurve(aGraph, i))
+    EXPECT_TRUE(BRepGraph_Tool::Edge::HasCurve(aGraph, BRepGraph_EdgeId(i)))
       << "Edge " << i << " has null Curve3d handle";
   }
 }
@@ -271,7 +271,7 @@ TEST(BRepGraphGeometry, FaceDef_Triangulation_NullForAnalyticNoCrash)
   // Simply verify access does not crash.
   for (int i = 0; i < aGraph.Defs().NbFaces(); ++i)
   {
-    const bool hasActiveTri = BRepGraph_Tool::Face::HasTriangulation(aGraph, i);
+    const bool hasActiveTri = BRepGraph_Tool::Face::HasTriangulation(aGraph, BRepGraph_FaceId(i));
     EXPECT_FALSE(hasActiveTri) << "Face " << i << " unexpectedly has a triangulation";
   }
 }
@@ -394,7 +394,7 @@ TEST(BRepGraphIterator, FaceDef_AllSurfacesNonNull)
   int aCount = 0;
   for (BRepGraph_Iterator<BRepGraph_TopoNode::FaceDef> anIt(aGraph); anIt.More(); anIt.Next())
   {
-    EXPECT_TRUE(BRepGraph_Tool::Face::HasSurface(aGraph, anIt.Index()));
+    EXPECT_TRUE(BRepGraph_Tool::Face::HasSurface(aGraph, BRepGraph_FaceId(anIt.Index())));
     ++aCount;
   }
   EXPECT_EQ(aCount, aGraph.Defs().NbFaces());
@@ -409,8 +409,8 @@ TEST(BRepGraphIterator, EdgeDef_AllCurves3dNonNull)
   int aCount = 0;
   for (BRepGraph_Iterator<BRepGraph_TopoNode::EdgeDef> anIt(aGraph); anIt.More(); anIt.Next())
   {
-    if (!BRepGraph_Tool::Edge::Degenerated(aGraph, anIt.Index()))
-      EXPECT_TRUE(BRepGraph_Tool::Edge::HasCurve(aGraph, anIt.Index()));
+    if (!BRepGraph_Tool::Edge::Degenerated(aGraph, BRepGraph_EdgeId(anIt.Index())))
+      EXPECT_TRUE(BRepGraph_Tool::Edge::HasCurve(aGraph, BRepGraph_EdgeId(anIt.Index())));
     ++aCount;
   }
   EXPECT_EQ(aCount, aGraph.Defs().NbEdges());
@@ -425,7 +425,7 @@ TEST(BRepGraphIterator, AllCoEdgesHaveCurve2d)
   int aCount = 0;
   for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
   {
-    const NCollection_Vector<int>& aCoEdgeIdxs = aGraph.Defs().CoEdgesOfEdge(i);
+    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs = aGraph.Defs().CoEdgesOfEdge(BRepGraph_EdgeId(i));
     for (int j = 0; j < aCoEdgeIdxs.Length(); ++j)
     {
       EXPECT_TRUE(BRepGraph_Tool::CoEdge::HasPCurve(aGraph, aCoEdgeIdxs.Value(j)));
@@ -488,19 +488,19 @@ TEST(BRepGraphSubGraph, SubGraph_IndicesDisjoint_BetweenComponents)
   const NCollection_Vector<BRepGraph_SubGraph> aSubs = BRepGraph_Analyze::Decompose(aGraph);
   ASSERT_EQ(aSubs.Length(), 2);
 
-  // Collect face def indices from both components and verify they are disjoint.
-  NCollection_Map<int>           aFaceSet1;
-  const NCollection_Vector<int>& aFaces1 = aSubs.Value(0).FaceDefIndices();
+  // Collect face def ids from both components and verify they are disjoint.
+  NCollection_Map<int>                        aFaceSet1;
+  const NCollection_Vector<BRepGraph_FaceId>& aFaces1 = aSubs.Value(0).FaceDefIds();
   for (int i = 0; i < aFaces1.Length(); ++i)
   {
-    aFaceSet1.Add(aFaces1.Value(i));
+    aFaceSet1.Add(aFaces1.Value(i).Index);
   }
 
-  const NCollection_Vector<int>& aFaces2 = aSubs.Value(1).FaceDefIndices();
+  const NCollection_Vector<BRepGraph_FaceId>& aFaces2 = aSubs.Value(1).FaceDefIds();
   for (int i = 0; i < aFaces2.Length(); ++i)
   {
-    EXPECT_FALSE(aFaceSet1.Contains(aFaces2.Value(i)))
-      << "Face def index " << aFaces2.Value(i) << " found in both components";
+    EXPECT_FALSE(aFaceSet1.Contains(aFaces2.Value(i).Index))
+      << "Face def index " << aFaces2.Value(i).Index << " found in both components";
   }
 }
 
@@ -553,7 +553,7 @@ TEST(BRepGraphGeometry, Box_EdgeDef_SameParameter_IsSet)
   // Box edges are well-formed; SameParameter should be true for all.
   for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
   {
-    EXPECT_TRUE(BRepGraph_Tool::Edge::SameParameter(aGraph, i))
+    EXPECT_TRUE(BRepGraph_Tool::Edge::SameParameter(aGraph, BRepGraph_EdgeId(i)))
       << "Edge def " << i << " has SameParameter=false";
   }
 }
@@ -567,7 +567,7 @@ TEST(BRepGraphGeometry, Box_EdgeDef_SameRange_IsSet)
 
   for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
   {
-    EXPECT_TRUE(BRepGraph_Tool::Edge::SameRange(aGraph, i))
+    EXPECT_TRUE(BRepGraph_Tool::Edge::SameRange(aGraph, BRepGraph_EdgeId(i)))
       << "Edge def " << i << " has SameRange=false";
   }
 }
@@ -583,18 +583,18 @@ TEST(BRepGraphGeometry, Cylinder_SeamEdge_HasTwoCoEdges)
   aGraph.Build(BRepPrimAPI_MakeCylinder(5.0, 20.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  // Find a seam edge via CoEdge SeamPairIdx.
+  // Find a seam edge via CoEdge SeamPairId.
   bool aFoundSeam = false;
   for (int i = 0; i < aGraph.Defs().NbEdges() && !aFoundSeam; ++i)
   {
-    const NCollection_Vector<int>& aCoEdgeIdxs = aGraph.Defs().CoEdgesOfEdge(i);
+    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs = aGraph.Defs().CoEdgesOfEdge(BRepGraph_EdgeId(i));
     for (int j = 0; j < aCoEdgeIdxs.Length() && !aFoundSeam; ++j)
     {
       const BRepGraphInc::CoEdgeEntity& aCE = aGraph.Defs().CoEdge(aCoEdgeIdxs.Value(j));
-      if (aCE.SeamPairIdx >= 0)
+      if (aCE.SeamPairId.IsValid())
       {
         // Verify the paired coedge has opposite orientation.
-        const BRepGraphInc::CoEdgeEntity& aPair = aGraph.Defs().CoEdge(aCE.SeamPairIdx);
+        const BRepGraphInc::CoEdgeEntity& aPair = aGraph.Defs().CoEdge(aCE.SeamPairId);
         EXPECT_NE(aCE.Sense, aPair.Sense) << "Seam coedges should have opposite orientations";
         EXPECT_EQ(aCE.FaceDefId, aPair.FaceDefId) << "Seam coedges should share the same face";
         aFoundSeam = true;
@@ -614,20 +614,20 @@ TEST(BRepGraphGeometry, Cylinder_SeamEdge_FindPCurve_WithOrientation)
   for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
   {
     const BRepGraph_NodeId         anEdgeDefId(BRepGraph_NodeId::Kind::Edge, i);
-    const NCollection_Vector<int>& aCoEdgeIdxs = aGraph.Defs().CoEdgesOfEdge(i);
+    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs = aGraph.Defs().CoEdgesOfEdge(BRepGraph_EdgeId(i));
 
     for (int j = 0; j < aCoEdgeIdxs.Length(); ++j)
     {
       const BRepGraphInc::CoEdgeEntity& aCE = aGraph.Defs().CoEdge(aCoEdgeIdxs.Value(j));
-      if (aCE.SeamPairIdx < 0)
+      if (!aCE.SeamPairId.IsValid())
         continue;
 
       // This is a seam edge - test oriented overload.
-      const BRepGraph_NodeId            aFaceId = aCE.FaceDefId;
+      const BRepGraph_FaceId            aFaceId(aCE.FaceDefId.Index);
       const BRepGraphInc::CoEdgeEntity* aPC_Fwd =
-        BRepGraph_Tool::Edge::FindPCurve(aGraph, BRepGraph_NodeId::Edge(i), aFaceId, TopAbs_FORWARD);
+        BRepGraph_Tool::Edge::FindPCurve(aGraph, BRepGraph_EdgeId(i), aFaceId, TopAbs_FORWARD);
       const BRepGraphInc::CoEdgeEntity* aPC_Rev =
-        BRepGraph_Tool::Edge::FindPCurve(aGraph, BRepGraph_NodeId::Edge(i), aFaceId, TopAbs_REVERSED);
+        BRepGraph_Tool::Edge::FindPCurve(aGraph, BRepGraph_EdgeId(i), aFaceId, TopAbs_REVERSED);
 
       EXPECT_NE(aPC_Fwd, nullptr) << "FindPCurve FORWARD returned null for seam edge";
       EXPECT_NE(aPC_Rev, nullptr) << "FindPCurve REVERSED returned null for seam edge";
@@ -647,16 +647,18 @@ TEST(BRepGraphGeometry, Box_FindPCurve_Context_MatchesThreeArgOverload)
   for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
   {
     const BRepGraph_NodeId         anEdgeDefId(BRepGraph_NodeId::Kind::Edge, i);
-    const NCollection_Vector<int>& aCoEdgeIdxs = aGraph.Defs().CoEdgesOfEdge(i);
+    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs = aGraph.Defs().CoEdgesOfEdge(BRepGraph_EdgeId(i));
 
     for (int j = 0; j < aCoEdgeIdxs.Length(); ++j)
     {
       const BRepGraphInc::CoEdgeEntity& aCE = aGraph.Defs().CoEdge(aCoEdgeIdxs.Value(j));
-      const BRepGraph_PCurveContext     aCtx(i, aCE.FaceDefId.Index, aCE.Sense);
+      const BRepGraph_PCurveContext     aCtx(BRepGraph_EdgeId(i),
+                                           BRepGraph_FaceId(aCE.FaceDefId.Index),
+                                           aCE.Sense);
 
       const BRepGraphInc::CoEdgeEntity* aFromCtx = aGraph.Defs().FindPCurve(aCtx);
       const BRepGraphInc::CoEdgeEntity* aFrom3Arg =
-        BRepGraph_Tool::Edge::FindPCurve(aGraph, BRepGraph_NodeId::Edge(i), aCE.FaceDefId, aCE.Sense);
+        BRepGraph_Tool::Edge::FindPCurve(aGraph, BRepGraph_EdgeId(i), BRepGraph_FaceId(aCE.FaceDefId.Index), aCE.Sense);
 
       EXPECT_EQ(aFromCtx, aFrom3Arg);
       EXPECT_NE(aFromCtx, nullptr);
@@ -672,18 +674,22 @@ TEST(BRepGraphGeometry, Cylinder_SeamEdge_FindPCurve_Context_DistinguishesOrient
 
   for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
   {
-    const NCollection_Vector<int>& aCoEdgeIdxs = aGraph.Defs().CoEdgesOfEdge(i);
+    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs = aGraph.Defs().CoEdgesOfEdge(BRepGraph_EdgeId(i));
 
     for (int j = 0; j < aCoEdgeIdxs.Length(); ++j)
     {
       const BRepGraphInc::CoEdgeEntity& aCE = aGraph.Defs().CoEdge(aCoEdgeIdxs.Value(j));
-      if (aCE.SeamPairIdx < 0)
+      if (!aCE.SeamPairId.IsValid())
         continue;
 
       // Seam edge: same face, two orientations.
       const BRepGraph_NodeId        aFaceId = aCE.FaceDefId;
-      const BRepGraph_PCurveContext aCtxFwd(i, aFaceId.Index, TopAbs_FORWARD);
-      const BRepGraph_PCurveContext aCtxRev(i, aFaceId.Index, TopAbs_REVERSED);
+      const BRepGraph_PCurveContext aCtxFwd(BRepGraph_EdgeId(i),
+                                           BRepGraph_FaceId(aFaceId.Index),
+                                           TopAbs_FORWARD);
+      const BRepGraph_PCurveContext aCtxRev(BRepGraph_EdgeId(i),
+                                           BRepGraph_FaceId(aFaceId.Index),
+                                           TopAbs_REVERSED);
 
       const BRepGraphInc::CoEdgeEntity* aPCFwd = aGraph.Defs().FindPCurve(aCtxFwd);
       const BRepGraphInc::CoEdgeEntity* aPCRev = aGraph.Defs().FindPCurve(aCtxRev);
@@ -714,26 +720,26 @@ TEST(BRepGraphRepresentations, Box_RepCounts_MatchTopology)
   // Every face has a valid surface.
   for (int i = 0; i < aGraph.Defs().NbFaces(); ++i)
   {
-    EXPECT_TRUE(BRepGraph_Tool::Face::HasSurface(aGraph, i)) << "Face " << i << " has no surface";
-    EXPECT_FALSE(BRepGraph_Tool::Face::Surface(aGraph, i).IsNull());
+    EXPECT_TRUE(BRepGraph_Tool::Face::HasSurface(aGraph, BRepGraph_FaceId(i))) << "Face " << i << " has no surface";
+    EXPECT_FALSE(BRepGraph_Tool::Face::Surface(aGraph, BRepGraph_FaceId(i)).IsNull());
   }
 
   // Every non-degenerate edge has a valid 3D curve.
   for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
   {
-    if (!BRepGraph_Tool::Edge::Degenerated(aGraph, i) && BRepGraph_Tool::Edge::HasCurve(aGraph, i))
+    if (!BRepGraph_Tool::Edge::Degenerated(aGraph, BRepGraph_EdgeId(i)) && BRepGraph_Tool::Edge::HasCurve(aGraph, BRepGraph_EdgeId(i)))
     {
-      EXPECT_FALSE(BRepGraph_Tool::Edge::Curve(aGraph, i).IsNull());
+      EXPECT_FALSE(BRepGraph_Tool::Edge::Curve(aGraph, BRepGraph_EdgeId(i)).IsNull());
     }
   }
 
-  // Every coedge with a PCurve has a valid Curve2DRepIdx.
+  // Every coedge with a PCurve has a valid Curve2DRepId.
   for (int i = 0; i < aGraph.Defs().NbCoEdges(); ++i)
   {
-    const auto& aCoEdge = aGraph.Defs().CoEdge(i);
-    if (aCoEdge.Curve2DRepIdx >= 0)
+    const auto& aCoEdge = aGraph.Defs().CoEdge(BRepGraph_CoEdgeId(i));
+    if (aCoEdge.Curve2DRepId.IsValid())
     {
-      const occ::handle<Geom2d_Curve>& aPCurve = BRepGraph_Tool::CoEdge::PCurve(aGraph, aCoEdge);
+      const occ::handle<Geom2d_Curve>& aPCurve = BRepGraph_Tool::CoEdge::PCurve(aGraph, BRepGraph_CoEdgeId(i));
       EXPECT_FALSE(aPCurve.IsNull());
     }
   }
@@ -748,10 +754,10 @@ TEST(BRepGraphRepresentations, Sphere_SurfaceDedup_SharedHandle)
   // All faces of a sphere share the same TShape -> same entity -> same surface.
   if (aGraph.Defs().NbFaces() > 1)
   {
-    const Geom_Surface* aFirstSurfPtr = BRepGraph_Tool::Face::Surface(aGraph, 0).get();
+    const Geom_Surface* aFirstSurfPtr = BRepGraph_Tool::Face::Surface(aGraph, BRepGraph_FaceId(0)).get();
     for (int i = 1; i < aGraph.Defs().NbFaces(); ++i)
     {
-      EXPECT_EQ(BRepGraph_Tool::Face::Surface(aGraph, i).get(), aFirstSurfPtr)
+      EXPECT_EQ(BRepGraph_Tool::Face::Surface(aGraph, BRepGraph_FaceId(i)).get(), aFirstSurfPtr)
         << "Faces sharing same surface should share the same surface pointer";
     }
   }
@@ -765,17 +771,17 @@ TEST(BRepGraphRepresentations, Cylinder_TriangulationReps_Populated)
 
   for (int i = 0; i < aGraph.Defs().NbFaces(); ++i)
   {
-    const auto& aFace = aGraph.Defs().Face(i);
-    if (!aFace.TriangulationRepIdxs.IsEmpty())
+    const auto& aFace = aGraph.Defs().Face(BRepGraph_FaceId(i));
+    if (!aFace.TriangulationRepIds.IsEmpty())
     {
-      for (int j = 0; j < aFace.TriangulationRepIdxs.Length(); ++j)
+      for (int j = 0; j < aFace.TriangulationRepIds.Length(); ++j)
       {
-        EXPECT_GE(aFace.TriangulationRepIdxs.Value(j), 0);
+        EXPECT_TRUE(aFace.TriangulationRepIds.Value(j).IsValid());
       }
       // Verify active triangulation is non-null via BRepGraph_Tool.
-      if (BRepGraph_Tool::Face::HasTriangulation(aGraph, i))
+      if (BRepGraph_Tool::Face::HasTriangulation(aGraph, BRepGraph_FaceId(i)))
       {
-        EXPECT_FALSE(BRepGraph_Tool::Face::Triangulation(aGraph, i).IsNull());
+        EXPECT_FALSE(BRepGraph_Tool::Face::Triangulation(aGraph, BRepGraph_FaceId(i)).IsNull());
       }
     }
   }
@@ -784,19 +790,19 @@ TEST(BRepGraphRepresentations, Cylinder_TriangulationReps_Populated)
 TEST(BRepGraphRepresentations, RepId_FactoryMethods)
 {
   const auto aSurfId = BRepGraph_RepId::Surface(42);
-  EXPECT_EQ(aSurfId.RepKind, BRepGraph_RepId::Kind::Surface);
+  EXPECT_EQ(BRepGraph_RepId(aSurfId).RepKind, BRepGraph_RepId::Kind::Surface);
   EXPECT_EQ(aSurfId.Index, 42);
   EXPECT_TRUE(aSurfId.IsValid());
 
   const auto aCurve3DId = BRepGraph_RepId::Curve3D(7);
-  EXPECT_EQ(aCurve3DId.RepKind, BRepGraph_RepId::Kind::Curve3D);
+  EXPECT_EQ(BRepGraph_RepId(aCurve3DId).RepKind, BRepGraph_RepId::Kind::Curve3D);
   EXPECT_EQ(aCurve3DId.Index, 7);
 
   const auto aDefaultId = BRepGraph_RepId();
   EXPECT_FALSE(aDefaultId.IsValid());
 
   EXPECT_EQ(aSurfId, BRepGraph_RepId::Surface(42));
-  EXPECT_NE(aSurfId, aCurve3DId);
+  EXPECT_NE(BRepGraph_RepId(aSurfId), BRepGraph_RepId(aCurve3DId));
 }
 
 TEST(BRepGraphRepresentations, Compound_TwoBoxes_SurfaceDedup)
@@ -820,13 +826,13 @@ TEST(BRepGraphRepresentations, Compound_TwoBoxes_SurfaceDedup)
 
   for (int i = 0; i < aGraph.Defs().NbFaces(); ++i)
   {
-    EXPECT_TRUE(BRepGraph_Tool::Face::HasSurface(aGraph, i));
+    EXPECT_TRUE(BRepGraph_Tool::Face::HasSurface(aGraph, BRepGraph_FaceId(i)));
   }
   for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
   {
-    if (!BRepGraph_Tool::Edge::Degenerated(aGraph, i) && BRepGraph_Tool::Edge::HasCurve(aGraph, i))
+    if (!BRepGraph_Tool::Edge::Degenerated(aGraph, BRepGraph_EdgeId(i)) && BRepGraph_Tool::Edge::HasCurve(aGraph, BRepGraph_EdgeId(i)))
     {
-      EXPECT_FALSE(BRepGraph_Tool::Edge::Curve(aGraph, i).IsNull());
+      EXPECT_FALSE(BRepGraph_Tool::Edge::Curve(aGraph, BRepGraph_EdgeId(i)).IsNull());
     }
   }
 }
@@ -837,20 +843,20 @@ TEST(BRepGraphRepresentations, Box_Polygon2DRep_MatchesInline)
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  // Every coedge with a Polygon2DRepIdx has a valid polygon rep.
+  // Every coedge with a Polygon2DRepId has a valid polygon rep.
   for (int i = 0; i < aGraph.Defs().NbCoEdges(); ++i)
   {
-    const auto& aCoEdge = aGraph.Defs().CoEdge(i);
-    if (aCoEdge.Polygon2DRepIdx >= 0)
+    const auto& aCoEdge = aGraph.Defs().CoEdge(BRepGraph_CoEdgeId(i));
+    if (aCoEdge.Polygon2DRepId.IsValid())
     {
       const occ::handle<Poly_Polygon2D>& aPoly =
-        BRepGraph_Tool::CoEdge::PolygonOnSurface(aGraph, i);
-      EXPECT_FALSE(aPoly.IsNull()) << "CoEdge " << i << " has Polygon2DRepIdx but null polygon";
+        BRepGraph_Tool::CoEdge::PolygonOnSurface(aGraph, BRepGraph_CoEdgeId(i));
+      EXPECT_FALSE(aPoly.IsNull()) << "CoEdge " << i << " has Polygon2DRepId but null polygon";
     }
-    // PolygonOnTriRepIdxs should have valid rep entries.
-    for (int j = 0; j < aCoEdge.PolygonOnTriRepIdxs.Length(); ++j)
+    // PolygonOnTriRepIds should have valid rep entries.
+    for (int j = 0; j < aCoEdge.PolygonOnTriRepIds.Length(); ++j)
     {
-      EXPECT_GE(aCoEdge.PolygonOnTriRepIdxs.Value(j), 0);
+      EXPECT_TRUE(aCoEdge.PolygonOnTriRepIds.Value(j).IsValid());
     }
   }
 }

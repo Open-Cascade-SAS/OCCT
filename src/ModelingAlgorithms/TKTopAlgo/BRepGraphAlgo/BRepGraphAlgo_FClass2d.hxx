@@ -14,6 +14,7 @@
 #ifndef _BRepGraphAlgo_FClass2d_HeaderFile
 #define _BRepGraphAlgo_FClass2d_HeaderFile
 
+#include <BRepGraph_NodeId.hxx>
 #include <CSLib_Class2d.hxx>
 #include <NCollection_Vector.hxx>
 #include <Standard.hxx>
@@ -37,12 +38,12 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Build wire polygon classifiers from graph data for a face.
-  //! @param[in] theGraph      pre-built BRepGraph (IsDone() == true)
-  //! @param[in] theFaceDefIdx zero-based face definition index
-  //! @param[in] theTolUV      classification tolerance in UV space
-  Standard_EXPORT BRepGraphAlgo_FClass2d(const BRepGraph& theGraph,
-                                         int              theFaceDefIdx,
-                                         double           theTolUV);
+  //! @param[in] theGraph  pre-built BRepGraph (IsDone() == true)
+  //! @param[in] theFace   face definition identifier
+  //! @param[in] theTolUV  classification tolerance in UV space
+  Standard_EXPORT BRepGraphAlgo_FClass2d(const BRepGraph&       theGraph,
+                                         const BRepGraph_FaceId theFace,
+                                         const double           theTolUV);
 
   //! Classify a UV point relative to the face boundary.
   //! @param[in] thePntUV              point in UV parameter space
@@ -93,8 +94,8 @@ private:
   NCollection_Vector<CSLib_Class2d> myWireClassifiers; //!< Per-wire polygon classifiers.
   NCollection_Vector<WireOrient>    myWireOrients;     //!< Per-wire orientation.
   double                            myTolUV      = 0.0;
-  const BRepGraph*                  myGraph      = nullptr; //!< For fallback face reconstruction.
-  int                               myFaceDefIdx = 0;       //!< For fallback face reconstruction.
+  const BRepGraph*                  myGraph  = nullptr; //!< For fallback face reconstruction.
+  BRepGraph_FaceId                  myFaceId;            //!< For fallback face reconstruction.
   double                            myUmin       = 0.0;
   double                            myUmax       = 0.0;
   double                            myVmin       = 0.0;

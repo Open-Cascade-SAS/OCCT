@@ -225,7 +225,7 @@ TEST(BRepGraphReconstructTest, Edge_HasCurve_NonNull)
 
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    if (BRepGraph_Tool::Edge::Degenerated(aGraph, anEdgeIdx))
+    if (BRepGraph_Tool::Edge::Degenerated(aGraph, BRepGraph_EdgeId(anEdgeIdx)))
       continue;
 
     TopoDS_Shape aReconEdge =
@@ -250,7 +250,7 @@ TEST(BRepGraphReconstructTest, Edge_ParameterRange_Preserved)
 
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    if (BRepGraph_Tool::Edge::Degenerated(aGraph, anEdgeIdx))
+    if (BRepGraph_Tool::Edge::Degenerated(aGraph, BRepGraph_EdgeId(anEdgeIdx)))
       continue;
 
     TopoDS_Shape aReconEdge =
@@ -260,7 +260,7 @@ TEST(BRepGraphReconstructTest, Edge_ParameterRange_Preserved)
     double          aLast  = 0.0;
     BRep_Tool::Curve(TopoDS::Edge(aReconEdge), aLoc, aFirst, aLast);
 
-    const auto [aDefFirst, aDefLast] = BRepGraph_Tool::Edge::Range(aGraph, anEdgeIdx);
+    const auto [aDefFirst, aDefLast] = BRepGraph_Tool::Edge::Range(aGraph, BRepGraph_EdgeId(anEdgeIdx));
     EXPECT_NEAR(aFirst, aDefFirst, Precision::Confusion())
       << "Edge " << anEdgeIdx << " ParamFirst mismatch";
     EXPECT_NEAR(aLast, aDefLast, Precision::Confusion())
@@ -279,7 +279,7 @@ TEST(BRepGraphReconstructTest, Vertex_Point_MatchesDefPoint)
 
   for (int aVertIdx = 0; aVertIdx < aGraph.Defs().NbVertices(); ++aVertIdx)
   {
-    const gp_Pnt aDefPt = BRepGraph_Tool::Vertex::Pnt(aGraph, aVertIdx);
+    const gp_Pnt aDefPt = BRepGraph_Tool::Vertex::Pnt(aGraph, BRepGraph_VertexId(aVertIdx));
 
     TopoDS_Shape aReconVtx =
       aGraph.Shapes().Reconstruct(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Vertex, aVertIdx));
@@ -305,7 +305,7 @@ TEST(BRepGraphReconstructTest, Face_PCurvesPresent_OnAllEdges)
 
   for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
   {
-    TopoDS_Shape aReconFace = aGraph.Shapes().ReconstructFace(aFaceIdx);
+    TopoDS_Shape aReconFace = aGraph.Shapes().ReconstructFace(BRepGraph_FaceId(aFaceIdx));
     ASSERT_FALSE(aReconFace.IsNull()) << "ReconstructFace returned null for face " << aFaceIdx;
 
     const TopoDS_Face& aFace = TopoDS::Face(aReconFace);
@@ -334,15 +334,15 @@ TEST(BRepGraphReconstructTest, Face_OrientationPreserved)
 
   // Verify that reconstructed faces have valid orientations matching incidence refs.
   ASSERT_EQ(aGraph.Defs().NbShells(), 1);
-  const BRepGraph_TopoNode::ShellDef& aShellDef = aGraph.Defs().Shell(0);
+  const BRepGraph_TopoNode::ShellDef& aShellDef = aGraph.Defs().Shell(BRepGraph_ShellId(0));
   for (int aRefIdx = 0; aRefIdx < aShellDef.FaceRefs.Length(); ++aRefIdx)
   {
     const BRepGraphInc::FaceRef& aFaceRef      = aShellDef.FaceRefs.Value(aRefIdx);
     const TopAbs_Orientation     anExpectedOri = aFaceRef.Orientation;
 
-    TopoDS_Shape aReconFace = aGraph.Shapes().ReconstructFace(aFaceRef.FaceIdx);
+    TopoDS_Shape aReconFace = aGraph.Shapes().ReconstructFace(BRepGraph_FaceId(aFaceRef.FaceDefId));
     ASSERT_FALSE(aReconFace.IsNull())
-      << "ReconstructFace returned null for face " << aFaceRef.FaceIdx;
+      << "ReconstructFace returned null for face " << aFaceRef.FaceDefId.Index;
 
     // The reconstructed face from the def should be valid.
     EXPECT_EQ(aReconFace.ShapeType(), TopAbs_FACE);
@@ -382,7 +382,7 @@ TEST(BRepGraphReconstructTest, Reconstruct_Face_ValidShape)
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Defs().NbFaces(), 0);
 
-  TopoDS_Shape aRecon = aGraph.Shapes().ReconstructFace(0);
+  TopoDS_Shape aRecon = aGraph.Shapes().ReconstructFace(BRepGraph_FaceId(0));
   EXPECT_FALSE(aRecon.IsNull());
   EXPECT_EQ(aRecon.ShapeType(), TopAbs_FACE);
 }
@@ -400,7 +400,7 @@ TEST(BRepGraphReconstructTest, Reconstruct_Edge_ValidShape)
   // Find a non-degenerate edge.
   for (int anIdx = 0; anIdx < aGraph.Defs().NbEdges(); ++anIdx)
   {
-    if (BRepGraph_Tool::Edge::Degenerated(aGraph, anIdx))
+    if (BRepGraph_Tool::Edge::Degenerated(aGraph, BRepGraph_EdgeId(anIdx)))
       continue;
 
     TopoDS_Shape aRecon =
@@ -422,7 +422,7 @@ TEST(BRepGraphReconstructTest, Reconstruct_Vertex_CorrectPoint)
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Defs().NbVertices(), 0);
 
-  const gp_Pnt anExpectedPt = BRepGraph_Tool::Vertex::Pnt(aGraph, 0);
+  const gp_Pnt anExpectedPt = BRepGraph_Tool::Vertex::Pnt(aGraph, BRepGraph_VertexId(0));
 
   TopoDS_Shape aRecon =
     aGraph.Shapes().Reconstruct(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Vertex, 0));
@@ -447,32 +447,32 @@ TEST(BRepGraphReconstructTest, AfterVertexMutation_ModifiedFlagAndPointChanged)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Find a vertex belonging to face 0 and move it significantly.
-  const BRepGraph_TopoNode::FaceDef& aFaceDef       = aGraph.Defs().Face(0);
-  const int                          anOuterWireIdx = aFaceDef.OuterWireIdx();
+  const BRepGraph_TopoNode::FaceDef& aFaceDef       = aGraph.Defs().Face(BRepGraph_FaceId(0));
+  const int                          anOuterWireIdx = aFaceDef.OuterWireDefId().Index;
   ASSERT_GE(anOuterWireIdx, 0);
 
-  const BRepGraph_TopoNode::WireDef& aWireDef = aGraph.Defs().Wire(anOuterWireIdx);
+  const BRepGraph_TopoNode::WireDef& aWireDef = aGraph.Defs().Wire(BRepGraph_WireId(anOuterWireIdx));
   ASSERT_GT(aWireDef.CoEdgeRefs.Length(), 0);
 
   const BRepGraphInc::CoEdgeRef&       aFirstCR     = aWireDef.CoEdgeRefs.First();
-  const BRepGraph_TopoNode::CoEdgeDef& aFirstCoEdge = aGraph.Defs().CoEdge(aFirstCR.CoEdgeIdx);
-  const BRepGraph_TopoNode::EdgeDef&   anEdgeDef    = aGraph.Defs().Edge(aFirstCoEdge.EdgeIdx);
-  const int                            aVertIdx     = anEdgeDef.StartVertex.VertexIdx;
+  const BRepGraph_TopoNode::CoEdgeDef& aFirstCoEdge = aGraph.Defs().CoEdge(BRepGraph_CoEdgeId(aFirstCR.CoEdgeDefId));
+  const BRepGraph_TopoNode::EdgeDef&   anEdgeDef    = aGraph.Defs().Edge(BRepGraph_EdgeId(aFirstCoEdge.EdgeDefId));
+  const int                            aVertIdx     = anEdgeDef.StartVertex.VertexDefId.Index;
   ASSERT_GE(aVertIdx, 0);
 
   // Mutate: move vertex by 5 units in Z.
-  const gp_Pnt anOldPt = BRepGraph_Tool::Vertex::Pnt(aGraph, aVertIdx);
+  const gp_Pnt anOldPt = BRepGraph_Tool::Vertex::Pnt(aGraph, BRepGraph_VertexId(aVertIdx));
   {
-    BRepGraph_MutRef<BRepGraph_TopoNode::VertexDef> aMutVtx = aGraph.MutVertex(aVertIdx);
+    BRepGraph_MutRef<BRepGraph_TopoNode::VertexDef> aMutVtx = aGraph.MutVertex(BRepGraph_VertexId(aVertIdx));
     aMutVtx->Point = gp_Pnt(anOldPt.X(), anOldPt.Y(), anOldPt.Z() + 5.0);
   }
 
   // Verify the modification flag is set on the vertex def.
-  EXPECT_TRUE(aGraph.Defs().Vertex(aVertIdx).IsModified)
+  EXPECT_TRUE(aGraph.Defs().Vertex(BRepGraph_VertexId(aVertIdx)).IsModified)
     << "Vertex def should be marked as modified after mutation";
 
   // Verify the graph VertexDef.Point has actually changed.
-  const gp_Pnt aNewPt = BRepGraph_Tool::Vertex::Pnt(aGraph, aVertIdx);
+  const gp_Pnt aNewPt = BRepGraph_Tool::Vertex::Pnt(aGraph, BRepGraph_VertexId(aVertIdx));
   EXPECT_GT(anOldPt.Distance(aNewPt), Precision::Confusion())
     << "VertexDef.Point should differ after mutation";
 }
@@ -491,7 +491,7 @@ TEST(BRepGraphReconstructTest, AfterToleranceMutation_NewTShape)
 
   // Mutate tolerance.
   {
-    BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aMutEdge = aGraph.MutEdge(0);
+    BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aMutEdge = aGraph.MutEdge(BRepGraph_EdgeId(0));
     aMutEdge->Tolerance                                    = aMutEdge->Tolerance + 1.0;
   }
 

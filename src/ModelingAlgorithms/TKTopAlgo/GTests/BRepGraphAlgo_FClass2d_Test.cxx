@@ -16,6 +16,7 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraphAlgo_FClass2d.hxx>
+#include <BRepGraph_NodeId.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
@@ -47,7 +48,7 @@ TEST(BRepGraphAlgo_FClass2dTest, PlanarBoxFace_CenterIsIN)
   BRepTools::UVBounds(aFace, aUmin, aUmax, aVmin, aVmax);
 
   const double           aTolUV = 1.0e-6;
-  BRepGraphAlgo_FClass2d aClassifier(aGraph, 0, aTolUV);
+  BRepGraphAlgo_FClass2d aClassifier(aGraph, BRepGraph_FaceId(0), aTolUV);
 
   // Center of UV domain should be IN.
   const gp_Pnt2d aCenter(0.5 * (aUmin + aUmax), 0.5 * (aVmin + aVmax));
@@ -69,7 +70,7 @@ TEST(BRepGraphAlgo_FClass2dTest, PlanarBoxFace_OutsideIsOUT)
   double aUmin, aUmax, aVmin, aVmax;
   BRepTools::UVBounds(aFace, aUmin, aUmax, aVmin, aVmax);
 
-  BRepGraphAlgo_FClass2d aClassifier(aGraph, 0, 1.0e-6);
+  BRepGraphAlgo_FClass2d aClassifier(aGraph, BRepGraph_FaceId(0), 1.0e-6);
 
   // Point far outside the UV domain.
   const gp_Pnt2d aOutside(aUmax + 100.0, aVmax + 100.0);
@@ -101,7 +102,7 @@ TEST(BRepGraphAlgo_FClass2dTest, CylindricalFace_CenterIsIN)
   }
   ASSERT_GE(aFaceIdx, 0);
 
-  BRepGraphAlgo_FClass2d aClassifier(aGraph, aFaceIdx, 1.0e-6);
+  BRepGraphAlgo_FClass2d aClassifier(aGraph, BRepGraph_FaceId(aFaceIdx), 1.0e-6);
 
   // Mid-height, mid-angle point should be IN.
   const gp_Pnt2d aMid(M_PI, 10.0);
@@ -119,7 +120,7 @@ TEST(BRepGraphAlgo_FClass2dTest, Sphere_CenterIsIN)
   // Find the spherical face (there is one face in a sphere).
   ASSERT_GE(aGraph.Defs().NbFaces(), 1);
 
-  BRepGraphAlgo_FClass2d aClassifier(aGraph, 0, 1.0e-6);
+  BRepGraphAlgo_FClass2d aClassifier(aGraph, BRepGraph_FaceId(0), 1.0e-6);
 
   // Mid-point on the spherical face parametric domain.
   const gp_Pnt2d aMid(M_PI, 0.0);
@@ -159,7 +160,7 @@ TEST(BRepGraphAlgo_FClass2dTest, FaceWithHole_InsideHoleIsOUT)
 
   if (aFaceIdx >= 0)
   {
-    BRepGraphAlgo_FClass2d aClassifier(aGraph, aFaceIdx, 1.0e-6);
+    BRepGraphAlgo_FClass2d aClassifier(aGraph, BRepGraph_FaceId(aFaceIdx), 1.0e-6);
 
     // Center of the hole (approximately 10,10 in face UV space) should be OUT.
     const gp_Pnt2d aHoleCenter(10.0, 10.0);
@@ -181,7 +182,7 @@ TEST(BRepGraphAlgo_FClass2dTest, PerformInfinitePoint_ReturnsOUT)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  BRepGraphAlgo_FClass2d aClassifier(aGraph, 0, 1.0e-6);
+  BRepGraphAlgo_FClass2d aClassifier(aGraph, BRepGraph_FaceId(0), 1.0e-6);
   EXPECT_EQ(aClassifier.PerformInfinitePoint(), TopAbs_OUT);
 }
 
@@ -200,7 +201,7 @@ TEST(BRepGraphAlgo_FClass2dTest, Consistency_VsLegacy_Box)
     const double       aTolUV = 1.0e-6;
 
     BRepTopAdaptor_FClass2d aLegacy(aFace, aTolUV);
-    BRepGraphAlgo_FClass2d  aGraphBased(aGraph, aFaceIdx, aTolUV);
+    BRepGraphAlgo_FClass2d  aGraphBased(aGraph, BRepGraph_FaceId(aFaceIdx), aTolUV);
 
     double aUmin, aUmax, aVmin, aVmax;
     BRepTools::UVBounds(aFace, aUmin, aUmax, aVmin, aVmax);
@@ -243,7 +244,7 @@ TEST(BRepGraphAlgo_FClass2dTest, Consistency_VsLegacy_FusedBoxes)
     const double       aTolUV = 1.0e-6;
 
     BRepTopAdaptor_FClass2d aLegacy(aFace, aTolUV);
-    BRepGraphAlgo_FClass2d  aGraphBased(aGraph, aFaceIdx, aTolUV);
+    BRepGraphAlgo_FClass2d  aGraphBased(aGraph, BRepGraph_FaceId(aFaceIdx), aTolUV);
 
     double aUmin, aUmax, aVmin, aVmax;
     BRepTools::UVBounds(aFace, aUmin, aUmax, aVmin, aVmax);

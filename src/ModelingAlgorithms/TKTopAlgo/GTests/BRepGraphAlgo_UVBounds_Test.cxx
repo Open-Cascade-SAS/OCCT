@@ -60,7 +60,7 @@ TEST(BRepGraphAlgo_UVBoundsTest, Compute_Box_ValidBounds)
     }
 
     BRepGraphAlgo_UVBounds::CachedData aData;
-    BRepGraphAlgo_UVBounds::Compute(aGraph, aFaceIdx, aData);
+    BRepGraphAlgo_UVBounds::Compute(aGraph, BRepGraph_FaceId(aFaceIdx), aData);
     EXPECT_TRUE(aData.IsValid) << "Face " << aFaceIdx << " should have valid UV bounds";
     EXPECT_LE(aData.UMin, aData.UMax) << "U range for face " << aFaceIdx;
     EXPECT_LE(aData.VMin, aData.VMax) << "V range for face " << aFaceIdx;
@@ -98,7 +98,7 @@ TEST(BRepGraphAlgo_UVBoundsTest, Compute_Cylinder_MatchesLegacy)
     BRepTools::UVBounds(aFace, aLegacyUmin, aLegacyUmax, aLegacyVmin, aLegacyVmax);
 
     BRepGraphAlgo_UVBounds::CachedData aData;
-    BRepGraphAlgo_UVBounds::Compute(aGraph, aFaceIdx, aData);
+    BRepGraphAlgo_UVBounds::Compute(aGraph, BRepGraph_FaceId(aFaceIdx), aData);
     ASSERT_TRUE(aData.IsValid) << "Face " << aFaceIdx;
 
     const double aTol = 1.0e-6;
@@ -121,7 +121,7 @@ TEST(BRepGraphAlgo_UVBoundsTest, Compute_Sphere_PeriodicClamping)
   for (int i = 0; i < aGraph.Defs().NbFaces(); ++i)
   {
     BRepGraphAlgo_UVBounds::CachedData aData;
-    BRepGraphAlgo_UVBounds::Compute(aGraph, i, aData);
+    BRepGraphAlgo_UVBounds::Compute(aGraph, BRepGraph_FaceId(i), aData);
     ASSERT_TRUE(aData.IsValid) << "Face " << i;
 
     // UV range should be finite and non-degenerate.
@@ -143,7 +143,7 @@ TEST(BRepGraphAlgo_UVBoundsTest, Compute_Sphere_PeriodicClamping)
     BRepTools::UVBounds(aFace, aLegacyUmin, aLegacyUmax, aLegacyVmin, aLegacyVmax);
 
     BRepGraphAlgo_UVBounds::CachedData aData;
-    BRepGraphAlgo_UVBounds::Compute(aGraph, aFaceIdx, aData);
+    BRepGraphAlgo_UVBounds::Compute(aGraph, BRepGraph_FaceId(aFaceIdx), aData);
     ASSERT_TRUE(aData.IsValid);
 
     const double aTol = 1.0e-6;
@@ -166,7 +166,7 @@ TEST(BRepGraphAlgo_UVBoundsTest, CachedAPI_AddGet_Consistent)
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GE(aGraph.Defs().NbFaces(), 1);
 
-  const BRepGraph_NodeId aFaceNode = aGraph.Defs().Face(0).Id;
+  const BRepGraph_NodeId aFaceNode = aGraph.Defs().Face(BRepGraph_FaceId(0)).Id;
 
   // AddCached computes and stores.
   BRepGraphAlgo_UVBounds::CachedData aAdded = BRepGraphAlgo_UVBounds::AddCached(aGraph, aFaceNode);
@@ -191,7 +191,7 @@ TEST(BRepGraphAlgo_UVBoundsTest, CachedAPI_Invalidate_ClearsCache)
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GE(aGraph.Defs().NbFaces(), 1);
 
-  const BRepGraph_NodeId aFaceNode = aGraph.Defs().Face(0).Id;
+  const BRepGraph_NodeId aFaceNode = aGraph.Defs().Face(BRepGraph_FaceId(0)).Id;
 
   // Populate cache.
   BRepGraphAlgo_UVBounds::AddCached(aGraph, aFaceNode);

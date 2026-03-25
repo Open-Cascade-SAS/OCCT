@@ -90,10 +90,10 @@ TEST(BRepGraphAlgo_ValidateTest, DetectsRemovedNodeReference)
   int aVtxToRemove = -1;
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(anEdgeIdx);
+    const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(BRepGraph_EdgeId(anEdgeIdx));
     if (anEdge.StartVertexDefId().IsValid())
     {
-      aVtxToRemove = anEdge.StartVertex.VertexIdx;
+      aVtxToRemove = anEdge.StartVertexDefId().Index;
       break;
     }
   }
@@ -122,7 +122,7 @@ TEST(BRepGraphAlgo_ValidateTest, WireConnectivity_DisconnectedEdges)
   int aTargetWire = -1;
   for (int aWireIdx = 0; aWireIdx < aGraph.Defs().NbWires(); ++aWireIdx)
   {
-    if (aGraph.Defs().Wire(aWireIdx).CoEdgeRefs.Length() >= 2)
+    if (aGraph.Defs().Wire(BRepGraph_WireId(aWireIdx)).CoEdgeRefs.Length() >= 2)
     {
       aTargetWire = aWireIdx;
       break;
@@ -131,14 +131,14 @@ TEST(BRepGraphAlgo_ValidateTest, WireConnectivity_DisconnectedEdges)
   ASSERT_GE(aTargetWire, 0);
 
   // Get the first edge in the wire and corrupt its end vertex.
-  const BRepGraph_TopoNode::WireDef&   aWireDef     = aGraph.Defs().Wire(aTargetWire);
+  const BRepGraph_TopoNode::WireDef&   aWireDef     = aGraph.Defs().Wire(BRepGraph_WireId(aTargetWire));
   const BRepGraphInc::CoEdgeRef&       aFirstCR     = aWireDef.CoEdgeRefs.Value(0);
-  const BRepGraph_TopoNode::CoEdgeDef& aFirstCoEdge = aGraph.Defs().CoEdge(aFirstCR.CoEdgeIdx);
-  const BRepGraph_NodeId aFirstEdgeId(BRepGraph_NodeId::Kind::Edge, aFirstCoEdge.EdgeIdx);
+  const BRepGraph_TopoNode::CoEdgeDef& aFirstCoEdge = aGraph.Defs().CoEdge(BRepGraph_CoEdgeId(aFirstCR.CoEdgeDefId));
+  const BRepGraph_NodeId               aFirstEdgeId(aFirstCoEdge.EdgeDefId);
   ASSERT_TRUE(aFirstEdgeId.IsValid());
 
   BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aFirstEdge =
-    aGraph.MutEdge(aFirstEdgeId.Index);
+    aGraph.MutEdge(BRepGraph_EdgeId(aFirstEdgeId.Index));
 
   // Find a vertex different from the current end vertex.
   BRepGraph_NodeId anOrigEnd = aFirstEdge->EndVertexDefId();
@@ -147,7 +147,7 @@ TEST(BRepGraphAlgo_ValidateTest, WireConnectivity_DisconnectedEdges)
     if (BRepGraph_NodeId::Vertex(aVtxIdx) != anOrigEnd
         && BRepGraph_NodeId::Vertex(aVtxIdx) != aFirstEdge->StartVertexDefId())
     {
-      aFirstEdge->EndVertex.VertexIdx = aVtxIdx;
+      aFirstEdge->EndVertex.VertexDefId = BRepGraph_VertexId(aVtxIdx);
       break;
     }
   }
@@ -186,8 +186,8 @@ TEST(BRepGraphAlgo_ValidateTest, BoundsCheck_InvalidIndex)
   ASSERT_GT(aGraph.Defs().NbEdges(), 0);
 
   // Corrupt edge's Curve3d to null.
-  BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge = aGraph.MutEdge(0);
-  anEdge->Curve3DRepIdx                                = -1;
+  BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge = aGraph.MutEdge(BRepGraph_EdgeId(0));
+  anEdge->Curve3DRepId                                  = BRepGraph_Curve3DRepId();
 
   const BRepGraphAlgo_Validate::Result aResult = BRepGraphAlgo_Validate::Perform(aGraph);
   EXPECT_FALSE(aResult.IsValid());
@@ -209,8 +209,8 @@ TEST(BRepGraphAlgo_ValidateTest, AfterSplitEdge_ProducesSubEdges)
   double           aSplitParam = 0.0;
   for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
   {
-    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.Defs().Edge(i);
-    if (!anEdgeDef.IsDegenerate && anEdgeDef.Curve3DRepIdx >= 0
+    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.Defs().Edge(BRepGraph_EdgeId(i));
+    if (!anEdgeDef.IsDegenerate && anEdgeDef.Curve3DRepId.IsValid()
         && anEdgeDef.StartVertexDefId().IsValid() && anEdgeDef.EndVertexDefId().IsValid())
     {
       anEdgeId    = BRepGraph_NodeId::Edge(i);
@@ -222,9 +222,9 @@ TEST(BRepGraphAlgo_ValidateTest, AfterSplitEdge_ProducesSubEdges)
 
   // Create a split vertex at the midpoint.
   gp_Pnt aMidPt;
-  BRepGraph_Tool::Edge::Curve(aGraph, anEdgeId)->D0(aSplitParam, aMidPt);
+  BRepGraph_Tool::Edge::Curve(aGraph, BRepGraph_EdgeId(anEdgeId.Index))->D0(aSplitParam, aMidPt);
   BRepGraph_NodeId aSplitVtx =
-    aGraph.Builder().AddVertexDef(aMidPt, BRepGraph_Tool::Edge::Tolerance(aGraph, anEdgeId));
+    aGraph.Builder().AddVertexDef(aMidPt, BRepGraph_Tool::Edge::Tolerance(aGraph, BRepGraph_EdgeId(anEdgeId.Index)));
 
   BRepGraph_NodeId aSubA, aSubB;
   BRepGraph_Mutator::SplitEdge(aGraph, anEdgeId, aSplitVtx, aSplitParam, aSubA, aSubB);
@@ -235,7 +235,7 @@ TEST(BRepGraphAlgo_ValidateTest, AfterSplitEdge_ProducesSubEdges)
   EXPECT_TRUE(aSubB.IsValid());
 
   // Original edge should be marked removed.
-  EXPECT_TRUE(aGraph.Defs().Edge(anEdgeId.Index).IsRemoved);
+  EXPECT_TRUE(aGraph.Defs().Edge(BRepGraph_EdgeId(anEdgeId.Index)).IsRemoved);
 }
 
 TEST(BRepGraphAlgo_ValidateTest, CorruptedPCurve_FaceDefIdOutOfBounds)
@@ -250,7 +250,7 @@ TEST(BRepGraphAlgo_ValidateTest, CorruptedPCurve_FaceDefIdOutOfBounds)
 
   // Corrupt a CoEdge's FaceDefId to an out-of-range value.
   ASSERT_GT(aGraph.Defs().NbCoEdges(), 0);
-  BRepGraph_MutRef<BRepGraph_TopoNode::CoEdgeDef> aCoEdgeDef = aGraph.MutCoEdge(0);
+  BRepGraph_MutRef<BRepGraph_TopoNode::CoEdgeDef> aCoEdgeDef = aGraph.MutCoEdge(BRepGraph_CoEdgeId(0));
   aCoEdgeDef->FaceDefId = BRepGraph_NodeId::Face(aGraph.Defs().NbFaces() + 999);
 
   const BRepGraphAlgo_Validate::Result aValResult = BRepGraphAlgo_Validate::Perform(aGraph);
