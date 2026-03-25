@@ -152,6 +152,49 @@ int cachedActiveByKind(const BRepGraphInc_Storage& theStorage, const BRepGraph_N
   return 0;
 }
 
+//! Initialize a sub-edge definition produced by SplitEdge.
+//! Copies shared properties from the original edge and assigns boundary vertices/params.
+//! Both vertex refs are taken as full VertexRef (including Location) to avoid
+//! accidental Location loss if the helper is reused in other contexts.
+void initSubEdgeDef(BRepGraphInc::EdgeEntity&       theSub,
+                    const BRepGraph_Curve3DRepId     theCurve3DRepId,
+                    const double                     theTolerance,
+                    const bool                       theSameParameter,
+                    const BRepGraphInc::VertexRef&   theStartRef,
+                    const BRepGraphInc::VertexRef&   theEndRef,
+                    const double                     theParamFirst,
+                    const double                     theParamLast)
+{
+  theSub.Curve3DRepId = theCurve3DRepId;
+  theSub.Tolerance    = theTolerance;
+  theSub.SameParameter = theSameParameter;
+  theSub.SameRange    = false;
+  theSub.IsDegenerate = false;
+  theSub.StartVertex  = theStartRef;
+  theSub.EndVertex    = theEndRef;
+  theSub.ParamFirst   = theParamFirst;
+  theSub.ParamLast    = theParamLast;
+}
+
+//! Initialize a sub-CoEdge definition produced by SplitEdge.
+void initSubCoEdgeDef(BRepGraphInc::CoEdgeEntity&  theCE,
+                      const BRepGraph_EdgeId        theEdgeId,
+                      const BRepGraph_FaceId        theFaceId,
+                      const TopAbs_Orientation      theSense,
+                      const BRepGraph_Curve2DRepId  theCurve2DRepId,
+                      const double                  theParamFirst,
+                      const double                  theParamLast,
+                      const GeomAbs_Shape           theContinuity)
+{
+  theCE.EdgeDefId    = theEdgeId;
+  theCE.FaceDefId    = theFaceId;
+  theCE.Sense        = theSense;
+  theCE.Curve2DRepId = theCurve2DRepId;
+  theCE.ParamFirst   = theParamFirst;
+  theCE.ParamLast    = theParamLast;
+  theCE.Continuity   = theContinuity;
+}
+
 } // namespace
 
 //=================================================================================================
@@ -196,40 +239,43 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&             theGraph,
   aSubBDef.Id                           = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, aSubBIdx);
   theSubB                               = aSubBDef.Id;
 
+  // Build split vertex refs (no Location since split vertex is new).
+  BRepGraphInc::VertexRef aSplitEndRef;
+  aSplitEndRef.VertexDefId = theSplitVertex.IsValid()
+                               ? BRepGraph_VertexId::FromNodeId(theSplitVertex)
+                               : BRepGraph_VertexId();
+  aSplitEndRef.Orientation = TopAbs_REVERSED;
+
+  BRepGraphInc::VertexRef aSplitStartRef;
+  aSplitStartRef.VertexDefId = aSplitEndRef.VertexDefId;
+  aSplitStartRef.Orientation = TopAbs_FORWARD;
+
   // Set SubA: StartVertex -> SplitVertex, [ParamFirst, theSplitParam].
   {
     BRepGraph_TopoNode::EdgeDef& aSubA =
       theGraph.myData->myIncStorage.ChangeEdge(BRepGraph_EdgeId(aSubAIdx));
-    aSubA.Curve3DRepId          = aOrigCurve3DRepId;
-    aSubA.Tolerance             = aOrigTolerance;
-    aSubA.SameParameter         = aOrigSameParameter;
-    aSubA.SameRange             = false;
-    aSubA.IsDegenerate          = false;
-    aSubA.StartVertex           = aOrigStartVertexRef; // copy full ref with Location
-    aSubA.EndVertex.VertexDefId = theSplitVertex.IsValid()
-                                    ? BRepGraph_VertexId::FromNodeId(theSplitVertex)
-                                    : BRepGraph_VertexId();
-    aSubA.EndVertex.Orientation = TopAbs_REVERSED;
-    aSubA.ParamFirst            = aOrigParamFirst;
-    aSubA.ParamLast             = theSplitParam;
+    initSubEdgeDef(aSubA,
+                   aOrigCurve3DRepId,
+                   aOrigTolerance,
+                   aOrigSameParameter,
+                   aOrigStartVertexRef,
+                   aSplitEndRef,
+                   aOrigParamFirst,
+                   theSplitParam);
   }
 
   // Set SubB: SplitVertex -> EndVertex, [theSplitParam, ParamLast].
   {
     BRepGraph_TopoNode::EdgeDef& aSubB =
       theGraph.myData->myIncStorage.ChangeEdge(BRepGraph_EdgeId(aSubBIdx));
-    aSubB.Curve3DRepId            = aOrigCurve3DRepId;
-    aSubB.Tolerance               = aOrigTolerance;
-    aSubB.SameParameter           = aOrigSameParameter;
-    aSubB.SameRange               = false;
-    aSubB.IsDegenerate            = false;
-    aSubB.StartVertex.VertexDefId = theSplitVertex.IsValid()
-                                      ? BRepGraph_VertexId::FromNodeId(theSplitVertex)
-                                      : BRepGraph_VertexId();
-    aSubB.StartVertex.Orientation = TopAbs_FORWARD;
-    aSubB.EndVertex               = aOrigEndVertexRef; // copy full ref with Location
-    aSubB.ParamFirst              = theSplitParam;
-    aSubB.ParamLast               = aOrigParamLast;
+    initSubEdgeDef(aSubB,
+                   aOrigCurve3DRepId,
+                   aOrigTolerance,
+                   aOrigSameParameter,
+                   aSplitStartRef,
+                   aOrigEndVertexRef,
+                   theSplitParam,
+                   aOrigParamLast);
   }
 
   theGraph.allocateUID(theSubA);
@@ -322,26 +368,28 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&             theGraph,
     BRepGraphInc::CoEdgeEntity& aCoEdgeSubA    = theGraph.myData->myIncStorage.AppendCoEdge();
     const int                   aCoEdgeSubAIdx = theGraph.myData->myIncStorage.NbCoEdges() - 1;
     aCoEdgeSubA.Id                             = BRepGraph_NodeId::CoEdge(aCoEdgeSubAIdx);
-    aCoEdgeSubA.EdgeDefId                      = BRepGraph_EdgeId(aSubAIdx);
-    aCoEdgeSubA.FaceDefId                      = aCE.FaceDefId;
-    aCoEdgeSubA.Sense                          = aCE.Sense;
-    aCoEdgeSubA.Curve2DRepId                   = aCE.Curve2DRepId;
-    aCoEdgeSubA.ParamFirst                     = aCE.ParamFirst;
-    aCoEdgeSubA.ParamLast                      = aPCSplit;
-    aCoEdgeSubA.Continuity                     = aCE.Continuity;
+    initSubCoEdgeDef(aCoEdgeSubA,
+                     BRepGraph_EdgeId(aSubAIdx),
+                     aCE.FaceDefId,
+                     aCE.Sense,
+                     aCE.Curve2DRepId,
+                     aCE.ParamFirst,
+                     aPCSplit,
+                     aCE.Continuity);
     theGraph.allocateUID(aCoEdgeSubA.Id);
 
     // Create CoEdge for SubB.
     BRepGraphInc::CoEdgeEntity& aCoEdgeSubB    = theGraph.myData->myIncStorage.AppendCoEdge();
     const int                   aCoEdgeSubBIdx = theGraph.myData->myIncStorage.NbCoEdges() - 1;
     aCoEdgeSubB.Id                             = BRepGraph_NodeId::CoEdge(aCoEdgeSubBIdx);
-    aCoEdgeSubB.EdgeDefId                      = BRepGraph_EdgeId(aSubBIdx);
-    aCoEdgeSubB.FaceDefId                      = aCE.FaceDefId;
-    aCoEdgeSubB.Sense                          = aCE.Sense;
-    aCoEdgeSubB.Curve2DRepId                   = aCE.Curve2DRepId;
-    aCoEdgeSubB.ParamFirst                     = aPCSplit;
-    aCoEdgeSubB.ParamLast                      = aCE.ParamLast;
-    aCoEdgeSubB.Continuity                     = aCE.Continuity;
+    initSubCoEdgeDef(aCoEdgeSubB,
+                     BRepGraph_EdgeId(aSubBIdx),
+                     aCE.FaceDefId,
+                     aCE.Sense,
+                     aCE.Curve2DRepId,
+                     aPCSplit,
+                     aCE.ParamLast,
+                     aCE.Continuity);
     theGraph.allocateUID(aCoEdgeSubB.Id);
   }
 

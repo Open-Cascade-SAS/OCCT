@@ -32,30 +32,30 @@
 //! Trivially copyable, cheap to pass by value.
 struct BRepGraph_UID
 {
-  //! Default: invalid UID.
+  //! Default: invalid UID (counter = 0 is the invalid sentinel).
   BRepGraph_UID()
-      : myKind(BRepGraph_NodeId::Kind::Solid),
-        myCounter(0),
-        myGeneration(0),
-        myValid(false)
+      : myCounter(0),
+        myKind(BRepGraph_NodeId::Kind::Solid),
+        myGeneration(0)
   {
   }
 
   //! Construct a valid UID.  Called internally by BRepGraph::allocateUID().
+  //! @pre theCounter > 0 (counter = 0 is reserved as the invalid sentinel)
   BRepGraph_UID(const BRepGraph_NodeId::Kind theKind,
                 const size_t                 theCounter,
                 const uint32_t               theGeneration)
-      : myKind(theKind),
-        myCounter(theCounter),
-        myGeneration(theGeneration),
-        myValid(true)
+      : myCounter(theCounter),
+        myKind(theKind),
+        myGeneration(theGeneration)
   {
+    Standard_ASSERT_VOID(theCounter > 0, "BRepGraph_UID: counter must be > 0 for valid UIDs");
   }
 
   //! Factory: returns an explicitly invalid UID.
   static BRepGraph_UID Invalid() { return BRepGraph_UID(); }
 
-  [[nodiscard]] bool IsValid() const { return myValid; }
+  [[nodiscard]] bool IsValid() const { return myCounter > 0; }
 
   [[nodiscard]] BRepGraph_NodeId::Kind Kind() const { return myKind; }
 
@@ -68,10 +68,11 @@ struct BRepGraph_UID
   [[nodiscard]] bool IsAssembly() const { return BRepGraph_NodeId::IsAssemblyKind(myKind); }
 
   //! Equality: Identity = (Kind, Counter).  Generation excluded.
+  //! Two invalid UIDs are equal.
   bool operator==(const BRepGraph_UID& theOther) const
   {
-    if (!myValid || !theOther.myValid)
-      return myValid == theOther.myValid;
+    if (myCounter == 0 || theOther.myCounter == 0)
+      return (myCounter == 0) == (theOther.myCounter == 0);
     return myKind == theOther.myKind && myCounter == theOther.myCounter;
   }
 
@@ -94,10 +95,9 @@ struct BRepGraph_UID
   }
 
 private:
-  BRepGraph_NodeId::Kind myKind;
-  size_t                 myCounter;
-  uint32_t               myGeneration;
-  bool                   myValid;
+  size_t                 myCounter;    //!< 0 = invalid sentinel; valid counters start at 1.
+  BRepGraph_NodeId::Kind myKind;       //!< Node kind.
+  uint32_t               myGeneration; //!< Build() cycle that produced this UID.
 };
 
 //! std::hash specialization for NCollection_DefaultHasher support.

@@ -18,6 +18,8 @@
 
 #include <NCollection_DataMap.hxx>
 
+#include <utility>
+
 class BRepGraph_UserAttribute;
 
 //! Per-node cache bundle.
@@ -39,11 +41,27 @@ struct BRepGraph_NodeCache
   {
   }
 
+  //! Move constructor: transfers user attributes without copying.
+  BRepGraph_NodeCache(BRepGraph_NodeCache&& theOther) noexcept
+      : myUserAttributes(std::move(theOther.myUserAttributes))
+  {
+  }
+
   BRepGraph_NodeCache& operator=(const BRepGraph_NodeCache& theOther)
   {
     if (this != &theOther)
     {
       myUserAttributes = theOther.myUserAttributes;
+    }
+    return *this;
+  }
+
+  //! Move assignment: transfers user attributes without copying.
+  BRepGraph_NodeCache& operator=(BRepGraph_NodeCache&& theOther) noexcept
+  {
+    if (this != &theOther)
+    {
+      myUserAttributes = std::move(theOther.myUserAttributes);
     }
     return *this;
   }

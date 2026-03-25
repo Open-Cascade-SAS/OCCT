@@ -153,6 +153,7 @@ struct BRepGraph_NodeId
       : NodeKind(theKind),
         Index(theIdx)
   {
+    Standard_ASSERT_VOID(theIdx >= -1, "BRepGraph_NodeId: index must be >= -1");
   }
 
   //! True if this id points to an allocated node slot.

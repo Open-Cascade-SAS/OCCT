@@ -49,7 +49,7 @@ struct BRepGraph_Data
   BRepGraphInc_Storage myIncStorage;
 
   //! UID system.
-  std::atomic<size_t>   myNextUIDCounter{0};
+  std::atomic<size_t>   myNextUIDCounter{1}; //!< Starts at 1; counter=0 is BRepGraph_UID invalid sentinel.
   std::atomic<uint32_t> myGeneration{0};
 
   //! History subsystem.
