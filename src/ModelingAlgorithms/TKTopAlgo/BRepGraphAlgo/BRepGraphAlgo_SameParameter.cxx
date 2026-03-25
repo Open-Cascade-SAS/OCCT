@@ -714,12 +714,13 @@ bool enforceImpl(BRepGraph&       theGraph,
 
 //=================================================================================================
 
-bool BRepGraphAlgo_SameParameter::Enforce(BRepGraph&       theGraph,
-                                          BRepGraph_NodeId theEdgeId,
-                                          double           theTolerance)
+bool BRepGraphAlgo_SameParameter::Enforce(BRepGraph&             theGraph,
+                                          const BRepGraph_EdgeId theEdgeId,
+                                          const double           theTolerance)
 {
-  EnforceFlags aFlags;
-  return enforceImpl(theGraph, theEdgeId, theTolerance, aFlags);
+  const BRepGraph_NodeId aNodeId = theEdgeId;
+  EnforceFlags           aFlags;
+  return enforceImpl(theGraph, aNodeId, theTolerance, aFlags);
 }
 
 //=================================================================================================

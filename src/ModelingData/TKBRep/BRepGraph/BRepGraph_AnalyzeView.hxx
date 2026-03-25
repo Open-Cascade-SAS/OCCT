@@ -31,19 +31,19 @@ class BRepGraph::AnalyzeView
 {
 public:
   //! Detect free (boundary) edges: edges referenced by exactly one face.
-  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> FreeEdges() const;
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_EdgeId> FreeEdges() const;
 
   //! All (Edge, Face) pairs missing a PCurveNode.
-  [[nodiscard]] Standard_EXPORT NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>>
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<std::pair<BRepGraph_EdgeId, BRepGraph_FaceId>>
     MissingPCurves() const;
 
-  //! Nodes with tolerance conflicts across shared geometry.
+  //! Edges with tolerance conflicts across shared geometry.
   //! @param[in] theThreshold maximum allowed tolerance spread
-  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> ToleranceConflicts(
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_EdgeId> ToleranceConflicts(
     const double theThreshold) const;
 
   //! WireNodes with < 2 edges or non-closed outer wires.
-  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> DegenerateWires() const;
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_WireId> DegenerateWires() const;
 
   //! Split into connected components (non-owning SubGraph views).
   [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_SubGraph> Decompose() const;

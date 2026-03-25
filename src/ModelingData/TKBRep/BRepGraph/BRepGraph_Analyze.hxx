@@ -42,27 +42,27 @@ public:
   //! Detect free (boundary) edges: edges referenced by exactly one face.
   //! Degenerate edges are excluded.
   //! @param[in] theGraph the graph to analyze
-  //! @return vector of NodeIds for free edges
-  Standard_EXPORT static NCollection_Vector<BRepGraph_NodeId> FreeEdges(const BRepGraph& theGraph);
+  //! @return vector of EdgeIds for free edges
+  Standard_EXPORT static NCollection_Vector<BRepGraph_EdgeId> FreeEdges(const BRepGraph& theGraph);
 
   //! All (Edge, Face) pairs missing a PCurveNode.
   //! @param[in] theGraph the graph to analyze
   //! @return vector of (EdgeId, FaceId) pairs with missing pcurves
-  Standard_EXPORT static NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>>
+  Standard_EXPORT static NCollection_Vector<std::pair<BRepGraph_EdgeId, BRepGraph_FaceId>>
     MissingPCurves(const BRepGraph& theGraph);
 
-  //! Nodes with tolerance conflicts across shared geometry.
+  //! Edges with tolerance conflicts across shared geometry.
   //! @param[in] theGraph     the graph to analyze
   //! @param[in] theThreshold maximum allowed tolerance spread on a shared curve
-  //! @return vector of edge NodeIds involved in tolerance conflicts
-  Standard_EXPORT static NCollection_Vector<BRepGraph_NodeId> ToleranceConflicts(
+  //! @return vector of EdgeIds involved in tolerance conflicts
+  Standard_EXPORT static NCollection_Vector<BRepGraph_EdgeId> ToleranceConflicts(
     const BRepGraph& theGraph,
     const double     theThreshold);
 
   //! WireNodes with < 2 edges or non-closed outer wires.
   //! @param[in] theGraph the graph to analyze
-  //! @return vector of degenerate wire NodeIds
-  Standard_EXPORT static NCollection_Vector<BRepGraph_NodeId> DegenerateWires(
+  //! @return vector of degenerate WireIds
+  Standard_EXPORT static NCollection_Vector<BRepGraph_WireId> DegenerateWires(
     const BRepGraph& theGraph);
 
   //! Split into connected components (non-owning SubGraph views).
@@ -79,8 +79,8 @@ public:
   //! @param[in] theEdgeB second edge id
   //! @return endpoint distance score
   Standard_EXPORT static double EdgeEndpointPairScore(const BRepGraph&       theGraph,
-                                                      const BRepGraph_NodeId theEdgeA,
-                                                      const BRepGraph_NodeId theEdgeB);
+                                                      const BRepGraph_EdgeId theEdgeA,
+                                                      const BRepGraph_EdgeId theEdgeB);
 
   //! Geometric compatibility test between two edges using sampled bidirectional projection.
   //! @param[in] theGraph source graph
@@ -92,8 +92,8 @@ public:
   //! @param[in] theHighConfidenceRatio forward-pass threshold to skip reverse pass
   //! @return true if edges are geometrically compatible
   Standard_EXPORT static bool AreEdgesCompatibleSampled(const BRepGraph&       theGraph,
-                                                        const BRepGraph_NodeId theEdgeA,
-                                                        const BRepGraph_NodeId theEdgeB,
+                                                        const BRepGraph_EdgeId theEdgeA,
+                                                        const BRepGraph_EdgeId theEdgeB,
                                                         const double           theTolerance,
                                                         const int              theNbSamples = 5,
                                                         const double theMaxChordRatio       = 2.0,
@@ -113,8 +113,8 @@ public:
   //! @return true if edges are geometrically compatible
   Standard_EXPORT static bool AreEdgesCompatibleSampled(
     const BRepGraph&                  theGraph,
-    const BRepGraph_NodeId            theEdgeA,
-    const BRepGraph_NodeId            theEdgeB,
+    const BRepGraph_EdgeId            theEdgeA,
+    const BRepGraph_EdgeId            theEdgeB,
     const NCollection_Array1<gp_Pnt>& theSamplePtsA,
     const ExtremaPC_Curve&            theExtPCRevA,
     const double                      theChordA,

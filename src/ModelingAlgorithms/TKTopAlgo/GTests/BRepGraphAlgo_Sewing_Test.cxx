@@ -1828,10 +1828,10 @@ TEST(BRepGraphAlgo_SameParameterTest, Enforce_BoxEdge_SetsSameParameter)
   // Enforce on each edge.
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    const BRepGraph_NodeId anEdgeId(BRepGraph_NodeId::Kind::Edge, anEdgeIdx);
+    const BRepGraph_EdgeId anEdgeId(anEdgeIdx);
     const bool             isOk = BRepGraphAlgo_SameParameter::Enforce(aGraph, anEdgeId, 1.0e-04);
     EXPECT_TRUE(isOk) << "Edge " << anEdgeIdx << " failed SameParameter enforcement";
-    EXPECT_TRUE(BRepGraph_Tool::Edge::SameParameter(aGraph, BRepGraph_EdgeId(anEdgeIdx)));
+    EXPECT_TRUE(BRepGraph_Tool::Edge::SameParameter(aGraph, anEdgeId));
   }
 }
 
@@ -1852,10 +1852,10 @@ TEST(BRepGraphAlgo_SameParameterTest, Enforce_CylinderEdge_ToleranceReasonable)
 
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
-    const BRepGraph_NodeId anEdgeId(BRepGraph_NodeId::Kind::Edge, anEdgeIdx);
-    BRepGraphAlgo_SameParameter::Enforce(aGraph, anEdgeId, 1.0e-04);
+    const BRepGraph_EdgeId anEdgeId(anEdgeIdx);
+    (void)BRepGraphAlgo_SameParameter::Enforce(aGraph, anEdgeId, 1.0e-04);
     // Tolerance should not blow up to unreasonable values.
-    EXPECT_LT(BRepGraph_Tool::Edge::Tolerance(aGraph, BRepGraph_EdgeId(anEdgeIdx)), 1.0)
+    EXPECT_LT(BRepGraph_Tool::Edge::Tolerance(aGraph, anEdgeId), 1.0)
       << "Edge " << anEdgeIdx << " tolerance is unreasonably large";
   }
 }
@@ -1877,7 +1877,7 @@ TEST(BRepGraphAlgo_SameParameterTest, Perform_BatchSetsFlags)
 
   const double aTolerance    = 1.0e-04;
   const double aMaxTolerance = 1.0; // Sanity upper bound for a 10x20x30 box.
-  BRepGraphAlgo_SameParameter::Perform(aGraph, anEdgeIndices, aTolerance);
+  (void)BRepGraphAlgo_SameParameter::Perform(aGraph, anEdgeIndices, aTolerance);
 
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
   {
@@ -1905,11 +1905,11 @@ TEST(BRepGraphAlgo_SameParameterTest, Enforce_NoCurve3d_SetsFlag)
     if (BRepGraph_Tool::Edge::Degenerated(aGraph, BRepGraph_EdgeId(anEdgeIdx))
         || !BRepGraph_Tool::Edge::HasCurve(aGraph, BRepGraph_EdgeId(anEdgeIdx)))
     {
-      aGraph.MutEdge(BRepGraph_EdgeId(anEdgeIdx))->SameParameter = false;
-      const BRepGraph_NodeId anEdgeId(BRepGraph_NodeId::Kind::Edge, anEdgeIdx);
-      const bool             isOk = BRepGraphAlgo_SameParameter::Enforce(aGraph, anEdgeId, 1.0e-04);
+      const BRepGraph_EdgeId anEdgeId(anEdgeIdx);
+      aGraph.MutEdge(anEdgeId)->SameParameter = false;
+      const bool isOk = BRepGraphAlgo_SameParameter::Enforce(aGraph, anEdgeId, 1.0e-04);
       EXPECT_TRUE(isOk);
-      EXPECT_TRUE(BRepGraph_Tool::Edge::SameParameter(aGraph, BRepGraph_EdgeId(anEdgeIdx)));
+      EXPECT_TRUE(BRepGraph_Tool::Edge::SameParameter(aGraph, anEdgeId));
       break;
     }
   }

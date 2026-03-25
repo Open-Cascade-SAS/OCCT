@@ -88,39 +88,41 @@ public:
     int  NbDeletedFaces        = 0;     //!< Small faces removed by face analysis.
     int  NbRejectedByTolerance = 0;     //!< Candidate pairs rejected by MaxTolerance.
 
-    NCollection_Vector<BRepGraph_NodeId> FreeEdges;        //!< Remaining free edges after sewing.
-    NCollection_Vector<BRepGraph_NodeId> MultipleEdges;    //!< Edges shared by >2 faces.
-    NCollection_Vector<BRepGraph_NodeId> SewnEdgePairs;    //!< Keep-edge IDs of sewn pairs.
-    NCollection_Vector<BRepGraph_NodeId> DegeneratedEdges; //!< Degenerate edges found or created.
-    NCollection_Vector<BRepGraph_NodeId> DeletedFaces;     //!< Faces removed by face analysis.
+    NCollection_Vector<BRepGraph_EdgeId> FreeEdges;        //!< Remaining free edges after sewing.
+    NCollection_Vector<BRepGraph_EdgeId> MultipleEdges;    //!< Edges shared by >2 faces.
+    NCollection_Vector<BRepGraph_EdgeId> SewnEdgePairs;    //!< Keep-edge IDs of sewn pairs.
+    NCollection_Vector<BRepGraph_EdgeId> DegeneratedEdges; //!< Degenerate edges found or created.
+    NCollection_Vector<BRepGraph_FaceId> DeletedFaces;     //!< Faces removed by face analysis.
   };
 
   //! Primary API: sew free edges on a pre-built graph (in-place).
   //! Graph must be built (IsDone() == true). Uses default options.
   //! @param[in,out] theGraph the graph to modify
   //! @return result with diagnostics
-  static Standard_EXPORT Result Perform(BRepGraph& theGraph);
+  [[nodiscard]] static Standard_EXPORT Result Perform(BRepGraph& theGraph);
 
   //! Primary API: sew free edges on a pre-built graph (in-place).
   //! Graph must be built (IsDone() == true).
   //! @param[in,out] theGraph   the graph to modify
   //! @param[in]     theOptions sewing parameters
   //! @return result with diagnostics
-  static Standard_EXPORT Result Perform(BRepGraph& theGraph, const Options& theOptions);
+  [[nodiscard]] static Standard_EXPORT Result Perform(BRepGraph&      theGraph,
+                                                      const Options& theOptions);
 
   //! Convenience: sew a shape, return the result shape.
   //! Builds graph internally, calls Perform(), reconstructs, encodes regularity.
   //! Uses default options.
   //! @param[in] theShape root shape (Face, Shell, Compound, etc.)
   //! @return sewn result shape (empty if failed)
-  static Standard_EXPORT TopoDS_Shape Sew(const TopoDS_Shape& theShape);
+  [[nodiscard]] static Standard_EXPORT TopoDS_Shape Sew(const TopoDS_Shape& theShape);
 
   //! Convenience: sew a shape, return the result shape.
   //! Builds graph internally, calls Perform(), reconstructs, encodes regularity.
   //! @param[in] theShape   root shape (Face, Shell, Compound, etc.)
   //! @param[in] theOptions sewing parameters
   //! @return sewn result shape (empty if failed)
-  static Standard_EXPORT TopoDS_Shape Sew(const TopoDS_Shape& theShape, const Options& theOptions);
+  [[nodiscard]] static Standard_EXPORT TopoDS_Shape Sew(const TopoDS_Shape& theShape,
+                                                        const Options&      theOptions);
 
 private:
   BRepGraphAlgo_Sewing() = delete;

@@ -133,6 +133,11 @@ public:
   //! Decrement the active count for the given node kind.
   void DecrementActiveCount(const BRepGraph_NodeId::Kind theKind);
 
+  //! Mark an entity node as removed and decrement its active counter once.
+  //! @param[in] theNodeId typed entity id
+  //! @return true if the node transitioned from active to removed
+  Standard_EXPORT bool MarkRemoved(const BRepGraph_NodeId theNodeId);
+
   //! @name Const representation access
   //! Each method returns a const reference to the representation entity at the given typed id.
 
@@ -532,7 +537,8 @@ private:
     void DecrementActive()
     {
       Standard_ASSERT_VOID(NbActive > 0, "EntityStore::DecrementActive: underflow");
-      --NbActive;
+      if (NbActive > 0)
+        --NbActive;
     }
 
     void Clear()
@@ -573,14 +579,18 @@ private:
     void DecrementActive()
     {
       Standard_ASSERT_VOID(NbActive > 0, "RepStore::DecrementActive: underflow");
-      --NbActive;
+      if (NbActive > 0)
+        --NbActive;
     }
 
     void EraseLast()
     {
       Standard_ASSERT_VOID(NbActive > 0, "RepStore::EraseLast: underflow");
-      Entities.EraseLast();
-      --NbActive;
+      if (NbActive > 0)
+      {
+        Entities.EraseLast();
+        --NbActive;
+      }
     }
 
     void Clear()

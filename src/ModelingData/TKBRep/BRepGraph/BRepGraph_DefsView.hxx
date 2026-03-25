@@ -62,6 +62,7 @@ public:
   //! Number of active (non-removed) definitions per kind.
   [[nodiscard]] Standard_EXPORT int NbActiveVertices() const;
   [[nodiscard]] Standard_EXPORT int NbActiveEdges() const;
+  [[nodiscard]] Standard_EXPORT int NbActiveCoEdges() const;
   [[nodiscard]] Standard_EXPORT int NbActiveWires() const;
   [[nodiscard]] Standard_EXPORT int NbActiveFaces() const;
   [[nodiscard]] Standard_EXPORT int NbActiveShells() const;

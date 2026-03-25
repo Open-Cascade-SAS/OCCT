@@ -24,6 +24,135 @@
 #include <TopAbs_Orientation.hxx>
 #include <TopLoc_Location.hxx>
 
+namespace
+{
+
+const char* kindName(const BRepGraph_NodeId::Kind theKind)
+{
+  switch (theKind)
+  {
+    case BRepGraph_NodeId::Kind::Vertex:
+      return "Vertices";
+    case BRepGraph_NodeId::Kind::Edge:
+      return "Edges";
+    case BRepGraph_NodeId::Kind::CoEdge:
+      return "CoEdges";
+    case BRepGraph_NodeId::Kind::Wire:
+      return "Wires";
+    case BRepGraph_NodeId::Kind::Face:
+      return "Faces";
+    case BRepGraph_NodeId::Kind::Shell:
+      return "Shells";
+    case BRepGraph_NodeId::Kind::Solid:
+      return "Solids";
+    case BRepGraph_NodeId::Kind::Compound:
+      return "Compounds";
+    case BRepGraph_NodeId::Kind::CompSolid:
+      return "CompSolids";
+    case BRepGraph_NodeId::Kind::Product:
+      return "Products";
+    case BRepGraph_NodeId::Kind::Occurrence:
+      return "Occurrences";
+  }
+  return "Unknown";
+}
+
+int countActiveByKind(const BRepGraphInc_Storage& theStorage, const BRepGraph_NodeId::Kind theKind)
+{
+  int aCount = 0;
+  switch (theKind)
+  {
+    case BRepGraph_NodeId::Kind::Vertex:
+      for (int i = 0; i < theStorage.NbVertices(); ++i)
+        if (!theStorage.Vertex(BRepGraph_VertexId(i)).IsRemoved)
+          ++aCount;
+      return aCount;
+    case BRepGraph_NodeId::Kind::Edge:
+      for (int i = 0; i < theStorage.NbEdges(); ++i)
+        if (!theStorage.Edge(BRepGraph_EdgeId(i)).IsRemoved)
+          ++aCount;
+      return aCount;
+    case BRepGraph_NodeId::Kind::CoEdge:
+      for (int i = 0; i < theStorage.NbCoEdges(); ++i)
+        if (!theStorage.CoEdge(BRepGraph_CoEdgeId(i)).IsRemoved)
+          ++aCount;
+      return aCount;
+    case BRepGraph_NodeId::Kind::Wire:
+      for (int i = 0; i < theStorage.NbWires(); ++i)
+        if (!theStorage.Wire(BRepGraph_WireId(i)).IsRemoved)
+          ++aCount;
+      return aCount;
+    case BRepGraph_NodeId::Kind::Face:
+      for (int i = 0; i < theStorage.NbFaces(); ++i)
+        if (!theStorage.Face(BRepGraph_FaceId(i)).IsRemoved)
+          ++aCount;
+      return aCount;
+    case BRepGraph_NodeId::Kind::Shell:
+      for (int i = 0; i < theStorage.NbShells(); ++i)
+        if (!theStorage.Shell(BRepGraph_ShellId(i)).IsRemoved)
+          ++aCount;
+      return aCount;
+    case BRepGraph_NodeId::Kind::Solid:
+      for (int i = 0; i < theStorage.NbSolids(); ++i)
+        if (!theStorage.Solid(BRepGraph_SolidId(i)).IsRemoved)
+          ++aCount;
+      return aCount;
+    case BRepGraph_NodeId::Kind::Compound:
+      for (int i = 0; i < theStorage.NbCompounds(); ++i)
+        if (!theStorage.Compound(BRepGraph_CompoundId(i)).IsRemoved)
+          ++aCount;
+      return aCount;
+    case BRepGraph_NodeId::Kind::CompSolid:
+      for (int i = 0; i < theStorage.NbCompSolids(); ++i)
+        if (!theStorage.CompSolid(BRepGraph_CompSolidId(i)).IsRemoved)
+          ++aCount;
+      return aCount;
+    case BRepGraph_NodeId::Kind::Product:
+      for (int i = 0; i < theStorage.NbProducts(); ++i)
+        if (!theStorage.Product(BRepGraph_ProductId(i)).IsRemoved)
+          ++aCount;
+      return aCount;
+    case BRepGraph_NodeId::Kind::Occurrence:
+      for (int i = 0; i < theStorage.NbOccurrences(); ++i)
+        if (!theStorage.Occurrence(BRepGraph_OccurrenceId(i)).IsRemoved)
+          ++aCount;
+      return aCount;
+  }
+  return 0;
+}
+
+int cachedActiveByKind(const BRepGraphInc_Storage& theStorage, const BRepGraph_NodeId::Kind theKind)
+{
+  switch (theKind)
+  {
+    case BRepGraph_NodeId::Kind::Vertex:
+      return theStorage.NbActiveVertices();
+    case BRepGraph_NodeId::Kind::Edge:
+      return theStorage.NbActiveEdges();
+    case BRepGraph_NodeId::Kind::CoEdge:
+      return theStorage.NbActiveCoEdges();
+    case BRepGraph_NodeId::Kind::Wire:
+      return theStorage.NbActiveWires();
+    case BRepGraph_NodeId::Kind::Face:
+      return theStorage.NbActiveFaces();
+    case BRepGraph_NodeId::Kind::Shell:
+      return theStorage.NbActiveShells();
+    case BRepGraph_NodeId::Kind::Solid:
+      return theStorage.NbActiveSolids();
+    case BRepGraph_NodeId::Kind::Compound:
+      return theStorage.NbActiveCompounds();
+    case BRepGraph_NodeId::Kind::CompSolid:
+      return theStorage.NbActiveCompSolids();
+    case BRepGraph_NodeId::Kind::Product:
+      return theStorage.NbActiveProducts();
+    case BRepGraph_NodeId::Kind::Occurrence:
+      return theStorage.NbActiveOccurrences();
+  }
+  return 0;
+}
+
+} // namespace
+
 //=================================================================================================
 
 void BRepGraph_Mutator::SplitEdge(BRepGraph&             theGraph,
@@ -139,6 +268,7 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&             theGraph,
             aSubBCoEdge.EdgeDefId                   = BRepGraph_EdgeId(aSubBIdx);
             aSubBCoEdge.Sense                       = aOrigOri;
             aSubBCoEdge.FaceDefId                   = aOldCoEdge.FaceDefId;
+            theGraph.allocateUID(aSubBCoEdge.Id);
 
             BRepGraphInc::CoEdgeRef aSubBRef;
             aSubBRef.CoEdgeDefId = BRepGraph_CoEdgeId(aSubBCoEdgeIdx);
@@ -150,9 +280,7 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&             theGraph,
     }
 
     // Mark original edge as removed in incidence.
-    if (theEdgeDef.Index >= 0 && theEdgeDef.Index < theGraph.myData->myIncStorage.NbEdges())
-      theGraph.myData->myIncStorage.ChangeEdge(BRepGraph_EdgeId::FromNodeId(theEdgeDef)).IsRemoved =
-        true;
+    theGraph.myData->myIncStorage.MarkRemoved(theEdgeDef);
   }
 
   // Split PCurve entries for each CoEdge referencing the original edge.
@@ -200,6 +328,7 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&             theGraph,
     aCoEdgeSubA.ParamFirst                     = aCE.ParamFirst;
     aCoEdgeSubA.ParamLast                      = aPCSplit;
     aCoEdgeSubA.Continuity                     = aCE.Continuity;
+    theGraph.allocateUID(aCoEdgeSubA.Id);
 
     // Create CoEdge for SubB.
     BRepGraphInc::CoEdgeEntity& aCoEdgeSubB    = theGraph.myData->myIncStorage.AppendCoEdge();
@@ -212,6 +341,7 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&             theGraph,
     aCoEdgeSubB.ParamFirst                     = aPCSplit;
     aCoEdgeSubB.ParamLast                      = aCE.ParamLast;
     aCoEdgeSubB.Continuity                     = aCE.Continuity;
+    theGraph.allocateUID(aCoEdgeSubB.Id);
   }
 
   // Register TopoDS shapes for sub-edges so OriginalOf() works in downstream algorithms.
@@ -356,63 +486,66 @@ void BRepGraph_Mutator::ReplaceEdgeInWire(BRepGraph&             theGraph,
 
 void BRepGraph_Mutator::CommitMutation(BRepGraph& theGraph)
 {
-  Standard_ASSERT_VOID(theGraph.myData->myIncStorage.ValidateReverseIndex(),
-                       "CommitMutation: reverse index inconsistency");
+  const bool isValid = ValidateMutationBoundary(theGraph);
+  Standard_ASSERT_VOID(isValid, "CommitMutation: mutation boundary consistency check failed");
+  (void)isValid;
+}
 
-  // Verify active counts match actual entity state.
-  const BRepGraphInc_Storage& aStg = theGraph.myData->myIncStorage;
+//=================================================================================================
 
-  int aNbVtx = 0, aNbEdg = 0, aNbWir = 0, aNbFac = 0;
-  int aNbShl = 0, aNbSol = 0, aNbCmp = 0, aNbCS = 0;
-  for (int i = 0; i < aStg.NbVertices(); ++i)
-    if (!aStg.Vertex(BRepGraph_VertexId(i)).IsRemoved)
-      ++aNbVtx;
-  for (int i = 0; i < aStg.NbEdges(); ++i)
-    if (!aStg.Edge(BRepGraph_EdgeId(i)).IsRemoved)
-      ++aNbEdg;
-  for (int i = 0; i < aStg.NbWires(); ++i)
-    if (!aStg.Wire(BRepGraph_WireId(i)).IsRemoved)
-      ++aNbWir;
-  for (int i = 0; i < aStg.NbFaces(); ++i)
-    if (!aStg.Face(BRepGraph_FaceId(i)).IsRemoved)
-      ++aNbFac;
-  for (int i = 0; i < aStg.NbShells(); ++i)
-    if (!aStg.Shell(BRepGraph_ShellId(i)).IsRemoved)
-      ++aNbShl;
-  for (int i = 0; i < aStg.NbSolids(); ++i)
-    if (!aStg.Solid(BRepGraph_SolidId(i)).IsRemoved)
-      ++aNbSol;
-  for (int i = 0; i < aStg.NbCompounds(); ++i)
-    if (!aStg.Compound(BRepGraph_CompoundId(i)).IsRemoved)
-      ++aNbCmp;
-  for (int i = 0; i < aStg.NbCompSolids(); ++i)
-    if (!aStg.CompSolid(BRepGraph_CompSolidId(i)).IsRemoved)
-      ++aNbCS;
+bool BRepGraph_Mutator::ValidateMutationBoundary(const BRepGraph&                         theGraph,
+                                                 NCollection_Vector<BoundaryIssue>* const theIssues)
+{
+  bool                           isValid = true;
+  const BRepGraphInc_Storage& aStorage  = theGraph.myData->myIncStorage;
 
-  Standard_ASSERT_VOID(aNbVtx == aStg.NbActiveVertices(),
-                       "CommitMutation: active vertex count mismatch");
-  Standard_ASSERT_VOID(aNbEdg == aStg.NbActiveEdges(),
-                       "CommitMutation: active edge count mismatch");
-  Standard_ASSERT_VOID(aNbWir == aStg.NbActiveWires(),
-                       "CommitMutation: active wire count mismatch");
-  Standard_ASSERT_VOID(aNbFac == aStg.NbActiveFaces(),
-                       "CommitMutation: active face count mismatch");
-  Standard_ASSERT_VOID(aNbShl == aStg.NbActiveShells(),
-                       "CommitMutation: active shell count mismatch");
-  Standard_ASSERT_VOID(aNbSol == aStg.NbActiveSolids(),
-                       "CommitMutation: active solid count mismatch");
-  Standard_ASSERT_VOID(aNbCmp == aStg.NbActiveCompounds(),
-                       "CommitMutation: active compound count mismatch");
-  Standard_ASSERT_VOID(aNbCS == aStg.NbActiveCompSolids(),
-                       "CommitMutation: active compsolid count mismatch");
+  if (!aStorage.ValidateReverseIndex())
+  {
+    isValid = false;
+    if (theIssues != nullptr)
+    {
+      BoundaryIssue anIssue;
+      anIssue.NodeId      = BRepGraph_NodeId();
+      anIssue.Description = "Mutation boundary reverse index inconsistency";
+      theIssues->Append(anIssue);
+    }
+  }
 
-  // Suppress unused-variable warnings in non-debug builds where Standard_ASSERT_VOID is a no-op.
-  (void)aNbVtx;
-  (void)aNbEdg;
-  (void)aNbWir;
-  (void)aNbFac;
-  (void)aNbShl;
-  (void)aNbSol;
-  (void)aNbCmp;
-  (void)aNbCS;
+  constexpr BRepGraph_NodeId::Kind THE_KINDS[] = {BRepGraph_NodeId::Kind::Vertex,
+                                                   BRepGraph_NodeId::Kind::Edge,
+                                                   BRepGraph_NodeId::Kind::CoEdge,
+                                                   BRepGraph_NodeId::Kind::Wire,
+                                                   BRepGraph_NodeId::Kind::Face,
+                                                   BRepGraph_NodeId::Kind::Shell,
+                                                   BRepGraph_NodeId::Kind::Solid,
+                                                   BRepGraph_NodeId::Kind::Compound,
+                                                   BRepGraph_NodeId::Kind::CompSolid,
+                                                   BRepGraph_NodeId::Kind::Product,
+                                                   BRepGraph_NodeId::Kind::Occurrence};
+  for (int aKindIdx = 0; aKindIdx < static_cast<int>(sizeof(THE_KINDS) / sizeof(THE_KINDS[0]));
+       ++aKindIdx)
+  {
+    const BRepGraph_NodeId::Kind aKind      = THE_KINDS[aKindIdx];
+    const int                    aCachedCnt = cachedActiveByKind(aStorage, aKind);
+    const int                    anActualCnt = countActiveByKind(aStorage, aKind);
+    if (aCachedCnt == anActualCnt)
+      continue;
+
+    isValid = false;
+    if (theIssues != nullptr)
+    {
+      BoundaryIssue          anIssue;
+      TCollection_AsciiString aDesc("Mutation boundary active count mismatch for ");
+      aDesc += kindName(aKind);
+      aDesc += ": cached=";
+      aDesc += TCollection_AsciiString(aCachedCnt);
+      aDesc += " actual=";
+      aDesc += TCollection_AsciiString(anActualCnt);
+      anIssue.NodeId      = BRepGraph_NodeId(aKind, -1);
+      anIssue.Description = aDesc;
+      theIssues->Append(anIssue);
+    }
+  }
+
+  return isValid;
 }

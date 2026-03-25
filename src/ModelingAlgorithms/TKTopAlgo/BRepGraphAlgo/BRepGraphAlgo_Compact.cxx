@@ -187,6 +187,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
 
   const bool wasHistoryEnabled = theGraph.IsHistoryEnabled();
   theGraph.SetHistoryEnabled(theOptions.HistoryMode);
+  const uint32_t aGeneration = theGraph.myData->myGeneration.load(std::memory_order_relaxed);
 
   // Record history before swap (remap entries for topology defs).
   if (theOptions.HistoryMode)
@@ -229,6 +230,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
   // Construct a fresh graph and rebuild bottom-up.
   // Geometry nodes (Surface, Curve) are automatically created through AddFaceDef/AddEdgeDef.
   BRepGraph aNewGraph;
+  aNewGraph.myData->myGeneration.store(aGeneration, std::memory_order_relaxed);
 
   // Helper lambda for remapping NodeIds.
   auto remapId = [&](const BRepGraph_NodeId& theId) -> BRepGraph_NodeId {
@@ -454,6 +456,9 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
     }
     (void)aNewGraph.Builder().AddCompSolidDef(aNewSolids);
   }
+
+  // Rebuild reverse index from final forward incidence to guarantee compact output consistency.
+  aNewGraph.myData->myIncStorage.BuildReverseIndex();
 
   aResult.NbNodesAfter = static_cast<int>(aNewGraph.Defs().NbNodes());
 

@@ -569,7 +569,7 @@ TEST_F(BRepGraphTest, FaceCountOfEdge_SharedEdge)
 
 TEST_F(BRepGraphTest, FreeEdges_ClosedBox_Empty)
 {
-  NCollection_Vector<BRepGraph_NodeId> aFree = BRepGraph_Analyze::FreeEdges(myGraph);
+  NCollection_Vector<BRepGraph_EdgeId> aFree = BRepGraph_Analyze::FreeEdges(myGraph);
   EXPECT_EQ(aFree.Length(), 0);
 }
 
@@ -1305,7 +1305,7 @@ TEST(BRepGraphDetectionTest, FreeEdges_SingleFace_AllEdgesFree)
   aGraph.Build(aFace);
   ASSERT_TRUE(aGraph.IsDone());
 
-  NCollection_Vector<BRepGraph_NodeId> aFreeEdges = BRepGraph_Analyze::FreeEdges(aGraph);
+  NCollection_Vector<BRepGraph_EdgeId> aFreeEdges = BRepGraph_Analyze::FreeEdges(aGraph);
   EXPECT_EQ(aFreeEdges.Length(), 4);
 }
 
@@ -1365,7 +1365,7 @@ TEST_F(BRepGraphTest, DetectToleranceConflicts_ManualConflict_Detected)
 
   if (isConflictSetUp)
   {
-    NCollection_Vector<BRepGraph_NodeId> aConflicts =
+    NCollection_Vector<BRepGraph_EdgeId> aConflicts =
       BRepGraph_Analyze::ToleranceConflicts(myGraph, 0.5);
     EXPECT_GE(aConflicts.Length(), 1);
   }

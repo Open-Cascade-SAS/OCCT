@@ -13,7 +13,9 @@
 
 #include <BRepGraphAlgo_FaceAnalysis.hxx>
 
+#include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_MutationGuard.hxx>
 #include <BRepGraph_MutRef.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <NCollection_DataMap.hxx>
@@ -86,6 +88,7 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
   {
     return aResult;
   }
+  BRepGraph_MutationGuard aMutationGuard(theGraph);
 
   const double aMinTol =
     theOptions.MinTolerance > 0.0
@@ -149,8 +152,7 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
           BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aMutEdge = theGraph.MutEdge(anEdgeId);
           aMutEdge->IsDegenerate                                 = true;
           aMutEdge->Curve3DRepId                                 = BRepGraph_Curve3DRepId();
-          aResult.DegeneratedEdges.Append(
-            BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, anEdgeIdx));
+          aResult.DegeneratedEdges.Append(BRepGraph_EdgeId(anEdgeIdx));
 
           // Merge start/end vertices if they differ.
           const BRepGraph_VertexId aStartVtx = anEdge.StartVertex.VertexDefId;
@@ -190,8 +192,8 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
     // Remove face if all edges are small/degenerate.
     if (aNbEdges > 0 && aNbSmall == aNbEdges)
     {
-      theGraph.MutFace(BRepGraph_FaceId(aFaceIdx))->IsRemoved = true;
-      aResult.DeletedFaces.Append(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, aFaceIdx));
+      theGraph.Builder().RemoveNode(BRepGraph_NodeId::Face(aFaceIdx));
+      aResult.DeletedFaces.Append(BRepGraph_FaceId(aFaceIdx));
     }
   }
 

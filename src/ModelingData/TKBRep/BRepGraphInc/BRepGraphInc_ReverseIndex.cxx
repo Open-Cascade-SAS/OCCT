@@ -489,6 +489,14 @@ void BRepGraphInc_ReverseIndex::BindEdgeToWire(const BRepGraph_EdgeId theEdgeId,
 
 //=================================================================================================
 
+void BRepGraphInc_ReverseIndex::BindCoEdgeToWire(const BRepGraph_CoEdgeId theCoEdgeId,
+                                                 const BRepGraph_WireId   theWireId)
+{
+  appendUnique(myCoEdgeToWires, theCoEdgeId.Index, theWireId);
+}
+
+//=================================================================================================
+
 void BRepGraphInc_ReverseIndex::UnbindEdgeFromWire(const BRepGraph_EdgeId theEdgeId,
                                                    const BRepGraph_WireId theWireId)
 {
@@ -509,9 +517,29 @@ void BRepGraphInc_ReverseIndex::UnbindEdgeFromWire(const BRepGraph_EdgeId theEdg
 
 //=================================================================================================
 
+void BRepGraphInc_ReverseIndex::UnbindCoEdgeFromWire(const BRepGraph_CoEdgeId theCoEdgeId,
+                                                     const BRepGraph_WireId   theWireId)
+{
+  if (theCoEdgeId.Index < 0 || theCoEdgeId.Index >= myCoEdgeToWires.Length())
+    return;
+  NCollection_Vector<BRepGraph_WireId>& aWires = myCoEdgeToWires.ChangeValue(theCoEdgeId.Index);
+  for (int i = 0; i < aWires.Length(); ++i)
+  {
+    if (aWires.Value(i) == theWireId)
+    {
+      if (i < aWires.Length() - 1)
+        aWires.ChangeValue(i) = aWires.Value(aWires.Length() - 1);
+      aWires.EraseLast();
+      break;
+    }
+  }
+}
+
+//=================================================================================================
+
 void BRepGraphInc_ReverseIndex::ReplaceEdgeInWireMap(const BRepGraph_EdgeId theOldEdgeId,
-                                                     const BRepGraph_EdgeId theNewEdgeId,
-                                                     const BRepGraph_WireId theWireId)
+                                                      const BRepGraph_EdgeId theNewEdgeId,
+                                                      const BRepGraph_WireId theWireId)
 {
   UnbindEdgeFromWire(theOldEdgeId, theWireId);
   BindEdgeToWire(theNewEdgeId, theWireId);
@@ -551,6 +579,26 @@ void BRepGraphInc_ReverseIndex::BindEdgeToCoEdge(const BRepGraph_EdgeId   theEdg
                                                  const BRepGraph_CoEdgeId theCoEdgeId)
 {
   appendUnique(myEdgeToCoEdges, theEdgeId.Index, theCoEdgeId);
+}
+
+//=================================================================================================
+
+void BRepGraphInc_ReverseIndex::UnbindEdgeFromCoEdge(const BRepGraph_EdgeId   theEdgeId,
+                                                     const BRepGraph_CoEdgeId theCoEdgeId)
+{
+  if (theEdgeId.Index < 0 || theEdgeId.Index >= myEdgeToCoEdges.Length())
+    return;
+  NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdges = myEdgeToCoEdges.ChangeValue(theEdgeId.Index);
+  for (int i = 0; i < aCoEdges.Length(); ++i)
+  {
+    if (aCoEdges.Value(i) == theCoEdgeId)
+    {
+      if (i < aCoEdges.Length() - 1)
+        aCoEdges.ChangeValue(i) = aCoEdges.Value(aCoEdges.Length() - 1);
+      aCoEdges.EraseLast();
+      break;
+    }
+  }
 }
 
 //=================================================================================================

@@ -124,6 +124,7 @@ TEST(BRepGraphAlgo_FaceAnalysisTest, SmallFace_Removal)
   BRepGraph aGraph;
   aGraph.Build(aCompound);
   ASSERT_TRUE(aGraph.IsDone());
+  ASSERT_EQ(aGraph.Defs().NbActiveFaces(), 2);
 
   BRepGraphAlgo_FaceAnalysis::Options aOpts;
   aOpts.MinTolerance                         = 1.0e-2;
@@ -133,6 +134,7 @@ TEST(BRepGraphAlgo_FaceAnalysisTest, SmallFace_Removal)
   EXPECT_EQ(aResult.NbDeletedFaces, 1);
   EXPECT_EQ(aResult.DeletedFaces.Length(), 1);
   EXPECT_EQ(aResult.NbSmallEdges, 4);
+  EXPECT_EQ(aGraph.Defs().NbActiveFaces(), 1);
 
   // Verify the normal face is NOT removed.
   int aNbRemainingFaces = 0;

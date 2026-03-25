@@ -58,13 +58,14 @@ public:
   //! Run compaction with default options.
   //! @param[in,out] theGraph graph to compact
   //! @return compaction statistics
-  Standard_EXPORT static Result Perform(BRepGraph& theGraph);
+  [[nodiscard]] Standard_EXPORT static Result Perform(BRepGraph& theGraph);
 
   //! Run compaction with specified options.
   //! @param[in,out] theGraph graph to compact
   //! @param[in] theOptions compaction configuration
   //! @return compaction statistics
-  Standard_EXPORT static Result Perform(BRepGraph& theGraph, const Options& theOptions);
+  [[nodiscard]] Standard_EXPORT static Result Perform(BRepGraph&      theGraph,
+                                                      const Options& theOptions);
 
 private:
   BRepGraphAlgo_Compact() = delete;

@@ -1224,9 +1224,10 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> matchFreeEdges
                       + BRepGraph_Tool::Edge::Tolerance(theGraph, BRepGraph_EdgeId(anIdB.Index));
         }
 
+        const BRepGraph_EdgeId anEdgeIdB(anIdB.Index);
         if (BRepGraph_Analyze::AreEdgesCompatibleSampled(theGraph,
-                                                         anIdA,
-                                                         anIdB,
+                                                         anEdgeA,
+                                                         anEdgeIdB,
                                                          aSamplePtsA,
                                                          anExtPCRevA,
                                                          aChordA,
@@ -1235,7 +1236,7 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> matchFreeEdges
                                                          THE_MAX_CHORD_RATIO,
                                                          THE_HIGH_CONFIDENCE_RATIO))
         {
-          const double aScore = BRepGraph_Analyze::EdgeEndpointPairScore(theGraph, anIdA, anIdB);
+          const double aScore = BRepGraph_Analyze::EdgeEndpointPairScore(theGraph, anEdgeA, anEdgeIdB);
           if (aScore < aMatch.BestScore)
           {
             aMatch.BestScore = aScore;
@@ -1482,7 +1483,7 @@ int mergeMatchedEdges(
     aHistOriginals.Append(anIdB);
     aHistReplacements.Append(anIdA);
 
-    theResult.SewnEdgePairs.Append(anIdA);
+    theResult.SewnEdgePairs.Append(BRepGraph_EdgeId(anIdA.Index));
     ++aSewnCount;
   }
 
@@ -1500,9 +1501,9 @@ int mergeMatchedEdges(
   // 6. SameParameter enforcement (graph-only, parallel).
   if (theOptions.SameParameterMode && !theSewnEdgeIndices.IsEmpty())
   {
-    BRepGraphAlgo_SameParameter::Perform(theGraph,
-                                         theSewnEdgeIndices,
-                                         theOptions.Tolerance);
+    (void)BRepGraphAlgo_SameParameter::Perform(theGraph,
+                                               theSewnEdgeIndices,
+                                               theOptions.Tolerance);
   }
 
   return aSewnCount;
@@ -1569,7 +1570,7 @@ TopoDS_Shape reconstructFromGraph(const BRepGraph& theGraph)
 void convertDegenerateEdges(BRepGraph& theGraph, BRepGraphAlgo_Sewing::Result& theResult)
 {
   // Collect remaining free edges after merging.
-  const NCollection_Vector<BRepGraph_NodeId> aFreeEdges = BRepGraph_Analyze::FreeEdges(theGraph);
+  const NCollection_Vector<BRepGraph_EdgeId> aFreeEdges = BRepGraph_Analyze::FreeEdges(theGraph);
   if (aFreeEdges.IsEmpty())
   {
     return;
@@ -1579,9 +1580,8 @@ void convertDegenerateEdges(BRepGraph& theGraph, BRepGraphAlgo_Sewing::Result& t
   // edge chord length <= sum of vertex tolerances.
   for (int aFreeIter = 0; aFreeIter < aFreeEdges.Length(); ++aFreeIter)
   {
-    const BRepGraph_NodeId             anEdgeNodeId = aFreeEdges.Value(aFreeIter);
-    const BRepGraph_EdgeId             anEdgeId(anEdgeNodeId.Index);
-    const BRepGraph_TopoNode::EdgeDef& anEdge = theGraph.Defs().Edge(anEdgeId);
+    const BRepGraph_EdgeId             anEdgeId = aFreeEdges.Value(aFreeIter);
+    const BRepGraph_TopoNode::EdgeDef& anEdge   = theGraph.Defs().Edge(anEdgeId);
 
     if (BRepGraph_Tool::Edge::Degenerated(theGraph, anEdgeId)
         || !BRepGraph_Tool::Edge::HasCurve(theGraph, anEdgeId))
@@ -1686,6 +1686,7 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
   {
     return aResult;
   }
+  BRepGraph_MutationGuard aMutationGuard(theGraph);
 
   // Configure history on the graph.
   theGraph.SetHistoryEnabled(theOptions.HistoryMode);
@@ -1818,12 +1819,11 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
     }
     if (aDefs.FaceCountOfEdge(anEdgeId) > 2)
     {
-      aResult.MultipleEdges.Append(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, anEdgeIdx));
+      aResult.MultipleEdges.Append(BRepGraph_EdgeId(anEdgeIdx));
     }
   }
   aResult.NbMultipleEdges = aResult.MultipleEdges.Length();
 
-  BRepGraph_Mutator::CommitMutation(theGraph);
   aResult.IsDone = true;
   return aResult;
 }

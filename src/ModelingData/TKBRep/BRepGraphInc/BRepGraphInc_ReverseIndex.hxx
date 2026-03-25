@@ -273,6 +273,18 @@ public:
   Standard_EXPORT void BindEdgeToCoEdge(const BRepGraph_EdgeId   theEdgeId,
                                         const BRepGraph_CoEdgeId theCoEdgeId);
 
+  //! Remove a coedge from the edge-to-coedge index for a given edge.
+  Standard_EXPORT void UnbindEdgeFromCoEdge(const BRepGraph_EdgeId   theEdgeId,
+                                            const BRepGraph_CoEdgeId theCoEdgeId);
+
+  //! Register a coedge as belonging to a wire (O(1) amortized).
+  Standard_EXPORT void BindCoEdgeToWire(const BRepGraph_CoEdgeId theCoEdgeId,
+                                        const BRepGraph_WireId   theWireId);
+
+  //! Remove a wire from the coedge-to-wire index for a given coedge.
+  Standard_EXPORT void UnbindCoEdgeFromWire(const BRepGraph_CoEdgeId theCoEdgeId,
+                                            const BRepGraph_WireId   theWireId);
+
   //! Register an edge as belonging to a face (O(1) amortized, deduplicates).
   Standard_EXPORT void BindEdgeToFace(const BRepGraph_EdgeId theEdgeId,
                                       const BRepGraph_FaceId theFaceId);

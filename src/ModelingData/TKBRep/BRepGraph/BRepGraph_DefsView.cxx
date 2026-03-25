@@ -101,6 +101,13 @@ int BRepGraph::DefsView::NbActiveEdges() const
 
 //=================================================================================================
 
+int BRepGraph::DefsView::NbActiveCoEdges() const
+{
+  return myGraph->myData->myIncStorage.NbActiveCoEdges();
+}
+
+//=================================================================================================
+
 int BRepGraph::DefsView::NbActiveWires() const
 {
   return myGraph->myData->myIncStorage.NbActiveWires();

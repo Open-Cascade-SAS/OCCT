@@ -407,6 +407,7 @@ TEST_F(BRepGraphHistoryTest, SplitEdge_RewritesAllContainingWires)
   ASSERT_GT(aWireIndices.Length(), 0);
 
   const int aNbEdgesBefore = myGraph.Defs().NbEdges();
+  const int aNbActiveEdgesBefore = myGraph.Defs().NbActiveEdges();
 
   BRepGraph_NodeId aSubA;
   BRepGraph_NodeId aSubB;
@@ -416,6 +417,7 @@ TEST_F(BRepGraphHistoryTest, SplitEdge_RewritesAllContainingWires)
   ASSERT_TRUE(aSubA.IsValid());
   ASSERT_TRUE(aSubB.IsValid());
   EXPECT_EQ(myGraph.Defs().NbEdges(), aNbEdgesBefore + 2);
+  EXPECT_EQ(myGraph.Defs().NbActiveEdges(), aNbActiveEdgesBefore + 1);
 
   for (int aWireIter = 0; aWireIter < aWireIndices.Length(); ++aWireIter)
   {

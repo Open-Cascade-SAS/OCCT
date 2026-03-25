@@ -63,12 +63,15 @@ private:
   static void populateUIDsIncremental(BRepGraph& theGraph,
                                       const int  theOldVtx,
                                       const int  theOldEdge,
+                                      const int  theOldCoEdge,
                                       const int  theOldWire,
                                       const int  theOldFace,
                                       const int  theOldShell,
                                       const int  theOldSolid,
                                       const int  theOldComp,
-                                      const int  theOldCS);
+                                      const int  theOldCS,
+                                      const int  theOldProduct,
+                                      const int  theOldOccurrence);
 
   BRepGraph_Builder() = delete;
 };

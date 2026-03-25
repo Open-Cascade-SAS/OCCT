@@ -271,15 +271,15 @@ TEST_F(BRepGraphViewsTest, BuilderView_IsRemoved_False)
 
 TEST_F(BRepGraphViewsTest, AnalyzeView_FreeEdges_MatchesStatic)
 {
-  NCollection_Vector<BRepGraph_NodeId> aViewResult = myGraph.Analyze().FreeEdges();
-  NCollection_Vector<BRepGraph_NodeId> aFlatResult = BRepGraph_Analyze::FreeEdges(myGraph);
+  NCollection_Vector<BRepGraph_EdgeId> aViewResult = myGraph.Analyze().FreeEdges();
+  NCollection_Vector<BRepGraph_EdgeId> aFlatResult = BRepGraph_Analyze::FreeEdges(myGraph);
   EXPECT_EQ(aViewResult.Length(), aFlatResult.Length());
 }
 
 TEST_F(BRepGraphViewsTest, AnalyzeView_DegenerateWires_MatchesStatic)
 {
-  NCollection_Vector<BRepGraph_NodeId> aViewResult = myGraph.Analyze().DegenerateWires();
-  NCollection_Vector<BRepGraph_NodeId> aFlatResult = BRepGraph_Analyze::DegenerateWires(myGraph);
+  NCollection_Vector<BRepGraph_WireId> aViewResult = myGraph.Analyze().DegenerateWires();
+  NCollection_Vector<BRepGraph_WireId> aFlatResult = BRepGraph_Analyze::DegenerateWires(myGraph);
   EXPECT_EQ(aViewResult.Length(), aFlatResult.Length());
 }
 

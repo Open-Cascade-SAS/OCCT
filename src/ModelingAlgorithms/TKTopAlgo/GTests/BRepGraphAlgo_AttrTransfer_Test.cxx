@@ -376,7 +376,7 @@ TEST(BRepGraphAlgo_AttrTransferTest, AttrTransfer_GeometryHistorySkipped)
   aGraph.Attrs().Set(aFaceNode, THE_COLOR_KEY, makeIntAttr(42));
 
   // Dedup creates geometry-level history (Surface -> Surface).
-  BRepGraphAlgo_Deduplicate::Perform(aGraph);
+  (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
 
   // AttrTransfer should skip the geometry-level history records.
   const BRepGraphAlgo_AttrTransfer::Result aResult = BRepGraphAlgo_AttrTransfer::Perform(aGraph);
@@ -434,7 +434,7 @@ TEST(BRepGraphAlgo_AttrTransferTest, FindNode_ReconstructedShape)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Run dedup to mark faces as modified.
-  BRepGraphAlgo_Deduplicate::Perform(aGraph);
+  (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
 
   // Reconstruct face 0 - this creates a new TShape.
   const BRepGraph_NodeId aFaceNode(BRepGraph_NodeId::Kind::Face, 0);
@@ -477,12 +477,6 @@ TEST(BRepGraphAlgo_AttrTransferTest, Deduplicate_AffectedFaceDefs)
   // (face whose surface was rewritten) appears in AffectedFaceDefs.
   EXPECT_EQ(aResult.NbSurfaceRewrites, aResult.AffectedFaceDefs.Length());
   EXPECT_GE(aResult.AffectedFaceDefs.Length(), 1);
-
-  // Every affected face should be a Face kind.
-  for (int anIdx = 0; anIdx < aResult.AffectedFaceDefs.Length(); ++anIdx)
-  {
-    EXPECT_EQ(aResult.AffectedFaceDefs.Value(anIdx).NodeKind, BRepGraph_NodeId::Kind::Face);
-  }
 }
 
 TEST(BRepGraphAlgo_AttrTransferTest, Deduplicate_AffectedEdgeDefs)
@@ -509,9 +503,4 @@ TEST(BRepGraphAlgo_AttrTransferTest, Deduplicate_AffectedEdgeDefs)
   const BRepGraphAlgo_Deduplicate::Result aResult = BRepGraphAlgo_Deduplicate::Perform(aGraph);
 
   EXPECT_EQ(aResult.NbCurveRewrites, aResult.AffectedEdgeDefs.Length());
-
-  for (int anIdx = 0; anIdx < aResult.AffectedEdgeDefs.Length(); ++anIdx)
-  {
-    EXPECT_EQ(aResult.AffectedEdgeDefs.Value(anIdx).NodeKind, BRepGraph_NodeId::Kind::Edge);
-  }
 }

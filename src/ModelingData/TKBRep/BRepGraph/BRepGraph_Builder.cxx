@@ -33,6 +33,8 @@ void BRepGraph_Builder::populateUIDs(BRepGraph& theGraph)
     theGraph.allocateUID(aStorage.Vertex(BRepGraph_VertexId(i)).Id);
   for (int i = 0; i < aStorage.NbEdges(); ++i)
     theGraph.allocateUID(aStorage.Edge(BRepGraph_EdgeId(i)).Id);
+  for (int i = 0; i < aStorage.NbCoEdges(); ++i)
+    theGraph.allocateUID(aStorage.CoEdge(BRepGraph_CoEdgeId(i)).Id);
   for (int i = 0; i < aStorage.NbWires(); ++i)
     theGraph.allocateUID(aStorage.Wire(BRepGraph_WireId(i)).Id);
   for (int i = 0; i < aStorage.NbFaces(); ++i)
@@ -45,6 +47,10 @@ void BRepGraph_Builder::populateUIDs(BRepGraph& theGraph)
     theGraph.allocateUID(aStorage.Compound(BRepGraph_CompoundId(i)).Id);
   for (int i = 0; i < aStorage.NbCompSolids(); ++i)
     theGraph.allocateUID(aStorage.CompSolid(BRepGraph_CompSolidId(i)).Id);
+  for (int i = 0; i < aStorage.NbProducts(); ++i)
+    theGraph.allocateUID(aStorage.Product(BRepGraph_ProductId(i)).Id);
+  for (int i = 0; i < aStorage.NbOccurrences(); ++i)
+    theGraph.allocateUID(aStorage.Occurrence(BRepGraph_OccurrenceId(i)).Id);
 }
 
 //=================================================================================================
@@ -165,12 +171,15 @@ void BRepGraph_Builder::Append(BRepGraph&          theGraph,
   BRepGraphInc_Storage& aStorage   = theGraph.myData->myIncStorage;
   const int             anOldVtx   = aStorage.NbVertices();
   const int             anOldEdge  = aStorage.NbEdges();
+  const int             anOldCoEdge = aStorage.NbCoEdges();
   const int             anOldWire  = aStorage.NbWires();
   const int             anOldFace  = aStorage.NbFaces();
   const int             anOldShell = aStorage.NbShells();
   const int             anOldSolid = aStorage.NbSolids();
   const int             anOldComp  = aStorage.NbCompounds();
   const int             anOldCS    = aStorage.NbCompSolids();
+  const int             anOldProduct = aStorage.NbProducts();
+  const int             anOldOccurrence = aStorage.NbOccurrences();
 
   occ::handle<NCollection_IncAllocator> aTmpAlloc = new NCollection_IncAllocator;
   BRepGraphInc_Populate::Append(aStorage, theShape, theParallel, aTmpAlloc);
@@ -183,12 +192,15 @@ void BRepGraph_Builder::Append(BRepGraph&          theGraph,
   populateUIDsIncremental(theGraph,
                           anOldVtx,
                           anOldEdge,
+                          anOldCoEdge,
                           anOldWire,
                           anOldFace,
                           anOldShell,
                           anOldSolid,
                           anOldComp,
-                          anOldCS);
+                          anOldCS,
+                          anOldProduct,
+                          anOldOccurrence);
 
   theGraph.myData->myIsDone = true;
 }
@@ -198,12 +210,15 @@ void BRepGraph_Builder::Append(BRepGraph&          theGraph,
 void BRepGraph_Builder::populateUIDsIncremental(BRepGraph& theGraph,
                                                 const int  theOldVtx,
                                                 const int  theOldEdge,
+                                                const int  theOldCoEdge,
                                                 const int  theOldWire,
                                                 const int  theOldFace,
                                                 const int  theOldShell,
                                                 const int  theOldSolid,
                                                 const int  theOldComp,
-                                                const int  theOldCS)
+                                                const int  theOldCS,
+                                                const int  theOldProduct,
+                                                const int  theOldOccurrence)
 {
   BRepGraphInc_Storage& aStorage = theGraph.myData->myIncStorage;
 
@@ -214,6 +229,8 @@ void BRepGraph_Builder::populateUIDsIncremental(BRepGraph& theGraph,
     theGraph.allocateUID(aStorage.Vertex(BRepGraph_VertexId(i)).Id);
   for (int i = theOldEdge; i < aStorage.NbEdges(); ++i)
     theGraph.allocateUID(aStorage.Edge(BRepGraph_EdgeId(i)).Id);
+  for (int i = theOldCoEdge; i < aStorage.NbCoEdges(); ++i)
+    theGraph.allocateUID(aStorage.CoEdge(BRepGraph_CoEdgeId(i)).Id);
   for (int i = theOldWire; i < aStorage.NbWires(); ++i)
     theGraph.allocateUID(aStorage.Wire(BRepGraph_WireId(i)).Id);
   for (int i = theOldFace; i < aStorage.NbFaces(); ++i)
@@ -226,4 +243,8 @@ void BRepGraph_Builder::populateUIDsIncremental(BRepGraph& theGraph,
     theGraph.allocateUID(aStorage.Compound(BRepGraph_CompoundId(i)).Id);
   for (int i = theOldCS; i < aStorage.NbCompSolids(); ++i)
     theGraph.allocateUID(aStorage.CompSolid(BRepGraph_CompSolidId(i)).Id);
+  for (int i = theOldProduct; i < aStorage.NbProducts(); ++i)
+    theGraph.allocateUID(aStorage.Product(BRepGraph_ProductId(i)).Id);
+  for (int i = theOldOccurrence; i < aStorage.NbOccurrences(); ++i)
+    theGraph.allocateUID(aStorage.Occurrence(BRepGraph_OccurrenceId(i)).Id);
 }

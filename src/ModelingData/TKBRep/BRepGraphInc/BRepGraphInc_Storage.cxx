@@ -205,6 +205,72 @@ void BRepGraphInc_Storage::DecrementActiveCount(const BRepGraph_NodeId::Kind the
 
 //=================================================================================================
 
+bool BRepGraphInc_Storage::MarkRemoved(const BRepGraph_NodeId theNodeId)
+{
+  if (!theNodeId.IsValid())
+    return false;
+
+  BRepGraphInc::BaseEntity* anEnt = nullptr;
+  switch (theNodeId.NodeKind)
+  {
+    case BRepGraph_NodeId::Kind::Vertex:
+      if (theNodeId.Index >= 0 && theNodeId.Index < myVertices.Nb())
+        anEnt = &myVertices.Change(theNodeId.Index);
+      break;
+    case BRepGraph_NodeId::Kind::Edge:
+      if (theNodeId.Index >= 0 && theNodeId.Index < myEdges.Nb())
+        anEnt = &myEdges.Change(theNodeId.Index);
+      break;
+    case BRepGraph_NodeId::Kind::CoEdge:
+      if (theNodeId.Index >= 0 && theNodeId.Index < myCoEdges.Nb())
+        anEnt = &myCoEdges.Change(theNodeId.Index);
+      break;
+    case BRepGraph_NodeId::Kind::Wire:
+      if (theNodeId.Index >= 0 && theNodeId.Index < myWires.Nb())
+        anEnt = &myWires.Change(theNodeId.Index);
+      break;
+    case BRepGraph_NodeId::Kind::Face:
+      if (theNodeId.Index >= 0 && theNodeId.Index < myFaces.Nb())
+        anEnt = &myFaces.Change(theNodeId.Index);
+      break;
+    case BRepGraph_NodeId::Kind::Shell:
+      if (theNodeId.Index >= 0 && theNodeId.Index < myShells.Nb())
+        anEnt = &myShells.Change(theNodeId.Index);
+      break;
+    case BRepGraph_NodeId::Kind::Solid:
+      if (theNodeId.Index >= 0 && theNodeId.Index < mySolids.Nb())
+        anEnt = &mySolids.Change(theNodeId.Index);
+      break;
+    case BRepGraph_NodeId::Kind::Compound:
+      if (theNodeId.Index >= 0 && theNodeId.Index < myCompounds.Nb())
+        anEnt = &myCompounds.Change(theNodeId.Index);
+      break;
+    case BRepGraph_NodeId::Kind::CompSolid:
+      if (theNodeId.Index >= 0 && theNodeId.Index < myCompSolids.Nb())
+        anEnt = &myCompSolids.Change(theNodeId.Index);
+      break;
+    case BRepGraph_NodeId::Kind::Product:
+      if (theNodeId.Index >= 0 && theNodeId.Index < myProducts.Nb())
+        anEnt = &myProducts.Change(theNodeId.Index);
+      break;
+    case BRepGraph_NodeId::Kind::Occurrence:
+      if (theNodeId.Index >= 0 && theNodeId.Index < myOccurrences.Nb())
+        anEnt = &myOccurrences.Change(theNodeId.Index);
+      break;
+    default:
+      return false;
+  }
+
+  if (anEnt == nullptr || anEnt->IsRemoved)
+    return false;
+
+  anEnt->IsRemoved = true;
+  DecrementActiveCount(theNodeId.NodeKind);
+  return true;
+}
+
+//=================================================================================================
+
 void BRepGraphInc_Storage::BuildReverseIndex()
 {
   myReverseIdx.SetAllocator(myAllocator);
@@ -291,10 +357,211 @@ void BRepGraphInc_Storage::BuildDeltaReverseIndex(const int theOldNbEdges,
 
 bool BRepGraphInc_Storage::ValidateReverseIndex() const
 {
-  return myReverseIdx.Validate(myEdges.Entities,
-                               myCoEdges.Entities,
-                               myWires.Entities,
-                               myFaces.Entities,
-                               myShells.Entities,
-                               mySolids.Entities);
+  if (!myReverseIdx.Validate(myEdges.Entities,
+                             myCoEdges.Entities,
+                             myWires.Entities,
+                             myFaces.Entities,
+                             myShells.Entities,
+                             mySolids.Entities))
+  {
+    return false;
+  }
+
+  auto containsNode = [](const auto* theVec, const int theIndex) {
+    if (theVec == nullptr)
+    {
+      return false;
+    }
+    for (int anIdx = 0; anIdx < theVec->Length(); ++anIdx)
+    {
+      if (theVec->Value(anIdx).Index == theIndex)
+      {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  // Wire -> CoEdge and Edge -> CoEdge coherence.
+  for (int aWireIdx = 0; aWireIdx < myWires.Nb(); ++aWireIdx)
+  {
+    const BRepGraphInc::WireEntity& aWire = myWires.Get(aWireIdx);
+    if (aWire.IsRemoved)
+    {
+      continue;
+    }
+
+    for (int aCoEdgeRefIdx = 0; aCoEdgeRefIdx < aWire.CoEdgeRefs.Length(); ++aCoEdgeRefIdx)
+    {
+      const BRepGraph_CoEdgeId aCoEdgeId = aWire.CoEdgeRefs.Value(aCoEdgeRefIdx).CoEdgeDefId;
+      if (!aCoEdgeId.IsValid() || aCoEdgeId.Index >= myCoEdges.Nb())
+      {
+        return false;
+      }
+
+      const BRepGraphInc::CoEdgeEntity& aCoEdge = myCoEdges.Get(aCoEdgeId.Index);
+      if (aCoEdge.IsRemoved)
+      {
+        return false;
+      }
+      if (!containsNode(myReverseIdx.WiresOfCoEdge(aCoEdgeId), aWireIdx))
+      {
+        return false;
+      }
+      if (aCoEdge.EdgeDefId.IsValid()
+          && !containsNode(myReverseIdx.CoEdgesOfEdge(aCoEdge.EdgeDefId), aCoEdgeId.Index))
+      {
+        return false;
+      }
+    }
+  }
+
+  // Reverse Edge -> CoEdges entries must point back to active CoEdges.
+  for (int anEdgeIdx = 0; anEdgeIdx < myEdges.Nb(); ++anEdgeIdx)
+  {
+    const NCollection_Vector<BRepGraph_CoEdgeId>* aCoEdges =
+      myReverseIdx.CoEdgesOfEdge(BRepGraph_EdgeId(anEdgeIdx));
+    if (aCoEdges == nullptr)
+    {
+      continue;
+    }
+    for (int aCoEdgeIdx = 0; aCoEdgeIdx < aCoEdges->Length(); ++aCoEdgeIdx)
+    {
+      const int aRefIdx = aCoEdges->Value(aCoEdgeIdx).Index;
+      if (aRefIdx < 0 || aRefIdx >= myCoEdges.Nb())
+      {
+        return false;
+      }
+      const BRepGraphInc::CoEdgeEntity& aCoEdge = myCoEdges.Get(aRefIdx);
+      if (aCoEdge.IsRemoved || !aCoEdge.EdgeDefId.IsValid() || aCoEdge.EdgeDefId.Index != anEdgeIdx)
+      {
+        return false;
+      }
+    }
+  }
+
+  // Compound child reverse maps.
+  for (int aCompIdx = 0; aCompIdx < myCompounds.Nb(); ++aCompIdx)
+  {
+    const BRepGraphInc::CompoundEntity& aCompound = myCompounds.Get(aCompIdx);
+    if (aCompound.IsRemoved)
+    {
+      continue;
+    }
+
+    for (int aChildIdx = 0; aChildIdx < aCompound.ChildRefs.Length(); ++aChildIdx)
+    {
+      const BRepGraph_NodeId aChildId = aCompound.ChildRefs.Value(aChildIdx).ChildDefId;
+      if (!aChildId.IsValid())
+      {
+        continue;
+      }
+
+      switch (aChildId.NodeKind)
+      {
+        case BRepGraph_NodeId::Kind::Solid:
+          if (!containsNode(myReverseIdx.CompoundsOfSolid(BRepGraph_SolidId(aChildId.Index)), aCompIdx))
+          {
+            return false;
+          }
+          break;
+        case BRepGraph_NodeId::Kind::Shell:
+          if (!containsNode(myReverseIdx.CompoundsOfShell(BRepGraph_ShellId(aChildId.Index)), aCompIdx))
+          {
+            return false;
+          }
+          break;
+        case BRepGraph_NodeId::Kind::Face:
+          if (!containsNode(myReverseIdx.CompoundsOfFace(BRepGraph_FaceId(aChildId.Index)), aCompIdx))
+          {
+            return false;
+          }
+          break;
+        case BRepGraph_NodeId::Kind::Compound:
+          if (!containsNode(myReverseIdx.CompoundsOfCompound(BRepGraph_CompoundId(aChildId.Index)),
+                            aCompIdx))
+          {
+            return false;
+          }
+          break;
+        case BRepGraph_NodeId::Kind::CompSolid:
+          if (!containsNode(myReverseIdx.CompoundsOfCompSolid(BRepGraph_CompSolidId(aChildId.Index)),
+                            aCompIdx))
+          {
+            return false;
+          }
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
+  // CompSolid -> Solid reverse map.
+  for (int aCompSolidIdx = 0; aCompSolidIdx < myCompSolids.Nb(); ++aCompSolidIdx)
+  {
+    const BRepGraphInc::CompSolidEntity& aCompSolid = myCompSolids.Get(aCompSolidIdx);
+    if (aCompSolid.IsRemoved)
+    {
+      continue;
+    }
+
+    for (int aSolidRefIdx = 0; aSolidRefIdx < aCompSolid.SolidRefs.Length(); ++aSolidRefIdx)
+    {
+      const BRepGraph_SolidId aSolidId = aCompSolid.SolidRefs.Value(aSolidRefIdx).SolidDefId;
+      if (!aSolidId.IsValid() || aSolidId.Index >= mySolids.Nb())
+      {
+        return false;
+      }
+      if (!containsNode(myReverseIdx.CompSolidsOfSolid(aSolidId), aCompSolidIdx))
+      {
+        return false;
+      }
+    }
+  }
+
+  // Occurrence -> Product reverse map.
+  for (int anOccIdx = 0; anOccIdx < myOccurrences.Nb(); ++anOccIdx)
+  {
+    const BRepGraphInc::OccurrenceEntity& anOcc = myOccurrences.Get(anOccIdx);
+    if (anOcc.IsRemoved)
+    {
+      continue;
+    }
+    if (!anOcc.ProductDefId.IsValid() || anOcc.ProductDefId.Index >= myProducts.Nb())
+    {
+      return false;
+    }
+    if (!containsNode(myReverseIdx.OccurrencesOfProduct(anOcc.ProductDefId), anOccIdx))
+    {
+      return false;
+    }
+  }
+
+  // Reverse Product -> Occurrences entries must point to active occurrences
+  // that reference the same product.
+  for (int aProductIdx = 0; aProductIdx < myProducts.Nb(); ++aProductIdx)
+  {
+    const NCollection_Vector<BRepGraph_OccurrenceId>* anOccs =
+      myReverseIdx.OccurrencesOfProduct(BRepGraph_ProductId(aProductIdx));
+    if (anOccs == nullptr)
+    {
+      continue;
+    }
+    for (int anOccRefIdx = 0; anOccRefIdx < anOccs->Length(); ++anOccRefIdx)
+    {
+      const int anOccIdx = anOccs->Value(anOccRefIdx).Index;
+      if (anOccIdx < 0 || anOccIdx >= myOccurrences.Nb())
+      {
+        return false;
+      }
+      const BRepGraphInc::OccurrenceEntity& anOcc = myOccurrences.Get(anOccIdx);
+      if (anOcc.IsRemoved || !anOcc.ProductDefId.IsValid() || anOcc.ProductDefId.Index != aProductIdx)
+      {
+        return false;
+      }
+    }
+  }
+
+  return true;
 }

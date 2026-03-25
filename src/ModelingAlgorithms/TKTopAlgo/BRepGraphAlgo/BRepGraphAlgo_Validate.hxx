@@ -41,6 +41,17 @@ public:
     Error
   };
 
+  //! Validation mode controlling check depth/performance trade-off.
+  enum class Mode
+  {
+    //! Fast boundary-oriented checks for frequent validation points.
+    Lightweight,
+    //! Full structural audit (superset of Lightweight).
+    Audit,
+    //! Backward-compatible alias.
+    DeepAudit = Audit
+  };
+
   //! A single structural issue found in the graph.
   struct Issue
   {
@@ -55,7 +66,7 @@ public:
     NCollection_Vector<Issue> Issues;
 
     //! True if no Error-level issues were found.
-    bool IsValid() const
+    [[nodiscard]] bool IsValid() const
     {
       for (int anIdx = 0; anIdx < Issues.Length(); ++anIdx)
       {
@@ -66,7 +77,7 @@ public:
     }
 
     //! Count issues of a given severity.
-    int NbIssues(Severity theSev) const
+    [[nodiscard]] int NbIssues(const Severity theSev) const
     {
       int aCount = 0;
       for (int anIdx = 0; anIdx < Issues.Length(); ++anIdx)
@@ -78,10 +89,52 @@ public:
     }
   };
 
-  //! Run all structural checks on a built graph.
+  //! Validation options.
+  struct Options
+  {
+    //! Default mode for regular validation calls.
+    Mode ValidationMode = Mode::Lightweight;
+
+    //! Build options for lightweight validation.
+    static Options Lightweight()
+    {
+      Options anOptions;
+      anOptions.ValidationMode = Mode::Lightweight;
+      return anOptions;
+    }
+
+    //! Build options for deep-audit validation.
+    static Options DeepAudit()
+    {
+      return Audit();
+    }
+
+    //! Build options for full-audit validation.
+    static Options Audit()
+    {
+      Options anOptions;
+      anOptions.ValidationMode = Mode::Audit;
+      return anOptions;
+    }
+  };
+
+  //! Run default lightweight structural checks on a built graph.
   //! @param[in] theGraph graph to validate (const, read-only)
   //! @return validation result with all detected issues
-  Standard_EXPORT static Result Perform(const BRepGraph& theGraph);
+  [[nodiscard]] Standard_EXPORT static Result Perform(const BRepGraph& theGraph);
+
+  //! Run structural checks on a built graph with explicit mode.
+  //! @param[in] theGraph graph to validate (const, read-only)
+  //! @param[in] theMode validation mode
+  //! @return validation result with all detected issues
+  [[nodiscard]] Standard_EXPORT static Result Perform(const BRepGraph& theGraph, const Mode theMode);
+
+  //! Run structural checks on a built graph with explicit options.
+  //! @param[in] theGraph graph to validate (const, read-only)
+  //! @param[in] theOptions validation profile/options
+  //! @return validation result with all detected issues
+  [[nodiscard]] Standard_EXPORT static Result Perform(const BRepGraph&  theGraph,
+                                                      const Options&   theOptions);
 
 private:
   BRepGraphAlgo_Validate() = delete;

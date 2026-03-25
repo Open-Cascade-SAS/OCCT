@@ -46,7 +46,7 @@ public:
   //! Uses default options (no overwrite).
   //! @param[in,out] theGraph graph with history and attributes
   //! @return transfer statistics
-  Standard_EXPORT static Result Perform(BRepGraph& theGraph);
+  [[nodiscard]] Standard_EXPORT static Result Perform(BRepGraph& theGraph);
 
   //! Transfer attributes from original nodes to derived nodes using history.
   //! Walks history records in chronological order. For each mapping entry
@@ -55,7 +55,8 @@ public:
   //! @param[in,out] theGraph graph with history and attributes
   //! @param[in] theOptions transfer configuration
   //! @return transfer statistics
-  Standard_EXPORT static Result Perform(BRepGraph& theGraph, const Options& theOptions);
+  [[nodiscard]] Standard_EXPORT static Result Perform(BRepGraph&      theGraph,
+                                                      const Options& theOptions);
 
 private:
   BRepGraphAlgo_AttrTransfer() = delete;

@@ -44,8 +44,8 @@ public:
   struct Result
   {
     bool IsDone = false; //!< True if analysis completed successfully.
-    NCollection_Vector<BRepGraph_NodeId> DegeneratedEdges; //!< Edges marked degenerate.
-    NCollection_Vector<BRepGraph_NodeId> DeletedFaces; //!< Faces removed (all edges degenerate).
+    NCollection_Vector<BRepGraph_EdgeId> DegeneratedEdges; //!< Edges marked degenerate.
+    NCollection_Vector<BRepGraph_FaceId> DeletedFaces; //!< Faces removed (all edges degenerate).
     int                                  NbSmallEdges   = 0; //!< Number of small edges detected.
     int                                  NbDeletedFaces = 0; //!< Number of deleted faces.
   };
@@ -54,7 +54,8 @@ public:
   //! @param[in,out] theGraph   the graph to analyze and modify
   //! @param[in]     theOptions analysis parameters
   //! @return result with diagnostics
-  static Standard_EXPORT Result Perform(BRepGraph& theGraph, const Options& theOptions);
+  [[nodiscard]] static Standard_EXPORT Result Perform(BRepGraph&      theGraph,
+                                                      const Options& theOptions);
 
 private:
   BRepGraphAlgo_FaceAnalysis() = delete;

@@ -19,6 +19,7 @@
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_MutRef.hxx>
 #include <BRepGraph_Mutator.hxx>
+#include <BRepGraph_MutationGuard.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
 
 #include <GeomHash_CurveHasher.hxx>
@@ -44,13 +45,14 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
 //=================================================================================================
 
 BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph&     theGraph,
-                                                                     const Options& theOptions)
+                                                                      const Options& theOptions)
 {
   Result aResult;
   if (!theGraph.IsDone())
   {
     return aResult;
   }
+  BRepGraph_MutationGuard aMutationGuard(theGraph);
 
   const bool wasHistoryEnabled = theGraph.IsHistoryEnabled();
   theGraph.SetHistoryEnabled(theOptions.HistoryMode);
@@ -138,7 +140,7 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
         theGraph.Defs().Face(BRepGraph_FaceId(aCanonFaceIdx)).SurfaceRepId;
       aFaceDef->SurfaceRepId = aCanonSurfRepId;
       ++aResult.NbSurfaceRewrites;
-      aResult.AffectedFaceDefs.Append(aFaceDef->Id);
+      aResult.AffectedFaceDefs.Append(BRepGraph_FaceId(aFaceDef->Id.Index));
 
       NCollection_Vector<BRepGraph_NodeId> aRepl;
       aRepl.Append(BRepGraph_NodeId::Face(aCanonFaceIdx));
@@ -159,7 +161,7 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
         theGraph.Defs().Edge(BRepGraph_EdgeId(aCanonEdgeIdx)).Curve3DRepId;
       anEdgeDef->Curve3DRepId = aCanonCurveRepId;
       ++aResult.NbCurveRewrites;
-      aResult.AffectedEdgeDefs.Append(anEdgeDef->Id);
+      aResult.AffectedEdgeDefs.Append(BRepGraph_EdgeId(anEdgeDef->Id.Index));
 
       NCollection_Vector<BRepGraph_NodeId> aRepl;
       aRepl.Append(BRepGraph_NodeId::Edge(aCanonEdgeIdx));
@@ -693,7 +695,6 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
                               && (aResult.NbMergedVertices > 0 || aResult.NbMergedEdges > 0
                                   || aResult.NbMergedWires > 0 || aResult.NbMergedFaces > 0);
 
-  BRepGraph_Mutator::CommitMutation(theGraph);
   theGraph.SetHistoryEnabled(wasHistoryEnabled);
   return aResult;
 }

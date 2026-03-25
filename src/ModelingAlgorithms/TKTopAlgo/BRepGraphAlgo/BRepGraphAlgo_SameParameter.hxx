@@ -46,9 +46,9 @@ public:
   //! @param[in]     theEdgeId    edge node to process
   //! @param[in]     theTolerance reference tolerance for pass/fail
   //! @return true if all PCurves are within tolerance
-  static Standard_EXPORT bool Enforce(BRepGraph&       theGraph,
-                                      BRepGraph_NodeId theEdgeId,
-                                      double           theTolerance);
+  [[nodiscard]] static Standard_EXPORT bool Enforce(BRepGraph&             theGraph,
+                                                    const BRepGraph_EdgeId theEdgeId,
+                                                    const double           theTolerance);
 
   //! Enforce SameParameter on a set of edges.
   //! Each edge is independent; mutations are batched under a single MutationGuard.
@@ -56,9 +56,10 @@ public:
   //! @param[in]     theEdgeIds   edge definition identifiers to process
   //! @param[in]     theTolerance reference tolerance
   //! @return diagnostic counters
-  static Standard_EXPORT Result Perform(BRepGraph&                                      theGraph,
-                                        const NCollection_IndexedMap<BRepGraph_EdgeId>& theEdgeIds,
-                                        const double theTolerance);
+  [[nodiscard]] static Standard_EXPORT Result
+    Perform(BRepGraph&                                      theGraph,
+            const NCollection_IndexedMap<BRepGraph_EdgeId>& theEdgeIds,
+            const double                                    theTolerance);
 
 private:
   BRepGraphAlgo_SameParameter() = delete;

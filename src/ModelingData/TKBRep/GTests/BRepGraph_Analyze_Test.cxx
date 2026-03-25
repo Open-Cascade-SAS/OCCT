@@ -85,7 +85,7 @@ TEST(BRepGraphAnalyze, FreeEdges_SingleFace_AllFree)
   aGraph.Build(aFace);
   ASSERT_TRUE(aGraph.IsDone());
 
-  const NCollection_Vector<BRepGraph_NodeId> aFreeEdges = BRepGraph_Analyze::FreeEdges(aGraph);
+  const NCollection_Vector<BRepGraph_EdgeId> aFreeEdges = BRepGraph_Analyze::FreeEdges(aGraph);
 
   // A single planar face from a box has 4 edges, all free (each shared by only 1 face).
   EXPECT_EQ(aFreeEdges.Length(), 4);
@@ -112,7 +112,7 @@ TEST(BRepGraphAnalyze, FreeEdges_TwoAdjacentFaces_SharedNotFree)
   aGraph.Build(aCompound);
   ASSERT_TRUE(aGraph.IsDone());
 
-  const NCollection_Vector<BRepGraph_NodeId> aFreeEdges = BRepGraph_Analyze::FreeEdges(aGraph);
+  const NCollection_Vector<BRepGraph_EdgeId> aFreeEdges = BRepGraph_Analyze::FreeEdges(aGraph);
 
   // Two faces from a box compound. Depending on TShape sharing, edges may or may not
   // be deduplicated. The key property: free edge count < total edge defs (some are shared).
@@ -125,7 +125,7 @@ TEST(BRepGraphAnalyze, FreeEdges_TwoAdjacentFaces_SharedNotFree)
 
 TEST_F(BRepGraphAnalyzeTest, FreeEdges_ClosedBox_NoneReturned)
 {
-  const NCollection_Vector<BRepGraph_NodeId> aFreeEdges = BRepGraph_Analyze::FreeEdges(myGraph);
+  const NCollection_Vector<BRepGraph_EdgeId> aFreeEdges = BRepGraph_Analyze::FreeEdges(myGraph);
 
   // A closed box has no free edges: every edge is shared by exactly 2 faces.
   EXPECT_EQ(aFreeEdges.Length(), 0);
@@ -140,7 +140,7 @@ TEST(BRepGraphAnalyze, FreeEdges_Sphere_SeamEdgesAreFree)
   aGraph.Build(aSphere);
   ASSERT_TRUE(aGraph.IsDone());
 
-  const NCollection_Vector<BRepGraph_NodeId> aFreeEdges = BRepGraph_Analyze::FreeEdges(aGraph);
+  const NCollection_Vector<BRepGraph_EdgeId> aFreeEdges = BRepGraph_Analyze::FreeEdges(aGraph);
   // A sphere has seam edges that are referenced by only 1 face (the single face),
   // so they are detected as free by the FreeEdges algorithm (FaceCountOfEdge == 1).
   // Degenerate edges at poles are excluded.
@@ -159,12 +159,12 @@ TEST(BRepGraphAnalyze, EdgeCompatibilityAndScore_SingleFace)
   aGraph.Build(aFace);
   ASSERT_TRUE(aGraph.IsDone());
 
-  const NCollection_Vector<BRepGraph_NodeId> aFreeEdges = BRepGraph_Analyze::FreeEdges(aGraph);
+  const NCollection_Vector<BRepGraph_EdgeId> aFreeEdges = BRepGraph_Analyze::FreeEdges(aGraph);
   ASSERT_EQ(aFreeEdges.Length(), 4);
 
-  const BRepGraph_NodeId aEdge0 = aFreeEdges.Value(0);
-  const BRepGraph_NodeId aEdge1 = aFreeEdges.Value(1);
-  const BRepGraph_NodeId aEdge2 = aFreeEdges.Value(2);
+  const BRepGraph_EdgeId aEdge0 = aFreeEdges.Value(0);
+  const BRepGraph_EdgeId aEdge1 = aFreeEdges.Value(1);
+  const BRepGraph_EdgeId aEdge2 = aFreeEdges.Value(2);
 
   EXPECT_TRUE(BRepGraph_Analyze::AreEdgesCompatibleSampled(aGraph, aEdge0, aEdge0, 1.0e-6));
   EXPECT_FALSE(BRepGraph_Analyze::AreEdgesCompatibleSampled(aGraph, aEdge0, aEdge1, 1.0e-6));
@@ -186,7 +186,7 @@ TEST_F(BRepGraphAnalyzeTest, MissingPCurves_ValidBox_Empty)
 
 TEST_F(BRepGraphAnalyzeTest, ToleranceConflicts_UniformBox_None)
 {
-  const NCollection_Vector<BRepGraph_NodeId> aConflicts =
+  const NCollection_Vector<BRepGraph_EdgeId> aConflicts =
     BRepGraph_Analyze::ToleranceConflicts(myGraph, 1.0e-3);
   EXPECT_EQ(aConflicts.Length(), 0);
 }
@@ -195,14 +195,14 @@ TEST_F(BRepGraphAnalyzeTest, ToleranceConflicts_SmallThreshold_StillNone)
 {
   // Even with a tiny threshold, a standard box has no shared curves between
   // different edges, so no tolerance conflicts can occur.
-  const NCollection_Vector<BRepGraph_NodeId> aConflicts =
+  const NCollection_Vector<BRepGraph_EdgeId> aConflicts =
     BRepGraph_Analyze::ToleranceConflicts(myGraph, 0.0);
   EXPECT_EQ(aConflicts.Length(), 0);
 }
 
 TEST_F(BRepGraphAnalyzeTest, DegenerateWires_ValidBox_None)
 {
-  const NCollection_Vector<BRepGraph_NodeId> aDegWires =
+  const NCollection_Vector<BRepGraph_WireId> aDegWires =
     BRepGraph_Analyze::DegenerateWires(myGraph);
   EXPECT_EQ(aDegWires.Length(), 0);
 }

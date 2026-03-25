@@ -61,20 +61,21 @@ public:
     int NbMergedWires    = 0;
     int NbMergedFaces    = 0;
 
-    NCollection_Vector<BRepGraph_NodeId> AffectedFaceDefs; //!< Faces whose SurfNodeId changed.
-    NCollection_Vector<BRepGraph_NodeId> AffectedEdgeDefs; //!< Edges whose CurveNodeId changed.
+    NCollection_Vector<BRepGraph_FaceId> AffectedFaceDefs; //!< Faces whose SurfNodeId changed.
+    NCollection_Vector<BRepGraph_EdgeId> AffectedEdgeDefs; //!< Edges whose CurveNodeId changed.
   };
 
   //! Run deduplication on a built graph.
   //! @param[in,out] theGraph graph to update
   //! @return dedup statistics
-  Standard_EXPORT static Result Perform(BRepGraph& theGraph);
+  [[nodiscard]] Standard_EXPORT static Result Perform(BRepGraph& theGraph);
 
   //! Run deduplication on a built graph.
   //! @param[in,out] theGraph graph to update
   //! @param[in] theOptions dedup configuration
   //! @return dedup statistics
-  Standard_EXPORT static Result Perform(BRepGraph& theGraph, const Options& theOptions);
+  [[nodiscard]] Standard_EXPORT static Result Perform(BRepGraph&      theGraph,
+                                                      const Options& theOptions);
 
 private:
   BRepGraphAlgo_Deduplicate() = delete;

@@ -13,6 +13,8 @@
 
 #include <BRepGraph_History.hxx>
 
+#include <NCollection_Map.hxx>
+
 namespace
 {
 constexpr int THE_INIT_VECTOR_CAPACITY = 256;
@@ -187,9 +189,13 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph_History::FindDerived(
   const BRepGraph_NodeId theOriginal) const
 {
   // Collect all transitively derived nodes using iterative BFS.
-  NCollection_Vector<BRepGraph_NodeId> aResult;
-  NCollection_Vector<BRepGraph_NodeId> aQueue;
+  // A visited set guards against infinite loops if cycles exist in the forward map.
+  NCollection_Vector<BRepGraph_NodeId>  aResult;
+  NCollection_Vector<BRepGraph_NodeId>  aQueue;
+  NCollection_Map<BRepGraph_NodeId>     aVisited;
+
   aQueue.Append(theOriginal);
+  aVisited.Add(theOriginal);
 
   for (int aQueueIdx = 0; aQueueIdx < aQueue.Length(); ++aQueueIdx)
   {
@@ -207,7 +213,11 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph_History::FindDerived(
     const NCollection_Vector<BRepGraph_NodeId>& aDirectDerived = myOriginalToDerived.Find(aNode);
     for (int anIdx = 0; anIdx < aDirectDerived.Length(); ++anIdx)
     {
-      aQueue.Append(aDirectDerived.Value(anIdx));
+      const BRepGraph_NodeId& aDerived = aDirectDerived.Value(anIdx);
+      if (aVisited.Add(aDerived))
+      {
+        aQueue.Append(aDerived);
+      }
     }
   }
 

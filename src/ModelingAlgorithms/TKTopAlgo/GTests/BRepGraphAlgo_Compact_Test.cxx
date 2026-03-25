@@ -101,7 +101,7 @@ TEST(BRepGraphAlgo_CompactTest, AfterDeduplicate_RemovesNodes)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Run geometry dedup which replaces duplicate surface/curve handles directly.
-  BRepGraphAlgo_Deduplicate::Perform(aGraph);
+  (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
 
   BRepGraphAlgo_Compact::Options anOpts;
   anOpts.HistoryMode                       = false;
@@ -120,8 +120,8 @@ TEST(BRepGraphAlgo_CompactTest, IndexDensity_NoGaps)
   aGraph.Build(makeTwoCopiedFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
-  BRepGraphAlgo_Deduplicate::Perform(aGraph);
-  BRepGraphAlgo_Compact::Perform(aGraph);
+  (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
+  (void)BRepGraphAlgo_Compact::Perform(aGraph);
 
   // After compaction, there should be no removed defs.
   for (int anIdx = 0; anIdx < aGraph.Defs().NbVertices(); ++anIdx)
@@ -140,8 +140,8 @@ TEST(BRepGraphAlgo_CompactTest, CrossReferences_Valid)
   aGraph.Build(makeTwoCopiedFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
-  BRepGraphAlgo_Deduplicate::Perform(aGraph);
-  BRepGraphAlgo_Compact::Perform(aGraph);
+  (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
+  (void)BRepGraphAlgo_Compact::Perform(aGraph);
 
   const BRepGraphAlgo_Validate::Result aValResult = BRepGraphAlgo_Validate::Perform(aGraph);
   EXPECT_TRUE(aValResult.IsValid());
@@ -153,11 +153,11 @@ TEST(BRepGraphAlgo_CompactTest, HistoryMode_RecordsMapping)
   aGraph.Build(makeTwoCopiedFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
-  BRepGraphAlgo_Deduplicate::Perform(aGraph);
+  (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
 
   BRepGraphAlgo_Compact::Options anOpts;
   anOpts.HistoryMode = true;
-  BRepGraphAlgo_Compact::Perform(aGraph, anOpts);
+  (void)BRepGraphAlgo_Compact::Perform(aGraph, anOpts);
 
   const int aNbRemapRecords =
     countHistoryRecordsByOp(aGraph, TCollection_AsciiString("Compact:Remap"));
@@ -174,7 +174,7 @@ TEST(BRepGraphAlgo_CompactTest, FullPipeline_Deduplicate_Compact_Validate)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Full dedup (replaces duplicate handles directly on defs).
-  BRepGraphAlgo_Deduplicate::Perform(aGraph);
+  (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
 
   // Compact. Without MergeDefsWhenSafe, no topology nodes are removed,
   // so NbNodesAfter == NbNodesBefore.
@@ -226,8 +226,8 @@ TEST(BRepGraphAlgo_CompactTest, Compact_PreservesTopologyUIDs)
   const uint32_t aGenBefore = aGraph.UIDs().Generation();
 
   // Run dedup + compact.
-  BRepGraphAlgo_Deduplicate::Perform(aGraph);
-  BRepGraphAlgo_Compact::Perform(aGraph);
+  (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
+  (void)BRepGraphAlgo_Compact::Perform(aGraph);
 
   // Generation must be preserved across compact.
   EXPECT_EQ(aGraph.UIDs().Generation(), aGenBefore);
@@ -285,8 +285,8 @@ TEST(BRepGraphAlgo_CompactTest, MutationGen_SurvivesCompact)
   ASSERT_EQ(aGraph.Defs().Edge(BRepGraph_EdgeId(0)).MutationGen, THE_EXPECTED_MUTATION_GEN);
 
   // Run dedup + compact.
-  BRepGraphAlgo_Deduplicate::Perform(aGraph);
-  BRepGraphAlgo_Compact::Perform(aGraph);
+  (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
+  (void)BRepGraphAlgo_Compact::Perform(aGraph);
 
   // Edge 0 may have been remapped. Find the edge that carries the mutated
   // tolerance and verify both the tolerance value and MutationGen are preserved.

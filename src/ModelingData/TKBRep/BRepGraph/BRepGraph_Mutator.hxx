@@ -15,7 +15,9 @@
 #define _BRepGraph_Mutator_HeaderFile
 
 #include <BRepGraph_NodeId.hxx>
+#include <NCollection_Vector.hxx>
 #include <Standard_DefineAlloc.hxx>
+#include <TCollection_AsciiString.hxx>
 
 class BRepGraph;
 
@@ -28,6 +30,13 @@ class BRepGraph_Mutator
 {
 public:
   DEFINE_STANDARD_ALLOC
+
+  //! A single boundary invariant issue detected by ValidateMutationBoundary().
+  struct BoundaryIssue
+  {
+    BRepGraph_NodeId        NodeId;
+    TCollection_AsciiString Description;
+  };
 
   //! Split a single edge definition at a vertex and 3D-curve parameter.
   //! Creates two new EdgeDef slots, splits all PCurve nodes at the corresponding
@@ -65,6 +74,15 @@ public:
   //! and assert active entity counts match actual entity state.
   //! Should be called at the end of every algorithm's Perform().
   static Standard_EXPORT void CommitMutation(BRepGraph& theGraph);
+
+  //! Validate lightweight mutation-boundary invariants:
+  //! reverse-index consistency and active-count consistency for all node kinds.
+  //! @param[in] theGraph graph to validate
+  //! @param[out] theIssues optional destination for detailed issues
+  //! @return true if no issues were found
+  [[nodiscard]] static Standard_EXPORT bool
+    ValidateMutationBoundary(const BRepGraph&                        theGraph,
+                             NCollection_Vector<BoundaryIssue>* const theIssues = nullptr);
 
 private:
   BRepGraph_Mutator() = delete;

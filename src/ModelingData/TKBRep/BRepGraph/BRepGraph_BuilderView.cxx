@@ -96,6 +96,7 @@ BRepGraph_NodeId BRepGraph::BuilderView::AddWireDef(
     aCoEdge.Id        = BRepGraph_NodeId(BRepGraph_NodeId::Kind::CoEdge, aCoEdgeIdx);
     aCoEdge.EdgeDefId = BRepGraph_EdgeId::FromNodeId(anEdgeDefId);
     aCoEdge.Sense     = anOri;
+    myGraph->allocateUID(aCoEdge.Id);
 
     // CoEdgeRef on WireEntity.
     BRepGraphInc::CoEdgeRef aCoEdgeRef;
@@ -104,6 +105,10 @@ BRepGraph_NodeId BRepGraph::BuilderView::AddWireDef(
 
     myGraph->myData->myIncStorage.ChangeReverseIndex().BindEdgeToWire(aCoEdge.EdgeDefId,
                                                                       BRepGraph_WireId(aIdx));
+    myGraph->myData->myIncStorage.ChangeReverseIndex().BindEdgeToCoEdge(aCoEdge.EdgeDefId,
+                                                                         BRepGraph_CoEdgeId(aCoEdgeIdx));
+    myGraph->myData->myIncStorage.ChangeReverseIndex().BindCoEdgeToWire(BRepGraph_CoEdgeId(aCoEdgeIdx),
+                                                                         BRepGraph_WireId(aIdx));
   }
 
   // Check closure.
@@ -409,6 +414,7 @@ void BRepGraph::BuilderView::RemoveNode(const BRepGraph_NodeId theNode,
         BRepGraphInc::CoEdgeEntity& aCoEdge   = aStorage.ChangeCoEdge(aCoEdgeId);
         if (aCoEdge.EdgeDefId == theNode)
         {
+          aStorage.ChangeReverseIndex().UnbindEdgeFromCoEdge(BRepGraph_EdgeId(theNode.Index), aCoEdgeId);
           aCoEdge.EdgeDefId = BRepGraph_EdgeId::FromNodeId(theReplacement);
           aStorage.ChangeReverseIndex().BindEdgeToCoEdge(BRepGraph_EdgeId(theReplacement.Index),
                                                          aCoEdgeId);
@@ -421,8 +427,7 @@ void BRepGraph::BuilderView::RemoveNode(const BRepGraph_NodeId theNode,
   BRepGraph_TopoNode::BaseDef* aDef = myGraph->ChangeTopoDef(theNode);
   if (aDef != nullptr && !aDef->IsRemoved)
   {
-    aDef->IsRemoved = true;
-    myGraph->myData->myIncStorage.DecrementActiveCount(theNode.NodeKind);
+    myGraph->myData->myIncStorage.MarkRemoved(theNode);
   }
 
   BRepGraph_NodeCache* aCache = myGraph->mutableCache(theNode);
@@ -605,6 +610,7 @@ void BRepGraph::BuilderView::AddPCurveToEdge(const BRepGraph_NodeId           th
                                                  BRepGraph_CoEdgeId(aCoEdgeIdx));
   aStorage.ChangeReverseIndex().BindEdgeToFace(BRepGraph_EdgeId(theEdgeDef.Index),
                                                BRepGraph_FaceId(theFaceDef.Index));
+  myGraph->allocateUID(aCoEdge.Id);
 
   myGraph->markModified(theEdgeDef);
 }

@@ -160,7 +160,7 @@ TEST(BRepGraph_LayerIntegrationTest, Sewing_FaceNamesUntouched)
     aLayer->SetNodeName(BRepGraph_NodeId::Face(i), aStr);
   }
 
-  BRepGraphAlgo_Sewing::Perform(aGraph);
+  (void)BRepGraphAlgo_Sewing::Perform(aGraph);
 
   // All face names should remain unchanged.
   for (int i = 0; i < aNbFaces; ++i)
@@ -184,7 +184,7 @@ TEST(BRepGraph_LayerIntegrationTest, Sewing_LayerStillRegisteredAfter)
   occ::handle<BRepGraph_NameLayer> aLayer = new BRepGraph_NameLayer();
   aGraph.RegisterLayer(aLayer);
 
-  BRepGraphAlgo_Sewing::Perform(aGraph);
+  (void)BRepGraphAlgo_Sewing::Perform(aGraph);
 
   // Layer should still be registered after sewing.
   occ::handle<BRepGraph_Layer> aFound = aGraph.FindLayer("Name");
@@ -286,8 +286,8 @@ TEST(BRepGraph_LayerIntegrationTest, Compact_LayerSurvivesSwap)
   aLayer->SetNodeName(BRepGraph_NodeId::Face(1), "SecondFace");
 
   // Deduplicate to create some removed nodes, then compact to rebuild indices.
-  BRepGraphAlgo_Deduplicate::Perform(aGraph);
-  BRepGraphAlgo_Compact::Perform(aGraph);
+  (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
+  (void)BRepGraphAlgo_Compact::Perform(aGraph);
 
   // Layer should still be registered after compact.
   occ::handle<BRepGraph_Layer> aFound = aGraph.FindLayer("Name");
@@ -322,7 +322,7 @@ TEST(BRepGraph_LayerIntegrationTest, Compact_RemappedNamesAccessible)
 
   // Remove one face, then compact.
   aGraph.Builder().RemoveNode(BRepGraph_NodeId::Face(0));
-  BRepGraphAlgo_Compact::Perform(aGraph);
+  (void)BRepGraphAlgo_Compact::Perform(aGraph);
 
   // After compact, face count decreased by 1.
   const int aNbFacesAfter = aGraph.Defs().NbFaces();
@@ -360,7 +360,7 @@ TEST(BRepGraph_LayerIntegrationTest, Compact_MultipleEntityKindsRemapped)
   aGraph.Builder().RemoveNode(BRepGraph_NodeId::Edge(0));
   aGraph.Builder().RemoveNode(BRepGraph_NodeId::Face(0));
 
-  BRepGraphAlgo_Compact::Perform(aGraph);
+  (void)BRepGraphAlgo_Compact::Perform(aGraph);
 
   // All three names should have been removed (no remapping for removed nodes).
   EXPECT_EQ(aLayer->FindNodeName(BRepGraph_NodeId::Vertex(0)), nullptr);
@@ -447,19 +447,19 @@ TEST(BRepGraph_LayerIntegrationTest, FullPipeline_NamesTrackThroughAllStages)
   }
 
   // Stage 1: Sew.
-  BRepGraphAlgo_Sewing::Perform(aGraph);
+  (void)BRepGraphAlgo_Sewing::Perform(aGraph);
   EXPECT_FALSE(aGraph.FindLayer("Name").IsNull());
   const int aNamesAfterSew = aLayer->NbNames();
   EXPECT_GT(aNamesAfterSew, 0);
 
   // Stage 2: Deduplicate.
-  BRepGraphAlgo_Deduplicate::Perform(aGraph);
+  (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
   EXPECT_FALSE(aGraph.FindLayer("Name").IsNull());
   const int aNamesAfterDedup = aLayer->NbNames();
   EXPECT_GT(aNamesAfterDedup, 0);
 
   // Stage 3: Compact.
-  BRepGraphAlgo_Compact::Perform(aGraph);
+  (void)BRepGraphAlgo_Compact::Perform(aGraph);
   EXPECT_FALSE(aGraph.FindLayer("Name").IsNull());
   const int aNamesAfterCompact = aLayer->NbNames();
   EXPECT_GT(aNamesAfterCompact, 0);
@@ -511,7 +511,7 @@ TEST(BRepGraph_LayerIntegrationTest, Sewing_Cylinder_NamesPreserved)
     aLayer->SetNodeName(BRepGraph_NodeId::Face(i), aStr);
   }
 
-  BRepGraphAlgo_Sewing::Perform(aGraph);
+  (void)BRepGraphAlgo_Sewing::Perform(aGraph);
 
   // Layer should survive sewing on periodic surfaces.
   EXPECT_FALSE(aGraph.FindLayer("Name").IsNull());
@@ -592,9 +592,9 @@ TEST(BRepGraph_LayerIntegrationTest, TwoLayers_BothSurviveFullPipeline)
   }
 
   // Full pipeline.
-  BRepGraphAlgo_Sewing::Perform(aGraph);
-  BRepGraphAlgo_Deduplicate::Perform(aGraph);
-  BRepGraphAlgo_Compact::Perform(aGraph);
+  (void)BRepGraphAlgo_Sewing::Perform(aGraph);
+  (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
+  (void)BRepGraphAlgo_Compact::Perform(aGraph);
 
   // Both layers should survive.
   EXPECT_FALSE(aGraph.FindLayer("Name").IsNull());

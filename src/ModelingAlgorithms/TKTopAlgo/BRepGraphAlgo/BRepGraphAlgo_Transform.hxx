@@ -52,9 +52,9 @@ public:
   //! @param[in] theCopyGeom if true, geometry is deep-copied before transforming;
   //!                        if false, light-copy then transform locations/points only
   //! @return a new BRepGraph with the transformation applied
-  Standard_EXPORT static BRepGraph Perform(const BRepGraph& theGraph,
-                                           const gp_Trsf&   theTrsf,
-                                           bool             theCopyGeom = true);
+  [[nodiscard]] Standard_EXPORT static BRepGraph Perform(const BRepGraph& theGraph,
+                                                        const gp_Trsf&   theTrsf,
+                                                        bool             theCopyGeom = true);
 
   //! Transform a single face sub-graph.
   //! @param[in] theGraph    a pre-built BRepGraph
@@ -62,10 +62,10 @@ public:
   //! @param[in] theTrsf     the transformation to apply
   //! @param[in] theCopyGeom if true, geometry is deep-copied before transforming
   //! @return a new BRepGraph containing only the specified face, transformed
-  Standard_EXPORT static BRepGraph TransformFace(const BRepGraph&       theGraph,
-                                                 const BRepGraph_FaceId theFace,
-                                                 const gp_Trsf&         theTrsf,
-                                                 const bool             theCopyGeom = true);
+  [[nodiscard]] Standard_EXPORT static BRepGraph TransformFace(const BRepGraph&       theGraph,
+                                                               const BRepGraph_FaceId theFace,
+                                                               const gp_Trsf&         theTrsf,
+                                                               const bool theCopyGeom = true);
 
 private:
   //! Apply location-only transform by storing per-node locations.

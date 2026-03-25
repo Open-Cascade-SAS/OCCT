@@ -20,6 +20,7 @@
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_ShapesView.hxx>
+#include <BRepGraph_UIDsView.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
 #include <BRepGraphInc_Storage.hxx>
 #include <BRepGraphAlgo_Deduplicate.hxx>
@@ -46,6 +47,19 @@ TEST(BRepGraphAlgo_ValidateTest, CleanGraph_NoIssues)
   EXPECT_TRUE(aResult.IsValid());
   EXPECT_EQ(aResult.NbIssues(BRepGraphAlgo_Validate::Severity::Error), 0);
   EXPECT_EQ(aResult.NbIssues(BRepGraphAlgo_Validate::Severity::Warning), 0);
+
+  const BRepGraphAlgo_Validate::Options aDeepOpts = BRepGraphAlgo_Validate::Options::DeepAudit();
+  const BRepGraphAlgo_Validate::Result aDeepResult =
+    BRepGraphAlgo_Validate::Perform(aGraph, aDeepOpts);
+  EXPECT_TRUE(aDeepResult.IsValid());
+  EXPECT_EQ(aDeepResult.NbIssues(BRepGraphAlgo_Validate::Severity::Error), 0);
+
+  const BRepGraphAlgo_Validate::Options aLightOpts =
+    BRepGraphAlgo_Validate::Options::Lightweight();
+  const BRepGraphAlgo_Validate::Result aLightResult =
+    BRepGraphAlgo_Validate::Perform(aGraph, aLightOpts);
+  EXPECT_TRUE(aLightResult.IsValid());
+  EXPECT_EQ(aLightResult.NbIssues(BRepGraphAlgo_Validate::Severity::Error), 0);
 }
 
 TEST(BRepGraphAlgo_ValidateTest, AfterGeomDeduplicate_NoIssues)
@@ -69,7 +83,7 @@ TEST(BRepGraphAlgo_ValidateTest, AfterGeomDeduplicate_NoIssues)
   aGraph.Build(aCompound);
   ASSERT_TRUE(aGraph.IsDone());
 
-  BRepGraphAlgo_Deduplicate::Perform(aGraph);
+  (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
 
   const BRepGraphAlgo_Validate::Result aResult = BRepGraphAlgo_Validate::Perform(aGraph);
   EXPECT_TRUE(aResult.IsValid());
@@ -102,9 +116,13 @@ TEST(BRepGraphAlgo_ValidateTest, DetectsRemovedNodeReference)
   // Remove the vertex without fixing edges referencing it.
   aGraph.Builder().RemoveNode(BRepGraph_NodeId::Vertex(aVtxToRemove));
 
-  const BRepGraphAlgo_Validate::Result aResult = BRepGraphAlgo_Validate::Perform(aGraph);
-  EXPECT_FALSE(aResult.IsValid());
-  EXPECT_GT(aResult.NbIssues(BRepGraphAlgo_Validate::Severity::Error), 0);
+  const BRepGraphAlgo_Validate::Result aDefaultResult = BRepGraphAlgo_Validate::Perform(aGraph);
+  EXPECT_TRUE(aDefaultResult.IsValid());
+
+  const BRepGraphAlgo_Validate::Result aDeepResult =
+    BRepGraphAlgo_Validate::Perform(aGraph, BRepGraphAlgo_Validate::Options::DeepAudit());
+  EXPECT_FALSE(aDeepResult.IsValid());
+  EXPECT_GT(aDeepResult.NbIssues(BRepGraphAlgo_Validate::Severity::Error), 0);
 }
 
 TEST(BRepGraphAlgo_ValidateTest, WireConnectivity_DisconnectedEdges)
@@ -155,7 +173,8 @@ TEST(BRepGraphAlgo_ValidateTest, WireConnectivity_DisconnectedEdges)
 
   ASSERT_NE(aFirstEdge->EndVertexDefId(), anOrigEnd);
 
-  const BRepGraphAlgo_Validate::Result aResult = BRepGraphAlgo_Validate::Perform(aGraph);
+  const BRepGraphAlgo_Validate::Result aResult =
+    BRepGraphAlgo_Validate::Perform(aGraph, BRepGraphAlgo_Validate::Options::DeepAudit());
   EXPECT_FALSE(aResult.IsValid());
 
   // Check that at least one connectivity error was found.
@@ -190,7 +209,8 @@ TEST(BRepGraphAlgo_ValidateTest, BoundsCheck_InvalidIndex)
   BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge = aGraph.MutEdge(BRepGraph_EdgeId(0));
   anEdge->Curve3DRepId                                 = BRepGraph_Curve3DRepId();
 
-  const BRepGraphAlgo_Validate::Result aResult = BRepGraphAlgo_Validate::Perform(aGraph);
+  const BRepGraphAlgo_Validate::Result aResult =
+    BRepGraphAlgo_Validate::Perform(aGraph, BRepGraphAlgo_Validate::Options::DeepAudit());
   EXPECT_FALSE(aResult.IsValid());
   EXPECT_GT(aResult.NbIssues(BRepGraphAlgo_Validate::Severity::Error), 0);
 }
@@ -256,6 +276,118 @@ TEST(BRepGraphAlgo_ValidateTest, CorruptedPCurve_FaceDefIdOutOfBounds)
     aGraph.MutCoEdge(BRepGraph_CoEdgeId(0));
   aCoEdgeDef->FaceDefId = BRepGraph_NodeId::Face(aGraph.Defs().NbFaces() + 999);
 
-  const BRepGraphAlgo_Validate::Result aValResult = BRepGraphAlgo_Validate::Perform(aGraph);
-  EXPECT_FALSE(aValResult.IsValid());
+  const BRepGraphAlgo_Validate::Result aDefaultResult = BRepGraphAlgo_Validate::Perform(aGraph);
+  EXPECT_FALSE(aDefaultResult.IsValid());
+
+  const BRepGraphAlgo_Validate::Result aLightResult =
+    BRepGraphAlgo_Validate::Perform(aGraph, BRepGraphAlgo_Validate::Options::Lightweight());
+  EXPECT_FALSE(aLightResult.IsValid());
+
+  const BRepGraphAlgo_Validate::Result aDeepResult =
+    BRepGraphAlgo_Validate::Perform(aGraph, BRepGraphAlgo_Validate::Options::DeepAudit());
+  EXPECT_FALSE(aDeepResult.IsValid());
+}
+
+TEST(BRepGraphAlgo_ValidateTest, LightweightAndDeepAudit_DetectActiveCountDrift)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  const int aNbActiveFacesBefore = aGraph.Defs().NbActiveFaces();
+  ASSERT_GT(aNbActiveFacesBefore, 0);
+
+  // Intentionally bypass RemoveNode() to simulate counter drift bug class.
+  BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aFaceDef = aGraph.MutFace(BRepGraph_FaceId(0));
+  aFaceDef->IsRemoved                                       = true;
+
+  const BRepGraphAlgo_Validate::Result aLightResult =
+    BRepGraphAlgo_Validate::Perform(aGraph, BRepGraphAlgo_Validate::Options::Lightweight());
+  EXPECT_FALSE(aLightResult.IsValid());
+  EXPECT_GT(aLightResult.NbIssues(BRepGraphAlgo_Validate::Severity::Error), 0);
+
+  bool aFoundBoundaryActiveCountMismatch = false;
+  for (int anIdx = 0; anIdx < aLightResult.Issues.Length(); ++anIdx)
+  {
+    const TCollection_AsciiString& aDesc = aLightResult.Issues.Value(anIdx).Description;
+    if (aDesc.Search("Mutation boundary active count mismatch for Faces") > 0)
+    {
+      aFoundBoundaryActiveCountMismatch = true;
+      break;
+    }
+  }
+  EXPECT_TRUE(aFoundBoundaryActiveCountMismatch);
+
+  const BRepGraphAlgo_Validate::Result aDeepResult =
+    BRepGraphAlgo_Validate::Perform(aGraph, BRepGraphAlgo_Validate::Options::DeepAudit());
+  EXPECT_FALSE(aDeepResult.IsValid());
+  EXPECT_GT(aDeepResult.NbIssues(BRepGraphAlgo_Validate::Severity::Error), 0);
+
+  bool aFoundActiveCountMismatch = false;
+  for (int anIdx = 0; anIdx < aDeepResult.Issues.Length(); ++anIdx)
+  {
+    const TCollection_AsciiString& aDesc = aDeepResult.Issues.Value(anIdx).Description;
+    if (aDesc.Search("NbActiveFaces mismatch") > 0)
+    {
+      aFoundActiveCountMismatch = true;
+      break;
+    }
+  }
+  EXPECT_TRUE(aFoundActiveCountMismatch);
+  EXPECT_EQ(aGraph.Defs().NbActiveFaces(), aNbActiveFacesBefore);
+}
+
+TEST(BRepGraphAlgo_ValidateTest, DeepDetectsIdDriftButLightweightSkipsIt)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+  ASSERT_GT(aGraph.Defs().NbFaces(), 0);
+
+  BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aFaceDef = aGraph.MutFace(BRepGraph_FaceId(0));
+  aFaceDef->Id                                            = BRepGraph_NodeId::Face(42);
+
+  const BRepGraphAlgo_Validate::Result aLightResult =
+    BRepGraphAlgo_Validate::Perform(aGraph, BRepGraphAlgo_Validate::Options::Lightweight());
+  EXPECT_TRUE(aLightResult.IsValid());
+
+  const BRepGraphAlgo_Validate::Result aDeepResult =
+    BRepGraphAlgo_Validate::Perform(aGraph, BRepGraphAlgo_Validate::Options::DeepAudit());
+  EXPECT_FALSE(aDeepResult.IsValid());
+
+  const BRepGraphAlgo_Validate::Result aDefaultResult = BRepGraphAlgo_Validate::Perform(aGraph);
+  EXPECT_TRUE(aDefaultResult.IsValid());
+}
+
+TEST(BRepGraphAlgo_ValidateTest, DeepAudit_ValidatesCoEdgeUIDsFromBuilderWireCreation)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+  ASSERT_GT(aGraph.Defs().NbEdges(), 0);
+
+  NCollection_Vector<std::pair<BRepGraph_NodeId, TopAbs_Orientation>> anEdges;
+  anEdges.Append(std::make_pair(BRepGraph_NodeId::Edge(0), TopAbs_FORWARD));
+  const BRepGraph_NodeId aWireId = aGraph.Builder().AddWireDef(anEdges);
+  ASSERT_TRUE(aWireId.IsValid());
+
+  const BRepGraph_TopoNode::WireDef& aWire = aGraph.Defs().Wire(BRepGraph_WireId(aWireId.Index));
+  ASSERT_EQ(aWire.CoEdgeRefs.Length(), 1);
+  const BRepGraph_NodeId aCoEdgeId = BRepGraph_NodeId::CoEdge(aWire.CoEdgeRefs.Value(0).CoEdgeDefId.Index);
+  EXPECT_TRUE(aGraph.UIDs().Of(aCoEdgeId).IsValid());
+
+  const BRepGraphAlgo_Validate::Result aDeepResult =
+    BRepGraphAlgo_Validate::Perform(aGraph, BRepGraphAlgo_Validate::Options::DeepAudit());
+  if (!aDeepResult.IsValid())
+  {
+    for (int anIdx = 0; anIdx < aDeepResult.Issues.Length(); ++anIdx)
+    {
+      const BRepGraphAlgo_Validate::Issue& anIssue = aDeepResult.Issues.Value(anIdx);
+      ADD_FAILURE() << "Issue[" << anIdx << "] kind="
+                    << static_cast<int>(anIssue.NodeId.NodeKind) << " idx=" << anIssue.NodeId.Index
+                    << " desc=" << anIssue.Description.ToCString();
+    }
+  }
+  EXPECT_TRUE(aDeepResult.IsValid());
+  EXPECT_EQ(aDeepResult.NbIssues(BRepGraphAlgo_Validate::Severity::Error), 0);
 }

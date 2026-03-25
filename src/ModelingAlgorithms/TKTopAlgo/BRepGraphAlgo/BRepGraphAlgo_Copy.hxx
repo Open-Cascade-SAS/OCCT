@@ -45,16 +45,17 @@ public:
   //! @param[in] theCopyGeom if true (default), geometry handles are deep-copied;
   //!                        if false, geometry is shared (only topology is duplicated)
   //! @return a new BRepGraph with IsDone() == true on success
-  Standard_EXPORT static BRepGraph Perform(const BRepGraph& theGraph, bool theCopyGeom = true);
+  [[nodiscard]] Standard_EXPORT static BRepGraph Perform(const BRepGraph& theGraph,
+                                                        bool             theCopyGeom = true);
 
   //! Copy a single face sub-graph.
   //! @param[in] theGraph    a pre-built BRepGraph
   //! @param[in] theFace     face definition identifier in the graph
   //! @param[in] theCopyGeom if true, geometry is deep-copied
   //! @return a new BRepGraph containing only the specified face and its dependencies
-  Standard_EXPORT static BRepGraph CopyFace(const BRepGraph&       theGraph,
-                                            const BRepGraph_FaceId theFace,
-                                            const bool             theCopyGeom = true);
+  [[nodiscard]] Standard_EXPORT static BRepGraph CopyFace(const BRepGraph&       theGraph,
+                                                          const BRepGraph_FaceId theFace,
+                                                          const bool theCopyGeom = true);
 
 private:
   BRepGraphAlgo_Copy() = delete;

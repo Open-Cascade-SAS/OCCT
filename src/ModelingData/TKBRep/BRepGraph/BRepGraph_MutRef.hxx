@@ -27,6 +27,12 @@
 //! This header is included at the bottom of BRepGraph.hxx after the
 //! BRepGraph class is fully defined, so markModified() is visible.
 //!
+//! @warning The stored pointer is valid only while no entities of the same
+//! kind are appended to the graph. Appending (e.g., Builder().AddVertexDef(),
+//! AddEdgeDef(), AddWireDef(), AddFaceDef(), etc.) may trigger internal
+//! vector reallocation, invalidating all pointers. Callers must not invoke
+//! any Builder().Add*Def() method while a BRepGraph_MutRef is alive.
+//!
 //! @code
 //!   {
 //!     BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge =

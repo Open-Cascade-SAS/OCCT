@@ -2151,12 +2151,12 @@ TEST(BRepGraphAlgo_DeduplicateTest, AfterMerge_Validate_NoIssues)
   BRepGraphAlgo_Deduplicate::Options anOpts;
   anOpts.MergeDefsWhenSafe = true;
 
-  BRepGraphAlgo_Deduplicate::Perform(aGraph, anOpts);
+  (void)BRepGraphAlgo_Deduplicate::Perform(aGraph, anOpts);
 
   // After merge + compact, graph should be structurally valid.
   // Merge alone may leave stale back-references on geometry nodes
   // that are cleaned up by compaction.
-  BRepGraphAlgo_Compact::Perform(aGraph);
+  (void)BRepGraphAlgo_Compact::Perform(aGraph);
 
   const BRepGraphAlgo_Validate::Result aValResult = BRepGraphAlgo_Validate::Perform(aGraph);
   EXPECT_TRUE(aValResult.IsValid());
