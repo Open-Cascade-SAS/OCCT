@@ -497,8 +497,8 @@ void BRepGraph_Mutator::CommitMutation(BRepGraph& theGraph)
 bool BRepGraph_Mutator::ValidateMutationBoundary(const BRepGraph&                         theGraph,
                                                  NCollection_Vector<BoundaryIssue>* const theIssues)
 {
-  bool                           isValid = true;
-  const BRepGraphInc_Storage& aStorage  = theGraph.myData->myIncStorage;
+  bool                        isValid  = true;
+  const BRepGraphInc_Storage& aStorage = theGraph.myData->myIncStorage;
 
   if (!aStorage.ValidateReverseIndex())
   {
@@ -513,21 +513,21 @@ bool BRepGraph_Mutator::ValidateMutationBoundary(const BRepGraph&               
   }
 
   constexpr BRepGraph_NodeId::Kind THE_KINDS[] = {BRepGraph_NodeId::Kind::Vertex,
-                                                   BRepGraph_NodeId::Kind::Edge,
-                                                   BRepGraph_NodeId::Kind::CoEdge,
-                                                   BRepGraph_NodeId::Kind::Wire,
-                                                   BRepGraph_NodeId::Kind::Face,
-                                                   BRepGraph_NodeId::Kind::Shell,
-                                                   BRepGraph_NodeId::Kind::Solid,
-                                                   BRepGraph_NodeId::Kind::Compound,
-                                                   BRepGraph_NodeId::Kind::CompSolid,
-                                                   BRepGraph_NodeId::Kind::Product,
-                                                   BRepGraph_NodeId::Kind::Occurrence};
+                                                  BRepGraph_NodeId::Kind::Edge,
+                                                  BRepGraph_NodeId::Kind::CoEdge,
+                                                  BRepGraph_NodeId::Kind::Wire,
+                                                  BRepGraph_NodeId::Kind::Face,
+                                                  BRepGraph_NodeId::Kind::Shell,
+                                                  BRepGraph_NodeId::Kind::Solid,
+                                                  BRepGraph_NodeId::Kind::Compound,
+                                                  BRepGraph_NodeId::Kind::CompSolid,
+                                                  BRepGraph_NodeId::Kind::Product,
+                                                  BRepGraph_NodeId::Kind::Occurrence};
   for (int aKindIdx = 0; aKindIdx < static_cast<int>(sizeof(THE_KINDS) / sizeof(THE_KINDS[0]));
        ++aKindIdx)
   {
-    const BRepGraph_NodeId::Kind aKind      = THE_KINDS[aKindIdx];
-    const int                    aCachedCnt = cachedActiveByKind(aStorage, aKind);
+    const BRepGraph_NodeId::Kind aKind       = THE_KINDS[aKindIdx];
+    const int                    aCachedCnt  = cachedActiveByKind(aStorage, aKind);
     const int                    anActualCnt = countActiveByKind(aStorage, aKind);
     if (aCachedCnt == anActualCnt)
       continue;
@@ -535,7 +535,7 @@ bool BRepGraph_Mutator::ValidateMutationBoundary(const BRepGraph&               
     isValid = false;
     if (theIssues != nullptr)
     {
-      BoundaryIssue          anIssue;
+      BoundaryIssue           anIssue;
       TCollection_AsciiString aDesc("Mutation boundary active count mismatch for ");
       aDesc += kindName(aKind);
       aDesc += ": cached=";

@@ -538,8 +538,8 @@ void BRepGraphInc_ReverseIndex::UnbindCoEdgeFromWire(const BRepGraph_CoEdgeId th
 //=================================================================================================
 
 void BRepGraphInc_ReverseIndex::ReplaceEdgeInWireMap(const BRepGraph_EdgeId theOldEdgeId,
-                                                      const BRepGraph_EdgeId theNewEdgeId,
-                                                      const BRepGraph_WireId theWireId)
+                                                     const BRepGraph_EdgeId theNewEdgeId,
+                                                     const BRepGraph_WireId theWireId)
 {
   UnbindEdgeFromWire(theOldEdgeId, theWireId);
   BindEdgeToWire(theNewEdgeId, theWireId);

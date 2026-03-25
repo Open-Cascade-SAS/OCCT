@@ -80,9 +80,9 @@ public:
   //! @param[in] theGraph graph to validate
   //! @param[out] theIssues optional destination for detailed issues
   //! @return true if no issues were found
-  [[nodiscard]] static Standard_EXPORT bool
-    ValidateMutationBoundary(const BRepGraph&                        theGraph,
-                             NCollection_Vector<BoundaryIssue>* const theIssues = nullptr);
+  [[nodiscard]] static Standard_EXPORT bool ValidateMutationBoundary(
+    const BRepGraph&                         theGraph,
+    NCollection_Vector<BoundaryIssue>* const theIssues = nullptr);
 
 private:
   BRepGraph_Mutator() = delete;

@@ -64,7 +64,7 @@ public:
   //! @param[in,out] theGraph graph to compact
   //! @param[in] theOptions compaction configuration
   //! @return compaction statistics
-  [[nodiscard]] Standard_EXPORT static Result Perform(BRepGraph&      theGraph,
+  [[nodiscard]] Standard_EXPORT static Result Perform(BRepGraph&     theGraph,
                                                       const Options& theOptions);
 
 private:

@@ -99,11 +99,11 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph, bool theCopyGeo
     occ::handle<Geom_Curve> aCurve = copyCurve(anEdgeSrcCurve, theCopyGeom);
 
     (void)aResult.Builder().AddEdgeDef(anEdge.StartVertexDefId(),
-                                 anEdge.EndVertexDefId(),
-                                 aCurve,
-                                 anEdge.ParamFirst,
-                                 anEdge.ParamLast,
-                                 anEdge.Tolerance);
+                                       anEdge.EndVertexDefId(),
+                                       aCurve,
+                                       anEdge.ParamFirst,
+                                       anEdge.ParamLast,
+                                       anEdge.Tolerance);
 
     BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aNewEdge =
       aResult.MutEdge(BRepGraph_EdgeId(anIdx));
@@ -314,10 +314,9 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph, bool theCopyGeo
   aResult.myData->myNextUIDCounter.store(
     theGraph.myData->myNextUIDCounter.load(std::memory_order_relaxed),
     std::memory_order_relaxed);
-  aResult.myData->myGeneration.store(
-    theGraph.myData->myGeneration.load(std::memory_order_relaxed),
-    std::memory_order_relaxed);
-  aResult.myData->myIsDone     = true;
+  aResult.myData->myGeneration.store(theGraph.myData->myGeneration.load(std::memory_order_relaxed),
+                                     std::memory_order_relaxed);
+  aResult.myData->myIsDone = true;
 
   return aResult;
 }

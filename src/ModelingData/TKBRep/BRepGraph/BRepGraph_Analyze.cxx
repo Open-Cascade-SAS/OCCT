@@ -105,8 +105,7 @@ NCollection_Vector<BRepGraph_EdgeId> BRepGraph_Analyze::ToleranceConflicts(
   for (int anEdgeIdx = 0; anEdgeIdx < theGraph.myData->myIncStorage.NbEdges(); ++anEdgeIdx)
   {
     const BRepGraph_EdgeId             anEdgeId(anEdgeIdx);
-    const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
-      theGraph.myData->myIncStorage.Edge(anEdgeId);
+    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = theGraph.myData->myIncStorage.Edge(anEdgeId);
     if (!anEdgeDef.Curve3DRepId.IsValid())
       continue;
     const occ::handle<Geom_Curve>& aCurve3d =
@@ -369,10 +368,8 @@ bool BRepGraph_Analyze::AreEdgesCompatibleSampled(const BRepGraph&       theGrap
     }
   }
 
-  GeomAdaptor_TransformedCurve aCurveA =
-    BRepGraph_Tool::Edge::CurveAdaptor(theGraph, theEdgeA);
-  GeomAdaptor_TransformedCurve aCurveB =
-    BRepGraph_Tool::Edge::CurveAdaptor(theGraph, theEdgeB);
+  GeomAdaptor_TransformedCurve aCurveA = BRepGraph_Tool::Edge::CurveAdaptor(theGraph, theEdgeA);
+  GeomAdaptor_TransformedCurve aCurveB = BRepGraph_Tool::Edge::CurveAdaptor(theGraph, theEdgeB);
 
   GCPnts_UniformAbscissa aSamplerA(aCurveA, theNbSamples);
   if (!aSamplerA.IsDone() || aSamplerA.NbPoints() < 2)
@@ -446,9 +443,8 @@ bool BRepGraph_Analyze::AreEdgesCompatibleSampled(const BRepGraph&              
     }
   }
 
-  GeomAdaptor_TransformedCurve aCurveB =
-    BRepGraph_Tool::Edge::CurveAdaptor(theGraph, theEdgeB);
-  ExtremaPC_Curve anExtPCB(aCurveB);
+  GeomAdaptor_TransformedCurve aCurveB = BRepGraph_Tool::Edge::CurveAdaptor(theGraph, theEdgeB);
+  ExtremaPC_Curve              anExtPCB(aCurveB);
 
   const double aTolSq        = theTolerance * theTolerance;
   double       aMaxFwdDistSq = 0.0;

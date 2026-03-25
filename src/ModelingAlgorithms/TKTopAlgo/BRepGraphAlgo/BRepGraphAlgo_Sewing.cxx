@@ -1236,7 +1236,8 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> matchFreeEdges
                                                          THE_MAX_CHORD_RATIO,
                                                          THE_HIGH_CONFIDENCE_RATIO))
         {
-          const double aScore = BRepGraph_Analyze::EdgeEndpointPairScore(theGraph, anEdgeA, anEdgeIdB);
+          const double aScore =
+            BRepGraph_Analyze::EdgeEndpointPairScore(theGraph, anEdgeA, anEdgeIdB);
           if (aScore < aMatch.BestScore)
           {
             aMatch.BestScore = aScore;
@@ -1501,9 +1502,7 @@ int mergeMatchedEdges(
   // 6. SameParameter enforcement (graph-only, parallel).
   if (theOptions.SameParameterMode && !theSewnEdgeIndices.IsEmpty())
   {
-    (void)BRepGraphAlgo_SameParameter::Perform(theGraph,
-                                               theSewnEdgeIndices,
-                                               theOptions.Tolerance);
+    (void)BRepGraphAlgo_SameParameter::Perform(theGraph, theSewnEdgeIndices, theOptions.Tolerance);
   }
 
   return aSewnCount;

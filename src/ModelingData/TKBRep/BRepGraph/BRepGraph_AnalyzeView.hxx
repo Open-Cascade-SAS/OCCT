@@ -35,7 +35,7 @@ public:
 
   //! All (Edge, Face) pairs missing a PCurveNode.
   [[nodiscard]] Standard_EXPORT NCollection_Vector<std::pair<BRepGraph_EdgeId, BRepGraph_FaceId>>
-    MissingPCurves() const;
+                                MissingPCurves() const;
 
   //! Edges with tolerance conflicts across shared geometry.
   //! @param[in] theThreshold maximum allowed tolerance spread

@@ -358,7 +358,9 @@ TEST(BRepGraphAssemblyTest, NbNodes_IncludesAssembly)
 
   // Add assembly + occurrence.
   const BRepGraph_NodeId aAssemblyId = aGraph.Builder().AddAssemblyProduct();
-  (void)aGraph.Builder().AddOccurrence(aAssemblyId, BRepGraph_NodeId::Product(0), TopLoc_Location());
+  (void)aGraph.Builder().AddOccurrence(aAssemblyId,
+                                       BRepGraph_NodeId::Product(0),
+                                       TopLoc_Location());
 
   const size_t aNbNodesAfterAssembly = aGraph.Defs().NbNodes();
   EXPECT_EQ(aNbNodesAfterAssembly, aNbNodesAfterBuild + 2); // +1 product, +1 occurrence

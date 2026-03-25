@@ -55,8 +55,8 @@ public:
   //! Reconstruct a TopoDS_Shape from a definition node, applying per-node location.
   //! @param[in] theNode definition node identifier
   //! @return reconstructed shape with location applied
-  [[nodiscard]] Standard_EXPORT TopoDS_Shape ReconstructFromNode(
-    const BRepGraph_NodeId theNode) const;
+  [[nodiscard]] Standard_EXPORT TopoDS_Shape
+    ReconstructFromNode(const BRepGraph_NodeId theNode) const;
 
   //! Look up the definition NodeId for a shape from the Build() input.
   //! Uses TShape pointer comparison (same semantics as IsSame()).

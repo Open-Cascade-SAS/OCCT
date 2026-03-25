@@ -48,7 +48,10 @@ public:
       occ::handle<NCollection_BaseAllocator>());
 
   //! Return the allocator used for internal collections.
-  [[nodiscard]] const occ::handle<NCollection_BaseAllocator>& Allocator() const { return myAllocator; }
+  [[nodiscard]] const occ::handle<NCollection_BaseAllocator>& Allocator() const
+  {
+    return myAllocator;
+  }
 
   //! @name Count accessors (total including removed)
 
@@ -142,19 +145,22 @@ public:
   //! Each method returns a const reference to the representation entity at the given typed id.
 
   //! @param[in] theRep typed surface representation id
-  [[nodiscard]] const BRepGraphInc::SurfaceRep& SurfaceRep(const BRepGraph_SurfaceRepId theRep) const
+  [[nodiscard]] const BRepGraphInc::SurfaceRep& SurfaceRep(
+    const BRepGraph_SurfaceRepId theRep) const
   {
     return mySurfaces.Get(theRep.Index);
   }
 
   //! @param[in] theRep typed curve-3D representation id
-  [[nodiscard]] const BRepGraphInc::Curve3DRep& Curve3DRep(const BRepGraph_Curve3DRepId theRep) const
+  [[nodiscard]] const BRepGraphInc::Curve3DRep& Curve3DRep(
+    const BRepGraph_Curve3DRepId theRep) const
   {
     return myCurves3D.Get(theRep.Index);
   }
 
   //! @param[in] theRep typed curve-2D representation id
-  [[nodiscard]] const BRepGraphInc::Curve2DRep& Curve2DRep(const BRepGraph_Curve2DRepId theRep) const
+  [[nodiscard]] const BRepGraphInc::Curve2DRep& Curve2DRep(
+    const BRepGraph_Curve2DRepId theRep) const
   {
     return myCurves2D.Get(theRep.Index);
   }
@@ -167,13 +173,15 @@ public:
   }
 
   //! @param[in] theRep typed polygon-3D representation id
-  [[nodiscard]] const BRepGraphInc::Polygon3DRep& Polygon3DRep(const BRepGraph_Polygon3DRepId theRep) const
+  [[nodiscard]] const BRepGraphInc::Polygon3DRep& Polygon3DRep(
+    const BRepGraph_Polygon3DRepId theRep) const
   {
     return myPolygons3D.Get(theRep.Index);
   }
 
   //! @param[in] theRep typed polygon-2D representation id
-  [[nodiscard]] const BRepGraphInc::Polygon2DRep& Polygon2DRep(const BRepGraph_Polygon2DRepId theRep) const
+  [[nodiscard]] const BRepGraphInc::Polygon2DRep& Polygon2DRep(
+    const BRepGraph_Polygon2DRepId theRep) const
   {
     return myPolygons2D.Get(theRep.Index);
   }
@@ -294,25 +302,29 @@ public:
   }
 
   //! @param[in] theCompound typed compound id
-  [[nodiscard]] const BRepGraphInc::CompoundEntity& Compound(const BRepGraph_CompoundId theCompound) const
+  [[nodiscard]] const BRepGraphInc::CompoundEntity& Compound(
+    const BRepGraph_CompoundId theCompound) const
   {
     return myCompounds.Get(theCompound.Index);
   }
 
   //! @param[in] theCompSolid typed comp-solid id
-  [[nodiscard]] const BRepGraphInc::CompSolidEntity& CompSolid(const BRepGraph_CompSolidId theCompSolid) const
+  [[nodiscard]] const BRepGraphInc::CompSolidEntity& CompSolid(
+    const BRepGraph_CompSolidId theCompSolid) const
   {
     return myCompSolids.Get(theCompSolid.Index);
   }
 
   //! @param[in] theProduct typed product id
-  [[nodiscard]] const BRepGraphInc::ProductEntity& Product(const BRepGraph_ProductId theProduct) const
+  [[nodiscard]] const BRepGraphInc::ProductEntity& Product(
+    const BRepGraph_ProductId theProduct) const
   {
     return myProducts.Get(theProduct.Index);
   }
 
   //! @param[in] theOccurrence typed occurrence id
-  [[nodiscard]] const BRepGraphInc::OccurrenceEntity& Occurrence(const BRepGraph_OccurrenceId theOccurrence) const
+  [[nodiscard]] const BRepGraphInc::OccurrenceEntity& Occurrence(
+    const BRepGraph_OccurrenceId theOccurrence) const
   {
     return myOccurrences.Get(theOccurrence.Index);
   }

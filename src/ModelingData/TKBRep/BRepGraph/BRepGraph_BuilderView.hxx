@@ -49,13 +49,12 @@ public:
   //! @param[in] theLast      last curve parameter
   //! @param[in] theTolerance edge tolerance
   //! @return NodeId of the new edge definition
-  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId AddEdgeDef(
-    const BRepGraph_NodeId         theStartVtx,
-    const BRepGraph_NodeId         theEndVtx,
-    const occ::handle<Geom_Curve>& theCurve,
-    const double                   theFirst,
-    const double                   theLast,
-    const double                   theTolerance);
+  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId AddEdgeDef(const BRepGraph_NodeId theStartVtx,
+                                                            const BRepGraph_NodeId theEndVtx,
+                                                            const occ::handle<Geom_Curve>& theCurve,
+                                                            const double                   theFirst,
+                                                            const double                   theLast,
+                                                            const double theTolerance);
 
   //! Add a wire definition to the graph.
   //! Each pair is (EdgeDefId, OrientationInWire).
@@ -127,10 +126,10 @@ public:
   //! @param[in] theReferencedProduct  child product being instantiated
   //! @param[in] thePlacement          local placement relative to parent
   //! @return NodeId of the new occurrence definition
-  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId AddOccurrence(
-    const BRepGraph_NodeId theParentProduct,
-    const BRepGraph_NodeId theReferencedProduct,
-    const TopLoc_Location& thePlacement);
+  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId
+    AddOccurrence(const BRepGraph_NodeId theParentProduct,
+                  const BRepGraph_NodeId theReferencedProduct,
+                  const TopLoc_Location& thePlacement);
 
   //! Add an occurrence with an explicit parent occurrence for nested assembly chains.
   //! This establishes a tree-structured placement path for unambiguous
@@ -140,11 +139,11 @@ public:
   //! @param[in] thePlacement          local placement relative to parent
   //! @param[in] theParentOccurrence   the occurrence that placed the parent product
   //! @return NodeId of the new occurrence definition
-  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId AddOccurrence(
-    const BRepGraph_NodeId theParentProduct,
-    const BRepGraph_NodeId theReferencedProduct,
-    const TopLoc_Location& thePlacement,
-    const BRepGraph_NodeId theParentOccurrence);
+  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId
+    AddOccurrence(const BRepGraph_NodeId theParentProduct,
+                  const BRepGraph_NodeId theReferencedProduct,
+                  const TopLoc_Location& thePlacement,
+                  const BRepGraph_NodeId theParentOccurrence);
 
   //! Append a shape to the existing graph without clearing.
   //! @param[in] theShape   shape to add

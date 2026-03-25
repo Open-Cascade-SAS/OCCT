@@ -74,7 +74,7 @@ public:
   //! @param[in,out] theGraph graph to update
   //! @param[in] theOptions dedup configuration
   //! @return dedup statistics
-  [[nodiscard]] Standard_EXPORT static Result Perform(BRepGraph&      theGraph,
+  [[nodiscard]] Standard_EXPORT static Result Perform(BRepGraph&     theGraph,
                                                       const Options& theOptions);
 
 private:

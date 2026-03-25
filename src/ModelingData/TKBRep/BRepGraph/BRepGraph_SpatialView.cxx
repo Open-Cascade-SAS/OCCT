@@ -23,7 +23,7 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::SameDomainFaces(
   const BRepGraph_NodeId theFaceDef) const
 {
   NCollection_Vector<BRepGraph_NodeId> aResult;
-  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  const BRepGraphInc_Storage&          aStorage = myGraph->myData->myIncStorage;
   if (theFaceDef.NodeKind != BRepGraph_NodeId::Kind::Face
       || !theFaceDef.IsValid(aStorage.NbFaces()))
     return aResult;
@@ -48,13 +48,14 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::FacesOfEdge(
   const BRepGraph_NodeId theEdgeDef) const
 {
   NCollection_Vector<BRepGraph_NodeId> aResult;
-  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  const BRepGraphInc_Storage&          aStorage = myGraph->myData->myIncStorage;
   if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge
       || !theEdgeDef.IsValid(aStorage.NbEdges()))
     return aResult;
 
   const BRepGraph_EdgeId                      anEdgeDefId(theEdgeDef.Index);
-  const NCollection_Vector<BRepGraph_FaceId>* aFaces = aStorage.ReverseIndex().FacesOfEdge(anEdgeDefId);
+  const NCollection_Vector<BRepGraph_FaceId>* aFaces =
+    aStorage.ReverseIndex().FacesOfEdge(anEdgeDefId);
   if (aFaces != nullptr)
   {
     for (int aFIdx = 0; aFIdx < aFaces->Length(); ++aFIdx)
@@ -70,10 +71,9 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::SharedEdges(
   const BRepGraph_NodeId theFaceB) const
 {
   NCollection_Vector<BRepGraph_NodeId> aResult;
-  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
-  if (theFaceA.NodeKind != BRepGraph_NodeId::Kind::Face
-      || !theFaceA.IsValid(aStorage.NbFaces()) || theFaceB.NodeKind != BRepGraph_NodeId::Kind::Face
-      || !theFaceB.IsValid(aStorage.NbFaces()))
+  const BRepGraphInc_Storage&          aStorage = myGraph->myData->myIncStorage;
+  if (theFaceA.NodeKind != BRepGraph_NodeId::Kind::Face || !theFaceA.IsValid(aStorage.NbFaces())
+      || theFaceB.NodeKind != BRepGraph_NodeId::Kind::Face || !theFaceB.IsValid(aStorage.NbFaces()))
     return aResult;
 
   const BRepGraph_FaceId             aFaceDefAId(theFaceA.Index);
@@ -120,7 +120,7 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::AdjacentFaces(
 {
   NCollection_Vector<BRepGraph_NodeId> aResult;
   NCollection_PackedMap<int>           aFaceSet;
-  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  const BRepGraphInc_Storage&          aStorage = myGraph->myData->myIncStorage;
   if (theFaceDef.NodeKind != BRepGraph_NodeId::Kind::Face
       || !theFaceDef.IsValid(aStorage.NbFaces()))
     return aResult;
@@ -160,7 +160,7 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::EdgesOfFace(
   const BRepGraph_NodeId theFaceDef) const
 {
   NCollection_Vector<BRepGraph_NodeId> aResult;
-  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  const BRepGraphInc_Storage&          aStorage = myGraph->myData->myIncStorage;
   if (theFaceDef.NodeKind != BRepGraph_NodeId::Kind::Face
       || !theFaceDef.IsValid(aStorage.NbFaces()))
     return aResult;
@@ -190,7 +190,7 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::EdgesOfVertex(
   const BRepGraph_NodeId theVertexDef) const
 {
   NCollection_Vector<BRepGraph_NodeId> aResult;
-  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  const BRepGraphInc_Storage&          aStorage = myGraph->myData->myIncStorage;
   if (theVertexDef.NodeKind != BRepGraph_NodeId::Kind::Vertex
       || !theVertexDef.IsValid(aStorage.NbVertices()))
     return aResult;
@@ -212,7 +212,7 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::VerticesOfEdge(
   const BRepGraph_NodeId theEdgeDef) const
 {
   NCollection_Vector<BRepGraph_NodeId> aResult;
-  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  const BRepGraphInc_Storage&          aStorage = myGraph->myData->myIncStorage;
   if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge
       || !theEdgeDef.IsValid(aStorage.NbEdges()))
     return aResult;
@@ -234,7 +234,7 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::SpatialView::AdjacentEdges(
   const BRepGraph_NodeId theEdgeDef) const
 {
   NCollection_Vector<BRepGraph_NodeId> aResult;
-  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  const BRepGraphInc_Storage&          aStorage = myGraph->myData->myIncStorage;
   if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge
       || !theEdgeDef.IsValid(aStorage.NbEdges()))
     return aResult;

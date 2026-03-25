@@ -45,7 +45,7 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
 //=================================================================================================
 
 BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph&     theGraph,
-                                                                      const Options& theOptions)
+                                                                     const Options& theOptions)
 {
   Result aResult;
   if (!theGraph.IsDone())

@@ -406,7 +406,7 @@ TEST_F(BRepGraphHistoryTest, SplitEdge_RewritesAllContainingWires)
     myGraph.Defs().WiresOfEdge(BRepGraph_EdgeId(anEdgeId.Index));
   ASSERT_GT(aWireIndices.Length(), 0);
 
-  const int aNbEdgesBefore = myGraph.Defs().NbEdges();
+  const int aNbEdgesBefore       = myGraph.Defs().NbEdges();
   const int aNbActiveEdgesBefore = myGraph.Defs().NbActiveEdges();
 
   BRepGraph_NodeId aSubA;

@@ -55,7 +55,7 @@ public:
   //! @param[in,out] theGraph graph with history and attributes
   //! @param[in] theOptions transfer configuration
   //! @return transfer statistics
-  [[nodiscard]] Standard_EXPORT static Result Perform(BRepGraph&      theGraph,
+  [[nodiscard]] Standard_EXPORT static Result Perform(BRepGraph&     theGraph,
                                                       const Options& theOptions);
 
 private:

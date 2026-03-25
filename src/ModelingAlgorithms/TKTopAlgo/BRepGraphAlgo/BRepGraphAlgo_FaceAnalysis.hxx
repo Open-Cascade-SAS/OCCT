@@ -54,7 +54,7 @@ public:
   //! @param[in,out] theGraph   the graph to analyze and modify
   //! @param[in]     theOptions analysis parameters
   //! @return result with diagnostics
-  [[nodiscard]] static Standard_EXPORT Result Perform(BRepGraph&      theGraph,
+  [[nodiscard]] static Standard_EXPORT Result Perform(BRepGraph&     theGraph,
                                                       const Options& theOptions);
 
 private:

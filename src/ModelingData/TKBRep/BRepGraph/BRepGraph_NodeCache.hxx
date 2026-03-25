@@ -83,7 +83,10 @@ struct BRepGraph_NodeCache
   }
 
   //! Remove a user attribute by key.  Returns true if something was removed.
-  [[nodiscard]] bool RemoveUserAttribute(const int theKey) { return myUserAttributes.UnBind(theKey); }
+  [[nodiscard]] bool RemoveUserAttribute(const int theKey)
+  {
+    return myUserAttributes.UnBind(theKey);
+  }
 
   //! True if any user attributes are registered on this node.
   [[nodiscard]] bool HasUserAttributes() const { return !myUserAttributes.IsEmpty(); }

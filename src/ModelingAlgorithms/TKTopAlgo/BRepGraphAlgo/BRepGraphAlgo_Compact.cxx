@@ -509,7 +509,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
   aNewGraph.myData->myGeneration.store(
     theGraph.myData->myGeneration.load(std::memory_order_relaxed),
     std::memory_order_relaxed);
-  aNewGraph.myData->myIsDone     = true;
+  aNewGraph.myData->myIsDone = true;
 
   // Save layers before swap (default move would transfer empty layers from aNewGraph).
   NCollection_DataMap<TCollection_AsciiString, occ::handle<BRepGraph_Layer>> aSavedLayers;

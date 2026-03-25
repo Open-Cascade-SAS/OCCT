@@ -460,19 +460,22 @@ bool BRepGraphInc_Storage::ValidateReverseIndex() const
       switch (aChildId.NodeKind)
       {
         case BRepGraph_NodeId::Kind::Solid:
-          if (!containsNode(myReverseIdx.CompoundsOfSolid(BRepGraph_SolidId(aChildId.Index)), aCompIdx))
+          if (!containsNode(myReverseIdx.CompoundsOfSolid(BRepGraph_SolidId(aChildId.Index)),
+                            aCompIdx))
           {
             return false;
           }
           break;
         case BRepGraph_NodeId::Kind::Shell:
-          if (!containsNode(myReverseIdx.CompoundsOfShell(BRepGraph_ShellId(aChildId.Index)), aCompIdx))
+          if (!containsNode(myReverseIdx.CompoundsOfShell(BRepGraph_ShellId(aChildId.Index)),
+                            aCompIdx))
           {
             return false;
           }
           break;
         case BRepGraph_NodeId::Kind::Face:
-          if (!containsNode(myReverseIdx.CompoundsOfFace(BRepGraph_FaceId(aChildId.Index)), aCompIdx))
+          if (!containsNode(myReverseIdx.CompoundsOfFace(BRepGraph_FaceId(aChildId.Index)),
+                            aCompIdx))
           {
             return false;
           }
@@ -485,8 +488,9 @@ bool BRepGraphInc_Storage::ValidateReverseIndex() const
           }
           break;
         case BRepGraph_NodeId::Kind::CompSolid:
-          if (!containsNode(myReverseIdx.CompoundsOfCompSolid(BRepGraph_CompSolidId(aChildId.Index)),
-                            aCompIdx))
+          if (!containsNode(
+                myReverseIdx.CompoundsOfCompSolid(BRepGraph_CompSolidId(aChildId.Index)),
+                aCompIdx))
           {
             return false;
           }
@@ -556,7 +560,8 @@ bool BRepGraphInc_Storage::ValidateReverseIndex() const
         return false;
       }
       const BRepGraphInc::OccurrenceEntity& anOcc = myOccurrences.Get(anOccIdx);
-      if (anOcc.IsRemoved || !anOcc.ProductDefId.IsValid() || anOcc.ProductDefId.Index != aProductIdx)
+      if (anOcc.IsRemoved || !anOcc.ProductDefId.IsValid()
+          || anOcc.ProductDefId.Index != aProductIdx)
       {
         return false;
       }

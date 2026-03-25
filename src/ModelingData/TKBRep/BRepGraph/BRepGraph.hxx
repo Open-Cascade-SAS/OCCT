@@ -313,7 +313,6 @@ private:
 
   //! Generic mutable topology definition lookup by NodeId.
   Standard_EXPORT BRepGraph_TopoNode::BaseDef* ChangeTopoDef(const BRepGraph_NodeId theId);
-
 };
 
 // Included after BRepGraph is complete so the template body sees markModified().

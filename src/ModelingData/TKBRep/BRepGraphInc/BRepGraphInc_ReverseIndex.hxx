@@ -98,13 +98,15 @@ public:
     const int                                                 theNbProducts);
 
   //! Return wire indices containing the given edge.
-  [[nodiscard]] const NCollection_Vector<BRepGraph_WireId>* WiresOfEdge(const BRepGraph_EdgeId theEdgeId) const
+  [[nodiscard]] const NCollection_Vector<BRepGraph_WireId>* WiresOfEdge(
+    const BRepGraph_EdgeId theEdgeId) const
   {
     return seekVec(myEdgeToWires, theEdgeId.Index);
   }
 
   //! Return face indices containing the given edge (from EdgeFaceGeom rows).
-  [[nodiscard]] const NCollection_Vector<BRepGraph_FaceId>* FacesOfEdge(const BRepGraph_EdgeId theEdgeId) const
+  [[nodiscard]] const NCollection_Vector<BRepGraph_FaceId>* FacesOfEdge(
+    const BRepGraph_EdgeId theEdgeId) const
   {
     return seekVec(myEdgeToFaces, theEdgeId.Index);
   }
@@ -133,13 +135,15 @@ public:
   }
 
   //! Return face indices containing the given wire.
-  [[nodiscard]] const NCollection_Vector<BRepGraph_FaceId>* FacesOfWire(const BRepGraph_WireId theWireId) const
+  [[nodiscard]] const NCollection_Vector<BRepGraph_FaceId>* FacesOfWire(
+    const BRepGraph_WireId theWireId) const
   {
     return seekVec(myWireToFaces, theWireId.Index);
   }
 
   //! Return shell indices containing the given face.
-  [[nodiscard]] const NCollection_Vector<BRepGraph_ShellId>* ShellsOfFace(const BRepGraph_FaceId theFaceId) const
+  [[nodiscard]] const NCollection_Vector<BRepGraph_ShellId>* ShellsOfFace(
+    const BRepGraph_FaceId theFaceId) const
   {
     return seekVec(myFaceToShells, theFaceId.Index);
   }
@@ -210,13 +214,15 @@ public:
   // --- Safe reference accessors (return empty vector instead of nullptr) ---
 
   //! Return wire indices containing the given edge (safe reference, never null).
-  [[nodiscard]] const NCollection_Vector<BRepGraph_WireId>& WiresOfEdgeRef(const BRepGraph_EdgeId theEdgeId) const
+  [[nodiscard]] const NCollection_Vector<BRepGraph_WireId>& WiresOfEdgeRef(
+    const BRepGraph_EdgeId theEdgeId) const
   {
     return seekRef(myEdgeToWires, theEdgeId.Index);
   }
 
   //! Return face indices containing the given edge (safe reference, never null).
-  [[nodiscard]] const NCollection_Vector<BRepGraph_FaceId>& FacesOfEdgeRef(const BRepGraph_EdgeId theEdgeId) const
+  [[nodiscard]] const NCollection_Vector<BRepGraph_FaceId>& FacesOfEdgeRef(
+    const BRepGraph_EdgeId theEdgeId) const
   {
     return seekRef(myEdgeToFaces, theEdgeId.Index);
   }
@@ -229,7 +235,8 @@ public:
   }
 
   //! Return face indices containing the given wire (safe reference, never null).
-  [[nodiscard]] const NCollection_Vector<BRepGraph_FaceId>& FacesOfWireRef(const BRepGraph_WireId theWireId) const
+  [[nodiscard]] const NCollection_Vector<BRepGraph_FaceId>& FacesOfWireRef(
+    const BRepGraph_WireId theWireId) const
   {
     return seekRef(myWireToFaces, theWireId.Index);
   }

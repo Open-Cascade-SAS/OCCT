@@ -66,7 +66,7 @@ struct BaseEntity
   bool IsModified = false; //!< True when mutated since Build(). Monotonic within a Build() cycle.
                            //!< Never cleared during mutation. Use MutationGen for granular checks;
                            //!< cache consumers should invalidate when true.
-  bool IsRemoved  = false; //!< Soft-removal flag
+  bool IsRemoved = false;  //!< Soft-removal flag
 };
 
 //! Fields shared by every representation entity.

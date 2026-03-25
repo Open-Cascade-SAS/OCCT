@@ -72,7 +72,7 @@ bool isDefRemoved(const BRepGraph& theGraph, BRepGraph_NodeId theId)
 //! @param[in,out] theIssues         destination validator issue vector
 void appendMutationBoundaryIssues(
   const NCollection_Vector<BRepGraph_Mutator::BoundaryIssue>& theBoundaryIssues,
-  NCollection_Vector<BRepGraphAlgo_Validate::Issue>&           theIssues)
+  NCollection_Vector<BRepGraphAlgo_Validate::Issue>&          theIssues)
 {
   using Issue    = BRepGraphAlgo_Validate::Issue;
   using Severity = BRepGraphAlgo_Validate::Severity;
@@ -155,7 +155,8 @@ void checkCrossReferenceBounds(const BRepGraph&                                 
       }
     }
     // Rep index bounds.
-    if (aCoEdge.Curve2DRepId.IsValid() && !aCoEdge.Curve2DRepId.IsValid(theGraph.Defs().NbCurves2D()))
+    if (aCoEdge.Curve2DRepId.IsValid()
+        && !aCoEdge.Curve2DRepId.IsValid(theGraph.Defs().NbCurves2D()))
     {
       theIssues.Append(Issue{Severity::Error, aCoEdge.Id, "CoEdgeDef.Curve2DRepId out of bounds"});
     }
@@ -421,8 +422,8 @@ void checkReverseIndexConsistency(const BRepGraph&                              
 void checkReverseIndexFaceCountCache(const BRepGraph&                                   theGraph,
                                      NCollection_Vector<BRepGraphAlgo_Validate::Issue>& theIssues)
 {
-  using Issue                    = BRepGraphAlgo_Validate::Issue;
-  using Severity                 = BRepGraphAlgo_Validate::Severity;
+  using Issue                     = BRepGraphAlgo_Validate::Issue;
+  using Severity                  = BRepGraphAlgo_Validate::Severity;
   const BRepGraph::DefsView aDefs = theGraph.Defs();
 
   for (int anEdgeIdx = 0; anEdgeIdx < aDefs.NbEdges(); ++anEdgeIdx)
@@ -432,7 +433,7 @@ void checkReverseIndexFaceCountCache(const BRepGraph&                           
     if (anEdge.IsRemoved)
       continue;
 
-    NCollection_Map<int> aUniqueFaces;
+    NCollection_Map<int>                          aUniqueFaces;
     const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdges = aDefs.CoEdgesOfEdge(anEdgeId);
     for (int aCoEdgeIdx = 0; aCoEdgeIdx < aCoEdges.Length(); ++aCoEdgeIdx)
     {
@@ -444,7 +445,7 @@ void checkReverseIndexFaceCountCache(const BRepGraph&                           
       aUniqueFaces.Add(aCoEdge.FaceDefId.Index);
     }
 
-    const int aCachedCount = aDefs.FaceCountOfEdge(anEdgeId);
+    const int aCachedCount  = aDefs.FaceCountOfEdge(anEdgeId);
     const int anActualCount = aUniqueFaces.Extent();
     if (aCachedCount != anActualCount)
     {
@@ -862,7 +863,7 @@ BRepGraphAlgo_Validate::Result BRepGraphAlgo_Validate::Perform(const BRepGraph& 
 //=================================================================================================
 
 BRepGraphAlgo_Validate::Result BRepGraphAlgo_Validate::Perform(const BRepGraph& theGraph,
-                                                               const Mode        theMode)
+                                                               const Mode       theMode)
 {
   Options anOptions;
   anOptions.ValidationMode = theMode;
@@ -871,8 +872,8 @@ BRepGraphAlgo_Validate::Result BRepGraphAlgo_Validate::Perform(const BRepGraph& 
 
 //=================================================================================================
 
-BRepGraphAlgo_Validate::Result BRepGraphAlgo_Validate::Perform(const BRepGraph&   theGraph,
-                                                               const Options&      theOptions)
+BRepGraphAlgo_Validate::Result BRepGraphAlgo_Validate::Perform(const BRepGraph& theGraph,
+                                                               const Options&   theOptions)
 {
   Result aResult;
   if (!theGraph.IsDone())

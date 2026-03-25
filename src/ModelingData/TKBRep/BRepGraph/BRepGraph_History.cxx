@@ -190,9 +190,9 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph_History::FindDerived(
 {
   // Collect all transitively derived nodes using iterative BFS.
   // A visited set guards against infinite loops if cycles exist in the forward map.
-  NCollection_Vector<BRepGraph_NodeId>  aResult;
-  NCollection_Vector<BRepGraph_NodeId>  aQueue;
-  NCollection_Map<BRepGraph_NodeId>     aVisited;
+  NCollection_Vector<BRepGraph_NodeId> aResult;
+  NCollection_Vector<BRepGraph_NodeId> aQueue;
+  NCollection_Map<BRepGraph_NodeId>    aVisited;
 
   aQueue.Append(theOriginal);
   aVisited.Add(theOriginal);

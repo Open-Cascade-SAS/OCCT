@@ -62,7 +62,8 @@ public:
   //! Follows the reverse map recursively until a root is reached.
   //! @param[in] theModified node id to trace back
   //! @return the root original node id, or theModified itself if not found
-  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId FindOriginal(const BRepGraph_NodeId theModified) const;
+  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId
+    FindOriginal(const BRepGraph_NodeId theModified) const;
 
   //! Walk forwards from an original node to all derived nodes.
   //! Follows the forward map recursively, collecting all leaves.

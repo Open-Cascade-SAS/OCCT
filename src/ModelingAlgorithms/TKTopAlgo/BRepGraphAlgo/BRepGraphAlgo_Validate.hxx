@@ -104,10 +104,7 @@ public:
     }
 
     //! Build options for deep-audit validation.
-    static Options DeepAudit()
-    {
-      return Audit();
-    }
+    static Options DeepAudit() { return Audit(); }
 
     //! Build options for full-audit validation.
     static Options Audit()
@@ -127,13 +124,14 @@ public:
   //! @param[in] theGraph graph to validate (const, read-only)
   //! @param[in] theMode validation mode
   //! @return validation result with all detected issues
-  [[nodiscard]] Standard_EXPORT static Result Perform(const BRepGraph& theGraph, const Mode theMode);
+  [[nodiscard]] Standard_EXPORT static Result Perform(const BRepGraph& theGraph,
+                                                      const Mode       theMode);
 
   //! Run structural checks on a built graph with explicit options.
   //! @param[in] theGraph graph to validate (const, read-only)
   //! @param[in] theOptions validation profile/options
   //! @return validation result with all detected issues
-  [[nodiscard]] Standard_EXPORT static Result Perform(const BRepGraph&  theGraph,
+  [[nodiscard]] Standard_EXPORT static Result Perform(const BRepGraph& theGraph,
                                                       const Options&   theOptions);
 
 private:

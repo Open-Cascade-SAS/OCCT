@@ -106,7 +106,7 @@ public:
   //! @param[in,out] theGraph   the graph to modify
   //! @param[in]     theOptions sewing parameters
   //! @return result with diagnostics
-  [[nodiscard]] static Standard_EXPORT Result Perform(BRepGraph&      theGraph,
+  [[nodiscard]] static Standard_EXPORT Result Perform(BRepGraph&     theGraph,
                                                       const Options& theOptions);
 
   //! Convenience: sew a shape, return the result shape.

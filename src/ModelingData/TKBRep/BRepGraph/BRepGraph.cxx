@@ -70,7 +70,7 @@ void BRepGraph::Build(const TopoDS_Shape&                   theShape,
 
 BRepGraph_UID BRepGraph::allocateUID(const BRepGraph_NodeId theNodeId)
 {
-  const size_t  aCounter = myData->myNextUIDCounter.fetch_add(1, std::memory_order_relaxed);
+  const size_t   aCounter    = myData->myNextUIDCounter.fetch_add(1, std::memory_order_relaxed);
   const uint32_t aGeneration = myData->myGeneration.load(std::memory_order_relaxed);
   BRepGraph_UID  aUID(theNodeId.NodeKind, aCounter, aGeneration);
   myData->myIncStorage.ChangeUIDs(theNodeId.NodeKind).Append(aUID);
@@ -252,8 +252,8 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
                        + aStorage.NbWires() + aStorage.NbEdges() + aStorage.NbVertices()
                        + aStorage.NbCompounds() + aStorage.NbCompSolids() + aStorage.NbProducts()
                        + aStorage.NbOccurrences();
-  const int aMaxDepth = aNbNodes > 0 ? aNbNodes : 1;
-  occ::handle<NCollection_IncAllocator> anAlloc = new NCollection_IncAllocator();
+  const int                             aMaxDepth = aNbNodes > 0 ? aNbNodes : 1;
+  occ::handle<NCollection_IncAllocator> anAlloc   = new NCollection_IncAllocator();
   NCollection_Vector<StackEntry>        aStack(64, anAlloc);
   NCollection_Map<BRepGraph_NodeId>     aVisited(aNbNodes, anAlloc);
   aStack.Append({theNode, 0});

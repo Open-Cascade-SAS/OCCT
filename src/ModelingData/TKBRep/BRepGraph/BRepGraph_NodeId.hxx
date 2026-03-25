@@ -130,10 +130,7 @@ struct BRepGraph_NodeId
   };
 
   //! True if the kind is a core topology kind (Solid..CoEdge).
-  static bool IsTopologyKind(const Kind theKind)
-  {
-    return static_cast<int>(theKind) <= 8;
-  }
+  static bool IsTopologyKind(const Kind theKind) { return static_cast<int>(theKind) <= 8; }
 
   //! True if the kind is an assembly kind (Product or Occurrence).
   static bool IsAssemblyKind(const Kind theKind)

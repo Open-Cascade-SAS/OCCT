@@ -49,14 +49,13 @@ TEST(BRepGraphAlgo_ValidateTest, CleanGraph_NoIssues)
   EXPECT_EQ(aResult.NbIssues(BRepGraphAlgo_Validate::Severity::Warning), 0);
 
   const BRepGraphAlgo_Validate::Options aDeepOpts = BRepGraphAlgo_Validate::Options::DeepAudit();
-  const BRepGraphAlgo_Validate::Result aDeepResult =
+  const BRepGraphAlgo_Validate::Result  aDeepResult =
     BRepGraphAlgo_Validate::Perform(aGraph, aDeepOpts);
   EXPECT_TRUE(aDeepResult.IsValid());
   EXPECT_EQ(aDeepResult.NbIssues(BRepGraphAlgo_Validate::Severity::Error), 0);
 
-  const BRepGraphAlgo_Validate::Options aLightOpts =
-    BRepGraphAlgo_Validate::Options::Lightweight();
-  const BRepGraphAlgo_Validate::Result aLightResult =
+  const BRepGraphAlgo_Validate::Options aLightOpts = BRepGraphAlgo_Validate::Options::Lightweight();
+  const BRepGraphAlgo_Validate::Result  aLightResult =
     BRepGraphAlgo_Validate::Perform(aGraph, aLightOpts);
   EXPECT_TRUE(aLightResult.IsValid());
   EXPECT_EQ(aLightResult.NbIssues(BRepGraphAlgo_Validate::Severity::Error), 0);
@@ -299,7 +298,7 @@ TEST(BRepGraphAlgo_ValidateTest, LightweightAndDeepAudit_DetectActiveCountDrift)
 
   // Intentionally bypass RemoveNode() to simulate counter drift bug class.
   BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aFaceDef = aGraph.MutFace(BRepGraph_FaceId(0));
-  aFaceDef->IsRemoved                                       = true;
+  aFaceDef->IsRemoved                                    = true;
 
   const BRepGraphAlgo_Validate::Result aLightResult =
     BRepGraphAlgo_Validate::Perform(aGraph, BRepGraphAlgo_Validate::Options::Lightweight());
@@ -345,7 +344,7 @@ TEST(BRepGraphAlgo_ValidateTest, DeepDetectsIdDriftButLightweightSkipsIt)
   ASSERT_GT(aGraph.Defs().NbFaces(), 0);
 
   BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aFaceDef = aGraph.MutFace(BRepGraph_FaceId(0));
-  aFaceDef->Id                                            = BRepGraph_NodeId::Face(42);
+  aFaceDef->Id                                           = BRepGraph_NodeId::Face(42);
 
   const BRepGraphAlgo_Validate::Result aLightResult =
     BRepGraphAlgo_Validate::Perform(aGraph, BRepGraphAlgo_Validate::Options::Lightweight());
@@ -373,7 +372,8 @@ TEST(BRepGraphAlgo_ValidateTest, DeepAudit_ValidatesCoEdgeUIDsFromBuilderWireCre
 
   const BRepGraph_TopoNode::WireDef& aWire = aGraph.Defs().Wire(BRepGraph_WireId(aWireId.Index));
   ASSERT_EQ(aWire.CoEdgeRefs.Length(), 1);
-  const BRepGraph_NodeId aCoEdgeId = BRepGraph_NodeId::CoEdge(aWire.CoEdgeRefs.Value(0).CoEdgeDefId.Index);
+  const BRepGraph_NodeId aCoEdgeId =
+    BRepGraph_NodeId::CoEdge(aWire.CoEdgeRefs.Value(0).CoEdgeDefId.Index);
   EXPECT_TRUE(aGraph.UIDs().Of(aCoEdgeId).IsValid());
 
   const BRepGraphAlgo_Validate::Result aDeepResult =
@@ -383,8 +383,8 @@ TEST(BRepGraphAlgo_ValidateTest, DeepAudit_ValidatesCoEdgeUIDsFromBuilderWireCre
     for (int anIdx = 0; anIdx < aDeepResult.Issues.Length(); ++anIdx)
     {
       const BRepGraphAlgo_Validate::Issue& anIssue = aDeepResult.Issues.Value(anIdx);
-      ADD_FAILURE() << "Issue[" << anIdx << "] kind="
-                    << static_cast<int>(anIssue.NodeId.NodeKind) << " idx=" << anIssue.NodeId.Index
+      ADD_FAILURE() << "Issue[" << anIdx << "] kind=" << static_cast<int>(anIssue.NodeId.NodeKind)
+                    << " idx=" << anIssue.NodeId.Index
                     << " desc=" << anIssue.Description.ToCString();
     }
   }

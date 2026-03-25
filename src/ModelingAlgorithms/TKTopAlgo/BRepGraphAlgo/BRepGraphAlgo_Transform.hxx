@@ -53,8 +53,8 @@ public:
   //!                        if false, light-copy then transform locations/points only
   //! @return a new BRepGraph with the transformation applied
   [[nodiscard]] Standard_EXPORT static BRepGraph Perform(const BRepGraph& theGraph,
-                                                        const gp_Trsf&   theTrsf,
-                                                        bool             theCopyGeom = true);
+                                                         const gp_Trsf&   theTrsf,
+                                                         bool             theCopyGeom = true);
 
   //! Transform a single face sub-graph.
   //! @param[in] theGraph    a pre-built BRepGraph

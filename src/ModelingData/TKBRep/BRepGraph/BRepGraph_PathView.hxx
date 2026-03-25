@@ -57,20 +57,20 @@ public:
   //! Handles assembly occurrences, compound containers, and topology uniformly.
   //! @param[in] thePath fully specified topology path
   //! @return composed TopLoc_Location
-  [[nodiscard]] Standard_EXPORT TopLoc_Location GlobalLocation(
-    const BRepGraph_TopologyPath& thePath) const;
+  [[nodiscard]] Standard_EXPORT TopLoc_Location
+    GlobalLocation(const BRepGraph_TopologyPath& thePath) const;
 
   //! Global orientation at the leaf of the path (all levels composed).
   //! @param[in] thePath fully specified topology path
   //! @return composed TopAbs_Orientation
-  [[nodiscard]] Standard_EXPORT TopAbs_Orientation GlobalOrientation(
-    const BRepGraph_TopologyPath& thePath) const;
+  [[nodiscard]] Standard_EXPORT TopAbs_Orientation
+    GlobalOrientation(const BRepGraph_TopologyPath& thePath) const;
 
   //! Leaf entity definition NodeId.
   //! @param[in] thePath topology path
   //! @return NodeId of the entity at the path's leaf, or invalid if path is invalid
-  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId LeafNode(
-    const BRepGraph_TopologyPath& thePath) const;
+  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId
+    LeafNode(const BRepGraph_TopologyPath& thePath) const;
 
   //! Location composed from root down to step theLevel (0-based).
   //! Level 0 = first child of root. Level Depth()-1 = leaf.
@@ -88,9 +88,8 @@ public:
   //! Orientation composed from root down to step theLevel.
   //! @param[in] thePath  topology path
   //! @param[in] theLevel step index (0-based)
-  [[nodiscard]] Standard_EXPORT TopAbs_Orientation OrientationAt(
-    const BRepGraph_TopologyPath& thePath,
-    int                           theLevel) const;
+  [[nodiscard]] Standard_EXPORT TopAbs_Orientation
+    OrientationAt(const BRepGraph_TopologyPath& thePath, int theLevel) const;
 
   //! Find the first step level where the resolved entity has the given kind.
   //! Returns -1 if no such level exists in the path.
@@ -102,9 +101,8 @@ public:
   //! Truncate path to theLevel steps (returns new path addressing that entity).
   //! @param[in] thePath  topology path
   //! @param[in] theLevel number of steps to keep
-  [[nodiscard]] Standard_EXPORT BRepGraph_TopologyPath Truncated(
-    const BRepGraph_TopologyPath& thePath,
-    const int                     theLevel) const;
+  [[nodiscard]] Standard_EXPORT BRepGraph_TopologyPath
+    Truncated(const BRepGraph_TopologyPath& thePath, const int theLevel) const;
 
   //! True if the path passes through the given entity at any level.
   [[nodiscard]] Standard_EXPORT bool PathContains(const BRepGraph_TopologyPath& thePath,
@@ -155,8 +153,9 @@ public:
   //! @param[in] theAncestorPath    candidate ancestor path
   //! @param[in] theDescendantPath  candidate descendant path
   //! @return true if ancestor path is a prefix of descendant path
-  [[nodiscard]] Standard_EXPORT bool IsAncestorOf(const BRepGraph_TopologyPath& theAncestorPath,
-                                                  const BRepGraph_TopologyPath& theDescendantPath) const;
+  [[nodiscard]] Standard_EXPORT bool IsAncestorOf(
+    const BRepGraph_TopologyPath& theAncestorPath,
+    const BRepGraph_TopologyPath& theDescendantPath) const;
 
   //! Enumerate all resolved nodes along a path, including root, intermediates
   //! (expanding 1:1 transitions), and leaf.

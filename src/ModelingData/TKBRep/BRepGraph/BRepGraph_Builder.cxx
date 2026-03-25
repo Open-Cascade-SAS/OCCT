@@ -168,17 +168,17 @@ void BRepGraph_Builder::Append(BRepGraph&          theGraph,
     return;
 
   // Snapshot entity counts before append to allocate UIDs only for new entities.
-  BRepGraphInc_Storage& aStorage   = theGraph.myData->myIncStorage;
-  const int             anOldVtx   = aStorage.NbVertices();
-  const int             anOldEdge  = aStorage.NbEdges();
-  const int             anOldCoEdge = aStorage.NbCoEdges();
-  const int             anOldWire  = aStorage.NbWires();
-  const int             anOldFace  = aStorage.NbFaces();
-  const int             anOldShell = aStorage.NbShells();
-  const int             anOldSolid = aStorage.NbSolids();
-  const int             anOldComp  = aStorage.NbCompounds();
-  const int             anOldCS    = aStorage.NbCompSolids();
-  const int             anOldProduct = aStorage.NbProducts();
+  BRepGraphInc_Storage& aStorage        = theGraph.myData->myIncStorage;
+  const int             anOldVtx        = aStorage.NbVertices();
+  const int             anOldEdge       = aStorage.NbEdges();
+  const int             anOldCoEdge     = aStorage.NbCoEdges();
+  const int             anOldWire       = aStorage.NbWires();
+  const int             anOldFace       = aStorage.NbFaces();
+  const int             anOldShell      = aStorage.NbShells();
+  const int             anOldSolid      = aStorage.NbSolids();
+  const int             anOldComp       = aStorage.NbCompounds();
+  const int             anOldCS         = aStorage.NbCompSolids();
+  const int             anOldProduct    = aStorage.NbProducts();
   const int             anOldOccurrence = aStorage.NbOccurrences();
 
   occ::handle<NCollection_IncAllocator> aTmpAlloc = new NCollection_IncAllocator;

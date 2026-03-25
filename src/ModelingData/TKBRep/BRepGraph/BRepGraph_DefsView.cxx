@@ -516,7 +516,7 @@ const BRepGraphInc::CoEdgeEntity* BRepGraph::DefsView::FindPCurve(
   const BRepGraph_NodeId theEdgeDef,
   const BRepGraph_NodeId theFaceDef) const
 {
-  const BRepGraphInc_Storage&                   aStorage = myGraph->myData->myIncStorage;
+  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
   if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge
       || !theEdgeDef.IsValid(aStorage.NbEdges()))
     return nullptr;
@@ -539,7 +539,7 @@ const BRepGraphInc::CoEdgeEntity* BRepGraph::DefsView::FindPCurve(
   const BRepGraph_NodeId   theFaceDef,
   const TopAbs_Orientation theEdgeOrientation) const
 {
-  const BRepGraphInc_Storage&                   aStorage = myGraph->myData->myIncStorage;
+  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
   if (theEdgeDef.NodeKind != BRepGraph_NodeId::Kind::Edge
       || !theEdgeDef.IsValid(aStorage.NbEdges()))
     return nullptr;

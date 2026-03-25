@@ -73,7 +73,10 @@ public:
   void Next() { ++myCurrent; }
 
   //! The full path from root to current entity occurrence.
-  [[nodiscard]] const BRepGraph_TopologyPath& CurrentPath() const { return myResults.Value(myCurrent).Path; }
+  [[nodiscard]] const BRepGraph_TopologyPath& CurrentPath() const
+  {
+    return myResults.Value(myCurrent).Path;
+  }
 
   //! Definition NodeId at the path leaf (cached, O(1)).
   [[nodiscard]] BRepGraph_NodeId Current() const { return myResults.Value(myCurrent).Leaf; }
@@ -85,7 +88,8 @@ public:
   [[nodiscard]] Standard_EXPORT TopAbs_Orientation Orientation() const;
 
   //! Location composed from root to the first step matching theKind.
-  [[nodiscard]] Standard_EXPORT TopLoc_Location LocationOf(const BRepGraph_NodeId::Kind theKind) const;
+  [[nodiscard]] Standard_EXPORT TopLoc_Location
+    LocationOf(const BRepGraph_NodeId::Kind theKind) const;
 
   //! Entity at the first step matching theKind.
   [[nodiscard]] Standard_EXPORT BRepGraph_NodeId NodeOf(const BRepGraph_NodeId::Kind theKind) const;
