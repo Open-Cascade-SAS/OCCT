@@ -657,9 +657,9 @@ bool makeFreeChildRef(const BRepGraphInc_Storage& theStorage,
 
 //! Extract first, last, and internal/external vertices from an edge.
 static void edgeVertices(const TopoDS_Edge&                           theEdge,
-                  TopoDS_Vertex&                               theFirst,
-                  TopoDS_Vertex&                               theLast,
-                  NCollection_Vector<ExtractedInternalVertex>& theInternal)
+                         TopoDS_Vertex&                               theFirst,
+                         TopoDS_Vertex&                               theLast,
+                         NCollection_Vector<ExtractedInternalVertex>& theInternal)
 {
   for (TopoDS_Iterator aVIt(theEdge, false, false); aVIt.More(); aVIt.Next())
   {
@@ -712,10 +712,10 @@ static void edgeVertices(const TopoDS_Edge&                           theEdge,
 //! Extract edge geometry and parametric data in a face context.
 //! Fills theEdgeData with 3D curve, vertices, PCurves, and polygons.
 static void extractEdgeInFace(ExtractedEdge&                   theEdgeData,
-                       const TopoDS_Edge&               theEdge,
-                       const TopoDS_Face&               theForwardFace,
-                       const occ::handle<Geom_Surface>& theFaceSurface,
-                       const occ::handle<Geom_Surface>& theOrigSurface)
+                              const TopoDS_Edge&               theEdge,
+                              const TopoDS_Face&               theForwardFace,
+                              const occ::handle<Geom_Surface>& theFaceSurface,
+                              const occ::handle<Geom_Surface>& theOrigSurface)
 {
   theEdgeData.Shape             = theEdge;
   theEdgeData.Tolerance         = BRep_Tool::Tolerance(theEdge);

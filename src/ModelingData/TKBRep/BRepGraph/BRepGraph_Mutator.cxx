@@ -156,35 +156,35 @@ int cachedActiveByKind(const BRepGraphInc_Storage& theStorage, const BRepGraph_N
 //! Copies shared properties from the original edge and assigns boundary vertices/params.
 //! Both vertex refs are taken as full VertexRef (including Location) to avoid
 //! accidental Location loss if the helper is reused in other contexts.
-void initSubEdgeDef(BRepGraphInc::EdgeEntity&       theSub,
-                    const BRepGraph_Curve3DRepId     theCurve3DRepId,
-                    const double                     theTolerance,
-                    const bool                       theSameParameter,
-                    const BRepGraphInc::VertexRef&   theStartRef,
-                    const BRepGraphInc::VertexRef&   theEndRef,
-                    const double                     theParamFirst,
-                    const double                     theParamLast)
+void initSubEdgeDef(BRepGraphInc::EdgeEntity&      theSub,
+                    const BRepGraph_Curve3DRepId   theCurve3DRepId,
+                    const double                   theTolerance,
+                    const bool                     theSameParameter,
+                    const BRepGraphInc::VertexRef& theStartRef,
+                    const BRepGraphInc::VertexRef& theEndRef,
+                    const double                   theParamFirst,
+                    const double                   theParamLast)
 {
-  theSub.Curve3DRepId = theCurve3DRepId;
-  theSub.Tolerance    = theTolerance;
+  theSub.Curve3DRepId  = theCurve3DRepId;
+  theSub.Tolerance     = theTolerance;
   theSub.SameParameter = theSameParameter;
-  theSub.SameRange    = false;
-  theSub.IsDegenerate = false;
-  theSub.StartVertex  = theStartRef;
-  theSub.EndVertex    = theEndRef;
-  theSub.ParamFirst   = theParamFirst;
-  theSub.ParamLast    = theParamLast;
+  theSub.SameRange     = false;
+  theSub.IsDegenerate  = false;
+  theSub.StartVertex   = theStartRef;
+  theSub.EndVertex     = theEndRef;
+  theSub.ParamFirst    = theParamFirst;
+  theSub.ParamLast     = theParamLast;
 }
 
 //! Initialize a sub-CoEdge definition produced by SplitEdge.
 void initSubCoEdgeDef(BRepGraphInc::CoEdgeEntity&  theCE,
-                      const BRepGraph_EdgeId        theEdgeId,
-                      const BRepGraph_FaceId        theFaceId,
-                      const TopAbs_Orientation      theSense,
-                      const BRepGraph_Curve2DRepId  theCurve2DRepId,
-                      const double                  theParamFirst,
-                      const double                  theParamLast,
-                      const GeomAbs_Shape           theContinuity)
+                      const BRepGraph_EdgeId       theEdgeId,
+                      const BRepGraph_FaceId       theFaceId,
+                      const TopAbs_Orientation     theSense,
+                      const BRepGraph_Curve2DRepId theCurve2DRepId,
+                      const double                 theParamFirst,
+                      const double                 theParamLast,
+                      const GeomAbs_Shape          theContinuity)
 {
   theCE.EdgeDefId    = theEdgeId;
   theCE.FaceDefId    = theFaceId;
