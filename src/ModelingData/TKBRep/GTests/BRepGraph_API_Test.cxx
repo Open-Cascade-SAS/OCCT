@@ -791,3 +791,93 @@ TEST(BRepGraphAPI_AdjacencyTest, FacesOfEdge_NoFaces_Programmatic)
   NCollection_Vector<BRepGraph_NodeId> aFaces = aGraph.Spatial().FacesOfEdge(anEdgeId);
   EXPECT_EQ(aFaces.Length(), 0);
 }
+
+// ============ New SpatialView adjacency methods ============
+
+TEST(BRepGraphSpatialView, EdgesOfFace_Box_HasEdges)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  // Each box face has 4 edges (rectangular loop).
+  NCollection_Vector<BRepGraph_NodeId> aEdges =
+    aGraph.Spatial().EdgesOfFace(BRepGraph_NodeId::Face(0));
+  EXPECT_EQ(aEdges.Length(), 4);
+}
+
+TEST(BRepGraphSpatialView, VerticesOfEdge_Box_HasTwoVertices)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  NCollection_Vector<BRepGraph_NodeId> aVerts =
+    aGraph.Spatial().VerticesOfEdge(BRepGraph_NodeId::Edge(0));
+  EXPECT_EQ(aVerts.Length(), 2);
+  EXPECT_EQ(aVerts.Value(0).NodeKind, BRepGraph_NodeId::Kind::Vertex);
+  EXPECT_EQ(aVerts.Value(1).NodeKind, BRepGraph_NodeId::Kind::Vertex);
+}
+
+TEST(BRepGraphSpatialView, EdgesOfVertex_Box_ThreeEdges)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  // Each box corner vertex is shared by 3 edges.
+  NCollection_Vector<BRepGraph_NodeId> aEdges =
+    aGraph.Spatial().EdgesOfVertex(BRepGraph_NodeId::Vertex(0));
+  EXPECT_EQ(aEdges.Length(), 3);
+}
+
+TEST(BRepGraphSpatialView, AdjacentEdges_Box_SharedVertex)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  // Box edge shares 2 vertices, each with 3 incident edges.
+  // Adjacent = (3 - 1) + (3 - 1) - overlap = at least 4 adjacent edges.
+  NCollection_Vector<BRepGraph_NodeId> aAdj =
+    aGraph.Spatial().AdjacentEdges(BRepGraph_NodeId::Edge(0));
+  EXPECT_GE(aAdj.Length(), 4);
+}
+
+TEST(BRepGraphSpatialView, FaceCountOfEdge_Box_TwoFaces)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  // Every box edge is shared by exactly 2 faces (manifold).
+  EXPECT_EQ(aGraph.Spatial().FaceCountOfEdge(BRepGraph_NodeId::Edge(0)), 2);
+}
+
+TEST(BRepGraphSpatialView, IsManifoldEdge_Box_True)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  EXPECT_TRUE(aGraph.Spatial().IsManifoldEdge(BRepGraph_NodeId::Edge(0)));
+  EXPECT_FALSE(aGraph.Spatial().IsBoundaryEdge(BRepGraph_NodeId::Edge(0)));
+}
+
+TEST(BRepGraphSpatialView, InvalidInput_ReturnsEmpty)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  // Wrong kind.
+  EXPECT_EQ(aGraph.Spatial().EdgesOfFace(BRepGraph_NodeId::Edge(0)).Length(), 0);
+  EXPECT_EQ(aGraph.Spatial().EdgesOfVertex(BRepGraph_NodeId::Face(0)).Length(), 0);
+  EXPECT_EQ(aGraph.Spatial().VerticesOfEdge(BRepGraph_NodeId::Face(0)).Length(), 0);
+  EXPECT_EQ(aGraph.Spatial().AdjacentEdges(BRepGraph_NodeId::Face(0)).Length(), 0);
+
+  // Invalid NodeId.
+  EXPECT_EQ(aGraph.Spatial().FaceCountOfEdge(BRepGraph_NodeId()), 0);
+  EXPECT_FALSE(aGraph.Spatial().IsBoundaryEdge(BRepGraph_NodeId()));
+  EXPECT_FALSE(aGraph.Spatial().IsManifoldEdge(BRepGraph_NodeId()));
+}

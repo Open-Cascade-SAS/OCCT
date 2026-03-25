@@ -141,6 +141,7 @@ public:
   class ShapesView;
   class BuilderView;
   class AnalyzeView;
+  class PathView;
 
   //! Access topology definitions.
   DefsView Defs() const;
@@ -148,6 +149,8 @@ public:
   UIDsView UIDs() const;
   //! Access spatial and adjacency queries.
   SpatialView Spatial() const;
+  //! Access topology path resolution queries.
+  PathView Paths() const;
   //! Access user attributes.
   AttrsView Attrs();
   //! Access shape reconstruction.

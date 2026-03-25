@@ -15,135 +15,73 @@
 #define _BRepGraph_SpatialView_HeaderFile
 
 #include <BRepGraph.hxx>
-#include <BRepGraph_TopologyPath.hxx>
-#include <BRepGraphInc_Storage.hxx>
-#include <TopAbs_Orientation.hxx>
-#include <TopLoc_Location.hxx>
 
-//! @brief Read-only view for spatial queries, topology path resolution,
-//! and topological adjacency.
+//! @brief Read-only view for topological adjacency queries.
 //!
-//! All path-based queries use the uniform step model: the path is walked
-//! from root through each step, dispatching on the current entity kind
-//! to resolve ref locations, orientations, and child entities.
-//!
-//! ## Usage
-//! @code
-//!   BRepGraph_Explorer anExp(aGraph, BRepGraph_NodeId::Solid(0), Kind::Face);
-//!   for (; anExp.More(); anExp.Next())
-//!   {
-//!     TopLoc_Location aFaceLoc = aGraph.Spatial().GlobalLocation(anExp.CurrentPath());
-//!   }
-//! @endcode
+//! Provides definition-level adjacency: adjacent faces, shared edges,
+//! same-domain faces, and faces referencing an edge.
+//! These queries operate on the reverse index, not on topology paths.
 //!
 //! Obtained via BRepGraph::Spatial().
 class BRepGraph::SpatialView
 {
 public:
-  //! One occurrence of a node with composed location context.
-  struct OccurrenceEntry
-  {
-    BRepGraph_TopologyPath Path;
-    TopLoc_Location        Location;
-    TopAbs_Orientation     Orientation;
-  };
-
-  //! All occurrence entries for a node: paths, locations, orientations.
-  //! Computed on demand via reverse index walk. No caching.
-  //! @param[in] theNode entity to find all occurrences of
-  Standard_EXPORT NCollection_Vector<OccurrenceEntry> NodeLocations(BRepGraph_NodeId theNode) const;
-
-  //! Global location at the leaf of the path (all levels composed).
-  //! Handles assembly occurrences, compound containers, and topology uniformly.
-  //! @param[in] thePath fully specified topology path
-  //! @return composed TopLoc_Location
-  Standard_EXPORT TopLoc_Location GlobalLocation(const BRepGraph_TopologyPath& thePath) const;
-
-  //! Global orientation at the leaf of the path (all levels composed).
-  //! @param[in] thePath fully specified topology path
-  //! @return composed TopAbs_Orientation
-  Standard_EXPORT TopAbs_Orientation GlobalOrientation(const BRepGraph_TopologyPath& thePath) const;
-
-  //! Leaf entity definition NodeId.
-  //! @param[in] thePath topology path
-  //! @return NodeId of the entity at the path's leaf, or invalid if path is invalid
-  Standard_EXPORT BRepGraph_NodeId LeafNode(const BRepGraph_TopologyPath& thePath) const;
-
-  //! Location composed from root down to step theLevel (0-based).
-  //! Level 0 = first child of root. Level Depth()-1 = leaf.
-  //! @param[in] thePath  topology path
-  //! @param[in] theLevel step index (0-based)
-  Standard_EXPORT TopLoc_Location LocationAt(const BRepGraph_TopologyPath& thePath,
-                                             int                           theLevel) const;
-
-  //! Entity NodeId at step theLevel.
-  //! @param[in] thePath  topology path
-  //! @param[in] theLevel step index (0-based)
-  Standard_EXPORT BRepGraph_NodeId NodeAt(const BRepGraph_TopologyPath& thePath,
-                                          int                           theLevel) const;
-
-  //! Orientation composed from root down to step theLevel.
-  //! @param[in] thePath  topology path
-  //! @param[in] theLevel step index (0-based)
-  Standard_EXPORT TopAbs_Orientation OrientationAt(const BRepGraph_TopologyPath& thePath,
-                                                   int                           theLevel) const;
-
-  //! Find the first step level where the resolved entity has the given kind.
-  //! Returns -1 if no such level exists in the path.
-  //! @param[in] thePath  topology path
-  //! @param[in] theKind  entity kind to search for
-  Standard_EXPORT int FindLevel(const BRepGraph_TopologyPath& thePath,
-                                BRepGraph_NodeId::Kind        theKind) const;
-
-  //! Truncate path to theLevel steps (returns new path addressing that entity).
-  //! @param[in] thePath  topology path
-  //! @param[in] theLevel number of steps to keep
-  Standard_EXPORT BRepGraph_TopologyPath Truncated(const BRepGraph_TopologyPath& thePath,
-                                                   int                           theLevel) const;
-
-  //! True if the path passes through the given entity at any level.
-  Standard_EXPORT bool PathContains(const BRepGraph_TopologyPath& thePath,
-                                    BRepGraph_NodeId              theNode) const;
-
-  //! Filter paths: keep only those that pass through theNode.
-  Standard_EXPORT NCollection_Vector<BRepGraph_TopologyPath> FilterByInclude(
-    const NCollection_Vector<BRepGraph_TopologyPath>& thePaths,
-    BRepGraph_NodeId                                  theNode) const;
-
-  //! Filter paths: remove those that pass through theNode.
-  Standard_EXPORT NCollection_Vector<BRepGraph_TopologyPath> FilterByExclude(
-    const NCollection_Vector<BRepGraph_TopologyPath>& thePaths,
-    BRepGraph_NodeId                                  theNode) const;
-
-  //! All paths from any root to the given entity.
-  Standard_EXPORT NCollection_Vector<BRepGraph_TopologyPath> PathsTo(
-    BRepGraph_NodeId theNode) const;
-
-  //! All paths from a specific root to the given entity.
-  Standard_EXPORT NCollection_Vector<BRepGraph_TopologyPath> PathsFromTo(
-    BRepGraph_NodeId theRoot,
-    BRepGraph_NodeId theLeaf) const;
-
-  //! Compute the global placement of an occurrence by walking the parent chain.
-  //! @param[in] theOccurrenceIdx zero-based occurrence definition index
-  Standard_EXPORT TopLoc_Location GlobalPlacement(const int theOccurrenceIdx) const;
-
   //! Return all face definitions sharing the same surface as the given face.
+  //! @param[in] theFaceDef face definition NodeId
   Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> SameDomainFaces(
     const BRepGraph_NodeId theFaceDef) const;
 
   //! Return all face definition NodeIds that reference this edge.
+  //! @param[in] theEdgeDef edge definition NodeId
   Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> FacesOfEdge(
     const BRepGraph_NodeId theEdgeDef) const;
 
   //! Return all edges shared between two faces.
+  //! @param[in] theFaceA first face definition NodeId
+  //! @param[in] theFaceB second face definition NodeId
   Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> SharedEdges(
     const BRepGraph_NodeId theFaceA,
     const BRepGraph_NodeId theFaceB) const;
 
   //! Return all faces adjacent to a face (sharing at least one edge).
+  //! @param[in] theFaceDef face definition NodeId
   Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> AdjacentFaces(
     const BRepGraph_NodeId theFaceDef) const;
+
+  //! Return all edge definitions in a face (collected from all wires via coedges).
+  //! @param[in] theFaceDef face definition NodeId
+  //! @return unique edge NodeIds (deduplicated)
+  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> EdgesOfFace(
+    const BRepGraph_NodeId theFaceDef) const;
+
+  //! Return all edge definitions incident to a vertex.
+  //! @param[in] theVertexDef vertex definition NodeId
+  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> EdgesOfVertex(
+    const BRepGraph_NodeId theVertexDef) const;
+
+  //! Return start, end, and internal vertex definitions for an edge.
+  //! @param[in] theEdgeDef edge definition NodeId
+  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> VerticesOfEdge(
+    const BRepGraph_NodeId theEdgeDef) const;
+
+  //! Return all edges sharing a vertex with the given edge (excluding itself).
+  //! @param[in] theEdgeDef edge definition NodeId
+  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> AdjacentEdges(
+    const BRepGraph_NodeId theEdgeDef) const;
+
+  //! Return the number of distinct faces referencing this edge.
+  //! 0 = free edge, 1 = boundary, 2 = manifold, 3+ = non-manifold.
+  //! O(1) lookup via cached reverse index.
+  //! @param[in] theEdgeDef edge definition NodeId
+  Standard_EXPORT int FaceCountOfEdge(const BRepGraph_NodeId theEdgeDef) const;
+
+  //! True if the edge is referenced by exactly one face (boundary edge).
+  //! @param[in] theEdgeDef edge definition NodeId
+  Standard_EXPORT bool IsBoundaryEdge(const BRepGraph_NodeId theEdgeDef) const;
+
+  //! True if the edge is referenced by exactly two faces (manifold interior edge).
+  //! @param[in] theEdgeDef edge definition NodeId
+  Standard_EXPORT bool IsManifoldEdge(const BRepGraph_NodeId theEdgeDef) const;
 
 private:
   friend class BRepGraph;
@@ -152,76 +90,6 @@ private:
       : myGraph(theGraph)
   {
   }
-
-  //! Compose location from root through theMaxSteps steps.
-  TopLoc_Location composeToLevel(const BRepGraph_TopologyPath& thePath, int theMaxSteps) const;
-
-  //! Compose orientation from root through theMaxSteps steps.
-  TopAbs_Orientation composeOrientationToLevel(const BRepGraph_TopologyPath& thePath,
-                                               int                           theMaxSteps) const;
-
-  //! Resolve entity at theMaxSteps steps from root.
-  BRepGraph_NodeId resolveAtLevel(const BRepGraph_TopologyPath& thePath, int theMaxSteps) const;
-
-  //! Return the ref location for a step at the given parent entity.
-  TopLoc_Location stepLocation(const BRepGraph_NodeId theParent, int theRefIdx) const;
-
-  //! Return the ref orientation for a step at the given parent entity.
-  TopAbs_Orientation stepOrientation(const BRepGraph_NodeId theParent, int theRefIdx) const;
-
-  //! Resolve the child entity after a step at the given parent entity.
-  BRepGraph_NodeId resolveChild(const BRepGraph_NodeId theParent, int theRefIdx) const;
-
-  //! Reverse walk to discover all paths to a node (no location composition).
-  NCollection_Vector<BRepGraph_TopologyPath> reverseWalkPaths(BRepGraph_NodeId theNode) const;
-
-  //! Reverse walk with location/orientation composition (for NodeLocations).
-  NCollection_Vector<OccurrenceEntry> reverseWalkEntries(BRepGraph_NodeId theNode) const;
-
-  //! Walk upward from an edge to all roots, collecting paths.
-  void reverseWalkFromEdge(int                                         theEdgeIdx,
-                           NCollection_Vector<BRepGraph_TopologyPath>& theResult) const;
-
-  //! Walk upward from a face to all roots.
-  void reverseWalkFromFace(int                                         theFaceIdx,
-                           NCollection_Vector<BRepGraph_TopologyPath>& theResult) const;
-
-  //! Walk upward from a shell to all roots.
-  void reverseWalkFromShell(int                                         theShellIdx,
-                            NCollection_Vector<BRepGraph_TopologyPath>& theResult) const;
-
-  //! Walk upward from a wire to all roots via faces.
-  void reverseWalkFromWire(int                                         theWireIdx,
-                           NCollection_Vector<BRepGraph_TopologyPath>& theResult) const;
-
-  //! Walk upward from a vertex to all roots via edges.
-  void reverseWalkFromVertex(int                                         theVertexIdx,
-                             NCollection_Vector<BRepGraph_TopologyPath>& theResult) const;
-
-  //! Build occurrence entry from a complete path (compose location + orientation).
-  OccurrenceEntry buildEntry(const BRepGraph_TopologyPath& thePath) const;
-
-  //! Find the ref index of a child in a parent's ref vector (linear scan).
-  static int findShellRefIdx(const BRepGraphInc::SolidEntity& theSolid, int theShellIdx);
-  static int findFaceRefIdx(const BRepGraphInc::ShellEntity& theShell, int theFaceIdx);
-  static int findWireRefIdx(const BRepGraphInc::FaceEntity& theFace, int theWireIdx);
-  static int findCoEdgeRefIdx(const BRepGraphInc::WireEntity& theWire, int theCoEdgeIdx);
-  static int findChildRefIdx(const BRepGraphInc::CompoundEntity& theCompound,
-                             BRepGraph_NodeId::Kind              theKind,
-                             int                                 theChildIdx);
-  static int findSolidRefIdx(const BRepGraphInc::CompSolidEntity& theCS, int theSolidIdx);
-
-  //! True if the entity kind has a 1:1 transition (no step consumed).
-  static bool is1to1(const BRepGraph_NodeId::Kind theKind);
-
-  //! Location for a 1:1 transition.
-  TopLoc_Location transitLocation(const BRepGraph_NodeId theNode) const;
-
-  //! Orientation for a 1:1 transition.
-  TopAbs_Orientation transitOrientation(const BRepGraph_NodeId theNode) const;
-
-  //! Child entity for a 1:1 transition.
-  BRepGraph_NodeId transitChild(const BRepGraph_NodeId theNode) const;
 
   const BRepGraph* myGraph;
 };

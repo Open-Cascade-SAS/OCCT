@@ -13,7 +13,7 @@
 
 #include <BRepGraph_Explorer.hxx>
 #include <BRepGraph_DefsView.hxx>
-#include <BRepGraph_SpatialView.hxx>
+#include <BRepGraph_PathView.hxx>
 
 //=================================================================================================
 
@@ -66,14 +66,14 @@ void BRepGraph_Explorer::Init(const BRepGraph&       theGraph,
 
 TopLoc_Location BRepGraph_Explorer::Location() const
 {
-  return myGraph->Spatial().GlobalLocation(CurrentPath());
+  return myGraph->Paths().GlobalLocation(CurrentPath());
 }
 
 //=================================================================================================
 
 TopAbs_Orientation BRepGraph_Explorer::Orientation() const
 {
-  return myGraph->Spatial().GlobalOrientation(CurrentPath());
+  return myGraph->Paths().GlobalOrientation(CurrentPath());
 }
 
 //=================================================================================================
@@ -81,10 +81,10 @@ TopAbs_Orientation BRepGraph_Explorer::Orientation() const
 TopLoc_Location BRepGraph_Explorer::LocationOf(BRepGraph_NodeId::Kind theKind) const
 {
   const BRepGraph_TopologyPath& aPath  = CurrentPath();
-  int                           aLevel = myGraph->Spatial().FindLevel(aPath, theKind);
+  int                           aLevel = myGraph->Paths().FindLevel(aPath, theKind);
   if (aLevel < 0)
     return TopLoc_Location();
-  return myGraph->Spatial().LocationAt(aPath, aLevel);
+  return myGraph->Paths().LocationAt(aPath, aLevel);
 }
 
 //=================================================================================================
@@ -92,24 +92,24 @@ TopLoc_Location BRepGraph_Explorer::LocationOf(BRepGraph_NodeId::Kind theKind) c
 BRepGraph_NodeId BRepGraph_Explorer::NodeOf(BRepGraph_NodeId::Kind theKind) const
 {
   const BRepGraph_TopologyPath& aPath  = CurrentPath();
-  int                           aLevel = myGraph->Spatial().FindLevel(aPath, theKind);
+  int                           aLevel = myGraph->Paths().FindLevel(aPath, theKind);
   if (aLevel < 0)
     return BRepGraph_NodeId();
-  return myGraph->Spatial().NodeAt(aPath, aLevel);
+  return myGraph->Paths().NodeAt(aPath, aLevel);
 }
 
 //=================================================================================================
 
 TopLoc_Location BRepGraph_Explorer::LocationAt(int theLevel) const
 {
-  return myGraph->Spatial().LocationAt(CurrentPath(), theLevel);
+  return myGraph->Paths().LocationAt(CurrentPath(), theLevel);
 }
 
 //=================================================================================================
 
 BRepGraph_NodeId BRepGraph_Explorer::NodeAt(int theLevel) const
 {
-  return myGraph->Spatial().NodeAt(CurrentPath(), theLevel);
+  return myGraph->Paths().NodeAt(CurrentPath(), theLevel);
 }
 
 //=================================================================================================

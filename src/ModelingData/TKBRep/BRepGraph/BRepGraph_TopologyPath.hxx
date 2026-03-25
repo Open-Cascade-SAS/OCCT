@@ -30,8 +30,8 @@
 //! Parasolid's PK_TOPOL_traverse pattern.
 //!
 //! Paths are produced by BRepGraph_Explorer (top-down discovery)
-//! or SpatialView::PathsTo (bottom-up reverse lookup).
-//! Pass paths to SpatialView for location, orientation, and entity queries.
+//! or PathView::PathsTo (bottom-up reverse lookup).
+//! Pass paths to PathView for location, orientation, and entity queries.
 //!
 //! ## Virtual concatenated ref list convention
 //! Each step's RefIdx indexes into a virtual concatenation of the current
@@ -82,6 +82,18 @@ public:
   }
 
   bool operator!=(const BRepGraph_TopologyPath& theOther) const { return !(*this == theOther); }
+
+  //! Return a new path keeping only the first theLevel steps.
+  //! If theLevel >= Depth(), returns a copy of this path.
+  //! @param[in] theLevel number of steps to keep
+  BRepGraph_TopologyPath Truncated(const int theLevel) const
+  {
+    BRepGraph_TopologyPath aResult(myRoot);
+    const int              aLimit = theLevel < Depth() ? theLevel : Depth();
+    for (int i = 0; i < aLimit; ++i)
+      aResult.pushStep(mySteps.Value(i));
+    return aResult;
+  }
 
   //! Root-only path (depth 0).
   static BRepGraph_TopologyPath FromRoot(const BRepGraph_NodeId theRoot)

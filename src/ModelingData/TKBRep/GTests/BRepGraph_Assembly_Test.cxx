@@ -15,7 +15,7 @@
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_Iterator.hxx>
-#include <BRepGraph_SpatialView.hxx>
+#include <BRepGraph_PathView.hxx>
 #include <BRepGraph_UIDsView.hxx>
 #include <BRepGraphInc_ReverseIndex.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -329,7 +329,7 @@ TEST(BRepGraphAssemblyTest, GlobalPlacement_DeepNesting)
 
   // Global placement of the part occurrence should be aTrsf2 * aTrsf1.
   // ParentOccurrenceIdx chain: anOccPart -> anOccSubAsm -> -1 (root).
-  TopLoc_Location aGlobal = aGraph.Spatial().GlobalPlacement(anOccPart.Index);
+  TopLoc_Location aGlobal = aGraph.Paths().OccurrenceLocation(anOccPart.Index);
   const gp_Trsf&  aGTrsf  = aGlobal.Transformation();
   EXPECT_NEAR(aGTrsf.TranslationPart().X(), 100.0, Precision::Confusion());
   EXPECT_NEAR(aGTrsf.TranslationPart().Y(), 200.0, Precision::Confusion());
@@ -559,8 +559,8 @@ TEST(BRepGraphAssemblyTest, GlobalPlacement_DAGSharing_DistinctPathsGiveDistinct
     aGraph.Builder().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location(aTrsf2));
 
   // Same part, different occurrences, different global placements.
-  TopLoc_Location aGlobal1 = aGraph.Spatial().GlobalPlacement(anOcc1.Index);
-  TopLoc_Location aGlobal2 = aGraph.Spatial().GlobalPlacement(anOcc2.Index);
+  TopLoc_Location aGlobal1 = aGraph.Paths().OccurrenceLocation(anOcc1.Index);
+  TopLoc_Location aGlobal2 = aGraph.Paths().OccurrenceLocation(anOcc2.Index);
 
   EXPECT_NEAR(aGlobal1.Transformation().TranslationPart().X(), 100.0, Precision::Confusion());
   EXPECT_NEAR(aGlobal1.Transformation().TranslationPart().Y(), 0.0, Precision::Confusion());
@@ -627,7 +627,7 @@ TEST(BRepGraphAssemblyTest, GlobalPlacement_ThreeLevelNesting)
     aGraph.Builder().AddOccurrence(aMidAsm, aLeafPart, TopLoc_Location(aT1), anOccMid);
 
   // Global of leaf = T3 * T2 * T1 => (1, 2, 3).
-  TopLoc_Location aGlobal = aGraph.Spatial().GlobalPlacement(anOccLeaf.Index);
+  TopLoc_Location aGlobal = aGraph.Paths().OccurrenceLocation(anOccLeaf.Index);
   const gp_XYZ&   aTransl = aGlobal.Transformation().TranslationPart();
   EXPECT_NEAR(aTransl.X(), 1.0, Precision::Confusion());
   EXPECT_NEAR(aTransl.Y(), 2.0, Precision::Confusion());
@@ -689,7 +689,7 @@ TEST(BRepGraphAssemblyTest, GlobalPlacement_CircularParentOccurrence_Terminates)
   }
 
   // GlobalPlacement must terminate despite the cycle (depth guard).
-  TopLoc_Location aGlobal = aGraph.Spatial().GlobalPlacement(anOcc2.Index);
+  TopLoc_Location aGlobal = aGraph.Paths().OccurrenceLocation(anOcc2.Index);
   // We don't check the value - just that it doesn't hang.
   (void)aGlobal;
 }

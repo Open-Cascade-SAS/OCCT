@@ -32,6 +32,8 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_NameLayer.hxx
   BRepGraph_NodeCache.hxx
   BRepGraph_NodeId.hxx
+  BRepGraph_PathView.cxx
+  BRepGraph_PathView.hxx
   BRepGraph_RepId.hxx
   BRepGraph_PCurveContext.hxx
   BRepGraph_ShapesView.cxx
