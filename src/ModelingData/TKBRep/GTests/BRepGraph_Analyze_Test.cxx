@@ -54,7 +54,7 @@ static gp_Pnt bboxCenter(const BRepGraph& theGraph, BRepGraph_NodeId theNode)
 // Fixture: builds a 10x20x30 box graph for reuse
 // ============================================================
 
-class BRepGraphAnalyzeTest : public testing::Test
+class BRepGraph_AnalyzeTest : public testing::Test
 {
 protected:
   void SetUp() override
@@ -73,7 +73,7 @@ protected:
 // FreeEdges tests
 // ============================================================
 
-TEST(BRepGraphAnalyze, FreeEdges_SingleFace_AllFree)
+TEST_F(BRepGraph_AnalyzeTest, FreeEdges_SingleFace_AllFree)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -91,7 +91,7 @@ TEST(BRepGraphAnalyze, FreeEdges_SingleFace_AllFree)
   EXPECT_EQ(aFreeEdges.Length(), 4);
 }
 
-TEST(BRepGraphAnalyze, FreeEdges_TwoAdjacentFaces_SharedNotFree)
+TEST_F(BRepGraph_AnalyzeTest, FreeEdges_TwoAdjacentFaces_SharedNotFree)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -123,7 +123,7 @@ TEST(BRepGraphAnalyze, FreeEdges_TwoAdjacentFaces_SharedNotFree)
   EXPECT_LE(aFreeEdges.Length(), aGraph.Defs().NbEdges());
 }
 
-TEST_F(BRepGraphAnalyzeTest, FreeEdges_ClosedBox_NoneReturned)
+TEST_F(BRepGraph_AnalyzeTest, FreeEdges_ClosedBox_NoneReturned)
 {
   const NCollection_Vector<BRepGraph_EdgeId> aFreeEdges = BRepGraph_Analyze::FreeEdges(myGraph);
 
@@ -131,7 +131,7 @@ TEST_F(BRepGraphAnalyzeTest, FreeEdges_ClosedBox_NoneReturned)
   EXPECT_EQ(aFreeEdges.Length(), 0);
 }
 
-TEST(BRepGraphAnalyze, FreeEdges_Sphere_SeamEdgesAreFree)
+TEST_F(BRepGraph_AnalyzeTest, FreeEdges_Sphere_SeamEdgesAreFree)
 {
   BRepPrimAPI_MakeSphere aSphereMaker(50.0);
   const TopoDS_Shape&    aSphere = aSphereMaker.Shape();
@@ -147,7 +147,7 @@ TEST(BRepGraphAnalyze, FreeEdges_Sphere_SeamEdgesAreFree)
   EXPECT_GE(aFreeEdges.Length(), 0);
 }
 
-TEST(BRepGraphAnalyze, EdgeCompatibilityAndScore_SingleFace)
+TEST_F(BRepGraph_AnalyzeTest, EdgeCompatibilityAndScore_SingleFace)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -178,20 +178,20 @@ TEST(BRepGraphAnalyze, EdgeCompatibilityAndScore_SingleFace)
 // MissingPCurves, ToleranceConflicts, DegenerateWires
 // ============================================================
 
-TEST_F(BRepGraphAnalyzeTest, MissingPCurves_ValidBox_Empty)
+TEST_F(BRepGraph_AnalyzeTest, MissingPCurves_ValidBox_Empty)
 {
   const auto aMissing = BRepGraph_Analyze::MissingPCurves(myGraph);
   EXPECT_EQ(aMissing.Length(), 0);
 }
 
-TEST_F(BRepGraphAnalyzeTest, ToleranceConflicts_UniformBox_None)
+TEST_F(BRepGraph_AnalyzeTest, ToleranceConflicts_UniformBox_None)
 {
   const NCollection_Vector<BRepGraph_EdgeId> aConflicts =
     BRepGraph_Analyze::ToleranceConflicts(myGraph, 1.0e-3);
   EXPECT_EQ(aConflicts.Length(), 0);
 }
 
-TEST_F(BRepGraphAnalyzeTest, ToleranceConflicts_SmallThreshold_StillNone)
+TEST_F(BRepGraph_AnalyzeTest, ToleranceConflicts_SmallThreshold_StillNone)
 {
   // Even with a tiny threshold, a standard box has no shared curves between
   // different edges, so no tolerance conflicts can occur.
@@ -200,7 +200,7 @@ TEST_F(BRepGraphAnalyzeTest, ToleranceConflicts_SmallThreshold_StillNone)
   EXPECT_EQ(aConflicts.Length(), 0);
 }
 
-TEST_F(BRepGraphAnalyzeTest, DegenerateWires_ValidBox_None)
+TEST_F(BRepGraph_AnalyzeTest, DegenerateWires_ValidBox_None)
 {
   const NCollection_Vector<BRepGraph_WireId> aDegWires =
     BRepGraph_Analyze::DegenerateWires(myGraph);
@@ -211,7 +211,7 @@ TEST_F(BRepGraphAnalyzeTest, DegenerateWires_ValidBox_None)
 // Decompose tests
 // ============================================================
 
-TEST(BRepGraphAnalyze, Decompose_ThreeDisconnected_ThreeComponents)
+TEST_F(BRepGraph_AnalyzeTest, Decompose_ThreeDisconnected_ThreeComponents)
 {
   BRepPrimAPI_MakeBox aBox1(10.0, 10.0, 10.0);
   BRepPrimAPI_MakeBox aBox2(gp_Pnt(100.0, 0.0, 0.0), 10.0, 10.0, 10.0);
@@ -240,7 +240,7 @@ TEST(BRepGraphAnalyze, Decompose_ThreeDisconnected_ThreeComponents)
   }
 }
 
-TEST(BRepGraphAnalyze, Decompose_EmptyCompound_ZeroComponents)
+TEST_F(BRepGraph_AnalyzeTest, Decompose_EmptyCompound_ZeroComponents)
 {
   BRep_Builder    aBuilder;
   TopoDS_Compound aCompound;
@@ -257,7 +257,7 @@ TEST(BRepGraphAnalyze, Decompose_EmptyCompound_ZeroComponents)
 // ParallelForEach tests
 // ============================================================
 
-TEST_F(BRepGraphAnalyzeTest, ParallelForEachFace_Box_VisitsAllSix)
+TEST_F(BRepGraph_AnalyzeTest, ParallelForEachFace_Box_VisitsAllSix)
 {
   const NCollection_Vector<BRepGraph_SubGraph> aComponents = BRepGraph_Analyze::Decompose(myGraph);
   ASSERT_EQ(aComponents.Length(), 1);
@@ -271,7 +271,7 @@ TEST_F(BRepGraphAnalyzeTest, ParallelForEachFace_Box_VisitsAllSix)
   EXPECT_EQ(aCounter.load(), 6);
 }
 
-TEST_F(BRepGraphAnalyzeTest, ParallelForEachEdge_Box_VisitsAllTwelve)
+TEST_F(BRepGraph_AnalyzeTest, ParallelForEachEdge_Box_VisitsAllTwelve)
 {
   const NCollection_Vector<BRepGraph_SubGraph> aComponents = BRepGraph_Analyze::Decompose(myGraph);
   ASSERT_EQ(aComponents.Length(), 1);
@@ -288,7 +288,7 @@ TEST_F(BRepGraphAnalyzeTest, ParallelForEachEdge_Box_VisitsAllTwelve)
   EXPECT_GE(aCounter.load(), 12);
 }
 
-TEST(BRepGraphAnalyze, ParallelForEachFace_SubGraph_OnlyComponentFaces)
+TEST_F(BRepGraph_AnalyzeTest, ParallelForEachFace_SubGraph_OnlyComponentFaces)
 {
   BRepPrimAPI_MakeBox aBox1(10.0, 10.0, 10.0);
   BRepPrimAPI_MakeBox aBox2(gp_Pnt(100.0, 0.0, 0.0), 5.0, 5.0, 5.0);
@@ -320,7 +320,7 @@ TEST(BRepGraphAnalyze, ParallelForEachFace_SubGraph_OnlyComponentFaces)
 // BoundingBox tests
 // ============================================================
 
-TEST_F(BRepGraphAnalyzeTest, BoundingBox_Box_MatchesBRepBndLib)
+TEST_F(BRepGraph_AnalyzeTest, BoundingBox_Box_MatchesBRepBndLib)
 {
   Bnd_Box aRefBox;
   BRepBndLib::Add(myBoxShape, aRefBox);
@@ -345,7 +345,7 @@ TEST_F(BRepGraphAnalyzeTest, BoundingBox_Box_MatchesBRepBndLib)
   EXPECT_NEAR(aGZmax, aRefZmax, aTol);
 }
 
-TEST(BRepGraphAnalyze, BoundingBox_Sphere_NonVoid)
+TEST_F(BRepGraph_AnalyzeTest, BoundingBox_Sphere_NonVoid)
 {
   BRepPrimAPI_MakeSphere aSphereMaker(25.0);
   const TopoDS_Shape&    aSphere = aSphereMaker.Shape();
@@ -364,7 +364,7 @@ TEST(BRepGraphAnalyze, BoundingBox_Sphere_NonVoid)
   }
 }
 
-TEST(BRepGraphAnalyze, BoundingBox_Cylinder_FacesNonVoid)
+TEST_F(BRepGraph_AnalyzeTest, BoundingBox_Cylinder_FacesNonVoid)
 {
   BRepPrimAPI_MakeCylinder aCylMaker(10.0, 50.0);
   const TopoDS_Shape&      aCylinder = aCylMaker.Shape();
@@ -383,7 +383,7 @@ TEST(BRepGraphAnalyze, BoundingBox_Cylinder_FacesNonVoid)
   }
 }
 
-TEST_F(BRepGraphAnalyzeTest, BoundingBox_FaceSubsetOfShell)
+TEST_F(BRepGraph_AnalyzeTest, BoundingBox_FaceSubsetOfShell)
 {
   const BRepGraph_NodeId aShellId(BRepGraph_NodeId::Kind::Shell, 0);
   Bnd_Box                aShellBox;
@@ -415,7 +415,7 @@ TEST_F(BRepGraphAnalyzeTest, BoundingBox_FaceSubsetOfShell)
   }
 }
 
-TEST_F(BRepGraphAnalyzeTest, BoundingBox_ShellSubsetOfSolid)
+TEST_F(BRepGraph_AnalyzeTest, BoundingBox_ShellSubsetOfSolid)
 {
   const BRepGraph_NodeId aSolidId(BRepGraph_NodeId::Kind::Solid, 0);
   Bnd_Box                aSolidBox;
@@ -442,7 +442,7 @@ TEST_F(BRepGraphAnalyzeTest, BoundingBox_ShellSubsetOfSolid)
   EXPECT_LE(aSHZmax, aSOZmax + aTol);
 }
 
-TEST_F(BRepGraphAnalyzeTest, BoundingBox_Edge_SubsetOfOwningFace)
+TEST_F(BRepGraph_AnalyzeTest, BoundingBox_Edge_SubsetOfOwningFace)
 {
   // Take first face and check that each of its edges' bounding boxes
   // fit within the face bounding box.
@@ -481,7 +481,7 @@ TEST_F(BRepGraphAnalyzeTest, BoundingBox_Edge_SubsetOfOwningFace)
   }
 }
 
-TEST_F(BRepGraphAnalyzeTest, BoundingBox_Vertex_SinglePoint)
+TEST_F(BRepGraph_AnalyzeTest, BoundingBox_Vertex_SinglePoint)
 {
   for (int aVertIdx = 0; aVertIdx < myGraph.Defs().NbVertices(); ++aVertIdx)
   {
@@ -501,7 +501,7 @@ TEST_F(BRepGraphAnalyzeTest, BoundingBox_Vertex_SinglePoint)
   }
 }
 
-TEST_F(BRepGraphAnalyzeTest, BoundingBox_AfterMutation_CacheInvalidated)
+TEST_F(BRepGraph_AnalyzeTest, BoundingBox_AfterMutation_CacheInvalidated)
 {
   const BRepGraph_NodeId aVertId(BRepGraph_NodeId::Kind::Vertex, 0);
 
@@ -523,7 +523,7 @@ TEST_F(BRepGraphAnalyzeTest, BoundingBox_AfterMutation_CacheInvalidated)
   EXPECT_TRUE(myGraph.Defs().Vertex(BRepGraph_VertexId(0)).IsModified);
 }
 
-TEST_F(BRepGraphAnalyzeTest, Invalidate_ThenRecompute_SameResult)
+TEST_F(BRepGraph_AnalyzeTest, Invalidate_ThenRecompute_SameResult)
 {
   const BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
 
@@ -550,7 +550,7 @@ TEST_F(BRepGraphAnalyzeTest, Invalidate_ThenRecompute_SameResult)
   EXPECT_NEAR(aZ1max, aZ2max, Precision::Confusion());
 }
 
-TEST_F(BRepGraphAnalyzeTest, InvalidateSubgraph_PropagatesUpToSolid)
+TEST_F(BRepGraph_AnalyzeTest, InvalidateSubgraph_PropagatesUpToSolid)
 {
   const BRepGraph_NodeId aSolidId(BRepGraph_NodeId::Kind::Solid, 0);
   const BRepGraph_NodeId aVertId(BRepGraph_NodeId::Kind::Vertex, 0);
@@ -586,7 +586,7 @@ TEST_F(BRepGraphAnalyzeTest, InvalidateSubgraph_PropagatesUpToSolid)
 // Centroid tests
 // ============================================================
 
-TEST_F(BRepGraphAnalyzeTest, Centroid_Box_AtCenter)
+TEST_F(BRepGraph_AnalyzeTest, Centroid_Box_AtCenter)
 {
   // 10x20x30 box at origin: centroid near (5, 10, 15).
   const BRepGraph_NodeId aSolidId(BRepGraph_NodeId::Kind::Solid, 0);
@@ -597,7 +597,7 @@ TEST_F(BRepGraphAnalyzeTest, Centroid_Box_AtCenter)
   EXPECT_NEAR(aCentroid.Z(), 15.0, 1.0);
 }
 
-TEST(BRepGraphAnalyze, Centroid_Sphere_AtOrigin)
+TEST_F(BRepGraph_AnalyzeTest, Centroid_Sphere_AtOrigin)
 {
   BRepPrimAPI_MakeSphere aSphereMaker(30.0);
   const TopoDS_Shape&    aSphere = aSphereMaker.Shape();
@@ -614,7 +614,7 @@ TEST(BRepGraphAnalyze, Centroid_Sphere_AtOrigin)
   EXPECT_NEAR(aCentroid.Z(), 0.0, 2.0);
 }
 
-TEST_F(BRepGraphAnalyzeTest, Centroid_Face_InsideFaceBBox)
+TEST_F(BRepGraph_AnalyzeTest, Centroid_Face_InsideFaceBBox)
 {
   for (int aFaceIdx = 0; aFaceIdx < myGraph.Defs().NbFaces(); ++aFaceIdx)
   {
@@ -639,7 +639,7 @@ TEST_F(BRepGraphAnalyzeTest, Centroid_Face_InsideFaceBBox)
   }
 }
 
-TEST_F(BRepGraphAnalyzeTest, Centroid_AfterMutation_CacheInvalidated)
+TEST_F(BRepGraph_AnalyzeTest, Centroid_AfterMutation_CacheInvalidated)
 {
   const BRepGraph_NodeId aVertId(BRepGraph_NodeId::Kind::Vertex, 0);
 

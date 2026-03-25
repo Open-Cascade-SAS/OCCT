@@ -17,7 +17,7 @@
 
 #include <gtest/gtest.h>
 
-class BRepGraphMutationGenTest : public testing::Test
+class BRepGraph_MutationGenTest : public testing::Test
 {
 protected:
   void SetUp() override
@@ -31,7 +31,7 @@ protected:
   BRepGraph myGraph;
 };
 
-TEST_F(BRepGraphMutationGenTest, MutationGen_IncrementedOnMutation)
+TEST_F(BRepGraph_MutationGenTest, MutationGen_IncrementedOnMutation)
 {
   EXPECT_EQ(myGraph.Defs().Edge(BRepGraph_EdgeId(0)).MutationGen, 0u);
 
@@ -40,7 +40,7 @@ TEST_F(BRepGraphMutationGenTest, MutationGen_IncrementedOnMutation)
   EXPECT_EQ(myGraph.Defs().Edge(BRepGraph_EdgeId(0)).MutationGen, 1u);
 }
 
-TEST_F(BRepGraphMutationGenTest, MutationGen_MultipleIncrements)
+TEST_F(BRepGraph_MutationGenTest, MutationGen_MultipleIncrements)
 {
   myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.1;
   myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.2;
@@ -48,7 +48,7 @@ TEST_F(BRepGraphMutationGenTest, MutationGen_MultipleIncrements)
   EXPECT_EQ(myGraph.Defs().Edge(BRepGraph_EdgeId(0)).MutationGen, 2u);
 }
 
-TEST_F(BRepGraphMutationGenTest, MutationGen_DeferredMode)
+TEST_F(BRepGraph_MutationGenTest, MutationGen_DeferredMode)
 {
   myGraph.BeginDeferredInvalidation();
   myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
@@ -62,7 +62,7 @@ TEST_F(BRepGraphMutationGenTest, MutationGen_DeferredMode)
   EXPECT_EQ(myGraph.Defs().Edge(BRepGraph_EdgeId(0)).MutationGen, 1u);
 }
 
-TEST_F(BRepGraphMutationGenTest, MutationGen_PropagatedParent_NotIncremented)
+TEST_F(BRepGraph_MutationGenTest, MutationGen_PropagatedParent_NotIncremented)
 {
   // Mutate an edge - parent wire/face/shell/solid get IsModified via propagation,
   // but their MutationGen must stay 0 (they weren't directly mutated).
@@ -85,7 +85,7 @@ TEST_F(BRepGraphMutationGenTest, MutationGen_PropagatedParent_NotIncremented)
     EXPECT_EQ(myGraph.Defs().Solid(BRepGraph_SolidId(i)).MutationGen, 0u);
 }
 
-TEST_F(BRepGraphMutationGenTest, MutationGen_DeferredPropagatedParent_NotIncremented)
+TEST_F(BRepGraph_MutationGenTest, MutationGen_DeferredPropagatedParent_NotIncremented)
 {
   // Same as above but in deferred mode - propagation on flush must not
   // increment MutationGen on parents.

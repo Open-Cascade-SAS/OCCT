@@ -301,12 +301,12 @@ TEST_F(BRepGraphTest, Build_SimpleBox_IsDone)
   EXPECT_TRUE(myGraph.IsDone());
 }
 
-TEST(BRepGraphReverseIndexTest, BuildDelta_ValidateAndSkipRemoved_NullAllocator)
+TEST_F(BRepGraphTest, BuildDelta_ValidateAndSkipRemoved_NullAllocator)
 {
   verifyBuildDeltaScenario(occ::handle<NCollection_BaseAllocator>());
 }
 
-TEST(BRepGraphReverseIndexTest, BuildDelta_ValidateAndSkipRemoved_WithAllocator)
+TEST_F(BRepGraphTest, BuildDelta_ValidateAndSkipRemoved_WithAllocator)
 {
   const occ::handle<NCollection_IncAllocator> anAllocator = new NCollection_IncAllocator();
   verifyBuildDeltaScenario(anAllocator);
@@ -456,7 +456,7 @@ TEST_F(BRepGraphTest, SameDomainFaces_Box_Empty)
   }
 }
 
-TEST(BRepGraphDecomposeTest, Decompose_TwoSeparateFaces)
+TEST_F(BRepGraphTest, Decompose_TwoSeparateFaces)
 {
   BRepPrimAPI_MakeBox aBox1(10.0, 10.0, 10.0);
   BRepPrimAPI_MakeBox aBox2(20.0, 20.0, 20.0);
@@ -498,7 +498,7 @@ TEST_F(BRepGraphTest, UserAttribute_SetGet)
   EXPECT_NEAR(aTyped->UncheckedValue(), 3.14, 1.0e-10);
 }
 
-TEST(BRepGraphReBuildTest, ReBuild_UIDMonotonic)
+TEST_F(BRepGraphTest, ReBuild_UIDMonotonic)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -612,7 +612,7 @@ TEST_F(BRepGraphTest, ReplaceEdgeInWire_Substitution)
   EXPECT_EQ(aNewCoEdge.EdgeDefId.Index, aNewEdgeId.Index);
 }
 
-TEST(BRepGraphParallelTest, ParallelBuild_SameAsSequential)
+TEST_F(BRepGraphTest, ParallelBuild_SameAsSequential)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -635,7 +635,7 @@ TEST(BRepGraphParallelTest, ParallelBuild_SameAsSequential)
   EXPECT_EQ(aParGraph.Defs().NbEdges(), aSeqGraph.Defs().NbEdges());
 }
 
-TEST(BRepGraphParallelTest, ParallelBuild_CompoundOfFaces)
+TEST_F(BRepGraphTest, ParallelBuild_CompoundOfFaces)
 {
   BRepPrimAPI_MakeBox aBox1(10.0, 10.0, 10.0);
   BRepPrimAPI_MakeBox aBox2(20.0, 20.0, 20.0);
@@ -914,7 +914,7 @@ TEST_F(BRepGraphTest, Shape_InvalidatedAfterMutation)
   EXPECT_FALSE(aBefore.IsSame(anAfter));
 }
 
-TEST(BRepGraphUIDTest, DefaultBuild_AssignsValidUIDs)
+TEST_F(BRepGraphTest, DefaultBuild_AssignsValidUIDs)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
 
@@ -932,7 +932,7 @@ TEST(BRepGraphUIDTest, DefaultBuild_AssignsValidUIDs)
   EXPECT_EQ(aGraph.UIDs().NodeIdFrom(aUID), aFaceId);
 }
 
-TEST(BRepGraphUIDTest, UIDsGeneration_IncrementsAcrossBuilds)
+TEST_F(BRepGraphTest, UIDsGeneration_IncrementsAcrossBuilds)
 {
   BRepPrimAPI_MakeBox aBoxMaker1(10.0, 20.0, 30.0);
   BRepPrimAPI_MakeBox aBoxMaker2(11.0, 21.0, 31.0);
@@ -948,7 +948,7 @@ TEST(BRepGraphUIDTest, UIDsGeneration_IncrementsAcrossBuilds)
   EXPECT_EQ(aGeneration2, aGeneration1 + 1);
 }
 
-TEST(BRepGraphUIDTest, StaleUID_HasReturnsFalseAfterRebuild)
+TEST_F(BRepGraphTest, StaleUID_HasReturnsFalseAfterRebuild)
 {
   BRepPrimAPI_MakeBox aBoxMaker1(10.0, 20.0, 30.0);
   BRepPrimAPI_MakeBox aBoxMaker2(11.0, 21.0, 31.0);
@@ -1295,7 +1295,7 @@ TEST_F(BRepGraphTest, ParallelForEachEdge_AllEdgesVisited)
 // Group 7: Detection Methods
 // ===================================================================
 
-TEST(BRepGraphDetectionTest, FreeEdges_SingleFace_AllEdgesFree)
+TEST_F(BRepGraphTest, FreeEdges_SingleFace_AllEdgesFree)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   TopExp_Explorer     anExp(aBoxMaker.Shape(), TopAbs_FACE);
@@ -1309,7 +1309,7 @@ TEST(BRepGraphDetectionTest, FreeEdges_SingleFace_AllEdgesFree)
   EXPECT_EQ(aFreeEdges.Length(), 4);
 }
 
-TEST(BRepGraphDetectionTest, Decompose_ThreeDisconnectedFaces_ThreeComponents)
+TEST_F(BRepGraphTest, Decompose_ThreeDisconnectedFaces_ThreeComponents)
 {
   BRepPrimAPI_MakeBox aBox1(10.0, 10.0, 10.0);
   BRepPrimAPI_MakeBox aBox2(20.0, 20.0, 20.0);
@@ -1388,7 +1388,7 @@ TEST_F(BRepGraphTest, RemoveUserAttribute_AfterSet_ReturnsNull)
   EXPECT_TRUE(myGraph.Attrs().Get(aFaceId, aKey).IsNull());
 }
 
-TEST(BRepGraphErrorTest, Build_EmptyCompound_IsDoneZeroCounts)
+TEST_F(BRepGraphTest, Build_EmptyCompound_IsDoneZeroCounts)
 {
   BRep_Builder    aBuilder;
   TopoDS_Compound aCompound;
@@ -1457,7 +1457,7 @@ TEST_F(BRepGraphTest, Allocator_DefaultConstructor_NotNull)
   EXPECT_FALSE(myGraph.Allocator().IsNull());
 }
 
-TEST(BRepGraphAllocatorTest, Build_WithCustomAllocator_IsDone)
+TEST_F(BRepGraphTest, Build_WithCustomAllocator_IsDone)
 {
   occ::handle<NCollection_BaseAllocator> anAlloc = NCollection_BaseAllocator::CommonBaseAllocator();
   BRepGraph                              aGraph(anAlloc);
@@ -1759,7 +1759,7 @@ TEST_F(BRepGraphTest, UserAttribute_OnEdgeNode)
 // Group 14: Build From Different Root Shapes
 // ===================================================================
 
-TEST(BRepGraphBuildTest, Build_SingleFace_CorrectCounts)
+TEST_F(BRepGraphTest, Build_SingleFace_CorrectCounts)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   TopExp_Explorer     anExp(aBoxMaker.Shape(), TopAbs_FACE);
@@ -1776,7 +1776,7 @@ TEST(BRepGraphBuildTest, Build_SingleFace_CorrectCounts)
   EXPECT_EQ(aGraph.Defs().NbVertices(), 4);
 }
 
-TEST(BRepGraphBuildTest, Build_Shell_CorrectCounts)
+TEST_F(BRepGraphTest, Build_Shell_CorrectCounts)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   TopExp_Explorer     anExp(aBoxMaker.Shape(), TopAbs_SHELL);
@@ -1792,7 +1792,7 @@ TEST(BRepGraphBuildTest, Build_Shell_CorrectCounts)
   EXPECT_EQ(aGraph.Defs().NbVertices(), 8);
 }
 
-TEST(BRepGraphBuildTest, Build_CompoundOfTwoSolids)
+TEST_F(BRepGraphTest, Build_CompoundOfTwoSolids)
 {
   BRepPrimAPI_MakeBox aBox1(10.0, 10.0, 10.0);
   BRepPrimAPI_MakeBox aBox2(20.0, 20.0, 20.0);
@@ -1811,7 +1811,7 @@ TEST(BRepGraphBuildTest, Build_CompoundOfTwoSolids)
   EXPECT_EQ(aGraph.Defs().NbFaces(), 12);
 }
 
-TEST(BRepGraphBuildTest, ReconstructShape_ShellRoot_SameFaceCount)
+TEST_F(BRepGraphTest, ReconstructShape_ShellRoot_SameFaceCount)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   TopExp_Explorer     anExp(aBoxMaker.Shape(), TopAbs_SHELL);

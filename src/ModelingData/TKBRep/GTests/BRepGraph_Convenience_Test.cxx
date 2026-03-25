@@ -20,7 +20,7 @@
 
 #include <gtest/gtest.h>
 
-class BRepGraphConvenienceTest : public testing::Test
+class BRepGraph_ConvenienceTest : public testing::Test
 {
 protected:
   void SetUp() override
@@ -35,7 +35,7 @@ protected:
 
 // ---------- Part A: NodeId Static Factories ----------
 
-TEST_F(BRepGraphConvenienceTest, NodeId_Factories_CorrectKindAndIndex)
+TEST_F(BRepGraph_ConvenienceTest, NodeId_Factories_CorrectKindAndIndex)
 {
   const BRepGraph_NodeId aSolid = BRepGraph_NodeId::Solid(3);
   EXPECT_EQ(aSolid.NodeKind, BRepGraph_NodeId::Kind::Solid);
@@ -70,7 +70,7 @@ TEST_F(BRepGraphConvenienceTest, NodeId_Factories_CorrectKindAndIndex)
   EXPECT_EQ(aCompSolid.Index, 0);
 }
 
-TEST_F(BRepGraphConvenienceTest, NodeId_Factories_EqualToConstructor)
+TEST_F(BRepGraph_ConvenienceTest, NodeId_Factories_EqualToConstructor)
 {
   EXPECT_EQ(BRepGraph_NodeId::Face(3), BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, 3));
   EXPECT_EQ(BRepGraph_NodeId::Edge(0), BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, 0));
@@ -78,7 +78,7 @@ TEST_F(BRepGraphConvenienceTest, NodeId_Factories_EqualToConstructor)
 
 // ---------- Part B: EdgeDef Oriented Vertices ----------
 
-TEST_F(BRepGraphConvenienceTest, EdgeDef_OrientedStartVertex_Forward)
+TEST_F(BRepGraph_ConvenienceTest, EdgeDef_OrientedStartVertex_Forward)
 {
   const BRepGraph::DefsView aDefs = myGraph.Defs();
   ASSERT_GT(aDefs.NbEdges(), 0);
@@ -86,28 +86,28 @@ TEST_F(BRepGraphConvenienceTest, EdgeDef_OrientedStartVertex_Forward)
   EXPECT_EQ(anEdge.OrientedStartVertex(TopAbs_FORWARD), anEdge.StartVertexDefId());
 }
 
-TEST_F(BRepGraphConvenienceTest, EdgeDef_OrientedStartVertex_Reversed)
+TEST_F(BRepGraph_ConvenienceTest, EdgeDef_OrientedStartVertex_Reversed)
 {
   const BRepGraph::DefsView          aDefs  = myGraph.Defs();
   const BRepGraph_TopoNode::EdgeDef& anEdge = aDefs.Edge(BRepGraph_EdgeId(0));
   EXPECT_EQ(anEdge.OrientedStartVertex(TopAbs_REVERSED), anEdge.EndVertexDefId());
 }
 
-TEST_F(BRepGraphConvenienceTest, EdgeDef_OrientedEndVertex_Forward)
+TEST_F(BRepGraph_ConvenienceTest, EdgeDef_OrientedEndVertex_Forward)
 {
   const BRepGraph::DefsView          aDefs  = myGraph.Defs();
   const BRepGraph_TopoNode::EdgeDef& anEdge = aDefs.Edge(BRepGraph_EdgeId(0));
   EXPECT_EQ(anEdge.OrientedEndVertex(TopAbs_FORWARD), anEdge.EndVertexDefId());
 }
 
-TEST_F(BRepGraphConvenienceTest, EdgeDef_OrientedEndVertex_Reversed)
+TEST_F(BRepGraph_ConvenienceTest, EdgeDef_OrientedEndVertex_Reversed)
 {
   const BRepGraph::DefsView          aDefs  = myGraph.Defs();
   const BRepGraph_TopoNode::EdgeDef& anEdge = aDefs.Edge(BRepGraph_EdgeId(0));
   EXPECT_EQ(anEdge.OrientedEndVertex(TopAbs_REVERSED), anEdge.StartVertexDefId());
 }
 
-TEST_F(BRepGraphConvenienceTest, EdgeDef_OrientedVertex_Internal_Invalid)
+TEST_F(BRepGraph_ConvenienceTest, EdgeDef_OrientedVertex_Internal_Invalid)
 {
   const BRepGraph::DefsView          aDefs  = myGraph.Defs();
   const BRepGraph_TopoNode::EdgeDef& anEdge = aDefs.Edge(BRepGraph_EdgeId(0));
@@ -117,14 +117,14 @@ TEST_F(BRepGraphConvenienceTest, EdgeDef_OrientedVertex_Internal_Invalid)
 
 // ---------- Part D: FaceDef::Surface ----------
 
-TEST_F(BRepGraphConvenienceTest, FaceSurface_Valid)
+TEST_F(BRepGraph_ConvenienceTest, FaceSurface_Valid)
 {
   const BRepGraph::DefsView aDefs = myGraph.Defs();
   ASSERT_GT(aDefs.NbFaces(), 0);
   EXPECT_TRUE(aDefs.Face(BRepGraph_FaceId(0)).SurfaceRepId.IsValid());
 }
 
-TEST_F(BRepGraphConvenienceTest, FaceSurface_AllBoxFaces)
+TEST_F(BRepGraph_ConvenienceTest, FaceSurface_AllBoxFaces)
 {
   const BRepGraph::DefsView aDefs = myGraph.Defs();
   for (int aFaceIter = 0; aFaceIter < aDefs.NbFaces(); ++aFaceIter)
@@ -136,7 +136,7 @@ TEST_F(BRepGraphConvenienceTest, FaceSurface_AllBoxFaces)
 
 // ---------- Part E: DefsView::FindPCurve ----------
 
-TEST_F(BRepGraphConvenienceTest, FindPCurve_ValidPair)
+TEST_F(BRepGraph_ConvenienceTest, FindPCurve_ValidPair)
 {
   const BRepGraph::DefsView aDefs = myGraph.Defs();
 
@@ -158,7 +158,7 @@ TEST_F(BRepGraphConvenienceTest, FindPCurve_ValidPair)
   }
 }
 
-TEST_F(BRepGraphConvenienceTest, FindPCurve_InvalidPair_ReturnsNull)
+TEST_F(BRepGraph_ConvenienceTest, FindPCurve_InvalidPair_ReturnsNull)
 {
   const BRepGraph::DefsView aDefs = myGraph.Defs();
   EXPECT_EQ(aDefs.FindPCurve(BRepGraph_NodeId::Edge(0), BRepGraph_NodeId::Face(9999)), nullptr);
@@ -166,14 +166,14 @@ TEST_F(BRepGraphConvenienceTest, FindPCurve_InvalidPair_ReturnsNull)
 
 // ---------- Part F: DefsView::NbShellFaces / ShellFaceDef ----------
 
-TEST_F(BRepGraphConvenienceTest, NbShellFaces_Box_SixFaces)
+TEST_F(BRepGraph_ConvenienceTest, NbShellFaces_Box_SixFaces)
 {
   const BRepGraph::DefsView aDefs = myGraph.Defs();
   ASSERT_EQ(aDefs.NbShells(), 1);
   EXPECT_EQ(aDefs.NbShellFaces(BRepGraph_ShellId(0)), 6);
 }
 
-TEST_F(BRepGraphConvenienceTest, ShellFaceDef_AllValid)
+TEST_F(BRepGraph_ConvenienceTest, ShellFaceDef_AllValid)
 {
   const BRepGraph::DefsView aDefs    = myGraph.Defs();
   const int                 aNbFaces = aDefs.NbShellFaces(BRepGraph_ShellId(0));
@@ -185,7 +185,7 @@ TEST_F(BRepGraphConvenienceTest, ShellFaceDef_AllValid)
   }
 }
 
-TEST_F(BRepGraphConvenienceTest, ShellFaceDef_OutOfRange_Invalid)
+TEST_F(BRepGraph_ConvenienceTest, ShellFaceDef_OutOfRange_Invalid)
 {
   const BRepGraph::DefsView aDefs = myGraph.Defs();
   EXPECT_FALSE(aDefs.ShellFaceDef(BRepGraph_ShellId(0), -1).IsValid());
@@ -194,7 +194,7 @@ TEST_F(BRepGraphConvenienceTest, ShellFaceDef_OutOfRange_Invalid)
 
 // ---------- Integration: Cylinder with seam edge ----------
 
-TEST(BRepGraphConvenienceCylinderTest, FindPCurve_WithOrientation_SeamEdge)
+TEST_F(BRepGraph_ConvenienceTest, FindPCurve_WithOrientation_SeamEdge)
 {
   BRepPrimAPI_MakeCylinder aCylMaker(5.0, 10.0);
   const TopoDS_Shape&      aCyl = aCylMaker.Shape();

@@ -1808,7 +1808,7 @@ TEST(BRepGraphAlgo_SewingTest, SewSolidInput_PreservesHierarchy)
 // BRepGraphAlgo_SameParameter Tests
 // ============================================================
 
-TEST(BRepGraphAlgo_SameParameterTest, Enforce_BoxEdge_SetsSameParameter)
+TEST(BRepGraphAlgo_SewingTest, Enforce_BoxEdge_SetsSameParameter)
 {
   // Build a box and verify that SameParameter enforcement on its edges
   // sets the SameParameter flag and maintains reasonable tolerance.
@@ -1835,7 +1835,7 @@ TEST(BRepGraphAlgo_SameParameterTest, Enforce_BoxEdge_SetsSameParameter)
   }
 }
 
-TEST(BRepGraphAlgo_SameParameterTest, Enforce_CylinderEdge_ToleranceReasonable)
+TEST(BRepGraphAlgo_SewingTest, Enforce_CylinderEdge_ToleranceReasonable)
 {
   // Cylinder has curved edges where SameParameter is more meaningful.
   BRepPrimAPI_MakeCylinder aCylMaker(5.0, 20.0);
@@ -1860,7 +1860,7 @@ TEST(BRepGraphAlgo_SameParameterTest, Enforce_CylinderEdge_ToleranceReasonable)
   }
 }
 
-TEST(BRepGraphAlgo_SameParameterTest, Perform_BatchSetsFlags)
+TEST(BRepGraphAlgo_SewingTest, Perform_BatchSetsFlags)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -1889,7 +1889,7 @@ TEST(BRepGraphAlgo_SameParameterTest, Perform_BatchSetsFlags)
   }
 }
 
-TEST(BRepGraphAlgo_SameParameterTest, Enforce_NoCurve3d_SetsFlag)
+TEST(BRepGraphAlgo_SewingTest, Enforce_NoCurve3d_SetsFlag)
 {
   // Edge with no 3D curve should just set the flag without error.
   BRepPrimAPI_MakeSphere aSphereMaker(10.0);
@@ -1915,7 +1915,7 @@ TEST(BRepGraphAlgo_SameParameterTest, Enforce_NoCurve3d_SetsFlag)
   }
 }
 
-TEST(BRepGraphAlgo_SameParameterTest, Enforce_AfterSewing_SewnEdgesAreValid)
+TEST(BRepGraphAlgo_SewingTest, Enforce_AfterSewing_SewnEdgesAreValid)
 {
   // Sew two box faces, then verify SameParameter on the sewn edge.
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
@@ -1959,7 +1959,7 @@ TEST(BRepGraphAlgo_SameParameterTest, Enforce_AfterSewing_SewnEdgesAreValid)
 // Deep vs Light Copy Test
 // ============================================================
 
-TEST(BRepGraphAlgo_CopyTest, DeepAndLightCopy_MatchNodeCounts)
+TEST(BRepGraphAlgo_SewingTest, DeepAndLightCopy_MatchNodeCounts)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();

@@ -42,7 +42,7 @@
 // Geometry navigation tests
 // ============================================================
 
-TEST(BRepGraphGeometry, Sphere_AllFaces_SameSurface)
+TEST(BRepGraph_GeometryTest, Sphere_AllFaces_SameSurface)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeSphere(15.0).Shape());
@@ -61,7 +61,7 @@ TEST(BRepGraphGeometry, Sphere_AllFaces_SameSurface)
   }
 }
 
-TEST(BRepGraphGeometry, Sphere_AllFacesShareSurface)
+TEST(BRepGraph_GeometryTest, Sphere_AllFacesShareSurface)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeSphere(15.0).Shape());
@@ -82,7 +82,7 @@ TEST(BRepGraphGeometry, Sphere_AllFacesShareSurface)
   EXPECT_EQ(aSameCount, aGraph.Defs().NbFaces());
 }
 
-TEST(BRepGraphGeometry, Box_Curve3d_ValidForAll12Edges)
+TEST(BRepGraph_GeometryTest, Box_Curve3d_ValidForAll12Edges)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
@@ -96,7 +96,7 @@ TEST(BRepGraphGeometry, Box_Curve3d_ValidForAll12Edges)
   }
 }
 
-TEST(BRepGraphGeometry, Box_AllEdgesHaveCurve3d)
+TEST(BRepGraph_GeometryTest, Box_AllEdgesHaveCurve3d)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
@@ -109,7 +109,7 @@ TEST(BRepGraphGeometry, Box_AllEdgesHaveCurve3d)
   }
 }
 
-TEST(BRepGraphGeometry, Box_FindPCurve_AllEdgeFacePairs_Valid)
+TEST(BRepGraph_GeometryTest, Box_FindPCurve_AllEdgeFacePairs_Valid)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
@@ -135,7 +135,7 @@ TEST(BRepGraphGeometry, Box_FindPCurve_AllEdgeFacePairs_Valid)
   EXPECT_GT(aPCurveCount, 0);
 }
 
-TEST(BRepGraphGeometry, CoEdge_FaceDefIdValid)
+TEST(BRepGraph_GeometryTest, CoEdge_FaceDefIdValid)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
@@ -155,7 +155,7 @@ TEST(BRepGraphGeometry, CoEdge_FaceDefIdValid)
   }
 }
 
-TEST(BRepGraphGeometry, CoEdge_ParamRange_NonZero)
+TEST(BRepGraph_GeometryTest, CoEdge_ParamRange_NonZero)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
@@ -178,7 +178,7 @@ TEST(BRepGraphGeometry, CoEdge_ParamRange_NonZero)
   EXPECT_GT(aCoEdgeCount, 0);
 }
 
-TEST(BRepGraphGeometry, CoEdge_Continuity_Valid)
+TEST(BRepGraph_GeometryTest, CoEdge_Continuity_Valid)
 {
   const TopoDS_Shape aShape = BRepPrimAPI_MakeCylinder(10.0, 20.0).Shape();
 
@@ -204,7 +204,7 @@ TEST(BRepGraphGeometry, CoEdge_Continuity_Valid)
   EXPECT_TRUE(hasNonC0Continuity);
 }
 
-TEST(BRepGraphGeometry, FaceDef_Surface_IsNotNull)
+TEST(BRepGraph_GeometryTest, FaceDef_Surface_IsNotNull)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
@@ -217,7 +217,7 @@ TEST(BRepGraphGeometry, FaceDef_Surface_IsNotNull)
   }
 }
 
-TEST(BRepGraphGeometry, EdgeDef_Curve3d_IsNotNull)
+TEST(BRepGraph_GeometryTest, EdgeDef_Curve3d_IsNotNull)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
@@ -230,7 +230,7 @@ TEST(BRepGraphGeometry, EdgeDef_Curve3d_IsNotNull)
   }
 }
 
-TEST(BRepGraphGeometry, SameDomainFaces_SimpleBox_Empty)
+TEST(BRepGraph_GeometryTest, SameDomainFaces_SimpleBox_Empty)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
@@ -246,7 +246,7 @@ TEST(BRepGraphGeometry, SameDomainFaces_SimpleBox_Empty)
   }
 }
 
-TEST(BRepGraphGeometry, CompoundWithMovedChild_SharedSolidDef)
+TEST(BRepGraph_GeometryTest, CompoundWithMovedChild_SharedSolidDef)
 {
   const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
 
@@ -270,7 +270,7 @@ TEST(BRepGraphGeometry, CompoundWithMovedChild_SharedSolidDef)
   EXPECT_TRUE(aGraph.IsDone());
 }
 
-TEST(BRepGraphGeometry, FaceDef_Triangulation_NullForAnalyticNoCrash)
+TEST(BRepGraph_GeometryTest, FaceDef_Triangulation_NullForAnalyticNoCrash)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
@@ -289,7 +289,7 @@ TEST(BRepGraphGeometry, FaceDef_Triangulation_NullForAnalyticNoCrash)
 // Iterator tests
 // ============================================================
 
-TEST(BRepGraphIterator, SolidDef_CountMatchesNb)
+TEST(BRepGraph_GeometryTest, SolidDef_CountMatchesNb)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
@@ -304,7 +304,7 @@ TEST(BRepGraphIterator, SolidDef_CountMatchesNb)
   EXPECT_EQ(aCount, aGraph.Defs().NbSolids());
 }
 
-TEST(BRepGraphIterator, ShellDef_CountMatchesNb)
+TEST(BRepGraph_GeometryTest, ShellDef_CountMatchesNb)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
@@ -319,7 +319,7 @@ TEST(BRepGraphIterator, ShellDef_CountMatchesNb)
   EXPECT_EQ(aCount, aGraph.Defs().NbShells());
 }
 
-TEST(BRepGraphIterator, FaceDef_CountMatchesNb)
+TEST(BRepGraph_GeometryTest, FaceDef_CountMatchesNb)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
@@ -334,7 +334,7 @@ TEST(BRepGraphIterator, FaceDef_CountMatchesNb)
   EXPECT_EQ(aCount, aGraph.Defs().NbFaces());
 }
 
-TEST(BRepGraphIterator, WireDef_CountMatchesNb)
+TEST(BRepGraph_GeometryTest, WireDef_CountMatchesNb)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
@@ -349,7 +349,7 @@ TEST(BRepGraphIterator, WireDef_CountMatchesNb)
   EXPECT_EQ(aCount, aGraph.Defs().NbWires());
 }
 
-TEST(BRepGraphIterator, EdgeDef_CountMatchesNb)
+TEST(BRepGraph_GeometryTest, EdgeDef_CountMatchesNb)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
@@ -364,7 +364,7 @@ TEST(BRepGraphIterator, EdgeDef_CountMatchesNb)
   EXPECT_EQ(aCount, aGraph.Defs().NbEdges());
 }
 
-TEST(BRepGraphIterator, VertexDef_CountMatchesNb)
+TEST(BRepGraph_GeometryTest, VertexDef_CountMatchesNb)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
@@ -379,7 +379,7 @@ TEST(BRepGraphIterator, VertexDef_CountMatchesNb)
   EXPECT_EQ(aCount, aGraph.Defs().NbVertices());
 }
 
-TEST(BRepGraphIterator, FaceDef_CountViaIterator_MatchesNb)
+TEST(BRepGraph_GeometryTest, FaceDef_CountViaIterator_MatchesNb)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
@@ -394,7 +394,7 @@ TEST(BRepGraphIterator, FaceDef_CountViaIterator_MatchesNb)
   EXPECT_EQ(aCount, aGraph.Defs().NbFaces());
 }
 
-TEST(BRepGraphIterator, FaceDef_AllSurfacesNonNull)
+TEST(BRepGraph_GeometryTest, FaceDef_AllSurfacesNonNull)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
@@ -409,7 +409,7 @@ TEST(BRepGraphIterator, FaceDef_AllSurfacesNonNull)
   EXPECT_EQ(aCount, aGraph.Defs().NbFaces());
 }
 
-TEST(BRepGraphIterator, EdgeDef_AllCurves3dNonNull)
+TEST(BRepGraph_GeometryTest, EdgeDef_AllCurves3dNonNull)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
@@ -425,7 +425,7 @@ TEST(BRepGraphIterator, EdgeDef_AllCurves3dNonNull)
   EXPECT_EQ(aCount, aGraph.Defs().NbEdges());
 }
 
-TEST(BRepGraphIterator, AllCoEdgesHaveCurve2d)
+TEST(BRepGraph_GeometryTest, AllCoEdgesHaveCurve2d)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
@@ -449,7 +449,7 @@ TEST(BRepGraphIterator, AllCoEdgesHaveCurve2d)
 // SubGraph / Decompose tests
 // ============================================================
 
-TEST(BRepGraphSubGraph, Decompose_SingleBox_OneComponent)
+TEST(BRepGraph_GeometryTest, Decompose_SingleBox_OneComponent)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
@@ -459,7 +459,7 @@ TEST(BRepGraphSubGraph, Decompose_SingleBox_OneComponent)
   EXPECT_EQ(aSubs.Length(), 1);
 }
 
-TEST(BRepGraphSubGraph, Decompose_TwoBoxCompound_TwoComponents)
+TEST(BRepGraph_GeometryTest, Decompose_TwoBoxCompound_TwoComponents)
 {
   const TopoDS_Shape aBox1 = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
   const TopoDS_Shape aBox2 =
@@ -479,7 +479,7 @@ TEST(BRepGraphSubGraph, Decompose_TwoBoxCompound_TwoComponents)
   EXPECT_EQ(aSubs.Length(), 2);
 }
 
-TEST(BRepGraphSubGraph, SubGraph_IndicesDisjoint_BetweenComponents)
+TEST(BRepGraph_GeometryTest, SubGraph_IndicesDisjoint_BetweenComponents)
 {
   const TopoDS_Shape aBox1 = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
   const TopoDS_Shape aBox2 =
@@ -514,7 +514,7 @@ TEST(BRepGraphSubGraph, SubGraph_IndicesDisjoint_BetweenComponents)
   }
 }
 
-TEST(BRepGraphSubGraph, SubGraph_NbTopoNodes_SumEqualsTotal)
+TEST(BRepGraph_GeometryTest, SubGraph_NbTopoNodes_SumEqualsTotal)
 {
   const TopoDS_Shape aBox1 = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
   const TopoDS_Shape aBox2 =
@@ -553,7 +553,7 @@ TEST(BRepGraphSubGraph, SubGraph_NbTopoNodes_SumEqualsTotal)
 // SameParameter / SameRange round-trip tests
 // ============================================================
 
-TEST(BRepGraphGeometry, Box_EdgeDef_SameParameter_IsSet)
+TEST(BRepGraph_GeometryTest, Box_EdgeDef_SameParameter_IsSet)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
@@ -568,7 +568,7 @@ TEST(BRepGraphGeometry, Box_EdgeDef_SameParameter_IsSet)
   }
 }
 
-TEST(BRepGraphGeometry, Box_EdgeDef_SameRange_IsSet)
+TEST(BRepGraph_GeometryTest, Box_EdgeDef_SameRange_IsSet)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
@@ -586,7 +586,7 @@ TEST(BRepGraphGeometry, Box_EdgeDef_SameRange_IsSet)
 // Seam edge PCurve validation tests
 // ============================================================
 
-TEST(BRepGraphGeometry, Cylinder_SeamEdge_HasTwoCoEdges)
+TEST(BRepGraph_GeometryTest, Cylinder_SeamEdge_HasTwoCoEdges)
 {
   // A cylinder has a seam edge on its lateral face.
   BRepGraph aGraph;
@@ -615,7 +615,7 @@ TEST(BRepGraphGeometry, Cylinder_SeamEdge_HasTwoCoEdges)
   EXPECT_TRUE(aFoundSeam) << "No seam edge found in cylinder";
 }
 
-TEST(BRepGraphGeometry, Cylinder_SeamEdge_FindPCurve_WithOrientation)
+TEST(BRepGraph_GeometryTest, Cylinder_SeamEdge_FindPCurve_WithOrientation)
 {
   // Verify FindPCurve(edge, face, orientation) returns different entries for FORWARD vs REVERSED.
   BRepGraph aGraph;
@@ -650,7 +650,7 @@ TEST(BRepGraphGeometry, Cylinder_SeamEdge_FindPCurve_WithOrientation)
   GTEST_SKIP() << "No seam edge found; test inconclusive";
 }
 
-TEST(BRepGraphGeometry, Box_FindPCurve_Context_MatchesThreeArgOverload)
+TEST(BRepGraph_GeometryTest, Box_FindPCurve_Context_MatchesThreeArgOverload)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
@@ -682,7 +682,7 @@ TEST(BRepGraphGeometry, Box_FindPCurve_Context_MatchesThreeArgOverload)
   }
 }
 
-TEST(BRepGraphGeometry, Cylinder_SeamEdge_FindPCurve_Context_DistinguishesOrientation)
+TEST(BRepGraph_GeometryTest, Cylinder_SeamEdge_FindPCurve_Context_DistinguishesOrientation)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeCylinder(5.0, 20.0).Shape());
@@ -724,7 +724,7 @@ TEST(BRepGraphGeometry, Cylinder_SeamEdge_FindPCurve_Context_DistinguishesOrient
 // Representation entity layer tests
 // ============================================================
 
-TEST(BRepGraphRepresentations, Box_RepCounts_MatchTopology)
+TEST(BRepGraph_GeometryTest, Box_RepCounts_MatchTopology)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
@@ -765,7 +765,7 @@ TEST(BRepGraphRepresentations, Box_RepCounts_MatchTopology)
   }
 }
 
-TEST(BRepGraphRepresentations, Sphere_SurfaceDedup_SharedHandle)
+TEST(BRepGraph_GeometryTest, Sphere_SurfaceDedup_SharedHandle)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeSphere(15.0).Shape());
@@ -784,7 +784,7 @@ TEST(BRepGraphRepresentations, Sphere_SurfaceDedup_SharedHandle)
   }
 }
 
-TEST(BRepGraphRepresentations, Cylinder_TriangulationReps_Populated)
+TEST(BRepGraph_GeometryTest, Cylinder_TriangulationReps_Populated)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeCylinder(5.0, 10.0).Shape());
@@ -808,7 +808,7 @@ TEST(BRepGraphRepresentations, Cylinder_TriangulationReps_Populated)
   }
 }
 
-TEST(BRepGraphRepresentations, RepId_FactoryMethods)
+TEST(BRepGraph_GeometryTest, RepId_FactoryMethods)
 {
   const auto aSurfId = BRepGraph_RepId::Surface(42);
   EXPECT_EQ(BRepGraph_RepId(aSurfId).RepKind, BRepGraph_RepId::Kind::Surface);
@@ -826,7 +826,7 @@ TEST(BRepGraphRepresentations, RepId_FactoryMethods)
   EXPECT_NE(BRepGraph_RepId(aSurfId), BRepGraph_RepId(aCurve3DId));
 }
 
-TEST(BRepGraphRepresentations, Compound_TwoBoxes_SurfaceDedup)
+TEST(BRepGraph_GeometryTest, Compound_TwoBoxes_SurfaceDedup)
 {
   TopoDS_Shape aBox1 = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
   TopoDS_Shape aBox2 = BRepPrimAPI_MakeBox(20.0, 20.0, 20.0).Shape();
@@ -859,7 +859,7 @@ TEST(BRepGraphRepresentations, Compound_TwoBoxes_SurfaceDedup)
   }
 }
 
-TEST(BRepGraphRepresentations, Box_Polygon2DRep_MatchesInline)
+TEST(BRepGraph_GeometryTest, Box_Polygon2DRep_MatchesInline)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());

@@ -72,7 +72,7 @@ static int countSubShapes(const TopoDS_Shape& theShape, TopAbs_ShapeEnum theType
 // Area/volume fidelity per primitive
 // ============================================================
 
-TEST(BRepGraphReconstructTest, Box_Area_Preserved)
+TEST(BRepGraph_ReconstructTest, Box_Area_Preserved)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox       = aBoxMaker.Shape();
@@ -89,7 +89,7 @@ TEST(BRepGraphReconstructTest, Box_Area_Preserved)
   EXPECT_NEAR(aReconArea, anOrigArea, anOrigArea * 0.01);
 }
 
-TEST(BRepGraphReconstructTest, Box_Volume_Preserved)
+TEST(BRepGraph_ReconstructTest, Box_Volume_Preserved)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox      = aBoxMaker.Shape();
@@ -106,7 +106,7 @@ TEST(BRepGraphReconstructTest, Box_Volume_Preserved)
   EXPECT_NEAR(aReconVol, anOrigVol, anOrigVol * 0.01);
 }
 
-TEST(BRepGraphReconstructTest, Sphere_Area_Preserved)
+TEST(BRepGraph_ReconstructTest, Sphere_Area_Preserved)
 {
   BRepPrimAPI_MakeSphere aSphereMaker(15.0);
   const TopoDS_Shape&    aSphere    = aSphereMaker.Shape();
@@ -123,7 +123,7 @@ TEST(BRepGraphReconstructTest, Sphere_Area_Preserved)
   EXPECT_NEAR(aReconArea, anOrigArea, anOrigArea * 0.01);
 }
 
-TEST(BRepGraphReconstructTest, Sphere_Volume_Preserved)
+TEST(BRepGraph_ReconstructTest, Sphere_Volume_Preserved)
 {
   BRepPrimAPI_MakeSphere aSphereMaker(15.0);
   const TopoDS_Shape&    aSphere   = aSphereMaker.Shape();
@@ -140,7 +140,7 @@ TEST(BRepGraphReconstructTest, Sphere_Volume_Preserved)
   EXPECT_NEAR(aReconVol, anOrigVol, anOrigVol * 0.01);
 }
 
-TEST(BRepGraphReconstructTest, Cylinder_Area_Preserved)
+TEST(BRepGraph_ReconstructTest, Cylinder_Area_Preserved)
 {
   BRepPrimAPI_MakeCylinder aCylMaker(10.0, 20.0);
   const TopoDS_Shape&      aCyl       = aCylMaker.Shape();
@@ -157,7 +157,7 @@ TEST(BRepGraphReconstructTest, Cylinder_Area_Preserved)
   EXPECT_NEAR(aReconArea, anOrigArea, anOrigArea * 0.01);
 }
 
-TEST(BRepGraphReconstructTest, Cylinder_Volume_Preserved)
+TEST(BRepGraph_ReconstructTest, Cylinder_Volume_Preserved)
 {
   BRepPrimAPI_MakeCylinder aCylMaker(10.0, 20.0);
   const TopoDS_Shape&      aCyl      = aCylMaker.Shape();
@@ -178,7 +178,7 @@ TEST(BRepGraphReconstructTest, Cylinder_Volume_Preserved)
 // Per-kind reconstruction
 // ============================================================
 
-TEST(BRepGraphReconstructTest, Shell_FaceCount_MatchesOriginal)
+TEST(BRepGraph_ReconstructTest, Shell_FaceCount_MatchesOriginal)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox            = aBoxMaker.Shape();
@@ -195,7 +195,7 @@ TEST(BRepGraphReconstructTest, Shell_FaceCount_MatchesOriginal)
   EXPECT_EQ(aReconFaceCount, anOrigFaceCount);
 }
 
-TEST(BRepGraphReconstructTest, Wire_EdgeCount_FourPerBoxFace)
+TEST(BRepGraph_ReconstructTest, Wire_EdgeCount_FourPerBoxFace)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -214,7 +214,7 @@ TEST(BRepGraphReconstructTest, Wire_EdgeCount_FourPerBoxFace)
   }
 }
 
-TEST(BRepGraphReconstructTest, Edge_HasCurve_NonNull)
+TEST(BRepGraph_ReconstructTest, Edge_HasCurve_NonNull)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -239,7 +239,7 @@ TEST(BRepGraphReconstructTest, Edge_HasCurve_NonNull)
   }
 }
 
-TEST(BRepGraphReconstructTest, Edge_ParameterRange_Preserved)
+TEST(BRepGraph_ReconstructTest, Edge_ParameterRange_Preserved)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -269,7 +269,7 @@ TEST(BRepGraphReconstructTest, Edge_ParameterRange_Preserved)
   }
 }
 
-TEST(BRepGraphReconstructTest, Vertex_Point_MatchesDefPoint)
+TEST(BRepGraph_ReconstructTest, Vertex_Point_MatchesDefPoint)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -295,7 +295,7 @@ TEST(BRepGraphReconstructTest, Vertex_Point_MatchesDefPoint)
   }
 }
 
-TEST(BRepGraphReconstructTest, Face_PCurvesPresent_OnAllEdges)
+TEST(BRepGraph_ReconstructTest, Face_PCurvesPresent_OnAllEdges)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -324,7 +324,7 @@ TEST(BRepGraphReconstructTest, Face_PCurvesPresent_OnAllEdges)
   }
 }
 
-TEST(BRepGraphReconstructTest, Face_OrientationPreserved)
+TEST(BRepGraph_ReconstructTest, Face_OrientationPreserved)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -355,7 +355,7 @@ TEST(BRepGraphReconstructTest, Face_OrientationPreserved)
 // Shape() vs ReconstructShape() consistency
 // ============================================================
 
-TEST(BRepGraphReconstructTest, Shape_UnmodifiedGraph_SameAsOriginalOf)
+TEST(BRepGraph_ReconstructTest, Shape_UnmodifiedGraph_SameAsOriginalOf)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -373,7 +373,7 @@ TEST(BRepGraphReconstructTest, Shape_UnmodifiedGraph_SameAsOriginalOf)
   EXPECT_TRUE(aShapeResult.IsSame(anOriginal));
 }
 
-TEST(BRepGraphReconstructTest, Reconstruct_Face_ValidShape)
+TEST(BRepGraph_ReconstructTest, Reconstruct_Face_ValidShape)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -388,7 +388,7 @@ TEST(BRepGraphReconstructTest, Reconstruct_Face_ValidShape)
   EXPECT_EQ(aRecon.ShapeType(), TopAbs_FACE);
 }
 
-TEST(BRepGraphReconstructTest, Reconstruct_Edge_ValidShape)
+TEST(BRepGraph_ReconstructTest, Reconstruct_Edge_ValidShape)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -413,7 +413,7 @@ TEST(BRepGraphReconstructTest, Reconstruct_Edge_ValidShape)
   FAIL() << "No non-degenerate edge found";
 }
 
-TEST(BRepGraphReconstructTest, Reconstruct_Vertex_CorrectPoint)
+TEST(BRepGraph_ReconstructTest, Reconstruct_Vertex_CorrectPoint)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -438,7 +438,7 @@ TEST(BRepGraphReconstructTest, Reconstruct_Vertex_CorrectPoint)
 // After mutation
 // ============================================================
 
-TEST(BRepGraphReconstructTest, AfterVertexMutation_ModifiedFlagAndPointChanged)
+TEST(BRepGraph_ReconstructTest, AfterVertexMutation_ModifiedFlagAndPointChanged)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -482,7 +482,7 @@ TEST(BRepGraphReconstructTest, AfterVertexMutation_ModifiedFlagAndPointChanged)
     << "VertexDef.Point should differ after mutation";
 }
 
-TEST(BRepGraphReconstructTest, AfterToleranceMutation_NewTShape)
+TEST(BRepGraph_ReconstructTest, AfterToleranceMutation_NewTShape)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -507,7 +507,7 @@ TEST(BRepGraphReconstructTest, AfterToleranceMutation_NewTShape)
     << "Shape() should return a new TShape after tolerance mutation";
 }
 
-TEST(BRepGraphReconstructTest, CompoundRoot_TwoSolids_Preserved)
+TEST(BRepGraph_ReconstructTest, CompoundRoot_TwoSolids_Preserved)
 {
   BRepPrimAPI_MakeBox aBoxMaker1(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox1 = aBoxMaker1.Shape();

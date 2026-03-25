@@ -21,7 +21,7 @@
 
 #include <gtest/gtest.h>
 
-class BRepGraphDeferredInvalidationTest : public testing::Test
+class BRepGraph_DeferredInvalidationTest : public testing::Test
 {
 protected:
   void SetUp() override
@@ -35,7 +35,7 @@ protected:
   BRepGraph myGraph;
 };
 
-TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_EdgeMutation_SetsIsModified)
+TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_EdgeMutation_SetsIsModified)
 {
   EXPECT_FALSE(myGraph.Defs().Edge(BRepGraph_EdgeId(0)).IsModified);
 
@@ -46,7 +46,7 @@ TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_EdgeMutation_SetsIsModifi
   myGraph.EndDeferredInvalidation();
 }
 
-TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_PropagatesUpOnFlush)
+TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_PropagatesUpOnFlush)
 {
   myGraph.BeginDeferredInvalidation();
   myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
@@ -77,7 +77,7 @@ TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_PropagatesUpOnFlush)
   EXPECT_TRUE(myGraph.Defs().Solid(BRepGraph_SolidId(0)).IsModified);
 }
 
-TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_DirectFaceMutation_PropagatesUp)
+TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_DirectFaceMutation_PropagatesUp)
 {
   myGraph.BeginDeferredInvalidation();
   myGraph.MutFace(BRepGraph_FaceId(0));
@@ -93,7 +93,7 @@ TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_DirectFaceMutation_Propag
   EXPECT_TRUE(myGraph.Defs().Solid(BRepGraph_SolidId(0)).IsModified);
 }
 
-TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_DirectShellMutation_PropagatesUp)
+TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_DirectShellMutation_PropagatesUp)
 {
   myGraph.BeginDeferredInvalidation();
   myGraph.MutShell(BRepGraph_ShellId(0));
@@ -106,7 +106,7 @@ TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_DirectShellMutation_Propa
   EXPECT_TRUE(myGraph.Defs().Solid(BRepGraph_SolidId(0)).IsModified);
 }
 
-TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_MultipleEdges_BatchPropagation)
+TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_MultipleEdges_BatchPropagation)
 {
   myGraph.BeginDeferredInvalidation();
 
@@ -137,7 +137,7 @@ TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_MultipleEdges_BatchPropag
   EXPECT_TRUE(myGraph.Defs().Solid(BRepGraph_SolidId(0)).IsModified);
 }
 
-TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_ReconstructAfterFlush_Succeeds)
+TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_ReconstructAfterFlush_Succeeds)
 {
   // Modify an edge in deferred mode and verify reconstruction still works.
   myGraph.BeginDeferredInvalidation();
@@ -151,7 +151,7 @@ TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_ReconstructAfterFlush_Suc
   EXPECT_FALSE(aShape.IsNull());
 }
 
-TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_ParallelMutation_NoDataRace)
+TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_ParallelMutation_NoDataRace)
 {
   const int aNbEdges = myGraph.Defs().NbEdges();
   ASSERT_GT(aNbEdges, 1);
@@ -178,7 +178,7 @@ TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_ParallelMutation_NoDataRa
   EXPECT_TRUE(myGraph.Defs().Solid(BRepGraph_SolidId(0)).IsModified);
 }
 
-TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_NoMutations_FlushIsSafe)
+TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_NoMutations_FlushIsSafe)
 {
   // Begin/End with no mutations in between should be a no-op.
   myGraph.BeginDeferredInvalidation();
@@ -192,7 +192,7 @@ TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_NoMutations_FlushIsSafe)
   EXPECT_FALSE(myGraph.Defs().Solid(BRepGraph_SolidId(0)).IsModified);
 }
 
-TEST_F(BRepGraphDeferredInvalidationTest, EndWithoutBegin_IsIdempotent)
+TEST_F(BRepGraph_DeferredInvalidationTest, EndWithoutBegin_IsIdempotent)
 {
   // Calling End without Begin should be a safe no-op.
   EXPECT_NO_THROW(myGraph.EndDeferredInvalidation());
@@ -202,7 +202,7 @@ TEST_F(BRepGraphDeferredInvalidationTest, EndWithoutBegin_IsIdempotent)
   EXPECT_FALSE(myGraph.Defs().Solid(BRepGraph_SolidId(0)).IsModified);
 }
 
-TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_DoubleEnd_IsIdempotent)
+TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_DoubleEnd_IsIdempotent)
 {
   myGraph.BeginDeferredInvalidation();
   myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
@@ -213,7 +213,7 @@ TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_DoubleEnd_IsIdempotent)
   EXPECT_TRUE(myGraph.Defs().Edge(BRepGraph_EdgeId(0)).IsModified);
 }
 
-TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_SameEdgeMutatedTwice)
+TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_SameEdgeMutatedTwice)
 {
   myGraph.BeginDeferredInvalidation();
   myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.1;
@@ -227,7 +227,7 @@ TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_SameEdgeMutatedTwice)
   EXPECT_TRUE(myGraph.Defs().Solid(BRepGraph_SolidId(0)).IsModified);
 }
 
-TEST_F(BRepGraphDeferredInvalidationTest, DeferredMode_DirectWireMutation_PropagatesUp)
+TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_DirectWireMutation_PropagatesUp)
 {
   myGraph.BeginDeferredInvalidation();
   myGraph.MutWire(BRepGraph_WireId(0));

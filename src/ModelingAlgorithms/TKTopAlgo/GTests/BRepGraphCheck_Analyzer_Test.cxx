@@ -166,14 +166,14 @@ TEST(BRepGraphCheck_AnalyzerTest, FaceMinimum_ValidFace_NoIssues)
 // Report tests
 // ---------------------------------------------------------------------------
 
-TEST(BRepGraphCheck_ReportTest, EmptyReport_IsValid)
+TEST(BRepGraphCheck_AnalyzerTest, EmptyReport_IsValid)
 {
   BRepGraphCheck_Report aReport;
   EXPECT_TRUE(aReport.IsValid());
   EXPECT_FALSE(aReport.HasIssues());
 }
 
-TEST(BRepGraphCheck_ReportTest, AddIssue_MakesInvalid)
+TEST(BRepGraphCheck_AnalyzerTest, AddIssue_MakesInvalid)
 {
   BRepGraphCheck_Report aReport;
 
@@ -188,7 +188,7 @@ TEST(BRepGraphCheck_ReportTest, AddIssue_MakesInvalid)
   EXPECT_EQ(aReport.Issues().Length(), 1);
 }
 
-TEST(BRepGraphCheck_ReportTest, WarningOnly_StillValid)
+TEST(BRepGraphCheck_AnalyzerTest, WarningOnly_StillValid)
 {
   BRepGraphCheck_Report aReport;
 
@@ -202,7 +202,7 @@ TEST(BRepGraphCheck_ReportTest, WarningOnly_StillValid)
   EXPECT_TRUE(aReport.IsValid());
 }
 
-TEST(BRepGraphCheck_ReportTest, IssuesForNode_ReturnsCorrectSubset)
+TEST(BRepGraphCheck_AnalyzerTest, IssuesForNode_ReturnsCorrectSubset)
 {
   BRepGraphCheck_Report aReport;
 
@@ -234,7 +234,7 @@ TEST(BRepGraphCheck_ReportTest, IssuesForNode_ReturnsCorrectSubset)
   EXPECT_EQ(aNode1Issues.Length(), 1);
 }
 
-TEST(BRepGraphCheck_ReportTest, Clear_ResetsEverything)
+TEST(BRepGraphCheck_AnalyzerTest, Clear_ResetsEverything)
 {
   BRepGraphCheck_Report aReport;
 

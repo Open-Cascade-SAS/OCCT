@@ -32,7 +32,7 @@
 // Build_SingleSolid_AutoCreatesRootProduct
 // =============================================================================
 
-TEST(BRepGraphAssemblyTest, Build_SingleSolid_AutoCreatesRootProduct)
+TEST(BRepGraph_AssemblyTest, Build_SingleSolid_AutoCreatesRootProduct)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
@@ -55,7 +55,7 @@ TEST(BRepGraphAssemblyTest, Build_SingleSolid_AutoCreatesRootProduct)
 // Build_Compound_AutoCreatesRootProduct
 // =============================================================================
 
-TEST(BRepGraphAssemblyTest, Build_Compound_AutoCreatesRootProduct)
+TEST(BRepGraph_AssemblyTest, Build_Compound_AutoCreatesRootProduct)
 {
   TopoDS_Compound aCompound;
   BRep_Builder    aBB;
@@ -79,7 +79,7 @@ TEST(BRepGraphAssemblyTest, Build_Compound_AutoCreatesRootProduct)
 // AddProduct_IsPart
 // =============================================================================
 
-TEST(BRepGraphAssemblyTest, AddProduct_IsPart)
+TEST(BRepGraph_AssemblyTest, AddProduct_IsPart)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
@@ -99,7 +99,7 @@ TEST(BRepGraphAssemblyTest, AddProduct_IsPart)
 // AddAssemblyProduct_IsAssembly
 // =============================================================================
 
-TEST(BRepGraphAssemblyTest, AddAssemblyProduct_IsAssembly)
+TEST(BRepGraph_AssemblyTest, AddAssemblyProduct_IsAssembly)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
@@ -117,7 +117,7 @@ TEST(BRepGraphAssemblyTest, AddAssemblyProduct_IsAssembly)
 // AddOccurrence_LinksCorrectly
 // =============================================================================
 
-TEST(BRepGraphAssemblyTest, AddOccurrence_LinksCorrectly)
+TEST(BRepGraph_AssemblyTest, AddOccurrence_LinksCorrectly)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
@@ -151,7 +151,7 @@ TEST(BRepGraphAssemblyTest, AddOccurrence_LinksCorrectly)
 // DAGSharing_MultipleOccurrencesSamePart
 // =============================================================================
 
-TEST(BRepGraphAssemblyTest, DAGSharing_MultipleOccurrencesSamePart)
+TEST(BRepGraph_AssemblyTest, DAGSharing_MultipleOccurrencesSamePart)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
@@ -183,7 +183,7 @@ TEST(BRepGraphAssemblyTest, DAGSharing_MultipleOccurrencesSamePart)
 // RootProducts_Query
 // =============================================================================
 
-TEST(BRepGraphAssemblyTest, RootProducts_Query)
+TEST(BRepGraph_AssemblyTest, RootProducts_Query)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
@@ -209,7 +209,7 @@ TEST(BRepGraphAssemblyTest, RootProducts_Query)
 // RemoveOccurrence_UpdatesParent
 // =============================================================================
 
-TEST(BRepGraphAssemblyTest, RemoveOccurrence_UpdatesParent)
+TEST(BRepGraph_AssemblyTest, RemoveOccurrence_UpdatesParent)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
@@ -234,7 +234,7 @@ TEST(BRepGraphAssemblyTest, RemoveOccurrence_UpdatesParent)
 // RemoveProduct_CascadeOccurrences
 // =============================================================================
 
-TEST(BRepGraphAssemblyTest, RemoveProduct_CascadeOccurrences)
+TEST(BRepGraph_AssemblyTest, RemoveProduct_CascadeOccurrences)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
@@ -259,7 +259,7 @@ TEST(BRepGraphAssemblyTest, RemoveProduct_CascadeOccurrences)
 // MutProduct_RAII
 // =============================================================================
 
-TEST(BRepGraphAssemblyTest, MutProduct_RAII)
+TEST(BRepGraph_AssemblyTest, MutProduct_RAII)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
@@ -279,7 +279,7 @@ TEST(BRepGraphAssemblyTest, MutProduct_RAII)
 // MutOccurrence_Placement
 // =============================================================================
 
-TEST(BRepGraphAssemblyTest, MutOccurrence_Placement)
+TEST(BRepGraph_AssemblyTest, MutOccurrence_Placement)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
@@ -309,7 +309,7 @@ TEST(BRepGraphAssemblyTest, MutOccurrence_Placement)
 // GlobalPlacement_DeepNesting
 // =============================================================================
 
-TEST(BRepGraphAssemblyTest, GlobalPlacement_DeepNesting)
+TEST(BRepGraph_AssemblyTest, GlobalPlacement_DeepNesting)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
@@ -346,7 +346,7 @@ TEST(BRepGraphAssemblyTest, GlobalPlacement_DeepNesting)
 // NbNodes_IncludesAssembly
 // =============================================================================
 
-TEST(BRepGraphAssemblyTest, NbNodes_IncludesAssembly)
+TEST(BRepGraph_AssemblyTest, NbNodes_IncludesAssembly)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
@@ -370,7 +370,7 @@ TEST(BRepGraphAssemblyTest, NbNodes_IncludesAssembly)
 // OccurrencesOfProduct_ReverseIndex
 // =============================================================================
 
-TEST(BRepGraphAssemblyTest, OccurrencesOfProduct_ReverseIndex)
+TEST(BRepGraph_AssemblyTest, OccurrencesOfProduct_ReverseIndex)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
@@ -393,7 +393,7 @@ TEST(BRepGraphAssemblyTest, OccurrencesOfProduct_ReverseIndex)
 // Iterator_Product
 // =============================================================================
 
-TEST(BRepGraphAssemblyTest, Iterator_Product)
+TEST(BRepGraph_AssemblyTest, Iterator_Product)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
@@ -413,7 +413,7 @@ TEST(BRepGraphAssemblyTest, Iterator_Product)
 // Iterator_Occurrence
 // =============================================================================
 
-TEST(BRepGraphAssemblyTest, Iterator_Occurrence)
+TEST(BRepGraph_AssemblyTest, Iterator_Occurrence)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
@@ -436,7 +436,7 @@ TEST(BRepGraphAssemblyTest, Iterator_Occurrence)
 // NodeId_Helpers
 // =============================================================================
 
-TEST(BRepGraphAssemblyTest, NodeId_Helpers)
+TEST(BRepGraph_AssemblyTest, NodeId_Helpers)
 {
   EXPECT_TRUE(BRepGraph_NodeId::IsTopologyKind(BRepGraph_NodeId::Kind::Solid));
   EXPECT_TRUE(BRepGraph_NodeId::IsTopologyKind(BRepGraph_NodeId::Kind::Vertex));
@@ -454,7 +454,7 @@ TEST(BRepGraphAssemblyTest, NodeId_Helpers)
 // UID_IsAssembly
 // =============================================================================
 
-TEST(BRepGraphAssemblyTest, UID_IsAssembly)
+TEST(BRepGraph_AssemblyTest, UID_IsAssembly)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
@@ -472,7 +472,7 @@ TEST(BRepGraphAssemblyTest, UID_IsAssembly)
 // AddOccurrence_InvalidParent_ReturnsInvalid
 // =============================================================================
 
-TEST(BRepGraphAssemblyTest, AddOccurrence_InvalidParent_ReturnsInvalid)
+TEST(BRepGraph_AssemblyTest, AddOccurrence_InvalidParent_ReturnsInvalid)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
@@ -501,7 +501,7 @@ TEST(BRepGraphAssemblyTest, AddOccurrence_InvalidParent_ReturnsInvalid)
 // AddOccurrence_SelfReference_ReturnsInvalid
 // =============================================================================
 
-TEST(BRepGraphAssemblyTest, AddOccurrence_SelfReference_ReturnsInvalid)
+TEST(BRepGraph_AssemblyTest, AddOccurrence_SelfReference_ReturnsInvalid)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
@@ -519,7 +519,7 @@ TEST(BRepGraphAssemblyTest, AddOccurrence_SelfReference_ReturnsInvalid)
 // RootProducts_RemovedOccurrence_DoesNotAffectRoots
 // =============================================================================
 
-TEST(BRepGraphAssemblyTest, RootProducts_RemovedOccurrence_DoesNotAffectRoots)
+TEST(BRepGraph_AssemblyTest, RootProducts_RemovedOccurrence_DoesNotAffectRoots)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
@@ -546,7 +546,7 @@ TEST(BRepGraphAssemblyTest, RootProducts_RemovedOccurrence_DoesNotAffectRoots)
 // GlobalPlacement_DAGSharing_DistinctPathsGiveDistinctPlacements
 // =============================================================================
 
-TEST(BRepGraphAssemblyTest, GlobalPlacement_DAGSharing_DistinctPathsGiveDistinctPlacements)
+TEST(BRepGraph_AssemblyTest, GlobalPlacement_DAGSharing_DistinctPathsGiveDistinctPlacements)
 {
   // Shared part placed twice under the same assembly at different locations.
   // Each occurrence has its own placement chain - no ambiguity.
@@ -583,7 +583,7 @@ TEST(BRepGraphAssemblyTest, GlobalPlacement_DAGSharing_DistinctPathsGiveDistinct
 // AddOccurrence_RemovedProduct_ReturnsInvalid
 // =============================================================================
 
-TEST(BRepGraphAssemblyTest, AddOccurrence_RemovedProduct_ReturnsInvalid)
+TEST(BRepGraph_AssemblyTest, AddOccurrence_RemovedProduct_ReturnsInvalid)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
@@ -610,7 +610,7 @@ TEST(BRepGraphAssemblyTest, AddOccurrence_RemovedProduct_ReturnsInvalid)
 // GlobalPlacement_ThreeLevelNesting
 // =============================================================================
 
-TEST(BRepGraphAssemblyTest, GlobalPlacement_ThreeLevelNesting)
+TEST(BRepGraph_AssemblyTest, GlobalPlacement_ThreeLevelNesting)
 {
   // Root -> Mid -> Leaf, each with a distinct translation.
   BRepGraph aGraph;
@@ -650,7 +650,7 @@ TEST(BRepGraphAssemblyTest, GlobalPlacement_ThreeLevelNesting)
 // OccurrencesOfProduct_ViaReverseIndex
 // =============================================================================
 
-TEST(BRepGraphAssemblyTest, OccurrencesOfProduct_ViaReverseIndex)
+TEST(BRepGraph_AssemblyTest, OccurrencesOfProduct_ViaReverseIndex)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
@@ -676,7 +676,7 @@ TEST(BRepGraphAssemblyTest, OccurrencesOfProduct_ViaReverseIndex)
 // GlobalPlacement_CircularParentOccurrence_Terminates
 // =============================================================================
 
-TEST(BRepGraphAssemblyTest, GlobalPlacement_CircularParentOccurrence_Terminates)
+TEST(BRepGraph_AssemblyTest, GlobalPlacement_CircularParentOccurrence_Terminates)
 {
   // Manually create a circular ParentOccurrenceDefId via MutRef to simulate
   // a malformed graph. GlobalPlacement must terminate (THE_MAX_OCCURRENCE_DEPTH guard).

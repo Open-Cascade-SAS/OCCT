@@ -30,7 +30,7 @@
 // Fixture: builds a box 10x20x30 and its BRepGraph
 // =========================================================================
 
-class BRepGraphSharingTest : public testing::Test
+class BRepGraph_SharingTest : public testing::Test
 {
 protected:
   void SetUp() override
@@ -47,7 +47,7 @@ protected:
 // Edge sharing via incidence: each box edge appears in 2 wires (faces)
 // =========================================================================
 
-TEST_F(BRepGraphSharingTest, EdgeDef_EachSharedByTwoFaces)
+TEST_F(BRepGraph_SharingTest, EdgeDef_EachSharedByTwoFaces)
 {
   ASSERT_TRUE(myGraph.IsDone());
   EXPECT_EQ(myGraph.Defs().NbEdges(), 12);
@@ -60,7 +60,7 @@ TEST_F(BRepGraphSharingTest, EdgeDef_EachSharedByTwoFaces)
   }
 }
 
-TEST_F(BRepGraphSharingTest, FaceDef_EachHasValidSurface)
+TEST_F(BRepGraph_SharingTest, FaceDef_EachHasValidSurface)
 {
   ASSERT_TRUE(myGraph.IsDone());
   EXPECT_EQ(myGraph.Defs().NbFaces(), 6);
@@ -71,7 +71,7 @@ TEST_F(BRepGraphSharingTest, FaceDef_EachHasValidSurface)
   }
 }
 
-TEST_F(BRepGraphSharingTest, SolidDef_HasOneShellRef)
+TEST_F(BRepGraph_SharingTest, SolidDef_HasOneShellRef)
 {
   ASSERT_TRUE(myGraph.IsDone());
   EXPECT_EQ(myGraph.Defs().NbSolids(), 1);
@@ -79,7 +79,7 @@ TEST_F(BRepGraphSharingTest, SolidDef_HasOneShellRef)
   EXPECT_EQ(aDef.ShellRefs.Length(), 1);
 }
 
-TEST_F(BRepGraphSharingTest, ShellDef_HasSixFaceRefs)
+TEST_F(BRepGraph_SharingTest, ShellDef_HasSixFaceRefs)
 {
   ASSERT_TRUE(myGraph.IsDone());
   EXPECT_EQ(myGraph.Defs().NbShells(), 1);
@@ -91,7 +91,7 @@ TEST_F(BRepGraphSharingTest, ShellDef_HasSixFaceRefs)
 // Containment hierarchy
 // =========================================================================
 
-TEST_F(BRepGraphSharingTest, SolidDef_ContainsOneShellRef)
+TEST_F(BRepGraph_SharingTest, SolidDef_ContainsOneShellRef)
 {
   ASSERT_TRUE(myGraph.IsDone());
   EXPECT_EQ(myGraph.Defs().NbSolids(), 1);
@@ -99,7 +99,7 @@ TEST_F(BRepGraphSharingTest, SolidDef_ContainsOneShellRef)
   EXPECT_EQ(aSolidDef.ShellRefs.Length(), 1);
 }
 
-TEST_F(BRepGraphSharingTest, ShellDef_ContainsSixFaceRefs)
+TEST_F(BRepGraph_SharingTest, ShellDef_ContainsSixFaceRefs)
 {
   ASSERT_TRUE(myGraph.IsDone());
   EXPECT_EQ(myGraph.Defs().NbShells(), 1);
@@ -107,7 +107,7 @@ TEST_F(BRepGraphSharingTest, ShellDef_ContainsSixFaceRefs)
   EXPECT_EQ(aShellDef.FaceRefs.Length(), 6);
 }
 
-TEST_F(BRepGraphSharingTest, FaceDef_OuterWireIdx_Valid)
+TEST_F(BRepGraph_SharingTest, FaceDef_OuterWireIdx_Valid)
 {
   ASSERT_TRUE(myGraph.IsDone());
   for (int anIdx = 0; anIdx < myGraph.Defs().NbFaces(); ++anIdx)
@@ -117,7 +117,7 @@ TEST_F(BRepGraphSharingTest, FaceDef_OuterWireIdx_Valid)
   }
 }
 
-TEST_F(BRepGraphSharingTest, WireDef_CoEdgeRefsCount_FourPerBoxFace)
+TEST_F(BRepGraph_SharingTest, WireDef_CoEdgeRefsCount_FourPerBoxFace)
 {
   ASSERT_TRUE(myGraph.IsDone());
   for (int anIdx = 0; anIdx < myGraph.Defs().NbWires(); ++anIdx)
@@ -130,7 +130,7 @@ TEST_F(BRepGraphSharingTest, WireDef_CoEdgeRefsCount_FourPerBoxFace)
   }
 }
 
-TEST_F(BRepGraphSharingTest, EdgeDef_VertexDefs_BothValid)
+TEST_F(BRepGraph_SharingTest, EdgeDef_VertexDefs_BothValid)
 {
   ASSERT_TRUE(myGraph.IsDone());
   for (int anIdx = 0; anIdx < myGraph.Defs().NbEdges(); ++anIdx)
@@ -147,7 +147,7 @@ TEST_F(BRepGraphSharingTest, EdgeDef_VertexDefs_BothValid)
 // Orientation via incidence refs
 // =========================================================================
 
-TEST_F(BRepGraphSharingTest, SharedEdge_IncidenceRefs_DifferentOrientation)
+TEST_F(BRepGraph_SharingTest, SharedEdge_IncidenceRefs_DifferentOrientation)
 {
   ASSERT_TRUE(myGraph.IsDone());
   // In a box, shared edges between adjacent faces have coedges on
@@ -175,7 +175,7 @@ TEST_F(BRepGraphSharingTest, SharedEdge_IncidenceRefs_DifferentOrientation)
     << "Expected at least some shared edges with coedges on different faces";
 }
 
-TEST_F(BRepGraphSharingTest, NonClosedEdge_StartEnd_Different)
+TEST_F(BRepGraph_SharingTest, NonClosedEdge_StartEnd_Different)
 {
   ASSERT_TRUE(myGraph.IsDone());
   for (int anIdx = 0; anIdx < myGraph.Defs().NbEdges(); ++anIdx)
@@ -189,7 +189,7 @@ TEST_F(BRepGraphSharingTest, NonClosedEdge_StartEnd_Different)
   }
 }
 
-TEST_F(BRepGraphSharingTest, VertexDef_Points_MatchExpectedBoxCorners)
+TEST_F(BRepGraph_SharingTest, VertexDef_Points_MatchExpectedBoxCorners)
 {
   ASSERT_TRUE(myGraph.IsDone());
   // For a simple 10x20x30 box, all 8 vertex points should be valid.
@@ -211,7 +211,7 @@ TEST_F(BRepGraphSharingTest, VertexDef_Points_MatchExpectedBoxCorners)
 // TShape sharing in compounds (standalone tests)
 // =========================================================================
 
-TEST(BRepGraphSharingCompoundTest, CompoundTwoIdenticalBoxes)
+TEST_F(BRepGraph_SharingTest, CompoundTwoIdenticalBoxes)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -241,7 +241,7 @@ TEST(BRepGraphSharingCompoundTest, CompoundTwoIdenticalBoxes)
             aGraph.Defs().Compound(BRepGraph_CompoundId(0)).ChildRefs.Value(1).ChildDefId.Index);
 }
 
-TEST(BRepGraphSharingCompoundTest, CompoundTwoDistinctBoxes)
+TEST_F(BRepGraph_SharingTest, CompoundTwoDistinctBoxes)
 {
   BRepPrimAPI_MakeBox aBoxMaker1(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox1 = aBoxMaker1.Shape();
@@ -266,7 +266,7 @@ TEST(BRepGraphSharingCompoundTest, CompoundTwoDistinctBoxes)
   EXPECT_EQ(aGraph.Defs().NbVertices(), 16);
 }
 
-TEST(BRepGraphSharingCompoundTest, CompoundWithLocation_MoreUsagesThanDefs)
+TEST_F(BRepGraph_SharingTest, CompoundWithLocation_MoreUsagesThanDefs)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -291,7 +291,7 @@ TEST(BRepGraphSharingCompoundTest, CompoundWithLocation_MoreUsagesThanDefs)
   EXPECT_EQ(aGraph.Defs().NbVertices(), 8);
 }
 
-TEST(BRepGraphSharingCompoundTest, TranslatedCopy_SameTShape_SharedDefs)
+TEST_F(BRepGraph_SharingTest, TranslatedCopy_SameTShape_SharedDefs)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();

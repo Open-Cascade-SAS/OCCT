@@ -27,7 +27,7 @@
 // Null / Empty / Invalid input tests
 // ============================================================
 
-TEST(BRepGraphEdgeCasesTest, Build_NullShape_IsDoneFalse)
+TEST(BRepGraph_EdgeCasesTest, Build_NullShape_IsDoneFalse)
 {
   BRepGraph    aGraph;
   TopoDS_Shape aNullShape;
@@ -35,7 +35,7 @@ TEST(BRepGraphEdgeCasesTest, Build_NullShape_IsDoneFalse)
   EXPECT_FALSE(aGraph.IsDone());
 }
 
-TEST(BRepGraphEdgeCasesTest, Build_EmptyCompound_IsDoneZeroCounts)
+TEST(BRepGraph_EdgeCasesTest, Build_EmptyCompound_IsDoneZeroCounts)
 {
   BRepGraph       aGraph;
   BRep_Builder    aBuilder;
@@ -55,7 +55,7 @@ TEST(BRepGraphEdgeCasesTest, Build_EmptyCompound_IsDoneZeroCounts)
   EXPECT_EQ(aGraph.Defs().NbEdges(), 0);
 }
 
-TEST(BRepGraphEdgeCasesTest, Shape_InvalidNodeId_ReturnsNull)
+TEST(BRepGraph_EdgeCasesTest, Shape_InvalidNodeId_ReturnsNull)
 {
   BRepGraph           aGraph;
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
@@ -67,7 +67,7 @@ TEST(BRepGraphEdgeCasesTest, Shape_InvalidNodeId_ReturnsNull)
   EXPECT_TRUE(aShape.IsNull());
 }
 
-TEST(BRepGraphEdgeCasesTest, ReconstructShape_InvalidNodeId_ReturnsNull)
+TEST(BRepGraph_EdgeCasesTest, ReconstructShape_InvalidNodeId_ReturnsNull)
 {
   BRepGraph           aGraph;
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
@@ -79,7 +79,7 @@ TEST(BRepGraphEdgeCasesTest, ReconstructShape_InvalidNodeId_ReturnsNull)
   EXPECT_TRUE(aShape.IsNull());
 }
 
-TEST(BRepGraphEdgeCasesTest, TopoDef_InvalidNodeId_ReturnsNull)
+TEST(BRepGraph_EdgeCasesTest, TopoDef_InvalidNodeId_ReturnsNull)
 {
   BRepGraph           aGraph;
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
@@ -91,7 +91,7 @@ TEST(BRepGraphEdgeCasesTest, TopoDef_InvalidNodeId_ReturnsNull)
   EXPECT_EQ(aDef, nullptr);
 }
 
-TEST(BRepGraphEdgeCasesTest, NbNodes_BeforeBuild_ReturnsZero)
+TEST(BRepGraph_EdgeCasesTest, NbNodes_BeforeBuild_ReturnsZero)
 {
   BRepGraph aGraph;
   EXPECT_EQ(aGraph.Defs().NbNodes(), 0u);
@@ -101,7 +101,7 @@ TEST(BRepGraphEdgeCasesTest, NbNodes_BeforeBuild_ReturnsZero)
 // Rebuild behavior tests
 // ============================================================
 
-TEST(BRepGraphEdgeCasesTest, Build_TwiceOnSameGraph_GenerationIncrements)
+TEST(BRepGraph_EdgeCasesTest, Build_TwiceOnSameGraph_GenerationIncrements)
 {
   BRepGraph aGraph;
 
@@ -119,7 +119,7 @@ TEST(BRepGraphEdgeCasesTest, Build_TwiceOnSameGraph_GenerationIncrements)
   EXPECT_GT(aSecondGen, aFirstGen);
 }
 
-TEST(BRepGraphEdgeCasesTest, Build_TwiceOnSameGraph_OldUIDsInvalidated)
+TEST(BRepGraph_EdgeCasesTest, Build_TwiceOnSameGraph_OldUIDsInvalidated)
 {
   BRepGraph aGraph;
 
@@ -148,7 +148,7 @@ TEST(BRepGraphEdgeCasesTest, Build_TwiceOnSameGraph_OldUIDsInvalidated)
   EXPECT_EQ(aUID.Generation(), aSecondGen);
 }
 
-TEST(BRepGraphEdgeCasesTest, Build_TwiceOnSameGraph_CountsResetCorrectly)
+TEST(BRepGraph_EdgeCasesTest, Build_TwiceOnSameGraph_CountsResetCorrectly)
 {
   BRepGraph aGraph;
 
@@ -185,7 +185,7 @@ TEST(BRepGraphEdgeCasesTest, Build_TwiceOnSameGraph_CountsResetCorrectly)
 // UID edge cases
 // ============================================================
 
-TEST(BRepGraphEdgeCasesTest, UID_AlwaysEnabled_AfterBuild)
+TEST(BRepGraph_EdgeCasesTest, UID_AlwaysEnabled_AfterBuild)
 {
   BRepGraph aGraph;
 
@@ -202,7 +202,7 @@ TEST(BRepGraphEdgeCasesTest, UID_AlwaysEnabled_AfterBuild)
 // Parallel build equivalence tests
 // ============================================================
 
-TEST(BRepGraphEdgeCasesTest, ParallelBuild_Sphere_SameAsSequential)
+TEST(BRepGraph_EdgeCasesTest, ParallelBuild_Sphere_SameAsSequential)
 {
   BRepPrimAPI_MakeSphere aSphereMaker(50.0);
   const TopoDS_Shape     aSphere = aSphereMaker.Shape();
@@ -226,7 +226,7 @@ TEST(BRepGraphEdgeCasesTest, ParallelBuild_Sphere_SameAsSequential)
   EXPECT_EQ(aParGraph.Defs().NbNodes(), aSeqGraph.Defs().NbNodes());
 }
 
-TEST(BRepGraphEdgeCasesTest, ParallelBuild_Compound_SameAsSequential)
+TEST(BRepGraph_EdgeCasesTest, ParallelBuild_Compound_SameAsSequential)
 {
   // Build a compound of three boxes at different sizes.
   BRep_Builder    aBuilder;

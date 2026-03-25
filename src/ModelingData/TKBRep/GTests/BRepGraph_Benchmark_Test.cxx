@@ -87,7 +87,7 @@ double runBenchmark(const char* theLabel, Func theFunc)
 
 } // namespace
 
-TEST(BRepGraph_Benchmark, Smoke_BuildReconstructAndAdjacency)
+TEST(BRepGraph_BenchmarkTest, Smoke_BuildReconstructAndAdjacency)
 {
   const TopoDS_Compound aFaces = makeFaceCloud(120);
 
@@ -104,7 +104,7 @@ TEST(BRepGraph_Benchmark, Smoke_BuildReconstructAndAdjacency)
   EXPECT_GE(anAdj.Length(), 0);
 }
 
-TEST(BRepGraph_Benchmark, DISABLED_Build_100Faces)
+TEST(BRepGraph_BenchmarkTest, DISABLED_Build_100Faces)
 {
   const TopoDS_Compound aFaces = makeFaceCloud(100);
   const double          aAvg   = runBenchmark("Build 100 faces", [&]() {
@@ -115,7 +115,7 @@ TEST(BRepGraph_Benchmark, DISABLED_Build_100Faces)
   EXPECT_GT(aAvg, 0.0);
 }
 
-TEST(BRepGraph_Benchmark, DISABLED_Build_1000Faces)
+TEST(BRepGraph_BenchmarkTest, DISABLED_Build_1000Faces)
 {
   const TopoDS_Compound aFaces = makeFaceCloud(1000);
   const double          aAvg   = runBenchmark("Build 1000 faces", [&]() {
@@ -126,7 +126,7 @@ TEST(BRepGraph_Benchmark, DISABLED_Build_1000Faces)
   EXPECT_GT(aAvg, 0.0);
 }
 
-TEST(BRepGraph_Benchmark, DISABLED_Build_10000Faces)
+TEST(BRepGraph_BenchmarkTest, DISABLED_Build_10000Faces)
 {
   const TopoDS_Compound aFaces = makeFaceCloud(10000);
   const double          aAvg   = runBenchmark("Build 10000 faces", [&]() {
@@ -137,7 +137,7 @@ TEST(BRepGraph_Benchmark, DISABLED_Build_10000Faces)
   EXPECT_GT(aAvg, 0.0);
 }
 
-TEST(BRepGraph_Benchmark, DISABLED_Build_1000Faces_Parallel)
+TEST(BRepGraph_BenchmarkTest, DISABLED_Build_1000Faces_Parallel)
 {
   const TopoDS_Compound aFaces = makeFaceCloud(1000);
   const double          aAvg   = runBenchmark("Build 1000 faces parallel", [&]() {
@@ -148,7 +148,7 @@ TEST(BRepGraph_Benchmark, DISABLED_Build_1000Faces_Parallel)
   EXPECT_GT(aAvg, 0.0);
 }
 
-TEST(BRepGraph_Benchmark, DISABLED_Build_10000Faces_Parallel)
+TEST(BRepGraph_BenchmarkTest, DISABLED_Build_10000Faces_Parallel)
 {
   const TopoDS_Compound aFaces = makeFaceCloud(10000);
   const double          aAvg   = runBenchmark("Build 10000 faces parallel", [&]() {
@@ -159,7 +159,7 @@ TEST(BRepGraph_Benchmark, DISABLED_Build_10000Faces_Parallel)
   EXPECT_GT(aAvg, 0.0);
 }
 
-TEST(BRepGraph_Benchmark, DISABLED_Reconstruct_RoundTrip)
+TEST(BRepGraph_BenchmarkTest, DISABLED_Reconstruct_RoundTrip)
 {
   const TopoDS_Compound aFaces = makeFaceCloud(10000);
   BRepGraph             aGraph;
@@ -183,7 +183,7 @@ TEST(BRepGraph_Benchmark, DISABLED_Reconstruct_RoundTrip)
   EXPECT_GT(aAvg, 0.0);
 }
 
-TEST(BRepGraph_Benchmark, DISABLED_SpatialQuery_Throughput)
+TEST(BRepGraph_BenchmarkTest, DISABLED_SpatialQuery_Throughput)
 {
   const TopoDS_Compound aFaces = makeFaceCloud(10000);
   BRepGraph             aGraph;
