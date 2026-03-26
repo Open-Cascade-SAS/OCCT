@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 #include <BRepGraph.hxx>
-#include <BRepGraph_AttrRegistry.hxx>
 #include <BRepGraph_DefsView.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_BuilderView.hxx>
@@ -21,7 +20,6 @@
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <NCollection_Vector.hxx>
 #include <Standard_Failure.hxx>
-#include <Standard_GUID.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <gp_Pnt.hxx>
 
@@ -323,49 +321,6 @@ TEST_F(BRepGraph_HistoryTest, FindOriginal_TwoApply_TransitiveTrace)
   const BRepGraph_NodeId anOriginal1 = myGraph.History().FindOriginal(aVtx1);
   EXPECT_TRUE(anOriginal1.IsValid());
   EXPECT_EQ(anOriginal1, aVtx0);
-}
-
-// ============================================================
-// AttrRegistry tests (standalone, no fixture needed)
-// ============================================================
-
-TEST_F(BRepGraph_HistoryTest, Register_SameGUID_SameKey)
-{
-  const Standard_GUID aGUID("a1b2c3d4-1111-2222-3333-444455556666");
-  const int           aKey1 = BRepGraph_AttrRegistry::Register(aGUID);
-  const int           aKey2 = BRepGraph_AttrRegistry::Register(aGUID);
-  EXPECT_EQ(aKey1, aKey2);
-}
-
-TEST_F(BRepGraph_HistoryTest, Register_DifferentGUID_DifferentKey)
-{
-  const Standard_GUID aGUID1("b1b2c3d4-aaaa-bbbb-cccc-ddddeeee0001");
-  const Standard_GUID aGUID2("b1b2c3d4-aaaa-bbbb-cccc-ddddeeee0002");
-  const int           aKey1 = BRepGraph_AttrRegistry::Register(aGUID1);
-  const int           aKey2 = BRepGraph_AttrRegistry::Register(aGUID2);
-  EXPECT_NE(aKey1, aKey2);
-}
-
-TEST_F(BRepGraph_HistoryTest, Find_ByGUID_ReturnsCorrectKey)
-{
-  const Standard_GUID aGUID("c1c2c3c4-1111-2222-3333-aabbccddeeff");
-  const int           aExpectedKey = BRepGraph_AttrRegistry::Register(aGUID);
-
-  int        aFoundKey = -1;
-  const bool aOk       = BRepGraph_AttrRegistry::Find(aGUID, aFoundKey);
-  EXPECT_TRUE(aOk);
-  EXPECT_EQ(aFoundKey, aExpectedKey);
-}
-
-TEST_F(BRepGraph_HistoryTest, Find_ByKey_ReturnsCorrectGUID)
-{
-  const Standard_GUID aGUID("d1d2d3d4-5555-6666-7777-888899990000");
-  const int           aKey = BRepGraph_AttrRegistry::Register(aGUID);
-
-  Standard_GUID aFoundGUID;
-  const bool    aOk = BRepGraph_AttrRegistry::Find(aKey, aFoundGUID);
-  EXPECT_TRUE(aOk);
-  EXPECT_TRUE(aFoundGUID == aGUID);
 }
 
 TEST_F(BRepGraph_HistoryTest, ApplyModification_WhenModifierThrows_DoesNotRecordHistory)

@@ -16,6 +16,8 @@ set(OCCT_TKTopAlgo_GTests_FILES
   BRepGraphAlgo_FaceAnalysis_Test.cxx
   BRepGraphAlgo_FClass2d_Test.cxx
   BRepGraphAlgo_Sewing_Test.cxx
+  BRepGraphAlgo_SameParameter_Test.cxx
+  BRepGraphAlgo_Sewing_Performance_Test.cxx
   BRepGraphAlgo_Transform_Test.cxx
   BRepGraphAlgo_BndLib_Test.cxx
   BRepGraphAlgo_Validate_Test.cxx

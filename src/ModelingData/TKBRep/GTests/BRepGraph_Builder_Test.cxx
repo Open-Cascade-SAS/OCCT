@@ -52,7 +52,7 @@ static gp_Pnt bboxCenter(BRepGraph& theGraph, BRepGraph_NodeId theNode)
 // Task 1A: Graph-Native BoundingBox
 // ============================================================
 
-TEST(BRepGraph_APITest, Box_MatchesTopoDSBox)
+TEST(BRepGraph_BuilderTest, Box_MatchesTopoDSBox)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -79,7 +79,7 @@ TEST(BRepGraph_APITest, Box_MatchesTopoDSBox)
   EXPECT_GE(aGZmax, 30.0 - Precision::Confusion());
 }
 
-TEST(BRepGraph_APITest, Sphere_NonVoid)
+TEST(BRepGraph_BuilderTest, Sphere_NonVoid)
 {
   BRepPrimAPI_MakeSphere aSphereMaker(15.0);
   const TopoDS_Shape&    aSphere = aSphereMaker.Shape();
@@ -94,7 +94,7 @@ TEST(BRepGraph_APITest, Sphere_NonVoid)
   EXPECT_FALSE(aGraphBox.IsVoid());
 }
 
-TEST(BRepGraph_APITest, Cylinder_NonVoid)
+TEST(BRepGraph_BuilderTest, Cylinder_NonVoid)
 {
   BRepPrimAPI_MakeCylinder aCylMaker(5.0, 20.0);
   const TopoDS_Shape&      aCyl = aCylMaker.Shape();
@@ -109,7 +109,7 @@ TEST(BRepGraph_APITest, Cylinder_NonVoid)
   EXPECT_FALSE(aGraphBox.IsVoid());
 }
 
-TEST(BRepGraph_APITest, SingleFace_MatchesVertices)
+TEST(BRepGraph_BuilderTest, SingleFace_MatchesVertices)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -125,7 +125,7 @@ TEST(BRepGraph_APITest, SingleFace_MatchesVertices)
   EXPECT_FALSE(aGraphBox.IsVoid());
 }
 
-TEST(BRepGraph_APITest, Box_CentroidNearCenter)
+TEST(BRepGraph_BuilderTest, Box_CentroidNearCenter)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -147,7 +147,7 @@ TEST(BRepGraph_APITest, Box_CentroidNearCenter)
 // Task 2A: Programmatic Node Addition API
 // ============================================================
 
-TEST(BRepGraph_APITest, AddVertexDef_ReturnsValidId)
+TEST(BRepGraph_BuilderTest, AddVertexDef_ReturnsValidId)
 {
   BRepGraph        aGraph;
   BRepGraph_NodeId aVtxId = aGraph.Builder().AddVertexDef(gp_Pnt(1.0, 2.0, 3.0), 0.001);
@@ -162,7 +162,7 @@ TEST(BRepGraph_APITest, AddVertexDef_ReturnsValidId)
   EXPECT_NEAR(aVtxDef.Tolerance, 0.001, 1e-10);
 }
 
-TEST(BRepGraph_APITest, AddEdgeDef_WithCurve)
+TEST(BRepGraph_BuilderTest, AddEdgeDef_WithCurve)
 {
   BRepGraph        aGraph;
   BRepGraph_NodeId aV1 = aGraph.Builder().AddVertexDef(gp_Pnt(0.0, 0.0, 0.0), 0.001);
@@ -182,7 +182,7 @@ TEST(BRepGraph_APITest, AddEdgeDef_WithCurve)
   EXPECT_NEAR(anEdgeDef.ParamLast, 10.0, 1e-10);
 }
 
-TEST(BRepGraph_APITest, AddWireDef_ClosedRectangle)
+TEST(BRepGraph_BuilderTest, AddWireDef_ClosedRectangle)
 {
   BRepGraph        aGraph;
   BRepGraph_NodeId aV0 = aGraph.Builder().AddVertexDef(gp_Pnt(0, 0, 0), 0.001);
@@ -215,7 +215,7 @@ TEST(BRepGraph_APITest, AddWireDef_ClosedRectangle)
   EXPECT_TRUE(aWireDef.IsClosed);
 }
 
-TEST(BRepGraph_APITest, AddFaceDef_WithSurface)
+TEST(BRepGraph_BuilderTest, AddFaceDef_WithSurface)
 {
   BRepGraph aGraph;
 
@@ -256,7 +256,7 @@ TEST(BRepGraph_APITest, AddFaceDef_WithSurface)
   EXPECT_TRUE(aFaceDef.SurfaceRepId.IsValid());
 }
 
-TEST(BRepGraph_APITest, AddShellAndSolid)
+TEST(BRepGraph_BuilderTest, AddShellAndSolid)
 {
   BRepGraph        aGraph;
   BRepGraph_NodeId aShellId = aGraph.Builder().AddShellDef();
@@ -272,7 +272,7 @@ TEST(BRepGraph_APITest, AddShellAndSolid)
 // Task 2B: Incremental Build (AppendShape)
 // ============================================================
 
-TEST(BRepGraph_APITest, AppendTwoBoxFaces)
+TEST(BRepGraph_BuilderTest, AppendTwoBoxFaces)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -302,7 +302,7 @@ TEST(BRepGraph_APITest, AppendTwoBoxFaces)
 // Task 2C: Soft Node Removal
 // ============================================================
 
-TEST(BRepGraph_APITest, RemoveVertex_IsRemoved)
+TEST(BRepGraph_BuilderTest, RemoveVertex_IsRemoved)
 {
   BRepGraph        aGraph;
   BRepGraph_NodeId aVtxId = aGraph.Builder().AddVertexDef(gp_Pnt(1.0, 2.0, 3.0), 0.001);
@@ -312,7 +312,7 @@ TEST(BRepGraph_APITest, RemoveVertex_IsRemoved)
   EXPECT_TRUE(aGraph.Defs().IsRemoved(aVtxId));
 }
 
-TEST(BRepGraph_APITest, RemoveFaceFromBox)
+TEST(BRepGraph_BuilderTest, RemoveFaceFromBox)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -335,7 +335,7 @@ TEST(BRepGraph_APITest, RemoveFaceFromBox)
   }
 }
 
-TEST(BRepGraph_APITest, RemoveInvalidNode_NoError)
+TEST(BRepGraph_BuilderTest, RemoveInvalidNode_NoError)
 {
   BRepGraph        aGraph;
   BRepGraph_NodeId anInvalidId;
@@ -347,7 +347,7 @@ TEST(BRepGraph_APITest, RemoveInvalidNode_NoError)
 // Item 1: Complete Construction API (Shell/Solid linking)
 // ============================================================
 
-TEST(BRepGraph_APITest, AddFaceToShell_CreatesUsage)
+TEST(BRepGraph_BuilderTest, AddFaceToShell_CreatesUsage)
 {
   BRepGraph aGraph;
 
@@ -387,7 +387,7 @@ TEST(BRepGraph_APITest, AddFaceToShell_CreatesUsage)
   EXPECT_EQ(aShellDef.FaceRefs.Length(), 1);
 }
 
-TEST(BRepGraph_APITest, AddShellToSolid_CreatesUsage)
+TEST(BRepGraph_BuilderTest, AddShellToSolid_CreatesUsage)
 {
   BRepGraph aGraph;
 
@@ -400,7 +400,7 @@ TEST(BRepGraph_APITest, AddShellToSolid_CreatesUsage)
   EXPECT_EQ(aSolidDef.ShellRefs.Length(), 1);
 }
 
-TEST(BRepGraph_APITest, AddCompoundDef_WithChildren)
+TEST(BRepGraph_BuilderTest, AddCompoundDef_WithChildren)
 {
   BRepGraph aGraph;
 
@@ -420,7 +420,7 @@ TEST(BRepGraph_APITest, AddCompoundDef_WithChildren)
   EXPECT_EQ(aCompDef.ChildRefs.Length(), 2);
 }
 
-TEST(BRepGraph_APITest, AddCompSolidDef_WithSolids)
+TEST(BRepGraph_BuilderTest, AddCompSolidDef_WithSolids)
 {
   BRepGraph aGraph;
 
@@ -441,7 +441,7 @@ TEST(BRepGraph_APITest, AddCompSolidDef_WithSolids)
   EXPECT_EQ(aCSolDef.SolidRefs.Length(), 2);
 }
 
-TEST(BRepGraph_APITest, FullSolid_ProgrammaticConstruction)
+TEST(BRepGraph_BuilderTest, FullSolid_ProgrammaticConstruction)
 {
   BRepGraph aGraph;
 
@@ -491,7 +491,7 @@ TEST(BRepGraph_APITest, FullSolid_ProgrammaticConstruction)
 // Item 2: Mutable Access for All Def Types
 // ============================================================
 
-TEST(BRepGraph_APITest, MutableFaceDefinition_ChangesTolerance)
+TEST(BRepGraph_BuilderTest, MutableFaceDefinition_ChangesTolerance)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -511,7 +511,7 @@ TEST(BRepGraph_APITest, MutableFaceDefinition_ChangesTolerance)
   (void)anOrigTol;
 }
 
-TEST(BRepGraph_APITest, MutableShellDefinition)
+TEST(BRepGraph_BuilderTest, MutableShellDefinition)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -528,7 +528,7 @@ TEST(BRepGraph_APITest, MutableShellDefinition)
   EXPECT_TRUE(aGraph.Defs().Shell(BRepGraph_ShellId(0)).IsModified);
 }
 
-TEST(BRepGraph_APITest, MutableSolidDefinition)
+TEST(BRepGraph_BuilderTest, MutableSolidDefinition)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -545,7 +545,7 @@ TEST(BRepGraph_APITest, MutableSolidDefinition)
   EXPECT_TRUE(aGraph.Defs().Solid(BRepGraph_SolidId(0)).IsModified);
 }
 
-TEST(BRepGraph_APITest, MutableCompoundDefinition)
+TEST(BRepGraph_BuilderTest, MutableCompoundDefinition)
 {
   BRepGraph                            aGraph;
   NCollection_Vector<BRepGraph_NodeId> aChildren;
@@ -559,7 +559,7 @@ TEST(BRepGraph_APITest, MutableCompoundDefinition)
   EXPECT_TRUE(aGraph.Defs().Compound(BRepGraph_CompoundId(0)).IsModified);
 }
 
-TEST(BRepGraph_APITest, MutableCompSolidDefinition)
+TEST(BRepGraph_BuilderTest, MutableCompSolidDefinition)
 {
   BRepGraph                            aGraph;
   NCollection_Vector<BRepGraph_NodeId> aSolids;
@@ -577,7 +577,7 @@ TEST(BRepGraph_APITest, MutableCompSolidDefinition)
 // Item 3: Iterator Skips Removed Nodes
 // ============================================================
 
-TEST(BRepGraph_APITest, SkipsRemovedFaces)
+TEST(BRepGraph_BuilderTest, SkipsRemovedFaces)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -600,7 +600,7 @@ TEST(BRepGraph_APITest, SkipsRemovedFaces)
   EXPECT_EQ(aCount, 4);
 }
 
-TEST(BRepGraph_APITest, SkipsRemovedEdges)
+TEST(BRepGraph_BuilderTest, SkipsRemovedEdges)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -622,7 +622,7 @@ TEST(BRepGraph_APITest, SkipsRemovedEdges)
   EXPECT_EQ(aCount, aNbEdges - 1);
 }
 
-TEST(BRepGraph_APITest, SkipsFirstNode)
+TEST(BRepGraph_BuilderTest, SkipsFirstNode)
 {
   BRepGraph aGraph;
   (void)aGraph.Builder().AddVertexDef(gp_Pnt(0, 0, 0), 0.001);
@@ -645,7 +645,7 @@ TEST(BRepGraph_APITest, SkipsFirstNode)
 // Item 4: Cascading Soft Removal
 // ============================================================
 
-TEST(BRepGraph_APITest, RemoveFace_RemovesWiresAndEdges)
+TEST(BRepGraph_BuilderTest, RemoveFace_RemovesWiresAndEdges)
 {
   BRepGraph aGraph;
 
@@ -690,7 +690,7 @@ TEST(BRepGraph_APITest, RemoveFace_RemovesWiresAndEdges)
   EXPECT_TRUE(aGraph.Defs().IsRemoved(aV3));
 }
 
-TEST(BRepGraph_APITest, RemoveSolid_CascadesToFaces)
+TEST(BRepGraph_BuilderTest, RemoveSolid_CascadesToFaces)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -717,7 +717,7 @@ TEST(BRepGraph_APITest, RemoveSolid_CascadesToFaces)
 // Item 5: Edge Adjacency Queries
 // ============================================================
 
-TEST(BRepGraph_APITest, FacesOfEdge_BoxSharedEdge)
+TEST(BRepGraph_BuilderTest, FacesOfEdge_BoxSharedEdge)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -735,7 +735,7 @@ TEST(BRepGraph_APITest, FacesOfEdge_BoxSharedEdge)
   }
 }
 
-TEST(BRepGraph_APITest, SharedEdges_AdjacentBoxFaces)
+TEST(BRepGraph_BuilderTest, SharedEdges_AdjacentBoxFaces)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -762,7 +762,7 @@ TEST(BRepGraph_APITest, SharedEdges_AdjacentBoxFaces)
   EXPECT_EQ(aSharingPairs, 12);
 }
 
-TEST(BRepGraph_APITest, AdjacentFaces_BoxFace)
+TEST(BRepGraph_BuilderTest, AdjacentFaces_BoxFace)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -782,7 +782,7 @@ TEST(BRepGraph_APITest, AdjacentFaces_BoxFace)
   }
 }
 
-TEST(BRepGraph_APITest, FacesOfEdge_NoFaces_Programmatic)
+TEST(BRepGraph_BuilderTest, FacesOfEdge_NoFaces_Programmatic)
 {
   BRepGraph        aGraph;
   BRepGraph_NodeId aV0 = aGraph.Builder().AddVertexDef(gp_Pnt(0, 0, 0), 0.001);
@@ -798,7 +798,7 @@ TEST(BRepGraph_APITest, FacesOfEdge_NoFaces_Programmatic)
 
 // ============ New SpatialView adjacency methods ============
 
-TEST(BRepGraph_APITest, EdgesOfFace_Box_HasEdges)
+TEST(BRepGraph_BuilderTest, EdgesOfFace_Box_HasEdges)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
@@ -810,7 +810,7 @@ TEST(BRepGraph_APITest, EdgesOfFace_Box_HasEdges)
   EXPECT_EQ(aEdges.Length(), 4);
 }
 
-TEST(BRepGraph_APITest, VerticesOfEdge_Box_HasTwoVertices)
+TEST(BRepGraph_BuilderTest, VerticesOfEdge_Box_HasTwoVertices)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
@@ -823,7 +823,7 @@ TEST(BRepGraph_APITest, VerticesOfEdge_Box_HasTwoVertices)
   EXPECT_EQ(aVerts.Value(1).NodeKind, BRepGraph_NodeId::Kind::Vertex);
 }
 
-TEST(BRepGraph_APITest, EdgesOfVertex_Box_ThreeEdges)
+TEST(BRepGraph_BuilderTest, EdgesOfVertex_Box_ThreeEdges)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
@@ -835,7 +835,7 @@ TEST(BRepGraph_APITest, EdgesOfVertex_Box_ThreeEdges)
   EXPECT_EQ(aEdges.Length(), 3);
 }
 
-TEST(BRepGraph_APITest, AdjacentEdges_Box_SharedVertex)
+TEST(BRepGraph_BuilderTest, AdjacentEdges_Box_SharedVertex)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
@@ -848,7 +848,7 @@ TEST(BRepGraph_APITest, AdjacentEdges_Box_SharedVertex)
   EXPECT_GE(aAdj.Length(), 4);
 }
 
-TEST(BRepGraph_APITest, FaceCountOfEdge_Box_TwoFaces)
+TEST(BRepGraph_BuilderTest, FaceCountOfEdge_Box_TwoFaces)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
@@ -858,7 +858,7 @@ TEST(BRepGraph_APITest, FaceCountOfEdge_Box_TwoFaces)
   EXPECT_EQ(aGraph.Spatial().FaceCountOfEdge(BRepGraph_NodeId::Edge(0)), 2);
 }
 
-TEST(BRepGraph_APITest, IsManifoldEdge_Box_True)
+TEST(BRepGraph_BuilderTest, IsManifoldEdge_Box_True)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
@@ -868,7 +868,7 @@ TEST(BRepGraph_APITest, IsManifoldEdge_Box_True)
   EXPECT_FALSE(aGraph.Spatial().IsBoundaryEdge(BRepGraph_NodeId::Edge(0)));
 }
 
-TEST(BRepGraph_APITest, InvalidInput_ReturnsEmpty)
+TEST(BRepGraph_BuilderTest, InvalidInput_ReturnsEmpty)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
@@ -884,95 +884,4 @@ TEST(BRepGraph_APITest, InvalidInput_ReturnsEmpty)
   EXPECT_EQ(aGraph.Spatial().FaceCountOfEdge(BRepGraph_NodeId()), 0);
   EXPECT_FALSE(aGraph.Spatial().IsBoundaryEdge(BRepGraph_NodeId()));
   EXPECT_FALSE(aGraph.Spatial().IsManifoldEdge(BRepGraph_NodeId()));
-}
-
-// ============ TypedNodeId tests ============
-
-TEST(BRepGraph_APITest, Construction_DefaultInvalid)
-{
-  BRepGraph_FaceId aFace;
-  EXPECT_FALSE(aFace.IsValid());
-  EXPECT_EQ(aFace.Index, -1);
-}
-
-TEST(BRepGraph_APITest, Construction_FromIndex)
-{
-  BRepGraph_FaceId aFace(5);
-  EXPECT_TRUE(aFace.IsValid());
-  EXPECT_EQ(aFace.Index, 5);
-}
-
-TEST(BRepGraph_APITest, Factory_ReturnsTyped)
-{
-  // Factory returns Typed<Kind::Face>, which is BRepGraph_FaceId.
-  BRepGraph_FaceId aFace = BRepGraph_NodeId::Face(3);
-  EXPECT_TRUE(aFace.IsValid());
-  EXPECT_EQ(aFace.Index, 3);
-
-  BRepGraph_EdgeId anEdge = BRepGraph_NodeId::Edge(7);
-  EXPECT_EQ(anEdge.Index, 7);
-}
-
-TEST(BRepGraph_APITest, ImplicitConversion_ToNodeId)
-{
-  BRepGraph_FaceId aFace(5);
-
-  // Implicit conversion to BRepGraph_NodeId.
-  BRepGraph_NodeId aNodeId = aFace;
-  EXPECT_EQ(aNodeId.NodeKind, BRepGraph_NodeId::Kind::Face);
-  EXPECT_EQ(aNodeId.Index, 5);
-}
-
-TEST(BRepGraph_APITest, ImplicitConversion_PassToFunction)
-{
-  // Typed ids work with existing APIs that take BRepGraph_NodeId.
-  BRepGraph aGraph;
-  aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
-  ASSERT_TRUE(aGraph.IsDone());
-
-  BRepGraph_FaceId aFace(0);
-  // AdjacentFaces takes BRepGraph_NodeId - implicit conversion works.
-  NCollection_Vector<BRepGraph_NodeId> aAdj = aGraph.Spatial().AdjacentFaces(aFace);
-  EXPECT_GT(aAdj.Length(), 0);
-}
-
-TEST(BRepGraph_APITest, FromNodeId_CorrectKind)
-{
-  BRepGraph_NodeId aNodeId = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, 3);
-  BRepGraph_EdgeId anEdge  = BRepGraph_EdgeId::FromNodeId(aNodeId);
-  EXPECT_EQ(anEdge.Index, 3);
-}
-
-TEST(BRepGraph_APITest, Comparison_TypedVsTyped)
-{
-  BRepGraph_FaceId aFace1(3);
-  BRepGraph_FaceId aFace2(3);
-  BRepGraph_FaceId aFace3(5);
-
-  EXPECT_EQ(aFace1, aFace2);
-  EXPECT_NE(aFace1, aFace3);
-}
-
-TEST(BRepGraph_APITest, Comparison_TypedVsNodeId)
-{
-  BRepGraph_FaceId aFace(3);
-  BRepGraph_NodeId aMatch(BRepGraph_NodeId::Kind::Face, 3);
-  BRepGraph_NodeId aDiffKind(BRepGraph_NodeId::Kind::Edge, 3);
-  BRepGraph_NodeId aDiffIdx(BRepGraph_NodeId::Kind::Face, 5);
-
-  EXPECT_EQ(aFace, aMatch);
-  EXPECT_EQ(aMatch, aFace);
-  EXPECT_NE(aFace, aDiffKind);
-  EXPECT_NE(aFace, aDiffIdx);
-}
-
-TEST(BRepGraph_APITest, Hash_ConsistentWithNodeId)
-{
-  BRepGraph_FaceId aFace(5);
-  BRepGraph_NodeId aNodeId = aFace;
-
-  std::hash<BRepGraph_FaceId> aTypedHash;
-  std::hash<BRepGraph_NodeId> aNodeHash;
-
-  EXPECT_EQ(aTypedHash(aFace), aNodeHash(aNodeId));
 }
