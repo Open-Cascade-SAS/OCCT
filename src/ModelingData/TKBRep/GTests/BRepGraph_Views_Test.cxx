@@ -245,7 +245,7 @@ TEST_F(BRepGraph_ViewsTest, ShapesView_HasOriginal_True)
 TEST_F(BRepGraph_ViewsTest, MutView_EdgeDef_MarksModified)
 {
   {
-    BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge = myGraph.MutEdge(BRepGraph_EdgeId(0));
+    BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
   }
   EXPECT_TRUE(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).IsModified);
 }

@@ -122,7 +122,7 @@ TEST_F(BRepGraph_EventBusTest, ZeroCost_NoSubscribers)
 {
   // Mutate edge without any subscribing layer - verify no crash.
   {
-    auto aMut       = myGraph.MutEdge(BRepGraph_EdgeId(0));
+    auto aMut       = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
     aMut->Tolerance = 0.5;
   }
   EXPECT_TRUE(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).IsModified);
@@ -140,7 +140,7 @@ TEST_F(BRepGraph_EventBusTest, ImmediateMode_SingleEdge)
   myGraph.RegisterLayer(aLayer);
 
   {
-    auto aMut       = myGraph.MutEdge(BRepGraph_EdgeId(0));
+    auto aMut       = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
     aMut->Tolerance = 0.5;
   }
 
@@ -162,7 +162,7 @@ TEST_F(BRepGraph_EventBusTest, ImmediateMode_UpwardPropagation)
   myGraph.RegisterLayer(aLayer);
 
   {
-    auto aMut       = myGraph.MutEdge(BRepGraph_EdgeId(0));
+    auto aMut       = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
     aMut->Tolerance = 0.5;
   }
 
@@ -183,7 +183,7 @@ TEST_F(BRepGraph_EventBusTest, ImmediateMode_KindFilter)
   myGraph.RegisterLayer(aLayer);
 
   {
-    auto aMut       = myGraph.MutEdge(BRepGraph_EdgeId(0));
+    auto aMut       = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
     aMut->Tolerance = 0.5;
   }
 
@@ -203,11 +203,11 @@ TEST_F(BRepGraph_EventBusTest, DeferredMode_BatchDispatch)
     new BRepGraph_ModTrackingLayer("Tracker", aAllKinds);
   myGraph.RegisterLayer(aLayer);
 
-  myGraph.BeginDeferredInvalidation();
-  myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
-  myGraph.MutEdge(BRepGraph_EdgeId(1))->Tolerance = 0.6;
-  myGraph.MutEdge(BRepGraph_EdgeId(2))->Tolerance = 0.7;
-  myGraph.EndDeferredInvalidation();
+  myGraph.Builder().BeginDeferredInvalidation();
+  myGraph.Builder().MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
+  myGraph.Builder().MutEdge(BRepGraph_EdgeId(1))->Tolerance = 0.6;
+  myGraph.Builder().MutEdge(BRepGraph_EdgeId(2))->Tolerance = 0.7;
+  myGraph.Builder().EndDeferredInvalidation();
 
   // OnNodesModified called exactly once.
   EXPECT_EQ(aLayer->myBatchCallCount, 1);
@@ -225,13 +225,13 @@ TEST_F(BRepGraph_EventBusTest, DeferredMode_NoImmediateDispatch)
     new BRepGraph_ModTrackingLayer("Tracker", aEdgeBit);
   myGraph.RegisterLayer(aLayer);
 
-  myGraph.BeginDeferredInvalidation();
-  myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
+  myGraph.Builder().BeginDeferredInvalidation();
+  myGraph.Builder().MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
 
   // During deferred mode: OnNodeModified must NOT be called.
   EXPECT_EQ(aLayer->myImmediateEvents.Length(), 0);
 
-  myGraph.EndDeferredInvalidation();
+  myGraph.Builder().EndDeferredInvalidation();
 
   // Immediate events still empty - only batch was dispatched.
   EXPECT_EQ(aLayer->myImmediateEvents.Length(), 0);
@@ -247,7 +247,7 @@ TEST_F(BRepGraph_EventBusTest, UnregisterLayer_FlagUpdate)
 
   // Mutate - should dispatch.
   {
-    auto aMut       = myGraph.MutEdge(BRepGraph_EdgeId(0));
+    auto aMut       = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
     aMut->Tolerance = 0.5;
   }
   EXPECT_GT(aLayer->myImmediateEvents.Length(), 0);
@@ -258,7 +258,7 @@ TEST_F(BRepGraph_EventBusTest, UnregisterLayer_FlagUpdate)
 
   // Mutate again - should NOT dispatch (layer unregistered).
   {
-    auto aMut       = myGraph.MutEdge(BRepGraph_EdgeId(1));
+    auto aMut       = myGraph.Builder().MutEdge(BRepGraph_EdgeId(1));
     aMut->Tolerance = 0.6;
   }
   EXPECT_EQ(aLayer->myImmediateEvents.Length(), 0);
@@ -276,7 +276,7 @@ TEST_F(BRepGraph_EventBusTest, MultipleSubscribers)
   myGraph.RegisterLayer(aFaceLayer);
 
   {
-    auto aMut       = myGraph.MutEdge(BRepGraph_EdgeId(0));
+    auto aMut       = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
     aMut->Tolerance = 0.5;
   }
 
@@ -300,7 +300,7 @@ TEST_F(BRepGraph_EventBusTest, DefaultSubscribedKinds_Zero)
   // Mutate - NameLayer should not receive modification events.
   // (We just verify no crash; NameLayer has no event tracking.)
   {
-    auto aMut       = myGraph.MutEdge(BRepGraph_EdgeId(0));
+    auto aMut       = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
     aMut->Tolerance = 0.5;
   }
   EXPECT_TRUE(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).IsModified);
@@ -315,7 +315,7 @@ TEST_F(BRepGraph_EventBusTest, MutationGuard_DispatchesOnDestruction)
 
   {
     BRepGraph_MutationGuard aGuard(myGraph);
-    myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
+    myGraph.Builder().MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
 
     // During guard scope: no batch dispatch yet.
     EXPECT_EQ(aLayer->myBatchCallCount, 0);
@@ -333,9 +333,9 @@ TEST_F(BRepGraph_EventBusTest, DeferredMode_NoModifications_NoDispatch)
     new BRepGraph_ModTrackingLayer("Tracker", aEdgeBit);
   myGraph.RegisterLayer(aLayer);
 
-  myGraph.BeginDeferredInvalidation();
+  myGraph.Builder().BeginDeferredInvalidation();
   // No mutations.
-  myGraph.EndDeferredInvalidation();
+  myGraph.Builder().EndDeferredInvalidation();
 
   EXPECT_EQ(aLayer->myBatchCallCount, 0);
   EXPECT_EQ(aLayer->myBatchEvents.Length(), 0);
@@ -377,7 +377,7 @@ TEST_F(BRepGraph_EventBusTest, OverlappingSubscription_EdgeAndFace)
   myGraph.RegisterLayer(aLayer);
 
   {
-    auto aMut       = myGraph.MutEdge(BRepGraph_EdgeId(0));
+    auto aMut       = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
     aMut->Tolerance = 0.5;
   }
 

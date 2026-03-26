@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <BRepGraph.hxx>
+#include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 
@@ -35,28 +36,28 @@ TEST_F(BRepGraph_MutationGenTest, MutationGen_IncrementedOnMutation)
 {
   EXPECT_EQ(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).MutationGen, 0u);
 
-  myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
+  myGraph.Builder().MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
 
   EXPECT_EQ(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).MutationGen, 1u);
 }
 
 TEST_F(BRepGraph_MutationGenTest, MutationGen_MultipleIncrements)
 {
-  myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.1;
-  myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.2;
+  myGraph.Builder().MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.1;
+  myGraph.Builder().MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.2;
 
   EXPECT_EQ(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).MutationGen, 2u);
 }
 
 TEST_F(BRepGraph_MutationGenTest, MutationGen_DeferredMode)
 {
-  myGraph.BeginDeferredInvalidation();
-  myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
+  myGraph.Builder().BeginDeferredInvalidation();
+  myGraph.Builder().MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
 
   // MutationGen is incremented even in deferred mode.
   EXPECT_EQ(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).MutationGen, 1u);
 
-  myGraph.EndDeferredInvalidation();
+  myGraph.Builder().EndDeferredInvalidation();
 
   // Still 1 after flush - flush doesn't re-increment.
   EXPECT_EQ(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).MutationGen, 1u);
@@ -71,7 +72,7 @@ TEST_F(BRepGraph_MutationGenTest, MutationGen_PropagatedParent_NotIncremented)
   const int aNbShells = myGraph.Topo().NbShells();
   const int aNbSolids = myGraph.Topo().NbSolids();
 
-  myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
+  myGraph.Builder().MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
 
   EXPECT_EQ(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).MutationGen, 1u);
 
@@ -89,9 +90,9 @@ TEST_F(BRepGraph_MutationGenTest, MutationGen_DeferredPropagatedParent_NotIncrem
 {
   // Same as above but in deferred mode - propagation on flush must not
   // increment MutationGen on parents.
-  myGraph.BeginDeferredInvalidation();
-  myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
-  myGraph.EndDeferredInvalidation();
+  myGraph.Builder().BeginDeferredInvalidation();
+  myGraph.Builder().MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
+  myGraph.Builder().EndDeferredInvalidation();
 
   EXPECT_EQ(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).MutationGen, 1u);
 

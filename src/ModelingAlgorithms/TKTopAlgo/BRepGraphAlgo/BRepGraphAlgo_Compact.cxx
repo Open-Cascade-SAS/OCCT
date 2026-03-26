@@ -279,7 +279,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
 
     // Copy edge properties.
     BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aNewEdge =
-      aNewGraph.MutEdge(BRepGraph_EdgeId(aNewEdgeId.Index));
+      aNewGraph.Builder().MutEdge(BRepGraph_EdgeId(aNewEdgeId.Index));
     aNewEdge->IsDegenerate  = anOldEdge.IsDegenerate;
     aNewEdge->SameParameter = anOldEdge.SameParameter;
     aNewEdge->SameRange     = anOldEdge.SameRange;
@@ -341,7 +341,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
 
     // Copy triangulations from old FaceDef to new FaceDef.
     BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aNewFace =
-      aNewGraph.MutFace(BRepGraph_FaceId(aFaceMap.Find(anIdx)));
+      aNewGraph.Builder().MutFace(BRepGraph_FaceId(aFaceMap.Find(anIdx)));
     aNewFace->TriangulationRepIds      = anOldFace.TriangulationRepIds;
     aNewFace->ActiveTriangulationIndex = anOldFace.ActiveTriangulationIndex;
   }

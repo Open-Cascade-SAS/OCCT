@@ -280,8 +280,8 @@ TEST(BRepGraphAlgo_CompactTest, MutationGen_SurvivesCompact)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Mutate edge 0 twice so MutationGen == THE_EXPECTED_MUTATION_GEN.
-  aGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.1;
-  aGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = THE_MUTATED_EDGE_TOLERANCE;
+  aGraph.Builder().MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.1;
+  aGraph.Builder().MutEdge(BRepGraph_EdgeId(0))->Tolerance = THE_MUTATED_EDGE_TOLERANCE;
   ASSERT_EQ(aGraph.Topo().Edge(BRepGraph_EdgeId(0)).MutationGen, THE_EXPECTED_MUTATION_GEN);
 
   // Run dedup + compact.

@@ -135,7 +135,7 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
       const int                                     aFaceIdx      = anIt.Key();
       const int                                     aCanonFaceIdx = anIt.Value();
       BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aFaceDef =
-        theGraph.MutFace(BRepGraph_FaceId(aFaceIdx));
+        theGraph.Builder().MutFace(BRepGraph_FaceId(aFaceIdx));
       const BRepGraph_SurfaceRepId aCanonSurfRepId =
         theGraph.Topo().Face(BRepGraph_FaceId(aCanonFaceIdx)).SurfaceRepId;
       aFaceDef->SurfaceRepId = aCanonSurfRepId;
@@ -156,7 +156,7 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
       const int                                     anEdgeIdx     = anIt.Key();
       const int                                     aCanonEdgeIdx = anIt.Value();
       BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdgeDef =
-        theGraph.MutEdge(BRepGraph_EdgeId(anEdgeIdx));
+        theGraph.Builder().MutEdge(BRepGraph_EdgeId(anEdgeIdx));
       const BRepGraph_Curve3DRepId aCanonCurveRepId =
         theGraph.Topo().Edge(BRepGraph_EdgeId(aCanonEdgeIdx)).Curve3DRepId;
       anEdgeDef->Curve3DRepId = aCanonCurveRepId;
@@ -258,7 +258,7 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
         for (int anEdgeIdx = 0; anEdgeIdx < theGraph.Topo().NbEdges(); ++anEdgeIdx)
         {
           BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge =
-            theGraph.MutEdge(BRepGraph_EdgeId(anEdgeIdx));
+            theGraph.Builder().MutEdge(BRepGraph_EdgeId(anEdgeIdx));
           if (anEdge->IsRemoved)
             continue;
           if (anEdge->StartVertexDefId() == anOldId)

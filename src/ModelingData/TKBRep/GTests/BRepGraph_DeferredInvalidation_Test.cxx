@@ -39,17 +39,17 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_EdgeMutation_SetsIsModif
 {
   EXPECT_FALSE(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).IsModified);
 
-  myGraph.BeginDeferredInvalidation();
-  myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
+  myGraph.Builder().BeginDeferredInvalidation();
+  myGraph.Builder().MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
   // In deferred mode, the entity's IsModified flag is set.
   EXPECT_TRUE(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).IsModified);
-  myGraph.EndDeferredInvalidation();
+  myGraph.Builder().EndDeferredInvalidation();
 }
 
 TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_PropagatesUpOnFlush)
 {
-  myGraph.BeginDeferredInvalidation();
-  myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
+  myGraph.Builder().BeginDeferredInvalidation();
+  myGraph.Builder().MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
 
   // During deferred mode: edge is modified, but parent wire/face are NOT yet.
   const NCollection_Vector<BRepGraph_WireId>& aWires =
@@ -57,7 +57,7 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_PropagatesUpOnFlush)
   ASSERT_GT(aWires.Length(), 0);
   EXPECT_FALSE(myGraph.Topo().Wire(aWires.Value(0)).IsModified);
 
-  myGraph.EndDeferredInvalidation();
+  myGraph.Builder().EndDeferredInvalidation();
 
   // After flush: wire and face should be propagated.
   EXPECT_TRUE(myGraph.Topo().Wire(aWires.Value(0)).IsModified);
@@ -79,14 +79,14 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_PropagatesUpOnFlush)
 
 TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_DirectFaceMutation_PropagatesUp)
 {
-  myGraph.BeginDeferredInvalidation();
-  myGraph.MutFace(BRepGraph_FaceId(0));
+  myGraph.Builder().BeginDeferredInvalidation();
+  myGraph.Builder().MutFace(BRepGraph_FaceId(0));
 
   EXPECT_TRUE(myGraph.Topo().Face(BRepGraph_FaceId(0)).IsModified);
   // Shell not yet propagated during deferred mode.
   EXPECT_FALSE(myGraph.Topo().Shell(BRepGraph_ShellId(0)).IsModified);
 
-  myGraph.EndDeferredInvalidation();
+  myGraph.Builder().EndDeferredInvalidation();
 
   // After flush: shell and solid should be propagated.
   EXPECT_TRUE(myGraph.Topo().Shell(BRepGraph_ShellId(0)).IsModified);
@@ -95,25 +95,25 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_DirectFaceMutation_Propa
 
 TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_DirectShellMutation_PropagatesUp)
 {
-  myGraph.BeginDeferredInvalidation();
-  myGraph.MutShell(BRepGraph_ShellId(0));
+  myGraph.Builder().BeginDeferredInvalidation();
+  myGraph.Builder().MutShell(BRepGraph_ShellId(0));
 
   EXPECT_TRUE(myGraph.Topo().Shell(BRepGraph_ShellId(0)).IsModified);
   EXPECT_FALSE(myGraph.Topo().Solid(BRepGraph_SolidId(0)).IsModified);
 
-  myGraph.EndDeferredInvalidation();
+  myGraph.Builder().EndDeferredInvalidation();
 
   EXPECT_TRUE(myGraph.Topo().Solid(BRepGraph_SolidId(0)).IsModified);
 }
 
 TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_MultipleEdges_BatchPropagation)
 {
-  myGraph.BeginDeferredInvalidation();
+  myGraph.Builder().BeginDeferredInvalidation();
 
   const int aNbEdges = myGraph.Topo().NbEdges();
   for (int anEdgeIdx = 0; anEdgeIdx < aNbEdges; ++anEdgeIdx)
   {
-    myGraph.MutEdge(BRepGraph_EdgeId(anEdgeIdx))->Tolerance = 0.1;
+    myGraph.Builder().MutEdge(BRepGraph_EdgeId(anEdgeIdx))->Tolerance = 0.1;
   }
 
   // During deferred mode: all edges modified, but no parent propagation yet.
@@ -122,7 +122,7 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_MultipleEdges_BatchPropa
     EXPECT_FALSE(myGraph.Topo().Wire(BRepGraph_WireId(aWireIdx)).IsModified);
   }
 
-  myGraph.EndDeferredInvalidation();
+  myGraph.Builder().EndDeferredInvalidation();
 
   // After flush: all wires, faces, shells, solids should be modified.
   for (int aWireIdx = 0; aWireIdx < myGraph.Topo().NbWires(); ++aWireIdx)
@@ -140,9 +140,9 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_MultipleEdges_BatchPropa
 TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_ReconstructAfterFlush_Succeeds)
 {
   // Modify an edge in deferred mode and verify reconstruction still works.
-  myGraph.BeginDeferredInvalidation();
-  myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
-  myGraph.EndDeferredInvalidation();
+  myGraph.Builder().BeginDeferredInvalidation();
+  myGraph.Builder().MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
+  myGraph.Builder().EndDeferredInvalidation();
 
   // Reconstruction should succeed (shape cache was cleared on flush).
   const BRepGraph_NodeId aSolidId = BRepGraph_NodeId::Solid(0);
@@ -156,13 +156,13 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_ParallelMutation_NoDataR
   const int aNbEdges = myGraph.Topo().NbEdges();
   ASSERT_GT(aNbEdges, 1);
 
-  myGraph.BeginDeferredInvalidation();
+  myGraph.Builder().BeginDeferredInvalidation();
   OSD_Parallel::For(
     0,
     aNbEdges,
-    [&](int theIdx) { myGraph.MutEdge(BRepGraph_EdgeId(theIdx))->Tolerance = 0.1 + theIdx * 0.01; },
+    [&](int theIdx) { myGraph.Builder().MutEdge(BRepGraph_EdgeId(theIdx))->Tolerance = 0.1 + theIdx * 0.01; },
     false);
-  myGraph.EndDeferredInvalidation();
+  myGraph.Builder().EndDeferredInvalidation();
 
   // All edges should be modified.
   for (int anEdgeIdx = 0; anEdgeIdx < aNbEdges; ++anEdgeIdx)
@@ -181,8 +181,8 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_ParallelMutation_NoDataR
 TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_NoMutations_FlushIsSafe)
 {
   // Begin/End with no mutations in between should be a no-op.
-  myGraph.BeginDeferredInvalidation();
-  myGraph.EndDeferredInvalidation();
+  myGraph.Builder().BeginDeferredInvalidation();
+  myGraph.Builder().EndDeferredInvalidation();
 
   // Nothing should be modified.
   EXPECT_FALSE(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).IsModified);
@@ -195,7 +195,7 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_NoMutations_FlushIsSafe)
 TEST_F(BRepGraph_DeferredInvalidationTest, EndWithoutBegin_IsIdempotent)
 {
   // Calling End without Begin should be a safe no-op.
-  EXPECT_NO_THROW(myGraph.EndDeferredInvalidation());
+  EXPECT_NO_THROW(myGraph.Builder().EndDeferredInvalidation());
 
   // Nothing should be modified or cleared.
   EXPECT_FALSE(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).IsModified);
@@ -204,21 +204,21 @@ TEST_F(BRepGraph_DeferredInvalidationTest, EndWithoutBegin_IsIdempotent)
 
 TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_DoubleEnd_IsIdempotent)
 {
-  myGraph.BeginDeferredInvalidation();
-  myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
-  myGraph.EndDeferredInvalidation();
+  myGraph.Builder().BeginDeferredInvalidation();
+  myGraph.Builder().MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
+  myGraph.Builder().EndDeferredInvalidation();
 
   // Second End should be a safe no-op.
-  EXPECT_NO_THROW(myGraph.EndDeferredInvalidation());
+  EXPECT_NO_THROW(myGraph.Builder().EndDeferredInvalidation());
   EXPECT_TRUE(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).IsModified);
 }
 
 TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_SameEdgeMutatedTwice)
 {
-  myGraph.BeginDeferredInvalidation();
-  myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.1;
-  myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
-  myGraph.EndDeferredInvalidation();
+  myGraph.Builder().BeginDeferredInvalidation();
+  myGraph.Builder().MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.1;
+  myGraph.Builder().MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
+  myGraph.Builder().EndDeferredInvalidation();
 
   // Last write wins.
   EXPECT_NEAR(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).Tolerance, 0.5, Precision::Confusion());
@@ -229,13 +229,13 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_SameEdgeMutatedTwice)
 
 TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_DirectWireMutation_PropagatesUp)
 {
-  myGraph.BeginDeferredInvalidation();
-  myGraph.MutWire(BRepGraph_WireId(0));
+  myGraph.Builder().BeginDeferredInvalidation();
+  myGraph.Builder().MutWire(BRepGraph_WireId(0));
 
   EXPECT_TRUE(myGraph.Topo().Wire(BRepGraph_WireId(0)).IsModified);
   EXPECT_FALSE(myGraph.Topo().Face(BRepGraph_FaceId(0)).IsModified);
 
-  myGraph.EndDeferredInvalidation();
+  myGraph.Builder().EndDeferredInvalidation();
 
   // After flush: face, shell, solid should be propagated.
   bool aFacePropagated = false;

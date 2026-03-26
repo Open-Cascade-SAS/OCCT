@@ -24,12 +24,13 @@ class Geom_Surface;
 class Geom_Curve;
 class Geom2d_Curve;
 
-//! @brief Non-const view for programmatic graph construction.
+//! @brief Non-const view for programmatic graph construction and mutation.
 //!
 //! Provides methods to create topology definition nodes (vertices, edges,
 //! wires, faces, shells, solids, compounds) and assembly nodes (products,
 //! occurrences) without an existing TopoDS_Shape. Also supports incremental
-//! shape appending and soft-deletion of nodes.
+//! shape appending, soft-deletion of nodes, scoped mutable definition guards
+//! (RAII Mut* methods), and deferred invalidation mode for parallel mutation.
 //! Obtained via BRepGraph::Builder().
 class BRepGraph::BuilderView
 {
@@ -191,6 +192,82 @@ public:
   //! Mark a node and all its descendants as removed (cascading soft deletion).
   //! @param[in] theNode root node to remove
   Standard_EXPORT void RemoveSubgraph(const BRepGraph_NodeId theNode);
+
+  //! @name Deferred invalidation mode for parallel mutation loops.
+
+  //! Begin deferred invalidation mode.
+  //! While active, markModified() only sets IsModified flags on entities
+  //! without acquiring the shape-cache mutex or propagating upward.
+  //! Call EndDeferredInvalidation() to batch-flush all accumulated changes.
+  //! Intended for parallel mutation loops (SameParameter, Sewing processEdges).
+  Standard_EXPORT void BeginDeferredInvalidation();
+
+  //! End deferred invalidation mode and batch-flush:
+  //! clears the entire shape cache and propagates IsModified upward
+  //! for all modified entities in a single pass.
+  Standard_EXPORT void EndDeferredInvalidation();
+
+  //! Check if deferred invalidation mode is currently active.
+  [[nodiscard]] Standard_EXPORT bool IsDeferredMode() const;
+
+  //! @name Scoped mutable definition guards (RAII).
+  //! Return a BRepGraph_MutRef that defers markModified() to scope exit.
+  //! Use when modifying multiple fields on the same entity.
+
+  //! Return scoped mutable edge definition guard.
+  //! @param[in] theEdge typed edge identifier
+  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> MutEdge(
+    const BRepGraph_EdgeId theEdge);
+
+  //! Return scoped mutable vertex definition guard.
+  //! @param[in] theVertex typed vertex identifier
+  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::VertexDef> MutVertex(
+    const BRepGraph_VertexId theVertex);
+
+  //! Return scoped mutable wire definition guard.
+  //! @param[in] theWire typed wire identifier
+  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::WireDef> MutWire(
+    const BRepGraph_WireId theWire);
+
+  //! Return scoped mutable face definition guard.
+  //! @param[in] theFace typed face identifier
+  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> MutFace(
+    const BRepGraph_FaceId theFace);
+
+  //! Return scoped mutable shell definition guard.
+  //! @param[in] theShell typed shell identifier
+  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::ShellDef> MutShell(
+    const BRepGraph_ShellId theShell);
+
+  //! Return scoped mutable solid definition guard.
+  //! @param[in] theSolid typed solid identifier
+  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::SolidDef> MutSolid(
+    const BRepGraph_SolidId theSolid);
+
+  //! Return scoped mutable compound definition guard.
+  //! @param[in] theCompound typed compound identifier
+  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::CompoundDef> MutCompound(
+    const BRepGraph_CompoundId theCompound);
+
+  //! Return scoped mutable coedge definition guard.
+  //! @param[in] theCoEdge typed coedge identifier
+  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::CoEdgeDef> MutCoEdge(
+    const BRepGraph_CoEdgeId theCoEdge);
+
+  //! Return scoped mutable comp-solid definition guard.
+  //! @param[in] theCompSolid typed comp-solid identifier
+  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::CompSolidDef> MutCompSolid(
+    const BRepGraph_CompSolidId theCompSolid);
+
+  //! Return scoped mutable product definition guard.
+  //! @param[in] theProduct typed product identifier
+  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::ProductDef> MutProduct(
+    const BRepGraph_ProductId theProduct);
+
+  //! Return scoped mutable occurrence definition guard.
+  //! @param[in] theOccurrence typed occurrence identifier
+  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::OccurrenceDef> MutOccurrence(
+    const BRepGraph_OccurrenceId theOccurrence);
 
 private:
   friend class BRepGraph;

@@ -16,6 +16,7 @@
 #include <BRepBndLib.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_Analyze.hxx>
+#include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_SubGraph.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
@@ -484,7 +485,7 @@ TEST_F(BRepGraph_AnalyzeTest, BoundingBox_AfterMutation_CacheInvalidated)
   ASSERT_FALSE(aBoxBefore.IsVoid());
 
   // Mutate vertex - this should invalidate the cache via markModified.
-  myGraph.MutVertex(BRepGraph_VertexId(0));
+  myGraph.Builder().MutVertex(BRepGraph_VertexId(0));
 
   // Verify that after mutation, recomputing still produces a valid bbox.
   // BoundingBox uses the original shape for computation, so results stay consistent.
@@ -534,7 +535,7 @@ TEST_F(BRepGraph_AnalyzeTest, InvalidateSubgraph_PropagatesUpToSolid)
 
   // Invalidate from a vertex upward via a no-op mutation (triggers markModified).
   {
-    auto aMut = myGraph.MutVertex(BRepGraph_VertexId(aVertId.Index));
+    auto aMut = myGraph.Builder().MutVertex(BRepGraph_VertexId(aVertId.Index));
   }
 
   // Recompute. Since no actual mutation occurred, the result should be the same.
@@ -619,7 +620,7 @@ TEST_F(BRepGraph_AnalyzeTest, Centroid_AfterMutation_CacheInvalidated)
   const gp_Pnt aCentroidBefore = bboxCenter(myGraph, aVertId);
 
   // Mutate vertex (marks modified, invalidates cache).
-  myGraph.MutVertex(BRepGraph_VertexId(0));
+  myGraph.Builder().MutVertex(BRepGraph_VertexId(0));
 
   // Centroid recomputes from original shape - result stays consistent.
   const gp_Pnt aCentroidAfter = bboxCenter(myGraph, aVertId);

@@ -267,7 +267,7 @@ TEST(BRepGraph_AssemblyTest, MutProduct_RAII)
 
   {
     BRepGraph_MutRef<BRepGraph_TopoNode::ProductDef> aMutProd =
-      aGraph.MutProduct(BRepGraph_ProductId(0));
+      aGraph.Builder().MutProduct(BRepGraph_ProductId(0));
     // Setting ShapeRootId to a different topology node.
     aMutProd->ShapeRootId = BRepGraph_NodeId::Solid(0);
   } // markModified fires here
@@ -295,7 +295,7 @@ TEST(BRepGraph_AssemblyTest, MutOccurrence_Placement)
 
   {
     BRepGraph_MutRef<BRepGraph_TopoNode::OccurrenceDef> aMutOcc =
-      aGraph.MutOccurrence(BRepGraph_OccurrenceId(anOccId.Index));
+      aGraph.Builder().MutOccurrence(BRepGraph_OccurrenceId(anOccId.Index));
     aMutOcc->Placement = TopLoc_Location(aTrsf);
   } // markModified fires here
 
@@ -698,7 +698,7 @@ TEST(BRepGraph_AssemblyTest, GlobalPlacement_CircularParentOccurrence_Terminates
   // Inject circular reference: occ1.ParentOccurrenceDefId = occ2 (creates cycle).
   {
     BRepGraph_MutRef<BRepGraph_TopoNode::OccurrenceDef> aMut =
-      aGraph.MutOccurrence(BRepGraph_OccurrenceId(anOcc1.Index));
+      aGraph.Builder().MutOccurrence(BRepGraph_OccurrenceId(anOcc1.Index));
     aMut->ParentOccurrenceDefId = BRepGraph_OccurrenceId(anOcc2.Index);
   }
 

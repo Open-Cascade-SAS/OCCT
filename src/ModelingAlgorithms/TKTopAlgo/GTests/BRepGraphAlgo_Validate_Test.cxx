@@ -156,7 +156,7 @@ TEST(BRepGraphAlgo_ValidateTest, WireConnectivity_DisconnectedEdges)
   ASSERT_TRUE(aFirstEdgeId.IsValid());
 
   BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aFirstEdge =
-    aGraph.MutEdge(BRepGraph_EdgeId(aFirstEdgeId.Index));
+    aGraph.Builder().MutEdge(BRepGraph_EdgeId(aFirstEdgeId.Index));
 
   // Find a vertex different from the current end vertex.
   BRepGraph_NodeId anOrigEnd = aFirstEdge->EndVertexDefId();
@@ -205,7 +205,7 @@ TEST(BRepGraphAlgo_ValidateTest, BoundsCheck_InvalidIndex)
   ASSERT_GT(aGraph.Topo().NbEdges(), 0);
 
   // Corrupt edge's Curve3d to null.
-  BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge = aGraph.MutEdge(BRepGraph_EdgeId(0));
+  BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge = aGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
   anEdge->Curve3DRepId                                 = BRepGraph_Curve3DRepId();
 
   const BRepGraphAlgo_Validate::Result aResult =
@@ -272,7 +272,7 @@ TEST(BRepGraphAlgo_ValidateTest, CorruptedPCurve_FaceDefIdOutOfBounds)
   // Corrupt a CoEdge's FaceDefId to an out-of-range value.
   ASSERT_GT(aGraph.Topo().NbCoEdges(), 0);
   BRepGraph_MutRef<BRepGraph_TopoNode::CoEdgeDef> aCoEdgeDef =
-    aGraph.MutCoEdge(BRepGraph_CoEdgeId(0));
+    aGraph.Builder().MutCoEdge(BRepGraph_CoEdgeId(0));
   aCoEdgeDef->FaceDefId = BRepGraph_NodeId::Face(aGraph.Topo().NbFaces() + 999);
 
   const BRepGraphAlgo_Validate::Result aDefaultResult = BRepGraphAlgo_Validate::Perform(aGraph);
@@ -297,7 +297,7 @@ TEST(BRepGraphAlgo_ValidateTest, LightweightAndDeepAudit_DetectActiveCountDrift)
   ASSERT_GT(aNbActiveFacesBefore, 0);
 
   // Intentionally bypass RemoveNode() to simulate counter drift bug class.
-  BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aFaceDef = aGraph.MutFace(BRepGraph_FaceId(0));
+  BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aFaceDef = aGraph.Builder().MutFace(BRepGraph_FaceId(0));
   aFaceDef->IsRemoved                                    = true;
 
   const BRepGraphAlgo_Validate::Result aLightResult =
@@ -343,7 +343,7 @@ TEST(BRepGraphAlgo_ValidateTest, DeepDetectsIdDriftButLightweightSkipsIt)
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().NbFaces(), 0);
 
-  BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aFaceDef = aGraph.MutFace(BRepGraph_FaceId(0));
+  BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aFaceDef = aGraph.Builder().MutFace(BRepGraph_FaceId(0));
   aFaceDef->Id                                           = BRepGraph_NodeId::Face(42);
 
   const BRepGraphAlgo_Validate::Result aLightResult =

@@ -16,7 +16,7 @@
 
 //! @brief RAII guard wrapping a mutable reference to a topology definition.
 //!
-//! Obtained via BRepGraph::MutEdge(), MutVertex(), etc.
+//! Obtained via BRepGraph::Builder().MutEdge(), MutVertex(), etc.
 //! Provides operator-> / operator* for direct field access.
 //! Calls markModified() exactly once on scope exit (destruction),
 //! regardless of how many fields were modified.
@@ -36,7 +36,7 @@
 //! @code
 //!   {
 //!     BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge =
-//!     theGraph.MutEdge(BRepGraph_EdgeId(42)); anEdge->Tolerance     = 0.5; anEdge->SameParameter =
+//!     theGraph.Builder().MutEdge(BRepGraph_EdgeId(42)); anEdge->Tolerance     = 0.5; anEdge->SameParameter =
 //!     true;
 //!   } // markModified called once here
 //! @endcode

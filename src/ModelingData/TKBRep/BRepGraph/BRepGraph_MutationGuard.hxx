@@ -15,6 +15,7 @@
 #define _BRepGraph_MutationGuard_HeaderFile
 
 #include <BRepGraph.hxx>
+#include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_Mutator.hxx>
 
 //! @brief RAII guard for batch mutation scopes.
@@ -39,10 +40,10 @@ public:
   //! Begin deferred invalidation if not already active.
   explicit BRepGraph_MutationGuard(BRepGraph& theGraph)
       : myGraph(theGraph),
-        myOwnsScope(!theGraph.IsDeferredMode())
+        myOwnsScope(!theGraph.Builder().IsDeferredMode())
   {
     if (myOwnsScope)
-      myGraph.BeginDeferredInvalidation();
+      myGraph.Builder().BeginDeferredInvalidation();
   }
 
   //! End deferred invalidation and validate reverse index + active counts.
@@ -50,7 +51,7 @@ public:
   {
     if (myOwnsScope)
     {
-      myGraph.EndDeferredInvalidation();
+      myGraph.Builder().EndDeferredInvalidation();
       BRepGraph_Mutator::CommitMutation(myGraph);
     }
   }

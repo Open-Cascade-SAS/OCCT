@@ -14,6 +14,7 @@
 #include <BRep_Builder.hxx>
 #include <BRepBuilderAPI_Copy.hxx>
 #include <BRepGraph.hxx>
+#include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraphAlgo_SameParameter.hxx>
@@ -56,7 +57,7 @@ TEST(BRepGraphAlgo_SameParameterTest, Enforce_BoxEdge_SetsSameParameter)
 
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
   {
-    aGraph.MutEdge(BRepGraph_EdgeId(anEdgeIdx))->SameParameter = false;
+    aGraph.Builder().MutEdge(BRepGraph_EdgeId(anEdgeIdx))->SameParameter = false;
   }
 
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
@@ -79,7 +80,7 @@ TEST(BRepGraphAlgo_SameParameterTest, Enforce_CylinderEdge_ToleranceReasonable)
 
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
   {
-    aGraph.MutEdge(BRepGraph_EdgeId(anEdgeIdx))->SameParameter = false;
+    aGraph.Builder().MutEdge(BRepGraph_EdgeId(anEdgeIdx))->SameParameter = false;
   }
 
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
@@ -101,7 +102,7 @@ TEST(BRepGraphAlgo_SameParameterTest, Perform_BatchSetsFlags)
   ASSERT_TRUE(aGraph.IsDone());
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
   {
-    aGraph.MutEdge(BRepGraph_EdgeId(anEdgeIdx))->SameParameter = false;
+    aGraph.Builder().MutEdge(BRepGraph_EdgeId(anEdgeIdx))->SameParameter = false;
   }
 
   NCollection_IndexedMap<BRepGraph_EdgeId> anEdgeIndices;
@@ -139,7 +140,7 @@ TEST(BRepGraphAlgo_SameParameterTest, Enforce_NoCurve3d_SetsFlag)
         || !BRepGraph_Tool::Edge::HasCurve(aGraph, BRepGraph_EdgeId(anEdgeIdx)))
     {
       const BRepGraph_EdgeId anEdgeId(anEdgeIdx);
-      aGraph.MutEdge(anEdgeId)->SameParameter = false;
+      aGraph.Builder().MutEdge(anEdgeId)->SameParameter = false;
       const bool isOk = BRepGraphAlgo_SameParameter::Enforce(aGraph, anEdgeId, 1.0e-04);
       EXPECT_TRUE(isOk);
       EXPECT_TRUE(BRepGraph_Tool::Edge::SameParameter(aGraph, anEdgeId));

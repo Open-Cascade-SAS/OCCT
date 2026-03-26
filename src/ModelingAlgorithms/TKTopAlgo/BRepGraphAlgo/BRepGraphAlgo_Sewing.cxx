@@ -709,7 +709,7 @@ void assembleVertices(BRepGraph&                                   theGraph,
   for (int aFreeEdgeIter = 1; aFreeEdgeIter <= aNbFreeEdges; ++aFreeEdgeIter)
   {
     BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge =
-      theGraph.MutEdge(BRepGraph_EdgeId(theFreeEdges.Value(aFreeEdgeIter).Index));
+      theGraph.Builder().MutEdge(BRepGraph_EdgeId(theFreeEdges.Value(aFreeEdgeIter).Index));
     const int* aMergedStart = anEdge->StartVertex.VertexDefId.IsValid()
                                 ? aVertexMerge.Seek(anEdge->StartVertex.VertexDefId.Index)
                                 : nullptr;
@@ -1572,7 +1572,7 @@ int mergeMatchedEdges(
     }
 
     theSewnEdgeIndices.Add(anEdgeIdA);
-    theGraph.MutEdge(anEdgeIdA)->Tolerance = aMergedTol;
+    theGraph.Builder().MutEdge(anEdgeIdA)->Tolerance = aMergedTol;
 
     // 2. PCurve transfer from remove-edge to keep-edge via CoEdge data.
     const NCollection_Vector<BRepGraph_CoEdgeId>& aRemoveCoEdges =
@@ -1769,7 +1769,7 @@ void convertDegenerateEdges(BRepGraph& theGraph, BRepGraphAlgo_Sewing::Result& t
     if (aLength <= aVertexTolSum)
     {
       // Mark as degenerate: clear 3D curve, merge vertices to midpoint.
-      BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aMutEdge = theGraph.MutEdge(anEdgeId);
+      BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aMutEdge = theGraph.Builder().MutEdge(anEdgeId);
       aMutEdge->IsDegenerate                                 = true;
       aMutEdge->Curve3DRepId                                 = BRepGraph_Curve3DRepId();
 
@@ -1787,7 +1787,7 @@ void convertDegenerateEdges(BRepGraph& theGraph, BRepGraphAlgo_Sewing::Result& t
 
         // Keep start vertex, update it to midpoint.
         BRepGraph_MutRef<BRepGraph_TopoNode::VertexDef> aVtx =
-          theGraph.MutVertex(anEdge.StartVertex.VertexDefId);
+          theGraph.Builder().MutVertex(anEdge.StartVertex.VertexDefId);
         aVtx->Point                       = aPtMid;
         aVtx->Tolerance                   = aNewTol;
         aMutEdge->EndVertex.VertexDefId   = anEdge.StartVertex.VertexDefId;

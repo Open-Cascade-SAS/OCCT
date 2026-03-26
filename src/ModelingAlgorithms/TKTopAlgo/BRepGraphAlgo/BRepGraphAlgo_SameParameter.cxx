@@ -231,7 +231,7 @@ bool enforceImpl(BRepGraph&       theGraph,
   // Single MutRef scope ensures markModified fires exactly once,
   // even on early returns, due to RAII.
   BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aMutEdge =
-    theGraph.MutEdge(BRepGraph_EdgeId(theEdgeId.Index));
+    theGraph.Builder().MutEdge(BRepGraph_EdgeId(theEdgeId.Index));
   const BRepGraph_TopoNode::EdgeDef&            anEdge = *aMutEdge;
   const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
     theGraph.Topo().CoEdgesOfEdge(BRepGraph_EdgeId(theEdgeId.Index));
@@ -386,7 +386,7 @@ bool enforceImpl(BRepGraph&       theGraph,
           aMaxDist = std::max(aMaxDist, std::max(aMaxAnalErr, Precision::Confusion()));
           if (aUpdatePC)
           {
-            theGraph.MutCoEdge(BRepGraph_CoEdgeId(aCoEdgeIdx))->Curve2DRepId =
+            theGraph.Builder().MutCoEdge(BRepGraph_CoEdgeId(aCoEdgeIdx))->Curve2DRepId =
               theGraph.Builder().CreateCurve2DRep(aCurPC);
           }
           continue;
@@ -635,7 +635,7 @@ bool enforceImpl(BRepGraph&       theGraph,
         aMaxDist = std::max(aMaxDist, aSameP.TolReached());
         if (aUpdatePC)
         {
-          theGraph.MutCoEdge(BRepGraph_CoEdgeId(aCoEdgeIdx))->Curve2DRepId =
+          theGraph.Builder().MutCoEdge(BRepGraph_CoEdgeId(aCoEdgeIdx))->Curve2DRepId =
             theGraph.Builder().CreateCurve2DRep(aCurPC);
         }
       }
@@ -654,7 +654,7 @@ bool enforceImpl(BRepGraph&       theGraph,
         }
         if (aUpdatePC)
         {
-          theGraph.MutCoEdge(BRepGraph_CoEdgeId(aCoEdgeIdx))->Curve2DRepId =
+          theGraph.Builder().MutCoEdge(BRepGraph_CoEdgeId(aCoEdgeIdx))->Curve2DRepId =
             theGraph.Builder().CreateCurve2DRep(aCurPC);
         }
       }
@@ -672,7 +672,7 @@ bool enforceImpl(BRepGraph&       theGraph,
                            aFallbackPC);
         if (!aFallbackPC.IsNull())
         {
-          theGraph.MutCoEdge(BRepGraph_CoEdgeId(aCoEdgeIdx))->Curve2DRepId =
+          theGraph.Builder().MutCoEdge(BRepGraph_CoEdgeId(aCoEdgeIdx))->Curve2DRepId =
             theGraph.Builder().CreateCurve2DRep(aFallbackPC);
         }
         isAllSameP = false;

@@ -149,7 +149,7 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
           ++aNbSmall;
 
           // Mark edge as degenerate.
-          BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aMutEdge = theGraph.MutEdge(anEdgeId);
+          BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aMutEdge = theGraph.Builder().MutEdge(anEdgeId);
           aMutEdge->IsDegenerate                                 = true;
           aMutEdge->Curve3DRepId                                 = BRepGraph_Curve3DRepId();
           aResult.DegeneratedEdges.Append(BRepGraph_EdgeId(anEdgeIdx));
@@ -266,7 +266,7 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
 
     // Update target vertex.
     BRepGraph_MutRef<BRepGraph_TopoNode::VertexDef> aTargetVtx =
-      theGraph.MutVertex(BRepGraph_VertexId(aTargetIdx));
+      theGraph.Builder().MutVertex(BRepGraph_VertexId(aTargetIdx));
     aTargetVtx->Point     = aCentroid;
     aTargetVtx->Tolerance = aMaxTol;
   }
@@ -315,7 +315,7 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
       if (aNeedUpdate)
       {
         BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aMutEdge =
-          theGraph.MutEdge(BRepGraph_EdgeId(anEdgeIdx));
+          theGraph.Builder().MutEdge(BRepGraph_EdgeId(anEdgeIdx));
         aMutEdge->StartVertex.VertexDefId = BRepGraph_VertexId(aNewStart);
         aMutEdge->EndVertex.VertexDefId   = BRepGraph_VertexId(aNewEnd);
       }
