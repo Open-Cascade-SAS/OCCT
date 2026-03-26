@@ -70,3 +70,51 @@ uint32_t BRepGraph::UIDsView::Generation() const
 {
   return myGraph->myData->myGeneration.load();
 }
+
+//=================================================================================================
+
+const Standard_GUID& BRepGraph::UIDsView::GraphGUID() const
+{
+  return myGraph->myData->myGraphGUID;
+}
+
+//=================================================================================================
+
+BRepGraph_VersionStamp BRepGraph::UIDsView::StampOf(const BRepGraph_NodeId theNode) const
+{
+  if (!theNode.IsValid())
+    return BRepGraph_VersionStamp();
+
+  const NCollection_Vector<BRepGraph_UID>& aVec =
+    myGraph->myData->myIncStorage.UIDs(theNode.NodeKind);
+  if (theNode.Index >= aVec.Length())
+    return BRepGraph_VersionStamp();
+
+  const BRepGraph_UID                aUID = aVec.Value(theNode.Index);
+  const BRepGraph_TopoNode::BaseDef* aDef = myGraph->TopoDef(theNode);
+  if (aDef == nullptr || aDef->IsRemoved)
+    return BRepGraph_VersionStamp();
+
+  return BRepGraph_VersionStamp(aUID, aDef->MutationGen, myGraph->myData->myGeneration.load());
+}
+
+//=================================================================================================
+
+bool BRepGraph::UIDsView::IsStale(const BRepGraph_VersionStamp& theStamp) const
+{
+  if (!theStamp.IsValid())
+    return true;
+
+  if (theStamp.myGeneration != myGraph->myData->myGeneration.load())
+    return true;
+
+  const BRepGraph_NodeId aNodeId = NodeIdFrom(theStamp.myUID);
+  if (!aNodeId.IsValid())
+    return true;
+
+  const BRepGraph_TopoNode::BaseDef* aDef = myGraph->TopoDef(aNodeId);
+  if (aDef == nullptr || aDef->IsRemoved)
+    return true;
+
+  return aDef->MutationGen != theStamp.myMutationGen;
+}

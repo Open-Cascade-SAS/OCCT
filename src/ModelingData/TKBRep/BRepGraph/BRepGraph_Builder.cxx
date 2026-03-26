@@ -18,7 +18,35 @@
 #include <BRepGraphInc_Populate.hxx>
 #include <BRepGraphInc_Storage.hxx>
 #include <NCollection_IncAllocator.hxx>
+#include <MathUtils_Random.hxx>
+#include <Standard_GUID.hxx>
 #include <TopAbs_ShapeEnum.hxx>
+
+#include <cstring>
+#include <random>
+
+namespace
+{
+
+//! Generate a random Standard_GUID using MathUtils::RandomGenerator
+//! seeded with std::random_device for platform entropy.
+static Standard_GUID generateRandomGUID()
+{
+  std::random_device         aRD;
+  MathUtils::RandomGenerator aRNG(aRD());
+  // Fill 16 bytes with random data, then construct Standard_UUID field by field.
+  const uint64_t aRand1 = aRNG.NextInt();
+  const uint64_t aRand2 = aRNG.NextInt();
+  Standard_UUID  aUUID;
+  aUUID.Data1 = static_cast<uint32_t>(aRand1);
+  aUUID.Data2 = static_cast<uint16_t>(aRand1 >> 32);
+  aUUID.Data3 = static_cast<uint16_t>(aRand1 >> 48);
+  for (int i = 0; i < 8; ++i)
+    aUUID.Data4[i] = static_cast<uint8_t>(aRand2 >> (i * 8));
+  return Standard_GUID(aUUID);
+}
+
+} // namespace
 
 //=================================================================================================
 
@@ -73,6 +101,7 @@ void BRepGraph_Builder::Perform(BRepGraph&                            theGraph,
   theGraph.myData->myHistoryLog.Clear();
   theGraph.myData->myCurrentShapes.Clear();
   ++theGraph.myData->myGeneration;
+  theGraph.myData->myGraphGUID = generateRandomGUID();
   theGraph.myData->myIsDone = false;
 
   // Notify registered layers that graph data is being cleared.

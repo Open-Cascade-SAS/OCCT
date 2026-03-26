@@ -30,6 +30,16 @@
 //! produced this UID (for stale-reference detection).
 //!
 //! Trivially copyable, cheap to pass by value.
+//!
+//! ## Serialization Contract
+//!
+//! To persist a BRepGraph across sessions:
+//! 1. Write: for each entity, serialize (Kind, Counter, MutationGen).
+//! 2. Read: reconstruct entities, populate UID vectors with deserialized
+//!    (Kind, Counter) values, set myNextUIDCounter to max(all counters) + 1.
+//! 3. myGeneration resets to 0 on load (session-scoped).
+//! 4. VersionStamps from a previous session will correctly detect staleness
+//!    via Generation mismatch.
 struct BRepGraph_UID
 {
   //! Default: invalid UID (counter = 0 is the invalid sentinel).

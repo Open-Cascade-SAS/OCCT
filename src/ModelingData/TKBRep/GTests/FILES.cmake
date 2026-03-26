@@ -26,6 +26,7 @@ set(OCCT_TKBRep_GTests_FILES
   BRepGraph_Reconstruct_Test.cxx
   BRepGraph_Sharing_Test.cxx
   BRepGraph_Test.cxx
+  BRepGraph_VersionStamp_Test.cxx
   BRepGraph_Views_Test.cxx
   TopExp_Test.cxx
   TopoDS_Builder_Test.cxx

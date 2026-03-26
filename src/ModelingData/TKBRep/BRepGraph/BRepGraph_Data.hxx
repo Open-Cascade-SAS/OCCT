@@ -25,6 +25,7 @@
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_UID.hxx>
 #include <BRepGraph_UIDsView.hxx>
+#include <Standard_GUID.hxx>
 #include <BRepGraph_UserAttribute.hxx>
 #include <BRepGraphInc_Storage.hxx>
 
@@ -58,6 +59,7 @@ struct BRepGraph_Data
   std::atomic<size_t> myNextUIDCounter{
     1}; //!< Starts at 1; counter=0 is BRepGraph_UID invalid sentinel.
   std::atomic<uint32_t> myGeneration{0};
+  Standard_GUID         myGraphGUID; //!< Random graph identity, generated at Build().
 
   //! History subsystem.
   BRepGraph_History myHistoryLog;
