@@ -21,6 +21,7 @@
 #include <BRep_PointOnCurveOnSurface.hxx>
 #include <BRep_PointOnSurface.hxx>
 #include <BRep_TEdge.hxx>
+#include <BRep_TFace.hxx>
 #include <BRep_TVertex.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepTools.hxx>
@@ -35,6 +36,8 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 
