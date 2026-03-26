@@ -13,7 +13,7 @@
 
 #include <BRepGraphCheck.hxx>
 
-#include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_TopoNode.hxx>
 #include <Geom_Curve.hxx>
@@ -27,7 +27,7 @@ void BRepGraphCheck::CheckVertexOnEdge(const BRepGraph&                         
                                        const BRepGraph_EdgeId                    theEdge,
                                        NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
 {
-  const BRepGraph::DefsView            aDefs     = theGraph.Defs();
+  const BRepGraph::TopoView            aDefs     = theGraph.Topo();
   const BRepGraph_TopoNode::VertexDef& aVtxDef   = aDefs.Vertex(theVertex);
   const BRepGraph_TopoNode::EdgeDef&   anEdgeDef = aDefs.Edge(theEdge);
 
@@ -79,7 +79,7 @@ void BRepGraphCheck::CheckVertexOnFace(const BRepGraph&                         
                                        const BRepGraph_FaceId                    theFace,
                                        NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
 {
-  const BRepGraph::DefsView            aDefs   = theGraph.Defs();
+  const BRepGraph::TopoView            aDefs   = theGraph.Topo();
   const BRepGraph_TopoNode::VertexDef& aVtxDef = aDefs.Vertex(theVertex);
 
   if (!BRepGraph_Tool::Face::HasSurface(theGraph, theFace))

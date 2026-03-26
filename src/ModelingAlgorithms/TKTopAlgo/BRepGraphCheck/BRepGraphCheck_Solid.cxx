@@ -14,7 +14,7 @@
 #include <BRepGraphCheck.hxx>
 
 #include <BRepClass3d_SolidClassifier.hxx>
-#include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_TopoNode.hxx>
@@ -32,7 +32,7 @@ void BRepGraphCheck::CheckSolidMinimum(const BRepGraph&                         
                                        const BRepGraph_SolidId                   theSolid,
                                        NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
 {
-  const BRepGraph::DefsView           aDefs        = theGraph.Defs();
+  const BRepGraph::TopoView           aDefs        = theGraph.Topo();
   const BRepGraph_TopoNode::SolidDef& aSolidDef    = aDefs.Solid(theSolid);
   const BRepGraph_NodeId              aSolidNodeId = aSolidDef.Id;
 

@@ -15,7 +15,7 @@
 #include <BRep_Tool.hxx>
 #include <BRepGProp.hxx>
 #include <BRepGraph.hxx>
-#include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
@@ -205,7 +205,7 @@ TEST(BRepGraph_ReconstructTest, Wire_EdgeCount_FourPerBoxFace)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Each wire of a box face should have exactly 4 edges.
-  for (int aWireIdx = 0; aWireIdx < aGraph.Defs().NbWires(); ++aWireIdx)
+  for (int aWireIdx = 0; aWireIdx < aGraph.Topo().NbWires(); ++aWireIdx)
   {
     TopoDS_Shape aReconWire =
       aGraph.Shapes().Reconstruct(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Wire, aWireIdx));
@@ -223,7 +223,7 @@ TEST(BRepGraph_ReconstructTest, Edge_HasCurve_NonNull)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
   {
     if (BRepGraph_Tool::Edge::Degenerated(aGraph, BRepGraph_EdgeId(anEdgeIdx)))
       continue;
@@ -248,7 +248,7 @@ TEST(BRepGraph_ReconstructTest, Edge_ParameterRange_Preserved)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
   {
     if (BRepGraph_Tool::Edge::Degenerated(aGraph, BRepGraph_EdgeId(anEdgeIdx)))
       continue;
@@ -278,7 +278,7 @@ TEST(BRepGraph_ReconstructTest, Vertex_Point_MatchesDefPoint)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  for (int aVertIdx = 0; aVertIdx < aGraph.Defs().NbVertices(); ++aVertIdx)
+  for (int aVertIdx = 0; aVertIdx < aGraph.Topo().NbVertices(); ++aVertIdx)
   {
     const gp_Pnt aDefPt = BRepGraph_Tool::Vertex::Pnt(aGraph, BRepGraph_VertexId(aVertIdx));
 
@@ -304,7 +304,7 @@ TEST(BRepGraph_ReconstructTest, Face_PCurvesPresent_OnAllEdges)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
+  for (int aFaceIdx = 0; aFaceIdx < aGraph.Topo().NbFaces(); ++aFaceIdx)
   {
     TopoDS_Shape aReconFace = aGraph.Shapes().ReconstructFace(BRepGraph_FaceId(aFaceIdx));
     ASSERT_FALSE(aReconFace.IsNull()) << "ReconstructFace returned null for face " << aFaceIdx;
@@ -334,8 +334,8 @@ TEST(BRepGraph_ReconstructTest, Face_OrientationPreserved)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Verify that reconstructed faces have valid orientations matching incidence refs.
-  ASSERT_EQ(aGraph.Defs().NbShells(), 1);
-  const BRepGraph_TopoNode::ShellDef& aShellDef = aGraph.Defs().Shell(BRepGraph_ShellId(0));
+  ASSERT_EQ(aGraph.Topo().NbShells(), 1);
+  const BRepGraph_TopoNode::ShellDef& aShellDef = aGraph.Topo().Shell(BRepGraph_ShellId(0));
   for (int aRefIdx = 0; aRefIdx < aShellDef.FaceRefs.Length(); ++aRefIdx)
   {
     const BRepGraphInc::FaceRef& aFaceRef      = aShellDef.FaceRefs.Value(aRefIdx);
@@ -381,7 +381,7 @@ TEST(BRepGraph_ReconstructTest, Reconstruct_Face_ValidShape)
   BRepGraph aGraph;
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.Defs().NbFaces(), 0);
+  ASSERT_GT(aGraph.Topo().NbFaces(), 0);
 
   TopoDS_Shape aRecon = aGraph.Shapes().ReconstructFace(BRepGraph_FaceId(0));
   EXPECT_FALSE(aRecon.IsNull());
@@ -396,10 +396,10 @@ TEST(BRepGraph_ReconstructTest, Reconstruct_Edge_ValidShape)
   BRepGraph aGraph;
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.Defs().NbEdges(), 0);
+  ASSERT_GT(aGraph.Topo().NbEdges(), 0);
 
   // Find a non-degenerate edge.
-  for (int anIdx = 0; anIdx < aGraph.Defs().NbEdges(); ++anIdx)
+  for (int anIdx = 0; anIdx < aGraph.Topo().NbEdges(); ++anIdx)
   {
     if (BRepGraph_Tool::Edge::Degenerated(aGraph, BRepGraph_EdgeId(anIdx)))
       continue;
@@ -421,7 +421,7 @@ TEST(BRepGraph_ReconstructTest, Reconstruct_Vertex_CorrectPoint)
   BRepGraph aGraph;
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.Defs().NbVertices(), 0);
+  ASSERT_GT(aGraph.Topo().NbVertices(), 0);
 
   const gp_Pnt anExpectedPt = BRepGraph_Tool::Vertex::Pnt(aGraph, BRepGraph_VertexId(0));
 
@@ -448,19 +448,19 @@ TEST(BRepGraph_ReconstructTest, AfterVertexMutation_ModifiedFlagAndPointChanged)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Find a vertex belonging to face 0 and move it significantly.
-  const BRepGraph_TopoNode::FaceDef& aFaceDef       = aGraph.Defs().Face(BRepGraph_FaceId(0));
+  const BRepGraph_TopoNode::FaceDef& aFaceDef       = aGraph.Topo().Face(BRepGraph_FaceId(0));
   const int                          anOuterWireIdx = aFaceDef.OuterWireDefId().Index;
   ASSERT_GE(anOuterWireIdx, 0);
 
   const BRepGraph_TopoNode::WireDef& aWireDef =
-    aGraph.Defs().Wire(BRepGraph_WireId(anOuterWireIdx));
+    aGraph.Topo().Wire(BRepGraph_WireId(anOuterWireIdx));
   ASSERT_GT(aWireDef.CoEdgeRefs.Length(), 0);
 
   const BRepGraphInc::CoEdgeRef&       aFirstCR = aWireDef.CoEdgeRefs.First();
   const BRepGraph_TopoNode::CoEdgeDef& aFirstCoEdge =
-    aGraph.Defs().CoEdge(BRepGraph_CoEdgeId(aFirstCR.CoEdgeDefId));
+    aGraph.Topo().CoEdge(BRepGraph_CoEdgeId(aFirstCR.CoEdgeDefId));
   const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
-    aGraph.Defs().Edge(BRepGraph_EdgeId(aFirstCoEdge.EdgeDefId));
+    aGraph.Topo().Edge(BRepGraph_EdgeId(aFirstCoEdge.EdgeDefId));
   const int aVertIdx = anEdgeDef.StartVertex.VertexDefId.Index;
   ASSERT_GE(aVertIdx, 0);
 
@@ -473,7 +473,7 @@ TEST(BRepGraph_ReconstructTest, AfterVertexMutation_ModifiedFlagAndPointChanged)
   }
 
   // Verify the modification flag is set on the vertex def.
-  EXPECT_TRUE(aGraph.Defs().Vertex(BRepGraph_VertexId(aVertIdx)).IsModified)
+  EXPECT_TRUE(aGraph.Topo().Vertex(BRepGraph_VertexId(aVertIdx)).IsModified)
     << "Vertex def should be marked as modified after mutation";
 
   // Verify the graph VertexDef.Point has actually changed.
@@ -523,7 +523,7 @@ TEST(BRepGraph_ReconstructTest, CompoundRoot_TwoSolids_Preserved)
   BRepGraph aGraph;
   aGraph.Build(aCompound);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_EQ(aGraph.Defs().NbSolids(), 2);
+  ASSERT_EQ(aGraph.Topo().NbSolids(), 2);
 
   // Reconstruct each solid and verify volumes match originals.
   const double anOrigVol1 = computeVolume(aBox1);

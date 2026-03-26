@@ -18,7 +18,7 @@
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
 #include <BRepGraph.hxx>
-#include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_TopoView.hxx>
 #include <BRepGraphInc_Populate.hxx>
 #include <BRepGraphInc_Reconstruct.hxx>
 #include <BRepGraphInc_Storage.hxx>
@@ -82,12 +82,12 @@ TEST(BRepGraphIncTest, Box_EntityCounts_MatchDefCounts)
   ASSERT_TRUE(aStorage.GetIsDone());
 
   // Entity counts must match Def counts.
-  EXPECT_EQ(aStorage.NbVertices(), aGraph.Defs().NbVertices());
-  EXPECT_EQ(aStorage.NbEdges(), aGraph.Defs().NbEdges());
-  EXPECT_EQ(aStorage.NbWires(), aGraph.Defs().NbWires());
-  EXPECT_EQ(aStorage.NbFaces(), aGraph.Defs().NbFaces());
-  EXPECT_EQ(aStorage.NbShells(), aGraph.Defs().NbShells());
-  EXPECT_EQ(aStorage.NbSolids(), aGraph.Defs().NbSolids());
+  EXPECT_EQ(aStorage.NbVertices(), aGraph.Topo().NbVertices());
+  EXPECT_EQ(aStorage.NbEdges(), aGraph.Topo().NbEdges());
+  EXPECT_EQ(aStorage.NbWires(), aGraph.Topo().NbWires());
+  EXPECT_EQ(aStorage.NbFaces(), aGraph.Topo().NbFaces());
+  EXPECT_EQ(aStorage.NbShells(), aGraph.Topo().NbShells());
+  EXPECT_EQ(aStorage.NbSolids(), aGraph.Topo().NbSolids());
 }
 
 TEST(BRepGraphIncTest, Cylinder_EntityCounts_MatchDefCounts)
@@ -103,12 +103,12 @@ TEST(BRepGraphIncTest, Cylinder_EntityCounts_MatchDefCounts)
   BRepGraphInc_Populate::Perform(aStorage, aCyl, false);
   ASSERT_TRUE(aStorage.GetIsDone());
 
-  EXPECT_EQ(aStorage.NbVertices(), aGraph.Defs().NbVertices());
-  EXPECT_EQ(aStorage.NbEdges(), aGraph.Defs().NbEdges());
-  EXPECT_EQ(aStorage.NbWires(), aGraph.Defs().NbWires());
-  EXPECT_EQ(aStorage.NbFaces(), aGraph.Defs().NbFaces());
-  EXPECT_EQ(aStorage.NbShells(), aGraph.Defs().NbShells());
-  EXPECT_EQ(aStorage.NbSolids(), aGraph.Defs().NbSolids());
+  EXPECT_EQ(aStorage.NbVertices(), aGraph.Topo().NbVertices());
+  EXPECT_EQ(aStorage.NbEdges(), aGraph.Topo().NbEdges());
+  EXPECT_EQ(aStorage.NbWires(), aGraph.Topo().NbWires());
+  EXPECT_EQ(aStorage.NbFaces(), aGraph.Topo().NbFaces());
+  EXPECT_EQ(aStorage.NbShells(), aGraph.Topo().NbShells());
+  EXPECT_EQ(aStorage.NbSolids(), aGraph.Topo().NbSolids());
 }
 
 TEST(BRepGraphIncTest, Sphere_EntityCounts_MatchDefCounts)
@@ -124,10 +124,10 @@ TEST(BRepGraphIncTest, Sphere_EntityCounts_MatchDefCounts)
   BRepGraphInc_Populate::Perform(aStorage, aSph, false);
   ASSERT_TRUE(aStorage.GetIsDone());
 
-  EXPECT_EQ(aStorage.NbVertices(), aGraph.Defs().NbVertices());
-  EXPECT_EQ(aStorage.NbEdges(), aGraph.Defs().NbEdges());
-  EXPECT_EQ(aStorage.NbWires(), aGraph.Defs().NbWires());
-  EXPECT_EQ(aStorage.NbFaces(), aGraph.Defs().NbFaces());
+  EXPECT_EQ(aStorage.NbVertices(), aGraph.Topo().NbVertices());
+  EXPECT_EQ(aStorage.NbEdges(), aGraph.Topo().NbEdges());
+  EXPECT_EQ(aStorage.NbWires(), aGraph.Topo().NbWires());
+  EXPECT_EQ(aStorage.NbFaces(), aGraph.Topo().NbFaces());
 }
 
 // ============================================================

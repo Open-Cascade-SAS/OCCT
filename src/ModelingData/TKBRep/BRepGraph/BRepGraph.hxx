@@ -32,7 +32,6 @@
 #include <NCollection_Vector.hxx>
 #include <NCollection_DataMap.hxx>
 
-#include <functional>
 #include <memory>
 
 template <typename DefT>
@@ -69,7 +68,7 @@ class BRepGraph_Mutator;
 //!
 //! ## Grouped View API
 //! Related methods are grouped behind lightweight view objects.
-//! Include the corresponding header (e.g. BRepGraph_DefsView.hxx) to use.
+//! Include the corresponding header (e.g. BRepGraph_TopoView.hxx) to use.
 //!
 //! ## Thread safety
 //! All const query methods are thread-safe.
@@ -117,38 +116,25 @@ public:
   //! for all modified entities in a single pass.
   Standard_EXPORT void EndDeferredInvalidation();
 
-  //! Enable or disable history recording.
-  Standard_EXPORT void SetHistoryEnabled(const bool theVal);
-
-  //! Check if history recording is enabled.
-  [[nodiscard]] Standard_EXPORT bool IsHistoryEnabled() const;
-
-  //! Apply a modification operation and record history.
-  Standard_EXPORT void ApplyModification(
-    const BRepGraph_NodeId                                                            theTarget,
-    std::function<NCollection_Vector<BRepGraph_NodeId>(BRepGraph&, BRepGraph_NodeId)> theModifier,
-    const TCollection_AsciiString&                                                    theOpLabel);
+  //! Check if deferred invalidation mode is currently active.
+  [[nodiscard]] Standard_EXPORT bool IsDeferredMode() const;
 
 public:
   //! Shared cache for edge/vertex shapes during multi-face reconstruction.
   using ReconstructCache = NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape>;
 
   //! @name Grouped View API
-  class DefsView;
+  class TopoView;
   class UIDsView;
-  class SpatialView;
   class AttrsView;
   class ShapesView;
   class BuilderView;
-  class AnalyzeView;
   class PathView;
 
-  //! Access topology definitions.
-  [[nodiscard]] DefsView Defs() const;
+  //! Access topology definitions and spatial adjacency queries.
+  [[nodiscard]] TopoView Topo() const;
   //! Access unique identifiers.
   [[nodiscard]] UIDsView UIDs() const;
-  //! Access spatial and adjacency queries.
-  [[nodiscard]] SpatialView Spatial() const;
   //! Access topology path resolution queries.
   [[nodiscard]] PathView Paths() const;
   //! Access user attributes.
@@ -200,14 +186,6 @@ public:
   Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::CoEdgeDef> MutCoEdge(
     const BRepGraph_CoEdgeId theCoEdge);
 
-  //! Create a new Curve2DRep in storage and return its typed identifier.
-  //! Use this when assigning a new PCurve to an existing CoEdge entity
-  //! via MutCoEdge().
-  //! @param[in] theCurve2d the 2D parametric curve handle
-  //! @return typed Curve2DRep identifier, or invalid if the curve is null
-  [[nodiscard]] Standard_EXPORT BRepGraph_Curve2DRepId
-    CreateCurve2DRep(const occ::handle<Geom2d_Curve>& theCurve2d);
-
   //! Return scoped mutable comp-solid definition guard.
   //! @param[in] theCompSolid typed comp-solid identifier
   Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::CompSolidDef> MutCompSolid(
@@ -225,8 +203,6 @@ public:
 
   //! Access programmatic graph construction.
   [[nodiscard]] BuilderView Builder();
-  //! Access analysis queries.
-  [[nodiscard]] AnalyzeView Analyze() const;
 
   //! Access history subsystem directly.
   [[nodiscard]] Standard_EXPORT BRepGraph_History&       History();
@@ -244,7 +220,6 @@ public:
 
 private:
   friend class BRepGraph_Builder;
-  friend class BRepGraph_History;
   friend class BRepGraph_Analyze;
   friend class BRepGraph_Mutator;
   friend class BRepGraphAlgo_BndLib;
@@ -252,7 +227,6 @@ private:
   friend class BRepGraphAlgo_Copy;
   friend class BRepGraphAlgo_Transform;
   friend class BRepGraphAlgo_UVBounds;
-  friend class BRepGraph_MutationGuard;
   template <typename>
   friend class BRepGraph_MutRef;
 

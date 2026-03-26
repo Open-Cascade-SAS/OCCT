@@ -16,7 +16,7 @@
 #include <BRepGraphInc_WireExplorer.hxx>
 #include <Bnd_Box2d.hxx>
 #include <BndLib_Add2dCurve.hxx>
-#include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_TopoNode.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
@@ -37,7 +37,7 @@ void BRepGraphCheck::CheckWireMinimum(const BRepGraph&                          
                                       const BRepGraph_WireId                    theWire,
                                       NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
 {
-  const BRepGraph::DefsView          aDefs    = theGraph.Defs();
+  const BRepGraph::TopoView          aDefs    = theGraph.Topo();
   const BRepGraph_TopoNode::WireDef& aWireDef = aDefs.Wire(theWire);
 
   // Empty wire check.
@@ -113,7 +113,7 @@ void BRepGraphCheck::CheckWireOnFace(const BRepGraph&                          t
                                      const bool                                theGeomControls,
                                      NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
 {
-  const BRepGraph::DefsView          aDefs       = theGraph.Defs();
+  const BRepGraph::TopoView          aDefs       = theGraph.Topo();
   const BRepGraph_TopoNode::WireDef& aWireDef    = aDefs.Wire(theWire);
   const BRepGraph_NodeId             aWireNodeId = aWireDef.Id;
   const BRepGraph_NodeId             aFaceNodeId = BRepGraph_NodeId::Face(theFace.Index);

@@ -14,10 +14,10 @@
 #include <BRep_Builder.hxx>
 #include <BRepBuilderAPI_Copy.hxx>
 #include <BRepGraph.hxx>
-#include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_ShapesView.hxx>
-#include <BRepGraph_SpatialView.hxx>
+#include <BRepGraph_TopoView.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -94,13 +94,13 @@ TEST(BRepGraph_BenchmarkTest, Smoke_BuildReconstructAndAdjacency)
   BRepGraph aGraph;
   aGraph.Build(aFaces);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.Defs().NbFaces(), 0);
+  ASSERT_GT(aGraph.Topo().NbFaces(), 0);
 
   const BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
   const TopoDS_Shape     aFaceShape = aGraph.Shapes().Reconstruct(aFaceId);
   EXPECT_FALSE(aFaceShape.IsNull());
 
-  const NCollection_Vector<BRepGraph_NodeId> anAdj = aGraph.Spatial().AdjacentFaces(aFaceId);
+  const NCollection_Vector<BRepGraph_NodeId> anAdj = aGraph.Topo().AdjacentFaces(aFaceId);
   EXPECT_GE(anAdj.Length(), 0);
 }
 
@@ -166,7 +166,7 @@ TEST(BRepGraph_BenchmarkTest, DISABLED_Reconstruct_RoundTrip)
   aGraph.Build(aFaces);
   ASSERT_TRUE(aGraph.IsDone());
 
-  const int aNbFaces = aGraph.Defs().NbFaces();
+  const int aNbFaces = aGraph.Topo().NbFaces();
   ASSERT_GT(aNbFaces, 0);
 
   const double aAvg = runBenchmark("Reconstruct 10000 faces", [&]() {
@@ -190,14 +190,14 @@ TEST(BRepGraph_BenchmarkTest, DISABLED_SpatialQuery_Throughput)
   aGraph.Build(aFaces);
   ASSERT_TRUE(aGraph.IsDone());
 
-  const int aNbFaces = aGraph.Defs().NbFaces();
+  const int aNbFaces = aGraph.Topo().NbFaces();
   ASSERT_GT(aNbFaces, 0);
 
   const double aAvg = runBenchmark("SpatialQuery 10000 faces", [&]() {
     for (int anIdx = 0; anIdx < aNbFaces; ++anIdx)
     {
       const BRepGraph_NodeId                     aFaceId = BRepGraph_NodeId::Face(anIdx);
-      const NCollection_Vector<BRepGraph_NodeId> anAdj   = aGraph.Spatial().AdjacentFaces(aFaceId);
+      const NCollection_Vector<BRepGraph_NodeId> anAdj   = aGraph.Topo().AdjacentFaces(aFaceId);
       EXPECT_GE(anAdj.Length(), 0);
     }
   });

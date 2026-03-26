@@ -11,27 +11,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _BRepGraph_DefsView_HeaderFile
-#define _BRepGraph_DefsView_HeaderFile
+#ifndef _BRepGraph_TopoView_HeaderFile
+#define _BRepGraph_TopoView_HeaderFile
 
 #include <BRepGraph.hxx>
-#include <BRepGraph_PCurveContext.hxx>
 #include <BRepGraph_RepId.hxx>
 #include <GeomAdaptor_TransformedCurve.hxx>
 #include <GeomAdaptor_TransformedSurface.hxx>
 
 class Adaptor3d_CurveOnSurface;
 
-//! @brief Read-only view over topology definition nodes stored in BRepGraph.
+//! @brief Unified read-only view over topology definition and adjacency nodes stored in BRepGraph.
 //!
-//! Provides const access to all topology kinds (Vertex, Edge, Wire, Face,
-//! Shell, Solid, Compound, CompSolid, CoEdge) and assembly kinds (Product,
-//! Occurrence) by zero-based definition index. Also exposes representation
-//! counts and PCurve lookup methods.
-//! Obtained via BRepGraph::Defs().
-class BRepGraph::DefsView
+//! Merges the former DefsView (definition lookups, representation counts,
+//! PCurve queries) and SpatialView (adjacency queries: adjacent faces,
+//! shared edges, same-domain faces, faces referencing an edge, etc.)
+//! into a single view class.
+//! Obtained via BRepGraph::Topo().
+class BRepGraph::TopoView
 {
 public:
+  //! @name Count accessors
+
   //! Number of solid definitions.
   [[nodiscard]] Standard_EXPORT int NbSolids() const;
 
@@ -83,6 +84,8 @@ public:
   //! @param[in] theEdge typed edge definition identifier
   [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_CoEdgeId>& CoEdgesOfEdge(
     const BRepGraph_EdgeId theEdge) const;
+
+  //! @name Definition accessors
 
   //! Access solid definition by typed identifier.
   //! @param[in] theSolid typed solid definition identifier
@@ -145,49 +148,6 @@ public:
   [[nodiscard]] Standard_EXPORT BRepGraph_NodeId ShellFaceDef(const BRepGraph_ShellId theShell,
                                                               const int theFaceIndex) const;
 
-  //! Number of product definitions.
-  Standard_EXPORT int NbProducts() const;
-
-  //! Number of occurrence definitions.
-  Standard_EXPORT int NbOccurrences() const;
-
-  //! Number of active (non-removed) product definitions.
-  Standard_EXPORT int NbActiveProducts() const;
-
-  //! Number of active (non-removed) occurrence definitions.
-  Standard_EXPORT int NbActiveOccurrences() const;
-
-  //! Access product definition by typed identifier.
-  //! @param[in] theProduct typed product definition identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraph_TopoNode::ProductDef& Product(
-    const BRepGraph_ProductId theProduct) const;
-
-  //! Access occurrence definition by typed identifier.
-  //! @param[in] theOccurrence typed occurrence definition identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraph_TopoNode::OccurrenceDef& Occurrence(
-    const BRepGraph_OccurrenceId theOccurrence) const;
-
-  //! Return NodeIds of all root products (products that are not referenced by any occurrence).
-  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> RootProducts() const;
-
-  //! True if the product is an assembly (has child occurrences, no ShapeRootId).
-  //! @param[in] theProduct typed product definition identifier
-  [[nodiscard]] Standard_EXPORT bool IsAssembly(const BRepGraph_ProductId theProduct) const;
-
-  //! True if the product is a part (has a valid ShapeRootId).
-  //! @param[in] theProduct typed product definition identifier
-  [[nodiscard]] Standard_EXPORT bool IsPart(const BRepGraph_ProductId theProduct) const;
-
-  //! Number of child occurrences of a product.
-  //! @param[in] theProduct typed product definition identifier
-  [[nodiscard]] Standard_EXPORT int NbComponents(const BRepGraph_ProductId theProduct) const;
-
-  //! Return the i-th child occurrence NodeId of a product.
-  //! @param[in] theProduct typed product definition identifier
-  //! @param[in] theComponentIdx zero-based occurrence index within the product
-  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId Component(const BRepGraph_ProductId theProduct,
-                                                           const int theComponentIdx) const;
-
   //! Total number of nodes in the graph (all topology + assembly kinds).
   [[nodiscard]] Standard_EXPORT size_t NbNodes() const;
 
@@ -237,10 +197,64 @@ public:
     const BRepGraph_NodeId   theFaceDef,
     const TopAbs_Orientation theEdgeOrientation) const;
 
-  //! Find the CoEdge for a given PCurve context.
-  //! @param[in] theContext  composite key identifying edge, face and orientation
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::CoEdgeEntity* FindPCurve(
-    const BRepGraph_PCurveContext& theContext) const;
+  //! @name Spatial adjacency queries
+
+  //! Return all face definitions sharing the same surface as the given face.
+  //! @param[in] theFaceDef face definition NodeId
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> SameDomainFaces(
+    const BRepGraph_NodeId theFaceDef) const;
+
+  //! Return all face definition NodeIds that reference this edge.
+  //! @param[in] theEdgeDef edge definition NodeId
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> FacesOfEdge(
+    const BRepGraph_NodeId theEdgeDef) const;
+
+  //! Return all edges shared between two faces.
+  //! @param[in] theFaceA first face definition NodeId
+  //! @param[in] theFaceB second face definition NodeId
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> SharedEdges(
+    const BRepGraph_NodeId theFaceA,
+    const BRepGraph_NodeId theFaceB) const;
+
+  //! Return all faces adjacent to a face (sharing at least one edge).
+  //! @param[in] theFaceDef face definition NodeId
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> AdjacentFaces(
+    const BRepGraph_NodeId theFaceDef) const;
+
+  //! Return all edge definitions in a face (collected from all wires via coedges).
+  //! @param[in] theFaceDef face definition NodeId
+  //! @return unique edge NodeIds (deduplicated)
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> EdgesOfFace(
+    const BRepGraph_NodeId theFaceDef) const;
+
+  //! Return all edge definitions incident to a vertex.
+  //! @param[in] theVertexDef vertex definition NodeId
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> EdgesOfVertex(
+    const BRepGraph_NodeId theVertexDef) const;
+
+  //! Return start, end, and internal vertex definitions for an edge.
+  //! @param[in] theEdgeDef edge definition NodeId
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> VerticesOfEdge(
+    const BRepGraph_NodeId theEdgeDef) const;
+
+  //! Return all edges sharing a vertex with the given edge (excluding itself).
+  //! @param[in] theEdgeDef edge definition NodeId
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> AdjacentEdges(
+    const BRepGraph_NodeId theEdgeDef) const;
+
+  //! Return the number of distinct faces referencing this edge.
+  //! 0 = free edge, 1 = boundary, 2 = manifold, 3+ = non-manifold.
+  //! O(1) lookup via cached reverse index.
+  //! @param[in] theEdgeDef edge definition NodeId
+  [[nodiscard]] Standard_EXPORT int FaceCountOfEdge(const BRepGraph_NodeId theEdgeDef) const;
+
+  //! True if the edge is referenced by exactly one face (boundary edge).
+  //! @param[in] theEdgeDef edge definition NodeId
+  [[nodiscard]] Standard_EXPORT bool IsBoundaryEdge(const BRepGraph_NodeId theEdgeDef) const;
+
+  //! True if the edge is referenced by exactly two faces (manifold interior edge).
+  //! @param[in] theEdgeDef edge definition NodeId
+  [[nodiscard]] Standard_EXPORT bool IsManifoldEdge(const BRepGraph_NodeId theEdgeDef) const;
 
 private:
   friend class BRepGraph;
@@ -281,7 +295,7 @@ private:
   [[nodiscard]] Standard_EXPORT const BRepGraphInc::PolygonOnTriRep& PolygonOnTriRep(
     const BRepGraph_PolygonOnTriRepId theRep) const;
 
-  explicit DefsView(const BRepGraph* theGraph)
+  explicit TopoView(const BRepGraph* theGraph)
       : myGraph(theGraph)
   {
   }
@@ -289,9 +303,9 @@ private:
   const BRepGraph* myGraph;
 };
 
-inline BRepGraph::DefsView BRepGraph::Defs() const
+inline BRepGraph::TopoView BRepGraph::Topo() const
 {
-  return DefsView(this);
+  return TopoView(this);
 }
 
-#endif // _BRepGraph_DefsView_HeaderFile
+#endif // _BRepGraph_TopoView_HeaderFile

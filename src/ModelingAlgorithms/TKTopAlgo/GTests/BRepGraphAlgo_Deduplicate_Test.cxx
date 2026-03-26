@@ -20,12 +20,11 @@
 #include <BRepBuilderAPI_Copy.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_BuilderView.hxx>
-#include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_HistoryRecord.hxx>
 #include <BRepGraph_NodeId.hxx>
-#include <BRepGraph_PCurveContext.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraphAlgo_Compact.hxx>
 #include <BRepGraphAlgo_Deduplicate.hxx>
@@ -73,7 +72,7 @@ TopoDS_Compound makeTwoCopiedIdenticalFaces()
 int nbUniqueFaceSurfaceDefs(const BRepGraph& theGraph)
 {
   NCollection_Map<const Geom_Surface*> aSurfSet;
-  for (int aFaceIdx = 0; aFaceIdx < theGraph.Defs().NbFaces(); ++aFaceIdx)
+  for (int aFaceIdx = 0; aFaceIdx < theGraph.Topo().NbFaces(); ++aFaceIdx)
   {
     const occ::handle<Geom_Surface>& aSurf =
       BRepGraph_Tool::Face::Surface(theGraph, BRepGraph_FaceId(aFaceIdx));
@@ -90,7 +89,7 @@ int nbUniqueFaceSurfaceDefs(const BRepGraph& theGraph)
 int nbUniqueEdgeCurveDefs(const BRepGraph& theGraph)
 {
   NCollection_Map<const Geom_Curve*> aCurveSet;
-  for (int anEdgeIdx = 0; anEdgeIdx < theGraph.Defs().NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < theGraph.Topo().NbEdges(); ++anEdgeIdx)
   {
     const occ::handle<Geom_Curve>& aCurve =
       BRepGraph_Tool::Edge::Curve(theGraph, BRepGraph_EdgeId(anEdgeIdx));
@@ -107,15 +106,15 @@ int nbUniqueEdgeCurveDefs(const BRepGraph& theGraph)
 int nbPCurveEntries(const BRepGraph& theGraph)
 {
   int aCount = 0;
-  for (int anEdgeIdx = 0; anEdgeIdx < theGraph.Defs().NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < theGraph.Topo().NbEdges(); ++anEdgeIdx)
   {
-    if (theGraph.Defs().Edge(BRepGraph_EdgeId(anEdgeIdx)).IsRemoved)
+    if (theGraph.Topo().Edge(BRepGraph_EdgeId(anEdgeIdx)).IsRemoved)
       continue;
     const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
-      theGraph.Defs().CoEdgesOfEdge(BRepGraph_EdgeId(anEdgeIdx));
+      theGraph.Topo().CoEdgesOfEdge(BRepGraph_EdgeId(anEdgeIdx));
     for (int i = 0; i < aCoEdgeIdxs.Length(); ++i)
     {
-      const BRepGraphInc::CoEdgeEntity& aCE = theGraph.Defs().CoEdge(aCoEdgeIdxs.Value(i));
+      const BRepGraphInc::CoEdgeEntity& aCE = theGraph.Topo().CoEdge(aCoEdgeIdxs.Value(i));
       if (aCE.FaceDefId.IsValid())
         ++aCount;
     }
@@ -243,10 +242,10 @@ TopoDS_Compound makeTwoIdenticalBoxes()
 int nbUniquePCurveNodes(const BRepGraph& theGraph)
 {
   int aCount = 0;
-  for (int anEdgeIdx = 0; anEdgeIdx < theGraph.Defs().NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < theGraph.Topo().NbEdges(); ++anEdgeIdx)
   {
     const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
-      theGraph.Defs().CoEdgesOfEdge(BRepGraph_EdgeId(anEdgeIdx));
+      theGraph.Topo().CoEdgesOfEdge(BRepGraph_EdgeId(anEdgeIdx));
     aCount += aCoEdgeIdxs.Length();
   }
   return aCount;
@@ -255,16 +254,16 @@ int nbUniquePCurveNodes(const BRepGraph& theGraph)
 int addDuplicatePCurvesToAllEdges(BRepGraph& theGraph)
 {
   int aDupCount = 0;
-  for (int anEdgeIdx = 0; anEdgeIdx < theGraph.Defs().NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < theGraph.Topo().NbEdges(); ++anEdgeIdx)
   {
     const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
-      theGraph.Defs().CoEdgesOfEdge(BRepGraph_EdgeId(anEdgeIdx));
+      theGraph.Topo().CoEdgesOfEdge(BRepGraph_EdgeId(anEdgeIdx));
     if (aCoEdgeIdxs.IsEmpty())
     {
       continue;
     }
 
-    const BRepGraphInc::CoEdgeEntity& aCE = theGraph.Defs().CoEdge(aCoEdgeIdxs.Value(0));
+    const BRepGraphInc::CoEdgeEntity& aCE = theGraph.Topo().CoEdge(aCoEdgeIdxs.Value(0));
     if (!aCE.Curve2DRepId.IsValid())
     {
       continue;
@@ -378,14 +377,14 @@ TEST(BRepGraphAlgo_DeduplicateTest, RestoresHistoryEnabledFlag)
   aGraph.Build(makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
-  aGraph.SetHistoryEnabled(false);
-  ASSERT_FALSE(aGraph.IsHistoryEnabled());
+  aGraph.History().SetEnabled(false);
+  ASSERT_FALSE(aGraph.History().IsEnabled());
 
   BRepGraphAlgo_Deduplicate::Options anOpts;
   anOpts.HistoryMode = true;
   (void)BRepGraphAlgo_Deduplicate::Perform(aGraph, anOpts);
 
-  EXPECT_FALSE(aGraph.IsHistoryEnabled());
+  EXPECT_FALSE(aGraph.History().IsEnabled());
 }
 
 TEST(BRepGraphAlgo_DeduplicateTest, DefaultOverload_PerformWorks)
@@ -483,8 +482,8 @@ TEST(BRepGraphAlgo_DeduplicateTest, ResultCountersConsistency)
   ASSERT_TRUE(aGraph.IsDone());
 
   // TwoCopiedFaces: 2 surfaces, 8 curves, 8 PCurves.
-  ASSERT_EQ(aGraph.Defs().NbFaces(), 2);
-  ASSERT_EQ(aGraph.Defs().NbEdges(), 8);
+  ASSERT_EQ(aGraph.Topo().NbFaces(), 2);
+  ASSERT_EQ(aGraph.Topo().NbEdges(), 8);
   ASSERT_EQ(nbPCurveEntries(aGraph), 8);
 
   BRepGraphAlgo_Deduplicate::Options anOpts;
@@ -494,11 +493,11 @@ TEST(BRepGraphAlgo_DeduplicateTest, ResultCountersConsistency)
 
   // Canonical + duplicates == total for each geometry type.
   EXPECT_EQ(aRes.NbCanonicalSurfaces, 1);
-  EXPECT_EQ(aRes.NbCanonicalSurfaces + (aGraph.Defs().NbFaces() - aRes.NbCanonicalSurfaces),
-            aGraph.Defs().NbFaces());
+  EXPECT_EQ(aRes.NbCanonicalSurfaces + (aGraph.Topo().NbFaces() - aRes.NbCanonicalSurfaces),
+            aGraph.Topo().NbFaces());
   EXPECT_EQ(aRes.NbCanonicalCurves, 4);
-  EXPECT_EQ(aRes.NbCanonicalCurves + (aGraph.Defs().NbEdges() - aRes.NbCanonicalCurves),
-            aGraph.Defs().NbEdges());
+  EXPECT_EQ(aRes.NbCanonicalCurves + (aGraph.Topo().NbEdges() - aRes.NbCanonicalCurves),
+            aGraph.Topo().NbEdges());
 }
 
 TEST(BRepGraphAlgo_DeduplicateTest, EmptyCompound_NoRewrites)
@@ -523,7 +522,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, MultipleCopies_NWayDedup)
   aGraph.Build(makeNCopiedIdenticalFaces(aNbCopies));
   ASSERT_TRUE(aGraph.IsDone());
 
-  ASSERT_EQ(aGraph.Defs().NbFaces(), aNbCopies);
+  ASSERT_EQ(aGraph.Topo().NbFaces(), aNbCopies);
 
   const BRepGraphAlgo_Deduplicate::Result aRes = BRepGraphAlgo_Deduplicate::Perform(aGraph);
   EXPECT_EQ(aRes.NbCanonicalSurfaces, 1);
@@ -538,9 +537,9 @@ TEST(BRepGraphAlgo_DeduplicateTest, MixedGeometry_OnlyIdenticalDeduped)
   ASSERT_TRUE(aGraph.IsDone());
 
   // 2 box face copies + 1 cylinder face = 3 faces, 3 surfaces, 11 curves.
-  ASSERT_EQ(aGraph.Defs().NbFaces(), 3);
-  ASSERT_EQ(aGraph.Defs().NbFaces(), 3);
-  ASSERT_EQ(aGraph.Defs().NbEdges(), 11);
+  ASSERT_EQ(aGraph.Topo().NbFaces(), 3);
+  ASSERT_EQ(aGraph.Topo().NbFaces(), 3);
+  ASSERT_EQ(aGraph.Topo().NbEdges(), 11);
 
   const BRepGraphAlgo_Deduplicate::Result aRes = BRepGraphAlgo_Deduplicate::Perform(aGraph);
   // Only the two identical box faces should be deduped; cylinder face is untouched.
@@ -565,7 +564,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, AfterDedup_AllCopiedFacesShareCanonicalSurfa
 
   // All face defs should share the same Surface handle.
   NCollection_Map<const Geom_Surface*> aSurfIds;
-  for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
+  for (int aFaceIdx = 0; aFaceIdx < aGraph.Topo().NbFaces(); ++aFaceIdx)
   {
     const occ::handle<Geom_Surface>& aSurf =
       BRepGraph_Tool::Face::Surface(aGraph, BRepGraph_FaceId(aFaceIdx));
@@ -654,7 +653,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, MergeDefsWhenSafe_MergesVertices)
   aGraph.Build(makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
-  const int aNbVerticesBefore = aGraph.Defs().NbVertices();
+  const int aNbVerticesBefore = aGraph.Topo().NbVertices();
 
   BRepGraphAlgo_Deduplicate::Options anOpts;
   anOpts.MergeDefsWhenSafe = true;
@@ -677,10 +676,10 @@ TEST(BRepGraphAlgo_DeduplicateTest, NestedCompound_AllCopiesDeduped)
   ASSERT_TRUE(aGraph.IsDone());
 
   // 3 copies of the same face across nested compounds: 3 surfaces, 12 curves.
-  ASSERT_EQ(aGraph.Defs().NbFaces(), 3);
-  ASSERT_EQ(aGraph.Defs().NbEdges(), 12);
-  ASSERT_EQ(aGraph.Defs().NbFaces(), 3);
-  ASSERT_EQ(aGraph.Defs().NbEdges(), 12);
+  ASSERT_EQ(aGraph.Topo().NbFaces(), 3);
+  ASSERT_EQ(aGraph.Topo().NbEdges(), 12);
+  ASSERT_EQ(aGraph.Topo().NbFaces(), 3);
+  ASSERT_EQ(aGraph.Topo().NbEdges(), 12);
 
   const BRepGraphAlgo_Deduplicate::Result aRes = BRepGraphAlgo_Deduplicate::Perform(aGraph);
   EXPECT_EQ(aRes.NbCanonicalSurfaces, 1);
@@ -700,8 +699,8 @@ TEST(BRepGraphAlgo_DeduplicateTest, ThreeDistinctPrimitives_MinimalDedup)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Box(6 faces) + Sphere(1 face) + Cone(3 faces) = 10 faces, 18 edges.
-  ASSERT_EQ(aGraph.Defs().NbFaces(), 10);
-  ASSERT_EQ(aGraph.Defs().NbEdges(), 18);
+  ASSERT_EQ(aGraph.Topo().NbFaces(), 10);
+  ASSERT_EQ(aGraph.Topo().NbEdges(), 18);
 
   const BRepGraphAlgo_Deduplicate::Result aRes = BRepGraphAlgo_Deduplicate::Perform(aGraph);
   // 9 canonical surfaces (1 surface matches between cone bottom and sphere/box plane).
@@ -719,10 +718,10 @@ TEST(BRepGraphAlgo_DeduplicateTest, TwoIdenticalBoxes_SurfacesAndCurvesDeduped)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Two identical boxes: 12 faces, 24 edges, 12 geom surfaces, 24 geom curves.
-  ASSERT_EQ(aGraph.Defs().NbFaces(), 12);
-  ASSERT_EQ(aGraph.Defs().NbEdges(), 24);
-  ASSERT_EQ(aGraph.Defs().NbFaces(), 12);
-  ASSERT_EQ(aGraph.Defs().NbEdges(), 24);
+  ASSERT_EQ(aGraph.Topo().NbFaces(), 12);
+  ASSERT_EQ(aGraph.Topo().NbEdges(), 24);
+  ASSERT_EQ(aGraph.Topo().NbFaces(), 12);
+  ASSERT_EQ(aGraph.Topo().NbEdges(), 24);
 
   const BRepGraphAlgo_Deduplicate::Result aRes = BRepGraphAlgo_Deduplicate::Perform(aGraph);
   EXPECT_EQ(aRes.NbCanonicalSurfaces, 6);
@@ -746,7 +745,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, CurveRewriteCount_MatchesDuplicateEdgeCurves
   ASSERT_TRUE(aGraph.IsDone());
 
   // TwoCopiedFaces: 8 geom curves, 4 canonical -> 4 duplicates.
-  ASSERT_EQ(aGraph.Defs().NbEdges(), 8);
+  ASSERT_EQ(aGraph.Topo().NbEdges(), 8);
 
   BRepGraphAlgo_Deduplicate::Options anAnalyze;
   anAnalyze.AnalyzeOnly = true;
@@ -963,9 +962,9 @@ TEST(BRepGraphAlgo_DeduplicateTest, AfterDedup_AllSurfacesValid)
 
   (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
 
-  for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
+  for (int aFaceIdx = 0; aFaceIdx < aGraph.Topo().NbFaces(); ++aFaceIdx)
   {
-    const BRepGraph_TopoNode::FaceDef& aFaceDef = aGraph.Defs().Face(BRepGraph_FaceId(aFaceIdx));
+    const BRepGraph_TopoNode::FaceDef& aFaceDef = aGraph.Topo().Face(BRepGraph_FaceId(aFaceIdx));
     EXPECT_TRUE(aFaceDef.SurfaceRepId.IsValid())
       << "Face " << aFaceIdx << " has null Surface after dedup";
   }
@@ -979,9 +978,9 @@ TEST(BRepGraphAlgo_DeduplicateTest, AfterDedup_AllCurve3dsValid)
 
   (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
 
-  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
   {
-    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.Defs().Edge(BRepGraph_EdgeId(anEdgeIdx));
+    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.Topo().Edge(BRepGraph_EdgeId(anEdgeIdx));
     if (!anEdgeDef.IsDegenerate)
     {
       EXPECT_TRUE(anEdgeDef.Curve3DRepId.IsValid())
@@ -1003,13 +1002,13 @@ TEST(BRepGraphAlgo_DeduplicateTest, AfterDedup_AllInlinePCurvesHaveCurve2d)
   (void)addDuplicatePCurvesToAllEdges(aGraph);
   (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
 
-  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
   {
     const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
-      aGraph.Defs().CoEdgesOfEdge(BRepGraph_EdgeId(anEdgeIdx));
+      aGraph.Topo().CoEdgesOfEdge(BRepGraph_EdgeId(anEdgeIdx));
     for (int aCEIter = 0; aCEIter < aCoEdgeIdxs.Length(); ++aCEIter)
     {
-      const BRepGraphInc::CoEdgeEntity& aCE = aGraph.Defs().CoEdge(aCoEdgeIdxs.Value(aCEIter));
+      const BRepGraphInc::CoEdgeEntity& aCE = aGraph.Topo().CoEdge(aCoEdgeIdxs.Value(aCEIter));
       EXPECT_TRUE(aCE.Curve2DRepId.IsValid())
         << "Edge " << anEdgeIdx << " CoEdge " << aCEIter << " has null Curve2d after dedup";
     }
@@ -1025,9 +1024,9 @@ TEST(BRepGraphAlgo_DeduplicateTest, AfterDedup_CanonicalSurfaceGeomNotNull)
   (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
 
   // All face defs should have a non-null surface after dedup.
-  for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
+  for (int aFaceIdx = 0; aFaceIdx < aGraph.Topo().NbFaces(); ++aFaceIdx)
   {
-    const BRepGraph_TopoNode::FaceDef& aFaceDef = aGraph.Defs().Face(BRepGraph_FaceId(aFaceIdx));
+    const BRepGraph_TopoNode::FaceDef& aFaceDef = aGraph.Topo().Face(BRepGraph_FaceId(aFaceIdx));
     EXPECT_TRUE(aFaceDef.SurfaceRepId.IsValid())
       << "Face " << aFaceIdx << " has null Surface after dedup";
   }
@@ -1041,9 +1040,9 @@ TEST(BRepGraphAlgo_DeduplicateTest, AfterDedup_CanonicalCurveGeomNotNull)
 
   (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
 
-  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
   {
-    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.Defs().Edge(BRepGraph_EdgeId(anEdgeIdx));
+    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.Topo().Edge(BRepGraph_EdgeId(anEdgeIdx));
     if (!anEdgeDef.IsDegenerate)
     {
       EXPECT_TRUE(anEdgeDef.Curve3DRepId.IsValid())
@@ -1093,7 +1092,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, TenCopies_AllDeduplicatedToOneSurface)
   aGraph.Build(makeNCopiedIdenticalFaces(aNbCopies));
   ASSERT_TRUE(aGraph.IsDone());
 
-  ASSERT_EQ(aGraph.Defs().NbFaces(), aNbCopies);
+  ASSERT_EQ(aGraph.Topo().NbFaces(), aNbCopies);
 
   const BRepGraphAlgo_Deduplicate::Result aRes = BRepGraphAlgo_Deduplicate::Perform(aGraph);
   EXPECT_EQ(aRes.NbCanonicalSurfaces, 1);
@@ -1108,7 +1107,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, TwoCopies_CurveCanonicalCountLessThanTotal)
   ASSERT_TRUE(aGraph.IsDone());
 
   // 8 geom curves, 4 canonical.
-  ASSERT_EQ(aGraph.Defs().NbEdges(), 8);
+  ASSERT_EQ(aGraph.Topo().NbEdges(), 8);
 
   BRepGraphAlgo_Deduplicate::Options anOpts;
   anOpts.AnalyzeOnly                           = true;
@@ -1193,15 +1192,15 @@ TEST(BRepGraphAlgo_DeduplicateTest, RestoresHistoryFlag_WhenHistoryModeOff)
   aGraph.Build(makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
-  aGraph.SetHistoryEnabled(true);
-  ASSERT_TRUE(aGraph.IsHistoryEnabled());
+  aGraph.History().SetEnabled(true);
+  ASSERT_TRUE(aGraph.History().IsEnabled());
 
   BRepGraphAlgo_Deduplicate::Options anOpts;
   anOpts.HistoryMode = false;
   (void)BRepGraphAlgo_Deduplicate::Perform(aGraph, anOpts);
 
   // Should be restored to the original value (true).
-  EXPECT_TRUE(aGraph.IsHistoryEnabled());
+  EXPECT_TRUE(aGraph.History().IsEnabled());
 }
 
 TEST(BRepGraphAlgo_DeduplicateTest, RestoresHistoryFlag_AnalyzeOnlyPath)
@@ -1210,7 +1209,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, RestoresHistoryFlag_AnalyzeOnlyPath)
   aGraph.Build(makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
-  aGraph.SetHistoryEnabled(true);
+  aGraph.History().SetEnabled(true);
 
   BRepGraphAlgo_Deduplicate::Options anOpts;
   anOpts.AnalyzeOnly = true;
@@ -1218,7 +1217,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, RestoresHistoryFlag_AnalyzeOnlyPath)
   (void)BRepGraphAlgo_Deduplicate::Perform(aGraph, anOpts);
 
   // Restored even when exiting through the AnalyzeOnly early-return.
-  EXPECT_TRUE(aGraph.IsHistoryEnabled());
+  EXPECT_TRUE(aGraph.History().IsEnabled());
 }
 
 // ---------------------------------------------------------------------------
@@ -1232,15 +1231,15 @@ TEST(BRepGraphAlgo_DeduplicateTest, GeomCountsUnchanged_AfterDedup)
   ASSERT_TRUE(aGraph.IsDone());
 
   // TwoCopiedFaces: 2 surfaces, 8 curves, 8 PCurves.
-  ASSERT_EQ(aGraph.Defs().NbFaces(), 2);
-  ASSERT_EQ(aGraph.Defs().NbEdges(), 8);
+  ASSERT_EQ(aGraph.Topo().NbFaces(), 2);
+  ASSERT_EQ(aGraph.Topo().NbEdges(), 8);
   ASSERT_EQ(nbPCurveEntries(aGraph), 8);
 
   (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
 
   // Dedup rewrites references, but does not remove geometry nodes.
-  EXPECT_EQ(aGraph.Defs().NbFaces(), 2);
-  EXPECT_EQ(aGraph.Defs().NbEdges(), 8);
+  EXPECT_EQ(aGraph.Topo().NbFaces(), 2);
+  EXPECT_EQ(aGraph.Topo().NbEdges(), 8);
   EXPECT_EQ(nbPCurveEntries(aGraph), 8);
 }
 
@@ -1251,14 +1250,14 @@ TEST(BRepGraphAlgo_DeduplicateTest, DefCountsUnchanged_AfterDedup)
   ASSERT_TRUE(aGraph.IsDone());
 
   // TwoCopiedFaces: 2 face defs, 8 edge defs.
-  ASSERT_EQ(aGraph.Defs().NbFaces(), 2);
-  ASSERT_EQ(aGraph.Defs().NbEdges(), 8);
+  ASSERT_EQ(aGraph.Topo().NbFaces(), 2);
+  ASSERT_EQ(aGraph.Topo().NbEdges(), 8);
 
   (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
 
   // Dedup never removes or adds defs.
-  EXPECT_EQ(aGraph.Defs().NbFaces(), 2);
-  EXPECT_EQ(aGraph.Defs().NbEdges(), 8);
+  EXPECT_EQ(aGraph.Topo().NbFaces(), 2);
+  EXPECT_EQ(aGraph.Topo().NbEdges(), 8);
 }
 
 TEST(BRepGraphAlgo_DeduplicateTest, PCurveEntryCount_UnchangedAfterDedup)
@@ -1308,8 +1307,8 @@ TEST(BRepGraphAlgo_DeduplicateTest, TwoCopiedSphereFaces_Deduped)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Two sphere face copies: 2 faces, 6 edges.
-  ASSERT_EQ(aGraph.Defs().NbFaces(), 2);
-  ASSERT_EQ(aGraph.Defs().NbEdges(), 6);
+  ASSERT_EQ(aGraph.Topo().NbFaces(), 2);
+  ASSERT_EQ(aGraph.Topo().NbEdges(), 6);
 
   const BRepGraphAlgo_Deduplicate::Result aRes = BRepGraphAlgo_Deduplicate::Perform(aGraph);
   EXPECT_EQ(aRes.NbCanonicalSurfaces, 1);
@@ -1343,9 +1342,9 @@ TEST(BRepGraphAlgo_DeduplicateTest, TwoCopiedCylinderFaces_Deduped)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Two cylinder face copies: 2 faces, 6 edges, 2 surfaces, 6 curves, 12 PCurves.
-  ASSERT_EQ(aGraph.Defs().NbFaces(), 2);
-  ASSERT_EQ(aGraph.Defs().NbFaces(), 2);
-  ASSERT_EQ(aGraph.Defs().NbEdges(), 6);
+  ASSERT_EQ(aGraph.Topo().NbFaces(), 2);
+  ASSERT_EQ(aGraph.Topo().NbFaces(), 2);
+  ASSERT_EQ(aGraph.Topo().NbEdges(), 6);
 
   const BRepGraphAlgo_Deduplicate::Result aRes = BRepGraphAlgo_Deduplicate::Perform(aGraph);
   EXPECT_EQ(aRes.NbCanonicalSurfaces, 1);
@@ -1354,35 +1353,6 @@ TEST(BRepGraphAlgo_DeduplicateTest, TwoCopiedCylinderFaces_Deduped)
   EXPECT_EQ(aRes.NbCurveRewrites, 3);
   // 8 canonicalize + 1 nullify surface + 3 nullify curves + 4 nullify PCurves = 16.
   EXPECT_GT(aRes.NbHistoryRecords, 0);
-}
-
-TEST(BRepGraphAlgo_DeduplicateTest, PCurveContext_WorksAsDataMapKey)
-{
-  // Default-constructed context has invalid (negative) indices.
-  const BRepGraph_PCurveContext aDefault;
-  EXPECT_EQ(aDefault.EdgeDefId.Index, -1);
-  EXPECT_EQ(aDefault.FaceDefId.Index, -1);
-
-  // Two contexts differing only by orientation are distinct keys.
-  const BRepGraph_PCurveContext aCtxFwd(BRepGraph_EdgeId(0), BRepGraph_FaceId(1), TopAbs_FORWARD);
-  const BRepGraph_PCurveContext aCtxRev(BRepGraph_EdgeId(0), BRepGraph_FaceId(1), TopAbs_REVERSED);
-  EXPECT_NE(aCtxFwd, aCtxRev);
-
-  // Same context hashes/compares equal and works as NCollection_DataMap key.
-  const BRepGraph_PCurveContext aCtxFwd2(BRepGraph_EdgeId(0), BRepGraph_FaceId(1), TopAbs_FORWARD);
-  EXPECT_EQ(aCtxFwd, aCtxFwd2);
-
-  NCollection_DataMap<BRepGraph_PCurveContext, int> aMap;
-  aMap.Bind(aCtxFwd, 10);
-  aMap.Bind(aCtxRev, 20);
-
-  ASSERT_TRUE(aMap.IsBound(aCtxFwd));
-  ASSERT_TRUE(aMap.IsBound(aCtxRev));
-  EXPECT_EQ(aMap.Find(aCtxFwd), 10);
-  EXPECT_EQ(aMap.Find(aCtxRev), 20);
-
-  // Lookup with equivalent key returns the same value.
-  EXPECT_EQ(aMap.Find(aCtxFwd2), 10);
 }
 
 TEST(BRepGraphAlgo_DeduplicateTest, DifferentSizedCylinders_NotDeduped)
@@ -1406,9 +1376,9 @@ TEST(BRepGraphAlgo_DeduplicateTest, DifferentSizedCylinders_NotDeduped)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Two distinct cylinder faces: 2 surfaces, 6 curves.
-  ASSERT_EQ(aGraph.Defs().NbFaces(), 2);
-  ASSERT_EQ(aGraph.Defs().NbFaces(), 2);
-  ASSERT_EQ(aGraph.Defs().NbEdges(), 6);
+  ASSERT_EQ(aGraph.Topo().NbFaces(), 2);
+  ASSERT_EQ(aGraph.Topo().NbFaces(), 2);
+  ASSERT_EQ(aGraph.Topo().NbEdges(), 6);
 
   const BRepGraphAlgo_Deduplicate::Result aRes = BRepGraphAlgo_Deduplicate::Perform(aGraph);
   // Different radii -> different cylindrical surfaces -> no surface/curve dedup.
@@ -1431,7 +1401,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, BackRefs_SurfaceRewrite_UpdatesFaceDefUsers)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Before dedup: each face has its own surface handle.
-  ASSERT_EQ(aGraph.Defs().NbFaces(), 2);
+  ASSERT_EQ(aGraph.Topo().NbFaces(), 2);
   EXPECT_NE(BRepGraph_Tool::Face::Surface(aGraph, BRepGraph_FaceId(0)).get(),
             BRepGraph_Tool::Face::Surface(aGraph, BRepGraph_FaceId(1)).get());
 
@@ -1449,14 +1419,14 @@ TEST(BRepGraphAlgo_DeduplicateTest, BackRefs_CurveRewrite_UpdatesEdgeDefUsers)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Before dedup: 8 edges, each with its own curve handle.
-  ASSERT_EQ(aGraph.Defs().NbEdges(), 8);
+  ASSERT_EQ(aGraph.Topo().NbEdges(), 8);
 
   (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
 
   // After dedup: edges with identical curves should share the same pointer.
   // Count distinct curve pointers across all edges.
   NCollection_Map<const Geom_Curve*> aDistinctCurves;
-  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
   {
     const occ::handle<Geom_Curve>& aCurve =
       BRepGraph_Tool::Edge::Curve(aGraph, BRepGraph_EdgeId(anEdgeIdx));
@@ -1476,7 +1446,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, FacesOnSurface_AfterDedup_ReturnsCorrectDefs
   (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
 
   // After dedup, all face defs point to the same canonical surface.
-  ASSERT_EQ(aGraph.Defs().NbFaces(), 2);
+  ASSERT_EQ(aGraph.Topo().NbFaces(), 2);
   EXPECT_TRUE(BRepGraph_Tool::Face::HasSurface(aGraph, BRepGraph_FaceId(0)));
   EXPECT_TRUE(BRepGraph_Tool::Face::HasSurface(aGraph, BRepGraph_FaceId(1)));
   EXPECT_EQ(BRepGraph_Tool::Face::Surface(aGraph, BRepGraph_FaceId(0)).get(),
@@ -1494,7 +1464,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, Nullify_OrphanedSurface_HandleIsNull)
   EXPECT_EQ(aRes.NbNullifiedSurfaces, 0);
 
   // After dedup, both faces share the same canonical surface; all surfaces non-null.
-  for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
+  for (int aFaceIdx = 0; aFaceIdx < aGraph.Topo().NbFaces(); ++aFaceIdx)
   {
     EXPECT_TRUE(BRepGraph_Tool::Face::HasSurface(aGraph, BRepGraph_FaceId(aFaceIdx)))
       << "Face " << aFaceIdx << " has null Surface after dedup";
@@ -1513,7 +1483,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, Nullify_OrphanedCurve_HandleIsNull)
 
   // After dedup, all non-degenerate edges should have non-null Curve3d;
   // duplicate edges now share the canonical curve pointer.
-  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
   {
     if (!BRepGraph_Tool::Edge::Degenerated(aGraph, BRepGraph_EdgeId(anEdgeIdx)))
     {
@@ -1552,10 +1522,10 @@ TEST(BRepGraphAlgo_DeduplicateTest, AnalyzeOnly_NoBackRefChangesOrNullification)
 
   // Snapshot surface/curve pointers before.
   NCollection_Vector<const Geom_Surface*> aSurfPtrs;
-  for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
+  for (int aFaceIdx = 0; aFaceIdx < aGraph.Topo().NbFaces(); ++aFaceIdx)
     aSurfPtrs.Append(BRepGraph_Tool::Face::Surface(aGraph, BRepGraph_FaceId(aFaceIdx)).get());
   NCollection_Vector<const Geom_Curve*> aCurvePtrs;
-  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
     aCurvePtrs.Append(BRepGraph_Tool::Edge::Curve(aGraph, BRepGraph_EdgeId(anEdgeIdx)).get());
 
   BRepGraphAlgo_Deduplicate::Options anOpts;
@@ -1566,23 +1536,23 @@ TEST(BRepGraphAlgo_DeduplicateTest, AnalyzeOnly_NoBackRefChangesOrNullification)
   EXPECT_EQ(aRes.NbNullifiedCurves, 0);
 
   // Surface/curve pointers unchanged (analyze only, no rewriting).
-  for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
+  for (int aFaceIdx = 0; aFaceIdx < aGraph.Topo().NbFaces(); ++aFaceIdx)
   {
     EXPECT_EQ(BRepGraph_Tool::Face::Surface(aGraph, BRepGraph_FaceId(aFaceIdx)).get(),
               aSurfPtrs.Value(aFaceIdx));
   }
-  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
   {
     EXPECT_EQ(BRepGraph_Tool::Edge::Curve(aGraph, BRepGraph_EdgeId(anEdgeIdx)).get(),
               aCurvePtrs.Value(anEdgeIdx));
   }
 
   // All handles still non-null.
-  for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
+  for (int aFaceIdx = 0; aFaceIdx < aGraph.Topo().NbFaces(); ++aFaceIdx)
   {
     EXPECT_TRUE(BRepGraph_Tool::Face::HasSurface(aGraph, BRepGraph_FaceId(aFaceIdx)));
   }
-  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
   {
     if (!BRepGraph_Tool::Edge::Degenerated(aGraph, BRepGraph_EdgeId(anEdgeIdx)))
       EXPECT_TRUE(BRepGraph_Tool::Edge::HasCurve(aGraph, BRepGraph_EdgeId(anEdgeIdx)));
@@ -1612,11 +1582,11 @@ TEST(BRepGraphAlgo_DeduplicateTest, Pump_FullDedup_BackRefsAndNullify)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Snapshot geometry counts before dedup.
-  const int aNbSurfsBefore  = aGraph.Defs().NbFaces();
-  const int aNbCurvesBefore = aGraph.Defs().NbEdges();
+  const int aNbSurfsBefore  = aGraph.Topo().NbFaces();
+  const int aNbCurvesBefore = aGraph.Topo().NbEdges();
   const int aNbPCBefore     = nbPCurveEntries(aGraph);
-  const int aNbFaces        = aGraph.Defs().NbFaces();
-  const int aNbEdges        = aGraph.Defs().NbEdges();
+  const int aNbFaces        = aGraph.Topo().NbFaces();
+  const int aNbEdges        = aGraph.Topo().NbEdges();
 
   ASSERT_GT(aNbSurfsBefore, 0);
   ASSERT_GT(aNbCurvesBefore, 0);
@@ -1632,26 +1602,26 @@ TEST(BRepGraphAlgo_DeduplicateTest, Pump_FullDedup_BackRefsAndNullify)
   const BRepGraphAlgo_Deduplicate::Result aRes = BRepGraphAlgo_Deduplicate::Perform(aGraph, anOpts);
 
   // Geometry node counts are unchanged (nodes are not removed).
-  EXPECT_EQ(aGraph.Defs().NbFaces(), aNbSurfsBefore);
-  EXPECT_EQ(aGraph.Defs().NbEdges(), aNbCurvesBefore);
+  EXPECT_EQ(aGraph.Topo().NbFaces(), aNbSurfsBefore);
+  EXPECT_EQ(aGraph.Topo().NbEdges(), aNbCurvesBefore);
   // CoEdge count may increase slightly: dedup transfers PCurves to canonical edges
   // via AddPCurveToEdge (creating new CoEdges), while removed edges' CoEdges
   // are excluded from the count.
   EXPECT_GE(nbPCurveEntries(aGraph), aNbPCBefore - 2);
 
   // Def counts are unchanged.
-  EXPECT_EQ(aGraph.Defs().NbFaces(), aNbFaces);
-  EXPECT_EQ(aGraph.Defs().NbEdges(), aNbEdges);
+  EXPECT_EQ(aGraph.Topo().NbFaces(), aNbFaces);
+  EXPECT_EQ(aGraph.Topo().NbEdges(), aNbEdges);
 
   // After dedup, all face surfaces should be non-null.
-  for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
+  for (int aFaceIdx = 0; aFaceIdx < aGraph.Topo().NbFaces(); ++aFaceIdx)
   {
     EXPECT_TRUE(BRepGraph_Tool::Face::HasSurface(aGraph, BRepGraph_FaceId(aFaceIdx)))
       << "Face " << aFaceIdx << " has null Surface after dedup";
   }
 
   // After dedup, non-degenerate edge curves should be non-null.
-  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Defs().NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
   {
     if (!BRepGraph_Tool::Edge::Degenerated(aGraph, BRepGraph_EdgeId(anEdgeIdx)))
     {
@@ -1690,9 +1660,9 @@ TEST(BRepGraphAlgo_DeduplicateTest, Pump_FullDedup_BackRefsAndNullify)
   // reconstructs if modified (dedup marks face/edge defs as modified,
   // which propagates up to the root compound).
   BRepGraph_NodeId aRootId;
-  if (aGraph.Defs().NbCompounds() > 0)
+  if (aGraph.Topo().NbCompounds() > 0)
     aRootId = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Compound, 0);
-  else if (aGraph.Defs().NbSolids() > 0)
+  else if (aGraph.Topo().NbSolids() > 0)
     aRootId = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Solid, 0);
   ASSERT_TRUE(aRootId.IsValid());
 
@@ -1747,17 +1717,17 @@ TEST(BRepGraphAlgo_DeduplicateTest, Pump_FullDedup_BackRefsAndNullify)
   ASSERT_TRUE(aGraph2.IsDone());
 
   std::cout << "  === Graph from reconstructed shape ===\n"
-            << "  Faces: " << aGraph2.Defs().NbFaces() << ", Edges: " << aGraph2.Defs().NbEdges()
+            << "  Faces: " << aGraph2.Topo().NbFaces() << ", Edges: " << aGraph2.Topo().NbEdges()
             << "\n"
-            << "  Surfaces: " << aGraph2.Defs().NbFaces()
-            << ", Curves: " << aGraph2.Defs().NbEdges() << ", PCurves: " << nbPCurveEntries(aGraph2)
+            << "  Surfaces: " << aGraph2.Topo().NbFaces()
+            << ", Curves: " << aGraph2.Topo().NbEdges() << ", PCurves: " << nbPCurveEntries(aGraph2)
             << "\n";
 
   // The new graph should have fewer geometry nodes (shared handles -> single node).
-  EXPECT_EQ(aGraph2.Defs().NbFaces(), aNbFaces);
-  EXPECT_EQ(aGraph2.Defs().NbEdges(), aNbEdges);
-  EXPECT_LE(aGraph2.Defs().NbFaces(), aNbSurfsBefore);
-  EXPECT_LE(aGraph2.Defs().NbEdges(), aNbCurvesBefore);
+  EXPECT_EQ(aGraph2.Topo().NbFaces(), aNbFaces);
+  EXPECT_EQ(aGraph2.Topo().NbEdges(), aNbEdges);
+  EXPECT_LE(aGraph2.Topo().NbFaces(), aNbSurfsBefore);
+  EXPECT_LE(aGraph2.Topo().NbEdges(), aNbCurvesBefore);
 
   const char* anOutPath = "/Users/dpasukhi/work/OCCT/build/bug24867_pump_deduped.brep";
   const bool  isWritten = BRepTools::Write(aFinalShape, anOutPath);
@@ -1894,7 +1864,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, RoundTrip_TwoCopiedFaces_FewerSurfaces)
   BRepGraph aGraph1;
   aGraph1.Build(aCompound);
   ASSERT_TRUE(aGraph1.IsDone());
-  ASSERT_EQ(aGraph1.Defs().NbFaces(), 2);
+  ASSERT_EQ(aGraph1.Topo().NbFaces(), 2);
 
   (void)BRepGraphAlgo_Deduplicate::Perform(aGraph1);
   ASSERT_EQ(nbUniqueFaceSurfaceDefs(aGraph1), 1);
@@ -1903,7 +1873,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, RoundTrip_TwoCopiedFaces_FewerSurfaces)
   BRep_Builder    aBB;
   TopoDS_Compound aReconstructed;
   aBB.MakeCompound(aReconstructed);
-  for (int aFaceIdx = 0; aFaceIdx < aGraph1.Defs().NbFaces(); ++aFaceIdx)
+  for (int aFaceIdx = 0; aFaceIdx < aGraph1.Topo().NbFaces(); ++aFaceIdx)
   {
     const TopoDS_Shape aFace = aGraph1.Shapes().ReconstructFace(BRepGraph_FaceId(aFaceIdx));
     ASSERT_FALSE(aFace.IsNull());
@@ -1918,7 +1888,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, RoundTrip_TwoCopiedFaces_FewerSurfaces)
   // Face defs count stays 2 (topology defs, not geometry nodes).
   // After round-trip, unique surface pointer count should be 1
   // because both faces share the same surface handle from dedup.
-  EXPECT_EQ(aGraph2.Defs().NbFaces(), 2);
+  EXPECT_EQ(aGraph2.Topo().NbFaces(), 2);
   EXPECT_EQ(nbUniqueFaceSurfaceDefs(aGraph2), 1);
 }
 
@@ -1929,7 +1899,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, RoundTrip_TwoCopiedFaces_FewerCurves)
   BRepGraph aGraph1;
   aGraph1.Build(aCompound);
   ASSERT_TRUE(aGraph1.IsDone());
-  ASSERT_EQ(aGraph1.Defs().NbEdges(), 8);
+  ASSERT_EQ(aGraph1.Topo().NbEdges(), 8);
 
   (void)BRepGraphAlgo_Deduplicate::Perform(aGraph1);
   ASSERT_EQ(nbUniqueEdgeCurveDefs(aGraph1), 4);
@@ -1938,7 +1908,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, RoundTrip_TwoCopiedFaces_FewerCurves)
   BRep_Builder    aBB;
   TopoDS_Compound aReconstructed;
   aBB.MakeCompound(aReconstructed);
-  for (int aFaceIdx = 0; aFaceIdx < aGraph1.Defs().NbFaces(); ++aFaceIdx)
+  for (int aFaceIdx = 0; aFaceIdx < aGraph1.Topo().NbFaces(); ++aFaceIdx)
   {
     const TopoDS_Shape aFace = aGraph1.Shapes().ReconstructFace(BRepGraph_FaceId(aFaceIdx));
     ASSERT_FALSE(aFace.IsNull());
@@ -1952,7 +1922,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, RoundTrip_TwoCopiedFaces_FewerCurves)
   // Edge defs count stays 8 (topology defs, not geometry nodes).
   // After round-trip, unique curve pointer count should be 4
   // because duplicate edges share the same curve handle from dedup.
-  EXPECT_EQ(aGraph2.Defs().NbEdges(), 8);
+  EXPECT_EQ(aGraph2.Topo().NbEdges(), 8);
   EXPECT_EQ(nbUniqueEdgeCurveDefs(aGraph2), 4);
 }
 
@@ -1978,7 +1948,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, Build_SharedTFace_OneSurfaceNode)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Both face usages share the same TFace -> same raw surface pointer -> one surface node.
-  EXPECT_EQ(aGraph.Defs().NbFaces(), 1);
+  EXPECT_EQ(aGraph.Topo().NbFaces(), 1);
 }
 
 TEST(BRepGraphAlgo_DeduplicateTest, RoundTrip_TwoBoxes_GeomReduction)
@@ -1989,8 +1959,8 @@ TEST(BRepGraphAlgo_DeduplicateTest, RoundTrip_TwoBoxes_GeomReduction)
   aGraph1.Build(aCompound);
   ASSERT_TRUE(aGraph1.IsDone());
 
-  const int aSurfsBefore  = aGraph1.Defs().NbFaces();
-  const int aCurvesBefore = aGraph1.Defs().NbEdges();
+  const int aSurfsBefore  = aGraph1.Topo().NbFaces();
+  const int aCurvesBefore = aGraph1.Topo().NbEdges();
   ASSERT_EQ(aSurfsBefore, 12);
   ASSERT_EQ(aCurvesBefore, 24);
 
@@ -2007,8 +1977,8 @@ TEST(BRepGraphAlgo_DeduplicateTest, RoundTrip_TwoBoxes_GeomReduction)
   ASSERT_TRUE(aGraph2.IsDone());
 
   // Face/edge def counts stay the same (topology defs, not geometry nodes).
-  EXPECT_EQ(aGraph2.Defs().NbFaces(), aSurfsBefore);
-  EXPECT_EQ(aGraph2.Defs().NbEdges(), aCurvesBefore);
+  EXPECT_EQ(aGraph2.Topo().NbFaces(), aSurfsBefore);
+  EXPECT_EQ(aGraph2.Topo().NbEdges(), aCurvesBefore);
 
   // After dedup, unique geometry pointer counts should reflect deduplication:
   // 6 canonical surfaces and 12 canonical curves.
@@ -2026,7 +1996,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, MergeVertices_SharedVerticesReduced)
   aGraph.Build(makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
-  const int aNbVerticesBefore = aGraph.Defs().NbVertices();
+  const int aNbVerticesBefore = aGraph.Topo().NbVertices();
 
   BRepGraphAlgo_Deduplicate::Options anOpts;
   anOpts.MergeDefsWhenSafe = true;
@@ -2037,9 +2007,9 @@ TEST(BRepGraphAlgo_DeduplicateTest, MergeVertices_SharedVerticesReduced)
 
   // Count non-removed vertices.
   int aNbActiveVertices = 0;
-  for (int anIdx = 0; anIdx < aGraph.Defs().NbVertices(); ++anIdx)
+  for (int anIdx = 0; anIdx < aGraph.Topo().NbVertices(); ++anIdx)
   {
-    if (!aGraph.Defs().Vertex(BRepGraph_VertexId(anIdx)).IsRemoved)
+    if (!aGraph.Topo().Vertex(BRepGraph_VertexId(anIdx)).IsRemoved)
       ++aNbActiveVertices;
   }
   EXPECT_LT(aNbActiveVertices, aNbVerticesBefore);
@@ -2107,7 +2077,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, AnalyzeOnly_MergeDefsWhenSafe_CountsOnly)
   aGraph.Build(makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
-  const int aNbVerticesBefore = aGraph.Defs().NbVertices();
+  const int aNbVerticesBefore = aGraph.Topo().NbVertices();
 
   BRepGraphAlgo_Deduplicate::Options anOpts;
   anOpts.MergeDefsWhenSafe = true;
@@ -2117,7 +2087,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, AnalyzeOnly_MergeDefsWhenSafe_CountsOnly)
   // Counts should be reported.
   EXPECT_GT(aRes.NbMergedVertices, 0);
   // But no mutation: all vertices still present.
-  EXPECT_EQ(aGraph.Defs().NbVertices(), aNbVerticesBefore);
+  EXPECT_EQ(aGraph.Topo().NbVertices(), aNbVerticesBefore);
   EXPECT_FALSE(aRes.IsDefMergeApplied);
 }
 

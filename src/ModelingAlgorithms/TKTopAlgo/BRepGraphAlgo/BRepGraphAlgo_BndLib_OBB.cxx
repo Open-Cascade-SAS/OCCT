@@ -14,7 +14,7 @@
 #include <BRepGraphAlgo_BndLib.hxx>
 
 #include <BRepGraph.hxx>
-#include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_TopoNode.hxx>
@@ -96,7 +96,7 @@ static int pointsForOBB(const BRepGraph&            theGraph,
   int aRetVal = 0;
 
   // Collect all vertex points.
-  const int aNbVerts = theGraph.Defs().NbVertices();
+  const int aNbVerts = theGraph.Topo().NbVertices();
   for (int i = 0; i < aNbVerts; ++i)
   {
     const BRepGraph_VertexId aVertId(i);
@@ -117,7 +117,7 @@ static int pointsForOBB(const BRepGraph&            theGraph,
   }
 
   // Analyze faces for planarity and triangulation.
-  const int aNbFaces = theGraph.Defs().NbFaces();
+  const int aNbFaces = theGraph.Topo().NbFaces();
   for (int aFaceIdx = 0; aFaceIdx < aNbFaces; ++aFaceIdx)
   {
     const BRepGraph_FaceId aFaceId(aFaceIdx);
@@ -140,16 +140,16 @@ static int pointsForOBB(const BRepGraph&            theGraph,
       // Planar face: check if all edges are linear.
       bool                               hasNonLinearEdge = false;
       const BRepGraph_TopoNode::FaceDef& aFaceDef =
-        theGraph.Defs().Face(BRepGraph_FaceId(aFaceIdx));
+        theGraph.Topo().Face(BRepGraph_FaceId(aFaceIdx));
       for (int aWireRefIdx = 0; aWireRefIdx < aFaceDef.WireRefs.Length() && !hasNonLinearEdge;
            ++aWireRefIdx)
       {
         const BRepGraphInc::WireRef&       aWR      = aFaceDef.WireRefs.Value(aWireRefIdx);
-        const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.Defs().Wire(aWR.WireDefId);
+        const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.Topo().Wire(aWR.WireDefId);
         for (int anIdx = 0; anIdx < aWireDef.CoEdgeRefs.Length(); ++anIdx)
         {
           const BRepGraphInc::CoEdgeRef&       aCR     = aWireDef.CoEdgeRefs.Value(anIdx);
-          const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Defs().CoEdge(aCR.CoEdgeDefId);
+          const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdge(aCR.CoEdgeDefId);
           const BRepGraph_EdgeId               anEdgeId(aCoEdge.EdgeDefId);
           if (BRepGraph_Tool::Edge::Degenerated(theGraph, anEdgeId)
               || !BRepGraph_Tool::Edge::HasCurve(theGraph, anEdgeId))
@@ -206,11 +206,11 @@ static int pointsForOBB(const BRepGraph&            theGraph,
   }
 
   // Consider free edges (not in any face).
-  const int aNbEdges = theGraph.Defs().NbEdges();
+  const int aNbEdges = theGraph.Topo().NbEdges();
   for (int i = 0; i < aNbEdges; ++i)
   {
     const BRepGraph_EdgeId anEdgeId(i);
-    if (theGraph.Defs().FaceCountOfEdge(anEdgeId) > 0)
+    if (theGraph.Topo().FaceCountOfEdge(anEdgeId) > 0)
     {
       continue; // Edge is in a face, already handled.
     }
@@ -317,7 +317,7 @@ static int isWCS(const gp_Dir& theDir)
 static void computeProperties(const BRepGraph& theGraph, GProp_GProps& theGCommon)
 {
   // For solids: volume properties.
-  const int aNbSolids = theGraph.Defs().NbSolids();
+  const int aNbSolids = theGraph.Topo().NbSolids();
   for (int i = 0; i < aNbSolids; ++i)
   {
     const BRepGraph_NodeId aSolidId = BRepGraph_NodeId::Solid(i);
@@ -328,7 +328,7 @@ static void computeProperties(const BRepGraph& theGraph, GProp_GProps& theGCommo
   }
 
   // For faces not in solids: surface properties.
-  const int aNbFaces = theGraph.Defs().NbFaces();
+  const int aNbFaces = theGraph.Topo().NbFaces();
   for (int i = 0; i < aNbFaces; ++i)
   {
     const TopoDS_Shape aFaceShape = theGraph.Shapes().ReconstructFace(BRepGraph_FaceId(i));
@@ -338,7 +338,7 @@ static void computeProperties(const BRepGraph& theGraph, GProp_GProps& theGCommo
   }
 
   // For free vertices.
-  const int aNbVerts = theGraph.Defs().NbVertices();
+  const int aNbVerts = theGraph.Topo().NbVertices();
   for (int i = 0; i < aNbVerts; ++i)
   {
     GProp_GProps aG(BRepGraph_Tool::Vertex::Pnt(theGraph, BRepGraph_VertexId(i)));
@@ -392,23 +392,23 @@ static void computePCA(const BRepGraph& theGraph,
     // Need to reconstruct shape, apply transform, and compute bbox.
     // Find the root node.
     TopoDS_Shape aRootShape;
-    if (theGraph.Defs().NbCompounds() > 0)
+    if (theGraph.Topo().NbCompounds() > 0)
     {
       aRootShape = theGraph.Shapes().Shape(BRepGraph_NodeId::Compound(0));
     }
-    else if (theGraph.Defs().NbCompSolids() > 0)
+    else if (theGraph.Topo().NbCompSolids() > 0)
     {
       aRootShape = theGraph.Shapes().Shape(BRepGraph_NodeId::CompSolid(0));
     }
-    else if (theGraph.Defs().NbSolids() > 0)
+    else if (theGraph.Topo().NbSolids() > 0)
     {
       aRootShape = theGraph.Shapes().Shape(BRepGraph_NodeId::Solid(0));
     }
-    else if (theGraph.Defs().NbShells() > 0)
+    else if (theGraph.Topo().NbShells() > 0)
     {
       aRootShape = theGraph.Shapes().Shape(BRepGraph_NodeId::Shell(0));
     }
-    else if (theGraph.Defs().NbFaces() > 0)
+    else if (theGraph.Topo().NbFaces() > 0)
     {
       aRootShape = theGraph.Shapes().ReconstructFace(BRepGraph_FaceId(0));
     }

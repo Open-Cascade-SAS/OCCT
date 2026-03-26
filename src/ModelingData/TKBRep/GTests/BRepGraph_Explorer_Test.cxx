@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <BRepGraph.hxx>
-#include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Explorer.hxx>
 #include <BRepGraph_PathView.hxx>
 #include <BRepGraph_TopologyPath.hxx>
@@ -621,7 +621,7 @@ TEST(BRepGraph_ExplorerTest, PathsTo_ShellInCompound_CompoundRoot)
   BRepGraph aGraph;
   aGraph.Build(aComp);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.Defs().NbShells(), 0);
+  ASSERT_GT(aGraph.Topo().NbShells(), 0);
 
   // PathsTo(Face) should trace through Shell to Compound root.
   NCollection_Vector<BRepGraph_TopologyPath> aPaths =
@@ -648,7 +648,7 @@ TEST(BRepGraph_ExplorerTest, PathsTo_SolidInCompSolid_CompSolidRoot)
   BRepGraph aGraph;
   aGraph.Build(aCS);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.Defs().NbCompSolids(), 0);
+  ASSERT_GT(aGraph.Topo().NbCompSolids(), 0);
 
   // PathsTo(Face) should trace up through Solid to CompSolid root.
   NCollection_Vector<BRepGraph_TopologyPath> aPaths =
@@ -675,8 +675,8 @@ TEST(BRepGraph_ExplorerTest, PathsTo_CompSolidInCompound_CompoundRoot)
   BRepGraph aGraph;
   aGraph.Build(aComp);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.Defs().NbCompSolids(), 0);
-  ASSERT_GT(aGraph.Defs().NbCompounds(), 0);
+  ASSERT_GT(aGraph.Topo().NbCompSolids(), 0);
+  ASSERT_GT(aGraph.Topo().NbCompounds(), 0);
 
   // PathsTo(Face) should trace Solid -> CompSolid -> Compound root.
   NCollection_Vector<BRepGraph_TopologyPath> aPaths =

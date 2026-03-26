@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <BRepGraph_Explorer.hxx>
-#include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_PathView.hxx>
 
 //=================================================================================================
@@ -35,7 +35,7 @@ BRepGraph_Explorer::BRepGraph_Explorer(const BRepGraph&          theGraph,
   myResults.Clear();
   myCurrent = 0;
 
-  const int              aDepthBudget = static_cast<int>(theGraph.Defs().NbNodes());
+  const int              aDepthBudget = static_cast<int>(theGraph.Topo().NbNodes());
   const BRepGraph_NodeId aRootNode    = theProduct;
   BRepGraph_TopologyPath aRootPath(aRootNode);
   explore(theGraph, theTargetKind, aRootNode, aRootPath, aDepthBudget);
@@ -54,7 +54,7 @@ void BRepGraph_Explorer::Init(const BRepGraph&       theGraph,
   if (!theRoot.IsValid())
     return;
 
-  const int              aDepthBudget = static_cast<int>(theGraph.Defs().NbNodes());
+  const int              aDepthBudget = static_cast<int>(theGraph.Topo().NbNodes());
   BRepGraph_TopologyPath aRootPath(theRoot);
   explore(theGraph, theTargetKind, theRoot, aRootPath, aDepthBudget);
 }
@@ -121,7 +121,7 @@ void BRepGraph_Explorer::explore(const BRepGraph&              theGraph,
     return;
 
   using Kind                      = BRepGraph_NodeId::Kind;
-  const BRepGraph::DefsView aDefs = theGraph.Defs();
+  const BRepGraph::TopoView aDefs = theGraph.Topo();
 
   // Check if current node matches target.
   if (theCurrentNode.NodeKind == theTargetKind)
@@ -321,7 +321,7 @@ void BRepGraph_Explorer::explore(const BRepGraph&              theGraph,
 
     case Kind::Product: {
       const BRepGraphInc::ProductEntity& aProd =
-        aDefs.Product(BRepGraph_ProductId(theCurrentNode.Index));
+        theGraph.Paths().Product(BRepGraph_ProductId(theCurrentNode.Index));
       if (aProd.IsRemoved)
         return;
       if (aProd.ShapeRootId.IsValid())
@@ -349,7 +349,7 @@ void BRepGraph_Explorer::explore(const BRepGraph&              theGraph,
 
     case Kind::Occurrence: {
       const BRepGraphInc::OccurrenceEntity& anOcc =
-        aDefs.Occurrence(BRepGraph_OccurrenceId(theCurrentNode.Index));
+        theGraph.Paths().Occurrence(BRepGraph_OccurrenceId(theCurrentNode.Index));
       if (anOcc.IsRemoved)
         return;
       // 1:1 transition to Product (no step consumed).

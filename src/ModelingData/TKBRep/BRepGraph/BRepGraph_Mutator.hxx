@@ -19,6 +19,8 @@
 #include <Standard_DefineAlloc.hxx>
 #include <TCollection_AsciiString.hxx>
 
+#include <functional>
+
 class BRepGraph;
 
 //! @brief Static helper for edge splitting and wire mutation on BRepGraph.
@@ -69,6 +71,17 @@ public:
                                                 const BRepGraph_EdgeId theOldEdgeDef,
                                                 const BRepGraph_EdgeId theNewEdgeDef,
                                                 const bool             theReversed);
+
+  //! Apply a modification operation and record history.
+  //! @param[in,out] theGraph    graph to mutate
+  //! @param[in] theTarget       node to modify
+  //! @param[in] theModifier     callback that performs the modification and returns replacements
+  //! @param[in] theOpLabel      human-readable operation label for history
+  static Standard_EXPORT void ApplyModification(
+    BRepGraph&                                                                        theGraph,
+    const BRepGraph_NodeId                                                            theTarget,
+    std::function<NCollection_Vector<BRepGraph_NodeId>(BRepGraph&, BRepGraph_NodeId)> theModifier,
+    const TCollection_AsciiString&                                                    theOpLabel);
 
   //! Finalize a batch of mutations: validate reverse index consistency
   //! and assert active entity counts match actual entity state.

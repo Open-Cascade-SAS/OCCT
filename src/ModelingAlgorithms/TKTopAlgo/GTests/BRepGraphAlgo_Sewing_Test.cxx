@@ -19,7 +19,7 @@
 #include <BRepBuilderAPI_Transform.hxx>
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepGProp.hxx>
-#include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_Tool.hxx>
@@ -235,9 +235,9 @@ TEST(BRepGraphAlgo_SewingTest, GraphAccessAfterSewing)
   ASSERT_TRUE(aResult.IsDone);
 
   EXPECT_TRUE(aGraph.IsDone());
-  EXPECT_EQ(aGraph.Defs().NbFaces(), 2);
-  EXPECT_GT(aGraph.Defs().NbEdges(), 0);
-  EXPECT_GT(aGraph.Defs().NbVertices(), 0);
+  EXPECT_EQ(aGraph.Topo().NbFaces(), 2);
+  EXPECT_GT(aGraph.Topo().NbEdges(), 0);
+  EXPECT_GT(aGraph.Topo().NbVertices(), 0);
   // History should record the merge.
   EXPECT_GE(aGraph.History().NbRecords(), 1);
 }
@@ -742,8 +742,8 @@ TEST(BRepGraphAlgo_SewingTest, VertexMerging_SharedVerticesAfterSewing)
 
   // After sewing, the graph's vertex count should be less than the sum of
   // individual face vertices (because coincident vertices were merged).
-  EXPECT_LE(aGraph.Defs().NbVertices(), 8);
-  EXPECT_GE(aGraph.Defs().NbVertices(), 6);
+  EXPECT_LE(aGraph.Topo().NbVertices(), 8);
+  EXPECT_GE(aGraph.Topo().NbVertices(), 6);
 }
 
 TEST(BRepGraphAlgo_SewingTest, GraphEdgeCount_AfterSewing)
@@ -765,8 +765,8 @@ TEST(BRepGraphAlgo_SewingTest, GraphEdgeCount_AfterSewing)
   BRepGraphAlgo_Sewing::Result aResult = sewOnGraph(aShapes, aOpts, aGraph);
   ASSERT_TRUE(aResult.IsDone);
 
-  EXPECT_EQ(aGraph.Defs().NbFaces(), 6);
-  EXPECT_GE(aGraph.Defs().NbEdges(), 12);
+  EXPECT_EQ(aGraph.Topo().NbFaces(), 6);
+  EXPECT_GE(aGraph.Topo().NbEdges(), 12);
 }
 
 TEST(BRepGraphAlgo_SewingTest, SewAllSixFaces_AreaPerFace)
@@ -866,7 +866,7 @@ NCollection_Sequence<TopoDS_Shape> buildFaceGrid(int    theNx,
       gp_Trsf aTrsf;
       aTrsf.SetTranslation(gp_Vec(anIx * theSizeX, anIy * theSizeY, 0.0));
 
-      if (aTemplateGraph.IsDone() && aTemplateGraph.Defs().NbFaces() > 0)
+      if (aTemplateGraph.IsDone() && aTemplateGraph.Topo().NbFaces() > 0)
       {
         BRepGraph aTransGraph =
           BRepGraphAlgo_Transform::TransformFace(aTemplateGraph, BRepGraph_FaceId(0), aTrsf, true);
@@ -969,7 +969,7 @@ TEST(BRepGraphAlgo_SewingTest, Perform_PreBuiltGraph_ModifiesInPlace)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Snapshot edge count before sewing.
-  const int aNbEdgesBefore = aGraph.Defs().NbEdges();
+  const int aNbEdgesBefore = aGraph.Topo().NbEdges();
 
   BRepGraphAlgo_Sewing::Options aOpts;
   aOpts.Tolerance                      = 1.0e-04;
@@ -978,7 +978,7 @@ TEST(BRepGraphAlgo_SewingTest, Perform_PreBuiltGraph_ModifiesInPlace)
   EXPECT_EQ(aResult.NbSewnEdges, 12);
 
   // The graph was modified in-place; edge definitions still exist.
-  EXPECT_GE(aGraph.Defs().NbEdges(), aNbEdgesBefore);
+  EXPECT_GE(aGraph.Topo().NbEdges(), aNbEdgesBefore);
   // History records are present (batch recording creates fewer records).
   EXPECT_GE(aGraph.History().NbRecords(), 1);
 }
@@ -1190,9 +1190,9 @@ TEST(BRepGraphAlgo_SewingTest, DeepAndLightCopy_MatchNodeCounts)
   BRepGraph aLightCopy = BRepGraphAlgo_Copy::Perform(aGraph, false);
   ASSERT_TRUE(aLightCopy.IsDone());
 
-  EXPECT_EQ(aDeepCopy.Defs().NbFaces(), aLightCopy.Defs().NbFaces());
-  EXPECT_EQ(aDeepCopy.Defs().NbEdges(), aLightCopy.Defs().NbEdges());
-  EXPECT_EQ(aDeepCopy.Defs().NbVertices(), aLightCopy.Defs().NbVertices());
+  EXPECT_EQ(aDeepCopy.Topo().NbFaces(), aLightCopy.Topo().NbFaces());
+  EXPECT_EQ(aDeepCopy.Topo().NbEdges(), aLightCopy.Topo().NbEdges());
+  EXPECT_EQ(aDeepCopy.Topo().NbVertices(), aLightCopy.Topo().NbVertices());
 }
 
 // ============================================================
@@ -1415,13 +1415,13 @@ TEST(BRepGraphAlgo_SewingTest, NonManifoldMode_ThreeFacesShareEdge)
     {
       const int                                     aKeepIdx = aRes.SewnEdgePairs.Value(i).Index;
       const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
-        aGraph.Defs().CoEdgesOfEdge(BRepGraph_EdgeId(aKeepIdx));
+        aGraph.Topo().CoEdgesOfEdge(BRepGraph_EdgeId(aKeepIdx));
       EXPECT_GE(aCoEdgeIdxs.Length(), 2);
 
       NCollection_Map<int> aFaceIds;
       for (int j = 0; j < aCoEdgeIdxs.Length(); ++j)
       {
-        const BRepGraphInc::CoEdgeEntity& aCE = aGraph.Defs().CoEdge(aCoEdgeIdxs.Value(j));
+        const BRepGraphInc::CoEdgeEntity& aCE = aGraph.Topo().CoEdge(aCoEdgeIdxs.Value(j));
         // PCurve may be stored (Curve2DRepId valid) or computed on-the-fly for planar faces.
         // Use PCurveAdaptor which handles both cases.
         const Geom2dAdaptor_Curve aPCAdaptor =

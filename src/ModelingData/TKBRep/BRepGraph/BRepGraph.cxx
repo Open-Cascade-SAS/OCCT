@@ -535,20 +535,6 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::FindDerived(
 
 //=================================================================================================
 
-void BRepGraph::ApplyModification(
-  const BRepGraph_NodeId                                                            theTarget,
-  std::function<NCollection_Vector<BRepGraph_NodeId>(BRepGraph&, BRepGraph_NodeId)> theModifier,
-  const TCollection_AsciiString&                                                    theOpLabel)
-{
-  NCollection_Vector<BRepGraph_NodeId> aReplacements = theModifier(*this, theTarget);
-
-  myData->myHistoryLog.Record(theOpLabel, theTarget, aReplacements);
-
-  invalidateSubgraphImpl(theTarget);
-}
-
-//=================================================================================================
-
 void BRepGraph::RecordHistory(const TCollection_AsciiString&              theOpLabel,
                               const BRepGraph_NodeId                      theOriginal,
                               const NCollection_Vector<BRepGraph_NodeId>& theReplacements)
@@ -557,6 +543,11 @@ void BRepGraph::RecordHistory(const TCollection_AsciiString&              theOpL
 }
 
 //=================================================================================================
+
+bool BRepGraph::IsDeferredMode() const
+{
+  return myData->myDeferredMode;
+}
 
 void BRepGraph::BeginDeferredInvalidation()
 {
@@ -821,16 +812,6 @@ const occ::handle<NCollection_BaseAllocator>& BRepGraph::Allocator() const
   return myData->myAllocator;
 }
 
-void BRepGraph::SetHistoryEnabled(const bool theVal)
-{
-  myData->myHistoryLog.SetEnabled(theVal);
-}
-
-bool BRepGraph::IsHistoryEnabled() const
-{
-  return myData->myHistoryLog.IsEnabled();
-}
-
 BRepGraph_History& BRepGraph::History()
 {
   return myData->myHistoryLog;
@@ -949,20 +930,6 @@ BRepGraph_MutRef<BRepGraph_TopoNode::CoEdgeDef> BRepGraph::MutCoEdge(
     this,
     &myData->myIncStorage.ChangeCoEdge(theCoEdge),
     BRepGraph_NodeId(BRepGraph_NodeId::Kind::CoEdge, theCoEdge.Index));
-}
-
-//=================================================================================================
-
-BRepGraph_Curve2DRepId BRepGraph::CreateCurve2DRep(const occ::handle<Geom2d_Curve>& theCurve2d)
-{
-  if (theCurve2d.IsNull())
-    return BRepGraph_Curve2DRepId();
-
-  BRepGraphInc::Curve2DRep& aRep  = myData->myIncStorage.AppendCurve2DRep();
-  const int                 anIdx = myData->myIncStorage.NbCurves2D() - 1;
-  aRep.Id                         = BRepGraph_RepId::Curve2D(anIdx);
-  aRep.Curve                      = theCurve2d;
-  return BRepGraph_Curve2DRepId(anIdx);
 }
 
 //=================================================================================================

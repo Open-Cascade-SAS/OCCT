@@ -19,7 +19,7 @@
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepCheck_Status.hxx>
 #include <BRepGraph.hxx>
-#include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_TopoNode.hxx>
 #include <BRepGraph_Tool.hxx>
@@ -175,7 +175,7 @@ TEST(BRepGraphCheck_AnalyzerTest, IncrementalCheckEdge_ValidBox)
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraphCheck_Analyzer anAnalyzer(aGraph);
-  for (int anEdgeIter = 0; anEdgeIter < aGraph.Defs().NbEdges(); ++anEdgeIter)
+  for (int anEdgeIter = 0; anEdgeIter < aGraph.Topo().NbEdges(); ++anEdgeIter)
   {
     anAnalyzer.CheckEdge(BRepGraph_EdgeId(anEdgeIter));
   }
@@ -193,7 +193,7 @@ TEST(BRepGraphCheck_AnalyzerTest, IncrementalCheckFace_ValidBox)
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraphCheck_Analyzer anAnalyzer(aGraph);
-  for (int aFaceIter = 0; aFaceIter < aGraph.Defs().NbFaces(); ++aFaceIter)
+  for (int aFaceIter = 0; aFaceIter < aGraph.Topo().NbFaces(); ++aFaceIter)
   {
     anAnalyzer.CheckFace(BRepGraph_FaceId(aFaceIter));
   }
@@ -233,7 +233,7 @@ TEST(BRepGraphCheck_AnalyzerTest, ShellChecks_ValidBox)
   BRepGraph aGraph;
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.Defs().NbShells(), 0);
+  ASSERT_GT(aGraph.Topo().NbShells(), 0);
 
   BRepGraphCheck_Analyzer anAnalyzer(aGraph);
   anAnalyzer.CheckShell(BRepGraph_ShellId(0));
@@ -329,7 +329,7 @@ TEST(BRepGraphCheck_AnalyzerTest, OpenShell_DetectsNotClosed)
   BRepGraph aGraph;
   aGraph.Build(anOpenShell);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.Defs().NbShells(), 0);
+  ASSERT_GT(aGraph.Topo().NbShells(), 0);
 
   BRepGraphCheck_Analyzer anAnalyzer(aGraph);
   anAnalyzer.CheckShell(BRepGraph_ShellId(0));
@@ -369,7 +369,7 @@ TEST(BRepGraphCheck_AnalyzerTest, InconsistentShell_DetectsBadOrientation)
   BRepGraph aGraph;
   aGraph.Build(aBadShell);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.Defs().NbShells(), 0);
+  ASSERT_GT(aGraph.Topo().NbShells(), 0);
 
   NCollection_Vector<BRepGraphCheck_Issue> aIssues;
   BRepGraphCheck::CheckShellOrientation(aGraph, BRepGraph_ShellId(0), aIssues);
@@ -406,7 +406,7 @@ TEST(BRepGraphCheck_AnalyzerTest, DisconnectedShell_DetectsNotConnected)
   BRepGraph aGraph;
   aGraph.Build(aDisconnectedShell);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.Defs().NbShells(), 0);
+  ASSERT_GT(aGraph.Topo().NbShells(), 0);
 
   NCollection_Vector<BRepGraphCheck_Issue> aIssues;
   BRepGraphCheck::CheckShellMinimum(aGraph, BRepGraph_ShellId(0), aIssues);
@@ -500,7 +500,7 @@ TEST(BRepGraphCheck_AnalyzerTest, DisplacedVertex_DetectsInvalidPointOnCurve)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Find the edge and its vertices, check for InvalidPointOnCurve.
-  const BRepGraph::DefsView aDefs            = aGraph.Defs();
+  const BRepGraph::TopoView aDefs            = aGraph.Topo();
   bool                      aHasInvalidPoint = false;
   for (int anEdgeIter = 0; anEdgeIter < aDefs.NbEdges(); ++anEdgeIter)
   {
@@ -543,7 +543,7 @@ TEST(BRepGraphCheck_AnalyzerTest, MissingPCurve_DetectsNoCurveOnSurface)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  const BRepGraph::DefsView aDefs = aGraph.Defs();
+  const BRepGraph::TopoView aDefs = aGraph.Topo();
   ASSERT_GT(aDefs.NbFaces(), 1);
   ASSERT_GT(aDefs.NbEdges(), 0);
 
@@ -655,7 +655,7 @@ TEST(BRepGraphCheck_AnalyzerTest, SharedFaceBetweenShells_DetectsImbrication)
   BRepGraph aGraph;
   aGraph.Build(aSolid);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.Defs().NbSolids(), 0);
+  ASSERT_GT(aGraph.Topo().NbSolids(), 0);
 
   NCollection_Vector<BRepGraphCheck_Issue> aIssues;
   BRepGraphCheck::CheckSolidMinimum(aGraph, BRepGraph_SolidId(0), aIssues);

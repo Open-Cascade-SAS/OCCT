@@ -150,6 +150,14 @@ public:
   //! @param[in] theParallel if true, per-face geometry extraction is parallel
   Standard_EXPORT void AppendShape(const TopoDS_Shape& theShape, const bool theParallel = false);
 
+  //! Create a new Curve2DRep in storage and return its typed identifier.
+  //! Use this when assigning a new PCurve to an existing CoEdge entity
+  //! via MutCoEdge().
+  //! @param[in] theCurve2d the 2D parametric curve handle
+  //! @return typed Curve2DRep identifier, or invalid if the curve is null
+  [[nodiscard]] Standard_EXPORT BRepGraph_Curve2DRepId
+    CreateCurve2DRep(const occ::handle<Geom2d_Curve>& theCurve2d);
+
   //! Attach a PCurve to an edge for a given face context.
   //! Creates a new CoEdge entity with Curve2DRep and updates reverse indices.
   //! @param[in] theEdgeDef           edge definition NodeId

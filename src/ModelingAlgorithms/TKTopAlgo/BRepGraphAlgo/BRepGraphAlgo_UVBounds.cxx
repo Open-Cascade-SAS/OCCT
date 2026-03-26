@@ -14,7 +14,7 @@
 #include <BRepGraphAlgo_UVBounds.hxx>
 
 #include <BRepGraph.hxx>
-#include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_TopoNode.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
@@ -253,7 +253,7 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph&       theGraph,
 {
   theData = CachedData();
 
-  const BRepGraph_TopoNode::FaceDef& aFaceDef = theGraph.Defs().Face(theFace);
+  const BRepGraph_TopoNode::FaceDef& aFaceDef = theGraph.Topo().Face(theFace);
   if (!BRepGraph_Tool::Face::HasSurface(theGraph, theFace))
   {
     return;
@@ -295,7 +295,7 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph&       theGraph,
       {
         return;
       }
-      const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.Defs().Wire(theWireId);
+      const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.Topo().Wire(theWireId);
       for (int anIdx = 0; anIdx < aWireDef.CoEdgeRefs.Length() && !isAborted; ++anIdx)
       {
         NbEdges++;
@@ -305,7 +305,7 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph&       theGraph,
           return;
         }
         const BRepGraphInc::CoEdgeRef&       aCR     = aWireDef.CoEdgeRefs.Value(anIdx);
-        const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Defs().CoEdge(aCR.CoEdgeDefId);
+        const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdge(aCR.CoEdgeDefId);
         const BRepGraphInc::CoEdgeEntity*    aPCurve =
           BRepGraph_Tool::Edge::FindPCurve(theGraph, aCoEdge.EdgeDefId, theFace);
         if (aPCurve == nullptr || !aPCurve->Curve2DRepId.IsValid())
@@ -405,11 +405,11 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph&       theGraph,
   for (int aWireRefIdx = 0; aWireRefIdx < aFaceDef.WireRefs.Length(); ++aWireRefIdx)
   {
     const BRepGraphInc::WireRef&       aWR      = aFaceDef.WireRefs.Value(aWireRefIdx);
-    const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.Defs().Wire(aWR.WireDefId);
+    const BRepGraph_TopoNode::WireDef& aWireDef = theGraph.Topo().Wire(aWR.WireDefId);
     for (int anIdx = 0; anIdx < aWireDef.CoEdgeRefs.Length(); ++anIdx)
     {
       const BRepGraphInc::CoEdgeRef&       aCR     = aWireDef.CoEdgeRefs.Value(anIdx);
-      const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Defs().CoEdge(aCR.CoEdgeDefId);
+      const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdge(aCR.CoEdgeDefId);
       const BRepGraphInc::CoEdgeEntity*    aPCurve =
         BRepGraph_Tool::Edge::FindPCurve(theGraph, aCoEdge.EdgeDefId, theFace);
       if (aPCurve == nullptr || !aPCurve->Curve2DRepId.IsValid())

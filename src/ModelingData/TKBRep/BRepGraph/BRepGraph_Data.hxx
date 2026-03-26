@@ -16,7 +16,7 @@
 
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_UID.hxx>
-#include <BRepGraph_AttrRegistry.hxx>
+#include <BRepGraph_UserAttribute.hxx>
 #include <BRepGraph_NodeCache.hxx>
 #include <BRepGraph_TopoNode.hxx>
 #include <BRepGraph_History.hxx>

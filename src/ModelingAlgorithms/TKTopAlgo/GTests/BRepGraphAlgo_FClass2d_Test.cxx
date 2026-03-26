@@ -14,7 +14,7 @@
 #include <BRepAlgoAPI_Cut.hxx>
 #include <BRepAlgoAPI_Fuse.hxx>
 #include <BRepGraph.hxx>
-#include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_TopoView.hxx>
 #include <BRepGraphAlgo_FClass2d.hxx>
 #include <BRepGraph_NodeId.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -36,7 +36,7 @@ TEST(BRepGraphAlgo_FClass2dTest, PlanarBoxFace_CenterIsIN)
   BRepGraph aGraph;
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.Defs().NbFaces(), 0);
+  ASSERT_GT(aGraph.Topo().NbFaces(), 0);
 
   // Pick the first face.
   TopExp_Explorer anExp(aBox, TopAbs_FACE);
@@ -118,7 +118,7 @@ TEST(BRepGraphAlgo_FClass2dTest, Sphere_CenterIsIN)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Find the spherical face (there is one face in a sphere).
-  ASSERT_GE(aGraph.Defs().NbFaces(), 1);
+  ASSERT_GE(aGraph.Topo().NbFaces(), 1);
 
   BRepGraphAlgo_FClass2d aClassifier(aGraph, BRepGraph_FaceId(0), 1.0e-6);
 

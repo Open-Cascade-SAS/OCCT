@@ -16,7 +16,7 @@
 #include <BRepGraphInc_WireExplorer.hxx>
 #include <Bnd_Box2d.hxx>
 #include <BndLib_Add2dCurve.hxx>
-#include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_TopoNode.hxx>
 #include <BRepGraphAlgo_FClass2d.hxx>
@@ -35,7 +35,7 @@ static double computeWireSignedArea(const BRepGraph&                   theGraph,
                                     const BRepGraph_TopoNode::WireDef& theWireDef,
                                     const BRepGraph_FaceId             theFaceId)
 {
-  const BRepGraph::DefsView aDefs = theGraph.Defs();
+  const BRepGraph::TopoView aDefs = theGraph.Topo();
 
   constexpr int THE_NB_SAMPLES = 20;
   double        anArea         = 0.0;
@@ -111,7 +111,7 @@ static void collectWirePCurves(const BRepGraph&                   theGraph,
                                const BRepGraph_FaceId             theFaceId,
                                WirePCurveSet&                     theResult)
 {
-  const BRepGraph::DefsView aDefs = theGraph.Defs();
+  const BRepGraph::TopoView aDefs = theGraph.Topo();
 
   auto edgeLookup = [&aDefs](int theIdx) -> const BRepGraphInc::EdgeEntity& {
     return aDefs.Edge(BRepGraph_EdgeId(theIdx));
@@ -173,7 +173,7 @@ void BRepGraphCheck::CheckFaceMinimum(const BRepGraph&                          
                                       const BRepGraph_FaceId                    theFace,
                                       NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
 {
-  const BRepGraph::DefsView          aDefs    = theGraph.Defs();
+  const BRepGraph::TopoView          aDefs    = theGraph.Topo();
   const BRepGraph_TopoNode::FaceDef& aFaceDef = aDefs.Face(theFace);
 
   // Face must have a surface.
@@ -205,7 +205,7 @@ void BRepGraphCheck::CheckFaceWires(const BRepGraph&                          th
                                     const bool                                theGeomControls,
                                     NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
 {
-  const BRepGraph::DefsView          aDefs       = theGraph.Defs();
+  const BRepGraph::TopoView          aDefs       = theGraph.Topo();
   const BRepGraph_TopoNode::FaceDef& aFaceDef    = aDefs.Face(theFace);
   const BRepGraph_NodeId             aFaceNodeId = aFaceDef.Id;
 

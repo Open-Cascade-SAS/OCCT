@@ -15,7 +15,7 @@
 
 #include <BRepClass_FaceClassifier.hxx>
 #include <BRepGraph.hxx>
-#include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_TopoNode.hxx>
@@ -146,7 +146,7 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph&       theGraph,
       myGraph(&theGraph),
       myFaceId(theFace)
 {
-  const BRepGraph_TopoNode::FaceDef& aFaceDef = theGraph.Defs().Face(theFace);
+  const BRepGraph_TopoNode::FaceDef& aFaceDef = theGraph.Topo().Face(theFace);
 
   // Surface type and periodicity.
   // Geometry is stored at identity; location offsets are absorbed into usages.
@@ -194,7 +194,7 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph&       theGraph,
   for (int aWireIdx = 0; aWireIdx < aNbWires && !anIsBadWire; ++aWireIdx)
   {
     const BRepGraph_TopoNode::WireDef& aWireDef =
-      theGraph.Defs().Wire(BRepGraph_WireId(aWireDefIndices(aWireIdx)));
+      theGraph.Topo().Wire(BRepGraph_WireId(aWireDefIndices(aWireIdx)));
     int aNbPnts = 0;
     aPnt2dVec.Clear();
     int    aFirstPoint     = 1;
@@ -204,10 +204,10 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph&       theGraph,
 
     // Build connection-ordered edge sequence using WireExplorer.
     auto edgeLookup = [&theGraph](int theIdx) -> const BRepGraphInc::EdgeEntity& {
-      return theGraph.Defs().Edge(BRepGraph_EdgeId(theIdx));
+      return theGraph.Topo().Edge(BRepGraph_EdgeId(theIdx));
     };
     auto coedgeLookup = [&theGraph](int theIdx) -> const BRepGraphInc::CoEdgeEntity& {
-      return theGraph.Defs().CoEdge(BRepGraph_CoEdgeId(theIdx));
+      return theGraph.Topo().CoEdge(BRepGraph_CoEdgeId(theIdx));
     };
     BRepGraphInc_WireExplorer aWireExp(aWireDef.CoEdgeRefs, coedgeLookup, edgeLookup);
     const NCollection_Vector<BRepGraphInc::CoEdgeRef>& anOrderedRefs = aWireExp.OrderedRefs();
@@ -226,8 +226,8 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph&       theGraph,
     {
       const BRepGraphInc::CoEdgeRef&       aCoEdgeRef = anOrderedRefs.Value(anEdgeIdx);
       const BRepGraph_TopoNode::CoEdgeDef& aCoEdgeDef =
-        theGraph.Defs().CoEdge(aCoEdgeRef.CoEdgeDefId);
-      const BRepGraph_TopoNode::EdgeDef& anEdgeDef = theGraph.Defs().Edge(aCoEdgeDef.EdgeDefId);
+        theGraph.Topo().CoEdge(aCoEdgeRef.CoEdgeDefId);
+      const BRepGraph_TopoNode::EdgeDef& anEdgeDef = theGraph.Topo().Edge(aCoEdgeDef.EdgeDefId);
       const TopAbs_Orientation           anOri     = aCoEdgeDef.Sense;
 
       if (anOri != TopAbs_FORWARD && anOri != TopAbs_REVERSED)
@@ -375,7 +375,7 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph&       theGraph,
           {
             const BRepGraphInc::CoEdgeRef&       aCoEdgeRef2 = anOrderedRefs.Value(anEdgeIdx);
             const BRepGraph_TopoNode::CoEdgeDef& aCoEdgeDef2 =
-              theGraph.Defs().CoEdge(aCoEdgeRef2.CoEdgeDefId);
+              theGraph.Topo().CoEdge(aCoEdgeRef2.CoEdgeDefId);
             const TopAbs_Orientation anOri = aCoEdgeDef2.Sense;
 
             if (anOri != TopAbs_FORWARD && anOri != TopAbs_REVERSED)

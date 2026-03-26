@@ -581,6 +581,21 @@ void BRepGraph::BuilderView::RemoveSubgraph(const BRepGraph_NodeId theNode)
 
 //=================================================================================================
 
+BRepGraph_Curve2DRepId BRepGraph::BuilderView::CreateCurve2DRep(
+  const occ::handle<Geom2d_Curve>& theCurve2d)
+{
+  if (theCurve2d.IsNull())
+    return BRepGraph_Curve2DRepId();
+
+  BRepGraphInc::Curve2DRep& aRep  = myGraph->myData->myIncStorage.AppendCurve2DRep();
+  const int                 anIdx = myGraph->myData->myIncStorage.NbCurves2D() - 1;
+  aRep.Id                         = BRepGraph_RepId::Curve2D(anIdx);
+  aRep.Curve                      = theCurve2d;
+  return BRepGraph_Curve2DRepId(anIdx);
+}
+
+//=================================================================================================
+
 void BRepGraph::BuilderView::AddPCurveToEdge(const BRepGraph_NodeId           theEdgeDef,
                                              const BRepGraph_NodeId           theFaceDef,
                                              const occ::handle<Geom2d_Curve>& theCurve2d,

@@ -15,11 +15,11 @@
 #include <BRepBuilderAPI_Copy.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_AttrsView.hxx>
-#include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_ShapesView.hxx>
-#include <BRepGraph_TypedAttribute.hxx>
+#include <BRepGraph_UserAttribute.hxx>
 #include <BRepGraphAlgo_AttrTransfer.hxx>
 #include <BRepGraphAlgo_Deduplicate.hxx>
 #include <BRepGraphAlgo_Sewing.hxx>
@@ -469,7 +469,7 @@ TEST(BRepGraphAlgo_AttrTransferTest, Deduplicate_AffectedFaceDefs)
   BRepGraph aGraph;
   aGraph.Build(aCompound);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_EQ(aGraph.Defs().NbFaces(), 2);
+  ASSERT_EQ(aGraph.Topo().NbFaces(), 2);
 
   const BRepGraphAlgo_Deduplicate::Result aResult = BRepGraphAlgo_Deduplicate::Perform(aGraph);
 

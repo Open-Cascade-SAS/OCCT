@@ -199,6 +199,21 @@ void initSubCoEdgeDef(BRepGraphInc::CoEdgeEntity&  theCE,
 
 //=================================================================================================
 
+void BRepGraph_Mutator::ApplyModification(
+  BRepGraph&                                                                        theGraph,
+  const BRepGraph_NodeId                                                            theTarget,
+  std::function<NCollection_Vector<BRepGraph_NodeId>(BRepGraph&, BRepGraph_NodeId)> theModifier,
+  const TCollection_AsciiString&                                                    theOpLabel)
+{
+  NCollection_Vector<BRepGraph_NodeId> aReplacements = theModifier(theGraph, theTarget);
+
+  theGraph.myData->myHistoryLog.Record(theOpLabel, theTarget, aReplacements);
+
+  theGraph.invalidateSubgraphImpl(theTarget);
+}
+
+//=================================================================================================
+
 void BRepGraph_Mutator::SplitEdge(BRepGraph&             theGraph,
                                   const BRepGraph_NodeId theEdgeDef,
                                   const BRepGraph_NodeId theSplitVertex,

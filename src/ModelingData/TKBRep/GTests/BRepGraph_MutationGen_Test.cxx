@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <BRepGraph.hxx>
-#include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_TopoView.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 
 #include <gtest/gtest.h>
@@ -33,11 +33,11 @@ protected:
 
 TEST_F(BRepGraph_MutationGenTest, MutationGen_IncrementedOnMutation)
 {
-  EXPECT_EQ(myGraph.Defs().Edge(BRepGraph_EdgeId(0)).MutationGen, 0u);
+  EXPECT_EQ(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).MutationGen, 0u);
 
   myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
 
-  EXPECT_EQ(myGraph.Defs().Edge(BRepGraph_EdgeId(0)).MutationGen, 1u);
+  EXPECT_EQ(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).MutationGen, 1u);
 }
 
 TEST_F(BRepGraph_MutationGenTest, MutationGen_MultipleIncrements)
@@ -45,7 +45,7 @@ TEST_F(BRepGraph_MutationGenTest, MutationGen_MultipleIncrements)
   myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.1;
   myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.2;
 
-  EXPECT_EQ(myGraph.Defs().Edge(BRepGraph_EdgeId(0)).MutationGen, 2u);
+  EXPECT_EQ(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).MutationGen, 2u);
 }
 
 TEST_F(BRepGraph_MutationGenTest, MutationGen_DeferredMode)
@@ -54,35 +54,35 @@ TEST_F(BRepGraph_MutationGenTest, MutationGen_DeferredMode)
   myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
 
   // MutationGen is incremented even in deferred mode.
-  EXPECT_EQ(myGraph.Defs().Edge(BRepGraph_EdgeId(0)).MutationGen, 1u);
+  EXPECT_EQ(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).MutationGen, 1u);
 
   myGraph.EndDeferredInvalidation();
 
   // Still 1 after flush - flush doesn't re-increment.
-  EXPECT_EQ(myGraph.Defs().Edge(BRepGraph_EdgeId(0)).MutationGen, 1u);
+  EXPECT_EQ(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).MutationGen, 1u);
 }
 
 TEST_F(BRepGraph_MutationGenTest, MutationGen_PropagatedParent_NotIncremented)
 {
   // Mutate an edge - parent wire/face/shell/solid get IsModified via propagation,
   // but their MutationGen must stay 0 (they weren't directly mutated).
-  const int aNbWires  = myGraph.Defs().NbWires();
-  const int aNbFaces  = myGraph.Defs().NbFaces();
-  const int aNbShells = myGraph.Defs().NbShells();
-  const int aNbSolids = myGraph.Defs().NbSolids();
+  const int aNbWires  = myGraph.Topo().NbWires();
+  const int aNbFaces  = myGraph.Topo().NbFaces();
+  const int aNbShells = myGraph.Topo().NbShells();
+  const int aNbSolids = myGraph.Topo().NbSolids();
 
   myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
 
-  EXPECT_EQ(myGraph.Defs().Edge(BRepGraph_EdgeId(0)).MutationGen, 1u);
+  EXPECT_EQ(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).MutationGen, 1u);
 
   for (int i = 0; i < aNbWires; ++i)
-    EXPECT_EQ(myGraph.Defs().Wire(BRepGraph_WireId(i)).MutationGen, 0u);
+    EXPECT_EQ(myGraph.Topo().Wire(BRepGraph_WireId(i)).MutationGen, 0u);
   for (int i = 0; i < aNbFaces; ++i)
-    EXPECT_EQ(myGraph.Defs().Face(BRepGraph_FaceId(i)).MutationGen, 0u);
+    EXPECT_EQ(myGraph.Topo().Face(BRepGraph_FaceId(i)).MutationGen, 0u);
   for (int i = 0; i < aNbShells; ++i)
-    EXPECT_EQ(myGraph.Defs().Shell(BRepGraph_ShellId(i)).MutationGen, 0u);
+    EXPECT_EQ(myGraph.Topo().Shell(BRepGraph_ShellId(i)).MutationGen, 0u);
   for (int i = 0; i < aNbSolids; ++i)
-    EXPECT_EQ(myGraph.Defs().Solid(BRepGraph_SolidId(i)).MutationGen, 0u);
+    EXPECT_EQ(myGraph.Topo().Solid(BRepGraph_SolidId(i)).MutationGen, 0u);
 }
 
 TEST_F(BRepGraph_MutationGenTest, MutationGen_DeferredPropagatedParent_NotIncremented)
@@ -93,14 +93,14 @@ TEST_F(BRepGraph_MutationGenTest, MutationGen_DeferredPropagatedParent_NotIncrem
   myGraph.MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
   myGraph.EndDeferredInvalidation();
 
-  EXPECT_EQ(myGraph.Defs().Edge(BRepGraph_EdgeId(0)).MutationGen, 1u);
+  EXPECT_EQ(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).MutationGen, 1u);
 
-  for (int i = 0; i < myGraph.Defs().NbWires(); ++i)
-    EXPECT_EQ(myGraph.Defs().Wire(BRepGraph_WireId(i)).MutationGen, 0u);
-  for (int i = 0; i < myGraph.Defs().NbFaces(); ++i)
-    EXPECT_EQ(myGraph.Defs().Face(BRepGraph_FaceId(i)).MutationGen, 0u);
-  for (int i = 0; i < myGraph.Defs().NbShells(); ++i)
-    EXPECT_EQ(myGraph.Defs().Shell(BRepGraph_ShellId(i)).MutationGen, 0u);
-  for (int i = 0; i < myGraph.Defs().NbSolids(); ++i)
-    EXPECT_EQ(myGraph.Defs().Solid(BRepGraph_SolidId(i)).MutationGen, 0u);
+  for (int i = 0; i < myGraph.Topo().NbWires(); ++i)
+    EXPECT_EQ(myGraph.Topo().Wire(BRepGraph_WireId(i)).MutationGen, 0u);
+  for (int i = 0; i < myGraph.Topo().NbFaces(); ++i)
+    EXPECT_EQ(myGraph.Topo().Face(BRepGraph_FaceId(i)).MutationGen, 0u);
+  for (int i = 0; i < myGraph.Topo().NbShells(); ++i)
+    EXPECT_EQ(myGraph.Topo().Shell(BRepGraph_ShellId(i)).MutationGen, 0u);
+  for (int i = 0; i < myGraph.Topo().NbSolids(); ++i)
+    EXPECT_EQ(myGraph.Topo().Solid(BRepGraph_SolidId(i)).MutationGen, 0u);
 }

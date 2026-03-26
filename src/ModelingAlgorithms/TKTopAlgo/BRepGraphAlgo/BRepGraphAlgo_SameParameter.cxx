@@ -16,7 +16,8 @@
 #include <Approx_CurvilinearParameter.hxx>
 #include <Approx_SameParameter.hxx>
 #include <BRepCheck.hxx>
-#include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_BuilderView.hxx>
+#include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_MutationGuard.hxx>
 #include <BRepGraph_MutRef.hxx>
 #include <BRepGraph_Tool.hxx>
@@ -233,7 +234,7 @@ bool enforceImpl(BRepGraph&       theGraph,
     theGraph.MutEdge(BRepGraph_EdgeId(theEdgeId.Index));
   const BRepGraph_TopoNode::EdgeDef&            anEdge = *aMutEdge;
   const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
-    theGraph.Defs().CoEdgesOfEdge(BRepGraph_EdgeId(theEdgeId.Index));
+    theGraph.Topo().CoEdgesOfEdge(BRepGraph_EdgeId(theEdgeId.Index));
   if (!BRepGraph_Tool::Edge::HasCurve(theGraph, BRepGraph_EdgeId(theEdgeId.Index))
       || aCoEdgeIdxs.IsEmpty())
   {
@@ -297,7 +298,7 @@ bool enforceImpl(BRepGraph&       theGraph,
   for (int aCEIter = 0; aCEIter < aCoEdgeIdxs.Length(); ++aCEIter)
   {
     const BRepGraph_CoEdgeId             aCoEdgeIdx = aCoEdgeIdxs.Value(aCEIter);
-    const BRepGraph_TopoNode::CoEdgeDef& aCoEdge    = theGraph.Defs().CoEdge(aCoEdgeIdx);
+    const BRepGraph_TopoNode::CoEdgeDef& aCoEdge    = theGraph.Topo().CoEdge(aCoEdgeIdx);
     if (!aCoEdge.Curve2DRepId.IsValid())
     {
       continue;
@@ -386,7 +387,7 @@ bool enforceImpl(BRepGraph&       theGraph,
           if (aUpdatePC)
           {
             theGraph.MutCoEdge(BRepGraph_CoEdgeId(aCoEdgeIdx))->Curve2DRepId =
-              theGraph.CreateCurve2DRep(aCurPC);
+              theGraph.Builder().CreateCurve2DRep(aCurPC);
           }
           continue;
         }
@@ -635,7 +636,7 @@ bool enforceImpl(BRepGraph&       theGraph,
         if (aUpdatePC)
         {
           theGraph.MutCoEdge(BRepGraph_CoEdgeId(aCoEdgeIdx))->Curve2DRepId =
-            theGraph.CreateCurve2DRep(aCurPC);
+            theGraph.Builder().CreateCurve2DRep(aCurPC);
         }
       }
       else if (aSameP.IsDone())
@@ -654,7 +655,7 @@ bool enforceImpl(BRepGraph&       theGraph,
         if (aUpdatePC)
         {
           theGraph.MutCoEdge(BRepGraph_CoEdgeId(aCoEdgeIdx))->Curve2DRepId =
-            theGraph.CreateCurve2DRep(aCurPC);
+            theGraph.Builder().CreateCurve2DRep(aCurPC);
         }
       }
       else
@@ -672,7 +673,7 @@ bool enforceImpl(BRepGraph&       theGraph,
         if (!aFallbackPC.IsNull())
         {
           theGraph.MutCoEdge(BRepGraph_CoEdgeId(aCoEdgeIdx))->Curve2DRepId =
-            theGraph.CreateCurve2DRep(aFallbackPC);
+            theGraph.Builder().CreateCurve2DRep(aFallbackPC);
         }
         isAllSameP = false;
       }

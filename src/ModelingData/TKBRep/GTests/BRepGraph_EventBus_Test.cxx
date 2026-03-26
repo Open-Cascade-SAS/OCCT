@@ -13,7 +13,7 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_BuilderView.hxx>
-#include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Layer.hxx>
 #include <BRepGraph_MutationGuard.hxx>
 #include <BRepGraph_NameLayer.hxx>
@@ -125,7 +125,7 @@ TEST_F(BRepGraph_EventBusTest, ZeroCost_NoSubscribers)
     auto aMut       = myGraph.MutEdge(BRepGraph_EdgeId(0));
     aMut->Tolerance = 0.5;
   }
-  EXPECT_TRUE(myGraph.Defs().Edge(BRepGraph_EdgeId(0)).IsModified);
+  EXPECT_TRUE(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).IsModified);
 }
 
 TEST_F(BRepGraph_EventBusTest, ImmediateMode_SingleEdge)
@@ -303,7 +303,7 @@ TEST_F(BRepGraph_EventBusTest, DefaultSubscribedKinds_Zero)
     auto aMut       = myGraph.MutEdge(BRepGraph_EdgeId(0));
     aMut->Tolerance = 0.5;
   }
-  EXPECT_TRUE(myGraph.Defs().Edge(BRepGraph_EdgeId(0)).IsModified);
+  EXPECT_TRUE(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).IsModified);
 }
 
 TEST_F(BRepGraph_EventBusTest, MutationGuard_DispatchesOnDestruction)

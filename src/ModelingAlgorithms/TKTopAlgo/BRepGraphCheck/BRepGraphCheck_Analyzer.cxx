@@ -13,7 +13,7 @@
 
 #include <BRepGraphCheck_Analyzer.hxx>
 
-#include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_TopoView.hxx>
 #include <BRepGraphCheck.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
 #include <OSD_Parallel.hxx>
@@ -52,7 +52,7 @@ void BRepGraphCheck_Analyzer::Perform()
 {
   myReport.Clear();
 
-  const BRepGraph::DefsView aDefs       = myGraph->Defs();
+  const BRepGraph::TopoView aDefs       = myGraph->Topo();
   const int                 aNbEdges    = aDefs.NbEdges();
   const int                 aNbFaces    = aDefs.NbFaces();
   const int                 aNbVertices = aDefs.NbVertices();
@@ -106,7 +106,7 @@ void BRepGraphCheck_Analyzer::Perform()
         BRepGraphCheck::CheckFaceWires(*myGraph, aFaceId, aGeomCtl, aLocal);
 
         // Edge-in-face and vertex-in-face checks.
-        const BRepGraph::DefsView          aLocalDefs = myGraph->Defs();
+        const BRepGraph::TopoView          aLocalDefs = myGraph->Topo();
         const BRepGraph_TopoNode::FaceDef& aFaceDef   = aLocalDefs.Face(aFaceId);
 
         // Iterate wires of this face through incidence refs.
@@ -203,7 +203,7 @@ void BRepGraphCheck_Analyzer::Perform()
 void BRepGraphCheck_Analyzer::CheckVertex(const BRepGraph_VertexId theVertex)
 {
   // Check vertex against all edges that reference it.
-  const BRepGraph::DefsView                aDefs    = myGraph->Defs();
+  const BRepGraph::TopoView                aDefs    = myGraph->Topo();
   const int                                aNbEdges = aDefs.NbEdges();
   NCollection_Vector<BRepGraphCheck_Issue> aLocal;
 

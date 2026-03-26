@@ -19,7 +19,7 @@
 #include <BRepBuilderAPI_Transform.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_BuilderView.hxx>
-#include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Layer.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_Mutator.hxx>
@@ -100,7 +100,7 @@ TEST(BRepGraph_LayerIntegrationTest, Sewing_NameMigratesToKeptEdge)
   aGraph.RegisterLayer(aLayer);
 
   // Name all edges before sewing.
-  const int aNbEdges = aGraph.Defs().NbEdges();
+  const int aNbEdges = aGraph.Topo().NbEdges();
   for (int i = 0; i < aNbEdges; ++i)
   {
     TCollection_ExtendedString aStr("Edge_");
@@ -119,9 +119,9 @@ TEST(BRepGraph_LayerIntegrationTest, Sewing_NameMigratesToKeptEdge)
   EXPECT_LE(aLayer->NbNames(), aNbEdges);
 
   // Core invariant: no name should reference a removed edge.
-  for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
+  for (int i = 0; i < aGraph.Topo().NbEdges(); ++i)
   {
-    const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(BRepGraph_EdgeId(i));
+    const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Topo().Edge(BRepGraph_EdgeId(i));
     if (anEdge.IsRemoved)
     {
       EXPECT_EQ(aLayer->FindNodeName(BRepGraph_NodeId::Edge(i)), nullptr)
@@ -131,9 +131,9 @@ TEST(BRepGraph_LayerIntegrationTest, Sewing_NameMigratesToKeptEdge)
 
   // All surviving names should reference non-removed edges.
   int aNbNamedKept = 0;
-  for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
+  for (int i = 0; i < aGraph.Topo().NbEdges(); ++i)
   {
-    if (!aGraph.Defs().Edge(BRepGraph_EdgeId(i)).IsRemoved
+    if (!aGraph.Topo().Edge(BRepGraph_EdgeId(i)).IsRemoved
         && aLayer->FindNodeName(BRepGraph_NodeId::Edge(i)) != nullptr)
       ++aNbNamedKept;
   }
@@ -152,7 +152,7 @@ TEST(BRepGraph_LayerIntegrationTest, Sewing_FaceNamesUntouched)
   aGraph.RegisterLayer(aLayer);
 
   // Name faces - they should not be affected by sewing (only edges merge).
-  const int aNbFaces = aGraph.Defs().NbFaces();
+  const int aNbFaces = aGraph.Topo().NbFaces();
   for (int i = 0; i < aNbFaces; ++i)
   {
     TCollection_ExtendedString aStr("Face_");
@@ -208,7 +208,7 @@ TEST(BRepGraph_LayerIntegrationTest, Deduplicate_NameMigratesToCanonical)
   aGraph.RegisterLayer(aLayer);
 
   // Name all vertices.
-  const int aNbVertices = aGraph.Defs().NbVertices();
+  const int aNbVertices = aGraph.Topo().NbVertices();
   for (int i = 0; i < aNbVertices; ++i)
   {
     TCollection_ExtendedString aStr("Vertex_");
@@ -225,9 +225,9 @@ TEST(BRepGraph_LayerIntegrationTest, Deduplicate_NameMigratesToCanonical)
     EXPECT_LT(aLayer->NbNames(), aNbVertices);
 
     // No name should reference a removed vertex.
-    for (int i = 0; i < aGraph.Defs().NbVertices(); ++i)
+    for (int i = 0; i < aGraph.Topo().NbVertices(); ++i)
     {
-      if (aGraph.Defs().Vertex(BRepGraph_VertexId(i)).IsRemoved)
+      if (aGraph.Topo().Vertex(BRepGraph_VertexId(i)).IsRemoved)
       {
         EXPECT_EQ(aLayer->FindNodeName(BRepGraph_NodeId::Vertex(i)), nullptr)
           << "Removed vertex " << i << " still has a name";
@@ -247,7 +247,7 @@ TEST(BRepGraph_LayerIntegrationTest, Deduplicate_EdgeNames)
   occ::handle<BRepGraph_NameLayer> aLayer = new BRepGraph_NameLayer();
   aGraph.RegisterLayer(aLayer);
 
-  const int aNbEdges = aGraph.Defs().NbEdges();
+  const int aNbEdges = aGraph.Topo().NbEdges();
   for (int i = 0; i < aNbEdges; ++i)
   {
     TCollection_ExtendedString aStr("Edge_");
@@ -311,7 +311,7 @@ TEST(BRepGraph_LayerIntegrationTest, Compact_RemappedNamesAccessible)
   aGraph.RegisterLayer(aLayer);
 
   // Name all faces.
-  const int aNbFaces = aGraph.Defs().NbFaces();
+  const int aNbFaces = aGraph.Topo().NbFaces();
   for (int i = 0; i < aNbFaces; ++i)
   {
     TCollection_ExtendedString aStr("F_");
@@ -325,7 +325,7 @@ TEST(BRepGraph_LayerIntegrationTest, Compact_RemappedNamesAccessible)
   (void)BRepGraphAlgo_Compact::Perform(aGraph);
 
   // After compact, face count decreased by 1.
-  const int aNbFacesAfter = aGraph.Defs().NbFaces();
+  const int aNbFacesAfter = aGraph.Topo().NbFaces();
   EXPECT_EQ(aNbFacesAfter, aNbFaces - 1);
 
   // Names should have been remapped: (aNbFaces - 1) names survive.
@@ -384,9 +384,9 @@ TEST(BRepGraph_LayerIntegrationTest, SplitEdge_OriginalEdgeRemoved)
 
   // Find an edge with a 3D curve for splitting.
   int aSplitEdgeIdx = -1;
-  for (int i = 0; i < aGraph.Defs().NbEdges(); ++i)
+  for (int i = 0; i < aGraph.Topo().NbEdges(); ++i)
   {
-    const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Defs().Edge(BRepGraph_EdgeId(i));
+    const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Topo().Edge(BRepGraph_EdgeId(i));
     if (!anEdge.IsDegenerate && anEdge.Curve3DRepId.IsValid() && anEdge.StartVertexDefId().IsValid()
         && anEdge.EndVertexDefId().IsValid())
     {
@@ -415,7 +415,7 @@ TEST(BRepGraph_LayerIntegrationTest, SplitEdge_OriginalEdgeRemoved)
   // so the layer callback is NOT triggered. Original name stays in the layer
   // but the edge is marked IsRemoved. This is a known limitation -
   // SplitEdge doesn't know the "replacement" (it creates 2 sub-edges).
-  EXPECT_TRUE(aGraph.Defs().Edge(BRepGraph_EdgeId(aSplitEdgeIdx)).IsRemoved);
+  EXPECT_TRUE(aGraph.Topo().Edge(BRepGraph_EdgeId(aSplitEdgeIdx)).IsRemoved);
 
   // Sub-edges should be valid.
   EXPECT_TRUE(aSubA.IsValid());
@@ -438,7 +438,7 @@ TEST(BRepGraph_LayerIntegrationTest, FullPipeline_NamesTrackThroughAllStages)
   aGraph.RegisterLayer(aLayer);
 
   // Name all faces.
-  const int aNbFaces = aGraph.Defs().NbFaces();
+  const int aNbFaces = aGraph.Topo().NbFaces();
   for (int i = 0; i < aNbFaces; ++i)
   {
     TCollection_ExtendedString aStr("Face_");
@@ -465,10 +465,10 @@ TEST(BRepGraph_LayerIntegrationTest, FullPipeline_NamesTrackThroughAllStages)
   EXPECT_GT(aNamesAfterCompact, 0);
 
   // After compact, all remaining names should reference valid (non-removed) nodes.
-  const int aNbFacesAfter = aGraph.Defs().NbFaces();
+  const int aNbFacesAfter = aGraph.Topo().NbFaces();
   for (int i = 0; i < aNbFacesAfter; ++i)
   {
-    EXPECT_FALSE(aGraph.Defs().Face(BRepGraph_FaceId(i)).IsRemoved)
+    EXPECT_FALSE(aGraph.Topo().Face(BRepGraph_FaceId(i)).IsRemoved)
       << "Face " << i << " is removed after compact - should have been eliminated";
   }
 }
@@ -504,7 +504,7 @@ TEST(BRepGraph_LayerIntegrationTest, Sewing_Cylinder_NamesPreserved)
   aGraph.RegisterLayer(aLayer);
 
   // Name all faces.
-  for (int i = 0; i < aGraph.Defs().NbFaces(); ++i)
+  for (int i = 0; i < aGraph.Topo().NbFaces(); ++i)
   {
     TCollection_ExtendedString aStr("CylFace_");
     aStr += i;
@@ -583,7 +583,7 @@ TEST(BRepGraph_LayerIntegrationTest, TwoLayers_BothSurviveFullPipeline)
   aGraph.RegisterLayer(aIntLayer);
 
   // Populate both layers.
-  for (int i = 0; i < aGraph.Defs().NbFaces(); ++i)
+  for (int i = 0; i < aGraph.Topo().NbFaces(); ++i)
   {
     TCollection_ExtendedString aStr("F");
     aStr += i;
@@ -603,9 +603,9 @@ TEST(BRepGraph_LayerIntegrationTest, TwoLayers_BothSurviveFullPipeline)
   EXPECT_GT(aIntLayer->NbEntries(), 0);
 
   // All entries should reference valid (non-removed) face indices.
-  const int aNbFaces = aGraph.Defs().NbFaces();
+  const int aNbFaces = aGraph.Topo().NbFaces();
   for (int i = 0; i < aNbFaces; ++i)
   {
-    EXPECT_FALSE(aGraph.Defs().Face(BRepGraph_FaceId(i)).IsRemoved);
+    EXPECT_FALSE(aGraph.Topo().Face(BRepGraph_FaceId(i)).IsRemoved);
   }
 }

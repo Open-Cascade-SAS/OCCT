@@ -13,8 +13,7 @@
 
 #include <BRepGraphCheck.hxx>
 
-#include <BRepGraph_DefsView.hxx>
-#include <BRepGraph_SpatialView.hxx>
+#include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_TopoNode.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
@@ -27,7 +26,7 @@ void BRepGraphCheck::CheckShellMinimum(const BRepGraph&                         
                                        const BRepGraph_ShellId                   theShell,
                                        NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
 {
-  const BRepGraph::DefsView           aDefs     = theGraph.Defs();
+  const BRepGraph::TopoView           aDefs     = theGraph.Topo();
   const BRepGraph_TopoNode::ShellDef& aShellDef = aDefs.Shell(theShell);
 
   // Shell must have at least one face.
@@ -53,7 +52,7 @@ void BRepGraphCheck::CheckShellMinimum(const BRepGraph&                         
     return;
 
   // BFS from the first face.
-  const BRepGraph::SpatialView aSpatial = theGraph.Spatial();
+  const BRepGraph::TopoView aSpatial = theGraph.Topo();
   NCollection_Map<int>         aVisited;
   NCollection_Vector<int>      aQueue;
 
@@ -94,7 +93,7 @@ void BRepGraphCheck::CheckShellClosed(const BRepGraph&                          
                                       const BRepGraph_ShellId                   theShell,
                                       NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
 {
-  const BRepGraph::DefsView           aDefs        = theGraph.Defs();
+  const BRepGraph::TopoView           aDefs        = theGraph.Topo();
   const BRepGraph_TopoNode::ShellDef& aShellDef    = aDefs.Shell(theShell);
   const BRepGraph_NodeId              aShellNodeId = aShellDef.Id;
 
@@ -184,7 +183,7 @@ void BRepGraphCheck::CheckShellOrientation(const BRepGraph&                     
                                            const BRepGraph_ShellId                   theShell,
                                            NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
 {
-  const BRepGraph::DefsView           aDefs        = theGraph.Defs();
+  const BRepGraph::TopoView           aDefs        = theGraph.Topo();
   const BRepGraph_TopoNode::ShellDef& aShellDef    = aDefs.Shell(theShell);
   const BRepGraph_NodeId              aShellNodeId = aShellDef.Id;
 
@@ -306,7 +305,7 @@ void BRepGraphCheck::CheckShellOrientation(const BRepGraph&                     
       const int aCurrSign = aFaceOriMap.Find(aCurrFace);
 
       // Find all manifold-shared edges (those with exactly 2 face references).
-      const BRepGraph::SpatialView aSpatial = theGraph.Spatial();
+      const BRepGraph::TopoView aSpatial = theGraph.Topo();
       const BRepGraph_NodeId       aCurrFaceNodeId(BRepGraph_NodeId::Kind::Face, aCurrFace);
       const NCollection_Vector<BRepGraph_NodeId> anAdjFaces =
         aSpatial.AdjacentFaces(aCurrFaceNodeId);

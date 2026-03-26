@@ -16,7 +16,7 @@
 #include <BRepBndLib.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_Analyze.hxx>
-#include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_SubGraph.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
 #include <BRepGraphAlgo_BndLib.hxx>
@@ -120,7 +120,7 @@ TEST_F(BRepGraph_AnalyzeTest, FreeEdges_TwoAdjacentFaces_SharedNotFree)
   // with the shared edge having FaceCount==2. But compound construction may vary.
   // Just verify we get fewer free edges than total edges (some sharing detected).
   EXPECT_GT(aFreeEdges.Length(), 0);
-  EXPECT_LE(aFreeEdges.Length(), aGraph.Defs().NbEdges());
+  EXPECT_LE(aFreeEdges.Length(), aGraph.Topo().NbEdges());
 }
 
 TEST_F(BRepGraph_AnalyzeTest, FreeEdges_ClosedBox_NoneReturned)
@@ -145,33 +145,6 @@ TEST_F(BRepGraph_AnalyzeTest, FreeEdges_Sphere_SeamEdgesAreFree)
   // so they are detected as free by the FreeEdges algorithm (FaceCountOfEdge == 1).
   // Degenerate edges at poles are excluded.
   EXPECT_GE(aFreeEdges.Length(), 0);
-}
-
-TEST_F(BRepGraph_AnalyzeTest, EdgeCompatibilityAndScore_SingleFace)
-{
-  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-  const TopoDS_Shape& aBox = aBoxMaker.Shape();
-
-  TopExp_Explorer    anExp(aBox, TopAbs_FACE);
-  const TopoDS_Shape aFace = anExp.Current();
-
-  BRepGraph aGraph;
-  aGraph.Build(aFace);
-  ASSERT_TRUE(aGraph.IsDone());
-
-  const NCollection_Vector<BRepGraph_EdgeId> aFreeEdges = BRepGraph_Analyze::FreeEdges(aGraph);
-  ASSERT_EQ(aFreeEdges.Length(), 4);
-
-  const BRepGraph_EdgeId aEdge0 = aFreeEdges.Value(0);
-  const BRepGraph_EdgeId aEdge1 = aFreeEdges.Value(1);
-  const BRepGraph_EdgeId aEdge2 = aFreeEdges.Value(2);
-
-  EXPECT_TRUE(BRepGraph_Analyze::AreEdgesCompatibleSampled(aGraph, aEdge0, aEdge0, 1.0e-6));
-  EXPECT_FALSE(BRepGraph_Analyze::AreEdgesCompatibleSampled(aGraph, aEdge0, aEdge1, 1.0e-6));
-
-  const double aScoreSame = BRepGraph_Analyze::EdgeEndpointPairScore(aGraph, aEdge0, aEdge0);
-  const double aScoreFar  = BRepGraph_Analyze::EdgeEndpointPairScore(aGraph, aEdge0, aEdge2);
-  EXPECT_LE(aScoreSame, aScoreFar);
 }
 
 // ============================================================
@@ -355,7 +328,7 @@ TEST_F(BRepGraph_AnalyzeTest, BoundingBox_Sphere_NonVoid)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Verify face-level bounding boxes are valid.
-  for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
+  for (int aFaceIdx = 0; aFaceIdx < aGraph.Topo().NbFaces(); ++aFaceIdx)
   {
     const BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, aFaceIdx);
     Bnd_Box                aFaceBox;
@@ -374,7 +347,7 @@ TEST_F(BRepGraph_AnalyzeTest, BoundingBox_Cylinder_FacesNonVoid)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Verify all face-level bounding boxes are valid.
-  for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
+  for (int aFaceIdx = 0; aFaceIdx < aGraph.Topo().NbFaces(); ++aFaceIdx)
   {
     const BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, aFaceIdx);
     Bnd_Box                aFaceBox;
@@ -395,7 +368,7 @@ TEST_F(BRepGraph_AnalyzeTest, BoundingBox_FaceSubsetOfShell)
 
   const double aTol = Precision::Confusion();
 
-  for (int aFaceIdx = 0; aFaceIdx < myGraph.Defs().NbFaces(); ++aFaceIdx)
+  for (int aFaceIdx = 0; aFaceIdx < myGraph.Topo().NbFaces(); ++aFaceIdx)
   {
     const BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, aFaceIdx);
     Bnd_Box                aFaceBox;
@@ -455,14 +428,14 @@ TEST_F(BRepGraph_AnalyzeTest, BoundingBox_Edge_SubsetOfOwningFace)
   aFaceBox.Get(aFXmin, aFYmin, aFZmin, aFXmax, aFYmax, aFZmax);
 
   // Get edges of the first wire of the first face via incidence refs.
-  const BRepGraph_TopoNode::WireDef& aWireDef = myGraph.Defs().Wire(BRepGraph_WireId(0));
+  const BRepGraph_TopoNode::WireDef& aWireDef = myGraph.Topo().Wire(BRepGraph_WireId(0));
   const double                       aTol     = Precision::Confusion();
 
   for (int aCoEdgeIter = 0; aCoEdgeIter < aWireDef.CoEdgeRefs.Length(); ++aCoEdgeIter)
   {
     const BRepGraphInc::CoEdgeRef&       aCR = aWireDef.CoEdgeRefs.Value(aCoEdgeIter);
     const BRepGraph_TopoNode::CoEdgeDef& aCoEdge =
-      myGraph.Defs().CoEdge(BRepGraph_CoEdgeId(aCR.CoEdgeDefId));
+      myGraph.Topo().CoEdge(BRepGraph_CoEdgeId(aCR.CoEdgeDefId));
     const BRepGraph_NodeId anEdgeId = aCoEdge.EdgeDefId;
     Bnd_Box                anEdgeBox;
     BRepGraphAlgo_BndLib::Add(myGraph, anEdgeId, anEdgeBox);
@@ -483,7 +456,7 @@ TEST_F(BRepGraph_AnalyzeTest, BoundingBox_Edge_SubsetOfOwningFace)
 
 TEST_F(BRepGraph_AnalyzeTest, BoundingBox_Vertex_SinglePoint)
 {
-  for (int aVertIdx = 0; aVertIdx < myGraph.Defs().NbVertices(); ++aVertIdx)
+  for (int aVertIdx = 0; aVertIdx < myGraph.Topo().NbVertices(); ++aVertIdx)
   {
     const BRepGraph_NodeId aVertId(BRepGraph_NodeId::Kind::Vertex, aVertIdx);
     Bnd_Box                aVertBox;
@@ -520,7 +493,7 @@ TEST_F(BRepGraph_AnalyzeTest, BoundingBox_AfterMutation_CacheInvalidated)
   ASSERT_FALSE(aBoxAfter.IsVoid());
 
   // Verify IsModified flag was set.
-  EXPECT_TRUE(myGraph.Defs().Vertex(BRepGraph_VertexId(0)).IsModified);
+  EXPECT_TRUE(myGraph.Topo().Vertex(BRepGraph_VertexId(0)).IsModified);
 }
 
 TEST_F(BRepGraph_AnalyzeTest, Invalidate_ThenRecompute_SameResult)
@@ -616,7 +589,7 @@ TEST_F(BRepGraph_AnalyzeTest, Centroid_Sphere_AtOrigin)
 
 TEST_F(BRepGraph_AnalyzeTest, Centroid_Face_InsideFaceBBox)
 {
-  for (int aFaceIdx = 0; aFaceIdx < myGraph.Defs().NbFaces(); ++aFaceIdx)
+  for (int aFaceIdx = 0; aFaceIdx < myGraph.Topo().NbFaces(); ++aFaceIdx)
   {
     const BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, aFaceIdx);
     const gp_Pnt           aCentroid = bboxCenter(myGraph, aFaceId);
@@ -657,5 +630,5 @@ TEST_F(BRepGraph_AnalyzeTest, Centroid_AfterMutation_CacheInvalidated)
   EXPECT_NEAR(aCentroidBefore.Z(), aCentroidAfter.Z(), Precision::Confusion());
 
   // Verify the modification flag was set.
-  EXPECT_TRUE(myGraph.Defs().Vertex(BRepGraph_VertexId(0)).IsModified);
+  EXPECT_TRUE(myGraph.Topo().Vertex(BRepGraph_VertexId(0)).IsModified);
 }

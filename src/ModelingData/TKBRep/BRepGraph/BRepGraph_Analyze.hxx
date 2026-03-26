@@ -16,15 +16,12 @@
 
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_SubGraph.hxx>
-#include <NCollection_Array1.hxx>
 #include <NCollection_Vector.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <gp_Pnt.hxx>
 
 #include <utility>
 
 class BRepGraph;
-class ExtremaPC_Curve;
 
 //! @brief Static analysis methods for BRepGraph.
 //!
@@ -71,57 +68,6 @@ public:
   //! @return vector of SubGraph views over connected components
   Standard_EXPORT static NCollection_Vector<BRepGraph_SubGraph> Decompose(
     const BRepGraph& theGraph);
-
-  //! Compute endpoint-based matching score between two edges.
-  //! Lower score means a better endpoint correspondence.
-  //! @param[in] theGraph source graph
-  //! @param[in] theEdgeA first edge id
-  //! @param[in] theEdgeB second edge id
-  //! @return endpoint distance score
-  Standard_EXPORT static double EdgeEndpointPairScore(const BRepGraph&       theGraph,
-                                                      const BRepGraph_EdgeId theEdgeA,
-                                                      const BRepGraph_EdgeId theEdgeB);
-
-  //! Geometric compatibility test between two edges using sampled bidirectional projection.
-  //! @param[in] theGraph source graph
-  //! @param[in] theEdgeA first edge id
-  //! @param[in] theEdgeB second edge id
-  //! @param[in] theTolerance maximum allowed point-to-curve distance
-  //! @param[in] theNbSamples number of samples along each curve
-  //! @param[in] theMaxChordRatio max accepted endpoint chord ratio
-  //! @param[in] theHighConfidenceRatio forward-pass threshold to skip reverse pass
-  //! @return true if edges are geometrically compatible
-  Standard_EXPORT static bool AreEdgesCompatibleSampled(const BRepGraph&       theGraph,
-                                                        const BRepGraph_EdgeId theEdgeA,
-                                                        const BRepGraph_EdgeId theEdgeB,
-                                                        const double           theTolerance,
-                                                        const int              theNbSamples = 5,
-                                                        const double theMaxChordRatio       = 2.0,
-                                                        const double theHighConfidenceRatio = 0.01);
-
-  //! Cached variant of geometric compatibility test.
-  //! @param[in] theGraph source graph
-  //! @param[in] theEdgeA first edge id
-  //! @param[in] theEdgeB second edge id
-  //! @param[in] theSamplePtsA pre-sampled points on edgeA
-  //! @param[in] theExtPCRevA pre-initialized reverse projector on edgeA curve
-  //! @param[in] theChordA chord length of edgeA
-  //! @param[in] theTolerance maximum allowed point-to-curve distance
-  //! @param[in] theNbSamples number of samples along edgeB for reverse pass
-  //! @param[in] theMaxChordRatio max accepted endpoint chord ratio
-  //! @param[in] theHighConfidenceRatio forward-pass threshold to skip reverse pass
-  //! @return true if edges are geometrically compatible
-  Standard_EXPORT static bool AreEdgesCompatibleSampled(
-    const BRepGraph&                  theGraph,
-    const BRepGraph_EdgeId            theEdgeA,
-    const BRepGraph_EdgeId            theEdgeB,
-    const NCollection_Array1<gp_Pnt>& theSamplePtsA,
-    const ExtremaPC_Curve&            theExtPCRevA,
-    const double                      theChordA,
-    const double                      theTolerance,
-    const int                         theNbSamples           = 5,
-    const double                      theMaxChordRatio       = 2.0,
-    const double                      theHighConfidenceRatio = 0.01);
 
   //! Parallel iteration over FaceNode indices in a SubGraph.
   //! @param[in] theGraph  the parent graph

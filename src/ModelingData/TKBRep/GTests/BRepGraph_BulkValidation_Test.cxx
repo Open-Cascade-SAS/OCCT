@@ -20,7 +20,8 @@
 #include <BRepCheck_Result.hxx>
 #include <BRepCheck_Status.hxx>
 #include <BRepGraph.hxx>
-#include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_PathView.hxx>
+#include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepTools.hxx>
 #include <Geom2d_Curve.hxx>
@@ -394,7 +395,7 @@ TEST_P(BRepGraphBulkValidation, RoundTrip)
   ASSERT_TRUE(aGraph.IsDone()) << "Build failed: " << aFilePath;
 
   // Step 5: Verify graph entity counts match TopExp counts
-  const auto aDefs = aGraph.Defs();
+  const auto aDefs = aGraph.Topo();
   EXPECT_EQ(aDefs.NbVertices(), anOrigCounts.NbVertices) << aFilePath;
   EXPECT_EQ(aDefs.NbEdges(), anOrigCounts.NbEdges) << aFilePath;
   EXPECT_EQ(aDefs.NbWires(), anOrigCounts.NbWires) << aFilePath;
@@ -405,14 +406,15 @@ TEST_P(BRepGraphBulkValidation, RoundTrip)
   EXPECT_EQ(aDefs.NbCompounds(), anOrigCounts.NbCompounds) << aFilePath;
 
   // Step 6: Get root NodeId from Product(0)
-  ASSERT_GE(aDefs.NbProducts(), 1) << "No products: " << aFilePath;
-  const BRepGraph_NodeId aRootId = aDefs.Product(BRepGraph_ProductId(0)).ShapeRootId;
+  const auto aPaths = aGraph.Paths();
+  ASSERT_GE(aPaths.NbProducts(), 1) << "No products: " << aFilePath;
+  const BRepGraph_NodeId aRootId = aPaths.Product(BRepGraph_ProductId(0)).ShapeRootId;
 
   // Step 7: Reconstruct and apply root orientation/location from Product
   TopoDS_Shape aReconShape = aGraph.Shapes().Reconstruct(aRootId);
   ASSERT_FALSE(aReconShape.IsNull()) << "Reconstruct returned null: " << aFilePath;
   {
-    const auto& aProduct = aDefs.Product(BRepGraph_ProductId(0));
+    const auto& aProduct = aPaths.Product(BRepGraph_ProductId(0));
     aReconShape.Orientation(aProduct.RootOrientation);
     if (!aProduct.RootLocation.IsIdentity())
       aReconShape.Location(aProduct.RootLocation);

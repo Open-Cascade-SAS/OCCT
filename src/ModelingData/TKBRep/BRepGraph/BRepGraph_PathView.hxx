@@ -133,6 +133,51 @@ public:
   [[nodiscard]] Standard_EXPORT TopLoc_Location
     OccurrenceLocation(const BRepGraph_OccurrenceId theOccurrence) const;
 
+  //! @name Assembly accessors
+
+  //! Number of product definitions.
+  [[nodiscard]] Standard_EXPORT int NbProducts() const;
+
+  //! Number of occurrence definitions.
+  [[nodiscard]] Standard_EXPORT int NbOccurrences() const;
+
+  //! Number of active (non-removed) product definitions.
+  [[nodiscard]] Standard_EXPORT int NbActiveProducts() const;
+
+  //! Number of active (non-removed) occurrence definitions.
+  [[nodiscard]] Standard_EXPORT int NbActiveOccurrences() const;
+
+  //! Access product definition by typed identifier.
+  //! @param[in] theProduct typed product definition identifier
+  [[nodiscard]] Standard_EXPORT const BRepGraph_TopoNode::ProductDef& Product(
+    const BRepGraph_ProductId theProduct) const;
+
+  //! Access occurrence definition by typed identifier.
+  //! @param[in] theOccurrence typed occurrence definition identifier
+  [[nodiscard]] Standard_EXPORT const BRepGraph_TopoNode::OccurrenceDef& Occurrence(
+    const BRepGraph_OccurrenceId theOccurrence) const;
+
+  //! Return NodeIds of all root products (products that are not referenced by any occurrence).
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> RootProducts() const;
+
+  //! True if the product is an assembly (has child occurrences, no ShapeRootId).
+  //! @param[in] theProduct typed product definition identifier
+  [[nodiscard]] Standard_EXPORT bool IsAssembly(const BRepGraph_ProductId theProduct) const;
+
+  //! True if the product is a part (has a valid ShapeRootId).
+  //! @param[in] theProduct typed product definition identifier
+  [[nodiscard]] Standard_EXPORT bool IsPart(const BRepGraph_ProductId theProduct) const;
+
+  //! Number of child occurrences of a product.
+  //! @param[in] theProduct typed product definition identifier
+  [[nodiscard]] Standard_EXPORT int NbComponents(const BRepGraph_ProductId theProduct) const;
+
+  //! Return the i-th child occurrence NodeId of a product.
+  //! @param[in] theProduct typed product definition identifier
+  //! @param[in] theComponentIdx zero-based occurrence index within the product
+  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId Component(const BRepGraph_ProductId theProduct,
+                                                           const int theComponentIdx) const;
+
   //! Count entities of the given kind encountered along the path.
   //! @param[in] thePath  topology path
   //! @param[in] theKind  entity kind to count

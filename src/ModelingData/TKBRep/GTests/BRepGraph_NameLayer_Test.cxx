@@ -15,7 +15,7 @@
 #include <BRepBuilderAPI_Copy.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_BuilderView.hxx>
-#include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Layer.hxx>
 #include <BRepGraph_NameLayer.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>

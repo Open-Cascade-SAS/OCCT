@@ -14,7 +14,7 @@
 #include <BRepGraphAlgo_FaceAnalysis.hxx>
 
 #include <BRepGraph_BuilderView.hxx>
-#include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_MutationGuard.hxx>
 #include <BRepGraph_MutRef.hxx>
 #include <BRepGraph_Tool.hxx>
@@ -93,9 +93,9 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
   const double aMinTol =
     theOptions.MinTolerance > 0.0
       ? theOptions.MinTolerance
-      : std::max(Precision::Confusion(), theGraph.Defs().NbEdges() > 0 ? 1.0e-10 : 0.0);
+      : std::max(Precision::Confusion(), theGraph.Topo().NbEdges() > 0 ? 1.0e-10 : 0.0);
 
-  const BRepGraph::DefsView aDefs = theGraph.Defs();
+  const BRepGraph::TopoView aDefs = theGraph.Topo();
 
   // Track which edges are small and which vertices need merging.
   NCollection_Map<int> aSmallEdgeSet;

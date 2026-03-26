@@ -13,7 +13,7 @@
 
 
 #include <BRepGraph.hxx>
-#include <BRepGraph_SpatialView.hxx>
+#include <BRepGraph_TopoView.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 
 #include <gtest/gtest.h>
@@ -64,7 +64,7 @@ TEST(BRepGraph_NodeIdTest, ImplicitConversion_PassToFunction)
 
   BRepGraph_FaceId aFace(0);
   // AdjacentFaces takes BRepGraph_NodeId - implicit conversion works.
-  NCollection_Vector<BRepGraph_NodeId> aAdj = aGraph.Spatial().AdjacentFaces(aFace);
+  NCollection_Vector<BRepGraph_NodeId> aAdj = aGraph.Topo().AdjacentFaces(aFace);
   EXPECT_GT(aAdj.Length(), 0);
 }
 

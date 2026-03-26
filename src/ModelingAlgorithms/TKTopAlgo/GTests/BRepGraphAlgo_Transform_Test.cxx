@@ -14,7 +14,8 @@
 #include <BRepBuilderAPI_Transform.hxx>
 #include <BRepGProp.hxx>
 #include <BRepGraph.hxx>
-#include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_PathView.hxx>
+#include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraphAlgo_Transform.hxx>
@@ -46,8 +47,8 @@ TEST(BRepGraphAlgo_TransformTest, TranslateBox_FaceCount)
 
   BRepGraph aResultGraph = BRepGraphAlgo_Transform::Perform(aGraph, aTrsf, true);
   ASSERT_TRUE(aResultGraph.IsDone());
-  EXPECT_EQ(aResultGraph.Defs().NbFaces(), 6);
-  EXPECT_EQ(aResultGraph.Defs().NbFaces(), aGraph.Defs().NbFaces());
+  EXPECT_EQ(aResultGraph.Topo().NbFaces(), 6);
+  EXPECT_EQ(aResultGraph.Topo().NbFaces(), aGraph.Topo().NbFaces());
 }
 
 TEST(BRepGraphAlgo_TransformTest, TranslateBox_AreaPreserved)
@@ -71,7 +72,7 @@ TEST(BRepGraphAlgo_TransformTest, TranslateBox_AreaPreserved)
 
   // Verify area is preserved by summing individual face areas.
   double aTransArea = 0.0;
-  for (int aFaceIdx = 0; aFaceIdx < aResultGraph.Defs().NbFaces(); ++aFaceIdx)
+  for (int aFaceIdx = 0; aFaceIdx < aResultGraph.Topo().NbFaces(); ++aFaceIdx)
   {
     TopoDS_Shape aFace = aResultGraph.Shapes().ReconstructFace(BRepGraph_FaceId(aFaceIdx));
     GProp_GProps aProps;
@@ -90,7 +91,7 @@ TEST(BRepGraphAlgo_TransformTest, TranslateBox_VertexPointsShifted)
   BRepGraph aGraph;
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.Defs().NbVertices(), 0);
+  ASSERT_GT(aGraph.Topo().NbVertices(), 0);
 
   const double aDx = 100.0, aDy = 200.0, aDz = 300.0;
   gp_Trsf      aTrsf;
@@ -98,10 +99,10 @@ TEST(BRepGraphAlgo_TransformTest, TranslateBox_VertexPointsShifted)
 
   BRepGraph aResultGraph = BRepGraphAlgo_Transform::Perform(aGraph, aTrsf, true);
   ASSERT_TRUE(aResultGraph.IsDone());
-  ASSERT_EQ(aResultGraph.Defs().NbVertices(), aGraph.Defs().NbVertices());
+  ASSERT_EQ(aResultGraph.Topo().NbVertices(), aGraph.Topo().NbVertices());
 
   // Verify that all vertices have been shifted.
-  for (int anIdx = 0; anIdx < aGraph.Defs().NbVertices(); ++anIdx)
+  for (int anIdx = 0; anIdx < aGraph.Topo().NbVertices(); ++anIdx)
   {
     const gp_Pnt anOrigPt = BRepGraph_Tool::Vertex::Pnt(aGraph, BRepGraph_VertexId(anIdx));
     const gp_Pnt aTransPt = BRepGraph_Tool::Vertex::Pnt(aResultGraph, BRepGraph_VertexId(anIdx));
@@ -122,7 +123,7 @@ TEST(BRepGraphAlgo_TransformTest, LocationOnly_NoCopyGeom)
   BRepGraph aGraph;
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.Defs().NbVertices(), 0);
+  ASSERT_GT(aGraph.Topo().NbVertices(), 0);
 
   const double aDx = 50.0;
   gp_Trsf      aTrsf;
@@ -131,11 +132,11 @@ TEST(BRepGraphAlgo_TransformTest, LocationOnly_NoCopyGeom)
   // theCopyGeom = false: location-only, no geometry modification.
   BRepGraph aResultGraph = BRepGraphAlgo_Transform::Perform(aGraph, aTrsf, false);
   ASSERT_TRUE(aResultGraph.IsDone());
-  EXPECT_EQ(aResultGraph.Defs().NbFaces(), 6);
-  EXPECT_EQ(aResultGraph.Defs().NbVertices(), aGraph.Defs().NbVertices());
+  EXPECT_EQ(aResultGraph.Topo().NbFaces(), 6);
+  EXPECT_EQ(aResultGraph.Topo().NbVertices(), aGraph.Topo().NbVertices());
 
   // Vertex definition points must NOT be modified (location-only mode).
-  for (int anIdx = 0; anIdx < aGraph.Defs().NbVertices(); ++anIdx)
+  for (int anIdx = 0; anIdx < aGraph.Topo().NbVertices(); ++anIdx)
   {
     const gp_Pnt anOrigPt = BRepGraph_Tool::Vertex::Pnt(aGraph, BRepGraph_VertexId(anIdx));
     const gp_Pnt aGraphPt = BRepGraph_Tool::Vertex::Pnt(aResultGraph, BRepGraph_VertexId(anIdx));
@@ -144,9 +145,9 @@ TEST(BRepGraphAlgo_TransformTest, LocationOnly_NoCopyGeom)
   }
 
   // Verify the transform is stored on Product::RootLocation.
-  ASSERT_GT(aResultGraph.Defs().NbProducts(), 0);
+  ASSERT_GT(aResultGraph.Paths().NbProducts(), 0);
   const TopLoc_Location& aRootLoc =
-    aResultGraph.Defs().Product(BRepGraph_ProductId(0)).RootLocation;
+    aResultGraph.Paths().Product(BRepGraph_ProductId(0)).RootLocation;
   EXPECT_FALSE(aRootLoc.IsIdentity());
   const gp_Trsf aProductTrsf = aRootLoc.Transformation();
   EXPECT_NEAR(aProductTrsf.Value(1, 4), aDx, Precision::Confusion());
@@ -154,7 +155,7 @@ TEST(BRepGraphAlgo_TransformTest, LocationOnly_NoCopyGeom)
   EXPECT_NEAR(aProductTrsf.Value(3, 4), 0.0, Precision::Confusion());
 
   // Verify that reconstructed solid + RootLocation produces correct geometry.
-  ASSERT_GT(aResultGraph.Defs().NbSolids(), 0);
+  ASSERT_GT(aResultGraph.Topo().NbSolids(), 0);
   TopoDS_Shape aTransSolid = aResultGraph.Shapes().Reconstruct(BRepGraph_NodeId::Solid(0));
   ASSERT_FALSE(aTransSolid.IsNull());
   aTransSolid.Location(aRootLoc);
@@ -175,7 +176,7 @@ TEST(BRepGraphAlgo_TransformTest, TransformSingleFace)
   BRepGraph aGraph;
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.Defs().NbFaces(), 0);
+  ASSERT_GT(aGraph.Topo().NbFaces(), 0);
 
   gp_Trsf aTrsf;
   aTrsf.SetTranslation(gp_Vec(10.0, 20.0, 30.0));
@@ -183,7 +184,7 @@ TEST(BRepGraphAlgo_TransformTest, TransformSingleFace)
   BRepGraph aResultGraph =
     BRepGraphAlgo_Transform::TransformFace(aGraph, BRepGraph_FaceId(0), aTrsf, true);
   ASSERT_TRUE(aResultGraph.IsDone());
-  EXPECT_EQ(aResultGraph.Defs().NbFaces(), 1);
+  EXPECT_EQ(aResultGraph.Topo().NbFaces(), 1);
 }
 
 // Performance comparison: BRepGraphAlgo_Transform vs BRepBuilderAPI_Transform.

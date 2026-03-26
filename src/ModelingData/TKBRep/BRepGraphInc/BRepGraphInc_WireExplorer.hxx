@@ -29,7 +29,7 @@
 //! For most wires this is fast since N is small (4-8 edges typically).
 //!
 //! Accepts any edge/coedge accessor - works with both BRepGraphInc_Storage and
-//! higher-level views (BRepGraph::DefsView).
+//! higher-level views (BRepGraph::TopoView).
 //!
 //! Usage with BRepGraphInc_Storage:
 //! @code

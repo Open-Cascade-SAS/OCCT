@@ -16,7 +16,8 @@
 #include <BRepGraphAlgo_Copy.hxx>
 
 #include <BRepGraph_Data.hxx>
-#include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_PathView.hxx>
+#include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_MutRef.hxx>
 #include <BRepGraph_Tool.hxx>
 
@@ -30,7 +31,7 @@ namespace
 void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
 {
   // Transform absolute vertex points.
-  for (int anIdx = 0; anIdx < theGraph.Defs().NbVertices(); ++anIdx)
+  for (int anIdx = 0; anIdx < theGraph.Topo().NbVertices(); ++anIdx)
   {
     theGraph.MutVertex(BRepGraph_VertexId(anIdx))->Point.Transform(theTrsf);
   }
@@ -38,7 +39,7 @@ void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
   // Transform surface geometry handles directly on surface reps.
   // Use visited set to avoid transforming shared handles twice.
   NCollection_Map<int> aVisitedSurfReps;
-  for (int anIdx = 0; anIdx < theGraph.Defs().NbFaces(); ++anIdx)
+  for (int anIdx = 0; anIdx < theGraph.Topo().NbFaces(); ++anIdx)
   {
     BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aFace = theGraph.MutFace(BRepGraph_FaceId(anIdx));
     if (BRepGraph_Tool::Face::HasSurface(theGraph, BRepGraph_FaceId(anIdx))
@@ -56,7 +57,7 @@ void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
 
   // Transform curve geometry handles directly on curve reps.
   NCollection_Map<int> aVisitedCurveReps;
-  for (int anIdx = 0; anIdx < theGraph.Defs().NbEdges(); ++anIdx)
+  for (int anIdx = 0; anIdx < theGraph.Topo().NbEdges(); ++anIdx)
   {
     BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge =
       theGraph.MutEdge(BRepGraph_EdgeId(anIdx));
@@ -85,7 +86,7 @@ void BRepGraphAlgo_Transform::applyLocationTransform(BRepGraph& theGraph, const 
   // Product::RootLocation participates in path composition
   // (SpatialView::stepLocation, composeToLevel), so all descendant
   // queries automatically include it.
-  const NCollection_Vector<BRepGraph_NodeId> aRoots = theGraph.Defs().RootProducts();
+  const NCollection_Vector<BRepGraph_NodeId> aRoots = theGraph.Paths().RootProducts();
   for (int anIdx = 0; anIdx < aRoots.Length(); ++anIdx)
   {
     const BRepGraph_NodeId       aRootId = aRoots.Value(anIdx);
@@ -141,7 +142,7 @@ BRepGraph BRepGraphAlgo_Transform::TransformFace(const BRepGraph&       theGraph
                                                  const gp_Trsf&         theTrsf,
                                                  const bool             theCopyGeom)
 {
-  if (!theGraph.IsDone() || theFace.Index < 0 || theFace.Index >= theGraph.Defs().NbFaces())
+  if (!theGraph.IsDone() || theFace.Index < 0 || theFace.Index >= theGraph.Topo().NbFaces())
     return BRepGraph();
 
   const bool useGeomModif =

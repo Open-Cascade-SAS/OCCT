@@ -16,7 +16,7 @@
 #include <BRep_Builder.hxx>
 #include <BRepBndLib.hxx>
 #include <BRepGraph.hxx>
-#include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraphAlgo_BndLib.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -174,7 +174,7 @@ TEST(BRepGraphAlgo_BndLibTest, Add_PerNode_Face)
 
   BRepGraph aGraph = buildGraph(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.Defs().NbFaces(), 0);
+  ASSERT_GT(aGraph.Topo().NbFaces(), 0);
 
   Bnd_Box aFaceBox;
   BRepGraphAlgo_BndLib::Add(aGraph, BRepGraph_NodeId::Face(0), aFaceBox);
@@ -206,7 +206,7 @@ TEST(BRepGraphAlgo_BndLibTest, Add_PerNode_Edge)
 
   BRepGraph aGraph = buildGraph(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.Defs().NbEdges(), 0);
+  ASSERT_GT(aGraph.Topo().NbEdges(), 0);
 
   Bnd_Box anEdgeBox;
   BRepGraphAlgo_BndLib::Add(aGraph, BRepGraph_NodeId::Edge(0), anEdgeBox);
@@ -220,7 +220,7 @@ TEST(BRepGraphAlgo_BndLibTest, Add_PerNode_Shell)
 
   BRepGraph aGraph = buildGraph(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.Defs().NbShells(), 0);
+  ASSERT_GT(aGraph.Topo().NbShells(), 0);
 
   Bnd_Box aShellBox;
   BRepGraphAlgo_BndLib::Add(aGraph, BRepGraph_NodeId::Shell(0), aShellBox);
@@ -238,7 +238,7 @@ TEST(BRepGraphAlgo_BndLibTest, Add_PerNode_Solid)
 
   BRepGraph aGraph = buildGraph(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.Defs().NbSolids(), 0);
+  ASSERT_GT(aGraph.Topo().NbSolids(), 0);
 
   Bnd_Box aSolidBox;
   BRepGraphAlgo_BndLib::Add(aGraph, BRepGraph_NodeId::Solid(0), aSolidBox);
@@ -352,7 +352,7 @@ TEST(BRepGraphAlgo_BndLibTest, AddCached_Standard_ReturnsNonVoid)
 
   BRepGraph aGraph = buildGraph(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.Defs().NbFaces(), 0);
+  ASSERT_GT(aGraph.Topo().NbFaces(), 0);
 
   Bnd_Box aCachedBox = BRepGraphAlgo_BndLib::AddCached(aGraph,
                                                        BRepGraph_NodeId::Face(0),

@@ -16,7 +16,7 @@
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepGraph.hxx>
-#include <BRepGraph_DefsView.hxx>
+#include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraphAlgo_FaceAnalysis.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -38,8 +38,8 @@ TEST(BRepGraphAlgo_FaceAnalysisTest, NormalFace_Unaffected)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  const int aNbEdgesBefore = aGraph.Defs().NbEdges();
-  const int aNbFacesBefore = aGraph.Defs().NbFaces();
+  const int aNbEdgesBefore = aGraph.Topo().NbEdges();
+  const int aNbFacesBefore = aGraph.Topo().NbFaces();
 
   BRepGraphAlgo_FaceAnalysis::Options aOpts;
   aOpts.MinTolerance                         = 1.0e-8;
@@ -50,8 +50,8 @@ TEST(BRepGraphAlgo_FaceAnalysisTest, NormalFace_Unaffected)
   EXPECT_EQ(aResult.NbDeletedFaces, 0);
   EXPECT_EQ(aResult.DegeneratedEdges.Length(), 0);
   EXPECT_EQ(aResult.DeletedFaces.Length(), 0);
-  EXPECT_EQ(aGraph.Defs().NbEdges(), aNbEdgesBefore);
-  EXPECT_EQ(aGraph.Defs().NbFaces(), aNbFacesBefore);
+  EXPECT_EQ(aGraph.Topo().NbEdges(), aNbEdgesBefore);
+  EXPECT_EQ(aGraph.Topo().NbFaces(), aNbFacesBefore);
 }
 
 TEST(BRepGraphAlgo_FaceAnalysisTest, SmallEdge_Detection)
@@ -124,7 +124,7 @@ TEST(BRepGraphAlgo_FaceAnalysisTest, SmallFace_Removal)
   BRepGraph aGraph;
   aGraph.Build(aCompound);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_EQ(aGraph.Defs().NbActiveFaces(), 2);
+  ASSERT_EQ(aGraph.Topo().NbActiveFaces(), 2);
 
   BRepGraphAlgo_FaceAnalysis::Options aOpts;
   aOpts.MinTolerance                         = 1.0e-2;
@@ -134,13 +134,13 @@ TEST(BRepGraphAlgo_FaceAnalysisTest, SmallFace_Removal)
   EXPECT_EQ(aResult.NbDeletedFaces, 1);
   EXPECT_EQ(aResult.DeletedFaces.Length(), 1);
   EXPECT_EQ(aResult.NbSmallEdges, 4);
-  EXPECT_EQ(aGraph.Defs().NbActiveFaces(), 1);
+  EXPECT_EQ(aGraph.Topo().NbActiveFaces(), 1);
 
   // Verify the normal face is NOT removed.
   int aNbRemainingFaces = 0;
-  for (int aFaceIdx = 0; aFaceIdx < aGraph.Defs().NbFaces(); ++aFaceIdx)
+  for (int aFaceIdx = 0; aFaceIdx < aGraph.Topo().NbFaces(); ++aFaceIdx)
   {
-    if (!aGraph.Defs().Face(BRepGraph_FaceId(aFaceIdx)).IsRemoved)
+    if (!aGraph.Topo().Face(BRepGraph_FaceId(aFaceIdx)).IsRemoved)
     {
       ++aNbRemainingFaces;
     }
@@ -181,7 +181,7 @@ TEST(BRepGraphAlgo_FaceAnalysisTest, VertexGluing_AveragedCoordinates)
 
   // The degenerated edge's vertices should be merged.
   const int   anEdgeIdx = aResult.DegeneratedEdges.Value(0).Index;
-  const auto& anEdge    = aGraph.Defs().Edge(BRepGraph_EdgeId(anEdgeIdx));
+  const auto& anEdge    = aGraph.Topo().Edge(BRepGraph_EdgeId(anEdgeIdx));
   EXPECT_TRUE(anEdge.IsDegenerate);
   EXPECT_EQ(anEdge.StartVertex.VertexDefId, anEdge.EndVertex.VertexDefId);
 }
