@@ -26,9 +26,9 @@ Standard_GUID BRepGraph_VersionStamp::ToGUID(const Standard_GUID& theGraphGUID) 
   const size_t        aCounter   = myUID.Counter();
   const int           aKind      = static_cast<int>(myUID.Kind());
 
-  uint8_t aBuffer[sizeof(aGraphUUID) + sizeof(aCounter) + sizeof(aKind)
-                  + sizeof(myMutationGen) + sizeof(myGeneration)];
-  size_t anOff = 0;
+  uint8_t aBuffer[sizeof(aGraphUUID) + sizeof(aCounter) + sizeof(aKind) + sizeof(myMutationGen)
+                  + sizeof(myGeneration)];
+  size_t  anOff = 0;
   std::memcpy(aBuffer + anOff, &aGraphUUID, sizeof(aGraphUUID));
   anOff += sizeof(aGraphUUID);
   std::memcpy(aBuffer + anOff, &aCounter, sizeof(aCounter));
@@ -41,10 +41,10 @@ Standard_GUID BRepGraph_VersionStamp::ToGUID(const Standard_GUID& theGraphGUID) 
   anOff += sizeof(myGeneration);
 
   // Two independent hashes fill the 128-bit GUID.
-  const size_t aHash1    = opencascade::hashBytes(aBuffer, static_cast<int>(anOff));
-  const size_t aHalfOff  = sizeof(aGraphUUID);
-  const size_t aHash2    = opencascade::hashBytes(aBuffer + aHalfOff,
-                                                  static_cast<int>(anOff - aHalfOff));
+  const size_t aHash1   = opencascade::hashBytes(aBuffer, static_cast<int>(anOff));
+  const size_t aHalfOff = sizeof(aGraphUUID);
+  const size_t aHash2 =
+    opencascade::hashBytes(aBuffer + aHalfOff, static_cast<int>(anOff - aHalfOff));
 
   Standard_UUID aResultUUID;
   static_assert(sizeof(size_t) >= 8, "Expected 64-bit size_t");

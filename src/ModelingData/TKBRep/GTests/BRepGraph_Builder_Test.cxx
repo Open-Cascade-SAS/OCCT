@@ -19,7 +19,6 @@
 #include <BRepGraphAlgo_BndLib.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Iterator.hxx>
-#include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -503,8 +502,9 @@ TEST(BRepGraph_BuilderTest, MutableFaceDefinition_ChangesTolerance)
 
   const double anOrigTol = BRepGraph_Tool::Face::Tolerance(aGraph, BRepGraph_FaceId(0));
   {
-    BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aFaceDef = aGraph.Builder().MutFace(BRepGraph_FaceId(0));
-    aFaceDef->Tolerance                                    = 0.5;
+    BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aFaceDef =
+      aGraph.Builder().MutFace(BRepGraph_FaceId(0));
+    aFaceDef->Tolerance = 0.5;
   }
   EXPECT_NEAR(BRepGraph_Tool::Face::Tolerance(aGraph, BRepGraph_FaceId(0)), 0.5, 1e-10);
   EXPECT_TRUE(aGraph.Topo().Face(BRepGraph_FaceId(0)).IsModified);
@@ -753,7 +753,7 @@ TEST(BRepGraph_BuilderTest, SharedEdges_AdjacentBoxFaces)
     {
       NCollection_Vector<BRepGraph_NodeId> aShared =
         aGraph.Topo().SharedEdges(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, aFaceA),
-                                     BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, aFaceB));
+                                  BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, aFaceB));
       if (!aShared.IsEmpty())
         ++aSharingPairs;
     }

@@ -42,7 +42,8 @@ void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
   NCollection_Map<int> aVisitedSurfReps;
   for (int anIdx = 0; anIdx < theGraph.Topo().NbFaces(); ++anIdx)
   {
-    BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aFace = theGraph.Builder().MutFace(BRepGraph_FaceId(anIdx));
+    BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aFace =
+      theGraph.Builder().MutFace(BRepGraph_FaceId(anIdx));
     if (BRepGraph_Tool::Face::HasSurface(theGraph, BRepGraph_FaceId(anIdx))
         && aVisitedSurfReps.Add(aFace->SurfaceRepId.Index))
     {

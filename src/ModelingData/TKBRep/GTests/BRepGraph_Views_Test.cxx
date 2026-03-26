@@ -19,7 +19,6 @@
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_ShapesView.hxx>
-#include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_UIDsView.hxx>
 #include <BRepGraphAlgo_BndLib.hxx>
 
@@ -245,7 +244,8 @@ TEST_F(BRepGraph_ViewsTest, ShapesView_HasOriginal_True)
 TEST_F(BRepGraph_ViewsTest, MutView_EdgeDef_MarksModified)
 {
   {
-    BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
+    BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge =
+      myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
   }
   EXPECT_TRUE(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).IsModified);
 }

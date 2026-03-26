@@ -149,9 +149,10 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
           ++aNbSmall;
 
           // Mark edge as degenerate.
-          BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aMutEdge = theGraph.Builder().MutEdge(anEdgeId);
-          aMutEdge->IsDegenerate                                 = true;
-          aMutEdge->Curve3DRepId                                 = BRepGraph_Curve3DRepId();
+          BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aMutEdge =
+            theGraph.Builder().MutEdge(anEdgeId);
+          aMutEdge->IsDegenerate = true;
+          aMutEdge->Curve3DRepId = BRepGraph_Curve3DRepId();
           aResult.DegeneratedEdges.Append(BRepGraph_EdgeId(anEdgeIdx));
 
           // Merge start/end vertices if they differ.

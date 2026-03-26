@@ -94,6 +94,7 @@ BRepGraphAlgo_Sewing::Result sewOnGraph(const NCollection_Sequence<TopoDS_Shape>
 }
 
 } // namespace
+
 // ===================================================================
 // Many-Faces Sewing: build a shell from a grid of disconnected faces
 // ===================================================================
@@ -163,6 +164,7 @@ NCollection_Sequence<TopoDS_Shape> buildFaceGrid(int    theNx,
 }
 
 } // namespace
+
 // ===================================================================
 // Performance: BRepGraphAlgo_Sewing vs BRepBuilderAPI_Sewing
 // ===================================================================

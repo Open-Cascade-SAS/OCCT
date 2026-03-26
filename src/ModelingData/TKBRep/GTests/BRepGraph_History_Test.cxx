@@ -48,7 +48,8 @@ TEST_F(BRepGraph_HistoryTest, FindOriginal_ChainABC_ReturnsA)
   BRepGraph_NodeId       anEdge1;
   BRepGraph_NodeId       anEdge2;
 
-  BRepGraph_Mutator::ApplyModification(myGraph,
+  BRepGraph_Mutator::ApplyModification(
+    myGraph,
     anEdge0,
     [&](BRepGraph& theGraph,
         BRepGraph_NodeId /*theTarget*/) -> NCollection_Vector<BRepGraph_NodeId> {
@@ -60,7 +61,8 @@ TEST_F(BRepGraph_HistoryTest, FindOriginal_ChainABC_ReturnsA)
     },
     "Step1");
 
-  BRepGraph_Mutator::ApplyModification(myGraph,
+  BRepGraph_Mutator::ApplyModification(
+    myGraph,
     anEdge1,
     [&](BRepGraph& theGraph,
         BRepGraph_NodeId /*theTarget*/) -> NCollection_Vector<BRepGraph_NodeId> {
@@ -82,7 +84,8 @@ TEST_F(BRepGraph_HistoryTest, FindDerived_ChainABC_ContainsBAndC)
   BRepGraph_NodeId       anEdge1;
   BRepGraph_NodeId       anEdge2;
 
-  BRepGraph_Mutator::ApplyModification(myGraph,
+  BRepGraph_Mutator::ApplyModification(
+    myGraph,
     anEdge0,
     [&](BRepGraph& theGraph, BRepGraph_NodeId) -> NCollection_Vector<BRepGraph_NodeId> {
       anEdge1 = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, theGraph.Topo().NbEdges());
@@ -92,7 +95,8 @@ TEST_F(BRepGraph_HistoryTest, FindDerived_ChainABC_ContainsBAndC)
     },
     "Step1");
 
-  BRepGraph_Mutator::ApplyModification(myGraph,
+  BRepGraph_Mutator::ApplyModification(
+    myGraph,
     anEdge1,
     [&](BRepGraph& theGraph, BRepGraph_NodeId) -> NCollection_Vector<BRepGraph_NodeId> {
       anEdge2 = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, theGraph.Topo().NbEdges());
@@ -151,7 +155,8 @@ TEST_F(BRepGraph_HistoryTest, Disabled_ApplyModification_ModifierStillRuns)
   bool aModifierRan = false;
 
   const BRepGraph_NodeId anEdge0(BRepGraph_NodeId::Kind::Edge, 0);
-  BRepGraph_Mutator::ApplyModification(myGraph,
+  BRepGraph_Mutator::ApplyModification(
+    myGraph,
     anEdge0,
     [&](BRepGraph&, BRepGraph_NodeId) -> NCollection_Vector<BRepGraph_NodeId> {
       aModifierRan = true;
@@ -184,7 +189,8 @@ TEST_F(BRepGraph_HistoryTest, ApplyModification_EmptyReplacements)
   const BRepGraph_NodeId anEdge0(BRepGraph_NodeId::Kind::Edge, 0);
   const int              aNbBefore = myGraph.History().NbRecords();
 
-  BRepGraph_Mutator::ApplyModification(myGraph,
+  BRepGraph_Mutator::ApplyModification(
+    myGraph,
     anEdge0,
     [](BRepGraph&, BRepGraph_NodeId) -> NCollection_Vector<BRepGraph_NodeId> {
       return NCollection_Vector<BRepGraph_NodeId>();
@@ -202,7 +208,8 @@ TEST_F(BRepGraph_HistoryTest, ApplyModification_MultipleReplacements)
   BRepGraph_NodeId       aNew1;
   BRepGraph_NodeId       aNew2;
 
-  BRepGraph_Mutator::ApplyModification(myGraph,
+  BRepGraph_Mutator::ApplyModification(
+    myGraph,
     anEdge0,
     [&](BRepGraph& theGraph, BRepGraph_NodeId) -> NCollection_Vector<BRepGraph_NodeId> {
       const int aBase = theGraph.Topo().NbEdges();
@@ -292,7 +299,8 @@ TEST_F(BRepGraph_HistoryTest, FindOriginal_TwoApply_TransitiveTrace)
   BRepGraph_NodeId       aVtx1;
   BRepGraph_NodeId       aVtx2;
 
-  BRepGraph_Mutator::ApplyModification(myGraph,
+  BRepGraph_Mutator::ApplyModification(
+    myGraph,
     aVtx0,
     [&](BRepGraph& theGraph, BRepGraph_NodeId) -> NCollection_Vector<BRepGraph_NodeId> {
       aVtx1 = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Vertex, theGraph.Topo().NbVertices());
@@ -302,7 +310,8 @@ TEST_F(BRepGraph_HistoryTest, FindOriginal_TwoApply_TransitiveTrace)
     },
     "Move1");
 
-  BRepGraph_Mutator::ApplyModification(myGraph,
+  BRepGraph_Mutator::ApplyModification(
+    myGraph,
     aVtx1,
     [&](BRepGraph& theGraph, BRepGraph_NodeId) -> NCollection_Vector<BRepGraph_NodeId> {
       aVtx2 = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Vertex, theGraph.Topo().NbVertices());
@@ -329,7 +338,8 @@ TEST_F(BRepGraph_HistoryTest, ApplyModification_WhenModifierThrows_DoesNotRecord
 
   const BRepGraph_NodeId anEdge(BRepGraph_NodeId::Kind::Edge, 0);
 
-  EXPECT_THROW(BRepGraph_Mutator::ApplyModification(myGraph,
+  EXPECT_THROW(BRepGraph_Mutator::ApplyModification(
+                 myGraph,
                  anEdge,
                  [](BRepGraph&, BRepGraph_NodeId) -> NCollection_Vector<BRepGraph_NodeId> {
                    throw Standard_Failure("Synthetic failure");
@@ -424,7 +434,8 @@ TEST_F(BRepGraph_HistoryTest, ApplyModification_SplitEdge_RecordsBothDerivedNode
 
   const int aNbRecordsBefore = myGraph.History().NbRecords();
 
-  BRepGraph_Mutator::ApplyModification(myGraph,
+  BRepGraph_Mutator::ApplyModification(
+    myGraph,
     anEdgeId,
     [&](BRepGraph& theGraph, BRepGraph_NodeId theTarget) -> NCollection_Vector<BRepGraph_NodeId> {
       BRepGraph_NodeId aSubA;

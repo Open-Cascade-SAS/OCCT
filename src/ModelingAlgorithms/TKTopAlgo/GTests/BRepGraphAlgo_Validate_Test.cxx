@@ -205,8 +205,9 @@ TEST(BRepGraphAlgo_ValidateTest, BoundsCheck_InvalidIndex)
   ASSERT_GT(aGraph.Topo().NbEdges(), 0);
 
   // Corrupt edge's Curve3d to null.
-  BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge = aGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
-  anEdge->Curve3DRepId                                 = BRepGraph_Curve3DRepId();
+  BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge =
+    aGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
+  anEdge->Curve3DRepId = BRepGraph_Curve3DRepId();
 
   const BRepGraphAlgo_Validate::Result aResult =
     BRepGraphAlgo_Validate::Perform(aGraph, BRepGraphAlgo_Validate::Options::DeepAudit());
@@ -297,8 +298,9 @@ TEST(BRepGraphAlgo_ValidateTest, LightweightAndDeepAudit_DetectActiveCountDrift)
   ASSERT_GT(aNbActiveFacesBefore, 0);
 
   // Intentionally bypass RemoveNode() to simulate counter drift bug class.
-  BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aFaceDef = aGraph.Builder().MutFace(BRepGraph_FaceId(0));
-  aFaceDef->IsRemoved                                    = true;
+  BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aFaceDef =
+    aGraph.Builder().MutFace(BRepGraph_FaceId(0));
+  aFaceDef->IsRemoved = true;
 
   const BRepGraphAlgo_Validate::Result aLightResult =
     BRepGraphAlgo_Validate::Perform(aGraph, BRepGraphAlgo_Validate::Options::Lightweight());
@@ -343,8 +345,9 @@ TEST(BRepGraphAlgo_ValidateTest, DeepDetectsIdDriftButLightweightSkipsIt)
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().NbFaces(), 0);
 
-  BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aFaceDef = aGraph.Builder().MutFace(BRepGraph_FaceId(0));
-  aFaceDef->Id                                           = BRepGraph_NodeId::Face(42);
+  BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aFaceDef =
+    aGraph.Builder().MutFace(BRepGraph_FaceId(0));
+  aFaceDef->Id = BRepGraph_NodeId::Face(42);
 
   const BRepGraphAlgo_Validate::Result aLightResult =
     BRepGraphAlgo_Validate::Perform(aGraph, BRepGraphAlgo_Validate::Options::Lightweight());

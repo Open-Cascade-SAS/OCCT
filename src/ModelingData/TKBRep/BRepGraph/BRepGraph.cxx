@@ -740,4 +740,3 @@ void BRepGraph::dispatchNodesModified(const NCollection_Vector<BRepGraph_NodeId>
       anIter.Value()->OnNodesModified(theModifiedNodes);
   }
 }
-

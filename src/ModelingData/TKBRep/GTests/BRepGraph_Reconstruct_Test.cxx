@@ -497,8 +497,9 @@ TEST(BRepGraph_ReconstructTest, AfterToleranceMutation_NewTShape)
 
   // Mutate tolerance.
   {
-    BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aMutEdge = aGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
-    aMutEdge->Tolerance                                    = aMutEdge->Tolerance + 1.0;
+    BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aMutEdge =
+      aGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
+    aMutEdge->Tolerance = aMutEdge->Tolerance + 1.0;
   }
 
   // After mutation, Shape() should return a reconstructed shape with a different TShape.

@@ -682,8 +682,7 @@ void BRepGraph::BuilderView::EndDeferredInvalidation()
     for (int aShellIter = 0; aShellIter < aShells->Length(); ++aShellIter)
     {
       const BRepGraph_ShellId       aShellId  = aShells->Value(aShellIter);
-      BRepGraph_TopoNode::ShellDef& aShellDef =
-        myGraph->myData->myIncStorage.ChangeShell(aShellId);
+      BRepGraph_TopoNode::ShellDef& aShellDef = myGraph->myData->myIncStorage.ChangeShell(aShellId);
       if (aShellDef.IsModified)
         continue;
       aShellDef.IsModified = true;
@@ -760,11 +759,11 @@ void BRepGraph::BuilderView::EndDeferredInvalidation()
   // Invalidate UserAttribute caches (UVBounds, BndLib, etc.) for all modified entities.
   // When modification subscribers exist, the collection of modified NodeIds piggybacks
   // on this existing per-kind iteration to avoid a separate sweep pass.
-  const int  aNbVertices      = myGraph->myData->myIncStorage.NbVertices();
-  const int  aNbSolids        = myGraph->myData->myIncStorage.NbSolids();
-  const int  aNbCompounds     = myGraph->myData->myIncStorage.NbCompounds();
-  const int  aNbCompSols      = myGraph->myData->myIncStorage.NbCompSolids();
-  const bool aCollectModified = myGraph->myHasModificationSubscribers;
+  const int                            aNbVertices  = myGraph->myData->myIncStorage.NbVertices();
+  const int                            aNbSolids    = myGraph->myData->myIncStorage.NbSolids();
+  const int                            aNbCompounds = myGraph->myData->myIncStorage.NbCompounds();
+  const int                            aNbCompSols  = myGraph->myData->myIncStorage.NbCompSolids();
+  const bool                           aCollectModified = myGraph->myHasModificationSubscribers;
   NCollection_Vector<BRepGraph_NodeId> aModifiedNodes;
   int                                  aModifiedKindsMask = 0;
 
@@ -798,8 +797,7 @@ void BRepGraph::BuilderView::EndDeferredInvalidation()
   }
   for (int i = 0; i < aNbWires; ++i)
   {
-    const BRepGraphInc::WireEntity& aWire =
-      myGraph->myData->myIncStorage.Wire(BRepGraph_WireId(i));
+    const BRepGraphInc::WireEntity& aWire = myGraph->myData->myIncStorage.Wire(BRepGraph_WireId(i));
     if (!aWire.IsRemoved && aWire.IsModified)
     {
       myGraph->myData->myIncStorage.ChangeWire(BRepGraph_WireId(i)).Cache.InvalidateAll();
@@ -812,8 +810,7 @@ void BRepGraph::BuilderView::EndDeferredInvalidation()
   }
   for (int i = 0; i < aNbFaces; ++i)
   {
-    const BRepGraphInc::FaceEntity& aFace =
-      myGraph->myData->myIncStorage.Face(BRepGraph_FaceId(i));
+    const BRepGraphInc::FaceEntity& aFace = myGraph->myData->myIncStorage.Face(BRepGraph_FaceId(i));
     if (!aFace.IsRemoved && aFace.IsModified)
     {
       myGraph->myData->myIncStorage.ChangeFace(BRepGraph_FaceId(i)).Cache.InvalidateAll();

@@ -86,7 +86,8 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph, bool theCopyGeo
   {
     const BRepGraph_TopoNode::VertexDef& aVtx = theGraph.Topo().Vertex(BRepGraph_VertexId(anIdx));
     (void)aResult.Builder().AddVertexDef(aVtx.Point, aVtx.Tolerance);
-    transferUserAttributes(aVtx.Cache, aResult.Builder().MutVertex(BRepGraph_VertexId(anIdx))->Cache);
+    transferUserAttributes(aVtx.Cache,
+                           aResult.Builder().MutVertex(BRepGraph_VertexId(anIdx))->Cache);
   }
 
   // Edges.
@@ -198,7 +199,8 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph, bool theCopyGeo
     BRepGraph_NodeId aNewShellId = aResult.Builder().AddShellDef();
 
     const BRepGraph_TopoNode::ShellDef& aShell = theGraph.Topo().Shell(BRepGraph_ShellId(anIdx));
-    transferUserAttributes(aShell.Cache, aResult.Builder().MutShell(BRepGraph_ShellId(anIdx))->Cache);
+    transferUserAttributes(aShell.Cache,
+                           aResult.Builder().MutShell(BRepGraph_ShellId(anIdx))->Cache);
 
     for (int aFaceRefIdx = 0; aFaceRefIdx < aShell.FaceRefs.Length(); ++aFaceRefIdx)
     {
@@ -214,7 +216,8 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph, bool theCopyGeo
     BRepGraph_NodeId aNewSolidId = aResult.Builder().AddSolidDef();
 
     const BRepGraph_TopoNode::SolidDef& aSolid = theGraph.Topo().Solid(BRepGraph_SolidId(anIdx));
-    transferUserAttributes(aSolid.Cache, aResult.Builder().MutSolid(BRepGraph_SolidId(anIdx))->Cache);
+    transferUserAttributes(aSolid.Cache,
+                           aResult.Builder().MutSolid(BRepGraph_SolidId(anIdx))->Cache);
 
     for (int aShellRefIdx = 0; aShellRefIdx < aSolid.ShellRefs.Length(); ++aShellRefIdx)
     {
@@ -236,7 +239,8 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph, bool theCopyGeo
       aChildNodeIds.Append(aCR.ChildDefId);
     }
     (void)aResult.Builder().AddCompoundDef(aChildNodeIds);
-    transferUserAttributes(aComp.Cache, aResult.Builder().MutCompound(BRepGraph_CompoundId(anIdx))->Cache);
+    transferUserAttributes(aComp.Cache,
+                           aResult.Builder().MutCompound(BRepGraph_CompoundId(anIdx))->Cache);
   }
 
   // CompSolids.
@@ -248,7 +252,8 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph, bool theCopyGeo
     for (int aSI = 0; aSI < aCS.SolidRefs.Length(); ++aSI)
       aSolidNodeIds.Append(aCS.SolidRefs.Value(aSI).SolidDefId);
     (void)aResult.Builder().AddCompSolidDef(aSolidNodeIds);
-    transferUserAttributes(aCS.Cache, aResult.Builder().MutCompSolid(BRepGraph_CompSolidId(anIdx))->Cache);
+    transferUserAttributes(aCS.Cache,
+                           aResult.Builder().MutCompSolid(BRepGraph_CompSolidId(anIdx))->Cache);
   }
 
   // Products.
@@ -383,7 +388,8 @@ BRepGraph BRepGraphAlgo_Copy::CopyFace(const BRepGraph&       theGraph,
     const BRepGraph_TopoNode::VertexDef& aVtx =
       theGraph.Topo().Vertex(BRepGraph_VertexId(anOldIdx));
     (void)aResult.Builder().AddVertexDef(aVtx.Point, aVtx.Tolerance);
-    transferUserAttributes(aVtx.Cache, aResult.Builder().MutVertex(BRepGraph_VertexId(anIdx - 1))->Cache);
+    transferUserAttributes(aVtx.Cache,
+                           aResult.Builder().MutVertex(BRepGraph_VertexId(anIdx - 1))->Cache);
   }
 
   // Add edges in deterministic order.
@@ -442,7 +448,8 @@ BRepGraph BRepGraphAlgo_Copy::CopyFace(const BRepGraph&       theGraph,
       aNewEntries.Append(std::make_pair(BRepGraph_NodeId::Edge(*aNewEdgeIdx), aCoEdge.Sense));
     }
     (void)aResult.Builder().AddWireDef(aNewEntries);
-    transferUserAttributes(aWire.Cache, aResult.Builder().MutWire(BRepGraph_WireId(anIdx - 1))->Cache);
+    transferUserAttributes(aWire.Cache,
+                           aResult.Builder().MutWire(BRepGraph_WireId(anIdx - 1))->Cache);
   }
 
   // Add the face.
@@ -469,10 +476,11 @@ BRepGraph BRepGraphAlgo_Copy::CopyFace(const BRepGraph&       theGraph,
   }
 
   (void)aResult.Builder().AddFaceDef(aSurf, anOuterWire, anInnerWires, aFaceDef.Tolerance);
-  BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aNewFace = aResult.Builder().MutFace(BRepGraph_FaceId(0));
-  aNewFace->NaturalRestriction                           = aFaceDef.NaturalRestriction;
-  aNewFace->TriangulationRepIds                          = aFaceDef.TriangulationRepIds;
-  aNewFace->ActiveTriangulationIndex                     = aFaceDef.ActiveTriangulationIndex;
+  BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aNewFace =
+    aResult.Builder().MutFace(BRepGraph_FaceId(0));
+  aNewFace->NaturalRestriction       = aFaceDef.NaturalRestriction;
+  aNewFace->TriangulationRepIds      = aFaceDef.TriangulationRepIds;
+  aNewFace->ActiveTriangulationIndex = aFaceDef.ActiveTriangulationIndex;
   transferUserAttributes(aFaceDef.Cache, aNewFace->Cache);
 
   // PCurves for edges in this face via CoEdge data.

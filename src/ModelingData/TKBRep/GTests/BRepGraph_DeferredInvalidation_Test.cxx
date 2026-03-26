@@ -160,7 +160,9 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_ParallelMutation_NoDataR
   OSD_Parallel::For(
     0,
     aNbEdges,
-    [&](int theIdx) { myGraph.Builder().MutEdge(BRepGraph_EdgeId(theIdx))->Tolerance = 0.1 + theIdx * 0.01; },
+    [&](int theIdx) {
+      myGraph.Builder().MutEdge(BRepGraph_EdgeId(theIdx))->Tolerance = 0.1 + theIdx * 0.01;
+    },
     false);
   myGraph.Builder().EndDeferredInvalidation();
 

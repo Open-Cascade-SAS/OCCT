@@ -57,7 +57,8 @@ public:
   //! Combines the node's UID with its current MutationGen and graph Generation.
   //! @param[in] theNode node identifier
   //! @return version stamp, or invalid stamp if theNode is invalid, removed, or out of bounds
-  [[nodiscard]] Standard_EXPORT BRepGraph_VersionStamp StampOf(const BRepGraph_NodeId theNode) const;
+  [[nodiscard]] Standard_EXPORT BRepGraph_VersionStamp
+    StampOf(const BRepGraph_NodeId theNode) const;
 
   //! Check if a previously-taken stamp is stale.
   //! A stamp is stale when the node has been mutated, removed,

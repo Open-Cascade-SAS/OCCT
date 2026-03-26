@@ -25,7 +25,6 @@
 #include <BRepGraph_Mutator.hxx>
 #include <BRepGraph_PathView.hxx>
 #include <BRepGraph_ShapesView.hxx>
-#include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_UIDsView.hxx>
 #include <BRepGraphInc_Entity.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
@@ -547,8 +546,9 @@ TEST_F(BRepGraphTest, DetectDegenerateWires_ValidBox_Empty)
 TEST_F(BRepGraphTest, MutableEdge_ModifyTolerance)
 {
   double anOrigTol = BRepGraph_Tool::Edge::Tolerance(myGraph, BRepGraph_EdgeId(0));
-  BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
-  anEdge->Tolerance                                    = anOrigTol * 2.0;
+  BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge =
+    myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
+  anEdge->Tolerance = anOrigTol * 2.0;
   EXPECT_NEAR(BRepGraph_Tool::Edge::Tolerance(myGraph, BRepGraph_EdgeId(0)),
               anOrigTol * 2.0,
               1.0e-15);
@@ -907,7 +907,7 @@ TEST_F(BRepGraphTest, Shape_InvalidatedAfterMutation)
   EXPECT_FALSE(aBefore.IsNull());
 
   myGraph.Builder().MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.123;
-  TopoDS_Shape anAfter                            = myGraph.Shapes().Shape(anEdgeId);
+  TopoDS_Shape anAfter                                      = myGraph.Shapes().Shape(anEdgeId);
   EXPECT_FALSE(anAfter.IsNull());
 
   // After mutation, Shape() reconstructs a new edge - different TShape.
@@ -1425,11 +1425,12 @@ TEST_F(BRepGraphTest, TopoNode_GenericLookup_MatchesTypedAccess)
 TEST_F(BRepGraphTest, NbNodes_Box_TotalCount)
 {
   // NbNodes should equal sum of all per-kind counts (topology + assembly).
-  size_t anExpected =
-    static_cast<size_t>(myGraph.Topo().NbSolids()) + myGraph.Topo().NbShells()
-    + myGraph.Topo().NbFaces() + myGraph.Topo().NbWires() + myGraph.Topo().NbCoEdges()
-    + myGraph.Topo().NbEdges() + myGraph.Topo().NbVertices() + myGraph.Topo().NbCompounds()
-    + myGraph.Topo().NbCompSolids() + myGraph.Paths().NbProducts() + myGraph.Paths().NbOccurrences();
+  size_t anExpected = static_cast<size_t>(myGraph.Topo().NbSolids()) + myGraph.Topo().NbShells()
+                      + myGraph.Topo().NbFaces() + myGraph.Topo().NbWires()
+                      + myGraph.Topo().NbCoEdges() + myGraph.Topo().NbEdges()
+                      + myGraph.Topo().NbVertices() + myGraph.Topo().NbCompounds()
+                      + myGraph.Topo().NbCompSolids() + myGraph.Paths().NbProducts()
+                      + myGraph.Paths().NbOccurrences();
   EXPECT_EQ(myGraph.Topo().NbNodes(), anExpected);
 }
 
@@ -1686,9 +1687,10 @@ TEST_F(BRepGraphTest, Centroid_Face_InsideBBox)
 
 TEST_F(BRepGraphTest, MutableWireDef_ModifyClosure_Verified)
 {
-  BRepGraph_MutRef<BRepGraph_TopoNode::WireDef> aMutWD       = myGraph.Builder().MutWire(BRepGraph_WireId(0));
-  bool                                          anOrigClosed = aMutWD->IsClosed;
-  aMutWD->IsClosed                                           = !anOrigClosed;
+  BRepGraph_MutRef<BRepGraph_TopoNode::WireDef> aMutWD =
+    myGraph.Builder().MutWire(BRepGraph_WireId(0));
+  bool anOrigClosed = aMutWD->IsClosed;
+  aMutWD->IsClosed  = !anOrigClosed;
 
   EXPECT_EQ(myGraph.Topo().Wire(BRepGraph_WireId(0)).IsClosed, !anOrigClosed);
 

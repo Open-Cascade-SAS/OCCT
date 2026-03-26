@@ -93,7 +93,7 @@ TEST_F(BRepGraph_VersionStampTest, IsStale_DifferentGeneration_ReturnsTrue)
 {
   const BRepGraph_VersionStamp aStamp = myGraph.UIDs().StampOf(BRepGraph_FaceId(0));
 
-  // Rebuild the graph — generation changes.
+  // Rebuild the graph - generation changes.
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   myGraph.Build(aBoxMaker.Shape());
   ASSERT_TRUE(myGraph.IsDone());
@@ -161,8 +161,7 @@ TEST_F(BRepGraph_VersionStampTest, StampOf_AssemblyNodes_WorksForProductsAndOccu
   // Box graph auto-creates a root Product.
   ASSERT_GT(myGraph.Paths().NbProducts(), 0);
 
-  const BRepGraph_VersionStamp aProdStamp =
-    myGraph.UIDs().StampOf(BRepGraph_NodeId::Product(0));
+  const BRepGraph_VersionStamp aProdStamp = myGraph.UIDs().StampOf(BRepGraph_NodeId::Product(0));
   EXPECT_TRUE(aProdStamp.IsValid());
   EXPECT_FALSE(myGraph.UIDs().IsStale(aProdStamp));
 }
@@ -194,23 +193,23 @@ TEST_F(BRepGraph_VersionStampTest, GraphGUID_Rebuild_Changes)
 
 TEST_F(BRepGraph_VersionStampTest, ToGUID_Deterministic_SameInputSameOutput)
 {
-  const BRepGraph_VersionStamp aStamp  = myGraph.UIDs().StampOf(BRepGraph_FaceId(0));
-  const Standard_GUID&        aGraph  = myGraph.UIDs().GraphGUID();
-  const Standard_GUID         aGUID1  = aStamp.ToGUID(aGraph);
-  const Standard_GUID         aGUID2  = aStamp.ToGUID(aGraph);
+  const BRepGraph_VersionStamp aStamp = myGraph.UIDs().StampOf(BRepGraph_FaceId(0));
+  const Standard_GUID&         aGraph = myGraph.UIDs().GraphGUID();
+  const Standard_GUID          aGUID1 = aStamp.ToGUID(aGraph);
+  const Standard_GUID          aGUID2 = aStamp.ToGUID(aGraph);
   EXPECT_EQ(aGUID1, aGUID2);
 }
 
 TEST_F(BRepGraph_VersionStampTest, ToGUID_DifferentMutationGen_DifferentGUID)
 {
   const BRepGraph_VersionStamp aStampBefore = myGraph.UIDs().StampOf(BRepGraph_FaceId(0));
-  const Standard_GUID&        aGraph       = myGraph.UIDs().GraphGUID();
-  const Standard_GUID         aGUIDBefore  = aStampBefore.ToGUID(aGraph);
+  const Standard_GUID&         aGraph       = myGraph.UIDs().GraphGUID();
+  const Standard_GUID          aGUIDBefore  = aStampBefore.ToGUID(aGraph);
 
   myGraph.Builder().MutFace(BRepGraph_FaceId(0))->NaturalRestriction = true;
 
   const BRepGraph_VersionStamp aStampAfter = myGraph.UIDs().StampOf(BRepGraph_FaceId(0));
-  const Standard_GUID         aGUIDAfter  = aStampAfter.ToGUID(aGraph);
+  const Standard_GUID          aGUIDAfter  = aStampAfter.ToGUID(aGraph);
 
   EXPECT_NE(aGUIDBefore, aGUIDAfter);
 }

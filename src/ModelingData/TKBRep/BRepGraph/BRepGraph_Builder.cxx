@@ -102,7 +102,7 @@ void BRepGraph_Builder::Perform(BRepGraph&                            theGraph,
   theGraph.myData->myCurrentShapes.Clear();
   ++theGraph.myData->myGeneration;
   theGraph.myData->myGraphGUID = generateRandomGUID();
-  theGraph.myData->myIsDone = false;
+  theGraph.myData->myIsDone    = false;
 
   // Notify registered layers that graph data is being cleared.
   for (NCollection_DataMap<TCollection_AsciiString, occ::handle<BRepGraph_Layer>>::Iterator anIter(

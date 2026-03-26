@@ -116,9 +116,9 @@ static bool areEdgesCompatibleSampled(const BRepGraph&                  theGraph
                                       const ExtremaPC_Curve&            theExtPCRevA,
                                       const double                      theChordA,
                                       const double                      theTolerance,
-                                      const int                         theNbSamples = 5,
-                                      const double theMaxChordRatio       = 2.0,
-                                      const double theHighConfidenceRatio = 0.01)
+                                      const int                         theNbSamples     = 5,
+                                      const double                      theMaxChordRatio = 2.0,
+                                      const double theHighConfidenceRatio                = 0.01)
 {
   const BRepGraph::TopoView          aDefs  = theGraph.Topo();
   const BRepGraph_TopoNode::EdgeDef& aNodeA = aDefs.Edge(theEdgeA);
@@ -1363,18 +1363,17 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> matchFreeEdges
 
         const BRepGraph_EdgeId anEdgeIdB(anIdB.Index);
         if (areEdgesCompatibleSampled(theGraph,
-                                                         anEdgeA,
-                                                         anEdgeIdB,
-                                                         aSamplePtsA,
-                                                         anExtPCRevA,
-                                                         aChordA,
-                                                         aWorkTol,
-                                                         THE_NB_EDGE_MATCH_SAMPLES,
-                                                         THE_MAX_CHORD_RATIO,
-                                                         THE_HIGH_CONFIDENCE_RATIO))
+                                      anEdgeA,
+                                      anEdgeIdB,
+                                      aSamplePtsA,
+                                      anExtPCRevA,
+                                      aChordA,
+                                      aWorkTol,
+                                      THE_NB_EDGE_MATCH_SAMPLES,
+                                      THE_MAX_CHORD_RATIO,
+                                      THE_HIGH_CONFIDENCE_RATIO))
         {
-          const double aScore =
-            edgeEndpointPairScore(theGraph, anEdgeA, anEdgeIdB);
+          const double aScore = edgeEndpointPairScore(theGraph, anEdgeA, anEdgeIdB);
           if (aScore < aMatch.BestScore)
           {
             aMatch.BestScore = aScore;

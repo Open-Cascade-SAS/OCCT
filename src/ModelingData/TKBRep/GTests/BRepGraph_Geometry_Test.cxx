@@ -19,7 +19,6 @@
 #include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_RepId.hxx>
 #include <BRepGraph_ShapesView.hxx>
-#include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_SubGraph.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -665,9 +664,7 @@ TEST(BRepGraph_GeometryTest, Box_FindPCurve_MatchesToolOverload)
     {
       const BRepGraphInc::CoEdgeEntity& aCE = aGraph.Topo().CoEdge(aCoEdgeIdxs.Value(j));
       const BRepGraphInc::CoEdgeEntity* aFromDefs =
-        aGraph.Topo().FindPCurve(anEdgeDefId,
-                                 aCE.FaceDefId,
-                                 aCE.Sense);
+        aGraph.Topo().FindPCurve(anEdgeDefId, aCE.FaceDefId, aCE.Sense);
       const BRepGraphInc::CoEdgeEntity* aFromTool =
         BRepGraph_Tool::Edge::FindPCurve(aGraph,
                                          BRepGraph_EdgeId(i),
@@ -698,7 +695,7 @@ TEST(BRepGraph_GeometryTest, Cylinder_SeamEdge_FindPCurve_DistinguishesOrientati
         continue;
 
       // Seam edge: same face, two orientations.
-      const BRepGraph_NodeId        aFaceId = aCE.FaceDefId;
+      const BRepGraph_NodeId aFaceId = aCE.FaceDefId;
       const BRepGraph_NodeId anEdgeNodeId(BRepGraph_NodeId::Kind::Edge, i);
 
       const BRepGraphInc::CoEdgeEntity* aPCFwd =

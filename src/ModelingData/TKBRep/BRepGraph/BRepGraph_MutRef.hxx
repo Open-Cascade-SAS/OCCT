@@ -36,8 +36,8 @@
 //! @code
 //!   {
 //!     BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge =
-//!     theGraph.Builder().MutEdge(BRepGraph_EdgeId(42)); anEdge->Tolerance     = 0.5; anEdge->SameParameter =
-//!     true;
+//!     theGraph.Builder().MutEdge(BRepGraph_EdgeId(42)); anEdge->Tolerance     = 0.5;
+//!     anEdge->SameParameter = true;
 //!   } // markModified called once here
 //! @endcode
 template <typename DefT>

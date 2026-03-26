@@ -324,4 +324,3 @@ void BRepGraph_Analyze::ParallelForEachEdge(
     [&](int anIdx) { theLambda(aIndices.Value(anIdx)); },
     false);
 }
-

@@ -259,7 +259,7 @@ int BRepGraph::TopoView::NbShellFaces(const BRepGraph_ShellId theShell) const
 //=================================================================================================
 
 BRepGraph_NodeId BRepGraph::TopoView::ShellFaceDef(const BRepGraph_ShellId theShell,
-                                                    const int               theFaceIndex) const
+                                                   const int               theFaceIndex) const
 {
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
   if (!theShell.IsValid(aStorage.NbShells()))

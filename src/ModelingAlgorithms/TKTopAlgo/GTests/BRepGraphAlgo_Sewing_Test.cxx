@@ -1027,6 +1027,7 @@ TEST(BRepGraphAlgo_SewingTest, Sew_Convenience_MatchesPerform)
   EXPECT_EQ(aNbPerformFaces, aNbSewFaces);
   EXPECT_EQ(aNbSewFaces, 6);
 }
+
 TEST(BRepGraphAlgo_SewingTest, CutAtIntersections_TVertex)
 {
   const gp_Pnt aP00(0, 0, 0);
