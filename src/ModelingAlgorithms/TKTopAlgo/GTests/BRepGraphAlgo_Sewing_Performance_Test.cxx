@@ -73,40 +73,6 @@ NCollection_Sequence<TopoDS_Face> extractCopiedFaces(const TopoDS_Shape& theBox)
   return aFaces;
 }
 
-//! Find two adjacent faces from a shape (sharing a common edge).
-//! Returns true if a pair is found.
-bool findAdjacentFaces(const TopoDS_Shape& theShape, TopoDS_Face& theFace1, TopoDS_Face& theFace2)
-{
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-    anEdgeFaceMap;
-  TopExp::MapShapesAndAncestors(theShape, TopAbs_EDGE, TopAbs_FACE, anEdgeFaceMap);
-  for (int anEntryIdx = 1; anEntryIdx <= anEdgeFaceMap.Extent(); ++anEntryIdx)
-  {
-    const NCollection_List<TopoDS_Shape>& aFaces = anEdgeFaceMap(anEntryIdx);
-    if (aFaces.Extent() == 2)
-    {
-      theFace1 = TopoDS::Face(aFaces.First());
-      theFace2 = TopoDS::Face(aFaces.Last());
-      return true;
-    }
-  }
-  return false;
-}
-
-//! Build a compound from copied faces and sew using convenience API.
-TopoDS_Shape sewCopiedFaces(const NCollection_Sequence<TopoDS_Face>& theFaces,
-                            const BRepGraphAlgo_Sewing::Options&     theOptions)
-{
-  BRep_Builder    aBB;
-  TopoDS_Compound aCompound;
-  aBB.MakeCompound(aCompound);
-  for (int aFaceIdx = 1; aFaceIdx <= theFaces.Length(); ++aFaceIdx)
-  {
-    aBB.Add(aCompound, theFaces.Value(aFaceIdx));
-  }
-  return BRepGraphAlgo_Sewing::Sew(aCompound, theOptions);
-}
-
 //! Build a compound from shapes and sew using Perform on a pre-built graph.
 BRepGraphAlgo_Sewing::Result sewOnGraph(const NCollection_Sequence<TopoDS_Shape>& theShapes,
                                         const BRepGraphAlgo_Sewing::Options&      theOptions,
