@@ -61,6 +61,7 @@ public:
 
 private:
   friend class BRepGraph;
+  friend struct BRepGraph_Data;
 
   explicit AttrsView(BRepGraph* theGraph)
       : myGraph(theGraph)
@@ -69,10 +70,5 @@ private:
 
   BRepGraph* myGraph;
 };
-
-inline BRepGraph::AttrsView BRepGraph::Attrs()
-{
-  return AttrsView(this);
-}
 
 #endif // _BRepGraph_AttrsView_HeaderFile

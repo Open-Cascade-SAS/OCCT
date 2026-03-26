@@ -72,6 +72,7 @@ public:
 
 private:
   friend class BRepGraph;
+  friend struct BRepGraph_Data;
 
   explicit ShapesView(const BRepGraph* theGraph)
       : myGraph(theGraph)
@@ -80,10 +81,5 @@ private:
 
   const BRepGraph* myGraph;
 };
-
-inline BRepGraph::ShapesView BRepGraph::Shapes() const
-{
-  return ShapesView(this);
-}
 
 #endif // _BRepGraph_ShapesView_HeaderFile

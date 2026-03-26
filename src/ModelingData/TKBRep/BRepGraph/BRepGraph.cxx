@@ -26,9 +26,25 @@
 
 //=================================================================================================
 
+void BRepGraph::initViews()
+{
+  if (myData)
+  {
+    myData->myTopoView    = TopoView(this);
+    myData->myUIDsView    = UIDsView(this);
+    myData->myPathView    = PathView(this);
+    myData->myAttrsView   = AttrsView(this);
+    myData->myShapesView  = ShapesView(this);
+    myData->myBuilderView = BuilderView(this);
+  }
+}
+
+//=================================================================================================
+
 BRepGraph::BRepGraph()
     : myData(std::make_unique<BRepGraph_Data>())
 {
+  initViews();
 }
 
 //=================================================================================================
@@ -36,6 +52,7 @@ BRepGraph::BRepGraph()
 BRepGraph::BRepGraph(const occ::handle<NCollection_BaseAllocator>& theAlloc)
     : myData(std::make_unique<BRepGraph_Data>(theAlloc))
 {
+  initViews();
 }
 
 //=================================================================================================
@@ -44,11 +61,73 @@ BRepGraph::~BRepGraph() = default;
 
 //=================================================================================================
 
-BRepGraph::BRepGraph(BRepGraph&&) noexcept = default;
+const BRepGraph::TopoView& BRepGraph::Topo() const
+{
+  return myData->myTopoView;
+}
 
 //=================================================================================================
 
-BRepGraph& BRepGraph::operator=(BRepGraph&&) noexcept = default;
+const BRepGraph::UIDsView& BRepGraph::UIDs() const
+{
+  return myData->myUIDsView;
+}
+
+//=================================================================================================
+
+const BRepGraph::PathView& BRepGraph::Paths() const
+{
+  return myData->myPathView;
+}
+
+//=================================================================================================
+
+BRepGraph::AttrsView& BRepGraph::Attrs()
+{
+  return myData->myAttrsView;
+}
+
+//=================================================================================================
+
+const BRepGraph::ShapesView& BRepGraph::Shapes() const
+{
+  return myData->myShapesView;
+}
+
+//=================================================================================================
+
+BRepGraph::BuilderView& BRepGraph::Builder()
+{
+  return myData->myBuilderView;
+}
+
+//=================================================================================================
+
+BRepGraph::BRepGraph(BRepGraph&& theOther) noexcept
+    : myData(std::move(theOther.myData)),
+      myLayers(std::move(theOther.myLayers)),
+      myHasModificationSubscribers(theOther.myHasModificationSubscribers)
+{
+  // View objects store a back-pointer to the owning BRepGraph; after move,
+  // they must point to the new owner (`this`), not the moved-from object.
+  initViews();
+}
+
+//=================================================================================================
+
+BRepGraph& BRepGraph::operator=(BRepGraph&& theOther) noexcept
+{
+  if (this != &theOther)
+  {
+    myData                       = std::move(theOther.myData);
+    myLayers                     = std::move(theOther.myLayers);
+    myHasModificationSubscribers = theOther.myHasModificationSubscribers;
+    // View objects store a back-pointer to the owning BRepGraph; after move,
+    // they must point to the new owner (`this`), not the moved-from object.
+    initViews();
+  }
+  return *this;
+}
 
 //=================================================================================================
 
@@ -805,6 +884,7 @@ void BRepGraph::SetAllocator(const occ::handle<NCollection_BaseAllocator>& theAl
 
   // Recreate the entire data object with the new allocator.
   myData = std::make_unique<BRepGraph_Data>(myData->myAllocator);
+  initViews();
 }
 
 const occ::handle<NCollection_BaseAllocator>& BRepGraph::Allocator() const

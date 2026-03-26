@@ -194,6 +194,7 @@ public:
 
 private:
   friend class BRepGraph;
+  friend struct BRepGraph_Data;
 
   explicit BuilderView(BRepGraph* theGraph)
       : myGraph(theGraph)
@@ -202,10 +203,5 @@ private:
 
   BRepGraph* myGraph;
 };
-
-inline BRepGraph::BuilderView BRepGraph::Builder()
-{
-  return BuilderView(this);
-}
 
 #endif // _BRepGraph_BuilderView_HeaderFile

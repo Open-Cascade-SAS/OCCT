@@ -132,15 +132,17 @@ public:
   class PathView;
 
   //! Access topology definitions and spatial adjacency queries.
-  [[nodiscard]] TopoView Topo() const;
+  [[nodiscard]] Standard_EXPORT const TopoView& Topo() const;
   //! Access unique identifiers.
-  [[nodiscard]] UIDsView UIDs() const;
+  [[nodiscard]] Standard_EXPORT const UIDsView& UIDs() const;
   //! Access topology path resolution queries.
-  [[nodiscard]] PathView Paths() const;
+  [[nodiscard]] Standard_EXPORT const PathView& Paths() const;
   //! Access user attributes.
-  [[nodiscard]] AttrsView Attrs();
+  [[nodiscard]] Standard_EXPORT AttrsView& Attrs();
   //! Access shape reconstruction.
-  [[nodiscard]] ShapesView Shapes() const;
+  [[nodiscard]] Standard_EXPORT const ShapesView& Shapes() const;
+  //! Access programmatic graph construction.
+  [[nodiscard]] Standard_EXPORT BuilderView& Builder();
 
   //! @name Scoped mutable definition guards (RAII).
   //! Return a BRepGraph_MutRef that defers markModified() to scope exit.
@@ -201,9 +203,6 @@ public:
   Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::OccurrenceDef> MutOccurrence(
     const BRepGraph_OccurrenceId theOccurrence);
 
-  //! Access programmatic graph construction.
-  [[nodiscard]] BuilderView Builder();
-
   //! Access history subsystem directly.
   [[nodiscard]] Standard_EXPORT BRepGraph_History&       History();
   [[nodiscard]] Standard_EXPORT const BRepGraph_History& History() const;
@@ -263,6 +262,9 @@ private:
   //! one kind in theModifiedKindsMask.
   void dispatchNodesModified(const NCollection_Vector<BRepGraph_NodeId>& theModifiedNodes,
                              const int                                   theModifiedKindsMask);
+
+  //! Initialize cached view objects to point to this graph.
+  void initViews();
 
   Standard_EXPORT void          invalidateSubgraphImpl(const BRepGraph_NodeId theNode);
   Standard_EXPORT BRepGraph_UID allocateUID(const BRepGraph_NodeId theNodeId);

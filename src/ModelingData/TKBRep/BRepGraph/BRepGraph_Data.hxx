@@ -14,12 +14,18 @@
 #ifndef _BRepGraph_Data_HeaderFile
 #define _BRepGraph_Data_HeaderFile
 
-#include <BRepGraph_NodeId.hxx>
-#include <BRepGraph_UID.hxx>
-#include <BRepGraph_UserAttribute.hxx>
-#include <BRepGraph_NodeCache.hxx>
-#include <BRepGraph_TopoNode.hxx>
+#include <BRepGraph_AttrsView.hxx>
+#include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_History.hxx>
+#include <BRepGraph_NodeCache.hxx>
+#include <BRepGraph_NodeId.hxx>
+#include <BRepGraph_PathView.hxx>
+#include <BRepGraph_ShapesView.hxx>
+#include <BRepGraph_TopoNode.hxx>
+#include <BRepGraph_TopoView.hxx>
+#include <BRepGraph_UID.hxx>
+#include <BRepGraph_UIDsView.hxx>
+#include <BRepGraph_UserAttribute.hxx>
 #include <BRepGraphInc_Storage.hxx>
 
 #include <TopoDS_Shape.hxx>
@@ -67,6 +73,14 @@ struct BRepGraph_Data
   mutable std::shared_mutex                                   myCurrentShapesMutex;
 
   using ReconstructCache = NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape>;
+
+  //! Cached view objects (pointers set to owning BRepGraph in its constructor).
+  BRepGraph::TopoView    myTopoView{nullptr};
+  BRepGraph::UIDsView    myUIDsView{nullptr};
+  BRepGraph::PathView    myPathView{nullptr};
+  BRepGraph::AttrsView   myAttrsView{nullptr};
+  BRepGraph::ShapesView  myShapesView{nullptr};
+  BRepGraph::BuilderView myBuilderView{nullptr};
 
   BRepGraph_Data()
       : myAllocator(new NCollection_IncAllocator),

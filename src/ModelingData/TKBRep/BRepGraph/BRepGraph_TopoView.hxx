@@ -258,6 +258,7 @@ public:
 
 private:
   friend class BRepGraph;
+  friend struct BRepGraph_Data;
   friend class BRepGraph_Tool;
 
   //! Access surface representation by typed identifier.
@@ -302,10 +303,5 @@ private:
 
   const BRepGraph* myGraph;
 };
-
-inline BRepGraph::TopoView BRepGraph::Topo() const
-{
-  return TopoView(this);
-}
 
 #endif // _BRepGraph_TopoView_HeaderFile

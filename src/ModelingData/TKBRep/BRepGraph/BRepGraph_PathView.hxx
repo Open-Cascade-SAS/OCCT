@@ -211,6 +211,7 @@ public:
 
 private:
   friend class BRepGraph;
+  friend struct BRepGraph_Data;
 
   explicit PathView(const BRepGraph* theGraph)
       : myGraph(theGraph)
@@ -300,10 +301,5 @@ private:
 
   const BRepGraph* myGraph;
 };
-
-inline BRepGraph::PathView BRepGraph::Paths() const
-{
-  return PathView(this);
-}
 
 #endif // _BRepGraph_PathView_HeaderFile
