@@ -91,6 +91,12 @@ struct ChildRef
   TopLoc_Location    LocalLocation;
 };
 
+//! Reference from a product to one of its child occurrences.
+struct OccurrenceRef
+{
+  BRepGraph_OccurrenceId OccurrenceDefId;
+};
+
 } // namespace BRepGraphInc
 
 #endif // _BRepGraphInc_IncidenceRef_HeaderFile

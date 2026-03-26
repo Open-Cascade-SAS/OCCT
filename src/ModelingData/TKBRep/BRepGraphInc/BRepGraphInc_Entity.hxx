@@ -393,12 +393,6 @@ struct CompSolidEntity : public BaseEntity
   }
 };
 
-//! Reference from a product to one of its child occurrences.
-struct OccurrenceRef
-{
-  BRepGraph_OccurrenceId OccurrenceDefId;
-};
-
 //! Product entity: reusable shape definition (part or assembly).
 //! A part has a valid ShapeRootId pointing to the root topology node.
 //! An assembly has an invalid ShapeRootId and owns child occurrences.
