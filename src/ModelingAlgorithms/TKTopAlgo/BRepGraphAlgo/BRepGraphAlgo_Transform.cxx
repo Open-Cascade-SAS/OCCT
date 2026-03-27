@@ -12,12 +12,12 @@
 // commercial license or contractual agreement.
 
 #include <BRepGraphAlgo_Transform.hxx>
+
 #include <BRepGraphInc_Definition.hxx>
 #include <BRepGraphInc_Reference.hxx>
 #include <BRepGraphInc_Representation.hxx>
-
 #include <BRepGraphAlgo_Copy.hxx>
-
+#include <NCollection_Map.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_Data.hxx>
 #include <BRepGraph_PathView.hxx>
