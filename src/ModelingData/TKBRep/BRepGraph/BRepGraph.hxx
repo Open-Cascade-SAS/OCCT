@@ -20,6 +20,8 @@
 #include <BRepGraph_RepId.hxx>
 #include <BRepGraph_UID.hxx>
 #include <BRepGraphInc_Definition.hxx>
+#include <BRepGraphInc_Reference.hxx>
+#include <BRepGraphInc_Representation.hxx>
 #include <BRepGraph_HistoryRecord.hxx>
 #include <BRepGraph_SubGraph.hxx>
 #include <BRepGraph_UserAttribute.hxx>

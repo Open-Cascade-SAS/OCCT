@@ -28,14 +28,14 @@ References are inline structs stored in parent entity vectors. They encode **usa
 
 | Ref Struct | Parent → Child | Fields | Data Weight |
 |------------|----------------|--------|-------------|
-| `ShellRef` | Solid → Shell | ShellDefId, Orientation, LocalLocation | Light |
-| `FaceRef` | Shell → Face | FaceDefId, Orientation, LocalLocation | Light |
-| `WireRef` | Face → Wire | WireDefId, IsOuter, Orientation, LocalLocation | Light |
-| `CoEdgeRef` | Wire → CoEdge | CoEdgeDefId, LocalLocation | Minimal |
-| `VertexRef` | Edge/Face → Vertex | VertexDefId, Orientation, LocalLocation | Light |
-| `SolidRef` | CompSolid → Solid | SolidDefId, Orientation, LocalLocation | Light |
-| `ChildRef` | Compound → any | ChildDefId(NodeId), Orientation, LocalLocation | Light |
-| `OccurrenceRef` | Product → Occurrence | OccurrenceDefId | Minimal |
+| `ShellUsage` | Solid → Shell | ShellDefId, Orientation, LocalLocation | Light |
+| `FaceUsage` | Shell → Face | FaceDefId, Orientation, LocalLocation | Light |
+| `WireUsage` | Face → Wire | WireDefId, IsOuter, Orientation, LocalLocation | Light |
+| `CoEdgeUsage` | Wire → CoEdge | CoEdgeDefId, LocalLocation | Minimal |
+| `VertexUsage` | Edge/Face → Vertex | VertexDefId, Orientation, LocalLocation | Light |
+| `SolidUsage` | CompSolid → Solid | SolidDefId, Orientation, LocalLocation | Light |
+| `ChildUsage` | Compound → any | ChildDefId(NodeId), Orientation, LocalLocation | Light |
+| `OccurrenceUsage` | Product → Occurrence | OccurrenceDefId | Minimal |
 
 ### 1.4 Already-Promoted References
 
@@ -47,8 +47,8 @@ Two reference types have already been promoted to full entities:
 
 ### 1.5 What References Lack Today
 
-- **No persistent identity**: ShellRef, FaceRef, WireRef, VertexRef, SolidRef, ChildRef have no UID
-- **No mutation tracking**: If a FaceRef's orientation changes (face flipped in shell), there's no per-ref MutationGen — only the parent entity's MutationGen increments
+- **No persistent identity**: ShellUsage, FaceUsage, WireUsage, VertexUsage, SolidUsage, ChildUsage have no UID
+- **No mutation tracking**: If a FaceUsage's orientation changes (face flipped in shell), there's no per-ref MutationGen — only the parent entity's MutationGen increments
 - **No VersionStamp**: Cannot stamp or detect staleness of a specific reference
 - **No serialization anchor**: Cannot round-trip reference identity across save/load
 - **No external ID mapping**: Cannot map STEP entity IDs or XCAF labels to references
@@ -149,7 +149,7 @@ For **XBF** (binary format): TDF_Label tree is serialized. RefUID would serializ
 Add `BRepGraph_UID` directly to each inline Ref struct:
 
 ```cpp
-struct FaceRef
+struct FaceUsage
 {
   BRepGraph_FaceId   FaceDefId;
   TopAbs_Orientation Orientation = TopAbs_FORWARD;
@@ -194,12 +194,12 @@ enum class Kind : int
   Product = 10, Occurrence = 11,
 
   // NEW: Reference entities (promoted from inline refs)
-  ShellUse   = 20,  // was ShellRef (Shell used in Solid)
-  FaceUse    = 21,  // was FaceRef (Face used in Shell)
-  WireUse    = 22,  // was WireRef (Wire used in Face)
-  VertexUse  = 23,  // was VertexRef (Vertex on Edge/Face)
-  SolidUse   = 24,  // was SolidRef (Solid in CompSolid)
-  ChildUse   = 25,  // was ChildRef (any in Compound)
+  ShellUse   = 20,  // was ShellUsage (Shell used in Solid)
+  FaceUse    = 21,  // was FaceUsage (Face used in Shell)
+  WireUse    = 22,  // was WireUsage (Wire used in Face)
+  VertexUse  = 23,  // was VertexUsage (Vertex on Edge/Face)
+  SolidUse   = 24,  // was SolidUsage (Solid in CompSolid)
+  ChildUse   = 25,  // was ChildUsage (any in Compound)
 };
 ```
 
@@ -219,7 +219,7 @@ Parent entities store typed IDs instead of inline refs:
 ```cpp
 struct ShellDef : public BaseDef
 {
-  NCollection_Vector<BRepGraph_FaceUseId> FaceUseIds;  // was NCollection_Vector<FaceRef>
+  NCollection_Vector<BRepGraph_FaceUseId> FaceUseIds;  // was NCollection_Vector<FaceUsage>
 };
 ```
 
@@ -239,7 +239,7 @@ struct ShellDef : public BaseDef
 - **Deeper indirection**: Shell → FaceUseId → FaceUseEntity → FaceDefId → FaceDef. One extra hop.
 - **API surface growth**: New typed IDs (`BRepGraph_FaceUseId`, `BRepGraph_WireUseId`, etc.), new accessors on views, new mutation methods on BuilderView.
 - **Mixed semantics**: "Use" entities are fundamentally different from "definition" entities. Mixing them in the same `Kind` enum and `DefStore` obscures the conceptual distinction.
-- **CoEdgeRef becomes redundant**: CoEdgeRef is already just `{CoEdgeDefId, LocalLocation}`. If we also promote it to a "CoEdgeUse" entity, CoEdge itself becomes awkward (CoEdge is already a promoted ref, so CoEdgeUse would be a "use of a use").
+- **CoEdgeUsage becomes redundant**: CoEdgeUsage is already just `{CoEdgeDefId, LocalLocation}`. If we also promote it to a "CoEdgeUse" entity, CoEdge itself becomes awkward (CoEdge is already a promoted ref, so CoEdgeUse would be a "use of a use").
 
 **Verdict**: Architecturally clean for the UID system but adds significant weight. Better suited if use-entities need to carry substantial per-use data (like CoEdge does).
 
@@ -309,21 +309,21 @@ struct BaseRef
   bool             IsRemoved   = false;
 };
 
-struct ShellRef : public BaseRef
+struct ShellUsage : public BaseRef
 {
   BRepGraph_ShellId  ShellDefId;
   TopAbs_Orientation Orientation;
   TopLoc_Location    LocalLocation;
 };
 
-struct FaceRef : public BaseRef
+struct FaceUsage : public BaseRef
 {
   BRepGraph_FaceId   FaceDefId;
   TopAbs_Orientation Orientation;
   TopLoc_Location    LocalLocation;
 };
 
-struct WireRef : public BaseRef
+struct WireUsage : public BaseRef
 {
   BRepGraph_WireId   WireDefId;
   bool               IsOuter;
@@ -331,27 +331,27 @@ struct WireRef : public BaseRef
   TopLoc_Location    LocalLocation;
 };
 
-struct CoEdgeRef : public BaseRef
+struct CoEdgeUsage : public BaseRef
 {
   BRepGraph_CoEdgeId CoEdgeDefId;
   TopLoc_Location    LocalLocation;
 };
 
-struct VertexRef : public BaseRef
+struct VertexUsage : public BaseRef
 {
   BRepGraph_VertexId VertexDefId;
   TopAbs_Orientation Orientation;     // FORWARD/REVERSED/INTERNAL/EXTERNAL
   TopLoc_Location    LocalLocation;
 };
 
-struct SolidRef : public BaseRef
+struct SolidUsage : public BaseRef
 {
   BRepGraph_SolidId  SolidDefId;
   TopAbs_Orientation Orientation;
   TopLoc_Location    LocalLocation;
 };
 
-struct ChildRef : public BaseRef
+struct ChildUsage : public BaseRef
 {
   BRepGraph_NodeId   ChildDefId;      // any-kind child
   TopAbs_Orientation Orientation;
@@ -366,7 +366,7 @@ Parent entities store typed RefIds instead of inline Ref structs:
 struct ShellDef : public BaseDef
 {
   bool IsClosed;
-  NCollection_Vector<BRepGraph_FaceRefId> FaceRefIds;  // was FaceRef inline
+  NCollection_Vector<BRepGraph_FaceRefId> FaceRefIds;  // was FaceUsage inline
   NCollection_Vector<BRepGraph_ChildRefId> FreeChildRefIds;
 };
 ```
@@ -394,10 +394,10 @@ class BRepGraph::RefsView
 {
 public:
   // Access ref by typed id (same names as entity views)
-  [[nodiscard]] const BRepGraphInc::FaceRef& Face(BRepGraph_FaceRefId) const;
-  [[nodiscard]] const BRepGraphInc::WireRef& Wire(BRepGraph_WireRefId) const;
-  [[nodiscard]] const BRepGraphInc::ShellRef& Shell(BRepGraph_ShellRefId) const;
-  [[nodiscard]] const BRepGraphInc::VertexRef& Vertex(BRepGraph_VertexRefId) const;
+  [[nodiscard]] const BRepGraphInc::FaceUsage& Face(BRepGraph_FaceRefId) const;
+  [[nodiscard]] const BRepGraphInc::WireUsage& Wire(BRepGraph_WireRefId) const;
+  [[nodiscard]] const BRepGraphInc::ShellUsage& Shell(BRepGraph_ShellRefId) const;
+  [[nodiscard]] const BRepGraphInc::VertexUsage& Vertex(BRepGraph_VertexRefId) const;
   // ... etc
 
   // Counts
@@ -438,7 +438,7 @@ public:
 - **New infrastructure**: Need new `RefStore<T>` template, new `RefId` type with `Typed<Kind>`, new `RefUID` type (or reuse existing UID), new `RefsView`, new builder methods.
 - **Two levels of indirection**: Shell → FaceInShellRefId → FaceInShellRef → FaceDefId → FaceDef. Same as Option B.
 - **Separate MutationGen semantics**: When a ref changes, does the parent entity's MutationGen also increment? Need to define propagation rules.
-- **CoEdgeRef/OccurrenceRef overlap**: CoEdge and Occurrence are already entities with UIDs. Adding CoEdgeInWireRef and OccurrenceInProductRef creates a "ref of a promoted ref" — need to clarify identity semantics (the ref's UID identifies the usage in a wire, the CoEdge's UID identifies the CoEdge entity itself).
+- **CoEdgeUsage/OccurrenceUsage overlap**: CoEdge and Occurrence are already entities with UIDs. Adding CoEdgeInWireRef and OccurrenceInProductRef creates a "ref of a promoted ref" — need to clarify identity semantics (the ref's UID identifies the usage in a wire, the CoEdge's UID identifies the CoEdge entity itself).
 - **Ref reverse indices**: May need a separate reverse index system for refs (parent→ref, child→ref lookups). Could share with existing ReverseIndex or require new infrastructure.
 - **Code volume**: New files: RefId.hxx, RefUID.hxx, BaseRef in Entity.hxx, RefStore in Storage, RefsView.hxx/.cxx, builder methods. ~8-10 new/modified files.
 
@@ -684,8 +684,8 @@ struct RefStore
 struct ShellDef : public BaseDef
 {
   bool IsClosed;
-  NCollection_Vector<FaceRef> FaceRefs;
-  NCollection_Vector<ChildRef> FreeChildRefs;
+  NCollection_Vector<FaceUsage> FaceRefs;
+  NCollection_Vector<ChildUsage> FreeChildRefs;
 };
 
 // AFTER (with RefId):
@@ -693,7 +693,7 @@ struct ShellDef : public BaseDef
 {
   bool IsClosed;
   NCollection_Vector<BRepGraph_FaceInShellRefId> FaceRefIds;  // indices into RefStore
-  NCollection_Vector<ChildRef> FreeChildRefs;  // or also promoted
+  NCollection_Vector<ChildUsage> FreeChildRefs;  // or also promoted
 };
 ```
 
@@ -702,7 +702,7 @@ struct ShellDef : public BaseDef
 ```cpp
 // BEFORE (inline refs):
 const ShellDef& shell = storage.Shell(shellId);
-for (const FaceRef& faceRef : shell.FaceRefs)
+for (const FaceUsage& faceRef : shell.FaceRefs)
 {
   const FaceDef& face = storage.Face(faceRef.FaceDefId);
   TopAbs_Orientation orient = faceRef.Orientation;
@@ -712,7 +712,7 @@ for (const FaceRef& faceRef : shell.FaceRefs)
 const ShellDef& shell = storage.Shell(shellId);
 for (const BRepGraph_FaceRefId& refId : shell.FaceRefIds)
 {
-  const FaceRef& faceRef = graph.Refs().Face(refId);    // same FaceRef name
+  const FaceUsage& faceRef = graph.Refs().Face(refId);    // same FaceUsage name
   const FaceDef& face = storage.Face(faceRef.FaceDefId);
   TopAbs_Orientation orient = faceRef.Orientation;
 }
@@ -728,9 +728,9 @@ One extra indirection, but enables per-ref identity and mutation tracking.
 
 1. **Keep CoEdgeInWire ref**: CoEdge's UID identifies the PCurve ownership. CoEdgeInWireRef's UID identifies the wire-to-coedge link. Both are valid identity levels. A CoEdge can appear in multiple wires (shared loops), so the wire-link needs its own identity.
 
-2. **Skip CoEdgeInWire ref**: CoEdgeRef is already minimal (just CoEdgeDefId + LocalLocation). If CoEdge always appears in exactly one wire (typical), the ref doesn't need its own identity — CoEdge's UID suffices. Only add CoEdgeInWire if shared-loop scenarios arise.
+2. **Skip CoEdgeInWire ref**: CoEdgeUsage is already minimal (just CoEdgeDefId + LocalLocation). If CoEdge always appears in exactly one wire (typical), the ref doesn't need its own identity — CoEdge's UID suffices. Only add CoEdgeInWire if shared-loop scenarios arise.
 
-3. **Same for OccurrenceRef**: Occurrence entity already has a UID. OccurrenceRef is just `{OccurrenceDefId}`. Skip OccurrenceInProduct ref unless occurrences can be shared across products (currently they cannot — each occurrence has exactly one parent product).
+3. **Same for OccurrenceUsage**: Occurrence entity already has a UID. OccurrenceUsage is just `{OccurrenceDefId}`. Skip OccurrenceInProduct ref unless occurrences can be shared across products (currently they cannot — each occurrence has exactly one parent product).
 
 **Recommendation**: Start without CoEdgeInWire and OccurrenceInProduct ref kinds. Add them later only if multi-parent scenarios emerge. This keeps the initial scope focused.
 
@@ -798,7 +798,7 @@ During `BRepGraphInc_Populate` (called by `Build()`):
 ```
 // Current flow:
 1. Create entities (Vertex, Edge, ..., Shell, Solid)
-2. Create inline refs (ShellRef, FaceRef, WireRef, VertexRef) inside parent entities
+2. Create inline refs (ShellUsage, FaceUsage, WireUsage, VertexUsage) inside parent entities
 3. Allocate UIDs for entities
 4. Build reverse indices
 
@@ -1033,7 +1033,7 @@ Compound → Child refs with identity location are a realistic sharing case.
 In assemblies, the same part (Product) is instanced multiple times. Each instance (Occurrence) has a different placement. Currently:
 - Product entity is shared (by ID)
 - Occurrence entities are distinct (each has its own placement)
-- OccurrenceRef is just `{OccurrenceDefId}` — trivially thin, nothing to share
+- OccurrenceUsage is just `{OccurrenceDefId}` — trivially thin, nothing to share
 
 Assembly sharing is already handled at the **entity level** (shared Product), not at the ref level.
 
@@ -1083,7 +1083,7 @@ If refs can be shared (N:1 parent-to-ref), the following complexities arise:
 5. The main external-system use case (assemblies) is already served by Product/Occurrence entity sharing
 
 **Where sharing DOES make sense:**
-- **Compound → ChildRef**: Same sub-shape in multiple compounds with identical context. Moderate benefit.
+- **Compound → ChildUsage**: Same sub-shape in multiple compounds with identical context. Moderate benefit.
 - **Multi-body models**: CompSolid containing solids that also appear in compounds. Edge case.
 - **Future custom containers**: User-defined grouping where entities appear in multiple groups with same context.
 
@@ -1150,7 +1150,7 @@ VertexOnEdge, VertexOnFace, SolidInCompSolid, ChildInCompound
 ```
 
 **Pros**: Explicit direction. No collision with existing `XxxRef` names. Self-documenting.
-**Cons**: Long names. Two prepositions (In/On) — inconsistent. Over-specified: bakes parent type into name, but a VertexRef can be on an Edge OR a Face. If a FaceRef could also appear in a Compound, the name `FaceInShell` is misleading.
+**Cons**: Long names. Two prepositions (In/On) — inconsistent. Over-specified: bakes parent type into name, but a VertexUsage can be on an Edge OR a Face. If a FaceUsage could also appear in a Compound, the name `FaceInShell` is misleading.
 
 ### N2: `{Child}Use`
 
@@ -1168,14 +1168,14 @@ VertexUse, SolidUse, ChildUse
 
 ```
 RefId::Kind enum:  Shell, Face, Wire, CoEdge, Vertex, Solid, Child
-Ref structs:       ShellRef, FaceRef, WireRef, CoEdgeRef, VertexRef, SolidRef, ChildRef
+Ref structs:       ShellUsage, FaceUsage, WireUsage, CoEdgeUsage, VertexUsage, SolidUsage, ChildUsage
 Typed RefIds:      BRepGraph_ShellRefId, BRepGraph_FaceRefId, BRepGraph_WireRefId, ...
 ```
 
 The parent identity is a **data field** on the ref, not encoded in the type name:
 
 ```cpp
-struct FaceRef : public BaseRef
+struct FaceUsage : public BaseRef
 {
   BRepGraph_FaceId   FaceDefId;
   BRepGraph_NodeId   ParentId;      // generic — Shell, Compound, or any parent
@@ -1183,7 +1183,7 @@ struct FaceRef : public BaseRef
   TopLoc_Location    LocalLocation;
 };
 
-struct VertexRef : public BaseRef
+struct VertexUsage : public BaseRef
 {
   BRepGraph_VertexId VertexDefId;
   BRepGraph_NodeId   ParentId;      // could be Edge or Face — ONE ref kind covers both
@@ -1196,10 +1196,10 @@ struct VertexRef : public BaseRef
 
 **Pros**:
 - Familiar names (same as current inline structs).
-- Unified: one `VertexRef` kind covers all vertex usages (edge boundary, face internal, etc.).
+- Unified: one `VertexUsage` kind covers all vertex usages (edge boundary, face internal, etc.).
 - Parent context is data, not type — flexible for future parent kinds.
 - Fewer RefId::Kind values (7 instead of 8+).
-- Clean migration: inline `BRepGraphInc::FaceRef` → table-based `BRepGraphInc::FaceRef` (same name, richer struct).
+- Clean migration: inline `BRepGraphInc::FaceUsage` → table-based `BRepGraphInc::FaceUsage` (same name, richer struct).
 
 **Cons**:
 - Collides with current inline struct names during migration. Can be resolved by:
@@ -1245,7 +1245,7 @@ ShellMembership, FaceMembership, WireMembership, CoEdgeMembership, VertexMembers
 
 The entity-aligned pattern (N3) is cleanest because:
 1. **Entities already set the precedent**: `CoEdge` not `EdgeOnFace`, `Occurrence` not `ProductInstance`
-2. **Parent is data, not type**: A `VertexRef` can be on an Edge or Face — the ParentId field tells you which
+2. **Parent is data, not type**: A `VertexUsage` can be on an Edge or Face — the ParentId field tells you which
 3. **Fewer kinds**: No need for `VertexOnEdge` vs `VertexOnFace` — just `Vertex` ref kind
 4. **Familiar**: Same names already used in the codebase
 
@@ -1270,39 +1270,39 @@ CoEdge and Occurrence are unique: they are **already entities** (have BaseDef, U
 ```
                 Entity Level (has UID)          Reference Level (no UID currently)
                 ─────────────────────           ─────────────────────────────────
-CoEdge:         CoEdgeDef                    CoEdgeRef in WireDef
+CoEdge:         CoEdgeDef                    CoEdgeUsage in WireDef
                 Kind=8, has PCurve,             {CoEdgeDefId, LocalLocation}
                 UV, params, seam pair
 
-Occurrence:     OccurrenceDef                OccurrenceRef in ProductDef
+Occurrence:     OccurrenceDef                OccurrenceUsage in ProductDef
                 Kind=11, has Placement,         {OccurrenceDefId}
                 ProductDefId, ParentProductId
 ```
 
-### 13.2 Does CoEdgeRef Need a RefId?
+### 13.2 Does CoEdgeUsage Need a RefId?
 
-**Arguments FOR RefId on CoEdgeRef**:
+**Arguments FOR RefId on CoEdgeUsage**:
 1. **Wire membership identity**: The fact that CoEdge #42 is the 3rd element in Wire #7 is a structural relationship that could be tracked.
-2. **LocalLocation on ref**: CoEdgeRef carries a `LocalLocation`. If this changes, it's a ref-level mutation distinct from CoEdge entity mutation.
+2. **LocalLocation on ref**: CoEdgeUsage carries a `LocalLocation`. If this changes, it's a ref-level mutation distinct from CoEdge entity mutation.
 3. **Shared CoEdges (future)**: If two wires on the same face could share a CoEdge (shared loops/holes), the wire-to-coedge link would need its own identity.
 4. **STEP mapping**: `ORIENTED_EDGE` in STEP includes both the edge-use data AND its position in an `EDGE_LOOP`. Having CoEdgeInWire RefId maps to the loop-membership aspect.
-5. **Uniformity**: If all other refs get RefIds, omitting CoEdgeRef is inconsistent.
+5. **Uniformity**: If all other refs get RefIds, omitting CoEdgeUsage is inconsistent.
 
-**Arguments AGAINST RefId on CoEdgeRef**:
+**Arguments AGAINST RefId on CoEdgeUsage**:
 1. **CoEdge entity UID suffices**: In practice, each CoEdge appears in exactly one wire. The CoEdge entity's UID already uniquely identifies the wire membership.
-2. **Minimal ref data**: CoEdgeRef is just `{CoEdgeDefId, LocalLocation}`. The location is almost always identity. The ref carries no semantically significant data beyond the CoEdge itself.
+2. **Minimal ref data**: CoEdgeUsage is just `{CoEdgeDefId, LocalLocation}`. The location is almost always identity. The ref carries no semantically significant data beyond the CoEdge itself.
 3. **High cardinality**: Number of CoEdgeRefs ≈ Number of CoEdges. Adding RefIds doubles the identity tracking for the same structural information.
 4. **No real-world need**: No external system (STEP, CATIA, XCAF) requires a separate ID for "CoEdge's position in a wire" vs "the CoEdge itself."
 
-### 13.3 Does OccurrenceRef Need a RefId?
+### 13.3 Does OccurrenceUsage Need a RefId?
 
-**Arguments FOR RefId on OccurrenceRef**:
+**Arguments FOR RefId on OccurrenceUsage**:
 1. **Product-to-Occurrence link identity**: The fact that Occurrence #5 is a child of Product #2 is a structural relationship.
 2. **Uniformity** with other ref kinds.
 
-**Arguments AGAINST RefId on OccurrenceRef**:
+**Arguments AGAINST RefId on OccurrenceUsage**:
 1. **Occurrence entity UID suffices**: Each Occurrence has exactly one parent Product (stored on `OccurrenceDef::ParentProductDefId`). The Occurrence entity's UID fully identifies the relationship.
-2. **OccurrenceRef is trivially thin**: Just `{OccurrenceDefId}`. No orientation, no location. The ref carries zero contextual data — it's purely a containment pointer.
+2. **OccurrenceUsage is trivially thin**: Just `{OccurrenceDefId}`. No orientation, no location. The ref carries zero contextual data — it's purely a containment pointer.
 3. **Assembly identity already complete**: Product UID + Occurrence UID fully identifies any assembly instance. No gap.
 
 ### 13.4 Options
@@ -1310,7 +1310,7 @@ Occurrence:     OccurrenceDef                OccurrenceRef in ProductDef
 | Option | CoEdge Ref | Occurrence Ref | Notes |
 |---|---|---|---|
 | **T1: Include both** | CoEdgeInWire RefId | OccurrenceInProduct RefId | Full uniformity. Every parent→child link has RefId. |
-| **T2: Include CoEdge only** | CoEdgeInWire RefId | No RefId | CoEdgeRef has LocalLocation worth tracking. OccurrenceRef is trivially empty. |
+| **T2: Include CoEdge only** | CoEdgeInWire RefId | No RefId | CoEdgeUsage has LocalLocation worth tracking. OccurrenceUsage is trivially empty. |
 | **T3: Exclude both** | No RefId | No RefId | Entity UIDs suffice. Add later if needed. |
 | **T4: Include neither now, design for future** | Reserved Kind enum slots | Reserved Kind enum slots | Allocate Kind values but don't implement storage. Forward-compatible. |
 
@@ -1648,7 +1648,7 @@ Sub-shape labels carry attributes (color, material). These attributes are per-us
 | 2 | UID counter | U1 (shared), U2 (separate), U3 (partitioned), U4 (domain tag) | User selected shared |
 | 3 | Ref kind scope | K1 (all 8), K2 (core 4), K3 (3), K4 (minimal 2), K5 (tiered) | User selected all |
 | 4 | Ref sharing | S1 (no sharing), S2 (refcount), S3 (parent list), S4 (indirection) | Under analysis |
-| 5 | Naming convention | N1 (ChildInParent), N2 (ChildUse), N3 (ChildRef replace), N4 (Parent_ChildRef), N5 (BRepGraph_), N6 (Membership) | Open |
+| 5 | Naming convention | N1 (ChildInParent), N2 (ChildUse), N3 (ChildUsage replace), N4 (Parent_ChildRef), N5 (BRepGraph_), N6 (Membership) | Open |
 | 6 | CoEdge/Occurrence refs | T1 (both), T2 (CoEdge only), T3 (neither), T4 (reserved slots) | Open |
 | 7 | VersionStamp | V1 (unified), V2 (separate), V3 (template) | User selected unified |
 | 8 | Mutation propagation | P1 (bubble up), P2 (ref-only), P3 (configurable), P4 (up+down) | User selected bubble up |
@@ -1695,7 +1695,7 @@ aTShape->myShapes.Append(aChild);  // Appends copy to list
 | TopoDS Concept | BRepGraph Equivalent | Sharing Level |
 |---|---|---|
 | `TopoDS_TShape` (entity) | `FaceDef`, `EdgeDef`, etc. in DefStore | Entity shared by ID (same FaceId from multiple shells) |
-| `TopoDS_Shape` (reference) | `FaceRef`, `WireRef`, etc. inline in parent | Reference NOT shared (each parent has own copy) |
+| `TopoDS_Shape` (reference) | `FaceUsage`, `WireUsage`, etc. inline in parent | Reference NOT shared (each parent has own copy) |
 | `Handle(TShape)` pointer identity | Entity ID equality (same FaceId) | Same entity, different context |
 | `TopLoc_Location` on Shape | `LocalLocation` on Ref | Per-instance context |
 | `TopAbs_Orientation` on Shape | `Orientation` on Ref | Per-instance context |
@@ -1731,7 +1731,7 @@ Since the original TopoDS model intentionally does NOT share references, and BRe
 **However**, with the RefId table design, sharing BECOMES POSSIBLE if desired:
 - Multiple parents could point to the same RefId (flat table enables this)
 - Would need copy-on-write when context changes
-- Main benefit: Compound → ChildRef where same sub-shape appears in multiple compounds with identity transform
+- Main benefit: Compound → ChildUsage where same sub-shape appears in multiple compounds with identity transform
 
 ### 21.5 Geometry Sharing in BRep vs BRepGraph
 
@@ -2284,7 +2284,7 @@ The Domain byte ensures that entity GUID, ref GUID, and rep GUID never collide e
 | 2 | UID counter | **U1 (shared)**, U2 (separate), U3 (partitioned), U4 (domain tag) | User selected shared |
 | 3 | Ref kind scope | **K1 (all 8)**, K2 (core 4), K3 (3), K4 (minimal 2), K5 (tiered) | User selected all |
 | 4 | Ref sharing | S1 (no sharing), S2 (refcount), S3 (parent list), S4 (indirection) | Analysis shows minimal practical benefit (section 21) |
-| 5 | Naming convention | N1 (ChildInParent), N2 (ChildUse), N3 (ChildRef replace), N4 (Parent_ChildRef), N5 (BRepGraph_), N6 (Membership) | Open |
+| 5 | Naming convention | N1 (ChildInParent), N2 (ChildUse), N3 (ChildUsage replace), N4 (Parent_ChildRef), N5 (BRepGraph_), N6 (Membership) | Open |
 | 6 | CoEdge/Occurrence refs | T1 (both), T2 (CoEdge only), T3 (neither), T4 (reserved slots) | Open |
 | 7 | VersionStamp | **V1 (unified)**, V2 (separate), V3 (template) | User selected unified |
 | 8 | Mutation propagation | **P1 (bubble up)**, P2 (ref-only), P3 (configurable), P4 (up+down) | User selected bubble up |

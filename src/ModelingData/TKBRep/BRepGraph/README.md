@@ -77,7 +77,7 @@ All queries and mutations go through lightweight view objects obtained from a `B
 - **RepId** (Kind + Index): separate geometry/mesh addressing decoupled from topology nodes
 - **Topology entities**: Vertex, Edge, CoEdge, Wire, Face, Shell, Solid, Compound, CompSolid
 - **Assembly entities**: Product (part or assembly), Occurrence (placed instance)
-- **Context refs**: VertexRef, CoEdgeRef, WireRef, FaceRef, ShellRef, SolidRef, ChildRef, OccurrenceRef
+- **Context refs**: VertexUsage, CoEdgeUsage, WireUsage, FaceUsage, ShellUsage, SolidUsage, ChildUsage, OccurrenceUsage
 - **Reverse indices**: edge→wire, edge→face, edge→coedge, vertex→edge, wire→face, face→shell, shell→solid, product→occurrences
 
 ## Reference Identity (RefId)
@@ -88,9 +88,9 @@ Reference entries are the typed edges of the incidence graph. Each ref kind has 
 
 8 ref kinds: Shell, Face, Wire, CoEdge, Vertex, Solid, Child, Occurrence. Type-safe wrappers: `BRepGraph_ShellRefId`, `BRepGraph_FaceRefId`, `BRepGraph_WireRefId`, `BRepGraph_CoEdgeRefId`, `BRepGraph_VertexRefId`, `BRepGraph_SolidRefId`, `BRepGraph_ChildRefId`, `BRepGraph_OccurrenceRefId`.
 
-### BaseRef and RefEntry
+### BaseRef and Ref
 
-`BaseRef` is the common header for all reference entries: `RefId` + `ParentId` + `MutationGen` + `IsRemoved`. Concrete ref entry types (e.g. `ShellRefEntry`, `FaceRefEntry`) extend BaseRef with `DefId` + `Orientation` + `LocalLocation`.
+`BaseRef` is the common header for all reference entries: `RefId` + `ParentId` + `MutationGen` + `IsRemoved`. Concrete ref entry types (e.g. `ShellRef`, `FaceRef`) extend BaseRef with `DefId` + `Orientation` + `LocalLocation`.
 
 ### RefUID
 
@@ -172,11 +172,11 @@ flowchart LR
     O3[Occurrence 3]
   end
 
-  RP -->|OccurrenceRef| O1
-  RP -->|OccurrenceRef| O2
+  RP -->|OccurrenceUsage| O1
+  RP -->|OccurrenceUsage| O2
   O1 -->|ProductDefId| P1
   O2 -->|ProductDefId| P2
-  P2 -->|OccurrenceRef| O3
+  P2 -->|OccurrenceUsage| O3
   O3 -->|ProductDefId| P1
 ```
 

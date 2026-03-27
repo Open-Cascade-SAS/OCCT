@@ -13,6 +13,8 @@
 
 #include <BRepGraphAlgo_Deduplicate.hxx>
 #include <BRepGraphInc_Definition.hxx>
+#include <BRepGraphInc_Reference.hxx>
+#include <BRepGraphInc_Representation.hxx>
 
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_RefsView.hxx>
@@ -49,7 +51,7 @@ void forWireCoEdgeRefEntries(const BRepGraph&       theGraph,
   for (int i = 0; i < aWireEnt.CoEdgeRefIds.Length(); ++i)
   {
     const BRepGraph_CoEdgeRefId         aRefId = aWireEnt.CoEdgeRefIds.Value(i);
-    const BRepGraphInc::CoEdgeRefEntry& aCR    = aRefs.CoEdge(aRefId);
+    const BRepGraphInc::CoEdgeRef& aCR    = aRefs.CoEdge(aRefId);
     if (aCR.IsRemoved || !aCR.CoEdgeDefId.IsValid(theGraph.Topo().NbCoEdges()))
     {
       continue;
@@ -68,7 +70,7 @@ void forFaceWireRefEntries(const BRepGraph&       theGraph,
   for (int i = 0; i < aFaceEnt.WireRefIds.Length(); ++i)
   {
     const BRepGraph_WireRefId         aRefId = aFaceEnt.WireRefIds.Value(i);
-    const BRepGraphInc::WireRefEntry& aWR    = aRefs.Wire(aRefId);
+    const BRepGraphInc::WireRef& aWR    = aRefs.Wire(aRefId);
     if (aWR.IsRemoved || !aWR.WireDefId.IsValid(theGraph.Topo().NbWires()))
     {
       continue;
@@ -306,14 +308,14 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
           // Resolve current vertex def ids through ref entries and update them.
           if (anEdge->StartVertexRefId.IsValid())
           {
-            BRepGraph_MutRefEntry<BRepGraphInc::VertexRefEntry> aStartRef =
+            BRepGraph_MutRefEntry<BRepGraphInc::VertexRef> aStartRef =
               theGraph.Builder().MutVertexRef(anEdge->StartVertexRefId);
             if (aStartRef->VertexDefId == BRepGraph_VertexId(anOldId.Index))
               aStartRef->VertexDefId = BRepGraph_VertexId(aCanonId.Index);
           }
           if (anEdge->EndVertexRefId.IsValid())
           {
-            BRepGraph_MutRefEntry<BRepGraphInc::VertexRefEntry> anEndRef =
+            BRepGraph_MutRefEntry<BRepGraphInc::VertexRef> anEndRef =
               theGraph.Builder().MutVertexRef(anEdge->EndVertexRefId);
             if (anEndRef->VertexDefId == BRepGraph_VertexId(anOldId.Index))
               anEndRef->VertexDefId = BRepGraph_VertexId(aCanonId.Index);
@@ -551,7 +553,7 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
       size_t operator()(const BRepGraph_WireId theWireId, const BRepGraph& theGraph) const
       {
         size_t aHash = 0;
-        forWireCoEdgeRefEntries(theGraph, theWireId, [&](const BRepGraphInc::CoEdgeRefEntry& aCR) {
+        forWireCoEdgeRefEntries(theGraph, theWireId, [&](const BRepGraphInc::CoEdgeRef& aCR) {
           const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdge(aCR.CoEdgeDefId);
           size_t                         aEntryHash[2];
           aEntryHash[0] = opencascade::hash(aCoEdge.EdgeDefId);
@@ -566,10 +568,10 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
     auto wiresEqual = [&](const BRepGraph_WireId theA, const BRepGraph_WireId theB) -> bool {
       NCollection_Vector<BRepGraph_CoEdgeId> aWireACoEdges;
       NCollection_Vector<BRepGraph_CoEdgeId> aWireBCoEdges;
-      forWireCoEdgeRefEntries(theGraph, theA, [&](const BRepGraphInc::CoEdgeRefEntry& aCR) {
+      forWireCoEdgeRefEntries(theGraph, theA, [&](const BRepGraphInc::CoEdgeRef& aCR) {
         aWireACoEdges.Append(aCR.CoEdgeDefId);
       });
-      forWireCoEdgeRefEntries(theGraph, theB, [&](const BRepGraphInc::CoEdgeRefEntry& aCR) {
+      forWireCoEdgeRefEntries(theGraph, theB, [&](const BRepGraphInc::CoEdgeRef& aCR) {
         aWireBCoEdges.Append(aCR.CoEdgeDefId);
       });
 
@@ -683,7 +685,7 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
       size_t aHash = 0;
       forFaceWireRefEntries(theGraph,
                             BRepGraph_FaceId(theFaceIdx),
-                            [&](const BRepGraphInc::WireRefEntry& aWR) {
+                            [&](const BRepGraphInc::WireRef& aWR) {
                               if (aWR.IsOuter)
                               {
                                 aHash ^= opencascade::hash(aWR.WireDefId);

@@ -16,6 +16,8 @@
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepGraphCheck_Analyzer.hxx>
 #include <BRepGraphInc_Definition.hxx>
+#include <BRepGraphInc_Reference.hxx>
+#include <BRepGraphInc_Representation.hxx>
 
 #include <chrono>
 #include <BRepBuilderAPI_Copy.hxx>

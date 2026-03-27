@@ -21,6 +21,8 @@
 #include <BRepGProp.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraphInc_Definition.hxx>
+#include <BRepGraphInc_Reference.hxx>
+#include <BRepGraphInc_Representation.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_Tool.hxx>

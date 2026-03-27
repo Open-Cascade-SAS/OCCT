@@ -13,6 +13,8 @@
 
 #include <BRepGraphAlgo_FaceAnalysis.hxx>
 #include <BRepGraphInc_Definition.hxx>
+#include <BRepGraphInc_Reference.hxx>
+#include <BRepGraphInc_Representation.hxx>
 
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_MutRef.hxx>
@@ -124,7 +126,7 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
     for (int aWireRefIter = 0; aWireRefIter < aFaceEnt.WireRefIds.Length(); ++aWireRefIter)
     {
       const BRepGraph_WireRefId         aWireRefId = aFaceEnt.WireRefIds.Value(aWireRefIter);
-      const BRepGraphInc::WireRefEntry& aWR        = aRefs.Wire(aWireRefId);
+      const BRepGraphInc::WireRef& aWR        = aRefs.Wire(aWireRefId);
       if (aWR.IsRemoved || !aWR.WireDefId.IsValid(aDefs.NbWires()))
       {
         continue;
@@ -136,7 +138,7 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
            ++aCoEdgeRefIter)
       {
         const BRepGraph_CoEdgeRefId aCoEdgeRefId = aWireEnt.CoEdgeRefIds.Value(aCoEdgeRefIter);
-        const BRepGraphInc::CoEdgeRefEntry& aCR  = aRefs.CoEdge(aCoEdgeRefId);
+        const BRepGraphInc::CoEdgeRef& aCR  = aRefs.CoEdge(aCoEdgeRefId);
         if (aCR.IsRemoved || !aCR.CoEdgeDefId.IsValid(aDefs.NbCoEdges()))
         {
           continue;

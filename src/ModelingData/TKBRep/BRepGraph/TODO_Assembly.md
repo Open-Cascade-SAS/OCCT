@@ -18,7 +18,7 @@ one root Product. `Build(aBox)` auto-creates a single root Product with
 ## Completed
 
 ### Data Model and Core API — DONE (2026-03-20)
-- `ProductDef` / `OccurrenceDef` / `OccurrenceRef` in `BRepGraphInc_Definition.hxx`
+- `ProductDef` / `OccurrenceDef` / `OccurrenceUsage` in `BRepGraphInc_Definition.hxx`
 - `DefStore<T>` in `BRepGraphInc_Storage` with typed-id accessors
 - BRepGraph dispatch (TopoDef, markModified, invalidateSubgraph, allocateUID)
 - Auto root Product creation in `BRepGraph_Builder`

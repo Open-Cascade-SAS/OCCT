@@ -19,6 +19,8 @@
 #include <BRepGraph_RefUID.hxx>
 #include <BRepGraph_UID.hxx>
 #include <BRepGraphInc_Definition.hxx>
+#include <BRepGraphInc_Reference.hxx>
+#include <BRepGraphInc_Representation.hxx>
 #include <BRepGraphInc_ReverseIndex.hxx>
 
 #include <NCollection_BaseAllocator.hxx>
@@ -372,49 +374,49 @@ public:
 
   //! @name Const transitional reference access
 
-  [[nodiscard]] const BRepGraphInc::ShellRefEntry& ShellRefEntry(
+  [[nodiscard]] const BRepGraphInc::ShellRef& ShellRef(
     const BRepGraph_ShellRefId theRefId) const
   {
     return myShellRefs.Get(theRefId.Index);
   }
 
-  [[nodiscard]] const BRepGraphInc::FaceRefEntry& FaceRefEntry(
+  [[nodiscard]] const BRepGraphInc::FaceRef& FaceRef(
     const BRepGraph_FaceRefId theRefId) const
   {
     return myFaceRefs.Get(theRefId.Index);
   }
 
-  [[nodiscard]] const BRepGraphInc::WireRefEntry& WireRefEntry(
+  [[nodiscard]] const BRepGraphInc::WireRef& WireRef(
     const BRepGraph_WireRefId theRefId) const
   {
     return myWireRefs.Get(theRefId.Index);
   }
 
-  [[nodiscard]] const BRepGraphInc::CoEdgeRefEntry& CoEdgeRefEntry(
+  [[nodiscard]] const BRepGraphInc::CoEdgeRef& CoEdgeRef(
     const BRepGraph_CoEdgeRefId theRefId) const
   {
     return myCoEdgeRefs.Get(theRefId.Index);
   }
 
-  [[nodiscard]] const BRepGraphInc::VertexRefEntry& VertexRefEntry(
+  [[nodiscard]] const BRepGraphInc::VertexRef& VertexRef(
     const BRepGraph_VertexRefId theRefId) const
   {
     return myVertexRefs.Get(theRefId.Index);
   }
 
-  [[nodiscard]] const BRepGraphInc::SolidRefEntry& SolidRefEntry(
+  [[nodiscard]] const BRepGraphInc::SolidRef& SolidRef(
     const BRepGraph_SolidRefId theRefId) const
   {
     return mySolidRefs.Get(theRefId.Index);
   }
 
-  [[nodiscard]] const BRepGraphInc::ChildRefEntry& ChildRefEntry(
+  [[nodiscard]] const BRepGraphInc::ChildRef& ChildRef(
     const BRepGraph_ChildRefId theRefId) const
   {
     return myChildRefs.Get(theRefId.Index);
   }
 
-  [[nodiscard]] const BRepGraphInc::OccurrenceRefEntry& OccurrenceRefEntry(
+  [[nodiscard]] const BRepGraphInc::OccurrenceRef& OccurrenceRef(
     const BRepGraph_OccurrenceRefId theRefId) const
   {
     return myOccurrenceRefs.Get(theRefId.Index);
@@ -491,42 +493,42 @@ public:
 
   //! @name Mutable transitional reference access
 
-  BRepGraphInc::ShellRefEntry& ChangeShellRefEntry(const BRepGraph_ShellRefId theRefId)
+  BRepGraphInc::ShellRef& ChangeShellRef(const BRepGraph_ShellRefId theRefId)
   {
     return myShellRefs.Change(theRefId.Index);
   }
 
-  BRepGraphInc::FaceRefEntry& ChangeFaceRefEntry(const BRepGraph_FaceRefId theRefId)
+  BRepGraphInc::FaceRef& ChangeFaceRef(const BRepGraph_FaceRefId theRefId)
   {
     return myFaceRefs.Change(theRefId.Index);
   }
 
-  BRepGraphInc::WireRefEntry& ChangeWireRefEntry(const BRepGraph_WireRefId theRefId)
+  BRepGraphInc::WireRef& ChangeWireRef(const BRepGraph_WireRefId theRefId)
   {
     return myWireRefs.Change(theRefId.Index);
   }
 
-  BRepGraphInc::CoEdgeRefEntry& ChangeCoEdgeRefEntry(const BRepGraph_CoEdgeRefId theRefId)
+  BRepGraphInc::CoEdgeRef& ChangeCoEdgeRef(const BRepGraph_CoEdgeRefId theRefId)
   {
     return myCoEdgeRefs.Change(theRefId.Index);
   }
 
-  BRepGraphInc::VertexRefEntry& ChangeVertexRefEntry(const BRepGraph_VertexRefId theRefId)
+  BRepGraphInc::VertexRef& ChangeVertexRef(const BRepGraph_VertexRefId theRefId)
   {
     return myVertexRefs.Change(theRefId.Index);
   }
 
-  BRepGraphInc::SolidRefEntry& ChangeSolidRefEntry(const BRepGraph_SolidRefId theRefId)
+  BRepGraphInc::SolidRef& ChangeSolidRef(const BRepGraph_SolidRefId theRefId)
   {
     return mySolidRefs.Change(theRefId.Index);
   }
 
-  BRepGraphInc::ChildRefEntry& ChangeChildRefEntry(const BRepGraph_ChildRefId theRefId)
+  BRepGraphInc::ChildRef& ChangeChildRef(const BRepGraph_ChildRefId theRefId)
   {
     return myChildRefs.Change(theRefId.Index);
   }
 
-  BRepGraphInc::OccurrenceRefEntry& ChangeOccurrenceRefEntry(
+  BRepGraphInc::OccurrenceRef& ChangeOccurrenceRef(
     const BRepGraph_OccurrenceRefId theRefId)
   {
     return myOccurrenceRefs.Change(theRefId.Index);
@@ -561,21 +563,21 @@ public:
 
   //! @name Append transitional reference entries
 
-  BRepGraphInc::ShellRefEntry& AppendShellRefEntry() { return myShellRefs.Append(); }
+  BRepGraphInc::ShellRef& AppendShellRef() { return myShellRefs.Append(); }
 
-  BRepGraphInc::FaceRefEntry& AppendFaceRefEntry() { return myFaceRefs.Append(); }
+  BRepGraphInc::FaceRef& AppendFaceRef() { return myFaceRefs.Append(); }
 
-  BRepGraphInc::WireRefEntry& AppendWireRefEntry() { return myWireRefs.Append(); }
+  BRepGraphInc::WireRef& AppendWireRef() { return myWireRefs.Append(); }
 
-  BRepGraphInc::CoEdgeRefEntry& AppendCoEdgeRefEntry() { return myCoEdgeRefs.Append(); }
+  BRepGraphInc::CoEdgeRef& AppendCoEdgeRef() { return myCoEdgeRefs.Append(); }
 
-  BRepGraphInc::VertexRefEntry& AppendVertexRefEntry() { return myVertexRefs.Append(); }
+  BRepGraphInc::VertexRef& AppendVertexRef() { return myVertexRefs.Append(); }
 
-  BRepGraphInc::SolidRefEntry& AppendSolidRefEntry() { return mySolidRefs.Append(); }
+  BRepGraphInc::SolidRef& AppendSolidRef() { return mySolidRefs.Append(); }
 
-  BRepGraphInc::ChildRefEntry& AppendChildRefEntry() { return myChildRefs.Append(); }
+  BRepGraphInc::ChildRef& AppendChildRef() { return myChildRefs.Append(); }
 
-  BRepGraphInc::OccurrenceRefEntry& AppendOccurrenceRefEntry() { return myOccurrenceRefs.Append(); }
+  BRepGraphInc::OccurrenceRef& AppendOccurrenceRef() { return myOccurrenceRefs.Append(); }
 
   //! @name UID access
 
@@ -593,13 +595,13 @@ public:
   //! Return the BaseRef portion of any ref entry by generic RefId.
   //! @param[in] theRefId generic reference identifier
   //! @return const reference to the BaseRef base of the ref entry
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::BaseRef& BaseRefEntry(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::BaseRef& BaseRef(
     const BRepGraph_RefId theRefId) const;
 
   //! Return the mutable BaseRef portion of any ref entry by generic RefId.
   //! @param[in] theRefId generic reference identifier
   //! @return mutable reference to the BaseRef base of the ref entry
-  Standard_EXPORT BRepGraphInc::BaseRef& ChangeBaseRefEntry(const BRepGraph_RefId theRefId);
+  Standard_EXPORT BRepGraphInc::BaseRef& ChangeBaseRef(const BRepGraph_RefId theRefId);
 
   //! @name Ref UID access
 
@@ -846,14 +848,14 @@ private:
   DefStore<BRepGraphInc::OccurrenceDef> myOccurrences;
 
   //! @name Transitional reference entry stores
-  RefStore<BRepGraphInc::ShellRefEntry>      myShellRefs;
-  RefStore<BRepGraphInc::FaceRefEntry>       myFaceRefs;
-  RefStore<BRepGraphInc::WireRefEntry>       myWireRefs;
-  RefStore<BRepGraphInc::CoEdgeRefEntry>     myCoEdgeRefs;
-  RefStore<BRepGraphInc::VertexRefEntry>     myVertexRefs;
-  RefStore<BRepGraphInc::SolidRefEntry>      mySolidRefs;
-  RefStore<BRepGraphInc::ChildRefEntry>      myChildRefs;
-  RefStore<BRepGraphInc::OccurrenceRefEntry> myOccurrenceRefs;
+  RefStore<BRepGraphInc::ShellRef>      myShellRefs;
+  RefStore<BRepGraphInc::FaceRef>       myFaceRefs;
+  RefStore<BRepGraphInc::WireRef>       myWireRefs;
+  RefStore<BRepGraphInc::CoEdgeRef>     myCoEdgeRefs;
+  RefStore<BRepGraphInc::VertexRef>     myVertexRefs;
+  RefStore<BRepGraphInc::SolidRef>      mySolidRefs;
+  RefStore<BRepGraphInc::ChildRef>      myChildRefs;
+  RefStore<BRepGraphInc::OccurrenceRef> myOccurrenceRefs;
 
   //! @name Representation entity stores
   RepStore<BRepGraphInc::SurfaceRep>       mySurfaces;

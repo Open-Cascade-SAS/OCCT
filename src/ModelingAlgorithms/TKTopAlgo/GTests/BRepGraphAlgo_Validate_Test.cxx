@@ -15,6 +15,8 @@
 #include <BRepBuilderAPI_Copy.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraphInc_Definition.hxx>
+#include <BRepGraphInc_Reference.hxx>
+#include <BRepGraphInc_Representation.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Mutator.hxx>
@@ -48,7 +50,7 @@ NCollection_Vector<BRepGraph_CoEdgeRefId> coEdgeRefsOfWire(const BRepGraph&     
   for (int aRefIdx = 0; aRefIdx < aRefs.NbCoEdgeRefs(); ++aRefIdx)
   {
     const BRepGraph_CoEdgeRefId         aRefId(aRefIdx);
-    const BRepGraphInc::CoEdgeRefEntry& aRef = aRefs.CoEdge(aRefId);
+    const BRepGraphInc::CoEdgeRef& aRef = aRefs.CoEdge(aRefId);
     if (aRef.ParentId == aParentNode && !aRef.IsRemoved)
       aRefIds.Append(aRefId);
   }
@@ -127,7 +129,7 @@ TEST(BRepGraphAlgo_ValidateTest, DetectsRemovedNodeReference)
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
   {
     const BRepGraph_EdgeId              anEdgeId(anEdgeIdx);
-    const BRepGraphInc::VertexRefEntry& aStartRef =
+    const BRepGraphInc::VertexRef& aStartRef =
       BRepGraph_Tool::Edge::StartVertex(aGraph, anEdgeId);
     if (aStartRef.VertexDefId.IsValid())
     {
@@ -176,7 +178,7 @@ TEST(BRepGraphAlgo_ValidateTest, WireConnectivity_DisconnectedEdges)
   const NCollection_Vector<BRepGraph_CoEdgeRefId> aWireRefIds =
     coEdgeRefsOfWire(aGraph, BRepGraph_WireId(aTargetWire));
   ASSERT_GE(aWireRefIds.Length(), 1);
-  const BRepGraphInc::CoEdgeRefEntry& aFirstCR = aGraph.Refs().CoEdge(aWireRefIds.Value(0));
+  const BRepGraphInc::CoEdgeRef& aFirstCR = aGraph.Refs().CoEdge(aWireRefIds.Value(0));
   const BRepGraphInc::CoEdgeDef&      aFirstCoEdge =
     aGraph.Topo().CoEdge(BRepGraph_CoEdgeId(aFirstCR.CoEdgeDefId));
   const BRepGraph_NodeId aFirstEdgeId(aFirstCoEdge.EdgeDefId);
@@ -196,7 +198,7 @@ TEST(BRepGraphAlgo_ValidateTest, WireConnectivity_DisconnectedEdges)
     if (BRepGraph_NodeId::Vertex(aVtxIdx) != anOrigEnd
         && BRepGraph_NodeId::Vertex(aVtxIdx) != BRepGraph_NodeId(anOrigStartVtx))
     {
-      BRepGraph_MutRefEntry<BRepGraphInc::VertexRefEntry> aMutEndRef =
+      BRepGraph_MutRefEntry<BRepGraphInc::VertexRef> aMutEndRef =
         aGraph.Builder().MutVertexRef(aFirstEdge->EndVertexRefId);
       aMutEndRef->VertexDefId = BRepGraph_VertexId(aVtxIdx);
       break;

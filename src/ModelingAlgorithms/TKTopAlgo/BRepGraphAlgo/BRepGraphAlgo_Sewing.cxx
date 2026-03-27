@@ -13,6 +13,8 @@
 
 #include <BRepGraphAlgo_Sewing.hxx>
 #include <BRepGraphInc_Definition.hxx>
+#include <BRepGraphInc_Reference.hxx>
+#include <BRepGraphInc_Representation.hxx>
 
 #include <Bnd_Box.hxx>
 #include <Bnd_Box2d.hxx>
@@ -1840,8 +1842,8 @@ void convertDegenerateEdges(BRepGraph& theGraph, BRepGraphAlgo_Sewing::Result& t
         aVtx->Point     = aPtMid;
         aVtx->Tolerance = aNewTol;
         // Point end vertex ref to the same definition as start, with REVERSED orientation.
-        const BRepGraphInc::VertexRefEntry& aStartRef = aDegRefs.Vertex(anEdge.StartVertexRefId);
-        BRepGraph_MutRefEntry<BRepGraphInc::VertexRefEntry> aEndRef =
+        const BRepGraphInc::VertexRef& aStartRef = aDegRefs.Vertex(anEdge.StartVertexRefId);
+        BRepGraph_MutRefEntry<BRepGraphInc::VertexRef> aEndRef =
           theGraph.Builder().MutVertexRef(anEdge.EndVertexRefId);
         aEndRef->VertexDefId   = aStartVertexId;
         aEndRef->Orientation   = TopAbs_REVERSED;

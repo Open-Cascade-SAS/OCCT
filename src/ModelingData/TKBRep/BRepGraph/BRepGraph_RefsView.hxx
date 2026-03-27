@@ -16,12 +16,14 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraphInc_Definition.hxx>
+#include <BRepGraphInc_Reference.hxx>
+#include <BRepGraphInc_Representation.hxx>
 #include <BRepGraph_VersionStamp.hxx>
 
 //! @brief Read-only view for RefId/RefUID-based reference storage.
 //!
 //! This view exposes reference-entry storage:
-//! - typed reference entry access (ShellRefEntry, FaceRefEntry, ...)
+//! - typed reference entry access (ShellRef, FaceRef, ...)
 //! - reference counts
 //! - RefUID lookup and reverse lookup
 //! - stale tracking via BRepGraph_VersionStamp
@@ -39,21 +41,21 @@ public:
   [[nodiscard]] Standard_EXPORT int NbOccurrenceRefs() const;
 
   //! @name Reference entry access
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::ShellRefEntry& Shell(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::ShellRef& Shell(
     const BRepGraph_ShellRefId theRefId) const;
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::FaceRefEntry& Face(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::FaceRef& Face(
     const BRepGraph_FaceRefId theRefId) const;
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::WireRefEntry& Wire(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::WireRef& Wire(
     const BRepGraph_WireRefId theRefId) const;
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::CoEdgeRefEntry& CoEdge(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::CoEdgeRef& CoEdge(
     const BRepGraph_CoEdgeRefId theRefId) const;
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::VertexRefEntry& Vertex(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::VertexRef& Vertex(
     const BRepGraph_VertexRefId theRefId) const;
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::SolidRefEntry& Solid(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::SolidRef& Solid(
     const BRepGraph_SolidRefId theRefId) const;
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::ChildRefEntry& Child(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::ChildRef& Child(
     const BRepGraph_ChildRefId theRefId) const;
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::OccurrenceRefEntry& Occurrence(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::OccurrenceRef& Occurrence(
     const BRepGraph_OccurrenceRefId theRefId) const;
 
   //! @name RefUID operations

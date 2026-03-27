@@ -13,6 +13,8 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraphInc_Definition.hxx>
+#include <BRepGraphInc_Reference.hxx>
+#include <BRepGraphInc_Representation.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -84,7 +86,7 @@ TEST_F(BRepGraph_ConvenienceTest, EdgeDef_StartVertex_Valid)
 {
   ASSERT_GT(myGraph.Topo().NbEdges(), 0);
   const BRepGraph_EdgeId              anEdgeId(0);
-  const BRepGraphInc::VertexRefEntry& aStart = BRepGraph_Tool::Edge::StartVertex(myGraph, anEdgeId);
+  const BRepGraphInc::VertexRef& aStart = BRepGraph_Tool::Edge::StartVertex(myGraph, anEdgeId);
   EXPECT_TRUE(aStart.VertexDefId.IsValid());
 }
 
@@ -92,7 +94,7 @@ TEST_F(BRepGraph_ConvenienceTest, EdgeDef_EndVertex_Valid)
 {
   ASSERT_GT(myGraph.Topo().NbEdges(), 0);
   const BRepGraph_EdgeId              anEdgeId(0);
-  const BRepGraphInc::VertexRefEntry& anEnd = BRepGraph_Tool::Edge::EndVertex(myGraph, anEdgeId);
+  const BRepGraphInc::VertexRef& anEnd = BRepGraph_Tool::Edge::EndVertex(myGraph, anEdgeId);
   EXPECT_TRUE(anEnd.VertexDefId.IsValid());
 }
 

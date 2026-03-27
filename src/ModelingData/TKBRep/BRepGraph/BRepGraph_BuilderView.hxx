@@ -85,7 +85,7 @@ public:
   [[nodiscard]] Standard_EXPORT BRepGraph_NodeId AddSolid();
 
   //! Link a face to a shell.
-  //! Appends FaceRefEntry and stores its FaceRefId in shell FaceRefIds.
+  //! Appends FaceRef and stores its FaceRefId in shell FaceRefIds.
   //! @param[in] theShellEntity  shell definition NodeId
   //! @param[in] theFaceEntity   face definition NodeId
   //! @param[in] theOri       orientation of the face in the shell
@@ -94,7 +94,7 @@ public:
                                       const TopAbs_Orientation theOri = TopAbs_FORWARD);
 
   //! Link a shell to a solid.
-  //! Appends ShellRefEntry and stores its ShellRefId in solid ShellRefIds.
+  //! Appends ShellRef and stores its ShellRefId in solid ShellRefIds.
   //! @param[in] theSolidEntity  solid definition NodeId
   //! @param[in] theShellEntity  shell definition NodeId
   //! @param[in] theOri       orientation of the shell in the solid
@@ -270,42 +270,42 @@ public:
 
   //! Return scoped mutable shell reference guard.
   //! @param[in] theShellRef typed shell reference identifier
-  Standard_EXPORT BRepGraph_MutRefEntry<BRepGraphInc::ShellRefEntry> MutShellRef(
+  Standard_EXPORT BRepGraph_MutRefEntry<BRepGraphInc::ShellRef> MutShellRef(
     const BRepGraph_ShellRefId theShellRef);
 
   //! Return scoped mutable face reference guard.
   //! @param[in] theFaceRef typed face reference identifier
-  Standard_EXPORT BRepGraph_MutRefEntry<BRepGraphInc::FaceRefEntry> MutFaceRef(
+  Standard_EXPORT BRepGraph_MutRefEntry<BRepGraphInc::FaceRef> MutFaceRef(
     const BRepGraph_FaceRefId theFaceRef);
 
   //! Return scoped mutable wire reference guard.
   //! @param[in] theWireRef typed wire reference identifier
-  Standard_EXPORT BRepGraph_MutRefEntry<BRepGraphInc::WireRefEntry> MutWireRef(
+  Standard_EXPORT BRepGraph_MutRefEntry<BRepGraphInc::WireRef> MutWireRef(
     const BRepGraph_WireRefId theWireRef);
 
   //! Return scoped mutable coedge reference guard.
   //! @param[in] theCoEdgeRef typed coedge reference identifier
-  Standard_EXPORT BRepGraph_MutRefEntry<BRepGraphInc::CoEdgeRefEntry> MutCoEdgeRef(
+  Standard_EXPORT BRepGraph_MutRefEntry<BRepGraphInc::CoEdgeRef> MutCoEdgeRef(
     const BRepGraph_CoEdgeRefId theCoEdgeRef);
 
   //! Return scoped mutable vertex reference guard.
   //! @param[in] theVertexRef typed vertex reference identifier
-  Standard_EXPORT BRepGraph_MutRefEntry<BRepGraphInc::VertexRefEntry> MutVertexRef(
+  Standard_EXPORT BRepGraph_MutRefEntry<BRepGraphInc::VertexRef> MutVertexRef(
     const BRepGraph_VertexRefId theVertexRef);
 
   //! Return scoped mutable solid reference guard.
   //! @param[in] theSolidRef typed solid reference identifier
-  Standard_EXPORT BRepGraph_MutRefEntry<BRepGraphInc::SolidRefEntry> MutSolidRef(
+  Standard_EXPORT BRepGraph_MutRefEntry<BRepGraphInc::SolidRef> MutSolidRef(
     const BRepGraph_SolidRefId theSolidRef);
 
   //! Return scoped mutable child reference guard.
   //! @param[in] theChildRef typed child reference identifier
-  Standard_EXPORT BRepGraph_MutRefEntry<BRepGraphInc::ChildRefEntry> MutChildRef(
+  Standard_EXPORT BRepGraph_MutRefEntry<BRepGraphInc::ChildRef> MutChildRef(
     const BRepGraph_ChildRefId theChildRef);
 
   //! Return scoped mutable occurrence reference guard.
   //! @param[in] theOccurrenceRef typed occurrence reference identifier
-  Standard_EXPORT BRepGraph_MutRefEntry<BRepGraphInc::OccurrenceRefEntry> MutOccurrenceRef(
+  Standard_EXPORT BRepGraph_MutRefEntry<BRepGraphInc::OccurrenceRef> MutOccurrenceRef(
     const BRepGraph_OccurrenceRefId theOccurrenceRef);
 
 private:

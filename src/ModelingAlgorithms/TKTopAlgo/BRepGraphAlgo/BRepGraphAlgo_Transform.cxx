@@ -13,6 +13,8 @@
 
 #include <BRepGraphAlgo_Transform.hxx>
 #include <BRepGraphInc_Definition.hxx>
+#include <BRepGraphInc_Reference.hxx>
+#include <BRepGraphInc_Representation.hxx>
 
 #include <BRepGraphAlgo_Copy.hxx>
 

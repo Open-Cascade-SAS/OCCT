@@ -235,7 +235,7 @@ void BRepGraphInc_Storage::ResetAllRefUIDs()
 
 //=================================================================================================
 
-const BRepGraphInc::BaseRef& BRepGraphInc_Storage::BaseRefEntry(
+const BRepGraphInc::BaseRef& BRepGraphInc_Storage::BaseRef(
   const BRepGraph_RefId theRefId) const
 {
   switch (theRefId.RefKind)
@@ -263,7 +263,7 @@ const BRepGraphInc::BaseRef& BRepGraphInc_Storage::BaseRefEntry(
 
 //=================================================================================================
 
-BRepGraphInc::BaseRef& BRepGraphInc_Storage::ChangeBaseRefEntry(const BRepGraph_RefId theRefId)
+BRepGraphInc::BaseRef& BRepGraphInc_Storage::ChangeBaseRef(const BRepGraph_RefId theRefId)
 {
   switch (theRefId.RefKind)
   {
@@ -638,7 +638,7 @@ bool BRepGraphInc_Storage::ValidateReverseIndex() const
   // Wire -> CoEdge and Edge -> CoEdge coherence via coedge ref entries.
   for (int aCoEdgeRefIdx = 0; aCoEdgeRefIdx < myCoEdgeRefs.Nb(); ++aCoEdgeRefIdx)
   {
-    const BRepGraphInc::CoEdgeRefEntry& aRef = myCoEdgeRefs.Get(aCoEdgeRefIdx);
+    const BRepGraphInc::CoEdgeRef& aRef = myCoEdgeRefs.Get(aCoEdgeRefIdx);
     if (aRef.IsRemoved || !aRef.ParentId.IsValid()
         || aRef.ParentId.NodeKind != BRepGraph_NodeId::Kind::Wire || !aRef.CoEdgeDefId.IsValid())
     {
@@ -695,7 +695,7 @@ bool BRepGraphInc_Storage::ValidateReverseIndex() const
   // Compound child reverse maps via child ref entries.
   for (int aChildRefIdx = 0; aChildRefIdx < myChildRefs.Nb(); ++aChildRefIdx)
   {
-    const BRepGraphInc::ChildRefEntry& aRef = myChildRefs.Get(aChildRefIdx);
+    const BRepGraphInc::ChildRef& aRef = myChildRefs.Get(aChildRefIdx);
     if (aRef.IsRemoved || !aRef.ParentId.IsValid()
         || aRef.ParentId.NodeKind != BRepGraph_NodeId::Kind::Compound || !aRef.ChildDefId.IsValid())
     {
@@ -762,7 +762,7 @@ bool BRepGraphInc_Storage::ValidateReverseIndex() const
   // CompSolid -> Solid reverse map via solid ref entries.
   for (int aSolidRefIdx = 0; aSolidRefIdx < mySolidRefs.Nb(); ++aSolidRefIdx)
   {
-    const BRepGraphInc::SolidRefEntry& aRef = mySolidRefs.Get(aSolidRefIdx);
+    const BRepGraphInc::SolidRef& aRef = mySolidRefs.Get(aSolidRefIdx);
     if (aRef.IsRemoved || !aRef.ParentId.IsValid()
         || aRef.ParentId.NodeKind != BRepGraph_NodeId::Kind::CompSolid
         || !aRef.SolidDefId.IsValid())

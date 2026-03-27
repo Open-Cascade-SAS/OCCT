@@ -16,6 +16,8 @@
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraphInc_Definition.hxx>
+#include <BRepGraphInc_Reference.hxx>
+#include <BRepGraphInc_Representation.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
 #include <gp_Pnt.hxx>

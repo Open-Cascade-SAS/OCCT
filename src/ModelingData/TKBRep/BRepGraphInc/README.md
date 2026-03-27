@@ -11,7 +11,7 @@ BRepGraphInc is not a user-facing API. It is the runtime model that powers BRepG
 - Topology entity tables (Vertex, Edge, CoEdge, Wire, Face, Shell, Solid, Compound, CompSolid)
 - Assembly entity tables (Product, Occurrence)
 - Representation entity tables (SurfaceRep, Curve3DRep, Curve2DRep, TriangulationRep, Polygon3DRep, Polygon2DRep, PolygonOnTriRep)
-- Reference entry tables (ShellRefEntry, FaceRefEntry, WireRefEntry, CoEdgeRefEntry, VertexRefEntry, SolidRefEntry, ChildRefEntry, OccurrenceRefEntry) with BaseRef identity, orientation, and location
+- Reference entry tables (ShellRef, FaceRef, WireRef, CoEdgeRef, VertexRef, SolidRef, ChildRef, OccurrenceRef) with BaseRef identity, orientation, and location
 - Reverse adjacency indices (including product→occurrences)
 - TShape to NodeId mapping
 - Original shape map
@@ -57,18 +57,18 @@ flowchart LR
     OC[OccurrenceDef]
   end
 
-  F -->|WireRef| W
-  W -->|CoEdgeRef| CE
+  F -->|WireUsage| W
+  W -->|CoEdgeUsage| CE
   CE -->|EdgeDefId| E
-  E -->|Start/End VertexRef| V
-  SH -->|FaceRef| F
-  SO -->|ShellRef| SH
-  CO -->|ChildRef| SO
-  CO -->|ChildRef| SH
-  CO -->|ChildRef| F
-  CS -->|SolidRef| SO
+  E -->|Start/End VertexUsage| V
+  SH -->|FaceUsage| F
+  SO -->|ShellUsage| SH
+  CO -->|ChildUsage| SO
+  CO -->|ChildUsage| SH
+  CO -->|ChildUsage| F
+  CS -->|SolidUsage| SO
 
-  PR -->|OccurrenceRef| OC
+  PR -->|OccurrenceUsage| OC
   PR -->|ShapeRootId| SO
   OC -->|ProductDefId| PR
   OC -.->|ParentOccurrenceDefId| OC
@@ -76,7 +76,7 @@ flowchart LR
 
 Notes:
 
-- Intrinsic data lives on entities; context data (orientation/location) lives on RefEntry tables
+- Intrinsic data lives on entities; context data (orientation/location) lives on Ref tables
 - CoEdge owns PCurve data for each edge-face binding (Weiler half-edge pattern)
 - ProductDef: `ShapeRootId` (topology root for parts; invalid for assemblies), `OccurrenceRefIds`
 - OccurrenceDef: `ProductDefId`, `ParentProductDefId`, `ParentOccurrenceDefId` (tree-structured placement chain), `Placement`
@@ -138,11 +138,11 @@ Common header for all reference entries:
 - `MutationGen`: generation counter for change tracking
 - `IsRemoved`: soft-delete flag
 
-### RefEntry Types
+### Ref Types
 
 Concrete ref entry types extend BaseRef with context data:
 
-- `ShellRefEntry`, `FaceRefEntry`, `WireRefEntry`, `CoEdgeRefEntry`, `VertexRefEntry`, `SolidRefEntry`, `ChildRefEntry`, `OccurrenceRefEntry`
+- `ShellRef`, `FaceRef`, `WireRef`, `CoEdgeRef`, `VertexRef`, `SolidRef`, `ChildRef`, `OccurrenceRef`
 - Each adds: `DefId` (target entity index), `Orientation`, `LocalLocation`
 
 ### Entity RefId Vectors
@@ -181,7 +181,7 @@ flowchart LR
 | **Phase 1** | Sequential | Traverse hierarchy. Create container entities (Compound, CompSolid, Solid, Shell). Collect face contexts. |
 | **Phase 2** | Parallel | Extract per-face geometry: surface, PCurves, triangulations, vertices, edges. |
 | **Phase 3** | Sequential | Register faces, wires, edges, CoEdges with TShape deduplication. Link faces to shells. |
-| **Phase 3a** | Sequential | Resolve deferred Compound→Face ChildRef indices via TShape lookup. |
+| **Phase 3a** | Sequential | Resolve deferred Compound→Face ChildUsage indices via TShape lookup. |
 | **Phase 3b** | Optional | Edge regularities (controlled by `Options.ExtractRegularities`). |
 | **Phase 3c** | Optional | Vertex point representations (controlled by `Options.ExtractVertexPointReps`). |
 | **Phase 4** | Sequential | Build reverse indices for O(1) upward navigation. |
@@ -210,13 +210,13 @@ Multi-pass matching in `extractStoredPCurves()`:
 
 ### Instance Locations
 
-| RefEntry Type | What it stores |
+| Ref Type | What it stores |
 |---------------|---------------|
-| `FaceRefEntry.LocalLocation` | face.Location() relative to shell |
-| `WireRefEntry.LocalLocation` | wire.Location() relative to face |
-| `CoEdgeRefEntry.LocalLocation` | edge.Location() relative to wire |
-| `ShellRefEntry.LocalLocation` | shell.Location() relative to solid |
-| `VertexRefEntry.LocalLocation` | vertex.Location() relative to edge |
+| `FaceRef.LocalLocation` | face.Location() relative to shell |
+| `WireRef.LocalLocation` | wire.Location() relative to face |
+| `CoEdgeRef.LocalLocation` | edge.Location() relative to wire |
+| `ShellRef.LocalLocation` | shell.Location() relative to solid |
+| `VertexRef.LocalLocation` | vertex.Location() relative to edge |
 
 ### Deduplication
 

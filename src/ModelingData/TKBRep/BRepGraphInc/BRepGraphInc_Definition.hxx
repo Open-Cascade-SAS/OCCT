@@ -18,16 +18,9 @@
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_RefId.hxx>
 #include <BRepGraph_RepId.hxx>
-#include <BRepGraphInc_IncidenceRef.hxx>
+#include <BRepGraphInc_Usage.hxx>
 
-#include <Geom2d_Curve.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_Surface.hxx>
-#include <Poly_Polygon2D.hxx>
-#include <Poly_Polygon3D.hxx>
-#include <Poly_PolygonOnTriangulation.hxx>
-#include <Poly_Triangulation.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopLoc_Location.hxx>
 #include <gp_Pnt.hxx>
@@ -36,14 +29,12 @@
 #include <NCollection_BaseAllocator.hxx>
 #include <NCollection_Vector.hxx>
 
-//! @brief Entity structs for the incidence-table topology model.
+//! @brief Definition structs for the incidence-table topology model.
 //!
-//! Each entity holds its intrinsic geometry plus forward-direction children
-//! (incidence refs). The incidence model stores topology as flat vectors
-//! of entities (one per kind) with integer cross-references, enabling
-//! cache-friendly traversal and parallel geometry extraction.
-//! Locations are stored on refs (VertexRef, CoEdgeRef, WireRef, FaceRef,
-//! ShellRef, SolidRef) where they can differ per usage context.
+//! Each definition holds intrinsic geometry properties plus forward-direction
+//! children (via RefId indices). The incidence model stores topology as flat
+//! vectors of definitions (one per kind) with integer cross-references,
+//! enabling cache-friendly traversal and parallel geometry extraction.
 namespace BRepGraphInc
 {
 
@@ -70,130 +61,7 @@ struct BaseDef
   bool IsRemoved = false;  //!< Soft-removal flag
 };
 
-//! Fields shared by every reference entry.
-struct BaseRef
-{
-  BRepGraph_RefId  RefId;               //!< Typed address (kind + per-kind index)
-  BRepGraph_NodeId ParentId;            //!< Parent topology node owning this reference usage
-  uint32_t         MutationGen = 0;     //!< Per-reference mutation counter
-  bool             IsRemoved   = false; //!< Soft-removal flag
-};
-
-//! Fields shared by every representation entity.
-struct BaseRep
-{
-  BRepGraph_RepId Id;                  //!< Typed address (Kind + per-kind index)
-  uint32_t        MutationGen = 0;     //!< Per-rep mutation counter
-  bool            IsRemoved   = false; //!< Soft-removal flag
-};
-
-//! Transitional shell reference storage entry.
-struct ShellRefEntry : public BaseRef
-{
-  BRepGraph_ShellId  ShellDefId;
-  TopAbs_Orientation Orientation = TopAbs_FORWARD;
-  TopLoc_Location    LocalLocation;
-};
-
-//! Transitional face reference storage entry.
-struct FaceRefEntry : public BaseRef
-{
-  BRepGraph_FaceId   FaceDefId;
-  TopAbs_Orientation Orientation = TopAbs_FORWARD;
-  TopLoc_Location    LocalLocation;
-};
-
-//! Transitional wire reference storage entry.
-struct WireRefEntry : public BaseRef
-{
-  BRepGraph_WireId   WireDefId;
-  bool               IsOuter     = false;
-  TopAbs_Orientation Orientation = TopAbs_FORWARD;
-  TopLoc_Location    LocalLocation;
-};
-
-//! Transitional coedge reference storage entry.
-struct CoEdgeRefEntry : public BaseRef
-{
-  BRepGraph_CoEdgeId CoEdgeDefId;
-  TopLoc_Location    LocalLocation;
-};
-
-//! Transitional vertex reference storage entry.
-struct VertexRefEntry : public BaseRef
-{
-  BRepGraph_VertexId VertexDefId;
-  TopAbs_Orientation Orientation = TopAbs_INTERNAL;
-  TopLoc_Location    LocalLocation;
-};
-
-//! Transitional solid reference storage entry.
-struct SolidRefEntry : public BaseRef
-{
-  BRepGraph_SolidId  SolidDefId;
-  TopAbs_Orientation Orientation = TopAbs_FORWARD;
-  TopLoc_Location    LocalLocation;
-};
-
-//! Transitional child reference storage entry.
-struct ChildRefEntry : public BaseRef
-{
-  BRepGraph_NodeId   ChildDefId;
-  TopAbs_Orientation Orientation = TopAbs_FORWARD;
-  TopLoc_Location    LocalLocation;
-};
-
-//! Occurrence reference storage entry.
-struct OccurrenceRefEntry : public BaseRef
-{
-  BRepGraph_OccurrenceId OccurrenceDefId;
-};
-
-//! Surface geometry representation for faces.
-struct SurfaceRep : public BaseRep
-{
-  occ::handle<Geom_Surface> Surface; //!< The geometric surface
-};
-
-//! 3D curve geometry representation for edges.
-struct Curve3DRep : public BaseRep
-{
-  occ::handle<Geom_Curve> Curve; //!< The 3D curve geometry
-};
-
-//! 2D parametric curve (PCurve) representation for coedges.
-struct Curve2DRep : public BaseRep
-{
-  occ::handle<Geom2d_Curve> Curve; //!< The 2D parametric curve
-};
-
-//! Triangulation mesh representation for faces.
-struct TriangulationRep : public BaseRep
-{
-  occ::handle<Poly_Triangulation> Triangulation; //!< The mesh
-};
-
-//! 3D polygon discretization for edges.
-struct Polygon3DRep : public BaseRep
-{
-  occ::handle<Poly_Polygon3D> Polygon; //!< The 3D polygon
-};
-
-//! 2D polygon-on-surface discretization for coedges.
-struct Polygon2DRep : public BaseRep
-{
-  occ::handle<Poly_Polygon2D> Polygon; //!< The 2D polygon on surface parametric space
-};
-
-//! Polygon-on-triangulation for coedges.
-//! Links a polygon to a specific triangulation rep (global index, not face-local).
-struct PolygonOnTriRep : public BaseRep
-{
-  occ::handle<Poly_PolygonOnTriangulation> Polygon; //!< Polygon indices into triangulation
-  BRepGraph_TriangulationRepId TriangulationRepId;  //!< Typed id into myTriangulationsRep
-};
-
-//! Vertex entity: 3D point + tolerance.
+//! Vertex definition: 3D point + tolerance.
 struct VertexDef : public BaseDef
 {
   //! 3D point in definition frame (raw BRep_TVertex::Pnt, without vertex-in-edge Location).
@@ -265,7 +133,7 @@ struct EdgeDef : public BaseDef
   //! True if StartVertex == EndVertex (topological loop, e.g. circle edge).
   bool IsClosed = false;
 
-  //! Boundary vertex reference ids (indices into VertexRefEntry table).
+  //! Boundary vertex reference ids (indices into VertexRef table).
   //! For closed edges, the start and end ref entries point to the same VertexDefId.
   BRepGraph_VertexRefId StartVertexRefId;
   BRepGraph_VertexRefId EndVertexRefId;

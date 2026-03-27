@@ -15,6 +15,8 @@
 #include <BRep_Tool.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraphInc_Definition.hxx>
+#include <BRepGraphInc_Reference.hxx>
+#include <BRepGraphInc_Representation.hxx>
 #include <BRepGraph_Analyze.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Iterator.hxx>

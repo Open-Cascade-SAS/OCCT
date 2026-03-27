@@ -16,6 +16,8 @@
 #include <BRepBndLib.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraphInc_Definition.hxx>
+#include <BRepGraphInc_Reference.hxx>
+#include <BRepGraphInc_Representation.hxx>
 #include <BRepGraph_Analyze.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_MutRef.hxx>
@@ -438,7 +440,7 @@ TEST_F(BRepGraph_AnalyzeTest, BoundingBox_Edge_SubsetOfOwningFace)
 
   for (int aCoEdgeIter = 0; aCoEdgeIter < aCoEdgeRefs.Length(); ++aCoEdgeIter)
   {
-    const BRepGraphInc::CoEdgeRefEntry& aCR = myGraph.Refs().CoEdge(aCoEdgeRefs.Value(aCoEdgeIter));
+    const BRepGraphInc::CoEdgeRef& aCR = myGraph.Refs().CoEdge(aCoEdgeRefs.Value(aCoEdgeIter));
     const BRepGraphInc::CoEdgeDef&      aCoEdge  = myGraph.Topo().CoEdge(aCR.CoEdgeDefId);
     const BRepGraph_NodeId              anEdgeId = aCoEdge.EdgeDefId;
     Bnd_Box                             anEdgeBox;

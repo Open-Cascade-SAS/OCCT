@@ -15,6 +15,8 @@
 #define _BRepGraph_WireExplorer_HeaderFile
 
 #include <BRepGraphInc_Definition.hxx>
+#include <BRepGraphInc_Reference.hxx>
+#include <BRepGraphInc_Representation.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Vector.hxx>
 
@@ -39,7 +41,7 @@
 //!     return aStorage.CoEdge(idx);
 //!   };
 //!   auto vtxRefLookup = [&](const BRepGraph_VertexRefId id) -> BRepGraph_VertexId {
-//!     return aStorage.VertexRefEntry(id).VertexDefId;
+//!     return aStorage.VertexRef(id).VertexDefId;
 //!   };
 //!   BRepGraph_WireExplorer anExp(aStorage.Wire(aWireIdx).CoEdgeRefs,
 //!                                    coedgeLookup, edgeLookup, vtxRefLookup);
@@ -53,7 +55,7 @@ public:
   //! @param[in] theEdgeLookup     function to get EdgeDef by index
   //! @param[in] theVtxRefLookup   function to resolve VertexRefId to VertexDefId
   template <typename CoEdgeLookupT, typename EdgeLookupT, typename VertexRefLookupT>
-  BRepGraph_WireExplorer(const NCollection_Vector<BRepGraphInc::CoEdgeRef>& theCoEdgeRefs,
+  BRepGraph_WireExplorer(const NCollection_Vector<BRepGraphInc::CoEdgeUsage>& theCoEdgeRefs,
                          const CoEdgeLookupT&                               theCoEdgeLookup,
                          const EdgeLookupT&                                 theEdgeLookup,
                          const VertexRefLookupT&                            theVtxRefLookup)
@@ -69,7 +71,7 @@ public:
   void Next() { ++myCurrent; }
 
   //! Current coedge reference in connection order.
-  const BRepGraphInc::CoEdgeRef& CurrentRef() const { return myOrder.Value(myCurrent); }
+  const BRepGraphInc::CoEdgeUsage& CurrentRef() const { return myOrder.Value(myCurrent); }
 
   //! Current coedge typed identifier in storage.
   BRepGraph_CoEdgeId CurrentCoEdgeId() const { return CurrentRef().CoEdgeDefId; }
@@ -78,7 +80,7 @@ public:
   int NbEdges() const { return myOrder.Length(); }
 
   //! Access the ordered coedge refs vector directly.
-  const NCollection_Vector<BRepGraphInc::CoEdgeRef>& OrderedRefs() const { return myOrder; }
+  const NCollection_Vector<BRepGraphInc::CoEdgeUsage>& OrderedRefs() const { return myOrder; }
 
 private:
   //! Resolve the oriented start vertex of an edge: for FORWARD sense returns
@@ -111,7 +113,7 @@ private:
 
   //! Build connection-ordered coedge sequence from CoEdgeRefs.
   template <typename CoEdgeLookupT, typename EdgeLookupT, typename VertexRefLookupT>
-  void buildOrder(const NCollection_Vector<BRepGraphInc::CoEdgeRef>& theCoEdgeRefs,
+  void buildOrder(const NCollection_Vector<BRepGraphInc::CoEdgeUsage>& theCoEdgeRefs,
                   const CoEdgeLookupT&                               theCoEdgeLookup,
                   const EdgeLookupT&                                 theEdgeLookup,
                   const VertexRefLookupT&                            theVtxRefLookup)
@@ -131,7 +133,7 @@ private:
     // Chain coedges by matching end-vertex to start-vertex.
     for (int aPlaced = 1; aPlaced < aNbEdges; ++aPlaced)
     {
-      const BRepGraphInc::CoEdgeRef& aPrevRef    = myOrder.Value(aPlaced - 1);
+      const BRepGraphInc::CoEdgeUsage& aPrevRef    = myOrder.Value(aPlaced - 1);
       const BRepGraphInc::CoEdgeDef& aPrevCoEdge = theCoEdgeLookup(aPrevRef.CoEdgeDefId.Index);
       const BRepGraph_NodeId         aPrevEnd =
         orientedEndVertex(theEdgeLookup(aPrevCoEdge.EdgeDefId.Index),
@@ -143,7 +145,7 @@ private:
       {
         if (aUsed(i))
           continue;
-        const BRepGraphInc::CoEdgeRef& aCandRef    = theCoEdgeRefs.Value(i);
+        const BRepGraphInc::CoEdgeUsage& aCandRef    = theCoEdgeRefs.Value(i);
         const BRepGraphInc::CoEdgeDef& aCandCoEdge = theCoEdgeLookup(aCandRef.CoEdgeDefId.Index);
         const BRepGraph_NodeId         aCandStart =
           orientedStartVertex(theEdgeLookup(aCandCoEdge.EdgeDefId.Index),
@@ -174,7 +176,7 @@ private:
     }
   }
 
-  NCollection_Vector<BRepGraphInc::CoEdgeRef> myOrder;
+  NCollection_Vector<BRepGraphInc::CoEdgeUsage> myOrder;
   int                                         myCurrent;
 };
 

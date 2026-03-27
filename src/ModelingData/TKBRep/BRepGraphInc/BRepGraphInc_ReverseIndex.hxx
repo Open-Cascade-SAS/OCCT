@@ -31,13 +31,13 @@ struct CompoundDef;
 struct CompSolidDef;
 struct ProductDef;
 struct OccurrenceDef;
-struct ShellRefEntry;
-struct FaceRefEntry;
-struct WireRefEntry;
-struct CoEdgeRefEntry;
-struct SolidRefEntry;
-struct ChildRefEntry;
-struct VertexRefEntry;
+struct ShellRef;
+struct FaceRef;
+struct WireRef;
+struct CoEdgeRef;
+struct SolidRef;
+struct ChildRef;
+struct VertexRef;
 } // namespace BRepGraphInc
 
 //! @brief Reverse incidence indices for O(1) upward navigation.
@@ -84,13 +84,13 @@ public:
                              const NCollection_Vector<BRepGraphInc::SolidDef>&       theSolids,
                              const NCollection_Vector<BRepGraphInc::CompoundDef>&    theCompounds,
                              const NCollection_Vector<BRepGraphInc::CompSolidDef>&   theCompSolids,
-                             const NCollection_Vector<BRepGraphInc::ShellRefEntry>&  theShellRefs,
-                             const NCollection_Vector<BRepGraphInc::FaceRefEntry>&   theFaceRefs,
-                             const NCollection_Vector<BRepGraphInc::WireRefEntry>&   theWireRefs,
-                             const NCollection_Vector<BRepGraphInc::CoEdgeRefEntry>& theCoEdgeRefs,
-                             const NCollection_Vector<BRepGraphInc::SolidRefEntry>&  theSolidRefs,
-                             const NCollection_Vector<BRepGraphInc::ChildRefEntry>&  theChildRefs,
-                             const NCollection_Vector<BRepGraphInc::VertexRefEntry>& theVertexRefs);
+                             const NCollection_Vector<BRepGraphInc::ShellRef>&  theShellRefs,
+                             const NCollection_Vector<BRepGraphInc::FaceRef>&   theFaceRefs,
+                             const NCollection_Vector<BRepGraphInc::WireRef>&   theWireRefs,
+                             const NCollection_Vector<BRepGraphInc::CoEdgeRef>& theCoEdgeRefs,
+                             const NCollection_Vector<BRepGraphInc::SolidRef>&  theSolidRefs,
+                             const NCollection_Vector<BRepGraphInc::ChildRef>&  theChildRefs,
+                             const NCollection_Vector<BRepGraphInc::VertexRef>& theVertexRefs);
 
   //! Incrementally update reverse indices for entities/ref-parents appended after a previous
   //! Build(). Only processes entities from the old counts to the current vector lengths and
@@ -109,11 +109,11 @@ public:
     const NCollection_Vector<BRepGraphInc::FaceDef>&        theFaces,
     const NCollection_Vector<BRepGraphInc::ShellDef>&       theShells,
     const NCollection_Vector<BRepGraphInc::SolidDef>&       theSolids,
-    const NCollection_Vector<BRepGraphInc::ShellRefEntry>&  theShellRefs,
-    const NCollection_Vector<BRepGraphInc::FaceRefEntry>&   theFaceRefs,
-    const NCollection_Vector<BRepGraphInc::WireRefEntry>&   theWireRefs,
-    const NCollection_Vector<BRepGraphInc::CoEdgeRefEntry>& theCoEdgeRefs,
-    const NCollection_Vector<BRepGraphInc::VertexRefEntry>& theVertexRefs,
+    const NCollection_Vector<BRepGraphInc::ShellRef>&  theShellRefs,
+    const NCollection_Vector<BRepGraphInc::FaceRef>&   theFaceRefs,
+    const NCollection_Vector<BRepGraphInc::WireRef>&   theWireRefs,
+    const NCollection_Vector<BRepGraphInc::CoEdgeRef>& theCoEdgeRefs,
+    const NCollection_Vector<BRepGraphInc::VertexRef>& theVertexRefs,
     const int                                               theOldNbEdges,
     const int                                               theOldNbWires,
     const int                                               theOldNbFaces,
@@ -185,42 +185,42 @@ public:
     return seekVec(myShellToSolids, theShellId.Index);
   }
 
-  //! Return compound indices containing the given solid as a ChildRef.
+  //! Return compound indices containing the given solid as a ChildUsage.
   [[nodiscard]] const NCollection_Vector<BRepGraph_CompoundId>* CompoundsOfSolid(
     const BRepGraph_SolidId theSolidId) const
   {
     return seekVec(myCompoundsOfSolid, theSolidId.Index);
   }
 
-  //! Return compsolid indices containing the given solid as a SolidRef.
+  //! Return compsolid indices containing the given solid as a SolidUsage.
   [[nodiscard]] const NCollection_Vector<BRepGraph_CompSolidId>* CompSolidsOfSolid(
     const BRepGraph_SolidId theSolidId) const
   {
     return seekVec(myCompSolidsOfSolid, theSolidId.Index);
   }
 
-  //! Return compound indices containing the given shell as a ChildRef.
+  //! Return compound indices containing the given shell as a ChildUsage.
   [[nodiscard]] const NCollection_Vector<BRepGraph_CompoundId>* CompoundsOfShell(
     const BRepGraph_ShellId theShellId) const
   {
     return seekVec(myCompoundsOfShell, theShellId.Index);
   }
 
-  //! Return compound indices containing the given face as a ChildRef.
+  //! Return compound indices containing the given face as a ChildUsage.
   [[nodiscard]] const NCollection_Vector<BRepGraph_CompoundId>* CompoundsOfFace(
     const BRepGraph_FaceId theFaceId) const
   {
     return seekVec(myCompoundsOfFace, theFaceId.Index);
   }
 
-  //! Return compound indices containing the given compound as a ChildRef.
+  //! Return compound indices containing the given compound as a ChildUsage.
   [[nodiscard]] const NCollection_Vector<BRepGraph_CompoundId>* CompoundsOfCompound(
     const BRepGraph_CompoundId theCompoundId) const
   {
     return seekVec(myCompoundsOfCompound, theCompoundId.Index);
   }
 
-  //! Return compound indices containing the given compsolid as a ChildRef.
+  //! Return compound indices containing the given compsolid as a ChildUsage.
   [[nodiscard]] const NCollection_Vector<BRepGraph_CompoundId>* CompoundsOfCompSolid(
     const BRepGraph_CompSolidId theCompSolidId) const
   {
@@ -282,11 +282,11 @@ public:
     const NCollection_Vector<BRepGraphInc::FaceDef>&        theFaces,
     const NCollection_Vector<BRepGraphInc::ShellDef>&       theShells,
     const NCollection_Vector<BRepGraphInc::SolidDef>&       theSolids,
-    const NCollection_Vector<BRepGraphInc::ShellRefEntry>&  theShellRefs,
-    const NCollection_Vector<BRepGraphInc::FaceRefEntry>&   theFaceRefs,
-    const NCollection_Vector<BRepGraphInc::WireRefEntry>&   theWireRefs,
-    const NCollection_Vector<BRepGraphInc::CoEdgeRefEntry>& theCoEdgeRefs,
-    const NCollection_Vector<BRepGraphInc::VertexRefEntry>& theVertexRefs) const;
+    const NCollection_Vector<BRepGraphInc::ShellRef>&  theShellRefs,
+    const NCollection_Vector<BRepGraphInc::FaceRef>&   theFaceRefs,
+    const NCollection_Vector<BRepGraphInc::WireRef>&   theWireRefs,
+    const NCollection_Vector<BRepGraphInc::CoEdgeRef>& theCoEdgeRefs,
+    const NCollection_Vector<BRepGraphInc::VertexRef>& theVertexRefs) const;
 
   // --- Incremental mutation ---
 

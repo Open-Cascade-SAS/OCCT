@@ -13,6 +13,8 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraphInc_Definition.hxx>
+#include <BRepGraphInc_Reference.hxx>
+#include <BRepGraphInc_Representation.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_MutRefEntry.hxx>
@@ -399,7 +401,7 @@ TEST_F(BRepGraph_HistoryTest, SplitEdge_RewritesAllContainingWires)
 
     for (int anIdx = 0; anIdx < aCoEdgeRefs.Length(); ++anIdx)
     {
-      const BRepGraphInc::CoEdgeRefEntry& aCR     = myGraph.Refs().CoEdge(aCoEdgeRefs.Value(anIdx));
+      const BRepGraphInc::CoEdgeRef& aCR     = myGraph.Refs().CoEdge(aCoEdgeRefs.Value(anIdx));
       const BRepGraphInc::CoEdgeDef&      aCoEdge = myGraph.Topo().CoEdge(aCR.CoEdgeDefId);
       const BRepGraph_NodeId              anId(aCoEdge.EdgeDefId);
       if (anId == anEdgeId)
@@ -449,7 +451,7 @@ TEST_F(BRepGraph_HistoryTest, SplitEdge_IgnoresRemovedCoEdgeRefEntries)
   for (int aRefOrd = 0; aRefOrd < aWireRefsBefore.Length(); ++aRefOrd)
   {
     const BRepGraph_CoEdgeRefId         aRefId  = aWireRefsBefore.Value(aRefOrd);
-    const BRepGraphInc::CoEdgeRefEntry& aRef    = myGraph.Refs().CoEdge(aRefId);
+    const BRepGraphInc::CoEdgeRef& aRef    = myGraph.Refs().CoEdge(aRefId);
     const BRepGraphInc::CoEdgeDef&      aCoEdge = myGraph.Topo().CoEdge(aRef.CoEdgeDefId);
     if (aCoEdge.EdgeDefId == BRepGraph_EdgeId(anEdgeId.Index))
     {
@@ -462,7 +464,7 @@ TEST_F(BRepGraph_HistoryTest, SplitEdge_IgnoresRemovedCoEdgeRefEntries)
   ASSERT_GE(aRemovedOrd, 0);
 
   {
-    BRepGraph_MutRefEntry<BRepGraphInc::CoEdgeRefEntry> aMut =
+    BRepGraph_MutRefEntry<BRepGraphInc::CoEdgeRef> aMut =
       myGraph.Builder().MutCoEdgeRef(aRefToRemove);
     aMut->IsRemoved = true;
   }
@@ -492,7 +494,7 @@ TEST_F(BRepGraph_HistoryTest, SplitEdge_IgnoresRemovedCoEdgeRefEntries)
   for (int aRefIdx = 0; aRefIdx < myGraph.Refs().NbCoEdgeRefs(); ++aRefIdx)
   {
     const BRepGraph_CoEdgeRefId         aRefId(aRefIdx);
-    const BRepGraphInc::CoEdgeRefEntry& aRef = myGraph.Refs().CoEdge(aRefId);
+    const BRepGraphInc::CoEdgeRef& aRef = myGraph.Refs().CoEdge(aRefId);
     if (aRef.IsRemoved || !aRef.CoEdgeDefId.IsValid(myGraph.Topo().NbCoEdges()))
       continue;
     const BRepGraph_NodeId anId(myGraph.Topo().CoEdge(aRef.CoEdgeDefId).EdgeDefId);

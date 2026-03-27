@@ -19,9 +19,9 @@ graph TD
     P1["Product 1<br/><b>Part: Bolt</b><br/>ShapeRootId → Solid(0)"]
     P2["Product 2<br/><b>Part: Plate</b><br/>ShapeRootId → Solid(1)"]
 
-    P0 -->|OccurrenceRef| O0
-    P0 -->|OccurrenceRef| O1
-    P0 -->|OccurrenceRef| O2
+    P0 -->|OccurrenceUsage| O0
+    P0 -->|OccurrenceUsage| O1
+    P0 -->|OccurrenceUsage| O2
 
     O0 -->|ProductDefId| P1
     O1 -->|ProductDefId| P1
@@ -64,16 +64,16 @@ graph TD
     Axle["Product: Axle<br/><b>Part</b><br/>ShapeRootId → Solid(2)"]
     Wheel["Product: Wheel<br/><b>Part</b><br/>ShapeRootId → Solid(3)"]
 
-    Car -->|OccurrenceRef| OccChassis
-    Car -->|OccurrenceRef| OccWheel1
-    Car -->|OccurrenceRef| OccWheel2
+    Car -->|OccurrenceUsage| OccChassis
+    Car -->|OccurrenceUsage| OccWheel1
+    Car -->|OccurrenceUsage| OccWheel2
 
     OccChassis -->|ProductDefId| Chassis
     OccWheel1 -->|ProductDefId| Wheel
     OccWheel2 -->|ProductDefId| Wheel
 
-    Chassis -->|OccurrenceRef| OccAxle1
-    Chassis -->|OccurrenceRef| OccAxle2
+    Chassis -->|OccurrenceUsage| OccAxle1
+    Chassis -->|OccurrenceUsage| OccAxle2
 
     OccAxle1 -->|ProductDefId| Axle
     OccAxle2 -->|ProductDefId| Axle
@@ -194,7 +194,7 @@ classDiagram
 
     class ProductDef {
         +BRepGraph_NodeId ShapeRootId
-        +NCollection_Vector~OccurrenceRef~ OccurrenceRefs
+        +NCollection_Vector~OccurrenceUsage~ OccurrenceRefs
         +InitVectors(allocator)
     }
 
@@ -205,19 +205,19 @@ classDiagram
         +TopLoc_Location Placement
     }
 
-    class OccurrenceRef {
+    class OccurrenceUsage {
         +BRepGraph_OccurrenceId OccurrenceDefId
     }
 
     BaseDef <|-- ProductDef
     BaseDef <|-- OccurrenceDef
-    ProductDef *-- OccurrenceRef : OccurrenceRefs
+    ProductDef *-- OccurrenceUsage : OccurrenceRefs
 
     class SolidDef {
-        +NCollection_Vector~ShellRef~ ShellRefs
+        +NCollection_Vector~ShellUsage~ ShellRefs
     }
     class CompoundDef {
-        +NCollection_Vector~ChildRef~ ChildRefs
+        +NCollection_Vector~ChildUsage~ ChildRefs
     }
 
     BaseDef <|-- SolidDef
@@ -359,9 +359,9 @@ flowchart TD
     Occ2["Occurrence<br/>Placement: T_front_axle"]
     Axle["Product: Axle (part)"]
 
-    Root -->|OccurrenceRef| Occ1
+    Root -->|OccurrenceUsage| Occ1
     Occ1 -->|ProductDefId| Chassis
-    Chassis -->|OccurrenceRef| Occ2
+    Chassis -->|OccurrenceUsage| Occ2
     Occ2 -->|ProductDefId| Axle
 
     GlobalLoc["GlobalPlacement(Occ2) =<br/>T_chassis * T_front_axle"]

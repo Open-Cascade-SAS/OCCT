@@ -254,7 +254,7 @@ int BRepGraph::TopoView::NbShellFaces(const BRepGraph_ShellId theShell) const
   int                           aNbFaces = 0;
   for (int i = 0; i < aShell.FaceRefIds.Length(); ++i)
   {
-    if (!aStorage.FaceRefEntry(aShell.FaceRefIds.Value(i)).IsRemoved)
+    if (!aStorage.FaceRef(aShell.FaceRefIds.Value(i)).IsRemoved)
       ++aNbFaces;
   }
   return aNbFaces;
@@ -275,7 +275,7 @@ BRepGraph_NodeId BRepGraph::TopoView::ShellFaceEntity(const BRepGraph_ShellId th
   int                           anOrdinal = 0;
   for (int i = 0; i < aShell.FaceRefIds.Length(); ++i)
   {
-    const BRepGraphInc::FaceRefEntry& aRef = aStorage.FaceRefEntry(aShell.FaceRefIds.Value(i));
+    const BRepGraphInc::FaceRef& aRef = aStorage.FaceRef(aShell.FaceRefIds.Value(i));
     if (aRef.IsRemoved)
       continue;
     if (anOrdinal == theFaceIndex)
@@ -613,7 +613,7 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::TopoView::EdgesOfFace(
 
   for (int w = 0; w < aFace.WireRefIds.Length(); ++w)
   {
-    const BRepGraphInc::WireRefEntry& aWireRef = aStorage.WireRefEntry(aFace.WireRefIds.Value(w));
+    const BRepGraphInc::WireRef& aWireRef = aStorage.WireRef(aFace.WireRefIds.Value(w));
     if (aWireRef.IsRemoved || !aWireRef.WireDefId.IsValid())
       continue;
     if (!aWireRef.WireDefId.IsValid(aStorage.NbWires()))
@@ -622,8 +622,8 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::TopoView::EdgesOfFace(
     const BRepGraphInc::WireDef& aWire = aStorage.Wire(aWireRef.WireDefId);
     for (int ce = 0; ce < aWire.CoEdgeRefIds.Length(); ++ce)
     {
-      const BRepGraphInc::CoEdgeRefEntry& aCoEdgeRef =
-        aStorage.CoEdgeRefEntry(aWire.CoEdgeRefIds.Value(ce));
+      const BRepGraphInc::CoEdgeRef& aCoEdgeRef =
+        aStorage.CoEdgeRef(aWire.CoEdgeRefIds.Value(ce));
       if (aCoEdgeRef.IsRemoved || !aCoEdgeRef.CoEdgeDefId.IsValid())
         continue;
       if (!aCoEdgeRef.CoEdgeDefId.IsValid(aStorage.NbCoEdges()))
@@ -650,8 +650,8 @@ BRepGraph_WireId BRepGraph::TopoView::OuterWireOfFace(const BRepGraph_FaceId the
   const BRepGraphInc::FaceDef& aFace = aStorage.Face(theFace);
   for (int aRefIdx = 0; aRefIdx < aFace.WireRefIds.Length(); ++aRefIdx)
   {
-    const BRepGraphInc::WireRefEntry& aWireRef =
-      aStorage.WireRefEntry(aFace.WireRefIds.Value(aRefIdx));
+    const BRepGraphInc::WireRef& aWireRef =
+      aStorage.WireRef(aFace.WireRefIds.Value(aRefIdx));
     if (!aWireRef.IsRemoved && aWireRef.IsOuter)
       return aWireRef.WireDefId;
   }
@@ -696,11 +696,11 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::TopoView::VerticesOfEdge(
   const BRepGraph_EdgeId       aEdgeDefId(theEdgeEntity.Index);
   const BRepGraphInc::EdgeDef& anEdge = aStorage.Edge(aEdgeDefId);
   if (anEdge.StartVertexRefId.IsValid())
-    aResult.Append(aStorage.VertexRefEntry(anEdge.StartVertexRefId).VertexDefId);
+    aResult.Append(aStorage.VertexRef(anEdge.StartVertexRefId).VertexDefId);
   if (anEdge.EndVertexRefId.IsValid())
-    aResult.Append(aStorage.VertexRefEntry(anEdge.EndVertexRefId).VertexDefId);
+    aResult.Append(aStorage.VertexRef(anEdge.EndVertexRefId).VertexDefId);
   for (int i = 0; i < anEdge.InternalVertexRefIds.Length(); ++i)
-    aResult.Append(aStorage.VertexRefEntry(anEdge.InternalVertexRefIds.Value(i)).VertexDefId);
+    aResult.Append(aStorage.VertexRef(anEdge.InternalVertexRefIds.Value(i)).VertexDefId);
   return aResult;
 }
 
@@ -724,11 +724,11 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::TopoView::AdjacentEdges(
   // Collect all vertices of this edge, then all edges of those vertices.
   NCollection_Vector<BRepGraph_VertexId> aVertices;
   if (anEdge.StartVertexRefId.IsValid())
-    aVertices.Append(aStorage.VertexRefEntry(anEdge.StartVertexRefId).VertexDefId);
+    aVertices.Append(aStorage.VertexRef(anEdge.StartVertexRefId).VertexDefId);
   if (anEdge.EndVertexRefId.IsValid())
-    aVertices.Append(aStorage.VertexRefEntry(anEdge.EndVertexRefId).VertexDefId);
+    aVertices.Append(aStorage.VertexRef(anEdge.EndVertexRefId).VertexDefId);
   for (int i = 0; i < anEdge.InternalVertexRefIds.Length(); ++i)
-    aVertices.Append(aStorage.VertexRefEntry(anEdge.InternalVertexRefIds.Value(i)).VertexDefId);
+    aVertices.Append(aStorage.VertexRef(anEdge.InternalVertexRefIds.Value(i)).VertexDefId);
 
   for (int v = 0; v < aVertices.Length(); ++v)
   {

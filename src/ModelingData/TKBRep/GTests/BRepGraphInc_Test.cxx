@@ -19,6 +19,8 @@
 #include <BRepBuilderAPI_Transform.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraphInc_Definition.hxx>
+#include <BRepGraphInc_Reference.hxx>
+#include <BRepGraphInc_Representation.hxx>
 #include "BRepGraph_RefTestTools.hxx"
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraphInc_Populate.hxx>
@@ -755,8 +757,8 @@ TEST(BRepGraphIncTest, EdgeInternalVertex_Captured)
     if (anEdgeEnt.InternalVertexRefIds.Length() == 1)
     {
       aFound = true;
-      const BRepGraphInc::VertexRefEntry& aIntVRef =
-        aStorage.VertexRefEntry(anEdgeEnt.InternalVertexRefIds.Value(0));
+      const BRepGraphInc::VertexRef& aIntVRef =
+        aStorage.VertexRef(anEdgeEnt.InternalVertexRefIds.Value(0));
       EXPECT_GE(aIntVRef.VertexDefId.Index, 0);
       EXPECT_EQ(aIntVRef.Orientation, TopAbs_INTERNAL);
       // Verify the vertex point.
@@ -823,7 +825,7 @@ TEST(BRepGraphIncTest, EdgeExternalVertex_Captured)
     if (anEdgeEnt.InternalVertexRefIds.Length() == 1)
     {
       aFound = true;
-      EXPECT_EQ(aStorage.VertexRefEntry(anEdgeEnt.InternalVertexRefIds.Value(0)).Orientation,
+      EXPECT_EQ(aStorage.VertexRef(anEdgeEnt.InternalVertexRefIds.Value(0)).Orientation,
                 TopAbs_EXTERNAL);
       break;
     }
@@ -876,10 +878,10 @@ TEST(BRepGraphIncTest, EdgeMultipleInternalVertices_AllCaptured)
       bool aHasInternal = false, aHasExternal = false;
       for (int j = 0; j < 2; ++j)
       {
-        if (aStorage.VertexRefEntry(anEdgeEnt.InternalVertexRefIds.Value(j)).Orientation
+        if (aStorage.VertexRef(anEdgeEnt.InternalVertexRefIds.Value(j)).Orientation
             == TopAbs_INTERNAL)
           aHasInternal = true;
-        if (aStorage.VertexRefEntry(anEdgeEnt.InternalVertexRefIds.Value(j)).Orientation
+        if (aStorage.VertexRef(anEdgeEnt.InternalVertexRefIds.Value(j)).Orientation
             == TopAbs_EXTERNAL)
           aHasExternal = true;
       }
@@ -923,8 +925,8 @@ TEST(BRepGraphIncTest, FaceDirectVertex_Internal_Captured)
   EXPECT_EQ(aFaceEnt.VertexRefIds.Length(), 1);
   if (aFaceEnt.VertexRefIds.Length() == 1)
   {
-    const BRepGraphInc::VertexRefEntry& aFaceVRef =
-      aStorage.VertexRefEntry(aFaceEnt.VertexRefIds.Value(0));
+    const BRepGraphInc::VertexRef& aFaceVRef =
+      aStorage.VertexRef(aFaceEnt.VertexRefIds.Value(0));
     EXPECT_GE(aFaceVRef.VertexDefId.Index, 0);
     EXPECT_EQ(aFaceVRef.Orientation, TopAbs_INTERNAL);
   }
@@ -994,7 +996,7 @@ TEST(BRepGraphIncTest, FaceExternalVertex_Captured)
   const BRepGraphInc::FaceDef& aFaceEnt = aStorage.Face(BRepGraph_FaceId(0));
   EXPECT_EQ(aFaceEnt.VertexRefIds.Length(), 1);
   if (aFaceEnt.VertexRefIds.Length() == 1)
-    EXPECT_EQ(aStorage.VertexRefEntry(aFaceEnt.VertexRefIds.Value(0)).Orientation, TopAbs_EXTERNAL);
+    EXPECT_EQ(aStorage.VertexRef(aFaceEnt.VertexRefIds.Value(0)).Orientation, TopAbs_EXTERNAL);
 }
 
 TEST(BRepGraphIncTest, FaceNoDirectVertices_EmptyVector)

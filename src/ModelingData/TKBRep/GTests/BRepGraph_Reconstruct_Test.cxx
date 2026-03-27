@@ -16,6 +16,8 @@
 #include <BRepGProp.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraphInc_Definition.hxx>
+#include <BRepGraphInc_Reference.hxx>
+#include <BRepGraphInc_Representation.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include "BRepGraph_RefTestTools.hxx"
 #include <BRepGraph_TopoView.hxx>
@@ -341,7 +343,7 @@ TEST(BRepGraph_ReconstructTest, Face_OrientationPreserved)
     BRepGraph_TestTools::FaceRefsOfShell(aGraph, BRepGraph_ShellId(0));
   for (int aRefIdx = 0; aRefIdx < aFaceRefs.Length(); ++aRefIdx)
   {
-    const BRepGraphInc::FaceRefEntry& aFaceRef      = aGraph.Refs().Face(aFaceRefs.Value(aRefIdx));
+    const BRepGraphInc::FaceRef& aFaceRef      = aGraph.Refs().Face(aFaceRefs.Value(aRefIdx));
     const TopAbs_Orientation          anExpectedOri = aFaceRef.Orientation;
 
     TopoDS_Shape aReconFace = aGraph.Shapes().ReconstructFace(aFaceRef.FaceDefId);
@@ -459,7 +461,7 @@ TEST(BRepGraph_ReconstructTest, AfterVertexMutation_ModifiedFlagAndPointChanged)
     BRepGraph_TestTools::CoEdgeRefsOfWire(aGraph, anOuterWire);
   ASSERT_GT(aCoEdgeRefs.Length(), 0);
 
-  const BRepGraphInc::CoEdgeRefEntry& aFirstCR     = aGraph.Refs().CoEdge(aCoEdgeRefs.First());
+  const BRepGraphInc::CoEdgeRef& aFirstCR     = aGraph.Refs().CoEdge(aCoEdgeRefs.First());
   const BRepGraphInc::CoEdgeDef&      aFirstCoEdge = aGraph.Topo().CoEdge(aFirstCR.CoEdgeDefId);
   const int                           aVertIdx =
     BRepGraph_Tool::Edge::StartVertex(aGraph, BRepGraph_EdgeId(aFirstCoEdge.EdgeDefId))

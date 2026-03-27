@@ -13,6 +13,8 @@
 
 #include <BRepGraphCheck.hxx>
 #include <BRepGraphInc_Definition.hxx>
+#include <BRepGraphInc_Reference.hxx>
+#include <BRepGraphInc_Representation.hxx>
 
 #include <BRepGraph_RefsView.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
@@ -31,17 +33,17 @@ namespace
 
 //=================================================================================================
 
-static NCollection_Vector<BRepGraphInc::ShellRefEntry> collectSolidShellRefs(
+static NCollection_Vector<BRepGraphInc::ShellRef> collectSolidShellRefs(
   const BRepGraph::TopoView& theDefs,
   const BRepGraph::RefsView& theRefs,
   const BRepGraph_NodeId     theSolidNodeId)
 {
-  NCollection_Vector<BRepGraphInc::ShellRefEntry> aResult;
+  NCollection_Vector<BRepGraphInc::ShellRef> aResult;
   const BRepGraphInc::SolidDef& aSolidDef = theDefs.Solid(BRepGraph_SolidId(theSolidNodeId.Index));
   for (int aRefIter = 0; aRefIter < aSolidDef.ShellRefIds.Length(); ++aRefIter)
   {
     const BRepGraph_ShellRefId         aRefId = aSolidDef.ShellRefIds.Value(aRefIter);
-    const BRepGraphInc::ShellRefEntry& aRef   = theRefs.Shell(aRefId);
+    const BRepGraphInc::ShellRef& aRef   = theRefs.Shell(aRefId);
     if (aRef.IsRemoved || !aRef.ShellDefId.IsValid(theDefs.NbShells()))
     {
       continue;
@@ -53,17 +55,17 @@ static NCollection_Vector<BRepGraphInc::ShellRefEntry> collectSolidShellRefs(
 
 //=================================================================================================
 
-static NCollection_Vector<BRepGraphInc::FaceRefEntry> collectShellFaceRefs(
+static NCollection_Vector<BRepGraphInc::FaceRef> collectShellFaceRefs(
   const BRepGraph::TopoView& theDefs,
   const BRepGraph::RefsView& theRefs,
   const BRepGraph_NodeId     theShellNodeId)
 {
-  NCollection_Vector<BRepGraphInc::FaceRefEntry> aResult;
+  NCollection_Vector<BRepGraphInc::FaceRef> aResult;
   const BRepGraphInc::ShellDef& aShellDef = theDefs.Shell(BRepGraph_ShellId(theShellNodeId.Index));
   for (int aRefIter = 0; aRefIter < aShellDef.FaceRefIds.Length(); ++aRefIter)
   {
     const BRepGraph_FaceRefId         aRefId = aShellDef.FaceRefIds.Value(aRefIter);
-    const BRepGraphInc::FaceRefEntry& aRef   = theRefs.Face(aRefId);
+    const BRepGraphInc::FaceRef& aRef   = theRefs.Face(aRefId);
     if (aRef.IsRemoved || !aRef.FaceDefId.IsValid(theDefs.NbFaces()))
     {
       continue;
@@ -85,7 +87,7 @@ void BRepGraphCheck::CheckSolidMinimum(const BRepGraph&                         
   const BRepGraph::RefsView&                            aRefs        = theGraph.Refs();
   const BRepGraphInc::SolidDef&                         aSolidDef    = aDefs.Solid(theSolid);
   const BRepGraph_NodeId                                aSolidNodeId = aSolidDef.Id;
-  const NCollection_Vector<BRepGraphInc::ShellRefEntry> aSolidShellRefs =
+  const NCollection_Vector<BRepGraphInc::ShellRef> aSolidShellRefs =
     collectSolidShellRefs(aDefs, aRefs, aSolidNodeId);
 
   if (aSolidShellRefs.IsEmpty())
@@ -95,10 +97,10 @@ void BRepGraphCheck::CheckSolidMinimum(const BRepGraph&                         
   NCollection_Map<int> aAllFaces;
   for (int aShellIter = 0; aShellIter < aSolidShellRefs.Length(); ++aShellIter)
   {
-    const BRepGraphInc::ShellRefEntry& aSR          = aSolidShellRefs.Value(aShellIter);
+    const BRepGraphInc::ShellRef& aSR          = aSolidShellRefs.Value(aShellIter);
     const BRepGraphInc::ShellDef&      aShellDef    = aDefs.Shell(aSR.ShellDefId);
     const BRepGraph_NodeId             aShellNodeId = BRepGraph_NodeId::Shell(aSR.ShellDefId.Index);
-    const NCollection_Vector<BRepGraphInc::FaceRefEntry> aShellFaceRefs =
+    const NCollection_Vector<BRepGraphInc::FaceRef> aShellFaceRefs =
       collectShellFaceRefs(aDefs, aRefs, aShellNodeId);
 
     // Check shell orientation: shells in a solid should have FORWARD or REVERSED orientation.
@@ -115,7 +117,7 @@ void BRepGraphCheck::CheckSolidMinimum(const BRepGraph&                         
 
     for (int aFaceIter = 0; aFaceIter < aShellFaceRefs.Length(); ++aFaceIter)
     {
-      const BRepGraphInc::FaceRefEntry& aFR        = aShellFaceRefs.Value(aFaceIter);
+      const BRepGraphInc::FaceRef& aFR        = aShellFaceRefs.Value(aFaceIter);
       const BRepGraph_NodeId            aFaceDefId = aFR.FaceDefId;
 
       if (!aAllFaces.Add(aFR.FaceDefId.Index))
@@ -147,16 +149,16 @@ void BRepGraphCheck::CheckSolidMinimum(const BRepGraph&                         
   // For each inner shell (index > 0), find a representative face point and classify it.
   for (int aShellIter = 1; aShellIter < aSolidShellRefs.Length(); ++aShellIter)
   {
-    const BRepGraphInc::ShellRefEntry&                   aSR = aSolidShellRefs.Value(aShellIter);
+    const BRepGraphInc::ShellRef&                   aSR = aSolidShellRefs.Value(aShellIter);
     const BRepGraph_NodeId                               aShellDefId = aSR.ShellDefId;
-    const NCollection_Vector<BRepGraphInc::FaceRefEntry> aShellFaceRefs =
+    const NCollection_Vector<BRepGraphInc::FaceRef> aShellFaceRefs =
       collectShellFaceRefs(aDefs, aRefs, BRepGraph_NodeId::Shell(aSR.ShellDefId.Index));
 
     if (aShellFaceRefs.IsEmpty())
       continue;
 
     // Get a point from the first face of the inner shell.
-    const BRepGraphInc::FaceRefEntry& aFR = aShellFaceRefs.Value(0);
+    const BRepGraphInc::FaceRef& aFR = aShellFaceRefs.Value(0);
 
     if (!BRepGraph_Tool::Face::HasSurface(theGraph, aFR.FaceDefId))
       continue;
@@ -201,7 +203,7 @@ void BRepGraphCheck::CheckSolidMinimum(const BRepGraph&                         
   int aForwardShellCount = 0;
   for (int aShellIter = 0; aShellIter < aSolidShellRefs.Length(); ++aShellIter)
   {
-    const BRepGraphInc::ShellRefEntry& aSR = aSolidShellRefs.Value(aShellIter);
+    const BRepGraphInc::ShellRef& aSR = aSolidShellRefs.Value(aShellIter);
     if (aSR.Orientation == TopAbs_FORWARD)
       aForwardShellCount++;
   }

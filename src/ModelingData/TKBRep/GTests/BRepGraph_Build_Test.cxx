@@ -19,6 +19,8 @@
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraphInc_Definition.hxx>
+#include <BRepGraphInc_Reference.hxx>
+#include <BRepGraphInc_Representation.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Tool.hxx>
@@ -712,9 +714,9 @@ TEST(BRepGraph_BuildTest, Box_EdgeVertexDefsAreValid)
   for (int anIdx = 0; anIdx < aGraph.Topo().NbEdges(); ++anIdx)
   {
     const BRepGraph_EdgeId              anEdgeId(anIdx);
-    const BRepGraphInc::VertexRefEntry& aStartRef =
+    const BRepGraphInc::VertexRef& aStartRef =
       BRepGraph_Tool::Edge::StartVertex(aGraph, anEdgeId);
-    const BRepGraphInc::VertexRefEntry& anEndRef =
+    const BRepGraphInc::VertexRef& anEndRef =
       BRepGraph_Tool::Edge::EndVertex(aGraph, anEdgeId);
     EXPECT_TRUE(aStartRef.VertexDefId.IsValid()) << "Edge " << anIdx << " has invalid start vertex";
     EXPECT_TRUE(anEndRef.VertexDefId.IsValid()) << "Edge " << anIdx << " has invalid end vertex";

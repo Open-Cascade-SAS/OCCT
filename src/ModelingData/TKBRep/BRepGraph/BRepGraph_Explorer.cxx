@@ -148,7 +148,7 @@ void BRepGraph_Explorer::explore(const BRepGraph&              theGraph,
 
       for (int aStep = 0; aStep < aComp.ChildRefIds.Length(); ++aStep)
       {
-        const BRepGraphInc::ChildRefEntry& aRef =
+        const BRepGraphInc::ChildRef& aRef =
           theGraph.Refs().Child(aComp.ChildRefIds.Value(aStep));
         if (aRef.IsRemoved)
           continue;
@@ -169,7 +169,7 @@ void BRepGraph_Explorer::explore(const BRepGraph&              theGraph,
 
       for (int aStep = 0; aStep < aCS.SolidRefIds.Length(); ++aStep)
       {
-        const BRepGraphInc::SolidRefEntry& aRef =
+        const BRepGraphInc::SolidRef& aRef =
           theGraph.Refs().Solid(aCS.SolidRefIds.Value(aStep));
         if (aRef.IsRemoved)
           continue;
@@ -189,7 +189,7 @@ void BRepGraph_Explorer::explore(const BRepGraph&              theGraph,
 
       for (int i = 0; i < aSolid.ShellRefIds.Length(); ++i)
       {
-        const BRepGraphInc::ShellRefEntry& aRef =
+        const BRepGraphInc::ShellRef& aRef =
           theGraph.Refs().Shell(aSolid.ShellRefIds.Value(i));
         if (aRef.IsRemoved)
           continue;
@@ -218,7 +218,7 @@ void BRepGraph_Explorer::explore(const BRepGraph&              theGraph,
 
       for (int i = 0; i < aShell.FaceRefIds.Length(); ++i)
       {
-        const BRepGraphInc::FaceRefEntry& aRef = theGraph.Refs().Face(aShell.FaceRefIds.Value(i));
+        const BRepGraphInc::FaceRef& aRef = theGraph.Refs().Face(aShell.FaceRefIds.Value(i));
         if (aRef.IsRemoved)
           continue;
 
@@ -246,7 +246,7 @@ void BRepGraph_Explorer::explore(const BRepGraph&              theGraph,
 
       for (int i = 0; i < aFace.WireRefIds.Length(); ++i)
       {
-        const BRepGraphInc::WireRefEntry& aRef = theGraph.Refs().Wire(aFace.WireRefIds.Value(i));
+        const BRepGraphInc::WireRef& aRef = theGraph.Refs().Wire(aFace.WireRefIds.Value(i));
         if (aRef.IsRemoved)
           continue;
 
@@ -258,7 +258,7 @@ void BRepGraph_Explorer::explore(const BRepGraph&              theGraph,
 
       for (int i = 0; i < aFace.VertexRefIds.Length(); ++i)
       {
-        const BRepGraphInc::VertexRefEntry& aVRef =
+        const BRepGraphInc::VertexRef& aVRef =
           theGraph.Refs().Vertex(aFace.VertexRefIds.Value(i));
         BRepGraph_TopologyPath aChild = thePath;
         aChild.pushStep(aFace.WireRefIds.Length() + i);
@@ -281,7 +281,7 @@ void BRepGraph_Explorer::explore(const BRepGraph&              theGraph,
 
       for (int aStep = 0; aStep < aWire.CoEdgeRefIds.Length(); ++aStep)
       {
-        const BRepGraphInc::CoEdgeRefEntry& aRef =
+        const BRepGraphInc::CoEdgeRef& aRef =
           theGraph.Refs().CoEdge(aWire.CoEdgeRefIds.Value(aStep));
         if (aRef.IsRemoved)
           continue;

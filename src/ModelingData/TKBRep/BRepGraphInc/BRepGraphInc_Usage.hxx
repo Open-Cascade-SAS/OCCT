@@ -11,25 +11,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _BRepGraphInc_IncidenceRef_HeaderFile
-#define _BRepGraphInc_IncidenceRef_HeaderFile
+#ifndef _BRepGraphInc_Usage_HeaderFile
+#define _BRepGraphInc_Usage_HeaderFile
 
 #include <BRepGraph_NodeId.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopLoc_Location.hxx>
 
-//! Lightweight reference structs for incidence-table topology.
+//! Lightweight usage structs for incidence-table topology.
 //!
-//! Each struct encodes a forward-direction containment relationship
-//! between a parent entity and a child entity, carrying the orientation
-//! and (where applicable) the local location of the child in the parent context.
+//! Each struct encodes how a definition is used at a particular site,
+//! carrying the orientation and (where applicable) the local location
+//! of the child in the parent context.
 namespace BRepGraphInc
 {
 
 //! Reference to a vertex carrying Orientation and Location.
 //! Used for boundary vertices (FORWARD/REVERSED) on edges and
 //! direct INTERNAL/EXTERNAL vertex children on edges and faces.
-struct VertexRef
+struct VertexUsage
 {
   BRepGraph_VertexId VertexDefId;
   TopAbs_Orientation Orientation = TopAbs_INTERNAL;
@@ -38,20 +38,20 @@ struct VertexRef
 
 //! Reference from a wire to one of its coedges.
 //!
-//! Unlike other Ref types, CoEdgeRef intentionally carries no Orientation field.
+//! Unlike other Ref types, CoEdgeUsage intentionally carries no Orientation field.
 //! Orientation (Sense) lives on CoEdgeDef because it is definitional, not
 //! referential: Sense is intrinsically bound to the CoEdge's PCurve, parametric
 //! range, and UV endpoints.  Seam edges rely on two CoEdgeDefs with opposite
 //! Sense sharing a SeamPairIdx, each owning its own PCurve - moving Sense here
 //! would break that coupling.
-struct CoEdgeRef
+struct CoEdgeUsage
 {
   BRepGraph_CoEdgeId CoEdgeDefId;
   TopLoc_Location    LocalLocation;
 };
 
 //! Reference from a face to one of its wires.
-struct WireRef
+struct WireUsage
 {
   BRepGraph_WireId   WireDefId;
   bool               IsOuter     = false;
@@ -60,7 +60,7 @@ struct WireRef
 };
 
 //! Reference from a shell to one of its faces.
-struct FaceRef
+struct FaceUsage
 {
   BRepGraph_FaceId   FaceDefId;
   TopAbs_Orientation Orientation = TopAbs_FORWARD;
@@ -68,7 +68,7 @@ struct FaceRef
 };
 
 //! Reference from a solid to one of its shells.
-struct ShellRef
+struct ShellUsage
 {
   BRepGraph_ShellId  ShellDefId;
   TopAbs_Orientation Orientation = TopAbs_FORWARD;
@@ -76,7 +76,7 @@ struct ShellRef
 };
 
 //! Reference from a comp-solid to one of its solids.
-struct SolidRef
+struct SolidUsage
 {
   BRepGraph_SolidId  SolidDefId;
   TopAbs_Orientation Orientation = TopAbs_FORWARD;
@@ -84,7 +84,7 @@ struct SolidRef
 };
 
 //! Reference from a compound to a child of any kind.
-struct ChildRef
+struct ChildUsage
 {
   BRepGraph_NodeId   ChildDefId; //!< Typed child entity id.
   TopAbs_Orientation Orientation = TopAbs_FORWARD;
@@ -92,11 +92,11 @@ struct ChildRef
 };
 
 //! Reference from a product to one of its child occurrences.
-struct OccurrenceRef
+struct OccurrenceUsage
 {
   BRepGraph_OccurrenceId OccurrenceDefId;
 };
 
 } // namespace BRepGraphInc
 
-#endif // _BRepGraphInc_IncidenceRef_HeaderFile
+#endif // _BRepGraphInc_Usage_HeaderFile
