@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <BRepGraphAlgo_Transform.hxx>
+#include <BRepGraphInc_Entity.hxx>
 
 #include <BRepGraphAlgo_Copy.hxx>
 
@@ -42,7 +43,7 @@ void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
   NCollection_Map<int> aVisitedSurfReps;
   for (int anIdx = 0; anIdx < theGraph.Topo().NbFaces(); ++anIdx)
   {
-    BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> aFace =
+    BRepGraph_MutRef<BRepGraphInc::FaceEntity> aFace =
       theGraph.Builder().MutFace(BRepGraph_FaceId(anIdx));
     if (BRepGraph_Tool::Face::HasSurface(theGraph, BRepGraph_FaceId(anIdx))
         && aVisitedSurfReps.Add(aFace->SurfaceRepId.Index))
@@ -61,7 +62,7 @@ void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
   NCollection_Map<int> aVisitedCurveReps;
   for (int anIdx = 0; anIdx < theGraph.Topo().NbEdges(); ++anIdx)
   {
-    BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge =
+    BRepGraph_MutRef<BRepGraphInc::EdgeEntity> anEdge =
       theGraph.Builder().MutEdge(BRepGraph_EdgeId(anIdx));
     if (BRepGraph_Tool::Edge::HasCurve(theGraph, BRepGraph_EdgeId(anIdx))
         && aVisitedCurveReps.Add(anEdge->Curve3DRepId.Index))

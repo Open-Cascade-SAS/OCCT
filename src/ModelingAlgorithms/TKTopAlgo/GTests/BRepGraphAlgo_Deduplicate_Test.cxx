@@ -15,6 +15,7 @@
 #include <BRep_Tool.hxx>
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepGraphCheck_Analyzer.hxx>
+#include <BRepGraphInc_Entity.hxx>
 
 #include <chrono>
 #include <BRepBuilderAPI_Copy.hxx>
@@ -115,7 +116,7 @@ int nbPCurveEntries(const BRepGraph& theGraph)
     for (int i = 0; i < aCoEdgeIdxs.Length(); ++i)
     {
       const BRepGraphInc::CoEdgeEntity& aCE = theGraph.Topo().CoEdge(aCoEdgeIdxs.Value(i));
-      if (aCE.FaceDefId.IsValid())
+      if (aCE.FaceEntityId.IsValid())
         ++aCount;
     }
   }
@@ -271,7 +272,7 @@ int addDuplicatePCurvesToAllEdges(BRepGraph& theGraph)
 
     const occ::handle<Geom2d_Curve>& aDupPCurve = BRepGraph_Tool::CoEdge::PCurve(theGraph, aCE);
     theGraph.Builder().AddPCurveToEdge(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, anEdgeIdx),
-                                       aCE.FaceDefId,
+                                       aCE.FaceEntityId,
                                        aDupPCurve,
                                        aCE.ParamFirst,
                                        aCE.ParamLast,
@@ -399,7 +400,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, DefaultOverload_PerformWorks)
   EXPECT_EQ(aRes.NbCurveRewrites, 4);
   // 1 surface canonicalize + 4 curve canonicalizes = 5 history records.
   EXPECT_EQ(aRes.NbHistoryRecords, 5);
-  EXPECT_FALSE(aRes.IsDefMergeApplied);
+  EXPECT_FALSE(aRes.IsEntityMergeApplied);
 }
 
 TEST(BRepGraphAlgo_DeduplicateTest, SingleFace_NoSurfaceRewrite)
@@ -433,7 +434,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, NotDoneGraph_ReturnsEmptyResult)
   EXPECT_EQ(aRes.NbNullifiedSurfaces, 0);
   EXPECT_EQ(aRes.NbNullifiedCurves, 0);
   EXPECT_EQ(aRes.NbHistoryRecords, 0);
-  EXPECT_FALSE(aRes.IsDefMergeApplied);
+  EXPECT_FALSE(aRes.IsEntityMergeApplied);
 }
 
 TEST(BRepGraphAlgo_DeduplicateTest, Idempotent_SecondRunNoRewrites)
@@ -629,7 +630,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, DefaultOptionsStruct_HasExpectedDefaults)
   BRepGraphAlgo_Deduplicate::Options anOpts;
   EXPECT_FALSE(anOpts.AnalyzeOnly);
   EXPECT_TRUE(anOpts.HistoryMode);
-  EXPECT_FALSE(anOpts.MergeDefsWhenSafe);
+  EXPECT_FALSE(anOpts.MergeEntitiesWhenSafe);
   EXPECT_NEAR(anOpts.CompTolerance, Precision::Angular(), 1e-20);
   EXPECT_NEAR(anOpts.HashTolerance, Precision::Confusion(), 1e-20);
 }
@@ -644,7 +645,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, DefaultResultStruct_AllZeroed)
   EXPECT_EQ(aRes.NbNullifiedSurfaces, 0);
   EXPECT_EQ(aRes.NbNullifiedCurves, 0);
   EXPECT_EQ(aRes.NbHistoryRecords, 0);
-  EXPECT_FALSE(aRes.IsDefMergeApplied);
+  EXPECT_FALSE(aRes.IsEntityMergeApplied);
 }
 
 TEST(BRepGraphAlgo_DeduplicateTest, MergeDefsWhenSafe_MergesVertices)
@@ -656,12 +657,12 @@ TEST(BRepGraphAlgo_DeduplicateTest, MergeDefsWhenSafe_MergesVertices)
   const int aNbVerticesBefore = aGraph.Topo().NbVertices();
 
   BRepGraphAlgo_Deduplicate::Options anOpts;
-  anOpts.MergeDefsWhenSafe = true;
+  anOpts.MergeEntitiesWhenSafe = true;
 
   const BRepGraphAlgo_Deduplicate::Result aRes = BRepGraphAlgo_Deduplicate::Perform(aGraph, anOpts);
   // Two copied faces share identical vertex positions -> vertices should merge.
   EXPECT_GT(aRes.NbMergedVertices, 0);
-  EXPECT_TRUE(aRes.IsDefMergeApplied);
+  EXPECT_TRUE(aRes.IsEntityMergeApplied);
   (void)aNbVerticesBefore;
 }
 
@@ -964,7 +965,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, AfterDedup_AllSurfacesValid)
 
   for (int aFaceIdx = 0; aFaceIdx < aGraph.Topo().NbFaces(); ++aFaceIdx)
   {
-    const BRepGraph_TopoNode::FaceDef& aFaceDef = aGraph.Topo().Face(BRepGraph_FaceId(aFaceIdx));
+    const BRepGraphInc::FaceEntity& aFaceDef = aGraph.Topo().Face(BRepGraph_FaceId(aFaceIdx));
     EXPECT_TRUE(aFaceDef.SurfaceRepId.IsValid())
       << "Face " << aFaceIdx << " has null Surface after dedup";
   }
@@ -980,7 +981,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, AfterDedup_AllCurve3dsValid)
 
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
   {
-    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.Topo().Edge(BRepGraph_EdgeId(anEdgeIdx));
+    const BRepGraphInc::EdgeEntity& anEdgeDef = aGraph.Topo().Edge(BRepGraph_EdgeId(anEdgeIdx));
     if (!anEdgeDef.IsDegenerate)
     {
       EXPECT_TRUE(anEdgeDef.Curve3DRepId.IsValid())
@@ -1026,7 +1027,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, AfterDedup_CanonicalSurfaceGeomNotNull)
   // All face defs should have a non-null surface after dedup.
   for (int aFaceIdx = 0; aFaceIdx < aGraph.Topo().NbFaces(); ++aFaceIdx)
   {
-    const BRepGraph_TopoNode::FaceDef& aFaceDef = aGraph.Topo().Face(BRepGraph_FaceId(aFaceIdx));
+    const BRepGraphInc::FaceEntity& aFaceDef = aGraph.Topo().Face(BRepGraph_FaceId(aFaceIdx));
     EXPECT_TRUE(aFaceDef.SurfaceRepId.IsValid())
       << "Face " << aFaceIdx << " has null Surface after dedup";
   }
@@ -1042,7 +1043,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, AfterDedup_CanonicalCurveGeomNotNull)
 
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
   {
-    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.Topo().Edge(BRepGraph_EdgeId(anEdgeIdx));
+    const BRepGraphInc::EdgeEntity& anEdgeDef = aGraph.Topo().Edge(BRepGraph_EdgeId(anEdgeIdx));
     if (!anEdgeDef.IsDegenerate)
     {
       EXPECT_TRUE(anEdgeDef.Curve3DRepId.IsValid())
@@ -1597,7 +1598,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, Pump_FullDedup_BackRefsAndNullify)
   BRepGraphAlgo_Deduplicate::Options anOpts;
   anOpts.AnalyzeOnly       = false;
   anOpts.HistoryMode       = true;
-  anOpts.MergeDefsWhenSafe = true;
+  anOpts.MergeEntitiesWhenSafe = true;
 
   const BRepGraphAlgo_Deduplicate::Result aRes = BRepGraphAlgo_Deduplicate::Perform(aGraph, anOpts);
 
@@ -1987,7 +1988,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, RoundTrip_TwoBoxes_GeomReduction)
 }
 
 // ---------------------------------------------------------------------------
-// Topology definition merge tests (MergeDefsWhenSafe = true)
+// Topology definition merge tests (MergeEntitiesWhenSafe = true)
 // ---------------------------------------------------------------------------
 
 TEST(BRepGraphAlgo_DeduplicateTest, MergeVertices_SharedVerticesReduced)
@@ -1999,7 +2000,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, MergeVertices_SharedVerticesReduced)
   const int aNbVerticesBefore = aGraph.Topo().NbVertices();
 
   BRepGraphAlgo_Deduplicate::Options anOpts;
-  anOpts.MergeDefsWhenSafe = true;
+  anOpts.MergeEntitiesWhenSafe = true;
 
   const BRepGraphAlgo_Deduplicate::Result aRes = BRepGraphAlgo_Deduplicate::Perform(aGraph, anOpts);
   // Two copied faces -> shared vertex positions should merge.
@@ -2022,7 +2023,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, MergeEdges_SharedEdgesReduced)
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraphAlgo_Deduplicate::Options anOpts;
-  anOpts.MergeDefsWhenSafe = true;
+  anOpts.MergeEntitiesWhenSafe = true;
 
   const BRepGraphAlgo_Deduplicate::Result aRes = BRepGraphAlgo_Deduplicate::Perform(aGraph, anOpts);
   EXPECT_GT(aRes.NbMergedEdges, 0);
@@ -2035,7 +2036,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, MergeWires_IdenticalWiresMerged)
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraphAlgo_Deduplicate::Options anOpts;
-  anOpts.MergeDefsWhenSafe = true;
+  anOpts.MergeEntitiesWhenSafe = true;
 
   const BRepGraphAlgo_Deduplicate::Result aRes = BRepGraphAlgo_Deduplicate::Perform(aGraph, anOpts);
   // After vertex and edge merge, identical wires should also merge.
@@ -2049,7 +2050,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, MergeFaces_IdenticalFacesMerged)
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraphAlgo_Deduplicate::Options anOpts;
-  anOpts.MergeDefsWhenSafe = true;
+  anOpts.MergeEntitiesWhenSafe = true;
 
   const BRepGraphAlgo_Deduplicate::Result aRes = BRepGraphAlgo_Deduplicate::Perform(aGraph, anOpts);
   // After lower-level merges, faces with same surface+wires should merge.
@@ -2062,13 +2063,13 @@ TEST(BRepGraphAlgo_DeduplicateTest, MergeDefsWhenSafe_False_NoMerge)
   aGraph.Build(makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
-  // Default: MergeDefsWhenSafe = false.
+  // Default: MergeEntitiesWhenSafe = false.
   const BRepGraphAlgo_Deduplicate::Result aRes = BRepGraphAlgo_Deduplicate::Perform(aGraph);
   EXPECT_EQ(aRes.NbMergedVertices, 0);
   EXPECT_EQ(aRes.NbMergedEdges, 0);
   EXPECT_EQ(aRes.NbMergedWires, 0);
   EXPECT_EQ(aRes.NbMergedFaces, 0);
-  EXPECT_FALSE(aRes.IsDefMergeApplied);
+  EXPECT_FALSE(aRes.IsEntityMergeApplied);
 }
 
 TEST(BRepGraphAlgo_DeduplicateTest, AnalyzeOnly_MergeDefsWhenSafe_CountsOnly)
@@ -2080,7 +2081,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, AnalyzeOnly_MergeDefsWhenSafe_CountsOnly)
   const int aNbVerticesBefore = aGraph.Topo().NbVertices();
 
   BRepGraphAlgo_Deduplicate::Options anOpts;
-  anOpts.MergeDefsWhenSafe = true;
+  anOpts.MergeEntitiesWhenSafe = true;
   anOpts.AnalyzeOnly       = true;
 
   const BRepGraphAlgo_Deduplicate::Result aRes = BRepGraphAlgo_Deduplicate::Perform(aGraph, anOpts);
@@ -2088,7 +2089,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, AnalyzeOnly_MergeDefsWhenSafe_CountsOnly)
   EXPECT_GT(aRes.NbMergedVertices, 0);
   // But no mutation: all vertices still present.
   EXPECT_EQ(aGraph.Topo().NbVertices(), aNbVerticesBefore);
-  EXPECT_FALSE(aRes.IsDefMergeApplied);
+  EXPECT_FALSE(aRes.IsEntityMergeApplied);
 }
 
 TEST(BRepGraphAlgo_DeduplicateTest, HistoryRecords_MergePhases)
@@ -2098,7 +2099,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, HistoryRecords_MergePhases)
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraphAlgo_Deduplicate::Options anOpts;
-  anOpts.MergeDefsWhenSafe = true;
+  anOpts.MergeEntitiesWhenSafe = true;
   anOpts.HistoryMode       = true;
 
   const BRepGraphAlgo_Deduplicate::Result aRes = BRepGraphAlgo_Deduplicate::Perform(aGraph, anOpts);
@@ -2119,7 +2120,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, AfterMerge_Validate_NoIssues)
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraphAlgo_Deduplicate::Options anOpts;
-  anOpts.MergeDefsWhenSafe = true;
+  anOpts.MergeEntitiesWhenSafe = true;
 
   (void)BRepGraphAlgo_Deduplicate::Perform(aGraph, anOpts);
 

@@ -27,7 +27,7 @@ TopoDS_Shape BRepGraph::ShapesView::Shape(const BRepGraph_NodeId theNode) const
     return TopoDS_Shape();
 
   // Fast path: check unmodified originals in Storage.
-  const BRepGraph_TopoNode::BaseDef* aDef = myGraph->TopoDef(theNode);
+  const BRepGraphInc::BaseEntity* aDef = myGraph->TopoEntity(theNode);
   if (aDef != nullptr && !aDef->IsModified)
   {
     const TopoDS_Shape* anOrig = myGraph->myData->myIncStorage.FindOriginal(theNode);

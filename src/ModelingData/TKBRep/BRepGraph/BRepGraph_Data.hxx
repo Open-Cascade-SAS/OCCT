@@ -22,7 +22,7 @@
 #include <BRepGraph_PathView.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_ShapesView.hxx>
-#include <BRepGraph_TopoNode.hxx>
+#include <BRepGraphInc_Entity.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_UID.hxx>
 #include <BRepGraph_UIDsView.hxx>

@@ -15,7 +15,6 @@
 
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Tool.hxx>
-#include <BRepGraph_TopoNode.hxx>
 #include <BRepGraphInc_Entity.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
@@ -29,8 +28,8 @@ void BRepGraphCheck::CheckVertexOnEdge(const BRepGraph&                         
                                        NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
 {
   const BRepGraph::TopoView&           aDefs     = theGraph.Topo();
-  const BRepGraph_TopoNode::VertexDef& aVtxDef   = aDefs.Vertex(theVertex);
-  const BRepGraph_TopoNode::EdgeDef&   anEdgeDef = aDefs.Edge(theEdge);
+  const BRepGraphInc::VertexEntity& aVtxDef   = aDefs.Vertex(theVertex);
+  const BRepGraphInc::EdgeEntity&   anEdgeDef = aDefs.Edge(theEdge);
 
   // Skip degenerate edges.
   if (BRepGraph_Tool::Edge::Degenerated(theGraph, theEdge))
@@ -44,11 +43,11 @@ void BRepGraphCheck::CheckVertexOnEdge(const BRepGraph&                         
   double aParam = 0.0;
   const BRepGraph_VertexId aStartVtxId =
     anEdgeDef.StartVertexRefId.IsValid()
-      ? BRepGraph_Tool::Edge::StartVertex(theGraph, theEdge).VertexDefId
+      ? BRepGraph_Tool::Edge::StartVertex(theGraph, theEdge).VertexEntityId
       : BRepGraph_VertexId();
   const BRepGraph_VertexId anEndVtxId =
     anEdgeDef.EndVertexRefId.IsValid()
-      ? BRepGraph_Tool::Edge::EndVertex(theGraph, theEdge).VertexDefId
+      ? BRepGraph_Tool::Edge::EndVertex(theGraph, theEdge).VertexEntityId
       : BRepGraph_VertexId();
   if (aStartVtxId.IsValid() && aStartVtxId == theVertex)
   {
@@ -89,7 +88,7 @@ void BRepGraphCheck::CheckVertexOnFace(const BRepGraph&                         
                                        NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
 {
   const BRepGraph::TopoView&           aDefs   = theGraph.Topo();
-  const BRepGraph_TopoNode::VertexDef& aVtxDef = aDefs.Vertex(theVertex);
+  const BRepGraphInc::VertexEntity& aVtxDef = aDefs.Vertex(theVertex);
 
   if (!BRepGraph_Tool::Face::HasSurface(theGraph, theFace))
     return;
@@ -100,18 +99,18 @@ void BRepGraphCheck::CheckVertexOnFace(const BRepGraph&                         
   for (int anEdgeIter = 0; anEdgeIter < aNbEdges; ++anEdgeIter)
   {
     const BRepGraph_EdgeId             anEdgeId  = BRepGraph_EdgeId(anEdgeIter);
-    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(anEdgeId);
+    const BRepGraphInc::EdgeEntity& anEdgeDef = aDefs.Edge(anEdgeId);
 
     bool   aIsEndpoint = false;
     double aParam      = 0.0;
 
     const BRepGraph_VertexId aFaceStartVtxId =
       anEdgeDef.StartVertexRefId.IsValid()
-        ? BRepGraph_Tool::Edge::StartVertex(theGraph, anEdgeId).VertexDefId
+        ? BRepGraph_Tool::Edge::StartVertex(theGraph, anEdgeId).VertexEntityId
         : BRepGraph_VertexId();
     const BRepGraph_VertexId aFaceEndVtxId =
       anEdgeDef.EndVertexRefId.IsValid()
-        ? BRepGraph_Tool::Edge::EndVertex(theGraph, anEdgeId).VertexDefId
+        ? BRepGraph_Tool::Edge::EndVertex(theGraph, anEdgeId).VertexEntityId
         : BRepGraph_VertexId();
     if (aFaceStartVtxId.IsValid() && aFaceStartVtxId == theVertex)
     {

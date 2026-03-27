@@ -12,13 +12,13 @@
 // commercial license or contractual agreement.
 
 #include <BRepGraph.hxx>
+#include <BRepGraphInc_Entity.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_MutRefEntry.hxx>
 #include <BRepGraph_Mutator.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include "BRepGraph_RefTestTools.hxx"
-#include <BRepGraphInc_IncidenceRef.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <NCollection_Vector.hxx>
 #include <Standard_Failure.hxx>
@@ -357,14 +357,14 @@ TEST_F(BRepGraph_HistoryTest, SplitEdge_RewritesAllContainingWires)
   ASSERT_GT(myGraph.Topo().NbEdges(), 0);
 
   const BRepGraph_NodeId             anEdgeId(BRepGraph_NodeId::Kind::Edge, 0);
-  const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
+  const BRepGraphInc::EdgeEntity& anEdgeDef =
     myGraph.Topo().Edge(BRepGraph_EdgeId(anEdgeId.Index));
 
   const double aSplitParam = 0.5 * (anEdgeDef.ParamFirst + anEdgeDef.ParamLast);
 
   const int              aNbVerticesBefore = myGraph.Topo().NbVertices();
   const gp_Pnt           aSplitPoint(1.0, 2.0, 3.0);
-  const BRepGraph_NodeId aSplitVertex = myGraph.Builder().AddVertexDef(aSplitPoint, 1.0e-7);
+  const BRepGraph_NodeId aSplitVertex = myGraph.Builder().AddVertex(aSplitPoint, 1.0e-7);
 
   ASSERT_TRUE(aSplitVertex.IsValid());
   EXPECT_EQ(myGraph.Topo().NbVertices(), aNbVerticesBefore + 1);
@@ -401,9 +401,9 @@ TEST_F(BRepGraph_HistoryTest, SplitEdge_RewritesAllContainingWires)
     for (int anIdx = 0; anIdx < aCoEdgeRefs.Length(); ++anIdx)
     {
       const BRepGraphInc::CoEdgeRefEntry& aCR = myGraph.Refs().CoEdge(aCoEdgeRefs.Value(anIdx));
-      const BRepGraph_TopoNode::CoEdgeDef& aCoEdge =
-        myGraph.Topo().CoEdge(aCR.CoEdgeDefId);
-      const BRepGraph_NodeId anId(aCoEdge.EdgeDefId);
+      const BRepGraphInc::CoEdgeEntity& aCoEdge =
+        myGraph.Topo().CoEdge(aCR.CoEdgeEntityId);
+      const BRepGraph_NodeId anId(aCoEdge.EdgeEntityId);
       if (anId == anEdgeId)
       {
         hasOld = true;
@@ -434,7 +434,7 @@ TEST_F(BRepGraph_HistoryTest, SplitEdge_IgnoresRemovedCoEdgeRefEntries)
   ASSERT_GT(myGraph.Topo().NbEdges(), 0);
 
   const BRepGraph_NodeId             anEdgeId(BRepGraph_NodeId::Kind::Edge, 0);
-  const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
+  const BRepGraphInc::EdgeEntity& anEdgeDef =
     myGraph.Topo().Edge(BRepGraph_EdgeId(anEdgeId.Index));
   const double aSplitParam = 0.5 * (anEdgeDef.ParamFirst + anEdgeDef.ParamLast);
 
@@ -453,9 +453,9 @@ TEST_F(BRepGraph_HistoryTest, SplitEdge_IgnoresRemovedCoEdgeRefEntries)
   {
     const BRepGraph_CoEdgeRefId          aRefId = aWireRefsBefore.Value(aRefOrd);
     const BRepGraphInc::CoEdgeRefEntry& aRef    = myGraph.Refs().CoEdge(aRefId);
-    const BRepGraph_TopoNode::CoEdgeDef& aCoEdge =
-      myGraph.Topo().CoEdge(aRef.CoEdgeDefId);
-    if (aCoEdge.EdgeDefId == BRepGraph_EdgeId(anEdgeId.Index))
+    const BRepGraphInc::CoEdgeEntity& aCoEdge =
+      myGraph.Topo().CoEdge(aRef.CoEdgeEntityId);
+    if (aCoEdge.EdgeEntityId == BRepGraph_EdgeId(anEdgeId.Index))
     {
       aRefToRemove = aRefId;
       aRemovedOrd  = aRefOrd;
@@ -471,12 +471,12 @@ TEST_F(BRepGraph_HistoryTest, SplitEdge_IgnoresRemovedCoEdgeRefEntries)
     aMut->IsRemoved = true;
   }
   ASSERT_TRUE(myGraph.Refs().CoEdge(aRefToRemove).IsRemoved);
-  const BRepGraph_CoEdgeId aRemovedCoEdgeId = myGraph.Refs().CoEdge(aRefToRemove).CoEdgeDefId;
+  const BRepGraph_CoEdgeId aRemovedCoEdgeId = myGraph.Refs().CoEdge(aRefToRemove).CoEdgeEntityId;
 
   const int aRemovedWireNbActiveBefore = BRepGraph_TestTools::CountCoEdgeRefsOfWire(myGraph, aWireId);
 
   const BRepGraph_NodeId aSplitVertex =
-    myGraph.Builder().AddVertexDef(gp_Pnt(4.0, 5.0, 6.0), 1.0e-7);
+    myGraph.Builder().AddVertex(gp_Pnt(4.0, 5.0, 6.0), 1.0e-7);
   ASSERT_TRUE(aSplitVertex.IsValid());
 
   BRepGraph_NodeId aSubA;
@@ -487,8 +487,8 @@ TEST_F(BRepGraph_HistoryTest, SplitEdge_IgnoresRemovedCoEdgeRefEntries)
 
   EXPECT_TRUE(myGraph.Refs().CoEdge(aRefToRemove).IsRemoved);
   EXPECT_EQ(BRepGraph_TestTools::CountCoEdgeRefsOfWire(myGraph, aWireId), aRemovedWireNbActiveBefore);
-  const BRepGraph_TopoNode::CoEdgeDef& aRemovedCoEdgeAfter = myGraph.Topo().CoEdge(aRemovedCoEdgeId);
-  EXPECT_EQ(aRemovedCoEdgeAfter.EdgeDefId, BRepGraph_EdgeId(anEdgeId.Index));
+  const BRepGraphInc::CoEdgeEntity& aRemovedCoEdgeAfter = myGraph.Topo().CoEdge(aRemovedCoEdgeId);
+  EXPECT_EQ(aRemovedCoEdgeAfter.EdgeEntityId, BRepGraph_EdgeId(anEdgeId.Index));
 
   bool hasSubA = false;
   bool hasSubB = false;
@@ -496,9 +496,9 @@ TEST_F(BRepGraph_HistoryTest, SplitEdge_IgnoresRemovedCoEdgeRefEntries)
   {
     const BRepGraph_CoEdgeRefId          aRefId(aRefIdx);
     const BRepGraphInc::CoEdgeRefEntry& aRef = myGraph.Refs().CoEdge(aRefId);
-    if (aRef.IsRemoved || !aRef.CoEdgeDefId.IsValid(myGraph.Topo().NbCoEdges()))
+    if (aRef.IsRemoved || !aRef.CoEdgeEntityId.IsValid(myGraph.Topo().NbCoEdges()))
       continue;
-    const BRepGraph_NodeId anId(myGraph.Topo().CoEdge(aRef.CoEdgeDefId).EdgeDefId);
+    const BRepGraph_NodeId anId(myGraph.Topo().CoEdge(aRef.CoEdgeEntityId).EdgeEntityId);
     if (anId == aSubA)
       hasSubA = true;
     if (anId == aSubB)
@@ -513,12 +513,12 @@ TEST_F(BRepGraph_HistoryTest, ApplyModification_SplitEdge_RecordsBothDerivedNode
   ASSERT_GT(myGraph.Topo().NbEdges(), 0);
 
   const BRepGraph_NodeId             anEdgeId(BRepGraph_NodeId::Kind::Edge, 0);
-  const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
+  const BRepGraphInc::EdgeEntity& anEdgeDef =
     myGraph.Topo().Edge(BRepGraph_EdgeId(anEdgeId.Index));
   const double aSplitParam = 0.5 * (anEdgeDef.ParamFirst + anEdgeDef.ParamLast);
 
   const BRepGraph_NodeId aSplitVertex =
-    myGraph.Builder().AddVertexDef(gp_Pnt(4.0, 5.0, 6.0), 1.0e-7);
+    myGraph.Builder().AddVertex(gp_Pnt(4.0, 5.0, 6.0), 1.0e-7);
   ASSERT_TRUE(aSplitVertex.IsValid());
 
   const int aNbRecordsBefore = myGraph.History().NbRecords();

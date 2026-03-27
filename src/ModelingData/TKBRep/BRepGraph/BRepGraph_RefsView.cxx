@@ -72,21 +72,24 @@ int BRepGraph::RefsView::NbOccurrenceRefs() const
 
 //=================================================================================================
 
-const BRepGraphInc::ShellRefEntry& BRepGraph::RefsView::Shell(const BRepGraph_ShellRefId theRefId) const
+const BRepGraphInc::ShellRefEntry& BRepGraph::RefsView::Shell(
+  const BRepGraph_ShellRefId theRefId) const
 {
   return myGraph->myData->myIncStorage.ShellRefEntry(theRefId);
 }
 
 //=================================================================================================
 
-const BRepGraphInc::FaceRefEntry& BRepGraph::RefsView::Face(const BRepGraph_FaceRefId theRefId) const
+const BRepGraphInc::FaceRefEntry& BRepGraph::RefsView::Face(
+  const BRepGraph_FaceRefId theRefId) const
 {
   return myGraph->myData->myIncStorage.FaceRefEntry(theRefId);
 }
 
 //=================================================================================================
 
-const BRepGraphInc::WireRefEntry& BRepGraph::RefsView::Wire(const BRepGraph_WireRefId theRefId) const
+const BRepGraphInc::WireRefEntry& BRepGraph::RefsView::Wire(
+  const BRepGraph_WireRefId theRefId) const
 {
   return myGraph->myData->myIncStorage.WireRefEntry(theRefId);
 }
@@ -109,14 +112,16 @@ const BRepGraphInc::VertexRefEntry& BRepGraph::RefsView::Vertex(
 
 //=================================================================================================
 
-const BRepGraphInc::SolidRefEntry& BRepGraph::RefsView::Solid(const BRepGraph_SolidRefId theRefId) const
+const BRepGraphInc::SolidRefEntry& BRepGraph::RefsView::Solid(
+  const BRepGraph_SolidRefId theRefId) const
 {
   return myGraph->myData->myIncStorage.SolidRefEntry(theRefId);
 }
 
 //=================================================================================================
 
-const BRepGraphInc::ChildRefEntry& BRepGraph::RefsView::Child(const BRepGraph_ChildRefId theRefId) const
+const BRepGraphInc::ChildRefEntry& BRepGraph::RefsView::Child(
+  const BRepGraph_ChildRefId theRefId) const
 {
   return myGraph->myData->myIncStorage.ChildRefEntry(theRefId);
 }
@@ -300,19 +305,3 @@ const NCollection_Vector<BRepGraph_SolidRefId>& BRepGraph::RefsView::SolidRefIds
 }
 
 //=================================================================================================
-
-BRepGraph_WireId BRepGraph::RefsView::OuterWireOfFace(const BRepGraph_FaceId theFace) const
-{
-  if (!theFace.IsValid(myGraph->myData->myIncStorage.NbFaces()))
-    return BRepGraph_WireId();
-
-  const BRepGraphInc::FaceEntity& aFaceEnt = myGraph->myData->myIncStorage.Face(theFace);
-  for (int i = 0; i < aFaceEnt.WireRefIds.Length(); ++i)
-  {
-    const BRepGraphInc::WireRefEntry& aWireRef =
-      myGraph->myData->myIncStorage.WireRefEntry(aFaceEnt.WireRefIds.Value(i));
-    if (!aWireRef.IsRemoved && aWireRef.IsOuter)
-      return aWireRef.WireDefId;
-  }
-  return BRepGraph_WireId();
-}

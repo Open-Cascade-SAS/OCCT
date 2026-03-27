@@ -110,7 +110,7 @@ TEST(BRepGraphAlgo_CompactTest, AfterDeduplicate_RemovesNodes)
   // No separate geometry nodes exist, so NbRemovedSurfaces/NbRemovedCurves is always 0.
   EXPECT_EQ(aRes.NbRemovedSurfaces, 0);
   EXPECT_EQ(aRes.NbRemovedCurves, 0);
-  // Without MergeDefsWhenSafe, topology node count does not change either.
+  // Without MergeEntitiesWhenSafe, topology node count does not change either.
   EXPECT_EQ(aRes.NbNodesAfter, aRes.NbNodesBefore);
 }
 
@@ -176,7 +176,7 @@ TEST(BRepGraphAlgo_CompactTest, FullPipeline_Deduplicate_Compact_Validate)
   // Full dedup (replaces duplicate handles directly on defs).
   (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
 
-  // Compact. Without MergeDefsWhenSafe, no topology nodes are removed,
+  // Compact. Without MergeEntitiesWhenSafe, no topology nodes are removed,
   // so NbNodesAfter == NbNodesBefore.
   const BRepGraphAlgo_Compact::Result aCompactRes = BRepGraphAlgo_Compact::Perform(aGraph);
   EXPECT_EQ(aCompactRes.NbNodesAfter, aCompactRes.NbNodesBefore);
@@ -293,7 +293,7 @@ TEST(BRepGraphAlgo_CompactTest, MutationGen_SurvivesCompact)
   bool aFound = false;
   for (int anIdx = 0; anIdx < aGraph.Topo().NbEdges(); ++anIdx)
   {
-    const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Topo().Edge(BRepGraph_EdgeId(anIdx));
+    const BRepGraphInc::EdgeEntity& anEdge = aGraph.Topo().Edge(BRepGraph_EdgeId(anIdx));
     if (std::abs(anEdge.Tolerance - THE_MUTATED_EDGE_TOLERANCE) < Precision::Confusion())
     {
       EXPECT_EQ(anEdge.MutationGen, THE_EXPECTED_MUTATION_GEN)

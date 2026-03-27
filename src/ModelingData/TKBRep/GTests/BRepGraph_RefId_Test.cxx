@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <BRepGraph.hxx>
+#include <BRepGraphInc_Entity.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_MutRefEntry.hxx>
 #include <BRepGraph_RefId.hxx>
@@ -21,7 +22,6 @@
 #include <BRepGraph_UIDsView.hxx>
 #include <BRepGraph_VersionStamp.hxx>
 #include "BRepGraph_RefTestTools.hxx"
-#include <BRepGraphInc_Entity.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <Standard_GUID.hxx>
 
@@ -63,7 +63,7 @@ int countInlineVertexRefs(const BRepGraph& theGraph)
   int                         aNb   = 0;
   for (int i = 0; i < aTopo.NbEdges(); ++i)
   {
-    const BRepGraph_TopoNode::EdgeDef& anEdge = aTopo.Edge(BRepGraph_EdgeId(i));
+    const BRepGraphInc::EdgeEntity& anEdge = aTopo.Edge(BRepGraph_EdgeId(i));
     if (anEdge.StartVertexRefId.IsValid())
       ++aNb;
     if (anEdge.EndVertexRefId.IsValid())
@@ -217,7 +217,7 @@ TEST(BRepGraph_RefIdTest, RefsView_AfterBuild_UIDRoundtripAndParentKinds)
     const BRepGraphInc::FaceRefEntry& anEntry = aGraph.Refs().Face(BRepGraph_FaceRefId(i));
     EXPECT_EQ(anEntry.RefId, aRefId);
     EXPECT_EQ(anEntry.ParentId.NodeKind, BRepGraph_NodeId::Kind::Shell);
-    EXPECT_TRUE(anEntry.FaceDefId.IsValid(aGraph.Topo().NbFaces()));
+    EXPECT_TRUE(anEntry.FaceEntityId.IsValid(aGraph.Topo().NbFaces()));
   }
 
   for (int i = 0; i < aGraph.Refs().NbWireRefs(); ++i)
@@ -229,7 +229,7 @@ TEST(BRepGraph_RefIdTest, RefsView_AfterBuild_UIDRoundtripAndParentKinds)
     EXPECT_EQ(aGraph.Refs().RefIdFrom(aUID), aRefId);
     EXPECT_EQ(anEntry.RefId, aRefId);
     EXPECT_EQ(anEntry.ParentId.NodeKind, BRepGraph_NodeId::Kind::Face);
-    EXPECT_TRUE(anEntry.WireDefId.IsValid(aGraph.Topo().NbWires()));
+    EXPECT_TRUE(anEntry.WireEntityId.IsValid(aGraph.Topo().NbWires()));
   }
 
   for (int i = 0; i < aGraph.Refs().NbCoEdgeRefs(); ++i)
@@ -241,7 +241,7 @@ TEST(BRepGraph_RefIdTest, RefsView_AfterBuild_UIDRoundtripAndParentKinds)
     EXPECT_EQ(aGraph.Refs().RefIdFrom(aUID), aRefId);
     EXPECT_EQ(anEntry.RefId, aRefId);
     EXPECT_EQ(anEntry.ParentId.NodeKind, BRepGraph_NodeId::Kind::Wire);
-    EXPECT_TRUE(anEntry.CoEdgeDefId.IsValid(aGraph.Topo().NbCoEdges()));
+    EXPECT_TRUE(anEntry.CoEdgeEntityId.IsValid(aGraph.Topo().NbCoEdges()));
   }
 
   for (int i = 0; i < aGraph.Refs().NbShellRefs(); ++i)
@@ -253,7 +253,7 @@ TEST(BRepGraph_RefIdTest, RefsView_AfterBuild_UIDRoundtripAndParentKinds)
     EXPECT_EQ(aGraph.Refs().RefIdFrom(aUID), aRefId);
     EXPECT_EQ(anEntry.RefId, aRefId);
     EXPECT_EQ(anEntry.ParentId.NodeKind, BRepGraph_NodeId::Kind::Solid);
-    EXPECT_TRUE(anEntry.ShellDefId.IsValid(aGraph.Topo().NbShells()));
+    EXPECT_TRUE(anEntry.ShellEntityId.IsValid(aGraph.Topo().NbShells()));
   }
 
   for (int i = 0; i < aGraph.Refs().NbVertexRefs(); ++i)
@@ -266,7 +266,7 @@ TEST(BRepGraph_RefIdTest, RefsView_AfterBuild_UIDRoundtripAndParentKinds)
     EXPECT_EQ(anEntry.RefId, aRefId);
     EXPECT_TRUE(anEntry.ParentId.NodeKind == BRepGraph_NodeId::Kind::Edge
                 || anEntry.ParentId.NodeKind == BRepGraph_NodeId::Kind::Face);
-    EXPECT_TRUE(anEntry.VertexDefId.IsValid(aGraph.Topo().NbVertices()));
+    EXPECT_TRUE(anEntry.VertexEntityId.IsValid(aGraph.Topo().NbVertices()));
   }
 
   for (int i = 0; i < aGraph.Refs().NbSolidRefs(); ++i)
@@ -278,7 +278,7 @@ TEST(BRepGraph_RefIdTest, RefsView_AfterBuild_UIDRoundtripAndParentKinds)
     EXPECT_EQ(aGraph.Refs().RefIdFrom(aUID), aRefId);
     EXPECT_EQ(anEntry.RefId, aRefId);
     EXPECT_EQ(anEntry.ParentId.NodeKind, BRepGraph_NodeId::Kind::CompSolid);
-    EXPECT_TRUE(anEntry.SolidDefId.IsValid(aGraph.Topo().NbSolids()));
+    EXPECT_TRUE(anEntry.SolidEntityId.IsValid(aGraph.Topo().NbSolids()));
   }
 
   for (int i = 0; i < aGraph.Refs().NbChildRefs(); ++i)
@@ -292,7 +292,7 @@ TEST(BRepGraph_RefIdTest, RefsView_AfterBuild_UIDRoundtripAndParentKinds)
     EXPECT_TRUE(anEntry.ParentId.NodeKind == BRepGraph_NodeId::Kind::Compound
                 || anEntry.ParentId.NodeKind == BRepGraph_NodeId::Kind::Shell
                 || anEntry.ParentId.NodeKind == BRepGraph_NodeId::Kind::Solid);
-    EXPECT_TRUE(anEntry.ChildDefId.IsValid());
+    EXPECT_TRUE(anEntry.ChildEntityId.IsValid());
   }
 }
 
@@ -327,7 +327,7 @@ TEST(BRepGraph_RefIdTest, MutFaceRef_UpdatesRefStampAndParentModifiedFlag)
   EXPECT_GT(aAfterEntry.MutationGen, aBeforeMutationGen);
   EXPECT_TRUE(aGraph.Refs().IsStale(aBeforeStamp));
 
-  const BRepGraph_TopoNode::BaseDef* aParentDef = aGraph.Topo().TopoDef(aAfterEntry.ParentId);
+  const BRepGraphInc::BaseEntity* aParentDef = aGraph.Topo().TopoEntity(aAfterEntry.ParentId);
   ASSERT_NE(aParentDef, nullptr);
   EXPECT_TRUE(aParentDef->IsModified);
 }
@@ -377,7 +377,7 @@ TEST(BRepGraph_RefIdTest, ChildRefs_CompoundEntriesAreValid)
     {
       const BRepGraphInc::ChildRefEntry& aRefEntry = aRefs.Child(aChildRefs.Value(aChildRefIdx));
       EXPECT_EQ(aRefEntry.ParentId, BRepGraph_NodeId::Compound(aCompIdx));
-      EXPECT_TRUE(aRefEntry.ChildDefId.IsValid());
+      EXPECT_TRUE(aRefEntry.ChildEntityId.IsValid());
       EXPECT_FALSE(aRefEntry.IsRemoved);
     }
   }

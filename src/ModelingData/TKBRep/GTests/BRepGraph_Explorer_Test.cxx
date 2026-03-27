@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <BRepGraph.hxx>
+#include <BRepGraphInc_Entity.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_Explorer.hxx>
 #include <BRepGraph_MutRefEntry.hxx>
@@ -393,11 +394,11 @@ TEST(BRepGraph_ExplorerTest, PathsTo_MatchesExplorer_WhenEarlierCompoundRefRemov
   aGraph.Build(aComp);
   ASSERT_TRUE(aGraph.IsDone());
 
-  const BRepGraph_TopoNode::CompoundDef& aRootComp = aGraph.Topo().Compound(BRepGraph_CompoundId(0));
+  const BRepGraphInc::CompoundEntity& aRootComp = aGraph.Topo().Compound(BRepGraph_CompoundId(0));
   ASSERT_GE(aRootComp.ChildRefIds.Length(), 2);
 
   const BRepGraph_ChildRefId aRemovedRefId = aRootComp.ChildRefIds.Value(0);
-  const BRepGraph_NodeId aSecondChild = aGraph.Refs().Child(aRootComp.ChildRefIds.Value(1)).ChildDefId;
+  const BRepGraph_NodeId aSecondChild = aGraph.Refs().Child(aRootComp.ChildRefIds.Value(1)).ChildEntityId;
   ASSERT_TRUE(aSecondChild.IsValid());
 
   // Capture one face path under the second child before removal.
@@ -464,16 +465,16 @@ TEST(BRepGraph_ExplorerTest, PathsTo_MatchesExplorer_WhenFirstShellRefRemoved)
   aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  const BRepGraph_TopoNode::SolidDef& aSolid = aGraph.Topo().Solid(BRepGraph_SolidId(0));
+  const BRepGraphInc::SolidEntity& aSolid = aGraph.Topo().Solid(BRepGraph_SolidId(0));
   ASSERT_GT(aSolid.ShellRefIds.Length(), 0);
-  const BRepGraph_ShellId aShellId = aGraph.Refs().Shell(aSolid.ShellRefIds.Value(0)).ShellDefId;
+  const BRepGraph_ShellId aShellId = aGraph.Refs().Shell(aSolid.ShellRefIds.Value(0)).ShellEntityId;
   ASSERT_TRUE(aShellId.IsValid(aGraph.Topo().NbShells()));
 
   // Duplicate shell usage to create two shell refs to the same shell in one solid.
   aGraph.Builder().AddShellToSolid(BRepGraph_NodeId::Solid(0),
                                    BRepGraph_NodeId::Shell(aShellId.Index),
                                    TopAbs_FORWARD);
-  const BRepGraph_TopoNode::SolidDef& aSolidAfterDup = aGraph.Topo().Solid(BRepGraph_SolidId(0));
+  const BRepGraphInc::SolidEntity& aSolidAfterDup = aGraph.Topo().Solid(BRepGraph_SolidId(0));
   ASSERT_GE(aSolidAfterDup.ShellRefIds.Length(), 2);
 
   // Remove the first shell ref so the active one is not the first matching shell usage.

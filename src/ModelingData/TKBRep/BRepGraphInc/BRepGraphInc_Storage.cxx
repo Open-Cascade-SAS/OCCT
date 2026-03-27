@@ -642,28 +642,28 @@ bool BRepGraphInc_Storage::ValidateReverseIndex() const
   {
     const BRepGraphInc::CoEdgeRefEntry& aRef = myCoEdgeRefs.Get(aCoEdgeRefIdx);
     if (aRef.IsRemoved || !aRef.ParentId.IsValid()
-        || aRef.ParentId.NodeKind != BRepGraph_NodeId::Kind::Wire || !aRef.CoEdgeDefId.IsValid())
+        || aRef.ParentId.NodeKind != BRepGraph_NodeId::Kind::Wire || !aRef.CoEdgeEntityId.IsValid())
     {
       continue;
     }
     if (aRef.ParentId.Index < 0 || aRef.ParentId.Index >= myWires.Nb()
-        || aRef.CoEdgeDefId.Index < 0 || aRef.CoEdgeDefId.Index >= myCoEdges.Nb())
+        || aRef.CoEdgeEntityId.Index < 0 || aRef.CoEdgeEntityId.Index >= myCoEdges.Nb())
     {
       return false;
     }
 
     const BRepGraphInc::WireEntity& aWire = myWires.Get(aRef.ParentId.Index);
-    const BRepGraphInc::CoEdgeEntity& aCoEdge = myCoEdges.Get(aRef.CoEdgeDefId.Index);
+    const BRepGraphInc::CoEdgeEntity& aCoEdge = myCoEdges.Get(aRef.CoEdgeEntityId.Index);
     if (aWire.IsRemoved || aCoEdge.IsRemoved)
     {
       continue;
     }
-    if (!containsNodeIndex(myReverseIdx.WiresOfCoEdge(aRef.CoEdgeDefId), aRef.ParentId.Index))
+    if (!containsNodeIndex(myReverseIdx.WiresOfCoEdge(aRef.CoEdgeEntityId), aRef.ParentId.Index))
     {
       return false;
     }
-    if (aCoEdge.EdgeDefId.IsValid()
-        && !containsNodeIndex(myReverseIdx.CoEdgesOfEdge(aCoEdge.EdgeDefId), aRef.CoEdgeDefId.Index))
+    if (aCoEdge.EdgeEntityId.IsValid()
+        && !containsNodeIndex(myReverseIdx.CoEdgesOfEdge(aCoEdge.EdgeEntityId), aRef.CoEdgeEntityId.Index))
     {
       return false;
     }
@@ -686,7 +686,7 @@ bool BRepGraphInc_Storage::ValidateReverseIndex() const
         return false;
       }
       const BRepGraphInc::CoEdgeEntity& aCoEdge = myCoEdges.Get(aRefIdx);
-      if (aCoEdge.IsRemoved || !aCoEdge.EdgeDefId.IsValid() || aCoEdge.EdgeDefId.Index != anEdgeIdx)
+      if (aCoEdge.IsRemoved || !aCoEdge.EdgeEntityId.IsValid() || aCoEdge.EdgeEntityId.Index != anEdgeIdx)
       {
         return false;
       }
@@ -698,7 +698,7 @@ bool BRepGraphInc_Storage::ValidateReverseIndex() const
   {
     const BRepGraphInc::ChildRefEntry& aRef = myChildRefs.Get(aChildRefIdx);
     if (aRef.IsRemoved || !aRef.ParentId.IsValid()
-        || aRef.ParentId.NodeKind != BRepGraph_NodeId::Kind::Compound || !aRef.ChildDefId.IsValid())
+        || aRef.ParentId.NodeKind != BRepGraph_NodeId::Kind::Compound || !aRef.ChildEntityId.IsValid())
     {
       continue;
     }
@@ -713,24 +713,24 @@ bool BRepGraphInc_Storage::ValidateReverseIndex() const
       continue;
     }
 
-    switch (aRef.ChildDefId.NodeKind)
+    switch (aRef.ChildEntityId.NodeKind)
     {
       case BRepGraph_NodeId::Kind::Solid:
-        if (!containsNodeIndex(myReverseIdx.CompoundsOfSolid(BRepGraph_SolidId(aRef.ChildDefId.Index)),
+        if (!containsNodeIndex(myReverseIdx.CompoundsOfSolid(BRepGraph_SolidId(aRef.ChildEntityId.Index)),
                           aRef.ParentId.Index))
         {
           return false;
         }
         break;
       case BRepGraph_NodeId::Kind::Shell:
-        if (!containsNodeIndex(myReverseIdx.CompoundsOfShell(BRepGraph_ShellId(aRef.ChildDefId.Index)),
+        if (!containsNodeIndex(myReverseIdx.CompoundsOfShell(BRepGraph_ShellId(aRef.ChildEntityId.Index)),
                           aRef.ParentId.Index))
         {
           return false;
         }
         break;
       case BRepGraph_NodeId::Kind::Face:
-        if (!containsNodeIndex(myReverseIdx.CompoundsOfFace(BRepGraph_FaceId(aRef.ChildDefId.Index)),
+        if (!containsNodeIndex(myReverseIdx.CompoundsOfFace(BRepGraph_FaceId(aRef.ChildEntityId.Index)),
                           aRef.ParentId.Index))
         {
           return false;
@@ -738,7 +738,7 @@ bool BRepGraphInc_Storage::ValidateReverseIndex() const
         break;
       case BRepGraph_NodeId::Kind::Compound:
         if (!containsNodeIndex(
-              myReverseIdx.CompoundsOfCompound(BRepGraph_CompoundId(aRef.ChildDefId.Index)),
+              myReverseIdx.CompoundsOfCompound(BRepGraph_CompoundId(aRef.ChildEntityId.Index)),
               aRef.ParentId.Index))
         {
           return false;
@@ -746,7 +746,7 @@ bool BRepGraphInc_Storage::ValidateReverseIndex() const
         break;
       case BRepGraph_NodeId::Kind::CompSolid:
         if (!containsNodeIndex(
-              myReverseIdx.CompoundsOfCompSolid(BRepGraph_CompSolidId(aRef.ChildDefId.Index)),
+              myReverseIdx.CompoundsOfCompSolid(BRepGraph_CompSolidId(aRef.ChildEntityId.Index)),
               aRef.ParentId.Index))
         {
           return false;
@@ -762,22 +762,22 @@ bool BRepGraphInc_Storage::ValidateReverseIndex() const
   {
     const BRepGraphInc::SolidRefEntry& aRef = mySolidRefs.Get(aSolidRefIdx);
     if (aRef.IsRemoved || !aRef.ParentId.IsValid()
-        || aRef.ParentId.NodeKind != BRepGraph_NodeId::Kind::CompSolid || !aRef.SolidDefId.IsValid())
+        || aRef.ParentId.NodeKind != BRepGraph_NodeId::Kind::CompSolid || !aRef.SolidEntityId.IsValid())
     {
       continue;
     }
     if (aRef.ParentId.Index < 0 || aRef.ParentId.Index >= myCompSolids.Nb()
-        || aRef.SolidDefId.Index < 0 || aRef.SolidDefId.Index >= mySolids.Nb())
+        || aRef.SolidEntityId.Index < 0 || aRef.SolidEntityId.Index >= mySolids.Nb())
     {
       return false;
     }
 
     const BRepGraphInc::CompSolidEntity& aCompSolid = myCompSolids.Get(aRef.ParentId.Index);
-    if (aCompSolid.IsRemoved || mySolids.Get(aRef.SolidDefId.Index).IsRemoved)
+    if (aCompSolid.IsRemoved || mySolids.Get(aRef.SolidEntityId.Index).IsRemoved)
     {
       continue;
     }
-    if (!containsNodeIndex(myReverseIdx.CompSolidsOfSolid(aRef.SolidDefId), aRef.ParentId.Index))
+    if (!containsNodeIndex(myReverseIdx.CompSolidsOfSolid(aRef.SolidEntityId), aRef.ParentId.Index))
     {
       return false;
     }
@@ -791,11 +791,11 @@ bool BRepGraphInc_Storage::ValidateReverseIndex() const
     {
       continue;
     }
-    if (!anOcc.ProductDefId.IsValid() || anOcc.ProductDefId.Index >= myProducts.Nb())
+    if (!anOcc.ProductEntityId.IsValid() || anOcc.ProductEntityId.Index >= myProducts.Nb())
     {
       return false;
     }
-    if (!containsNodeIndex(myReverseIdx.OccurrencesOfProduct(anOcc.ProductDefId), anOccIdx))
+    if (!containsNodeIndex(myReverseIdx.OccurrencesOfProduct(anOcc.ProductEntityId), anOccIdx))
     {
       return false;
     }
@@ -819,8 +819,8 @@ bool BRepGraphInc_Storage::ValidateReverseIndex() const
         return false;
       }
       const BRepGraphInc::OccurrenceEntity& anOcc = myOccurrences.Get(anOccIdx);
-      if (anOcc.IsRemoved || !anOcc.ProductDefId.IsValid()
-          || anOcc.ProductDefId.Index != aProductIdx)
+      if (anOcc.IsRemoved || !anOcc.ProductEntityId.IsValid()
+          || anOcc.ProductEntityId.Index != aProductIdx)
       {
         return false;
       }

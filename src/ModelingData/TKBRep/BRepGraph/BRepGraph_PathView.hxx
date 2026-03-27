@@ -16,7 +16,6 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_TopologyPath.hxx>
-#include <BRepGraphInc_Storage.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopLoc_Location.hxx>
 
@@ -149,12 +148,12 @@ public:
 
   //! Access product definition by typed identifier.
   //! @param[in] theProduct typed product definition identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraph_TopoNode::ProductDef& Product(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::ProductEntity& Product(
     const BRepGraph_ProductId theProduct) const;
 
   //! Access occurrence definition by typed identifier.
   //! @param[in] theOccurrence typed occurrence definition identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraph_TopoNode::OccurrenceDef& Occurrence(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::OccurrenceEntity& Occurrence(
     const BRepGraph_OccurrenceId theOccurrence) const;
 
   //! Return NodeIds of all root products (products that are not referenced by any occurrence).
@@ -288,27 +287,6 @@ private:
   void reverseWalkFromVertex(const int                                   theVertexIdx,
                              NCollection_Vector<BRepGraph_TopologyPath>& theResult,
                              const int                                   theDepthBudget) const;
-
-  //! Find the ordinal index of a child in a parent entity's RefId vector.
-  static int findShellRefIdx(const BRepGraphInc_Storage& theStorage,
-                             const BRepGraph_SolidId     theSolidId,
-                             const int                   theShellIdx);
-  static int findFaceRefIdx(const BRepGraphInc_Storage& theStorage,
-                            const BRepGraph_ShellId     theShellId,
-                            const int                   theFaceIdx);
-  static int findWireRefIdx(const BRepGraphInc_Storage& theStorage,
-                            const BRepGraph_FaceId      theFaceId,
-                            const int                   theWireIdx);
-  static int findCoEdgeRefIdx(const BRepGraphInc_Storage& theStorage,
-                              const BRepGraph_WireId      theWireId,
-                              const int                   theCoEdgeIdx);
-  static int findChildRefIdx(const BRepGraphInc_Storage& theStorage,
-                             const BRepGraph_CompoundId  theCompoundId,
-                             BRepGraph_NodeId::Kind      theKind,
-                             const int                   theChildIdx);
-  static int findSolidRefIdx(const BRepGraphInc_Storage& theStorage,
-                             const BRepGraph_CompSolidId theCompSolidId,
-                             const int                   theSolidIdx);
 
   const BRepGraph* myGraph;
 };

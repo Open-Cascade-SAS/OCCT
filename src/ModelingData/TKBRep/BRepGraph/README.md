@@ -90,7 +90,7 @@ Reference entries are the typed edges of the incidence graph. Each ref kind has 
 
 ### BaseRef and RefEntry
 
-`BaseRef` is the common header for all reference entries: `RefId` + `ParentId` + `MutationGen` + `IsRemoved`. Concrete ref entry types (e.g. `ShellRefEntry`, `FaceRefEntry`) extend BaseRef with `DefId` + `Orientation` + `LocalLocation`.
+`BaseRef` is the common header for all reference entries: `RefId` + `ParentId` + `MutationGen` + `IsRemoved`. Concrete ref entry types (e.g. `ShellRefEntry`, `FaceRefEntry`) extend BaseRef with `EntityId` + `Orientation` + `LocalLocation`.
 
 ### RefUID
 
@@ -112,7 +112,9 @@ Reference entries are the typed edges of the incidence graph. Each ref kind has 
 - Ref entry access: `Shell(id)`, `Face(id)`, etc.
 - UID operations: `UIDOf(refId)`, `RefIdFrom(uid)`
 - Parent-to-ref vectors: `ShellRefIdsOf(solidId)`, `FaceRefIdsOf(shellId)`, etc.
-- Convenience: `OuterWireOfFace(faceIdx)`
+
+Face outer-wire convenience is available from `TopoView`:
+- `Topo().OuterWireOfFace(faceId)`
 
 ## Core Pipelines
 
@@ -172,18 +174,18 @@ flowchart LR
 
   RP -->|OccurrenceRef| O1
   RP -->|OccurrenceRef| O2
-  O1 -->|ProductDefId| P1
-  O2 -->|ProductDefId| P2
+  O1 -->|ProductEntityId| P1
+  O2 -->|ProductEntityId| P2
   P2 -->|OccurrenceRef| O3
-  O3 -->|ProductDefId| P1
+  O3 -->|ProductEntityId| P1
 ```
 
 - **ProductEntity**: `ShapeRootId` (topology root for parts; invalid for assemblies), `RootOrientation`, `RootLocation`, `OccurrenceRefIds` (child occurrences)
-- **OccurrenceEntity**: `ProductDefId` (referenced product), `ParentProductDefId` (parent assembly), `ParentOccurrenceDefId` (parent occurrence for tree-structured placement chains), `Placement` (TopLoc_Location)
+- **OccurrenceEntity**: `ProductEntityId` (referenced product), `ParentProductEntityId` (parent assembly), `ParentOccurrenceEntityId` (parent occurrence for tree-structured placement chains), `Placement` (TopLoc_Location)
 
 ### Placement Composition
 
-`SpatialView::GlobalPlacement(occId)` walks `ParentOccurrenceDefId` from leaf to root, composing `Placement` transforms. DAG-safe: shared products placed at multiple locations have distinct occurrence paths.
+`SpatialView::GlobalPlacement(occId)` walks `ParentOccurrenceEntityId` from leaf to root, composing `Placement` transforms. DAG-safe: shared products placed at multiple locations have distinct occurrence paths.
 
 ### API Distribution
 
@@ -191,9 +193,9 @@ flowchart LR
 |------|---------|
 | **DefsView** | `NbProducts`, `NbOccurrences`, `Product(i)`, `Occurrence(i)`, `RootProducts`, `IsAssembly`, `IsPart`, `NbComponents`, `Component` |
 | **BuilderView** | `AddProduct`, `AddAssemblyProduct`, `AddOccurrence` (with optional parent occurrence), `RemoveSubgraph` (cascades to child occurrences) |
-| **MutView** | `ProductDef(i)`, `OccurrenceDef(i)` (RAII guards) |
+| **MutView** | `ProductEntity(i)`, `OccurrenceEntity(i)` (RAII guards) |
 | **SpatialView** | `GlobalPlacement(occIdx)` |
-| **Iterator** | `BRepGraph_Iterator<ProductDef>`, `BRepGraph_Iterator<OccurrenceDef>` |
+| **Iterator** | `BRepGraph_Iterator<ProductEntity>`, `BRepGraph_Iterator<OccurrenceEntity>` |
 
 ### Single-Shape Graph
 
@@ -327,7 +329,7 @@ Benefits: O(1) allocation (bump-pointer), O(1) destruction (bulk page release). 
 
 | Category | Files |
 |----------|-------|
-| **Core** | `BRepGraph.hxx/.cxx`, `BRepGraph_Data.hxx`, `BRepGraph_NodeId.hxx`, `BRepGraph_UID.hxx`, `BRepGraph_RefId.hxx`, `BRepGraph_RefUID.hxx`, `BRepGraph_RepId.hxx`, `BRepGraph_TopoNode.hxx` |
+| **Core** | `BRepGraph.hxx/.cxx`, `BRepGraph_Data.hxx`, `BRepGraph_NodeId.hxx`, `BRepGraph_UID.hxx`, `BRepGraph_RefId.hxx`, `BRepGraph_RefUID.hxx`, `BRepGraph_RepId.hxx` |
 | **Views** | `BRepGraph_DefsView.hxx/.cxx`, `BRepGraph_UIDsView.hxx/.cxx`, `BRepGraph_RefsView.hxx/.cxx`, `BRepGraph_ShapesView.hxx/.cxx`, `BRepGraph_SpatialView.hxx/.cxx`, `BRepGraph_AttrsView.hxx/.cxx`, `BRepGraph_BuilderView.hxx/.cxx`, `BRepGraph_AnalyzeView.hxx`, `BRepGraph_PathView.hxx/.cxx` |
 | **Refs** | `BRepGraph_MutRefEntry.hxx`, `BRepGraph_VersionStamp.hxx/.cxx` |
 | **Traversal** | `BRepGraph_Explorer.hxx/.cxx`, `BRepGraph_TopologyPath.hxx`, `BRepGraph_SubGraph.hxx`, `BRepGraph_PCurveContext.hxx` |

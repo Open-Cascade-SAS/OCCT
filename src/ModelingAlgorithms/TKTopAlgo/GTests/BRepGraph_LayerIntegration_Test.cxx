@@ -121,7 +121,7 @@ TEST(BRepGraph_LayerIntegrationTest, Sewing_NameMigratesToKeptEdge)
   // Core invariant: no name should reference a removed edge.
   for (int i = 0; i < aGraph.Topo().NbEdges(); ++i)
   {
-    const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Topo().Edge(BRepGraph_EdgeId(i));
+    const BRepGraphInc::EdgeEntity& anEdge = aGraph.Topo().Edge(BRepGraph_EdgeId(i));
     if (anEdge.IsRemoved)
     {
       EXPECT_EQ(aLayer->FindNodeName(BRepGraph_NodeId::Edge(i)), nullptr)
@@ -386,11 +386,11 @@ TEST(BRepGraph_LayerIntegrationTest, SplitEdge_OriginalEdgeRemoved)
   int aSplitEdgeIdx = -1;
   for (int i = 0; i < aGraph.Topo().NbEdges(); ++i)
   {
-    const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Topo().Edge(BRepGraph_EdgeId(i));
+    const BRepGraphInc::EdgeEntity& anEdge = aGraph.Topo().Edge(BRepGraph_EdgeId(i));
     const BRepGraph_EdgeId anEdgeId(i);
     if (!anEdge.IsDegenerate && anEdge.Curve3DRepId.IsValid()
-        && BRepGraph_Tool::Edge::StartVertex(aGraph, anEdgeId).VertexDefId.IsValid()
-        && BRepGraph_Tool::Edge::EndVertex(aGraph, anEdgeId).VertexDefId.IsValid())
+        && BRepGraph_Tool::Edge::StartVertex(aGraph, anEdgeId).VertexEntityId.IsValid()
+        && BRepGraph_Tool::Edge::EndVertex(aGraph, anEdgeId).VertexEntityId.IsValid())
     {
       aSplitEdgeIdx = i;
       break;
@@ -407,7 +407,7 @@ TEST(BRepGraph_LayerIntegrationTest, SplitEdge_OriginalEdgeRemoved)
   const double aMidParam = 0.5 * (aEdgeFirst + aEdgeLast);
   const gp_Pnt aMidPnt =
     BRepGraph_Tool::Edge::Curve(aGraph, BRepGraph_EdgeId(aSplitEdgeIdx))->EvalD0(aMidParam);
-  const BRepGraph_NodeId aSplitVtx = aGraph.Builder().AddVertexDef(aMidPnt, Precision::Confusion());
+  const BRepGraph_NodeId aSplitVtx = aGraph.Builder().AddVertex(aMidPnt, Precision::Confusion());
 
   // Split the edge.
   BRepGraph_NodeId aSubA, aSubB;

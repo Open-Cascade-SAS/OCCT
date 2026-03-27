@@ -91,7 +91,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage& theStora
       {
         const BRepGraphInc::VertexRefEntry& aStartVR =
           theStorage.VertexRefEntry(anEdge.StartVertexRefId);
-        TopoDS_Shape aStartVtx = Node(theStorage, aStartVR.VertexDefId, theCache);
+        TopoDS_Shape aStartVtx = Node(theStorage, aStartVR.VertexEntityId, theCache);
         if (!aStartVtx.IsNull())
         {
           aStartVtx.Orientation(TopAbs_FORWARD);
@@ -104,7 +104,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage& theStora
       {
         const BRepGraphInc::VertexRefEntry& anEndVR =
           theStorage.VertexRefEntry(anEdge.EndVertexRefId);
-        TopoDS_Shape anEndVtx = Node(theStorage, anEndVR.VertexDefId, theCache);
+        TopoDS_Shape anEndVtx = Node(theStorage, anEndVR.VertexEntityId, theCache);
         if (!anEndVtx.IsNull())
         {
           anEndVtx.Orientation(TopAbs_REVERSED);
@@ -117,7 +117,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage& theStora
       {
         const BRepGraphInc::VertexRefEntry& aVR =
           theStorage.VertexRefEntry(anEdge.InternalVertexRefIds.Value(i));
-        TopoDS_Shape aVtx = Node(theStorage, aVR.VertexDefId, theCache);
+        TopoDS_Shape aVtx = Node(theStorage, aVR.VertexEntityId, theCache);
         if (!aVtx.IsNull())
         {
           aVtx.Orientation(aVR.Orientation);
@@ -149,13 +149,13 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage& theStora
         const BRepGraphInc::CoEdgeRefEntry& aCoEdgeRef =
           theStorage.CoEdgeRefEntry(aWire.CoEdgeRefIds.Value(aRefOrd));
         if (aCoEdgeRef.IsRemoved
-            || !aCoEdgeRef.CoEdgeDefId.IsValid(theStorage.NbCoEdges()))
+            || !aCoEdgeRef.CoEdgeEntityId.IsValid(theStorage.NbCoEdges()))
           continue;
         const BRepGraphInc::CoEdgeEntity& aCoEdge =
-          theStorage.CoEdge(BRepGraph_CoEdgeId(aCoEdgeRef.CoEdgeDefId.Index));
-        if (aCoEdge.IsRemoved || !aCoEdge.EdgeDefId.IsValid(theStorage.NbEdges()))
+          theStorage.CoEdge(BRepGraph_CoEdgeId(aCoEdgeRef.CoEdgeEntityId.Index));
+        if (aCoEdge.IsRemoved || !aCoEdge.EdgeEntityId.IsValid(theStorage.NbEdges()))
           continue;
-        TopoDS_Shape anEdge = Node(theStorage, aCoEdge.EdgeDefId, theCache);
+        TopoDS_Shape anEdge = Node(theStorage, aCoEdge.EdgeEntityId, theCache);
         if (!anEdge.IsNull())
         {
           anEdge.Orientation(aCoEdge.Sense);
@@ -182,9 +182,9 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage& theStora
       for (int aRefOrd = 0; aRefOrd < aShell.FaceRefIds.Length(); ++aRefOrd)
       {
         const BRepGraphInc::FaceRefEntry& aRef = theStorage.FaceRefEntry(aShell.FaceRefIds.Value(aRefOrd));
-        if (aRef.IsRemoved || !aRef.FaceDefId.IsValid(theStorage.NbFaces()))
+        if (aRef.IsRemoved || !aRef.FaceEntityId.IsValid(theStorage.NbFaces()))
           continue;
-        TopoDS_Shape aFace = FaceWithCache(theStorage, aRef.FaceDefId.Index, theCache);
+        TopoDS_Shape aFace = FaceWithCache(theStorage, aRef.FaceEntityId.Index, theCache);
         if (!aFace.IsNull())
         {
           aFace.Orientation(aRef.Orientation);
@@ -198,7 +198,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage& theStora
       {
         const BRepGraphInc::ChildRefEntry& aRef =
           theStorage.ChildRefEntry(aShell.FreeChildRefIds.Value(i));
-        TopoDS_Shape aChild = Node(theStorage, aRef.ChildDefId, theCache);
+        TopoDS_Shape aChild = Node(theStorage, aRef.ChildEntityId, theCache);
         if (!aChild.IsNull())
         {
           aChild.Orientation(aRef.Orientation);
@@ -222,9 +222,9 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage& theStora
         const BRepGraphInc::ShellRefEntry& aShellRef =
           theStorage.ShellRefEntry(aSolid.ShellRefIds.Value(aRefOrd));
         if (aShellRef.IsRemoved
-            || !aShellRef.ShellDefId.IsValid(theStorage.NbShells()))
+            || !aShellRef.ShellEntityId.IsValid(theStorage.NbShells()))
           continue;
-        TopoDS_Shape                  aShell    = Node(theStorage, aShellRef.ShellDefId, theCache);
+        TopoDS_Shape                  aShell    = Node(theStorage, aShellRef.ShellEntityId, theCache);
         if (!aShell.IsNull())
         {
           aShell.Orientation(aShellRef.Orientation);
@@ -238,7 +238,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage& theStora
       {
         const BRepGraphInc::ChildRefEntry& aCR =
           theStorage.ChildRefEntry(aSolid.FreeChildRefIds.Value(i));
-        TopoDS_Shape aChild = Node(theStorage, aCR.ChildDefId, theCache);
+        TopoDS_Shape aChild = Node(theStorage, aCR.ChildEntityId, theCache);
         if (!aChild.IsNull())
         {
           aChild.Orientation(aCR.Orientation);
@@ -258,9 +258,9 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage& theStora
       for (int aRefOrd = 0; aRefOrd < aComp.ChildRefIds.Length(); ++aRefOrd)
       {
         const BRepGraphInc::ChildRefEntry& aRef = theStorage.ChildRefEntry(aComp.ChildRefIds.Value(aRefOrd));
-        if (aRef.IsRemoved || !aRef.ChildDefId.IsValid())
+        if (aRef.IsRemoved || !aRef.ChildEntityId.IsValid())
           continue;
-        TopoDS_Shape                  aChild = Node(theStorage, aRef.ChildDefId, theCache);
+        TopoDS_Shape                  aChild = Node(theStorage, aRef.ChildEntityId, theCache);
         if (!aChild.IsNull())
         {
           aChild.Orientation(aRef.Orientation);
@@ -281,9 +281,9 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage& theStora
       {
         const BRepGraphInc::SolidRefEntry& aRef = theStorage.SolidRefEntry(aCS.SolidRefIds.Value(aRefOrd));
         if (aRef.IsRemoved
-            || !aRef.SolidDefId.IsValid(theStorage.NbSolids()))
+            || !aRef.SolidEntityId.IsValid(theStorage.NbSolids()))
           continue;
-        TopoDS_Shape                  aSolid = Node(theStorage, aRef.SolidDefId, theCache);
+        TopoDS_Shape                  aSolid = Node(theStorage, aRef.SolidEntityId, theCache);
         if (!aSolid.IsNull())
         {
           aSolid.Orientation(aRef.Orientation);
@@ -413,7 +413,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
     {
       const BRepGraphInc::VertexRefEntry& aStartVR =
         theStorage.VertexRefEntry(anEdge.StartVertexRefId);
-      TopoDS_Shape aStartVtx = aGetOrBuildVertex(aStartVR.VertexDefId.Index);
+      TopoDS_Shape aStartVtx = aGetOrBuildVertex(aStartVR.VertexEntityId.Index);
       if (!aStartVtx.IsNull())
       {
         aStartVtx.Orientation(TopAbs_FORWARD);
@@ -426,7 +426,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
     {
       const BRepGraphInc::VertexRefEntry& anEndVR =
         theStorage.VertexRefEntry(anEdge.EndVertexRefId);
-      TopoDS_Shape anEndVtx = aGetOrBuildVertex(anEndVR.VertexDefId.Index);
+      TopoDS_Shape anEndVtx = aGetOrBuildVertex(anEndVR.VertexEntityId.Index);
       if (!anEndVtx.IsNull())
       {
         anEndVtx.Orientation(TopAbs_REVERSED);
@@ -439,7 +439,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
     {
       const BRepGraphInc::VertexRefEntry& aVR =
         theStorage.VertexRefEntry(anEdge.InternalVertexRefIds.Value(anIntIdx));
-      TopoDS_Shape aVtx = aGetOrBuildVertex(aVR.VertexDefId.Index);
+      TopoDS_Shape aVtx = aGetOrBuildVertex(aVR.VertexEntityId.Index);
       if (!aVtx.IsNull())
       {
         aVtx.Orientation(aVR.Orientation);
@@ -463,8 +463,8 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
     {
       const BRepGraphInc::EdgeEntity::RegularityEntry& aRegEntry =
         anEdge.Regularities.Value(aRegIdx);
-      const BRepGraph_NodeId& aFaceId1    = aRegEntry.FaceDef1;
-      const BRepGraph_NodeId& aFaceId2    = aRegEntry.FaceDef2;
+      const BRepGraph_NodeId& aFaceId1    = aRegEntry.FaceEntity1;
+      const BRepGraph_NodeId& aFaceId2    = aRegEntry.FaceEntity2;
       const TopoDS_Shape*     aFaceShape1 = theCache.Seek(aFaceId1);
       const TopoDS_Shape*     aFaceShape2 = theCache.Seek(aFaceId2);
       if (aFaceShape1 != nullptr && aFaceShape2 != nullptr)
@@ -508,13 +508,13 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
         const BRepGraphInc::CoEdgeRefEntry& aCoEdgeRef =
           theStorage.CoEdgeRefEntry(aWire.CoEdgeRefIds.Value(aRefOrd));
         if (aCoEdgeRef.IsRemoved
-            || !aCoEdgeRef.CoEdgeDefId.IsValid(theStorage.NbCoEdges()))
+            || !aCoEdgeRef.CoEdgeEntityId.IsValid(theStorage.NbCoEdges()))
           continue;
         const BRepGraphInc::CoEdgeEntity& aCoEdge =
-          theStorage.CoEdge(BRepGraph_CoEdgeId(aCoEdgeRef.CoEdgeDefId.Index));
-        if (aCoEdge.IsRemoved || !aCoEdge.EdgeDefId.IsValid(theStorage.NbEdges()))
+          theStorage.CoEdge(BRepGraph_CoEdgeId(aCoEdgeRef.CoEdgeEntityId.Index));
+        if (aCoEdge.IsRemoved || !aCoEdge.EdgeEntityId.IsValid(theStorage.NbEdges()))
           continue;
-        TopoDS_Edge anEdge = aGetOrBuildEdge(aCoEdge.EdgeDefId.Index);
+        TopoDS_Edge anEdge = aGetOrBuildEdge(aCoEdge.EdgeEntityId.Index);
         anEdge.Orientation(aCoEdge.Sense);
         if (!aCoEdgeRef.LocalLocation.IsIdentity())
           anEdge.Location(aCoEdgeRef.LocalLocation);
@@ -539,14 +539,14 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
       const BRepGraphInc::CoEdgeRefEntry& aCoEdgeRef =
         theStorage.CoEdgeRefEntry(aWire.CoEdgeRefIds.Value(aRefOrd));
       if (aCoEdgeRef.IsRemoved
-          || !aCoEdgeRef.CoEdgeDefId.IsValid(theStorage.NbCoEdges()))
+          || !aCoEdgeRef.CoEdgeEntityId.IsValid(theStorage.NbCoEdges()))
         continue;
       const BRepGraphInc::CoEdgeEntity& aCoEdge =
-        theStorage.CoEdge(BRepGraph_CoEdgeId(aCoEdgeRef.CoEdgeDefId.Index));
-      if (aCoEdge.IsRemoved || !aCoEdge.EdgeDefId.IsValid(theStorage.NbEdges()))
+        theStorage.CoEdge(BRepGraph_CoEdgeId(aCoEdgeRef.CoEdgeEntityId.Index));
+      if (aCoEdge.IsRemoved || !aCoEdge.EdgeEntityId.IsValid(theStorage.NbEdges()))
         continue;
-      TopoDS_Edge                     anEdge    = aGetOrBuildEdge(aCoEdge.EdgeDefId.Index);
-      const BRepGraphInc::EdgeEntity& anEdgeEnt = theStorage.Edge(aCoEdge.EdgeDefId);
+      TopoDS_Edge                     anEdge    = aGetOrBuildEdge(aCoEdge.EdgeEntityId.Index);
+      const BRepGraphInc::EdgeEntity& anEdgeEnt = theStorage.Edge(aCoEdge.EdgeEntityId);
 
       // Compute composed edge location within the face TShape hierarchy.
       // This is wire-in-face Location * edge-in-wire Location.
@@ -688,10 +688,10 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
   for (int aRefOrd = 0; aRefOrd < aFace.WireRefIds.Length(); ++aRefOrd)
   {
     const BRepGraphInc::WireRefEntry& aWireRef = theStorage.WireRefEntry(aFace.WireRefIds.Value(aRefOrd));
-    if (aWireRef.IsRemoved || !aWireRef.WireDefId.IsValid(theStorage.NbWires())
+    if (aWireRef.IsRemoved || !aWireRef.WireEntityId.IsValid(theStorage.NbWires())
         || !aWireRef.IsOuter)
       continue;
-    TopoDS_Wire aWire = aBuildWireForFace(aWireRef.WireDefId, aWireRef.LocalLocation);
+    TopoDS_Wire aWire = aBuildWireForFace(aWireRef.WireEntityId, aWireRef.LocalLocation);
     aWire.Orientation(aWireRef.Orientation);
     if (!aWireRef.LocalLocation.IsIdentity())
       aWire.Location(aWireRef.LocalLocation);
@@ -701,10 +701,10 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
   for (int aRefOrd = 0; aRefOrd < aFace.WireRefIds.Length(); ++aRefOrd)
   {
     const BRepGraphInc::WireRefEntry& aWireRef = theStorage.WireRefEntry(aFace.WireRefIds.Value(aRefOrd));
-    if (aWireRef.IsRemoved || !aWireRef.WireDefId.IsValid(theStorage.NbWires())
+    if (aWireRef.IsRemoved || !aWireRef.WireEntityId.IsValid(theStorage.NbWires())
         || aWireRef.IsOuter)
       continue;
-    TopoDS_Wire aWire = aBuildWireForFace(aWireRef.WireDefId, aWireRef.LocalLocation);
+    TopoDS_Wire aWire = aBuildWireForFace(aWireRef.WireEntityId, aWireRef.LocalLocation);
     aWire.Orientation(aWireRef.Orientation);
     if (!aWireRef.LocalLocation.IsIdentity())
       aWire.Location(aWireRef.LocalLocation);
@@ -717,10 +717,10 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
     const BRepGraphInc::VertexRefEntry& aVR = theStorage.VertexRefEntry(BRepGraph_VertexRefId(aRefIdx));
     if (aVR.ParentId != aFaceNodeId || aVR.IsRemoved)
       continue;
-    if (!aVR.VertexDefId.IsValid())
+    if (!aVR.VertexEntityId.IsValid())
       continue;
-    const BRepGraphInc::VertexEntity& aVtxEnt    = theStorage.Vertex(aVR.VertexDefId);
-    BRepGraph_NodeId                  aVtxId     = aVR.VertexDefId;
+    const BRepGraphInc::VertexEntity& aVtxEnt    = theStorage.Vertex(aVR.VertexEntityId);
+    BRepGraph_NodeId                  aVtxId     = aVR.VertexEntityId;
     const TopoDS_Shape*               aVtxCached = theCache.Seek(aVtxId);
     TopoDS_Shape                      aVtxShape;
     if (aVtxCached != nullptr)
@@ -745,19 +745,19 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
   for (int aWireRefOrd = 0; aWireRefOrd < aFace.WireRefIds.Length(); ++aWireRefOrd)
   {
     const BRepGraphInc::WireRefEntry& aWireRef = theStorage.WireRefEntry(aFace.WireRefIds.Value(aWireRefOrd));
-    if (aWireRef.IsRemoved || !aWireRef.WireDefId.IsValid(theStorage.NbWires()))
+    if (aWireRef.IsRemoved || !aWireRef.WireEntityId.IsValid(theStorage.NbWires()))
       continue;
-    const BRepGraphInc::WireEntity& aWireEnt = theStorage.Wire(aWireRef.WireDefId);
+    const BRepGraphInc::WireEntity& aWireEnt = theStorage.Wire(aWireRef.WireEntityId);
     for (int aCoEdgeRefOrd = 0; aCoEdgeRefOrd < aWireEnt.CoEdgeRefIds.Length(); ++aCoEdgeRefOrd)
     {
       const BRepGraphInc::CoEdgeRefEntry& aCoEdgeRef =
         theStorage.CoEdgeRefEntry(aWireEnt.CoEdgeRefIds.Value(aCoEdgeRefOrd));
       if (aCoEdgeRef.IsRemoved
-          || !aCoEdgeRef.CoEdgeDefId.IsValid(theStorage.NbCoEdges()))
+          || !aCoEdgeRef.CoEdgeEntityId.IsValid(theStorage.NbCoEdges()))
         continue;
       const BRepGraphInc::CoEdgeEntity& aCoEdge =
-        theStorage.CoEdge(BRepGraph_CoEdgeId(aCoEdgeRef.CoEdgeDefId.Index));
-      const BRepGraphInc::EdgeEntity& anEdgeEnt              = theStorage.Edge(aCoEdge.EdgeDefId);
+        theStorage.CoEdge(BRepGraph_CoEdgeId(aCoEdgeRef.CoEdgeEntityId.Index));
+      const BRepGraphInc::EdgeEntity& anEdgeEnt              = theStorage.Edge(aCoEdge.EdgeEntityId);
       const auto aRestoreVertexPointReps = [&](BRepGraph_VertexId theVtxId) {
         if (!theVtxId.IsValid())
           return;
@@ -772,7 +772,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
         {
           const BRepGraphInc::VertexEntity::PointOnCurveEntry& aPOC =
             aVtx.PointsOnCurve.Value(aPOCIdx);
-          const TopoDS_Shape* anEdgeCached = theCache.Seek(aPOC.EdgeDefId);
+          const TopoDS_Shape* anEdgeCached = theCache.Seek(aPOC.EdgeEntityId);
           if (anEdgeCached != nullptr && !anEdgeCached->IsNull())
             aBB.UpdateVertex(aVtxShape,
                              aPOC.Parameter,
@@ -783,7 +783,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
         {
           const BRepGraphInc::VertexEntity::PointOnSurfaceEntry& aPOS =
             aVtx.PointsOnSurface.Value(aPOSIdx);
-          const TopoDS_Shape* aFaceCached = theCache.Seek(aPOS.FaceDefId);
+          const TopoDS_Shape* aFaceCached = theCache.Seek(aPOS.FaceEntityId);
           if (aFaceCached != nullptr && !aFaceCached->IsNull())
             aBB.UpdateVertex(aVtxShape,
                              aPOS.ParameterU,
@@ -793,9 +793,9 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
         }
       };
       if (anEdgeEnt.StartVertexRefId.IsValid())
-        aRestoreVertexPointReps(theStorage.VertexRefEntry(anEdgeEnt.StartVertexRefId).VertexDefId);
+        aRestoreVertexPointReps(theStorage.VertexRefEntry(anEdgeEnt.StartVertexRefId).VertexEntityId);
       if (anEdgeEnt.EndVertexRefId.IsValid())
-        aRestoreVertexPointReps(theStorage.VertexRefEntry(anEdgeEnt.EndVertexRefId).VertexDefId);
+        aRestoreVertexPointReps(theStorage.VertexRefEntry(anEdgeEnt.EndVertexRefId).VertexEntityId);
     }
   }
 

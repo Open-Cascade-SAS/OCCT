@@ -15,13 +15,13 @@
 #include <BRep_Builder.hxx>
 #include <BRepBndLib.hxx>
 #include <BRepGraph.hxx>
+#include <BRepGraphInc_Entity.hxx>
 #include <BRepGraph_Analyze.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_MutRef.hxx>
 #include <BRepGraph_SubGraph.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraphAlgo_BndLib.hxx>
-#include <BRepGraphInc_IncidenceRef.hxx>
 #include "BRepGraph_RefTestTools.hxx"
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
@@ -212,7 +212,7 @@ TEST_F(BRepGraph_AnalyzeTest, Decompose_ThreeDisconnected_ThreeComponents)
   // Each component should contain 6 faces (one box).
   for (int anIdx = 0; anIdx < aComponents.Length(); ++anIdx)
   {
-    EXPECT_EQ(aComponents.Value(anIdx).FaceDefIds().Length(), 6)
+    EXPECT_EQ(aComponents.Value(anIdx).FaceEntityIds().Length(), 6)
       << "Component " << anIdx << " does not have 6 faces";
   }
 }
@@ -439,9 +439,9 @@ TEST_F(BRepGraph_AnalyzeTest, BoundingBox_Edge_SubsetOfOwningFace)
   for (int aCoEdgeIter = 0; aCoEdgeIter < aCoEdgeRefs.Length(); ++aCoEdgeIter)
   {
     const BRepGraphInc::CoEdgeRefEntry& aCR = myGraph.Refs().CoEdge(aCoEdgeRefs.Value(aCoEdgeIter));
-    const BRepGraph_TopoNode::CoEdgeDef& aCoEdge =
-      myGraph.Topo().CoEdge(aCR.CoEdgeDefId);
-    const BRepGraph_NodeId anEdgeId = aCoEdge.EdgeDefId;
+    const BRepGraphInc::CoEdgeEntity& aCoEdge =
+      myGraph.Topo().CoEdge(aCR.CoEdgeEntityId);
+    const BRepGraph_NodeId anEdgeId = aCoEdge.EdgeEntityId;
     Bnd_Box                anEdgeBox;
     BRepGraphAlgo_BndLib::Add(myGraph, anEdgeId, anEdgeBox);
     if (anEdgeBox.IsVoid())
@@ -539,7 +539,7 @@ TEST_F(BRepGraph_AnalyzeTest, InvalidateSubgraph_PropagatesUpToSolid)
 
   // Invalidate from a vertex upward via a no-op mutation (triggers markModified).
   {
-    BRepGraph_MutRef<BRepGraph_TopoNode::VertexDef> aMut =
+    BRepGraph_MutRef<BRepGraphInc::VertexEntity> aMut =
       myGraph.Builder().MutVertex(BRepGraph_VertexId(aVertId.Index));
   }
 

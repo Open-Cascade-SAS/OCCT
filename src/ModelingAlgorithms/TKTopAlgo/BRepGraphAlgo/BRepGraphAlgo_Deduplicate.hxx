@@ -38,7 +38,7 @@ public:
   {
     bool   AnalyzeOnly       = false;
     bool   HistoryMode       = true;
-    bool   MergeDefsWhenSafe = false;
+    bool   MergeEntitiesWhenSafe = false;
     double CompTolerance     = Precision::Angular();
     double HashTolerance     = Precision::Confusion();
   };
@@ -53,16 +53,16 @@ public:
     int  NbNullifiedSurfaces = 0;
     int  NbNullifiedCurves   = 0;
     int  NbHistoryRecords    = 0;
-    bool IsDefMergeApplied   = false;
+    bool IsEntityMergeApplied   = false;
 
-    //! Topology definition merge counters (active when MergeDefsWhenSafe = true).
+    //! Topology definition merge counters (active when MergeEntitiesWhenSafe = true).
     int NbMergedVertices = 0;
     int NbMergedEdges    = 0;
     int NbMergedWires    = 0;
     int NbMergedFaces    = 0;
 
-    NCollection_Vector<BRepGraph_FaceId> AffectedFaceDefs; //!< Faces whose SurfNodeId changed.
-    NCollection_Vector<BRepGraph_EdgeId> AffectedEdgeDefs; //!< Edges whose CurveNodeId changed.
+    NCollection_Vector<BRepGraph_FaceId> AffectedFaces; //!< Faces whose SurfNodeId changed.
+    NCollection_Vector<BRepGraph_EdgeId> AffectedEdges; //!< Edges whose CurveNodeId changed.
   };
 
   //! Run deduplication on a built graph.

@@ -12,14 +12,13 @@
 // commercial license or contractual agreement.
 
 #include <BRepGraphAlgo_BndLib.hxx>
+#include <BRepGraphInc_Entity.hxx>
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_Tool.hxx>
-#include <BRepGraph_TopoNode.hxx>
-#include <BRepGraphInc_IncidenceRef.hxx>
 #include <BRepGProp.hxx>
 
 #include <Bnd_Box.hxx>
@@ -141,28 +140,28 @@ static int pointsForOBB(const BRepGraph&            theGraph,
     {
       // Planar face: check if all edges are linear.
       bool                                        hasNonLinearEdge = false;
-      const BRepGraph_TopoNode::FaceDef&          aFaceEnt = theGraph.Topo().Face(aFaceId);
+      const BRepGraphInc::FaceEntity&          aFaceEnt = theGraph.Topo().Face(aFaceId);
       for (int aWRI = 0; aWRI < aFaceEnt.WireRefIds.Length() && !hasNonLinearEdge; ++aWRI)
       {
         const BRepGraph_WireRefId             aWireRefId = aFaceEnt.WireRefIds.Value(aWRI);
         const BRepGraphInc::WireRefEntry&     aWR        = aRefs.Wire(aWireRefId);
-        if (aWR.IsRemoved || !aWR.WireDefId.IsValid(theGraph.Topo().NbWires()))
+        if (aWR.IsRemoved || !aWR.WireEntityId.IsValid(theGraph.Topo().NbWires()))
         {
           continue;
         }
 
-        const BRepGraph_TopoNode::WireDef& aWireEnt = theGraph.Topo().Wire(aWR.WireDefId);
+        const BRepGraphInc::WireEntity& aWireEnt = theGraph.Topo().Wire(aWR.WireEntityId);
         for (int aCRI = 0; aCRI < aWireEnt.CoEdgeRefIds.Length(); ++aCRI)
         {
           const BRepGraph_CoEdgeRefId           aCERefId = aWireEnt.CoEdgeRefIds.Value(aCRI);
           const BRepGraphInc::CoEdgeRefEntry&   aCR      = aRefs.CoEdge(aCERefId);
-          if (aCR.IsRemoved || !aCR.CoEdgeDefId.IsValid(theGraph.Topo().NbCoEdges()))
+          if (aCR.IsRemoved || !aCR.CoEdgeEntityId.IsValid(theGraph.Topo().NbCoEdges()))
           {
             continue;
           }
 
-          const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdge(aCR.CoEdgeDefId);
-          const BRepGraph_EdgeId               anEdgeId(aCoEdge.EdgeDefId);
+          const BRepGraphInc::CoEdgeEntity& aCoEdge = theGraph.Topo().CoEdge(aCR.CoEdgeEntityId);
+          const BRepGraph_EdgeId               anEdgeId(aCoEdge.EdgeEntityId);
           if (!anEdgeId.IsValid(theGraph.Topo().NbEdges()))
           {
             continue;

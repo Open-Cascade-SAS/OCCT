@@ -11,8 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _BRepGraphInc_WireExplorer_HeaderFile
-#define _BRepGraphInc_WireExplorer_HeaderFile
+#ifndef _BRepGraph_WireExplorer_HeaderFile
+#define _BRepGraph_WireExplorer_HeaderFile
 
 #include <BRepGraphInc_Entity.hxx>
 #include <NCollection_Array1.hxx>
@@ -27,10 +27,10 @@
 //! The coedges are reordered on construction (O(N^2) worst case for N coedges).
 //! For most wires this is fast since N is small (4-8 edges typically).
 //!
-//! Accepts any edge/coedge accessor - works with both BRepGraphInc_Storage and
-//! higher-level views (BRepGraph::TopoView).
+//! Accepts any edge/coedge accessor - works with both low-level storage adapters
+//! and higher-level views (BRepGraph::TopoView).
 //!
-//! Usage with BRepGraphInc_Storage:
+//! Usage with storage-backed accessors:
 //! @code
 //!   auto edgeLookup = [&](const int idx) -> const BRepGraphInc::EdgeEntity& {
 //!     return aStorage.Edge(idx);
@@ -39,24 +39,24 @@
 //!     return aStorage.CoEdge(idx);
 //!   };
 //!   auto vtxRefLookup = [&](const BRepGraph_VertexRefId id) -> BRepGraph_VertexId {
-//!     return aStorage.VertexRefEntry(id).VertexDefId;
+//!     return aStorage.VertexRefEntry(id).VertexEntityId;
 //!   };
-//!   BRepGraphInc_WireExplorer anExp(aStorage.Wire(aWireIdx).CoEdgeRefs,
+//!   BRepGraph_WireExplorer anExp(aStorage.Wire(aWireIdx).CoEdgeRefs,
 //!                                    coedgeLookup, edgeLookup, vtxRefLookup);
 //! @endcode
-class BRepGraphInc_WireExplorer
+class BRepGraph_WireExplorer
 {
 public:
   //! Initialize the explorer, reordering coedges by vertex connectivity.
   //! @param[in] theCoEdgeRefs     wire's coedge reference vector
   //! @param[in] theCoEdgeLookup   function to get CoEdgeEntity by index
   //! @param[in] theEdgeLookup     function to get EdgeEntity by index
-  //! @param[in] theVtxRefLookup   function to resolve VertexRefId to VertexDefId
+  //! @param[in] theVtxRefLookup   function to resolve VertexRefId to VertexEntityId
   template <typename CoEdgeLookupT, typename EdgeLookupT, typename VertexRefLookupT>
-  BRepGraphInc_WireExplorer(const NCollection_Vector<BRepGraphInc::CoEdgeRef>& theCoEdgeRefs,
-                            const CoEdgeLookupT&                                theCoEdgeLookup,
-                            const EdgeLookupT&                                  theEdgeLookup,
-                            const VertexRefLookupT&                             theVtxRefLookup)
+  BRepGraph_WireExplorer(const NCollection_Vector<BRepGraphInc::CoEdgeRef>& theCoEdgeRefs,
+                         const CoEdgeLookupT&                                      theCoEdgeLookup,
+                         const EdgeLookupT&                                        theEdgeLookup,
+                         const VertexRefLookupT&                                   theVtxRefLookup)
       : myCurrent(0)
   {
     buildOrder(theCoEdgeRefs, theCoEdgeLookup, theEdgeLookup, theVtxRefLookup);
@@ -72,7 +72,7 @@ public:
   const BRepGraphInc::CoEdgeRef& CurrentRef() const { return myOrder.Value(myCurrent); }
 
   //! Current coedge typed identifier in storage.
-  BRepGraph_CoEdgeId CurrentCoEdgeId() const { return CurrentRef().CoEdgeDefId; }
+  BRepGraph_CoEdgeId CurrentCoEdgeId() const { return CurrentRef().CoEdgeEntityId; }
 
   //! Number of coedges in the ordered sequence.
   int NbEdges() const { return myOrder.Length(); }
@@ -85,8 +85,8 @@ private:
   //! the start vertex def id, for REVERSED returns the end vertex def id.
   template <typename VertexRefLookupT>
   static BRepGraph_NodeId orientedStartVertex(const BRepGraphInc::EdgeEntity& theEdge,
-                                              const TopAbs_Orientation         theSense,
-                                              const VertexRefLookupT&          theVtxRefLookup)
+                                              const TopAbs_Orientation                 theSense,
+                                              const VertexRefLookupT&                  theVtxRefLookup)
   {
     const BRepGraph_VertexRefId aRefId =
       (theSense == TopAbs_FORWARD) ? theEdge.StartVertexRefId : theEdge.EndVertexRefId;
@@ -99,8 +99,8 @@ private:
   //! the end vertex def id, for REVERSED returns the start vertex def id.
   template <typename VertexRefLookupT>
   static BRepGraph_NodeId orientedEndVertex(const BRepGraphInc::EdgeEntity& theEdge,
-                                            const TopAbs_Orientation         theSense,
-                                            const VertexRefLookupT&          theVtxRefLookup)
+                                            const TopAbs_Orientation                 theSense,
+                                            const VertexRefLookupT&                  theVtxRefLookup)
   {
     const BRepGraph_VertexRefId aRefId =
       (theSense == TopAbs_FORWARD) ? theEdge.EndVertexRefId : theEdge.StartVertexRefId;
@@ -112,9 +112,9 @@ private:
   //! Build connection-ordered coedge sequence from CoEdgeRefs.
   template <typename CoEdgeLookupT, typename EdgeLookupT, typename VertexRefLookupT>
   void buildOrder(const NCollection_Vector<BRepGraphInc::CoEdgeRef>& theCoEdgeRefs,
-                  const CoEdgeLookupT&                               theCoEdgeLookup,
-                  const EdgeLookupT&                                 theEdgeLookup,
-                  const VertexRefLookupT&                            theVtxRefLookup)
+                  const CoEdgeLookupT&                                     theCoEdgeLookup,
+                  const EdgeLookupT&                                       theEdgeLookup,
+                  const VertexRefLookupT&                                  theVtxRefLookup)
   {
     const int aNbEdges = theCoEdgeRefs.Length();
     if (aNbEdges == 0)
@@ -131,10 +131,10 @@ private:
     // Chain coedges by matching end-vertex to start-vertex.
     for (int aPlaced = 1; aPlaced < aNbEdges; ++aPlaced)
     {
-      const BRepGraphInc::CoEdgeRef&    aPrevRef    = myOrder.Value(aPlaced - 1);
-      const BRepGraphInc::CoEdgeEntity& aPrevCoEdge = theCoEdgeLookup(aPrevRef.CoEdgeDefId.Index);
-      const BRepGraph_NodeId            aPrevEnd =
-        orientedEndVertex(theEdgeLookup(aPrevCoEdge.EdgeDefId.Index),
+      const BRepGraphInc::CoEdgeRef&   aPrevRef    = myOrder.Value(aPlaced - 1);
+      const BRepGraphInc::CoEdgeEntity& aPrevCoEdge = theCoEdgeLookup(aPrevRef.CoEdgeEntityId.Index);
+      const BRepGraph_NodeId                 aPrevEnd =
+        orientedEndVertex(theEdgeLookup(aPrevCoEdge.EdgeEntityId.Index),
                           aPrevCoEdge.Sense,
                           theVtxRefLookup);
 
@@ -143,10 +143,10 @@ private:
       {
         if (aUsed(i))
           continue;
-        const BRepGraphInc::CoEdgeRef&    aCandRef    = theCoEdgeRefs.Value(i);
-        const BRepGraphInc::CoEdgeEntity& aCandCoEdge = theCoEdgeLookup(aCandRef.CoEdgeDefId.Index);
-        const BRepGraph_NodeId            aCandStart =
-          orientedStartVertex(theEdgeLookup(aCandCoEdge.EdgeDefId.Index),
+        const BRepGraphInc::CoEdgeRef&   aCandRef    = theCoEdgeRefs.Value(i);
+        const BRepGraphInc::CoEdgeEntity& aCandCoEdge = theCoEdgeLookup(aCandRef.CoEdgeEntityId.Index);
+        const BRepGraph_NodeId                 aCandStart =
+          orientedStartVertex(theEdgeLookup(aCandCoEdge.EdgeEntityId.Index),
                               aCandCoEdge.Sense,
                               theVtxRefLookup);
 
@@ -175,7 +175,7 @@ private:
   }
 
   NCollection_Vector<BRepGraphInc::CoEdgeRef> myOrder;
-  int                                         myCurrent;
+  int                                                myCurrent;
 };
 
-#endif // _BRepGraphInc_WireExplorer_HeaderFile
+#endif // _BRepGraph_WireExplorer_HeaderFile

@@ -230,9 +230,9 @@ bool enforceImpl(BRepGraph&       theGraph,
 {
   // Single MutRef scope ensures markModified fires exactly once,
   // even on early returns, due to RAII.
-  BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aMutEdge =
+  BRepGraph_MutRef<BRepGraphInc::EdgeEntity> aMutEdge =
     theGraph.Builder().MutEdge(BRepGraph_EdgeId(theEdgeId.Index));
-  const BRepGraph_TopoNode::EdgeDef&            anEdge = *aMutEdge;
+  const BRepGraphInc::EdgeEntity&            anEdge = *aMutEdge;
   const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
     theGraph.Topo().CoEdgesOfEdge(BRepGraph_EdgeId(theEdgeId.Index));
   if (!BRepGraph_Tool::Edge::HasCurve(theGraph, BRepGraph_EdgeId(theEdgeId.Index))
@@ -298,18 +298,18 @@ bool enforceImpl(BRepGraph&       theGraph,
   for (int aCEIter = 0; aCEIter < aCoEdgeIdxs.Length(); ++aCEIter)
   {
     const BRepGraph_CoEdgeId             aCoEdgeIdx = aCoEdgeIdxs.Value(aCEIter);
-    const BRepGraph_TopoNode::CoEdgeDef& aCoEdge    = theGraph.Topo().CoEdge(aCoEdgeIdx);
+    const BRepGraphInc::CoEdgeEntity& aCoEdge    = theGraph.Topo().CoEdge(aCoEdgeIdx);
     if (!aCoEdge.Curve2DRepId.IsValid())
     {
       continue;
     }
-    if (!aCoEdge.FaceDefId.IsValid())
+    if (!aCoEdge.FaceEntityId.IsValid())
     {
       continue;
     }
 
     if (!BRepGraph_Tool::Face::HasSurface(theGraph,
-                                          BRepGraph_FaceId::FromNodeId(aCoEdge.FaceDefId)))
+                                          BRepGraph_FaceId::FromNodeId(aCoEdge.FaceEntityId)))
     {
       continue;
     }
@@ -317,7 +317,7 @@ bool enforceImpl(BRepGraph&       theGraph,
     hasYaPCu = true;
 
     // Load surface (apply face transform if non-identity).
-    const BRepGraph_FaceId         aCoEdgeFaceId = BRepGraph_FaceId::FromNodeId(aCoEdge.FaceDefId);
+    const BRepGraph_FaceId         aCoEdgeFaceId = BRepGraph_FaceId::FromNodeId(aCoEdge.FaceEntityId);
     GeomAdaptor_TransformedSurface aTransSurf =
       BRepGraph_Tool::Face::SurfaceAdaptor(theGraph, aCoEdgeFaceId);
     occ::handle<Geom_Surface> aSurf    = BRepGraph_Tool::Face::Surface(theGraph, aCoEdgeFaceId);

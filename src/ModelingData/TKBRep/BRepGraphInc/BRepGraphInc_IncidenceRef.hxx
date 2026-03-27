@@ -31,7 +31,7 @@ namespace BRepGraphInc
 //! direct INTERNAL/EXTERNAL vertex children on edges and faces.
 struct VertexRef
 {
-  BRepGraph_VertexId VertexDefId;
+  BRepGraph_VertexId VertexEntityId;
   TopAbs_Orientation Orientation = TopAbs_INTERNAL;
   TopLoc_Location    LocalLocation;
 };
@@ -46,14 +46,14 @@ struct VertexRef
 //! would break that coupling.
 struct CoEdgeRef
 {
-  BRepGraph_CoEdgeId CoEdgeDefId;
+  BRepGraph_CoEdgeId CoEdgeEntityId;
   TopLoc_Location    LocalLocation;
 };
 
 //! Reference from a face to one of its wires.
 struct WireRef
 {
-  BRepGraph_WireId   WireDefId;
+  BRepGraph_WireId   WireEntityId;
   bool               IsOuter     = false;
   TopAbs_Orientation Orientation = TopAbs_FORWARD;
   TopLoc_Location    LocalLocation;
@@ -62,7 +62,7 @@ struct WireRef
 //! Reference from a shell to one of its faces.
 struct FaceRef
 {
-  BRepGraph_FaceId   FaceDefId;
+  BRepGraph_FaceId   FaceEntityId;
   TopAbs_Orientation Orientation = TopAbs_FORWARD;
   TopLoc_Location    LocalLocation;
 };
@@ -70,7 +70,7 @@ struct FaceRef
 //! Reference from a solid to one of its shells.
 struct ShellRef
 {
-  BRepGraph_ShellId  ShellDefId;
+  BRepGraph_ShellId  ShellEntityId;
   TopAbs_Orientation Orientation = TopAbs_FORWARD;
   TopLoc_Location    LocalLocation;
 };
@@ -78,7 +78,7 @@ struct ShellRef
 //! Reference from a comp-solid to one of its solids.
 struct SolidRef
 {
-  BRepGraph_SolidId  SolidDefId;
+  BRepGraph_SolidId  SolidEntityId;
   TopAbs_Orientation Orientation = TopAbs_FORWARD;
   TopLoc_Location    LocalLocation;
 };
@@ -86,7 +86,7 @@ struct SolidRef
 //! Reference from a compound to a child of any kind.
 struct ChildRef
 {
-  BRepGraph_NodeId   ChildDefId; //!< Typed child entity id.
+  BRepGraph_NodeId   ChildEntityId; //!< Typed child entity id.
   TopAbs_Orientation Orientation = TopAbs_FORWARD;
   TopLoc_Location    LocalLocation;
 };
@@ -94,7 +94,7 @@ struct ChildRef
 //! Reference from a product to one of its child occurrences.
 struct OccurrenceRef
 {
-  BRepGraph_OccurrenceId OccurrenceDefId;
+  BRepGraph_OccurrenceId OccurrenceEntityId;
 };
 
 } // namespace BRepGraphInc

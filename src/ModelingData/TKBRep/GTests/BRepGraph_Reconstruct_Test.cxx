@@ -15,12 +15,12 @@
 #include <BRep_Tool.hxx>
 #include <BRepGProp.hxx>
 #include <BRepGraph.hxx>
+#include <BRepGraphInc_Entity.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include "BRepGraph_RefTestTools.hxx"
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_Tool.hxx>
-#include <BRepGraphInc_IncidenceRef.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
@@ -344,9 +344,9 @@ TEST(BRepGraph_ReconstructTest, Face_OrientationPreserved)
     const BRepGraphInc::FaceRefEntry& aFaceRef = aGraph.Refs().Face(aFaceRefs.Value(aRefIdx));
     const TopAbs_Orientation          anExpectedOri = aFaceRef.Orientation;
 
-    TopoDS_Shape aReconFace = aGraph.Shapes().ReconstructFace(aFaceRef.FaceDefId);
+    TopoDS_Shape aReconFace = aGraph.Shapes().ReconstructFace(aFaceRef.FaceEntityId);
     ASSERT_FALSE(aReconFace.IsNull())
-      << "ReconstructFace returned null for face " << aFaceRef.FaceDefId.Index;
+      << "ReconstructFace returned null for face " << aFaceRef.FaceEntityId.Index;
 
     // The reconstructed face from the def should be valid.
     EXPECT_EQ(aReconFace.ShapeType(), TopAbs_FACE);
@@ -459,14 +459,14 @@ TEST(BRepGraph_ReconstructTest, AfterVertexMutation_ModifiedFlagAndPointChanged)
   ASSERT_GT(aCoEdgeRefs.Length(), 0);
 
   const BRepGraphInc::CoEdgeRefEntry& aFirstCR = aGraph.Refs().CoEdge(aCoEdgeRefs.First());
-  const BRepGraph_TopoNode::CoEdgeDef& aFirstCoEdge = aGraph.Topo().CoEdge(aFirstCR.CoEdgeDefId);
-  const int aVertIdx = BRepGraph_Tool::Edge::StartVertex(aGraph, BRepGraph_EdgeId(aFirstCoEdge.EdgeDefId)).VertexDefId.Index;
+  const BRepGraphInc::CoEdgeEntity& aFirstCoEdge = aGraph.Topo().CoEdge(aFirstCR.CoEdgeEntityId);
+  const int aVertIdx = BRepGraph_Tool::Edge::StartVertex(aGraph, BRepGraph_EdgeId(aFirstCoEdge.EdgeEntityId)).VertexEntityId.Index;
   ASSERT_GE(aVertIdx, 0);
 
   // Mutate: move vertex by 5 units in Z.
   const gp_Pnt anOldPt = BRepGraph_Tool::Vertex::Pnt(aGraph, BRepGraph_VertexId(aVertIdx));
   {
-    BRepGraph_MutRef<BRepGraph_TopoNode::VertexDef> aMutVtx =
+    BRepGraph_MutRef<BRepGraphInc::VertexEntity> aMutVtx =
       aGraph.Builder().MutVertex(BRepGraph_VertexId(aVertIdx));
     aMutVtx->Point = gp_Pnt(anOldPt.X(), anOldPt.Y(), anOldPt.Z() + 5.0);
   }
@@ -495,7 +495,7 @@ TEST(BRepGraph_ReconstructTest, AfterToleranceMutation_NewTShape)
 
   // Mutate tolerance.
   {
-    BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aMutEdge =
+    BRepGraph_MutRef<BRepGraphInc::EdgeEntity> aMutEdge =
       aGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
     aMutEdge->Tolerance = aMutEdge->Tolerance + 1.0;
   }

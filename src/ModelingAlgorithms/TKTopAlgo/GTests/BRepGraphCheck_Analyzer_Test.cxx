@@ -19,9 +19,9 @@
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepCheck_Status.hxx>
 #include <BRepGraph.hxx>
+#include <BRepGraphInc_Entity.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_NodeId.hxx>
-#include <BRepGraph_TopoNode.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraphCheck.hxx>
 #include <BRepGraphCheck_Analyzer.hxx>
@@ -508,18 +508,18 @@ TEST(BRepGraphCheck_AnalyzerTest, DisplacedVertex_DetectsInvalidPointOnCurve)
     NCollection_Vector<BRepGraphCheck_Issue> aIssues;
     const BRepGraphInc::VertexRefEntry& aStartRef =
       BRepGraph_Tool::Edge::StartVertex(aGraph, anEdgeId);
-    if (aStartRef.VertexDefId.IsValid())
+    if (aStartRef.VertexEntityId.IsValid())
     {
       BRepGraphCheck::CheckVertexOnEdge(aGraph,
-                                        aStartRef.VertexDefId,
+                                        aStartRef.VertexEntityId,
                                         anEdgeId,
                                         aIssues);
     }
     const BRepGraphInc::VertexRefEntry& anEndRef =
       BRepGraph_Tool::Edge::EndVertex(aGraph, anEdgeId);
-    if (anEndRef.VertexDefId.IsValid())
+    if (anEndRef.VertexEntityId.IsValid())
     {
-      BRepGraphCheck::CheckVertexOnEdge(aGraph, anEndRef.VertexDefId, anEdgeId, aIssues);
+      BRepGraphCheck::CheckVertexOnEdge(aGraph, anEndRef.VertexEntityId, anEdgeId, aIssues);
     }
     for (int anIssueIter = 0; anIssueIter < aIssues.Length(); ++anIssueIter)
     {

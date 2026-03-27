@@ -12,12 +12,11 @@
 // commercial license or contractual agreement.
 
 #include <BRepGraphCheck.hxx>
+#include <BRepGraphInc_Entity.hxx>
 
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Tool.hxx>
-#include <BRepGraph_TopoNode.hxx>
-#include <BRepGraphInc_IncidenceRef.hxx>
 #include <NCollection_Map.hxx>
 #include <NCollection_Vector.hxx>
 
@@ -31,12 +30,12 @@ static NCollection_Vector<BRepGraphInc::FaceRefEntry> collectShellFaceRefs(const
                                                                              const BRepGraph_NodeId theShellNodeId)
 {
   NCollection_Vector<BRepGraphInc::FaceRefEntry> aResult;
-  const BRepGraph_TopoNode::ShellDef& aShellDef = theDefs.Shell(BRepGraph_ShellId(theShellNodeId.Index));
+  const BRepGraphInc::ShellEntity& aShellDef = theDefs.Shell(BRepGraph_ShellId(theShellNodeId.Index));
   for (int aRefIter = 0; aRefIter < aShellDef.FaceRefIds.Length(); ++aRefIter)
   {
     const BRepGraph_FaceRefId          aRefId = aShellDef.FaceRefIds.Value(aRefIter);
     const BRepGraphInc::FaceRefEntry& aRef   = theRefs.Face(aRefId);
-    if (aRef.IsRemoved || !aRef.FaceDefId.IsValid(theDefs.NbFaces()))
+    if (aRef.IsRemoved || !aRef.FaceEntityId.IsValid(theDefs.NbFaces()))
     {
       continue;
     }
@@ -52,12 +51,12 @@ static NCollection_Vector<BRepGraphInc::WireRefEntry> collectFaceWireRefs(const 
                                                                             const BRepGraph_NodeId theFaceNodeId)
 {
   NCollection_Vector<BRepGraphInc::WireRefEntry> aResult;
-  const BRepGraph_TopoNode::FaceDef& aFaceDef = theDefs.Face(BRepGraph_FaceId(theFaceNodeId.Index));
+  const BRepGraphInc::FaceEntity& aFaceDef = theDefs.Face(BRepGraph_FaceId(theFaceNodeId.Index));
   for (int aRefIter = 0; aRefIter < aFaceDef.WireRefIds.Length(); ++aRefIter)
   {
     const BRepGraph_WireRefId          aRefId = aFaceDef.WireRefIds.Value(aRefIter);
     const BRepGraphInc::WireRefEntry& aRef   = theRefs.Wire(aRefId);
-    if (aRef.IsRemoved || !aRef.WireDefId.IsValid(theDefs.NbWires()))
+    if (aRef.IsRemoved || !aRef.WireEntityId.IsValid(theDefs.NbWires()))
     {
       continue;
     }
@@ -73,18 +72,18 @@ static NCollection_Vector<BRepGraphInc::CoEdgeRef> collectWireCoEdgeRefs(const B
                                                                            const BRepGraph_NodeId theWireNodeId)
 {
   NCollection_Vector<BRepGraphInc::CoEdgeRef> aResult;
-  const BRepGraph_TopoNode::WireDef& aWireDef = theDefs.Wire(BRepGraph_WireId(theWireNodeId.Index));
+  const BRepGraphInc::WireEntity& aWireDef = theDefs.Wire(BRepGraph_WireId(theWireNodeId.Index));
   for (int aRefIter = 0; aRefIter < aWireDef.CoEdgeRefIds.Length(); ++aRefIter)
   {
     const BRepGraph_CoEdgeRefId          aRefId = aWireDef.CoEdgeRefIds.Value(aRefIter);
     const BRepGraphInc::CoEdgeRefEntry& aRef   = theRefs.CoEdge(aRefId);
-    if (aRef.IsRemoved || !aRef.CoEdgeDefId.IsValid(theDefs.NbCoEdges()))
+    if (aRef.IsRemoved || !aRef.CoEdgeEntityId.IsValid(theDefs.NbCoEdges()))
     {
       continue;
     }
 
     BRepGraphInc::CoEdgeRef aCoEdgeRef;
-    aCoEdgeRef.CoEdgeDefId   = aRef.CoEdgeDefId;
+    aCoEdgeRef.CoEdgeEntityId   = aRef.CoEdgeEntityId;
     aCoEdgeRef.LocalLocation = aRef.LocalLocation;
     aResult.Append(aCoEdgeRef);
   }
@@ -101,7 +100,7 @@ void BRepGraphCheck::CheckShellMinimum(const BRepGraph&                         
 {
   const BRepGraph::TopoView&          aDefs          = theGraph.Topo();
   const BRepGraph::RefsView&          aRefs          = theGraph.Refs();
-  const BRepGraph_TopoNode::ShellDef& aShellDef      = aDefs.Shell(theShell);
+  const BRepGraphInc::ShellEntity& aShellDef      = aDefs.Shell(theShell);
   const BRepGraph_NodeId              aShellNodeId   = aShellDef.Id;
   const NCollection_Vector<BRepGraphInc::FaceRefEntry> aShellFaceRefs =
     collectShellFaceRefs(aDefs, aRefs, aShellNodeId);
@@ -122,7 +121,7 @@ void BRepGraphCheck::CheckShellMinimum(const BRepGraph&                         
   for (int aFaceIter = 0; aFaceIter < aShellFaceRefs.Length(); ++aFaceIter)
   {
     const BRepGraphInc::FaceRefEntry& aFR = aShellFaceRefs.Value(aFaceIter);
-    aShellFaces.Add(aFR.FaceDefId.Index);
+    aShellFaces.Add(aFR.FaceEntityId.Index);
   }
 
   if (aShellFaces.Size() <= 1)
@@ -172,7 +171,7 @@ void BRepGraphCheck::CheckShellClosed(const BRepGraph&                          
 {
   const BRepGraph::TopoView&          aDefs        = theGraph.Topo();
   const BRepGraph::RefsView&          aRefs        = theGraph.Refs();
-  const BRepGraph_TopoNode::ShellDef& aShellDef    = aDefs.Shell(theShell);
+  const BRepGraphInc::ShellEntity& aShellDef    = aDefs.Shell(theShell);
   const BRepGraph_NodeId              aShellNodeId = aShellDef.Id;
   const NCollection_Vector<BRepGraphInc::FaceRefEntry> aShellFaceRefs =
     collectShellFaceRefs(aDefs, aRefs, aShellNodeId);
@@ -185,12 +184,12 @@ void BRepGraphCheck::CheckShellClosed(const BRepGraph&                          
   for (int aFaceIter = 0; aFaceIter < aShellFaceRefs.Length(); ++aFaceIter)
   {
     const BRepGraphInc::FaceRefEntry& aFR     = aShellFaceRefs.Value(aFaceIter);
-    const BRepGraph_NodeId       aFaceDefId = aFR.FaceDefId;
-    if (!aShellFaces.Add(aFR.FaceDefId.Index))
+    const BRepGraph_NodeId       aFaceEntityId = aFR.FaceEntityId;
+    if (!aShellFaces.Add(aFR.FaceEntityId.Index))
     {
       // Redundant face: same face appears twice in the shell.
       BRepGraphCheck_Issue anIssue;
-      anIssue.NodeId        = aFaceDefId;
+      anIssue.NodeId        = aFaceEntityId;
       anIssue.ContextNodeId = aShellNodeId;
       anIssue.Status        = BRepCheck_RedundantFace;
       anIssue.IssueSeverity = BRepGraphCheck_Issue::Severity::Error;
@@ -213,15 +212,15 @@ void BRepGraphCheck::CheckShellClosed(const BRepGraph&                          
     for (int aWireIter = 0; aWireIter < aFaceWireRefs.Length(); ++aWireIter)
     {
       const BRepGraphInc::WireRefEntry& aWR = aFaceWireRefs.Value(aWireIter);
-      const BRepGraph_NodeId            aWireNodeId = BRepGraph_NodeId::Wire(aWR.WireDefId.Index);
+      const BRepGraph_NodeId            aWireNodeId = BRepGraph_NodeId::Wire(aWR.WireEntityId.Index);
       const NCollection_Vector<BRepGraphInc::CoEdgeRef> aWireCoEdgeRefs =
         collectWireCoEdgeRefs(aDefs, aRefs, aWireNodeId);
 
       for (int aCoEdgeIter = 0; aCoEdgeIter < aWireCoEdgeRefs.Length(); ++aCoEdgeIter)
       {
         const BRepGraphInc::CoEdgeRef&       aCR        = aWireCoEdgeRefs.Value(aCoEdgeIter);
-        const BRepGraph_TopoNode::CoEdgeDef& aCoEdgeDef = aDefs.CoEdge(aCR.CoEdgeDefId);
-        const int                            anEdgeIdx  = aCoEdgeDef.EdgeDefId.Index;
+        const BRepGraphInc::CoEdgeEntity& aCoEdgeDef = aDefs.CoEdge(aCR.CoEdgeEntityId);
+        const int                            anEdgeIdx  = aCoEdgeDef.EdgeEntityId.Index;
 
         // Skip degenerate edges.
         if (BRepGraph_Tool::Edge::Degenerated(theGraph, BRepGraph_EdgeId(anEdgeIdx)))
@@ -269,7 +268,7 @@ void BRepGraphCheck::CheckShellOrientation(const BRepGraph&                     
 {
   const BRepGraph::TopoView&          aDefs        = theGraph.Topo();
   const BRepGraph::RefsView&          aRefs        = theGraph.Refs();
-  const BRepGraph_TopoNode::ShellDef& aShellDef    = aDefs.Shell(theShell);
+  const BRepGraphInc::ShellEntity& aShellDef    = aDefs.Shell(theShell);
   const BRepGraph_NodeId              aShellNodeId = aShellDef.Id;
   const NCollection_Vector<BRepGraphInc::FaceRefEntry> aShellFaceRefs =
     collectShellFaceRefs(aDefs, aRefs, aShellNodeId);
@@ -280,7 +279,7 @@ void BRepGraphCheck::CheckShellOrientation(const BRepGraph&                     
   // Build a map: edge def index -> list of (face def index, orientation in wire).
   struct EdgeInFace
   {
-    int                FaceDefIdx;
+    int                FaceEntityIdx;
     TopAbs_Orientation OrientationInWire;
   };
 
@@ -289,7 +288,7 @@ void BRepGraphCheck::CheckShellOrientation(const BRepGraph&                     
   for (int aFaceIter = 0; aFaceIter < aShellFaceRefs.Length(); ++aFaceIter)
   {
     const BRepGraphInc::FaceRefEntry& aFR      = aShellFaceRefs.Value(aFaceIter);
-    const int                         aFaceIdx = aFR.FaceDefId.Index;
+    const int                         aFaceIdx = aFR.FaceEntityId.Index;
     const TopAbs_Orientation          aFaceOri = aFR.Orientation;
     const BRepGraph_NodeId            aFaceNodeId(BRepGraph_NodeId::Kind::Face, aFaceIdx);
     const NCollection_Vector<BRepGraphInc::WireRefEntry> aFaceWireRefs =
@@ -298,15 +297,15 @@ void BRepGraphCheck::CheckShellOrientation(const BRepGraph&                     
     for (int aWireIter = 0; aWireIter < aFaceWireRefs.Length(); ++aWireIter)
     {
       const BRepGraphInc::WireRefEntry& aWR = aFaceWireRefs.Value(aWireIter);
-      const BRepGraph_NodeId            aWireNodeId = BRepGraph_NodeId::Wire(aWR.WireDefId.Index);
+      const BRepGraph_NodeId            aWireNodeId = BRepGraph_NodeId::Wire(aWR.WireEntityId.Index);
       const NCollection_Vector<BRepGraphInc::CoEdgeRef> aWireCoEdgeRefs =
         collectWireCoEdgeRefs(aDefs, aRefs, aWireNodeId);
 
       for (int aCoEdgeIter = 0; aCoEdgeIter < aWireCoEdgeRefs.Length(); ++aCoEdgeIter)
       {
         const BRepGraphInc::CoEdgeRef&       aCR        = aWireCoEdgeRefs.Value(aCoEdgeIter);
-        const BRepGraph_TopoNode::CoEdgeDef& aCoEdgeDef = aDefs.CoEdge(aCR.CoEdgeDefId);
-        const int                            anEdgeIdx  = aCoEdgeDef.EdgeDefId.Index;
+        const BRepGraphInc::CoEdgeEntity& aCoEdgeDef = aDefs.CoEdge(aCR.CoEdgeEntityId);
+        const int                            anEdgeIdx  = aCoEdgeDef.EdgeEntityId.Index;
 
         // Compose edge orientation: coedge sense x wire x face orientation.
         TopAbs_Orientation aCompOri = aCoEdgeDef.Sense;
@@ -326,7 +325,7 @@ void BRepGraphCheck::CheckShellOrientation(const BRepGraph&                     
         }
 
         EdgeInFace anEIF;
-        anEIF.FaceDefIdx        = aFaceIdx;
+        anEIF.FaceEntityIdx        = aFaceIdx;
         anEIF.OrientationInWire = aCompOri;
 
         if (!anEdgeUsageMap.IsBound(anEdgeIdx))
@@ -377,7 +376,7 @@ void BRepGraphCheck::CheckShellOrientation(const BRepGraph&                     
     for (int aFaceIter = 0; aFaceIter < aShellFaceRefs.Length(); ++aFaceIter)
     {
       const BRepGraphInc::FaceRefEntry& aFR = aShellFaceRefs.Value(aFaceIter);
-      aShellFaces.Add(aFR.FaceDefId.Index);
+      aShellFaces.Add(aFR.FaceEntityId.Index);
     }
 
     // BFS with orientation assignment: +1 or -1.

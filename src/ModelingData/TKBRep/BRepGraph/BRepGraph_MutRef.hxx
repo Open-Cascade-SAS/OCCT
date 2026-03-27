@@ -28,19 +28,19 @@
 //! BRepGraph class is fully defined, so markModified() is visible.
 //!
 //! @warning The stored pointer is valid only while no entities of the same
-//! kind are appended to the graph. Appending (e.g., Builder().AddVertexDef(),
-//! AddEdgeDef(), AddWireDef(), AddFaceDef(), etc.) may trigger internal
+//! kind are appended to the graph. Appending (e.g., Builder().AddVertex(),
+//! AddEdge(), AddWire(), AddFace(), etc.) may trigger internal
 //! vector reallocation, invalidating all pointers. Callers must not invoke
 //! any Builder().Add*Def() method while a BRepGraph_MutRef is alive.
 //!
 //! @code
 //!   {
-//!     BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> anEdge =
+//!     BRepGraph_MutRef<BRepGraphInc::EdgeEntity> anEdge =
 //!     theGraph.Builder().MutEdge(BRepGraph_EdgeId(42)); anEdge->Tolerance     = 0.5;
 //!     anEdge->SameParameter = true;
 //!   } // markModified called once here
 //! @endcode
-template <typename DefT>
+template <typename EntityT>
 class BRepGraph_MutRef
 {
 public:
@@ -48,25 +48,25 @@ public:
   //! @param[in] theGraph  owning graph (used for markModified on destruction)
   //! @param[in] theDef    pointer to the mutable definition
   //! @param[in] theId     node identity for markModified
-  BRepGraph_MutRef(BRepGraph* theGraph, DefT* theDef, const BRepGraph_NodeId theId)
+  BRepGraph_MutRef(BRepGraph* theGraph, EntityT* theEntity, const BRepGraph_NodeId theId)
       : myGraph(theGraph),
-        myDef(theDef),
+        myEntity(theEntity),
         myId(theId)
   {
   }
 
-  //! Destructor: calls the optimized markModified(NodeId, BaseDef&) overload
+  //! Destructor: calls the optimized markModified(NodeId, BaseEntity&) overload
   //! if the guard still owns the reference, skipping redundant storage dispatch.
   ~BRepGraph_MutRef()
   {
     if (myGraph != nullptr)
-      myGraph->markModified(myId, *myDef);
+      myGraph->markModified(myId, *myEntity);
   }
 
   //! Move constructor: transfers ownership; source becomes inert.
   BRepGraph_MutRef(BRepGraph_MutRef&& theOther) noexcept
       : myGraph(theOther.myGraph),
-        myDef(theOther.myDef),
+        myEntity(theOther.myEntity),
         myId(theOther.myId)
   {
     theOther.myGraph = nullptr;
@@ -78,9 +78,9 @@ public:
     if (this != &theOther)
     {
       if (myGraph != nullptr)
-        myGraph->markModified(myId, *myDef);
+        myGraph->markModified(myId, *myEntity);
       myGraph          = theOther.myGraph;
-      myDef            = theOther.myDef;
+      myEntity         = theOther.myEntity;
       myId             = theOther.myId;
       theOther.myGraph = nullptr;
     }
@@ -91,14 +91,14 @@ public:
   BRepGraph_MutRef& operator=(const BRepGraph_MutRef&) = delete;
 
   //! Access the definition via pointer syntax.
-  [[nodiscard]] DefT* operator->() { return myDef; }
+  [[nodiscard]] EntityT* operator->() { return myEntity; }
 
   //! Dereference to the definition.
-  [[nodiscard]] DefT& operator*() { return *myDef; }
+  [[nodiscard]] EntityT& operator*() { return *myEntity; }
 
 private:
   BRepGraph*       myGraph; //!< Owning graph (nullptr after move).
-  DefT*            myDef;   //!< Mutable definition pointer.
+  EntityT*         myEntity;   //!< Mutable definition pointer.
   BRepGraph_NodeId myId;    //!< Node identity for markModified.
 };
 

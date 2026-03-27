@@ -12,13 +12,12 @@
 // commercial license or contractual agreement.
 
 #include <BRepGraphCheck_Analyzer.hxx>
+#include <BRepGraphInc_Entity.hxx>
 
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraphCheck.hxx>
-#include <BRepGraphInc_Entity.hxx>
-#include <BRepGraphInc_IncidenceRef.hxx>
 #include <NCollection_Array1.hxx>
 #include <OSD_Parallel.hxx>
 
@@ -111,17 +110,17 @@ void BRepGraphCheck_Analyzer::Perform()
         // Edge-in-face and vertex-in-face checks.
         const BRepGraph::TopoView&         aLocalDefs = myGraph->Topo();
         const BRepGraph::RefsView&         aLocalRefs = myGraph->Refs();
-        const BRepGraph_TopoNode::FaceDef& aFaceDef   = aLocalDefs.Face(aFaceId);
+        const BRepGraphInc::FaceEntity& aFaceDef   = aLocalDefs.Face(aFaceId);
 
         for (int aWireRefIter = 0; aWireRefIter < aFaceDef.WireRefIds.Length(); ++aWireRefIter)
         {
           const BRepGraph_WireRefId         aWireRefId = aFaceDef.WireRefIds.Value(aWireRefIter);
           const BRepGraphInc::WireRefEntry& aWireRef   = aLocalRefs.Wire(aWireRefId);
-          if (aWireRef.IsRemoved || !aWireRef.WireDefId.IsValid(aLocalDefs.NbWires()))
+          if (aWireRef.IsRemoved || !aWireRef.WireEntityId.IsValid(aLocalDefs.NbWires()))
           {
             continue;
           }
-          const BRepGraph_WireId aWireId = aWireRef.WireDefId;
+          const BRepGraph_WireId aWireId = aWireRef.WireEntityId;
 
           // Wire minimum check.
           BRepGraphCheck::CheckWireMinimum(*myGraph, aWireId, aLocal);
@@ -129,28 +128,28 @@ void BRepGraphCheck_Analyzer::Perform()
           // Wire-on-face check.
           BRepGraphCheck::CheckWireOnFace(*myGraph, aWireId, aFaceId, aGeomCtl, aLocal);
 
-          const BRepGraph_TopoNode::WireDef& aWireDef = aLocalDefs.Wire(aWireId);
+          const BRepGraphInc::WireEntity& aWireDef = aLocalDefs.Wire(aWireId);
           for (int aCoEdgeRefIter = 0; aCoEdgeRefIter < aWireDef.CoEdgeRefIds.Length();
                ++aCoEdgeRefIter)
           {
             const BRepGraph_CoEdgeRefId         aCoEdgeRefId = aWireDef.CoEdgeRefIds.Value(aCoEdgeRefIter);
             const BRepGraphInc::CoEdgeRefEntry& aCoEdgeRef   = aLocalRefs.CoEdge(aCoEdgeRefId);
-            if (aCoEdgeRef.IsRemoved || !aCoEdgeRef.CoEdgeDefId.IsValid(aLocalDefs.NbCoEdges()))
+            if (aCoEdgeRef.IsRemoved || !aCoEdgeRef.CoEdgeEntityId.IsValid(aLocalDefs.NbCoEdges()))
             {
               continue;
             }
-            const BRepGraph_TopoNode::CoEdgeDef& aCoEdgeDef =
-              aLocalDefs.CoEdge(aCoEdgeRef.CoEdgeDefId);
-            const BRepGraph_EdgeId anEdgeId = aCoEdgeDef.EdgeDefId;
+            const BRepGraphInc::CoEdgeEntity& aCoEdgeDef =
+              aLocalDefs.CoEdge(aCoEdgeRef.CoEdgeEntityId);
+            const BRepGraph_EdgeId anEdgeId = aCoEdgeDef.EdgeEntityId;
 
             BRepGraphCheck::CheckEdgeOnFace(*myGraph, anEdgeId, aFaceId, anIsExact, aLocal);
 
             // Vertex checks at edge endpoints.
-            const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aLocalDefs.Edge(anEdgeId);
+            const BRepGraphInc::EdgeEntity& anEdgeDef = aLocalDefs.Edge(anEdgeId);
             if (anEdgeDef.StartVertexRefId.IsValid())
             {
               const BRepGraph_VertexId aStartVtxId =
-                BRepGraph_Tool::Edge::StartVertex(*myGraph, anEdgeId).VertexDefId;
+                BRepGraph_Tool::Edge::StartVertex(*myGraph, anEdgeId).VertexEntityId;
               if (aStartVtxId.IsValid())
               {
                 BRepGraphCheck::CheckVertexOnEdge(*myGraph, aStartVtxId, anEdgeId, aLocal);
@@ -160,7 +159,7 @@ void BRepGraphCheck_Analyzer::Perform()
             if (anEdgeDef.EndVertexRefId.IsValid())
             {
               const BRepGraph_VertexId anEndVtxId =
-                BRepGraph_Tool::Edge::EndVertex(*myGraph, anEdgeId).VertexDefId;
+                BRepGraph_Tool::Edge::EndVertex(*myGraph, anEdgeId).VertexEntityId;
               if (anEndVtxId.IsValid())
               {
                 BRepGraphCheck::CheckVertexOnEdge(*myGraph, anEndVtxId, anEdgeId, aLocal);
@@ -230,14 +229,14 @@ void BRepGraphCheck_Analyzer::CheckVertex(const BRepGraph_VertexId theVertex)
   for (int anEdgeIter = 0; anEdgeIter < aNbEdges; ++anEdgeIter)
   {
     const BRepGraph_EdgeId             anEdgeId(anEdgeIter);
-    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(anEdgeId);
+    const BRepGraphInc::EdgeEntity& anEdgeDef = aDefs.Edge(anEdgeId);
     const BRepGraph_VertexId aStartVtxId =
       anEdgeDef.StartVertexRefId.IsValid()
-        ? BRepGraph_Tool::Edge::StartVertex(*myGraph, anEdgeId).VertexDefId
+        ? BRepGraph_Tool::Edge::StartVertex(*myGraph, anEdgeId).VertexEntityId
         : BRepGraph_VertexId();
     const BRepGraph_VertexId anEndVtxId =
       anEdgeDef.EndVertexRefId.IsValid()
-        ? BRepGraph_Tool::Edge::EndVertex(*myGraph, anEdgeId).VertexDefId
+        ? BRepGraph_Tool::Edge::EndVertex(*myGraph, anEdgeId).VertexEntityId
         : BRepGraph_VertexId();
     if ((aStartVtxId.IsValid() && aStartVtxId == theVertex)
         || (anEndVtxId.IsValid() && anEndVtxId == theVertex))

@@ -12,14 +12,13 @@
 // commercial license or contractual agreement.
 
 #include <BRepGraphAlgo_BndLib.hxx>
+#include <BRepGraphInc_Entity.hxx>
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <Standard_Assert.hxx>
 #include <BRepGraph_Tool.hxx>
-#include <BRepGraph_TopoNode.hxx>
-#include <BRepGraphInc_IncidenceRef.hxx>
 #include <BRepGraphAlgo_FClass2d.hxx>
 #include <BRepGraphAlgo_UVBounds.hxx>
 
@@ -58,12 +57,12 @@ template <typename FuncT>
 static void forFaceWireRefEntries(const BRepGraph& theGraph, const BRepGraph_FaceId theFaceId, FuncT&& theFunc)
 {
   const BRepGraph::RefsView&              aRefs    = theGraph.Refs();
-  const BRepGraph_TopoNode::FaceDef&      aFaceEnt = theGraph.Topo().Face(theFaceId);
+  const BRepGraphInc::FaceEntity&      aFaceEnt = theGraph.Topo().Face(theFaceId);
   for (int i = 0; i < aFaceEnt.WireRefIds.Length(); ++i)
   {
     const BRepGraph_WireRefId             aRefId = aFaceEnt.WireRefIds.Value(i);
     const BRepGraphInc::WireRefEntry&     aWR    = aRefs.Wire(aRefId);
-    if (aWR.IsRemoved || !aWR.WireDefId.IsValid(theGraph.Topo().NbWires()))
+    if (aWR.IsRemoved || !aWR.WireEntityId.IsValid(theGraph.Topo().NbWires()))
     {
       continue;
     }
@@ -76,12 +75,12 @@ template <typename FuncT>
 static void forWireCoEdgeRefEntries(const BRepGraph& theGraph, const BRepGraph_WireId theWireId, FuncT&& theFunc)
 {
   const BRepGraph::RefsView&              aRefs    = theGraph.Refs();
-  const BRepGraph_TopoNode::WireDef&      aWireEnt = theGraph.Topo().Wire(theWireId);
+  const BRepGraphInc::WireEntity&      aWireEnt = theGraph.Topo().Wire(theWireId);
   for (int i = 0; i < aWireEnt.CoEdgeRefIds.Length(); ++i)
   {
     const BRepGraph_CoEdgeRefId           aRefId = aWireEnt.CoEdgeRefIds.Value(i);
     const BRepGraphInc::CoEdgeRefEntry&   aCR    = aRefs.CoEdge(aRefId);
-    if (aCR.IsRemoved || !aCR.CoEdgeDefId.IsValid(theGraph.Topo().NbCoEdges()))
+    if (aCR.IsRemoved || !aCR.CoEdgeEntityId.IsValid(theGraph.Topo().NbCoEdges()))
     {
       continue;
     }
@@ -94,12 +93,12 @@ template <typename FuncT>
 static void forSolidShellRefEntries(const BRepGraph& theGraph, const BRepGraph_SolidId theSolidId, FuncT&& theFunc)
 {
   const BRepGraph::RefsView&              aRefs     = theGraph.Refs();
-  const BRepGraph_TopoNode::SolidDef&     aSolidEnt = theGraph.Topo().Solid(theSolidId);
+  const BRepGraphInc::SolidEntity&     aSolidEnt = theGraph.Topo().Solid(theSolidId);
   for (int i = 0; i < aSolidEnt.ShellRefIds.Length(); ++i)
   {
     const BRepGraph_ShellRefId            aRefId = aSolidEnt.ShellRefIds.Value(i);
     const BRepGraphInc::ShellRefEntry&    aSR    = aRefs.Shell(aRefId);
-    if (aSR.IsRemoved || !aSR.ShellDefId.IsValid(theGraph.Topo().NbShells()))
+    if (aSR.IsRemoved || !aSR.ShellEntityId.IsValid(theGraph.Topo().NbShells()))
     {
       continue;
     }
@@ -114,12 +113,12 @@ static void forCompoundChildRefEntries(const BRepGraph&       theGraph,
                                        FuncT&&                theFunc)
 {
   const BRepGraph::RefsView&                aRefs       = theGraph.Refs();
-  const BRepGraph_TopoNode::CompoundDef&    aCompEnt    = theGraph.Topo().Compound(BRepGraph_CompoundId(theCompNode.Index));
+  const BRepGraphInc::CompoundEntity&    aCompEnt    = theGraph.Topo().Compound(BRepGraph_CompoundId(theCompNode.Index));
   for (int i = 0; i < aCompEnt.ChildRefIds.Length(); ++i)
   {
     const BRepGraph_ChildRefId              aRefId = aCompEnt.ChildRefIds.Value(i);
     const BRepGraphInc::ChildRefEntry&      aCR    = aRefs.Child(aRefId);
-    if (aCR.IsRemoved || !aCR.ChildDefId.IsValid())
+    if (aCR.IsRemoved || !aCR.ChildEntityId.IsValid())
     {
       continue;
     }
@@ -134,12 +133,12 @@ static void forCompSolidSolidRefEntries(const BRepGraph&          theGraph,
                                         FuncT&&                   theFunc)
 {
   const BRepGraph::RefsView&                aRefs      = theGraph.Refs();
-  const BRepGraph_TopoNode::CompSolidDef&   aCSEnt     = theGraph.Topo().CompSolid(theCompSolidId);
+  const BRepGraphInc::CompSolidEntity&   aCSEnt     = theGraph.Topo().CompSolid(theCompSolidId);
   for (int i = 0; i < aCSEnt.SolidRefIds.Length(); ++i)
   {
     const BRepGraph_SolidRefId              aRefId = aCSEnt.SolidRefIds.Value(i);
     const BRepGraphInc::SolidRefEntry&      aSR    = aRefs.Solid(aRefId);
-    if (aSR.IsRemoved || !aSR.SolidDefId.IsValid(theGraph.Topo().NbSolids()))
+    if (aSR.IsRemoved || !aSR.SolidEntityId.IsValid(theGraph.Topo().NbSolids()))
     {
       continue;
     }
@@ -221,9 +220,9 @@ static void addFaceBox(const BRepGraph&       theGraph,
     // Plane: use edge 3D curves directly from the graph.
     bool hasEdges = false;
     forFaceWireRefEntries(theGraph, theFaceId, [&](const BRepGraphInc::WireRefEntry& aWR) {
-      forWireCoEdgeRefEntries(theGraph, aWR.WireDefId, [&](const BRepGraphInc::CoEdgeRefEntry& aCR) {
-        const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdge(aCR.CoEdgeDefId);
-        const BRepGraph_EdgeId               anEdgeId(aCoEdge.EdgeDefId);
+      forWireCoEdgeRefEntries(theGraph, aWR.WireEntityId, [&](const BRepGraphInc::CoEdgeRefEntry& aCR) {
+        const BRepGraphInc::CoEdgeEntity& aCoEdge = theGraph.Topo().CoEdge(aCR.CoEdgeEntityId);
+        const BRepGraph_EdgeId               anEdgeId(aCoEdge.EdgeEntityId);
         if (BRepGraph_Tool::Edge::Degenerated(theGraph, anEdgeId)
             || !BRepGraph_Tool::Edge::HasCurve(theGraph, anEdgeId))
         {
@@ -550,9 +549,9 @@ static void addFaceBoxOptimal(const BRepGraph&       theGraph,
     // Edge-based path: iterate wire coedges.
     bool hasEdges = false;
     forFaceWireRefEntries(theGraph, theFaceId, [&](const BRepGraphInc::WireRefEntry& aWR) {
-      forWireCoEdgeRefEntries(theGraph, aWR.WireDefId, [&](const BRepGraphInc::CoEdgeRefEntry& aCR) {
-        const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdge(aCR.CoEdgeDefId);
-        const BRepGraph_EdgeId               anEdgeId(aCoEdge.EdgeDefId);
+      forWireCoEdgeRefEntries(theGraph, aWR.WireEntityId, [&](const BRepGraphInc::CoEdgeRefEntry& aCR) {
+        const BRepGraphInc::CoEdgeEntity& aCoEdge = theGraph.Topo().CoEdge(aCR.CoEdgeEntityId);
+        const BRepGraph_EdgeId               anEdgeId(aCoEdge.EdgeEntityId);
         if (BRepGraph_Tool::Edge::Degenerated(theGraph, anEdgeId)
             || !BRepGraph_Tool::Edge::HasCurve(theGraph, anEdgeId))
         {
@@ -590,9 +589,9 @@ static void addFaceBoxOptimal(const BRepGraph&       theGraph,
       // Build edge box for adjustment.
       Bnd_Box aEBox;
       forFaceWireRefEntries(theGraph, theFaceId, [&](const BRepGraphInc::WireRefEntry& aWR) {
-        forWireCoEdgeRefEntries(theGraph, aWR.WireDefId, [&](const BRepGraphInc::CoEdgeRefEntry& aCR) {
-          const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdge(aCR.CoEdgeDefId);
-          const BRepGraph_EdgeId               anEdgeId(aCoEdge.EdgeDefId);
+        forWireCoEdgeRefEntries(theGraph, aWR.WireEntityId, [&](const BRepGraphInc::CoEdgeRefEntry& aCR) {
+          const BRepGraphInc::CoEdgeEntity& aCoEdge = theGraph.Topo().CoEdge(aCR.CoEdgeEntityId);
+          const BRepGraph_EdgeId               anEdgeId(aCoEdge.EdgeEntityId);
           if (BRepGraph_Tool::Edge::Degenerated(theGraph, anEdgeId)
               || !BRepGraph_Tool::Edge::HasCurve(theGraph, anEdgeId))
           {
@@ -651,8 +650,8 @@ static void addNodeBox(const BRepGraph&       theGraph,
     }
     case BRepGraph_NodeId::Kind::Wire: {
       forWireCoEdgeRefEntries(theGraph, BRepGraph_WireId(theNode.Index), [&](const BRepGraphInc::CoEdgeRefEntry& aCR) {
-        const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdge(aCR.CoEdgeDefId);
-        addNodeBox(theGraph, aCoEdge.EdgeDefId, theBox, theUseTri);
+        const BRepGraphInc::CoEdgeEntity& aCoEdge = theGraph.Topo().CoEdge(aCR.CoEdgeEntityId);
+        addNodeBox(theGraph, aCoEdge.EdgeEntityId, theBox, theUseTri);
       });
       break;
     }
@@ -665,26 +664,26 @@ static void addNodeBox(const BRepGraph&       theGraph,
       const int               aNbFaces = theGraph.Topo().NbShellFaces(aShellId);
       for (int i = 0; i < aNbFaces; ++i)
       {
-        const BRepGraph_NodeId aFaceDefId = theGraph.Topo().ShellFaceDef(aShellId, i);
-        addFaceBox(theGraph, BRepGraph_FaceId(aFaceDefId.Index), theBox, theUseTri);
+        const BRepGraph_NodeId aFaceEntityId = theGraph.Topo().ShellFaceEntity(aShellId, i);
+        addFaceBox(theGraph, BRepGraph_FaceId(aFaceEntityId.Index), theBox, theUseTri);
       }
       break;
     }
     case BRepGraph_NodeId::Kind::Solid: {
       forSolidShellRefEntries(theGraph, BRepGraph_SolidId(theNode.Index), [&](const BRepGraphInc::ShellRefEntry& aSR) {
-        addNodeBox(theGraph, aSR.ShellDefId, theBox, theUseTri);
+        addNodeBox(theGraph, aSR.ShellEntityId, theBox, theUseTri);
       });
       break;
     }
     case BRepGraph_NodeId::Kind::Compound: {
       forCompoundChildRefEntries(theGraph, BRepGraph_NodeId::Compound(theNode.Index), [&](const BRepGraphInc::ChildRefEntry& aCR) {
-        addNodeBox(theGraph, aCR.ChildDefId, theBox, theUseTri);
+        addNodeBox(theGraph, aCR.ChildEntityId, theBox, theUseTri);
       });
       break;
     }
     case BRepGraph_NodeId::Kind::CompSolid: {
       forCompSolidSolidRefEntries(theGraph, BRepGraph_CompSolidId(theNode.Index), [&](const BRepGraphInc::SolidRefEntry& aSR) {
-        addNodeBox(theGraph, aSR.SolidDefId, theBox, theUseTri);
+        addNodeBox(theGraph, aSR.SolidEntityId, theBox, theUseTri);
       });
       break;
     }
@@ -732,8 +731,8 @@ static void addNodeBoxOptimal(const BRepGraph&       theGraph,
     }
     case BRepGraph_NodeId::Kind::Wire: {
       forWireCoEdgeRefEntries(theGraph, BRepGraph_WireId(theNode.Index), [&](const BRepGraphInc::CoEdgeRefEntry& aCR) {
-        const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdge(aCR.CoEdgeDefId);
-        addNodeBoxOptimal(theGraph, aCoEdge.EdgeDefId, theBox, theUseTri, theUseShapeTol);
+        const BRepGraphInc::CoEdgeEntity& aCoEdge = theGraph.Topo().CoEdge(aCR.CoEdgeEntityId);
+        addNodeBoxOptimal(theGraph, aCoEdge.EdgeEntityId, theBox, theUseTri, theUseShapeTol);
       });
       break;
     }
@@ -750,9 +749,9 @@ static void addNodeBoxOptimal(const BRepGraph&       theGraph,
       const int               aNbFaces = theGraph.Topo().NbShellFaces(aShellId);
       for (int i = 0; i < aNbFaces; ++i)
       {
-        const BRepGraph_NodeId aFaceDefId = theGraph.Topo().ShellFaceDef(aShellId, i);
+        const BRepGraph_NodeId aFaceEntityId = theGraph.Topo().ShellFaceEntity(aShellId, i);
         addFaceBoxOptimal(theGraph,
-                          BRepGraph_FaceId(aFaceDefId.Index),
+                          BRepGraph_FaceId(aFaceEntityId.Index),
                           theBox,
                           theUseTri,
                           theUseShapeTol);
@@ -761,20 +760,20 @@ static void addNodeBoxOptimal(const BRepGraph&       theGraph,
     }
     case BRepGraph_NodeId::Kind::Solid: {
       forSolidShellRefEntries(theGraph, BRepGraph_SolidId(theNode.Index), [&](const BRepGraphInc::ShellRefEntry& aSR) {
-        addNodeBoxOptimal(theGraph, aSR.ShellDefId, theBox, theUseTri, theUseShapeTol);
+        addNodeBoxOptimal(theGraph, aSR.ShellEntityId, theBox, theUseTri, theUseShapeTol);
       });
       break;
     }
     case BRepGraph_NodeId::Kind::Compound: {
       forCompoundChildRefEntries(theGraph, BRepGraph_NodeId::Compound(theNode.Index), [&](const BRepGraphInc::ChildRefEntry& aCR) {
-        addNodeBoxOptimal(theGraph, aCR.ChildDefId, theBox, theUseTri, theUseShapeTol);
+        addNodeBoxOptimal(theGraph, aCR.ChildEntityId, theBox, theUseTri, theUseShapeTol);
       });
       break;
     }
     case BRepGraph_NodeId::Kind::CompSolid: {
       forCompSolidSolidRefEntries(theGraph, BRepGraph_CompSolidId(theNode.Index), [&](const BRepGraphInc::SolidRefEntry& aSR) {
         addNodeBoxOptimal(theGraph,
-                          aSR.SolidDefId,
+                          aSR.SolidEntityId,
                           theBox,
                           theUseTri,
                           theUseShapeTol);
@@ -966,7 +965,7 @@ bool BRepGraphAlgo_BndLib::GetCached(const BRepGraph&                  theGraph,
                                      BRepGraphAlgo_BndLib::CachedData& theData)
 {
   const int                          aKey = CacheKey();
-  const BRepGraph_TopoNode::BaseDef* aDef = theGraph.TopoDef(theNode);
+  const BRepGraphInc::BaseEntity* aDef = theGraph.TopoEntity(theNode);
   if (aDef == nullptr)
   {
     return false;

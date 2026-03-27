@@ -30,22 +30,22 @@ public:
   const BRepGraph* ParentGraph() const { return myParent; }
 
   //! Typed definition id sets.
-  const NCollection_Vector<BRepGraph_SolidId>& SolidDefIds() const { return mySolidDefIds; }
+  const NCollection_Vector<BRepGraph_SolidId>& SolidEntityIds() const { return mySolidEntityIds; }
 
-  const NCollection_Vector<BRepGraph_ShellId>& ShellDefIds() const { return myShellDefIds; }
+  const NCollection_Vector<BRepGraph_ShellId>& ShellEntityIds() const { return myShellEntityIds; }
 
-  const NCollection_Vector<BRepGraph_FaceId>& FaceDefIds() const { return myFaceDefIds; }
+  const NCollection_Vector<BRepGraph_FaceId>& FaceEntityIds() const { return myFaceEntityIds; }
 
-  const NCollection_Vector<BRepGraph_WireId>& WireDefIds() const { return myWireDefIds; }
+  const NCollection_Vector<BRepGraph_WireId>& WireEntityIds() const { return myWireEntityIds; }
 
-  const NCollection_Vector<BRepGraph_EdgeId>& EdgeDefIds() const { return myEdgeDefIds; }
+  const NCollection_Vector<BRepGraph_EdgeId>& EdgeEntityIds() const { return myEdgeEntityIds; }
 
-  const NCollection_Vector<BRepGraph_VertexId>& VertexDefIds() const { return myVertexDefIds; }
+  const NCollection_Vector<BRepGraph_VertexId>& VertexEntityIds() const { return myVertexEntityIds; }
 
   int NbTopoNodes() const
   {
-    return mySolidDefIds.Length() + myShellDefIds.Length() + myFaceDefIds.Length()
-           + myWireDefIds.Length() + myEdgeDefIds.Length() + myVertexDefIds.Length();
+    return mySolidEntityIds.Length() + myShellEntityIds.Length() + myFaceEntityIds.Length()
+           + myWireEntityIds.Length() + myEdgeEntityIds.Length() + myVertexEntityIds.Length();
   }
 
 private:
@@ -54,12 +54,12 @@ private:
 
   const BRepGraph* myParent = nullptr;
 
-  NCollection_Vector<BRepGraph_SolidId>  mySolidDefIds;
-  NCollection_Vector<BRepGraph_ShellId>  myShellDefIds;
-  NCollection_Vector<BRepGraph_FaceId>   myFaceDefIds;
-  NCollection_Vector<BRepGraph_WireId>   myWireDefIds;
-  NCollection_Vector<BRepGraph_EdgeId>   myEdgeDefIds;
-  NCollection_Vector<BRepGraph_VertexId> myVertexDefIds;
+  NCollection_Vector<BRepGraph_SolidId>  mySolidEntityIds;
+  NCollection_Vector<BRepGraph_ShellId>  myShellEntityIds;
+  NCollection_Vector<BRepGraph_FaceId>   myFaceEntityIds;
+  NCollection_Vector<BRepGraph_WireId>   myWireEntityIds;
+  NCollection_Vector<BRepGraph_EdgeId>   myEdgeEntityIds;
+  NCollection_Vector<BRepGraph_VertexId> myVertexEntityIds;
 };
 
 #endif // _BRepGraph_SubGraph_HeaderFile

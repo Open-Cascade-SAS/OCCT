@@ -44,7 +44,7 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_TopologyPath.hxx
   BRepGraph_Tool.cxx
   BRepGraph_Tool.hxx
-  BRepGraph_TopoNode.hxx
+  BRepGraph_WireExplorer.hxx
   BRepGraph_UID.hxx
   BRepGraph_UIDsView.cxx
   BRepGraph_VersionStamp.cxx

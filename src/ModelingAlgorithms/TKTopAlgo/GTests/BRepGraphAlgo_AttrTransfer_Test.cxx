@@ -474,9 +474,9 @@ TEST(BRepGraphAlgo_AttrTransferTest, Deduplicate_AffectedFaceDefs)
   const BRepGraphAlgo_Deduplicate::Result aResult = BRepGraphAlgo_Deduplicate::Perform(aGraph);
 
   // Both faces shared an identical surface, but only the non-canonical one
-  // (face whose surface was rewritten) appears in AffectedFaceDefs.
-  EXPECT_EQ(aResult.NbSurfaceRewrites, aResult.AffectedFaceDefs.Length());
-  EXPECT_GE(aResult.AffectedFaceDefs.Length(), 1);
+  // (face whose surface was rewritten) appears in AffectedFaces.
+  EXPECT_EQ(aResult.NbSurfaceRewrites, aResult.AffectedFaces.Length());
+  EXPECT_GE(aResult.AffectedFaces.Length(), 1);
 }
 
 TEST(BRepGraphAlgo_AttrTransferTest, Deduplicate_AffectedEdgeDefs)
@@ -502,5 +502,5 @@ TEST(BRepGraphAlgo_AttrTransferTest, Deduplicate_AffectedEdgeDefs)
 
   const BRepGraphAlgo_Deduplicate::Result aResult = BRepGraphAlgo_Deduplicate::Perform(aGraph);
 
-  EXPECT_EQ(aResult.NbCurveRewrites, aResult.AffectedEdgeDefs.Length());
+  EXPECT_EQ(aResult.NbCurveRewrites, aResult.AffectedEdges.Length());
 }

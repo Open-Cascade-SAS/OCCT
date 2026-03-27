@@ -19,11 +19,10 @@
 #include <BRepGraph_RefUID.hxx>
 #include <BRepGraph_RepId.hxx>
 #include <BRepGraph_UID.hxx>
-#include <BRepGraph_TopoNode.hxx>
+#include <BRepGraphInc_Entity.hxx>
 #include <BRepGraph_HistoryRecord.hxx>
 #include <BRepGraph_SubGraph.hxx>
 #include <BRepGraph_UserAttribute.hxx>
-#include <BRepGraphInc_Entity.hxx>
 #include <BRepGraphInc_Populate.hxx>
 
 #include <Standard_DefineAlloc.hxx>
@@ -37,7 +36,7 @@
 
 #include <memory>
 
-template <typename DefT>
+template <typename EntityT>
 class BRepGraph_MutRef;
 template <typename RefT>
 class BRepGraph_MutRefEntry;
@@ -208,27 +207,28 @@ private:
   Standard_EXPORT BRepGraph_RefUID allocateRefUID(const BRepGraph_RefId theRefId);
 
   Standard_EXPORT BRepGraph_NodeCache* mutableCache(const BRepGraph_NodeId theNode);
-  Standard_EXPORT void                 markModified(const BRepGraph_NodeId theDefId);
+  Standard_EXPORT void                 markModified(const BRepGraph_NodeId theNodeId);
   Standard_EXPORT void                 markRefModified(const BRepGraph_RefId theRefId);
 
-  //! Optimized overload: skips ChangeTopoDef() and mutableCache() dispatch
-  //! when the caller already holds a mutable reference to the definition.
-  Standard_EXPORT void markModified(const BRepGraph_NodeId       theDefId,
-                                    BRepGraph_TopoNode::BaseDef& theDef);
-  Standard_EXPORT void markRefModified(const BRepGraph_RefId theRefId, BRepGraphInc::BaseRef& theRef);
+  //! Optimized overload: skips ChangeTopoEntity() and mutableCache() dispatch
+  //! when the caller already holds a mutable reference to the target entity.
+  Standard_EXPORT void markModified(const BRepGraph_NodeId            theNodeId,
+                                    BRepGraphInc::BaseEntity& theEntity);
+  Standard_EXPORT void markRefModified(const BRepGraph_RefId            theRefId,
+                                       BRepGraphInc::BaseRef& theRef);
 
   //! Mark a parent node as transitively modified (IsModified only, no MutationGen increment).
   //! Skips if already modified. Clears caches, dispatches events, and continues propagation.
   Standard_EXPORT void markParentModified(const BRepGraph_NodeId theParentId);
 
   //! Propagate IsModified upward through reverse indices without incrementing MutationGen.
-  Standard_EXPORT void propagateModified(const BRepGraph_NodeId theDefId);
+  Standard_EXPORT void propagateModified(const BRepGraph_NodeId theNodeId);
 
   //! Generic topology definition lookup by NodeId (const).
-  Standard_EXPORT const BRepGraph_TopoNode::BaseDef* TopoDef(const BRepGraph_NodeId theId) const;
+  Standard_EXPORT const BRepGraphInc::BaseEntity* TopoEntity(const BRepGraph_NodeId theId) const;
 
   //! Generic mutable topology definition lookup by NodeId.
-  Standard_EXPORT BRepGraph_TopoNode::BaseDef* ChangeTopoDef(const BRepGraph_NodeId theId);
+  Standard_EXPORT BRepGraphInc::BaseEntity* ChangeTopoEntity(const BRepGraph_NodeId theId);
 };
 
 // Included after BRepGraph is complete so the template body sees markModified().

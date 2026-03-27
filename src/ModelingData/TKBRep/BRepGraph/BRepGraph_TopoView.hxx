@@ -23,7 +23,7 @@ class Adaptor3d_CurveOnSurface;
 
 //! @brief Unified read-only view over topology definition and adjacency nodes stored in BRepGraph.
 //!
-//! Merges the former DefsView (definition lookups, representation counts,
+//! Merges the former TopoView (definition lookups, representation counts,
 //! PCurve queries) and SpatialView (adjacency queries: adjacent faces,
 //! shared edges, same-domain faces, faces referencing an edge, etc.)
 //! into a single view class.
@@ -89,53 +89,53 @@ public:
 
   //! Access solid definition by typed identifier.
   //! @param[in] theSolid typed solid definition identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraph_TopoNode::SolidDef& Solid(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::SolidEntity& Solid(
     const BRepGraph_SolidId theSolid) const;
 
   //! Access shell definition by typed identifier.
   //! @param[in] theShell typed shell definition identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraph_TopoNode::ShellDef& Shell(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::ShellEntity& Shell(
     const BRepGraph_ShellId theShell) const;
 
   //! Access face definition by typed identifier.
   //! @param[in] theFace typed face definition identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraph_TopoNode::FaceDef& Face(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::FaceEntity& Face(
     const BRepGraph_FaceId theFace) const;
 
   //! Access wire definition by typed identifier.
   //! @param[in] theWire typed wire definition identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraph_TopoNode::WireDef& Wire(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::WireEntity& Wire(
     const BRepGraph_WireId theWire) const;
 
   //! Access edge definition by typed identifier.
   //! @param[in] theEdge typed edge definition identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraph_TopoNode::EdgeDef& Edge(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::EdgeEntity& Edge(
     const BRepGraph_EdgeId theEdge) const;
 
   //! Access vertex definition by typed identifier.
   //! @param[in] theVertex typed vertex definition identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraph_TopoNode::VertexDef& Vertex(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::VertexEntity& Vertex(
     const BRepGraph_VertexId theVertex) const;
 
   //! Access compound definition by typed identifier.
   //! @param[in] theCompound typed compound definition identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraph_TopoNode::CompoundDef& Compound(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::CompoundEntity& Compound(
     const BRepGraph_CompoundId theCompound) const;
 
   //! Access compsolid definition by typed identifier.
   //! @param[in] theCompSolid typed compsolid definition identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraph_TopoNode::CompSolidDef& CompSolid(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::CompSolidEntity& CompSolid(
     const BRepGraph_CompSolidId theCompSolid) const;
 
   //! Access coedge definition by typed identifier.
   //! @param[in] theCoEdge typed coedge definition identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraph_TopoNode::CoEdgeDef& CoEdge(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::CoEdgeEntity& CoEdge(
     const BRepGraph_CoEdgeId theCoEdge) const;
 
   //! Generic topology definition lookup by NodeId.
   //! @param[in] theId node identifier
-  //! @return pointer to BaseDef or nullptr if invalid
-  [[nodiscard]] Standard_EXPORT const BRepGraph_TopoNode::BaseDef* TopoDef(
+  //! @return pointer to BaseEntity or nullptr if invalid
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::BaseEntity* TopoEntity(
     const BRepGraph_NodeId theId) const;
 
   //! Number of face definitions in a shell (via first usage).
@@ -145,7 +145,7 @@ public:
   //! Access face definition NodeId belonging to a shell by index.
   //! @param[in] theShell typed shell definition identifier
   //! @param[in] theFaceIndex zero-based face index within the shell
-  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId ShellFaceDef(const BRepGraph_ShellId theShell,
+  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId ShellFaceEntity(const BRepGraph_ShellId theShell,
                                                               const int theFaceIndex) const;
 
   //! Total number of nodes in the graph (all topology + assembly kinds).
@@ -182,32 +182,32 @@ public:
   //! @name Geometry query methods
 
   //! Find the CoEdge for an edge on a given face, or nullptr if none exists.
-  //! @param[in] theEdgeDef edge definition NodeId
-  //! @param[in] theFaceDef face definition NodeId
+  //! @param[in] theEdgeEntity edge definition NodeId
+  //! @param[in] theFaceEntity face definition NodeId
   [[nodiscard]] Standard_EXPORT const BRepGraphInc::CoEdgeEntity* FindPCurve(
-    const BRepGraph_NodeId theEdgeDef,
-    const BRepGraph_NodeId theFaceDef) const;
+    const BRepGraph_NodeId theEdgeEntity,
+    const BRepGraph_NodeId theFaceEntity) const;
 
   //! Find the CoEdge for an edge/face/orientation triple (seam edge support).
-  //! @param[in] theEdgeDef           edge definition NodeId
-  //! @param[in] theFaceDef           face definition NodeId
+  //! @param[in] theEdgeEntity           edge definition NodeId
+  //! @param[in] theFaceEntity           face definition NodeId
   //! @param[in] theEdgeOrientation   edge orientation on the face
   [[nodiscard]] Standard_EXPORT const BRepGraphInc::CoEdgeEntity* FindPCurve(
-    const BRepGraph_NodeId   theEdgeDef,
-    const BRepGraph_NodeId   theFaceDef,
+    const BRepGraph_NodeId   theEdgeEntity,
+    const BRepGraph_NodeId   theFaceEntity,
     const TopAbs_Orientation theEdgeOrientation) const;
 
   //! @name Spatial adjacency queries
 
   //! Return all face definitions sharing the same surface as the given face.
-  //! @param[in] theFaceDef face definition NodeId
+  //! @param[in] theFaceEntity face definition NodeId
   [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> SameDomainFaces(
-    const BRepGraph_NodeId theFaceDef) const;
+    const BRepGraph_NodeId theFaceEntity) const;
 
   //! Return all face definition NodeIds that reference this edge.
-  //! @param[in] theEdgeDef edge definition NodeId
+  //! @param[in] theEdgeEntity edge definition NodeId
   [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> FacesOfEdge(
-    const BRepGraph_NodeId theEdgeDef) const;
+    const BRepGraph_NodeId theEdgeEntity) const;
 
   //! Return all edges shared between two faces.
   //! @param[in] theFaceA first face definition NodeId
@@ -217,44 +217,50 @@ public:
     const BRepGraph_NodeId theFaceB) const;
 
   //! Return all faces adjacent to a face (sharing at least one edge).
-  //! @param[in] theFaceDef face definition NodeId
+  //! @param[in] theFaceEntity face definition NodeId
   [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> AdjacentFaces(
-    const BRepGraph_NodeId theFaceDef) const;
+    const BRepGraph_NodeId theFaceEntity) const;
 
   //! Return all edge definitions in a face (collected from all wires via coedges).
-  //! @param[in] theFaceDef face definition NodeId
+  //! @param[in] theFaceEntity face definition NodeId
   //! @return unique edge NodeIds (deduplicated)
   [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> EdgesOfFace(
-    const BRepGraph_NodeId theFaceDef) const;
+    const BRepGraph_NodeId theFaceEntity) const;
+
+  //! Return outer wire definition id of a face, or invalid if none.
+  //! @param[in] theFace typed face definition identifier
+  //! @return outer wire definition id
+  [[nodiscard]] Standard_EXPORT BRepGraph_WireId OuterWireOfFace(
+    const BRepGraph_FaceId theFace) const;
 
   //! Return all edge definitions incident to a vertex.
-  //! @param[in] theVertexDef vertex definition NodeId
+  //! @param[in] theVertexEntity vertex definition NodeId
   [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> EdgesOfVertex(
-    const BRepGraph_NodeId theVertexDef) const;
+    const BRepGraph_NodeId theVertexEntity) const;
 
   //! Return start, end, and internal vertex definitions for an edge.
-  //! @param[in] theEdgeDef edge definition NodeId
+  //! @param[in] theEdgeEntity edge definition NodeId
   [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> VerticesOfEdge(
-    const BRepGraph_NodeId theEdgeDef) const;
+    const BRepGraph_NodeId theEdgeEntity) const;
 
   //! Return all edges sharing a vertex with the given edge (excluding itself).
-  //! @param[in] theEdgeDef edge definition NodeId
+  //! @param[in] theEdgeEntity edge definition NodeId
   [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> AdjacentEdges(
-    const BRepGraph_NodeId theEdgeDef) const;
+    const BRepGraph_NodeId theEdgeEntity) const;
 
   //! Return the number of distinct faces referencing this edge.
   //! 0 = free edge, 1 = boundary, 2 = manifold, 3+ = non-manifold.
   //! O(1) lookup via cached reverse index.
-  //! @param[in] theEdgeDef edge definition NodeId
-  [[nodiscard]] Standard_EXPORT int FaceCountOfEdge(const BRepGraph_NodeId theEdgeDef) const;
+  //! @param[in] theEdgeEntity edge definition NodeId
+  [[nodiscard]] Standard_EXPORT int FaceCountOfEdge(const BRepGraph_NodeId theEdgeEntity) const;
 
   //! True if the edge is referenced by exactly one face (boundary edge).
-  //! @param[in] theEdgeDef edge definition NodeId
-  [[nodiscard]] Standard_EXPORT bool IsBoundaryEdge(const BRepGraph_NodeId theEdgeDef) const;
+  //! @param[in] theEdgeEntity edge definition NodeId
+  [[nodiscard]] Standard_EXPORT bool IsBoundaryEdge(const BRepGraph_NodeId theEdgeEntity) const;
 
   //! True if the edge is referenced by exactly two faces (manifold interior edge).
-  //! @param[in] theEdgeDef edge definition NodeId
-  [[nodiscard]] Standard_EXPORT bool IsManifoldEdge(const BRepGraph_NodeId theEdgeDef) const;
+  //! @param[in] theEdgeEntity edge definition NodeId
+  [[nodiscard]] Standard_EXPORT bool IsManifoldEdge(const BRepGraph_NodeId theEdgeEntity) const;
 
 private:
   friend class BRepGraph;

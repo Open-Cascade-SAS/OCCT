@@ -20,6 +20,7 @@
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepGProp.hxx>
 #include <BRepGraph_TopoView.hxx>
+#include <BRepGraphInc_Entity.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_Tool.hxx>
@@ -1428,8 +1429,8 @@ TEST(BRepGraphAlgo_SewingTest, NonManifoldMode_ThreeFacesShareEdge)
         const Geom2dAdaptor_Curve aPCAdaptor =
           BRepGraph_Tool::CoEdge::PCurveAdaptor(aGraph, aCoEdgeIdxs.Value(j));
         EXPECT_FALSE(aPCAdaptor.Curve().IsNull());
-        EXPECT_TRUE(aCE.FaceDefId.IsValid());
-        aFaceIds.Add(aCE.FaceDefId.Index);
+        EXPECT_TRUE(aCE.FaceEntityId.IsValid());
+        aFaceIds.Add(aCE.FaceEntityId.Index);
       }
       // CoEdges should reference distinct faces (each merged from a different face).
       EXPECT_GE(aFaceIds.Extent(), 2);

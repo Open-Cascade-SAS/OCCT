@@ -15,19 +15,8 @@
 #define _BRepGraph_RefsView_HeaderFile
 
 #include <BRepGraph.hxx>
+#include <BRepGraphInc_Entity.hxx>
 #include <BRepGraph_VersionStamp.hxx>
-
-namespace BRepGraphInc
-{
-struct ShellRefEntry;
-struct FaceRefEntry;
-struct WireRefEntry;
-struct CoEdgeRefEntry;
-struct VertexRefEntry;
-struct SolidRefEntry;
-struct ChildRefEntry;
-struct OccurrenceRefEntry;
-} // namespace BRepGraphInc
 
 //! @brief Read-only view for RefId/RefUID-based reference storage.
 //!
@@ -113,12 +102,6 @@ public:
   //! @return solid ref ids owned by this comp-solid
   [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_SolidRefId>&
     SolidRefIdsOf(const BRepGraph_CompSolidId theCompSolid) const;
-
-  //! Return the outer wire definition id for a face, or invalid if none.
-  //! @param[in] theFace face entity identifier
-  //! @return outer wire id, or invalid WireId
-  [[nodiscard]] Standard_EXPORT BRepGraph_WireId OuterWireOfFace(
-    const BRepGraph_FaceId theFace) const;
 
 private:
   friend class BRepGraph;

@@ -15,7 +15,9 @@
 #define _BRepGraph_RefTestTools_HeaderFile
 
 #include <BRepGraph.hxx>
+#include <BRepGraphInc_Entity.hxx>
 #include <BRepGraph_RefsView.hxx>
+#include <BRepGraph_TopoView.hxx>
 #include <BRepGraphInc_Storage.hxx>
 
 #include <NCollection_Vector.hxx>
@@ -84,7 +86,7 @@ inline bool FaceUsesWire(const BRepGraph&      theGraph,
   const NCollection_Vector<BRepGraph_WireRefId> aWireRefs = WireRefsOfFace(theGraph, theFaceId);
   for (int aRefIdx = 0; aRefIdx < aWireRefs.Length(); ++aRefIdx)
   {
-    if (aRefs.Wire(aWireRefs.Value(aRefIdx)).WireDefId == theWireId)
+    if (aRefs.Wire(aWireRefs.Value(aRefIdx)).WireEntityId == theWireId)
       return true;
   }
   return false;
@@ -199,15 +201,7 @@ inline int CountChildRefsOfParent(const BRepGraph&      theGraph,
 inline BRepGraph_WireId OuterWireOfFace(const BRepGraph&      theGraph,
                                         const BRepGraph_FaceId theFaceId)
 {
-  const BRepGraph::RefsView&                    aRefs     = theGraph.Refs();
-  const NCollection_Vector<BRepGraph_WireRefId> aWireRefs = WireRefsOfFace(theGraph, theFaceId);
-  for (int aRefIdx = 0; aRefIdx < aWireRefs.Length(); ++aRefIdx)
-  {
-    const BRepGraphInc::WireRefEntry& aWireRef = aRefs.Wire(aWireRefs.Value(aRefIdx));
-    if (aWireRef.IsOuter)
-      return aWireRef.WireDefId;
-  }
-  return BRepGraph_WireId();
+  return theGraph.Topo().OuterWireOfFace(theFaceId);
 }
 
 //=================================================================================================
@@ -271,7 +265,7 @@ inline bool FaceUsesWire(const BRepGraphInc_Storage& theStorage,
   for (int aRefIdx = 0; aRefIdx < aWireRefs.Length(); ++aRefIdx)
   {
     const BRepGraphInc::WireRefEntry& aWireRef = theStorage.WireRefEntry(aWireRefs.Value(aRefIdx));
-    if (aWireRef.WireDefId == theWireId)
+    if (aWireRef.WireEntityId == theWireId)
       return true;
   }
   return false;
@@ -391,7 +385,7 @@ inline BRepGraph_WireId OuterWireOfFace(const BRepGraphInc_Storage& theStorage,
   {
     const BRepGraphInc::WireRefEntry& aWireRef = theStorage.WireRefEntry(aWireRefs.Value(aRefIdx));
     if (aWireRef.IsOuter)
-      return aWireRef.WireDefId;
+      return aWireRef.WireEntityId;
   }
   return BRepGraph_WireId();
 }

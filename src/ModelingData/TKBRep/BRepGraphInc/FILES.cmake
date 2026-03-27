@@ -11,5 +11,4 @@ set(OCCT_BRepGraphInc_FILES
   BRepGraphInc_ReverseIndex.hxx
   BRepGraphInc_Storage.cxx
   BRepGraphInc_Storage.hxx
-  BRepGraphInc_WireExplorer.hxx
 )

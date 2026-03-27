@@ -23,17 +23,6 @@
 class Geom_Surface;
 class Geom_Curve;
 class Geom2d_Curve;
-namespace BRepGraphInc
-{
-struct ShellRefEntry;
-struct FaceRefEntry;
-struct WireRefEntry;
-struct CoEdgeRefEntry;
-struct VertexRefEntry;
-struct SolidRefEntry;
-struct ChildRefEntry;
-struct OccurrenceRefEntry;
-} // namespace BRepGraphInc
 
 //! @brief Non-const view for programmatic graph construction and mutation.
 //!
@@ -50,7 +39,7 @@ public:
   //! @param[in] thePoint     3D coordinates
   //! @param[in] theTolerance vertex tolerance
   //! @return NodeId of the new vertex definition
-  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId AddVertexDef(const gp_Pnt& thePoint,
+  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId AddVertex(const gp_Pnt& thePoint,
                                                               const double  theTolerance);
 
   //! Add an edge definition to the graph.
@@ -61,7 +50,7 @@ public:
   //! @param[in] theLast      last curve parameter
   //! @param[in] theTolerance edge tolerance
   //! @return NodeId of the new edge definition
-  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId AddEdgeDef(const BRepGraph_NodeId theStartVtx,
+  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId AddEdge(const BRepGraph_NodeId theStartVtx,
                                                             const BRepGraph_NodeId theEndVtx,
                                                             const occ::handle<Geom_Curve>& theCurve,
                                                             const double                   theFirst,
@@ -69,11 +58,11 @@ public:
                                                             const double theTolerance);
 
   //! Add a wire definition to the graph.
-  //! Each pair is (EdgeDefId, OrientationInWire).
+  //! Each pair is (EdgeEntityId, OrientationInWire).
   //! @param[in] theEdges ordered edge entries
   //! @return NodeId of the new wire definition
   [[nodiscard]] Standard_EXPORT BRepGraph_NodeId
-    AddWireDef(const NCollection_Vector<std::pair<BRepGraph_NodeId, TopAbs_Orientation>>& theEdges);
+    AddWire(const NCollection_Vector<std::pair<BRepGraph_NodeId, TopAbs_Orientation>>& theEdges);
 
   //! Add a face definition to the graph.
   //! @param[in] theSurface    surface geometry
@@ -82,48 +71,48 @@ public:
   //! @param[in] theTolerance  face tolerance
   //! @return NodeId of the new face definition
   [[nodiscard]] Standard_EXPORT BRepGraph_NodeId
-    AddFaceDef(const occ::handle<Geom_Surface>&            theSurface,
+    AddFace(const occ::handle<Geom_Surface>&            theSurface,
                const BRepGraph_NodeId                      theOuterWire,
                const NCollection_Vector<BRepGraph_NodeId>& theInnerWires,
                const double                                theTolerance);
 
   //! Add an empty shell definition to the graph.
   //! @return NodeId of the new shell definition
-  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId AddShellDef();
+  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId AddShell();
 
   //! Add an empty solid definition to the graph.
   //! @return NodeId of the new solid definition
-  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId AddSolidDef();
+  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId AddSolid();
 
   //! Link a face to a shell.
   //! Appends FaceRefEntry and stores its FaceRefId in shell FaceRefIds.
-  //! @param[in] theShellDef  shell definition NodeId
-  //! @param[in] theFaceDef   face definition NodeId
+  //! @param[in] theShellEntity  shell definition NodeId
+  //! @param[in] theFaceEntity   face definition NodeId
   //! @param[in] theOri       orientation of the face in the shell
-  Standard_EXPORT void AddFaceToShell(const BRepGraph_NodeId   theShellDef,
-                                      const BRepGraph_NodeId   theFaceDef,
+  Standard_EXPORT void AddFaceToShell(const BRepGraph_NodeId   theShellEntity,
+                                      const BRepGraph_NodeId   theFaceEntity,
                                       const TopAbs_Orientation theOri = TopAbs_FORWARD);
 
   //! Link a shell to a solid.
   //! Appends ShellRefEntry and stores its ShellRefId in solid ShellRefIds.
-  //! @param[in] theSolidDef  solid definition NodeId
-  //! @param[in] theShellDef  shell definition NodeId
+  //! @param[in] theSolidEntity  solid definition NodeId
+  //! @param[in] theShellEntity  shell definition NodeId
   //! @param[in] theOri       orientation of the shell in the solid
-  Standard_EXPORT void AddShellToSolid(const BRepGraph_NodeId   theSolidDef,
-                                       const BRepGraph_NodeId   theShellDef,
+  Standard_EXPORT void AddShellToSolid(const BRepGraph_NodeId   theSolidEntity,
+                                       const BRepGraph_NodeId   theShellEntity,
                                        const TopAbs_Orientation theOri = TopAbs_FORWARD);
 
   //! Add a compound definition with child definitions.
-  //! @param[in] theChildDefs child definition NodeIds
+  //! @param[in] theChildEntities child definition NodeIds
   //! @return NodeId of the new compound definition
   [[nodiscard]] Standard_EXPORT BRepGraph_NodeId
-    AddCompoundDef(const NCollection_Vector<BRepGraph_NodeId>& theChildDefs);
+    AddCompound(const NCollection_Vector<BRepGraph_NodeId>& theChildEntities);
 
   //! Add a compsolid definition with child solid definitions.
-  //! @param[in] theSolidDefs child solid definition NodeIds
+  //! @param[in] theSolidEntities child solid definition NodeIds
   //! @return NodeId of the new compsolid definition
   [[nodiscard]] Standard_EXPORT BRepGraph_NodeId
-    AddCompSolidDef(const NCollection_Vector<BRepGraph_NodeId>& theSolidDefs);
+    AddCompSolid(const NCollection_Vector<BRepGraph_NodeId>& theSolidEntities);
 
   //! Add a part product with a root shape node.
   //! @param[in] theShapeRoot root topology NodeId for the part
@@ -174,15 +163,15 @@ public:
 
   //! Attach a PCurve to an edge for a given face context.
   //! Creates a new CoEdge entity with Curve2DRep and updates reverse indices.
-  //! @param[in] theEdgeDef           edge definition NodeId
-  //! @param[in] theFaceDef           face definition NodeId
+  //! @param[in] theEdgeEntity           edge definition NodeId
+  //! @param[in] theFaceEntity           face definition NodeId
   //! @param[in] theCurve2d           2D curve geometry
   //! @param[in] theFirst             first curve parameter
   //! @param[in] theLast              last curve parameter
   //! @param[in] theEdgeOrientation   edge orientation on the face
   Standard_EXPORT void AddPCurveToEdge(
-    const BRepGraph_NodeId           theEdgeDef,
-    const BRepGraph_NodeId           theFaceDef,
+    const BRepGraph_NodeId           theEdgeEntity,
+    const BRepGraph_NodeId           theFaceEntity,
     const occ::handle<Geom2d_Curve>& theCurve2d,
     const double                     theFirst,
     const double                     theLast,
@@ -229,57 +218,57 @@ public:
 
   //! Return scoped mutable edge definition guard.
   //! @param[in] theEdge typed edge identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> MutEdge(
+  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::EdgeEntity> MutEdge(
     const BRepGraph_EdgeId theEdge);
 
   //! Return scoped mutable vertex definition guard.
   //! @param[in] theVertex typed vertex identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::VertexDef> MutVertex(
+  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::VertexEntity> MutVertex(
     const BRepGraph_VertexId theVertex);
 
   //! Return scoped mutable wire definition guard.
   //! @param[in] theWire typed wire identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::WireDef> MutWire(
+  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::WireEntity> MutWire(
     const BRepGraph_WireId theWire);
 
   //! Return scoped mutable face definition guard.
   //! @param[in] theFace typed face identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::FaceDef> MutFace(
+  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::FaceEntity> MutFace(
     const BRepGraph_FaceId theFace);
 
   //! Return scoped mutable shell definition guard.
   //! @param[in] theShell typed shell identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::ShellDef> MutShell(
+  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::ShellEntity> MutShell(
     const BRepGraph_ShellId theShell);
 
   //! Return scoped mutable solid definition guard.
   //! @param[in] theSolid typed solid identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::SolidDef> MutSolid(
+  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::SolidEntity> MutSolid(
     const BRepGraph_SolidId theSolid);
 
   //! Return scoped mutable compound definition guard.
   //! @param[in] theCompound typed compound identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::CompoundDef> MutCompound(
+  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::CompoundEntity> MutCompound(
     const BRepGraph_CompoundId theCompound);
 
   //! Return scoped mutable coedge definition guard.
   //! @param[in] theCoEdge typed coedge identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::CoEdgeDef> MutCoEdge(
+  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::CoEdgeEntity> MutCoEdge(
     const BRepGraph_CoEdgeId theCoEdge);
 
   //! Return scoped mutable comp-solid definition guard.
   //! @param[in] theCompSolid typed comp-solid identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::CompSolidDef> MutCompSolid(
+  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::CompSolidEntity> MutCompSolid(
     const BRepGraph_CompSolidId theCompSolid);
 
   //! Return scoped mutable product definition guard.
   //! @param[in] theProduct typed product identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::ProductDef> MutProduct(
+  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::ProductEntity> MutProduct(
     const BRepGraph_ProductId theProduct);
 
   //! Return scoped mutable occurrence definition guard.
   //! @param[in] theOccurrence typed occurrence identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::OccurrenceDef> MutOccurrence(
+  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::OccurrenceEntity> MutOccurrence(
     const BRepGraph_OccurrenceId theOccurrence);
 
   //! Return scoped mutable shell reference guard.

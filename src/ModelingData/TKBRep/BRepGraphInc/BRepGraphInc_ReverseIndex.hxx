@@ -60,7 +60,7 @@ public:
   Standard_EXPORT void Clear();
 
   //! Rebuild all reverse indices from the entity and reference-entry tables.
-  //! Edge-to-face index is derived from CoEdge.FaceDefId links.
+  //! Edge-to-face index is derived from CoEdge.FaceEntityId links.
   //! @param[in] theEdges      edge entity vector (for vertex-to-edge, edge-to-face)
   //! @param[in] theCoEdges    coedge entity vector (for edge-to-coedge and edge-to-face)
   //! @param[in] theWires      wire entity vector (parent validation for coedge refs)

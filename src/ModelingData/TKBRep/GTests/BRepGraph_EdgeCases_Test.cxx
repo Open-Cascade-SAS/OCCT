@@ -79,7 +79,7 @@ TEST(BRepGraph_EdgeCasesTest, ReconstructShape_InvalidNodeId_ReturnsNull)
   EXPECT_TRUE(aShape.IsNull());
 }
 
-TEST(BRepGraph_EdgeCasesTest, TopoDef_InvalidNodeId_ReturnsNull)
+TEST(BRepGraph_EdgeCasesTest, TopoEntity_InvalidNodeId_ReturnsNull)
 {
   BRepGraph           aGraph;
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
@@ -87,7 +87,7 @@ TEST(BRepGraph_EdgeCasesTest, TopoDef_InvalidNodeId_ReturnsNull)
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph_NodeId             anInvalidId;
-  const BRepGraph_TopoNode::BaseDef* aDef = aGraph.Topo().TopoDef(anInvalidId);
+  const BRepGraphInc::BaseEntity* aDef = aGraph.Topo().TopoEntity(anInvalidId);
   EXPECT_EQ(aDef, nullptr);
 }
 

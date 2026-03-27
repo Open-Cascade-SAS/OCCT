@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <BRepGraphAlgo_FClass2d.hxx>
+#include <BRepGraphInc_Entity.hxx>
 
 #include <BRepClass_FaceClassifier.hxx>
 #include <BRepGraph.hxx>
@@ -19,9 +20,7 @@
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_Tool.hxx>
-#include <BRepGraph_TopoNode.hxx>
-#include <BRepGraphInc_IncidenceRef.hxx>
-#include <BRepGraphInc_WireExplorer.hxx>
+#include <BRepGraph_WireExplorer.hxx>
 #include <CSLib_Class2d.hxx>
 #include <ElCLib.hxx>
 #include <GCPnts_QuasiUniformDeflection.hxx>
@@ -162,7 +161,7 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph&       theGraph,
   // Get wires via transitional reference entries.
   const BRepGraph::RefsView& aRefs     = theGraph.Refs();
   const BRepGraph::TopoView& aTopoView = theGraph.Topo();
-  const BRepGraph_TopoNode::FaceDef& aFaceEnt = aTopoView.Face(theFace);
+  const BRepGraphInc::FaceEntity& aFaceEnt = aTopoView.Face(theFace);
 
   NCollection_Vector<int> anOuterWireDefIndices;
   NCollection_Vector<int> anInnerWireDefIndices;
@@ -170,17 +169,17 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph&       theGraph,
   {
     const BRepGraph_WireRefId         aWireRefId = aFaceEnt.WireRefIds.Value(aWRI);
     const BRepGraphInc::WireRefEntry& aWR        = aRefs.Wire(aWireRefId);
-    if (aWR.IsRemoved || !aWR.WireDefId.IsValid(aTopoView.NbWires()))
+    if (aWR.IsRemoved || !aWR.WireEntityId.IsValid(aTopoView.NbWires()))
     {
       continue;
     }
     if (aWR.IsOuter)
     {
-      anOuterWireDefIndices.Append(aWR.WireDefId.Index);
+      anOuterWireDefIndices.Append(aWR.WireEntityId.Index);
     }
     else
     {
-      anInnerWireDefIndices.Append(aWR.WireDefId.Index);
+      anInnerWireDefIndices.Append(aWR.WireEntityId.Index);
     }
   }
 
@@ -226,26 +225,26 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph&       theGraph,
       return theGraph.Topo().CoEdge(BRepGraph_CoEdgeId(theIdx));
     };
     auto vtxRefLookup = [&theGraph](const BRepGraph_VertexRefId theRefId) -> BRepGraph_VertexId {
-      return theGraph.Refs().Vertex(theRefId).VertexDefId;
+      return theGraph.Refs().Vertex(theRefId).VertexEntityId;
     };
     NCollection_Vector<BRepGraphInc::CoEdgeRef> aWireCoEdgeRefs;
     const BRepGraph_WireId                      aWireId(aWireDefIndices(aWireIdx));
-    const BRepGraph_TopoNode::WireDef&          aWireEnt = aTopoView.Wire(aWireId);
+    const BRepGraphInc::WireEntity&          aWireEnt = aTopoView.Wire(aWireId);
     for (int aCRI = 0; aCRI < aWireEnt.CoEdgeRefIds.Length(); ++aCRI)
     {
       const BRepGraph_CoEdgeRefId         aCERefId = aWireEnt.CoEdgeRefIds.Value(aCRI);
       const BRepGraphInc::CoEdgeRefEntry& aCRE     = aRefs.CoEdge(aCERefId);
-      if (aCRE.IsRemoved || !aCRE.CoEdgeDefId.IsValid(aTopoView.NbCoEdges()))
+      if (aCRE.IsRemoved || !aCRE.CoEdgeEntityId.IsValid(aTopoView.NbCoEdges()))
       {
         continue;
       }
 
       BRepGraphInc::CoEdgeRef aCR;
-      aCR.CoEdgeDefId   = aCRE.CoEdgeDefId;
+      aCR.CoEdgeEntityId   = aCRE.CoEdgeEntityId;
       aCR.LocalLocation = aCRE.LocalLocation;
       aWireCoEdgeRefs.Append(aCR);
     }
-    BRepGraphInc_WireExplorer aWireExp(aWireCoEdgeRefs, coedgeLookup, edgeLookup, vtxRefLookup);
+    BRepGraph_WireExplorer aWireExp(aWireCoEdgeRefs, coedgeLookup, edgeLookup, vtxRefLookup);
     const NCollection_Vector<BRepGraphInc::CoEdgeRef>& anOrderedRefs = aWireExp.OrderedRefs();
 
     const int aNbEdgeRefs = anOrderedRefs.Length();
@@ -261,9 +260,9 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph&       theGraph,
     for (int anEdgeIdx = 0; anEdgeIdx < aNbEdgeRefs; ++anEdgeIdx)
     {
       const BRepGraphInc::CoEdgeRef&       aCoEdgeRef = anOrderedRefs.Value(anEdgeIdx);
-      const BRepGraph_TopoNode::CoEdgeDef& aCoEdgeDef =
-        theGraph.Topo().CoEdge(aCoEdgeRef.CoEdgeDefId);
-      const BRepGraph_TopoNode::EdgeDef& anEdgeDef = theGraph.Topo().Edge(aCoEdgeDef.EdgeDefId);
+      const BRepGraphInc::CoEdgeEntity& aCoEdgeDef =
+        theGraph.Topo().CoEdge(aCoEdgeRef.CoEdgeEntityId);
+      const BRepGraphInc::EdgeEntity& anEdgeDef = theGraph.Topo().Edge(aCoEdgeDef.EdgeEntityId);
       const TopAbs_Orientation           anOri     = aCoEdgeDef.Sense;
 
       if (anOri != TopAbs_FORWARD && anOri != TopAbs_REVERSED)
@@ -271,13 +270,13 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph&       theGraph,
 
       // Resolve 3D curve from rep index.
       const occ::handle<Geom_Curve>& anEdgeCurve3d =
-        BRepGraph_Tool::Edge::Curve(theGraph, aCoEdgeDef.EdgeDefId);
+        BRepGraph_Tool::Edge::Curve(theGraph, aCoEdgeDef.EdgeEntityId);
 
       // PCurve data from CoEdge.
       if (!aCoEdgeDef.Curve2DRepId.IsValid())
         return;
       const occ::handle<Geom2d_Curve>& aCurve2d =
-        BRepGraph_Tool::CoEdge::PCurve(theGraph, aCoEdgeRef.CoEdgeDefId);
+        BRepGraph_Tool::CoEdge::PCurve(theGraph, aCoEdgeRef.CoEdgeEntityId);
 
       double aParamFirst = aCoEdgeDef.ParamFirst;
       double aParamLast  = aCoEdgeDef.ParamLast;
@@ -287,25 +286,25 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph&       theGraph,
 
       // Edge degeneration check.
       bool anIsDegenerated = false;
-      if (BRepGraph_Tool::Edge::Degenerated(theGraph, aCoEdgeDef.EdgeDefId))
+      if (BRepGraph_Tool::Edge::Degenerated(theGraph, aCoEdgeDef.EdgeEntityId))
         anIsDegenerated = true;
 
       if (aCoEdgeDef.SeamPairId.IsValid())
         anIsDegenerated = true;
 
       if (!anEdgeDef.StartVertexRefId.IsValid()
-          || !BRepGraph_Tool::Edge::StartVertex(theGraph, aCoEdgeDef.EdgeDefId).VertexDefId.IsValid()
+          || !BRepGraph_Tool::Edge::StartVertex(theGraph, aCoEdgeDef.EdgeEntityId).VertexEntityId.IsValid()
           || !anEdgeDef.EndVertexRefId.IsValid()
-          || !BRepGraph_Tool::Edge::EndVertex(theGraph, aCoEdgeDef.EdgeDefId).VertexDefId.IsValid())
+          || !BRepGraph_Tool::Edge::EndVertex(theGraph, aCoEdgeDef.EdgeEntityId).VertexEntityId.IsValid())
         anIsDegenerated = true;
 
       // Check 3D curve degeneration if not already flagged.
-      if (!anIsDegenerated && BRepGraph_Tool::Edge::HasCurve(theGraph, aCoEdgeDef.EdgeDefId))
+      if (!anIsDegenerated && BRepGraph_Tool::Edge::HasCurve(theGraph, aCoEdgeDef.EdgeEntityId))
       {
         const occ::handle<Geom_Curve>& aEdgeCurve3d =
-          BRepGraph_Tool::Edge::Curve(theGraph, aCoEdgeDef.EdgeDefId);
+          BRepGraph_Tool::Edge::Curve(theGraph, aCoEdgeDef.EdgeEntityId);
         const auto [aEdgeParamFirst, aEdgeParamLast] =
-          BRepGraph_Tool::Edge::Range(theGraph, aCoEdgeDef.EdgeDefId);
+          BRepGraph_Tool::Edge::Range(theGraph, aCoEdgeDef.EdgeEntityId);
         anIsDegenerated =
           isDegenerated(aEdgeCurve3d, TopLoc_Location(), aEdgeParamFirst, aEdgeParamLast);
       }
@@ -413,8 +412,8 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph&       theGraph,
           for (int anEdgeIdx = 0; anEdgeIdx < aNbEdgeRefs; ++anEdgeIdx)
           {
             const BRepGraphInc::CoEdgeRef&       aCoEdgeRef2 = anOrderedRefs.Value(anEdgeIdx);
-            const BRepGraph_TopoNode::CoEdgeDef& aCoEdgeDef2 =
-              theGraph.Topo().CoEdge(aCoEdgeRef2.CoEdgeDefId);
+            const BRepGraphInc::CoEdgeEntity& aCoEdgeDef2 =
+              theGraph.Topo().CoEdge(aCoEdgeRef2.CoEdgeEntityId);
             const TopAbs_Orientation anOri = aCoEdgeDef2.Sense;
 
             if (anOri != TopAbs_FORWARD && anOri != TopAbs_REVERSED)
@@ -424,7 +423,7 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph&       theGraph,
               continue;
 
             const occ::handle<Geom2d_Curve>& aCurve2d2 =
-              BRepGraph_Tool::CoEdge::PCurve(theGraph, aCoEdgeRef2.CoEdgeDefId);
+              BRepGraph_Tool::CoEdge::PCurve(theGraph, aCoEdgeRef2.CoEdgeEntityId);
             double aParamFirst = aCoEdgeDef2.ParamFirst;
             double aParamLast  = aCoEdgeDef2.ParamLast;
             if (std::abs(aParamLast - aParamFirst) < 1.e-9)

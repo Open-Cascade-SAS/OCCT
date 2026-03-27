@@ -90,7 +90,7 @@ struct BaseRep
 //! Transitional shell reference storage entry.
 struct ShellRefEntry : public BaseRef
 {
-  BRepGraph_ShellId  ShellDefId;
+  BRepGraph_ShellId  ShellEntityId;
   TopAbs_Orientation Orientation = TopAbs_FORWARD;
   TopLoc_Location    LocalLocation;
 };
@@ -98,7 +98,7 @@ struct ShellRefEntry : public BaseRef
 //! Transitional face reference storage entry.
 struct FaceRefEntry : public BaseRef
 {
-  BRepGraph_FaceId   FaceDefId;
+  BRepGraph_FaceId   FaceEntityId;
   TopAbs_Orientation Orientation = TopAbs_FORWARD;
   TopLoc_Location    LocalLocation;
 };
@@ -106,7 +106,7 @@ struct FaceRefEntry : public BaseRef
 //! Transitional wire reference storage entry.
 struct WireRefEntry : public BaseRef
 {
-  BRepGraph_WireId   WireDefId;
+  BRepGraph_WireId   WireEntityId;
   bool               IsOuter     = false;
   TopAbs_Orientation Orientation = TopAbs_FORWARD;
   TopLoc_Location    LocalLocation;
@@ -115,14 +115,14 @@ struct WireRefEntry : public BaseRef
 //! Transitional coedge reference storage entry.
 struct CoEdgeRefEntry : public BaseRef
 {
-  BRepGraph_CoEdgeId CoEdgeDefId;
+  BRepGraph_CoEdgeId CoEdgeEntityId;
   TopLoc_Location    LocalLocation;
 };
 
 //! Transitional vertex reference storage entry.
 struct VertexRefEntry : public BaseRef
 {
-  BRepGraph_VertexId VertexDefId;
+  BRepGraph_VertexId VertexEntityId;
   TopAbs_Orientation Orientation = TopAbs_INTERNAL;
   TopLoc_Location    LocalLocation;
 };
@@ -130,7 +130,7 @@ struct VertexRefEntry : public BaseRef
 //! Transitional solid reference storage entry.
 struct SolidRefEntry : public BaseRef
 {
-  BRepGraph_SolidId  SolidDefId;
+  BRepGraph_SolidId  SolidEntityId;
   TopAbs_Orientation Orientation = TopAbs_FORWARD;
   TopLoc_Location    LocalLocation;
 };
@@ -138,7 +138,7 @@ struct SolidRefEntry : public BaseRef
 //! Transitional child reference storage entry.
 struct ChildRefEntry : public BaseRef
 {
-  BRepGraph_NodeId   ChildDefId;
+  BRepGraph_NodeId   ChildEntityId;
   TopAbs_Orientation Orientation = TopAbs_FORWARD;
   TopLoc_Location    LocalLocation;
 };
@@ -146,7 +146,7 @@ struct ChildRefEntry : public BaseRef
 //! Occurrence reference storage entry.
 struct OccurrenceRefEntry : public BaseRef
 {
-  BRepGraph_OccurrenceId OccurrenceDefId;
+  BRepGraph_OccurrenceId OccurrenceEntityId;
 };
 
 //! Surface geometry representation for faces.
@@ -206,7 +206,7 @@ struct VertexEntity : public BaseEntity
   struct PointOnCurveEntry
   {
     double           Parameter = 0.0;
-    BRepGraph_EdgeId EdgeDefId; //!< Edge definition owning the curve
+    BRepGraph_EdgeId EdgeEntityId; //!< Edge definition owning the curve
   };
 
   NCollection_Vector<PointOnCurveEntry> PointsOnCurve;
@@ -216,7 +216,7 @@ struct VertexEntity : public BaseEntity
   {
     double           ParameterU = 0.0;
     double           ParameterV = 0.0;
-    BRepGraph_FaceId FaceDefId; //!< Face definition owning the surface
+    BRepGraph_FaceId FaceEntityId; //!< Face definition owning the surface
   };
 
   NCollection_Vector<PointOnSurfaceEntry> PointsOnSurface;
@@ -225,7 +225,7 @@ struct VertexEntity : public BaseEntity
   struct PointOnPCurveEntry
   {
     double           Parameter = 0.0;
-    BRepGraph_FaceId FaceDefId; //!< Face definition owning the surface
+    BRepGraph_FaceId FaceEntityId; //!< Face definition owning the surface
   };
 
   NCollection_Vector<PointOnPCurveEntry> PointsOnPCurve;
@@ -266,7 +266,7 @@ struct EdgeEntity : public BaseEntity
   bool IsClosed = false;
 
   //! Boundary vertex reference ids (indices into VertexRefEntry table).
-  //! For closed edges, the start and end ref entries point to the same VertexDefId.
+  //! For closed edges, the start and end ref entries point to the same VertexEntityId.
   BRepGraph_VertexRefId StartVertexRefId;
   BRepGraph_VertexRefId EndVertexRefId;
 
@@ -280,8 +280,8 @@ struct EdgeEntity : public BaseEntity
   //! Edge regularity (continuity) between adjacent face pairs.
   struct RegularityEntry
   {
-    BRepGraph_FaceId FaceDef1;
-    BRepGraph_FaceId FaceDef2;
+    BRepGraph_FaceId FaceEntity1;
+    BRepGraph_FaceId FaceEntity2;
     GeomAbs_Shape    Continuity = GeomAbs_C0;
   };
 
@@ -303,8 +303,8 @@ struct EdgeEntity : public BaseEntity
 //! linked by SeamPairIdx.
 struct CoEdgeEntity : public BaseEntity
 {
-  BRepGraph_EdgeId   EdgeDefId; //!< Parent edge definition id
-  BRepGraph_FaceId   FaceDefId; //!< Face this coedge belongs to (invalid for free wires)
+  BRepGraph_EdgeId   EdgeEntityId; //!< Parent edge definition id
+  BRepGraph_FaceId   FaceEntityId; //!< Face this coedge belongs to (invalid for free wires)
   TopAbs_Orientation Sense = TopAbs_FORWARD; //!< Orientation relative to parent edge
 
   //! Typed representation id into Storage::myCurves2D (invalid for free-wire coedges).
@@ -445,9 +445,9 @@ struct ProductEntity : public BaseEntity
 //! unambiguous GlobalPlacement computation even when products are shared (DAG).
 struct OccurrenceEntity : public BaseEntity
 {
-  BRepGraph_ProductId    ProductDefId;          //!< Referenced product definition id
-  BRepGraph_ProductId    ParentProductDefId;    //!< Parent assembly product definition id
-  BRepGraph_OccurrenceId ParentOccurrenceDefId; //!< Parent occurrence id (invalid for top-level)
+  BRepGraph_ProductId    ProductEntityId;          //!< Referenced product definition id
+  BRepGraph_ProductId    ParentProductEntityId;    //!< Parent assembly product definition id
+  BRepGraph_OccurrenceId ParentOccurrenceEntityId; //!< Parent occurrence id (invalid for top-level)
   TopLoc_Location        Placement;             //!< Local placement relative to parent
 
   //! No-op: OccurrenceEntity has no inner vectors to reinitialize.

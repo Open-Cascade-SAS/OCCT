@@ -41,17 +41,17 @@ public:
   };
 
   //! Split a single edge definition at a vertex and 3D-curve parameter.
-  //! Creates two new EdgeDef slots, splits all PCurve nodes at the corresponding
+  //! Creates two new EdgeEntity slots, splits all PCurve nodes at the corresponding
   //! 2D parameter, and updates every wire that contained the original edge
   //! (inserting the two sub-edges in traversal order).
   //! @param[in,out] theGraph       graph to mutate
-  //! @param[in] theEdgeDef         edge to split (must not be degenerate)
+  //! @param[in] theEdgeEntity         edge to split (must not be degenerate)
   //! @param[in] theSplitVertex     vertex definition at the split point (already in graph)
   //! @param[in] theSplitParam      parameter on the 3D curve at the split point
   //! @param[out] theSubA           sub-edge: StartVertex -> SplitVertex
   //! @param[out] theSubB           sub-edge: SplitVertex -> EndVertex
   static Standard_EXPORT void SplitEdge(BRepGraph&             theGraph,
-                                        const BRepGraph_NodeId theEdgeDef,
+                                        const BRepGraph_NodeId theEdgeEntity,
                                         const BRepGraph_NodeId theSplitVertex,
                                         const double           theSplitParam,
                                         BRepGraph_NodeId&      theSubA,
@@ -62,14 +62,14 @@ public:
   //! if theReversed, and incrementally updates edge-to-wire, edge-to-face, and
   //! edge-to-coedge reverse indices.
   //! @param[in,out] theGraph       graph to mutate
-  //! @param[in] theWireDefId       wire definition identifier
-  //! @param[in] theOldEdgeDef      edge to replace
-  //! @param[in] theNewEdgeDef      replacement edge
+  //! @param[in] theWireEntityId       wire definition identifier
+  //! @param[in] theOldEdgeEntity      edge to replace
+  //! @param[in] theNewEdgeEntity      replacement edge
   //! @param[in] theReversed        if true, reverse the orientation of the replacement
   static Standard_EXPORT void ReplaceEdgeInWire(BRepGraph&             theGraph,
-                                                const BRepGraph_WireId theWireDefId,
-                                                const BRepGraph_EdgeId theOldEdgeDef,
-                                                const BRepGraph_EdgeId theNewEdgeDef,
+                                                const BRepGraph_WireId theWireEntityId,
+                                                const BRepGraph_EdgeId theOldEdgeEntity,
+                                                const BRepGraph_EdgeId theNewEdgeEntity,
                                                 const bool             theReversed);
 
   //! Apply a modification operation and record history.
