@@ -1,0 +1,23 @@
+puts "============"
+puts "Verify vfit -selected works correctly for a primitive TopoDS_Shape with transformation"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+box b 100 200 300
+
+vinit View1
+
+vdisplay b -dispMode 1
+vlocation b -location 500 0 0
+vfit
+
+vzoom 0.5
+vselmode b FACE 1
+vselect 250 125
+
+vfit -selected
+
+if { [vreadpixel 250 250 rgb name] == "BLACK" } {
+    puts "Error: face should be in the middle"
+}
