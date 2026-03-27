@@ -303,13 +303,13 @@ bool enforceImpl(BRepGraph&       theGraph,
     {
       continue;
     }
-    if (!aCoEdge.FaceEntityId.IsValid())
+    if (!aCoEdge.FaceDefId.IsValid())
     {
       continue;
     }
 
     if (!BRepGraph_Tool::Face::HasSurface(theGraph,
-                                          BRepGraph_FaceId::FromNodeId(aCoEdge.FaceEntityId)))
+                                          BRepGraph_FaceId::FromNodeId(aCoEdge.FaceDefId)))
     {
       continue;
     }
@@ -317,7 +317,7 @@ bool enforceImpl(BRepGraph&       theGraph,
     hasYaPCu = true;
 
     // Load surface (apply face transform if non-identity).
-    const BRepGraph_FaceId         aCoEdgeFaceId = BRepGraph_FaceId::FromNodeId(aCoEdge.FaceEntityId);
+    const BRepGraph_FaceId         aCoEdgeFaceId = BRepGraph_FaceId::FromNodeId(aCoEdge.FaceDefId);
     GeomAdaptor_TransformedSurface aTransSurf =
       BRepGraph_Tool::Face::SurfaceAdaptor(theGraph, aCoEdgeFaceId);
     occ::handle<Geom_Surface> aSurf    = BRepGraph_Tool::Face::Surface(theGraph, aCoEdgeFaceId);

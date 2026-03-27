@@ -389,8 +389,8 @@ TEST(BRepGraph_LayerIntegrationTest, SplitEdge_OriginalEdgeRemoved)
     const BRepGraphInc::EdgeDef& anEdge = aGraph.Topo().Edge(BRepGraph_EdgeId(i));
     const BRepGraph_EdgeId anEdgeId(i);
     if (!anEdge.IsDegenerate && anEdge.Curve3DRepId.IsValid()
-        && BRepGraph_Tool::Edge::StartVertex(aGraph, anEdgeId).VertexEntityId.IsValid()
-        && BRepGraph_Tool::Edge::EndVertex(aGraph, anEdgeId).VertexEntityId.IsValid())
+        && BRepGraph_Tool::Edge::StartVertex(aGraph, anEdgeId).VertexDefId.IsValid()
+        && BRepGraph_Tool::Edge::EndVertex(aGraph, anEdgeId).VertexDefId.IsValid())
     {
       aSplitEdgeIdx = i;
       break;

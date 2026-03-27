@@ -145,23 +145,23 @@ static int pointsForOBB(const BRepGraph&            theGraph,
       {
         const BRepGraph_WireRefId             aWireRefId = aFaceEnt.WireRefIds.Value(aWRI);
         const BRepGraphInc::WireRefEntry&     aWR        = aRefs.Wire(aWireRefId);
-        if (aWR.IsRemoved || !aWR.WireEntityId.IsValid(theGraph.Topo().NbWires()))
+        if (aWR.IsRemoved || !aWR.WireDefId.IsValid(theGraph.Topo().NbWires()))
         {
           continue;
         }
 
-        const BRepGraphInc::WireDef& aWireEnt = theGraph.Topo().Wire(aWR.WireEntityId);
+        const BRepGraphInc::WireDef& aWireEnt = theGraph.Topo().Wire(aWR.WireDefId);
         for (int aCRI = 0; aCRI < aWireEnt.CoEdgeRefIds.Length(); ++aCRI)
         {
           const BRepGraph_CoEdgeRefId           aCERefId = aWireEnt.CoEdgeRefIds.Value(aCRI);
           const BRepGraphInc::CoEdgeRefEntry&   aCR      = aRefs.CoEdge(aCERefId);
-          if (aCR.IsRemoved || !aCR.CoEdgeEntityId.IsValid(theGraph.Topo().NbCoEdges()))
+          if (aCR.IsRemoved || !aCR.CoEdgeDefId.IsValid(theGraph.Topo().NbCoEdges()))
           {
             continue;
           }
 
-          const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdge(aCR.CoEdgeEntityId);
-          const BRepGraph_EdgeId               anEdgeId(aCoEdge.EdgeEntityId);
+          const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdge(aCR.CoEdgeDefId);
+          const BRepGraph_EdgeId               anEdgeId(aCoEdge.EdgeDefId);
           if (!anEdgeId.IsValid(theGraph.Topo().NbEdges()))
           {
             continue;

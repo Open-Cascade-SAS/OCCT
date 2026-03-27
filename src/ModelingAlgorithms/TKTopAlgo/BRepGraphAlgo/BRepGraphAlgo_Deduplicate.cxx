@@ -48,7 +48,7 @@ void forWireCoEdgeRefEntries(const BRepGraph& theGraph, const BRepGraph_WireId t
   {
     const BRepGraph_CoEdgeRefId         aRefId = aWireEnt.CoEdgeRefIds.Value(i);
     const BRepGraphInc::CoEdgeRefEntry& aCR    = aRefs.CoEdge(aRefId);
-    if (aCR.IsRemoved || !aCR.CoEdgeEntityId.IsValid(theGraph.Topo().NbCoEdges()))
+    if (aCR.IsRemoved || !aCR.CoEdgeDefId.IsValid(theGraph.Topo().NbCoEdges()))
     {
       continue;
     }
@@ -65,7 +65,7 @@ void forFaceWireRefEntries(const BRepGraph& theGraph, const BRepGraph_FaceId the
   {
     const BRepGraph_WireRefId         aRefId = aFaceEnt.WireRefIds.Value(i);
     const BRepGraphInc::WireRefEntry& aWR    = aRefs.Wire(aRefId);
-    if (aWR.IsRemoved || !aWR.WireEntityId.IsValid(theGraph.Topo().NbWires()))
+    if (aWR.IsRemoved || !aWR.WireDefId.IsValid(theGraph.Topo().NbWires()))
     {
       continue;
     }
@@ -305,15 +305,15 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
           {
             BRepGraph_MutRefEntry<BRepGraphInc::VertexRefEntry> aStartRef =
               theGraph.Builder().MutVertexRef(anEdge->StartVertexRefId);
-            if (aStartRef->VertexEntityId == BRepGraph_VertexId(anOldId.Index))
-              aStartRef->VertexEntityId = BRepGraph_VertexId(aCanonId.Index);
+            if (aStartRef->VertexDefId == BRepGraph_VertexId(anOldId.Index))
+              aStartRef->VertexDefId = BRepGraph_VertexId(aCanonId.Index);
           }
           if (anEdge->EndVertexRefId.IsValid())
           {
             BRepGraph_MutRefEntry<BRepGraphInc::VertexRefEntry> anEndRef =
               theGraph.Builder().MutVertexRef(anEdge->EndVertexRefId);
-            if (anEndRef->VertexEntityId == BRepGraph_VertexId(anOldId.Index))
-              anEndRef->VertexEntityId = BRepGraph_VertexId(aCanonId.Index);
+            if (anEndRef->VertexDefId == BRepGraph_VertexId(anOldId.Index))
+              anEndRef->VertexDefId = BRepGraph_VertexId(aCanonId.Index);
           }
         }
 
@@ -335,7 +335,7 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
 
   // Phase 2: Edge Merging.
   {
-    // Key: (canonical Curve3d pointer, canonical StartVertexEntityId, canonical EndVertexEntityId).
+    // Key: (canonical Curve3d pointer, canonical StartVertexDefId, canonical EndVertexDefId).
     struct EdgeKey
     {
       const Geom_Curve* CurvePtr;
@@ -379,11 +379,11 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
       aKey.CurvePtr = BRepGraph_Tool::Edge::Curve(theGraph, anEdgeId).get();
       const BRepGraph_VertexId aStartVtxId =
         anEdge.StartVertexRefId.IsValid()
-          ? theGraph.Refs().Vertex(anEdge.StartVertexRefId).VertexEntityId
+          ? theGraph.Refs().Vertex(anEdge.StartVertexRefId).VertexDefId
           : BRepGraph_VertexId();
       const BRepGraph_VertexId anEndVtxId =
         anEdge.EndVertexRefId.IsValid()
-          ? theGraph.Refs().Vertex(anEdge.EndVertexRefId).VertexEntityId
+          ? theGraph.Refs().Vertex(anEdge.EndVertexRefId).VertexDefId
           : BRepGraph_VertexId();
       aKey.StartVtx = aStartVtxId.IsValid() ? aStartVtxId.Index : -1;
       aKey.EndVtx   = anEndVtxId.IsValid() ? anEndVtxId.Index : -1;
@@ -449,22 +449,22 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
         const BRepGraph_NodeId aCanonStart =
           aCanonEdge.StartVertexRefId.IsValid()
             ? BRepGraph_NodeId::Vertex(
-                theGraph.Refs().Vertex(aCanonEdge.StartVertexRefId).VertexEntityId.Index)
+                theGraph.Refs().Vertex(aCanonEdge.StartVertexRefId).VertexDefId.Index)
             : BRepGraph_NodeId();
         const BRepGraph_NodeId aCanonEnd =
           aCanonEdge.EndVertexRefId.IsValid()
             ? BRepGraph_NodeId::Vertex(
-                theGraph.Refs().Vertex(aCanonEdge.EndVertexRefId).VertexEntityId.Index)
+                theGraph.Refs().Vertex(aCanonEdge.EndVertexRefId).VertexDefId.Index)
             : BRepGraph_NodeId();
         const BRepGraph_NodeId anOldStart =
           anOldEdge.StartVertexRefId.IsValid()
             ? BRepGraph_NodeId::Vertex(
-                theGraph.Refs().Vertex(anOldEdge.StartVertexRefId).VertexEntityId.Index)
+                theGraph.Refs().Vertex(anOldEdge.StartVertexRefId).VertexDefId.Index)
             : BRepGraph_NodeId();
         const BRepGraph_NodeId anOldEnd =
           anOldEdge.EndVertexRefId.IsValid()
             ? BRepGraph_NodeId::Vertex(
-                theGraph.Refs().Vertex(anOldEdge.EndVertexRefId).VertexEntityId.Index)
+                theGraph.Refs().Vertex(anOldEdge.EndVertexRefId).VertexDefId.Index)
             : BRepGraph_NodeId();
         const bool isReversed = (aCanonStart == anOldEnd && aCanonEnd == anOldStart);
 
@@ -509,7 +509,7 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
           {
             const BRepGraphInc::CoEdgeDef& aCanonCE =
               theGraph.Topo().CoEdge(aCanonCoEdges.Value(aCanonCEIdx));
-            if (aCanonCE.FaceEntityId == aOldCE.FaceEntityId && aCanonCE.Sense == aTransferOri)
+            if (aCanonCE.FaceDefId == aOldCE.FaceDefId && aCanonCE.Sense == aTransferOri)
             {
               aAlreadyHas = true;
               break;
@@ -521,7 +521,7 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
             const occ::handle<Geom2d_Curve>& aOldPCurve =
               BRepGraph_Tool::CoEdge::PCurve(theGraph, aOldCoEdges.Value(aCEIdx));
             theGraph.Builder().AddPCurveToEdge(aCanonId,
-                                               aOldCE.FaceEntityId,
+                                               aOldCE.FaceDefId,
                                                aOldPCurve,
                                                aOldCE.ParamFirst,
                                                aOldCE.ParamLast,
@@ -553,9 +553,9 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
       {
         size_t aHash = 0;
         forWireCoEdgeRefEntries(theGraph, theWireId, [&](const BRepGraphInc::CoEdgeRefEntry& aCR) {
-          const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdge(aCR.CoEdgeEntityId);
+          const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdge(aCR.CoEdgeDefId);
           size_t                               aEntryHash[2];
-          aEntryHash[0] = opencascade::hash(aCoEdge.EdgeEntityId);
+          aEntryHash[0] = opencascade::hash(aCoEdge.EdgeDefId);
           aEntryHash[1] = opencascade::hash(static_cast<int>(aCoEdge.Sense));
           aHash ^= opencascade::hashBytes(aEntryHash, sizeof(aEntryHash)) + 0x9e3779b9
                    + (aHash << 6) + (aHash >> 2);
@@ -568,10 +568,10 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
       NCollection_Vector<BRepGraph_CoEdgeId> aWireACoEdges;
       NCollection_Vector<BRepGraph_CoEdgeId> aWireBCoEdges;
       forWireCoEdgeRefEntries(theGraph, theA, [&](const BRepGraphInc::CoEdgeRefEntry& aCR) {
-        aWireACoEdges.Append(aCR.CoEdgeEntityId);
+        aWireACoEdges.Append(aCR.CoEdgeDefId);
       });
       forWireCoEdgeRefEntries(theGraph, theB, [&](const BRepGraphInc::CoEdgeRefEntry& aCR) {
-        aWireBCoEdges.Append(aCR.CoEdgeEntityId);
+        aWireBCoEdges.Append(aCR.CoEdgeDefId);
       });
 
       if (aWireACoEdges.Length() != aWireBCoEdges.Length())
@@ -580,7 +580,7 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
       {
         const BRepGraphInc::CoEdgeDef& aCoEdgeA = theGraph.Topo().CoEdge(aWireACoEdges.Value(anIdx));
         const BRepGraphInc::CoEdgeDef& aCoEdgeB = theGraph.Topo().CoEdge(aWireBCoEdges.Value(anIdx));
-        if (aCoEdgeA.EdgeEntityId != aCoEdgeB.EdgeEntityId || aCoEdgeA.Sense != aCoEdgeB.Sense)
+        if (aCoEdgeA.EdgeDefId != aCoEdgeB.EdgeDefId || aCoEdgeA.Sense != aCoEdgeB.Sense)
           return false;
       }
       return true;
@@ -683,11 +683,11 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
       forFaceWireRefEntries(theGraph, BRepGraph_FaceId(theFaceIdx), [&](const BRepGraphInc::WireRefEntry& aWR) {
         if (aWR.IsOuter)
         {
-          aHash ^= opencascade::hash(aWR.WireEntityId);
+          aHash ^= opencascade::hash(aWR.WireDefId);
         }
         else
         {
-          aHash ^= opencascade::hash(aWR.WireEntityId) + 0x9e3779b9;
+          aHash ^= opencascade::hash(aWR.WireDefId) + 0x9e3779b9;
         }
       });
       return aHash;

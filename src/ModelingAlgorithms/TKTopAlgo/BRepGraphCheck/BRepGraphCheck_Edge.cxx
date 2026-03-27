@@ -115,7 +115,7 @@ void BRepGraphCheck::CheckEdgeMinimum(const BRepGraph&                          
   if (anEdgeDef.StartVertexRefId.IsValid())
   {
     const BRepGraph_VertexId aStartVtxIdx =
-      BRepGraph_Tool::Edge::StartVertex(theGraph, theEdge).VertexEntityId;
+      BRepGraph_Tool::Edge::StartVertex(theGraph, theEdge).VertexDefId;
     if (aStartVtxIdx.IsValid()
         && BRepGraph_Tool::Vertex::Tolerance(theGraph, aStartVtxIdx) < Precision::Confusion())
     {
@@ -129,7 +129,7 @@ void BRepGraphCheck::CheckEdgeMinimum(const BRepGraph&                          
   if (anEdgeDef.EndVertexRefId.IsValid())
   {
     const BRepGraph_VertexId anEndVtxIdx =
-      BRepGraph_Tool::Edge::EndVertex(theGraph, theEdge).VertexEntityId;
+      BRepGraph_Tool::Edge::EndVertex(theGraph, theEdge).VertexDefId;
     if (anEndVtxIdx.IsValid()
         && BRepGraph_Tool::Vertex::Tolerance(theGraph, anEndVtxIdx) < Precision::Confusion())
     {

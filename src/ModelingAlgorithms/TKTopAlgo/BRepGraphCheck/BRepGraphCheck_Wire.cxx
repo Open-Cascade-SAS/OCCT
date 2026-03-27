@@ -44,7 +44,7 @@ BRepGraph_NodeId resolveOrientedStartVertex(const BRepGraph&                 the
     (theSense == TopAbs_FORWARD) ? theEdge.StartVertexRefId : theEdge.EndVertexRefId;
   if (!aRefId.IsValid())
     return BRepGraph_NodeId();
-  return BRepGraph_NodeId::Vertex(theGraph.Refs().Vertex(aRefId).VertexEntityId.Index);
+  return BRepGraph_NodeId::Vertex(theGraph.Refs().Vertex(aRefId).VertexDefId.Index);
 }
 
 //! Resolve oriented end vertex through ref entries.
@@ -56,7 +56,7 @@ BRepGraph_NodeId resolveOrientedEndVertex(const BRepGraph&                 theGr
     (theSense == TopAbs_FORWARD) ? theEdge.EndVertexRefId : theEdge.StartVertexRefId;
   if (!aRefId.IsValid())
     return BRepGraph_NodeId();
-  return BRepGraph_NodeId::Vertex(theGraph.Refs().Vertex(aRefId).VertexEntityId.Index);
+  return BRepGraph_NodeId::Vertex(theGraph.Refs().Vertex(aRefId).VertexDefId.Index);
 }
 
 //=================================================================================================
@@ -73,13 +73,13 @@ static NCollection_Vector<BRepGraphInc::CoEdgeRef> collectWireCoEdgeRefs(const B
   {
     const BRepGraph_CoEdgeRefId          aRefId = aWireDef.CoEdgeRefIds.Value(aRefIter);
     const BRepGraphInc::CoEdgeRefEntry& aRef   = aRefs.CoEdge(aRefId);
-    if (aRef.IsRemoved || !aRef.CoEdgeEntityId.IsValid(aDefs.NbCoEdges()))
+    if (aRef.IsRemoved || !aRef.CoEdgeDefId.IsValid(aDefs.NbCoEdges()))
     {
       continue;
     }
 
     BRepGraphInc::CoEdgeRef aCoEdgeRef;
-    aCoEdgeRef.CoEdgeEntityId   = aRef.CoEdgeEntityId;
+    aCoEdgeRef.CoEdgeDefId   = aRef.CoEdgeDefId;
     aCoEdgeRef.LocalLocation = aRef.LocalLocation;
     aResult.Append(aCoEdgeRef);
   }
@@ -119,8 +119,8 @@ void BRepGraphCheck::CheckWireMinimum(const BRepGraph&                          
   for (int aCoEdgeIter = 0; aCoEdgeIter < aCoEdgeRefs.Length(); ++aCoEdgeIter)
   {
     const BRepGraphInc::CoEdgeRef&       aCR        = aCoEdgeRefs.Value(aCoEdgeIter);
-    const BRepGraphInc::CoEdgeDef& aCoEdgeDef = aDefs.CoEdge(aCR.CoEdgeEntityId);
-    const int                            anEdgeIdx  = aCoEdgeDef.EdgeEntityId.Index;
+    const BRepGraphInc::CoEdgeDef& aCoEdgeDef = aDefs.CoEdge(aCR.CoEdgeDefId);
+    const int                            anEdgeIdx  = aCoEdgeDef.EdgeDefId.Index;
     if (!anEdgeCounts.IsBound(anEdgeIdx))
     {
       anEdgeCounts.Bind(anEdgeIdx, 1);
@@ -195,8 +195,8 @@ void BRepGraphCheck::CheckWireOnFace(const BRepGraph&                          t
     for (int anEdgeIter = 0; anEdgeIter < aNbEdges; ++anEdgeIter)
     {
       const BRepGraphInc::CoEdgeRef&       aCR        = aCoEdgeRefs.Value(anEdgeIter);
-      const BRepGraphInc::CoEdgeDef& aCoEdgeDef = aDefs.CoEdge(aCR.CoEdgeEntityId);
-      const BRepGraphInc::EdgeDef&   anEdgeDef  = aDefs.Edge(aCoEdgeDef.EdgeEntityId);
+      const BRepGraphInc::CoEdgeDef& aCoEdgeDef = aDefs.CoEdge(aCR.CoEdgeDefId);
+      const BRepGraphInc::EdgeDef&   anEdgeDef  = aDefs.Edge(aCoEdgeDef.EdgeDefId);
       const BRepGraph_NodeId aStartVtx =
         resolveOrientedStartVertex(theGraph, anEdgeDef, aCoEdgeDef.Sense);
       const BRepGraph_NodeId anEndVtx =
@@ -231,8 +231,8 @@ void BRepGraphCheck::CheckWireOnFace(const BRepGraph&                          t
       const int aCurrIdx = aQueue(aQueueHead++);
 
       const BRepGraphInc::CoEdgeRef&       aCurrCR     = aCoEdgeRefs.Value(aCurrIdx);
-      const BRepGraphInc::CoEdgeDef& aCurrCoEdge = aDefs.CoEdge(aCurrCR.CoEdgeEntityId);
-      const BRepGraphInc::EdgeDef&   aCurrEdge   = aDefs.Edge(aCurrCoEdge.EdgeEntityId);
+      const BRepGraphInc::CoEdgeDef& aCurrCoEdge = aDefs.CoEdge(aCurrCR.CoEdgeDefId);
+      const BRepGraphInc::EdgeDef&   aCurrEdge   = aDefs.Edge(aCurrCoEdge.EdgeDefId);
       const BRepGraph_NodeId aStartVtx =
         resolveOrientedStartVertex(theGraph, aCurrEdge, aCurrCoEdge.Sense);
       const BRepGraph_NodeId anEndVtx =
@@ -312,7 +312,7 @@ void BRepGraphCheck::CheckWireOnFace(const BRepGraph&                          t
   for (int anEdgeIter = 0; anEdgeIter < aNbEdges && !aHasSeamEdge; ++anEdgeIter)
   {
     const BRepGraphInc::CoEdgeRef&       aCR        = aCoEdgeRefs.Value(anEdgeIter);
-    const BRepGraphInc::CoEdgeDef& aCoEdgeDef = aDefs.CoEdge(aCR.CoEdgeEntityId);
+    const BRepGraphInc::CoEdgeDef& aCoEdgeDef = aDefs.CoEdge(aCR.CoEdgeDefId);
     if (aCoEdgeDef.SeamPairId.IsValid())
       aHasSeamEdge = true;
   }
@@ -326,7 +326,7 @@ void BRepGraphCheck::CheckWireOnFace(const BRepGraph&                          t
       return aDefs.CoEdge(BRepGraph_CoEdgeId(theIdx));
     };
     auto vtxRefLookup = [&theGraph](const BRepGraph_VertexRefId theRefId) -> BRepGraph_VertexId {
-      return theGraph.Refs().Vertex(theRefId).VertexEntityId;
+      return theGraph.Refs().Vertex(theRefId).VertexDefId;
     };
     BRepGraph_WireExplorer aWireExp(aCoEdgeRefs, coedgeLookup, edgeLookup, vtxRefLookup);
     BRepGraphInc::CoEdgeRef   aFirstCR = aWireExp.CurrentRef();
@@ -334,17 +334,17 @@ void BRepGraphCheck::CheckWireOnFace(const BRepGraph&                          t
     for (; aWireExp.More(); aWireExp.Next())
       aLastCR = aWireExp.CurrentRef();
 
-    const BRepGraphInc::CoEdgeDef& aFirstCoEdge = aDefs.CoEdge(aFirstCR.CoEdgeEntityId);
-    const BRepGraphInc::CoEdgeDef& aLastCoEdge  = aDefs.CoEdge(aLastCR.CoEdgeEntityId);
+    const BRepGraphInc::CoEdgeDef& aFirstCoEdge = aDefs.CoEdge(aFirstCR.CoEdgeDefId);
+    const BRepGraphInc::CoEdgeDef& aLastCoEdge  = aDefs.CoEdge(aLastCR.CoEdgeDefId);
 
     // Get PCurves for first and last edges (orientation-specific for seam edges).
     const BRepGraphInc::CoEdgeDef* aFirstPC =
       BRepGraph_Tool::Edge::FindPCurve(theGraph,
-                                       aFirstCoEdge.EdgeEntityId,
+                                       aFirstCoEdge.EdgeDefId,
                                        theFace,
                                        aFirstCoEdge.Sense);
     const BRepGraphInc::CoEdgeDef* aLastPC =
-      BRepGraph_Tool::Edge::FindPCurve(theGraph, aLastCoEdge.EdgeEntityId, theFace, aLastCoEdge.Sense);
+      BRepGraph_Tool::Edge::FindPCurve(theGraph, aLastCoEdge.EdgeDefId, theFace, aLastCoEdge.Sense);
 
     if (aFirstPC != nullptr && aLastPC != nullptr)
     {
@@ -410,7 +410,7 @@ void BRepGraphCheck::CheckWireOnFace(const BRepGraph&                          t
   {
     occ::handle<Geom2dAdaptor_Curve> Adaptor;
     Bnd_Box2d                        Box;
-    int                              EdgeEntityIdx;
+    int                              EdgeDefIdx;
     BRepGraph_NodeId                 StartVtxId;
     BRepGraph_NodeId                 EndVtxId;
   };
@@ -420,11 +420,11 @@ void BRepGraphCheck::CheckWireOnFace(const BRepGraph&                          t
   for (int anEdgeIter = 0; anEdgeIter < aNbEdges; ++anEdgeIter)
   {
     const BRepGraphInc::CoEdgeRef&       aCR        = aCoEdgeRefs.Value(anEdgeIter);
-    const BRepGraphInc::CoEdgeDef& aCoEdgeDef = aDefs.CoEdge(aCR.CoEdgeEntityId);
-    const BRepGraphInc::EdgeDef&   anEdgeDef  = aDefs.Edge(aCoEdgeDef.EdgeEntityId);
+    const BRepGraphInc::CoEdgeDef& aCoEdgeDef = aDefs.CoEdge(aCR.CoEdgeDefId);
+    const BRepGraphInc::EdgeDef&   anEdgeDef  = aDefs.Edge(aCoEdgeDef.EdgeDefId);
 
     // Skip degenerate edges.
-    if (BRepGraph_Tool::Edge::Degenerated(theGraph, aCoEdgeDef.EdgeEntityId))
+    if (BRepGraph_Tool::Edge::Degenerated(theGraph, aCoEdgeDef.EdgeDefId))
     {
       aPCurveData.Append(EdgePCurveData());
       continue;
@@ -432,7 +432,7 @@ void BRepGraphCheck::CheckWireOnFace(const BRepGraph&                          t
 
     // Get PCurve adaptor - uses stored PCurve, or computes via CurveOnPlane for planar faces.
     Geom2dAdaptor_Curve aPCAdaptor =
-      BRepGraph_Tool::CoEdge::PCurveAdaptor(theGraph, aCR.CoEdgeEntityId);
+      BRepGraph_Tool::CoEdge::PCurveAdaptor(theGraph, aCR.CoEdgeDefId);
     if (aPCAdaptor.Curve().IsNull())
     {
       aPCurveData.Append(EdgePCurveData());
@@ -440,7 +440,7 @@ void BRepGraphCheck::CheckWireOnFace(const BRepGraph&                          t
     }
 
     EdgePCurveData aData;
-    aData.EdgeEntityIdx = aCoEdgeDef.EdgeEntityId.Index;
+    aData.EdgeDefIdx = aCoEdgeDef.EdgeDefId.Index;
 
     aData.StartVtxId = resolveOrientedStartVertex(theGraph, anEdgeDef, aCoEdgeDef.Sense);
     aData.EndVtxId   = resolveOrientedEndVertex(theGraph, anEdgeDef, aCoEdgeDef.Sense);

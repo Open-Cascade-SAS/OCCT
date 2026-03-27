@@ -1429,8 +1429,8 @@ TEST(BRepGraphAlgo_SewingTest, NonManifoldMode_ThreeFacesShareEdge)
         const Geom2dAdaptor_Curve aPCAdaptor =
           BRepGraph_Tool::CoEdge::PCurveAdaptor(aGraph, aCoEdgeIdxs.Value(j));
         EXPECT_FALSE(aPCAdaptor.Curve().IsNull());
-        EXPECT_TRUE(aCE.FaceEntityId.IsValid());
-        aFaceIds.Add(aCE.FaceEntityId.Index);
+        EXPECT_TRUE(aCE.FaceDefId.IsValid());
+        aFaceIds.Add(aCE.FaceDefId.Index);
       }
       // CoEdges should reference distinct faces (each merged from a different face).
       EXPECT_GE(aFaceIds.Extent(), 2);

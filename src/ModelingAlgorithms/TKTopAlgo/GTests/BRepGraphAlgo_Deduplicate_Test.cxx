@@ -116,7 +116,7 @@ int nbPCurveEntries(const BRepGraph& theGraph)
     for (int i = 0; i < aCoEdgeIdxs.Length(); ++i)
     {
       const BRepGraphInc::CoEdgeDef& aCE = theGraph.Topo().CoEdge(aCoEdgeIdxs.Value(i));
-      if (aCE.FaceEntityId.IsValid())
+      if (aCE.FaceDefId.IsValid())
         ++aCount;
     }
   }
@@ -272,7 +272,7 @@ int addDuplicatePCurvesToAllEdges(BRepGraph& theGraph)
 
     const occ::handle<Geom2d_Curve>& aDupPCurve = BRepGraph_Tool::CoEdge::PCurve(theGraph, aCE);
     theGraph.Builder().AddPCurveToEdge(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, anEdgeIdx),
-                                       aCE.FaceEntityId,
+                                       aCE.FaceDefId,
                                        aDupPCurve,
                                        aCE.ParamFirst,
                                        aCE.ParamLast,
