@@ -17,6 +17,7 @@
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_TopoNode.hxx>
+#include <BRepGraphInc_Entity.hxx>
 #include <BRepLib_ValidateEdge.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <GeomAdaptor_Curve.hxx>
@@ -112,10 +113,12 @@ void BRepGraphCheck::CheckEdgeMinimum(const BRepGraph&                          
   }
 
   // Vertex tolerances should not exceed edge tolerance unreasonably.
-  if (anEdgeDef.StartVertexDefId().IsValid())
+  if (anEdgeDef.StartVertexRefId.IsValid())
   {
-    const BRepGraph_VertexId aStartVtxIdx = anEdgeDef.StartVertex.VertexDefId;
-    if (BRepGraph_Tool::Vertex::Tolerance(theGraph, aStartVtxIdx) < Precision::Confusion())
+    const BRepGraph_VertexId aStartVtxIdx =
+      BRepGraph_Tool::Edge::StartVertex(theGraph, theEdge).VertexDefId;
+    if (aStartVtxIdx.IsValid()
+        && BRepGraph_Tool::Vertex::Tolerance(theGraph, aStartVtxIdx) < Precision::Confusion())
     {
       BRepGraphCheck_Issue anIssue;
       anIssue.NodeId        = aDefs.Vertex(aStartVtxIdx).Id;
@@ -124,10 +127,12 @@ void BRepGraphCheck::CheckEdgeMinimum(const BRepGraph&                          
       theIssues.Append(anIssue);
     }
   }
-  if (anEdgeDef.EndVertexDefId().IsValid())
+  if (anEdgeDef.EndVertexRefId.IsValid())
   {
-    const BRepGraph_VertexId anEndVtxIdx = anEdgeDef.EndVertex.VertexDefId;
-    if (BRepGraph_Tool::Vertex::Tolerance(theGraph, anEndVtxIdx) < Precision::Confusion())
+    const BRepGraph_VertexId anEndVtxIdx =
+      BRepGraph_Tool::Edge::EndVertex(theGraph, theEdge).VertexDefId;
+    if (anEndVtxIdx.IsValid()
+        && BRepGraph_Tool::Vertex::Tolerance(theGraph, anEndVtxIdx) < Precision::Confusion())
     {
       BRepGraphCheck_Issue anIssue;
       anIssue.NodeId        = aDefs.Vertex(anEndVtxIdx).Id;

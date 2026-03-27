@@ -24,7 +24,7 @@ The runtime model is incidence-first:
 - Orientation/location context is stored on incidence refs
 - No separate runtime Usage storage layer
 
-See backend details in `src/ModelingData/TKBRep/BRepGraphInc/ReadMe.md`.
+See backend details in `src/ModelingData/TKBRep/BRepGraphInc/README.md`.
 
 ## Architecture
 
@@ -65,17 +65,54 @@ All queries and mutations go through lightweight view objects obtained from a `B
 | **AttrsView** | `Attrs()` | Layer registration, lookup, unregistration |
 | **BuilderView** | `Builder()` | Mutations: AddProduct, AddOccurrence, RemoveNode, RemoveSubgraph |
 | **AnalyzeView** | `Analyze()` | Diagnostics: FreeEdges, MissingPCurves, ToleranceConflicts, Decompose |
+| **RefsView** | `Refs()` | Reference entry access, RefUID lookup, VersionStamp for refs |
 | **PathView** | `Paths()` | Path-based traversal: GlobalLocation, GlobalOrientation, PathsTo, NodeLocations, CommonAncestor |
 
 ## Main Data Concepts
 
 - **NodeId** (Kind + Index): lightweight typed address into per-kind node vectors
 - **UID** (Kind + Counter): generation-aware persistent identity surviving compaction/reorder
+- **RefId** (Kind + Index): lightweight typed address into per-kind reference entry vectors
+- **RefUID** (Kind + Counter): generation-aware persistent reference identity
 - **RepId** (Kind + Index): separate geometry/mesh addressing decoupled from topology nodes
 - **Topology entities**: Vertex, Edge, CoEdge, Wire, Face, Shell, Solid, Compound, CompSolid
 - **Assembly entities**: Product (part or assembly), Occurrence (placed instance)
 - **Context refs**: VertexRef, CoEdgeRef, WireRef, FaceRef, ShellRef, SolidRef, ChildRef, OccurrenceRef
 - **Reverse indices**: edge→wire, edge→face, edge→coedge, vertex→edge, wire→face, face→shell, shell→solid, product→occurrences
+
+## Reference Identity (RefId)
+
+Reference entries are the typed edges of the incidence graph. Each ref kind has its own id space, entry table, and UID counter.
+
+### Ref Kinds
+
+8 ref kinds: Shell, Face, Wire, CoEdge, Vertex, Solid, Child, Occurrence. Type-safe wrappers: `BRepGraph_ShellRefId`, `BRepGraph_FaceRefId`, `BRepGraph_WireRefId`, `BRepGraph_CoEdgeRefId`, `BRepGraph_VertexRefId`, `BRepGraph_SolidRefId`, `BRepGraph_ChildRefId`, `BRepGraph_OccurrenceRefId`.
+
+### BaseRef and RefEntry
+
+`BaseRef` is the common header for all reference entries: `RefId` + `ParentId` + `MutationGen` + `IsRemoved`. Concrete ref entry types (e.g. `ShellRefEntry`, `FaceRefEntry`) extend BaseRef with `DefId` + `Orientation` + `LocalLocation`.
+
+### RefUID
+
+`BRepGraph_RefUID` (Kind + Counter) provides persistent identity for reference entries. Counter-based and generation-aware, surviving compaction and reorder. Analogous to `BRepGraph_UID` for entities.
+
+### VersionStamp Support
+
+`BRepGraph_VersionStamp` supports the ref domain: `StampOf(refId)` and `IsStale(stamp)` enable cache invalidation for ref-dependent computations.
+
+### Mutation Guards
+
+`BRepGraph_MutRefEntry<T>` is an RAII guard for safe ref entry mutation, analogous to `BRepGraph_MutRef` for entities.
+
+### RefsView API
+
+`RefsView` (via `Refs()`) provides:
+
+- Ref counts: `NbShellRefs`, `NbFaceRefs`, `NbWireRefs`, etc.
+- Ref entry access: `Shell(id)`, `Face(id)`, etc.
+- UID operations: `UIDOf(refId)`, `RefIdFrom(uid)`
+- Parent-to-ref vectors: `ShellRefIdsOf(solidId)`, `FaceRefIdsOf(shellId)`, etc.
+- Convenience: `OuterWireOfFace(faceIdx)`
 
 ## Core Pipelines
 
@@ -141,7 +178,7 @@ flowchart LR
   O3 -->|ProductDefId| P1
 ```
 
-- **ProductEntity**: `ShapeRootId` (topology root for parts; invalid for assemblies), `RootOrientation`, `RootLocation`, `OccurrenceRefs` (child occurrences)
+- **ProductEntity**: `ShapeRootId` (topology root for parts; invalid for assemblies), `RootOrientation`, `RootLocation`, `OccurrenceRefIds` (child occurrences)
 - **OccurrenceEntity**: `ProductDefId` (referenced product), `ParentProductDefId` (parent assembly), `ParentOccurrenceDefId` (parent occurrence for tree-structured placement chains), `Placement` (TopLoc_Location)
 
 ### Placement Composition
@@ -290,8 +327,9 @@ Benefits: O(1) allocation (bump-pointer), O(1) destruction (bulk page release). 
 
 | Category | Files |
 |----------|-------|
-| **Core** | `BRepGraph.hxx/.cxx`, `BRepGraph_Data.hxx`, `BRepGraph_NodeId.hxx`, `BRepGraph_UID.hxx`, `BRepGraph_RepId.hxx`, `BRepGraph_TopoNode.hxx` |
-| **Views** | `BRepGraph_DefsView.hxx/.cxx`, `BRepGraph_UIDsView.hxx/.cxx`, `BRepGraph_ShapesView.hxx/.cxx`, `BRepGraph_SpatialView.hxx/.cxx`, `BRepGraph_AttrsView.hxx/.cxx`, `BRepGraph_BuilderView.hxx/.cxx`, `BRepGraph_AnalyzeView.hxx`, `BRepGraph_PathView.hxx/.cxx` |
+| **Core** | `BRepGraph.hxx/.cxx`, `BRepGraph_Data.hxx`, `BRepGraph_NodeId.hxx`, `BRepGraph_UID.hxx`, `BRepGraph_RefId.hxx`, `BRepGraph_RefUID.hxx`, `BRepGraph_RepId.hxx`, `BRepGraph_TopoNode.hxx` |
+| **Views** | `BRepGraph_DefsView.hxx/.cxx`, `BRepGraph_UIDsView.hxx/.cxx`, `BRepGraph_RefsView.hxx/.cxx`, `BRepGraph_ShapesView.hxx/.cxx`, `BRepGraph_SpatialView.hxx/.cxx`, `BRepGraph_AttrsView.hxx/.cxx`, `BRepGraph_BuilderView.hxx/.cxx`, `BRepGraph_AnalyzeView.hxx`, `BRepGraph_PathView.hxx/.cxx` |
+| **Refs** | `BRepGraph_MutRefEntry.hxx` |
 | **Traversal** | `BRepGraph_Explorer.hxx/.cxx`, `BRepGraph_TopologyPath.hxx`, `BRepGraph_SubGraph.hxx`, `BRepGraph_PCurveContext.hxx` |
 | **Geometry** | `BRepGraph_Tool.hxx/.cxx` |
 | **Mutation** | `BRepGraph_Mutator.hxx/.cxx`, `BRepGraph_MutRef.hxx`, `BRepGraph_MutationGuard.hxx` |

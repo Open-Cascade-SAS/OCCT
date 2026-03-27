@@ -17,10 +17,11 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_Analyze.hxx>
 #include <BRepGraph_BuilderView.hxx>
-#include <BRepGraph_TopoView.hxx>
+#include <BRepGraph_MutRef.hxx>
 #include <BRepGraph_SubGraph.hxx>
-#include <BRepGraphInc_IncidenceRef.hxx>
+#include <BRepGraph_TopoView.hxx>
 #include <BRepGraphAlgo_BndLib.hxx>
+#include <BRepGraphInc_IncidenceRef.hxx>
 #include "BRepGraph_RefTestTools.hxx"
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
@@ -537,7 +538,8 @@ TEST_F(BRepGraph_AnalyzeTest, InvalidateSubgraph_PropagatesUpToSolid)
 
   // Invalidate from a vertex upward via a no-op mutation (triggers markModified).
   {
-    auto aMut = myGraph.Builder().MutVertex(BRepGraph_VertexId(aVertId.Index));
+    BRepGraph_MutRef<BRepGraph_TopoNode::VertexDef> aMut =
+      myGraph.Builder().MutVertex(BRepGraph_VertexId(aVertId.Index));
   }
 
   // Recompute. Since no actual mutation occurred, the result should be the same.

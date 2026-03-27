@@ -26,6 +26,7 @@ struct CoEdgeRefEntry;
 struct VertexRefEntry;
 struct SolidRefEntry;
 struct ChildRefEntry;
+struct OccurrenceRefEntry;
 } // namespace BRepGraphInc
 
 //! @brief Read-only view for RefId/RefUID-based reference storage.
@@ -46,6 +47,7 @@ public:
   [[nodiscard]] Standard_EXPORT int NbVertexRefs() const;
   [[nodiscard]] Standard_EXPORT int NbSolidRefs() const;
   [[nodiscard]] Standard_EXPORT int NbChildRefs() const;
+  [[nodiscard]] Standard_EXPORT int NbOccurrenceRefs() const;
 
   //! @name Reference entry access
   [[nodiscard]] Standard_EXPORT const BRepGraphInc::ShellRefEntry& Shell(
@@ -62,6 +64,8 @@ public:
     const BRepGraph_SolidRefId theRefId) const;
   [[nodiscard]] Standard_EXPORT const BRepGraphInc::ChildRefEntry& Child(
     const BRepGraph_ChildRefId theRefId) const;
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::OccurrenceRefEntry& Occurrence(
+    const BRepGraph_OccurrenceRefId theRefId) const;
 
   //! @name RefUID operations
   [[nodiscard]] Standard_EXPORT BRepGraph_RefUID UIDOf(const BRepGraph_RefId theRefId) const;
@@ -99,6 +103,11 @@ public:
   //! @return child ref ids owned by this compound
   [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_ChildRefId>&
     ChildRefIdsOf(const BRepGraph_CompoundId theCompound) const;
+
+  //! @param[in] theProduct product entity identifier
+  //! @return occurrence ref ids owned by this product
+  [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_OccurrenceRefId>&
+    OccurrenceRefIdsOf(const BRepGraph_ProductId theProduct) const;
 
   //! @param[in] theCompSolid comp-solid entity identifier
   //! @return solid ref ids owned by this comp-solid

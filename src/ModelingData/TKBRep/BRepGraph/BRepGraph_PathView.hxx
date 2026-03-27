@@ -51,7 +51,7 @@ public:
   //! Computed on demand via reverse index walk. No caching.
   //! @param[in] theNode entity to find all occurrences of
   [[nodiscard]] Standard_EXPORT NCollection_Vector<OccurrenceEntry> NodeLocations(
-    BRepGraph_NodeId theNode) const;
+    const BRepGraph_NodeId theNode) const;
 
   //! Global location at the leaf of the path (all levels composed).
   //! Handles assembly occurrences, compound containers, and topology uniformly.
@@ -77,19 +77,19 @@ public:
   //! @param[in] thePath  topology path
   //! @param[in] theLevel step index (0-based)
   [[nodiscard]] Standard_EXPORT TopLoc_Location LocationAt(const BRepGraph_TopologyPath& thePath,
-                                                           int theLevel) const;
+                                                           const int theLevel) const;
 
   //! Entity NodeId at step theLevel.
   //! @param[in] thePath  topology path
   //! @param[in] theLevel step index (0-based)
   [[nodiscard]] Standard_EXPORT BRepGraph_NodeId NodeAt(const BRepGraph_TopologyPath& thePath,
-                                                        int theLevel) const;
+                                                        const int theLevel) const;
 
   //! Orientation composed from root down to step theLevel.
   //! @param[in] thePath  topology path
   //! @param[in] theLevel step index (0-based)
   [[nodiscard]] Standard_EXPORT TopAbs_Orientation
-    OrientationAt(const BRepGraph_TopologyPath& thePath, int theLevel) const;
+    OrientationAt(const BRepGraph_TopologyPath& thePath, const int theLevel) const;
 
   //! Find the first step level where the resolved entity has the given kind.
   //! Returns -1 if no such level exists in the path.
@@ -106,26 +106,26 @@ public:
 
   //! True if the path passes through the given entity at any level.
   [[nodiscard]] Standard_EXPORT bool PathContains(const BRepGraph_TopologyPath& thePath,
-                                                  BRepGraph_NodeId              theNode) const;
+                                                  const BRepGraph_NodeId        theNode) const;
 
   //! Filter paths: keep only those that pass through theNode.
   [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_TopologyPath> FilterByInclude(
     const NCollection_Vector<BRepGraph_TopologyPath>& thePaths,
-    BRepGraph_NodeId                                  theNode) const;
+    const BRepGraph_NodeId                              theNode) const;
 
   //! Filter paths: remove those that pass through theNode.
   [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_TopologyPath> FilterByExclude(
     const NCollection_Vector<BRepGraph_TopologyPath>& thePaths,
-    BRepGraph_NodeId                                  theNode) const;
+    const BRepGraph_NodeId                            theNode) const;
 
   //! All paths from any root to the given entity.
   [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_TopologyPath> PathsTo(
-    BRepGraph_NodeId theNode) const;
+    const BRepGraph_NodeId theNode) const;
 
   //! All paths from a specific root to the given entity.
   [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_TopologyPath> PathsFromTo(
-    BRepGraph_NodeId theRoot,
-    BRepGraph_NodeId theLeaf) const;
+    const BRepGraph_NodeId theRoot,
+    const BRepGraph_NodeId theLeaf) const;
 
   //! Compute the global placement of an occurrence by walking the parent chain.
   //! @param[in] theOccurrence typed occurrence identifier
@@ -252,40 +252,40 @@ private:
 
   //! Reverse walk to discover all paths to a node (no location composition).
   //! Uses a conservative depth budget to prevent infinite recursion on malformed graphs.
-  NCollection_Vector<BRepGraph_TopologyPath> reverseWalkPaths(BRepGraph_NodeId theNode) const;
+  NCollection_Vector<BRepGraph_TopologyPath> reverseWalkPaths(const BRepGraph_NodeId theNode) const;
 
   //! Depth-budgeted reverse walk (decrements budget on each recursive call).
-  NCollection_Vector<BRepGraph_TopologyPath> reverseWalkPaths(BRepGraph_NodeId theNode,
-                                                              int theDepthBudget) const;
+  NCollection_Vector<BRepGraph_TopologyPath> reverseWalkPaths(const BRepGraph_NodeId theNode,
+                                                              const int theDepthBudget) const;
 
   //! Reverse walk with location/orientation composition (for NodeLocations).
-  NCollection_Vector<OccurrenceEntry> reverseWalkEntries(BRepGraph_NodeId theNode) const;
+  NCollection_Vector<OccurrenceEntry> reverseWalkEntries(const BRepGraph_NodeId theNode) const;
 
   //! Build occurrence entry from a complete path (compose location + orientation).
   OccurrenceEntry buildEntry(const BRepGraph_TopologyPath& thePath) const;
 
   //! Walk upward from an edge to all roots, collecting paths.
-  void reverseWalkFromEdge(int                                         theEdgeIdx,
+  void reverseWalkFromEdge(const int                                   theEdgeIdx,
                            NCollection_Vector<BRepGraph_TopologyPath>& theResult,
                            const int                                   theDepthBudget) const;
 
   //! Walk upward from a face to all roots.
-  void reverseWalkFromFace(int                                         theFaceIdx,
+  void reverseWalkFromFace(const int                                   theFaceIdx,
                            NCollection_Vector<BRepGraph_TopologyPath>& theResult,
                            const int                                   theDepthBudget) const;
 
   //! Walk upward from a shell to all roots.
-  void reverseWalkFromShell(int                                         theShellIdx,
+  void reverseWalkFromShell(const int                                   theShellIdx,
                             NCollection_Vector<BRepGraph_TopologyPath>& theResult,
                             const int                                   theDepthBudget) const;
 
   //! Walk upward from a wire to all roots via faces.
-  void reverseWalkFromWire(int                                         theWireIdx,
+  void reverseWalkFromWire(const int                                   theWireIdx,
                            NCollection_Vector<BRepGraph_TopologyPath>& theResult,
                            const int                                   theDepthBudget) const;
 
   //! Walk upward from a vertex to all roots via edges.
-  void reverseWalkFromVertex(int                                         theVertexIdx,
+  void reverseWalkFromVertex(const int                                   theVertexIdx,
                              NCollection_Vector<BRepGraph_TopologyPath>& theResult,
                              const int                                   theDepthBudget) const;
 

@@ -94,6 +94,8 @@ public:
 
   [[nodiscard]] int NbChildRefs() const { return myChildRefs.Nb(); }
 
+  [[nodiscard]] int NbOccurrenceRefs() const { return myOccurrenceRefs.Nb(); }
+
   //! @name Representation count accessors
 
   [[nodiscard]] int NbSurfaces() const { return mySurfaces.Nb(); }
@@ -166,6 +168,8 @@ public:
 
   [[nodiscard]] int NbActiveChildRefs() const { return myChildRefs.NbActive; }
 
+  [[nodiscard]] int NbActiveOccurrenceRefs() const { return myOccurrenceRefs.NbActive; }
+
   //! Decrement the active count for the given node kind.
   void DecrementActiveCount(const BRepGraph_NodeId::Kind theKind);
 
@@ -173,6 +177,11 @@ public:
   //! @param[in] theNodeId typed entity id
   //! @return true if the node transitioned from active to removed
   Standard_EXPORT bool MarkRemoved(const BRepGraph_NodeId theNodeId);
+
+  //! Mark a reference entry as removed and decrement its active counter once.
+  //! @param[in] theRefId typed reference id
+  //! @return true if the ref transitioned from active to removed
+  Standard_EXPORT bool MarkRemovedRef(const BRepGraph_RefId theRefId);
 
   //! @name Const representation access
   //! Each method returns a const reference to the representation entity at the given typed id.
@@ -404,6 +413,12 @@ public:
     return myChildRefs.Get(theRefId.Index);
   }
 
+  [[nodiscard]] const BRepGraphInc::OccurrenceRefEntry& OccurrenceRefEntry(
+    const BRepGraph_OccurrenceRefId theRefId) const
+  {
+    return myOccurrenceRefs.Get(theRefId.Index);
+  }
+
   //! @name Mutable entity access
   //! Each method returns a mutable reference to the entity at the given typed id.
 
@@ -510,6 +525,12 @@ public:
     return myChildRefs.Change(theRefId.Index);
   }
 
+  BRepGraphInc::OccurrenceRefEntry& ChangeOccurrenceRefEntry(
+    const BRepGraph_OccurrenceRefId theRefId)
+  {
+    return myOccurrenceRefs.Change(theRefId.Index);
+  }
+
   //! @name Append entity (returns mutable ref to newly created entity)
   //! Each method creates a new entity, increments the active count,
   //! initializes inner vectors with the storage allocator, and returns
@@ -552,6 +573,11 @@ public:
   BRepGraphInc::SolidRefEntry& AppendSolidRefEntry() { return mySolidRefs.Append(); }
 
   BRepGraphInc::ChildRefEntry& AppendChildRefEntry() { return myChildRefs.Append(); }
+
+  BRepGraphInc::OccurrenceRefEntry& AppendOccurrenceRefEntry()
+  {
+    return myOccurrenceRefs.Append();
+  }
 
   //! @name UID access
 
@@ -828,7 +854,8 @@ private:
   RefStore<BRepGraphInc::CoEdgeRefEntry> myCoEdgeRefs;
   RefStore<BRepGraphInc::VertexRefEntry> myVertexRefs;
   RefStore<BRepGraphInc::SolidRefEntry>  mySolidRefs;
-  RefStore<BRepGraphInc::ChildRefEntry>  myChildRefs;
+  RefStore<BRepGraphInc::ChildRefEntry>      myChildRefs;
+  RefStore<BRepGraphInc::OccurrenceRefEntry> myOccurrenceRefs;
 
   //! @name Representation entity stores
   RepStore<BRepGraphInc::SurfaceRep>       mySurfaces;

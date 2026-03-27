@@ -751,13 +751,15 @@ TEST(BRepGraphIncTest, EdgeInternalVertex_Captured)
   for (int i = 0; i < aStorage.NbEdges(); ++i)
   {
     const BRepGraphInc::EdgeEntity& anEdgeEnt = aStorage.Edge(BRepGraph_EdgeId(i));
-    if (anEdgeEnt.InternalVertices.Length() == 1)
+    if (anEdgeEnt.InternalVertexRefIds.Length() == 1)
     {
       aFound = true;
-      EXPECT_GE(anEdgeEnt.InternalVertices.Value(0).VertexDefId.Index, 0);
-      EXPECT_EQ(anEdgeEnt.InternalVertices.Value(0).Orientation, TopAbs_INTERNAL);
+      const BRepGraphInc::VertexRefEntry& aIntVRef =
+        aStorage.VertexRefEntry(anEdgeEnt.InternalVertexRefIds.Value(0));
+      EXPECT_GE(aIntVRef.VertexDefId.Index, 0);
+      EXPECT_EQ(aIntVRef.Orientation, TopAbs_INTERNAL);
       // Verify the vertex point.
-      int aVtxIdx = anEdgeEnt.InternalVertices.Value(0).VertexDefId.Index;
+      int aVtxIdx = aIntVRef.VertexDefId.Index;
       const BRepGraphInc::VertexEntity& aVtxEnt = aStorage.Vertex(BRepGraph_VertexId(aVtxIdx));
       EXPECT_NEAR(aVtxEnt.Point.X(), 5.0, Precision::Confusion());
       break;
@@ -817,10 +819,11 @@ TEST(BRepGraphIncTest, EdgeExternalVertex_Captured)
   for (int i = 0; i < aStorage.NbEdges(); ++i)
   {
     const BRepGraphInc::EdgeEntity& anEdgeEnt = aStorage.Edge(BRepGraph_EdgeId(i));
-    if (anEdgeEnt.InternalVertices.Length() == 1)
+    if (anEdgeEnt.InternalVertexRefIds.Length() == 1)
     {
       aFound = true;
-      EXPECT_EQ(anEdgeEnt.InternalVertices.Value(0).Orientation, TopAbs_EXTERNAL);
+      EXPECT_EQ(aStorage.VertexRefEntry(anEdgeEnt.InternalVertexRefIds.Value(0)).Orientation,
+                TopAbs_EXTERNAL);
       break;
     }
   }
@@ -838,7 +841,7 @@ TEST(BRepGraphIncTest, EdgeNoInternalVertices_EmptyVector)
 
   for (int i = 0; i < aStorage.NbEdges(); ++i)
   {
-    EXPECT_EQ(aStorage.Edge(BRepGraph_EdgeId(i)).InternalVertices.Length(), 0)
+    EXPECT_EQ(aStorage.Edge(BRepGraph_EdgeId(i)).InternalVertexRefIds.Length(), 0)
       << "Edge " << i << " should have no internal vertices";
   }
 }
@@ -865,16 +868,18 @@ TEST(BRepGraphIncTest, EdgeMultipleInternalVertices_AllCaptured)
   for (int i = 0; i < aStorage.NbEdges(); ++i)
   {
     const BRepGraphInc::EdgeEntity& anEdgeEnt = aStorage.Edge(BRepGraph_EdgeId(i));
-    if (anEdgeEnt.InternalVertices.Length() == 2)
+    if (anEdgeEnt.InternalVertexRefIds.Length() == 2)
     {
       aFound = true;
       // Check both orientations are preserved.
       bool aHasInternal = false, aHasExternal = false;
       for (int j = 0; j < 2; ++j)
       {
-        if (anEdgeEnt.InternalVertices.Value(j).Orientation == TopAbs_INTERNAL)
+        if (aStorage.VertexRefEntry(anEdgeEnt.InternalVertexRefIds.Value(j)).Orientation
+            == TopAbs_INTERNAL)
           aHasInternal = true;
-        if (anEdgeEnt.InternalVertices.Value(j).Orientation == TopAbs_EXTERNAL)
+        if (aStorage.VertexRefEntry(anEdgeEnt.InternalVertexRefIds.Value(j)).Orientation
+            == TopAbs_EXTERNAL)
           aHasExternal = true;
       }
       EXPECT_TRUE(aHasInternal);
@@ -914,11 +919,13 @@ TEST(BRepGraphIncTest, FaceDirectVertex_Internal_Captured)
   ASSERT_GE(aStorage.NbFaces(), 1);
 
   const BRepGraphInc::FaceEntity& aFaceEnt = aStorage.Face(BRepGraph_FaceId(0));
-  EXPECT_EQ(aFaceEnt.VertexRefs.Length(), 1);
-  if (aFaceEnt.VertexRefs.Length() == 1)
+  EXPECT_EQ(aFaceEnt.VertexRefIds.Length(), 1);
+  if (aFaceEnt.VertexRefIds.Length() == 1)
   {
-    EXPECT_GE(aFaceEnt.VertexRefs.Value(0).VertexDefId.Index, 0);
-    EXPECT_EQ(aFaceEnt.VertexRefs.Value(0).Orientation, TopAbs_INTERNAL);
+    const BRepGraphInc::VertexRefEntry& aFaceVRef =
+      aStorage.VertexRefEntry(aFaceEnt.VertexRefIds.Value(0));
+    EXPECT_GE(aFaceVRef.VertexDefId.Index, 0);
+    EXPECT_EQ(aFaceVRef.Orientation, TopAbs_INTERNAL);
   }
 }
 
@@ -984,9 +991,10 @@ TEST(BRepGraphIncTest, FaceExternalVertex_Captured)
   ASSERT_GE(aStorage.NbFaces(), 1);
 
   const BRepGraphInc::FaceEntity& aFaceEnt = aStorage.Face(BRepGraph_FaceId(0));
-  EXPECT_EQ(aFaceEnt.VertexRefs.Length(), 1);
-  if (aFaceEnt.VertexRefs.Length() == 1)
-    EXPECT_EQ(aFaceEnt.VertexRefs.Value(0).Orientation, TopAbs_EXTERNAL);
+  EXPECT_EQ(aFaceEnt.VertexRefIds.Length(), 1);
+  if (aFaceEnt.VertexRefIds.Length() == 1)
+    EXPECT_EQ(aStorage.VertexRefEntry(aFaceEnt.VertexRefIds.Value(0)).Orientation,
+              TopAbs_EXTERNAL);
 }
 
 TEST(BRepGraphIncTest, FaceNoDirectVertices_EmptyVector)
@@ -1000,7 +1008,7 @@ TEST(BRepGraphIncTest, FaceNoDirectVertices_EmptyVector)
 
   for (int i = 0; i < aStorage.NbFaces(); ++i)
   {
-    EXPECT_EQ(aStorage.Face(BRepGraph_FaceId(i)).VertexRefs.Length(), 0)
+    EXPECT_EQ(aStorage.Face(BRepGraph_FaceId(i)).VertexRefIds.Length(), 0)
       << "Face " << i << " should have no direct vertex children";
   }
 }
@@ -1029,7 +1037,7 @@ TEST(BRepGraphIncTest, FaceWithWiresAndVertices_BothCaptured)
 
   const BRepGraphInc::FaceEntity& aFaceEnt = aStorage.Face(BRepGraph_FaceId(0));
   EXPECT_GE(BRepGraph_TestTools::CountWireRefsOfFace(aStorage, BRepGraph_FaceId(0)), 1);
-  EXPECT_EQ(aFaceEnt.VertexRefs.Length(), 1);
+  EXPECT_EQ(aFaceEnt.VertexRefIds.Length(), 1);
 }
 
 // ============================================================
@@ -1157,14 +1165,14 @@ TEST(BRepGraphIncTest, ParallelBuild_InternalVertices_SameAsSequential)
   // Check internal vertex counts match.
   for (int i = 0; i < aSerial.NbEdges(); ++i)
   {
-    EXPECT_EQ(aParallel.Edge(BRepGraph_EdgeId(i)).InternalVertices.Length(),
-              aSerial.Edge(BRepGraph_EdgeId(i)).InternalVertices.Length())
+    EXPECT_EQ(aParallel.Edge(BRepGraph_EdgeId(i)).InternalVertexRefIds.Length(),
+              aSerial.Edge(BRepGraph_EdgeId(i)).InternalVertexRefIds.Length())
       << "Edge " << i << " internal vertex count mismatch";
   }
   for (int i = 0; i < aSerial.NbFaces(); ++i)
   {
-    EXPECT_EQ(aParallel.Face(BRepGraph_FaceId(i)).VertexRefs.Length(),
-              aSerial.Face(BRepGraph_FaceId(i)).VertexRefs.Length())
+    EXPECT_EQ(aParallel.Face(BRepGraph_FaceId(i)).VertexRefIds.Length(),
+              aSerial.Face(BRepGraph_FaceId(i)).VertexRefIds.Length())
       << "Face " << i << " direct vertex count mismatch";
   }
 }

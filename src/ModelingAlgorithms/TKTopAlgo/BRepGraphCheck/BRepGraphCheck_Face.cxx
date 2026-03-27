@@ -21,6 +21,7 @@
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_TopoNode.hxx>
 #include <BRepGraphAlgo_FClass2d.hxx>
+#include <BRepGraphInc_Entity.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dInt_GInter.hxx>
@@ -100,7 +101,10 @@ static double computeWireSignedArea(const BRepGraph&                   theGraph,
   auto coedgeLookup = [&aDefs](int theIdx) -> const BRepGraphInc::CoEdgeEntity& {
     return aDefs.CoEdge(BRepGraph_CoEdgeId(theIdx));
   };
-  for (BRepGraphInc_WireExplorer anExp(theCoEdgeRefs, coedgeLookup, edgeLookup);
+  auto vtxRefLookup = [&theGraph](const BRepGraph_VertexRefId theRefId) -> BRepGraph_VertexId {
+    return theGraph.Refs().Vertex(theRefId).VertexDefId;
+  };
+  for (BRepGraphInc_WireExplorer anExp(theCoEdgeRefs, coedgeLookup, edgeLookup, vtxRefLookup);
        anExp.More();
        anExp.Next())
   {
@@ -171,7 +175,10 @@ static void collectWirePCurves(const BRepGraph&                   theGraph,
   auto coedgeLookup = [&aDefs](int theIdx) -> const BRepGraphInc::CoEdgeEntity& {
     return aDefs.CoEdge(BRepGraph_CoEdgeId(theIdx));
   };
-  for (BRepGraphInc_WireExplorer anExp(theCoEdgeRefs, coedgeLookup, edgeLookup);
+  auto vtxRefLookup2 = [&theGraph](const BRepGraph_VertexRefId theRefId) -> BRepGraph_VertexId {
+    return theGraph.Refs().Vertex(theRefId).VertexDefId;
+  };
+  for (BRepGraphInc_WireExplorer anExp(theCoEdgeRefs, coedgeLookup, edgeLookup, vtxRefLookup2);
        anExp.More();
        anExp.Next())
   {
@@ -208,8 +215,21 @@ static void collectWirePCurves(const BRepGraph&                   theGraph,
     }
 
     WirePCurveSet::EdgeData aData;
-    aData.StartVtxId = anEdgeDef.OrientedStartVertex(aCoEdgeDef.Sense);
-    aData.EndVtxId   = anEdgeDef.OrientedEndVertex(aCoEdgeDef.Sense);
+    // Resolve oriented vertices through ref entries.
+    {
+      const BRepGraph_VertexRefId aStartRefId =
+        (aCoEdgeDef.Sense == TopAbs_FORWARD) ? anEdgeDef.StartVertexRefId
+                                             : anEdgeDef.EndVertexRefId;
+      aData.StartVtxId = aStartRefId.IsValid()
+        ? BRepGraph_NodeId::Vertex(theGraph.Refs().Vertex(aStartRefId).VertexDefId.Index)
+        : BRepGraph_NodeId();
+      const BRepGraph_VertexRefId anEndRefId =
+        (aCoEdgeDef.Sense == TopAbs_FORWARD) ? anEdgeDef.EndVertexRefId
+                                             : anEdgeDef.StartVertexRefId;
+      aData.EndVtxId = anEndRefId.IsValid()
+        ? BRepGraph_NodeId::Vertex(theGraph.Refs().Vertex(anEndRefId).VertexDefId.Index)
+        : BRepGraph_NodeId();
+    }
 
     aData.Adaptor =
       new Geom2dAdaptor_Curve(aCollectedPC2d, aPCurve->ParamFirst, aPCurve->ParamLast);

@@ -47,13 +47,13 @@ public:
 
   //! True if any issues reference the given node.
   //! @param[in] theNode graph node to query
-  Standard_EXPORT bool HasIssuesForNode(BRepGraph_NodeId theNode) const;
+  Standard_EXPORT bool HasIssuesForNode(const BRepGraph_NodeId theNode) const;
 
   //! Return all issues referencing a specific node.
   //! @param[in] theNode graph node to query
   //! @return copy of issues for thread safety
   Standard_EXPORT NCollection_Vector<BRepGraphCheck_Issue> IssuesForNode(
-    BRepGraph_NodeId theNode) const;
+    const BRepGraph_NodeId theNode) const;
 
   //! True if no Error or Fatal issues exist (warnings are acceptable).
   Standard_EXPORT bool IsValid() const;

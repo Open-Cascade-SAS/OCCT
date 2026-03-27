@@ -710,12 +710,16 @@ TEST(BRepGraph_BuildTest, Box_EdgeVertexDefsAreValid)
 
   for (int anIdx = 0; anIdx < aGraph.Topo().NbEdges(); ++anIdx)
   {
-    const auto& anEdge = aGraph.Topo().Edge(BRepGraph_EdgeId(anIdx));
-    EXPECT_TRUE(anEdge.StartVertexDefId().IsValid())
+    const BRepGraph_EdgeId anEdgeId(anIdx);
+    const BRepGraphInc::VertexRefEntry& aStartRef =
+      BRepGraph_Tool::Edge::StartVertex(aGraph, anEdgeId);
+    const BRepGraphInc::VertexRefEntry& anEndRef =
+      BRepGraph_Tool::Edge::EndVertex(aGraph, anEdgeId);
+    EXPECT_TRUE(aStartRef.VertexDefId.IsValid())
       << "Edge " << anIdx << " has invalid start vertex";
-    EXPECT_TRUE(anEdge.EndVertexDefId().IsValid()) << "Edge " << anIdx << " has invalid end vertex";
-    EXPECT_EQ(BRepGraph_NodeId(anEdge.StartVertexDefId()).NodeKind, BRepGraph_NodeId::Kind::Vertex);
-    EXPECT_EQ(BRepGraph_NodeId(anEdge.EndVertexDefId()).NodeKind, BRepGraph_NodeId::Kind::Vertex);
+    EXPECT_TRUE(anEndRef.VertexDefId.IsValid()) << "Edge " << anIdx << " has invalid end vertex";
+    EXPECT_EQ(BRepGraph_NodeId(aStartRef.VertexDefId).NodeKind, BRepGraph_NodeId::Kind::Vertex);
+    EXPECT_EQ(BRepGraph_NodeId(anEndRef.VertexDefId).NodeKind, BRepGraph_NodeId::Kind::Vertex);
   }
 }
 
@@ -746,7 +750,7 @@ TEST(BRepGraph_BuildTest, Box_EdgeParamRange_IsNonDegenerate)
 
   for (int anIdx = 0; anIdx < aGraph.Topo().NbEdges(); ++anIdx)
   {
-    const auto& anEdge = aGraph.Topo().Edge(BRepGraph_EdgeId(anIdx));
+    const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Topo().Edge(BRepGraph_EdgeId(anIdx));
     EXPECT_LT(anEdge.ParamFirst, anEdge.ParamLast)
       << "Edge " << anIdx << " has invalid parameter range [" << anEdge.ParamFirst << ", "
       << anEdge.ParamLast << "]";

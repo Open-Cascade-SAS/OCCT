@@ -49,15 +49,15 @@ public:
 
   //! Enable/disable geometric controls (SameParameter, curve deviation, etc.).
   //! Default: true.
-  Standard_EXPORT void SetGeometricControls(bool theVal);
+  Standard_EXPORT void SetGeometricControls(const bool theVal);
 
   //! Enable/disable parallel execution of checks.
   //! Default: false.
-  Standard_EXPORT void SetParallel(bool theVal);
+  Standard_EXPORT void SetParallel(const bool theVal);
 
   //! Enable/disable exact method for BRepLib_ValidateEdge.
   //! Default: false.
-  Standard_EXPORT void SetExactMethod(bool theVal);
+  Standard_EXPORT void SetExactMethod(const bool theVal);
 
   //! Run all validation checks and populate the report.
   Standard_EXPORT void Perform();
@@ -92,7 +92,7 @@ public:
 
   //! True if no Error or Fatal issues exist for a specific node.
   //! @param[in] theNode graph node to query
-  Standard_EXPORT bool IsValid(BRepGraph_NodeId theNode) const;
+  Standard_EXPORT bool IsValid(const BRepGraph_NodeId theNode) const;
 
   //! Access the accumulated report.
   Standard_EXPORT const BRepGraphCheck_Report& Report() const;

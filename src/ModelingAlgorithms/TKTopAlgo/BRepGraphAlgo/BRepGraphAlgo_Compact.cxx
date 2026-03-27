@@ -376,8 +376,14 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
       continue;
     const BRepGraph_TopoNode::EdgeDef& anOldEdge = theGraph.Topo().Edge(BRepGraph_EdgeId(anIdx));
 
-    const BRepGraph_NodeId aNewStart = remapId(anOldEdge.StartVertexDefId());
-    const BRepGraph_NodeId aNewEnd   = remapId(anOldEdge.EndVertexDefId());
+    const BRepGraph_NodeId aNewStart =
+      anOldEdge.StartVertexRefId.IsValid()
+        ? remapId(BRepGraph_Tool::Edge::StartVertex(theGraph, BRepGraph_EdgeId(anIdx)).VertexDefId)
+        : BRepGraph_NodeId();
+    const BRepGraph_NodeId aNewEnd =
+      anOldEdge.EndVertexRefId.IsValid()
+        ? remapId(BRepGraph_Tool::Edge::EndVertex(theGraph, BRepGraph_EdgeId(anIdx)).VertexDefId)
+        : BRepGraph_NodeId();
 
     // Get the curve handle if available.
     const occ::handle<Geom_Curve>& aCurve =

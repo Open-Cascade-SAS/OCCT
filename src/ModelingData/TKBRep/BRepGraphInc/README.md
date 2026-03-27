@@ -11,11 +11,11 @@ BRepGraphInc is not a user-facing API. It is the runtime model that powers BRepG
 - Topology entity tables (Vertex, Edge, CoEdge, Wire, Face, Shell, Solid, Compound, CompSolid)
 - Assembly entity tables (Product, Occurrence)
 - Representation entity tables (SurfaceRep, Curve3DRep, Curve2DRep, TriangulationRep, Polygon3DRep, Polygon2DRep, PolygonOnTriRep)
-- Context references with orientation and location
+- Reference entry tables (ShellRefEntry, FaceRefEntry, WireRefEntry, CoEdgeRefEntry, VertexRefEntry, SolidRefEntry, ChildRefEntry, OccurrenceRefEntry) with BaseRef identity, orientation, and location
 - Reverse adjacency indices (including product→occurrences)
 - TShape to NodeId mapping
 - Original shape map
-- Per-kind UID vectors (10 kinds: 8 topology + 2 assembly)
+- Per-kind UID vectors (10 entity kinds + 8 ref kinds)
 
 ## Architecture
 
@@ -76,9 +76,9 @@ flowchart LR
 
 Notes:
 
-- Intrinsic data lives on entities; occurrence context (orientation/location) lives on refs
+- Intrinsic data lives on entities; context data (orientation/location) lives on RefEntry tables
 - CoEdge owns PCurve data for each edge-face binding (Weiler half-edge pattern)
-- ProductEntity: `ShapeRootId` (topology root for parts; invalid for assemblies), `OccurrenceRefs`
+- ProductEntity: `ShapeRootId` (topology root for parts; invalid for assemblies), `OccurrenceRefIds`
 - OccurrenceEntity: `ProductDefId`, `ParentProductDefId`, `ParentOccurrenceDefId` (tree-structured placement chain), `Placement`
 
 ## Entity Hierarchy
@@ -87,18 +87,18 @@ Notes:
 graph TD
     Product["ProductEntity<br/><i>ShapeRootId, RootOrientation, RootLocation</i>"]
 
-    Compound["CompoundEntity<br/><i>ChildRefs[]</i>"]
-    CompSolid["CompSolidEntity<br/><i>SolidRefs[]</i>"]
-    Solid["SolidEntity<br/><i>ShellRefs[], FreeChildRefs[]</i>"]
-    Shell["ShellEntity<br/><i>IsClosed, FaceRefs[], FreeChildRefs[]</i>"]
+    Compound["CompoundEntity<br/><i>ChildRefIds[]</i>"]
+    CompSolid["CompSolidEntity<br/><i>SolidRefIds[]</i>"]
+    Solid["SolidEntity<br/><i>ShellRefIds[], FreeChildRefIds[]</i>"]
+    Shell["ShellEntity<br/><i>IsClosed, FaceRefIds[], FreeChildRefIds[]</i>"]
 
-    Face["FaceEntity<br/><i>SurfaceRepId, TriangulationRepIds,<br/>ActiveTriangulationIndex, WireRefs[],<br/>VertexRefs[], Tolerance, NaturalRestriction</i>"]
+    Face["FaceEntity<br/><i>SurfaceRepId, TriangulationRepIds,<br/>ActiveTriangulationIndex, WireRefIds[],<br/>VertexRefIds[], Tolerance, NaturalRestriction</i>"]
 
-    Wire["WireEntity<br/><i>CoEdgeRefs[], IsClosed</i>"]
+    Wire["WireEntity<br/><i>CoEdgeRefIds[], IsClosed</i>"]
 
     CoEdge["CoEdgeEntity<br/><i>EdgeDefId, FaceDefId, Sense,<br/>Curve2DRepId, Polygon2DRepId,<br/>ParamFirst/Last, UV1/UV2,<br/>SeamPairId, SeamContinuity</i>"]
 
-    Edge["EdgeEntity<br/><i>Curve3DRepId, Polygon3DRepId,<br/>StartVertex, EndVertex,<br/>InternalVertices[],<br/>ParamFirst/Last, Tolerance,<br/>SameParameter, SameRange,<br/>IsDegenerate, IsClosed,<br/>Regularities[]</i>"]
+    Edge["EdgeEntity<br/><i>Curve3DRepId, Polygon3DRepId,<br/>StartVertexRefId, EndVertexRefId,<br/>InternalVertexRefIds[],<br/>ParamFirst/Last, Tolerance,<br/>SameParameter, SameRange,<br/>IsDegenerate, IsClosed,<br/>Regularities[]</i>"]
 
     Vertex["VertexEntity<br/><i>Point (def frame), Tolerance,<br/>PointsOnCurve[],<br/>PointsOnPCurve[],<br/>PointsOnSurface[]</i>"]
 
@@ -109,14 +109,14 @@ graph TD
 
     Product -->|"ShapeRootId"| Compound
     Product -->|"ShapeRootId"| Solid
-    Compound -->|"ChildRef"| Solid
-    CompSolid -->|"SolidRef"| Solid
-    Solid -->|"ShellRef"| Shell
-    Shell -->|"FaceRef"| Face
-    Face -->|"WireRef"| Wire
-    Wire -->|"CoEdgeRef"| CoEdge
+    Compound -->|"ChildRefId"| Solid
+    CompSolid -->|"SolidRefId"| Solid
+    Solid -->|"ShellRefId"| Shell
+    Shell -->|"FaceRefId"| Face
+    Face -->|"WireRefId"| Wire
+    Wire -->|"CoEdgeRefId"| CoEdge
     CoEdge -->|"EdgeIdx"| Edge
-    Edge -->|"VertexRef"| Vertex
+    Edge -->|"StartVertexRefId"| Vertex
 
     Face -.->|"SurfaceRepId"| SurfRep
     Face -.->|"TriangulationRepIds"| TriRep
@@ -124,6 +124,43 @@ graph TD
     CoEdge -.->|"Curve2DRepId"| C2DRep
     CoEdge -.->|"SeamPairId"| CoEdge
 ```
+
+## Reference Entry Model
+
+Reference entries are the typed incidence edges connecting parent entities to child definitions. Each ref kind has its own entry table and RefId space, managed by `RefStore<T>` in Storage.
+
+### BaseRef
+
+Common header for all reference entries:
+
+- `RefId`: typed address (Kind + Index) into the ref entry vector
+- `ParentId`: NodeId of the owning parent entity
+- `MutationGen`: generation counter for change tracking
+- `IsRemoved`: soft-delete flag
+
+### RefEntry Types
+
+Concrete ref entry types extend BaseRef with context data:
+
+- `ShellRefEntry`, `FaceRefEntry`, `WireRefEntry`, `CoEdgeRefEntry`, `VertexRefEntry`, `SolidRefEntry`, `ChildRefEntry`, `OccurrenceRefEntry`
+- Each adds: `DefId` (target entity index), `Orientation`, `LocalLocation`
+
+### Entity RefId Vectors
+
+Entities store typed RefId vectors instead of inline ref arrays:
+
+- **SolidEntity**: `ShellRefIds[]`, `FreeChildRefIds[]`
+- **ShellEntity**: `FaceRefIds[]`, `FreeChildRefIds[]`
+- **FaceEntity**: `WireRefIds[]`, `VertexRefIds[]`
+- **WireEntity**: `CoEdgeRefIds[]`
+- **EdgeEntity**: `StartVertexRefId`, `EndVertexRefId`, `InternalVertexRefIds[]`
+- **CompoundEntity**: `ChildRefIds[]`
+- **CompSolidEntity**: `SolidRefIds[]`
+- **ProductEntity**: `OccurrenceRefIds[]`
+
+### RefStore
+
+`RefStore<T>` in Storage groups per-kind ref entry vector + UID vector + active count. Provides `Get()`, `Change()`, `Append()`, `DecrementActive()` -- same pattern as `EntityStore<T>`.
 
 ## Build Pipeline
 
@@ -173,13 +210,13 @@ Multi-pass matching in `extractStoredPCurves()`:
 
 ### Instance Locations
 
-| Ref Type | What it stores |
-|----------|---------------|
-| `FaceRef.LocalLocation` | face.Location() relative to shell |
-| `WireRef.LocalLocation` | wire.Location() relative to face |
-| `CoEdgeRef.LocalLocation` | edge.Location() relative to wire |
-| `ShellRef.LocalLocation` | shell.Location() relative to solid |
-| `VertexRef.LocalLocation` | vertex.Location() relative to edge |
+| RefEntry Type | What it stores |
+|---------------|---------------|
+| `FaceRefEntry.LocalLocation` | face.Location() relative to shell |
+| `WireRefEntry.LocalLocation` | wire.Location() relative to face |
+| `CoEdgeRefEntry.LocalLocation` | edge.Location() relative to wire |
+| `ShellRefEntry.LocalLocation` | shell.Location() relative to solid |
+| `VertexRefEntry.LocalLocation` | vertex.Location() relative to edge |
 
 ### Deduplication
 
@@ -225,7 +262,7 @@ anEdge.Location(Identity);                     // Reset after attachment
 
 ### Special Cases
 
-- **Seam edges**: Two CoEdges with opposite Sense, linked by `SeamPairIdx`. Both PCurves attached via `UpdateEdge(E, PC1, PC2, S, L, tol)`.
+- **Seam edges**: Two CoEdges with opposite Sense, linked by `SeamPairId`. Both PCurves attached via `UpdateEdge(E, PC1, PC2, S, L, tol)`.
 - **Degenerate edges**: `MakeEdge()` + `Degenerated(true)`, no 3D curve.
 - **IsClosed/NaturalRestriction**: Set AFTER sub-shapes are added (Add can reset flags).
 

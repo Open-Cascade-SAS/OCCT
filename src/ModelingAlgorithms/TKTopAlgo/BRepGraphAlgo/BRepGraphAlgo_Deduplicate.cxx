@@ -19,6 +19,7 @@
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_MutRef.hxx>
+#include <BRepGraph_MutRefEntry.hxx>
 #include <BRepGraph_Mutator.hxx>
 #include <BRepGraph_MutationGuard.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
@@ -299,10 +300,21 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
             theGraph.Builder().MutEdge(BRepGraph_EdgeId(anEdgeIdx));
           if (anEdge->IsRemoved)
             continue;
-          if (anEdge->StartVertexDefId() == anOldId)
-            anEdge->StartVertex.VertexDefId = BRepGraph_VertexId(aCanonId.Index);
-          if (anEdge->EndVertexDefId() == anOldId)
-            anEdge->EndVertex.VertexDefId = BRepGraph_VertexId(aCanonId.Index);
+          // Resolve current vertex def ids through ref entries and update them.
+          if (anEdge->StartVertexRefId.IsValid())
+          {
+            BRepGraph_MutRefEntry<BRepGraphInc::VertexRefEntry> aStartRef =
+              theGraph.Builder().MutVertexRef(anEdge->StartVertexRefId);
+            if (aStartRef->VertexDefId == BRepGraph_VertexId(anOldId.Index))
+              aStartRef->VertexDefId = BRepGraph_VertexId(aCanonId.Index);
+          }
+          if (anEdge->EndVertexRefId.IsValid())
+          {
+            BRepGraph_MutRefEntry<BRepGraphInc::VertexRefEntry> anEndRef =
+              theGraph.Builder().MutVertexRef(anEdge->EndVertexRefId);
+            if (anEndRef->VertexDefId == BRepGraph_VertexId(anOldId.Index))
+              anEndRef->VertexDefId = BRepGraph_VertexId(aCanonId.Index);
+          }
         }
 
         // Mark non-canonical as removed.
@@ -365,10 +377,16 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
       // Use canonical (forward) key: use raw pointer as a stable identity.
       EdgeKey aKey;
       aKey.CurvePtr = BRepGraph_Tool::Edge::Curve(theGraph, anEdgeId).get();
-      aKey.StartVtx =
-        anEdge.StartVertex.VertexDefId.IsValid() ? anEdge.StartVertex.VertexDefId.Index : -1;
-      aKey.EndVtx =
-        anEdge.EndVertex.VertexDefId.IsValid() ? anEdge.EndVertex.VertexDefId.Index : -1;
+      const BRepGraph_VertexId aStartVtxId =
+        anEdge.StartVertexRefId.IsValid()
+          ? theGraph.Refs().Vertex(anEdge.StartVertexRefId).VertexDefId
+          : BRepGraph_VertexId();
+      const BRepGraph_VertexId anEndVtxId =
+        anEdge.EndVertexRefId.IsValid()
+          ? theGraph.Refs().Vertex(anEdge.EndVertexRefId).VertexDefId
+          : BRepGraph_VertexId();
+      aKey.StartVtx = aStartVtxId.IsValid() ? aStartVtxId.Index : -1;
+      aKey.EndVtx   = anEndVtxId.IsValid() ? anEndVtxId.Index : -1;
 
       // Normalize: always use min vertex index first for undirected matching.
       if (aKey.StartVtx > aKey.EndVtx)
@@ -427,8 +445,28 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
         // Determine if the non-canonical edge is reversed relative to canonical.
         const BRepGraph_TopoNode::EdgeDef& aCanonEdge = theGraph.Topo().Edge(aCanonEdgeId);
         const BRepGraph_TopoNode::EdgeDef& anOldEdge  = theGraph.Topo().Edge(anOldEdgeId);
-        const bool isReversed = (aCanonEdge.StartVertexDefId() == anOldEdge.EndVertexDefId()
-                                 && aCanonEdge.EndVertexDefId() == anOldEdge.StartVertexDefId());
+        // Resolve vertex def ids for reversal check.
+        const BRepGraph_NodeId aCanonStart =
+          aCanonEdge.StartVertexRefId.IsValid()
+            ? BRepGraph_NodeId::Vertex(
+                theGraph.Refs().Vertex(aCanonEdge.StartVertexRefId).VertexDefId.Index)
+            : BRepGraph_NodeId();
+        const BRepGraph_NodeId aCanonEnd =
+          aCanonEdge.EndVertexRefId.IsValid()
+            ? BRepGraph_NodeId::Vertex(
+                theGraph.Refs().Vertex(aCanonEdge.EndVertexRefId).VertexDefId.Index)
+            : BRepGraph_NodeId();
+        const BRepGraph_NodeId anOldStart =
+          anOldEdge.StartVertexRefId.IsValid()
+            ? BRepGraph_NodeId::Vertex(
+                theGraph.Refs().Vertex(anOldEdge.StartVertexRefId).VertexDefId.Index)
+            : BRepGraph_NodeId();
+        const BRepGraph_NodeId anOldEnd =
+          anOldEdge.EndVertexRefId.IsValid()
+            ? BRepGraph_NodeId::Vertex(
+                theGraph.Refs().Vertex(anOldEdge.EndVertexRefId).VertexDefId.Index)
+            : BRepGraph_NodeId();
+        const bool isReversed = (aCanonStart == anOldEnd && aCanonEnd == anOldStart);
 
         // Replace in wires.
         const NCollection_Vector<BRepGraph_WireId>& aWires =

@@ -12,10 +12,11 @@
 // commercial license or contractual agreement.
 
 #include <BRepGraph.hxx>
-#include <BRepGraph_TopoView.hxx>
-#include <BRepGraph_History.hxx>
 #include <BRepGraph_BuilderView.hxx>
+#include <BRepGraph_History.hxx>
+#include <BRepGraph_MutRefEntry.hxx>
 #include <BRepGraph_Mutator.hxx>
+#include <BRepGraph_TopoView.hxx>
 #include "BRepGraph_RefTestTools.hxx"
 #include <BRepGraphInc_IncidenceRef.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -465,7 +466,8 @@ TEST_F(BRepGraph_HistoryTest, SplitEdge_IgnoresRemovedCoEdgeRefEntries)
   ASSERT_GE(aRemovedOrd, 0);
 
   {
-    auto aMut = myGraph.Builder().MutCoEdgeRef(aRefToRemove);
+    BRepGraph_MutRefEntry<BRepGraphInc::CoEdgeRefEntry> aMut =
+      myGraph.Builder().MutCoEdgeRef(aRefToRemove);
     aMut->IsRemoved = true;
   }
   ASSERT_TRUE(myGraph.Refs().CoEdge(aRefToRemove).IsRemoved);

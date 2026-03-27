@@ -101,8 +101,19 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph, bool theCopyGeo
       BRepGraph_Tool::Edge::Curve(theGraph, BRepGraph_EdgeId(anIdx));
     occ::handle<Geom_Curve> aCurve = copyCurve(anEdgeSrcCurve, theCopyGeom);
 
-    (void)aResult.Builder().AddEdgeDef(anEdge.StartVertexDefId(),
-                                       anEdge.EndVertexDefId(),
+    // Resolve vertex def ids through storage ref entries for the full copy
+    // (identity mapping: old index == new index).
+    const BRepGraph_NodeId aStartVtxId =
+      anEdge.StartVertexRefId.IsValid()
+        ? BRepGraph_NodeId::Vertex(aRefs.Vertex(anEdge.StartVertexRefId).VertexDefId.Index)
+        : BRepGraph_NodeId();
+    const BRepGraph_NodeId anEndVtxId =
+      anEdge.EndVertexRefId.IsValid()
+        ? BRepGraph_NodeId::Vertex(aRefs.Vertex(anEdge.EndVertexRefId).VertexDefId.Index)
+        : BRepGraph_NodeId();
+
+    (void)aResult.Builder().AddEdgeDef(aStartVtxId,
+                                       anEndVtxId,
                                        aCurve,
                                        anEdge.ParamFirst,
                                        anEdge.ParamLast,
@@ -291,7 +302,7 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph, bool theCopyGeo
     aNewProd.ShapeRootId                  = aSrcProd.ShapeRootId;
     aNewProd.RootOrientation              = aSrcProd.RootOrientation;
     aNewProd.RootLocation                 = aSrcProd.RootLocation;
-    aNewProd.OccurrenceRefs               = aSrcProd.OccurrenceRefs;
+    aNewProd.OccurrenceRefIds             = aSrcProd.OccurrenceRefIds;
     aResult.allocateUID(aNewProd.Id);
   }
 
@@ -403,10 +414,18 @@ BRepGraph BRepGraphAlgo_Copy::CopyFace(const BRepGraph&       theGraph,
       anEdgeSet.Add(aCoEdge.EdgeDefId.Index);
 
       const BRepGraph_TopoNode::EdgeDef& anEdgeDef = theGraph.Topo().Edge(aCoEdge.EdgeDefId);
-      if (anEdgeDef.StartVertex.VertexDefId.IsValid(theGraph.Topo().NbVertices()))
-        aVertexSet.Add(anEdgeDef.StartVertex.VertexDefId.Index);
-      if (anEdgeDef.EndVertex.VertexDefId.IsValid(theGraph.Topo().NbVertices()))
-        aVertexSet.Add(anEdgeDef.EndVertex.VertexDefId.Index);
+      if (anEdgeDef.StartVertexRefId.IsValid())
+      {
+        const BRepGraph_VertexId aStartVtx = aRefs.Vertex(anEdgeDef.StartVertexRefId).VertexDefId;
+        if (aStartVtx.IsValid(theGraph.Topo().NbVertices()))
+          aVertexSet.Add(aStartVtx.Index);
+      }
+      if (anEdgeDef.EndVertexRefId.IsValid())
+      {
+        const BRepGraph_VertexId anEndVtx = aRefs.Vertex(anEdgeDef.EndVertexRefId).VertexDefId;
+        if (anEndVtx.IsValid(theGraph.Topo().NbVertices()))
+          aVertexSet.Add(anEndVtx.Index);
+      }
     }
   }
 
@@ -441,17 +460,25 @@ BRepGraph BRepGraphAlgo_Copy::CopyFace(const BRepGraph&       theGraph,
     const BRepGraph_TopoNode::EdgeDef& anEdge   = theGraph.Topo().Edge(BRepGraph_EdgeId(anOldIdx));
 
     BRepGraph_NodeId aNewStart, aNewEnd;
-    if (anEdge.StartVertex.VertexDefId.IsValid())
+    if (anEdge.StartVertexRefId.IsValid())
     {
-      const int* aNewVtxIdx = aVertexMap.Seek(anEdge.StartVertex.VertexDefId.Index);
-      if (aNewVtxIdx != nullptr)
-        aNewStart = BRepGraph_NodeId::Vertex(*aNewVtxIdx);
+      const BRepGraph_VertexId aStartVtx = aRefs.Vertex(anEdge.StartVertexRefId).VertexDefId;
+      if (aStartVtx.IsValid())
+      {
+        const int* aNewVtxIdx = aVertexMap.Seek(aStartVtx.Index);
+        if (aNewVtxIdx != nullptr)
+          aNewStart = BRepGraph_NodeId::Vertex(*aNewVtxIdx);
+      }
     }
-    if (anEdge.EndVertex.VertexDefId.IsValid())
+    if (anEdge.EndVertexRefId.IsValid())
     {
-      const int* aNewVtxIdx = aVertexMap.Seek(anEdge.EndVertex.VertexDefId.Index);
-      if (aNewVtxIdx != nullptr)
-        aNewEnd = BRepGraph_NodeId::Vertex(*aNewVtxIdx);
+      const BRepGraph_VertexId anEndVtx = aRefs.Vertex(anEdge.EndVertexRefId).VertexDefId;
+      if (anEndVtx.IsValid())
+      {
+        const int* aNewVtxIdx = aVertexMap.Seek(anEndVtx.Index);
+        if (aNewVtxIdx != nullptr)
+          aNewEnd = BRepGraph_NodeId::Vertex(*aNewVtxIdx);
+      }
     }
 
     const occ::handle<Geom_Curve>& anEdgeSrcCurve2 =

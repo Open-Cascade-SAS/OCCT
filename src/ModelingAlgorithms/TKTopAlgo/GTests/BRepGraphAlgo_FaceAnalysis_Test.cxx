@@ -16,6 +16,7 @@
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepGraph.hxx>
+#include <BRepGraph_Tool.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraphAlgo_FaceAnalysis.hxx>
@@ -181,7 +182,11 @@ TEST(BRepGraphAlgo_FaceAnalysisTest, VertexGluing_AveragedCoordinates)
 
   // The degenerated edge's vertices should be merged.
   const int   anEdgeIdx = aResult.DegeneratedEdges.Value(0).Index;
-  const auto& anEdge    = aGraph.Topo().Edge(BRepGraph_EdgeId(anEdgeIdx));
+  const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Topo().Edge(BRepGraph_EdgeId(anEdgeIdx));
   EXPECT_TRUE(anEdge.IsDegenerate);
-  EXPECT_EQ(anEdge.StartVertex.VertexDefId, anEdge.EndVertex.VertexDefId);
+  const BRepGraph_VertexId aStartVtx =
+    BRepGraph_Tool::Edge::StartVertex(aGraph, BRepGraph_EdgeId(anEdgeIdx)).VertexDefId;
+  const BRepGraph_VertexId anEndVtx =
+    BRepGraph_Tool::Edge::EndVertex(aGraph, BRepGraph_EdgeId(anEdgeIdx)).VertexDefId;
+  EXPECT_EQ(aStartVtx, anEndVtx);
 }

@@ -33,6 +33,7 @@
 class Adaptor3d_CurveOnSurface;
 namespace BRepGraphInc
 {
+struct VertexRefEntry;
 struct WireRefEntry;
 }
 
@@ -145,19 +146,19 @@ public:
       const BRepGraph&       theGraph,
       const BRepGraph_EdgeId theEdge);
 
-    //! Returns the start vertex reference (carries Location and Orientation).
+    //! Returns the start vertex reference entry (carries Location and Orientation).
     //! @param[in] theGraph source graph
     //! @param[in] theEdge  typed edge definition identifier
-    //! @return const reference to the start VertexRef
-    [[nodiscard]] Standard_EXPORT static const BRepGraphInc::VertexRef& StartVertex(
+    //! @return const reference to the start VertexRefEntry
+    [[nodiscard]] Standard_EXPORT static const BRepGraphInc::VertexRefEntry& StartVertex(
       const BRepGraph&       theGraph,
       const BRepGraph_EdgeId theEdge);
 
-    //! Returns the end vertex reference (carries Location and Orientation).
+    //! Returns the end vertex reference entry (carries Location and Orientation).
     //! @param[in] theGraph source graph
     //! @param[in] theEdge  typed edge definition identifier
-    //! @return const reference to the end VertexRef
-    [[nodiscard]] Standard_EXPORT static const BRepGraphInc::VertexRef& EndVertex(
+    //! @return const reference to the end VertexRefEntry
+    [[nodiscard]] Standard_EXPORT static const BRepGraphInc::VertexRefEntry& EndVertex(
       const BRepGraph&       theGraph,
       const BRepGraph_EdgeId theEdge);
 

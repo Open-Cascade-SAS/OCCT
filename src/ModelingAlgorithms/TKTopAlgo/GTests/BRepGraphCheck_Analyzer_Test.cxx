@@ -504,19 +504,22 @@ TEST(BRepGraphCheck_AnalyzerTest, DisplacedVertex_DetectsInvalidPointOnCurve)
   bool                      aHasInvalidPoint = false;
   for (int anEdgeIter = 0; anEdgeIter < aDefs.NbEdges(); ++anEdgeIter)
   {
-    const BRepGraph_EdgeId                   anEdgeId  = BRepGraph_EdgeId(anEdgeIter);
-    const BRepGraph_TopoNode::EdgeDef&       anEdgeDef = aDefs.Edge(anEdgeId);
+    const BRepGraph_EdgeId                   anEdgeId = BRepGraph_EdgeId(anEdgeIter);
     NCollection_Vector<BRepGraphCheck_Issue> aIssues;
-    if (anEdgeDef.StartVertexDefId().IsValid())
+    const BRepGraphInc::VertexRefEntry& aStartRef =
+      BRepGraph_Tool::Edge::StartVertex(aGraph, anEdgeId);
+    if (aStartRef.VertexDefId.IsValid())
     {
       BRepGraphCheck::CheckVertexOnEdge(aGraph,
-                                        anEdgeDef.StartVertex.VertexDefId,
+                                        aStartRef.VertexDefId,
                                         anEdgeId,
                                         aIssues);
     }
-    if (anEdgeDef.EndVertexDefId().IsValid())
+    const BRepGraphInc::VertexRefEntry& anEndRef =
+      BRepGraph_Tool::Edge::EndVertex(aGraph, anEdgeId);
+    if (anEndRef.VertexDefId.IsValid())
     {
-      BRepGraphCheck::CheckVertexOnEdge(aGraph, anEdgeDef.EndVertex.VertexDefId, anEdgeId, aIssues);
+      BRepGraphCheck::CheckVertexOnEdge(aGraph, anEndRef.VertexDefId, anEdgeId, aIssues);
     }
     for (int anIssueIter = 0; anIssueIter < aIssues.Length(); ++anIssueIter)
     {

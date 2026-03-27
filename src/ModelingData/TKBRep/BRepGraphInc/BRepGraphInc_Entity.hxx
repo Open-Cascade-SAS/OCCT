@@ -143,6 +143,12 @@ struct ChildRefEntry : public BaseRef
   TopLoc_Location    LocalLocation;
 };
 
+//! Occurrence reference storage entry.
+struct OccurrenceRefEntry : public BaseRef
+{
+  BRepGraph_OccurrenceId OccurrenceDefId;
+};
+
 //! Surface geometry representation for faces.
 struct SurfaceRep : public BaseRep
 {
@@ -259,21 +265,14 @@ struct EdgeEntity : public BaseEntity
   //! True if StartVertex == EndVertex (topological loop, e.g. circle edge).
   bool IsClosed = false;
 
-  //! Boundary vertex references (carry Location for shared vertices).
-  //! For closed edges, StartVertex.VertexDefId == EndVertex.VertexDefId.
-  //! StartVertex.Orientation is always FORWARD, EndVertex.Orientation is always REVERSED.
-  VertexRef StartVertex;
-  VertexRef EndVertex;
+  //! Boundary vertex reference ids (indices into VertexRefEntry table).
+  //! For closed edges, the start and end ref entries point to the same VertexDefId.
+  BRepGraph_VertexRefId StartVertexRefId;
+  BRepGraph_VertexRefId EndVertexRefId;
 
-  //! Additional vertices with INTERNAL or EXTERNAL orientation.
+  //! Additional vertex reference ids with INTERNAL or EXTERNAL orientation.
   //! Edges with only FORWARD/REVERSED boundary vertices leave this empty.
-  NCollection_Vector<VertexRef> InternalVertices;
-
-  //! Convenience: start vertex typed id from index.
-  [[nodiscard]] BRepGraph_VertexId StartVertexDefId() const { return StartVertex.VertexDefId; }
-
-  //! Convenience: end vertex typed id from index.
-  [[nodiscard]] BRepGraph_VertexId EndVertexDefId() const { return EndVertex.VertexDefId; }
+  NCollection_Vector<BRepGraph_VertexRefId> InternalVertexRefIds;
 
   //! Typed representation id into Storage::myPolygons3D (invalid if no polygon).
   BRepGraph_Polygon3DRepId Polygon3DRepId;
@@ -291,30 +290,8 @@ struct EdgeEntity : public BaseEntity
   //! Reinitialize inner vectors with the given allocator.
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
-    InitVec(Regularities, theAlloc, 2);     // typically 0-2
-    InitVec(InternalVertices, theAlloc, 2); // typically 0
-  }
-
-  //! Return the start vertex adjusted for orientation in wire context.
-  //! FORWARD -> StartVertexDefId(), REVERSED -> EndVertexDefId(), other -> invalid.
-  [[nodiscard]] BRepGraph_VertexId OrientedStartVertex(TopAbs_Orientation theOri) const
-  {
-    if (theOri == TopAbs_FORWARD)
-      return StartVertexDefId();
-    if (theOri == TopAbs_REVERSED)
-      return EndVertexDefId();
-    return BRepGraph_VertexId();
-  }
-
-  //! Return the end vertex adjusted for orientation in wire context.
-  //! FORWARD -> EndVertexDefId(), REVERSED -> StartVertexDefId(), other -> invalid.
-  [[nodiscard]] BRepGraph_VertexId OrientedEndVertex(TopAbs_Orientation theOri) const
-  {
-    if (theOri == TopAbs_FORWARD)
-      return EndVertexDefId();
-    if (theOri == TopAbs_REVERSED)
-      return StartVertexDefId();
-    return BRepGraph_VertexId();
+    InitVec(Regularities, theAlloc, 2);         // typically 0-2
+    InitVec(InternalVertexRefIds, theAlloc, 2); // typically 0
   }
 };
 
@@ -388,13 +365,13 @@ struct FaceEntity : public BaseEntity
   NCollection_Vector<BRepGraph_WireRefId> WireRefIds; //!< Wire ref indices (outer first)
 
   //! Direct INTERNAL/EXTERNAL vertex children (not inside wires).
-  NCollection_Vector<VertexRef> VertexRefs;
+  NCollection_Vector<BRepGraph_VertexRefId> VertexRefIds;
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
     InitVec(TriangulationRepIds, theAlloc, 2); // typically 1
-    InitVec(WireRefIds, theAlloc, 2);          // typically 1-2 (outer + holes)
-    InitVec(VertexRefs, theAlloc, 2);          // typically 0
+    InitVec(WireRefIds, theAlloc, 2);           // typically 1-2 (outer + holes)
+    InitVec(VertexRefIds, theAlloc, 2);         // typically 0
   }
 };
 
@@ -402,26 +379,26 @@ struct FaceEntity : public BaseEntity
 struct ShellEntity : public BaseEntity
 {
   bool IsClosed = false; //!< True if shell forms a watertight (closed) boundary.
-  NCollection_Vector<BRepGraph_FaceRefId> FaceRefIds; //!< Face ref indices
-  NCollection_Vector<ChildRef> FreeChildRefs; //!< Non-face children (wires, edges)
+  NCollection_Vector<BRepGraph_FaceRefId> FaceRefIds;     //!< Face ref indices
+  NCollection_Vector<BRepGraph_ChildRefId> FreeChildRefIds; //!< Non-face children (wires, edges)
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
-    InitVec(FaceRefIds, theAlloc, 8);    // typically 4-8 faces per shell
-    InitVec(FreeChildRefs, theAlloc, 2); // typically 0
+    InitVec(FaceRefIds, theAlloc, 8);        // typically 4-8 faces per shell
+    InitVec(FreeChildRefIds, theAlloc, 2);   // typically 0
   }
 };
 
 //! Solid entity: ordered shell references with local locations.
 struct SolidEntity : public BaseEntity
 {
-  NCollection_Vector<BRepGraph_ShellRefId> ShellRefIds; //!< Shell ref indices
-  NCollection_Vector<ChildRef> FreeChildRefs; //!< Non-shell children (edges, vertices)
+  NCollection_Vector<BRepGraph_ShellRefId> ShellRefIds;    //!< Shell ref indices
+  NCollection_Vector<BRepGraph_ChildRefId> FreeChildRefIds; //!< Non-shell children (edges, vertices)
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
-    InitVec(ShellRefIds, theAlloc, 2);   // typically 1
-    InitVec(FreeChildRefs, theAlloc, 2); // typically 0
+    InitVec(ShellRefIds, theAlloc, 2);       // typically 1
+    InitVec(FreeChildRefIds, theAlloc, 2);   // typically 0
   }
 };
 
@@ -455,11 +432,11 @@ struct ProductEntity : public BaseEntity
   BRepGraph_NodeId   ShapeRootId; //!< Root topology for parts; invalid for assemblies
   TopAbs_Orientation RootOrientation = TopAbs_FORWARD; //!< Orientation of the root shape
   TopLoc_Location    RootLocation;                     //!< Location of the root shape
-  NCollection_Vector<OccurrenceRef> OccurrenceRefs;
+  NCollection_Vector<BRepGraph_OccurrenceRefId> OccurrenceRefIds; //!< Occurrence ref indices
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
-    InitVec(OccurrenceRefs, theAlloc, 4);
+    InitVec(OccurrenceRefIds, theAlloc, 4);
   }
 };
 

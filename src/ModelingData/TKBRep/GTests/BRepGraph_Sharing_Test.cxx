@@ -15,6 +15,7 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include "BRepGraph_RefTestTools.hxx"
+#include <BRepGraph_Tool.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -132,10 +133,10 @@ TEST_F(BRepGraph_SharingTest, EdgeDef_VertexDefs_BothValid)
   ASSERT_TRUE(myGraph.IsDone());
   for (int anIdx = 0; anIdx < myGraph.Topo().NbEdges(); ++anIdx)
   {
-    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = myGraph.Topo().Edge(BRepGraph_EdgeId(anIdx));
-    EXPECT_TRUE(anEdgeDef.StartVertexDefId().IsValid())
+    const BRepGraph_EdgeId anEdgeId(anIdx);
+    EXPECT_TRUE(BRepGraph_Tool::Edge::StartVertex(myGraph, anEdgeId).VertexDefId.IsValid())
       << "Edge def " << anIdx << " has invalid start vertex def";
-    EXPECT_TRUE(anEdgeDef.EndVertexDefId().IsValid())
+    EXPECT_TRUE(BRepGraph_Tool::Edge::EndVertex(myGraph, anEdgeId).VertexDefId.IsValid())
       << "Edge def " << anIdx << " has invalid end vertex def";
   }
 }
@@ -177,11 +178,14 @@ TEST_F(BRepGraph_SharingTest, NonClosedEdge_StartEnd_Different)
   ASSERT_TRUE(myGraph.IsDone());
   for (int anIdx = 0; anIdx < myGraph.Topo().NbEdges(); ++anIdx)
   {
-    const BRepGraph_TopoNode::EdgeDef& aDef = myGraph.Topo().Edge(BRepGraph_EdgeId(anIdx));
+    const BRepGraph_EdgeId             anEdgeId(anIdx);
+    const BRepGraph_TopoNode::EdgeDef& aDef = myGraph.Topo().Edge(anEdgeId);
     if (aDef.IsDegenerate)
       continue;
     // Box edges are not closed, so start and end vertex defs must differ
-    EXPECT_NE(aDef.StartVertex.VertexDefId, aDef.EndVertex.VertexDefId)
+    const BRepGraph_VertexId aStartVtx = BRepGraph_Tool::Edge::StartVertex(myGraph, anEdgeId).VertexDefId;
+    const BRepGraph_VertexId anEndVtx  = BRepGraph_Tool::Edge::EndVertex(myGraph, anEdgeId).VertexDefId;
+    EXPECT_NE(aStartVtx, anEndVtx)
       << "Non-degenerate edge def " << anIdx << " has identical start and end vertex def ids";
   }
 }

@@ -162,7 +162,7 @@ inline bool BRepGraph_AttrRegistry::Contains(const Standard_GUID& theGUID)
   return guidToInt().IsBound(theGUID);
 }
 
-inline bool BRepGraph_AttrRegistry::Contains(int theKey)
+inline bool BRepGraph_AttrRegistry::Contains(const int theKey)
 {
   std::shared_lock<std::shared_mutex> aLock(mutex());
   return intToGuid().IsBound(theKey);

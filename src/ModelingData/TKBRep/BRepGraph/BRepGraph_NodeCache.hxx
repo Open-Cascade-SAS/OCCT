@@ -71,10 +71,10 @@ struct BRepGraph_NodeCache
   {
     if (!myUserAttributes.IsEmpty())
     {
-      for (auto anIter = myUserAttributes.cbegin(); anIter != myUserAttributes.cend(); ++anIter)
+      for (NCollection_DataMap<int, occ::handle<BRepGraph_UserAttribute>>::Iterator anIter(myUserAttributes); anIter.More(); anIter.Next())
       {
-        if (!(*anIter).IsNull())
-          (*anIter)->Invalidate();
+        if (!anIter.Value().IsNull())
+          anIter.Value()->Invalidate();
       }
     }
   }

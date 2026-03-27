@@ -35,7 +35,8 @@ struct BRepGraph_RefId
     CoEdge = 3, //!< CoEdge reference entries (usage of coedge definitions)
     Vertex = 4, //!< Vertex reference entries (usage of vertex definitions)
     Solid  = 5, //!< Solid reference entries (usage of solid definitions)
-    Child  = 6  //!< Generic child references (usage of mixed node definitions)
+    Child      = 6, //!< Generic child references (usage of mixed node definitions)
+    Occurrence = 7  //!< Occurrence references (usage of occurrence definitions)
   };
 
   //! @brief Compile-time typed wrapper around BRepGraph_RefId.
@@ -147,6 +148,11 @@ struct BRepGraph_RefId
 
   static Typed<Kind::Child> Child(const int theIdx) { return Typed<Kind::Child>(theIdx); }
 
+  static Typed<Kind::Occurrence> Occurrence(const int theIdx)
+  {
+    return Typed<Kind::Occurrence>(theIdx);
+  }
+
   bool operator==(const BRepGraph_RefId& theOther) const
   {
     return RefKind == theOther.RefKind && Index == theOther.Index;
@@ -168,7 +174,8 @@ using BRepGraph_WireRefId   = BRepGraph_RefId::Typed<BRepGraph_RefId::Kind::Wire
 using BRepGraph_CoEdgeRefId = BRepGraph_RefId::Typed<BRepGraph_RefId::Kind::CoEdge>;
 using BRepGraph_VertexRefId = BRepGraph_RefId::Typed<BRepGraph_RefId::Kind::Vertex>;
 using BRepGraph_SolidRefId  = BRepGraph_RefId::Typed<BRepGraph_RefId::Kind::Solid>;
-using BRepGraph_ChildRefId  = BRepGraph_RefId::Typed<BRepGraph_RefId::Kind::Child>;
+using BRepGraph_ChildRefId      = BRepGraph_RefId::Typed<BRepGraph_RefId::Kind::Child>;
+using BRepGraph_OccurrenceRefId = BRepGraph_RefId::Typed<BRepGraph_RefId::Kind::Occurrence>;
 
 template <>
 struct std::hash<BRepGraph_RefId>

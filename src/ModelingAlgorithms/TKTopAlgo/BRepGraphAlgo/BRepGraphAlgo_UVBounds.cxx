@@ -569,9 +569,9 @@ static void storeUVAttr(BRepGraph_NodeCache&                      theCache,
   theCache.SetUserAttribute(theKey, aNewAttr);
 }
 
-bool BRepGraphAlgo_UVBounds::GetCached(const BRepGraph& theGraph,
-                                       BRepGraph_NodeId theNode,
-                                       CachedData&      theData)
+bool BRepGraphAlgo_UVBounds::GetCached(const BRepGraph&       theGraph,
+                                       const BRepGraph_NodeId theNode,
+                                       CachedData&            theData)
 {
   if (theNode.NodeKind != BRepGraph_NodeId::Kind::Face || !theNode.IsValid())
   {
@@ -590,8 +590,8 @@ bool BRepGraphAlgo_UVBounds::GetCached(const BRepGraph& theGraph,
 
 //=================================================================================================
 
-BRepGraphAlgo_UVBounds::CachedData BRepGraphAlgo_UVBounds::AddCached(BRepGraph&       theGraph,
-                                                                     BRepGraph_NodeId theNode)
+BRepGraphAlgo_UVBounds::CachedData BRepGraphAlgo_UVBounds::AddCached(BRepGraph&             theGraph,
+                                                                     const BRepGraph_NodeId theNode)
 {
   if (theNode.NodeKind != BRepGraph_NodeId::Kind::Face || !theNode.IsValid())
   {
@@ -629,9 +629,9 @@ BRepGraphAlgo_UVBounds::CachedData BRepGraphAlgo_UVBounds::AddCached(BRepGraph& 
 
 //=================================================================================================
 
-void BRepGraphAlgo_UVBounds::SetCached(BRepGraph&        theGraph,
-                                       BRepGraph_NodeId  theNode,
-                                       const CachedData& theData)
+void BRepGraphAlgo_UVBounds::SetCached(BRepGraph&             theGraph,
+                                       const BRepGraph_NodeId theNode,
+                                       const CachedData&      theData)
 {
   if (theNode.NodeKind != BRepGraph_NodeId::Kind::Face || !theNode.IsValid())
   {
@@ -649,7 +649,7 @@ void BRepGraphAlgo_UVBounds::SetCached(BRepGraph&        theGraph,
 
 //=================================================================================================
 
-void BRepGraphAlgo_UVBounds::InvalidateCached(BRepGraph& theGraph, BRepGraph_NodeId theNode)
+void BRepGraphAlgo_UVBounds::InvalidateCached(BRepGraph& theGraph, const BRepGraph_NodeId theNode)
 {
   if (theNode.NodeKind != BRepGraph_NodeId::Kind::Face || !theNode.IsValid())
   {

@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <BRepGraph.hxx>
+#include <BRepGraph_Tool.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
@@ -76,43 +77,48 @@ TEST_F(BRepGraph_ConvenienceTest, NodeId_Factories_EqualToConstructor)
   EXPECT_EQ(BRepGraph_NodeId::Edge(0), BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, 0));
 }
 
-// ---------- Part B: EdgeDef Oriented Vertices ----------
+// ---------- Part B: EdgeDef Vertex Access via BRepGraph_Tool ----------
 
-TEST_F(BRepGraph_ConvenienceTest, EdgeDef_OrientedStartVertex_Forward)
+TEST_F(BRepGraph_ConvenienceTest, EdgeDef_StartVertex_Valid)
 {
-  const BRepGraph::TopoView aDefs = myGraph.Topo();
-  ASSERT_GT(aDefs.NbEdges(), 0);
-  const BRepGraph_TopoNode::EdgeDef& anEdge = aDefs.Edge(BRepGraph_EdgeId(0));
-  EXPECT_EQ(anEdge.OrientedStartVertex(TopAbs_FORWARD), anEdge.StartVertexDefId());
+  ASSERT_GT(myGraph.Topo().NbEdges(), 0);
+  const BRepGraph_EdgeId anEdgeId(0);
+  const BRepGraphInc::VertexRefEntry& aStart =
+    BRepGraph_Tool::Edge::StartVertex(myGraph, anEdgeId);
+  EXPECT_TRUE(aStart.VertexDefId.IsValid());
 }
 
-TEST_F(BRepGraph_ConvenienceTest, EdgeDef_OrientedStartVertex_Reversed)
+TEST_F(BRepGraph_ConvenienceTest, EdgeDef_EndVertex_Valid)
 {
-  const BRepGraph::TopoView          aDefs  = myGraph.Topo();
-  const BRepGraph_TopoNode::EdgeDef& anEdge = aDefs.Edge(BRepGraph_EdgeId(0));
-  EXPECT_EQ(anEdge.OrientedStartVertex(TopAbs_REVERSED), anEdge.EndVertexDefId());
+  ASSERT_GT(myGraph.Topo().NbEdges(), 0);
+  const BRepGraph_EdgeId anEdgeId(0);
+  const BRepGraphInc::VertexRefEntry& anEnd =
+    BRepGraph_Tool::Edge::EndVertex(myGraph, anEdgeId);
+  EXPECT_TRUE(anEnd.VertexDefId.IsValid());
 }
 
-TEST_F(BRepGraph_ConvenienceTest, EdgeDef_OrientedEndVertex_Forward)
+TEST_F(BRepGraph_ConvenienceTest, EdgeDef_StartEnd_DifferForNonClosed)
 {
-  const BRepGraph::TopoView          aDefs  = myGraph.Topo();
-  const BRepGraph_TopoNode::EdgeDef& anEdge = aDefs.Edge(BRepGraph_EdgeId(0));
-  EXPECT_EQ(anEdge.OrientedEndVertex(TopAbs_FORWARD), anEdge.EndVertexDefId());
+  ASSERT_GT(myGraph.Topo().NbEdges(), 0);
+  const BRepGraph_EdgeId anEdgeId(0);
+  const BRepGraph_TopoNode::EdgeDef& anEdge = myGraph.Topo().Edge(anEdgeId);
+  if (!anEdge.IsClosed)
+  {
+    const BRepGraph_VertexId aStartId =
+      BRepGraph_Tool::Edge::StartVertex(myGraph, anEdgeId).VertexDefId;
+    const BRepGraph_VertexId anEndId =
+      BRepGraph_Tool::Edge::EndVertex(myGraph, anEdgeId).VertexDefId;
+    EXPECT_NE(aStartId, anEndId);
+  }
 }
 
-TEST_F(BRepGraph_ConvenienceTest, EdgeDef_OrientedEndVertex_Reversed)
+TEST_F(BRepGraph_ConvenienceTest, EdgeDef_RefIds_AreValid)
 {
-  const BRepGraph::TopoView          aDefs  = myGraph.Topo();
-  const BRepGraph_TopoNode::EdgeDef& anEdge = aDefs.Edge(BRepGraph_EdgeId(0));
-  EXPECT_EQ(anEdge.OrientedEndVertex(TopAbs_REVERSED), anEdge.StartVertexDefId());
-}
-
-TEST_F(BRepGraph_ConvenienceTest, EdgeDef_OrientedVertex_Internal_Invalid)
-{
-  const BRepGraph::TopoView          aDefs  = myGraph.Topo();
-  const BRepGraph_TopoNode::EdgeDef& anEdge = aDefs.Edge(BRepGraph_EdgeId(0));
-  EXPECT_FALSE(anEdge.OrientedStartVertex(TopAbs_INTERNAL).IsValid());
-  EXPECT_FALSE(anEdge.OrientedEndVertex(TopAbs_INTERNAL).IsValid());
+  ASSERT_GT(myGraph.Topo().NbEdges(), 0);
+  const BRepGraph_EdgeId anEdgeId(0);
+  const BRepGraph_TopoNode::EdgeDef& anEdge = myGraph.Topo().Edge(anEdgeId);
+  EXPECT_TRUE(anEdge.StartVertexRefId.IsValid());
+  EXPECT_TRUE(anEdge.EndVertexRefId.IsValid());
 }
 
 // ---------- Part D: FaceDef::Surface ----------

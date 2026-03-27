@@ -16,6 +16,7 @@
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_PathView.hxx>
+#include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_UIDsView.hxx>
 #include <BRepGraphInc_ReverseIndex.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -140,11 +141,10 @@ TEST(BRepGraph_AssemblyTest, AddOccurrence_LinksCorrectly)
   EXPECT_EQ(anOcc.ProductDefId.Index, aPartId.Index);
   EXPECT_EQ(anOcc.ParentProductDefId.Index, aAssemblyId.Index);
 
-  // Check that assembly product has the occurrence in OccurrenceRefs.
-  const BRepGraph_TopoNode::ProductDef& aAssembly =
-    aGraph.Paths().Product(BRepGraph_ProductId(aAssemblyId.Index));
-  EXPECT_EQ(aAssembly.OccurrenceRefs.Length(), 1);
-  EXPECT_EQ(aAssembly.OccurrenceRefs.Value(0).OccurrenceDefId.Index, anOccId.Index);
+  // Check that assembly product has the occurrence in OccurrenceRefIds.
+  const BRepGraph_ProductId aAssemblyProdId(aAssemblyId.Index);
+  EXPECT_EQ(aGraph.Paths().NbComponents(aAssemblyProdId), 1);
+  EXPECT_EQ(aGraph.Paths().Component(aAssemblyProdId, 0).Index, anOccId.Index);
 }
 
 // =============================================================================
@@ -174,9 +174,7 @@ TEST(BRepGraph_AssemblyTest, DAGSharing_MultipleOccurrencesSamePart)
   EXPECT_EQ(aGraph.Paths().Occurrence(BRepGraph_OccurrenceId(anOcc1.Index)).ProductDefId,
             aGraph.Paths().Occurrence(BRepGraph_OccurrenceId(anOcc2.Index)).ProductDefId);
 
-  const BRepGraph_TopoNode::ProductDef& aAssembly =
-    aGraph.Paths().Product(BRepGraph_ProductId(aAssemblyId.Index));
-  EXPECT_EQ(aAssembly.OccurrenceRefs.Length(), 2);
+  EXPECT_EQ(aGraph.Paths().NbComponents(BRepGraph_ProductId(aAssemblyId.Index)), 2);
 }
 
 // =============================================================================
@@ -221,13 +219,21 @@ TEST(BRepGraph_AssemblyTest, RemoveOccurrence_UpdatesParent)
     aGraph.Builder().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location());
 
   EXPECT_EQ(aGraph.Paths().NbComponents(BRepGraph_ProductId(aAssemblyId.Index)), 1);
+  const NCollection_Vector<BRepGraph_OccurrenceRefId>& aBeforeRefs =
+    aGraph.Refs().OccurrenceRefIdsOf(BRepGraph_ProductId(aAssemblyId.Index));
+  ASSERT_EQ(aBeforeRefs.Length(), 1);
+  const BRepGraph_OccurrenceRefId anOccRefId = aBeforeRefs.Value(0);
+  EXPECT_FALSE(aGraph.Refs().Occurrence(anOccRefId).IsRemoved);
 
   // Remove the occurrence - should update parent's OccurrenceRefs.
   aGraph.Builder().RemoveSubgraph(anOccId);
 
   EXPECT_TRUE(aGraph.Topo().IsRemoved(anOccId));
-  EXPECT_EQ(aGraph.Paths().Product(BRepGraph_ProductId(aAssemblyId.Index)).OccurrenceRefs.Length(),
-            0);
+  EXPECT_EQ(aGraph.Paths().NbComponents(BRepGraph_ProductId(aAssemblyId.Index)), 0);
+  const NCollection_Vector<BRepGraph_OccurrenceRefId>& anAfterRefs =
+    aGraph.Refs().OccurrenceRefIdsOf(BRepGraph_ProductId(aAssemblyId.Index));
+  EXPECT_EQ(anAfterRefs.Length(), 0);
+  EXPECT_TRUE(aGraph.Refs().Occurrence(anOccRefId).IsRemoved);
 }
 
 // =============================================================================

@@ -629,10 +629,10 @@ static void addFaceBoxOptimal(const BRepGraph&       theGraph,
 }
 
 //! Recursive per-node bounding box computation.
-static void addNodeBox(const BRepGraph& theGraph,
-                       BRepGraph_NodeId theNode,
-                       Bnd_Box&         theBox,
-                       bool             theUseTri)
+static void addNodeBox(const BRepGraph&       theGraph,
+                       const BRepGraph_NodeId theNode,
+                       Bnd_Box&               theBox,
+                       const bool             theUseTri)
 {
   if (!theNode.IsValid())
   {
@@ -694,11 +694,11 @@ static void addNodeBox(const BRepGraph& theGraph,
 }
 
 //! Recursive per-node optimal bounding box computation.
-static void addNodeBoxOptimal(const BRepGraph& theGraph,
-                              BRepGraph_NodeId theNode,
-                              Bnd_Box&         theBox,
-                              bool             theUseTri,
-                              bool             theUseShapeTol)
+static void addNodeBoxOptimal(const BRepGraph&       theGraph,
+                              const BRepGraph_NodeId theNode,
+                              Bnd_Box&               theBox,
+                              const bool             theUseTri,
+                              const bool             theUseShapeTol)
 {
   if (!theNode.IsValid())
   {
@@ -790,7 +790,7 @@ static void addNodeBoxOptimal(const BRepGraph& theGraph,
 
 //=================================================================================================
 
-void BRepGraphAlgo_BndLib::Add(const BRepGraph& theGraph, Bnd_Box& theBox, bool theUseTriangulation)
+void BRepGraphAlgo_BndLib::Add(const BRepGraph& theGraph, Bnd_Box& theBox, const bool theUseTriangulation)
 {
   // Add all faces.
   const int aNbFaces = theGraph.Topo().NbFaces();
@@ -820,10 +820,10 @@ void BRepGraphAlgo_BndLib::Add(const BRepGraph& theGraph, Bnd_Box& theBox, bool 
 
 //=================================================================================================
 
-void BRepGraphAlgo_BndLib::Add(const BRepGraph& theGraph,
-                               BRepGraph_NodeId theNode,
-                               Bnd_Box&         theBox,
-                               bool             theUseTriangulation)
+void BRepGraphAlgo_BndLib::Add(const BRepGraph&       theGraph,
+                               const BRepGraph_NodeId theNode,
+                               Bnd_Box&               theBox,
+                               const bool             theUseTriangulation)
 {
   addNodeBox(theGraph, theNode, theBox, theUseTriangulation);
 }
@@ -832,8 +832,8 @@ void BRepGraphAlgo_BndLib::Add(const BRepGraph& theGraph,
 
 void BRepGraphAlgo_BndLib::AddOptimal(const BRepGraph& theGraph,
                                       Bnd_Box&         theBox,
-                                      bool             theUseTriangulation,
-                                      bool             theUseShapeTolerance)
+                                      const bool       theUseTriangulation,
+                                      const bool       theUseShapeTolerance)
 {
   // Add all faces (optimal).
   const int aNbFaces = theGraph.Topo().NbFaces();
@@ -881,11 +881,11 @@ void BRepGraphAlgo_BndLib::AddOptimal(const BRepGraph& theGraph,
 
 //=================================================================================================
 
-void BRepGraphAlgo_BndLib::AddOptimal(const BRepGraph& theGraph,
-                                      BRepGraph_NodeId theNode,
-                                      Bnd_Box&         theBox,
-                                      bool             theUseTriangulation,
-                                      bool             theUseShapeTolerance)
+void BRepGraphAlgo_BndLib::AddOptimal(const BRepGraph&       theGraph,
+                                      const BRepGraph_NodeId theNode,
+                                      Bnd_Box&               theBox,
+                                      const bool             theUseTriangulation,
+                                      const bool             theUseShapeTolerance)
 {
   addNodeBoxOptimal(theGraph, theNode, theBox, theUseTriangulation, theUseShapeTolerance);
 }
@@ -962,7 +962,7 @@ int BRepGraphAlgo_BndLib::CacheKey()
 //=================================================================================================
 
 bool BRepGraphAlgo_BndLib::GetCached(const BRepGraph&                  theGraph,
-                                     BRepGraph_NodeId                  theNode,
+                                     const BRepGraph_NodeId            theNode,
                                      BRepGraphAlgo_BndLib::CachedData& theData)
 {
   const int                          aKey = CacheKey();
@@ -990,10 +990,10 @@ bool BRepGraphAlgo_BndLib::GetCached(const BRepGraph&                  theGraph,
 
 //=================================================================================================
 
-Bnd_Box BRepGraphAlgo_BndLib::AddCached(BRepGraph&                      theGraph,
-                                        BRepGraph_NodeId                theNode,
-                                        BRepGraphAlgo_BndLib::Precision thePrecision,
-                                        bool                            theUseTriangulation)
+Bnd_Box BRepGraphAlgo_BndLib::AddCached(BRepGraph&                            theGraph,
+                                        const BRepGraph_NodeId                theNode,
+                                        const BRepGraphAlgo_BndLib::Precision thePrecision,
+                                        const bool                            theUseTriangulation)
 {
   const int aKey = CacheKey();
 
@@ -1065,12 +1065,12 @@ Bnd_Box BRepGraphAlgo_BndLib::AddCached(BRepGraph&                      theGraph
 
 //=================================================================================================
 
-void BRepGraphAlgo_BndLib::SetCached(BRepGraph&       theGraph,
-                                     BRepGraph_NodeId theNode,
-                                     const Bnd_Box&   theBox,
-                                     Precision        thePrecision,
-                                     bool             theUsedTriangulation,
-                                     bool             theUsedShapeTolerance)
+void BRepGraphAlgo_BndLib::SetCached(BRepGraph&             theGraph,
+                                     const BRepGraph_NodeId theNode,
+                                     const Bnd_Box&         theBox,
+                                     const Precision        thePrecision,
+                                     const bool             theUsedTriangulation,
+                                     const bool             theUsedShapeTolerance)
 {
   const int            aKey   = CacheKey();
   BRepGraph_NodeCache* aCache = theGraph.mutableCache(theNode);
@@ -1104,7 +1104,7 @@ void BRepGraphAlgo_BndLib::SetCached(BRepGraph&       theGraph,
 
 //=================================================================================================
 
-void BRepGraphAlgo_BndLib::InvalidateCached(BRepGraph& theGraph, BRepGraph_NodeId theNode)
+void BRepGraphAlgo_BndLib::InvalidateCached(BRepGraph& theGraph, const BRepGraph_NodeId theNode)
 {
   const int            aKey   = CacheKey();
   BRepGraph_NodeCache* aCache = theGraph.mutableCache(theNode);

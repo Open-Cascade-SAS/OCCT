@@ -13,6 +13,7 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_BuilderView.hxx>
+#include <BRepGraph_MutRefEntry.hxx>
 #include <BRepGraph_RefId.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_RefUID.hxx>
@@ -63,14 +64,14 @@ int countInlineVertexRefs(const BRepGraph& theGraph)
   for (int i = 0; i < aTopo.NbEdges(); ++i)
   {
     const BRepGraph_TopoNode::EdgeDef& anEdge = aTopo.Edge(BRepGraph_EdgeId(i));
-    if (anEdge.StartVertex.VertexDefId.IsValid())
+    if (anEdge.StartVertexRefId.IsValid())
       ++aNb;
-    if (anEdge.EndVertex.VertexDefId.IsValid())
+    if (anEdge.EndVertexRefId.IsValid())
       ++aNb;
-    aNb += anEdge.InternalVertices.Length();
+    aNb += anEdge.InternalVertexRefIds.Length();
   }
   for (int i = 0; i < aTopo.NbFaces(); ++i)
-    aNb += aTopo.Face(BRepGraph_FaceId(i)).VertexRefs.Length();
+    aNb += aTopo.Face(BRepGraph_FaceId(i)).VertexRefIds.Length();
   return aNb;
 }
 
@@ -316,7 +317,8 @@ TEST(BRepGraph_RefIdTest, MutFaceRef_UpdatesRefStampAndParentModifiedFlag)
   const TopAbs_Orientation anBeforeOri        = aBeforeEntry.Orientation;
 
   {
-    auto aMut = aGraph.Builder().MutFaceRef(aFaceRefId);
+    BRepGraph_MutRefEntry<BRepGraphInc::FaceRefEntry> aMut =
+      aGraph.Builder().MutFaceRef(aFaceRefId);
     aMut->Orientation = (anBeforeOri == TopAbs_FORWARD) ? TopAbs_REVERSED : TopAbs_FORWARD;
   }
 
@@ -347,7 +349,8 @@ TEST(BRepGraph_RefIdTest, MutFaceRef_MarkRemoved_PersistsAndInvalidatesStamp)
   ASSERT_TRUE(aBeforeStamp.IsRefStamp());
 
   {
-    auto aMut = aGraph.Builder().MutFaceRef(aFaceRefId);
+    BRepGraph_MutRefEntry<BRepGraphInc::FaceRefEntry> aMut =
+      aGraph.Builder().MutFaceRef(aFaceRefId);
     aMut->IsRemoved = true;
   }
 

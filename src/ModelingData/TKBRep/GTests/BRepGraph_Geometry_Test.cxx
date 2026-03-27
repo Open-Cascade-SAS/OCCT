@@ -747,7 +747,7 @@ TEST(BRepGraph_GeometryTest, Box_RepCounts_MatchTopology)
   // Every coedge with a PCurve has a valid Curve2DRepId.
   for (int i = 0; i < aGraph.Topo().NbCoEdges(); ++i)
   {
-    const auto& aCoEdge = aGraph.Topo().CoEdge(BRepGraph_CoEdgeId(i));
+    const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = aGraph.Topo().CoEdge(BRepGraph_CoEdgeId(i));
     if (aCoEdge.Curve2DRepId.IsValid())
     {
       const occ::handle<Geom2d_Curve>& aPCurve =
@@ -784,7 +784,7 @@ TEST(BRepGraph_GeometryTest, Cylinder_TriangulationReps_Populated)
 
   for (int i = 0; i < aGraph.Topo().NbFaces(); ++i)
   {
-    const auto& aFace = aGraph.Topo().Face(BRepGraph_FaceId(i));
+    const BRepGraph_TopoNode::FaceDef& aFace = aGraph.Topo().Face(BRepGraph_FaceId(i));
     if (!aFace.TriangulationRepIds.IsEmpty())
     {
       for (int j = 0; j < aFace.TriangulationRepIds.Length(); ++j)
@@ -860,7 +860,7 @@ TEST(BRepGraph_GeometryTest, Box_Polygon2DRep_MatchesInline)
   // Every coedge with a Polygon2DRepId has a valid polygon rep.
   for (int i = 0; i < aGraph.Topo().NbCoEdges(); ++i)
   {
-    const auto& aCoEdge = aGraph.Topo().CoEdge(BRepGraph_CoEdgeId(i));
+    const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = aGraph.Topo().CoEdge(BRepGraph_CoEdgeId(i));
     if (aCoEdge.Polygon2DRepId.IsValid())
     {
       const occ::handle<Poly_Polygon2D>& aPoly =

@@ -72,7 +72,7 @@ bool BRepGraphCheck_Report::HasIssues() const
 
 //=================================================================================================
 
-bool BRepGraphCheck_Report::HasIssuesForNode(BRepGraph_NodeId theNode) const
+bool BRepGraphCheck_Report::HasIssuesForNode(const BRepGraph_NodeId theNode) const
 {
   std::lock_guard<std::mutex> aLock(myMutex);
   return myNodeIndex.IsBound(theNode);
@@ -81,7 +81,7 @@ bool BRepGraphCheck_Report::HasIssuesForNode(BRepGraph_NodeId theNode) const
 //=================================================================================================
 
 NCollection_Vector<BRepGraphCheck_Issue> BRepGraphCheck_Report::IssuesForNode(
-  BRepGraph_NodeId theNode) const
+  const BRepGraph_NodeId theNode) const
 {
   NCollection_Vector<BRepGraphCheck_Issue> aResult;
   std::lock_guard<std::mutex>              aLock(myMutex);

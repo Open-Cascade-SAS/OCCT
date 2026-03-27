@@ -127,10 +127,12 @@ TEST(BRepGraphAlgo_ValidateTest, DetectsRemovedNodeReference)
   int aVtxToRemove = -1;
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
   {
-    const BRepGraph_TopoNode::EdgeDef& anEdge = aGraph.Topo().Edge(BRepGraph_EdgeId(anEdgeIdx));
-    if (anEdge.StartVertexDefId().IsValid())
+    const BRepGraph_EdgeId anEdgeId(anEdgeIdx);
+    const BRepGraphInc::VertexRefEntry& aStartRef =
+      BRepGraph_Tool::Edge::StartVertex(aGraph, anEdgeId);
+    if (aStartRef.VertexDefId.IsValid())
     {
-      aVtxToRemove = anEdge.StartVertexDefId().Index;
+      aVtxToRemove = aStartRef.VertexDefId.Index;
       break;
     }
   }
@@ -185,18 +187,24 @@ TEST(BRepGraphAlgo_ValidateTest, WireConnectivity_DisconnectedEdges)
     aGraph.Builder().MutEdge(BRepGraph_EdgeId(aFirstEdgeId.Index));
 
   // Find a vertex different from the current end vertex.
-  BRepGraph_NodeId anOrigEnd = aFirstEdge->EndVertexDefId();
+  const BRepGraph_VertexId anOrigEndVtx =
+    aGraph.Refs().Vertex(aFirstEdge->EndVertexRefId).VertexDefId;
+  const BRepGraph_VertexId anOrigStartVtx =
+    aGraph.Refs().Vertex(aFirstEdge->StartVertexRefId).VertexDefId;
+  const BRepGraph_NodeId anOrigEnd = BRepGraph_NodeId(anOrigEndVtx);
   for (int aVtxIdx = 0; aVtxIdx < aGraph.Topo().NbVertices(); ++aVtxIdx)
   {
     if (BRepGraph_NodeId::Vertex(aVtxIdx) != anOrigEnd
-        && BRepGraph_NodeId::Vertex(aVtxIdx) != aFirstEdge->StartVertexDefId())
+        && BRepGraph_NodeId::Vertex(aVtxIdx) != BRepGraph_NodeId(anOrigStartVtx))
     {
-      aFirstEdge->EndVertex.VertexDefId = BRepGraph_VertexId(aVtxIdx);
+      BRepGraph_MutRefEntry<BRepGraphInc::VertexRefEntry> aMutEndRef =
+        aGraph.Builder().MutVertexRef(aFirstEdge->EndVertexRefId);
+      aMutEndRef->VertexDefId = BRepGraph_VertexId(aVtxIdx);
       break;
     }
   }
 
-  ASSERT_NE(aFirstEdge->EndVertexDefId(), anOrigEnd);
+  ASSERT_NE(aGraph.Refs().Vertex(aFirstEdge->EndVertexRefId).VertexDefId, anOrigEndVtx);
 
   const BRepGraphAlgo_Validate::Result aResult =
     BRepGraphAlgo_Validate::Perform(aGraph, BRepGraphAlgo_Validate::Options::DeepAudit());
@@ -256,9 +264,11 @@ TEST(BRepGraphAlgo_ValidateTest, AfterSplitEdge_ProducesSubEdges)
   double           aSplitParam = 0.0;
   for (int i = 0; i < aGraph.Topo().NbEdges(); ++i)
   {
-    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.Topo().Edge(BRepGraph_EdgeId(i));
+    const BRepGraph_EdgeId             anCandEdgeId(i);
+    const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aGraph.Topo().Edge(anCandEdgeId);
     if (!anEdgeDef.IsDegenerate && anEdgeDef.Curve3DRepId.IsValid()
-        && anEdgeDef.StartVertexDefId().IsValid() && anEdgeDef.EndVertexDefId().IsValid())
+        && BRepGraph_Tool::Edge::StartVertex(aGraph, anCandEdgeId).VertexDefId.IsValid()
+        && BRepGraph_Tool::Edge::EndVertex(aGraph, anCandEdgeId).VertexDefId.IsValid())
     {
       anEdgeId    = BRepGraph_NodeId::Edge(i);
       aSplitParam = 0.5 * (anEdgeDef.ParamFirst + anEdgeDef.ParamLast);

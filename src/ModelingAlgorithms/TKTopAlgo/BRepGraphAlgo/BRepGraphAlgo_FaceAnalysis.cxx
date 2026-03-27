@@ -14,11 +14,13 @@
 #include <BRepGraphAlgo_FaceAnalysis.hxx>
 
 #include <BRepGraph_BuilderView.hxx>
-#include <BRepGraph_RefsView.hxx>
-#include <BRepGraph_TopoView.hxx>
-#include <BRepGraph_MutationGuard.hxx>
 #include <BRepGraph_MutRef.hxx>
+#include <BRepGraph_MutRefEntry.hxx>
+#include <BRepGraph_MutationGuard.hxx>
+#include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_Tool.hxx>
+#include <BRepGraph_TopoView.hxx>
+#include <BRepGraphInc_Entity.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_Map.hxx>
 #include <NCollection_Vector.hxx>
@@ -177,10 +179,16 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
           aResult.DegeneratedEdges.Append(BRepGraph_EdgeId(anEdgeIdx));
 
           // Merge start/end vertices if they differ.
-          const BRepGraph_VertexId aStartVtx = anEdge.StartVertex.VertexDefId;
-          const BRepGraph_VertexId aEndVtx   = anEdge.EndVertex.VertexDefId;
-          const int                aStartIdx = aStartVtx.Index;
-          const int                aEndIdx   = aEndVtx.Index;
+          const BRepGraph_VertexId aStartVtx =
+            anEdge.StartVertexRefId.IsValid()
+              ? aRefs.Vertex(anEdge.StartVertexRefId).VertexDefId
+              : BRepGraph_VertexId();
+          const BRepGraph_VertexId aEndVtx =
+            anEdge.EndVertexRefId.IsValid()
+              ? aRefs.Vertex(anEdge.EndVertexRefId).VertexDefId
+              : BRepGraph_VertexId();
+          const int aStartIdx = aStartVtx.Index;
+          const int aEndIdx   = aEndVtx.Index;
           if (aStartIdx >= 0 && aEndIdx >= 0 && aStartIdx != aEndIdx)
           {
             // Resolve existing merges.
@@ -310,10 +318,14 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
   {
     for (int anEdgeIdx = 0; anEdgeIdx < aDefs.NbEdges(); ++anEdgeIdx)
     {
-      const BRepGraph_TopoNode::EdgeDef& anEdge      = aDefs.Edge(BRepGraph_EdgeId(anEdgeIdx));
-      bool                               aNeedUpdate = false;
-      int                                aNewStart   = anEdge.StartVertex.VertexDefId.Index;
-      int                                aNewEnd     = anEdge.EndVertex.VertexDefId.Index;
+      const BRepGraph_TopoNode::EdgeDef& anEdge = aDefs.Edge(BRepGraph_EdgeId(anEdgeIdx));
+      bool aNeedUpdate = false;
+      int  aNewStart   = anEdge.StartVertexRefId.IsValid()
+                            ? aRefs.Vertex(anEdge.StartVertexRefId).VertexDefId.Index
+                            : -1;
+      int  aNewEnd     = anEdge.EndVertexRefId.IsValid()
+                           ? aRefs.Vertex(anEdge.EndVertexRefId).VertexDefId.Index
+                           : -1;
 
       if (aNewStart >= 0)
       {
@@ -336,10 +348,17 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
 
       if (aNeedUpdate)
       {
-        BRepGraph_MutRef<BRepGraph_TopoNode::EdgeDef> aMutEdge =
-          theGraph.Builder().MutEdge(BRepGraph_EdgeId(anEdgeIdx));
-        aMutEdge->StartVertex.VertexDefId = BRepGraph_VertexId(aNewStart);
-        aMutEdge->EndVertex.VertexDefId   = BRepGraph_VertexId(aNewEnd);
+        const BRepGraph_TopoNode::EdgeDef& anEdgeRef = aDefs.Edge(BRepGraph_EdgeId(anEdgeIdx));
+        if (anEdgeRef.StartVertexRefId.IsValid() && aNewStart >= 0)
+        {
+          theGraph.Builder().MutVertexRef(anEdgeRef.StartVertexRefId)->VertexDefId =
+            BRepGraph_VertexId(aNewStart);
+        }
+        if (anEdgeRef.EndVertexRefId.IsValid() && aNewEnd >= 0)
+        {
+          theGraph.Builder().MutVertexRef(anEdgeRef.EndVertexRefId)->VertexDefId =
+            BRepGraph_VertexId(aNewEnd);
+        }
       }
     }
   }

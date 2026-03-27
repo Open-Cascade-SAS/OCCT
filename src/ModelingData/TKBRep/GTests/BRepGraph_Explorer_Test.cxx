@@ -13,12 +13,13 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_BuilderView.hxx>
-#include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Explorer.hxx>
+#include <BRepGraph_MutRefEntry.hxx>
 #include <BRepGraph_PathView.hxx>
 #include <BRepGraph_RefsView.hxx>
-#include <BRepGraph_TopologyPath.hxx>
 #include <BRepGraph_Tool.hxx>
+#include <BRepGraph_TopoView.hxx>
+#include <BRepGraph_TopologyPath.hxx>
 
 #include <BRep_Builder.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -422,7 +423,8 @@ TEST(BRepGraph_ExplorerTest, PathsTo_MatchesExplorer_WhenEarlierCompoundRefRemov
 
   // Remove the first child ref (earlier ordinal).
   {
-    auto aMut = aGraph.Builder().MutChildRef(aRemovedRefId);
+    BRepGraph_MutRefEntry<BRepGraphInc::ChildRefEntry> aMut =
+      aGraph.Builder().MutChildRef(aRemovedRefId);
     aMut->IsRemoved = true;
   }
   EXPECT_TRUE(aGraph.Refs().Child(aRemovedRefId).IsRemoved);
@@ -477,7 +479,8 @@ TEST(BRepGraph_ExplorerTest, PathsTo_MatchesExplorer_WhenFirstShellRefRemoved)
   // Remove the first shell ref so the active one is not the first matching shell usage.
   const BRepGraph_ShellRefId aRemovedShellRefId = aSolidAfterDup.ShellRefIds.Value(0);
   {
-    auto aMut = aGraph.Builder().MutShellRef(aRemovedShellRefId);
+    BRepGraph_MutRefEntry<BRepGraphInc::ShellRefEntry> aMut =
+      aGraph.Builder().MutShellRef(aRemovedShellRefId);
     aMut->IsRemoved = true;
   }
   EXPECT_TRUE(aGraph.Refs().Shell(aRemovedShellRefId).IsRemoved);

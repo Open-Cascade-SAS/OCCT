@@ -214,7 +214,7 @@ NCollection_Vector<BRepGraph_SubGraph> BRepGraph_Analyze::Decompose(const BRepGr
   const BRepGraphInc_Storage& aStorage = theGraph.myData->myIncStorage;
 
   // Collect wire, edge and vertex children from a face def into a SubGraph.
-  auto collectFaceChildren = [&](BRepGraph_SubGraph& theSub, const BRepGraph_FaceId theFaceDefId) {
+  std::function<void(BRepGraph_SubGraph&, const BRepGraph_FaceId)> aCollectFaceChildren = [&](BRepGraph_SubGraph& theSub, const BRepGraph_FaceId theFaceDefId) {
     const BRepGraphInc::FaceEntity& aFaceEnt = aStorage.Face(theFaceDefId);
     for (int aWireRefIdx = 0; aWireRefIdx < aFaceEnt.WireRefIds.Length(); ++aWireRefIdx)
     {
@@ -241,10 +241,20 @@ NCollection_Vector<BRepGraph_SubGraph> BRepGraph_Analyze::Decompose(const BRepGr
         theSub.myEdgeDefIds.Append(anEdgeDefId);
 
         const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(anEdgeDefId);
-        if (anEdgeDef.StartVertex.VertexDefId.IsValid(aDefs.NbVertices()))
-          theSub.myVertexDefIds.Append(anEdgeDef.StartVertex.VertexDefId);
-        if (anEdgeDef.EndVertex.VertexDefId.IsValid(aDefs.NbVertices()))
-          theSub.myVertexDefIds.Append(anEdgeDef.EndVertex.VertexDefId);
+        if (anEdgeDef.StartVertexRefId.IsValid())
+        {
+          const BRepGraph_VertexId aStartVtxId =
+            aStorage.VertexRefEntry(anEdgeDef.StartVertexRefId).VertexDefId;
+          if (aStartVtxId.IsValid(aDefs.NbVertices()))
+            theSub.myVertexDefIds.Append(aStartVtxId);
+        }
+        if (anEdgeDef.EndVertexRefId.IsValid())
+        {
+          const BRepGraph_VertexId anEndVtxId =
+            aStorage.VertexRefEntry(anEdgeDef.EndVertexRefId).VertexDefId;
+          if (anEndVtxId.IsValid(aDefs.NbVertices()))
+            theSub.myVertexDefIds.Append(anEndVtxId);
+        }
       }
     }
   };
@@ -281,7 +291,7 @@ NCollection_Vector<BRepGraph_SubGraph> BRepGraph_Analyze::Decompose(const BRepGr
 
           const BRepGraph_FaceId aFaceDefId = aFaceRef.FaceDefId;
           aSub.myFaceDefIds.Append(aFaceDefId);
-          collectFaceChildren(aSub, aFaceDefId);
+          aCollectFaceChildren(aSub, aFaceDefId);
         }
       }
 
@@ -309,7 +319,7 @@ NCollection_Vector<BRepGraph_SubGraph> BRepGraph_Analyze::Decompose(const BRepGr
 
         const BRepGraph_FaceId aFaceDefId = aFaceRef.FaceDefId;
         aSub.myFaceDefIds.Append(aFaceDefId);
-        collectFaceChildren(aSub, aFaceDefId);
+        aCollectFaceChildren(aSub, aFaceDefId);
       }
 
       aResult.Append(aSub);
@@ -325,7 +335,7 @@ NCollection_Vector<BRepGraph_SubGraph> BRepGraph_Analyze::Decompose(const BRepGr
 
       const BRepGraph_FaceId aFaceDefId(aFaceDefIdx);
       aSub.myFaceDefIds.Append(aFaceDefId);
-      collectFaceChildren(aSub, aFaceDefId);
+      aCollectFaceChildren(aSub, aFaceDefId);
 
       aResult.Append(aSub);
     }

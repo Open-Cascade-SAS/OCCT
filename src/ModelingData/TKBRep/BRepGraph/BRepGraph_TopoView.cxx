@@ -680,12 +680,12 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::TopoView::VerticesOfEdge(
 
   const BRepGraph_EdgeId          aEdgeDefId(theEdgeDef.Index);
   const BRepGraphInc::EdgeEntity& anEdge = aStorage.Edge(aEdgeDefId);
-  if (anEdge.StartVertex.VertexDefId.IsValid())
-    aResult.Append(anEdge.StartVertex.VertexDefId);
-  if (anEdge.EndVertex.VertexDefId.IsValid())
-    aResult.Append(anEdge.EndVertex.VertexDefId);
-  for (int i = 0; i < anEdge.InternalVertices.Length(); ++i)
-    aResult.Append(anEdge.InternalVertices.Value(i).VertexDefId);
+  if (anEdge.StartVertexRefId.IsValid())
+    aResult.Append(aStorage.VertexRefEntry(anEdge.StartVertexRefId).VertexDefId);
+  if (anEdge.EndVertexRefId.IsValid())
+    aResult.Append(aStorage.VertexRefEntry(anEdge.EndVertexRefId).VertexDefId);
+  for (int i = 0; i < anEdge.InternalVertexRefIds.Length(); ++i)
+    aResult.Append(aStorage.VertexRefEntry(anEdge.InternalVertexRefIds.Value(i)).VertexDefId);
   return aResult;
 }
 
@@ -708,12 +708,12 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::TopoView::AdjacentEdges(
 
   // Collect all vertices of this edge, then all edges of those vertices.
   NCollection_Vector<BRepGraph_VertexId> aVertices;
-  if (anEdge.StartVertex.VertexDefId.IsValid())
-    aVertices.Append(anEdge.StartVertex.VertexDefId);
-  if (anEdge.EndVertex.VertexDefId.IsValid())
-    aVertices.Append(anEdge.EndVertex.VertexDefId);
-  for (int i = 0; i < anEdge.InternalVertices.Length(); ++i)
-    aVertices.Append(anEdge.InternalVertices.Value(i).VertexDefId);
+  if (anEdge.StartVertexRefId.IsValid())
+    aVertices.Append(aStorage.VertexRefEntry(anEdge.StartVertexRefId).VertexDefId);
+  if (anEdge.EndVertexRefId.IsValid())
+    aVertices.Append(aStorage.VertexRefEntry(anEdge.EndVertexRefId).VertexDefId);
+  for (int i = 0; i < anEdge.InternalVertexRefIds.Length(); ++i)
+    aVertices.Append(aStorage.VertexRefEntry(anEdge.InternalVertexRefIds.Value(i)).VertexDefId);
 
   for (int v = 0; v < aVertices.Length(); ++v)
   {

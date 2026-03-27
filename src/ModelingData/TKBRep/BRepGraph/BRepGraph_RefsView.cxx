@@ -65,6 +65,13 @@ int BRepGraph::RefsView::NbChildRefs() const
 
 //=================================================================================================
 
+int BRepGraph::RefsView::NbOccurrenceRefs() const
+{
+  return myGraph->myData->myIncStorage.NbOccurrenceRefs();
+}
+
+//=================================================================================================
+
 const BRepGraphInc::ShellRefEntry& BRepGraph::RefsView::Shell(const BRepGraph_ShellRefId theRefId) const
 {
   return myGraph->myData->myIncStorage.ShellRefEntry(theRefId);
@@ -112,6 +119,14 @@ const BRepGraphInc::SolidRefEntry& BRepGraph::RefsView::Solid(const BRepGraph_So
 const BRepGraphInc::ChildRefEntry& BRepGraph::RefsView::Child(const BRepGraph_ChildRefId theRefId) const
 {
   return myGraph->myData->myIncStorage.ChildRefEntry(theRefId);
+}
+
+//=================================================================================================
+
+const BRepGraphInc::OccurrenceRefEntry& BRepGraph::RefsView::Occurrence(
+  const BRepGraph_OccurrenceRefId theRefId) const
+{
+  return myGraph->myData->myIncStorage.OccurrenceRefEntry(theRefId);
 }
 
 //=================================================================================================
@@ -260,6 +275,17 @@ const NCollection_Vector<BRepGraph_ChildRefId>& BRepGraph::RefsView::ChildRefIds
   if (!theCompound.IsValid(myGraph->myData->myIncStorage.NbCompounds()))
     return anEmpty;
   return myGraph->myData->myIncStorage.Compound(theCompound).ChildRefIds;
+}
+
+//=================================================================================================
+
+const NCollection_Vector<BRepGraph_OccurrenceRefId>& BRepGraph::RefsView::OccurrenceRefIdsOf(
+  const BRepGraph_ProductId theProduct) const
+{
+  static const NCollection_Vector<BRepGraph_OccurrenceRefId> anEmpty;
+  if (!theProduct.IsValid(myGraph->myData->myIncStorage.NbProducts()))
+    return anEmpty;
+  return myGraph->myData->myIncStorage.Product(theProduct).OccurrenceRefIds;
 }
 
 //=================================================================================================

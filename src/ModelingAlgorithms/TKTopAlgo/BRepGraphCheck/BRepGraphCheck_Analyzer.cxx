@@ -15,7 +15,9 @@
 
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_TopoView.hxx>
+#include <BRepGraph_Tool.hxx>
 #include <BRepGraphCheck.hxx>
+#include <BRepGraphInc_Entity.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
 #include <OSD_Parallel.hxx>
 
@@ -76,21 +78,21 @@ BRepGraphCheck_Analyzer::BRepGraphCheck_Analyzer(const BRepGraph& theGraph)
 
 //=================================================================================================
 
-void BRepGraphCheck_Analyzer::SetGeometricControls(bool theVal)
+void BRepGraphCheck_Analyzer::SetGeometricControls(const bool theVal)
 {
   myGeomControls = theVal;
 }
 
 //=================================================================================================
 
-void BRepGraphCheck_Analyzer::SetParallel(bool theVal)
+void BRepGraphCheck_Analyzer::SetParallel(const bool theVal)
 {
   myIsParallel = theVal;
 }
 
 //=================================================================================================
 
-void BRepGraphCheck_Analyzer::SetExactMethod(bool theVal)
+void BRepGraphCheck_Analyzer::SetExactMethod(const bool theVal)
 {
   myIsExact = theVal;
 }
@@ -189,17 +191,25 @@ void BRepGraphCheck_Analyzer::Perform()
 
             // Vertex checks at edge endpoints.
             const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aLocalDefs.Edge(anEdgeId);
-            if (anEdgeDef.StartVertexDefId().IsValid())
+            if (anEdgeDef.StartVertexRefId.IsValid())
             {
-              const BRepGraph_VertexId aStartVtxId = anEdgeDef.StartVertex.VertexDefId;
-              BRepGraphCheck::CheckVertexOnEdge(*myGraph, aStartVtxId, anEdgeId, aLocal);
-              BRepGraphCheck::CheckVertexOnFace(*myGraph, aStartVtxId, aFaceId, aLocal);
+              const BRepGraph_VertexId aStartVtxId =
+                BRepGraph_Tool::Edge::StartVertex(*myGraph, anEdgeId).VertexDefId;
+              if (aStartVtxId.IsValid())
+              {
+                BRepGraphCheck::CheckVertexOnEdge(*myGraph, aStartVtxId, anEdgeId, aLocal);
+                BRepGraphCheck::CheckVertexOnFace(*myGraph, aStartVtxId, aFaceId, aLocal);
+              }
             }
-            if (anEdgeDef.EndVertexDefId().IsValid())
+            if (anEdgeDef.EndVertexRefId.IsValid())
             {
-              const BRepGraph_VertexId anEndVtxId = anEdgeDef.EndVertex.VertexDefId;
-              BRepGraphCheck::CheckVertexOnEdge(*myGraph, anEndVtxId, anEdgeId, aLocal);
-              BRepGraphCheck::CheckVertexOnFace(*myGraph, anEndVtxId, aFaceId, aLocal);
+              const BRepGraph_VertexId anEndVtxId =
+                BRepGraph_Tool::Edge::EndVertex(*myGraph, anEdgeId).VertexDefId;
+              if (anEndVtxId.IsValid())
+              {
+                BRepGraphCheck::CheckVertexOnEdge(*myGraph, anEndVtxId, anEdgeId, aLocal);
+                BRepGraphCheck::CheckVertexOnFace(*myGraph, anEndVtxId, aFaceId, aLocal);
+              }
             }
           }
         }
@@ -266,8 +276,16 @@ void BRepGraphCheck_Analyzer::CheckVertex(const BRepGraph_VertexId theVertex)
   {
     const BRepGraph_EdgeId             anEdgeId(anEdgeIter);
     const BRepGraph_TopoNode::EdgeDef& anEdgeDef = aDefs.Edge(anEdgeId);
-    if ((anEdgeDef.StartVertexDefId().IsValid() && anEdgeDef.StartVertex.VertexDefId == theVertex)
-        || (anEdgeDef.EndVertexDefId().IsValid() && anEdgeDef.EndVertex.VertexDefId == theVertex))
+    const BRepGraph_VertexId aStartVtxId =
+      anEdgeDef.StartVertexRefId.IsValid()
+        ? BRepGraph_Tool::Edge::StartVertex(*myGraph, anEdgeId).VertexDefId
+        : BRepGraph_VertexId();
+    const BRepGraph_VertexId anEndVtxId =
+      anEdgeDef.EndVertexRefId.IsValid()
+        ? BRepGraph_Tool::Edge::EndVertex(*myGraph, anEdgeId).VertexDefId
+        : BRepGraph_VertexId();
+    if ((aStartVtxId.IsValid() && aStartVtxId == theVertex)
+        || (anEndVtxId.IsValid() && anEndVtxId == theVertex))
     {
       BRepGraphCheck::CheckVertexOnEdge(*myGraph, theVertex, anEdgeId, aLocal);
     }
@@ -337,7 +355,7 @@ bool BRepGraphCheck_Analyzer::IsValid() const
 
 //=================================================================================================
 
-bool BRepGraphCheck_Analyzer::IsValid(BRepGraph_NodeId theNode) const
+bool BRepGraphCheck_Analyzer::IsValid(const BRepGraph_NodeId theNode) const
 {
   if (!myReport.HasIssuesForNode(theNode))
     return true;

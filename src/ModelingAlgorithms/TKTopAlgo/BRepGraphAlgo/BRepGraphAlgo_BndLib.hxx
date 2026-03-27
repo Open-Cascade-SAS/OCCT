@@ -68,17 +68,17 @@ public:
   //! @param[in] theUseTriangulation if true, use triangulation when available
   Standard_EXPORT static void Add(const BRepGraph& theGraph,
                                   Bnd_Box&         theBox,
-                                  bool             theUseTriangulation = true);
+                                  const bool       theUseTriangulation = true);
 
   //! AABB of a single node (Face, Edge, Vertex, Shell, Solid, etc).
   //! @param[in] theGraph pre-built BRepGraph
   //! @param[in] theNode node identifier to compute bbox for
   //! @param[in,out] theBox bounding box to enlarge
   //! @param[in] theUseTriangulation if true, use triangulation when available
-  Standard_EXPORT static void Add(const BRepGraph& theGraph,
-                                  BRepGraph_NodeId theNode,
-                                  Bnd_Box&         theBox,
-                                  bool             theUseTriangulation = true);
+  Standard_EXPORT static void Add(const BRepGraph&    theGraph,
+                                  const BRepGraph_NodeId theNode,
+                                  Bnd_Box&               theBox,
+                                  const bool             theUseTriangulation = true);
 
   //! Precise AABB using optimal curve/surface methods.
   //! @param[in] theGraph pre-built BRepGraph
@@ -87,8 +87,8 @@ public:
   //! @param[in] theUseShapeTolerance if true, enlarge box by shape tolerances
   Standard_EXPORT static void AddOptimal(const BRepGraph& theGraph,
                                          Bnd_Box&         theBox,
-                                         bool             theUseTriangulation  = true,
-                                         bool             theUseShapeTolerance = false);
+                                         const bool       theUseTriangulation  = true,
+                                         const bool       theUseShapeTolerance = false);
 
   //! Per-node precise AABB.
   //! @param[in] theGraph pre-built BRepGraph
@@ -96,11 +96,11 @@ public:
   //! @param[in,out] theBox bounding box to enlarge
   //! @param[in] theUseTriangulation if true, use triangulation when available
   //! @param[in] theUseShapeTolerance if true, enlarge box by shape tolerances
-  Standard_EXPORT static void AddOptimal(const BRepGraph& theGraph,
-                                         BRepGraph_NodeId theNode,
-                                         Bnd_Box&         theBox,
-                                         bool             theUseTriangulation  = true,
-                                         bool             theUseShapeTolerance = false);
+  Standard_EXPORT static void AddOptimal(const BRepGraph&       theGraph,
+                                         const BRepGraph_NodeId theNode,
+                                         Bnd_Box&               theBox,
+                                         const bool             theUseTriangulation  = true,
+                                         const bool             theUseShapeTolerance = false);
 
   //! Oriented bounding box.
   //! @param[in] theGraph pre-built BRepGraph
@@ -110,9 +110,9 @@ public:
   //! @param[in] theIsShapeToleranceUsed if true, extend by shape tolerances
   Standard_EXPORT static void AddOBB(const BRepGraph& theGraph,
                                      Bnd_OBB&         theOBB,
-                                     bool             theIsTriangulationUsed  = true,
-                                     bool             theIsOptimal            = false,
-                                     bool             theIsShapeToleranceUsed = true);
+                                     const bool       theIsTriangulationUsed  = true,
+                                     const bool       theIsOptimal            = false,
+                                     const bool       theIsShapeToleranceUsed = true);
 
   // - Cached API --
   // Stores/retrieves bounding boxes as user attributes on graph nodes.
@@ -125,9 +125,9 @@ public:
   //! @param[in]  theNode   node identifier
   //! @param[out] theData   cached data (unchanged if no cache exists)
   //! @return true if a cached bbox exists at any precision
-  Standard_EXPORT static bool GetCached(const BRepGraph& theGraph,
-                                        BRepGraph_NodeId theNode,
-                                        CachedData&      theData);
+  Standard_EXPORT static bool GetCached(const BRepGraph&       theGraph,
+                                        const BRepGraph_NodeId theNode,
+                                        CachedData&            theData);
 
   //! Compute and cache bounding box if not already cached at sufficient precision.
   //! @param[in]  theGraph    pre-built BRepGraph (non-const for cache mutation)
@@ -135,10 +135,10 @@ public:
   //! @param[in]  thePrecision desired precision level
   //! @param[in]  theUseTriangulation use triangulation when available
   //! @return computed or cached bounding box
-  Standard_EXPORT static Bnd_Box AddCached(BRepGraph&       theGraph,
-                                           BRepGraph_NodeId theNode,
-                                           Precision        thePrecision = Precision::Standard,
-                                           bool             theUseTriangulation = true);
+  Standard_EXPORT static Bnd_Box AddCached(BRepGraph&             theGraph,
+                                           const BRepGraph_NodeId theNode,
+                                           const Precision        thePrecision = Precision::Standard,
+                                           const bool             theUseTriangulation = true);
 
   //! Store an externally-computed bounding box into the cache.
   //! @param[in]  theGraph    pre-built BRepGraph (non-const for cache mutation)
@@ -147,17 +147,17 @@ public:
   //! @param[in]  thePrecision precision level of the stored box
   //! @param[in]  theUsedTriangulation whether triangulation was used
   //! @param[in]  theUsedShapeTolerance whether shape tolerances were applied
-  Standard_EXPORT static void SetCached(BRepGraph&       theGraph,
-                                        BRepGraph_NodeId theNode,
-                                        const Bnd_Box&   theBox,
-                                        Precision        thePrecision,
-                                        bool             theUsedTriangulation  = false,
-                                        bool             theUsedShapeTolerance = false);
+  Standard_EXPORT static void SetCached(BRepGraph&             theGraph,
+                                        const BRepGraph_NodeId theNode,
+                                        const Bnd_Box&         theBox,
+                                        const Precision        thePrecision,
+                                        const bool             theUsedTriangulation  = false,
+                                        const bool             theUsedShapeTolerance = false);
 
   //! Invalidate the cached bounding box for a node.
   //! @param[in]  theGraph  pre-built BRepGraph (non-const for cache mutation)
   //! @param[in]  theNode   node identifier
-  Standard_EXPORT static void InvalidateCached(BRepGraph& theGraph, BRepGraph_NodeId theNode);
+  Standard_EXPORT static void InvalidateCached(BRepGraph& theGraph, const BRepGraph_NodeId theNode);
 
   //! Return the user attribute key used for bbox caching.
   //! @return integer key registered via GUID

@@ -79,28 +79,28 @@ public:
   //! @param[in]  theNode   face definition node identifier
   //! @param[out] theData   cached data (unchanged if no cache exists)
   //! @return true if a cached UV bounds exists and is not dirty
-  Standard_EXPORT static bool GetCached(const BRepGraph& theGraph,
-                                        BRepGraph_NodeId theNode,
-                                        CachedData&      theData);
+  Standard_EXPORT static bool GetCached(const BRepGraph&       theGraph,
+                                        const BRepGraph_NodeId theNode,
+                                        CachedData&            theData);
 
   //! Compute and cache UV bounds if not already cached.
   //! @param[in]  theGraph  pre-built BRepGraph (non-const for cache mutation)
   //! @param[in]  theNode   face definition node identifier
   //! @return computed or cached UV bounds data
-  Standard_EXPORT static CachedData AddCached(BRepGraph& theGraph, BRepGraph_NodeId theNode);
+  Standard_EXPORT static CachedData AddCached(BRepGraph& theGraph, const BRepGraph_NodeId theNode);
 
   //! Store externally-computed UV bounds into the cache.
   //! @param[in]  theGraph  pre-built BRepGraph (non-const for cache mutation)
   //! @param[in]  theNode   face definition node identifier
   //! @param[in]  theData   UV bounds data to store
-  Standard_EXPORT static void SetCached(BRepGraph&        theGraph,
-                                        BRepGraph_NodeId  theNode,
-                                        const CachedData& theData);
+  Standard_EXPORT static void SetCached(BRepGraph&             theGraph,
+                                        const BRepGraph_NodeId theNode,
+                                        const CachedData&      theData);
 
   //! Invalidate the cached UV bounds for a node.
   //! @param[in]  theGraph  pre-built BRepGraph (non-const for cache mutation)
   //! @param[in]  theNode   face definition node identifier
-  Standard_EXPORT static void InvalidateCached(BRepGraph& theGraph, BRepGraph_NodeId theNode);
+  Standard_EXPORT static void InvalidateCached(BRepGraph& theGraph, const BRepGraph_NodeId theNode);
 
   //! Return the user attribute key used for UV bounds caching.
   //! @return integer key registered via GUID

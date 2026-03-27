@@ -115,7 +115,7 @@ private:
                BRepGraph_NodeId::Kind        theTargetKind,
                BRepGraph_NodeId              theCurrentNode,
                const BRepGraph_TopologyPath& thePath,
-               int                           theDepthBudget);
+               const int                     theDepthBudget);
 
   //! Result entry pairing a path with its pre-resolved leaf node.
   struct ExplorerResult

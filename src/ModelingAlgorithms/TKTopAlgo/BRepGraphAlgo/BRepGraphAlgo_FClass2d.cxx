@@ -225,6 +225,9 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph&       theGraph,
     auto coedgeLookup = [&theGraph](int theIdx) -> const BRepGraphInc::CoEdgeEntity& {
       return theGraph.Topo().CoEdge(BRepGraph_CoEdgeId(theIdx));
     };
+    auto vtxRefLookup = [&theGraph](const BRepGraph_VertexRefId theRefId) -> BRepGraph_VertexId {
+      return theGraph.Refs().Vertex(theRefId).VertexDefId;
+    };
     NCollection_Vector<BRepGraphInc::CoEdgeRef> aWireCoEdgeRefs;
     const BRepGraph_WireId                      aWireId(aWireDefIndices(aWireIdx));
     const BRepGraph_TopoNode::WireDef&          aWireEnt = aTopoView.Wire(aWireId);
@@ -242,7 +245,7 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph&       theGraph,
       aCR.LocalLocation = aCRE.LocalLocation;
       aWireCoEdgeRefs.Append(aCR);
     }
-    BRepGraphInc_WireExplorer aWireExp(aWireCoEdgeRefs, coedgeLookup, edgeLookup);
+    BRepGraphInc_WireExplorer aWireExp(aWireCoEdgeRefs, coedgeLookup, edgeLookup, vtxRefLookup);
     const NCollection_Vector<BRepGraphInc::CoEdgeRef>& anOrderedRefs = aWireExp.OrderedRefs();
 
     const int aNbEdgeRefs = anOrderedRefs.Length();
@@ -290,7 +293,10 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph&       theGraph,
       if (aCoEdgeDef.SeamPairId.IsValid())
         anIsDegenerated = true;
 
-      if (!anEdgeDef.StartVertexDefId().IsValid() || !anEdgeDef.EndVertexDefId().IsValid())
+      if (!anEdgeDef.StartVertexRefId.IsValid()
+          || !BRepGraph_Tool::Edge::StartVertex(theGraph, aCoEdgeDef.EdgeDefId).VertexDefId.IsValid()
+          || !anEdgeDef.EndVertexRefId.IsValid()
+          || !BRepGraph_Tool::Edge::EndVertex(theGraph, aCoEdgeDef.EdgeDefId).VertexDefId.IsValid())
         anIsDegenerated = true;
 
       // Check 3D curve degeneration if not already flagged.

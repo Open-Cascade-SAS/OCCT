@@ -16,6 +16,7 @@
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_TopoNode.hxx>
+#include <BRepGraphInc_Entity.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
 #include <gp_Pnt.hxx>
@@ -41,11 +42,19 @@ void BRepGraphCheck::CheckVertexOnEdge(const BRepGraph&                         
 
   // Determine parameter for this vertex on the curve.
   double aParam = 0.0;
-  if (anEdgeDef.StartVertexDefId().IsValid() && anEdgeDef.StartVertex.VertexDefId == theVertex)
+  const BRepGraph_VertexId aStartVtxId =
+    anEdgeDef.StartVertexRefId.IsValid()
+      ? BRepGraph_Tool::Edge::StartVertex(theGraph, theEdge).VertexDefId
+      : BRepGraph_VertexId();
+  const BRepGraph_VertexId anEndVtxId =
+    anEdgeDef.EndVertexRefId.IsValid()
+      ? BRepGraph_Tool::Edge::EndVertex(theGraph, theEdge).VertexDefId
+      : BRepGraph_VertexId();
+  if (aStartVtxId.IsValid() && aStartVtxId == theVertex)
   {
     aParam = anEdgeDef.ParamFirst;
   }
-  else if (anEdgeDef.EndVertexDefId().IsValid() && anEdgeDef.EndVertex.VertexDefId == theVertex)
+  else if (anEndVtxId.IsValid() && anEndVtxId == theVertex)
   {
     aParam = anEdgeDef.ParamLast;
   }
@@ -96,12 +105,20 @@ void BRepGraphCheck::CheckVertexOnFace(const BRepGraph&                         
     bool   aIsEndpoint = false;
     double aParam      = 0.0;
 
-    if (anEdgeDef.StartVertexDefId().IsValid() && anEdgeDef.StartVertex.VertexDefId == theVertex)
+    const BRepGraph_VertexId aFaceStartVtxId =
+      anEdgeDef.StartVertexRefId.IsValid()
+        ? BRepGraph_Tool::Edge::StartVertex(theGraph, anEdgeId).VertexDefId
+        : BRepGraph_VertexId();
+    const BRepGraph_VertexId aFaceEndVtxId =
+      anEdgeDef.EndVertexRefId.IsValid()
+        ? BRepGraph_Tool::Edge::EndVertex(theGraph, anEdgeId).VertexDefId
+        : BRepGraph_VertexId();
+    if (aFaceStartVtxId.IsValid() && aFaceStartVtxId == theVertex)
     {
       aIsEndpoint = true;
       aParam      = anEdgeDef.ParamFirst;
     }
-    else if (anEdgeDef.EndVertexDefId().IsValid() && anEdgeDef.EndVertex.VertexDefId == theVertex)
+    else if (aFaceEndVtxId.IsValid() && aFaceEndVtxId == theVertex)
     {
       aIsEndpoint = true;
       aParam      = anEdgeDef.ParamLast;

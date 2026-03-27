@@ -32,6 +32,7 @@ struct CoEdgeRefEntry;
 struct VertexRefEntry;
 struct SolidRefEntry;
 struct ChildRefEntry;
+struct OccurrenceRefEntry;
 } // namespace BRepGraphInc
 
 //! @brief Non-const view for programmatic graph construction and mutation.
@@ -315,6 +316,11 @@ public:
   //! @param[in] theChildRef typed child reference identifier
   Standard_EXPORT BRepGraph_MutRefEntry<BRepGraphInc::ChildRefEntry> MutChildRef(
     const BRepGraph_ChildRefId theChildRef);
+
+  //! Return scoped mutable occurrence reference guard.
+  //! @param[in] theOccurrenceRef typed occurrence reference identifier
+  Standard_EXPORT BRepGraph_MutRefEntry<BRepGraphInc::OccurrenceRefEntry> MutOccurrenceRef(
+    const BRepGraph_OccurrenceRefId theOccurrenceRef);
 
 private:
   friend class BRepGraph;
