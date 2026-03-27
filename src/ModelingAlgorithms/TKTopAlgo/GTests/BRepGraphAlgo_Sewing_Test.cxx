@@ -20,7 +20,7 @@
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepGProp.hxx>
 #include <BRepGraph_TopoView.hxx>
-#include <BRepGraphInc_Entity.hxx>
+#include <BRepGraphInc_Definition.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_Tool.hxx>
@@ -1423,7 +1423,7 @@ TEST(BRepGraphAlgo_SewingTest, NonManifoldMode_ThreeFacesShareEdge)
       NCollection_Map<int> aFaceIds;
       for (int j = 0; j < aCoEdgeIdxs.Length(); ++j)
       {
-        const BRepGraphInc::CoEdgeEntity& aCE = aGraph.Topo().CoEdge(aCoEdgeIdxs.Value(j));
+        const BRepGraphInc::CoEdgeDef& aCE = aGraph.Topo().CoEdge(aCoEdgeIdxs.Value(j));
         // PCurve may be stored (Curve2DRepId valid) or computed on-the-fly for planar faces.
         // Use PCurveAdaptor which handles both cases.
         const Geom2dAdaptor_Curve aPCAdaptor =

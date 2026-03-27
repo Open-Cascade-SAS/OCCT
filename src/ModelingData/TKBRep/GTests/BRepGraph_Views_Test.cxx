@@ -101,7 +101,7 @@ TEST_F(BRepGraph_ViewsTest, DefsView_FaceAccessor_Valid)
 {
   for (int anIdx = 0; anIdx < myGraph.Topo().NbFaces(); ++anIdx)
   {
-    const BRepGraphInc::FaceEntity& aFace = myGraph.Topo().Face(BRepGraph_FaceId(anIdx));
+    const BRepGraphInc::FaceDef& aFace = myGraph.Topo().Face(BRepGraph_FaceId(anIdx));
     EXPECT_TRUE(aFace.Id.IsValid()) << "Face " << anIdx << " has invalid Id";
   }
 }
@@ -109,7 +109,7 @@ TEST_F(BRepGraph_ViewsTest, DefsView_FaceAccessor_Valid)
 TEST_F(BRepGraph_ViewsTest, DefsView_TopoEntity_Valid)
 {
   BRepGraph_NodeId                   aFaceId(BRepGraph_NodeId::Kind::Face, 0);
-  const BRepGraphInc::BaseEntity* aBase = myGraph.Topo().TopoEntity(aFaceId);
+  const BRepGraphInc::BaseDef* aBase = myGraph.Topo().TopoEntity(aFaceId);
   ASSERT_NE(aBase, nullptr);
   EXPECT_EQ(aBase->Id, myGraph.Topo().Face(BRepGraph_FaceId(0)).Id);
 }
@@ -244,7 +244,7 @@ TEST_F(BRepGraph_ViewsTest, ShapesView_HasOriginal_True)
 TEST_F(BRepGraph_ViewsTest, MutView_EdgeDef_MarksModified)
 {
   {
-    BRepGraph_MutRef<BRepGraphInc::EdgeEntity> anEdge =
+    BRepGraph_MutRef<BRepGraphInc::EdgeDef> anEdge =
       myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
   }
   EXPECT_TRUE(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).IsModified);

@@ -39,9 +39,9 @@ struct VertexRef
 //! Reference from a wire to one of its coedges.
 //!
 //! Unlike other Ref types, CoEdgeRef intentionally carries no Orientation field.
-//! Orientation (Sense) lives on CoEdgeEntity because it is definitional, not
+//! Orientation (Sense) lives on CoEdgeDef because it is definitional, not
 //! referential: Sense is intrinsically bound to the CoEdge's PCurve, parametric
-//! range, and UV endpoints.  Seam edges rely on two CoEdgeEntities with opposite
+//! range, and UV endpoints.  Seam edges rely on two CoEdgeDefs with opposite
 //! Sense sharing a SeamPairIdx, each owning its own PCurve - moving Sense here
 //! would break that coupling.
 struct CoEdgeRef

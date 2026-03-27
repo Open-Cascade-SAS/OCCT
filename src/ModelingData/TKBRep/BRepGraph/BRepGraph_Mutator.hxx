@@ -41,7 +41,7 @@ public:
   };
 
   //! Split a single edge definition at a vertex and 3D-curve parameter.
-  //! Creates two new EdgeEntity slots, splits all PCurve nodes at the corresponding
+  //! Creates two new EdgeDef slots, splits all PCurve nodes at the corresponding
   //! 2D parameter, and updates every wire that contained the original edge
   //! (inserting the two sub-edges in traversal order).
   //! @param[in,out] theGraph       graph to mutate

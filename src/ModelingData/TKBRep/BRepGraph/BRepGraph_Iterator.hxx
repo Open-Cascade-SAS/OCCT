@@ -24,10 +24,10 @@
 //!
 //! ## Usage
 //! @code
-//!   for (BRepGraph_Iterator<BRepGraphInc::FaceEntity> anIt(aGraph);
+//!   for (BRepGraph_Iterator<BRepGraphInc::FaceDef> anIt(aGraph);
 //!        anIt.More(); anIt.Next())
 //!   {
-//!     const BRepGraphInc::FaceEntity& aFace = anIt.Current();
+//!     const BRepGraphInc::FaceDef& aFace = anIt.Current();
 //!   }
 //! @endcode
 namespace BRepGraph_IteratorDetail
@@ -47,49 +47,49 @@ template <typename T>
 struct NodeIdType;
 
 template <>
-struct NodeIdType<BRepGraphInc::SolidEntity>
+struct NodeIdType<BRepGraphInc::SolidDef>
 {
   using type = BRepGraph_SolidId;
 };
 
 template <>
-struct NodeIdType<BRepGraphInc::ShellEntity>
+struct NodeIdType<BRepGraphInc::ShellDef>
 {
   using type = BRepGraph_ShellId;
 };
 
 template <>
-struct NodeIdType<BRepGraphInc::FaceEntity>
+struct NodeIdType<BRepGraphInc::FaceDef>
 {
   using type = BRepGraph_FaceId;
 };
 
 template <>
-struct NodeIdType<BRepGraphInc::WireEntity>
+struct NodeIdType<BRepGraphInc::WireDef>
 {
   using type = BRepGraph_WireId;
 };
 
 template <>
-struct NodeIdType<BRepGraphInc::EdgeEntity>
+struct NodeIdType<BRepGraphInc::EdgeDef>
 {
   using type = BRepGraph_EdgeId;
 };
 
 template <>
-struct NodeIdType<BRepGraphInc::VertexEntity>
+struct NodeIdType<BRepGraphInc::VertexDef>
 {
   using type = BRepGraph_VertexId;
 };
 
 template <>
-struct NodeIdType<BRepGraphInc::ProductEntity>
+struct NodeIdType<BRepGraphInc::ProductDef>
 {
   using type = BRepGraph_ProductId;
 };
 
 template <>
-struct NodeIdType<BRepGraphInc::OccurrenceEntity>
+struct NodeIdType<BRepGraphInc::OccurrenceDef>
 {
   using type = BRepGraph_OccurrenceId;
 };
@@ -140,7 +140,7 @@ private:
 // ---------------------------------------------------------------------------
 
 template <>
-inline BRepGraph_Iterator<BRepGraphInc::SolidEntity>::BRepGraph_Iterator(
+inline BRepGraph_Iterator<BRepGraphInc::SolidDef>::BRepGraph_Iterator(
   const BRepGraph& theGraph)
     : myGraph(theGraph),
       myLength(theGraph.Topo().NbSolids())
@@ -149,7 +149,7 @@ inline BRepGraph_Iterator<BRepGraphInc::SolidEntity>::BRepGraph_Iterator(
 }
 
 template <>
-inline BRepGraph_Iterator<BRepGraphInc::ShellEntity>::BRepGraph_Iterator(
+inline BRepGraph_Iterator<BRepGraphInc::ShellDef>::BRepGraph_Iterator(
   const BRepGraph& theGraph)
     : myGraph(theGraph),
       myLength(theGraph.Topo().NbShells())
@@ -158,7 +158,7 @@ inline BRepGraph_Iterator<BRepGraphInc::ShellEntity>::BRepGraph_Iterator(
 }
 
 template <>
-inline BRepGraph_Iterator<BRepGraphInc::FaceEntity>::BRepGraph_Iterator(
+inline BRepGraph_Iterator<BRepGraphInc::FaceDef>::BRepGraph_Iterator(
   const BRepGraph& theGraph)
     : myGraph(theGraph),
       myLength(theGraph.Topo().NbFaces())
@@ -167,7 +167,7 @@ inline BRepGraph_Iterator<BRepGraphInc::FaceEntity>::BRepGraph_Iterator(
 }
 
 template <>
-inline BRepGraph_Iterator<BRepGraphInc::WireEntity>::BRepGraph_Iterator(
+inline BRepGraph_Iterator<BRepGraphInc::WireDef>::BRepGraph_Iterator(
   const BRepGraph& theGraph)
     : myGraph(theGraph),
       myLength(theGraph.Topo().NbWires())
@@ -176,7 +176,7 @@ inline BRepGraph_Iterator<BRepGraphInc::WireEntity>::BRepGraph_Iterator(
 }
 
 template <>
-inline BRepGraph_Iterator<BRepGraphInc::EdgeEntity>::BRepGraph_Iterator(
+inline BRepGraph_Iterator<BRepGraphInc::EdgeDef>::BRepGraph_Iterator(
   const BRepGraph& theGraph)
     : myGraph(theGraph),
       myLength(theGraph.Topo().NbEdges())
@@ -185,7 +185,7 @@ inline BRepGraph_Iterator<BRepGraphInc::EdgeEntity>::BRepGraph_Iterator(
 }
 
 template <>
-inline BRepGraph_Iterator<BRepGraphInc::VertexEntity>::BRepGraph_Iterator(
+inline BRepGraph_Iterator<BRepGraphInc::VertexDef>::BRepGraph_Iterator(
   const BRepGraph& theGraph)
     : myGraph(theGraph),
       myLength(theGraph.Topo().NbVertices())
@@ -194,7 +194,7 @@ inline BRepGraph_Iterator<BRepGraphInc::VertexEntity>::BRepGraph_Iterator(
 }
 
 template <>
-inline BRepGraph_Iterator<BRepGraphInc::ProductEntity>::BRepGraph_Iterator(
+inline BRepGraph_Iterator<BRepGraphInc::ProductDef>::BRepGraph_Iterator(
   const BRepGraph& theGraph)
     : myGraph(theGraph),
       myLength(theGraph.Paths().NbProducts())
@@ -203,7 +203,7 @@ inline BRepGraph_Iterator<BRepGraphInc::ProductEntity>::BRepGraph_Iterator(
 }
 
 template <>
-inline BRepGraph_Iterator<BRepGraphInc::OccurrenceEntity>::BRepGraph_Iterator(
+inline BRepGraph_Iterator<BRepGraphInc::OccurrenceDef>::BRepGraph_Iterator(
   const BRepGraph& theGraph)
     : myGraph(theGraph),
       myLength(theGraph.Paths().NbOccurrences())
@@ -216,57 +216,57 @@ inline BRepGraph_Iterator<BRepGraphInc::OccurrenceEntity>::BRepGraph_Iterator(
 // ---------------------------------------------------------------------------
 
 template <>
-inline const BRepGraphInc::SolidEntity& BRepGraph_Iterator<
-  BRepGraphInc::SolidEntity>::Current() const
+inline const BRepGraphInc::SolidDef& BRepGraph_Iterator<
+  BRepGraphInc::SolidDef>::Current() const
 {
   return myGraph.Topo().Solid(CurrentId());
 }
 
 template <>
-inline const BRepGraphInc::ShellEntity& BRepGraph_Iterator<
-  BRepGraphInc::ShellEntity>::Current() const
+inline const BRepGraphInc::ShellDef& BRepGraph_Iterator<
+  BRepGraphInc::ShellDef>::Current() const
 {
   return myGraph.Topo().Shell(CurrentId());
 }
 
 template <>
-inline const BRepGraphInc::FaceEntity& BRepGraph_Iterator<BRepGraphInc::FaceEntity>::Current()
+inline const BRepGraphInc::FaceDef& BRepGraph_Iterator<BRepGraphInc::FaceDef>::Current()
   const
 {
   return myGraph.Topo().Face(CurrentId());
 }
 
 template <>
-inline const BRepGraphInc::WireEntity& BRepGraph_Iterator<BRepGraphInc::WireEntity>::Current()
+inline const BRepGraphInc::WireDef& BRepGraph_Iterator<BRepGraphInc::WireDef>::Current()
   const
 {
   return myGraph.Topo().Wire(CurrentId());
 }
 
 template <>
-inline const BRepGraphInc::EdgeEntity& BRepGraph_Iterator<BRepGraphInc::EdgeEntity>::Current()
+inline const BRepGraphInc::EdgeDef& BRepGraph_Iterator<BRepGraphInc::EdgeDef>::Current()
   const
 {
   return myGraph.Topo().Edge(CurrentId());
 }
 
 template <>
-inline const BRepGraphInc::VertexEntity& BRepGraph_Iterator<
-  BRepGraphInc::VertexEntity>::Current() const
+inline const BRepGraphInc::VertexDef& BRepGraph_Iterator<
+  BRepGraphInc::VertexDef>::Current() const
 {
   return myGraph.Topo().Vertex(CurrentId());
 }
 
 template <>
-inline const BRepGraphInc::ProductEntity& BRepGraph_Iterator<
-  BRepGraphInc::ProductEntity>::Current() const
+inline const BRepGraphInc::ProductDef& BRepGraph_Iterator<
+  BRepGraphInc::ProductDef>::Current() const
 {
   return myGraph.Paths().Product(CurrentId());
 }
 
 template <>
-inline const BRepGraphInc::OccurrenceEntity& BRepGraph_Iterator<
-  BRepGraphInc::OccurrenceEntity>::Current() const
+inline const BRepGraphInc::OccurrenceDef& BRepGraph_Iterator<
+  BRepGraphInc::OccurrenceDef>::Current() const
 {
   return myGraph.Paths().Occurrence(CurrentId());
 }

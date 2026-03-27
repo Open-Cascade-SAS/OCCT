@@ -218,57 +218,57 @@ public:
 
   //! Return scoped mutable edge definition guard.
   //! @param[in] theEdge typed edge identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::EdgeEntity> MutEdge(
+  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::EdgeDef> MutEdge(
     const BRepGraph_EdgeId theEdge);
 
   //! Return scoped mutable vertex definition guard.
   //! @param[in] theVertex typed vertex identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::VertexEntity> MutVertex(
+  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::VertexDef> MutVertex(
     const BRepGraph_VertexId theVertex);
 
   //! Return scoped mutable wire definition guard.
   //! @param[in] theWire typed wire identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::WireEntity> MutWire(
+  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::WireDef> MutWire(
     const BRepGraph_WireId theWire);
 
   //! Return scoped mutable face definition guard.
   //! @param[in] theFace typed face identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::FaceEntity> MutFace(
+  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::FaceDef> MutFace(
     const BRepGraph_FaceId theFace);
 
   //! Return scoped mutable shell definition guard.
   //! @param[in] theShell typed shell identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::ShellEntity> MutShell(
+  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::ShellDef> MutShell(
     const BRepGraph_ShellId theShell);
 
   //! Return scoped mutable solid definition guard.
   //! @param[in] theSolid typed solid identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::SolidEntity> MutSolid(
+  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::SolidDef> MutSolid(
     const BRepGraph_SolidId theSolid);
 
   //! Return scoped mutable compound definition guard.
   //! @param[in] theCompound typed compound identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::CompoundEntity> MutCompound(
+  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::CompoundDef> MutCompound(
     const BRepGraph_CompoundId theCompound);
 
   //! Return scoped mutable coedge definition guard.
   //! @param[in] theCoEdge typed coedge identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::CoEdgeEntity> MutCoEdge(
+  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::CoEdgeDef> MutCoEdge(
     const BRepGraph_CoEdgeId theCoEdge);
 
   //! Return scoped mutable comp-solid definition guard.
   //! @param[in] theCompSolid typed comp-solid identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::CompSolidEntity> MutCompSolid(
+  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::CompSolidDef> MutCompSolid(
     const BRepGraph_CompSolidId theCompSolid);
 
   //! Return scoped mutable product definition guard.
   //! @param[in] theProduct typed product identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::ProductEntity> MutProduct(
+  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::ProductDef> MutProduct(
     const BRepGraph_ProductId theProduct);
 
   //! Return scoped mutable occurrence definition guard.
   //! @param[in] theOccurrence typed occurrence identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::OccurrenceEntity> MutOccurrence(
+  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::OccurrenceDef> MutOccurrence(
     const BRepGraph_OccurrenceId theOccurrence);
 
   //! Return scoped mutable shell reference guard.

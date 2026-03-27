@@ -1,7 +1,7 @@
 set(OCCT_BRepGraphInc_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_BRepGraphInc_FILES
-  BRepGraphInc_Entity.hxx
+  BRepGraphInc_Definition.hxx
   BRepGraphInc_IncidenceRef.hxx
   BRepGraphInc_Populate.cxx
   BRepGraphInc_Populate.hxx

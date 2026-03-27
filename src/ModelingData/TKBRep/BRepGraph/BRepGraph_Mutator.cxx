@@ -162,7 +162,7 @@ const NCollection_Vector<BRepGraph_CoEdgeRefId>& wireCoEdgeRefIds(
 //! Initialize a sub-edge definition produced by SplitEdge.
 //! Copies shared properties from the original edge and assigns boundary vertex ref ids.
 //! Vertex ref entries must already exist in storage; only their RefId indices are passed.
-void initSubEdgeEntity(BRepGraphInc::EdgeEntity&       theSub,
+void initSubEdgeEntity(BRepGraphInc::EdgeDef&       theSub,
                     const BRepGraph_Curve3DRepId    theCurve3DRepId,
                     const double                    theTolerance,
                     const bool                      theSameParameter,
@@ -183,7 +183,7 @@ void initSubEdgeEntity(BRepGraphInc::EdgeEntity&       theSub,
 }
 
 //! Initialize a sub-CoEdge definition produced by SplitEdge.
-void initSubCoEdgeEntity(BRepGraphInc::CoEdgeEntity&  theCE,
+void initSubCoEdgeEntity(BRepGraphInc::CoEdgeDef&  theCE,
                       const BRepGraph_EdgeId       theEdgeId,
                       const BRepGraph_FaceId       theFaceId,
                       const TopAbs_Orientation     theSense,
@@ -223,8 +223,8 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&             theGraph,
                                   BRepGraph_NodeId&      theSubA,
                                   BRepGraph_NodeId&      theSubB)
 {
-  // Copy all data from the original EdgeEntity before appending to vectors (which may reallocate).
-  const BRepGraphInc::EdgeEntity& anOrig =
+  // Copy all data from the original EdgeDef before appending to vectors (which may reallocate).
+  const BRepGraphInc::EdgeDef& anOrig =
     theGraph.myData->myIncStorage.Edge(BRepGraph_EdgeId::FromNodeId(theEdgeEntity));
 
   const BRepGraphInc_Storage&   aConstStorage         = theGraph.myData->myIncStorage;
@@ -254,13 +254,13 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&             theGraph,
     aOrigWiresPtr != nullptr ? *aOrigWiresPtr : NCollection_Vector<BRepGraph_WireId>();
 
   // Allocate SubA slot.
-  BRepGraphInc::EdgeEntity& aSubADef = theGraph.myData->myIncStorage.AppendEdge();
+  BRepGraphInc::EdgeDef& aSubADef = theGraph.myData->myIncStorage.AppendEdge();
   const int                    aSubAIdx = theGraph.myData->myIncStorage.NbEdges() - 1;
   aSubADef.Id                           = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, aSubAIdx);
   theSubA                               = aSubADef.Id;
 
   // Allocate SubB slot (note: Appended() may invalidate aSubADef reference - use index).
-  BRepGraphInc::EdgeEntity& aSubBDef = theGraph.myData->myIncStorage.AppendEdge();
+  BRepGraphInc::EdgeDef& aSubBDef = theGraph.myData->myIncStorage.AppendEdge();
   const int                    aSubBIdx = theGraph.myData->myIncStorage.NbEdges() - 1;
   aSubBDef.Id                           = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, aSubBIdx);
   theSubB                               = aSubBDef.Id;
@@ -348,7 +348,7 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&             theGraph,
 
   // Set SubA: StartVertex -> SplitVertex, [ParamFirst, theSplitParam].
   {
-    BRepGraphInc::EdgeEntity& aSubA =
+    BRepGraphInc::EdgeDef& aSubA =
       theGraph.myData->myIncStorage.ChangeEdge(BRepGraph_EdgeId(aSubAIdx));
     initSubEdgeEntity(aSubA,
                    aOrigCurve3DRepId,
@@ -362,7 +362,7 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&             theGraph,
 
   // Set SubB: SplitVertex -> EndVertex, [theSplitParam, ParamLast].
   {
-    BRepGraphInc::EdgeEntity& aSubB =
+    BRepGraphInc::EdgeDef& aSubB =
       theGraph.myData->myIncStorage.ChangeEdge(BRepGraph_EdgeId(aSubBIdx));
     initSubEdgeEntity(aSubB,
                    aOrigCurve3DRepId,
@@ -403,7 +403,7 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&             theGraph,
           if (aOldCoEdgeIdx < 0 || aOldCoEdgeIdx >= aStorage.NbCoEdges())
             continue;
 
-          BRepGraphInc::CoEdgeEntity& aOldCoEdge =
+          BRepGraphInc::CoEdgeDef& aOldCoEdge =
             aStorage.ChangeCoEdge(BRepGraph_CoEdgeId(aOldCoEdgeIdx));
           if (aOldCoEdge.EdgeEntityId == theEdgeEntity)
           {
@@ -415,7 +415,7 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&             theGraph,
             aOldCoEdge.EdgeEntityId = BRepGraph_EdgeId(aSubAIdx);
 
             // Create a new coedge for SubB and insert after SubA.
-            BRepGraphInc::CoEdgeEntity& aSubBCoEdge = aStorage.AppendCoEdge();
+            BRepGraphInc::CoEdgeDef& aSubBCoEdge = aStorage.AppendCoEdge();
             const int                   aSubBCoEdgeIdx = aStorage.NbCoEdges() - 1;
             aSubBCoEdge.Id                          = BRepGraph_NodeId::CoEdge(aSubBCoEdgeIdx);
             aSubBCoEdge.EdgeEntityId                   = BRepGraph_EdgeId(aSubBIdx);
@@ -434,7 +434,7 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&             theGraph,
 
             // Add new CoEdgeRefId to wire entity's RefId vector right after the
             // replaced slot to preserve coedge walk order.
-            BRepGraphInc::WireEntity& aWireEnt = aStorage.ChangeWire(BRepGraph_WireId(aWireIdx));
+            BRepGraphInc::WireDef& aWireEnt = aStorage.ChangeWire(BRepGraph_WireId(aWireIdx));
             if (aRefOrd >= 0 && aRefOrd < aWireEnt.CoEdgeRefIds.Length())
             {
               aWireEnt.CoEdgeRefIds.InsertAfter(aRefOrd, BRepGraph_CoEdgeRefId(aSubBRefIdx));
@@ -459,7 +459,7 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&             theGraph,
 
   // Split PCurve entries for each CoEdge referencing the original edge.
   // Copy CoEdge data before mutation (vector may reallocate).
-  NCollection_Vector<BRepGraphInc::CoEdgeEntity> aOrigCoEdges;
+  NCollection_Vector<BRepGraphInc::CoEdgeDef> aOrigCoEdges;
   {
     const NCollection_Vector<BRepGraph_CoEdgeId>* aCoEdgeIdxs =
       theGraph.myData->myIncStorage.ReverseIndex().CoEdgesOfEdge(
@@ -474,7 +474,7 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&             theGraph,
   const double aParamRange = aOrigParamLast - aOrigParamFirst;
   for (int aCEIdx = 0; aCEIdx < aOrigCoEdges.Length(); ++aCEIdx)
   {
-    const BRepGraphInc::CoEdgeEntity& aCE = aOrigCoEdges.Value(aCEIdx);
+    const BRepGraphInc::CoEdgeDef& aCE = aOrigCoEdges.Value(aCEIdx);
 
     // Compute 2D split parameter.
     double aPCSplit;
@@ -492,7 +492,7 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&             theGraph,
     }
 
     // Create CoEdge for SubA.
-    BRepGraphInc::CoEdgeEntity& aCoEdgeSubA    = theGraph.myData->myIncStorage.AppendCoEdge();
+    BRepGraphInc::CoEdgeDef& aCoEdgeSubA    = theGraph.myData->myIncStorage.AppendCoEdge();
     const int                   aCoEdgeSubAIdx = theGraph.myData->myIncStorage.NbCoEdges() - 1;
     aCoEdgeSubA.Id                             = BRepGraph_NodeId::CoEdge(aCoEdgeSubAIdx);
     initSubCoEdgeEntity(aCoEdgeSubA,
@@ -506,7 +506,7 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&             theGraph,
     theGraph.allocateUID(aCoEdgeSubA.Id);
 
     // Create CoEdge for SubB.
-    BRepGraphInc::CoEdgeEntity& aCoEdgeSubB    = theGraph.myData->myIncStorage.AppendCoEdge();
+    BRepGraphInc::CoEdgeDef& aCoEdgeSubB    = theGraph.myData->myIncStorage.AppendCoEdge();
     const int                   aCoEdgeSubBIdx = theGraph.myData->myIncStorage.NbCoEdges() - 1;
     aCoEdgeSubB.Id                             = BRepGraph_NodeId::CoEdge(aCoEdgeSubBIdx);
     initSubCoEdgeEntity(aCoEdgeSubB,
@@ -571,9 +571,9 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&             theGraph,
   // Incremental vertex-to-edge updates: register sub-edge vertices.
   {
     const BRepGraphInc_Storage& aStorageRef = theGraph.myData->myIncStorage;
-    const BRepGraphInc::EdgeEntity& aSubAEnt =
+    const BRepGraphInc::EdgeDef& aSubAEnt =
       aStorageRef.Edge(BRepGraph_EdgeId(aSubAIdx));
-    const BRepGraphInc::EdgeEntity& aSubBEnt =
+    const BRepGraphInc::EdgeDef& aSubBEnt =
       aStorageRef.Edge(BRepGraph_EdgeId(aSubBIdx));
     BRepGraphInc_ReverseIndex& aRevIdxMut = theGraph.myData->myIncStorage.ChangeReverseIndex();
 
@@ -618,7 +618,7 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&             theGraph,
     // Edge-to-face: derive from original edge's CoEdges (same faces apply to both sub-edges).
     for (int aCEIdx = 0; aCEIdx < aOrigCoEdges.Length(); ++aCEIdx)
     {
-      const BRepGraphInc::CoEdgeEntity& aCE = aOrigCoEdges.Value(aCEIdx);
+      const BRepGraphInc::CoEdgeDef& aCE = aOrigCoEdges.Value(aCEIdx);
       if (aCE.FaceEntityId.IsValid())
       {
         aRevIdxMut.BindEdgeToFace(BRepGraph_EdgeId(aSubAIdx), aCE.FaceEntityId);
@@ -657,7 +657,7 @@ void BRepGraph_Mutator::ReplaceEdgeInWire(BRepGraph&             theGraph,
     if (aCoEdgeEntIdx < 0 || aCoEdgeEntIdx >= aStorage.NbCoEdges())
       continue;
 
-    BRepGraphInc::CoEdgeEntity& aCoEdge =
+    BRepGraphInc::CoEdgeDef& aCoEdge =
       aStorage.ChangeCoEdge(BRepGraph_CoEdgeId(aCoEdgeEntIdx));
     if (aCoEdge.EdgeEntityId == theOldEdgeEntity)
     {
@@ -671,7 +671,7 @@ void BRepGraph_Mutator::ReplaceEdgeInWire(BRepGraph&             theGraph,
       aRevIdx.BindEdgeToCoEdge(theNewEdgeEntity, BRepGraph_CoEdgeId(aCoEdgeEntIdx));
 
       // Update edge-to-face: bind new edge, unbind old edge for all faces of this wire.
-      // Wire-to-face mappings are built from FaceEntity.WireRefs during Build() and are
+      // Wire-to-face mappings are built from FaceDef.WireRefs during Build() and are
       // stable across edge mutations - only face-level operations modify them.
       const NCollection_Vector<BRepGraph_FaceId>* aFaces = aRevIdx.FacesOfWire(theWireEntityId);
       if (aFaces != nullptr)

@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <BRepGraphAlgo_BndLib.hxx>
-#include <BRepGraphInc_Entity.hxx>
+#include <BRepGraphInc_Definition.hxx>
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_RefsView.hxx>
@@ -140,7 +140,7 @@ static int pointsForOBB(const BRepGraph&            theGraph,
     {
       // Planar face: check if all edges are linear.
       bool                                        hasNonLinearEdge = false;
-      const BRepGraphInc::FaceEntity&          aFaceEnt = theGraph.Topo().Face(aFaceId);
+      const BRepGraphInc::FaceDef&          aFaceEnt = theGraph.Topo().Face(aFaceId);
       for (int aWRI = 0; aWRI < aFaceEnt.WireRefIds.Length() && !hasNonLinearEdge; ++aWRI)
       {
         const BRepGraph_WireRefId             aWireRefId = aFaceEnt.WireRefIds.Value(aWRI);
@@ -150,7 +150,7 @@ static int pointsForOBB(const BRepGraph&            theGraph,
           continue;
         }
 
-        const BRepGraphInc::WireEntity& aWireEnt = theGraph.Topo().Wire(aWR.WireEntityId);
+        const BRepGraphInc::WireDef& aWireEnt = theGraph.Topo().Wire(aWR.WireEntityId);
         for (int aCRI = 0; aCRI < aWireEnt.CoEdgeRefIds.Length(); ++aCRI)
         {
           const BRepGraph_CoEdgeRefId           aCERefId = aWireEnt.CoEdgeRefIds.Value(aCRI);
@@ -160,7 +160,7 @@ static int pointsForOBB(const BRepGraph&            theGraph,
             continue;
           }
 
-          const BRepGraphInc::CoEdgeEntity& aCoEdge = theGraph.Topo().CoEdge(aCR.CoEdgeEntityId);
+          const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdge(aCR.CoEdgeEntityId);
           const BRepGraph_EdgeId               anEdgeId(aCoEdge.EdgeEntityId);
           if (!anEdgeId.IsValid(theGraph.Topo().NbEdges()))
           {

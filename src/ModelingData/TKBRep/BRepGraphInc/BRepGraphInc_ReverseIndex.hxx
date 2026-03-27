@@ -21,16 +21,16 @@
 
 namespace BRepGraphInc
 {
-struct EdgeEntity;
-struct CoEdgeEntity;
-struct WireEntity;
-struct FaceEntity;
-struct ShellEntity;
-struct SolidEntity;
-struct CompoundEntity;
-struct CompSolidEntity;
-struct ProductEntity;
-struct OccurrenceEntity;
+struct EdgeDef;
+struct CoEdgeDef;
+struct WireDef;
+struct FaceDef;
+struct ShellDef;
+struct SolidDef;
+struct CompoundDef;
+struct CompSolidDef;
+struct ProductDef;
+struct OccurrenceDef;
 struct ShellRefEntry;
 struct FaceRefEntry;
 struct WireRefEntry;
@@ -77,14 +77,14 @@ public:
   //! @param[in] theChildRefs  child ref-entry table (compound child reverse)
   //! @param[in] theVertexRefs vertex ref-entry table (edge vertex resolution)
   Standard_EXPORT void Build(
-    const NCollection_Vector<BRepGraphInc::EdgeEntity>&      theEdges,
-    const NCollection_Vector<BRepGraphInc::CoEdgeEntity>&    theCoEdges,
-    const NCollection_Vector<BRepGraphInc::WireEntity>&      theWires,
-    const NCollection_Vector<BRepGraphInc::FaceEntity>&      theFaces,
-    const NCollection_Vector<BRepGraphInc::ShellEntity>&     theShells,
-    const NCollection_Vector<BRepGraphInc::SolidEntity>&     theSolids,
-    const NCollection_Vector<BRepGraphInc::CompoundEntity>&  theCompounds,
-    const NCollection_Vector<BRepGraphInc::CompSolidEntity>& theCompSolids,
+    const NCollection_Vector<BRepGraphInc::EdgeDef>&      theEdges,
+    const NCollection_Vector<BRepGraphInc::CoEdgeDef>&    theCoEdges,
+    const NCollection_Vector<BRepGraphInc::WireDef>&      theWires,
+    const NCollection_Vector<BRepGraphInc::FaceDef>&      theFaces,
+    const NCollection_Vector<BRepGraphInc::ShellDef>&     theShells,
+    const NCollection_Vector<BRepGraphInc::SolidDef>&     theSolids,
+    const NCollection_Vector<BRepGraphInc::CompoundDef>&  theCompounds,
+    const NCollection_Vector<BRepGraphInc::CompSolidDef>& theCompSolids,
     const NCollection_Vector<BRepGraphInc::ShellRefEntry>&   theShellRefs,
     const NCollection_Vector<BRepGraphInc::FaceRefEntry>&    theFaceRefs,
     const NCollection_Vector<BRepGraphInc::WireRefEntry>&    theWireRefs,
@@ -104,12 +104,12 @@ public:
   //! @param[in] theOldNbShells  shell count before the append operation
   //! @param[in] theOldNbSolids  solid count before the append operation
   Standard_EXPORT void BuildDelta(
-    const NCollection_Vector<BRepGraphInc::EdgeEntity>&      theEdges,
-    const NCollection_Vector<BRepGraphInc::CoEdgeEntity>&    theCoEdges,
-    const NCollection_Vector<BRepGraphInc::WireEntity>&      theWires,
-    const NCollection_Vector<BRepGraphInc::FaceEntity>&      theFaces,
-    const NCollection_Vector<BRepGraphInc::ShellEntity>&     theShells,
-    const NCollection_Vector<BRepGraphInc::SolidEntity>&     theSolids,
+    const NCollection_Vector<BRepGraphInc::EdgeDef>&      theEdges,
+    const NCollection_Vector<BRepGraphInc::CoEdgeDef>&    theCoEdges,
+    const NCollection_Vector<BRepGraphInc::WireDef>&      theWires,
+    const NCollection_Vector<BRepGraphInc::FaceDef>&      theFaces,
+    const NCollection_Vector<BRepGraphInc::ShellDef>&     theShells,
+    const NCollection_Vector<BRepGraphInc::SolidDef>&     theSolids,
     const NCollection_Vector<BRepGraphInc::ShellRefEntry>&   theShellRefs,
     const NCollection_Vector<BRepGraphInc::FaceRefEntry>&    theFaceRefs,
     const NCollection_Vector<BRepGraphInc::WireRefEntry>&    theWireRefs,
@@ -125,7 +125,7 @@ public:
   //! @param[in] theOccurrences occurrence entity vector
   //! @param[in] theNbProducts  total number of products (for pre-sizing)
   Standard_EXPORT void BuildProductOccurrences(
-    const NCollection_Vector<BRepGraphInc::OccurrenceEntity>& theOccurrences,
+    const NCollection_Vector<BRepGraphInc::OccurrenceDef>& theOccurrences,
     const int                                                 theNbProducts);
 
   //! Return wire indices containing the given edge.
@@ -277,12 +277,12 @@ public:
   //! reverse entry exists (edge->wire). Intended for debug validation.
   //! @return true if all forward refs have matching reverse entries
   Standard_EXPORT bool Validate(
-    const NCollection_Vector<BRepGraphInc::EdgeEntity>&     theEdges,
-    const NCollection_Vector<BRepGraphInc::CoEdgeEntity>&   theCoEdges,
-    const NCollection_Vector<BRepGraphInc::WireEntity>&     theWires,
-    const NCollection_Vector<BRepGraphInc::FaceEntity>&     theFaces,
-    const NCollection_Vector<BRepGraphInc::ShellEntity>&    theShells,
-    const NCollection_Vector<BRepGraphInc::SolidEntity>&    theSolids,
+    const NCollection_Vector<BRepGraphInc::EdgeDef>&     theEdges,
+    const NCollection_Vector<BRepGraphInc::CoEdgeDef>&   theCoEdges,
+    const NCollection_Vector<BRepGraphInc::WireDef>&     theWires,
+    const NCollection_Vector<BRepGraphInc::FaceDef>&     theFaces,
+    const NCollection_Vector<BRepGraphInc::ShellDef>&    theShells,
+    const NCollection_Vector<BRepGraphInc::SolidDef>&    theSolids,
     const NCollection_Vector<BRepGraphInc::ShellRefEntry>&  theShellRefs,
     const NCollection_Vector<BRepGraphInc::FaceRefEntry>&   theFaceRefs,
     const NCollection_Vector<BRepGraphInc::WireRefEntry>&   theWireRefs,

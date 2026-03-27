@@ -8,9 +8,9 @@ BRepGraph currently has three ID types:
 
 | ID Type | Struct | Fields | Purpose | Storage |
 |---------|--------|--------|---------|---------|
-| **NodeId** | `BRepGraph_NodeId` | `Kind + Index` | Volatile position in per-kind entity vector | `EntityStore<T>::Entities` |
+| **NodeId** | `BRepGraph_NodeId` | `Kind + Index` | Volatile position in per-kind entity vector | `DefStore<T>::Entities` |
 | **RepId** | `BRepGraph_RepId` | `Kind + Index` | Volatile position in per-kind representation vector | `RepStore<T>::Entities` |
-| **UID** | `BRepGraph_UID` | `Kind + Counter + Generation` | Persistent identity across Compact/removal | `EntityStore<T>::UIDs` (parallel vector) |
+| **UID** | `BRepGraph_UID` | `Kind + Counter + Generation` | Persistent identity across Compact/removal | `DefStore<T>::UIDs` (parallel vector) |
 
 ### 1.2 Entity Kinds (NodeId::Kind)
 
@@ -20,7 +20,7 @@ Topology:  Solid(0), Shell(1), Face(2), Wire(3), Edge(4), Vertex(5),
 Assembly:  Product(10), Occurrence(11)
 ```
 
-Every entity inherits `BaseEntity` which carries: `Id`, `Cache`, `MutationGen`, `IsModified`, `IsRemoved`.
+Every entity inherits `BaseDef` which carries: `Id`, `Cache`, `MutationGen`, `IsModified`, `IsRemoved`.
 
 ### 1.3 Reference Structs (Inline, No Persistent ID)
 
@@ -41,9 +41,9 @@ References are inline structs stored in parent entity vectors. They encode **usa
 
 Two reference types have already been promoted to full entities:
 
-1. **CoEdge (Kind=8)**: Originally edge-in-wire reference. Promoted because it carries heavy data (PCurve, UV endpoints, parameters, continuity, seam pairing, polygon representations). Has its own `BaseEntity`, UID, MutationGen.
+1. **CoEdge (Kind=8)**: Originally edge-in-wire reference. Promoted because it carries heavy data (PCurve, UV endpoints, parameters, continuity, seam pairing, polygon representations). Has its own `BaseDef`, UID, MutationGen.
 
-2. **Occurrence (Kind=11)**: Assembly instance. Promoted because it forms a DAG structure (parent occurrence, parent product, placement). Has its own `BaseEntity`, UID, MutationGen.
+2. **Occurrence (Kind=11)**: Assembly instance. Promoted because it forms a DAG structure (parent occurrence, parent product, placement). Has its own `BaseDef`, UID, MutationGen.
 
 ### 1.5 What References Lack Today
 
@@ -203,10 +203,10 @@ enum class Kind : int
 };
 ```
 
-Each promoted ref becomes a full entity with `BaseEntity`, stored in `EntityStore<XxxUseEntity>`:
+Each promoted ref becomes a full entity with `BaseDef`, stored in `DefStore<XxxUseEntity>`:
 
 ```cpp
-struct FaceUseEntity : public BaseEntity
+struct FaceUseEntity : public BaseDef
 {
   BRepGraph_FaceId   FaceDefId;
   BRepGraph_ShellId  ParentShellId;  // back-pointer
@@ -217,15 +217,15 @@ struct FaceUseEntity : public BaseEntity
 
 Parent entities store typed IDs instead of inline refs:
 ```cpp
-struct ShellEntity : public BaseEntity
+struct ShellDef : public BaseDef
 {
   NCollection_Vector<BRepGraph_FaceUseId> FaceUseIds;  // was NCollection_Vector<FaceRef>
 };
 ```
 
 **Pros**:
-- **Uniform**: Everything with a UID is an entity. Single `EntityStore` pattern handles all.
-- **Automatic MutationGen**: `BaseEntity` already has it. `markModified()` works out of the box.
+- **Uniform**: Everything with a UID is an entity. Single `DefStore` pattern handles all.
+- **Automatic MutationGen**: `BaseDef` already has it. `markModified()` works out of the box.
 - **VersionStamp works**: `UIDs().StampOf(FaceUseId)` — no API changes needed.
 - **Clean UID lifecycle**: `allocateUID()` works identically for use-entities and topology entities.
 - **Reverse index**: Can add reverse lookups (e.g., `FaceUsesOfShell()`) using existing `ReverseIndex` pattern.
@@ -234,11 +234,11 @@ struct ShellEntity : public BaseEntity
 
 **Cons**:
 - **Entity count explosion**: A box (6 faces, 24 edges) gains ~47 use-entities: 1 ShellUse + 6 FaceUse + 6 WireUse + 24 CoEdge (existing) + ~10 VertexUse. For large models (100K faces), adds ~300K use-entities.
-- **Storage overhead**: Each `BaseEntity` is ~40-48 bytes (Id + Cache + MutationGen + IsModified + IsRemoved). Multiplied by 300K = ~14 MB overhead for a 100K-face model. Not prohibitive but noticeable.
+- **Storage overhead**: Each `BaseDef` is ~40-48 bytes (Id + Cache + MutationGen + IsModified + IsRemoved). Multiplied by 300K = ~14 MB overhead for a 100K-face model. Not prohibitive but noticeable.
 - **More Kind values**: Every switch/dispatch over `Kind` grows. Affects `TopoDef()`, `allocateUID()`, entity accessors, views.
-- **Deeper indirection**: Shell → FaceUseId → FaceUseEntity → FaceDefId → FaceEntity. One extra hop.
+- **Deeper indirection**: Shell → FaceUseId → FaceUseEntity → FaceDefId → FaceDef. One extra hop.
 - **API surface growth**: New typed IDs (`BRepGraph_FaceUseId`, `BRepGraph_WireUseId`, etc.), new accessors on views, new mutation methods on BuilderView.
-- **Mixed semantics**: "Use" entities are fundamentally different from "definition" entities. Mixing them in the same `Kind` enum and `EntityStore` obscures the conceptual distinction.
+- **Mixed semantics**: "Use" entities are fundamentally different from "definition" entities. Mixing them in the same `Kind` enum and `DefStore` obscures the conceptual distinction.
 - **CoEdgeRef becomes redundant**: CoEdgeRef is already just `{CoEdgeDefId, LocalLocation}`. If we also promote it to a "CoEdgeUse" entity, CoEdge itself becomes awkward (CoEdge is already a promoted ref, so CoEdgeUse would be a "use of a use").
 
 **Verdict**: Architecturally clean for the UID system but adds significant weight. Better suited if use-entities need to carry substantial per-use data (like CoEdge does).
@@ -282,7 +282,7 @@ using BRepGraph_SolidRefId  = BRepGraph_RefId::Typed<BRepGraph_RefId::Kind::Soli
 using BRepGraph_ChildRefId  = BRepGraph_RefId::Typed<BRepGraph_RefId::Kind::Child>;
 ```
 
-Each ref kind gets its own storage in a new `RefStore<T>` pattern (analogous to `EntityStore<T>` and `RepStore<T>`):
+Each ref kind gets its own storage in a new `RefStore<T>` pattern (analogous to `DefStore<T>` and `RepStore<T>`):
 
 ```cpp
 template <typename RefT>
@@ -363,7 +363,7 @@ struct ChildRef : public BaseRef
 Parent entities store typed RefIds instead of inline Ref structs:
 
 ```cpp
-struct ShellEntity : public BaseEntity
+struct ShellDef : public BaseDef
 {
   bool IsClosed;
   NCollection_Vector<BRepGraph_FaceRefId> FaceRefIds;  // was FaceRef inline
@@ -424,10 +424,10 @@ public:
 
 **Pros**:
 - **Clean separation**: RefId is a distinct type from NodeId. Compile-time safety prevents mixing entity IDs with ref IDs.
-- **Parallel UID vectors**: Same proven pattern as EntityStore. UID lifecycle is clear.
+- **Parallel UID vectors**: Same proven pattern as DefStore. UID lifecycle is clear.
 - **Per-ref MutationGen**: BaseRef has its own MutationGen. Granular tracking of ref changes.
 - **VersionStamp compatible**: Stamps work for refs just like for entities.
-- **Lightweight BaseRef**: Only `RefId + MutationGen + IsRemoved` (~12 bytes). Much lighter than full BaseEntity (~48 bytes) because refs don't need Cache.
+- **Lightweight BaseRef**: Only `RefId + MutationGen + IsRemoved` (~12 bytes). Much lighter than full BaseDef (~48 bytes) because refs don't need Cache.
 - **Back-pointers**: Each ref knows its parent, enabling upward navigation without reverse indices.
 - **Storage locality**: Refs of the same kind stored contiguously. Good cache behavior for bulk operations.
 - **Natural API**: `graph.Refs().FaceInShell(id)` reads clearly. Separate from entity access.
@@ -436,7 +436,7 @@ public:
 
 **Cons**:
 - **New infrastructure**: Need new `RefStore<T>` template, new `RefId` type with `Typed<Kind>`, new `RefUID` type (or reuse existing UID), new `RefsView`, new builder methods.
-- **Two levels of indirection**: Shell → FaceInShellRefId → FaceInShellRef → FaceDefId → FaceEntity. Same as Option B.
+- **Two levels of indirection**: Shell → FaceInShellRefId → FaceInShellRef → FaceDefId → FaceDef. Same as Option B.
 - **Separate MutationGen semantics**: When a ref changes, does the parent entity's MutationGen also increment? Need to define propagation rules.
 - **CoEdgeRef/OccurrenceRef overlap**: CoEdge and Occurrence are already entities with UIDs. Adding CoEdgeInWireRef and OccurrenceInProductRef creates a "ref of a promoted ref" — need to clarify identity semantics (the ref's UID identifies the usage in a wire, the CoEdge's UID identifies the CoEdge entity itself).
 - **Ref reverse indices**: May need a separate reverse index system for refs (parent→ref, child→ref lookups). Could share with existing ReverseIndex or require new infrastructure.
@@ -644,11 +644,11 @@ struct BaseRef
 };
 ```
 
-**No Cache field**: Unlike BaseEntity, refs don't need lazily-computed cached data. They're too thin for that overhead.
+**No Cache field**: Unlike BaseDef, refs don't need lazily-computed cached data. They're too thin for that overhead.
 
 **No IsModified flag**: MutationGen is sufficient. IsModified is used for Build()-cycle tracking on entities; refs don't participate in Build() cycles the same way.
 
-BaseRef is ~12-16 bytes vs BaseEntity's ~48 bytes — significantly lighter.
+BaseRef is ~12-16 bytes vs BaseDef's ~48 bytes — significantly lighter.
 
 ### 5.4 Storage Pattern
 
@@ -681,7 +681,7 @@ struct RefStore
 
 ```cpp
 // BEFORE (current):
-struct ShellEntity : public BaseEntity
+struct ShellDef : public BaseDef
 {
   bool IsClosed;
   NCollection_Vector<FaceRef> FaceRefs;
@@ -689,7 +689,7 @@ struct ShellEntity : public BaseEntity
 };
 
 // AFTER (with RefId):
-struct ShellEntity : public BaseEntity
+struct ShellDef : public BaseDef
 {
   bool IsClosed;
   NCollection_Vector<BRepGraph_FaceInShellRefId> FaceRefIds;  // indices into RefStore
@@ -701,19 +701,19 @@ struct ShellEntity : public BaseEntity
 
 ```cpp
 // BEFORE (inline refs):
-const ShellEntity& shell = storage.Shell(shellId);
+const ShellDef& shell = storage.Shell(shellId);
 for (const FaceRef& faceRef : shell.FaceRefs)
 {
-  const FaceEntity& face = storage.Face(faceRef.FaceDefId);
+  const FaceDef& face = storage.Face(faceRef.FaceDefId);
   TopAbs_Orientation orient = faceRef.Orientation;
 }
 
 // AFTER (RefId table — same ref name, just looked up by RefId):
-const ShellEntity& shell = storage.Shell(shellId);
+const ShellDef& shell = storage.Shell(shellId);
 for (const BRepGraph_FaceRefId& refId : shell.FaceRefIds)
 {
   const FaceRef& faceRef = graph.Refs().Face(refId);    // same FaceRef name
-  const FaceEntity& face = storage.Face(faceRef.FaceDefId);
+  const FaceDef& face = storage.Face(faceRef.FaceDefId);
   TopAbs_Orientation orient = faceRef.Orientation;
 }
 ```
@@ -958,7 +958,7 @@ This is critical for XCAF where face color/material/name are per-usage-context, 
 - Gives every reference persistent identity, mutation tracking, and version stamping
 - Maps naturally to external systems (STEP entities, CATIA persistent names, XCAF labels)
 - Has manageable storage overhead (can be tiered for large models)
-- Follows the proven EntityStore/RepStore pattern
+- Follows the proven DefStore/RepStore pattern
 - Can be implemented incrementally without breaking existing code
 
 **Implementation order**: Phase 1 (infrastructure) → Phase 2 (dual storage) → Phase 3 (migration) → Phase 4 (external mapping).
@@ -1164,7 +1164,7 @@ VertexUse, SolidUse, ChildUse
 
 ### N3: `{Child}Ref` — Unified, Same as Entity Pattern (Recommended)
 
-**Key insight**: Entities are named by what they ARE (`CoEdgeEntity`, not `EdgeOnFaceEntity`). References should follow the same principle — named by the CHILD type, not by the parent-child relationship.
+**Key insight**: Entities are named by what they ARE (`CoEdgeDef`, not `EdgeOnFaceEntity`). References should follow the same principle — named by the CHILD type, not by the parent-child relationship.
 
 ```
 RefId::Kind enum:  Shell, Face, Wire, CoEdge, Vertex, Solid, Child
@@ -1192,7 +1192,7 @@ struct VertexRef : public BaseRef
 };
 ```
 
-**This mirrors how entities work**: `VertexEntity` doesn't distinguish "vertex used by edge" vs "vertex used by face". It's just a vertex. The context is in the reference, not the type.
+**This mirrors how entities work**: `VertexDef` doesn't distinguish "vertex used by edge" vs "vertex used by face". It's just a vertex. The context is in the reference, not the type.
 
 **Pros**:
 - Familiar names (same as current inline structs).
@@ -1265,16 +1265,16 @@ RefId::Kind:   Shell(0), Face(1), Wire(2), CoEdge(3), Vertex(4),
 
 ### 13.1 The Two-Level Pattern
 
-CoEdge and Occurrence are unique: they are **already entities** (have BaseEntity, UID, storage vector) but are also **referenced** from parent entities via thin inline refs.
+CoEdge and Occurrence are unique: they are **already entities** (have BaseDef, UID, storage vector) but are also **referenced** from parent entities via thin inline refs.
 
 ```
                 Entity Level (has UID)          Reference Level (no UID currently)
                 ─────────────────────           ─────────────────────────────────
-CoEdge:         CoEdgeEntity                    CoEdgeRef in WireEntity
+CoEdge:         CoEdgeDef                    CoEdgeRef in WireDef
                 Kind=8, has PCurve,             {CoEdgeDefId, LocalLocation}
                 UV, params, seam pair
 
-Occurrence:     OccurrenceEntity                OccurrenceRef in ProductEntity
+Occurrence:     OccurrenceDef                OccurrenceRef in ProductDef
                 Kind=11, has Placement,         {OccurrenceDefId}
                 ProductDefId, ParentProductId
 ```
@@ -1301,7 +1301,7 @@ Occurrence:     OccurrenceEntity                OccurrenceRef in ProductEntity
 2. **Uniformity** with other ref kinds.
 
 **Arguments AGAINST RefId on OccurrenceRef**:
-1. **Occurrence entity UID suffices**: Each Occurrence has exactly one parent Product (stored on `OccurrenceEntity::ParentProductDefId`). The Occurrence entity's UID fully identifies the relationship.
+1. **Occurrence entity UID suffices**: Each Occurrence has exactly one parent Product (stored on `OccurrenceDef::ParentProductDefId`). The Occurrence entity's UID fully identifies the relationship.
 2. **OccurrenceRef is trivially thin**: Just `{OccurrenceDefId}`. No orientation, no location. The ref carries zero contextual data — it's purely a containment pointer.
 3. **Assembly identity already complete**: Product UID + Occurrence UID fully identifies any assembly instance. No gap.
 
@@ -1538,7 +1538,7 @@ struct BaseRef
 };
 ```
 
-Adds monotonic modification flag like BaseEntity.
+Adds monotonic modification flag like BaseDef.
 
 ### W3: BaseRef with Back-Pointer (24+ bytes)
 
@@ -1694,7 +1694,7 @@ aTShape->myShapes.Append(aChild);  // Appends copy to list
 
 | TopoDS Concept | BRepGraph Equivalent | Sharing Level |
 |---|---|---|
-| `TopoDS_TShape` (entity) | `FaceEntity`, `EdgeEntity`, etc. in EntityStore | Entity shared by ID (same FaceId from multiple shells) |
+| `TopoDS_TShape` (entity) | `FaceDef`, `EdgeDef`, etc. in DefStore | Entity shared by ID (same FaceId from multiple shells) |
 | `TopoDS_Shape` (reference) | `FaceRef`, `WireRef`, etc. inline in parent | Reference NOT shared (each parent has own copy) |
 | `Handle(TShape)` pointer identity | Entity ID equality (same FaceId) | Same entity, different context |
 | `TopLoc_Location` on Shape | `LocalLocation` on Ref | Per-instance context |
@@ -1723,7 +1723,7 @@ Shell_B's children: [ Shape(TFace_ptr=0x1234, Orient=REV, Loc=L2),  ... ]
 
 Since the original TopoDS model intentionally does NOT share references, and BRepGraph faithfully mirrors this design:
 
-1. **Entity sharing works** (same FaceId from multiple ShellEntity::FaceRefs) — already implemented
+1. **Entity sharing works** (same FaceId from multiple ShellDef::FaceRefs) — already implemented
 2. **Reference sharing is architecturally absent** in the original model and rarely useful in practice
 3. **Orientation almost always differs** between usages of the same entity — making ref sharing impossible in most cases
 4. **The main real-world sharing** is at the entity level (shared faces, shared edges, shared vertices)
@@ -1758,7 +1758,7 @@ BRep explicitly documents what is shared and what is not:
 
 ### 22.1 Current State
 
-RepStore currently has **NO UID vector** (unlike EntityStore):
+RepStore currently has **NO UID vector** (unlike DefStore):
 
 ```cpp
 template <typename RepT>
@@ -1796,7 +1796,7 @@ struct BaseRep
 
 ### 22.3 Design: Add UID to RepStore
 
-Minimal change — follow the EntityStore pattern:
+Minimal change — follow the DefStore pattern:
 
 ```cpp
 template <typename RepT>
@@ -1959,7 +1959,7 @@ struct AttrStore
 
 Entities reference attributes by `BRepGraph_AttrId` (index into AttrStore) instead of storing them directly on NodeCache.
 
-Pros: Follows EntityStore/RepStore pattern. Deduplication of shared attributes.
+Pros: Follows DefStore/RepStore pattern. Deduplication of shared attributes.
 Cons: Indirection. Changing from NodeCache-based to AttrStore-based storage is a significant refactor.
 
 **A4: UID only for specific attribute types (PMI, Named Layers)**
@@ -2199,7 +2199,7 @@ struct BRepGraph_AnyUID
 
 **F3 (template)** is the most elegant:
 - DRY implementation — one template covers all
-- BRepGraph already uses templates extensively (Typed<Kind>, EntityStore<T>)
+- BRepGraph already uses templates extensively (Typed<Kind>, DefStore<T>)
 - Could start with F2 and refactor to F3 later
 
 ---
@@ -2211,7 +2211,7 @@ With all four identity domains, the full BRepGraph ID architecture would be:
 ```
                     Volatile ID              Persistent UID           Store
                     ───────────              ──────────────           ─────
-Entities:           NodeId (Kind+Index)      BRepGraph_UID            EntityStore<T>
+Entities:           NodeId (Kind+Index)      BRepGraph_UID            DefStore<T>
 References:         RefId  (Kind+Index)      BRepGraph_RefUID         RefStore<T>
 Representations:    RepId  (Kind+Index)      BRepGraph_RepUID         RepStore<T>
 
@@ -2232,7 +2232,7 @@ Build() or AddXxx():
 
   // Entity:
   BRepGraph_UID(NodeId::Kind, counter, generation)
-    → stored in EntityStore<T>::UIDs parallel vector
+    → stored in DefStore<T>::UIDs parallel vector
 
   // Reference:
   BRepGraph_RefUID(RefId::Kind, counter, generation)

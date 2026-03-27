@@ -154,7 +154,7 @@ TEST(BRepGraph_BuilderTest, AddVertex_ReturnsValidId)
   EXPECT_EQ(aVtxId.NodeKind, BRepGraph_NodeId::Kind::Vertex);
   EXPECT_EQ(aVtxId.Index, 0);
 
-  const BRepGraphInc::VertexEntity& aVtxDef = aGraph.Topo().Vertex(BRepGraph_VertexId(0));
+  const BRepGraphInc::VertexDef& aVtxDef = aGraph.Topo().Vertex(BRepGraph_VertexId(0));
   EXPECT_NEAR(aVtxDef.Point.X(), 1.0, Precision::Confusion());
   EXPECT_NEAR(aVtxDef.Point.Y(), 2.0, Precision::Confusion());
   EXPECT_NEAR(aVtxDef.Point.Z(), 3.0, Precision::Confusion());
@@ -173,7 +173,7 @@ TEST(BRepGraph_BuilderTest, AddEdge_WithCurve)
   EXPECT_TRUE(anEdgeId.IsValid());
   EXPECT_EQ(anEdgeId.NodeKind, BRepGraph_NodeId::Kind::Edge);
 
-  const BRepGraphInc::EdgeEntity& anEdgeDef = aGraph.Topo().Edge(BRepGraph_EdgeId(0));
+  const BRepGraphInc::EdgeDef& anEdgeDef = aGraph.Topo().Edge(BRepGraph_EdgeId(0));
   EXPECT_EQ(BRepGraph_Tool::Edge::StartVertex(aGraph, BRepGraph_EdgeId(0)).VertexEntityId, BRepGraph_VertexId(aV1.Index));
   EXPECT_EQ(BRepGraph_Tool::Edge::EndVertex(aGraph, BRepGraph_EdgeId(0)).VertexEntityId, BRepGraph_VertexId(aV2.Index));
   EXPECT_TRUE(anEdgeDef.Curve3DRepId.IsValid());
@@ -210,7 +210,7 @@ TEST(BRepGraph_BuilderTest, AddWire_ClosedRectangle)
   EXPECT_EQ(aWireId.NodeKind, BRepGraph_NodeId::Kind::Wire);
 
   EXPECT_EQ(BRepGraph_TestTools::CountCoEdgeRefsOfWire(aGraph, BRepGraph_WireId(0)), 4);
-  const BRepGraphInc::WireEntity& aWireDef = aGraph.Topo().Wire(BRepGraph_WireId(0));
+  const BRepGraphInc::WireDef& aWireDef = aGraph.Topo().Wire(BRepGraph_WireId(0));
   EXPECT_TRUE(aWireDef.IsClosed);
 }
 
@@ -251,7 +251,7 @@ TEST(BRepGraph_BuilderTest, AddFace_WithSurface)
   EXPECT_EQ(aGraph.Topo().NbFaces(), 1);
   EXPECT_EQ(aGraph.Topo().NbFaces(), 1);
 
-  const BRepGraphInc::FaceEntity& aFaceDef = aGraph.Topo().Face(BRepGraph_FaceId(0));
+  const BRepGraphInc::FaceDef& aFaceDef = aGraph.Topo().Face(BRepGraph_FaceId(0));
   EXPECT_TRUE(aFaceDef.SurfaceRepId.IsValid());
 }
 
@@ -431,7 +431,7 @@ TEST(BRepGraph_BuilderTest, AddCompSolid_WithSolids)
   EXPECT_EQ(aCSolId.NodeKind, BRepGraph_NodeId::Kind::CompSolid);
   EXPECT_EQ(aGraph.Topo().NbCompSolids(), 1);
 
-  const BRepGraphInc::CompSolidEntity& aCSolDef =
+  const BRepGraphInc::CompSolidDef& aCSolDef =
     aGraph.Topo().CompSolid(BRepGraph_CompSolidId(0));
   (void)aCSolDef;
   EXPECT_EQ(BRepGraph_TestTools::CountSolidRefsOfCompSolid(aGraph, BRepGraph_CompSolidId(0)), 2);
@@ -498,7 +498,7 @@ TEST(BRepGraph_BuilderTest, MutableFaceDefinition_ChangesTolerance)
 
   const double anOrigTol = BRepGraph_Tool::Face::Tolerance(aGraph, BRepGraph_FaceId(0));
   {
-    BRepGraph_MutRef<BRepGraphInc::FaceEntity> aFaceDef =
+    BRepGraph_MutRef<BRepGraphInc::FaceDef> aFaceDef =
       aGraph.Builder().MutFace(BRepGraph_FaceId(0));
     aFaceDef->Tolerance = 0.5;
   }
@@ -518,7 +518,7 @@ TEST(BRepGraph_BuilderTest, MutableShellDefinition)
   ASSERT_GT(aGraph.Topo().NbShells(), 0);
 
   {
-    BRepGraph_MutRef<BRepGraphInc::ShellEntity> aShellDef =
+    BRepGraph_MutRef<BRepGraphInc::ShellDef> aShellDef =
       aGraph.Builder().MutShell(BRepGraph_ShellId(0));
   }
   EXPECT_TRUE(aGraph.Topo().Shell(BRepGraph_ShellId(0)).IsModified);
@@ -535,7 +535,7 @@ TEST(BRepGraph_BuilderTest, MutableSolidDefinition)
   ASSERT_GT(aGraph.Topo().NbSolids(), 0);
 
   {
-    BRepGraph_MutRef<BRepGraphInc::SolidEntity> aSolidDef =
+    BRepGraph_MutRef<BRepGraphInc::SolidDef> aSolidDef =
       aGraph.Builder().MutSolid(BRepGraph_SolidId(0));
   }
   EXPECT_TRUE(aGraph.Topo().Solid(BRepGraph_SolidId(0)).IsModified);
@@ -549,7 +549,7 @@ TEST(BRepGraph_BuilderTest, MutableCompoundDefinition)
   ASSERT_EQ(aGraph.Topo().NbCompounds(), 1);
 
   {
-    BRepGraph_MutRef<BRepGraphInc::CompoundEntity> aCompDef =
+    BRepGraph_MutRef<BRepGraphInc::CompoundDef> aCompDef =
       aGraph.Builder().MutCompound(BRepGraph_CompoundId(0));
   }
   EXPECT_TRUE(aGraph.Topo().Compound(BRepGraph_CompoundId(0)).IsModified);
@@ -563,7 +563,7 @@ TEST(BRepGraph_BuilderTest, MutableCompSolidDefinition)
   ASSERT_EQ(aGraph.Topo().NbCompSolids(), 1);
 
   {
-    BRepGraph_MutRef<BRepGraphInc::CompSolidEntity> aCSolDef =
+    BRepGraph_MutRef<BRepGraphInc::CompSolidDef> aCSolDef =
       aGraph.Builder().MutCompSolid(BRepGraph_CompSolidId(0));
   }
   EXPECT_TRUE(aGraph.Topo().CompSolid(BRepGraph_CompSolidId(0)).IsModified);
@@ -588,7 +588,7 @@ TEST(BRepGraph_BuilderTest, SkipsRemovedFaces)
   aGraph.Builder().RemoveNode(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, 3));
 
   int aCount = 0;
-  for (BRepGraph_Iterator<BRepGraphInc::FaceEntity> anIt(aGraph); anIt.More(); anIt.Next())
+  for (BRepGraph_Iterator<BRepGraphInc::FaceDef> anIt(aGraph); anIt.More(); anIt.Next())
   {
     EXPECT_FALSE(anIt.Current().IsRemoved);
     ++aCount;
@@ -610,7 +610,7 @@ TEST(BRepGraph_BuilderTest, SkipsRemovedEdges)
   aGraph.Builder().RemoveNode(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, 0));
 
   int aCount = 0;
-  for (BRepGraph_Iterator<BRepGraphInc::EdgeEntity> anIt(aGraph); anIt.More(); anIt.Next())
+  for (BRepGraph_Iterator<BRepGraphInc::EdgeDef> anIt(aGraph); anIt.More(); anIt.Next())
   {
     EXPECT_FALSE(anIt.Current().IsRemoved);
     ++aCount;
@@ -629,7 +629,7 @@ TEST(BRepGraph_BuilderTest, SkipsFirstNode)
   aGraph.Builder().RemoveNode(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Vertex, 0));
 
   int aCount = 0;
-  for (BRepGraph_Iterator<BRepGraphInc::VertexEntity> anIt(aGraph); anIt.More(); anIt.Next())
+  for (BRepGraph_Iterator<BRepGraphInc::VertexDef> anIt(aGraph); anIt.More(); anIt.Next())
   {
     EXPECT_FALSE(anIt.Current().IsRemoved);
     ++aCount;

@@ -89,53 +89,53 @@ public:
 
   //! Access solid definition by typed identifier.
   //! @param[in] theSolid typed solid definition identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::SolidEntity& Solid(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::SolidDef& Solid(
     const BRepGraph_SolidId theSolid) const;
 
   //! Access shell definition by typed identifier.
   //! @param[in] theShell typed shell definition identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::ShellEntity& Shell(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::ShellDef& Shell(
     const BRepGraph_ShellId theShell) const;
 
   //! Access face definition by typed identifier.
   //! @param[in] theFace typed face definition identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::FaceEntity& Face(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::FaceDef& Face(
     const BRepGraph_FaceId theFace) const;
 
   //! Access wire definition by typed identifier.
   //! @param[in] theWire typed wire definition identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::WireEntity& Wire(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::WireDef& Wire(
     const BRepGraph_WireId theWire) const;
 
   //! Access edge definition by typed identifier.
   //! @param[in] theEdge typed edge definition identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::EdgeEntity& Edge(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::EdgeDef& Edge(
     const BRepGraph_EdgeId theEdge) const;
 
   //! Access vertex definition by typed identifier.
   //! @param[in] theVertex typed vertex definition identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::VertexEntity& Vertex(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::VertexDef& Vertex(
     const BRepGraph_VertexId theVertex) const;
 
   //! Access compound definition by typed identifier.
   //! @param[in] theCompound typed compound definition identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::CompoundEntity& Compound(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::CompoundDef& Compound(
     const BRepGraph_CompoundId theCompound) const;
 
   //! Access compsolid definition by typed identifier.
   //! @param[in] theCompSolid typed compsolid definition identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::CompSolidEntity& CompSolid(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::CompSolidDef& CompSolid(
     const BRepGraph_CompSolidId theCompSolid) const;
 
   //! Access coedge definition by typed identifier.
   //! @param[in] theCoEdge typed coedge definition identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::CoEdgeEntity& CoEdge(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::CoEdgeDef& CoEdge(
     const BRepGraph_CoEdgeId theCoEdge) const;
 
   //! Generic topology definition lookup by NodeId.
   //! @param[in] theId node identifier
-  //! @return pointer to BaseEntity or nullptr if invalid
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::BaseEntity* TopoEntity(
+  //! @return pointer to BaseDef or nullptr if invalid
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::BaseDef* TopoEntity(
     const BRepGraph_NodeId theId) const;
 
   //! Number of face definitions in a shell (via first usage).
@@ -184,7 +184,7 @@ public:
   //! Find the CoEdge for an edge on a given face, or nullptr if none exists.
   //! @param[in] theEdgeEntity edge definition NodeId
   //! @param[in] theFaceEntity face definition NodeId
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::CoEdgeEntity* FindPCurve(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::CoEdgeDef* FindPCurve(
     const BRepGraph_NodeId theEdgeEntity,
     const BRepGraph_NodeId theFaceEntity) const;
 
@@ -192,7 +192,7 @@ public:
   //! @param[in] theEdgeEntity           edge definition NodeId
   //! @param[in] theFaceEntity           face definition NodeId
   //! @param[in] theEdgeOrientation   edge orientation on the face
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::CoEdgeEntity* FindPCurve(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::CoEdgeDef* FindPCurve(
     const BRepGraph_NodeId   theEdgeEntity,
     const BRepGraph_NodeId   theFaceEntity,
     const TopAbs_Orientation theEdgeOrientation) const;

@@ -15,7 +15,7 @@
 #include <BRep_Tool.hxx>
 #include <BRepGProp.hxx>
 #include <BRepGraph.hxx>
-#include <BRepGraphInc_Entity.hxx>
+#include <BRepGraphInc_Definition.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include "BRepGraph_RefTestTools.hxx"
 #include <BRepGraph_TopoView.hxx>
@@ -459,14 +459,14 @@ TEST(BRepGraph_ReconstructTest, AfterVertexMutation_ModifiedFlagAndPointChanged)
   ASSERT_GT(aCoEdgeRefs.Length(), 0);
 
   const BRepGraphInc::CoEdgeRefEntry& aFirstCR = aGraph.Refs().CoEdge(aCoEdgeRefs.First());
-  const BRepGraphInc::CoEdgeEntity& aFirstCoEdge = aGraph.Topo().CoEdge(aFirstCR.CoEdgeEntityId);
+  const BRepGraphInc::CoEdgeDef& aFirstCoEdge = aGraph.Topo().CoEdge(aFirstCR.CoEdgeEntityId);
   const int aVertIdx = BRepGraph_Tool::Edge::StartVertex(aGraph, BRepGraph_EdgeId(aFirstCoEdge.EdgeEntityId)).VertexEntityId.Index;
   ASSERT_GE(aVertIdx, 0);
 
   // Mutate: move vertex by 5 units in Z.
   const gp_Pnt anOldPt = BRepGraph_Tool::Vertex::Pnt(aGraph, BRepGraph_VertexId(aVertIdx));
   {
-    BRepGraph_MutRef<BRepGraphInc::VertexEntity> aMutVtx =
+    BRepGraph_MutRef<BRepGraphInc::VertexDef> aMutVtx =
       aGraph.Builder().MutVertex(BRepGraph_VertexId(aVertIdx));
     aMutVtx->Point = gp_Pnt(anOldPt.X(), anOldPt.Y(), anOldPt.Z() + 5.0);
   }
@@ -495,7 +495,7 @@ TEST(BRepGraph_ReconstructTest, AfterToleranceMutation_NewTShape)
 
   // Mutate tolerance.
   {
-    BRepGraph_MutRef<BRepGraphInc::EdgeEntity> aMutEdge =
+    BRepGraph_MutRef<BRepGraphInc::EdgeDef> aMutEdge =
       aGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
     aMutEdge->Tolerance = aMutEdge->Tolerance + 1.0;
   }

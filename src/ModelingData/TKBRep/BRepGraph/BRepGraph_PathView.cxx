@@ -105,7 +105,7 @@ TopLoc_Location BRepGraph::PathView::stepLocation(const BRepGraph_NodeId thePare
     case Kind::Compound: {
       if (theParent.Index >= 0 && theParent.Index < aStorage.NbCompounds())
       {
-        const BRepGraphInc::CompoundEntity& aComp =
+        const BRepGraphInc::CompoundDef& aComp =
           aStorage.Compound(BRepGraph_CompoundId(theParent.Index));
         if (theRefIdx < aComp.ChildRefIds.Length())
           return aStorage.ChildRefEntry(aComp.ChildRefIds.Value(theRefIdx)).LocalLocation;
@@ -115,7 +115,7 @@ TopLoc_Location BRepGraph::PathView::stepLocation(const BRepGraph_NodeId thePare
     case Kind::CompSolid: {
       if (theParent.Index >= 0 && theParent.Index < aStorage.NbCompSolids())
       {
-        const BRepGraphInc::CompSolidEntity& aCS =
+        const BRepGraphInc::CompSolidDef& aCS =
           aStorage.CompSolid(BRepGraph_CompSolidId(theParent.Index));
         if (theRefIdx < aCS.SolidRefIds.Length())
           return aStorage.SolidRefEntry(aCS.SolidRefIds.Value(theRefIdx)).LocalLocation;
@@ -125,7 +125,7 @@ TopLoc_Location BRepGraph::PathView::stepLocation(const BRepGraph_NodeId thePare
     case Kind::Solid: {
       if (theParent.Index >= 0 && theParent.Index < aStorage.NbSolids())
       {
-        const BRepGraphInc::SolidEntity& aSolid =
+        const BRepGraphInc::SolidDef& aSolid =
           aStorage.Solid(BRepGraph_SolidId(theParent.Index));
         if (theRefIdx < aSolid.ShellRefIds.Length())
           return aStorage.ShellRefEntry(aSolid.ShellRefIds.Value(theRefIdx)).LocalLocation;
@@ -138,7 +138,7 @@ TopLoc_Location BRepGraph::PathView::stepLocation(const BRepGraph_NodeId thePare
     case Kind::Shell: {
       if (theParent.Index >= 0 && theParent.Index < aStorage.NbShells())
       {
-        const BRepGraphInc::ShellEntity& aShell =
+        const BRepGraphInc::ShellDef& aShell =
           aStorage.Shell(BRepGraph_ShellId(theParent.Index));
         if (theRefIdx < aShell.FaceRefIds.Length())
           return aStorage.FaceRefEntry(aShell.FaceRefIds.Value(theRefIdx)).LocalLocation;
@@ -151,7 +151,7 @@ TopLoc_Location BRepGraph::PathView::stepLocation(const BRepGraph_NodeId thePare
     case Kind::Face: {
       if (theParent.Index >= 0 && theParent.Index < aStorage.NbFaces())
       {
-        const BRepGraphInc::FaceEntity& aFace =
+        const BRepGraphInc::FaceDef& aFace =
           aStorage.Face(BRepGraph_FaceId(theParent.Index));
         if (theRefIdx < aFace.WireRefIds.Length())
           return aStorage.WireRefEntry(aFace.WireRefIds.Value(theRefIdx)).LocalLocation;
@@ -164,7 +164,7 @@ TopLoc_Location BRepGraph::PathView::stepLocation(const BRepGraph_NodeId thePare
     case Kind::Wire: {
       if (theParent.Index >= 0 && theParent.Index < aStorage.NbWires())
       {
-        const BRepGraphInc::WireEntity& aWire =
+        const BRepGraphInc::WireDef& aWire =
           aStorage.Wire(BRepGraph_WireId(theParent.Index));
         if (theRefIdx < aWire.CoEdgeRefIds.Length())
           return aStorage.CoEdgeRefEntry(aWire.CoEdgeRefIds.Value(theRefIdx)).LocalLocation;
@@ -174,7 +174,7 @@ TopLoc_Location BRepGraph::PathView::stepLocation(const BRepGraph_NodeId thePare
     case Kind::Edge: {
       if (theParent.Index >= 0 && theParent.Index < aStorage.NbEdges())
       {
-        const BRepGraphInc::EdgeEntity& anEdge =
+        const BRepGraphInc::EdgeDef& anEdge =
           aStorage.Edge(BRepGraph_EdgeId(theParent.Index));
         // Ordinal: 0=Start, 1=End, 2+=Internal
         if (theRefIdx == 0 && anEdge.StartVertexRefId.IsValid())
@@ -215,7 +215,7 @@ TopAbs_Orientation BRepGraph::PathView::stepOrientation(const BRepGraph_NodeId t
     case Kind::Compound: {
       if (theParent.Index >= 0 && theParent.Index < aStorage.NbCompounds())
       {
-        const BRepGraphInc::CompoundEntity& aComp =
+        const BRepGraphInc::CompoundDef& aComp =
           aStorage.Compound(BRepGraph_CompoundId(theParent.Index));
         if (theRefIdx < aComp.ChildRefIds.Length())
           return aStorage.ChildRefEntry(aComp.ChildRefIds.Value(theRefIdx)).Orientation;
@@ -225,7 +225,7 @@ TopAbs_Orientation BRepGraph::PathView::stepOrientation(const BRepGraph_NodeId t
     case Kind::CompSolid: {
       if (theParent.Index >= 0 && theParent.Index < aStorage.NbCompSolids())
       {
-        const BRepGraphInc::CompSolidEntity& aCS =
+        const BRepGraphInc::CompSolidDef& aCS =
           aStorage.CompSolid(BRepGraph_CompSolidId(theParent.Index));
         if (theRefIdx < aCS.SolidRefIds.Length())
           return aStorage.SolidRefEntry(aCS.SolidRefIds.Value(theRefIdx)).Orientation;
@@ -235,7 +235,7 @@ TopAbs_Orientation BRepGraph::PathView::stepOrientation(const BRepGraph_NodeId t
     case Kind::Solid: {
       if (theParent.Index >= 0 && theParent.Index < aStorage.NbSolids())
       {
-        const BRepGraphInc::SolidEntity& aSolid =
+        const BRepGraphInc::SolidDef& aSolid =
           aStorage.Solid(BRepGraph_SolidId(theParent.Index));
         if (theRefIdx < aSolid.ShellRefIds.Length())
           return aStorage.ShellRefEntry(aSolid.ShellRefIds.Value(theRefIdx)).Orientation;
@@ -248,7 +248,7 @@ TopAbs_Orientation BRepGraph::PathView::stepOrientation(const BRepGraph_NodeId t
     case Kind::Shell: {
       if (theParent.Index >= 0 && theParent.Index < aStorage.NbShells())
       {
-        const BRepGraphInc::ShellEntity& aShell =
+        const BRepGraphInc::ShellDef& aShell =
           aStorage.Shell(BRepGraph_ShellId(theParent.Index));
         if (theRefIdx < aShell.FaceRefIds.Length())
           return aStorage.FaceRefEntry(aShell.FaceRefIds.Value(theRefIdx)).Orientation;
@@ -261,7 +261,7 @@ TopAbs_Orientation BRepGraph::PathView::stepOrientation(const BRepGraph_NodeId t
     case Kind::Face: {
       if (theParent.Index >= 0 && theParent.Index < aStorage.NbFaces())
       {
-        const BRepGraphInc::FaceEntity& aFace =
+        const BRepGraphInc::FaceDef& aFace =
           aStorage.Face(BRepGraph_FaceId(theParent.Index));
         if (theRefIdx < aFace.WireRefIds.Length())
           return aStorage.WireRefEntry(aFace.WireRefIds.Value(theRefIdx)).Orientation;
@@ -272,11 +272,11 @@ TopAbs_Orientation BRepGraph::PathView::stepOrientation(const BRepGraph_NodeId t
       return TopAbs_FORWARD;
     }
     case Kind::Wire:
-      return TopAbs_FORWARD; // CoEdgeRef has no orientation; Sense is on CoEdgeEntity.
+      return TopAbs_FORWARD; // CoEdgeRef has no orientation; Sense is on CoEdgeDef.
     case Kind::Edge: {
       if (theParent.Index >= 0 && theParent.Index < aStorage.NbEdges())
       {
-        const BRepGraphInc::EdgeEntity& anEdge =
+        const BRepGraphInc::EdgeDef& anEdge =
           aStorage.Edge(BRepGraph_EdgeId(theParent.Index));
         if (theRefIdx == 0 && anEdge.StartVertexRefId.IsValid())
           return aStorage.VertexRefEntry(anEdge.StartVertexRefId).Orientation;
@@ -306,7 +306,7 @@ BRepGraph_NodeId BRepGraph::PathView::resolveChild(const BRepGraph_NodeId thePar
     case Kind::Product: {
       if (theParent.Index >= 0 && theParent.Index < aStorage.NbProducts())
       {
-        const BRepGraphInc::ProductEntity& aProd =
+        const BRepGraphInc::ProductDef& aProd =
           aStorage.Product(BRepGraph_ProductId(theParent.Index));
         if (theRefIdx < 0 && aProd.ShapeRootId.IsValid())
           return aProd.ShapeRootId; // Part -> shape root
@@ -318,7 +318,7 @@ BRepGraph_NodeId BRepGraph::PathView::resolveChild(const BRepGraph_NodeId thePar
     case Kind::Compound: {
       if (theParent.Index >= 0 && theParent.Index < aStorage.NbCompounds())
       {
-        const BRepGraphInc::CompoundEntity& aComp =
+        const BRepGraphInc::CompoundDef& aComp =
           aStorage.Compound(BRepGraph_CompoundId(theParent.Index));
         if (theRefIdx >= 0 && theRefIdx < aComp.ChildRefIds.Length())
           return aStorage.ChildRefEntry(aComp.ChildRefIds.Value(theRefIdx)).ChildEntityId;
@@ -328,7 +328,7 @@ BRepGraph_NodeId BRepGraph::PathView::resolveChild(const BRepGraph_NodeId thePar
     case Kind::CompSolid: {
       if (theParent.Index >= 0 && theParent.Index < aStorage.NbCompSolids())
       {
-        const BRepGraphInc::CompSolidEntity& aCS =
+        const BRepGraphInc::CompSolidDef& aCS =
           aStorage.CompSolid(BRepGraph_CompSolidId(theParent.Index));
         if (theRefIdx >= 0 && theRefIdx < aCS.SolidRefIds.Length())
           return aStorage.SolidRefEntry(aCS.SolidRefIds.Value(theRefIdx)).SolidEntityId;
@@ -338,7 +338,7 @@ BRepGraph_NodeId BRepGraph::PathView::resolveChild(const BRepGraph_NodeId thePar
     case Kind::Solid: {
       if (theParent.Index >= 0 && theParent.Index < aStorage.NbSolids())
       {
-        const BRepGraphInc::SolidEntity& aSolid =
+        const BRepGraphInc::SolidDef& aSolid =
           aStorage.Solid(BRepGraph_SolidId(theParent.Index));
         if (theRefIdx >= 0 && theRefIdx < aSolid.ShellRefIds.Length())
           return aStorage.ShellRefEntry(aSolid.ShellRefIds.Value(theRefIdx)).ShellEntityId;
@@ -351,7 +351,7 @@ BRepGraph_NodeId BRepGraph::PathView::resolveChild(const BRepGraph_NodeId thePar
     case Kind::Shell: {
       if (theParent.Index >= 0 && theParent.Index < aStorage.NbShells())
       {
-        const BRepGraphInc::ShellEntity& aShell =
+        const BRepGraphInc::ShellDef& aShell =
           aStorage.Shell(BRepGraph_ShellId(theParent.Index));
         if (theRefIdx >= 0 && theRefIdx < aShell.FaceRefIds.Length())
           return aStorage.FaceRefEntry(aShell.FaceRefIds.Value(theRefIdx)).FaceEntityId;
@@ -364,7 +364,7 @@ BRepGraph_NodeId BRepGraph::PathView::resolveChild(const BRepGraph_NodeId thePar
     case Kind::Face: {
       if (theParent.Index >= 0 && theParent.Index < aStorage.NbFaces())
       {
-        const BRepGraphInc::FaceEntity& aFace =
+        const BRepGraphInc::FaceDef& aFace =
           aStorage.Face(BRepGraph_FaceId(theParent.Index));
         if (theRefIdx >= 0 && theRefIdx < aFace.WireRefIds.Length())
           return aStorage.WireRefEntry(aFace.WireRefIds.Value(theRefIdx)).WireEntityId;
@@ -377,7 +377,7 @@ BRepGraph_NodeId BRepGraph::PathView::resolveChild(const BRepGraph_NodeId thePar
     case Kind::Wire: {
       if (theParent.Index >= 0 && theParent.Index < aStorage.NbWires())
       {
-        const BRepGraphInc::WireEntity& aWire =
+        const BRepGraphInc::WireDef& aWire =
           aStorage.Wire(BRepGraph_WireId(theParent.Index));
         if (theRefIdx >= 0 && theRefIdx < aWire.CoEdgeRefIds.Length())
           return aStorage.CoEdgeRefEntry(aWire.CoEdgeRefIds.Value(theRefIdx)).CoEdgeEntityId;
@@ -387,7 +387,7 @@ BRepGraph_NodeId BRepGraph::PathView::resolveChild(const BRepGraph_NodeId thePar
     case Kind::Edge: {
       if (theParent.Index >= 0 && theParent.Index < aStorage.NbEdges())
       {
-        const BRepGraphInc::EdgeEntity& anEdge =
+        const BRepGraphInc::EdgeDef& anEdge =
           aStorage.Edge(BRepGraph_EdgeId(theParent.Index));
         if (theRefIdx == 0 && anEdge.StartVertexRefId.IsValid())
           return aStorage.VertexRefEntry(anEdge.StartVertexRefId).VertexEntityId;
@@ -770,7 +770,7 @@ NCollection_Vector<BRepGraph_TopologyPath> BRepGraph::PathView::reverseWalkPaths
           const int aCSIdx = aCompSolids->Value(cs).Index;
           if (aCSIdx < 0 || aCSIdx >= aStorage.NbCompSolids())
             continue;
-          const BRepGraphInc::CompSolidEntity& aCS =
+          const BRepGraphInc::CompSolidDef& aCS =
             aStorage.CompSolid(BRepGraph_CompSolidId(aCSIdx));
           if (aCS.IsRemoved)
             continue;
@@ -809,7 +809,7 @@ NCollection_Vector<BRepGraph_TopologyPath> BRepGraph::PathView::reverseWalkPaths
           const int aCompIdx = aCompounds->Value(c).Index;
           if (aCompIdx < 0 || aCompIdx >= aStorage.NbCompounds())
             continue;
-          const BRepGraphInc::CompoundEntity& aComp =
+          const BRepGraphInc::CompoundDef& aComp =
             aStorage.Compound(BRepGraph_CompoundId(aCompIdx));
           if (aComp.IsRemoved)
             continue;
@@ -853,7 +853,7 @@ NCollection_Vector<BRepGraph_TopologyPath> BRepGraph::PathView::reverseWalkPaths
           const int aParentIdx = aParents->Value(p).Index;
           if (aParentIdx < 0 || aParentIdx >= aStorage.NbCompounds())
             continue;
-          const BRepGraphInc::CompoundEntity& aParentComp = aStorage.Compound(aParents->Value(p));
+          const BRepGraphInc::CompoundDef& aParentComp = aStorage.Compound(aParents->Value(p));
           if (aParentComp.IsRemoved)
             continue;
           int aRefIdx = -1;
@@ -897,7 +897,7 @@ NCollection_Vector<BRepGraph_TopologyPath> BRepGraph::PathView::reverseWalkPaths
           const int aCompIdx = aParents->Value(p).Index;
           if (aCompIdx < 0 || aCompIdx >= aStorage.NbCompounds())
             continue;
-          const BRepGraphInc::CompoundEntity& aComp = aStorage.Compound(aParents->Value(p));
+          const BRepGraphInc::CompoundDef& aComp = aStorage.Compound(aParents->Value(p));
           if (aComp.IsRemoved)
             continue;
           int aRefIdx = -1;
@@ -969,7 +969,7 @@ void BRepGraph::PathView::reverseWalkFromVertex(
   for (int e = 0; e < aEdges->Length(); ++e)
   {
     const int                       anEdgeIdx = aEdges->Value(e).Index;
-    const BRepGraphInc::EdgeEntity& anEdge    = aStorage.Edge(BRepGraph_EdgeId(anEdgeIdx));
+    const BRepGraphInc::EdgeDef& anEdge    = aStorage.Edge(BRepGraph_EdgeId(anEdgeIdx));
     if (anEdge.IsRemoved)
       continue;
 
@@ -1028,7 +1028,7 @@ void BRepGraph::PathView::reverseWalkFromEdge(const int theEdgeIdx,
   for (int ce = 0; ce < aCoEdges->Length(); ++ce)
   {
     const BRepGraph_CoEdgeId          aCoEdgeId = aCoEdges->Value(ce);
-    const BRepGraphInc::CoEdgeEntity& aCoEdge   = aStorage.CoEdge(aCoEdgeId);
+    const BRepGraphInc::CoEdgeDef& aCoEdge   = aStorage.CoEdge(aCoEdgeId);
     if (aCoEdge.IsRemoved)
       continue;
 
@@ -1040,7 +1040,7 @@ void BRepGraph::PathView::reverseWalkFromEdge(const int theEdgeIdx,
     for (int w = 0; w < aWires->Length(); ++w)
     {
       const int                       aWireIdx = aWires->Value(w).Index;
-      const BRepGraphInc::WireEntity& aWire    = aStorage.Wire(BRepGraph_WireId(aWireIdx));
+      const BRepGraphInc::WireDef& aWire    = aStorage.Wire(BRepGraph_WireId(aWireIdx));
       if (aWire.IsRemoved)
         continue;
 
@@ -1092,7 +1092,7 @@ void BRepGraph::PathView::reverseWalkFromWire(const int theWireIdx,
   for (int f = 0; f < aFaces->Length(); ++f)
   {
     const int                       aFaceIdx = aFaces->Value(f).Index;
-    const BRepGraphInc::FaceEntity& aFace    = aStorage.Face(BRepGraph_FaceId(aFaceIdx));
+    const BRepGraphInc::FaceDef& aFace    = aStorage.Face(BRepGraph_FaceId(aFaceIdx));
     if (aFace.IsRemoved)
       continue;
 
@@ -1140,7 +1140,7 @@ void BRepGraph::PathView::reverseWalkFromFace(const int theFaceIdx,
     for (int s = 0; s < aShells->Length(); ++s)
     {
       const int                        aShellIdx = aShells->Value(s).Index;
-      const BRepGraphInc::ShellEntity& aShell    = aStorage.Shell(BRepGraph_ShellId(aShellIdx));
+      const BRepGraphInc::ShellDef& aShell    = aStorage.Shell(BRepGraph_ShellId(aShellIdx));
       if (aShell.IsRemoved)
         continue;
 
@@ -1179,7 +1179,7 @@ void BRepGraph::PathView::reverseWalkFromFace(const int theFaceIdx,
       const int aCompIdx = aCompFaces->Value(c).Index;
       if (aCompIdx < 0 || aCompIdx >= aStorage.NbCompounds())
         continue;
-      const BRepGraphInc::CompoundEntity& aComp = aStorage.Compound(BRepGraph_CompoundId(aCompIdx));
+      const BRepGraphInc::CompoundDef& aComp = aStorage.Compound(BRepGraph_CompoundId(aCompIdx));
       if (aComp.IsRemoved)
         continue;
       int aRefIdx = -1;
@@ -1230,7 +1230,7 @@ void BRepGraph::PathView::reverseWalkFromShell(
     for (int s = 0; s < aSolids->Length(); ++s)
     {
       const int                        aSolidIdx = aSolids->Value(s).Index;
-      const BRepGraphInc::SolidEntity& aSolid    = aStorage.Solid(BRepGraph_SolidId(aSolidIdx));
+      const BRepGraphInc::SolidDef& aSolid    = aStorage.Solid(BRepGraph_SolidId(aSolidIdx));
       if (aSolid.IsRemoved)
         continue;
 
@@ -1271,7 +1271,7 @@ void BRepGraph::PathView::reverseWalkFromShell(
       const int aCompIdx = aCompShells->Value(c).Index;
       if (aCompIdx < 0 || aCompIdx >= aStorage.NbCompounds())
         continue;
-      const BRepGraphInc::CompoundEntity& aComp = aStorage.Compound(BRepGraph_CompoundId(aCompIdx));
+      const BRepGraphInc::CompoundDef& aComp = aStorage.Compound(BRepGraph_CompoundId(aCompIdx));
       if (aComp.IsRemoved)
         continue;
       int aRefIdx = -1;
@@ -1325,7 +1325,7 @@ TopLoc_Location BRepGraph::PathView::OccurrenceLocation(
   while (aParentOccId.IsValid(aNbOccurrences) && aSteps < aNbOccurrences)
   {
     ++aSteps;
-    const BRepGraphInc::OccurrenceEntity& aParentOcc = aStorage.Occurrence(aParentOccId);
+    const BRepGraphInc::OccurrenceDef& aParentOcc = aStorage.Occurrence(aParentOccId);
     if (aParentOcc.IsRemoved)
       break;
     aGlobal      = aParentOcc.Placement * aGlobal;
@@ -1520,7 +1520,7 @@ int BRepGraph::PathView::NbActiveOccurrences() const
 
 //=================================================================================================
 
-const BRepGraphInc::ProductEntity& BRepGraph::PathView::Product(
+const BRepGraphInc::ProductDef& BRepGraph::PathView::Product(
   const BRepGraph_ProductId theProduct) const
 {
   return myGraph->myData->myIncStorage.Product(theProduct);
@@ -1528,7 +1528,7 @@ const BRepGraphInc::ProductEntity& BRepGraph::PathView::Product(
 
 //=================================================================================================
 
-const BRepGraphInc::OccurrenceEntity& BRepGraph::PathView::Occurrence(
+const BRepGraphInc::OccurrenceDef& BRepGraph::PathView::Occurrence(
   const BRepGraph_OccurrenceId theOccurrence) const
 {
   return myGraph->myData->myIncStorage.Occurrence(theOccurrence);
@@ -1547,7 +1547,7 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::PathView::RootProducts() const
   NCollection_Map<int> aReferencedProducts;
   for (int anOccIdx = 0; anOccIdx < aStorage.NbOccurrences(); ++anOccIdx)
   {
-    const BRepGraphInc::OccurrenceEntity& anOcc =
+    const BRepGraphInc::OccurrenceDef& anOcc =
       aStorage.Occurrence(BRepGraph_OccurrenceId(anOccIdx));
     if (!anOcc.IsRemoved && anOcc.ProductEntityId.IsValid())
       aReferencedProducts.Add(anOcc.ProductEntityId.Index);
@@ -1556,7 +1556,7 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::PathView::RootProducts() const
   NCollection_Vector<BRepGraph_NodeId> aRoots;
   for (int aProdIdx = 0; aProdIdx < aNbProducts; ++aProdIdx)
   {
-    const BRepGraphInc::ProductEntity& aProduct = aStorage.Product(BRepGraph_ProductId(aProdIdx));
+    const BRepGraphInc::ProductDef& aProduct = aStorage.Product(BRepGraph_ProductId(aProdIdx));
     if (aProduct.IsRemoved)
       continue;
     if (!aReferencedProducts.Contains(aProdIdx))
@@ -1572,7 +1572,7 @@ bool BRepGraph::PathView::IsAssembly(const BRepGraph_ProductId theProduct) const
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
   if (!theProduct.IsValid(aStorage.NbProducts()))
     return false;
-  const BRepGraphInc::ProductEntity& aProductEnt = aStorage.Product(theProduct);
+  const BRepGraphInc::ProductDef& aProductEnt = aStorage.Product(theProduct);
   return !aProductEnt.ShapeRootId.IsValid();
 }
 
@@ -1583,7 +1583,7 @@ bool BRepGraph::PathView::IsPart(const BRepGraph_ProductId theProduct) const
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
   if (!theProduct.IsValid(aStorage.NbProducts()))
     return false;
-  const BRepGraphInc::ProductEntity& aProductEnt = aStorage.Product(theProduct);
+  const BRepGraphInc::ProductDef& aProductEnt = aStorage.Product(theProduct);
   return aProductEnt.ShapeRootId.IsValid();
 }
 
@@ -1605,7 +1605,7 @@ BRepGraph_NodeId BRepGraph::PathView::Component(const BRepGraph_ProductId thePro
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
   if (!theProduct.IsValid(aStorage.NbProducts()))
     return BRepGraph_NodeId();
-  const BRepGraphInc::ProductEntity& aProductEnt = aStorage.Product(theProduct);
+  const BRepGraphInc::ProductDef& aProductEnt = aStorage.Product(theProduct);
   if (theComponentIdx < 0 || theComponentIdx >= aProductEnt.OccurrenceRefIds.Length())
     return BRepGraph_NodeId();
   return aStorage.OccurrenceRefEntry(aProductEnt.OccurrenceRefIds.Value(theComponentIdx)).OccurrenceEntityId;

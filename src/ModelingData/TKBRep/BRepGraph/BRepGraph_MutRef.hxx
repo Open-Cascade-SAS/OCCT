@@ -35,7 +35,7 @@
 //!
 //! @code
 //!   {
-//!     BRepGraph_MutRef<BRepGraphInc::EdgeEntity> anEdge =
+//!     BRepGraph_MutRef<BRepGraphInc::EdgeDef> anEdge =
 //!     theGraph.Builder().MutEdge(BRepGraph_EdgeId(42)); anEdge->Tolerance     = 0.5;
 //!     anEdge->SameParameter = true;
 //!   } // markModified called once here
@@ -55,7 +55,7 @@ public:
   {
   }
 
-  //! Destructor: calls the optimized markModified(NodeId, BaseEntity&) overload
+  //! Destructor: calls the optimized markModified(NodeId, BaseDef&) overload
   //! if the guard still owns the reference, skipping redundant storage dispatch.
   ~BRepGraph_MutRef()
   {

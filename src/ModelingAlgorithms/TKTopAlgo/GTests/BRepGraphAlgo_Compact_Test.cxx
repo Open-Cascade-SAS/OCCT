@@ -293,7 +293,7 @@ TEST(BRepGraphAlgo_CompactTest, MutationGen_SurvivesCompact)
   bool aFound = false;
   for (int anIdx = 0; anIdx < aGraph.Topo().NbEdges(); ++anIdx)
   {
-    const BRepGraphInc::EdgeEntity& anEdge = aGraph.Topo().Edge(BRepGraph_EdgeId(anIdx));
+    const BRepGraphInc::EdgeDef& anEdge = aGraph.Topo().Edge(BRepGraph_EdgeId(anIdx));
     if (std::abs(anEdge.Tolerance - THE_MUTATED_EDGE_TOLERANCE) < Precision::Confusion())
     {
       EXPECT_EQ(anEdge.MutationGen, THE_EXPECTED_MUTATION_GEN)

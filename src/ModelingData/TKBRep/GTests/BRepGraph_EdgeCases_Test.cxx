@@ -87,7 +87,7 @@ TEST(BRepGraph_EdgeCasesTest, TopoEntity_InvalidNodeId_ReturnsNull)
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph_NodeId             anInvalidId;
-  const BRepGraphInc::BaseEntity* aDef = aGraph.Topo().TopoEntity(anInvalidId);
+  const BRepGraphInc::BaseDef* aDef = aGraph.Topo().TopoEntity(anInvalidId);
   EXPECT_EQ(aDef, nullptr);
 }
 

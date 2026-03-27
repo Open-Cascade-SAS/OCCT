@@ -19,7 +19,7 @@
 #include <BRepGraph_RefUID.hxx>
 #include <BRepGraph_RepId.hxx>
 #include <BRepGraph_UID.hxx>
-#include <BRepGraphInc_Entity.hxx>
+#include <BRepGraphInc_Definition.hxx>
 #include <BRepGraph_HistoryRecord.hxx>
 #include <BRepGraph_SubGraph.hxx>
 #include <BRepGraph_UserAttribute.hxx>
@@ -213,7 +213,7 @@ private:
   //! Optimized overload: skips ChangeTopoEntity() and mutableCache() dispatch
   //! when the caller already holds a mutable reference to the target entity.
   Standard_EXPORT void markModified(const BRepGraph_NodeId            theNodeId,
-                                    BRepGraphInc::BaseEntity& theEntity);
+                                    BRepGraphInc::BaseDef& theEntity);
   Standard_EXPORT void markRefModified(const BRepGraph_RefId            theRefId,
                                        BRepGraphInc::BaseRef& theRef);
 
@@ -225,10 +225,10 @@ private:
   Standard_EXPORT void propagateModified(const BRepGraph_NodeId theNodeId);
 
   //! Generic topology definition lookup by NodeId (const).
-  Standard_EXPORT const BRepGraphInc::BaseEntity* TopoEntity(const BRepGraph_NodeId theId) const;
+  Standard_EXPORT const BRepGraphInc::BaseDef* TopoEntity(const BRepGraph_NodeId theId) const;
 
   //! Generic mutable topology definition lookup by NodeId.
-  Standard_EXPORT BRepGraphInc::BaseEntity* ChangeTopoEntity(const BRepGraph_NodeId theId);
+  Standard_EXPORT BRepGraphInc::BaseDef* ChangeTopoEntity(const BRepGraph_NodeId theId);
 };
 
 // Included after BRepGraph is complete so the template body sees markModified().

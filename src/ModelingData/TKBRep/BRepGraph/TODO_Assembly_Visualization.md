@@ -185,20 +185,20 @@ graph TB
 
 ```mermaid
 classDiagram
-    class BaseEntity {
+    class BaseDef {
         +BRepGraph_NodeId Id
         +BRepGraph_NodeCache Cache
         +bool IsModified
         +bool IsRemoved
     }
 
-    class ProductEntity {
+    class ProductDef {
         +BRepGraph_NodeId ShapeRootId
         +NCollection_Vector~OccurrenceRef~ OccurrenceRefs
         +InitVectors(allocator)
     }
 
-    class OccurrenceEntity {
+    class OccurrenceDef {
         +BRepGraph_ProductId ProductDefId
         +BRepGraph_ProductId ParentProductDefId
         +BRepGraph_OccurrenceId ParentOccurrenceDefId
@@ -209,21 +209,21 @@ classDiagram
         +BRepGraph_OccurrenceId OccurrenceDefId
     }
 
-    BaseEntity <|-- ProductEntity
-    BaseEntity <|-- OccurrenceEntity
-    ProductEntity *-- OccurrenceRef : OccurrenceRefs
+    BaseDef <|-- ProductDef
+    BaseDef <|-- OccurrenceDef
+    ProductDef *-- OccurrenceRef : OccurrenceRefs
 
-    class SolidEntity {
+    class SolidDef {
         +NCollection_Vector~ShellRef~ ShellRefs
     }
-    class CompoundEntity {
+    class CompoundDef {
         +NCollection_Vector~ChildRef~ ChildRefs
     }
 
-    BaseEntity <|-- SolidEntity
-    BaseEntity <|-- CompoundEntity
+    BaseDef <|-- SolidDef
+    BaseDef <|-- CompoundDef
 
-    note for ProductEntity "Part: ShapeRootId valid, OccurrenceRefs empty\nAssembly: ShapeRootId invalid, OccurrenceRefs non-empty"
+    note for ProductDef "Part: ShapeRootId valid, OccurrenceRefs empty\nAssembly: ShapeRootId invalid, OccurrenceRefs non-empty"
 ```
 
 ---

@@ -378,7 +378,7 @@ bool BRepGraphInc_Storage::MarkRemoved(const BRepGraph_NodeId theNodeId)
   if (!theNodeId.IsValid())
     return false;
 
-  BRepGraphInc::BaseEntity* anEnt = nullptr;
+  BRepGraphInc::BaseDef* anEnt = nullptr;
   switch (theNodeId.NodeKind)
   {
     case BRepGraph_NodeId::Kind::Vertex:
@@ -652,8 +652,8 @@ bool BRepGraphInc_Storage::ValidateReverseIndex() const
       return false;
     }
 
-    const BRepGraphInc::WireEntity& aWire = myWires.Get(aRef.ParentId.Index);
-    const BRepGraphInc::CoEdgeEntity& aCoEdge = myCoEdges.Get(aRef.CoEdgeEntityId.Index);
+    const BRepGraphInc::WireDef& aWire = myWires.Get(aRef.ParentId.Index);
+    const BRepGraphInc::CoEdgeDef& aCoEdge = myCoEdges.Get(aRef.CoEdgeEntityId.Index);
     if (aWire.IsRemoved || aCoEdge.IsRemoved)
     {
       continue;
@@ -685,7 +685,7 @@ bool BRepGraphInc_Storage::ValidateReverseIndex() const
       {
         return false;
       }
-      const BRepGraphInc::CoEdgeEntity& aCoEdge = myCoEdges.Get(aRefIdx);
+      const BRepGraphInc::CoEdgeDef& aCoEdge = myCoEdges.Get(aRefIdx);
       if (aCoEdge.IsRemoved || !aCoEdge.EdgeEntityId.IsValid() || aCoEdge.EdgeEntityId.Index != anEdgeIdx)
       {
         return false;
@@ -707,7 +707,7 @@ bool BRepGraphInc_Storage::ValidateReverseIndex() const
       return false;
     }
 
-    const BRepGraphInc::CompoundEntity& aCompound = myCompounds.Get(aRef.ParentId.Index);
+    const BRepGraphInc::CompoundDef& aCompound = myCompounds.Get(aRef.ParentId.Index);
     if (aCompound.IsRemoved)
     {
       continue;
@@ -772,7 +772,7 @@ bool BRepGraphInc_Storage::ValidateReverseIndex() const
       return false;
     }
 
-    const BRepGraphInc::CompSolidEntity& aCompSolid = myCompSolids.Get(aRef.ParentId.Index);
+    const BRepGraphInc::CompSolidDef& aCompSolid = myCompSolids.Get(aRef.ParentId.Index);
     if (aCompSolid.IsRemoved || mySolids.Get(aRef.SolidEntityId.Index).IsRemoved)
     {
       continue;
@@ -786,7 +786,7 @@ bool BRepGraphInc_Storage::ValidateReverseIndex() const
   // Occurrence -> Product reverse map.
   for (int anOccIdx = 0; anOccIdx < myOccurrences.Nb(); ++anOccIdx)
   {
-    const BRepGraphInc::OccurrenceEntity& anOcc = myOccurrences.Get(anOccIdx);
+    const BRepGraphInc::OccurrenceDef& anOcc = myOccurrences.Get(anOccIdx);
     if (anOcc.IsRemoved)
     {
       continue;
@@ -818,7 +818,7 @@ bool BRepGraphInc_Storage::ValidateReverseIndex() const
       {
         return false;
       }
-      const BRepGraphInc::OccurrenceEntity& anOcc = myOccurrences.Get(anOccIdx);
+      const BRepGraphInc::OccurrenceDef& anOcc = myOccurrences.Get(anOccIdx);
       if (anOcc.IsRemoved || !anOcc.ProductEntityId.IsValid()
           || anOcc.ProductEntityId.Index != aProductIdx)
       {

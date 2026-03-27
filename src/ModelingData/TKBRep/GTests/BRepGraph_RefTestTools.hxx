@@ -15,7 +15,7 @@
 #define _BRepGraph_RefTestTools_HeaderFile
 
 #include <BRepGraph.hxx>
-#include <BRepGraphInc_Entity.hxx>
+#include <BRepGraphInc_Definition.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraphInc_Storage.hxx>

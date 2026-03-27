@@ -15,7 +15,7 @@
 
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Tool.hxx>
-#include <BRepGraphInc_Entity.hxx>
+#include <BRepGraphInc_Definition.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
 #include <gp_Pnt.hxx>
@@ -28,8 +28,8 @@ void BRepGraphCheck::CheckVertexOnEdge(const BRepGraph&                         
                                        NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
 {
   const BRepGraph::TopoView&           aDefs     = theGraph.Topo();
-  const BRepGraphInc::VertexEntity& aVtxDef   = aDefs.Vertex(theVertex);
-  const BRepGraphInc::EdgeEntity&   anEdgeDef = aDefs.Edge(theEdge);
+  const BRepGraphInc::VertexDef& aVtxDef   = aDefs.Vertex(theVertex);
+  const BRepGraphInc::EdgeDef&   anEdgeDef = aDefs.Edge(theEdge);
 
   // Skip degenerate edges.
   if (BRepGraph_Tool::Edge::Degenerated(theGraph, theEdge))
@@ -88,7 +88,7 @@ void BRepGraphCheck::CheckVertexOnFace(const BRepGraph&                         
                                        NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
 {
   const BRepGraph::TopoView&           aDefs   = theGraph.Topo();
-  const BRepGraphInc::VertexEntity& aVtxDef = aDefs.Vertex(theVertex);
+  const BRepGraphInc::VertexDef& aVtxDef = aDefs.Vertex(theVertex);
 
   if (!BRepGraph_Tool::Face::HasSurface(theGraph, theFace))
     return;
@@ -99,7 +99,7 @@ void BRepGraphCheck::CheckVertexOnFace(const BRepGraph&                         
   for (int anEdgeIter = 0; anEdgeIter < aNbEdges; ++anEdgeIter)
   {
     const BRepGraph_EdgeId             anEdgeId  = BRepGraph_EdgeId(anEdgeIter);
-    const BRepGraphInc::EdgeEntity& anEdgeDef = aDefs.Edge(anEdgeId);
+    const BRepGraphInc::EdgeDef& anEdgeDef = aDefs.Edge(anEdgeId);
 
     bool   aIsEndpoint = false;
     double aParam      = 0.0;
@@ -127,7 +127,7 @@ void BRepGraphCheck::CheckVertexOnFace(const BRepGraph&                         
       continue;
 
     // Look for PCurve of this edge on this face.
-    const BRepGraphInc::CoEdgeEntity* aPCurve =
+    const BRepGraphInc::CoEdgeDef* aPCurve =
       BRepGraph_Tool::Edge::FindPCurve(theGraph, anEdgeId, theFace);
     if (aPCurve == nullptr)
       continue;

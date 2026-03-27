@@ -180,8 +180,8 @@ flowchart LR
   O3 -->|ProductEntityId| P1
 ```
 
-- **ProductEntity**: `ShapeRootId` (topology root for parts; invalid for assemblies), `RootOrientation`, `RootLocation`, `OccurrenceRefIds` (child occurrences)
-- **OccurrenceEntity**: `ProductEntityId` (referenced product), `ParentProductEntityId` (parent assembly), `ParentOccurrenceEntityId` (parent occurrence for tree-structured placement chains), `Placement` (TopLoc_Location)
+- **ProductDef**: `ShapeRootId` (topology root for parts; invalid for assemblies), `RootOrientation`, `RootLocation`, `OccurrenceRefIds` (child occurrences)
+- **OccurrenceDef**: `ProductEntityId` (referenced product), `ParentProductEntityId` (parent assembly), `ParentOccurrenceEntityId` (parent occurrence for tree-structured placement chains), `Placement` (TopLoc_Location)
 
 ### Placement Composition
 
@@ -193,9 +193,9 @@ flowchart LR
 |------|---------|
 | **DefsView** | `NbProducts`, `NbOccurrences`, `Product(i)`, `Occurrence(i)`, `RootProducts`, `IsAssembly`, `IsPart`, `NbComponents`, `Component` |
 | **BuilderView** | `AddProduct`, `AddAssemblyProduct`, `AddOccurrence` (with optional parent occurrence), `RemoveSubgraph` (cascades to child occurrences) |
-| **MutView** | `ProductEntity(i)`, `OccurrenceEntity(i)` (RAII guards) |
+| **MutView** | `ProductDef(i)`, `OccurrenceDef(i)` (RAII guards) |
 | **SpatialView** | `GlobalPlacement(occIdx)` |
-| **Iterator** | `BRepGraph_Iterator<ProductEntity>`, `BRepGraph_Iterator<OccurrenceEntity>` |
+| **Iterator** | `BRepGraph_Iterator<ProductDef>`, `BRepGraph_Iterator<OccurrenceDef>` |
 
 ### Single-Shape Graph
 
@@ -266,7 +266,7 @@ Graph-wide named metadata collections with full lifecycle management. Registered
 
 ### UserAttributes (`BRepGraph_UserAttribute`)
 
-Per-node cached computations in `BaseEntity.Cache`. Lazily evaluated, auto-invalidated when mutated.
+Per-node cached computations in `BaseDef.Cache`. Lazily evaluated, auto-invalidated when mutated.
 
 - **Purpose**: ephemeral computed caches (bounding boxes, UV bounds, FClass2d results)
 - **Lifecycle**: auto-invalidated by `markModified()`; recomputed on next `Get()`

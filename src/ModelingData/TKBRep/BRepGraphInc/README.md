@@ -41,20 +41,20 @@ flowchart TB
 ```mermaid
 flowchart LR
   subgraph Topology Entities
-    V[VertexEntity]
-    E[EdgeEntity]
-    CE[CoEdgeEntity]
-    W[WireEntity]
-    F[FaceEntity]
-    SH[ShellEntity]
-    SO[SolidEntity]
-    CO[CompoundEntity]
-    CS[CompSolidEntity]
+    V[VertexDef]
+    E[EdgeDef]
+    CE[CoEdgeDef]
+    W[WireDef]
+    F[FaceDef]
+    SH[ShellDef]
+    SO[SolidDef]
+    CO[CompoundDef]
+    CS[CompSolidDef]
   end
 
   subgraph Assembly Entities
-    PR[ProductEntity]
-    OC[OccurrenceEntity]
+    PR[ProductDef]
+    OC[OccurrenceDef]
   end
 
   F -->|WireRef| W
@@ -78,29 +78,29 @@ Notes:
 
 - Intrinsic data lives on entities; context data (orientation/location) lives on RefEntry tables
 - CoEdge owns PCurve data for each edge-face binding (Weiler half-edge pattern)
-- ProductEntity: `ShapeRootId` (topology root for parts; invalid for assemblies), `OccurrenceRefIds`
-- OccurrenceEntity: `ProductDefId`, `ParentProductDefId`, `ParentOccurrenceDefId` (tree-structured placement chain), `Placement`
+- ProductDef: `ShapeRootId` (topology root for parts; invalid for assemblies), `OccurrenceRefIds`
+- OccurrenceDef: `ProductDefId`, `ParentProductDefId`, `ParentOccurrenceDefId` (tree-structured placement chain), `Placement`
 
 ## Entity Hierarchy
 
 ```mermaid
 graph TD
-    Product["ProductEntity<br/><i>ShapeRootId, RootOrientation, RootLocation</i>"]
+    Product["ProductDef<br/><i>ShapeRootId, RootOrientation, RootLocation</i>"]
 
-    Compound["CompoundEntity<br/><i>ChildRefIds[]</i>"]
-    CompSolid["CompSolidEntity<br/><i>SolidRefIds[]</i>"]
-    Solid["SolidEntity<br/><i>ShellRefIds[], FreeChildRefIds[]</i>"]
-    Shell["ShellEntity<br/><i>IsClosed, FaceRefIds[], FreeChildRefIds[]</i>"]
+    Compound["CompoundDef<br/><i>ChildRefIds[]</i>"]
+    CompSolid["CompSolidDef<br/><i>SolidRefIds[]</i>"]
+    Solid["SolidDef<br/><i>ShellRefIds[], FreeChildRefIds[]</i>"]
+    Shell["ShellDef<br/><i>IsClosed, FaceRefIds[], FreeChildRefIds[]</i>"]
 
-    Face["FaceEntity<br/><i>SurfaceRepId, TriangulationRepIds,<br/>ActiveTriangulationIndex, WireRefIds[],<br/>VertexRefIds[], Tolerance, NaturalRestriction</i>"]
+    Face["FaceDef<br/><i>SurfaceRepId, TriangulationRepIds,<br/>ActiveTriangulationIndex, WireRefIds[],<br/>VertexRefIds[], Tolerance, NaturalRestriction</i>"]
 
-    Wire["WireEntity<br/><i>CoEdgeRefIds[], IsClosed</i>"]
+    Wire["WireDef<br/><i>CoEdgeRefIds[], IsClosed</i>"]
 
-    CoEdge["CoEdgeEntity<br/><i>EdgeDefId, FaceDefId, Sense,<br/>Curve2DRepId, Polygon2DRepId,<br/>ParamFirst/Last, UV1/UV2,<br/>SeamPairId, SeamContinuity</i>"]
+    CoEdge["CoEdgeDef<br/><i>EdgeDefId, FaceDefId, Sense,<br/>Curve2DRepId, Polygon2DRepId,<br/>ParamFirst/Last, UV1/UV2,<br/>SeamPairId, SeamContinuity</i>"]
 
-    Edge["EdgeEntity<br/><i>Curve3DRepId, Polygon3DRepId,<br/>StartVertexRefId, EndVertexRefId,<br/>InternalVertexRefIds[],<br/>ParamFirst/Last, Tolerance,<br/>SameParameter, SameRange,<br/>IsDegenerate, IsClosed,<br/>Regularities[]</i>"]
+    Edge["EdgeDef<br/><i>Curve3DRepId, Polygon3DRepId,<br/>StartVertexRefId, EndVertexRefId,<br/>InternalVertexRefIds[],<br/>ParamFirst/Last, Tolerance,<br/>SameParameter, SameRange,<br/>IsDegenerate, IsClosed,<br/>Regularities[]</i>"]
 
-    Vertex["VertexEntity<br/><i>Point (def frame), Tolerance,<br/>PointsOnCurve[],<br/>PointsOnPCurve[],<br/>PointsOnSurface[]</i>"]
+    Vertex["VertexDef<br/><i>Point (def frame), Tolerance,<br/>PointsOnCurve[],<br/>PointsOnPCurve[],<br/>PointsOnSurface[]</i>"]
 
     SurfRep["SurfaceRep<br/><i>Geom_Surface</i>"]
     C3DRep["Curve3DRep<br/><i>Geom_Curve</i>"]
@@ -149,18 +149,18 @@ Concrete ref entry types extend BaseRef with context data:
 
 Entities store typed RefId vectors instead of inline ref arrays:
 
-- **SolidEntity**: `ShellRefIds[]`, `FreeChildRefIds[]`
-- **ShellEntity**: `FaceRefIds[]`, `FreeChildRefIds[]`
-- **FaceEntity**: `WireRefIds[]`, `VertexRefIds[]`
-- **WireEntity**: `CoEdgeRefIds[]`
-- **EdgeEntity**: `StartVertexRefId`, `EndVertexRefId`, `InternalVertexRefIds[]`
-- **CompoundEntity**: `ChildRefIds[]`
-- **CompSolidEntity**: `SolidRefIds[]`
-- **ProductEntity**: `OccurrenceRefIds[]`
+- **SolidDef**: `ShellRefIds[]`, `FreeChildRefIds[]`
+- **ShellDef**: `FaceRefIds[]`, `FreeChildRefIds[]`
+- **FaceDef**: `WireRefIds[]`, `VertexRefIds[]`
+- **WireDef**: `CoEdgeRefIds[]`
+- **EdgeDef**: `StartVertexRefId`, `EndVertexRefId`, `InternalVertexRefIds[]`
+- **CompoundDef**: `ChildRefIds[]`
+- **CompSolidDef**: `SolidRefIds[]`
+- **ProductDef**: `OccurrenceRefIds[]`
 
 ### RefStore
 
-`RefStore<T>` in Storage groups per-kind ref entry vector + UID vector + active count. Provides `Get()`, `Change()`, `Append()`, `DecrementActive()` (for soft-delete tracking via `BaseRef.IsRemoved`) -- same pattern as `EntityStore<T>`.
+`RefStore<T>` in Storage groups per-kind ref entry vector + UID vector + active count. Provides `Get()`, `Change()`, `Append()`, `DecrementActive()` (for soft-delete tracking via `BaseRef.IsRemoved`) -- same pattern as `DefStore<T>`.
 
 ## Build Pipeline
 
@@ -298,11 +298,11 @@ anEdge.Location(Identity);                     // Reset after attachment
 
 ## Memory and Performance
 
-### Typed-Id API and EntityStore
+### Typed-Id API and DefStore
 
 All public Storage accessors use strongly-typed ids (`BRepGraph_VertexId`, `BRepGraph_EdgeId`, `BRepGraph_FaceId`, etc.) instead of raw `int` for compile-time safety. Internally, Storage uses two template patterns:
 
-- **`EntityStore<T>`**: groups entity vector + per-kind UID vector + active count. Provides `Get()`, `Change()`, `Append()`, `DecrementActive()`.
+- **`DefStore<T>`**: groups entity vector + per-kind UID vector + active count. Provides `Get()`, `Change()`, `Append()`, `DecrementActive()`.
 - **`RepStore<T>`**: groups representation vector + active count. Same accessor pattern, no UID vector.
 
 ### Allocator Propagation
@@ -325,14 +325,14 @@ Contract: `SetAllocator()` must be called before `Build()`/`BuildDelta()` on Rev
 
 | Item | Count | GraphInc Storage |
 |------|------:|-----------------|
-| Solid | 1 | `SolidEntity` table |
-| Shell | 1 | `ShellEntity` table |
-| Face | 6 | `FaceEntity` table |
-| Wire | 6 | `WireEntity` table |
-| Edge | 12 | `EdgeEntity` table |
-| CoEdge | 24 | `CoEdgeEntity` table |
-| Vertex | 8 | `VertexEntity` table |
-| Product | 1 (auto root) | `ProductEntity` table |
+| Solid | 1 | `SolidDef` table |
+| Shell | 1 | `ShellDef` table |
+| Face | 6 | `FaceDef` table |
+| Wire | 6 | `WireDef` table |
+| Edge | 12 | `EdgeDef` table |
+| CoEdge | 24 | `CoEdgeDef` table |
+| Vertex | 8 | `VertexDef` table |
+| Product | 1 (auto root) | `ProductDef` table |
 
 Key difference: TopoDS expresses context through shape occurrences. GraphInc keeps canonical entities and stores context on refs.
 
@@ -340,7 +340,7 @@ Key difference: TopoDS expresses context through shape occurrences. GraphInc kee
 
 | File | Purpose |
 |------|---------|
-| `BRepGraphInc_Entity.hxx` | Entity struct definitions |
+| `BRepGraphInc_Definition.hxx` | Entity struct definitions |
 | `BRepGraphInc_IncidenceRef.hxx` | Context reference definitions |
 | `BRepGraphInc_Storage.hxx/.cxx` | Typed storage and ownership |
 | `BRepGraphInc_Populate.hxx/.cxx` | TopoDS → incidence build and append |

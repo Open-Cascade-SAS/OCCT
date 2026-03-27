@@ -31,7 +31,7 @@ void BRepGraph::AttrsView::Set(const BRepGraph_NodeId                      theNo
 occ::handle<BRepGraph_UserAttribute> BRepGraph::AttrsView::Get(const BRepGraph_NodeId theNode,
                                                                const int              theKey) const
 {
-  const BRepGraphInc::BaseEntity* aDef = myGraph->TopoEntity(theNode);
+  const BRepGraphInc::BaseDef* aDef = myGraph->TopoEntity(theNode);
   if (aDef == nullptr)
     return occ::handle<BRepGraph_UserAttribute>();
   return aDef->Cache.GetUserAttribute(theKey);
@@ -60,7 +60,7 @@ void BRepGraph::AttrsView::Invalidate(const BRepGraph_NodeId theNode, const int 
 
 NCollection_Vector<int> BRepGraph::AttrsView::AttributeKeys(const BRepGraph_NodeId theNode) const
 {
-  const BRepGraphInc::BaseEntity* aDef = myGraph->TopoEntity(theNode);
+  const BRepGraphInc::BaseDef* aDef = myGraph->TopoEntity(theNode);
   if (aDef == nullptr)
     return NCollection_Vector<int>();
   return aDef->Cache.UserAttributeKeys();

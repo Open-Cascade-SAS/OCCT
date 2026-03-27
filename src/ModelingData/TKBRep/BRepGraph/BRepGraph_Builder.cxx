@@ -190,7 +190,7 @@ void BRepGraph_Builder::Perform(BRepGraph&                            theGraph,
         break;
     }
 
-    BRepGraphInc::ProductEntity& aProduct    = aStorage.AppendProduct();
+    BRepGraphInc::ProductDef& aProduct    = aStorage.AppendProduct();
     const int                    aProductIdx = aStorage.NbProducts() - 1;
     aProduct.Id                              = BRepGraph_NodeId::Product(aProductIdx);
     aProduct.ShapeRootId                     = aTopologyRoot; // invalid if no topology matched

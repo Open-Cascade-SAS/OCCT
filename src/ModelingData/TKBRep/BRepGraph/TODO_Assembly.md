@@ -18,8 +18,8 @@ one root Product. `Build(aBox)` auto-creates a single root Product with
 ## Completed
 
 ### Data Model and Core API — DONE (2026-03-20)
-- `ProductEntity` / `OccurrenceEntity` / `OccurrenceRef` in `BRepGraphInc_Entity.hxx`
-- `EntityStore<T>` in `BRepGraphInc_Storage` with typed-id accessors
+- `ProductDef` / `OccurrenceDef` / `OccurrenceRef` in `BRepGraphInc_Definition.hxx`
+- `DefStore<T>` in `BRepGraphInc_Storage` with typed-id accessors
 - BRepGraph dispatch (TopoDef, markModified, invalidateSubgraph, allocateUID)
 - Auto root Product creation in `BRepGraph_Builder`
 - DefsView: `Product()`, `Occurrence()`, `RootProducts()`, `IsAssembly()`, `IsPart()`, `NbComponents()`, `Component()`
@@ -128,7 +128,7 @@ Depends on XDE Population Bridge and XDE Export.
 | Test | Description |
 |------|-------------|
 | `PopulateFromXDE` | Load STEP assembly, populate graph, verify product/occurrence counts |
-| `SharedParts` | Assembly with shared parts, verify single ProductEntity per unique part |
+| `SharedParts` | Assembly with shared parts, verify single ProductDef per unique part |
 | `RoundTrip` | Populate → Reconstruct → compare XDE label trees |
 
 **File**: `src/DataExchange/TKXCAF/GTests/BRepGraphDE_Assembly_Test.cxx`

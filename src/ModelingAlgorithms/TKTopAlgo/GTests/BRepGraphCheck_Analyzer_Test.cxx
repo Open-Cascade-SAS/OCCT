@@ -19,7 +19,7 @@
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepCheck_Status.hxx>
 #include <BRepGraph.hxx>
-#include <BRepGraphInc_Entity.hxx>
+#include <BRepGraphInc_Definition.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_Tool.hxx>
@@ -562,7 +562,7 @@ TEST(BRepGraphCheck_AnalyzerTest, MissingPCurve_DetectsNoCurveOnSurface)
 
     // Check if this edge has a PCurve on face 0.
     const BRepGraph_FaceId            aFaceId(0);
-    const BRepGraphInc::CoEdgeEntity* aPCEntry =
+    const BRepGraphInc::CoEdgeDef* aPCEntry =
       BRepGraph_Tool::Edge::FindPCurve(aGraph, BRepGraph_EdgeId(anEdgeId), aFaceId);
     if (aPCEntry != nullptr)
       continue; // This edge has a PCurve on face 0, skip it.

@@ -18,7 +18,7 @@
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
 #include <BRepGraph.hxx>
-#include <BRepGraphInc_Entity.hxx>
+#include <BRepGraphInc_Definition.hxx>
 #include "BRepGraph_RefTestTools.hxx"
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraphInc_Populate.hxx>
@@ -499,7 +499,7 @@ TEST(BRepGraphIncTest, Compound_RoundTrip_SubShapeCounts)
 }
 
 // ============================================================
-// CoEdge count consistency (PCurve data lives on CoEdgeEntity)
+// CoEdge count consistency (PCurve data lives on CoEdgeDef)
 // ============================================================
 
 TEST(BRepGraphIncTest, Box_CoEdgeCount)
@@ -543,7 +543,7 @@ TEST(BRepGraphIncTest, Cylinder_HasSeamEdges)
       continue;
     for (int i = 0; i < aCoEdgeIdxs->Length(); ++i)
     {
-      const BRepGraphInc::CoEdgeEntity& aCE = aStorage.CoEdge(aCoEdgeIdxs->Value(i));
+      const BRepGraphInc::CoEdgeDef& aCE = aStorage.CoEdge(aCoEdgeIdxs->Value(i));
       if (aCE.Sense == TopAbs_FORWARD && aCE.SeamPairId.IsValid())
       {
         ++aSeamPairCount;
@@ -599,7 +599,7 @@ TEST(BRepGraphIncTest, Sphere_DegenerateEdges_Preserved)
   int aDegenerateCount = 0;
   for (int i = 0; i < aStorage.NbEdges(); ++i)
   {
-    const BRepGraphInc::EdgeEntity& anEdge = aStorage.Edge(BRepGraph_EdgeId(i));
+    const BRepGraphInc::EdgeDef& anEdge = aStorage.Edge(BRepGraph_EdgeId(i));
     if (anEdge.IsDegenerate)
     {
       ++aDegenerateCount;
@@ -751,7 +751,7 @@ TEST(BRepGraphIncTest, EdgeInternalVertex_Captured)
   bool aFound = false;
   for (int i = 0; i < aStorage.NbEdges(); ++i)
   {
-    const BRepGraphInc::EdgeEntity& anEdgeEnt = aStorage.Edge(BRepGraph_EdgeId(i));
+    const BRepGraphInc::EdgeDef& anEdgeEnt = aStorage.Edge(BRepGraph_EdgeId(i));
     if (anEdgeEnt.InternalVertexRefIds.Length() == 1)
     {
       aFound = true;
@@ -761,7 +761,7 @@ TEST(BRepGraphIncTest, EdgeInternalVertex_Captured)
       EXPECT_EQ(aIntVRef.Orientation, TopAbs_INTERNAL);
       // Verify the vertex point.
       int aVtxIdx = aIntVRef.VertexEntityId.Index;
-      const BRepGraphInc::VertexEntity& aVtxEnt = aStorage.Vertex(BRepGraph_VertexId(aVtxIdx));
+      const BRepGraphInc::VertexDef& aVtxEnt = aStorage.Vertex(BRepGraph_VertexId(aVtxIdx));
       EXPECT_NEAR(aVtxEnt.Point.X(), 5.0, Precision::Confusion());
       break;
     }
@@ -819,7 +819,7 @@ TEST(BRepGraphIncTest, EdgeExternalVertex_Captured)
   bool aFound = false;
   for (int i = 0; i < aStorage.NbEdges(); ++i)
   {
-    const BRepGraphInc::EdgeEntity& anEdgeEnt = aStorage.Edge(BRepGraph_EdgeId(i));
+    const BRepGraphInc::EdgeDef& anEdgeEnt = aStorage.Edge(BRepGraph_EdgeId(i));
     if (anEdgeEnt.InternalVertexRefIds.Length() == 1)
     {
       aFound = true;
@@ -868,7 +868,7 @@ TEST(BRepGraphIncTest, EdgeMultipleInternalVertices_AllCaptured)
   bool aFound = false;
   for (int i = 0; i < aStorage.NbEdges(); ++i)
   {
-    const BRepGraphInc::EdgeEntity& anEdgeEnt = aStorage.Edge(BRepGraph_EdgeId(i));
+    const BRepGraphInc::EdgeDef& anEdgeEnt = aStorage.Edge(BRepGraph_EdgeId(i));
     if (anEdgeEnt.InternalVertexRefIds.Length() == 2)
     {
       aFound = true;
@@ -919,7 +919,7 @@ TEST(BRepGraphIncTest, FaceDirectVertex_Internal_Captured)
   ASSERT_TRUE(aStorage.GetIsDone());
   ASSERT_GE(aStorage.NbFaces(), 1);
 
-  const BRepGraphInc::FaceEntity& aFaceEnt = aStorage.Face(BRepGraph_FaceId(0));
+  const BRepGraphInc::FaceDef& aFaceEnt = aStorage.Face(BRepGraph_FaceId(0));
   EXPECT_EQ(aFaceEnt.VertexRefIds.Length(), 1);
   if (aFaceEnt.VertexRefIds.Length() == 1)
   {
@@ -991,7 +991,7 @@ TEST(BRepGraphIncTest, FaceExternalVertex_Captured)
   ASSERT_TRUE(aStorage.GetIsDone());
   ASSERT_GE(aStorage.NbFaces(), 1);
 
-  const BRepGraphInc::FaceEntity& aFaceEnt = aStorage.Face(BRepGraph_FaceId(0));
+  const BRepGraphInc::FaceDef& aFaceEnt = aStorage.Face(BRepGraph_FaceId(0));
   EXPECT_EQ(aFaceEnt.VertexRefIds.Length(), 1);
   if (aFaceEnt.VertexRefIds.Length() == 1)
     EXPECT_EQ(aStorage.VertexRefEntry(aFaceEnt.VertexRefIds.Value(0)).Orientation,
@@ -1036,7 +1036,7 @@ TEST(BRepGraphIncTest, FaceWithWiresAndVertices_BothCaptured)
   ASSERT_TRUE(aStorage.GetIsDone());
   ASSERT_GE(aStorage.NbFaces(), 1);
 
-  const BRepGraphInc::FaceEntity& aFaceEnt = aStorage.Face(BRepGraph_FaceId(0));
+  const BRepGraphInc::FaceDef& aFaceEnt = aStorage.Face(BRepGraph_FaceId(0));
   EXPECT_GE(BRepGraph_TestTools::CountWireRefsOfFace(aStorage, BRepGraph_FaceId(0)), 1);
   EXPECT_EQ(aFaceEnt.VertexRefIds.Length(), 1);
 }

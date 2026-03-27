@@ -15,7 +15,7 @@
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepGraph.hxx>
-#include <BRepGraphInc_Entity.hxx>
+#include <BRepGraphInc_Definition.hxx>
 #include <BRepGraphAlgo_BndLib.hxx>
 #include <BRepGraph_Analyze.hxx>
 #include <BRepGraph_AttrsView.hxx>
@@ -75,14 +75,14 @@ static gp_Pnt bboxCenter(BRepGraph& theGraph, BRepGraph_NodeId theNode)
 
 struct ReverseIndexInputData
 {
-  NCollection_Vector<BRepGraphInc::EdgeEntity>      Edges;
-  NCollection_Vector<BRepGraphInc::CoEdgeEntity>    CoEdges;
-  NCollection_Vector<BRepGraphInc::WireEntity>      Wires;
-  NCollection_Vector<BRepGraphInc::FaceEntity>      Faces;
-  NCollection_Vector<BRepGraphInc::ShellEntity>     Shells;
-  NCollection_Vector<BRepGraphInc::SolidEntity>     Solids;
-  NCollection_Vector<BRepGraphInc::CompoundEntity>  Compounds;
-  NCollection_Vector<BRepGraphInc::CompSolidEntity> CompSolids;
+  NCollection_Vector<BRepGraphInc::EdgeDef>      Edges;
+  NCollection_Vector<BRepGraphInc::CoEdgeDef>    CoEdges;
+  NCollection_Vector<BRepGraphInc::WireDef>      Wires;
+  NCollection_Vector<BRepGraphInc::FaceDef>      Faces;
+  NCollection_Vector<BRepGraphInc::ShellDef>     Shells;
+  NCollection_Vector<BRepGraphInc::SolidDef>     Solids;
+  NCollection_Vector<BRepGraphInc::CompoundDef>  Compounds;
+  NCollection_Vector<BRepGraphInc::CompSolidDef> CompSolids;
   NCollection_Vector<BRepGraphInc::ShellRefEntry>   ShellRefs;
   NCollection_Vector<BRepGraphInc::FaceRefEntry>    FaceRefs;
   NCollection_Vector<BRepGraphInc::WireRefEntry>    WireRefs;
@@ -96,7 +96,7 @@ static ReverseIndexInputData buildReverseIndexBaseInput()
 {
   ReverseIndexInputData aData;
 
-  BRepGraphInc::EdgeEntity& anEdge = aData.Edges.Appended();
+  BRepGraphInc::EdgeDef& anEdge = aData.Edges.Appended();
   anEdge.InitVectors(occ::handle<NCollection_BaseAllocator>());
   anEdge.Id = BRepGraph_NodeId::Edge(0);
 
@@ -113,13 +113,13 @@ static ReverseIndexInputData buildReverseIndexBaseInput()
   anEndVRef0.Orientation = TopAbs_REVERSED;
   anEdge.EndVertexRefId  = BRepGraph_VertexRefId(aData.VertexRefs.Length() - 1);
 
-  BRepGraphInc::CoEdgeEntity& aCoEdge = aData.CoEdges.Appended();
+  BRepGraphInc::CoEdgeDef& aCoEdge = aData.CoEdges.Appended();
   aCoEdge.InitVectors(occ::handle<NCollection_BaseAllocator>());
   aCoEdge.Id        = BRepGraph_NodeId::CoEdge(0);
   aCoEdge.EdgeEntityId = BRepGraph_EdgeId(0);
   aCoEdge.FaceEntityId = BRepGraph_FaceId(0);
 
-  BRepGraphInc::WireEntity& aWire = aData.Wires.Appended();
+  BRepGraphInc::WireDef& aWire = aData.Wires.Appended();
   aWire.InitVectors(occ::handle<NCollection_BaseAllocator>());
   aWire.Id = BRepGraph_NodeId::Wire(0);
 
@@ -128,7 +128,7 @@ static ReverseIndexInputData buildReverseIndexBaseInput()
   aCoEdgeRef.CoEdgeEntityId                   = BRepGraph_CoEdgeId(0);
   aWire.CoEdgeRefIds.Append(BRepGraph_CoEdgeRefId(0));
 
-  BRepGraphInc::FaceEntity& aFace = aData.Faces.Appended();
+  BRepGraphInc::FaceDef& aFace = aData.Faces.Appended();
   aFace.InitVectors(occ::handle<NCollection_BaseAllocator>());
   aFace.Id = BRepGraph_NodeId::Face(0);
 
@@ -138,7 +138,7 @@ static ReverseIndexInputData buildReverseIndexBaseInput()
   aWireRefEntry.IsOuter                     = true;
   aFace.WireRefIds.Append(BRepGraph_WireRefId(0));
 
-  BRepGraphInc::ShellEntity& aShell = aData.Shells.Appended();
+  BRepGraphInc::ShellDef& aShell = aData.Shells.Appended();
   aShell.InitVectors(occ::handle<NCollection_BaseAllocator>());
   aShell.Id = BRepGraph_NodeId::Shell(0);
 
@@ -147,7 +147,7 @@ static ReverseIndexInputData buildReverseIndexBaseInput()
   aFaceRefEntry.FaceEntityId                   = BRepGraph_FaceId(0);
   aShell.FaceRefIds.Append(BRepGraph_FaceRefId(0));
 
-  BRepGraphInc::SolidEntity& aSolid = aData.Solids.Appended();
+  BRepGraphInc::SolidDef& aSolid = aData.Solids.Appended();
   aSolid.InitVectors(occ::handle<NCollection_BaseAllocator>());
   aSolid.Id = BRepGraph_NodeId::Solid(0);
 
@@ -162,7 +162,7 @@ static ReverseIndexInputData buildReverseIndexBaseInput()
 static void appendReverseIndexDeltaInput(ReverseIndexInputData& theData)
 {
   // Active edge/wire/face/shell/solid chain.
-  BRepGraphInc::EdgeEntity& anEdge = theData.Edges.Appended();
+  BRepGraphInc::EdgeDef& anEdge = theData.Edges.Appended();
   anEdge.InitVectors(occ::handle<NCollection_BaseAllocator>());
   anEdge.Id = BRepGraph_NodeId::Edge(1);
 
@@ -178,13 +178,13 @@ static void appendReverseIndexDeltaInput(ReverseIndexInputData& theData)
   anEndVRef1.Orientation = TopAbs_REVERSED;
   anEdge.EndVertexRefId  = BRepGraph_VertexRefId(theData.VertexRefs.Length() - 1);
 
-  BRepGraphInc::CoEdgeEntity& aCoEdge = theData.CoEdges.Appended();
+  BRepGraphInc::CoEdgeDef& aCoEdge = theData.CoEdges.Appended();
   aCoEdge.InitVectors(occ::handle<NCollection_BaseAllocator>());
   aCoEdge.Id        = BRepGraph_NodeId::CoEdge(1);
   aCoEdge.EdgeEntityId = BRepGraph_EdgeId(1);
   aCoEdge.FaceEntityId = BRepGraph_FaceId(1);
 
-  BRepGraphInc::WireEntity& aWire = theData.Wires.Appended();
+  BRepGraphInc::WireDef& aWire = theData.Wires.Appended();
   aWire.InitVectors(occ::handle<NCollection_BaseAllocator>());
   aWire.Id = BRepGraph_NodeId::Wire(1);
 
@@ -193,7 +193,7 @@ static void appendReverseIndexDeltaInput(ReverseIndexInputData& theData)
   aCoEdgeRef.CoEdgeEntityId                   = BRepGraph_CoEdgeId(1);
   aWire.CoEdgeRefIds.Append(BRepGraph_CoEdgeRefId(theData.CoEdgeRefs.Length() - 1));
 
-  BRepGraphInc::FaceEntity& aFace = theData.Faces.Appended();
+  BRepGraphInc::FaceDef& aFace = theData.Faces.Appended();
   aFace.InitVectors(occ::handle<NCollection_BaseAllocator>());
   aFace.Id = BRepGraph_NodeId::Face(1);
 
@@ -203,7 +203,7 @@ static void appendReverseIndexDeltaInput(ReverseIndexInputData& theData)
   aWireRefEntry.IsOuter                     = true;
   aFace.WireRefIds.Append(BRepGraph_WireRefId(theData.WireRefs.Length() - 1));
 
-  BRepGraphInc::ShellEntity& aShell = theData.Shells.Appended();
+  BRepGraphInc::ShellDef& aShell = theData.Shells.Appended();
   aShell.InitVectors(occ::handle<NCollection_BaseAllocator>());
   aShell.Id = BRepGraph_NodeId::Shell(1);
 
@@ -212,7 +212,7 @@ static void appendReverseIndexDeltaInput(ReverseIndexInputData& theData)
   aFaceRefEntry.FaceEntityId                   = BRepGraph_FaceId(1);
   aShell.FaceRefIds.Append(BRepGraph_FaceRefId(theData.FaceRefs.Length() - 1));
 
-  BRepGraphInc::SolidEntity& aSolid = theData.Solids.Appended();
+  BRepGraphInc::SolidDef& aSolid = theData.Solids.Appended();
   aSolid.InitVectors(occ::handle<NCollection_BaseAllocator>());
   aSolid.Id = BRepGraph_NodeId::Solid(1);
 
@@ -222,7 +222,7 @@ static void appendReverseIndexDeltaInput(ReverseIndexInputData& theData)
   aSolid.ShellRefIds.Append(BRepGraph_ShellRefId(theData.ShellRefs.Length() - 1));
 
   // Removed entities to ensure BuildDelta skips them.
-  BRepGraphInc::EdgeEntity& aRemovedEdge = theData.Edges.Appended();
+  BRepGraphInc::EdgeDef& aRemovedEdge = theData.Edges.Appended();
   aRemovedEdge.InitVectors(occ::handle<NCollection_BaseAllocator>());
   aRemovedEdge.Id                      = BRepGraph_NodeId::Edge(2);
   aRemovedEdge.IsRemoved = true;
@@ -239,14 +239,14 @@ static void appendReverseIndexDeltaInput(ReverseIndexInputData& theData)
   aRemovedEndVRef.Orientation = TopAbs_REVERSED;
   aRemovedEdge.EndVertexRefId = BRepGraph_VertexRefId(theData.VertexRefs.Length() - 1);
 
-  BRepGraphInc::CoEdgeEntity& aRemovedCoEdge = theData.CoEdges.Appended();
+  BRepGraphInc::CoEdgeDef& aRemovedCoEdge = theData.CoEdges.Appended();
   aRemovedCoEdge.InitVectors(occ::handle<NCollection_BaseAllocator>());
   aRemovedCoEdge.Id        = BRepGraph_NodeId::CoEdge(2);
   aRemovedCoEdge.IsRemoved = true;
   aRemovedCoEdge.EdgeEntityId = BRepGraph_EdgeId(2);
   aRemovedCoEdge.FaceEntityId = BRepGraph_FaceId(2);
 
-  BRepGraphInc::WireEntity& aRemovedWire = theData.Wires.Appended();
+  BRepGraphInc::WireDef& aRemovedWire = theData.Wires.Appended();
   aRemovedWire.InitVectors(occ::handle<NCollection_BaseAllocator>());
   aRemovedWire.Id        = BRepGraph_NodeId::Wire(2);
   aRemovedWire.IsRemoved = true;
@@ -256,7 +256,7 @@ static void appendReverseIndexDeltaInput(ReverseIndexInputData& theData)
   aRemovedCoEdgeRef.CoEdgeEntityId                   = BRepGraph_CoEdgeId(2);
   aRemovedCoEdgeRef.IsRemoved                     = true;
 
-  BRepGraphInc::FaceEntity& aRemovedFace = theData.Faces.Appended();
+  BRepGraphInc::FaceDef& aRemovedFace = theData.Faces.Appended();
   aRemovedFace.InitVectors(occ::handle<NCollection_BaseAllocator>());
   aRemovedFace.Id        = BRepGraph_NodeId::Face(2);
   aRemovedFace.IsRemoved = true;
@@ -266,7 +266,7 @@ static void appendReverseIndexDeltaInput(ReverseIndexInputData& theData)
   aRemovedWireRef.WireEntityId                   = BRepGraph_WireId(2);
   aRemovedWireRef.IsRemoved                   = true;
 
-  BRepGraphInc::ShellEntity& aRemovedShell = theData.Shells.Appended();
+  BRepGraphInc::ShellDef& aRemovedShell = theData.Shells.Appended();
   aRemovedShell.InitVectors(occ::handle<NCollection_BaseAllocator>());
   aRemovedShell.Id        = BRepGraph_NodeId::Shell(2);
   aRemovedShell.IsRemoved = true;
@@ -276,7 +276,7 @@ static void appendReverseIndexDeltaInput(ReverseIndexInputData& theData)
   aRemovedFaceRef.FaceEntityId                   = BRepGraph_FaceId(2);
   aRemovedFaceRef.IsRemoved                   = true;
 
-  BRepGraphInc::SolidEntity& aRemovedSolid = theData.Solids.Appended();
+  BRepGraphInc::SolidDef& aRemovedSolid = theData.Solids.Appended();
   aRemovedSolid.InitVectors(occ::handle<NCollection_BaseAllocator>());
   aRemovedSolid.Id        = BRepGraph_NodeId::Solid(2);
   aRemovedSolid.IsRemoved = true;
@@ -416,7 +416,7 @@ TEST_F(BRepGraphTest, FaceCountMatchesFacesVector_AfterBindUnbindSequence)
   ReverseIndexInputData aData = buildReverseIndexBaseInput();
 
   // Add a second active face for bind/unbind sequence checks.
-  BRepGraphInc::FaceEntity& aFace1 = aData.Faces.Appended();
+  BRepGraphInc::FaceDef& aFace1 = aData.Faces.Appended();
   aFace1.InitVectors(occ::handle<NCollection_BaseAllocator>());
   aFace1.Id = BRepGraph_NodeId::Face(1);
 
@@ -552,11 +552,11 @@ TEST_F(BRepGraphTest, FindPCurve_ValidPair)
     for (int aCoEdgeIter = 0; aCoEdgeIter < aCoEdgeRefs.Length(); ++aCoEdgeIter)
     {
       const BRepGraphInc::CoEdgeRefEntry& aCR = myGraph.Refs().CoEdge(aCoEdgeRefs.Value(aCoEdgeIter));
-      const BRepGraphInc::CoEdgeEntity& aCoEdge =
+      const BRepGraphInc::CoEdgeDef& aCoEdge =
         myGraph.Topo().CoEdge(aCR.CoEdgeEntityId);
       if (BRepGraph_Tool::Edge::Degenerated(myGraph, BRepGraph_EdgeId(aCoEdge.EdgeEntityId)))
         continue;
-      const BRepGraphInc::CoEdgeEntity* aPCurveEntry =
+      const BRepGraphInc::CoEdgeDef* aPCurveEntry =
         BRepGraph_Tool::Edge::FindPCurve(myGraph,
                                          BRepGraph_EdgeId(aCoEdge.EdgeEntityId),
                                          BRepGraph_FaceId(aFaceIdx));
@@ -715,7 +715,7 @@ TEST_F(BRepGraphTest, DetectDegenerateWires_ValidBox_Empty)
 TEST_F(BRepGraphTest, MutableEdge_ModifyTolerance)
 {
   double anOrigTol = BRepGraph_Tool::Edge::Tolerance(myGraph, BRepGraph_EdgeId(0));
-  BRepGraph_MutRef<BRepGraphInc::EdgeEntity> anEdge =
+  BRepGraph_MutRef<BRepGraphInc::EdgeDef> anEdge =
     myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
   anEdge->Tolerance = anOrigTol * 2.0;
   EXPECT_NEAR(BRepGraph_Tool::Edge::Tolerance(myGraph, BRepGraph_EdgeId(0)),
@@ -761,7 +761,7 @@ TEST_F(BRepGraphTest, ReplaceEdgeInWire_Substitution)
     BRepGraph_TestTools::CoEdgeRefsOfWire(myGraph, BRepGraph_WireId(0));
   ASSERT_GE(aCoEdgeRefs.Length(), 1);
   const BRepGraphInc::CoEdgeRefEntry& aOldCR = myGraph.Refs().CoEdge(aCoEdgeRefs.Value(0));
-  const BRepGraphInc::CoEdgeEntity& anOldCoEdge =
+  const BRepGraphInc::CoEdgeDef& anOldCoEdge =
     myGraph.Topo().CoEdge(aOldCR.CoEdgeEntityId);
   const BRepGraph_EdgeId anOldEdgeId = anOldCoEdge.EdgeEntityId;
 
@@ -779,7 +779,7 @@ TEST_F(BRepGraphTest, ReplaceEdgeInWire_Substitution)
     BRepGraph_TestTools::CoEdgeRefsOfWire(myGraph, BRepGraph_WireId(0));
   ASSERT_GE(aCoEdgeRefsAfter.Length(), 1);
   const BRepGraphInc::CoEdgeRefEntry& aNewCR = myGraph.Refs().CoEdge(aCoEdgeRefsAfter.Value(0));
-  const BRepGraphInc::CoEdgeEntity& aNewCoEdge =
+  const BRepGraphInc::CoEdgeDef& aNewCoEdge =
     myGraph.Topo().CoEdge(aNewCR.CoEdgeEntityId);
   EXPECT_EQ(aNewCoEdge.EdgeEntityId.Index, aNewEdgeId.Index);
 }
@@ -1020,7 +1020,7 @@ TEST_F(BRepGraphTest, IsModified_MutableEdge_PropagatesUp)
   EXPECT_TRUE(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).IsModified);
 
   // Check propagation up to parent wire and face.
-  const BRepGraphInc::EdgeEntity& anEdge = myGraph.Topo().Edge(BRepGraph_EdgeId(0));
+  const BRepGraphInc::EdgeDef& anEdge = myGraph.Topo().Edge(BRepGraph_EdgeId(0));
   if (anEdge.Id.IsValid())
   {
     // Find a wire containing this edge.
@@ -1275,7 +1275,7 @@ TEST_F(BRepGraphTest, AddPCurveToEdge_NewPCurve_RetrievableViaFindPCurve)
   occ::handle<Geom2d_Line> aCurve2d = new Geom2d_Line(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0));
   myGraph.Builder().AddPCurveToEdge(anEdgeId, aFaceId, aCurve2d, 0.0, 1.0);
 
-  const BRepGraphInc::CoEdgeEntity* aRetrieved = myGraph.Topo().FindPCurve(anEdgeId, aFaceId);
+  const BRepGraphInc::CoEdgeDef* aRetrieved = myGraph.Topo().FindPCurve(anEdgeId, aFaceId);
   EXPECT_NE(aRetrieved, nullptr);
   if (aRetrieved != nullptr)
   {
@@ -1290,7 +1290,7 @@ TEST_F(BRepGraphTest, ReplaceEdgeInWire_Reversed_OrientationFlipped)
   ASSERT_GE(aCoEdgeRefs.Length(), 1);
 
   const BRepGraphInc::CoEdgeRefEntry& anOrigCR = myGraph.Refs().CoEdge(aCoEdgeRefs.Value(0));
-  const BRepGraphInc::CoEdgeEntity& anOrigCoEdge =
+  const BRepGraphInc::CoEdgeDef& anOrigCoEdge =
     myGraph.Topo().CoEdge(anOrigCR.CoEdgeEntityId);
   const BRepGraph_EdgeId anOldEdgeId       = anOrigCoEdge.EdgeEntityId;
   TopAbs_Orientation     anOrigOrientation = anOrigCoEdge.Sense;
@@ -1305,7 +1305,7 @@ TEST_F(BRepGraphTest, ReplaceEdgeInWire_Reversed_OrientationFlipped)
     BRepGraph_TestTools::CoEdgeRefsOfWire(myGraph, BRepGraph_WireId(0));
   ASSERT_GE(aCoEdgeRefsAfter.Length(), 1);
   const BRepGraphInc::CoEdgeRefEntry& aNewCR = myGraph.Refs().CoEdge(aCoEdgeRefsAfter.Value(0));
-  const BRepGraphInc::CoEdgeEntity& aNewCoEdge =
+  const BRepGraphInc::CoEdgeDef& aNewCoEdge =
     myGraph.Topo().CoEdge(aNewCR.CoEdgeEntityId);
   EXPECT_EQ(aNewCoEdge.EdgeEntityId.Index, aNewEdgeId.Index);
 
@@ -1317,11 +1317,11 @@ TEST_F(BRepGraphTest, ReplaceEdgeInWire_Reversed_OrientationFlipped)
 
 TEST_F(BRepGraphTest, MutableVertex_ChangePoint_Verified)
 {
-  BRepGraph_MutRef<BRepGraphInc::VertexEntity> aMutVert =
+  BRepGraph_MutRef<BRepGraphInc::VertexDef> aMutVert =
     myGraph.Builder().MutVertex(BRepGraph_VertexId(0));
   aMutVert->Point = gp_Pnt(99.0, 99.0, 99.0);
 
-  const BRepGraphInc::VertexEntity& aVert = myGraph.Topo().Vertex(BRepGraph_VertexId(0));
+  const BRepGraphInc::VertexDef& aVert = myGraph.Topo().Vertex(BRepGraph_VertexId(0));
   EXPECT_NEAR(aVert.Point.X(), 99.0, Precision::Confusion());
   EXPECT_NEAR(aVert.Point.Y(), 99.0, Precision::Confusion());
   EXPECT_NEAR(aVert.Point.Z(), 99.0, Precision::Confusion());
@@ -1406,7 +1406,7 @@ TEST_F(BRepGraphTest, InvalidateSubgraph_Face_ConsistentAfter)
 
   // Invalidate subgraph from face via a no-op mutation (triggers markModified).
   {
-    BRepGraph_MutRef<BRepGraphInc::FaceEntity> aMut =
+    BRepGraph_MutRef<BRepGraphInc::FaceDef> aMut =
       myGraph.Builder().MutFace(BRepGraph_FaceId(aFaceId.Index));
   }
 
@@ -1585,13 +1585,13 @@ TEST_F(BRepGraphTest, Build_EmptyCompound_IsDoneZeroCounts)
 TEST_F(BRepGraphTest, TopoNode_GenericLookup_MatchesTypedAccess)
 {
   BRepGraph_NodeId                   aFaceId(BRepGraph_NodeId::Kind::Face, 0);
-  const BRepGraphInc::BaseEntity* aBase = myGraph.Topo().TopoEntity(aFaceId);
+  const BRepGraphInc::BaseDef* aBase = myGraph.Topo().TopoEntity(aFaceId);
   ASSERT_NE(aBase, nullptr);
   EXPECT_EQ(aBase->Id, myGraph.Topo().Face(BRepGraph_FaceId(0)).Id);
 
   // Invalid node id should return nullptr.
   BRepGraph_NodeId                   anInvalidId;
-  const BRepGraphInc::BaseEntity* anInvalidBase = myGraph.Topo().TopoEntity(anInvalidId);
+  const BRepGraphInc::BaseDef* anInvalidBase = myGraph.Topo().TopoEntity(anInvalidId);
   EXPECT_EQ(anInvalidBase, nullptr);
 }
 
@@ -1658,7 +1658,7 @@ TEST_F(BRepGraphTest, Wire_IsClosed_BoxOuterWires)
   {
     const BRepGraph_WireId anOuterWire = BRepGraph_TestTools::OuterWireOfFace(myGraph, BRepGraph_FaceId(aFaceIdx));
     ASSERT_TRUE(anOuterWire.IsValid());
-    const BRepGraphInc::WireEntity& aWireDef = myGraph.Topo().Wire(anOuterWire);
+    const BRepGraphInc::WireDef& aWireDef = myGraph.Topo().Wire(anOuterWire);
     EXPECT_TRUE(aWireDef.IsClosed) << "Outer wire of face " << aFaceIdx << " should be closed";
   }
 }
@@ -1861,7 +1861,7 @@ TEST_F(BRepGraphTest, Centroid_Face_InsideBBox)
 
 TEST_F(BRepGraphTest, MutableWireDef_ModifyClosure_Verified)
 {
-  BRepGraph_MutRef<BRepGraphInc::WireEntity> aMutWD =
+  BRepGraph_MutRef<BRepGraphInc::WireDef> aMutWD =
     myGraph.Builder().MutWire(BRepGraph_WireId(0));
   bool anOrigClosed = aMutWD->IsClosed;
   aMutWD->IsClosed  = !anOrigClosed;

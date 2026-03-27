@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <BRepGraphCheck.hxx>
-#include <BRepGraphInc_Entity.hxx>
+#include <BRepGraphInc_Definition.hxx>
 
 #include <BRepGraph_RefsView.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
@@ -37,7 +37,7 @@ static NCollection_Vector<BRepGraphInc::ShellRefEntry> collectSolidShellRefs(
   const BRepGraph_NodeId     theSolidNodeId)
 {
   NCollection_Vector<BRepGraphInc::ShellRefEntry> aResult;
-  const BRepGraphInc::SolidEntity& aSolidDef = theDefs.Solid(BRepGraph_SolidId(theSolidNodeId.Index));
+  const BRepGraphInc::SolidDef& aSolidDef = theDefs.Solid(BRepGraph_SolidId(theSolidNodeId.Index));
   for (int aRefIter = 0; aRefIter < aSolidDef.ShellRefIds.Length(); ++aRefIter)
   {
     const BRepGraph_ShellRefId          aRefId = aSolidDef.ShellRefIds.Value(aRefIter);
@@ -59,7 +59,7 @@ static NCollection_Vector<BRepGraphInc::FaceRefEntry> collectShellFaceRefs(
   const BRepGraph_NodeId     theShellNodeId)
 {
   NCollection_Vector<BRepGraphInc::FaceRefEntry> aResult;
-  const BRepGraphInc::ShellEntity& aShellDef = theDefs.Shell(BRepGraph_ShellId(theShellNodeId.Index));
+  const BRepGraphInc::ShellDef& aShellDef = theDefs.Shell(BRepGraph_ShellId(theShellNodeId.Index));
   for (int aRefIter = 0; aRefIter < aShellDef.FaceRefIds.Length(); ++aRefIter)
   {
     const BRepGraph_FaceRefId          aRefId = aShellDef.FaceRefIds.Value(aRefIter);
@@ -83,7 +83,7 @@ void BRepGraphCheck::CheckSolidMinimum(const BRepGraph&                         
 {
   const BRepGraph::TopoView&          aDefs        = theGraph.Topo();
   const BRepGraph::RefsView&          aRefs        = theGraph.Refs();
-  const BRepGraphInc::SolidEntity& aSolidDef    = aDefs.Solid(theSolid);
+  const BRepGraphInc::SolidDef& aSolidDef    = aDefs.Solid(theSolid);
   const BRepGraph_NodeId              aSolidNodeId = aSolidDef.Id;
   const NCollection_Vector<BRepGraphInc::ShellRefEntry> aSolidShellRefs =
     collectSolidShellRefs(aDefs, aRefs, aSolidNodeId);
@@ -96,7 +96,7 @@ void BRepGraphCheck::CheckSolidMinimum(const BRepGraph&                         
   for (int aShellIter = 0; aShellIter < aSolidShellRefs.Length(); ++aShellIter)
   {
     const BRepGraphInc::ShellRefEntry&  aSR          = aSolidShellRefs.Value(aShellIter);
-    const BRepGraphInc::ShellEntity& aShellDef    = aDefs.Shell(aSR.ShellEntityId);
+    const BRepGraphInc::ShellDef& aShellDef    = aDefs.Shell(aSR.ShellEntityId);
     const BRepGraph_NodeId              aShellNodeId = BRepGraph_NodeId::Shell(aSR.ShellEntityId.Index);
     const NCollection_Vector<BRepGraphInc::FaceRefEntry> aShellFaceRefs =
       collectShellFaceRefs(aDefs, aRefs, aShellNodeId);

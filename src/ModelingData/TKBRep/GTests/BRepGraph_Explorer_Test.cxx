@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <BRepGraph.hxx>
-#include <BRepGraphInc_Entity.hxx>
+#include <BRepGraphInc_Definition.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_Explorer.hxx>
 #include <BRepGraph_MutRefEntry.hxx>
@@ -394,7 +394,7 @@ TEST(BRepGraph_ExplorerTest, PathsTo_MatchesExplorer_WhenEarlierCompoundRefRemov
   aGraph.Build(aComp);
   ASSERT_TRUE(aGraph.IsDone());
 
-  const BRepGraphInc::CompoundEntity& aRootComp = aGraph.Topo().Compound(BRepGraph_CompoundId(0));
+  const BRepGraphInc::CompoundDef& aRootComp = aGraph.Topo().Compound(BRepGraph_CompoundId(0));
   ASSERT_GE(aRootComp.ChildRefIds.Length(), 2);
 
   const BRepGraph_ChildRefId aRemovedRefId = aRootComp.ChildRefIds.Value(0);
@@ -465,7 +465,7 @@ TEST(BRepGraph_ExplorerTest, PathsTo_MatchesExplorer_WhenFirstShellRefRemoved)
   aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  const BRepGraphInc::SolidEntity& aSolid = aGraph.Topo().Solid(BRepGraph_SolidId(0));
+  const BRepGraphInc::SolidDef& aSolid = aGraph.Topo().Solid(BRepGraph_SolidId(0));
   ASSERT_GT(aSolid.ShellRefIds.Length(), 0);
   const BRepGraph_ShellId aShellId = aGraph.Refs().Shell(aSolid.ShellRefIds.Value(0)).ShellEntityId;
   ASSERT_TRUE(aShellId.IsValid(aGraph.Topo().NbShells()));
@@ -474,7 +474,7 @@ TEST(BRepGraph_ExplorerTest, PathsTo_MatchesExplorer_WhenFirstShellRefRemoved)
   aGraph.Builder().AddShellToSolid(BRepGraph_NodeId::Solid(0),
                                    BRepGraph_NodeId::Shell(aShellId.Index),
                                    TopAbs_FORWARD);
-  const BRepGraphInc::SolidEntity& aSolidAfterDup = aGraph.Topo().Solid(BRepGraph_SolidId(0));
+  const BRepGraphInc::SolidDef& aSolidAfterDup = aGraph.Topo().Solid(BRepGraph_SolidId(0));
   ASSERT_GE(aSolidAfterDup.ShellRefIds.Length(), 2);
 
   // Remove the first shell ref so the active one is not the first matching shell usage.

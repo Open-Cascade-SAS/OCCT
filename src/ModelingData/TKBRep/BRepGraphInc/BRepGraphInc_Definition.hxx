@@ -11,8 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _BRepGraphInc_Entity_HeaderFile
-#define _BRepGraphInc_Entity_HeaderFile
+#ifndef _BRepGraphInc_Definition_HeaderFile
+#define _BRepGraphInc_Definition_HeaderFile
 
 #include <BRepGraph_NodeCache.hxx>
 #include <BRepGraph_NodeId.hxx>
@@ -57,7 +57,7 @@ inline void InitVec(NCollection_Vector<T>&                        theVec,
 }
 
 //! Fields shared by every entity.
-struct BaseEntity
+struct BaseDef
 {
   BRepGraph_NodeId    Id;    //!< Typed address (kind + per-kind index)
   BRepGraph_NodeCache Cache; //!< Lazily-computed derived quantities + user attributes
@@ -194,7 +194,7 @@ struct PolygonOnTriRep : public BaseRep
 };
 
 //! Vertex entity: 3D point + tolerance.
-struct VertexEntity : public BaseEntity
+struct VertexDef : public BaseDef
 {
   //! 3D point in definition frame (raw BRep_TVertex::Pnt, without vertex-in-edge Location).
   gp_Pnt Point;
@@ -241,7 +241,7 @@ struct VertexEntity : public BaseEntity
 
 //! Edge entity: parameter range, boundary vertices, flags.
 //! Geometry (curve, polygon) accessed via rep indices into Storage vectors.
-struct EdgeEntity : public BaseEntity
+struct EdgeDef : public BaseDef
 {
   //! Typed representation id into Storage::myCurves3D (invalid for degenerate edges).
   BRepGraph_Curve3DRepId Curve3DRepId;
@@ -301,7 +301,7 @@ struct EdgeEntity : public BaseEntity
 //! Wires reference coedges rather than edges directly.
 //! For seam edges, two coedges exist on the same face with opposite Sense,
 //! linked by SeamPairIdx.
-struct CoEdgeEntity : public BaseEntity
+struct CoEdgeDef : public BaseDef
 {
   BRepGraph_EdgeId   EdgeEntityId; //!< Parent edge definition id
   BRepGraph_FaceId   FaceEntityId; //!< Face this coedge belongs to (invalid for free wires)
@@ -332,7 +332,7 @@ struct CoEdgeEntity : public BaseEntity
 };
 
 //! Wire entity: ordered coedge references with closure flag.
-struct WireEntity : public BaseEntity
+struct WireDef : public BaseDef
 {
   bool IsClosed = false;
   NCollection_Vector<BRepGraph_CoEdgeRefId> CoEdgeRefIds; //!< Ordered coedge ref indices
@@ -344,7 +344,7 @@ struct WireEntity : public BaseEntity
 };
 
 //! Face entity: surface, triangulations, wires.
-struct FaceEntity : public BaseEntity
+struct FaceDef : public BaseDef
 {
   BRepGraph_SurfaceRepId SurfaceRepId; //!< Typed id into mySurfaces
   NCollection_Vector<BRepGraph_TriangulationRepId>
@@ -376,7 +376,7 @@ struct FaceEntity : public BaseEntity
 };
 
 //! Shell entity: ordered face references with local locations.
-struct ShellEntity : public BaseEntity
+struct ShellDef : public BaseDef
 {
   bool IsClosed = false; //!< True if shell forms a watertight (closed) boundary.
   NCollection_Vector<BRepGraph_FaceRefId> FaceRefIds;     //!< Face ref indices
@@ -390,7 +390,7 @@ struct ShellEntity : public BaseEntity
 };
 
 //! Solid entity: ordered shell references with local locations.
-struct SolidEntity : public BaseEntity
+struct SolidDef : public BaseDef
 {
   NCollection_Vector<BRepGraph_ShellRefId> ShellRefIds;    //!< Shell ref indices
   NCollection_Vector<BRepGraph_ChildRefId> FreeChildRefIds; //!< Non-shell children (edges, vertices)
@@ -403,7 +403,7 @@ struct SolidEntity : public BaseEntity
 };
 
 //! Compound entity: heterogeneous child references.
-struct CompoundEntity : public BaseEntity
+struct CompoundDef : public BaseDef
 {
   NCollection_Vector<BRepGraph_ChildRefId> ChildRefIds; //!< Child ref indices
 
@@ -414,7 +414,7 @@ struct CompoundEntity : public BaseEntity
 };
 
 //! Comp-solid entity: ordered solid references.
-struct CompSolidEntity : public BaseEntity
+struct CompSolidDef : public BaseDef
 {
   NCollection_Vector<BRepGraph_SolidRefId> SolidRefIds; //!< Solid ref indices
 
@@ -427,7 +427,7 @@ struct CompSolidEntity : public BaseEntity
 //! Product entity: reusable shape definition (part or assembly).
 //! A part has a valid ShapeRootId pointing to the root topology node.
 //! An assembly has an invalid ShapeRootId and owns child occurrences.
-struct ProductEntity : public BaseEntity
+struct ProductDef : public BaseDef
 {
   BRepGraph_NodeId   ShapeRootId; //!< Root topology for parts; invalid for assemblies
   TopAbs_Orientation RootOrientation = TopAbs_FORWARD; //!< Orientation of the root shape
@@ -443,18 +443,18 @@ struct ProductEntity : public BaseEntity
 //! Occurrence entity: placed instance of a product within a parent product.
 //! ParentOccurrenceIdx forms a tree-structured placement chain for
 //! unambiguous GlobalPlacement computation even when products are shared (DAG).
-struct OccurrenceEntity : public BaseEntity
+struct OccurrenceDef : public BaseDef
 {
   BRepGraph_ProductId    ProductEntityId;          //!< Referenced product definition id
   BRepGraph_ProductId    ParentProductEntityId;    //!< Parent assembly product definition id
   BRepGraph_OccurrenceId ParentOccurrenceEntityId; //!< Parent occurrence id (invalid for top-level)
   TopLoc_Location        Placement;             //!< Local placement relative to parent
 
-  //! No-op: OccurrenceEntity has no inner vectors to reinitialize.
-  //! Present for uniform EntityStore<T>::Append() logic.
+  //! No-op: OccurrenceDef has no inner vectors to reinitialize.
+  //! Present for uniform DefStore<T>::Append() logic.
   void InitVectors(const occ::handle<NCollection_BaseAllocator>&) {}
 };
 
 } // namespace BRepGraphInc
 
-#endif // _BRepGraphInc_Entity_HeaderFile
+#endif // _BRepGraphInc_Definition_HeaderFile

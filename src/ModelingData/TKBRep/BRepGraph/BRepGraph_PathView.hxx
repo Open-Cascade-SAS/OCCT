@@ -148,12 +148,12 @@ public:
 
   //! Access product definition by typed identifier.
   //! @param[in] theProduct typed product definition identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::ProductEntity& Product(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::ProductDef& Product(
     const BRepGraph_ProductId theProduct) const;
 
   //! Access occurrence definition by typed identifier.
   //! @param[in] theOccurrence typed occurrence definition identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::OccurrenceEntity& Occurrence(
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::OccurrenceDef& Occurrence(
     const BRepGraph_OccurrenceId theOccurrence) const;
 
   //! Return NodeIds of all root products (products that are not referenced by any occurrence).

@@ -414,7 +414,7 @@ TEST_P(BRepGraphBulkValidation, RoundTrip)
   TopoDS_Shape aReconShape = aGraph.Shapes().Reconstruct(aRootId);
   ASSERT_FALSE(aReconShape.IsNull()) << "Reconstruct returned null: " << aFilePath;
   {
-    const BRepGraphInc::ProductEntity& aProduct = aPaths.Product(BRepGraph_ProductId(0));
+    const BRepGraphInc::ProductDef& aProduct = aPaths.Product(BRepGraph_ProductId(0));
     aReconShape.Orientation(aProduct.RootOrientation);
     if (!aProduct.RootLocation.IsIdentity())
       aReconShape.Location(aProduct.RootLocation);

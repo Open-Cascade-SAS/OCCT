@@ -15,7 +15,7 @@
 #define _BRepGraph_RefsView_HeaderFile
 
 #include <BRepGraph.hxx>
-#include <BRepGraphInc_Entity.hxx>
+#include <BRepGraphInc_Definition.hxx>
 #include <BRepGraph_VersionStamp.hxx>
 
 //! @brief Read-only view for RefId/RefUID-based reference storage.

@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <BRepGraphCheck.hxx>
-#include <BRepGraphInc_Entity.hxx>
+#include <BRepGraphInc_Definition.hxx>
 
 #include <BRepGraph_WireExplorer.hxx>
 #include <BRepGraph_RefsView.hxx>
@@ -39,7 +39,7 @@ static NCollection_Vector<BRepGraphInc::CoEdgeRef> collectWireCoEdgeRefs(const B
                                                                            const BRepGraph_NodeId theWireNodeId)
 {
   NCollection_Vector<BRepGraphInc::CoEdgeRef> aResult;
-  const BRepGraphInc::WireEntity& aWireDef = theDefs.Wire(BRepGraph_WireId(theWireNodeId.Index));
+  const BRepGraphInc::WireDef& aWireDef = theDefs.Wire(BRepGraph_WireId(theWireNodeId.Index));
   for (int aRefIter = 0; aRefIter < aWireDef.CoEdgeRefIds.Length(); ++aRefIter)
   {
     const BRepGraph_CoEdgeRefId          aRefId = aWireDef.CoEdgeRefIds.Value(aRefIter);
@@ -64,7 +64,7 @@ static NCollection_Vector<BRepGraphInc::WireRefEntry> collectFaceWireRefs(const 
                                                                             const BRepGraph_NodeId theFaceNodeId)
 {
   NCollection_Vector<BRepGraphInc::WireRefEntry> aResult;
-  const BRepGraphInc::FaceEntity& aFaceDef = theDefs.Face(BRepGraph_FaceId(theFaceNodeId.Index));
+  const BRepGraphInc::FaceDef& aFaceDef = theDefs.Face(BRepGraph_FaceId(theFaceNodeId.Index));
   for (int aRefIter = 0; aRefIter < aFaceDef.WireRefIds.Length(); ++aRefIter)
   {
     const BRepGraph_WireRefId          aRefId = aFaceDef.WireRefIds.Value(aRefIter);
@@ -93,10 +93,10 @@ static double computeWireSignedArea(const BRepGraph&                   theGraph,
   gp_Pnt2d      aPrevPnt;
   bool          aHasPrev = false;
 
-  auto edgeLookup = [&aDefs](int theIdx) -> const BRepGraphInc::EdgeEntity& {
+  auto edgeLookup = [&aDefs](int theIdx) -> const BRepGraphInc::EdgeDef& {
     return aDefs.Edge(BRepGraph_EdgeId(theIdx));
   };
-  auto coedgeLookup = [&aDefs](int theIdx) -> const BRepGraphInc::CoEdgeEntity& {
+  auto coedgeLookup = [&aDefs](int theIdx) -> const BRepGraphInc::CoEdgeDef& {
     return aDefs.CoEdge(BRepGraph_CoEdgeId(theIdx));
   };
   auto vtxRefLookup = [&theGraph](const BRepGraph_VertexRefId theRefId) -> BRepGraph_VertexId {
@@ -107,9 +107,9 @@ static double computeWireSignedArea(const BRepGraph&                   theGraph,
        anExp.Next())
   {
     const BRepGraphInc::CoEdgeRef&       aCoEdgeRef = anExp.CurrentRef();
-    const BRepGraphInc::CoEdgeEntity& aCoEdgeDef = aDefs.CoEdge(aCoEdgeRef.CoEdgeEntityId);
+    const BRepGraphInc::CoEdgeDef& aCoEdgeDef = aDefs.CoEdge(aCoEdgeRef.CoEdgeEntityId);
 
-    const BRepGraphInc::CoEdgeEntity* aPCurve =
+    const BRepGraphInc::CoEdgeDef* aPCurve =
       BRepGraph_Tool::Edge::FindPCurve(theGraph, aCoEdgeDef.EdgeEntityId, theFaceId);
     if (aPCurve == nullptr)
       continue;
@@ -167,10 +167,10 @@ static void collectWirePCurves(const BRepGraph&                   theGraph,
 {
   const BRepGraph::TopoView& aDefs = theGraph.Topo();
 
-  auto edgeLookup = [&aDefs](int theIdx) -> const BRepGraphInc::EdgeEntity& {
+  auto edgeLookup = [&aDefs](int theIdx) -> const BRepGraphInc::EdgeDef& {
     return aDefs.Edge(BRepGraph_EdgeId(theIdx));
   };
-  auto coedgeLookup = [&aDefs](int theIdx) -> const BRepGraphInc::CoEdgeEntity& {
+  auto coedgeLookup = [&aDefs](int theIdx) -> const BRepGraphInc::CoEdgeDef& {
     return aDefs.CoEdge(BRepGraph_CoEdgeId(theIdx));
   };
   auto vtxRefLookup2 = [&theGraph](const BRepGraph_VertexRefId theRefId) -> BRepGraph_VertexId {
@@ -181,8 +181,8 @@ static void collectWirePCurves(const BRepGraph&                   theGraph,
        anExp.Next())
   {
     const BRepGraphInc::CoEdgeRef&       aCoEdgeRef = anExp.CurrentRef();
-    const BRepGraphInc::CoEdgeEntity& aCoEdgeDef = aDefs.CoEdge(aCoEdgeRef.CoEdgeEntityId);
-    const BRepGraphInc::EdgeEntity&   anEdgeDef  = aDefs.Edge(aCoEdgeDef.EdgeEntityId);
+    const BRepGraphInc::CoEdgeDef& aCoEdgeDef = aDefs.CoEdge(aCoEdgeRef.CoEdgeEntityId);
+    const BRepGraphInc::EdgeDef&   anEdgeDef  = aDefs.Edge(aCoEdgeDef.EdgeEntityId);
 
     if (BRepGraph_Tool::Edge::Degenerated(theGraph, aCoEdgeDef.EdgeEntityId))
     {
@@ -190,7 +190,7 @@ static void collectWirePCurves(const BRepGraph&                   theGraph,
       continue;
     }
 
-    const BRepGraphInc::CoEdgeEntity* aPCurve =
+    const BRepGraphInc::CoEdgeDef* aPCurve =
       BRepGraph_Tool::Edge::FindPCurve(theGraph, aCoEdgeDef.EdgeEntityId, theFaceId);
     if (aPCurve == nullptr)
     {
@@ -244,7 +244,7 @@ void BRepGraphCheck::CheckFaceMinimum(const BRepGraph&                          
                                       NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
 {
   const BRepGraph::TopoView&         aDefs    = theGraph.Topo();
-  const BRepGraphInc::FaceEntity& aFaceDef = aDefs.Face(theFace);
+  const BRepGraphInc::FaceDef& aFaceDef = aDefs.Face(theFace);
 
   // Face must have a surface.
   if (!BRepGraph_Tool::Face::HasSurface(theGraph, theFace))
@@ -277,7 +277,7 @@ void BRepGraphCheck::CheckFaceWires(const BRepGraph&                          th
 {
   const BRepGraph::TopoView&         aDefs       = theGraph.Topo();
   const BRepGraph::RefsView&         aRefs       = theGraph.Refs();
-  const BRepGraphInc::FaceEntity& aFaceDef    = aDefs.Face(theFace);
+  const BRepGraphInc::FaceDef& aFaceDef    = aDefs.Face(theFace);
   const BRepGraph_NodeId             aFaceNodeId = aFaceDef.Id;
   const NCollection_Vector<BRepGraphInc::WireRefEntry> aWireRefs =
     collectFaceWireRefs(aDefs, aRefs, aFaceNodeId);

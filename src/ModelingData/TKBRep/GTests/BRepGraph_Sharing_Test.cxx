@@ -67,7 +67,7 @@ TEST_F(BRepGraph_SharingTest, FaceDef_EachHasValidSurface)
   EXPECT_EQ(myGraph.Topo().NbFaces(), 6);
   for (int anIdx = 0; anIdx < myGraph.Topo().NbFaces(); ++anIdx)
   {
-    const BRepGraphInc::FaceEntity& aDef = myGraph.Topo().Face(BRepGraph_FaceId(anIdx));
+    const BRepGraphInc::FaceDef& aDef = myGraph.Topo().Face(BRepGraph_FaceId(anIdx));
     EXPECT_TRUE(aDef.SurfaceRepId.IsValid()) << "Face def " << anIdx << " has no surface rep";
   }
 }
@@ -178,7 +178,7 @@ TEST_F(BRepGraph_SharingTest, NonClosedEdge_StartEnd_Different)
   for (int anIdx = 0; anIdx < myGraph.Topo().NbEdges(); ++anIdx)
   {
     const BRepGraph_EdgeId             anEdgeId(anIdx);
-    const BRepGraphInc::EdgeEntity& aDef = myGraph.Topo().Edge(anEdgeId);
+    const BRepGraphInc::EdgeDef& aDef = myGraph.Topo().Edge(anEdgeId);
     if (aDef.IsDegenerate)
       continue;
     // Box edges are not closed, so start and end vertex defs must differ
@@ -196,7 +196,7 @@ TEST_F(BRepGraph_SharingTest, VertexDef_Points_MatchExpectedBoxCorners)
   EXPECT_EQ(myGraph.Topo().NbVertices(), 8);
   for (int anIdx = 0; anIdx < myGraph.Topo().NbVertices(); ++anIdx)
   {
-    const BRepGraphInc::VertexEntity& aDef = myGraph.Topo().Vertex(BRepGraph_VertexId(anIdx));
+    const BRepGraphInc::VertexDef& aDef = myGraph.Topo().Vertex(BRepGraph_VertexId(anIdx));
     // Verify coordinates are within the box bounds.
     EXPECT_GE(aDef.Point.X(), -Precision::Confusion());
     EXPECT_LE(aDef.Point.X(), 10.0 + Precision::Confusion());

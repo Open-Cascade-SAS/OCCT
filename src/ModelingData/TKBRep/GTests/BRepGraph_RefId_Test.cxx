@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <BRepGraph.hxx>
-#include <BRepGraphInc_Entity.hxx>
+#include <BRepGraphInc_Definition.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_MutRefEntry.hxx>
 #include <BRepGraph_RefId.hxx>
@@ -63,7 +63,7 @@ int countInlineVertexRefs(const BRepGraph& theGraph)
   int                         aNb   = 0;
   for (int i = 0; i < aTopo.NbEdges(); ++i)
   {
-    const BRepGraphInc::EdgeEntity& anEdge = aTopo.Edge(BRepGraph_EdgeId(i));
+    const BRepGraphInc::EdgeDef& anEdge = aTopo.Edge(BRepGraph_EdgeId(i));
     if (anEdge.StartVertexRefId.IsValid())
       ++aNb;
     if (anEdge.EndVertexRefId.IsValid())
@@ -327,7 +327,7 @@ TEST(BRepGraph_RefIdTest, MutFaceRef_UpdatesRefStampAndParentModifiedFlag)
   EXPECT_GT(aAfterEntry.MutationGen, aBeforeMutationGen);
   EXPECT_TRUE(aGraph.Refs().IsStale(aBeforeStamp));
 
-  const BRepGraphInc::BaseEntity* aParentDef = aGraph.Topo().TopoEntity(aAfterEntry.ParentId);
+  const BRepGraphInc::BaseDef* aParentDef = aGraph.Topo().TopoEntity(aAfterEntry.ParentId);
   ASSERT_NE(aParentDef, nullptr);
   EXPECT_TRUE(aParentDef->IsModified);
 }

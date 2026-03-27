@@ -15,7 +15,7 @@
 #define _BRepGraph_Tool_HeaderFile
 
 #include <BRepGraph.hxx>
-#include <BRepGraphInc_Entity.hxx>
+#include <BRepGraphInc_Definition.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <GeomAdaptor_TransformedCurve.hxx>
 #include <GeomAdaptor_TransformedSurface.hxx>
@@ -48,7 +48,7 @@ public:
   using CoEdgeRef      = BRepGraphInc::CoEdgeRef;
   using VertexRefEntry = BRepGraphInc::VertexRefEntry;
   using WireRefEntry   = BRepGraphInc::WireRefEntry;
-  using CoEdgeEntity   = BRepGraphInc::CoEdgeEntity;
+  using CoEdgeDef   = BRepGraphInc::CoEdgeDef;
 
   //! @brief Vertex geometry accessors.
   //!
@@ -269,8 +269,8 @@ public:
     //! @param[in] theGraph source graph
     //! @param[in] theEdge  typed edge definition identifier
     //! @param[in] theFace  typed face definition identifier
-    //! @return pointer to CoEdgeEntity, or nullptr if not found
-    [[nodiscard]] Standard_EXPORT static const CoEdgeEntity* FindPCurve(
+    //! @return pointer to CoEdgeDef, or nullptr if not found
+    [[nodiscard]] Standard_EXPORT static const CoEdgeDef* FindPCurve(
       const BRepGraph&       theGraph,
       const BRepGraph_EdgeId theEdge,
       const BRepGraph_FaceId theFace);
@@ -280,8 +280,8 @@ public:
     //! @param[in] theEdge  typed edge definition identifier
     //! @param[in] theFace  typed face definition identifier
     //! @param[in] theOri   edge orientation on the face
-    //! @return pointer to CoEdgeEntity, or nullptr if not found
-    [[nodiscard]] Standard_EXPORT static const CoEdgeEntity* FindPCurve(
+    //! @return pointer to CoEdgeDef, or nullptr if not found
+    [[nodiscard]] Standard_EXPORT static const CoEdgeDef* FindPCurve(
       const BRepGraph&         theGraph,
       const BRepGraph_EdgeId   theEdge,
       const BRepGraph_FaceId   theFace,
@@ -323,13 +323,13 @@ public:
       const BRepGraph&         theGraph,
       const BRepGraph_CoEdgeId theCoEdge);
 
-    //! Returns the raw PCurve handle from a CoEdgeEntity (no Location - UV space).
+    //! Returns the raw PCurve handle from a CoEdgeDef (no Location - UV space).
     //! @param[in] theGraph  source graph
     //! @param[in] theCoEdge coedge entity reference
     //! @return curve handle, or null handle if no PCurve
     [[nodiscard]] Standard_EXPORT static const occ::handle<Geom2d_Curve>& PCurve(
       const BRepGraph&                  theGraph,
-      const CoEdgeEntity&               theCoEdge);
+      const CoEdgeDef&               theCoEdge);
 
     //! Returns a PCurve adaptor by coedge identifier.
     //! If the coedge has a stored PCurve (Curve2DRepIdx >= 0), returns it directly.

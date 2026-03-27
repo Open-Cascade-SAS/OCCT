@@ -18,7 +18,7 @@
 #include <BRepGraph_RepId.hxx>
 #include <BRepGraph_RefUID.hxx>
 #include <BRepGraph_UID.hxx>
-#include <BRepGraphInc_Entity.hxx>
+#include <BRepGraphInc_Definition.hxx>
 #include <BRepGraphInc_ReverseIndex.hxx>
 
 #include <NCollection_BaseAllocator.hxx>
@@ -302,70 +302,70 @@ public:
   //! Each method returns a const reference to the entity at the given typed id.
 
   //! @param[in] theVertex typed vertex id
-  [[nodiscard]] const BRepGraphInc::VertexEntity& Vertex(const BRepGraph_VertexId theVertex) const
+  [[nodiscard]] const BRepGraphInc::VertexDef& Vertex(const BRepGraph_VertexId theVertex) const
   {
     return myVertices.Get(theVertex.Index);
   }
 
   //! @param[in] theEdge typed edge id
-  [[nodiscard]] const BRepGraphInc::EdgeEntity& Edge(const BRepGraph_EdgeId theEdge) const
+  [[nodiscard]] const BRepGraphInc::EdgeDef& Edge(const BRepGraph_EdgeId theEdge) const
   {
     return myEdges.Get(theEdge.Index);
   }
 
   //! @param[in] theCoEdge typed coedge id
-  [[nodiscard]] const BRepGraphInc::CoEdgeEntity& CoEdge(const BRepGraph_CoEdgeId theCoEdge) const
+  [[nodiscard]] const BRepGraphInc::CoEdgeDef& CoEdge(const BRepGraph_CoEdgeId theCoEdge) const
   {
     return myCoEdges.Get(theCoEdge.Index);
   }
 
   //! @param[in] theWire typed wire id
-  [[nodiscard]] const BRepGraphInc::WireEntity& Wire(const BRepGraph_WireId theWire) const
+  [[nodiscard]] const BRepGraphInc::WireDef& Wire(const BRepGraph_WireId theWire) const
   {
     return myWires.Get(theWire.Index);
   }
 
   //! @param[in] theFace typed face id
-  [[nodiscard]] const BRepGraphInc::FaceEntity& Face(const BRepGraph_FaceId theFace) const
+  [[nodiscard]] const BRepGraphInc::FaceDef& Face(const BRepGraph_FaceId theFace) const
   {
     return myFaces.Get(theFace.Index);
   }
 
   //! @param[in] theShell typed shell id
-  [[nodiscard]] const BRepGraphInc::ShellEntity& Shell(const BRepGraph_ShellId theShell) const
+  [[nodiscard]] const BRepGraphInc::ShellDef& Shell(const BRepGraph_ShellId theShell) const
   {
     return myShells.Get(theShell.Index);
   }
 
   //! @param[in] theSolid typed solid id
-  [[nodiscard]] const BRepGraphInc::SolidEntity& Solid(const BRepGraph_SolidId theSolid) const
+  [[nodiscard]] const BRepGraphInc::SolidDef& Solid(const BRepGraph_SolidId theSolid) const
   {
     return mySolids.Get(theSolid.Index);
   }
 
   //! @param[in] theCompound typed compound id
-  [[nodiscard]] const BRepGraphInc::CompoundEntity& Compound(
+  [[nodiscard]] const BRepGraphInc::CompoundDef& Compound(
     const BRepGraph_CompoundId theCompound) const
   {
     return myCompounds.Get(theCompound.Index);
   }
 
   //! @param[in] theCompSolid typed comp-solid id
-  [[nodiscard]] const BRepGraphInc::CompSolidEntity& CompSolid(
+  [[nodiscard]] const BRepGraphInc::CompSolidDef& CompSolid(
     const BRepGraph_CompSolidId theCompSolid) const
   {
     return myCompSolids.Get(theCompSolid.Index);
   }
 
   //! @param[in] theProduct typed product id
-  [[nodiscard]] const BRepGraphInc::ProductEntity& Product(
+  [[nodiscard]] const BRepGraphInc::ProductDef& Product(
     const BRepGraph_ProductId theProduct) const
   {
     return myProducts.Get(theProduct.Index);
   }
 
   //! @param[in] theOccurrence typed occurrence id
-  [[nodiscard]] const BRepGraphInc::OccurrenceEntity& Occurrence(
+  [[nodiscard]] const BRepGraphInc::OccurrenceDef& Occurrence(
     const BRepGraph_OccurrenceId theOccurrence) const
   {
     return myOccurrences.Get(theOccurrence.Index);
@@ -423,67 +423,67 @@ public:
   //! Each method returns a mutable reference to the entity at the given typed id.
 
   //! @param[in] theVertex typed vertex id
-  BRepGraphInc::VertexEntity& ChangeVertex(const BRepGraph_VertexId theVertex)
+  BRepGraphInc::VertexDef& ChangeVertex(const BRepGraph_VertexId theVertex)
   {
     return myVertices.Change(theVertex.Index);
   }
 
   //! @param[in] theEdge typed edge id
-  BRepGraphInc::EdgeEntity& ChangeEdge(const BRepGraph_EdgeId theEdge)
+  BRepGraphInc::EdgeDef& ChangeEdge(const BRepGraph_EdgeId theEdge)
   {
     return myEdges.Change(theEdge.Index);
   }
 
   //! @param[in] theCoEdge typed coedge id
-  BRepGraphInc::CoEdgeEntity& ChangeCoEdge(const BRepGraph_CoEdgeId theCoEdge)
+  BRepGraphInc::CoEdgeDef& ChangeCoEdge(const BRepGraph_CoEdgeId theCoEdge)
   {
     return myCoEdges.Change(theCoEdge.Index);
   }
 
   //! @param[in] theWire typed wire id
-  BRepGraphInc::WireEntity& ChangeWire(const BRepGraph_WireId theWire)
+  BRepGraphInc::WireDef& ChangeWire(const BRepGraph_WireId theWire)
   {
     return myWires.Change(theWire.Index);
   }
 
   //! @param[in] theFace typed face id
-  BRepGraphInc::FaceEntity& ChangeFace(const BRepGraph_FaceId theFace)
+  BRepGraphInc::FaceDef& ChangeFace(const BRepGraph_FaceId theFace)
   {
     return myFaces.Change(theFace.Index);
   }
 
   //! @param[in] theShell typed shell id
-  BRepGraphInc::ShellEntity& ChangeShell(const BRepGraph_ShellId theShell)
+  BRepGraphInc::ShellDef& ChangeShell(const BRepGraph_ShellId theShell)
   {
     return myShells.Change(theShell.Index);
   }
 
   //! @param[in] theSolid typed solid id
-  BRepGraphInc::SolidEntity& ChangeSolid(const BRepGraph_SolidId theSolid)
+  BRepGraphInc::SolidDef& ChangeSolid(const BRepGraph_SolidId theSolid)
   {
     return mySolids.Change(theSolid.Index);
   }
 
   //! @param[in] theCompound typed compound id
-  BRepGraphInc::CompoundEntity& ChangeCompound(const BRepGraph_CompoundId theCompound)
+  BRepGraphInc::CompoundDef& ChangeCompound(const BRepGraph_CompoundId theCompound)
   {
     return myCompounds.Change(theCompound.Index);
   }
 
   //! @param[in] theCompSolid typed comp-solid id
-  BRepGraphInc::CompSolidEntity& ChangeCompSolid(const BRepGraph_CompSolidId theCompSolid)
+  BRepGraphInc::CompSolidDef& ChangeCompSolid(const BRepGraph_CompSolidId theCompSolid)
   {
     return myCompSolids.Change(theCompSolid.Index);
   }
 
   //! @param[in] theProduct typed product id
-  BRepGraphInc::ProductEntity& ChangeProduct(const BRepGraph_ProductId theProduct)
+  BRepGraphInc::ProductDef& ChangeProduct(const BRepGraph_ProductId theProduct)
   {
     return myProducts.Change(theProduct.Index);
   }
 
   //! @param[in] theOccurrence typed occurrence id
-  BRepGraphInc::OccurrenceEntity& ChangeOccurrence(const BRepGraph_OccurrenceId theOccurrence)
+  BRepGraphInc::OccurrenceDef& ChangeOccurrence(const BRepGraph_OccurrenceId theOccurrence)
   {
     return myOccurrences.Change(theOccurrence.Index);
   }
@@ -536,27 +536,27 @@ public:
   //! initializes inner vectors with the storage allocator, and returns
   //! a mutable reference to the appended entry for initialization.
 
-  BRepGraphInc::VertexEntity& AppendVertex() { return myVertices.Append(myAllocator); }
+  BRepGraphInc::VertexDef& AppendVertex() { return myVertices.Append(myAllocator); }
 
-  BRepGraphInc::EdgeEntity& AppendEdge() { return myEdges.Append(myAllocator); }
+  BRepGraphInc::EdgeDef& AppendEdge() { return myEdges.Append(myAllocator); }
 
-  BRepGraphInc::CoEdgeEntity& AppendCoEdge() { return myCoEdges.Append(myAllocator); }
+  BRepGraphInc::CoEdgeDef& AppendCoEdge() { return myCoEdges.Append(myAllocator); }
 
-  BRepGraphInc::WireEntity& AppendWire() { return myWires.Append(myAllocator); }
+  BRepGraphInc::WireDef& AppendWire() { return myWires.Append(myAllocator); }
 
-  BRepGraphInc::FaceEntity& AppendFace() { return myFaces.Append(myAllocator); }
+  BRepGraphInc::FaceDef& AppendFace() { return myFaces.Append(myAllocator); }
 
-  BRepGraphInc::ShellEntity& AppendShell() { return myShells.Append(myAllocator); }
+  BRepGraphInc::ShellDef& AppendShell() { return myShells.Append(myAllocator); }
 
-  BRepGraphInc::SolidEntity& AppendSolid() { return mySolids.Append(myAllocator); }
+  BRepGraphInc::SolidDef& AppendSolid() { return mySolids.Append(myAllocator); }
 
-  BRepGraphInc::CompoundEntity& AppendCompound() { return myCompounds.Append(myAllocator); }
+  BRepGraphInc::CompoundDef& AppendCompound() { return myCompounds.Append(myAllocator); }
 
-  BRepGraphInc::CompSolidEntity& AppendCompSolid() { return myCompSolids.Append(myAllocator); }
+  BRepGraphInc::CompSolidDef& AppendCompSolid() { return myCompSolids.Append(myAllocator); }
 
-  BRepGraphInc::ProductEntity& AppendProduct() { return myProducts.Append(myAllocator); }
+  BRepGraphInc::ProductDef& AppendProduct() { return myProducts.Append(myAllocator); }
 
-  BRepGraphInc::OccurrenceEntity& AppendOccurrence() { return myOccurrences.Append(myAllocator); }
+  BRepGraphInc::OccurrenceDef& AppendOccurrence() { return myOccurrences.Append(myAllocator); }
 
   //! @name Append transitional reference entries
 
@@ -696,15 +696,15 @@ private:
   //! Groups the entity vector, per-kind UID vector, and active count
   //! into a single struct, eliminating repeated boilerplate.
   template <typename EntityT>
-  struct EntityStore
+  struct DefStore
   {
     NCollection_Vector<EntityT>       Entities;
     NCollection_Vector<BRepGraph_UID> UIDs;
     int                               NbActive = 0;
 
-    EntityStore() = default;
+    DefStore() = default;
 
-    EntityStore(const int theBlockSize, const occ::handle<NCollection_BaseAllocator>& theAlloc)
+    DefStore(const int theBlockSize, const occ::handle<NCollection_BaseAllocator>& theAlloc)
         : Entities(theBlockSize, theAlloc),
           UIDs(theBlockSize, theAlloc)
     {
@@ -726,7 +726,7 @@ private:
 
     void DecrementActive()
     {
-      Standard_ASSERT_VOID(NbActive > 0, "EntityStore::DecrementActive: underflow");
+      Standard_ASSERT_VOID(NbActive > 0, "DefStore::DecrementActive: underflow");
       if (NbActive > 0)
         --NbActive;
     }
@@ -835,17 +835,17 @@ private:
   };
 
   //! @name Topology entity stores
-  EntityStore<BRepGraphInc::VertexEntity>     myVertices;
-  EntityStore<BRepGraphInc::EdgeEntity>       myEdges;
-  EntityStore<BRepGraphInc::CoEdgeEntity>     myCoEdges;
-  EntityStore<BRepGraphInc::WireEntity>       myWires;
-  EntityStore<BRepGraphInc::FaceEntity>       myFaces;
-  EntityStore<BRepGraphInc::ShellEntity>      myShells;
-  EntityStore<BRepGraphInc::SolidEntity>      mySolids;
-  EntityStore<BRepGraphInc::CompoundEntity>   myCompounds;
-  EntityStore<BRepGraphInc::CompSolidEntity>  myCompSolids;
-  EntityStore<BRepGraphInc::ProductEntity>    myProducts;
-  EntityStore<BRepGraphInc::OccurrenceEntity> myOccurrences;
+  DefStore<BRepGraphInc::VertexDef>     myVertices;
+  DefStore<BRepGraphInc::EdgeDef>       myEdges;
+  DefStore<BRepGraphInc::CoEdgeDef>     myCoEdges;
+  DefStore<BRepGraphInc::WireDef>       myWires;
+  DefStore<BRepGraphInc::FaceDef>       myFaces;
+  DefStore<BRepGraphInc::ShellDef>      myShells;
+  DefStore<BRepGraphInc::SolidDef>      mySolids;
+  DefStore<BRepGraphInc::CompoundDef>   myCompounds;
+  DefStore<BRepGraphInc::CompSolidDef>  myCompSolids;
+  DefStore<BRepGraphInc::ProductDef>    myProducts;
+  DefStore<BRepGraphInc::OccurrenceDef> myOccurrences;
 
   //! @name Transitional reference entry stores
   RefStore<BRepGraphInc::ShellRefEntry>  myShellRefs;

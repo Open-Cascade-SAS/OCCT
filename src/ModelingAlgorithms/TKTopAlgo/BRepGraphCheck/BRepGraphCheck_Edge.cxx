@@ -16,7 +16,7 @@
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Tool.hxx>
-#include <BRepGraphInc_Entity.hxx>
+#include <BRepGraphInc_Definition.hxx>
 #include <BRepLib_ValidateEdge.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <GeomAdaptor_Curve.hxx>
@@ -34,7 +34,7 @@ void BRepGraphCheck::CheckEdgeMinimum(const BRepGraph&                          
                                       NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
 {
   const BRepGraph::TopoView&         aDefs     = theGraph.Topo();
-  const BRepGraphInc::EdgeEntity& anEdgeDef = aDefs.Edge(theEdge);
+  const BRepGraphInc::EdgeDef& anEdgeDef = aDefs.Edge(theEdge);
 
   const bool anIsDegenerate = BRepGraph_Tool::Edge::Degenerated(theGraph, theEdge);
   const bool aHasCurve      = BRepGraph_Tool::Edge::HasCurve(theGraph, theEdge);
@@ -151,7 +151,7 @@ void BRepGraphCheck::CheckEdgeOnFace(const BRepGraph&                          t
                                      NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
 {
   const BRepGraph::TopoView&         aDefs     = theGraph.Topo();
-  const BRepGraphInc::EdgeEntity& anEdgeDef = aDefs.Edge(theEdge);
+  const BRepGraphInc::EdgeDef& anEdgeDef = aDefs.Edge(theEdge);
 
   // Skip degenerate edges for PCurve/SameParameter checks.
   if (BRepGraph_Tool::Edge::Degenerated(theGraph, theEdge))
@@ -163,7 +163,7 @@ void BRepGraphCheck::CheckEdgeOnFace(const BRepGraph&                          t
   const BRepGraph_NodeId aFaceNodeId = BRepGraph_NodeId::Face(theFace.Index);
 
   // Check PCurve existence.
-  const BRepGraphInc::CoEdgeEntity* aPCurve =
+  const BRepGraphInc::CoEdgeDef* aPCurve =
     BRepGraph_Tool::Edge::FindPCurve(theGraph, theEdge, theFace);
   if (aPCurve == nullptr)
   {
@@ -197,9 +197,9 @@ void BRepGraphCheck::CheckEdgeOnFace(const BRepGraph&                          t
   // Seam edge check: for edges on closed surfaces, validate both PCurves.
   // A seam edge has two PCurves on the same face (FORWARD and REVERSED).
   {
-    const BRepGraphInc::CoEdgeEntity* aPCurveF =
+    const BRepGraphInc::CoEdgeDef* aPCurveF =
       BRepGraph_Tool::Edge::FindPCurve(theGraph, theEdge, theFace, TopAbs_FORWARD);
-    const BRepGraphInc::CoEdgeEntity* aPCurveR =
+    const BRepGraphInc::CoEdgeDef* aPCurveR =
       BRepGraph_Tool::Edge::FindPCurve(theGraph, theEdge, theFace, TopAbs_REVERSED);
     if (aPCurveF != nullptr && aPCurveR != nullptr && aPCurveF != aPCurveR)
     {
@@ -285,7 +285,7 @@ void BRepGraphCheck::CheckEdgeInShell(const BRepGraph&                          
                                       NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
 {
   const BRepGraph::TopoView&         aDefs        = theGraph.Topo();
-  const BRepGraphInc::EdgeEntity& anEdgeDef    = aDefs.Edge(theEdge);
+  const BRepGraphInc::EdgeDef& anEdgeDef    = aDefs.Edge(theEdge);
   const BRepGraph_NodeId             aShellNodeId = BRepGraph_NodeId::Shell(theShell.Index);
 
   // Skip degenerate edges.
