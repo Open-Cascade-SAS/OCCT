@@ -323,6 +323,8 @@ void BRepGraph_Mutator::SplitEdge(BRepGraph&             theGraph,
         {
           const BRepGraph_CoEdgeRefId       aRefId      = aWireRefIds.Value(aRefOrd);
           const BRepGraphInc::CoEdgeRefEntry& aRefEntry = aStorage.CoEdgeRefEntry(aRefId);
+          if (aRefEntry.IsRemoved)
+            continue;
           const int                         aOldCoEdgeIdx = aRefEntry.CoEdgeDefId.Index;
           if (aOldCoEdgeIdx < 0 || aOldCoEdgeIdx >= aStorage.NbCoEdges())
             continue;
@@ -549,6 +551,8 @@ void BRepGraph_Mutator::ReplaceEdgeInWire(BRepGraph&             theGraph,
   for (int aRefIdx = 0; aRefIdx < aWireRefIds.Length(); ++aRefIdx)
   {
     const BRepGraphInc::CoEdgeRefEntry& aRefEntry = aStorage.CoEdgeRefEntry(aWireRefIds.Value(aRefIdx));
+    if (aRefEntry.IsRemoved)
+      continue;
     const int                           aCoEdgeEntIdx = aRefEntry.CoEdgeDefId.Index;
     if (aCoEdgeEntIdx < 0 || aCoEdgeEntIdx >= aStorage.NbCoEdges())
       continue;

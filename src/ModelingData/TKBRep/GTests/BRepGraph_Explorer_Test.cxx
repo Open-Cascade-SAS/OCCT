@@ -425,6 +425,7 @@ TEST(BRepGraph_ExplorerTest, PathsTo_MatchesExplorer_WhenEarlierCompoundRefRemov
     auto aMut = aGraph.Builder().MutChildRef(aRemovedRefId);
     aMut->IsRemoved = true;
   }
+  EXPECT_TRUE(aGraph.Refs().Child(aRemovedRefId).IsRemoved);
 
   // Explorer should keep raw step indices and still report the same path.
   bool aExplorerHasPath = false;
@@ -479,6 +480,7 @@ TEST(BRepGraph_ExplorerTest, PathsTo_MatchesExplorer_WhenFirstShellRefRemoved)
     auto aMut = aGraph.Builder().MutShellRef(aRemovedShellRefId);
     aMut->IsRemoved = true;
   }
+  EXPECT_TRUE(aGraph.Refs().Shell(aRemovedShellRefId).IsRemoved);
 
   // Pick one face path from explorer.
   BRepGraph_Explorer anExp(aGraph, BRepGraph_NodeId::Solid(0), BRepGraph_NodeId::Kind::Face);

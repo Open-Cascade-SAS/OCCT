@@ -374,6 +374,60 @@ protected:
   BRepGraph myGraph;
 };
 
+
+TEST_F(BRepGraphTest, FaceCountMatchesFacesVector_AfterBindUnbindSequence)
+{
+  ReverseIndexInputData aData = buildReverseIndexBaseInput();
+
+  // Add a second active face for bind/unbind sequence checks.
+  BRepGraphInc::FaceEntity& aFace1 = aData.Faces.Appended();
+  aFace1.InitVectors(occ::handle<NCollection_BaseAllocator>());
+  aFace1.Id = BRepGraph_NodeId::Face(1);
+
+  BRepGraphInc_ReverseIndex aRevIdx;
+  aRevIdx.Build(aData.Edges,
+                aData.CoEdges,
+                aData.Wires,
+                aData.Faces,
+                aData.Shells,
+                aData.Solids,
+                aData.Compounds,
+                aData.CompSolids,
+                aData.ShellRefs,
+                aData.FaceRefs,
+                aData.WireRefs,
+                aData.CoEdgeRefs,
+                aData.SolidRefs,
+                aData.ChildRefs);
+
+  auto expectCountsMatch = [&]() {
+    for (int anEdgeIdx = 0; anEdgeIdx < aData.Edges.Length(); ++anEdgeIdx)
+    {
+      const NCollection_Vector<BRepGraph_FaceId>* aFaces =
+        aRevIdx.FacesOfEdge(BRepGraph_EdgeId(anEdgeIdx));
+      const int aExpectedCount = (aFaces == nullptr) ? 0 : aFaces->Length();
+      EXPECT_EQ(aRevIdx.FaceCountOfEdge(BRepGraph_EdgeId(anEdgeIdx)), aExpectedCount)
+        << "Edge " << anEdgeIdx << " face-count cache mismatch";
+    }
+  };
+
+  expectCountsMatch();
+
+  // Duplicate bind should be idempotent.
+  aRevIdx.BindEdgeToFace(BRepGraph_EdgeId(0), BRepGraph_FaceId(0));
+  expectCountsMatch();
+
+  // Bind/unbind/rebind sequence must keep cached count consistent.
+  aRevIdx.BindEdgeToFace(BRepGraph_EdgeId(0), BRepGraph_FaceId(1));
+  expectCountsMatch();
+  aRevIdx.UnbindEdgeFromFace(BRepGraph_EdgeId(0), BRepGraph_FaceId(0));
+  expectCountsMatch();
+  aRevIdx.BindEdgeToFace(BRepGraph_EdgeId(0), BRepGraph_FaceId(0));
+  expectCountsMatch();
+  aRevIdx.UnbindEdgeFromFace(BRepGraph_EdgeId(0), BRepGraph_FaceId(1));
+  expectCountsMatch();
+}
+
 TEST_F(BRepGraphTest, Build_SimpleBox_IsDone)
 {
   EXPECT_TRUE(myGraph.IsDone());

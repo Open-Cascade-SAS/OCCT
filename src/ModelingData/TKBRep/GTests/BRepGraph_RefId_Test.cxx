@@ -330,6 +330,33 @@ TEST(BRepGraph_RefIdTest, MutFaceRef_UpdatesRefStampAndParentModifiedFlag)
   EXPECT_TRUE(aParentDef->IsModified);
 }
 
+TEST(BRepGraph_RefIdTest, MutFaceRef_MarkRemoved_PersistsAndInvalidatesStamp)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  if (aGraph.Refs().NbFaceRefs() <= 0)
+  {
+    GTEST_SKIP() << "No face references available";
+  }
+
+  const BRepGraph_FaceRefId aFaceRefId(0);
+  const BRepGraph_VersionStamp aBeforeStamp = aGraph.Refs().StampOf(aFaceRefId);
+  ASSERT_TRUE(aBeforeStamp.IsValid());
+  ASSERT_TRUE(aBeforeStamp.IsRefStamp());
+
+  {
+    auto aMut = aGraph.Builder().MutFaceRef(aFaceRefId);
+    aMut->IsRemoved = true;
+  }
+
+  const BRepGraphInc::FaceRefEntry& aAfterEntry = aGraph.Refs().Face(aFaceRefId);
+  EXPECT_TRUE(aAfterEntry.IsRemoved);
+  EXPECT_TRUE(aGraph.Refs().IsStale(aBeforeStamp));
+  EXPECT_FALSE(aGraph.Refs().StampOf(aFaceRefId).IsValid());
+}
+
 TEST(BRepGraph_RefIdTest, ChildRefs_CompoundEntriesAreValid)
 {
   BRepGraph aGraph;
