@@ -23,14 +23,28 @@ Standard_GUID BRepGraph_VersionStamp::ToGUID(const Standard_GUID& theGraphGUID) 
 {
   // Pack fields into a flat byte buffer to avoid struct padding issues.
   const Standard_UUID aGraphUUID = theGraphGUID.ToUUID();
-  const size_t        aCounter   = myUID.Counter();
-  const int           aKind      = static_cast<int>(myUID.Kind());
+  const uint8_t       aDomain    = static_cast<uint8_t>(myDomain);
 
-  uint8_t aBuffer[sizeof(aGraphUUID) + sizeof(aCounter) + sizeof(aKind) + sizeof(myMutationGen)
-                  + sizeof(myGeneration)];
+  size_t aCounter = 0;
+  int    aKind    = 0;
+  if (myDomain == Domain::Entity)
+  {
+    aCounter = myUID.Counter();
+    aKind    = static_cast<int>(myUID.Kind());
+  }
+  else if (myDomain == Domain::Ref)
+  {
+    aCounter = myRefUID.Counter();
+    aKind    = static_cast<int>(myRefUID.Kind());
+  }
+
+  uint8_t aBuffer[sizeof(aGraphUUID) + sizeof(aDomain) + sizeof(aCounter) + sizeof(aKind)
+                  + sizeof(myMutationGen) + sizeof(myGeneration)];
   size_t  anOff = 0;
   std::memcpy(aBuffer + anOff, &aGraphUUID, sizeof(aGraphUUID));
   anOff += sizeof(aGraphUUID);
+  std::memcpy(aBuffer + anOff, &aDomain, sizeof(aDomain));
+  anOff += sizeof(aDomain);
   std::memcpy(aBuffer + anOff, &aCounter, sizeof(aCounter));
   anOff += sizeof(aCounter);
   std::memcpy(aBuffer + anOff, &aKind, sizeof(aKind));

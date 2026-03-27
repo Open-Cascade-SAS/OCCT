@@ -13,6 +13,7 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_BuilderView.hxx>
+#include "BRepGraph_RefTestTools.hxx"
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -65,7 +66,7 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_PropagatesUpOnFlush)
   // Check propagation to face.
   for (int aFI = 0; aFI < myGraph.Topo().NbFaces(); ++aFI)
   {
-    if (myGraph.Topo().Face(BRepGraph_FaceId(aFI)).OuterWireDefId().Index == aWires.Value(0).Index)
+    if (BRepGraph_TestTools::FaceUsesWire(myGraph, BRepGraph_FaceId(aFI), aWires.Value(0)))
     {
       EXPECT_TRUE(myGraph.Topo().Face(BRepGraph_FaceId(aFI)).IsModified);
       break;
@@ -243,7 +244,7 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_DirectWireMutation_Propa
   bool aFacePropagated = false;
   for (int aFI = 0; aFI < myGraph.Topo().NbFaces(); ++aFI)
   {
-    if (myGraph.Topo().Face(BRepGraph_FaceId(aFI)).OuterWireDefId().Index == 0
+    if (BRepGraph_TestTools::FaceUsesWire(myGraph, BRepGraph_FaceId(aFI), BRepGraph_WireId(0))
         && myGraph.Topo().Face(BRepGraph_FaceId(aFI)).IsModified)
     {
       aFacePropagated = true;

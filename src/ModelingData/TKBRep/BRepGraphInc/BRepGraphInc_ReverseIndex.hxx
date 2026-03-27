@@ -31,6 +31,12 @@ struct CompoundEntity;
 struct CompSolidEntity;
 struct ProductEntity;
 struct OccurrenceEntity;
+struct ShellRefEntry;
+struct FaceRefEntry;
+struct WireRefEntry;
+struct CoEdgeRefEntry;
+struct SolidRefEntry;
+struct ChildRefEntry;
 } // namespace BRepGraphInc
 
 //! @brief Reverse incidence indices for O(1) upward navigation.
@@ -52,13 +58,22 @@ public:
   //! Clear all indices.
   Standard_EXPORT void Clear();
 
-  //! Rebuild all reverse indices from the entity tables.
-  //! Edge-to-face index is derived from inline PCurve entries on EdgeEntity.
-  //! @param[in] theEdges   edge entity vector (for vertex-to-edge, edge-to-face)
-  //! @param[in] theWires   wire entity vector (for edge-to-wire)
-  //! @param[in] theFaces   face entity vector (for wire-to-face)
-  //! @param[in] theShells  shell entity vector (for face-to-shell)
-  //! @param[in] theSolids  solid entity vector (for shell-to-solid)
+  //! Rebuild all reverse indices from the entity and reference-entry tables.
+  //! Edge-to-face index is derived from CoEdge.FaceDefId links.
+  //! @param[in] theEdges      edge entity vector (for vertex-to-edge, edge-to-face)
+  //! @param[in] theCoEdges    coedge entity vector (for edge-to-coedge and edge-to-face)
+  //! @param[in] theWires      wire entity vector (parent validation for coedge refs)
+  //! @param[in] theFaces      face entity vector (parent validation for wire refs)
+  //! @param[in] theShells     shell entity vector (parent validation for face refs)
+  //! @param[in] theSolids     solid entity vector (parent validation for shell refs)
+  //! @param[in] theCompounds  compound entity vector (parent validation for child refs)
+  //! @param[in] theCompSolids compsolid entity vector (parent validation for solid refs)
+  //! @param[in] theShellRefs  shell ref-entry table (solid -> shell reverse)
+  //! @param[in] theFaceRefs   face ref-entry table (shell -> face reverse)
+  //! @param[in] theWireRefs   wire ref-entry table (face -> wire reverse)
+  //! @param[in] theCoEdgeRefs coedge ref-entry table (wire -> coedge/edge reverse)
+  //! @param[in] theSolidRefs  solid ref-entry table (compsolid -> solid reverse)
+  //! @param[in] theChildRefs  child ref-entry table (compound child reverse)
   Standard_EXPORT void Build(
     const NCollection_Vector<BRepGraphInc::EdgeEntity>&      theEdges,
     const NCollection_Vector<BRepGraphInc::CoEdgeEntity>&    theCoEdges,
@@ -67,10 +82,17 @@ public:
     const NCollection_Vector<BRepGraphInc::ShellEntity>&     theShells,
     const NCollection_Vector<BRepGraphInc::SolidEntity>&     theSolids,
     const NCollection_Vector<BRepGraphInc::CompoundEntity>&  theCompounds,
-    const NCollection_Vector<BRepGraphInc::CompSolidEntity>& theCompSolids);
+    const NCollection_Vector<BRepGraphInc::CompSolidEntity>& theCompSolids,
+    const NCollection_Vector<BRepGraphInc::ShellRefEntry>&   theShellRefs,
+    const NCollection_Vector<BRepGraphInc::FaceRefEntry>&    theFaceRefs,
+    const NCollection_Vector<BRepGraphInc::WireRefEntry>&    theWireRefs,
+    const NCollection_Vector<BRepGraphInc::CoEdgeRefEntry>&  theCoEdgeRefs,
+    const NCollection_Vector<BRepGraphInc::SolidRefEntry>&   theSolidRefs,
+    const NCollection_Vector<BRepGraphInc::ChildRefEntry>&   theChildRefs);
 
-  //! Incrementally update reverse indices for entities appended after a previous Build().
-  //! Only processes entities from the old counts to the current vector lengths.
+  //! Incrementally update reverse indices for entities/ref-parents appended after a previous
+  //! Build(). Only processes entities from the old counts to the current vector lengths and
+  //! reference entries whose parent was newly appended.
   //! Compound/CompSolid reverse indices are not updated incrementally -
   //! these containers are populated once during Build() and not mutated post-build.
   //! @param[in] theOldNbEdges   edge count before the append operation
@@ -84,6 +106,10 @@ public:
                                   const NCollection_Vector<BRepGraphInc::FaceEntity>&   theFaces,
                                   const NCollection_Vector<BRepGraphInc::ShellEntity>&  theShells,
                                   const NCollection_Vector<BRepGraphInc::SolidEntity>&  theSolids,
+                                  const NCollection_Vector<BRepGraphInc::ShellRefEntry>&  theShellRefs,
+                                  const NCollection_Vector<BRepGraphInc::FaceRefEntry>&   theFaceRefs,
+                                  const NCollection_Vector<BRepGraphInc::WireRefEntry>&   theWireRefs,
+                                  const NCollection_Vector<BRepGraphInc::CoEdgeRefEntry>& theCoEdgeRefs,
                                   const int theOldNbEdges,
                                   const int theOldNbWires,
                                   const int theOldNbFaces,
@@ -241,17 +267,21 @@ public:
     return seekRef(myWireToFaces, theWireId.Index);
   }
 
-  //! Verify reverse index consistency against forward entity tables.
+  //! Verify reverse index consistency against forward entity/reference-entry tables.
   //! For each forward ref (e.g., wire->edge), checks that the corresponding
   //! reverse entry exists (edge->wire). Intended for debug validation.
   //! @return true if all forward refs have matching reverse entries
   Standard_EXPORT bool Validate(
-    const NCollection_Vector<BRepGraphInc::EdgeEntity>&   theEdges,
-    const NCollection_Vector<BRepGraphInc::CoEdgeEntity>& theCoEdges,
-    const NCollection_Vector<BRepGraphInc::WireEntity>&   theWires,
-    const NCollection_Vector<BRepGraphInc::FaceEntity>&   theFaces,
-    const NCollection_Vector<BRepGraphInc::ShellEntity>&  theShells,
-    const NCollection_Vector<BRepGraphInc::SolidEntity>&  theSolids) const;
+    const NCollection_Vector<BRepGraphInc::EdgeEntity>&     theEdges,
+    const NCollection_Vector<BRepGraphInc::CoEdgeEntity>&   theCoEdges,
+    const NCollection_Vector<BRepGraphInc::WireEntity>&     theWires,
+    const NCollection_Vector<BRepGraphInc::FaceEntity>&     theFaces,
+    const NCollection_Vector<BRepGraphInc::ShellEntity>&    theShells,
+    const NCollection_Vector<BRepGraphInc::SolidEntity>&    theSolids,
+    const NCollection_Vector<BRepGraphInc::ShellRefEntry>&  theShellRefs,
+    const NCollection_Vector<BRepGraphInc::FaceRefEntry>&   theFaceRefs,
+    const NCollection_Vector<BRepGraphInc::WireRefEntry>&   theWireRefs,
+    const NCollection_Vector<BRepGraphInc::CoEdgeRefEntry>& theCoEdgeRefs) const;
 
   // --- Incremental mutation ---
 

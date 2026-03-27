@@ -23,6 +23,16 @@
 class Geom_Surface;
 class Geom_Curve;
 class Geom2d_Curve;
+namespace BRepGraphInc
+{
+struct ShellRefEntry;
+struct FaceRefEntry;
+struct WireRefEntry;
+struct CoEdgeRefEntry;
+struct VertexRefEntry;
+struct SolidRefEntry;
+struct ChildRefEntry;
+} // namespace BRepGraphInc
 
 //! @brief Non-const view for programmatic graph construction and mutation.
 //!
@@ -84,7 +94,8 @@ public:
   //! @return NodeId of the new solid definition
   [[nodiscard]] Standard_EXPORT BRepGraph_NodeId AddSolidDef();
 
-  //! Link a face to a shell (appends FaceRef to shell entity).
+  //! Link a face to a shell.
+  //! Appends FaceRefEntry and stores its FaceRefId in shell FaceRefIds.
   //! @param[in] theShellDef  shell definition NodeId
   //! @param[in] theFaceDef   face definition NodeId
   //! @param[in] theOri       orientation of the face in the shell
@@ -92,7 +103,8 @@ public:
                                       const BRepGraph_NodeId   theFaceDef,
                                       const TopAbs_Orientation theOri = TopAbs_FORWARD);
 
-  //! Link a shell to a solid (appends ShellRef to solid entity).
+  //! Link a shell to a solid.
+  //! Appends ShellRefEntry and stores its ShellRefId in solid ShellRefIds.
   //! @param[in] theSolidDef  solid definition NodeId
   //! @param[in] theShellDef  shell definition NodeId
   //! @param[in] theOri       orientation of the shell in the solid
@@ -268,6 +280,41 @@ public:
   //! @param[in] theOccurrence typed occurrence identifier
   Standard_EXPORT BRepGraph_MutRef<BRepGraph_TopoNode::OccurrenceDef> MutOccurrence(
     const BRepGraph_OccurrenceId theOccurrence);
+
+  //! Return scoped mutable shell reference guard.
+  //! @param[in] theShellRef typed shell reference identifier
+  Standard_EXPORT BRepGraph_MutRefEntry<BRepGraphInc::ShellRefEntry> MutShellRef(
+    const BRepGraph_ShellRefId theShellRef);
+
+  //! Return scoped mutable face reference guard.
+  //! @param[in] theFaceRef typed face reference identifier
+  Standard_EXPORT BRepGraph_MutRefEntry<BRepGraphInc::FaceRefEntry> MutFaceRef(
+    const BRepGraph_FaceRefId theFaceRef);
+
+  //! Return scoped mutable wire reference guard.
+  //! @param[in] theWireRef typed wire reference identifier
+  Standard_EXPORT BRepGraph_MutRefEntry<BRepGraphInc::WireRefEntry> MutWireRef(
+    const BRepGraph_WireRefId theWireRef);
+
+  //! Return scoped mutable coedge reference guard.
+  //! @param[in] theCoEdgeRef typed coedge reference identifier
+  Standard_EXPORT BRepGraph_MutRefEntry<BRepGraphInc::CoEdgeRefEntry> MutCoEdgeRef(
+    const BRepGraph_CoEdgeRefId theCoEdgeRef);
+
+  //! Return scoped mutable vertex reference guard.
+  //! @param[in] theVertexRef typed vertex reference identifier
+  Standard_EXPORT BRepGraph_MutRefEntry<BRepGraphInc::VertexRefEntry> MutVertexRef(
+    const BRepGraph_VertexRefId theVertexRef);
+
+  //! Return scoped mutable solid reference guard.
+  //! @param[in] theSolidRef typed solid reference identifier
+  Standard_EXPORT BRepGraph_MutRefEntry<BRepGraphInc::SolidRefEntry> MutSolidRef(
+    const BRepGraph_SolidRefId theSolidRef);
+
+  //! Return scoped mutable child reference guard.
+  //! @param[in] theChildRef typed child reference identifier
+  Standard_EXPORT BRepGraph_MutRefEntry<BRepGraphInc::ChildRefEntry> MutChildRef(
+    const BRepGraph_ChildRefId theChildRef);
 
 private:
   friend class BRepGraph;

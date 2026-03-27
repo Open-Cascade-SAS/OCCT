@@ -14,6 +14,7 @@
 #include <BRepGraphAlgo_FaceAnalysis.hxx>
 
 #include <BRepGraph_BuilderView.hxx>
+#include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_MutationGuard.hxx>
 #include <BRepGraph_MutRef.hxx>
@@ -96,6 +97,7 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
       : std::max(Precision::Confusion(), theGraph.Topo().NbEdges() > 0 ? 1.0e-10 : 0.0);
 
   const BRepGraph::TopoView aDefs = theGraph.Topo();
+  const BRepGraph::RefsView& aRefs = theGraph.Refs();
 
   // Track which edges are small and which vertices need merging.
   NCollection_Map<int> aSmallEdgeSet;
@@ -116,15 +118,34 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
     int aNbSmall = 0;
 
     // Iterate over all wires of this face.
-    for (int aWireRefIdx = 0; aWireRefIdx < aFace.WireRefs.Length(); ++aWireRefIdx)
+    const BRepGraph_TopoNode::FaceDef& aFaceEnt = aDefs.Face(BRepGraph_FaceId(aFaceIdx));
+    for (int aWireRefIter = 0; aWireRefIter < aFaceEnt.WireRefIds.Length(); ++aWireRefIter)
     {
-      const int aWireIdx                       = aFace.WireRefs.Value(aWireRefIdx).WireDefId.Index;
-      const BRepGraph_TopoNode::WireDef& aWire = aDefs.Wire(BRepGraph_WireId(aWireIdx));
-
-      for (int aCoEdgeRefIdx = 0; aCoEdgeRefIdx < aWire.CoEdgeRefs.Length(); ++aCoEdgeRefIdx)
+      const BRepGraph_WireRefId         aWireRefId = aFaceEnt.WireRefIds.Value(aWireRefIter);
+      const BRepGraphInc::WireRefEntry& aWR        = aRefs.Wire(aWireRefId);
+      if (aWR.IsRemoved || !aWR.WireDefId.IsValid(aDefs.NbWires()))
       {
-        const BRepGraphInc::CoEdgeRef&     aCR       = aWire.CoEdgeRefs.Value(aCoEdgeRefIdx);
-        const BRepGraph_EdgeId             anEdgeId  = aDefs.CoEdge(aCR.CoEdgeDefId).EdgeDefId;
+        continue;
+      }
+
+      const BRepGraph_TopoNode::WireDef& aWireEnt = aDefs.Wire(aWR.WireDefId);
+
+      for (int aCoEdgeRefIter = 0; aCoEdgeRefIter < aWireEnt.CoEdgeRefIds.Length(); ++aCoEdgeRefIter)
+      {
+        const BRepGraph_CoEdgeRefId         aCoEdgeRefId = aWireEnt.CoEdgeRefIds.Value(aCoEdgeRefIter);
+        const BRepGraphInc::CoEdgeRefEntry& aCR          = aRefs.CoEdge(aCoEdgeRefId);
+        if (aCR.IsRemoved || !aCR.CoEdgeDefId.IsValid(aDefs.NbCoEdges()))
+        {
+          continue;
+        }
+
+        const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = aDefs.CoEdge(aCR.CoEdgeDefId);
+        const BRepGraph_EdgeId               anEdgeId = aCoEdge.EdgeDefId;
+        if (!anEdgeId.IsValid(aDefs.NbEdges()))
+        {
+          continue;
+        }
+
         const int                          anEdgeIdx = anEdgeId.Index;
         const BRepGraph_TopoNode::EdgeDef& anEdge    = aDefs.Edge(anEdgeId);
         ++aNbEdges;

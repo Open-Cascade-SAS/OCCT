@@ -20,6 +20,7 @@
 #include <BRepGraph_NodeCache.hxx>
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_PathView.hxx>
+#include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_TopoNode.hxx>
 #include <BRepGraph_TopoView.hxx>
@@ -81,6 +82,7 @@ struct BRepGraph_Data
   BRepGraph::UIDsView    myUIDsView{nullptr};
   BRepGraph::PathView    myPathView{nullptr};
   BRepGraph::AttrsView   myAttrsView{nullptr};
+  BRepGraph::RefsView    myRefsView{nullptr};
   BRepGraph::ShapesView  myShapesView{nullptr};
   BRepGraph::BuilderView myBuilderView{nullptr};
 

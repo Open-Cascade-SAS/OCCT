@@ -105,6 +105,9 @@ bool BRepGraph::UIDsView::IsStale(const BRepGraph_VersionStamp& theStamp) const
   if (!theStamp.IsValid())
     return true;
 
+  if (!theStamp.IsEntityStamp())
+    return true;
+
   if (theStamp.myGeneration != myGraph->myData->myGeneration.load())
     return true;
 

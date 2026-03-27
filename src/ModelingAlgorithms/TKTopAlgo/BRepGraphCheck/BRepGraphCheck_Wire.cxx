@@ -14,6 +14,7 @@
 #include <BRepGraphCheck.hxx>
 
 #include <BRepGraphInc_WireExplorer.hxx>
+#include <BRepGraph_RefsView.hxx>
 #include <Bnd_Box2d.hxx>
 #include <BndLib_Add2dCurve.hxx>
 #include <BRepGraph_TopoView.hxx>
@@ -31,17 +32,53 @@
 
 #include <cmath>
 
+namespace
+{
+
+//=================================================================================================
+
+static NCollection_Vector<BRepGraphInc::CoEdgeRef> collectWireCoEdgeRefs(const BRepGraph&   theGraph,
+                                                                           const BRepGraph_NodeId theWireNodeId)
+{
+  const BRepGraph::TopoView& aDefs = theGraph.Topo();
+  const BRepGraph::RefsView& aRefs = theGraph.Refs();
+  NCollection_Vector<BRepGraphInc::CoEdgeRef> aResult;
+
+  const BRepGraph_TopoNode::WireDef& aWireDef = aDefs.Wire(BRepGraph_WireId(theWireNodeId.Index));
+  for (int aRefIter = 0; aRefIter < aWireDef.CoEdgeRefIds.Length(); ++aRefIter)
+  {
+    const BRepGraph_CoEdgeRefId          aRefId = aWireDef.CoEdgeRefIds.Value(aRefIter);
+    const BRepGraphInc::CoEdgeRefEntry& aRef   = aRefs.CoEdge(aRefId);
+    if (aRef.IsRemoved || !aRef.CoEdgeDefId.IsValid(aDefs.NbCoEdges()))
+    {
+      continue;
+    }
+
+    BRepGraphInc::CoEdgeRef aCoEdgeRef;
+    aCoEdgeRef.CoEdgeDefId   = aRef.CoEdgeDefId;
+    aCoEdgeRef.LocalLocation = aRef.LocalLocation;
+    aResult.Append(aCoEdgeRef);
+  }
+
+  return aResult;
+}
+
+} // namespace
+
 //=================================================================================================
 
 void BRepGraphCheck::CheckWireMinimum(const BRepGraph&                          theGraph,
                                       const BRepGraph_WireId                    theWire,
                                       NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
 {
-  const BRepGraph::TopoView          aDefs    = theGraph.Topo();
-  const BRepGraph_TopoNode::WireDef& aWireDef = aDefs.Wire(theWire);
+  const BRepGraph::TopoView&         aDefs       = theGraph.Topo();
+  const BRepGraph_TopoNode::WireDef& aWireDef    = aDefs.Wire(theWire);
+  const BRepGraph_NodeId             aWireNodeId = aWireDef.Id;
+  const NCollection_Vector<BRepGraphInc::CoEdgeRef> aCoEdgeRefs =
+    collectWireCoEdgeRefs(theGraph, aWireNodeId);
 
   // Empty wire check.
-  if (aWireDef.CoEdgeRefs.IsEmpty())
+  if (aCoEdgeRefs.IsEmpty())
   {
     BRepGraphCheck_Issue anIssue;
     anIssue.NodeId        = aWireDef.Id;
@@ -55,9 +92,9 @@ void BRepGraphCheck::CheckWireMinimum(const BRepGraph&                          
   // without forming a valid FORWARD/REVERSED pair.
   NCollection_DataMap<int, int> anEdgeCounts;
   NCollection_DataMap<int, int> anEdgeForwardCounts;
-  for (int aCoEdgeIter = 0; aCoEdgeIter < aWireDef.CoEdgeRefs.Length(); ++aCoEdgeIter)
+  for (int aCoEdgeIter = 0; aCoEdgeIter < aCoEdgeRefs.Length(); ++aCoEdgeIter)
   {
-    const BRepGraphInc::CoEdgeRef&       aCR        = aWireDef.CoEdgeRefs.Value(aCoEdgeIter);
+    const BRepGraphInc::CoEdgeRef&       aCR        = aCoEdgeRefs.Value(aCoEdgeIter);
     const BRepGraph_TopoNode::CoEdgeDef& aCoEdgeDef = aDefs.CoEdge(aCR.CoEdgeDefId);
     const int                            anEdgeIdx  = aCoEdgeDef.EdgeDefId.Index;
     if (!anEdgeCounts.IsBound(anEdgeIdx))
@@ -113,25 +150,27 @@ void BRepGraphCheck::CheckWireOnFace(const BRepGraph&                          t
                                      const bool                                theGeomControls,
                                      NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
 {
-  const BRepGraph::TopoView          aDefs       = theGraph.Topo();
+  const BRepGraph::TopoView&         aDefs       = theGraph.Topo();
   const BRepGraph_TopoNode::WireDef& aWireDef    = aDefs.Wire(theWire);
   const BRepGraph_NodeId             aWireNodeId = aWireDef.Id;
   const BRepGraph_NodeId             aFaceNodeId = BRepGraph_NodeId::Face(theFace.Index);
+  const NCollection_Vector<BRepGraphInc::CoEdgeRef> aCoEdgeRefs =
+    collectWireCoEdgeRefs(theGraph, aWireNodeId);
 
-  if (aWireDef.CoEdgeRefs.IsEmpty())
+  if (aCoEdgeRefs.IsEmpty())
     return;
 
   // Connectivity check: verify all edges are reachable via vertex adjacency.
   // Uses the same approach as BRepCheck_Wire::Closed() - build a vertex-to-edge
   // adjacency map, then propagate from the first edge to check all are reachable.
   // This works regardless of CoEdgeRefs ordering.
-  const int aNbEdges = aWireDef.CoEdgeRefs.Length();
+  const int aNbEdges = aCoEdgeRefs.Length();
   {
     // Build vertex -> edge-indices map (using oriented vertices).
     NCollection_DataMap<int, NCollection_Vector<int>> aVtxToEdgeIndices;
     for (int anEdgeIter = 0; anEdgeIter < aNbEdges; ++anEdgeIter)
     {
-      const BRepGraphInc::CoEdgeRef&       aCR        = aWireDef.CoEdgeRefs.Value(anEdgeIter);
+      const BRepGraphInc::CoEdgeRef&       aCR        = aCoEdgeRefs.Value(anEdgeIter);
       const BRepGraph_TopoNode::CoEdgeDef& aCoEdgeDef = aDefs.CoEdge(aCR.CoEdgeDefId);
       const BRepGraph_TopoNode::EdgeDef&   anEdgeDef  = aDefs.Edge(aCoEdgeDef.EdgeDefId);
       const BRepGraph_NodeId aStartVtx = anEdgeDef.OrientedStartVertex(aCoEdgeDef.Sense);
@@ -165,7 +204,7 @@ void BRepGraphCheck::CheckWireOnFace(const BRepGraph&                          t
       const int aCurrIdx = aQueue.First();
       aQueue.RemoveFirst();
 
-      const BRepGraphInc::CoEdgeRef&       aCurrCR     = aWireDef.CoEdgeRefs.Value(aCurrIdx);
+      const BRepGraphInc::CoEdgeRef&       aCurrCR     = aCoEdgeRefs.Value(aCurrIdx);
       const BRepGraph_TopoNode::CoEdgeDef& aCurrCoEdge = aDefs.CoEdge(aCurrCR.CoEdgeDefId);
       const BRepGraph_TopoNode::EdgeDef&   aCurrEdge   = aDefs.Edge(aCurrCoEdge.EdgeDefId);
       const BRepGraph_NodeId aStartVtx = aCurrEdge.OrientedStartVertex(aCurrCoEdge.Sense);
@@ -243,7 +282,7 @@ void BRepGraphCheck::CheckWireOnFace(const BRepGraph&                          t
   bool aHasSeamEdge = false;
   for (int anEdgeIter = 0; anEdgeIter < aNbEdges && !aHasSeamEdge; ++anEdgeIter)
   {
-    const BRepGraphInc::CoEdgeRef&       aCR        = aWireDef.CoEdgeRefs.Value(anEdgeIter);
+    const BRepGraphInc::CoEdgeRef&       aCR        = aCoEdgeRefs.Value(anEdgeIter);
     const BRepGraph_TopoNode::CoEdgeDef& aCoEdgeDef = aDefs.CoEdge(aCR.CoEdgeDefId);
     if (aCoEdgeDef.SeamPairId.IsValid())
       aHasSeamEdge = true;
@@ -257,7 +296,7 @@ void BRepGraphCheck::CheckWireOnFace(const BRepGraph&                          t
     auto coedgeLookup = [&aDefs](int theIdx) -> const BRepGraphInc::CoEdgeEntity& {
       return aDefs.CoEdge(BRepGraph_CoEdgeId(theIdx));
     };
-    BRepGraphInc_WireExplorer aWireExp(aWireDef.CoEdgeRefs, coedgeLookup, edgeLookup);
+    BRepGraphInc_WireExplorer aWireExp(aCoEdgeRefs, coedgeLookup, edgeLookup);
     BRepGraphInc::CoEdgeRef   aFirstCR = aWireExp.CurrentRef();
     BRepGraphInc::CoEdgeRef   aLastCR  = aFirstCR;
     for (; aWireExp.More(); aWireExp.Next())
@@ -348,7 +387,7 @@ void BRepGraphCheck::CheckWireOnFace(const BRepGraph&                          t
 
   for (int anEdgeIter = 0; anEdgeIter < aNbEdges; ++anEdgeIter)
   {
-    const BRepGraphInc::CoEdgeRef&       aCR        = aWireDef.CoEdgeRefs.Value(anEdgeIter);
+    const BRepGraphInc::CoEdgeRef&       aCR        = aCoEdgeRefs.Value(anEdgeIter);
     const BRepGraph_TopoNode::CoEdgeDef& aCoEdgeDef = aDefs.CoEdge(aCR.CoEdgeDefId);
     const BRepGraph_TopoNode::EdgeDef&   anEdgeDef  = aDefs.Edge(aCoEdgeDef.EdgeDefId);
 

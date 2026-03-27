@@ -17,6 +17,7 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraphAlgo_BndLib.hxx>
+#include "BRepGraph_RefTestTools.hxx"
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_Tool.hxx>
@@ -209,8 +210,8 @@ TEST(BRepGraph_BuilderTest, AddWireDef_ClosedRectangle)
   EXPECT_TRUE(aWireId.IsValid());
   EXPECT_EQ(aWireId.NodeKind, BRepGraph_NodeId::Kind::Wire);
 
+  EXPECT_EQ(BRepGraph_TestTools::CountCoEdgeRefsOfWire(aGraph, BRepGraph_WireId(0)), 4);
   const BRepGraph_TopoNode::WireDef& aWireDef = aGraph.Topo().Wire(BRepGraph_WireId(0));
-  EXPECT_EQ(aWireDef.CoEdgeRefs.Length(), 4);
   EXPECT_TRUE(aWireDef.IsClosed);
 }
 
@@ -381,9 +382,7 @@ TEST(BRepGraph_BuilderTest, AddFaceToShell_CreatesUsage)
   BRepGraph_NodeId aShellId = aGraph.Builder().AddShellDef();
   aGraph.Builder().AddFaceToShell(aShellId, aFaceId);
 
-  // Verify shell has a face ref.
-  const BRepGraph_TopoNode::ShellDef& aShellDef = aGraph.Topo().Shell(BRepGraph_ShellId(0));
-  EXPECT_EQ(aShellDef.FaceRefs.Length(), 1);
+  EXPECT_EQ(BRepGraph_TestTools::CountFaceRefsOfShell(aGraph, BRepGraph_ShellId(0)), 1);
 }
 
 TEST(BRepGraph_BuilderTest, AddShellToSolid_CreatesUsage)
@@ -395,8 +394,7 @@ TEST(BRepGraph_BuilderTest, AddShellToSolid_CreatesUsage)
 
   aGraph.Builder().AddShellToSolid(aSolidId, aShellId);
 
-  const BRepGraph_TopoNode::SolidDef& aSolidDef = aGraph.Topo().Solid(BRepGraph_SolidId(0));
-  EXPECT_EQ(aSolidDef.ShellRefs.Length(), 1);
+  EXPECT_EQ(BRepGraph_TestTools::CountShellRefsOfSolid(aGraph, BRepGraph_SolidId(0)), 1);
 }
 
 TEST(BRepGraph_BuilderTest, AddCompoundDef_WithChildren)
@@ -415,8 +413,7 @@ TEST(BRepGraph_BuilderTest, AddCompoundDef_WithChildren)
   EXPECT_EQ(aCompId.NodeKind, BRepGraph_NodeId::Kind::Compound);
   EXPECT_EQ(aGraph.Topo().NbCompounds(), 1);
 
-  const BRepGraph_TopoNode::CompoundDef& aCompDef = aGraph.Topo().Compound(BRepGraph_CompoundId(0));
-  EXPECT_EQ(aCompDef.ChildRefs.Length(), 2);
+  EXPECT_EQ(BRepGraph_TestTools::CountChildRefsOfParent(aGraph, BRepGraph_NodeId::Compound(0)), 2);
 }
 
 TEST(BRepGraph_BuilderTest, AddCompSolidDef_WithSolids)
@@ -437,7 +434,8 @@ TEST(BRepGraph_BuilderTest, AddCompSolidDef_WithSolids)
 
   const BRepGraph_TopoNode::CompSolidDef& aCSolDef =
     aGraph.Topo().CompSolid(BRepGraph_CompSolidId(0));
-  EXPECT_EQ(aCSolDef.SolidRefs.Length(), 2);
+  (void)aCSolDef;
+  EXPECT_EQ(BRepGraph_TestTools::CountSolidRefsOfCompSolid(aGraph, BRepGraph_CompSolidId(0)), 2);
 }
 
 TEST(BRepGraph_BuilderTest, FullSolid_ProgrammaticConstruction)
@@ -482,8 +480,7 @@ TEST(BRepGraph_BuilderTest, FullSolid_ProgrammaticConstruction)
   EXPECT_EQ(aGraph.Topo().NbShells(), 1);
   EXPECT_EQ(aGraph.Topo().NbFaces(), 1);
 
-  const BRepGraph_TopoNode::SolidDef& aSolidDefUs = aGraph.Topo().Solid(BRepGraph_SolidId(0));
-  EXPECT_EQ(aSolidDefUs.ShellRefs.Length(), 1);
+  EXPECT_EQ(BRepGraph_TestTools::CountShellRefsOfSolid(aGraph, BRepGraph_SolidId(0)), 1);
 }
 
 // ============================================================

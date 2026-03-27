@@ -16,6 +16,7 @@
 #include <BRepGProp.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_BuilderView.hxx>
+#include "BRepGraph_RefTestTools.hxx"
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_Tool.hxx>
@@ -334,15 +335,16 @@ TEST(BRepGraph_ReconstructTest, Face_OrientationPreserved)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  // Verify that reconstructed faces have valid orientations matching incidence refs.
+  // Verify that reconstructed faces have valid orientations matching ref entries.
   ASSERT_EQ(aGraph.Topo().NbShells(), 1);
-  const BRepGraph_TopoNode::ShellDef& aShellDef = aGraph.Topo().Shell(BRepGraph_ShellId(0));
-  for (int aRefIdx = 0; aRefIdx < aShellDef.FaceRefs.Length(); ++aRefIdx)
+  const NCollection_Vector<BRepGraph_FaceRefId> aFaceRefs =
+    BRepGraph_TestTools::FaceRefsOfShell(aGraph, BRepGraph_ShellId(0));
+  for (int aRefIdx = 0; aRefIdx < aFaceRefs.Length(); ++aRefIdx)
   {
-    const BRepGraphInc::FaceRef& aFaceRef      = aShellDef.FaceRefs.Value(aRefIdx);
-    const TopAbs_Orientation     anExpectedOri = aFaceRef.Orientation;
+    const BRepGraphInc::FaceRefEntry& aFaceRef = aGraph.Refs().Face(aFaceRefs.Value(aRefIdx));
+    const TopAbs_Orientation          anExpectedOri = aFaceRef.Orientation;
 
-    TopoDS_Shape aReconFace = aGraph.Shapes().ReconstructFace(BRepGraph_FaceId(aFaceRef.FaceDefId));
+    TopoDS_Shape aReconFace = aGraph.Shapes().ReconstructFace(aFaceRef.FaceDefId);
     ASSERT_FALSE(aReconFace.IsNull())
       << "ReconstructFace returned null for face " << aFaceRef.FaceDefId.Index;
 
@@ -449,17 +451,15 @@ TEST(BRepGraph_ReconstructTest, AfterVertexMutation_ModifiedFlagAndPointChanged)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Find a vertex belonging to face 0 and move it significantly.
-  const BRepGraph_TopoNode::FaceDef& aFaceDef       = aGraph.Topo().Face(BRepGraph_FaceId(0));
-  const int                          anOuterWireIdx = aFaceDef.OuterWireDefId().Index;
-  ASSERT_GE(anOuterWireIdx, 0);
+  const BRepGraph_WireId anOuterWire = BRepGraph_TestTools::OuterWireOfFace(aGraph, BRepGraph_FaceId(0));
+  ASSERT_TRUE(anOuterWire.IsValid());
 
-  const BRepGraph_TopoNode::WireDef& aWireDef =
-    aGraph.Topo().Wire(BRepGraph_WireId(anOuterWireIdx));
-  ASSERT_GT(aWireDef.CoEdgeRefs.Length(), 0);
+  const NCollection_Vector<BRepGraph_CoEdgeRefId> aCoEdgeRefs =
+    BRepGraph_TestTools::CoEdgeRefsOfWire(aGraph, anOuterWire);
+  ASSERT_GT(aCoEdgeRefs.Length(), 0);
 
-  const BRepGraphInc::CoEdgeRef&       aFirstCR = aWireDef.CoEdgeRefs.First();
-  const BRepGraph_TopoNode::CoEdgeDef& aFirstCoEdge =
-    aGraph.Topo().CoEdge(BRepGraph_CoEdgeId(aFirstCR.CoEdgeDefId));
+  const BRepGraphInc::CoEdgeRefEntry& aFirstCR = aGraph.Refs().CoEdge(aCoEdgeRefs.First());
+  const BRepGraph_TopoNode::CoEdgeDef& aFirstCoEdge = aGraph.Topo().CoEdge(aFirstCR.CoEdgeDefId);
   const BRepGraph_TopoNode::EdgeDef& anEdgeDef =
     aGraph.Topo().Edge(BRepGraph_EdgeId(aFirstCoEdge.EdgeDefId));
   const int aVertIdx = anEdgeDef.StartVertex.VertexDefId.Index;

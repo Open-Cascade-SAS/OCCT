@@ -71,7 +71,14 @@ private:
                                       const int  theOldComp,
                                       const int  theOldCS,
                                       const int  theOldProduct,
-                                      const int  theOldOccurrence);
+                                      const int  theOldOccurrence,
+                                      const int  theOldShellRef,
+                                      const int  theOldFaceRef,
+                                      const int  theOldWireRef,
+                                      const int  theOldCoEdgeRef,
+                                      const int  theOldVertexRef,
+                                      const int  theOldSolidRef,
+                                      const int  theOldChildRef);
 
   BRepGraph_Builder() = delete;
 };

@@ -15,12 +15,15 @@
 #define _BRepGraph_HeaderFile
 
 #include <BRepGraph_NodeId.hxx>
+#include <BRepGraph_RefId.hxx>
+#include <BRepGraph_RefUID.hxx>
 #include <BRepGraph_RepId.hxx>
 #include <BRepGraph_UID.hxx>
 #include <BRepGraph_TopoNode.hxx>
 #include <BRepGraph_HistoryRecord.hxx>
 #include <BRepGraph_SubGraph.hxx>
 #include <BRepGraph_UserAttribute.hxx>
+#include <BRepGraphInc_Entity.hxx>
 #include <BRepGraphInc_Populate.hxx>
 
 #include <Standard_DefineAlloc.hxx>
@@ -36,6 +39,8 @@
 
 template <typename DefT>
 class BRepGraph_MutRef;
+template <typename RefT>
+class BRepGraph_MutRefEntry;
 
 struct BRepGraph_Data;
 class BRepGraph_Layer;
@@ -113,6 +118,7 @@ public:
   class TopoView;
   class UIDsView;
   class AttrsView;
+  class RefsView;
   class ShapesView;
   class BuilderView;
   class PathView;
@@ -125,6 +131,8 @@ public:
   [[nodiscard]] Standard_EXPORT const PathView& Paths() const;
   //! Access user attributes.
   [[nodiscard]] Standard_EXPORT AttrsView& Attrs();
+  //! Access reference entries and their UIDs.
+  [[nodiscard]] Standard_EXPORT const RefsView& Refs() const;
   //! Access shape reconstruction.
   [[nodiscard]] Standard_EXPORT const ShapesView& Shapes() const;
   //! Access programmatic graph construction.
@@ -155,6 +163,8 @@ private:
   friend class BRepGraphAlgo_UVBounds;
   template <typename>
   friend class BRepGraph_MutRef;
+  template <typename>
+  friend class BRepGraph_MutRefEntry;
 
   Standard_EXPORT int                            NbHistoryRecords() const;
   Standard_EXPORT const BRepGraph_HistoryRecord& HistoryRecord(const int theRecordIdx) const;
@@ -195,14 +205,17 @@ private:
 
   Standard_EXPORT void          invalidateSubgraphImpl(const BRepGraph_NodeId theNode);
   Standard_EXPORT BRepGraph_UID allocateUID(const BRepGraph_NodeId theNodeId);
+  Standard_EXPORT BRepGraph_RefUID allocateRefUID(const BRepGraph_RefId theRefId);
 
   Standard_EXPORT BRepGraph_NodeCache* mutableCache(const BRepGraph_NodeId theNode);
   Standard_EXPORT void                 markModified(const BRepGraph_NodeId theDefId);
+  Standard_EXPORT void                 markRefModified(const BRepGraph_RefId theRefId);
 
   //! Optimized overload: skips ChangeTopoDef() and mutableCache() dispatch
   //! when the caller already holds a mutable reference to the definition.
   Standard_EXPORT void markModified(const BRepGraph_NodeId       theDefId,
                                     BRepGraph_TopoNode::BaseDef& theDef);
+  Standard_EXPORT void markRefModified(const BRepGraph_RefId theRefId, BRepGraphInc::BaseRef& theRef);
 
   //! Mark a parent node as transitively modified (IsModified only, no MutationGen increment).
   //! Skips if already modified. Clears caches, dispatches events, and continues propagation.
@@ -220,5 +233,6 @@ private:
 
 // Included after BRepGraph is complete so the template body sees markModified().
 #include <BRepGraph_MutRef.hxx>
+#include "BRepGraph_MutRefEntry.hxx"
 
 #endif // _BRepGraph_HeaderFile

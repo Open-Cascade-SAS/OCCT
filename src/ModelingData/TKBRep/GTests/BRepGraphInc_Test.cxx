@@ -18,6 +18,7 @@
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
 #include <BRepGraph.hxx>
+#include "BRepGraph_RefTestTools.hxx"
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraphInc_Populate.hxx>
 #include <BRepGraphInc_Reconstruct.hxx>
@@ -71,7 +72,7 @@ TEST(BRepGraphIncTest, Box_EntityCounts_MatchDefCounts)
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
-  // Build legacy graph.
+  // Build BRepGraph for parity checks.
   BRepGraph aGraph;
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
@@ -1027,7 +1028,7 @@ TEST(BRepGraphIncTest, FaceWithWiresAndVertices_BothCaptured)
   ASSERT_GE(aStorage.NbFaces(), 1);
 
   const BRepGraphInc::FaceEntity& aFaceEnt = aStorage.Face(BRepGraph_FaceId(0));
-  EXPECT_GE(aFaceEnt.WireRefs.Length(), 1);
+  EXPECT_GE(BRepGraph_TestTools::CountWireRefsOfFace(aStorage, BRepGraph_FaceId(0)), 1);
   EXPECT_EQ(aFaceEnt.VertexRefs.Length(), 1);
 }
 

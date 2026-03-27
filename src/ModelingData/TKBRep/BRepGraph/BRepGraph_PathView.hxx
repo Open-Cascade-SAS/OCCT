@@ -289,15 +289,26 @@ private:
                              NCollection_Vector<BRepGraph_TopologyPath>& theResult,
                              const int                                   theDepthBudget) const;
 
-  //! Find the ref index of a child in a parent's ref vector (linear scan).
-  static int findShellRefIdx(const BRepGraphInc::SolidEntity& theSolid, const int theShellIdx);
-  static int findFaceRefIdx(const BRepGraphInc::ShellEntity& theShell, const int theFaceIdx);
-  static int findWireRefIdx(const BRepGraphInc::FaceEntity& theFace, const int theWireIdx);
-  static int findCoEdgeRefIdx(const BRepGraphInc::WireEntity& theWire, const int theCoEdgeIdx);
-  static int findChildRefIdx(const BRepGraphInc::CompoundEntity& theCompound,
-                             BRepGraph_NodeId::Kind              theKind,
-                             int                                 theChildIdx);
-  static int findSolidRefIdx(const BRepGraphInc::CompSolidEntity& theCS, const int theSolidIdx);
+  //! Find the ordinal index of a child in a parent entity's RefId vector.
+  static int findShellRefIdx(const BRepGraphInc_Storage& theStorage,
+                             const BRepGraph_SolidId     theSolidId,
+                             const int                   theShellIdx);
+  static int findFaceRefIdx(const BRepGraphInc_Storage& theStorage,
+                            const BRepGraph_ShellId     theShellId,
+                            const int                   theFaceIdx);
+  static int findWireRefIdx(const BRepGraphInc_Storage& theStorage,
+                            const BRepGraph_FaceId      theFaceId,
+                            const int                   theWireIdx);
+  static int findCoEdgeRefIdx(const BRepGraphInc_Storage& theStorage,
+                              const BRepGraph_WireId      theWireId,
+                              const int                   theCoEdgeIdx);
+  static int findChildRefIdx(const BRepGraphInc_Storage& theStorage,
+                             const BRepGraph_CompoundId  theCompoundId,
+                             BRepGraph_NodeId::Kind      theKind,
+                             const int                   theChildIdx);
+  static int findSolidRefIdx(const BRepGraphInc_Storage& theStorage,
+                             const BRepGraph_CompSolidId theCompSolidId,
+                             const int                   theSolidIdx);
 
   const BRepGraph* myGraph;
 };

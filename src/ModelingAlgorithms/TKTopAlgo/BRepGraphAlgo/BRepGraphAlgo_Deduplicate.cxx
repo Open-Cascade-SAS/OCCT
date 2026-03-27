@@ -14,6 +14,7 @@
 #include <BRepGraphAlgo_Deduplicate.hxx>
 
 #include <BRepGraph_BuilderView.hxx>
+#include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_History.hxx>
@@ -34,6 +35,43 @@
 
 #include <algorithm>
 #include <cmath>
+
+namespace
+{
+template <typename FuncT>
+void forWireCoEdgeRefEntries(const BRepGraph& theGraph, const BRepGraph_WireId theWireId, FuncT&& theFunc)
+{
+  const BRepGraph_TopoNode::WireDef& aWireEnt = theGraph.Topo().Wire(theWireId);
+  const BRepGraph::RefsView&         aRefs    = theGraph.Refs();
+  for (int i = 0; i < aWireEnt.CoEdgeRefIds.Length(); ++i)
+  {
+    const BRepGraph_CoEdgeRefId         aRefId = aWireEnt.CoEdgeRefIds.Value(i);
+    const BRepGraphInc::CoEdgeRefEntry& aCR    = aRefs.CoEdge(aRefId);
+    if (aCR.IsRemoved || !aCR.CoEdgeDefId.IsValid(theGraph.Topo().NbCoEdges()))
+    {
+      continue;
+    }
+    theFunc(aCR);
+  }
+}
+
+template <typename FuncT>
+void forFaceWireRefEntries(const BRepGraph& theGraph, const BRepGraph_FaceId theFaceId, FuncT&& theFunc)
+{
+  const BRepGraph_TopoNode::FaceDef& aFaceEnt = theGraph.Topo().Face(theFaceId);
+  const BRepGraph::RefsView&         aRefs    = theGraph.Refs();
+  for (int i = 0; i < aFaceEnt.WireRefIds.Length(); ++i)
+  {
+    const BRepGraph_WireRefId         aRefId = aFaceEnt.WireRefIds.Value(i);
+    const BRepGraphInc::WireRefEntry& aWR    = aRefs.Wire(aRefId);
+    if (aWR.IsRemoved || !aWR.WireDefId.IsValid(theGraph.Topo().NbWires()))
+    {
+      continue;
+    }
+    theFunc(aWR);
+  }
+}
+} // namespace
 
 //=================================================================================================
 
@@ -475,33 +513,35 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
     {
       size_t operator()(const BRepGraph_WireId theWireId, const BRepGraph& theGraph) const
       {
-        const BRepGraph_TopoNode::WireDef& aWire = theGraph.Topo().Wire(theWireId);
-        size_t                             aHash = 0;
-        for (int anIdx = 0; anIdx < aWire.CoEdgeRefs.Length(); ++anIdx)
-        {
-          const BRepGraphInc::CoEdgeRef&       aCR     = aWire.CoEdgeRefs.Value(anIdx);
+        size_t aHash = 0;
+        forWireCoEdgeRefEntries(theGraph, theWireId, [&](const BRepGraphInc::CoEdgeRefEntry& aCR) {
           const BRepGraph_TopoNode::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdge(aCR.CoEdgeDefId);
           size_t                               aEntryHash[2];
           aEntryHash[0] = opencascade::hash(aCoEdge.EdgeDefId);
           aEntryHash[1] = opencascade::hash(static_cast<int>(aCoEdge.Sense));
           aHash ^= opencascade::hashBytes(aEntryHash, sizeof(aEntryHash)) + 0x9e3779b9
                    + (aHash << 6) + (aHash >> 2);
-        }
+        });
         return aHash;
       }
     };
 
     auto wiresEqual = [&](const BRepGraph_WireId theA, const BRepGraph_WireId theB) -> bool {
-      const BRepGraph_TopoNode::WireDef& aWireA = theGraph.Topo().Wire(theA);
-      const BRepGraph_TopoNode::WireDef& aWireB = theGraph.Topo().Wire(theB);
-      if (aWireA.CoEdgeRefs.Length() != aWireB.CoEdgeRefs.Length())
+      NCollection_Vector<BRepGraph_CoEdgeId> aWireACoEdges;
+      NCollection_Vector<BRepGraph_CoEdgeId> aWireBCoEdges;
+      forWireCoEdgeRefEntries(theGraph, theA, [&](const BRepGraphInc::CoEdgeRefEntry& aCR) {
+        aWireACoEdges.Append(aCR.CoEdgeDefId);
+      });
+      forWireCoEdgeRefEntries(theGraph, theB, [&](const BRepGraphInc::CoEdgeRefEntry& aCR) {
+        aWireBCoEdges.Append(aCR.CoEdgeDefId);
+      });
+
+      if (aWireACoEdges.Length() != aWireBCoEdges.Length())
         return false;
-      for (int anIdx = 0; anIdx < aWireA.CoEdgeRefs.Length(); ++anIdx)
+      for (int anIdx = 0; anIdx < aWireACoEdges.Length(); ++anIdx)
       {
-        const BRepGraphInc::CoEdgeRef&       aCRA     = aWireA.CoEdgeRefs.Value(anIdx);
-        const BRepGraphInc::CoEdgeRef&       aCRB     = aWireB.CoEdgeRefs.Value(anIdx);
-        const BRepGraph_TopoNode::CoEdgeDef& aCoEdgeA = theGraph.Topo().CoEdge(aCRA.CoEdgeDefId);
-        const BRepGraph_TopoNode::CoEdgeDef& aCoEdgeB = theGraph.Topo().CoEdge(aCRB.CoEdgeDefId);
+        const BRepGraph_TopoNode::CoEdgeDef& aCoEdgeA = theGraph.Topo().CoEdge(aWireACoEdges.Value(anIdx));
+        const BRepGraph_TopoNode::CoEdgeDef& aCoEdgeB = theGraph.Topo().CoEdge(aWireBCoEdges.Value(anIdx));
         if (aCoEdgeA.EdgeDefId != aCoEdgeB.EdgeDefId || aCoEdgeA.Sense != aCoEdgeB.Sense)
           return false;
       }
@@ -600,13 +640,9 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
     };
 
     auto faceWireHash = [&](int theFaceIdx) -> size_t {
-      // Collect wire def ids used by this face (via incidence refs).
-      const BRepGraph_TopoNode::FaceDef& aFace = theGraph.Topo().Face(BRepGraph_FaceId(theFaceIdx));
-      size_t                             aHash = 0;
-
-      for (int anIdx = 0; anIdx < aFace.WireRefs.Length(); ++anIdx)
-      {
-        const BRepGraphInc::WireRef& aWR = aFace.WireRefs.Value(anIdx);
+      // Collect wire def ids used by this face (via transitional incidence entries).
+      size_t aHash = 0;
+      forFaceWireRefEntries(theGraph, BRepGraph_FaceId(theFaceIdx), [&](const BRepGraphInc::WireRefEntry& aWR) {
         if (aWR.IsOuter)
         {
           aHash ^= opencascade::hash(aWR.WireDefId);
@@ -615,7 +651,7 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
         {
           aHash ^= opencascade::hash(aWR.WireDefId) + 0x9e3779b9;
         }
-      }
+      });
       return aHash;
     };
 

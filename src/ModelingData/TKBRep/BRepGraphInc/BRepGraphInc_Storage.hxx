@@ -16,6 +16,7 @@
 
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_RepId.hxx>
+#include <BRepGraph_RefUID.hxx>
 #include <BRepGraph_UID.hxx>
 #include <BRepGraphInc_Entity.hxx>
 #include <BRepGraphInc_ReverseIndex.hxx>
@@ -77,6 +78,22 @@ public:
 
   [[nodiscard]] int NbOccurrences() const { return myOccurrences.Nb(); }
 
+  //! @name Transitional reference count accessors
+
+  [[nodiscard]] int NbShellRefs() const { return myShellRefs.Nb(); }
+
+  [[nodiscard]] int NbFaceRefs() const { return myFaceRefs.Nb(); }
+
+  [[nodiscard]] int NbWireRefs() const { return myWireRefs.Nb(); }
+
+  [[nodiscard]] int NbCoEdgeRefs() const { return myCoEdgeRefs.Nb(); }
+
+  [[nodiscard]] int NbVertexRefs() const { return myVertexRefs.Nb(); }
+
+  [[nodiscard]] int NbSolidRefs() const { return mySolidRefs.Nb(); }
+
+  [[nodiscard]] int NbChildRefs() const { return myChildRefs.Nb(); }
+
   //! @name Representation count accessors
 
   [[nodiscard]] int NbSurfaces() const { return mySurfaces.Nb(); }
@@ -132,6 +149,22 @@ public:
   [[nodiscard]] int NbActiveProducts() const { return myProducts.NbActive; }
 
   [[nodiscard]] int NbActiveOccurrences() const { return myOccurrences.NbActive; }
+
+  //! @name Transitional reference active count accessors
+
+  [[nodiscard]] int NbActiveShellRefs() const { return myShellRefs.NbActive; }
+
+  [[nodiscard]] int NbActiveFaceRefs() const { return myFaceRefs.NbActive; }
+
+  [[nodiscard]] int NbActiveWireRefs() const { return myWireRefs.NbActive; }
+
+  [[nodiscard]] int NbActiveCoEdgeRefs() const { return myCoEdgeRefs.NbActive; }
+
+  [[nodiscard]] int NbActiveVertexRefs() const { return myVertexRefs.NbActive; }
+
+  [[nodiscard]] int NbActiveSolidRefs() const { return mySolidRefs.NbActive; }
+
+  [[nodiscard]] int NbActiveChildRefs() const { return myChildRefs.NbActive; }
 
   //! Decrement the active count for the given node kind.
   void DecrementActiveCount(const BRepGraph_NodeId::Kind theKind);
@@ -329,6 +362,48 @@ public:
     return myOccurrences.Get(theOccurrence.Index);
   }
 
+  //! @name Const transitional reference access
+
+  [[nodiscard]] const BRepGraphInc::ShellRefEntry& ShellRefEntry(
+    const BRepGraph_ShellRefId theRefId) const
+  {
+    return myShellRefs.Get(theRefId.Index);
+  }
+
+  [[nodiscard]] const BRepGraphInc::FaceRefEntry& FaceRefEntry(const BRepGraph_FaceRefId theRefId) const
+  {
+    return myFaceRefs.Get(theRefId.Index);
+  }
+
+  [[nodiscard]] const BRepGraphInc::WireRefEntry& WireRefEntry(const BRepGraph_WireRefId theRefId) const
+  {
+    return myWireRefs.Get(theRefId.Index);
+  }
+
+  [[nodiscard]] const BRepGraphInc::CoEdgeRefEntry& CoEdgeRefEntry(
+    const BRepGraph_CoEdgeRefId theRefId) const
+  {
+    return myCoEdgeRefs.Get(theRefId.Index);
+  }
+
+  [[nodiscard]] const BRepGraphInc::VertexRefEntry& VertexRefEntry(
+    const BRepGraph_VertexRefId theRefId) const
+  {
+    return myVertexRefs.Get(theRefId.Index);
+  }
+
+  [[nodiscard]] const BRepGraphInc::SolidRefEntry& SolidRefEntry(
+    const BRepGraph_SolidRefId theRefId) const
+  {
+    return mySolidRefs.Get(theRefId.Index);
+  }
+
+  [[nodiscard]] const BRepGraphInc::ChildRefEntry& ChildRefEntry(
+    const BRepGraph_ChildRefId theRefId) const
+  {
+    return myChildRefs.Get(theRefId.Index);
+  }
+
   //! @name Mutable entity access
   //! Each method returns a mutable reference to the entity at the given typed id.
 
@@ -398,6 +473,43 @@ public:
     return myOccurrences.Change(theOccurrence.Index);
   }
 
+  //! @name Mutable transitional reference access
+
+  BRepGraphInc::ShellRefEntry& ChangeShellRefEntry(const BRepGraph_ShellRefId theRefId)
+  {
+    return myShellRefs.Change(theRefId.Index);
+  }
+
+  BRepGraphInc::FaceRefEntry& ChangeFaceRefEntry(const BRepGraph_FaceRefId theRefId)
+  {
+    return myFaceRefs.Change(theRefId.Index);
+  }
+
+  BRepGraphInc::WireRefEntry& ChangeWireRefEntry(const BRepGraph_WireRefId theRefId)
+  {
+    return myWireRefs.Change(theRefId.Index);
+  }
+
+  BRepGraphInc::CoEdgeRefEntry& ChangeCoEdgeRefEntry(const BRepGraph_CoEdgeRefId theRefId)
+  {
+    return myCoEdgeRefs.Change(theRefId.Index);
+  }
+
+  BRepGraphInc::VertexRefEntry& ChangeVertexRefEntry(const BRepGraph_VertexRefId theRefId)
+  {
+    return myVertexRefs.Change(theRefId.Index);
+  }
+
+  BRepGraphInc::SolidRefEntry& ChangeSolidRefEntry(const BRepGraph_SolidRefId theRefId)
+  {
+    return mySolidRefs.Change(theRefId.Index);
+  }
+
+  BRepGraphInc::ChildRefEntry& ChangeChildRefEntry(const BRepGraph_ChildRefId theRefId)
+  {
+    return myChildRefs.Change(theRefId.Index);
+  }
+
   //! @name Append entity (returns mutable ref to newly created entity)
   //! Each method creates a new entity, increments the active count,
   //! initializes inner vectors with the storage allocator, and returns
@@ -425,6 +537,22 @@ public:
 
   BRepGraphInc::OccurrenceEntity& AppendOccurrence() { return myOccurrences.Append(myAllocator); }
 
+  //! @name Append transitional reference entries
+
+  BRepGraphInc::ShellRefEntry& AppendShellRefEntry() { return myShellRefs.Append(); }
+
+  BRepGraphInc::FaceRefEntry& AppendFaceRefEntry() { return myFaceRefs.Append(); }
+
+  BRepGraphInc::WireRefEntry& AppendWireRefEntry() { return myWireRefs.Append(); }
+
+  BRepGraphInc::CoEdgeRefEntry& AppendCoEdgeRefEntry() { return myCoEdgeRefs.Append(); }
+
+  BRepGraphInc::VertexRefEntry& AppendVertexRefEntry() { return myVertexRefs.Append(); }
+
+  BRepGraphInc::SolidRefEntry& AppendSolidRefEntry() { return mySolidRefs.Append(); }
+
+  BRepGraphInc::ChildRefEntry& AppendChildRefEntry() { return myChildRefs.Append(); }
+
   //! @name UID access
 
   //! Return the per-kind UID vector for a given Kind.
@@ -437,6 +565,30 @@ public:
 
   //! Clear all UID vectors (reset lengths to 0).
   Standard_EXPORT void ResetAllUIDs();
+
+  //! Return the BaseRef portion of any ref entry by generic RefId.
+  //! @param[in] theRefId generic reference identifier
+  //! @return const reference to the BaseRef base of the ref entry
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::BaseRef& BaseRefEntry(
+    const BRepGraph_RefId theRefId) const;
+
+  //! Return the mutable BaseRef portion of any ref entry by generic RefId.
+  //! @param[in] theRefId generic reference identifier
+  //! @return mutable reference to the BaseRef base of the ref entry
+  Standard_EXPORT BRepGraphInc::BaseRef& ChangeBaseRefEntry(const BRepGraph_RefId theRefId);
+
+  //! @name Ref UID access
+
+  //! Return the per-kind transitional reference UID vector.
+  [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_RefUID>& RefUIDs(
+    const BRepGraph_RefId::Kind theKind) const;
+
+  //! Return the per-kind transitional reference UID vector (mutable).
+  Standard_EXPORT NCollection_Vector<BRepGraph_RefUID>& ChangeRefUIDs(
+    const BRepGraph_RefId::Kind theKind);
+
+  //! Clear all transitional reference UID vectors.
+  Standard_EXPORT void ResetAllRefUIDs();
 
   //! @name Reverse index
 
@@ -612,6 +764,50 @@ private:
     }
   };
 
+  //! @brief Template store for transitional reference entry kinds.
+  //! Groups reference vectors and per-kind UID vectors into a single struct.
+  template <typename RefT>
+  struct RefStore
+  {
+    NCollection_Vector<RefT>          Refs;
+    NCollection_Vector<BRepGraph_RefUID> UIDs;
+    int                               NbActive = 0;
+
+    RefStore() = default;
+
+    RefStore(const int theBlockSize, const occ::handle<NCollection_BaseAllocator>& theAlloc)
+        : Refs(theBlockSize, theAlloc),
+          UIDs(theBlockSize, theAlloc)
+    {
+    }
+
+    int Nb() const { return Refs.Length(); }
+
+    const RefT& Get(const int theIdx) const { return Refs.Value(theIdx); }
+
+    RefT& Change(const int theIdx) { return Refs.ChangeValue(theIdx); }
+
+    RefT& Append()
+    {
+      ++NbActive;
+      return Refs.Appended();
+    }
+
+    void DecrementActive()
+    {
+      Standard_ASSERT_VOID(NbActive > 0, "RefStore::DecrementActive: underflow");
+      if (NbActive > 0)
+        --NbActive;
+    }
+
+    void Clear()
+    {
+      Refs.Clear();
+      UIDs.Clear();
+      NbActive = 0;
+    }
+  };
+
   //! @name Topology entity stores
   EntityStore<BRepGraphInc::VertexEntity>     myVertices;
   EntityStore<BRepGraphInc::EdgeEntity>       myEdges;
@@ -624,6 +820,15 @@ private:
   EntityStore<BRepGraphInc::CompSolidEntity>  myCompSolids;
   EntityStore<BRepGraphInc::ProductEntity>    myProducts;
   EntityStore<BRepGraphInc::OccurrenceEntity> myOccurrences;
+
+  //! @name Transitional reference entry stores
+  RefStore<BRepGraphInc::ShellRefEntry>  myShellRefs;
+  RefStore<BRepGraphInc::FaceRefEntry>   myFaceRefs;
+  RefStore<BRepGraphInc::WireRefEntry>   myWireRefs;
+  RefStore<BRepGraphInc::CoEdgeRefEntry> myCoEdgeRefs;
+  RefStore<BRepGraphInc::VertexRefEntry> myVertexRefs;
+  RefStore<BRepGraphInc::SolidRefEntry>  mySolidRefs;
+  RefStore<BRepGraphInc::ChildRefEntry>  myChildRefs;
 
   //! @name Representation entity stores
   RepStore<BRepGraphInc::SurfaceRep>       mySurfaces;

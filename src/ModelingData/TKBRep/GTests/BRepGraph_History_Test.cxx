@@ -16,6 +16,7 @@
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_Mutator.hxx>
+#include "BRepGraph_RefTestTools.hxx"
 #include <BRepGraphInc_IncidenceRef.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <NCollection_Vector.hxx>
@@ -386,18 +387,21 @@ TEST_F(BRepGraph_HistoryTest, SplitEdge_RewritesAllContainingWires)
 
   for (int aWireIter = 0; aWireIter < aWireIndices.Length(); ++aWireIter)
   {
-    const BRepGraph_TopoNode::WireDef& aWireDef =
-      myGraph.Topo().Wire(BRepGraph_WireId(aWireIndices.Value(aWireIter)));
+    const BRepGraph_WireId aWireId = BRepGraph_WireId(aWireIndices.Value(aWireIter));
+    const NCollection_Vector<BRepGraph_CoEdgeRefId> aCoEdgeRefs =
+      BRepGraph_TestTools::CoEdgeRefsOfWire(myGraph, aWireId);
 
     bool hasOld  = false;
     bool hasSubA = false;
     bool hasSubB = false;
+    int  aSubAOrd = -1;
+    int  aSubBOrd = -1;
 
-    for (int anIdx = 0; anIdx < aWireDef.CoEdgeRefs.Length(); ++anIdx)
+    for (int anIdx = 0; anIdx < aCoEdgeRefs.Length(); ++anIdx)
     {
-      const BRepGraphInc::CoEdgeRef&       aCR = aWireDef.CoEdgeRefs.Value(anIdx);
+      const BRepGraphInc::CoEdgeRefEntry& aCR = myGraph.Refs().CoEdge(aCoEdgeRefs.Value(anIdx));
       const BRepGraph_TopoNode::CoEdgeDef& aCoEdge =
-        myGraph.Topo().CoEdge(BRepGraph_CoEdgeId(aCR.CoEdgeDefId));
+        myGraph.Topo().CoEdge(aCR.CoEdgeDefId);
       const BRepGraph_NodeId anId(aCoEdge.EdgeDefId);
       if (anId == anEdgeId)
       {
@@ -406,16 +410,21 @@ TEST_F(BRepGraph_HistoryTest, SplitEdge_RewritesAllContainingWires)
       else if (anId == aSubA)
       {
         hasSubA = true;
+        aSubAOrd = anIdx;
       }
       else if (anId == aSubB)
       {
         hasSubB = true;
+        aSubBOrd = anIdx;
       }
     }
 
     EXPECT_FALSE(hasOld);
     EXPECT_TRUE(hasSubA);
     EXPECT_TRUE(hasSubB);
+    EXPECT_GE(aSubAOrd, 0);
+    EXPECT_GE(aSubBOrd, 0);
+    EXPECT_EQ(aSubBOrd, aSubAOrd + 1);
   }
 }
 

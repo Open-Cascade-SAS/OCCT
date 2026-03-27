@@ -16,6 +16,7 @@
 
 #include <BRepGraph_NodeCache.hxx>
 #include <BRepGraph_NodeId.hxx>
+#include <BRepGraph_RefId.hxx>
 #include <BRepGraph_RepId.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
 
@@ -69,12 +70,77 @@ struct BaseEntity
   bool IsRemoved = false;  //!< Soft-removal flag
 };
 
+//! Fields shared by every reference entry.
+struct BaseRef
+{
+  BRepGraph_RefId  RefId;       //!< Typed address (kind + per-kind index)
+  BRepGraph_NodeId ParentId;    //!< Parent topology node owning this reference usage
+  uint32_t         MutationGen = 0; //!< Per-reference mutation counter
+  bool             IsRemoved   = false; //!< Soft-removal flag
+};
+
 //! Fields shared by every representation entity.
 struct BaseRep
 {
   BRepGraph_RepId Id;                  //!< Typed address (Kind + per-kind index)
   uint32_t        MutationGen = 0;     //!< Per-rep mutation counter
   bool            IsRemoved   = false; //!< Soft-removal flag
+};
+
+//! Transitional shell reference storage entry.
+struct ShellRefEntry : public BaseRef
+{
+  BRepGraph_ShellId  ShellDefId;
+  TopAbs_Orientation Orientation = TopAbs_FORWARD;
+  TopLoc_Location    LocalLocation;
+};
+
+//! Transitional face reference storage entry.
+struct FaceRefEntry : public BaseRef
+{
+  BRepGraph_FaceId   FaceDefId;
+  TopAbs_Orientation Orientation = TopAbs_FORWARD;
+  TopLoc_Location    LocalLocation;
+};
+
+//! Transitional wire reference storage entry.
+struct WireRefEntry : public BaseRef
+{
+  BRepGraph_WireId   WireDefId;
+  bool               IsOuter     = false;
+  TopAbs_Orientation Orientation = TopAbs_FORWARD;
+  TopLoc_Location    LocalLocation;
+};
+
+//! Transitional coedge reference storage entry.
+struct CoEdgeRefEntry : public BaseRef
+{
+  BRepGraph_CoEdgeId CoEdgeDefId;
+  TopLoc_Location    LocalLocation;
+};
+
+//! Transitional vertex reference storage entry.
+struct VertexRefEntry : public BaseRef
+{
+  BRepGraph_VertexId VertexDefId;
+  TopAbs_Orientation Orientation = TopAbs_INTERNAL;
+  TopLoc_Location    LocalLocation;
+};
+
+//! Transitional solid reference storage entry.
+struct SolidRefEntry : public BaseRef
+{
+  BRepGraph_SolidId  SolidDefId;
+  TopAbs_Orientation Orientation = TopAbs_FORWARD;
+  TopLoc_Location    LocalLocation;
+};
+
+//! Transitional child reference storage entry.
+struct ChildRefEntry : public BaseRef
+{
+  BRepGraph_NodeId   ChildDefId;
+  TopAbs_Orientation Orientation = TopAbs_FORWARD;
+  TopLoc_Location    LocalLocation;
 };
 
 //! Surface geometry representation for faces.
@@ -291,12 +357,12 @@ struct CoEdgeEntity : public BaseEntity
 //! Wire entity: ordered coedge references with closure flag.
 struct WireEntity : public BaseEntity
 {
-  bool                          IsClosed = false;
-  NCollection_Vector<CoEdgeRef> CoEdgeRefs; //!< Ordered coedge references
+  bool IsClosed = false;
+  NCollection_Vector<BRepGraph_CoEdgeRefId> CoEdgeRefIds; //!< Ordered coedge ref indices
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
-    InitVec(CoEdgeRefs, theAlloc, 8); // typically 3-8 coedges per wire
+    InitVec(CoEdgeRefIds, theAlloc, 8); // typically 3-8 coedges per wire
   }
 };
 
@@ -319,8 +385,7 @@ struct FaceEntity : public BaseEntity
   double Tolerance          = 0.0;
   bool   NaturalRestriction = false;
 
-  //! Wire references: outer wire first (if present), then inner wires.
-  NCollection_Vector<WireRef> WireRefs;
+  NCollection_Vector<BRepGraph_WireRefId> WireRefIds; //!< Wire ref indices (outer first)
 
   //! Direct INTERNAL/EXTERNAL vertex children (not inside wires).
   NCollection_Vector<VertexRef> VertexRefs;
@@ -328,19 +393,8 @@ struct FaceEntity : public BaseEntity
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
     InitVec(TriangulationRepIds, theAlloc, 2); // typically 1
-    InitVec(WireRefs, theAlloc, 2);            // typically 1-2 (outer + holes)
+    InitVec(WireRefIds, theAlloc, 2);          // typically 1-2 (outer + holes)
     InitVec(VertexRefs, theAlloc, 2);          // typically 0
-  }
-
-  //! Return the outer wire id, or invalid if none.
-  [[nodiscard]] BRepGraph_WireId OuterWireDefId() const
-  {
-    for (int i = 0; i < WireRefs.Length(); ++i)
-    {
-      if (WireRefs.Value(i).IsOuter)
-        return WireRefs.Value(i).WireDefId;
-    }
-    return BRepGraph_WireId();
   }
 };
 
@@ -348,12 +402,12 @@ struct FaceEntity : public BaseEntity
 struct ShellEntity : public BaseEntity
 {
   bool IsClosed = false; //!< True if shell forms a watertight (closed) boundary.
-  NCollection_Vector<FaceRef>  FaceRefs;
+  NCollection_Vector<BRepGraph_FaceRefId> FaceRefIds; //!< Face ref indices
   NCollection_Vector<ChildRef> FreeChildRefs; //!< Non-face children (wires, edges)
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
-    InitVec(FaceRefs, theAlloc, 8);      // typically 4-8 faces per shell
+    InitVec(FaceRefIds, theAlloc, 8);    // typically 4-8 faces per shell
     InitVec(FreeChildRefs, theAlloc, 2); // typically 0
   }
 };
@@ -361,12 +415,12 @@ struct ShellEntity : public BaseEntity
 //! Solid entity: ordered shell references with local locations.
 struct SolidEntity : public BaseEntity
 {
-  NCollection_Vector<ShellRef> ShellRefs;
+  NCollection_Vector<BRepGraph_ShellRefId> ShellRefIds; //!< Shell ref indices
   NCollection_Vector<ChildRef> FreeChildRefs; //!< Non-shell children (edges, vertices)
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
-    InitVec(ShellRefs, theAlloc, 2);     // typically 1
+    InitVec(ShellRefIds, theAlloc, 2);   // typically 1
     InitVec(FreeChildRefs, theAlloc, 2); // typically 0
   }
 };
@@ -374,22 +428,22 @@ struct SolidEntity : public BaseEntity
 //! Compound entity: heterogeneous child references.
 struct CompoundEntity : public BaseEntity
 {
-  NCollection_Vector<ChildRef> ChildRefs;
+  NCollection_Vector<BRepGraph_ChildRefId> ChildRefIds; //!< Child ref indices
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
-    InitVec(ChildRefs, theAlloc, 4); // varies
+    InitVec(ChildRefIds, theAlloc, 4);
   }
 };
 
 //! Comp-solid entity: ordered solid references.
 struct CompSolidEntity : public BaseEntity
 {
-  NCollection_Vector<SolidRef> SolidRefs;
+  NCollection_Vector<BRepGraph_SolidRefId> SolidRefIds; //!< Solid ref indices
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
-    InitVec(SolidRefs, theAlloc, 2); // typically 1-2
+    InitVec(SolidRefIds, theAlloc, 2);
   }
 };
 

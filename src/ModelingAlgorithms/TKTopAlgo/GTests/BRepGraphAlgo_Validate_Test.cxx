@@ -19,6 +19,7 @@
 #include <BRepGraph_Mutator.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_NodeId.hxx>
+#include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_UIDsView.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
@@ -33,6 +34,29 @@
 #include <TopoDS_Compound.hxx>
 
 #include <gtest/gtest.h>
+
+namespace
+{
+
+//=================================================================================================
+
+NCollection_Vector<BRepGraph_CoEdgeRefId> coEdgeRefsOfWire(const BRepGraph&      theGraph,
+                                                            const BRepGraph_WireId theWireId)
+{
+  NCollection_Vector<BRepGraph_CoEdgeRefId> aRefIds;
+  const BRepGraph_NodeId                    aParentNode = BRepGraph_NodeId::Wire(theWireId.Index);
+  const BRepGraph::RefsView&                aRefs       = theGraph.Refs();
+  for (int aRefIdx = 0; aRefIdx < aRefs.NbCoEdgeRefs(); ++aRefIdx)
+  {
+    const BRepGraph_CoEdgeRefId         aRefId(aRefIdx);
+    const BRepGraphInc::CoEdgeRefEntry& aRef = aRefs.CoEdge(aRefId);
+    if (aRef.ParentId == aParentNode && !aRef.IsRemoved)
+      aRefIds.Append(aRefId);
+  }
+  return aRefIds;
+}
+
+} // namespace
 
 TEST(BRepGraphAlgo_ValidateTest, CleanGraph_NoIssues)
 {
@@ -139,7 +163,7 @@ TEST(BRepGraphAlgo_ValidateTest, WireConnectivity_DisconnectedEdges)
   int aTargetWire = -1;
   for (int aWireIdx = 0; aWireIdx < aGraph.Topo().NbWires(); ++aWireIdx)
   {
-    if (aGraph.Topo().Wire(BRepGraph_WireId(aWireIdx)).CoEdgeRefs.Length() >= 2)
+    if (coEdgeRefsOfWire(aGraph, BRepGraph_WireId(aWireIdx)).Length() >= 2)
     {
       aTargetWire = aWireIdx;
       break;
@@ -148,8 +172,10 @@ TEST(BRepGraphAlgo_ValidateTest, WireConnectivity_DisconnectedEdges)
   ASSERT_GE(aTargetWire, 0);
 
   // Get the first edge in the wire and corrupt its end vertex.
-  const BRepGraph_TopoNode::WireDef&   aWireDef = aGraph.Topo().Wire(BRepGraph_WireId(aTargetWire));
-  const BRepGraphInc::CoEdgeRef&       aFirstCR = aWireDef.CoEdgeRefs.Value(0);
+  const NCollection_Vector<BRepGraph_CoEdgeRefId> aWireRefIds =
+    coEdgeRefsOfWire(aGraph, BRepGraph_WireId(aTargetWire));
+  ASSERT_GE(aWireRefIds.Length(), 1);
+  const BRepGraphInc::CoEdgeRefEntry&  aFirstCR = aGraph.Refs().CoEdge(aWireRefIds.Value(0));
   const BRepGraph_TopoNode::CoEdgeDef& aFirstCoEdge =
     aGraph.Topo().CoEdge(BRepGraph_CoEdgeId(aFirstCR.CoEdgeDefId));
   const BRepGraph_NodeId aFirstEdgeId(aFirstCoEdge.EdgeDefId);
@@ -373,10 +399,11 @@ TEST(BRepGraphAlgo_ValidateTest, DeepAudit_ValidatesCoEdgeUIDsFromBuilderWireCre
   const BRepGraph_NodeId aWireId = aGraph.Builder().AddWireDef(anEdges);
   ASSERT_TRUE(aWireId.IsValid());
 
-  const BRepGraph_TopoNode::WireDef& aWire = aGraph.Topo().Wire(BRepGraph_WireId(aWireId.Index));
-  ASSERT_EQ(aWire.CoEdgeRefs.Length(), 1);
+  const NCollection_Vector<BRepGraph_CoEdgeRefId> aWireRefIds =
+    coEdgeRefsOfWire(aGraph, BRepGraph_WireId(aWireId.Index));
+  ASSERT_EQ(aWireRefIds.Length(), 1);
   const BRepGraph_NodeId aCoEdgeId =
-    BRepGraph_NodeId::CoEdge(aWire.CoEdgeRefs.Value(0).CoEdgeDefId.Index);
+    BRepGraph_NodeId::CoEdge(aGraph.Refs().CoEdge(aWireRefIds.Value(0)).CoEdgeDefId.Index);
   EXPECT_TRUE(aGraph.UIDs().Of(aCoEdgeId).IsValid());
 
   const BRepGraphAlgo_Validate::Result aDeepResult =

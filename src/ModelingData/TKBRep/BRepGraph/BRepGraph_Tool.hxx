@@ -31,6 +31,10 @@
 #include <utility>
 
 class Adaptor3d_CurveOnSurface;
+namespace BRepGraphInc
+{
+struct WireRefEntry;
+}
 
 //! Centralized geometry access for BRepGraph - analogue of BRep_Tool.
 //!
@@ -417,8 +421,8 @@ public:
     //! Returns the outer wire reference, or nullptr if none.
     //! @param[in] theGraph source graph
     //! @param[in] theFace  typed face definition identifier
-    //! @return pointer to the outer WireRef, or nullptr
-    [[nodiscard]] Standard_EXPORT static const BRepGraphInc::WireRef* OuterWire(
+    //! @return pointer to the outer WireRefEntry, or nullptr
+    [[nodiscard]] Standard_EXPORT static const BRepGraphInc::WireRefEntry* OuterWire(
       const BRepGraph&       theGraph,
       const BRepGraph_FaceId theFace);
 

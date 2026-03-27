@@ -12,9 +12,11 @@
 // commercial license or contractual agreement.
 
 #include <BRepGraph.hxx>
+#include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Explorer.hxx>
 #include <BRepGraph_PathView.hxx>
+#include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_TopologyPath.hxx>
 #include <BRepGraph_Tool.hxx>
 
@@ -375,6 +377,129 @@ TEST(BRepGraph_ExplorerTest, PathsTo_MatchesExplorer)
     }
   }
   EXPECT_TRUE(aFound);
+}
+
+TEST(BRepGraph_ExplorerTest, PathsTo_MatchesExplorer_WhenEarlierCompoundRefRemoved)
+{
+  // Build a compound of two boxes to get two child refs under one parent.
+  TopoDS_Compound aComp;
+  BRep_Builder    aBB;
+  aBB.MakeCompound(aComp);
+  aBB.Add(aComp, BRepPrimAPI_MakeBox(10, 10, 10).Shape());
+  aBB.Add(aComp, BRepPrimAPI_MakeBox(20, 20, 20).Shape());
+
+  BRepGraph aGraph;
+  aGraph.Build(aComp);
+  ASSERT_TRUE(aGraph.IsDone());
+
+  const BRepGraph_TopoNode::CompoundDef& aRootComp = aGraph.Topo().Compound(BRepGraph_CompoundId(0));
+  ASSERT_GE(aRootComp.ChildRefIds.Length(), 2);
+
+  const BRepGraph_ChildRefId aRemovedRefId = aRootComp.ChildRefIds.Value(0);
+  const BRepGraph_NodeId aSecondChild = aGraph.Refs().Child(aRootComp.ChildRefIds.Value(1)).ChildDefId;
+  ASSERT_TRUE(aSecondChild.IsValid());
+
+  // Capture one face path under the second child before removal.
+  BRepGraph_TopologyPath aExpectedPath;
+  BRepGraph_NodeId       aLeafNode;
+  bool                   aPathFound = false;
+  for (BRepGraph_Explorer anExp(
+         aGraph, BRepGraph_NodeId::Compound(0), BRepGraph_NodeId::Kind::Face);
+       anExp.More();
+       anExp.Next())
+  {
+    const BRepGraph_TopologyPath& aPath = anExp.CurrentPath();
+    if (aPath.Depth() > 0 && aGraph.Paths().NodeAt(aPath, 0) == aSecondChild)
+    {
+      aExpectedPath = aPath;
+      aLeafNode     = anExp.Current();
+      aPathFound    = true;
+      break;
+    }
+  }
+  ASSERT_TRUE(aPathFound);
+  ASSERT_TRUE(aLeafNode.IsValid());
+
+  // Remove the first child ref (earlier ordinal).
+  {
+    auto aMut = aGraph.Builder().MutChildRef(aRemovedRefId);
+    aMut->IsRemoved = true;
+  }
+
+  // Explorer should keep raw step indices and still report the same path.
+  bool aExplorerHasPath = false;
+  for (BRepGraph_Explorer anExp(
+         aGraph, BRepGraph_NodeId::Compound(0), BRepGraph_NodeId::Kind::Face);
+       anExp.More();
+       anExp.Next())
+  {
+    if (anExp.CurrentPath() == aExpectedPath)
+    {
+      aExplorerHasPath = true;
+      break;
+    }
+  }
+  EXPECT_TRUE(aExplorerHasPath);
+
+  // Reverse walk should agree with explorer.
+  const NCollection_Vector<BRepGraph_TopologyPath> aReversePaths = aGraph.Paths().PathsTo(aLeafNode);
+  bool                                              aReverseHasPath = false;
+  for (int i = 0; i < aReversePaths.Length(); ++i)
+  {
+    if (aReversePaths.Value(i) == aExpectedPath)
+    {
+      aReverseHasPath = true;
+      break;
+    }
+  }
+  EXPECT_TRUE(aReverseHasPath);
+}
+
+TEST(BRepGraph_ExplorerTest, PathsTo_MatchesExplorer_WhenFirstShellRefRemoved)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  const BRepGraph_TopoNode::SolidDef& aSolid = aGraph.Topo().Solid(BRepGraph_SolidId(0));
+  ASSERT_GT(aSolid.ShellRefIds.Length(), 0);
+  const BRepGraph_ShellId aShellId = aGraph.Refs().Shell(aSolid.ShellRefIds.Value(0)).ShellDefId;
+  ASSERT_TRUE(aShellId.IsValid(aGraph.Topo().NbShells()));
+
+  // Duplicate shell usage to create two shell refs to the same shell in one solid.
+  aGraph.Builder().AddShellToSolid(BRepGraph_NodeId::Solid(0),
+                                   BRepGraph_NodeId::Shell(aShellId.Index),
+                                   TopAbs_FORWARD);
+  const BRepGraph_TopoNode::SolidDef& aSolidAfterDup = aGraph.Topo().Solid(BRepGraph_SolidId(0));
+  ASSERT_GE(aSolidAfterDup.ShellRefIds.Length(), 2);
+
+  // Remove the first shell ref so the active one is not the first matching shell usage.
+  const BRepGraph_ShellRefId aRemovedShellRefId = aSolidAfterDup.ShellRefIds.Value(0);
+  {
+    auto aMut = aGraph.Builder().MutShellRef(aRemovedShellRefId);
+    aMut->IsRemoved = true;
+  }
+
+  // Pick one face path from explorer.
+  BRepGraph_Explorer anExp(aGraph, BRepGraph_NodeId::Solid(0), BRepGraph_NodeId::Kind::Face);
+  ASSERT_TRUE(anExp.More());
+  const BRepGraph_TopologyPath aExpectedPath = anExp.CurrentPath();
+  const BRepGraph_NodeId       aFaceNode     = anExp.Current();
+  ASSERT_TRUE(aFaceNode.IsValid());
+  ASSERT_EQ(aFaceNode.NodeKind, BRepGraph_NodeId::Kind::Face);
+
+  // Reverse walk must return the same path (not a removed shell-ref ordinal).
+  const NCollection_Vector<BRepGraph_TopologyPath> aReversePaths = aGraph.Paths().PathsTo(aFaceNode);
+  bool                                              aReverseHasPath = false;
+  for (int i = 0; i < aReversePaths.Length(); ++i)
+  {
+    if (aReversePaths.Value(i) == aExpectedPath)
+    {
+      aReverseHasPath = true;
+      break;
+    }
+  }
+  EXPECT_TRUE(aReverseHasPath);
 }
 
 // --- Path filtering tests ---

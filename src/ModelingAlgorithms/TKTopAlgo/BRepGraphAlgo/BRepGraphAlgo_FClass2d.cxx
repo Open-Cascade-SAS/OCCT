@@ -15,6 +15,7 @@
 
 #include <BRepClass_FaceClassifier.hxx>
 #include <BRepGraph.hxx>
+#include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_Tool.hxx>
@@ -146,8 +147,6 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph&       theGraph,
       myGraph(&theGraph),
       myFaceId(theFace)
 {
-  const BRepGraph_TopoNode::FaceDef& aFaceDef = theGraph.Topo().Face(theFace);
-
   // Surface type and periodicity.
   // Geometry is stored at identity; location offsets are absorbed into usages.
   if (!BRepGraph_Tool::Face::HasSurface(theGraph, theFace))
@@ -160,28 +159,47 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph&       theGraph,
   myUPeriod = myIsUPer ? aSurfAdaptor.UPeriod() : 0.0;
   myVPeriod = myIsVPer ? aSurfAdaptor.VPeriod() : 0.0;
 
-  // Get wires via incidence refs.
-  if (aFaceDef.WireRefs.IsEmpty())
-    return;
+  // Get wires via transitional reference entries.
+  const BRepGraph::RefsView& aRefs     = theGraph.Refs();
+  const BRepGraph::TopoView  aTopoView = theGraph.Topo();
+  const BRepGraph_TopoNode::FaceDef& aFaceEnt = aTopoView.Face(theFace);
 
-  // Collect wire indices: outer wire first, then inner wires.
-  const int               aNbWires = aFaceDef.WireRefs.Length();
-  NCollection_Array1<int> aWireDefIndices(0, aNbWires - 1);
-  int                     aWireFillIdx = 0;
-  // Put outer wire first.
-  for (int i = 0; i < aFaceDef.WireRefs.Length(); ++i)
+  NCollection_Vector<int> anOuterWireDefIndices;
+  NCollection_Vector<int> anInnerWireDefIndices;
+  for (int aWRI = 0; aWRI < aFaceEnt.WireRefIds.Length(); ++aWRI)
   {
-    if (aFaceDef.WireRefs.Value(i).IsOuter)
+    const BRepGraph_WireRefId         aWireRefId = aFaceEnt.WireRefIds.Value(aWRI);
+    const BRepGraphInc::WireRefEntry& aWR        = aRefs.Wire(aWireRefId);
+    if (aWR.IsRemoved || !aWR.WireDefId.IsValid(aTopoView.NbWires()))
     {
-      aWireDefIndices(aWireFillIdx++) = aFaceDef.WireRefs.Value(i).WireDefId.Index;
-      break;
+      continue;
+    }
+    if (aWR.IsOuter)
+    {
+      anOuterWireDefIndices.Append(aWR.WireDefId.Index);
+    }
+    else
+    {
+      anInnerWireDefIndices.Append(aWR.WireDefId.Index);
     }
   }
-  // Then inner wires.
-  for (int i = 0; i < aFaceDef.WireRefs.Length(); ++i)
+
+  if (anOuterWireDefIndices.IsEmpty() && anInnerWireDefIndices.IsEmpty())
   {
-    if (!aFaceDef.WireRefs.Value(i).IsOuter)
-      aWireDefIndices(aWireFillIdx++) = aFaceDef.WireRefs.Value(i).WireDefId.Index;
+    return;
+  }
+
+  // Collect wire indices: outer wire first, then inner wires.
+  const int               aNbWires = (anOuterWireDefIndices.IsEmpty() ? 0 : 1) + anInnerWireDefIndices.Length();
+  NCollection_Array1<int> aWireDefIndices(0, aNbWires - 1);
+  int                     aWireFillIdx = 0;
+  if (!anOuterWireDefIndices.IsEmpty())
+  {
+    aWireDefIndices(aWireFillIdx++) = anOuterWireDefIndices.Value(0);
+  }
+  for (int i = 0; i < anInnerWireDefIndices.Length(); ++i)
+  {
+    aWireDefIndices(aWireFillIdx++) = anInnerWireDefIndices.Value(i);
   }
 
   myUmin = myVmin = 0.0;
@@ -193,8 +211,6 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph&       theGraph,
 
   for (int aWireIdx = 0; aWireIdx < aNbWires && !anIsBadWire; ++aWireIdx)
   {
-    const BRepGraph_TopoNode::WireDef& aWireDef =
-      theGraph.Topo().Wire(BRepGraph_WireId(aWireDefIndices(aWireIdx)));
     int aNbPnts = 0;
     aPnt2dVec.Clear();
     int    aFirstPoint     = 1;
@@ -209,7 +225,24 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph&       theGraph,
     auto coedgeLookup = [&theGraph](int theIdx) -> const BRepGraphInc::CoEdgeEntity& {
       return theGraph.Topo().CoEdge(BRepGraph_CoEdgeId(theIdx));
     };
-    BRepGraphInc_WireExplorer aWireExp(aWireDef.CoEdgeRefs, coedgeLookup, edgeLookup);
+    NCollection_Vector<BRepGraphInc::CoEdgeRef> aWireCoEdgeRefs;
+    const BRepGraph_WireId                      aWireId(aWireDefIndices(aWireIdx));
+    const BRepGraph_TopoNode::WireDef&          aWireEnt = aTopoView.Wire(aWireId);
+    for (int aCRI = 0; aCRI < aWireEnt.CoEdgeRefIds.Length(); ++aCRI)
+    {
+      const BRepGraph_CoEdgeRefId         aCERefId = aWireEnt.CoEdgeRefIds.Value(aCRI);
+      const BRepGraphInc::CoEdgeRefEntry& aCRE     = aRefs.CoEdge(aCERefId);
+      if (aCRE.IsRemoved || !aCRE.CoEdgeDefId.IsValid(aTopoView.NbCoEdges()))
+      {
+        continue;
+      }
+
+      BRepGraphInc::CoEdgeRef aCR;
+      aCR.CoEdgeDefId   = aCRE.CoEdgeDefId;
+      aCR.LocalLocation = aCRE.LocalLocation;
+      aWireCoEdgeRefs.Append(aCR);
+    }
+    BRepGraphInc_WireExplorer aWireExp(aWireCoEdgeRefs, coedgeLookup, edgeLookup);
     const NCollection_Vector<BRepGraphInc::CoEdgeRef>& anOrderedRefs = aWireExp.OrderedRefs();
 
     const int aNbEdgeRefs = anOrderedRefs.Length();

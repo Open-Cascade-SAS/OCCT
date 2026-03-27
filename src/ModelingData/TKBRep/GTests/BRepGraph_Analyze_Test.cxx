@@ -21,6 +21,7 @@
 #include <BRepGraph_SubGraph.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
 #include <BRepGraphAlgo_BndLib.hxx>
+#include "BRepGraph_RefTestTools.hxx"
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
@@ -428,15 +429,16 @@ TEST_F(BRepGraph_AnalyzeTest, BoundingBox_Edge_SubsetOfOwningFace)
   double aFXmin, aFYmin, aFZmin, aFXmax, aFYmax, aFZmax;
   aFaceBox.Get(aFXmin, aFYmin, aFZmin, aFXmax, aFYmax, aFZmax);
 
-  // Get edges of the first wire of the first face via incidence refs.
-  const BRepGraph_TopoNode::WireDef& aWireDef = myGraph.Topo().Wire(BRepGraph_WireId(0));
-  const double                       aTol     = Precision::Confusion();
+  // Get edges of the first wire of the first face via ref entries.
+  const NCollection_Vector<BRepGraph_CoEdgeRefId> aCoEdgeRefs =
+    BRepGraph_TestTools::CoEdgeRefsOfWire(myGraph, BRepGraph_WireId(0));
+  const double aTol = Precision::Confusion();
 
-  for (int aCoEdgeIter = 0; aCoEdgeIter < aWireDef.CoEdgeRefs.Length(); ++aCoEdgeIter)
+  for (int aCoEdgeIter = 0; aCoEdgeIter < aCoEdgeRefs.Length(); ++aCoEdgeIter)
   {
-    const BRepGraphInc::CoEdgeRef&       aCR = aWireDef.CoEdgeRefs.Value(aCoEdgeIter);
+    const BRepGraphInc::CoEdgeRefEntry& aCR = myGraph.Refs().CoEdge(aCoEdgeRefs.Value(aCoEdgeIter));
     const BRepGraph_TopoNode::CoEdgeDef& aCoEdge =
-      myGraph.Topo().CoEdge(BRepGraph_CoEdgeId(aCR.CoEdgeDefId));
+      myGraph.Topo().CoEdge(aCR.CoEdgeDefId);
     const BRepGraph_NodeId anEdgeId = aCoEdge.EdgeDefId;
     Bnd_Box                anEdgeBox;
     BRepGraphAlgo_BndLib::Add(myGraph, anEdgeId, anEdgeBox);

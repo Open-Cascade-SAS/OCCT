@@ -24,6 +24,7 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_Layer.hxx
   BRepGraph_MutationGuard.hxx
   BRepGraph_MutRef.hxx
+  BRepGraph_MutRefEntry.hxx
   BRepGraph_Mutator.cxx
   BRepGraph_Mutator.hxx
   BRepGraph_NameLayer.cxx
@@ -32,6 +33,10 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_NodeId.hxx
   BRepGraph_PathView.cxx
   BRepGraph_PathView.hxx
+  BRepGraph_RefId.hxx
+  BRepGraph_RefUID.hxx
+  BRepGraph_RefsView.cxx
+  BRepGraph_RefsView.hxx
   BRepGraph_RepId.hxx
   BRepGraph_ShapesView.cxx
   BRepGraph_ShapesView.hxx

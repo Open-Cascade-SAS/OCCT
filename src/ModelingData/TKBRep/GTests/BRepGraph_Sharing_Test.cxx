@@ -14,6 +14,7 @@
 #include <BRep_Builder.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_BuilderView.hxx>
+#include "BRepGraph_RefTestTools.hxx"
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraphInc_IncidenceRef.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -75,16 +76,14 @@ TEST_F(BRepGraph_SharingTest, SolidDef_HasOneShellRef)
 {
   ASSERT_TRUE(myGraph.IsDone());
   EXPECT_EQ(myGraph.Topo().NbSolids(), 1);
-  const BRepGraph_TopoNode::SolidDef& aDef = myGraph.Topo().Solid(BRepGraph_SolidId(0));
-  EXPECT_EQ(aDef.ShellRefs.Length(), 1);
+  EXPECT_EQ(BRepGraph_TestTools::CountShellRefsOfSolid(myGraph, BRepGraph_SolidId(0)), 1);
 }
 
 TEST_F(BRepGraph_SharingTest, ShellDef_HasSixFaceRefs)
 {
   ASSERT_TRUE(myGraph.IsDone());
   EXPECT_EQ(myGraph.Topo().NbShells(), 1);
-  const BRepGraph_TopoNode::ShellDef& aDef = myGraph.Topo().Shell(BRepGraph_ShellId(0));
-  EXPECT_EQ(aDef.FaceRefs.Length(), 6);
+  EXPECT_EQ(BRepGraph_TestTools::CountFaceRefsOfShell(myGraph, BRepGraph_ShellId(0)), 6);
 }
 
 // =========================================================================
@@ -95,16 +94,14 @@ TEST_F(BRepGraph_SharingTest, SolidDef_ContainsOneShellRef)
 {
   ASSERT_TRUE(myGraph.IsDone());
   EXPECT_EQ(myGraph.Topo().NbSolids(), 1);
-  const BRepGraph_TopoNode::SolidDef& aSolidDef = myGraph.Topo().Solid(BRepGraph_SolidId(0));
-  EXPECT_EQ(aSolidDef.ShellRefs.Length(), 1);
+  EXPECT_EQ(BRepGraph_TestTools::CountShellRefsOfSolid(myGraph, BRepGraph_SolidId(0)), 1);
 }
 
 TEST_F(BRepGraph_SharingTest, ShellDef_ContainsSixFaceRefs)
 {
   ASSERT_TRUE(myGraph.IsDone());
   EXPECT_EQ(myGraph.Topo().NbShells(), 1);
-  const BRepGraph_TopoNode::ShellDef& aShellDef = myGraph.Topo().Shell(BRepGraph_ShellId(0));
-  EXPECT_EQ(aShellDef.FaceRefs.Length(), 6);
+  EXPECT_EQ(BRepGraph_TestTools::CountFaceRefsOfShell(myGraph, BRepGraph_ShellId(0)), 6);
 }
 
 TEST_F(BRepGraph_SharingTest, FaceDef_OuterWireIdx_Valid)
@@ -112,8 +109,8 @@ TEST_F(BRepGraph_SharingTest, FaceDef_OuterWireIdx_Valid)
   ASSERT_TRUE(myGraph.IsDone());
   for (int anIdx = 0; anIdx < myGraph.Topo().NbFaces(); ++anIdx)
   {
-    const BRepGraph_TopoNode::FaceDef& aFaceDef = myGraph.Topo().Face(BRepGraph_FaceId(anIdx));
-    EXPECT_GE(aFaceDef.OuterWireDefId().Index, 0) << "Face def " << anIdx << " has no outer wire";
+    const BRepGraph_WireId anOuterWire = BRepGraph_TestTools::OuterWireOfFace(myGraph, BRepGraph_FaceId(anIdx));
+    EXPECT_TRUE(anOuterWire.IsValid()) << "Face def " << anIdx << " has no outer wire";
   }
 }
 
@@ -122,10 +119,10 @@ TEST_F(BRepGraph_SharingTest, WireDef_CoEdgeRefsCount_FourPerBoxFace)
   ASSERT_TRUE(myGraph.IsDone());
   for (int anIdx = 0; anIdx < myGraph.Topo().NbWires(); ++anIdx)
   {
-    const BRepGraph_TopoNode::WireDef& aWireDef = myGraph.Topo().Wire(BRepGraph_WireId(anIdx));
-    EXPECT_GT(aWireDef.CoEdgeRefs.Length(), 0) << "Wire def " << anIdx << " has no coedge refs";
+    const int aNbCoEdgeRefs = BRepGraph_TestTools::CountCoEdgeRefsOfWire(myGraph, BRepGraph_WireId(anIdx));
+    EXPECT_GT(aNbCoEdgeRefs, 0) << "Wire def " << anIdx << " has no coedge refs";
     // Box face wires have 4 edges
-    EXPECT_EQ(aWireDef.CoEdgeRefs.Length(), 4)
+    EXPECT_EQ(aNbCoEdgeRefs, 4)
       << "Wire def " << anIdx << " expected 4 coedge refs for box face";
   }
 }
@@ -236,9 +233,11 @@ TEST_F(BRepGraph_SharingTest, CompoundTwoIdenticalBoxes)
   EXPECT_EQ(aGraph.Topo().NbVertices(), 8);
 
   // Compound has 2 child references to the same solid.
-  EXPECT_EQ(aGraph.Topo().Compound(BRepGraph_CompoundId(0)).ChildRefs.Length(), 2);
-  EXPECT_EQ(aGraph.Topo().Compound(BRepGraph_CompoundId(0)).ChildRefs.Value(0).ChildDefId.Index,
-            aGraph.Topo().Compound(BRepGraph_CompoundId(0)).ChildRefs.Value(1).ChildDefId.Index);
+  const NCollection_Vector<BRepGraph_ChildRefId> aChildRefs =
+    BRepGraph_TestTools::ChildRefsOfParent(aGraph, BRepGraph_NodeId::Compound(0));
+  ASSERT_EQ(aChildRefs.Length(), 2);
+  EXPECT_EQ(aGraph.Refs().Child(aChildRefs.Value(0)).ChildDefId.Index,
+            aGraph.Refs().Child(aChildRefs.Value(1)).ChildDefId.Index);
 }
 
 TEST_F(BRepGraph_SharingTest, CompoundTwoDistinctBoxes)
