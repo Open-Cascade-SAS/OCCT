@@ -75,7 +75,7 @@ public:
   //! @param[in] theNode node identifier to compute bbox for
   //! @param[in,out] theBox bounding box to enlarge
   //! @param[in] theUseTriangulation if true, use triangulation when available
-  Standard_EXPORT static void Add(const BRepGraph&    theGraph,
+  Standard_EXPORT static void Add(const BRepGraph&       theGraph,
                                   const BRepGraph_NodeId theNode,
                                   Bnd_Box&               theBox,
                                   const bool             theUseTriangulation = true);
@@ -137,8 +137,8 @@ public:
   //! @return computed or cached bounding box
   Standard_EXPORT static Bnd_Box AddCached(BRepGraph&             theGraph,
                                            const BRepGraph_NodeId theNode,
-                                           const Precision        thePrecision = Precision::Standard,
-                                           const bool             theUseTriangulation = true);
+                                           const Precision thePrecision = Precision::Standard,
+                                           const bool      theUseTriangulation = true);
 
   //! Store an externally-computed bounding box into the cache.
   //! @param[in]  theGraph    pre-built BRepGraph (non-const for cache mutation)

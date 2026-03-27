@@ -58,11 +58,12 @@ public:
 
   //! @name RefUID operations
   [[nodiscard]] Standard_EXPORT BRepGraph_RefUID UIDOf(const BRepGraph_RefId theRefId) const;
-  [[nodiscard]] Standard_EXPORT BRepGraph_RefId RefIdFrom(const BRepGraph_RefUID& theUID) const;
-  [[nodiscard]] Standard_EXPORT bool Has(const BRepGraph_RefUID& theUID) const;
+  [[nodiscard]] Standard_EXPORT BRepGraph_RefId  RefIdFrom(const BRepGraph_RefUID& theUID) const;
+  [[nodiscard]] Standard_EXPORT bool             Has(const BRepGraph_RefUID& theUID) const;
 
   //! @name Ref version stamping
-  [[nodiscard]] Standard_EXPORT BRepGraph_VersionStamp StampOf(const BRepGraph_RefId theRefId) const;
+  [[nodiscard]] Standard_EXPORT BRepGraph_VersionStamp
+                                     StampOf(const BRepGraph_RefId theRefId) const;
   [[nodiscard]] Standard_EXPORT bool IsStale(const BRepGraph_VersionStamp& theStamp) const;
 
   //! @name Parent-to-ref typed vector access
@@ -70,28 +71,28 @@ public:
 
   //! @param[in] theShell shell entity identifier
   //! @return face ref ids owned by this shell
-  [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_FaceRefId>&
-    FaceRefIdsOf(const BRepGraph_ShellId theShell) const;
+  [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_FaceRefId>& FaceRefIdsOf(
+    const BRepGraph_ShellId theShell) const;
 
   //! @param[in] theFace face entity identifier
   //! @return wire ref ids owned by this face
-  [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_WireRefId>&
-    WireRefIdsOf(const BRepGraph_FaceId theFace) const;
+  [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_WireRefId>& WireRefIdsOf(
+    const BRepGraph_FaceId theFace) const;
 
   //! @param[in] theWire wire entity identifier
   //! @return coedge ref ids owned by this wire
-  [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_CoEdgeRefId>&
-    CoEdgeRefIdsOf(const BRepGraph_WireId theWire) const;
+  [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_CoEdgeRefId>& CoEdgeRefIdsOf(
+    const BRepGraph_WireId theWire) const;
 
   //! @param[in] theSolid solid entity identifier
   //! @return shell ref ids owned by this solid
-  [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_ShellRefId>&
-    ShellRefIdsOf(const BRepGraph_SolidId theSolid) const;
+  [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_ShellRefId>& ShellRefIdsOf(
+    const BRepGraph_SolidId theSolid) const;
 
   //! @param[in] theCompound compound entity identifier
   //! @return child ref ids owned by this compound
-  [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_ChildRefId>&
-    ChildRefIdsOf(const BRepGraph_CompoundId theCompound) const;
+  [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_ChildRefId>& ChildRefIdsOf(
+    const BRepGraph_CompoundId theCompound) const;
 
   //! @param[in] theProduct product entity identifier
   //! @return occurrence ref ids owned by this product
@@ -100,8 +101,8 @@ public:
 
   //! @param[in] theCompSolid comp-solid entity identifier
   //! @return solid ref ids owned by this comp-solid
-  [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_SolidRefId>&
-    SolidRefIdsOf(const BRepGraph_CompSolidId theCompSolid) const;
+  [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_SolidRefId>& SolidRefIdsOf(
+    const BRepGraph_CompSolidId theCompSolid) const;
 
 private:
   friend class BRepGraph;

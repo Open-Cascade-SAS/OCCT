@@ -358,8 +358,7 @@ public:
   }
 
   //! @param[in] theProduct typed product id
-  [[nodiscard]] const BRepGraphInc::ProductDef& Product(
-    const BRepGraph_ProductId theProduct) const
+  [[nodiscard]] const BRepGraphInc::ProductDef& Product(const BRepGraph_ProductId theProduct) const
   {
     return myProducts.Get(theProduct.Index);
   }
@@ -379,12 +378,14 @@ public:
     return myShellRefs.Get(theRefId.Index);
   }
 
-  [[nodiscard]] const BRepGraphInc::FaceRefEntry& FaceRefEntry(const BRepGraph_FaceRefId theRefId) const
+  [[nodiscard]] const BRepGraphInc::FaceRefEntry& FaceRefEntry(
+    const BRepGraph_FaceRefId theRefId) const
   {
     return myFaceRefs.Get(theRefId.Index);
   }
 
-  [[nodiscard]] const BRepGraphInc::WireRefEntry& WireRefEntry(const BRepGraph_WireRefId theRefId) const
+  [[nodiscard]] const BRepGraphInc::WireRefEntry& WireRefEntry(
+    const BRepGraph_WireRefId theRefId) const
   {
     return myWireRefs.Get(theRefId.Index);
   }
@@ -574,10 +575,7 @@ public:
 
   BRepGraphInc::ChildRefEntry& AppendChildRefEntry() { return myChildRefs.Append(); }
 
-  BRepGraphInc::OccurrenceRefEntry& AppendOccurrenceRefEntry()
-  {
-    return myOccurrenceRefs.Append();
-  }
+  BRepGraphInc::OccurrenceRefEntry& AppendOccurrenceRefEntry() { return myOccurrenceRefs.Append(); }
 
   //! @name UID access
 
@@ -795,9 +793,9 @@ private:
   template <typename RefT>
   struct RefStore
   {
-    NCollection_Vector<RefT>          Refs;
+    NCollection_Vector<RefT>             Refs;
     NCollection_Vector<BRepGraph_RefUID> UIDs;
-    int                               NbActive = 0;
+    int                                  NbActive = 0;
 
     RefStore() = default;
 
@@ -848,12 +846,12 @@ private:
   DefStore<BRepGraphInc::OccurrenceDef> myOccurrences;
 
   //! @name Transitional reference entry stores
-  RefStore<BRepGraphInc::ShellRefEntry>  myShellRefs;
-  RefStore<BRepGraphInc::FaceRefEntry>   myFaceRefs;
-  RefStore<BRepGraphInc::WireRefEntry>   myWireRefs;
-  RefStore<BRepGraphInc::CoEdgeRefEntry> myCoEdgeRefs;
-  RefStore<BRepGraphInc::VertexRefEntry> myVertexRefs;
-  RefStore<BRepGraphInc::SolidRefEntry>  mySolidRefs;
+  RefStore<BRepGraphInc::ShellRefEntry>      myShellRefs;
+  RefStore<BRepGraphInc::FaceRefEntry>       myFaceRefs;
+  RefStore<BRepGraphInc::WireRefEntry>       myWireRefs;
+  RefStore<BRepGraphInc::CoEdgeRefEntry>     myCoEdgeRefs;
+  RefStore<BRepGraphInc::VertexRefEntry>     myVertexRefs;
+  RefStore<BRepGraphInc::SolidRefEntry>      mySolidRefs;
   RefStore<BRepGraphInc::ChildRefEntry>      myChildRefs;
   RefStore<BRepGraphInc::OccurrenceRefEntry> myOccurrenceRefs;
 

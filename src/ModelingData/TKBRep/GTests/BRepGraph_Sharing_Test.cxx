@@ -109,7 +109,8 @@ TEST_F(BRepGraph_SharingTest, FaceDef_OuterWireIdx_Valid)
   ASSERT_TRUE(myGraph.IsDone());
   for (int anIdx = 0; anIdx < myGraph.Topo().NbFaces(); ++anIdx)
   {
-    const BRepGraph_WireId anOuterWire = BRepGraph_TestTools::OuterWireOfFace(myGraph, BRepGraph_FaceId(anIdx));
+    const BRepGraph_WireId anOuterWire =
+      BRepGraph_TestTools::OuterWireOfFace(myGraph, BRepGraph_FaceId(anIdx));
     EXPECT_TRUE(anOuterWire.IsValid()) << "Face def " << anIdx << " has no outer wire";
   }
 }
@@ -119,11 +120,11 @@ TEST_F(BRepGraph_SharingTest, WireDef_CoEdgeRefsCount_FourPerBoxFace)
   ASSERT_TRUE(myGraph.IsDone());
   for (int anIdx = 0; anIdx < myGraph.Topo().NbWires(); ++anIdx)
   {
-    const int aNbCoEdgeRefs = BRepGraph_TestTools::CountCoEdgeRefsOfWire(myGraph, BRepGraph_WireId(anIdx));
+    const int aNbCoEdgeRefs =
+      BRepGraph_TestTools::CountCoEdgeRefsOfWire(myGraph, BRepGraph_WireId(anIdx));
     EXPECT_GT(aNbCoEdgeRefs, 0) << "Wire def " << anIdx << " has no coedge refs";
     // Box face wires have 4 edges
-    EXPECT_EQ(aNbCoEdgeRefs, 4)
-      << "Wire def " << anIdx << " expected 4 coedge refs for box face";
+    EXPECT_EQ(aNbCoEdgeRefs, 4) << "Wire def " << anIdx << " expected 4 coedge refs for box face";
   }
 }
 
@@ -177,13 +178,15 @@ TEST_F(BRepGraph_SharingTest, NonClosedEdge_StartEnd_Different)
   ASSERT_TRUE(myGraph.IsDone());
   for (int anIdx = 0; anIdx < myGraph.Topo().NbEdges(); ++anIdx)
   {
-    const BRepGraph_EdgeId             anEdgeId(anIdx);
+    const BRepGraph_EdgeId       anEdgeId(anIdx);
     const BRepGraphInc::EdgeDef& aDef = myGraph.Topo().Edge(anEdgeId);
     if (aDef.IsDegenerate)
       continue;
     // Box edges are not closed, so start and end vertex defs must differ
-    const BRepGraph_VertexId aStartVtx = BRepGraph_Tool::Edge::StartVertex(myGraph, anEdgeId).VertexDefId;
-    const BRepGraph_VertexId anEndVtx  = BRepGraph_Tool::Edge::EndVertex(myGraph, anEdgeId).VertexDefId;
+    const BRepGraph_VertexId aStartVtx =
+      BRepGraph_Tool::Edge::StartVertex(myGraph, anEdgeId).VertexDefId;
+    const BRepGraph_VertexId anEndVtx =
+      BRepGraph_Tool::Edge::EndVertex(myGraph, anEdgeId).VertexDefId;
     EXPECT_NE(aStartVtx, anEndVtx)
       << "Non-degenerate edge def " << anIdx << " has identical start and end vertex def ids";
   }

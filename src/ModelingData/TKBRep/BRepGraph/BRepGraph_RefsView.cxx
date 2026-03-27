@@ -141,8 +141,8 @@ BRepGraph_RefUID BRepGraph::RefsView::UIDOf(const BRepGraph_RefId theRefId) cons
   if (!theRefId.IsValid())
     return BRepGraph_RefUID();
 
-  const NCollection_Vector<BRepGraph_RefUID>& aVec = myGraph->myData->myIncStorage.RefUIDs(
-    theRefId.RefKind);
+  const NCollection_Vector<BRepGraph_RefUID>& aVec =
+    myGraph->myData->myIncStorage.RefUIDs(theRefId.RefKind);
   if (theRefId.Index >= aVec.Length())
     return BRepGraph_RefUID();
   return aVec.Value(theRefId.Index);
@@ -155,7 +155,8 @@ BRepGraph_RefId BRepGraph::RefsView::RefIdFrom(const BRepGraph_RefUID& theUID) c
   if (!theUID.IsValid())
     return BRepGraph_RefId();
 
-  const NCollection_Vector<BRepGraph_RefUID>& aVec = myGraph->myData->myIncStorage.RefUIDs(theUID.Kind());
+  const NCollection_Vector<BRepGraph_RefUID>& aVec =
+    myGraph->myData->myIncStorage.RefUIDs(theUID.Kind());
   for (int i = 0; i < aVec.Length(); ++i)
   {
     if (aVec.Value(i) == theUID)
@@ -173,7 +174,8 @@ bool BRepGraph::RefsView::Has(const BRepGraph_RefUID& theUID) const
   if (theUID.Generation() != myGraph->myData->myGeneration.load())
     return false;
 
-  const NCollection_Vector<BRepGraph_RefUID>& aVec = myGraph->myData->myIncStorage.RefUIDs(theUID.Kind());
+  const NCollection_Vector<BRepGraph_RefUID>& aVec =
+    myGraph->myData->myIncStorage.RefUIDs(theUID.Kind());
   for (int i = 0; i < aVec.Length(); ++i)
   {
     if (aVec.Value(i) == theUID)
@@ -189,8 +191,8 @@ BRepGraph_VersionStamp BRepGraph::RefsView::StampOf(const BRepGraph_RefId theRef
   if (!theRefId.IsValid())
     return BRepGraph_VersionStamp();
 
-  const NCollection_Vector<BRepGraph_RefUID>& aUIDs = myGraph->myData->myIncStorage.RefUIDs(
-    theRefId.RefKind);
+  const NCollection_Vector<BRepGraph_RefUID>& aUIDs =
+    myGraph->myData->myIncStorage.RefUIDs(theRefId.RefKind);
   if (theRefId.Index >= aUIDs.Length())
     return BRepGraph_VersionStamp();
 

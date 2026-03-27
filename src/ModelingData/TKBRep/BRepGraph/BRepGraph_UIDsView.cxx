@@ -90,7 +90,7 @@ BRepGraph_VersionStamp BRepGraph::UIDsView::StampOf(const BRepGraph_NodeId theNo
   if (theNode.Index >= aVec.Length())
     return BRepGraph_VersionStamp();
 
-  const BRepGraph_UID                aUID = aVec.Value(theNode.Index);
+  const BRepGraph_UID          aUID = aVec.Value(theNode.Index);
   const BRepGraphInc::BaseDef* aDef = myGraph->TopoEntity(theNode);
   if (aDef == nullptr || aDef->IsRemoved)
     return BRepGraph_VersionStamp();

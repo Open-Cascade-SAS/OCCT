@@ -40,7 +40,7 @@ public:
   //! @param[in] theTolerance vertex tolerance
   //! @return NodeId of the new vertex definition
   [[nodiscard]] Standard_EXPORT BRepGraph_NodeId AddVertex(const gp_Pnt& thePoint,
-                                                              const double  theTolerance);
+                                                           const double  theTolerance);
 
   //! Add an edge definition to the graph.
   //! @param[in] theStartVtx  start vertex def NodeId
@@ -50,12 +50,12 @@ public:
   //! @param[in] theLast      last curve parameter
   //! @param[in] theTolerance edge tolerance
   //! @return NodeId of the new edge definition
-  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId AddEdge(const BRepGraph_NodeId theStartVtx,
-                                                            const BRepGraph_NodeId theEndVtx,
-                                                            const occ::handle<Geom_Curve>& theCurve,
-                                                            const double                   theFirst,
-                                                            const double                   theLast,
-                                                            const double theTolerance);
+  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId AddEdge(const BRepGraph_NodeId         theStartVtx,
+                                                         const BRepGraph_NodeId         theEndVtx,
+                                                         const occ::handle<Geom_Curve>& theCurve,
+                                                         const double                   theFirst,
+                                                         const double                   theLast,
+                                                         const double theTolerance);
 
   //! Add a wire definition to the graph.
   //! Each pair is (EdgeDefId, OrientationInWire).
@@ -72,9 +72,9 @@ public:
   //! @return NodeId of the new face definition
   [[nodiscard]] Standard_EXPORT BRepGraph_NodeId
     AddFace(const occ::handle<Geom_Surface>&            theSurface,
-               const BRepGraph_NodeId                      theOuterWire,
-               const NCollection_Vector<BRepGraph_NodeId>& theInnerWires,
-               const double                                theTolerance);
+            const BRepGraph_NodeId                      theOuterWire,
+            const NCollection_Vector<BRepGraph_NodeId>& theInnerWires,
+            const double                                theTolerance);
 
   //! Add an empty shell definition to the graph.
   //! @return NodeId of the new shell definition
@@ -218,8 +218,7 @@ public:
 
   //! Return scoped mutable edge definition guard.
   //! @param[in] theEdge typed edge identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::EdgeDef> MutEdge(
-    const BRepGraph_EdgeId theEdge);
+  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::EdgeDef> MutEdge(const BRepGraph_EdgeId theEdge);
 
   //! Return scoped mutable vertex definition guard.
   //! @param[in] theVertex typed vertex identifier
@@ -228,13 +227,11 @@ public:
 
   //! Return scoped mutable wire definition guard.
   //! @param[in] theWire typed wire identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::WireDef> MutWire(
-    const BRepGraph_WireId theWire);
+  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::WireDef> MutWire(const BRepGraph_WireId theWire);
 
   //! Return scoped mutable face definition guard.
   //! @param[in] theFace typed face identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::FaceDef> MutFace(
-    const BRepGraph_FaceId theFace);
+  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::FaceDef> MutFace(const BRepGraph_FaceId theFace);
 
   //! Return scoped mutable shell definition guard.
   //! @param[in] theShell typed shell identifier

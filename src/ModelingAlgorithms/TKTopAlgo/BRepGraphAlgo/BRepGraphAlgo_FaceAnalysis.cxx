@@ -132,23 +132,24 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
 
       const BRepGraphInc::WireDef& aWireEnt = aDefs.Wire(aWR.WireDefId);
 
-      for (int aCoEdgeRefIter = 0; aCoEdgeRefIter < aWireEnt.CoEdgeRefIds.Length(); ++aCoEdgeRefIter)
+      for (int aCoEdgeRefIter = 0; aCoEdgeRefIter < aWireEnt.CoEdgeRefIds.Length();
+           ++aCoEdgeRefIter)
       {
-        const BRepGraph_CoEdgeRefId         aCoEdgeRefId = aWireEnt.CoEdgeRefIds.Value(aCoEdgeRefIter);
-        const BRepGraphInc::CoEdgeRefEntry& aCR          = aRefs.CoEdge(aCoEdgeRefId);
+        const BRepGraph_CoEdgeRefId aCoEdgeRefId = aWireEnt.CoEdgeRefIds.Value(aCoEdgeRefIter);
+        const BRepGraphInc::CoEdgeRefEntry& aCR  = aRefs.CoEdge(aCoEdgeRefId);
         if (aCR.IsRemoved || !aCR.CoEdgeDefId.IsValid(aDefs.NbCoEdges()))
         {
           continue;
         }
 
-        const BRepGraphInc::CoEdgeDef& aCoEdge = aDefs.CoEdge(aCR.CoEdgeDefId);
-        const BRepGraph_EdgeId               anEdgeId = aCoEdge.EdgeDefId;
+        const BRepGraphInc::CoEdgeDef& aCoEdge  = aDefs.CoEdge(aCR.CoEdgeDefId);
+        const BRepGraph_EdgeId         anEdgeId = aCoEdge.EdgeDefId;
         if (!anEdgeId.IsValid(aDefs.NbEdges()))
         {
           continue;
         }
 
-        const int                          anEdgeIdx = anEdgeId.Index;
+        const int                    anEdgeIdx = anEdgeId.Index;
         const BRepGraphInc::EdgeDef& anEdge    = aDefs.Edge(anEdgeId);
         ++aNbEdges;
 
@@ -172,23 +173,20 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
           ++aNbSmall;
 
           // Mark edge as degenerate.
-          BRepGraph_MutRef<BRepGraphInc::EdgeDef> aMutEdge =
-            theGraph.Builder().MutEdge(anEdgeId);
-          aMutEdge->IsDegenerate = true;
-          aMutEdge->Curve3DRepId = BRepGraph_Curve3DRepId();
+          BRepGraph_MutRef<BRepGraphInc::EdgeDef> aMutEdge = theGraph.Builder().MutEdge(anEdgeId);
+          aMutEdge->IsDegenerate                           = true;
+          aMutEdge->Curve3DRepId                           = BRepGraph_Curve3DRepId();
           aResult.DegeneratedEdges.Append(BRepGraph_EdgeId(anEdgeIdx));
 
           // Merge start/end vertices if they differ.
-          const BRepGraph_VertexId aStartVtx =
-            anEdge.StartVertexRefId.IsValid()
-              ? aRefs.Vertex(anEdge.StartVertexRefId).VertexDefId
-              : BRepGraph_VertexId();
-          const BRepGraph_VertexId aEndVtx =
-            anEdge.EndVertexRefId.IsValid()
-              ? aRefs.Vertex(anEdge.EndVertexRefId).VertexDefId
-              : BRepGraph_VertexId();
-          const int aStartIdx = aStartVtx.Index;
-          const int aEndIdx   = aEndVtx.Index;
+          const BRepGraph_VertexId aStartVtx = anEdge.StartVertexRefId.IsValid()
+                                                 ? aRefs.Vertex(anEdge.StartVertexRefId).VertexDefId
+                                                 : BRepGraph_VertexId();
+          const BRepGraph_VertexId aEndVtx   = anEdge.EndVertexRefId.IsValid()
+                                                 ? aRefs.Vertex(anEdge.EndVertexRefId).VertexDefId
+                                                 : BRepGraph_VertexId();
+          const int                aStartIdx = aStartVtx.Index;
+          const int                aEndIdx   = aEndVtx.Index;
           if (aStartIdx >= 0 && aEndIdx >= 0 && aStartIdx != aEndIdx)
           {
             // Resolve existing merges.
@@ -318,14 +316,14 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
   {
     for (int anEdgeIdx = 0; anEdgeIdx < aDefs.NbEdges(); ++anEdgeIdx)
     {
-      const BRepGraphInc::EdgeDef& anEdge = aDefs.Edge(BRepGraph_EdgeId(anEdgeIdx));
-      bool aNeedUpdate = false;
-      int  aNewStart   = anEdge.StartVertexRefId.IsValid()
-                            ? aRefs.Vertex(anEdge.StartVertexRefId).VertexDefId.Index
-                            : -1;
-      int  aNewEnd     = anEdge.EndVertexRefId.IsValid()
-                           ? aRefs.Vertex(anEdge.EndVertexRefId).VertexDefId.Index
-                           : -1;
+      const BRepGraphInc::EdgeDef& anEdge      = aDefs.Edge(BRepGraph_EdgeId(anEdgeIdx));
+      bool                         aNeedUpdate = false;
+      int                          aNewStart   = anEdge.StartVertexRefId.IsValid()
+                                                   ? aRefs.Vertex(anEdge.StartVertexRefId).VertexDefId.Index
+                                                   : -1;
+      int                          aNewEnd     = anEdge.EndVertexRefId.IsValid()
+                                                   ? aRefs.Vertex(anEdge.EndVertexRefId).VertexDefId.Index
+                                                   : -1;
 
       if (aNewStart >= 0)
       {

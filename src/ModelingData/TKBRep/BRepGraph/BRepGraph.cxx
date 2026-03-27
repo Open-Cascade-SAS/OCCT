@@ -169,8 +169,8 @@ BRepGraph_UID BRepGraph::allocateUID(const BRepGraph_NodeId theNodeId)
 
 BRepGraph_RefUID BRepGraph::allocateRefUID(const BRepGraph_RefId theRefId)
 {
-  const size_t        aCounter    = myData->myNextUIDCounter.fetch_add(1, std::memory_order_relaxed);
-  const uint32_t      aGeneration = myData->myGeneration.load(std::memory_order_relaxed);
+  const size_t   aCounter    = myData->myNextUIDCounter.fetch_add(1, std::memory_order_relaxed);
+  const uint32_t aGeneration = myData->myGeneration.load(std::memory_order_relaxed);
   const BRepGraph_RefUID aUID(theRefId.RefKind, aCounter, aGeneration);
   myData->myIncStorage.ChangeRefUIDs(theRefId.RefKind).Append(aUID);
   return aUID;
@@ -395,7 +395,8 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
           aStorage.Compound(BRepGraph_CompoundId(aCurrent.Node.Index));
         for (int i = 0; i < aCompEnt.ChildRefIds.Length(); ++i)
         {
-          const BRepGraphInc::ChildRefEntry& aRef = aStorage.ChildRefEntry(aCompEnt.ChildRefIds.Value(i));
+          const BRepGraphInc::ChildRefEntry& aRef =
+            aStorage.ChildRefEntry(aCompEnt.ChildRefIds.Value(i));
           if (!aRef.IsRemoved)
             aPushChild(aRef.ChildDefId, aNextDepth);
         }
@@ -406,7 +407,8 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
           aStorage.CompSolid(BRepGraph_CompSolidId(aCurrent.Node.Index));
         for (int i = 0; i < aCSolEnt.SolidRefIds.Length(); ++i)
         {
-          const BRepGraphInc::SolidRefEntry& aRef = aStorage.SolidRefEntry(aCSolEnt.SolidRefIds.Value(i));
+          const BRepGraphInc::SolidRefEntry& aRef =
+            aStorage.SolidRefEntry(aCSolEnt.SolidRefIds.Value(i));
           if (!aRef.IsRemoved)
             aPushChild(aRef.SolidDefId, aNextDepth);
         }
@@ -424,7 +426,7 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
         }
         for (int i = 0; i < aSolidEnt.FreeChildRefIds.Length(); ++i)
           aPushChild(aStorage.ChildRefEntry(aSolidEnt.FreeChildRefIds.Value(i)).ChildDefId,
-                    aNextDepth);
+                     aNextDepth);
         break;
       }
       case Kind::Shell: {
@@ -439,7 +441,7 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
         }
         for (int i = 0; i < aShellEnt.FreeChildRefIds.Length(); ++i)
           aPushChild(aStorage.ChildRefEntry(aShellEnt.FreeChildRefIds.Value(i)).ChildDefId,
-                    aNextDepth);
+                     aNextDepth);
         break;
       }
       case Kind::Face: {
@@ -447,7 +449,8 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
           aStorage.Face(BRepGraph_FaceId(aCurrent.Node.Index));
         for (int i = 0; i < aFaceEnt.WireRefIds.Length(); ++i)
         {
-          const BRepGraphInc::WireRefEntry& aRef = aStorage.WireRefEntry(aFaceEnt.WireRefIds.Value(i));
+          const BRepGraphInc::WireRefEntry& aRef =
+            aStorage.WireRefEntry(aFaceEnt.WireRefIds.Value(i));
           if (!aRef.IsRemoved)
             aPushChild(aRef.WireDefId, aNextDepth);
         }
@@ -469,8 +472,7 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
         break;
       }
       case Kind::Edge: {
-        const BRepGraphInc::EdgeDef& anEdge =
-          aStorage.Edge(BRepGraph_EdgeId(aCurrent.Node.Index));
+        const BRepGraphInc::EdgeDef& anEdge = aStorage.Edge(BRepGraph_EdgeId(aCurrent.Node.Index));
         if (anEdge.StartVertexRefId.IsValid())
         {
           const BRepGraph_VertexId aStartVtx =
@@ -487,7 +489,7 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
         }
         for (int i = 0; i < anEdge.InternalVertexRefIds.Length(); ++i)
           aPushChild(aStorage.VertexRefEntry(anEdge.InternalVertexRefIds.Value(i)).VertexDefId,
-                    aNextDepth);
+                     aNextDepth);
         break;
       }
       case Kind::Product: {
@@ -495,9 +497,8 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
           aStorage.Product(BRepGraph_ProductId(aCurrent.Node.Index));
         aPushChild(aProd.ShapeRootId, aNextDepth);
         for (int i = 0; i < aProd.OccurrenceRefIds.Length(); ++i)
-          aPushChild(
-            aStorage.OccurrenceRefEntry(aProd.OccurrenceRefIds.Value(i)).OccurrenceDefId,
-            aNextDepth);
+          aPushChild(aStorage.OccurrenceRefEntry(aProd.OccurrenceRefIds.Value(i)).OccurrenceDefId,
+                     aNextDepth);
         break;
       }
       case Kind::Occurrence: {
@@ -550,8 +551,7 @@ void BRepGraph::markModified(const BRepGraph_NodeId theNodeId)
 
 //=================================================================================================
 
-void BRepGraph::markModified(const BRepGraph_NodeId            theNodeId,
-                             BRepGraphInc::BaseDef& theEntity)
+void BRepGraph::markModified(const BRepGraph_NodeId theNodeId, BRepGraphInc::BaseDef& theEntity)
 {
   theEntity.IsModified = true;
   ++theEntity.MutationGen; // Track direct mutations even in deferred mode.
@@ -589,8 +589,7 @@ void BRepGraph::markRefModified(const BRepGraph_RefId theRefId)
 
 //=================================================================================================
 
-void BRepGraph::markRefModified(const BRepGraph_RefId /*theRefId*/,
-                                BRepGraphInc::BaseRef&        theRef)
+void BRepGraph::markRefModified(const BRepGraph_RefId /*theRefId*/, BRepGraphInc::BaseRef& theRef)
 {
   ++theRef.MutationGen;
 

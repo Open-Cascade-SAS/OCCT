@@ -36,24 +36,24 @@ public:
   //! Configuration for graph deduplication run.
   struct Options
   {
-    bool   AnalyzeOnly       = false;
-    bool   HistoryMode       = true;
+    bool   AnalyzeOnly           = false;
+    bool   HistoryMode           = true;
     bool   MergeEntitiesWhenSafe = false;
-    double CompTolerance     = Precision::Angular();
-    double HashTolerance     = Precision::Confusion();
+    double CompTolerance         = Precision::Angular();
+    double HashTolerance         = Precision::Confusion();
   };
 
   //! Result counters for diagnostics and tests.
   struct Result
   {
-    int  NbCanonicalSurfaces = 0;
-    int  NbCanonicalCurves   = 0;
-    int  NbSurfaceRewrites   = 0;
-    int  NbCurveRewrites     = 0;
-    int  NbNullifiedSurfaces = 0;
-    int  NbNullifiedCurves   = 0;
-    int  NbHistoryRecords    = 0;
-    bool IsEntityMergeApplied   = false;
+    int  NbCanonicalSurfaces  = 0;
+    int  NbCanonicalCurves    = 0;
+    int  NbSurfaceRewrites    = 0;
+    int  NbCurveRewrites      = 0;
+    int  NbNullifiedSurfaces  = 0;
+    int  NbNullifiedCurves    = 0;
+    int  NbHistoryRecords     = 0;
+    bool IsEntityMergeApplied = false;
 
     //! Topology definition merge counters (active when MergeEntitiesWhenSafe = true).
     int NbMergedVertices = 0;

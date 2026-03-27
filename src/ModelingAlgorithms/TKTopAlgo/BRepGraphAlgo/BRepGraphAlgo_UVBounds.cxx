@@ -278,8 +278,8 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph&       theGraph,
   }
 
   // Check by comparing PCurves and surface boundaries (the 4-edge natural restriction check).
-  const double theTol = BRepGraph_Tool::Face::Tolerance(theGraph, theFace);
-  bool hasFaceWires = false;
+  const double theTol       = BRepGraph_Tool::Face::Tolerance(theGraph, theFace);
+  bool         hasFaceWires = false;
   {
     const BRepGraphInc::FaceDef& aFaceEnt = theGraph.Topo().Face(theFace);
     for (int i = 0; i < aFaceEnt.WireRefIds.Length(); ++i)
@@ -325,7 +325,7 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph&       theGraph,
           return;
         }
         const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdge(aCR.CoEdgeDefId);
-        const BRepGraphInc::CoEdgeDef*    aPCurve =
+        const BRepGraphInc::CoEdgeDef* aPCurve =
           BRepGraph_Tool::Edge::FindPCurve(theGraph, aCoEdge.EdgeDefId, theFace);
         if (aPCurve == nullptr || !aPCurve->Curve2DRepId.IsValid())
         {
@@ -427,7 +427,7 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph&       theGraph,
   const double aTolV  = std::max(aGAS.VResolution(theTol), Precision::PConfusion());
   const double aTolUV = std::max(aTolU, aTolV);
 
-  Bnd_Box2d aBox;
+  Bnd_Box2d                    aBox;
   const BRepGraphInc::FaceDef& aFaceEnt3 = theGraph.Topo().Face(theFace);
   for (int aWRI = 0; aWRI < aFaceEnt3.WireRefIds.Length(); ++aWRI)
   {
@@ -440,14 +440,14 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph&       theGraph,
     const BRepGraphInc::WireDef& aWireEnt = theGraph.Topo().Wire(aWR.WireDefId);
     for (int aCRI = 0; aCRI < aWireEnt.CoEdgeRefIds.Length(); ++aCRI)
     {
-      const BRepGraph_CoEdgeRefId          aCERefId = aWireEnt.CoEdgeRefIds.Value(aCRI);
-      const BRepGraphInc::CoEdgeRefEntry&  aCR      = aRefs.CoEdge(aCERefId);
+      const BRepGraph_CoEdgeRefId         aCERefId = aWireEnt.CoEdgeRefIds.Value(aCRI);
+      const BRepGraphInc::CoEdgeRefEntry& aCR      = aRefs.CoEdge(aCERefId);
       if (aCR.IsRemoved || !aCR.CoEdgeDefId.IsValid(theGraph.Topo().NbCoEdges()))
       {
         continue;
       }
       const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdge(aCR.CoEdgeDefId);
-      const BRepGraphInc::CoEdgeDef*    aPCurve =
+      const BRepGraphInc::CoEdgeDef* aPCurve =
         BRepGraph_Tool::Edge::FindPCurve(theGraph, aCoEdge.EdgeDefId, theFace);
       if (aPCurve == nullptr || !aPCurve->Curve2DRepId.IsValid())
         continue;
@@ -589,7 +589,7 @@ bool BRepGraphAlgo_UVBounds::GetCached(const BRepGraph&       theGraph,
 
 //=================================================================================================
 
-BRepGraphAlgo_UVBounds::CachedData BRepGraphAlgo_UVBounds::AddCached(BRepGraph&             theGraph,
+BRepGraphAlgo_UVBounds::CachedData BRepGraphAlgo_UVBounds::AddCached(BRepGraph& theGraph,
                                                                      const BRepGraph_NodeId theNode)
 {
   if (theNode.NodeKind != BRepGraph_NodeId::Kind::Face || !theNode.IsValid())

@@ -437,7 +437,6 @@ bool BRepGraphInc_Storage::MarkRemoved(const BRepGraph_NodeId theNodeId)
   return true;
 }
 
-
 //=================================================================================================
 
 bool BRepGraphInc_Storage::MarkRemovedRef(const BRepGraph_RefId theRefId)
@@ -636,7 +635,6 @@ bool BRepGraphInc_Storage::ValidateReverseIndex() const
     return false;
   }
 
-
   // Wire -> CoEdge and Edge -> CoEdge coherence via coedge ref entries.
   for (int aCoEdgeRefIdx = 0; aCoEdgeRefIdx < myCoEdgeRefs.Nb(); ++aCoEdgeRefIdx)
   {
@@ -646,13 +644,13 @@ bool BRepGraphInc_Storage::ValidateReverseIndex() const
     {
       continue;
     }
-    if (aRef.ParentId.Index < 0 || aRef.ParentId.Index >= myWires.Nb()
-        || aRef.CoEdgeDefId.Index < 0 || aRef.CoEdgeDefId.Index >= myCoEdges.Nb())
+    if (aRef.ParentId.Index < 0 || aRef.ParentId.Index >= myWires.Nb() || aRef.CoEdgeDefId.Index < 0
+        || aRef.CoEdgeDefId.Index >= myCoEdges.Nb())
     {
       return false;
     }
 
-    const BRepGraphInc::WireDef& aWire = myWires.Get(aRef.ParentId.Index);
+    const BRepGraphInc::WireDef&   aWire   = myWires.Get(aRef.ParentId.Index);
     const BRepGraphInc::CoEdgeDef& aCoEdge = myCoEdges.Get(aRef.CoEdgeDefId.Index);
     if (aWire.IsRemoved || aCoEdge.IsRemoved)
     {
@@ -663,7 +661,8 @@ bool BRepGraphInc_Storage::ValidateReverseIndex() const
       return false;
     }
     if (aCoEdge.EdgeDefId.IsValid()
-        && !containsNodeIndex(myReverseIdx.CoEdgesOfEdge(aCoEdge.EdgeDefId), aRef.CoEdgeDefId.Index))
+        && !containsNodeIndex(myReverseIdx.CoEdgesOfEdge(aCoEdge.EdgeDefId),
+                              aRef.CoEdgeDefId.Index))
     {
       return false;
     }
@@ -716,22 +715,25 @@ bool BRepGraphInc_Storage::ValidateReverseIndex() const
     switch (aRef.ChildDefId.NodeKind)
     {
       case BRepGraph_NodeId::Kind::Solid:
-        if (!containsNodeIndex(myReverseIdx.CompoundsOfSolid(BRepGraph_SolidId(aRef.ChildDefId.Index)),
-                          aRef.ParentId.Index))
+        if (!containsNodeIndex(
+              myReverseIdx.CompoundsOfSolid(BRepGraph_SolidId(aRef.ChildDefId.Index)),
+              aRef.ParentId.Index))
         {
           return false;
         }
         break;
       case BRepGraph_NodeId::Kind::Shell:
-        if (!containsNodeIndex(myReverseIdx.CompoundsOfShell(BRepGraph_ShellId(aRef.ChildDefId.Index)),
-                          aRef.ParentId.Index))
+        if (!containsNodeIndex(
+              myReverseIdx.CompoundsOfShell(BRepGraph_ShellId(aRef.ChildDefId.Index)),
+              aRef.ParentId.Index))
         {
           return false;
         }
         break;
       case BRepGraph_NodeId::Kind::Face:
-        if (!containsNodeIndex(myReverseIdx.CompoundsOfFace(BRepGraph_FaceId(aRef.ChildDefId.Index)),
-                          aRef.ParentId.Index))
+        if (!containsNodeIndex(
+              myReverseIdx.CompoundsOfFace(BRepGraph_FaceId(aRef.ChildDefId.Index)),
+              aRef.ParentId.Index))
         {
           return false;
         }
@@ -762,7 +764,8 @@ bool BRepGraphInc_Storage::ValidateReverseIndex() const
   {
     const BRepGraphInc::SolidRefEntry& aRef = mySolidRefs.Get(aSolidRefIdx);
     if (aRef.IsRemoved || !aRef.ParentId.IsValid()
-        || aRef.ParentId.NodeKind != BRepGraph_NodeId::Kind::CompSolid || !aRef.SolidDefId.IsValid())
+        || aRef.ParentId.NodeKind != BRepGraph_NodeId::Kind::CompSolid
+        || !aRef.SolidDefId.IsValid())
     {
       continue;
     }

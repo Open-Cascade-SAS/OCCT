@@ -202,8 +202,8 @@ private:
   //! Initialize cached view objects to point to this graph.
   void initViews();
 
-  Standard_EXPORT void          invalidateSubgraphImpl(const BRepGraph_NodeId theNode);
-  Standard_EXPORT BRepGraph_UID allocateUID(const BRepGraph_NodeId theNodeId);
+  Standard_EXPORT void             invalidateSubgraphImpl(const BRepGraph_NodeId theNode);
+  Standard_EXPORT BRepGraph_UID    allocateUID(const BRepGraph_NodeId theNodeId);
   Standard_EXPORT BRepGraph_RefUID allocateRefUID(const BRepGraph_RefId theRefId);
 
   Standard_EXPORT BRepGraph_NodeCache* mutableCache(const BRepGraph_NodeId theNode);
@@ -212,9 +212,9 @@ private:
 
   //! Optimized overload: skips ChangeTopoEntity() and mutableCache() dispatch
   //! when the caller already holds a mutable reference to the target entity.
-  Standard_EXPORT void markModified(const BRepGraph_NodeId            theNodeId,
+  Standard_EXPORT void markModified(const BRepGraph_NodeId theNodeId,
                                     BRepGraphInc::BaseDef& theEntity);
-  Standard_EXPORT void markRefModified(const BRepGraph_RefId            theRefId,
+  Standard_EXPORT void markRefModified(const BRepGraph_RefId  theRefId,
                                        BRepGraphInc::BaseRef& theRef);
 
   //! Mark a parent node as transitively modified (IsModified only, no MutationGen increment).

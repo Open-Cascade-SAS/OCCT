@@ -97,9 +97,9 @@ public:
   [[nodiscard]] EntityT& operator*() { return *myEntity; }
 
 private:
-  BRepGraph*       myGraph; //!< Owning graph (nullptr after move).
-  EntityT*         myEntity;   //!< Mutable definition pointer.
-  BRepGraph_NodeId myId;    //!< Node identity for markModified.
+  BRepGraph*       myGraph;  //!< Owning graph (nullptr after move).
+  EntityT*         myEntity; //!< Mutable definition pointer.
+  BRepGraph_NodeId myId;     //!< Node identity for markModified.
 };
 
 #endif // _BRepGraph_MutRef_HeaderFile

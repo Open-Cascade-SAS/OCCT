@@ -78,9 +78,9 @@ public:
   //! @param[in] theModifier     callback that performs the modification and returns replacements
   //! @param[in] theOpLabel      human-readable operation label for history
   template <typename ModifierT>
-  static void ApplyModification(BRepGraph&                    theGraph,
-                                const BRepGraph_NodeId        theTarget,
-                                ModifierT&&                   theModifier,
+  static void ApplyModification(BRepGraph&                     theGraph,
+                                const BRepGraph_NodeId         theTarget,
+                                ModifierT&&                    theModifier,
                                 const TCollection_AsciiString& theOpLabel)
   {
     NCollection_Vector<BRepGraph_NodeId> aReplacements =
@@ -105,10 +105,10 @@ public:
 
 private:
   static Standard_EXPORT void applyModificationImpl(
-    BRepGraph&                            theGraph,
-    const BRepGraph_NodeId                theTarget,
+    BRepGraph&                             theGraph,
+    const BRepGraph_NodeId                 theTarget,
     NCollection_Vector<BRepGraph_NodeId>&& theReplacements,
-    const TCollection_AsciiString&        theOpLabel);
+    const TCollection_AsciiString&         theOpLabel);
 
   BRepGraph_Mutator() = delete;
 };

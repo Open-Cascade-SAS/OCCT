@@ -34,15 +34,16 @@ namespace
 
 //=================================================================================================
 
-static NCollection_Vector<BRepGraphInc::CoEdgeRef> collectWireCoEdgeRefs(const BRepGraph::TopoView& theDefs,
-                                                                           const BRepGraph::RefsView& theRefs,
-                                                                           const BRepGraph_NodeId theWireNodeId)
+static NCollection_Vector<BRepGraphInc::CoEdgeRef> collectWireCoEdgeRefs(
+  const BRepGraph::TopoView& theDefs,
+  const BRepGraph::RefsView& theRefs,
+  const BRepGraph_NodeId     theWireNodeId)
 {
   NCollection_Vector<BRepGraphInc::CoEdgeRef> aResult;
   const BRepGraphInc::WireDef& aWireDef = theDefs.Wire(BRepGraph_WireId(theWireNodeId.Index));
   for (int aRefIter = 0; aRefIter < aWireDef.CoEdgeRefIds.Length(); ++aRefIter)
   {
-    const BRepGraph_CoEdgeRefId          aRefId = aWireDef.CoEdgeRefIds.Value(aRefIter);
+    const BRepGraph_CoEdgeRefId         aRefId = aWireDef.CoEdgeRefIds.Value(aRefIter);
     const BRepGraphInc::CoEdgeRefEntry& aRef   = theRefs.CoEdge(aRefId);
     if (aRef.IsRemoved || !aRef.CoEdgeDefId.IsValid(theDefs.NbCoEdges()))
     {
@@ -59,15 +60,16 @@ static NCollection_Vector<BRepGraphInc::CoEdgeRef> collectWireCoEdgeRefs(const B
 
 //=================================================================================================
 
-static NCollection_Vector<BRepGraphInc::WireRefEntry> collectFaceWireRefs(const BRepGraph::TopoView& theDefs,
-                                                                            const BRepGraph::RefsView& theRefs,
-                                                                            const BRepGraph_NodeId theFaceNodeId)
+static NCollection_Vector<BRepGraphInc::WireRefEntry> collectFaceWireRefs(
+  const BRepGraph::TopoView& theDefs,
+  const BRepGraph::RefsView& theRefs,
+  const BRepGraph_NodeId     theFaceNodeId)
 {
   NCollection_Vector<BRepGraphInc::WireRefEntry> aResult;
   const BRepGraphInc::FaceDef& aFaceDef = theDefs.Face(BRepGraph_FaceId(theFaceNodeId.Index));
   for (int aRefIter = 0; aRefIter < aFaceDef.WireRefIds.Length(); ++aRefIter)
   {
-    const BRepGraph_WireRefId          aRefId = aFaceDef.WireRefIds.Value(aRefIter);
+    const BRepGraph_WireRefId         aRefId = aFaceDef.WireRefIds.Value(aRefIter);
     const BRepGraphInc::WireRefEntry& aRef   = theRefs.Wire(aRefId);
     if (aRef.IsRemoved || !aRef.WireDefId.IsValid(theDefs.NbWires()))
     {
@@ -82,9 +84,10 @@ static NCollection_Vector<BRepGraphInc::WireRefEntry> collectFaceWireRefs(const 
 
 //! Helper: compute 2D signed area of a wire from its pcurves using the shoelace formula
 //! on sampled points. Positive = CCW, negative = CW.
-static double computeWireSignedArea(const BRepGraph&                   theGraph,
-                                    const NCollection_Vector<BRepGraphInc::CoEdgeRef>& theCoEdgeRefs,
-                                    const BRepGraph_FaceId             theFaceId)
+static double computeWireSignedArea(
+  const BRepGraph&                                   theGraph,
+  const NCollection_Vector<BRepGraphInc::CoEdgeRef>& theCoEdgeRefs,
+  const BRepGraph_FaceId                             theFaceId)
 {
   const BRepGraph::TopoView& aDefs = theGraph.Topo();
 
@@ -106,7 +109,7 @@ static double computeWireSignedArea(const BRepGraph&                   theGraph,
        anExp.More();
        anExp.Next())
   {
-    const BRepGraphInc::CoEdgeRef&       aCoEdgeRef = anExp.CurrentRef();
+    const BRepGraphInc::CoEdgeRef& aCoEdgeRef = anExp.CurrentRef();
     const BRepGraphInc::CoEdgeDef& aCoEdgeDef = aDefs.CoEdge(aCoEdgeRef.CoEdgeDefId);
 
     const BRepGraphInc::CoEdgeDef* aPCurve =
@@ -160,10 +163,10 @@ struct WirePCurveSet
   NCollection_Vector<EdgeData> Edges;
 };
 
-static void collectWirePCurves(const BRepGraph&                   theGraph,
+static void collectWirePCurves(const BRepGraph&                                   theGraph,
                                const NCollection_Vector<BRepGraphInc::CoEdgeRef>& theCoEdgeRefs,
-                               const BRepGraph_FaceId             theFaceId,
-                               WirePCurveSet&                     theResult)
+                               const BRepGraph_FaceId                             theFaceId,
+                               WirePCurveSet&                                     theResult)
 {
   const BRepGraph::TopoView& aDefs = theGraph.Topo();
 
@@ -180,7 +183,7 @@ static void collectWirePCurves(const BRepGraph&                   theGraph,
        anExp.More();
        anExp.Next())
   {
-    const BRepGraphInc::CoEdgeRef&       aCoEdgeRef = anExp.CurrentRef();
+    const BRepGraphInc::CoEdgeRef& aCoEdgeRef = anExp.CurrentRef();
     const BRepGraphInc::CoEdgeDef& aCoEdgeDef = aDefs.CoEdge(aCoEdgeRef.CoEdgeDefId);
     const BRepGraphInc::EdgeDef&   anEdgeDef  = aDefs.Edge(aCoEdgeDef.EdgeDefId);
 
@@ -215,18 +218,20 @@ static void collectWirePCurves(const BRepGraph&                   theGraph,
     WirePCurveSet::EdgeData aData;
     // Resolve oriented vertices through ref entries.
     {
-      const BRepGraph_VertexRefId aStartRefId =
-        (aCoEdgeDef.Sense == TopAbs_FORWARD) ? anEdgeDef.StartVertexRefId
-                                             : anEdgeDef.EndVertexRefId;
-      aData.StartVtxId = aStartRefId.IsValid()
-        ? BRepGraph_NodeId::Vertex(theGraph.Refs().Vertex(aStartRefId).VertexDefId.Index)
-        : BRepGraph_NodeId();
-      const BRepGraph_VertexRefId anEndRefId =
-        (aCoEdgeDef.Sense == TopAbs_FORWARD) ? anEdgeDef.EndVertexRefId
-                                             : anEdgeDef.StartVertexRefId;
-      aData.EndVtxId = anEndRefId.IsValid()
-        ? BRepGraph_NodeId::Vertex(theGraph.Refs().Vertex(anEndRefId).VertexDefId.Index)
-        : BRepGraph_NodeId();
+      const BRepGraph_VertexRefId aStartRefId = (aCoEdgeDef.Sense == TopAbs_FORWARD)
+                                                  ? anEdgeDef.StartVertexRefId
+                                                  : anEdgeDef.EndVertexRefId;
+      aData.StartVtxId =
+        aStartRefId.IsValid()
+          ? BRepGraph_NodeId::Vertex(theGraph.Refs().Vertex(aStartRefId).VertexDefId.Index)
+          : BRepGraph_NodeId();
+      const BRepGraph_VertexRefId anEndRefId = (aCoEdgeDef.Sense == TopAbs_FORWARD)
+                                                 ? anEdgeDef.EndVertexRefId
+                                                 : anEdgeDef.StartVertexRefId;
+      aData.EndVtxId =
+        anEndRefId.IsValid()
+          ? BRepGraph_NodeId::Vertex(theGraph.Refs().Vertex(anEndRefId).VertexDefId.Index)
+          : BRepGraph_NodeId();
     }
 
     aData.Adaptor =
@@ -243,7 +248,7 @@ void BRepGraphCheck::CheckFaceMinimum(const BRepGraph&                          
                                       const BRepGraph_FaceId                    theFace,
                                       NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
 {
-  const BRepGraph::TopoView&         aDefs    = theGraph.Topo();
+  const BRepGraph::TopoView&   aDefs    = theGraph.Topo();
   const BRepGraphInc::FaceDef& aFaceDef = aDefs.Face(theFace);
 
   // Face must have a surface.
@@ -275,10 +280,10 @@ void BRepGraphCheck::CheckFaceWires(const BRepGraph&                          th
                                     const bool                                theGeomControls,
                                     NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
 {
-  const BRepGraph::TopoView&         aDefs       = theGraph.Topo();
-  const BRepGraph::RefsView&         aRefs       = theGraph.Refs();
-  const BRepGraphInc::FaceDef& aFaceDef    = aDefs.Face(theFace);
-  const BRepGraph_NodeId             aFaceNodeId = aFaceDef.Id;
+  const BRepGraph::TopoView&                           aDefs       = theGraph.Topo();
+  const BRepGraph::RefsView&                           aRefs       = theGraph.Refs();
+  const BRepGraphInc::FaceDef&                         aFaceDef    = aDefs.Face(theFace);
+  const BRepGraph_NodeId                               aFaceNodeId = aFaceDef.Id;
   const NCollection_Vector<BRepGraphInc::WireRefEntry> aWireRefs =
     collectFaceWireRefs(aDefs, aRefs, aFaceNodeId);
 
@@ -289,8 +294,8 @@ void BRepGraphCheck::CheckFaceWires(const BRepGraph&                          th
   NCollection_Map<int> aWireDefSet;
   for (int aWireIter = 0; aWireIter < aWireRefs.Length(); ++aWireIter)
   {
-    const BRepGraphInc::WireRefEntry& aWR     = aWireRefs.Value(aWireIter);
-    const BRepGraph_NodeId       aWireDefId = aWR.WireDefId;
+    const BRepGraphInc::WireRefEntry& aWR        = aWireRefs.Value(aWireIter);
+    const BRepGraph_NodeId            aWireDefId = aWR.WireDefId;
     if (aWireDefId.IsValid())
     {
       if (!aWireDefSet.Add(aWireDefId.Index))
@@ -323,7 +328,7 @@ void BRepGraphCheck::CheckFaceWires(const BRepGraph&                          th
     {
       aOuterWireRefIdx = aWireIter;
       aWireDefIndices.Append(aWR.WireDefId.Index);
-      WirePCurveSet aSet;
+      WirePCurveSet                                     aSet;
       const NCollection_Vector<BRepGraphInc::CoEdgeRef> aWireCoEdgeRefs =
         collectWireCoEdgeRefs(aDefs, aRefs, BRepGraph_NodeId::Wire(aWR.WireDefId.Index));
       collectWirePCurves(theGraph, aWireCoEdgeRefs, theFace, aSet);
@@ -340,7 +345,7 @@ void BRepGraphCheck::CheckFaceWires(const BRepGraph&                          th
       continue;
     const BRepGraphInc::WireRefEntry& aWR = aWireRefs.Value(aWireIter);
     aWireDefIndices.Append(aWR.WireDefId.Index);
-    WirePCurveSet aSet;
+    WirePCurveSet                                     aSet;
     const NCollection_Vector<BRepGraphInc::CoEdgeRef> aWireCoEdgeRefs =
       collectWireCoEdgeRefs(aDefs, aRefs, BRepGraph_NodeId::Wire(aWR.WireDefId.Index));
     collectWirePCurves(theGraph, aWireCoEdgeRefs, theFace, aSet);
@@ -464,17 +469,16 @@ void BRepGraphCheck::CheckFaceWires(const BRepGraph&                          th
   // Wire orientation check: outer wire should have correct signed area.
   if (aWirePCurveSets.Length() > 0 && aHasOuterWire)
   {
-    const int              aOuterWireIdx    = aWireDefIndices.Value(0);
+    const int              aOuterWireIdx     = aWireDefIndices.Value(0);
     const BRepGraph_NodeId anOuterWireNodeId = BRepGraph_NodeId::Wire(aOuterWireIdx);
 
     // Determine expected orientation: face definition is in its natural (FORWARD) orientation.
     // The face usage orientation (from parent shell) would flip this, but at the definition
     // level the face is always FORWARD.
-    const TopAbs_Orientation aFaceOri = TopAbs_FORWARD;
+    const TopAbs_Orientation                          aFaceOri = TopAbs_FORWARD;
     const NCollection_Vector<BRepGraphInc::CoEdgeRef> aOuterCoEdgeRefs =
       collectWireCoEdgeRefs(aDefs, aRefs, BRepGraph_NodeId::Wire(aOuterWireIdx));
-    const double             anArea =
-      computeWireSignedArea(theGraph, aOuterCoEdgeRefs, theFace);
+    const double anArea = computeWireSignedArea(theGraph, aOuterCoEdgeRefs, theFace);
     // For FORWARD face: outer wire should be CCW (positive area).
     // For REVERSED face: outer wire should be CW (negative area).
     const bool anExpectPositive = (aFaceOri != TopAbs_REVERSED);

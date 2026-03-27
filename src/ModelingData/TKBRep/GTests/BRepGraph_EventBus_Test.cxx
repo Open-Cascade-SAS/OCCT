@@ -123,9 +123,8 @@ TEST_F(BRepGraph_EventBusTest, ZeroCost_NoSubscribers)
 {
   // Mutate edge without any subscribing layer - verify no crash.
   {
-    BRepGraph_MutRef<BRepGraphInc::EdgeDef> aMut =
-      myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
-    aMut->Tolerance = 0.5;
+    BRepGraph_MutRef<BRepGraphInc::EdgeDef> aMut = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
+    aMut->Tolerance                              = 0.5;
   }
   EXPECT_TRUE(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).IsModified);
 }
@@ -142,9 +141,8 @@ TEST_F(BRepGraph_EventBusTest, ImmediateMode_SingleEdge)
   myGraph.RegisterLayer(aLayer);
 
   {
-    BRepGraph_MutRef<BRepGraphInc::EdgeDef> aMut =
-      myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
-    aMut->Tolerance = 0.5;
+    BRepGraph_MutRef<BRepGraphInc::EdgeDef> aMut = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
+    aMut->Tolerance                              = 0.5;
   }
 
   // Edge(0) should have an immediate event.
@@ -165,9 +163,8 @@ TEST_F(BRepGraph_EventBusTest, ImmediateMode_UpwardPropagation)
   myGraph.RegisterLayer(aLayer);
 
   {
-    BRepGraph_MutRef<BRepGraphInc::EdgeDef> aMut =
-      myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
-    aMut->Tolerance = 0.5;
+    BRepGraph_MutRef<BRepGraphInc::EdgeDef> aMut = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
+    aMut->Tolerance                              = 0.5;
   }
 
   // Upward propagation: Edge -> Wire -> Face -> Shell -> Solid.
@@ -187,9 +184,8 @@ TEST_F(BRepGraph_EventBusTest, ImmediateMode_KindFilter)
   myGraph.RegisterLayer(aLayer);
 
   {
-    BRepGraph_MutRef<BRepGraphInc::EdgeDef> aMut =
-      myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
-    aMut->Tolerance = 0.5;
+    BRepGraph_MutRef<BRepGraphInc::EdgeDef> aMut = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
+    aMut->Tolerance                              = 0.5;
   }
 
   // Should receive face events (from upward propagation), but NOT edge events.
@@ -252,9 +248,8 @@ TEST_F(BRepGraph_EventBusTest, UnregisterLayer_FlagUpdate)
 
   // Mutate - should dispatch.
   {
-    BRepGraph_MutRef<BRepGraphInc::EdgeDef> aMut =
-      myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
-    aMut->Tolerance = 0.5;
+    BRepGraph_MutRef<BRepGraphInc::EdgeDef> aMut = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
+    aMut->Tolerance                              = 0.5;
   }
   EXPECT_GT(aLayer->myImmediateEvents.Length(), 0);
 
@@ -264,9 +259,8 @@ TEST_F(BRepGraph_EventBusTest, UnregisterLayer_FlagUpdate)
 
   // Mutate again - should NOT dispatch (layer unregistered).
   {
-    BRepGraph_MutRef<BRepGraphInc::EdgeDef> aMut =
-      myGraph.Builder().MutEdge(BRepGraph_EdgeId(1));
-    aMut->Tolerance = 0.6;
+    BRepGraph_MutRef<BRepGraphInc::EdgeDef> aMut = myGraph.Builder().MutEdge(BRepGraph_EdgeId(1));
+    aMut->Tolerance                              = 0.6;
   }
   EXPECT_EQ(aLayer->myImmediateEvents.Length(), 0);
 }
@@ -283,9 +277,8 @@ TEST_F(BRepGraph_EventBusTest, MultipleSubscribers)
   myGraph.RegisterLayer(aFaceLayer);
 
   {
-    BRepGraph_MutRef<BRepGraphInc::EdgeDef> aMut =
-      myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
-    aMut->Tolerance = 0.5;
+    BRepGraph_MutRef<BRepGraphInc::EdgeDef> aMut = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
+    aMut->Tolerance                              = 0.5;
   }
 
   // Edge layer gets edge events, no face events.
@@ -308,9 +301,8 @@ TEST_F(BRepGraph_EventBusTest, DefaultSubscribedKinds_Zero)
   // Mutate - NameLayer should not receive modification events.
   // (We just verify no crash; NameLayer has no event tracking.)
   {
-    BRepGraph_MutRef<BRepGraphInc::EdgeDef> aMut =
-      myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
-    aMut->Tolerance = 0.5;
+    BRepGraph_MutRef<BRepGraphInc::EdgeDef> aMut = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
+    aMut->Tolerance                              = 0.5;
   }
   EXPECT_TRUE(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).IsModified);
 }
@@ -386,9 +378,8 @@ TEST_F(BRepGraph_EventBusTest, OverlappingSubscription_EdgeAndFace)
   myGraph.RegisterLayer(aLayer);
 
   {
-    BRepGraph_MutRef<BRepGraphInc::EdgeDef> aMut =
-      myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
-    aMut->Tolerance = 0.5;
+    BRepGraph_MutRef<BRepGraphInc::EdgeDef> aMut = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
+    aMut->Tolerance                              = 0.5;
   }
 
   // Should see both edge events and face events (from upward propagation).

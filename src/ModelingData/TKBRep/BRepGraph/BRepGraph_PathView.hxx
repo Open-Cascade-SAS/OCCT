@@ -110,7 +110,7 @@ public:
   //! Filter paths: keep only those that pass through theNode.
   [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_TopologyPath> FilterByInclude(
     const NCollection_Vector<BRepGraph_TopologyPath>& thePaths,
-    const BRepGraph_NodeId                              theNode) const;
+    const BRepGraph_NodeId                            theNode) const;
 
   //! Filter paths: remove those that pass through theNode.
   [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_TopologyPath> FilterByExclude(

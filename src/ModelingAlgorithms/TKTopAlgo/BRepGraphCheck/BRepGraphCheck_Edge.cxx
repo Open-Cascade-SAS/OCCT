@@ -33,7 +33,7 @@ void BRepGraphCheck::CheckEdgeMinimum(const BRepGraph&                          
                                       const BRepGraph_EdgeId                    theEdge,
                                       NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
 {
-  const BRepGraph::TopoView&         aDefs     = theGraph.Topo();
+  const BRepGraph::TopoView&   aDefs     = theGraph.Topo();
   const BRepGraphInc::EdgeDef& anEdgeDef = aDefs.Edge(theEdge);
 
   const bool anIsDegenerate = BRepGraph_Tool::Edge::Degenerated(theGraph, theEdge);
@@ -150,7 +150,7 @@ void BRepGraphCheck::CheckEdgeOnFace(const BRepGraph&                          t
                                      const bool                                theIsExact,
                                      NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
 {
-  const BRepGraph::TopoView&         aDefs     = theGraph.Topo();
+  const BRepGraph::TopoView&   aDefs     = theGraph.Topo();
   const BRepGraphInc::EdgeDef& anEdgeDef = aDefs.Edge(theEdge);
 
   // Skip degenerate edges for PCurve/SameParameter checks.
@@ -284,9 +284,9 @@ void BRepGraphCheck::CheckEdgeInShell(const BRepGraph&                          
                                       const int                                 theEdgeFaceCount,
                                       NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
 {
-  const BRepGraph::TopoView&         aDefs        = theGraph.Topo();
+  const BRepGraph::TopoView&   aDefs        = theGraph.Topo();
   const BRepGraphInc::EdgeDef& anEdgeDef    = aDefs.Edge(theEdge);
-  const BRepGraph_NodeId             aShellNodeId = BRepGraph_NodeId::Shell(theShell.Index);
+  const BRepGraph_NodeId       aShellNodeId = BRepGraph_NodeId::Shell(theShell.Index);
 
   // Skip degenerate edges.
   if (BRepGraph_Tool::Edge::Degenerated(theGraph, theEdge))

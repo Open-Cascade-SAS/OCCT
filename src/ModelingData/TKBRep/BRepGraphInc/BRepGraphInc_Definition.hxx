@@ -73,9 +73,9 @@ struct BaseDef
 //! Fields shared by every reference entry.
 struct BaseRef
 {
-  BRepGraph_RefId  RefId;       //!< Typed address (kind + per-kind index)
-  BRepGraph_NodeId ParentId;    //!< Parent topology node owning this reference usage
-  uint32_t         MutationGen = 0; //!< Per-reference mutation counter
+  BRepGraph_RefId  RefId;               //!< Typed address (kind + per-kind index)
+  BRepGraph_NodeId ParentId;            //!< Parent topology node owning this reference usage
+  uint32_t         MutationGen = 0;     //!< Per-reference mutation counter
   bool             IsRemoved   = false; //!< Soft-removal flag
 };
 
@@ -334,7 +334,7 @@ struct CoEdgeDef : public BaseDef
 //! Wire entity: ordered coedge references with closure flag.
 struct WireDef : public BaseDef
 {
-  bool IsClosed = false;
+  bool                                      IsClosed = false;
   NCollection_Vector<BRepGraph_CoEdgeRefId> CoEdgeRefIds; //!< Ordered coedge ref indices
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
@@ -370,8 +370,8 @@ struct FaceDef : public BaseDef
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
     InitVec(TriangulationRepIds, theAlloc, 2); // typically 1
-    InitVec(WireRefIds, theAlloc, 2);           // typically 1-2 (outer + holes)
-    InitVec(VertexRefIds, theAlloc, 2);         // typically 0
+    InitVec(WireRefIds, theAlloc, 2);          // typically 1-2 (outer + holes)
+    InitVec(VertexRefIds, theAlloc, 2);        // typically 0
   }
 };
 
@@ -379,26 +379,27 @@ struct FaceDef : public BaseDef
 struct ShellDef : public BaseDef
 {
   bool IsClosed = false; //!< True if shell forms a watertight (closed) boundary.
-  NCollection_Vector<BRepGraph_FaceRefId> FaceRefIds;     //!< Face ref indices
+  NCollection_Vector<BRepGraph_FaceRefId>  FaceRefIds;      //!< Face ref indices
   NCollection_Vector<BRepGraph_ChildRefId> FreeChildRefIds; //!< Non-face children (wires, edges)
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
-    InitVec(FaceRefIds, theAlloc, 8);        // typically 4-8 faces per shell
-    InitVec(FreeChildRefIds, theAlloc, 2);   // typically 0
+    InitVec(FaceRefIds, theAlloc, 8);      // typically 4-8 faces per shell
+    InitVec(FreeChildRefIds, theAlloc, 2); // typically 0
   }
 };
 
 //! Solid entity: ordered shell references with local locations.
 struct SolidDef : public BaseDef
 {
-  NCollection_Vector<BRepGraph_ShellRefId> ShellRefIds;    //!< Shell ref indices
-  NCollection_Vector<BRepGraph_ChildRefId> FreeChildRefIds; //!< Non-shell children (edges, vertices)
+  NCollection_Vector<BRepGraph_ShellRefId> ShellRefIds; //!< Shell ref indices
+  NCollection_Vector<BRepGraph_ChildRefId>
+    FreeChildRefIds; //!< Non-shell children (edges, vertices)
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
-    InitVec(ShellRefIds, theAlloc, 2);       // typically 1
-    InitVec(FreeChildRefIds, theAlloc, 2);   // typically 0
+    InitVec(ShellRefIds, theAlloc, 2);     // typically 1
+    InitVec(FreeChildRefIds, theAlloc, 2); // typically 0
   }
 };
 
@@ -430,8 +431,8 @@ struct CompSolidDef : public BaseDef
 struct ProductDef : public BaseDef
 {
   BRepGraph_NodeId   ShapeRootId; //!< Root topology for parts; invalid for assemblies
-  TopAbs_Orientation RootOrientation = TopAbs_FORWARD; //!< Orientation of the root shape
-  TopLoc_Location    RootLocation;                     //!< Location of the root shape
+  TopAbs_Orientation RootOrientation = TopAbs_FORWARD;            //!< Orientation of the root shape
+  TopLoc_Location    RootLocation;                                //!< Location of the root shape
   NCollection_Vector<BRepGraph_OccurrenceRefId> OccurrenceRefIds; //!< Occurrence ref indices
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)

@@ -36,7 +36,7 @@ NCollection_Vector<BRepGraph_EdgeId> BRepGraph_Analyze::FreeEdges(const BRepGrap
 
   for (int anEdgeIdx = 0; anEdgeIdx < aDefs.NbEdges(); ++anEdgeIdx)
   {
-    const BRepGraph_EdgeId             anEdgeId(anEdgeIdx);
+    const BRepGraph_EdgeId       anEdgeId(anEdgeIdx);
     const BRepGraphInc::EdgeDef& anEdge = aDefs.Edge(anEdgeId);
     if (anEdge.IsRemoved || anEdge.IsDegenerate)
       continue;
@@ -67,7 +67,7 @@ NCollection_Vector<std::pair<BRepGraph_EdgeId, BRepGraph_FaceId>> BRepGraph_Anal
       const BRepGraph_NodeId anEdgeNode = anEdges.Value(anEdgeIdx);
       if (anEdgeNode.NodeKind != BRepGraph_NodeId::Kind::Edge)
         continue;
-      const BRepGraph_EdgeId             anEdgeDefId(anEdgeNode.Index);
+      const BRepGraph_EdgeId       anEdgeDefId(anEdgeNode.Index);
       const BRepGraphInc::EdgeDef& anEdge = aDefs.Edge(anEdgeDefId);
       if (anEdge.IsDegenerate)
         continue;
@@ -93,7 +93,7 @@ NCollection_Vector<BRepGraph_EdgeId> BRepGraph_Analyze::ToleranceConflicts(
   NCollection_DataMap<const Geom_Curve*, NCollection_Vector<BRepGraph_EdgeId>> aCurveToEdges;
   for (int anEdgeIdx = 0; anEdgeIdx < theGraph.myData->myIncStorage.NbEdges(); ++anEdgeIdx)
   {
-    const BRepGraph_EdgeId             anEdgeId(anEdgeIdx);
+    const BRepGraph_EdgeId       anEdgeId(anEdgeIdx);
     const BRepGraphInc::EdgeDef& anEdgeDef = theGraph.myData->myIncStorage.Edge(anEdgeId);
     if (!anEdgeDef.Curve3DRepId.IsValid())
       continue;
@@ -180,7 +180,8 @@ NCollection_Vector<BRepGraph_WireId> BRepGraph_Analyze::DegenerateWires(const BR
       continue;
     for (int i = 0; i < aFaceEnt.WireRefIds.Length(); ++i)
     {
-      const BRepGraphInc::WireRefEntry& aWireRef = aStorage.WireRefEntry(aFaceEnt.WireRefIds.Value(i));
+      const BRepGraphInc::WireRefEntry& aWireRef =
+        aStorage.WireRefEntry(aFaceEnt.WireRefIds.Value(i));
       if (aWireRef.IsRemoved || !aWireRef.IsOuter || !aWireRef.WireDefId.IsValid(aDefs.NbWires()))
         continue;
       anIsOuterWire(aWireRef.WireDefId.Index) = 1;
@@ -216,7 +217,7 @@ NCollection_Vector<BRepGraph_SubGraph> BRepGraph_Analyze::Decompose(const BRepGr
   const BRepGraphInc_Storage& aStorage = theGraph.myData->myIncStorage;
 
   // Collect wire, edge and vertex children from a face def into a SubGraph.
-  const auto aCollectFaceChildren = [&](BRepGraph_SubGraph& theSub,
+  const auto aCollectFaceChildren = [&](BRepGraph_SubGraph&    theSub,
                                         const BRepGraph_FaceId theFaceDefId) {
     const BRepGraphInc::FaceDef& aFaceEnt = aStorage.Face(theFaceDefId);
     for (int aWireRefIdx = 0; aWireRefIdx < aFaceEnt.WireRefIds.Length(); ++aWireRefIdx)

@@ -506,14 +506,11 @@ TEST(BRepGraphCheck_AnalyzerTest, DisplacedVertex_DetectsInvalidPointOnCurve)
   {
     const BRepGraph_EdgeId                   anEdgeId = BRepGraph_EdgeId(anEdgeIter);
     NCollection_Vector<BRepGraphCheck_Issue> aIssues;
-    const BRepGraphInc::VertexRefEntry& aStartRef =
+    const BRepGraphInc::VertexRefEntry&      aStartRef =
       BRepGraph_Tool::Edge::StartVertex(aGraph, anEdgeId);
     if (aStartRef.VertexDefId.IsValid())
     {
-      BRepGraphCheck::CheckVertexOnEdge(aGraph,
-                                        aStartRef.VertexDefId,
-                                        anEdgeId,
-                                        aIssues);
+      BRepGraphCheck::CheckVertexOnEdge(aGraph, aStartRef.VertexDefId, anEdgeId, aIssues);
     }
     const BRepGraphInc::VertexRefEntry& anEndRef =
       BRepGraph_Tool::Edge::EndVertex(aGraph, anEdgeId);
@@ -561,7 +558,7 @@ TEST(BRepGraphCheck_AnalyzerTest, MissingPCurve_DetectsNoCurveOnSurface)
       continue;
 
     // Check if this edge has a PCurve on face 0.
-    const BRepGraph_FaceId            aFaceId(0);
+    const BRepGraph_FaceId         aFaceId(0);
     const BRepGraphInc::CoEdgeDef* aPCEntry =
       BRepGraph_Tool::Edge::FindPCurve(aGraph, BRepGraph_EdgeId(anEdgeId), aFaceId);
     if (aPCEntry != nullptr)

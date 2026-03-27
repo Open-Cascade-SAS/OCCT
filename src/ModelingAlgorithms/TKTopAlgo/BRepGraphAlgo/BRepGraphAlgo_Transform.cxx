@@ -92,7 +92,7 @@ void BRepGraphAlgo_Transform::applyLocationTransform(BRepGraph& theGraph, const 
   const NCollection_Vector<BRepGraph_NodeId> aRoots = theGraph.Paths().RootProducts();
   for (int anIdx = 0; anIdx < aRoots.Length(); ++anIdx)
   {
-    const BRepGraph_NodeId       aRootId = aRoots.Value(anIdx);
+    const BRepGraph_NodeId    aRootId = aRoots.Value(anIdx);
     BRepGraphInc::ProductDef& aProduct =
       theGraph.myData->myIncStorage.ChangeProduct(BRepGraph_ProductId(aRootId.Index));
     aProduct.RootLocation = aLoc * aProduct.RootLocation;

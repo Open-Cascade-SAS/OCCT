@@ -146,7 +146,7 @@ public:
   //! @param[in] theShell typed shell definition identifier
   //! @param[in] theFaceIndex zero-based face index within the shell
   [[nodiscard]] Standard_EXPORT BRepGraph_NodeId ShellFaceEntity(const BRepGraph_ShellId theShell,
-                                                              const int theFaceIndex) const;
+                                                                 const int theFaceIndex) const;
 
   //! Total number of nodes in the graph (all topology + assembly kinds).
   [[nodiscard]] Standard_EXPORT size_t NbNodes() const;
@@ -230,8 +230,8 @@ public:
   //! Return outer wire definition id of a face, or invalid if none.
   //! @param[in] theFace typed face definition identifier
   //! @return outer wire definition id
-  [[nodiscard]] Standard_EXPORT BRepGraph_WireId OuterWireOfFace(
-    const BRepGraph_FaceId theFace) const;
+  [[nodiscard]] Standard_EXPORT BRepGraph_WireId
+    OuterWireOfFace(const BRepGraph_FaceId theFace) const;
 
   //! Return all edge definitions incident to a vertex.
   //! @param[in] theVertexEntity vertex definition NodeId

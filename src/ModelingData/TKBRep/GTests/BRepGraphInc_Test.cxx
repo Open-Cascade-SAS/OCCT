@@ -760,7 +760,7 @@ TEST(BRepGraphIncTest, EdgeInternalVertex_Captured)
       EXPECT_GE(aIntVRef.VertexDefId.Index, 0);
       EXPECT_EQ(aIntVRef.Orientation, TopAbs_INTERNAL);
       // Verify the vertex point.
-      int aVtxIdx = aIntVRef.VertexDefId.Index;
+      int                            aVtxIdx = aIntVRef.VertexDefId.Index;
       const BRepGraphInc::VertexDef& aVtxEnt = aStorage.Vertex(BRepGraph_VertexId(aVtxIdx));
       EXPECT_NEAR(aVtxEnt.Point.X(), 5.0, Precision::Confusion());
       break;
@@ -994,8 +994,7 @@ TEST(BRepGraphIncTest, FaceExternalVertex_Captured)
   const BRepGraphInc::FaceDef& aFaceEnt = aStorage.Face(BRepGraph_FaceId(0));
   EXPECT_EQ(aFaceEnt.VertexRefIds.Length(), 1);
   if (aFaceEnt.VertexRefIds.Length() == 1)
-    EXPECT_EQ(aStorage.VertexRefEntry(aFaceEnt.VertexRefIds.Value(0)).Orientation,
-              TopAbs_EXTERNAL);
+    EXPECT_EQ(aStorage.VertexRefEntry(aFaceEnt.VertexRefIds.Value(0)).Orientation, TopAbs_EXTERNAL);
 }
 
 TEST(BRepGraphIncTest, FaceNoDirectVertices_EmptyVector)

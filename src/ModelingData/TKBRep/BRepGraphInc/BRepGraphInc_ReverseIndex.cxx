@@ -22,8 +22,9 @@ namespace
 {
 
 template <typename T>
-BRepGraph_VertexId resolveVertexDefId(const NCollection_Vector<BRepGraphInc::VertexRefEntry>& theVertexRefs,
-                                      const T                                                   theRefId)
+BRepGraph_VertexId resolveVertexDefId(
+  const NCollection_Vector<BRepGraphInc::VertexRefEntry>& theVertexRefs,
+  const T                                                 theRefId)
 {
   if (!theRefId.IsValid() || theRefId.Index < 0 || theRefId.Index >= theVertexRefs.Length())
     return BRepGraph_VertexId();
@@ -74,21 +75,21 @@ void BRepGraphInc_ReverseIndex::Clear()
 //=================================================================================================
 
 void BRepGraphInc_ReverseIndex::Build(
-  const NCollection_Vector<BRepGraphInc::EdgeDef>&      theEdges,
-  const NCollection_Vector<BRepGraphInc::CoEdgeDef>&    theCoEdges,
-  const NCollection_Vector<BRepGraphInc::WireDef>&      theWires,
-  const NCollection_Vector<BRepGraphInc::FaceDef>&      theFaces,
-  const NCollection_Vector<BRepGraphInc::ShellDef>&     theShells,
-  const NCollection_Vector<BRepGraphInc::SolidDef>&     theSolids,
-  const NCollection_Vector<BRepGraphInc::CompoundDef>&  theCompounds,
-  const NCollection_Vector<BRepGraphInc::CompSolidDef>& theCompSolids,
-  const NCollection_Vector<BRepGraphInc::ShellRefEntry>&   theShellRefs,
-  const NCollection_Vector<BRepGraphInc::FaceRefEntry>&    theFaceRefs,
-  const NCollection_Vector<BRepGraphInc::WireRefEntry>&    theWireRefs,
-  const NCollection_Vector<BRepGraphInc::CoEdgeRefEntry>&  theCoEdgeRefs,
-  const NCollection_Vector<BRepGraphInc::SolidRefEntry>&   theSolidRefs,
-  const NCollection_Vector<BRepGraphInc::ChildRefEntry>&   theChildRefs,
-  const NCollection_Vector<BRepGraphInc::VertexRefEntry>&  theVertexRefs)
+  const NCollection_Vector<BRepGraphInc::EdgeDef>&        theEdges,
+  const NCollection_Vector<BRepGraphInc::CoEdgeDef>&      theCoEdges,
+  const NCollection_Vector<BRepGraphInc::WireDef>&        theWires,
+  const NCollection_Vector<BRepGraphInc::FaceDef>&        theFaces,
+  const NCollection_Vector<BRepGraphInc::ShellDef>&       theShells,
+  const NCollection_Vector<BRepGraphInc::SolidDef>&       theSolids,
+  const NCollection_Vector<BRepGraphInc::CompoundDef>&    theCompounds,
+  const NCollection_Vector<BRepGraphInc::CompSolidDef>&   theCompSolids,
+  const NCollection_Vector<BRepGraphInc::ShellRefEntry>&  theShellRefs,
+  const NCollection_Vector<BRepGraphInc::FaceRefEntry>&   theFaceRefs,
+  const NCollection_Vector<BRepGraphInc::WireRefEntry>&   theWireRefs,
+  const NCollection_Vector<BRepGraphInc::CoEdgeRefEntry>& theCoEdgeRefs,
+  const NCollection_Vector<BRepGraphInc::SolidRefEntry>&  theSolidRefs,
+  const NCollection_Vector<BRepGraphInc::ChildRefEntry>&  theChildRefs,
+  const NCollection_Vector<BRepGraphInc::VertexRefEntry>& theVertexRefs)
 {
   myNbIndexedCoEdges = 0;
 
@@ -162,8 +163,8 @@ void BRepGraphInc_ReverseIndex::Build(
       if (aRefIdx < 0 || aRefIdx >= theCoEdgeRefs.Length())
         continue;
       const BRepGraphInc::CoEdgeRefEntry& aRef = theCoEdgeRefs.Value(aRefIdx);
-      if (aRef.IsRemoved || !aRef.CoEdgeDefId.IsValid()
-          || aRef.CoEdgeDefId.Index < 0 || aRef.CoEdgeDefId.Index >= theCoEdges.Length())
+      if (aRef.IsRemoved || !aRef.CoEdgeDefId.IsValid() || aRef.CoEdgeDefId.Index < 0
+          || aRef.CoEdgeDefId.Index >= theCoEdges.Length())
         continue;
       const BRepGraphInc::CoEdgeDef& aCoEdge = theCoEdges.Value(aRef.CoEdgeDefId.Index);
       if (aCoEdge.IsRemoved || !aCoEdge.EdgeDefId.IsValid())
@@ -253,8 +254,8 @@ void BRepGraphInc_ReverseIndex::Build(
       if (aRefIdx < 0 || aRefIdx >= theWireRefs.Length())
         continue;
       const BRepGraphInc::WireRefEntry& aRef = theWireRefs.Value(aRefIdx);
-      if (aRef.IsRemoved || !aRef.WireDefId.IsValid()
-          || aRef.WireDefId.Index < 0 || aRef.WireDefId.Index >= theWires.Length())
+      if (aRef.IsRemoved || !aRef.WireDefId.IsValid() || aRef.WireDefId.Index < 0
+          || aRef.WireDefId.Index >= theWires.Length())
         continue;
       if (theWires.Value(aRef.WireDefId.Index).IsRemoved)
         continue;
@@ -274,8 +275,8 @@ void BRepGraphInc_ReverseIndex::Build(
       if (aRefIdx < 0 || aRefIdx >= theFaceRefs.Length())
         continue;
       const BRepGraphInc::FaceRefEntry& aRef = theFaceRefs.Value(aRefIdx);
-      if (aRef.IsRemoved || !aRef.FaceDefId.IsValid()
-          || aRef.FaceDefId.Index < 0 || aRef.FaceDefId.Index >= theFaces.Length())
+      if (aRef.IsRemoved || !aRef.FaceDefId.IsValid() || aRef.FaceDefId.Index < 0
+          || aRef.FaceDefId.Index >= theFaces.Length())
         continue;
       if (theFaces.Value(aRef.FaceDefId.Index).IsRemoved)
         continue;
@@ -295,8 +296,8 @@ void BRepGraphInc_ReverseIndex::Build(
       if (aRefIdx < 0 || aRefIdx >= theShellRefs.Length())
         continue;
       const BRepGraphInc::ShellRefEntry& aRef = theShellRefs.Value(aRefIdx);
-      if (aRef.IsRemoved || !aRef.ShellDefId.IsValid()
-          || aRef.ShellDefId.Index < 0 || aRef.ShellDefId.Index >= theShells.Length())
+      if (aRef.IsRemoved || !aRef.ShellDefId.IsValid() || aRef.ShellDefId.Index < 0
+          || aRef.ShellDefId.Index >= theShells.Length())
         continue;
       if (theShells.Value(aRef.ShellDefId.Index).IsRemoved)
         continue;
@@ -323,8 +324,8 @@ void BRepGraphInc_ReverseIndex::Build(
       const BRepGraphInc::ChildRefEntry& aRef = theChildRefs.Value(aChildRefIdx);
       if (aRef.IsRemoved || !aRef.ChildDefId.IsValid())
         continue;
-      if (aRef.ChildDefId.NodeKind == BRepGraph_NodeId::Kind::Solid
-          && aRef.ChildDefId.Index >= 0 && aRef.ChildDefId.Index < theSolids.Length())
+      if (aRef.ChildDefId.NodeKind == BRepGraph_NodeId::Kind::Solid && aRef.ChildDefId.Index >= 0
+          && aRef.ChildDefId.Index < theSolids.Length())
         appendDirect(myCompoundsOfSolid, aRef.ChildDefId.Index, BRepGraph_CompoundId(aCompIdx));
       else if (aRef.ChildDefId.NodeKind == BRepGraph_NodeId::Kind::Shell
                && aRef.ChildDefId.Index >= 0 && aRef.ChildDefId.Index < theShells.Length())
@@ -334,14 +335,10 @@ void BRepGraphInc_ReverseIndex::Build(
         appendDirect(myCompoundsOfFace, aRef.ChildDefId.Index, BRepGraph_CompoundId(aCompIdx));
       else if (aRef.ChildDefId.NodeKind == BRepGraph_NodeId::Kind::Compound
                && aRef.ChildDefId.Index >= 0 && aRef.ChildDefId.Index < theCompounds.Length())
-        appendDirect(myCompoundsOfCompound,
-                     aRef.ChildDefId.Index,
-                     BRepGraph_CompoundId(aCompIdx));
+        appendDirect(myCompoundsOfCompound, aRef.ChildDefId.Index, BRepGraph_CompoundId(aCompIdx));
       else if (aRef.ChildDefId.NodeKind == BRepGraph_NodeId::Kind::CompSolid
                && aRef.ChildDefId.Index >= 0 && aRef.ChildDefId.Index < theCompSolids.Length())
-        appendDirect(myCompoundsOfCompSolid,
-                     aRef.ChildDefId.Index,
-                     BRepGraph_CompoundId(aCompIdx));
+        appendDirect(myCompoundsOfCompSolid, aRef.ChildDefId.Index, BRepGraph_CompoundId(aCompIdx));
     }
   }
 
@@ -358,8 +355,8 @@ void BRepGraphInc_ReverseIndex::Build(
       if (aRefIdx < 0 || aRefIdx >= theSolidRefs.Length())
         continue;
       const BRepGraphInc::SolidRefEntry& aRef = theSolidRefs.Value(aRefIdx);
-      if (aRef.IsRemoved || !aRef.SolidDefId.IsValid()
-          || aRef.SolidDefId.Index < 0 || aRef.SolidDefId.Index >= theSolids.Length())
+      if (aRef.IsRemoved || !aRef.SolidDefId.IsValid() || aRef.SolidDefId.Index < 0
+          || aRef.SolidDefId.Index >= theSolids.Length())
         continue;
       if (theSolids.Value(aRef.SolidDefId.Index).IsRemoved)
         continue;
@@ -380,8 +377,8 @@ void BRepGraphInc_ReverseIndex::Build(
       if (aRefIdx < 0 || aRefIdx >= theCoEdgeRefs.Length())
         continue;
       const BRepGraphInc::CoEdgeRefEntry& aRef = theCoEdgeRefs.Value(aRefIdx);
-      if (aRef.IsRemoved || !aRef.CoEdgeDefId.IsValid()
-          || aRef.CoEdgeDefId.Index < 0 || aRef.CoEdgeDefId.Index >= theCoEdges.Length())
+      if (aRef.IsRemoved || !aRef.CoEdgeDefId.IsValid() || aRef.CoEdgeDefId.Index < 0
+          || aRef.CoEdgeDefId.Index >= theCoEdges.Length())
         continue;
       if (theCoEdges.Value(aRef.CoEdgeDefId.Index).IsRemoved)
         continue;
@@ -393,22 +390,22 @@ void BRepGraphInc_ReverseIndex::Build(
 //=================================================================================================
 
 void BRepGraphInc_ReverseIndex::BuildDelta(
-  const NCollection_Vector<BRepGraphInc::EdgeDef>&      theEdges,
-  const NCollection_Vector<BRepGraphInc::CoEdgeDef>&    theCoEdges,
-  const NCollection_Vector<BRepGraphInc::WireDef>&      theWires,
-  const NCollection_Vector<BRepGraphInc::FaceDef>&      theFaces,
-  const NCollection_Vector<BRepGraphInc::ShellDef>&     theShells,
-  const NCollection_Vector<BRepGraphInc::SolidDef>&     theSolids,
-  const NCollection_Vector<BRepGraphInc::ShellRefEntry>&   theShellRefs,
-  const NCollection_Vector<BRepGraphInc::FaceRefEntry>&    theFaceRefs,
-  const NCollection_Vector<BRepGraphInc::WireRefEntry>&    theWireRefs,
-  const NCollection_Vector<BRepGraphInc::CoEdgeRefEntry>&  theCoEdgeRefs,
-  const NCollection_Vector<BRepGraphInc::VertexRefEntry>&  theVertexRefs,
-  const int                                                theOldNbEdges,
-  const int                                                theOldNbWires,
-  const int                                                theOldNbFaces,
-  const int                                                theOldNbShells,
-  const int                                                theOldNbSolids)
+  const NCollection_Vector<BRepGraphInc::EdgeDef>&        theEdges,
+  const NCollection_Vector<BRepGraphInc::CoEdgeDef>&      theCoEdges,
+  const NCollection_Vector<BRepGraphInc::WireDef>&        theWires,
+  const NCollection_Vector<BRepGraphInc::FaceDef>&        theFaces,
+  const NCollection_Vector<BRepGraphInc::ShellDef>&       theShells,
+  const NCollection_Vector<BRepGraphInc::SolidDef>&       theSolids,
+  const NCollection_Vector<BRepGraphInc::ShellRefEntry>&  theShellRefs,
+  const NCollection_Vector<BRepGraphInc::FaceRefEntry>&   theFaceRefs,
+  const NCollection_Vector<BRepGraphInc::WireRefEntry>&   theWireRefs,
+  const NCollection_Vector<BRepGraphInc::CoEdgeRefEntry>& theCoEdgeRefs,
+  const NCollection_Vector<BRepGraphInc::VertexRefEntry>& theVertexRefs,
+  const int                                               theOldNbEdges,
+  const int                                               theOldNbWires,
+  const int                                               theOldNbFaces,
+  const int                                               theOldNbShells,
+  const int                                               theOldNbSolids)
 {
   // Helper: resolve a VertexRefId to the corresponding VertexDefId (BRepGraph_VertexId).
   // Returns an invalid id if the ref id is invalid or out of range.
@@ -464,8 +461,8 @@ void BRepGraphInc_ReverseIndex::BuildDelta(
       if (aRefIdx < 0 || aRefIdx >= theCoEdgeRefs.Length())
         continue;
       const BRepGraphInc::CoEdgeRefEntry& aRef = theCoEdgeRefs.Value(aRefIdx);
-      if (aRef.IsRemoved || !aRef.CoEdgeDefId.IsValid()
-          || aRef.CoEdgeDefId.Index < 0 || aRef.CoEdgeDefId.Index >= theCoEdges.Length())
+      if (aRef.IsRemoved || !aRef.CoEdgeDefId.IsValid() || aRef.CoEdgeDefId.Index < 0
+          || aRef.CoEdgeDefId.Index >= theCoEdges.Length())
         continue;
       const BRepGraphInc::CoEdgeDef& aCoEdge = theCoEdges.Value(aRef.CoEdgeDefId.Index);
       if (aCoEdge.IsRemoved || !aCoEdge.EdgeDefId.IsValid())
@@ -551,8 +548,8 @@ void BRepGraphInc_ReverseIndex::BuildDelta(
       if (aRefIdx < 0 || aRefIdx >= theWireRefs.Length())
         continue;
       const BRepGraphInc::WireRefEntry& aRef = theWireRefs.Value(aRefIdx);
-      if (aRef.IsRemoved || !aRef.WireDefId.IsValid()
-          || aRef.WireDefId.Index < 0 || aRef.WireDefId.Index >= theWires.Length())
+      if (aRef.IsRemoved || !aRef.WireDefId.IsValid() || aRef.WireDefId.Index < 0
+          || aRef.WireDefId.Index >= theWires.Length())
         continue;
       if (theWires.Value(aRef.WireDefId.Index).IsRemoved)
         continue;
@@ -572,8 +569,8 @@ void BRepGraphInc_ReverseIndex::BuildDelta(
       if (aRefIdx < 0 || aRefIdx >= theFaceRefs.Length())
         continue;
       const BRepGraphInc::FaceRefEntry& aRef = theFaceRefs.Value(aRefIdx);
-      if (aRef.IsRemoved || !aRef.FaceDefId.IsValid()
-          || aRef.FaceDefId.Index < 0 || aRef.FaceDefId.Index >= theFaces.Length())
+      if (aRef.IsRemoved || !aRef.FaceDefId.IsValid() || aRef.FaceDefId.Index < 0
+          || aRef.FaceDefId.Index >= theFaces.Length())
         continue;
       if (theFaces.Value(aRef.FaceDefId.Index).IsRemoved)
         continue;
@@ -593,8 +590,8 @@ void BRepGraphInc_ReverseIndex::BuildDelta(
       if (aRefIdx < 0 || aRefIdx >= theShellRefs.Length())
         continue;
       const BRepGraphInc::ShellRefEntry& aRef = theShellRefs.Value(aRefIdx);
-      if (aRef.IsRemoved || !aRef.ShellDefId.IsValid()
-          || aRef.ShellDefId.Index < 0 || aRef.ShellDefId.Index >= theShells.Length())
+      if (aRef.IsRemoved || !aRef.ShellDefId.IsValid() || aRef.ShellDefId.Index < 0
+          || aRef.ShellDefId.Index >= theShells.Length())
         continue;
       if (theShells.Value(aRef.ShellDefId.Index).IsRemoved)
         continue;
@@ -780,12 +777,12 @@ void BRepGraphInc_ReverseIndex::UnbindEdgeFromFace(const BRepGraph_EdgeId theEdg
 //=================================================================================================
 
 bool BRepGraphInc_ReverseIndex::Validate(
-  const NCollection_Vector<BRepGraphInc::EdgeDef>&     theEdges,
-  const NCollection_Vector<BRepGraphInc::CoEdgeDef>&   theCoEdges,
-  const NCollection_Vector<BRepGraphInc::WireDef>&     theWires,
-  const NCollection_Vector<BRepGraphInc::FaceDef>&     theFaces,
-  const NCollection_Vector<BRepGraphInc::ShellDef>&    theShells,
-  const NCollection_Vector<BRepGraphInc::SolidDef>&    theSolids,
+  const NCollection_Vector<BRepGraphInc::EdgeDef>&        theEdges,
+  const NCollection_Vector<BRepGraphInc::CoEdgeDef>&      theCoEdges,
+  const NCollection_Vector<BRepGraphInc::WireDef>&        theWires,
+  const NCollection_Vector<BRepGraphInc::FaceDef>&        theFaces,
+  const NCollection_Vector<BRepGraphInc::ShellDef>&       theShells,
+  const NCollection_Vector<BRepGraphInc::SolidDef>&       theSolids,
   const NCollection_Vector<BRepGraphInc::ShellRefEntry>&  theShellRefs,
   const NCollection_Vector<BRepGraphInc::FaceRefEntry>&   theFaceRefs,
   const NCollection_Vector<BRepGraphInc::WireRefEntry>&   theWireRefs,
@@ -901,7 +898,7 @@ bool BRepGraphInc_ReverseIndex::Validate(
 
 void BRepGraphInc_ReverseIndex::BuildProductOccurrences(
   const NCollection_Vector<BRepGraphInc::OccurrenceDef>& theOccurrences,
-  const int                                                 theNbProducts)
+  const int                                              theNbProducts)
 {
   myProductToOccurrences.Clear();
   preSize(myProductToOccurrences, theNbProducts, myAllocator);

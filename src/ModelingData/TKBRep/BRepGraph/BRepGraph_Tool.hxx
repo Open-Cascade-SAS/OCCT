@@ -48,7 +48,7 @@ public:
   using CoEdgeRef      = BRepGraphInc::CoEdgeRef;
   using VertexRefEntry = BRepGraphInc::VertexRefEntry;
   using WireRefEntry   = BRepGraphInc::WireRefEntry;
-  using CoEdgeDef   = BRepGraphInc::CoEdgeDef;
+  using CoEdgeDef      = BRepGraphInc::CoEdgeDef;
 
   //! @brief Vertex geometry accessors.
   //!
@@ -63,7 +63,7 @@ public:
     //! @param[in] theRef    vertex incidence reference carrying Location
     //! @return transformed 3D point
     [[nodiscard]] Standard_EXPORT static gp_Pnt Pnt(const BRepGraph& theGraph,
-                                                    const VertexRef&  theRef);
+                                                    const VertexRef& theRef);
 
     //! Returns the vertex 3D point in definition frame (no Location applied).
     //! @param[in] theGraph  source graph
@@ -184,9 +184,8 @@ public:
     //! @param[in] theGraph source graph
     //! @param[in] theRef   coedge incidence reference carrying Location
     //! @return transformed curve handle
-    [[nodiscard]] Standard_EXPORT static occ::handle<Geom_Curve> Curve(
-      const BRepGraph&               theGraph,
-      const CoEdgeRef&               theRef);
+    [[nodiscard]] Standard_EXPORT static occ::handle<Geom_Curve> Curve(const BRepGraph& theGraph,
+                                                                       const CoEdgeRef& theRef);
 
     //! Returns the 3D curve adaptor in definition frame (identity Trsf).
     //! @param[in] theGraph source graph
@@ -202,8 +201,8 @@ public:
     //! @param[in] theRef   coedge incidence reference carrying Location
     //! @return curve adaptor with Location applied
     [[nodiscard]] Standard_EXPORT static GeomAdaptor_TransformedCurve CurveAdaptor(
-      const BRepGraph&               theGraph,
-      const CoEdgeRef&               theRef);
+      const BRepGraph& theGraph,
+      const CoEdgeRef& theRef);
 
     //! @name 3D Polygon
 
@@ -295,9 +294,9 @@ public:
     //! @param[in] theFace  typed face definition identifier
     //! @return adaptor handle, or null if PCurve or surface is missing
     [[nodiscard]] Standard_EXPORT static occ::handle<Adaptor3d_CurveOnSurface> CurveOnSurface(
-      const BRepGraph&               theGraph,
-      const CoEdgeRef&               theRef,
-      const BRepGraph_FaceId         theFace);
+      const BRepGraph&       theGraph,
+      const CoEdgeRef&       theRef,
+      const BRepGraph_FaceId theFace);
   };
 
   //! @brief CoEdge (half-edge) parametric curve and polygon accessors.
@@ -328,8 +327,8 @@ public:
     //! @param[in] theCoEdge coedge entity reference
     //! @return curve handle, or null handle if no PCurve
     [[nodiscard]] Standard_EXPORT static const occ::handle<Geom2d_Curve>& PCurve(
-      const BRepGraph&                  theGraph,
-      const CoEdgeDef&               theCoEdge);
+      const BRepGraph& theGraph,
+      const CoEdgeDef& theCoEdge);
 
     //! Returns a PCurve adaptor by coedge identifier.
     //! If the coedge has a stored PCurve (Curve2DRepIdx >= 0), returns it directly.
@@ -348,8 +347,8 @@ public:
     //! @param[in] theRef   coedge incidence reference
     //! @return 2D curve adaptor
     [[nodiscard]] Standard_EXPORT static Geom2dAdaptor_Curve PCurveAdaptor(
-      const BRepGraph&               theGraph,
-      const CoEdgeRef&               theRef);
+      const BRepGraph& theGraph,
+      const CoEdgeRef& theRef);
 
     //! Returns the UV endpoints from a CoEdge as (UV1, UV2).
     //! @param[in] theGraph  source graph

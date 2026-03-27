@@ -78,9 +78,9 @@ struct BRepGraph_RefUID
   }
 
 private:
-  size_t               myCounter;
+  size_t                myCounter;
   BRepGraph_RefId::Kind myKind;
-  uint32_t             myGeneration;
+  uint32_t              myGeneration;
 };
 
 template <>

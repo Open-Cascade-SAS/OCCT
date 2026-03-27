@@ -168,7 +168,7 @@ TEST(BRepGraph_GeometryTest, CoEdge_ParamRange_NonZero)
     for (int j = 0; j < aCoEdgeIdxs.Length(); ++j)
     {
       const BRepGraphInc::CoEdgeDef& aCE    = aGraph.Topo().CoEdge(aCoEdgeIdxs.Value(j));
-      const double                      aRange = aCE.ParamLast - aCE.ParamFirst;
+      const double                   aRange = aCE.ParamLast - aCE.ParamFirst;
       EXPECT_GT(std::abs(aRange), Precision::PConfusion())
         << "Edge " << i << " CoEdge " << j << " has zero parameter range";
       ++aCoEdgeCount;
@@ -634,7 +634,7 @@ TEST(BRepGraph_GeometryTest, Cylinder_SeamEdge_FindPCurve_WithOrientation)
         continue;
 
       // This is a seam edge - test oriented overload.
-      const BRepGraph_FaceId            aFaceId(aCE.FaceDefId.Index);
+      const BRepGraph_FaceId         aFaceId(aCE.FaceDefId.Index);
       const BRepGraphInc::CoEdgeDef* aPC_Fwd =
         BRepGraph_Tool::Edge::FindPCurve(aGraph, BRepGraph_EdgeId(i), aFaceId, TopAbs_FORWARD);
       const BRepGraphInc::CoEdgeDef* aPC_Rev =

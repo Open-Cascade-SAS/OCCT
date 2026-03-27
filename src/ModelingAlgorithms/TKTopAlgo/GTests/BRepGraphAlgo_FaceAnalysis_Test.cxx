@@ -181,8 +181,8 @@ TEST(BRepGraphAlgo_FaceAnalysisTest, VertexGluing_AveragedCoordinates)
   EXPECT_EQ(aResult.DegeneratedEdges.Length(), 1);
 
   // The degenerated edge's vertices should be merged.
-  const int   anEdgeIdx = aResult.DegeneratedEdges.Value(0).Index;
-  const BRepGraphInc::EdgeDef& anEdge = aGraph.Topo().Edge(BRepGraph_EdgeId(anEdgeIdx));
+  const int                    anEdgeIdx = aResult.DegeneratedEdges.Value(0).Index;
+  const BRepGraphInc::EdgeDef& anEdge    = aGraph.Topo().Edge(BRepGraph_EdgeId(anEdgeIdx));
   EXPECT_TRUE(anEdge.IsDegenerate);
   const BRepGraph_VertexId aStartVtx =
     BRepGraph_Tool::Edge::StartVertex(aGraph, BRepGraph_EdgeId(anEdgeIdx)).VertexDefId;

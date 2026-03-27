@@ -235,7 +235,7 @@ GraphSewingProfile runGraphSewingProfiled(const NCollection_Sequence<TopoDS_Shap
   BRepGraph aGraph;
   aGraph.Build(aCompound, theOptions.Parallel);
 
-  const auto aSetupEnd = std::chrono::steady_clock::now();
+  const auto aSetupEnd       = std::chrono::steady_clock::now();
   aProfile.PopulateBuildTime = std::chrono::duration<double>(aSetupEnd - aSetupStart).count();
 
   if (!aGraph.IsDone())
@@ -244,13 +244,13 @@ GraphSewingProfile runGraphSewingProfiled(const NCollection_Sequence<TopoDS_Shap
     return aProfile;
   }
 
-  const auto aSewingStart = std::chrono::steady_clock::now();
-  BRepGraphAlgo_Sewing::Result aResult = BRepGraphAlgo_Sewing::Perform(aGraph, theOptions);
-  const auto aSewingEnd = std::chrono::steady_clock::now();
-  aProfile.SewingTime   = std::chrono::duration<double>(aSewingEnd - aSewingStart).count();
-  aProfile.CoreTotalTime = std::chrono::duration<double>(aSewingEnd - aSetupStart).count();
-  aProfile.IsDone        = aResult.IsDone;
-  aProfile.NbSewnEdges   = aResult.IsDone ? aResult.NbSewnEdges : 0;
+  const auto                   aSewingStart = std::chrono::steady_clock::now();
+  BRepGraphAlgo_Sewing::Result aResult      = BRepGraphAlgo_Sewing::Perform(aGraph, theOptions);
+  const auto                   aSewingEnd   = std::chrono::steady_clock::now();
+  aProfile.SewingTime       = std::chrono::duration<double>(aSewingEnd - aSewingStart).count();
+  aProfile.CoreTotalTime    = std::chrono::duration<double>(aSewingEnd - aSetupStart).count();
+  aProfile.IsDone           = aResult.IsDone;
+  aProfile.NbSewnEdges      = aResult.IsDone ? aResult.NbSewnEdges : 0;
   aProfile.NbHistoryRecords = aGraph.History().NbRecords();
 
   if (!aResult.IsDone)
@@ -264,9 +264,8 @@ GraphSewingProfile runGraphSewingProfiled(const NCollection_Sequence<TopoDS_Shap
   const auto   aReconstructEnd   = std::chrono::steady_clock::now();
   aProfile.ReconstructionTime =
     std::chrono::duration<double>(aReconstructEnd - aReconstructStart).count();
-  aProfile.EndToEndTotalTime =
-    std::chrono::duration<double>(aReconstructEnd - aSetupStart).count();
-  aProfile.HasResultShape = !aSewnShape.IsNull();
+  aProfile.EndToEndTotalTime = std::chrono::duration<double>(aReconstructEnd - aSetupStart).count();
+  aProfile.HasResultShape    = !aSewnShape.IsNull();
 
   return aProfile;
 }
@@ -288,14 +287,14 @@ void printPhaseBreakdown(const char* theLabel,
   const double aEndToEndAvg    = theEndToEndSum / static_cast<double>(theNbIters);
 
   std::cout << "[  PERF   ]   " << theLabel << " phase timings:" << std::endl;
-  std::cout << "[  PERF   ]     graph/build/populate: min " << theBuildMin << " s, avg " << aBuildAvg
-            << " s" << std::endl;
+  std::cout << "[  PERF   ]     graph/build/populate: min " << theBuildMin << " s, avg "
+            << aBuildAvg << " s" << std::endl;
   std::cout << "[  PERF   ]     sewing core:          min " << theSewMin << " s, avg " << aSewAvg
             << " s" << std::endl;
-  std::cout << "[  PERF   ]     reconstruction:       min " << theReconstructMin
-            << " s, avg " << aReconstructAvg << " s" << std::endl;
-  std::cout << "[  PERF   ]     end-to-end total:     min " << theEndToEndMin
-            << " s, avg " << aEndToEndAvg << " s" << std::endl;
+  std::cout << "[  PERF   ]     reconstruction:       min " << theReconstructMin << " s, avg "
+            << aReconstructAvg << " s" << std::endl;
+  std::cout << "[  PERF   ]     end-to-end total:     min " << theEndToEndMin << " s, avg "
+            << aEndToEndAvg << " s" << std::endl;
 }
 
 double runGraphSewing(const NCollection_Sequence<TopoDS_Shape>& theFaces,
@@ -486,20 +485,20 @@ constexpr int THE_NB_PROFILE_ITERS = 50;
 
 TEST(BRepGraphAlgo_SewingTest, Profiling_Grid50x50_Sequential)
 {
-  int    aNbSewn           = 0;
-  double aTotal            = 0.0;
-  double aBuildMin         = RealLast();
-  double aBuildSum         = 0.0;
-  double aSewMin           = RealLast();
-  double aSewSum           = 0.0;
-  double aReconstructMin   = RealLast();
-  double aReconstructSum   = 0.0;
-  double aEndToEndMin      = RealLast();
-  double aEndToEndSum      = 0.0;
+  int    aNbSewn         = 0;
+  double aTotal          = 0.0;
+  double aBuildMin       = RealLast();
+  double aBuildSum       = 0.0;
+  double aSewMin         = RealLast();
+  double aSewSum         = 0.0;
+  double aReconstructMin = RealLast();
+  double aReconstructSum = 0.0;
+  double aEndToEndMin    = RealLast();
+  double aEndToEndSum    = 0.0;
   for (int anIter = 0; anIter < THE_NB_PROFILE_ITERS; ++anIter)
   {
     NCollection_Sequence<TopoDS_Shape> aFaces = buildFaceGrid(50, 50, 1.0, 1.0);
-    BRepGraphAlgo_Sewing::Options aOpts;
+    BRepGraphAlgo_Sewing::Options      aOpts;
     aOpts.Tolerance = 1.0e-04;
     aOpts.Parallel  = false;
 
@@ -538,20 +537,20 @@ TEST(BRepGraphAlgo_SewingTest, Profiling_Grid50x50_Sequential)
 
 TEST(BRepGraphAlgo_SewingTest, Profiling_Grid50x50_Parallel)
 {
-  int    aNbSewn           = 0;
-  double aTotal            = 0.0;
-  double aBuildMin         = RealLast();
-  double aBuildSum         = 0.0;
-  double aSewMin           = RealLast();
-  double aSewSum           = 0.0;
-  double aReconstructMin   = RealLast();
-  double aReconstructSum   = 0.0;
-  double aEndToEndMin      = RealLast();
-  double aEndToEndSum      = 0.0;
+  int    aNbSewn         = 0;
+  double aTotal          = 0.0;
+  double aBuildMin       = RealLast();
+  double aBuildSum       = 0.0;
+  double aSewMin         = RealLast();
+  double aSewSum         = 0.0;
+  double aReconstructMin = RealLast();
+  double aReconstructSum = 0.0;
+  double aEndToEndMin    = RealLast();
+  double aEndToEndSum    = 0.0;
   for (int anIter = 0; anIter < THE_NB_PROFILE_ITERS; ++anIter)
   {
     NCollection_Sequence<TopoDS_Shape> aFaces = buildFaceGrid(50, 50, 1.0, 1.0);
-    BRepGraphAlgo_Sewing::Options aOpts;
+    BRepGraphAlgo_Sewing::Options      aOpts;
     aOpts.Tolerance = 1.0e-04;
     aOpts.Parallel  = true;
 
@@ -590,20 +589,20 @@ TEST(BRepGraphAlgo_SewingTest, Profiling_Grid50x50_Parallel)
 
 TEST(BRepGraphAlgo_SewingTest, Profiling_Grid50x50_NoHistory)
 {
-  int    aNbSewn           = 0;
-  double aTotal            = 0.0;
-  double aBuildMin         = RealLast();
-  double aBuildSum         = 0.0;
-  double aSewMin           = RealLast();
-  double aSewSum           = 0.0;
-  double aReconstructMin   = RealLast();
-  double aReconstructSum   = 0.0;
-  double aEndToEndMin      = RealLast();
-  double aEndToEndSum      = 0.0;
+  int    aNbSewn         = 0;
+  double aTotal          = 0.0;
+  double aBuildMin       = RealLast();
+  double aBuildSum       = 0.0;
+  double aSewMin         = RealLast();
+  double aSewSum         = 0.0;
+  double aReconstructMin = RealLast();
+  double aReconstructSum = 0.0;
+  double aEndToEndMin    = RealLast();
+  double aEndToEndSum    = 0.0;
   for (int anIter = 0; anIter < THE_NB_PROFILE_ITERS; ++anIter)
   {
     NCollection_Sequence<TopoDS_Shape> aFaces = buildFaceGrid(50, 50, 1.0, 1.0);
-    BRepGraphAlgo_Sewing::Options aOpts;
+    BRepGraphAlgo_Sewing::Options      aOpts;
     aOpts.Tolerance   = 1.0e-04;
     aOpts.Parallel    = false;
     aOpts.HistoryMode = false;
@@ -644,16 +643,16 @@ TEST(BRepGraphAlgo_SewingTest, Profiling_Grid50x50_NoHistory)
 
 TEST(BRepGraphAlgo_SewingTest, Profiling_Boxes200_Sequential)
 {
-  int    aNbSewn           = 0;
-  double aTotal            = 0.0;
-  double aBuildMin         = RealLast();
-  double aBuildSum         = 0.0;
-  double aSewMin           = RealLast();
-  double aSewSum           = 0.0;
-  double aReconstructMin   = RealLast();
-  double aReconstructSum   = 0.0;
-  double aEndToEndMin      = RealLast();
-  double aEndToEndSum      = 0.0;
+  int    aNbSewn         = 0;
+  double aTotal          = 0.0;
+  double aBuildMin       = RealLast();
+  double aBuildSum       = 0.0;
+  double aSewMin         = RealLast();
+  double aSewSum         = 0.0;
+  double aReconstructMin = RealLast();
+  double aReconstructSum = 0.0;
+  double aEndToEndMin    = RealLast();
+  double aEndToEndSum    = 0.0;
   for (int anIter = 0; anIter < THE_NB_PROFILE_ITERS; ++anIter)
   {
     NCollection_Sequence<TopoDS_Shape> aFaces;

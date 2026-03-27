@@ -398,15 +398,17 @@ TEST(BRepGraph_ExplorerTest, PathsTo_MatchesExplorer_WhenEarlierCompoundRefRemov
   ASSERT_GE(aRootComp.ChildRefIds.Length(), 2);
 
   const BRepGraph_ChildRefId aRemovedRefId = aRootComp.ChildRefIds.Value(0);
-  const BRepGraph_NodeId aSecondChild = aGraph.Refs().Child(aRootComp.ChildRefIds.Value(1)).ChildDefId;
+  const BRepGraph_NodeId     aSecondChild =
+    aGraph.Refs().Child(aRootComp.ChildRefIds.Value(1)).ChildDefId;
   ASSERT_TRUE(aSecondChild.IsValid());
 
   // Capture one face path under the second child before removal.
   BRepGraph_TopologyPath aExpectedPath;
   BRepGraph_NodeId       aLeafNode;
   bool                   aPathFound = false;
-  for (BRepGraph_Explorer anExp(
-         aGraph, BRepGraph_NodeId::Compound(0), BRepGraph_NodeId::Kind::Face);
+  for (BRepGraph_Explorer anExp(aGraph,
+                                BRepGraph_NodeId::Compound(0),
+                                BRepGraph_NodeId::Kind::Face);
        anExp.More();
        anExp.Next())
   {
@@ -432,8 +434,9 @@ TEST(BRepGraph_ExplorerTest, PathsTo_MatchesExplorer_WhenEarlierCompoundRefRemov
 
   // Explorer should keep raw step indices and still report the same path.
   bool aExplorerHasPath = false;
-  for (BRepGraph_Explorer anExp(
-         aGraph, BRepGraph_NodeId::Compound(0), BRepGraph_NodeId::Kind::Face);
+  for (BRepGraph_Explorer anExp(aGraph,
+                                BRepGraph_NodeId::Compound(0),
+                                BRepGraph_NodeId::Kind::Face);
        anExp.More();
        anExp.Next())
   {
@@ -446,8 +449,9 @@ TEST(BRepGraph_ExplorerTest, PathsTo_MatchesExplorer_WhenEarlierCompoundRefRemov
   EXPECT_TRUE(aExplorerHasPath);
 
   // Reverse walk should agree with explorer.
-  const NCollection_Vector<BRepGraph_TopologyPath> aReversePaths = aGraph.Paths().PathsTo(aLeafNode);
-  bool                                              aReverseHasPath = false;
+  const NCollection_Vector<BRepGraph_TopologyPath> aReversePaths =
+    aGraph.Paths().PathsTo(aLeafNode);
+  bool aReverseHasPath = false;
   for (int i = 0; i < aReversePaths.Length(); ++i)
   {
     if (aReversePaths.Value(i) == aExpectedPath)
@@ -495,8 +499,9 @@ TEST(BRepGraph_ExplorerTest, PathsTo_MatchesExplorer_WhenFirstShellRefRemoved)
   ASSERT_EQ(aFaceNode.NodeKind, BRepGraph_NodeId::Kind::Face);
 
   // Reverse walk must return the same path (not a removed shell-ref ordinal).
-  const NCollection_Vector<BRepGraph_TopologyPath> aReversePaths = aGraph.Paths().PathsTo(aFaceNode);
-  bool                                              aReverseHasPath = false;
+  const NCollection_Vector<BRepGraph_TopologyPath> aReversePaths =
+    aGraph.Paths().PathsTo(aFaceNode);
+  bool aReverseHasPath = false;
   for (int i = 0; i < aReversePaths.Length(); ++i)
   {
     if (aReversePaths.Value(i) == aExpectedPath)

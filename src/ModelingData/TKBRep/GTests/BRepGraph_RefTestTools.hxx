@@ -26,8 +26,8 @@ namespace BRepGraph_TestTools
 {
 
 //=================================================================================================
-inline NCollection_Vector<BRepGraph_CoEdgeRefId> CoEdgeRefsOfWire(const BRepGraph&      theGraph,
-                                                                   const BRepGraph_WireId theWireId)
+inline NCollection_Vector<BRepGraph_CoEdgeRefId> CoEdgeRefsOfWire(const BRepGraph&       theGraph,
+                                                                  const BRepGraph_WireId theWireId)
 {
   NCollection_Vector<BRepGraph_CoEdgeRefId> aRefIds;
   const BRepGraph::RefsView&                aRefs       = theGraph.Refs();
@@ -44,16 +44,15 @@ inline NCollection_Vector<BRepGraph_CoEdgeRefId> CoEdgeRefsOfWire(const BRepGrap
 
 //=================================================================================================
 
-inline int CountCoEdgeRefsOfWire(const BRepGraph&      theGraph,
-                                 const BRepGraph_WireId theWireId)
+inline int CountCoEdgeRefsOfWire(const BRepGraph& theGraph, const BRepGraph_WireId theWireId)
 {
   return CoEdgeRefsOfWire(theGraph, theWireId).Length();
 }
 
 //=================================================================================================
 
-inline NCollection_Vector<BRepGraph_WireRefId> WireRefsOfFace(const BRepGraph&      theGraph,
-                                                               const BRepGraph_FaceId theFaceId)
+inline NCollection_Vector<BRepGraph_WireRefId> WireRefsOfFace(const BRepGraph&       theGraph,
+                                                              const BRepGraph_FaceId theFaceId)
 {
   NCollection_Vector<BRepGraph_WireRefId> aRefIds;
   const BRepGraph::RefsView&              aRefs       = theGraph.Refs();
@@ -70,15 +69,14 @@ inline NCollection_Vector<BRepGraph_WireRefId> WireRefsOfFace(const BRepGraph&  
 
 //=================================================================================================
 
-inline int CountWireRefsOfFace(const BRepGraph&      theGraph,
-                               const BRepGraph_FaceId theFaceId)
+inline int CountWireRefsOfFace(const BRepGraph& theGraph, const BRepGraph_FaceId theFaceId)
 {
   return WireRefsOfFace(theGraph, theFaceId).Length();
 }
 
 //=================================================================================================
 
-inline bool FaceUsesWire(const BRepGraph&      theGraph,
+inline bool FaceUsesWire(const BRepGraph&       theGraph,
                          const BRepGraph_FaceId theFaceId,
                          const BRepGraph_WireId theWireId)
 {
@@ -94,8 +92,8 @@ inline bool FaceUsesWire(const BRepGraph&      theGraph,
 
 //=================================================================================================
 
-inline NCollection_Vector<BRepGraph_FaceRefId> FaceRefsOfShell(const BRepGraph&       theGraph,
-                                                                const BRepGraph_ShellId theShellId)
+inline NCollection_Vector<BRepGraph_FaceRefId> FaceRefsOfShell(const BRepGraph&        theGraph,
+                                                               const BRepGraph_ShellId theShellId)
 {
   NCollection_Vector<BRepGraph_FaceRefId> aRefIds;
   const BRepGraph::RefsView&              aRefs       = theGraph.Refs();
@@ -112,16 +110,15 @@ inline NCollection_Vector<BRepGraph_FaceRefId> FaceRefsOfShell(const BRepGraph& 
 
 //=================================================================================================
 
-inline int CountFaceRefsOfShell(const BRepGraph&       theGraph,
-                                const BRepGraph_ShellId theShellId)
+inline int CountFaceRefsOfShell(const BRepGraph& theGraph, const BRepGraph_ShellId theShellId)
 {
   return FaceRefsOfShell(theGraph, theShellId).Length();
 }
 
 //=================================================================================================
 
-inline NCollection_Vector<BRepGraph_ShellRefId> ShellRefsOfSolid(const BRepGraph&       theGraph,
-                                                                  const BRepGraph_SolidId theSolidId)
+inline NCollection_Vector<BRepGraph_ShellRefId> ShellRefsOfSolid(const BRepGraph&        theGraph,
+                                                                 const BRepGraph_SolidId theSolidId)
 {
   NCollection_Vector<BRepGraph_ShellRefId> aRefIds;
   const BRepGraph::RefsView&               aRefs       = theGraph.Refs();
@@ -138,8 +135,7 @@ inline NCollection_Vector<BRepGraph_ShellRefId> ShellRefsOfSolid(const BRepGraph
 
 //=================================================================================================
 
-inline int CountShellRefsOfSolid(const BRepGraph&       theGraph,
-                                 const BRepGraph_SolidId theSolidId)
+inline int CountShellRefsOfSolid(const BRepGraph& theGraph, const BRepGraph_SolidId theSolidId)
 {
   return ShellRefsOfSolid(theGraph, theSolidId).Length();
 }
@@ -151,8 +147,8 @@ inline NCollection_Vector<BRepGraph_SolidRefId> SolidRefsOfCompSolid(
   const BRepGraph_CompSolidId theCompSolidId)
 {
   NCollection_Vector<BRepGraph_SolidRefId> aRefIds;
-  const BRepGraph::RefsView&               aRefs       = theGraph.Refs();
-  const BRepGraph_NodeId                   aParentNode = BRepGraph_NodeId::CompSolid(theCompSolidId.Index);
+  const BRepGraph::RefsView&               aRefs = theGraph.Refs();
+  const BRepGraph_NodeId aParentNode = BRepGraph_NodeId::CompSolid(theCompSolidId.Index);
   for (int aRefIdx = 0; aRefIdx < aRefs.NbSolidRefs(); ++aRefIdx)
   {
     const BRepGraph_SolidRefId         aRefId(aRefIdx);
@@ -173,8 +169,9 @@ inline int CountSolidRefsOfCompSolid(const BRepGraph&            theGraph,
 
 //=================================================================================================
 
-inline NCollection_Vector<BRepGraph_ChildRefId> ChildRefsOfParent(const BRepGraph&      theGraph,
-                                                                   const BRepGraph_NodeId theParentId)
+inline NCollection_Vector<BRepGraph_ChildRefId> ChildRefsOfParent(
+  const BRepGraph&       theGraph,
+  const BRepGraph_NodeId theParentId)
 {
   NCollection_Vector<BRepGraph_ChildRefId> aRefIds;
   const BRepGraph::RefsView&               aRefs = theGraph.Refs();
@@ -190,16 +187,14 @@ inline NCollection_Vector<BRepGraph_ChildRefId> ChildRefsOfParent(const BRepGrap
 
 //=================================================================================================
 
-inline int CountChildRefsOfParent(const BRepGraph&      theGraph,
-                                  const BRepGraph_NodeId theParentId)
+inline int CountChildRefsOfParent(const BRepGraph& theGraph, const BRepGraph_NodeId theParentId)
 {
   return ChildRefsOfParent(theGraph, theParentId).Length();
 }
 
 //=================================================================================================
 
-inline BRepGraph_WireId OuterWireOfFace(const BRepGraph&      theGraph,
-                                        const BRepGraph_FaceId theFaceId)
+inline BRepGraph_WireId OuterWireOfFace(const BRepGraph& theGraph, const BRepGraph_FaceId theFaceId)
 {
   return theGraph.Topo().OuterWireOfFace(theFaceId);
 }
@@ -232,8 +227,9 @@ inline int CountCoEdgeRefsOfWire(const BRepGraphInc_Storage& theStorage,
 
 //=================================================================================================
 
-inline NCollection_Vector<BRepGraph_WireRefId> WireRefsOfFace(const BRepGraphInc_Storage& theStorage,
-                                                               const BRepGraph_FaceId       theFaceId)
+inline NCollection_Vector<BRepGraph_WireRefId> WireRefsOfFace(
+  const BRepGraphInc_Storage& theStorage,
+  const BRepGraph_FaceId      theFaceId)
 {
   NCollection_Vector<BRepGraph_WireRefId> aRefIds;
   const BRepGraph_NodeId                  aParentNode = BRepGraph_NodeId::Face(theFaceId.Index);
@@ -250,7 +246,7 @@ inline NCollection_Vector<BRepGraph_WireRefId> WireRefsOfFace(const BRepGraphInc
 //=================================================================================================
 
 inline int CountWireRefsOfFace(const BRepGraphInc_Storage& theStorage,
-                               const BRepGraph_FaceId       theFaceId)
+                               const BRepGraph_FaceId      theFaceId)
 {
   return WireRefsOfFace(theStorage, theFaceId).Length();
 }
@@ -258,8 +254,8 @@ inline int CountWireRefsOfFace(const BRepGraphInc_Storage& theStorage,
 //=================================================================================================
 
 inline bool FaceUsesWire(const BRepGraphInc_Storage& theStorage,
-                         const BRepGraph_FaceId       theFaceId,
-                         const BRepGraph_WireId       theWireId)
+                         const BRepGraph_FaceId      theFaceId,
+                         const BRepGraph_WireId      theWireId)
 {
   const NCollection_Vector<BRepGraph_WireRefId> aWireRefs = WireRefsOfFace(theStorage, theFaceId);
   for (int aRefIdx = 0; aRefIdx < aWireRefs.Length(); ++aRefIdx)
@@ -330,8 +326,7 @@ inline NCollection_Vector<BRepGraph_SolidRefId> SolidRefsOfCompSolid(
   const BRepGraph_CompSolidId theCompSolidId)
 {
   NCollection_Vector<BRepGraph_SolidRefId> aRefIds;
-  const BRepGraph_NodeId                   aParentNode =
-    BRepGraph_NodeId::CompSolid(theCompSolidId.Index);
+  const BRepGraph_NodeId aParentNode = BRepGraph_NodeId::CompSolid(theCompSolidId.Index);
   for (int aRefIdx = 0; aRefIdx < theStorage.NbSolidRefs(); ++aRefIdx)
   {
     const BRepGraph_SolidRefId         aRefId(aRefIdx);
@@ -378,7 +373,7 @@ inline int CountChildRefsOfParent(const BRepGraphInc_Storage& theStorage,
 //=================================================================================================
 
 inline BRepGraph_WireId OuterWireOfFace(const BRepGraphInc_Storage& theStorage,
-                                        const BRepGraph_FaceId       theFaceId)
+                                        const BRepGraph_FaceId      theFaceId)
 {
   const NCollection_Vector<BRepGraph_WireRefId> aWireRefs = WireRefsOfFace(theStorage, theFaceId);
   for (int aRefIdx = 0; aRefIdx < aWireRefs.Length(); ++aRefIdx)

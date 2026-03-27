@@ -191,11 +191,11 @@ void BRepGraph_Builder::Perform(BRepGraph&                            theGraph,
     }
 
     BRepGraphInc::ProductDef& aProduct    = aStorage.AppendProduct();
-    const int                    aProductIdx = aStorage.NbProducts() - 1;
-    aProduct.Id                              = BRepGraph_NodeId::Product(aProductIdx);
-    aProduct.ShapeRootId                     = aTopologyRoot; // invalid if no topology matched
-    aProduct.RootOrientation                 = theShape.Orientation();
-    aProduct.RootLocation                    = theShape.Location();
+    const int                 aProductIdx = aStorage.NbProducts() - 1;
+    aProduct.Id                           = BRepGraph_NodeId::Product(aProductIdx);
+    aProduct.ShapeRootId                  = aTopologyRoot; // invalid if no topology matched
+    aProduct.RootOrientation              = theShape.Orientation();
+    aProduct.RootLocation                 = theShape.Location();
     theGraph.allocateUID(aProduct.Id);
   }
 

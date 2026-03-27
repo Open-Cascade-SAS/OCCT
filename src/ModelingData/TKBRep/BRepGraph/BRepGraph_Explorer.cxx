@@ -121,7 +121,7 @@ void BRepGraph_Explorer::explore(const BRepGraph&              theGraph,
   if (theDepthBudget <= 0)
     return;
 
-  using Kind                      = BRepGraph_NodeId::Kind;
+  using Kind                       = BRepGraph_NodeId::Kind;
   const BRepGraph::TopoView& aDefs = theGraph.Topo();
 
   // Check if current node matches target.
@@ -183,8 +183,7 @@ void BRepGraph_Explorer::explore(const BRepGraph&              theGraph,
     }
 
     case Kind::Solid: {
-      const BRepGraphInc::SolidDef& aSolid =
-        aDefs.Solid(BRepGraph_SolidId(theCurrentNode.Index));
+      const BRepGraphInc::SolidDef& aSolid = aDefs.Solid(BRepGraph_SolidId(theCurrentNode.Index));
       if (aSolid.IsRemoved)
         return;
 
@@ -213,15 +212,13 @@ void BRepGraph_Explorer::explore(const BRepGraph&              theGraph,
     }
 
     case Kind::Shell: {
-      const BRepGraphInc::ShellDef& aShell =
-        aDefs.Shell(BRepGraph_ShellId(theCurrentNode.Index));
+      const BRepGraphInc::ShellDef& aShell = aDefs.Shell(BRepGraph_ShellId(theCurrentNode.Index));
       if (aShell.IsRemoved)
         return;
 
       for (int i = 0; i < aShell.FaceRefIds.Length(); ++i)
       {
-        const BRepGraphInc::FaceRefEntry& aRef =
-          theGraph.Refs().Face(aShell.FaceRefIds.Value(i));
+        const BRepGraphInc::FaceRefEntry& aRef = theGraph.Refs().Face(aShell.FaceRefIds.Value(i));
         if (aRef.IsRemoved)
           continue;
 
@@ -249,8 +246,7 @@ void BRepGraph_Explorer::explore(const BRepGraph&              theGraph,
 
       for (int i = 0; i < aFace.WireRefIds.Length(); ++i)
       {
-        const BRepGraphInc::WireRefEntry& aRef =
-          theGraph.Refs().Wire(aFace.WireRefIds.Value(i));
+        const BRepGraphInc::WireRefEntry& aRef = theGraph.Refs().Wire(aFace.WireRefIds.Value(i));
         if (aRef.IsRemoved)
           continue;
 
@@ -314,8 +310,7 @@ void BRepGraph_Explorer::explore(const BRepGraph&              theGraph,
       if (anEdge.IsRemoved)
         return;
       // Start vertex (ordinal 0).
-      if (anEdge.StartVertexRefId.IsValid()
-          && BRepGraph_NodeId::Kind::Vertex == theTargetKind)
+      if (anEdge.StartVertexRefId.IsValid() && BRepGraph_NodeId::Kind::Vertex == theTargetKind)
       {
         BRepGraph_TopologyPath aChild = thePath;
         aChild.pushStep(0);
@@ -324,8 +319,7 @@ void BRepGraph_Explorer::explore(const BRepGraph&              theGraph,
         aRes.Leaf            = theGraph.Refs().Vertex(anEdge.StartVertexRefId).VertexDefId;
       }
       // End vertex (ordinal 1).
-      if (anEdge.EndVertexRefId.IsValid()
-          && BRepGraph_NodeId::Kind::Vertex == theTargetKind)
+      if (anEdge.EndVertexRefId.IsValid() && BRepGraph_NodeId::Kind::Vertex == theTargetKind)
       {
         BRepGraph_TopologyPath aChild = thePath;
         aChild.pushStep(1);
@@ -367,8 +361,8 @@ void BRepGraph_Explorer::explore(const BRepGraph&              theGraph,
         const int                 aNbComps = theGraph.Paths().NbComponents(aProdId);
         for (int i = 0; i < aNbComps; ++i)
         {
-          const BRepGraph_NodeId   anOccNode = theGraph.Paths().Component(aProdId, i);
-          BRepGraph_TopologyPath   aChild    = thePath;
+          const BRepGraph_NodeId anOccNode = theGraph.Paths().Component(aProdId, i);
+          BRepGraph_TopologyPath aChild    = thePath;
           aChild.pushStep(i);
           explore(theGraph, theTargetKind, anOccNode, aChild, aChildBudget);
         }

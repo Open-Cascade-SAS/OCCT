@@ -91,10 +91,12 @@ BRepGraph_NodeId remapNodeId(const BRepGraph_NodeId&              theId,
 
 //! Iterate active coedge reference entries for a wire in append order.
 template <typename FuncT>
-void forWireCoEdgeRefEntries(const BRepGraph& theGraph, const BRepGraph_WireId theWireId, FuncT&& theFunc)
+void forWireCoEdgeRefEntries(const BRepGraph&       theGraph,
+                             const BRepGraph_WireId theWireId,
+                             FuncT&&                theFunc)
 {
   const BRepGraphInc::WireDef& aWireEnt = theGraph.Topo().Wire(theWireId);
-  const BRepGraph::RefsView&         aRefs    = theGraph.Refs();
+  const BRepGraph::RefsView&   aRefs    = theGraph.Refs();
   for (int i = 0; i < aWireEnt.CoEdgeRefIds.Length(); ++i)
   {
     const BRepGraph_CoEdgeRefId         aRefId = aWireEnt.CoEdgeRefIds.Value(i);
@@ -109,10 +111,12 @@ void forWireCoEdgeRefEntries(const BRepGraph& theGraph, const BRepGraph_WireId t
 
 //! Iterate active wire reference entries for a face in append order.
 template <typename FuncT>
-void forFaceWireRefEntries(const BRepGraph& theGraph, const BRepGraph_FaceId theFaceId, FuncT&& theFunc)
+void forFaceWireRefEntries(const BRepGraph&       theGraph,
+                           const BRepGraph_FaceId theFaceId,
+                           FuncT&&                theFunc)
 {
   const BRepGraphInc::FaceDef& aFaceEnt = theGraph.Topo().Face(theFaceId);
-  const BRepGraph::RefsView&         aRefs    = theGraph.Refs();
+  const BRepGraph::RefsView&   aRefs    = theGraph.Refs();
   for (int i = 0; i < aFaceEnt.WireRefIds.Length(); ++i)
   {
     const BRepGraph_WireRefId         aRefId = aFaceEnt.WireRefIds.Value(i);
@@ -127,10 +131,12 @@ void forFaceWireRefEntries(const BRepGraph& theGraph, const BRepGraph_FaceId the
 
 //! Iterate active face reference entries for a shell in append order.
 template <typename FuncT>
-void forShellFaceRefEntries(const BRepGraph& theGraph, const BRepGraph_ShellId theShellId, FuncT&& theFunc)
+void forShellFaceRefEntries(const BRepGraph&        theGraph,
+                            const BRepGraph_ShellId theShellId,
+                            FuncT&&                 theFunc)
 {
   const BRepGraphInc::ShellDef& aShellEnt = theGraph.Topo().Shell(theShellId);
-  const BRepGraph::RefsView&          aRefs     = theGraph.Refs();
+  const BRepGraph::RefsView&    aRefs     = theGraph.Refs();
   for (int i = 0; i < aShellEnt.FaceRefIds.Length(); ++i)
   {
     const BRepGraph_FaceRefId         aRefId = aShellEnt.FaceRefIds.Value(i);
@@ -145,10 +151,12 @@ void forShellFaceRefEntries(const BRepGraph& theGraph, const BRepGraph_ShellId t
 
 //! Iterate active shell reference entries for a solid in append order.
 template <typename FuncT>
-void forSolidShellRefEntries(const BRepGraph& theGraph, const BRepGraph_SolidId theSolidId, FuncT&& theFunc)
+void forSolidShellRefEntries(const BRepGraph&        theGraph,
+                             const BRepGraph_SolidId theSolidId,
+                             FuncT&&                 theFunc)
 {
   const BRepGraphInc::SolidDef& aSolidEnt = theGraph.Topo().Solid(theSolidId);
-  const BRepGraph::RefsView&          aRefs     = theGraph.Refs();
+  const BRepGraph::RefsView&    aRefs     = theGraph.Refs();
   for (int i = 0; i < aSolidEnt.ShellRefIds.Length(); ++i)
   {
     const BRepGraph_ShellRefId         aRefId = aSolidEnt.ShellRefIds.Value(i);
@@ -163,12 +171,12 @@ void forSolidShellRefEntries(const BRepGraph& theGraph, const BRepGraph_SolidId 
 
 //! Iterate active child reference entries for a compound in append order.
 template <typename FuncT>
-void forCompoundChildRefEntries(const BRepGraph&          theGraph,
+void forCompoundChildRefEntries(const BRepGraph&           theGraph,
                                 const BRepGraph_CompoundId theCompId,
-                                FuncT&&                   theFunc)
+                                FuncT&&                    theFunc)
 {
   const BRepGraphInc::CompoundDef& aCompEnt = theGraph.Topo().Compound(theCompId);
-  const BRepGraph::RefsView&             aRefs    = theGraph.Refs();
+  const BRepGraph::RefsView&       aRefs    = theGraph.Refs();
   for (int i = 0; i < aCompEnt.ChildRefIds.Length(); ++i)
   {
     const BRepGraph_ChildRefId         aRefId = aCompEnt.ChildRefIds.Value(i);
@@ -183,12 +191,12 @@ void forCompoundChildRefEntries(const BRepGraph&          theGraph,
 
 //! Iterate active solid reference entries for a compsolid in append order.
 template <typename FuncT>
-void forCompSolidSolidRefEntries(const BRepGraph&           theGraph,
+void forCompSolidSolidRefEntries(const BRepGraph&            theGraph,
                                  const BRepGraph_CompSolidId theCompSolidId,
-                                 FuncT&&                    theFunc)
+                                 FuncT&&                     theFunc)
 {
   const BRepGraphInc::CompSolidDef& aCSEnt = theGraph.Topo().CompSolid(theCompSolidId);
-  const BRepGraph::RefsView&              aRefs  = theGraph.Refs();
+  const BRepGraph::RefsView&        aRefs  = theGraph.Refs();
   for (int i = 0; i < aCSEnt.SolidRefIds.Length(); ++i)
   {
     const BRepGraph_SolidRefId         aRefId = aCSEnt.SolidRefIds.Value(i);
@@ -364,8 +372,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
   {
     if (!aVertexMap.IsBound(anIdx))
       continue;
-    const BRepGraphInc::VertexDef& anOldVtx =
-      theGraph.Topo().Vertex(BRepGraph_VertexId(anIdx));
+    const BRepGraphInc::VertexDef& anOldVtx = theGraph.Topo().Vertex(BRepGraph_VertexId(anIdx));
     (void)aNewGraph.Builder().AddVertex(anOldVtx.Point, anOldVtx.Tolerance);
   }
 
@@ -390,11 +397,11 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
       BRepGraph_Tool::Edge::Curve(theGraph, BRepGraph_EdgeId(anIdx));
 
     BRepGraph_NodeId aNewEdgeId = aNewGraph.Builder().AddEdge(aNewStart,
-                                                                 aNewEnd,
-                                                                 aCurve,
-                                                                 anOldEdge.ParamFirst,
-                                                                 anOldEdge.ParamLast,
-                                                                 anOldEdge.Tolerance);
+                                                              aNewEnd,
+                                                              aCurve,
+                                                              anOldEdge.ParamFirst,
+                                                              anOldEdge.ParamLast,
+                                                              anOldEdge.Tolerance);
 
     // Copy edge properties.
     BRepGraph_MutRef<BRepGraphInc::EdgeDef> aNewEdge =
@@ -414,12 +421,15 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
       continue;
 
     NCollection_Vector<std::pair<BRepGraph_NodeId, TopAbs_Orientation>> aNewEntries;
-    forWireCoEdgeRefEntries(theGraph, BRepGraph_WireId(anIdx), [&](const BRepGraphInc::CoEdgeRefEntry& aCR) {
-      const BRepGraphInc::CoEdgeDef& aCoEdge       = theGraph.Topo().CoEdge(aCR.CoEdgeDefId);
-      const BRepGraph_NodeId               aNewEdgeDefId = remapId(aCoEdge.EdgeDefId);
-      if (aNewEdgeDefId.IsValid())
-        aNewEntries.Append(std::make_pair(aNewEdgeDefId, aCoEdge.Sense));
-    });
+    forWireCoEdgeRefEntries(theGraph,
+                            BRepGraph_WireId(anIdx),
+                            [&](const BRepGraphInc::CoEdgeRefEntry& aCR) {
+                              const BRepGraphInc::CoEdgeDef& aCoEdge =
+                                theGraph.Topo().CoEdge(aCR.CoEdgeDefId);
+                              const BRepGraph_NodeId aNewEdgeDefId = remapId(aCoEdge.EdgeDefId);
+                              if (aNewEdgeDefId.IsValid())
+                                aNewEntries.Append(std::make_pair(aNewEdgeDefId, aCoEdge.Sense));
+                            });
     (void)aNewGraph.Builder().AddWire(aNewEntries);
   }
 
@@ -437,19 +447,21 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
     BRepGraph_NodeId                     aNewOuterWire;
     NCollection_Vector<BRepGraph_NodeId> aNewInnerWires;
 
-    forFaceWireRefEntries(theGraph, BRepGraph_FaceId(anIdx), [&](const BRepGraphInc::WireRefEntry& aWR) {
-      const BRepGraph_NodeId       aRemapped = remapId(aWR.WireDefId);
-      if (!aRemapped.IsValid())
-        return;
-      if (aWR.IsOuter)
-      {
-        aNewOuterWire = aRemapped;
-      }
-      else
-      {
-        aNewInnerWires.Append(aRemapped);
-      }
-    });
+    forFaceWireRefEntries(theGraph,
+                          BRepGraph_FaceId(anIdx),
+                          [&](const BRepGraphInc::WireRefEntry& aWR) {
+                            const BRepGraph_NodeId aRemapped = remapId(aWR.WireDefId);
+                            if (!aRemapped.IsValid())
+                              return;
+                            if (aWR.IsOuter)
+                            {
+                              aNewOuterWire = aRemapped;
+                            }
+                            else
+                            {
+                              aNewInnerWires.Append(aRemapped);
+                            }
+                          });
 
     (void)aNewGraph.Builder().AddFace(aSurf, aNewOuterWire, aNewInnerWires, anOldFace.Tolerance);
 
@@ -471,7 +483,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
       theGraph.Topo().CoEdgesOfEdge(BRepGraph_EdgeId(anIdx));
     for (int aCEIter = 0; aCEIter < aCoEdgeIds.Length(); ++aCEIter)
     {
-      const BRepGraph_CoEdgeId             aCoEdgeId = aCoEdgeIds.Value(aCEIter);
+      const BRepGraph_CoEdgeId       aCoEdgeId = aCoEdgeIds.Value(aCEIter);
       const BRepGraphInc::CoEdgeDef& aCoEdge   = theGraph.Topo().CoEdge(aCoEdgeId);
       if (!aCoEdge.Curve2DRepId.IsValid())
         continue;
@@ -500,11 +512,14 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
     BRepGraph_NodeId aNewShellId = aNewGraph.Builder().AddShell();
 
     // Add faces to shell via transitional incidence entries.
-    forShellFaceRefEntries(theGraph, BRepGraph_ShellId(anIdx), [&](const BRepGraphInc::FaceRefEntry& aFR) {
-      const BRepGraph_NodeId       aNewFace = remapId(aFR.FaceDefId);
-      if (aNewFace.IsValid())
-        aNewGraph.Builder().AddFaceToShell(aNewShellId, aNewFace, aFR.Orientation);
-    });
+    forShellFaceRefEntries(
+      theGraph,
+      BRepGraph_ShellId(anIdx),
+      [&](const BRepGraphInc::FaceRefEntry& aFR) {
+        const BRepGraph_NodeId aNewFace = remapId(aFR.FaceDefId);
+        if (aNewFace.IsValid())
+          aNewGraph.Builder().AddFaceToShell(aNewShellId, aNewFace, aFR.Orientation);
+      });
   }
 
   // Solids.
@@ -515,11 +530,14 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
 
     BRepGraph_NodeId aNewSolidId = aNewGraph.Builder().AddSolid();
 
-    forSolidShellRefEntries(theGraph, BRepGraph_SolidId(anIdx), [&](const BRepGraphInc::ShellRefEntry& aSR) {
-      const BRepGraph_NodeId        aNewShell = remapId(aSR.ShellDefId);
-      if (aNewShell.IsValid())
-        aNewGraph.Builder().AddShellToSolid(aNewSolidId, aNewShell, aSR.Orientation);
-    });
+    forSolidShellRefEntries(
+      theGraph,
+      BRepGraph_SolidId(anIdx),
+      [&](const BRepGraphInc::ShellRefEntry& aSR) {
+        const BRepGraph_NodeId aNewShell = remapId(aSR.ShellDefId);
+        if (aNewShell.IsValid())
+          aNewGraph.Builder().AddShellToSolid(aNewSolidId, aNewShell, aSR.Orientation);
+      });
   }
 
   // Compounds.
@@ -529,11 +547,13 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
       continue;
 
     NCollection_Vector<BRepGraph_NodeId> aNewChildren;
-    forCompoundChildRefEntries(theGraph, BRepGraph_CompoundId(anIdx), [&](const BRepGraphInc::ChildRefEntry& aCR) {
-      const BRepGraph_NodeId        aNewChild = remapId(aCR.ChildDefId);
-      if (aNewChild.IsValid())
-        aNewChildren.Append(aNewChild);
-    });
+    forCompoundChildRefEntries(theGraph,
+                               BRepGraph_CompoundId(anIdx),
+                               [&](const BRepGraphInc::ChildRefEntry& aCR) {
+                                 const BRepGraph_NodeId aNewChild = remapId(aCR.ChildDefId);
+                                 if (aNewChild.IsValid())
+                                   aNewChildren.Append(aNewChild);
+                               });
     (void)aNewGraph.Builder().AddCompound(aNewChildren);
   }
 
@@ -547,10 +567,10 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
     forCompSolidSolidRefEntries(theGraph,
                                 BRepGraph_CompSolidId(anIdx),
                                 [&](const BRepGraphInc::SolidRefEntry& aSR) {
-      const BRepGraph_NodeId aNewSolid = remapId(aSR.SolidDefId);
-      if (aNewSolid.IsValid())
-        aNewSolids.Append(aNewSolid);
-    });
+                                  const BRepGraph_NodeId aNewSolid = remapId(aSR.SolidDefId);
+                                  if (aNewSolid.IsValid())
+                                    aNewSolids.Append(aNewSolid);
+                                });
     (void)aNewGraph.Builder().AddCompSolid(aNewSolids);
   }
 

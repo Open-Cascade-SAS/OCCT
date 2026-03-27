@@ -1596,8 +1596,8 @@ TEST(BRepGraphAlgo_DeduplicateTest, Pump_FullDedup_BackRefsAndNullify)
 
   // Run full dedup with all options enabled.
   BRepGraphAlgo_Deduplicate::Options anOpts;
-  anOpts.AnalyzeOnly       = false;
-  anOpts.HistoryMode       = true;
+  anOpts.AnalyzeOnly           = false;
+  anOpts.HistoryMode           = true;
   anOpts.MergeEntitiesWhenSafe = true;
 
   const BRepGraphAlgo_Deduplicate::Result aRes = BRepGraphAlgo_Deduplicate::Perform(aGraph, anOpts);
@@ -2082,7 +2082,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, AnalyzeOnly_MergeDefsWhenSafe_CountsOnly)
 
   BRepGraphAlgo_Deduplicate::Options anOpts;
   anOpts.MergeEntitiesWhenSafe = true;
-  anOpts.AnalyzeOnly       = true;
+  anOpts.AnalyzeOnly           = true;
 
   const BRepGraphAlgo_Deduplicate::Result aRes = BRepGraphAlgo_Deduplicate::Perform(aGraph, anOpts);
   // Counts should be reported.
@@ -2100,7 +2100,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, HistoryRecords_MergePhases)
 
   BRepGraphAlgo_Deduplicate::Options anOpts;
   anOpts.MergeEntitiesWhenSafe = true;
-  anOpts.HistoryMode       = true;
+  anOpts.HistoryMode           = true;
 
   const BRepGraphAlgo_Deduplicate::Result aRes = BRepGraphAlgo_Deduplicate::Perform(aGraph, anOpts);
 

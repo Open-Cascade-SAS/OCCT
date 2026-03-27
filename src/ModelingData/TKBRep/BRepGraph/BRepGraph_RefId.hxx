@@ -29,12 +29,12 @@ struct BRepGraph_RefId
   //! Enumeration of supported topology reference kinds.
   enum class Kind : int
   {
-    Shell  = 0, //!< Shell reference entries (usage of shell definitions)
-    Face   = 1, //!< Face reference entries (usage of face definitions)
-    Wire   = 2, //!< Wire reference entries (usage of wire definitions)
-    CoEdge = 3, //!< CoEdge reference entries (usage of coedge definitions)
-    Vertex = 4, //!< Vertex reference entries (usage of vertex definitions)
-    Solid  = 5, //!< Solid reference entries (usage of solid definitions)
+    Shell      = 0, //!< Shell reference entries (usage of shell definitions)
+    Face       = 1, //!< Face reference entries (usage of face definitions)
+    Wire       = 2, //!< Wire reference entries (usage of wire definitions)
+    CoEdge     = 3, //!< CoEdge reference entries (usage of coedge definitions)
+    Vertex     = 4, //!< Vertex reference entries (usage of vertex definitions)
+    Solid      = 5, //!< Solid reference entries (usage of solid definitions)
     Child      = 6, //!< Generic child references (usage of mixed node definitions)
     Occurrence = 7  //!< Occurrence references (usage of occurrence definitions)
   };
@@ -168,12 +168,12 @@ struct BRepGraph_RefId
   }
 };
 
-using BRepGraph_ShellRefId  = BRepGraph_RefId::Typed<BRepGraph_RefId::Kind::Shell>;
-using BRepGraph_FaceRefId   = BRepGraph_RefId::Typed<BRepGraph_RefId::Kind::Face>;
-using BRepGraph_WireRefId   = BRepGraph_RefId::Typed<BRepGraph_RefId::Kind::Wire>;
-using BRepGraph_CoEdgeRefId = BRepGraph_RefId::Typed<BRepGraph_RefId::Kind::CoEdge>;
-using BRepGraph_VertexRefId = BRepGraph_RefId::Typed<BRepGraph_RefId::Kind::Vertex>;
-using BRepGraph_SolidRefId  = BRepGraph_RefId::Typed<BRepGraph_RefId::Kind::Solid>;
+using BRepGraph_ShellRefId      = BRepGraph_RefId::Typed<BRepGraph_RefId::Kind::Shell>;
+using BRepGraph_FaceRefId       = BRepGraph_RefId::Typed<BRepGraph_RefId::Kind::Face>;
+using BRepGraph_WireRefId       = BRepGraph_RefId::Typed<BRepGraph_RefId::Kind::Wire>;
+using BRepGraph_CoEdgeRefId     = BRepGraph_RefId::Typed<BRepGraph_RefId::Kind::CoEdge>;
+using BRepGraph_VertexRefId     = BRepGraph_RefId::Typed<BRepGraph_RefId::Kind::Vertex>;
+using BRepGraph_SolidRefId      = BRepGraph_RefId::Typed<BRepGraph_RefId::Kind::Solid>;
 using BRepGraph_ChildRefId      = BRepGraph_RefId::Typed<BRepGraph_RefId::Kind::Child>;
 using BRepGraph_OccurrenceRefId = BRepGraph_RefId::Typed<BRepGraph_RefId::Kind::Occurrence>;
 

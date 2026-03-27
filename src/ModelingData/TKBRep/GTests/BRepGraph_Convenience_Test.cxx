@@ -83,25 +83,23 @@ TEST_F(BRepGraph_ConvenienceTest, NodeId_Factories_EqualToConstructor)
 TEST_F(BRepGraph_ConvenienceTest, EdgeDef_StartVertex_Valid)
 {
   ASSERT_GT(myGraph.Topo().NbEdges(), 0);
-  const BRepGraph_EdgeId anEdgeId(0);
-  const BRepGraphInc::VertexRefEntry& aStart =
-    BRepGraph_Tool::Edge::StartVertex(myGraph, anEdgeId);
+  const BRepGraph_EdgeId              anEdgeId(0);
+  const BRepGraphInc::VertexRefEntry& aStart = BRepGraph_Tool::Edge::StartVertex(myGraph, anEdgeId);
   EXPECT_TRUE(aStart.VertexDefId.IsValid());
 }
 
 TEST_F(BRepGraph_ConvenienceTest, EdgeDef_EndVertex_Valid)
 {
   ASSERT_GT(myGraph.Topo().NbEdges(), 0);
-  const BRepGraph_EdgeId anEdgeId(0);
-  const BRepGraphInc::VertexRefEntry& anEnd =
-    BRepGraph_Tool::Edge::EndVertex(myGraph, anEdgeId);
+  const BRepGraph_EdgeId              anEdgeId(0);
+  const BRepGraphInc::VertexRefEntry& anEnd = BRepGraph_Tool::Edge::EndVertex(myGraph, anEdgeId);
   EXPECT_TRUE(anEnd.VertexDefId.IsValid());
 }
 
 TEST_F(BRepGraph_ConvenienceTest, EdgeDef_StartEnd_DifferForNonClosed)
 {
   ASSERT_GT(myGraph.Topo().NbEdges(), 0);
-  const BRepGraph_EdgeId anEdgeId(0);
+  const BRepGraph_EdgeId       anEdgeId(0);
   const BRepGraphInc::EdgeDef& anEdge = myGraph.Topo().Edge(anEdgeId);
   if (!anEdge.IsClosed)
   {
@@ -116,7 +114,7 @@ TEST_F(BRepGraph_ConvenienceTest, EdgeDef_StartEnd_DifferForNonClosed)
 TEST_F(BRepGraph_ConvenienceTest, EdgeDef_RefIds_AreValid)
 {
   ASSERT_GT(myGraph.Topo().NbEdges(), 0);
-  const BRepGraph_EdgeId anEdgeId(0);
+  const BRepGraph_EdgeId       anEdgeId(0);
   const BRepGraphInc::EdgeDef& anEdge = myGraph.Topo().Edge(anEdgeId);
   EXPECT_TRUE(anEdge.StartVertexRefId.IsValid());
   EXPECT_TRUE(anEdge.EndVertexRefId.IsValid());
@@ -154,8 +152,8 @@ TEST_F(BRepGraph_ConvenienceTest, FindPCurve_ValidPair)
 
     for (int anEdgeIter = 0; anEdgeIter < aDefs.NbEdges(); ++anEdgeIter)
     {
-      const BRepGraphInc::EdgeDef& anEdgeDef = aDefs.Edge(BRepGraph_EdgeId(anEdgeIter));
-      const BRepGraphInc::CoEdgeDef*  aPCurve   = aDefs.FindPCurve(anEdgeDef.Id, aFaceNodeId);
+      const BRepGraphInc::EdgeDef&   anEdgeDef = aDefs.Edge(BRepGraph_EdgeId(anEdgeIter));
+      const BRepGraphInc::CoEdgeDef* aPCurve   = aDefs.FindPCurve(anEdgeDef.Id, aFaceNodeId);
       if (aPCurve != nullptr)
       {
         EXPECT_TRUE(aPCurve->Curve2DRepId.IsValid());
@@ -226,7 +224,7 @@ TEST_F(BRepGraph_ConvenienceTest, FindPCurve_WithOrientation_SeamEdge)
         continue;
 
       // Found seam edge - verify FindPCurve returns distinct entries for each orientation.
-      const BRepGraph_NodeId            aFaceDefId = aCE.FaceDefId;
+      const BRepGraph_NodeId         aFaceDefId = aCE.FaceDefId;
       const BRepGraphInc::CoEdgeDef* aPCF =
         aDefs.FindPCurve(anEdgeDef.Id, aFaceDefId, TopAbs_FORWARD);
       const BRepGraphInc::CoEdgeDef* aPCR =

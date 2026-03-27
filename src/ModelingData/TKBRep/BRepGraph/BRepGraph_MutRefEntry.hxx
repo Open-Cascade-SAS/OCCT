@@ -61,6 +61,7 @@ public:
   BRepGraph_MutRefEntry& operator=(const BRepGraph_MutRefEntry&) = delete;
 
   [[nodiscard]] RefT* operator->() { return myRef; }
+
   [[nodiscard]] RefT& operator*() { return *myRef; }
 
 private:

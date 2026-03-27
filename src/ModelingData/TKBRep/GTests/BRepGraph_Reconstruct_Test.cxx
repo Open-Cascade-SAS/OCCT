@@ -341,7 +341,7 @@ TEST(BRepGraph_ReconstructTest, Face_OrientationPreserved)
     BRepGraph_TestTools::FaceRefsOfShell(aGraph, BRepGraph_ShellId(0));
   for (int aRefIdx = 0; aRefIdx < aFaceRefs.Length(); ++aRefIdx)
   {
-    const BRepGraphInc::FaceRefEntry& aFaceRef = aGraph.Refs().Face(aFaceRefs.Value(aRefIdx));
+    const BRepGraphInc::FaceRefEntry& aFaceRef      = aGraph.Refs().Face(aFaceRefs.Value(aRefIdx));
     const TopAbs_Orientation          anExpectedOri = aFaceRef.Orientation;
 
     TopoDS_Shape aReconFace = aGraph.Shapes().ReconstructFace(aFaceRef.FaceDefId);
@@ -451,16 +451,19 @@ TEST(BRepGraph_ReconstructTest, AfterVertexMutation_ModifiedFlagAndPointChanged)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Find a vertex belonging to face 0 and move it significantly.
-  const BRepGraph_WireId anOuterWire = BRepGraph_TestTools::OuterWireOfFace(aGraph, BRepGraph_FaceId(0));
+  const BRepGraph_WireId anOuterWire =
+    BRepGraph_TestTools::OuterWireOfFace(aGraph, BRepGraph_FaceId(0));
   ASSERT_TRUE(anOuterWire.IsValid());
 
   const NCollection_Vector<BRepGraph_CoEdgeRefId> aCoEdgeRefs =
     BRepGraph_TestTools::CoEdgeRefsOfWire(aGraph, anOuterWire);
   ASSERT_GT(aCoEdgeRefs.Length(), 0);
 
-  const BRepGraphInc::CoEdgeRefEntry& aFirstCR = aGraph.Refs().CoEdge(aCoEdgeRefs.First());
-  const BRepGraphInc::CoEdgeDef& aFirstCoEdge = aGraph.Topo().CoEdge(aFirstCR.CoEdgeDefId);
-  const int aVertIdx = BRepGraph_Tool::Edge::StartVertex(aGraph, BRepGraph_EdgeId(aFirstCoEdge.EdgeDefId)).VertexDefId.Index;
+  const BRepGraphInc::CoEdgeRefEntry& aFirstCR     = aGraph.Refs().CoEdge(aCoEdgeRefs.First());
+  const BRepGraphInc::CoEdgeDef&      aFirstCoEdge = aGraph.Topo().CoEdge(aFirstCR.CoEdgeDefId);
+  const int                           aVertIdx =
+    BRepGraph_Tool::Edge::StartVertex(aGraph, BRepGraph_EdgeId(aFirstCoEdge.EdgeDefId))
+      .VertexDefId.Index;
   ASSERT_GE(aVertIdx, 0);
 
   // Mutate: move vertex by 5 units in Z.
