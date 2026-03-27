@@ -174,6 +174,130 @@ namespace
 
 constexpr int THE_NB_PERF_ITERS = 10;
 
+struct GraphSewingProfile
+{
+  double PopulateBuildTime  = 0.0;
+  double SewingTime         = 0.0;
+  double ReconstructionTime = 0.0;
+  double CoreTotalTime      = 0.0;
+  double EndToEndTotalTime  = 0.0;
+  bool   IsDone             = false;
+  bool   HasResultShape     = false;
+  int    NbSewnEdges        = 0;
+  int    NbHistoryRecords   = 0;
+};
+
+TopoDS_Shape reconstructSewnShape(const BRepGraph& theGraph)
+{
+  const BRepGraph::TopoView& aTopo = theGraph.Topo();
+  if (aTopo.NbCompounds() > 0)
+  {
+    return theGraph.Shapes().Reconstruct(BRepGraph_NodeId::Compound(0));
+  }
+  if (aTopo.NbCompSolids() > 0)
+  {
+    return theGraph.Shapes().Reconstruct(BRepGraph_NodeId::CompSolid(0));
+  }
+  if (aTopo.NbSolids() > 0)
+  {
+    return theGraph.Shapes().Reconstruct(BRepGraph_NodeId::Solid(0));
+  }
+  if (aTopo.NbShells() > 0)
+  {
+    return theGraph.Shapes().Reconstruct(BRepGraph_NodeId::Shell(0));
+  }
+
+  BRep_Builder    aBB;
+  TopoDS_Compound aCompound;
+  aBB.MakeCompound(aCompound);
+  for (int aFaceIdx = 0; aFaceIdx < aTopo.NbFaces(); ++aFaceIdx)
+  {
+    aBB.Add(aCompound, theGraph.Shapes().ReconstructFace(BRepGraph_FaceId(aFaceIdx)));
+  }
+  return aCompound;
+}
+
+GraphSewingProfile runGraphSewingProfiled(const NCollection_Sequence<TopoDS_Shape>& theFaces,
+                                          const BRepGraphAlgo_Sewing::Options&      theOptions)
+{
+  GraphSewingProfile aProfile;
+
+  const auto aSetupStart = std::chrono::steady_clock::now();
+
+  BRep_Builder    aBB;
+  TopoDS_Compound aCompound;
+  aBB.MakeCompound(aCompound);
+  for (int anIdx = 1; anIdx <= theFaces.Length(); ++anIdx)
+  {
+    aBB.Add(aCompound, theFaces.Value(anIdx));
+  }
+
+  BRepGraph aGraph;
+  aGraph.Build(aCompound, theOptions.Parallel);
+
+  const auto aSetupEnd = std::chrono::steady_clock::now();
+  aProfile.PopulateBuildTime = std::chrono::duration<double>(aSetupEnd - aSetupStart).count();
+
+  if (!aGraph.IsDone())
+  {
+    aProfile.CoreTotalTime = aProfile.PopulateBuildTime;
+    return aProfile;
+  }
+
+  const auto aSewingStart = std::chrono::steady_clock::now();
+  BRepGraphAlgo_Sewing::Result aResult = BRepGraphAlgo_Sewing::Perform(aGraph, theOptions);
+  const auto aSewingEnd = std::chrono::steady_clock::now();
+  aProfile.SewingTime   = std::chrono::duration<double>(aSewingEnd - aSewingStart).count();
+  aProfile.CoreTotalTime = std::chrono::duration<double>(aSewingEnd - aSetupStart).count();
+  aProfile.IsDone        = aResult.IsDone;
+  aProfile.NbSewnEdges   = aResult.IsDone ? aResult.NbSewnEdges : 0;
+  aProfile.NbHistoryRecords = aGraph.History().NbRecords();
+
+  if (!aResult.IsDone)
+  {
+    aProfile.EndToEndTotalTime = aProfile.CoreTotalTime;
+    return aProfile;
+  }
+
+  const auto   aReconstructStart = std::chrono::steady_clock::now();
+  TopoDS_Shape aSewnShape        = reconstructSewnShape(aGraph);
+  const auto   aReconstructEnd   = std::chrono::steady_clock::now();
+  aProfile.ReconstructionTime =
+    std::chrono::duration<double>(aReconstructEnd - aReconstructStart).count();
+  aProfile.EndToEndTotalTime =
+    std::chrono::duration<double>(aReconstructEnd - aSetupStart).count();
+  aProfile.HasResultShape = !aSewnShape.IsNull();
+
+  return aProfile;
+}
+
+void printPhaseBreakdown(const char* theLabel,
+                         int         theNbIters,
+                         double      theBuildMin,
+                         double      theBuildSum,
+                         double      theSewMin,
+                         double      theSewSum,
+                         double      theReconstructMin,
+                         double      theReconstructSum,
+                         double      theEndToEndMin,
+                         double      theEndToEndSum)
+{
+  const double aBuildAvg       = theBuildSum / static_cast<double>(theNbIters);
+  const double aSewAvg         = theSewSum / static_cast<double>(theNbIters);
+  const double aReconstructAvg = theReconstructSum / static_cast<double>(theNbIters);
+  const double aEndToEndAvg    = theEndToEndSum / static_cast<double>(theNbIters);
+
+  std::cout << "[  PERF   ]   " << theLabel << " phase timings:" << std::endl;
+  std::cout << "[  PERF   ]     graph/build/populate: min " << theBuildMin << " s, avg " << aBuildAvg
+            << " s" << std::endl;
+  std::cout << "[  PERF   ]     sewing core:          min " << theSewMin << " s, avg " << aSewAvg
+            << " s" << std::endl;
+  std::cout << "[  PERF   ]     reconstruction:       min " << theReconstructMin
+            << " s, avg " << aReconstructAvg << " s" << std::endl;
+  std::cout << "[  PERF   ]     end-to-end total:     min " << theEndToEndMin
+            << " s, avg " << aEndToEndAvg << " s" << std::endl;
+}
+
 double runGraphSewing(const NCollection_Sequence<TopoDS_Shape>& theFaces,
                       bool                                      theParallel,
                       int&                                      theNbSewn)
@@ -362,121 +486,174 @@ constexpr int THE_NB_PROFILE_ITERS = 50;
 
 TEST(BRepGraphAlgo_SewingTest, Profiling_Grid50x50_Sequential)
 {
-  int    aNbSewn = 0;
-  double aTotal  = 0.0;
+  int    aNbSewn           = 0;
+  double aTotal            = 0.0;
+  double aBuildMin         = RealLast();
+  double aBuildSum         = 0.0;
+  double aSewMin           = RealLast();
+  double aSewSum           = 0.0;
+  double aReconstructMin   = RealLast();
+  double aReconstructSum   = 0.0;
+  double aEndToEndMin      = RealLast();
+  double aEndToEndSum      = 0.0;
   for (int anIter = 0; anIter < THE_NB_PROFILE_ITERS; ++anIter)
   {
-    NCollection_Sequence<TopoDS_Shape> aFaces      = buildFaceGrid(50, 50, 1.0, 1.0);
-    auto                               aTimerStart = std::chrono::steady_clock::now();
-
-    BRep_Builder    aBB;
-    TopoDS_Compound aCompound;
-    aBB.MakeCompound(aCompound);
-    for (int anIdx = 1; anIdx <= aFaces.Length(); ++anIdx)
-      aBB.Add(aCompound, aFaces.Value(anIdx));
-
+    NCollection_Sequence<TopoDS_Shape> aFaces = buildFaceGrid(50, 50, 1.0, 1.0);
     BRepGraphAlgo_Sewing::Options aOpts;
     aOpts.Tolerance = 1.0e-04;
     aOpts.Parallel  = false;
 
-    BRepGraph aGraph;
-    aGraph.Build(aCompound);
-    BRepGraphAlgo_Sewing::Result aResult = BRepGraphAlgo_Sewing::Perform(aGraph, aOpts);
-
-    auto aTimerEnd = std::chrono::steady_clock::now();
-    aTotal += std::chrono::duration<double>(aTimerEnd - aTimerStart).count();
+    GraphSewingProfile aProfile = runGraphSewingProfiled(aFaces, aOpts);
+    aTotal += aProfile.CoreTotalTime;
+    aBuildMin = std::min(aBuildMin, aProfile.PopulateBuildTime);
+    aBuildSum += aProfile.PopulateBuildTime;
+    aSewMin = std::min(aSewMin, aProfile.SewingTime);
+    aSewSum += aProfile.SewingTime;
+    aReconstructMin = std::min(aReconstructMin, aProfile.ReconstructionTime);
+    aReconstructSum += aProfile.ReconstructionTime;
+    aEndToEndMin = std::min(aEndToEndMin, aProfile.EndToEndTotalTime);
+    aEndToEndSum += aProfile.EndToEndTotalTime;
     if (anIter == 0)
     {
-      ASSERT_TRUE(aResult.IsDone);
-      aNbSewn = aResult.NbSewnEdges;
+      ASSERT_TRUE(aProfile.IsDone);
+      ASSERT_TRUE(aProfile.HasResultShape);
+      aNbSewn = aProfile.NbSewnEdges;
     }
   }
   std::cout << "[  PERF   ] 2500 faces (50x50), sequential, " << THE_NB_PROFILE_ITERS
             << " iters: " << aTotal << " s total, " << aTotal / THE_NB_PROFILE_ITERS
             << " s/iter, sewn: " << aNbSewn << std::endl;
+  printPhaseBreakdown("sequential",
+                      THE_NB_PROFILE_ITERS,
+                      aBuildMin,
+                      aBuildSum,
+                      aSewMin,
+                      aSewSum,
+                      aReconstructMin,
+                      aReconstructSum,
+                      aEndToEndMin,
+                      aEndToEndSum);
   EXPECT_GT(aNbSewn, 4800);
 }
 
 TEST(BRepGraphAlgo_SewingTest, Profiling_Grid50x50_Parallel)
 {
-  int    aNbSewn = 0;
-  double aTotal  = 0.0;
+  int    aNbSewn           = 0;
+  double aTotal            = 0.0;
+  double aBuildMin         = RealLast();
+  double aBuildSum         = 0.0;
+  double aSewMin           = RealLast();
+  double aSewSum           = 0.0;
+  double aReconstructMin   = RealLast();
+  double aReconstructSum   = 0.0;
+  double aEndToEndMin      = RealLast();
+  double aEndToEndSum      = 0.0;
   for (int anIter = 0; anIter < THE_NB_PROFILE_ITERS; ++anIter)
   {
-    NCollection_Sequence<TopoDS_Shape> aFaces      = buildFaceGrid(50, 50, 1.0, 1.0);
-    auto                               aTimerStart = std::chrono::steady_clock::now();
-
-    BRep_Builder    aBB;
-    TopoDS_Compound aCompound;
-    aBB.MakeCompound(aCompound);
-    for (int anIdx = 1; anIdx <= aFaces.Length(); ++anIdx)
-      aBB.Add(aCompound, aFaces.Value(anIdx));
-
+    NCollection_Sequence<TopoDS_Shape> aFaces = buildFaceGrid(50, 50, 1.0, 1.0);
     BRepGraphAlgo_Sewing::Options aOpts;
     aOpts.Tolerance = 1.0e-04;
     aOpts.Parallel  = true;
 
-    BRepGraph aGraph;
-    aGraph.Build(aCompound, true);
-    BRepGraphAlgo_Sewing::Result aResult = BRepGraphAlgo_Sewing::Perform(aGraph, aOpts);
-
-    auto aTimerEnd = std::chrono::steady_clock::now();
-    aTotal += std::chrono::duration<double>(aTimerEnd - aTimerStart).count();
+    GraphSewingProfile aProfile = runGraphSewingProfiled(aFaces, aOpts);
+    aTotal += aProfile.CoreTotalTime;
+    aBuildMin = std::min(aBuildMin, aProfile.PopulateBuildTime);
+    aBuildSum += aProfile.PopulateBuildTime;
+    aSewMin = std::min(aSewMin, aProfile.SewingTime);
+    aSewSum += aProfile.SewingTime;
+    aReconstructMin = std::min(aReconstructMin, aProfile.ReconstructionTime);
+    aReconstructSum += aProfile.ReconstructionTime;
+    aEndToEndMin = std::min(aEndToEndMin, aProfile.EndToEndTotalTime);
+    aEndToEndSum += aProfile.EndToEndTotalTime;
     if (anIter == 0)
     {
-      ASSERT_TRUE(aResult.IsDone);
-      aNbSewn = aResult.NbSewnEdges;
+      ASSERT_TRUE(aProfile.IsDone);
+      ASSERT_TRUE(aProfile.HasResultShape);
+      aNbSewn = aProfile.NbSewnEdges;
     }
   }
   std::cout << "[  PERF   ] 2500 faces (50x50), parallel, " << THE_NB_PROFILE_ITERS
             << " iters: " << aTotal << " s total, " << aTotal / THE_NB_PROFILE_ITERS
             << " s/iter, sewn: " << aNbSewn << std::endl;
+  printPhaseBreakdown("parallel",
+                      THE_NB_PROFILE_ITERS,
+                      aBuildMin,
+                      aBuildSum,
+                      aSewMin,
+                      aSewSum,
+                      aReconstructMin,
+                      aReconstructSum,
+                      aEndToEndMin,
+                      aEndToEndSum);
   EXPECT_GT(aNbSewn, 4800);
 }
 
 TEST(BRepGraphAlgo_SewingTest, Profiling_Grid50x50_NoHistory)
 {
-  int    aNbSewn = 0;
-  double aTotal  = 0.0;
+  int    aNbSewn           = 0;
+  double aTotal            = 0.0;
+  double aBuildMin         = RealLast();
+  double aBuildSum         = 0.0;
+  double aSewMin           = RealLast();
+  double aSewSum           = 0.0;
+  double aReconstructMin   = RealLast();
+  double aReconstructSum   = 0.0;
+  double aEndToEndMin      = RealLast();
+  double aEndToEndSum      = 0.0;
   for (int anIter = 0; anIter < THE_NB_PROFILE_ITERS; ++anIter)
   {
-    NCollection_Sequence<TopoDS_Shape> aFaces      = buildFaceGrid(50, 50, 1.0, 1.0);
-    auto                               aTimerStart = std::chrono::steady_clock::now();
-
-    BRep_Builder    aBB;
-    TopoDS_Compound aCompound;
-    aBB.MakeCompound(aCompound);
-    for (int anIdx = 1; anIdx <= aFaces.Length(); ++anIdx)
-      aBB.Add(aCompound, aFaces.Value(anIdx));
-
+    NCollection_Sequence<TopoDS_Shape> aFaces = buildFaceGrid(50, 50, 1.0, 1.0);
     BRepGraphAlgo_Sewing::Options aOpts;
     aOpts.Tolerance   = 1.0e-04;
     aOpts.Parallel    = false;
     aOpts.HistoryMode = false;
 
-    BRepGraph aGraph;
-    aGraph.Build(aCompound);
-    BRepGraphAlgo_Sewing::Result aResult = BRepGraphAlgo_Sewing::Perform(aGraph, aOpts);
-
-    auto aTimerEnd = std::chrono::steady_clock::now();
-    aTotal += std::chrono::duration<double>(aTimerEnd - aTimerStart).count();
+    GraphSewingProfile aProfile = runGraphSewingProfiled(aFaces, aOpts);
+    aTotal += aProfile.CoreTotalTime;
+    aBuildMin = std::min(aBuildMin, aProfile.PopulateBuildTime);
+    aBuildSum += aProfile.PopulateBuildTime;
+    aSewMin = std::min(aSewMin, aProfile.SewingTime);
+    aSewSum += aProfile.SewingTime;
+    aReconstructMin = std::min(aReconstructMin, aProfile.ReconstructionTime);
+    aReconstructSum += aProfile.ReconstructionTime;
+    aEndToEndMin = std::min(aEndToEndMin, aProfile.EndToEndTotalTime);
+    aEndToEndSum += aProfile.EndToEndTotalTime;
     if (anIter == 0)
     {
-      ASSERT_TRUE(aResult.IsDone);
-      aNbSewn = aResult.NbSewnEdges;
-      EXPECT_EQ(aGraph.History().NbRecords(), 0);
+      ASSERT_TRUE(aProfile.IsDone);
+      ASSERT_TRUE(aProfile.HasResultShape);
+      aNbSewn = aProfile.NbSewnEdges;
+      EXPECT_EQ(aProfile.NbHistoryRecords, 0);
     }
   }
   std::cout << "[  PERF   ] 2500 faces (50x50), no history, " << THE_NB_PROFILE_ITERS
             << " iters: " << aTotal << " s total, " << aTotal / THE_NB_PROFILE_ITERS
             << " s/iter, sewn: " << aNbSewn << std::endl;
+  printPhaseBreakdown("no-history",
+                      THE_NB_PROFILE_ITERS,
+                      aBuildMin,
+                      aBuildSum,
+                      aSewMin,
+                      aSewSum,
+                      aReconstructMin,
+                      aReconstructSum,
+                      aEndToEndMin,
+                      aEndToEndSum);
   EXPECT_GT(aNbSewn, 4800);
 }
 
 TEST(BRepGraphAlgo_SewingTest, Profiling_Boxes200_Sequential)
 {
-  int    aNbSewn = 0;
-  double aTotal  = 0.0;
+  int    aNbSewn           = 0;
+  double aTotal            = 0.0;
+  double aBuildMin         = RealLast();
+  double aBuildSum         = 0.0;
+  double aSewMin           = RealLast();
+  double aSewSum           = 0.0;
+  double aReconstructMin   = RealLast();
+  double aReconstructSum   = 0.0;
+  double aEndToEndMin      = RealLast();
+  double aEndToEndSum      = 0.0;
   for (int anIter = 0; anIter < THE_NB_PROFILE_ITERS; ++anIter)
   {
     NCollection_Sequence<TopoDS_Shape> aFaces;
@@ -488,33 +665,40 @@ TEST(BRepGraphAlgo_SewingTest, Profiling_Boxes200_Sequential)
         aFaces.Append(aF.Value(aFIdx));
     }
 
-    auto aTimerStart = std::chrono::steady_clock::now();
-
-    BRep_Builder    aBB;
-    TopoDS_Compound aCompound;
-    aBB.MakeCompound(aCompound);
-    for (int anIdx = 1; anIdx <= aFaces.Length(); ++anIdx)
-      aBB.Add(aCompound, aFaces.Value(anIdx));
-
     BRepGraphAlgo_Sewing::Options aOpts;
     aOpts.Tolerance = 1.0e-04;
     aOpts.Parallel  = true;
 
-    BRepGraph aGraph;
-    aGraph.Build(aCompound, true);
-    BRepGraphAlgo_Sewing::Result aResult = BRepGraphAlgo_Sewing::Perform(aGraph, aOpts);
-
-    auto aTimerEnd = std::chrono::steady_clock::now();
-    aTotal += std::chrono::duration<double>(aTimerEnd - aTimerStart).count();
+    GraphSewingProfile aProfile = runGraphSewingProfiled(aFaces, aOpts);
+    aTotal += aProfile.CoreTotalTime;
+    aBuildMin = std::min(aBuildMin, aProfile.PopulateBuildTime);
+    aBuildSum += aProfile.PopulateBuildTime;
+    aSewMin = std::min(aSewMin, aProfile.SewingTime);
+    aSewSum += aProfile.SewingTime;
+    aReconstructMin = std::min(aReconstructMin, aProfile.ReconstructionTime);
+    aReconstructSum += aProfile.ReconstructionTime;
+    aEndToEndMin = std::min(aEndToEndMin, aProfile.EndToEndTotalTime);
+    aEndToEndSum += aProfile.EndToEndTotalTime;
     if (anIter == 0)
     {
-      ASSERT_TRUE(aResult.IsDone);
-      aNbSewn = aResult.NbSewnEdges;
+      ASSERT_TRUE(aProfile.IsDone);
+      ASSERT_TRUE(aProfile.HasResultShape);
+      aNbSewn = aProfile.NbSewnEdges;
     }
   }
   std::cout << "[  PERF   ] 1200 faces (200 boxes), parallel, " << THE_NB_PROFILE_ITERS
             << " iters: " << aTotal << " s total, " << aTotal / THE_NB_PROFILE_ITERS
             << " s/iter, sewn: " << aNbSewn << std::endl;
+  printPhaseBreakdown("boxes200-parallel",
+                      THE_NB_PROFILE_ITERS,
+                      aBuildMin,
+                      aBuildSum,
+                      aSewMin,
+                      aSewSum,
+                      aReconstructMin,
+                      aReconstructSum,
+                      aEndToEndMin,
+                      aEndToEndSum);
   EXPECT_GT(aNbSewn, 1000);
 }
 

@@ -365,23 +365,50 @@ private:
   //! Ensure theIdx has at least theSize slots (pre-sizing with empty vectors).
   //! If theAlloc is non-null, inner vectors are constructed with it.
   template <typename T>
+  static void ensureSize(TypedIndexTable<T>&                           theIdx,
+                         const int                                     theSize,
+                         const occ::handle<NCollection_BaseAllocator>& theAlloc =
+                           occ::handle<NCollection_BaseAllocator>())
+  {
+    if (theSize <= theIdx.Length())
+      return;
+
+    if (!theAlloc.IsNull())
+    {
+      for (int i = theIdx.Length(); i < theSize; ++i)
+      {
+        theIdx.Append(NCollection_Vector<T>(16, theAlloc));
+      }
+    }
+    else
+    {
+      for (int i = theIdx.Length(); i < theSize; ++i)
+      {
+        theIdx.Appended();
+      }
+    }
+  }
+
+  //! Ensure theVec has at least theSize elements.
+  //! New elements are default-constructed (zero for scalar types).
+  template <typename T>
+  static void ensureSize(NCollection_Vector<T>& theVec, const int theSize)
+  {
+    while (theVec.Length() < theSize)
+    {
+      theVec.Appended();
+    }
+  }
+
+  //! Resize theIdx exactly to theSize slots (clears previous content first).
+  template <typename T>
   static void preSize(TypedIndexTable<T>&                           theIdx,
                       const int                                     theSize,
                       const occ::handle<NCollection_BaseAllocator>& theAlloc =
                         occ::handle<NCollection_BaseAllocator>())
   {
     theIdx.Clear();
-    for (int i = 0; i < theSize; ++i)
-    {
-      if (!theAlloc.IsNull())
-      {
-        theIdx.Append(NCollection_Vector<T>(16, theAlloc));
-      }
-      else
-      {
-        theIdx.Appended();
-      }
-    }
+    ensureSize(theIdx, theSize, theAlloc);
   }
 
   //! Add theVal to the vector at theKey, creating if needed.  Skips duplicates.
@@ -391,7 +418,7 @@ private:
     Standard_ASSERT_RETURN(theKey >= 0, "appendUnique: negative key", );
     // Grow if needed for incremental mutation after Build().
     if (theKey >= theIdx.Length())
-      theIdx.SetValue(theKey, NCollection_Vector<T>());
+      ensureSize(theIdx, theKey + 1);
 
     NCollection_Vector<T>& aVec = theIdx.ChangeValue(theKey);
     for (int i = 0; i < aVec.Length(); ++i)
@@ -411,7 +438,7 @@ private:
     // During Build(), outer vector is pre-sized so theKey < Length().
     // For safety, grow if somehow out of range.
     if (theKey >= theIdx.Length())
-      theIdx.SetValue(theKey, NCollection_Vector<T>());
+      ensureSize(theIdx, theKey + 1);
 
     theIdx.ChangeValue(theKey).Append(theVal);
   }
@@ -439,6 +466,7 @@ private:
   TypedIndexTable<BRepGraph_WireId> myCoEdgeToWires; //!< CoEdge -> parent Wire indices.
 
   NCollection_Vector<int> myEdgeFaceCount; //!< Cached face count per edge, O(1) lookup.
+  int myNbIndexedCoEdges = 0; //!< Number of coedges indexed by Build()/BuildDelta().
 };
 
 #endif // _BRepGraphInc_ReverseIndex_HeaderFile

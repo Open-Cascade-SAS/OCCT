@@ -19,7 +19,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <TCollection_AsciiString.hxx>
 
-#include <functional>
+#include <utility>
 
 class BRepGraph;
 
@@ -77,11 +77,17 @@ public:
   //! @param[in] theTarget       node to modify
   //! @param[in] theModifier     callback that performs the modification and returns replacements
   //! @param[in] theOpLabel      human-readable operation label for history
-  static Standard_EXPORT void ApplyModification(
-    BRepGraph&                                                                        theGraph,
-    const BRepGraph_NodeId                                                            theTarget,
-    std::function<NCollection_Vector<BRepGraph_NodeId>(BRepGraph&, BRepGraph_NodeId)> theModifier,
-    const TCollection_AsciiString&                                                    theOpLabel);
+  template <typename ModifierT>
+  static void ApplyModification(BRepGraph&                    theGraph,
+                                const BRepGraph_NodeId        theTarget,
+                                ModifierT&&                   theModifier,
+                                const TCollection_AsciiString& theOpLabel)
+  {
+    NCollection_Vector<BRepGraph_NodeId> aReplacements =
+      std::forward<ModifierT>(theModifier)(theGraph, theTarget);
+
+    applyModificationImpl(theGraph, theTarget, std::move(aReplacements), theOpLabel);
+  }
 
   //! Finalize a batch of mutations: validate reverse index consistency
   //! and assert active entity counts match actual entity state.
@@ -98,6 +104,12 @@ public:
     NCollection_Vector<BoundaryIssue>* const theIssues = nullptr);
 
 private:
+  static Standard_EXPORT void applyModificationImpl(
+    BRepGraph&                            theGraph,
+    const BRepGraph_NodeId                theTarget,
+    NCollection_Vector<BRepGraph_NodeId>&& theReplacements,
+    const TCollection_AsciiString&        theOpLabel);
+
   BRepGraph_Mutator() = delete;
 };
 

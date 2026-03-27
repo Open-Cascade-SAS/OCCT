@@ -24,7 +24,6 @@
 #include <Standard_ProgramError.hxx>
 
 #include <shared_mutex>
-#include <functional>
 
 //=================================================================================================
 
@@ -365,7 +364,7 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
   NCollection_Map<BRepGraph_NodeId>     aVisited(aNbNodes, anAlloc);
   aStack.Append({theNode, 0});
 
-  std::function<void(const BRepGraph_NodeId, const int)> aPushChild = [&](const BRepGraph_NodeId theChild, const int theDepth) {
+  const auto aPushChild = [&](const BRepGraph_NodeId theChild, const int theDepth) {
     if (!theChild.IsValid())
       return;
     aStack.Append({theChild, theDepth});

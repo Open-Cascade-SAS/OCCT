@@ -26,8 +26,9 @@
 #include <Geom2dInt_GInter.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DataMap.hxx>
-#include <NCollection_List.hxx>
+#include <Standard_Assert.hxx>
 #include <NCollection_Map.hxx>
 #include <Precision.hxx>
 
@@ -217,19 +218,19 @@ void BRepGraphCheck::CheckWireOnFace(const BRepGraph&                          t
     }
 
     // Propagate from edge 0: mark all reachable edges via shared vertices.
-    NCollection_Vector<bool> aVisited(aNbEdges);
-    for (int i = 0; i < aNbEdges; ++i)
-      aVisited.SetValue(i, false);
+    NCollection_Array1<bool> aVisited(0, aNbEdges - 1);
+    aVisited.Init(false);
 
-    NCollection_List<int> aQueue;
-    aQueue.Append(0);
-    aVisited.SetValue(0, true);
+    NCollection_Array1<int> aQueue(0, aNbEdges - 1);
+    int                     aQueueHead = 0;
+    int                     aQueueTail = 0;
+    aQueue(aQueueTail++) = 0;
+    aVisited(0) = true;
     int aNbVisited = 1;
 
-    while (!aQueue.IsEmpty())
+    while (aQueueHead < aQueueTail)
     {
-      const int aCurrIdx = aQueue.First();
-      aQueue.RemoveFirst();
+      const int aCurrIdx = aQueue(aQueueHead++);
 
       const BRepGraphInc::CoEdgeRef&       aCurrCR     = aCoEdgeRefs.Value(aCurrIdx);
       const BRepGraph_TopoNode::CoEdgeDef& aCurrCoEdge = aDefs.CoEdge(aCurrCR.CoEdgeDefId);
@@ -253,11 +254,12 @@ void BRepGraphCheck::CheckWireOnFace(const BRepGraph&                          t
         for (int i = 0; i < aNeighbors->Length(); ++i)
         {
           const int aNeighIdx = aNeighbors->Value(i);
-          if (!aVisited.Value(aNeighIdx))
+          if (!aVisited(aNeighIdx))
           {
-            aVisited.SetValue(aNeighIdx, true);
+            aVisited(aNeighIdx) = true;
             ++aNbVisited;
-            aQueue.Append(aNeighIdx);
+            Standard_ASSERT_VOID(aQueueTail < aNbEdges, "BFS queue overflow");
+            aQueue(aQueueTail++) = aNeighIdx;
           }
         }
       }

@@ -27,8 +27,6 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Wire.hxx>
 
-#include <functional>
-
 //=================================================================================================
 
 TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage& theStorage,
@@ -367,7 +365,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
   }
 
   // Helper: get or build edge from cache.
-  std::function<TopoDS_Edge(const int)> aGetOrBuildEdge = [&](const int theEdgeIdx) -> TopoDS_Edge {
+  const auto aGetOrBuildEdge = [&](const int theEdgeIdx) -> TopoDS_Edge {
     BRepGraph_NodeId    anEdgeId = BRepGraph_NodeId::Edge(theEdgeIdx);
     const TopoDS_Shape* aCached  = theCache.Seek(anEdgeId);
     if (aCached != nullptr)
@@ -397,7 +395,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
     aBB.SameRange(aNewEdge, anEdge.SameRange);
 
     // Vertices (also cached).
-    std::function<TopoDS_Shape(const int)> aGetOrBuildVertex = [&](const int theVtxIdx) -> TopoDS_Shape {
+    const auto aGetOrBuildVertex = [&](const int theVtxIdx) -> TopoDS_Shape {
       if (theVtxIdx < 0)
         return TopoDS_Shape();
       BRepGraph_NodeId    aVtxId     = BRepGraph_NodeId::Vertex(theVtxIdx);
@@ -489,8 +487,8 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
   // Wire TShape is cached (1 NodeId = 1 TShape); PCurve attachment is per-face.
   // theWireLocation is the wire's LocalLocation within the face (WireRef.LocalLocation),
   // needed to compute the correct CurveRepresentation location for PCurve binding.
-  std::function<TopoDS_Wire(BRepGraph_WireId, const TopLoc_Location&)> aBuildWireForFace = [&](BRepGraph_WireId       theWireId,
-                              const TopLoc_Location& theWireLocation) -> TopoDS_Wire {
+  const auto aBuildWireForFace = [&](BRepGraph_WireId       theWireId,
+                                     const TopLoc_Location& theWireLocation) -> TopoDS_Wire {
     const BRepGraphInc::WireEntity& aWire       = theStorage.Wire(theWireId);
     BRepGraph_NodeId                aWireNodeId = theWireId;
 
@@ -760,7 +758,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
       const BRepGraphInc::CoEdgeEntity& aCoEdge =
         theStorage.CoEdge(BRepGraph_CoEdgeId(aCoEdgeRef.CoEdgeDefId.Index));
       const BRepGraphInc::EdgeEntity& anEdgeEnt              = theStorage.Edge(aCoEdge.EdgeDefId);
-      std::function<void(BRepGraph_VertexId)> aRestoreVertexPointReps = [&](BRepGraph_VertexId theVtxId) {
+      const auto aRestoreVertexPointReps = [&](BRepGraph_VertexId theVtxId) {
         if (!theVtxId.IsValid())
           return;
         const BRepGraphInc::VertexEntity& aVtx = theStorage.Vertex(theVtxId);

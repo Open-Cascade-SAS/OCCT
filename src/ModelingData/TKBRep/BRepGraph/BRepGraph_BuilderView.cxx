@@ -25,7 +25,6 @@
 #include <Poly_Triangulation.hxx>
 
 #include <shared_mutex>
-#include <functional>
 
 namespace
 {
@@ -852,7 +851,7 @@ void BRepGraph::BuilderView::EndDeferredInvalidation()
   const BRepGraphInc_ReverseIndex& aRevIdx  = myGraph->myData->myIncStorage.ReverseIndex();
   const int                        aNbEdges = myGraph->myData->myIncStorage.NbEdges();
 
-  std::function<void(const BRepGraph_ShellId)> aPropagateShellToSolid = [&](const BRepGraph_ShellId theShellId) {
+  const auto aPropagateShellToSolid = [&](const BRepGraph_ShellId theShellId) {
     const NCollection_Vector<BRepGraph_SolidId>* aSolids = aRevIdx.SolidsOfShell(theShellId);
     if (aSolids == nullptr)
       return;
@@ -863,7 +862,7 @@ void BRepGraph::BuilderView::EndDeferredInvalidation()
     }
   };
 
-  std::function<void(const BRepGraph_FaceId)> aPropagateFaceToShell = [&](const BRepGraph_FaceId theFaceId) {
+  const auto aPropagateFaceToShell = [&](const BRepGraph_FaceId theFaceId) {
     const NCollection_Vector<BRepGraph_ShellId>* aShells = aRevIdx.ShellsOfFace(theFaceId);
     if (aShells == nullptr)
       return;
@@ -879,7 +878,7 @@ void BRepGraph::BuilderView::EndDeferredInvalidation()
     }
   };
 
-  std::function<void(const BRepGraph_WireId)> aPropagateWireToFace = [&](const BRepGraph_WireId theWireId) {
+  const auto aPropagateWireToFace = [&](const BRepGraph_WireId theWireId) {
     const NCollection_Vector<BRepGraph_FaceId>* aFaces = aRevIdx.FacesOfWire(theWireId);
     if (aFaces == nullptr)
       return;
@@ -954,6 +953,13 @@ void BRepGraph::BuilderView::EndDeferredInvalidation()
   const int                            aNbCompSols  = myGraph->myData->myIncStorage.NbCompSolids();
   const bool                           aCollectModified = myGraph->myHasModificationSubscribers;
   NCollection_Vector<BRepGraph_NodeId> aModifiedNodes;
+  if (aCollectModified)
+  {
+    const int aEstimatedModifiedCapacity = aNbVertices + aNbEdges + aNbWires + aNbFaces + aNbShells
+                                           + aNbSolids + aNbCompounds + aNbCompSols;
+    if (aEstimatedModifiedCapacity > 0)
+      aModifiedNodes.SetIncrement(aEstimatedModifiedCapacity);
+  }
   int                                  aModifiedKindsMask = 0;
 
   for (int i = 0; i < aNbVertices; ++i)

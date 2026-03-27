@@ -20,6 +20,7 @@
 #include <BRepGraphInc_Entity.hxx>
 
 #include <Geom_Curve.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DataMap.hxx>
 #include <OSD_Parallel.hxx>
 
@@ -145,15 +146,16 @@ NCollection_Vector<BRepGraph_WireId> BRepGraph_Analyze::DegenerateWires(const BR
   const BRepGraph::TopoView&  aDefs    = theGraph.Topo();
   const BRepGraphInc_Storage& aStorage = theGraph.myData->myIncStorage;
 
-  NCollection_Vector<int> aNbCoEdgesPerWire;
-  NCollection_Vector<int> anIsOuterWire;
-  for (int aWireIdx = 0; aWireIdx < aDefs.NbWires(); ++aWireIdx)
-  {
-    aNbCoEdgesPerWire.Append(0);
-    anIsOuterWire.Append(0);
-  }
+  const int aNbWires = aDefs.NbWires();
+  if (aNbWires == 0)
+    return aResult;
 
-  for (int aWireDefIdx = 0; aWireDefIdx < aDefs.NbWires(); ++aWireDefIdx)
+  NCollection_Array1<int> aNbCoEdgesPerWire(0, aNbWires - 1);
+  NCollection_Array1<int> anIsOuterWire(0, aNbWires - 1);
+  aNbCoEdgesPerWire.Init(0);
+  anIsOuterWire.Init(0);
+
+  for (int aWireDefIdx = 0; aWireDefIdx < aNbWires; ++aWireDefIdx)
   {
     const BRepGraphInc::WireEntity& aWireEnt = aStorage.Wire(BRepGraph_WireId(aWireDefIdx));
     if (aWireEnt.IsRemoved)
@@ -167,7 +169,7 @@ NCollection_Vector<BRepGraph_WireId> BRepGraph_Analyze::DegenerateWires(const BR
       const BRepGraphInc::CoEdgeEntity& aCoEdge = aStorage.CoEdge(aCoEdgeRef.CoEdgeDefId);
       if (aCoEdge.IsRemoved || !aCoEdge.EdgeDefId.IsValid(aDefs.NbEdges()))
         continue;
-      aNbCoEdgesPerWire.ChangeValue(aWireDefIdx) += 1;
+      aNbCoEdgesPerWire(aWireDefIdx) += 1;
     }
   }
 
@@ -181,15 +183,15 @@ NCollection_Vector<BRepGraph_WireId> BRepGraph_Analyze::DegenerateWires(const BR
       const BRepGraphInc::WireRefEntry& aWireRef = aStorage.WireRefEntry(aFaceEnt.WireRefIds.Value(i));
       if (aWireRef.IsRemoved || !aWireRef.IsOuter || !aWireRef.WireDefId.IsValid(aDefs.NbWires()))
         continue;
-      anIsOuterWire.ChangeValue(aWireRef.WireDefId.Index) = 1;
+      anIsOuterWire(aWireRef.WireDefId.Index) = 1;
     }
   }
 
-  for (int aWireDefIdx = 0; aWireDefIdx < aDefs.NbWires(); ++aWireDefIdx)
+  for (int aWireDefIdx = 0; aWireDefIdx < aNbWires; ++aWireDefIdx)
   {
     const BRepGraph_WireId aWireId(aWireDefIdx);
 
-    if (aNbCoEdgesPerWire.Value(aWireDefIdx) < 2)
+    if (aNbCoEdgesPerWire(aWireDefIdx) < 2)
     {
       aResult.Append(aWireId);
       continue;
@@ -197,7 +199,7 @@ NCollection_Vector<BRepGraph_WireId> BRepGraph_Analyze::DegenerateWires(const BR
 
     // Outer wire that is not closed.
     const BRepGraph_TopoNode::WireDef& aWire = aDefs.Wire(aWireId);
-    if (!aWire.IsClosed && anIsOuterWire.Value(aWireDefIdx) != 0)
+    if (!aWire.IsClosed && anIsOuterWire(aWireDefIdx) != 0)
       aResult.Append(aWireId);
   }
 
@@ -214,7 +216,8 @@ NCollection_Vector<BRepGraph_SubGraph> BRepGraph_Analyze::Decompose(const BRepGr
   const BRepGraphInc_Storage& aStorage = theGraph.myData->myIncStorage;
 
   // Collect wire, edge and vertex children from a face def into a SubGraph.
-  std::function<void(BRepGraph_SubGraph&, const BRepGraph_FaceId)> aCollectFaceChildren = [&](BRepGraph_SubGraph& theSub, const BRepGraph_FaceId theFaceDefId) {
+  const auto aCollectFaceChildren = [&](BRepGraph_SubGraph& theSub,
+                                        const BRepGraph_FaceId theFaceDefId) {
     const BRepGraphInc::FaceEntity& aFaceEnt = aStorage.Face(theFaceDefId);
     for (int aWireRefIdx = 0; aWireRefIdx < aFaceEnt.WireRefIds.Length(); ++aWireRefIdx)
     {
