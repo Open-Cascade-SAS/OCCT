@@ -563,7 +563,7 @@ TEST(BRepGraphIncTest, Cylinder_SeamEdge_ReverseIndex_NoDuplicateFace)
   BRepGraphInc_Populate::Perform(aStorage, aCyl, false);
   ASSERT_TRUE(aStorage.GetIsDone());
 
-  // For seam edges (two PCurve entries with the same FaceEntityId but opposite
+  // For seam edges (two PCurve entries with the same FaceDefId but opposite
   // orientations), the reverse index must contain each face only once.
   for (int anEdgeIdx = 0; anEdgeIdx < aStorage.NbEdges(); ++anEdgeIdx)
   {
@@ -757,10 +757,10 @@ TEST(BRepGraphIncTest, EdgeInternalVertex_Captured)
       aFound = true;
       const BRepGraphInc::VertexRefEntry& aIntVRef =
         aStorage.VertexRefEntry(anEdgeEnt.InternalVertexRefIds.Value(0));
-      EXPECT_GE(aIntVRef.VertexEntityId.Index, 0);
+      EXPECT_GE(aIntVRef.VertexDefId.Index, 0);
       EXPECT_EQ(aIntVRef.Orientation, TopAbs_INTERNAL);
       // Verify the vertex point.
-      int aVtxIdx = aIntVRef.VertexEntityId.Index;
+      int aVtxIdx = aIntVRef.VertexDefId.Index;
       const BRepGraphInc::VertexDef& aVtxEnt = aStorage.Vertex(BRepGraph_VertexId(aVtxIdx));
       EXPECT_NEAR(aVtxEnt.Point.X(), 5.0, Precision::Confusion());
       break;
@@ -925,7 +925,7 @@ TEST(BRepGraphIncTest, FaceDirectVertex_Internal_Captured)
   {
     const BRepGraphInc::VertexRefEntry& aFaceVRef =
       aStorage.VertexRefEntry(aFaceEnt.VertexRefIds.Value(0));
-    EXPECT_GE(aFaceVRef.VertexEntityId.Index, 0);
+    EXPECT_GE(aFaceVRef.VertexDefId.Index, 0);
     EXPECT_EQ(aFaceVRef.Orientation, TopAbs_INTERNAL);
   }
 }

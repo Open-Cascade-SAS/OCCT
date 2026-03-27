@@ -133,9 +133,9 @@ TEST_F(BRepGraph_SharingTest, EdgeDef_VertexDefs_BothValid)
   for (int anIdx = 0; anIdx < myGraph.Topo().NbEdges(); ++anIdx)
   {
     const BRepGraph_EdgeId anEdgeId(anIdx);
-    EXPECT_TRUE(BRepGraph_Tool::Edge::StartVertex(myGraph, anEdgeId).VertexEntityId.IsValid())
+    EXPECT_TRUE(BRepGraph_Tool::Edge::StartVertex(myGraph, anEdgeId).VertexDefId.IsValid())
       << "Edge def " << anIdx << " has invalid start vertex def";
-    EXPECT_TRUE(BRepGraph_Tool::Edge::EndVertex(myGraph, anEdgeId).VertexEntityId.IsValid())
+    EXPECT_TRUE(BRepGraph_Tool::Edge::EndVertex(myGraph, anEdgeId).VertexDefId.IsValid())
       << "Edge def " << anIdx << " has invalid end vertex def";
   }
 }
@@ -158,10 +158,10 @@ TEST_F(BRepGraph_SharingTest, SharedEdge_IncidenceRefs_DifferentOrientation)
     if (aCoEdgeIdxs.Length() < 2)
       continue;
     // Check if coedges reference different faces.
-    const BRepGraph_NodeId aFace0 = myGraph.Topo().CoEdge(aCoEdgeIdxs.Value(0)).FaceEntityId;
+    const BRepGraph_NodeId aFace0 = myGraph.Topo().CoEdge(aCoEdgeIdxs.Value(0)).FaceDefId;
     for (int aCEI = 1; aCEI < aCoEdgeIdxs.Length(); ++aCEI)
     {
-      if (myGraph.Topo().CoEdge(aCoEdgeIdxs.Value(aCEI)).FaceEntityId != aFace0)
+      if (myGraph.Topo().CoEdge(aCoEdgeIdxs.Value(aCEI)).FaceDefId != aFace0)
       {
         ++aMultiFaceEdgeCount;
         break;
@@ -182,8 +182,8 @@ TEST_F(BRepGraph_SharingTest, NonClosedEdge_StartEnd_Different)
     if (aDef.IsDegenerate)
       continue;
     // Box edges are not closed, so start and end vertex defs must differ
-    const BRepGraph_VertexId aStartVtx = BRepGraph_Tool::Edge::StartVertex(myGraph, anEdgeId).VertexEntityId;
-    const BRepGraph_VertexId anEndVtx  = BRepGraph_Tool::Edge::EndVertex(myGraph, anEdgeId).VertexEntityId;
+    const BRepGraph_VertexId aStartVtx = BRepGraph_Tool::Edge::StartVertex(myGraph, anEdgeId).VertexDefId;
+    const BRepGraph_VertexId anEndVtx  = BRepGraph_Tool::Edge::EndVertex(myGraph, anEdgeId).VertexDefId;
     EXPECT_NE(aStartVtx, anEndVtx)
       << "Non-degenerate edge def " << anIdx << " has identical start and end vertex def ids";
   }
@@ -239,8 +239,8 @@ TEST_F(BRepGraph_SharingTest, CompoundTwoIdenticalBoxes)
   const NCollection_Vector<BRepGraph_ChildRefId> aChildRefs =
     BRepGraph_TestTools::ChildRefsOfParent(aGraph, BRepGraph_NodeId::Compound(0));
   ASSERT_EQ(aChildRefs.Length(), 2);
-  EXPECT_EQ(aGraph.Refs().Child(aChildRefs.Value(0)).ChildEntityId.Index,
-            aGraph.Refs().Child(aChildRefs.Value(1)).ChildEntityId.Index);
+  EXPECT_EQ(aGraph.Refs().Child(aChildRefs.Value(0)).ChildDefId.Index,
+            aGraph.Refs().Child(aChildRefs.Value(1)).ChildDefId.Index);
 }
 
 TEST_F(BRepGraph_SharingTest, CompoundTwoDistinctBoxes)

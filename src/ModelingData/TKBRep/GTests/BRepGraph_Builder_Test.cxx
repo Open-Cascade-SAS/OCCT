@@ -174,8 +174,8 @@ TEST(BRepGraph_BuilderTest, AddEdge_WithCurve)
   EXPECT_EQ(anEdgeId.NodeKind, BRepGraph_NodeId::Kind::Edge);
 
   const BRepGraphInc::EdgeDef& anEdgeDef = aGraph.Topo().Edge(BRepGraph_EdgeId(0));
-  EXPECT_EQ(BRepGraph_Tool::Edge::StartVertex(aGraph, BRepGraph_EdgeId(0)).VertexEntityId, BRepGraph_VertexId(aV1.Index));
-  EXPECT_EQ(BRepGraph_Tool::Edge::EndVertex(aGraph, BRepGraph_EdgeId(0)).VertexEntityId, BRepGraph_VertexId(aV2.Index));
+  EXPECT_EQ(BRepGraph_Tool::Edge::StartVertex(aGraph, BRepGraph_EdgeId(0)).VertexDefId, BRepGraph_VertexId(aV1.Index));
+  EXPECT_EQ(BRepGraph_Tool::Edge::EndVertex(aGraph, BRepGraph_EdgeId(0)).VertexDefId, BRepGraph_VertexId(aV2.Index));
   EXPECT_TRUE(anEdgeDef.Curve3DRepId.IsValid());
   EXPECT_NEAR(anEdgeDef.ParamFirst, 0.0, 1e-10);
   EXPECT_NEAR(anEdgeDef.ParamLast, 10.0, 1e-10);

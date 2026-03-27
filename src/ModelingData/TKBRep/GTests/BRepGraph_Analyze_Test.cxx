@@ -212,7 +212,7 @@ TEST_F(BRepGraph_AnalyzeTest, Decompose_ThreeDisconnected_ThreeComponents)
   // Each component should contain 6 faces (one box).
   for (int anIdx = 0; anIdx < aComponents.Length(); ++anIdx)
   {
-    EXPECT_EQ(aComponents.Value(anIdx).FaceEntityIds().Length(), 6)
+    EXPECT_EQ(aComponents.Value(anIdx).FaceDefIds().Length(), 6)
       << "Component " << anIdx << " does not have 6 faces";
   }
 }
@@ -440,8 +440,8 @@ TEST_F(BRepGraph_AnalyzeTest, BoundingBox_Edge_SubsetOfOwningFace)
   {
     const BRepGraphInc::CoEdgeRefEntry& aCR = myGraph.Refs().CoEdge(aCoEdgeRefs.Value(aCoEdgeIter));
     const BRepGraphInc::CoEdgeDef& aCoEdge =
-      myGraph.Topo().CoEdge(aCR.CoEdgeEntityId);
-    const BRepGraph_NodeId anEdgeId = aCoEdge.EdgeEntityId;
+      myGraph.Topo().CoEdge(aCR.CoEdgeDefId);
+    const BRepGraph_NodeId anEdgeId = aCoEdge.EdgeDefId;
     Bnd_Box                anEdgeBox;
     BRepGraphAlgo_BndLib::Add(myGraph, anEdgeId, anEdgeBox);
     if (anEdgeBox.IsVoid())

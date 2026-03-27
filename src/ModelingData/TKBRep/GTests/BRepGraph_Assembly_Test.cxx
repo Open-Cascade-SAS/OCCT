@@ -138,8 +138,8 @@ TEST(BRepGraph_AssemblyTest, AddOccurrence_LinksCorrectly)
 
   const BRepGraphInc::OccurrenceDef& anOcc =
     aGraph.Paths().Occurrence(BRepGraph_OccurrenceId(anOccId.Index));
-  EXPECT_EQ(anOcc.ProductEntityId.Index, aPartId.Index);
-  EXPECT_EQ(anOcc.ParentProductEntityId.Index, aAssemblyId.Index);
+  EXPECT_EQ(anOcc.ProductDefId.Index, aPartId.Index);
+  EXPECT_EQ(anOcc.ParentProductDefId.Index, aAssemblyId.Index);
 
   // Check that assembly product has the occurrence in OccurrenceRefIds.
   const BRepGraph_ProductId aAssemblyProdId(aAssemblyId.Index);
@@ -171,8 +171,8 @@ TEST(BRepGraph_AssemblyTest, DAGSharing_MultipleOccurrencesSamePart)
     aGraph.Builder().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location(aTrsf2));
 
   EXPECT_NE(anOcc1, anOcc2);
-  EXPECT_EQ(aGraph.Paths().Occurrence(BRepGraph_OccurrenceId(anOcc1.Index)).ProductEntityId,
-            aGraph.Paths().Occurrence(BRepGraph_OccurrenceId(anOcc2.Index)).ProductEntityId);
+  EXPECT_EQ(aGraph.Paths().Occurrence(BRepGraph_OccurrenceId(anOcc1.Index)).ProductDefId,
+            aGraph.Paths().Occurrence(BRepGraph_OccurrenceId(anOcc2.Index)).ProductDefId);
 
   EXPECT_EQ(aGraph.Paths().NbComponents(BRepGraph_ProductId(aAssemblyId.Index)), 2);
 }
@@ -340,7 +340,7 @@ TEST(BRepGraph_AssemblyTest, GlobalPlacement_DeepNesting)
     aGraph.Builder().AddOccurrence(aSubAsmId, aPartId, TopLoc_Location(aTrsf1), anOccSubAsm);
 
   // Global placement of the part occurrence should be aTrsf2 * aTrsf1.
-  // ParentOccurrenceEntityId chain: anOccPart -> anOccSubAsm -> -1 (root).
+  // ParentOccurrenceDefId chain: anOccPart -> anOccSubAsm -> -1 (root).
   TopLoc_Location aGlobal =
     aGraph.Paths().OccurrenceLocation(BRepGraph_OccurrenceId::FromNodeId(anOccPart));
   const gp_Trsf& aGTrsf = aGlobal.Transformation();
@@ -684,7 +684,7 @@ TEST(BRepGraph_AssemblyTest, OccurrencesOfProduct_ViaReverseIndex)
 
 TEST(BRepGraph_AssemblyTest, GlobalPlacement_CircularParentOccurrence_Terminates)
 {
-  // Manually create a circular ParentOccurrenceEntityId via MutRef to simulate
+  // Manually create a circular ParentOccurrenceDefId via MutRef to simulate
   // a malformed graph. GlobalPlacement must terminate (THE_MAX_OCCURRENCE_DEPTH guard).
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
@@ -701,11 +701,11 @@ TEST(BRepGraph_AssemblyTest, GlobalPlacement_CircularParentOccurrence_Terminates
   const BRepGraph_NodeId anOcc2 =
     aGraph.Builder().AddOccurrence(aAsmId, aPartId, TopLoc_Location(aTrsf), anOcc1);
 
-  // Inject circular reference: occ1.ParentOccurrenceEntityId = occ2 (creates cycle).
+  // Inject circular reference: occ1.ParentOccurrenceDefId = occ2 (creates cycle).
   {
     BRepGraph_MutRef<BRepGraphInc::OccurrenceDef> aMut =
       aGraph.Builder().MutOccurrence(BRepGraph_OccurrenceId(anOcc1.Index));
-    aMut->ParentOccurrenceEntityId = BRepGraph_OccurrenceId(anOcc2.Index);
+    aMut->ParentOccurrenceDefId = BRepGraph_OccurrenceId(anOcc2.Index);
   }
 
   // GlobalPlacement must terminate despite the cycle (depth guard).

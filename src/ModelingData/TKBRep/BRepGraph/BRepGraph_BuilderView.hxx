@@ -58,7 +58,7 @@ public:
                                                             const double theTolerance);
 
   //! Add a wire definition to the graph.
-  //! Each pair is (EdgeEntityId, OrientationInWire).
+  //! Each pair is (EdgeDefId, OrientationInWire).
   //! @param[in] theEdges ordered edge entries
   //! @return NodeId of the new wire definition
   [[nodiscard]] Standard_EXPORT BRepGraph_NodeId

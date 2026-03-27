@@ -398,7 +398,7 @@ TEST(BRepGraph_ExplorerTest, PathsTo_MatchesExplorer_WhenEarlierCompoundRefRemov
   ASSERT_GE(aRootComp.ChildRefIds.Length(), 2);
 
   const BRepGraph_ChildRefId aRemovedRefId = aRootComp.ChildRefIds.Value(0);
-  const BRepGraph_NodeId aSecondChild = aGraph.Refs().Child(aRootComp.ChildRefIds.Value(1)).ChildEntityId;
+  const BRepGraph_NodeId aSecondChild = aGraph.Refs().Child(aRootComp.ChildRefIds.Value(1)).ChildDefId;
   ASSERT_TRUE(aSecondChild.IsValid());
 
   // Capture one face path under the second child before removal.
@@ -467,7 +467,7 @@ TEST(BRepGraph_ExplorerTest, PathsTo_MatchesExplorer_WhenFirstShellRefRemoved)
 
   const BRepGraphInc::SolidDef& aSolid = aGraph.Topo().Solid(BRepGraph_SolidId(0));
   ASSERT_GT(aSolid.ShellRefIds.Length(), 0);
-  const BRepGraph_ShellId aShellId = aGraph.Refs().Shell(aSolid.ShellRefIds.Value(0)).ShellEntityId;
+  const BRepGraph_ShellId aShellId = aGraph.Refs().Shell(aSolid.ShellRefIds.Value(0)).ShellDefId;
   ASSERT_TRUE(aShellId.IsValid(aGraph.Topo().NbShells()));
 
   // Duplicate shell usage to create two shell refs to the same shell in one solid.

@@ -48,9 +48,9 @@ TEST(BRepGraph_PolygonTest, MultiTriangulation_Roundtrip_PreservesAll)
 
   // Verify triangulations were captured on face definitions.
   bool aHasTriangulations = false;
-  for (int aFaceEntityIdx = 0; aFaceEntityIdx < aGraph.Topo().NbFaces(); ++aFaceEntityIdx)
+  for (int aFaceDefIdx = 0; aFaceDefIdx < aGraph.Topo().NbFaces(); ++aFaceDefIdx)
   {
-    const BRepGraphInc::FaceDef& aFaceDef = aGraph.Topo().Face(BRepGraph_FaceId(aFaceEntityIdx));
+    const BRepGraphInc::FaceDef& aFaceDef = aGraph.Topo().Face(BRepGraph_FaceId(aFaceDefIdx));
     if (!aFaceDef.TriangulationRepIds.IsEmpty())
     {
       aHasTriangulations = true;
@@ -60,7 +60,7 @@ TEST(BRepGraph_PolygonTest, MultiTriangulation_Roundtrip_PreservesAll)
       const BRepGraph_TriangulationRepId anActiveRepId = aFaceDef.ActiveTriangulationRepId();
       EXPECT_TRUE(anActiveRepId.IsValid());
       EXPECT_FALSE(
-        BRepGraph_Tool::Face::Triangulation(aGraph, BRepGraph_FaceId(aFaceEntityIdx)).IsNull());
+        BRepGraph_Tool::Face::Triangulation(aGraph, BRepGraph_FaceId(aFaceDefIdx)).IsNull());
     }
   }
   EXPECT_TRUE(aHasTriangulations) << "Meshed box should have triangulations";
@@ -166,7 +166,7 @@ TEST(BRepGraph_PolygonTest, PolyOnTri_Captured_AfterMesh)
       {
         EXPECT_TRUE(aCE.PolygonOnTriRepIds.Value(aPolyIdx).IsValid());
       }
-      EXPECT_TRUE(aCE.FaceEntityId.IsValid());
+      EXPECT_TRUE(aCE.FaceDefId.IsValid());
     }
   }
 }
@@ -185,8 +185,8 @@ TEST(BRepGraph_PolygonTest, PolyOnTri_Roundtrip_PreservedOnReconstruct)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Reconstruct solid and verify polygon-on-triangulation is re-attached.
-  BRepGraph_NodeId aSolidEntityId = BRepGraph_NodeId::Solid(0);
-  TopoDS_Shape     aReconSolid = aGraph.Shapes().Reconstruct(aSolidEntityId);
+  BRepGraph_NodeId aSolidDefId = BRepGraph_NodeId::Solid(0);
+  TopoDS_Shape     aReconSolid = aGraph.Shapes().Reconstruct(aSolidDefId);
   ASSERT_FALSE(aReconSolid.IsNull());
 
   int aNbReconPolyOnTri = 0;
@@ -270,11 +270,11 @@ TEST(BRepGraph_PolygonTest, VertexPointRepresentations_StructurallyValid)
 
     // Validate that any captured entries have valid def references.
     for (int i = 0; i < aVtx.PointsOnCurve.Length(); ++i)
-      EXPECT_TRUE(aVtx.PointsOnCurve.Value(i).EdgeEntityId.IsValid());
+      EXPECT_TRUE(aVtx.PointsOnCurve.Value(i).EdgeDefId.IsValid());
     for (int i = 0; i < aVtx.PointsOnSurface.Length(); ++i)
-      EXPECT_TRUE(aVtx.PointsOnSurface.Value(i).FaceEntityId.IsValid());
+      EXPECT_TRUE(aVtx.PointsOnSurface.Value(i).FaceDefId.IsValid());
     for (int i = 0; i < aVtx.PointsOnPCurve.Length(); ++i)
-      EXPECT_TRUE(aVtx.PointsOnPCurve.Value(i).FaceEntityId.IsValid());
+      EXPECT_TRUE(aVtx.PointsOnPCurve.Value(i).FaceDefId.IsValid());
   }
 
   // Just verify we can query - exact count depends on shape.
@@ -346,7 +346,7 @@ TEST(BRepGraph_PolygonTest, SeamEdge_PolyOnTri_TwoEntries)
     for (int aCEIdx = 0; aCEIdx < aCoEdgeIdxs.Length(); ++aCEIdx)
     {
       const BRepGraphInc::CoEdgeDef& aCE      = aGraph.Topo().CoEdge(aCoEdgeIdxs.Value(aCEIdx));
-      const int                         aFaceIdx = aCE.FaceEntityId.Index;
+      const int                         aFaceIdx = aCE.FaceDefId.Index;
       if (!aFaceCounts.IsBound(aFaceIdx))
         aFaceCounts.Bind(aFaceIdx, 0);
       aFaceCounts.ChangeFind(aFaceIdx) += 1;

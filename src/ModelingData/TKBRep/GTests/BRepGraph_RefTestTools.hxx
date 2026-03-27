@@ -86,7 +86,7 @@ inline bool FaceUsesWire(const BRepGraph&      theGraph,
   const NCollection_Vector<BRepGraph_WireRefId> aWireRefs = WireRefsOfFace(theGraph, theFaceId);
   for (int aRefIdx = 0; aRefIdx < aWireRefs.Length(); ++aRefIdx)
   {
-    if (aRefs.Wire(aWireRefs.Value(aRefIdx)).WireEntityId == theWireId)
+    if (aRefs.Wire(aWireRefs.Value(aRefIdx)).WireDefId == theWireId)
       return true;
   }
   return false;
@@ -265,7 +265,7 @@ inline bool FaceUsesWire(const BRepGraphInc_Storage& theStorage,
   for (int aRefIdx = 0; aRefIdx < aWireRefs.Length(); ++aRefIdx)
   {
     const BRepGraphInc::WireRefEntry& aWireRef = theStorage.WireRefEntry(aWireRefs.Value(aRefIdx));
-    if (aWireRef.WireEntityId == theWireId)
+    if (aWireRef.WireDefId == theWireId)
       return true;
   }
   return false;
@@ -385,7 +385,7 @@ inline BRepGraph_WireId OuterWireOfFace(const BRepGraphInc_Storage& theStorage,
   {
     const BRepGraphInc::WireRefEntry& aWireRef = theStorage.WireRefEntry(aWireRefs.Value(aRefIdx));
     if (aWireRef.IsOuter)
-      return aWireRef.WireEntityId;
+      return aWireRef.WireDefId;
   }
   return BRepGraph_WireId();
 }

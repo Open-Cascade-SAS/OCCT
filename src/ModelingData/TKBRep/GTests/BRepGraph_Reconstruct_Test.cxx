@@ -344,9 +344,9 @@ TEST(BRepGraph_ReconstructTest, Face_OrientationPreserved)
     const BRepGraphInc::FaceRefEntry& aFaceRef = aGraph.Refs().Face(aFaceRefs.Value(aRefIdx));
     const TopAbs_Orientation          anExpectedOri = aFaceRef.Orientation;
 
-    TopoDS_Shape aReconFace = aGraph.Shapes().ReconstructFace(aFaceRef.FaceEntityId);
+    TopoDS_Shape aReconFace = aGraph.Shapes().ReconstructFace(aFaceRef.FaceDefId);
     ASSERT_FALSE(aReconFace.IsNull())
-      << "ReconstructFace returned null for face " << aFaceRef.FaceEntityId.Index;
+      << "ReconstructFace returned null for face " << aFaceRef.FaceDefId.Index;
 
     // The reconstructed face from the def should be valid.
     EXPECT_EQ(aReconFace.ShapeType(), TopAbs_FACE);
@@ -459,8 +459,8 @@ TEST(BRepGraph_ReconstructTest, AfterVertexMutation_ModifiedFlagAndPointChanged)
   ASSERT_GT(aCoEdgeRefs.Length(), 0);
 
   const BRepGraphInc::CoEdgeRefEntry& aFirstCR = aGraph.Refs().CoEdge(aCoEdgeRefs.First());
-  const BRepGraphInc::CoEdgeDef& aFirstCoEdge = aGraph.Topo().CoEdge(aFirstCR.CoEdgeEntityId);
-  const int aVertIdx = BRepGraph_Tool::Edge::StartVertex(aGraph, BRepGraph_EdgeId(aFirstCoEdge.EdgeEntityId)).VertexEntityId.Index;
+  const BRepGraphInc::CoEdgeDef& aFirstCoEdge = aGraph.Topo().CoEdge(aFirstCR.CoEdgeDefId);
+  const int aVertIdx = BRepGraph_Tool::Edge::StartVertex(aGraph, BRepGraph_EdgeId(aFirstCoEdge.EdgeDefId)).VertexDefId.Index;
   ASSERT_GE(aVertIdx, 0);
 
   // Mutate: move vertex by 5 units in Z.

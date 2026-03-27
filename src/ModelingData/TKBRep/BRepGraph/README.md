@@ -90,7 +90,7 @@ Reference entries are the typed edges of the incidence graph. Each ref kind has 
 
 ### BaseRef and RefEntry
 
-`BaseRef` is the common header for all reference entries: `RefId` + `ParentId` + `MutationGen` + `IsRemoved`. Concrete ref entry types (e.g. `ShellRefEntry`, `FaceRefEntry`) extend BaseRef with `EntityId` + `Orientation` + `LocalLocation`.
+`BaseRef` is the common header for all reference entries: `RefId` + `ParentId` + `MutationGen` + `IsRemoved`. Concrete ref entry types (e.g. `ShellRefEntry`, `FaceRefEntry`) extend BaseRef with `DefId` + `Orientation` + `LocalLocation`.
 
 ### RefUID
 
@@ -174,18 +174,18 @@ flowchart LR
 
   RP -->|OccurrenceRef| O1
   RP -->|OccurrenceRef| O2
-  O1 -->|ProductEntityId| P1
-  O2 -->|ProductEntityId| P2
+  O1 -->|ProductDefId| P1
+  O2 -->|ProductDefId| P2
   P2 -->|OccurrenceRef| O3
-  O3 -->|ProductEntityId| P1
+  O3 -->|ProductDefId| P1
 ```
 
 - **ProductDef**: `ShapeRootId` (topology root for parts; invalid for assemblies), `RootOrientation`, `RootLocation`, `OccurrenceRefIds` (child occurrences)
-- **OccurrenceDef**: `ProductEntityId` (referenced product), `ParentProductEntityId` (parent assembly), `ParentOccurrenceEntityId` (parent occurrence for tree-structured placement chains), `Placement` (TopLoc_Location)
+- **OccurrenceDef**: `ProductDefId` (referenced product), `ParentProductDefId` (parent assembly), `ParentOccurrenceDefId` (parent occurrence for tree-structured placement chains), `Placement` (TopLoc_Location)
 
 ### Placement Composition
 
-`SpatialView::GlobalPlacement(occId)` walks `ParentOccurrenceEntityId` from leaf to root, composing `Placement` transforms. DAG-safe: shared products placed at multiple locations have distinct occurrence paths.
+`SpatialView::GlobalPlacement(occId)` walks `ParentOccurrenceDefId` from leaf to root, composing `Placement` transforms. DAG-safe: shared products placed at multiple locations have distinct occurrence paths.
 
 ### API Distribution
 
