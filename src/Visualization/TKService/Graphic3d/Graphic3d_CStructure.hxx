@@ -17,8 +17,7 @@
 
 #include <Graphic3d_DisplayPriority.hxx>
 #include <Graphic3d_PresentationAttributes.hxx>
-#include <Graphic3d_Group.hxx>
-#include <NCollection_Sequence.hxx>
+#include <Graphic3d_SequenceOfGroup.hxx>
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
 #include <Graphic3d_ViewAffinity.hxx>
 #include <Graphic3d_TransformPers.hxx>
@@ -34,148 +33,144 @@ class Graphic3d_CStructure : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(Graphic3d_CStructure, Standard_Transient)
 protected:
+
   //! Auxiliary wrapper to iterate through structure list.
-  template <class Struct_t>
+  template<class Struct_t>
   class SubclassStructIterator
   {
   public:
-    SubclassStructIterator(const NCollection_IndexedMap<const Graphic3d_CStructure*>& theStructs)
-        : myIter(theStructs)
-    {
-    }
-
-    bool More() const { return myIter.More(); }
-
-    void Next() { myIter.Next(); }
-
-    const Struct_t* Value() const { return (const Struct_t*)(myIter.Value()); }
-
-    Struct_t* ChangeValue() { return (Struct_t*)(myIter.Value()); }
-
+    SubclassStructIterator (const NCollection_IndexedMap<const Graphic3d_CStructure*>& theStructs) : myIter (theStructs) {}
+    bool More() const  { return myIter.More(); }
+    void Next()                    { myIter.Next(); }
+    const Struct_t*  Value() const { return (const Struct_t* )(myIter.Value()); }
+    Struct_t*        ChangeValue() { return (Struct_t* )(myIter.Value()); }
   private:
     NCollection_IndexedMap<const Graphic3d_CStructure*>::Iterator myIter;
   };
 
   //! Auxiliary wrapper to iterate through group sequence.
-  template <class Group_t>
+  template<class Group_t>
   class SubclassGroupIterator
   {
   public:
-    SubclassGroupIterator(const NCollection_Sequence<occ::handle<Graphic3d_Group>>& theGroups)
-        : myIter(theGroups)
-    {
-    }
-
-    bool More() const { return myIter.More(); }
-
-    void Next() { myIter.Next(); }
-
-    const Group_t* Value() const { return (const Group_t*)(myIter.Value().get()); }
-
-    Group_t* ChangeValue() { return (Group_t*)(myIter.ChangeValue().get()); }
-
+    SubclassGroupIterator (const Graphic3d_SequenceOfGroup& theGroups) : myIter (theGroups) {}
+    bool More() const  { return myIter.More(); }
+    void Next()                    { myIter.Next(); }
+    const Group_t*   Value() const { return (const Group_t* )(myIter.Value().get()); }
+    Group_t*         ChangeValue() { return (Group_t* )(myIter.ChangeValue().get()); }
   private:
-    NCollection_Sequence<occ::handle<Graphic3d_Group>>::Iterator myIter;
+    Graphic3d_SequenceOfGroup::Iterator myIter;
   };
 
 public:
+
   //! @return graphic driver created this structure
-  const occ::handle<Graphic3d_GraphicDriver>& GraphicDriver() const { return myGraphicDriver; }
+  const occ::handle<Graphic3d_GraphicDriver>& GraphicDriver() const
+  {
+    return myGraphicDriver;
+  }
 
   //! @return graphic groups
-  const NCollection_Sequence<occ::handle<Graphic3d_Group>>& Groups() const { return myGroups; }
+  const Graphic3d_SequenceOfGroup& Groups() const
+  {
+    return myGroups;
+  }
 
   //! Return transformation.
   const occ::handle<TopLoc_Datum3D>& Transformation() const { return myTrsf; }
 
   //! Assign transformation.
-  virtual void SetTransformation(const occ::handle<TopLoc_Datum3D>& theTrsf) { myTrsf = theTrsf; }
+  virtual void SetTransformation (const occ::handle<TopLoc_Datum3D>& theTrsf) { myTrsf = theTrsf; }
 
   //! Return transformation persistence.
   const occ::handle<Graphic3d_TransformPers>& TransformPersistence() const { return myTrsfPers; }
 
   //! Set transformation persistence.
-  virtual void SetTransformPersistence(const occ::handle<Graphic3d_TransformPers>& theTrsfPers)
-  {
-    myTrsfPers = theTrsfPers;
-  }
+  virtual void SetTransformPersistence (const occ::handle<Graphic3d_TransformPers>& theTrsfPers) { myTrsfPers = theTrsfPers; }
 
   //! Return TRUE if some groups might have transform persistence; FALSE by default.
   bool HasGroupTransformPersistence() const { return myHasGroupTrsf; }
 
   //! Set if some groups might have transform persistence.
-  void SetGroupTransformPersistence(bool theValue) { myHasGroupTrsf = theValue; }
+  void SetGroupTransformPersistence (bool theValue) { myHasGroupTrsf = theValue; }
+
+  //! Return TRUE if some groups might have flipping options; FALSE by default.
+  bool HasGroupFlipping() const { return myHasGroupFlipping; }
+
+  //! Set if some groups might have flipping options.
+  void SetGroupFlipping (bool theValue) { myHasGroupFlipping = theValue; }
 
   //! @return associated clip planes
-  const occ::handle<Graphic3d_SequenceOfHClipPlane>& ClipPlanes() const { return myClipPlanes; }
+  const occ::handle<Graphic3d_SequenceOfHClipPlane>& ClipPlanes() const
+  {
+    return myClipPlanes;
+  }
 
   //! Pass clip planes to the associated graphic driver structure
-  void SetClipPlanes(const occ::handle<Graphic3d_SequenceOfHClipPlane>& thePlanes)
+  void SetClipPlanes (const occ::handle<Graphic3d_SequenceOfHClipPlane>& thePlanes) { myClipPlanes = thePlanes; }
+
+  //! @return bounding box of this presentation
+  const Graphic3d_BndBox3d& BoundingBox() const
   {
-    myClipPlanes = thePlanes;
+    return myBndBox;
   }
 
   //! @return bounding box of this presentation
-  const Graphic3d_BndBox3d& BoundingBox() const { return myBndBox; }
-
-  //! @return bounding box of this presentation
   //! without transformation matrix applied
-  Graphic3d_BndBox3d& ChangeBoundingBox() { return myBndBox; }
+  Graphic3d_BndBox3d& ChangeBoundingBox()
+  {
+    return myBndBox;
+  }
 
   //! Return structure visibility flag
   bool IsVisible() const { return visible != 0; }
 
   //! Return structure visibility considering both View Affinity and global visibility state.
-  bool IsVisible(const int theViewId) const
+  bool IsVisible (const int theViewId) const
   {
-    return visible != 0 && (ViewAffinity.IsNull() || ViewAffinity->IsVisible(theViewId));
+    return visible != 0
+        && (ViewAffinity.IsNull()
+         || ViewAffinity->IsVisible (theViewId));
   }
 
   //! Set z layer ID to display the structure in specified layer
-  virtual void SetZLayer(const Graphic3d_ZLayerId theLayerIndex) { myZLayer = theLayerIndex; }
+  virtual void SetZLayer (const Graphic3d_ZLayerId theLayerIndex) { myZLayer = theLayerIndex; }
 
   //! Get z layer ID
   Graphic3d_ZLayerId ZLayer() const { return myZLayer; }
 
   //! Returns valid handle to highlight style of the structure in case if
   //! highlight flag is set to true
-  const occ::handle<Graphic3d_PresentationAttributes>& HighlightStyle() const
-  {
-    return myHighlightStyle;
-  }
+  const occ::handle<Graphic3d_PresentationAttributes>& HighlightStyle() const { return myHighlightStyle; }
 
-  //! Return structure id (generated by Graphic3d_GraphicDriver::NewIdentification() during
-  //! structure construction).
+  //! Return structure id (generated by Graphic3d_GraphicDriver::NewIdentification() during structure construction).
   int Identification() const { return myId; }
 
   //! Return structure display priority.
   Graphic3d_DisplayPriority Priority() const { return myPriority; }
 
   //! Set structure display priority.
-  void SetPriority(Graphic3d_DisplayPriority thePriority) { myPriority = thePriority; }
+  void SetPriority (Graphic3d_DisplayPriority thePriority) { myPriority = thePriority; }
 
   //! Return previous structure display priority.
   Graphic3d_DisplayPriority PreviousPriority() const { return myPreviousPriority; }
 
   //! Set previous structure display priority.
-  void SetPreviousPriority(Graphic3d_DisplayPriority thePriority)
-  {
-    myPreviousPriority = thePriority;
-  }
+  void SetPreviousPriority (Graphic3d_DisplayPriority thePriority) { myPreviousPriority = thePriority; }
 
 public:
+
   //! Returns FALSE if the structure hits the current view volume, otherwise returns TRUE.
   bool IsCulled() const { return myIsCulled; }
 
   //! Marks structure as culled/not culled - note that IsAlwaysRendered() is ignored here!
-  void SetCulled(bool theIsCulled) const { myIsCulled = theIsCulled; }
+  void SetCulled (bool theIsCulled) const { myIsCulled = theIsCulled; }
 
   //! Marks structure as overlapping the current view volume one.
   //! The method is called during traverse of BVH tree.
   void MarkAsNotCulled() const { myIsCulled = false; }
 
-  //! Returns whether check of object's bounding box clipping is enabled before drawing of object;
-  //! TRUE by default.
+  //! Returns whether check of object's bounding box clipping is enabled before drawing of object; TRUE by default.
   bool BndBoxClipCheck() const { return myBndBoxClipCheck; }
 
   //! Enable/disable check of object's bounding box clipping before drawing of object.
@@ -184,11 +179,15 @@ public:
   //! Checks if the structure should be included into BVH tree or not.
   bool IsAlwaysRendered() const
   {
-    return IsInfinite || IsForHighlight || IsMutable || Is2dText
-           || (!myTrsfPers.IsNull() && myTrsfPers->IsTrihedronOr2d());
+    return IsInfinite
+        || IsForHighlight
+        || IsMutable
+        || Is2dText
+        || (!myTrsfPers.IsNull() && myTrsfPers->IsTrihedronOr2d());
   }
 
 public:
+
   //! Update structure visibility state
   virtual void OnVisibilityChanged() = 0;
 
@@ -196,49 +195,49 @@ public:
   virtual void Clear() = 0;
 
   //! Connect other structure to this one
-  virtual void Connect(Graphic3d_CStructure& theStructure) = 0;
+  virtual void Connect    (Graphic3d_CStructure& theStructure) = 0;
 
   //! Disconnect other structure to this one
-  virtual void Disconnect(Graphic3d_CStructure& theStructure) = 0;
+  virtual void Disconnect (Graphic3d_CStructure& theStructure) = 0;
 
   //! Highlights structure with the given style
-  virtual void GraphicHighlight(const occ::handle<Graphic3d_PresentationAttributes>& theStyle) = 0;
+  virtual void GraphicHighlight (const occ::handle<Graphic3d_PresentationAttributes>& theStyle) = 0;
 
   //! Unhighlights the structure and invalidates pointer to structure's highlight style
   virtual void GraphicUnhighlight() = 0;
 
   //! Create shadow link to this structure
-  virtual occ::handle<Graphic3d_CStructure> ShadowLink(
-    const occ::handle<Graphic3d_StructureManager>& theManager) const = 0;
+  virtual occ::handle<Graphic3d_CStructure> ShadowLink (const occ::handle<Graphic3d_StructureManager>& theManager) const = 0;
 
   //! Create new group within this structure
-  virtual occ::handle<Graphic3d_Group> NewGroup(
-    const occ::handle<Graphic3d_Structure>& theStruct) = 0;
+  virtual occ::handle<Graphic3d_Group> NewGroup (const occ::handle<Graphic3d_Structure>& theStruct) = 0;
 
   //! Remove group from this structure
-  virtual void RemoveGroup(const occ::handle<Graphic3d_Group>& theGroup) = 0;
+  virtual void RemoveGroup (const occ::handle<Graphic3d_Group>& theGroup) = 0;
 
   //! Update render transformation matrix.
   virtual void updateLayerTransformation() {}
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, int theDepth = -1) const;
 
 public:
+
   occ::handle<Graphic3d_ViewAffinity> ViewAffinity; //!< view affinity mask
 
 protected:
+
   //! Create empty structure.
-  Standard_EXPORT Graphic3d_CStructure(const occ::handle<Graphic3d_StructureManager>& theManager);
+  Standard_EXPORT Graphic3d_CStructure (const occ::handle<Graphic3d_StructureManager>& theManager);
 
 protected:
-  occ::handle<Graphic3d_GraphicDriver>               myGraphicDriver;
-  NCollection_Sequence<occ::handle<Graphic3d_Group>> myGroups;
-  Graphic3d_BndBox3d                                 myBndBox;
-  occ::handle<TopLoc_Datum3D>                        myTrsf;
-  occ::handle<Graphic3d_TransformPers>               myTrsfPers;
-  occ::handle<Graphic3d_SequenceOfHClipPlane>        myClipPlanes;
-  // clang-format off
+
+  occ::handle<Graphic3d_GraphicDriver> myGraphicDriver;
+  Graphic3d_SequenceOfGroup       myGroups;
+  Graphic3d_BndBox3d              myBndBox;
+  occ::handle<TopLoc_Datum3D>          myTrsf;
+  occ::handle<Graphic3d_TransformPers> myTrsfPers;
+  occ::handle<Graphic3d_SequenceOfHClipPlane> myClipPlanes;
   occ::handle<Graphic3d_PresentationAttributes> myHighlightStyle; //! Current highlight style; is set only if highlight flag is true
 
   int          myId;
@@ -250,6 +249,7 @@ protected:
   bool myBndBoxClipCheck;  //!< Flag responsible for checking of bounding box clipping before drawing of object
 
   bool myHasGroupTrsf;     //!< flag specifying that some groups might have transform persistence
+  bool myHasGroupFlipping; //!< flag specifying that some groups might have flipping options
 
 public:
 
@@ -257,11 +257,11 @@ public:
   unsigned stick          : 1; //!< displaying state - should be set when structure has been added to scene graph (but can be in hidden state)
   unsigned highlight      : 1;
   unsigned visible        : 1; //!< visibility flag - can be used to suppress structure while leaving it in the scene graph
-  // clang-format on
-  unsigned HLRValidation : 1;
+  unsigned HLRValidation  : 1;
   unsigned IsForHighlight : 1;
-  unsigned IsMutable : 1;
-  unsigned Is2dText : 1;
+  unsigned IsMutable      : 1;
+  unsigned Is2dText       : 1;
+
 };
 
 #endif // _Graphic3d_CStructure_HeaderFile

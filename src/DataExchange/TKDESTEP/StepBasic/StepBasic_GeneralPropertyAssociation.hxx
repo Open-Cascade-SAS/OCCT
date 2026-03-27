@@ -28,13 +28,15 @@ class StepBasic_GeneralPropertyAssociation : public Standard_Transient
 {
 
 public:
+
+  
   //! Empty constructor
   Standard_EXPORT StepBasic_GeneralPropertyAssociation();
-
+  
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&    aName,
-                            const occ::handle<TCollection_HAsciiString>&    aDescription,
-                            const occ::handle<StepBasic_GeneralProperty>&   aGeneralProperty,
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
+                            const occ::handle<TCollection_HAsciiString>& aDescription,
+                            const occ::handle<StepBasic_GeneralProperty>& aGeneralProperty,
                             const occ::handle<StepRepr_PropertyDefinition>& aPropertyDefinition);
 
   //! Returns field Name
@@ -53,23 +55,23 @@ public:
   Standard_EXPORT occ::handle<StepBasic_GeneralProperty> GeneralProperty() const;
 
   //! Set field GeneralProperty
-  Standard_EXPORT void SetGeneralProperty(
-    const occ::handle<StepBasic_GeneralProperty>& GeneralProperty);
+  Standard_EXPORT void SetGeneralProperty(const occ::handle<StepBasic_GeneralProperty>& GeneralProperty);
 
   //! Returns field PropertyDefinition
   Standard_EXPORT occ::handle<StepRepr_PropertyDefinition> PropertyDefinition() const;
 
   //! Set field PropertyDefinition
-  Standard_EXPORT void SetPropertyDefinition(
-    const occ::handle<StepRepr_PropertyDefinition>& PropertyDefinition);
+  Standard_EXPORT void SetPropertyDefinition(const occ::handle<StepRepr_PropertyDefinition>& PropertyDefinition);
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_GeneralPropertyAssociation, Standard_Transient)
 
 private:
-  occ::handle<TCollection_HAsciiString>    theName;
-  occ::handle<TCollection_HAsciiString>    theDescription;
-  occ::handle<StepBasic_GeneralProperty>   theGeneralProperty;
+
+  occ::handle<TCollection_HAsciiString> theName;
+  occ::handle<TCollection_HAsciiString> theDescription;
+  occ::handle<StepBasic_GeneralProperty> theGeneralProperty;
   occ::handle<StepRepr_PropertyDefinition> thePropertyDefinition;
+
 };
 
 #endif // _StepBasic_GeneralPropertyAssociation_HeaderFile

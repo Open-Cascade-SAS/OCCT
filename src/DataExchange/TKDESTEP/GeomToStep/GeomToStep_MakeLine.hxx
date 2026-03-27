@@ -32,27 +32,31 @@ class Geom2d_Line;
 //! Line from Geom and Lin from gp, and the class
 //! Line from StepGeom which describes a line from
 //! Prostep.
-class GeomToStep_MakeLine : public GeomToStep_Root
+class GeomToStep_MakeLine  : public GeomToStep_Root
 {
 public:
+
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT GeomToStep_MakeLine(const gp_Lin&           L,
+  
+  Standard_EXPORT GeomToStep_MakeLine(const gp_Lin& L,
                                       const StepData_Factors& theLocalFactors = StepData_Factors());
-
-  Standard_EXPORT GeomToStep_MakeLine(const gp_Lin2d&         L,
+  
+  Standard_EXPORT GeomToStep_MakeLine(const gp_Lin2d& L,
                                       const StepData_Factors& theLocalFactors = StepData_Factors());
-
+  
   Standard_EXPORT GeomToStep_MakeLine(const occ::handle<Geom_Line>& C,
                                       const StepData_Factors& theLocalFactors = StepData_Factors());
-
+  
   Standard_EXPORT GeomToStep_MakeLine(const occ::handle<Geom2d_Line>& C,
                                       const StepData_Factors& theLocalFactors = StepData_Factors());
-
+  
   Standard_EXPORT const occ::handle<StepGeom_Line>& Value() const;
 
 private:
+
   occ::handle<StepGeom_Line> theLine;
+
 };
 
 #endif // _GeomToStep_MakeLine_HeaderFile

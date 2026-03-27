@@ -21,37 +21,31 @@
 #include <Graphic3d_Group.hxx>
 #include <Quantity_Color.hxx>
 #include <Standard_Type.hxx>
-#include <gp_Pnt.hxx>
-#include <NCollection_Sequence.hxx>
+#include <TColgp_SequenceOfPnt.hxx>
 #include <V3d_Viewer.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(V3d_CircularGrid, Aspect_CircularGrid)
+IMPLEMENT_STANDARD_RTTIEXT(V3d_CircularGrid,Aspect_CircularGrid)
 
 namespace
 {
-constexpr double THE_DEFAULT_GRID_STEP = 10.0;
-constexpr int    THE_DIVISION          = 8;
-constexpr double THE_MYFACTOR          = 50.0;
-} // namespace
+  static const double THE_DEFAULT_GRID_STEP = 10.0;
+  #define DIVISION 8
+  #define MYFACTOR 50.
+}
 
-//! Dummy implementation of Graphic3d_Structure overriding ::Compute() method for handling Device
-//! Lost.
+//! Dummy implementation of Graphic3d_Structure overriding ::Compute() method for handling Device Lost.
 class V3d_CircularGrid::CircularGridStructure : public Graphic3d_Structure
 {
 public:
   //! Main constructor.
-  CircularGridStructure(const occ::handle<Graphic3d_StructureManager>& theManager,
-                        V3d_CircularGrid*                              theGrid)
-      : Graphic3d_Structure(theManager),
-        myGrid(theGrid)
-  {
-  }
+  CircularGridStructure (const occ::handle<Graphic3d_StructureManager>& theManager, V3d_CircularGrid* theGrid)
+  : Graphic3d_Structure (theManager), myGrid (theGrid) {}
 
   //! Override method initiating recomputing in V3d_CircularGrid.
-  void Compute() override
+  virtual void Compute() override
   {
-    GraphicClear(false);
-    myGrid->myGroup         = NewGroup();
+    GraphicClear (false);
+    myGrid->myGroup = NewGroup();
     myGrid->myCurAreDefined = false;
     myGrid->UpdateDisplay();
   }
@@ -62,30 +56,28 @@ private:
 
 /*----------------------------------------------------------------------*/
 
-V3d_CircularGrid::V3d_CircularGrid(const V3d_ViewerPointer& aViewer,
-                                   const Quantity_Color&    aColor,
-                                   const Quantity_Color&    aTenthColor)
-    : Aspect_CircularGrid(1., 8),
-      myViewer(aViewer),
-      myCurAreDefined(false),
-      myToComputePrs(false),
-      myCurDrawMode(Aspect_GDM_Lines),
-      myCurXo(0.0),
-      myCurYo(0.0),
-      myCurAngle(0.0),
-      myCurStep(0.0),
-      myCurDivi(0),
-      myRadius(0.5 * aViewer->DefaultViewSize()),
-      myOffSet(THE_DEFAULT_GRID_STEP / THE_MYFACTOR)
+V3d_CircularGrid::V3d_CircularGrid (const V3d_ViewerPointer& aViewer, const Quantity_Color& aColor, const Quantity_Color& aTenthColor)
+: Aspect_CircularGrid (1.,8),
+  myViewer (aViewer),
+  myCurAreDefined (false),
+  myToComputePrs (false),
+  myCurDrawMode (Aspect_GDM_Lines),
+  myCurXo (0.0),
+  myCurYo (0.0),
+  myCurAngle (0.0),
+  myCurStep (0.0),
+  myCurDivi (0),
+  myRadius (0.5 * aViewer->DefaultViewSize()),
+  myOffSet (THE_DEFAULT_GRID_STEP / MYFACTOR)
 {
-  myColor      = aColor;
+  myColor = aColor;
   myTenthColor = aTenthColor;
 
-  myStructure = new CircularGridStructure(aViewer->StructureManager(), this);
-  myGroup     = myStructure->NewGroup();
-  myStructure->SetInfiniteState(true);
+  myStructure = new CircularGridStructure (aViewer->StructureManager(), this);
+  myGroup = myStructure->NewGroup();
+  myStructure->SetInfiniteState (true);
 
-  SetRadiusStep(THE_DEFAULT_GRID_STEP);
+  SetRadiusStep (THE_DEFAULT_GRID_STEP);
 }
 
 V3d_CircularGrid::~V3d_CircularGrid()
@@ -97,35 +89,39 @@ V3d_CircularGrid::~V3d_CircularGrid()
   }
 }
 
-void V3d_CircularGrid::SetColors(const Quantity_Color& aColor, const Quantity_Color& aTenthColor)
+void V3d_CircularGrid::SetColors (const Quantity_Color& aColor, const Quantity_Color& aTenthColor)
 {
-  if (myColor != aColor || myTenthColor != aTenthColor)
-  {
-    myColor         = aColor;
-    myTenthColor    = aTenthColor;
+  if( myColor != aColor || myTenthColor != aTenthColor ) {
+    myColor = aColor;
+    myTenthColor = aTenthColor;
     myCurAreDefined = false;
     UpdateDisplay();
   }
 }
 
-void V3d_CircularGrid::Display()
+void V3d_CircularGrid::Display ()
 {
-  myStructure->SetDisplayPriority(Graphic3d_DisplayPriority_AlmostBottom);
+  myStructure->SetDisplayPriority (Graphic3d_DisplayPriority_AlmostBottom);
   myStructure->Display();
   UpdateDisplay();
 }
 
-void V3d_CircularGrid::Erase() const
+void V3d_CircularGrid::Update()
 {
-  myStructure->Erase();
+  //
 }
 
-bool V3d_CircularGrid::IsDisplayed() const
+void V3d_CircularGrid::Erase () const
 {
-  return myStructure->IsDisplayed();
+  myStructure->Erase ();
 }
 
-void V3d_CircularGrid::UpdateDisplay()
+bool V3d_CircularGrid::IsDisplayed () const
+{
+  return myStructure->IsDisplayed ();
+}
+
+void V3d_CircularGrid::UpdateDisplay ()
 {
   gp_Ax3 ThePlane = myViewer->PrivilegedPlane();
 
@@ -133,10 +129,10 @@ void V3d_CircularGrid::UpdateDisplay()
   double xdx, xdy, xdz;
   double ydx, ydy, ydz;
   double dx, dy, dz;
-  ThePlane.Location().Coord(xl, yl, zl);
-  ThePlane.XDirection().Coord(xdx, xdy, xdz);
-  ThePlane.YDirection().Coord(ydx, ydy, ydz);
-  ThePlane.Direction().Coord(dx, dy, dz);
+  ThePlane.Location ().Coord (xl, yl, zl);
+  ThePlane.XDirection ().Coord (xdx, xdy, xdz);
+  ThePlane.YDirection ().Coord (ydx, ydy, ydz);
+  ThePlane.Direction ().Coord (dx, dy, dz);
 
   bool MakeTransform = !myCurAreDefined;
   if (!MakeTransform)
@@ -148,58 +144,52 @@ void V3d_CircularGrid::UpdateDisplay()
       double curxdx, curxdy, curxdz;
       double curydx, curydy, curydz;
       double curdx, curdy, curdz;
-      myCurViewPlane.Location().Coord(curxl, curyl, curzl);
-      myCurViewPlane.XDirection().Coord(curxdx, curxdy, curxdz);
-      myCurViewPlane.YDirection().Coord(curydx, curydy, curydz);
-      myCurViewPlane.Direction().Coord(curdx, curdy, curdz);
-      if (xl != curxl || yl != curyl || zl != curzl || xdx != curxdx || xdy != curxdy
-          || xdz != curxdz || ydx != curydx || ydy != curydy || ydz != curydz || dx != curdx
-          || dy != curdy || dz != curdz)
+      myCurViewPlane.Location ().Coord (curxl, curyl, curzl);
+      myCurViewPlane.XDirection ().Coord (curxdx, curxdy, curxdz);
+      myCurViewPlane.YDirection ().Coord (curydx, curydy, curydz);
+      myCurViewPlane.Direction ().Coord (curdx, curdy, curdz);
+      if (xl != curxl || yl != curyl || zl != curzl ||
+          xdx != curxdx || xdy != curxdy || xdz != curxdz ||
+          ydx != curydx || ydy != curydy || ydz != curydz ||
+          dx != curdx || dy != curdy || dz != curdz)
         MakeTransform = true;
     }
   }
 
   if (MakeTransform)
   {
-    const double CosAlpha = std::cos(RotationAngle());
-    const double SinAlpha = std::sin(RotationAngle());
+    const double CosAlpha = Cos (RotationAngle ());
+    const double SinAlpha = Sin (RotationAngle ());
 
     gp_Trsf aTrsf;
     // Translation
     // Transformation of change of marker
-    aTrsf.SetValues(xdx, ydx, dx, xl, xdy, ydy, dy, yl, xdz, ydz, dz, zl);
+    aTrsf.SetValues (xdx, ydx, dx, xl,
+                     xdy, ydy, dy, yl,
+                     xdz, ydz, dz, zl);
 
     // Translation of the origin
     // Rotation Alpha around axis -Z
     gp_Trsf aTrsf2;
-    aTrsf2.SetValues(CosAlpha,
-                     SinAlpha,
-                     0.0,
-                     -XOrigin(),
-                     -SinAlpha,
-                     CosAlpha,
-                     0.0,
-                     -YOrigin(),
-                     0.0,
-                     0.0,
-                     1.0,
-                     0.0);
-    aTrsf.Multiply(aTrsf2);
-    myStructure->SetTransformation(new TopLoc_Datum3D(aTrsf));
+    aTrsf2.SetValues ( CosAlpha, SinAlpha, 0.0, -XOrigin(),
+                      -SinAlpha, CosAlpha, 0.0, -YOrigin(),
+                            0.0,      0.0, 1.0, 0.0);
+    aTrsf.Multiply (aTrsf2);
+    myStructure->SetTransformation (new TopLoc_Datum3D (aTrsf));
 
-    myCurAngle = RotationAngle();
-    myCurXo = XOrigin(), myCurYo = YOrigin();
+    myCurAngle = RotationAngle ();
+    myCurXo = XOrigin (), myCurYo = YOrigin ();
     myCurViewPlane = ThePlane;
   }
 
   switch (myDrawMode)
   {
     case Aspect_GDM_Points:
-      DefinePoints();
+      DefinePoints ();
       myCurDrawMode = Aspect_GDM_Points;
       break;
     case Aspect_GDM_Lines:
-      DefineLines();
+      DefineLines ();
       myCurDrawMode = Aspect_GDM_Lines;
       break;
     case Aspect_GDM_None:
@@ -209,13 +199,16 @@ void V3d_CircularGrid::UpdateDisplay()
   myCurAreDefined = true;
 }
 
-void V3d_CircularGrid::DefineLines()
+void V3d_CircularGrid::DefineLines ()
 {
-  const double aStep     = RadiusStep();
-  const double aDivision = DivisionNumber();
-  const bool   toUpdate  = !myCurAreDefined || myCurDrawMode != Aspect_GDM_Lines
-                        || aDivision != myCurDivi || aStep != myCurStep;
-  if (!toUpdate && !myToComputePrs)
+  const double    aStep     = RadiusStep ();
+  const double    aDivision = DivisionNumber ();
+  const bool toUpdate  = !myCurAreDefined
+                                  || myCurDrawMode != Aspect_GDM_Lines
+                                  || aDivision != myCurDivi
+                                  || aStep     != myCurStep;
+  if (!toUpdate
+   && !myToComputePrs)
   {
     return;
   }
@@ -226,86 +219,80 @@ void V3d_CircularGrid::DefineLines()
   }
 
   myToComputePrs = false;
-  myGroup->Clear();
+  myGroup->Clear ();
 
-  const int Division = (int)((aDivision >= THE_DIVISION ? aDivision : THE_DIVISION));
+  const int Division = (int )( (aDivision >= DIVISION ? aDivision : DIVISION));
 
   int nbpnts = 2 * Division;
   // diametres
   double alpha = M_PI / aDivision;
 
-  myGroup->SetGroupPrimitivesAspect(
-    new Graphic3d_AspectLine3d(myTenthColor, Aspect_TOL_SOLID, 1.0));
-  occ::handle<Graphic3d_ArrayOfSegments> aPrims1 = new Graphic3d_ArrayOfSegments(2 * nbpnts);
-  const gp_Pnt                           p0(0., 0., -myOffSet);
-  for (int i = 1; i <= nbpnts; i++)
-  {
+  myGroup->SetGroupPrimitivesAspect (new Graphic3d_AspectLine3d (myTenthColor, Aspect_TOL_SOLID, 1.0));
+  occ::handle<Graphic3d_ArrayOfSegments> aPrims1 = new Graphic3d_ArrayOfSegments(2*nbpnts);
+  const gp_Pnt p0(0., 0., -myOffSet);
+  for (int i=1; i<=nbpnts; i++) {
     aPrims1->AddVertex(p0);
-    aPrims1->AddVertex(std::cos(alpha * i) * myRadius, std::sin(alpha * i) * myRadius, -myOffSet);
+    aPrims1->AddVertex(Cos(alpha*i)*myRadius, Sin(alpha*i)*myRadius, -myOffSet);
   }
   myGroup->AddPrimitiveArray(aPrims1, false);
 
   // circles
-  nbpnts                               = 2 * Division + 1;
-  alpha                                = M_PI / Division;
-  int                          nblines = 0;
-  NCollection_Sequence<gp_Pnt> aSeqLines, aSeqTenth;
-  for (double r = aStep; r <= myRadius; r += aStep, nblines++)
-  {
+  nbpnts = 2 * Division + 1;
+  alpha = M_PI / Division;
+  int nblines = 0;
+  TColgp_SequenceOfPnt aSeqLines, aSeqTenth;
+  for (double r=aStep; r<=myRadius; r+=aStep, nblines++) {
     const bool isTenth = (Modulus(nblines, 10) == 0);
-    for (int i = 0; i < nbpnts; i++)
-    {
-      const gp_Pnt pt(std::cos(alpha * i) * r, std::sin(alpha * i) * r, -myOffSet);
-      (isTenth ? aSeqTenth : aSeqLines).Append(pt);
+    for (int i=0; i<nbpnts; i++) {
+      const gp_Pnt pt(Cos(alpha*i)*r,Sin(alpha*i)*r,-myOffSet);
+      (isTenth? aSeqTenth : aSeqLines).Append(pt);
     }
   }
   if (aSeqTenth.Length())
   {
-    myGroup->SetGroupPrimitivesAspect(
-      new Graphic3d_AspectLine3d(myTenthColor, Aspect_TOL_SOLID, 1.0));
-    int                                     n, np;
-    const int                               nbl = aSeqTenth.Length() / nbpnts;
-    occ::handle<Graphic3d_ArrayOfPolylines> aPrims2 =
-      new Graphic3d_ArrayOfPolylines(aSeqTenth.Length(), nbl);
-    for (np = 1, n = 0; n < nbl; n++)
-    {
+    myGroup->SetGroupPrimitivesAspect (new Graphic3d_AspectLine3d (myTenthColor, Aspect_TOL_SOLID, 1.0));
+    int n, np;
+    const int nbl = aSeqTenth.Length() / nbpnts;
+    occ::handle<Graphic3d_ArrayOfPolylines> aPrims2 = new Graphic3d_ArrayOfPolylines(aSeqTenth.Length(),nbl);
+    for (np = 1, n=0; n<nbl; n++) {
       aPrims2->AddBound(nbpnts);
-      for (int i = 0; i < nbpnts; i++, np++)
+      for (int i=0; i<nbpnts; i++, np++)
         aPrims2->AddVertex(aSeqTenth(np));
-    }
+  }
     myGroup->AddPrimitiveArray(aPrims2, false);
   }
   if (aSeqLines.Length())
   {
-    myGroup->SetPrimitivesAspect(new Graphic3d_AspectLine3d(myColor, Aspect_TOL_SOLID, 1.0));
-    int                                     n, np;
-    const int                               nbl = aSeqLines.Length() / nbpnts;
-    occ::handle<Graphic3d_ArrayOfPolylines> aPrims3 =
-      new Graphic3d_ArrayOfPolylines(aSeqLines.Length(), nbl);
-    for (np = 1, n = 0; n < nbl; n++)
-    {
+    myGroup->SetPrimitivesAspect (new Graphic3d_AspectLine3d (myColor, Aspect_TOL_SOLID, 1.0));
+    int n, np;
+    const int nbl = aSeqLines.Length() / nbpnts;
+    occ::handle<Graphic3d_ArrayOfPolylines> aPrims3 = new Graphic3d_ArrayOfPolylines(aSeqLines.Length(),nbl);
+    for (np = 1, n=0; n<nbl; n++) {
       aPrims3->AddBound(nbpnts);
-      for (int i = 0; i < nbpnts; i++, np++)
+      for (int i=0; i<nbpnts; i++, np++)
         aPrims3->AddVertex(aSeqLines(np));
-    }
+  }
     myGroup->AddPrimitiveArray(aPrims3, false);
   }
 
-  myGroup->SetMinMaxValues(-myRadius, -myRadius, -myOffSet, myRadius, myRadius, -myOffSet);
-  myCurStep = aStep, myCurDivi = (int)aDivision;
+  myGroup->SetMinMaxValues (-myRadius, -myRadius, -myOffSet, myRadius, myRadius, -myOffSet);
+  myCurStep = aStep, myCurDivi = (int ) aDivision;
 
   // update bounding box
   myStructure->CalculateBoundBox();
-  myViewer->StructureManager()->Update(myStructure->GetZLayer());
+  myViewer->StructureManager()->Update (myStructure->GetZLayer());
 }
 
-void V3d_CircularGrid::DefinePoints()
+void V3d_CircularGrid::DefinePoints ()
 {
-  const double aStep     = RadiusStep();
-  const double aDivision = DivisionNumber();
-  const bool   toUpdate  = !myCurAreDefined || myCurDrawMode != Aspect_GDM_Points
-                        || aDivision != myCurDivi || aStep != myCurStep;
-  if (!toUpdate && !myToComputePrs)
+  const double    aStep     = RadiusStep();
+  const double    aDivision = DivisionNumber();
+  const bool toUpdate  = !myCurAreDefined
+                                  || myCurDrawMode != Aspect_GDM_Points
+                                  || aDivision != myCurDivi
+                                  || aStep     != myCurStep;
+  if (!toUpdate
+   && !myToComputePrs)
   {
     return;
   }
@@ -316,93 +303,90 @@ void V3d_CircularGrid::DefinePoints()
   }
 
   myToComputePrs = false;
-  myGroup->Clear();
+  myGroup->Clear ();
 
-  occ::handle<Graphic3d_AspectMarker3d> MarkerAttrib = new Graphic3d_AspectMarker3d();
-  MarkerAttrib->SetColor(myColor);
-  MarkerAttrib->SetType(Aspect_TOM_POINT);
-  MarkerAttrib->SetScale(3.);
+  occ::handle<Graphic3d_AspectMarker3d> MarkerAttrib = new Graphic3d_AspectMarker3d ();
+  MarkerAttrib->SetColor (myColor);
+  MarkerAttrib->SetType (Aspect_TOM_POINT);
+  MarkerAttrib->SetScale (3.);
 
-  const int nbpnts = int(2 * aDivision);
-  double    r, alpha = M_PI / aDivision;
+  const int nbpnts = int (2*aDivision);
+  double r, alpha = M_PI / aDivision;
 
   // diameters
-  NCollection_Sequence<gp_Pnt> aSeqPnts;
+  TColgp_SequenceOfPnt aSeqPnts;
   aSeqPnts.Append(gp_Pnt(0.0, 0.0, -myOffSet));
-  for (r = aStep; r <= myRadius; r += aStep)
-  {
-    for (int i = 0; i < nbpnts; i++)
-      aSeqPnts.Append(gp_Pnt(std::cos(alpha * i) * r, std::sin(alpha * i) * r, -myOffSet));
+  for (r=aStep; r<=myRadius; r+=aStep) {
+    for (int i=0; i<nbpnts; i++)
+      aSeqPnts.Append(gp_Pnt(Cos(alpha*i)*r, Sin(alpha*i)*r, -myOffSet));
   }
-  myGroup->SetGroupPrimitivesAspect(MarkerAttrib);
+  myGroup->SetGroupPrimitivesAspect (MarkerAttrib);
   if (aSeqPnts.Length())
   {
-    double                               X, Y, Z;
-    const int                            nbv    = aSeqPnts.Length();
-    occ::handle<Graphic3d_ArrayOfPoints> Cercle = new Graphic3d_ArrayOfPoints(nbv);
-    for (int i = 1; i <= nbv; i++)
+    double X,Y,Z;
+    const int nbv = aSeqPnts.Length();
+    occ::handle<Graphic3d_ArrayOfPoints> Cercle = new Graphic3d_ArrayOfPoints (nbv);
+    for (int i=1; i<=nbv; i++)
     {
-      aSeqPnts(i).Coord(X, Y, Z);
-      Cercle->AddVertex(X, Y, Z);
+      aSeqPnts(i).Coord(X,Y,Z);
+      Cercle->AddVertex (X,Y,Z);
     }
-    myGroup->AddPrimitiveArray(Cercle, false);
+    myGroup->AddPrimitiveArray (Cercle, false);
   }
-  myGroup->SetMinMaxValues(-myRadius, -myRadius, -myOffSet, myRadius, myRadius, -myOffSet);
+  myGroup->SetMinMaxValues (-myRadius, -myRadius, -myOffSet, myRadius, myRadius, -myOffSet);
 
-  myCurStep = aStep, myCurDivi = (int)aDivision;
+  myCurStep = aStep, myCurDivi = (int ) aDivision;
 
   // update bounding box
   myStructure->CalculateBoundBox();
-  myViewer->StructureManager()->Update(myStructure->GetZLayer());
+  myViewer->StructureManager()->Update (myStructure->GetZLayer());
 }
 
-void V3d_CircularGrid::GraphicValues(double& theRadius, double& theOffSet) const
+void V3d_CircularGrid::GraphicValues (double& theRadius, double& theOffSet) const
 {
   theRadius = myRadius;
   theOffSet = myOffSet;
 }
 
-void V3d_CircularGrid::SetGraphicValues(const double theRadius, const double theOffSet)
+void V3d_CircularGrid::SetGraphicValues (const double theRadius, const double theOffSet)
 {
-  if (!myCurAreDefined)
-  {
+  if (! myCurAreDefined) {
     myRadius = theRadius;
     myOffSet = theOffSet;
   }
-  if (myRadius != theRadius)
-  {
-    myRadius        = theRadius;
+  if (myRadius != theRadius) {
+    myRadius = theRadius;
     myCurAreDefined = false;
   }
-  if (myOffSet != theOffSet)
-  {
-    myOffSet        = theOffSet;
+  if (myOffSet != theOffSet) {
+    myOffSet = theOffSet;
     myCurAreDefined = false;
   }
-  if (!myCurAreDefined)
-    UpdateDisplay();
+  if( !myCurAreDefined ) UpdateDisplay();
 }
 
-//=================================================================================================
-
-void V3d_CircularGrid::DumpJson(Standard_OStream& theOStream, int theDepth) const
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void V3d_CircularGrid::DumpJson (Standard_OStream& theOStream, int theDepth) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Aspect_CircularGrid)
+  
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myStructure.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myGroup.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myCurViewPlane)
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myViewer)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myCurAreDefined)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToComputePrs)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myCurDrawMode)
 
-  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, myStructure.get())
-  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, myGroup.get())
-  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myCurViewPlane)
-  OCCT_DUMP_FIELD_VALUE_POINTER(theOStream, myViewer)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myCurAreDefined)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myToComputePrs)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myCurDrawMode)
-
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myCurXo)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myCurYo)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myCurAngle)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myCurStep)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myCurDivi)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myRadius)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myOffSet)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myCurXo)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myCurYo)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myCurAngle)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myCurStep)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myCurDivi)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myRadius)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myOffSet)
 }

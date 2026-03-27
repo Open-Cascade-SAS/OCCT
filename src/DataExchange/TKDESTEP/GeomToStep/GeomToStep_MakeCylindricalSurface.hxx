@@ -29,19 +29,22 @@ class Geom_CylindricalSurface;
 //! CylindricalSurface from Geom and the class
 //! CylindricalSurface from StepGeom which describes a
 //! cylindrical_surface from Prostep
-class GeomToStep_MakeCylindricalSurface : public GeomToStep_Root
+class GeomToStep_MakeCylindricalSurface  : public GeomToStep_Root
 {
 public:
+
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT GeomToStep_MakeCylindricalSurface(
-    const occ::handle<Geom_CylindricalSurface>& CSurf,
-    const StepData_Factors&                     theLocalFactors = StepData_Factors());
-
+  
+  Standard_EXPORT GeomToStep_MakeCylindricalSurface(const occ::handle<Geom_CylindricalSurface>& CSurf,
+                                                    const StepData_Factors& theLocalFactors = StepData_Factors());
+  
   Standard_EXPORT const occ::handle<StepGeom_CylindricalSurface>& Value() const;
 
 private:
+
   occ::handle<StepGeom_CylindricalSurface> theCylindricalSurface;
+
 };
 
 #endif // _GeomToStep_MakeCylindricalSurface_HeaderFile

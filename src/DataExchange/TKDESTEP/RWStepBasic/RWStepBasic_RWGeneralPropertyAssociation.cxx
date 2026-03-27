@@ -12,28 +12,32 @@
 // commercial license or contractual agreement.
 
 #include <Interface_EntityIterator.hxx>
-#include "RWStepBasic_RWGeneralPropertyAssociation.pxx"
+#include <RWStepBasic_RWGeneralPropertyAssociation.hxx>
 #include <StepBasic_GeneralProperty.hxx>
 #include <StepBasic_GeneralPropertyAssociation.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepRepr_PropertyDefinition.hxx>
 
-//=================================================================================================
+//=======================================================================
+//function : RWStepBasic_RWGeneralPropertyAssociation
+//purpose  : 
+//=======================================================================
+RWStepBasic_RWGeneralPropertyAssociation::RWStepBasic_RWGeneralPropertyAssociation()
+{
+}
 
-RWStepBasic_RWGeneralPropertyAssociation::RWStepBasic_RWGeneralPropertyAssociation() = default;
-
-//=================================================================================================
-
-void RWStepBasic_RWGeneralPropertyAssociation::ReadStep(
-  const occ::handle<StepData_StepReaderData>&              theData,
-  const int                                                theNum,
-  occ::handle<Interface_Check>&                            theAch,
-  const occ::handle<StepBasic_GeneralPropertyAssociation>& theEnt) const
+//=======================================================================
+//function : ReadStep
+//purpose  : 
+//=======================================================================
+void RWStepBasic_RWGeneralPropertyAssociation::ReadStep(const occ::handle<StepData_StepReaderData>& theData,
+                                                        const int theNum,
+                                                        occ::handle<Interface_Check>& theAch,
+                                                        const occ::handle<StepBasic_GeneralPropertyAssociation>& theEnt) const
 {
   // Check number of parameters
-  if (!theData->CheckNbParams(theNum, 4, theAch, "general_property_association"))
-    return;
+  if (!theData->CheckNbParams(theNum, 4, theAch, "general_property_association")) return;
 
   occ::handle<TCollection_HAsciiString> aName;
   theData->ReadString(theNum, 1, "name", theAch, aName);
@@ -42,30 +46,24 @@ void RWStepBasic_RWGeneralPropertyAssociation::ReadStep(
   theData->ReadString(theNum, 2, "description", theAch, aDescription);
 
   occ::handle<StepBasic_GeneralProperty> aGeneralProperty;
-  theData->ReadEntity(theNum,
-                      3,
-                      "base_definition",
-                      theAch,
-                      STANDARD_TYPE(StepBasic_GeneralProperty),
-                      aGeneralProperty);
+  theData->ReadEntity(theNum, 3, "base_definition", theAch, STANDARD_TYPE(StepBasic_GeneralProperty), aGeneralProperty);
 
   occ::handle<StepRepr_PropertyDefinition> aPropertyDefinition;
-  theData->ReadEntity(theNum,
-                      4,
-                      "derived_definition",
-                      theAch,
-                      STANDARD_TYPE(StepRepr_PropertyDefinition),
-                      aPropertyDefinition);
+  theData->ReadEntity(theNum, 4, "derived_definition", theAch, STANDARD_TYPE(StepRepr_PropertyDefinition), aPropertyDefinition);
 
   // Initialize entity
-  theEnt->Init(aName, aDescription, aGeneralProperty, aPropertyDefinition);
+  theEnt->Init(aName,
+               aDescription,
+               aGeneralProperty,
+               aPropertyDefinition);
 }
 
-//=================================================================================================
-
-void RWStepBasic_RWGeneralPropertyAssociation::WriteStep(
-  StepData_StepWriter&                                     theSW,
-  const occ::handle<StepBasic_GeneralPropertyAssociation>& theEnt) const
+//=======================================================================
+//function : WriteStep
+//purpose  : 
+//=======================================================================
+void RWStepBasic_RWGeneralPropertyAssociation::WriteStep (StepData_StepWriter& theSW,
+                                                          const occ::handle<StepBasic_GeneralPropertyAssociation> &theEnt) const
 {
   theSW.Send(theEnt->Name());
 
@@ -76,11 +74,12 @@ void RWStepBasic_RWGeneralPropertyAssociation::WriteStep(
   theSW.Send(theEnt->PropertyDefinition());
 }
 
-//=================================================================================================
-
-void RWStepBasic_RWGeneralPropertyAssociation::Share(
-  const occ::handle<StepBasic_GeneralPropertyAssociation>& theEnt,
-  Interface_EntityIterator&                                theIter) const
+//=======================================================================
+//function : Share
+//purpose  : 
+//=======================================================================
+void RWStepBasic_RWGeneralPropertyAssociation::Share(const occ::handle<StepBasic_GeneralPropertyAssociation>& theEnt,
+                                                     Interface_EntityIterator& theIter) const
 {
   theIter.AddItem(theEnt->GeneralProperty());
 

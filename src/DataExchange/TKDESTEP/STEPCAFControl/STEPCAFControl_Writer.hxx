@@ -16,36 +16,30 @@
 #ifndef _STEPCAFControl_Writer_HeaderFile
 #define _STEPCAFControl_Writer_HeaderFile
 
-#include <TopoDS_Shape.hxx>
-#include <Standard_Transient.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
-#include <NCollection_DataMap.hxx>
+#include <MoniTool_DataMapOfShapeTransient.hxx>
 #include <NCollection_Vector.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-#include <TDF_Label.hxx>
-#include <STEPCAFControl_ExternFile.hxx>
+#include <STEPCAFControl_DataMapOfLabelShape.hxx>
+#include <STEPCAFControl_DataMapOfLabelExternFile.hxx>
 #include <STEPControl_Writer.hxx>
 #include <StepAP242_GeometricItemSpecificUsage.hxx>
-#include <DESTEP_Parameters.hxx>
+#include <StepData_ConfParameters.hxx>
 #include <StepData_Factors.hxx>
 #include <StepDimTol_Datum.hxx>
 #include <StepDimTol_GeometricTolerance.hxx>
-#include <StepDimTol_DatumSystemOrReference.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
+#include <StepDimTol_HArray1OfDatumSystemOrReference.hxx>
 #include <StepRepr_ProductDefinitionShape.hxx>
 #include <StepVisual_DraughtingModel.hxx>
-#include <StepVisual_PresentationStyleAssignment.hxx>
-#include <NCollection_Sequence.hxx>
-#include <NCollection_Map.hxx>
+#include <StepVisual_HArray1OfPresentationStyleAssignment.hxx>
+#include <TDF_LabelSequence.hxx>
+#include <TDF_LabelMap.hxx>
 #include <XCAFDimTolObjects_GeomToleranceObject.hxx>
 
 class XSControl_WorkSession;
 class TDocStd_Document;
 class STEPCAFControl_ExternFile;
 class TopoDS_Shape;
-class StepShape_ShapeDefinitionRepresentation;
 
 //! Provides a tool to write DECAF document to the
 //! STEP file. Besides transfer of shapes (including
@@ -59,6 +53,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
 public:
+
   //! Creates a writer with an empty
   //! STEP model and sets ColorMode, LayerMode, NameMode and
   //! PropsMode to true.
@@ -73,7 +68,7 @@ public:
   //! Clears the internal data structures and attaches to a new session
   //! Clears the session if it was not yet set for STEP
   Standard_EXPORT void Init(const occ::handle<XSControl_WorkSession>& theWS,
-                            const bool                                theScratch = true);
+                            const bool theScratch = true);
 
   //! Writes all the produced models into file
   //! In case of multimodel with extern references,
@@ -93,9 +88,9 @@ public:
   //! gives prefix for names of extern files (can be empty string)
   //! Returns True if translation is OK
   Standard_EXPORT bool Transfer(const occ::handle<TDocStd_Document>& theDoc,
-                                const STEPControl_StepModelType      theMode    = STEPControl_AsIs,
-                                const char* const                    theIsMulti = nullptr,
-                                const Message_ProgressRange& theProgress = Message_ProgressRange());
+                                            const STEPControl_StepModelType theMode = STEPControl_AsIs,
+                                            const char* const theIsMulti = 0,
+                                            const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Transfers a document (or single label) to a STEP model
   //! This method uses if need to set parameters avoiding
@@ -108,79 +103,73 @@ public:
   //! @param theProgress progress indicator
   //! Returns True if translation is OK
   Standard_EXPORT bool Transfer(const occ::handle<TDocStd_Document>& theDoc,
-                                const DESTEP_Parameters&             theParams,
-                                const STEPControl_StepModelType      theMode    = STEPControl_AsIs,
-                                const char* const                    theIsMulti = nullptr,
-                                const Message_ProgressRange& theProgress = Message_ProgressRange());
+                                            const StepData_ConfParameters& theParams,
+                                            const STEPControl_StepModelType theMode = STEPControl_AsIs,
+                                            const char* const theIsMulti = 0,
+                                            const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Method to transfer part of the document specified by label
-  Standard_EXPORT bool Transfer(const TDF_Label&                theLabel,
-                                const STEPControl_StepModelType theMode    = STEPControl_AsIs,
-                                const char* const               theIsMulti = nullptr,
-                                const Message_ProgressRange& theProgress = Message_ProgressRange());
+  Standard_EXPORT bool Transfer(const TDF_Label& theLabel,
+                                            const STEPControl_StepModelType theMode = STEPControl_AsIs,
+                                            const char* const theIsMulti = 0,
+                                            const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Method to transfer part of the document specified by label
   //! This method uses if need to set parameters avoiding
   //! initialization from Interface_Static
-  Standard_EXPORT bool Transfer(const TDF_Label&                theLabel,
-                                const DESTEP_Parameters&        theParams,
-                                const STEPControl_StepModelType theMode    = STEPControl_AsIs,
-                                const char* const               theIsMulti = nullptr,
-                                const Message_ProgressRange& theProgress = Message_ProgressRange());
+  Standard_EXPORT bool Transfer(const TDF_Label& theLabel,
+                                            const StepData_ConfParameters& theParams,
+                                            const STEPControl_StepModelType theMode = STEPControl_AsIs,
+                                            const char* const theIsMulti = 0,
+                                            const Message_ProgressRange& theProgress = Message_ProgressRange());
 
-  //! Method to writing sequence of root assemblies
-  //! or part of the file specified by use by one label
-  Standard_EXPORT bool Transfer(const NCollection_Sequence<TDF_Label>& theLabelSeq,
-                                const STEPControl_StepModelType        theMode = STEPControl_AsIs,
-                                const char* const                      theIsMulti = nullptr,
-                                const Message_ProgressRange& theProgress = Message_ProgressRange());
+  //! Mehod to writing sequence of root assemblies or part of the file specified by use by one label 
+  Standard_EXPORT bool Transfer(const TDF_LabelSequence& theLabelSeq,
+                                            const STEPControl_StepModelType theMode = STEPControl_AsIs,
+                                            const char* const theIsMulti = 0,
+                                            const Message_ProgressRange& theProgress = Message_ProgressRange());
 
-  //! Method to writing sequence of root assemblies
-  //! or part of the file specified by use by one label.
-  //! This method is utilized if there's a need to set parameters avoiding
+  //! Mehod to writing sequence of root assemblies or part of the file specified by use by one label 
+  //! This method uses if need to set parameters avoiding
   //! initialization from Interface_Static
-  Standard_EXPORT bool Transfer(const NCollection_Sequence<TDF_Label>& theLabelSeq,
-                                const DESTEP_Parameters&               theParams,
-                                const STEPControl_StepModelType        theMode = STEPControl_AsIs,
-                                const char* const                      theIsMulti = nullptr,
-                                const Message_ProgressRange& theProgress = Message_ProgressRange());
+  Standard_EXPORT bool Transfer(const TDF_LabelSequence& theLabelSeq,
+                                            const StepData_ConfParameters& theParams,
+                                            const STEPControl_StepModelType theMode = STEPControl_AsIs,
+                                            const char* const theIsMulti = 0,
+                                            const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   Standard_EXPORT bool Perform(const occ::handle<TDocStd_Document>& theDoc,
-                               const TCollection_AsciiString&       theFileName,
-                               const Message_ProgressRange& theProgress = Message_ProgressRange());
+                                           const TCollection_AsciiString& theFileName,
+                                           const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Transfers a document and writes it to a STEP file
   //! Returns True if translation is OK
   Standard_EXPORT bool Perform(const occ::handle<TDocStd_Document>& theDoc,
-                               const char* const                    theFileName,
-                               const Message_ProgressRange& theProgress = Message_ProgressRange());
+                                           const char* const theFileName,
+                                           const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Transfers a document and writes it to a STEP file
-  //! This method is utilized if there's a need to set parameters avoiding
+  //! This method uses if need to set parameters avoiding
   //! initialization from Interface_Static
   //! Returns True if translation is OK
   Standard_EXPORT bool Perform(const occ::handle<TDocStd_Document>& theDoc,
-                               const char* const                    theFileName,
-                               const DESTEP_Parameters&             theParams,
-                               const Message_ProgressRange& theProgress = Message_ProgressRange());
+                                           const char* const theFileName,
+                                           const StepData_ConfParameters& theParams,
+                                           const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Returns data on external files
   //! Returns Null handle if no external files are read
-  const NCollection_DataMap<TCollection_AsciiString, occ::handle<STEPCAFControl_ExternFile>>&
-    ExternFiles() const
-  {
-    return myFiles;
-  };
+  const NCollection_DataMap<TCollection_AsciiString, occ::handle<STEPCAFControl_ExternFile>>& ExternFiles() const { return myFiles; };
 
   //! Returns data on external file by its original label
   //! Returns False if no external file with given name is read
-  Standard_EXPORT bool ExternFile(const TDF_Label&                        theLabel,
-                                  occ::handle<STEPCAFControl_ExternFile>& theExtFile) const;
+  Standard_EXPORT bool ExternFile(const TDF_Label& theLabel,
+                                              occ::handle<STEPCAFControl_ExternFile>& theExtFile) const;
 
   //! Returns data on external file by its name
   //! Returns False if no external file with given name is read
-  Standard_EXPORT bool ExternFile(const char* const                       theName,
-                                  occ::handle<STEPCAFControl_ExternFile>& theExtFile) const;
+  Standard_EXPORT bool ExternFile(const char* const theName,
+                                              occ::handle<STEPCAFControl_ExternFile>& theExtFile) const;
 
   //! Returns basic reader for root file
   STEPControl_Writer& ChangeWriter() { return myWriter; }
@@ -208,11 +197,6 @@ public:
 
   bool GetPropsMode() const { return myPropsMode; }
 
-  //! Set MetadataMode for indicate write metadata or not.
-  void SetMetadataMode(const bool theMetadataMode) { myMetadataMode = theMetadataMode; }
-
-  bool GetMetadataMode() const { return myMetadataMode; }
-
   //! Set SHUO mode for indicate write SHUO or not.
   void SetSHUOMode(const bool theSHUOMode) { mySHUOMode = theSHUOMode; }
 
@@ -223,74 +207,22 @@ public:
 
   bool GetDimTolMode() const { return myGDTMode; }
 
-  //! Set flag for indicate write material or not.
+  //! Set dimtolmode for indicate write D&GTs or not.
   void SetMaterialMode(const bool theMaterialMode) { myMatMode = theMaterialMode; }
 
   bool GetMaterialMode() const { return myMatMode; }
 
-  //! Set flag for indicate write visual material or not.
-  void SetVisualMaterialMode(const bool theVisualMaterialMode)
-  {
-    myVisMatMode = theVisualMaterialMode;
-  }
-
-  bool GetVisualMaterialMode() const { return myVisMatMode; }
-
-  //! Set clean duplicates flag.
-  //! If set to True, duplicates will be removed from the model.
-  //! @param theCleanDuplicates the flag to set.
-  void SetCleanDuplicates(const bool theCleanDuplicates)
-  {
-    myIsCleanDuplicates = theCleanDuplicates;
-  }
-
-  //! Returns the flag indicating whether duplicates should be removed from the model.
-  //! @return the flag indicating whether duplicates should be removed from the model.
-  bool GetCleanDuplicates() const { return myIsCleanDuplicates; }
-
-  //! Sets parameters for shape processing.
-  //! @param theParameters the parameters for shape processing.
-  Standard_EXPORT void SetShapeFixParameters(
-    const XSAlgo_ShapeProcessor::ParameterMap& theParameters);
-
-  //! Sets parameters for shape processing.
-  //! Parameters are moved from the input map.
-  //! @param theParameters the parameters for shape processing.
-  Standard_EXPORT void SetShapeFixParameters(XSAlgo_ShapeProcessor::ParameterMap&& theParameters);
-
-  //! Sets parameters for shape processing.
-  //! Parameters from @p theParameters are copied to the internal map.
-  //! Parameters from @p theAdditionalParameters are copied to the internal map
-  //! if they are not present in @p theParameters.
-  //! @param theParameters the parameters for shape processing.
-  //! @param theAdditionalParameters the additional parameters for shape processing.
-  Standard_EXPORT void SetShapeFixParameters(
-    const DE_ShapeFixParameters&               theParameters,
-    const XSAlgo_ShapeProcessor::ParameterMap& theAdditionalParameters = {});
-
-  //! Returns parameters for shape processing that was set by SetParameters() method.
-  //! @return the parameters for shape processing. Empty map if no parameters were set.
-  Standard_EXPORT const XSAlgo_ShapeProcessor::ParameterMap& GetShapeFixParameters() const;
-
-  //! Sets flags defining operations to be performed on shapes.
-  //! @param theFlags The flags defining operations to be performed on shapes.
-  Standard_EXPORT void SetShapeProcessFlags(const ShapeProcess::OperationsFlags& theFlags);
-
-  //! Returns flags defining operations to be performed on shapes.
-  //! @return Pair of values defining operations to be performed on shapes and a boolean value
-  //!         that indicates whether the flags were set.
-  Standard_EXPORT const XSAlgo_ShapeProcessor::ProcessingFlags& GetShapeProcessFlags() const;
-
 protected:
+
   //! Transfers labels to a STEP model
   //! Returns True if translation is OK
   //! isExternFile setting from transferExternFiles method
-  bool transfer(STEPControl_Writer&                    theWriter,
-                const NCollection_Sequence<TDF_Label>& theLabels,
-                const STEPControl_StepModelType        theMode      = STEPControl_AsIs,
-                const char* const                      theIsMulti   = nullptr,
-                const bool                             isExternFile = false,
-                const Message_ProgressRange&           theProgress  = Message_ProgressRange());
+  bool transfer(STEPControl_Writer& theWriter,
+                            const TDF_LabelSequence& theLabels,
+                            const STEPControl_StepModelType theMode = STEPControl_AsIs,
+                            const char* const theIsMulti = 0,
+                            const bool isExternFile = false,
+                            const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Parses assembly structure of label L, writes all the simple
   //! shapes each to its own file named by name of its label plus
@@ -298,144 +230,115 @@ protected:
   //! Returns shape representing that assembly structure
   //! in the form of nested empty compounds (and a sequence of
   //! labels which are newly written nodes of this assembly)
-  TopoDS_Shape transferExternFiles(
-    const TDF_Label&                 theLabel,
-    const STEPControl_StepModelType  theMode,
-    NCollection_Sequence<TDF_Label>& theLabelSeq,
-    const StepData_Factors&          theLocalFactors = StepData_Factors(),
-    const char* const                thePrefix       = "",
-    const Message_ProgressRange&     theProgress     = Message_ProgressRange());
+  TopoDS_Shape transferExternFiles(const TDF_Label& theLabel,
+                                   const STEPControl_StepModelType theMode,
+                                   TDF_LabelSequence& theLabelSeq,
+                                   const StepData_Factors& theLocalFactors = StepData_Factors(),
+                                   const char* const thePrefix = "",
+                                   const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Write external references to STEP
   bool writeExternRefs(const occ::handle<XSControl_WorkSession>& theWS,
-                       const NCollection_Sequence<TDF_Label>&    theLabels) const;
+                                   const TDF_LabelSequence& theLabels) const;
 
   //! Write colors assigned to specified labels, to STEP model
   bool writeColors(const occ::handle<XSControl_WorkSession>& theWS,
-                   const NCollection_Sequence<TDF_Label>&    theLabels);
+                               const TDF_LabelSequence& theLabels);
 
   //! Write names assigned to specified labels, to STEP model
   bool writeNames(const occ::handle<XSControl_WorkSession>& theWS,
-                  const NCollection_Sequence<TDF_Label>&    theLabels) const;
-
-  //! Write metadata assigned to specified labels, to STEP model
-  bool writeMetadata(const occ::handle<XSControl_WorkSession>& theWS,
-                     const NCollection_Sequence<TDF_Label>&    theLabels) const;
-
-  //! Write metadata assigned to specified label, to STEP model.
-  // Also recursively writes metadata for children labels.
-  bool writeMetadataForLabel(const occ::handle<XSControl_WorkSession>& theWS,
-                             const TDF_Label&                          theLabel) const;
-
-  //! Write metadata representation item to STEP model.
-  //! @param theKey The key for metadata item.
-  //! @param theModel The STEP model to write to.
-  //! @param theShapeDefRep The shape definition representation.
-  //! @param theProdDef The product definition.
-  //! @param theItem The representation item to write.
-  void writeMetadataRepresentationItem(
-    const TCollection_AsciiString&                              theKey,
-    const occ::handle<StepData_StepModel>&                      theModel,
-    const occ::handle<StepShape_ShapeDefinitionRepresentation>& theShapeDefRep,
-    const occ::handle<StepBasic_ProductDefinition>&             theProdDef,
-    const occ::handle<StepRepr_RepresentationItem>&             theItem) const;
+                              const TDF_LabelSequence& theLabels) const;
 
   //! Write D&GTs assigned to specified labels, to STEP model
   bool writeDGTs(const occ::handle<XSControl_WorkSession>& theWS,
-                 const NCollection_Sequence<TDF_Label>&    theLabels) const;
+                             const TDF_LabelSequence& theLabels) const;
 
   //! Write D&GTs assigned to specified labels, to STEP model, according AP242
   bool writeDGTsAP242(const occ::handle<XSControl_WorkSession>& theWS,
-                      const NCollection_Sequence<TDF_Label>&    theLabels,
-                      const StepData_Factors& theLocalFactors = StepData_Factors());
+                                  const TDF_LabelSequence& theLabels,
+                                  const StepData_Factors& theLocalFactors = StepData_Factors());
 
   //! Write materials assigned to specified labels, to STEP model
   bool writeMaterials(const occ::handle<XSControl_WorkSession>& theWS,
-                      const NCollection_Sequence<TDF_Label>&    theLabels) const;
+                                  const TDF_LabelSequence& theLabels) const;
 
   //! Write validation properties assigned to specified labels,
   //! to STEP model
   bool writeValProps(const occ::handle<XSControl_WorkSession>& theWS,
-                     const NCollection_Sequence<TDF_Label>&    theLabels,
-                     const char* const                         theIsMulti) const;
+                                 const TDF_LabelSequence& theLabels,
+                                 const char* const theIsMulti) const;
 
   //! Write layers assigned to specified labels, to STEP model
   bool writeLayers(const occ::handle<XSControl_WorkSession>& theWS,
-                   const NCollection_Sequence<TDF_Label>&    theLabels) const;
+                               const TDF_LabelSequence& theLabels) const;
 
   //! Write SHUO assigned to specified component, to STEP model
   bool writeSHUOs(const occ::handle<XSControl_WorkSession>& theWS,
-                  const NCollection_Sequence<TDF_Label>&    theLabels);
+                              const TDF_LabelSequence& theLabels);
 
   //! Finds length units located in root of label
   //! If it exists, initializes local length unit from it
   //! Else initializes according to Cascade length unit
-  void prepareUnit(const TDF_Label&                       theLabel,
+  void prepareUnit(const TDF_Label& theLabel,
                    const occ::handle<StepData_StepModel>& theModel,
-                   StepData_Factors&                      theLocalFactors);
+                   StepData_Factors& theLocalFactors);
 
-  occ::handle<StepRepr_ShapeAspect> writeShapeAspect(
-    const occ::handle<XSControl_WorkSession>&          theWS,
-    const TDF_Label                                    theLabel,
-    const TopoDS_Shape&                                theShape,
-    occ::handle<StepRepr_RepresentationContext>&       theRC,
-    occ::handle<StepAP242_GeometricItemSpecificUsage>& theGISU);
+  occ::handle<StepRepr_ShapeAspect> writeShapeAspect(const occ::handle<XSControl_WorkSession>& theWS,
+                                                const TDF_Label theLabel,
+                                                const TopoDS_Shape& theShape,
+                                                occ::handle<StepRepr_RepresentationContext>& theRC,
+                                                occ::handle<StepAP242_GeometricItemSpecificUsage>& theGISU);
 
-  void writePresentation(const occ::handle<XSControl_WorkSession>&    theWS,
-                         const TopoDS_Shape&                          thePresentation,
+  void writePresentation(const occ::handle<XSControl_WorkSession>& theWS,
+                         const TopoDS_Shape& thePresentation,
                          const occ::handle<TCollection_HAsciiString>& thePrsName,
-                         const bool                                   theHasSemantic,
-                         const bool                                   theHasPlane,
-                         const gp_Ax2&                                theAnnotationPlane,
-                         const gp_Pnt&                                theTextPosition,
-                         const occ::handle<Standard_Transient>&       theDimension,
+                         const bool theHasSemantic,
+                         const bool theHasPlane,
+                         const gp_Ax2& theAnnotationPlane,
+                         const gp_Pnt& theTextPosition,
+                         const occ::handle<Standard_Transient>& theDimension,
                          const StepData_Factors& theLocalFactors = StepData_Factors());
 
-  occ::handle<StepDimTol_Datum> writeDatumAP242(
-    const occ::handle<XSControl_WorkSession>& theWS,
-    const NCollection_Sequence<TDF_Label>&    theShapeL,
-    const TDF_Label&                          theDatumL,
-    const bool                                isFirstDTarget,
-    const occ::handle<StepDimTol_Datum>&      theWrittenDatum,
-    const StepData_Factors&                   theLocalFactors = StepData_Factors());
+  occ::handle<StepDimTol_Datum> writeDatumAP242(const occ::handle<XSControl_WorkSession>& theWS,
+                                           const TDF_LabelSequence& theShapeL,
+                                           const TDF_Label& theDatumL,
+                                           const bool isFirstDTarget,
+                                           const occ::handle<StepDimTol_Datum>& theWrittenDatum,
+                                           const StepData_Factors& theLocalFactors = StepData_Factors());
 
-  void writeToleranceZone(const occ::handle<XSControl_WorkSession>&                 theWS,
+  void writeToleranceZone(const occ::handle<XSControl_WorkSession>& theWS,
                           const occ::handle<XCAFDimTolObjects_GeomToleranceObject>& theObject,
-                          const occ::handle<StepDimTol_GeometricTolerance>&         theEntity,
-                          const occ::handle<StepRepr_RepresentationContext>&        theRC);
+                          const occ::handle<StepDimTol_GeometricTolerance>& theEntity,
+                          const occ::handle<StepRepr_RepresentationContext>& theRC);
 
-  void writeGeomTolerance(
-    const occ::handle<XSControl_WorkSession>&                                  theWS,
-    const NCollection_Sequence<TDF_Label>&                                     theShapeSeqL,
-    const TDF_Label&                                                           theGeomTolL,
-    const occ::handle<NCollection_HArray1<StepDimTol_DatumSystemOrReference>>& theDatumSystem,
-    const occ::handle<StepRepr_RepresentationContext>&                         theRC,
-    const StepData_Factors& theLocalFactors = StepData_Factors());
+  void writeGeomTolerance(const occ::handle<XSControl_WorkSession>& theWS,
+                          const TDF_LabelSequence& theShapeSeqL,
+                          const TDF_Label& theGeomTolL,
+                          const occ::handle<StepDimTol_HArray1OfDatumSystemOrReference>& theDatumSystem,
+                          const occ::handle<StepRepr_RepresentationContext>& theRC,
+                          const StepData_Factors& theLocalFactors = StepData_Factors());
 
 private:
-  STEPControl_Writer                                                                   myWriter;
+
+  STEPControl_Writer myWriter;
   NCollection_DataMap<TCollection_AsciiString, occ::handle<STEPCAFControl_ExternFile>> myFiles;
-  NCollection_Map<TDF_Label>                                                           myRootLabels;
-  NCollection_DataMap<TDF_Label, TopoDS_Shape>                                         myLabels;
-  NCollection_DataMap<TDF_Label, occ::handle<STEPCAFControl_ExternFile>>               myLabEF;
-  NCollection_DataMap<TDF_Label, TopoDS_Shape> myPureRefLabels;
-  bool                                         myColorMode;
-  bool                                         myNameMode;
-  bool                                         myLayerMode;
-  bool                                         myPropsMode;
-  bool                                         myMetadataMode;
-  bool                                         mySHUOMode;
-  NCollection_DataMap<TopoDS_Shape, occ::handle<Standard_Transient>, TopTools_ShapeMapHasher>
-                                                               myMapCompMDGPR;
-  bool                                                         myGDTMode;
-  bool                                                         myMatMode;
-  bool                                                         myVisMatMode;
-  bool                                                         myIsCleanDuplicates;
+  TDF_LabelMap myRootLabels;
+  STEPCAFControl_DataMapOfLabelShape myLabels;
+  STEPCAFControl_DataMapOfLabelExternFile myLabEF;
+  STEPCAFControl_DataMapOfLabelShape myPureRefLabels;
+  bool myColorMode;
+  bool myNameMode;
+  bool myLayerMode;
+  bool myPropsMode;
+  bool mySHUOMode;
+  MoniTool_DataMapOfShapeTransient myMapCompMDGPR;
+  bool myGDTMode;
+  bool myMatMode;
   NCollection_Vector<occ::handle<StepRepr_RepresentationItem>> myGDTAnnotations;
-  occ::handle<StepVisual_DraughtingModel>                      myGDTPresentationDM;
-  occ::handle<NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>>
-                                               myGDTPrsCurveStyle;
+  occ::handle<StepVisual_DraughtingModel> myGDTPresentationDM;
+  occ::handle<StepVisual_HArray1OfPresentationStyleAssignment> myGDTPrsCurveStyle;
   occ::handle<StepRepr_ProductDefinitionShape> myGDTCommonPDS;
+
 };
 
 #endif // _STEPCAFControl_Writer_HeaderFile

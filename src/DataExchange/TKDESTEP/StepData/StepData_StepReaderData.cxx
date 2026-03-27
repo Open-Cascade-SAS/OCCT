@@ -12,14 +12,12 @@
 // commercial license or contractual agreement.
 
 //    abv 09.04.99 S4136: eliminate parameter step.readaccept.void
-//    sln 04,10.2001. BUC61003. Prevent exception which may occur during reading of complex entity
-//    (if entity's items are not in alphabetical order)
+//    sln 04,10.2001. BUC61003. Prevent exception which may occur during reading of complex entity (if entity's items are not in alphabetical order)
 
 #include <Interface_Check.hxx>
-#include <TCollection_HAsciiString.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <MoniTool_Macros.hxx>
+#include <Interface_HArray1OfHAsciiString.hxx>
+#include <Interface_Macros.hxx>
+#include <Interface_Static.hxx>
 #include <Interface_ParamList.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
@@ -35,84 +33,70 @@
 #include <StepData_SelectReal.hxx>
 #include <StepData_SelectType.hxx>
 #include <StepData_StepReaderData.hxx>
-#include <NCollection_IncAllocator.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <NCollection_UtfIterator.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Sequence.hxx>
-#include <NCollection_HSequence.hxx>
-#include <NCollection_IndexedMap.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TColStd_HArray1OfTransient.hxx>
+#include <TColStd_HSequenceOfReal.hxx>
+#include <TColStd_IndexedMapOfInteger.hxx>
+#include <TColStd_SequenceOfInteger.hxx>
 #include <StepData_UndefinedEntity.hxx>
 #include <Resource_Unicode.hxx>
 
-#include <cstdio>
+#include <stdio.h>
 IMPLEMENT_STANDARD_RTTIEXT(StepData_StepReaderData, Interface_FileReaderData)
 
-// The Header consists of entities analogous in principle to those
-// of the Data, except that they are without identifier, and can neither
-// reference, nor be referenced (whether with Header or with Data)
-// Thus, in StepReaderData, the Header consists of the first "thenbhead" Entities
-// This separation allows STEP files to have metadata and structural information
-// separate from the main geometric and semantic data
+// Le Header est constitue d entites analogues dans leur principe a celles
+// du Data, a ceci pres qu elles sont sans identifieur, et ne peuvent ni
+// referencer, ni etre referencees (que ce soit avec Header ou avec Data)
+// Ainsi, dans StepReaderData, le Header est constitue des "thenbhead" 1res Entites
 //  #########################################################################
-//  ....   Creation and basic access to atomic file data    ....
+//  ....   Creation et Acces de base aux donnees atomiques du fichier    ....
+typedef TCollection_HAsciiString String;
+static char txtmes[200];  // plus commode que redeclarer partout
 
+static bool initstr = false;
 #define Maxlst 64
+//static TCollection_AsciiString subl[Maxlst];          // Maxlst : minimum 10
+
+static int acceptvoid = 0;
 
 // ----------  Fonctions Utilitaires  ----------
 
-//! Convert unsigned character to hexadecimal system,
+//! Convert unsigned character to hexadecimal system, 
 //! if character hasn't representation in this system, returns 0.
 static int convertCharacterTo16bit(const char16_t theCharacter)
 {
   switch (theCharacter)
   {
-    case '0':
-      return 0;
-    case '1':
-      return 1;
-    case '2':
-      return 2;
-    case '3':
-      return 3;
-    case '4':
-      return 4;
-    case '5':
-      return 5;
-    case '6':
-      return 6;
-    case '7':
-      return 7;
-    case '8':
-      return 8;
-    case '9':
-      return 9;
-    case 'A':
-    case 'a':
-      return 10;
-    case 'B':
-    case 'b':
-      return 11;
-    case 'C':
-    case 'c':
-      return 12;
-    case 'D':
-    case 'd':
-      return 13;
-    case 'E':
-    case 'e':
-      return 14;
-    case 'F':
-    case 'f':
-      return 15;
-    default:
-      return 0;
+    case '0': return 0;
+    case '1': return 1;
+    case '2': return 2;
+    case '3': return 3;
+    case '4': return 4;
+    case '5': return 5;
+    case '6': return 6;
+    case '7': return 7;
+    case '8': return 8;
+    case '9': return 9;
+    case 'A': case 'a': return 10;
+    case 'B': case 'b': return 11;
+    case 'C': case 'c': return 12;
+    case 'D': case 'd': return 13;
+    case 'E': case 'e': return 14;
+    case 'F': case 'f': return 15;
+    default : return 0;
   }
 }
 
-//=================================================================================================
-
+//=======================================================================
+//function : cleanText
+//purpose  : 
+//=======================================================================
 void StepData_StepReaderData::cleanText(const occ::handle<TCollection_HAsciiString>& theVal) const
 {
   if (theVal->Length() == 2)
@@ -121,24 +105,22 @@ void StepData_StepReaderData::cleanText(const occ::handle<TCollection_HAsciiStri
     return;
   }
   TCollection_ExtendedString aResString;
-  const bool                 toConversion = mySourceCodePage != Resource_FormatType_NoConversion;
+  const bool toConversion = mySourceCodePage != Resource_FormatType_NoConversion;
   Resource_Unicode::ConvertFormatToUnicode(mySourceCodePage, theVal->ToCString() + 1, aResString);
-  int                        aResStringSize = aResString.Length() - 1; // skip the last apostrophe
-  TCollection_ExtendedString aTempExtString;  // string for characters within control directives
-  int                        aSetCharInd = 1; // index to set value to result string
-                                              // clang-format off
+  int aResStringSize = aResString.Length() - 1; // skip the last apostrophe
+  TCollection_ExtendedString aTempExtString; // string for characters within control directives
+  int aSetCharInd = 1; // index to set value to result string
   Resource_FormatType aLocalFormatType = Resource_FormatType_iso8859_1; // a code page for a "\S\" control directive
-                                              // clang-format on
   for (int aStringInd = 1; aStringInd <= aResStringSize; ++aStringInd)
   {
     const char16_t aChar = aResString.Value(aStringInd);
-    aSetCharInd          = aStringInd;
+    aSetCharInd = aStringInd;
     if (aChar == '\\' && aStringInd <= aResStringSize - 3) // can contains the control directive
     {
-      bool           isConverted  = false;
-      const char16_t aDirChar     = aResString.Value(aStringInd + 1);
-      const bool     isSecSlash   = aResString.Value(aStringInd + 2) == '\\';
-      const bool     isThirdSlash = aResString.Value(aStringInd + 3) == '\\';
+      bool isConverted = false;
+      const char16_t aDirChar = aResString.Value(aStringInd + 1);
+      const bool isSecSlash = aResString.Value(aStringInd + 2) == '\\';
+      const bool isThirdSlash = aResString.Value(aStringInd + 3) == '\\';
       // Encoding ISO 8859 characters within a string;
       // ("\P{N}\") control directive;
       // indicates code page for ("\S\") control directive;
@@ -146,15 +128,15 @@ void StepData_StepReaderData::cleanText(const occ::handle<TCollection_HAsciiStri
       // "A" identifies ISO 8859-1; "B" identifies ISO 8859-2, etc.
       if (aDirChar == 'P' && isThirdSlash)
       {
-        const char aPageId = UpperCase(static_cast<char>(aResString.Value(aStringInd + 2) & 255));
+        const char aPageId =
+          UpperCase(static_cast<char>(aResString.Value(aStringInd + 2) & 255));
         if (aPageId >= 'A' && aPageId <= 'I')
         {
           aLocalFormatType = (Resource_FormatType)(Resource_FormatType_iso8859_1 + (aPageId - 'A'));
         }
         else
         {
-          thecheck->AddWarning(
-            "String control directive \\P*\\ with an unsupported symbol in place of *");
+          thecheck->AddWarning("String control directive \\P*\\ with an unsupported symbol in place of *");
         }
         isConverted = true;
         aStringInd += 3;
@@ -164,8 +146,8 @@ void StepData_StepReaderData::cleanText(const occ::handle<TCollection_HAsciiStri
       // converts followed a LATIN CODEPOINT character.
       else if (aDirChar == 'S' && isSecSlash)
       {
-        char       aResChar         = static_cast<char>(aResString.Value(aStringInd + 3) | 0x80);
-        const char aStrForCovert[2] = {aResChar, '\0'};
+        char aResChar = static_cast<char>(aResString.Value(aStringInd + 3) | 0x80);
+        const char aStrForCovert[2] = { aResChar, '\0' };
         Resource_Unicode::ConvertFormatToUnicode(aLocalFormatType, aStrForCovert, aTempExtString);
         isConverted = true;
         aStringInd += 3;
@@ -176,12 +158,9 @@ void StepData_StepReaderData::cleanText(const occ::handle<TCollection_HAsciiStri
       else if (aDirChar == 'X' && aStringInd <= aResStringSize - 4 && isSecSlash)
       {
         char aResChar = (char)convertCharacterTo16bit(aResString.Value(aStringInd + 3));
-        aResChar =
-          (aResChar << 4) | (char)convertCharacterTo16bit(aResString.Value(aStringInd + 4));
-        const char aStrForConvert[2] = {aResChar, '\0'};
-        // clang-format off
+        aResChar = (aResChar << 4) | (char)convertCharacterTo16bit(aResString.Value(aStringInd + 4));
+        const char aStrForConvert[2] = { aResChar, '\0' };
         aTempExtString = TCollection_ExtendedString(aStrForConvert, false); // pass through without conversion
-        // clang-format on
         isConverted = true;
         aStringInd += 4;
       }
@@ -192,19 +171,19 @@ void StepData_StepReaderData::cleanText(const occ::handle<TCollection_HAsciiStri
       // "\X0\" indicate the end of the "\X2\" or "\X4\".
       else if (aDirChar == 'X' && isThirdSlash)
       {
-        int  aFirstInd = aStringInd + 3;
-        int  aLastInd  = aStringInd;
-        bool isClosed  = false;
+        int aFirstInd = aStringInd + 3;
+        int aLastInd = aStringInd;
+        bool isClosed = false;
         // find the end of the "\X2\" or "\X4\" by an external "aStringInd"
         for (; aStringInd <= aResStringSize && !isClosed; ++aStringInd)
         {
-          if (aResStringSize - aStringInd > 2 && aResString.Value(aStringInd) == '\\'
-              && aResString.Value(aStringInd + 1) == 'X' && aResString.Value(aStringInd + 2) == '0'
-              && aResString.Value(aStringInd + 3) == '\\')
+          if (aResStringSize - aStringInd > 2 && aResString.Value(aStringInd) == '\\' &&
+            aResString.Value(aStringInd + 1) == 'X' && aResString.Value(aStringInd + 2) == '0' &&
+            aResString.Value(aStringInd + 3) == '\\')
           {
-            aLastInd   = aStringInd - 1;
+            aLastInd = aStringInd - 1;
             aStringInd = aStringInd + 2;
-            isClosed   = true;
+            isClosed = true;
           }
         }
         if (!isClosed) // "\X0\" not exists
@@ -213,7 +192,7 @@ void StepData_StepReaderData::cleanText(const occ::handle<TCollection_HAsciiStri
         }
         const int aStrLen = aLastInd - aFirstInd;
         // "\X2\" control directive;
-        // followed by multiples of four or three hexadecimal characters.
+        // followed by multiples of four or three hexadecimal characters. 
         // Encoding in UTF-16
         if (aResString.Value(aFirstInd - 1) == '2' && aResStringSize - aFirstInd > 3)
         {
@@ -221,8 +200,7 @@ void StepData_StepReaderData::cleanText(const occ::handle<TCollection_HAsciiStri
           if (aStrLen % anIterStep)
           {
             aTempExtString.AssignCat('?');
-            thecheck->AddWarning(
-              "String control directive \\X2\\ is followed by number of digits not multiple of 4");
+            thecheck->AddWarning("String control directive \\X2\\ is followed by number of digits not multiple of 4");
           }
           else
           {
@@ -240,28 +218,27 @@ void StepData_StepReaderData::cleanText(const occ::handle<TCollection_HAsciiStri
           }
         }
         // "\X4\" control directive;
-        // followed by multiples of eight hexadecimal characters.
+        // followed by multiples of eight hexadecimal characters. 
         // Encoding in UTF-32
         else if (aResString.Value(aFirstInd - 1) == '4' && aResStringSize - aFirstInd > 7)
         {
           if (aStrLen % 8)
           {
             aTempExtString.AssignCat('?');
-            thecheck->AddWarning(
-              "String control directive \\X4\\ is followed by number of digits not multiple of 8");
+            thecheck->AddWarning("String control directive \\X4\\ is followed by number of digits not multiple of 8");
           }
           else
           {
-            char32_t aUtfCharacter[2] = {'\0', '\0'};
+            char32_t aUtfCharacter[2] = { '\0', '\0' };
             for (int aCharInd = 1; aCharInd <= aStrLen; ++aCharInd)
             {
               aUtfCharacter[0] |= convertCharacterTo16bit(aResString.Value(aCharInd + aFirstInd));
               if (aCharInd % 8 == 0)
               {
-                NCollection_UtfIterator<char32_t> aUtfIter(aUtfCharacter);
-                char16_t                          aStringBuffer[3];
-                char16_t*                         aUtfPntr = aUtfIter.GetUtf16(aStringBuffer);
-                *aUtfPntr++                                = '\0';
+                NCollection_Utf32Iter aUtfIter(aUtfCharacter);
+                char16_t aStringBuffer[3];
+                char16_t* aUtfPntr = aUtfIter.GetUtf16(aStringBuffer);
+                *aUtfPntr++ = '\0';
                 TCollection_ExtendedString aUtfString(aStringBuffer);
                 aTempExtString.AssignCat(aUtfString);
                 aUtfCharacter[0] = '\0';
@@ -276,15 +253,12 @@ void StepData_StepReaderData::cleanText(const occ::handle<TCollection_HAsciiStri
       {
         if (toConversion) // else skip moving
         {
-          // clang-format off
           aResStringSize -= aStringInd - aSetCharInd - aTempExtString.Length() + 1; // change the string size to remove unused symbols
-          // clang-format on
           aResString.SetValue(aSetCharInd, aTempExtString);
           aSetCharInd += aTempExtString.Length(); // move to the new position
           aResString.SetValue(aSetCharInd, aResString.ToExtString() + aStringInd);
           aStringInd = aSetCharInd - 1;
-          aResString.Trunc(aResStringSize);
-          ;
+          aResString.Trunc(aResStringSize);;
         }
         aTempExtString.Clear();
         continue;
@@ -295,9 +269,7 @@ void StepData_StepReaderData::cleanText(const occ::handle<TCollection_HAsciiStri
       const char16_t aCharNext = aResString.Value(aStringInd + 1);
       if (aCharNext == aChar && (aChar == '\'' || aChar == '\\'))
       {
-        // clang-format off
         aResString.SetValue(aSetCharInd, aResString.ToExtString() + aStringInd); // move the string,removing one symbol
-        // clang-format on
         aResStringSize--; // change the string size to remove unused symbol
         aResString.Trunc(aResStringSize);
       }
@@ -310,7 +282,6 @@ void StepData_StepReaderData::cleanText(const occ::handle<TCollection_HAsciiStri
           if (aCharNext == 'N')
           {
             aResString.SetValue(aSetCharInd++, '\n');
-            // clang-format off
             aResString.SetValue(aSetCharInd, aResString.ToExtString() + aStringInd + 2); // move the string,removing two symbols
             aResStringSize-=2; // change the string size to remove unused symbols
             aResString.Trunc(aResStringSize);
@@ -320,8 +291,7 @@ void StepData_StepReaderData::cleanText(const occ::handle<TCollection_HAsciiStri
           {
             aResString.SetValue(aSetCharInd++, '\t');
             aResString.SetValue(aSetCharInd, aResString.ToExtString() + aStringInd + 2); // move the string,removing two symbols
-            // clang-format on
-            aResStringSize -= 2; // change the string size to remove unused symbols
+            aResStringSize-=2; // change the string size to remove unused symbols
             aResString.Trunc(aResStringSize);
             continue;
           }
@@ -344,88 +314,94 @@ void StepData_StepReaderData::cleanText(const occ::handle<TCollection_HAsciiStri
 
 //  -------------  METHODES  -------------
 
-//=================================================================================================
+//=======================================================================
+//function : StepData_StepReaderData
+//purpose  : 
+//=======================================================================
 
-StepData_StepReaderData::StepData_StepReaderData(const int                 nbheader,
-                                                 const int                 nbtotal,
-                                                 const int                 nbpar,
-                                                 const Resource_FormatType theSourceCodePage)
-    : Interface_FileReaderData(nbtotal, nbpar),
-      theidents(1, nbtotal),
-      thetypes(1, nbtotal),
-      mySourceCodePage(theSourceCodePage) //, themults (1,nbtotal)
+StepData_StepReaderData::StepData_StepReaderData
+(const int nbheader, const int nbtotal,
+  const int nbpar, const Resource_FormatType theSourceCodePage)
+  : Interface_FileReaderData(nbtotal, nbpar), theidents(1, nbtotal),
+  thetypes(1, nbtotal), mySourceCodePage(theSourceCodePage) //, themults (1,nbtotal)
 {
   //  char textnum[10];
-  thenbscop = 0;
-  thenbents = 0;
-  thelastn  = 0;
-  thenbhead = nbheader;
-  // themults.Init(0);
+  thenbscop = 0;  thenbents = 0;  thelastn = 0;  thenbhead = nbheader;
+  //themults.Init(0);
   thecheck = new Interface_Check;
+  if (initstr) return;
+  //for (int i = 0; i < Maxlst; i ++) {
+  //  sprintf(textnum,"$%d",i+1);
+  //  subl[i].AssignCat(textnum);
+  //}
+  initstr = true;
 }
 
-//=================================================================================================
+//=======================================================================
+//function : SetRecord
+//purpose  : 
+//=======================================================================
 
-void StepData_StepReaderData::SetRecord(const int         num,
-                                        const char* const ident,
-                                        const char* const type,
-                                        const int /* nbpar */)
+void StepData_StepReaderData::SetRecord(const int num,
+  const char* const ident,
+  const char* const type,
+  const int /* nbpar */)
 {
   int numlst;
+  /*
+    if (strcmp(type,"/ * (SUB) * /") == 0) {    // defini dans recfile.pc
+      thetypes.SetValue (num,sublist);
+    } else {
+      thenbents ++;   // total de termes propres du fichier
+      thetypes.SetValue(num,TCollection_AsciiString(type));
+  //    if (strcmp(ident,"SCOPE") != 0) thenbscop ++;  // ?? a verifier
+    }
+  */
+  if (type[0] != '(') thenbents++;   // total de termes propres du fichier
 
-  if (type[0] != '(')
-    thenbents++; // total number of proper file terms
+  //thetypes.ChangeValue(num).SetValue(1,type); gka memory
+  //============================================
+  int index = 0;
+  TCollection_AsciiString strtype(type);
+  if (thenametypes.Contains(type))
+    index = thenametypes.FindIndex(strtype);
+  else index = thenametypes.Add(strtype);
+  thetypes.ChangeValue(num) = index;
+  //===========================================
 
-  thetypes.ChangeValue(num) = thenametypes.Add(TCollection_AsciiString(type));
-
-  if (ident[0] == '$')
-  {
-    if (strlen(ident) > 2)
-      numlst = atoi(&ident[1]);
-    else
-      numlst = ident[1] - 48;
-    if (thelastn < numlst)
-      thelastn = numlst; // highest sub-list number
+  if (ident[0] == '$') {
+    if (strlen(ident) > 2) numlst = atoi(&ident[1]);
+    else numlst = ident[1] - 48;
+    if (thelastn < numlst) thelastn = numlst;    // plus fort n0 de sous-liste
     theidents.SetValue(num, -2 - numlst);
-  }
-  else if (ident[0] == '#')
-  {
+  } else if (ident[0] == '#') {
     numlst = atoi(&ident[1]);
     theidents.SetValue(num, numlst);
-    if (numlst == 0 && num > thenbhead)
-    {
-      //    Header, or Complex Type ...
-      //    If Complex Type, find Previous Type (we consider this is rare)
-      //    Chain the previous type to the next one
-      //    VERIFICATION that types are in alphabetical order
-      for (int prev = num - 1; prev > thenbhead; prev--)
-      {
-        if (theidents(prev) >= 0)
-        {
+    if (numlst == 0 && num > thenbhead) {
+      //    Header, ou bien Type Complexe ...
+      //    Si Type Complexe, retrouver Type Precedent (on considere que c est rare)
+      //    On chaine le type precedent sur le suivant
+      //    VERIFICATION que les types sont en ordre alphabetique
+      for (int prev = num - 1; prev > thenbhead; prev--) {
+        if (theidents(prev) >= 0) {
 
-          // themults.SetValue(prev,num);
+          //themults.SetValue(prev,num);
           themults.Bind(prev, num);
-          if (thenametypes.FindKey(thetypes.Value(num))
-                .IsLess(thenametypes.FindKey(thetypes.Value(prev))))
-          {
+          if (thenametypes.FindKey(thetypes.Value(num)).IsLess(thenametypes.FindKey(thetypes.Value(prev)))) {
             //  Warning: components in complex entity are not in alphabetical order.
             TCollection_AsciiString errm("Complex Type incorrect : ");
             errm.AssignCat(thenametypes.FindKey(thetypes.Value(prev)));
             errm.AssignCat(" / ");
             errm.AssignCat(thenametypes.FindKey(thetypes.Value(num)));
             errm.AssignCat(" ... ");
-            while (theidents(prev) <= 0)
-            {
-              prev--;
-              if (prev <= 0)
-                break;
+            while (theidents(prev) <= 0) {
+              prev--;  if (prev <= 0) break;
             }
 
             Message_Messenger::StreamBuffer sout = Message::SendTrace();
-            sout << "  ***  Incorrect record " << num << " (on " << NbRecords() << " -> "
-                 << num * 100 / NbRecords() << " % in File)  ***";
-            if (prev > 0)
-              sout << "  Ident #" << theidents(prev);
+            sout << "  ***  Incorrect record " << num << " (on " << NbRecords()
+                 << " -> " << num * 100 / NbRecords() << " % in File)  ***";
+            if (prev > 0) sout << "  Ident #" << theidents(prev);
             sout << "\n" << errm << std::endl;
             thecheck->AddWarning(errm.ToCString(), "Complex Type incorrect : ");
           }
@@ -434,71 +410,74 @@ void StepData_StepReaderData::SetRecord(const int         num,
       }
     }
   }
-  else if (!strcmp(ident, "SCOPE"))
-  {
+  else if (!strcmp(ident, "SCOPE")) {
     theidents.SetValue(num, -1); // SCOPE
     thenbscop++;
   }
-  else if (!strcmp(ident, "ENDSCOPE"))
-    theidents.SetValue(num, -2); // ENDSCOPE
-  //      Reste 0
+  else if (!strcmp(ident, "ENDSCOPE")) theidents.SetValue(num, -2);  // ENDSCOPE
+//      Reste 0
 
-  // InitParams(num);
+ // InitParams(num);
 }
 
-//=================================================================================================
+//=======================================================================
+//function : AddStepParam
+//purpose  : 
+//=======================================================================
 
-void StepData_StepReaderData::AddStepParam(const int                 num,
-                                           const char* const         aval,
-                                           const Interface_ParamType atype,
-                                           const int                 nument)
+void StepData_StepReaderData::AddStepParam(const int num,
+  const char* const aval,
+  const Interface_ParamType atype,
+  const int nument)
 {
-  if (atype == Interface_ParamSub)
-  {
+  if (atype == Interface_ParamSub) {
     int numid = 0;
-    if (aval[2] != '\0')
-    {
+    if (aval[2] != '\0') {
       numid = atoi(&aval[1]);
       //      if (numid <= Maxlst) Interface_FileReaderData::AddParam
       //	(num,subl[numid-1].ToCString(),atype,numid);
       Interface_FileReaderData::AddParam(num, aval, atype, numid);
-    }
-    else
-    {
-      char* numlstchar = (char*)(aval + 1);
-      numid            = (*numlstchar) - 48; // -48 ('0') -1 (adresse [] depuis 0)
-      //      Interface_FileReaderData::AddParam (num,subl[numid].ToCString(),atype,numid);
+    } else {
+      char *numlstchar = (char *)(aval + 1);
+      numid = (*numlstchar) - 48;  // -48 ('0') -1 (adresse [] depuis 0)
+//      Interface_FileReaderData::AddParam (num,subl[numid].ToCString(),atype,numid);
       Interface_FileReaderData::AddParam(num, aval, atype, numid);
     }
-  }
-  else if (atype == Interface_ParamIdent)
-  {
+  } else if (atype == Interface_ParamIdent) {
     int numid = atoi(&aval[1]);
     Interface_FileReaderData::AddParam(num, aval, atype, numid);
-  }
-  else
-  {
+  } else {
     Interface_FileReaderData::AddParam(num, aval, atype, nument);
   }
 
   //  Interface_FileReaderData::AddParam (num,parval,atype,numid);
 }
 
-//=================================================================================================
+//=======================================================================
+//function : RecordType
+//purpose  : 
+//=======================================================================
 
-const TCollection_AsciiString& StepData_StepReaderData::RecordType(const int num) const
+const TCollection_AsciiString& StepData_StepReaderData::RecordType
+(const int num) const
 {
   return thenametypes.FindKey(thetypes.Value(num));
 }
 
-//=================================================================================================
+//=======================================================================
+//function : CType
+//purpose  : 
+//=======================================================================
 
 const char* StepData_StepReaderData::CType(const int num) const
 {
   return thenametypes.FindKey(thetypes.Value(num)).ToCString();
 }
 
-//=================================================================================================
+//=======================================================================
+//function : RecordIdent
+//purpose  : 
+//=======================================================================
 
 int StepData_StepReaderData::RecordIdent(const int num) const
 {
@@ -506,50 +485,56 @@ int StepData_StepReaderData::RecordIdent(const int num) const
 }
 
 //  ########################################################################
-//  ....       Parameter reading aids, adapted for STEP       ....
+//  ....       Aides a la lecture des parametres, adaptees a STEP       ....
 
-//=================================================================================================
+//=======================================================================
+//function : SubListNumber
+//purpose  : 
+//=======================================================================
 
-int StepData_StepReaderData::SubListNumber(const int num, const int nump, const bool aslast) const
+int StepData_StepReaderData::SubListNumber(const int num,
+  const int nump,
+  const bool aslast) const
 {
-  if (nump == 0 || nump > NbParams(num))
-    return 0;
+  if (nump == 0 || nump > NbParams(num)) return 0;
   const Interface_FileParameter& FP = Param(num, nump);
-  if (FP.ParamType() != Interface_ParamSub)
-    return 0;
-  if (aslast)
-  {
-    if (nump != NbParams(num))
-      return 0;
-  }
+  if (FP.ParamType() != Interface_ParamSub) return 0;
+  if (aslast) { if (nump != NbParams(num)) return 0; }
   return FP.EntityNumber();
 }
 
-//=================================================================================================
+//=======================================================================
+//function : IsComplex
+//purpose  : 
+//=======================================================================
 
 bool StepData_StepReaderData::IsComplex(const int num) const
 {
-  // return (themults(num) != 0);
+  //return (themults(num) != 0);
   return themults.IsBound(num);
 }
 
-//=================================================================================================
+//=======================================================================
+//function : ComplexType
+//purpose  : 
+//=======================================================================
 
-void StepData_StepReaderData::ComplexType(
-  const int                                      num,
-  NCollection_Sequence<TCollection_AsciiString>& types) const
+void  StepData_StepReaderData::ComplexType(const int num,
+  TColStd_SequenceOfAsciiString& types) const
 {
-  if (theidents(num) < 0)
-    return;
-  for (int i = num; i > 0; i = NextForComplex(i))
-  {
+  if (theidents(num) < 0) return;
+  for (int i = num; i > 0; i = NextForComplex(i)) {
     types.Append(RecordType(i));
   }
 }
 
-//=================================================================================================
+//=======================================================================
+//function : NextForComplex
+//purpose  : 
+//=======================================================================
 
-int StepData_StepReaderData::NextForComplex(const int num) const
+int StepData_StepReaderData::NextForComplex
+(const int num) const
 {
   int next = 0;
   if (themults.IsBound(num))
@@ -557,1935 +542,1592 @@ int StepData_StepReaderData::NextForComplex(const int num) const
   return next;
 }
 
-//=================================================================================================
+//=======================================================================
+//function : NamedForComplex
+//purpose  : 
+//=======================================================================
 
-bool StepData_StepReaderData::NamedForComplex(const char* const             name,
-                                              const int                     num0,
-                                              int&                          num,
-                                              occ::handle<Interface_Check>& ach) const
+bool  StepData_StepReaderData::NamedForComplex
+(const char* const name, const int num0,
+  int& num, occ::handle<Interface_Check>& ach) const
 {
-  // bool stat = true;
+  //bool stat = true;
   int n = (num <= 0 ? num0 : NextForComplex(num));
   // sln 04,10.2001. BUC61003. if(n==0) the next  function is not called in order to avoid exception
   if ((n != 0) && (!strcmp(RecordType(n).ToCString(), name)))
-  {
-    num = n;
-    return true;
-  }
+    {  num = n;  return true;  }
 
-  if (n == 0)                            /*stat =*/
-    NamedForComplex(name, num0, n, ach); // on a rembobine
-                                         //  Not in alphabetical order: loop
-  char        txtmes[200];
-  const char* errmess = "Parameter n0.%d (%s) not a LIST";
-  Sprintf(txtmes, errmess, num0, name);
-  for (n = num0; n > 0; n = NextForComplex(n))
-  {
-    if (!strcmp(RecordType(n).ToCString(), name))
-    {
-      num     = n;
-      errmess = "Complex Record n0.%d, member type %s not in alphabetic order";
-      Sprintf(txtmes, errmess, num0, name);
-      ach->AddWarning(txtmes, errmess);
+  if (n == 0) /*stat =*/ NamedForComplex(name, num0, n, ach);  // on a rembobine
+//  Pas dans l ordre alphabetique : boucler
+  occ::handle<String> errmess = new String("Parameter n0.%d (%s) not a LIST");
+  sprintf(txtmes, errmess->ToCString(), num0, name);
+  for (n = num0; n > 0; n = NextForComplex(n)) {
+    if (!strcmp(RecordType(n).ToCString(), name)) {
+      num = n;
+      errmess = new String("Complex Record n0.%d, member type %s not in alphabetic order");
+      sprintf(txtmes, errmess->ToCString(), num0, name);
+      ach->AddWarning(txtmes, errmess->ToCString());
       return false;
     }
   }
-  num     = 0;
-  errmess = "Complex Record n0.%d, member type %s not found";
-  Sprintf(txtmes, errmess, num0, name);
-  ach->AddFail(txtmes, errmess);
+  num = 0;
+  errmess = new String("Complex Record n0.%d, member type %s not found");
+  sprintf(txtmes, errmess->ToCString(), num0, name);
+  ach->AddFail(txtmes, errmess->ToCString());
   return false;
 }
 
-//=================================================================================================
+//=======================================================================
+//function : NamedForComplex
+//purpose  : 
+//=======================================================================
 
-bool StepData_StepReaderData::NamedForComplex(const char* const             theName,
-                                              const char* const             theShortName,
-                                              const int                     num0,
-                                              int&                          num,
-                                              occ::handle<Interface_Check>& ach) const
+bool  StepData_StepReaderData::NamedForComplex
+(const char* const theName, const char* const theShortName,
+  const int num0, int& num,
+  occ::handle<Interface_Check>& ach) const
 {
   int n = (num <= 0 ? num0 : NextForComplex(num));
 
-  if ((n != 0)
-      && (!strcmp(RecordType(n).ToCString(), theName)
-          || !strcmp(RecordType(n).ToCString(), theShortName)))
+  if ((n != 0) && (!strcmp(RecordType(n).ToCString(), theName) ||
+    !strcmp(RecordType(n).ToCString(), theShortName)))
   {
     num = n;
     return true;
   }
 
-  // entities are not in alphabetical order
-  char        txtmes[200];
-  const char* errmess = "Parameter n0.%d (%s) not a LIST";
-  Sprintf(txtmes, errmess, num0, theName);
+  //entities are not in alphabetical order
+  occ::handle<String> errmess = new String("Parameter n0.%d (%s) not a LIST");
+  sprintf(txtmes, errmess->ToCString(), num0, theName);
   for (n = num0; n > 0; n = NextForComplex(n))
   {
-    if (!strcmp(RecordType(n).ToCString(), theName)
-        || !strcmp(RecordType(n).ToCString(), theShortName))
+    if (!strcmp(RecordType(n).ToCString(), theName) ||
+      !strcmp(RecordType(n).ToCString(), theShortName))
     {
-      num     = n;
-      errmess = "Complex Record n0.%d, member type %s not in alphabetic order";
-      Sprintf(txtmes, errmess, num0, theName);
-      ach->AddWarning(txtmes, errmess);
+      num = n;
+      errmess = new String("Complex Record n0.%d, member type %s not in alphabetic order");
+      sprintf(txtmes, errmess->ToCString(), num0, theName);
+      ach->AddWarning(txtmes, errmess->ToCString());
       return false;
     }
   }
-  num     = 0;
-  errmess = "Complex Record n0.%d, member type %s not found";
-  Sprintf(txtmes, errmess, num0, theName);
-  ach->AddFail(txtmes, errmess);
+  num = 0;
+  errmess = new String("Complex Record n0.%d, member type %s not found");
+  sprintf(txtmes, errmess->ToCString(), num0, theName);
+  ach->AddFail(txtmes, errmess->ToCString());
   return false;
 }
 
 //  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##
 
-//=================================================================================================
+//=======================================================================
+//function : CheckNbParams
+//purpose  : 
+//=======================================================================
 
-bool StepData_StepReaderData::CheckNbParams(const int                     num,
-                                            const int                     nbreq,
-                                            occ::handle<Interface_Check>& ach,
-                                            const char* const             mess) const
+bool StepData_StepReaderData::CheckNbParams(const int num,
+  const int nbreq,
+  occ::handle<Interface_Check>& ach,
+  const char* const mess) const
 {
-  if (NbParams(num) == nbreq)
-    return true;
-  char        txtmes[200];
-  const char* errmess;
-  if (mess[0] == '\0')
-    errmess = "Count of Parameters is not %d";
-  else
-    errmess = "Count of Parameters is not %d for %s";
-  Sprintf(txtmes, errmess, nbreq, mess);
-  ach->AddFail(txtmes, errmess);
+  if (NbParams(num) == nbreq) return true;
+  occ::handle<String> errmess;
+  if (mess[0] == '\0') errmess = new String("Count of Parameters is not %d");
+  else errmess = new String("Count of Parameters is not %d for %s");
+  sprintf(txtmes, errmess->ToCString(), nbreq, mess);
+  ach->AddFail(txtmes, errmess->ToCString());
   return false;
 }
 
-//=================================================================================================
+//=======================================================================
+//function : ReadSubList
+//purpose  : 
+//=======================================================================
 
-bool StepData_StepReaderData::ReadSubList(const int                     num,
-                                          const int                     nump,
-                                          const char* const             mess,
-                                          occ::handle<Interface_Check>& ach,
-                                          int&                          numsub,
-                                          const bool                    optional,
-                                          const int /* lenmin */,
-                                          const int /* lenmax */) const
+bool StepData_StepReaderData::ReadSubList(const int num,
+  const int nump,
+  const char* const mess,
+  occ::handle<Interface_Check>& ach,
+  int& numsub,
+  const bool optional,
+  const int /* lenmin */,
+  const int /* lenmax */) const
 {
-  char txtmes[200];
   numsub = SubListNumber(num, nump, false);
   if (numsub > 0)
   {
-    const int aNbParams = NbParams(numsub);
-    if (aNbParams == 0)
-    {
-      const char* anErrMess = "Parameter n0.%d (%s) is an empty LIST";
-      Sprintf(txtmes, anErrMess, nump, mess);
-      ach->AddWarning(txtmes, anErrMess);
-    }
-    return true;
+    return (NbParams(numsub) > 0);
   }
   //  Si optionel indefini, on passe l eponge
-  numsub      = 0;
+  numsub = 0;
   bool isvoid = (Param(num, nump).ParamType() == Interface_ParamVoid);
-  if (isvoid && optional)
-    return false;
+  if (isvoid && optional) return false;
 
-  const char* errmess = "Parameter n0.%d (%s) not a LIST";
-  Sprintf(txtmes, errmess, nump, mess);
-  ach->AddFail(txtmes, errmess);
-  return false;
+  occ::handle<String> errmess = new String("Parameter n0.%d (%s) not a LIST");
+  sprintf(txtmes, errmess->ToCString(), nump, mess);
+  if (acceptvoid && isvoid)  ach->AddWarning(txtmes, errmess->ToCString());
+  else { ach->AddFail(txtmes, errmess->ToCString()); return false; }
+  return true;
 }
 
-//  ...   Utilities for LateBinding
+//  ...   Facilites pour LateBinding
 
-//=================================================================================================
+//=======================================================================
+//function : ReadSub
+//purpose  : 
+//=======================================================================
 
-int StepData_StepReaderData::ReadSub(const int                           numsub,
-                                     const char* const                   mess,
-                                     occ::handle<Interface_Check>&       ach,
-                                     const occ::handle<StepData_PDescr>& descr,
-                                     occ::handle<Standard_Transient>&    val) const
+int StepData_StepReaderData::ReadSub(const int numsub,
+  const char* const mess,
+  occ::handle<Interface_Check>& ach,
+  const occ::handle<StepData_PDescr>& descr,
+  occ::handle<Standard_Transient>& val) const
 {
   int nbp = NbParams(numsub);
-  if (nbp == 0)
-    return 0; // empty list = Handle Null
+  if (nbp == 0) return 0;    // liste vide = Handle Null
   const TCollection_AsciiString& rectyp = RecordType(numsub);
-  if (nbp == 1 && rectyp.ToCString()[0] != '(')
-  {
-    //  it's a type with one parameter -> SelectNamed
-    //  cf ReadSelect but here, we are already on the parameter content
+  if (nbp == 1 && rectyp.ToCString()[0] != '(') {
+    //  c est un type avec un parametre -> SelectNamed
+    //  cf ReadSelect mais ici, on est deja sur le contenu du parametre
     occ::handle<StepData_SelectNamed> sn = new StepData_SelectNamed;
-    val                                  = sn;
+    val = sn;
     sn->SetName(rectyp.ToCString());
     occ::handle<Standard_Transient> aSN = sn;
-    if (ReadAny(numsub, 1, mess, ach, descr, aSN))
-      return sn->Kind();
-    else
-      return 0;
+    if (ReadAny(numsub, 1, mess, ach, descr, aSN)) return sn->Kind();
+    else return 0;
   }
 
-  //  common case: make an HArray1 of ... of ... of what exactly
-  const Interface_FileParameter&                                          FP0 = Param(numsub, 1);
-  Interface_ParamType                                                     FT, FT0 = FP0.ParamType();
-  const char*                                                             str = FP0.CValue();
-  occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>>       htr;
-  occ::handle<NCollection_HArray1<int>>                                   hin;
-  occ::handle<NCollection_HArray1<double>>                                hre;
-  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> hst;
-  int                                                                     kod = 0;
-  switch (FT0)
-  {
-    case Interface_ParamMisc:
-      return -1;
-    case Interface_ParamInteger:
-      kod = 1;
-      break;
-    case Interface_ParamReal:
-      kod = 5;
-      break;
-    case Interface_ParamIdent:
-      kod = 7;
-      break;
-    case Interface_ParamVoid:
-      kod = 0;
-      break;
-    case Interface_ParamText:
-      kod = 6;
-      break;
-    case Interface_ParamEnum:
-      kod = 4;
-      break; // a confirmer(logical)
-      /*      kod = 4;
-        if ( str[0] == '.' && str[2] == '.' && str[3] == '\0' &&
-        (str[1] == 'T' || str[1] == 'F' || str[1] == 'U') ) kod = 3;
-        break; */ // svv #2
-    case Interface_ParamLogical:
-      return -1;
-    case Interface_ParamSub:
-      kod = 0;
-      break;
-    case Interface_ParamHexa:
-      return -1;
-    case Interface_ParamBinary:
-      return -1;
-    default:
-      return -1;
+  //  cas courant : faire un HArray1 de ... de ... de quoi au fait
+  const Interface_FileParameter& FP0 = Param(numsub, 1);
+  Interface_ParamType FT, FT0 = FP0.ParamType();
+  const char* str = FP0.CValue();
+  occ::handle<TColStd_HArray1OfTransient> htr;
+  occ::handle<TColStd_HArray1OfInteger>   hin;
+  occ::handle<TColStd_HArray1OfReal>      hre;
+  occ::handle<Interface_HArray1OfHAsciiString>  hst;
+  int kod = 0;
+  switch (FT0) {
+  case Interface_ParamMisc: return -1;
+  case Interface_ParamInteger: kod = 1;  break;
+  case Interface_ParamReal: kod = 5;  break;
+  case Interface_ParamIdent: kod = 7;  break;
+  case Interface_ParamVoid: kod = 0;  break;
+  case Interface_ParamText: kod = 6;  break;
+  case Interface_ParamEnum: kod = 4;  break;  // a confirmer(logical)
+    /*      kod = 4;
+      if ( str[0] == '.' && str[2] == '.' && str[3] == '\0' &&
+      (str[1] == 'T' || str[1] == 'F' || str[1] == 'U') ) kod = 3;
+      break; */ // svv #2
+  case Interface_ParamLogical: return -1;
+  case Interface_ParamSub: kod = 0;  break;
+  case Interface_ParamHexa: return -1;
+  case Interface_ParamBinary: return -1;
+  default:  return -1;
   }
-  if (kod == 1 || kod == 3)
-  {
-    hin = new NCollection_HArray1<int>(1, nbp);
-    val = hin;
-  }
-  else if (kod == 5)
-  {
-    hre = new NCollection_HArray1<double>(1, nbp);
-    val = hre;
-  }
-  else if (kod == 6)
-  {
-    hst = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nbp);
-    val = hst;
-  }
-  else
-  {
-    htr = new NCollection_HArray1<occ::handle<Standard_Transient>>(1, nbp);
-    val = htr;
-  }
-  //  Attention: if variable type, will need to change approach -> htr
+  if (kod == 1 || kod == 3) { hin = new TColStd_HArray1OfInteger(1, nbp); val = hin; }
+  else if (kod == 5) { hre = new TColStd_HArray1OfReal(1, nbp); val = hre; }
+  else if (kod == 6) { hst = new Interface_HArray1OfHAsciiString(1, nbp); val = hst; }
+  else { htr = new TColStd_HArray1OfTransient(1, nbp); val = htr; }
+  //  Attention : si type variable, faudra changer son fusil d epaule -> htr
 
-  for (int ip = 1; ip <= nbp; ip++)
-  {
+  for (int ip = 1; ip <= nbp; ip++) {
     const Interface_FileParameter& FP = Param(numsub, ip);
-    str                               = FP.CValue();
-    FT                                = FP.ParamType();
-    switch (kod)
-    {
-      case 1: {
-        if (FT != Interface_ParamInteger)
-        {
-          kod = 0;
-          break;
-        }
-        hin->SetValue(ip, atoi(str));
-        break;
-      }
-      case 2:
-      case 3: {
-        if (FT != Interface_ParamEnum)
-        {
-          kod = 0;
-          break;
-        }
-        if (!strcmp(str, ".F."))
-          hin->SetValue(ip, 0);
-        else if (!strcmp(str, ".T."))
-          hin->SetValue(ip, 1);
-        else if (!strcmp(str, ".U."))
-          hin->SetValue(ip, 2);
-        else
-          kod = 0;
-        break;
-      }
-      case 4: {
-        if (FT != Interface_ParamEnum)
-        {
-          kod = 0;
-          break;
-        }
-        occ::handle<StepData_SelectNamed> sn = new StepData_SelectNamed;
-        sn->SetEnum(-1, str);
-        htr->SetValue(ip, sn);
-        break;
-      }
-      case 5: {
-        if (FT != Interface_ParamReal)
-        {
-          kod = 0;
-          break;
-        }
-        hre->SetValue(ip, Interface_FileReaderData::Fastof(str));
-        break;
-      }
-      case 6: {
-        if (FT != Interface_ParamText)
-        {
-          kod = 0;
-          break;
-        }
-        occ::handle<TCollection_HAsciiString> txt = new TCollection_HAsciiString(str);
-        cleanText(txt);
-        hst->SetValue(ip, txt);
-        break;
-      }
-      case 7: {
-        occ::handle<Standard_Transient> ent = BoundEntity(FP.EntityNumber());
-        htr->SetValue(ip, ent);
-        break;
-      }
-      default:
-        break;
+    str = FP.CValue();
+    FT = FP.ParamType();
+    switch (kod) {
+    case 1: {
+      if (FT != Interface_ParamInteger) { kod = 0; break; }
+      hin->SetValue(ip, atoi(str));	break;
     }
-    //    Remaining other cases ... everything is possible. cf the Param type
-    if (kod > 0)
-      continue;
-    //    Need to pass to transient ...
-    if (htr.IsNull())
-    {
-      htr = new NCollection_HArray1<occ::handle<Standard_Transient>>(1, nbp);
-      val = htr;
+    case 2:
+    case 3: {
+      if (FT != Interface_ParamEnum) { kod = 0; break; }
+      if (!strcmp(str, ".F.")) hin->SetValue(ip, 0);
+      else if (!strcmp(str, ".T.")) hin->SetValue(ip, 1);
+      else if (!strcmp(str, ".U.")) hin->SetValue(ip, 2);
+      else    kod = 0;
+      break;
+    }
+    case 4: {
+      if (FT != Interface_ParamEnum) { kod = 0; break; }
+      occ::handle<StepData_SelectNamed> sn = new StepData_SelectNamed;
+      sn->SetEnum(-1, str);
+      htr->SetValue(ip, sn);  break;
+    }
+    case 5: {
+      if (FT != Interface_ParamReal) { kod = 0; break; }
+      hre->SetValue(ip, Interface_FileReaderData::Fastof(str));   break;
+    }
+    case 6: {
+      if (FT != Interface_ParamText) { kod = 0; break; }
+      occ::handle<TCollection_HAsciiString> txt = new TCollection_HAsciiString(str);
+      cleanText(txt);
+      hst->SetValue(ip, txt);
+      break;
+    }
+    case 7: {
+      occ::handle<Standard_Transient> ent = BoundEntity(FP.EntityNumber());
+      htr->SetValue(ip, ent);  break;
+    }
+    default: break;
+    }
+    //    Restent les autres cas ... tout est possible. cf le type du Param
+    if (kod > 0) continue;
+    //    Il faut passer au transient ...
+    if (htr.IsNull()) {
+      htr = new TColStd_HArray1OfTransient(1, nbp);  val = htr;
       int jp;
-      if (!hin.IsNull())
-      {
-        for (jp = 1; jp < ip; jp++)
-        {
+      if (!hin.IsNull()) {
+        for (jp = 1; jp < ip; jp++) {
           occ::handle<StepData_SelectInt> sin = new StepData_SelectInt;
           sin->SetInt(hin->Value(jp));
           htr->SetValue(jp, sin);
         }
       }
-      if (!hre.IsNull())
-      {
-        for (jp = 1; jp < ip; jp++)
-        {
+      if (!hre.IsNull()) {
+        for (jp = 1; jp < ip; jp++) {
           occ::handle<StepData_SelectReal> sre = new StepData_SelectReal;
           sre->SetReal(hre->Value(jp));
           htr->SetValue(jp, sre);
         }
       }
-      if (!hst.IsNull())
-      {
-        for (jp = 1; jp < ip; jp++)
-        {
+      if (!hst.IsNull()) {
+        for (jp = 1; jp < ip; jp++) {
           htr->SetValue(jp, hst->Value(jp));
         }
       }
     }
-    //    Now, let's go: read the field and put it in place
-    //    What follows strongly resembles ReadAny ...
+    //    A present, faut y aller : lire le champ et le mettre en place
+    //    Ce qui suit ressemble fortement a ReadAny ...
 
-    switch (FT)
-    {
-      case Interface_ParamMisc:
-        break;
-      case Interface_ParamInteger: {
-        occ::handle<StepData_SelectInt> sin = new StepData_SelectInt;
-        sin->SetInteger(atoi(str));
-        htr->SetValue(ip, sin);
-        break;
-      }
-      case Interface_ParamReal: {
-        occ::handle<StepData_SelectReal> sre = new StepData_SelectReal;
-        sre->SetReal(Interface_FileReaderData::Fastof(str));
-        break;
-        // htr->SetValue (ip,sre); break; svv #2: unreachable
-      }
-      case Interface_ParamIdent:
-        htr->SetValue(ip, BoundEntity(FP.EntityNumber()));
-        break;
-      case Interface_ParamVoid:
-        break;
-      case Interface_ParamEnum: {
-        occ::handle<StepData_SelectInt>   sin;
-        occ::handle<StepData_SelectNamed> sna;
-        int                               logic = -1;
-        // PTV 16.09.2000
-        // set the default value of StepData_Logical
-        StepData_Logical slog = StepData_LUnknown;
-        if (str[0] == '.' && str[2] == '.' && str[3] == '\0')
-        {
-          if (str[1] == 'F')
-          {
-            slog  = StepData_LFalse;
-            logic = 0;
-          }
-          else if (str[1] == 'T')
-          {
-            slog  = StepData_LTrue;
-            logic = 1;
-          }
-          else if (str[1] == 'U')
-          {
-            slog  = StepData_LUnknown;
-            logic = 2;
-          }
-        }
-        if (logic >= 0)
-        {
-          sin = new StepData_SelectInt;
-          sin->SetLogical(slog);
-          htr->SetValue(ip, sin);
-        }
-        else
-        {
-          sna = new StepData_SelectNamed;
-          sna->SetEnum(logic, str);
-          htr->SetValue(ip, sna);
-        }
-        break;
-      }
-      case Interface_ParamLogical:
-        break;
-      case Interface_ParamText: {
-        occ::handle<TCollection_HAsciiString> txt = new TCollection_HAsciiString(str);
-        cleanText(txt);
-        htr->SetValue(ip, txt);
-        break;
-      }
-      case Interface_ParamSub: {
-        occ::handle<Standard_Transient> sub;
-        int                             nent = FP.EntityNumber();
-        int                             kind = ReadSub(nent, mess, ach, descr, sub);
-        if (kind < 0)
-          break;
-        htr->SetValue(ip, sub);
-        break;
-      }
-      case Interface_ParamHexa:
-        break;
-      case Interface_ParamBinary:
-        break;
-      default:
-        break;
+    switch (FT) {
+    case Interface_ParamMisc: break;
+    case Interface_ParamInteger: {
+      occ::handle<StepData_SelectInt> sin = new StepData_SelectInt;
+      sin->SetInteger(atoi(str));
+      htr->SetValue(ip, sin); break;
     }
-    return -1;
-  }
-  return 8; // for Any
-}
-
-//=================================================================================================
-
-bool StepData_StepReaderData::ReadMember(const int                           num,
-                                         const int                           nump,
-                                         const char* const                   mess,
-                                         occ::handle<Interface_Check>&       ach,
-                                         occ::handle<StepData_SelectMember>& val) const
-{
-  occ::handle<Standard_Transient> v = val;
-  occ::handle<StepData_PDescr>    nuldescr;
-  if (v.IsNull())
-  {
-    return ReadAny(num, nump, mess, ach, nuldescr, v)
-           && !(val = occ::down_cast<StepData_SelectMember>(v)).IsNull();
-  }
-  bool res = ReadAny(num, nump, mess, ach, nuldescr, v);
-  if (v == val)
-    return res;
-  //   changement -> refus
-  char        txtmes[200];
-  const char* errmess = "Parameter n0.%d (%s) : does not match SELECT clause";
-  Sprintf(txtmes, errmess, nump, mess);
-  ach->AddFail(txtmes, errmess);
-  return false;
-}
-
-//=================================================================================================
-
-bool StepData_StepReaderData::ReadField(const int                           num,
-                                        const int                           nump,
-                                        const char* const                   mess,
-                                        occ::handle<Interface_Check>&       ach,
-                                        const occ::handle<StepData_PDescr>& descr,
-                                        StepData_Field&                     fild) const
-{
-  const Interface_FileParameter&  FP  = Param(num, nump);
-  const char*                     str = FP.CValue();
-  bool                            OK  = true;
-  int                             nent, kind;
-  occ::handle<Standard_Transient> sub;
-  Interface_ParamType             FT = FP.ParamType();
-  switch (FT)
-  {
-    case Interface_ParamMisc:
-      OK = false;
+    case Interface_ParamReal: {
+      occ::handle<StepData_SelectReal> sre = new StepData_SelectReal;
+      sre->SetReal(Interface_FileReaderData::Fastof(str));   break;
+      //htr->SetValue (ip,sre); break; svv #2: unreachable
+    }
+    case Interface_ParamIdent: htr->SetValue(ip, BoundEntity(FP.EntityNumber()));  break;
+    case Interface_ParamVoid: break;
+    case Interface_ParamEnum: {
+      occ::handle<StepData_SelectInt>   sin;
+      occ::handle<StepData_SelectNamed> sna;
+      int logic = -1;
+      // PTV 16.09.2000
+      // set the default value of StepData_Logical
+      StepData_Logical slog = StepData_LUnknown;
+      if (str[0] == '.' && str[2] == '.' && str[3] == '\0') {
+        if (str[1] == 'F') { slog = StepData_LFalse;    logic = 0; }
+        else if (str[1] == 'T') { slog = StepData_LTrue;     logic = 1; }
+        else if (str[1] == 'U') { slog = StepData_LUnknown;  logic = 2; }
+      }
+      if (logic >= 0)
+	{ sin = new StepData_SelectInt; sin->SetLogical(slog); htr->SetValue(ip,sin); }
+      else { sna = new StepData_SelectNamed;
+	     sna->SetEnum (logic,str); htr->SetValue (ip,sna);  }
       break;
-    case Interface_ParamInteger:
-      fild.SetInteger(atoi(str));
-      break;
-    case Interface_ParamReal:
-      fild.SetReal(Interface_FileReaderData::Fastof(str));
-      break;
-    case Interface_ParamIdent:
-      nent = FP.EntityNumber();
-      if (nent > 0)
-        fild.SetEntity(BoundEntity(nent));
-      break;
-    case Interface_ParamVoid:
-      break;
+    }
+    case Interface_ParamLogical: break;
     case Interface_ParamText: {
       occ::handle<TCollection_HAsciiString> txt = new TCollection_HAsciiString(str);
       cleanText(txt);
-      fild.Set(txt);
+      htr->SetValue(ip, txt);
       break;
     }
-    case Interface_ParamEnum:
-      if (!strcmp(str, ".T."))
-        fild.SetLogical(StepData_LTrue);
-      else if (!strcmp(str, ".F."))
-        fild.SetLogical(StepData_LFalse);
-      else if (!strcmp(str, ".U."))
-        fild.SetLogical(StepData_LUnknown);
-      else
-        fild.SetEnum(-1, str);
-      break;
-    case Interface_ParamLogical:
-      OK = false;
-      break;
-    case Interface_ParamSub:
-      nent = FP.EntityNumber();
-      kind = ReadSub(nent, mess, ach, descr, sub);
-      if (kind < 0)
-        break;
-      fild.Clear(kind);
-      fild.Set(sub);
-      break;
-    case Interface_ParamHexa:
-      OK = false;
-      break;
-    case Interface_ParamBinary:
-      OK = false;
-      break;
-    default:
-      OK = false;
-      break;
+    case Interface_ParamSub: {
+      occ::handle<Standard_Transient> sub;
+      int nent = FP.EntityNumber();
+      int kind = ReadSub(nent, mess, ach, descr, sub);   if (kind < 0) break;
+      htr->SetValue(ip, sub);  break;
+    }
+    case Interface_ParamHexa: break;
+    case Interface_ParamBinary: break;
+    default: break;
+    }
+    return -1;
+  }
+  return 8;  // pour Any
+}
+
+//=======================================================================
+//function : ReadMember
+//purpose  : 
+//=======================================================================
+
+bool StepData_StepReaderData::ReadMember(const int num,
+  const int nump,
+  const char* const mess,
+  occ::handle<Interface_Check>& ach,
+  occ::handle<StepData_SelectMember>& val) const
+{
+  occ::handle<Standard_Transient> v = val;
+  occ::handle<StepData_PDescr> nuldescr;
+  if (v.IsNull())
+  {
+    return ReadAny(num, nump, mess, ach, nuldescr, v) &&
+      !(val = occ::down_cast<StepData_SelectMember>(v)).IsNull();
+  }
+  bool res = ReadAny(num, nump, mess, ach, nuldescr, v);
+  if (v == val) return res;
+  //   changement -> refus
+  occ::handle<String> errmess =
+    new String("Parameter n0.%d (%s) : does not match SELECT clause");
+  sprintf(txtmes, errmess->ToCString(), nump, mess);
+  ach->AddFail(txtmes, errmess->ToCString());
+  return false;
+}
+
+//=======================================================================
+//function : ReadField
+//purpose  : 
+//=======================================================================
+
+bool StepData_StepReaderData::ReadField(const int num,
+  const int nump,
+  const char* const mess,
+  occ::handle<Interface_Check>& ach,
+  const occ::handle<StepData_PDescr>& descr,
+  StepData_Field& fild) const
+{
+  const Interface_FileParameter& FP = Param(num, nump);
+  const char* str = FP.CValue();
+  bool OK = true;
+  int nent, kind;
+  occ::handle<TCollection_HAsciiString> txt;
+  occ::handle<Standard_Transient> sub;
+  Interface_ParamType FT = FP.ParamType();
+  switch (FT) {
+  case Interface_ParamMisc: OK = false;  break;
+  case Interface_ParamInteger: fild.SetInteger(atoi(str)); break;
+  case Interface_ParamReal:
+    fild.SetReal(Interface_FileReaderData::Fastof(str));   break;
+  case Interface_ParamIdent:
+    nent = FP.EntityNumber();
+    if (nent > 0) fild.SetEntity(BoundEntity(nent));
+    break;
+  case Interface_ParamVoid:  break;
+  case Interface_ParamText:
+    txt = new TCollection_HAsciiString(str);
+    cleanText(txt);
+    fild.Set(txt);
+    break;
+  case Interface_ParamEnum:
+    if (!strcmp(str, ".T.")) fild.SetLogical(StepData_LTrue);
+    else if (!strcmp(str, ".F.")) fild.SetLogical(StepData_LFalse);
+    else if (!strcmp(str, ".U.")) fild.SetLogical(StepData_LUnknown);
+    else    fild.SetEnum(-1, str);
+    break;
+  case Interface_ParamLogical: OK = false;  break;
+  case Interface_ParamSub:
+    nent = FP.EntityNumber();
+    kind = ReadSub(nent, mess, ach, descr, sub);   if (kind < 0) break;
+    fild.Clear(kind);  fild.Set(sub);      break;
+  case Interface_ParamHexa: OK = false;  break;
+  case Interface_ParamBinary: OK = false;  break;
+  default:  OK = false;  break;
   }
 
-  if (!OK)
-  {
-    if (!strcmp(str, "*"))
-      fild.SetDerived();
+  if (!OK) {
+    if (!strcmp(str, "*")) fild.SetDerived();
   }
   return true;
 }
 
-//=================================================================================================
+//=======================================================================
+//function : ReadList
+//purpose  : 
+//=======================================================================
 
-bool StepData_StepReaderData::ReadList(const int                            num,
-                                       occ::handle<Interface_Check>&        ach,
-                                       const occ::handle<StepData_ESDescr>& descr,
-                                       StepData_FieldList&                  list) const
+bool StepData_StepReaderData::ReadList(const int num,
+  occ::handle<Interface_Check>& ach,
+  const occ::handle<StepData_ESDescr>& descr,
+  StepData_FieldList& list) const
 {
   // controler nbs egaux
   int i, nb = list.NbFields();
-  if (!CheckNbParams(num, nb, ach, descr->TypeName()))
-    return false;
-  for (i = 1; i <= nb; i++)
-  {
-    occ::handle<StepData_PDescr> pde  = descr->Field(i);
-    StepData_Field&              fild = list.CField(i);
+  if (!CheckNbParams(num, nb, ach, descr->TypeName())) return false;
+  for (i = 1; i <= nb; i++) {
+    occ::handle<StepData_PDescr> pde = descr->Field(i);
+    StepData_Field& fild = list.CField(i);
     ReadField(num, i, pde->Name(), ach, pde, fild);
   }
   return true;
 }
 
-//=================================================================================================
+//=======================================================================
+//function : ReadAny
+//purpose  : 
+//=======================================================================
 
-bool StepData_StepReaderData::ReadAny(const int                           num,
-                                      const int                           nump,
-                                      const char* const                   mess,
-                                      occ::handle<Interface_Check>&       ach,
-                                      const occ::handle<StepData_PDescr>& descr,
-                                      occ::handle<Standard_Transient>&    val) const
+bool StepData_StepReaderData::ReadAny(const int num,
+  const int nump,
+  const char* const mess,
+  occ::handle<Interface_Check>& ach,
+  const occ::handle<StepData_PDescr>& descr,
+  occ::handle<Standard_Transient>& val) const
 {
-  const Interface_FileParameter& FP  = Param(num, nump);
-  const char*                    str = FP.CValue();
-  Interface_ParamType            FT  = FP.ParamType();
+  const Interface_FileParameter& FP = Param(num, nump);
+  const char*    str = FP.CValue();
+  Interface_ParamType FT = FP.ParamType();
 
-  //    Now, let's go: read the field and put it in place
-  switch (FT)
-  {
-    case Interface_ParamMisc:
-      break;
-    case Interface_ParamInteger: {
-      if (!val.IsNull())
-      {
-        DeclareAndCast(StepData_SelectMember, sm, val);
-        sm->SetReal(Interface_FileReaderData::Fastof(str));
-        return true;
-      }
-      occ::handle<StepData_SelectInt> sin = new StepData_SelectInt;
-      sin->SetInteger(atoi(str));
-      val = sin;
+  //    A present, faut y aller : lire le champ et le mettre en place
+  switch (FT) {
+  case Interface_ParamMisc: break;
+  case Interface_ParamInteger: {
+    if (!val.IsNull()) {
+      DeclareAndCast(StepData_SelectMember, sm, val);
+      sm->SetReal(Interface_FileReaderData::Fastof(str));
       return true;
     }
-    case Interface_ParamReal: {
-      if (!val.IsNull())
-      {
-        DeclareAndCast(StepData_SelectMember, sm, val);
-        sm->SetReal(Interface_FileReaderData::Fastof(str));
-        return true;
-      }
-      occ::handle<StepData_SelectReal> sre = new StepData_SelectReal;
-      sre->SetReal(Interface_FileReaderData::Fastof(str));
-      val = sre;
+    occ::handle<StepData_SelectInt> sin = new StepData_SelectInt;
+    sin->SetInteger(atoi(str));
+    val = sin;
+    return true;
+  }
+  case Interface_ParamReal: {
+    if (!val.IsNull()) {
+      DeclareAndCast(StepData_SelectMember, sm, val);
+      sm->SetReal(Interface_FileReaderData::Fastof(str));
       return true;
     }
-    case Interface_ParamIdent: {
-      int nent = FP.EntityNumber();
-      if (nent > 0)
-        val = BoundEntity(nent);
-      return (!val.IsNull());
-    }
-    case Interface_ParamVoid:
-      break;
-    case Interface_ParamEnum: {
-      occ::handle<StepData_SelectMember> sm;
-      if (!val.IsNull())
-        sm = GetCasted(StepData_SelectMember, val);
-      occ::handle<StepData_SelectInt>   sin;
-      occ::handle<StepData_SelectNamed> sna;
-      int                               logic = -1;
+    occ::handle<StepData_SelectReal> sre = new StepData_SelectReal;
+    sre->SetReal(Interface_FileReaderData::Fastof(str));
+    val = sre;
+    return true;
+  }
+  case Interface_ParamIdent: {
+    int nent = FP.EntityNumber();
+    if (nent > 0) val = BoundEntity(nent);
+    return (!val.IsNull());
+  }
+  case Interface_ParamVoid: break;
+  case Interface_ParamEnum: {
+    occ::handle<StepData_SelectMember> sm;
+    if (!val.IsNull())  sm = GetCasted(StepData_SelectMember, val);
+    occ::handle<StepData_SelectInt>   sin;
+    occ::handle<StepData_SelectNamed> sna;
+    int logic = -1;
 
-      // PTV 16.09.2000
-      // set the default value of StepData_Logical
-      StepData_Logical slog = StepData_LUnknown;
-      if (str[0] == '.' && str[2] == '.' && str[3] == '\0')
-      {
-        if (str[1] == 'F')
-        {
-          slog  = StepData_LFalse;
-          logic = 0;
-        }
-        else if (str[1] == 'T')
-        {
-          slog  = StepData_LTrue;
-          logic = 1;
-        }
-        else if (str[1] == 'U')
-        {
-          slog  = StepData_LUnknown;
-          logic = 2;
-        }
+    // PTV 16.09.2000
+    // set the default value of StepData_Logical
+    StepData_Logical slog = StepData_LUnknown;
+    if (str[0] == '.' && str[2] == '.' && str[3] == '\0') {
+      if (str[1] == 'F') { slog = StepData_LFalse;    logic = 0; }
+      else if (str[1] == 'T') { slog = StepData_LTrue;     logic = 1; }
+      else if (str[1] == 'U') { slog = StepData_LUnknown;  logic = 2; }
+    }
+    if (logic >= 0) {
+      if (!sm.IsNull()) sm->SetLogical(slog);
+      else {
+        sin = new StepData_SelectInt; val = sin;
+        sin->SetLogical(slog);
       }
-      if (logic >= 0)
-      {
-        if (!sm.IsNull())
-          sm->SetLogical(slog);
-        else
-        {
-          sin = new StepData_SelectInt;
-          val = sin;
-          sin->SetLogical(slog);
-        }
+    }
+    else {
+      if (!sm.IsNull()) sm->SetEnum(logic, str);
+      else {
+        sna = new StepData_SelectNamed;  val = sna;  // Named sans nom...
+        sna->SetEnum(logic, str);
       }
-      else
-      {
-        if (!sm.IsNull())
-          sm->SetEnum(logic, str);
-        else
-        {
-          sna = new StepData_SelectNamed;
-          val = sna; // Named sans nom...
-          sna->SetEnum(logic, str);
-        }
-      } // -> Select general
+    }        // -> Select general
+    return true;
+  }
+  case Interface_ParamLogical: break;
+  case Interface_ParamText: {
+    occ::handle<TCollection_HAsciiString> txt = new TCollection_HAsciiString(str);
+    cleanText(txt);
+
+    // PDN May 2000: for reading SOURCE_ITEM (external references)
+    if (!val.IsNull()) {
+      DeclareAndCast(StepData_SelectMember, sm, val);
+      sm->SetString(txt->ToCString());
       return true;
     }
-    case Interface_ParamLogical:
-      break;
-    case Interface_ParamText: {
-      occ::handle<TCollection_HAsciiString> txt = new TCollection_HAsciiString(str);
-      cleanText(txt);
 
-      // PDN May 2000: for reading SOURCE_ITEM (external references)
-      if (!val.IsNull())
-      {
-        DeclareAndCast(StepData_SelectMember, sm, val);
-        sm->SetString(txt->ToCString());
-        return true;
-      }
-
-      val = txt;
-      return true;
-    }
-    case Interface_ParamSub: {
-      int numsub = SubListNumber(num, nump, false);
-      int nbp    = NbParams(numsub);
-      if (nbp == 0)
-        return false; // empty list = Handle Null
-      const TCollection_AsciiString& rectyp = RecordType(numsub);
-      if (nbp == 1 && rectyp.ToCString()[0] != '(')
-      {
-        //  SelectNamed because Field !!!
-        // skl 15.01.2003 (for members with array of real)
-        DeclareAndCast(StepData_SelectArrReal, sma, val);
-        if (!sma.IsNull())
-        {
-          int numsub2 = SubListNumber(numsub, 1, false);
-          int nbp2    = NbParams(numsub2);
-          if (nbp2 > 1)
-          {
-            if (Param(numsub2, 1).ParamType() == Interface_ParamReal)
-            {
-              if (!sma->SetName(rectyp.ToCString()))
-                return false;
-              occ::handle<NCollection_HSequence<double>> aSeq = new NCollection_HSequence<double>;
-              for (int i = 1; i <= nbp2; i++)
-              {
-                if (Param(numsub2, i).ParamType() != Interface_ParamReal)
-                  continue;
-                occ::handle<Standard_Transient> asr = new StepData_SelectReal;
-                if (!ReadAny(numsub2, i, mess, ach, descr, asr))
-                  continue;
-                occ::handle<StepData_SelectReal> sm1 = occ::down_cast<StepData_SelectReal>(asr);
-                if (!sm1.IsNull())
-                  aSeq->Append(sm1->Real());
-              }
-              occ::handle<NCollection_HArray1<double>> anArr =
-                new NCollection_HArray1<double>(1, aSeq->Length());
-              for (int nr = 1; nr <= aSeq->Length(); nr++)
-              {
-                anArr->SetValue(nr, aSeq->Value(nr));
-              }
-              sma->SetArrReal(anArr);
-              return true;
+    val = txt;
+    return true;
+  }
+  case Interface_ParamSub: {
+    int numsub = SubListNumber(num, nump, false);
+    int nbp = NbParams(numsub);
+    if (nbp == 0) return false;    // liste vide = Handle Null
+    const TCollection_AsciiString& rectyp = RecordType(numsub);
+    if (nbp == 1 && rectyp.ToCString()[0] != '(') {
+      //  SelectNamed because Field !!!
+            // skl 15.01.2003 (for members with array of real)
+      DeclareAndCast(StepData_SelectArrReal, sma, val);
+      if (!sma.IsNull()) {
+        int numsub2 = SubListNumber(numsub, 1, false);
+        int nbp2 = NbParams(numsub2);
+        if (nbp2 > 1) {
+          if (Param(numsub2, 1).ParamType() == Interface_ParamReal) {
+            if (!sma->SetName(rectyp.ToCString())) return false;
+            occ::handle<TColStd_HSequenceOfReal> aSeq = new TColStd_HSequenceOfReal;
+            for (int i = 1; i <= nbp2; i++) {
+              if (Param(numsub2, i).ParamType() != Interface_ParamReal) continue;
+              occ::handle<Standard_Transient> asr = new StepData_SelectReal;
+              if (!ReadAny(numsub2, i, mess, ach, descr, asr)) continue;
+              occ::handle<StepData_SelectReal> sm1 = occ::down_cast<StepData_SelectReal>(asr);
+              if (!sm1.IsNull())
+                aSeq->Append(sm1->Real());
             }
+            occ::handle<TColStd_HArray1OfReal> anArr = new TColStd_HArray1OfReal(1, aSeq->Length());
+            for (int nr = 1; nr <= aSeq->Length(); nr++) {
+              anArr->SetValue(nr, aSeq->Value(nr));
+            }
+            sma->SetArrReal(anArr);
+            return true;
           }
         }
-        DeclareAndCast(StepData_SelectMember, sm, val);
-        if (sm.IsNull())
-        {
-          sm  = new StepData_SelectNamed;
-          val = sm;
-        }
-        if (!sm->SetName(rectyp.ToCString()))
-          return false; // loupe
-        return ReadAny(numsub, 1, mess, ach, descr, val);
       }
+      DeclareAndCast(StepData_SelectMember, sm, val);
+      if (sm.IsNull()) {
+        sm = new StepData_SelectNamed;
+        val = sm;
+      }
+      if (!sm->SetName(rectyp.ToCString())) return false;  // loupe
+      return ReadAny(numsub, 1, mess, ach, descr, val);
     }
-    default:
-      break;
+  }
+  default: break;
   }
   return false;
 }
 
 //  ....
 
-//=================================================================================================
+//=======================================================================
+//function : ReadXY
+//purpose  : 
+//=======================================================================
 
-bool StepData_StepReaderData::ReadXY(const int                     num,
-                                     const int                     nump,
-                                     const char* const             mess,
-                                     occ::handle<Interface_Check>& ach,
-                                     double&                       X,
-                                     double&                       Y) const
+bool StepData_StepReaderData::ReadXY(const int num,
+  const int nump,
+  const char* const mess,
+  occ::handle<Interface_Check>& ach,
+  double& X, double& Y) const
 {
-  char        txtmes[200];
-  const char* errmess = nullptr; // Null if no error
-  int         numsub  = SubListNumber(num, nump, false);
-  if (numsub != 0)
-  {
-    if (NbParams(numsub) == 2)
-    {
+  occ::handle<String> errmess;  // Null si pas d erreur
+  int numsub = SubListNumber(num, nump, false);
+  if (numsub != 0) {
+    if (NbParams(numsub) == 2) {
       const Interface_FileParameter& FPX = Param(numsub, 1);
-      if (FPX.ParamType() == Interface_ParamReal)
-        X = Interface_FileReaderData::Fastof(FPX.CValue());
-      else
-        errmess = "Parameter n0.%d (%s) : (X,Y) X not a Real";
+      if (FPX.ParamType() == Interface_ParamReal)  X =
+        Interface_FileReaderData::Fastof(FPX.CValue());
+      else errmess = new String("Parameter n0.%d (%s) : (X,Y) X not a Real");
 
       const Interface_FileParameter& FPY = Param(numsub, 2);
-      if (FPY.ParamType() == Interface_ParamReal)
-        Y = Interface_FileReaderData::Fastof(FPY.CValue());
-      else
-        errmess = "Parameter n0.%d (%s) : (X,Y) Y not a Real";
+      if (FPY.ParamType() == Interface_ParamReal)  Y =
+        Interface_FileReaderData::Fastof(FPY.CValue());
+      else errmess = new String("Parameter n0.%d (%s) : (X,Y) Y not a Real");
+
     }
-    else
-      errmess = "Parameter n0.%d (%s) : (X,Y) has not 2 params";
+    else errmess = new String("Parameter n0.%d (%s) : (X,Y) has not 2 params");
   }
-  else
-    errmess = "Parameter n0.%d (%s) : (X,Y) not a SubList";
+  else errmess = new String("Parameter n0.%d (%s) : (X,Y) not a SubList");
 
-  if (errmess == nullptr)
-    return true;
-
-  Sprintf(txtmes, errmess, nump, mess);
-  ach->AddFail(txtmes, errmess);
+  if (errmess.IsNull()) return true;
+  sprintf(txtmes, errmess->ToCString(), nump, mess);
+  ach->AddFail(txtmes, errmess->ToCString());
   return false;
 }
 
-//=================================================================================================
+//=======================================================================
+//function : ReadXYZ
+//purpose  : 
+//=======================================================================
 
-bool StepData_StepReaderData::ReadXYZ(const int                     num,
-                                      const int                     nump,
-                                      const char* const             mess,
-                                      occ::handle<Interface_Check>& ach,
-                                      double&                       X,
-                                      double&                       Y,
-                                      double&                       Z) const
+bool StepData_StepReaderData::ReadXYZ(const int num,
+  const int nump,
+  const char* const mess,
+  occ::handle<Interface_Check>& ach,
+  double& X, double& Y,
+  double& Z) const
 {
-  char        txtmes[200];
-  const char* errmess = nullptr; // Null if no error
-  int         numsub  = SubListNumber(num, nump, false);
-  if (numsub != 0)
-  {
-    if (NbParams(numsub) == 3)
-    {
+  occ::handle<String> errmess;  // Null si pas d erreur
+  int numsub = SubListNumber(num, nump, false);
+  if (numsub != 0) {
+    if (NbParams(numsub) == 3) {
       const Interface_FileParameter& FPX = Param(numsub, 1);
-      if (FPX.ParamType() == Interface_ParamReal)
-        X = Interface_FileReaderData::Fastof(FPX.CValue());
-      else
-        errmess = "Parameter n0.%d (%s) : (X,Y,Z) X not a Real";
+      if (FPX.ParamType() == Interface_ParamReal)  X =
+        Interface_FileReaderData::Fastof(FPX.CValue());
+      else errmess = new String("Parameter n0.%d (%s) : (X,Y,Z) X not a Real");
 
       const Interface_FileParameter& FPY = Param(numsub, 2);
-      if (FPY.ParamType() == Interface_ParamReal)
-        Y = Interface_FileReaderData::Fastof(FPY.CValue());
-      else
-        errmess = "Parameter n0.%d (%s) : (X,Y,Z) Y not a Real";
+      if (FPY.ParamType() == Interface_ParamReal)  Y =
+        Interface_FileReaderData::Fastof(FPY.CValue());
+      else errmess = new String("Parameter n0.%d (%s) : (X,Y,Z) Y not a Real");
 
       const Interface_FileParameter& FPZ = Param(numsub, 3);
-      if (FPZ.ParamType() == Interface_ParamReal)
-        Z = Interface_FileReaderData::Fastof(FPZ.CValue());
-      else
-        errmess = "Parameter n0.%d (%s) : (X,Y,Z) Z not a Real";
+      if (FPZ.ParamType() == Interface_ParamReal)  Z =
+        Interface_FileReaderData::Fastof(FPZ.CValue());
+      else errmess = new String("Parameter n0.%d (%s) : (X,Y,Z) Z not a Real");
+
     }
-    else
-      errmess = "Parameter n0.%d (%s) : (X,Y,Z) has not 3 params";
+    else errmess = new String("Parameter n0.%d (%s) : (X,Y,Z) has not 3 params");
   }
-  else
-    errmess = "Parameter n0.%d (%s) : (X,Y,Z) not a SubList";
+  else errmess = new String("Parameter n0.%d (%s) : (X,Y,Z) not a SubList");
 
-  if (errmess == nullptr)
-    return true;
-
-  Sprintf(txtmes, errmess, nump, mess);
-  ach->AddFail(txtmes, errmess);
+  if (errmess.IsNull()) return true;
+  sprintf(txtmes, errmess->ToCString(), nump, mess);
+  ach->AddFail(txtmes, errmess->ToCString());
   return false;
 }
 
-//=================================================================================================
+//=======================================================================
+//function : ReadReal
+//purpose  : 
+//=======================================================================
 
-bool StepData_StepReaderData::ReadReal(const int                     num,
-                                       const int                     nump,
-                                       const char* const             mess,
-                                       occ::handle<Interface_Check>& ach,
-                                       double&                       val) const
+bool StepData_StepReaderData::ReadReal(const int num,
+  const int nump,
+  const char* const mess,
+  occ::handle<Interface_Check>& ach,
+  double& val) const
 {
-  char        txtmes[200];
-  const char* errmess = nullptr; // Null si pas d erreur
-  if (nump > 0 && nump <= NbParams(num))
-  {
+  occ::handle<String> errmess;  // Null si pas d erreur
+  if (nump > 0 && nump <= NbParams(num)) {
     const Interface_FileParameter& FP = Param(num, nump);
-    if (FP.ParamType() == Interface_ParamReal || FP.ParamType() == Interface_ParamInteger)
+    if (FP.ParamType() == Interface_ParamReal || FP.ParamType() == Interface_ParamInteger) 
       val = Interface_FileReaderData::Fastof(FP.CValue());
-    else
-      errmess = "Parameter n0.%d (%s) not a Real";
+    else errmess = new String("Parameter n0.%d (%s) not a Real");
   }
-  else
-    errmess = "Parameter n0.%d (%s) absent";
+  else errmess = new String("Parameter n0.%d (%s) absent");
 
-  if (errmess == nullptr)
-    return true;
-
-  Sprintf(txtmes, errmess, nump, mess);
-  ach->AddFail(txtmes, errmess);
+  if (errmess.IsNull()) return true;
+  sprintf(txtmes, errmess->ToCString(), nump, mess);
+  ach->AddFail(txtmes, errmess->ToCString());
   return false;
 }
 
 //  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##
 
-//=================================================================================================
+//=======================================================================
+//function : ReadEntity
+//purpose  : 
+//=======================================================================
 
-bool StepData_StepReaderData::ReadEntity(const int                         num,
-                                         const int                         nump,
-                                         const char* const                 mess,
-                                         occ::handle<Interface_Check>&     ach,
-                                         const occ::handle<Standard_Type>& atype,
-                                         occ::handle<Standard_Transient>&  ent) const
+bool StepData_StepReaderData::ReadEntity(const int num,
+  const int nump,
+  const char* const mess,
+  occ::handle<Interface_Check>& ach,
+  const occ::handle<Standard_Type>& atype,
+  occ::handle<Standard_Transient>& ent) const
 {
-  char        txtmes[200];
-  const char* errmess = nullptr; // Null if no error
-  if (nump > 0 && nump <= NbParams(num))
-  {
-    const Interface_FileParameter& FP   = Param(num, nump);
-    int                            nent = FP.EntityNumber();
-    if (FP.ParamType() == Interface_ParamIdent)
-    {
-      if (nent > 0)
-      {
-        occ::handle<Standard_Transient> entent = BoundEntity(nent);
+  occ::handle<String> errmess;  // Null si pas d erreur
+  bool warn = false;
+  if (nump > 0 && nump <= NbParams(num)) {
+    const Interface_FileParameter& FP = Param(num, nump);
+    int nent = FP.EntityNumber();
+    if (FP.ParamType() == Interface_ParamIdent) {
+      warn = (acceptvoid > 0);
+      if (nent > 0) {
+	occ::handle<Standard_Transient> entent = BoundEntity(nent);
         if (entent.IsNull() || !entent->IsKind(atype))
         {
-          errmess = "Parameter n0.%d (%s) : Entity has illegal type";
+          errmess = new String("Parameter n0.%d (%s) : Entity has illegal type");
           if (!entent.IsNull() && entent->IsKind(STANDARD_TYPE(StepData_UndefinedEntity)))
             ent = entent;
         }
-        else
-          ent = entent;
+	else ent = entent;
       }
-      else
-        errmess = "Parameter n0.%d (%s) : Unresolved reference";
+      else errmess = new String("Parameter n0.%d (%s) : Unresolved reference");
     }
-    else
-    {
-      errmess = "Parameter n0.%d (%s) not an Entity";
+    else {
+      if (acceptvoid && FP.ParamType() == Interface_ParamVoid) warn = true;
+      errmess = new String("Parameter n0.%d (%s) not an Entity");
     }
   }
-  else
-  {
-    errmess = "Parameter n0.%d (%s) absent";
+  else {
+    warn = (acceptvoid > 0);
+    errmess = new String("Parameter n0.%d (%s) absent");
   }
 
-  if (errmess == nullptr)
-    return true;
-
-  Sprintf(txtmes, errmess, nump, mess);
-  ach->AddFail(txtmes, errmess);
+  if (errmess.IsNull()) return true;
+  sprintf(txtmes, errmess->ToCString(), nump, mess);
+  if (warn) ach->AddWarning(txtmes, errmess->ToCString());
+  else ach->AddFail(txtmes, errmess->ToCString());
   return false;
 }
 
-//=================================================================================================
+//=======================================================================
+//function : ReadEntity
+//purpose  : 
+//=======================================================================
 
-bool StepData_StepReaderData::ReadEntity(const int                     num,
-                                         const int                     nump,
-                                         const char* const             mess,
-                                         occ::handle<Interface_Check>& ach,
-                                         StepData_SelectType&          sel) const
+bool StepData_StepReaderData::ReadEntity(const int num,
+  const int nump,
+  const char* const mess,
+  occ::handle<Interface_Check>& ach,
+  StepData_SelectType& sel) const
 {
-  char        txtmes[200];
-  const char* errmess = nullptr; // Null if no error
-  if (nump > 0 && nump <= NbParams(num))
-  {
-    const Interface_FileParameter& FP   = Param(num, nump);
-    int                            nent = FP.EntityNumber();
-    if (FP.ParamType() == Interface_ParamIdent)
-    {
-      if (nent > 0)
-      {
-        occ::handle<Standard_Transient> entent = BoundEntity(nent);
+  occ::handle<String> errmess;  // Null si pas d erreur
+  bool warn = false;
+  if (nump > 0 && nump <= NbParams(num)) {
+    const Interface_FileParameter& FP = Param(num, nump);
+    int nent = FP.EntityNumber();
+    if (FP.ParamType() == Interface_ParamIdent) {
+      warn = (acceptvoid > 0);
+      if (nent > 0) {
+	occ::handle<Standard_Transient> entent = BoundEntity(nent);
         if (!sel.Matches(entent))
         {
-          errmess = "Parameter n0.%d (%s) : Entity has illegal type";
-          // fot not supported STEP entity
+          errmess = new String("Parameter n0.%d (%s) : Entity has illegal type");
+          //fot not supported STEP entity
           if (!entent.IsNull() && entent->IsKind(STANDARD_TYPE(StepData_UndefinedEntity)))
             sel.SetValue(entent);
         }
-        else
+	else
           sel.SetValue(entent);
       }
       else
-        errmess = "Parameter n0.%d (%s) : Unresolved reference";
+        errmess = new String("Parameter n0.%d (%s) : Unresolved reference");
     }
-    else if (FP.ParamType() == Interface_ParamVoid)
-    {
-      errmess = "Parameter n0.%d (%s) not an Entity";
+    else if (FP.ParamType() == Interface_ParamVoid) {
+      if (acceptvoid) warn = true;
+      errmess = new String("Parameter n0.%d (%s) not an Entity");
     }
-    else
-    {
-      // Remaining case: we are actually interested in the SelectMember ...
+    else {
+      // Cas restant : on s interesse en fait au SelectMember ...
       occ::handle<Standard_Transient> sm = sel.NewMember();
-      // SelectMember which performs this role. Can be specialized
+      // SelectMember qui assure ce role. Peut etre specialise
       if (!ReadAny(num, nump, mess, ach, sel.Description(), sm))
-        errmess = "Parameter n0.%d (%s) : could not be read";
+        errmess = new String("Parameter n0.%d (%s) : could not be read");
       if (!sel.Matches(sm))
-        errmess = "Parameter n0.%d (%s) : illegal parameter type";
+        errmess = new String("Parameter n0.%d (%s) : illegal parameter type");
       else
         sel.SetValue(sm);
     }
   }
-  else
-  {
-    errmess = "Parameter n0.%d (%s) absent";
+  else {
+    warn = (acceptvoid > 0);
+    errmess = new String("Parameter n0.%d (%s) absent");
   }
 
-  if (errmess == nullptr)
-    return true;
-
-  Sprintf(txtmes, errmess, nump, mess);
-  ach->AddFail(txtmes, errmess);
+  if (errmess.IsNull()) return true;
+  sprintf(txtmes, errmess->ToCString(), nump, mess);
+  if (warn) ach->AddWarning(txtmes, errmess->ToCString());
+  else ach->AddFail(txtmes, errmess->ToCString());
   return false;
 }
 
 //  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##
 
-//=================================================================================================
+//=======================================================================
+//function : ReadInteger
+//purpose  : 
+//=======================================================================
 
-bool StepData_StepReaderData::ReadInteger(const int                     num,
-                                          const int                     nump,
-                                          const char* const             mess,
-                                          occ::handle<Interface_Check>& ach,
-                                          int&                          val) const
+bool StepData_StepReaderData::ReadInteger(const int num,
+  const int nump,
+  const char* const mess,
+  occ::handle<Interface_Check>& ach,
+  int& val) const
 {
-  char        txtmes[200];
-  const char* errmess = nullptr; // Null if no error
-  if (nump > 0 && nump <= NbParams(num))
-  {
+  occ::handle<String> errmess;  // Null si pas d erreur
+  bool warn = false;
+  if (nump > 0 && nump <= NbParams(num)) {
     const Interface_FileParameter& FP = Param(num, nump);
     if (FP.ParamType() == Interface_ParamInteger)
       val = atoi(FP.CValue());
     else if (FP.ParamType() == Interface_ParamReal)
     {
-      val     = static_cast<int>(std::round(Interface_FileReaderData::Fastof(FP.CValue())));
-      errmess = "Parameter n0.%d (%s) was rounded";
+      val = static_cast<int>(std::round(Interface_FileReaderData::Fastof(FP.CValue())));
+      if (acceptvoid) warn = true;
+      errmess = new String("Parameter n0.%d (%s) was rounded");
     }
-    if (FP.ParamType() != Interface_ParamInteger && FP.ParamType() != Interface_ParamReal)
-      errmess = "Parameter n0.%d (%s) not an Integer";
+    if (FP.ParamType() != Interface_ParamInteger &&
+        FP.ParamType() != Interface_ParamReal)
+      errmess = new String("Parameter n0.%d (%s) not an Integer");
   }
-  else
-    errmess = "Parameter n0.%d (%s) absent";
+  else errmess = new String("Parameter n0.%d (%s) absent");
 
-  if (errmess == nullptr)
-    return true;
-
-  Sprintf(txtmes, errmess, nump, mess);
-  ach->AddFail(txtmes, errmess);
+  if (errmess.IsNull()) return true;
+  sprintf(txtmes, errmess->ToCString(), nump, mess);
+  if (warn) ach->AddWarning(txtmes, errmess->ToCString());
+  else ach->AddFail(txtmes, errmess->ToCString());
   return false;
 }
 
-//=================================================================================================
+//=======================================================================
+//function : ReadBoolean
+//purpose  : 
+//=======================================================================
 
-bool StepData_StepReaderData::ReadBoolean(const int                     num,
-                                          const int                     nump,
-                                          const char* const             mess,
-                                          occ::handle<Interface_Check>& ach,
-                                          bool&                         flag) const
+bool StepData_StepReaderData::ReadBoolean(const int num,
+  const int nump,
+  const char* const mess,
+  occ::handle<Interface_Check>& ach,
+  bool& flag) const
 {
-  char txtmes[200];
-  flag                = true;
-  const char* errmess = nullptr; // Null si pas d erreur
-  if (nump > 0 && nump <= NbParams(num))
-  {
+  flag = true;
+  occ::handle<String> errmess;  // Null si pas d erreur
+  if (nump > 0 && nump <= NbParams(num)) {
     const Interface_FileParameter& FP = Param(num, nump);
-    if (FP.ParamType() == Interface_ParamEnum)
-    {
+    if (FP.ParamType() == Interface_ParamEnum) {
       const char* txt = FP.CValue();
-      if (!strcmp(txt, ".T."))
-        flag = true;
-      else if (!strcmp(txt, ".F."))
-        flag = false;
-      else
-        errmess = "Parameter n0.%d (%s) : Incorrect Boolean Value. It was set to true";
+      if (!strcmp(txt, ".T.")) flag = true;
+      else if (!strcmp(txt, ".F.")) flag = false;
+      else errmess = new String("Parameter n0.%d (%s) : Incorrect Boolean Value. It was set to true");
     }
-    else
-      errmess = "Parameter n0.%d (%s) not a Boolean. It was set to true";
+    else errmess = new String("Parameter n0.%d (%s) not a Boolean. It was set to true");
   }
-  else
-    errmess = "Parameter n0.%d (%s) absent.It was set to true";
+  else errmess = new String("Parameter n0.%d (%s) absent.It was set to true");
 
-  if (errmess == nullptr)
-    return true;
-
-  Sprintf(txtmes, errmess, nump, mess);
-  ach->AddFail(txtmes, errmess);
+  if (errmess.IsNull()) return true;
+  sprintf(txtmes, errmess->ToCString(), nump, mess);
+  ach->AddFail(txtmes, errmess->ToCString());
   return false;
 }
 
-//=================================================================================================
+//=======================================================================
+//function : ReadLogical
+//purpose  : 
+//=======================================================================
 
-bool StepData_StepReaderData::ReadLogical(const int                     num,
-                                          const int                     nump,
-                                          const char* const             mess,
-                                          occ::handle<Interface_Check>& ach,
-                                          StepData_Logical&             flag) const
+bool StepData_StepReaderData::ReadLogical(const int num,
+  const int nump,
+  const char* const mess,
+  occ::handle<Interface_Check>& ach,
+  StepData_Logical& flag) const
 {
-  char        txtmes[200];
-  const char* errmess = nullptr; // Null si pas d erreur
-  if (nump > 0 && nump <= NbParams(num))
-  {
+  occ::handle<String> errmess;  // Null si pas d erreur
+  if (nump > 0 && nump <= NbParams(num)) {
     const Interface_FileParameter& FP = Param(num, nump);
-    if (FP.ParamType() == Interface_ParamEnum)
-    {
+    if (FP.ParamType() == Interface_ParamEnum) {
       const char* txt = FP.CValue();
-      if (!strcmp(txt, ".T."))
-        flag = StepData_LTrue;
-      else if (!strcmp(txt, ".F."))
-        flag = StepData_LFalse;
-      else if (!strcmp(txt, ".U."))
-        flag = StepData_LUnknown;
-      else
-        errmess = "Parameter n0.%d (%s) : Incorrect Logical Value";
+      if (!strcmp(txt, ".T.")) flag = StepData_LTrue;
+      else if (!strcmp(txt, ".F.")) flag = StepData_LFalse;
+      else if (!strcmp(txt, ".U.")) flag = StepData_LUnknown;
+      else errmess = new String("Parameter n0.%d (%s) : Incorrect Logical Value");
     }
-    else
-      errmess = "Parameter n0.%d (%s) not a Logical";
+    else errmess = new String("Parameter n0.%d (%s) not a Logical");
   }
-  else
-    errmess = "Parameter n0.%d (%s) absent";
+  else errmess = new String("Parameter n0.%d (%s) absent");
 
-  if (errmess == nullptr)
-    return true;
-
-  Sprintf(txtmes, errmess, nump, mess);
-  ach->AddFail(txtmes, errmess);
+  if (errmess.IsNull()) return true;
+  sprintf(txtmes, errmess->ToCString(), nump, mess);
+  ach->AddFail(txtmes, errmess->ToCString());
   return false;
 }
 
-//=================================================================================================
+//=======================================================================
+//function : ReadString
+//purpose  : 
+//=======================================================================
 
-bool StepData_StepReaderData::ReadString(const int                              num,
-                                         const int                              nump,
-                                         const char* const                      mess,
-                                         occ::handle<Interface_Check>&          ach,
-                                         occ::handle<TCollection_HAsciiString>& val) const
+bool StepData_StepReaderData::ReadString(const int num,
+  const int nump,
+  const char* const mess,
+  occ::handle<Interface_Check>& ach,
+  occ::handle<TCollection_HAsciiString>& val) const
 {
-  char        txtmes[200];
-  const char* errmess = nullptr; // Null if no error
-  if (nump > 0 && nump <= NbParams(num))
-  {
+  occ::handle<String> errmess;  // Null si pas d erreur
+  bool warn = false;
+  if (nump > 0 && nump <= NbParams(num)) {
     const Interface_FileParameter& FP = Param(num, nump);
-    if (FP.ParamType() == Interface_ParamText)
-    {
+    if (FP.ParamType() == Interface_ParamText) {
       /*const char* anStr = FP.CValue();
       if(strlen(anStr) < 3)
-        val = TCollection_AsciiString("");
+        val = new TCollection_HAsciiString("");
       else {
-        val = TCollection_AsciiString(FP.CValue());
+        val = new TCollection_HAsciiString(FP.CValue());
         CleanText (val);
       }*/
       val = new TCollection_HAsciiString(FP.CValue());
       cleanText(val);
-    }
-    else
-    {
-      errmess = "Parameter n0.%d (%s) not a quoted String";
+    } else {
+      if (acceptvoid && FP.ParamType() == Interface_ParamVoid) warn = true;
+      errmess = new String("Parameter n0.%d (%s) not a quoted String");
     }
   }
-  else
-    errmess = "Parameter n0.%d (%s) absent";
+  else errmess = new String("Parameter n0.%d (%s) absent");
 
-  if (errmess == nullptr)
-    return true;
-
-  Sprintf(txtmes, errmess, nump, mess);
-  ach->AddFail(txtmes, errmess);
+  if (errmess.IsNull()) return true;
+  sprintf(txtmes, errmess->ToCString(), nump, mess);
+  if (warn) ach->AddWarning(txtmes, errmess->ToCString());
+  else ach->AddFail(txtmes, errmess->ToCString());
   return false;
 }
 
-//=================================================================================================
+//=======================================================================
+//function : ReadEnumParam
+//purpose  : 
+//=======================================================================
 
-bool StepData_StepReaderData::ReadEnumParam(const int                     num,
-                                            const int                     nump,
-                                            const char* const             mess,
-                                            occ::handle<Interface_Check>& ach,
-                                            const char*&                  text) const
+bool StepData_StepReaderData::ReadEnumParam(const int num,
+  const int nump,
+  const char* const mess,
+  occ::handle<Interface_Check>& ach,
+  const char*& text) const
 {
-  char        txtmes[200];
-  const char* errmess = nullptr; // Null if no error
-  if (nump > 0 && nump <= NbParams(num))
-  {
+  occ::handle<String> errmess;  // Null si pas d erreur
+  bool warn = false;
+  if (nump > 0 && nump <= NbParams(num)) {
     const Interface_FileParameter& FP = Param(num, nump);
-    if (FP.ParamType() == Interface_ParamEnum)
-    {
+    if (FP.ParamType() == Interface_ParamEnum) {
       text = FP.CValue();
+      warn = (acceptvoid > 0);
+    } else if (FP.ParamType() == Interface_ParamVoid) {
+      errmess =
+        new String("Parameter n0.%d (%s) : Undefined Enumeration not allowed");
+      warn = (acceptvoid > 0);
     }
-    else if (FP.ParamType() == Interface_ParamVoid)
-    {
-      errmess = "Parameter n0.%d (%s) : Undefined Enumeration not allowed";
-    }
-    else
-      errmess = "Parameter n0.%d (%s) not an Enumeration";
+    else errmess = new String("Parameter n0.%d (%s) not an Enumeration");
   }
-  else
-    errmess = "Parameter n0.%d (%s) absent";
+  else errmess = new String("Parameter n0.%d (%s) absent");
 
-  if (errmess == nullptr)
-    return true;
-
-  Sprintf(txtmes, errmess, nump, mess);
-  ach->AddFail(txtmes, errmess);
+  if (errmess.IsNull()) return true;
+  sprintf(txtmes, errmess->ToCString(), nump, mess);
+  if (warn) ach->AddWarning(txtmes, errmess->ToCString());
+  else ach->AddFail(txtmes, errmess->ToCString());
   return false;
 }
 
-//=================================================================================================
+//=======================================================================
+//function : FailEnumValue
+//purpose  : 
+//=======================================================================
 
-void StepData_StepReaderData::FailEnumValue(const int /* num */,
-                                            const int                     nump,
-                                            const char* const             mess,
-                                            occ::handle<Interface_Check>& ach) const
+void  StepData_StepReaderData::FailEnumValue(const int /* num */,
+  const int nump,
+  const char* const mess,
+  occ::handle<Interface_Check>& ach) const
 {
-  char        txtmes[200];
-  const char* errmess = "Parameter n0.%d (%s) : Incorrect Enumeration Value";
-  Sprintf(txtmes, errmess, nump, mess);
-  ach->AddFail(txtmes, errmess);
+  occ::handle<String> errmess =
+    new String("Parameter n0.%d (%s) : Incorrect Enumeration Value");
+  sprintf(txtmes, errmess->ToCString(), nump, mess);
+  ach->AddFail(txtmes, errmess->ToCString());
 }
 
-//=================================================================================================
+//=======================================================================
+//function : ReadEnum
+//purpose  : 
+//=======================================================================
 
-bool StepData_StepReaderData::ReadEnum(const int                     num,
-                                       const int                     nump,
-                                       const char* const             mess,
-                                       occ::handle<Interface_Check>& ach,
-                                       const StepData_EnumTool&      enumtool,
-                                       int&                          val) const
+bool StepData_StepReaderData::ReadEnum(const int num,
+  const int nump,
+  const char* const mess,
+  occ::handle<Interface_Check>& ach,
+  const StepData_EnumTool& enumtool,
+  int& val) const
 {
-  //  resume with ReadEnumParam?
-  char        txtmes[200];
-  const char* errmess = nullptr; // Null if no error
-  if (nump > 0 && nump <= NbParams(num))
-  {
+  //  reprendre avec ReadEnumParam ?
+  occ::handle<String> errmess;  // Null si pas d erreur
+  bool warn = false;
+  if (nump > 0 && nump <= NbParams(num)) {
     const Interface_FileParameter& FP = Param(num, nump);
-    if (FP.ParamType() == Interface_ParamEnum)
-    {
+    if (FP.ParamType() == Interface_ParamEnum) {
       val = enumtool.Value(FP.CValue());
-      if (val >= 0)
-        return true;
-      else
-        errmess = "Parameter n0.%d (%s) : Incorrect Enumeration Value";
+      if (val >= 0) return true;
+      else errmess = new String("Parameter n0.%d (%s) : Incorrect Enumeration Value");
+      warn = (acceptvoid > 0);
     }
-    else if (FP.ParamType() == Interface_ParamVoid)
-    {
+    else if (FP.ParamType() == Interface_ParamVoid) {
       val = enumtool.NullValue();
-      if (val < 0)
-        errmess = "Parameter n0.%d (%s) : Undefined Enumeration not allowed";
+      if (val < 0) errmess =
+        new String("Parameter n0.%d (%s) : Undefined Enumeration not allowed");
+      warn = (acceptvoid > 0);
     }
-    else
-      errmess = "Parameter n0.%d (%s) not an Enumeration";
+    else errmess = new String("Parameter n0.%d (%s) not an Enumeration");
   }
+  else errmess = new String("Parameter n0.%d (%s) absent");
+
+  if (errmess.IsNull()) return true;
+  sprintf(txtmes, errmess->ToCString(), nump, mess);
+  if (warn)
+    ach->AddWarning(txtmes, errmess->ToCString());
   else
-    errmess = "Parameter n0.%d (%s) absent";
-
-  if (errmess == nullptr)
-    return true;
-
-  Sprintf(txtmes, errmess, nump, mess);
-  ach->AddFail(txtmes, errmess);
+    ach->AddFail(txtmes, errmess->ToCString());
   return false;
 }
 
-//=================================================================================================
+//=======================================================================
+//function : ReadTypedParam
+//purpose  : 
+//=======================================================================
 
-bool StepData_StepReaderData::ReadTypedParam(const int                     num,
-                                             const int                     nump,
-                                             const bool                    mustbetyped,
-                                             const char* const             mess,
-                                             occ::handle<Interface_Check>& ach,
-                                             int&                          numr,
-                                             int&                          numrp,
-                                             TCollection_AsciiString&      typ) const
+bool StepData_StepReaderData::ReadTypedParam(const int num,
+  const int nump,
+  const bool mustbetyped,
+  const char* const mess,
+  occ::handle<Interface_Check>& ach,
+  int& numr,
+  int& numrp,
+  TCollection_AsciiString& typ) const
 {
-  char        txtmes[200];
-  const char* errmess = nullptr; // Null si pas d erreur
-  if (nump > 0 && nump <= NbParams(num))
-  {
+  occ::handle<String> errmess;  // Null si pas d erreur
+  if (nump > 0 && nump <= NbParams(num)) {
     const Interface_FileParameter& FP = Param(num, nump);
-    if (FP.ParamType() != Interface_ParamSub)
-    {
-      //    Not a sub-list: OK if allowed
-      numr  = num;
-      numrp = nump;
-      typ.Clear();
-      if (mustbetyped)
-      {
-        errmess = "Parameter n0.%d (%s) : single, not typed";
-        Sprintf(txtmes, errmess, nump, mess);
-        ach->AddFail(txtmes, errmess);
+    if (FP.ParamType() != Interface_ParamSub) {
+      //    Pas une sous-liste : OK si admis
+      numr = num;  numrp = nump;  typ.Clear();
+      if (mustbetyped) {
+        errmess = new String("Parameter n0.%d (%s) : single, not typed");
+        sprintf(txtmes, errmess->ToCString(), nump, mess);
+        ach->AddFail(txtmes, errmess->ToCString());
         return false;
       }
       return true;
     }
-    numr  = FP.EntityNumber();
-    numrp = 1;
-    if (NbParams(numr) != 1)
-      errmess = "Parameter n0.%d (%s) : SubList, not typed";
+    numr = FP.EntityNumber();  numrp = 1;
+    if (NbParams(numr) != 1) errmess =
+      new String("Parameter n0.%d (%s) : SubList, not typed");
     typ = RecordType(numr);
   }
-  else
-    errmess = "Parameter n0.%d (%s) absent";
+  else errmess = new String("Parameter n0.%d (%s) absent");
 
-  if (errmess == nullptr)
-    return true;
-  Sprintf(txtmes, errmess, nump, mess);
-  ach->AddFail(txtmes, errmess);
+  if (errmess.IsNull()) return true;
+  sprintf(txtmes, errmess->ToCString(), nump, mess);
+  ach->AddFail(txtmes, errmess->ToCString());
   return false;
 }
 
-//=================================================================================================
+//=======================================================================
+//function : CheckDerived
+//purpose  : 
+//=======================================================================
 
-bool StepData_StepReaderData::CheckDerived(const int                     num,
-                                           const int                     nump,
-                                           const char* const             mess,
-                                           occ::handle<Interface_Check>& ach,
-                                           const bool                    errstat) const
+bool StepData_StepReaderData::CheckDerived(const int num,
+  const int nump,
+  const char* const mess,
+  occ::handle<Interface_Check>& ach,
+  const bool errstat) const
 {
-  char        txtmes[200];
-  const char* errmess = nullptr; // Null if no error
-  bool        warn    = !errstat;
-  if (nump > 0 && nump <= NbParams(num))
-  {
-    if (!strcmp(Param(num, nump).CValue(), "*"))
-      return true;
-    else
-      errmess = "Parameter n0.%d (%s) not Derived";
+  occ::handle<String> errmess;  // Null si pas d erreur
+  bool warn = !errstat;
+  if (nump > 0 && nump <= NbParams(num)) {
+    if (!strcmp(Param(num, nump).CValue(), "*")) return true;
+    else errmess = new String("Parameter n0.%d (%s) not Derived");
+    if (acceptvoid) warn = true;
   }
-  else
-    errmess = "Parameter n0.%d (%s) absent";
+  else errmess = new String("Parameter n0.%d (%s) absent");
 
-  if (errmess == nullptr)
-    return true;
-
-  Sprintf(txtmes, errmess, nump, mess);
-  if (warn)
-    ach->AddWarning(txtmes, errmess);
-  else
-    ach->AddFail(txtmes, errmess);
+  if (errmess.IsNull()) return true;
+  sprintf(txtmes, errmess->ToCString(), nump, mess);
+  if (warn) ach->AddWarning(txtmes, errmess->ToCString());
+  else      ach->AddFail(txtmes, errmess->ToCString());
   return false;
 }
 
 //  #########################################################################
-// ....     Specific methods (requested by FileReaderData)     .... //
+// ....     Methodes specifiques (demandees par FileReaderData)     .... //
 
-//=================================================================================================
+//=======================================================================
+//function : NbEntities
+//purpose  : 
+//=======================================================================
 
-int StepData_StepReaderData::NbEntities() const // redefined
+int StepData_StepReaderData::NbEntities() const  // redefined
 {
   return thenbents;
 }
 
-//=================================================================================================
+//=======================================================================
+//function : FindNextRecord
+//purpose  : 
+//=======================================================================
 
-int StepData_StepReaderData::FindNextRecord(const int num) const
+int StepData_StepReaderData::FindNextRecord
+(const int num) const
 {
-  // returns, for a given record number (by num), the next one which
-  // defines an entity, or 0 if finished:
-  // passes the Header (first nbhend records) and
-  // skips SCOPE and ENDSCOPE records and SUB-LISTS
+  // retourne, sur un numero d enregistrement donne (par num), le suivant qui
+  // definit une entite, ou 0 si c est fini :
+  // passe le Header (nbhend premiers records) et
+  // saute les enregistrements SCOPE et ENDSCOPE et les SOUS-LISTES
 
-  if (num < 0)
-    return 0;
-  int num1 = num + 1;
-  if (num == 0)
-    num1 = thenbhead + 1;
+  if (num < 0) return 0;
+  int num1 = num + 1; if (num == 0) num1 = thenbhead + 1;
   int max = NbRecords();
 
-  while (num1 <= max)
-  {
-    if (theidents(num1) > 0)
-      return num1;
+  while (num1 <= max) {
+    if (theidents(num1) > 0) return num1;
 
-    // SCOPE,ENDSCOPE and Sub-List have a fictitious identifier: -1,-2 respectively
-    // and SUBLIST have a negative one. Only a real entity has a positive Ident
+    // SCOPE,ENDSCOPE et Sous-Liste ont un identifieur fictif: -1,-2 respectivement
+    // et SUBLIST ont un negatif. Seule une vraie entite a un Ident positif
     num1++;
   }
   return 0;
 }
 
-//=================================================================================================
+//=======================================================================
+//function : FindEntityNumber
+//purpose  : 
+//=======================================================================
 
-int StepData_StepReaderData::FindEntityNumber(const int num, const int id) const
+int StepData_StepReaderData::FindEntityNumber(const int num,
+  const int id) const
 {
-  //  Given an "Id": search in the Ident type Parameters of <num>,
-  //  if one of them designates #Id precisely. If yes, return its EntityNumber
-  if (num == 0)
-    return 0;
+  //  Soit un "Id" : recherche dans les Parametres de type Ident de <num>,
+  //  si un d eux designe #Id justement. Si oui, retourne son EntityNumber
+  if (num == 0) return 0;
   int nb = NbParams(num);
-  for (int i = 1; i <= nb; i++)
-  {
+  for (int i = 1; i <= nb; i++) {
     const Interface_FileParameter& FP = Param(num, i);
-    if (FP.ParamType() != Interface_ParamIdent)
-      continue;
+    if (FP.ParamType() != Interface_ParamIdent) continue;
     int ixp = atoi(&FP.CValue()[1]);
-    if (ixp == id)
-      return FP.EntityNumber();
+    if (ixp == id) return FP.EntityNumber();
   }
-  return 0; // ici, pas trouve
+  return 0;    // ici, pas trouve
 }
 
 //  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##
-// ....         The following function deserves special attention        ....
+// ....         La fonction qui suit merite une attention speciale        ....
 
-//  This method preloads the EntityNumbers in the Params: they designate
-//  the Entities properly said in the list read by BoundEntity
-//  Interest: also addresses sub-lists (Num->record number in the Directory)
-//  result exploited by ParamEntity and ParamNumber
+//  Cette methode precharge les EntityNumbers dans les Params : ils designent
+//  les Entites proprement dites dans la liste lue par BoundEntity
+//  Interet : adresse de meme les sous-listes (Num->no record dans le Direc)
+//  resultat exploite par ParamEntity et ParamNumber
+
+//  En l absence de SCOPE, ou si les "ident" sont strictement ordonnes, a coup
+//  sur ils ne sont pas dupliques, on peut utiliser une IndexedMap en toute
+//  confiance. Sinon, il faut balayer dans le fichier, mais avec les SCOPES
+//  cela va beaucoup plus vite (s ils sont assez gros) : on s y retrouve.
+
+// Pour la recherche par balayage, On opere en plusieurs etapes
+// Avant toute chose, le chargement a deja fait une preparation : les idents
+// (Entity, SubList) sont deja en entiers (rapidite de lecture), en particulier
+// dans les EntityNumber : ainsi, on lit cet ident, on le traite, et on remet
+// a la place un vrai numero de Record
 //
-//  This is a critical optimization that resolves entity references during loading
-//  rather than during each access, significantly improving performance for large files
+// D abord, on passe le directory en table d entiers,  sous-listes expurgees
+// en // , table inverse vers cette table, car les sous-listes peuvent par
+// contre designer des objets ...
 
-//  In the absence of SCOPE, or if the "ident" are strictly ordered, for sure
-//  they are not duplicated, we can use an IndexedMap with full
-//  confidence. Otherwise, we must scan the file, but with SCOPES
-//  this goes much faster (if they are big enough): we find our way around.
+// Pour les sous-listes, on exploite leur mode de construction : elles sont
+// enregistrees AVANT d etre referencees. Un tableau "subn" note donc pour
+// chaque numero de sous-liste (relatif a une entite qui suit, et reference
+// par elle ou une autre sous-liste qui suit egalement), son n0 de record
+// REMARQUE : ceci marche aussi pour le Header, traite par l occasion
 
-// For the search by scanning, We operate in several steps
-// Before anything, the loading has already done preparation: the idents
-// (Entity, SubList) are already in integers (reading speed), in particular
-// in the EntityNumber: thus, we read this ident, we process it, and we put back
-// in its place a real Record number
-//
-// First, we pass the directory to integer table, sub-lists purged
-// in parallel, inverse table towards this table, because sub-lists can on the
-// contrary designate objects ...
-
-// For sub-lists, we exploit their construction mode: they are
-// recorded BEFORE being referenced. A "subn" array thus notes for
-// each sub-list number (relative to an entity that follows, and referenced
-// by it or another sub-list that also follows), its record number
-// NOTE: this also works for the Header, processed on the occasion
-
-//=================================================================================================
+//=======================================================================
+//function : SetEntityNumbers
+//purpose  : 
+//=======================================================================
 
 void StepData_StepReaderData::SetEntityNumbers(const bool withmap)
 {
   Message_Messenger::StreamBuffer sout = Message::SendTrace();
-  //   Initial pass: Direct resolution by Map
-  //   if everything passes (no collision), OK. Otherwise, other passes to plan
-  //   We resolve sub-lists at the same time
-  //   The Map approach is O(1) lookup but requires unique identifiers
-  //   If identifiers collide (due to SCOPE sections), we fall back to linear search
-  int                                   nbdirec = NbRecords();
-  occ::handle<NCollection_IncAllocator> anAlloc =
-    new NCollection_IncAllocator(NCollection_IncAllocator::THE_MINIMUM_BLOCK_SIZE);
-  NCollection_Array1<int> subn(0, thelastn);
+  //   Passe initiale : Resolution directe par Map
+  //   si tout passe (pas de collision), OK. Sinon, autres passes a prevoir
+  //   On resoud du meme coup les sous-listes
+  int nbdirec = NbRecords();
+  TColStd_Array1OfInteger subn(0, thelastn);
 
-  bool                        pbmap = false; // at least one conflict
-  int                         nbmap = 0;
-  NCollection_IndexedMap<int> imap(thenbents, anAlloc);
-  NCollection_Array1<int>     indm(0, nbdirec); // Index Map -> Record Number (only if map)
+  bool pbmap = false;        // au moins un conflit
+  int nbmap = 0;
+  TColStd_IndexedMapOfInteger imap(thenbents);
+  TColStd_Array1OfInteger indm(0, nbdirec);    // Index Map -> Record Number (seulement si map)
 
   int num; // svv Jan11 2000 : porting on DEC
-  for (num = 1; num <= nbdirec; num++)
-  {
+  for (num = 1; num <= nbdirec; num++) {
     int ident = theidents(num);
-    if (ident > 0)
-    { // Ident normal -> Map ?
-      //  Map: if Overlap, inhibit it. Otherwise, note index
+    if (ident > 0) {      // Ident normal -> Map ?
+//  Map : si Recouvrement, l inhiber. Sinon, noter index
       int indmap = imap.Add(ident);
-      if (indmap <= nbmap)
-      {
-        indmap       = imap.FindIndex(ident); // safer
-        indm(indmap) = -1;                    // Map -> pb
-        pbmap        = true;
-        //  pbmap means another pass will be necessary ...
-      }
-      else
-      {
-        nbmap        = indmap;
-        indm(indmap) = num; // Map ->ident
+      if (indmap <= nbmap) {
+        indmap = imap.FindIndex(ident);    // plus sur
+        indm(indmap) = -1;      // Map -> pb
+        pbmap = true;
+        //  pbmap signifie qu une autre passe sera necessaire ...
+      } else {
+        nbmap = indmap;
+        indm(indmap) = num;      // Map ->ident
       }
     }
   }
 
-  for (num = 1; num <= nbdirec; num++)
-  {
+  for (num = 1; num <= nbdirec; num++) {
     int ident = theidents(num);
-    if (ident < -2)
-      subn(-(ident + 2)) = num; // toujours a jour ...
+    if (ident < -2) subn(-(ident + 2)) = num;  // toujours a jour ...
 
     int nba = NbParams(num);
     int nda = (num == 1 ? 0 : ParamFirstRank(num - 1));
 
-    for (int na = nba; na > 0; na--)
-    {
-      //    We process: sub-lists (except subn), idents (if Map says OK ...)
+    for (int na = nba; na > 0; na--) {
+      //    On traite : les sous-listes (sf subn), les idents (si Map dit OK ...)
       Interface_FileParameter& FP = ChangeParameter(nda + na);
       //      Interface_FileParameter& FP = ChangeParam (num,na);
       Interface_ParamType letype = FP.ParamType();
-      if (letype == Interface_ParamSub)
-      {
+      if (letype == Interface_ParamSub) {
         int numsub = FP.EntityNumber();
-        if (numsub > thelastn)
-        {
-          Message::SendInfo() << "Bad Sub.N0, Record " << num << " Param " << na << ":$" << numsub
-                              << std::endl;
+        if (numsub > thelastn) {
+          Message::SendInfo()
+            << "Bad Sub.N0, Record " << num << " Param " << na << ":$" << numsub << std::endl;
           continue;
         }
         FP.SetEntityNumber(subn(numsub));
-      }
-      else if (letype == Interface_ParamIdent)
-      {
-        int id     = FP.EntityNumber();
+      } else if (letype == Interface_ParamIdent) {
+        int id = FP.EntityNumber();
         int indmap = imap.FindIndex(id);
-        if (indmap > 0)
-        { // the map found it
+        if (indmap > 0) {                  // la map a trouve
           int num0 = indm(indmap);
-          if (num0 > 0)
-            FP.SetEntityNumber(num0); // AND THERE, we have resolved
-          else
-            FP.SetEntityNumber(-id); // CONFLICT -> will need to resolve ...
-        }
-        else
-        { // NOT RESOLVED, if no pbmap, say it
-          if (pbmap)
-          {
+          if (num0 > 0) FP.SetEntityNumber(num0);  // ET VOILA, on a resolu
+          else FP.SetEntityNumber(-id);   // CONFLIT -> faudra resoudre ...
+	} else {                          // NON RESOLU, si pas pbmap, le dire
+          if (pbmap) {
             FP.SetEntityNumber(-id);
-            continue; // pbmap: we will find ourselves again
+            continue;            // pbmap : on se retrouvera
           }
           char failmess[100];
-          //  ...  Build the Check  ...
-          Sprintf(failmess, "Unresolved Reference, Ent.Id.#%d Param.n0 %d (Id.#%d)", ident, na, id);
+          //  ...  Construire le Check  ...
+          sprintf(failmess,
+            "Unresolved Reference, Ent.Id.#%d Param.n0 %d (Id.#%d)",
+            ident, na, id);
           thecheck->AddFail(failmess, "Unresolved Reference");
-          //  ...  And output a more complete message
-          sout << "*** ERR StepReaderData *** Entite #" << ident << "\n    Type:" << RecordType(num)
+          //  ...  Et sortir message un peu plus complet
+          sout << "*** ERR StepReaderData *** Entite #" << ident
+               << "\n    Type:" << RecordType(num)
                << "  Param.n0 " << na << ": #" << id << " Not found" << std::endl;
-        } // END  Mapping
-      } // END  Reference Processing
-    } // END  Parameters Loop
-  } // END  Directory Loop
+        }      // FIN  Mapping
+      }        // FIN  Traitement Reference
+    }          // FIN  Boucle Parametres
+  }            // FIN  Boucle Repertoires
 
-  if (!pbmap)
-  {
+  if (!pbmap) {
     return;
   }
   sout << " --  2nd pass required --";
 
-  int                                   nbseq = thenbents + 2 * thenbscop;
-  NCollection_Array1<int>               inds(0, nbseq);   // n0 Record/Entite
-  NCollection_Array1<int>               indi(0, nbseq);   // Idents/scopes
-  NCollection_Array1<int>               indr(0, nbdirec); // inverse of nds
-  occ::handle<NCollection_HArray1<int>> indx;             // for EXPORT (if any)
+  int nbseq = thenbents + 2 * thenbscop;
+  TColStd_Array1OfInteger inds(0, nbseq);   // n0 Record/Entite
+  TColStd_Array1OfInteger indi(0, nbseq);   // Idents/scopes
+  TColStd_Array1OfInteger indr(0, nbdirec); // inverse de nds
+  occ::handle<TColStd_HArray1OfInteger> indx;    // pour EXPORT (silya)
 
   imap.Clear();
-  anAlloc->Reset();
-  bool iamap = withmap; // (default True)
-  nbmap      = 0;
+  bool iamap = withmap;               // (par defaut True)
+  nbmap = 0;
 
-  NCollection_Sequence<int> scopile(anAlloc); // scope chaining noted by stack
-  int                       nr = 0;
-  for (num = 1; num <= nbdirec; num++)
-  {
+  TColStd_SequenceOfInteger scopile;  // chainage des scopes note par pile
+  int nr = 0;
+  for (num = 1; num <= nbdirec; num++) {
     int ident = theidents(num);
-    if (ident < -2)
-    {                     // SUB-LIST (most common case)
-      indr(num) = nr + 1; // search based on nr (following object)
-    }
-    else if (ident >= 0)
-    { // Ident normal
-      nr++;
-      inds(nr)  = num;
-      indi(nr)  = ident;
-      indr(num) = nr;
-      if (ident > 0)
-      { // and not (iamap && ident > 0)
-        //  Map: if Overlap, inhibit it. Otherwise, note index
+    if (ident < -2) {             // SOUS-LISTE (cas le plus courant)
+      indr(num) = nr + 1;         // recherche basee sur nr (objet qui suit)
+    } else if (ident >= 0) {      // Ident normal
+      nr++;  inds(nr) = num;  indi(nr) = ident; indr(num) = nr;
+      if (ident > 0) {   // et non (iamap && ident > 0)
+//  Map : si Recouvrement, l inhiber. Sinon, noter index
         int indmap = imap.Add(ident);
-        if (indmap <= nbmap)
-        {
+        if (indmap <= nbmap) {
           bool errorscope = false;
-          indmap          = imap.FindIndex(ident); // plus sur
-          pbmap           = true;
-          if (thenbscop == 0)
-            errorscope = true;
-          //  Identical numbers when there is no SCOPE? ERROR!
-          //  (Of course, if there are SCOPES, we pass through, but still...)
-          else
-          {
-            //  If there are SCOPES, let's look more closely to report a problem
-            //  Error if SAME SCOPE group
-            //  ATTENTION, we search, not in all records, but in the records
-            //    CHAINED, cf nr and not num (no sub-list, scope-endscope chaining)
+          indmap = imap.FindIndex(ident);    // plus sur
+          pbmap = true;
+          if (thenbscop == 0) errorscope = true;
+          //  Numeros identiques alors quilnya pas de SCOPE ? ERREUR !
+          //  (Bien sur, silya des SCOPES, on passe au travers, mais bon...)
+          else {
+            //  Silya des SCOPES, tachons d y voir de plus pres pour signaler un probleme
+            //  Erreur si MEME groupe SCOPE
+            //  ATTENTION, on recherche, non dans tous les records, mais dans les records
+            //    CHAINES, cf nr et non num (pas de sous-liste, chainage scope-endscope)
             int fromscope = nr;
-            int toscope   = indm(indmap);
-            if (toscope < 0)
-              toscope = -toscope;
-            for (;;)
-            {
-              fromscope--; // basic iteration
-              if (fromscope <= toscope)
-              {
-                errorscope = true; // BANG, we are on it
+            int toscope = indm(indmap);
+            if (toscope < 0) toscope = -toscope;
+            for (;;) {
+              fromscope--;    // iteration de base
+              if (fromscope <= toscope) {
+                errorscope = true;  // BANG, on est dessus
                 break;
               }
               int idtest = indi(fromscope);
-              if (idtest >= 0)
-                continue; // the next one (well, the previous one)
-              if (idtest == -1)
-                break; // not same level, so it's OK
-              if (idtest == -3)
-              {
+              if (idtest >= 0) continue;  // le suivant (enfin, le precedent)
+              if (idtest == -1) break;     // pas meme niveau, donc c est OK
+              if (idtest == -3) {
                 fromscope = inds(fromscope);
-                if (fromscope < toscope)
-                  break; // we exit, not on same level
+                if (fromscope < toscope) break;  // on sort, pas en meme niveau
               }
             }
           }
-          if (errorscope)
-          {
-            //  We are inside: report it
+          if (errorscope) {
+            //  On est dedans : le signaler
             char ligne[80];
-            Sprintf(ligne, "Ident defined SEVERAL TIMES : #%d", ident);
+            sprintf(ligne, "Ident defined SEVERAL TIMES : #%d", ident);
             thecheck->AddFail(ligne, "Ident defined SEVERAL TIMES : #%d");
             sout << "StepReaderData : SetEntityNumbers, " << ligne << std::endl;
           }
-          if (indm(indmap) > 0)
-            indm(indmap) = -indm(indmap); // Not for Map
-                                          //  Normal case for the Map
-        }
-        else
-        {
-          nbmap        = indmap;
-          indm(indmap) = nr; // Map ->(indm)->inds
-        }
+          if (indm(indmap) > 0) indm(indmap) = -indm(indmap);  // Pas pour Map
+      //  Cas Normal pour la Map
+	} else {
+	  nbmap = indmap;
+	  indm(indmap) = nr;      // Map ->(indm)->inds
+	}
       }
-    }
-    else if (ident == -1)
-    { // SCOPE
-      nr++;
-      inds(nr)  = num;
-      indi(nr)  = -1;
-      indr(num) = 0;
-      scopile.Append(nr);
-    }
-    else if (ident == -2)
-    {                             // ENDSCOPE
-      int nscop = scopile.Last(); // chainage SCOPE-ENDSCOPE
-      scopile.Remove(scopile.Length());
-      nr++;
-      inds(nr)    = nscop;
-      indi(nr)    = -3;
-      indr(num)   = 0;
-      inds(nscop) = nr;
-      if (NbParams(num) > 0)
-      {
-        //  EXPORT : traitement special greffe sur celui de SCOPE (sans le perturber)
-        if (indx.IsNull())
-        {
-          indx = new NCollection_HArray1<int>(0, nbseq);
-          for (int ixp = 0; ixp <= nbseq; ixp++)
-            indx->ChangeValue(ixp) = 0;
-        }
-        indx->ChangeValue(nr)    = num;
-        indx->ChangeValue(nscop) = num;
+    } else if (ident == -1) {     // SCOPE
+      nr ++;  inds(nr) = num;  indi(nr) = -1;    indr(num) = 0;
+      scopile.Append(nr) ;
+    } else if (ident == -2) {     // ENDSCOPE
+      int nscop = scopile.Last() ;     // chainage SCOPE-ENDSCOPE
+      scopile.Remove(scopile.Length()) ;
+      nr ++; inds(nr) = nscop; indi(nr) = -3; indr(num) = 0; inds(nscop) = nr;
+      if (NbParams(num) > 0) {
+//  EXPORT : traitement special greffe sur celui de SCOPE (sans le perturber)
+	if (indx.IsNull()) {
+    indx = new TColStd_HArray1OfInteger(0, nbseq);
+    for (int ixp = 0; ixp <= nbseq; ixp ++) indx->ChangeValue(ixp) = 0;
+	}
+  indx->ChangeValue(nr) = num;  indx->ChangeValue(nscop) = num;
       }
-    }
-    else if (ident == 0)
-    { // HEADER
+    } else if (ident == 0) {      // HEADER
       indr(num) = 0;
     }
   }
 
-  //  ..    EXPORT resolution, if any and if needed    ..
-  //  For each EXPORT value that has not been resolved by the MAP,
-  //  determine its local position by backward search from ENDSCOPE
-  if ((!iamap || pbmap) && !indx.IsNull())
-  {
-    for (nr = 0; nr <= nbseq; nr++)
-    {
-      if (indx->Value(nr) == 0 && indi(nr) != -3)
-        continue; // ENDSCOPE + EXPORT
-      num     = indx->Value(nr);
+  //  ..    Resolution des EXPORT, silyena et silya besoin    ..
+  //  Pour chaque valeur de EXPORT qui n a pas ete resolue par la MAP,
+  //  determiner sa position locale par recherche en arriere depuis ENDSCOPE
+  if ((!iamap || pbmap) && !indx.IsNull()) {
+    for (nr = 0; nr <= nbseq; nr++) {
+      if (indx->Value(nr) == 0 && indi(nr) != -3) continue;  // ENDSCOPE + EXPORT
+      num = indx->Value(nr);
       int nba = NbParams(num);
-      for (int na = 1; na <= nba; na++)
-      {
+      for (int na = 1; na <= nba; na++) {
         Interface_FileParameter& FP = ChangeParam(num, na);
-        if (FP.ParamType() != Interface_ParamIdent)
-          continue;
+        if (FP.ParamType() != Interface_ParamIdent) continue;
         int id = -FP.EntityNumber();
-        if (id < 0)
-          continue; // already resolved at head
-                    /*	if (imap.Contains(id)) {            et voila
-                        FP.SetEntityNumber(indm(imap.FindIndex(id)));
-                        continue;
-                      }    */
+        if (id < 0) continue;    // deja resolu en tete
+      /*	if (imap.Contains(id)) {            et voila
+          FP.SetEntityNumber(indm(imap.FindIndex(id)));
+          continue;
+        }    */
 
-        //  Search for the requested Id: if nested EXPORT, already resolved but we must
-        //  look! (useless however to go see: it's already done, because
-        //  a nested EXPORT has been processed BEFORE the one that nests)
+        //  Recherche du Id demande : si EXPORT imbrique, deja resolu mais il faut
+        //  regarder ! (inutile par contre d aller y voir : c est deja fait, car
+        //  un EXPORT imbrique a ete traite AVANT celui qui imbrique)
         int n0 = nr - 1;
-        if (indi(n0) == -3)
-          n0--; // if we just follow an ENDSCOPE
-        while (n0 > 0)
-        {
+        if (indi(n0) == -3) n0--;         // si on suit juste un ENDSCOPE
+        while (n0 > 0) {
           int irec = indi(n0);
-          if (irec == id)
-          { // found
+          if (irec == id) {                // trouve
             FP.SetEntityNumber(inds(n0));
             break;
           }
-          if (irec == -1)
-            break; // SCOPE: end of this SCOPE/ENDSCOPE
-          if (irec == -3)
-          {
-            //  beware of EXPORT: if an EXPORT holds Id, note its already calculated Number
-            //  Attention: Id to be read from CValue because EntityNumber already resolved
+          if (irec == -1) break;           // SCOPE : fin de ce SCOPE/ENDSCOPE
+          if (irec == -3) {
+            //  gare a EXPORT : si un EXPORT detient Id, noter son Numero deja calcule
+            //  Attention : Id a lire depuis CValue  car EntityNumber deja resolu
             int nok = FindEntityNumber(indx->Value(n0), id);
-            if (nok > 0)
-            {
+            if (nok > 0) {
               FP.SetEntityNumber(nok);
               break;
             }
-            n0 = inds(n0); // ENDSCOPE or unsuccessful EXPORT: skip it
-          } // end processing on an ENDSCOPE or EXPORT
+            n0 = inds(n0);   // ENDSCOPE ou EXPORT infructueux : le sauter
+          }      // fin traitement sur un ENDSCOPE ou EXPORT
           n0--;
-        } // end resolution of an EXPORT Parameter
-      } // end resolution of an EXPORT list
-    } // end looping on EXPORTs
+        }        // fin resolution d un Parametre EXPORT
+      }          // fin resolution de la liste d un EXPORT
+    }            // fin bouclage sur les EXPORT
   }
 
-  //  Table exploitation: looping operates on the table
+  //  Exploitation de la table : bouclage porte sur la table
 
-  //  Sub-lists processing: done on the fly, by managing a stack
-  //  based on the constitution of sub-lists
-  int maxsubpil                                 = 30; // simulated stack with an Array: very strong
-  occ::handle<NCollection_HArray1<int>> subpile =     // ... saves memory ...
-    new NCollection_HArray1<int>(1, maxsubpil);
-  int nbsubpil = 0; // ... and so much faster!
+  //  Traitement des sous-listes : se fait dans la foulee, par gestion d une pile
+  //  basee sur la constitution des sous-listes
+  int maxsubpil = 30;  // pile simulee avec un Array : tres fort
+  occ::handle<TColStd_HArray1OfInteger> subpile =  // ... gagne de la memoire ...
+    new TColStd_HArray1OfInteger(1, maxsubpil);
+  int nbsubpil = 0;              // ... et tellement plus rapide !
 
-  for (num = 1; num <= nbdirec; num++)
-  {
+  for (num = 1; num <= nbdirec; num++) {
     nr = indr(num);
-    if (nr == 0)
-      continue; //    not an object or a sub-list
+    if (nr == 0) continue;  //    pas un objet ou une sous-liste
     int nba = NbParams(num);
-    for (int na = nba; na > 0; na--)
-    {
-      //  We read from the end: this allows processing sub-lists on the fly
-      //  Otherwise, we should note that there were sub-lists and resume afterwards
-      //  Reverse processing ensures that nested sub-lists are resolved before their containers
-      //  This is critical for maintaining referential integrity in complex STEP structures
+    for (int na = nba; na > 0; na--) {
+      //  On lit depuis la fin : cela permet de traiter les sous-listes dans la foulee
+      //  Sinon, on devrait noter qu il y a eu des sous-listes et reprendre ensuite
 
-      Interface_FileParameter& FP     = ChangeParam(num, na);
-      Interface_ParamType      letype = FP.ParamType();
-      if (letype == Interface_ParamSub)
-      {
-        //  sub-list type parameter: sub-list number read by unstacking
+      Interface_FileParameter& FP = ChangeParam(num, na);
+      Interface_ParamType letype = FP.ParamType();
+      if (letype == Interface_ParamSub) {
+        //  parametre type sous-liste : numero de la sous-liste lu par depilement
         FP.SetEntityNumber(subpile->Value(nbsubpil));
-        nbsubpil--; //	subpile->Remove(nbsubpil);
-      }
-      else if (letype == Interface_ParamIdent)
-      {
-        //  ident type parameter (references an entity): search for requested ident
-        int id = -FP.EntityNumber();
-        if (id < 0)
-          continue; // already resolved at head
+        nbsubpil--;   //	subpile->Remove(nbsubpil);
 
-        // Here we go: we will search for id in ndi; scanning algorithm
-        // This implements a bidirectional search strategy: first backward from current position
-        // to file beginning, then forward to file end. This optimizes for locality of references.
-        int pass, sens, nok, n0, irec;
-        pass = sens = nok = 0;
-        if (!iamap)
-          pass = 1; // if map not available
-        while (pass < 3)
-        {
+      } else if (letype == Interface_ParamIdent) {
+        //  parametre type ident (reference une entite) : chercher ident demande
+        int id = -FP.EntityNumber();
+        if (id < 0) continue;    // deja resolu en tete
+
+      // Voila : on va chercher id dans ndi; algorithme de balayage
+        int pass, sens, nok, n0, irec;	pass = sens = nok = 0;
+        if (!iamap) pass = 1;                  // si map non disponible
+        while (pass < 3) {
           pass++;
-          //    MAP available
-          if (pass == 1)
-          { // MAP AVAILABLE
+          //    MAP disponible
+          if (pass == 1) {                     // MAP DISPONIBLE
             int indmap = imap.FindIndex(id);
-            if (indmap > 0)
-            { // the map found it
+            if (indmap > 0) {                  // la map a trouve
               nok = indm(indmap);
-              if (nok < 0)
-                continue; // CONFLICT -> need to resolve ...
+              if (nok < 0) continue;           // CONFLIT -> faut resoudre ...
               break;
             }
-            else
-              continue;
+            else continue;
           }
-          //    1st Pass: BACKWARD -> File beginning
-          if (sens == 0 && nr > 1)
-          {
+          //    1re Passe : REMONTEE -> Debut fichier
+          if (sens == 0 && nr > 1) {
             n0 = nr - 1;
-            if (indi(n0) == -3)
-              n0--; // if we just follow an ENDSCOPE
-            while (n0 > 0)
-            {
+            if (indi(n0) == -3) n0--;         // si on suit juste un ENDSCOPE
+            while (n0 > 0) {
               irec = indi(n0);
-              if (irec == id)
-              { // found
-                nok = n0;
-                break;
+              if (irec == id) {                // trouve
+                nok = n0; break;
               }
               //    ENDSCOPE : Attention a EXPORT sinon sauter
-              if (irec == -3)
-              {
-                if (indx.IsNull())
-                  n0 = inds(n0);
-                else
-                {
-                  //    EXPORT, we must look
+              if (irec == -3) {
+                if (indx.IsNull()) n0 = inds(n0);
+                else {
+                  //    EXPORT, il faut regarder
                   nok = FindEntityNumber(indx->Value(n0), id);
-                  if (nok > 0)
-                    break;
-                  n0 = inds(n0); // ENDSCOPE: skip it
+                  if (nok > 0) break;
+                  n0 = inds(n0);               // ENDSCOPE : le sauter
                 }
               }
               n0--;
             }
-            //    2nd Pass: DESCENT -> End of file
-          }
-          else if (nr < nbseq)
-          { // descent -> end of file
+            //    2me Passe : DESCENTE -> Fin fichier
+	  } else if (nr < nbseq) {             // descente -> fin fichier
             n0 = nr + 1;
-            while (n0 <= nbseq)
-            {
+            while (n0 <= nbseq) {
               irec = indi(n0);
-              if (irec == id)
-              { // found
-                nok = n0;
-                break;
+              if (irec == id) {                // trouve
+                nok = n0; break;
               }
-              //    SCOPE: Attention to EXPORT otherwise skip
-              if (irec == -1)
-              {
-                if (indx.IsNull())
-                  n0 = inds(n0);
-                else
-                {
-                  //    EXPORT, we must look
+              //    SCOPE : Attention a EXPORT sinon sauter
+              if (irec == -1) {
+                if (indx.IsNull()) n0 = inds(n0);
+                else {
+                  //    EXPORT, il faut regarder
                   nok = FindEntityNumber(indx->Value(n0), id);
-                  if (nok > 0)
-                    break;
-                  n0 = inds(n0); // SCOPE: skip it
+                  if (nok > 0) break;
+                  n0 = inds(n0);               // SCOPE : le sauter
                 }
               }
               n0++;
             }
           }
-          if (nok > 0)
-            break;
-          sens = 1 - sens; // next pass
+          if (nok > 0) break;
+          sens = 1 - sens;      // passe suivante
         }
-        // here we have nok, number found
-        if (nok > 0)
-        {
+        // ici on a nok, numero trouve
+        if (nok > 0) {
           int num0 = inds(nok);
-          FP.SetEntityNumber(num0); // AND THERE, we have resolved
+          FP.SetEntityNumber(num0);  // ET VOILA, on a resolu
 
-          // not found: report it
-        }
-        else
-        {
-          //  Feed the Check ... For this, determine Entity n0 and Ident
+                                 // pas trouve : le signaler
+	} else {
+          //  Alimenter le Check ...  Pour cela, determiner n0 Entite et Ident
           char failmess[100];
-          int  nument = 0;
-          int  n0ent; // svv Jan11 2000 : porting on DEC
-          for (n0ent = 1; n0ent <= nr; n0ent++)
-          {
-            if (indi(n0ent) > 0)
-              nument++;
+          int nument = 0;
+          int n0ent; // svv Jan11 2000 : porting on DEC
+          for (n0ent = 1; n0ent <= nr; n0ent++) {
+            if (indi(n0ent) > 0) nument++;
           }
           int ident = RecordIdent(num);
-          if (ident < 0)
-          {
-            for (n0ent = num + 1; n0ent <= nbdirec; n0ent++)
-            {
-              ident = RecordIdent(n0ent);
-              if (ident > 0)
-                break;
+          if (ident < 0) {
+            for (n0ent = num + 1; n0ent <= nbdirec; n0ent++) {
+              ident = RecordIdent(n0ent); if (ident > 0) break;
             }
           }
-          //  ...  Build the Check  ...
-          Sprintf(failmess,
-                  "Unresolved Reference, Ent.n0 %d (Id.#%d) Param.n0 %d (Id.#%d)",
-                  nument,
-                  ident,
-                  na,
-                  id);
+          //  ...  Construire le Check  ...
+          sprintf(failmess,
+            "Unresolved Reference, Ent.n0 %d (Id.#%d) Param.n0 %d (Id.#%d)",
+            nument, ident, na, id);
           thecheck->AddFail(failmess, "Unresolved Reference");
 
-          //  ...  And output a more complete message
-          sout << "*** ERR StepReaderData *** Entite " << nument << ", a " << (nr * 100) / nbseq
-               << "% de DATA : #" << ident << "\n    Type:" << RecordType(num) << "  Param.n0 "
-               << na << ": #" << id << " Not found" << std::endl;
+          //  ...  Et sortir message un peu plus complet
+          sout << "*** ERR StepReaderData *** Entite " << nument
+               << ", a " << (nr * 100) / nbseq << "% de DATA : #" << ident
+               << "\n    Type:" << RecordType(num)
+               << "  Param.n0 " << na << ": #" << id << " Not found" << std::endl;
 
-          FP.SetEntityNumber(0); // -> Unresolved reference
+          FP.SetEntityNumber(0);  // -> Reference non resolue
         }
       }
     }
-    //  If this record is itself a sub-list, stack it!
-    if (inds(nr) != num)
-    {
-      if (nbsubpil >= maxsubpil)
-      {
+    //  Si ce record est lui-meme une sous-liste, empiler !
+    if (inds(nr) != num) {
+      if (nbsubpil >= maxsubpil) {
         maxsubpil = maxsubpil + 30;
-        occ::handle<NCollection_HArray1<int>> newsubpil =
-          new NCollection_HArray1<int>(1, maxsubpil);
+        occ::handle<TColStd_HArray1OfInteger> newsubpil =
+          new TColStd_HArray1OfInteger(1, maxsubpil);
         for (int bidpil = 1; bidpil <= maxsubpil - 30; bidpil++)
           newsubpil->SetValue(bidpil, subpile->Value(bidpil));
         subpile = newsubpil;
       }
       nbsubpil++;
-      subpile->SetValue(nbsubpil, num); // Append(num);
+      subpile->SetValue(nbsubpil, num);      // Append(num);
     }
   }
 }
 
 //  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##
-//  ....             Header Management: Preparation, reading             ....
+//  ....             Gestion du Header : Preparation, lecture             ....
 
-//=================================================================================================
+//=======================================================================
+//function : FindNextHeaderRecord
+//purpose  : 
+//=======================================================================
 
-int StepData_StepReaderData::FindNextHeaderRecord(const int num) const
+int StepData_StepReaderData::FindNextHeaderRecord
+(const int num) const
 {
-  // returns, for a given record number (by num), the next one which
-  // defines an entity, or 0 if finished:
-  // Operates like FindNextRecord but only scans the Header
+  // retourne, sur un numero d enregistrement donne (par num), le suivant qui
+  // definit une entite, ou 0 si c est fini :
+  // Opere comme FindNextRecord mais ne balaie que le Header
 
-  if (num < 0)
-    return 0;
+  if (num < 0) return 0;
   int num1 = num + 1;
-  int max  = thenbhead;
+  int max = thenbhead;
 
-  while (num1 <= max)
-  {
-    // SCOPE,ENDSCOPE and Sub-List have a negative identifier
-    // Only retain positive or null Idents (null: no Ident in Header)
-    if (RecordIdent(num1) >= 0)
-      return num1;
+  while (num1 <= max) {
+    // SCOPE,ENDSCOPE et Sous-Liste ont un identifieur negatif
+    // Ne retenir que les Idents positifs ou nuls (nul : pas d Ident dans Header)
+    if (RecordIdent(num1) >= 0) return num1;
     num1++;
   }
   return 0;
 }
 
-//=================================================================================================
+//=======================================================================
+//function : PrepareHeader
+//purpose  : 
+//=======================================================================
 
 void StepData_StepReaderData::PrepareHeader()
 {
-  // Reference resolution: only concerns sub-lists
-  //  already done by SetEntityNumbers so no need to worry
+  // Resolution des references : ne concerne que les sous-listes
+  //  deja faite par SetEntityNumbers donc pas de souci a se faire
 
   /*
-  // Algorithm taken and adapted from SetEntityNumbers
+  // Algorithme repris et adapte de SetEntityNumbers
   //  Traitement des sous-listes : se fait dans la foulee, par gestion d une pile
   //  basee sur la constitution des sous-listes
-    NCollection_Sequence<int> subpile;
-    int nbsubpil = 0;     // stack depth but faster ...
+    TColStd_SequenceOfInteger subpile;
+    int nbsubpil = 0;     // profondeur de pile mais plus rapide ...
 
     for (int num = 1 ; num <= thenbhead ; num ++) {
       int nba = NbParams(num) ;
       for (int na = nba ; na > 0 ; na --) {
-  ..  We read from the end: this allows processing sub-lists on the fly
-  ..  Otherwise, we should note that there were sub-lists and resume afterwards
+  ..  On lit depuis la fin : cela permet de traiter les sous-listes dans la foulee
+  ..  Sinon, on devrait noter qu il y a eu des sous-listes et reprendre ensuite
 
         Interface_FileParameter& FP = ChangeParam(num,na);
         Interface_ParamType letype = FP.ParamType();
         if (letype == Interface_ParamSub) {
-  ..  sub-list type parameter: sub-list number read by unstacking
+  ..  parametre type sous-liste : numero de la sous-liste lu par depilement
           FP.SetEntityNumber(subpile.Last());
   .. ..        SetParam(num,na,FP);
     subpile.Remove(nbsubpil);
           nbsubpil --;
         }
       }
-  .. If it's a sub-list, stack
+  .. Si c est une sous-liste, empiler
       if (RecordIdent(num) < -2) {
         subpile.Append(num);
         nbsubpil ++;
@@ -2494,9 +2136,12 @@ void StepData_StepReaderData::PrepareHeader()
   */
 }
 
-//=================================================================================================
+//=======================================================================
+//function : GlobalCheck
+//purpose  : 
+//=======================================================================
 
-const occ::handle<Interface_Check> StepData_StepReaderData::GlobalCheck() const
+const occ::handle<Interface_Check>  StepData_StepReaderData::GlobalCheck() const
 {
   return thecheck;
 }

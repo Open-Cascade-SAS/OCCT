@@ -26,15 +26,19 @@
 
 //! This class implements the common services for
 //! all classes of GeomToStep which report error.
-class GeomToStep_Root
+class GeomToStep_Root 
 {
 public:
+
   DEFINE_STANDARD_ALLOC
 
+  
   Standard_EXPORT bool IsDone() const;
 
 protected:
+
   bool done;
+
 };
 
 #endif // _GeomToStep_Root_HeaderFile

@@ -32,26 +32,29 @@ class Transfer_TransientProcess;
 class StepToTopoDS_TranslateSolid : public StepToTopoDS_Root
 {
 public:
+
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT StepToTopoDS_TranslateSolid();
 
   Standard_EXPORT void Init(const occ::handle<StepVisual_TessellatedSolid>& theTSo,
-                            const occ::handle<Transfer_TransientProcess>&   theTP,
-                            StepToTopoDS_Tool&                              theTool,
-                            StepToTopoDS_NMTool&                            theNMTool,
-                            const bool                   theReadTessellatedWhenNoBRepOnly,
-                            bool&                        theHasGeom,
-                            const StepData_Factors&      theLocalFactors = StepData_Factors(),
-                            const Message_ProgressRange& theProgress     = Message_ProgressRange());
+                            const occ::handle<Transfer_TransientProcess>& theTP,
+                            StepToTopoDS_Tool& theTool,
+                            StepToTopoDS_NMTool& theNMTool,
+                            const bool theReadTessellatedWhenNoBRepOnly,
+                            bool& theHasGeom,
+                            const StepData_Factors& theLocalFactors = StepData_Factors(),
+                            const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   Standard_EXPORT const TopoDS_Shape& Value() const;
 
   Standard_EXPORT StepToTopoDS_TranslateSolidError Error() const;
 
 private:
+
   StepToTopoDS_TranslateSolidError myError;
-  TopoDS_Shape                     myResult;
+  TopoDS_Shape myResult;
+
 };
 
 #endif // _StepToTopoDS_TranslateSolid_HeaderFile

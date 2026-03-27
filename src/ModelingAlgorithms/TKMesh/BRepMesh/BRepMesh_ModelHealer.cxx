@@ -26,107 +26,102 @@
 #include <TopoDS_Vertex.hxx>
 
 #ifdef DEBUG_HEALER
-  #include <BRepBuilderAPI_MakePolygon.hxx>
-  #include <BRepTools.hxx>
-  #include <BRep_Builder.hxx>
-  #include <TopoDS_Compound.hxx>
+#include <BRepBuilderAPI_MakePolygon.hxx>
+#include <BRepTools.hxx>
+#include <BRep_Builder.hxx>
+#include <TopoDS_Compound.hxx>
 #endif
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_ModelHealer, IMeshTools_ModelAlgo)
 
 namespace
 {
-//! Decreases deflection of the given edge and tries to update discretization.
-class EdgeAmplifier
-{
-public:
-  //! Constructor.
-  EdgeAmplifier(const IMeshTools_Parameters& theParameters)
+  //! Decreases deflection of the given edge and tries to update discretization.
+  class EdgeAmplifier
+  {
+  public:
+    //! Constructor.
+    EdgeAmplifier(const IMeshTools_Parameters& theParameters)
       : myParameters(theParameters)
-  {
-  }
-
-  //! Main operator.
-  void operator()(const IMeshData::IEdgePtr& theDEdge) const
-  {
-    const IMeshData::IEdgeHandle aDEdge = theDEdge;
-
-    int aPointsNb = aDEdge->GetCurve()->ParametersNb();
-
-    aDEdge->Clear(true);
-    aDEdge->SetDeflection(std::max(aDEdge->GetDeflection() / 3., Precision::Confusion()));
-
-    for (int aPCurveIt = 0; aPCurveIt < aDEdge->PCurvesNb(); ++aPCurveIt)
     {
-      const IMeshData::IPCurveHandle& aPCurve = aDEdge->GetPCurve(aPCurveIt);
-      const IMeshData::IFaceHandle    aDFace  = aPCurve->GetFace();
-
-      // Check that outer wire contains 2 edges or less and add an additional point.
-      const IMeshData::IWireHandle& aDWire = aDFace->GetWire(0);
-      if (aDWire->EdgesNb() <= 2)
-      {
-        ++aPointsNb;
-        break;
-      }
     }
 
-    const IMeshData::IPCurveHandle&          aPCurve = aDEdge->GetPCurve(0);
-    const IMeshData::IFaceHandle             aDFace  = aPCurve->GetFace();
-    occ::handle<IMeshTools_CurveTessellator> aTessellator =
-      BRepMesh_EdgeDiscret::CreateEdgeTessellator(aDEdge,
-                                                  aPCurve->GetOrientation(),
-                                                  aDFace,
-                                                  myParameters,
-                                                  aPointsNb);
+    //! Main operator.
+    void operator()(const IMeshData::IEdgePtr& theDEdge) const
+    {
+      const IMeshData::IEdgeHandle aDEdge = theDEdge;
+      aDEdge->Clear(true);
+      aDEdge->SetDeflection(Max(aDEdge->GetDeflection() / 3., Precision::Confusion()));
 
-    BRepMesh_EdgeDiscret::Tessellate3d(aDEdge, aTessellator, false);
-    BRepMesh_EdgeDiscret::Tessellate2d(aDEdge, false);
+      const IMeshData::IPCurveHandle& aPCurve = aDEdge->GetPCurve(0);
+      const IMeshData::IFaceHandle    aDFace = aPCurve->GetFace();
+      occ::handle<IMeshTools_CurveTessellator> aTessellator =
+        BRepMesh_EdgeDiscret::CreateEdgeTessellator(
+          aDEdge, aPCurve->GetOrientation(), aDFace, myParameters);
+
+      BRepMesh_EdgeDiscret::Tessellate3d(aDEdge, aTessellator, false);
+      BRepMesh_EdgeDiscret::Tessellate2d(aDEdge, false);
+    }
+
+  private:
+
+    EdgeAmplifier (const EdgeAmplifier& theOther);
+
+    void operator=(const EdgeAmplifier& theOther);
+
+  private:
+    const IMeshTools_Parameters& myParameters;
+  };
+
+  //! Returns True if some of two vertcies is same with reference one.
+  bool isSameWithSomeOf(
+    const TopoDS_Vertex& theRefVertex,
+    const TopoDS_Vertex& theVertex1,
+    const TopoDS_Vertex& theVertex2)
+  {
+    return (theRefVertex.IsSame(theVertex1) ||
+            theRefVertex.IsSame(theVertex2));
   }
 
-private:
-  EdgeAmplifier(const EdgeAmplifier& theOther) = delete;
-
-  void operator=(const EdgeAmplifier& theOther) = delete;
-
-private:
-  const IMeshTools_Parameters& myParameters;
-};
-
-//! Returns True if some of two vertcies is same with reference one.
-bool isSameWithSomeOf(const TopoDS_Vertex& theRefVertex,
-                      const TopoDS_Vertex& theVertex1,
-                      const TopoDS_Vertex& theVertex2)
-{
-  return (theRefVertex.IsSame(theVertex1) || theRefVertex.IsSame(theVertex2));
+  //! Returns True if some of two vertcies is within tolerance of reference one.
+  bool isInToleranceWithSomeOf(
+    const gp_Pnt& theRefPoint,
+    const gp_Pnt& thePoint1,
+    const gp_Pnt& thePoint2,
+    const double theTol)
+  {
+    const double aSqTol = theTol * theTol;
+    return (theRefPoint.SquareDistance(thePoint1) < aSqTol ||
+            theRefPoint.SquareDistance(thePoint2) < aSqTol);
+  }
 }
 
-//! Returns True if some of two vertcies is within tolerance of reference one.
-bool isInToleranceWithSomeOf(const gp_Pnt& theRefPoint,
-                             const gp_Pnt& thePoint1,
-                             const gp_Pnt& thePoint2,
-                             const double  theTol)
+//=======================================================================
+// Function: Constructor
+// Purpose : 
+//=======================================================================
+BRepMesh_ModelHealer::BRepMesh_ModelHealer()
 {
-  const double aSqTol = theTol * theTol;
-  return (theRefPoint.SquareDistance(thePoint1) < aSqTol
-          || theRefPoint.SquareDistance(thePoint2) < aSqTol);
 }
-} // namespace
 
-//=================================================================================================
-
-BRepMesh_ModelHealer::BRepMesh_ModelHealer() = default;
-
-//=================================================================================================
-
-BRepMesh_ModelHealer::~BRepMesh_ModelHealer() = default;
-
-//=================================================================================================
-
-bool BRepMesh_ModelHealer::performInternal(const occ::handle<IMeshData_Model>& theModel,
-                                           const IMeshTools_Parameters&        theParameters,
-                                           const Message_ProgressRange&        theRange)
+//=======================================================================
+// Function: Destructor
+// Purpose : 
+//=======================================================================
+BRepMesh_ModelHealer::~BRepMesh_ModelHealer()
 {
-  (void)theRange;
+}
+
+//=======================================================================
+// Function: Perform
+// Purpose : 
+//=======================================================================
+bool BRepMesh_ModelHealer::performInternal(
+  const occ::handle<IMeshData_Model>& theModel,
+  const IMeshTools_Parameters&   theParameters,
+  const Message_ProgressRange&   theRange)
+{
+  (void )theRange;
   myModel      = theModel;
   myParameters = theParameters;
   if (myModel.IsNull())
@@ -135,7 +130,7 @@ bool BRepMesh_ModelHealer::performInternal(const occ::handle<IMeshData_Model>& t
   }
 
   // MinSize is made as a constant. It is connected with
-  // the fact that too rude discretisation can lead to
+  // the fact that too rude discretisation can lead to 
   // self-intersecting polygon, which cannot be fixed.
   // As result the face will not be triangulated at all.
   // E.g. see "Test mesh standard_mesh C7", the face #17.
@@ -144,8 +139,7 @@ bool BRepMesh_ModelHealer::performInternal(const occ::handle<IMeshData_Model>& t
   myFaceIntersectingEdges = new IMeshData::DMapOfIFacePtrsMapOfIEdgePtrs;
   for (int aFaceIt = 0; aFaceIt < myModel->FacesNb(); ++aFaceIt)
   {
-    myFaceIntersectingEdges->Bind(myModel->GetFace(aFaceIt).get(),
-                                  Handle(IMeshData::MapOfIEdgePtr)());
+    myFaceIntersectingEdges->Bind(myModel->GetFace(aFaceIt).get(), Handle(IMeshData::MapOfIEdgePtr)());
   }
 
   // TODO: Here we can process edges in order to remove close discrete points.
@@ -168,28 +162,29 @@ bool BRepMesh_ModelHealer::performInternal(const occ::handle<IMeshData_Model>& t
   return true;
 }
 
-//=================================================================================================
-
+//=======================================================================
+// Function: amplifyEdges
+// Purpose : 
+//=======================================================================
 void BRepMesh_ModelHealer::amplifyEdges()
 {
   occ::handle<NCollection_IncAllocator> aTmpAlloc =
     new NCollection_IncAllocator(IMeshData::MEMORY_BLOCK_SIZE_HUGE);
 
-  int                      aAmpIt  = 0;
-  const double             aIterNb = 5;
+  int aAmpIt = 0;
+  const double aIterNb = 5;
   IMeshData::MapOfIEdgePtr aEdgesToUpdate(1, aTmpAlloc);
-  EdgeAmplifier            anEdgeAmplifier(myParameters);
+  EdgeAmplifier anEdgeAmplifier (myParameters);
 
   while (aAmpIt++ < aIterNb && popEdgesToUpdate(aEdgesToUpdate))
   {
     // Try to update discretization by decreasing deflection of problematic edges.
-    OSD_Parallel::ForEach(aEdgesToUpdate.cbegin(),
-                          aEdgesToUpdate.cend(),
+    OSD_Parallel::ForEach(aEdgesToUpdate.cbegin(), aEdgesToUpdate.cend(),
                           anEdgeAmplifier,
-                          !myParameters.InParallel || aEdgesToUpdate.Size() <= 1,
+                          !(myParameters.InParallel && aEdgesToUpdate.Size() > 1),
                           aEdgesToUpdate.Size());
 
-    IMeshData::MapOfIFacePtr           aFacesToCheck(1, aTmpAlloc);
+    IMeshData::MapOfIFacePtr aFacesToCheck(1, aTmpAlloc);
     IMeshData::MapOfIEdgePtr::Iterator aEdgeIt(aEdgesToUpdate);
     for (; aEdgeIt.More(); aEdgeIt.Next())
     {
@@ -200,10 +195,8 @@ void BRepMesh_ModelHealer::amplifyEdges()
       }
     }
 
-    OSD_Parallel::ForEach(aFacesToCheck.cbegin(),
-                          aFacesToCheck.cend(),
-                          *this,
-                          !myParameters.InParallel || aFacesToCheck.Size() <= 1,
+    OSD_Parallel::ForEach(aFacesToCheck.cbegin(), aFacesToCheck.cend(),
+                          *this, !(myParameters.InParallel && aFacesToCheck.Size() > 1),
                           aFacesToCheck.Size());
 
     aEdgesToUpdate.Clear();
@@ -211,9 +204,12 @@ void BRepMesh_ModelHealer::amplifyEdges()
   }
 }
 
-//=================================================================================================
-
-bool BRepMesh_ModelHealer::popEdgesToUpdate(IMeshData::MapOfIEdgePtr& theEdgesToUpdate)
+//=======================================================================
+// Function: popEdgesToUpdate
+// Purpose : 
+//=======================================================================
+bool BRepMesh_ModelHealer::popEdgesToUpdate(
+  IMeshData::MapOfIEdgePtr& theEdgesToUpdate)
 {
   IMeshData::DMapOfIFacePtrsMapOfIEdgePtrs::Iterator aFaceIt(*myFaceIntersectingEdges);
   for (; aFaceIt.More(); aFaceIt.Next())
@@ -221,7 +217,7 @@ bool BRepMesh_ModelHealer::popEdgesToUpdate(IMeshData::MapOfIEdgePtr& theEdgesTo
     Handle(IMeshData::MapOfIEdgePtr)& aIntersections = aFaceIt.ChangeValue();
     if (!aIntersections.IsNull())
     {
-      NCollection_MapAlgo::Unite(theEdgesToUpdate, *aIntersections);
+      theEdgesToUpdate.Unite(*aIntersections);
       aIntersections.Nullify();
     }
   }
@@ -229,20 +225,21 @@ bool BRepMesh_ModelHealer::popEdgesToUpdate(IMeshData::MapOfIEdgePtr& theEdgesTo
   return !theEdgesToUpdate.IsEmpty();
 }
 
-//=================================================================================================
-
+//=======================================================================
+// Function: process
+// Purpose : 
+//=======================================================================
 void BRepMesh_ModelHealer::process(const IMeshData::IFaceHandle& theDFace) const
 {
   try
   {
     OCC_CATCH_SIGNALS
 
-    Handle(IMeshData::MapOfIEdgePtr)& aIntersections =
-      myFaceIntersectingEdges->ChangeFind(theDFace.get());
+    Handle(IMeshData::MapOfIEdgePtr)& aIntersections = myFaceIntersectingEdges->ChangeFind(theDFace.get());
     aIntersections.Nullify();
-
+  
     fixFaceBoundaries(theDFace);
-
+  
     if (!theDFace->IsSet(IMeshData_Failure))
     {
       BRepMesh_FaceChecker aChecker(theDFace, myParameters);
@@ -255,26 +252,24 @@ void BRepMesh_ModelHealer::process(const IMeshData::IFaceHandle& theDFace) const
       }
       else
       {
-        if (theDFace->WiresNb() == 1)
+        if (theDFace->WiresNb () == 1)
         {
-          const IMeshData::IWireHandle& aDWire = theDFace->GetWire(0);
+          const IMeshData::IWireHandle& aDWire = theDFace->GetWire (0);
 
-          if (aDWire->EdgesNb() == 2)
+          if (aDWire->EdgesNb () == 2)
           {
-            const IMeshData::IEdgePtr& aDEdge0 = aDWire->GetEdge(0);
-            const IMeshData::IEdgePtr& aDEdge1 = aDWire->GetEdge(1);
+            const IMeshData::IEdgePtr& aDEdge0 = aDWire->GetEdge (0);
+            const IMeshData::IEdgePtr& aDEdge1 = aDWire->GetEdge (1);
 
-            const IMeshData::IPCurveHandle& aPCurve0 =
-              aDEdge0->GetPCurve(theDFace.get(), aDWire->GetEdgeOrientation(0));
-            const IMeshData::IPCurveHandle& aPCurve1 =
-              aDEdge1->GetPCurve(theDFace.get(), aDWire->GetEdgeOrientation(1));
+            const IMeshData::IPCurveHandle& aPCurve0 = aDEdge0->GetPCurve (theDFace.get (), aDWire->GetEdgeOrientation (0));
+            const IMeshData::IPCurveHandle& aPCurve1 = aDEdge1->GetPCurve (theDFace.get (), aDWire->GetEdgeOrientation (1));
 
-            if (aPCurve0->ParametersNb() == 2 && aPCurve1->ParametersNb() == 2)
+            if (aPCurve0->ParametersNb () == 2 && aPCurve1->ParametersNb () == 2)
             {
               aIntersections = new IMeshData::MapOfIEdgePtr;
               // a kind of degenerated face - 1 wire, 2 edges and both edges are very small
-              aIntersections->Add(aDEdge0);
-              aIntersections->Add(aDEdge1);
+              aIntersections->Add (aDEdge0);
+              aIntersections->Add (aDEdge1);
             }
           }
         }
@@ -283,17 +278,19 @@ void BRepMesh_ModelHealer::process(const IMeshData::IFaceHandle& theDFace) const
   }
   catch (Standard_Failure const&)
   {
-    theDFace->SetStatus(IMeshData_Failure);
+    theDFace->SetStatus (IMeshData_Failure);
   }
 }
 
-//=================================================================================================
-
+//=======================================================================
+// Function: fixFaceBoundaries
+// Purpose : 
+//=======================================================================
 void BRepMesh_ModelHealer::fixFaceBoundaries(const IMeshData::IFaceHandle& theDFace) const
 {
 #ifdef DEBUG_HEALER
   TopoDS_Compound aComp;
-  BRep_Builder    aBuilder;
+  BRep_Builder aBuilder;
   aBuilder.MakeCompound(aComp);
 #endif
 
@@ -310,8 +307,8 @@ void BRepMesh_ModelHealer::fixFaceBoundaries(const IMeshData::IFaceHandle& theDF
       const IMeshData::IEdgeHandle aCurrEdge = aDWire->GetEdge(aEdgeIt);
       const IMeshData::IEdgeHandle aNextEdge = aDWire->GetEdge(aNextEdgeIt);
 
-      bool isConnected = !getCommonVertex(aCurrEdge, aNextEdge).IsNull()
-                         && !getCommonVertex(aPrevEdge, aCurrEdge).IsNull();
+      bool isConnected = !getCommonVertex(aCurrEdge, aNextEdge).IsNull() &&
+                                     !getCommonVertex(aPrevEdge, aCurrEdge).IsNull();
 
       if (isConnected)
       {
@@ -359,7 +356,7 @@ void BRepMesh_ModelHealer::fixFaceBoundaries(const IMeshData::IFaceHandle& theDF
   }
 
 #ifdef DEBUG_HEALER
-  TCollection_AsciiString aName("face_discr.brep");
+  TCollection_AsciiString aName    ("face_discr.brep");
   TCollection_AsciiString aFaceName("face_geom.brep");
   BRepTools::Write(aComp, aName.ToCString());
   BRepTools::Write(theDFace->GetFace(), aFaceName.ToCString());
@@ -368,23 +365,26 @@ void BRepMesh_ModelHealer::fixFaceBoundaries(const IMeshData::IFaceHandle& theDF
   BRepMesh_Deflection::ComputeDeflection(theDFace, myParameters);
 }
 
-//=================================================================================================
-
-TopoDS_Vertex BRepMesh_ModelHealer::getCommonVertex(const IMeshData::IEdgeHandle& theEdge1,
-                                                    const IMeshData::IEdgeHandle& theEdge2) const
+//=======================================================================
+// Function: hasCommonVertex
+// Purpose : 
+//=======================================================================
+TopoDS_Vertex BRepMesh_ModelHealer::getCommonVertex(
+  const IMeshData::IEdgeHandle& theEdge1,
+  const IMeshData::IEdgeHandle& theEdge2) const
 {
   TopoDS_Vertex aVertex1_1, aVertex1_2;
   TopExp::Vertices(theEdge1->GetEdge(), aVertex1_1, aVertex1_2);
 
-  // Test bugs moddata_2 bug428.
-  //   restore [locate_data_file OCC428.brep] rr
-  //   explode rr f
-  //   explode rr_91 w
-  //   explode rr_91_2 e
-  //   nbshapes rr_91_2_2
-  //   # 0 vertices; 1 edge
+  //Test bugs moddata_2 bug428.
+  //  restore [locate_data_file OCC428.brep] rr
+  //  explode rr f
+  //  explode rr_91 w
+  //  explode rr_91_2 e
+  //  nbshapes rr_91_2_2
+  //  # 0 vertices; 1 edge
 
-  // This shape is invalid and can lead to exception in this code.
+  //This shape is invalid and can lead to exception in this code.
 
   if (aVertex1_1.IsNull() || aVertex1_2.IsNull())
     return TopoDS_Vertex();
@@ -409,21 +409,21 @@ TopoDS_Vertex BRepMesh_ModelHealer::getCommonVertex(const IMeshData::IEdgeHandle
     return aVertex1_2;
   }
 
-  const gp_Pnt aPnt1_1 = BRep_Tool::Pnt(aVertex1_1);
-  const gp_Pnt aPnt1_2 = BRep_Tool::Pnt(aVertex1_2);
+  const gp_Pnt        aPnt1_1 = BRep_Tool::Pnt(aVertex1_1);
+  const gp_Pnt        aPnt1_2 = BRep_Tool::Pnt(aVertex1_2);
   const double aTol1_1 = BRep_Tool::Tolerance(aVertex1_1);
   const double aTol1_2 = BRep_Tool::Tolerance(aVertex1_2);
 
-  const gp_Pnt aPnt2_1 = BRep_Tool::Pnt(aVertex2_1);
-  const gp_Pnt aPnt2_2 = BRep_Tool::Pnt(aVertex2_2);
+  const gp_Pnt        aPnt2_1 = BRep_Tool::Pnt(aVertex2_1);
+  const gp_Pnt        aPnt2_2 = BRep_Tool::Pnt(aVertex2_2);
   const double aTol2_1 = BRep_Tool::Tolerance(aVertex2_1);
   const double aTol2_2 = BRep_Tool::Tolerance(aVertex2_2);
 
-  if (isInToleranceWithSomeOf(aPnt1_1, aPnt2_1, aPnt2_2, aTol1_1 + std::max(aTol2_1, aTol2_2)))
+  if (isInToleranceWithSomeOf(aPnt1_1, aPnt2_1, aPnt2_2, aTol1_1 + Max(aTol2_1, aTol2_2)))
   {
     return aVertex1_1;
   }
-  else if (isInToleranceWithSomeOf(aPnt1_2, aPnt2_1, aPnt2_2, aTol1_2 + std::max(aTol2_1, aTol2_2)))
+  else if (isInToleranceWithSomeOf(aPnt1_2, aPnt2_1, aPnt2_2, aTol1_2 + Max(aTol2_1, aTol2_2)))
   {
     return aVertex1_2;
   }
@@ -431,13 +431,18 @@ TopoDS_Vertex BRepMesh_ModelHealer::getCommonVertex(const IMeshData::IEdgeHandle
   return TopoDS_Vertex();
 }
 
-//=================================================================================================
-
-bool BRepMesh_ModelHealer::connectClosestPoints(const IMeshData::IPCurveHandle& thePrevDEdge,
-                                                const IMeshData::IPCurveHandle& theCurrDEdge,
-                                                const IMeshData::IPCurveHandle& theNextDEdge) const
+//=======================================================================
+// Function: connectClosestPoints
+// Purpose : 
+//=======================================================================
+bool BRepMesh_ModelHealer::connectClosestPoints(
+  const IMeshData::IPCurveHandle& thePrevDEdge,
+  const IMeshData::IPCurveHandle& theCurrDEdge,
+  const IMeshData::IPCurveHandle& theNextDEdge) const
 {
-  if (thePrevDEdge->IsInternal() || theCurrDEdge->IsInternal() || theNextDEdge->IsInternal())
+  if (thePrevDEdge->IsInternal() ||
+      theCurrDEdge->IsInternal() ||
+      theNextDEdge->IsInternal())
   {
     return true;
   }
@@ -455,15 +460,16 @@ bool BRepMesh_ModelHealer::connectClosestPoints(const IMeshData::IPCurveHandle& 
   gp_Pnt2d& aCurrFirstUV = theCurrDEdge->GetPoint(0);
   gp_Pnt2d& aCurrLastUV  = theCurrDEdge->GetPoint(theCurrDEdge->ParametersNb() - 1);
 
-  gp_Pnt2d *   aPrevUV = nullptr, *aCurrPrevUV = nullptr;
-  const double aPrevSqDist =
-    closestPoints(aPrevFirstUV, aPrevLastUV, aCurrFirstUV, aCurrLastUV, aPrevUV, aCurrPrevUV);
+  gp_Pnt2d *aPrevUV = NULL, *aCurrPrevUV = NULL;
+  const double aPrevSqDist = closestPoints(aPrevFirstUV, aPrevLastUV,
+                                                  aCurrFirstUV, aCurrLastUV,
+                                                  aPrevUV, aCurrPrevUV);
 
-  gp_Pnt2d *aNextUV = nullptr, *aCurrNextUV = nullptr;
+  gp_Pnt2d *aNextUV = NULL, *aCurrNextUV = NULL;
   if (thePrevDEdge == theNextDEdge)
   {
     // Wire consists of two edges. Connect both ends.
-    aNextUV     = (aPrevUV == &aPrevFirstUV) ? &aPrevLastUV : &aPrevFirstUV;
+    aNextUV     = (aPrevUV     == &aPrevFirstUV) ? &aPrevLastUV : &aPrevFirstUV;
     aCurrNextUV = (aCurrPrevUV == &aCurrFirstUV) ? &aCurrLastUV : &aCurrFirstUV;
 
     *aNextUV = *aCurrNextUV;
@@ -474,37 +480,24 @@ bool BRepMesh_ModelHealer::connectClosestPoints(const IMeshData::IPCurveHandle& 
   gp_Pnt2d& aNextFirstUV = theNextDEdge->GetPoint(0);
   gp_Pnt2d& aNextLastUV  = theNextDEdge->GetPoint(theNextDEdge->ParametersNb() - 1);
 
-  const double aNextSqDist =
-    closestPoints(aNextFirstUV, aNextLastUV, aCurrFirstUV, aCurrLastUV, aNextUV, aCurrNextUV);
+  const double aNextSqDist = closestPoints(aNextFirstUV, aNextLastUV,
+                                                  aCurrFirstUV, aCurrLastUV,
+                                                  aNextUV, aCurrNextUV);
 
 #ifdef DEBUG_HEALER
   std::cout << "PrevSqDist = " << aPrevSqDist << std::endl;
   std::cout << "NextSqDist = " << aNextSqDist << std::endl;
 #endif
 
-  // Connect closest points first. This can help to identify
+  // Connect closest points first. This can help to identify 
   // which ends should be connected in case of gap.
   if (aPrevSqDist - aNextSqDist > gp::Resolution())
   {
-    adjustSamePoints(aCurrNextUV,
-                     aNextUV,
-                     aCurrPrevUV,
-                     aPrevUV,
-                     aCurrFirstUV,
-                     aCurrLastUV,
-                     aPrevFirstUV,
-                     aPrevLastUV);
+    adjustSamePoints(aCurrNextUV, aNextUV, aCurrPrevUV, aPrevUV, aCurrFirstUV, aCurrLastUV, aPrevFirstUV, aPrevLastUV);
   }
   else
   {
-    adjustSamePoints(aCurrPrevUV,
-                     aPrevUV,
-                     aCurrNextUV,
-                     aNextUV,
-                     aCurrFirstUV,
-                     aCurrLastUV,
-                     aNextFirstUV,
-                     aNextLastUV);
+    adjustSamePoints(aCurrPrevUV, aPrevUV, aCurrNextUV, aNextUV, aCurrFirstUV, aCurrLastUV, aNextFirstUV, aNextLastUV);
   }
 
   return true;

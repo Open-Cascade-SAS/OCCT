@@ -31,23 +31,25 @@ class StepGeom_BSplineCurveWithKnots;
 //! BSplineCurveWithKnots from StepGeom
 //! which describes a bspline_curve_with_knots from
 //! Prostep
-class GeomToStep_MakeBSplineCurveWithKnots : public GeomToStep_Root
+class GeomToStep_MakeBSplineCurveWithKnots  : public GeomToStep_Root
 {
 public:
+
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT GeomToStep_MakeBSplineCurveWithKnots(
-    const occ::handle<Geom_BSplineCurve>& Bsplin,
-    const StepData_Factors&               theLocalFactors = StepData_Factors());
-
-  Standard_EXPORT GeomToStep_MakeBSplineCurveWithKnots(
-    const occ::handle<Geom2d_BSplineCurve>& Bsplin,
-    const StepData_Factors&                 theLocalFactors = StepData_Factors());
-
+  
+  Standard_EXPORT GeomToStep_MakeBSplineCurveWithKnots(const occ::handle<Geom_BSplineCurve>& Bsplin,
+                                                       const StepData_Factors& theLocalFactors = StepData_Factors());
+  
+  Standard_EXPORT GeomToStep_MakeBSplineCurveWithKnots(const occ::handle<Geom2d_BSplineCurve>& Bsplin,
+                                                       const StepData_Factors& theLocalFactors = StepData_Factors());
+  
   Standard_EXPORT const occ::handle<StepGeom_BSplineCurveWithKnots>& Value() const;
 
 private:
+
   occ::handle<StepGeom_BSplineCurveWithKnots> theBSplineCurveWithKnots;
+
 };
 
 #endif // _GeomToStep_MakeBSplineCurveWithKnots_HeaderFile

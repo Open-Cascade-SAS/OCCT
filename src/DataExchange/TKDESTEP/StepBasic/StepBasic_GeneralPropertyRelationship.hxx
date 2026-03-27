@@ -27,13 +27,15 @@ class StepBasic_GeneralPropertyRelationship : public Standard_Transient
 {
 
 public:
+
+  
   //! Empty constructor
   Standard_EXPORT StepBasic_GeneralPropertyRelationship();
-
+  
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&  aName,
-                            const bool                                    hasDescription,
-                            const occ::handle<TCollection_HAsciiString>&  aDescription,
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
+                            const bool hasDescription,
+                            const occ::handle<TCollection_HAsciiString>& aDescription,
                             const occ::handle<StepBasic_GeneralProperty>& aRelatingGeneralProperty,
                             const occ::handle<StepBasic_GeneralProperty>& aRelatedGeneralProperty);
 
@@ -56,24 +58,24 @@ public:
   Standard_EXPORT occ::handle<StepBasic_GeneralProperty> RelatingGeneralProperty() const;
 
   //! Set field RelatingGeneralProperty
-  Standard_EXPORT void SetRelatingGeneralProperty(
-    const occ::handle<StepBasic_GeneralProperty>& RelatingGeneralProperty);
+  Standard_EXPORT void SetRelatingGeneralProperty(const occ::handle<StepBasic_GeneralProperty>& RelatingGeneralProperty);
 
   //! Returns field RelatedGeneralProperty
   Standard_EXPORT occ::handle<StepBasic_GeneralProperty> RelatedGeneralProperty() const;
 
   //! Set field RelatedGeneralProperty
-  Standard_EXPORT void SetRelatedGeneralProperty(
-    const occ::handle<StepBasic_GeneralProperty>& RelatedGeneralProperty);
+  Standard_EXPORT void SetRelatedGeneralProperty(const occ::handle<StepBasic_GeneralProperty>& RelatedGeneralProperty);
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_GeneralPropertyRelationship, Standard_Transient)
 
 private:
-  bool                                   defDescription;
-  occ::handle<TCollection_HAsciiString>  theName;
-  occ::handle<TCollection_HAsciiString>  theDescription;
+
+  bool defDescription;
+  occ::handle<TCollection_HAsciiString> theName;
+  occ::handle<TCollection_HAsciiString> theDescription;
   occ::handle<StepBasic_GeneralProperty> theRelatingGeneralProperty;
   occ::handle<StepBasic_GeneralProperty> theRelatedGeneralProperty;
+
 };
 
 #endif // _StepBasic_GeneralPropertyRelationship_HeaderFile

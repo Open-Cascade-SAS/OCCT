@@ -32,27 +32,28 @@ class Geom2d_Circle;
 //! Circle from Geom, and Circ from gp, and the class
 //! Circle from StepGeom which describes a circle from
 //! Prostep.
-class GeomToStep_MakeCircle : public GeomToStep_Root
+class GeomToStep_MakeCircle  : public GeomToStep_Root
 {
 public:
+
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT GeomToStep_MakeCircle(
-    const gp_Circ&          C,
-    const StepData_Factors& theLocalFactors = StepData_Factors());
-
-  Standard_EXPORT GeomToStep_MakeCircle(
-    const occ::handle<Geom_Circle>& C,
-    const StepData_Factors&         theLocalFactors = StepData_Factors());
-
-  Standard_EXPORT GeomToStep_MakeCircle(
-    const occ::handle<Geom2d_Circle>& C,
-    const StepData_Factors&           theLocalFactors = StepData_Factors());
-
+  
+  Standard_EXPORT GeomToStep_MakeCircle(const gp_Circ& C,
+                                        const StepData_Factors& theLocalFactors = StepData_Factors());
+  
+  Standard_EXPORT GeomToStep_MakeCircle(const occ::handle<Geom_Circle>& C,
+                                        const StepData_Factors& theLocalFactors = StepData_Factors());
+  
+  Standard_EXPORT GeomToStep_MakeCircle(const occ::handle<Geom2d_Circle>& C,
+                                        const StepData_Factors& theLocalFactors = StepData_Factors());
+  
   Standard_EXPORT const occ::handle<StepGeom_Circle>& Value() const;
 
 private:
+
   occ::handle<StepGeom_Circle> theCircle;
+
 };
 
 #endif // _GeomToStep_MakeCircle_HeaderFile

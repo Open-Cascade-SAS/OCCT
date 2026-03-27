@@ -11,39 +11,38 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include "RWStepRepr_RWBooleanRepresentationItem.pxx"
+#include <RWStepRepr_RWBooleanRepresentationItem.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepRepr_BooleanRepresentationItem.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-RWStepRepr_RWBooleanRepresentationItem::RWStepRepr_RWBooleanRepresentationItem() = default;
+RWStepRepr_RWBooleanRepresentationItem::RWStepRepr_RWBooleanRepresentationItem()
+{
+}
 
-void RWStepRepr_RWBooleanRepresentationItem::ReadStep(
-  const occ::handle<StepData_StepReaderData>&            theData,
-  const int                                              theNum,
-  occ::handle<Interface_Check>&                          theAch,
-  const occ::handle<StepRepr_BooleanRepresentationItem>& theEnt) const
+void RWStepRepr_RWBooleanRepresentationItem::ReadStep(const occ::handle<StepData_StepReaderData>& theData,
+                                                      const int theNum,
+                                                      occ::handle<Interface_Check>& theAch,
+                                                      const occ::handle<StepRepr_BooleanRepresentationItem>& theEnt) const
 {
   // Check number of parameters
-  if (!theData->CheckNbParams(theNum, 2, theAch, "boolean_representation_item"))
-    return;
+  if (!theData->CheckNbParams(theNum, 2, theAch, "boolean_representation_item") ) return;
 
   // --- inherited field : name ---
   occ::handle<TCollection_HAsciiString> aName;
-  theData->ReadString(theNum, 1, "name", theAch, aName);
+  theData->ReadString (theNum, 1, "name", theAch, aName);
 
   // --- own field : value ---
   bool aValue;
-  theData->ReadBoolean(theNum, 2, "value", theAch, aValue);
+  theData->ReadBoolean (theNum, 2, "value", theAch, aValue);
 
   //--- Initialisation of the read entity ---
   theEnt->Init(aName, aValue);
 }
 
-void RWStepRepr_RWBooleanRepresentationItem::WriteStep(
-  StepData_StepWriter&                                   theSW,
-  const occ::handle<StepRepr_BooleanRepresentationItem>& theEnt) const
+void RWStepRepr_RWBooleanRepresentationItem::WriteStep(StepData_StepWriter& theSW,
+                                                       const occ::handle<StepRepr_BooleanRepresentationItem>& theEnt) const
 {
   theSW.Send(theEnt->Name());
   theSW.Send(theEnt->Value());

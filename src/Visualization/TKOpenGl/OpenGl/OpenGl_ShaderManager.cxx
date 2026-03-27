@@ -29,120 +29,101 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_ShaderManager, Graphic3d_ShaderManager)
 
 namespace
 {
-static const GLfloat THE_DEFAULT_AMBIENT[4]    = {0.0f, 0.0f, 0.0f, 1.0f};
-static const GLfloat THE_DEFAULT_SPOT_DIR[3]   = {0.0f, 0.0f, -1.0f};
-static const GLfloat THE_DEFAULT_SPOT_EXPONENT = 0.0f;
-static const GLfloat THE_DEFAULT_SPOT_CUTOFF   = 180.0f;
+  static const GLfloat THE_DEFAULT_AMBIENT[4]    = { 0.0f, 0.0f, 0.0f, 1.0f };
+  static const GLfloat THE_DEFAULT_SPOT_DIR[3]   = { 0.0f, 0.0f, -1.0f };
+  static const GLfloat THE_DEFAULT_SPOT_EXPONENT = 0.0f;
+  static const GLfloat THE_DEFAULT_SPOT_CUTOFF   = 180.0f;
 
-//! Bind FFP light source.
-static void bindLight(const Graphic3d_CLight&        theLight,
-                      const GLenum                   theLightGlId,
-                      const NCollection_Mat4<float>& theModelView,
-                      OpenGl_Context*                theCtx)
-{
-  // the light is a headlight?
-  if (theLight.IsHeadlight())
+  //! Bind FFP light source.
+  static void bindLight (const Graphic3d_CLight& theLight,
+                         const GLenum        theLightGlId,
+                         const OpenGl_Mat4&  theModelView,
+                         OpenGl_Context*     theCtx)
   {
-    theCtx->core11ffp->glMatrixMode(GL_MODELVIEW);
-    theCtx->core11ffp->glLoadIdentity();
+    // the light is a headlight?
+    if (theLight.IsHeadlight())
+    {
+      theCtx->core11ffp->glMatrixMode (GL_MODELVIEW);
+      theCtx->core11ffp->glLoadIdentity();
+    }
+
+    // setup light type
+    const Graphic3d_Vec4& aLightColor = theLight.PackedColor();
+    switch (theLight.Type())
+    {
+      case Graphic3d_TypeOfLightSource_Ambient:
+      {
+        break; // handled by separate if-clause at beginning of method
+      }
+      case Graphic3d_TypeOfLightSource_Directional:
+      {
+        // if the last parameter of GL_POSITION, is zero, the corresponding light source is a Directional one
+        const OpenGl_Vec4 anInfDir = -theLight.PackedDirectionRange();
+
+        // to create a realistic effect,  set the GL_SPECULAR parameter to the same value as the GL_DIFFUSE.
+        theCtx->core11ffp->glLightfv (theLightGlId, GL_AMBIENT,               THE_DEFAULT_AMBIENT);
+        theCtx->core11ffp->glLightfv (theLightGlId, GL_DIFFUSE,               aLightColor.GetData());
+        theCtx->core11ffp->glLightfv (theLightGlId, GL_SPECULAR,              aLightColor.GetData());
+        theCtx->core11ffp->glLightfv (theLightGlId, GL_POSITION,              anInfDir.GetData());
+        theCtx->core11ffp->glLightfv (theLightGlId, GL_SPOT_DIRECTION,        THE_DEFAULT_SPOT_DIR);
+        theCtx->core11ffp->glLightf  (theLightGlId, GL_SPOT_EXPONENT,         THE_DEFAULT_SPOT_EXPONENT);
+        theCtx->core11ffp->glLightf  (theLightGlId, GL_SPOT_CUTOFF,           THE_DEFAULT_SPOT_CUTOFF);
+        break;
+      }
+      case Graphic3d_TypeOfLightSource_Positional:
+      {
+        // to create a realistic effect, set the GL_SPECULAR parameter to the same value as the GL_DIFFUSE
+        const OpenGl_Vec4 aPosition (static_cast<float>(theLight.Position().X()), static_cast<float>(theLight.Position().Y()), static_cast<float>(theLight.Position().Z()), 1.0f);
+        theCtx->core11ffp->glLightfv (theLightGlId, GL_AMBIENT,               THE_DEFAULT_AMBIENT);
+        theCtx->core11ffp->glLightfv (theLightGlId, GL_DIFFUSE,               aLightColor.GetData());
+        theCtx->core11ffp->glLightfv (theLightGlId, GL_SPECULAR,              aLightColor.GetData());
+        theCtx->core11ffp->glLightfv (theLightGlId, GL_POSITION,              aPosition.GetData());
+        theCtx->core11ffp->glLightfv (theLightGlId, GL_SPOT_DIRECTION,        THE_DEFAULT_SPOT_DIR);
+        theCtx->core11ffp->glLightf  (theLightGlId, GL_SPOT_EXPONENT,         THE_DEFAULT_SPOT_EXPONENT);
+        theCtx->core11ffp->glLightf  (theLightGlId, GL_SPOT_CUTOFF,           THE_DEFAULT_SPOT_CUTOFF);
+        theCtx->core11ffp->glLightf  (theLightGlId, GL_CONSTANT_ATTENUATION,  theLight.ConstAttenuation());
+        theCtx->core11ffp->glLightf  (theLightGlId, GL_LINEAR_ATTENUATION,    theLight.LinearAttenuation());
+        theCtx->core11ffp->glLightf  (theLightGlId, GL_QUADRATIC_ATTENUATION, 0.0f);
+        break;
+      }
+      case Graphic3d_TypeOfLightSource_Spot:
+      {
+        const OpenGl_Vec4 aPosition (static_cast<float>(theLight.Position().X()), static_cast<float>(theLight.Position().Y()), static_cast<float>(theLight.Position().Z()), 1.0f);
+        theCtx->core11ffp->glLightfv (theLightGlId, GL_AMBIENT,               THE_DEFAULT_AMBIENT);
+        theCtx->core11ffp->glLightfv (theLightGlId, GL_DIFFUSE,               aLightColor.GetData());
+        theCtx->core11ffp->glLightfv (theLightGlId, GL_SPECULAR,              aLightColor.GetData());
+        theCtx->core11ffp->glLightfv (theLightGlId, GL_POSITION,              aPosition.GetData());
+        theCtx->core11ffp->glLightfv (theLightGlId, GL_SPOT_DIRECTION,        theLight.PackedDirectionRange().GetData());
+        theCtx->core11ffp->glLightf  (theLightGlId, GL_SPOT_EXPONENT,         theLight.Concentration() * 128.0f);
+        theCtx->core11ffp->glLightf  (theLightGlId, GL_SPOT_CUTOFF,          (theLight.Angle() * 180.0f) / GLfloat(M_PI));
+        theCtx->core11ffp->glLightf  (theLightGlId, GL_CONSTANT_ATTENUATION,  theLight.ConstAttenuation());
+        theCtx->core11ffp->glLightf  (theLightGlId, GL_LINEAR_ATTENUATION,    theLight.LinearAttenuation());
+        theCtx->core11ffp->glLightf  (theLightGlId, GL_QUADRATIC_ATTENUATION, 0.0f);
+        break;
+      }
+    }
+
+    // restore matrix in case of headlight
+    if (theLight.IsHeadlight())
+    {
+      theCtx->core11ffp->glLoadMatrixf (theModelView.GetData());
+    }
+
+    theCtx->core11fwd->glEnable (theLightGlId);
   }
-
-  // setup light type
-  const NCollection_Vec4<float>& aLightColor = theLight.PackedColor();
-  switch (theLight.Type())
-  {
-    case Graphic3d_TypeOfLightSource_Ambient: {
-      break; // handled by separate if-clause at beginning of method
-    }
-    case Graphic3d_TypeOfLightSource_Directional: {
-      // if the last parameter of GL_POSITION, is zero, the corresponding light source is a
-      // Directional one
-      const NCollection_Vec4<float> anInfDir = -theLight.PackedDirectionRange();
-
-      // to create a realistic effect,  set the GL_SPECULAR parameter to the same value as the
-      // GL_DIFFUSE.
-      theCtx->core11ffp->glLightfv(theLightGlId, GL_AMBIENT, THE_DEFAULT_AMBIENT);
-      theCtx->core11ffp->glLightfv(theLightGlId, GL_DIFFUSE, aLightColor.GetData());
-      theCtx->core11ffp->glLightfv(theLightGlId, GL_SPECULAR, aLightColor.GetData());
-      theCtx->core11ffp->glLightfv(theLightGlId, GL_POSITION, anInfDir.GetData());
-      theCtx->core11ffp->glLightfv(theLightGlId, GL_SPOT_DIRECTION, THE_DEFAULT_SPOT_DIR);
-      theCtx->core11ffp->glLightf(theLightGlId, GL_SPOT_EXPONENT, THE_DEFAULT_SPOT_EXPONENT);
-      theCtx->core11ffp->glLightf(theLightGlId, GL_SPOT_CUTOFF, THE_DEFAULT_SPOT_CUTOFF);
-      break;
-    }
-    case Graphic3d_TypeOfLightSource_Positional: {
-      // to create a realistic effect, set the GL_SPECULAR parameter to the same value as the
-      // GL_DIFFUSE
-      const NCollection_Vec4<float> aPosition(static_cast<float>(theLight.Position().X()),
-                                              static_cast<float>(theLight.Position().Y()),
-                                              static_cast<float>(theLight.Position().Z()),
-                                              1.0f);
-      theCtx->core11ffp->glLightfv(theLightGlId, GL_AMBIENT, THE_DEFAULT_AMBIENT);
-      theCtx->core11ffp->glLightfv(theLightGlId, GL_DIFFUSE, aLightColor.GetData());
-      theCtx->core11ffp->glLightfv(theLightGlId, GL_SPECULAR, aLightColor.GetData());
-      theCtx->core11ffp->glLightfv(theLightGlId, GL_POSITION, aPosition.GetData());
-      theCtx->core11ffp->glLightfv(theLightGlId, GL_SPOT_DIRECTION, THE_DEFAULT_SPOT_DIR);
-      theCtx->core11ffp->glLightf(theLightGlId, GL_SPOT_EXPONENT, THE_DEFAULT_SPOT_EXPONENT);
-      theCtx->core11ffp->glLightf(theLightGlId, GL_SPOT_CUTOFF, THE_DEFAULT_SPOT_CUTOFF);
-      theCtx->core11ffp->glLightf(theLightGlId,
-                                  GL_CONSTANT_ATTENUATION,
-                                  theLight.ConstAttenuation());
-      theCtx->core11ffp->glLightf(theLightGlId,
-                                  GL_LINEAR_ATTENUATION,
-                                  theLight.LinearAttenuation());
-      theCtx->core11ffp->glLightf(theLightGlId, GL_QUADRATIC_ATTENUATION, 0.0f);
-      break;
-    }
-    case Graphic3d_TypeOfLightSource_Spot: {
-      const NCollection_Vec4<float> aPosition(static_cast<float>(theLight.Position().X()),
-                                              static_cast<float>(theLight.Position().Y()),
-                                              static_cast<float>(theLight.Position().Z()),
-                                              1.0f);
-      theCtx->core11ffp->glLightfv(theLightGlId, GL_AMBIENT, THE_DEFAULT_AMBIENT);
-      theCtx->core11ffp->glLightfv(theLightGlId, GL_DIFFUSE, aLightColor.GetData());
-      theCtx->core11ffp->glLightfv(theLightGlId, GL_SPECULAR, aLightColor.GetData());
-      theCtx->core11ffp->glLightfv(theLightGlId, GL_POSITION, aPosition.GetData());
-      theCtx->core11ffp->glLightfv(theLightGlId,
-                                   GL_SPOT_DIRECTION,
-                                   theLight.PackedDirectionRange().GetData());
-      theCtx->core11ffp->glLightf(theLightGlId,
-                                  GL_SPOT_EXPONENT,
-                                  theLight.Concentration() * 128.0f);
-      theCtx->core11ffp->glLightf(theLightGlId,
-                                  GL_SPOT_CUTOFF,
-                                  (theLight.Angle() * 180.0f) / GLfloat(M_PI));
-      theCtx->core11ffp->glLightf(theLightGlId,
-                                  GL_CONSTANT_ATTENUATION,
-                                  theLight.ConstAttenuation());
-      theCtx->core11ffp->glLightf(theLightGlId,
-                                  GL_LINEAR_ATTENUATION,
-                                  theLight.LinearAttenuation());
-      theCtx->core11ffp->glLightf(theLightGlId, GL_QUADRATIC_ATTENUATION, 0.0f);
-      break;
-    }
-  }
-
-  // restore matrix in case of headlight
-  if (theLight.IsHeadlight())
-  {
-    theCtx->core11ffp->glLoadMatrixf(theModelView.GetData());
-  }
-
-  theCtx->core11fwd->glEnable(theLightGlId);
 }
-} // namespace
 
 // =======================================================================
 // function : OpenGl_ShaderManager
 // purpose  : Creates new empty shader manager
 // =======================================================================
-OpenGl_ShaderManager::OpenGl_ShaderManager(OpenGl_Context* theContext)
-    : Graphic3d_ShaderManager(theContext->GraphicsLibrary()),
-      myFfpProgram(new OpenGl_ShaderProgramFFP()),
-      myShadingModel(Graphic3d_TypeOfShadingModel_Gouraud),
-      myUnlitPrograms(new OpenGl_SetOfPrograms()),
-      myContext(theContext),
-      myHasLocalOrigin(false)
+OpenGl_ShaderManager::OpenGl_ShaderManager (OpenGl_Context* theContext)
+: Graphic3d_ShaderManager (theContext->GraphicsLibrary()),
+  myFfpProgram (new OpenGl_ShaderProgramFFP()),
+  myShadingModel (Graphic3d_TypeOfShadingModel_Gouraud),
+  myUnlitPrograms (new OpenGl_SetOfPrograms()),
+  myContext  (theContext),
+  myHasLocalOrigin (false)
 {
   mySRgbState = theContext->ToRenderSRGB();
 }
@@ -156,12 +137,14 @@ OpenGl_ShaderManager::~OpenGl_ShaderManager()
   myProgramList.Clear();
   if (!myPBREnvironment.IsNull())
   {
-    myPBREnvironment->Release(myContext);
+    myPBREnvironment->Release (myContext);
   }
 }
 
-//=================================================================================================
-
+// =======================================================================
+// function : clear
+// purpose  :
+// =======================================================================
 void OpenGl_ShaderManager::clear()
 {
   myProgramList.Clear();
@@ -170,8 +153,8 @@ void OpenGl_ShaderManager::clear()
   myOutlinePrograms.Nullify();
   myMapOfLightPrograms.Clear();
   myFontProgram.Nullify();
-  myBlitPrograms[0].Init(occ::handle<OpenGl_ShaderProgram>());
-  myBlitPrograms[1].Init(occ::handle<OpenGl_ShaderProgram>());
+  myBlitPrograms[0].Init (occ::handle<OpenGl_ShaderProgram>());
+  myBlitPrograms[1].Init (occ::handle<OpenGl_ShaderProgram>());
   myBoundBoxProgram.Nullify();
   myBoundBoxVertBuffer.Nullify();
   for (int aModeIter = 0; aModeIter < Graphic3d_StereoMode_NB; ++aModeIter)
@@ -185,9 +168,9 @@ void OpenGl_ShaderManager::clear()
 // function : Create
 // purpose  : Creates new shader program
 // =======================================================================
-bool OpenGl_ShaderManager::Create(const occ::handle<Graphic3d_ShaderProgram>& theProxy,
-                                  TCollection_AsciiString&                    theShareKey,
-                                  occ::handle<OpenGl_ShaderProgram>&          theProgram)
+bool OpenGl_ShaderManager::Create (const occ::handle<Graphic3d_ShaderProgram>& theProxy,
+                                               TCollection_AsciiString&               theShareKey,
+                                               occ::handle<OpenGl_ShaderProgram>&          theProgram)
 {
   theProgram.Nullify();
   if (theProxy.IsNull())
@@ -196,26 +179,26 @@ bool OpenGl_ShaderManager::Create(const occ::handle<Graphic3d_ShaderProgram>& th
   }
 
   theShareKey = theProxy->GetId();
-  if (myContext->GetResource<occ::handle<OpenGl_ShaderProgram>>(theShareKey, theProgram))
+  if (myContext->GetResource<occ::handle<OpenGl_ShaderProgram>> (theShareKey, theProgram))
   {
     if (theProgram->Share())
     {
-      myProgramList.Append(theProgram);
+      myProgramList.Append (theProgram);
     }
     return true;
   }
 
-  theProgram = new OpenGl_ShaderProgram(theProxy);
-  if (!theProgram->Initialize(myContext, theProxy->ShaderObjects()))
+  theProgram = new OpenGl_ShaderProgram (theProxy);
+  if (!theProgram->Initialize (myContext, theProxy->ShaderObjects()))
   {
-    theProgram->Release(myContext);
+    theProgram->Release (myContext);
     theShareKey.Clear();
     theProgram.Nullify();
     return false;
   }
 
-  myProgramList.Append(theProgram);
-  myContext->ShareResource(theShareKey, theProgram);
+  myProgramList.Append (theProgram);
+  myContext->ShareResource (theShareKey, theProgram);
   return true;
 }
 
@@ -223,12 +206,10 @@ bool OpenGl_ShaderManager::Create(const occ::handle<Graphic3d_ShaderProgram>& th
 // function : Unregister
 // purpose  : Removes specified shader program from the manager
 // =======================================================================
-void OpenGl_ShaderManager::Unregister(TCollection_AsciiString&           theShareKey,
-                                      occ::handle<OpenGl_ShaderProgram>& theProgram)
+void OpenGl_ShaderManager::Unregister (TCollection_AsciiString&      theShareKey,
+                                       occ::handle<OpenGl_ShaderProgram>& theProgram)
 {
-  for (NCollection_Sequence<occ::handle<OpenGl_ShaderProgram>>::Iterator anIt(myProgramList);
-       anIt.More();
-       anIt.Next())
+  for (NCollection_Sequence<occ::handle<OpenGl_ShaderProgram>>::Iterator anIt (myProgramList); anIt.More(); anIt.Next())
   {
     if (anIt.Value() == theProgram)
     {
@@ -239,7 +220,7 @@ void OpenGl_ShaderManager::Unregister(TCollection_AsciiString&           theShar
         return;
       }
 
-      myProgramList.Remove(anIt);
+      myProgramList.Remove (anIt);
       break;
     }
   }
@@ -247,41 +228,45 @@ void OpenGl_ShaderManager::Unregister(TCollection_AsciiString&           theShar
   const TCollection_AsciiString anID = theProgram->myProxy->GetId();
   if (anID.IsEmpty())
   {
-    myContext->DelayedRelease(theProgram);
+    myContext->DelayedRelease (theProgram);
     theProgram.Nullify();
   }
   else
   {
     theProgram.Nullify();
-    myContext->ReleaseResource(anID, true);
+    myContext->ReleaseResource (anID, true);
   }
 }
 
-//=================================================================================================
-
+// =======================================================================
+// function : switchLightPrograms
+// purpose  :
+// =======================================================================
 void OpenGl_ShaderManager::switchLightPrograms()
 {
   const occ::handle<Graphic3d_LightSet>& aLights = myLightSourceState.LightSources();
   if (aLights.IsNull())
   {
-    if (!myMapOfLightPrograms.Find("unlit", myLightPrograms))
+    if (!myMapOfLightPrograms.Find ("unlit", myLightPrograms))
     {
-      myLightPrograms = new OpenGl_SetOfShaderPrograms(myUnlitPrograms);
-      myMapOfLightPrograms.Bind("unlit", myLightPrograms);
+      myLightPrograms = new OpenGl_SetOfShaderPrograms (myUnlitPrograms);
+      myMapOfLightPrograms.Bind ("unlit", myLightPrograms);
     }
     return;
   }
 
-  const TCollection_AsciiString aKey = genLightKey(aLights, myLightSourceState.HasShadowMaps());
-  if (!myMapOfLightPrograms.Find(aKey, myLightPrograms))
+  const TCollection_AsciiString aKey = genLightKey (aLights, myLightSourceState.HasShadowMaps());
+  if (!myMapOfLightPrograms.Find (aKey, myLightPrograms))
   {
     myLightPrograms = new OpenGl_SetOfShaderPrograms();
-    myMapOfLightPrograms.Bind(aKey, myLightPrograms);
+    myMapOfLightPrograms.Bind (aKey, myLightPrograms);
   }
 }
 
-//=================================================================================================
-
+// =======================================================================
+// function : UpdateSRgbState
+// purpose  :
+// =======================================================================
 void OpenGl_ShaderManager::UpdateSRgbState()
 {
   if (mySRgbState == myContext->ToRenderSRGB())
@@ -299,33 +284,35 @@ void OpenGl_ShaderManager::UpdateSRgbState()
 // function : UpdateLightSourceStateTo
 // purpose  : Updates state of OCCT light sources
 // =======================================================================
-void OpenGl_ShaderManager::UpdateLightSourceStateTo(
-  const occ::handle<Graphic3d_LightSet>&    theLights,
-  int                                       theSpecIBLMapLevels,
-  const occ::handle<OpenGl_ShadowMapArray>& theShadowMaps)
+void OpenGl_ShaderManager::UpdateLightSourceStateTo (const occ::handle<Graphic3d_LightSet>& theLights,
+                                                     int theSpecIBLMapLevels,
+                                                     const occ::handle<OpenGl_ShadowMapArray>& theShadowMaps)
 {
-  myLightSourceState.Set(theLights);
-  myLightSourceState.SetSpecIBLMapLevels(theSpecIBLMapLevels);
-  myLightSourceState.SetShadowMaps(theShadowMaps);
+  myLightSourceState.Set (theLights);
+  myLightSourceState.SetSpecIBLMapLevels (theSpecIBLMapLevels);
+  myLightSourceState.SetShadowMaps (theShadowMaps);
   myLightSourceState.Update();
   switchLightPrograms();
 }
 
-//=================================================================================================
-
+// =======================================================================
+// function : UpdateLightSourceState
+// purpose  :
+// =======================================================================
 void OpenGl_ShaderManager::UpdateLightSourceState()
 {
   myLightSourceState.Update();
 }
 
-//=================================================================================================
-
-void OpenGl_ShaderManager::SetShadingModel(const Graphic3d_TypeOfShadingModel theModel)
+// =======================================================================
+// function : SetShadingModel
+// purpose  :
+// =======================================================================
+void OpenGl_ShaderManager::SetShadingModel (const Graphic3d_TypeOfShadingModel theModel)
 {
   if (theModel == Graphic3d_TypeOfShadingModel_DEFAULT)
   {
-    throw Standard_ProgramError(
-      "OpenGl_ShaderManager::SetShadingModel() - attempt to set invalid Shading Model!");
+    throw Standard_ProgramError ("OpenGl_ShaderManager::SetShadingModel() - attempt to set invalid Shading Model!");
   }
 
   myShadingModel = theModel;
@@ -336,10 +323,9 @@ void OpenGl_ShaderManager::SetShadingModel(const Graphic3d_TypeOfShadingModel th
 // function : SetProjectionState
 // purpose  : Sets new state of OCCT projection transform
 // =======================================================================
-void OpenGl_ShaderManager::UpdateProjectionStateTo(
-  const NCollection_Mat4<float>& theProjectionMatrix)
+void OpenGl_ShaderManager::UpdateProjectionStateTo (const OpenGl_Mat4& theProjectionMatrix)
 {
-  myProjectionState.Set(theProjectionMatrix);
+  myProjectionState.Set (theProjectionMatrix);
   myProjectionState.Update();
 }
 
@@ -347,10 +333,9 @@ void OpenGl_ShaderManager::UpdateProjectionStateTo(
 // function : SetModelWorldState
 // purpose  : Sets new state of OCCT model-world transform
 // =======================================================================
-void OpenGl_ShaderManager::UpdateModelWorldStateTo(
-  const NCollection_Mat4<float>& theModelWorldMatrix)
+void OpenGl_ShaderManager::UpdateModelWorldStateTo (const OpenGl_Mat4& theModelWorldMatrix)
 {
-  myModelWorldState.Set(theModelWorldMatrix);
+  myModelWorldState.Set (theModelWorldMatrix);
   myModelWorldState.Update();
 }
 
@@ -358,189 +343,175 @@ void OpenGl_ShaderManager::UpdateModelWorldStateTo(
 // function : SetWorldViewState
 // purpose  : Sets new state of OCCT world-view transform
 // =======================================================================
-void OpenGl_ShaderManager::UpdateWorldViewStateTo(const NCollection_Mat4<float>& theWorldViewMatrix)
+void OpenGl_ShaderManager::UpdateWorldViewStateTo (const OpenGl_Mat4& theWorldViewMatrix)
 {
-  myWorldViewState.Set(theWorldViewMatrix);
+  myWorldViewState.Set (theWorldViewMatrix);
   myWorldViewState.Update();
 }
 
-//=================================================================================================
-
-void OpenGl_ShaderManager::pushLightSourceState(
-  const occ::handle<OpenGl_ShaderProgram>& theProgram) const
+// =======================================================================
+// function : pushLightSourceState
+// purpose  :
+// =======================================================================
+void OpenGl_ShaderManager::pushLightSourceState (const occ::handle<OpenGl_ShaderProgram>& theProgram) const
 {
-  theProgram->UpdateState(OpenGl_LIGHT_SOURCES_STATE, myLightSourceState.Index());
+  theProgram->UpdateState (OpenGl_LIGHT_SOURCES_STATE, myLightSourceState.Index());
   if (theProgram == myFfpProgram)
   {
-    if (myContext->core11ffp == nullptr)
+    if (myContext->core11ffp == NULL)
     {
       return;
     }
 
-    GLenum                        aLightGlId = GL_LIGHT0;
-    const NCollection_Mat4<float> aModelView =
-      myWorldViewState.WorldViewMatrix() * myModelWorldState.ModelWorldMatrix();
-    for (Graphic3d_LightSet::Iterator aLightIt(
-           myLightSourceState.LightSources(),
-           Graphic3d_LightSet::IterationFilter_ExcludeDisabledAndAmbient);
-         aLightIt.More();
-         aLightIt.Next())
+    GLenum aLightGlId = GL_LIGHT0;
+    const OpenGl_Mat4 aModelView = myWorldViewState.WorldViewMatrix() * myModelWorldState.ModelWorldMatrix();
+    for (Graphic3d_LightSet::Iterator aLightIt (myLightSourceState.LightSources(), Graphic3d_LightSet::IterationFilter_ExcludeDisabledAndAmbient);
+         aLightIt.More(); aLightIt.Next())
     {
       if (aLightGlId > GL_LIGHT7) // only 8 lights in FFP...
       {
-        myContext->PushMessage(
-          GL_DEBUG_SOURCE_APPLICATION,
-          GL_DEBUG_TYPE_PORTABILITY,
-          0,
-          GL_DEBUG_SEVERITY_MEDIUM,
-          "Warning: light sources limit (8) has been exceeded within Fixed-function pipeline.");
+        myContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_MEDIUM,
+                                "Warning: light sources limit (8) has been exceeded within Fixed-function pipeline.");
         continue;
       }
 
-      bindLight(*aLightIt.Value(), aLightGlId, aModelView, myContext);
+      bindLight (*aLightIt.Value(), aLightGlId, aModelView, myContext);
       ++aLightGlId;
     }
 
     // apply accumulated ambient color
-    const NCollection_Vec4<float> anAmbient = !myLightSourceState.LightSources().IsNull()
-                                                ? myLightSourceState.LightSources()->AmbientColor()
-                                                : NCollection_Vec4<float>(0.0f, 0.0f, 0.0f, 1.0f);
-    myContext->core11ffp->glLightModelfv(GL_LIGHT_MODEL_AMBIENT, anAmbient.GetData());
+    const Graphic3d_Vec4 anAmbient = !myLightSourceState.LightSources().IsNull()
+                                    ? myLightSourceState.LightSources()->AmbientColor()
+                                    : Graphic3d_Vec4 (0.0f, 0.0f, 0.0f, 1.0f);
+    myContext->core11ffp->glLightModelfv (GL_LIGHT_MODEL_AMBIENT, anAmbient.GetData());
 
     // GL_LIGHTING is managed by drawers to switch between shaded / no lighting output,
     // therefore managing the state here does not have any effect - do it just for consistency.
     if (aLightGlId != GL_LIGHT0)
     {
-      myContext->core11fwd->glEnable(GL_LIGHTING);
+      myContext->core11fwd->glEnable (GL_LIGHTING);
     }
     else
     {
-      myContext->core11fwd->glDisable(GL_LIGHTING);
+      myContext->core11fwd->glDisable (GL_LIGHTING);
     }
     // switch off unused lights
     for (; aLightGlId <= GL_LIGHT7; ++aLightGlId)
     {
-      myContext->core11fwd->glDisable(aLightGlId);
+      myContext->core11fwd->glDisable (aLightGlId);
     }
     return;
   }
 
-  const int   aNbLightsMax = theProgram->NbLightsMax();
-  const GLint anAmbientLoc = theProgram->GetStateLocation(OpenGl_OCC_LIGHT_AMBIENT);
-  if (aNbLightsMax == 0 && anAmbientLoc == OpenGl_ShaderProgram::INVALID_LOCATION)
+  const int aNbLightsMax = theProgram->NbLightsMax();
+  const GLint anAmbientLoc = theProgram->GetStateLocation (OpenGl_OCC_LIGHT_AMBIENT);
+  if (aNbLightsMax == 0
+   && anAmbientLoc == OpenGl_ShaderProgram::INVALID_LOCATION)
   {
     return;
   }
 
   if (myLightTypeArray.Size() < aNbLightsMax)
   {
-    myLightTypeArray.Resize(0, aNbLightsMax - 1, false);
-    myLightParamsArray.Resize(0, aNbLightsMax - 1, false);
+    myLightTypeArray  .Resize (0, aNbLightsMax - 1, false);
+    myLightParamsArray.Resize (0, aNbLightsMax - 1, false);
   }
   for (int aLightIt = 0; aLightIt < aNbLightsMax; ++aLightIt)
   {
-    myLightTypeArray.SetValue(aLightIt, -1);
+    myLightTypeArray.SetValue (aLightIt, -1);
   }
 
-  if (myLightSourceState.LightSources().IsNull() || myLightSourceState.LightSources()->IsEmpty())
+  if (myLightSourceState.LightSources().IsNull()
+   || myLightSourceState.LightSources()->IsEmpty())
   {
-    theProgram->SetUniform(myContext,
-                           theProgram->GetStateLocation(OpenGl_OCC_LIGHT_SOURCE_COUNT),
-                           0);
-    theProgram->SetUniform(myContext,
-                           anAmbientLoc,
-                           NCollection_Vec4<float>(0.0f, 0.0f, 0.0f, 0.0f));
-    theProgram->SetUniform(myContext,
-                           theProgram->GetStateLocation(OpenGl_OCC_LIGHT_SOURCE_TYPES),
-                           aNbLightsMax,
-                           &myLightTypeArray.First());
+    theProgram->SetUniform (myContext,
+                            theProgram->GetStateLocation (OpenGl_OCC_LIGHT_SOURCE_COUNT),
+                            0);
+    theProgram->SetUniform (myContext,
+                            anAmbientLoc,
+                            OpenGl_Vec4 (0.0f, 0.0f, 0.0f, 0.0f));
+    theProgram->SetUniform (myContext,
+                            theProgram->GetStateLocation (OpenGl_OCC_LIGHT_SOURCE_TYPES),
+                            aNbLightsMax,
+                            &myLightTypeArray.First());
     return;
   }
 
   int aLightsNb = 0;
-  for (Graphic3d_LightSet::Iterator anIter(
-         myLightSourceState.LightSources(),
-         Graphic3d_LightSet::IterationFilter_ExcludeDisabledAndAmbient);
-       anIter.More();
-       anIter.Next())
+  for (Graphic3d_LightSet::Iterator anIter (myLightSourceState.LightSources(), Graphic3d_LightSet::IterationFilter_ExcludeDisabledAndAmbient);
+       anIter.More(); anIter.Next())
   {
     const Graphic3d_CLight& aLight = *anIter.Value();
     if (aLightsNb >= aNbLightsMax)
     {
       if (aNbLightsMax != 0)
       {
-        myContext->PushMessage(GL_DEBUG_SOURCE_APPLICATION,
-                               GL_DEBUG_TYPE_PORTABILITY,
-                               0,
-                               GL_DEBUG_SEVERITY_MEDIUM,
-                               TCollection_AsciiString("Warning: light sources limit (")
-                                 + aNbLightsMax + ") has been exceeded.");
+        myContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_MEDIUM,
+                                TCollection_AsciiString("Warning: light sources limit (") + aNbLightsMax + ") has been exceeded.");
       }
       continue;
     }
 
-    int&                          aLightType   = myLightTypeArray.ChangeValue(aLightsNb);
-    OpenGl_ShaderLightParameters& aLightParams = myLightParamsArray.ChangeValue(aLightsNb);
-    if (!aLight
-           .IsEnabled()) // has no affect with Graphic3d_LightSet::IterationFilter_ExcludeDisabled -
-                         // here just for consistency
+    int&             aLightType   = myLightTypeArray  .ChangeValue (aLightsNb);
+    OpenGl_ShaderLightParameters& aLightParams = myLightParamsArray.ChangeValue (aLightsNb);
+    if (!aLight.IsEnabled()) // has no affect with Graphic3d_LightSet::IterationFilter_ExcludeDisabled - here just for consistency
     {
-      // if it is desired to keep disabled light in the same order - we can replace it with a black
-      // light so that it will have no influence on result
-      aLightType         = -1; // Graphic3d_TypeOfLightSource_Ambient can be used instead
-      aLightParams.Color = NCollection_Vec4<float>(0.0f, 0.0f, 0.0f, 0.0f);
+      // if it is desired to keep disabled light in the same order - we can replace it with a black light so that it will have no influence on result
+      aLightType = -1; // Graphic3d_TypeOfLightSource_Ambient can be used instead
+      aLightParams.Color = OpenGl_Vec4 (0.0f, 0.0f, 0.0f, 0.0f);
       ++aLightsNb;
       continue;
     }
 
     // ignoring OpenGl_Context::ToRenderSRGB() for light colors,
     // as non-absolute colors for lights are rare and require tuning anyway
-    aLightType              = aLight.Type();
-    aLightParams.Color      = aLight.PackedColor();
-    aLightParams.Color.a()  = aLight.Intensity(); // used by PBR and ignored by old shading model
+    aLightType = aLight.Type();
+    aLightParams.Color     = aLight.PackedColor();
+    aLightParams.Color.a() = aLight.Intensity(); // used by PBR and ignored by old shading model
     aLightParams.Parameters = aLight.PackedParams();
     switch (aLight.Type())
     {
-      case Graphic3d_TypeOfLightSource_Ambient: {
+      case Graphic3d_TypeOfLightSource_Ambient:
+      {
         break;
       }
-      case Graphic3d_TypeOfLightSource_Directional: {
+      case Graphic3d_TypeOfLightSource_Directional:
+      {
         if (aLight.IsHeadlight())
         {
-          const NCollection_Mat4<float>& anOrientInv = myWorldViewState.WorldViewMatrixInverse();
-          aLightParams.Position =
-            anOrientInv * NCollection_Vec4<float>(-aLight.PackedDirection(), 0.0f);
-          aLightParams.Position.SetValues(aLightParams.Position.xyz().Normalized(), 0.0f);
+          const Graphic3d_Mat4& anOrientInv = myWorldViewState.WorldViewMatrixInverse();
+          aLightParams.Position = anOrientInv * Graphic3d_Vec4 (-aLight.PackedDirection(), 0.0f);
+          aLightParams.Position.SetValues (aLightParams.Position.xyz().Normalized(), 0.0f);
         }
         else
         {
-          aLightParams.Position = NCollection_Vec4<float>(-aLight.PackedDirection(), 0.0f);
+          aLightParams.Position = Graphic3d_Vec4 (-aLight.PackedDirection(), 0.0f);
         }
         break;
       }
-      case Graphic3d_TypeOfLightSource_Spot: {
+      case Graphic3d_TypeOfLightSource_Spot:
+      {
         if (aLight.IsHeadlight())
         {
-          const NCollection_Mat4<float>& anOrientInv = myWorldViewState.WorldViewMatrixInverse();
-          aLightParams.Direction =
-            anOrientInv * NCollection_Vec4<float>(aLight.PackedDirection(), 0.0f);
-          aLightParams.Direction.SetValues(aLightParams.Direction.xyz().Normalized(), 0.0f);
+          const Graphic3d_Mat4& anOrientInv = myWorldViewState.WorldViewMatrixInverse();
+          aLightParams.Direction = anOrientInv * Graphic3d_Vec4 (aLight.PackedDirection(), 0.0f);
+          aLightParams.Direction.SetValues (aLightParams.Direction.xyz().Normalized(), 0.0f);
         }
         else
         {
-          aLightParams.Direction = NCollection_Vec4<float>(aLight.PackedDirection(), 0.0f);
+          aLightParams.Direction = Graphic3d_Vec4 (aLight.PackedDirection(), 0.0f);
         }
       }
-        [[fallthrough]];
-      case Graphic3d_TypeOfLightSource_Positional: {
+      [[fallthrough]];
+      case Graphic3d_TypeOfLightSource_Positional:
+      {
         if (aLight.IsHeadlight())
         {
-          aLightParams.Position.x()                  = static_cast<float>(aLight.Position().X());
-          aLightParams.Position.y()                  = static_cast<float>(aLight.Position().Y());
-          aLightParams.Position.z()                  = static_cast<float>(aLight.Position().Z());
-          const NCollection_Mat4<float>& anOrientInv = myWorldViewState.WorldViewMatrixInverse();
-          aLightParams.Position =
-            anOrientInv * NCollection_Vec4<float>(aLightParams.Position.xyz(), 1.0f);
+          aLightParams.Position.x() = static_cast<float>(aLight.Position().X());
+          aLightParams.Position.y() = static_cast<float>(aLight.Position().Y());
+          aLightParams.Position.z() = static_cast<float>(aLight.Position().Z());
+          const Graphic3d_Mat4& anOrientInv = myWorldViewState.WorldViewMatrixInverse();
+          aLightParams.Position = anOrientInv * Graphic3d_Vec4 (aLightParams.Position.xyz(), 1.0f);
         }
         else
         {
@@ -556,186 +527,176 @@ void OpenGl_ShaderManager::pushLightSourceState(
     ++aLightsNb;
   }
 
-  const NCollection_Vec4<float>& anAmbient = myLightSourceState.LightSources()->AmbientColor();
-  theProgram->SetUniform(myContext,
-                         theProgram->GetStateLocation(OpenGl_OCC_LIGHT_SOURCE_COUNT),
-                         aLightsNb);
-  theProgram->SetUniform(myContext, anAmbientLoc, anAmbient);
-  theProgram->SetUniform(myContext,
-                         theProgram->GetStateLocation(OpenGl_OCC_LIGHT_SOURCE_TYPES),
-                         aNbLightsMax,
-                         &myLightTypeArray.First());
+  const Graphic3d_Vec4& anAmbient = myLightSourceState.LightSources()->AmbientColor();
+  theProgram->SetUniform (myContext,
+                          theProgram->GetStateLocation (OpenGl_OCC_LIGHT_SOURCE_COUNT),
+                          aLightsNb);
+  theProgram->SetUniform (myContext,
+                          anAmbientLoc,
+                          anAmbient);
+  theProgram->SetUniform (myContext,
+                          theProgram->GetStateLocation (OpenGl_OCC_LIGHT_SOURCE_TYPES),
+                          aNbLightsMax,
+                          &myLightTypeArray.First());
   if (aLightsNb > 0)
   {
-    theProgram->SetUniform(myContext,
-                           theProgram->GetStateLocation(OpenGl_OCC_LIGHT_SOURCE_PARAMS),
-                           aLightsNb * OpenGl_ShaderLightParameters::NbOfVec4(),
-                           myLightParamsArray.First().Packed());
+    theProgram->SetUniform (myContext,
+                            theProgram->GetStateLocation (OpenGl_OCC_LIGHT_SOURCE_PARAMS),
+                            aLightsNb * OpenGl_ShaderLightParameters::NbOfVec4(),
+                            myLightParamsArray.First().Packed());
   }
 
-  if (const OpenGl_ShaderUniformLocation aLocation =
-        theProgram->GetStateLocation(OpenGl_OCCT_NB_SPEC_IBL_LEVELS))
+  if (const OpenGl_ShaderUniformLocation aLocation = theProgram->GetStateLocation (OpenGl_OCCT_NB_SPEC_IBL_LEVELS))
   {
-    theProgram->SetUniform(myContext, aLocation, myLightSourceState.SpecIBLMapLevels());
+    theProgram->SetUniform (myContext, aLocation, myLightSourceState.SpecIBLMapLevels());
   }
 
   // update shadow map variables
-  if (const OpenGl_ShaderUniformLocation aShadowMatLoc =
-        theProgram->GetStateLocation(OpenGl_OCC_LIGHT_SHADOWMAP_MATRICES))
+  if (const OpenGl_ShaderUniformLocation aShadowMatLoc = theProgram->GetStateLocation (OpenGl_OCC_LIGHT_SHADOWMAP_MATRICES))
   {
     if (myShadowMatArray.Size() < theProgram->NbShadowMaps())
     {
-      myShadowMatArray.Resize(0, theProgram->NbShadowMaps() - 1, false);
+      myShadowMatArray.Resize (0, theProgram->NbShadowMaps() - 1, false);
     }
 
-    NCollection_Vec2<float> aSizeBias;
+    Graphic3d_Vec2 aSizeBias;
     if (myLightSourceState.HasShadowMaps())
     {
-      aSizeBias.SetValues(1.0f
-                            / (float)myLightSourceState.ShadowMaps()->First()->Texture()->SizeX(),
-                          myLightSourceState.ShadowMaps()->First()->ShadowMapBias());
-      const int aNbShadows =
-        std::min(theProgram->NbShadowMaps(), myLightSourceState.ShadowMaps()->Size());
+      aSizeBias.SetValues (1.0f / (float )myLightSourceState.ShadowMaps()->First()->Texture()->SizeX(),
+                           myLightSourceState.ShadowMaps()->First()->ShadowMapBias());
+      const int aNbShadows = Min (theProgram->NbShadowMaps(), myLightSourceState.ShadowMaps()->Size());
       for (int aShadowIter = 0; aShadowIter < aNbShadows; ++aShadowIter)
       {
-        const occ::handle<OpenGl_ShadowMap>& aShadow =
-          myLightSourceState.ShadowMaps()->Value(aShadowIter);
+        const occ::handle<OpenGl_ShadowMap>& aShadow = myLightSourceState.ShadowMaps()->Value (aShadowIter);
         myShadowMatArray[aShadowIter] = aShadow->LightSourceMatrix();
       }
     }
 
-    theProgram->SetUniform(myContext,
-                           aShadowMatLoc,
-                           theProgram->NbShadowMaps(),
-                           &myShadowMatArray.First());
-    theProgram->SetUniform(myContext,
-                           theProgram->GetStateLocation(OpenGl_OCC_LIGHT_SHADOWMAP_SIZE_BIAS),
-                           aSizeBias);
+    theProgram->SetUniform (myContext, aShadowMatLoc, theProgram->NbShadowMaps(), &myShadowMatArray.First());
+    theProgram->SetUniform (myContext, theProgram->GetStateLocation (OpenGl_OCC_LIGHT_SHADOWMAP_SIZE_BIAS), aSizeBias);
   }
 }
 
-//=================================================================================================
-
-void OpenGl_ShaderManager::pushProjectionState(
-  const occ::handle<OpenGl_ShaderProgram>& theProgram) const
+// =======================================================================
+// function : pushProjectionState
+// purpose  :
+// =======================================================================
+void OpenGl_ShaderManager::pushProjectionState (const occ::handle<OpenGl_ShaderProgram>& theProgram) const
 {
-  theProgram->UpdateState(OpenGl_PROJECTION_STATE, myProjectionState.Index());
+  theProgram->UpdateState (OpenGl_PROJECTION_STATE, myProjectionState.Index());
   if (theProgram == myFfpProgram)
   {
-    if (myContext->core11ffp != nullptr)
+    if (myContext->core11ffp != NULL)
     {
-      myContext->core11ffp->glMatrixMode(GL_PROJECTION);
-      myContext->core11ffp->glLoadMatrixf(myProjectionState.ProjectionMatrix().GetData());
+      myContext->core11ffp->glMatrixMode (GL_PROJECTION);
+      myContext->core11ffp->glLoadMatrixf (myProjectionState.ProjectionMatrix().GetData());
     }
     return;
   }
 
-  theProgram->SetUniform(myContext,
-                         theProgram->GetStateLocation(OpenGl_OCC_PROJECTION_MATRIX),
-                         myProjectionState.ProjectionMatrix());
+  theProgram->SetUniform (myContext,
+                          theProgram->GetStateLocation (OpenGl_OCC_PROJECTION_MATRIX),
+                          myProjectionState.ProjectionMatrix());
 
-  GLint aLocation = theProgram->GetStateLocation(OpenGl_OCC_PROJECTION_MATRIX_INVERSE);
+  GLint aLocation = theProgram->GetStateLocation (OpenGl_OCC_PROJECTION_MATRIX_INVERSE);
   if (aLocation != OpenGl_ShaderProgram::INVALID_LOCATION)
   {
-    theProgram->SetUniform(myContext, aLocation, myProjectionState.ProjectionMatrixInverse());
+    theProgram->SetUniform (myContext, aLocation, myProjectionState.ProjectionMatrixInverse());
   }
 
-  theProgram->SetUniform(myContext,
-                         theProgram->GetStateLocation(OpenGl_OCC_PROJECTION_MATRIX_TRANSPOSE),
-                         myProjectionState.ProjectionMatrix(),
-                         true);
+  theProgram->SetUniform (myContext,
+                          theProgram->GetStateLocation (OpenGl_OCC_PROJECTION_MATRIX_TRANSPOSE),
+                          myProjectionState.ProjectionMatrix(), true);
 
-  aLocation = theProgram->GetStateLocation(OpenGl_OCC_PROJECTION_MATRIX_INVERSE_TRANSPOSE);
+  aLocation = theProgram->GetStateLocation (OpenGl_OCC_PROJECTION_MATRIX_INVERSE_TRANSPOSE);
   if (aLocation != OpenGl_ShaderProgram::INVALID_LOCATION)
   {
-    theProgram->SetUniform(myContext, aLocation, myProjectionState.ProjectionMatrixInverse(), true);
+    theProgram->SetUniform (myContext, aLocation, myProjectionState.ProjectionMatrixInverse(), true);
   }
 }
 
-//=================================================================================================
-
-void OpenGl_ShaderManager::pushModelWorldState(
-  const occ::handle<OpenGl_ShaderProgram>& theProgram) const
+// =======================================================================
+// function : pushModelWorldState
+// purpose  :
+// =======================================================================
+void OpenGl_ShaderManager::pushModelWorldState (const occ::handle<OpenGl_ShaderProgram>& theProgram) const
 {
-  theProgram->UpdateState(OpenGl_MODEL_WORLD_STATE, myModelWorldState.Index());
+  theProgram->UpdateState (OpenGl_MODEL_WORLD_STATE, myModelWorldState.Index());
   if (theProgram == myFfpProgram)
   {
-    if (myContext->core11ffp != nullptr)
+    if (myContext->core11ffp != NULL)
     {
-      const NCollection_Mat4<float> aModelView =
-        myWorldViewState.WorldViewMatrix() * myModelWorldState.ModelWorldMatrix();
-      myContext->core11ffp->glMatrixMode(GL_MODELVIEW);
-      myContext->core11ffp->glLoadMatrixf(aModelView.GetData());
-      theProgram->UpdateState(OpenGl_WORLD_VIEW_STATE, myWorldViewState.Index());
+      const OpenGl_Mat4 aModelView = myWorldViewState.WorldViewMatrix() * myModelWorldState.ModelWorldMatrix();
+      myContext->core11ffp->glMatrixMode (GL_MODELVIEW);
+      myContext->core11ffp->glLoadMatrixf (aModelView.GetData());
+      theProgram->UpdateState (OpenGl_WORLD_VIEW_STATE, myWorldViewState.Index());
     }
     return;
   }
 
-  theProgram->SetUniform(myContext,
-                         theProgram->GetStateLocation(OpenGl_OCC_MODEL_WORLD_MATRIX),
-                         myModelWorldState.ModelWorldMatrix());
+  theProgram->SetUniform (myContext,
+                          theProgram->GetStateLocation (OpenGl_OCC_MODEL_WORLD_MATRIX),
+                          myModelWorldState.ModelWorldMatrix());
 
-  GLint aLocation = theProgram->GetStateLocation(OpenGl_OCC_MODEL_WORLD_MATRIX_INVERSE);
+  GLint aLocation = theProgram->GetStateLocation (OpenGl_OCC_MODEL_WORLD_MATRIX_INVERSE);
   if (aLocation != OpenGl_ShaderProgram::INVALID_LOCATION)
   {
-    theProgram->SetUniform(myContext, aLocation, myModelWorldState.ModelWorldMatrixInverse());
+    theProgram->SetUniform (myContext, aLocation, myModelWorldState.ModelWorldMatrixInverse());
   }
 
-  theProgram->SetUniform(myContext,
-                         theProgram->GetStateLocation(OpenGl_OCC_MODEL_WORLD_MATRIX_TRANSPOSE),
-                         myModelWorldState.ModelWorldMatrix(),
-                         true);
+  theProgram->SetUniform (myContext,
+                          theProgram->GetStateLocation (OpenGl_OCC_MODEL_WORLD_MATRIX_TRANSPOSE),
+                          myModelWorldState.ModelWorldMatrix(), true);
 
-  aLocation = theProgram->GetStateLocation(OpenGl_OCC_MODEL_WORLD_MATRIX_INVERSE_TRANSPOSE);
+  aLocation = theProgram->GetStateLocation (OpenGl_OCC_MODEL_WORLD_MATRIX_INVERSE_TRANSPOSE);
   if (aLocation != OpenGl_ShaderProgram::INVALID_LOCATION)
   {
-    theProgram->SetUniform(myContext, aLocation, myModelWorldState.ModelWorldMatrixInverse(), true);
+    theProgram->SetUniform (myContext, aLocation, myModelWorldState.ModelWorldMatrixInverse(), true);
   }
 }
 
-//=================================================================================================
-
-void OpenGl_ShaderManager::pushWorldViewState(
-  const occ::handle<OpenGl_ShaderProgram>& theProgram) const
+// =======================================================================
+// function : pushWorldViewState
+// purpose  :
+// =======================================================================
+void OpenGl_ShaderManager::pushWorldViewState (const occ::handle<OpenGl_ShaderProgram>& theProgram) const
 {
-  if (myWorldViewState.Index() == theProgram->ActiveState(OpenGl_WORLD_VIEW_STATE))
+  if (myWorldViewState.Index() == theProgram->ActiveState (OpenGl_WORLD_VIEW_STATE))
   {
     return;
   }
 
-  theProgram->UpdateState(OpenGl_WORLD_VIEW_STATE, myWorldViewState.Index());
+  theProgram->UpdateState (OpenGl_WORLD_VIEW_STATE, myWorldViewState.Index());
   if (theProgram == myFfpProgram)
   {
-    if (myContext->core11ffp != nullptr)
+    if (myContext->core11ffp != NULL)
     {
-      const NCollection_Mat4<float> aModelView =
-        myWorldViewState.WorldViewMatrix() * myModelWorldState.ModelWorldMatrix();
-      myContext->core11ffp->glMatrixMode(GL_MODELVIEW);
-      myContext->core11ffp->glLoadMatrixf(aModelView.GetData());
-      theProgram->UpdateState(OpenGl_MODEL_WORLD_STATE, myModelWorldState.Index());
+      const OpenGl_Mat4 aModelView = myWorldViewState.WorldViewMatrix() * myModelWorldState.ModelWorldMatrix();
+      myContext->core11ffp->glMatrixMode (GL_MODELVIEW);
+      myContext->core11ffp->glLoadMatrixf (aModelView.GetData());
+      theProgram->UpdateState (OpenGl_MODEL_WORLD_STATE, myModelWorldState.Index());
     }
     return;
   }
 
-  theProgram->SetUniform(myContext,
-                         theProgram->GetStateLocation(OpenGl_OCC_WORLD_VIEW_MATRIX),
-                         myWorldViewState.WorldViewMatrix());
+  theProgram->SetUniform (myContext,
+                          theProgram->GetStateLocation (OpenGl_OCC_WORLD_VIEW_MATRIX),
+                          myWorldViewState.WorldViewMatrix());
 
-  GLint aLocation = theProgram->GetStateLocation(OpenGl_OCC_WORLD_VIEW_MATRIX_INVERSE);
+  GLint aLocation = theProgram->GetStateLocation (OpenGl_OCC_WORLD_VIEW_MATRIX_INVERSE);
   if (aLocation != OpenGl_ShaderProgram::INVALID_LOCATION)
   {
-    theProgram->SetUniform(myContext, aLocation, myWorldViewState.WorldViewMatrixInverse());
+    theProgram->SetUniform (myContext, aLocation, myWorldViewState.WorldViewMatrixInverse());
   }
 
-  theProgram->SetUniform(myContext,
-                         theProgram->GetStateLocation(OpenGl_OCC_WORLD_VIEW_MATRIX_TRANSPOSE),
-                         myWorldViewState.WorldViewMatrix(),
-                         true);
+  theProgram->SetUniform (myContext,
+                          theProgram->GetStateLocation (OpenGl_OCC_WORLD_VIEW_MATRIX_TRANSPOSE),
+                          myWorldViewState.WorldViewMatrix(), true);
 
-  aLocation = theProgram->GetStateLocation(OpenGl_OCC_WORLD_VIEW_MATRIX_INVERSE_TRANSPOSE);
+  aLocation = theProgram->GetStateLocation (OpenGl_OCC_WORLD_VIEW_MATRIX_INVERSE_TRANSPOSE);
   if (aLocation != OpenGl_ShaderProgram::INVALID_LOCATION)
   {
-    theProgram->SetUniform(myContext, aLocation, myWorldViewState.WorldViewMatrixInverse(), true);
+    theProgram->SetUniform (myContext, aLocation, myWorldViewState.WorldViewMatrixInverse(), true);
   }
 }
 
@@ -757,15 +718,16 @@ void OpenGl_ShaderManager::RevertClippingState()
   myClippingState.Revert();
 }
 
-//=================================================================================================
-
-void OpenGl_ShaderManager::pushClippingState(
-  const occ::handle<OpenGl_ShaderProgram>& theProgram) const
+// =======================================================================
+// function : pushClippingState
+// purpose  :
+// =======================================================================
+void OpenGl_ShaderManager::pushClippingState (const occ::handle<OpenGl_ShaderProgram>& theProgram) const
 {
-  theProgram->UpdateState(OpenGl_CLIP_PLANES_STATE, myClippingState.Index());
+  theProgram->UpdateState (OpenGl_CLIP_PLANES_STATE, myClippingState.Index());
   if (theProgram == myFfpProgram)
   {
-    if (myContext->core11ffp == nullptr)
+    if (myContext->core11ffp == NULL)
     {
       return;
     }
@@ -773,39 +735,38 @@ void OpenGl_ShaderManager::pushClippingState(
     const int aNbMaxPlanes = myContext->MaxClipPlanes();
     if (myClipPlaneArrayFfp.Size() < aNbMaxPlanes)
     {
-      myClipPlaneArrayFfp.Resize(0, aNbMaxPlanes - 1, false);
+      myClipPlaneArrayFfp.Resize (0, aNbMaxPlanes - 1, false);
     }
 
-    int                                     aPlaneId           = 0;
-    bool                                    toRestoreModelView = false;
+    int aPlaneId = 0;
+    bool toRestoreModelView = false;
     const occ::handle<Graphic3d_ClipPlane>& aCappedChain = myContext->Clipping().CappedChain();
-    for (OpenGl_ClippingIterator aPlaneIter(myContext->Clipping()); aPlaneIter.More();
-         aPlaneIter.Next())
+    for (OpenGl_ClippingIterator aPlaneIter (myContext->Clipping()); aPlaneIter.More(); aPlaneIter.Next())
     {
       const occ::handle<Graphic3d_ClipPlane>& aPlane = aPlaneIter.Value();
-      if (aPlaneIter.IsDisabled() || aPlane->IsChain()
-          || (aPlane == aCappedChain && myContext->Clipping().IsCappingEnableAllExcept()))
+      if (aPlaneIter.IsDisabled()
+       || aPlane->IsChain()
+       || (aPlane == aCappedChain
+        && myContext->Clipping().IsCappingEnableAllExcept()))
       {
         continue;
       }
       else if (aPlaneId >= aNbMaxPlanes)
       {
-        Message::SendWarning() << "OpenGl_ShaderManager, warning: clipping planes limit ("
-                               << aNbMaxPlanes << ") has been exceeded";
+        Message::SendWarning() << "OpenGl_ShaderManager, warning: clipping planes limit (" << aNbMaxPlanes << ") has been exceeded";
         break;
       }
 
       const Graphic3d_ClipPlane::Equation& anEquation = aPlane->GetEquation();
-      NCollection_Vec4<double>&            aPlaneEq   = myClipPlaneArrayFfp.ChangeValue(aPlaneId);
-      aPlaneEq.x()                                    = anEquation.x();
-      aPlaneEq.y()                                    = anEquation.y();
-      aPlaneEq.z()                                    = anEquation.z();
-      aPlaneEq.w()                                    = anEquation.w();
+      OpenGl_Vec4d& aPlaneEq = myClipPlaneArrayFfp.ChangeValue (aPlaneId);
+      aPlaneEq.x() = anEquation.x();
+      aPlaneEq.y() = anEquation.y();
+      aPlaneEq.z() = anEquation.z();
+      aPlaneEq.w() = anEquation.w();
       if (myHasLocalOrigin)
       {
-        const gp_XYZ aPos = aPlane->ToPlane().Position().Location().XYZ() - myLocalOrigin;
-        const double aD =
-          -(anEquation.x() * aPos.X() + anEquation.y() * aPos.Y() + anEquation.z() * aPos.Z());
+        const gp_XYZ        aPos = aPlane->ToPlane().Position().Location().XYZ() - myLocalOrigin;
+        const double aD   = -(anEquation.x() * aPos.X() + anEquation.y() * aPos.Y() + anEquation.z() * aPos.Z());
         aPlaneEq.w() = aD;
       }
 
@@ -814,12 +775,12 @@ void OpenGl_ShaderManager::pushClippingState(
       {
         // set either identity or pure view matrix
         toRestoreModelView = true;
-        myContext->core11ffp->glMatrixMode(GL_MODELVIEW);
-        myContext->core11ffp->glLoadMatrixf(myWorldViewState.WorldViewMatrix().GetData());
+        myContext->core11ffp->glMatrixMode (GL_MODELVIEW);
+        myContext->core11ffp->glLoadMatrixf (myWorldViewState.WorldViewMatrix().GetData());
       }
 
-      myContext->core11fwd->glEnable(anFfpPlaneID);
-      myContext->core11ffp->glClipPlane(anFfpPlaneID, aPlaneEq);
+      myContext->core11fwd->glEnable (anFfpPlaneID);
+      myContext->core11ffp->glClipPlane (anFfpPlaneID, aPlaneEq);
 
       ++aPlaneId;
     }
@@ -827,43 +788,41 @@ void OpenGl_ShaderManager::pushClippingState(
     // switch off unused lights
     for (; aPlaneId < aNbMaxPlanes; ++aPlaneId)
     {
-      myContext->core11fwd->glDisable(GL_CLIP_PLANE0 + aPlaneId);
+      myContext->core11fwd->glDisable (GL_CLIP_PLANE0 + aPlaneId);
     }
 
     // restore combined model-view matrix
     if (toRestoreModelView)
     {
-      const NCollection_Mat4<float> aModelView =
-        myWorldViewState.WorldViewMatrix() * myModelWorldState.ModelWorldMatrix();
-      myContext->core11ffp->glLoadMatrixf(aModelView.GetData());
+      const OpenGl_Mat4 aModelView = myWorldViewState.WorldViewMatrix() * myModelWorldState.ModelWorldMatrix();
+      myContext->core11ffp->glLoadMatrixf (aModelView.GetData());
     }
     return;
   }
 
-  const GLint aLocEquations = theProgram->GetStateLocation(OpenGl_OCC_CLIP_PLANE_EQUATIONS);
+  const GLint aLocEquations = theProgram->GetStateLocation (OpenGl_OCC_CLIP_PLANE_EQUATIONS);
   if (aLocEquations == OpenGl_ShaderProgram::INVALID_LOCATION)
   {
     return;
   }
 
   const int aNbClipPlanesMax = theProgram->NbClipPlanesMax();
-  const int aNbPlanes = std::min(myContext->Clipping().NbClippingOrCappingOn(), aNbClipPlanesMax);
+  const int aNbPlanes = Min (myContext->Clipping().NbClippingOrCappingOn(), aNbClipPlanesMax);
   if (aNbPlanes < 1)
   {
-    theProgram->SetUniform(myContext, theProgram->GetStateLocation(OpenGl_OCC_CLIP_PLANE_COUNT), 0);
+    theProgram->SetUniform (myContext, theProgram->GetStateLocation (OpenGl_OCC_CLIP_PLANE_COUNT), 0);
     return;
   }
 
   if (myClipPlaneArray.Size() < aNbClipPlanesMax)
   {
-    myClipPlaneArray.Resize(0, aNbClipPlanesMax - 1, false);
-    myClipChainArray.Resize(0, aNbClipPlanesMax - 1, false);
+    myClipPlaneArray.Resize (0, aNbClipPlanesMax - 1, false);
+    myClipChainArray.Resize (0, aNbClipPlanesMax - 1, false);
   }
 
-  int                                     aPlaneId     = 0;
+  int aPlaneId = 0;
   const occ::handle<Graphic3d_ClipPlane>& aCappedChain = myContext->Clipping().CappedChain();
-  for (OpenGl_ClippingIterator aPlaneIter(myContext->Clipping()); aPlaneIter.More();
-       aPlaneIter.Next())
+  for (OpenGl_ClippingIterator aPlaneIter (myContext->Clipping()); aPlaneIter.More(); aPlaneIter.Next())
   {
     const occ::handle<Graphic3d_ClipPlane>& aPlane = aPlaneIter.Value();
     if (aPlaneIter.IsDisabled())
@@ -880,12 +839,11 @@ void OpenGl_ShaderManager::pushClippingState(
       }
 
       int aSubPlaneIndex = 1;
-      for (const Graphic3d_ClipPlane* aSubPlaneIter = aCappedChain.get(); aSubPlaneIter != nullptr;
-           aSubPlaneIter = aSubPlaneIter->ChainNextPlane().get(), ++aSubPlaneIndex)
+      for (const Graphic3d_ClipPlane* aSubPlaneIter = aCappedChain.get(); aSubPlaneIter != NULL; aSubPlaneIter = aSubPlaneIter->ChainNextPlane().get(), ++aSubPlaneIndex)
       {
         if (aSubPlaneIndex == myContext->Clipping().CappedSubPlane())
         {
-          addClippingPlane(aPlaneId, *aSubPlaneIter, aSubPlaneIter->GetEquation(), 1);
+          addClippingPlane (aPlaneId, *aSubPlaneIter, aSubPlaneIter->GetEquation(), 1);
           break;
         }
       }
@@ -896,22 +854,17 @@ void OpenGl_ShaderManager::pushClippingState(
       // enable sub-planes within processed Chain as reversed and ORed, excluding filtered plane
       if (aPlaneId + aPlane->NbChainNextPlanes() - 1 > aNbClipPlanesMax)
       {
-        myContext->PushMessage(GL_DEBUG_SOURCE_APPLICATION,
-                               GL_DEBUG_TYPE_PORTABILITY,
-                               0,
-                               GL_DEBUG_SEVERITY_HIGH,
-                               TCollection_AsciiString("Error: clipping planes limit (")
-                                 + aNbClipPlanesMax + ") has been exceeded.");
+        myContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH,
+                                TCollection_AsciiString("Error: clipping planes limit (") + aNbClipPlanesMax + ") has been exceeded.");
         break;
       }
 
       int aSubPlaneIndex = 1;
-      for (const Graphic3d_ClipPlane* aSubPlaneIter = aPlane.get(); aSubPlaneIter != nullptr;
-           aSubPlaneIter = aSubPlaneIter->ChainNextPlane().get(), ++aSubPlaneIndex)
+      for (const Graphic3d_ClipPlane* aSubPlaneIter = aPlane.get(); aSubPlaneIter != NULL; aSubPlaneIter = aSubPlaneIter->ChainNextPlane().get(), ++aSubPlaneIndex)
       {
         if (aSubPlaneIndex != -myContext->Clipping().CappedSubPlane())
         {
-          addClippingPlane(aPlaneId, *aSubPlaneIter, aSubPlaneIter->ReversedEquation(), 1);
+          addClippingPlane (aPlaneId, *aSubPlaneIter, aSubPlaneIter->ReversedEquation(), 1);
         }
       }
     }
@@ -920,164 +873,136 @@ void OpenGl_ShaderManager::pushClippingState(
       // normal case
       if (aPlaneId + aPlane->NbChainNextPlanes() > aNbClipPlanesMax)
       {
-        myContext->PushMessage(GL_DEBUG_SOURCE_APPLICATION,
-                               GL_DEBUG_TYPE_PORTABILITY,
-                               0,
-                               GL_DEBUG_SEVERITY_HIGH,
-                               TCollection_AsciiString("Error: clipping planes limit (")
-                                 + aNbClipPlanesMax + ") has been exceeded.");
+        myContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH,
+                                TCollection_AsciiString("Error: clipping planes limit (") + aNbClipPlanesMax + ") has been exceeded.");
         break;
       }
-      for (const Graphic3d_ClipPlane* aSubPlaneIter = aPlane.get(); aSubPlaneIter != nullptr;
-           aSubPlaneIter                            = aSubPlaneIter->ChainNextPlane().get())
+      for (const Graphic3d_ClipPlane* aSubPlaneIter = aPlane.get(); aSubPlaneIter != NULL; aSubPlaneIter = aSubPlaneIter->ChainNextPlane().get())
       {
-        addClippingPlane(aPlaneId,
-                         *aSubPlaneIter,
-                         aSubPlaneIter->GetEquation(),
-                         aSubPlaneIter->NbChainNextPlanes());
+        addClippingPlane (aPlaneId, *aSubPlaneIter, aSubPlaneIter->GetEquation(), aSubPlaneIter->NbChainNextPlanes());
       }
     }
   }
 
-  theProgram->SetUniform(myContext,
-                         theProgram->GetStateLocation(OpenGl_OCC_CLIP_PLANE_COUNT),
-                         aPlaneId);
-  theProgram->SetUniform(myContext, aLocEquations, aNbClipPlanesMax, &myClipPlaneArray.First());
-  theProgram->SetUniform(myContext,
-                         theProgram->GetStateLocation(OpenGl_OCC_CLIP_PLANE_CHAINS),
-                         aNbClipPlanesMax,
-                         &myClipChainArray.First());
+  theProgram->SetUniform (myContext, theProgram->GetStateLocation (OpenGl_OCC_CLIP_PLANE_COUNT), aPlaneId);
+  theProgram->SetUniform (myContext, aLocEquations, aNbClipPlanesMax, &myClipPlaneArray.First());
+  theProgram->SetUniform (myContext, theProgram->GetStateLocation (OpenGl_OCC_CLIP_PLANE_CHAINS), aNbClipPlanesMax, &myClipChainArray.First());
 }
 
-//=================================================================================================
-
-void OpenGl_ShaderManager::pushMaterialState(
-  const occ::handle<OpenGl_ShaderProgram>& theProgram) const
+// =======================================================================
+// function : pushMaterialState
+// purpose  :
+// =======================================================================
+void OpenGl_ShaderManager::pushMaterialState (const occ::handle<OpenGl_ShaderProgram>& theProgram) const
 {
   const OpenGl_Material& aMat = myMaterialState.Material();
-  theProgram->UpdateState(OpenGl_MATERIAL_STATE, myMaterialState.Index());
+  theProgram->UpdateState (OpenGl_MATERIAL_STATE, myMaterialState.Index());
   if (theProgram == myFfpProgram)
   {
-    if (myContext->core11ffp == nullptr)
+    if (myContext->core11ffp == NULL)
     {
       return;
     }
 
     if (myMaterialState.AlphaCutoff() < ShortRealLast())
     {
-      myContext->core11fwd->glAlphaFunc(GL_GEQUAL, myMaterialState.AlphaCutoff());
-      myContext->core11fwd->glEnable(GL_ALPHA_TEST);
+      myContext->core11fwd->glAlphaFunc (GL_GEQUAL, myMaterialState.AlphaCutoff());
+      myContext->core11fwd->glEnable (GL_ALPHA_TEST);
     }
     else
     {
-      myContext->core11fwd->glDisable(GL_ALPHA_TEST);
+      myContext->core11fwd->glDisable (GL_ALPHA_TEST);
     }
 
     const GLenum aFrontFace = myMaterialState.ToDistinguish() ? GL_FRONT : GL_FRONT_AND_BACK;
-    const OpenGl_MaterialCommon&  aFrontMat = aMat.Common[0];
-    const OpenGl_MaterialCommon&  aBackMat  = aMat.Common[1];
-    const NCollection_Vec4<float> aSpec4(aFrontMat.SpecularShininess.rgb(), 1.0f);
-    myContext->core11ffp->glMaterialfv(aFrontFace, GL_AMBIENT, aFrontMat.Ambient.GetData());
-    myContext->core11ffp->glMaterialfv(aFrontFace, GL_DIFFUSE, aFrontMat.Diffuse.GetData());
-    myContext->core11ffp->glMaterialfv(aFrontFace, GL_SPECULAR, aSpec4.GetData());
-    myContext->core11ffp->glMaterialfv(aFrontFace, GL_EMISSION, aFrontMat.Emission.GetData());
-    myContext->core11ffp->glMaterialf(aFrontFace, GL_SHININESS, aFrontMat.Shine());
+    const OpenGl_MaterialCommon& aFrontMat = aMat.Common[0];
+    const OpenGl_MaterialCommon& aBackMat  = aMat.Common[1];
+    const Graphic3d_Vec4 aSpec4 (aFrontMat.SpecularShininess.rgb(), 1.0f);
+    myContext->core11ffp->glMaterialfv(aFrontFace, GL_AMBIENT,   aFrontMat.Ambient.GetData());
+    myContext->core11ffp->glMaterialfv(aFrontFace, GL_DIFFUSE,   aFrontMat.Diffuse.GetData());
+    myContext->core11ffp->glMaterialfv(aFrontFace, GL_SPECULAR,  aSpec4.GetData());
+    myContext->core11ffp->glMaterialfv(aFrontFace, GL_EMISSION,  aFrontMat.Emission.GetData());
+    myContext->core11ffp->glMaterialf (aFrontFace, GL_SHININESS, aFrontMat.Shine());
     if (myMaterialState.ToDistinguish())
     {
-      const NCollection_Vec4<float> aSpec4Back(aBackMat.SpecularShininess.rgb(), 1.0f);
-      myContext->core11ffp->glMaterialfv(GL_BACK, GL_AMBIENT, aBackMat.Ambient.GetData());
-      myContext->core11ffp->glMaterialfv(GL_BACK, GL_DIFFUSE, aBackMat.Diffuse.GetData());
-      myContext->core11ffp->glMaterialfv(GL_BACK, GL_SPECULAR, aSpec4Back.GetData());
-      myContext->core11ffp->glMaterialfv(GL_BACK, GL_EMISSION, aBackMat.Emission.GetData());
-      myContext->core11ffp->glMaterialf(GL_BACK, GL_SHININESS, aBackMat.Shine());
+      const Graphic3d_Vec4 aSpec4Back (aBackMat.SpecularShininess.rgb(), 1.0f);
+      myContext->core11ffp->glMaterialfv(GL_BACK, GL_AMBIENT,   aBackMat.Ambient.GetData());
+      myContext->core11ffp->glMaterialfv(GL_BACK, GL_DIFFUSE,   aBackMat.Diffuse.GetData());
+      myContext->core11ffp->glMaterialfv(GL_BACK, GL_SPECULAR,  aSpec4Back.GetData());
+      myContext->core11ffp->glMaterialfv(GL_BACK, GL_EMISSION,  aBackMat.Emission.GetData());
+      myContext->core11ffp->glMaterialf (GL_BACK, GL_SHININESS, aBackMat.Shine());
     }
     return;
   }
 
-  theProgram->SetUniform(myContext,
-                         theProgram->GetStateLocation(OpenGl_OCCT_ALPHA_CUTOFF),
-                         myMaterialState.AlphaCutoff());
-  theProgram->SetUniform(myContext,
-                         theProgram->GetStateLocation(OpenGl_OCCT_TEXTURE_ENABLE),
-                         myMaterialState.ToMapTexture() ? 1 : 0);
-  theProgram->SetUniform(myContext,
-                         theProgram->GetStateLocation(OpenGl_OCCT_DISTINGUISH_MODE),
-                         myMaterialState.ToDistinguish() ? 1 : 0);
+  theProgram->SetUniform (myContext,
+                          theProgram->GetStateLocation (OpenGl_OCCT_ALPHA_CUTOFF),
+                          myMaterialState.AlphaCutoff());
+  theProgram->SetUniform (myContext,
+                          theProgram->GetStateLocation (OpenGl_OCCT_TEXTURE_ENABLE),
+                          myMaterialState.ToMapTexture()  ? 1 : 0);
+  theProgram->SetUniform (myContext,
+                          theProgram->GetStateLocation (OpenGl_OCCT_DISTINGUISH_MODE),
+                          myMaterialState.ToDistinguish() ? 1 : 0);
 
-  if (const OpenGl_ShaderUniformLocation& aLocPbrFront =
-        theProgram->GetStateLocation(OpenGl_OCCT_PBR_MATERIAL))
+  if (const OpenGl_ShaderUniformLocation& aLocPbrFront = theProgram->GetStateLocation (OpenGl_OCCT_PBR_MATERIAL))
   {
-    theProgram->SetUniform(myContext,
-                           aLocPbrFront,
-                           OpenGl_Material::NbOfVec4Pbr(),
-                           aMat.PackedPbr());
+    theProgram->SetUniform (myContext, aLocPbrFront, OpenGl_Material::NbOfVec4Pbr(), aMat.PackedPbr());
   }
-  if (const OpenGl_ShaderUniformLocation& aLocFront =
-        theProgram->GetStateLocation(OpenGl_OCCT_COMMON_MATERIAL))
+  if (const OpenGl_ShaderUniformLocation& aLocFront = theProgram->GetStateLocation (OpenGl_OCCT_COMMON_MATERIAL))
   {
-    theProgram->SetUniform(myContext,
-                           aLocFront,
-                           OpenGl_Material::NbOfVec4Common(),
-                           aMat.PackedCommon());
+    theProgram->SetUniform (myContext, aLocFront, OpenGl_Material::NbOfVec4Common(), aMat.PackedCommon());
   }
 }
 
-//=================================================================================================
-
-void OpenGl_ShaderManager::pushOitState(const occ::handle<OpenGl_ShaderProgram>& theProgram) const
+// =======================================================================
+// function : pushOitState
+// purpose  :
+// =======================================================================
+void OpenGl_ShaderManager::pushOitState (const occ::handle<OpenGl_ShaderProgram>& theProgram) const
 {
-  if (const OpenGl_ShaderUniformLocation& aLocOutput =
-        theProgram->GetStateLocation(OpenGl_OCCT_OIT_OUTPUT))
+  if (const OpenGl_ShaderUniformLocation& aLocOutput = theProgram->GetStateLocation (OpenGl_OCCT_OIT_OUTPUT))
   {
-    theProgram->SetUniform(myContext, aLocOutput, (GLint)myOitState.ActiveMode());
+    theProgram->SetUniform (myContext, aLocOutput, (GLint )myOitState.ActiveMode());
   }
-  if (const OpenGl_ShaderUniformLocation& aLocDepthFactor =
-        theProgram->GetStateLocation(OpenGl_OCCT_OIT_DEPTH_FACTOR))
+  if (const OpenGl_ShaderUniformLocation& aLocDepthFactor = theProgram->GetStateLocation (OpenGl_OCCT_OIT_DEPTH_FACTOR))
   {
-    theProgram->SetUniform(myContext, aLocDepthFactor, myOitState.DepthFactor());
+    theProgram->SetUniform (myContext, aLocDepthFactor, myOitState.DepthFactor());
   }
 }
 
-//=================================================================================================
-
-void OpenGl_ShaderManager::PushInteriorState(const occ::handle<OpenGl_ShaderProgram>& theProgram,
-                                             const occ::handle<Graphic3d_Aspects>& theAspect) const
+// =======================================================================
+// function : PushInteriorState
+// purpose  :
+// =======================================================================
+void OpenGl_ShaderManager::PushInteriorState (const occ::handle<OpenGl_ShaderProgram>& theProgram,
+                                              const occ::handle<Graphic3d_Aspects>& theAspect) const
 {
-  if (theProgram.IsNull() || !theProgram->IsValid())
+  if (theProgram.IsNull()
+  || !theProgram->IsValid())
   {
     return;
   }
 
-  if (const OpenGl_ShaderUniformLocation aLocLineWidth =
-        theProgram->GetStateLocation(OpenGl_OCCT_LINE_WIDTH))
+  if (const OpenGl_ShaderUniformLocation aLocLineWidth = theProgram->GetStateLocation (OpenGl_OCCT_LINE_WIDTH))
   {
-    theProgram->SetUniform(myContext,
-                           aLocLineWidth,
-                           theAspect->EdgeWidth() * myContext->LineWidthScale());
-    theProgram->SetUniform(myContext,
-                           theProgram->GetStateLocation(OpenGl_OCCT_LINE_FEATHER),
-                           myContext->LineFeather() * myContext->LineWidthScale());
+    theProgram->SetUniform (myContext, aLocLineWidth, theAspect->EdgeWidth() * myContext->LineWidthScale());
+    theProgram->SetUniform (myContext, theProgram->GetStateLocation (OpenGl_OCCT_LINE_FEATHER), myContext->LineFeather() * myContext->LineWidthScale());
   }
-  if (const OpenGl_ShaderUniformLocation aLocWireframeColor =
-        theProgram->GetStateLocation(OpenGl_OCCT_WIREFRAME_COLOR))
+  if (const OpenGl_ShaderUniformLocation aLocWireframeColor = theProgram->GetStateLocation (OpenGl_OCCT_WIREFRAME_COLOR))
   {
     if (theAspect->InteriorStyle() == Aspect_IS_HOLLOW)
     {
-      theProgram->SetUniform(myContext,
-                             aLocWireframeColor,
-                             NCollection_Vec4<float>(-1.0f, -1.0f, -1.0f, -1.0f));
+      theProgram->SetUniform (myContext, aLocWireframeColor, OpenGl_Vec4 (-1.0f, -1.0f, -1.0f, -1.0f));
     }
     else
     {
-      theProgram->SetUniform(myContext,
-                             aLocWireframeColor,
-                             myContext->Vec4FromQuantityColor(theAspect->EdgeColorRGBA()));
+      theProgram->SetUniform (myContext, aLocWireframeColor, myContext->Vec4FromQuantityColor (theAspect->EdgeColorRGBA()));
     }
   }
-  if (const OpenGl_ShaderUniformLocation aLocQuadModeState =
-        theProgram->GetStateLocation(OpenGl_OCCT_QUAD_MODE_STATE))
+  if (const OpenGl_ShaderUniformLocation aLocQuadModeState = theProgram->GetStateLocation (OpenGl_OCCT_QUAD_MODE_STATE))
   {
-    theProgram->SetUniform(myContext, aLocQuadModeState, theAspect->ToSkipFirstEdge() ? 1 : 0);
+    theProgram->SetUniform (myContext, aLocQuadModeState, theAspect->ToSkipFirstEdge() ? 1 : 0);
   }
 }
 
@@ -1085,189 +1010,192 @@ void OpenGl_ShaderManager::PushInteriorState(const occ::handle<OpenGl_ShaderProg
 // function : PushState
 // purpose  : Pushes state of OCCT graphics parameters to the program
 // =======================================================================
-void OpenGl_ShaderManager::PushState(const occ::handle<OpenGl_ShaderProgram>& theProgram,
-                                     Graphic3d_TypeOfShadingModel             theShadingModel) const
+void OpenGl_ShaderManager::PushState (const occ::handle<OpenGl_ShaderProgram>& theProgram,
+                                      Graphic3d_TypeOfShadingModel theShadingModel) const
 {
-  const occ::handle<OpenGl_ShaderProgram>& aProgram =
-    !theProgram.IsNull() ? theProgram : myFfpProgram;
-  PushClippingState(aProgram);
-  PushLightSourceState(aProgram); // should be before PushWorldViewState()
-  PushWorldViewState(aProgram);
-  PushModelWorldState(aProgram);
-  PushProjectionState(aProgram);
-  PushMaterialState(aProgram);
-  PushOitState(aProgram);
+  const occ::handle<OpenGl_ShaderProgram>& aProgram = !theProgram.IsNull() ? theProgram : myFfpProgram;
+  PushClippingState    (aProgram);
+  PushLightSourceState (aProgram); // should be before PushWorldViewState()
+  PushWorldViewState   (aProgram);
+  PushModelWorldState  (aProgram);
+  PushProjectionState  (aProgram);
+  PushMaterialState    (aProgram);
+  PushOitState         (aProgram);
 
   if (!theProgram.IsNull())
   {
-    if (const OpenGl_ShaderUniformLocation& aLocViewPort =
-          theProgram->GetStateLocation(OpenGl_OCCT_VIEWPORT))
+    if (const OpenGl_ShaderUniformLocation& aLocViewPort = theProgram->GetStateLocation (OpenGl_OCCT_VIEWPORT))
     {
-      theProgram->SetUniform(myContext,
-                             aLocViewPort,
-                             NCollection_Vec4<float>((float)myContext->Viewport()[0],
-                                                     (float)myContext->Viewport()[1],
-                                                     (float)myContext->Viewport()[2],
-                                                     (float)myContext->Viewport()[3]));
+      theProgram->SetUniform (myContext, aLocViewPort, OpenGl_Vec4 ((float )myContext->Viewport()[0], (float )myContext->Viewport()[1],
+                                                                    (float )myContext->Viewport()[2], (float )myContext->Viewport()[3]));
     }
   }
-  else if (myContext->core11ffp != nullptr)
+  else if (myContext->core11ffp != NULL)
   {
     // manage FFP lighting
-    myContext->SetShadeModel(theShadingModel);
+    myContext->SetShadeModel (theShadingModel);
     if (theShadingModel == Graphic3d_TypeOfShadingModel_Unlit)
     {
-      myContext->core11fwd->glDisable(GL_LIGHTING);
+      myContext->core11fwd->glDisable (GL_LIGHTING);
     }
     else
     {
-      myContext->core11fwd->glEnable(GL_LIGHTING);
+      myContext->core11fwd->glEnable (GL_LIGHTING);
     }
   }
 }
 
-//=================================================================================================
-
-bool OpenGl_ShaderManager::BindFontProgram(
-  const occ::handle<OpenGl_ShaderProgram>& theCustomProgram)
+// =======================================================================
+// function : BindFontProgram
+// purpose  :
+// =======================================================================
+bool OpenGl_ShaderManager::BindFontProgram (const occ::handle<OpenGl_ShaderProgram>& theCustomProgram)
 {
-  if (!theCustomProgram.IsNull() || myContext->caps->ffpEnable)
+  if (!theCustomProgram.IsNull()
+    || myContext->caps->ffpEnable)
   {
-    return bindProgramWithState(theCustomProgram, Graphic3d_TypeOfShadingModel_Unlit);
+    return bindProgramWithState (theCustomProgram, Graphic3d_TypeOfShadingModel_Unlit);
   }
 
   if (myFontProgram.IsNull())
   {
     occ::handle<Graphic3d_ShaderProgram> aProgramSrc = getStdProgramFont();
-    TCollection_AsciiString              aKey;
-    if (!Create(aProgramSrc, aKey, myFontProgram))
+    TCollection_AsciiString aKey;
+    if (!Create (aProgramSrc, aKey, myFontProgram))
     {
       myFontProgram = new OpenGl_ShaderProgram(); // just mark as invalid
       return false;
     }
   }
 
-  return bindProgramWithState(myFontProgram, Graphic3d_TypeOfShadingModel_Unlit);
+  return bindProgramWithState (myFontProgram, Graphic3d_TypeOfShadingModel_Unlit);
 }
 
-//=================================================================================================
-
-bool OpenGl_ShaderManager::BindFboBlitProgram(int theNbSamples, bool theIsFallback_sRGB)
+// =======================================================================
+// function : BindFboBlitProgram
+// purpose  :
+// =======================================================================
+bool OpenGl_ShaderManager::BindFboBlitProgram (int theNbSamples,
+                                                           bool theIsFallback_sRGB)
 {
-  NCollection_Array1<occ::handle<OpenGl_ShaderProgram>>& aList =
-    myBlitPrograms[theIsFallback_sRGB ? 1 : 0];
-  int aNbSamples = std::max(theNbSamples, 1);
+  NCollection_Array1<occ::handle<OpenGl_ShaderProgram>>& aList = myBlitPrograms[theIsFallback_sRGB ? 1 : 0];
+  int aNbSamples = Max (theNbSamples, 1);
   if (aNbSamples > aList.Upper())
   {
-    aList.Resize(1, aNbSamples, true);
+    aList.Resize (1, aNbSamples, true);
   }
 
   occ::handle<OpenGl_ShaderProgram>& aProg = aList[aNbSamples];
   if (!aProg.IsNull())
   {
-    return myContext->BindProgram(aProg);
+    return myContext->BindProgram (aProg);
   }
 
-  occ::handle<Graphic3d_ShaderProgram> aProgramSrc =
-    getStdProgramFboBlit(aNbSamples, theIsFallback_sRGB);
+  occ::handle<Graphic3d_ShaderProgram> aProgramSrc = getStdProgramFboBlit (aNbSamples, theIsFallback_sRGB);
   TCollection_AsciiString aKey;
-  if (!Create(aProgramSrc, aKey, aProg))
+  if (!Create (aProgramSrc, aKey, aProg))
   {
     aProg = new OpenGl_ShaderProgram(); // just mark as invalid
     return false;
   }
 
-  myContext->BindProgram(aProg);
-  aProg->SetSampler(myContext, "uColorSampler", Graphic3d_TextureUnit_0);
-  aProg->SetSampler(myContext, "uDepthSampler", Graphic3d_TextureUnit_1);
+  myContext->BindProgram (aProg);
+  aProg->SetSampler (myContext, "uColorSampler", Graphic3d_TextureUnit_0);
+  aProg->SetSampler (myContext, "uDepthSampler", Graphic3d_TextureUnit_1);
   return true;
 }
 
-//=================================================================================================
-
-bool OpenGl_ShaderManager::BindOitCompositingProgram(bool theIsMSAAEnabled)
+// =======================================================================
+// function : BindOitCompositingProgram
+// purpose  :
+// =======================================================================
+bool OpenGl_ShaderManager::BindOitCompositingProgram (bool theIsMSAAEnabled)
 {
-  const int                          aProgramIdx = theIsMSAAEnabled ? 1 : 0;
-  occ::handle<OpenGl_ShaderProgram>& aProgram    = myOitCompositingProgram[aProgramIdx];
+  const int aProgramIdx = theIsMSAAEnabled ? 1 : 0;
+  occ::handle<OpenGl_ShaderProgram>& aProgram = myOitCompositingProgram[aProgramIdx];
   if (!aProgram.IsNull())
   {
-    return myContext->BindProgram(aProgram);
+    return myContext->BindProgram (aProgram);
   }
 
-  occ::handle<Graphic3d_ShaderProgram> aProgramSrc = getStdProgramOitCompositing(theIsMSAAEnabled);
-  TCollection_AsciiString              aKey;
-  if (!Create(aProgramSrc, aKey, aProgram))
-  {
-    aProgram = new OpenGl_ShaderProgram(); // just mark as invalid
-    return false;
-  }
-
-  myContext->BindProgram(aProgram);
-  aProgram->SetSampler(myContext, "uAccumTexture", Graphic3d_TextureUnit_0);
-  aProgram->SetSampler(myContext, "uWeightTexture", Graphic3d_TextureUnit_1);
-  return true;
-}
-
-//=================================================================================================
-
-bool OpenGl_ShaderManager::BindOitDepthPeelingBlendProgram(bool theIsMSAAEnabled)
-{
-  const int                          aProgramIdx = theIsMSAAEnabled ? 1 : 0;
-  occ::handle<OpenGl_ShaderProgram>& aProgram    = myOitDepthPeelingBlendProgram[aProgramIdx];
-  if (!aProgram.IsNull())
-  {
-    return myContext->BindProgram(aProgram);
-  }
-
-  occ::handle<Graphic3d_ShaderProgram> aProgramSrc =
-    getStdProgramOitDepthPeelingBlend(theIsMSAAEnabled);
+  occ::handle<Graphic3d_ShaderProgram> aProgramSrc = getStdProgramOitCompositing (theIsMSAAEnabled);
   TCollection_AsciiString aKey;
-  if (!Create(aProgramSrc, aKey, aProgram))
+  if (!Create (aProgramSrc, aKey, aProgram))
   {
     aProgram = new OpenGl_ShaderProgram(); // just mark as invalid
     return false;
   }
 
-  myContext->BindProgram(aProgram);
-  aProgram->SetSampler(myContext, "uDepthPeelingBackColor", Graphic3d_TextureUnit_0);
+  myContext->BindProgram (aProgram);
+  aProgram->SetSampler (myContext, "uAccumTexture",  Graphic3d_TextureUnit_0);
+  aProgram->SetSampler (myContext, "uWeightTexture", Graphic3d_TextureUnit_1);
   return true;
 }
 
-//=================================================================================================
-
-bool OpenGl_ShaderManager::BindOitDepthPeelingFlushProgram(bool theIsMSAAEnabled)
+// =======================================================================
+// function : BindOitDepthPeelingBlendProgram
+// purpose  :
+// =======================================================================
+bool OpenGl_ShaderManager::BindOitDepthPeelingBlendProgram (bool theIsMSAAEnabled)
 {
-  const int                          aProgramIdx = theIsMSAAEnabled ? 1 : 0;
-  occ::handle<OpenGl_ShaderProgram>& aProgram    = myOitDepthPeelingFlushProgram[aProgramIdx];
+  const int aProgramIdx = theIsMSAAEnabled ? 1 : 0;
+  occ::handle<OpenGl_ShaderProgram>& aProgram = myOitDepthPeelingBlendProgram [aProgramIdx];
   if (!aProgram.IsNull())
   {
-    return myContext->BindProgram(aProgram);
+    return myContext->BindProgram (aProgram);
   }
 
-  occ::handle<Graphic3d_ShaderProgram> aProgramSrc =
-    getStdProgramOitDepthPeelingFlush(theIsMSAAEnabled);
+  occ::handle<Graphic3d_ShaderProgram> aProgramSrc = getStdProgramOitDepthPeelingBlend (theIsMSAAEnabled);
   TCollection_AsciiString aKey;
-  if (!Create(aProgramSrc, aKey, aProgram))
+  if (!Create (aProgramSrc, aKey, aProgram))
   {
     aProgram = new OpenGl_ShaderProgram(); // just mark as invalid
     return false;
   }
 
-  myContext->BindProgram(aProgram);
-  aProgram->SetSampler(myContext, "uDepthPeelingFrontColor", Graphic3d_TextureUnit_0);
-  aProgram->SetSampler(myContext, "uDepthPeelingBackColor", Graphic3d_TextureUnit_1);
+  myContext->BindProgram (aProgram);
+  aProgram->SetSampler (myContext, "uDepthPeelingBackColor", Graphic3d_TextureUnit_0);
   return true;
 }
 
-//=================================================================================================
-
-bool OpenGl_ShaderManager::prepareStdProgramUnlit(occ::handle<OpenGl_ShaderProgram>& theProgram,
-                                                  int                                theBits,
-                                                  bool                               theIsOutline)
+// =======================================================================
+// function : BindOitDepthPeelingFlushProgram
+// purpose  :
+// =======================================================================
+bool OpenGl_ShaderManager::BindOitDepthPeelingFlushProgram (bool theIsMSAAEnabled)
 {
-  occ::handle<Graphic3d_ShaderProgram> aProgramSrc = getStdProgramUnlit(theBits, theIsOutline);
-  TCollection_AsciiString              aKey;
-  if (!Create(aProgramSrc, aKey, theProgram))
+  const int aProgramIdx = theIsMSAAEnabled ? 1 : 0;
+  occ::handle<OpenGl_ShaderProgram>& aProgram = myOitDepthPeelingFlushProgram [aProgramIdx];
+  if (!aProgram.IsNull())
+  {
+    return myContext->BindProgram (aProgram);
+  }
+
+  occ::handle<Graphic3d_ShaderProgram> aProgramSrc = getStdProgramOitDepthPeelingFlush (theIsMSAAEnabled);
+  TCollection_AsciiString aKey;
+  if (!Create (aProgramSrc, aKey, aProgram))
+  {
+    aProgram = new OpenGl_ShaderProgram(); // just mark as invalid
+    return false;
+  }
+
+  myContext->BindProgram (aProgram);
+  aProgram->SetSampler (myContext, "uDepthPeelingFrontColor", Graphic3d_TextureUnit_0);
+  aProgram->SetSampler (myContext, "uDepthPeelingBackColor",  Graphic3d_TextureUnit_1);
+  return true;
+}
+
+// =======================================================================
+// function : prepareStdProgramUnlit
+// purpose  :
+// =======================================================================
+bool OpenGl_ShaderManager::prepareStdProgramUnlit (occ::handle<OpenGl_ShaderProgram>& theProgram,
+                                                               int theBits,
+                                                               bool theIsOutline)
+{
+  occ::handle<Graphic3d_ShaderProgram> aProgramSrc = getStdProgramUnlit (theBits, theIsOutline);
+  TCollection_AsciiString aKey;
+  if (!Create (aProgramSrc, aKey, theProgram))
   {
     theProgram = new OpenGl_ShaderProgram(); // just mark as invalid
     return false;
@@ -1275,15 +1203,16 @@ bool OpenGl_ShaderManager::prepareStdProgramUnlit(occ::handle<OpenGl_ShaderProgr
   return true;
 }
 
-//=================================================================================================
-
-bool OpenGl_ShaderManager::prepareStdProgramGouraud(occ::handle<OpenGl_ShaderProgram>& theProgram,
-                                                    const int                          theBits)
+// =======================================================================
+// function : prepareStdProgramGouraud
+// purpose  :
+// =======================================================================
+bool OpenGl_ShaderManager::prepareStdProgramGouraud (occ::handle<OpenGl_ShaderProgram>& theProgram,
+                                                                 const int        theBits)
 {
-  occ::handle<Graphic3d_ShaderProgram> aProgramSrc =
-    getStdProgramGouraud(myLightSourceState.LightSources(), theBits);
+  occ::handle<Graphic3d_ShaderProgram> aProgramSrc = getStdProgramGouraud (myLightSourceState.LightSources(), theBits);
   TCollection_AsciiString aKey;
-  if (!Create(aProgramSrc, aKey, theProgram))
+  if (!Create (aProgramSrc, aKey, theProgram))
   {
     theProgram = new OpenGl_ShaderProgram(); // just mark as invalid
     return false;
@@ -1291,23 +1220,21 @@ bool OpenGl_ShaderManager::prepareStdProgramGouraud(occ::handle<OpenGl_ShaderPro
   return true;
 }
 
-//=================================================================================================
-
-bool OpenGl_ShaderManager::prepareStdProgramPhong(occ::handle<OpenGl_ShaderProgram>& theProgram,
-                                                  const int                          theBits,
-                                                  const bool theIsFlatNormal,
-                                                  const bool theIsPBR)
+// =======================================================================
+// function : prepareStdProgramPhong
+// purpose  :
+// =======================================================================
+bool OpenGl_ShaderManager::prepareStdProgramPhong (occ::handle<OpenGl_ShaderProgram>& theProgram,
+                                                               const int        theBits,
+                                                               const bool        theIsFlatNormal,
+                                                               const bool        theIsPBR)
 {
-  int aNbShadowMaps =
-    myLightSourceState.HasShadowMaps() ? myLightSourceState.LightSources()->NbCastShadows() : 0;
-  occ::handle<Graphic3d_ShaderProgram> aProgramSrc =
-    getStdProgramPhong(myLightSourceState.LightSources(),
-                       theBits,
-                       theIsFlatNormal,
-                       theIsPBR,
-                       aNbShadowMaps);
+  int aNbShadowMaps = myLightSourceState.HasShadowMaps()
+                                 ? myLightSourceState.LightSources()->NbCastShadows()
+                                 : 0;
+  occ::handle<Graphic3d_ShaderProgram> aProgramSrc = getStdProgramPhong (myLightSourceState.LightSources(), theBits, theIsFlatNormal, theIsPBR, aNbShadowMaps);
   TCollection_AsciiString aKey;
-  if (!Create(aProgramSrc, aKey, theProgram))
+  if (!Create (aProgramSrc, aKey, theProgram))
   {
     theProgram = new OpenGl_ShaderProgram(); // just mark as invalid
     return false;
@@ -1315,11 +1242,13 @@ bool OpenGl_ShaderManager::prepareStdProgramPhong(occ::handle<OpenGl_ShaderProgr
   return true;
 }
 
-//=================================================================================================
-
-bool OpenGl_ShaderManager::BindStereoProgram(Graphic3d_StereoMode theStereoMode)
+// =======================================================================
+// function : BindStereoProgram
+// purpose  :
+// =======================================================================
+bool OpenGl_ShaderManager::BindStereoProgram (Graphic3d_StereoMode theStereoMode)
 {
-  if (theStereoMode < 0 || (int)theStereoMode >= Graphic3d_StereoMode_NB)
+  if (theStereoMode < 0 || (int )theStereoMode >= Graphic3d_StereoMode_NB)
   {
     return false;
   }
@@ -1327,125 +1256,137 @@ bool OpenGl_ShaderManager::BindStereoProgram(Graphic3d_StereoMode theStereoMode)
   occ::handle<OpenGl_ShaderProgram>& aProgram = myStereoPrograms[theStereoMode];
   if (!aProgram.IsNull())
   {
-    return myContext->BindProgram(aProgram);
+    return myContext->BindProgram (aProgram);
   }
 
-  occ::handle<Graphic3d_ShaderProgram> aProgramSrc = getStdProgramStereo(theStereoMode);
-  TCollection_AsciiString              aKey;
-  if (!Create(aProgramSrc, aKey, aProgram))
+  occ::handle<Graphic3d_ShaderProgram> aProgramSrc = getStdProgramStereo (theStereoMode);
+  TCollection_AsciiString aKey;
+  if (!Create (aProgramSrc, aKey, aProgram))
   {
     aProgram = new OpenGl_ShaderProgram(); // just mark as invalid
     return false;
   }
 
-  myContext->BindProgram(aProgram);
-  aProgram->SetSampler(myContext, "uLeftSampler", Graphic3d_TextureUnit_0);
-  aProgram->SetSampler(myContext, "uRightSampler", Graphic3d_TextureUnit_1);
-  aProgram->SetUniform(myContext, "uTexOffset", NCollection_Vec2<float>(0.0f));
+  myContext->BindProgram (aProgram);
+  aProgram->SetSampler (myContext, "uLeftSampler",  Graphic3d_TextureUnit_0);
+  aProgram->SetSampler (myContext, "uRightSampler", Graphic3d_TextureUnit_1);
+  aProgram->SetUniform (myContext, "uTexOffset",    Graphic3d_Vec2(0.0f));
   return true;
 }
 
-//=================================================================================================
-
+// =======================================================================
+// function : prepareStdProgramBoundBox
+// purpose  :
+// =======================================================================
 bool OpenGl_ShaderManager::prepareStdProgramBoundBox()
 {
-  occ::handle<Graphic3d_ShaderProgram> aProgramSrc =
-    Graphic3d_ShaderManager::getStdProgramBoundBox();
+  occ::handle<Graphic3d_ShaderProgram> aProgramSrc = Graphic3d_ShaderManager::getStdProgramBoundBox();
   TCollection_AsciiString aKey;
-  if (!Create(aProgramSrc, aKey, myBoundBoxProgram))
+  if (!Create (aProgramSrc, aKey, myBoundBoxProgram))
   {
     myBoundBoxProgram = new OpenGl_ShaderProgram(); // just mark as invalid
     return false;
   }
 
-  const NCollection_Vec4<float> aMin(-0.5f, -0.5f, -0.5f, 1.0f);
-  const NCollection_Vec4<float> anAxisShifts[3] = {NCollection_Vec4<float>(1.0f, 0.0f, 0.0f, 0.0f),
-                                                   NCollection_Vec4<float>(0.0f, 1.0f, 0.0f, 0.0f),
-                                                   NCollection_Vec4<float>(0.0f, 0.0f, 1.0f, 0.0f)};
+  const OpenGl_Vec4 aMin (-0.5f, -0.5f, -0.5f, 1.0f);
+  const OpenGl_Vec4 anAxisShifts[3] =
+  {
+    OpenGl_Vec4 (1.0f, 0.0f, 0.0f, 0.0f),
+    OpenGl_Vec4 (0.0f, 1.0f, 0.0f, 0.0f),
+    OpenGl_Vec4 (0.0f, 0.0f, 1.0f, 0.0f)
+  };
 
-  const NCollection_Vec4<float> aLookup1(0.0f, 1.0f, 0.0f, 1.0f);
-  const NCollection_Vec4<float> aLookup2(0.0f, 0.0f, 1.0f, 1.0f);
-  NCollection_Vec4<float>       aLinesVertices[24];
+  const OpenGl_Vec4 aLookup1 (0.0f, 1.0f, 0.0f, 1.0f);
+  const OpenGl_Vec4 aLookup2 (0.0f, 0.0f, 1.0f, 1.0f);
+  OpenGl_Vec4 aLinesVertices[24];
   for (int anAxis = 0, aVertex = 0; anAxis < 3; ++anAxis)
   {
     for (int aCompIter = 0; aCompIter < 4; ++aCompIter)
     {
-      aLinesVertices[aVertex++] = aMin + anAxisShifts[(anAxis + 1) % 3] * aLookup1[aCompIter]
-                                  + anAxisShifts[(anAxis + 2) % 3] * aLookup2[aCompIter];
+      aLinesVertices[aVertex++] = aMin
+        + anAxisShifts[(anAxis + 1) % 3] * aLookup1[aCompIter]
+        + anAxisShifts[(anAxis + 2) % 3] * aLookup2[aCompIter];
 
-      aLinesVertices[aVertex++] = aMin + anAxisShifts[anAxis]
-                                  + anAxisShifts[(anAxis + 1) % 3] * aLookup1[aCompIter]
-                                  + anAxisShifts[(anAxis + 2) % 3] * aLookup2[aCompIter];
+      aLinesVertices[aVertex++] = aMin
+        + anAxisShifts[anAxis]
+        + anAxisShifts[(anAxis + 1) % 3] * aLookup1[aCompIter]
+        + anAxisShifts[(anAxis + 2) % 3] * aLookup2[aCompIter];
     }
   }
   if (myContext->ToUseVbo())
   {
     myBoundBoxVertBuffer = new OpenGl_VertexBuffer();
-    if (myBoundBoxVertBuffer->Init(myContext, 4, 24, aLinesVertices[0].GetData()))
+    if (myBoundBoxVertBuffer->Init (myContext, 4, 24, aLinesVertices[0].GetData()))
     {
-      myContext->ShareResource("OpenGl_ShaderManager_BndBoxVbo", myBoundBoxVertBuffer);
+      myContext->ShareResource ("OpenGl_ShaderManager_BndBoxVbo", myBoundBoxVertBuffer);
       return true;
     }
   }
   myBoundBoxVertBuffer = new OpenGl_VertexBufferCompat();
-  myBoundBoxVertBuffer->Init(myContext, 4, 24, aLinesVertices[0].GetData());
-  myContext->ShareResource("OpenGl_ShaderManager_BndBoxVbo", myBoundBoxVertBuffer);
+  myBoundBoxVertBuffer->Init (myContext, 4, 24, aLinesVertices[0].GetData());
+  myContext->ShareResource ("OpenGl_ShaderManager_BndBoxVbo", myBoundBoxVertBuffer);
   return true;
 }
 
-//=================================================================================================
-
-bool OpenGl_ShaderManager::preparePBREnvBakingProgram(int theIndex)
+// =======================================================================
+// function : preparePBREnvBakingProgram
+// purpose  :
+// =======================================================================
+bool OpenGl_ShaderManager::preparePBREnvBakingProgram (int theIndex)
 {
-  occ::handle<Graphic3d_ShaderProgram> aProgramSrc = getPBREnvBakingProgram(theIndex);
-  TCollection_AsciiString              aKey;
-  if (!Create(aProgramSrc, aKey, myPBREnvBakingProgram[theIndex]))
+  occ::handle<Graphic3d_ShaderProgram> aProgramSrc = getPBREnvBakingProgram (theIndex);
+  TCollection_AsciiString aKey;
+  if (!Create (aProgramSrc, aKey, myPBREnvBakingProgram[theIndex]))
   {
     myPBREnvBakingProgram[theIndex] = new OpenGl_ShaderProgram(); // just mark as invalid
     return false;
   }
 
-  if (theIndex == 0 || theIndex == 2)
+  if (theIndex == 0
+   || theIndex == 2)
   {
     // workaround for old GLSL - load constants as uniform
-    myContext->BindProgram(myPBREnvBakingProgram[theIndex]);
-    const float aSHBasisFuncCoeffs[9] = {0.282095f * 0.282095f,
-                                         0.488603f * 0.488603f,
-                                         0.488603f * 0.488603f,
-                                         0.488603f * 0.488603f,
-                                         1.092548f * 1.092548f,
-                                         1.092548f * 1.092548f,
-                                         1.092548f * 1.092548f,
-                                         0.315392f * 0.315392f,
-                                         0.546274f * 0.546274f};
-    const float aSHCosCoeffs[9]       = {3.141593f,
-                                         2.094395f,
-                                         2.094395f,
-                                         2.094395f,
-                                         0.785398f,
-                                         0.785398f,
-                                         0.785398f,
-                                         0.785398f,
-                                         0.785398f};
-    myPBREnvBakingProgram[theIndex]->SetUniform(
-      myContext,
-      myPBREnvBakingProgram[theIndex]->GetUniformLocation(myContext, "aSHBasisFuncCoeffs"),
-      9,
-      aSHBasisFuncCoeffs);
-    myPBREnvBakingProgram[theIndex]->SetUniform(
-      myContext,
-      myPBREnvBakingProgram[theIndex]->GetUniformLocation(myContext, "aSHCosCoeffs"),
-      9,
-      aSHCosCoeffs);
-    myContext->BindProgram(nullptr);
+    myContext->BindProgram (myPBREnvBakingProgram[theIndex]);
+    const float aSHBasisFuncCoeffs[9] =
+    {
+      0.282095f * 0.282095f, 0.488603f * 0.488603f, 0.488603f * 0.488603f, 0.488603f * 0.488603f,
+      1.092548f * 1.092548f, 1.092548f * 1.092548f, 1.092548f * 1.092548f, 0.315392f * 0.315392f, 0.546274f * 0.546274f
+    };
+    const float aSHCosCoeffs[9] = { 3.141593f, 2.094395f, 2.094395f, 2.094395f, 0.785398f, 0.785398f, 0.785398f, 0.785398f, 0.785398f };
+    myPBREnvBakingProgram[theIndex]->SetUniform (myContext, myPBREnvBakingProgram[theIndex]->GetUniformLocation (myContext, "aSHBasisFuncCoeffs"), 9, aSHBasisFuncCoeffs);
+    myPBREnvBakingProgram[theIndex]->SetUniform (myContext, myPBREnvBakingProgram[theIndex]->GetUniformLocation (myContext, "aSHCosCoeffs"), 9, aSHCosCoeffs);
+    myContext->BindProgram (NULL);
   }
 
   return true;
 }
 
-//=================================================================================================
+// =======================================================================
+// function : prepareGridProgram
+// purpose  :
+// =======================================================================
+bool OpenGl_ShaderManager::prepareGridProgram()
+{
+  occ::handle<Graphic3d_ShaderProgram> aProgramSrc = getGridProgram();
 
-const occ::handle<Graphic3d_ShaderProgram>& OpenGl_ShaderManager::GetBgCubeMapProgram()
+  TCollection_AsciiString aKey;
+  if (!Create (aProgramSrc, aKey, myGridProgram))
+  {
+    myGridProgram = new OpenGl_ShaderProgram(); // just mark as invalid
+    return false;
+  }
+
+  myContext->BindProgram (myGridProgram);
+  myContext->BindProgram (occ::handle<OpenGl_ShaderProgram>());
+
+  return true;
+}
+
+// =======================================================================
+// function : GetBgCubeMapProgram
+// purpose  :
+// =======================================================================
+const occ::handle<Graphic3d_ShaderProgram>& OpenGl_ShaderManager::GetBgCubeMapProgram ()
 {
   if (myBgCubeMapProgram.IsNull())
   {
@@ -1454,9 +1395,11 @@ const occ::handle<Graphic3d_ShaderProgram>& OpenGl_ShaderManager::GetBgCubeMapPr
   return myBgCubeMapProgram;
 }
 
-//=================================================================================================
-
-const occ::handle<Graphic3d_ShaderProgram>& OpenGl_ShaderManager::GetBgSkydomeProgram()
+// =======================================================================
+// function : GetBgSkydomeProgram
+// purpose  :
+// =======================================================================
+const occ::handle<Graphic3d_ShaderProgram>& OpenGl_ShaderManager::GetBgSkydomeProgram ()
 {
   if (myBgSkydomeProgram.IsNull())
   {
@@ -1465,9 +1408,11 @@ const occ::handle<Graphic3d_ShaderProgram>& OpenGl_ShaderManager::GetBgSkydomePr
   return myBgSkydomeProgram;
 }
 
-//=================================================================================================
-
-const occ::handle<Graphic3d_ShaderProgram>& OpenGl_ShaderManager::GetColoredQuadProgram()
+// =======================================================================
+// function : GetColoredQuadProgram
+// purpose  :
+// =======================================================================
+const occ::handle<Graphic3d_ShaderProgram>& OpenGl_ShaderManager::GetColoredQuadProgram ()
 {
   if (myColoredQuadProgram.IsNull())
   {
@@ -1476,45 +1421,49 @@ const occ::handle<Graphic3d_ShaderProgram>& OpenGl_ShaderManager::GetColoredQuad
   return myColoredQuadProgram;
 }
 
-//=================================================================================================
-
-bool OpenGl_ShaderManager::bindProgramWithState(const occ::handle<OpenGl_ShaderProgram>& theProgram,
-                                                Graphic3d_TypeOfShadingModel theShadingModel)
+// =======================================================================
+// function : bindProgramWithState
+// purpose  :
+// =======================================================================
+bool OpenGl_ShaderManager::bindProgramWithState (const occ::handle<OpenGl_ShaderProgram>& theProgram,
+                                                             Graphic3d_TypeOfShadingModel theShadingModel)
 {
-  const bool isBound = myContext->BindProgram(theProgram);
-  if (isBound && !theProgram.IsNull())
+  const bool isBound = myContext->BindProgram (theProgram);
+  if (isBound
+  && !theProgram.IsNull())
   {
-    theProgram->ApplyVariables(myContext);
+    theProgram->ApplyVariables (myContext);
   }
-  PushState(theProgram, theShadingModel);
+  PushState (theProgram, theShadingModel);
   return isBound;
 }
 
-//=================================================================================================
-
-bool OpenGl_ShaderManager::BindMarkerProgram(
-  const occ::handle<OpenGl_TextureSet>&    theTextures,
-  Graphic3d_TypeOfShadingModel             theShadingModel,
-  Graphic3d_AlphaMode                      theAlphaMode,
-  bool                                     theHasVertColor,
-  const occ::handle<OpenGl_ShaderProgram>& theCustomProgram)
+// =======================================================================
+// function : BindMarkerProgram
+// purpose  :
+// =======================================================================
+bool OpenGl_ShaderManager::BindMarkerProgram (const occ::handle<OpenGl_TextureSet>& theTextures,
+                                                          Graphic3d_TypeOfShadingModel theShadingModel,
+                                                          Graphic3d_AlphaMode theAlphaMode,
+                                                          bool theHasVertColor,
+                                                          const occ::handle<OpenGl_ShaderProgram>& theCustomProgram)
 {
-  if (!theCustomProgram.IsNull() || myContext->caps->ffpEnable)
+  if (!theCustomProgram.IsNull()
+    || myContext->caps->ffpEnable)
   {
-    return bindProgramWithState(theCustomProgram, theShadingModel);
+    return bindProgramWithState (theCustomProgram, theShadingModel);
   }
 
-  int aBits =
-    getProgramBits(theTextures, theAlphaMode, Aspect_IS_SOLID, theHasVertColor, false, false);
-  if (!theTextures.IsNull() && theTextures->HasPointSprite())
+  int aBits = getProgramBits (theTextures, theAlphaMode, Aspect_IS_SOLID, theHasVertColor, false, false);
+  if (!theTextures.IsNull()
+    && theTextures->HasPointSprite())
   {
-    aBits |= theTextures->Last()->IsAlpha() ? Graphic3d_ShaderFlags_PointSpriteA
-                                            : Graphic3d_ShaderFlags_PointSprite;
+    aBits |= theTextures->Last()->IsAlpha() ? Graphic3d_ShaderFlags_PointSpriteA : Graphic3d_ShaderFlags_PointSprite;
   }
   else
   {
     aBits |= Graphic3d_ShaderFlags_PointSimple;
   }
-  occ::handle<OpenGl_ShaderProgram>& aProgram = getStdProgram(theShadingModel, aBits);
-  return bindProgramWithState(aProgram, theShadingModel);
+  occ::handle<OpenGl_ShaderProgram>& aProgram = getStdProgram (theShadingModel, aBits);
+  return bindProgramWithState (aProgram, theShadingModel);
 }

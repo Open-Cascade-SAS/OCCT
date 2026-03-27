@@ -22,27 +22,34 @@ IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_TriangularFrustum, Standard_Transient)
 
 namespace
 {
-void computeFrustumNormals(const gp_Vec* theEdges, gp_Vec* theNormals)
-{
-  // V0V1
-  theNormals[0] = theEdges[0].Crossed(theEdges[3]);
-  // V1V2
-  theNormals[1] = theEdges[1].Crossed(theEdges[4]);
-  // V0V2
-  theNormals[2] = theEdges[0].Crossed(theEdges[5]);
-  // Near
-  theNormals[3] = theEdges[3].Crossed(theEdges[4]);
-  // Far
-  theNormals[4] = -theNormals[3];
+  void computeFrustumNormals (const gp_Vec* theEdges, gp_Vec* theNormals)
+  {
+    // V0V1
+    theNormals[0] = theEdges[0].Crossed (theEdges[3]);
+    // V1V2
+    theNormals[1] = theEdges[1].Crossed (theEdges[4]);
+    // V0V2
+    theNormals[2] = theEdges[0].Crossed (theEdges[5]);
+    // Near
+    theNormals[3] = theEdges[3].Crossed (theEdges[4]);
+    // Far
+    theNormals[4] = -theNormals[3];
+  }
 }
-} // namespace
 
-//=================================================================================================
+// =======================================================================
+// function : SelectMgr_TriangularFrustum
+// purpose  :
+// =======================================================================
+SelectMgr_TriangularFrustum::SelectMgr_TriangularFrustum()
+{
+  //
+}
 
-SelectMgr_TriangularFrustum::SelectMgr_TriangularFrustum() = default;
-
-//=================================================================================================
-
+// =======================================================================
+// function : ~SelectMgr_TriangularFrustum
+// purpose  :
+// =======================================================================
 SelectMgr_TriangularFrustum::~SelectMgr_TriangularFrustum()
 {
   Clear();
@@ -53,19 +60,18 @@ SelectMgr_TriangularFrustum::~SelectMgr_TriangularFrustum()
 // purpose  : Caches projection of frustum's vertices onto its plane directions
 //            and {i, j, k}
 // =======================================================================
-void SelectMgr_TriangularFrustum::cacheVertexProjections(
-  SelectMgr_TriangularFrustum* theFrustum) const
+void SelectMgr_TriangularFrustum::cacheVertexProjections (SelectMgr_TriangularFrustum* theFrustum) const
 {
   for (int aPlaneIdx = 0; aPlaneIdx < 5; ++aPlaneIdx)
   {
-    double        aMax   = -DBL_MAX;
-    double        aMin   = DBL_MAX;
+    double aMax = -DBL_MAX;
+    double aMin =  DBL_MAX;
     const gp_XYZ& aPlane = theFrustum->myPlanes[aPlaneIdx].XYZ();
     for (int aVertIdx = 0; aVertIdx < 6; ++aVertIdx)
     {
-      double aProjection = aPlane.Dot(theFrustum->myVertices[aVertIdx].XYZ());
-      aMax               = std::max(aMax, aProjection);
-      aMin               = std::min(aMin, aProjection);
+      double aProjection = aPlane.Dot (theFrustum->myVertices[aVertIdx].XYZ());
+      aMax = Max (aMax, aProjection);
+      aMin = Min (aMin, aProjection);
     }
     theFrustum->myMaxVertsProjections[aPlaneIdx] = aMax;
     theFrustum->myMinVertsProjections[aPlaneIdx] = aMin;
@@ -74,51 +80,49 @@ void SelectMgr_TriangularFrustum::cacheVertexProjections(
   for (int aDim = 0; aDim < 3; ++aDim)
   {
     double aMax = -DBL_MAX;
-    double aMin = DBL_MAX;
+    double aMin =  DBL_MAX;
     for (int aVertIdx = 0; aVertIdx < 6; ++aVertIdx)
     {
       double aProjection = theFrustum->myVertices[aVertIdx].XYZ().GetData()[aDim];
-      aMax               = std::max(aMax, aProjection);
-      aMin               = std::min(aMin, aProjection);
+      aMax = Max (aMax, aProjection);
+      aMin = Min (aMin, aProjection);
     }
     theFrustum->myMaxOrthoVertsProjections[aDim] = aMax;
     theFrustum->myMinOrthoVertsProjections[aDim] = aMin;
   }
 }
 
-//=================================================================================================
-
-void SelectMgr_TriangularFrustum::Init(const gp_Pnt2d& theP1,
-                                       const gp_Pnt2d& theP2,
-                                       const gp_Pnt2d& theP3)
+//=======================================================================
+// function : Init
+// purpose  :
+//=======================================================================
+void SelectMgr_TriangularFrustum::Init (const gp_Pnt2d& theP1,
+                                        const gp_Pnt2d& theP2,
+                                        const gp_Pnt2d& theP3)
 {
   mySelTriangle.Points[0] = theP1;
   mySelTriangle.Points[1] = theP2;
   mySelTriangle.Points[2] = theP3;
 }
 
-//=================================================================================================
-
+//=======================================================================
+// function : Build
+// purpose  :
+//=======================================================================
 void SelectMgr_TriangularFrustum::Build()
 {
   // V0_Near
-  myVertices[0] =
-    myBuilder->ProjectPntOnViewPlane(mySelTriangle.Points[0].X(), mySelTriangle.Points[0].Y(), 0.0);
+  myVertices[0] = myBuilder->ProjectPntOnViewPlane (mySelTriangle.Points[0].X(), mySelTriangle.Points[0].Y(), 0.0);
   // V1_Near
-  myVertices[1] =
-    myBuilder->ProjectPntOnViewPlane(mySelTriangle.Points[1].X(), mySelTriangle.Points[1].Y(), 0.0);
+  myVertices[1] = myBuilder->ProjectPntOnViewPlane (mySelTriangle.Points[1].X(), mySelTriangle.Points[1].Y(), 0.0);
   // V2_Near
-  myVertices[2] =
-    myBuilder->ProjectPntOnViewPlane(mySelTriangle.Points[2].X(), mySelTriangle.Points[2].Y(), 0.0);
+  myVertices[2] = myBuilder->ProjectPntOnViewPlane (mySelTriangle.Points[2].X(), mySelTriangle.Points[2].Y(), 0.0);
   // V0_Far
-  myVertices[3] =
-    myBuilder->ProjectPntOnViewPlane(mySelTriangle.Points[0].X(), mySelTriangle.Points[0].Y(), 1.0);
+  myVertices[3] = myBuilder->ProjectPntOnViewPlane (mySelTriangle.Points[0].X(), mySelTriangle.Points[0].Y(), 1.0);
   // V1_Far
-  myVertices[4] =
-    myBuilder->ProjectPntOnViewPlane(mySelTriangle.Points[1].X(), mySelTriangle.Points[1].Y(), 1.0);
+  myVertices[4] = myBuilder->ProjectPntOnViewPlane (mySelTriangle.Points[1].X(), mySelTriangle.Points[1].Y(), 1.0);
   // V2_Far
-  myVertices[5] =
-    myBuilder->ProjectPntOnViewPlane(mySelTriangle.Points[2].X(), mySelTriangle.Points[2].Y(), 1.0);
+  myVertices[5] = myBuilder->ProjectPntOnViewPlane (mySelTriangle.Points[2].X(), mySelTriangle.Points[2].Y(), 1.0);
 
   // V0_Near - V0_Far
   myEdgeDirs[0] = myVertices[0].XYZ() - myVertices[3].XYZ();
@@ -133,9 +137,9 @@ void SelectMgr_TriangularFrustum::Build()
   // V1_Near - V0_Near
   myEdgeDirs[5] = myVertices[2].XYZ() - myVertices[0].XYZ();
 
-  computeFrustumNormals(myEdgeDirs, myPlanes);
+  computeFrustumNormals (myEdgeDirs, myPlanes);
 
-  cacheVertexProjections(this);
+  cacheVertexProjections (this);
 }
 
 //=======================================================================
@@ -149,18 +153,17 @@ void SelectMgr_TriangularFrustum::Build()
 //                  as any negative value;
 //                - scale only is needed: @theTrsf must be set to gp_Identity.
 //=======================================================================
-occ::handle<SelectMgr_BaseIntersector> SelectMgr_TriangularFrustum::ScaleAndTransform(
-  const int,
-  const gp_GTrsf& theTrsf,
-  const occ::handle<SelectMgr_FrustumBuilder>&) const
+occ::handle<SelectMgr_BaseIntersector> SelectMgr_TriangularFrustum::ScaleAndTransform (const int,
+                                                                                  const gp_GTrsf& theTrsf,
+                                                                                  const occ::handle<SelectMgr_FrustumBuilder>&) const
 {
   occ::handle<SelectMgr_TriangularFrustum> aRes = new SelectMgr_TriangularFrustum();
-  aRes->SetCamera(myCamera);
+  aRes->SetCamera (myCamera);
 
   for (int anIt = 0; anIt < 6; anIt++)
   {
     gp_Pnt aPoint = myVertices[anIt];
-    theTrsf.Transforms(aPoint.ChangeCoord());
+    theTrsf.Transforms (aPoint.ChangeCoord());
     aRes->myVertices[anIt] = aPoint;
   }
 
@@ -177,9 +180,9 @@ occ::handle<SelectMgr_BaseIntersector> SelectMgr_TriangularFrustum::ScaleAndTran
   // V1_Near - V0_Near
   aRes->myEdgeDirs[5] = aRes->myVertices[2].XYZ() - aRes->myVertices[0].XYZ();
 
-  computeFrustumNormals(aRes->myEdgeDirs, aRes->myPlanes);
+  computeFrustumNormals (aRes->myEdgeDirs, aRes->myPlanes);
 
-  cacheVertexProjections(aRes.get());
+  cacheVertexProjections (aRes.get());
 
   aRes->mySelTriangle = mySelTriangle;
 
@@ -191,12 +194,11 @@ occ::handle<SelectMgr_BaseIntersector> SelectMgr_TriangularFrustum::ScaleAndTran
 // purpose  : Returns a copy of the frustum using the given frustum builder configuration.
 //            Returned frustum should be re-constructed before being used.
 //=======================================================================
-occ::handle<SelectMgr_BaseIntersector> SelectMgr_TriangularFrustum::CopyWithBuilder(
-  const occ::handle<SelectMgr_FrustumBuilder>& theBuilder) const
+occ::handle<SelectMgr_BaseIntersector> SelectMgr_TriangularFrustum::CopyWithBuilder (const occ::handle<SelectMgr_FrustumBuilder>& theBuilder) const
 {
   occ::handle<SelectMgr_TriangularFrustum> aRes = new SelectMgr_TriangularFrustum();
-  aRes->mySelTriangle                           = mySelTriangle;
-  aRes->SetBuilder(theBuilder);
+  aRes->mySelTriangle = mySelTriangle;
+  aRes->SetBuilder (theBuilder);
 
   return aRes;
 }
@@ -206,12 +208,12 @@ occ::handle<SelectMgr_BaseIntersector> SelectMgr_TriangularFrustum::CopyWithBuil
 // purpose  : SAT intersection test between defined volume and
 //            given axis-aligned box
 //=======================================================================
-bool SelectMgr_TriangularFrustum::OverlapsBox(const NCollection_Vec3<double>& theMinPt,
-                                              const NCollection_Vec3<double>& theMaxPt,
-                                              const SelectMgr_ViewClipRange& /*theClipRange*/,
-                                              SelectBasics_PickResult& /*thePickResult*/) const
+bool SelectMgr_TriangularFrustum::OverlapsBox (const SelectMgr_Vec3& theMinPt,
+                                                           const SelectMgr_Vec3& theMaxPt,
+                                                           const SelectMgr_ViewClipRange& /*theClipRange*/,
+                                                           SelectBasics_PickResult& /*thePickResult*/) const
 {
-  return hasBoxOverlap(theMinPt, theMaxPt);
+  return hasBoxOverlap (theMinPt, theMaxPt);
 }
 
 // =======================================================================
@@ -220,22 +222,22 @@ bool SelectMgr_TriangularFrustum::OverlapsBox(const NCollection_Vec3<double>& th
 //            axis-aligned bounding box with minimum corner at point
 //            theMinPt and maximum at point theMaxPt
 // =======================================================================
-bool SelectMgr_TriangularFrustum::OverlapsBox(const NCollection_Vec3<double>& theMinPt,
-                                              const NCollection_Vec3<double>& theMaxPt,
-                                              bool* /*theInside*/) const
+bool SelectMgr_TriangularFrustum::OverlapsBox (const SelectMgr_Vec3& theMinPt,
+                                                           const SelectMgr_Vec3& theMaxPt,
+                                                           bool* /*theInside*/) const
 {
-  return hasBoxOverlap(theMinPt, theMaxPt, nullptr);
+  return hasBoxOverlap (theMinPt, theMaxPt, NULL);
 }
 
 // =======================================================================
 // function : OverlapsPoint
 // purpose  : Intersection test between defined volume and given point
 // =======================================================================
-bool SelectMgr_TriangularFrustum::OverlapsPoint(const gp_Pnt& thePnt,
-                                                const SelectMgr_ViewClipRange& /*theClipRange*/,
-                                                SelectBasics_PickResult& /*thePickResult*/) const
+bool SelectMgr_TriangularFrustum::OverlapsPoint (const gp_Pnt& thePnt,
+                                                             const SelectMgr_ViewClipRange& /*theClipRange*/,
+                                                             SelectBasics_PickResult& /*thePickResult*/) const
 {
-  return hasPointOverlap(thePnt);
+  return hasPointOverlap (thePnt);
 }
 
 // =======================================================================
@@ -245,10 +247,10 @@ bool SelectMgr_TriangularFrustum::OverlapsPoint(const gp_Pnt& thePnt,
 //            may be considered of interior part or boundary line defined
 //            by segments depending on given sensitivity type
 // =======================================================================
-bool SelectMgr_TriangularFrustum::OverlapsPolygon(const NCollection_Array1<gp_Pnt>& theArrayOfPnts,
-                                                  Select3D_TypeOfSensitivity        theSensType,
-                                                  const SelectMgr_ViewClipRange& /*theClipRange*/,
-                                                  SelectBasics_PickResult& /*thePickResult*/) const
+bool SelectMgr_TriangularFrustum::OverlapsPolygon (const TColgp_Array1OfPnt& theArrayOfPnts,
+                                                               Select3D_TypeOfSensitivity theSensType,
+                                                               const SelectMgr_ViewClipRange& /*theClipRange*/,
+                                                               SelectBasics_PickResult& /*thePickResult*/) const
 {
   if (theSensType == Select3D_TOS_BOUNDARY)
   {
@@ -256,9 +258,9 @@ bool SelectMgr_TriangularFrustum::OverlapsPolygon(const NCollection_Array1<gp_Pn
     const int anUpper = theArrayOfPnts.Upper();
     for (int aPtIdx = aLower; aPtIdx <= anUpper; ++aPtIdx)
     {
-      const gp_Pnt& aStartPt = theArrayOfPnts.Value(aPtIdx);
-      const gp_Pnt& aEndPt   = theArrayOfPnts.Value(aPtIdx == anUpper ? aLower : (aPtIdx + 1));
-      if (!hasSegmentOverlap(aStartPt, aEndPt))
+      const gp_Pnt& aStartPt = theArrayOfPnts.Value (aPtIdx);
+      const gp_Pnt& aEndPt   = theArrayOfPnts.Value (aPtIdx == anUpper ? aLower : (aPtIdx + 1));
+      if (!hasSegmentOverlap (aStartPt, aEndPt))
       {
         return false;
       }
@@ -266,8 +268,8 @@ bool SelectMgr_TriangularFrustum::OverlapsPolygon(const NCollection_Array1<gp_Pn
   }
   else if (theSensType == Select3D_TOS_INTERIOR)
   {
-    gp_Vec aNorm(gp_XYZ(RealLast(), RealLast(), RealLast()));
-    return hasPolygonOverlap(theArrayOfPnts, aNorm);
+    gp_Vec aNorm (gp_XYZ (RealLast(), RealLast(), RealLast()));
+    return hasPolygonOverlap (theArrayOfPnts, aNorm);
   }
 
   return false;
@@ -277,12 +279,12 @@ bool SelectMgr_TriangularFrustum::OverlapsPolygon(const NCollection_Array1<gp_Pn
 // function : OverlapsSegment
 // purpose  : Checks if line segment overlaps selecting frustum
 // =======================================================================
-bool SelectMgr_TriangularFrustum::OverlapsSegment(const gp_Pnt& thePnt1,
-                                                  const gp_Pnt& thePnt2,
-                                                  const SelectMgr_ViewClipRange& /*theClipRange*/,
-                                                  SelectBasics_PickResult& /*thePickResult*/) const
+bool SelectMgr_TriangularFrustum::OverlapsSegment (const gp_Pnt& thePnt1,
+                                                               const gp_Pnt& thePnt2,
+                                                               const SelectMgr_ViewClipRange& /*theClipRange*/,
+                                                               SelectBasics_PickResult& /*thePickResult*/) const
 {
-  return hasSegmentOverlap(thePnt1, thePnt2);
+  return hasSegmentOverlap (thePnt1, thePnt2);
 }
 
 // =======================================================================
@@ -292,106 +294,113 @@ bool SelectMgr_TriangularFrustum::OverlapsSegment(const gp_Pnt& thePnt1,
 //            boundary line defined by triangle vertices depending on
 //            given sensitivity type
 // =======================================================================
-bool SelectMgr_TriangularFrustum::OverlapsTriangle(const gp_Pnt&                  thePnt1,
-                                                   const gp_Pnt&                  thePnt2,
-                                                   const gp_Pnt&                  thePnt3,
-                                                   Select3D_TypeOfSensitivity     theSensType,
-                                                   const SelectMgr_ViewClipRange& theClipRange,
-                                                   SelectBasics_PickResult& thePickResult) const
+bool SelectMgr_TriangularFrustum::OverlapsTriangle (const gp_Pnt& thePnt1,
+                                                                const gp_Pnt& thePnt2,
+                                                                const gp_Pnt& thePnt3,
+                                                                Select3D_TypeOfSensitivity theSensType,
+                                                                const SelectMgr_ViewClipRange& theClipRange,
+                                                                SelectBasics_PickResult& thePickResult) const
 {
   if (theSensType == Select3D_TOS_BOUNDARY)
   {
-    const gp_Pnt                     aPntsArrayBuf[3] = {thePnt1, thePnt2, thePnt3};
-    const NCollection_Array1<gp_Pnt> aPntsArray(aPntsArrayBuf[0], 1, 3);
-    return OverlapsPolygon(aPntsArray, Select3D_TOS_BOUNDARY, theClipRange, thePickResult);
+    const gp_Pnt aPntsArrayBuf[3] = { thePnt1, thePnt2, thePnt3 };
+    const TColgp_Array1OfPnt aPntsArray (aPntsArrayBuf[0], 1, 3);
+    return OverlapsPolygon (aPntsArray, Select3D_TOS_BOUNDARY, theClipRange, thePickResult);
   }
   else if (theSensType == Select3D_TOS_INTERIOR)
   {
-    gp_Vec aNorm(gp_XYZ(RealLast(), RealLast(), RealLast()));
-    return hasTriangleOverlap(thePnt1, thePnt2, thePnt3, aNorm);
+    gp_Vec aNorm (gp_XYZ (RealLast(), RealLast(), RealLast()));
+    return hasTriangleOverlap (thePnt1, thePnt2, thePnt3, aNorm);
   }
 
   return true;
 }
 
-//=================================================================================================
-
-bool SelectMgr_TriangularFrustum::OverlapsSphere(const gp_Pnt& theCenter,
-                                                 const double  theRadius,
-                                                 bool*         theInside) const
+//=======================================================================
+// function : OverlapsSphere
+// purpose  :
+//=======================================================================
+bool SelectMgr_TriangularFrustum::OverlapsSphere (const gp_Pnt& theCenter,
+                                                              const double theRadius,
+                                                              bool* theInside) const
 {
-  (void)theInside;
-  return hasBoxOverlap(NCollection_Vec3<double>(theCenter.X() - theRadius,
-                                                theCenter.Y() - theRadius,
-                                                theCenter.Z() - theRadius),
-                       NCollection_Vec3<double>(theCenter.X() + theRadius,
-                                                theCenter.Y() + theRadius,
-                                                theCenter.Z() + theRadius),
-                       nullptr);
+  (void) theInside;
+  return hasBoxOverlap (SelectMgr_Vec3 (theCenter.X() - theRadius, theCenter.Y() - theRadius, theCenter.Z() - theRadius),
+                        SelectMgr_Vec3 (theCenter.X() + theRadius, theCenter.Y() + theRadius, theCenter.Z() + theRadius), NULL);
 }
 
-//=================================================================================================
+//=======================================================================
+// function : OverlapsSphere
+// purpose  :
+//=======================================================================
+bool SelectMgr_TriangularFrustum::OverlapsSphere (const gp_Pnt& theCenter,
+                                                              const double theRadius,
+                                                              const SelectMgr_ViewClipRange& theClipRange,
+                                                              SelectBasics_PickResult& thePickResult) const
+{
+  (void )theClipRange;
+  (void )thePickResult;
+  return hasSphereOverlap (theCenter, theRadius);
+}
 
-bool SelectMgr_TriangularFrustum::OverlapsSphere(const gp_Pnt&                  theCenter,
-                                                 const double                   theRadius,
-                                                 const SelectMgr_ViewClipRange& theClipRange,
-                                                 SelectBasics_PickResult&       thePickResult) const
+//=======================================================================
+// function : OverlapsCylinder
+// purpose  :
+//=======================================================================
+bool SelectMgr_TriangularFrustum::OverlapsCylinder (const double theBottomRad,
+                                                                const double theTopRad,
+                                                                const double theHeight,
+                                                                const gp_Trsf& theTrsf,
+                                                                const bool theIsHollow,
+                                                                const SelectMgr_ViewClipRange& theClipRange,
+                                                                SelectBasics_PickResult& thePickResult) const
 {
   (void)theClipRange;
   (void)thePickResult;
-  return hasSphereOverlap(theCenter, theRadius);
+  return hasCylinderOverlap (theBottomRad, theTopRad, theHeight, theTrsf, theIsHollow);
 }
 
-//=================================================================================================
+//=======================================================================
+// function : OverlapsCylinder
+// purpose  :
+//=======================================================================
+bool SelectMgr_TriangularFrustum::OverlapsCylinder (const double theBottomRad,
+                                                                const double theTopRad,
+                                                                const double theHeight,
+                                                                const gp_Trsf& theTrsf,
+                                                                const bool theIsHollow,
+                                                                bool* theInside) const
+{
+  (void) theInside;
+  return hasCylinderOverlap (theBottomRad, theTopRad, theHeight, theTrsf, theIsHollow);
+}
 
-bool SelectMgr_TriangularFrustum::OverlapsCylinder(const double                   theBottomRad,
-                                                   const double                   theTopRad,
-                                                   const double                   theHeight,
-                                                   const gp_Trsf&                 theTrsf,
-                                                   const bool                     theIsHollow,
-                                                   const SelectMgr_ViewClipRange& theClipRange,
-                                                   SelectBasics_PickResult& thePickResult) const
+//=======================================================================
+// function : OverlapsCircle
+// purpose  :
+//=======================================================================
+bool SelectMgr_TriangularFrustum::OverlapsCircle (const double theRadius,
+                                                              const gp_Trsf& theTrsf,
+                                                              const bool theIsFilled,
+                                                              const SelectMgr_ViewClipRange& theClipRange,
+                                                              SelectBasics_PickResult& thePickResult) const
 {
   (void)theClipRange;
   (void)thePickResult;
-  return hasCylinderOverlap(theBottomRad, theTopRad, theHeight, theTrsf, theIsHollow);
+  return hasCircleOverlap (theRadius, theTrsf, theIsFilled);
 }
 
-//=================================================================================================
-
-bool SelectMgr_TriangularFrustum::OverlapsCylinder(const double   theBottomRad,
-                                                   const double   theTopRad,
-                                                   const double   theHeight,
-                                                   const gp_Trsf& theTrsf,
-                                                   const bool     theIsHollow,
-                                                   bool*          theInside) const
+//=======================================================================
+// function : OverlapsCircle
+// purpose  :
+//=======================================================================
+bool SelectMgr_TriangularFrustum::OverlapsCircle (const double theRadius,
+                                                              const gp_Trsf& theTrsf,
+                                                              const bool theIsFilled,
+                                                              bool* theInside) const
 {
   (void)theInside;
-  return hasCylinderOverlap(theBottomRad, theTopRad, theHeight, theTrsf, theIsHollow);
-}
-
-//=================================================================================================
-
-bool SelectMgr_TriangularFrustum::OverlapsCircle(const double                   theRadius,
-                                                 const gp_Trsf&                 theTrsf,
-                                                 const bool                     theIsFilled,
-                                                 const SelectMgr_ViewClipRange& theClipRange,
-                                                 SelectBasics_PickResult&       thePickResult) const
-{
-  (void)theClipRange;
-  (void)thePickResult;
-  return hasCircleOverlap(theRadius, theTrsf, theIsFilled);
-}
-
-//=================================================================================================
-
-bool SelectMgr_TriangularFrustum::OverlapsCircle(const double   theRadius,
-                                                 const gp_Trsf& theTrsf,
-                                                 const bool     theIsFilled,
-                                                 bool*          theInside) const
-{
-  (void)theInside;
-  return hasCircleOverlap(theRadius, theTrsf, theIsFilled);
+  return hasCircleOverlap (theRadius, theTrsf, theIsFilled);
 }
 
 // =======================================================================
@@ -404,27 +413,30 @@ void SelectMgr_TriangularFrustum::Clear()
   myBuilder.Nullify();
 }
 
-//=================================================================================================
-
-void SelectMgr_TriangularFrustum::GetPlanes(
-  NCollection_Vector<NCollection_Vec4<double>>& thePlaneEquations) const
+// =======================================================================
+// function : GetPlanes
+// purpose  :
+// =======================================================================
+void SelectMgr_TriangularFrustum::GetPlanes (NCollection_Vector<SelectMgr_Vec4>& thePlaneEquations) const
 {
-  NCollection_Vec4<double> aPlaneEquation;
+  SelectMgr_Vec4 aPlaneEquation;
   for (int aPlaneIdx = 0; aPlaneIdx < 5; ++aPlaneIdx)
   {
     const gp_Vec& aNorm = myPlanes[aPlaneIdx];
-    aPlaneEquation.x()  = aNorm.X();
-    aPlaneEquation.y()  = aNorm.Y();
-    aPlaneEquation.z()  = aNorm.Z();
-    aPlaneEquation.w()  = -(aNorm.XYZ().Dot(myVertices[aPlaneIdx % 2 == 0 ? aPlaneIdx : 1].XYZ()));
-    thePlaneEquations.Append(aPlaneEquation);
+    aPlaneEquation.x() = aNorm.X();
+    aPlaneEquation.y() = aNorm.Y();
+    aPlaneEquation.z() = aNorm.Z();
+    aPlaneEquation.w() = - (aNorm.XYZ().Dot (myVertices[aPlaneIdx % 2 == 0 ? aPlaneIdx : 1].XYZ()));
+    thePlaneEquations.Append (aPlaneEquation);
   }
 }
 
-//=================================================================================================
-
-void SelectMgr_TriangularFrustum::DumpJson(Standard_OStream& theOStream, int theDepth) const
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void SelectMgr_TriangularFrustum::DumpJson (Standard_OStream& theOStream, int theDepth) const
 {
-  OCCT_DUMP_CLASS_BEGIN(theOStream, SelectMgr_TriangularFrustum)
-  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, SelectMgr_Frustum)
+  OCCT_DUMP_CLASS_BEGIN (theOStream, SelectMgr_TriangularFrustum)
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, SelectMgr_Frustum)
 }

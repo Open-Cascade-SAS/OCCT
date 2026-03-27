@@ -1,18 +1,4 @@
-// Copyright (c) 2025 OPEN CASCADE SAS
-//
-// This file is part of Open CASCADE Technology software library.
-//
-// This library is free software; you can redistribute it and/or modify it under
-// the terms of the GNU Lesser General Public License version 2.1 as published
-// by the Free Software Foundation, with special exception defined in the file
-// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
-// distribution for complete text of the license and disclaimer of any warranty.
-//
-// Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement.
-
-// clang-format off
-// This file has been automatically generated from resource file resources/Shaders/Declarations.glsl
+// This file has been automatically generated from resource file src/Shaders/Declarations.glsl
 
 static const char Shaders_Declarations_glsl[] =
   "\n"
@@ -72,6 +58,7 @@ static const char Shaders_Declarations_glsl[] =
   "  THE_ATTRIBUTE vec3 occNormal;\n"
   "  THE_ATTRIBUTE vec4 occTexCoord;\n"
   "  THE_ATTRIBUTE vec4 occVertColor;\n"
+  "  THE_ATTRIBUTE vec4 occVertColorBack;\n"
   "#elif defined(FRAGMENT_SHADER)\n"
   "  #if (__VERSION__ >= 130)\n"
   "    #ifdef OCC_ENABLE_draw_buffers\n"
@@ -291,5 +278,3 @@ static const char Shaders_Declarations_glsl[] =
   "uniform THE_PREC_ENUM int  occClipPlaneCount;   //!< Total number of clip planes\n"
   "#endif\n"
   "//! @endfile Declarations.glsl\n";
-
-// clang-format on

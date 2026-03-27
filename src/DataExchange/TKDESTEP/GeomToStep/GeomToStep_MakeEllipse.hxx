@@ -32,27 +32,28 @@ class Geom2d_Ellipse;
 //! Ellipse from Geom, and Circ from gp, and the class
 //! Ellipse from StepGeom which describes a Ellipse from
 //! Prostep.
-class GeomToStep_MakeEllipse : public GeomToStep_Root
+class GeomToStep_MakeEllipse  : public GeomToStep_Root
 {
 public:
+
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT GeomToStep_MakeEllipse(
-    const gp_Elips&         C,
-    const StepData_Factors& theLocalFactors = StepData_Factors());
-
-  Standard_EXPORT GeomToStep_MakeEllipse(
-    const occ::handle<Geom_Ellipse>& C,
-    const StepData_Factors&          theLocalFactors = StepData_Factors());
-
-  Standard_EXPORT GeomToStep_MakeEllipse(
-    const occ::handle<Geom2d_Ellipse>& C,
-    const StepData_Factors&            theLocalFactors = StepData_Factors());
-
+  
+  Standard_EXPORT GeomToStep_MakeEllipse(const gp_Elips& C,
+                                         const StepData_Factors& theLocalFactors = StepData_Factors());
+  
+  Standard_EXPORT GeomToStep_MakeEllipse(const occ::handle<Geom_Ellipse>& C,
+                                         const StepData_Factors& theLocalFactors = StepData_Factors());
+  
+  Standard_EXPORT GeomToStep_MakeEllipse(const occ::handle<Geom2d_Ellipse>& C,
+                                         const StepData_Factors& theLocalFactors = StepData_Factors());
+  
   Standard_EXPORT const occ::handle<StepGeom_Ellipse>& Value() const;
 
 private:
+
   occ::handle<StepGeom_Ellipse> theEllipse;
+
 };
 
 #endif // _GeomToStep_MakeEllipse_HeaderFile

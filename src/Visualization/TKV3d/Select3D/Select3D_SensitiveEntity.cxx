@@ -20,33 +20,55 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveEntity, Standard_Transient)
 
-//=================================================================================================
-
-Select3D_SensitiveEntity::Select3D_SensitiveEntity(
-  const occ::handle<SelectMgr_EntityOwner>& theOwnerId)
-    : myOwnerId(theOwnerId),
-      mySFactor(2)
+//=======================================================================
+//function : Select3D_SensitiveEntity
+//purpose  :
+//=======================================================================
+Select3D_SensitiveEntity::Select3D_SensitiveEntity (const occ::handle<SelectMgr_EntityOwner>& theOwnerId)
+: myOwnerId (theOwnerId),
+  mySFactor (2)
 {
+  //
 }
 
-//=================================================================================================
-
-void Select3D_SensitiveEntity::DumpJson(Standard_OStream& theOStream, int theDepth) const
+// =======================================================================
+// function : SetFlippingOptions
+// purpose  :
+// =======================================================================
+void Select3D_SensitiveEntity::SetFlippingOptions (const bool theIsEnabled,
+                                                   const gp_Ax2&          theRefPlane)
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
+  if (theIsEnabled)
+  {
+    myFlipper = new Graphic3d_Flipper(theRefPlane);
+  }
+  else
+  {
+    myFlipper = nullptr;
+  }
+}
 
-  OCCT_DUMP_FIELD_VALUE_POINTER(theOStream, myOwnerId.get())
-  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, myTrsfPers.get())
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, mySFactor)
+//=======================================================================
+//function : DumpJson
+//purpose  :
+//=======================================================================
+void Select3D_SensitiveEntity::DumpJson (Standard_OStream& theOStream, int theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, NbSubElements());
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myOwnerId.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myTrsfPers.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myFlipper.get())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, mySFactor)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, NbSubElements());
 
   gp_Pnt aCenterOfGeometry = CenterOfGeometry();
-  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &aCenterOfGeometry)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &aCenterOfGeometry)
 
   bool aHasInitLocation = HasInitLocation();
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, aHasInitLocation)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, aHasInitLocation)
 
   gp_GTrsf anInvInitLocation = InvInitLocation();
-  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &anInvInitLocation)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &anInvInitLocation)
 }

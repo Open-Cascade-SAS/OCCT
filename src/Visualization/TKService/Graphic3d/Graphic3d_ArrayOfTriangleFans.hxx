@@ -22,6 +22,7 @@ class Graphic3d_ArrayOfTriangleFans : public Graphic3d_ArrayOfPrimitives
 {
   DEFINE_STANDARD_RTTIEXT(Graphic3d_ArrayOfTriangleFans, Graphic3d_ArrayOfPrimitives)
 public:
+
   //! Creates an array of triangle fans (Graphic3d_TOPA_TRIANGLEFANS), a polygon can be filled as:
   //! 1) Creating a single fan defined with his vertexes, i.e:
   //! @code
@@ -30,8 +31,7 @@ public:
   //!   ....
   //!   myArray->AddVertex (x7, y7, z7);
   //! @endcode
-  //! 2) creating separate fans defined with a predefined number of fans and the number of vertex
-  //! per fan, i.e:
+  //! 2) creating separate fans defined with a predefined number of fans and the number of vertex per fan, i.e:
   //! @code
   //!   myArray = Graphic3d_ArrayOfTriangleFans (8, 2);
   //!   myArray->AddBound (4);
@@ -43,41 +43,32 @@ public:
   //!   ....
   //!   myArray->AddVertex (x8, y8, z8);
   //! @endcode
-  //! The number of triangle really drawn is: VertexNumber() - 2 * std::min(1, BoundNumber())
+  //! The number of triangle really drawn is: VertexNumber() - 2 * Min(1, BoundNumber())
   //! @param theMaxVertexs defines the maximum allowed vertex number in the array
   //! @param theMaxFans    defines the maximum allowed fan    number in the array
   //! @param theArrayFlags array flags
-  Graphic3d_ArrayOfTriangleFans(int                  theMaxVertexs,
-                                int                  theMaxFans,
-                                Graphic3d_ArrayFlags theArrayFlags)
-      : Graphic3d_ArrayOfPrimitives(Graphic3d_TOPA_TRIANGLEFANS,
-                                    theMaxVertexs,
-                                    theMaxFans,
-                                    0,
-                                    theArrayFlags)
-  {
-  }
+  Graphic3d_ArrayOfTriangleFans (int theMaxVertexs,
+                                 int theMaxFans,
+                                 Graphic3d_ArrayFlags theArrayFlags)
+  : Graphic3d_ArrayOfPrimitives (Graphic3d_TOPA_TRIANGLEFANS, theMaxVertexs, theMaxFans, 0, theArrayFlags) {}
 
   //! Creates an array of triangle fans (Graphic3d_TOPA_TRIANGLEFANS).
   //! @param theMaxVertexs defines the maximum allowed vertex number in the array
   //! @param theMaxFans    defines the maximum allowed fan    number in the array
-  Graphic3d_ArrayOfTriangleFans(int  theMaxVertexs,
-                                int  theMaxFans     = 0,
-                                bool theHasVNormals = false,
-                                bool theHasVColors  = false,
-                                bool theHasBColors  = false,
-                                bool theHasVTexels  = false)
-      : Graphic3d_ArrayOfPrimitives(
-          Graphic3d_TOPA_TRIANGLEFANS,
-          theMaxVertexs,
-          theMaxFans,
-          0,
-          (theHasVNormals ? Graphic3d_ArrayFlags_VertexNormal : Graphic3d_ArrayFlags_None)
-            | (theHasVColors ? Graphic3d_ArrayFlags_VertexColor : Graphic3d_ArrayFlags_None)
-            | (theHasVTexels ? Graphic3d_ArrayFlags_VertexTexel : Graphic3d_ArrayFlags_None)
-            | (theHasBColors ? Graphic3d_ArrayFlags_BoundColor : Graphic3d_ArrayFlags_None))
-  {
-  }
+  Graphic3d_ArrayOfTriangleFans (int theMaxVertexs,
+                                 int theMaxFans     = 0,
+                                 bool theHasVNormals = false,
+                                 bool theHasVColors  = false,
+                                 bool theHasBColors  = false,
+                                 bool theHasVTexels  = false,
+                                 bool theHasVColorsBack = false)
+  : Graphic3d_ArrayOfPrimitives (Graphic3d_TOPA_TRIANGLEFANS, theMaxVertexs, theMaxFans, 0,
+                                 (theHasVNormals ? Graphic3d_ArrayFlags_VertexNormal : Graphic3d_ArrayFlags_None)
+                               | (theHasVColors  ? Graphic3d_ArrayFlags_VertexColor  : Graphic3d_ArrayFlags_None)
+                               | (theHasVTexels  ? Graphic3d_ArrayFlags_VertexTexel  : Graphic3d_ArrayFlags_None)
+                               | (theHasBColors  ? Graphic3d_ArrayFlags_BoundColor   : Graphic3d_ArrayFlags_None)
+                               | (theHasVColorsBack ? Graphic3d_ArrayFlags_VertexColorBack : Graphic3d_ArrayFlags_None)) {}
+
 };
 
 #endif // _Graphic3d_ArrayOfTriangleFans_HeaderFile

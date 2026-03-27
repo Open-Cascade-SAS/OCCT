@@ -18,69 +18,71 @@
 #include <Graphic3d_GraphicDriver.hxx>
 #include <Standard_Dump.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_CStructure, Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_CStructure,Standard_Transient)
 
-//=================================================================================================
-
-Graphic3d_CStructure::Graphic3d_CStructure(
-  const occ::handle<Graphic3d_StructureManager>& theManager)
-    : myGraphicDriver(theManager->GraphicDriver()),
-      myId(-1),
-      myZLayer(Graphic3d_ZLayerId_Default),
-      myPriority(Graphic3d_DisplayPriority_Normal),
-      myPreviousPriority(Graphic3d_DisplayPriority_Normal),
-      myIsCulled(true),
-      myBndBoxClipCheck(true),
-      myHasGroupTrsf(false),
-      //
-      IsInfinite(0),
-      stick(0),
-      highlight(0),
-      visible(1),
-      HLRValidation(0),
-      IsForHighlight(false),
-      IsMutable(false),
-      Is2dText(false)
+//=============================================================================
+//function : Graphic3d_CStructure
+//purpose  :
+//=============================================================================
+Graphic3d_CStructure::Graphic3d_CStructure (const occ::handle<Graphic3d_StructureManager>& theManager)
+: myGraphicDriver   (theManager->GraphicDriver()),
+  myId              (-1),
+  myZLayer          (Graphic3d_ZLayerId_Default),
+  myPriority        (Graphic3d_DisplayPriority_Normal),
+  myPreviousPriority(Graphic3d_DisplayPriority_Normal),
+  myIsCulled        (true),
+  myBndBoxClipCheck (true),
+  myHasGroupTrsf    (false),
+  myHasGroupFlipping(false),
+  //
+  IsInfinite       (0),
+  stick            (0),
+  highlight        (0),
+  visible          (1),
+  HLRValidation    (0),
+  IsForHighlight   (false),
+  IsMutable        (false),
+  Is2dText         (false)
 {
   myId = myGraphicDriver->NewIdentification();
 }
 
-//=================================================================================================
-
-void Graphic3d_CStructure::DumpJson(Standard_OStream& theOStream, int theDepth) const
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void Graphic3d_CStructure::DumpJson (Standard_OStream& theOStream, int theDepth) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
 
-  for (NCollection_Sequence<occ::handle<Graphic3d_Group>>::Iterator anIterator(myGroups);
-       anIterator.More();
-       anIterator.Next())
+  for (Graphic3d_SequenceOfGroup::Iterator anIterator (myGroups); anIterator.More(); anIterator.Next())
   {
     const occ::handle<Graphic3d_Group>& aGroup = anIterator.Value();
-    OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, aGroup.get())
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, aGroup.get())
   }
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myId)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myZLayer)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myPriority)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myPreviousPriority)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myId)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myZLayer)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myPriority)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myPreviousPriority)
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, IsInfinite)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, stick)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, highlight)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, visible)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, IsInfinite)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, stick)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, highlight)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, visible)
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, HLRValidation)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, IsForHighlight)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, IsMutable)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, Is2dText)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, HLRValidation)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, IsForHighlight)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, IsMutable)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Is2dText)
 
-  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myBndBox)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myBndBox)
 
-  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, myTrsf.get())
-  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, myTrsfPers.get())
-  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, myClipPlanes.get())
-  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, myHighlightStyle.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myTrsf.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myTrsfPers.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myClipPlanes.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myHighlightStyle.get())
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myIsCulled)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myBndBoxClipCheck)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsCulled)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myBndBoxClipCheck)
 }
