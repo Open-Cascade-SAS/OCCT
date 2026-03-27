@@ -264,7 +264,7 @@ void dumpShapeCheckDetails(const BRepCheck_Analyzer& theAnalyzer,
     const TopoDS_Face&               aFace2 = TopoDS::Face(aFaceExp2.Current());
     TopLoc_Location                  aSurfLoc;
     const occ::handle<Geom_Surface>& aSurf2 = BRep_Tool::Surface(aFace2, aSurfLoc);
-    const auto*                      aTFace = static_cast<const BRep_TFace*>(aFace2.TShape().get());
+    const BRep_TFace*                aTFace = static_cast<const BRep_TFace*>(aFace2.TShape().get());
     std::cerr << "[" << theLabel << "] Face " << aFaceIdx << " surf=" << aSurf2.get()
               << " TFaceSurf=" << aTFace->Surface().get()
               << " TFaceLoc.IsId=" << aTFace->Location().IsIdentity()
@@ -395,7 +395,7 @@ TEST_P(BRepGraphBulkValidation, RoundTrip)
   ASSERT_TRUE(aGraph.IsDone()) << "Build failed: " << aFilePath;
 
   // Step 5: Verify graph entity counts match TopExp counts
-  const auto aDefs = aGraph.Topo();
+  const BRepGraph::TopoView& aDefs = aGraph.Topo();
   EXPECT_EQ(aDefs.NbVertices(), anOrigCounts.NbVertices) << aFilePath;
   EXPECT_EQ(aDefs.NbEdges(), anOrigCounts.NbEdges) << aFilePath;
   EXPECT_EQ(aDefs.NbWires(), anOrigCounts.NbWires) << aFilePath;
@@ -406,7 +406,7 @@ TEST_P(BRepGraphBulkValidation, RoundTrip)
   EXPECT_EQ(aDefs.NbCompounds(), anOrigCounts.NbCompounds) << aFilePath;
 
   // Step 6: Get root NodeId from Product(0)
-  const auto aPaths = aGraph.Paths();
+  const BRepGraph::PathView& aPaths = aGraph.Paths();
   ASSERT_GE(aPaths.NbProducts(), 1) << "No products: " << aFilePath;
   const BRepGraph_NodeId aRootId = aPaths.Product(BRepGraph_ProductId(0)).ShapeRootId;
 

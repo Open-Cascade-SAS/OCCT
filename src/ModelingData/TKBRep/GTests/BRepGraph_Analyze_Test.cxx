@@ -156,7 +156,8 @@ TEST_F(BRepGraph_AnalyzeTest, FreeEdges_Sphere_SeamEdgesAreFree)
 
 TEST_F(BRepGraph_AnalyzeTest, MissingPCurves_ValidBox_Empty)
 {
-  const auto aMissing = BRepGraph_Analyze::MissingPCurves(myGraph);
+  const NCollection_Vector<std::pair<BRepGraph_EdgeId, BRepGraph_FaceId>> aMissing =
+    BRepGraph_Analyze::MissingPCurves(myGraph);
   EXPECT_EQ(aMissing.Length(), 0);
 }
 

@@ -160,7 +160,7 @@ Entities store typed RefId vectors instead of inline ref arrays:
 
 ### RefStore
 
-`RefStore<T>` in Storage groups per-kind ref entry vector + UID vector + active count. Provides `Get()`, `Change()`, `Append()`, `DecrementActive()` -- same pattern as `EntityStore<T>`.
+`RefStore<T>` in Storage groups per-kind ref entry vector + UID vector + active count. Provides `Get()`, `Change()`, `Append()`, `DecrementActive()` (for soft-delete tracking via `BaseRef.IsRemoved`) -- same pattern as `EntityStore<T>`.
 
 ## Build Pipeline
 

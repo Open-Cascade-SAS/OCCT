@@ -702,13 +702,14 @@ TEST_F(BRepGraphTest, ReBuild_UIDMonotonic)
 
 TEST_F(BRepGraphTest, DetectMissingPCurves_ValidBox_Empty)
 {
-  auto aMissing = BRepGraph_Analyze::MissingPCurves(myGraph);
+  const NCollection_Vector<std::pair<BRepGraph_EdgeId, BRepGraph_FaceId>> aMissing =
+    BRepGraph_Analyze::MissingPCurves(myGraph);
   EXPECT_EQ(aMissing.Length(), 0);
 }
 
 TEST_F(BRepGraphTest, DetectDegenerateWires_ValidBox_Empty)
 {
-  auto aDegenerate = BRepGraph_Analyze::DegenerateWires(myGraph);
+  const NCollection_Vector<BRepGraph_WireId> aDegenerate = BRepGraph_Analyze::DegenerateWires(myGraph);
   EXPECT_EQ(aDegenerate.Length(), 0);
 }
 
