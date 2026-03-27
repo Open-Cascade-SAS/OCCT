@@ -36,14 +36,14 @@
 //! ## Virtual concatenated ref list convention
 //! Each step's RefIdx indexes into a virtual concatenation of the current
 //! entity's child-ref vectors:
-//! - Solid: ShellRefs[0..N) then FreeChildRefs[N..N+M)
-//! - Shell: FaceRefs[0..N) then FreeChildRefs[N..N+M)
-//! - Face:  WireRefs[0..N) then VertexRefs[N..N+M) (direct INTERNAL/EXTERNAL)
-//! - Wire:  CoEdgeRefs[0..N)
-//! - Edge:  0=StartVertex, 1=EndVertex, 2+=InternalVertices
-//! - Compound: ChildRefs[0..N)
-//! - CompSolid: SolidRefs[0..N)
-//! - Product(assembly): OccurrenceRefs[0..N)
+//! - Solid: ShellRefIds[0..N) then FreeChildRefIds[N..N+M)
+//! - Shell: FaceRefIds[0..N) then FreeChildRefIds[N..N+M)
+//! - Face:  WireRefIds[0..N) then VertexRefIds[N..N+M) (direct INTERNAL/EXTERNAL)
+//! - Wire:  CoEdgeRefIds[0..N)
+//! - Edge:  0=StartVertexRefId, 1=EndVertexRefId, 2+=InternalVertexRefIds
+//! - Compound: ChildRefIds[0..N)
+//! - CompSolid: SolidRefIds[0..N)
+//! - Product(assembly): OccurrenceRefIds[0..N)
 //!
 //! 1:1 transitions (Occurrence->Product, Product(part)->ShapeRoot,
 //! CoEdge->Edge) do not consume a step.
