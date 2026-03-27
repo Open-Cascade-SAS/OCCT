@@ -98,7 +98,7 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
       ? theOptions.MinTolerance
       : std::max(Precision::Confusion(), theGraph.Topo().NbEdges() > 0 ? 1.0e-10 : 0.0);
 
-  const BRepGraph::TopoView aDefs = theGraph.Topo();
+  const BRepGraph::TopoView& aDefs = theGraph.Topo();
   const BRepGraph::RefsView& aRefs = theGraph.Refs();
 
   // Track which edges are small and which vertices need merging.

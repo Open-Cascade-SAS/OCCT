@@ -137,7 +137,7 @@ void BRepGraphCheck::CheckSolidMinimum(const BRepGraph&                         
   if (aSolidShellRefs.Length() < 2)
     return;
 
-  const BRepGraph::ShapesView aShapes = theGraph.Shapes();
+  const BRepGraph::ShapesView& aShapes = theGraph.Shapes();
   const TopoDS_Shape          aSolid  = aShapes.Shape(aSolidNodeId);
   if (aSolid.IsNull() || aSolid.ShapeType() != TopAbs_SOLID)
     return;

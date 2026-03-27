@@ -84,7 +84,7 @@ static double edgeEndpointPairScore(const BRepGraph&       theGraph,
                                     const BRepGraph_EdgeId theEdgeA,
                                     const BRepGraph_EdgeId theEdgeB)
 {
-  const BRepGraph::TopoView          aDefs  = theGraph.Topo();
+  const BRepGraph::TopoView&         aDefs  = theGraph.Topo();
   const BRepGraph_TopoNode::EdgeDef& aEdgeA = aDefs.Edge(theEdgeA);
   const BRepGraph_TopoNode::EdgeDef& aEdgeB = aDefs.Edge(theEdgeB);
 
@@ -129,7 +129,7 @@ static bool areEdgesCompatibleSampled(const BRepGraph&                  theGraph
                                       const double                      theMaxChordRatio = 2.0,
                                       const double theHighConfidenceRatio                = 0.01)
 {
-  const BRepGraph::TopoView          aDefs  = theGraph.Topo();
+  const BRepGraph::TopoView&         aDefs  = theGraph.Topo();
   const BRepGraph_TopoNode::EdgeDef& aNodeA = aDefs.Edge(theEdgeA);
   const BRepGraph_TopoNode::EdgeDef& aNodeB = aDefs.Edge(theEdgeB);
 
@@ -566,7 +566,7 @@ NCollection_Array1<BRepGraph_NodeId> findFreeEdges(const BRepGraph&      theGrap
                                                    bool                  theIncludeFloating,
                                                    NCollection_Map<int>& theFloatingEdges)
 {
-  const BRepGraph::TopoView            aDefs = theGraph.Topo();
+  const BRepGraph::TopoView&           aDefs = theGraph.Topo();
   NCollection_Vector<BRepGraph_NodeId> aFreeVec;
 
   for (int anEdgeIdx = 0; anEdgeIdx < aDefs.NbEdges(); ++anEdgeIdx)
@@ -1708,7 +1708,7 @@ void processEdges(
 //! @return reconstructed shape
 TopoDS_Shape reconstructFromGraph(const BRepGraph& theGraph)
 {
-  const BRepGraph::TopoView aDefs = theGraph.Topo();
+  const BRepGraph::TopoView& aDefs = theGraph.Topo();
 
   if (aDefs.NbCompounds() > 0)
   {
@@ -2001,7 +2001,7 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
   aResult.NbFreeEdgesAfter = aResult.FreeEdges.Length();
 
   // Detect multiple edges (shared by >2 faces).
-  const BRepGraph::TopoView aDefs = theGraph.Topo();
+  const BRepGraph::TopoView& aDefs = theGraph.Topo();
   for (int anEdgeIdx = 0; anEdgeIdx < aDefs.NbEdges(); ++anEdgeIdx)
   {
     const BRepGraph_EdgeId             anEdgeId(anEdgeIdx);

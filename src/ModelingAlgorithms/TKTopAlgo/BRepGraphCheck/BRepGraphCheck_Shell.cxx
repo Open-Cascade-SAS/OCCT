@@ -129,7 +129,7 @@ void BRepGraphCheck::CheckShellMinimum(const BRepGraph&                         
     return;
 
   // BFS from the first face.
-  const BRepGraph::TopoView aSpatial = theGraph.Topo();
+  const BRepGraph::TopoView& aSpatial = theGraph.Topo();
   NCollection_Map<int>      aVisited;
   NCollection_Vector<int>   aQueue;
 
@@ -396,7 +396,7 @@ void BRepGraphCheck::CheckShellOrientation(const BRepGraph&                     
       const int aCurrSign = aFaceOriMap.Find(aCurrFace);
 
       // Find all manifold-shared edges (those with exactly 2 face references).
-      const BRepGraph::TopoView aSpatial = theGraph.Topo();
+      const BRepGraph::TopoView& aSpatial = theGraph.Topo();
       const BRepGraph_NodeId    aCurrFaceNodeId(BRepGraph_NodeId::Kind::Face, aCurrFace);
       const NCollection_Vector<BRepGraph_NodeId> anAdjFaces =
         aSpatial.AdjacentFaces(aCurrFaceNodeId);

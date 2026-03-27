@@ -88,7 +88,7 @@ static double computeWireSignedArea(const BRepGraph&                   theGraph,
                                     const NCollection_Vector<BRepGraphInc::CoEdgeRef>& theCoEdgeRefs,
                                     const BRepGraph_FaceId             theFaceId)
 {
-  const BRepGraph::TopoView aDefs = theGraph.Topo();
+  const BRepGraph::TopoView& aDefs = theGraph.Topo();
 
   constexpr int THE_NB_SAMPLES = 20;
   double        anArea         = 0.0;
@@ -167,7 +167,7 @@ static void collectWirePCurves(const BRepGraph&                   theGraph,
                                const BRepGraph_FaceId             theFaceId,
                                WirePCurveSet&                     theResult)
 {
-  const BRepGraph::TopoView aDefs = theGraph.Topo();
+  const BRepGraph::TopoView& aDefs = theGraph.Topo();
 
   auto edgeLookup = [&aDefs](int theIdx) -> const BRepGraphInc::EdgeEntity& {
     return aDefs.Edge(BRepGraph_EdgeId(theIdx));
@@ -245,7 +245,7 @@ void BRepGraphCheck::CheckFaceMinimum(const BRepGraph&                          
                                       const BRepGraph_FaceId                    theFace,
                                       NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
 {
-  const BRepGraph::TopoView          aDefs    = theGraph.Topo();
+  const BRepGraph::TopoView&         aDefs    = theGraph.Topo();
   const BRepGraph_TopoNode::FaceDef& aFaceDef = aDefs.Face(theFace);
 
   // Face must have a surface.

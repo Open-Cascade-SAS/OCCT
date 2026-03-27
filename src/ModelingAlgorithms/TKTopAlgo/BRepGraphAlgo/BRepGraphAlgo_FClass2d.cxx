@@ -161,7 +161,7 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph&       theGraph,
 
   // Get wires via transitional reference entries.
   const BRepGraph::RefsView& aRefs     = theGraph.Refs();
-  const BRepGraph::TopoView  aTopoView = theGraph.Topo();
+  const BRepGraph::TopoView& aTopoView = theGraph.Topo();
   const BRepGraph_TopoNode::FaceDef& aFaceEnt = aTopoView.Face(theFace);
 
   NCollection_Vector<int> anOuterWireDefIndices;

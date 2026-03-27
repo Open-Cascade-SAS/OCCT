@@ -122,7 +122,7 @@ void BRepGraph_Explorer::explore(const BRepGraph&              theGraph,
     return;
 
   using Kind                      = BRepGraph_NodeId::Kind;
-  const BRepGraph::TopoView aDefs = theGraph.Topo();
+  const BRepGraph::TopoView& aDefs = theGraph.Topo();
 
   // Check if current node matches target.
   if (theCurrentNode.NodeKind == theTargetKind)

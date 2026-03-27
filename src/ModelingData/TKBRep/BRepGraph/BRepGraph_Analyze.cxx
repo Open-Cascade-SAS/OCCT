@@ -31,7 +31,7 @@ NCollection_Vector<BRepGraph_EdgeId> BRepGraph_Analyze::FreeEdges(const BRepGrap
 {
   NCollection_Vector<BRepGraph_EdgeId> aResult;
 
-  const BRepGraph::TopoView aDefs = theGraph.Topo();
+  const BRepGraph::TopoView& aDefs = theGraph.Topo();
 
   for (int anEdgeIdx = 0; anEdgeIdx < aDefs.NbEdges(); ++anEdgeIdx)
   {
@@ -53,7 +53,7 @@ NCollection_Vector<std::pair<BRepGraph_EdgeId, BRepGraph_FaceId>> BRepGraph_Anal
 {
   NCollection_Vector<std::pair<BRepGraph_EdgeId, BRepGraph_FaceId>> aResult;
 
-  const BRepGraph::TopoView aDefs = theGraph.Topo();
+  const BRepGraph::TopoView& aDefs = theGraph.Topo();
 
   for (int aFaceDefIdx = 0; aFaceDefIdx < aDefs.NbFaces(); ++aFaceDefIdx)
   {

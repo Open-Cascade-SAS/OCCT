@@ -544,7 +544,7 @@ void checkReverseIndexFaceCountCache(const BRepGraph&                           
 {
   using Issue                     = BRepGraphAlgo_Validate::Issue;
   using Severity                  = BRepGraphAlgo_Validate::Severity;
-  const BRepGraph::TopoView aDefs = theGraph.Topo();
+  const BRepGraph::TopoView& aDefs = theGraph.Topo();
 
   for (int anEdgeIdx = 0; anEdgeIdx < aDefs.NbEdges(); ++anEdgeIdx)
   {
@@ -898,7 +898,7 @@ void checkEntityIds(const BRepGraph&                                   theGraph,
 {
   using Severity                  = BRepGraphAlgo_Validate::Severity;
   using Issue                     = BRepGraphAlgo_Validate::Issue;
-  const BRepGraph::TopoView aDefs = theGraph.Topo();
+  const BRepGraph::TopoView& aDefs = theGraph.Topo();
 
   auto checkKind = [&](BRepGraph_NodeId::Kind theKind, int theNb) {
     for (int anIdx = 0; anIdx < theNb; ++anIdx)
@@ -934,7 +934,7 @@ void checkEntityIds(const BRepGraph&                                   theGraph,
   checkKind(BRepGraph_NodeId::Kind::Solid, aDefs.NbSolids());
   checkKind(BRepGraph_NodeId::Kind::Compound, aDefs.NbCompounds());
   checkKind(BRepGraph_NodeId::Kind::CompSolid, aDefs.NbCompSolids());
-  const BRepGraph::PathView aPaths = theGraph.Paths();
+  const BRepGraph::PathView& aPaths = theGraph.Paths();
   checkKind(BRepGraph_NodeId::Kind::Product, aPaths.NbProducts());
   checkKind(BRepGraph_NodeId::Kind::Occurrence, aPaths.NbOccurrences());
 }
@@ -948,7 +948,7 @@ void checkActiveCounts(const BRepGraph&                                   theGra
 {
   using Severity                  = BRepGraphAlgo_Validate::Severity;
   using Issue                     = BRepGraphAlgo_Validate::Issue;
-  const BRepGraph::TopoView aDefs = theGraph.Topo();
+  const BRepGraph::TopoView& aDefs = theGraph.Topo();
 
   auto countActive = [&](BRepGraph_NodeId::Kind theKind, int theNb) -> int {
     int aCount = 0;
@@ -1003,7 +1003,7 @@ void checkActiveCounts(const BRepGraph&                                   theGra
   verify("CompSolids",
          aDefs.NbActiveCompSolids(),
          countActive(BRepGraph_NodeId::Kind::CompSolid, aDefs.NbCompSolids()));
-  const BRepGraph::PathView aPaths = theGraph.Paths();
+  const BRepGraph::PathView& aPaths = theGraph.Paths();
   verify("Products",
          aPaths.NbActiveProducts(),
          countActive(BRepGraph_NodeId::Kind::Product, aPaths.NbProducts()));
@@ -1070,8 +1070,8 @@ BRepGraphAlgo_Validate::Result BRepGraphAlgo_Validate::Perform(const BRepGraph& 
   checkActiveCounts(theGraph, aResult.Issues);
 
   // UID integrity checks: all active nodes must have a valid UID that round-trips.
-  const BRepGraph::TopoView aDefs = theGraph.Topo();
-  const BRepGraph::UIDsView aUIDs = theGraph.UIDs();
+  const BRepGraph::TopoView& aDefs = theGraph.Topo();
+  const BRepGraph::UIDsView& aUIDs = theGraph.UIDs();
   auto checkUIDKind               = [&](const BRepGraph_NodeId::Kind theKind, const int theNb) {
     for (int anIdx = 0; anIdx < theNb; ++anIdx)
     {
@@ -1115,7 +1115,7 @@ BRepGraphAlgo_Validate::Result BRepGraphAlgo_Validate::Perform(const BRepGraph& 
   checkUIDKind(BRepGraph_NodeId::Kind::Solid, aDefs.NbSolids());
   checkUIDKind(BRepGraph_NodeId::Kind::Compound, aDefs.NbCompounds());
   checkUIDKind(BRepGraph_NodeId::Kind::CompSolid, aDefs.NbCompSolids());
-  const BRepGraph::PathView aPaths = theGraph.Paths();
+  const BRepGraph::PathView& aPaths = theGraph.Paths();
   checkUIDKind(BRepGraph_NodeId::Kind::Product, aPaths.NbProducts());
   checkUIDKind(BRepGraph_NodeId::Kind::Occurrence, aPaths.NbOccurrences());
 
