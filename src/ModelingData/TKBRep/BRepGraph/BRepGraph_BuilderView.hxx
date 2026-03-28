@@ -15,6 +15,7 @@
 #define _BRepGraph_BuilderView_HeaderFile
 
 #include <BRepGraph.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopLoc_Location.hxx>
 
@@ -212,105 +213,169 @@ public:
   //! Check if deferred invalidation mode is currently active.
   [[nodiscard]] Standard_EXPORT bool IsDeferredMode() const;
 
-  //! @name Scoped mutable definition guards (RAII).
-  //! Return a BRepGraph_MutRef that defers markModified() to scope exit.
+  //! @name Topology editing operations.
+
+  //! A single boundary invariant issue detected by ValidateMutationBoundary().
+  struct BoundaryIssue
+  {
+    BRepGraph_NodeId        NodeId;
+    TCollection_AsciiString Description;
+  };
+
+  //! Split a single edge definition at a vertex and 3D-curve parameter.
+  //! Creates two new EdgeDef slots, splits all PCurve nodes at the corresponding
+  //! 2D parameter, and updates every wire that contained the original edge.
+  //! @param[in] theEdgeEntity     edge to split (must not be degenerate)
+  //! @param[in] theSplitVertex    vertex definition at the split point (already in graph)
+  //! @param[in] theSplitParam     parameter on the 3D curve at the split point
+  //! @param[out] theSubA          sub-edge: StartVertex -> SplitVertex
+  //! @param[out] theSubB          sub-edge: SplitVertex -> EndVertex
+  Standard_EXPORT void SplitEdge(const BRepGraph_NodeId theEdgeEntity,
+                                 const BRepGraph_NodeId theSplitVertex,
+                                 const double           theSplitParam,
+                                 BRepGraph_NodeId&      theSubA,
+                                 BRepGraph_NodeId&      theSubB);
+
+  //! Replace one edge with another in a wire definition.
+  //! Updates the CoEdge's EdgeIdx to point to the new edge, adjusts orientation
+  //! if theReversed, and incrementally updates reverse indices.
+  //! @param[in] theWireDefId      wire definition identifier
+  //! @param[in] theOldEdgeEntity  edge to replace
+  //! @param[in] theNewEdgeEntity  replacement edge
+  //! @param[in] theReversed       if true, reverse the orientation of the replacement
+  Standard_EXPORT void ReplaceEdgeInWire(const BRepGraph_WireId theWireDefId,
+                                         const BRepGraph_EdgeId theOldEdgeEntity,
+                                         const BRepGraph_EdgeId theNewEdgeEntity,
+                                         const bool             theReversed);
+
+  //! Apply a modification operation and record history.
+  //! @param[in] theTarget   node to modify
+  //! @param[in] theModifier callback that performs the modification and returns replacements
+  //! @param[in] theOpLabel  human-readable operation label for history
+  template <typename ModifierT>
+  void ApplyModification(const BRepGraph_NodeId         theTarget,
+                         ModifierT&&                    theModifier,
+                         const TCollection_AsciiString& theOpLabel)
+  {
+    NCollection_Vector<BRepGraph_NodeId> aReplacements =
+      std::forward<ModifierT>(theModifier)(*myGraph, theTarget);
+    applyModificationImpl(theTarget, std::move(aReplacements), theOpLabel);
+  }
+
+  //! Finalize a batch of mutations: validate reverse index consistency
+  //! and assert active entity counts match actual entity state.
+  Standard_EXPORT void CommitMutation();
+
+  //! Validate lightweight mutation-boundary invariants.
+  //! @param[out] theIssues optional destination for detailed issues
+  //! @return true if no issues were found
+  [[nodiscard]] Standard_EXPORT bool ValidateMutationBoundary(
+    NCollection_Vector<BoundaryIssue>* const theIssues = nullptr);
+
+  //! @name Scoped mutable guards (RAII).
+  //! Return a BRepGraph_MutGuard that defers notification to scope exit.
   //! Use when modifying multiple fields on the same entity.
 
   //! Return scoped mutable edge definition guard.
   //! @param[in] theEdge typed edge identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::EdgeDef> MutEdge(const BRepGraph_EdgeId theEdge);
+  Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::EdgeDef> MutEdge(const BRepGraph_EdgeId theEdge);
 
   //! Return scoped mutable vertex definition guard.
   //! @param[in] theVertex typed vertex identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::VertexDef> MutVertex(
+  Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::VertexDef> MutVertex(
     const BRepGraph_VertexId theVertex);
 
   //! Return scoped mutable wire definition guard.
   //! @param[in] theWire typed wire identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::WireDef> MutWire(const BRepGraph_WireId theWire);
+  Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::WireDef> MutWire(const BRepGraph_WireId theWire);
 
   //! Return scoped mutable face definition guard.
   //! @param[in] theFace typed face identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::FaceDef> MutFace(const BRepGraph_FaceId theFace);
+  Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::FaceDef> MutFace(const BRepGraph_FaceId theFace);
 
   //! Return scoped mutable shell definition guard.
   //! @param[in] theShell typed shell identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::ShellDef> MutShell(
+  Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::ShellDef> MutShell(
     const BRepGraph_ShellId theShell);
 
   //! Return scoped mutable solid definition guard.
   //! @param[in] theSolid typed solid identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::SolidDef> MutSolid(
+  Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::SolidDef> MutSolid(
     const BRepGraph_SolidId theSolid);
 
   //! Return scoped mutable compound definition guard.
   //! @param[in] theCompound typed compound identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::CompoundDef> MutCompound(
+  Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::CompoundDef> MutCompound(
     const BRepGraph_CompoundId theCompound);
 
   //! Return scoped mutable coedge definition guard.
   //! @param[in] theCoEdge typed coedge identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::CoEdgeDef> MutCoEdge(
+  Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef> MutCoEdge(
     const BRepGraph_CoEdgeId theCoEdge);
 
   //! Return scoped mutable comp-solid definition guard.
   //! @param[in] theCompSolid typed comp-solid identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::CompSolidDef> MutCompSolid(
+  Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::CompSolidDef> MutCompSolid(
     const BRepGraph_CompSolidId theCompSolid);
 
   //! Return scoped mutable product definition guard.
   //! @param[in] theProduct typed product identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::ProductDef> MutProduct(
+  Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::ProductDef> MutProduct(
     const BRepGraph_ProductId theProduct);
 
   //! Return scoped mutable occurrence definition guard.
   //! @param[in] theOccurrence typed occurrence identifier
-  Standard_EXPORT BRepGraph_MutRef<BRepGraphInc::OccurrenceDef> MutOccurrence(
+  Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::OccurrenceDef> MutOccurrence(
     const BRepGraph_OccurrenceId theOccurrence);
 
   //! Return scoped mutable shell reference guard.
   //! @param[in] theShellRef typed shell reference identifier
-  Standard_EXPORT BRepGraph_MutRefEntry<BRepGraphInc::ShellRef> MutShellRef(
+  Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::ShellRef> MutShellRef(
     const BRepGraph_ShellRefId theShellRef);
 
   //! Return scoped mutable face reference guard.
   //! @param[in] theFaceRef typed face reference identifier
-  Standard_EXPORT BRepGraph_MutRefEntry<BRepGraphInc::FaceRef> MutFaceRef(
+  Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::FaceRef> MutFaceRef(
     const BRepGraph_FaceRefId theFaceRef);
 
   //! Return scoped mutable wire reference guard.
   //! @param[in] theWireRef typed wire reference identifier
-  Standard_EXPORT BRepGraph_MutRefEntry<BRepGraphInc::WireRef> MutWireRef(
+  Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::WireRef> MutWireRef(
     const BRepGraph_WireRefId theWireRef);
 
   //! Return scoped mutable coedge reference guard.
   //! @param[in] theCoEdgeRef typed coedge reference identifier
-  Standard_EXPORT BRepGraph_MutRefEntry<BRepGraphInc::CoEdgeRef> MutCoEdgeRef(
+  Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::CoEdgeRef> MutCoEdgeRef(
     const BRepGraph_CoEdgeRefId theCoEdgeRef);
 
   //! Return scoped mutable vertex reference guard.
   //! @param[in] theVertexRef typed vertex reference identifier
-  Standard_EXPORT BRepGraph_MutRefEntry<BRepGraphInc::VertexRef> MutVertexRef(
+  Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::VertexRef> MutVertexRef(
     const BRepGraph_VertexRefId theVertexRef);
 
   //! Return scoped mutable solid reference guard.
   //! @param[in] theSolidRef typed solid reference identifier
-  Standard_EXPORT BRepGraph_MutRefEntry<BRepGraphInc::SolidRef> MutSolidRef(
+  Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::SolidRef> MutSolidRef(
     const BRepGraph_SolidRefId theSolidRef);
 
   //! Return scoped mutable child reference guard.
   //! @param[in] theChildRef typed child reference identifier
-  Standard_EXPORT BRepGraph_MutRefEntry<BRepGraphInc::ChildRef> MutChildRef(
+  Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::ChildRef> MutChildRef(
     const BRepGraph_ChildRefId theChildRef);
 
   //! Return scoped mutable occurrence reference guard.
   //! @param[in] theOccurrenceRef typed occurrence reference identifier
-  Standard_EXPORT BRepGraph_MutRefEntry<BRepGraphInc::OccurrenceRef> MutOccurrenceRef(
+  Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::OccurrenceRef> MutOccurrenceRef(
     const BRepGraph_OccurrenceRefId theOccurrenceRef);
 
 private:
   friend class BRepGraph;
   friend struct BRepGraph_Data;
+
+  Standard_EXPORT void applyModificationImpl(
+    const BRepGraph_NodeId                 theTarget,
+    NCollection_Vector<BRepGraph_NodeId>&& theReplacements,
+    const TCollection_AsciiString&         theOpLabel);
 
   explicit BuilderView(BRepGraph* theGraph)
       : myGraph(theGraph)

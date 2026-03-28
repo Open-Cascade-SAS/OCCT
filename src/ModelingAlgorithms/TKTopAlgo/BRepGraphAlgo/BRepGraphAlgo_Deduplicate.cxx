@@ -21,10 +21,7 @@
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_History.hxx>
-#include <BRepGraph_MutRef.hxx>
-#include <BRepGraph_MutRefEntry.hxx>
-#include <BRepGraph_Mutator.hxx>
-#include <BRepGraph_MutationGuard.hxx>
+#include <BRepGraph_DeferredScope.hxx>
 
 #include <GeomHash_CurveHasher.hxx>
 #include <GeomHash_SurfaceHasher.hxx>
@@ -97,7 +94,7 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
   {
     return aResult;
   }
-  BRepGraph_MutationGuard aMutationGuard(theGraph);
+  BRepGraph_DeferredScope aDeferredScope(theGraph);
 
   const bool wasHistoryEnabled = theGraph.History().IsEnabled();
   theGraph.History().SetEnabled(theOptions.HistoryMode);
@@ -179,7 +176,7 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
     {
       const int                               aFaceIdx      = anIt.Key();
       const int                               aCanonFaceIdx = anIt.Value();
-      BRepGraph_MutRef<BRepGraphInc::FaceDef> aFaceDef =
+      BRepGraph_MutGuard<BRepGraphInc::FaceDef> aFaceDef =
         theGraph.Builder().MutFace(BRepGraph_FaceId(aFaceIdx));
       const BRepGraph_SurfaceRepId aCanonSurfRepId =
         theGraph.Topo().Face(BRepGraph_FaceId(aCanonFaceIdx)).SurfaceRepId;
@@ -200,7 +197,7 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
     {
       const int                               anEdgeIdx     = anIt.Key();
       const int                               aCanonEdgeIdx = anIt.Value();
-      BRepGraph_MutRef<BRepGraphInc::EdgeDef> anEdgeDef =
+      BRepGraph_MutGuard<BRepGraphInc::EdgeDef> anEdgeDef =
         theGraph.Builder().MutEdge(BRepGraph_EdgeId(anEdgeIdx));
       const BRepGraph_Curve3DRepId aCanonCurveRepId =
         theGraph.Topo().Edge(BRepGraph_EdgeId(aCanonEdgeIdx)).Curve3DRepId;
@@ -301,21 +298,21 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
         // Update edges referencing the old vertex.
         for (int anEdgeIdx = 0; anEdgeIdx < theGraph.Topo().NbEdges(); ++anEdgeIdx)
         {
-          BRepGraph_MutRef<BRepGraphInc::EdgeDef> anEdge =
+          BRepGraph_MutGuard<BRepGraphInc::EdgeDef> anEdge =
             theGraph.Builder().MutEdge(BRepGraph_EdgeId(anEdgeIdx));
           if (anEdge->IsRemoved)
             continue;
           // Resolve current vertex def ids through ref entries and update them.
           if (anEdge->StartVertexRefId.IsValid())
           {
-            BRepGraph_MutRefEntry<BRepGraphInc::VertexRef> aStartRef =
+            BRepGraph_MutGuard<BRepGraphInc::VertexRef> aStartRef =
               theGraph.Builder().MutVertexRef(anEdge->StartVertexRefId);
             if (aStartRef->VertexDefId == BRepGraph_VertexId(anOldId.Index))
               aStartRef->VertexDefId = BRepGraph_VertexId(aCanonId.Index);
           }
           if (anEdge->EndVertexRefId.IsValid())
           {
-            BRepGraph_MutRefEntry<BRepGraphInc::VertexRef> anEndRef =
+            BRepGraph_MutGuard<BRepGraphInc::VertexRef> anEndRef =
               theGraph.Builder().MutVertexRef(anEdge->EndVertexRefId);
             if (anEndRef->VertexDefId == BRepGraph_VertexId(anOldId.Index))
               anEndRef->VertexDefId = BRepGraph_VertexId(aCanonId.Index);
@@ -475,11 +472,10 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
           theGraph.Topo().WiresOfEdge(anOldEdgeId);
         for (int aWireIter = 0; aWireIter < aWires.Length(); ++aWireIter)
         {
-          BRepGraph_Mutator::ReplaceEdgeInWire(theGraph,
-                                               aWires.Value(aWireIter),
-                                               anOldEdgeId,
-                                               aCanonEdgeId,
-                                               isReversed);
+          theGraph.Builder().ReplaceEdgeInWire(aWires.Value(aWireIter),
+                                              anOldEdgeId,
+                                              aCanonEdgeId,
+                                              isReversed);
         }
 
         // Transfer PCurves via CoEdges (skip duplicates).

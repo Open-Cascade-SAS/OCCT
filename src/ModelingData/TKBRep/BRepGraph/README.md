@@ -102,7 +102,7 @@ Reference entries are the typed edges of the incidence graph. Each ref kind has 
 
 ### Mutation Guards
 
-`BRepGraph_MutRefEntry<T>` is an RAII guard for safe ref entry mutation, analogous to `BRepGraph_MutRef` for entities.
+`BRepGraph_MutGuard<T>` is a unified RAII guard for safe mutation of both topology definitions (BaseDef hierarchy) and reference entries (BaseRef hierarchy).
 
 ### RefsView API
 
@@ -280,7 +280,7 @@ Per-node cached computations in `BaseDef.Cache`. Lazily evaluated, auto-invalida
 
 ## Mutation and History
 
-Primary mutation entry points are exposed via MutView and scoped RAII guards (`BRepGraph_MutRef`).
+Primary mutation entry points are exposed via MutView and scoped RAII guards (`BRepGraph_MutGuard`).
 
 Common operations: SplitEdge, ReplaceEdgeInWire, AddPCurveToEdge, relation-edge add/remove.
 
@@ -316,7 +316,7 @@ Benefits: O(1) allocation (bump-pointer), O(1) destruction (bulk page release). 
 
 `BRepGraphInc_ReverseIndex::Validate()` checks all reverse index maps against forward entity refs. Called automatically via `Standard_ASSERT_VOID` after SplitEdge and ReplaceEdgeInWire in debug builds.
 
-`BRepGraph_Mutator::CommitMutation()` validates reverse index + active entity counts. Called at end of Sewing, Compact, Deduplicate.
+`Builder().CommitMutation()` validates reverse index + active entity counts. Called at end of Sewing, Compact, Deduplicate.
 
 ## Practical Guidance
 
@@ -331,10 +331,10 @@ Benefits: O(1) allocation (bump-pointer), O(1) destruction (bulk page release). 
 |----------|-------|
 | **Core** | `BRepGraph.hxx/.cxx`, `BRepGraph_Data.hxx`, `BRepGraph_NodeId.hxx`, `BRepGraph_UID.hxx`, `BRepGraph_RefId.hxx`, `BRepGraph_RefUID.hxx`, `BRepGraph_RepId.hxx` |
 | **Views** | `BRepGraph_DefsView.hxx/.cxx`, `BRepGraph_UIDsView.hxx/.cxx`, `BRepGraph_RefsView.hxx/.cxx`, `BRepGraph_ShapesView.hxx/.cxx`, `BRepGraph_SpatialView.hxx/.cxx`, `BRepGraph_AttrsView.hxx/.cxx`, `BRepGraph_BuilderView.hxx/.cxx`, `BRepGraph_AnalyzeView.hxx`, `BRepGraph_PathView.hxx/.cxx` |
-| **Refs** | `BRepGraph_MutRefEntry.hxx`, `BRepGraph_VersionStamp.hxx/.cxx` |
+| **Refs** | `BRepGraph_VersionStamp.hxx/.cxx` |
 | **Traversal** | `BRepGraph_Explorer.hxx/.cxx`, `BRepGraph_TopologyPath.hxx`, `BRepGraph_SubGraph.hxx`, `BRepGraph_PCurveContext.hxx` |
 | **Geometry** | `BRepGraph_Tool.hxx/.cxx` |
-| **Mutation** | `BRepGraph_Mutator.hxx/.cxx`, `BRepGraph_MutRef.hxx`, `BRepGraph_MutationGuard.hxx` |
+| **Mutation** | `BRepGraph_MutGuard.hxx`, `BRepGraph_DeferredScope.hxx` |
 | **Layers** | `BRepGraph_Layer.hxx/.cxx`, `BRepGraph_NameLayer.hxx/.cxx`, `BRepGraph_AttrRegistry.hxx` |
 | **Attributes** | `BRepGraph_UserAttribute.hxx`, `BRepGraph_TypedAttribute.hxx`, `BRepGraph_NodeCache.hxx` |
 | **Analysis** | `BRepGraph_Analyze.hxx/.cxx` |

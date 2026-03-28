@@ -19,7 +19,7 @@
 #include <BRepGraphInc_Representation.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_TopoView.hxx>
-#include <BRepGraph_Mutator.hxx>
+#include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_RefsView.hxx>
@@ -183,7 +183,7 @@ TEST(BRepGraphAlgo_ValidateTest, WireConnectivity_DisconnectedEdges)
   const BRepGraph_NodeId aFirstEdgeId(aFirstCoEdge.EdgeDefId);
   ASSERT_TRUE(aFirstEdgeId.IsValid());
 
-  BRepGraph_MutRef<BRepGraphInc::EdgeDef> aFirstEdge =
+  BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aFirstEdge =
     aGraph.Builder().MutEdge(BRepGraph_EdgeId(aFirstEdgeId.Index));
 
   // Find a vertex different from the current end vertex.
@@ -197,7 +197,7 @@ TEST(BRepGraphAlgo_ValidateTest, WireConnectivity_DisconnectedEdges)
     if (BRepGraph_NodeId::Vertex(aVtxIdx) != anOrigEnd
         && BRepGraph_NodeId::Vertex(aVtxIdx) != BRepGraph_NodeId(anOrigStartVtx))
     {
-      BRepGraph_MutRefEntry<BRepGraphInc::VertexRef> aMutEndRef =
+      BRepGraph_MutGuard<BRepGraphInc::VertexRef> aMutEndRef =
         aGraph.Builder().MutVertexRef(aFirstEdge->EndVertexRefId);
       aMutEndRef->VertexDefId = BRepGraph_VertexId(aVtxIdx);
       break;
@@ -239,7 +239,7 @@ TEST(BRepGraphAlgo_ValidateTest, BoundsCheck_InvalidIndex)
   ASSERT_GT(aGraph.Topo().NbEdges(), 0);
 
   // Corrupt edge's Curve3d to null.
-  BRepGraph_MutRef<BRepGraphInc::EdgeDef> anEdge = aGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
+  BRepGraph_MutGuard<BRepGraphInc::EdgeDef> anEdge = aGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
   anEdge->Curve3DRepId                           = BRepGraph_Curve3DRepId();
 
   const BRepGraphAlgo_Validate::Result aResult =
@@ -284,7 +284,7 @@ TEST(BRepGraphAlgo_ValidateTest, AfterSplitEdge_ProducesSubEdges)
     BRepGraph_Tool::Edge::Tolerance(aGraph, BRepGraph_EdgeId(anEdgeId.Index)));
 
   BRepGraph_NodeId aSubA, aSubB;
-  BRepGraph_Mutator::SplitEdge(aGraph, anEdgeId, aSplitVtx, aSplitParam, aSubA, aSubB);
+  aGraph.Builder().SplitEdge(anEdgeId, aSplitVtx, aSplitParam, aSubA, aSubB);
 
   // Two new sub-edges should have been created.
   EXPECT_EQ(aGraph.Topo().NbEdges(), anOrigEdgeCount + 2);
@@ -307,7 +307,7 @@ TEST(BRepGraphAlgo_ValidateTest, CorruptedPCurve_FaceDefIdOutOfBounds)
 
   // Corrupt a CoEdge's FaceDefId to an out-of-range value.
   ASSERT_GT(aGraph.Topo().NbCoEdges(), 0);
-  BRepGraph_MutRef<BRepGraphInc::CoEdgeDef> aCoEdgeDef =
+  BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef> aCoEdgeDef =
     aGraph.Builder().MutCoEdge(BRepGraph_CoEdgeId(0));
   aCoEdgeDef->FaceDefId = BRepGraph_NodeId::Face(aGraph.Topo().NbFaces() + 999);
 
@@ -333,7 +333,7 @@ TEST(BRepGraphAlgo_ValidateTest, LightweightAndDeepAudit_DetectActiveCountDrift)
   ASSERT_GT(aNbActiveFacesBefore, 0);
 
   // Intentionally bypass RemoveNode() to simulate counter drift bug class.
-  BRepGraph_MutRef<BRepGraphInc::FaceDef> aFaceDef = aGraph.Builder().MutFace(BRepGraph_FaceId(0));
+  BRepGraph_MutGuard<BRepGraphInc::FaceDef> aFaceDef = aGraph.Builder().MutFace(BRepGraph_FaceId(0));
   aFaceDef->IsRemoved                              = true;
 
   const BRepGraphAlgo_Validate::Result aLightResult =
@@ -379,7 +379,7 @@ TEST(BRepGraphAlgo_ValidateTest, DeepDetectsIdDriftButLightweightSkipsIt)
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().NbFaces(), 0);
 
-  BRepGraph_MutRef<BRepGraphInc::FaceDef> aFaceDef = aGraph.Builder().MutFace(BRepGraph_FaceId(0));
+  BRepGraph_MutGuard<BRepGraphInc::FaceDef> aFaceDef = aGraph.Builder().MutFace(BRepGraph_FaceId(0));
   aFaceDef->Id                                     = BRepGraph_NodeId::Face(42);
 
   const BRepGraphAlgo_Validate::Result aLightResult =

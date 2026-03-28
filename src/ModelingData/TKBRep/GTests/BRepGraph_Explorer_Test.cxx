@@ -17,7 +17,6 @@
 #include <BRepGraphInc_Representation.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_Explorer.hxx>
-#include <BRepGraph_MutRefEntry.hxx>
 #include <BRepGraph_PathView.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_Tool.hxx>
@@ -428,7 +427,7 @@ TEST(BRepGraph_ExplorerTest, PathsTo_MatchesExplorer_WhenEarlierCompoundRefRemov
 
   // Remove the first child ref (earlier ordinal).
   {
-    BRepGraph_MutRefEntry<BRepGraphInc::ChildRef> aMut =
+    BRepGraph_MutGuard<BRepGraphInc::ChildRef> aMut =
       aGraph.Builder().MutChildRef(aRemovedRefId);
     aMut->IsRemoved = true;
   }
@@ -486,7 +485,7 @@ TEST(BRepGraph_ExplorerTest, PathsTo_MatchesExplorer_WhenFirstShellRefRemoved)
   // Remove the first shell ref so the active one is not the first matching shell usage.
   const BRepGraph_ShellRefId aRemovedShellRefId = aSolidAfterDup.ShellRefIds.Value(0);
   {
-    BRepGraph_MutRefEntry<BRepGraphInc::ShellRef> aMut =
+    BRepGraph_MutGuard<BRepGraphInc::ShellRef> aMut =
       aGraph.Builder().MutShellRef(aRemovedShellRefId);
     aMut->IsRemoved = true;
   }

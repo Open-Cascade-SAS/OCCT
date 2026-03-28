@@ -19,7 +19,7 @@
 #include <BRepGraph_PathView.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_TopoView.hxx>
-#include <BRepGraph_Mutator.hxx>
+#include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_UIDsView.hxx>
 #include <BRepGraph_WireExplorer.hxx>
@@ -195,14 +195,15 @@ bool isEntityRemoved(const BRepGraph& theGraph, BRepGraph_NodeId theId)
 //! @param[in]     theBoundaryIssues boundary issues reported by mutator
 //! @param[in,out] theIssues         destination validator issue vector
 void appendMutationBoundaryIssues(
-  const NCollection_Vector<BRepGraph_Mutator::BoundaryIssue>& theBoundaryIssues,
-  NCollection_Vector<BRepGraphAlgo_Validate::Issue>&          theIssues)
+  const NCollection_Vector<BRepGraph::BuilderView::BoundaryIssue>& theBoundaryIssues,
+  NCollection_Vector<BRepGraphAlgo_Validate::Issue>&               theIssues)
 {
   using Issue    = BRepGraphAlgo_Validate::Issue;
   using Severity = BRepGraphAlgo_Validate::Severity;
   for (int anIdx = 0; anIdx < theBoundaryIssues.Length(); ++anIdx)
   {
-    const BRepGraph_Mutator::BoundaryIssue& aBoundaryIssue = theBoundaryIssues.Value(anIdx);
+    const BRepGraph::BuilderView::BoundaryIssue& aBoundaryIssue =
+      theBoundaryIssues.Value(anIdx);
     theIssues.Append(Issue{Severity::Error, aBoundaryIssue.NodeId, aBoundaryIssue.Description});
   }
 }
@@ -1079,16 +1080,17 @@ BRepGraphAlgo_Validate::Result BRepGraphAlgo_Validate::Perform(const BRepGraph& 
 
   if (theOptions.ValidationMode == Mode::Lightweight)
   {
-    NCollection_Vector<BRepGraph_Mutator::BoundaryIssue> aBoundaryIssues;
-    if (!BRepGraph_Mutator::ValidateMutationBoundary(theGraph, &aBoundaryIssues))
+    NCollection_Vector<BRepGraph::BuilderView::BoundaryIssue> aBoundaryIssues;
+    // const_cast: ValidateMutationBoundary is read-only but lives on non-const BuilderView.
+    if (!const_cast<BRepGraph&>(theGraph).Builder().ValidateMutationBoundary(&aBoundaryIssues))
     {
       appendMutationBoundaryIssues(aBoundaryIssues, aResult.Issues);
     }
     return aResult;
   }
 
-  NCollection_Vector<BRepGraph_Mutator::BoundaryIssue> aBoundaryIssues;
-  if (!BRepGraph_Mutator::ValidateMutationBoundary(theGraph, &aBoundaryIssues))
+  NCollection_Vector<BRepGraph::BuilderView::BoundaryIssue> aBoundaryIssues;
+  if (!const_cast<BRepGraph&>(theGraph).Builder().ValidateMutationBoundary(&aBoundaryIssues))
   {
     appendMutationBoundaryIssues(aBoundaryIssues, aResult.Issues);
   }

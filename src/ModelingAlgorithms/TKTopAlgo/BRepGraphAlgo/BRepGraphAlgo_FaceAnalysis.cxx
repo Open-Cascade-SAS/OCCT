@@ -17,9 +17,7 @@
 #include <BRepGraphInc_Representation.hxx>
 
 #include <BRepGraph_BuilderView.hxx>
-#include <BRepGraph_MutRef.hxx>
-#include <BRepGraph_MutRefEntry.hxx>
-#include <BRepGraph_MutationGuard.hxx>
+#include <BRepGraph_DeferredScope.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_TopoView.hxx>
@@ -93,7 +91,7 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
   {
     return aResult;
   }
-  BRepGraph_MutationGuard aMutationGuard(theGraph);
+  BRepGraph_DeferredScope aMutationGuard(theGraph);
 
   const double aMinTol =
     theOptions.MinTolerance > 0.0
@@ -175,7 +173,7 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
           ++aNbSmall;
 
           // Mark edge as degenerate.
-          BRepGraph_MutRef<BRepGraphInc::EdgeDef> aMutEdge = theGraph.Builder().MutEdge(anEdgeId);
+          BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMutEdge = theGraph.Builder().MutEdge(anEdgeId);
           aMutEdge->IsDegenerate                           = true;
           aMutEdge->Curve3DRepId                           = BRepGraph_Curve3DRepId();
           aResult.DegeneratedEdges.Append(BRepGraph_EdgeId(anEdgeIdx));
@@ -295,7 +293,7 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
     }
 
     // Update target vertex.
-    BRepGraph_MutRef<BRepGraphInc::VertexDef> aTargetVtx =
+    BRepGraph_MutGuard<BRepGraphInc::VertexDef> aTargetVtx =
       theGraph.Builder().MutVertex(BRepGraph_VertexId(aTargetIdx));
     aTargetVtx->Point     = aCentroid;
     aTargetVtx->Tolerance = aMaxTol;

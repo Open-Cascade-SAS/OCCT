@@ -20,7 +20,6 @@
 #include <BRepGraphInc_Representation.hxx>
 #include <BRepGraph_Analyze.hxx>
 #include <BRepGraph_BuilderView.hxx>
-#include <BRepGraph_MutRef.hxx>
 #include <BRepGraph_SubGraph.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraphAlgo_BndLib.hxx>
@@ -540,7 +539,7 @@ TEST_F(BRepGraph_AnalyzeTest, InvalidateSubgraph_PropagatesUpToSolid)
 
   // Invalidate from a vertex upward via a no-op mutation (triggers markModified).
   {
-    BRepGraph_MutRef<BRepGraphInc::VertexDef> aMut =
+    BRepGraph_MutGuard<BRepGraphInc::VertexDef> aMut =
       myGraph.Builder().MutVertex(BRepGraph_VertexId(aVertId.Index));
   }
 

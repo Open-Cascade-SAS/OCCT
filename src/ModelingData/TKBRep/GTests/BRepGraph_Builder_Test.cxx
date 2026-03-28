@@ -499,7 +499,7 @@ TEST(BRepGraph_BuilderTest, MutableFaceDefinition_ChangesTolerance)
 
   const double anOrigTol = BRepGraph_Tool::Face::Tolerance(aGraph, BRepGraph_FaceId(0));
   {
-    BRepGraph_MutRef<BRepGraphInc::FaceDef> aFaceDef =
+    BRepGraph_MutGuard<BRepGraphInc::FaceDef> aFaceDef =
       aGraph.Builder().MutFace(BRepGraph_FaceId(0));
     aFaceDef->Tolerance = 0.5;
   }
@@ -519,7 +519,7 @@ TEST(BRepGraph_BuilderTest, MutableShellDefinition)
   ASSERT_GT(aGraph.Topo().NbShells(), 0);
 
   {
-    BRepGraph_MutRef<BRepGraphInc::ShellDef> aShellDef =
+    BRepGraph_MutGuard<BRepGraphInc::ShellDef> aShellDef =
       aGraph.Builder().MutShell(BRepGraph_ShellId(0));
   }
   EXPECT_TRUE(aGraph.Topo().Shell(BRepGraph_ShellId(0)).IsModified);
@@ -536,7 +536,7 @@ TEST(BRepGraph_BuilderTest, MutableSolidDefinition)
   ASSERT_GT(aGraph.Topo().NbSolids(), 0);
 
   {
-    BRepGraph_MutRef<BRepGraphInc::SolidDef> aSolidDef =
+    BRepGraph_MutGuard<BRepGraphInc::SolidDef> aSolidDef =
       aGraph.Builder().MutSolid(BRepGraph_SolidId(0));
   }
   EXPECT_TRUE(aGraph.Topo().Solid(BRepGraph_SolidId(0)).IsModified);
@@ -550,7 +550,7 @@ TEST(BRepGraph_BuilderTest, MutableCompoundDefinition)
   ASSERT_EQ(aGraph.Topo().NbCompounds(), 1);
 
   {
-    BRepGraph_MutRef<BRepGraphInc::CompoundDef> aCompDef =
+    BRepGraph_MutGuard<BRepGraphInc::CompoundDef> aCompDef =
       aGraph.Builder().MutCompound(BRepGraph_CompoundId(0));
   }
   EXPECT_TRUE(aGraph.Topo().Compound(BRepGraph_CompoundId(0)).IsModified);
@@ -564,7 +564,7 @@ TEST(BRepGraph_BuilderTest, MutableCompSolidDefinition)
   ASSERT_EQ(aGraph.Topo().NbCompSolids(), 1);
 
   {
-    BRepGraph_MutRef<BRepGraphInc::CompSolidDef> aCSolDef =
+    BRepGraph_MutGuard<BRepGraphInc::CompSolidDef> aCSolDef =
       aGraph.Builder().MutCompSolid(BRepGraph_CompSolidId(0));
   }
   EXPECT_TRUE(aGraph.Topo().CompSolid(BRepGraph_CompSolidId(0)).IsModified);

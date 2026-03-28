@@ -22,12 +22,10 @@
 #include <BRepGraph_Analyze.hxx>
 #include <BRepGraph_AttrsView.hxx>
 #include <BRepGraph_BuilderView.hxx>
-#include <BRepGraph_MutRef.hxx>
 #include "BRepGraph_RefTestTools.hxx"
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_Tool.hxx>
-#include <BRepGraph_Mutator.hxx>
 #include <BRepGraph_PathView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_UIDsView.hxx>
@@ -718,7 +716,7 @@ TEST_F(BRepGraphTest, DetectDegenerateWires_ValidBox_Empty)
 TEST_F(BRepGraphTest, MutableEdge_ModifyTolerance)
 {
   double anOrigTol = BRepGraph_Tool::Edge::Tolerance(myGraph, BRepGraph_EdgeId(0));
-  BRepGraph_MutRef<BRepGraphInc::EdgeDef> anEdge = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
+  BRepGraph_MutGuard<BRepGraphInc::EdgeDef> anEdge = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
   anEdge->Tolerance                              = anOrigTol * 2.0;
   EXPECT_NEAR(BRepGraph_Tool::Edge::Tolerance(myGraph, BRepGraph_EdgeId(0)),
               anOrigTol * 2.0,
@@ -769,11 +767,10 @@ TEST_F(BRepGraphTest, ReplaceEdgeInWire_Substitution)
   // Pick a different edge to substitute.
   const BRepGraph_EdgeId aNewEdgeId((anOldEdgeId.Index + 1) % myGraph.Topo().NbEdges());
 
-  BRepGraph_Mutator::ReplaceEdgeInWire(myGraph,
-                                       BRepGraph_WireId(0),
-                                       anOldEdgeId,
-                                       aNewEdgeId,
-                                       false);
+  myGraph.Builder().ReplaceEdgeInWire(BRepGraph_WireId(0),
+                                      anOldEdgeId,
+                                      aNewEdgeId,
+                                      false);
 
   // Verify the substitution via the updated incidence refs.
   const NCollection_Vector<BRepGraph_CoEdgeRefId> aCoEdgeRefsAfter =
@@ -887,11 +884,10 @@ TEST_F(BRepGraphTest, ReconstructFace_AfterEdgeReplace_ContainsNewEdge)
   occ::handle<Geom_Curve> anOldCurve =
     BRepGraph_Tool::Edge::Curve(myGraph, BRepGraph_EdgeId(anOldEdgeId.Index));
 
-  BRepGraph_Mutator::ReplaceEdgeInWire(myGraph,
-                                       BRepGraph_WireId(0),
-                                       anOldEdgeId,
-                                       aNewEdgeId,
-                                       false);
+  myGraph.Builder().ReplaceEdgeInWire(BRepGraph_WireId(0),
+                                      anOldEdgeId,
+                                      aNewEdgeId,
+                                      false);
 
   // Reconstruct face 0 (the face owning wire 0).
   const int aFaceIdx =
@@ -961,11 +957,10 @@ TEST_F(BRepGraphTest, Shape_AfterReplaceEdge_DiffersFromOriginal)
   const int                      aNewIdx     = (anOldEdgeId.Index + 1) % myGraph.Topo().NbEdges();
   const BRepGraph_EdgeId         aNewEdgeId(aNewIdx);
 
-  BRepGraph_Mutator::ReplaceEdgeInWire(myGraph,
-                                       BRepGraph_WireId(0),
-                                       anOldEdgeId,
-                                       aNewEdgeId,
-                                       false);
+  myGraph.Builder().ReplaceEdgeInWire(BRepGraph_WireId(0),
+                                      anOldEdgeId,
+                                      aNewEdgeId,
+                                      false);
 
   // Find the face that owns wire 0.
   int aFaceDefIdx = -1;
@@ -1180,7 +1175,7 @@ TEST_F(BRepGraphTest, FindOriginal_SingleHop_ReturnsSource)
     return aResult;
   };
 
-  BRepGraph_Mutator::ApplyModification(myGraph, anEdge0, aModifier, "TestHop");
+  myGraph.Builder().ApplyModification(anEdge0, aModifier, "TestHop");
 
   BRepGraph_NodeId anOriginal = myGraph.History().FindOriginal(anEdge1);
   EXPECT_EQ(anOriginal, anEdge0);
@@ -1197,7 +1192,7 @@ TEST_F(BRepGraphTest, FindDerived_SingleHop_ContainsTarget)
     return aResult;
   };
 
-  BRepGraph_Mutator::ApplyModification(myGraph, anEdge0, aModifier, "TestHop");
+  myGraph.Builder().ApplyModification(anEdge0, aModifier, "TestHop");
 
   NCollection_Vector<BRepGraph_NodeId> aDerived = myGraph.History().FindDerived(anEdge0);
   bool                                 isFound  = false;
@@ -1224,7 +1219,7 @@ TEST_F(BRepGraphTest, ApplyModification_MultiStepChain_FindOriginalTracesBack)
     aResult.Append(anEdge1);
     return aResult;
   };
-  BRepGraph_Mutator::ApplyModification(myGraph, anEdge0, aModifier1, "Step1");
+  myGraph.Builder().ApplyModification(anEdge0, aModifier1, "Step1");
 
   // Step 2: edge1 -> edge2
   auto aModifier2 = [&](BRepGraph& /*theGraph*/, BRepGraph_NodeId /*theTarget*/) {
@@ -1232,7 +1227,7 @@ TEST_F(BRepGraphTest, ApplyModification_MultiStepChain_FindOriginalTracesBack)
     aResult.Append(anEdge2);
     return aResult;
   };
-  BRepGraph_Mutator::ApplyModification(myGraph, anEdge1, aModifier2, "Step2");
+  myGraph.Builder().ApplyModification(anEdge1, aModifier2, "Step2");
 
   // FindOriginal from edge2 should trace back to edge0.
   BRepGraph_NodeId anOriginal = myGraph.History().FindOriginal(anEdge2);
@@ -1295,7 +1290,7 @@ TEST_F(BRepGraphTest, ReplaceEdgeInWire_Reversed_OrientationFlipped)
   const int              aNewIdx = (anOldEdgeId.Index + 1) % myGraph.Topo().NbEdges();
   const BRepGraph_EdgeId aNewEdgeId(aNewIdx);
 
-  BRepGraph_Mutator::ReplaceEdgeInWire(myGraph, BRepGraph_WireId(0), anOldEdgeId, aNewEdgeId, true);
+  myGraph.Builder().ReplaceEdgeInWire(BRepGraph_WireId(0), anOldEdgeId, aNewEdgeId, true);
 
   const NCollection_Vector<BRepGraph_CoEdgeRefId> aCoEdgeRefsAfter =
     BRepGraph_TestTools::CoEdgeRefsOfWire(myGraph, BRepGraph_WireId(0));
@@ -1312,7 +1307,7 @@ TEST_F(BRepGraphTest, ReplaceEdgeInWire_Reversed_OrientationFlipped)
 
 TEST_F(BRepGraphTest, MutableVertex_ChangePoint_Verified)
 {
-  BRepGraph_MutRef<BRepGraphInc::VertexDef> aMutVert =
+  BRepGraph_MutGuard<BRepGraphInc::VertexDef> aMutVert =
     myGraph.Builder().MutVertex(BRepGraph_VertexId(0));
   aMutVert->Point = gp_Pnt(99.0, 99.0, 99.0);
 
@@ -1401,7 +1396,7 @@ TEST_F(BRepGraphTest, InvalidateSubgraph_Face_ConsistentAfter)
 
   // Invalidate subgraph from face via a no-op mutation (triggers markModified).
   {
-    BRepGraph_MutRef<BRepGraphInc::FaceDef> aMut =
+    BRepGraph_MutGuard<BRepGraphInc::FaceDef> aMut =
       myGraph.Builder().MutFace(BRepGraph_FaceId(aFaceId.Index));
   }
 
@@ -1857,7 +1852,7 @@ TEST_F(BRepGraphTest, Centroid_Face_InsideBBox)
 
 TEST_F(BRepGraphTest, MutableWireDef_ModifyClosure_Verified)
 {
-  BRepGraph_MutRef<BRepGraphInc::WireDef> aMutWD = myGraph.Builder().MutWire(BRepGraph_WireId(0));
+  BRepGraph_MutGuard<BRepGraphInc::WireDef> aMutWD = myGraph.Builder().MutWire(BRepGraph_WireId(0));
   bool                                    anOrigClosed = aMutWD->IsClosed;
   aMutWD->IsClosed                                     = !anOrigClosed;
 
@@ -2119,7 +2114,7 @@ TEST_F(BRepGraphTest, ApplyModification_HistoryDisabled_NoHistoryNoDerivedEdges)
     return aResult;
   };
 
-  BRepGraph_Mutator::ApplyModification(myGraph, anEdge0, aModifier, "NoHistory");
+  myGraph.Builder().ApplyModification(anEdge0, aModifier, "NoHistory");
 
   // No history records should be added.
   EXPECT_EQ(myGraph.History().NbRecords(), aNbHistBefore);
@@ -2139,6 +2134,6 @@ TEST_F(BRepGraphTest, ApplyModification_HistoryDisabled_ModifierStillRuns)
     return aResult;
   };
 
-  BRepGraph_Mutator::ApplyModification(myGraph, anEdge0, aModifier, "CheckModifier");
+  myGraph.Builder().ApplyModification(anEdge0, aModifier, "CheckModifier");
   EXPECT_TRUE(isModifierCalled);
 }

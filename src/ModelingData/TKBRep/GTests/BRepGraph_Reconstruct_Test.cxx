@@ -471,7 +471,7 @@ TEST(BRepGraph_ReconstructTest, AfterVertexMutation_ModifiedFlagAndPointChanged)
   // Mutate: move vertex by 5 units in Z.
   const gp_Pnt anOldPt = BRepGraph_Tool::Vertex::Pnt(aGraph, BRepGraph_VertexId(aVertIdx));
   {
-    BRepGraph_MutRef<BRepGraphInc::VertexDef> aMutVtx =
+    BRepGraph_MutGuard<BRepGraphInc::VertexDef> aMutVtx =
       aGraph.Builder().MutVertex(BRepGraph_VertexId(aVertIdx));
     aMutVtx->Point = gp_Pnt(anOldPt.X(), anOldPt.Y(), anOldPt.Z() + 5.0);
   }
@@ -500,7 +500,7 @@ TEST(BRepGraph_ReconstructTest, AfterToleranceMutation_NewTShape)
 
   // Mutate tolerance.
   {
-    BRepGraph_MutRef<BRepGraphInc::EdgeDef> aMutEdge =
+    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMutEdge =
       aGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
     aMutEdge->Tolerance = aMutEdge->Tolerance + 1.0;
   }

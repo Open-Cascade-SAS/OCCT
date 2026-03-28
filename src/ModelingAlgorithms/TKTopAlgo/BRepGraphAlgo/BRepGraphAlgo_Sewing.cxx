@@ -52,10 +52,7 @@
 #include <BRepGraph_Analyze.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_History.hxx>
-#include <BRepGraph_MutRef.hxx>
-#include <BRepGraph_MutRefEntry.hxx>
-#include <BRepGraph_MutationGuard.hxx>
-#include <BRepGraph_Mutator.hxx>
+#include <BRepGraph_DeferredScope.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_TopoView.hxx>
@@ -997,7 +994,7 @@ void cutAtIntersections(BRepGraph&                                   theGraph,
       const SplitCandidate&  aCand = aUniqueSplits.Value(aSplitIter);
       const BRepGraph_NodeId aVtxNodeId(BRepGraph_NodeId::Kind::Vertex, aCand.VtxIdx);
       BRepGraph_NodeId       aSubA, aSubB;
-      BRepGraph_Mutator::SplitEdge(theGraph, aCurrentEdge, aVtxNodeId, aCand.Param, aSubA, aSubB);
+      theGraph.Builder().SplitEdge(aCurrentEdge, aVtxNodeId, aCand.Param, aSubA, aSubB);
       aChain.Append(aSubA);
       aCurrentEdge = aSubB;
     }
@@ -1649,11 +1646,10 @@ int mergeMatchedEdges(
     const NCollection_Vector<BRepGraph_WireId> aWires = theGraph.Topo().WiresOfEdge(anEdgeIdB);
     for (int aWIdx = 0; aWIdx < aWires.Length(); ++aWIdx)
     {
-      BRepGraph_Mutator::ReplaceEdgeInWire(theGraph,
-                                           aWires.Value(aWIdx),
-                                           anEdgeIdB,
-                                           anEdgeIdA,
-                                           isReversed);
+      theGraph.Builder().ReplaceEdgeInWire(aWires.Value(aWIdx),
+                                          anEdgeIdB,
+                                          anEdgeIdA,
+                                          isReversed);
     }
 
     // Remove the old edge properly - decrements NbActiveEdges, clears cache.
@@ -1817,7 +1813,7 @@ void convertDegenerateEdges(BRepGraph& theGraph, BRepGraphAlgo_Sewing::Result& t
     if (aLength <= aVertexTolSum)
     {
       // Mark as degenerate: clear 3D curve, merge vertices to midpoint.
-      BRepGraph_MutRef<BRepGraphInc::EdgeDef> aMutEdge = theGraph.Builder().MutEdge(anEdgeId);
+      BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMutEdge = theGraph.Builder().MutEdge(anEdgeId);
       aMutEdge->IsDegenerate                           = true;
       aMutEdge->Curve3DRepId                           = BRepGraph_Curve3DRepId();
 
@@ -1837,13 +1833,13 @@ void convertDegenerateEdges(BRepGraph& theGraph, BRepGraphAlgo_Sewing::Result& t
         const double aNewTol   = std::max(aD1, aD2);
 
         // Keep start vertex, update it to midpoint.
-        BRepGraph_MutRef<BRepGraphInc::VertexDef> aVtx =
+        BRepGraph_MutGuard<BRepGraphInc::VertexDef> aVtx =
           theGraph.Builder().MutVertex(aStartVertexId);
         aVtx->Point     = aPtMid;
         aVtx->Tolerance = aNewTol;
         // Point end vertex ref to the same definition as start, with REVERSED orientation.
         const BRepGraphInc::VertexRef& aStartRef = aDegRefs.Vertex(anEdge.StartVertexRefId);
-        BRepGraph_MutRefEntry<BRepGraphInc::VertexRef> aEndRef =
+        BRepGraph_MutGuard<BRepGraphInc::VertexRef> aEndRef =
           theGraph.Builder().MutVertexRef(anEdge.EndVertexRefId);
         aEndRef->VertexDefId   = aStartVertexId;
         aEndRef->Orientation   = TopAbs_REVERSED;
@@ -1877,7 +1873,7 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
   {
     return aResult;
   }
-  BRepGraph_MutationGuard aMutationGuard(theGraph);
+  BRepGraph_DeferredScope aDeferredScope(theGraph);
 
   // Configure history on the graph.
   theGraph.History().SetEnabled(theOptions.HistoryMode);

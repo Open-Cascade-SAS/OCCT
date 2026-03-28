@@ -18,8 +18,7 @@
 #include <BRepCheck.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_TopoView.hxx>
-#include <BRepGraph_MutationGuard.hxx>
-#include <BRepGraph_MutRef.hxx>
+#include <BRepGraph_DeferredScope.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BSplCLib.hxx>
 #include <ExtremaPC_Curve.hxx>
@@ -230,7 +229,7 @@ bool enforceImpl(BRepGraph&       theGraph,
 {
   // Single MutRef scope ensures markModified fires exactly once,
   // even on early returns, due to RAII.
-  BRepGraph_MutRef<BRepGraphInc::EdgeDef> aMutEdge =
+  BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMutEdge =
     theGraph.Builder().MutEdge(BRepGraph_EdgeId(theEdgeId.Index));
   const BRepGraphInc::EdgeDef&                  anEdge = *aMutEdge;
   const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
@@ -749,7 +748,7 @@ BRepGraphAlgo_SameParameter::Result BRepGraphAlgo_SameParameter::Perform(
   int aNbApprox = 0;
 
   {
-    BRepGraph_MutationGuard aGuard(theGraph);
+    BRepGraph_DeferredScope aScope(theGraph);
     for (int anEdgeIdx = 0; anEdgeIdx < aNbEdges; ++anEdgeIdx)
     {
       const BRepGraph_EdgeId anEdgeId = anEdgeIdArr.Value(anEdgeIdx);

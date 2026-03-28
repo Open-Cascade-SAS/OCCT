@@ -11,14 +11,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _BRepGraph_MutationGuard_HeaderFile
-#define _BRepGraph_MutationGuard_HeaderFile
+#ifndef _BRepGraph_DeferredScope_HeaderFile
+#define _BRepGraph_DeferredScope_HeaderFile
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_BuilderView.hxx>
-#include <BRepGraph_Mutator.hxx>
 
-//! @brief RAII guard for batch mutation scopes.
+//! @brief RAII guard for batch mutation scopes with deferred invalidation.
 //!
 //! Activates deferred invalidation on construction and flushes it on destruction,
 //! followed by CommitMutation validation. Guarantees exception-safe cleanup:
@@ -30,15 +29,15 @@
 //! Usage:
 //! @code
 //!   {
-//!     BRepGraph_MutationGuard aGuard(theGraph);
+//!     BRepGraph_DeferredScope aScope(theGraph);
 //!     OSD_Parallel::For(0, N, [&](int i) { /* mutations */ }, !parallel);
 //!   } // EndDeferredInvalidation + CommitMutation called here
 //! @endcode
-class BRepGraph_MutationGuard
+class BRepGraph_DeferredScope
 {
 public:
   //! Begin deferred invalidation if not already active.
-  explicit BRepGraph_MutationGuard(BRepGraph& theGraph)
+  explicit BRepGraph_DeferredScope(BRepGraph& theGraph)
       : myGraph(theGraph),
         myOwnsScope(!theGraph.Builder().IsDeferredMode())
   {
@@ -47,21 +46,21 @@ public:
   }
 
   //! End deferred invalidation and validate reverse index + active counts.
-  ~BRepGraph_MutationGuard()
+  ~BRepGraph_DeferredScope()
   {
     if (myOwnsScope)
     {
       myGraph.Builder().EndDeferredInvalidation();
-      BRepGraph_Mutator::CommitMutation(myGraph);
+      myGraph.Builder().CommitMutation();
     }
   }
 
-  BRepGraph_MutationGuard(const BRepGraph_MutationGuard&)            = delete;
-  BRepGraph_MutationGuard& operator=(const BRepGraph_MutationGuard&) = delete;
+  BRepGraph_DeferredScope(const BRepGraph_DeferredScope&)            = delete;
+  BRepGraph_DeferredScope& operator=(const BRepGraph_DeferredScope&) = delete;
 
 private:
   BRepGraph& myGraph;
   bool       myOwnsScope;
 };
 
-#endif // _BRepGraph_MutationGuard_HeaderFile
+#endif // _BRepGraph_DeferredScope_HeaderFile

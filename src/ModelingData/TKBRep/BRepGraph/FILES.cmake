@@ -22,11 +22,8 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_Iterator.hxx
   BRepGraph_Layer.cxx
   BRepGraph_Layer.hxx
-  BRepGraph_MutationGuard.hxx
-  BRepGraph_MutRef.hxx
-  BRepGraph_MutRefEntry.hxx
-  BRepGraph_Mutator.cxx
-  BRepGraph_Mutator.hxx
+  BRepGraph_DeferredScope.hxx
+  BRepGraph_MutGuard.hxx
   BRepGraph_NameLayer.cxx
   BRepGraph_NameLayer.hxx
   BRepGraph_NodeCache.hxx

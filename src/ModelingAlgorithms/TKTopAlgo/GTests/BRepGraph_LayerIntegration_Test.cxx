@@ -22,7 +22,6 @@
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Layer.hxx>
 #include <BRepGraph_Tool.hxx>
-#include <BRepGraph_Mutator.hxx>
 #include <BRepGraph_NameLayer.hxx>
 #include <BRepGraphAlgo_Compact.hxx>
 #include <BRepGraphAlgo_Deduplicate.hxx>
@@ -411,7 +410,7 @@ TEST(BRepGraph_LayerIntegrationTest, SplitEdge_OriginalEdgeRemoved)
 
   // Split the edge.
   BRepGraph_NodeId aSubA, aSubB;
-  BRepGraph_Mutator::SplitEdge(aGraph, aSplitEdgeId, aSplitVtx, aMidParam, aSubA, aSubB);
+  aGraph.Builder().SplitEdge(aSplitEdgeId, aSplitVtx, aMidParam, aSubA, aSubB);
 
   // SplitEdge marks original as removed directly (not via RemoveNode),
   // so the layer callback is NOT triggered. Original name stays in the layer

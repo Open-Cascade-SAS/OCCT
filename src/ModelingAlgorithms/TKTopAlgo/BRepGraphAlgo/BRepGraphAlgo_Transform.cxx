@@ -22,7 +22,6 @@
 #include <BRepGraph_Data.hxx>
 #include <BRepGraph_PathView.hxx>
 #include <BRepGraph_TopoView.hxx>
-#include <BRepGraph_MutRef.hxx>
 #include <BRepGraph_Tool.hxx>
 
 namespace
@@ -45,7 +44,7 @@ void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
   NCollection_Map<int> aVisitedSurfReps;
   for (int anIdx = 0; anIdx < theGraph.Topo().NbFaces(); ++anIdx)
   {
-    BRepGraph_MutRef<BRepGraphInc::FaceDef> aFace =
+    BRepGraph_MutGuard<BRepGraphInc::FaceDef> aFace =
       theGraph.Builder().MutFace(BRepGraph_FaceId(anIdx));
     if (BRepGraph_Tool::Face::HasSurface(theGraph, BRepGraph_FaceId(anIdx))
         && aVisitedSurfReps.Add(aFace->SurfaceRepId.Index))
@@ -64,7 +63,7 @@ void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
   NCollection_Map<int> aVisitedCurveReps;
   for (int anIdx = 0; anIdx < theGraph.Topo().NbEdges(); ++anIdx)
   {
-    BRepGraph_MutRef<BRepGraphInc::EdgeDef> anEdge =
+    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> anEdge =
       theGraph.Builder().MutEdge(BRepGraph_EdgeId(anIdx));
     if (BRepGraph_Tool::Edge::HasCurve(theGraph, BRepGraph_EdgeId(anIdx))
         && aVisitedCurveReps.Add(anEdge->Curve3DRepId.Index))

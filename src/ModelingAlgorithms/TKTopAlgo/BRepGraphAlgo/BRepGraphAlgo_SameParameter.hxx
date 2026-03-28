@@ -51,7 +51,7 @@ public:
                                                     const double           theTolerance);
 
   //! Enforce SameParameter on a set of edges.
-  //! Each edge is independent; mutations are batched under a single MutationGuard.
+  //! Each edge is independent; mutations are batched under a single DeferredScope.
   //! @param[in,out] theGraph     the graph containing the edges
   //! @param[in]     theEdgeIds   edge definition identifiers to process
   //! @param[in]     theTolerance reference tolerance

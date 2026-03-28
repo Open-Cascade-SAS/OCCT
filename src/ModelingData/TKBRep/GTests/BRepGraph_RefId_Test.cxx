@@ -16,7 +16,6 @@
 #include <BRepGraphInc_Reference.hxx>
 #include <BRepGraphInc_Representation.hxx>
 #include <BRepGraph_BuilderView.hxx>
-#include <BRepGraph_MutRefEntry.hxx>
 #include <BRepGraph_RefId.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_RefUID.hxx>
@@ -319,7 +318,7 @@ TEST(BRepGraph_RefIdTest, MutFaceRef_UpdatesRefStampAndParentModifiedFlag)
   const TopAbs_Orientation anBeforeOri        = aBeforeEntry.Orientation;
 
   {
-    BRepGraph_MutRefEntry<BRepGraphInc::FaceRef> aMut = aGraph.Builder().MutFaceRef(aFaceRefId);
+    BRepGraph_MutGuard<BRepGraphInc::FaceRef> aMut = aGraph.Builder().MutFaceRef(aFaceRefId);
     aMut->Orientation = (anBeforeOri == TopAbs_FORWARD) ? TopAbs_REVERSED : TopAbs_FORWARD;
   }
 
@@ -350,7 +349,7 @@ TEST(BRepGraph_RefIdTest, MutFaceRef_MarkRemoved_PersistsAndInvalidatesStamp)
   ASSERT_TRUE(aBeforeStamp.IsRefStamp());
 
   {
-    BRepGraph_MutRefEntry<BRepGraphInc::FaceRef> aMut = aGraph.Builder().MutFaceRef(aFaceRefId);
+    BRepGraph_MutGuard<BRepGraphInc::FaceRef> aMut = aGraph.Builder().MutFaceRef(aFaceRefId);
     aMut->IsRemoved                                   = true;
   }
 

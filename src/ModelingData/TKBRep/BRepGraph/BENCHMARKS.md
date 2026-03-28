@@ -5,7 +5,7 @@ Config: RelWithDebInfo
 
 ## Core (BRepGraph_Benchmark)
 
-| Benchmark | Mode | Baseline (s) | After T1.2 (s) | Array UIDs (s) | Grouped (s) | Dense RevIdx (s) | Static Sewing (s) | Perf Opt (s) | Alloc Prop (s) | Deferred (s) | O(1) FaceCount (s) | Review Fix (s) | KDTree Dedup (s) | Cache Inval (s) | MutRef (s) | Delta vs Baseline |
+| Benchmark | Mode | Baseline (s) | After T1.2 (s) | Array UIDs (s) | Grouped (s) | Dense RevIdx (s) | Static Sewing (s) | Perf Opt (s) | Alloc Prop (s) | Deferred (s) | O(1) FaceCount (s) | Review Fix (s) | KDTree Dedup (s) | Cache Inval (s) | DeferredScope (s) | Delta vs Baseline |
 |-----------|------|-------------|----------------|-----------------|-------------|-------------------|-------------------|-------------|----------------|--------------|---------------------|----------------|------------------|-----------------|------------|-------------------|
 | Build 100 faces | seq | 0.000508 | 0.000691 | 0.000557 | 0.000529 | 0.000544 | 0.000506 | 0.000582 | 0.000480 | 0.000543 | 0.000535 | 0.000491 | 0.000540 | 0.000520 | 0.000534 | +5% |
 | Build 1000 faces | seq | 0.006630 | 0.009284 | 0.007372 | 0.006567 | 0.006915 | 0.006203 | 0.006616 | 0.005832 | 0.006564 | 0.006982 | 0.006224 | 0.006800 | 0.007934 | 0.006659 | 0% |
@@ -17,7 +17,7 @@ Config: RelWithDebInfo
 
 ## Algorithms (BRepGraphAlgo_Benchmark)
 
-| Benchmark | Mode | Baseline (s) | After T1.2 (s) | Array UIDs (s) | Grouped (s) | Dense RevIdx (s) | Static Sewing (s) | Perf Opt (s) | Alloc Prop (s) | Deferred (s) | O(1) FaceCount (s) | Review Fix (s) | KDTree Dedup (s) | Cache Inval (s) | MutRef (s) | Delta vs Baseline |
+| Benchmark | Mode | Baseline (s) | After T1.2 (s) | Array UIDs (s) | Grouped (s) | Dense RevIdx (s) | Static Sewing (s) | Perf Opt (s) | Alloc Prop (s) | Deferred (s) | O(1) FaceCount (s) | Review Fix (s) | KDTree Dedup (s) | Cache Inval (s) | DeferredScope (s) | Delta vs Baseline |
 |-----------|------|-------------|----------------|-----------------|-------------|-------------------|-------------------|-------------|----------------|--------------|---------------------|----------------|------------------|-----------------|------------|-------------------|
 | Sewing 500 faces | parallel | 0.090420 | 0.089111 | 0.089873 | 0.087665 | 0.093905 | 0.089684 | 0.042964 | 0.037183 | 0.040604 | 0.039473 | 0.036571 | 0.040277 | 0.038696 | 0.038320 | **-58%** |
 | Sewing 500 faces | seq | 0.168491 | 0.164901 | 0.168284 | 0.162548 | 0.168708 | 0.167740 | 0.124732 | 0.093939 | 0.097588 | 0.095534 | 0.093600 | 0.094757 | 0.095963 | 0.094683 | **-44%** |
@@ -25,7 +25,7 @@ Config: RelWithDebInfo
 
 ## Sewing Profiling (BRepGraphAlgo_SewingTest)
 
-| Benchmark | Mode | Static Sewing (s) | Perf Opt (s) | Alloc Prop (s) | Deferred (s) | O(1) FaceCount (s) | Review Fix (s) | KDTree Dedup (s) | Cache Inval (s) | MutRef (s) | Delta vs Alloc Prop |
+| Benchmark | Mode | Static Sewing (s) | Perf Opt (s) | Alloc Prop (s) | Deferred (s) | O(1) FaceCount (s) | Review Fix (s) | KDTree Dedup (s) | Cache Inval (s) | DeferredScope (s) | Delta vs Alloc Prop |
 |-----------|------|--------------------|-------------|----------------|--------------|---------------------|----------------|------------------|-----------------|------------|---------------------|
 | 2500 faces (50x50) | seq | — | 0.048373 | 0.045253 | 0.049053 | 0.051594 | 0.045293 | 0.046022 | 0.045272 | 0.045011 | 0% |
 | 2500 faces (50x50) | parallel | — | 0.052911 | 0.049522 | 0.037282 | 0.036822 | 0.032046 | 0.035192 | 0.032717 | 0.033176 | **-33%** |
@@ -107,12 +107,12 @@ Config: RelWithDebInfo
   - Core benchmarks within noise — InvalidateAll() is no-op on empty caches (checks IsEmpty() first)
   - Build 1000 faces spike (+20-39%) is run-to-run noise: 10000 faces shows -1% seq, -9% parallel
   - Sewing/profiling benchmarks stable: no regression from centralized invalidation
-- MutRef: 2026-03-20, unified RAII mutation API + markModified optimization:
-  - MutView::XxxDef() now returns BRepGraph_MutRef<> (deferred markModified) instead of raw reference (eager)
+- MutGuard: 2026-03-20, unified RAII mutation API + markModified optimization:
+  - MutView::XxxDef() now returns BRepGraph_MutGuard<> (deferred markModified) instead of raw reference (eager)
   - MutView Def accessors inlined as one-line delegates to BRepGraph::MutXxx()
   - markModified(NodeId, BaseDef&) overload skips ChangeTopoDef() + mutableCache() redundant dispatch
-  - All Mut().XxxDef() call sites migrated: `.Field` → `->Field`, captured refs use MutRef type
-  - SameParameter::enforceImpl() wraps all 6 edge mutations in single MutRef scope (1 markModified vs 6)
+  - All Mut().XxxDef() call sites migrated: `.Field` → `->Field`, captured refs use MutGuard type
+  - SameParameter::enforceImpl() wraps all 6 edge mutations in single MutGuard scope (1 markModified vs 6)
   - Core benchmarks within noise — mutation path optimization, not build/read path
   - Sewing profiling stable: deferred markModified is equivalent to eager for single-field mutations
 

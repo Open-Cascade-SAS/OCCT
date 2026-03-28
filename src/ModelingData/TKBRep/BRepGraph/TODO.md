@@ -62,8 +62,8 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 - Sewing `mergeMatchedEdges` uses `Builder().RemoveNode()` for replaced edges
 - `FreeEdges` and multiple-edge detection switched to O(1) `DefsView::FaceCountOfEdge` with `IsRemoved` filter
 
-### ~~MutationGuard RAII~~ — DONE (2026-03-20)
-- `BRepGraph_MutationGuard` RAII class: `BeginDeferredInvalidation()` on construct, `EndDeferredInvalidation()` + `CommitMutation()` on destruct
+### ~~DeferredScope RAII~~ — DONE (2026-03-20)
+- `BRepGraph_DeferredScope` RAII class: `BeginDeferredInvalidation()` on construct, `EndDeferredInvalidation()` + `CommitMutation()` on destruct
 - Re-entrant: nested guards are no-ops, only outermost flushes and commits
 - Applied in: SameParameter::Perform, Sewing::processEdges
 

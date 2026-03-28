@@ -18,7 +18,6 @@
 
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_Data.hxx>
-#include <BRepGraph_MutRef.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_TopoView.hxx>
@@ -122,7 +121,7 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph, bool theCopyGeo
                                     anEdge.ParamLast,
                                     anEdge.Tolerance);
 
-    BRepGraph_MutRef<BRepGraphInc::EdgeDef> aNewEdge =
+    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aNewEdge =
       aResult.Builder().MutEdge(BRepGraph_EdgeId(anIdx));
     aNewEdge->IsDegenerate  = anEdge.IsDegenerate;
     aNewEdge->SameParameter = anEdge.SameParameter;
@@ -182,7 +181,7 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph, bool theCopyGeo
 
     (void)aResult.Builder().AddFace(aSurf, anOuterWire, anInnerWires, aFace.Tolerance);
 
-    BRepGraph_MutRef<BRepGraphInc::FaceDef> aNewFace =
+    BRepGraph_MutGuard<BRepGraphInc::FaceDef> aNewFace =
       aResult.Builder().MutFace(BRepGraph_FaceId(anIdx));
     aNewFace->NaturalRestriction       = aFace.NaturalRestriction;
     aNewFace->TriangulationRepIds      = aFace.TriangulationRepIds;
@@ -486,7 +485,7 @@ BRepGraph BRepGraphAlgo_Copy::CopyFace(const BRepGraph&       theGraph,
     (void)aResult.Builder()
       .AddEdge(aNewStart, aNewEnd, aCurve, anEdge.ParamFirst, anEdge.ParamLast, anEdge.Tolerance);
 
-    BRepGraph_MutRef<BRepGraphInc::EdgeDef> aNewEdge =
+    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aNewEdge =
       aResult.Builder().MutEdge(BRepGraph_EdgeId(aNewEdgeIdx));
     aNewEdge->IsDegenerate  = anEdge.IsDegenerate;
     aNewEdge->SameParameter = anEdge.SameParameter;
@@ -544,7 +543,7 @@ BRepGraph BRepGraphAlgo_Copy::CopyFace(const BRepGraph&       theGraph,
   }
 
   (void)aResult.Builder().AddFace(aSurf, anOuterWire, anInnerWires, aFaceDef.Tolerance);
-  BRepGraph_MutRef<BRepGraphInc::FaceDef> aNewFace = aResult.Builder().MutFace(BRepGraph_FaceId(0));
+  BRepGraph_MutGuard<BRepGraphInc::FaceDef> aNewFace = aResult.Builder().MutFace(BRepGraph_FaceId(0));
   aNewFace->NaturalRestriction                     = aFaceDef.NaturalRestriction;
   aNewFace->TriangulationRepIds                    = aFaceDef.TriangulationRepIds;
   aNewFace->ActiveTriangulationIndex               = aFaceDef.ActiveTriangulationIndex;

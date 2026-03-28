@@ -38,10 +38,8 @@
 
 #include <memory>
 
-template <typename EntityT>
-class BRepGraph_MutRef;
-template <typename RefT>
-class BRepGraph_MutRefEntry;
+template <typename T>
+class BRepGraph_MutGuard;
 
 struct BRepGraph_Data;
 class BRepGraph_Layer;
@@ -51,8 +49,6 @@ class TCollection_AsciiString;
 class BRepGraph_Builder;
 class BRepGraph_History;
 class BRepGraph_Analyze;
-class BRepGraph_Mutator;
-
 //! @brief Topology-geometry graph over TopoDS / BRep.
 //!
 //! Stores B-Rep topology as flat entity vectors (incidence-table model) with
@@ -156,16 +152,13 @@ public:
 private:
   friend class BRepGraph_Builder;
   friend class BRepGraph_Analyze;
-  friend class BRepGraph_Mutator;
   friend class BRepGraphAlgo_BndLib;
   friend class BRepGraphAlgo_Compact;
   friend class BRepGraphAlgo_Copy;
   friend class BRepGraphAlgo_Transform;
   friend class BRepGraphAlgo_UVBounds;
   template <typename>
-  friend class BRepGraph_MutRef;
-  template <typename>
-  friend class BRepGraph_MutRefEntry;
+  friend class BRepGraph_MutGuard;
 
   Standard_EXPORT int                            NbHistoryRecords() const;
   Standard_EXPORT const BRepGraph_HistoryRecord& HistoryRecord(const int theRecordIdx) const;
@@ -234,7 +227,6 @@ private:
 };
 
 // Included after BRepGraph is complete so the template body sees markModified().
-#include <BRepGraph_MutRef.hxx>
-#include "BRepGraph_MutRefEntry.hxx"
+#include <BRepGraph_MutGuard.hxx>
 
 #endif // _BRepGraph_HeaderFile

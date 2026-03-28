@@ -23,8 +23,6 @@
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_History.hxx>
-#include <BRepGraph_Mutator.hxx>
-#include <BRepGraph_MutRef.hxx>
 #include <BRepGraph_UID.hxx>
 
 #include <NCollection_DataMap.hxx>
@@ -406,7 +404,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
                                                               anOldEdge.Tolerance);
 
     // Copy edge properties.
-    BRepGraph_MutRef<BRepGraphInc::EdgeDef> aNewEdge =
+    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aNewEdge =
       aNewGraph.Builder().MutEdge(BRepGraph_EdgeId(aNewEdgeId.Index));
     aNewEdge->IsDegenerate  = anOldEdge.IsDegenerate;
     aNewEdge->SameParameter = anOldEdge.SameParameter;
@@ -466,7 +464,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
     (void)aNewGraph.Builder().AddFace(aSurf, aNewOuterWire, aNewInnerWires, anOldFace.Tolerance);
 
     // Copy triangulations from old FaceDef to new FaceDef.
-    BRepGraph_MutRef<BRepGraphInc::FaceDef> aNewFace =
+    BRepGraph_MutGuard<BRepGraphInc::FaceDef> aNewFace =
       aNewGraph.Builder().MutFace(BRepGraph_FaceId(aFaceMap.Find(anIdx)));
     aNewFace->TriangulationRepIds      = anOldFace.TriangulationRepIds;
     aNewFace->ActiveTriangulationIndex = anOldFace.ActiveTriangulationIndex;
@@ -665,7 +663,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
     anIter.Value()->OnCompact(aRemapMap);
   }
 
-  BRepGraph_Mutator::CommitMutation(theGraph);
+  theGraph.Builder().CommitMutation();
   theGraph.History().SetEnabled(wasHistoryEnabled);
   return aResult;
 }
