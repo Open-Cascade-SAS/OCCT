@@ -112,6 +112,13 @@ BRepGraph::BuilderView& BRepGraph::Builder()
 
 //=================================================================================================
 
+const BRepGraph::BuilderView& BRepGraph::Builder() const
+{
+  return myData->myBuilderView;
+}
+
+//=================================================================================================
+
 BRepGraph::BRepGraph(BRepGraph&& theOther) noexcept
     : myData(std::move(theOther.myData)),
       myLayers(std::move(theOther.myLayers)),

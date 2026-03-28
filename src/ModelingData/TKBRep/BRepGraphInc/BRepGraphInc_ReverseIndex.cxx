@@ -49,6 +49,33 @@ bool containsIndexInTable(const NCollection_Vector<NCollection_Vector<T>>& theId
   return false;
 }
 
+static bool hasActiveFaceForEdgeInCoEdges(
+  const NCollection_Vector<BRepGraph_CoEdgeId>&     theCoEdgeIds,
+  const NCollection_Vector<BRepGraphInc::CoEdgeDef>& theCoEdges,
+  const int                                          theEdgeIdx,
+  const int                                          theFaceIdx)
+{
+  for (int aCoEdgeOrd = 0; aCoEdgeOrd < theCoEdgeIds.Length(); ++aCoEdgeOrd)
+  {
+    const int aCoEdgeIdx = theCoEdgeIds.Value(aCoEdgeOrd).Index;
+    if (aCoEdgeIdx < 0 || aCoEdgeIdx >= theCoEdges.Length())
+    {
+      continue;
+    }
+
+    const BRepGraphInc::CoEdgeDef& aCoEdge = theCoEdges.Value(aCoEdgeIdx);
+    if (aCoEdge.IsRemoved || !aCoEdge.EdgeDefId.IsValid() || !aCoEdge.FaceDefId.IsValid())
+    {
+      continue;
+    }
+    if (aCoEdge.EdgeDefId.Index == theEdgeIdx && aCoEdge.FaceDefId.Index == theFaceIdx)
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
 } // namespace
 
 //=================================================================================================
@@ -791,6 +818,177 @@ bool BRepGraphInc_ReverseIndex::Validate(
   const NCollection_Vector<BRepGraphInc::CoEdgeRef>& theCoEdgeRefs,
   const NCollection_Vector<BRepGraphInc::VertexRef>& theVertexRefs) const
 {
+  auto hasActiveWireUsageOfEdge = [&](const int theWireIdx, const int theEdgeIdx) -> bool {
+    if (theWireIdx < 0 || theWireIdx >= theWires.Length() || theEdgeIdx < 0
+        || theEdgeIdx >= theEdges.Length())
+    {
+      return false;
+    }
+    const BRepGraphInc::WireDef& aWire = theWires.Value(theWireIdx);
+    if (aWire.IsRemoved)
+    {
+      return false;
+    }
+    for (int aRefOrd = 0; aRefOrd < aWire.CoEdgeRefIds.Length(); ++aRefOrd)
+    {
+      const int aRefIdx = aWire.CoEdgeRefIds.Value(aRefOrd).Index;
+      if (aRefIdx < 0 || aRefIdx >= theCoEdgeRefs.Length())
+      {
+        continue;
+      }
+      const BRepGraphInc::CoEdgeRef& aRef = theCoEdgeRefs.Value(aRefIdx);
+      if (aRef.IsRemoved || !aRef.CoEdgeDefId.IsValid())
+      {
+        continue;
+      }
+      if (aRef.ParentId.NodeKind != BRepGraph_NodeId::Kind::Wire || aRef.ParentId.Index != theWireIdx)
+      {
+        continue;
+      }
+      const int aCoEdgeIdx = aRef.CoEdgeDefId.Index;
+      if (aCoEdgeIdx < 0 || aCoEdgeIdx >= theCoEdges.Length())
+      {
+        continue;
+      }
+      const BRepGraphInc::CoEdgeDef& aCoEdge = theCoEdges.Value(aCoEdgeIdx);
+      if (aCoEdge.IsRemoved || !aCoEdge.EdgeDefId.IsValid())
+      {
+        continue;
+      }
+      if (aCoEdge.EdgeDefId.Index == theEdgeIdx)
+      {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  auto hasActiveFaceRefForWire = [&](const int theWireIdx, const int theFaceIdx) -> bool {
+    if (theWireIdx < 0 || theWireIdx >= theWires.Length() || theFaceIdx < 0
+        || theFaceIdx >= theFaces.Length())
+    {
+      return false;
+    }
+    const BRepGraphInc::FaceDef& aFace = theFaces.Value(theFaceIdx);
+    if (aFace.IsRemoved)
+    {
+      return false;
+    }
+    for (int aRefOrd = 0; aRefOrd < aFace.WireRefIds.Length(); ++aRefOrd)
+    {
+      const int aRefIdx = aFace.WireRefIds.Value(aRefOrd).Index;
+      if (aRefIdx < 0 || aRefIdx >= theWireRefs.Length())
+      {
+        continue;
+      }
+      const BRepGraphInc::WireRef& aRef = theWireRefs.Value(aRefIdx);
+      if (aRef.IsRemoved || !aRef.WireDefId.IsValid())
+      {
+        continue;
+      }
+      if (aRef.ParentId.NodeKind != BRepGraph_NodeId::Kind::Face || aRef.ParentId.Index != theFaceIdx)
+      {
+        continue;
+      }
+      if (aRef.WireDefId.Index == theWireIdx)
+      {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  auto hasActiveFaceForEdge = [&](const int theEdgeIdx, const int theFaceIdx) -> bool {
+    if (theEdgeIdx < 0 || theEdgeIdx >= theEdges.Length() || theFaceIdx < 0
+        || theFaceIdx >= theFaces.Length())
+    {
+      return false;
+    }
+    const BRepGraphInc::EdgeDef& anEdge = theEdges.Value(theEdgeIdx);
+    if (anEdge.IsRemoved)
+    {
+      return false;
+    }
+
+    const NCollection_Vector<BRepGraph_CoEdgeId>* aCoEdgeIds = seekVec(myEdgeToCoEdges, theEdgeIdx);
+    if (aCoEdgeIds == nullptr)
+    {
+      return false;
+    }
+
+    return hasActiveFaceForEdgeInCoEdges(*aCoEdgeIds, theCoEdges, theEdgeIdx, theFaceIdx);
+  };
+
+  auto hasActiveFaceRef = [&](const int theShellIdx, const int theFaceIdx) -> bool {
+    if (theShellIdx < 0 || theShellIdx >= theShells.Length() || theFaceIdx < 0
+        || theFaceIdx >= theFaces.Length())
+    {
+      return false;
+    }
+    const BRepGraphInc::ShellDef& aShell = theShells.Value(theShellIdx);
+    if (aShell.IsRemoved)
+    {
+      return false;
+    }
+    for (int aRefOrd = 0; aRefOrd < aShell.FaceRefIds.Length(); ++aRefOrd)
+    {
+      const int aRefIdx = aShell.FaceRefIds.Value(aRefOrd).Index;
+      if (aRefIdx < 0 || aRefIdx >= theFaceRefs.Length())
+      {
+        continue;
+      }
+      const BRepGraphInc::FaceRef& aRef = theFaceRefs.Value(aRefIdx);
+      if (aRef.IsRemoved || !aRef.FaceDefId.IsValid())
+      {
+        continue;
+      }
+      if (aRef.ParentId.NodeKind != BRepGraph_NodeId::Kind::Shell || aRef.ParentId.Index != theShellIdx)
+      {
+        continue;
+      }
+      if (aRef.FaceDefId.Index == theFaceIdx)
+      {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  auto hasActiveShellRef = [&](const int theSolidIdx, const int theShellIdx) -> bool {
+    if (theSolidIdx < 0 || theSolidIdx >= theSolids.Length() || theShellIdx < 0
+        || theShellIdx >= theShells.Length())
+    {
+      return false;
+    }
+    const BRepGraphInc::SolidDef& aSolid = theSolids.Value(theSolidIdx);
+    if (aSolid.IsRemoved)
+    {
+      return false;
+    }
+    for (int aRefOrd = 0; aRefOrd < aSolid.ShellRefIds.Length(); ++aRefOrd)
+    {
+      const int aRefIdx = aSolid.ShellRefIds.Value(aRefOrd).Index;
+      if (aRefIdx < 0 || aRefIdx >= theShellRefs.Length())
+      {
+        continue;
+      }
+      const BRepGraphInc::ShellRef& aRef = theShellRefs.Value(aRefIdx);
+      if (aRef.IsRemoved || !aRef.ShellDefId.IsValid())
+      {
+        continue;
+      }
+      if (aRef.ParentId.NodeKind != BRepGraph_NodeId::Kind::Solid || aRef.ParentId.Index != theSolidIdx)
+      {
+        continue;
+      }
+      if (aRef.ShellDefId.Index == theShellIdx)
+      {
+        return true;
+      }
+    }
+    return false;
+  };
+
 
   // Check: for each coedge ref entry, edge->wire reverse entry must exist.
   for (int aCoEdgeRefIdx = 0; aCoEdgeRefIdx < theCoEdgeRefs.Length(); ++aCoEdgeRefIdx)
@@ -891,6 +1089,125 @@ bool BRepGraphInc_ReverseIndex::Validate(
       continue;
     if (!containsIndexInTable(myShellToSolids, aRef.ShellDefId.Index, aRef.ParentId.Index))
       return false;
+  }
+
+  // Check reverse tables for stale/extra entries not backed by active forward refs.
+  for (int anEdgeIdx = 0; anEdgeIdx < myEdgeToWires.Length(); ++anEdgeIdx)
+  {
+    const BRepGraph_EdgeId anEdgeId(anEdgeIdx);
+    const NCollection_Vector<BRepGraph_WireId>& aWires = WiresOfEdgeRef(anEdgeId);
+    for (int aWireOrd = 0; aWireOrd < aWires.Length(); ++aWireOrd)
+    {
+      const int aWireIdx = aWires.Value(aWireOrd).Index;
+      if (aWireIdx < 0 || aWireIdx >= theWires.Length())
+      {
+        return false;
+      }
+      if (!hasActiveWireUsageOfEdge(aWireIdx, anEdgeIdx))
+      {
+        return false;
+      }
+    }
+  }
+
+  for (int anEdgeIdx = 0; anEdgeIdx < myEdgeToCoEdges.Length(); ++anEdgeIdx)
+  {
+    const BRepGraph_EdgeId anEdgeId(anEdgeIdx);
+    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdges = CoEdgesOfEdgeRef(anEdgeId);
+    for (int aCoEdgeOrd = 0; aCoEdgeOrd < aCoEdges.Length(); ++aCoEdgeOrd)
+    {
+      const int aCoEdgeIdx = aCoEdges.Value(aCoEdgeOrd).Index;
+      if (aCoEdgeIdx < 0 || aCoEdgeIdx >= theCoEdges.Length())
+      {
+        return false;
+      }
+      const BRepGraphInc::CoEdgeDef& aCoEdge = theCoEdges.Value(aCoEdgeIdx);
+      if (aCoEdge.IsRemoved || !aCoEdge.EdgeDefId.IsValid() || aCoEdge.EdgeDefId.Index != anEdgeIdx)
+      {
+        return false;
+      }
+    }
+  }
+
+  for (int aWireIdx = 0; aWireIdx < myWireToFaces.Length(); ++aWireIdx)
+  {
+    const BRepGraph_WireId aWireId(aWireIdx);
+    const NCollection_Vector<BRepGraph_FaceId>& aFaces = FacesOfWireRef(aWireId);
+    for (int aFaceOrd = 0; aFaceOrd < aFaces.Length(); ++aFaceOrd)
+    {
+      const int aFaceIdx = aFaces.Value(aFaceOrd).Index;
+      if (aFaceIdx < 0 || aFaceIdx >= theFaces.Length())
+      {
+        return false;
+      }
+      if (!hasActiveFaceRefForWire(aWireIdx, aFaceIdx))
+      {
+        return false;
+      }
+    }
+  }
+
+  for (int anEdgeIdx = 0; anEdgeIdx < myEdgeToFaces.Length(); ++anEdgeIdx)
+  {
+    const NCollection_Vector<BRepGraph_FaceId>* aFaces = seekVec(myEdgeToFaces, anEdgeIdx);
+    if (aFaces == nullptr)
+    {
+      continue;
+    }
+    for (int aFaceOrd = 0; aFaceOrd < aFaces->Length(); ++aFaceOrd)
+    {
+      const int aFaceIdx = aFaces->Value(aFaceOrd).Index;
+      if (aFaceIdx < 0 || aFaceIdx >= theFaces.Length())
+      {
+        return false;
+      }
+      if (!hasActiveFaceForEdge(anEdgeIdx, aFaceIdx))
+      {
+        return false;
+      }
+    }
+  }
+
+  for (int aFaceIdx = 0; aFaceIdx < myFaceToShells.Length(); ++aFaceIdx)
+  {
+    const NCollection_Vector<BRepGraph_ShellId>* aShellsVec = seekVec(myFaceToShells, aFaceIdx);
+    if (aShellsVec == nullptr)
+    {
+      continue;
+    }
+    for (int aShellOrd = 0; aShellOrd < aShellsVec->Length(); ++aShellOrd)
+    {
+      const int aShellIdx = aShellsVec->Value(aShellOrd).Index;
+      if (aShellIdx < 0 || aShellIdx >= theShells.Length())
+      {
+        return false;
+      }
+      if (!hasActiveFaceRef(aShellIdx, aFaceIdx))
+      {
+        return false;
+      }
+    }
+  }
+
+  for (int aShellIdx = 0; aShellIdx < myShellToSolids.Length(); ++aShellIdx)
+  {
+    const NCollection_Vector<BRepGraph_SolidId>* aSolidsVec = seekVec(myShellToSolids, aShellIdx);
+    if (aSolidsVec == nullptr)
+    {
+      continue;
+    }
+    for (int aSolidOrd = 0; aSolidOrd < aSolidsVec->Length(); ++aSolidOrd)
+    {
+      const int aSolidIdx = aSolidsVec->Value(aSolidOrd).Index;
+      if (aSolidIdx < 0 || aSolidIdx >= theSolids.Length())
+      {
+        return false;
+      }
+      if (!hasActiveShellRef(aSolidIdx, aShellIdx))
+      {
+        return false;
+      }
+    }
   }
 
   return true;

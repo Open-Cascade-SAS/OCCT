@@ -1081,8 +1081,7 @@ BRepGraphAlgo_Validate::Result BRepGraphAlgo_Validate::Perform(const BRepGraph& 
   if (theOptions.ValidationMode == Mode::Lightweight)
   {
     NCollection_Vector<BRepGraph::BuilderView::BoundaryIssue> aBoundaryIssues;
-    // const_cast: ValidateMutationBoundary is read-only but lives on non-const BuilderView.
-    if (!const_cast<BRepGraph&>(theGraph).Builder().ValidateMutationBoundary(&aBoundaryIssues))
+    if (!theGraph.Builder().ValidateMutationBoundary(&aBoundaryIssues))
     {
       appendMutationBoundaryIssues(aBoundaryIssues, aResult.Issues);
     }
@@ -1090,7 +1089,7 @@ BRepGraphAlgo_Validate::Result BRepGraphAlgo_Validate::Perform(const BRepGraph& 
   }
 
   NCollection_Vector<BRepGraph::BuilderView::BoundaryIssue> aBoundaryIssues;
-  if (!const_cast<BRepGraph&>(theGraph).Builder().ValidateMutationBoundary(&aBoundaryIssues))
+  if (!theGraph.Builder().ValidateMutationBoundary(&aBoundaryIssues))
   {
     appendMutationBoundaryIssues(aBoundaryIssues, aResult.Issues);
   }

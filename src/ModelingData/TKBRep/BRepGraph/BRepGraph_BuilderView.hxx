@@ -270,7 +270,7 @@ public:
   //! @param[out] theIssues optional destination for detailed issues
   //! @return true if no issues were found
   [[nodiscard]] Standard_EXPORT bool ValidateMutationBoundary(
-    NCollection_Vector<BoundaryIssue>* const theIssues = nullptr);
+    NCollection_Vector<BoundaryIssue>* const theIssues = nullptr) const;
 
   //! @name Scoped mutable guards (RAII).
   //! Return a BRepGraph_MutGuard that defers notification to scope exit.

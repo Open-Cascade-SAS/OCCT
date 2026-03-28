@@ -25,6 +25,7 @@
 #include <Geom2d_Curve.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
+#include <NCollection_LocalArray.hxx>
 #include <NCollection_PackedMap.hxx>
 #include <Poly_Triangulation.hxx>
 #include <Standard_Assert.hxx>
@@ -174,6 +175,100 @@ const char* kindName(const BRepGraph_NodeId::Kind theKind)
   }
   return "Unknown";
 }
+
+//=================================================================================================
+
+static bool isNodeIndexInRange(const BRepGraphInc_Storage& theStorage, const BRepGraph_NodeId theNode)
+{
+  if (theNode.Index < 0)
+    return false;
+
+  switch (theNode.NodeKind)
+  {
+    case BRepGraph_NodeId::Kind::Vertex:
+      return theNode.Index < theStorage.NbVertices();
+    case BRepGraph_NodeId::Kind::Edge:
+      return theNode.Index < theStorage.NbEdges();
+    case BRepGraph_NodeId::Kind::CoEdge:
+      return theNode.Index < theStorage.NbCoEdges();
+    case BRepGraph_NodeId::Kind::Wire:
+      return theNode.Index < theStorage.NbWires();
+    case BRepGraph_NodeId::Kind::Face:
+      return theNode.Index < theStorage.NbFaces();
+    case BRepGraph_NodeId::Kind::Shell:
+      return theNode.Index < theStorage.NbShells();
+    case BRepGraph_NodeId::Kind::Solid:
+      return theNode.Index < theStorage.NbSolids();
+    case BRepGraph_NodeId::Kind::Compound:
+      return theNode.Index < theStorage.NbCompounds();
+    case BRepGraph_NodeId::Kind::CompSolid:
+      return theNode.Index < theStorage.NbCompSolids();
+    case BRepGraph_NodeId::Kind::Product:
+      return theNode.Index < theStorage.NbProducts();
+    case BRepGraph_NodeId::Kind::Occurrence:
+      return theNode.Index < theStorage.NbOccurrences();
+  }
+
+  return false;
+}
+
+//=================================================================================================
+
+static void rebindCoEdgesForEdgeReplacement(BRepGraphInc_Storage& theStorage,
+                                            const BRepGraph_EdgeId theSourceEdgeId,
+                                            const BRepGraph_EdgeId theReplacementEdgeId)
+{
+  const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
+    theStorage.ReverseIndex().CoEdgesOfEdgeRef(theSourceEdgeId);
+  const int aNbCoEdges = aCoEdgeIdxs.Length();
+  NCollection_LocalArray<BRepGraph_CoEdgeId, 16> aCoEdgeSnapshot(aNbCoEdges);
+  for (int aCoEdgeIdx = 0; aCoEdgeIdx < aNbCoEdges; ++aCoEdgeIdx)
+  {
+    aCoEdgeSnapshot[aCoEdgeIdx] = aCoEdgeIdxs.Value(aCoEdgeIdx);
+  }
+
+  for (int aCoEdgeIdx = 0; aCoEdgeIdx < aNbCoEdges; ++aCoEdgeIdx)
+  {
+    const BRepGraph_CoEdgeId aCoEdgeId = aCoEdgeSnapshot[aCoEdgeIdx];
+    if (!aCoEdgeId.IsValid(theStorage.NbCoEdges()))
+      continue;
+
+    BRepGraphInc::CoEdgeDef& aCoEdge = theStorage.ChangeCoEdge(aCoEdgeId);
+    if (aCoEdge.IsRemoved || aCoEdge.EdgeDefId != theSourceEdgeId)
+      continue;
+
+    theStorage.ChangeReverseIndex().UnbindEdgeFromCoEdge(theSourceEdgeId, aCoEdgeId);
+    aCoEdge.EdgeDefId = theReplacementEdgeId;
+    theStorage.ChangeReverseIndex().BindEdgeToCoEdge(theReplacementEdgeId, aCoEdgeId);
+  }
+}
+
+//=================================================================================================
+
+static void unbindCoEdgesOfRemovedEdge(BRepGraphInc_Storage& theStorage, const BRepGraph_EdgeId theEdgeId)
+{
+  const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
+    theStorage.ReverseIndex().CoEdgesOfEdgeRef(theEdgeId);
+  const int aNbCoEdges = aCoEdgeIdxs.Length();
+  NCollection_LocalArray<BRepGraph_CoEdgeId, 16> aCoEdgeSnapshot(aNbCoEdges);
+  for (int aCoEdgeIdx = 0; aCoEdgeIdx < aNbCoEdges; ++aCoEdgeIdx)
+  {
+    aCoEdgeSnapshot[aCoEdgeIdx] = aCoEdgeIdxs.Value(aCoEdgeIdx);
+  }
+
+  for (int aCoEdgeIdx = 0; aCoEdgeIdx < aNbCoEdges; ++aCoEdgeIdx)
+  {
+    const BRepGraph_CoEdgeId aCoEdgeId = aCoEdgeSnapshot[aCoEdgeIdx];
+    if (!aCoEdgeId.IsValid(theStorage.NbCoEdges()))
+      continue;
+
+    const BRepGraphInc::CoEdgeDef& aCoEdge = theStorage.CoEdge(aCoEdgeId);
+    if (!aCoEdge.IsRemoved && aCoEdge.EdgeDefId == theEdgeId)
+      theStorage.ChangeReverseIndex().UnbindEdgeFromCoEdge(theEdgeId, aCoEdgeId);
+  }
+}
+
+//=================================================================================================
 
 int countActiveByKind(const BRepGraphInc_Storage& theStorage, const BRepGraph_NodeId::Kind theKind)
 {
@@ -757,31 +852,57 @@ void BRepGraph::BuilderView::RemoveNode(const BRepGraph_NodeId theNode,
   if (!theNode.IsValid())
     return;
 
+  BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+
   // When removing an Edge with a replacement, reparent all CoEdges from the
   // removed edge to the replacement edge. This prevents orphaned CoEdges
   // that would be excluded from queries via CoEdgesOfEdge().
   if (theNode.NodeKind == BRepGraph_NodeId::Kind::Edge && theReplacement.IsValid()
       && theReplacement.NodeKind == BRepGraph_NodeId::Kind::Edge)
   {
-    BRepGraphInc_Storage&                         aStorage = myGraph->myData->myIncStorage;
-    const NCollection_Vector<BRepGraph_CoEdgeId>* aCoEdgeIdxs =
-      aStorage.ReverseIndex().CoEdgesOfEdge(BRepGraph_EdgeId(theNode.Index));
-    if (aCoEdgeIdxs != nullptr)
-    {
-      for (int i = 0; i < aCoEdgeIdxs->Length(); ++i)
-      {
-        const BRepGraph_CoEdgeId aCoEdgeId = aCoEdgeIdxs->Value(i);
-        BRepGraphInc::CoEdgeDef& aCoEdge   = aStorage.ChangeCoEdge(aCoEdgeId);
-        if (aCoEdge.EdgeDefId == theNode)
-        {
-          aStorage.ChangeReverseIndex().UnbindEdgeFromCoEdge(BRepGraph_EdgeId(theNode.Index),
-                                                             aCoEdgeId);
-          aCoEdge.EdgeDefId = BRepGraph_EdgeId::FromNodeId(theReplacement);
-          aStorage.ChangeReverseIndex().BindEdgeToCoEdge(BRepGraph_EdgeId(theReplacement.Index),
-                                                         aCoEdgeId);
-        }
-      }
-    }
+    Standard_ASSERT_RETURN(isNodeIndexInRange(aStorage, theNode),
+                           "RemoveNode: source edge index is out of range",
+                           Standard_VOID_RETURN);
+    Standard_ASSERT_RETURN(isNodeIndexInRange(aStorage, theReplacement),
+                           "RemoveNode: replacement edge index is out of range",
+                           Standard_VOID_RETURN);
+    Standard_ASSERT_RETURN(
+      !aStorage.Edge(BRepGraph_EdgeId(theReplacement.Index)).IsRemoved,
+      "RemoveNode: replacement edge must be active",
+      Standard_VOID_RETURN);
+
+    rebindCoEdgesForEdgeReplacement(aStorage,
+                                    BRepGraph_EdgeId::FromNodeId(theNode),
+                                    BRepGraph_EdgeId::FromNodeId(theReplacement));
+  }
+
+  switch (theNode.NodeKind)
+  {
+    case BRepGraph_NodeId::Kind::Vertex:
+    case BRepGraph_NodeId::Kind::Edge:
+    case BRepGraph_NodeId::Kind::CoEdge:
+    case BRepGraph_NodeId::Kind::Wire:
+    case BRepGraph_NodeId::Kind::Face:
+    case BRepGraph_NodeId::Kind::Shell:
+    case BRepGraph_NodeId::Kind::Solid:
+    case BRepGraph_NodeId::Kind::Compound:
+    case BRepGraph_NodeId::Kind::CompSolid:
+    case BRepGraph_NodeId::Kind::Product:
+    case BRepGraph_NodeId::Kind::Occurrence:
+      break;
+    default:
+      Standard_ASSERT_RETURN(false,
+                             "RemoveNode: unsupported node kind",
+                             Standard_VOID_RETURN);
+  }
+  Standard_ASSERT_RETURN(isNodeIndexInRange(aStorage, theNode),
+                         "RemoveNode: node index is out of range",
+                         Standard_VOID_RETURN);
+
+  if (theNode.NodeKind == BRepGraph_NodeId::Kind::Edge)
+  {
+    // Keep reverse edge->coedge table coherent for pure removals too.
+    unbindCoEdgesOfRemovedEdge(aStorage, BRepGraph_EdgeId::FromNodeId(theNode));
   }
 
   // Mark removed on the entity (which is the sole definition store).
@@ -1494,9 +1615,31 @@ void BRepGraph::BuilderView::SplitEdge(const BRepGraph_NodeId theEdgeEntity,
                                        BRepGraph_NodeId&      theSubA,
                                        BRepGraph_NodeId&      theSubB)
 {
+  Standard_ASSERT_RETURN(theEdgeEntity.NodeKind == BRepGraph_NodeId::Kind::Edge,
+                         "SplitEdge: theEdgeEntity must be an Edge node",
+                         Standard_VOID_RETURN);
+  Standard_ASSERT_RETURN(theEdgeEntity.Index >= 0
+                           && theEdgeEntity.Index < myGraph->myData->myIncStorage.NbEdges(),
+                         "SplitEdge: edge index is out of range",
+                         Standard_VOID_RETURN);
+  Standard_ASSERT_RETURN(theSplitVertex.NodeKind == BRepGraph_NodeId::Kind::Vertex,
+                         "SplitEdge: theSplitVertex must be a Vertex node",
+                         Standard_VOID_RETURN);
+  Standard_ASSERT_RETURN(theSplitVertex.Index >= 0
+                           && theSplitVertex.Index < myGraph->myData->myIncStorage.NbVertices(),
+                         "SplitEdge: split-vertex index is out of range",
+                         Standard_VOID_RETURN);
+
   // Copy all data from the original EdgeDef before appending to vectors (which may reallocate).
   const BRepGraphInc::EdgeDef& anOrig =
     myGraph->myData->myIncStorage.Edge(BRepGraph_EdgeId::FromNodeId(theEdgeEntity));
+  Standard_ASSERT_RETURN(!anOrig.IsRemoved, "SplitEdge: source edge is removed", Standard_VOID_RETURN);
+  Standard_ASSERT_RETURN(!anOrig.IsDegenerate,
+                         "SplitEdge: degenerate edge cannot be split",
+                         Standard_VOID_RETURN);
+  Standard_ASSERT_RETURN(anOrig.ParamFirst < theSplitParam && theSplitParam < anOrig.ParamLast,
+                         "SplitEdge: split parameter must be inside open edge range",
+                         Standard_VOID_RETURN);
 
   const BRepGraphInc_Storage&  aConstStorage         = myGraph->myData->myIncStorage;
   const BRepGraph_Curve3DRepId aOrigCurve3DRepId     = anOrig.Curve3DRepId;
@@ -1901,6 +2044,23 @@ void BRepGraph::BuilderView::ReplaceEdgeInWire(const BRepGraph_WireId theWireDef
                                                const BRepGraph_EdgeId theNewEdgeEntity,
                                                const bool             theReversed)
 {
+  Standard_ASSERT_RETURN(
+    theWireDefId.Index >= 0 && theWireDefId.Index < myGraph->myData->myIncStorage.NbWires(),
+    "ReplaceEdgeInWire: wire index is out of range",
+    Standard_VOID_RETURN);
+  Standard_ASSERT_RETURN(theOldEdgeEntity.Index >= 0
+                           && theOldEdgeEntity.Index < myGraph->myData->myIncStorage.NbEdges(),
+                         "ReplaceEdgeInWire: old edge index is out of range",
+                         Standard_VOID_RETURN);
+  Standard_ASSERT_RETURN(theNewEdgeEntity.Index >= 0
+                           && theNewEdgeEntity.Index < myGraph->myData->myIncStorage.NbEdges(),
+                         "ReplaceEdgeInWire: new edge index is out of range",
+                         Standard_VOID_RETURN);
+  Standard_ASSERT_RETURN(
+    !myGraph->myData->myIncStorage.Edge(theNewEdgeEntity).IsRemoved,
+    "ReplaceEdgeInWire: replacement edge must be active",
+    Standard_VOID_RETURN);
+
   BRepGraphInc_Storage&                            aStorage = myGraph->myData->myIncStorage;
   const NCollection_Vector<BRepGraph_CoEdgeRefId>& aWireRefIds =
     wireCoEdgeRefIds(aStorage, theWireDefId);
@@ -1925,6 +2085,7 @@ void BRepGraph::BuilderView::ReplaceEdgeInWire(const BRepGraph_WireId theWireDef
       // Update reverse indices incrementally.
       BRepGraphInc_ReverseIndex& aRevIdx = myGraph->myData->myIncStorage.ChangeReverseIndex();
       aRevIdx.ReplaceEdgeInWireMap(theOldEdgeEntity, theNewEdgeEntity, theWireDefId);
+      aRevIdx.UnbindEdgeFromCoEdge(theOldEdgeEntity, BRepGraph_CoEdgeId(aCoEdgeEntIdx));
       aRevIdx.BindEdgeToCoEdge(theNewEdgeEntity, BRepGraph_CoEdgeId(aCoEdgeEntIdx));
 
       // Update edge-to-face: bind new edge, unbind old edge for all faces of this wire.
@@ -1961,7 +2122,7 @@ void BRepGraph::BuilderView::CommitMutation()
 //=================================================================================================
 
 bool BRepGraph::BuilderView::ValidateMutationBoundary(
-  NCollection_Vector<BoundaryIssue>* const theIssues)
+  NCollection_Vector<BoundaryIssue>* const theIssues) const
 {
   bool                        isValid  = true;
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;

@@ -134,6 +134,8 @@ public:
   [[nodiscard]] Standard_EXPORT const ShapesView& Shapes() const;
   //! Access programmatic graph construction.
   [[nodiscard]] Standard_EXPORT BuilderView& Builder();
+  //! Const access to mutation-boundary validation helpers.
+  [[nodiscard]] Standard_EXPORT const BuilderView& Builder() const;
 
   //! Access history subsystem directly.
   [[nodiscard]] Standard_EXPORT BRepGraph_History&       History();

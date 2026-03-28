@@ -19,7 +19,6 @@
 #include <BRepGraphInc_Representation.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_TopoView.hxx>
-#include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_RefsView.hxx>
