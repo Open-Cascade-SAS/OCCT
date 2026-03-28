@@ -165,10 +165,14 @@ void BRepGraph::Build(const TopoDS_Shape&                   theShape,
 
 BRepGraph_UID BRepGraph::allocateUID(const BRepGraph_NodeId theNodeId)
 {
-  const size_t   aCounter    = myData->myNextUIDCounter.fetch_add(1, std::memory_order_relaxed);
+  // Load counter before append: if Append() throws, no counter is consumed.
+  // Single-threaded precondition: UID allocation is only called from Builder
+  // methods which are externally serialized, so load-then-increment is safe.
+  const size_t   aCounter    = myData->myNextUIDCounter.load(std::memory_order_relaxed);
   const uint32_t aGeneration = myData->myGeneration.load(std::memory_order_relaxed);
   BRepGraph_UID  aUID(theNodeId.NodeKind, aCounter, aGeneration);
   myData->myIncStorage.ChangeUIDs(theNodeId.NodeKind).Append(aUID);
+  myData->myNextUIDCounter.fetch_add(1, std::memory_order_relaxed);
   return aUID;
 }
 
@@ -176,10 +180,13 @@ BRepGraph_UID BRepGraph::allocateUID(const BRepGraph_NodeId theNodeId)
 
 BRepGraph_RefUID BRepGraph::allocateRefUID(const BRepGraph_RefId theRefId)
 {
-  const size_t   aCounter    = myData->myNextUIDCounter.fetch_add(1, std::memory_order_relaxed);
+  // Load counter before append: if Append() throws, no counter is consumed.
+  // Single-threaded precondition: see allocateUID() comment.
+  const size_t   aCounter    = myData->myNextUIDCounter.load(std::memory_order_relaxed);
   const uint32_t aGeneration = myData->myGeneration.load(std::memory_order_relaxed);
   const BRepGraph_RefUID aUID(theRefId.RefKind, aCounter, aGeneration);
   myData->myIncStorage.ChangeRefUIDs(theRefId.RefKind).Append(aUID);
+  myData->myNextUIDCounter.fetch_add(1, std::memory_order_relaxed);
   return aUID;
 }
 
@@ -513,7 +520,7 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
 
 //=================================================================================================
 
-void BRepGraph::markModified(const BRepGraph_NodeId theNodeId)
+void BRepGraph::markModified(const BRepGraph_NodeId theNodeId) noexcept
 {
   if (!theNodeId.IsValid())
     return;
@@ -549,7 +556,8 @@ void BRepGraph::markModified(const BRepGraph_NodeId theNodeId)
 
 //=================================================================================================
 
-void BRepGraph::markModified(const BRepGraph_NodeId theNodeId, BRepGraphInc::BaseDef& theEntity)
+void BRepGraph::markModified(const BRepGraph_NodeId theNodeId,
+                             BRepGraphInc::BaseDef& theEntity) noexcept
 {
   theEntity.IsModified = true;
   ++theEntity.MutationGen; // Track direct mutations even in deferred mode.
@@ -576,7 +584,7 @@ void BRepGraph::markModified(const BRepGraph_NodeId theNodeId, BRepGraphInc::Bas
 
 //=================================================================================================
 
-void BRepGraph::markRefModified(const BRepGraph_RefId theRefId)
+void BRepGraph::markRefModified(const BRepGraph_RefId theRefId) noexcept
 {
   if (!theRefId.IsValid())
     return;
@@ -587,7 +595,8 @@ void BRepGraph::markRefModified(const BRepGraph_RefId theRefId)
 
 //=================================================================================================
 
-void BRepGraph::markRefModified(const BRepGraph_RefId /*theRefId*/, BRepGraphInc::BaseRef& theRef)
+void BRepGraph::markRefModified(const BRepGraph_RefId /*theRefId*/,
+                                BRepGraphInc::BaseRef& theRef) noexcept
 {
   ++theRef.MutationGen;
 
@@ -599,7 +608,7 @@ void BRepGraph::markRefModified(const BRepGraph_RefId /*theRefId*/, BRepGraphInc
 
 //=================================================================================================
 
-void BRepGraph::markParentModified(const BRepGraph_NodeId theParentId)
+void BRepGraph::markParentModified(const BRepGraph_NodeId theParentId) noexcept
 {
   BRepGraphInc::BaseDef* aParent = ChangeTopoEntity(theParentId);
   if (aParent == nullptr || aParent->IsModified)
@@ -624,7 +633,7 @@ void BRepGraph::markParentModified(const BRepGraph_NodeId theParentId)
 
 //=================================================================================================
 
-void BRepGraph::propagateModified(const BRepGraph_NodeId theNodeId)
+void BRepGraph::propagateModified(const BRepGraph_NodeId theNodeId) noexcept
 {
   const BRepGraphInc_ReverseIndex& aRevIdx = myData->myIncStorage.ReverseIndex();
   switch (theNodeId.NodeKind)
@@ -674,6 +683,84 @@ void BRepGraph::propagateModified(const BRepGraph_NodeId theNodeId)
     }
     default:
       // Solid/Compound/CompSolid/Product modifications don't propagate further.
+      break;
+  }
+}
+
+//=================================================================================================
+
+void BRepGraph::markRepModified(const BRepGraph_RepId theRepId) noexcept
+{
+  if (!theRepId.IsValid())
+    return;
+
+  BRepGraphInc_Storage&   aStorage = myData->myIncStorage;
+  const BRepGraph_RepId::Kind aKind = theRepId.RepKind;
+  const int               anIdx    = theRepId.Index;
+
+  // Increment MutationGen on the representation.
+  switch (aKind)
+  {
+    case BRepGraph_RepId::Kind::Surface:
+      if (anIdx < aStorage.NbSurfaces())
+        ++aStorage.ChangeSurfaceRep(BRepGraph_SurfaceRepId(anIdx)).MutationGen;
+      break;
+    case BRepGraph_RepId::Kind::Curve3D:
+      if (anIdx < aStorage.NbCurves3D())
+        ++aStorage.ChangeCurve3DRep(BRepGraph_Curve3DRepId(anIdx)).MutationGen;
+      break;
+    case BRepGraph_RepId::Kind::Curve2D:
+      if (anIdx < aStorage.NbCurves2D())
+        ++aStorage.ChangeCurve2DRep(BRepGraph_Curve2DRepId(anIdx)).MutationGen;
+      break;
+    case BRepGraph_RepId::Kind::Triangulation:
+      if (anIdx < aStorage.NbTriangulations())
+        ++aStorage.ChangeTriangulationRep(BRepGraph_TriangulationRepId(anIdx)).MutationGen;
+      break;
+    case BRepGraph_RepId::Kind::Polygon3D:
+      if (anIdx < aStorage.NbPolygons3D())
+        ++aStorage.ChangePolygon3DRep(BRepGraph_Polygon3DRepId(anIdx)).MutationGen;
+      break;
+    default:
+      return;
+  }
+
+  // Propagate IsModified to owning topology nodes.
+  switch (aKind)
+  {
+    case BRepGraph_RepId::Kind::Surface:
+      for (int i = 0; i < aStorage.NbFaces(); ++i)
+        if (aStorage.Face(BRepGraph_FaceId(i)).SurfaceRepId.Index == anIdx)
+          markModified(BRepGraph_NodeId::Face(i));
+      break;
+    case BRepGraph_RepId::Kind::Curve3D:
+      for (int i = 0; i < aStorage.NbEdges(); ++i)
+        if (aStorage.Edge(BRepGraph_EdgeId(i)).Curve3DRepId.Index == anIdx)
+          markModified(BRepGraph_NodeId::Edge(i));
+      break;
+    case BRepGraph_RepId::Kind::Curve2D:
+      for (int i = 0; i < aStorage.NbCoEdges(); ++i)
+        if (aStorage.CoEdge(BRepGraph_CoEdgeId(i)).Curve2DRepId.Index == anIdx)
+          markModified(BRepGraph_NodeId::CoEdge(i));
+      break;
+    case BRepGraph_RepId::Kind::Triangulation:
+      for (int i = 0; i < aStorage.NbFaces(); ++i)
+      {
+        const BRepGraphInc::FaceDef& aFace = aStorage.Face(BRepGraph_FaceId(i));
+        for (int j = 0; j < aFace.TriangulationRepIds.Length(); ++j)
+          if (aFace.TriangulationRepIds.Value(j).Index == anIdx)
+          {
+            markModified(BRepGraph_NodeId::Face(i));
+            break;
+          }
+      }
+      break;
+    case BRepGraph_RepId::Kind::Polygon3D:
+      for (int i = 0; i < aStorage.NbEdges(); ++i)
+        if (aStorage.Edge(BRepGraph_EdgeId(i)).Polygon3DRepId.Index == anIdx)
+          markModified(BRepGraph_NodeId::Edge(i));
+      break;
+    default:
       break;
   }
 }
@@ -771,7 +858,7 @@ void BRepGraph::UnregisterLayer(const TCollection_AsciiString& theName)
 //=================================================================================================
 
 void BRepGraph::dispatchLayerOnNodeRemoved(const BRepGraph_NodeId theNode,
-                                           const BRepGraph_NodeId theReplacement)
+                                           const BRepGraph_NodeId theReplacement) noexcept
 {
   for (NCollection_DataMap<TCollection_AsciiString, occ::handle<BRepGraph_Layer>>::Iterator anIter(
          myLayers);
@@ -802,7 +889,7 @@ void BRepGraph::updateModificationSubscriberFlag()
 
 //=================================================================================================
 
-void BRepGraph::dispatchNodeModified(const BRepGraph_NodeId theNode)
+void BRepGraph::dispatchNodeModified(const BRepGraph_NodeId theNode) noexcept
 {
   const int aKindBit = BRepGraph_Layer::KindBit(theNode.NodeKind);
   for (NCollection_DataMap<TCollection_AsciiString, occ::handle<BRepGraph_Layer>>::Iterator anIter(
@@ -818,7 +905,7 @@ void BRepGraph::dispatchNodeModified(const BRepGraph_NodeId theNode)
 //=================================================================================================
 
 void BRepGraph::dispatchNodesModified(const NCollection_Vector<BRepGraph_NodeId>& theModifiedNodes,
-                                      const int theModifiedKindsMask)
+                                      const int theModifiedKindsMask) noexcept
 {
   for (NCollection_DataMap<TCollection_AsciiString, occ::handle<BRepGraph_Layer>>::Iterator anIter(
          myLayers);

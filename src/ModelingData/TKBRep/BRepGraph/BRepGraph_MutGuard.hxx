@@ -29,6 +29,7 @@
 //! Compile-time dispatch selects the ID type and notification method:
 //! - For types derived from BRepGraphInc::BaseDef: BRepGraph_NodeId + markModified()
 //! - For types derived from BRepGraphInc::BaseRef: BRepGraph_RefId + markRefModified()
+//! - For types derived from BRepGraphInc::BaseRep: BRepGraph_RepId + markRepModified()
 //!
 //! @warning The stored pointer is valid only while no entities of the same
 //! kind are appended to the graph. Appending (e.g., Builder().AddVertex(),
@@ -48,20 +49,26 @@ template <typename T>
 class BRepGraph_MutGuard
 {
   static_assert(std::is_base_of_v<BRepGraphInc::BaseDef, T>
-                  || std::is_base_of_v<BRepGraphInc::BaseRef, T>,
-                "BRepGraph_MutGuard<T>: T must derive from BaseDef or BaseRef");
+                  || std::is_base_of_v<BRepGraphInc::BaseRef, T>
+                  || std::is_base_of_v<BRepGraphInc::BaseRep, T>,
+                "BRepGraph_MutGuard<T>: T must derive from BaseDef, BaseRef, or BaseRep");
 
-  //! ID type: BRepGraph_NodeId for definitions, BRepGraph_RefId for references.
-  using IdType =
-    std::conditional_t<std::is_base_of_v<BRepGraphInc::BaseDef, T>, BRepGraph_NodeId, BRepGraph_RefId>;
+  //! ID type: BRepGraph_NodeId for definitions, BRepGraph_RefId for references,
+  //! BRepGraph_RepId for representations.
+  using IdType = std::conditional_t<
+    std::is_base_of_v<BRepGraphInc::BaseDef, T>,
+    BRepGraph_NodeId,
+    std::conditional_t<std::is_base_of_v<BRepGraphInc::BaseRef, T>, BRepGraph_RefId, BRepGraph_RepId>>;
 
   //! Call the appropriate notification method on the graph.
-  void notify()
+  void notify() noexcept
   {
     if constexpr (std::is_base_of_v<BRepGraphInc::BaseDef, T>)
       myGraph->markModified(myId, *myEntity);
-    else
+    else if constexpr (std::is_base_of_v<BRepGraphInc::BaseRef, T>)
       myGraph->markRefModified(myId, *myEntity);
+    else
+      myGraph->markRepModified(myId);
   }
 
 public:

@@ -183,18 +183,18 @@ private:
 
   //! Dispatch OnNodeRemoved to all registered layers.
   void dispatchLayerOnNodeRemoved(const BRepGraph_NodeId theNode,
-                                  const BRepGraph_NodeId theReplacement);
+                                  const BRepGraph_NodeId theReplacement) noexcept;
 
   //! Rescan myLayers and update myHasModificationSubscribers flag.
   void updateModificationSubscriberFlag();
 
   //! Dispatch OnNodeModified to layers whose SubscribedKinds matches the node's kind.
-  void dispatchNodeModified(const BRepGraph_NodeId theNode);
+  void dispatchNodeModified(const BRepGraph_NodeId theNode) noexcept;
 
   //! Dispatch OnNodesModified to layers whose SubscribedKinds matches at least
   //! one kind in theModifiedKindsMask.
   void dispatchNodesModified(const NCollection_Vector<BRepGraph_NodeId>& theModifiedNodes,
-                             const int                                   theModifiedKindsMask);
+                             const int theModifiedKindsMask) noexcept;
 
   //! Initialize cached view objects to point to this graph.
   void initViews();
@@ -204,28 +204,33 @@ private:
   Standard_EXPORT BRepGraph_RefUID allocateRefUID(const BRepGraph_RefId theRefId);
 
   Standard_EXPORT BRepGraph_NodeCache* mutableCache(const BRepGraph_NodeId theNode);
-  Standard_EXPORT void                 markModified(const BRepGraph_NodeId theNodeId);
-  Standard_EXPORT void                 markRefModified(const BRepGraph_RefId theRefId);
+  Standard_EXPORT void markModified(const BRepGraph_NodeId theNodeId) noexcept;
+  Standard_EXPORT void markRefModified(const BRepGraph_RefId theRefId) noexcept;
 
   //! Optimized overload: skips ChangeTopoEntity() and mutableCache() dispatch
   //! when the caller already holds a mutable reference to the target entity.
   Standard_EXPORT void markModified(const BRepGraph_NodeId theNodeId,
-                                    BRepGraphInc::BaseDef& theEntity);
+                                    BRepGraphInc::BaseDef& theEntity) noexcept;
   Standard_EXPORT void markRefModified(const BRepGraph_RefId  theRefId,
-                                       BRepGraphInc::BaseRef& theRef);
+                                       BRepGraphInc::BaseRef& theRef) noexcept;
 
   //! Mark a parent node as transitively modified (IsModified only, no MutationGen increment).
   //! Skips if already modified. Clears caches, dispatches events, and continues propagation.
-  Standard_EXPORT void markParentModified(const BRepGraph_NodeId theParentId);
+  Standard_EXPORT void markParentModified(const BRepGraph_NodeId theParentId) noexcept;
 
   //! Propagate IsModified upward through reverse indices without incrementing MutationGen.
-  Standard_EXPORT void propagateModified(const BRepGraph_NodeId theNodeId);
+  Standard_EXPORT void propagateModified(const BRepGraph_NodeId theNodeId) noexcept;
+
+  //! Increment MutationGen on a representation and propagate IsModified
+  //! to the owning topology node(s).
+  Standard_EXPORT void markRepModified(const BRepGraph_RepId theRepId) noexcept;
 
   //! Generic topology definition lookup by NodeId (const).
   Standard_EXPORT const BRepGraphInc::BaseDef* TopoEntity(const BRepGraph_NodeId theId) const;
 
   //! Generic mutable topology definition lookup by NodeId.
   Standard_EXPORT BRepGraphInc::BaseDef* ChangeTopoEntity(const BRepGraph_NodeId theId);
+
 };
 
 // Included after BRepGraph is complete so the template body sees markModified().

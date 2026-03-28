@@ -288,16 +288,16 @@ class BRepGraph_TestCounterLayer : public BRepGraph_Layer
 public:
   const TCollection_AsciiString& Name() const override { return myName; }
 
-  void OnNodeRemoved(const BRepGraph_NodeId, const BRepGraph_NodeId) override { ++myRemoveCount; }
+  void OnNodeRemoved(const BRepGraph_NodeId, const BRepGraph_NodeId) noexcept override { ++myRemoveCount; }
 
-  void OnCompact(const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>&) override
+  void OnCompact(const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>&) noexcept override
   {
     ++myCompactCount;
   }
 
-  void InvalidateAll() override {}
+  void InvalidateAll() noexcept override {}
 
-  void Clear() override {}
+  void Clear() noexcept override {}
 
   int myRemoveCount  = 0;
   int myCompactCount = 0;

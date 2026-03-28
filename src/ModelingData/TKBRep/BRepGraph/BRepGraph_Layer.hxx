@@ -51,8 +51,10 @@ public:
   //! @param[in] theReplacement if valid, the node that replaces theNode
   //!            (e.g., sewing edge merge, deduplicate). If invalid, pure deletion.
   //!            Layers should migrate data from theNode to theReplacement when valid.
+  //! @warning Layer callbacks must not throw. They are called from noexcept
+  //! notification paths (MutGuard destructors, deferred invalidation flush).
   virtual void OnNodeRemoved(const BRepGraph_NodeId theNode,
-                             const BRepGraph_NodeId theReplacement) = 0;
+                             const BRepGraph_NodeId theReplacement) noexcept = 0;
 
   //! Called after Compact with a unified old->new remap map.
   //! Layer must remap all internal NodeId references using this map.
@@ -61,13 +63,13 @@ public:
   //! drop data associated with those nodes.
   //! @param[in] theRemapMap maps old NodeId to new NodeId for all surviving nodes
   virtual void OnCompact(
-    const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap) = 0;
+    const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap) noexcept = 0;
 
   //! Mark all cached values dirty (bulk invalidation).
-  virtual void InvalidateAll() = 0;
+  virtual void InvalidateAll() noexcept = 0;
 
   //! Clear all stored data.
-  virtual void Clear() = 0;
+  virtual void Clear() noexcept = 0;
 
   // --- Modification event subscription ---
 
@@ -82,7 +84,7 @@ public:
   //! Only dispatched if the node's kind matches SubscribedKinds().
   //! Default: no-op.
   //! @param[in] theNode the modified node
-  Standard_EXPORT virtual void OnNodeModified(const BRepGraph_NodeId theNode);
+  Standard_EXPORT virtual void OnNodeModified(const BRepGraph_NodeId theNode) noexcept;
 
   //! Called after EndDeferredInvalidation() with all nodes modified during
   //! the deferred scope. Only dispatched if at least one modified node's kind
@@ -91,7 +93,7 @@ public:
   //! Default: no-op.
   //! @param[in] theModifiedNodes all modified, non-removed nodes
   Standard_EXPORT virtual void OnNodesModified(
-    const NCollection_Vector<BRepGraph_NodeId>& theModifiedNodes);
+    const NCollection_Vector<BRepGraph_NodeId>& theModifiedNodes) noexcept;
 
   //! Convenience: return bitmask bit for a given Kind.
   static int KindBit(const BRepGraph_NodeId::Kind theKind)

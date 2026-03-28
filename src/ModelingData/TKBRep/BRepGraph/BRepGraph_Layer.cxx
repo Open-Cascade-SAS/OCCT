@@ -24,11 +24,11 @@ int BRepGraph_Layer::SubscribedKinds() const
 
 //=================================================================================================
 
-void BRepGraph_Layer::OnNodeModified(const BRepGraph_NodeId /*theNode*/) {}
+void BRepGraph_Layer::OnNodeModified(const BRepGraph_NodeId /*theNode*/) noexcept {}
 
 //=================================================================================================
 
 void BRepGraph_Layer::OnNodesModified(
-  const NCollection_Vector<BRepGraph_NodeId>& /*theModifiedNodes*/)
+  const NCollection_Vector<BRepGraph_NodeId>& /*theModifiedNodes*/) noexcept
 {
 }

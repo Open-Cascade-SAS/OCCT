@@ -50,7 +50,7 @@ void BRepGraph_NameLayer::RemoveNodeName(const BRepGraph_NodeId theNode)
 //=================================================================================================
 
 void BRepGraph_NameLayer::OnNodeRemoved(const BRepGraph_NodeId theNode,
-                                        const BRepGraph_NodeId theReplacement)
+                                        const BRepGraph_NodeId theReplacement) noexcept
 {
   if (theReplacement.IsValid())
   {
@@ -67,7 +67,7 @@ void BRepGraph_NameLayer::OnNodeRemoved(const BRepGraph_NodeId theNode,
 //=================================================================================================
 
 void BRepGraph_NameLayer::OnCompact(
-  const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap)
+  const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap) noexcept
 {
   NCollection_DataMap<BRepGraph_NodeId, TCollection_ExtendedString> aRemapped;
   for (NCollection_DataMap<BRepGraph_NodeId, TCollection_ExtendedString>::Iterator anIter(myNames);
@@ -83,14 +83,14 @@ void BRepGraph_NameLayer::OnCompact(
 
 //=================================================================================================
 
-void BRepGraph_NameLayer::InvalidateAll()
+void BRepGraph_NameLayer::InvalidateAll() noexcept
 {
   // NameLayer stores concrete values, not cached computations - nothing to invalidate.
 }
 
 //=================================================================================================
 
-void BRepGraph_NameLayer::Clear()
+void BRepGraph_NameLayer::Clear() noexcept
 {
   myNames.Clear();
 }

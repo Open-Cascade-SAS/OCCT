@@ -533,13 +533,13 @@ public:
     return THE_NAME;
   }
 
-  void OnNodeRemoved(const BRepGraph_NodeId theNode, const BRepGraph_NodeId) override
+  void OnNodeRemoved(const BRepGraph_NodeId theNode, const BRepGraph_NodeId) noexcept override
   {
     myData.UnBind(theNode);
   }
 
   void OnCompact(
-    const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap) override
+    const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap) noexcept override
   {
     NCollection_DataMap<BRepGraph_NodeId, int> aRemapped;
     for (NCollection_DataMap<BRepGraph_NodeId, int>::Iterator anIter(myData); anIter.More();
@@ -552,9 +552,9 @@ public:
     myData = std::move(aRemapped);
   }
 
-  void InvalidateAll() override {}
+  void InvalidateAll() noexcept override {}
 
-  void Clear() override { myData.Clear(); }
+  void Clear() noexcept override { myData.Clear(); }
 
   void Set(BRepGraph_NodeId theId, int theVal) { myData.Bind(theId, theVal); }
 

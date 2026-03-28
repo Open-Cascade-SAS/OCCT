@@ -24,6 +24,19 @@
 //!
 //! Identity = (RefKind, Counter). Generation is excluded from equality/hash.
 //! Counter 0 is an invalid sentinel.
+//!
+//! ## Serialization Contract
+//!
+//! Entity UIDs (BRepGraph_UID) and reference UIDs (BRepGraph_RefUID) share
+//! a single monotonic counter (BRepGraph_Data::myNextUIDCounter).
+//! To persist a BRepGraph across sessions:
+//! 1. Write: for each reference entry, serialize (RefKind, Counter, MutationGen).
+//! 2. Read: reconstruct reference entries, populate RefUID vectors with
+//!    deserialized (RefKind, Counter) values, set myNextUIDCounter to
+//!    max(all_entity_counters, all_ref_counters) + 1.
+//! 3. myGeneration resets to 0 on load (session-scoped).
+//! 4. VersionStamps from a previous session will correctly detect staleness
+//!    via Generation mismatch.
 struct BRepGraph_RefUID
 {
   BRepGraph_RefUID()

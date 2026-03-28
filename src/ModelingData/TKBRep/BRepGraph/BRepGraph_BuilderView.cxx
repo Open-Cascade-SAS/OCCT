@@ -1134,7 +1134,7 @@ void BRepGraph::BuilderView::BeginDeferredInvalidation()
 
 //=================================================================================================
 
-void BRepGraph::BuilderView::EndDeferredInvalidation()
+void BRepGraph::BuilderView::EndDeferredInvalidation() noexcept
 {
   if (!myGraph->myData->myDeferredMode)
     return;
@@ -1594,6 +1594,61 @@ BRepGraph_MutGuard<BRepGraphInc::OccurrenceRef> BRepGraph::BuilderView::MutOccur
     myGraph,
     &myGraph->myData->myIncStorage.ChangeOccurrenceRef(theOccurrenceRef),
     BRepGraph_RefId::Occurrence(theOccurrenceRef.Index));
+}
+
+//=================================================================================================
+
+BRepGraph_MutGuard<BRepGraphInc::SurfaceRep> BRepGraph::BuilderView::MutSurface(
+  const BRepGraph_SurfaceRepId theSurface)
+{
+  return BRepGraph_MutGuard<BRepGraphInc::SurfaceRep>(
+    myGraph,
+    &myGraph->myData->myIncStorage.ChangeSurfaceRep(theSurface),
+    BRepGraph_RepId::Surface(theSurface.Index));
+}
+
+//=================================================================================================
+
+BRepGraph_MutGuard<BRepGraphInc::Curve3DRep> BRepGraph::BuilderView::MutCurve3D(
+  const BRepGraph_Curve3DRepId theCurve)
+{
+  return BRepGraph_MutGuard<BRepGraphInc::Curve3DRep>(
+    myGraph,
+    &myGraph->myData->myIncStorage.ChangeCurve3DRep(theCurve),
+    BRepGraph_RepId::Curve3D(theCurve.Index));
+}
+
+//=================================================================================================
+
+BRepGraph_MutGuard<BRepGraphInc::Curve2DRep> BRepGraph::BuilderView::MutCurve2D(
+  const BRepGraph_Curve2DRepId theCurve)
+{
+  return BRepGraph_MutGuard<BRepGraphInc::Curve2DRep>(
+    myGraph,
+    &myGraph->myData->myIncStorage.ChangeCurve2DRep(theCurve),
+    BRepGraph_RepId::Curve2D(theCurve.Index));
+}
+
+//=================================================================================================
+
+BRepGraph_MutGuard<BRepGraphInc::TriangulationRep> BRepGraph::BuilderView::MutTriangulation(
+  const BRepGraph_TriangulationRepId theTriangulation)
+{
+  return BRepGraph_MutGuard<BRepGraphInc::TriangulationRep>(
+    myGraph,
+    &myGraph->myData->myIncStorage.ChangeTriangulationRep(theTriangulation),
+    BRepGraph_RepId::Triangulation(theTriangulation.Index));
+}
+
+//=================================================================================================
+
+BRepGraph_MutGuard<BRepGraphInc::Polygon3DRep> BRepGraph::BuilderView::MutPolygon3D(
+  const BRepGraph_Polygon3DRepId thePolygon)
+{
+  return BRepGraph_MutGuard<BRepGraphInc::Polygon3DRep>(
+    myGraph,
+    &myGraph->myData->myIncStorage.ChangePolygon3DRep(thePolygon),
+    BRepGraph_RepId::Polygon3D(thePolygon.Index));
 }
 
 //=================================================================================================
@@ -2112,7 +2167,7 @@ void BRepGraph::BuilderView::ReplaceEdgeInWire(const BRepGraph_WireId theWireDef
 
 //=================================================================================================
 
-void BRepGraph::BuilderView::CommitMutation()
+void BRepGraph::BuilderView::CommitMutation() noexcept
 {
   const bool isValid = ValidateMutationBoundary();
   Standard_ASSERT_VOID(isValid, "CommitMutation: mutation boundary consistency check failed");

@@ -105,3 +105,109 @@ TEST_F(BRepGraph_MutationGenTest, MutationGen_DeferredPropagatedParent_NotIncrem
   for (int i = 0; i < myGraph.Topo().NbSolids(); ++i)
     EXPECT_EQ(myGraph.Topo().Solid(BRepGraph_SolidId(i)).MutationGen, 0u);
 }
+
+TEST_F(BRepGraph_MutationGenTest, RepMutation_SurfacePropagatesIsModifiedToFace)
+{
+  const BRepGraph_FaceId aFaceId(0);
+  const BRepGraph_SurfaceRepId aSurfId = myGraph.Topo().Face(aFaceId).SurfaceRepId;
+  ASSERT_TRUE(aSurfId.IsValid());
+  EXPECT_FALSE(myGraph.Topo().Face(aFaceId).IsModified);
+
+  {
+    auto aGuard = myGraph.Builder().MutSurface(aSurfId);
+    (void)aGuard;
+  }
+
+  // Surface mutation propagates IsModified and increments MutationGen on the owning face.
+  EXPECT_TRUE(myGraph.Topo().Face(aFaceId).IsModified);
+  EXPECT_EQ(myGraph.Topo().Face(aFaceId).MutationGen, 1u);
+}
+
+TEST_F(BRepGraph_MutationGenTest, RepMutation_Curve3DPropagatesIsModifiedToEdge)
+{
+  const BRepGraph_EdgeId anEdgeId(0);
+  const BRepGraph_Curve3DRepId aCurveId = myGraph.Topo().Edge(anEdgeId).Curve3DRepId;
+  if (!aCurveId.IsValid())
+    return; // Skip degenerate edges without 3D curves.
+
+  EXPECT_FALSE(myGraph.Topo().Edge(anEdgeId).IsModified);
+
+  {
+    auto aGuard = myGraph.Builder().MutCurve3D(aCurveId);
+    (void)aGuard;
+  }
+
+  // Curve3D mutation propagates IsModified and increments MutationGen on the owning edge.
+  EXPECT_TRUE(myGraph.Topo().Edge(anEdgeId).IsModified);
+  EXPECT_EQ(myGraph.Topo().Edge(anEdgeId).MutationGen, 1u);
+}
+
+TEST_F(BRepGraph_MutationGenTest, RepMutation_Curve2DPropagatesIsModifiedToCoEdge)
+{
+  // Find a coedge with a valid PCurve.
+  for (int i = 0; i < myGraph.Topo().NbCoEdges(); ++i)
+  {
+    const BRepGraph_CoEdgeId aCoEdgeId(i);
+    const BRepGraph_Curve2DRepId aCurveId = myGraph.Topo().CoEdge(aCoEdgeId).Curve2DRepId;
+    if (!aCurveId.IsValid())
+      continue;
+
+    EXPECT_FALSE(myGraph.Topo().CoEdge(aCoEdgeId).IsModified);
+
+    {
+      auto aGuard = myGraph.Builder().MutCurve2D(aCurveId);
+      (void)aGuard;
+    }
+
+    EXPECT_TRUE(myGraph.Topo().CoEdge(aCoEdgeId).IsModified);
+    EXPECT_EQ(myGraph.Topo().CoEdge(aCoEdgeId).MutationGen, 1u);
+    return;
+  }
+}
+
+TEST_F(BRepGraph_MutationGenTest, RepMutation_TriangulationPropagatesIsModifiedToFace)
+{
+  // Find a face with a valid triangulation.
+  for (int i = 0; i < myGraph.Topo().NbFaces(); ++i)
+  {
+    const BRepGraph_FaceId aFaceId(i);
+    const BRepGraphInc::FaceDef& aFace = myGraph.Topo().Face(aFaceId);
+    if (aFace.TriangulationRepIds.IsEmpty())
+      continue;
+
+    const BRepGraph_TriangulationRepId aTriId = aFace.TriangulationRepIds.Value(0);
+    EXPECT_FALSE(aFace.IsModified);
+
+    {
+      auto aGuard = myGraph.Builder().MutTriangulation(aTriId);
+      (void)aGuard;
+    }
+
+    EXPECT_TRUE(myGraph.Topo().Face(aFaceId).IsModified);
+    EXPECT_EQ(myGraph.Topo().Face(aFaceId).MutationGen, 1u);
+    return;
+  }
+}
+
+TEST_F(BRepGraph_MutationGenTest, RepMutation_Polygon3DPropagatesIsModifiedToEdge)
+{
+  // Find an edge with a valid Polygon3D.
+  for (int i = 0; i < myGraph.Topo().NbEdges(); ++i)
+  {
+    const BRepGraph_EdgeId anEdgeId(i);
+    const BRepGraph_Polygon3DRepId aPolyId = myGraph.Topo().Edge(anEdgeId).Polygon3DRepId;
+    if (!aPolyId.IsValid())
+      continue;
+
+    EXPECT_FALSE(myGraph.Topo().Edge(anEdgeId).IsModified);
+
+    {
+      auto aGuard = myGraph.Builder().MutPolygon3D(aPolyId);
+      (void)aGuard;
+    }
+
+    EXPECT_TRUE(myGraph.Topo().Edge(anEdgeId).IsModified);
+    EXPECT_EQ(myGraph.Topo().Edge(anEdgeId).MutationGen, 1u);
+    return;
+  }
+}

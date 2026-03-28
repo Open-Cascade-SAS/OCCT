@@ -208,7 +208,7 @@ public:
   //! End deferred invalidation mode and batch-flush:
   //! clears the entire shape cache and propagates IsModified upward
   //! for all modified entities in a single pass.
-  Standard_EXPORT void EndDeferredInvalidation();
+  Standard_EXPORT void EndDeferredInvalidation() noexcept;
 
   //! Check if deferred invalidation mode is currently active.
   [[nodiscard]] Standard_EXPORT bool IsDeferredMode() const;
@@ -264,7 +264,7 @@ public:
 
   //! Finalize a batch of mutations: validate reverse index consistency
   //! and assert active entity counts match actual entity state.
-  Standard_EXPORT void CommitMutation();
+  Standard_EXPORT void CommitMutation() noexcept;
 
   //! Validate lightweight mutation-boundary invariants.
   //! @param[out] theIssues optional destination for detailed issues
@@ -367,6 +367,29 @@ public:
   //! @param[in] theOccurrenceRef typed occurrence reference identifier
   Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::OccurrenceRef> MutOccurrenceRef(
     const BRepGraph_OccurrenceRefId theOccurrenceRef);
+
+  //! @name Representation mutation guards.
+
+  //! Return scoped mutable surface representation guard.
+  //! On destruction, increments MutationGen and propagates IsModified to owning Face(s).
+  Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::SurfaceRep> MutSurface(
+    const BRepGraph_SurfaceRepId theSurface);
+
+  //! Return scoped mutable 3D curve representation guard.
+  Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::Curve3DRep> MutCurve3D(
+    const BRepGraph_Curve3DRepId theCurve);
+
+  //! Return scoped mutable 2D curve (PCurve) representation guard.
+  Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::Curve2DRep> MutCurve2D(
+    const BRepGraph_Curve2DRepId theCurve);
+
+  //! Return scoped mutable triangulation representation guard.
+  Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::TriangulationRep> MutTriangulation(
+    const BRepGraph_TriangulationRepId theTriangulation);
+
+  //! Return scoped mutable 3D polygon representation guard.
+  Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::Polygon3DRep> MutPolygon3D(
+    const BRepGraph_Polygon3DRepId thePolygon);
 
 private:
   friend class BRepGraph;
