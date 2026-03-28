@@ -52,6 +52,7 @@
 #include <BRepGraph_Analyze.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_History.hxx>
+#include <BRepGraph_ParallelPolicy.hxx>
 #include <BRepGraph_DeferredScope.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_ShapesView.hxx>
@@ -618,6 +619,7 @@ NCollection_Array1<BRepGraph_NodeId> findFreeEdges(const BRepGraph&      theGrap
 void assembleVertices(BRepGraph&                                   theGraph,
                       const NCollection_Array1<BRepGraph_NodeId>&  theFreeEdges,
                       double                                       theTolerance,
+                      bool                                         theUseLightweightSearch,
                       const occ::handle<NCollection_IncAllocator>& theTmpAlloc)
 {
   const int               aNbFreeEdges = theFreeEdges.Length();
@@ -653,8 +655,6 @@ void assembleVertices(BRepGraph&                                   theGraph,
   }
 
   NCollection_OrderedDataMap<int, int> aVertexMerge(aNbVertices, theTmpAlloc);
-
-  // Build point array and index mapping for the KDTree.
   NCollection_Array1<gp_Pnt> aVertexPoints(0, aNbVertices - 1);
   NCollection_Array1<int>    aGraphIndices(0, aNbVertices - 1);
   for (int aVtxIter = 0; aVtxIter < aNbVertices; ++aVtxIter)
@@ -665,51 +665,91 @@ void assembleVertices(BRepGraph&                                   theGraph,
     aGraphIndices.SetValue(aVtxIter, anIdx);
   }
 
-  // Build the KDTree - O(n log n).
-  NCollection_KDTree<gp_Pnt, 3> aTree;
-  aTree.Build(aVertexPoints);
-
-  // For each vertex (not already merged), find neighbors within tolerance.
-  for (int aVtxIter = 0; aVtxIter < aNbVertices; ++aVtxIter)
+  if (theUseLightweightSearch)
   {
-    const int anIdxI = aGraphIndices.Value(aVtxIter);
-    if (aVertexMerge.IsBound(anIdxI))
+    for (int aVtxIter = 0; aVtxIter < aNbVertices; ++aVtxIter)
     {
-      continue;
+      const int anIdxI = aGraphIndices.Value(aVtxIter);
+      if (aVertexMerge.IsBound(anIdxI))
+      {
+        continue;
+      }
+
+      const gp_Pnt& aPntI       = aVertexPoints.Value(aVtxIter);
+      bool          aMergedSelf = false;
+      for (int aCandIter = aVtxIter + 1; aCandIter < aNbVertices && !aMergedSelf; ++aCandIter)
+      {
+        const int anIdxJ = aGraphIndices.Value(aCandIter);
+        if (aVertexMerge.IsBound(anIdxJ) || aPntI.Distance(aVertexPoints.Value(aCandIter)) > theTolerance)
+        {
+          continue;
+        }
+
+        // Merge: keep vertex with smaller tolerance.
+        const double aTolI =
+          BRepGraph_Tool::Vertex::Tolerance(theGraph, BRepGraph_VertexId(anIdxI));
+        const double aTolJ =
+          BRepGraph_Tool::Vertex::Tolerance(theGraph, BRepGraph_VertexId(anIdxJ));
+        if (aTolJ < aTolI)
+        {
+          aVertexMerge.Bind(anIdxI, anIdxJ);
+          aMergedSelf = true;
+        }
+        else
+        {
+          aVertexMerge.Bind(anIdxJ, anIdxI);
+        }
+      }
     }
+  }
+  else
+  {
+    // Build the KDTree - O(n log n).
+    NCollection_KDTree<gp_Pnt, 3> aTree;
+    aTree.Build(aVertexPoints);
 
-    const gp_Pnt& aPntI       = aVertexPoints.Value(aVtxIter);
-    bool          aMergedSelf = false;
-    aTree.ForEachInRange(aPntI, theTolerance, [&](size_t theResultIdx) {
-      if (aMergedSelf)
+    // For each vertex (not already merged), find neighbors within tolerance.
+    for (int aVtxIter = 0; aVtxIter < aNbVertices; ++aVtxIter)
+    {
+      const int anIdxI = aGraphIndices.Value(aVtxIter);
+      if (aVertexMerge.IsBound(anIdxI))
       {
-        return;
-      }
-      const int anArrayIdx = static_cast<int>(theResultIdx) - 1;
-      if (anArrayIdx == aVtxIter)
-      {
-        return;
-      }
-
-      const int anIdxJ = aGraphIndices.Value(anArrayIdx);
-      if (aVertexMerge.IsBound(anIdxJ))
-      {
-        return;
+        continue;
       }
 
-      // Merge: keep vertex with smaller tolerance.
-      const double aTolI = BRepGraph_Tool::Vertex::Tolerance(theGraph, BRepGraph_VertexId(anIdxI));
-      const double aTolJ = BRepGraph_Tool::Vertex::Tolerance(theGraph, BRepGraph_VertexId(anIdxJ));
-      if (aTolJ < aTolI)
-      {
-        aVertexMerge.Bind(anIdxI, anIdxJ);
-        aMergedSelf = true;
-      }
-      else
-      {
-        aVertexMerge.Bind(anIdxJ, anIdxI);
-      }
-    });
+      const gp_Pnt& aPntI       = aVertexPoints.Value(aVtxIter);
+      bool          aMergedSelf = false;
+      aTree.ForEachInRange(aPntI, theTolerance, [&](size_t theResultIdx) {
+        if (aMergedSelf)
+        {
+          return;
+        }
+        const int anArrayIdx = static_cast<int>(theResultIdx) - 1;
+        if (anArrayIdx == aVtxIter)
+        {
+          return;
+        }
+
+        const int anIdxJ = aGraphIndices.Value(anArrayIdx);
+        if (aVertexMerge.IsBound(anIdxJ))
+        {
+          return;
+        }
+
+        // Merge: keep vertex with smaller tolerance.
+        const double aTolI = BRepGraph_Tool::Vertex::Tolerance(theGraph, BRepGraph_VertexId(anIdxI));
+        const double aTolJ = BRepGraph_Tool::Vertex::Tolerance(theGraph, BRepGraph_VertexId(anIdxJ));
+        if (aTolJ < aTolI)
+        {
+          aVertexMerge.Bind(anIdxI, anIdxJ);
+          aMergedSelf = true;
+        }
+        else
+        {
+          aVertexMerge.Bind(anIdxJ, anIdxI);
+        }
+      });
+    }
   }
 
   // Union-find collapse with path compression.
@@ -763,6 +803,7 @@ void cutAtIntersections(BRepGraph&                                   theGraph,
                         const BRepGraphAlgo_Sewing::Options&         theOptions,
                         double                                       theMinTol,
                         const NCollection_Map<int>&                  theFloatingEdges,
+                        int                                          theParallelWorkers,
                         const occ::handle<NCollection_IncAllocator>& theTmpAlloc)
 {
   const int aNbFreeEdges = theFreeEdges.Length();
@@ -812,20 +853,6 @@ void cutAtIntersections(BRepGraph&                                   theGraph,
                         BRepGraph_Tool::Vertex::Pnt(theGraph, BRepGraph_VertexId(aVtxIdx)));
   }
 
-  // Build UBTree on vertex point-boxes (no enlargement).
-  // Edge BBoxes are already enlarged by tolerance before querying, so the tree overlap
-  // test (edgeBox vs vtxPointBox) is equivalent to the original point-in-box test.
-  // O(N log N) construction; replaces the O(E*V) brute-force inner loop.
-  NCollection_UBTree<int, Bnd_Box>       aVtxTree;
-  NCollection_UBTreeFiller<int, Bnd_Box> aTreeFiller(aVtxTree);
-  for (int aVtxIter = 0; aVtxIter < aNbVtx; ++aVtxIter)
-  {
-    Bnd_Box aVtxBox;
-    aVtxBox.Set(aVtxPoints.Value(aVtxIter));
-    aTreeFiller.Add(aVtxIter, aVtxBox);
-  }
-  aTreeFiller.Fill();
-
   struct SplitCandidate
   {
     double Param;
@@ -835,6 +862,29 @@ void cutAtIntersections(BRepGraph&                                   theGraph,
   // Step 2a (parallel): Find T-vertex split candidates per edge.
   // Each thread creates its own VtxBoxSelector (UBTree::Select is const).
   NCollection_Array1<NCollection_Vector<SplitCandidate>> aPerEdgeSplits(1, aNbFreeEdges);
+  BRepGraph_ParallelPolicy::Workload                     aSplitSearchWork;
+  aSplitSearchWork.PrimaryItems   = aNbFreeEdges;
+  aSplitSearchWork.AuxiliaryItems = aNbVtx;
+  const bool isParallelSplitSearch = BRepGraph_ParallelPolicy::ShouldRun(theOptions.Parallel,
+                                                                         theParallelWorkers,
+                                                                         aSplitSearchWork);
+  const bool isLightweightSplitSearch = theOptions.Parallel && !isParallelSplitSearch;
+  NCollection_UBTree<int, Bnd_Box> aVtxTree;
+  if (!isLightweightSplitSearch)
+  {
+    // Build UBTree on vertex point-boxes (no enlargement).
+    // Edge BBoxes are already enlarged by tolerance before querying, so the tree overlap
+    // test (edgeBox vs vtxPointBox) is equivalent to the original point-in-box test.
+    // O(N log N) construction; replaces the O(E*V) brute-force inner loop.
+    NCollection_UBTreeFiller<int, Bnd_Box> aTreeFiller(aVtxTree);
+    for (int aVtxIter = 0; aVtxIter < aNbVtx; ++aVtxIter)
+    {
+      Bnd_Box aVtxBox;
+      aVtxBox.Set(aVtxPoints.Value(aVtxIter));
+      aTreeFiller.Add(aVtxIter, aVtxBox);
+    }
+    aTreeFiller.Fill();
+  }
 
   OSD_Parallel::For(
     0,
@@ -900,28 +950,24 @@ void cutAtIntersections(BRepGraph&                                   theGraph,
 
       NCollection_Vector<SplitCandidate> aSplits;
 
-      // Query UBTree for vertices whose boxes overlap the edge box - O(log V).
-      VtxBoxSelector aSelector;
-      aSelector.SetCurrentBox(aEdgeBBox);
-      aVtxTree.Select(aSelector);
-
-      const NCollection_Vector<int>& aCandidates = aSelector.Results();
-      for (int aCandIter = 0; aCandIter < aCandidates.Length(); ++aCandIter)
-      {
-        const int aVtxIter = aCandidates.Value(aCandIter);
-        const int aVtxIdx  = aFreeVtxList.Value(aVtxIter);
+      const auto aTryCandidate = [&](const int theVtxIter) {
+        const int aVtxIdx = aFreeVtxList.Value(theVtxIter);
         if (aVtxIdx == aStartIdx || aVtxIdx == aEndIdx)
         {
-          continue;
+          return;
         }
 
-        const gp_Pnt& aVtxPnt = aVtxPoints.Value(aVtxIter);
+        const gp_Pnt& aVtxPnt = aVtxPoints.Value(theVtxIter);
+        if (isLightweightSplitSearch && aEdgeBBox.IsOut(aVtxPnt))
+        {
+          return;
+        }
 
         const ExtremaPC::Result& aRes =
           anExtPC.Perform(aVtxPnt, Precision::Confusion(), ExtremaPC::SearchMode::Min);
         if (!aRes.IsDone() || aRes.NbExt() == 0)
         {
-          continue;
+          return;
         }
 
         const int    aMinIdx    = aRes.MinIndex();
@@ -935,6 +981,27 @@ void cutAtIntersections(BRepGraph&                                   theGraph,
           aCand.Param  = aMinParam;
           aCand.VtxIdx = aVtxIdx;
           aSplits.Append(aCand);
+        }
+      };
+
+      if (isLightweightSplitSearch)
+      {
+        for (int aVtxIter = 0; aVtxIter < aNbVtx; ++aVtxIter)
+        {
+          aTryCandidate(aVtxIter);
+        }
+      }
+      else
+      {
+        // Query UBTree for vertices whose boxes overlap the edge box - O(log V).
+        VtxBoxSelector aSelector;
+        aSelector.SetCurrentBox(aEdgeBBox);
+        aVtxTree.Select(aSelector);
+
+        const NCollection_Vector<int>& aCandidates = aSelector.Results();
+        for (int aCandIter = 0; aCandIter < aCandidates.Length(); ++aCandIter)
+        {
+          aTryCandidate(aCandidates.Value(aCandIter));
         }
       }
 
@@ -970,7 +1037,7 @@ void cutAtIntersections(BRepGraph&                                   theGraph,
         }
       }
     },
-    !theOptions.Parallel);
+    !isParallelSplitSearch);
 
   // Step 2b (sequential): Apply splits to graph.
   NCollection_Array1<NCollection_Vector<BRepGraph_NodeId>> aSubEdgeChains(1, aNbFreeEdges);
@@ -1048,6 +1115,7 @@ NCollection_Array1<NCollection_Vector<int>> detectCandidates(
   const NCollection_Array1<BRepGraph_NodeId>&   theFreeEdges,
   const NCollection_Array1<int>&                theFaceOfPos,
   const BRepGraphAlgo_Sewing::Options&          theOptions,
+  int                                           theParallelWorkers,
   const occ::handle<NCollection_BaseAllocator>& theWorkAlloc)
 {
   const int                                   aNbFreeEdges = theFreeEdges.Length();
@@ -1066,6 +1134,11 @@ NCollection_Array1<NCollection_Vector<int>> detectCandidates(
 
   // Step 1: Precompute bounding boxes in parallel.
   NCollection_Array1<Bnd_Box> aBBoxes(1, aNbFreeEdges);
+  BRepGraph_ParallelPolicy::Workload aBBoxWork;
+  aBBoxWork.PrimaryItems = aNbFreeEdges;
+  const bool isParallelBBoxBuild = BRepGraph_ParallelPolicy::ShouldRun(theOptions.Parallel,
+                                                                       theParallelWorkers,
+                                                                       aBBoxWork);
   OSD_Parallel::For(
     0,
     aNbFreeEdges,
@@ -1078,7 +1151,48 @@ NCollection_Array1<NCollection_Vector<int>> detectCandidates(
       }
       aBBoxes.SetValue(theIdx + 1, aBox);
     },
-    !theOptions.Parallel);
+    !isParallelBBoxBuild);
+
+  BRepGraph_ParallelPolicy::Workload aCandidateSearchWork;
+  aCandidateSearchWork.PrimaryItems = aNbFreeEdges;
+  const bool isParallelCandidateSearch = BRepGraph_ParallelPolicy::ShouldRun(theOptions.Parallel,
+                                                                              theParallelWorkers,
+                                                                              aCandidateSearchWork);
+  if (theOptions.Parallel && !isParallelCandidateSearch)
+  {
+    for (int aPosI = 1; aPosI <= aNbFreeEdges; ++aPosI)
+    {
+      const Bnd_Box& aBoxI = aBBoxes.Value(aPosI);
+      if (aBoxI.IsVoid())
+      {
+        continue;
+      }
+
+      for (int aPosJ = aPosI + 1; aPosJ <= aNbFreeEdges; ++aPosJ)
+      {
+        const Bnd_Box& aBoxJ = aBBoxes.Value(aPosJ);
+        if (aBoxJ.IsVoid() || aBoxI.IsOut(aBoxJ))
+        {
+          continue;
+        }
+
+        const int aFaceI = theFaceOfPos(aPosI);
+        const int aFaceJ = theFaceOfPos(aPosJ);
+        if (aFaceI >= 0 && aFaceI == aFaceJ
+            && !canSewSameFaceEdges(theGraph,
+                                    BRepGraph_EdgeId(theFreeEdges.Value(aPosI).Index),
+                                    BRepGraph_EdgeId(theFreeEdges.Value(aPosJ).Index),
+                                    BRepGraph_FaceId(aFaceI)))
+        {
+          continue;
+        }
+
+        anAdj.ChangeValue(aPosI).Append(aPosJ);
+        anAdj.ChangeValue(aPosJ).Append(aPosI);
+      }
+    }
+    return anAdj;
+  }
 
   // Step 2: Build KDTree from BBox centers.
   NCollection_Array1<gp_Pnt> aCenters(0, aNbFreeEdges - 1);
@@ -1110,6 +1224,19 @@ NCollection_Array1<NCollection_Vector<int>> detectCandidates(
   NCollection_KDTree<gp_Pnt, 3> aTree;
   aTree.Build(aCenters);
 
+  const auto isAcceptedPair = [&](const int thePosI, const int thePosJ) {
+    const int aFaceI = theFaceOfPos(thePosI);
+    const int aFaceJ = theFaceOfPos(thePosJ);
+    if (aFaceI >= 0 && aFaceI == aFaceJ)
+    {
+      return canSewSameFaceEdges(theGraph,
+                                 BRepGraph_EdgeId(theFreeEdges.Value(thePosI).Index),
+                                 BRepGraph_EdgeId(theFreeEdges.Value(thePosJ).Index),
+                                 BRepGraph_FaceId(aFaceI));
+    }
+    return true;
+  };
+
   // Step 3: Find overlapping position pairs and emit them via callback.
   const auto aSearchFn = [&](int theIdxI, const auto& theAppendPair) {
     const int      anI   = theIdxI + 1;
@@ -1140,26 +1267,16 @@ NCollection_Array1<NCollection_Vector<int>> detectCandidates(
 
       if (!aBoxI.IsOut(aBoxJ))
       {
-        // Same-face rejection using precomputed face indices (Opt 2).
-        const int aFaceI = theFaceOfPos(anI);
-        const int aFaceJ = theFaceOfPos(anJ);
-        if (aFaceI >= 0 && aFaceI == aFaceJ)
+        if (!isAcceptedPair(anI, anJ))
         {
-          if (!canSewSameFaceEdges(theGraph,
-                                   BRepGraph_EdgeId(theFreeEdges.Value(anI).Index),
-                                   BRepGraph_EdgeId(theFreeEdges.Value(anJ).Index),
-                                   BRepGraph_FaceId(aFaceI)))
-          {
-            return;
-          }
+          return;
         }
-
         theAppendPair(anI, anJ);
       }
     });
   };
 
-  if (theOptions.Parallel)
+  if (isParallelCandidateSearch)
   {
     NCollection_Array1<NCollection_Vector<int>> aPerEdgeAdj(0, aNbFreeEdges - 1);
     OSD_Parallel::For(
@@ -1212,6 +1329,7 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> matchFreeEdges
   const NCollection_Array1<NCollection_Vector<int>>& theAdjacency,
   const BRepGraphAlgo_Sewing::Options&               theOptions,
   double                                             theMinTol,
+  int                                                theParallelWorkers,
   const occ::handle<NCollection_IncAllocator>&       theTmpAlloc)
 {
   NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> aResult(
@@ -1292,6 +1410,12 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> matchFreeEdges
     return aResult;
   }
 
+  int aTotalAdjacencyEntries = 0;
+  for (int aPos = 1; aPos <= aNbFreeEdges; ++aPos)
+  {
+    aTotalAdjacencyEntries += theAdjacency(aPos).Length();
+  }
+
   struct MatchResult
   {
     BRepGraph_NodeId BestMatch;
@@ -1327,6 +1451,136 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> matchFreeEdges
     {
       anEndpoint.Tolerance = BRepGraph_Tool::Edge::Tolerance(theGraph, anEdgeId);
     }
+  }
+
+  BRepGraph_ParallelPolicy::Workload aMatchWork;
+  aMatchWork.PrimaryItems     = aNbFreeEdges;
+  aMatchWork.InteractionCount = aTotalAdjacencyEntries;
+  const bool isParallelMatching = BRepGraph_ParallelPolicy::ShouldRun(theOptions.Parallel,
+                                                                      theParallelWorkers,
+                                                                      aMatchWork);
+
+  if (theOptions.Parallel && !isParallelMatching && !theOptions.NonManifoldMode)
+  {
+    NCollection_Vector<ScoredPair> aScoredPairs(THE_INIT_VECTOR_CAPACITY, theTmpAlloc);
+
+    for (int anI = 1; anI <= aNbFreeEdges; ++anI)
+    {
+      const BRepGraph_NodeId   anIdA       = theFreeEdges.Value(anI);
+      const BRepGraph_EdgeId   anEdgeA(anIdA.Index);
+      const EdgeEndpointCache& anEndpointA = aEndpointByPos.Value(anI);
+
+      if (BRepGraph_Tool::Edge::Degenerated(theGraph, anEdgeA)
+          || !isEdgeCompatibleMinTol(anEndpointA, theMinTol))
+      {
+        continue;
+      }
+
+      GeomAdaptor_TransformedCurve aCurveA = BRepGraph_Tool::Edge::CurveAdaptor(theGraph, anEdgeA);
+      GCPnts_UniformAbscissa       aSamplerA(aCurveA, THE_NB_EDGE_MATCH_SAMPLES);
+      if (!aSamplerA.IsDone() || aSamplerA.NbPoints() < 2)
+      {
+        continue;
+      }
+
+      NCollection_LocalArray<gp_Pnt, 8> aSamplePtsABuf(aSamplerA.NbPoints());
+      NCollection_Array1<gp_Pnt>        aSamplePtsA(aSamplePtsABuf[0], 1, aSamplerA.NbPoints());
+      for (int aSmpIter = 1; aSmpIter <= aSamplerA.NbPoints(); ++aSmpIter)
+      {
+        aSamplePtsA.SetValue(aSmpIter, aCurveA.EvalD0(aSamplerA.Parameter(aSmpIter)));
+      }
+
+      ExtremaPC_Curve anExtPCRevA(aCurveA);
+      const gp_Pnt&   aStartA = anEndpointA.Start;
+      const gp_Pnt&   aEndA   = anEndpointA.End;
+
+      const NCollection_Vector<int>& aCands = theAdjacency(anI);
+      for (int aCandIter = 0; aCandIter < aCands.Length(); ++aCandIter)
+      {
+        const int aPosB = aCands.Value(aCandIter);
+        if (aPosB <= anI)
+        {
+          continue;
+        }
+
+        const BRepGraph_NodeId   anIdB       = theFreeEdges.Value(aPosB);
+        const EdgeEndpointCache& anEndpointB = aEndpointByPos.Value(aPosB);
+
+        double aWorkTol = theOptions.Tolerance;
+        if (isLocalTolMode)
+        {
+          aWorkTol += anEndpointA.Tolerance + anEndpointB.Tolerance;
+        }
+
+        const BRepGraph_EdgeId anEdgeIdB(anIdB.Index);
+        if (!areEdgesCompatibleSampled(theGraph,
+                                       anEdgeA,
+                                       anEdgeIdB,
+                                       anEndpointA,
+                                       anEndpointB,
+                                       aSamplePtsA,
+                                       anExtPCRevA,
+                                       aWorkTol,
+                                       THE_NB_EDGE_MATCH_SAMPLES,
+                                       THE_MAX_CHORD_RATIO,
+                                       THE_HIGH_CONFIDENCE_RATIO))
+        {
+          continue;
+        }
+
+        ScoredPair aPair;
+        aPair.EdgeA = anIdA;
+        aPair.EdgeB = anIdB;
+        aPair.Score = edgeEndpointPairScore(aStartA, aEndA, anEndpointB.Start, anEndpointB.End);
+        aScoredPairs.Append(aPair);
+      }
+    }
+
+    const int aNbScored = aScoredPairs.Length();
+    if (aNbScored == 0)
+    {
+      return aResult;
+    }
+
+    NCollection_LocalArray<ScoredPair, 64> aSortedPairsBuf(aNbScored);
+    NCollection_Array1<ScoredPair>         aSortedPairs(aSortedPairsBuf[0], 0, aNbScored - 1);
+    for (int anIdx = 0; anIdx < aNbScored; ++anIdx)
+    {
+      aSortedPairs.SetValue(anIdx, aScoredPairs.Value(anIdx));
+    }
+
+    std::sort(&aSortedPairs.ChangeFirst(),
+              &aSortedPairs.ChangeFirst() + aNbScored,
+              [](const ScoredPair& theA, const ScoredPair& theB) {
+                if (theA.Score < theB.Score)
+                {
+                  return true;
+                }
+                if (theA.Score > theB.Score)
+                {
+                  return false;
+                }
+                if (theA.EdgeA.Index != theB.EdgeA.Index)
+                {
+                  return theA.EdgeA.Index < theB.EdgeA.Index;
+                }
+                return theA.EdgeB.Index < theB.EdgeB.Index;
+              });
+
+    NCollection_Map<int> aConsumed;
+    for (int anIdx = 0; anIdx < aNbScored; ++anIdx)
+    {
+      const ScoredPair& aPair = aSortedPairs.Value(anIdx);
+      if (aConsumed.Contains(aPair.EdgeA.Index) || aConsumed.Contains(aPair.EdgeB.Index))
+      {
+        continue;
+      }
+
+      aResult.Append({aPair.EdgeA, aPair.EdgeB});
+      aConsumed.Add(aPair.EdgeA.Index);
+      aConsumed.Add(aPair.EdgeB.Index);
+    }
+    return aResult;
   }
 
   OSD_Parallel::For(
@@ -1418,7 +1672,7 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> matchFreeEdges
         }
       }
     },
-    !theOptions.Parallel);
+    !isParallelMatching);
 
   NCollection_Array1<NCollection_Vector<ScoredPair>> aCompScoredPairs(1, aNbComponents);
   for (int aEdgeIter = 1; aEdgeIter <= aNbFreeEdges; ++aEdgeIter)
@@ -1445,6 +1699,19 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> matchFreeEdges
   NCollection_Array1<NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>>> aCompPairs(
     1,
     aNbComponents);
+
+  int aTotalScoredPairs = 0;
+  for (int aCompIter = 1; aCompIter <= aNbComponents; ++aCompIter)
+  {
+    aTotalScoredPairs += aCompScoredPairs.Value(aCompIter).Length();
+  }
+
+  BRepGraph_ParallelPolicy::Workload aComponentReduceWork;
+  aComponentReduceWork.PrimaryItems     = aNbComponents;
+  aComponentReduceWork.InteractionCount = aTotalScoredPairs;
+  const bool isParallelComponentReduce = BRepGraph_ParallelPolicy::ShouldRun(theOptions.Parallel,
+                                                                              theParallelWorkers,
+                                                                              aComponentReduceWork);
 
   OSD_Parallel::For(
     0,
@@ -1552,7 +1819,7 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> matchFreeEdges
         aConsumed.Add(aPair.EdgeB.Index);
       }
     },
-    !theOptions.Parallel);
+    !isParallelComponentReduce);
 
   for (int aCompIter = 1; aCompIter <= aNbComponents; ++aCompIter)
   {
@@ -1578,11 +1845,13 @@ int mergeMatchedEdges(
   BRepGraph&                                                               theGraph,
   const NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>>& thePairs,
   const BRepGraphAlgo_Sewing::Options&                                     theOptions,
+  const bool                                                                theParallelRequested,
   NCollection_IndexedMap<BRepGraph_EdgeId>&                                theSewnEdgeIndices,
   BRepGraphAlgo_Sewing::Result&                                            theResult,
   const occ::handle<NCollection_IncAllocator>&                             theTmpAlloc)
 {
   int aSewnCount = 0;
+  bool hasNonSameParameterInput = false;
 
   // Accumulate history pairs for batch recording (Opt 5).
   // Use the scoped temp allocator - these vectors are consumed by RecordBatch then discarded.
@@ -1618,6 +1887,8 @@ int mergeMatchedEdges(
 
     const BRepGraphInc::EdgeDef& aRemoveEdge = theGraph.Topo().Edge(anEdgeIdB);
     const BRepGraphInc::EdgeDef& aKeepEdge   = theGraph.Topo().Edge(anEdgeIdA);
+    hasNonSameParameterInput =
+      hasNonSameParameterInput || !aKeepEdge.SameParameter || !aRemoveEdge.SameParameter;
 
     // 1. Tolerance merge (graph-only).
     const double aMergedTol = std::max(BRepGraph_Tool::Edge::Tolerance(theGraph, anEdgeIdA),
@@ -1701,7 +1972,9 @@ int mergeMatchedEdges(
   }
 
   // 6. SameParameter enforcement (graph-only, parallel).
-  if (theOptions.SameParameterMode && !theSewnEdgeIndices.IsEmpty())
+  if (theOptions.SameParameterMode
+      && !theSewnEdgeIndices.IsEmpty()
+      && (!theParallelRequested || hasNonSameParameterInput))
   {
     (void)BRepGraphAlgo_SameParameter::Perform(theGraph, theSewnEdgeIndices, theOptions.Tolerance);
   }
@@ -1911,6 +2184,8 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
   // Temporary allocator reused across sequential lifecycle phases.
   // Reset(false) is applied at safe boundaries once dependent containers are destroyed.
   occ::handle<NCollection_IncAllocator> aTmpAllocator = new NCollection_IncAllocator;
+  const int aParallelWorkers =
+    theOptions.Parallel ? BRepGraph_ParallelPolicy::WorkerCount() : 1;
 
   // Phase 0 (optional): Face analysis - detect/remove small edges and faces.
   if (theOptions.FaceAnalysis)
@@ -1939,14 +2214,37 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
     return aResult;
   }
 
+  BRepGraph_ParallelPolicy::Workload aCoreWork;
+  aCoreWork.PrimaryItems = aFreeEdges.Length();
+  BRepGraphAlgo_Sewing::Options aExecOptions = theOptions;
+  aExecOptions.Parallel =
+    BRepGraph_ParallelPolicy::ShouldRun(theOptions.Parallel, aParallelWorkers, aCoreWork);
+
   // Phase 2: Assemble vertices.
-  assembleVertices(theGraph, aFreeEdges, theOptions.Tolerance, aTmpAllocator);
+  BRepGraph_ParallelPolicy::Workload aVertexAssembleWork;
+  aVertexAssembleWork.PrimaryItems = aFreeEdges.Length();
+  const bool isLightweightVertexAssemble =
+    aExecOptions.Parallel
+    && !BRepGraph_ParallelPolicy::ShouldRun(aExecOptions.Parallel,
+                                            aParallelWorkers,
+                                            aVertexAssembleWork);
+  assembleVertices(theGraph,
+                   aFreeEdges,
+                   theOptions.Tolerance,
+                   isLightweightVertexAssemble,
+                   aTmpAllocator);
   aTmpAllocator->Reset(false);
 
   // Phase 3 (optional): Cut edges at intersections.
   if (theOptions.Cutting)
   {
-    cutAtIntersections(theGraph, aFreeEdges, theOptions, aMinTol, aFloatingEdges, aTmpAllocator);
+    cutAtIntersections(theGraph,
+                       aFreeEdges,
+                       aExecOptions,
+                       aMinTol,
+                       aFloatingEdges,
+                       aParallelWorkers,
+                       aTmpAllocator);
     aTmpAllocator->Reset(false);
   }
 
@@ -1978,9 +2276,20 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
   // Phase 6-8: Merge/process sewn edges while phase-local buffers are alive.
   {
     NCollection_Array1<NCollection_Vector<int>> aAdjacency =
-      detectCandidates(theGraph, aFreeEdges, aFaceOfPos, theOptions, aTmpAllocator);
+      detectCandidates(theGraph,
+                       aFreeEdges,
+                       aFaceOfPos,
+                       aExecOptions,
+                       aParallelWorkers,
+                       aTmpAllocator);
     NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> aMatchedPairs =
-      matchFreeEdges(theGraph, aFreeEdges, aAdjacency, theOptions, aMinTol, aTmpAllocator);
+      matchFreeEdges(theGraph,
+                     aFreeEdges,
+                     aAdjacency,
+                     aExecOptions,
+                     aMinTol,
+                     aParallelWorkers,
+                     aTmpAllocator);
 
     if (aMatchedPairs.IsEmpty())
     {
@@ -1995,7 +2304,8 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
     NCollection_IndexedMap<BRepGraph_EdgeId> aSewnEdgeIndices(aNbPairs, aTmpAllocator);
     aResult.NbSewnEdges = mergeMatchedEdges(theGraph,
                                             aMatchedPairs,
-                                            theOptions,
+                                            aExecOptions,
+                                            theOptions.Parallel,
                                             aSewnEdgeIndices,
                                             aResult,
                                             aTmpAllocator);
@@ -2004,7 +2314,7 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
     convertDegenerateEdges(theGraph, aResult);
 
     // Phase 8: Process sewn edges (tolerance consistency).
-    processEdges(theGraph, aSewnEdgeIndices, theOptions);
+    processEdges(theGraph, aSewnEdgeIndices, aExecOptions);
   }
   aTmpAllocator->Reset(false);
 

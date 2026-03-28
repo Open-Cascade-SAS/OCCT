@@ -30,6 +30,7 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_NodeId.hxx
   BRepGraph_ParamLayer.cxx
   BRepGraph_ParamLayer.hxx
+  BRepGraph_ParallelPolicy.hxx
   BRepGraph_PathView.cxx
   BRepGraph_PathView.hxx
   BRepGraph_RefId.hxx

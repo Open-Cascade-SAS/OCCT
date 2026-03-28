@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <BRepGraphInc_Populate.hxx>
+#include <BRepGraph_ParallelPolicy.hxx>
 #include <BRepGraph_ParamLayer.hxx>
 #include <BRepGraph_RegularityLayer.hxx>
 #include <BRepGraphInc_Storage.hxx>
@@ -1965,6 +1966,8 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&                       
   // Must NOT use the storage's persistent allocator for scratch data.
   const occ::handle<NCollection_BaseAllocator>& aTmpAlloc =
     !theTmpAlloc.IsNull() ? theTmpAlloc : NCollection_BaseAllocator::CommonBaseAllocator();
+  const int aParallelWorkers =
+    theParallel ? BRepGraph_ParallelPolicy::WorkerCount() : 1;
 
   // Phase 1 (sequential): Recursively explore hierarchy, collecting face contexts.
   NCollection_Vector<FaceLocalData> aFaceData(256, aTmpAlloc);
@@ -1973,11 +1976,16 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&                       
   traverseHierarchy(theStorage, aFaceData, aRepDedup, theShape, TopLoc_Location());
 
   // Phase 2 (parallel): Extract per-face geometry/topology.
+  BRepGraph_ParallelPolicy::Workload aFaceExtractWork;
+  aFaceExtractWork.PrimaryItems = aFaceData.Length();
+  const bool isParallelFaceExtraction = BRepGraph_ParallelPolicy::ShouldRun(theParallel,
+                                                                            aParallelWorkers,
+                                                                            aFaceExtractWork);
   OSD_Parallel::For(
     0,
     aFaceData.Length(),
     [&](const int theIndex) { extractFaceData(aFaceData.ChangeValue(theIndex)); },
-    !theParallel);
+    !isParallelFaceExtraction);
 
   // Phase 3 (sequential): Register into storage with deduplication.
   registerFaceData(theStorage, aFaceData, aRepDedup);
@@ -2051,6 +2059,8 @@ void BRepGraphInc_Populate::Append(BRepGraphInc_Storage&                        
   // Must NOT use the storage's persistent allocator for scratch data.
   const occ::handle<NCollection_BaseAllocator>& aTmpAlloc =
     !theTmpAlloc.IsNull() ? theTmpAlloc : NCollection_BaseAllocator::CommonBaseAllocator();
+  const int aParallelWorkers =
+    theParallel ? BRepGraph_ParallelPolicy::WorkerCount() : 1;
 
   // Snapshot entity counts before appending, for incremental updates.
   const int anOldNbEdges    = theStorage.NbEdges();
@@ -2066,11 +2076,16 @@ void BRepGraphInc_Populate::Append(BRepGraphInc_Storage&                        
   flattenToFaces(aFaceData, theShape, TopLoc_Location());
 
   // Parallel face extraction.
+  BRepGraph_ParallelPolicy::Workload aFaceExtractWork;
+  aFaceExtractWork.PrimaryItems = aFaceData.Length();
+  const bool isParallelFaceExtraction = BRepGraph_ParallelPolicy::ShouldRun(theParallel,
+                                                                            aParallelWorkers,
+                                                                            aFaceExtractWork);
   OSD_Parallel::For(
     0,
     aFaceData.Length(),
     [&](const int theIndex) { extractFaceData(aFaceData.ChangeValue(theIndex)); },
-    !theParallel);
+    !isParallelFaceExtraction);
 
   // Sequential registration (reuses existing dedup maps).
   RepDedup aRepDedup;
