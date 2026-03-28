@@ -622,8 +622,7 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::TopoView::EdgesOfFace(
     const BRepGraphInc::WireDef& aWire = aStorage.Wire(aWireRef.WireDefId);
     for (int ce = 0; ce < aWire.CoEdgeRefIds.Length(); ++ce)
     {
-      const BRepGraphInc::CoEdgeRef& aCoEdgeRef =
-        aStorage.CoEdgeRef(aWire.CoEdgeRefIds.Value(ce));
+      const BRepGraphInc::CoEdgeRef& aCoEdgeRef = aStorage.CoEdgeRef(aWire.CoEdgeRefIds.Value(ce));
       if (aCoEdgeRef.IsRemoved || !aCoEdgeRef.CoEdgeDefId.IsValid())
         continue;
       if (!aCoEdgeRef.CoEdgeDefId.IsValid(aStorage.NbCoEdges()))
@@ -650,8 +649,7 @@ BRepGraph_WireId BRepGraph::TopoView::OuterWireOfFace(const BRepGraph_FaceId the
   const BRepGraphInc::FaceDef& aFace = aStorage.Face(theFace);
   for (int aRefIdx = 0; aRefIdx < aFace.WireRefIds.Length(); ++aRefIdx)
   {
-    const BRepGraphInc::WireRef& aWireRef =
-      aStorage.WireRef(aFace.WireRefIds.Value(aRefIdx));
+    const BRepGraphInc::WireRef& aWireRef = aStorage.WireRef(aFace.WireRefIds.Value(aRefIdx));
     if (!aWireRef.IsRemoved && aWireRef.IsOuter)
       return aWireRef.WireDefId;
   }

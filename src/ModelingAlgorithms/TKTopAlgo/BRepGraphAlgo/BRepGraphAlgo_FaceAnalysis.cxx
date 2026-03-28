@@ -125,7 +125,7 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
     const BRepGraphInc::FaceDef& aFaceEnt = aDefs.Face(BRepGraph_FaceId(aFaceIdx));
     for (int aWireRefIter = 0; aWireRefIter < aFaceEnt.WireRefIds.Length(); ++aWireRefIter)
     {
-      const BRepGraph_WireRefId         aWireRefId = aFaceEnt.WireRefIds.Value(aWireRefIter);
+      const BRepGraph_WireRefId    aWireRefId = aFaceEnt.WireRefIds.Value(aWireRefIter);
       const BRepGraphInc::WireRef& aWR        = aRefs.Wire(aWireRefId);
       if (aWR.IsRemoved || !aWR.WireDefId.IsValid(aDefs.NbWires()))
       {
@@ -137,8 +137,8 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
       for (int aCoEdgeRefIter = 0; aCoEdgeRefIter < aWireEnt.CoEdgeRefIds.Length();
            ++aCoEdgeRefIter)
       {
-        const BRepGraph_CoEdgeRefId aCoEdgeRefId = aWireEnt.CoEdgeRefIds.Value(aCoEdgeRefIter);
-        const BRepGraphInc::CoEdgeRef& aCR  = aRefs.CoEdge(aCoEdgeRefId);
+        const BRepGraph_CoEdgeRefId    aCoEdgeRefId = aWireEnt.CoEdgeRefIds.Value(aCoEdgeRefIter);
+        const BRepGraphInc::CoEdgeRef& aCR          = aRefs.CoEdge(aCoEdgeRefId);
         if (aCR.IsRemoved || !aCR.CoEdgeDefId.IsValid(aDefs.NbCoEdges()))
         {
           continue;

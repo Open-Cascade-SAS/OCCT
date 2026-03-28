@@ -49,7 +49,7 @@ NCollection_Vector<BRepGraph_CoEdgeRefId> coEdgeRefsOfWire(const BRepGraph&     
   const BRepGraph::RefsView&                aRefs       = theGraph.Refs();
   for (int aRefIdx = 0; aRefIdx < aRefs.NbCoEdgeRefs(); ++aRefIdx)
   {
-    const BRepGraph_CoEdgeRefId         aRefId(aRefIdx);
+    const BRepGraph_CoEdgeRefId    aRefId(aRefIdx);
     const BRepGraphInc::CoEdgeRef& aRef = aRefs.CoEdge(aRefId);
     if (aRef.ParentId == aParentNode && !aRef.IsRemoved)
       aRefIds.Append(aRefId);
@@ -128,9 +128,8 @@ TEST(BRepGraphAlgo_ValidateTest, DetectsRemovedNodeReference)
   int aVtxToRemove = -1;
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
   {
-    const BRepGraph_EdgeId              anEdgeId(anEdgeIdx);
-    const BRepGraphInc::VertexRef& aStartRef =
-      BRepGraph_Tool::Edge::StartVertex(aGraph, anEdgeId);
+    const BRepGraph_EdgeId         anEdgeId(anEdgeIdx);
+    const BRepGraphInc::VertexRef& aStartRef = BRepGraph_Tool::Edge::StartVertex(aGraph, anEdgeId);
     if (aStartRef.VertexDefId.IsValid())
     {
       aVtxToRemove = aStartRef.VertexDefId.Index;
@@ -179,7 +178,7 @@ TEST(BRepGraphAlgo_ValidateTest, WireConnectivity_DisconnectedEdges)
     coEdgeRefsOfWire(aGraph, BRepGraph_WireId(aTargetWire));
   ASSERT_GE(aWireRefIds.Length(), 1);
   const BRepGraphInc::CoEdgeRef& aFirstCR = aGraph.Refs().CoEdge(aWireRefIds.Value(0));
-  const BRepGraphInc::CoEdgeDef&      aFirstCoEdge =
+  const BRepGraphInc::CoEdgeDef& aFirstCoEdge =
     aGraph.Topo().CoEdge(BRepGraph_CoEdgeId(aFirstCR.CoEdgeDefId));
   const BRepGraph_NodeId aFirstEdgeId(aFirstCoEdge.EdgeDefId);
   ASSERT_TRUE(aFirstEdgeId.IsValid());

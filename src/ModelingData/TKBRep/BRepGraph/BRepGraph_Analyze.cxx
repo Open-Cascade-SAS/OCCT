@@ -182,8 +182,7 @@ NCollection_Vector<BRepGraph_WireId> BRepGraph_Analyze::DegenerateWires(const BR
       continue;
     for (int i = 0; i < aFaceEnt.WireRefIds.Length(); ++i)
     {
-      const BRepGraphInc::WireRef& aWireRef =
-        aStorage.WireRef(aFaceEnt.WireRefIds.Value(i));
+      const BRepGraphInc::WireRef& aWireRef = aStorage.WireRef(aFaceEnt.WireRefIds.Value(i));
       if (aWireRef.IsRemoved || !aWireRef.IsOuter || !aWireRef.WireDefId.IsValid(aDefs.NbWires()))
         continue;
       anIsOuterWire(aWireRef.WireDefId.Index) = 1;

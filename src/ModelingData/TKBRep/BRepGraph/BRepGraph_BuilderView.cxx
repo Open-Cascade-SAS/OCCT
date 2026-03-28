@@ -169,25 +169,23 @@ BRepGraph_NodeId BRepGraph::BuilderView::AddEdge(const BRepGraph_NodeId         
   anEdgeDef.Id                     = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, aIdx);
   if (theStartVtx.IsValid())
   {
-    BRepGraphInc::VertexRef& aStartVtxRef =
-      myGraph->myData->myIncStorage.AppendVertexRef();
-    const int aStartVtxRefIdx = myGraph->myData->myIncStorage.NbVertexRefs() - 1;
-    aStartVtxRef.RefId        = BRepGraph_RefId::Vertex(aStartVtxRefIdx);
-    aStartVtxRef.ParentId     = anEdgeDef.Id;
-    aStartVtxRef.VertexDefId  = BRepGraph_VertexId::FromNodeId(theStartVtx);
-    aStartVtxRef.Orientation  = TopAbs_FORWARD;
+    BRepGraphInc::VertexRef& aStartVtxRef    = myGraph->myData->myIncStorage.AppendVertexRef();
+    const int                aStartVtxRefIdx = myGraph->myData->myIncStorage.NbVertexRefs() - 1;
+    aStartVtxRef.RefId                       = BRepGraph_RefId::Vertex(aStartVtxRefIdx);
+    aStartVtxRef.ParentId                    = anEdgeDef.Id;
+    aStartVtxRef.VertexDefId                 = BRepGraph_VertexId::FromNodeId(theStartVtx);
+    aStartVtxRef.Orientation                 = TopAbs_FORWARD;
     myGraph->allocateRefUID(aStartVtxRef.RefId);
     anEdgeDef.StartVertexRefId = BRepGraph_VertexRefId(aStartVtxRefIdx);
   }
   if (theEndVtx.IsValid())
   {
-    BRepGraphInc::VertexRef& anEndVtxRef =
-      myGraph->myData->myIncStorage.AppendVertexRef();
-    const int anEndVtxRefIdx = myGraph->myData->myIncStorage.NbVertexRefs() - 1;
-    anEndVtxRef.RefId        = BRepGraph_RefId::Vertex(anEndVtxRefIdx);
-    anEndVtxRef.ParentId     = anEdgeDef.Id;
-    anEndVtxRef.VertexDefId  = BRepGraph_VertexId::FromNodeId(theEndVtx);
-    anEndVtxRef.Orientation  = TopAbs_REVERSED;
+    BRepGraphInc::VertexRef& anEndVtxRef    = myGraph->myData->myIncStorage.AppendVertexRef();
+    const int                anEndVtxRefIdx = myGraph->myData->myIncStorage.NbVertexRefs() - 1;
+    anEndVtxRef.RefId                       = BRepGraph_RefId::Vertex(anEndVtxRefIdx);
+    anEndVtxRef.ParentId                    = anEdgeDef.Id;
+    anEndVtxRef.VertexDefId                 = BRepGraph_VertexId::FromNodeId(theEndVtx);
+    anEndVtxRef.Orientation                 = TopAbs_REVERSED;
     myGraph->allocateRefUID(anEndVtxRef.RefId);
     anEdgeDef.EndVertexRefId = BRepGraph_VertexRefId(anEndVtxRefIdx);
   }
@@ -234,12 +232,11 @@ BRepGraph_NodeId BRepGraph::BuilderView::AddWire(
     myGraph->allocateUID(aCoEdge.Id);
 
     // CoEdgeRef in ref-table.
-    BRepGraphInc::CoEdgeRef& aCoEdgeRef =
-      myGraph->myData->myIncStorage.AppendCoEdgeRef();
-    const int aCoEdgeRefIdx     = myGraph->myData->myIncStorage.NbCoEdgeRefs() - 1;
-    aCoEdgeRef.RefId       = BRepGraph_RefId::CoEdge(aCoEdgeRefIdx);
-    aCoEdgeRef.ParentId    = BRepGraph_NodeId::Wire(aIdx);
-    aCoEdgeRef.CoEdgeDefId = BRepGraph_CoEdgeId(aCoEdgeIdx);
+    BRepGraphInc::CoEdgeRef& aCoEdgeRef    = myGraph->myData->myIncStorage.AppendCoEdgeRef();
+    const int                aCoEdgeRefIdx = myGraph->myData->myIncStorage.NbCoEdgeRefs() - 1;
+    aCoEdgeRef.RefId                       = BRepGraph_RefId::CoEdge(aCoEdgeRefIdx);
+    aCoEdgeRef.ParentId                    = BRepGraph_NodeId::Wire(aIdx);
+    aCoEdgeRef.CoEdgeDefId                 = BRepGraph_CoEdgeId(aCoEdgeIdx);
     myGraph->allocateRefUID(aCoEdgeRef.RefId);
     myGraph->myData->myIncStorage.ChangeWire(BRepGraph_WireId(aIdx))
       .CoEdgeRefIds.Append(BRepGraph_CoEdgeRefId(aCoEdgeRefIdx));
@@ -313,12 +310,12 @@ BRepGraph_NodeId BRepGraph::BuilderView::AddFace(
   // Link wire refs.
   if (theOuterWire.IsValid())
   {
-    BRepGraphInc::WireRef& aWireRef = myGraph->myData->myIncStorage.AppendWireRef();
-    const int                   aWireRefIdx   = myGraph->myData->myIncStorage.NbWireRefs() - 1;
-    aWireRef.RefId                       = BRepGraph_RefId::Wire(aWireRefIdx);
-    aWireRef.ParentId                    = BRepGraph_NodeId::Face(aIdx);
-    aWireRef.WireDefId                   = BRepGraph_WireId::FromNodeId(theOuterWire);
-    aWireRef.IsOuter                     = true;
+    BRepGraphInc::WireRef& aWireRef    = myGraph->myData->myIncStorage.AppendWireRef();
+    const int              aWireRefIdx = myGraph->myData->myIncStorage.NbWireRefs() - 1;
+    aWireRef.RefId                     = BRepGraph_RefId::Wire(aWireRefIdx);
+    aWireRef.ParentId                  = BRepGraph_NodeId::Face(aIdx);
+    aWireRef.WireDefId                 = BRepGraph_WireId::FromNodeId(theOuterWire);
+    aWireRef.IsOuter                   = true;
     myGraph->allocateRefUID(aWireRef.RefId);
     myGraph->myData->myIncStorage.ChangeFace(BRepGraph_FaceId(aIdx))
       .WireRefIds.Append(BRepGraph_WireRefId(aWireRefIdx));
@@ -329,12 +326,12 @@ BRepGraph_NodeId BRepGraph::BuilderView::AddFace(
     if (!aWireDefId.IsValid())
       continue;
 
-    BRepGraphInc::WireRef& aWireRef = myGraph->myData->myIncStorage.AppendWireRef();
-    const int                   aWireRefIdx   = myGraph->myData->myIncStorage.NbWireRefs() - 1;
-    aWireRef.RefId                       = BRepGraph_RefId::Wire(aWireRefIdx);
-    aWireRef.ParentId                    = BRepGraph_NodeId::Face(aIdx);
-    aWireRef.WireDefId                   = BRepGraph_WireId::FromNodeId(aWireDefId);
-    aWireRef.IsOuter                     = false;
+    BRepGraphInc::WireRef& aWireRef    = myGraph->myData->myIncStorage.AppendWireRef();
+    const int              aWireRefIdx = myGraph->myData->myIncStorage.NbWireRefs() - 1;
+    aWireRef.RefId                     = BRepGraph_RefId::Wire(aWireRefIdx);
+    aWireRef.ParentId                  = BRepGraph_NodeId::Face(aIdx);
+    aWireRef.WireDefId                 = BRepGraph_WireId::FromNodeId(aWireDefId);
+    aWireRef.IsOuter                   = false;
     myGraph->allocateRefUID(aWireRef.RefId);
     myGraph->myData->myIncStorage.ChangeFace(BRepGraph_FaceId(aIdx))
       .WireRefIds.Append(BRepGraph_WireRefId(aWireRefIdx));
@@ -380,11 +377,11 @@ void BRepGraph::BuilderView::AddFaceToShell(const BRepGraph_NodeId   theShellEnt
       && !myGraph->myData->myIncStorage.Face(BRepGraph_FaceId(theFaceEntity.Index)).IsRemoved)
   {
     BRepGraphInc::FaceRef& aFREntry = myGraph->myData->myIncStorage.AppendFaceRef();
-    const int                   aFRIdx   = myGraph->myData->myIncStorage.NbFaceRefs() - 1;
-    aFREntry.RefId                       = BRepGraph_RefId::Face(aFRIdx);
-    aFREntry.ParentId                    = theShellEntity;
-    aFREntry.FaceDefId                   = BRepGraph_FaceId::FromNodeId(theFaceEntity);
-    aFREntry.Orientation                 = theOri;
+    const int              aFRIdx   = myGraph->myData->myIncStorage.NbFaceRefs() - 1;
+    aFREntry.RefId                  = BRepGraph_RefId::Face(aFRIdx);
+    aFREntry.ParentId               = theShellEntity;
+    aFREntry.FaceDefId              = BRepGraph_FaceId::FromNodeId(theFaceEntity);
+    aFREntry.Orientation            = theOri;
     myGraph->allocateRefUID(aFREntry.RefId);
     myGraph->myData->myIncStorage.ChangeShell(BRepGraph_ShellId(theShellEntity.Index))
       .FaceRefIds.Append(BRepGraph_FaceRefId(aFRIdx));
@@ -407,11 +404,11 @@ void BRepGraph::BuilderView::AddShellToSolid(const BRepGraph_NodeId   theSolidEn
       && !myGraph->myData->myIncStorage.Shell(BRepGraph_ShellId(theShellEntity.Index)).IsRemoved)
   {
     BRepGraphInc::ShellRef& aSREntry = myGraph->myData->myIncStorage.AppendShellRef();
-    const int                    aSRIdx   = myGraph->myData->myIncStorage.NbShellRefs() - 1;
-    aSREntry.RefId                        = BRepGraph_RefId::Shell(aSRIdx);
-    aSREntry.ParentId                     = theSolidEntity;
-    aSREntry.ShellDefId                   = BRepGraph_ShellId::FromNodeId(theShellEntity);
-    aSREntry.Orientation                  = theOri;
+    const int               aSRIdx   = myGraph->myData->myIncStorage.NbShellRefs() - 1;
+    aSREntry.RefId                   = BRepGraph_RefId::Shell(aSRIdx);
+    aSREntry.ParentId                = theSolidEntity;
+    aSREntry.ShellDefId              = BRepGraph_ShellId::FromNodeId(theShellEntity);
+    aSREntry.Orientation             = theOri;
     myGraph->allocateRefUID(aSREntry.RefId);
     myGraph->myData->myIncStorage.ChangeSolid(BRepGraph_SolidId(theSolidEntity.Index))
       .ShellRefIds.Append(BRepGraph_ShellRefId(aSRIdx));
@@ -432,12 +429,12 @@ BRepGraph_NodeId BRepGraph::BuilderView::AddCompound(
 
   for (int aChildIdx = 0; aChildIdx < theChildEntities.Length(); ++aChildIdx)
   {
-    const BRepGraph_NodeId&      aChild   = theChildEntities.Value(aChildIdx);
+    const BRepGraph_NodeId& aChild   = theChildEntities.Value(aChildIdx);
     BRepGraphInc::ChildRef& aCREntry = myGraph->myData->myIncStorage.AppendChildRef();
-    const int                    aCRIdx   = myGraph->myData->myIncStorage.NbChildRefs() - 1;
-    aCREntry.RefId                        = BRepGraph_RefId::Child(aCRIdx);
-    aCREntry.ParentId                     = aCompDef.Id;
-    aCREntry.ChildDefId                   = aChild;
+    const int               aCRIdx   = myGraph->myData->myIncStorage.NbChildRefs() - 1;
+    aCREntry.RefId                   = BRepGraph_RefId::Child(aCRIdx);
+    aCREntry.ParentId                = aCompDef.Id;
+    aCREntry.ChildDefId              = aChild;
     myGraph->allocateRefUID(aCREntry.RefId);
     aCompDef.ChildRefIds.Append(BRepGraph_ChildRefId(aCRIdx));
   }
@@ -458,9 +455,9 @@ BRepGraph_NodeId BRepGraph::BuilderView::AddCompSolid(
   for (int aSolIdx = 0; aSolIdx < theSolidEntities.Length(); ++aSolIdx)
   {
     BRepGraphInc::SolidRef& aSREntry = myGraph->myData->myIncStorage.AppendSolidRef();
-    const int                    aSRIdx   = myGraph->myData->myIncStorage.NbSolidRefs() - 1;
-    aSREntry.RefId                        = BRepGraph_RefId::Solid(aSRIdx);
-    aSREntry.ParentId                     = aCSolDef.Id;
+    const int               aSRIdx   = myGraph->myData->myIncStorage.NbSolidRefs() - 1;
+    aSREntry.RefId                   = BRepGraph_RefId::Solid(aSRIdx);
+    aSREntry.ParentId                = aCSolDef.Id;
     aSREntry.SolidDefId = BRepGraph_SolidId::FromNodeId(theSolidEntities.Value(aSolIdx));
     myGraph->allocateRefUID(aSREntry.RefId);
     aCSolDef.SolidRefIds.Append(BRepGraph_SolidRefId(aSRIdx));
@@ -546,11 +543,11 @@ BRepGraph_NodeId BRepGraph::BuilderView::AddOccurrence(const BRepGraph_NodeId th
   myGraph->allocateUID(anOccDef.Id);
 
   // Add OccurrenceRef to the parent product.
-  BRepGraphInc::OccurrenceRef& anOccRef = aStorage.AppendOccurrenceRef();
-  const int                         anOccRefIdx   = aStorage.NbOccurrenceRefs() - 1;
-  anOccRef.RefId                             = BRepGraph_RefId::Occurrence(anOccRefIdx);
-  anOccRef.ParentId                          = theParentProduct;
-  anOccRef.OccurrenceDefId                   = BRepGraph_OccurrenceId(anOccIdx);
+  BRepGraphInc::OccurrenceRef& anOccRef    = aStorage.AppendOccurrenceRef();
+  const int                    anOccRefIdx = aStorage.NbOccurrenceRefs() - 1;
+  anOccRef.RefId                           = BRepGraph_RefId::Occurrence(anOccRefIdx);
+  anOccRef.ParentId                        = theParentProduct;
+  anOccRef.OccurrenceDefId                 = BRepGraph_OccurrenceId(anOccIdx);
   myGraph->allocateRefUID(anOccRef.RefId);
   aStorage.ChangeProduct(BRepGraph_ProductId(theParentProduct.Index))
     .OccurrenceRefIds.Append(BRepGraph_OccurrenceRefId(anOccRefIdx));

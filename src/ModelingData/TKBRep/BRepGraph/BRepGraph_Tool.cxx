@@ -27,7 +27,8 @@
 
 //=================================================================================================
 
-gp_Pnt BRepGraph_Tool::Vertex::Pnt(const BRepGraph& theGraph, const BRepGraphInc::VertexUsage& theRef)
+gp_Pnt BRepGraph_Tool::Vertex::Pnt(const BRepGraph&                 theGraph,
+                                   const BRepGraphInc::VertexUsage& theRef)
 {
   const gp_Pnt& aPnt = theGraph.Topo().Vertex(theRef.VertexDefId).Point;
   if (theRef.LocalLocation.IsIdentity())
@@ -134,9 +135,8 @@ bool BRepGraph_Tool::Edge::HasPolygon3D(const BRepGraph& theGraph, const BRepGra
 
 //=================================================================================================
 
-const BRepGraphInc::VertexRef& BRepGraph_Tool::Edge::StartVertex(
-  const BRepGraph&       theGraph,
-  const BRepGraph_EdgeId theEdge)
+const BRepGraphInc::VertexRef& BRepGraph_Tool::Edge::StartVertex(const BRepGraph&       theGraph,
+                                                                 const BRepGraph_EdgeId theEdge)
 {
   return theGraph.Refs().Vertex(theGraph.Topo().Edge(theEdge).StartVertexRefId);
 }
@@ -144,7 +144,7 @@ const BRepGraphInc::VertexRef& BRepGraph_Tool::Edge::StartVertex(
 //=================================================================================================
 
 const BRepGraphInc::VertexRef& BRepGraph_Tool::Edge::EndVertex(const BRepGraph&       theGraph,
-                                                                    const BRepGraph_EdgeId theEdge)
+                                                               const BRepGraph_EdgeId theEdge)
 {
   return theGraph.Refs().Vertex(theGraph.Topo().Edge(theEdge).EndVertexRefId);
 }
@@ -152,7 +152,7 @@ const BRepGraphInc::VertexRef& BRepGraph_Tool::Edge::EndVertex(const BRepGraph& 
 //=================================================================================================
 
 GeomAdaptor_TransformedCurve BRepGraph_Tool::Edge::CurveAdaptor(
-  const BRepGraph&               theGraph,
+  const BRepGraph&                 theGraph,
   const BRepGraphInc::CoEdgeUsage& theRef)
 {
   const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdge(theRef.CoEdgeDefId);
@@ -224,7 +224,7 @@ const occ::handle<Geom_Curve>& BRepGraph_Tool::Edge::Curve(const BRepGraph&     
 
 //=================================================================================================
 
-occ::handle<Geom_Curve> BRepGraph_Tool::Edge::Curve(const BRepGraph&               theGraph,
+occ::handle<Geom_Curve> BRepGraph_Tool::Edge::Curve(const BRepGraph&                 theGraph,
                                                     const BRepGraphInc::CoEdgeUsage& theRef)
 {
   const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdge(theRef.CoEdgeDefId);
@@ -303,7 +303,7 @@ GeomAbs_Shape BRepGraph_Tool::Edge::MaxContinuity(const BRepGraph&       theGrap
 
 //=================================================================================================
 
-Geom2dAdaptor_Curve BRepGraph_Tool::CoEdge::PCurveAdaptor(const BRepGraph&               theGraph,
+Geom2dAdaptor_Curve BRepGraph_Tool::CoEdge::PCurveAdaptor(const BRepGraph&                 theGraph,
                                                           const BRepGraphInc::CoEdgeUsage& theRef)
 {
   return PCurveAdaptor(theGraph, theRef.CoEdgeDefId);
@@ -494,7 +494,7 @@ bool BRepGraph_Tool::Face::HasTriangulation(const BRepGraph&       theGraph,
 //=================================================================================================
 
 const BRepGraphInc::WireRef* BRepGraph_Tool::Face::OuterWire(const BRepGraph&       theGraph,
-                                                                  const BRepGraph_FaceId theFace)
+                                                             const BRepGraph_FaceId theFace)
 {
   const BRepGraphInc::FaceDef& aFace = theGraph.Topo().Face(theFace);
   const BRepGraph::RefsView&   aRefs = theGraph.Refs();
@@ -570,9 +570,9 @@ const occ::handle<Poly_Triangulation>& BRepGraph_Tool::Face::Triangulation(
 //=================================================================================================
 
 occ::handle<Adaptor3d_CurveOnSurface> BRepGraph_Tool::Edge::CurveOnSurface(
-  const BRepGraph&               theGraph,
+  const BRepGraph&                 theGraph,
   const BRepGraphInc::CoEdgeUsage& theRef,
-  const BRepGraph_FaceId         theFace)
+  const BRepGraph_FaceId           theFace)
 {
   const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdge(theRef.CoEdgeDefId);
   const BRepGraphInc::FaceDef&   aFace   = theGraph.Topo().Face(theFace);

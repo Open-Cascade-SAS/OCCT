@@ -374,44 +374,37 @@ public:
 
   //! @name Const transitional reference access
 
-  [[nodiscard]] const BRepGraphInc::ShellRef& ShellRef(
-    const BRepGraph_ShellRefId theRefId) const
+  [[nodiscard]] const BRepGraphInc::ShellRef& ShellRef(const BRepGraph_ShellRefId theRefId) const
   {
     return myShellRefs.Get(theRefId.Index);
   }
 
-  [[nodiscard]] const BRepGraphInc::FaceRef& FaceRef(
-    const BRepGraph_FaceRefId theRefId) const
+  [[nodiscard]] const BRepGraphInc::FaceRef& FaceRef(const BRepGraph_FaceRefId theRefId) const
   {
     return myFaceRefs.Get(theRefId.Index);
   }
 
-  [[nodiscard]] const BRepGraphInc::WireRef& WireRef(
-    const BRepGraph_WireRefId theRefId) const
+  [[nodiscard]] const BRepGraphInc::WireRef& WireRef(const BRepGraph_WireRefId theRefId) const
   {
     return myWireRefs.Get(theRefId.Index);
   }
 
-  [[nodiscard]] const BRepGraphInc::CoEdgeRef& CoEdgeRef(
-    const BRepGraph_CoEdgeRefId theRefId) const
+  [[nodiscard]] const BRepGraphInc::CoEdgeRef& CoEdgeRef(const BRepGraph_CoEdgeRefId theRefId) const
   {
     return myCoEdgeRefs.Get(theRefId.Index);
   }
 
-  [[nodiscard]] const BRepGraphInc::VertexRef& VertexRef(
-    const BRepGraph_VertexRefId theRefId) const
+  [[nodiscard]] const BRepGraphInc::VertexRef& VertexRef(const BRepGraph_VertexRefId theRefId) const
   {
     return myVertexRefs.Get(theRefId.Index);
   }
 
-  [[nodiscard]] const BRepGraphInc::SolidRef& SolidRef(
-    const BRepGraph_SolidRefId theRefId) const
+  [[nodiscard]] const BRepGraphInc::SolidRef& SolidRef(const BRepGraph_SolidRefId theRefId) const
   {
     return mySolidRefs.Get(theRefId.Index);
   }
 
-  [[nodiscard]] const BRepGraphInc::ChildRef& ChildRef(
-    const BRepGraph_ChildRefId theRefId) const
+  [[nodiscard]] const BRepGraphInc::ChildRef& ChildRef(const BRepGraph_ChildRefId theRefId) const
   {
     return myChildRefs.Get(theRefId.Index);
   }
@@ -528,8 +521,7 @@ public:
     return myChildRefs.Change(theRefId.Index);
   }
 
-  BRepGraphInc::OccurrenceRef& ChangeOccurrenceRef(
-    const BRepGraph_OccurrenceRefId theRefId)
+  BRepGraphInc::OccurrenceRef& ChangeOccurrenceRef(const BRepGraph_OccurrenceRefId theRefId)
   {
     return myOccurrenceRefs.Change(theRefId.Index);
   }

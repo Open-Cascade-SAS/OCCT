@@ -925,8 +925,7 @@ TEST(BRepGraphIncTest, FaceDirectVertex_Internal_Captured)
   EXPECT_EQ(aFaceEnt.VertexRefIds.Length(), 1);
   if (aFaceEnt.VertexRefIds.Length() == 1)
   {
-    const BRepGraphInc::VertexRef& aFaceVRef =
-      aStorage.VertexRef(aFaceEnt.VertexRefIds.Value(0));
+    const BRepGraphInc::VertexRef& aFaceVRef = aStorage.VertexRef(aFaceEnt.VertexRefIds.Value(0));
     EXPECT_GE(aFaceVRef.VertexDefId.Index, 0);
     EXPECT_EQ(aFaceVRef.Orientation, TopAbs_INTERNAL);
   }

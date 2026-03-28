@@ -67,14 +67,14 @@ static NCollection_Vector<BRepGraphInc::CoEdgeUsage> collectWireCoEdgeRefs(
   const BRepGraph&       theGraph,
   const BRepGraph_NodeId theWireNodeId)
 {
-  const BRepGraph::TopoView&                  aDefs = theGraph.Topo();
-  const BRepGraph::RefsView&                  aRefs = theGraph.Refs();
+  const BRepGraph::TopoView&                    aDefs = theGraph.Topo();
+  const BRepGraph::RefsView&                    aRefs = theGraph.Refs();
   NCollection_Vector<BRepGraphInc::CoEdgeUsage> aResult;
 
   const BRepGraphInc::WireDef& aWireDef = aDefs.Wire(BRepGraph_WireId(theWireNodeId.Index));
   for (int aRefIter = 0; aRefIter < aWireDef.CoEdgeRefIds.Length(); ++aRefIter)
   {
-    const BRepGraph_CoEdgeRefId         aRefId = aWireDef.CoEdgeRefIds.Value(aRefIter);
+    const BRepGraph_CoEdgeRefId    aRefId = aWireDef.CoEdgeRefIds.Value(aRefIter);
     const BRepGraphInc::CoEdgeRef& aRef   = aRefs.CoEdge(aRefId);
     if (aRef.IsRemoved || !aRef.CoEdgeDefId.IsValid(aDefs.NbCoEdges()))
     {
@@ -98,9 +98,9 @@ void BRepGraphCheck::CheckWireMinimum(const BRepGraph&                          
                                       const BRepGraph_WireId                    theWire,
                                       NCollection_Vector<BRepGraphCheck_Issue>& theIssues)
 {
-  const BRepGraph::TopoView&                        aDefs       = theGraph.Topo();
-  const BRepGraphInc::WireDef&                      aWireDef    = aDefs.Wire(theWire);
-  const BRepGraph_NodeId                            aWireNodeId = aWireDef.Id;
+  const BRepGraph::TopoView&                          aDefs       = theGraph.Topo();
+  const BRepGraphInc::WireDef&                        aWireDef    = aDefs.Wire(theWire);
+  const BRepGraph_NodeId                              aWireNodeId = aWireDef.Id;
   const NCollection_Vector<BRepGraphInc::CoEdgeUsage> aCoEdgeRefs =
     collectWireCoEdgeRefs(theGraph, aWireNodeId);
 
@@ -122,8 +122,8 @@ void BRepGraphCheck::CheckWireMinimum(const BRepGraph&                          
   for (int aCoEdgeIter = 0; aCoEdgeIter < aCoEdgeRefs.Length(); ++aCoEdgeIter)
   {
     const BRepGraphInc::CoEdgeUsage& aCR        = aCoEdgeRefs.Value(aCoEdgeIter);
-    const BRepGraphInc::CoEdgeDef& aCoEdgeDef = aDefs.CoEdge(aCR.CoEdgeDefId);
-    const int                      anEdgeIdx  = aCoEdgeDef.EdgeDefId.Index;
+    const BRepGraphInc::CoEdgeDef&   aCoEdgeDef = aDefs.CoEdge(aCR.CoEdgeDefId);
+    const int                        anEdgeIdx  = aCoEdgeDef.EdgeDefId.Index;
     if (!anEdgeCounts.IsBound(anEdgeIdx))
     {
       anEdgeCounts.Bind(anEdgeIdx, 1);
@@ -198,9 +198,9 @@ void BRepGraphCheck::CheckWireOnFace(const BRepGraph&                          t
     for (int anEdgeIter = 0; anEdgeIter < aNbEdges; ++anEdgeIter)
     {
       const BRepGraphInc::CoEdgeUsage& aCR        = aCoEdgeRefs.Value(anEdgeIter);
-      const BRepGraphInc::CoEdgeDef& aCoEdgeDef = aDefs.CoEdge(aCR.CoEdgeDefId);
-      const BRepGraphInc::EdgeDef&   anEdgeDef  = aDefs.Edge(aCoEdgeDef.EdgeDefId);
-      const BRepGraph_NodeId         aStartVtx =
+      const BRepGraphInc::CoEdgeDef&   aCoEdgeDef = aDefs.CoEdge(aCR.CoEdgeDefId);
+      const BRepGraphInc::EdgeDef&     anEdgeDef  = aDefs.Edge(aCoEdgeDef.EdgeDefId);
+      const BRepGraph_NodeId           aStartVtx =
         resolveOrientedStartVertex(theGraph, anEdgeDef, aCoEdgeDef.Sense);
       const BRepGraph_NodeId anEndVtx =
         resolveOrientedEndVertex(theGraph, anEdgeDef, aCoEdgeDef.Sense);
@@ -234,9 +234,9 @@ void BRepGraphCheck::CheckWireOnFace(const BRepGraph&                          t
       const int aCurrIdx = aQueue(aQueueHead++);
 
       const BRepGraphInc::CoEdgeUsage& aCurrCR     = aCoEdgeRefs.Value(aCurrIdx);
-      const BRepGraphInc::CoEdgeDef& aCurrCoEdge = aDefs.CoEdge(aCurrCR.CoEdgeDefId);
-      const BRepGraphInc::EdgeDef&   aCurrEdge   = aDefs.Edge(aCurrCoEdge.EdgeDefId);
-      const BRepGraph_NodeId         aStartVtx =
+      const BRepGraphInc::CoEdgeDef&   aCurrCoEdge = aDefs.CoEdge(aCurrCR.CoEdgeDefId);
+      const BRepGraphInc::EdgeDef&     aCurrEdge   = aDefs.Edge(aCurrCoEdge.EdgeDefId);
+      const BRepGraph_NodeId           aStartVtx =
         resolveOrientedStartVertex(theGraph, aCurrEdge, aCurrCoEdge.Sense);
       const BRepGraph_NodeId anEndVtx =
         resolveOrientedEndVertex(theGraph, aCurrEdge, aCurrCoEdge.Sense);
@@ -315,7 +315,7 @@ void BRepGraphCheck::CheckWireOnFace(const BRepGraph&                          t
   for (int anEdgeIter = 0; anEdgeIter < aNbEdges && !aHasSeamEdge; ++anEdgeIter)
   {
     const BRepGraphInc::CoEdgeUsage& aCR        = aCoEdgeRefs.Value(anEdgeIter);
-    const BRepGraphInc::CoEdgeDef& aCoEdgeDef = aDefs.CoEdge(aCR.CoEdgeDefId);
+    const BRepGraphInc::CoEdgeDef&   aCoEdgeDef = aDefs.CoEdge(aCR.CoEdgeDefId);
     if (aCoEdgeDef.SeamPairId.IsValid())
       aHasSeamEdge = true;
   }
@@ -331,7 +331,7 @@ void BRepGraphCheck::CheckWireOnFace(const BRepGraph&                          t
     auto vtxRefLookup = [&theGraph](const BRepGraph_VertexRefId theRefId) -> BRepGraph_VertexId {
       return theGraph.Refs().Vertex(theRefId).VertexDefId;
     };
-    BRepGraph_WireExplorer  aWireExp(aCoEdgeRefs, coedgeLookup, edgeLookup, vtxRefLookup);
+    BRepGraph_WireExplorer    aWireExp(aCoEdgeRefs, coedgeLookup, edgeLookup, vtxRefLookup);
     BRepGraphInc::CoEdgeUsage aFirstCR = aWireExp.CurrentRef();
     BRepGraphInc::CoEdgeUsage aLastCR  = aFirstCR;
     for (; aWireExp.More(); aWireExp.Next())
@@ -423,8 +423,8 @@ void BRepGraphCheck::CheckWireOnFace(const BRepGraph&                          t
   for (int anEdgeIter = 0; anEdgeIter < aNbEdges; ++anEdgeIter)
   {
     const BRepGraphInc::CoEdgeUsage& aCR        = aCoEdgeRefs.Value(anEdgeIter);
-    const BRepGraphInc::CoEdgeDef& aCoEdgeDef = aDefs.CoEdge(aCR.CoEdgeDefId);
-    const BRepGraphInc::EdgeDef&   anEdgeDef  = aDefs.Edge(aCoEdgeDef.EdgeDefId);
+    const BRepGraphInc::CoEdgeDef&   aCoEdgeDef = aDefs.CoEdge(aCR.CoEdgeDefId);
+    const BRepGraphInc::EdgeDef&     anEdgeDef  = aDefs.Edge(aCoEdgeDef.EdgeDefId);
 
     // Skip degenerate edges.
     if (BRepGraph_Tool::Edge::Degenerated(theGraph, aCoEdgeDef.EdgeDefId))

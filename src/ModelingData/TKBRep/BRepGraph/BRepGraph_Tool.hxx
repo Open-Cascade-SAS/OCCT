@@ -46,11 +46,11 @@ class Adaptor3d_CurveOnSurface;
 class BRepGraph_Tool
 {
 public:
-  using VertexUsage      = BRepGraphInc::VertexUsage;
-  using CoEdgeUsage      = BRepGraphInc::CoEdgeUsage;
-  using VertexRef = BRepGraphInc::VertexRef;
-  using WireRef   = BRepGraphInc::WireRef;
-  using CoEdgeDef      = BRepGraphInc::CoEdgeDef;
+  using VertexUsage = BRepGraphInc::VertexUsage;
+  using CoEdgeUsage = BRepGraphInc::CoEdgeUsage;
+  using VertexRef   = BRepGraphInc::VertexRef;
+  using WireRef     = BRepGraphInc::WireRef;
+  using CoEdgeDef   = BRepGraphInc::CoEdgeDef;
 
   //! @brief Vertex geometry accessors.
   //!
@@ -64,7 +64,7 @@ public:
     //! @param[in] theGraph  source graph
     //! @param[in] theRef    vertex incidence reference carrying Location
     //! @return transformed 3D point
-    [[nodiscard]] Standard_EXPORT static gp_Pnt Pnt(const BRepGraph& theGraph,
+    [[nodiscard]] Standard_EXPORT static gp_Pnt Pnt(const BRepGraph&   theGraph,
                                                     const VertexUsage& theRef);
 
     //! Returns the vertex 3D point in definition frame (no Location applied).
@@ -161,9 +161,8 @@ public:
     //! @param[in] theGraph source graph
     //! @param[in] theEdge  typed edge definition identifier
     //! @return const reference to the end VertexRef
-    [[nodiscard]] Standard_EXPORT static const VertexRef& EndVertex(
-      const BRepGraph&       theGraph,
-      const BRepGraph_EdgeId theEdge);
+    [[nodiscard]] Standard_EXPORT static const VertexRef& EndVertex(const BRepGraph&       theGraph,
+                                                                    const BRepGraph_EdgeId theEdge);
 
     //! @name 3D Curve
 
@@ -186,7 +185,7 @@ public:
     //! @param[in] theGraph source graph
     //! @param[in] theRef   coedge incidence reference carrying Location
     //! @return transformed curve handle
-    [[nodiscard]] Standard_EXPORT static occ::handle<Geom_Curve> Curve(const BRepGraph& theGraph,
+    [[nodiscard]] Standard_EXPORT static occ::handle<Geom_Curve> Curve(const BRepGraph&   theGraph,
                                                                        const CoEdgeUsage& theRef);
 
     //! Returns the 3D curve adaptor in definition frame (identity Trsf).
@@ -203,7 +202,7 @@ public:
     //! @param[in] theRef   coedge incidence reference carrying Location
     //! @return curve adaptor with Location applied
     [[nodiscard]] Standard_EXPORT static GeomAdaptor_TransformedCurve CurveAdaptor(
-      const BRepGraph& theGraph,
+      const BRepGraph&   theGraph,
       const CoEdgeUsage& theRef);
 
     //! @name 3D Polygon
@@ -297,7 +296,7 @@ public:
     //! @return adaptor handle, or null if PCurve or surface is missing
     [[nodiscard]] Standard_EXPORT static occ::handle<Adaptor3d_CurveOnSurface> CurveOnSurface(
       const BRepGraph&       theGraph,
-      const CoEdgeUsage&       theRef,
+      const CoEdgeUsage&     theRef,
       const BRepGraph_FaceId theFace);
   };
 
@@ -349,7 +348,7 @@ public:
     //! @param[in] theRef   coedge incidence reference
     //! @return 2D curve adaptor
     [[nodiscard]] Standard_EXPORT static Geom2dAdaptor_Curve PCurveAdaptor(
-      const BRepGraph& theGraph,
+      const BRepGraph&   theGraph,
       const CoEdgeUsage& theRef);
 
     //! Returns the UV endpoints from a CoEdge as (UV1, UV2).
@@ -425,9 +424,8 @@ public:
     //! @param[in] theGraph source graph
     //! @param[in] theFace  typed face definition identifier
     //! @return pointer to the outer WireRef, or nullptr
-    [[nodiscard]] Standard_EXPORT static const WireRef* OuterWire(
-      const BRepGraph&       theGraph,
-      const BRepGraph_FaceId theFace);
+    [[nodiscard]] Standard_EXPORT static const WireRef* OuterWire(const BRepGraph&       theGraph,
+                                                                  const BRepGraph_FaceId theFace);
 
     //! Returns the raw surface handle (definition frame, no copy).
     //! @param[in] theGraph source graph

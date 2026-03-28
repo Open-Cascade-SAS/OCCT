@@ -713,11 +713,9 @@ TEST(BRepGraph_BuildTest, Box_EdgeVertexDefsAreValid)
 
   for (int anIdx = 0; anIdx < aGraph.Topo().NbEdges(); ++anIdx)
   {
-    const BRepGraph_EdgeId              anEdgeId(anIdx);
-    const BRepGraphInc::VertexRef& aStartRef =
-      BRepGraph_Tool::Edge::StartVertex(aGraph, anEdgeId);
-    const BRepGraphInc::VertexRef& anEndRef =
-      BRepGraph_Tool::Edge::EndVertex(aGraph, anEdgeId);
+    const BRepGraph_EdgeId         anEdgeId(anIdx);
+    const BRepGraphInc::VertexRef& aStartRef = BRepGraph_Tool::Edge::StartVertex(aGraph, anEdgeId);
+    const BRepGraphInc::VertexRef& anEndRef  = BRepGraph_Tool::Edge::EndVertex(aGraph, anEdgeId);
     EXPECT_TRUE(aStartRef.VertexDefId.IsValid()) << "Edge " << anIdx << " has invalid start vertex";
     EXPECT_TRUE(anEndRef.VertexDefId.IsValid()) << "Edge " << anIdx << " has invalid end vertex";
     EXPECT_EQ(BRepGraph_NodeId(aStartRef.VertexDefId).NodeKind, BRepGraph_NodeId::Kind::Vertex);

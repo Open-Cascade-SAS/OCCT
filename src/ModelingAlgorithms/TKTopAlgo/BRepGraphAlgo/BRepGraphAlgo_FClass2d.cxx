@@ -169,7 +169,7 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph&       theGraph,
   NCollection_Vector<int> anInnerWireDefIndices;
   for (int aWRI = 0; aWRI < aFaceEnt.WireRefIds.Length(); ++aWRI)
   {
-    const BRepGraph_WireRefId         aWireRefId = aFaceEnt.WireRefIds.Value(aWRI);
+    const BRepGraph_WireRefId    aWireRefId = aFaceEnt.WireRefIds.Value(aWRI);
     const BRepGraphInc::WireRef& aWR        = aRefs.Wire(aWireRefId);
     if (aWR.IsRemoved || !aWR.WireDefId.IsValid(aTopoView.NbWires()))
     {
@@ -230,11 +230,11 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph&       theGraph,
       return theGraph.Refs().Vertex(theRefId).VertexDefId;
     };
     NCollection_Vector<BRepGraphInc::CoEdgeUsage> aWireCoEdgeRefs;
-    const BRepGraph_WireId                      aWireId(aWireDefIndices(aWireIdx));
-    const BRepGraphInc::WireDef&                aWireEnt = aTopoView.Wire(aWireId);
+    const BRepGraph_WireId                        aWireId(aWireDefIndices(aWireIdx));
+    const BRepGraphInc::WireDef&                  aWireEnt = aTopoView.Wire(aWireId);
     for (int aCRI = 0; aCRI < aWireEnt.CoEdgeRefIds.Length(); ++aCRI)
     {
-      const BRepGraph_CoEdgeRefId         aCERefId = aWireEnt.CoEdgeRefIds.Value(aCRI);
+      const BRepGraph_CoEdgeRefId    aCERefId = aWireEnt.CoEdgeRefIds.Value(aCRI);
       const BRepGraphInc::CoEdgeRef& aCRE     = aRefs.CoEdge(aCERefId);
       if (aCRE.IsRemoved || !aCRE.CoEdgeDefId.IsValid(aTopoView.NbCoEdges()))
       {
@@ -262,9 +262,9 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph&       theGraph,
     for (int anEdgeIdx = 0; anEdgeIdx < aNbEdgeRefs; ++anEdgeIdx)
     {
       const BRepGraphInc::CoEdgeUsage& aCoEdgeRef = anOrderedRefs.Value(anEdgeIdx);
-      const BRepGraphInc::CoEdgeDef& aCoEdgeDef = theGraph.Topo().CoEdge(aCoEdgeRef.CoEdgeDefId);
-      const BRepGraphInc::EdgeDef&   anEdgeDef  = theGraph.Topo().Edge(aCoEdgeDef.EdgeDefId);
-      const TopAbs_Orientation       anOri      = aCoEdgeDef.Sense;
+      const BRepGraphInc::CoEdgeDef&   aCoEdgeDef = theGraph.Topo().CoEdge(aCoEdgeRef.CoEdgeDefId);
+      const BRepGraphInc::EdgeDef&     anEdgeDef  = theGraph.Topo().Edge(aCoEdgeDef.EdgeDefId);
+      const TopAbs_Orientation         anOri      = aCoEdgeDef.Sense;
 
       if (anOri != TopAbs_FORWARD && anOri != TopAbs_REVERSED)
         continue;
@@ -414,7 +414,7 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph&       theGraph,
           for (int anEdgeIdx = 0; anEdgeIdx < aNbEdgeRefs; ++anEdgeIdx)
           {
             const BRepGraphInc::CoEdgeUsage& aCoEdgeRef2 = anOrderedRefs.Value(anEdgeIdx);
-            const BRepGraphInc::CoEdgeDef& aCoEdgeDef2 =
+            const BRepGraphInc::CoEdgeDef&   aCoEdgeDef2 =
               theGraph.Topo().CoEdge(aCoEdgeRef2.CoEdgeDefId);
             const TopAbs_Orientation anOri = aCoEdgeDef2.Sense;
 

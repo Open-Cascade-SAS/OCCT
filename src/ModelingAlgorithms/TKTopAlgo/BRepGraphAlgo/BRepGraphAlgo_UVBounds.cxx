@@ -286,7 +286,7 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph&       theGraph,
     const BRepGraphInc::FaceDef& aFaceEnt = theGraph.Topo().Face(theFace);
     for (int i = 0; i < aFaceEnt.WireRefIds.Length(); ++i)
     {
-      const BRepGraph_WireRefId         aRefId = aFaceEnt.WireRefIds.Value(i);
+      const BRepGraph_WireRefId    aRefId = aFaceEnt.WireRefIds.Value(i);
       const BRepGraphInc::WireRef& aWR    = aRefs.Wire(aRefId);
       if (!aWR.IsRemoved && aWR.WireDefId.IsValid(theGraph.Topo().NbWires()))
       {
@@ -314,7 +314,7 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph&       theGraph,
       const BRepGraphInc::WireDef& aWireEnt = theGraph.Topo().Wire(theWireId);
       for (int aCRI = 0; aCRI < aWireEnt.CoEdgeRefIds.Length() && !isAborted; ++aCRI)
       {
-        const BRepGraph_CoEdgeRefId         aCERefId = aWireEnt.CoEdgeRefIds.Value(aCRI);
+        const BRepGraph_CoEdgeRefId    aCERefId = aWireEnt.CoEdgeRefIds.Value(aCRI);
         const BRepGraphInc::CoEdgeRef& aCR      = aRefs.CoEdge(aCERefId);
         if (aCR.IsRemoved || !aCR.CoEdgeDefId.IsValid(theGraph.Topo().NbCoEdges()))
         {
@@ -408,7 +408,7 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph&       theGraph,
     const BRepGraphInc::FaceDef& aFaceEnt2 = theGraph.Topo().Face(theFace);
     for (int aWRI = 0; aWRI < aFaceEnt2.WireRefIds.Length() && !isAborted; ++aWRI)
     {
-      const BRepGraph_WireRefId         aWireRefId = aFaceEnt2.WireRefIds.Value(aWRI);
+      const BRepGraph_WireRefId    aWireRefId = aFaceEnt2.WireRefIds.Value(aWRI);
       const BRepGraphInc::WireRef& aWR        = aRefs.Wire(aWireRefId);
       if (aWR.IsRemoved || !aWR.WireDefId.IsValid(theGraph.Topo().NbWires()))
       {
@@ -433,7 +433,7 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph&       theGraph,
   const BRepGraphInc::FaceDef& aFaceEnt3 = theGraph.Topo().Face(theFace);
   for (int aWRI = 0; aWRI < aFaceEnt3.WireRefIds.Length(); ++aWRI)
   {
-    const BRepGraph_WireRefId         aWireRefId = aFaceEnt3.WireRefIds.Value(aWRI);
+    const BRepGraph_WireRefId    aWireRefId = aFaceEnt3.WireRefIds.Value(aWRI);
     const BRepGraphInc::WireRef& aWR        = aRefs.Wire(aWireRefId);
     if (aWR.IsRemoved || !aWR.WireDefId.IsValid(theGraph.Topo().NbWires()))
     {
@@ -442,7 +442,7 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph&       theGraph,
     const BRepGraphInc::WireDef& aWireEnt = theGraph.Topo().Wire(aWR.WireDefId);
     for (int aCRI = 0; aCRI < aWireEnt.CoEdgeRefIds.Length(); ++aCRI)
     {
-      const BRepGraph_CoEdgeRefId         aCERefId = aWireEnt.CoEdgeRefIds.Value(aCRI);
+      const BRepGraph_CoEdgeRefId    aCERefId = aWireEnt.CoEdgeRefIds.Value(aCRI);
       const BRepGraphInc::CoEdgeRef& aCR      = aRefs.CoEdge(aCERefId);
       if (aCR.IsRemoved || !aCR.CoEdgeDefId.IsValid(theGraph.Topo().NbCoEdges()))
       {

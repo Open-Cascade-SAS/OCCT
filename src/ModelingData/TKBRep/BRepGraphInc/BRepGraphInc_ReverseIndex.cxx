@@ -26,7 +26,7 @@ namespace
 template <typename T>
 BRepGraph_VertexId resolveVertexDefId(
   const NCollection_Vector<BRepGraphInc::VertexRef>& theVertexRefs,
-  const T                                                 theRefId)
+  const T                                            theRefId)
 {
   if (!theRefId.IsValid() || theRefId.Index < 0 || theRefId.Index >= theVertexRefs.Length())
     return BRepGraph_VertexId();
@@ -77,21 +77,21 @@ void BRepGraphInc_ReverseIndex::Clear()
 //=================================================================================================
 
 void BRepGraphInc_ReverseIndex::Build(
-  const NCollection_Vector<BRepGraphInc::EdgeDef>&        theEdges,
-  const NCollection_Vector<BRepGraphInc::CoEdgeDef>&      theCoEdges,
-  const NCollection_Vector<BRepGraphInc::WireDef>&        theWires,
-  const NCollection_Vector<BRepGraphInc::FaceDef>&        theFaces,
-  const NCollection_Vector<BRepGraphInc::ShellDef>&       theShells,
-  const NCollection_Vector<BRepGraphInc::SolidDef>&       theSolids,
-  const NCollection_Vector<BRepGraphInc::CompoundDef>&    theCompounds,
-  const NCollection_Vector<BRepGraphInc::CompSolidDef>&   theCompSolids,
-  const NCollection_Vector<BRepGraphInc::ShellRef>&  theShellRefs,
-  const NCollection_Vector<BRepGraphInc::FaceRef>&   theFaceRefs,
-  const NCollection_Vector<BRepGraphInc::WireRef>&   theWireRefs,
-  const NCollection_Vector<BRepGraphInc::CoEdgeRef>& theCoEdgeRefs,
-  const NCollection_Vector<BRepGraphInc::SolidRef>&  theSolidRefs,
-  const NCollection_Vector<BRepGraphInc::ChildRef>&  theChildRefs,
-  const NCollection_Vector<BRepGraphInc::VertexRef>& theVertexRefs)
+  const NCollection_Vector<BRepGraphInc::EdgeDef>&      theEdges,
+  const NCollection_Vector<BRepGraphInc::CoEdgeDef>&    theCoEdges,
+  const NCollection_Vector<BRepGraphInc::WireDef>&      theWires,
+  const NCollection_Vector<BRepGraphInc::FaceDef>&      theFaces,
+  const NCollection_Vector<BRepGraphInc::ShellDef>&     theShells,
+  const NCollection_Vector<BRepGraphInc::SolidDef>&     theSolids,
+  const NCollection_Vector<BRepGraphInc::CompoundDef>&  theCompounds,
+  const NCollection_Vector<BRepGraphInc::CompSolidDef>& theCompSolids,
+  const NCollection_Vector<BRepGraphInc::ShellRef>&     theShellRefs,
+  const NCollection_Vector<BRepGraphInc::FaceRef>&      theFaceRefs,
+  const NCollection_Vector<BRepGraphInc::WireRef>&      theWireRefs,
+  const NCollection_Vector<BRepGraphInc::CoEdgeRef>&    theCoEdgeRefs,
+  const NCollection_Vector<BRepGraphInc::SolidRef>&     theSolidRefs,
+  const NCollection_Vector<BRepGraphInc::ChildRef>&     theChildRefs,
+  const NCollection_Vector<BRepGraphInc::VertexRef>&    theVertexRefs)
 {
   myNbIndexedCoEdges = 0;
 
@@ -392,22 +392,22 @@ void BRepGraphInc_ReverseIndex::Build(
 //=================================================================================================
 
 void BRepGraphInc_ReverseIndex::BuildDelta(
-  const NCollection_Vector<BRepGraphInc::EdgeDef>&        theEdges,
-  const NCollection_Vector<BRepGraphInc::CoEdgeDef>&      theCoEdges,
-  const NCollection_Vector<BRepGraphInc::WireDef>&        theWires,
-  const NCollection_Vector<BRepGraphInc::FaceDef>&        theFaces,
-  const NCollection_Vector<BRepGraphInc::ShellDef>&       theShells,
-  const NCollection_Vector<BRepGraphInc::SolidDef>&       theSolids,
+  const NCollection_Vector<BRepGraphInc::EdgeDef>&   theEdges,
+  const NCollection_Vector<BRepGraphInc::CoEdgeDef>& theCoEdges,
+  const NCollection_Vector<BRepGraphInc::WireDef>&   theWires,
+  const NCollection_Vector<BRepGraphInc::FaceDef>&   theFaces,
+  const NCollection_Vector<BRepGraphInc::ShellDef>&  theShells,
+  const NCollection_Vector<BRepGraphInc::SolidDef>&  theSolids,
   const NCollection_Vector<BRepGraphInc::ShellRef>&  theShellRefs,
   const NCollection_Vector<BRepGraphInc::FaceRef>&   theFaceRefs,
   const NCollection_Vector<BRepGraphInc::WireRef>&   theWireRefs,
   const NCollection_Vector<BRepGraphInc::CoEdgeRef>& theCoEdgeRefs,
   const NCollection_Vector<BRepGraphInc::VertexRef>& theVertexRefs,
-  const int                                               theOldNbEdges,
-  const int                                               theOldNbWires,
-  const int                                               theOldNbFaces,
-  const int                                               theOldNbShells,
-  const int                                               theOldNbSolids)
+  const int                                          theOldNbEdges,
+  const int                                          theOldNbWires,
+  const int                                          theOldNbFaces,
+  const int                                          theOldNbShells,
+  const int                                          theOldNbSolids)
 {
   // Helper: resolve a VertexRefId to the corresponding VertexDefId (BRepGraph_VertexId).
   // Returns an invalid id if the ref id is invalid or out of range.
@@ -779,12 +779,12 @@ void BRepGraphInc_ReverseIndex::UnbindEdgeFromFace(const BRepGraph_EdgeId theEdg
 //=================================================================================================
 
 bool BRepGraphInc_ReverseIndex::Validate(
-  const NCollection_Vector<BRepGraphInc::EdgeDef>&        theEdges,
-  const NCollection_Vector<BRepGraphInc::CoEdgeDef>&      theCoEdges,
-  const NCollection_Vector<BRepGraphInc::WireDef>&        theWires,
-  const NCollection_Vector<BRepGraphInc::FaceDef>&        theFaces,
-  const NCollection_Vector<BRepGraphInc::ShellDef>&       theShells,
-  const NCollection_Vector<BRepGraphInc::SolidDef>&       theSolids,
+  const NCollection_Vector<BRepGraphInc::EdgeDef>&   theEdges,
+  const NCollection_Vector<BRepGraphInc::CoEdgeDef>& theCoEdges,
+  const NCollection_Vector<BRepGraphInc::WireDef>&   theWires,
+  const NCollection_Vector<BRepGraphInc::FaceDef>&   theFaces,
+  const NCollection_Vector<BRepGraphInc::ShellDef>&  theShells,
+  const NCollection_Vector<BRepGraphInc::SolidDef>&  theSolids,
   const NCollection_Vector<BRepGraphInc::ShellRef>&  theShellRefs,
   const NCollection_Vector<BRepGraphInc::FaceRef>&   theFaceRefs,
   const NCollection_Vector<BRepGraphInc::WireRef>&   theWireRefs,

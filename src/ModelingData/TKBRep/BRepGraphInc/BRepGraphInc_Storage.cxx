@@ -235,8 +235,7 @@ void BRepGraphInc_Storage::ResetAllRefUIDs()
 
 //=================================================================================================
 
-const BRepGraphInc::BaseRef& BRepGraphInc_Storage::BaseRef(
-  const BRepGraph_RefId theRefId) const
+const BRepGraphInc::BaseRef& BRepGraphInc_Storage::BaseRef(const BRepGraph_RefId theRefId) const
 {
   switch (theRefId.RefKind)
   {

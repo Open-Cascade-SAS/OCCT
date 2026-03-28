@@ -114,7 +114,7 @@ void BRepGraphCheck_Analyzer::Perform()
 
         for (int aWireRefIter = 0; aWireRefIter < aFaceDef.WireRefIds.Length(); ++aWireRefIter)
         {
-          const BRepGraph_WireRefId         aWireRefId = aFaceDef.WireRefIds.Value(aWireRefIter);
+          const BRepGraph_WireRefId    aWireRefId = aFaceDef.WireRefIds.Value(aWireRefIter);
           const BRepGraphInc::WireRef& aWireRef   = aLocalRefs.Wire(aWireRefId);
           if (aWireRef.IsRemoved || !aWireRef.WireDefId.IsValid(aLocalDefs.NbWires()))
           {
@@ -132,7 +132,7 @@ void BRepGraphCheck_Analyzer::Perform()
           for (int aCoEdgeRefIter = 0; aCoEdgeRefIter < aWireDef.CoEdgeRefIds.Length();
                ++aCoEdgeRefIter)
           {
-            const BRepGraph_CoEdgeRefId aCoEdgeRefId = aWireDef.CoEdgeRefIds.Value(aCoEdgeRefIter);
+            const BRepGraph_CoEdgeRefId aCoEdgeRefId  = aWireDef.CoEdgeRefIds.Value(aCoEdgeRefIter);
             const BRepGraphInc::CoEdgeRef& aCoEdgeRef = aLocalRefs.CoEdge(aCoEdgeRefId);
             if (aCoEdgeRef.IsRemoved || !aCoEdgeRef.CoEdgeDefId.IsValid(aLocalDefs.NbCoEdges()))
             {

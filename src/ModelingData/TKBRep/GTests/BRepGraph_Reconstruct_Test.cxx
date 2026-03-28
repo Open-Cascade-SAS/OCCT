@@ -344,7 +344,7 @@ TEST(BRepGraph_ReconstructTest, Face_OrientationPreserved)
   for (int aRefIdx = 0; aRefIdx < aFaceRefs.Length(); ++aRefIdx)
   {
     const BRepGraphInc::FaceRef& aFaceRef      = aGraph.Refs().Face(aFaceRefs.Value(aRefIdx));
-    const TopAbs_Orientation          anExpectedOri = aFaceRef.Orientation;
+    const TopAbs_Orientation     anExpectedOri = aFaceRef.Orientation;
 
     TopoDS_Shape aReconFace = aGraph.Shapes().ReconstructFace(aFaceRef.FaceDefId);
     ASSERT_FALSE(aReconFace.IsNull())
@@ -462,8 +462,8 @@ TEST(BRepGraph_ReconstructTest, AfterVertexMutation_ModifiedFlagAndPointChanged)
   ASSERT_GT(aCoEdgeRefs.Length(), 0);
 
   const BRepGraphInc::CoEdgeRef& aFirstCR     = aGraph.Refs().CoEdge(aCoEdgeRefs.First());
-  const BRepGraphInc::CoEdgeDef&      aFirstCoEdge = aGraph.Topo().CoEdge(aFirstCR.CoEdgeDefId);
-  const int                           aVertIdx =
+  const BRepGraphInc::CoEdgeDef& aFirstCoEdge = aGraph.Topo().CoEdge(aFirstCR.CoEdgeDefId);
+  const int                      aVertIdx =
     BRepGraph_Tool::Edge::StartVertex(aGraph, BRepGraph_EdgeId(aFirstCoEdge.EdgeDefId))
       .VertexDefId.Index;
   ASSERT_GE(aVertIdx, 0);

@@ -101,7 +101,7 @@ void forWireCoEdgeRefEntries(const BRepGraph&       theGraph,
   const BRepGraph::RefsView&   aRefs    = theGraph.Refs();
   for (int i = 0; i < aWireEnt.CoEdgeRefIds.Length(); ++i)
   {
-    const BRepGraph_CoEdgeRefId         aRefId = aWireEnt.CoEdgeRefIds.Value(i);
+    const BRepGraph_CoEdgeRefId    aRefId = aWireEnt.CoEdgeRefIds.Value(i);
     const BRepGraphInc::CoEdgeRef& aCR    = aRefs.CoEdge(aRefId);
     if (aCR.IsRemoved || !aCR.CoEdgeDefId.IsValid(theGraph.Topo().NbCoEdges()))
     {
@@ -121,7 +121,7 @@ void forFaceWireRefEntries(const BRepGraph&       theGraph,
   const BRepGraph::RefsView&   aRefs    = theGraph.Refs();
   for (int i = 0; i < aFaceEnt.WireRefIds.Length(); ++i)
   {
-    const BRepGraph_WireRefId         aRefId = aFaceEnt.WireRefIds.Value(i);
+    const BRepGraph_WireRefId    aRefId = aFaceEnt.WireRefIds.Value(i);
     const BRepGraphInc::WireRef& aWR    = aRefs.Wire(aRefId);
     if (aWR.IsRemoved || !aWR.WireDefId.IsValid(theGraph.Topo().NbWires()))
     {
@@ -141,7 +141,7 @@ void forShellFaceRefEntries(const BRepGraph&        theGraph,
   const BRepGraph::RefsView&    aRefs     = theGraph.Refs();
   for (int i = 0; i < aShellEnt.FaceRefIds.Length(); ++i)
   {
-    const BRepGraph_FaceRefId         aRefId = aShellEnt.FaceRefIds.Value(i);
+    const BRepGraph_FaceRefId    aRefId = aShellEnt.FaceRefIds.Value(i);
     const BRepGraphInc::FaceRef& aFR    = aRefs.Face(aRefId);
     if (aFR.IsRemoved || !aFR.FaceDefId.IsValid(theGraph.Topo().NbFaces()))
     {
@@ -161,7 +161,7 @@ void forSolidShellRefEntries(const BRepGraph&        theGraph,
   const BRepGraph::RefsView&    aRefs     = theGraph.Refs();
   for (int i = 0; i < aSolidEnt.ShellRefIds.Length(); ++i)
   {
-    const BRepGraph_ShellRefId         aRefId = aSolidEnt.ShellRefIds.Value(i);
+    const BRepGraph_ShellRefId    aRefId = aSolidEnt.ShellRefIds.Value(i);
     const BRepGraphInc::ShellRef& aSR    = aRefs.Shell(aRefId);
     if (aSR.IsRemoved || !aSR.ShellDefId.IsValid(theGraph.Topo().NbShells()))
     {
@@ -181,7 +181,7 @@ void forCompoundChildRefEntries(const BRepGraph&           theGraph,
   const BRepGraph::RefsView&       aRefs    = theGraph.Refs();
   for (int i = 0; i < aCompEnt.ChildRefIds.Length(); ++i)
   {
-    const BRepGraph_ChildRefId         aRefId = aCompEnt.ChildRefIds.Value(i);
+    const BRepGraph_ChildRefId    aRefId = aCompEnt.ChildRefIds.Value(i);
     const BRepGraphInc::ChildRef& aCR    = aRefs.Child(aRefId);
     if (aCR.IsRemoved || !aCR.ChildDefId.IsValid())
     {
@@ -201,7 +201,7 @@ void forCompSolidSolidRefEntries(const BRepGraph&            theGraph,
   const BRepGraph::RefsView&        aRefs  = theGraph.Refs();
   for (int i = 0; i < aCSEnt.SolidRefIds.Length(); ++i)
   {
-    const BRepGraph_SolidRefId         aRefId = aCSEnt.SolidRefIds.Value(i);
+    const BRepGraph_SolidRefId    aRefId = aCSEnt.SolidRefIds.Value(i);
     const BRepGraphInc::SolidRef& aSR    = aRefs.Solid(aRefId);
     if (aSR.IsRemoved || !aSR.SolidDefId.IsValid(theGraph.Topo().NbSolids()))
     {
@@ -449,21 +449,19 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
     BRepGraph_NodeId                     aNewOuterWire;
     NCollection_Vector<BRepGraph_NodeId> aNewInnerWires;
 
-    forFaceWireRefEntries(theGraph,
-                          BRepGraph_FaceId(anIdx),
-                          [&](const BRepGraphInc::WireRef& aWR) {
-                            const BRepGraph_NodeId aRemapped = remapId(aWR.WireDefId);
-                            if (!aRemapped.IsValid())
-                              return;
-                            if (aWR.IsOuter)
-                            {
-                              aNewOuterWire = aRemapped;
-                            }
-                            else
-                            {
-                              aNewInnerWires.Append(aRemapped);
-                            }
-                          });
+    forFaceWireRefEntries(theGraph, BRepGraph_FaceId(anIdx), [&](const BRepGraphInc::WireRef& aWR) {
+      const BRepGraph_NodeId aRemapped = remapId(aWR.WireDefId);
+      if (!aRemapped.IsValid())
+        return;
+      if (aWR.IsOuter)
+      {
+        aNewOuterWire = aRemapped;
+      }
+      else
+      {
+        aNewInnerWires.Append(aRemapped);
+      }
+    });
 
     (void)aNewGraph.Builder().AddFace(aSurf, aNewOuterWire, aNewInnerWires, anOldFace.Tolerance);
 

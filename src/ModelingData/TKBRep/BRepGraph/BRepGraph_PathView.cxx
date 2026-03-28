@@ -178,8 +178,7 @@ TopLoc_Location BRepGraph::PathView::stepLocation(const BRepGraph_NodeId thePare
           return aStorage.VertexRef(anEdge.EndVertexRefId).LocalLocation;
         const int aInternalIdx = theRefIdx - 2;
         if (aInternalIdx >= 0 && aInternalIdx < anEdge.InternalVertexRefIds.Length())
-          return aStorage.VertexRef(anEdge.InternalVertexRefIds.Value(aInternalIdx))
-            .LocalLocation;
+          return aStorage.VertexRef(anEdge.InternalVertexRefIds.Value(aInternalIdx)).LocalLocation;
       }
       return TopLoc_Location();
     }
@@ -276,8 +275,7 @@ TopAbs_Orientation BRepGraph::PathView::stepOrientation(const BRepGraph_NodeId t
           return aStorage.VertexRef(anEdge.EndVertexRefId).Orientation;
         const int aInternalIdx = theRefIdx - 2;
         if (aInternalIdx >= 0 && aInternalIdx < anEdge.InternalVertexRefIds.Length())
-          return aStorage.VertexRef(anEdge.InternalVertexRefIds.Value(aInternalIdx))
-            .Orientation;
+          return aStorage.VertexRef(anEdge.InternalVertexRefIds.Value(aInternalIdx)).Orientation;
       }
       return TopAbs_FORWARD;
     }
@@ -304,8 +302,7 @@ BRepGraph_NodeId BRepGraph::PathView::resolveChild(const BRepGraph_NodeId thePar
         if (theRefIdx < 0 && aProd.ShapeRootId.IsValid())
           return aProd.ShapeRootId; // Part -> shape root
         if (theRefIdx >= 0 && theRefIdx < aProd.OccurrenceRefIds.Length())
-          return aStorage.OccurrenceRef(aProd.OccurrenceRefIds.Value(theRefIdx))
-            .OccurrenceDefId;
+          return aStorage.OccurrenceRef(aProd.OccurrenceRefIds.Value(theRefIdx)).OccurrenceDefId;
       }
       return BRepGraph_NodeId();
     }
@@ -384,8 +381,7 @@ BRepGraph_NodeId BRepGraph::PathView::resolveChild(const BRepGraph_NodeId thePar
           return aStorage.VertexRef(anEdge.EndVertexRefId).VertexDefId;
         const int aInternalIdx = theRefIdx - 2;
         if (aInternalIdx >= 0 && aInternalIdx < anEdge.InternalVertexRefIds.Length())
-          return aStorage.VertexRef(anEdge.InternalVertexRefIds.Value(aInternalIdx))
-            .VertexDefId;
+          return aStorage.VertexRef(anEdge.InternalVertexRefIds.Value(aInternalIdx)).VertexDefId;
       }
       return BRepGraph_NodeId();
     }
@@ -1037,8 +1033,7 @@ void BRepGraph::PathView::reverseWalkFromEdge(const int theEdgeIdx,
       int aCoEdgeRefIdx = -1;
       for (int aRefIdx = 0; aRefIdx < aWire.CoEdgeRefIds.Length(); ++aRefIdx)
       {
-        const BRepGraphInc::CoEdgeRef& aRef =
-          aStorage.CoEdgeRef(aWire.CoEdgeRefIds.Value(aRefIdx));
+        const BRepGraphInc::CoEdgeRef& aRef = aStorage.CoEdgeRef(aWire.CoEdgeRefIds.Value(aRefIdx));
         if (!aRef.IsRemoved && aRef.CoEdgeDefId == aCoEdgeId)
         {
           aCoEdgeRefIdx = aRefIdx;
@@ -1089,8 +1084,7 @@ void BRepGraph::PathView::reverseWalkFromWire(const int theWireIdx,
     int aWireRefIdx = -1;
     for (int aRefIdx = 0; aRefIdx < aFace.WireRefIds.Length(); ++aRefIdx)
     {
-      const BRepGraphInc::WireRef& aRef =
-        aStorage.WireRef(aFace.WireRefIds.Value(aRefIdx));
+      const BRepGraphInc::WireRef& aRef = aStorage.WireRef(aFace.WireRefIds.Value(aRefIdx));
       if (!aRef.IsRemoved && aRef.WireDefId.Index == theWireIdx)
       {
         aWireRefIdx = aRefIdx;
@@ -1137,8 +1131,7 @@ void BRepGraph::PathView::reverseWalkFromFace(const int theFaceIdx,
       int aFaceRefIdx = -1;
       for (int aRefIdx = 0; aRefIdx < aShell.FaceRefIds.Length(); ++aRefIdx)
       {
-        const BRepGraphInc::FaceRef& aRef =
-          aStorage.FaceRef(aShell.FaceRefIds.Value(aRefIdx));
+        const BRepGraphInc::FaceRef& aRef = aStorage.FaceRef(aShell.FaceRefIds.Value(aRefIdx));
         if (!aRef.IsRemoved && aRef.FaceDefId.Index == theFaceIdx)
         {
           aFaceRefIdx = aRefIdx;
@@ -1227,8 +1220,7 @@ void BRepGraph::PathView::reverseWalkFromShell(
       int aShellRefIdx = -1;
       for (int aRefIdx = 0; aRefIdx < aSolid.ShellRefIds.Length(); ++aRefIdx)
       {
-        const BRepGraphInc::ShellRef& aRef =
-          aStorage.ShellRef(aSolid.ShellRefIds.Value(aRefIdx));
+        const BRepGraphInc::ShellRef& aRef = aStorage.ShellRef(aSolid.ShellRefIds.Value(aRefIdx));
         if (!aRef.IsRemoved && aRef.ShellDefId.Index == theShellIdx)
         {
           aShellRefIdx = aRefIdx;
