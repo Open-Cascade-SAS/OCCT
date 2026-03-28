@@ -1704,18 +1704,21 @@ void flattenToFaces(NCollection_Vector<FaceLocalData>& theFaceData,
 
 //=================================================================================================
 
-void populateRegularityLayer(BRepGraphInc_Storage&                        theStorage,
-                             BRepGraph_RegularityLayer*                   theRegularityLayer,
-                             const bool                                   theExtractRegularities,
+void populateRegularityLayer(BRepGraphInc_Storage&                         theStorage,
+                             BRepGraph_RegularityLayer*                    theRegularityLayer,
+                             const bool                                    theExtractRegularities,
+                             const int                                     theOldNbEdges,
                              const occ::handle<NCollection_BaseAllocator>& theTmpAlloc)
 {
   if (theRegularityLayer == nullptr)
     return;
 
-  theRegularityLayer->Clear();
+  if (theOldNbEdges == 0)
+    theRegularityLayer->Clear();
   if (!theExtractRegularities)
     return;
 
+  // Surface-to-face map covers all faces (new edges may reference old faces).
   NCollection_DataMap<const Geom_Surface*, int> aSurfToFaceIdx(1, theTmpAlloc);
   for (int i = 0; i < theStorage.NbFaces(); ++i)
   {
@@ -1730,9 +1733,10 @@ void populateRegularityLayer(BRepGraphInc_Storage&                        theSto
       aSurfToFaceIdx.TryBind(aRawSurf.get(), i);
   }
 
-  for (int anEdgeIdx = 0; anEdgeIdx < theStorage.NbEdges(); ++anEdgeIdx)
+  // Only process new edges in incremental mode.
+  for (int anEdgeIdx = theOldNbEdges; anEdgeIdx < theStorage.NbEdges(); ++anEdgeIdx)
   {
-    const BRepGraphInc::EdgeDef& anEdgeEnt = theStorage.Edge(BRepGraph_EdgeId(anEdgeIdx));
+    const BRepGraphInc::EdgeDef& anEdgeEnt   = theStorage.Edge(BRepGraph_EdgeId(anEdgeIdx));
     const TopoDS_Shape*          anOrigShape = theStorage.FindOriginal(anEdgeEnt.Id);
     if (anOrigShape == nullptr || anOrigShape->IsNull())
       continue;
@@ -1775,12 +1779,14 @@ void populateRegularityLayer(BRepGraphInc_Storage&                        theSto
 void populateParamLayer(BRepGraphInc_Storage&                         theStorage,
                         BRepGraph_ParamLayer*                         theParamLayer,
                         const bool                                    theExtractVertexPointReps,
+                        const int                                     theOldNbVertices,
                         const occ::handle<NCollection_BaseAllocator>& theTmpAlloc)
 {
   if (theParamLayer == nullptr)
     return;
 
-  theParamLayer->Clear();
+  if (theOldNbVertices == 0)
+    theParamLayer->Clear();
   if (!theExtractVertexPointReps)
     return;
 
@@ -1847,7 +1853,8 @@ void populateParamLayer(BRepGraphInc_Storage&                         theStorage
     }
   }
 
-  for (int aVtxIdx = 0; aVtxIdx < theStorage.NbVertices(); ++aVtxIdx)
+  // Only process new vertices in incremental mode.
+  for (int aVtxIdx = theOldNbVertices; aVtxIdx < theStorage.NbVertices(); ++aVtxIdx)
   {
     const BRepGraph_VertexId       aVertexId(aVtxIdx);
     const BRepGraphInc::VertexDef& aVtxDef   = theStorage.Vertex(aVertexId);
@@ -1917,19 +1924,23 @@ void populateParamLayer(BRepGraphInc_Storage&                         theStorage
 
 //=================================================================================================
 
-void populateOptionalLayers(BRepGraphInc_Storage&                        theStorage,
-                            BRepGraph_ParamLayer*                        theParamLayer,
-                            BRepGraph_RegularityLayer*                   theRegularityLayer,
-                            const BRepGraphInc_Populate::Options&        theOptions,
+void populateOptionalLayers(BRepGraphInc_Storage&                         theStorage,
+                            BRepGraph_ParamLayer*                         theParamLayer,
+                            BRepGraph_RegularityLayer*                    theRegularityLayer,
+                            const BRepGraphInc_Populate::Options&         theOptions,
+                            const int                                     theOldNbEdges,
+                            const int                                     theOldNbVertices,
                             const occ::handle<NCollection_BaseAllocator>& theTmpAlloc)
 {
   populateRegularityLayer(theStorage,
                           theRegularityLayer,
                           theOptions.ExtractRegularities,
+                          theOldNbEdges,
                           theTmpAlloc);
   populateParamLayer(theStorage,
                      theParamLayer,
                      theOptions.ExtractVertexPointReps,
+                     theOldNbVertices,
                      theTmpAlloc);
 }
 
@@ -2015,7 +2026,7 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&                       
     }
   }
 
-  populateOptionalLayers(theStorage, theParamLayer, theRegularityLayer, theOptions, aTmpAlloc);
+  populateOptionalLayers(theStorage, theParamLayer, theRegularityLayer, theOptions, 0, 0, aTmpAlloc);
 
   // Build reverse indices.
   theStorage.BuildReverseIndex();
@@ -2041,12 +2052,13 @@ void BRepGraphInc_Populate::Append(BRepGraphInc_Storage&                        
   const occ::handle<NCollection_BaseAllocator>& aTmpAlloc =
     !theTmpAlloc.IsNull() ? theTmpAlloc : NCollection_BaseAllocator::CommonBaseAllocator();
 
-  // Snapshot entity counts before appending, for incremental reverse-index update.
-  const int anOldNbEdges  = theStorage.NbEdges();
-  const int anOldNbWires  = theStorage.NbWires();
-  const int anOldNbFaces  = theStorage.NbFaces();
-  const int anOldNbShells = theStorage.NbShells();
-  const int anOldNbSolids = theStorage.NbSolids();
+  // Snapshot entity counts before appending, for incremental updates.
+  const int anOldNbEdges    = theStorage.NbEdges();
+  const int anOldNbWires    = theStorage.NbWires();
+  const int anOldNbFaces    = theStorage.NbFaces();
+  const int anOldNbShells   = theStorage.NbShells();
+  const int anOldNbSolids   = theStorage.NbSolids();
+  const int anOldNbVertices = theStorage.NbVertices();
 
   // Collect face contexts by flattening hierarchy.
   NCollection_Vector<FaceLocalData> aFaceData(256, aTmpAlloc);
@@ -2064,7 +2076,13 @@ void BRepGraphInc_Populate::Append(BRepGraphInc_Storage&                        
   RepDedup aRepDedup;
   registerFaceData(theStorage, aFaceData, aRepDedup);
 
-  populateOptionalLayers(theStorage, theParamLayer, theRegularityLayer, theOptions, aTmpAlloc);
+  populateOptionalLayers(theStorage,
+                         theParamLayer,
+                         theRegularityLayer,
+                         theOptions,
+                         anOldNbEdges,
+                         anOldNbVertices,
+                         aTmpAlloc);
 
   // Incrementally update reverse indices for newly appended entities only.
   theStorage.BuildDeltaReverseIndex(anOldNbEdges,

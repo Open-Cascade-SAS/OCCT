@@ -697,7 +697,23 @@ void BRepGraph_ParamLayer::OnCompact(
     }
 
     if (!aNewVP.IsEmpty())
-      aNewParams.Bind(aNewVertex, std::move(aNewVP));
+    {
+      // Merge into existing entry if multiple old vertices remap to the same new vertex.
+      VertexParams* anExisting = aNewParams.ChangeSeek(aNewVertex);
+      if (anExisting != nullptr)
+      {
+        for (int i = 0; i < aNewVP.PointsOnCurve.Length(); ++i)
+          anExisting->PointsOnCurve.Append(aNewVP.PointsOnCurve.Value(i));
+        for (int i = 0; i < aNewVP.PointsOnSurface.Length(); ++i)
+          anExisting->PointsOnSurface.Append(aNewVP.PointsOnSurface.Value(i));
+        for (int i = 0; i < aNewVP.PointsOnPCurve.Length(); ++i)
+          anExisting->PointsOnPCurve.Append(aNewVP.PointsOnPCurve.Value(i));
+      }
+      else
+      {
+        aNewParams.Bind(aNewVertex, std::move(aNewVP));
+      }
+    }
   }
 
   myVertexParams     = std::move(aNewParams);

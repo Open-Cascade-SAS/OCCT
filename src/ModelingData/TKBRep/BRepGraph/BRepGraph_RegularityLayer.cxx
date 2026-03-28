@@ -441,10 +441,26 @@ void BRepGraph_RegularityLayer::OnCompact(
       if (!aNewEdgeRegs.IsBound(aNewEdge))
         aNewEdgeRegs.Bind(aNewEdge, EdgeRegularities());
       EdgeRegularities& aRegularities = aNewEdgeRegs.ChangeFind(aNewEdge);
-      RegularityEntry&  anEntry       = aRegularities.Entries.Appended();
-      anEntry.FaceEntity1             = aNewFace1;
-      anEntry.FaceEntity2             = aNewFace2;
-      anEntry.Continuity              = anOldEntry.Continuity;
+
+      // Deduplicate: if same face pair already exists for this edge, update continuity.
+      bool aDuplicate = false;
+      for (int aExIdx = 0; aExIdx < aRegularities.Entries.Length(); ++aExIdx)
+      {
+        RegularityEntry& anExisting = aRegularities.Entries.ChangeValue(aExIdx);
+        if (anExisting.FaceEntity1 == aNewFace1 && anExisting.FaceEntity2 == aNewFace2)
+        {
+          anExisting.Continuity = anOldEntry.Continuity;
+          aDuplicate            = true;
+          break;
+        }
+      }
+      if (aDuplicate)
+        continue;
+
+      RegularityEntry& anEntry = aRegularities.Entries.Appended();
+      anEntry.FaceEntity1      = aNewFace1;
+      anEntry.FaceEntity2      = aNewFace2;
+      anEntry.Continuity       = anOldEntry.Continuity;
 
       appendUnique(aNewFaceToEdges, aNewFace1, aNewEdge);
       appendUnique(aNewFaceToEdges, aNewFace2, aNewEdge);
