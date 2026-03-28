@@ -2161,8 +2161,14 @@ void BRepGraph::BuilderView::ReplaceEdgeInWire(const BRepGraph_WireId theWireDef
 
   myGraph->markModified(BRepGraph_NodeId::Wire(theWireDefId.Index));
 
-  Standard_ASSERT_VOID(myGraph->myData->myIncStorage.ValidateReverseIndex(),
-                       "ReplaceEdgeInWire: post-mutation reverse index inconsistency");
+  // Validate reverse index only when not in deferred mode.
+  // In deferred mode (batch sewing, parallel mutations), intermediate states
+  // may have temporarily stale entries; validation runs at CommitMutation().
+  if (!myGraph->myData->myDeferredMode)
+  {
+    Standard_ASSERT_VOID(myGraph->myData->myIncStorage.ValidateReverseIndex(),
+                         "ReplaceEdgeInWire: post-mutation reverse index inconsistency");
+  }
 }
 
 //=================================================================================================

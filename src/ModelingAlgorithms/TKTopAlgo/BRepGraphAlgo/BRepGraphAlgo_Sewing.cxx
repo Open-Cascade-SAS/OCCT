@@ -1486,6 +1486,8 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> matchFreeEdges
       // In non-manifold mode, normalize pairs so the longest edge is EdgeA (keep-edge).
       // This ensures the longest curve retains its geometry and accumulates PCurves.
       // Uses actual arc length via GCPnts_AbscissaPoint for accuracy on curved edges.
+      // For equal-length edges, use lower index as EdgeA for deterministic ordering
+      // and to deduplicate symmetric pairs (A→B and B→A normalize to the same form).
       if (theOptions.NonManifoldMode)
       {
         for (int anIdx = 0; anIdx < aNbScored; ++anIdx)
@@ -1518,7 +1520,8 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> matchFreeEdges
               BRepGraph_Tool::Edge::Range(theGraph, BRepGraph_EdgeId(aPair.EdgeB.Index));
             aLenB = aLastB - aFirstB;
           }
-          if (aLenB > aLenA)
+          if (aLenB > aLenA
+              || (aLenB == aLenA && aPair.EdgeB.Index < aPair.EdgeA.Index))
           {
             std::swap(aPair.EdgeA, aPair.EdgeB);
           }
@@ -1586,11 +1589,32 @@ int mergeMatchedEdges(
   NCollection_Vector<BRepGraph_NodeId> aHistOriginals(THE_INIT_VECTOR_CAPACITY, theTmpAlloc);
   NCollection_Vector<BRepGraph_NodeId> aHistReplacements(THE_INIT_VECTOR_CAPACITY, theTmpAlloc);
 
+  // Replacement map for resolving edges removed by earlier pairs in the loop.
+  NCollection_DataMap<int, int> aReplacementMap(16, theTmpAlloc);
+
   for (int aPairIter = 0; aPairIter < thePairs.Length(); ++aPairIter)
   {
-    const auto& [anIdA, anIdB] = thePairs.Value(aPairIter);
+    const auto& [anOrigIdA, anOrigIdB] = thePairs.Value(aPairIter);
+
+    // Resolve both edges through the replacement chain.
+    BRepGraph_NodeId anIdA = anOrigIdA;
+    for (const int* aRepl = aReplacementMap.Seek(anIdA.Index); aRepl != nullptr;
+         aRepl            = aReplacementMap.Seek(anIdA.Index))
+      anIdA = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, *aRepl);
+
+    BRepGraph_NodeId anIdB = anOrigIdB;
+    for (const int* aRepl = aReplacementMap.Seek(anIdB.Index); aRepl != nullptr;
+         aRepl            = aReplacementMap.Seek(anIdB.Index))
+      anIdB = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, *aRepl);
+
     const BRepGraph_EdgeId anEdgeIdA(anIdA.Index);
     const BRepGraph_EdgeId anEdgeIdB(anIdB.Index);
+
+    // Skip self-merges and already-removed edges.
+    if (anIdA.Index == anIdB.Index)
+      continue;
+    if (theGraph.Topo().Edge(anEdgeIdA).IsRemoved || theGraph.Topo().Edge(anEdgeIdB).IsRemoved)
+      continue;
 
     const BRepGraphInc::EdgeDef& aRemoveEdge = theGraph.Topo().Edge(anEdgeIdB);
     const BRepGraphInc::EdgeDef& aKeepEdge   = theGraph.Topo().Edge(anEdgeIdA);
@@ -1655,6 +1679,7 @@ int mergeMatchedEdges(
     // Remove the old edge properly - decrements NbActiveEdges, clears cache.
     // Pass replacement (anIdA) so layers can migrate data from remove-edge to keep-edge.
     theGraph.Builder().RemoveNode(anIdB, anIdA);
+    aReplacementMap.Bind(anIdB.Index, anIdA.Index);
 
     // 5. Accumulate for batch history recording.
     aHistOriginals.Append(anIdB);
