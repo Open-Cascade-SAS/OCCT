@@ -199,7 +199,7 @@ private:
                                   const BRepGraph_NodeId theReplacement) noexcept;
 
   //! Rescan myLayers and update myHasModificationSubscribers flag.
-  void updateModificationSubscriberFlag();
+  Standard_EXPORT void updateModificationSubscriberFlag();
 
   //! Dispatch OnNodeModified to layers whose SubscribedKinds matches the node's kind.
   void dispatchNodeModified(const BRepGraph_NodeId theNode) noexcept;

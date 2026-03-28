@@ -1052,7 +1052,7 @@ TEST(BRepGraph_BuildTest, RegularityLayer_RemoveRegularity_SharedFaceRetained)
   aLayer.SetRegularity(anEdgeId, aFace1, aFace3, GeomAbs_G1);
   EXPECT_EQ(aLayer.NbRegularities(anEdgeId), 2);
 
-  // Remove (F1,F2) — F1 is shared by the surviving (F1,F3) entry.
+  // Remove (F1,F2) - F1 is shared by the surviving (F1,F3) entry.
   aLayer.OnNodeModified(BRepGraph_NodeId::Face(aFace2.Index));
 
   // (F1,F3) must survive; F1 must still be tracked.
