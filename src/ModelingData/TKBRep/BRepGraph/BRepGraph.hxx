@@ -43,6 +43,8 @@ class BRepGraph_MutGuard;
 
 struct BRepGraph_Data;
 class BRepGraph_Layer;
+class BRepGraph_ParamLayer;
+class BRepGraph_RegularityLayer;
 class NCollection_BaseAllocator;
 class TCollection_AsciiString;
 
@@ -141,6 +143,14 @@ public:
   [[nodiscard]] Standard_EXPORT BRepGraph_History&       History();
   [[nodiscard]] Standard_EXPORT const BRepGraph_History& History() const;
 
+  //! Access built-in parametric binding layer.
+  [[nodiscard]] Standard_EXPORT BRepGraph_ParamLayer& ParamLayer();
+  [[nodiscard]] Standard_EXPORT const BRepGraph_ParamLayer& ParamLayer() const;
+
+  //! Access built-in edge regularity layer.
+  [[nodiscard]] Standard_EXPORT BRepGraph_RegularityLayer& RegularityLayer();
+  [[nodiscard]] Standard_EXPORT const BRepGraph_RegularityLayer& RegularityLayer() const;
+
   //! Register a named layer. Replaces existing layer with same name.
   Standard_EXPORT void RegisterLayer(const occ::handle<BRepGraph_Layer>& theLayer);
 
@@ -177,6 +187,9 @@ private:
   //! Named layers (stored on BRepGraph, not BRepGraph_Data, to survive Compact swap).
   NCollection_DataMap<TCollection_AsciiString, occ::handle<BRepGraph_Layer>> myLayers;
 
+  occ::handle<BRepGraph_ParamLayer>      myParamLayer;
+  occ::handle<BRepGraph_RegularityLayer> myRegularityLayer;
+
   //! True if any registered layer has SubscribedKinds() != 0.
   //! Enables zero-cost skip of modification dispatch when no layer subscribes.
   bool myHasModificationSubscribers = false;
@@ -198,6 +211,9 @@ private:
 
   //! Initialize cached view objects to point to this graph.
   void initViews();
+
+  //! Create and register built-in layers.
+  void initBuiltInLayers();
 
   Standard_EXPORT void             invalidateSubgraphImpl(const BRepGraph_NodeId theNode);
   Standard_EXPORT BRepGraph_UID    allocateUID(const BRepGraph_NodeId theNodeId);

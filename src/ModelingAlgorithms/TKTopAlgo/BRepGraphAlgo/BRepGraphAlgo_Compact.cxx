@@ -19,6 +19,8 @@
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_Data.hxx>
 #include <BRepGraph_Layer.hxx>
+#include <BRepGraph_ParamLayer.hxx>
+#include <BRepGraph_RegularityLayer.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Tool.hxx>
@@ -270,7 +272,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
   }
 
   // Build old->new index maps for each node kind.
-  NCollection_DataMap<int, int> aVertexMap, anEdgeMap, aWireMap, aFaceMap;
+  NCollection_DataMap<int, int> aVertexMap, anEdgeMap, aCoEdgeMap, aWireMap, aFaceMap;
   NCollection_DataMap<int, int> aShellMap, aSolidMap, aCompoundMap, aCompSolidMap;
 
   int aNewIdx = 0;
@@ -421,6 +423,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
       continue;
 
     NCollection_Vector<std::pair<BRepGraph_NodeId, TopAbs_Orientation>> aNewEntries;
+    NCollection_Vector<BRepGraph_CoEdgeId>                             anOldCoEdges;
     forWireCoEdgeRefEntries(theGraph,
                             BRepGraph_WireId(anIdx),
                             [&](const BRepGraphInc::CoEdgeRef& aCR) {
@@ -428,9 +431,17 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
                                 theGraph.Topo().CoEdge(aCR.CoEdgeDefId);
                               const BRepGraph_NodeId aNewEdgeDefId = remapId(aCoEdge.EdgeDefId);
                               if (aNewEdgeDefId.IsValid())
+                              {
                                 aNewEntries.Append(std::make_pair(aNewEdgeDefId, aCoEdge.Sense));
+                                anOldCoEdges.Append(aCR.CoEdgeDefId);
+                              }
                             });
+    const int aNewFirstCoEdge = aNewGraph.Topo().NbCoEdges();
     (void)aNewGraph.Builder().AddWire(aNewEntries);
+    for (int aCoEdgeIdx = 0; aCoEdgeIdx < anOldCoEdges.Length(); ++aCoEdgeIdx)
+    {
+      aCoEdgeMap.Bind(anOldCoEdges.Value(aCoEdgeIdx).Index, aNewFirstCoEdge + aCoEdgeIdx);
+    }
   }
 
   // Faces.
@@ -628,13 +639,19 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
 
   // Save layers before swap (default move would transfer empty layers from aNewGraph).
   NCollection_DataMap<TCollection_AsciiString, occ::handle<BRepGraph_Layer>> aSavedLayers;
+  occ::handle<BRepGraph_Layer>                                               aSavedParamLayer =
+    theGraph.myParamLayer;
+  occ::handle<BRepGraph_Layer> aSavedRegularityLayer = theGraph.myRegularityLayer;
   aSavedLayers = std::move(theGraph.myLayers);
 
   // Swap.
   theGraph = std::move(aNewGraph);
 
   // Restore layers and notify about index remapping.
-  theGraph.myLayers = std::move(aSavedLayers);
+  theGraph.myLayers          = std::move(aSavedLayers);
+  theGraph.myParamLayer      = occ::down_cast<BRepGraph_ParamLayer>(aSavedParamLayer);
+  theGraph.myRegularityLayer = occ::down_cast<BRepGraph_RegularityLayer>(aSavedRegularityLayer);
+  theGraph.updateModificationSubscriberFlag();
 
   // Build unified remap map covering all 8 topology kinds.
   NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId> aRemapMap;
@@ -642,6 +659,8 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
     aRemapMap.Bind(BRepGraph_NodeId::Vertex(it.Key()), BRepGraph_NodeId::Vertex(it.Value()));
   for (NCollection_DataMap<int, int>::Iterator it(anEdgeMap); it.More(); it.Next())
     aRemapMap.Bind(BRepGraph_NodeId::Edge(it.Key()), BRepGraph_NodeId::Edge(it.Value()));
+  for (NCollection_DataMap<int, int>::Iterator it(aCoEdgeMap); it.More(); it.Next())
+    aRemapMap.Bind(BRepGraph_NodeId::CoEdge(it.Key()), BRepGraph_NodeId::CoEdge(it.Value()));
   for (NCollection_DataMap<int, int>::Iterator it(aWireMap); it.More(); it.Next())
     aRemapMap.Bind(BRepGraph_NodeId::Wire(it.Key()), BRepGraph_NodeId::Wire(it.Value()));
   for (NCollection_DataMap<int, int>::Iterator it(aFaceMap); it.More(); it.Next())

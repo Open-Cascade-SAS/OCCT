@@ -138,6 +138,8 @@ void BRepGraph_Builder::Perform(BRepGraph&                            theGraph,
                                  theShape,
                                  theParallel,
                                  theOptions,
+                                 &theGraph.ParamLayer(),
+                                 &theGraph.RegularityLayer(),
                                  aTmpAlloc);
   if (!theGraph.myData->myIncStorage.GetIsDone())
   {
@@ -233,7 +235,13 @@ void BRepGraph_Builder::Append(BRepGraph&          theGraph,
   const int             anOldChildRef   = aStorage.NbChildRefs();
 
   occ::handle<NCollection_IncAllocator> aTmpAlloc = new NCollection_IncAllocator;
-  BRepGraphInc_Populate::Append(aStorage, theShape, theParallel, aTmpAlloc);
+  BRepGraphInc_Populate::Append(aStorage,
+                                theShape,
+                                theParallel,
+                                BRepGraphInc_Populate::Options(),
+                                &theGraph.ParamLayer(),
+                                &theGraph.RegularityLayer(),
+                                aTmpAlloc);
 
   if (!aStorage.GetIsDone())
     return;

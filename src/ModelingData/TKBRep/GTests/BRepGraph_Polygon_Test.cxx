@@ -13,9 +13,12 @@
 
 #include <BRep_CurveOn2Surfaces.hxx>
 #include <BRep_CurveRepresentation.hxx>
+#include <BRep_Builder.hxx>
 #include <BRep_TEdge.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepGraph.hxx>
+#include <BRepGraph_ParamLayer.hxx>
+#include <BRepGraph_RegularityLayer.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraphInc_Definition.hxx>
@@ -251,36 +254,108 @@ TEST(BRepGraph_PolygonTest, UVPoints_Captured_OnPCurves)
 
 TEST(BRepGraph_PolygonTest, VertexPointRepresentations_StructurallyValid)
 {
-  // Not all shapes have explicit point representations (BRepPrimAPI_MakeBox doesn't store them).
-  // Verify the data model is structurally sound: vectors exist and any captured entries are valid.
-  TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10., 20., 30.).Shape();
+  // Populate-time extraction reads explicit BRep point representations from vertices.
+  // Add one representation of each kind so the layer is exercised deterministically.
+  TopoDS_Shape aShape = BRepPrimAPI_MakeCylinder(5., 10.).Shape();
+  BRep_Builder aBuilder;
+
+  bool hasPointOnCurve = false;
+  for (TopExp_Explorer anEdgeExp(aShape, TopAbs_EDGE); anEdgeExp.More() && !hasPointOnCurve; anEdgeExp.Next())
+  {
+    const TopoDS_Edge& anEdge = TopoDS::Edge(anEdgeExp.Current());
+    double             aFirst = 0.0;
+    double             aLast  = 0.0;
+    TopLoc_Location    aLoc;
+    if (BRep_Tool::Curve(anEdge, aLoc, aFirst, aLast).IsNull())
+      continue;
+
+    for (TopoDS_Iterator aVtxIt(anEdge, false, false); aVtxIt.More(); aVtxIt.Next())
+    {
+      const TopoDS_Vertex& aVertex = TopoDS::Vertex(aVtxIt.Value());
+      const double aParameter =
+        aVertex.Orientation() == TopAbs_REVERSED ? aLast : aFirst;
+      aBuilder.UpdateVertex(aVertex, aParameter, anEdge, BRep_Tool::Tolerance(aVertex));
+      hasPointOnCurve = true;
+      break;
+    }
+  }
+
+  bool hasPointOnSurface = false;
+  for (TopExp_Explorer aFaceExp(aShape, TopAbs_FACE); aFaceExp.More() && !hasPointOnSurface; aFaceExp.Next())
+  {
+    const TopoDS_Face& aFace = TopoDS::Face(aFaceExp.Current());
+    for (TopExp_Explorer aVtxExp(aFace, TopAbs_VERTEX); aVtxExp.More(); aVtxExp.Next())
+    {
+      const TopoDS_Vertex& aVertex = TopoDS::Vertex(aVtxExp.Current());
+      const gp_Pnt2d       aUV     = BRep_Tool::Parameters(aVertex, aFace);
+      aBuilder.UpdateVertex(aVertex, aUV.X(), aUV.Y(), aFace, BRep_Tool::Tolerance(aVertex));
+      hasPointOnSurface = true;
+      break;
+    }
+  }
+
+  bool hasPointOnPCurve = false;
+  for (TopExp_Explorer aFaceExp(aShape, TopAbs_FACE); aFaceExp.More() && !hasPointOnPCurve; aFaceExp.Next())
+  {
+    const TopoDS_Face& aFace = TopoDS::Face(aFaceExp.Current());
+    for (TopExp_Explorer anEdgeExp(aFace, TopAbs_EDGE); anEdgeExp.More() && !hasPointOnPCurve;
+         anEdgeExp.Next())
+    {
+      const TopoDS_Edge& anEdge = TopoDS::Edge(anEdgeExp.Current());
+      double             aFirst = 0.0;
+      double             aLast  = 0.0;
+      occ::handle<Geom2d_Curve> aPCurve = BRep_Tool::CurveOnSurface(anEdge, aFace, aFirst, aLast);
+      if (aPCurve.IsNull())
+        continue;
+
+      aBuilder.UpdateEdge(anEdge, aPCurve, aFace, BRep_Tool::Tolerance(anEdge));
+      aBuilder.Range(anEdge, aFace, aFirst, aLast);
+
+      for (TopoDS_Iterator aVtxIt(anEdge, false, false); aVtxIt.More(); aVtxIt.Next())
+      {
+        const TopoDS_Vertex& aVertex = TopoDS::Vertex(aVtxIt.Value());
+        const double aParameter =
+          aVertex.Orientation() == TopAbs_REVERSED ? aLast : aFirst;
+        aBuilder.UpdateVertex(aVertex, aParameter, anEdge, aFace, BRep_Tool::Tolerance(aVertex));
+        hasPointOnPCurve = true;
+        break;
+      }
+    }
+  }
+
+  ASSERT_TRUE(hasPointOnCurve);
+  ASSERT_TRUE(hasPointOnSurface);
+  ASSERT_TRUE(hasPointOnPCurve);
 
   BRepGraph aGraph;
-  aGraph.Build(aBox);
+  aGraph.Build(aShape);
   ASSERT_TRUE(aGraph.IsDone());
 
-  // Count all vertex point representations (may be zero for simple boxes).
+  // Count all extracted vertex point representations.
   int aNbPointsOnCurve   = 0;
   int aNbPointsOnSurface = 0;
   int aNbPointsOnPCurve  = 0;
   for (int aVtxIdx = 0; aVtxIdx < aGraph.Topo().NbVertices(); ++aVtxIdx)
   {
-    const BRepGraphInc::VertexDef& aVtx = aGraph.Topo().Vertex(BRepGraph_VertexId(aVtxIdx));
-    aNbPointsOnCurve += aVtx.PointsOnCurve.Length();
-    aNbPointsOnSurface += aVtx.PointsOnSurface.Length();
-    aNbPointsOnPCurve += aVtx.PointsOnPCurve.Length();
+    const BRepGraph_VertexId                    aVertexId(aVtxIdx);
+    const BRepGraph_ParamLayer::VertexParams* aParams = aGraph.ParamLayer().FindVertexParams(aVertexId);
+    if (aParams == nullptr)
+      continue;
+    aNbPointsOnCurve += aParams->PointsOnCurve.Length();
+    aNbPointsOnSurface += aParams->PointsOnSurface.Length();
+    aNbPointsOnPCurve += aParams->PointsOnPCurve.Length();
 
     // Validate that any captured entries have valid def references.
-    for (int i = 0; i < aVtx.PointsOnCurve.Length(); ++i)
-      EXPECT_TRUE(aVtx.PointsOnCurve.Value(i).EdgeDefId.IsValid());
-    for (int i = 0; i < aVtx.PointsOnSurface.Length(); ++i)
-      EXPECT_TRUE(aVtx.PointsOnSurface.Value(i).FaceDefId.IsValid());
-    for (int i = 0; i < aVtx.PointsOnPCurve.Length(); ++i)
-      EXPECT_TRUE(aVtx.PointsOnPCurve.Value(i).FaceDefId.IsValid());
+    for (int i = 0; i < aParams->PointsOnCurve.Length(); ++i)
+      EXPECT_TRUE(aParams->PointsOnCurve.Value(i).EdgeDefId.IsValid());
+    for (int i = 0; i < aParams->PointsOnSurface.Length(); ++i)
+      EXPECT_TRUE(aParams->PointsOnSurface.Value(i).FaceDefId.IsValid());
+    for (int i = 0; i < aParams->PointsOnPCurve.Length(); ++i)
+      EXPECT_TRUE(aParams->PointsOnPCurve.Value(i).CoEdgeDefId.IsValid());
   }
 
-  // Just verify we can query - exact count depends on shape.
-  EXPECT_GE(aNbPointsOnCurve + aNbPointsOnSurface + aNbPointsOnPCurve, 0);
+  EXPECT_GT(aNbPointsOnSurface, 0);
+  EXPECT_GT(aNbPointsOnCurve + aNbPointsOnSurface + aNbPointsOnPCurve, 0);
 }
 
 // ============================================================
@@ -316,8 +391,7 @@ TEST(BRepGraph_PolygonTest, EdgeRegularity_MatchesOriginal)
   int aNbGraphReg = 0;
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
   {
-    const BRepGraphInc::EdgeDef& anEdge = aGraph.Topo().Edge(BRepGraph_EdgeId(anEdgeIdx));
-    aNbGraphReg += anEdge.Regularities.Length();
+    aNbGraphReg += aGraph.RegularityLayer().NbRegularities(BRepGraph_EdgeId(anEdgeIdx));
   }
   EXPECT_EQ(aNbGraphReg, aNbOrigReg)
     << "Graph regularity count should match BRep_CurveOn2Surfaces count";

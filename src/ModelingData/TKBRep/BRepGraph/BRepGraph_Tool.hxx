@@ -100,6 +100,16 @@ public:
     [[nodiscard]] Standard_EXPORT static gp_Pnt2d Parameters(const BRepGraph&         theGraph,
                                                              const BRepGraph_VertexId theVertex,
                                                              const BRepGraph_FaceId   theFace);
+
+    //! Returns the vertex parameter on a coedge's PCurve.
+    //! @param[in] theGraph  source graph
+    //! @param[in] theVertex typed vertex definition identifier
+    //! @param[in] theCoEdge typed coedge definition identifier
+    //! @return PCurve parameter
+    //! @throws Standard_NoSuchObject if vertex has no PointOnPCurve for this coedge
+    [[nodiscard]] Standard_EXPORT static double PCurveParameter(const BRepGraph&         theGraph,
+                                                                const BRepGraph_VertexId theVertex,
+                                                                const BRepGraph_CoEdgeId theCoEdge);
   };
 
   //! @brief Edge geometry, curve, polygon, and continuity accessors.

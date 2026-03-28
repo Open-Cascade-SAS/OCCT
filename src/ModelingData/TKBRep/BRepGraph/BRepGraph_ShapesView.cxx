@@ -44,8 +44,10 @@ TopoDS_Shape BRepGraph::ShapesView::Shape(const BRepGraph_NodeId theNode) const
   }
 
   // Reconstruct from incidence storage.
-  TopoDS_Shape aReconstructed =
-    BRepGraphInc_Reconstruct::Node(myGraph->myData->myIncStorage, theNode);
+  TopoDS_Shape aReconstructed = BRepGraphInc_Reconstruct::Node(myGraph->myData->myIncStorage,
+                                                               theNode,
+                                                               &myGraph->ParamLayer(),
+                                                               &myGraph->RegularityLayer());
 
   // Store under exclusive lock with double-check.
   if (!aReconstructed.IsNull())
@@ -81,7 +83,10 @@ const TopoDS_Shape& BRepGraph::ShapesView::OriginalOf(const BRepGraph_NodeId the
 
 TopoDS_Shape BRepGraph::ShapesView::Reconstruct(const BRepGraph_NodeId theRoot) const
 {
-  TopoDS_Shape aShape = BRepGraphInc_Reconstruct::Node(myGraph->myData->myIncStorage, theRoot);
+  TopoDS_Shape aShape = BRepGraphInc_Reconstruct::Node(myGraph->myData->myIncStorage,
+                                                       theRoot,
+                                                       &myGraph->ParamLayer(),
+                                                       &myGraph->RegularityLayer());
 
   return aShape;
 }
@@ -93,14 +98,19 @@ TopoDS_Shape BRepGraph::ShapesView::ReconstructFace(const BRepGraph_FaceId theFa
   BRepGraphInc_Reconstruct::Cache aCache;
   return BRepGraphInc_Reconstruct::FaceWithCache(myGraph->myData->myIncStorage,
                                                  theFace.Index,
-                                                 aCache);
+                                                 aCache,
+                                                 &myGraph->ParamLayer(),
+                                                 &myGraph->RegularityLayer());
 }
 
 //=================================================================================================
 
 TopoDS_Shape BRepGraph::ShapesView::ReconstructFromNode(const BRepGraph_NodeId theNode) const
 {
-  return BRepGraphInc_Reconstruct::Node(myGraph->myData->myIncStorage, theNode);
+  return BRepGraphInc_Reconstruct::Node(myGraph->myData->myIncStorage,
+                                        theNode,
+                                        &myGraph->ParamLayer(),
+                                        &myGraph->RegularityLayer());
 }
 
 //=================================================================================================

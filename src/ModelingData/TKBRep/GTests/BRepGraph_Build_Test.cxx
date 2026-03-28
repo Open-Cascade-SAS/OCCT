@@ -18,6 +18,8 @@
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepGraph.hxx>
+#include <BRepGraph_ParamLayer.hxx>
+#include <BRepGraph_RegularityLayer.hxx>
 #include <BRepGraphInc_Definition.hxx>
 #include <BRepGraphInc_Reference.hxx>
 #include <BRepGraphInc_Representation.hxx>
@@ -855,7 +857,7 @@ TEST(BRepGraph_BuildTest, Build_WithoutPostPasses_BasicQueriesWork)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraphInc_Populate::Options anOpts;
-  anOpts.ExtractRegularities    = false;
+  anOpts.ExtractRegularities = false;
   anOpts.ExtractVertexPointReps = false;
 
   BRepGraph aGraph;
@@ -869,14 +871,171 @@ TEST(BRepGraph_BuildTest, Build_WithoutPostPasses_BasicQueriesWork)
   // Regularities should be empty.
   for (int i = 0; i < aGraph.Topo().NbEdges(); ++i)
   {
-    EXPECT_EQ(aGraph.Topo().Edge(BRepGraph_EdgeId(i)).Regularities.Length(), 0);
+    EXPECT_EQ(aGraph.RegularityLayer().NbRegularities(BRepGraph_EdgeId(i)), 0);
   }
 
   // Vertex point reps should be empty.
   for (int i = 0; i < aGraph.Topo().NbVertices(); ++i)
   {
-    EXPECT_EQ(aGraph.Topo().Vertex(BRepGraph_VertexId(i)).PointsOnCurve.Length(), 0);
-    EXPECT_EQ(aGraph.Topo().Vertex(BRepGraph_VertexId(i)).PointsOnSurface.Length(), 0);
-    EXPECT_EQ(aGraph.Topo().Vertex(BRepGraph_VertexId(i)).PointsOnPCurve.Length(), 0);
+    EXPECT_EQ(aGraph.ParamLayer().NbPointsOnCurve(BRepGraph_VertexId(i)), 0);
+    EXPECT_EQ(aGraph.ParamLayer().NbPointsOnSurface(BRepGraph_VertexId(i)), 0);
+    EXPECT_EQ(aGraph.ParamLayer().NbPointsOnPCurve(BRepGraph_VertexId(i)), 0);
   }
+}
+
+TEST(BRepGraph_BuildTest, ParamLayer_EdgeMutation_InvalidatesVertexBindings)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  ASSERT_GT(aGraph.Topo().NbVertices(), 0);
+  ASSERT_GT(aGraph.Topo().NbEdges(), 0);
+
+  const BRepGraph_VertexId aVertexId(0);
+  const BRepGraph_EdgeId   anEdgeId(0);
+  aGraph.ParamLayer().SetPointOnCurve(aVertexId, anEdgeId, 1.25);
+  EXPECT_TRUE(aGraph.ParamLayer().FindPointOnCurve(aVertexId, anEdgeId));
+
+  aGraph.Builder().MutEdge(anEdgeId)->Tolerance += 0.01;
+
+  EXPECT_FALSE(aGraph.ParamLayer().FindPointOnCurve(aVertexId, anEdgeId));
+}
+
+TEST(BRepGraph_BuildTest, ParamLayer_FaceMutation_InvalidatesVertexBindings)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  ASSERT_GT(aGraph.Topo().NbVertices(), 0);
+  ASSERT_GT(aGraph.Topo().NbFaces(), 0);
+
+  const BRepGraph_VertexId aVertexId(0);
+  const BRepGraph_FaceId   aFaceId(0);
+  aGraph.ParamLayer().SetPointOnSurface(aVertexId, aFaceId, 0.5, 0.75);
+  EXPECT_TRUE(aGraph.ParamLayer().FindPointOnSurface(aVertexId, aFaceId));
+
+  {
+    BRepGraph_MutGuard<BRepGraphInc::FaceDef> aFace = aGraph.Builder().MutFace(aFaceId);
+    aFace->NaturalRestriction                 = !aFace->NaturalRestriction;
+  }
+
+  EXPECT_FALSE(aGraph.ParamLayer().FindPointOnSurface(aVertexId, aFaceId));
+}
+
+TEST(BRepGraph_BuildTest, ParamLayer_CoEdgeMutation_InvalidatesPCurveBindings)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  ASSERT_GT(aGraph.Topo().NbVertices(), 0);
+  ASSERT_GT(aGraph.Topo().NbCoEdges(), 0);
+
+  const BRepGraph_VertexId aVertexId(0);
+  const BRepGraph_CoEdgeId aCoEdgeId(0);
+  aGraph.ParamLayer().SetPointOnPCurve(aVertexId, aCoEdgeId, 2.5);
+  EXPECT_TRUE(aGraph.ParamLayer().FindPointOnPCurve(aVertexId, aCoEdgeId));
+
+  aGraph.Builder().MutCoEdge(aCoEdgeId)->ParamFirst += 0.01;
+
+  EXPECT_FALSE(aGraph.ParamLayer().FindPointOnPCurve(aVertexId, aCoEdgeId));
+}
+
+TEST(BRepGraph_BuildTest, RegularityLayer_EdgeMutation_InvalidatesBindings)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  BRepGraph_EdgeId                            anEdgeId;
+  BRepGraph_RegularityLayer::RegularityEntry  aRegularity;
+  bool                                        hasBinding = false;
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges() && !hasBinding; ++anEdgeIdx)
+  {
+    anEdgeId = BRepGraph_EdgeId(anEdgeIdx);
+    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdges = aGraph.Topo().CoEdgesOfEdge(anEdgeId);
+    BRepGraph_FaceId                              aFace1;
+    BRepGraph_FaceId                              aFace2;
+    for (int aCoEdgeIdx = 0; aCoEdgeIdx < aCoEdges.Length(); ++aCoEdgeIdx)
+    {
+      const BRepGraph_FaceId aFace = aGraph.Topo().CoEdge(aCoEdges.Value(aCoEdgeIdx)).FaceDefId;
+      if (!aFace.IsValid())
+        continue;
+      if (!aFace1.IsValid())
+        aFace1 = aFace;
+      else if (aFace != aFace1)
+      {
+        aFace2 = aFace;
+        break;
+      }
+    }
+    if (!aFace1.IsValid() || !aFace2.IsValid())
+      continue;
+    aGraph.RegularityLayer().SetRegularity(anEdgeId, aFace1, aFace2, GeomAbs_C1);
+    aRegularity.FaceEntity1 = aFace1;
+    aRegularity.FaceEntity2 = aFace2;
+    aRegularity.Continuity  = GeomAbs_C1;
+    hasBinding              = true;
+  }
+  ASSERT_TRUE(hasBinding);
+  EXPECT_TRUE(aGraph.RegularityLayer().FindContinuity(
+    anEdgeId, aRegularity.FaceEntity1, aRegularity.FaceEntity2));
+
+  aGraph.Builder().MutEdge(anEdgeId)->Tolerance += 0.01;
+
+  EXPECT_FALSE(aGraph.RegularityLayer().FindContinuity(
+    anEdgeId, aRegularity.FaceEntity1, aRegularity.FaceEntity2));
+  EXPECT_EQ(aGraph.RegularityLayer().NbRegularities(anEdgeId), 0);
+}
+
+TEST(BRepGraph_BuildTest, RegularityLayer_FaceMutation_InvalidatesBindings)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  BRepGraph_EdgeId                           anEdgeId;
+  BRepGraph_RegularityLayer::RegularityEntry aRegularity;
+  bool                                       hasBinding = false;
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges() && !hasBinding; ++anEdgeIdx)
+  {
+    anEdgeId = BRepGraph_EdgeId(anEdgeIdx);
+    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdges = aGraph.Topo().CoEdgesOfEdge(anEdgeId);
+    BRepGraph_FaceId                              aFace1;
+    BRepGraph_FaceId                              aFace2;
+    for (int aCoEdgeIdx = 0; aCoEdgeIdx < aCoEdges.Length(); ++aCoEdgeIdx)
+    {
+      const BRepGraph_FaceId aFace = aGraph.Topo().CoEdge(aCoEdges.Value(aCoEdgeIdx)).FaceDefId;
+      if (!aFace.IsValid())
+        continue;
+      if (!aFace1.IsValid())
+        aFace1 = aFace;
+      else if (aFace != aFace1)
+      {
+        aFace2 = aFace;
+        break;
+      }
+    }
+    if (!aFace1.IsValid() || !aFace2.IsValid())
+      continue;
+    aGraph.RegularityLayer().SetRegularity(anEdgeId, aFace1, aFace2, GeomAbs_C1);
+    aRegularity.FaceEntity1 = aFace1;
+    aRegularity.FaceEntity2 = aFace2;
+    aRegularity.Continuity  = GeomAbs_C1;
+    hasBinding              = true;
+  }
+  ASSERT_TRUE(hasBinding);
+  EXPECT_TRUE(aGraph.RegularityLayer().FindContinuity(
+    anEdgeId, aRegularity.FaceEntity1, aRegularity.FaceEntity2));
+
+  {
+    BRepGraph_MutGuard<BRepGraphInc::FaceDef> aFace =
+      aGraph.Builder().MutFace(aRegularity.FaceEntity1);
+    aFace->NaturalRestriction = !aFace->NaturalRestriction;
+  }
+
+  EXPECT_FALSE(aGraph.RegularityLayer().FindContinuity(
+    anEdgeId, aRegularity.FaceEntity1, aRegularity.FaceEntity2));
 }

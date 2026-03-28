@@ -320,9 +320,9 @@ void BRepGraphInc_Storage::Clear()
   myReverseIdx.Clear();
   myTShapeToNodeId.Clear();
   myOriginalShapes.Clear();
-  myIsDone             = false;
-  myHasRegularities    = false;
-  myHasVertexPointReps = false;
+  myExtractedRegularities.Clear();
+  myIsDone          = false;
+  myHasRegularities = false;
 }
 
 //=================================================================================================

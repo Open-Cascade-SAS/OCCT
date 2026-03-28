@@ -70,41 +70,7 @@ struct VertexDef : public BaseDef
   //! Tolerance from BRep_TVertex.
   double Tolerance = 0.0;
 
-  //! Vertex parameter on a 3D curve.
-  struct PointOnCurveEntry
-  {
-    double           Parameter = 0.0;
-    BRepGraph_EdgeId EdgeDefId; //!< Edge definition owning the curve
-  };
-
-  NCollection_Vector<PointOnCurveEntry> PointsOnCurve;
-
-  //! Vertex parameter on a surface (U, V).
-  struct PointOnSurfaceEntry
-  {
-    double           ParameterU = 0.0;
-    double           ParameterV = 0.0;
-    BRepGraph_FaceId FaceDefId; //!< Face definition owning the surface
-  };
-
-  NCollection_Vector<PointOnSurfaceEntry> PointsOnSurface;
-
-  //! Vertex parameter on a PCurve on a surface.
-  struct PointOnPCurveEntry
-  {
-    double           Parameter = 0.0;
-    BRepGraph_FaceId FaceDefId; //!< Face definition owning the surface
-  };
-
-  NCollection_Vector<PointOnPCurveEntry> PointsOnPCurve;
-
-  //! Reinitialize inner vectors with the given allocator.
-  void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
-  {
-    InitVec(PointsOnCurve, theAlloc, 2); // typically 1-2 per vertex
-    InitVec(PointsOnSurface, theAlloc, 2);
-    InitVec(PointsOnPCurve, theAlloc, 2);
-  }
+  void InitVectors(const occ::handle<NCollection_BaseAllocator>&) {}
 };
 
 //! Edge entity: parameter range, boundary vertices, flags.
@@ -145,20 +111,9 @@ struct EdgeDef : public BaseDef
   //! Typed representation id into Storage::myPolygons3D (invalid if no polygon).
   BRepGraph_Polygon3DRepId Polygon3DRepId;
 
-  //! Edge regularity (continuity) between adjacent face pairs.
-  struct RegularityEntry
-  {
-    BRepGraph_FaceId FaceEntity1;
-    BRepGraph_FaceId FaceEntity2;
-    GeomAbs_Shape    Continuity = GeomAbs_C0;
-  };
-
-  NCollection_Vector<RegularityEntry> Regularities;
-
   //! Reinitialize inner vectors with the given allocator.
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
-    InitVec(Regularities, theAlloc, 2);         // typically 0-2
     InitVec(InternalVertexRefIds, theAlloc, 2); // typically 0
   }
 };

@@ -19,6 +19,8 @@
 
 class TopoDS_Shape;
 class BRepGraphInc_Storage;
+class BRepGraph_ParamLayer;
+class BRepGraph_RegularityLayer;
 
 //! @brief Populates a BRepGraphInc_Storage from a TopoDS_Shape.
 //!
@@ -39,7 +41,7 @@ public:
   //! Options controlling which post-passes are executed during population.
   struct Options
   {
-    bool ExtractRegularities;    //!< Phase 3b: edge regularities
+    bool ExtractRegularities; //!< Phase 3b: edge regularities
     bool ExtractVertexPointReps; //!< Phase 3c: vertex point representations
 
     Options()
@@ -58,19 +60,25 @@ public:
                                       const TopoDS_Shape&   theShape,
                                       const bool            theParallel,
                                       const Options&        theOptions = Options(),
+                                      BRepGraph_ParamLayer* theParamLayer = nullptr,
+                                      BRepGraph_RegularityLayer* theRegularityLayer = nullptr,
                                       const occ::handle<NCollection_BaseAllocator>& theTmpAlloc =
                                         occ::handle<NCollection_BaseAllocator>());
 
   //! Extend existing storage with additional shapes (no clear).
   //! Flattens hierarchy to face level only (no Solid/Shell/Compound entities created).
-  //! Does not run post-passes (regularities, vertex point representations).
+  //! Recomputes the built-in metadata layers from the populated storage.
   //! @param[in,out] theStorage  storage to extend
   //! @param[in]     theShape    shape to append
   //! @param[in]     theParallel if true, face-level extraction runs in parallel
+  //! @param[in]     theOptions  optional post-pass controls
   //! @param[in]     theTmpAlloc optional allocator for temporary scratch data
-  static Standard_EXPORT void Append(BRepGraphInc_Storage&                         theStorage,
-                                     const TopoDS_Shape&                           theShape,
-                                     const bool                                    theParallel,
+  static Standard_EXPORT void Append(BRepGraphInc_Storage&            theStorage,
+                                     const TopoDS_Shape&              theShape,
+                                     const bool                       theParallel,
+                                     const Options&                   theOptions = Options(),
+                                     BRepGraph_ParamLayer*            theParamLayer = nullptr,
+                                     BRepGraph_RegularityLayer*       theRegularityLayer = nullptr,
                                      const occ::handle<NCollection_BaseAllocator>& theTmpAlloc =
                                        occ::handle<NCollection_BaseAllocator>());
 

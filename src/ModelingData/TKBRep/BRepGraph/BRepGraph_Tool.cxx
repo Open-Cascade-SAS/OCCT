@@ -14,7 +14,9 @@
 #include <BRepGraph_Tool.hxx>
 
 #include <Adaptor3d_CurveOnSurface.hxx>
+#include <BRepGraph_ParamLayer.hxx>
 #include <BRepGraph_RefsView.hxx>
+#include <BRepGraph_RegularityLayer.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraphInc_Definition.hxx>
 #include <BRepGraphInc_Reference.hxx>
@@ -57,12 +59,9 @@ double BRepGraph_Tool::Vertex::Parameter(const BRepGraph&         theGraph,
                                          const BRepGraph_VertexId theVertex,
                                          const BRepGraph_EdgeId   theEdge)
 {
-  const BRepGraphInc::VertexDef& aVtx = theGraph.Topo().Vertex(theVertex);
-  for (int i = 0; i < aVtx.PointsOnCurve.Length(); ++i)
-  {
-    if (aVtx.PointsOnCurve.Value(i).EdgeDefId == theEdge)
-      return aVtx.PointsOnCurve.Value(i).Parameter;
-  }
+  double aParameter = 0.0;
+  if (theGraph.ParamLayer().FindPointOnCurve(theVertex, theEdge, &aParameter))
+    return aParameter;
   throw Standard_NoSuchObject("BRepGraph_Tool::Parameter - no PointOnCurve for this edge");
 }
 
@@ -72,13 +71,9 @@ gp_Pnt2d BRepGraph_Tool::Vertex::Parameters(const BRepGraph&         theGraph,
                                             const BRepGraph_VertexId theVertex,
                                             const BRepGraph_FaceId   theFace)
 {
-  const BRepGraphInc::VertexDef& aVtx = theGraph.Topo().Vertex(theVertex);
-  for (int i = 0; i < aVtx.PointsOnSurface.Length(); ++i)
-  {
-    const BRepGraphInc::VertexDef::PointOnSurfaceEntry& aPOS = aVtx.PointsOnSurface.Value(i);
-    if (aPOS.FaceDefId == theFace)
-      return gp_Pnt2d(aPOS.ParameterU, aPOS.ParameterV);
-  }
+  gp_Pnt2d aUV;
+  if (theGraph.ParamLayer().FindPointOnSurface(theVertex, theFace, &aUV))
+    return aUV;
   throw Standard_NoSuchObject("BRepGraph_Tool::Parameters - no PointOnSurface for this face");
 }
 
@@ -252,20 +247,24 @@ const occ::handle<Poly_Polygon3D>& BRepGraph_Tool::Edge::Polygon3D(const BRepGra
 
 //=================================================================================================
 
+double BRepGraph_Tool::Vertex::PCurveParameter(const BRepGraph&         theGraph,
+                                               const BRepGraph_VertexId theVertex,
+                                               const BRepGraph_CoEdgeId theCoEdge)
+{
+  double aParameter = 0.0;
+  if (theGraph.ParamLayer().FindPointOnPCurve(theVertex, theCoEdge, &aParameter))
+    return aParameter;
+  throw Standard_NoSuchObject("BRepGraph_Tool::PCurveParameter - no PointOnPCurve for this coedge");
+}
+
+//=================================================================================================
+
 bool BRepGraph_Tool::Edge::HasContinuity(const BRepGraph&       theGraph,
                                          const BRepGraph_EdgeId theEdge,
                                          const BRepGraph_FaceId theFace1,
                                          const BRepGraph_FaceId theFace2)
 {
-  const BRepGraphInc::EdgeDef& anEdge = theGraph.Topo().Edge(theEdge);
-  for (int i = 0; i < anEdge.Regularities.Length(); ++i)
-  {
-    const BRepGraphInc::EdgeDef::RegularityEntry& aReg = anEdge.Regularities.Value(i);
-    if ((aReg.FaceEntity1 == theFace1 && aReg.FaceEntity2 == theFace2)
-        || (aReg.FaceEntity1 == theFace2 && aReg.FaceEntity2 == theFace1))
-      return true;
-  }
-  return false;
+  return theGraph.RegularityLayer().FindContinuity(theEdge, theFace1, theFace2, nullptr);
 }
 
 //=================================================================================================
@@ -275,14 +274,9 @@ GeomAbs_Shape BRepGraph_Tool::Edge::Continuity(const BRepGraph&       theGraph,
                                                const BRepGraph_FaceId theFace1,
                                                const BRepGraph_FaceId theFace2)
 {
-  const BRepGraphInc::EdgeDef& anEdge = theGraph.Topo().Edge(theEdge);
-  for (int i = 0; i < anEdge.Regularities.Length(); ++i)
-  {
-    const BRepGraphInc::EdgeDef::RegularityEntry& aReg = anEdge.Regularities.Value(i);
-    if ((aReg.FaceEntity1 == theFace1 && aReg.FaceEntity2 == theFace2)
-        || (aReg.FaceEntity1 == theFace2 && aReg.FaceEntity2 == theFace1))
-      return aReg.Continuity;
-  }
+  GeomAbs_Shape aContinuity = GeomAbs_C0;
+  if (theGraph.RegularityLayer().FindContinuity(theEdge, theFace1, theFace2, &aContinuity))
+    return aContinuity;
   return GeomAbs_C0;
 }
 
@@ -291,14 +285,7 @@ GeomAbs_Shape BRepGraph_Tool::Edge::Continuity(const BRepGraph&       theGraph,
 GeomAbs_Shape BRepGraph_Tool::Edge::MaxContinuity(const BRepGraph&       theGraph,
                                                   const BRepGraph_EdgeId theEdge)
 {
-  const BRepGraphInc::EdgeDef& anEdge = theGraph.Topo().Edge(theEdge);
-  GeomAbs_Shape                aMax   = GeomAbs_C0;
-  for (int i = 0; i < anEdge.Regularities.Length(); ++i)
-  {
-    if (anEdge.Regularities.Value(i).Continuity > aMax)
-      aMax = anEdge.Regularities.Value(i).Continuity;
-  }
-  return aMax;
+  return theGraph.RegularityLayer().MaxContinuity(theEdge);
 }
 
 //=================================================================================================

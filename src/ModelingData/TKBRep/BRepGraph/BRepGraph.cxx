@@ -14,6 +14,8 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_Data.hxx>
 #include <BRepGraph_Layer.hxx>
+#include <BRepGraph_ParamLayer.hxx>
+#include <BRepGraph_RegularityLayer.hxx>
 #include <BRepGraph_RefsView.hxx>
 
 #include <BRepGraph_Builder.hxx>
@@ -43,10 +45,24 @@ void BRepGraph::initViews()
 
 //=================================================================================================
 
+void BRepGraph::initBuiltInLayers()
+{
+  if (myParamLayer.IsNull())
+    myParamLayer = new BRepGraph_ParamLayer();
+  if (myRegularityLayer.IsNull())
+    myRegularityLayer = new BRepGraph_RegularityLayer();
+
+  RegisterLayer(myParamLayer);
+  RegisterLayer(myRegularityLayer);
+}
+
+//=================================================================================================
+
 BRepGraph::BRepGraph()
     : myData(std::make_unique<BRepGraph_Data>())
 {
   initViews();
+  initBuiltInLayers();
 }
 
 //=================================================================================================
@@ -55,6 +71,7 @@ BRepGraph::BRepGraph(const occ::handle<NCollection_BaseAllocator>& theAlloc)
     : myData(std::make_unique<BRepGraph_Data>(theAlloc))
 {
   initViews();
+  initBuiltInLayers();
 }
 
 //=================================================================================================
@@ -119,9 +136,39 @@ const BRepGraph::BuilderView& BRepGraph::Builder() const
 
 //=================================================================================================
 
+BRepGraph_ParamLayer& BRepGraph::ParamLayer()
+{
+  return *myParamLayer;
+}
+
+//=================================================================================================
+
+const BRepGraph_ParamLayer& BRepGraph::ParamLayer() const
+{
+  return *myParamLayer;
+}
+
+//=================================================================================================
+
+BRepGraph_RegularityLayer& BRepGraph::RegularityLayer()
+{
+  return *myRegularityLayer;
+}
+
+//=================================================================================================
+
+const BRepGraph_RegularityLayer& BRepGraph::RegularityLayer() const
+{
+  return *myRegularityLayer;
+}
+
+//=================================================================================================
+
 BRepGraph::BRepGraph(BRepGraph&& theOther) noexcept
     : myData(std::move(theOther.myData)),
       myLayers(std::move(theOther.myLayers)),
+      myParamLayer(std::move(theOther.myParamLayer)),
+      myRegularityLayer(std::move(theOther.myRegularityLayer)),
       myHasModificationSubscribers(theOther.myHasModificationSubscribers)
 {
   // View objects store a back-pointer to the owning BRepGraph; after move,
@@ -137,6 +184,8 @@ BRepGraph& BRepGraph::operator=(BRepGraph&& theOther) noexcept
   {
     myData                       = std::move(theOther.myData);
     myLayers                     = std::move(theOther.myLayers);
+    myParamLayer                 = std::move(theOther.myParamLayer);
+    myRegularityLayer            = std::move(theOther.myRegularityLayer);
     myHasModificationSubscribers = theOther.myHasModificationSubscribers;
     // View objects store a back-pointer to the owning BRepGraph; after move,
     // they must point to the new owner (`this`), not the moved-from object.
@@ -832,11 +881,22 @@ const BRepGraph_History& BRepGraph::History() const
 
 void BRepGraph::RegisterLayer(const occ::handle<BRepGraph_Layer>& theLayer)
 {
-  if (!theLayer.IsNull())
-  {
-    myLayers.Bind(theLayer->Name(), theLayer);
-    updateModificationSubscriberFlag();
-  }
+  if (theLayer.IsNull())
+    return;
+
+  const occ::handle<BRepGraph_ParamLayer> aParamLayer = occ::down_cast<BRepGraph_ParamLayer>(theLayer);
+  if (!aParamLayer.IsNull())
+    myParamLayer = aParamLayer;
+
+  const occ::handle<BRepGraph_RegularityLayer> aRegularityLayer =
+    occ::down_cast<BRepGraph_RegularityLayer>(theLayer);
+  if (!aRegularityLayer.IsNull())
+    myRegularityLayer = aRegularityLayer;
+
+  if (myLayers.IsBound(theLayer->Name()))
+    myLayers.UnBind(theLayer->Name());
+  myLayers.Bind(theLayer->Name(), theLayer);
+  updateModificationSubscriberFlag();
 }
 
 //=================================================================================================
@@ -851,6 +911,12 @@ occ::handle<BRepGraph_Layer> BRepGraph::FindLayer(const TCollection_AsciiString&
 
 void BRepGraph::UnregisterLayer(const TCollection_AsciiString& theName)
 {
+  if ((!myParamLayer.IsNull() && theName == myParamLayer->Name())
+      || (!myRegularityLayer.IsNull() && theName == myRegularityLayer->Name()))
+  {
+    return;
+  }
+
   myLayers.UnBind(theName);
   updateModificationSubscriberFlag();
 }
