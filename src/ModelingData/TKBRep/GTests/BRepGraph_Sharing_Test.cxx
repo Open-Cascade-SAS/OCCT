@@ -55,7 +55,7 @@ TEST_F(BRepGraph_SharingTest, EdgeDef_EachSharedByTwoFaces)
   // In a box, each edge is shared by exactly 2 faces.
   for (int anIdx = 0; anIdx < myGraph.Topo().NbEdges(); ++anIdx)
   {
-    int aFaceCount = myGraph.Topo().FaceCountOfEdge(BRepGraph_EdgeId(anIdx));
+    int aFaceCount = myGraph.Topo().NbFacesOfEdge(BRepGraph_EdgeId(anIdx));
     EXPECT_EQ(aFaceCount, 2) << "Edge def " << anIdx << " expected to be shared by 2 faces, got "
                              << aFaceCount;
   }

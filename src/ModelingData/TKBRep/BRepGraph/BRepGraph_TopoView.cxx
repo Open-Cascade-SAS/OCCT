@@ -93,6 +93,20 @@ int BRepGraph::TopoView::NbCoEdges() const
 
 //=================================================================================================
 
+int BRepGraph::TopoView::NbProducts() const
+{
+  return myGraph->myData->myIncStorage.NbProducts();
+}
+
+//=================================================================================================
+
+int BRepGraph::TopoView::NbOccurrences() const
+{
+  return myGraph->myData->myIncStorage.NbOccurrences();
+}
+
+//=================================================================================================
+
 int BRepGraph::TopoView::NbActiveVertices() const
 {
   return myGraph->myData->myIncStorage.NbActiveVertices();
@@ -156,9 +170,23 @@ int BRepGraph::TopoView::NbActiveCompSolids() const
 
 //=================================================================================================
 
-int BRepGraph::TopoView::FaceCountOfEdge(const BRepGraph_EdgeId theEdge) const
+int BRepGraph::TopoView::NbActiveProducts() const
 {
-  return myGraph->myData->myIncStorage.ReverseIndex().FaceCountOfEdge(theEdge);
+  return myGraph->myData->myIncStorage.NbActiveProducts();
+}
+
+//=================================================================================================
+
+int BRepGraph::TopoView::NbActiveOccurrences() const
+{
+  return myGraph->myData->myIncStorage.NbActiveOccurrences();
+}
+
+//=================================================================================================
+
+int BRepGraph::TopoView::NbFacesOfEdge(const BRepGraph_EdgeId theEdge) const
+{
+  return myGraph->myData->myIncStorage.ReverseIndex().NbFacesOfEdge(theEdge);
 }
 
 //=================================================================================================
@@ -294,15 +322,12 @@ const BRepGraphInc::BaseDef* BRepGraph::TopoView::TopoEntity(const BRepGraph_Nod
 
 //=================================================================================================
 
-size_t BRepGraph::TopoView::NbNodes() const
+int BRepGraph::TopoView::NbNodes() const
 {
   const BRepGraphInc_Storage& aS = myGraph->myData->myIncStorage;
-  return static_cast<size_t>(aS.NbSolids()) + static_cast<size_t>(aS.NbShells())
-         + static_cast<size_t>(aS.NbFaces()) + static_cast<size_t>(aS.NbWires())
-         + static_cast<size_t>(aS.NbCoEdges()) + static_cast<size_t>(aS.NbEdges())
-         + static_cast<size_t>(aS.NbVertices()) + static_cast<size_t>(aS.NbCompounds())
-         + static_cast<size_t>(aS.NbCompSolids()) + static_cast<size_t>(aS.NbProducts())
-         + static_cast<size_t>(aS.NbOccurrences());
+  return aS.NbSolids() + aS.NbShells() + aS.NbFaces() + aS.NbWires() + aS.NbCoEdges()
+         + aS.NbEdges() + aS.NbVertices() + aS.NbCompounds() + aS.NbCompSolids()
+         + aS.NbProducts() + aS.NbOccurrences();
 }
 
 //=================================================================================================
@@ -745,26 +770,14 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::TopoView::AdjacentEdges(
 
 //=================================================================================================
 
-int BRepGraph::TopoView::FaceCountOfEdge(const BRepGraph_NodeId theEdgeEntity) const
+bool BRepGraph::TopoView::IsBoundaryEdge(const BRepGraph_EdgeId theEdge) const
 {
-  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
-  if (theEdgeEntity.NodeKind != BRepGraph_NodeId::Kind::Edge
-      || !theEdgeEntity.IsValid(aStorage.NbEdges()))
-    return 0;
-  const BRepGraph_EdgeId aEdgeDefId(theEdgeEntity.Index);
-  return aStorage.ReverseIndex().FaceCountOfEdge(aEdgeDefId);
+  return NbFacesOfEdge(theEdge) == 1;
 }
 
 //=================================================================================================
 
-bool BRepGraph::TopoView::IsBoundaryEdge(const BRepGraph_NodeId theEdgeEntity) const
+bool BRepGraph::TopoView::IsManifoldEdge(const BRepGraph_EdgeId theEdge) const
 {
-  return FaceCountOfEdge(theEdgeEntity) == 1;
-}
-
-//=================================================================================================
-
-bool BRepGraph::TopoView::IsManifoldEdge(const BRepGraph_NodeId theEdgeEntity) const
-{
-  return FaceCountOfEdge(theEdgeEntity) == 2;
+  return NbFacesOfEdge(theEdge) == 2;
 }

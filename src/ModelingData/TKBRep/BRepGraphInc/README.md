@@ -319,7 +319,7 @@ Contract: `SetAllocator()` must be called before `Build()`/`BuildDelta()` on Rev
 - Edge-to-face reverse index uses sort-dedup (stack-allocated for typical 1-4 coedges per edge)
 - `Append()` allocates UIDs incrementally (O(M) instead of O(N+M))
 - Post-passes are optional via `BRepGraphInc_Populate::Options`
-- `FaceCountOfEdge()` is O(1) via cached count vector
+- `NbFacesOfEdge()` is O(1) via cached count vector
 
 ## TopoDS vs GraphInc Comparison (Box)
 

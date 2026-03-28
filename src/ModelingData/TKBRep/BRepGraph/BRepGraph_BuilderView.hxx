@@ -394,6 +394,14 @@ public:
   Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::Polygon3DRep> MutPolygon3D(
     const BRepGraph_Polygon3DRepId thePolygon);
 
+  //! Return scoped mutable 2D polygon representation guard.
+  Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::Polygon2DRep> MutPolygon2D(
+    const BRepGraph_Polygon2DRepId thePolygon);
+
+  //! Return scoped mutable polygon-on-triangulation representation guard.
+  Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::PolygonOnTriRep> MutPolygonOnTri(
+    const BRepGraph_PolygonOnTriRepId thePolygon);
+
 private:
   friend class BRepGraph;
   friend struct BRepGraph_Data;

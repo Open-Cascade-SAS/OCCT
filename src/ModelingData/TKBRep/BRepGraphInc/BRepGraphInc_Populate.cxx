@@ -786,6 +786,12 @@ bool makeFreeChildRef(const BRepGraphInc_Storage& theStorage,
 }
 
 //! Extract first, last, and internal/external vertices from an edge.
+//! Extract start (FORWARD), end (REVERSED), and internal vertices from an edge.
+//! TopoDS_Iterator may yield multiple FORWARD or REVERSED vertices (rare but legal,
+//! e.g., edges rebuilt by BRepTools_Modifier). In that case the *last* encountered
+//! vertex of each orientation becomes the boundary vertex; earlier ones are demoted
+//! to the internal list with their original orientation preserved. INTERNAL and
+//! EXTERNAL vertices go directly to the internal list.
 static void edgeVertices(const TopoDS_Edge&                           theEdge,
                          TopoDS_Vertex&                               theFirst,
                          TopoDS_Vertex&                               theLast,

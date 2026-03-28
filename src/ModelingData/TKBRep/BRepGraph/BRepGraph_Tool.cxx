@@ -585,3 +585,10 @@ bool BRepGraph_Tool::Wire::IsClosed(const BRepGraph& theGraph, const BRepGraph_W
 {
   return theGraph.Topo().Wire(theWire).IsClosed;
 }
+
+//=================================================================================================
+
+int BRepGraph_Tool::Wire::NbCoEdges(const BRepGraph& theGraph, const BRepGraph_WireId theWire)
+{
+  return theGraph.Topo().Wire(theWire).CoEdgeRefIds.Length();
+}

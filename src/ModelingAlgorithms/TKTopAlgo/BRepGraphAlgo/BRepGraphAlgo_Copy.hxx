@@ -28,6 +28,10 @@
 //! - theCopyGeom = true  (deep): geometry handles are cloned, result is fully independent.
 //! - theCopyGeom = false (light): geometry handles are shared, only topology is duplicated.
 //!
+//! @note Unlike in-place mutation algorithms (Sewing, Deduplicate) which return a
+//! Result struct with diagnostics, Copy and Transform return a BRepGraph directly
+//! because they produce new graphs. Check IsDone() on the returned graph for success.
+//!
 //! ## Typical usage
 //! @code
 //!   BRepGraph aGraph;
@@ -44,7 +48,8 @@ public:
   //! @param[in] theGraph    a pre-built BRepGraph (must have IsDone() == true)
   //! @param[in] theCopyGeom if true (default), geometry handles are deep-copied;
   //!                        if false, geometry is shared (only topology is duplicated)
-  //! @return a new BRepGraph with IsDone() == true on success
+  //! @return a new BRepGraph with IsDone() == true on success,
+  //!         or an empty graph with IsDone() == false on failure
   [[nodiscard]] Standard_EXPORT static BRepGraph Perform(const BRepGraph& theGraph,
                                                          bool             theCopyGeom = true);
 

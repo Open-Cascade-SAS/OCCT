@@ -35,6 +35,14 @@
 //! The explorer handles all hierarchy levels uniformly: assembly occurrences,
 //! compound containers, topology entities, free children, and direct face vertices.
 //!
+//! ## When to use Explorer vs PathView
+//! - **Explorer**: enumerate all occurrences of a target kind under a root,
+//!   with composed Location and Orientation available at each step. Best for
+//!   bulk traversal (e.g., "visit every Edge in a Solid").
+//! - **PathView**: query specific paths, compose global placement for a known
+//!   occurrence, find all paths to a node, or perform assembly-level queries
+//!   (products, occurrences, common ancestor). Best for targeted lookups.
+//!
 //! ## Usage
 //! @code
 //!   for (BRepGraph_Explorer anExp(aGraph, BRepGraph_NodeId::Solid(0),

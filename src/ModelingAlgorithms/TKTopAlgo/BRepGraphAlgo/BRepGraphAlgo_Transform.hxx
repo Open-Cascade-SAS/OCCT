@@ -32,6 +32,9 @@
 //! - theCopyGeom = false (root-level): light-copy with shared geometry, apply
 //!   transform via location modification only. Triangulations remain valid.
 //!
+//! @note Returns BRepGraph directly (not a Result struct) because this is an
+//! immutable operation producing a new graph. Check IsDone() for success.
+//!
 //! ## Typical usage
 //! @code
 //!   BRepGraph aGraph;

@@ -591,7 +591,7 @@ NCollection_Array1<BRepGraph_NodeId> findFreeEdges(const BRepGraph&      theGrap
     }
 
     // Cached face count from reverse index - O(1).
-    const int aFaceCount = aDefs.FaceCountOfEdge(anEdgeId);
+    const int aFaceCount = aDefs.NbFacesOfEdge(anEdgeId);
 
     // Exclude seam edges: on a UV-closed surface (cylinder, sphere, torus) with
     // two PCurves on the same face. Surface closure is verified first via
@@ -2189,7 +2189,8 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
   }
   BRepGraph_DeferredScope aDeferredScope(theGraph);
 
-  // Configure history on the graph.
+  // Configure history on the graph; preserve caller's state for restoration on exit.
+  const bool wasHistoryEnabled = theGraph.History().IsEnabled();
   theGraph.History().SetEnabled(theOptions.HistoryMode);
 
   // Compute effective MinTolerance.
@@ -2227,6 +2228,7 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
   {
     aResult.IsDone           = true;
     aResult.NbFreeEdgesAfter = 0;
+    theGraph.History().SetEnabled(wasHistoryEnabled);
     return aResult;
   }
 
@@ -2312,6 +2314,7 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
       aResult.IsDone           = true;
       aResult.NbFreeEdgesAfter = aResult.NbFreeEdgesBefore;
       aResult.FreeEdges        = BRepGraph_Analyze::FreeEdges(theGraph);
+      theGraph.History().SetEnabled(wasHistoryEnabled);
       return aResult;
     }
 
@@ -2348,7 +2351,7 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
     {
       continue;
     }
-    if (aDefs.FaceCountOfEdge(anEdgeId) > 2)
+    if (aDefs.NbFacesOfEdge(anEdgeId) > 2)
     {
       aResult.MultipleEdges.Append(BRepGraph_EdgeId(anEdgeIdx));
     }
@@ -2356,6 +2359,7 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
   aResult.NbMultipleEdges = aResult.MultipleEdges.Length();
 
   aResult.IsDone = true;
+  theGraph.History().SetEnabled(wasHistoryEnabled);
   return aResult;
 }
 

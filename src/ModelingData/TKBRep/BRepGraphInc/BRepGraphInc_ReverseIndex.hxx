@@ -149,7 +149,7 @@ public:
 
   //! Return cached face count for an edge - O(1).
   //! Populated during Build() and updated incrementally by BindEdgeToFace().
-  [[nodiscard]] int FaceCountOfEdge(const BRepGraph_EdgeId theEdgeId) const
+  [[nodiscard]] int NbFacesOfEdge(const BRepGraph_EdgeId theEdgeId) const
   {
     if (theEdgeId.Index < 0 || theEdgeId.Index >= myEdgeFaceCount.Length())
       return 0;

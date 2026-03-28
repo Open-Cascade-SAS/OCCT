@@ -845,14 +845,14 @@ TEST(BRepGraph_BuilderTest, AdjacentEdges_Box_SharedVertex)
   EXPECT_GE(aAdj.Length(), 4);
 }
 
-TEST(BRepGraph_BuilderTest, FaceCountOfEdge_Box_TwoFaces)
+TEST(BRepGraph_BuilderTest, NbFacesOfEdge_Box_TwoFaces)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   // Every box edge is shared by exactly 2 faces (manifold).
-  EXPECT_EQ(aGraph.Topo().FaceCountOfEdge(BRepGraph_NodeId::Edge(0)), 2);
+  EXPECT_EQ(aGraph.Topo().NbFacesOfEdge(BRepGraph_EdgeId(0)), 2);
 }
 
 TEST(BRepGraph_BuilderTest, IsManifoldEdge_Box_True)
@@ -861,8 +861,8 @@ TEST(BRepGraph_BuilderTest, IsManifoldEdge_Box_True)
   aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  EXPECT_TRUE(aGraph.Topo().IsManifoldEdge(BRepGraph_NodeId::Edge(0)));
-  EXPECT_FALSE(aGraph.Topo().IsBoundaryEdge(BRepGraph_NodeId::Edge(0)));
+  EXPECT_TRUE(aGraph.Topo().IsManifoldEdge(BRepGraph_EdgeId(0)));
+  EXPECT_FALSE(aGraph.Topo().IsBoundaryEdge(BRepGraph_EdgeId(0)));
 }
 
 TEST(BRepGraph_BuilderTest, InvalidInput_ReturnsEmpty)
@@ -876,9 +876,4 @@ TEST(BRepGraph_BuilderTest, InvalidInput_ReturnsEmpty)
   EXPECT_EQ(aGraph.Topo().EdgesOfVertex(BRepGraph_NodeId::Face(0)).Length(), 0);
   EXPECT_EQ(aGraph.Topo().VerticesOfEdge(BRepGraph_NodeId::Face(0)).Length(), 0);
   EXPECT_EQ(aGraph.Topo().AdjacentEdges(BRepGraph_NodeId::Face(0)).Length(), 0);
-
-  // Invalid NodeId.
-  EXPECT_EQ(aGraph.Topo().FaceCountOfEdge(BRepGraph_NodeId()), 0);
-  EXPECT_FALSE(aGraph.Topo().IsBoundaryEdge(BRepGraph_NodeId()));
-  EXPECT_FALSE(aGraph.Topo().IsManifoldEdge(BRepGraph_NodeId()));
 }

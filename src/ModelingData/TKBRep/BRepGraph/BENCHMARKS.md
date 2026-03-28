@@ -70,11 +70,11 @@ Config: RelWithDebInfo
 - Sewing 2500 faces parallel: **-25%** vs Alloc Prop (mutex contention eliminated in SameParameter + processEdges)
 - Sewing 1200 faces parallel: **-21%** vs Alloc Prop
 - Sequential sewing shows noise (+6-8%) — expected since single-threaded has no mutex contention to eliminate
-- O(1) FaceCount: 2026-03-20, fix sewing mutation model for correct O(1) FaceCountOfEdge:
+- O(1) FaceCount: 2026-03-20, fix sewing mutation model for correct O(1) NbFacesOfEdge:
   - Sewing uses `Builder().RemoveNode()` for replaced edges (proper active count maintenance)
   - `ReplaceEdgeInWire` binds new edge + unbinds old edge from faces in single loop
   - `FaceCountForEdge` simplified to direct O(1) delegation (removes PackedMap allocation per call)
-  - `FreeEdges` and multiple-edge detection switched to `DefsView::FaceCountOfEdge` with `IsRemoved` filter
+  - `FreeEdges` and multiple-edge detection switched to `DefsView::NbFacesOfEdge` with `IsRemoved` filter
   - `UnbindEdgeFromFace` added to ReverseIndex (mirrors UnbindVertexFromEdge pattern)
   - `CommitMutation` guardrails: validates reverse index + active counts at end of Sewing, Compact, Deduplicate
   - CommitMutation assertions are debug-only (`Standard_ASSERT_VOID` is no-op in non-debug) — zero overhead

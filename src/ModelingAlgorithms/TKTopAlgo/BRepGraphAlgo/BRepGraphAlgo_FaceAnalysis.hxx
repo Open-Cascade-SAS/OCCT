@@ -38,6 +38,7 @@ public:
   {
     double MinTolerance = 0.0;   //!< Threshold for small-edge detection; 0 = auto.
     bool   Parallel     = false; //!< Enable parallel execution.
+    bool   HistoryMode  = false; //!< Record mutations (degenerate edges, removed faces) to History.
   };
 
   //! Result of face analysis.

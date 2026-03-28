@@ -387,11 +387,11 @@ static void verifyBuildDeltaScenario(const occ::handle<NCollection_BaseAllocator
   ASSERT_EQ(anActiveSolids->Length(), 1);
   EXPECT_EQ(anActiveSolids->Value(0), BRepGraph_SolidId(1));
 
-  EXPECT_EQ(aRevIdx.FaceCountOfEdge(BRepGraph_EdgeId(1)), 1);
+  EXPECT_EQ(aRevIdx.NbFacesOfEdge(BRepGraph_EdgeId(1)), 1);
 
   EXPECT_EQ(aRevIdx.WiresOfEdge(BRepGraph_EdgeId(2)), nullptr);
   EXPECT_EQ(aRevIdx.EdgesOfVertex(BRepGraph_VertexId(10)), nullptr);
-  EXPECT_EQ(aRevIdx.FaceCountOfEdge(BRepGraph_EdgeId(2)), 0);
+  EXPECT_EQ(aRevIdx.NbFacesOfEdge(BRepGraph_EdgeId(2)), 0);
 }
 } // namespace
 
@@ -440,7 +440,7 @@ TEST_F(BRepGraphTest, FaceCountMatchesFacesVector_AfterBindUnbindSequence)
       const NCollection_Vector<BRepGraph_FaceId>* aFaces =
         aRevIdx.FacesOfEdge(BRepGraph_EdgeId(anEdgeIdx));
       const int aExpectedCount = (aFaces == nullptr) ? 0 : aFaces->Length();
-      EXPECT_EQ(aRevIdx.FaceCountOfEdge(BRepGraph_EdgeId(anEdgeIdx)), aExpectedCount)
+      EXPECT_EQ(aRevIdx.NbFacesOfEdge(BRepGraph_EdgeId(anEdgeIdx)), aExpectedCount)
         << "Edge " << anEdgeIdx << " face-count cache mismatch";
     }
   };
@@ -776,14 +776,14 @@ TEST_F(BRepGraphTest, MutableEdge_ModifyTolerance)
               1.0e-15);
 }
 
-TEST_F(BRepGraphTest, FaceCountOfEdge_SharedEdge)
+TEST_F(BRepGraphTest, NbFacesOfEdge_SharedEdge)
 {
   // In a box, each non-degenerate edge is shared by exactly 2 faces.
   for (int anEdgeIdx = 0; anEdgeIdx < myGraph.Topo().NbEdges(); ++anEdgeIdx)
   {
     if (!BRepGraph_Tool::Edge::Degenerated(myGraph, BRepGraph_EdgeId(anEdgeIdx)))
     {
-      int aCount = myGraph.Topo().FaceCountOfEdge(BRepGraph_EdgeId(anEdgeIdx));
+      int aCount = myGraph.Topo().NbFacesOfEdge(BRepGraph_EdgeId(anEdgeIdx));
       EXPECT_EQ(aCount, 2) << "Edge " << anEdgeIdx << " should be shared by 2 faces";
     }
   }
@@ -1320,7 +1320,8 @@ TEST_F(BRepGraphTest, AddPCurveToEdge_NewPCurve_RetrievableViaFindPCurve)
   occ::handle<Geom2d_Line> aCurve2d = new Geom2d_Line(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0));
   myGraph.Builder().AddPCurveToEdge(anEdgeId, aFaceId, aCurve2d, 0.0, 1.0);
 
-  const BRepGraphInc::CoEdgeDef* aRetrieved = myGraph.Topo().FindPCurve(anEdgeId, aFaceId);
+  const BRepGraphInc::CoEdgeDef* aRetrieved =
+    BRepGraph_Tool::Edge::FindPCurve(myGraph, BRepGraph_EdgeId(anEdgeId.Index), BRepGraph_FaceId(aFaceId.Index));
   EXPECT_NE(aRetrieved, nullptr);
   if (aRetrieved != nullptr)
   {

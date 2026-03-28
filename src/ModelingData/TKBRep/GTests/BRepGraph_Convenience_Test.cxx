@@ -155,7 +155,10 @@ TEST_F(BRepGraph_ConvenienceTest, FindPCurve_ValidPair)
     for (int anEdgeIter = 0; anEdgeIter < aDefs.NbEdges(); ++anEdgeIter)
     {
       const BRepGraphInc::EdgeDef&   anEdgeDef = aDefs.Edge(BRepGraph_EdgeId(anEdgeIter));
-      const BRepGraphInc::CoEdgeDef* aPCurve   = aDefs.FindPCurve(anEdgeDef.Id, aFaceNodeId);
+      const BRepGraphInc::CoEdgeDef* aPCurve =
+        BRepGraph_Tool::Edge::FindPCurve(myGraph,
+                                         BRepGraph_EdgeId(anEdgeDef.Id.Index),
+                                         BRepGraph_FaceId(aFaceNodeId.Index));
       if (aPCurve != nullptr)
       {
         EXPECT_TRUE(aPCurve->Curve2DRepId.IsValid());
@@ -167,8 +170,8 @@ TEST_F(BRepGraph_ConvenienceTest, FindPCurve_ValidPair)
 
 TEST_F(BRepGraph_ConvenienceTest, FindPCurve_InvalidPair_ReturnsNull)
 {
-  const BRepGraph::TopoView aDefs = myGraph.Topo();
-  EXPECT_EQ(aDefs.FindPCurve(BRepGraph_NodeId::Edge(0), BRepGraph_NodeId::Face(9999)), nullptr);
+  EXPECT_EQ(BRepGraph_Tool::Edge::FindPCurve(myGraph, BRepGraph_EdgeId(0), BRepGraph_FaceId(9999)),
+            nullptr);
 }
 
 // ---------- Part F: DefsView::NbShellFaces / ShellFaceEntity ----------
@@ -226,11 +229,17 @@ TEST_F(BRepGraph_ConvenienceTest, FindPCurve_WithOrientation_SeamEdge)
         continue;
 
       // Found seam edge - verify FindPCurve returns distinct entries for each orientation.
-      const BRepGraph_NodeId         aFaceDefId = aCE.FaceDefId;
+      const BRepGraph_FaceId         aFaceDefId = aCE.FaceDefId;
       const BRepGraphInc::CoEdgeDef* aPCF =
-        aDefs.FindPCurve(anEdgeDef.Id, aFaceDefId, TopAbs_FORWARD);
+        BRepGraph_Tool::Edge::FindPCurve(aGraph,
+                                         BRepGraph_EdgeId(anEdgeDef.Id.Index),
+                                         aFaceDefId,
+                                         TopAbs_FORWARD);
       const BRepGraphInc::CoEdgeDef* aPCR =
-        aDefs.FindPCurve(anEdgeDef.Id, aFaceDefId, TopAbs_REVERSED);
+        BRepGraph_Tool::Edge::FindPCurve(aGraph,
+                                         BRepGraph_EdgeId(anEdgeDef.Id.Index),
+                                         aFaceDefId,
+                                         TopAbs_REVERSED);
       EXPECT_NE(aPCF, nullptr);
       EXPECT_NE(aPCR, nullptr);
       if (aPCF != nullptr && aPCR != nullptr)

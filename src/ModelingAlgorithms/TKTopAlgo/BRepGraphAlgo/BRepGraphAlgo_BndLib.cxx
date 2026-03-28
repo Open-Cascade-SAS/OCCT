@@ -830,7 +830,7 @@ void BRepGraphAlgo_BndLib::Add(const BRepGraph& theGraph,
   const int aNbEdges = theGraph.Topo().NbEdges();
   for (int i = 0; i < aNbEdges; ++i)
   {
-    if (theGraph.Topo().FaceCountOfEdge(BRepGraph_EdgeId(i)) == 0)
+    if (theGraph.Topo().NbFacesOfEdge(BRepGraph_EdgeId(i)) == 0)
     {
       addEdgeBox(theGraph, BRepGraph_EdgeId(i), theBox);
     }
@@ -877,7 +877,7 @@ void BRepGraphAlgo_BndLib::AddOptimal(const BRepGraph& theGraph,
   const int aNbEdges = theGraph.Topo().NbEdges();
   for (int i = 0; i < aNbEdges; ++i)
   {
-    if (theGraph.Topo().FaceCountOfEdge(BRepGraph_EdgeId(i)) == 0)
+    if (theGraph.Topo().NbFacesOfEdge(BRepGraph_EdgeId(i)) == 0)
     {
       Bnd_Box aLocBox;
       addEdgeBoxOptimal(theGraph, BRepGraph_EdgeId(i), aLocBox, theUseShapeTolerance);

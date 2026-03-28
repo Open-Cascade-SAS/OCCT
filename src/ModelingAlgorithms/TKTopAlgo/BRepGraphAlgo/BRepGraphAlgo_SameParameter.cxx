@@ -17,8 +17,9 @@
 #include <Approx_SameParameter.hxx>
 #include <BRepCheck.hxx>
 #include <BRepGraph_BuilderView.hxx>
-#include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_DeferredScope.hxx>
+#include <BRepGraph_History.hxx>
+#include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BSplCLib.hxx>
 #include <ExtremaPC_Curve.hxx>
@@ -730,12 +731,32 @@ BRepGraphAlgo_SameParameter::Result BRepGraphAlgo_SameParameter::Perform(
   const NCollection_IndexedMap<BRepGraph_EdgeId>& theEdgeIds,
   const double                                    theTolerance)
 {
-  Result    aResult;
+  Options anOpts;
+  anOpts.Tolerance = theTolerance;
+  return Perform(theGraph, theEdgeIds, anOpts);
+}
+
+//=================================================================================================
+
+BRepGraphAlgo_SameParameter::Result BRepGraphAlgo_SameParameter::Perform(
+  BRepGraph&                                      theGraph,
+  const NCollection_IndexedMap<BRepGraph_EdgeId>& theEdgeIds,
+  const Options&                                  theOptions)
+{
+  Result aResult;
+  if (!theGraph.IsDone())
+  {
+    return aResult;
+  }
+
   const int aNbEdges = theEdgeIds.Extent();
   if (aNbEdges == 0)
   {
     return aResult;
   }
+
+  const bool wasHistoryEnabled = theGraph.History().IsEnabled();
+  theGraph.History().SetEnabled(theOptions.HistoryMode);
 
   // Copy edge ids to array for indexed access.
   NCollection_Array1<BRepGraph_EdgeId> anEdgeIdArr(0, aNbEdges - 1);
@@ -748,19 +769,27 @@ BRepGraphAlgo_SameParameter::Result BRepGraphAlgo_SameParameter::Perform(
   int aNbApprox = 0;
 
   {
-    BRepGraph_DeferredScope aScope(theGraph);
+    BRepGraph_DeferredScope aDeferredScope(theGraph);
     for (int anEdgeIdx = 0; anEdgeIdx < aNbEdges; ++anEdgeIdx)
     {
       const BRepGraph_EdgeId anEdgeId = anEdgeIdArr.Value(anEdgeIdx);
       const BRepGraph_NodeId aNodeId  = static_cast<BRepGraph_NodeId>(anEdgeId);
       EnforceFlags           aFlags;
-      enforceImpl(theGraph, aNodeId, theTolerance, aFlags);
+      enforceImpl(theGraph, aNodeId, theOptions.Tolerance, aFlags);
       aNbC0 += aFlags.NbC0Fallbacks;
       aNbApprox += aFlags.NbApproxFallbacks;
+
+      // Record tolerance mutation to history.
+      NCollection_Vector<BRepGraph_NodeId> aRepl;
+      aRepl.Append(aNodeId);
+      theGraph.History().Record(TCollection_AsciiString("SameParameter:EnforceTolerance"),
+                                aNodeId,
+                                aRepl);
     }
   }
 
   aResult.NbC0Fallbacks     = aNbC0;
   aResult.NbApproxFallbacks = aNbApprox;
+  theGraph.History().SetEnabled(wasHistoryEnabled);
   return aResult;
 }

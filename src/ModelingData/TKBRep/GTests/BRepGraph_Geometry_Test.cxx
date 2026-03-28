@@ -669,7 +669,10 @@ TEST(BRepGraph_GeometryTest, Box_FindPCurve_MatchesToolOverload)
     {
       const BRepGraphInc::CoEdgeDef& aCE = aGraph.Topo().CoEdge(aCoEdgeIdxs.Value(j));
       const BRepGraphInc::CoEdgeDef* aFromDefs =
-        aGraph.Topo().FindPCurve(anEdgeDefId, aCE.FaceDefId, aCE.Sense);
+        BRepGraph_Tool::Edge::FindPCurve(aGraph,
+                                         BRepGraph_EdgeId(anEdgeDefId.Index),
+                                         aCE.FaceDefId,
+                                         aCE.Sense);
       const BRepGraphInc::CoEdgeDef* aFromTool =
         BRepGraph_Tool::Edge::FindPCurve(aGraph,
                                          BRepGraph_EdgeId(i),
@@ -700,13 +703,13 @@ TEST(BRepGraph_GeometryTest, Cylinder_SeamEdge_FindPCurve_DistinguishesOrientati
         continue;
 
       // Seam edge: same face, two orientations.
-      const BRepGraph_NodeId aFaceId = aCE.FaceDefId;
-      const BRepGraph_NodeId anEdgeNodeId(BRepGraph_NodeId::Kind::Edge, i);
+      const BRepGraph_FaceId aFaceId = aCE.FaceDefId;
+      const BRepGraph_EdgeId anEdgeId(i);
 
       const BRepGraphInc::CoEdgeDef* aPCFwd =
-        aGraph.Topo().FindPCurve(anEdgeNodeId, aFaceId, TopAbs_FORWARD);
+        BRepGraph_Tool::Edge::FindPCurve(aGraph, anEdgeId, aFaceId, TopAbs_FORWARD);
       const BRepGraphInc::CoEdgeDef* aPCRev =
-        aGraph.Topo().FindPCurve(anEdgeNodeId, aFaceId, TopAbs_REVERSED);
+        BRepGraph_Tool::Edge::FindPCurve(aGraph, anEdgeId, aFaceId, TopAbs_REVERSED);
 
       EXPECT_NE(aPCFwd, nullptr);
       EXPECT_NE(aPCRev, nullptr);

@@ -18,6 +18,7 @@
 
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_DeferredScope.hxx>
+#include <BRepGraph_History.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_TopoView.hxx>
@@ -91,7 +92,10 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
   {
     return aResult;
   }
-  BRepGraph_DeferredScope aMutationGuard(theGraph);
+  BRepGraph_DeferredScope aDeferredScope(theGraph);
+
+  const bool wasHistoryEnabled = theGraph.History().IsEnabled();
+  theGraph.History().SetEnabled(theOptions.HistoryMode);
 
   const double aMinTol =
     theOptions.MinTolerance > 0.0
@@ -220,7 +224,12 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
     // Remove face if all edges are small/degenerate.
     if (aNbEdges > 0 && aNbSmall == aNbEdges)
     {
-      theGraph.Builder().RemoveNode(BRepGraph_NodeId::Face(aFaceIdx));
+      const BRepGraph_NodeId aFaceNodeId = BRepGraph_NodeId::Face(aFaceIdx);
+      theGraph.Builder().RemoveNode(aFaceNodeId);
+      NCollection_Vector<BRepGraph_NodeId> anEmpty;
+      theGraph.History().Record(TCollection_AsciiString("FaceAnalysis:RemoveFace"),
+                                aFaceNodeId,
+                                anEmpty);
       aResult.DeletedFaces.Append(BRepGraph_FaceId(aFaceIdx));
     }
   }
@@ -312,6 +321,16 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
     aFinalMerge.Bind(anIt.Key(), aTarget);
   }
 
+  // Record vertex merge history.
+  for (NCollection_DataMap<int, int>::Iterator anIt(aFinalMerge); anIt.More(); anIt.Next())
+  {
+    NCollection_Vector<BRepGraph_NodeId> aRepl;
+    aRepl.Append(BRepGraph_NodeId::Vertex(anIt.Value()));
+    theGraph.History().Record(TCollection_AsciiString("FaceAnalysis:MergeVertex"),
+                              BRepGraph_NodeId::Vertex(anIt.Key()),
+                              aRepl);
+  }
+
   if (!aFinalMerge.IsEmpty())
   {
     for (int anEdgeIdx = 0; anEdgeIdx < aDefs.NbEdges(); ++anEdgeIdx)
@@ -362,5 +381,6 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
   }
 
   aResult.IsDone = true;
+  theGraph.History().SetEnabled(wasHistoryEnabled);
   return aResult;
 }

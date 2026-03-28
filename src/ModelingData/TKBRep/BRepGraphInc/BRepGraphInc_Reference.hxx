@@ -94,6 +94,9 @@ struct ChildRef : public BaseRef
 };
 
 //! Occurrence reference storage entry.
+//! Unlike other ref types, OccurrenceRef omits Orientation and LocalLocation.
+//! Placement is owned by OccurrenceDef::Placement; this ref is a lightweight
+//! pointer from the parent Product's OccurrenceRefIds to the OccurrenceDef slot.
 struct OccurrenceRef : public BaseRef
 {
   BRepGraph_OccurrenceId OccurrenceDefId;

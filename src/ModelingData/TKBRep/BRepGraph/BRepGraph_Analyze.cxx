@@ -43,7 +43,7 @@ NCollection_Vector<BRepGraph_EdgeId> BRepGraph_Analyze::FreeEdges(const BRepGrap
     if (anEdge.IsRemoved || anEdge.IsDegenerate)
       continue;
 
-    if (aDefs.FaceCountOfEdge(anEdgeId) == 1)
+    if (aDefs.NbFacesOfEdge(anEdgeId) == 1)
       aResult.Append(anEdgeId);
   }
   return aResult;

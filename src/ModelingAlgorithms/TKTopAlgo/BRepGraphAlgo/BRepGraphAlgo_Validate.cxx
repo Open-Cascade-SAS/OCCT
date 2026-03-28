@@ -591,7 +591,7 @@ void checkReverseIndexFaceCountCache(const BRepGraph&                           
       aUniqueFaces.Add(aCoEdge.FaceDefId.Index);
     }
 
-    const int aCachedCount  = aDefs.FaceCountOfEdge(anEdgeId);
+    const int aCachedCount  = aDefs.NbFacesOfEdge(anEdgeId);
     const int anActualCount = aUniqueFaces.Extent();
     if (aCachedCount != anActualCount)
     {

@@ -480,7 +480,9 @@ public:
 
   //! @brief Wire property accessors.
   //!
-  //! Provides wire closure flag access.
+  //! Provides wire closure and size queries.
+  //! For ordered edge traversal, use BRepGraphInc_WireExplorer or access
+  //! the WireDef::CoEdgeRefIds vector directly via TopoView.
   class Wire
   {
   public:
@@ -489,6 +491,13 @@ public:
     //! @param[in] theWire  typed wire definition identifier
     //! @return true if closed
     [[nodiscard]] Standard_EXPORT static bool IsClosed(const BRepGraph&       theGraph,
+                                                       const BRepGraph_WireId theWire);
+
+    //! Number of CoEdge references in the wire (i.e., edge count including orientation).
+    //! @param[in] theGraph source graph
+    //! @param[in] theWire  typed wire definition identifier
+    //! @return number of coedge entries
+    [[nodiscard]] Standard_EXPORT static int NbCoEdges(const BRepGraph&       theGraph,
                                                        const BRepGraph_WireId theWire);
   };
 

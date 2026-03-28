@@ -60,6 +60,12 @@ public:
   //! Number of coedge definitions.
   [[nodiscard]] Standard_EXPORT int NbCoEdges() const;
 
+  //! Number of product definitions (delegates to PathView for API symmetry).
+  [[nodiscard]] Standard_EXPORT int NbProducts() const;
+
+  //! Number of occurrence definitions (delegates to PathView for API symmetry).
+  [[nodiscard]] Standard_EXPORT int NbOccurrences() const;
+
   //! Number of active (non-removed) definitions per kind.
   [[nodiscard]] Standard_EXPORT int NbActiveVertices() const;
   [[nodiscard]] Standard_EXPORT int NbActiveEdges() const;
@@ -71,9 +77,15 @@ public:
   [[nodiscard]] Standard_EXPORT int NbActiveCompounds() const;
   [[nodiscard]] Standard_EXPORT int NbActiveCompSolids() const;
 
+  //! Number of active (non-removed) product definitions.
+  [[nodiscard]] Standard_EXPORT int NbActiveProducts() const;
+
+  //! Number of active (non-removed) occurrence definitions.
+  [[nodiscard]] Standard_EXPORT int NbActiveOccurrences() const;
+
   //! Return cached face count for an edge - O(1).
   //! @param[in] theEdge typed edge definition identifier
-  [[nodiscard]] Standard_EXPORT int FaceCountOfEdge(const BRepGraph_EdgeId theEdge) const;
+  [[nodiscard]] Standard_EXPORT int NbFacesOfEdge(const BRepGraph_EdgeId theEdge) const;
 
   //! Return wire definition indices that contain a given edge (safe reference, never null).
   //! @param[in] theEdge typed edge definition identifier
@@ -149,7 +161,7 @@ public:
                                                                  const int theFaceIndex) const;
 
   //! Total number of nodes in the graph (all topology + assembly kinds).
-  [[nodiscard]] Standard_EXPORT size_t NbNodes() const;
+  [[nodiscard]] Standard_EXPORT int NbNodes() const;
 
   //! Check if a node has been soft-removed.
   //! @param[in] theNode node to check
@@ -178,24 +190,6 @@ public:
 
   //! Number of polygon-on-triangulation representations.
   [[nodiscard]] Standard_EXPORT int NbPolygonsOnTri() const;
-
-  //! @name Geometry query methods
-
-  //! Find the CoEdge for an edge on a given face, or nullptr if none exists.
-  //! @param[in] theEdgeEntity edge definition NodeId
-  //! @param[in] theFaceEntity face definition NodeId
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::CoEdgeDef* FindPCurve(
-    const BRepGraph_NodeId theEdgeEntity,
-    const BRepGraph_NodeId theFaceEntity) const;
-
-  //! Find the CoEdge for an edge/face/orientation triple (seam edge support).
-  //! @param[in] theEdgeEntity           edge definition NodeId
-  //! @param[in] theFaceEntity           face definition NodeId
-  //! @param[in] theEdgeOrientation   edge orientation on the face
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::CoEdgeDef* FindPCurve(
-    const BRepGraph_NodeId   theEdgeEntity,
-    const BRepGraph_NodeId   theFaceEntity,
-    const TopAbs_Orientation theEdgeOrientation) const;
 
   //! @name Spatial adjacency queries
 
@@ -248,24 +242,15 @@ public:
   [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> AdjacentEdges(
     const BRepGraph_NodeId theEdgeEntity) const;
 
-  //! Return the number of distinct faces referencing this edge.
-  //! 0 = free edge, 1 = boundary, 2 = manifold, 3+ = non-manifold.
-  //! O(1) lookup via cached reverse index.
-  //! @param[in] theEdgeEntity edge definition NodeId
-  [[nodiscard]] Standard_EXPORT int FaceCountOfEdge(const BRepGraph_NodeId theEdgeEntity) const;
-
   //! True if the edge is referenced by exactly one face (boundary edge).
-  //! @param[in] theEdgeEntity edge definition NodeId
-  [[nodiscard]] Standard_EXPORT bool IsBoundaryEdge(const BRepGraph_NodeId theEdgeEntity) const;
+  //! @param[in] theEdge typed edge definition identifier
+  [[nodiscard]] Standard_EXPORT bool IsBoundaryEdge(const BRepGraph_EdgeId theEdge) const;
 
   //! True if the edge is referenced by exactly two faces (manifold interior edge).
-  //! @param[in] theEdgeEntity edge definition NodeId
-  [[nodiscard]] Standard_EXPORT bool IsManifoldEdge(const BRepGraph_NodeId theEdgeEntity) const;
+  //! @param[in] theEdge typed edge definition identifier
+  [[nodiscard]] Standard_EXPORT bool IsManifoldEdge(const BRepGraph_EdgeId theEdge) const;
 
-private:
-  friend class BRepGraph;
-  friend struct BRepGraph_Data;
-  friend class BRepGraph_Tool;
+  //! @name Representation accessors
 
   //! Access surface representation by typed identifier.
   //! @param[in] theRep typed surface representation identifier
@@ -301,6 +286,28 @@ private:
   //! @param[in] theRep typed polygon-on-triangulation representation identifier
   [[nodiscard]] Standard_EXPORT const BRepGraphInc::PolygonOnTriRep& PolygonOnTriRep(
     const BRepGraph_PolygonOnTriRepId theRep) const;
+
+private:
+  friend class BRepGraph;
+  friend struct BRepGraph_Data;
+  friend class BRepGraph_Tool;
+  friend class BRepGraph_Analyze;
+
+  //! Find the CoEdge for an edge on a given face, or nullptr if none exists.
+  //! @param[in] theEdgeEntity edge definition NodeId
+  //! @param[in] theFaceEntity face definition NodeId
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::CoEdgeDef* FindPCurve(
+    const BRepGraph_NodeId theEdgeEntity,
+    const BRepGraph_NodeId theFaceEntity) const;
+
+  //! Find the CoEdge for an edge/face/orientation triple (seam edge support).
+  //! @param[in] theEdgeEntity           edge definition NodeId
+  //! @param[in] theFaceEntity           face definition NodeId
+  //! @param[in] theEdgeOrientation   edge orientation on the face
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::CoEdgeDef* FindPCurve(
+    const BRepGraph_NodeId   theEdgeEntity,
+    const BRepGraph_NodeId   theFaceEntity,
+    const TopAbs_Orientation theEdgeOrientation) const;
 
   explicit TopoView(const BRepGraph* theGraph)
       : myGraph(theGraph)

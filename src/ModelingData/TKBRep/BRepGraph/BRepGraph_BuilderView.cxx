@@ -1660,6 +1660,28 @@ BRepGraph_MutGuard<BRepGraphInc::Polygon3DRep> BRepGraph::BuilderView::MutPolygo
 
 //=================================================================================================
 
+BRepGraph_MutGuard<BRepGraphInc::Polygon2DRep> BRepGraph::BuilderView::MutPolygon2D(
+  const BRepGraph_Polygon2DRepId thePolygon)
+{
+  return BRepGraph_MutGuard<BRepGraphInc::Polygon2DRep>(
+    myGraph,
+    &myGraph->myData->myIncStorage.ChangePolygon2DRep(thePolygon),
+    BRepGraph_RepId::Polygon2D(thePolygon.Index));
+}
+
+//=================================================================================================
+
+BRepGraph_MutGuard<BRepGraphInc::PolygonOnTriRep> BRepGraph::BuilderView::MutPolygonOnTri(
+  const BRepGraph_PolygonOnTriRepId thePolygon)
+{
+  return BRepGraph_MutGuard<BRepGraphInc::PolygonOnTriRep>(
+    myGraph,
+    &myGraph->myData->myIncStorage.ChangePolygonOnTriRep(thePolygon),
+    BRepGraph_RepId::PolygonOnTri(thePolygon.Index));
+}
+
+//=================================================================================================
+
 void BRepGraph::BuilderView::applyModificationImpl(
   const BRepGraph_NodeId                 theTarget,
   NCollection_Vector<BRepGraph_NodeId>&& theReplacements,

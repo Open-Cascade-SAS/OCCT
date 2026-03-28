@@ -146,7 +146,7 @@ TEST_F(BRepGraph_AnalyzeTest, FreeEdges_Sphere_SeamEdgesAreFree)
 
   const NCollection_Vector<BRepGraph_EdgeId> aFreeEdges = BRepGraph_Analyze::FreeEdges(aGraph);
   // A sphere has seam edges that are referenced by only 1 face (the single face),
-  // so they are detected as free by the FreeEdges algorithm (FaceCountOfEdge == 1).
+  // so they are detected as free by the FreeEdges algorithm (NbFacesOfEdge == 1).
   // Degenerate edges at poles are excluded.
   EXPECT_GE(aFreeEdges.Length(), 0);
 }

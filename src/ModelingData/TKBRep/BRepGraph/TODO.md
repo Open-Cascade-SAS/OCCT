@@ -56,11 +56,11 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 - **Result**: O(delta) instead of O(N) for append operations
 
 ### ~~FaceCountForEdge fast path~~ — DONE (2026-03-20)
-- `FaceCountForEdge` simplified to O(1) delegation to `ReverseIndex::FaceCountOfEdge()`
+- `FaceCountForEdge` simplified to O(1) delegation to `ReverseIndex::NbFacesOfEdge()`
 - `UnbindEdgeFromFace` added to ReverseIndex for edge-to-face maintenance
 - `ReplaceEdgeInWire` binds new edge + unbinds old edge from wire's faces in single loop
 - Sewing `mergeMatchedEdges` uses `Builder().RemoveNode()` for replaced edges
-- `FreeEdges` and multiple-edge detection switched to O(1) `DefsView::FaceCountOfEdge` with `IsRemoved` filter
+- `FreeEdges` and multiple-edge detection switched to O(1) `DefsView::NbFacesOfEdge` with `IsRemoved` filter
 
 ### ~~DeferredScope RAII~~ — DONE (2026-03-20)
 - `BRepGraph_DeferredScope` RAII class: `BeginDeferredInvalidation()` on construct, `EndDeferredInvalidation()` + `CommitMutation()` on destruct
@@ -232,7 +232,7 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 
 ### ~~Precomputed FaceCount~~ — DONE (2026-03-19)
 - `myEdgeFaceCount` vector built during `ReverseIndex::Build`
-- O(1) lookup via `FaceCountOfEdge()`
+- O(1) lookup via `NbFacesOfEdge()`
 
 ### ~~History label granularity~~ — DONE (2026-03-19)
 - `ExtraInfo` field on HistoryRecord

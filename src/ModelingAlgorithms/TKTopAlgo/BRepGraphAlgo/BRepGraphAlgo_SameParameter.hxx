@@ -32,6 +32,13 @@ class BRepGraphAlgo_SameParameter
 public:
   DEFINE_STANDARD_ALLOC
 
+  //! Configuration for SameParameter enforcement.
+  struct Options
+  {
+    double Tolerance   = 0.0;   //!< Reference tolerance for pass/fail.
+    bool   HistoryMode = false; //!< Record tolerance mutations to History.
+  };
+
   //! Diagnostic result from SameParameter enforcement.
   struct Result
   {
@@ -60,6 +67,16 @@ public:
     Perform(BRepGraph&                                      theGraph,
             const NCollection_IndexedMap<BRepGraph_EdgeId>& theEdgeIds,
             const double                                    theTolerance);
+
+  //! Enforce SameParameter on a set of edges with options.
+  //! @param[in,out] theGraph     the graph containing the edges
+  //! @param[in]     theEdgeIds   edge definition identifiers to process
+  //! @param[in]     theOptions   configuration including tolerance and history mode
+  //! @return diagnostic counters
+  [[nodiscard]] static Standard_EXPORT Result
+    Perform(BRepGraph&                                      theGraph,
+            const NCollection_IndexedMap<BRepGraph_EdgeId>& theEdgeIds,
+            const Options&                                  theOptions);
 
 private:
   BRepGraphAlgo_SameParameter() = delete;
