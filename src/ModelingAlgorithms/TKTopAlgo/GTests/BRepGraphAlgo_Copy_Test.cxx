@@ -296,7 +296,9 @@ TEST(BRepGraphAlgo_CopyTest, CopyBox_UIDsPreserved)
       EXPECT_EQ(aCopyUID.IsValid(), anOrigUID.IsValid())
         << "UID validity mismatch at " << theLabel << " " << anIdx;
       if (anOrigUID.IsValid())
+      {
         EXPECT_EQ(aCopyUID, anOrigUID) << "UID mismatch at " << theLabel << " " << anIdx;
+      }
     }
   };
 
