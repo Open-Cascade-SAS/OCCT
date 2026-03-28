@@ -420,7 +420,9 @@ TEST(BRepGraph_GeometryTest, EdgeDef_AllCurves3dNonNull)
   for (BRepGraph_Iterator<BRepGraphInc::EdgeDef> anIt(aGraph); anIt.More(); anIt.Next())
   {
     if (!BRepGraph_Tool::Edge::Degenerated(aGraph, BRepGraph_EdgeId(anIt.Index())))
+    {
       EXPECT_TRUE(BRepGraph_Tool::Edge::HasCurve(aGraph, BRepGraph_EdgeId(anIt.Index())));
+    }
     ++aCount;
   }
   EXPECT_EQ(aCount, aGraph.Topo().NbEdges());
