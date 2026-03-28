@@ -1754,7 +1754,7 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> matchFreeEdges
       // This ensures the longest curve retains its geometry and accumulates PCurves.
       // Uses actual arc length via GCPnts_AbscissaPoint for accuracy on curved edges.
       // For equal-length edges, use lower index as EdgeA for deterministic ordering
-      // and to deduplicate symmetric pairs (A→B and B→A normalize to the same form).
+      // and to deduplicate symmetric pairs (A->B and B->A normalize to the same form).
       if (theOptions.NonManifoldMode)
       {
         for (int anIdx = 0; anIdx < aNbScored; ++anIdx)
