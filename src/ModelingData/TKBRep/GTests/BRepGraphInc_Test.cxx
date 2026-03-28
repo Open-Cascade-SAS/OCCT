@@ -403,7 +403,9 @@ TEST(BRepGraphIncTest, Box_ReverseIndex_EdgesToWires)
       aStorage.ReverseIndex().WiresOfEdge(BRepGraph_EdgeId(anEdgeIdx));
     EXPECT_TRUE(aWires != nullptr) << "Edge " << anEdgeIdx << " not in any wire";
     if (aWires != nullptr)
+    {
       EXPECT_GE(aWires->Length(), 1);
+    }
   }
 }
 
@@ -425,7 +427,9 @@ TEST(BRepGraphIncTest, Box_ReverseIndex_EdgesToFaces)
       aStorage.ReverseIndex().FacesOfEdge(BRepGraph_EdgeId(anEdgeIdx));
     EXPECT_TRUE(aFaces != nullptr) << "Edge " << anEdgeIdx << " not in any face";
     if (aFaces != nullptr)
+    {
       EXPECT_GE(aFaces->Length(), 1);
+    }
   }
 }
 
@@ -995,7 +999,9 @@ TEST(BRepGraphIncTest, FaceExternalVertex_Captured)
   const BRepGraphInc::FaceDef& aFaceEnt = aStorage.Face(BRepGraph_FaceId(0));
   EXPECT_EQ(aFaceEnt.VertexRefIds.Length(), 1);
   if (aFaceEnt.VertexRefIds.Length() == 1)
+  {
     EXPECT_EQ(aStorage.VertexRef(aFaceEnt.VertexRefIds.Value(0)).Orientation, TopAbs_EXTERNAL);
+  }
 }
 
 TEST(BRepGraphIncTest, FaceNoDirectVertices_EmptyVector)
