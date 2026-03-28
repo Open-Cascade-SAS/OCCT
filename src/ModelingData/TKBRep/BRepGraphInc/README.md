@@ -341,9 +341,9 @@ Key difference: TopoDS expresses context through shape occurrences. GraphInc kee
 | File | Purpose |
 |------|---------|
 | `BRepGraphInc_Definition.hxx` | Entity struct definitions |
-| `BRepGraphInc_IncidenceRef.hxx` | Context reference definitions |
+| `BRepGraphInc_Reference.hxx` | Context reference definitions |
 | `BRepGraphInc_Storage.hxx/.cxx` | Typed storage and ownership |
 | `BRepGraphInc_Populate.hxx/.cxx` | TopoDS → incidence build and append |
 | `BRepGraphInc_Reconstruct.hxx/.cxx` | Incidence → TopoDS reconstruction |
 | `BRepGraphInc_ReverseIndex.hxx/.cxx` | Reverse adjacency services |
-| `BRepGraphInc_WireExplorer.hxx` | Wire traversal in connection order |
+| `BRepGraph_WireExplorer.hxx` | Wire traversal in connection order (in BRepGraph package) |

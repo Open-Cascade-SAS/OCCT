@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <BRep_Builder.hxx>
+#include <BRepAlgoAPI_Common.hxx>
 #include <BRepAlgoAPI_Fuse.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
@@ -668,4 +669,161 @@ TEST(BRepGraphCheck_AnalyzerTest, SharedFaceBetweenShells_DetectsImbrication)
   }
   EXPECT_TRUE(aHasImbrication)
     << "Solid with shared face between shells should report InvalidImbricationOfShells.";
+}
+
+// ---------------------------------------------------------------------------
+// Compound / CompSolid tests
+// ---------------------------------------------------------------------------
+
+TEST(BRepGraphCheck_AnalyzerTest, ValidCompound_TwoBoxes_NoIssues)
+{
+  const TopoDS_Shape aBox1 = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
+  const TopoDS_Shape aBox2 = BRepPrimAPI_MakeBox(gp_Pnt(20.0, 0.0, 0.0), 10.0, 10.0, 10.0).Shape();
+
+  BRep_Builder    aBB;
+  TopoDS_Compound aCompound;
+  aBB.MakeCompound(aCompound);
+  aBB.Add(aCompound, aBox1);
+  aBB.Add(aCompound, aBox2);
+
+  BRepGraph aGraph;
+  aGraph.Build(aCompound);
+  ASSERT_TRUE(aGraph.IsDone());
+
+  BRepGraphCheck_Analyzer anAnalyzer(aGraph);
+  anAnalyzer.Perform();
+
+  EXPECT_TRUE(anAnalyzer.IsValid())
+    << "Compound of two valid boxes should have no errors. Found "
+    << anAnalyzer.Report().Issues().Length() << " issues.";
+}
+
+TEST(BRepGraphCheck_AnalyzerTest, ValidCompSolid_NoIssues)
+{
+  // Build two adjacent boxes placed side-by-side into a CompSolid.
+  const TopoDS_Shape aBox1 = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
+  const TopoDS_Shape aBox2 =
+    BRepPrimAPI_MakeBox(gp_Pnt(10.0, 0.0, 0.0), 10.0, 10.0, 10.0).Shape();
+
+  // Build a CompSolid from the two solids.
+  BRep_Builder      aBB;
+  TopoDS_CompSolid  aCompSolid;
+  aBB.MakeCompSolid(aCompSolid);
+  aBB.Add(aCompSolid, aBox1);
+  aBB.Add(aCompSolid, aBox2);
+
+  BRepGraph aGraph;
+  aGraph.Build(aCompSolid);
+  ASSERT_TRUE(aGraph.IsDone());
+
+  BRepGraphCheck_Analyzer anAnalyzer(aGraph);
+  anAnalyzer.Perform();
+
+  EXPECT_TRUE(anAnalyzer.IsValid())
+    << "CompSolid of two valid boxes should have no errors. Found "
+    << anAnalyzer.Report().Issues().Length() << " issues.";
+}
+
+// ---------------------------------------------------------------------------
+// ExactMethod tests
+// ---------------------------------------------------------------------------
+
+TEST(BRepGraphCheck_AnalyzerTest, ExactMethod_ValidBox_NoIssues)
+{
+  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
+
+  BRepGraph aGraph;
+  aGraph.Build(aBox);
+  ASSERT_TRUE(aGraph.IsDone());
+
+  BRepGraphCheck_Analyzer anAnalyzer(aGraph);
+  anAnalyzer.SetExactMethod(true);
+  anAnalyzer.Perform();
+
+  EXPECT_TRUE(anAnalyzer.IsValid())
+    << "Valid box with exact method should have no errors. Found "
+    << anAnalyzer.Report().Issues().Length() << " issues.";
+}
+
+TEST(BRepGraphCheck_AnalyzerTest, ExactMethod_DisplacedVertex_StillDetectsError)
+{
+  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
+
+  TopExp_Explorer anEdgeExp(aBox, TopAbs_EDGE);
+  ASSERT_TRUE(anEdgeExp.More());
+  const TopoDS_Edge& anEdge = TopoDS::Edge(anEdgeExp.Current());
+
+  TopoDS_Vertex aV1, aV2;
+  TopExp::Vertices(anEdge, aV1, aV2);
+
+  // Displace start vertex far from the curve.
+  BRep_Builder aBB;
+  aBB.UpdateVertex(aV1, gp_Pnt(999.0, 999.0, 999.0), Precision::Confusion());
+
+  BRepGraph aGraph;
+  aGraph.Build(aBox);
+  ASSERT_TRUE(aGraph.IsDone());
+
+  BRepGraphCheck_Analyzer anAnalyzer(aGraph);
+  anAnalyzer.SetExactMethod(true);
+  anAnalyzer.SetGeometricControls(true);
+  anAnalyzer.Perform();
+
+  EXPECT_FALSE(anAnalyzer.IsValid())
+    << "Displaced vertex with exact method should still be detected.";
+  EXPECT_GT(anAnalyzer.Report().Issues().Length(), 0);
+}
+
+// ---------------------------------------------------------------------------
+// Parallel vs sequential equivalence
+// ---------------------------------------------------------------------------
+
+TEST(BRepGraphCheck_AnalyzerTest, ParallelVsSequential_SameIssueSet)
+{
+  // Build a box with a displaced vertex to create known issues.
+  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
+
+  TopExp_Explorer anEdgeExp(aBox, TopAbs_EDGE);
+  ASSERT_TRUE(anEdgeExp.More());
+  const TopoDS_Edge& anEdge = TopoDS::Edge(anEdgeExp.Current());
+
+  TopoDS_Vertex aV1, aV2;
+  TopExp::Vertices(anEdge, aV1, aV2);
+
+  BRep_Builder aBB;
+  aBB.UpdateVertex(aV1, gp_Pnt(999.0, 999.0, 999.0), Precision::Confusion());
+
+  // Sequential run.
+  BRepGraph aGraphSeq;
+  aGraphSeq.Build(aBox);
+  ASSERT_TRUE(aGraphSeq.IsDone());
+
+  BRepGraphCheck_Analyzer aSeqAnalyzer(aGraphSeq);
+  aSeqAnalyzer.SetParallel(false);
+  aSeqAnalyzer.SetGeometricControls(true);
+  aSeqAnalyzer.Perform();
+
+  // Parallel run.
+  BRepGraph aGraphPar;
+  aGraphPar.Build(aBox);
+  ASSERT_TRUE(aGraphPar.IsDone());
+
+  BRepGraphCheck_Analyzer aParAnalyzer(aGraphPar);
+  aParAnalyzer.SetParallel(true);
+  aParAnalyzer.SetGeometricControls(true);
+  aParAnalyzer.Perform();
+
+  // Compare issue counts.
+  EXPECT_EQ(aSeqAnalyzer.Report().Issues().Length(), aParAnalyzer.Report().Issues().Length())
+    << "Sequential and parallel analyzers should find the same number of issues.";
+
+  // Compare that the same BRepCheck_Status values appear in both.
+  NCollection_IndexedMap<int> aSeqStatuses, aParStatuses;
+  for (int i = 0; i < aSeqAnalyzer.Report().Issues().Length(); ++i)
+    aSeqStatuses.Add(static_cast<int>(aSeqAnalyzer.Report().Issues().Value(i).Status));
+  for (int i = 0; i < aParAnalyzer.Report().Issues().Length(); ++i)
+    aParStatuses.Add(static_cast<int>(aParAnalyzer.Report().Issues().Value(i).Status));
+
+  EXPECT_EQ(aSeqStatuses.Extent(), aParStatuses.Extent())
+    << "Sequential and parallel analyzers should find the same set of status codes.";
 }

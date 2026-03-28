@@ -33,9 +33,9 @@ flowchart TB
   A[Algorithms] --> G[BRepGraph facade]
 
   subgraph Views
-    V1[Defs / UIDs / Shapes]
-    V2[Spatial / Attrs / Builder]
-    V3[Analyze / Paths]
+    V1[Topo / UIDs / Shapes]
+    V2[Attrs / Builder / Refs]
+    V3[Paths]
   end
 
   G --> Views
@@ -58,15 +58,30 @@ All queries and mutations go through lightweight view objects obtained from a `B
 
 | View | Accessor | Purpose |
 |------|----------|---------|
-| **DefsView** | `Defs()` | Const topology/assembly definition access, entity counts, RootProducts |
+| **TopoView** | `Topo()` | Const topology definition access, entity counts, adjacency queries (SharedEdges, AdjacentFaces, SameDomainFaces) |
 | **UIDsView** | `UIDs()` | UID allocation, lookup, validity checking |
 | **ShapesView** | `Shapes()` | TopoDS reconstruction, FindNode/HasNode reverse lookup |
-| **SpatialView** | `Spatial()` | Adjacency queries (SharedEdges, AdjacentFaces, SameDomainFaces), GlobalPlacement |
 | **AttrsView** | `Attrs()` | Layer registration, lookup, unregistration |
-| **BuilderView** | `Builder()` | Mutations: AddProduct, AddOccurrence, RemoveNode, RemoveSubgraph |
-| **AnalyzeView** | `Analyze()` | Diagnostics: FreeEdges, MissingPCurves, ToleranceConflicts, Decompose |
+| **BuilderView** | `Builder()` | Mutations: AddProduct, AddOccurrence, RemoveNode, RemoveSubgraph, MutGuard accessors |
 | **RefsView** | `Refs()` | Reference entry access, RefUID lookup, VersionStamp for refs |
-| **PathView** | `Paths()` | Path-based traversal: GlobalLocation, GlobalOrientation, PathsTo, NodeLocations, CommonAncestor |
+| **PathView** | `Paths()` | Assembly queries (NbProducts, RootProducts, IsAssembly, IsPart), path traversal (GlobalLocation, GlobalOrientation, PathsTo, NodeLocations, CommonAncestor) |
+
+### Non-View Helpers
+
+| Class | Purpose |
+|-------|---------|
+| **BRepGraph_Analyze** | Static diagnostic functions: `FreeEdges`, `MissingPCurves`, `ToleranceConflicts`, `Decompose` |
+
+### Direct Subsystem Accessors
+
+| Accessor | Purpose |
+|----------|---------|
+| `History()` | Mutation history subsystem (lineage records) |
+| `ParamLayer()` | Built-in parametric binding layer |
+| `RegularityLayer()` | Built-in edge regularity layer |
+| `RegisterLayer()` | Register a custom `BRepGraph_Layer` |
+| `FindLayer()` | Lookup a registered layer by name |
+| `UnregisterLayer()` | Remove a registered layer by name |
 
 ## Main Data Concepts
 
@@ -185,16 +200,14 @@ flowchart LR
 
 ### Placement Composition
 
-`SpatialView::GlobalPlacement(occId)` walks `ParentOccurrenceDefId` from leaf to root, composing `Placement` transforms. DAG-safe: shared products placed at multiple locations have distinct occurrence paths.
+`Paths().OccurrenceLocation(occId)` walks `ParentOccurrenceDefId` from leaf to root, composing `Placement` transforms. DAG-safe: shared products placed at multiple locations have distinct occurrence paths.
 
 ### API Distribution
 
 | View | Methods |
 |------|---------|
-| **DefsView** | `NbProducts`, `NbOccurrences`, `Product(i)`, `Occurrence(i)`, `RootProducts`, `IsAssembly`, `IsPart`, `NbComponents`, `Component` |
-| **BuilderView** | `AddProduct`, `AddAssemblyProduct`, `AddOccurrence` (with optional parent occurrence), `RemoveSubgraph` (cascades to child occurrences) |
-| **MutView** | `ProductDef(i)`, `OccurrenceDef(i)` (RAII guards) |
-| **SpatialView** | `GlobalPlacement(occIdx)` |
+| **PathView** | `NbProducts`, `NbOccurrences`, `Product(i)`, `Occurrence(i)`, `RootProducts`, `IsAssembly`, `IsPart`, `NbComponents`, `Component`, `OccurrenceLocation(occId)` |
+| **BuilderView** | `AddProduct`, `AddAssemblyProduct`, `AddOccurrence` (with optional parent occurrence), `RemoveSubgraph` (cascades to child occurrences), `MutProduct(i)`, `MutOccurrence(i)` (RAII guards) |
 | **Iterator** | `BRepGraph_Iterator<ProductDef>`, `BRepGraph_Iterator<OccurrenceDef>` |
 
 ### Single-Shape Graph
@@ -238,7 +251,7 @@ Can also start from a Product to descend through assembly occurrences into topol
 
 ### SubGraph
 
-`BRepGraph_SubGraph` is a non-owning view over a connected component, produced by `Analyze().Decompose()`. Stores per-kind typed definition id sets for parallel processing.
+`BRepGraph_SubGraph` is a non-owning view over a connected component, produced by `BRepGraph_Analyze::Decompose()`. Stores per-kind typed definition id sets for parallel processing.
 
 ## Geometry Access (BRepGraph_Tool)
 
@@ -280,7 +293,7 @@ Per-node cached computations in `BaseDef.Cache`. Lazily evaluated, auto-invalida
 
 ## Mutation and History
 
-Primary mutation entry points are exposed via MutView and scoped RAII guards (`BRepGraph_MutGuard`).
+Primary mutation entry points are exposed via `Builder()` and scoped RAII guards (`BRepGraph_MutGuard`).
 
 Common operations: SplitEdge, ReplaceEdgeInWire, AddPCurveToEdge, relation-edge add/remove.
 
@@ -330,7 +343,7 @@ Benefits: O(1) allocation (bump-pointer), O(1) destruction (bulk page release). 
 | Category | Files |
 |----------|-------|
 | **Core** | `BRepGraph.hxx/.cxx`, `BRepGraph_Data.hxx`, `BRepGraph_NodeId.hxx`, `BRepGraph_UID.hxx`, `BRepGraph_RefId.hxx`, `BRepGraph_RefUID.hxx`, `BRepGraph_RepId.hxx` |
-| **Views** | `BRepGraph_DefsView.hxx/.cxx`, `BRepGraph_UIDsView.hxx/.cxx`, `BRepGraph_RefsView.hxx/.cxx`, `BRepGraph_ShapesView.hxx/.cxx`, `BRepGraph_SpatialView.hxx/.cxx`, `BRepGraph_AttrsView.hxx/.cxx`, `BRepGraph_BuilderView.hxx/.cxx`, `BRepGraph_AnalyzeView.hxx`, `BRepGraph_PathView.hxx/.cxx` |
+| **Views** | `BRepGraph_TopoView.hxx/.cxx`, `BRepGraph_UIDsView.hxx/.cxx`, `BRepGraph_RefsView.hxx/.cxx`, `BRepGraph_ShapesView.hxx/.cxx`, `BRepGraph_AttrsView.hxx/.cxx`, `BRepGraph_BuilderView.hxx/.cxx`, `BRepGraph_PathView.hxx/.cxx` |
 | **Refs** | `BRepGraph_VersionStamp.hxx/.cxx` |
 | **Traversal** | `BRepGraph_Explorer.hxx/.cxx`, `BRepGraph_TopologyPath.hxx`, `BRepGraph_SubGraph.hxx`, `BRepGraph_PCurveContext.hxx` |
 | **Geometry** | `BRepGraph_Tool.hxx/.cxx` |

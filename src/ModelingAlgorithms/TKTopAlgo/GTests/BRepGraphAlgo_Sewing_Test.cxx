@@ -28,6 +28,9 @@
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraphAlgo_Copy.hxx>
 #include <BRepGraphAlgo_Sewing.hxx>
+#include <BRepGraphAlgo_Validate.hxx>
+#include <BRepGraph_BuilderView.hxx>
+#include <BRepGraph_MutGuard.hxx>
 #include <BRepGraphAlgo_Transform.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
@@ -1438,4 +1441,69 @@ TEST(BRepGraphAlgo_SewingTest, NonManifoldMode_ThreeFacesShareEdge)
       EXPECT_GE(aFaceIds.Extent(), 2);
     }
   }
+}
+
+// ---------------------------------------------------------------------------
+// Seam edge PCurve consistency: corrupted dual-PCurve detected by audit
+// ---------------------------------------------------------------------------
+
+TEST(BRepGraphAlgo_SewingTest, SeamEdge_CorruptedDualPCurve_DetectedByValidator)
+{
+  // Build a cylinder which has seam edges with dual PCurves.
+  const TopoDS_Shape aCylinder = BRepPrimAPI_MakeCylinder(5.0, 20.0).Shape();
+
+  BRepGraph aGraph;
+  aGraph.Build(aCylinder);
+  ASSERT_TRUE(aGraph.IsDone());
+
+  // Find a CoEdge that is part of a seam pair.
+  int aSeamCoEdgeIdx = -1;
+  for (int i = 0; i < aGraph.Topo().NbCoEdges(); ++i)
+  {
+    const BRepGraphInc::CoEdgeDef& aCoEdge = aGraph.Topo().CoEdge(BRepGraph_CoEdgeId(i));
+    if (aCoEdge.SeamPairId.IsValid() && !aCoEdge.IsRemoved)
+    {
+      aSeamCoEdgeIdx = i;
+      break;
+    }
+  }
+  ASSERT_GE(aSeamCoEdgeIdx, 0) << "Cylinder should have at least one seam CoEdge.";
+
+  // Verify seam detection: the found CoEdge must reference a valid paired CoEdge.
+  {
+    const BRepGraphInc::CoEdgeDef& aSeamCoEdge =
+      aGraph.Topo().CoEdge(BRepGraph_CoEdgeId(aSeamCoEdgeIdx));
+    ASSERT_TRUE(aSeamCoEdge.SeamPairId.IsValid())
+      << "Seam CoEdge must have a valid SeamPairId before corruption.";
+    ASSERT_LT(aSeamCoEdge.SeamPairId.Index, aGraph.Topo().NbCoEdges())
+      << "SeamPairId must reference an in-bounds CoEdge.";
+    ASSERT_TRUE(aSeamCoEdge.Curve2DRepId.IsValid())
+      << "Seam CoEdge must have a valid Curve2DRepId before corruption.";
+  }
+
+  // Corrupt its Curve2DRepId to an out-of-bounds index.
+  BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef> aCoEdgeDef =
+    aGraph.Builder().MutCoEdge(BRepGraph_CoEdgeId(aSeamCoEdgeIdx));
+  aCoEdgeDef->Curve2DRepId = BRepGraph_Curve2DRepId(aGraph.Topo().NbCurves2D() + 1);
+
+  const BRepGraphAlgo_Validate::Result aAuditResult =
+    BRepGraphAlgo_Validate::Perform(aGraph, BRepGraphAlgo_Validate::Options::DeepAudit());
+  EXPECT_FALSE(aAuditResult.IsValid())
+    << "Corrupted seam edge PCurve should be detected by audit.";
+  EXPECT_GT(aAuditResult.NbIssues(BRepGraphAlgo_Validate::Severity::Error), 0);
+
+  // Verify the error specifically mentions geometry reference bounds.
+  bool aFoundGeomRefError = false;
+  for (int anIdx = 0; anIdx < aAuditResult.Issues.Length(); ++anIdx)
+  {
+    const BRepGraphAlgo_Validate::Issue& anIssue = aAuditResult.Issues.Value(anIdx);
+    if (anIssue.Sev == BRepGraphAlgo_Validate::Severity::Error
+        && anIssue.Description.Search("CoEdgeDef.Curve2DRepId out of bounds") > 0)
+    {
+      aFoundGeomRefError = true;
+      break;
+    }
+  }
+  EXPECT_TRUE(aFoundGeomRefError)
+    << "Audit should report 'CoEdgeDef.Curve2DRepId out of bounds' for the corrupted seam CoEdge.";
 }

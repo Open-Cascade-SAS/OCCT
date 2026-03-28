@@ -26,12 +26,16 @@
 #include <BRepGraph_UIDsView.hxx>
 #include <BRepGraphAlgo_Deduplicate.hxx>
 #include <BRepGraphAlgo_Validate.hxx>
+#include <BRepGraph_PathView.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <TopAbs_ShapeEnum.hxx>
+#include <TopLoc_Location.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
 
 #include <gtest/gtest.h>
 
@@ -427,3 +431,209 @@ TEST(BRepGraphAlgo_ValidateTest, DeepAudit_ValidatesCoEdgeUIDsFromBuilderWireCre
   EXPECT_TRUE(aDeepResult.IsValid());
   EXPECT_EQ(aDeepResult.NbIssues(BRepGraphAlgo_Validate::Severity::Error), 0);
 }
+
+// ---------------------------------------------------------------------------
+// Assembly validation tests
+// ---------------------------------------------------------------------------
+
+TEST(BRepGraphAlgo_ValidateTest, AssemblyGraph_ValidProduct_NoIssuesInAudit)
+{
+  // Build a box; Build() auto-creates a root part product.
+  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
+
+  BRepGraph aGraph;
+  aGraph.Build(aBox);
+  ASSERT_TRUE(aGraph.IsDone());
+  ASSERT_GE(aGraph.Paths().NbProducts(), 1);
+
+  // Identify the auto-created part product.
+  const NCollection_Vector<BRepGraph_NodeId> aInitialRootProducts = aGraph.Paths().RootProducts();
+  ASSERT_GT(aInitialRootProducts.Length(), 0);
+  const BRepGraph_NodeId aPartProduct = aInitialRootProducts.Value(0);
+  ASSERT_TRUE(aGraph.Paths().IsPart(BRepGraph_ProductId(aPartProduct.Index)));
+
+  // Explicitly create an assembly product and add two occurrences of the part.
+  const BRepGraph_NodeId aAssemblyProduct = aGraph.Builder().AddAssemblyProduct();
+  ASSERT_TRUE(aAssemblyProduct.IsValid());
+
+  gp_Trsf aTrsf;
+  aTrsf.SetTranslation(gp_Vec(20.0, 0.0, 0.0));
+  const BRepGraph_NodeId anOcc1 =
+    aGraph.Builder().AddOccurrence(aAssemblyProduct, aPartProduct, TopLoc_Location());
+  const BRepGraph_NodeId anOcc2 =
+    aGraph.Builder().AddOccurrence(aAssemblyProduct, aPartProduct, TopLoc_Location(aTrsf));
+  ASSERT_TRUE(anOcc1.IsValid());
+  ASSERT_TRUE(anOcc2.IsValid());
+
+  // Verify assembly structure.
+  EXPECT_TRUE(aGraph.Paths().IsAssembly(BRepGraph_ProductId(aAssemblyProduct.Index)));
+  EXPECT_EQ(aGraph.Paths().NbComponents(BRepGraph_ProductId(aAssemblyProduct.Index)), 2);
+
+  // Rebuild reverse index after assembly modifications.
+  aGraph.Builder().CommitMutation();
+
+  // Audit should pass on the explicitly constructed assembly.
+  const BRepGraphAlgo_Validate::Result aAuditResult =
+    BRepGraphAlgo_Validate::Perform(aGraph, BRepGraphAlgo_Validate::Options::DeepAudit());
+  if (!aAuditResult.IsValid())
+  {
+    for (int anIdx = 0; anIdx < aAuditResult.Issues.Length(); ++anIdx)
+    {
+      const BRepGraphAlgo_Validate::Issue& anIssue = aAuditResult.Issues.Value(anIdx);
+      ADD_FAILURE() << "Issue[" << anIdx << "] kind=" << static_cast<int>(anIssue.NodeId.NodeKind)
+                    << " idx=" << anIssue.NodeId.Index
+                    << " desc=" << anIssue.Description.ToCString();
+    }
+  }
+  EXPECT_TRUE(aAuditResult.IsValid());
+}
+
+TEST(BRepGraphAlgo_ValidateTest, AssemblyGraph_CorruptedProductShapeRootId_DetectedByAudit)
+{
+  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
+
+  BRepGraph aGraph;
+  aGraph.Build(aBox);
+  ASSERT_TRUE(aGraph.IsDone());
+  ASSERT_GE(aGraph.Paths().NbProducts(), 1);
+
+  // Corrupt ShapeRootId to an out-of-bounds value.
+  BRepGraph_MutGuard<BRepGraphInc::ProductDef> aProduct =
+    aGraph.Builder().MutProduct(BRepGraph_ProductId(0));
+  aProduct->ShapeRootId = BRepGraph_NodeId::Solid(aGraph.Topo().NbSolids() + 1);
+
+  const BRepGraphAlgo_Validate::Result aAuditResult =
+    BRepGraphAlgo_Validate::Perform(aGraph, BRepGraphAlgo_Validate::Options::DeepAudit());
+  EXPECT_FALSE(aAuditResult.IsValid())
+    << "Product with out-of-bounds ShapeRootId should be detected by audit.";
+  EXPECT_GT(aAuditResult.NbIssues(BRepGraphAlgo_Validate::Severity::Error), 0);
+
+  // Verify the specific error message.
+  bool aFoundExpectedError = false;
+  for (int anIdx = 0; anIdx < aAuditResult.Issues.Length(); ++anIdx)
+  {
+    const BRepGraphAlgo_Validate::Issue& anIssue = aAuditResult.Issues.Value(anIdx);
+    if (anIssue.Sev == BRepGraphAlgo_Validate::Severity::Error
+        && anIssue.Description.Search("ShapeRootId out of bounds") > 0)
+    {
+      aFoundExpectedError = true;
+      break;
+    }
+  }
+  EXPECT_TRUE(aFoundExpectedError)
+    << "Audit should report 'ProductDef.ShapeRootId out of bounds'.";
+}
+
+TEST(BRepGraphAlgo_ValidateTest, AssemblyGraph_CorruptedOccurrenceProductDefId_DetectedByAudit)
+{
+  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
+
+  BRepGraph aGraph;
+  aGraph.Build(aBox);
+  ASSERT_TRUE(aGraph.IsDone());
+
+  // Create an assembly with one occurrence.
+  const BRepGraph_NodeId aRootAssembly = aGraph.Builder().AddAssemblyProduct();
+  ASSERT_TRUE(aRootAssembly.IsValid());
+
+  const NCollection_Vector<BRepGraph_NodeId> aRootProducts = aGraph.Paths().RootProducts();
+  BRepGraph_NodeId                           aPartId;
+  for (int i = 0; i < aRootProducts.Length(); ++i)
+  {
+    const BRepGraph_ProductId aProductId(aRootProducts.Value(i).Index);
+    if (aGraph.Paths().IsPart(aProductId))
+    {
+      aPartId = aRootProducts.Value(i);
+      break;
+    }
+  }
+  ASSERT_TRUE(aPartId.IsValid());
+
+  const BRepGraph_NodeId anOccId =
+    aGraph.Builder().AddOccurrence(aRootAssembly, aPartId, TopLoc_Location());
+  ASSERT_TRUE(anOccId.IsValid());
+
+  // Corrupt the occurrence's ProductDefId to an invalid index.
+  BRepGraph_MutGuard<BRepGraphInc::OccurrenceDef> anOccDef =
+    aGraph.Builder().MutOccurrence(BRepGraph_OccurrenceId(anOccId.Index));
+  anOccDef->ProductDefId = BRepGraph_ProductId(aGraph.Paths().NbProducts() + 1);
+
+  const BRepGraphAlgo_Validate::Result aAuditResult =
+    BRepGraphAlgo_Validate::Perform(aGraph, BRepGraphAlgo_Validate::Options::DeepAudit());
+  EXPECT_FALSE(aAuditResult.IsValid())
+    << "Occurrence with out-of-bounds ProductDefId should be detected by audit.";
+  EXPECT_GT(aAuditResult.NbIssues(BRepGraphAlgo_Validate::Severity::Error), 0);
+
+  // Verify the specific error message.
+  bool aFoundExpectedError = false;
+  for (int anIdx = 0; anIdx < aAuditResult.Issues.Length(); ++anIdx)
+  {
+    const BRepGraphAlgo_Validate::Issue& anIssue = aAuditResult.Issues.Value(anIdx);
+    if (anIssue.Sev == BRepGraphAlgo_Validate::Severity::Error
+        && anIssue.Description.Search("ProductDefId invalid") > 0)
+    {
+      aFoundExpectedError = true;
+      break;
+    }
+  }
+  EXPECT_TRUE(aFoundExpectedError)
+    << "Audit should report 'OccurrenceDef.ProductDefId invalid'.";
+}
+
+TEST(BRepGraphAlgo_ValidateTest, LightweightVsAudit_RemovedVertexReference_Differential)
+{
+  // Verifies that removed-node isolation is an Audit-only check.
+  // RemoveNode(vertex) correctly updates active counts (Lightweight passes)
+  // but leaves edges referencing the removed vertex (Audit detects).
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+  ASSERT_GT(aGraph.Topo().NbVertices(), 0);
+
+  // Find a vertex referenced by at least one edge.
+  int aVtxToRemove = -1;
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
+  {
+    const BRepGraph_EdgeId         anEdgeId(anEdgeIdx);
+    const BRepGraphInc::VertexRef& aStartRef = BRepGraph_Tool::Edge::StartVertex(aGraph, anEdgeId);
+    if (aStartRef.VertexDefId.IsValid())
+    {
+      aVtxToRemove = aStartRef.VertexDefId.Index;
+      break;
+    }
+  }
+  ASSERT_GE(aVtxToRemove, 0) << "Need a vertex referenced by an edge.";
+
+  // Remove the vertex. RemoveNode correctly decrements active count
+  // but does NOT fix edges that still reference it.
+  aGraph.Builder().RemoveNode(BRepGraph_NodeId::Vertex(aVtxToRemove));
+
+  // Lightweight only checks active counts — should pass.
+  const BRepGraphAlgo_Validate::Result aLightResult =
+    BRepGraphAlgo_Validate::Perform(aGraph, BRepGraphAlgo_Validate::Options::Lightweight());
+  EXPECT_TRUE(aLightResult.IsValid())
+    << "Lightweight should not check removed-node isolation.";
+
+  // Audit runs checkRemovedNodeIsolation — should detect the dangling reference.
+  const BRepGraphAlgo_Validate::Result aAuditResult =
+    BRepGraphAlgo_Validate::Perform(aGraph, BRepGraphAlgo_Validate::Options::DeepAudit());
+  EXPECT_FALSE(aAuditResult.IsValid())
+    << "Audit should detect edges referencing a removed vertex.";
+  EXPECT_GT(aAuditResult.NbIssues(BRepGraphAlgo_Validate::Severity::Error), 0);
+
+  // Verify the specific error message.
+  bool aFoundExpectedError = false;
+  for (int anIdx = 0; anIdx < aAuditResult.Issues.Length(); ++anIdx)
+  {
+    const BRepGraphAlgo_Validate::Issue& anIssue = aAuditResult.Issues.Value(anIdx);
+    if (anIssue.Sev == BRepGraphAlgo_Validate::Severity::Error
+        && anIssue.Description.Search("references removed") > 0)
+    {
+      aFoundExpectedError = true;
+      break;
+    }
+  }
+  EXPECT_TRUE(aFoundExpectedError)
+    << "Audit should report 'Non-removed EdgeDef references removed StartVertexEntity'.";
+}
+

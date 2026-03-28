@@ -203,6 +203,9 @@ public:
   //! without acquiring the shape-cache mutex or propagating upward.
   //! Call EndDeferredInvalidation() to batch-flush all accumulated changes.
   //! Intended for parallel mutation loops (SameParameter, Sewing processEdges).
+  //! @warning Mutations inside OSD_Parallel::For MUST use deferred mode.
+  //! Without it, concurrent markModified() calls race on the shape cache mutex
+  //! and upward propagation. Prefer BRepGraph_DeferredScope RAII guard.
   Standard_EXPORT void BeginDeferredInvalidation();
 
   //! End deferred invalidation mode and batch-flush:

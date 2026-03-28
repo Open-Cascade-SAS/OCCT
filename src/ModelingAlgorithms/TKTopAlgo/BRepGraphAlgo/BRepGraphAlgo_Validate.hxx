@@ -29,6 +29,21 @@
 //!
 //! Distinct from BRepGraphCheck (geometric shape validity). This class
 //! checks the graph data structure itself.
+//!
+//! ### Validation Mode Check Matrix
+//!
+//! | Check                          | Lightweight | Audit |
+//! |--------------------------------|:-----------:|:-----:|
+//! | Active entity count boundary   |     YES     |  YES  |
+//! | Cross-reference bounds         |      -      |  YES  |
+//! | Reverse-index consistency      |      -      |  YES  |
+//! | Face-count cache consistency   |      -      |  YES  |
+//! | Incidence ref consistency      |      -      |  YES  |
+//! | Geometry representation refs   |      -      |  YES  |
+//! | Removed-node isolation         |      -      |  YES  |
+//! | Wire edge connectivity         |      -      |  YES  |
+//! | Entity ID positional integrity |      -      |  YES  |
+//! | UID round-trip integrity       |      -      |  YES  |
 class BRepGraphAlgo_Validate
 {
 public:
@@ -116,6 +131,7 @@ public:
   };
 
   //! Run default lightweight structural checks on a built graph.
+  //! Uses Mode::Lightweight; for full structural audit use Perform(theGraph, Mode::Audit).
   //! @param[in] theGraph graph to validate (const, read-only)
   //! @return validation result with all detected issues
   [[nodiscard]] Standard_EXPORT static Result Perform(const BRepGraph& theGraph);

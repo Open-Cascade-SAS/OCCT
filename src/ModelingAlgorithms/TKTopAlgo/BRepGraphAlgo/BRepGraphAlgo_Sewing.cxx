@@ -64,13 +64,29 @@
 
 namespace
 {
-constexpr int    THE_NB_EDGE_MATCH_SAMPLES = 5;   // sample count for edge geometric matching
-constexpr double THE_MAX_CHORD_RATIO       = 2.0; // maximum chord-length ratio for sewable edges
-constexpr double THE_HIGH_CONFIDENCE_RATIO =
-  0.01;                                          // forward-distance threshold to skip reverse pass
-constexpr int    THE_INIT_VECTOR_CAPACITY = 256; // initial capacity for scratch vectors
-constexpr double THE_SEAM_SEPARATION_THRESHOLD =
-  0.25; // minimum midpoint UV separation as fraction of period
+// 5 evenly-spaced samples along normalized arc-length for edge geometric matching.
+// Balance between accuracy and cost: fewer samples miss mid-span deviations,
+// more samples add GCPnts evaluation overhead with diminishing returns.
+constexpr int THE_NB_EDGE_MATCH_SAMPLES = 5;
+
+// Maximum allowed ratio of chord lengths between candidate merge edges.
+// Edges with chord-length ratio > 2.0 are geometrically incompatible
+// (one edge is more than twice as long as the other).
+constexpr double THE_MAX_CHORD_RATIO = 2.0;
+
+// If forward-pass max normalized distance is below 1% of tolerance,
+// the reverse pass is redundant (edges match tightly in one direction).
+constexpr double THE_HIGH_CONFIDENCE_RATIO = 0.01;
+
+// Initial capacity for scratch NCollection_Vectors used in sewing phases.
+// 256 covers most box/cylinder-class models without reallocation;
+// larger models grow via IncAllocator bump pages.
+constexpr int THE_INIT_VECTOR_CAPACITY = 256;
+
+// Minimum UV midpoint separation (as fraction of surface period) to
+// distinguish a true seam edge from a non-seam edge that merely shares
+// surface parameter-space boundary. 0.25 = quarter-period threshold.
+constexpr double THE_SEAM_SEPARATION_THRESHOLD = 0.25;
 
 struct EdgeEndpointCache
 {

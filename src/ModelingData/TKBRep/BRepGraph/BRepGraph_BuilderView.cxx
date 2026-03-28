@@ -829,6 +829,11 @@ BRepGraph_NodeId BRepGraph::BuilderView::AddOccurrence(const BRepGraph_NodeId th
   aStorage.ChangeProduct(BRepGraph_ProductId(theParentProduct.Index))
     .OccurrenceRefIds.Append(BRepGraph_OccurrenceRefId(anOccRefIdx));
 
+  // Rebuild product→occurrence reverse index to keep it in sync
+  // after appending a new occurrence entity.
+  aStorage.ChangeReverseIndex().BuildProductOccurrences(aStorage.myOccurrences.Entities,
+                                                        aStorage.NbProducts());
+
   return anOccDef.Id;
 }
 

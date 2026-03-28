@@ -124,15 +124,20 @@ cd build
 cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DBUILD_GTEST=ON
 cmake --build . --config RelWithDebInfo --parallel
 
+# Binary path depends on platform/build layout:
+#   Standard cmake:  ./bin/OpenCascadeGTest
+#   macOS Xcode:     ./mac64/clang/bini/OpenCascadeGTest
+#   Windows MSVC:    ./win64/vc14/bini/OpenCascadeGTest
+
 # Core benchmarks (Build, Reconstruct, SpatialQuery)
-./mac64/clang/bini/OpenCascadeGTest --gtest_filter="BRepGraph_Benchmark.*" --gtest_also_run_disabled_tests
+./bin/OpenCascadeGTest --gtest_filter="BRepGraph_Benchmark.*" --gtest_also_run_disabled_tests
 
 # Algorithm benchmarks (Sewing 500 faces, Deduplicate+Compact)
-./mac64/clang/bini/OpenCascadeGTest --gtest_filter="BRepGraphAlgo_Benchmark.*" --gtest_also_run_disabled_tests
+./bin/OpenCascadeGTest --gtest_filter="BRepGraphAlgo_Benchmark.*" --gtest_also_run_disabled_tests
 
 # Sewing profiling (2500 faces grid, 1200 faces boxes — 50 iterations each)
-./mac64/clang/bini/OpenCascadeGTest --gtest_filter="BRepGraphAlgo_SewingTest.Profiling_*"
+./bin/OpenCascadeGTest --gtest_filter="BRepGraphAlgo_SewingTest.Profiling_*"
 
 # All BRepGraph tests (functional correctness)
-./mac64/clang/bini/OpenCascadeGTest --gtest_filter="*BRepGraph*"
+./bin/OpenCascadeGTest --gtest_filter="*BRepGraph*"
 ```

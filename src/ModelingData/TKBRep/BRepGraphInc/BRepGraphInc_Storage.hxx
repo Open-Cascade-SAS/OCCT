@@ -679,6 +679,7 @@ public:
 
 private:
   friend class BRepGraphInc_Populate;
+  friend class BRepGraph;
 
   //! @brief Template store for topology entity kinds.
   //! Groups the entity vector, per-kind UID vector, and active count

@@ -26,6 +26,12 @@
 //! Re-entrant: if deferred mode is already active (e.g., nested guard),
 //! the inner guard is a no-op - only the outermost guard flushes and commits.
 //!
+//! @warning Mutations inside OSD_Parallel::For MUST be wrapped in a
+//! BRepGraph_DeferredScope. Without deferred mode, markModified() acquires
+//! the shape-cache mutex and propagates invalidation upward on every call,
+//! causing data races when multiple threads mutate concurrently. Deferred mode
+//! batches these operations into a single-threaded flush at scope exit.
+//!
 //! Usage:
 //! @code
 //!   {
