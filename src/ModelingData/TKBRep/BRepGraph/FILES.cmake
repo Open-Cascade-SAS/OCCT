@@ -26,18 +26,18 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_MutGuard.hxx
   BRepGraph_NameLayer.cxx
   BRepGraph_NameLayer.hxx
-  BRepGraph_ParamLayer.cxx
-  BRepGraph_ParamLayer.hxx
-  BRepGraph_RegularityLayer.cxx
-  BRepGraph_RegularityLayer.hxx
   BRepGraph_NodeCache.hxx
   BRepGraph_NodeId.hxx
+  BRepGraph_ParamLayer.cxx
+  BRepGraph_ParamLayer.hxx
   BRepGraph_PathView.cxx
   BRepGraph_PathView.hxx
   BRepGraph_RefId.hxx
   BRepGraph_RefUID.hxx
   BRepGraph_RefsView.cxx
   BRepGraph_RefsView.hxx
+  BRepGraph_RegularityLayer.cxx
+  BRepGraph_RegularityLayer.hxx
   BRepGraph_RepId.hxx
   BRepGraph_ShapesView.cxx
   BRepGraph_ShapesView.hxx

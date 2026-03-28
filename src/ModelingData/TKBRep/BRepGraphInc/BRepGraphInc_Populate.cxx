@@ -16,12 +16,12 @@
 #include <BRepGraph_RegularityLayer.hxx>
 #include <BRepGraphInc_Storage.hxx>
 
-#include <BRep_PointOnCurve.hxx>
-#include <BRep_PointOnCurveOnSurface.hxx>
-#include <BRep_PointOnSurface.hxx>
 #include <BRep_CurveOn2Surfaces.hxx>
 #include <BRep_CurveOnClosedSurface.hxx>
 #include <BRep_CurveRepresentation.hxx>
+#include <BRep_PointOnCurve.hxx>
+#include <BRep_PointOnCurveOnSurface.hxx>
+#include <BRep_PointOnSurface.hxx>
 #include <BRep_TEdge.hxx>
 #include <BRep_TFace.hxx>
 #include <BRep_TVertex.hxx>
@@ -1772,9 +1772,9 @@ void populateRegularityLayer(BRepGraphInc_Storage&                        theSto
 
 //=================================================================================================
 
-void populateParamLayer(BRepGraphInc_Storage&                        theStorage,
-                        BRepGraph_ParamLayer*                        theParamLayer,
-                        const bool                                   theExtractVertexPointReps,
+void populateParamLayer(BRepGraphInc_Storage&                         theStorage,
+                        BRepGraph_ParamLayer*                         theParamLayer,
+                        const bool                                    theExtractVertexPointReps,
                         const occ::handle<NCollection_BaseAllocator>& theTmpAlloc)
 {
   if (theParamLayer == nullptr)
@@ -1804,8 +1804,8 @@ void populateParamLayer(BRepGraphInc_Storage&                        theStorage,
   NCollection_Vector<const Geom_Surface*>                    aFaceRawSurfaces(1, theTmpAlloc);
   for (int i = 0; i < theStorage.NbFaces(); ++i)
   {
-    const BRepGraphInc::FaceDef& aFaceEnt   = theStorage.Face(BRepGraph_FaceId(i));
-    const TopoDS_Shape*          anOrigFace = theStorage.FindOriginal(aFaceEnt.Id);
+    const BRepGraphInc::FaceDef& aFaceEnt    = theStorage.Face(BRepGraph_FaceId(i));
+    const TopoDS_Shape*          anOrigFace  = theStorage.FindOriginal(aFaceEnt.Id);
     const Geom_Surface*          aRawSurfPtr = nullptr;
     if (anOrigFace != nullptr && !anOrigFace->IsNull())
     {
@@ -1849,9 +1849,9 @@ void populateParamLayer(BRepGraphInc_Storage&                        theStorage,
 
   for (int aVtxIdx = 0; aVtxIdx < theStorage.NbVertices(); ++aVtxIdx)
   {
-    const BRepGraph_VertexId          aVertexId(aVtxIdx);
-    const BRepGraphInc::VertexDef&    aVtxDef = theStorage.Vertex(aVertexId);
-    const TopoDS_Shape*               aVtxShape = theStorage.FindOriginal(aVtxDef.Id);
+    const BRepGraph_VertexId       aVertexId(aVtxIdx);
+    const BRepGraphInc::VertexDef& aVtxDef   = theStorage.Vertex(aVertexId);
+    const TopoDS_Shape*            aVtxShape = theStorage.FindOriginal(aVtxDef.Id);
     if (aVtxShape == nullptr || aVtxShape->IsNull())
       continue;
 
@@ -1886,7 +1886,7 @@ void populateParamLayer(BRepGraphInc_Storage&                        theStorage,
         for (int aCandidateIdx = 0; aCandidateIdx < aCandidates->Length(); ++aCandidateIdx)
         {
           const BRepGraph_CoEdgeId       aCoEdgeId = aCandidates->Value(aCandidateIdx);
-          const BRepGraphInc::CoEdgeDef& aCoEdge = theStorage.CoEdge(aCoEdgeId);
+          const BRepGraphInc::CoEdgeDef& aCoEdge   = theStorage.CoEdge(aCoEdgeId);
           if (!aCoEdge.FaceDefId.IsValid(aFaceRawSurfaces.Length()))
             continue;
           if (aFaceRawSurfaces.Value(aCoEdge.FaceDefId.Index) == aSurfacePtr)

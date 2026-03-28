@@ -70,21 +70,21 @@ public:
   DEFINE_STANDARD_RTTIEXT(BRepGraph_RegularityLayer, BRepGraph_Layer)
 
 private:
-  Standard_EXPORT void normalizeFacePair(BRepGraph_FaceId& theFace1,
-                                         BRepGraph_FaceId& theFace2) const noexcept;
-  Standard_EXPORT EdgeRegularities& changeEdgeRegularities(const BRepGraph_EdgeId theEdge);
-  Standard_EXPORT void bindFaceToEdge(const BRepGraph_FaceId theFace, const BRepGraph_EdgeId theEdge);
-  Standard_EXPORT void unbindFaceFromEdge(const BRepGraph_FaceId theFace,
-                                          const BRepGraph_EdgeId theEdge) noexcept;
-  Standard_EXPORT void removeRegularity(const BRepGraph_EdgeId theEdge,
-                                        const BRepGraph_FaceId theFace1,
-                                        const BRepGraph_FaceId theFace2) noexcept;
-  Standard_EXPORT void removeEdgeBindings(const BRepGraph_EdgeId theEdge) noexcept;
-  Standard_EXPORT void invalidateFaceBindings(const BRepGraph_FaceId theFace) noexcept;
-  Standard_EXPORT void migrateEdgeBindings(const BRepGraph_EdgeId theOldEdge,
-                                           const BRepGraph_EdgeId theNewEdge) noexcept;
-  Standard_EXPORT void migrateFaceBindings(const BRepGraph_FaceId theOldFace,
-                                           const BRepGraph_FaceId theNewFace) noexcept;
+  void normalizeFacePair(BRepGraph_FaceId& theFace1,
+                         BRepGraph_FaceId& theFace2) const noexcept;
+  EdgeRegularities& changeEdgeRegularities(const BRepGraph_EdgeId theEdge);
+  void bindFaceToEdge(const BRepGraph_FaceId theFace, const BRepGraph_EdgeId theEdge);
+  void unbindFaceFromEdge(const BRepGraph_FaceId theFace,
+                          const BRepGraph_EdgeId theEdge) noexcept;
+  void removeRegularity(const BRepGraph_EdgeId theEdge,
+                        const BRepGraph_FaceId theFace1,
+                        const BRepGraph_FaceId theFace2) noexcept;
+  void removeEdgeBindings(const BRepGraph_EdgeId theEdge) noexcept;
+  void invalidateFaceBindings(const BRepGraph_FaceId theFace) noexcept;
+  void migrateEdgeBindings(const BRepGraph_EdgeId theOldEdge,
+                           const BRepGraph_EdgeId theNewEdge) noexcept;
+  void migrateFaceBindings(const BRepGraph_FaceId theOldFace,
+                           const BRepGraph_FaceId theNewFace) noexcept;
 
 private:
   NCollection_DataMap<BRepGraph_EdgeId, EdgeRegularities>                 myEdgeRegularities;

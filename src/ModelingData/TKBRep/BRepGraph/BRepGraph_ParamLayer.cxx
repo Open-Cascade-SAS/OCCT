@@ -645,7 +645,10 @@ void BRepGraph_ParamLayer::OnNodeRemoved(const BRepGraph_NodeId theNode,
 void BRepGraph_ParamLayer::OnCompact(
   const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap) noexcept
 {
-  NCollection_DataMap<BRepGraph_VertexId, VertexParams> aRemappedParams;
+  NCollection_DataMap<BRepGraph_VertexId, VertexParams>                           aNewParams;
+  NCollection_DataMap<BRepGraph_EdgeId, NCollection_Vector<BRepGraph_VertexId>>   aNewEdgeToVtx;
+  NCollection_DataMap<BRepGraph_FaceId, NCollection_Vector<BRepGraph_VertexId>>   aNewFaceToVtx;
+  NCollection_DataMap<BRepGraph_CoEdgeId, NCollection_Vector<BRepGraph_VertexId>> aNewCoEdgeToVtx;
 
   for (NCollection_DataMap<BRepGraph_VertexId, VertexParams>::Iterator anIter(myVertexParams);
        anIter.More();
@@ -656,18 +659,18 @@ void BRepGraph_ParamLayer::OnCompact(
       continue;
 
     const VertexParams& aOldParams = anIter.Value();
+    VertexParams        aNewVP;
+
     for (int anIdx = 0; anIdx < aOldParams.PointsOnCurve.Length(); ++anIdx)
     {
       const PointOnCurveEntry& anOldEntry = aOldParams.PointsOnCurve.Value(anIdx);
       const BRepGraph_EdgeId   aNewEdge   = remapEdge(theRemapMap, anOldEntry.EdgeDefId);
       if (!aNewEdge.IsValid())
         continue;
-      if (!aRemappedParams.IsBound(aNewVertex))
-        aRemappedParams.Bind(aNewVertex, VertexParams());
-      VertexParams& aNewParams = aRemappedParams.ChangeFind(aNewVertex);
-      PointOnCurveEntry& anEntry = aNewParams.PointsOnCurve.Appended();
+      PointOnCurveEntry& anEntry = aNewVP.PointsOnCurve.Appended();
       anEntry.Parameter          = anOldEntry.Parameter;
       anEntry.EdgeDefId          = aNewEdge;
+      appendUnique(aNewEdgeToVtx, aNewEdge, aNewVertex);
     }
     for (int anIdx = 0; anIdx < aOldParams.PointsOnSurface.Length(); ++anIdx)
     {
@@ -675,13 +678,11 @@ void BRepGraph_ParamLayer::OnCompact(
       const BRepGraph_FaceId     aNewFace   = remapFace(theRemapMap, anOldEntry.FaceDefId);
       if (!aNewFace.IsValid())
         continue;
-      if (!aRemappedParams.IsBound(aNewVertex))
-        aRemappedParams.Bind(aNewVertex, VertexParams());
-      VertexParams& aNewParams = aRemappedParams.ChangeFind(aNewVertex);
-      PointOnSurfaceEntry& anEntry = aNewParams.PointsOnSurface.Appended();
-      anEntry.ParameterU          = anOldEntry.ParameterU;
-      anEntry.ParameterV          = anOldEntry.ParameterV;
-      anEntry.FaceDefId           = aNewFace;
+      PointOnSurfaceEntry& anEntry = aNewVP.PointsOnSurface.Appended();
+      anEntry.ParameterU           = anOldEntry.ParameterU;
+      anEntry.ParameterV           = anOldEntry.ParameterV;
+      anEntry.FaceDefId            = aNewFace;
+      appendUnique(aNewFaceToVtx, aNewFace, aNewVertex);
     }
     for (int anIdx = 0; anIdx < aOldParams.PointsOnPCurve.Length(); ++anIdx)
     {
@@ -689,37 +690,20 @@ void BRepGraph_ParamLayer::OnCompact(
       const BRepGraph_CoEdgeId  aNewCoEdge = remapCoEdge(theRemapMap, anOldEntry.CoEdgeDefId);
       if (!aNewCoEdge.IsValid())
         continue;
-      if (!aRemappedParams.IsBound(aNewVertex))
-        aRemappedParams.Bind(aNewVertex, VertexParams());
-      VertexParams& aNewParams = aRemappedParams.ChangeFind(aNewVertex);
-      PointOnPCurveEntry& anEntry = aNewParams.PointsOnPCurve.Appended();
-      anEntry.Parameter          = anOldEntry.Parameter;
-      anEntry.CoEdgeDefId        = aNewCoEdge;
+      PointOnPCurveEntry& anEntry = aNewVP.PointsOnPCurve.Appended();
+      anEntry.Parameter           = anOldEntry.Parameter;
+      anEntry.CoEdgeDefId         = aNewCoEdge;
+      appendUnique(aNewCoEdgeToVtx, aNewCoEdge, aNewVertex);
     }
+
+    if (!aNewVP.IsEmpty())
+      aNewParams.Bind(aNewVertex, std::move(aNewVP));
   }
 
-  Clear();
-  for (NCollection_DataMap<BRepGraph_VertexId, VertexParams>::Iterator anIter(aRemappedParams);
-       anIter.More();
-       anIter.Next())
-  {
-    const VertexParams& aParams = anIter.Value();
-    for (int anIdx = 0; anIdx < aParams.PointsOnCurve.Length(); ++anIdx)
-    {
-      const PointOnCurveEntry& anEntry = aParams.PointsOnCurve.Value(anIdx);
-      SetPointOnCurve(anIter.Key(), anEntry.EdgeDefId, anEntry.Parameter);
-    }
-    for (int anIdx = 0; anIdx < aParams.PointsOnSurface.Length(); ++anIdx)
-    {
-      const PointOnSurfaceEntry& anEntry = aParams.PointsOnSurface.Value(anIdx);
-      SetPointOnSurface(anIter.Key(), anEntry.FaceDefId, anEntry.ParameterU, anEntry.ParameterV);
-    }
-    for (int anIdx = 0; anIdx < aParams.PointsOnPCurve.Length(); ++anIdx)
-    {
-      const PointOnPCurveEntry& anEntry = aParams.PointsOnPCurve.Value(anIdx);
-      SetPointOnPCurve(anIter.Key(), anEntry.CoEdgeDefId, anEntry.Parameter);
-    }
-  }
+  myVertexParams     = std::move(aNewParams);
+  myEdgeToVertices   = std::move(aNewEdgeToVtx);
+  myFaceToVertices   = std::move(aNewFaceToVtx);
+  myCoEdgeToVertices = std::move(aNewCoEdgeToVtx);
 }
 
 //=================================================================================================

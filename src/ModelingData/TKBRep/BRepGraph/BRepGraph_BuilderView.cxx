@@ -15,6 +15,8 @@
 #include <BRepGraph_Data.hxx>
 #include <BRepGraph_Builder.hxx>
 #include <BRepGraph_Layer.hxx>
+#include <BRepGraph_ParamLayer.hxx>
+#include <BRepGraph_RegularityLayer.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_TopoView.hxx>
@@ -2232,6 +2234,32 @@ bool BRepGraph::BuilderView::ValidateMutationBoundary(
       aDesc += TCollection_AsciiString(anActualCnt);
       anIssue.NodeId      = BRepGraph_NodeId(aKind, -1);
       anIssue.Description = aDesc;
+      theIssues->Append(anIssue);
+    }
+  }
+
+  // Validate built-in layer consistency: layers must not have bindings
+  // for entity kinds that have zero active entities in the graph.
+  if (myGraph->ParamLayer().HasBindings() && aStorage.NbVertices() == 0)
+  {
+    isValid = false;
+    if (theIssues != nullptr)
+    {
+      BoundaryIssue anIssue;
+      anIssue.NodeId      = BRepGraph_NodeId();
+      anIssue.Description = "ParamLayer has bindings but graph has no vertices";
+      theIssues->Append(anIssue);
+    }
+  }
+
+  if (myGraph->RegularityLayer().HasBindings() && aStorage.NbEdges() == 0)
+  {
+    isValid = false;
+    if (theIssues != nullptr)
+    {
+      BoundaryIssue anIssue;
+      anIssue.NodeId      = BRepGraph_NodeId();
+      anIssue.Description = "RegularityLayer has bindings but graph has no edges";
       theIssues->Append(anIssue);
     }
   }

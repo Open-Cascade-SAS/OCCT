@@ -103,36 +103,36 @@ public:
   DEFINE_STANDARD_RTTIEXT(BRepGraph_ParamLayer, BRepGraph_Layer)
 
 private:
-  Standard_EXPORT void removeVertexBindings(const BRepGraph_VertexId theVertex) noexcept;
-  Standard_EXPORT void invalidateEdgeBindings(const BRepGraph_EdgeId theEdge) noexcept;
-  Standard_EXPORT void invalidateFaceBindings(const BRepGraph_FaceId theFace) noexcept;
-  Standard_EXPORT void invalidateCoEdgeBindings(const BRepGraph_CoEdgeId theCoEdge) noexcept;
-  Standard_EXPORT void migrateVertexBindings(const BRepGraph_VertexId theOldVertex,
-                                             const BRepGraph_VertexId theNewVertex) noexcept;
-  Standard_EXPORT void migrateEdgeBindings(const BRepGraph_EdgeId theOldEdge,
-                                           const BRepGraph_EdgeId theNewEdge) noexcept;
-  Standard_EXPORT void migrateFaceBindings(const BRepGraph_FaceId theOldFace,
-                                           const BRepGraph_FaceId theNewFace) noexcept;
-  Standard_EXPORT void migrateCoEdgeBindings(const BRepGraph_CoEdgeId theOldCoEdge,
-                                             const BRepGraph_CoEdgeId theNewCoEdge) noexcept;
+  void removeVertexBindings(const BRepGraph_VertexId theVertex) noexcept;
+  void invalidateEdgeBindings(const BRepGraph_EdgeId theEdge) noexcept;
+  void invalidateFaceBindings(const BRepGraph_FaceId theFace) noexcept;
+  void invalidateCoEdgeBindings(const BRepGraph_CoEdgeId theCoEdge) noexcept;
+  void migrateVertexBindings(const BRepGraph_VertexId theOldVertex,
+                             const BRepGraph_VertexId theNewVertex) noexcept;
+  void migrateEdgeBindings(const BRepGraph_EdgeId theOldEdge,
+                           const BRepGraph_EdgeId theNewEdge) noexcept;
+  void migrateFaceBindings(const BRepGraph_FaceId theOldFace,
+                           const BRepGraph_FaceId theNewFace) noexcept;
+  void migrateCoEdgeBindings(const BRepGraph_CoEdgeId theOldCoEdge,
+                             const BRepGraph_CoEdgeId theNewCoEdge) noexcept;
 
-  Standard_EXPORT VertexParams& changeVertexParams(const BRepGraph_VertexId theVertex);
-  Standard_EXPORT void bindEdgeToVertex(const BRepGraph_EdgeId theEdge, const BRepGraph_VertexId theVertex);
-  Standard_EXPORT void bindFaceToVertex(const BRepGraph_FaceId theFace, const BRepGraph_VertexId theVertex);
-  Standard_EXPORT void bindCoEdgeToVertex(const BRepGraph_CoEdgeId theCoEdge,
-                                          const BRepGraph_VertexId theVertex);
-  Standard_EXPORT void unbindEdgeFromVertex(const BRepGraph_EdgeId theEdge,
-                                            const BRepGraph_VertexId theVertex) noexcept;
-  Standard_EXPORT void unbindFaceFromVertex(const BRepGraph_FaceId theFace,
-                                            const BRepGraph_VertexId theVertex) noexcept;
-  Standard_EXPORT void unbindCoEdgeFromVertex(const BRepGraph_CoEdgeId theCoEdge,
-                                              const BRepGraph_VertexId theVertex) noexcept;
-  Standard_EXPORT void removePointOnCurve(const BRepGraph_VertexId theVertex,
-                                          const BRepGraph_EdgeId   theEdge) noexcept;
-  Standard_EXPORT void removePointOnSurface(const BRepGraph_VertexId theVertex,
-                                            const BRepGraph_FaceId   theFace) noexcept;
-  Standard_EXPORT void removePointOnPCurve(const BRepGraph_VertexId theVertex,
-                                           const BRepGraph_CoEdgeId theCoEdge) noexcept;
+  VertexParams& changeVertexParams(const BRepGraph_VertexId theVertex);
+  void bindEdgeToVertex(const BRepGraph_EdgeId theEdge, const BRepGraph_VertexId theVertex);
+  void bindFaceToVertex(const BRepGraph_FaceId theFace, const BRepGraph_VertexId theVertex);
+  void bindCoEdgeToVertex(const BRepGraph_CoEdgeId theCoEdge,
+                          const BRepGraph_VertexId theVertex);
+  void unbindEdgeFromVertex(const BRepGraph_EdgeId theEdge,
+                            const BRepGraph_VertexId theVertex) noexcept;
+  void unbindFaceFromVertex(const BRepGraph_FaceId theFace,
+                            const BRepGraph_VertexId theVertex) noexcept;
+  void unbindCoEdgeFromVertex(const BRepGraph_CoEdgeId theCoEdge,
+                              const BRepGraph_VertexId theVertex) noexcept;
+  void removePointOnCurve(const BRepGraph_VertexId theVertex,
+                          const BRepGraph_EdgeId   theEdge) noexcept;
+  void removePointOnSurface(const BRepGraph_VertexId theVertex,
+                            const BRepGraph_FaceId   theFace) noexcept;
+  void removePointOnPCurve(const BRepGraph_VertexId theVertex,
+                           const BRepGraph_CoEdgeId theCoEdge) noexcept;
 
 private:
   NCollection_DataMap<BRepGraph_VertexId, VertexParams>                    myVertexParams;

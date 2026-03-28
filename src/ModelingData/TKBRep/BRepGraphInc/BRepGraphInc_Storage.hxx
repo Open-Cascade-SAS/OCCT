@@ -23,8 +23,6 @@
 #include <BRepGraphInc_Representation.hxx>
 #include <BRepGraphInc_ReverseIndex.hxx>
 
-#include <GeomAbs_Shape.hxx>
-
 #include <NCollection_BaseAllocator.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_Vector.hxx>
@@ -660,9 +658,6 @@ public:
 
   void SetIsDone(const bool theVal) { myIsDone = theVal; }
 
-  //! True if edge regularities were extracted during population.
-  [[nodiscard]] bool HasRegularities() const { return myHasRegularities; }
-
   //! Clear all storage.
   Standard_EXPORT void Clear();
 
@@ -684,15 +679,6 @@ public:
 
 private:
   friend class BRepGraphInc_Populate;
-  friend class BRepGraph_Builder;
-
-  struct ExtractedRegularity
-  {
-    BRepGraph_EdgeId EdgeDefId;
-    BRepGraph_FaceId FaceDefId1;
-    BRepGraph_FaceId FaceDefId2;
-    GeomAbs_Shape    Continuity = GeomAbs_C0;
-  };
 
   //! @brief Template store for topology entity kinds.
   //! Groups the entity vector, per-kind UID vector, and active count
@@ -875,10 +861,7 @@ private:
 
   occ::handle<NCollection_BaseAllocator> myAllocator;
 
-  NCollection_Vector<ExtractedRegularity> myExtractedRegularities;
-
-  bool myIsDone          = false;
-  bool myHasRegularities = false;
+  bool myIsDone = false;
 };
 
 #endif // _BRepGraphInc_Storage_HeaderFile

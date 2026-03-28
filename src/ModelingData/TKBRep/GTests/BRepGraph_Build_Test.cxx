@@ -1039,3 +1039,112 @@ TEST(BRepGraph_BuildTest, RegularityLayer_FaceMutation_InvalidatesBindings)
   EXPECT_FALSE(aGraph.RegularityLayer().FindContinuity(
     anEdgeId, aRegularity.FaceEntity1, aRegularity.FaceEntity2));
 }
+
+TEST(BRepGraph_BuildTest, RegularityLayer_RemoveRegularity_SharedFaceRetained)
+{
+  BRepGraph_RegularityLayer aLayer;
+  const BRepGraph_EdgeId    anEdgeId(0);
+  const BRepGraph_FaceId    aFace1(0);
+  const BRepGraph_FaceId    aFace2(1);
+  const BRepGraph_FaceId    aFace3(2);
+
+  aLayer.SetRegularity(anEdgeId, aFace1, aFace2, GeomAbs_C1);
+  aLayer.SetRegularity(anEdgeId, aFace1, aFace3, GeomAbs_G1);
+  EXPECT_EQ(aLayer.NbRegularities(anEdgeId), 2);
+
+  // Remove (F1,F2) — F1 is shared by the surviving (F1,F3) entry.
+  aLayer.OnNodeModified(BRepGraph_NodeId::Face(aFace2.Index));
+
+  // (F1,F3) must survive; F1 must still be tracked.
+  EXPECT_TRUE(aLayer.FindContinuity(anEdgeId, aFace1, aFace3));
+  EXPECT_EQ(aLayer.NbRegularities(anEdgeId), 1);
+
+  // Modifying F1 should still invalidate the remaining entry.
+  aLayer.OnNodeModified(BRepGraph_NodeId::Face(aFace1.Index));
+  EXPECT_EQ(aLayer.NbRegularities(anEdgeId), 0);
+}
+
+TEST(BRepGraph_BuildTest, RegularityLayer_RemoveRegularity_NoMatch_NoEffect)
+{
+  BRepGraph_RegularityLayer aLayer;
+  const BRepGraph_EdgeId    anEdgeId(0);
+  const BRepGraph_FaceId    aFace1(0);
+  const BRepGraph_FaceId    aFace2(1);
+  const BRepGraph_FaceId    aFace3(2);
+
+  aLayer.SetRegularity(anEdgeId, aFace1, aFace2, GeomAbs_C1);
+  EXPECT_EQ(aLayer.NbRegularities(anEdgeId), 1);
+
+  // Modifying F3 (not referenced) should have no effect.
+  aLayer.OnNodeModified(BRepGraph_NodeId::Face(aFace3.Index));
+  EXPECT_EQ(aLayer.NbRegularities(anEdgeId), 1);
+  EXPECT_TRUE(aLayer.FindContinuity(anEdgeId, aFace1, aFace2));
+}
+
+TEST(BRepGraph_BuildTest, ParamLayer_OnCompact_RemapsNodeIds)
+{
+  BRepGraph_ParamLayer aLayer;
+  const BRepGraph_VertexId aVtx0(0);
+  const BRepGraph_VertexId aVtx1(1);
+  const BRepGraph_EdgeId   anEdge0(0);
+  const BRepGraph_EdgeId   anEdge1(1);
+  const BRepGraph_FaceId   aFace0(0);
+  const BRepGraph_CoEdgeId aCoEdge0(0);
+
+  aLayer.SetPointOnCurve(aVtx0, anEdge0, 1.0);
+  aLayer.SetPointOnCurve(aVtx1, anEdge1, 2.0);
+  aLayer.SetPointOnSurface(aVtx0, aFace0, 0.5, 0.75);
+  aLayer.SetPointOnPCurve(aVtx1, aCoEdge0, 3.0);
+
+  // Remap: vtx0->vtx0, vtx1 dropped; edge0->edge0, edge1 dropped; face0->face0; coedge0 dropped.
+  NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId> aRemapMap;
+  aRemapMap.Bind(BRepGraph_NodeId::Vertex(0), BRepGraph_NodeId::Vertex(0));
+  aRemapMap.Bind(BRepGraph_NodeId::Edge(0), BRepGraph_NodeId::Edge(0));
+  aRemapMap.Bind(BRepGraph_NodeId::Face(0), BRepGraph_NodeId::Face(0));
+
+  aLayer.OnCompact(aRemapMap);
+
+  // Vtx0 on edge0 should survive.
+  double aParam = 0.0;
+  EXPECT_TRUE(aLayer.FindPointOnCurve(aVtx0, anEdge0, &aParam));
+  EXPECT_NEAR(aParam, 1.0, 1e-15);
+
+  // Vtx0 on face0 should survive.
+  gp_Pnt2d aUV;
+  EXPECT_TRUE(aLayer.FindPointOnSurface(aVtx0, aFace0, &aUV));
+  EXPECT_NEAR(aUV.X(), 0.5, 1e-15);
+  EXPECT_NEAR(aUV.Y(), 0.75, 1e-15);
+
+  // Vtx1 was dropped.
+  EXPECT_FALSE(aLayer.FindPointOnCurve(aVtx1, anEdge1));
+  EXPECT_FALSE(aLayer.FindPointOnPCurve(aVtx1, aCoEdge0));
+}
+
+TEST(BRepGraph_BuildTest, RegularityLayer_OnCompact_RemapsNodeIds)
+{
+  BRepGraph_RegularityLayer aLayer;
+  const BRepGraph_EdgeId    anEdge0(0);
+  const BRepGraph_EdgeId    anEdge1(1);
+  const BRepGraph_FaceId    aFace0(0);
+  const BRepGraph_FaceId    aFace1(1);
+  const BRepGraph_FaceId    aFace2(2);
+
+  aLayer.SetRegularity(anEdge0, aFace0, aFace1, GeomAbs_C1);
+  aLayer.SetRegularity(anEdge1, aFace1, aFace2, GeomAbs_G1);
+
+  // Remap: edge0->edge0, edge1 dropped; face0->face0, face1->face1, face2 dropped.
+  NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId> aRemapMap;
+  aRemapMap.Bind(BRepGraph_NodeId::Edge(0), BRepGraph_NodeId::Edge(0));
+  aRemapMap.Bind(BRepGraph_NodeId::Face(0), BRepGraph_NodeId::Face(0));
+  aRemapMap.Bind(BRepGraph_NodeId::Face(1), BRepGraph_NodeId::Face(1));
+
+  aLayer.OnCompact(aRemapMap);
+
+  // Edge0 (F0,F1) should survive.
+  GeomAbs_Shape aContinuity = GeomAbs_C0;
+  EXPECT_TRUE(aLayer.FindContinuity(anEdge0, aFace0, aFace1, &aContinuity));
+  EXPECT_EQ(aContinuity, GeomAbs_C1);
+
+  // Edge1 was dropped.
+  EXPECT_EQ(aLayer.NbRegularities(anEdge1), 0);
+}
