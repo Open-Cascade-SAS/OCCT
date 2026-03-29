@@ -314,13 +314,6 @@ static bool isRefIndexInRange(const BRepGraphInc_Storage& theStorage, const BRep
 
 //=================================================================================================
 
-static bool isActiveRef(const BRepGraphInc_Storage& theStorage, const BRepGraph_RefId theRefId)
-{
-  return isRefIndexInRange(theStorage, theRefId) && !theStorage.BaseRef(theRefId).IsRemoved;
-}
-
-//=================================================================================================
-
 static bool isRepIndexInRange(const BRepGraphInc_Storage& theStorage, const BRepGraph_RepId theRepId)
 {
   if (!theRepId.IsValid())
@@ -1362,19 +1355,20 @@ void BRepGraph::BuilderView::AddPCurveToEdge(const BRepGraph_NodeId           th
 
 void BRepGraph::BuilderView::BeginDeferredInvalidation()
 {
-  myGraph->myData->myDeferredMode = true;
+  myGraph->myData->myDeferredMode.store(true, std::memory_order_relaxed);
 }
 
 //=================================================================================================
 
 void BRepGraph::BuilderView::EndDeferredInvalidation() noexcept
 {
-  if (!myGraph->myData->myDeferredMode)
+  if (!myGraph->myData->myDeferredMode.load(std::memory_order_relaxed))
     return;
 
-  myGraph->myData->myDeferredMode = false;
+  myGraph->myData->myDeferredMode.store(false, std::memory_order_relaxed);
 
   NCollection_Vector<BRepGraph_NodeId>& aDeferredList = myGraph->myData->myDeferredModified;
+
   if (aDeferredList.IsEmpty())
     return;
 
@@ -1564,13 +1558,14 @@ void BRepGraph::BuilderView::EndDeferredInvalidation() noexcept
 
   // Clear deferred list for next scope.
   aDeferredList.Clear();
+
 }
 
 //=================================================================================================
 
 bool BRepGraph::BuilderView::IsDeferredMode() const
 {
-  return myGraph->myData->myDeferredMode;
+  return myGraph->myData->myDeferredMode.load(std::memory_order_relaxed);
 }
 
 //=================================================================================================
@@ -2424,7 +2419,7 @@ void BRepGraph::BuilderView::ReplaceEdgeInWire(const BRepGraph_WireId theWireDef
   // Validate reverse index only when not in deferred mode.
   // In deferred mode (batch sewing, parallel mutations), intermediate states
   // may have temporarily stale entries; validation runs at CommitMutation().
-  if (!myGraph->myData->myDeferredMode)
+  if (!myGraph->myData->myDeferredMode.load(std::memory_order_relaxed))
   {
     Standard_ASSERT_VOID(myGraph->myData->myIncStorage.ValidateReverseIndex(),
                          "ReplaceEdgeInWire: post-mutation reverse index inconsistency");

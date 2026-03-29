@@ -75,7 +75,8 @@ class BRepGraph_Analyze;
 //! Include the corresponding header (e.g. BRepGraph_TopoView.hxx) to use.
 //!
 //! ## Thread safety
-//! All const query methods are thread-safe.
+//! Const query methods are safe for concurrent reads.
+//! Concurrent reads during active mutation still require external synchronization.
 //! Build() is internally parallel when requested.
 class BRepGraph
 {

@@ -534,11 +534,11 @@ void BRepGraph::markModified(const BRepGraph_NodeId theNodeId,
 {
   ++theEntity.OwnGen;
   ++theEntity.SubtreeGen;
-  ++myData->myPropagationWave;
-  theEntity.LastPropWave = myData->myPropagationWave;
+  const uint32_t aWave = myData->myPropagationWave.fetch_add(1, std::memory_order_relaxed) + 1;
+  theEntity.LastPropWave = aWave;
 
   // In deferred mode: accumulate for batch processing.
-  if (myData->myDeferredMode)
+  if (myData->myDeferredMode.load(std::memory_order_relaxed))
   {
     myData->myDeferredModified.Append(theNodeId);
     return;
@@ -569,7 +569,7 @@ void BRepGraph::markRefModified(const BRepGraph_RefId /*theRefId*/,
                                 BRepGraphInc::BaseRef& theRef) noexcept
 {
   ++theRef.OwnGen;
-  ++myData->myPropagationWave;
+  myData->myPropagationWave.fetch_add(1, std::memory_order_relaxed);
 
   if (!theRef.ParentId.IsValid())
     return;
@@ -585,11 +585,13 @@ void BRepGraph::markParentSubtreeGen(const BRepGraph_NodeId theParentId) noexcep
   if (aParent == nullptr)
     return;
 
+  const uint32_t aWave = myData->myPropagationWave.load(std::memory_order_relaxed);
+
   // Re-visit guard: skip if this parent was already processed in the current
   // propagation wave. Prevents exponential blowup on diamond topologies.
-  if (aParent->LastPropWave == myData->myPropagationWave)
+  if (aParent->LastPropWave == aWave)
     return;
-  aParent->LastPropWave = myData->myPropagationWave;
+  aParent->LastPropWave = aWave;
 
   ++aParent->SubtreeGen; // ONLY SubtreeGen — not OwnGen.
   // NO mutex, NO shape cache UnBind, NO dispatch.

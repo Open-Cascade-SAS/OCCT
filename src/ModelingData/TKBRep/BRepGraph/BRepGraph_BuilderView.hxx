@@ -213,9 +213,9 @@ public:
   //! entities are modified sequentially and upward propagation should be
   //! deferred until all mutations are complete.
   //! Prefer BRepGraph_DeferredScope RAII guard.
-  //! @warning NOT thread-safe on its own. Parallel mutation batches should use
-  //! `BRepGraph_DeferredScope`, and direct concurrent `Mut*()` usage still
-  //! requires external synchronization around the mutation body.
+  //! @warning Deferred mode batches invalidation only; it does NOT serialize
+  //! the mutation body. Direct concurrent `Mut*()` usage still requires
+  //! external synchronization around each mutation.
   Standard_EXPORT void BeginDeferredInvalidation();
 
   //! End deferred invalidation mode and batch-flush:

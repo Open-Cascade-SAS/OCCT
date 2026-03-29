@@ -4,9 +4,9 @@ BRepGraphInc is the incidence-table backend used by BRepGraph.
 
 It provides the runtime source of truth for topology entities, assembly entities, context references, reverse indices, reconstruction support, and identity mapping.
 
-BRepGraphInc is not a user-facing API. It is the runtime model that powers BRepGraph.
+BRepGraphInc is the backend runtime model that powers BRepGraph.
 
-External code should normally enter through `BRepGraph::Build()`, `BRepGraph::Shapes()`, `BRepGraph::Topo()`, `BRepGraph::Refs()`, and the other facade views. Direct use of `BRepGraphInc_*` classes is reserved for backend maintenance, low-level infrastructure, and focused tests.
+External code should normally enter through `BRepGraph::Build()`, `BRepGraph::Shapes()`, `BRepGraph::Topo()`, `BRepGraph::Refs()`, and the other facade views. A subset of `BRepGraphInc::*` structs is intentionally exposed read-only through those views; direct storage-level access (`BRepGraph_Data`, `myIncStorage`) is reserved for backend maintenance, low-level infrastructure, and focused tests.
 
 ## What This Backend Owns
 

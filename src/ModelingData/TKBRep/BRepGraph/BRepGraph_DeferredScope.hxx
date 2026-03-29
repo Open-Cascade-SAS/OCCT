@@ -21,22 +21,23 @@
 //!
 //! Activates deferred invalidation on construction and flushes it on destruction,
 //! followed by CommitMutation validation. Guarantees exception-safe cleanup:
-//! no partial mutations are visible outside the guard scope.
+//! deferred mode is always closed and boundary checks are executed.
 //!
 //! Re-entrant: if deferred mode is already active (e.g., nested guard),
 //! the inner guard is a no-op - only the outermost guard flushes and commits.
 //!
-//! @warning Mutations inside OSD_Parallel::For MUST be wrapped in a
-//! BRepGraph_DeferredScope. Without deferred mode, markModified() acquires
-//! the shape-cache mutex and propagates invalidation upward on every call,
-//! causing data races when multiple threads mutate concurrently. Deferred mode
-//! batches these operations into a single-threaded flush at scope exit.
+//! @warning This guard batches invalidation and propagation; it is NOT a
+//! transaction and does not serialize mutation bodies. Concurrent `Mut*()`
+//! usage still requires external synchronization.
 //!
 //! Usage:
 //! @code
 //!   {
 //!     BRepGraph_DeferredScope aScope(theGraph);
-//!     OSD_Parallel::For(0, N, [&](int i) { /* mutations */ }, !parallel);
+//!     for (int i = 0; i < N; ++i)
+//!     {
+//!       // mutations
+//!     }
 //!   } // EndDeferredInvalidation + CommitMutation called here
 //! @endcode
 class BRepGraph_DeferredScope

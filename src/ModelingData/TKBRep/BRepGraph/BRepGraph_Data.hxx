@@ -75,7 +75,7 @@ struct BRepGraph_Data
   //! markModified() / markRefModified() call. markParentModified()
   //! compares entity.LastPropWave against this to skip already-visited
   //! parents in the same propagation wave (O(1) re-visit guard).
-  uint32_t myPropagationWave = 0;
+  std::atomic<uint32_t> myPropagationWave{0};
 
   //! NodeIds accumulated during deferred mode. Processed by EndDeferredInvalidation().
   NCollection_Vector<BRepGraph_NodeId> myDeferredModified;

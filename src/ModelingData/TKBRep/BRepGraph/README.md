@@ -344,9 +344,10 @@ Propagation is **mutex-free** — no locks, no shape cache clears, no layer disp
 
 ### Deferred Mode
 
-`BRepGraph_DeferredScope` wraps batch mutations (sewing, parallel algorithms):
+`BRepGraph_DeferredScope` wraps batch mutations (sewing, SameParameter, compact loops):
 - During scope: `markModified()` appends to deferred list, no propagation
 - At scope exit: BFS upward propagation of SubtreeGen, batch layer dispatch
+- Deferred mode batches invalidation only; concurrent `Mut*()` calls still require external synchronization
 
 ### Shape Cache
 
@@ -381,7 +382,7 @@ Benefits: O(1) allocation (bump-pointer), O(1) destruction (bulk page release). 
 - Shape cache is protected by shared mutex.
 - Build supports internal parallel extraction.
 - Mutation must be externally serialized.
-- `BeginDeferredInvalidation()` / `EndDeferredInvalidation()` enables batch mutation without mutex contention.
+- `BeginDeferredInvalidation()` / `EndDeferredInvalidation()` reduces invalidation overhead for batch mutation loops.
 
 ## Build Options
 
@@ -399,7 +400,7 @@ Benefits: O(1) allocation (bump-pointer), O(1) destruction (bulk page release). 
 ## Practical Guidance
 
 1. Treat BRepGraph as API boundary and BRepGraphInc as implementation backend.
-2. Keep `BRepGraphInc_*` types out of stable public headers when a facade/value type is enough.
+2. Treat view APIs (`Topo()`, `Refs()`, `Paths()`) as the stable read boundary; avoid direct access to `BRepGraph_Data` / `myIncStorage` outside designated backend maintenance code.
 3. Keep reverse index updates consistent with forward ref changes.
 4. Prefer incremental updates in mutators over full rebuilds.
 5. Use profiling before adding micro-optimizations.
