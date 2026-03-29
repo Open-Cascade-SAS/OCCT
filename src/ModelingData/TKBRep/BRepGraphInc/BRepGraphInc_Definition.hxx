@@ -62,12 +62,13 @@ struct BaseDef
   //! Used by TransientCache and shape cache for hierarchical freshness.
   uint32_t SubtreeGen = 0;
 
-  uint32_t LastPropWave =
-    0;                     //!< Wave counter from the last propagation that visited this node.
-                           //!< Used as a re-visit guard in markParentSubtreeGen() to prevent
-                           //!< exponential blowup on diamond topologies. Compared against
-                           //!< BRepGraph_Data::myPropagationWave.
-  bool IsRemoved = false;  //!< Soft-removal flag
+  //! Wave counter from the last propagation that visited this node.
+  //! Used as a re-visit guard in markParentSubtreeGen() to prevent
+  //! exponential blowup on diamond topologies. Compared against
+  //! BRepGraph_Data::myPropagationWave.
+  uint32_t LastPropWave = 0;
+
+  bool IsRemoved = false; //!< Soft-removal flag
 };
 
 //! Vertex definition: 3D point + tolerance.
