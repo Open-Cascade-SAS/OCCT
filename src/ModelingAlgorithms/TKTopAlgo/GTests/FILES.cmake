@@ -22,7 +22,7 @@ set(OCCT_TKTopAlgo_GTests_FILES
   BRepGraphAlgo_BndLib_Test.cxx
   BRepGraphAlgo_Validate_Test.cxx
   BRepGraphAlgo_Compact_Test.cxx
-  BRepGraph_LayerIntegration_Test.cxx
+  BRepGraphAlgo_Layer_Test.cxx
   BRepGraphAlgo_UVBounds_Test.cxx
   BRepLib_MakeWire_Test.cxx
   BRepGraphCheck_Analyzer_Test.cxx

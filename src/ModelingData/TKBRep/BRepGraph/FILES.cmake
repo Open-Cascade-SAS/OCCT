@@ -26,8 +26,6 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_LayerRegistry.hxx
   BRepGraph_DeferredScope.hxx
   BRepGraph_MutGuard.hxx
-  BRepGraph_NameLayer.cxx
-  BRepGraph_NameLayer.hxx
   BRepGraph_NodeId.hxx
   BRepGraph_ParamLayer.cxx
   BRepGraph_ParamLayer.hxx

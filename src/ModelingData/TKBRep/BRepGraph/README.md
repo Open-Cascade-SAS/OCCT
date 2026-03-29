@@ -280,7 +280,7 @@ layers are added explicitly via `RegisterLayer()` or `LayerRegistry().RegisterLa
 - **Storage**: internal maps keyed by NodeId, owned by the layer
 - **Lifecycle**: `OnNodeRemoved(old, replacement)` migrates data; `OnCompact(remapMap)` remaps; `OnNodeModified`/`OnNodesModified` for mutation tracking
 - **Survives mutations**: yes
-- **Examples**: `BRepGraph_NameLayer`, `BRepGraph_ParamLayer`, `BRepGraph_RegularityLayer`
+- **Examples**: `BRepGraph_ParamLayer`, `BRepGraph_RegularityLayer`
 
 Typical workflow:
 
@@ -415,7 +415,7 @@ Benefits: O(1) allocation (bump-pointer), O(1) destruction (bulk page release). 
 | **Traversal** | `BRepGraph_Explorer.hxx/.cxx`, `BRepGraph_TopologyPath.hxx`, `BRepGraph_SubGraph.hxx`, `BRepGraph_PCurveContext.hxx` |
 | **Geometry** | `BRepGraph_Tool.hxx/.cxx` |
 | **Mutation** | `BRepGraph_MutGuard.hxx`, `BRepGraph_DeferredScope.hxx` |
-| **Layers** | `BRepGraph_Layer.hxx/.cxx`, `BRepGraph_NameLayer.hxx/.cxx` |
+| **Layers** | `BRepGraph_Layer.hxx/.cxx`, `BRepGraph_ParamLayer.hxx/.cxx`, `BRepGraph_RegularityLayer.hxx/.cxx` |
 | **Transient Cache** | `BRepGraph_TransientCache.hxx/.cxx` |
 | **Analysis** | `BRepGraph_Analyze.hxx/.cxx` |
 | **History** | `BRepGraph_History.hxx/.cxx`, `BRepGraph_HistoryRecord.hxx` |

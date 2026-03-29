@@ -36,7 +36,6 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 - `RemoveNode(NodeId, NodeId replacement)` overload dispatches `OnNodeRemoved` to all layers
 - Compact saves/restores layers around graph swap, dispatches `OnCompact` with remap maps
 - Sewing and Deduplicate pass replacement NodeId to RemoveNode for data migration
-- `BRepGraph_NameLayer` proof-of-concept: TCollection_ExtendedString per node with full lifecycle
 
 ### Named Attribute Layers (DE Layers) [Arch] ★★★★
 - Built-in layers for DataExchange (replaces XCAFDoc_*Tool pattern):
@@ -122,7 +121,6 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 ### ~~OnCompact Unified Remap Map~~ — DONE (2026-03-20)
 - Replaced 6-argument `OnCompact(vertexMap, edgeMap, wireMap, faceMap, shellMap, solidMap)` with single `DataMap<BRepGraph_NodeId, BRepGraph_NodeId>`
 - Fixed data-loss bug: Compound/CompSolid remaps were built by Compact but never passed to layers
-- `BRepGraph_NameLayer::OnCompact` simplified from per-kind switch to single map lookup
 - Unified map built in `BRepGraphAlgo_Compact` from all 8 per-kind maps, extensible for future kinds
 - **Result**: All 8 node kinds correctly remapped for layers; simpler layer implementation
 

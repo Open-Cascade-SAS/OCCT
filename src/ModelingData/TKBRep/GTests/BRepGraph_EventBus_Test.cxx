@@ -15,7 +15,6 @@
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_Layer.hxx>
 #include <BRepGraph_DeferredScope.hxx>
-#include <BRepGraph_NameLayer.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <Precision.hxx>
@@ -111,6 +110,45 @@ private:
 };
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepGraph_ModTrackingLayer, BRepGraph_Layer)
+
+// Minimal layer with default SubscribedKinds() behavior from base class.
+class BRepGraph_DefaultLayer : public BRepGraph_Layer
+{
+public:
+  const Standard_GUID& ID() const override
+  {
+    static const Standard_GUID THE_ID("2f9b6a5c-1f2d-4a88-9c1c-7a0c16a10007");
+    return THE_ID;
+  }
+
+  const TCollection_AsciiString& Name() const override
+  {
+    static const TCollection_AsciiString THE_NAME("DefaultLayer");
+    return THE_NAME;
+  }
+
+  void OnNodeRemoved(const BRepGraph_NodeId,
+                     const BRepGraph_NodeId) noexcept override
+  {
+  }
+
+  void OnCompact(
+    const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>&) noexcept override
+  {
+  }
+
+  void InvalidateAll() noexcept override
+  {
+  }
+
+  void Clear() noexcept override
+  {
+  }
+
+  DEFINE_STANDARD_RTTIEXT(BRepGraph_DefaultLayer, BRepGraph_Layer)
+};
+
+IMPLEMENT_STANDARD_RTTIEXT(BRepGraph_DefaultLayer, BRepGraph_Layer)
 
 class BRepGraph_EventBusTest : public testing::Test
 {
@@ -308,11 +346,11 @@ TEST_F(BRepGraph_EventBusTest, MultipleSubscribers)
 
 TEST_F(BRepGraph_EventBusTest, DefaultSubscribedKinds_Zero)
 {
-  occ::handle<BRepGraph_NameLayer> aNameLayer = new BRepGraph_NameLayer;
-  myGraph.RegisterLayer(aNameLayer);
+  occ::handle<BRepGraph_DefaultLayer> aDefaultLayer = new BRepGraph_DefaultLayer;
+  myGraph.RegisterLayer(aDefaultLayer);
 
-  // SubscribedKinds() == 0 for NameLayer (default).
-  EXPECT_EQ(aNameLayer->SubscribedKinds(), 0);
+  // SubscribedKinds() == 0 in BRepGraph_Layer base default implementation.
+  EXPECT_EQ(aDefaultLayer->SubscribedKinds(), 0);
 
   // Mutate - NameLayer should not receive modification events.
   // (We just verify no crash; NameLayer has no event tracking.)
