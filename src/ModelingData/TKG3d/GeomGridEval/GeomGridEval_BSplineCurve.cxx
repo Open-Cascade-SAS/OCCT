@@ -71,6 +71,8 @@ inline void locateSpan(double                            theParam,
 }
 
 //! Count consecutive parameters in the same span (for cache threshold decision).
+//! For non-periodic curves, uses a fast knot-boundary comparison instead of
+//! calling BSplCLib::LocateParameter for every subsequent parameter.
 inline int countSpanSize(const NCollection_Array1<double>& theParams,
                          const NCollection_Array1<double>& theFlatKnots,
                          int                               theDegree,
@@ -82,6 +84,25 @@ inline int countSpanSize(const NCollection_Array1<double>& theParams,
   const int aNb    = theParams.Size();
   int       aCount = 1;
 
+  if (!theIsPeriodic)
+  {
+    // Fast path: params are sorted (ascending from buildKnotAwareParams),
+    // so just compare against the next knot boundary.
+    if (theTargetSpan + 1 > theFlatKnots.Upper())
+    {
+      return aCount;
+    }
+    const double aNextKnot = theFlatKnots.Value(theTargetSpan + 1);
+    for (int i = theStartIdx + 1; i < aNb; ++i)
+    {
+      if (theParams.Value(aLower + i) >= aNextKnot)
+        break;
+      ++aCount;
+    }
+    return aCount;
+  }
+
+  // Periodic fallback: span assignment requires full LocateParameter.
   for (int i = theStartIdx + 1; i < aNb; ++i)
   {
     double aParam    = theParams.Value(aLower + i);
@@ -138,18 +159,33 @@ NCollection_Array1<ResultT> evaluateGridCached(const CurveData&                 
   double aSpanStart = 0.0;
   double aSpanLen   = 1.0;
   bool   aUseCache  = false;
+  double aSpanEnd   = 0.0; // upper flat-knot boundary of current span
 
   for (int i = 0; i < aNbParams; ++i)
   {
     const double aParam    = theParams.Value(aLow + i);
     double       aAdjParam = aParam;
     int          aSpan     = 0;
-    locateSpan(aParam, *theData.FlatKnots, theData.Degree, theData.IsPeriodic, aAdjParam, aSpan);
+
+    // Precondition: theParams is sorted ascending (guaranteed by buildKnotAwareParams).
+    // For non-periodic curves, skip locateSpan when the parameter is still within
+    // the current span. This avoids BSplCLib::Hunt binary search for the common case.
+    // locateSpan is called only on span transitions, preserving exact semantics.
+    if (!theData.IsPeriodic && aPrevSpan >= 0 && aParam < aSpanEnd)
+    {
+      aAdjParam = aParam;
+      aSpan     = aPrevSpan;
+    }
+    else
+    {
+      locateSpan(aParam, *theData.FlatKnots, theData.Degree, theData.IsPeriodic, aAdjParam, aSpan);
+    }
 
     // Update span info when span changes
     if (aSpan != aPrevSpan)
     {
       aPrevSpan = aSpan;
+      aSpanEnd  = theData.FlatKnots->Value(aSpan + 1);
       aSpanSize =
         countSpanSize(theParams, *theData.FlatKnots, theData.Degree, theData.IsPeriodic, i, aSpan);
       computeSpanCoeffs(*theData.FlatKnots, aSpan, aSpanStart, aSpanLen);
