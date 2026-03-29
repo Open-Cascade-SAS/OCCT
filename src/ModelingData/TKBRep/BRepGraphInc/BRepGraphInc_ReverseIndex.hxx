@@ -40,11 +40,12 @@ struct ChildRef;
 struct VertexRef;
 } // namespace BRepGraphInc
 
-//! @brief Reverse incidence indices for O(1) upward navigation.
+//! @brief Backend reverse incidence indices for O(1) upward navigation.
 //!
-//! Built from entity vectors and relationship-geometry rows after
-//! population.  Indices are rebuilt entirely on each mutation
-//! (rebuild cost is O(N) which is acceptable for typical models).
+//! Built from entity and reference-entry tables after population.
+//! Full Build() is used for initial construction, while builder-side
+//! mutations maintain the index incrementally through targeted bind/unbind
+//! operations and BuildDelta() for append workflows.
 class BRepGraphInc_ReverseIndex
 {
 public:
@@ -133,7 +134,7 @@ public:
     return seekVec(myEdgeToWires, theEdgeId.Index);
   }
 
-  //! Return face indices containing the given edge (from EdgeFaceGeom rows).
+  //! Return face indices containing the given edge (derived from CoEdge.FaceDefId links).
   [[nodiscard]] const NCollection_Vector<BRepGraph_FaceId>* FacesOfEdge(
     const BRepGraph_EdgeId theEdgeId) const
   {

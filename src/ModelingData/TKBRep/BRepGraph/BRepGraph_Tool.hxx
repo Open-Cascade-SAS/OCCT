@@ -18,6 +18,7 @@
 #include <BRepGraphInc_Definition.hxx>
 #include <BRepGraphInc_Reference.hxx>
 #include <BRepGraphInc_Representation.hxx>
+#include <BRepGraphInc_Usage.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <GeomAdaptor_TransformedCurve.hxx>
 #include <GeomAdaptor_TransformedSurface.hxx>

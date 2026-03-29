@@ -19,7 +19,6 @@
 #include <BRepGraphAlgo_Copy.hxx>
 #include <NCollection_Map.hxx>
 #include <BRepGraph_BuilderView.hxx>
-#include <BRepGraph_Data.hxx>
 #include <BRepGraph_PathView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Tool.hxx>
@@ -93,15 +92,10 @@ void BRepGraphAlgo_Transform::applyLocationTransform(BRepGraph& theGraph, const 
   const NCollection_Vector<BRepGraph_NodeId> aRoots = theGraph.Paths().RootProducts();
   for (int anIdx = 0; anIdx < aRoots.Length(); ++anIdx)
   {
-    const BRepGraph_NodeId    aRootId = aRoots.Value(anIdx);
-    BRepGraphInc::ProductDef& aProduct =
-      theGraph.myData->myIncStorage.ChangeProduct(BRepGraph_ProductId(aRootId.Index));
-    aProduct.RootLocation = aLoc * aProduct.RootLocation;
-    theGraph.markModified(aRootId);
+    const BRepGraph_ProductId aRootId(aRoots.Value(anIdx).Index);
+    BRepGraph_MutGuard<BRepGraphInc::ProductDef> aProduct = theGraph.Builder().MutProduct(aRootId);
+    aProduct->RootLocation = aLoc * aProduct->RootLocation;
   }
-
-  // Invalidate cached reconstructed shapes.
-  theGraph.myData->myCurrentShapes.Clear();
 }
 
 //=================================================================================================

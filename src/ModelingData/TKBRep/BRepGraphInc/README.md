@@ -6,6 +6,8 @@ It provides the runtime source of truth for topology entities, assembly entities
 
 BRepGraphInc is not a user-facing API. It is the runtime model that powers BRepGraph.
 
+External code should normally enter through `BRepGraph::Build()`, `BRepGraph::Shapes()`, `BRepGraph::Topo()`, `BRepGraph::Refs()`, and the other facade views. Direct use of `BRepGraphInc_*` classes is reserved for backend maintenance, low-level infrastructure, and focused tests.
+
 ## What This Backend Owns
 
 - Topology entity tables (Vertex, Edge, CoEdge, Wire, Face, Shell, Solid, Compound, CompSolid)
@@ -186,7 +188,9 @@ flowchart LR
 | **Phase 3c** | Optional | Vertex point representations (controlled by `Options.ExtractVertexPointReps`). |
 | **Phase 4** | Sequential | Build reverse indices for O(1) upward navigation. |
 
-Entry point: `BRepGraphInc_Populate::Perform()`.
+Backend entry point: `BRepGraphInc_Populate::Perform()`.
+
+For normal graph construction, use `BRepGraph::Build()` instead. The facade owns the public lifecycle, view initialization, mutation boundary behavior, and cache coordination on top of this backend pipeline.
 
 ### Geometry: Definition-Frame Storage
 

@@ -25,9 +25,11 @@ class BRepGraphInc_Storage;
 class BRepGraph_ParamLayer;
 class BRepGraph_RegularityLayer;
 
-//! @brief Reconstruct TopoDS shapes from incidence-table storage.
+//! @brief Backend reconstruction helpers over incidence-table storage.
 //!
 //! Converts BRepGraphInc_Storage entity data back into TopoDS shapes.
+//! This class is part of the BRepGraphInc backend; external callers should
+//! prefer BRepGraph::Shapes() so reconstruction stays behind the facade.
 //! Supports single-node and cached multi-face reconstruction with
 //! shared edge/vertex reuse via the Cache.
 class BRepGraphInc_Reconstruct

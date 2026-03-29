@@ -31,14 +31,16 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_TShape.hxx>
 
-//! @brief Central storage container for the incidence-table topology model.
+//! @brief Central backend storage container for the incidence-table topology model.
 //!
 //! Holds all entity vectors (Vertex through Occurrence), representation
 //! vectors (Surface, Curve3D, Curve2D, Triangulation, Polygon), reverse
 //! indices for O(1) upward navigation, TShape deduplication maps, original
 //! shape bindings, and per-kind UID vectors. Provides typed accessors
-//! enforcing compile-time safety. BRepGraphInc_Populate has friend access
-//! for efficient bulk writes during graph population.
+//! enforcing compile-time safety for backend code. External callers should
+//! normally use the BRepGraph facade rather than reaching into this storage
+//! directly. BRepGraphInc_Populate has friend access for efficient bulk writes
+//! during graph population.
 class BRepGraph_Builder;
 
 class BRepGraphInc_Storage

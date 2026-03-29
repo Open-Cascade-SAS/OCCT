@@ -22,10 +22,15 @@ class BRepGraphInc_Storage;
 class BRepGraph_ParamLayer;
 class BRepGraph_RegularityLayer;
 
-//! @brief Populates a BRepGraphInc_Storage from a TopoDS_Shape.
+//! @brief Backend population pipeline for BRepGraphInc_Storage.
+//!
+//! This class is part of the BRepGraphInc backend and is intended for
+//! backend maintenance, tests, and low-level infrastructure only.
+//! External code should enter through BRepGraph::Build(), which owns the
+//! public lifecycle, cache invalidation, and layer coordination.
 //!
 //! Adapted from BRepGraph_Builder, but writes to incidence-table storage
-//! instead of Def/Usage two-layer storage.  Entity structs carry forward
+//! instead of Def/Usage two-layer storage. Entity structs carry forward
 //! child references directly (no separate Usage objects).
 //!
 //! The population pipeline:
@@ -51,7 +56,7 @@ public:
     }
   };
 
-  //! Build incidence storage from a TopoDS_Shape.
+  //! Build backend incidence storage from a TopoDS_Shape.
   //! @param[out] theStorage  storage to populate (cleared first)
   //! @param[in]  theShape    root shape
   //! @param[in]  theParallel if true, face-level extraction runs in parallel
@@ -65,7 +70,7 @@ public:
                                       const occ::handle<NCollection_BaseAllocator>& theTmpAlloc =
                                         occ::handle<NCollection_BaseAllocator>());
 
-  //! Extend existing storage with additional shapes (no clear).
+  //! Extend existing backend storage with additional shapes (no clear).
   //! Flattens hierarchy to face level only (no Solid/Shell/Compound entities created).
   //! Recomputes the built-in metadata layers from the populated storage.
   //! @param[in,out] theStorage  storage to extend

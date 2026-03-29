@@ -15,8 +15,7 @@
 #define _BRepGraph_WireExplorer_HeaderFile
 
 #include <BRepGraphInc_Definition.hxx>
-#include <BRepGraphInc_Reference.hxx>
-#include <BRepGraphInc_Representation.hxx>
+#include <BRepGraphInc_Usage.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Vector.hxx>
 
