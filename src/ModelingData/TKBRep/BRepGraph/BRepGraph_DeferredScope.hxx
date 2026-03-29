@@ -21,7 +21,8 @@
 //!
 //! Activates deferred invalidation on construction and flushes it on destruction,
 //! followed by CommitMutation validation. Guarantees exception-safe cleanup:
-//! deferred mode is always closed and boundary checks are executed.
+//! when this guard owns deferred mode, it is always closed and boundary checks
+//! are executed at scope exit.
 //!
 //! Re-entrant: if deferred mode is already active (e.g., nested guard),
 //! the inner guard is a no-op - only the outermost guard flushes and commits.
