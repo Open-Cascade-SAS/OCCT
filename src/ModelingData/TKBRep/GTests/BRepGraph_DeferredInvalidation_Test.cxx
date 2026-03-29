@@ -13,12 +13,16 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_BuilderView.hxx>
+#include <BRepGraph_PathView.hxx>
 #include "BRepGraph_RefTestTools.hxx"
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <OSD_Parallel.hxx>
 #include <Precision.hxx>
+#include <TopLoc_Location.hxx>
+
+#include <mutex>
 
 #include <gtest/gtest.h>
 
@@ -156,16 +160,20 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_ReconstructAfterFlush_Su
   EXPECT_FALSE(aShape.IsNull());
 }
 
-TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_ParallelMutation_NoDataRace)
+TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_ParallelMutation_WithExternalSync)
 {
   const int aNbEdges = myGraph.Topo().NbEdges();
   ASSERT_GT(aNbEdges, 1);
 
+  // Deferred mode is NOT internally thread-safe. Parallel callers must
+  // provide external synchronization around each MutGuard usage.
+  std::mutex aMutex;
   myGraph.Builder().BeginDeferredInvalidation();
   OSD_Parallel::For(
     0,
     aNbEdges,
     [&](int theIdx) {
+      std::lock_guard<std::mutex> aLock(aMutex);
       myGraph.Builder().MutEdge(BRepGraph_EdgeId(theIdx))->Tolerance = 0.1 + theIdx * 0.01;
     },
     false);
@@ -265,4 +273,38 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_DirectWireMutation_Propa
   EXPECT_TRUE(aFacePropagated);
   EXPECT_GT(myGraph.Topo().Shell(BRepGraph_ShellId(0)).SubtreeGen, 0u);
   EXPECT_GT(myGraph.Topo().Solid(BRepGraph_SolidId(0)).SubtreeGen, 0u);
+}
+
+TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_OccurrenceMutation_PropagatesSubtreeGenToProduct)
+{
+  // Build an assembly: root product + child occurrence referencing it.
+  const BRepGraph_NodeId aPartId     = BRepGraph_NodeId::Product(0);
+  const BRepGraph_NodeId aAssemblyId = myGraph.Builder().AddAssemblyProduct();
+  const BRepGraph_NodeId anOccId =
+    myGraph.Builder().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location());
+  ASSERT_TRUE(anOccId.IsValid());
+
+  // Verify parent product starts clean.
+  const BRepGraph_ProductId aAsmProductId(aAssemblyId.Index);
+  EXPECT_EQ(myGraph.Paths().Product(aAsmProductId).SubtreeGen, 0u);
+
+  // Mutate occurrence placement in deferred mode.
+  myGraph.Builder().BeginDeferredInvalidation();
+  {
+    gp_Trsf aTrsf;
+    aTrsf.SetTranslation(gp_Vec(100.0, 0.0, 0.0));
+    myGraph.Builder().MutOccurrence(BRepGraph_OccurrenceId(anOccId.Index))->Placement =
+      TopLoc_Location(aTrsf);
+  }
+
+  // During deferred mode: occurrence OwnGen incremented, but parent product NOT yet.
+  EXPECT_GT(myGraph.Paths().Occurrence(BRepGraph_OccurrenceId(anOccId.Index)).OwnGen, 0u);
+  EXPECT_EQ(myGraph.Paths().Product(aAsmProductId).SubtreeGen, 0u);
+
+  myGraph.Builder().EndDeferredInvalidation();
+
+  // After flush: parent assembly product must have SubtreeGen incremented exactly once.
+  EXPECT_EQ(myGraph.Paths().Product(aAsmProductId).SubtreeGen, 1u);
+  // Parent's OwnGen must remain 0 — its own data didn't change.
+  EXPECT_EQ(myGraph.Paths().Product(aAsmProductId).OwnGen, 0u);
 }

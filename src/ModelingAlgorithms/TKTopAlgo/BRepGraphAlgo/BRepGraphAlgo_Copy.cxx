@@ -359,6 +359,24 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph, bool theCopyGeo
                                      std::memory_order_relaxed);
   aResult.myData->myIsDone = true;
 
+  // Pre-allocate transient cache for lock-free parallel access on the copied graph.
+  {
+    BRepGraphInc_Storage& aStorage = aResult.myData->myIncStorage;
+    int aCounts[BRepGraph_TransientCache::THE_KIND_COUNT] = {};
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Vertex)]     = aStorage.NbVertices();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Edge)]       = aStorage.NbEdges();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::CoEdge)]     = aStorage.NbCoEdges();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Wire)]       = aStorage.NbWires();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Face)]       = aStorage.NbFaces();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Shell)]      = aStorage.NbShells();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Solid)]      = aStorage.NbSolids();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Compound)]   = aStorage.NbCompounds();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::CompSolid)]  = aStorage.NbCompSolids();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Product)]    = aStorage.NbProducts();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Occurrence)] = aStorage.NbOccurrences();
+    aResult.myTransientCache.Reserve(BRepGraph_TransientCache::THE_DEFAULT_MAX_ATTR_KEY, aCounts);
+  }
+
   return aResult;
 }
 
@@ -586,6 +604,24 @@ BRepGraph BRepGraphAlgo_Copy::CopyFace(const BRepGraph&       theGraph,
   }
 
   aResult.myData->myIsDone = true;
+
+  // Pre-allocate transient cache for lock-free parallel access on the copied graph.
+  {
+    BRepGraphInc_Storage& aStorage = aResult.myData->myIncStorage;
+    int aCounts[BRepGraph_TransientCache::THE_KIND_COUNT] = {};
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Vertex)]     = aStorage.NbVertices();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Edge)]       = aStorage.NbEdges();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::CoEdge)]     = aStorage.NbCoEdges();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Wire)]       = aStorage.NbWires();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Face)]       = aStorage.NbFaces();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Shell)]      = aStorage.NbShells();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Solid)]      = aStorage.NbSolids();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Compound)]   = aStorage.NbCompounds();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::CompSolid)]  = aStorage.NbCompSolids();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Product)]    = aStorage.NbProducts();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Occurrence)] = aStorage.NbOccurrences();
+    aResult.myTransientCache.Reserve(BRepGraph_TransientCache::THE_DEFAULT_MAX_ATTR_KEY, aCounts);
+  }
 
   return aResult;
 }

@@ -667,9 +667,9 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
     aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Solid)]     = aStr.NbSolids();
     aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Compound)]  = aStr.NbCompounds();
     aCounts[static_cast<int>(BRepGraph_NodeId::Kind::CompSolid)] = aStr.NbCompSolids();
-    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Product)]   = aStr.NbProducts();
-    const int aMaxKey = 15;
-    theGraph.myTransientCache.Reserve(aMaxKey, aCounts);
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Product)]    = aStr.NbProducts();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Occurrence)] = aStr.NbOccurrences();
+    theGraph.myTransientCache.Reserve(BRepGraph_TransientCache::THE_DEFAULT_MAX_ATTR_KEY, aCounts);
   }
   theGraph.updateModificationSubscriberFlag();
 

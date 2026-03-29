@@ -78,7 +78,7 @@ void BRepGraph_TransientCache::Reserve(const int theMaxKey, const int theCounts[
     }
   }
 
-  myIsReserved = true;
+  myIsReserved.store(true, std::memory_order_release);
 }
 
 //=================================================================================================
@@ -92,7 +92,8 @@ void BRepGraph_TransientCache::Set(const BRepGraph_NodeId                      t
     return;
 
   // Lock-free fast path: slot is pre-allocated and in range.
-  if (myIsReserved
+  // Acquire on myIsReserved ensures visibility of all Reserve() writes.
+  if (myIsReserved.load(std::memory_order_acquire)
       && theKey < myKeys.Length())
   {
     const int                     aKindIdx = static_cast<int>(theNode.NodeKind);
@@ -121,7 +122,8 @@ occ::handle<BRepGraph_UserAttribute> BRepGraph_TransientCache::Get(
   const uint32_t         theCurrentSubtreeGen) const
 {
   // Lock-free fast path: slot is pre-allocated and in range.
-  if (myIsReserved
+  // Acquire on myIsReserved ensures visibility of all Reserve() writes.
+  if (myIsReserved.load(std::memory_order_acquire)
       && theKey < myKeys.Length())
   {
     const int                           aKindIdx = static_cast<int>(theNode.NodeKind);
@@ -226,5 +228,5 @@ void BRepGraph_TransientCache::TransferAttributes(const BRepGraph_TransientCache
 void BRepGraph_TransientCache::Clear() noexcept
 {
   myKeys.Clear();
-  myIsReserved = false;
+  myIsReserved.store(false, std::memory_order_relaxed);
 }

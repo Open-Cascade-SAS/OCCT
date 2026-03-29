@@ -19,6 +19,7 @@
 
 #include <NCollection_Vector.hxx>
 
+#include <atomic>
 #include <shared_mutex>
 
 //! @brief Centralized transient cache for algorithm-computed per-node attributes.
@@ -45,6 +46,9 @@ public:
   //! Number of Kind enum slots to cover (0..11, with gap at 9).
   static constexpr int THE_KIND_COUNT =
     static_cast<int>(BRepGraph_NodeId::Kind::Occurrence) + 1;
+
+  //! Default upper bound for attribute keys (BndLib=0, UVBounds=1, etc.).
+  static constexpr int THE_DEFAULT_MAX_ATTR_KEY = 15;
 
   //! Per-slot storage: attribute handle + SubtreeGen stamp.
   struct CacheSlot
@@ -100,28 +104,34 @@ public:
   void Reserve(const int theMaxKey, const int theCounts[THE_KIND_COUNT]);
 
   //! True if Reserve() has been called and storage is pre-allocated.
-  [[nodiscard]] bool IsReserved() const noexcept { return myIsReserved; }
+  [[nodiscard]] bool IsReserved() const noexcept
+  {
+    return myIsReserved.load(std::memory_order_acquire);
+  }
 
   //! Clear all cached data. Called on Build() and Compact().
   //! Resets the pre-allocated state.
   void Clear() noexcept;
 
   //! Move constructor: transfers data, creates fresh mutex.
+  //! Caller must ensure no concurrent access to theOther during move.
   BRepGraph_TransientCache(BRepGraph_TransientCache&& theOther) noexcept
       : myKeys(std::move(theOther.myKeys)),
-        myIsReserved(theOther.myIsReserved)
+        myIsReserved(theOther.myIsReserved.load(std::memory_order_relaxed))
   {
-    theOther.myIsReserved = false;
+    theOther.myIsReserved.store(false, std::memory_order_relaxed);
   }
 
   //! Move assignment: transfers data, mutex stays local.
+  //! Caller must ensure no concurrent access to theOther during move.
   BRepGraph_TransientCache& operator=(BRepGraph_TransientCache&& theOther) noexcept
   {
     if (this != &theOther)
     {
-      myKeys        = std::move(theOther.myKeys);
-      myIsReserved  = theOther.myIsReserved;
-      theOther.myIsReserved = false;
+      myKeys = std::move(theOther.myKeys);
+      myIsReserved.store(theOther.myIsReserved.load(std::memory_order_relaxed),
+                         std::memory_order_relaxed);
+      theOther.myIsReserved.store(false, std::memory_order_relaxed);
     }
     return *this;
   }
@@ -157,7 +167,8 @@ private:
   NCollection_Vector<KeySlot> myKeys;
 
   //! True after Reserve() — enables lock-free access for in-range slots.
-  bool myIsReserved = false;
+  //! Atomic with acquire/release to ensure safe publication of pre-allocated vectors.
+  std::atomic<bool> myIsReserved{false};
 
   //! Protects structural modifications (vector growth) during concurrent access.
   //! Bypassed for in-range access when myIsReserved is true.

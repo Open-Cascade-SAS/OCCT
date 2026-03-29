@@ -1312,6 +1312,26 @@ void BRepGraph::BuilderView::EndDeferredInvalidation() noexcept
           }
         break;
       }
+      case BRepGraph_NodeId::Kind::Occurrence: {
+        // Occurrence modifications propagate to the parent product.
+        const BRepGraphInc::OccurrenceDef& anOccDef =
+          myGraph->myData->myIncStorage.Occurrence(BRepGraph_OccurrenceId(aNodeId.Index));
+        if (anOccDef.ParentProductDefId.IsValid())
+        {
+          const BRepGraph_NodeId aParentId = anOccDef.ParentProductDefId;
+          if (markVisited(aParentId))
+          {
+            BRepGraphInc::BaseDef* aParent = myGraph->ChangeTopoEntity(aParentId);
+            if (aParent != nullptr && !aParent->IsRemoved)
+            {
+              ++aParent->SubtreeGen;
+              aAllModified.Append(aParentId);
+              aModifiedKindsMask |= BRepGraph_Layer::KindBit(aParentId.NodeKind);
+            }
+          }
+        }
+        break;
+      }
       default:
         break;
     }

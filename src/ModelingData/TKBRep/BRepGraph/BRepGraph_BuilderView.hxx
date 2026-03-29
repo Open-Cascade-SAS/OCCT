@@ -196,22 +196,26 @@ public:
   //! @param[in] theNode root node to remove
   Standard_EXPORT void RemoveSubgraph(const BRepGraph_NodeId theNode);
 
-  //! @name Deferred invalidation mode for parallel mutation loops.
+  //! @name Deferred invalidation mode for batch mutation loops.
 
   //! Begin deferred invalidation mode.
   //! While active, markModified() only increments OwnGen + SubtreeGen and
   //! appends to the deferred list — without acquiring the shape-cache mutex
   //! or propagating upward.
   //! Call EndDeferredInvalidation() to batch-flush all accumulated changes.
-  //! Intended for parallel mutation loops (SameParameter, Sewing processEdges).
-  //! @warning Mutations inside OSD_Parallel::For MUST use deferred mode.
-  //! Without it, concurrent markModified() calls race on the shape cache mutex
-  //! and upward propagation. Prefer BRepGraph_DeferredScope RAII guard.
+  //! Intended for batch mutation loops (SameParameter, Sewing) where many
+  //! entities are modified sequentially and upward propagation should be
+  //! deferred until all mutations are complete.
+  //! Prefer BRepGraph_DeferredScope RAII guard.
+  //! @warning NOT thread-safe. Concurrent markModified() calls from multiple
+  //! threads require external synchronization (e.g., a mutex around each
+  //! MutGuard usage). The deferred list and propagation wave counter are
+  //! not protected by internal locks.
   Standard_EXPORT void BeginDeferredInvalidation();
 
   //! End deferred invalidation mode and batch-flush:
-  //! clears the entire shape cache and propagates SubtreeGen upward
-  //! for all modified entities from the deferred list.
+  //! propagates SubtreeGen upward for all modified entities from the deferred
+  //! list. Shape cache entries are validated lazily via SubtreeGen comparison.
   Standard_EXPORT void EndDeferredInvalidation() noexcept;
 
   //! Check if deferred invalidation mode is currently active.

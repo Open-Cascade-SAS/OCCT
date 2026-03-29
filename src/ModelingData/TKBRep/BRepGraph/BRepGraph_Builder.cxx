@@ -220,10 +220,9 @@ void BRepGraph_Builder::Perform(BRepGraph&                            theGraph,
     aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Solid)]     = aStorage.NbSolids();
     aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Compound)]  = aStorage.NbCompounds();
     aCounts[static_cast<int>(BRepGraph_NodeId::Kind::CompSolid)] = aStorage.NbCompSolids();
-    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Product)]   = aStorage.NbProducts();
-    // Use a generous key upper bound (attribute keys are few: BndLib, UVBounds, etc.).
-    const int aMaxKey = 15;
-    theGraph.myTransientCache.Reserve(aMaxKey, aCounts);
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Product)]    = aStorage.NbProducts();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Occurrence)] = aStorage.NbOccurrences();
+    theGraph.myTransientCache.Reserve(BRepGraph_TransientCache::THE_DEFAULT_MAX_ATTR_KEY, aCounts);
   }
 }
 
