@@ -146,7 +146,7 @@ BRepGraph_VersionStamp BRepGraph::UIDsView::StampOf(const BRepGraph_NodeId theNo
     return BRepGraph_VersionStamp();
 
   const BRepGraph_UID          aUID = aVec.Value(theNode.Index);
-  const BRepGraphInc::BaseDef* aDef = myGraph->TopoEntity(theNode);
+  const BRepGraphInc::BaseDef* aDef = myGraph->topoEntity(theNode);
   if (aDef == nullptr || aDef->IsRemoved)
     return BRepGraph_VersionStamp();
 
@@ -170,7 +170,7 @@ bool BRepGraph::UIDsView::IsStale(const BRepGraph_VersionStamp& theStamp) const
   if (!aNodeId.IsValid())
     return true;
 
-  const BRepGraphInc::BaseDef* aDef = myGraph->TopoEntity(aNodeId);
+  const BRepGraphInc::BaseDef* aDef = myGraph->topoEntity(aNodeId);
   if (aDef == nullptr || aDef->IsRemoved)
     return true;
 

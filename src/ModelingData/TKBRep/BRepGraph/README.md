@@ -79,9 +79,9 @@ All queries and mutations go through lightweight view objects obtained from a `B
 | `History()` | Mutation history subsystem (lineage records) |
 | `TransientCache()` | Transient algorithm cache (BndBox, UVBounds) — NOT a Layer |
 | `LayerRegistry()` | Access the GUID-keyed runtime registry of registered layers |
-| `RegisterLayer()` | Register a `BRepGraph_Layer` plugin explicitly |
-| `FindLayer(guid)` / `FindLayer<T>()` | Lookup a registered layer by GUID or layer type |
-| `UnregisterLayer(guid)` | Remove a registered layer by GUID |
+| `LayerRegistry().RegisterLayer(layer)` | Register a `BRepGraph_Layer` plugin explicitly |
+| `LayerRegistry().FindLayer(guid)` / `LayerRegistry().FindLayer<T>()` | Lookup a registered layer by GUID or layer type |
+| `LayerRegistry().UnregisterLayer(guid)` | Remove a registered layer by GUID |
 
 ## Main Data Concepts
 
@@ -272,7 +272,7 @@ Can also start from a Product to descend through assembly occurrences into topol
 ### Layers (`BRepGraph_Layer`)
 
 Graph-wide metadata plugins with full lifecycle management. Graphs start with zero layers by default;
-layers are added explicitly via `RegisterLayer()` or `LayerRegistry().RegisterLayer()`.
+layers are added explicitly via `LayerRegistry().RegisterLayer()`.
 
 - **Purpose**: persistent domain metadata (colors, materials, names, layer groups)
 - **Identity**: `Standard_GUID`, not display name
@@ -286,11 +286,11 @@ Typical workflow:
 
 ```cpp
 BRepGraph aGraph;
-aGraph.RegisterLayer(new BRepGraph_ParamLayer());
-aGraph.RegisterLayer(new BRepGraph_RegularityLayer());
+aGraph.LayerRegistry().RegisterLayer(new BRepGraph_ParamLayer());
+aGraph.LayerRegistry().RegisterLayer(new BRepGraph_RegularityLayer());
 
 const occ::handle<BRepGraph_ParamLayer> aParamLayer =
-  aGraph.FindLayer<BRepGraph_ParamLayer>();
+  aGraph.LayerRegistry().FindLayer<BRepGraph_ParamLayer>();
 ```
 
 ### TransientCache (`BRepGraph_TransientCache`)

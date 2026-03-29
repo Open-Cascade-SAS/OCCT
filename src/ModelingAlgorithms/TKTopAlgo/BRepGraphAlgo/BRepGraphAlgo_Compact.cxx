@@ -308,7 +308,8 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
 
   const bool wasHistoryEnabled = theGraph.History().IsEnabled();
   theGraph.History().SetEnabled(theOptions.HistoryMode);
-  const uint32_t aGeneration = theGraph.myData->myGeneration.load(std::memory_order_relaxed);
+  const BRepGraph_Data* aGraphData = theGraph.data();
+  const uint32_t aGeneration = aGraphData->myGeneration.load(std::memory_order_relaxed);
 
   // Record history before swap (remap entries for topology defs).
   if (theOptions.HistoryMode)
@@ -351,7 +352,8 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
   // Construct a fresh graph and rebuild bottom-up.
   // Geometry nodes (Surface, Curve) are automatically created through AddFace/AddEdge.
   BRepGraph aNewGraph;
-  aNewGraph.myData->myGeneration.store(aGeneration, std::memory_order_relaxed);
+  BRepGraph_Data* aNewGraphData = aNewGraph.data();
+  aNewGraphData->myGeneration.store(aGeneration, std::memory_order_relaxed);
 
   // Helper lambda for remapping NodeIds.
   auto remapId = [&](const BRepGraph_NodeId& theId) -> BRepGraph_NodeId {
@@ -582,7 +584,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
   }
 
   // Rebuild reverse index from final forward incidence to guarantee compact output consistency.
-  aNewGraph.myData->myIncStorage.BuildReverseIndex();
+  aNewGraph.incStorage().BuildReverseIndex();
 
   aResult.NbNodesAfter = static_cast<int>(aNewGraph.Topo().NbNodes());
 
@@ -603,52 +605,52 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
   };
 
   transferUIDs(aVertexMap,
-               theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Vertex),
-               aNewGraph.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Vertex));
+               aGraphData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Vertex),
+               aNewGraphData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Vertex));
   transferUIDs(anEdgeMap,
-               theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Edge),
-               aNewGraph.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Edge));
+               aGraphData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Edge),
+               aNewGraphData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Edge));
   transferUIDs(aWireMap,
-               theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Wire),
-               aNewGraph.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Wire));
+               aGraphData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Wire),
+               aNewGraphData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Wire));
   transferUIDs(aFaceMap,
-               theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Face),
-               aNewGraph.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Face));
+               aGraphData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Face),
+               aNewGraphData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Face));
   transferUIDs(aShellMap,
-               theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Shell),
-               aNewGraph.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Shell));
+               aGraphData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Shell),
+               aNewGraphData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Shell));
   transferUIDs(aSolidMap,
-               theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Solid),
-               aNewGraph.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Solid));
+               aGraphData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Solid),
+               aNewGraphData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Solid));
   transferUIDs(aCompoundMap,
-               theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Compound),
-               aNewGraph.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Compound));
+               aGraphData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Compound),
+               aNewGraphData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Compound));
   transferUIDs(aCompSolidMap,
-               theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::CompSolid),
-               aNewGraph.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::CompSolid));
+               aGraphData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::CompSolid),
+               aNewGraphData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::CompSolid));
 
-  aNewGraph.myData->myNextUIDCounter.store(
-    theGraph.myData->myNextUIDCounter.load(std::memory_order_relaxed),
+  aNewGraphData->myNextUIDCounter.store(
+    aGraphData->myNextUIDCounter.load(std::memory_order_relaxed),
     std::memory_order_relaxed);
-  aNewGraph.myData->myGeneration.store(
-    theGraph.myData->myGeneration.load(std::memory_order_relaxed),
+  aNewGraphData->myGeneration.store(
+    aGraphData->myGeneration.load(std::memory_order_relaxed),
     std::memory_order_relaxed);
-  aNewGraph.myData->myIsDone = true;
+  aNewGraphData->myIsDone = true;
 
   // Save layers before swap (default move would transfer empty layers from aNewGraph).
-  BRepGraph_LayerRegistry aSavedLayerRegistry = std::move(theGraph.myLayerRegistry);
+  BRepGraph_LayerRegistry aSavedLayerRegistry = std::move(theGraph.layerRegistry());
 
   // Swap.
   theGraph = std::move(aNewGraph);
 
   // Restore layers and notify about index remapping.
-  theGraph.myLayerRegistry = std::move(aSavedLayerRegistry);
+  theGraph.layerRegistry() = std::move(aSavedLayerRegistry);
   // Clear and re-reserve TransientCache for the compacted entity counts.
   // The saved cache had pre-allocation for old indices; after compaction
   // indices are remapped and counts may differ.
-  theGraph.myTransientCache.Clear();
+  theGraph.transientCache().Clear();
   {
-    BRepGraphInc_Storage& aStr = theGraph.myData->myIncStorage;
+    BRepGraphInc_Storage& aStr = theGraph.incStorage();
     int aCounts[BRepGraph_TransientCache::THE_KIND_COUNT] = {};
     aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Vertex)]    = aStr.NbVertices();
     aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Edge)]      = aStr.NbEdges();
@@ -667,7 +669,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
     {
       aReservedKindCount = aRegisteredKindCount;
     }
-    theGraph.myTransientCache.Reserve(aReservedKindCount, aCounts);
+    theGraph.TransientCache().Reserve(aReservedKindCount, aCounts);
   }
   // Build unified remap map covering all 8 topology kinds.
   NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId> aRemapMap;
@@ -690,7 +692,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
   for (NCollection_DataMap<int, int>::Iterator it(aCompSolidMap); it.More(); it.Next())
     aRemapMap.Bind(BRepGraph_NodeId::CompSolid(it.Key()), BRepGraph_NodeId::CompSolid(it.Value()));
 
-  theGraph.myLayerRegistry.DispatchOnCompact(aRemapMap);
+  theGraph.LayerRegistry().DispatchOnCompact(aRemapMap);
 
   theGraph.Builder().CommitMutation();
   theGraph.History().SetEnabled(wasHistoryEnabled);

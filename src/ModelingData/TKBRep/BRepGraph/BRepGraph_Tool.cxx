@@ -60,7 +60,7 @@ double BRepGraph_Tool::Vertex::Parameter(const BRepGraph&         theGraph,
                                          const BRepGraph_EdgeId   theEdge)
 {
   double aParameter = 0.0;
-  const occ::handle<BRepGraph_ParamLayer> aParamLayer = theGraph.FindLayer<BRepGraph_ParamLayer>();
+  const occ::handle<BRepGraph_ParamLayer> aParamLayer = theGraph.LayerRegistry().FindLayer<BRepGraph_ParamLayer>();
   if (!aParamLayer.IsNull() && aParamLayer->FindPointOnCurve(theVertex, theEdge, &aParameter))
     return aParameter;
   throw Standard_NoSuchObject("BRepGraph_Tool::Parameter - no PointOnCurve for this edge");
@@ -73,7 +73,7 @@ gp_Pnt2d BRepGraph_Tool::Vertex::Parameters(const BRepGraph&         theGraph,
                                             const BRepGraph_FaceId   theFace)
 {
   gp_Pnt2d aUV;
-  const occ::handle<BRepGraph_ParamLayer> aParamLayer = theGraph.FindLayer<BRepGraph_ParamLayer>();
+  const occ::handle<BRepGraph_ParamLayer> aParamLayer = theGraph.LayerRegistry().FindLayer<BRepGraph_ParamLayer>();
   if (!aParamLayer.IsNull() && aParamLayer->FindPointOnSurface(theVertex, theFace, &aUV))
     return aUV;
   throw Standard_NoSuchObject("BRepGraph_Tool::Parameters - no PointOnSurface for this face");
@@ -254,7 +254,7 @@ double BRepGraph_Tool::Vertex::PCurveParameter(const BRepGraph&         theGraph
                                                 const BRepGraph_CoEdgeId theCoEdge)
 {
   double aParameter = 0.0;
-  const occ::handle<BRepGraph_ParamLayer> aParamLayer = theGraph.FindLayer<BRepGraph_ParamLayer>();
+  const occ::handle<BRepGraph_ParamLayer> aParamLayer = theGraph.LayerRegistry().FindLayer<BRepGraph_ParamLayer>();
   if (!aParamLayer.IsNull() && aParamLayer->FindPointOnPCurve(theVertex, theCoEdge, &aParameter))
     return aParameter;
   throw Standard_NoSuchObject("BRepGraph_Tool::PCurveParameter - no PointOnPCurve for this coedge");
@@ -268,7 +268,7 @@ bool BRepGraph_Tool::Edge::HasContinuity(const BRepGraph&       theGraph,
                                          const BRepGraph_FaceId theFace2)
 {
   const occ::handle<BRepGraph_RegularityLayer> aRegularityLayer =
-    theGraph.FindLayer<BRepGraph_RegularityLayer>();
+    theGraph.LayerRegistry().FindLayer<BRepGraph_RegularityLayer>();
   return !aRegularityLayer.IsNull()
          && aRegularityLayer->FindContinuity(theEdge, theFace1, theFace2, nullptr);
 }
@@ -282,7 +282,7 @@ GeomAbs_Shape BRepGraph_Tool::Edge::Continuity(const BRepGraph&       theGraph,
 {
   GeomAbs_Shape aContinuity = GeomAbs_C0;
   const occ::handle<BRepGraph_RegularityLayer> aRegularityLayer =
-    theGraph.FindLayer<BRepGraph_RegularityLayer>();
+    theGraph.LayerRegistry().FindLayer<BRepGraph_RegularityLayer>();
   if (!aRegularityLayer.IsNull()
       && aRegularityLayer->FindContinuity(theEdge, theFace1, theFace2, &aContinuity))
     return aContinuity;
@@ -295,7 +295,7 @@ GeomAbs_Shape BRepGraph_Tool::Edge::MaxContinuity(const BRepGraph&       theGrap
                                                   const BRepGraph_EdgeId theEdge)
 {
   const occ::handle<BRepGraph_RegularityLayer> aRegularityLayer =
-    theGraph.FindLayer<BRepGraph_RegularityLayer>();
+    theGraph.LayerRegistry().FindLayer<BRepGraph_RegularityLayer>();
   return !aRegularityLayer.IsNull() ? aRegularityLayer->MaxContinuity(theEdge) : GeomAbs_C0;
 }
 

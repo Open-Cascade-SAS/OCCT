@@ -183,7 +183,7 @@ TEST_F(BRepGraph_EventBusTest, ImmediateMode_SingleEdge)
                         | BRepGraph_Layer::KindBit(BRepGraph_NodeId::Kind::Solid);
   occ::handle<BRepGraph_ModTrackingLayer> aLayer =
     new BRepGraph_ModTrackingLayer("Tracker", aAllKinds);
-  myGraph.RegisterLayer(aLayer);
+  myGraph.LayerRegistry().RegisterLayer(aLayer);
 
   {
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
@@ -205,7 +205,7 @@ TEST_F(BRepGraph_EventBusTest, ImmediateMode_UpwardPropagation)
                         | BRepGraph_Layer::KindBit(BRepGraph_NodeId::Kind::Solid);
   occ::handle<BRepGraph_ModTrackingLayer> aLayer =
     new BRepGraph_ModTrackingLayer("Tracker", aAllKinds);
-  myGraph.RegisterLayer(aLayer);
+  myGraph.LayerRegistry().RegisterLayer(aLayer);
 
   {
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
@@ -230,7 +230,7 @@ TEST_F(BRepGraph_EventBusTest, ImmediateMode_KindFilter)
   occ::handle<BRepGraph_ModTrackingLayer> aLayer =
     new BRepGraph_ModTrackingLayer("FaceOnly",
                                    BRepGraph_Layer::KindBit(BRepGraph_NodeId::Kind::Face));
-  myGraph.RegisterLayer(aLayer);
+  myGraph.LayerRegistry().RegisterLayer(aLayer);
 
   {
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
@@ -254,7 +254,7 @@ TEST_F(BRepGraph_EventBusTest, DeferredMode_BatchDispatch)
                         | BRepGraph_Layer::KindBit(BRepGraph_NodeId::Kind::Solid);
   occ::handle<BRepGraph_ModTrackingLayer> aLayer =
     new BRepGraph_ModTrackingLayer("Tracker", aAllKinds);
-  myGraph.RegisterLayer(aLayer);
+  myGraph.LayerRegistry().RegisterLayer(aLayer);
 
   myGraph.Builder().BeginDeferredInvalidation();
   myGraph.Builder().MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
@@ -276,7 +276,7 @@ TEST_F(BRepGraph_EventBusTest, DeferredMode_NoImmediateDispatch)
   const int aEdgeBit = BRepGraph_Layer::KindBit(BRepGraph_NodeId::Kind::Edge);
   occ::handle<BRepGraph_ModTrackingLayer> aLayer =
     new BRepGraph_ModTrackingLayer("Tracker", aEdgeBit);
-  myGraph.RegisterLayer(aLayer);
+  myGraph.LayerRegistry().RegisterLayer(aLayer);
 
   myGraph.Builder().BeginDeferredInvalidation();
   myGraph.Builder().MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
@@ -296,7 +296,7 @@ TEST_F(BRepGraph_EventBusTest, UnregisterLayer_FlagUpdate)
   const int aEdgeBit = BRepGraph_Layer::KindBit(BRepGraph_NodeId::Kind::Edge);
   occ::handle<BRepGraph_ModTrackingLayer> aLayer =
     new BRepGraph_ModTrackingLayer("Tracker", aEdgeBit);
-  myGraph.RegisterLayer(aLayer);
+  myGraph.LayerRegistry().RegisterLayer(aLayer);
 
   // Mutate - should dispatch.
   {
@@ -306,7 +306,7 @@ TEST_F(BRepGraph_EventBusTest, UnregisterLayer_FlagUpdate)
   EXPECT_GT(aLayer->myImmediateEvents.Length(), 0);
 
   // Unregister and clear.
-  myGraph.UnregisterLayer(aLayer->ID());
+  myGraph.LayerRegistry().UnregisterLayer(aLayer->ID());
   aLayer->Clear();
 
   // Mutate again - should NOT dispatch (layer unregistered).
@@ -327,8 +327,8 @@ TEST_F(BRepGraph_EventBusTest, MultipleSubscribers)
     new BRepGraph_ModTrackingLayer("FaceTracker",
                                    BRepGraph_Layer::KindBit(BRepGraph_NodeId::Kind::Face),
                                    Standard_GUID("2f9b6a5c-1f2d-4a88-9c1c-7a0c16a10006"));
-  myGraph.RegisterLayer(aEdgeLayer);
-  myGraph.RegisterLayer(aFaceLayer);
+  myGraph.LayerRegistry().RegisterLayer(aEdgeLayer);
+  myGraph.LayerRegistry().RegisterLayer(aFaceLayer);
 
   {
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
@@ -347,7 +347,7 @@ TEST_F(BRepGraph_EventBusTest, MultipleSubscribers)
 TEST_F(BRepGraph_EventBusTest, DefaultSubscribedKinds_Zero)
 {
   occ::handle<BRepGraph_DefaultLayer> aDefaultLayer = new BRepGraph_DefaultLayer;
-  myGraph.RegisterLayer(aDefaultLayer);
+  myGraph.LayerRegistry().RegisterLayer(aDefaultLayer);
 
   // SubscribedKinds() == 0 in BRepGraph_Layer base default implementation.
   EXPECT_EQ(aDefaultLayer->SubscribedKinds(), 0);
@@ -366,7 +366,7 @@ TEST_F(BRepGraph_EventBusTest, DeferredScope_DispatchesOnDestruction)
   const int aEdgeBit = BRepGraph_Layer::KindBit(BRepGraph_NodeId::Kind::Edge);
   occ::handle<BRepGraph_ModTrackingLayer> aLayer =
     new BRepGraph_ModTrackingLayer("Tracker", aEdgeBit);
-  myGraph.RegisterLayer(aLayer);
+  myGraph.LayerRegistry().RegisterLayer(aLayer);
 
   {
     BRepGraph_DeferredScope aScope(myGraph);
@@ -386,7 +386,7 @@ TEST_F(BRepGraph_EventBusTest, DeferredMode_NoModifications_NoDispatch)
   const int aEdgeBit = BRepGraph_Layer::KindBit(BRepGraph_NodeId::Kind::Edge);
   occ::handle<BRepGraph_ModTrackingLayer> aLayer =
     new BRepGraph_ModTrackingLayer("Tracker", aEdgeBit);
-  myGraph.RegisterLayer(aLayer);
+  myGraph.LayerRegistry().RegisterLayer(aLayer);
 
   myGraph.Builder().BeginDeferredInvalidation();
   // No mutations.
@@ -429,7 +429,7 @@ TEST_F(BRepGraph_EventBusTest, OverlappingSubscription_EdgeAndFace)
                         | BRepGraph_Layer::KindBit(BRepGraph_NodeId::Kind::Face);
   occ::handle<BRepGraph_ModTrackingLayer> aLayer =
     new BRepGraph_ModTrackingLayer("EdgeFace", aEdgeFace);
-  myGraph.RegisterLayer(aLayer);
+  myGraph.LayerRegistry().RegisterLayer(aLayer);
 
   {
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));

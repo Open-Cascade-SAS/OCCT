@@ -35,42 +35,101 @@ class BRepGraph::RefsView
 {
 public:
   //! @name Reference counts
+  //! Return the total number of reference entries (including removed).
+  //! @{
+
+  //! Number of shell references.
   [[nodiscard]] Standard_EXPORT int NbShellRefs() const;
+  //! Number of face references.
   [[nodiscard]] Standard_EXPORT int NbFaceRefs() const;
+  //! Number of wire references.
   [[nodiscard]] Standard_EXPORT int NbWireRefs() const;
+  //! Number of coedge references.
   [[nodiscard]] Standard_EXPORT int NbCoEdgeRefs() const;
+  //! Number of vertex references.
   [[nodiscard]] Standard_EXPORT int NbVertexRefs() const;
+  //! Number of solid references.
   [[nodiscard]] Standard_EXPORT int NbSolidRefs() const;
+  //! Number of generic child references.
   [[nodiscard]] Standard_EXPORT int NbChildRefs() const;
+  //! Number of occurrence references.
   [[nodiscard]] Standard_EXPORT int NbOccurrenceRefs() const;
 
+  //! @}
+
   //! @name Reference entry access
+  //! Access reference entries by typed identifier.
+  //! @{
+
+  //! Access shell reference by typed identifier.
+  //! @param[in] theRefId typed shell reference identifier
   [[nodiscard]] Standard_EXPORT const BRepGraphInc::ShellRef& Shell(
     const BRepGraph_ShellRefId theRefId) const;
+  //! Access face reference by typed identifier.
+  //! @param[in] theRefId typed face reference identifier
   [[nodiscard]] Standard_EXPORT const BRepGraphInc::FaceRef& Face(
     const BRepGraph_FaceRefId theRefId) const;
+  //! Access wire reference by typed identifier.
+  //! @param[in] theRefId typed wire reference identifier
   [[nodiscard]] Standard_EXPORT const BRepGraphInc::WireRef& Wire(
     const BRepGraph_WireRefId theRefId) const;
+  //! Access coedge reference by typed identifier.
+  //! @param[in] theRefId typed coedge reference identifier
   [[nodiscard]] Standard_EXPORT const BRepGraphInc::CoEdgeRef& CoEdge(
     const BRepGraph_CoEdgeRefId theRefId) const;
+  //! Access vertex reference by typed identifier.
+  //! @param[in] theRefId typed vertex reference identifier
   [[nodiscard]] Standard_EXPORT const BRepGraphInc::VertexRef& Vertex(
     const BRepGraph_VertexRefId theRefId) const;
+  //! Access solid reference by typed identifier.
+  //! @param[in] theRefId typed solid reference identifier
   [[nodiscard]] Standard_EXPORT const BRepGraphInc::SolidRef& Solid(
     const BRepGraph_SolidRefId theRefId) const;
+  //! Access child reference by typed identifier.
+  //! @param[in] theRefId typed child reference identifier
   [[nodiscard]] Standard_EXPORT const BRepGraphInc::ChildRef& Child(
     const BRepGraph_ChildRefId theRefId) const;
+  //! Access occurrence reference by typed identifier.
+  //! @param[in] theRefId typed occurrence reference identifier
   [[nodiscard]] Standard_EXPORT const BRepGraphInc::OccurrenceRef& Occurrence(
     const BRepGraph_OccurrenceRefId theRefId) const;
 
+  //! @}
+
   //! @name RefUID operations
+  //! Bidirectional conversion between RefId and persistent RefUID.
+  //! @{
+
+  //! Return the RefUID assigned to a reference.
+  //! @param[in] theRefId reference identifier
+  //! @return RefUID for the reference
   [[nodiscard]] Standard_EXPORT BRepGraph_RefUID UIDOf(const BRepGraph_RefId theRefId) const;
+  //! Resolve a RefUID back to a RefId.
+  //! @param[in] theUID unique identifier to resolve
+  //! @return corresponding RefId, or invalid RefId if not found
   [[nodiscard]] Standard_EXPORT BRepGraph_RefId  RefIdFrom(const BRepGraph_RefUID& theUID) const;
+  //! Check if a RefUID is valid and exists in this graph generation.
+  //! @param[in] theUID unique identifier to check
+  //! @return true if the RefUID belongs to this graph generation
   [[nodiscard]] Standard_EXPORT bool             Has(const BRepGraph_RefUID& theUID) const;
 
+  //! @}
+
   //! @name Ref version stamping
+  //! Track reference staleness across graph mutations.
+  //! @{
+
+  //! Produce a version stamp for the given reference.
+  //! @param[in] theRefId reference identifier
+  //! @return version stamp, or invalid stamp if theRefId is invalid
   [[nodiscard]] Standard_EXPORT BRepGraph_VersionStamp
                                      StampOf(const BRepGraph_RefId theRefId) const;
+  //! Check if a previously-taken stamp is stale.
+  //! @param[in] theStamp version stamp to check
+  //! @return true if the stamp no longer matches the current reference state
   [[nodiscard]] Standard_EXPORT bool IsStale(const BRepGraph_VersionStamp& theStamp) const;
+
+  //! @}
 
   //! @name Parent-to-ref typed vector access
   //! Return the typed RefId vector of refs belonging to a parent entity.

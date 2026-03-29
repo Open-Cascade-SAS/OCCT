@@ -164,9 +164,9 @@ static BRepGraph_ReconstructionContext makeReconstructionContext(const BRepGraph
   aContext.Graph   = theGraph;
   aContext.Storage = &theStorage;
 
-  const occ::handle<BRepGraph_ParamLayer> aParamLayer = theGraph->FindLayer<BRepGraph_ParamLayer>();
+  const occ::handle<BRepGraph_ParamLayer> aParamLayer = theGraph->LayerRegistry().FindLayer<BRepGraph_ParamLayer>();
   const occ::handle<BRepGraph_RegularityLayer> aRegularityLayer =
-    theGraph->FindLayer<BRepGraph_RegularityLayer>();
+    theGraph->LayerRegistry().FindLayer<BRepGraph_RegularityLayer>();
   aContext.Params       = aParamLayer.get();
   aContext.Regularities = aRegularityLayer.get();
   return aContext;
@@ -181,7 +181,7 @@ TopoDS_Shape BRepGraph::ShapesView::Shape(const BRepGraph_NodeId theNode) const
     return TopoDS_Shape();
 
   // Fast path: if entity was never mutated, return the original shape.
-  const BRepGraphInc::BaseDef* aDef = myGraph->TopoEntity(theNode);
+  const BRepGraphInc::BaseDef* aDef = myGraph->topoEntity(theNode);
   if (aDef != nullptr && aDef->SubtreeGen == 0)
   {
     const TopoDS_Shape* anOrig = myGraph->myData->myIncStorage.FindOriginal(theNode);
@@ -256,9 +256,9 @@ TopoDS_Shape BRepGraph::ShapesView::Reconstruct(const BRepGraph_NodeId theRoot) 
 TopoDS_Shape BRepGraph::ShapesView::ReconstructFace(const BRepGraph_FaceId theFace) const
 {
   BRepGraphInc_Reconstruct::Cache aCache;
-  const occ::handle<BRepGraph_ParamLayer> aParamLayer = myGraph->FindLayer<BRepGraph_ParamLayer>();
+  const occ::handle<BRepGraph_ParamLayer> aParamLayer = myGraph->LayerRegistry().FindLayer<BRepGraph_ParamLayer>();
   const occ::handle<BRepGraph_RegularityLayer> aRegularityLayer =
-    myGraph->FindLayer<BRepGraph_RegularityLayer>();
+    myGraph->LayerRegistry().FindLayer<BRepGraph_RegularityLayer>();
   return BRepGraphInc_Reconstruct::FaceWithCache(myGraph->myData->myIncStorage,
                                                  theFace.Index,
                                                  aCache,

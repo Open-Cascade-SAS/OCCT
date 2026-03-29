@@ -66,8 +66,8 @@ static int countUnique(const TopoDS_Shape& theShape, TopAbs_ShapeEnum theType)
 
 static void registerStandardLayers(BRepGraph& theGraph)
 {
-  theGraph.RegisterLayer(new BRepGraph_ParamLayer());
-  theGraph.RegisterLayer(new BRepGraph_RegularityLayer());
+  theGraph.LayerRegistry().RegisterLayer(new BRepGraph_ParamLayer());
+  theGraph.LayerRegistry().RegisterLayer(new BRepGraph_RegularityLayer());
 }
 
 // =============================================================================
@@ -870,9 +870,9 @@ TEST(BRepGraph_BuildTest, Build_WithoutPostPasses_BasicQueriesWork)
   registerStandardLayers(aGraph);
   aGraph.Build(aBox, false, anOpts);
   ASSERT_TRUE(aGraph.IsDone());
-  const occ::handle<BRepGraph_ParamLayer> aParamLayer = aGraph.FindLayer<BRepGraph_ParamLayer>();
+  const occ::handle<BRepGraph_ParamLayer> aParamLayer = aGraph.LayerRegistry().FindLayer<BRepGraph_ParamLayer>();
   const occ::handle<BRepGraph_RegularityLayer> aRegularityLayer =
-    aGraph.FindLayer<BRepGraph_RegularityLayer>();
+    aGraph.LayerRegistry().FindLayer<BRepGraph_RegularityLayer>();
   ASSERT_FALSE(aParamLayer.IsNull());
   ASSERT_FALSE(aRegularityLayer.IsNull());
 
@@ -901,7 +901,7 @@ TEST(BRepGraph_BuildTest, ParamLayer_EdgeMutation_InvalidatesVertexBindings)
   registerStandardLayers(aGraph);
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
-  const occ::handle<BRepGraph_ParamLayer> aParamLayer = aGraph.FindLayer<BRepGraph_ParamLayer>();
+  const occ::handle<BRepGraph_ParamLayer> aParamLayer = aGraph.LayerRegistry().FindLayer<BRepGraph_ParamLayer>();
   ASSERT_FALSE(aParamLayer.IsNull());
 
   ASSERT_GT(aGraph.Topo().NbVertices(), 0);
@@ -923,7 +923,7 @@ TEST(BRepGraph_BuildTest, ParamLayer_FaceMutation_InvalidatesVertexBindings)
   registerStandardLayers(aGraph);
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
-  const occ::handle<BRepGraph_ParamLayer> aParamLayer = aGraph.FindLayer<BRepGraph_ParamLayer>();
+  const occ::handle<BRepGraph_ParamLayer> aParamLayer = aGraph.LayerRegistry().FindLayer<BRepGraph_ParamLayer>();
   ASSERT_FALSE(aParamLayer.IsNull());
 
   ASSERT_GT(aGraph.Topo().NbVertices(), 0);
@@ -948,7 +948,7 @@ TEST(BRepGraph_BuildTest, ParamLayer_CoEdgeMutation_InvalidatesPCurveBindings)
   registerStandardLayers(aGraph);
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
-  const occ::handle<BRepGraph_ParamLayer> aParamLayer = aGraph.FindLayer<BRepGraph_ParamLayer>();
+  const occ::handle<BRepGraph_ParamLayer> aParamLayer = aGraph.LayerRegistry().FindLayer<BRepGraph_ParamLayer>();
   ASSERT_FALSE(aParamLayer.IsNull());
 
   ASSERT_GT(aGraph.Topo().NbVertices(), 0);
@@ -971,7 +971,7 @@ TEST(BRepGraph_BuildTest, RegularityLayer_EdgeMutation_InvalidatesBindings)
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
   const occ::handle<BRepGraph_RegularityLayer> aRegularityLayer =
-    aGraph.FindLayer<BRepGraph_RegularityLayer>();
+    aGraph.LayerRegistry().FindLayer<BRepGraph_RegularityLayer>();
   ASSERT_FALSE(aRegularityLayer.IsNull());
 
   BRepGraph_EdgeId                            anEdgeId;
@@ -1022,7 +1022,7 @@ TEST(BRepGraph_BuildTest, RegularityLayer_FaceMutation_InvalidatesBindings)
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
   const occ::handle<BRepGraph_RegularityLayer> aRegularityLayer =
-    aGraph.FindLayer<BRepGraph_RegularityLayer>();
+    aGraph.LayerRegistry().FindLayer<BRepGraph_RegularityLayer>();
   ASSERT_FALSE(aRegularityLayer.IsNull());
 
   BRepGraph_EdgeId                           anEdgeId;

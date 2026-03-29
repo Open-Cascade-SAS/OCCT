@@ -71,12 +71,6 @@ public:
   [[nodiscard]] Standard_EXPORT int NbActiveCompounds() const;
   [[nodiscard]] Standard_EXPORT int NbActiveCompSolids() const;
 
-  //! Number of active (non-removed) product definitions.
-  [[nodiscard]] Standard_EXPORT int NbActiveProducts() const;
-
-  //! Number of active (non-removed) occurrence definitions.
-  [[nodiscard]] Standard_EXPORT int NbActiveOccurrences() const;
-
   //! Return cached face count for an edge - O(1).
   //! @param[in] theEdge typed edge definition identifier
   [[nodiscard]] Standard_EXPORT int NbFacesOfEdge(const BRepGraph_EdgeId theEdge) const;

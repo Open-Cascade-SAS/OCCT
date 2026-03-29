@@ -293,31 +293,29 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph, bool theCopyGeo
   }
 
   // Products.
-  for (int anIdx = 0; anIdx < theGraph.myData->myIncStorage.NbProducts(); ++anIdx)
+  for (int anIdx = 0; anIdx < theGraph.incStorage().NbProducts(); ++anIdx)
   {
     const BRepGraphInc::ProductDef& aSrcProd =
-      theGraph.myData->myIncStorage.Product(BRepGraph_ProductId(anIdx));
-    BRepGraphInc::ProductDef& aNewProd = aResult.myData->myIncStorage.AppendProduct();
+      theGraph.incStorage().Product(BRepGraph_ProductId(anIdx));
+    BRepGraphInc::ProductDef& aNewProd = aResult.incStorage().AppendProduct();
     aNewProd.Id                        = BRepGraph_NodeId::Product(anIdx);
     aNewProd.ShapeRootId               = aSrcProd.ShapeRootId;
     aNewProd.RootOrientation           = aSrcProd.RootOrientation;
     aNewProd.RootLocation              = aSrcProd.RootLocation;
     aNewProd.OccurrenceRefIds          = aSrcProd.OccurrenceRefIds;
-    aResult.allocateUID(aNewProd.Id);
   }
 
   // Occurrences.
-  for (int anIdx = 0; anIdx < theGraph.myData->myIncStorage.NbOccurrences(); ++anIdx)
+  for (int anIdx = 0; anIdx < theGraph.incStorage().NbOccurrences(); ++anIdx)
   {
     const BRepGraphInc::OccurrenceDef& aSrcOcc =
-      theGraph.myData->myIncStorage.Occurrence(BRepGraph_OccurrenceId(anIdx));
-    BRepGraphInc::OccurrenceDef& aNewOcc = aResult.myData->myIncStorage.AppendOccurrence();
+      theGraph.incStorage().Occurrence(BRepGraph_OccurrenceId(anIdx));
+    BRepGraphInc::OccurrenceDef& aNewOcc = aResult.incStorage().AppendOccurrence();
     aNewOcc.Id                           = BRepGraph_NodeId::Occurrence(anIdx);
     aNewOcc.ProductDefId                 = aSrcOcc.ProductDefId;
     aNewOcc.ParentProductDefId           = aSrcOcc.ParentProductDefId;
     aNewOcc.ParentOccurrenceDefId        = aSrcOcc.ParentOccurrenceDefId;
     aNewOcc.Placement                    = aSrcOcc.Placement;
-    aResult.allocateUID(aNewOcc.Id);
   }
 
   // Phase 3: Transfer UIDs (identity mapping - direct vector copy).
@@ -331,37 +329,37 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph, bool theCopyGeo
     }
   };
 
-  copyUIDs(theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Vertex),
-           aResult.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Vertex));
-  copyUIDs(theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Edge),
-           aResult.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Edge));
-  copyUIDs(theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Wire),
-           aResult.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Wire));
-  copyUIDs(theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Face),
-           aResult.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Face));
-  copyUIDs(theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Shell),
-           aResult.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Shell));
-  copyUIDs(theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Solid),
-           aResult.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Solid));
-  copyUIDs(theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Compound),
-           aResult.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Compound));
-  copyUIDs(theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::CompSolid),
-           aResult.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::CompSolid));
-  copyUIDs(theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Product),
-           aResult.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Product));
-  copyUIDs(theGraph.myData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Occurrence),
-           aResult.myData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Occurrence));
+  copyUIDs(theGraph.incStorage().UIDs(BRepGraph_NodeId::Kind::Vertex),
+           aResult.incStorage().ChangeUIDs(BRepGraph_NodeId::Kind::Vertex));
+  copyUIDs(theGraph.incStorage().UIDs(BRepGraph_NodeId::Kind::Edge),
+           aResult.incStorage().ChangeUIDs(BRepGraph_NodeId::Kind::Edge));
+  copyUIDs(theGraph.incStorage().UIDs(BRepGraph_NodeId::Kind::Wire),
+           aResult.incStorage().ChangeUIDs(BRepGraph_NodeId::Kind::Wire));
+  copyUIDs(theGraph.incStorage().UIDs(BRepGraph_NodeId::Kind::Face),
+           aResult.incStorage().ChangeUIDs(BRepGraph_NodeId::Kind::Face));
+  copyUIDs(theGraph.incStorage().UIDs(BRepGraph_NodeId::Kind::Shell),
+           aResult.incStorage().ChangeUIDs(BRepGraph_NodeId::Kind::Shell));
+  copyUIDs(theGraph.incStorage().UIDs(BRepGraph_NodeId::Kind::Solid),
+           aResult.incStorage().ChangeUIDs(BRepGraph_NodeId::Kind::Solid));
+  copyUIDs(theGraph.incStorage().UIDs(BRepGraph_NodeId::Kind::Compound),
+           aResult.incStorage().ChangeUIDs(BRepGraph_NodeId::Kind::Compound));
+  copyUIDs(theGraph.incStorage().UIDs(BRepGraph_NodeId::Kind::CompSolid),
+           aResult.incStorage().ChangeUIDs(BRepGraph_NodeId::Kind::CompSolid));
+  copyUIDs(theGraph.incStorage().UIDs(BRepGraph_NodeId::Kind::Product),
+           aResult.incStorage().ChangeUIDs(BRepGraph_NodeId::Kind::Product));
+  copyUIDs(theGraph.incStorage().UIDs(BRepGraph_NodeId::Kind::Occurrence),
+           aResult.incStorage().ChangeUIDs(BRepGraph_NodeId::Kind::Occurrence));
 
-  aResult.myData->myNextUIDCounter.store(
-    theGraph.myData->myNextUIDCounter.load(std::memory_order_relaxed),
+  aResult.data()->myNextUIDCounter.store(
+    theGraph.data()->myNextUIDCounter.load(std::memory_order_relaxed),
     std::memory_order_relaxed);
-  aResult.myData->myGeneration.store(theGraph.myData->myGeneration.load(std::memory_order_relaxed),
+  aResult.data()->myGeneration.store(theGraph.data()->myGeneration.load(std::memory_order_relaxed),
                                      std::memory_order_relaxed);
-  aResult.myData->myIsDone = true;
+  aResult.data()->myIsDone = true;
 
   // Pre-allocate transient cache for lock-free parallel access on the copied graph.
   {
-    BRepGraphInc_Storage& aStorage = aResult.myData->myIncStorage;
+    BRepGraphInc_Storage& aStorage = aResult.incStorage();
     int aCounts[BRepGraph_TransientCache::THE_KIND_COUNT] = {};
     aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Vertex)]     = aStorage.NbVertices();
     aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Edge)]       = aStorage.NbEdges();
@@ -380,7 +378,7 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph, bool theCopyGeo
     {
       aReservedKindCount = aRegisteredKindCount;
     }
-    aResult.myTransientCache.Reserve(aReservedKindCount, aCounts);
+    aResult.TransientCache().Reserve(aReservedKindCount, aCounts);
   }
 
   return aResult;
@@ -609,11 +607,11 @@ BRepGraph BRepGraphAlgo_Copy::CopyFace(const BRepGraph&       theGraph,
     }
   }
 
-  aResult.myData->myIsDone = true;
+  aResult.data()->myIsDone = true;
 
   // Pre-allocate transient cache for lock-free parallel access on the copied graph.
   {
-    BRepGraphInc_Storage& aStorage = aResult.myData->myIncStorage;
+    BRepGraphInc_Storage& aStorage = aResult.incStorage();
     int aCounts[BRepGraph_TransientCache::THE_KIND_COUNT] = {};
     aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Vertex)]     = aStorage.NbVertices();
     aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Edge)]       = aStorage.NbEdges();
@@ -632,7 +630,7 @@ BRepGraph BRepGraphAlgo_Copy::CopyFace(const BRepGraph&       theGraph,
     {
       aReservedKindCount = aRegisteredKindCount;
     }
-    aResult.myTransientCache.Reserve(aReservedKindCount, aCounts);
+    aResult.TransientCache().Reserve(aReservedKindCount, aCounts);
   }
 
   return aResult;

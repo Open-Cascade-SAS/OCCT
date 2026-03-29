@@ -86,10 +86,16 @@ public:
   BRepGraph(const BRepGraph&)            = delete;
   BRepGraph& operator=(const BRepGraph&) = delete;
 
+  //! Default constructor. Creates an empty graph with default allocator.
   Standard_EXPORT BRepGraph();
+  //! Construct with a custom allocator for internal collections.
+  //! @param[in] theAlloc allocator for internal collections (null uses CommonBaseAllocator)
   Standard_EXPORT explicit BRepGraph(const occ::handle<NCollection_BaseAllocator>& theAlloc);
+  //! Destructor.
   Standard_EXPORT ~BRepGraph();
+  //! Move constructor.
   Standard_EXPORT            BRepGraph(BRepGraph&&) noexcept;
+  //! Move assignment operator.
   Standard_EXPORT BRepGraph& operator=(BRepGraph&&) noexcept;
 
   //! Build the full graph from a TopoDS_Shape.
@@ -140,34 +146,24 @@ public:
   [[nodiscard]] Standard_EXPORT const BuilderView& Builder() const;
 
   //! Access history subsystem directly.
+  //! @return history subsystem for tracking modifications
   [[nodiscard]] Standard_EXPORT BRepGraph_History&       History();
+  //! Access history subsystem directly (const).
+  //! @return history subsystem for tracking modifications
   [[nodiscard]] Standard_EXPORT const BRepGraph_History& History() const;
 
   //! Access transient cache for algorithm-computed attributes (BndBox, UVBounds).
   //! SubtreeGen-validated, cleared on Build/Compact. NOT a Layer.
   [[nodiscard]] BRepGraph_TransientCache& TransientCache() { return myTransientCache; }
+  //! Access transient cache for algorithm-computed attributes (const).
   [[nodiscard]] const BRepGraph_TransientCache& TransientCache() const { return myTransientCache; }
 
   //! Access registered graph layers.
+  //! @return layer registry for managing attribute layers
   [[nodiscard]] Standard_EXPORT BRepGraph_LayerRegistry& LayerRegistry();
+  //! Access registered graph layers (const).
+  //! @return layer registry for managing attribute layers
   [[nodiscard]] Standard_EXPORT const BRepGraph_LayerRegistry& LayerRegistry() const;
-
-  //! Register a GUID-identified layer. Replaces an existing layer with same GUID.
-  Standard_EXPORT int RegisterLayer(const occ::handle<BRepGraph_Layer>& theLayer);
-
-  //! Find a layer by GUID. Returns null handle if not found.
-  [[nodiscard]] Standard_EXPORT occ::handle<BRepGraph_Layer> FindLayer(
-    const Standard_GUID& theGUID) const;
-
-  //! Typed convenience lookup by layer GUID.
-  template <typename T>
-  [[nodiscard]] occ::handle<T> FindLayer() const
-  {
-    return myLayerRegistry.FindLayer<T>();
-  }
-
-  //! Remove a layer by GUID.
-  Standard_EXPORT void UnregisterLayer(const Standard_GUID& theGUID);
 
 private:
   friend class BRepGraph_Builder;
@@ -180,24 +176,27 @@ private:
   template <typename>
   friend class BRepGraph_MutGuard;
 
-  Standard_EXPORT int                            NbHistoryRecords() const;
-  Standard_EXPORT const BRepGraph_HistoryRecord& HistoryRecord(const int theRecordIdx) const;
-  Standard_EXPORT BRepGraph_NodeId FindOriginal(const BRepGraph_NodeId theModified) const;
-  Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> FindDerived(
-    const BRepGraph_NodeId theOriginal) const;
+  //! @name Private accessors for friend classes
+  //! These provide controlled access to internal state for algorithms and builders.
+  //! @{
 
-  Standard_EXPORT void RecordHistory(const TCollection_AsciiString&              theOpLabel,
-                                     const BRepGraph_NodeId                      theOriginal,
-                                     const NCollection_Vector<BRepGraph_NodeId>& theReplacements);
+  //! Access the underlying storage.
+  [[nodiscard]] BRepGraphInc_Storage& incStorage();
+  [[nodiscard]] const BRepGraphInc_Storage& incStorage() const;
 
-  std::unique_ptr<BRepGraph_Data> myData;
+  //! Access the graph data structure.
+  [[nodiscard]] BRepGraph_Data* data();
+  [[nodiscard]] const BRepGraph_Data* data() const;
 
-  //! Registered layers are stored on BRepGraph, not BRepGraph_Data, to survive Compact swap.
-  BRepGraph_LayerRegistry myLayerRegistry;
-  BRepGraph_TransientCache myTransientCache; //!< Transient algorithm caches (BndBox, UVBounds)
+  //! Access the layer registry.
+  [[nodiscard]] BRepGraph_LayerRegistry& layerRegistry();
+  [[nodiscard]] const BRepGraph_LayerRegistry& layerRegistry() const;
 
-  //! Initialize cached view objects to point to this graph.
-  void initViews();
+  //! Access the transient cache.
+  [[nodiscard]] BRepGraph_TransientCache& transientCache();
+  [[nodiscard]] const BRepGraph_TransientCache& transientCache() const;
+
+  //! @}
 
   Standard_EXPORT void             invalidateSubgraphImpl(const BRepGraph_NodeId theNode);
   Standard_EXPORT BRepGraph_UID    allocateUID(const BRepGraph_NodeId theNodeId);
@@ -206,7 +205,7 @@ private:
   Standard_EXPORT void markModified(const BRepGraph_NodeId theNodeId) noexcept;
   Standard_EXPORT void markRefModified(const BRepGraph_RefId theRefId) noexcept;
 
-  //! Optimized overload: skips ChangeTopoEntity() dispatch
+  //! Optimized overload: skips changeTopoEntity() dispatch
   //! when the caller already holds a mutable reference to the target entity.
   Standard_EXPORT void markModified(const BRepGraph_NodeId theNodeId,
                                     BRepGraphInc::BaseDef& theEntity) noexcept;
@@ -226,11 +225,20 @@ private:
   Standard_EXPORT void markRepModified(const BRepGraph_RepId theRepId) noexcept;
 
   //! Generic topology definition lookup by NodeId (const).
-  Standard_EXPORT const BRepGraphInc::BaseDef* TopoEntity(const BRepGraph_NodeId theId) const;
+  Standard_EXPORT const BRepGraphInc::BaseDef* topoEntity(const BRepGraph_NodeId theId) const;
 
   //! Generic mutable topology definition lookup by NodeId.
-  Standard_EXPORT BRepGraphInc::BaseDef* ChangeTopoEntity(const BRepGraph_NodeId theId);
+  Standard_EXPORT BRepGraphInc::BaseDef* changeTopoEntity(const BRepGraph_NodeId theId);
 
+  //! Initialize cached view objects to point to this graph.
+  Standard_EXPORT void initViews();
+
+  // Fields at the bottom (OCCT style)
+  std::unique_ptr<BRepGraph_Data> myData;
+
+  //! Registered layers are stored on BRepGraph, not BRepGraph_Data, to survive Compact swap.
+  BRepGraph_LayerRegistry myLayerRegistry;
+  BRepGraph_TransientCache myTransientCache; //!< Transient algorithm caches (BndBox, UVBounds)
 };
 
 // Included after BRepGraph is complete so the template body sees markModified().

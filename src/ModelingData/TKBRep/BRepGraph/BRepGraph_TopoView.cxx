@@ -151,21 +151,7 @@ int BRepGraph::TopoView::NbActiveCompounds() const
 
 int BRepGraph::TopoView::NbActiveCompSolids() const
 {
-  return myGraph->myData->myIncStorage.NbActiveCompSolids();
-}
-
-//=================================================================================================
-
-int BRepGraph::TopoView::NbActiveProducts() const
-{
-  return myGraph->myData->myIncStorage.NbActiveProducts();
-}
-
-//=================================================================================================
-
-int BRepGraph::TopoView::NbActiveOccurrences() const
-{
-  return myGraph->myData->myIncStorage.NbActiveOccurrences();
+  return myGraph->incStorage().NbActiveCompSolids();
 }
 
 //=================================================================================================
@@ -303,7 +289,7 @@ BRepGraph_NodeId BRepGraph::TopoView::ShellFaceEntity(const BRepGraph_ShellId th
 
 const BRepGraphInc::BaseDef* BRepGraph::TopoView::TopoEntity(const BRepGraph_NodeId theId) const
 {
-  return myGraph->TopoEntity(theId);
+  return myGraph->topoEntity(theId);
 }
 
 //=================================================================================================
@@ -477,7 +463,7 @@ const BRepGraphInc::CoEdgeDef* BRepGraph::TopoView::FindPCurve(
 
 bool BRepGraph::TopoView::IsRemoved(const BRepGraph_NodeId theNode) const
 {
-  const BRepGraphInc::BaseDef* aDef = myGraph->TopoEntity(theNode);
+  const BRepGraphInc::BaseDef* aDef = myGraph->topoEntity(theNode);
   if (aDef == nullptr)
     return false;
   return aDef->IsRemoved;

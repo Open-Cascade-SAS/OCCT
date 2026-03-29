@@ -556,7 +556,7 @@ bool BRepGraphAlgo_UVBounds::GetCached(const BRepGraph&       theGraph,
     return false;
   }
 
-  const BRepGraphInc::BaseDef* aDef = theGraph.TopoEntity(theNode);
+  const BRepGraphInc::BaseDef* aDef = theGraph.topoEntity(theNode);
   if (aDef == nullptr)
   {
     return false;
@@ -581,7 +581,7 @@ BRepGraphAlgo_UVBounds::CachedData BRepGraphAlgo_UVBounds::AddCached(BRepGraph& 
     return CachedData();
   }
 
-  const BRepGraphInc::BaseDef* aDef = theGraph.TopoEntity(theNode);
+  const BRepGraphInc::BaseDef* aDef = theGraph.topoEntity(theNode);
   if (aDef == nullptr)
   {
     return CachedData();
@@ -639,7 +639,7 @@ void BRepGraphAlgo_UVBounds::SetCached(BRepGraph&             theGraph,
     return;
   }
 
-  const BRepGraphInc::BaseDef* aDef = theGraph.TopoEntity(theNode);
+  const BRepGraphInc::BaseDef* aDef = theGraph.topoEntity(theNode);
   if (aDef == nullptr)
   {
     return;

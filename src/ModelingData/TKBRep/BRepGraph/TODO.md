@@ -32,7 +32,7 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 ### ~~Named Attribute Layers (Infrastructure)~~ — DONE (2026-03-20)
 - `BRepGraph_Layer` abstract base class with lifecycle callbacks:
   - `Name()`, `OnNodeRemoved(nodeId, replacement)`, `OnCompact(maps)`, `InvalidateAll()`, `Clear()`
-- Registration: `BRepGraph::RegisterLayer()`, `FindLayer()`, `UnregisterLayer()`
+- Registration: `BRepGraph::LayerRegistry().RegisterLayer()`, `LayerRegistry().FindLayer()`, `LayerRegistry().UnregisterLayer()`
 - `RemoveNode(NodeId, NodeId replacement)` overload dispatches `OnNodeRemoved` to all layers
 - Compact saves/restores layers around graph swap, dispatches `OnCompact` with remap maps
 - Sewing and Deduplicate pass replacement NodeId to RemoveNode for data migration

@@ -190,7 +190,7 @@ TEST(BRepGraphAlgo_LayerTest, Sewing_NameMigratesToKeptEdge)
   ASSERT_TRUE(aGraph.IsDone());
 
   occ::handle<BRepGraphAlgo_NameLayer> aLayer = new BRepGraphAlgo_NameLayer();
-  aGraph.RegisterLayer(aLayer);
+  aGraph.LayerRegistry().RegisterLayer(aLayer);
 
   // Name all edges before sewing.
   const int aNbEdges = aGraph.Topo().NbEdges();
@@ -242,7 +242,7 @@ TEST(BRepGraphAlgo_LayerTest, Sewing_FaceNamesUntouched)
   ASSERT_TRUE(aGraph.IsDone());
 
   occ::handle<BRepGraphAlgo_NameLayer> aLayer = new BRepGraphAlgo_NameLayer();
-  aGraph.RegisterLayer(aLayer);
+  aGraph.LayerRegistry().RegisterLayer(aLayer);
 
   // Name faces - they should not be affected by sewing (only edges merge).
   const int aNbFaces = aGraph.Topo().NbFaces();
@@ -275,12 +275,12 @@ TEST(BRepGraphAlgo_LayerTest, Sewing_LayerStillRegisteredAfter)
   ASSERT_TRUE(aGraph.IsDone());
 
   occ::handle<BRepGraphAlgo_NameLayer> aLayer = new BRepGraphAlgo_NameLayer();
-  aGraph.RegisterLayer(aLayer);
+  aGraph.LayerRegistry().RegisterLayer(aLayer);
 
   (void)BRepGraphAlgo_Sewing::Perform(aGraph);
 
   // Layer should still be registered after sewing.
-  occ::handle<BRepGraph_Layer> aFound = aGraph.FindLayer(BRepGraphAlgo_NameLayer::GetID());
+  occ::handle<BRepGraph_Layer> aFound = aGraph.LayerRegistry().FindLayer(BRepGraphAlgo_NameLayer::GetID());
   ASSERT_FALSE(aFound.IsNull());
   EXPECT_EQ(aFound.get(), aLayer.get());
 }
@@ -298,7 +298,7 @@ TEST(BRepGraphAlgo_LayerTest, Deduplicate_NameMigratesToCanonical)
   ASSERT_TRUE(aGraph.IsDone());
 
   occ::handle<BRepGraphAlgo_NameLayer> aLayer = new BRepGraphAlgo_NameLayer();
-  aGraph.RegisterLayer(aLayer);
+  aGraph.LayerRegistry().RegisterLayer(aLayer);
 
   // Name all vertices.
   const int aNbVertices = aGraph.Topo().NbVertices();
@@ -338,7 +338,7 @@ TEST(BRepGraphAlgo_LayerTest, Deduplicate_EdgeNames)
   ASSERT_TRUE(aGraph.IsDone());
 
   occ::handle<BRepGraphAlgo_NameLayer> aLayer = new BRepGraphAlgo_NameLayer();
-  aGraph.RegisterLayer(aLayer);
+  aGraph.LayerRegistry().RegisterLayer(aLayer);
 
   const int aNbEdges = aGraph.Topo().NbEdges();
   for (int i = 0; i < aNbEdges; ++i)
@@ -356,7 +356,7 @@ TEST(BRepGraphAlgo_LayerTest, Deduplicate_EdgeNames)
   }
 
   // Layer is still registered.
-  ASSERT_FALSE(aGraph.FindLayer(BRepGraphAlgo_NameLayer::GetID()).IsNull());
+  ASSERT_FALSE(aGraph.LayerRegistry().FindLayer(BRepGraphAlgo_NameLayer::GetID()).IsNull());
 }
 
 // ============================================================
@@ -372,7 +372,7 @@ TEST(BRepGraphAlgo_LayerTest, Compact_LayerSurvivesSwap)
   ASSERT_TRUE(aGraph.IsDone());
 
   occ::handle<BRepGraphAlgo_NameLayer> aLayer = new BRepGraphAlgo_NameLayer();
-  aGraph.RegisterLayer(aLayer);
+  aGraph.LayerRegistry().RegisterLayer(aLayer);
 
   // Name some faces.
   aLayer->SetNodeName(BRepGraph_NodeId::Face(0), "FirstFace");
@@ -383,7 +383,7 @@ TEST(BRepGraphAlgo_LayerTest, Compact_LayerSurvivesSwap)
   (void)BRepGraphAlgo_Compact::Perform(aGraph);
 
   // Layer should still be registered after compact.
-  occ::handle<BRepGraph_Layer> aFound = aGraph.FindLayer(BRepGraphAlgo_NameLayer::GetID());
+  occ::handle<BRepGraph_Layer> aFound = aGraph.LayerRegistry().FindLayer(BRepGraphAlgo_NameLayer::GetID());
   ASSERT_FALSE(aFound.IsNull());
 
   occ::handle<BRepGraphAlgo_NameLayer> aCast =
@@ -402,7 +402,7 @@ TEST(BRepGraphAlgo_LayerTest, Compact_RemappedNamesAccessible)
   ASSERT_TRUE(aGraph.IsDone());
 
   occ::handle<BRepGraphAlgo_NameLayer> aLayer = new BRepGraphAlgo_NameLayer();
-  aGraph.RegisterLayer(aLayer);
+  aGraph.LayerRegistry().RegisterLayer(aLayer);
 
   // Name all faces.
   const int aNbFaces = aGraph.Topo().NbFaces();
@@ -442,7 +442,7 @@ TEST(BRepGraphAlgo_LayerTest, Compact_MultipleEntityKindsRemapped)
   ASSERT_TRUE(aGraph.IsDone());
 
   occ::handle<BRepGraphAlgo_NameLayer> aLayer = new BRepGraphAlgo_NameLayer();
-  aGraph.RegisterLayer(aLayer);
+  aGraph.LayerRegistry().RegisterLayer(aLayer);
 
   // Name vertices and edges.
   aLayer->SetNodeName(BRepGraph_NodeId::Vertex(0), "V0");
@@ -474,7 +474,7 @@ TEST(BRepGraphAlgo_LayerTest, SplitEdge_OriginalEdgeRemoved)
   ASSERT_TRUE(aGraph.IsDone());
 
   occ::handle<BRepGraphAlgo_NameLayer> aLayer = new BRepGraphAlgo_NameLayer();
-  aGraph.RegisterLayer(aLayer);
+  aGraph.LayerRegistry().RegisterLayer(aLayer);
 
   // Find an edge with a 3D curve for splitting.
   int aSplitEdgeIdx = -1;
@@ -531,7 +531,7 @@ TEST(BRepGraphAlgo_LayerTest, FullPipeline_NamesTrackThroughAllStages)
   ASSERT_TRUE(aGraph.IsDone());
 
   occ::handle<BRepGraphAlgo_NameLayer> aLayer = new BRepGraphAlgo_NameLayer();
-  aGraph.RegisterLayer(aLayer);
+  aGraph.LayerRegistry().RegisterLayer(aLayer);
 
   // Name all faces.
   const int aNbFaces = aGraph.Topo().NbFaces();
@@ -544,19 +544,19 @@ TEST(BRepGraphAlgo_LayerTest, FullPipeline_NamesTrackThroughAllStages)
 
   // Stage 1: Sew.
   (void)BRepGraphAlgo_Sewing::Perform(aGraph);
-  EXPECT_FALSE(aGraph.FindLayer(BRepGraphAlgo_NameLayer::GetID()).IsNull());
+  EXPECT_FALSE(aGraph.LayerRegistry().FindLayer(BRepGraphAlgo_NameLayer::GetID()).IsNull());
   const int aNamesAfterSew = aLayer->NbNames();
   EXPECT_GT(aNamesAfterSew, 0);
 
   // Stage 2: Deduplicate.
   (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
-  EXPECT_FALSE(aGraph.FindLayer(BRepGraphAlgo_NameLayer::GetID()).IsNull());
+  EXPECT_FALSE(aGraph.LayerRegistry().FindLayer(BRepGraphAlgo_NameLayer::GetID()).IsNull());
   const int aNamesAfterDedup = aLayer->NbNames();
   EXPECT_GT(aNamesAfterDedup, 0);
 
   // Stage 3: Compact.
   (void)BRepGraphAlgo_Compact::Perform(aGraph);
-  EXPECT_FALSE(aGraph.FindLayer(BRepGraphAlgo_NameLayer::GetID()).IsNull());
+  EXPECT_FALSE(aGraph.LayerRegistry().FindLayer(BRepGraphAlgo_NameLayer::GetID()).IsNull());
   const int aNamesAfterCompact = aLayer->NbNames();
   EXPECT_GT(aNamesAfterCompact, 0);
 
@@ -597,7 +597,7 @@ TEST(BRepGraphAlgo_LayerTest, Sewing_Cylinder_NamesPreserved)
   ASSERT_TRUE(aGraph.IsDone());
 
   occ::handle<BRepGraphAlgo_NameLayer> aLayer = new BRepGraphAlgo_NameLayer();
-  aGraph.RegisterLayer(aLayer);
+  aGraph.LayerRegistry().RegisterLayer(aLayer);
 
   // Name all faces.
   for (int i = 0; i < aGraph.Topo().NbFaces(); ++i)
@@ -610,7 +610,7 @@ TEST(BRepGraphAlgo_LayerTest, Sewing_Cylinder_NamesPreserved)
   (void)BRepGraphAlgo_Sewing::Perform(aGraph);
 
   // Layer should survive sewing on periodic surfaces.
-  EXPECT_FALSE(aGraph.FindLayer(BRepGraphAlgo_NameLayer::GetID()).IsNull());
+  EXPECT_FALSE(aGraph.LayerRegistry().FindLayer(BRepGraphAlgo_NameLayer::GetID()).IsNull());
   EXPECT_GT(aLayer->NbNames(), 0);
 }
 
@@ -681,8 +681,8 @@ TEST(BRepGraphAlgo_LayerTest, TwoLayers_BothSurviveFullPipeline)
 
   occ::handle<BRepGraphAlgo_NameLayer>      aNameLayer = new BRepGraphAlgo_NameLayer();
   occ::handle<BRepGraphAlgo_IntCounterLayer> aIntLayer = new BRepGraphAlgo_IntCounterLayer();
-  aGraph.RegisterLayer(aNameLayer);
-  aGraph.RegisterLayer(aIntLayer);
+  aGraph.LayerRegistry().RegisterLayer(aNameLayer);
+  aGraph.LayerRegistry().RegisterLayer(aIntLayer);
 
   // Populate both layers.
   for (int i = 0; i < aGraph.Topo().NbFaces(); ++i)
@@ -699,8 +699,8 @@ TEST(BRepGraphAlgo_LayerTest, TwoLayers_BothSurviveFullPipeline)
   (void)BRepGraphAlgo_Compact::Perform(aGraph);
 
   // Both layers should survive.
-  EXPECT_FALSE(aGraph.FindLayer(BRepGraphAlgo_NameLayer::GetID()).IsNull());
-  EXPECT_FALSE(aGraph.FindLayer(aIntLayer->ID()).IsNull());
+  EXPECT_FALSE(aGraph.LayerRegistry().FindLayer(BRepGraphAlgo_NameLayer::GetID()).IsNull());
+  EXPECT_FALSE(aGraph.LayerRegistry().FindLayer(aIntLayer->ID()).IsNull());
   EXPECT_GT(aNameLayer->NbNames(), 0);
   EXPECT_GT(aIntLayer->NbEntries(), 0);
 

@@ -114,6 +114,8 @@ const BRepGraph::BuilderView& BRepGraph::Builder() const
   return myData->myBuilderView;
 }
 
+//=================================================================================================
+
 BRepGraph::BRepGraph(BRepGraph&& theOther) noexcept
     : myData(std::move(theOther.myData)),
       myLayerRegistry(std::move(theOther.myLayerRegistry)),
@@ -225,7 +227,7 @@ bool BRepGraph::IsDone() const
 
 //=================================================================================================
 
-const BRepGraphInc::BaseDef* BRepGraph::TopoEntity(const BRepGraph_NodeId theId) const
+const BRepGraphInc::BaseDef* BRepGraph::topoEntity(const BRepGraph_NodeId theId) const
 {
   if (!theId.IsValid())
     return nullptr;
@@ -283,7 +285,7 @@ const BRepGraphInc::BaseDef* BRepGraph::TopoEntity(const BRepGraph_NodeId theId)
 
 //=================================================================================================
 
-BRepGraphInc::BaseDef* BRepGraph::ChangeTopoEntity(const BRepGraph_NodeId theId)
+BRepGraphInc::BaseDef* BRepGraph::changeTopoEntity(const BRepGraph_NodeId theId)
 {
   if (!theId.IsValid())
     return nullptr;
@@ -350,7 +352,7 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
   const BRepGraphInc_Storage& aStorage = myData->myIncStorage;
 
   // Bounds check: ensure the node index is within the entity vector.
-  if (TopoEntity(theNode) == nullptr)
+  if (topoEntity(theNode) == nullptr)
     return;
 
   struct StackEntry
@@ -384,11 +386,11 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
       continue;
 
     // Bounds check: skip nodes whose index is outside the entity vector.
-    if (TopoEntity(aCurrent.Node) == nullptr)
+    if (topoEntity(aCurrent.Node) == nullptr)
       continue;
 
     // Increment OwnGen + SubtreeGen so generation-based cache freshness detects the change.
-    BRepGraphInc::BaseDef* anEntity = ChangeTopoEntity(aCurrent.Node);
+    BRepGraphInc::BaseDef* anEntity = changeTopoEntity(aCurrent.Node);
     if (anEntity != nullptr)
     {
       ++anEntity->OwnGen;
@@ -520,7 +522,7 @@ void BRepGraph::markModified(const BRepGraph_NodeId theNodeId) noexcept
   if (!theNodeId.IsValid())
     return;
 
-  BRepGraphInc::BaseDef* anEntity = ChangeTopoEntity(theNodeId);
+  BRepGraphInc::BaseDef* anEntity = changeTopoEntity(theNodeId);
   if (anEntity == nullptr)
     return;
 
@@ -581,7 +583,7 @@ void BRepGraph::markRefModified(const BRepGraph_RefId /*theRefId*/,
 
 void BRepGraph::markParentSubtreeGen(const BRepGraph_NodeId theParentId) noexcept
 {
-  BRepGraphInc::BaseDef* aParent = ChangeTopoEntity(theParentId);
+  BRepGraphInc::BaseDef* aParent = changeTopoEntity(theParentId);
   if (aParent == nullptr)
     return;
 
@@ -734,38 +736,6 @@ void BRepGraph::markRepModified(const BRepGraph_RepId theRepId) noexcept
 
 //=================================================================================================
 
-int BRepGraph::NbHistoryRecords() const
-{
-  return myData->myHistoryLog.NbRecords();
-}
-
-const BRepGraph_HistoryRecord& BRepGraph::HistoryRecord(const int theRecordIdx) const
-{
-  return myData->myHistoryLog.Record(theRecordIdx);
-}
-
-BRepGraph_NodeId BRepGraph::FindOriginal(const BRepGraph_NodeId theModified) const
-{
-  return myData->myHistoryLog.FindOriginal(theModified);
-}
-
-NCollection_Vector<BRepGraph_NodeId> BRepGraph::FindDerived(
-  const BRepGraph_NodeId theOriginal) const
-{
-  return myData->myHistoryLog.FindDerived(theOriginal);
-}
-
-//=================================================================================================
-
-void BRepGraph::RecordHistory(const TCollection_AsciiString&              theOpLabel,
-                              const BRepGraph_NodeId                      theOriginal,
-                              const NCollection_Vector<BRepGraph_NodeId>& theReplacements)
-{
-  myData->myHistoryLog.Record(theOpLabel, theOriginal, theReplacements);
-}
-
-//=================================================================================================
-
 void BRepGraph::SetAllocator(const occ::handle<NCollection_BaseAllocator>& theAlloc)
 {
   Standard_ASSERT_VOID(
@@ -813,21 +783,56 @@ const BRepGraph_LayerRegistry& BRepGraph::LayerRegistry() const
 
 //=================================================================================================
 
-int BRepGraph::RegisterLayer(const occ::handle<BRepGraph_Layer>& theLayer)
+BRepGraphInc_Storage& BRepGraph::incStorage()
 {
-  return myLayerRegistry.RegisterLayer(theLayer);
+  return myData->myIncStorage;
 }
 
 //=================================================================================================
 
-occ::handle<BRepGraph_Layer> BRepGraph::FindLayer(const Standard_GUID& theGUID) const
+const BRepGraphInc_Storage& BRepGraph::incStorage() const
 {
-  return myLayerRegistry.FindLayer(theGUID);
+  return myData->myIncStorage;
 }
 
 //=================================================================================================
 
-void BRepGraph::UnregisterLayer(const Standard_GUID& theGUID)
+BRepGraph_Data* BRepGraph::data()
 {
-  myLayerRegistry.UnregisterLayer(theGUID);
+  return myData.get();
+}
+
+//=================================================================================================
+
+const BRepGraph_Data* BRepGraph::data() const
+{
+  return myData.get();
+}
+
+//=================================================================================================
+
+BRepGraph_LayerRegistry& BRepGraph::layerRegistry()
+{
+  return myLayerRegistry;
+}
+
+//=================================================================================================
+
+const BRepGraph_LayerRegistry& BRepGraph::layerRegistry() const
+{
+  return myLayerRegistry;
+}
+
+//=================================================================================================
+
+BRepGraph_TransientCache& BRepGraph::transientCache()
+{
+  return myTransientCache;
+}
+
+//=================================================================================================
+
+const BRepGraph_TransientCache& BRepGraph::transientCache() const
+{
+  return myTransientCache;
 }

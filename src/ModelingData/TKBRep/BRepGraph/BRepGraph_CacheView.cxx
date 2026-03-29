@@ -21,7 +21,7 @@ void BRepGraph::CacheView::Set(const BRepGraph_NodeId                   theNode,
                                const occ::handle<BRepGraph_CacheKind>&  theKind,
                                const occ::handle<BRepGraph_CacheValue>& theValue)
 {
-  const BRepGraphInc::BaseDef* aDef = myGraph->TopoEntity(theNode);
+  const BRepGraphInc::BaseDef* aDef = myGraph->topoEntity(theNode);
   if (aDef == nullptr)
   {
     return;
@@ -35,7 +35,7 @@ occ::handle<BRepGraph_CacheValue> BRepGraph::CacheView::Get(
   const BRepGraph_NodeId                  theNode,
   const occ::handle<BRepGraph_CacheKind>& theKind) const
 {
-  const BRepGraphInc::BaseDef* aDef = myGraph->TopoEntity(theNode);
+  const BRepGraphInc::BaseDef* aDef = myGraph->topoEntity(theNode);
   if (aDef == nullptr)
   {
     return occ::handle<BRepGraph_CacheValue>();
@@ -56,7 +56,7 @@ bool BRepGraph::CacheView::Remove(const BRepGraph_NodeId theNode,
 void BRepGraph::CacheView::Invalidate(const BRepGraph_NodeId theNode,
                                       const occ::handle<BRepGraph_CacheKind>& theKind)
 {
-  const BRepGraphInc::BaseDef* aDef = myGraph->TopoEntity(theNode);
+  const BRepGraphInc::BaseDef* aDef = myGraph->topoEntity(theNode);
   if (aDef == nullptr)
   {
     return;

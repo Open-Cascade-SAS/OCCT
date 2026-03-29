@@ -39,8 +39,8 @@
 
 static void registerStandardLayers(BRepGraph& theGraph)
 {
-  theGraph.RegisterLayer(new BRepGraph_ParamLayer());
-  theGraph.RegisterLayer(new BRepGraph_RegularityLayer());
+  theGraph.LayerRegistry().RegisterLayer(new BRepGraph_ParamLayer());
+  theGraph.LayerRegistry().RegisterLayer(new BRepGraph_RegularityLayer());
 }
 
 // ============================================================
@@ -337,7 +337,7 @@ TEST(BRepGraph_PolygonTest, VertexPointRepresentations_StructurallyValid)
   registerStandardLayers(aGraph);
   aGraph.Build(aShape);
   ASSERT_TRUE(aGraph.IsDone());
-  const occ::handle<BRepGraph_ParamLayer> aParamLayer = aGraph.FindLayer<BRepGraph_ParamLayer>();
+  const occ::handle<BRepGraph_ParamLayer> aParamLayer = aGraph.LayerRegistry().FindLayer<BRepGraph_ParamLayer>();
   ASSERT_FALSE(aParamLayer.IsNull());
 
   // Count all extracted vertex point representations.
@@ -397,7 +397,7 @@ TEST(BRepGraph_PolygonTest, EdgeRegularity_MatchesOriginal)
   aGraph.Build(aCyl);
   ASSERT_TRUE(aGraph.IsDone());
   const occ::handle<BRepGraph_RegularityLayer> aRegularityLayer =
-    aGraph.FindLayer<BRepGraph_RegularityLayer>();
+    aGraph.LayerRegistry().FindLayer<BRepGraph_RegularityLayer>();
   ASSERT_FALSE(aRegularityLayer.IsNull());
 
   // Count captured regularity entries.

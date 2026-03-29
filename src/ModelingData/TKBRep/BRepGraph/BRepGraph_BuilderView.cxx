@@ -1122,14 +1122,14 @@ void BRepGraph::BuilderView::RemoveNode(const BRepGraph_NodeId theNode,
   }
 
   // Mark removed on the entity (which is the sole definition store).
-  BRepGraphInc::BaseDef* aDef = myGraph->ChangeTopoEntity(theNode);
+  BRepGraphInc::BaseDef* aDef = myGraph->changeTopoEntity(theNode);
   if (aDef != nullptr && !aDef->IsRemoved)
   {
     myGraph->myData->myIncStorage.MarkRemoved(theNode);
   }
 
   // Increment OwnGen + SubtreeGen so generation-based cache freshness detects the removal.
-  BRepGraphInc::BaseDef* aRemovedDef = myGraph->ChangeTopoEntity(theNode);
+  BRepGraphInc::BaseDef* aRemovedDef = myGraph->changeTopoEntity(theNode);
   if (aRemovedDef != nullptr)
   {
     ++aRemovedDef->OwnGen;
@@ -1462,7 +1462,7 @@ void BRepGraph::BuilderView::EndDeferredInvalidation() noexcept
             const BRepGraph_NodeId aParentId = aWires->Value(w);
             if (!markVisited(aParentId))
               continue;
-            BRepGraphInc::BaseDef* aParent = myGraph->ChangeTopoEntity(aParentId);
+            BRepGraphInc::BaseDef* aParent = myGraph->changeTopoEntity(aParentId);
             if (aParent == nullptr || aParent->IsRemoved)
               continue;
             ++aParent->SubtreeGen;
@@ -1482,7 +1482,7 @@ void BRepGraph::BuilderView::EndDeferredInvalidation() noexcept
             const BRepGraph_NodeId aParentId = aFaces->Value(f);
             if (!markVisited(aParentId))
               continue;
-            BRepGraphInc::BaseDef* aParent = myGraph->ChangeTopoEntity(aParentId);
+            BRepGraphInc::BaseDef* aParent = myGraph->changeTopoEntity(aParentId);
             if (aParent == nullptr || aParent->IsRemoved)
               continue;
             ++aParent->SubtreeGen;
@@ -1500,7 +1500,7 @@ void BRepGraph::BuilderView::EndDeferredInvalidation() noexcept
             const BRepGraph_NodeId aParentId = aShells->Value(s);
             if (!markVisited(aParentId))
               continue;
-            BRepGraphInc::BaseDef* aParent = myGraph->ChangeTopoEntity(aParentId);
+            BRepGraphInc::BaseDef* aParent = myGraph->changeTopoEntity(aParentId);
             if (aParent == nullptr || aParent->IsRemoved)
               continue;
             ++aParent->SubtreeGen;
@@ -1518,7 +1518,7 @@ void BRepGraph::BuilderView::EndDeferredInvalidation() noexcept
             const BRepGraph_NodeId aParentId = aSolids->Value(s);
             if (!markVisited(aParentId))
               continue;
-            BRepGraphInc::BaseDef* aParent = myGraph->ChangeTopoEntity(aParentId);
+            BRepGraphInc::BaseDef* aParent = myGraph->changeTopoEntity(aParentId);
             if (aParent == nullptr || aParent->IsRemoved)
               continue;
             ++aParent->SubtreeGen;
@@ -1536,7 +1536,7 @@ void BRepGraph::BuilderView::EndDeferredInvalidation() noexcept
           const BRepGraph_NodeId aParentId = anOccDef.ParentProductDefId;
           if (markVisited(aParentId))
           {
-            BRepGraphInc::BaseDef* aParent = myGraph->ChangeTopoEntity(aParentId);
+            BRepGraphInc::BaseDef* aParent = myGraph->changeTopoEntity(aParentId);
             if (aParent != nullptr && !aParent->IsRemoved)
             {
               ++aParent->SubtreeGen;
@@ -2493,7 +2493,7 @@ bool BRepGraph::BuilderView::ValidateMutationBoundary(
 
   // Validate built-in layer consistency: layers must not have bindings
   // for entity kinds that have zero active entities in the graph.
-  const occ::handle<BRepGraph_ParamLayer> aParamLayer = myGraph->FindLayer<BRepGraph_ParamLayer>();
+  const occ::handle<BRepGraph_ParamLayer> aParamLayer = myGraph->LayerRegistry().FindLayer<BRepGraph_ParamLayer>();
   if (!aParamLayer.IsNull() && aParamLayer->HasBindings() && aStorage.NbVertices() == 0)
   {
     isValid = false;
@@ -2507,7 +2507,7 @@ bool BRepGraph::BuilderView::ValidateMutationBoundary(
   }
 
   const occ::handle<BRepGraph_RegularityLayer> aRegularityLayer =
-    myGraph->FindLayer<BRepGraph_RegularityLayer>();
+    myGraph->LayerRegistry().FindLayer<BRepGraph_RegularityLayer>();
   if (!aRegularityLayer.IsNull() && aRegularityLayer->HasBindings() && aStorage.NbEdges() == 0)
   {
     isValid = false;

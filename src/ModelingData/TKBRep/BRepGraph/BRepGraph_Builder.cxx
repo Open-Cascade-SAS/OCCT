@@ -145,9 +145,9 @@ void BRepGraph_Builder::Perform(BRepGraph&                            theGraph,
   // Temporary allocator for populate scratch data, discarded after build.
   occ::handle<NCollection_IncAllocator> aTmpAlloc = new NCollection_IncAllocator;
   const occ::handle<BRepGraph_ParamLayer> aParamLayer =
-    theGraph.FindLayer<BRepGraph_ParamLayer>();
+    theGraph.LayerRegistry().FindLayer<BRepGraph_ParamLayer>();
   const occ::handle<BRepGraph_RegularityLayer> aRegularityLayer =
-    theGraph.FindLayer<BRepGraph_RegularityLayer>();
+    theGraph.LayerRegistry().FindLayer<BRepGraph_RegularityLayer>();
 
   BRepGraphInc_Populate::Perform(theGraph.myData->myIncStorage,
                                  theShape,
@@ -277,9 +277,9 @@ void BRepGraph_Builder::Append(BRepGraph&          theGraph,
 
   occ::handle<NCollection_IncAllocator> aTmpAlloc = new NCollection_IncAllocator;
   const occ::handle<BRepGraph_ParamLayer> aParamLayer =
-    theGraph.FindLayer<BRepGraph_ParamLayer>();
+    theGraph.LayerRegistry().FindLayer<BRepGraph_ParamLayer>();
   const occ::handle<BRepGraph_RegularityLayer> aRegularityLayer =
-    theGraph.FindLayer<BRepGraph_RegularityLayer>();
+    theGraph.LayerRegistry().FindLayer<BRepGraph_RegularityLayer>();
   BRepGraphInc_Populate::Append(aStorage,
                                 theShape,
                                 theParallel,

@@ -994,7 +994,7 @@ bool BRepGraphAlgo_BndLib::GetCached(const BRepGraph&                  theGraph,
                                      const BRepGraph_NodeId            theNode,
                                      BRepGraphAlgo_BndLib::CachedData& theData)
 {
-  const BRepGraphInc::BaseDef* aDef = theGraph.TopoEntity(theNode);
+  const BRepGraphInc::BaseDef* aDef = theGraph.topoEntity(theNode);
   if (aDef == nullptr)
   {
     return false;
@@ -1024,7 +1024,7 @@ Bnd_Box BRepGraphAlgo_BndLib::AddCached(BRepGraph&                            th
                                         const BRepGraphAlgo_BndLib::Precision thePrecision,
                                         const bool                            theUseTriangulation)
 {
-  const BRepGraphInc::BaseDef* aDef = theGraph.TopoEntity(theNode);
+  const BRepGraphInc::BaseDef* aDef = theGraph.topoEntity(theNode);
   if (aDef == nullptr)
     return Bnd_Box();
   const uint32_t         aGen      = aDef->SubtreeGen;
@@ -1097,7 +1097,7 @@ void BRepGraphAlgo_BndLib::SetCached(BRepGraph&             theGraph,
                                      const bool             theUsedTriangulation,
                                      const bool             theUsedShapeTolerance)
 {
-  const BRepGraphInc::BaseDef* aDef = theGraph.TopoEntity(theNode);
+  const BRepGraphInc::BaseDef* aDef = theGraph.topoEntity(theNode);
   if (aDef == nullptr)
   {
     return;
