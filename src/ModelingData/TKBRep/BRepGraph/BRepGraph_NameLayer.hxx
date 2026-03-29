@@ -22,6 +22,7 @@
 //! Proof-of-concept layer demonstrating the Named Layers infrastructure.
 //! Stores TCollection_ExtendedString per BRepGraph_NodeId.
 //! Automatically migrates names during sewing, deduplication, and compaction.
+//! On removal with invalid replacement, name entries are dropped.
 class BRepGraph_NameLayer : public BRepGraph_Layer
 {
 public:

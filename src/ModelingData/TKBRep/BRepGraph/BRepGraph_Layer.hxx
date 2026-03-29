@@ -54,7 +54,10 @@ public:
   //! @param[in] theNode        the removed node
   //! @param[in] theReplacement if valid, the node that replaces theNode
   //!            (e.g., sewing edge merge, deduplicate). If invalid, pure deletion.
-  //!            Layers should migrate data from theNode to theReplacement when valid.
+  //!            Layers should migrate data from theNode to theReplacement when valid,
+  //!            otherwise discard or archive removed-node data.
+  //!            Implementations must validate theReplacement before dereferencing
+  //!            graph data through it.
   //! @warning Layer callbacks must not throw. They are called from noexcept
   //! notification paths (MutGuard destructors, deferred invalidation flush).
   virtual void OnNodeRemoved(const BRepGraph_NodeId theNode,

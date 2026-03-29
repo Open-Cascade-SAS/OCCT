@@ -60,12 +60,6 @@ public:
   //! Number of coedge definitions.
   [[nodiscard]] Standard_EXPORT int NbCoEdges() const;
 
-  //! Number of product definitions (delegates to PathView for API symmetry).
-  [[nodiscard]] Standard_EXPORT int NbProducts() const;
-
-  //! Number of occurrence definitions (delegates to PathView for API symmetry).
-  [[nodiscard]] Standard_EXPORT int NbOccurrences() const;
-
   //! Number of active (non-removed) definitions per kind.
   [[nodiscard]] Standard_EXPORT int NbActiveVertices() const;
   [[nodiscard]] Standard_EXPORT int NbActiveEdges() const;

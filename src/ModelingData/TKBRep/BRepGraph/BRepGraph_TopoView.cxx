@@ -93,20 +93,6 @@ int BRepGraph::TopoView::NbCoEdges() const
 
 //=================================================================================================
 
-int BRepGraph::TopoView::NbProducts() const
-{
-  return myGraph->myData->myIncStorage.NbProducts();
-}
-
-//=================================================================================================
-
-int BRepGraph::TopoView::NbOccurrences() const
-{
-  return myGraph->myData->myIncStorage.NbOccurrences();
-}
-
-//=================================================================================================
-
 int BRepGraph::TopoView::NbActiveVertices() const
 {
   return myGraph->myData->myIncStorage.NbActiveVertices();

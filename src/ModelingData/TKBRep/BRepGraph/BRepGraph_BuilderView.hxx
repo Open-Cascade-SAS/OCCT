@@ -31,7 +31,8 @@ class Geom2d_Curve;
 //! wires, faces, shells, solids, compounds) and assembly nodes (products,
 //! occurrences) without an existing TopoDS_Shape. Also supports incremental
 //! shape appending, soft-deletion of nodes, scoped mutable definition guards
-//! (RAII Mut* methods), and deferred invalidation mode for parallel mutation.
+//! (RAII Mut* methods), and deferred invalidation mode for batched mutation
+//! loops under external serialization.
 //! Obtained via BRepGraph::Builder().
 //!
 //! Contract notes:
@@ -214,8 +215,9 @@ public:
   //! deferred until all mutations are complete.
   //! Prefer BRepGraph_DeferredScope RAII guard.
   //! @warning Deferred mode batches invalidation only; it does NOT serialize
-  //! the mutation body. Direct concurrent `Mut*()` usage still requires
-  //! external synchronization around each mutation.
+  //! the mutation body. Callers must guarantee exclusive Builder() mutation
+  //! access while deferred mode is active; direct concurrent `Mut*()` usage
+  //! still requires external synchronization around each mutation.
   Standard_EXPORT void BeginDeferredInvalidation();
 
   //! End deferred invalidation mode and batch-flush:
@@ -224,6 +226,8 @@ public:
   Standard_EXPORT void EndDeferredInvalidation() noexcept;
 
   //! Check if deferred invalidation mode is currently active.
+  //! @note This is a state flag only. It does not imply mutation ownership
+  //! or synchronization guarantees.
   [[nodiscard]] Standard_EXPORT bool IsDeferredMode() const;
 
   //! @name Topology editing operations.
@@ -275,8 +279,11 @@ public:
     applyModificationImpl(theTarget, std::move(aReplacements), theOpLabel);
   }
 
-  //! Finalize a batch of mutations: validate reverse index consistency
-  //! and assert active entity counts match actual entity state.
+  //! Finalize a batch of mutations.
+  //! Validates reverse-index consistency and asserts active entity counts
+  //! match actual entity state.
+  //! Call this after manual batch mutation loops, or rely on
+  //! BRepGraph_DeferredScope to call it automatically at scope exit.
   Standard_EXPORT void CommitMutation() noexcept;
 
   //! Validate lightweight mutation-boundary invariants.

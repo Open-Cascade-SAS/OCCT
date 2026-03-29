@@ -29,6 +29,8 @@ class BRepGraph::ShapesView
 {
 public:
   //! Return or reconstruct a TopoDS_Shape for a node.
+  //! Topology definition nodes (Vertex..CompSolid) reconstruct their topology
+  //! directly, without assembly wrappers.
   //! Product nodes are reconstructed in product-local coordinates.
   //! Occurrence nodes are reconstructed with cumulative occurrence placement.
   //! @param[in] theNode node identifier
@@ -48,6 +50,7 @@ public:
     const BRepGraph_NodeId theNode) const;
 
   //! Reconstruct a TopoDS_Shape from a graph node without using the persistent cache.
+  //! Topology definition nodes reconstruct topology directly.
   //! Product nodes are reconstructed in product-local coordinates.
   //! Occurrence nodes are reconstructed with cumulative occurrence placement.
   //! @param[in] theRoot definition node identifier

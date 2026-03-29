@@ -25,6 +25,12 @@
 //! - reference counts
 //! - RefUID lookup and reverse lookup
 //! - stale tracking via BRepGraph_VersionStamp
+//!
+//! Identity semantics:
+//! - RefId (kind + index) is graph-local and may change after Compact().
+//!   Use it for in-graph traversal and short-lived mutation logic.
+//! - RefUID (kind + counter + generation) is stable across index remapping
+//!   and intended for longer-lived identity tracking.
 class BRepGraph::RefsView
 {
 public:

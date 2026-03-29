@@ -2,6 +2,10 @@
 
 BRepGraphInc is the incidence-table backend used by BRepGraph.
 
+INTERNAL USE ONLY: this package is the backend runtime model behind the
+BRepGraph facade. External code should treat BRepGraphInc storage/layout APIs
+as unstable implementation details unless explicitly surfaced by facade views.
+
 It provides the runtime source of truth for topology entities, assembly entities, context references, reverse indices, reconstruction support, and identity mapping.
 
 BRepGraphInc is the backend runtime model that powers BRepGraph.
