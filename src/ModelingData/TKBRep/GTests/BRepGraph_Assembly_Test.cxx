@@ -17,6 +17,7 @@
 #include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_PathView.hxx>
 #include <BRepGraph_RefsView.hxx>
+#include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_UIDsView.hxx>
 #include <BRepGraphInc_ReverseIndex.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -24,10 +25,19 @@
 #include <Precision.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopoDS_Compound.hxx>
+#include <TopoDS_Iterator.hxx>
 #include <BRep_Builder.hxx>
 #include <gp_Trsf.hxx>
 
 #include <gtest/gtest.h>
+
+namespace
+{
+static double translationX(const TopoDS_Shape& theShape)
+{
+  return theShape.Location().Transformation().TranslationPart().X();
+}
+} // namespace
 
 // =============================================================================
 // Build_SingleSolid_AutoCreatesRootProduct
@@ -670,6 +680,122 @@ TEST(BRepGraph_AssemblyTest, GlobalPlacement_ThreeLevelNesting)
   EXPECT_NEAR(aTransl.X(), 1.0, Precision::Confusion());
   EXPECT_NEAR(aTransl.Y(), 2.0, Precision::Confusion());
   EXPECT_NEAR(aTransl.Z(), 3.0, Precision::Confusion());
+}
+
+// =============================================================================
+// ShapesView_ProductShape_ReconstructsBuiltRootTransform
+// =============================================================================
+
+TEST(BRepGraph_AssemblyTest, ShapesView_ProductShape_ReconstructsBuiltRootTransform)
+{
+  TopoDS_Shape aRootShape = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
+
+  gp_Trsf aMove;
+  aMove.SetTranslation(gp_Vec(15.0, -7.0, 2.0));
+  aRootShape.Move(TopLoc_Location(aMove));
+  aRootShape.Reverse();
+
+  BRepGraph aGraph;
+  aGraph.Build(aRootShape);
+  ASSERT_TRUE(aGraph.IsDone());
+
+  const TopoDS_Shape aProductShape = aGraph.Shapes().Shape(BRepGraph_NodeId::Product(0));
+  ASSERT_FALSE(aProductShape.IsNull());
+  EXPECT_EQ(aProductShape.ShapeType(), aRootShape.ShapeType());
+  EXPECT_EQ(aProductShape.Orientation(), aRootShape.Orientation());
+  EXPECT_EQ(aProductShape.Location(), aRootShape.Location());
+
+  const TopoDS_Shape aReconstructed = aGraph.Shapes().Reconstruct(BRepGraph_NodeId::Product(0));
+  ASSERT_FALSE(aReconstructed.IsNull());
+  EXPECT_EQ(aReconstructed.ShapeType(), aRootShape.ShapeType());
+  EXPECT_EQ(aReconstructed.Orientation(), aRootShape.Orientation());
+  EXPECT_EQ(aReconstructed.Location(), aRootShape.Location());
+}
+
+// =============================================================================
+// ShapesView_AssemblyProduct_ReconstructsChildOccurrences
+// =============================================================================
+
+TEST(BRepGraph_AssemblyTest, ShapesView_AssemblyProduct_ReconstructsChildOccurrences)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  const BRepGraph_NodeId aPartId     = BRepGraph_NodeId::Product(0);
+  const BRepGraph_NodeId aAssemblyId = aGraph.Builder().AddAssemblyProduct();
+
+  gp_Trsf aTrsf1;
+  aTrsf1.SetTranslation(gp_Vec(100.0, 0.0, 0.0));
+  gp_Trsf aTrsf2;
+  aTrsf2.SetTranslation(gp_Vec(200.0, 0.0, 0.0));
+
+  ASSERT_TRUE(aGraph.Builder().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location(aTrsf1)).IsValid());
+  ASSERT_TRUE(aGraph.Builder().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location(aTrsf2)).IsValid());
+
+  const TopoDS_Shape aAssemblyShape = aGraph.Shapes().Shape(aAssemblyId);
+  ASSERT_FALSE(aAssemblyShape.IsNull());
+  EXPECT_EQ(aAssemblyShape.ShapeType(), TopAbs_COMPOUND);
+  EXPECT_EQ(aAssemblyShape.NbChildren(), 2);
+
+  TopoDS_Iterator anIt(aAssemblyShape);
+  ASSERT_TRUE(anIt.More());
+  const TopoDS_Shape aFirstChild = anIt.Value();
+  anIt.Next();
+  ASSERT_TRUE(anIt.More());
+  const TopoDS_Shape aSecondChild = anIt.Value();
+  anIt.Next();
+  EXPECT_FALSE(anIt.More());
+
+  EXPECT_TRUE(aFirstChild.IsPartner(aSecondChild));
+  EXPECT_NEAR(translationX(aFirstChild), 100.0, Precision::Confusion());
+  EXPECT_NEAR(translationX(aSecondChild), 200.0, Precision::Confusion());
+}
+
+// =============================================================================
+// ShapesView_OccurrenceShape_UsesGlobalPlacementChain
+// =============================================================================
+
+TEST(BRepGraph_AssemblyTest, ShapesView_OccurrenceShape_UsesGlobalPlacementChain)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  const BRepGraph_NodeId aPartId       = BRepGraph_NodeId::Product(0);
+  const BRepGraph_NodeId aSubAssembly  = aGraph.Builder().AddAssemblyProduct();
+  const BRepGraph_NodeId aRootAssembly = aGraph.Builder().AddAssemblyProduct();
+
+  gp_Trsf aParentTrsf;
+  aParentTrsf.SetTranslation(gp_Vec(10.0, 0.0, 0.0));
+  const BRepGraph_NodeId aParentOccurrence =
+    aGraph.Builder().AddOccurrence(aRootAssembly, aSubAssembly, TopLoc_Location(aParentTrsf));
+  ASSERT_TRUE(aParentOccurrence.IsValid());
+
+  gp_Trsf aChildTrsf;
+  aChildTrsf.SetTranslation(gp_Vec(20.0, 0.0, 0.0));
+  const BRepGraph_NodeId aChildOccurrence =
+    aGraph.Builder().AddOccurrence(aSubAssembly,
+                                   aPartId,
+                                   TopLoc_Location(aChildTrsf),
+                                   aParentOccurrence);
+  ASSERT_TRUE(aChildOccurrence.IsValid());
+
+  const TopoDS_Shape aSubAssemblyShape = aGraph.Shapes().Shape(aSubAssembly);
+  ASSERT_FALSE(aSubAssemblyShape.IsNull());
+  EXPECT_EQ(aSubAssemblyShape.NbChildren(), 1);
+
+  TopoDS_Iterator aSubIt(aSubAssemblyShape);
+  ASSERT_TRUE(aSubIt.More());
+  EXPECT_NEAR(translationX(aSubIt.Value()), 20.0, Precision::Confusion());
+
+  const TopoDS_Shape aOccurrenceShape = aGraph.Shapes().Shape(aChildOccurrence);
+  ASSERT_FALSE(aOccurrenceShape.IsNull());
+  EXPECT_NEAR(translationX(aOccurrenceShape), 30.0, Precision::Confusion());
+
+  const TopoDS_Shape aReconstructed = aGraph.Shapes().ReconstructFromNode(aChildOccurrence);
+  ASSERT_FALSE(aReconstructed.IsNull());
+  EXPECT_NEAR(translationX(aReconstructed), 30.0, Precision::Confusion());
 }
 
 // =============================================================================

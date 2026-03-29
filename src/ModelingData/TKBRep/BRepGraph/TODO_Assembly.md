@@ -9,7 +9,7 @@ one root Product. `Build(aBox)` auto-creates a single root Product with
 - `Kind::Product = 10`, `Kind::Occurrence = 11` as first-class node kinds
 - Product→Occurrence→Product DAG; each Occurrence carries `TopLoc_Location`
 - GlobalPlacement via `ParentOccurrenceDefId` chain composition
-- API distributed across existing views (DefsView, BuilderView, SpatialView, PathView)
+- API distributed across existing views (TopoView, BuilderView, PathView)
 
 **Visualizations**: [TODO_Assembly_Visualization.md](TODO_Assembly_Visualization.md)
 
@@ -22,12 +22,19 @@ one root Product. `Build(aBox)` auto-creates a single root Product with
 - `DefStore<T>` in `BRepGraphInc_Storage` with typed-id accessors
 - BRepGraph dispatch (TopoDef, markModified, invalidateSubgraph, allocateUID)
 - Auto root Product creation in `BRepGraph_Builder`
-- DefsView: `Product()`, `Occurrence()`, `RootProducts()`, `IsAssembly()`, `IsPart()`, `NbComponents()`, `Component()`
+- TopoView / PathView: `Product()`, `Occurrence()`, `RootProducts()`, `IsAssembly()`, `IsPart()`, `NbComponents()`, `Component()`
 - BuilderView: `AddProduct()`, `AddAssemblyProduct()`, `AddOccurrence()`, RemoveNode/RemoveSubgraph cascade
-- SpatialView: `GlobalPlacement(occId)` via ParentOccurrenceDefId walk
+- PathView: `OccurrenceLocation(occId)` via ParentOccurrenceDefId walk
 - MutRef: `MutProduct()`, `MutOccurrence()` RAII guards
 - Iterator: `BRepGraph_Iterator<ProductDef>`, `BRepGraph_Iterator<OccurrenceDef>`
 - ReverseIndex: `OccurrencesOfProduct()`, `BuildProductOccurrences()`
+
+### Assembly Reconstruction at ShapesView — DONE (2026-03-29)
+- `BRepGraph_ShapesView` now reconstructs Product nodes in product-local coordinates
+- part Products reuse the topology reconstruction backend and apply `RootOrientation` / `RootLocation`
+- assembly Products rebuild a `TopoDS_Compound` from child occurrences without pushing assembly logic into `BRepGraphInc_Reconstruct`
+- Occurrence reconstruction now applies the cumulative placement chain via `PathView::OccurrenceLocation()`
+- coverage verifies built root-product reconstruction, shared-product assembly compounds, and nested occurrence placement
 
 ### OnCompact Signature Unification — DONE (2026-03-20)
 - Unified `DataMap<BRepGraph_NodeId, BRepGraph_NodeId>` replaces 6-argument `OnCompact`
@@ -44,34 +51,6 @@ one root Product. `Build(aBox)` auto-creates a single root Product with
 ---
 
 ## Remaining Work
-
-### Assembly Reconstruction [Arch] ★★★★
-
-Currently `BRepGraphInc_Reconstruct::Node()` returns an empty shape for Product/Occurrence.
-
-**Approach**: Implement at the `ShapesView` level rather than `BRepGraphInc_Reconstruct`, because
-reconstruction needs to compose placements from the occurrence chain — a concern
-that belongs to the BRepGraph facade, not the raw storage backend.
-
-```cpp
-// ShapesView::ReconstructProduct(productId)
-// Part: delegate to existing Node(ShapeRootId) reconstruction
-// Assembly: build Compound from child occurrence reconstructions
-
-// ShapesView::ReconstructOccurrence(occId)
-// Reconstruct referenced product, apply Placement
-```
-
-**Considerations**:
-- Part product reconstruction is trivial — delegate to existing `ReconstructFromNode(ShapeRootId)`
-- Assembly product → `TopoDS_Compound` of child occurrence shapes
-- Occurrence → referenced product shape with `Placement` applied
-- Shared products: the same TopoDS_Shape can be reused for the product body,
-  with only the Location differing per occurrence. Cache at product level, apply per-occurrence Location.
-- `BRepGraph_Explorer` already traverses Products→Occurrences→topology uniformly,
-  so reconstruction can reuse the Explorer path for validation
-
-**Files**: `BRepGraph_ShapesView.hxx/.cxx`
 
 ### XDE Population Bridge [Arch] ★★★★
 
@@ -157,10 +136,10 @@ Assembly Attribute Resolution ─────────┘ (deferred until DE 
 
 | Responsibility | Location |
 |---------------|----------|
-| Const accessors (`Product()`, `RootProducts()`, `IsAssembly()`, `IsPart()`) | `DefsView` |
+| Const accessors (`Product()`, `RootProducts()`, `IsAssembly()`, `IsPart()`) | `TopoView` / `PathView` |
 | Mutations (`AddProduct()`, `AddOccurrence()`) | `BuilderView` |
 | RAII guards (`MutProduct()`, `MutOccurrence()`) | `BRepGraph` |
-| `GlobalPlacement()` | `SpatialView` |
+| `OccurrenceLocation()` | `PathView` |
 | Occurrence path, location, attribute context | `PathView` |
 | Assembly traversal into topology | `BRepGraph_Explorer` |
 | Reverse index (product→occurrences) | `BRepGraphInc_ReverseIndex` |
@@ -173,7 +152,7 @@ Assembly Attribute Resolution ─────────┘ (deferred until DE 
 |----------|-----------|
 | **Intrinsic, not Layer** | Assembly is fundamental to model identity. A Layer can be unregistered, leaving the graph inconsistent. |
 | **Auto root Product on Build()** | Algorithms never branch on "is this an assembly graph?" — it always is. |
-| **Methods on Views** | Follows existing pattern: const on DefsView, mutations on BuilderView, spatial on SpatialView. |
+| **Methods on Views** | Follows existing pattern: const on TopoView / PathView, mutations on BuilderView, spatial context on PathView. |
 | **Always via Occurrence** | Product→Occurrence→Product. Every placement is explicit with its own NodeId. |
 | **Single ShapeRootId** | One NodeId pointing to root topology. Mixed products use nested products. |
 | **PathView replaces AssemblyQuery** | `PathsTo()`, `OccurrenceLocation()`, Explorer cover OccurrencePath and LeafParts. Only ResolveAttribute remains, deferred until DE Layers exist. |
