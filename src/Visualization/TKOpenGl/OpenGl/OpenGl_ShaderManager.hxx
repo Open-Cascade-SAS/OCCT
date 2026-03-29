@@ -148,6 +148,7 @@ public:
                        const Graphic3d_TypeOfShadingModel       theShadingModel,
                        const Graphic3d_AlphaMode                theAlphaMode,
                        const bool                               theHasVertColor,
+                       const bool                               theEnableLineGeometry,
                        const occ::handle<OpenGl_ShaderProgram>& theCustomProgram)
   {
     if (!theCustomProgram.IsNull() || myContext->caps->ffpEnable)
@@ -157,6 +158,12 @@ public:
 
     int aBits =
       getProgramBits(theTextures, theAlphaMode, Aspect_IS_SOLID, theHasVertColor, false, false);
+
+    if (theEnableLineGeometry)
+    {
+      aBits |= Graphic3d_ShaderFlags_LineWidth;
+    }
+
     if (theLineType != Aspect_TOL_SOLID)
     {
       aBits |= Graphic3d_ShaderFlags_StippleLine;

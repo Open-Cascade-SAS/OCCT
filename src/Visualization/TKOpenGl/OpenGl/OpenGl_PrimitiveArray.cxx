@@ -551,6 +551,7 @@ void OpenGl_PrimitiveArray::drawEdges(const occ::handle<OpenGl_Workspace>& theWo
                                                  Graphic3d_TypeOfShadingModel_Unlit,
                                                  Graphic3d_AlphaMode_Opaque,
                                                  false,
+                                                 false,
                                                  anAspect->ShaderProgramRes(aGlContext));
   }
   aGlContext->SetSampleAlphaToCoverage(
@@ -883,6 +884,16 @@ void OpenGl_PrimitiveArray::Render(const occ::handle<OpenGl_Workspace>& theWorks
 
   bool toDrawArray = true, toSetLinePolygMode = false;
   int  toDrawInteriorEdges = 0; // 0 - no edges, 1 - glsl edges, 2 - polygonMode
+  int  toDrawLineGeometry = 1; // 1 - render using FFP, 2 - render using glsl
+
+  if (myDrawMode == GL_LINES || myDrawMode == GL_LINE_STRIP)
+  {
+    if (aCtx->hasGeometryStage != OpenGl_FeatureNotAvailable && !aCtx->caps->lineGeomDisable)
+    {
+      toDrawLineGeometry = 2;
+    }
+  }
+
   if (myIsFillType)
   {
     toDrawArray = anAspectFace->Aspect()->InteriorStyle() != Aspect_IS_EMPTY;
@@ -981,7 +992,14 @@ void OpenGl_PrimitiveArray::Render(const occ::handle<OpenGl_Workspace>& theWorks
                                                aShadingModel,
                                                Graphic3d_AlphaMode_Opaque,
                                                hasVertColor,
+                                               toDrawLineGeometry == 2,
                                                anAspectFace->ShaderProgramRes(aCtx));
+
+        if (toDrawLineGeometry == 2)
+        {
+          aCtx->ShaderManager()->PushInteriorState (aCtx->ActiveProgram(), anAspectFace->Aspect());
+        }
+
         break;
       }
       default: {
