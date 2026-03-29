@@ -99,7 +99,7 @@ Config: RelWithDebInfo
   - BuildDelta inner vector capacity aligned to 16 (was inconsistent 256 vs 16)
   - Deduplicate+Compact throughput stable (~0.0045s, within run-to-run noise)
   - Core benchmarks within noise — KDTree change only affects Deduplicate path
-- Cache Inval: 2026-03-20, automatic UserAttribute cache invalidation in markModified():
+- Cache Inval: 2026-03-20, automatic transient-cache invalidation in markModified():
   - markModified() now calls InvalidateAll() on node cache alongside shape-cache clearing
   - EndDeferredInvalidation() sweeps all modified entities and invalidates their caches
   - Removed redundant manual Cache().Invalidate() call in Sewing::processEdges

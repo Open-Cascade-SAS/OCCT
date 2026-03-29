@@ -89,7 +89,7 @@ graph TD
     style OccAxle2 fill:#f39c12,color:#fff
 ```
 
-**GlobalPlacement** for OccAxle1: `T_identity * T_front` (composed root-to-leaf).
+**OccurrenceLocation** for OccAxle1: `T_identity * T_front` (composed root-to-leaf).
 
 ---
 
@@ -134,7 +134,7 @@ graph TB
         MutOccurrence["MutOccurrence(idx)"]
     end
 
-    subgraph DefsView["DefsView (const)"]
+    subgraph TopoPathView["TopoView / PathView (const)"]
         direction TB
         DV1["Product(idx) / Occurrence(idx)"]
         DV2["NbProducts() / NbOccurrences()"]
@@ -152,30 +152,30 @@ graph TB
         BV5["RemoveSubgraph — deep removal"]
     end
 
-    subgraph MutView["MutView (RAII guards)"]
+    subgraph MutGraph["BRepGraph (RAII guards)"]
         direction TB
-        MV1["ProductDef(idx)"]
-        MV2["OccurrenceDef(idx)"]
+        MV1["MutProduct(idx)"]
+        MV2["MutOccurrence(idx)"]
     end
 
-    subgraph SpatialView["SpatialView (spatial)"]
+    subgraph PathView["PathView (assembly context)"]
         direction TB
-        SV1["GlobalPlacement(path)"]
-        SV2["GlobalPlacement(occIdx)"]
+        SV1["GlobalLocation(path)"]
+        SV2["OccurrenceLocation(occIdx)"]
     end
 
-    subgraph AssemblyQuery["BRepGraph_AssemblyQuery (utility)"]
+    subgraph ResolveLater["Deferred attribute resolution"]
         direction TB
-        AQ1["ResolveAttribute(layer, occ, graph)"]
-        AQ2["LeafParts(graph, productId)"]
-        AQ3["OccurrencePath(graph, occIdx)"]
+        AQ1["ResolveLayerValue?(occ)"]
+        AQ2["Leaf-part traversal via Explorer"]
+        AQ3["Occurrence paths via PathView"]
     end
 
-    style DefsView fill:#e8f4fd,stroke:#4a9eff
+    style TopoPathView fill:#e8f4fd,stroke:#4a9eff
     style BuilderView fill:#fdf2e8,stroke:#f39c12
-    style MutView fill:#e8fdf0,stroke:#2ecc71
-    style SpatialView fill:#f0e8fd,stroke:#9b59b6
-    style AssemblyQuery fill:#fde8e8,stroke:#e74c3c
+    style MutGraph fill:#e8fdf0,stroke:#2ecc71
+    style PathView fill:#f0e8fd,stroke:#9b59b6
+    style ResolveLater fill:#fde8e8,stroke:#e74c3c
     style BRepGraph fill:#f5f5f5,stroke:#333
 ```
 
@@ -276,11 +276,11 @@ are remapped using `theRemapMap.Find()`.  Missing entries trigger an assertion.
 ```mermaid
 flowchart TD
     Ph1["Phase 1<br/>Data Model<br/>+ auto root Product"]
-    Ph2["Phase 2<br/>Core API Integration<br/>DefsView, BuilderView,<br/>MutView, Iterator,<br/>SpatialView, ReverseIndex"]
+    Ph2["Phase 2<br/>Core API Integration<br/>TopoView / PathView,<br/>BuilderView, MutProduct,<br/>Iterator, ReverseIndex"]
     Ph3["Phase 3<br/>OnCompact<br/>Signature Fix"]
     Ph4["Phase 4<br/>XDE Population<br/>Bridge"]
-    Ph5["Phase 5<br/>Reconstruction"]
-    Ph6["Phase 6<br/>BRepGraph_AssemblyQuery<br/>Utility"]
+    Ph5["Phase 5<br/>Facade Reconstruction<br/>(done)"]
+    Ph6["Phase 6<br/>Deferred attribute<br/>resolution"]
     Ph7["Phase 7<br/>Testing"]
 
     Ph1 --> Ph2
@@ -364,7 +364,7 @@ flowchart TD
     Chassis -->|OccurrenceUsage| Occ2
     Occ2 -->|ProductDefId| Axle
 
-    GlobalLoc["GlobalPlacement(Occ2) =<br/>T_chassis * T_front_axle"]
+    GlobalLoc["OccurrenceLocation(Occ2) =<br/>T_chassis * T_front_axle"]
 
     Occ2 -.-> GlobalLoc
 
@@ -376,5 +376,5 @@ flowchart TD
     style GlobalLoc fill:#fff,stroke:#e74c3c,stroke-width:2px
 ```
 
-`SpatialView::GlobalPlacement(occId)` walks `ParentOccurrenceDefId` chain upward,
+`PathView::OccurrenceLocation(occId)` walks `ParentOccurrenceDefId` chain upward,
 composing `TopLoc_Location` values from root to leaf.

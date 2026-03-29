@@ -49,6 +49,10 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 - Built-in layers for algorithms: `AnalysisLayer` (BndLib, UVBounds, FClass2d caches)
 - **Why**: foundation for OCAF-free DataExchange pipeline
 - **Depends on**: Named Layers infrastructure (done)
+- **Design direction**:
+  - persistent metadata stays on top of the GUID-keyed layer system, not in `TransientCache`
+  - `UID` / `RefUID` are the persistence anchors; `NodeId` / `RefId` remain runtime addresses
+  - occurrence-context fallback (occurrence override -> product) should stay outside core storage and be added later through `PathView` or layer-side helpers
 
 ### ~~Incremental reverse-index delta~~ — DONE (2026-03-19)
 - `Populate::Append` now uses `BuildDeltaReverseIndex` instead of full `BuildReverseIndex`
@@ -152,23 +156,38 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 - UID (Kind + Counter) is the persistent identity; MutationGen tracks freshness
 - Layer-aware: serialize only needed layers
 - Binary or JSON format
+- MUST persist:
+  - topology / assembly defs and refs
+  - reps needed for reconstruction
+  - UID / RefUID vectors and next UID counter
+  - direct mutation freshness (`OwnGen`)
+  - explicitly persistent layer payloads
+- MUST NOT persist:
+  - `TransientCache`
+  - reconstructed shape cache
+  - reverse indices / lazy UID lookup maps
+  - propagation / deferred-mutation bookkeeping
+- OPTIONAL:
+  - history log
+  - heavy tessellation payloads when regeneration is acceptable
+- Reuse existing history + `OnCompact(remap)` as the remap contract; persistence should anchor on UID / RefUID rather than saved NodeId / RefId
 
 ### ~~Assembly model extension (Phases 1+2)~~ — DONE (2026-03-20)
 - **Full design**: [TODO_Assembly.md](TODO_Assembly.md) — see for complete implementation details
 - **Intrinsic architecture**: assembly is core, not a Layer plugin — every graph has a root Product
 - `Kind::Product = 10`, `Kind::Occurrence = 11` as first-class node kinds with UIDs, history, compact
-- API distributed across existing views: DefsView (queries, RootProducts, IsAssembly, IsPart), BuilderView (AddProduct, AddOccurrence, RemoveNode cascade), MutView (RAII guards), SpatialView (GlobalPlacement), Iterator (ProductDef, OccurrenceDef)
+- API distributed across current surfaces: TopoView / PathView (queries, RootProducts, IsAssembly, IsPart), BuilderView (AddProduct, AddOccurrence, RemoveNode cascade), `BRepGraph::MutProduct()` / `MutOccurrence()` (RAII guards), PathView (`OccurrenceLocation()`), Iterator (ProductDef, OccurrenceDef)
 - `Build(aBox)` auto-creates root Product; algorithms always see a uniform model
-- Product→Occurrence→Product DAG; each occurrence carries `TopLoc_Location` + `ParentOccurrenceIdx` for tree-structured placement chains
-- Self-reference prevention, removed-product guards, DAG-safe GlobalPlacement via ParentOccurrenceIdx walk
-- 25 GTests covering data model, API, mutations, DAG sharing, deep nesting, error paths, cascading removal
+- Product→Occurrence→Product DAG; each occurrence carries `TopLoc_Location` + `ParentOccurrenceDefId` for tree-structured placement chains
+- Self-reference prevention, removed-product guards, DAG-safe occurrence placement via `ParentOccurrenceDefId` walk
+- 30 GTests covering data model, API, mutations, DAG sharing, deep nesting, facade reconstruction, error paths, and cascading removal
 - ~~Phase 3 OnCompact signature fix~~ — DONE: `DataMap<BRepGraph_NodeId, BRepGraph_NodeId>` unified remap map
 
 ### Assembly model extension (Remaining phases) [Arch] ★★★★
 - Phase 4: XDE Population Bridge — `BRepGraphDE_PopulateAssembly` in DataExchange/TKXCAF
-- Phase 5: Reconstruction — shape reconstruction from assembly graph
+- Phase 5: XDE Export — BRepGraph assembly -> XDE document structure
 - Phase 6: DE Metadata on Assembly Nodes — colors, materials, layers on assembly nodes
-- `BRepGraph_AssemblyQuery` utility for complex queries (ResolveAttribute, LeafParts, OccurrencePath)
+- usage-context attribute resolution helper (deferred until DE layers exist)
 - Replaces XCAFDoc_ShapeTool's Shape/Reference/Component model
 - XDE bridge lives in DataExchange/TKXCAF (uses TKXCAF internally; TKBRep itself has no TKXCAF dependency)
 
@@ -177,12 +196,24 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 - Allows external code holding NodeIds to remap after Compact
 - Currently Compact transfers UIDs but doesn't expose the remapping
 
+### Public/Internal Boundary Cleanup [Arch] ★★★
+- Keep `BRepGraphInc_*` as backend storage implementation, not stable public surface
+- Highest-priority leaks to remove first:
+  - public headers including `BRepGraphInc_Definition.hxx` / `Reference.hxx` / `Representation.hxx`
+  - `RefsView` returning concrete `BRepGraphInc::*Ref`
+  - helper signatures (`Tool`, `WireExplorer`) that hard-code backend usage structs
+- Smallest safe slice:
+  - add public usage/value wrappers for ref payload inspection
+  - refactor `RefsView` to return those wrappers
+  - add test helpers so GTests can stop depending directly on backend structs
+- Defer deeper mutation/accessor redesign until after this header-boundary slice lands
+
 ### Fingerprinting & Quick Equality [Perf] ★★★
 - Topological fingerprints (hash of reverse-index adjacency + geometry hashes)
 - O(1) shape comparison, fast deduplication, change detection
 
 ### Lock-Free Query Paths [Perf] ★★★
-- All const views (DefsView, SpatialView, RelEdgesView) completely lock-free
+- All const views (`TopoView`, `PathView`, `RefsView`) completely lock-free
 - Atomic flags + generational counters
 - Only mutation paths use shared_mutex
 - **Profile context**: const query paths currently have no contention, but future parallel algorithms may need this

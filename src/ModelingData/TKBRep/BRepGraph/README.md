@@ -34,7 +34,7 @@ flowchart TB
 
   subgraph Views
     V1[Topo / UIDs / Shapes]
-    V2[Attrs / Builder / Refs]
+    V2[Cache / Builder / Refs]
     V3[Paths]
   end
 
@@ -265,7 +265,9 @@ Can also start from a Product to descend through assembly occurrences into topol
 | **Face** | `Surface`, `Tolerance`, `NaturalRestriction`, `Wires`, `BndLib`, `UVBounds`, `CurveOnPlane`, `EvalD0` |
 | **Wire** | `Edges` (traversal order via WireExplorer) |
 
-## Extensibility: Layers vs UserAttributes
+## Extensibility: Layers vs TransientCache
+
+`UserAttribute` naming is reserved for the future persistent metadata subsystem.
 
 ### Layers (`BRepGraph_Layer`)
 
@@ -308,7 +310,14 @@ registered cache-kind descriptors with O(1) slot access. NOT a Layer — cleared
 ### When to Use Which
 
 - Data that must persist and migrate across graph mutations → **Layer**
-- Computed values that can be recomputed from entity state → **TransientCache** (via `AttrsView`)
+- Computed values that can be recomputed from entity state → **TransientCache** (via `CacheView` / `Cache()`)
+
+### Persistence Boundary
+
+- Persist the graph model: topology / assembly defs, refs, reps, UID / RefUID vectors, direct mutation freshness (`OwnGen`), and explicitly persistent layer data.
+- Do **not** persist runtime acceleration state: `TransientCache`, reconstructed shape cache, reverse indices, lazy UID lookup maps, or deferred-mutation bookkeeping.
+- Use `UID` / `RefUID` as persistence anchors and `NodeId` / `RefId` as runtime addresses.
+- Keep occurrence-context metadata resolution out of the core storage model; add it later through `PathView` helpers or layer-side resolvers once DE layers exist.
 
 ## Mutation Tracking and Change Propagation
 
@@ -390,9 +399,10 @@ Benefits: O(1) allocation (bump-pointer), O(1) destruction (bulk page release). 
 ## Practical Guidance
 
 1. Treat BRepGraph as API boundary and BRepGraphInc as implementation backend.
-2. Keep reverse index updates consistent with forward ref changes.
-3. Prefer incremental updates in mutators over full rebuilds.
-4. Use profiling before adding micro-optimizations.
+2. Keep `BRepGraphInc_*` types out of stable public headers when a facade/value type is enough.
+3. Keep reverse index updates consistent with forward ref changes.
+4. Prefer incremental updates in mutators over full rebuilds.
+5. Use profiling before adding micro-optimizations.
 
 ## File Map
 

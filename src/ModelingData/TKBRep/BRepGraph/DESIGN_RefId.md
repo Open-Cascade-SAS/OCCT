@@ -1928,12 +1928,13 @@ Attribute identity = (EntityUID, AttrKey). No separate UID for the attribute.
 Pros: Simple. Works for per-entity attributes.
 Cons: Cannot track shared attributes (same color on 100 faces). Cannot track attribute-only changes.
 
-**A2: UID on Attribute Handle**
+**A2: UID on Persistent Metadata Value**
 
-In a future persistent attribute subsystem, add UID to `BRepGraph_UserAttribute`:
+If a handle-based persistent metadata design is ever used, add UID to a dedicated
+metadata value type outside `TransientCache`:
 
 ```cpp
-class BRepGraph_UserAttribute : public Standard_Transient
+class BRepGraph_PersistentMetadataValue : public Standard_Transient
 {
   BRepGraph_AttrUID myUID;  // NEW
   uint32_t myMutationGen;   // NEW
@@ -1950,8 +1951,8 @@ Separate persistent attribute store (flat vector) with parallel UID vector:
 ```cpp
 struct AttrStore
 {
-  NCollection_Vector<Handle(BRepGraph_UserAttribute)> Attrs;
-  NCollection_Vector<BRepGraph_AttrUID>               UIDs;
+  NCollection_Vector<Handle(BRepGraph_PersistentMetadataValue)> Attrs;
+  NCollection_Vector<BRepGraph_AttrUID>                          UIDs;
   int NbActive = 0;
 };
 ```
@@ -2220,7 +2221,7 @@ Representations:    RepId  (Kind+Index)      BRepGraph_RepUID         RepStore<T
                     ToGUID       = hash(GraphGUID + VersionStamp fields) → Standard_GUID
 ```
 
-**Attributes**: Not a separate ID domain. Stored as properties on entities/refs (via AttrsView/NodeCache). PMI annotations that need identity become entity kinds (Kind::Annotation).
+**Attributes**: Not a separate ID domain in the current direction. Persistent metadata should live in layers keyed by entity/ref UID, while recomputable values stay in `TransientCache`. PMI annotations that need identity become entity kinds (`Kind::Annotation`).
 
 ### 25.1 UID Allocation Flow
 
