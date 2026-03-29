@@ -79,6 +79,8 @@ inline void locateSpan(double                            theParam,
 }
 
 //! Count consecutive parameters in the same span (for cache threshold decision).
+//! For non-periodic cases, uses a fast knot-boundary comparison instead of
+//! calling BSplCLib::LocateParameter for every subsequent parameter.
 inline int countSpanSize(const NCollection_Array1<double>& theParams,
                          const NCollection_Array1<double>& theFlatKnots,
                          int                               theDegree,
@@ -90,6 +92,25 @@ inline int countSpanSize(const NCollection_Array1<double>& theParams,
   const int aNb    = theParams.Size();
   int       aCount = 1;
 
+  if (!theIsPeriodic)
+  {
+    // Fast path: params are sorted (ascending from grid construction),
+    // so just compare against the next knot boundary.
+    if (theTargetSpan + 1 > theFlatKnots.Upper())
+    {
+      return aCount;
+    }
+    const double aNextKnot = theFlatKnots.Value(theTargetSpan + 1);
+    for (int i = theStartIdx + 1; i < aNb; ++i)
+    {
+      if (theParams.Value(aLower + i) >= aNextKnot)
+        break;
+      ++aCount;
+    }
+    return aCount;
+  }
+
+  // Periodic fallback: span assignment requires full LocateParameter.
   for (int i = theStartIdx + 1; i < aNb; ++i)
   {
     double aParam    = theParams.Value(aLower + i);
@@ -150,17 +171,29 @@ NCollection_Array2<ResultT> evaluateGridCached(const SurfaceData&               
   int    aUSpanSize    = 0;
   double aUSpanMid     = 0.0;
   double aUSpanHalfLen = 1.0;
+  double aUSpanEnd     = 0.0; // upper flat-knot boundary of current U span
 
   for (int ui = 0; ui < aNbU; ++ui)
   {
     const double aU     = theUParams.Value(aLowU + ui);
     double       aAdjU  = aU;
     int          aUSpan = 0;
-    locateSpan(aU, *theData.UFlatKnots, theData.UDegree, theData.IsUPeriodic, aAdjU, aUSpan);
+
+    // Skip locateSpan when parameter is still within current U span.
+    if (!theData.IsUPeriodic && aPrevUSpan >= 0 && aU < aUSpanEnd)
+    {
+      aAdjU  = aU;
+      aUSpan = aPrevUSpan;
+    }
+    else
+    {
+      locateSpan(aU, *theData.UFlatKnots, theData.UDegree, theData.IsUPeriodic, aAdjU, aUSpan);
+    }
 
     if (aUSpan != aPrevUSpan)
     {
       aPrevUSpan = aUSpan;
+      aUSpanEnd  = theData.UFlatKnots->Value(aUSpan + 1);
       aUSpanSize = countSpanSize(theUParams,
                                  *theData.UFlatKnots,
                                  theData.UDegree,
@@ -175,17 +208,29 @@ NCollection_Array2<ResultT> evaluateGridCached(const SurfaceData&               
     double aVSpanMid     = 0.0;
     double aVSpanHalfLen = 1.0;
     bool   aUseCache     = false;
+    double aVSpanEnd     = 0.0; // upper flat-knot boundary of current V span
 
     for (int vi = 0; vi < aNbV; ++vi)
     {
       const double aV     = theVParams.Value(aLowV + vi);
       double       aAdjV  = aV;
       int          aVSpan = 0;
-      locateSpan(aV, *theData.VFlatKnots, theData.VDegree, theData.IsVPeriodic, aAdjV, aVSpan);
+
+      // Skip locateSpan when parameter is still within current V span.
+      if (!theData.IsVPeriodic && aPrevVSpan >= 0 && aV < aVSpanEnd)
+      {
+        aAdjV  = aV;
+        aVSpan = aPrevVSpan;
+      }
+      else
+      {
+        locateSpan(aV, *theData.VFlatKnots, theData.VDegree, theData.IsVPeriodic, aAdjV, aVSpan);
+      }
 
       if (aVSpan != aPrevVSpan)
       {
         aPrevVSpan = aVSpan;
+        aVSpanEnd  = theData.VFlatKnots->Value(aVSpan + 1);
         aVSpanSize = countSpanSize(theVParams,
                                    *theData.VFlatKnots,
                                    theData.VDegree,
@@ -240,19 +285,53 @@ NCollection_Array2<ResultT> evaluateGridDirect(const SurfaceData&               
 
   NCollection_Array2<ResultT> aGrid(1, aNbU, 1, aNbV);
 
+  int    aPrevUSpan = -1;
+  double aUSpanEnd  = 0.0;
+
   for (int ui = 0; ui < aNbU; ++ui)
   {
     const double aU     = theUParams.Value(aLowU + ui);
     double       aAdjU  = aU;
     int          aUSpan = 0;
-    locateSpan(aU, *theData.UFlatKnots, theData.UDegree, theData.IsUPeriodic, aAdjU, aUSpan);
+
+    if (!theData.IsUPeriodic && aPrevUSpan >= 0 && aU < aUSpanEnd)
+    {
+      aAdjU  = aU;
+      aUSpan = aPrevUSpan;
+    }
+    else
+    {
+      locateSpan(aU, *theData.UFlatKnots, theData.UDegree, theData.IsUPeriodic, aAdjU, aUSpan);
+    }
+    if (aUSpan != aPrevUSpan)
+    {
+      aPrevUSpan = aUSpan;
+      aUSpanEnd  = theData.UFlatKnots->Value(aUSpan + 1);
+    }
+
+    int    aPrevVSpan = -1;
+    double aVSpanEnd  = 0.0;
 
     for (int vi = 0; vi < aNbV; ++vi)
     {
       const double aV     = theVParams.Value(aLowV + vi);
       double       aAdjV  = aV;
       int          aVSpan = 0;
-      locateSpan(aV, *theData.VFlatKnots, theData.VDegree, theData.IsVPeriodic, aAdjV, aVSpan);
+
+      if (!theData.IsVPeriodic && aPrevVSpan >= 0 && aV < aVSpanEnd)
+      {
+        aAdjV  = aV;
+        aVSpan = aPrevVSpan;
+      }
+      else
+      {
+        locateSpan(aV, *theData.VFlatKnots, theData.VDegree, theData.IsVPeriodic, aAdjV, aVSpan);
+      }
+      if (aVSpan != aPrevVSpan)
+      {
+        aPrevVSpan = aVSpan;
+        aVSpanEnd  = theData.VFlatKnots->Value(aVSpan + 1);
+      }
 
       ResultT aResult;
       theEval(theData, aAdjU, aAdjV, aUSpan, aVSpan, aResult);
