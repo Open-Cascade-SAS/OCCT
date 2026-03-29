@@ -268,15 +268,6 @@ TopoDS_Shape BRepGraph::ShapesView::ReconstructFace(const BRepGraph_FaceId theFa
 
 //=================================================================================================
 
-TopoDS_Shape BRepGraph::ShapesView::ReconstructFromNode(const BRepGraph_NodeId theNode) const
-{
-  BRepGraph_ReconstructionContext aContext =
-    makeReconstructionContext(myGraph, myGraph->myData->myIncStorage);
-  return reconstructShape(aContext, theNode);
-}
-
-//=================================================================================================
-
 BRepGraph_NodeId BRepGraph::ShapesView::FindNode(const TopoDS_Shape& theShape) const
 {
   if (theShape.IsNull())

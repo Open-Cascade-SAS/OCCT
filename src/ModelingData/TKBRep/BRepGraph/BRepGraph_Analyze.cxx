@@ -61,20 +61,16 @@ NCollection_Vector<std::pair<BRepGraph_EdgeId, BRepGraph_FaceId>> BRepGraph_Anal
   for (int aFaceDefIdx = 0; aFaceDefIdx < aDefs.NbFaces(); ++aFaceDefIdx)
   {
     const BRepGraph_FaceId aFaceId(aFaceDefIdx);
-    const BRepGraph_NodeId aFaceDefId = BRepGraph_NodeId::Face(aFaceDefIdx);
 
-    const NCollection_Vector<BRepGraph_NodeId> anEdges = aDefs.EdgesOfFace(aFaceDefId);
+    const NCollection_Vector<BRepGraph_EdgeId> anEdges = aDefs.EdgesOfFace(aFaceId);
     for (int anEdgeIdx = 0; anEdgeIdx < anEdges.Length(); ++anEdgeIdx)
     {
-      const BRepGraph_NodeId anEdgeNode = anEdges.Value(anEdgeIdx);
-      if (anEdgeNode.NodeKind != BRepGraph_NodeId::Kind::Edge)
-        continue;
-      const BRepGraph_EdgeId       anEdgeDefId(anEdgeNode.Index);
-      const BRepGraphInc::EdgeDef& anEdge = aDefs.Edge(anEdgeDefId);
+      const BRepGraph_EdgeId       anEdgeDefId = anEdges.Value(anEdgeIdx);
+      const BRepGraphInc::EdgeDef& anEdge      = aDefs.Edge(anEdgeDefId);
       if (anEdge.IsDegenerate)
         continue;
 
-      const BRepGraphInc::CoEdgeDef* aPCurve = aDefs.FindPCurve(anEdge.Id, aFaceDefId);
+      const BRepGraphInc::CoEdgeDef* aPCurve = aDefs.FindPCurve(anEdge.Id, aFaceId);
       if (aPCurve == nullptr)
         aResult.Append(std::make_pair(anEdgeDefId, aFaceId));
     }
@@ -378,5 +374,43 @@ void BRepGraph_Analyze::ParallelForEachEdge(
     0,
     aIndices.Length(),
     [&](int anIdx) { theLambda(aIndices.Value(anIdx)); },
+    false);
+}
+
+//=================================================================================================
+
+void BRepGraph_Analyze::ParallelForEachFace(
+  const BRepGraph&                                   theGraph,
+  const std::function<void(const BRepGraph_FaceId)>& theLambda)
+{
+  const int aNbFaces = theGraph.Topo().NbFaces();
+  OSD_Parallel::For(
+    0,
+    aNbFaces,
+    [&](int anIdx)
+    {
+      const BRepGraph_FaceId aFaceId(anIdx);
+      if (!theGraph.Topo().IsRemoved(aFaceId))
+        theLambda(aFaceId);
+    },
+    false);
+}
+
+//=================================================================================================
+
+void BRepGraph_Analyze::ParallelForEachEdge(
+  const BRepGraph&                                   theGraph,
+  const std::function<void(const BRepGraph_EdgeId)>& theLambda)
+{
+  const int aNbEdges = theGraph.Topo().NbEdges();
+  OSD_Parallel::For(
+    0,
+    aNbEdges,
+    [&](int anIdx)
+    {
+      const BRepGraph_EdgeId anEdgeId(anIdx);
+      if (!theGraph.Topo().IsRemoved(anEdgeId))
+        theLambda(anEdgeId);
+    },
     false);
 }

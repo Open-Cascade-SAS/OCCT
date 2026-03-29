@@ -171,15 +171,15 @@ TEST_F(BRepGraph_ViewsTest, UIDsView_Generation_Positive)
 
 TEST_F(BRepGraph_ViewsTest, SpatialView_AdjacentFaces_FourPerBoxFace)
 {
-  BRepGraph_NodeId                     aFaceId(BRepGraph_NodeId::Kind::Face, 0);
-  NCollection_Vector<BRepGraph_NodeId> aResult = myGraph.Topo().AdjacentFaces(aFaceId);
+  BRepGraph_FaceId                     aFaceId(0);
+  NCollection_Vector<BRepGraph_FaceId> aResult = myGraph.Topo().AdjacentFaces(aFaceId);
   EXPECT_EQ(aResult.Length(), 4);
 }
 
 TEST_F(BRepGraph_ViewsTest, SpatialView_FacesOfEdge_TwoPerBoxEdge)
 {
-  BRepGraph_NodeId                     anEdgeId(BRepGraph_NodeId::Kind::Edge, 0);
-  NCollection_Vector<BRepGraph_NodeId> aResult = myGraph.Topo().FacesOfEdge(anEdgeId);
+  BRepGraph_EdgeId                           anEdgeId(0);
+  const NCollection_Vector<BRepGraph_FaceId>& aResult = myGraph.Topo().FacesOfEdge(anEdgeId);
   EXPECT_EQ(aResult.Length(), 2);
 }
 

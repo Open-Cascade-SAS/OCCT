@@ -21,6 +21,7 @@
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraphAlgo_FaceAnalysis.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
+#include <BRepPrimAPI_MakeCylinder.hxx>
 #include <Precision.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -189,4 +190,51 @@ TEST(BRepGraphAlgo_FaceAnalysisTest, VertexGluing_AveragedCoordinates)
   const BRepGraph_VertexId anEndVtx =
     BRepGraph_Tool::Edge::EndVertex(aGraph, BRepGraph_EdgeId(anEdgeIdx)).VertexDefId;
   EXPECT_EQ(aStartVtx, anEndVtx);
+}
+
+TEST(BRepGraphAlgo_FaceAnalysisTest, Perform_ParallelMatchesSerial)
+{
+  // Multi-face compound: box (6 faces) + cylinder (3 faces).
+  BRepPrimAPI_MakeBox      aBoxMaker(10.0, 20.0, 30.0);
+  BRepPrimAPI_MakeCylinder aCylMaker(5.0, 15.0);
+
+  BRep_Builder    aBB;
+  TopoDS_Compound aCompound;
+  aBB.MakeCompound(aCompound);
+  aBB.Add(aCompound, aBoxMaker.Shape());
+  aBB.Add(aCompound, aCylMaker.Shape());
+
+  // Serial run.
+  BRepGraph aGraphSerial;
+  aGraphSerial.Build(aCompound);
+  ASSERT_TRUE(aGraphSerial.IsDone());
+
+  BRepGraphAlgo_FaceAnalysis::Options aSerialOpts;
+  aSerialOpts.MinTolerance = 1.0e-8;
+  aSerialOpts.Parallel     = false;
+  const BRepGraphAlgo_FaceAnalysis::Result aSerialResult =
+    BRepGraphAlgo_FaceAnalysis::Perform(aGraphSerial, aSerialOpts);
+  ASSERT_TRUE(aSerialResult.IsDone);
+
+  // Parallel run on a fresh graph from the same compound.
+  BRepGraph aGraphParallel;
+  aGraphParallel.Build(aCompound);
+  ASSERT_TRUE(aGraphParallel.IsDone());
+
+  BRepGraphAlgo_FaceAnalysis::Options aParallelOpts;
+  aParallelOpts.MinTolerance = 1.0e-8;
+  aParallelOpts.Parallel     = true;
+  const BRepGraphAlgo_FaceAnalysis::Result aParallelResult =
+    BRepGraphAlgo_FaceAnalysis::Perform(aGraphParallel, aParallelOpts);
+  ASSERT_TRUE(aParallelResult.IsDone);
+
+  // Both runs must produce identical diagnostics.
+  EXPECT_EQ(aParallelResult.NbSmallEdges, aSerialResult.NbSmallEdges);
+  EXPECT_EQ(aParallelResult.NbDeletedFaces, aSerialResult.NbDeletedFaces);
+  EXPECT_EQ(aParallelResult.DegeneratedEdges.Length(), aSerialResult.DegeneratedEdges.Length());
+  EXPECT_EQ(aParallelResult.DeletedFaces.Length(), aSerialResult.DeletedFaces.Length());
+
+  // Verify the face and edge counts also match between the two graphs.
+  EXPECT_EQ(aGraphParallel.Topo().NbActiveFaces(), aGraphSerial.Topo().NbActiveFaces());
+  EXPECT_EQ(aGraphParallel.Topo().NbEdges(), aGraphSerial.Topo().NbEdges());
 }

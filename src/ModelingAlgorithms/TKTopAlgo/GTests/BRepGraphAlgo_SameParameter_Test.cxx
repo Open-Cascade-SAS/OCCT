@@ -149,6 +149,35 @@ TEST(BRepGraphAlgo_SameParameterTest, Enforce_NoCurve3d_SetsFlag)
   }
 }
 
+TEST(BRepGraphAlgo_SameParameterTest, FallbackCounters_DefaultZeroOnCleanShape)
+{
+  // A clean box should not trigger any C0 or Approx fallbacks.
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+
+  BRepGraph aGraph;
+  aGraph.Build(aBox);
+  ASSERT_TRUE(aGraph.IsDone());
+
+  // Clear SameParameter flags so Perform actually processes each edge.
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
+  {
+    aGraph.Builder().MutEdge(BRepGraph_EdgeId(anEdgeIdx))->SameParameter = false;
+  }
+
+  NCollection_IndexedMap<BRepGraph_EdgeId> anEdgeIds;
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
+  {
+    anEdgeIds.Add(BRepGraph_EdgeId(anEdgeIdx));
+  }
+
+  const BRepGraphAlgo_SameParameter::Result aResult =
+    BRepGraphAlgo_SameParameter::Perform(aGraph, anEdgeIds, 1.0e-04);
+
+  EXPECT_EQ(aResult.NbC0Fallbacks, 0);
+  EXPECT_EQ(aResult.NbApproxFallbacks, 0);
+}
+
 TEST(BRepGraphAlgo_SameParameterTest, Enforce_AfterSewing_SewnEdgesAreValid)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);

@@ -145,8 +145,8 @@ void BRepGraphCheck::CheckShellMinimum(const BRepGraph&                         
   while (aFront < aQueue.Length())
   {
     const int              aCurrFaceIdx                   = aQueue.Value(aFront++);
-    const BRepGraph_NodeId aCurrFaceNodeId                = BRepGraph_NodeId::Face(aCurrFaceIdx);
-    const NCollection_Vector<BRepGraph_NodeId> anAdjFaces = aSpatial.AdjacentFaces(aCurrFaceNodeId);
+    const BRepGraph_FaceId aCurrFaceId(aCurrFaceIdx);
+    const NCollection_Vector<BRepGraph_FaceId> anAdjFaces = aSpatial.AdjacentFaces(aCurrFaceId);
 
     for (int anAdjIter = 0; anAdjIter < anAdjFaces.Length(); ++anAdjIter)
     {
@@ -401,9 +401,9 @@ void BRepGraphCheck::CheckShellOrientation(const BRepGraph&                     
 
       // Find all manifold-shared edges (those with exactly 2 face references).
       const BRepGraph::TopoView& aSpatial = theGraph.Topo();
-      const BRepGraph_NodeId     aCurrFaceNodeId(BRepGraph_NodeId::Kind::Face, aCurrFace);
-      const NCollection_Vector<BRepGraph_NodeId> anAdjFaces =
-        aSpatial.AdjacentFaces(aCurrFaceNodeId);
+      const BRepGraph_FaceId     aCurrFaceId(aCurrFace);
+      const NCollection_Vector<BRepGraph_FaceId> anAdjFaces =
+        aSpatial.AdjacentFaces(aCurrFaceId);
 
       for (int anAdjIter = 0; anAdjIter < anAdjFaces.Length(); ++anAdjIter)
       {
@@ -412,8 +412,8 @@ void BRepGraphCheck::CheckShellOrientation(const BRepGraph&                     
           continue;
 
         // Find the shared edge and its orientations in both faces.
-        const NCollection_Vector<BRepGraph_NodeId> aSharedEdges =
-          aSpatial.SharedEdges(aCurrFaceNodeId, anAdjFaces.Value(anAdjIter));
+        const NCollection_Vector<BRepGraph_EdgeId> aSharedEdges =
+          aSpatial.SharedEdges(aCurrFaceId, anAdjFaces.Value(anAdjIter));
 
         for (int anEdgeIter = 0; anEdgeIter < aSharedEdges.Length(); ++anEdgeIter)
         {

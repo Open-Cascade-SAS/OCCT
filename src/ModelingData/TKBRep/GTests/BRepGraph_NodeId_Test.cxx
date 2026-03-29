@@ -62,8 +62,8 @@ TEST(BRepGraph_NodeIdTest, ImplicitConversion_PassToFunction)
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_FaceId aFace(0);
-  // AdjacentFaces takes BRepGraph_NodeId - implicit conversion works.
-  NCollection_Vector<BRepGraph_NodeId> aAdj = aGraph.Topo().AdjacentFaces(aFace);
+  // AdjacentFaces takes BRepGraph_FaceId - typed id works directly.
+  NCollection_Vector<BRepGraph_FaceId> aAdj = aGraph.Topo().AdjacentFaces(aFace);
   EXPECT_GT(aAdj.Length(), 0);
 }
 

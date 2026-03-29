@@ -93,6 +93,24 @@ struct NodeIdType<BRepGraphInc::OccurrenceDef>
 {
   using type = BRepGraph_OccurrenceId;
 };
+
+template <>
+struct NodeIdType<BRepGraphInc::CoEdgeDef>
+{
+  using type = BRepGraph_CoEdgeId;
+};
+
+template <>
+struct NodeIdType<BRepGraphInc::CompoundDef>
+{
+  using type = BRepGraph_CompoundId;
+};
+
+template <>
+struct NodeIdType<BRepGraphInc::CompSolidDef>
+{
+  using type = BRepGraph_CompSolidId;
+};
 } // namespace BRepGraph_IteratorDetail
 
 template <typename NodeType>
@@ -204,6 +222,30 @@ inline BRepGraph_Iterator<BRepGraphInc::OccurrenceDef>::BRepGraph_Iterator(
   skipRemoved();
 }
 
+template <>
+inline BRepGraph_Iterator<BRepGraphInc::CoEdgeDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
+    : myGraph(theGraph),
+      myLength(theGraph.Topo().NbCoEdges())
+{
+  skipRemoved();
+}
+
+template <>
+inline BRepGraph_Iterator<BRepGraphInc::CompoundDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
+    : myGraph(theGraph),
+      myLength(theGraph.Topo().NbCompounds())
+{
+  skipRemoved();
+}
+
+template <>
+inline BRepGraph_Iterator<BRepGraphInc::CompSolidDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
+    : myGraph(theGraph),
+      myLength(theGraph.Topo().NbCompSolids())
+{
+  skipRemoved();
+}
+
 // ---------------------------------------------------------------------------
 // Definition iterators: Current()
 // ---------------------------------------------------------------------------
@@ -256,5 +298,41 @@ inline const BRepGraphInc::OccurrenceDef& BRepGraph_Iterator<BRepGraphInc::Occur
 {
   return myGraph.Paths().Occurrence(CurrentId());
 }
+
+template <>
+inline const BRepGraphInc::CoEdgeDef& BRepGraph_Iterator<BRepGraphInc::CoEdgeDef>::Current() const
+{
+  return myGraph.Topo().CoEdge(CurrentId());
+}
+
+template <>
+inline const BRepGraphInc::CompoundDef& BRepGraph_Iterator<BRepGraphInc::CompoundDef>::Current()
+  const
+{
+  return myGraph.Topo().Compound(CurrentId());
+}
+
+template <>
+inline const BRepGraphInc::CompSolidDef& BRepGraph_Iterator<BRepGraphInc::CompSolidDef>::Current()
+  const
+{
+  return myGraph.Topo().CompSolid(CurrentId());
+}
+
+// ---------------------------------------------------------------------------
+// Convenience type aliases
+// ---------------------------------------------------------------------------
+
+using BRepGraph_SolidIterator      = BRepGraph_Iterator<BRepGraphInc::SolidDef>;
+using BRepGraph_ShellIterator      = BRepGraph_Iterator<BRepGraphInc::ShellDef>;
+using BRepGraph_FaceIterator       = BRepGraph_Iterator<BRepGraphInc::FaceDef>;
+using BRepGraph_WireIterator       = BRepGraph_Iterator<BRepGraphInc::WireDef>;
+using BRepGraph_EdgeIterator       = BRepGraph_Iterator<BRepGraphInc::EdgeDef>;
+using BRepGraph_VertexIterator     = BRepGraph_Iterator<BRepGraphInc::VertexDef>;
+using BRepGraph_CoEdgeIterator     = BRepGraph_Iterator<BRepGraphInc::CoEdgeDef>;
+using BRepGraph_CompoundIterator   = BRepGraph_Iterator<BRepGraphInc::CompoundDef>;
+using BRepGraph_CompSolidIterator  = BRepGraph_Iterator<BRepGraphInc::CompSolidDef>;
+using BRepGraph_ProductIterator    = BRepGraph_Iterator<BRepGraphInc::ProductDef>;
+using BRepGraph_OccurrenceIterator = BRepGraph_Iterator<BRepGraphInc::OccurrenceDef>;
 
 #endif // _BRepGraph_Iterator_HeaderFile

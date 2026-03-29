@@ -23,6 +23,12 @@
 //! Each struct encodes how a definition is used at a particular site,
 //! carrying the orientation and (where applicable) the local location
 //! of the child in the parent context.
+//!
+//! Usage structs are lightweight projections of the managed Reference entries
+//! (see BRepGraphInc_Reference.hxx). They carry only the semantic payload
+//! (DefId + Orientation + Location) without lifecycle fields (RefId, ParentId,
+//! OwnGen, IsRemoved). Used in read-only iteration contexts (BRepGraph_Tool,
+//! BRepGraph_WireExplorer) where identity tracking is not needed.
 namespace BRepGraphInc
 {
 

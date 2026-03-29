@@ -227,6 +227,13 @@ bool BRepGraph::IsDone() const
 
 //=================================================================================================
 
+const NCollection_Vector<BRepGraph_NodeId>& BRepGraph::RootNodeIds() const
+{
+  return myData->myRootNodeIds;
+}
+
+//=================================================================================================
+
 const BRepGraphInc::BaseDef* BRepGraph::topoEntity(const BRepGraph_NodeId theId) const
 {
   if (!theId.IsValid())

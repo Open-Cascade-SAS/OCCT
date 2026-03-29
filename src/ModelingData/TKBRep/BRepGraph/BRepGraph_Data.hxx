@@ -67,6 +67,9 @@ struct BRepGraph_Data
 
   bool myIsDone = false;
 
+  //! Root topology NodeIds set by Build()/AppendShape() — one per input shape.
+  NCollection_Vector<BRepGraph_NodeId> myRootNodeIds;
+
   //! When true, markModified() only increments OwnGen + SubtreeGen and appends to
   //! myDeferredModified — no mutex acquisition and no upward propagation.
   std::atomic<bool> myDeferredMode{false};

@@ -1177,3 +1177,54 @@ TEST(BRepGraph_BuildTest, RegularityLayer_OnCompact_RemapsNodeIds)
   // Edge1 was dropped.
   EXPECT_EQ(aLayer.NbRegularities(anEdge1), 0);
 }
+
+TEST(BRepGraph_BuildTest, RootNodeIds_Box_ReturnsSolid)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+
+  BRepGraph aGraph;
+  aGraph.Build(aBox);
+  ASSERT_TRUE(aGraph.IsDone());
+
+  // Build() from a solid should produce exactly one root node.
+  const NCollection_Vector<BRepGraph_NodeId>& aRoots = aGraph.RootNodeIds();
+  ASSERT_EQ(aRoots.Length(), 1);
+
+  // The root's kind should match the input shape type (Solid for a box).
+  const BRepGraph_NodeId aRoot = aRoots.Value(0);
+  EXPECT_TRUE(aRoot.IsValid());
+  EXPECT_EQ(aRoot.NodeKind, BRepGraph_NodeId::Kind::Solid);
+}
+
+TEST(BRepGraph_BuildTest, RootNodeIds_AppendShape_ReturnsTwoRoots)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+
+  BRepGraph aGraph;
+  aGraph.Build(aBox);
+  ASSERT_TRUE(aGraph.IsDone());
+  ASSERT_EQ(aGraph.RootNodeIds().Length(), 1);
+
+  // Append a second shape (a single face from another box).
+  BRepPrimAPI_MakeBox aBox2Maker(5.0, 5.0, 5.0);
+  TopExp_Explorer     anExp(aBox2Maker.Shape(), TopAbs_FACE);
+  ASSERT_TRUE(anExp.More());
+  const TopoDS_Face aFace = TopoDS::Face(anExp.Current());
+
+  aGraph.Builder().AppendShape(aFace);
+  ASSERT_TRUE(aGraph.IsDone());
+
+  // After appending, there should be two root nodes.
+  const NCollection_Vector<BRepGraph_NodeId>& aRoots = aGraph.RootNodeIds();
+  EXPECT_EQ(aRoots.Length(), 2);
+
+  // First root remains a Solid; second root is a Face (from AppendShape).
+  EXPECT_EQ(aRoots.Value(0).NodeKind, BRepGraph_NodeId::Kind::Solid);
+  EXPECT_EQ(aRoots.Value(1).NodeKind, BRepGraph_NodeId::Kind::Face);
+
+  // Both roots should be valid.
+  EXPECT_TRUE(aRoots.Value(0).IsValid());
+  EXPECT_TRUE(aRoots.Value(1).IsValid());
+}

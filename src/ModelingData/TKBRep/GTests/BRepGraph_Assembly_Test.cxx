@@ -793,7 +793,7 @@ TEST(BRepGraph_AssemblyTest, ShapesView_OccurrenceShape_UsesGlobalPlacementChain
   ASSERT_FALSE(aOccurrenceShape.IsNull());
   EXPECT_NEAR(translationX(aOccurrenceShape), 30.0, Precision::Confusion());
 
-  const TopoDS_Shape aReconstructed = aGraph.Shapes().ReconstructFromNode(aChildOccurrence);
+  const TopoDS_Shape aReconstructed = aGraph.Shapes().Reconstruct(aChildOccurrence);
   ASSERT_FALSE(aReconstructed.IsNull());
   EXPECT_NEAR(translationX(aReconstructed), 30.0, Precision::Confusion());
 }

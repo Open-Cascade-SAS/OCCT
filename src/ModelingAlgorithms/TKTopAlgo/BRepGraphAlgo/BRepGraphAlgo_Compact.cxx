@@ -629,6 +629,18 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
                aGraphData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::CompSolid),
                aNewGraphData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::CompSolid));
 
+  // Mark UID reverse index dirty so it is rebuilt from the transferred UID vectors
+  // on next NodeIdFrom()/Has() call. The reverse index was populated during
+  // AddVertex/AddEdge/etc. with intermediate UIDs that are now overwritten.
+  {
+    std::unique_lock<std::shared_mutex> aUIDLock(aNewGraphData->myUIDToNodeIdMutex);
+    aNewGraphData->myUIDToNodeIdDirty = true;
+  }
+  {
+    std::unique_lock<std::shared_mutex> aRefUIDLock(aNewGraphData->myRefUIDToRefIdMutex);
+    aNewGraphData->myRefUIDToRefIdDirty = true;
+  }
+
   aNewGraphData->myNextUIDCounter.store(
     aGraphData->myNextUIDCounter.load(std::memory_order_relaxed),
     std::memory_order_relaxed);

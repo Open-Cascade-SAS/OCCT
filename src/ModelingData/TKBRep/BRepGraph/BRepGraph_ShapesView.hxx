@@ -62,14 +62,6 @@ public:
   //! @return reconstructed face shape
   [[nodiscard]] Standard_EXPORT TopoDS_Shape ReconstructFace(const BRepGraph_FaceId theFace) const;
 
-  //! Reconstruct a TopoDS_Shape from a graph node, applying node-level transforms.
-  //! For Product nodes this includes the product root transform.
-  //! For Occurrence nodes this includes the cumulative occurrence placement chain.
-  //! @param[in] theNode definition node identifier
-  //! @return reconstructed shape with location applied
-  [[nodiscard]] Standard_EXPORT TopoDS_Shape
-    ReconstructFromNode(const BRepGraph_NodeId theNode) const;
-
   //! Look up the definition NodeId for a shape from the Build() input.
   //! Uses TShape pointer comparison (same semantics as IsSame()).
   //! Synthetic Product / Occurrence reconstructions are not given dedicated

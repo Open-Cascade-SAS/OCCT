@@ -240,8 +240,8 @@ TEST(BRepGraph_GeometryTest, SameDomainFaces_SimpleBox_Empty)
   // For a simple box each face has a unique surface, so SameDomainFaces is empty.
   for (int i = 0; i < aGraph.Topo().NbFaces(); ++i)
   {
-    const BRepGraph_NodeId                     aFaceDefId(BRepGraph_NodeId::Kind::Face, i);
-    const NCollection_Vector<BRepGraph_NodeId> aSameDomain =
+    const BRepGraph_FaceId                     aFaceDefId(i);
+    const NCollection_Vector<BRepGraph_FaceId> aSameDomain =
       aGraph.Topo().SameDomainFaces(aFaceDefId);
     EXPECT_EQ(aSameDomain.Length(), 0) << "Face def " << i << " has unexpected same-domain faces";
   }

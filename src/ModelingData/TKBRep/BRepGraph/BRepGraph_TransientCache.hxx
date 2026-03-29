@@ -236,12 +236,16 @@ public:
   };
 
   //! Store a cached value for a node and cache kind.
+  //! @pre Reserve() must have been called for lock-free parallel access
+  //!      on in-range entity indices; out-of-range access falls back to mutex.
   void Set(const BRepGraph_NodeId                  theNode,
            const occ::handle<BRepGraph_CacheKind>& theKind,
            const occ::handle<BRepGraph_CacheValue>& theValue,
            const uint32_t                          theCurrentSubtreeGen);
 
   //! Retrieve a cached value for a node and cache kind.
+  //! @pre Reserve() must have been called for lock-free parallel access
+  //!      on in-range entity indices; out-of-range access falls back to mutex.
   [[nodiscard]] occ::handle<BRepGraph_CacheValue> Get(
     const BRepGraph_NodeId                  theNode,
     const occ::handle<BRepGraph_CacheKind>& theKind,

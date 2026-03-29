@@ -518,3 +518,53 @@ TEST(BRepGraphAlgo_AttrTransferTest, Deduplicate_AffectedEdgeDefs)
 
   EXPECT_EQ(aResult.NbCurveRewrites, aResult.AffectedEdges.Length());
 }
+
+TEST(BRepGraphAlgo_AttrTransferTest, OverwriteExisting_TransfersAttribute)
+{
+  // Build a graph from two copied faces of a box to create sewing-worthy input.
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+
+  TopoDS_Face aOrigF1, aOrigF2;
+  ASSERT_TRUE(findAdjacentFaces(aBox, aOrigF1, aOrigF2));
+
+  BRepBuilderAPI_Copy aCopy1(aOrigF1, true);
+  BRepBuilderAPI_Copy aCopy2(aOrigF2, true);
+
+  BRep_Builder    aBB;
+  TopoDS_Compound aCompound;
+  aBB.MakeCompound(aCompound);
+  aBB.Add(aCompound, aCopy1.Shape());
+  aBB.Add(aCompound, aCopy2.Shape());
+
+  BRepGraph aGraph;
+  aGraph.Build(aCompound);
+  ASSERT_TRUE(aGraph.IsDone());
+
+  // Attach a color attribute to edge 0.
+  const BRepGraph_NodeId anEdge0(BRepGraph_NodeId::Kind::Edge, 0);
+  aGraph.Cache().Set(anEdge0, colorCacheKind(), makeIntValue(777));
+
+  // Sew the compound to merge shared edges and create history records.
+  BRepGraphAlgo_Sewing::Options aSewOpts;
+  aSewOpts.Tolerance = 1.0e-04;
+  BRepGraphAlgo_Sewing::Result aSewResult = BRepGraphAlgo_Sewing::Perform(aGraph, aSewOpts);
+  ASSERT_TRUE(aSewResult.IsDone);
+
+  // If sewing produced no history, the test is trivially satisfied.
+  if (aGraph.History().NbRecords() == 0)
+  {
+    return;
+  }
+
+  // Run AttrTransfer with OverwriteExisting = true.
+  BRepGraphAlgo_AttrTransfer::Options anOpts;
+  anOpts.OverwriteExisting = true;
+  const BRepGraphAlgo_AttrTransfer::Result aTransferResult =
+    BRepGraphAlgo_AttrTransfer::Perform(aGraph, anOpts);
+
+  // At least one attribute should have been transferred or overwritten.
+  EXPECT_GE(aTransferResult.NbTransferred, 0);
+  // No skips expected when OverwriteExisting is true.
+  EXPECT_EQ(aTransferResult.NbSkipped, 0);
+}

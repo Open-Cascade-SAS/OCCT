@@ -41,6 +41,11 @@
 //! ## Thread safety
 //! Callback dispatch is single-threaded (called from mutation paths).
 //! Layers that only provide read access can skip internal locking.
+//!
+//! @warning All lifecycle callbacks (OnNodeRemoved, OnCompact, InvalidateAll,
+//! Clear, OnNodeModified, OnNodesModified) are declared noexcept. Derived
+//! implementations that throw will cause std::terminate. This is enforced
+//! by C++ language semantics for noexcept virtual overrides.
 class BRepGraph_Layer : public Standard_Transient
 {
 public:

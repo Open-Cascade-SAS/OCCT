@@ -77,7 +77,18 @@ class BRepGraph_Analyze;
 //! ## Thread safety
 //! Const query methods are safe for concurrent reads.
 //! Concurrent reads during active mutation still require external synchronization.
+//! Deferred invalidation (BRepGraph_DeferredScope) batches SubtreeGen propagation;
+//! concurrent Mut*() calls during deferred mode still require external serialization.
 //! Build() is internally parallel when requested.
+//!
+//! ## UID persistence
+//! UIDs use monotonic counters (not vector indices), persisting across Compact()
+//! and node removal. Only Build() resets counters (new generation).
+//! See BRepGraph_UID.hxx for the serialization contract.
+//!
+//! ## Extension model
+//! Extend via BRepGraph_Layer (per-node attributes) or BRepGraph_TransientCache
+//! (algorithm-computed caches). Direct storage extension is not supported.
 class BRepGraph
 {
 public:
@@ -108,6 +119,11 @@ public:
 
   //! Return true if the graph was successfully built.
   [[nodiscard]] Standard_EXPORT bool IsDone() const;
+
+  //! Return root topology NodeIds created by Build() and AppendShape().
+  //! Each Build() or AppendShape() call adds the top-level node of the input shape.
+  //! Returns empty vector if the graph has not been built.
+  [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_NodeId>& RootNodeIds() const;
 
   //! Replace the internal allocator and re-create all storage.
   Standard_EXPORT void SetAllocator(const occ::handle<NCollection_BaseAllocator>& theAlloc);
@@ -142,7 +158,8 @@ public:
   [[nodiscard]] Standard_EXPORT const ShapesView& Shapes() const;
   //! Access programmatic graph construction.
   [[nodiscard]] Standard_EXPORT BuilderView& Builder();
-  //! Const access to mutation-boundary validation helpers.
+  //! Const access provides ValidateMutationBoundary() and IsDeferredMode() only.
+  //! All mutation methods require non-const Builder().
   [[nodiscard]] Standard_EXPORT const BuilderView& Builder() const;
 
   //! Access history subsystem directly.

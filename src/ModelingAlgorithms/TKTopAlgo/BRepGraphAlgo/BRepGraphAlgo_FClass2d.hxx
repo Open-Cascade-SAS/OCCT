@@ -30,6 +30,10 @@ class gp_Pnt2d;
 //! approximation of wire pcurves, similar to BRepTopAdaptor_FClass2d but operating
 //! on pre-built BRepGraph data instead of traversing TopoDS topology.
 //!
+//! Unlike other BRepGraphAlgo classes which are pure static utilities, FClass2d is
+//! stateful: the constructor builds the classification polygon once, enabling
+//! efficient repeated point queries via Perform().
+//!
 //! The constructor discretizes wire pcurves into polygons and builds CSLib_Class2d
 //! classifiers. Subsequent Perform() calls classify points cheaply.
 class BRepGraphAlgo_FClass2d

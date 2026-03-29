@@ -31,6 +31,12 @@
 //!   Use it for in-graph traversal and short-lived mutation logic.
 //! - RefUID (kind + counter + generation) is stable across index remapping
 //!   and intended for longer-lived identity tracking.
+//!
+//! ## RefsView vs TopoView naming
+//! RefsView accessors take reference IDs (BRepGraph_ShellRefId, BRepGraph_FaceRefId)
+//! and return reference-entry structs carrying per-use orientation and location.
+//! TopoView accessors take definition IDs (BRepGraph_ShellId, BRepGraph_FaceId)
+//! and return definition structs.
 class BRepGraph::RefsView
 {
 public:

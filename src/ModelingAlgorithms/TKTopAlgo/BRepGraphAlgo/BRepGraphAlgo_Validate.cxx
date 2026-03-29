@@ -1155,5 +1155,74 @@ BRepGraphAlgo_Validate::Result BRepGraphAlgo_Validate::Perform(const BRepGraph& 
   checkUIDKind(BRepGraph_NodeId::Kind::Product, aPaths.NbProducts());
   checkUIDKind(BRepGraph_NodeId::Kind::Occurrence, aPaths.NbOccurrences());
 
+  // Assembly DAG cycle detection: for each product, check if it can
+  // reach itself through its occurrence->product chain.
+  // Shared references (two occurrences pointing to the same child) are valid;
+  // only self-reachability constitutes a cycle.
+  for (int aProdIdx = 0; aProdIdx < aPaths.NbProducts(); ++aProdIdx)
+  {
+    const BRepGraph_ProductId           aProdId(aProdIdx);
+    const BRepGraphInc::ProductDef& aProd = aPaths.Product(aProdId);
+    if (aProd.IsRemoved)
+      continue;
+
+    // BFS from this product's children; skip already-visited to avoid
+    // exponential blowup on DAGs. A cycle exists if we re-encounter aProdIdx.
+    NCollection_Map<int>                   aVisited;
+    NCollection_Vector<BRepGraph_ProductId> aQueue;
+    int                                     aHead = 0;
+
+    // Seed with direct children.
+    for (int i = 0; i < aProd.OccurrenceRefIds.Length(); ++i)
+    {
+      const BRepGraphInc::OccurrenceRef& anOccRef =
+        theGraph.Refs().Occurrence(aProd.OccurrenceRefIds.Value(i));
+      if (anOccRef.IsRemoved || !anOccRef.OccurrenceDefId.IsValid(aPaths.NbOccurrences()))
+        continue;
+      const BRepGraphInc::OccurrenceDef& anOcc = aPaths.Occurrence(anOccRef.OccurrenceDefId);
+      if (anOcc.IsRemoved || !anOcc.ProductDefId.IsValid(aPaths.NbProducts()))
+        continue;
+      if (anOcc.ProductDefId.Index == aProdIdx)
+      {
+        aResult.Issues.Append(
+          Issue{Severity::Error, aProdId,
+                "Assembly cycle: Product directly references itself via occurrence"});
+        break;
+      }
+      if (aVisited.Add(anOcc.ProductDefId.Index))
+        aQueue.Append(anOcc.ProductDefId);
+    }
+
+    bool aCycleFound = false;
+    while (aHead < aQueue.Length() && !aCycleFound)
+    {
+      const BRepGraph_ProductId         aChildProdId = aQueue.Value(aHead);
+      ++aHead;
+      const BRepGraphInc::ProductDef& aChildProd = aPaths.Product(aChildProdId);
+      if (aChildProd.IsRemoved)
+        continue;
+      for (int i = 0; i < aChildProd.OccurrenceRefIds.Length(); ++i)
+      {
+        const BRepGraphInc::OccurrenceRef& aRef =
+          theGraph.Refs().Occurrence(aChildProd.OccurrenceRefIds.Value(i));
+        if (aRef.IsRemoved || !aRef.OccurrenceDefId.IsValid(aPaths.NbOccurrences()))
+          continue;
+        const BRepGraphInc::OccurrenceDef& aOcc = aPaths.Occurrence(aRef.OccurrenceDefId);
+        if (aOcc.IsRemoved || !aOcc.ProductDefId.IsValid(aPaths.NbProducts()))
+          continue;
+        if (aOcc.ProductDefId.Index == aProdIdx)
+        {
+          aResult.Issues.Append(
+            Issue{Severity::Error, aProdId,
+                  "Assembly cycle: Product reaches itself through occurrence chain"});
+          aCycleFound = true;
+          break;
+        }
+        if (aVisited.Add(aOcc.ProductDefId.Index))
+          aQueue.Append(aOcc.ProductDefId);
+      }
+    }
+  }
+
   return aResult;
 }

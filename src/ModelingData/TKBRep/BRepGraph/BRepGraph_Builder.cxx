@@ -119,6 +119,7 @@ void BRepGraph_Builder::Perform(BRepGraph&                            theGraph,
   theGraph.myData->myIncStorage.Clear();
   theGraph.myData->myHistoryLog.Clear();
   theGraph.myData->myCurrentShapes.Clear();
+  theGraph.myData->myRootNodeIds.Clear();
   theGraph.myTransientCache.Clear();
   {
     std::unique_lock<std::shared_mutex> aUIDLock(theGraph.myData->myUIDToNodeIdMutex);
@@ -206,6 +207,9 @@ void BRepGraph_Builder::Perform(BRepGraph&                            theGraph,
       default:
         break;
     }
+
+    if (aTopologyRoot.IsValid())
+      theGraph.myData->myRootNodeIds.Append(aTopologyRoot);
 
     BRepGraphInc::ProductDef& aProduct    = aStorage.AppendProduct();
     const int                 aProductIdx = aStorage.NbProducts() - 1;
@@ -312,6 +316,48 @@ void BRepGraph_Builder::Append(BRepGraph&          theGraph,
                           anOldVertexRef,
                           anOldSolidRef,
                           anOldChildRef);
+
+  // Track the new root from the appended shape.
+  BRepGraph_NodeId anAppendedRoot;
+  switch (theShape.ShapeType())
+  {
+    case TopAbs_COMPOUND:
+      if (aStorage.NbCompounds() > anOldComp)
+        anAppendedRoot = BRepGraph_NodeId::Compound(anOldComp);
+      break;
+    case TopAbs_COMPSOLID:
+      if (aStorage.NbCompSolids() > anOldCS)
+        anAppendedRoot = BRepGraph_NodeId::CompSolid(anOldCS);
+      break;
+    case TopAbs_SOLID:
+      if (aStorage.NbSolids() > anOldSolid)
+        anAppendedRoot = BRepGraph_NodeId::Solid(anOldSolid);
+      break;
+    case TopAbs_SHELL:
+      if (aStorage.NbShells() > anOldShell)
+        anAppendedRoot = BRepGraph_NodeId::Shell(anOldShell);
+      break;
+    case TopAbs_FACE:
+      if (aStorage.NbFaces() > anOldFace)
+        anAppendedRoot = BRepGraph_NodeId::Face(anOldFace);
+      break;
+    case TopAbs_WIRE:
+      if (aStorage.NbWires() > anOldWire)
+        anAppendedRoot = BRepGraph_NodeId::Wire(anOldWire);
+      break;
+    case TopAbs_EDGE:
+      if (aStorage.NbEdges() > anOldEdge)
+        anAppendedRoot = BRepGraph_NodeId::Edge(anOldEdge);
+      break;
+    case TopAbs_VERTEX:
+      if (aStorage.NbVertices() > anOldVtx)
+        anAppendedRoot = BRepGraph_NodeId::Vertex(anOldVtx);
+      break;
+    default:
+      break;
+  }
+  if (anAppendedRoot.IsValid())
+    theGraph.myData->myRootNodeIds.Append(anAppendedRoot);
 
   theGraph.myData->myIsDone = true;
 }

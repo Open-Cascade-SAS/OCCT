@@ -95,11 +95,12 @@ TEST(BRepGraph_BenchmarkTest, Smoke_BuildReconstructAndAdjacency)
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().NbFaces(), 0);
 
-  const BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
-  const TopoDS_Shape     aFaceShape = aGraph.Shapes().Reconstruct(aFaceId);
+  const BRepGraph_NodeId aFaceNodeId(BRepGraph_NodeId::Kind::Face, 0);
+  const TopoDS_Shape     aFaceShape = aGraph.Shapes().Reconstruct(aFaceNodeId);
   EXPECT_FALSE(aFaceShape.IsNull());
 
-  const NCollection_Vector<BRepGraph_NodeId> anAdj = aGraph.Topo().AdjacentFaces(aFaceId);
+  const BRepGraph_FaceId                     aFaceId(0);
+  const NCollection_Vector<BRepGraph_FaceId> anAdj = aGraph.Topo().AdjacentFaces(aFaceId);
   EXPECT_GE(anAdj.Length(), 0);
 }
 
@@ -195,8 +196,8 @@ TEST(BRepGraph_BenchmarkTest, DISABLED_SpatialQuery_Throughput)
   const double aAvg = runBenchmark("SpatialQuery 10000 faces", [&]() {
     for (int anIdx = 0; anIdx < aNbFaces; ++anIdx)
     {
-      const BRepGraph_NodeId                     aFaceId = BRepGraph_NodeId::Face(anIdx);
-      const NCollection_Vector<BRepGraph_NodeId> anAdj   = aGraph.Topo().AdjacentFaces(aFaceId);
+      const BRepGraph_FaceId                     aFaceId(anIdx);
+      const NCollection_Vector<BRepGraph_FaceId> anAdj = aGraph.Topo().AdjacentFaces(aFaceId);
       EXPECT_GE(anAdj.Length(), 0);
     }
   });

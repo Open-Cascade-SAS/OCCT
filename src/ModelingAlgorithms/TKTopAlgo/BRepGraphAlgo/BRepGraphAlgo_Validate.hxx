@@ -44,6 +44,7 @@
 //! | Wire edge connectivity         |      -      |  YES  |
 //! | Entity ID positional integrity |      -      |  YES  |
 //! | UID round-trip integrity       |      -      |  YES  |
+//! | Assembly DAG cycle detection   |      -      |  YES  |
 class BRepGraphAlgo_Validate
 {
 public:

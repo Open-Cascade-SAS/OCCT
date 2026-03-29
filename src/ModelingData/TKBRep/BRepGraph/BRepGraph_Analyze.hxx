@@ -78,6 +78,13 @@ public:
     const BRepGraph_SubGraph&                          theSub,
     const std::function<void(const BRepGraph_FaceId)>& theLambda);
 
+  //! Parallel iteration over all active faces in the whole graph.
+  //! @param[in] theGraph  the graph to iterate
+  //! @param[in] theLambda callback invoked with each active face typed id
+  Standard_EXPORT static void ParallelForEachFace(
+    const BRepGraph&                                   theGraph,
+    const std::function<void(const BRepGraph_FaceId)>& theLambda);
+
   //! Parallel iteration over EdgeNode indices in a SubGraph.
   //! @param[in] theGraph  the parent graph
   //! @param[in] theSub    SubGraph whose edges to iterate
@@ -85,6 +92,13 @@ public:
   Standard_EXPORT static void ParallelForEachEdge(
     const BRepGraph&                                   theGraph,
     const BRepGraph_SubGraph&                          theSub,
+    const std::function<void(const BRepGraph_EdgeId)>& theLambda);
+
+  //! Parallel iteration over all active edges in the whole graph.
+  //! @param[in] theGraph  the graph to iterate
+  //! @param[in] theLambda callback invoked with each active edge typed id
+  Standard_EXPORT static void ParallelForEachEdge(
+    const BRepGraph&                                   theGraph,
     const std::function<void(const BRepGraph_EdgeId)>& theLambda);
 
 private:

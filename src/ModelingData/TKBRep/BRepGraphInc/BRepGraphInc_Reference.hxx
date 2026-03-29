@@ -25,6 +25,9 @@
 //! how a child definition is used by its parent (orientation, location).
 //! Reference entries are stored in flat per-kind vectors in BRepGraphInc_Storage
 //! and support mutation tracking and soft-removal.
+//!
+//! For lightweight read-only projections without lifecycle fields, see
+//! BRepGraphInc_Usage.hxx (Usage structs carry only DefId + Orientation + Location).
 namespace BRepGraphInc
 {
 
@@ -63,6 +66,8 @@ struct WireRef : public BaseRef
 };
 
 //! CoEdge reference storage entry.
+//! No Orientation field -- CoEdgeDef::Sense owns the edge-on-face sense,
+//! coupling with PCurve parametrization. See CoEdgeUsage for rationale.
 struct CoEdgeRef : public BaseRef
 {
   BRepGraph_CoEdgeId CoEdgeDefId;
@@ -73,7 +78,7 @@ struct CoEdgeRef : public BaseRef
 struct VertexRef : public BaseRef
 {
   BRepGraph_VertexId VertexDefId;
-  TopAbs_Orientation Orientation = TopAbs_INTERNAL;
+  TopAbs_Orientation Orientation = TopAbs_INTERNAL; //!< INTERNAL: B-Rep vertex classification convention
   TopLoc_Location    LocalLocation;
 };
 

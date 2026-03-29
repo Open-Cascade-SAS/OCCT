@@ -23,8 +23,11 @@ class Standard_GUID;
 //!
 //! UIDs are (Kind, Counter) pairs that persist across graph mutations
 //! (Compact, node removal). Each UID is assigned exactly once and never
-//! reused. The Generation field enables stale-reference detection when
-//! a graph is rebuilt. Provides bidirectional NodeId/UID resolution.
+//! reused. Counters are monotonic and independent of vector indices,
+//! so UIDs survive Compact() index remapping. Only Build() resets
+//! counters (new generation). The Generation field enables stale-reference
+//! detection when a graph is rebuilt.
+//! Provides bidirectional NodeId/UID resolution.
 //! Obtained via BRepGraph::UIDs().
 class BRepGraph::UIDsView
 {

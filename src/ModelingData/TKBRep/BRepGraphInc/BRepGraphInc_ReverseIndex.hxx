@@ -46,6 +46,12 @@ struct VertexRef;
 //! Full Build() is used for initial construction, while builder-side
 //! mutations maintain the index incrementally through targeted bind/unbind
 //! operations and BuildDelta() for append workflows.
+//!
+//! ## Two query tiers
+//! Pointer-returning methods (e.g. WiresOfEdge() -> nullptr for empty) serve
+//! performance-critical backend code that avoids static-empty-vector overhead.
+//! Safe-reference methods (e.g. WiresOfEdgeRef() -> static empty vector) serve
+//! the public facade (TopoView delegates to Ref variants).
 class BRepGraphInc_ReverseIndex
 {
 public:
@@ -62,6 +68,7 @@ public:
 
   //! Rebuild all reverse indices from the entity and reference-entry tables.
   //! Edge-to-face index is derived from CoEdge.FaceDefId links.
+  //! @pre SetAllocator() must have been called (uses myAllocator for inner vectors).
   //! @param[in] theEdges      edge entity vector (for vertex-to-edge, edge-to-face)
   //! @param[in] theCoEdges    coedge entity vector (for edge-to-coedge and edge-to-face)
   //! @param[in] theWires      wire entity vector (parent validation for coedge refs)
@@ -269,6 +276,27 @@ public:
     const BRepGraph_WireId theWireId) const
   {
     return seekRef(myWireToFaces, theWireId.Index);
+  }
+
+  //! Return edge indices incident to the given vertex (safe reference, never null).
+  [[nodiscard]] const NCollection_Vector<BRepGraph_EdgeId>& EdgesOfVertexRef(
+    const BRepGraph_VertexId theVertexId) const
+  {
+    return seekRef(myVertexToEdges, theVertexId.Index);
+  }
+
+  //! Return shell indices containing the given face (safe reference, never null).
+  [[nodiscard]] const NCollection_Vector<BRepGraph_ShellId>& ShellsOfFaceRef(
+    const BRepGraph_FaceId theFaceId) const
+  {
+    return seekRef(myFaceToShells, theFaceId.Index);
+  }
+
+  //! Return solid indices containing the given shell (safe reference, never null).
+  [[nodiscard]] const NCollection_Vector<BRepGraph_SolidId>& SolidsOfShellRef(
+    const BRepGraph_ShellId theShellId) const
+  {
+    return seekRef(myShellToSolids, theShellId.Index);
   }
 
   //! Verify reverse index consistency against forward entity/reference-entry tables.

@@ -783,8 +783,8 @@ TEST(BRepGraph_BuilderTest, FacesOfEdge_BoxSharedEdge)
   // Every edge in a box is shared by exactly 2 faces.
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
   {
-    BRepGraph_NodeId                     anEdgeId(BRepGraph_NodeId::Kind::Edge, anEdgeIdx);
-    NCollection_Vector<BRepGraph_NodeId> aFaces = aGraph.Topo().FacesOfEdge(anEdgeId);
+    BRepGraph_EdgeId                     anEdgeId(anEdgeIdx);
+    NCollection_Vector<BRepGraph_FaceId> aFaces = aGraph.Topo().FacesOfEdge(anEdgeId);
     EXPECT_EQ(aFaces.Length(), 2) << "Edge " << anEdgeIdx << " has " << aFaces.Length() << " faces";
   }
 }
@@ -805,9 +805,9 @@ TEST(BRepGraph_BuilderTest, SharedEdges_AdjacentBoxFaces)
   {
     for (int aFaceB = aFaceA + 1; aFaceB < aGraph.Topo().NbFaces(); ++aFaceB)
     {
-      NCollection_Vector<BRepGraph_NodeId> aShared =
-        aGraph.Topo().SharedEdges(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, aFaceA),
-                                  BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, aFaceB));
+      NCollection_Vector<BRepGraph_EdgeId> aShared =
+        aGraph.Topo().SharedEdges(BRepGraph_FaceId(aFaceA),
+                                  BRepGraph_FaceId(aFaceB));
       if (!aShared.IsEmpty())
         ++aSharingPairs;
     }
@@ -829,8 +829,8 @@ TEST(BRepGraph_BuilderTest, AdjacentFaces_BoxFace)
   // Each face of a box is adjacent to 4 other faces.
   for (int aFaceIdx = 0; aFaceIdx < aGraph.Topo().NbFaces(); ++aFaceIdx)
   {
-    BRepGraph_NodeId                     aFaceId(BRepGraph_NodeId::Kind::Face, aFaceIdx);
-    NCollection_Vector<BRepGraph_NodeId> aAdj = aGraph.Topo().AdjacentFaces(aFaceId);
+    BRepGraph_FaceId                     aFaceId(aFaceIdx);
+    NCollection_Vector<BRepGraph_FaceId> aAdj = aGraph.Topo().AdjacentFaces(aFaceId);
     EXPECT_EQ(aAdj.Length(), 4) << "Face " << aFaceIdx << " has " << aAdj.Length()
                                 << " adjacent faces";
   }
@@ -846,7 +846,8 @@ TEST(BRepGraph_BuilderTest, FacesOfEdge_NoFaces_Programmatic)
   BRepGraph_NodeId       anEdgeId = aGraph.Builder().AddEdge(aV0, aV1, aLine, 0.0, 10.0, 0.001);
 
   // Edge not in any face => empty result.
-  NCollection_Vector<BRepGraph_NodeId> aFaces = aGraph.Topo().FacesOfEdge(anEdgeId);
+  const NCollection_Vector<BRepGraph_FaceId>& aFaces =
+    aGraph.Topo().FacesOfEdge(BRepGraph_EdgeId(anEdgeId.Index));
   EXPECT_EQ(aFaces.Length(), 0);
 }
 
@@ -859,7 +860,7 @@ TEST(BRepGraph_BuilderTest, EdgesOfFace_Box_HasEdges)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Each box face has 4 edges (rectangular loop).
-  NCollection_Vector<BRepGraph_NodeId> aEdges =
+  NCollection_Vector<BRepGraph_EdgeId> aEdges =
     aGraph.Topo().EdgesOfFace(BRepGraph_NodeId::Face(0));
   EXPECT_EQ(aEdges.Length(), 4);
 }
@@ -870,11 +871,11 @@ TEST(BRepGraph_BuilderTest, VerticesOfEdge_Box_HasTwoVertices)
   aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  NCollection_Vector<BRepGraph_NodeId> aVerts =
+  NCollection_Vector<BRepGraph_VertexId> aVerts =
     aGraph.Topo().VerticesOfEdge(BRepGraph_NodeId::Edge(0));
   EXPECT_EQ(aVerts.Length(), 2);
-  EXPECT_EQ(aVerts.Value(0).NodeKind, BRepGraph_NodeId::Kind::Vertex);
-  EXPECT_EQ(aVerts.Value(1).NodeKind, BRepGraph_NodeId::Kind::Vertex);
+  EXPECT_TRUE(aVerts.Value(0).IsValid());
+  EXPECT_TRUE(aVerts.Value(1).IsValid());
 }
 
 TEST(BRepGraph_BuilderTest, EdgesOfVertex_Box_ThreeEdges)
@@ -884,7 +885,7 @@ TEST(BRepGraph_BuilderTest, EdgesOfVertex_Box_ThreeEdges)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Each box corner vertex is shared by 3 edges.
-  NCollection_Vector<BRepGraph_NodeId> aEdges =
+  const NCollection_Vector<BRepGraph_EdgeId>& aEdges =
     aGraph.Topo().EdgesOfVertex(BRepGraph_NodeId::Vertex(0));
   EXPECT_EQ(aEdges.Length(), 3);
 }
@@ -897,7 +898,7 @@ TEST(BRepGraph_BuilderTest, AdjacentEdges_Box_SharedVertex)
 
   // Box edge shares 2 vertices, each with 3 incident edges.
   // Adjacent = (3 - 1) + (3 - 1) - overlap = at least 4 adjacent edges.
-  NCollection_Vector<BRepGraph_NodeId> aAdj =
+  NCollection_Vector<BRepGraph_EdgeId> aAdj =
     aGraph.Topo().AdjacentEdges(BRepGraph_NodeId::Edge(0));
   EXPECT_GE(aAdj.Length(), 4);
 }
@@ -928,9 +929,9 @@ TEST(BRepGraph_BuilderTest, InvalidInput_ReturnsEmpty)
   aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  // Wrong kind.
-  EXPECT_EQ(aGraph.Topo().EdgesOfFace(BRepGraph_NodeId::Edge(0)).Length(), 0);
-  EXPECT_EQ(aGraph.Topo().EdgesOfVertex(BRepGraph_NodeId::Face(0)).Length(), 0);
-  EXPECT_EQ(aGraph.Topo().VerticesOfEdge(BRepGraph_NodeId::Face(0)).Length(), 0);
-  EXPECT_EQ(aGraph.Topo().AdjacentEdges(BRepGraph_NodeId::Face(0)).Length(), 0);
+  // Out-of-range typed ids return empty results.
+  EXPECT_EQ(aGraph.Topo().EdgesOfFace(BRepGraph_FaceId(999)).Length(), 0);
+  EXPECT_EQ(aGraph.Topo().EdgesOfVertex(BRepGraph_VertexId(999)).Length(), 0);
+  EXPECT_EQ(aGraph.Topo().VerticesOfEdge(BRepGraph_EdgeId(999)).Length(), 0);
+  EXPECT_EQ(aGraph.Topo().AdjacentEdges(BRepGraph_EdgeId(999)).Length(), 0);
 }

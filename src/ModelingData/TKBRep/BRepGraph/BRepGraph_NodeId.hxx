@@ -46,6 +46,7 @@ struct BRepGraph_NodeId
     Compound   = 6,  //!< TopoDS_Compound container
     CompSolid  = 7,  //!< TopoDS_CompSolid container
     CoEdge     = 8,  //!< Use of an edge on a face (owns PCurve data)
+    // Value 9 reserved for future topology kind extension.
     Product    = 10, //!< Reusable shape definition (part or assembly)
     Occurrence = 11  //!< Placed instance of a product within a parent product
   };

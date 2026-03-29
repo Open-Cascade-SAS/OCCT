@@ -304,3 +304,51 @@ TEST(BRepGraphAlgo_CompactTest, OwnGen_SurvivesCompact)
   }
   EXPECT_TRUE(aFound) << "No edge with mutated tolerance found after compact";
 }
+
+TEST(BRepGraphAlgo_CompactTest, UIDRoundTrip_AfterCompaction)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+
+  BRepGraph aGraph;
+  aGraph.Build(aBox);
+  ASSERT_TRUE(aGraph.IsDone());
+  ASSERT_GE(aGraph.Topo().NbFaces(), 3);
+  ASSERT_GE(aGraph.Topo().NbEdges(), 3);
+
+  // Record UIDs for a few face and edge nodes.
+  const BRepGraph_UID aFaceUID0 = aGraph.UIDs().Of(BRepGraph_FaceId(0));
+  const BRepGraph_UID aFaceUID1 = aGraph.UIDs().Of(BRepGraph_FaceId(1));
+  const BRepGraph_UID aFaceUID2 = aGraph.UIDs().Of(BRepGraph_FaceId(2));
+  const BRepGraph_UID anEdgeUID0 = aGraph.UIDs().Of(BRepGraph_EdgeId(0));
+  const BRepGraph_UID anEdgeUID1 = aGraph.UIDs().Of(BRepGraph_EdgeId(1));
+  ASSERT_TRUE(aFaceUID0.IsValid());
+  ASSERT_TRUE(aFaceUID1.IsValid());
+  ASSERT_TRUE(aFaceUID2.IsValid());
+  ASSERT_TRUE(anEdgeUID0.IsValid());
+  ASSERT_TRUE(anEdgeUID1.IsValid());
+
+  // Record the UID of the face to be removed.
+  const BRepGraph_UID aRemovedFaceUID = aGraph.UIDs().Of(BRepGraph_FaceId(2));
+
+  // Remove one face.
+  aGraph.Builder().RemoveNode(BRepGraph_FaceId(2));
+
+  // Run compaction.
+  const BRepGraphAlgo_Compact::Result aRes = BRepGraphAlgo_Compact::Perform(aGraph);
+  EXPECT_GE(aRes.NbRemovedFaces, 1);
+
+  // Surviving UIDs should resolve to valid NodeIds.
+  const BRepGraph_NodeId aFace0After = aGraph.UIDs().NodeIdFrom(aFaceUID0);
+  const BRepGraph_NodeId aFace1After = aGraph.UIDs().NodeIdFrom(aFaceUID1);
+  const BRepGraph_NodeId anEdge0After = aGraph.UIDs().NodeIdFrom(anEdgeUID0);
+  const BRepGraph_NodeId anEdge1After = aGraph.UIDs().NodeIdFrom(anEdgeUID1);
+  EXPECT_TRUE(aFace0After.IsValid()) << "Face 0 UID lost after compaction";
+  EXPECT_TRUE(aFace1After.IsValid()) << "Face 1 UID lost after compaction";
+  EXPECT_TRUE(anEdge0After.IsValid()) << "Edge 0 UID lost after compaction";
+  EXPECT_TRUE(anEdge1After.IsValid()) << "Edge 1 UID lost after compaction";
+
+  // The removed face's UID should no longer resolve to a valid NodeId.
+  const BRepGraph_NodeId aRemovedAfter = aGraph.UIDs().NodeIdFrom(aRemovedFaceUID);
+  EXPECT_FALSE(aRemovedAfter.IsValid()) << "Removed face UID still resolves after compaction";
+}
