@@ -60,6 +60,7 @@
 #include <BRepGraph_Tool.hxx>
 
 #include <algorithm>
+#include <optional>
 #include <utility>
 
 namespace
@@ -411,6 +412,14 @@ bool isSeamEdge(const BRepGraph& theGraph, const BRepGraph_EdgeId theEdgeId)
   return false;
 }
 
+//! Caches pre-computed closure flags to avoid repeated expensive
+//! IsUClosed/IsVClosed queries on the same surface in parallel loops.
+struct FaceClosureInfo
+{
+  bool IsUClosed = false;
+  bool IsVClosed = false;
+};
+
 //! Check if two free edges on the same UV-closed face lie on opposite sides of
 //! the seam and can be sewn together. Uses 2D bounding boxes of their PCurves:
 //! on a U-closed surface, two V-long edges are on opposite sides if their
@@ -420,25 +429,39 @@ bool isSeamEdge(const BRepGraph& theGraph, const BRepGraph_EdgeId theEdgeId)
 //! @param[in] theEdgeA      first edge index
 //! @param[in] theEdgeB      second edge index
 //! @param[in] theSharedFace shared face index (-1 if none)
+//! @param[in] theClosure    pre-computed closure flags (nullptr = compute on the fly)
 //! @return true if the edges can be sewn on the shared face
-bool canSewSameFaceEdges(const BRepGraph&       theGraph,
-                         const BRepGraph_EdgeId theEdgeA,
-                         const BRepGraph_EdgeId theEdgeB,
-                         const BRepGraph_FaceId theSharedFace)
+bool canSewSameFaceEdges(const BRepGraph&          theGraph,
+                         const BRepGraph_EdgeId    theEdgeA,
+                         const BRepGraph_EdgeId    theEdgeB,
+                         const BRepGraph_FaceId    theSharedFace,
+                         const FaceClosureInfo*    theClosure = nullptr)
 {
   if (!theSharedFace.IsValid())
   {
     return false;
   }
+
   if (!BRepGraph_Tool::Face::HasSurface(theGraph, theSharedFace))
   {
     return false;
   }
-  const occ::handle<Geom_Surface>& aFaceSurf2 =
-    BRepGraph_Tool::Face::Surface(theGraph, theSharedFace);
-  const occ::handle<Geom_Surface> aBasis    = basisSurface(aFaceSurf2);
-  const bool                      isUClosed = aBasis->IsUClosed();
-  const bool                      isVClosed = aBasis->IsVClosed();
+
+  const occ::handle<Geom_Surface> aBasis =
+    basisSurface(BRepGraph_Tool::Face::Surface(theGraph, theSharedFace));
+
+  bool isUClosed = false;
+  bool isVClosed = false;
+  if (theClosure != nullptr)
+  {
+    isUClosed = theClosure->IsUClosed;
+    isVClosed = theClosure->IsVClosed;
+  }
+  else
+  {
+    isUClosed = aBasis->IsUClosed();
+    isVClosed = aBasis->IsVClosed();
+  }
   if (!isUClosed && !isVClosed)
   {
     return false;
@@ -949,10 +972,7 @@ void cutAtIntersections(BRepGraph&                                   theGraph,
         }
       }
 
-      ExtremaPC_Curve anExtPC(aCurve);
-
-      Bnd_Box aEdgeBBox;
-      BRepGraphAlgo_BndLib::Add(theGraph, anEdgeId, aEdgeBBox);
+      Bnd_Box aEdgeBBox = BRepGraphAlgo_BndLib::AddCached(theGraph, anEdgeId);
       if (aEdgeBBox.IsVoid())
       {
         return;
@@ -963,6 +983,11 @@ void cutAtIntersections(BRepGraph&                                   theGraph,
       const double aParamFirst = aCurve.FirstParameter();
       const double aParamLast  = aCurve.LastParameter();
       const double aParamEps   = Precision::Confusion();
+
+      // Defer ExtremaPC_Curve construction until a candidate vertex passes
+      // the bounding box filter. This avoids expensive BSpline grid building
+      // for edges with no nearby vertices.
+      std::optional<ExtremaPC_Curve> anExtPC;
 
       NCollection_Vector<SplitCandidate> aSplits;
 
@@ -979,8 +1004,12 @@ void cutAtIntersections(BRepGraph&                                   theGraph,
           return;
         }
 
+        if (!anExtPC.has_value())
+        {
+          anExtPC.emplace(aCurve);
+        }
         const ExtremaPC::Result& aRes =
-          anExtPC.Perform(aVtxPnt, Precision::Confusion(), ExtremaPC::SearchMode::Min);
+          anExtPC->Perform(aVtxPnt, Precision::Confusion(), ExtremaPC::SearchMode::Min);
         if (!aRes.IsDone() || aRes.NbExt() == 0)
         {
           return;
@@ -1082,6 +1111,8 @@ void cutAtIntersections(BRepGraph&                                   theGraph,
       aCurrentEdge = aSubB;
     }
     aChain.Append(aCurrentEdge);
+    // Invalidate cached bbox for the original edge since its geometry changed.
+    BRepGraphAlgo_BndLib::InvalidateCached(theGraph, anEdgeId);
   }
 
   if (!anySplits)
@@ -1127,7 +1158,7 @@ void cutAtIntersections(BRepGraph&                                   theGraph,
 //! @param[in]  theParallel      enable parallel BBox computation
 //! @return per-edge adjacency lists of candidate indices
 NCollection_Array1<NCollection_Vector<int>> detectCandidates(
-  const BRepGraph&                              theGraph,
+  BRepGraph&                                    theGraph,
   const NCollection_Array1<BRepGraph_NodeId>&   theFreeEdges,
   const NCollection_Array1<int>&                theFaceOfPos,
   const BRepGraphAlgo_Sewing::Options&          theOptions,
@@ -1159,8 +1190,7 @@ NCollection_Array1<NCollection_Vector<int>> detectCandidates(
     0,
     aNbFreeEdges,
     [&](int theIdx) {
-      Bnd_Box aBox;
-      BRepGraphAlgo_BndLib::Add(theGraph, theFreeEdges.Value(theIdx + 1), aBox);
+      Bnd_Box aBox = BRepGraphAlgo_BndLib::AddCached(theGraph, theFreeEdges.Value(theIdx + 1));
       if (!aBox.IsVoid())
       {
         aBox.Enlarge(theOptions.Tolerance);
@@ -1168,6 +1198,28 @@ NCollection_Array1<NCollection_Vector<int>> detectCandidates(
       aBBoxes.SetValue(theIdx + 1, aBox);
     },
     !isParallelBBoxBuild);
+
+  // Precompute surface closure flags per face to avoid repeated
+  // expensive IsUClosed/IsVClosed calls inside the parallel candidate loop.
+  NCollection_DataMap<int, FaceClosureInfo> aClosureCache;
+  for (int aPosI = 1; aPosI <= aNbFreeEdges; ++aPosI)
+  {
+    const int aFaceIdx = theFaceOfPos(aPosI);
+    if (aFaceIdx < 0 || aClosureCache.IsBound(aFaceIdx))
+    {
+      continue;
+    }
+    const BRepGraph_FaceId aFaceId(aFaceIdx);
+    FaceClosureInfo        anInfo;
+    if (BRepGraph_Tool::Face::HasSurface(theGraph, aFaceId))
+    {
+      const occ::handle<Geom_Surface> aBasis =
+        basisSurface(BRepGraph_Tool::Face::Surface(theGraph, aFaceId));
+      anInfo.IsUClosed = aBasis->IsUClosed();
+      anInfo.IsVClosed = aBasis->IsVClosed();
+    }
+    aClosureCache.Bind(aFaceIdx, anInfo);
+  }
 
   BRepGraph_ParallelPolicy::Workload aCandidateSearchWork;
   aCandidateSearchWork.PrimaryItems = aNbFreeEdges;
@@ -1194,13 +1246,17 @@ NCollection_Array1<NCollection_Vector<int>> detectCandidates(
 
         const int aFaceI = theFaceOfPos(aPosI);
         const int aFaceJ = theFaceOfPos(aPosJ);
-        if (aFaceI >= 0 && aFaceI == aFaceJ
-            && !canSewSameFaceEdges(theGraph,
-                                    BRepGraph_EdgeId(theFreeEdges.Value(aPosI).Index),
-                                    BRepGraph_EdgeId(theFreeEdges.Value(aPosJ).Index),
-                                    BRepGraph_FaceId(aFaceI)))
+        if (aFaceI >= 0 && aFaceI == aFaceJ)
         {
-          continue;
+          const FaceClosureInfo* aClosure = aClosureCache.Seek(aFaceI);
+          if (!canSewSameFaceEdges(theGraph,
+                                   BRepGraph_EdgeId(theFreeEdges.Value(aPosI).Index),
+                                   BRepGraph_EdgeId(theFreeEdges.Value(aPosJ).Index),
+                                   BRepGraph_FaceId(aFaceI),
+                                   aClosure))
+          {
+            continue;
+          }
         }
 
         anAdj.ChangeValue(aPosI).Append(aPosJ);
@@ -1245,10 +1301,12 @@ NCollection_Array1<NCollection_Vector<int>> detectCandidates(
     const int aFaceJ = theFaceOfPos(thePosJ);
     if (aFaceI >= 0 && aFaceI == aFaceJ)
     {
+      const FaceClosureInfo* aClosure = aClosureCache.Seek(aFaceI);
       return canSewSameFaceEdges(theGraph,
                                  BRepGraph_EdgeId(theFreeEdges.Value(thePosI).Index),
                                  BRepGraph_EdgeId(theFreeEdges.Value(thePosJ).Index),
-                                 BRepGraph_FaceId(aFaceI));
+                                 BRepGraph_FaceId(aFaceI),
+                                 aClosure);
     }
     return true;
   };
