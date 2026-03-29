@@ -90,6 +90,7 @@ void OpenGl_AspectsSprite::UpdateRediness(const occ::handle<Graphic3d_Aspects>& 
   spriteKeys(theAspect->MarkerImage(),
              theAspect->MarkerType(),
              theAspect->MarkerScale(),
+             theAspect->MarkerPhysical(),
              theAspect->ColorRGBA(),
              aSpriteKeyNew,
              aSpriteAKeyNew);
@@ -100,8 +101,9 @@ void OpenGl_AspectsSprite::UpdateRediness(const occ::handle<Graphic3d_Aspects>& 
   if (aSpriteKeyNew.IsEmpty() || aSpriteKeyOld != aSpriteKeyNew || aSpriteAKeyNew.IsEmpty()
       || aSpriteAKeyOld != aSpriteAKeyNew)
   {
-    myIsSpriteReady = false;
-    myMarkerSize    = theAspect->MarkerScale();
+    myIsSpriteReady  = false;
+    myMarkerSize     = theAspect->MarkerScale();
+    myMarkerPhysical = theAspect->MarkerPhysical();
   }
 }
 
@@ -118,6 +120,7 @@ const occ::handle<OpenGl_PointSprite>& OpenGl_AspectsSprite::Sprite(
           theAspects->MarkerImage(),
           theAspects->MarkerType(),
           theAspects->MarkerScale(),
+          theAspects->MarkerPhysical(),
           theAspects->ColorRGBA(),
           myMarkerSize);
     myIsSpriteReady = true;
@@ -131,12 +134,13 @@ void OpenGl_AspectsSprite::build(const occ::handle<OpenGl_Context>&        theCt
                                  const occ::handle<Graphic3d_MarkerImage>& theMarkerImage,
                                  Aspect_TypeOfMarker                       theType,
                                  float                                     theScale,
+                                 bool                                      thePhysicalScale,
                                  const NCollection_Vec4<float>&            theColor,
                                  float&                                    theMarkerSize)
 {
   // generate key for shared resource
   TCollection_AsciiString aNewKey, aNewKeyA;
-  spriteKeys(theMarkerImage, theType, theScale, theColor, aNewKey, aNewKeyA);
+  spriteKeys(theMarkerImage, theType, theScale, thePhysicalScale, theColor, aNewKey, aNewKeyA);
 
   const TCollection_AsciiString& aSpriteKeyOld =
     !mySprite.IsNull() ? mySprite->ResourceId() : TCollection_AsciiString::EmptyString();
@@ -342,6 +346,7 @@ void OpenGl_AspectsSprite::build(const occ::handle<OpenGl_Context>&        theCt
 void OpenGl_AspectsSprite::spriteKeys(const occ::handle<Graphic3d_MarkerImage>& theMarkerImage,
                                       Aspect_TypeOfMarker                       theType,
                                       float                                     theScale,
+                                      bool                          thePhysicalScale,
                                       const NCollection_Vec4<float>&            theColor,
                                       TCollection_AsciiString&                  theKey,
                                       TCollection_AsciiString&                  theKeyA)
@@ -355,7 +360,7 @@ void OpenGl_AspectsSprite::spriteKeys(const occ::handle<Graphic3d_MarkerImage>& 
       theKeyA = theMarkerImage->GetImageAlphaId();
     }
   }
-  else if (theType != Aspect_TOM_POINT && theType != Aspect_TOM_EMPTY)
+  else if (theType != Aspect_TOM_POINT && theType != Aspect_TOM_EMPTY && !thePhysicalScale)
   {
     // predefined markers are defined with 0.5 step
     const int aScale = int(theScale * 10.0f + 0.5f);

@@ -1494,6 +1494,7 @@ bool OpenGl_ShaderManager::BindMarkerProgram(
   const occ::handle<OpenGl_TextureSet>&    theTextures,
   Graphic3d_TypeOfShadingModel             theShadingModel,
   Graphic3d_AlphaMode                      theAlphaMode,
+  bool                                     theRenderPhysicalCircle,
   bool                                     theHasVertColor,
   const occ::handle<OpenGl_ShaderProgram>& theCustomProgram)
 {
@@ -1513,6 +1514,11 @@ bool OpenGl_ShaderManager::BindMarkerProgram(
   {
     aBits |= Graphic3d_ShaderFlags_PointSimple;
   }
+
+  if (theRenderPhysicalCircle) {
+    aBits |= Graphic3d_ShaderFlags_PointCircle;
+  }
+
   occ::handle<OpenGl_ShaderProgram>& aProgram = getStdProgram(theShadingModel, aBits);
   return bindProgramWithState(aProgram, theShadingModel);
 }

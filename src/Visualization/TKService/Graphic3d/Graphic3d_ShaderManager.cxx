@@ -54,6 +54,9 @@ static int roundUpMaxLightSources(int theNbLights)
   return aMaxLimit;
 }
 
+  //! Number of points used for rendering points rendered as physical circles
+  const int THE_NB_POINT_CIRCLE_SEGMENTS = 7;
+
   //! Number of points used for rendering circular end caps of lines
   const int THE_LINE_END_CAP_SEGMENTS = 4;
 
@@ -179,6 +182,10 @@ const char THE_FRAG_WIREFRAME_COLOR[] =
 //! Compute gl_Position vertex shader output.
 const char THE_VERT_gl_Position[] =
   EOL "  gl_Position = occProjectionMatrix * occWorldViewMatrix * occModelWorldMatrix * occVertex;";
+
+//! Compute gl_Position as world position for later processing in a geometry shader
+const char THE_VERT_gl_ViewPosition[] =
+EOL"  gl_Position = occWorldViewMatrix * occModelWorldMatrix * occVertex;";
 
 //! Displace gl_Position alongside vertex normal for outline rendering.
 //! This code adds silhouette only for smooth surfaces of closed primitive, and produces visual
@@ -871,7 +878,7 @@ static TCollection_AsciiString prepareGeomMainSrc(Graphic3d_ShaderObject::Shader
           aSrcMainGeom += EOL "  EdgeDistance = vec3 (0.0, 0.0, aHeightABC[2]);";
           break;
       }
-
+    
       aSrcMainGeom += TCollection_AsciiString() + EOL "  gl_Position = gl_in[" + aVertIndex
                       + "].gl_Position;" EOL "  EmitVertex();";
     }
@@ -880,7 +887,49 @@ static TCollection_AsciiString prepareGeomMainSrc(Graphic3d_ShaderObject::Shader
 
     theInputArrayType = Graphic3d_TOPA_TRIANGLES;
     theNbOutputPoints = 3;
-    theNbInputPoints = 3;
+    theNbInputPoints = 3;      
+  }
+
+  if ((theBits & Graphic3d_ShaderFlags_PointCircle) != 0)
+  {
+    aSrcMainGeom += TCollection_AsciiString()
+    + EOL"  vec4 center = gl_in[0].gl_Position;"
+    + EOL"  vec4 centerNdc = occProjectionMatrix * center;"
+    + EOL"  vec3 normNdc = centerNdc.xyz / centerNdc.w;"
+    + EOL""
+    + EOL"  if (!((normNdc.x >= -1.0 && normNdc.x <= 1.0) &&"
+    + EOL"        (normNdc.y >= -1.0 && normNdc.y <= 1.0) &&"
+    + EOL"        (normNdc.z >= -1.0 && normNdc.z <= 1.0))) {"
+    + EOL"    EndPrimitive();"
+    + EOL"    return;"
+    + EOL"  }"
+    + EOL""
+    + EOL"  float pRadius = occPointSize / 2.0;"
+    + genGeomPassthroughCode(theStageInOuts, 0)
+    + EOL""
+    + EOL"  const int nbSegments = " + THE_NB_POINT_CIRCLE_SEGMENTS + ";"
+    + EOL""
+    + EOL"  gl_Position = occProjectionMatrix * (center + vec4(pRadius, 0.0, 0.0, 0.0));"
+    + EOL"  EmitVertex();"
+    + EOL"  for (int i = (nbSegments - 2); i >= 1; --i) {"
+    + EOL"    float phi = -PI_DIV_2 + (i / float(nbSegments - 1)) * PI;"
+    + EOL""
+    + EOL"    float x = pRadius * sin(phi);"
+    + EOL"    float y = pRadius * cos(phi);"
+    + EOL""
+    + EOL"    gl_Position = occProjectionMatrix * (center + vec4(x, y, 0.0, 0.0));"
+    + EOL"    EmitVertex();"
+    + EOL"    gl_Position = occProjectionMatrix * (center + vec4(x, -y, 0.0, 0.0));"
+    + EOL"    EmitVertex();"
+    + EOL"  }"
+    + EOL"  gl_Position = occProjectionMatrix * (center + vec4(-pRadius, 0.0, 0.0, 0.0));"
+    + EOL"  EmitVertex();"
+    + EOL""
+    + EOL"  EndPrimitive();";
+
+    theNbOutputPoints = THE_NB_POINT_CIRCLE_SEGMENTS * 2 - 2;
+    theInputArrayType = Graphic3d_TOPA_POINTS;
+    theNbInputPoints = 1;
   }
 
   if ((theBits & Graphic3d_ShaderFlags_LineWidth) != 0)
@@ -1169,8 +1218,13 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getStdProgramUnlit
     }
   }
 
+
+  aSrcVertExtraMain += ((theBits & Graphic3d_ShaderFlags_PointCircle) != 0)
+                         ? THE_VERT_gl_ViewPosition
+                         : THE_VERT_gl_Position;
+
   aSrcVert = aSrcVertExtraFunc + EOL "void main()" EOL "{" + aSrcVertExtraMain
-             + THE_VERT_gl_Position + aSrcVertEndMain + EOL "}";
+             + aSrcVertEndMain + EOL "}";
 
   int aNbGeomInputVerts = 0;
   int aNbGeomOutputVerts = 0;
@@ -1192,6 +1246,7 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getStdProgramUnlit
   aProgramSrc->SetNbShadowMaps(0);
   aProgramSrc->SetNbClipPlanesMax(aNbClipPlanes);
   aProgramSrc->SetAlphaTest((theBits & Graphic3d_ShaderFlags_AlphaTest) != 0);
+  
   aProgramSrc->AttachShader(Graphic3d_ShaderObject::CreateFromSource(aSrcVert,
                                                                      Graphic3d_TOS_VERTEX,
                                                                      aUniforms,
@@ -1552,6 +1607,11 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getStdProgramGoura
   int                           aNbLights = 0;
   const TCollection_AsciiString aLights =
     stdComputeLighting(aNbLights, theLights, !aSrcVertColor.IsEmpty(), false, toUseTexColor, 0);
+
+  aSrcVertExtraMain += ((theBits & Graphic3d_ShaderFlags_PointCircle) != 0)
+    ? THE_VERT_gl_ViewPosition
+    : THE_VERT_gl_Position;
+
   aSrcVert =
     TCollection_AsciiString() + THE_FUNC_transformNormal_world + EOL + aSrcVertColor + aLights
     + EOL "void main()" EOL "{" EOL "  vec4 aPositionWorld = occModelWorldMatrix * occVertex;" EOL
@@ -1563,7 +1623,7 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getStdProgramGoura
           "    aView = normalize (anEye - aPositionWorld.xyz);" EOL "  }" EOL
           "  FrontColor  = computeLighting (aNormal, aView, aPositionWorld, true);" EOL
           "  BackColor   = computeLighting (aNormal, aView, aPositionWorld, false);"
-    + aSrcVertExtraMain + THE_VERT_gl_Position + EOL "}";
+    + aSrcVertExtraMain + EOL "}";
 
   int aNbGeomInputVerts = 0;
   int aNbGeomOutputVerts = 0;
@@ -1586,6 +1646,7 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getStdProgramGoura
   aProgramSrc->SetNbShadowMaps(0);
   aProgramSrc->SetNbClipPlanesMax(aNbClipPlanes);
   aProgramSrc->SetAlphaTest((theBits & Graphic3d_ShaderFlags_AlphaTest) != 0);
+
   aProgramSrc->AttachShader(Graphic3d_ShaderObject::CreateFromSource(aSrcVert,
                                                                      Graphic3d_TOS_VERTEX,
                                                                      aUniforms,
@@ -1816,6 +1877,10 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getStdProgramPhong
       "  }";
   }
 
+  aSrcVertExtraMain += ((theBits & Graphic3d_ShaderFlags_PointCircle) != 0)
+    ? THE_VERT_gl_ViewPosition
+    : THE_VERT_gl_Position;
+
   aSrcVert = TCollection_AsciiString() + aSrcVertExtraFunc
              + EOL
              "void main()" EOL "{" EOL "  PositionWorld = occModelWorldMatrix * occVertex;" EOL
@@ -1824,7 +1889,7 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getStdProgramPhong
              "  else" EOL "  {" EOL
              "    vec3 anEye = (occWorldViewMatrixInverse * vec4(0.0, 0.0, 0.0, 1.0)).xyz;" EOL
              "    View = normalize (anEye - PositionWorld.xyz);" EOL "  }"
-             + aSrcVertExtraMain + THE_VERT_gl_Position + EOL "}";
+             + aSrcVertExtraMain + EOL "}";
 
   int aNbGeomInputVerts = 0;
   int aNbGeomOutputVerts = 0;

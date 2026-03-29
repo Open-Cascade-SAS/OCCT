@@ -177,6 +177,7 @@ public:
   Standard_EXPORT bool BindMarkerProgram(const occ::handle<OpenGl_TextureSet>&    theTextures,
                                          Graphic3d_TypeOfShadingModel             theShadingModel,
                                          Graphic3d_AlphaMode                      theAlphaMode,
+                                         bool                                     theRenderPhysicalCircle,
                                          bool                                     theHasVertColor,
                                          const occ::handle<OpenGl_ShaderProgram>& theCustomProgram);
 
