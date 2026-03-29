@@ -25,7 +25,6 @@
 #include <BRepGraph_HistoryRecord.hxx>
 #include <BRepGraph_LayerRegistry.hxx>
 #include <BRepGraph_SubGraph.hxx>
-#include <BRepGraph_UserAttribute.hxx>
 #include <BRepGraphInc_Populate.hxx>
 #include <BRepGraph_TransientCache.hxx>
 
@@ -116,7 +115,7 @@ public:
   //! @name Grouped View API
   class TopoView;
   class UIDsView;
-  class AttrsView;
+  class CacheView;
   class RefsView;
   class ShapesView;
   class BuilderView;
@@ -128,8 +127,8 @@ public:
   [[nodiscard]] Standard_EXPORT const UIDsView& UIDs() const;
   //! Access topology path resolution queries.
   [[nodiscard]] Standard_EXPORT const PathView& Paths() const;
-  //! Access user attributes.
-  [[nodiscard]] Standard_EXPORT AttrsView& Attrs();
+  //! Access transient cache values.
+  [[nodiscard]] Standard_EXPORT CacheView& Cache();
   //! Access reference entries and their UIDs.
   [[nodiscard]] Standard_EXPORT const RefsView& Refs() const;
   //! Access shape reconstruction.

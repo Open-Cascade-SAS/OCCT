@@ -24,8 +24,9 @@
 //! operations (sewing, boolean ops, etc.).
 //!
 //! All topology kinds (Face, Edge, Wire, Vertex, etc.) carry user
-//! attributes via BRepGraph_TransientCache. No geometry-only node kinds exist
-//! in the current graph model, so no filtering is required.
+//! attributes via cache-kind descriptors stored in BRepGraph_TransientCache.
+//! No geometry-only node kinds exist in the current graph model, so no
+//! filtering is required.
 class BRepGraphAlgo_AttrTransfer
 {
 public:

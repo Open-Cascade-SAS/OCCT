@@ -14,12 +14,12 @@
 #include <BRep_Builder.hxx>
 #include <BRepBuilderAPI_Copy.hxx>
 #include <BRepGraph.hxx>
-#include <BRepGraph_AttrsView.hxx>
+#include <BRepGraph_CacheView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_ShapesView.hxx>
-#include <BRepGraph_UserAttribute.hxx>
+#include <BRepGraph_TransientCache.hxx>
 #include <BRepGraphAlgo_AttrTransfer.hxx>
 #include <BRepGraphAlgo_Deduplicate.hxx>
 #include <BRepGraphAlgo_Sewing.hxx>
@@ -39,12 +39,23 @@
 namespace
 {
 
-static const int THE_COLOR_KEY = BRepGraph_UserAttribute::AllocateKey();
-static const int THE_LABEL_KEY = BRepGraph_UserAttribute::AllocateKey();
-
-occ::handle<BRepGraph_UserAttribute> makeIntAttr(int theValue)
+const occ::handle<BRepGraph_CacheKind>& colorCacheKind()
 {
-  return new BRepGraph_TypedAttribute<int>(theValue);
+  static const occ::handle<BRepGraph_CacheKind> THE_KIND =
+    new BRepGraph_CacheKind(Standard_GUID("2f9b6a5c-1f2d-4a88-9c1c-7a0c16a10024"), "Color");
+  return THE_KIND;
+}
+
+const occ::handle<BRepGraph_CacheKind>& labelCacheKind()
+{
+  static const occ::handle<BRepGraph_CacheKind> THE_KIND =
+    new BRepGraph_CacheKind(Standard_GUID("2f9b6a5c-1f2d-4a88-9c1c-7a0c16a10025"), "Label");
+  return THE_KIND;
+}
+
+occ::handle<BRepGraph_CacheValue> makeIntValue(int theValue)
+{
+  return new BRepGraph_TypedCacheValue<int>(theValue);
 }
 
 //! Find two adjacent faces from a shape (sharing a common edge).
@@ -131,9 +142,9 @@ TEST(BRepGraphAlgo_AttrTransferTest, HasNode_BasicCheck)
   EXPECT_FALSE(aGraph.Shapes().HasNode(TopoDS_Shape()));
 }
 
-// --- AttributeKeys tests ---
+// --- CacheKinds tests ---
 
-TEST(BRepGraphAlgo_AttrTransferTest, AttributeKeys_Empty)
+TEST(BRepGraphAlgo_AttrTransferTest, CacheKinds_Empty)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -142,12 +153,13 @@ TEST(BRepGraphAlgo_AttrTransferTest, AttributeKeys_Empty)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  const BRepGraph_NodeId        aFaceNode(BRepGraph_NodeId::Kind::Face, 0);
-  const NCollection_Vector<int> aKeys = aGraph.Attrs().AttributeKeys(aFaceNode);
-  EXPECT_TRUE(aKeys.IsEmpty());
+  const BRepGraph_NodeId                                       aFaceNode(BRepGraph_NodeId::Kind::Face, 0);
+  const NCollection_Vector<occ::handle<BRepGraph_CacheKind>> aKinds =
+    aGraph.Cache().CacheKinds(aFaceNode);
+  EXPECT_TRUE(aKinds.IsEmpty());
 }
 
-TEST(BRepGraphAlgo_AttrTransferTest, AttributeKeys_AfterSet)
+TEST(BRepGraphAlgo_AttrTransferTest, CacheKinds_AfterSet)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -158,27 +170,28 @@ TEST(BRepGraphAlgo_AttrTransferTest, AttributeKeys_AfterSet)
 
   const BRepGraph_NodeId aFaceNode(BRepGraph_NodeId::Kind::Face, 0);
 
-  aGraph.Attrs().Set(aFaceNode, THE_COLOR_KEY, makeIntAttr(42));
-  aGraph.Attrs().Set(aFaceNode, THE_LABEL_KEY, makeIntAttr(99));
+  aGraph.Cache().Set(aFaceNode, colorCacheKind(), makeIntValue(42));
+  aGraph.Cache().Set(aFaceNode, labelCacheKind(), makeIntValue(99));
 
-  const NCollection_Vector<int> aKeys = aGraph.Attrs().AttributeKeys(aFaceNode);
-  EXPECT_EQ(aKeys.Length(), 2);
+  const NCollection_Vector<occ::handle<BRepGraph_CacheKind>> aKinds =
+    aGraph.Cache().CacheKinds(aFaceNode);
+  EXPECT_EQ(aKinds.Length(), 2);
 
   // Verify both keys are present.
   bool hasColor = false;
   bool hasLabel = false;
-  for (int anIdx = 0; anIdx < aKeys.Length(); ++anIdx)
+  for (int anIdx = 0; anIdx < aKinds.Length(); ++anIdx)
   {
-    if (aKeys.Value(anIdx) == THE_COLOR_KEY)
+    if (!aKinds.Value(anIdx).IsNull() && aKinds.Value(anIdx)->ID() == colorCacheKind()->ID())
       hasColor = true;
-    if (aKeys.Value(anIdx) == THE_LABEL_KEY)
+    if (!aKinds.Value(anIdx).IsNull() && aKinds.Value(anIdx)->ID() == labelCacheKind()->ID())
       hasLabel = true;
   }
   EXPECT_TRUE(hasColor);
   EXPECT_TRUE(hasLabel);
 }
 
-TEST(BRepGraphAlgo_AttrTransferTest, AttributeKeys_FreshNode_Empty)
+TEST(BRepGraphAlgo_AttrTransferTest, CacheKinds_FreshNode_Empty)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -188,9 +201,10 @@ TEST(BRepGraphAlgo_AttrTransferTest, AttributeKeys_FreshNode_Empty)
   ASSERT_TRUE(aGraph.IsDone());
 
   // A node with no attributes set should return empty keys.
-  const BRepGraph_NodeId        aVertexNode(BRepGraph_NodeId::Kind::Vertex, 0);
-  const NCollection_Vector<int> aKeys = aGraph.Attrs().AttributeKeys(aVertexNode);
-  EXPECT_TRUE(aKeys.IsEmpty());
+  const BRepGraph_NodeId                                       aVertexNode(BRepGraph_NodeId::Kind::Vertex, 0);
+  const NCollection_Vector<occ::handle<BRepGraph_CacheKind>> aKinds =
+    aGraph.Cache().CacheKinds(aVertexNode);
+  EXPECT_TRUE(aKinds.IsEmpty());
 }
 
 // --- AttrTransfer tests ---
@@ -259,8 +273,8 @@ TEST(BRepGraphAlgo_AttrTransferTest, AttrTransfer_NoOverwrite)
   const BRepGraph_NodeId aFace0(BRepGraph_NodeId::Kind::Face, 0);
   const BRepGraph_NodeId aFace1(BRepGraph_NodeId::Kind::Face, 1);
 
-  aGraph.Attrs().Set(aFace0, THE_COLOR_KEY, makeIntAttr(100));
-  aGraph.Attrs().Set(aFace1, THE_COLOR_KEY, makeIntAttr(200));
+  aGraph.Cache().Set(aFace0, colorCacheKind(), makeIntValue(100));
+  aGraph.Cache().Set(aFace1, colorCacheKind(), makeIntValue(200));
 
   NCollection_Vector<BRepGraph_NodeId> aRepl;
   aRepl.Append(aFace1);
@@ -276,8 +290,8 @@ TEST(BRepGraphAlgo_AttrTransferTest, AttrTransfer_NoOverwrite)
   EXPECT_EQ(aResult.NbTransferred, 0);
 
   // Target still has its original value.
-  Handle(BRepGraph_TypedAttribute<int>) aTargetAttr =
-    Handle(BRepGraph_TypedAttribute<int>)::DownCast(aGraph.Attrs().Get(aFace1, THE_COLOR_KEY));
+  Handle(BRepGraph_TypedCacheValue<int>) aTargetAttr =
+    Handle(BRepGraph_TypedCacheValue<int>)::DownCast(aGraph.Cache().Get(aFace1, colorCacheKind()));
   ASSERT_FALSE(aTargetAttr.IsNull());
   EXPECT_EQ(aTargetAttr->UncheckedValue(), 200);
 }
@@ -294,8 +308,8 @@ TEST(BRepGraphAlgo_AttrTransferTest, AttrTransfer_Overwrite)
   const BRepGraph_NodeId aFace0(BRepGraph_NodeId::Kind::Face, 0);
   const BRepGraph_NodeId aFace1(BRepGraph_NodeId::Kind::Face, 1);
 
-  aGraph.Attrs().Set(aFace0, THE_COLOR_KEY, makeIntAttr(100));
-  aGraph.Attrs().Set(aFace1, THE_COLOR_KEY, makeIntAttr(200));
+  aGraph.Cache().Set(aFace0, colorCacheKind(), makeIntValue(100));
+  aGraph.Cache().Set(aFace1, colorCacheKind(), makeIntValue(200));
 
   NCollection_Vector<BRepGraph_NodeId> aRepl;
   aRepl.Append(aFace1);
@@ -311,8 +325,8 @@ TEST(BRepGraphAlgo_AttrTransferTest, AttrTransfer_Overwrite)
   EXPECT_EQ(aResult.NbSkipped, 0);
 
   // Target now has the source value.
-  Handle(BRepGraph_TypedAttribute<int>) aTargetAttr =
-    Handle(BRepGraph_TypedAttribute<int>)::DownCast(aGraph.Attrs().Get(aFace1, THE_COLOR_KEY));
+  Handle(BRepGraph_TypedCacheValue<int>) aTargetAttr =
+    Handle(BRepGraph_TypedCacheValue<int>)::DownCast(aGraph.Cache().Get(aFace1, colorCacheKind()));
   ASSERT_FALSE(aTargetAttr.IsNull());
   EXPECT_EQ(aTargetAttr->UncheckedValue(), 100);
 }
@@ -329,8 +343,8 @@ TEST(BRepGraphAlgo_AttrTransferTest, AttrTransfer_MultipleKeys)
   const BRepGraph_NodeId aFace0(BRepGraph_NodeId::Kind::Face, 0);
   const BRepGraph_NodeId aFace1(BRepGraph_NodeId::Kind::Face, 1);
 
-  aGraph.Attrs().Set(aFace0, THE_COLOR_KEY, makeIntAttr(10));
-  aGraph.Attrs().Set(aFace0, THE_LABEL_KEY, makeIntAttr(20));
+  aGraph.Cache().Set(aFace0, colorCacheKind(), makeIntValue(10));
+  aGraph.Cache().Set(aFace0, labelCacheKind(), makeIntValue(20));
 
   NCollection_Vector<BRepGraph_NodeId> aRepl;
   aRepl.Append(aFace1);
@@ -339,10 +353,10 @@ TEST(BRepGraphAlgo_AttrTransferTest, AttrTransfer_MultipleKeys)
   const BRepGraphAlgo_AttrTransfer::Result aResult = BRepGraphAlgo_AttrTransfer::Perform(aGraph);
   EXPECT_EQ(aResult.NbTransferred, 2);
 
-  Handle(BRepGraph_TypedAttribute<int>) aColorAttr =
-    Handle(BRepGraph_TypedAttribute<int>)::DownCast(aGraph.Attrs().Get(aFace1, THE_COLOR_KEY));
-  Handle(BRepGraph_TypedAttribute<int>) aLabelAttr =
-    Handle(BRepGraph_TypedAttribute<int>)::DownCast(aGraph.Attrs().Get(aFace1, THE_LABEL_KEY));
+  Handle(BRepGraph_TypedCacheValue<int>) aColorAttr =
+    Handle(BRepGraph_TypedCacheValue<int>)::DownCast(aGraph.Cache().Get(aFace1, colorCacheKind()));
+  Handle(BRepGraph_TypedCacheValue<int>) aLabelAttr =
+    Handle(BRepGraph_TypedCacheValue<int>)::DownCast(aGraph.Cache().Get(aFace1, labelCacheKind()));
   ASSERT_FALSE(aColorAttr.IsNull());
   ASSERT_FALSE(aLabelAttr.IsNull());
   EXPECT_EQ(aColorAttr->UncheckedValue(), 10);
@@ -373,7 +387,7 @@ TEST(BRepGraphAlgo_AttrTransferTest, AttrTransfer_GeometryHistorySkipped)
 
   // Attach an attribute to face 0.
   const BRepGraph_NodeId aFaceNode(BRepGraph_NodeId::Kind::Face, 0);
-  aGraph.Attrs().Set(aFaceNode, THE_COLOR_KEY, makeIntAttr(42));
+  aGraph.Cache().Set(aFaceNode, colorCacheKind(), makeIntValue(42));
 
   // Dedup creates geometry-level history (Surface -> Surface).
   (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
@@ -383,8 +397,8 @@ TEST(BRepGraphAlgo_AttrTransferTest, AttrTransfer_GeometryHistorySkipped)
   EXPECT_EQ(aResult.NbTransferred, 0);
 
   // The face still has its attribute.
-  Handle(BRepGraph_TypedAttribute<int>) aRetrieved =
-    Handle(BRepGraph_TypedAttribute<int>)::DownCast(aGraph.Attrs().Get(aFaceNode, THE_COLOR_KEY));
+  Handle(BRepGraph_TypedCacheValue<int>) aRetrieved =
+    Handle(BRepGraph_TypedCacheValue<int>)::DownCast(aGraph.Cache().Get(aFaceNode, colorCacheKind()));
   ASSERT_FALSE(aRetrieved.IsNull());
   EXPECT_EQ(aRetrieved->UncheckedValue(), 42);
 }
@@ -399,7 +413,7 @@ TEST(BRepGraphAlgo_AttrTransferTest, AttrTransfer_DeletionRecordSkipped)
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph_NodeId aFace0(BRepGraph_NodeId::Kind::Face, 0);
-  aGraph.Attrs().Set(aFace0, THE_COLOR_KEY, makeIntAttr(100));
+  aGraph.Cache().Set(aFace0, colorCacheKind(), makeIntValue(100));
 
   // Record a deletion (empty replacements).
   NCollection_Vector<BRepGraph_NodeId> aEmptyRepl;

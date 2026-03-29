@@ -661,7 +661,13 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
     aCounts[static_cast<int>(BRepGraph_NodeId::Kind::CompSolid)] = aStr.NbCompSolids();
     aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Product)]    = aStr.NbProducts();
     aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Occurrence)] = aStr.NbOccurrences();
-    theGraph.myTransientCache.Reserve(BRepGraph_TransientCache::THE_DEFAULT_MAX_ATTR_KEY, aCounts);
+    int aReservedKindCount = BRepGraph_TransientCache::THE_DEFAULT_RESERVED_KIND_COUNT;
+    const int aRegisteredKindCount = BRepGraph_CacheKindRegistry::NbRegistered();
+    if (aRegisteredKindCount > aReservedKindCount)
+    {
+      aReservedKindCount = aRegisteredKindCount;
+    }
+    theGraph.myTransientCache.Reserve(aReservedKindCount, aCounts);
   }
   // Build unified remap map covering all 8 topology kinds.
   NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId> aRemapMap;

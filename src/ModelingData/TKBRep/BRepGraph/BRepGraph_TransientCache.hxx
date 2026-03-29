@@ -15,93 +15,257 @@
 #define _BRepGraph_TransientCache_HeaderFile
 
 #include <BRepGraph_NodeId.hxx>
-#include <BRepGraph_UserAttribute.hxx>
+
+#include <Standard_GUID.hxx>
+#include <Standard_Handle.hxx>
+#include <Standard_Transient.hxx>
+#include <TCollection_AsciiString.hxx>
 
 #include <NCollection_Vector.hxx>
 
 #include <atomic>
+#include <functional>
+#include <mutex>
 #include <shared_mutex>
 
-//! @brief Centralized transient cache for algorithm-computed per-node attributes.
+//! @brief Descriptor of one transient cache family.
 //!
-//! Stores short-lived cached data (BndBox, UVBounds, etc.) in dense per-kind
-//! vectors indexed by entity index. O(1) access by direct indexing — no hashing.
+//! A cache kind defines stable public identity for one class of transient,
+//! recomputable per-node data such as bounding boxes or UV bounds.
+//! Instances are process-global descriptors registered in
+//! BRepGraph_CacheKindRegistry and referenced from graphs by dense runtime slots.
+class BRepGraph_CacheKind : public Standard_Transient
+{
+public:
+  //! Create a cache kind descriptor.
+  //! @param[in] theID            stable public GUID identity
+  //! @param[in] theName          display-only name
+  //! @param[in] theNodeKindsMask optional node-kind applicability mask;
+  //!                             0 means "unspecified / unrestricted"
+  Standard_EXPORT BRepGraph_CacheKind(const Standard_GUID&           theID,
+                                      const TCollection_AsciiString& theName          = TCollection_AsciiString(),
+                                      const int                      theNodeKindsMask = 0);
+
+  //! Stable public identity.
+  [[nodiscard]] const Standard_GUID& ID() const { return myID; }
+
+  //! Display-only metadata.
+  [[nodiscard]] const TCollection_AsciiString& Name() const { return myName; }
+
+  //! Optional node-kind applicability mask.
+  [[nodiscard]] int NodeKindsMask() const { return myNodeKindsMask; }
+
+  //! True if this cache kind is applicable to the given node kind.
+  //! Cache kinds with NodeKindsMask() == 0 are treated as unrestricted.
+  [[nodiscard]] bool SupportsNodeKind(const BRepGraph_NodeId::Kind theKind) const
+  {
+    return myNodeKindsMask == 0 || (myNodeKindsMask & KindBit(theKind)) != 0;
+  }
+
+  //! Convenience: bitmask bit for a given node kind.
+  static int KindBit(const BRepGraph_NodeId::Kind theKind)
+  {
+    return 1 << static_cast<int>(theKind);
+  }
+
+  DEFINE_STANDARD_RTTIEXT(BRepGraph_CacheKind, Standard_Transient)
+
+private:
+  Standard_GUID           myID;
+  TCollection_AsciiString myName;
+  int                     myNodeKindsMask = 0;
+};
+
+//! @brief Process-global registry of cache kind descriptors.
+//!
+//! Maps stable GUID identity to dense runtime slot index. Slot indices are an
+//! internal storage detail used by BRepGraph_TransientCache for O(1) indexing.
+class BRepGraph_CacheKindRegistry
+{
+public:
+  //! Register a cache kind descriptor.
+  //! Idempotent: the same GUID always yields the same slot.
+  //! @return dense runtime slot, or -1 for null input
+  [[nodiscard]] Standard_EXPORT static int Register(const occ::handle<BRepGraph_CacheKind>& theKind);
+
+  //! Find slot by GUID. Returns -1 if not found.
+  [[nodiscard]] Standard_EXPORT static int FindSlot(const Standard_GUID& theGUID);
+
+  //! Find slot by GUID.
+  //! @param[out] theSlot dense runtime slot if found
+  //! @return true if the GUID is registered
+  Standard_EXPORT static bool FindSlot(const Standard_GUID& theGUID, int& theSlot);
+
+  //! Find descriptor by GUID.
+  [[nodiscard]] Standard_EXPORT static occ::handle<BRepGraph_CacheKind> FindKind(
+    const Standard_GUID& theGUID);
+
+  //! Find descriptor by slot.
+  [[nodiscard]] Standard_EXPORT static occ::handle<BRepGraph_CacheKind> FindKind(const int theSlot);
+
+  //! Check whether a GUID is registered.
+  [[nodiscard]] Standard_EXPORT static bool Contains(const Standard_GUID& theGUID);
+
+  //! Check whether a slot is registered.
+  [[nodiscard]] Standard_EXPORT static bool Contains(const int theSlot);
+
+  //! Number of registered cache kinds.
+  [[nodiscard]] Standard_EXPORT static int NbRegistered();
+
+private:
+  BRepGraph_CacheKindRegistry() = delete;
+};
+
+//! @brief Abstract base for transient per-node cache values.
+//!
+//! Inherits from Standard_Transient and is stored via
+//! occ::handle<BRepGraph_CacheValue>. This uses OCCT's embedded refcount and is
+//! consistent with the Handle pattern used throughout the codebase.
+class BRepGraph_CacheValue : public Standard_Transient
+{
+public:
+  //! Mark the cached value as needing recomputation. Lock-free.
+  void Invalidate() { myDirty.store(true, std::memory_order_release); }
+
+  //! True if the cached value needs recomputation.
+  bool IsDirty() const { return myDirty.load(std::memory_order_acquire); }
+
+  DEFINE_STANDARD_RTTI_INLINE(BRepGraph_CacheValue, Standard_Transient)
+
+protected:
+  BRepGraph_CacheValue()
+      : myDirty(true)
+  {
+  }
+
+  //! Subclass calls after successful computation to clear the dirty flag.
+  void MarkClean() const { myDirty.store(false, std::memory_order_release); }
+
+  //! Mutex for thread-safe Get() in subclasses.
+  mutable std::shared_mutex myMutex;
+
+private:
+  mutable std::atomic<bool> myDirty;
+};
+
+//! @brief Concrete typed wrapper for a lazily-computed per-node value.
+//!
+//! @tparam T cached value type (for example double).
+template <typename T>
+class BRepGraph_TypedCacheValue : public BRepGraph_CacheValue
+{
+public:
+  BRepGraph_TypedCacheValue() = default;
+
+  //! Construct with an initial value (marked clean).
+  explicit BRepGraph_TypedCacheValue(const T& theInitial)
+      : myValue(theInitial)
+  {
+    MarkClean();
+  }
+
+  //! Get the cached value, computing via theComputer if dirty.
+  //! Thread-safe: uses the base class shared_mutex.
+  T Get(const std::function<T()>& theComputer) const
+  {
+    if (!IsDirty())
+    {
+      std::shared_lock<std::shared_mutex> aLock(myMutex);
+      if (!IsDirty())
+      {
+        return myValue;
+      }
+    }
+
+    std::unique_lock<std::shared_mutex> aLock(myMutex);
+    if (IsDirty())
+    {
+      myValue = theComputer();
+      MarkClean();
+    }
+    return myValue;
+  }
+
+  //! Direct write - stores the value and marks clean.
+  void Set(const T& theValue)
+  {
+    std::unique_lock<std::shared_mutex> aLock(myMutex);
+    myValue = theValue;
+    MarkClean();
+  }
+
+  //! Direct read. Caller must guarantee freshness.
+  const T& UncheckedValue() const { return myValue; }
+
+private:
+  mutable T myValue{};
+};
+
+//! @brief Centralized transient cache for algorithm-computed per-node values.
+//!
+//! Stores short-lived cached data (BndBox, UVBounds, etc.) in dense per-cache-kind
+//! vectors indexed by entity index. O(1) access by direct indexing - no hashing.
 //!
 //! ## SubtreeGen-based freshness
 //! Each stored slot records SubtreeGen at write time. On read, if stored
-//! SubtreeGen differs from entity's current SubtreeGen the attribute is
-//! considered stale — the caller decides how to handle it.
+//! SubtreeGen differs from entity's current SubtreeGen the cached value is
+//! considered stale - the caller decides how to handle it.
 //!
 //! ## Lifecycle
-//! NOT a Layer. Cleared on Build() and Compact(). No OnNodeRemoved handling —
+//! NOT a Layer. Cleared on Build() and Compact(). No OnNodeRemoved handling -
 //! stale data is auto-detected by SubtreeGen mismatch.
 //!
 //! ## Thread safety
 //! After Reserve(), Get() and Set() for in-range indices bypass the mutex
-//! entirely — safe because parallel algorithms access different entity slots.
+//! entirely - safe because parallel algorithms access different entity slots.
 //! Out-of-range access (entities added after Build) falls back to mutex.
 class BRepGraph_TransientCache
 {
 public:
   //! Number of Kind enum slots to cover (0..11, with gap at 9).
-  static constexpr int THE_KIND_COUNT =
-    static_cast<int>(BRepGraph_NodeId::Kind::Occurrence) + 1;
+  static constexpr int THE_KIND_COUNT = static_cast<int>(BRepGraph_NodeId::Kind::Occurrence) + 1;
 
-  //! Default upper bound for attribute keys (BndLib=0, UVBounds=1, etc.).
-  static constexpr int THE_DEFAULT_MAX_ATTR_KEY = 15;
+  //! Default number of cache-kind slots reserved after Build().
+  static constexpr int THE_DEFAULT_RESERVED_KIND_COUNT = 16;
 
-  //! Per-slot storage: attribute handle + SubtreeGen stamp.
+  //! Per-slot storage: cached value handle + SubtreeGen stamp.
   struct CacheSlot
   {
-    occ::handle<BRepGraph_UserAttribute> Attr;
-    uint32_t                             StoredSubtreeGen = 0;
+    occ::handle<BRepGraph_CacheValue> Value;
+    uint32_t                          StoredSubtreeGen = 0;
   };
 
-  //! Store an attribute for a node at a given key.
-  //! @param[in] theNode          target node
-  //! @param[in] theKey           attribute key (from BRepGraph_AttrRegistry)
-  //! @param[in] theAttr          attribute handle to store
-  //! @param[in] theCurrentSubtreeGen current SubtreeGen of the entity
-  void Set(const BRepGraph_NodeId                      theNode,
-           const int                                   theKey,
-           const occ::handle<BRepGraph_UserAttribute>& theAttr,
-           const uint32_t                              theCurrentSubtreeGen);
+  //! Store a cached value for a node and cache kind.
+  void Set(const BRepGraph_NodeId                  theNode,
+           const occ::handle<BRepGraph_CacheKind>& theKind,
+           const occ::handle<BRepGraph_CacheValue>& theValue,
+           const uint32_t                          theCurrentSubtreeGen);
 
-  //! Retrieve an attribute for a node at a given key.
-  //! If stored SubtreeGen differs from theCurrentSubtreeGen, the returned
-  //! attribute is considered stale — the caller should check IsDirty()
-  //! or recompute as appropriate.
-  //! @param[in] theNode              target node
-  //! @param[in] theKey               attribute key
-  //! @param[in] theCurrentSubtreeGen current SubtreeGen of the entity
-  //! @return attribute handle, or null if absent
-  [[nodiscard]] occ::handle<BRepGraph_UserAttribute> Get(
-    const BRepGraph_NodeId theNode,
-    const int              theKey,
-    const uint32_t         theCurrentSubtreeGen) const;
+  //! Retrieve a cached value for a node and cache kind.
+  [[nodiscard]] occ::handle<BRepGraph_CacheValue> Get(
+    const BRepGraph_NodeId                  theNode,
+    const occ::handle<BRepGraph_CacheKind>& theKind,
+    const uint32_t                          theCurrentSubtreeGen) const;
 
-  //! Remove an attribute for a node at a given key.
-  //! @return true if something was removed
-  [[nodiscard]] bool Remove(const BRepGraph_NodeId theNode, const int theKey);
+  //! Remove a cached value for a node and cache kind.
+  [[nodiscard]] bool Remove(const BRepGraph_NodeId theNode,
+                            const occ::handle<BRepGraph_CacheKind>& theKind);
 
-  //! True if any attributes are stored for this node (any key).
-  [[nodiscard]] bool HasAttributes(const BRepGraph_NodeId theNode) const;
+  //! True if any cached values are stored for this node (any cache kind).
+  [[nodiscard]] bool HasCacheValues(const BRepGraph_NodeId theNode) const;
 
-  //! Return all registered attribute keys that have non-null entries for this node.
-  [[nodiscard]] NCollection_Vector<int> AttributeKeys(const BRepGraph_NodeId theNode) const;
+  //! Return all registered cache kinds that have non-null entries for this node.
+  [[nodiscard]] NCollection_Vector<occ::handle<BRepGraph_CacheKind>> CacheKinds(
+    const BRepGraph_NodeId theNode) const;
 
-  //! Transfer all attributes from a source cache to a destination node in this cache.
-  void TransferAttributes(const BRepGraph_TransientCache& theSrcCache,
+  //! Transfer all cached values from a source cache to a destination node.
+  void TransferCacheValues(const BRepGraph_TransientCache& theSrcCache,
                           const BRepGraph_NodeId          theSrcNode,
                           const BRepGraph_NodeId          theDstNode,
                           const uint32_t                  theDstSubtreeGen);
 
   //! Pre-allocate storage for lock-free parallel access.
-  //! Must be called after Build() when entity counts are final.
-  //! After this call, Get() and Set() for in-range indices skip the mutex.
-  //! @param[in] theMaxKey  highest attribute key expected (typically 2-3)
-  //! @param[in] theCounts  entity count per kind (indexed by Kind enum)
-  void Reserve(const int theMaxKey, const int theCounts[THE_KIND_COUNT]);
+  void Reserve(const int theKindCount, const int theCounts[THE_KIND_COUNT]);
 
   //! True if Reserve() has been called and storage is pre-allocated.
   [[nodiscard]] bool IsReserved() const noexcept
@@ -110,25 +274,22 @@ public:
   }
 
   //! Clear all cached data. Called on Build() and Compact().
-  //! Resets the pre-allocated state.
   void Clear() noexcept;
 
   //! Move constructor: transfers data, creates fresh mutex.
-  //! Caller must ensure no concurrent access to theOther during move.
   BRepGraph_TransientCache(BRepGraph_TransientCache&& theOther) noexcept
-      : myKeys(std::move(theOther.myKeys)),
+      : myKinds(std::move(theOther.myKinds)),
         myIsReserved(theOther.myIsReserved.load(std::memory_order_relaxed))
   {
     theOther.myIsReserved.store(false, std::memory_order_relaxed);
   }
 
   //! Move assignment: transfers data, mutex stays local.
-  //! Caller must ensure no concurrent access to theOther during move.
   BRepGraph_TransientCache& operator=(BRepGraph_TransientCache&& theOther) noexcept
   {
     if (this != &theOther)
     {
-      myKeys = std::move(theOther.myKeys);
+      myKinds = std::move(theOther.myKinds);
       myIsReserved.store(theOther.myIsReserved.load(std::memory_order_relaxed),
                          std::memory_order_relaxed);
       theOther.myIsReserved.store(false, std::memory_order_relaxed);
@@ -141,37 +302,34 @@ public:
   BRepGraph_TransientCache& operator=(const BRepGraph_TransientCache&) = delete;
 
 private:
-
-  //! Per-kind dense vector of cache slots.
-  struct KindStore
+  //! Per-node-kind dense vector of cache slots.
+  struct NodeKindStore
   {
     NCollection_Vector<CacheSlot> mySlots;
   };
 
-  //! Per-key storage: one KindStore per entity kind.
-  struct KeySlot
+  //! Per-cache-kind storage: one node-kind store per entity kind.
+  struct CacheKindSlot
   {
-    KindStore myKinds[THE_KIND_COUNT];
+    NodeKindStore myNodeKinds[THE_KIND_COUNT];
   };
 
-  //! Ensure myKeys has capacity for the given key index.
-  void ensureKey(const int theKey);
+  //! Ensure myKinds has capacity for the given cache-kind slot.
+  void ensureKind(const int theKindSlot);
 
-  //! Access slot (mutable) — grows vector if needed.
-  CacheSlot& changeSlot(const BRepGraph_NodeId theNode, const int theKey);
+  //! Access slot (mutable) - grows vector if needed.
+  CacheSlot& changeSlot(const BRepGraph_NodeId theNode, const int theKindSlot);
 
-  //! Access slot (const) — returns nullptr if out of range.
-  const CacheSlot* seekSlot(const BRepGraph_NodeId theNode, const int theKey) const;
+  //! Access slot (const) - returns nullptr if out of range.
+  const CacheSlot* seekSlot(const BRepGraph_NodeId theNode, const int theKindSlot) const;
 
-  //! Outer vector indexed by attribute key (0, 1, 2, ...).
-  NCollection_Vector<KeySlot> myKeys;
+  //! Outer vector indexed by cache-kind slot.
+  NCollection_Vector<CacheKindSlot> myKinds;
 
-  //! True after Reserve() — enables lock-free access for in-range slots.
-  //! Atomic with acquire/release to ensure safe publication of pre-allocated vectors.
+  //! True after Reserve() - enables lock-free access for in-range slots.
   std::atomic<bool> myIsReserved{false};
 
   //! Protects structural modifications (vector growth) during concurrent access.
-  //! Bypassed for in-range access when myIsReserved is true.
   mutable std::shared_mutex myMutex;
 };
 

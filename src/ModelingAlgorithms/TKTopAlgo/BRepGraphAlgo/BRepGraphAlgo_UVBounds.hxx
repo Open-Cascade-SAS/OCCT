@@ -14,6 +14,7 @@
 #ifndef _BRepGraphAlgo_UVBounds_HeaderFile
 #define _BRepGraphAlgo_UVBounds_HeaderFile
 
+#include <BRepGraph_TransientCache.hxx>
 #include <BRepGraph_NodeId.hxx>
 #include <Standard_DefineAlloc.hxx>
 
@@ -24,7 +25,7 @@ class BRepGraph;
 //! Computes the UV parametric domain of a face from pre-built BRepGraph data,
 //! handling natural restriction detection, periodicity clamping, and BSpline
 //! pseudo-periodicity (geometrically periodic surfaces not flagged as such).
-//! Results are cached as user attributes on face nodes to avoid recomputation.
+//! Results are cached as transient cache values on face nodes to avoid recomputation.
 //!
 //! ## Typical usage
 //! @code
@@ -69,7 +70,7 @@ public:
                                       CachedData&            theData);
 
   // - Cached API --
-  // Stores/retrieves UV bounds as user attributes on graph nodes.
+  // Stores/retrieves UV bounds as transient cache values on graph nodes.
   // Thread-safe for concurrent calls on *different* nodes.
   // First attachment on a given node is NOT thread-safe with concurrent
   // first-attachment on the same node.
@@ -102,9 +103,8 @@ public:
   //! @param[in]  theNode   face definition node identifier
   Standard_EXPORT static void InvalidateCached(BRepGraph& theGraph, const BRepGraph_NodeId theNode);
 
-  //! Return the user attribute key used for UV bounds caching.
-  //! @return integer key registered via GUID
-  Standard_EXPORT static int CacheKey();
+  //! Return the cache kind descriptor used for UV bounds caching.
+  [[nodiscard]] Standard_EXPORT static const occ::handle<BRepGraph_CacheKind>& CacheKind();
 
 private:
   BRepGraphAlgo_UVBounds() = delete;

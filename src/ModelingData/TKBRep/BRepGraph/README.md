@@ -61,7 +61,7 @@ All queries and mutations go through lightweight view objects obtained from a `B
 | **TopoView** | `Topo()` | Const topology definition access, entity counts, adjacency queries (SharedEdges, AdjacentFaces, SameDomainFaces) |
 | **UIDsView** | `UIDs()` | UID allocation, lookup, validity checking |
 | **ShapesView** | `Shapes()` | TopoDS reconstruction, FindNode/HasNode reverse lookup |
-| **AttrsView** | `Attrs()` | Transient cache access (Set/Get/Remove per-node cached attributes) |
+| **CacheView** | `Cache()` | Transient cache access (Set/Get/Remove per-node cached values) |
 | **BuilderView** | `Builder()` | Mutations: AddProduct, AddOccurrence, RemoveNode, RemoveSubgraph, MutGuard accessors |
 | **RefsView** | `Refs()` | Reference entry access, RefUID lookup, VersionStamp for refs |
 | **PathView** | `Paths()` | Assembly queries (NbProducts, RootProducts, IsAssembly, IsPart), path traversal (GlobalLocation, GlobalOrientation, PathsTo, NodeLocations, CommonAncestor) |
@@ -293,14 +293,17 @@ const occ::handle<BRepGraph_ParamLayer> aParamLayer =
 
 ### TransientCache (`BRepGraph_TransientCache`)
 
-Centralized per-node cache for algorithm-computed attributes. Dense per-kind vectors with O(1) access. NOT a Layer — cleared on Build() and Compact().
+Centralized per-node cache for algorithm-computed attributes. Dense graph-local storage keyed by
+registered cache-kind descriptors with O(1) slot access. NOT a Layer — cleared on Build() and Compact().
 
 - **Purpose**: ephemeral computed caches (bounding boxes, UV bounds, FClass2d results)
-- **Storage**: dense `NCollection_Vector<CacheSlot>` per kind per key, indexed by entity index
+- **Identity**: cache families are described by `BRepGraph_CacheKind` with stable `Standard_GUID` identity
+- **Storage**: dense `NCollection_Vector<CacheKindSlot>` per cache kind, then per node kind, then per entity index
+- **Granularity**: one cached value per `(node, cache kind)`
 - **Freshness**: SubtreeGen-validated. Each slot stores `StoredSubtreeGen`; on read, if it differs from the entity's current `SubtreeGen`, the attribute is marked dirty and recomputed lazily.
 - **Thread safety**: `shared_mutex` (concurrent reads from `OSD_Parallel::For`, exclusive writes)
 - **Survives mutations**: yes (stale entries detected by SubtreeGen mismatch)
-- **Example**: `BRepGraph_TypedAttribute<Bnd_Box>` for cached bounding boxes
+- **Examples**: `BRepGraphAlgo_BndLib::CacheKind()`, `BRepGraphAlgo_UVBounds::CacheKind()`
 
 ### When to Use Which
 
@@ -396,13 +399,13 @@ Benefits: O(1) allocation (bump-pointer), O(1) destruction (bulk page release). 
 | Category | Files |
 |----------|-------|
 | **Core** | `BRepGraph.hxx/.cxx`, `BRepGraph_Data.hxx`, `BRepGraph_NodeId.hxx`, `BRepGraph_UID.hxx`, `BRepGraph_RefId.hxx`, `BRepGraph_RefUID.hxx`, `BRepGraph_RepId.hxx` |
-| **Views** | `BRepGraph_TopoView.hxx/.cxx`, `BRepGraph_UIDsView.hxx/.cxx`, `BRepGraph_RefsView.hxx/.cxx`, `BRepGraph_ShapesView.hxx/.cxx`, `BRepGraph_AttrsView.hxx/.cxx`, `BRepGraph_BuilderView.hxx/.cxx`, `BRepGraph_PathView.hxx/.cxx` |
+| **Views** | `BRepGraph_TopoView.hxx/.cxx`, `BRepGraph_UIDsView.hxx/.cxx`, `BRepGraph_RefsView.hxx/.cxx`, `BRepGraph_ShapesView.hxx/.cxx`, `BRepGraph_CacheView.hxx/.cxx`, `BRepGraph_BuilderView.hxx/.cxx`, `BRepGraph_PathView.hxx/.cxx` |
 | **Refs** | `BRepGraph_VersionStamp.hxx/.cxx` |
 | **Traversal** | `BRepGraph_Explorer.hxx/.cxx`, `BRepGraph_TopologyPath.hxx`, `BRepGraph_SubGraph.hxx`, `BRepGraph_PCurveContext.hxx` |
 | **Geometry** | `BRepGraph_Tool.hxx/.cxx` |
 | **Mutation** | `BRepGraph_MutGuard.hxx`, `BRepGraph_DeferredScope.hxx` |
 | **Layers** | `BRepGraph_Layer.hxx/.cxx`, `BRepGraph_NameLayer.hxx/.cxx` |
-| **Transient Cache** | `BRepGraph_TransientCache.hxx/.cxx`, `BRepGraph_UserAttribute.hxx` |
+| **Transient Cache** | `BRepGraph_TransientCache.hxx/.cxx` |
 | **Analysis** | `BRepGraph_Analyze.hxx/.cxx` |
 | **History** | `BRepGraph_History.hxx/.cxx`, `BRepGraph_HistoryRecord.hxx` |
 | **Iteration** | `BRepGraph_Iterator.hxx` |

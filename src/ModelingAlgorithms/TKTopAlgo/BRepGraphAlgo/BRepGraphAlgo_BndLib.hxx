@@ -14,6 +14,7 @@
 #ifndef _BRepGraphAlgo_BndLib_HeaderFile
 #define _BRepGraphAlgo_BndLib_HeaderFile
 
+#include <BRepGraph_TransientCache.hxx>
 #include <BRepGraph_NodeId.hxx>
 #include <Standard_DefineAlloc.hxx>
 
@@ -115,7 +116,7 @@ public:
                                      const bool       theIsShapeToleranceUsed = true);
 
   // - Cached API --
-  // Stores/retrieves bounding boxes as user attributes on graph nodes.
+  // Stores/retrieves bounding boxes as transient cache values on graph nodes.
   // Thread-safe for concurrent calls on *different* nodes.
   // First attachment on a given node is NOT thread-safe with concurrent
   // first-attachment on the same node.
@@ -159,9 +160,8 @@ public:
   //! @param[in]  theNode   node identifier
   Standard_EXPORT static void InvalidateCached(BRepGraph& theGraph, const BRepGraph_NodeId theNode);
 
-  //! Return the user attribute key used for bbox caching.
-  //! @return integer key registered via GUID
-  Standard_EXPORT static int CacheKey();
+  //! Return the cache kind descriptor used for bbox caching.
+  [[nodiscard]] Standard_EXPORT static const occ::handle<BRepGraph_CacheKind>& CacheKind();
 
 private:
   BRepGraphAlgo_BndLib() = delete;

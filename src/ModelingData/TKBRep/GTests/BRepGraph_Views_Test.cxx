@@ -14,7 +14,7 @@
 #include <Bnd_Box.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_Analyze.hxx>
-#include <BRepGraph_AttrsView.hxx>
+#include <BRepGraph_CacheView.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_History.hxx>
@@ -31,12 +31,12 @@
 
 namespace
 {
-//! Concrete subclass for testing user attributes.
-class TestUserAttribute : public BRepGraph_UserAttribute
+//! Concrete subclass for testing cache values.
+class TestCacheValue : public BRepGraph_CacheValue
 {
 public:
-  DEFINE_STANDARD_RTTI_INLINE(TestUserAttribute, BRepGraph_UserAttribute)
-  TestUserAttribute() = default;
+  DEFINE_STANDARD_RTTI_INLINE(TestCacheValue, BRepGraph_CacheValue)
+  TestCacheValue() = default;
 };
 
 //! Compute the center of a bounding box for the given node.
@@ -49,6 +49,13 @@ static gp_Pnt bboxCenter(BRepGraph& theGraph, BRepGraph_NodeId theNode)
   double xn, yn, zn, xx, yx, zx;
   aBox.Get(xn, yn, zn, xx, yx, zx);
   return gp_Pnt((xn + xx) * 0.5, (yn + yx) * 0.5, (zn + zx) * 0.5);
+}
+
+const occ::handle<BRepGraph_CacheKind>& testUserAttrKind()
+{
+  static const occ::handle<BRepGraph_CacheKind> THE_KIND =
+    new BRepGraph_CacheKind(Standard_GUID("2f9b6a5c-1f2d-4a88-9c1c-7a0c16a10020"), "ViewsTestAttr");
+  return THE_KIND;
 }
 } // namespace
 
@@ -203,26 +210,24 @@ TEST_F(BRepGraph_ViewsTest, BndLib_Centroid_InsideBBox)
   EXPECT_LE(aCentroid.Y(), aYmax + aTol);
 }
 
-// ---------- AttrsView ----------
+// ---------- CacheView ----------
 
 TEST_F(BRepGraph_ViewsTest, AttrsView_SetGet_RoundTrip)
 {
   BRepGraph_NodeId                     aFaceId(BRepGraph_NodeId::Kind::Face, 0);
-  const int                            aKey   = 42;
-  occ::handle<BRepGraph_UserAttribute> anAttr = new TestUserAttribute();
-  myGraph.Attrs().Set(aFaceId, aKey, anAttr);
-  occ::handle<BRepGraph_UserAttribute> aRetrieved = myGraph.Attrs().Get(aFaceId, aKey);
+  occ::handle<BRepGraph_CacheValue> anAttr = new TestCacheValue();
+  myGraph.Cache().Set(aFaceId, testUserAttrKind(), anAttr);
+  occ::handle<BRepGraph_CacheValue> aRetrieved = myGraph.Cache().Get(aFaceId, testUserAttrKind());
   EXPECT_EQ(aRetrieved, anAttr);
 }
 
 TEST_F(BRepGraph_ViewsTest, AttrsView_Remove_Works)
 {
   BRepGraph_NodeId                     aFaceId(BRepGraph_NodeId::Kind::Face, 0);
-  const int                            aKey   = 99;
-  occ::handle<BRepGraph_UserAttribute> anAttr = new TestUserAttribute();
-  myGraph.Attrs().Set(aFaceId, aKey, anAttr);
-  EXPECT_TRUE(myGraph.Attrs().Remove(aFaceId, aKey));
-  EXPECT_TRUE(myGraph.Attrs().Get(aFaceId, aKey).IsNull());
+  occ::handle<BRepGraph_CacheValue> anAttr = new TestCacheValue();
+  myGraph.Cache().Set(aFaceId, testUserAttrKind(), anAttr);
+  EXPECT_TRUE(myGraph.Cache().Remove(aFaceId, testUserAttrKind()));
+  EXPECT_TRUE(myGraph.Cache().Get(aFaceId, testUserAttrKind()).IsNull());
 }
 
 // ---------- ShapesView ----------

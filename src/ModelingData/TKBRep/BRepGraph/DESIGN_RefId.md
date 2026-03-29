@@ -910,15 +910,14 @@ With RefId, history can also track ref-level changes:
 
 ### 8.3 Named Layers / Attributes
 
-Current attribute system attaches data to NodeId:
+Current transient cache system attaches cache values to `NodeId`:
 ```cpp
-BRepGraph_AttrsView::Set(NodeId, "color", value);
+aGraph.Cache().Set(NodeId, theColorKind, theColorValue);
 ```
 
-With RefId, attributes can also be attached to refs:
-```cpp
-BRepGraph_AttrsView::Set(RefId, "color", value);  // per-face-in-shell color
-```
+With `RefId`, a future persistent attribute system could also attach data to refs,
+for example per-face-in-shell color/material/name in usage context rather than only
+per-entity transient cache values.
 
 This is critical for XCAF where face color/material/name are per-usage-context, not per-entity.
 
@@ -1881,22 +1880,22 @@ But if the surface is mutated, ALL 3 faces are affected. This is the same as ent
 
 ## 23. UID for Attributes (Color, PMI, Named Layers)
 
-### 23.1 Current Attribute System
+### 23.1 Current Transient Cache System
 
-Attributes are stored via `AttrsView` on `BRepGraph_NodeCache`:
+Transient cache values are stored via `CacheView` on `BRepGraph_TransientCache`:
 
 ```cpp
-class AttrsView {
-  void Set(NodeId theNode, int theKey, Handle(BRepGraph_UserAttribute) theAttr);
-  Handle(BRepGraph_UserAttribute) Get(NodeId theNode, int theKey) const;
-  bool Remove(NodeId theNode, int theKey);
+class CacheView {
+  void Set(NodeId theNode, Handle(BRepGraph_CacheKind) theKind, Handle(BRepGraph_CacheValue) theValue);
+  Handle(BRepGraph_CacheValue) Get(NodeId theNode, Handle(BRepGraph_CacheKind) theKind) const;
+  bool Remove(NodeId theNode, Handle(BRepGraph_CacheKind) theKind);
 };
 ```
 
-- Attributes are keyed by `(NodeId, int key)` — the integer key identifies the attribute kind
-- Attributes are attached to **entities only** (NodeId) — not to refs or reps
-- No persistent identity for the attribute itself
-- No mutation tracking on attributes (only on the owning entity)
+- Cache values are keyed by `(NodeId, CacheKind)` — the descriptor identifies the cache kind
+- Cache values are attached to **entities only** (`NodeId`) — not to refs or reps
+- No persistent identity for the cache value itself
+- No mutation tracking on cache values (only on the owning entity)
 
 ### 23.2 What Attribute UID Would Enable
 
@@ -1931,7 +1930,7 @@ Cons: Cannot track shared attributes (same color on 100 faces). Cannot track att
 
 **A2: UID on Attribute Handle**
 
-Add UID to `BRepGraph_UserAttribute`:
+In a future persistent attribute subsystem, add UID to `BRepGraph_UserAttribute`:
 
 ```cpp
 class BRepGraph_UserAttribute : public Standard_Transient
@@ -1946,7 +1945,7 @@ Cons: UID lifecycle tied to Handle reference counting. Parallel UID vector patte
 
 **A3: Attribute Registry with UID**
 
-Separate attribute store (flat vector) with parallel UID vector:
+Separate persistent attribute store (flat vector) with parallel UID vector:
 
 ```cpp
 struct AttrStore

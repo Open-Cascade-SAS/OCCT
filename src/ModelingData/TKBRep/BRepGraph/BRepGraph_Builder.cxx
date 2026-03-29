@@ -222,7 +222,13 @@ void BRepGraph_Builder::Perform(BRepGraph&                            theGraph,
     aCounts[static_cast<int>(BRepGraph_NodeId::Kind::CompSolid)] = aStorage.NbCompSolids();
     aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Product)]    = aStorage.NbProducts();
     aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Occurrence)] = aStorage.NbOccurrences();
-    theGraph.myTransientCache.Reserve(BRepGraph_TransientCache::THE_DEFAULT_MAX_ATTR_KEY, aCounts);
+    int aReservedKindCount = BRepGraph_TransientCache::THE_DEFAULT_RESERVED_KIND_COUNT;
+    const int aRegisteredKindCount = BRepGraph_CacheKindRegistry::NbRegistered();
+    if (aRegisteredKindCount > aReservedKindCount)
+    {
+      aReservedKindCount = aRegisteredKindCount;
+    }
+    theGraph.myTransientCache.Reserve(aReservedKindCount, aCounts);
   }
 }
 

@@ -5,8 +5,8 @@ set(OCCT_BRepGraph_FILES
   BRepGraph.hxx
   BRepGraph_Analyze.cxx
   BRepGraph_Analyze.hxx
-  BRepGraph_AttrsView.cxx
-  BRepGraph_AttrsView.hxx
+  BRepGraph_CacheView.cxx
+  BRepGraph_CacheView.hxx
   BRepGraph_Builder.cxx
   BRepGraph_Builder.hxx
   BRepGraph_BuilderView.cxx
@@ -55,5 +55,4 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_VersionStamp.cxx
   BRepGraph_VersionStamp.hxx
   BRepGraph_UIDsView.hxx
-  BRepGraph_UserAttribute.hxx
 )

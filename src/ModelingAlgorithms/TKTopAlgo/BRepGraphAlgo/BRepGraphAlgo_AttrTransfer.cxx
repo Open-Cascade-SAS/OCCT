@@ -13,7 +13,7 @@
 
 #include <BRepGraphAlgo_AttrTransfer.hxx>
 
-#include <BRepGraph_AttrsView.hxx>
+#include <BRepGraph_CacheView.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_HistoryRecord.hxx>
 #include <BRepGraph_NodeId.hxx>
@@ -54,9 +54,10 @@ BRepGraphAlgo_AttrTransfer::Result BRepGraphAlgo_AttrTransfer::Perform(BRepGraph
       if (aReplacements.IsEmpty())
         continue;
 
-      // Get attribute keys on the original node.
-      const NCollection_Vector<int> aKeys = theGraph.Attrs().AttributeKeys(anOriginal);
-      if (aKeys.IsEmpty())
+      // Get attribute kinds on the original node.
+      const NCollection_Vector<occ::handle<BRepGraph_CacheKind>> aKinds =
+        theGraph.Cache().CacheKinds(anOriginal);
+      if (aKinds.IsEmpty())
         continue;
 
       // Copy each attribute to each replacement node.
@@ -68,14 +69,14 @@ BRepGraphAlgo_AttrTransfer::Result BRepGraphAlgo_AttrTransfer::Perform(BRepGraph
         if (aTarget == anOriginal)
           continue;
 
-        for (int aKeyIdx = 0; aKeyIdx < aKeys.Length(); ++aKeyIdx)
+        for (int aKindIdx = 0; aKindIdx < aKinds.Length(); ++aKindIdx)
         {
-          const int aKey = aKeys.Value(aKeyIdx);
+          const occ::handle<BRepGraph_CacheKind>& aKind = aKinds.Value(aKindIdx);
 
           // Check if target already has this attribute.
           if (!theOptions.OverwriteExisting)
           {
-            occ::handle<BRepGraph_UserAttribute> anExisting = theGraph.Attrs().Get(aTarget, aKey);
+            occ::handle<BRepGraph_CacheValue> anExisting = theGraph.Cache().Get(aTarget, aKind);
             if (!anExisting.IsNull())
             {
               ++aResult.NbSkipped;
@@ -83,10 +84,10 @@ BRepGraphAlgo_AttrTransfer::Result BRepGraphAlgo_AttrTransfer::Perform(BRepGraph
             }
           }
 
-          occ::handle<BRepGraph_UserAttribute> anAttr = theGraph.Attrs().Get(anOriginal, aKey);
+          occ::handle<BRepGraph_CacheValue> anAttr = theGraph.Cache().Get(anOriginal, aKind);
           if (!anAttr.IsNull())
           {
-            theGraph.Attrs().Set(aTarget, aKey, anAttr);
+            theGraph.Cache().Set(aTarget, aKind, anAttr);
             ++aResult.NbTransferred;
           }
         }

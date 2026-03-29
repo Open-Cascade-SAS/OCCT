@@ -20,7 +20,7 @@
 #include <BRepGraphInc_Representation.hxx>
 #include <BRepGraphAlgo_BndLib.hxx>
 #include <BRepGraph_Analyze.hxx>
-#include <BRepGraph_AttrsView.hxx>
+#include <BRepGraph_CacheView.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include "BRepGraph_RefTestTools.hxx"
 #include <BRepGraph_TopoView.hxx>
@@ -71,6 +71,27 @@ static gp_Pnt bboxCenter(BRepGraph& theGraph, BRepGraph_NodeId theNode)
   double xn, yn, zn, xx, yx, zx;
   aBox.Get(xn, yn, zn, xx, yx, zx);
   return gp_Pnt((xn + xx) * 0.5, (yn + yx) * 0.5, (zn + zx) * 0.5);
+}
+
+const occ::handle<BRepGraph_CacheKind>& testDoubleAttrKind()
+{
+  static const occ::handle<BRepGraph_CacheKind> THE_KIND =
+    new BRepGraph_CacheKind(Standard_GUID("2f9b6a5c-1f2d-4a88-9c1c-7a0c16a10021"), "TestDoubleAttr");
+  return THE_KIND;
+}
+
+const occ::handle<BRepGraph_CacheKind>& testIntAttrKind()
+{
+  static const occ::handle<BRepGraph_CacheKind> THE_KIND =
+    new BRepGraph_CacheKind(Standard_GUID("2f9b6a5c-1f2d-4a88-9c1c-7a0c16a10022"), "TestIntAttr");
+  return THE_KIND;
+}
+
+const occ::handle<BRepGraph_CacheKind>& testAuxAttrKind()
+{
+  static const occ::handle<BRepGraph_CacheKind> THE_KIND =
+    new BRepGraph_CacheKind(Standard_GUID("2f9b6a5c-1f2d-4a88-9c1c-7a0c16a10023"), "TestAuxAttr");
+  return THE_KIND;
 }
 
 struct ReverseIndexInputData
@@ -705,15 +726,14 @@ TEST_F(BRepGraphTest, UserAttribute_SetGet)
 {
   BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
 
-  const int                                aKey   = BRepGraph_UserAttribute::AllocateKey();
-  Handle(BRepGraph_TypedAttribute<double>) anAttr = new BRepGraph_TypedAttribute<double>(3.14);
-  myGraph.Attrs().Set(aFaceId, aKey, anAttr);
+  Handle(BRepGraph_TypedCacheValue<double>) anAttr = new BRepGraph_TypedCacheValue<double>(3.14);
+  myGraph.Cache().Set(aFaceId, testDoubleAttrKind(), anAttr);
 
-  occ::handle<BRepGraph_UserAttribute> aRetrieved = myGraph.Attrs().Get(aFaceId, aKey);
+  occ::handle<BRepGraph_CacheValue> aRetrieved = myGraph.Cache().Get(aFaceId, testDoubleAttrKind());
   ASSERT_FALSE(aRetrieved.IsNull());
 
-  Handle(BRepGraph_TypedAttribute<double>) aTyped =
-    Handle(BRepGraph_TypedAttribute<double>)::DownCast(aRetrieved);
+  Handle(BRepGraph_TypedCacheValue<double>) aTyped =
+    Handle(BRepGraph_TypedCacheValue<double>)::DownCast(aRetrieved);
   ASSERT_FALSE(aTyped.IsNull());
   EXPECT_NEAR(aTyped->UncheckedValue(), 3.14, 1.0e-10);
 }
@@ -1656,14 +1676,13 @@ TEST_F(BRepGraphTest, DetectToleranceConflicts_ManualConflict_Detected)
 TEST_F(BRepGraphTest, RemoveUserAttribute_AfterSet_ReturnsNull)
 {
   BRepGraph_NodeId                     aFaceId(BRepGraph_NodeId::Kind::Face, 0);
-  const int                            aKey   = BRepGraph_UserAttribute::AllocateKey();
-  occ::handle<BRepGraph_UserAttribute> anAttr = new BRepGraph_TypedAttribute<int>(42);
+  occ::handle<BRepGraph_CacheValue> anAttr = new BRepGraph_TypedCacheValue<int>(42);
 
-  myGraph.Attrs().Set(aFaceId, aKey, anAttr);
-  ASSERT_FALSE(myGraph.Attrs().Get(aFaceId, aKey).IsNull());
+  myGraph.Cache().Set(aFaceId, testIntAttrKind(), anAttr);
+  ASSERT_FALSE(myGraph.Cache().Get(aFaceId, testIntAttrKind()).IsNull());
 
-  myGraph.Attrs().Remove(aFaceId, aKey);
-  EXPECT_TRUE(myGraph.Attrs().Get(aFaceId, aKey).IsNull());
+  myGraph.Cache().Remove(aFaceId, testIntAttrKind());
+  EXPECT_TRUE(myGraph.Cache().Get(aFaceId, testIntAttrKind()).IsNull());
 }
 
 TEST_F(BRepGraphTest, Build_EmptyCompound_IsDoneZeroCounts)
@@ -1978,20 +1997,16 @@ TEST_F(BRepGraphTest, MultipleUserAttributes_SameNode_Independent)
 {
   BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
 
-  const int aKey1 = BRepGraph_UserAttribute::AllocateKey();
-  const int aKey2 = BRepGraph_UserAttribute::AllocateKey();
-  EXPECT_NE(aKey1, aKey2);
+  Handle(BRepGraph_TypedCacheValue<int>)    anAttr1 = new BRepGraph_TypedCacheValue<int>(100);
+  Handle(BRepGraph_TypedCacheValue<double>) anAttr2 = new BRepGraph_TypedCacheValue<double>(2.718);
 
-  Handle(BRepGraph_TypedAttribute<int>)    anAttr1 = new BRepGraph_TypedAttribute<int>(100);
-  Handle(BRepGraph_TypedAttribute<double>) anAttr2 = new BRepGraph_TypedAttribute<double>(2.718);
+  myGraph.Cache().Set(aFaceId, testIntAttrKind(), anAttr1);
+  myGraph.Cache().Set(aFaceId, testAuxAttrKind(), anAttr2);
 
-  myGraph.Attrs().Set(aFaceId, aKey1, anAttr1);
-  myGraph.Attrs().Set(aFaceId, aKey2, anAttr2);
-
-  Handle(BRepGraph_TypedAttribute<int>) aRetrieved1 =
-    Handle(BRepGraph_TypedAttribute<int>)::DownCast(myGraph.Attrs().Get(aFaceId, aKey1));
-  Handle(BRepGraph_TypedAttribute<double>) aRetrieved2 =
-    Handle(BRepGraph_TypedAttribute<double>)::DownCast(myGraph.Attrs().Get(aFaceId, aKey2));
+  Handle(BRepGraph_TypedCacheValue<int>) aRetrieved1 =
+    Handle(BRepGraph_TypedCacheValue<int>)::DownCast(myGraph.Cache().Get(aFaceId, testIntAttrKind()));
+  Handle(BRepGraph_TypedCacheValue<double>) aRetrieved2 =
+    Handle(BRepGraph_TypedCacheValue<double>)::DownCast(myGraph.Cache().Get(aFaceId, testAuxAttrKind()));
 
   ASSERT_FALSE(aRetrieved1.IsNull());
   ASSERT_FALSE(aRetrieved2.IsNull());
@@ -1999,35 +2014,33 @@ TEST_F(BRepGraphTest, MultipleUserAttributes_SameNode_Independent)
   EXPECT_NEAR(aRetrieved2->UncheckedValue(), 2.718, 1.0e-10);
 
   // Remove one; the other should remain.
-  myGraph.Attrs().Remove(aFaceId, aKey1);
-  EXPECT_TRUE(myGraph.Attrs().Get(aFaceId, aKey1).IsNull());
-  EXPECT_FALSE(myGraph.Attrs().Get(aFaceId, aKey2).IsNull());
+  myGraph.Cache().Remove(aFaceId, testIntAttrKind());
+  EXPECT_TRUE(myGraph.Cache().Get(aFaceId, testIntAttrKind()).IsNull());
+  EXPECT_FALSE(myGraph.Cache().Get(aFaceId, testAuxAttrKind()).IsNull());
 }
 
 TEST_F(BRepGraphTest, InvalidateUserAttribute_SpecificKey)
 {
   BRepGraph_NodeId                      aFaceId(BRepGraph_NodeId::Kind::Face, 0);
-  const int                             aKey   = BRepGraph_UserAttribute::AllocateKey();
-  Handle(BRepGraph_TypedAttribute<int>) anAttr = new BRepGraph_TypedAttribute<int>(42);
-  myGraph.Attrs().Set(aFaceId, aKey, anAttr);
+  Handle(BRepGraph_TypedCacheValue<int>) anAttr = new BRepGraph_TypedCacheValue<int>(42);
+  myGraph.Cache().Set(aFaceId, testIntAttrKind(), anAttr);
 
   // Invalidate should not remove, just mark dirty.
-  myGraph.Attrs().Invalidate(aFaceId, aKey);
+  myGraph.Cache().Invalidate(aFaceId, testIntAttrKind());
 
-  occ::handle<BRepGraph_UserAttribute> aRetrieved = myGraph.Attrs().Get(aFaceId, aKey);
+  occ::handle<BRepGraph_CacheValue> aRetrieved = myGraph.Cache().Get(aFaceId, testIntAttrKind());
   EXPECT_FALSE(aRetrieved.IsNull()); // still present
 }
 
 TEST_F(BRepGraphTest, UserAttribute_OnEdgeNode)
 {
   BRepGraph_NodeId                         anEdgeId(BRepGraph_NodeId::Kind::Edge, 0);
-  const int                                aKey   = BRepGraph_UserAttribute::AllocateKey();
-  Handle(BRepGraph_TypedAttribute<double>) anAttr = new BRepGraph_TypedAttribute<double>(1.5);
+  Handle(BRepGraph_TypedCacheValue<double>) anAttr = new BRepGraph_TypedCacheValue<double>(1.5);
 
-  myGraph.Attrs().Set(anEdgeId, aKey, anAttr);
+  myGraph.Cache().Set(anEdgeId, testDoubleAttrKind(), anAttr);
 
-  Handle(BRepGraph_TypedAttribute<double>) aRetrieved =
-    Handle(BRepGraph_TypedAttribute<double>)::DownCast(myGraph.Attrs().Get(anEdgeId, aKey));
+  Handle(BRepGraph_TypedCacheValue<double>) aRetrieved =
+    Handle(BRepGraph_TypedCacheValue<double>)::DownCast(myGraph.Cache().Get(anEdgeId, testDoubleAttrKind()));
   ASSERT_FALSE(aRetrieved.IsNull());
   EXPECT_NEAR(aRetrieved->UncheckedValue(), 1.5, 1.0e-10);
 }

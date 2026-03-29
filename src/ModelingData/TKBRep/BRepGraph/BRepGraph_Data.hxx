@@ -14,7 +14,7 @@
 #ifndef _BRepGraph_Data_HeaderFile
 #define _BRepGraph_Data_HeaderFile
 
-#include <BRepGraph_AttrsView.hxx>
+#include <BRepGraph_CacheView.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_NodeId.hxx>
@@ -28,7 +28,6 @@
 #include <BRepGraph_UID.hxx>
 #include <BRepGraph_UIDsView.hxx>
 #include <Standard_GUID.hxx>
-#include <BRepGraph_UserAttribute.hxx>
 #include <BRepGraphInc_Storage.hxx>
 
 #include <TopoDS_Shape.hxx>
@@ -98,7 +97,7 @@ struct BRepGraph_Data
   BRepGraph::TopoView    myTopoView{nullptr};
   BRepGraph::UIDsView    myUIDsView{nullptr};
   BRepGraph::PathView    myPathView{nullptr};
-  BRepGraph::AttrsView   myAttrsView{nullptr};
+  BRepGraph::CacheView   myCacheView{nullptr};
   BRepGraph::RefsView    myRefsView{nullptr};
   BRepGraph::ShapesView  myShapesView{nullptr};
   BRepGraph::BuilderView myBuilderView{nullptr};
