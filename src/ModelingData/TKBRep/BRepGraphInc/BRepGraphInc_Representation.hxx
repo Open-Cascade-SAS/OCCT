@@ -37,7 +37,7 @@ namespace BRepGraphInc
 struct BaseRep
 {
   BRepGraph_RepId Id;                  //!< Typed address (Kind + per-kind index)
-  uint32_t        MutationGen = 0;     //!< Per-rep mutation counter
+  uint32_t        OwnGen      = 0;     //!< Per-rep mutation counter
   bool            IsRemoved   = false; //!< Soft-removal flag
 };
 

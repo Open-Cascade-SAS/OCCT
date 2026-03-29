@@ -196,7 +196,7 @@ BRepGraph_VersionStamp BRepGraph::RefsView::StampOf(const BRepGraph_RefId theRef
     return BRepGraph_VersionStamp();
 
   return BRepGraph_VersionStamp(aUIDs.Value(theRefId.Index),
-                                aBase.MutationGen,
+                                aBase.OwnGen,
                                 myGraph->myData->myGeneration.load());
 }
 

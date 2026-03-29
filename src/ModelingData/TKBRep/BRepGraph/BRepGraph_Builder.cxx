@@ -15,6 +15,7 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_Data.hxx>
 #include <BRepGraph_Layer.hxx>
+#include <BRepGraph_TransientCache.hxx>
 #include <BRepGraphInc_Populate.hxx>
 #include <BRepGraphInc_Storage.hxx>
 #include <NCollection_IncAllocator.hxx>
@@ -115,6 +116,7 @@ void BRepGraph_Builder::Perform(BRepGraph&                            theGraph,
   theGraph.myData->myIncStorage.Clear();
   theGraph.myData->myHistoryLog.Clear();
   theGraph.myData->myCurrentShapes.Clear();
+  theGraph.myTransientCache.Clear();
   ++theGraph.myData->myGeneration;
   theGraph.myData->myGraphGUID = generateRandomGUID();
   theGraph.myData->myIsDone    = false;
@@ -202,6 +204,27 @@ void BRepGraph_Builder::Perform(BRepGraph&                            theGraph,
   }
 
   theGraph.myData->myIsDone = true;
+
+  // Pre-allocate transient cache for lock-free parallel access.
+  // Entity counts are now final — Reserve() sizes dense vectors so that
+  // Get()/Set() skip the mutex for in-range indices.
+  {
+    BRepGraphInc_Storage& aStorage = theGraph.myData->myIncStorage;
+    int aCounts[BRepGraph_TransientCache::THE_KIND_COUNT] = {};
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Vertex)]    = aStorage.NbVertices();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Edge)]      = aStorage.NbEdges();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::CoEdge)]    = aStorage.NbCoEdges();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Wire)]      = aStorage.NbWires();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Face)]      = aStorage.NbFaces();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Shell)]     = aStorage.NbShells();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Solid)]     = aStorage.NbSolids();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Compound)]  = aStorage.NbCompounds();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::CompSolid)] = aStorage.NbCompSolids();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Product)]   = aStorage.NbProducts();
+    // Use a generous key upper bound (attribute keys are few: BndLib, UVBounds, etc.).
+    const int aMaxKey = 15;
+    theGraph.myTransientCache.Reserve(aMaxKey, aCounts);
+  }
 }
 
 //=================================================================================================

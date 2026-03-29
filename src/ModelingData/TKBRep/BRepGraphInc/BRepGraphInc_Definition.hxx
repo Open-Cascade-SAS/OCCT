@@ -14,7 +14,6 @@
 #ifndef _BRepGraphInc_Definition_HeaderFile
 #define _BRepGraphInc_Definition_HeaderFile
 
-#include <BRepGraph_NodeCache.hxx>
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_RefId.hxx>
 #include <BRepGraph_RepId.hxx>
@@ -50,14 +49,24 @@ inline void InitVec(NCollection_Vector<T>&                        theVec,
 //! Fields shared by every entity.
 struct BaseDef
 {
-  BRepGraph_NodeId    Id;    //!< Typed address (kind + per-kind index)
-  BRepGraph_NodeCache Cache; //!< Lazily-computed derived quantities + user attributes
-  uint32_t            MutationGen =
-    0; //!< Per-node mutation counter, incremented by markModified().
-       //!< Wraps on overflow; callers compare via difference, not absolute value.
-  bool IsModified = false; //!< True when mutated since Build(). Monotonic within a Build() cycle.
-                           //!< Never cleared during mutation. Use MutationGen for granular checks;
-                           //!< cache consumers should invalidate when true.
+  BRepGraph_NodeId Id; //!< Typed address (kind + per-kind index)
+
+  //! Own-data mutation counter, incremented ONLY when the entity's own
+  //! definition fields change (tolerance, point, flags, etc.).
+  //! NOT incremented by descendant changes.
+  //! Used by VersionStamp for persistent identity staleness detection.
+  uint32_t OwnGen = 0;
+
+  //! Subtree mutation counter, incremented when own data OR any descendant
+  //! data changes. Propagated upward via markParentSubtreeGen().
+  //! Used by TransientCache and shape cache for hierarchical freshness.
+  uint32_t SubtreeGen = 0;
+
+  uint32_t LastPropWave =
+    0;                     //!< Wave counter from the last propagation that visited this node.
+                           //!< Used as a re-visit guard in markParentSubtreeGen() to prevent
+                           //!< exponential blowup on diamond topologies. Compared against
+                           //!< BRepGraph_Data::myPropagationWave.
   bool IsRemoved = false;  //!< Soft-removal flag
 };
 

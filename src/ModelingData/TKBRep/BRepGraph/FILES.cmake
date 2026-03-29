@@ -26,7 +26,6 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_MutGuard.hxx
   BRepGraph_NameLayer.cxx
   BRepGraph_NameLayer.hxx
-  BRepGraph_NodeCache.hxx
   BRepGraph_NodeId.hxx
   BRepGraph_ParamLayer.cxx
   BRepGraph_ParamLayer.hxx
@@ -46,6 +45,8 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_TopologyPath.hxx
   BRepGraph_Tool.cxx
   BRepGraph_Tool.hxx
+  BRepGraph_TransientCache.cxx
+  BRepGraph_TransientCache.hxx
   BRepGraph_WireExplorer.hxx
   BRepGraph_UID.hxx
   BRepGraph_UIDsView.cxx

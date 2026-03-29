@@ -241,12 +241,12 @@ TEST_F(BRepGraph_ViewsTest, ShapesView_HasOriginal_True)
 
 // ---------- MutView ----------
 
-TEST_F(BRepGraph_ViewsTest, MutView_EdgeDef_MarksModified)
+TEST_F(BRepGraph_ViewsTest, MutView_EdgeDef_IncrementsOwnGen)
 {
   {
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> anEdge = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
   }
-  EXPECT_TRUE(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).IsModified);
+  EXPECT_GT(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).OwnGen, 0u);
 }
 
 // ---------- BuilderView ----------

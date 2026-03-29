@@ -19,6 +19,7 @@
 #include <TopoDS_Shape.hxx>
 
 #include <NCollection_DataMap.hxx>
+#include <NCollection_Vector.hxx>
 
 class BRepGraphInc_Storage;
 class BRepGraph_ParamLayer;
@@ -28,14 +29,54 @@ class BRepGraph_RegularityLayer;
 //!
 //! Converts BRepGraphInc_Storage entity data back into TopoDS shapes.
 //! Supports single-node and cached multi-face reconstruction with
-//! shared edge/vertex reuse via the Cache map.
+//! shared edge/vertex reuse via the Cache.
 class BRepGraphInc_Reconstruct
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Shared cache for edge/vertex shapes during multi-face reconstruction.
-  using Cache = NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape>;
+  //! Per-Kind dense vector cache for O(1) shape lookup by entity index.
+  //! Replaces NCollection_DataMap to eliminate hash/equality overhead.
+  struct Cache
+  {
+    //! Number of Kind slots (Vertex=5, Edge=4, Wire=3, Face=2, Shell=1, Solid=0,
+    //! Compound=6, CompSolid=7, CoEdge=8).
+    static constexpr int THE_KIND_COUNT =
+      static_cast<int>(BRepGraph_NodeId::Kind::Occurrence) + 1;
+
+    NCollection_Vector<TopoDS_Shape> myKinds[THE_KIND_COUNT];
+
+    //! Seek a cached shape. Returns nullptr if not yet cached.
+    const TopoDS_Shape* Seek(const BRepGraph_NodeId theNode) const
+    {
+      const int aKindIdx = static_cast<int>(theNode.NodeKind);
+      if (aKindIdx < 0 || aKindIdx >= THE_KIND_COUNT)
+        return nullptr;
+      const NCollection_Vector<TopoDS_Shape>& aVec = myKinds[aKindIdx];
+      if (theNode.Index >= aVec.Length())
+        return nullptr;
+      const TopoDS_Shape& aShape = aVec.Value(theNode.Index);
+      return aShape.IsNull() ? nullptr : &aShape;
+    }
+
+    //! Bind a reconstructed shape to a node. Grows the vector as needed.
+    void Bind(const BRepGraph_NodeId theNode, const TopoDS_Shape& theShape)
+    {
+      const int aKindIdx = static_cast<int>(theNode.NodeKind);
+      if (aKindIdx < 0 || aKindIdx >= THE_KIND_COUNT)
+        return;
+      NCollection_Vector<TopoDS_Shape>& aVec = myKinds[aKindIdx];
+      while (theNode.Index >= aVec.Length())
+        aVec.Append(TopoDS_Shape());
+      aVec.ChangeValue(theNode.Index) = theShape;
+    }
+
+    //! Check if a node is already cached.
+    bool IsBound(const BRepGraph_NodeId theNode) const
+    {
+      return Seek(theNode) != nullptr;
+    }
+  };
 
   //! Reconstruct a TopoDS_Shape from an entity node.
   //! Creates a local cache internally; shared vertices/edges are not reused

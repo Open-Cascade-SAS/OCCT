@@ -270,34 +270,34 @@ TEST(BRepGraphAlgo_CompactTest, Compact_PreservesTopologyUIDs)
   // Geometry is now stored inline on defs; no separate geometry UIDs to verify.
 }
 
-TEST(BRepGraphAlgo_CompactTest, MutationGen_SurvivesCompact)
+TEST(BRepGraphAlgo_CompactTest, OwnGen_SurvivesCompact)
 {
   constexpr double   THE_MUTATED_EDGE_TOLERANCE = 0.2;
-  constexpr uint32_t THE_EXPECTED_MUTATION_GEN  = 2;
+  constexpr uint32_t THE_EXPECTED_OWN_GEN       = 2;
 
   BRepGraph aGraph;
   aGraph.Build(makeTwoCopiedFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
-  // Mutate edge 0 twice so MutationGen == THE_EXPECTED_MUTATION_GEN.
+  // Mutate edge 0 twice so OwnGen == THE_EXPECTED_OWN_GEN.
   aGraph.Builder().MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.1;
   aGraph.Builder().MutEdge(BRepGraph_EdgeId(0))->Tolerance = THE_MUTATED_EDGE_TOLERANCE;
-  ASSERT_EQ(aGraph.Topo().Edge(BRepGraph_EdgeId(0)).MutationGen, THE_EXPECTED_MUTATION_GEN);
+  ASSERT_EQ(aGraph.Topo().Edge(BRepGraph_EdgeId(0)).OwnGen, THE_EXPECTED_OWN_GEN);
 
   // Run dedup + compact.
   (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
   (void)BRepGraphAlgo_Compact::Perform(aGraph);
 
   // Edge 0 may have been remapped. Find the edge that carries the mutated
-  // tolerance and verify both the tolerance value and MutationGen are preserved.
+  // tolerance and verify both the tolerance value and OwnGen are preserved.
   bool aFound = false;
   for (int anIdx = 0; anIdx < aGraph.Topo().NbEdges(); ++anIdx)
   {
     const BRepGraphInc::EdgeDef& anEdge = aGraph.Topo().Edge(BRepGraph_EdgeId(anIdx));
     if (std::abs(anEdge.Tolerance - THE_MUTATED_EDGE_TOLERANCE) < Precision::Confusion())
     {
-      EXPECT_EQ(anEdge.MutationGen, THE_EXPECTED_MUTATION_GEN)
-        << "Edge " << anIdx << " has mutated tolerance but wrong MutationGen";
+      EXPECT_EQ(anEdge.OwnGen, THE_EXPECTED_OWN_GEN)
+        << "Edge " << anIdx << " has mutated tolerance but wrong OwnGen";
       aFound = true;
       break;
     }

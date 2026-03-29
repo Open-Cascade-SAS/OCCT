@@ -30,7 +30,7 @@
 //! Entity UIDs (BRepGraph_UID) and reference UIDs (BRepGraph_RefUID) share
 //! a single monotonic counter (BRepGraph_Data::myNextUIDCounter).
 //! To persist a BRepGraph across sessions:
-//! 1. Write: for each reference entry, serialize (RefKind, Counter, MutationGen).
+//! 1. Write: for each reference entry, serialize (RefKind, Counter, OwnGen).
 //! 2. Read: reconstruct reference entries, populate RefUID vectors with
 //!    deserialized (RefKind, Counter) values, set myNextUIDCounter to
 //!    max(all_entity_counters, all_ref_counters) + 1.

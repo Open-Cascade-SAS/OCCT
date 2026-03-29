@@ -278,7 +278,7 @@ TEST(BRepGraph_AssemblyTest, MutProduct_RAII)
     aMutProd->ShapeRootId = BRepGraph_NodeId::Solid(0);
   } // markModified fires here
 
-  EXPECT_TRUE(aGraph.Paths().Product(BRepGraph_ProductId(0)).IsModified);
+  EXPECT_GT(aGraph.Paths().Product(BRepGraph_ProductId(0)).OwnGen, 0u);
 }
 
 // =============================================================================
@@ -305,7 +305,7 @@ TEST(BRepGraph_AssemblyTest, MutOccurrence_Placement)
     aMutOcc->Placement = TopLoc_Location(aTrsf);
   } // markModified fires here
 
-  EXPECT_TRUE(aGraph.Paths().Occurrence(BRepGraph_OccurrenceId(anOccId.Index)).IsModified);
+  EXPECT_GT(aGraph.Paths().Occurrence(BRepGraph_OccurrenceId(anOccId.Index)).OwnGen, 0u);
   const gp_Trsf& aStoredTrsf =
     aGraph.Paths().Occurrence(BRepGraph_OccurrenceId(anOccId.Index)).Placement.Transformation();
   EXPECT_NEAR(aStoredTrsf.TranslationPart().X(), 50.0, Precision::Confusion());

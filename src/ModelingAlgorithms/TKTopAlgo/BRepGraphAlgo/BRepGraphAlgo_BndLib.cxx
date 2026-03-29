@@ -17,6 +17,7 @@
 #include <BRepGraphInc_Representation.hxx>
 
 #include <BRepGraph.hxx>
+#include <BRepGraph_TransientCache.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <Standard_Assert.hxx>
@@ -999,7 +1000,8 @@ bool BRepGraphAlgo_BndLib::GetCached(const BRepGraph&                  theGraph,
     return false;
   }
 
-  occ::handle<BRepGraph_UserAttribute> anAttr = aDef->Cache.GetUserAttribute(aKey);
+  occ::handle<BRepGraph_UserAttribute> anAttr =
+    theGraph.TransientCache().Get(theNode, aKey, aDef->SubtreeGen);
   if (!anAttr)
   {
     return false;
@@ -1022,24 +1024,25 @@ Bnd_Box BRepGraphAlgo_BndLib::AddCached(BRepGraph&                            th
                                         const BRepGraphAlgo_BndLib::Precision thePrecision,
                                         const bool                            theUseTriangulation)
 {
-  const int aKey = CacheKey();
+  const int                    aKey = CacheKey();
+  const BRepGraphInc::BaseDef* aDef = theGraph.TopoEntity(theNode);
+  if (aDef == nullptr)
+    return Bnd_Box();
+  const uint32_t         aGen      = aDef->SubtreeGen;
+  BRepGraph_TransientCache& anAttrLay = theGraph.TransientCache();
 
   // Try to read existing cached value.
-  BRepGraph_NodeCache* aCache = theGraph.mutableCache(theNode);
-  if (aCache != nullptr)
+  occ::handle<BRepGraph_UserAttribute> anExisting = anAttrLay.Get(theNode, aKey, aGen);
+  if (anExisting)
   {
-    occ::handle<BRepGraph_UserAttribute> anExisting = aCache->GetUserAttribute(aKey);
-    if (anExisting)
+    occ::handle<BRepGraphAlgo_BndBoxAttribute> aBndAttr =
+      occ::down_cast<BRepGraphAlgo_BndBoxAttribute>(anExisting);
+    if (!aBndAttr.IsNull())
     {
-      occ::handle<BRepGraphAlgo_BndBoxAttribute> aBndAttr =
-        occ::down_cast<BRepGraphAlgo_BndBoxAttribute>(anExisting);
-      if (!aBndAttr.IsNull())
+      BRepGraphAlgo_BndLib::CachedData aData;
+      if (aBndAttr->GetIfSufficient(thePrecision, aData))
       {
-        BRepGraphAlgo_BndLib::CachedData aData;
-        if (aBndAttr->GetIfSufficient(thePrecision, aData))
-        {
-          return aData.Box;
-        }
+        return aData.Box;
       }
     }
   }
@@ -1062,30 +1065,26 @@ Bnd_Box BRepGraphAlgo_BndLib::AddCached(BRepGraph&                            th
   }
 
   // Cache the result.
-  BRepGraphAlgo_BndLib::CachedData aData;
-  aData.Box                = aBox;
-  aData.BoxPrecision       = thePrecision;
-  aData.UsedTriangulation  = theUseTriangulation;
-  aData.UsedShapeTolerance = aUsedShapeTol;
+  BRepGraphAlgo_BndLib::CachedData aCachedData;
+  aCachedData.Box                = aBox;
+  aCachedData.BoxPrecision       = thePrecision;
+  aCachedData.UsedTriangulation  = theUseTriangulation;
+  aCachedData.UsedShapeTolerance = aUsedShapeTol;
 
-  if (aCache != nullptr)
+  if (anExisting)
   {
-    occ::handle<BRepGraph_UserAttribute> anExisting = aCache->GetUserAttribute(aKey);
-    if (anExisting)
+    occ::handle<BRepGraphAlgo_BndBoxAttribute> aBndAttr =
+      occ::down_cast<BRepGraphAlgo_BndBoxAttribute>(anExisting);
+    if (!aBndAttr.IsNull())
     {
-      occ::handle<BRepGraphAlgo_BndBoxAttribute> aBndAttr =
-        occ::down_cast<BRepGraphAlgo_BndBoxAttribute>(anExisting);
-      if (!aBndAttr.IsNull())
-      {
-        aBndAttr->SetData(aData);
-        return aBox;
-      }
+      aBndAttr->SetData(aCachedData);
+      return aBox;
     }
-
-    occ::handle<BRepGraphAlgo_BndBoxAttribute> aNewAttr = new BRepGraphAlgo_BndBoxAttribute();
-    aNewAttr->SetData(aData);
-    aCache->SetUserAttribute(aKey, aNewAttr);
   }
+
+  occ::handle<BRepGraphAlgo_BndBoxAttribute> aNewAttr = new BRepGraphAlgo_BndBoxAttribute();
+  aNewAttr->SetData(aCachedData);
+  anAttrLay.Set(theNode, aKey, aNewAttr, aGen);
 
   return aBox;
 }
@@ -1099,12 +1098,14 @@ void BRepGraphAlgo_BndLib::SetCached(BRepGraph&             theGraph,
                                      const bool             theUsedTriangulation,
                                      const bool             theUsedShapeTolerance)
 {
-  const int            aKey   = CacheKey();
-  BRepGraph_NodeCache* aCache = theGraph.mutableCache(theNode);
-  if (aCache == nullptr)
+  const int                    aKey = CacheKey();
+  const BRepGraphInc::BaseDef* aDef = theGraph.TopoEntity(theNode);
+  if (aDef == nullptr)
   {
     return;
   }
+  const uint32_t       aGen      = aDef->SubtreeGen;
+  BRepGraph_TransientCache& anAttrLay = theGraph.TransientCache();
 
   CachedData aData;
   aData.Box                = theBox;
@@ -1112,7 +1113,7 @@ void BRepGraphAlgo_BndLib::SetCached(BRepGraph&             theGraph,
   aData.UsedTriangulation  = theUsedTriangulation;
   aData.UsedShapeTolerance = theUsedShapeTolerance;
 
-  occ::handle<BRepGraph_UserAttribute> anExisting = aCache->GetUserAttribute(aKey);
+  occ::handle<BRepGraph_UserAttribute> anExisting = anAttrLay.Get(theNode, aKey, aGen);
   if (anExisting)
   {
     occ::handle<BRepGraphAlgo_BndBoxAttribute> aBndAttr =
@@ -1126,18 +1127,12 @@ void BRepGraphAlgo_BndLib::SetCached(BRepGraph&             theGraph,
 
   occ::handle<BRepGraphAlgo_BndBoxAttribute> aNewAttr = new BRepGraphAlgo_BndBoxAttribute();
   aNewAttr->SetData(aData);
-  aCache->SetUserAttribute(aKey, aNewAttr);
+  anAttrLay.Set(theNode, aKey, aNewAttr, aGen);
 }
 
 //=================================================================================================
 
 void BRepGraphAlgo_BndLib::InvalidateCached(BRepGraph& theGraph, const BRepGraph_NodeId theNode)
 {
-  const int            aKey   = CacheKey();
-  BRepGraph_NodeCache* aCache = theGraph.mutableCache(theNode);
-  if (aCache == nullptr)
-  {
-    return;
-  }
-  aCache->InvalidateUserAttribute(aKey);
+  (void)theGraph.TransientCache().Remove(theNode, CacheKey());
 }

@@ -24,6 +24,7 @@
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Tool.hxx>
+#include <BRepGraph_TransientCache.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_UID.hxx>
 
@@ -639,8 +640,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
 
   // Save layers before swap (default move would transfer empty layers from aNewGraph).
   NCollection_DataMap<TCollection_AsciiString, occ::handle<BRepGraph_Layer>> aSavedLayers;
-  occ::handle<BRepGraph_Layer>                                               aSavedParamLayer =
-    theGraph.myParamLayer;
+  occ::handle<BRepGraph_Layer> aSavedParamLayer      = theGraph.myParamLayer;
   occ::handle<BRepGraph_Layer> aSavedRegularityLayer = theGraph.myRegularityLayer;
   aSavedLayers = std::move(theGraph.myLayers);
 
@@ -651,6 +651,26 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
   theGraph.myLayers          = std::move(aSavedLayers);
   theGraph.myParamLayer      = occ::down_cast<BRepGraph_ParamLayer>(aSavedParamLayer);
   theGraph.myRegularityLayer = occ::down_cast<BRepGraph_RegularityLayer>(aSavedRegularityLayer);
+  // Clear and re-reserve TransientCache for the compacted entity counts.
+  // The saved cache had pre-allocation for old indices; after compaction
+  // indices are remapped and counts may differ.
+  theGraph.myTransientCache.Clear();
+  {
+    BRepGraphInc_Storage& aStr = theGraph.myData->myIncStorage;
+    int aCounts[BRepGraph_TransientCache::THE_KIND_COUNT] = {};
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Vertex)]    = aStr.NbVertices();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Edge)]      = aStr.NbEdges();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::CoEdge)]    = aStr.NbCoEdges();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Wire)]      = aStr.NbWires();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Face)]      = aStr.NbFaces();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Shell)]     = aStr.NbShells();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Solid)]     = aStr.NbSolids();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Compound)]  = aStr.NbCompounds();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::CompSolid)] = aStr.NbCompSolids();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Product)]   = aStr.NbProducts();
+    const int aMaxKey = 15;
+    theGraph.myTransientCache.Reserve(aMaxKey, aCounts);
+  }
   theGraph.updateModificationSubscriberFlag();
 
   // Build unified remap map covering all 8 topology kinds.

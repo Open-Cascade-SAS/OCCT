@@ -497,8 +497,8 @@ TEST_F(BRepGraph_AnalyzeTest, BoundingBox_AfterMutation_CacheInvalidated)
   BRepGraphAlgo_BndLib::Add(myGraph, aVertId, aBoxAfter);
   ASSERT_FALSE(aBoxAfter.IsVoid());
 
-  // Verify IsModified flag was set.
-  EXPECT_TRUE(myGraph.Topo().Vertex(BRepGraph_VertexId(0)).IsModified);
+  // Verify OwnGen was incremented (vertex was directly mutated).
+  EXPECT_GT(myGraph.Topo().Vertex(BRepGraph_VertexId(0)).OwnGen, 0u);
 }
 
 TEST_F(BRepGraph_AnalyzeTest, Invalidate_ThenRecompute_SameResult)
@@ -635,6 +635,6 @@ TEST_F(BRepGraph_AnalyzeTest, Centroid_AfterMutation_CacheInvalidated)
   EXPECT_NEAR(aCentroidBefore.Y(), aCentroidAfter.Y(), Precision::Confusion());
   EXPECT_NEAR(aCentroidBefore.Z(), aCentroidAfter.Z(), Precision::Confusion());
 
-  // Verify the modification flag was set.
-  EXPECT_TRUE(myGraph.Topo().Vertex(BRepGraph_VertexId(0)).IsModified);
+  // Verify OwnGen was incremented (vertex was directly mutated).
+  EXPECT_GT(myGraph.Topo().Vertex(BRepGraph_VertexId(0)).OwnGen, 0u);
 }

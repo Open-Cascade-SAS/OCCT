@@ -199,8 +199,9 @@ public:
   //! @name Deferred invalidation mode for parallel mutation loops.
 
   //! Begin deferred invalidation mode.
-  //! While active, markModified() only sets IsModified flags on entities
-  //! without acquiring the shape-cache mutex or propagating upward.
+  //! While active, markModified() only increments OwnGen + SubtreeGen and
+  //! appends to the deferred list — without acquiring the shape-cache mutex
+  //! or propagating upward.
   //! Call EndDeferredInvalidation() to batch-flush all accumulated changes.
   //! Intended for parallel mutation loops (SameParameter, Sewing processEdges).
   //! @warning Mutations inside OSD_Parallel::For MUST use deferred mode.
@@ -209,8 +210,8 @@ public:
   Standard_EXPORT void BeginDeferredInvalidation();
 
   //! End deferred invalidation mode and batch-flush:
-  //! clears the entire shape cache and propagates IsModified upward
-  //! for all modified entities in a single pass.
+  //! clears the entire shape cache and propagates SubtreeGen upward
+  //! for all modified entities from the deferred list.
   Standard_EXPORT void EndDeferredInvalidation() noexcept;
 
   //! Check if deferred invalidation mode is currently active.
@@ -374,7 +375,7 @@ public:
   //! @name Representation mutation guards.
 
   //! Return scoped mutable surface representation guard.
-  //! On destruction, increments MutationGen and propagates IsModified to owning Face(s).
+  //! On destruction, increments OwnGen and propagates mutation to owning Face(s).
   Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::SurfaceRep> MutSurface(
     const BRepGraph_SurfaceRepId theSurface);
 

@@ -95,7 +95,7 @@ BRepGraph_VersionStamp BRepGraph::UIDsView::StampOf(const BRepGraph_NodeId theNo
   if (aDef == nullptr || aDef->IsRemoved)
     return BRepGraph_VersionStamp();
 
-  return BRepGraph_VersionStamp(aUID, aDef->MutationGen, myGraph->myData->myGeneration.load());
+  return BRepGraph_VersionStamp(aUID, aDef->OwnGen, myGraph->myData->myGeneration.load());
 }
 
 //=================================================================================================
@@ -119,5 +119,5 @@ bool BRepGraph::UIDsView::IsStale(const BRepGraph_VersionStamp& theStamp) const
   if (aDef == nullptr || aDef->IsRemoved)
     return true;
 
-  return aDef->MutationGen != theStamp.myMutationGen;
+  return aDef->OwnGen != theStamp.myMutationGen;
 }

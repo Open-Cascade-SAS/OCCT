@@ -54,7 +54,7 @@ public:
   [[nodiscard]] Standard_EXPORT const Standard_GUID& GraphGUID() const;
 
   //! Produce a version stamp for the given node.
-  //! Combines the node's UID with its current MutationGen and graph Generation.
+  //! Combines the node's UID with its current OwnGen and graph Generation.
   //! @param[in] theNode node identifier
   //! @return version stamp, or invalid stamp if theNode is invalid, removed, or out of bounds
   [[nodiscard]] Standard_EXPORT BRepGraph_VersionStamp

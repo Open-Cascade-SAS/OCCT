@@ -33,7 +33,7 @@ struct BaseRef
 {
   BRepGraph_RefId  RefId;               //!< Typed address (kind + per-kind index)
   BRepGraph_NodeId ParentId;            //!< Parent topology node owning this reference usage
-  uint32_t         MutationGen = 0;     //!< Per-reference mutation counter
+  uint32_t         OwnGen      = 0;     //!< Per-reference mutation counter
   bool             IsRemoved   = false; //!< Soft-removal flag
 };
 

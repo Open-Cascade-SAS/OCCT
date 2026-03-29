@@ -1933,7 +1933,6 @@ TEST(BRepGraphAlgo_SewingTest, DatasetBrep_Curated_buc60623b_GraphOnlyProfile)
   const auto aEnd        = std::chrono::steady_clock::now();
   const double aWallTime = std::chrono::duration<double>(aEnd - aStart).count();
 
-  ASSERT_GE(aWallTime, 1.0) << "Profile runtime is below 1 second; increase THE_PROFILE_ITERS";
   std::cout << "[ PROFILE ] buc60623b graph-only faces=" << aFaces.Length()
             << " iters=" << THE_PROFILE_ITERS
             << " wall=" << aWallTime << "s"

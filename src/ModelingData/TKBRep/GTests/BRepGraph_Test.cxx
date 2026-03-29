@@ -1056,15 +1056,16 @@ TEST_F(BRepGraphTest, Shape_VertexKind_Valid)
   EXPECT_EQ(aShape.ShapeType(), TopAbs_VERTEX);
 }
 
-TEST_F(BRepGraphTest, IsModified_MutableEdge_PropagatesUp)
+TEST_F(BRepGraphTest, OwnGen_MutableEdge_PropagatesSubtreeGenUp)
 {
-  EXPECT_FALSE(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).IsModified);
+  EXPECT_EQ(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).OwnGen, 0u);
 
   myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
 
-  EXPECT_TRUE(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).IsModified);
+  // Edge was directly mutated: OwnGen incremented.
+  EXPECT_GT(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).OwnGen, 0u);
 
-  // Check propagation up to parent wire and face.
+  // Check propagation up to parent wire and face (SubtreeGen).
   const BRepGraphInc::EdgeDef& anEdge = myGraph.Topo().Edge(BRepGraph_EdgeId(0));
   if (anEdge.Id.IsValid())
   {
@@ -1073,13 +1074,13 @@ TEST_F(BRepGraphTest, IsModified_MutableEdge_PropagatesUp)
       myGraph.Topo().WiresOfEdge(BRepGraph_EdgeId(0));
     if (aWires.Length() > 0)
     {
-      EXPECT_TRUE(myGraph.Topo().Wire(aWires.Value(0)).IsModified);
+      EXPECT_GT(myGraph.Topo().Wire(aWires.Value(0)).SubtreeGen, 0u);
       // Check propagation to owning face.
       for (int aFI = 0; aFI < myGraph.Topo().NbFaces(); ++aFI)
       {
         if (BRepGraph_TestTools::FaceUsesWire(myGraph, BRepGraph_FaceId(aFI), aWires.Value(0)))
         {
-          EXPECT_TRUE(myGraph.Topo().Face(BRepGraph_FaceId(aFI)).IsModified);
+          EXPECT_GT(myGraph.Topo().Face(BRepGraph_FaceId(aFI)).SubtreeGen, 0u);
           break;
         }
       }

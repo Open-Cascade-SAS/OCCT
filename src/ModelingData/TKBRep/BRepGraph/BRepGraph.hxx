@@ -26,6 +26,7 @@
 #include <BRepGraph_SubGraph.hxx>
 #include <BRepGraph_UserAttribute.hxx>
 #include <BRepGraphInc_Populate.hxx>
+#include <BRepGraph_TransientCache.hxx>
 
 #include <Standard_DefineAlloc.hxx>
 #include <TopoDS_Shape.hxx>
@@ -151,6 +152,11 @@ public:
   [[nodiscard]] Standard_EXPORT BRepGraph_RegularityLayer& RegularityLayer();
   [[nodiscard]] Standard_EXPORT const BRepGraph_RegularityLayer& RegularityLayer() const;
 
+  //! Access transient cache for algorithm-computed attributes (BndBox, UVBounds).
+  //! SubtreeGen-validated, cleared on Build/Compact. NOT a Layer.
+  [[nodiscard]] BRepGraph_TransientCache& TransientCache() { return myTransientCache; }
+  [[nodiscard]] const BRepGraph_TransientCache& TransientCache() const { return myTransientCache; }
+
   //! Register a named layer. Replaces existing layer with same name.
   Standard_EXPORT void RegisterLayer(const occ::handle<BRepGraph_Layer>& theLayer);
 
@@ -189,6 +195,7 @@ private:
 
   occ::handle<BRepGraph_ParamLayer>      myParamLayer;
   occ::handle<BRepGraph_RegularityLayer> myRegularityLayer;
+  BRepGraph_TransientCache               myTransientCache; //!< Transient algorithm caches (BndBox, UVBounds)
 
   //! True if any registered layer has SubscribedKinds() != 0.
   //! Enables zero-cost skip of modification dispatch when no layer subscribes.
@@ -219,25 +226,25 @@ private:
   Standard_EXPORT BRepGraph_UID    allocateUID(const BRepGraph_NodeId theNodeId);
   Standard_EXPORT BRepGraph_RefUID allocateRefUID(const BRepGraph_RefId theRefId);
 
-  Standard_EXPORT BRepGraph_NodeCache* mutableCache(const BRepGraph_NodeId theNode);
   Standard_EXPORT void markModified(const BRepGraph_NodeId theNodeId) noexcept;
   Standard_EXPORT void markRefModified(const BRepGraph_RefId theRefId) noexcept;
 
-  //! Optimized overload: skips ChangeTopoEntity() and mutableCache() dispatch
+  //! Optimized overload: skips ChangeTopoEntity() dispatch
   //! when the caller already holds a mutable reference to the target entity.
   Standard_EXPORT void markModified(const BRepGraph_NodeId theNodeId,
                                     BRepGraphInc::BaseDef& theEntity) noexcept;
   Standard_EXPORT void markRefModified(const BRepGraph_RefId  theRefId,
                                        BRepGraphInc::BaseRef& theRef) noexcept;
 
-  //! Mark a parent node as transitively modified (IsModified only, no MutationGen increment).
-  //! Skips if already modified. Clears caches, dispatches events, and continues propagation.
-  Standard_EXPORT void markParentModified(const BRepGraph_NodeId theParentId) noexcept;
+  //! Increment SubtreeGen on a parent node (NOT OwnGen — parent's own data didn't change).
+  //! Uses wave guard to prevent exponential blowup on diamond topologies.
+  //! Mutex-free: no shape cache clear, no dispatch.
+  Standard_EXPORT void markParentSubtreeGen(const BRepGraph_NodeId theParentId) noexcept;
 
-  //! Propagate IsModified upward through reverse indices without incrementing MutationGen.
-  Standard_EXPORT void propagateModified(const BRepGraph_NodeId theNodeId) noexcept;
+  //! Propagate SubtreeGen upward through reverse indices via markParentSubtreeGen().
+  Standard_EXPORT void propagateSubtreeGen(const BRepGraph_NodeId theNodeId) noexcept;
 
-  //! Increment MutationGen on a representation and propagate IsModified
+  //! Increment OwnGen on a representation and propagate mutation
   //! to the owning topology node(s).
   Standard_EXPORT void markRepModified(const BRepGraph_RepId theRepId) noexcept;
 

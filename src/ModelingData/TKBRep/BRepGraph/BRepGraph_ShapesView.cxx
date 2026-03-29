@@ -26,21 +26,21 @@ TopoDS_Shape BRepGraph::ShapesView::Shape(const BRepGraph_NodeId theNode) const
   if (!theNode.IsValid())
     return TopoDS_Shape();
 
-  // Fast path: check unmodified originals in Storage.
+  // Fast path: if entity was never mutated, return the original shape.
   const BRepGraphInc::BaseDef* aDef = myGraph->TopoEntity(theNode);
-  if (aDef != nullptr && !aDef->IsModified)
+  if (aDef != nullptr && aDef->SubtreeGen == 0)
   {
     const TopoDS_Shape* anOrig = myGraph->myData->myIncStorage.FindOriginal(theNode);
     if (anOrig != nullptr)
       return *anOrig;
   }
 
-  // Check mutable cache under shared lock.
+  // Check mutable cache under shared lock with SubtreeGen validation.
   {
     std::shared_lock<std::shared_mutex> aReadLock(myGraph->myData->myCurrentShapesMutex);
-    const TopoDS_Shape*                 aCached = myGraph->myData->myCurrentShapes.Seek(theNode);
-    if (aCached != nullptr)
-      return *aCached;
+    const BRepGraph_Data::CachedShape*  aCached = myGraph->myData->myCurrentShapes.Seek(theNode);
+    if (aCached != nullptr && aDef != nullptr && aCached->StoredSubtreeGen == aDef->SubtreeGen)
+      return aCached->Shape;
   }
 
   // Reconstruct from incidence storage.
@@ -49,15 +49,21 @@ TopoDS_Shape BRepGraph::ShapesView::Shape(const BRepGraph_NodeId theNode) const
                                                                &myGraph->ParamLayer(),
                                                                &myGraph->RegularityLayer());
 
-  // Store under exclusive lock with double-check.
-  if (!aReconstructed.IsNull())
+  // Store under exclusive lock with double-check to avoid redundant writes
+  // when multiple threads reconstruct the same parent node concurrently.
+  if (!aReconstructed.IsNull() && aDef != nullptr)
   {
     std::unique_lock<std::shared_mutex> aWriteLock(myGraph->myData->myCurrentShapesMutex);
-    if (!myGraph->myData->myCurrentShapes.IsBound(theNode))
+    const BRepGraph_Data::CachedShape*  aExisting = myGraph->myData->myCurrentShapes.Seek(theNode);
+    if (aExisting != nullptr && aExisting->StoredSubtreeGen == aDef->SubtreeGen)
     {
-      myGraph->myData->myCurrentShapes.Bind(theNode, aReconstructed);
-      myGraph->myData->myIncStorage.BindTShapeToNode(aReconstructed.TShape().get(), theNode);
+      return aExisting->Shape;
     }
+    BRepGraph_Data::CachedShape anEntry;
+    anEntry.Shape            = aReconstructed;
+    anEntry.StoredSubtreeGen = aDef->SubtreeGen;
+    myGraph->myData->myCurrentShapes.Bind(theNode, anEntry);
+    myGraph->myData->myIncStorage.BindTShapeToNode(aReconstructed.TShape().get(), theNode);
   }
   return aReconstructed;
 }

@@ -125,7 +125,7 @@ TEST_F(BRepGraph_EventBusTest, ZeroCost_NoSubscribers)
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
     aMut->Tolerance                              = 0.5;
   }
-  EXPECT_TRUE(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).IsModified);
+  EXPECT_GT(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).OwnGen, 0u);
 }
 
 TEST_F(BRepGraph_EventBusTest, ImmediateMode_SingleEdge)
@@ -166,12 +166,16 @@ TEST_F(BRepGraph_EventBusTest, ImmediateMode_UpwardPropagation)
     aMut->Tolerance                              = 0.5;
   }
 
-  // Upward propagation: Edge -> Wire -> Face -> Shell -> Solid.
+  // Only directly mutated node gets immediate dispatch.
+  // Parents get SubtreeGen incremented but NO dispatch (mutex-free propagation).
   EXPECT_GT(aLayer->CountImmediateEventsOfKind(BRepGraph_NodeId::Kind::Edge), 0);
-  EXPECT_GT(aLayer->CountImmediateEventsOfKind(BRepGraph_NodeId::Kind::Wire), 0);
-  EXPECT_GT(aLayer->CountImmediateEventsOfKind(BRepGraph_NodeId::Kind::Face), 0);
-  EXPECT_GT(aLayer->CountImmediateEventsOfKind(BRepGraph_NodeId::Kind::Shell), 0);
-  EXPECT_GT(aLayer->CountImmediateEventsOfKind(BRepGraph_NodeId::Kind::Solid), 0);
+  EXPECT_EQ(aLayer->CountImmediateEventsOfKind(BRepGraph_NodeId::Kind::Wire), 0);
+  EXPECT_EQ(aLayer->CountImmediateEventsOfKind(BRepGraph_NodeId::Kind::Face), 0);
+  EXPECT_EQ(aLayer->CountImmediateEventsOfKind(BRepGraph_NodeId::Kind::Shell), 0);
+  EXPECT_EQ(aLayer->CountImmediateEventsOfKind(BRepGraph_NodeId::Kind::Solid), 0);
+  // Verify SubtreeGen was propagated upward despite no dispatch.
+  EXPECT_GT(myGraph.Topo().Wire(BRepGraph_WireId(0)).SubtreeGen, 0u);
+  EXPECT_GT(myGraph.Topo().Face(BRepGraph_FaceId(0)).SubtreeGen, 0u);
 }
 
 TEST_F(BRepGraph_EventBusTest, ImmediateMode_KindFilter)
@@ -187,9 +191,12 @@ TEST_F(BRepGraph_EventBusTest, ImmediateMode_KindFilter)
     aMut->Tolerance                              = 0.5;
   }
 
-  // Should receive face events (from upward propagation), but NOT edge events.
+  // No face dispatch from upward propagation (mutex-free SubtreeGen only).
+  // Edge is directly mutated but Face-only subscription filters it out.
   EXPECT_EQ(aLayer->CountImmediateEventsOfKind(BRepGraph_NodeId::Kind::Edge), 0);
-  EXPECT_GT(aLayer->CountImmediateEventsOfKind(BRepGraph_NodeId::Kind::Face), 0);
+  EXPECT_EQ(aLayer->CountImmediateEventsOfKind(BRepGraph_NodeId::Kind::Face), 0);
+  // But SubtreeGen was propagated.
+  EXPECT_GT(myGraph.Topo().Face(BRepGraph_FaceId(0)).SubtreeGen, 0u);
 }
 
 TEST_F(BRepGraph_EventBusTest, DeferredMode_BatchDispatch)
@@ -280,13 +287,13 @@ TEST_F(BRepGraph_EventBusTest, MultipleSubscribers)
     aMut->Tolerance                              = 0.5;
   }
 
-  // Edge layer gets edge events, no face events.
+  // Edge layer gets edge events (directly mutated), no face events.
   EXPECT_GT(aEdgeLayer->CountImmediateEventsOfKind(BRepGraph_NodeId::Kind::Edge), 0);
   EXPECT_EQ(aEdgeLayer->CountImmediateEventsOfKind(BRepGraph_NodeId::Kind::Face), 0);
 
-  // Face layer gets face events (from propagation), no edge events.
+  // Face layer gets NO events — parents don't get immediate dispatch.
   EXPECT_EQ(aFaceLayer->CountImmediateEventsOfKind(BRepGraph_NodeId::Kind::Edge), 0);
-  EXPECT_GT(aFaceLayer->CountImmediateEventsOfKind(BRepGraph_NodeId::Kind::Face), 0);
+  EXPECT_EQ(aFaceLayer->CountImmediateEventsOfKind(BRepGraph_NodeId::Kind::Face), 0);
 }
 
 TEST_F(BRepGraph_EventBusTest, DefaultSubscribedKinds_Zero)
@@ -303,7 +310,7 @@ TEST_F(BRepGraph_EventBusTest, DefaultSubscribedKinds_Zero)
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
     aMut->Tolerance                              = 0.5;
   }
-  EXPECT_TRUE(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).IsModified);
+  EXPECT_GT(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).OwnGen, 0u);
 }
 
 TEST_F(BRepGraph_EventBusTest, DeferredScope_DispatchesOnDestruction)
@@ -381,9 +388,8 @@ TEST_F(BRepGraph_EventBusTest, OverlappingSubscription_EdgeAndFace)
     aMut->Tolerance                              = 0.5;
   }
 
-  // Should see both edge events and face events (from upward propagation).
+  // Edge events from direct mutation; NO face events (no parent dispatch).
   EXPECT_GT(aLayer->CountImmediateEventsOfKind(BRepGraph_NodeId::Kind::Edge), 0);
-  EXPECT_GT(aLayer->CountImmediateEventsOfKind(BRepGraph_NodeId::Kind::Face), 0);
-  // Should NOT see wire events (not subscribed).
+  EXPECT_EQ(aLayer->CountImmediateEventsOfKind(BRepGraph_NodeId::Kind::Face), 0);
   EXPECT_EQ(aLayer->CountImmediateEventsOfKind(BRepGraph_NodeId::Kind::Wire), 0);
 }

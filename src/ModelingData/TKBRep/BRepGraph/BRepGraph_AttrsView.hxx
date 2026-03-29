@@ -21,7 +21,8 @@
 //! Attributes are keyed by integer identifiers and stored as
 //! Handle(BRepGraph_UserAttribute). Supports set, get, remove,
 //! invalidate, and key enumeration per node. Attribute data is
-//! stored in the node's BRepGraph_NodeCache.
+//! stored centrally in BRepGraph_TransientCache with generation-based
+//! freshness tracking via SubtreeGen.
 //! Obtained via BRepGraph::Attrs().
 class BRepGraph::AttrsView
 {

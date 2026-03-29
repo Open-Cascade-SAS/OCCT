@@ -314,8 +314,8 @@ TEST(BRepGraph_RefIdTest, MutFaceRef_UpdatesRefStampAndParentModifiedFlag)
   ASSERT_TRUE(aBeforeEntry.ParentId.IsValid());
   ASSERT_TRUE(aBeforeStamp.IsValid());
   ASSERT_TRUE(aBeforeStamp.IsRefStamp());
-  const uint32_t           aBeforeMutationGen = aBeforeEntry.MutationGen;
-  const TopAbs_Orientation anBeforeOri        = aBeforeEntry.Orientation;
+  const uint32_t           aBeforeOwnGen = aBeforeEntry.OwnGen;
+  const TopAbs_Orientation anBeforeOri   = aBeforeEntry.Orientation;
 
   {
     BRepGraph_MutGuard<BRepGraphInc::FaceRef> aMut = aGraph.Builder().MutFaceRef(aFaceRefId);
@@ -324,12 +324,12 @@ TEST(BRepGraph_RefIdTest, MutFaceRef_UpdatesRefStampAndParentModifiedFlag)
 
   const BRepGraphInc::FaceRef& aAfterEntry = aGraph.Refs().Face(aFaceRefId);
   EXPECT_NE(aAfterEntry.Orientation, anBeforeOri);
-  EXPECT_GT(aAfterEntry.MutationGen, aBeforeMutationGen);
+  EXPECT_GT(aAfterEntry.OwnGen, aBeforeOwnGen);
   EXPECT_TRUE(aGraph.Refs().IsStale(aBeforeStamp));
 
   const BRepGraphInc::BaseDef* aParentDef = aGraph.Topo().TopoEntity(aAfterEntry.ParentId);
   ASSERT_NE(aParentDef, nullptr);
-  EXPECT_TRUE(aParentDef->IsModified);
+  EXPECT_GT(aParentDef->SubtreeGen, 0u);
 }
 
 TEST(BRepGraph_RefIdTest, MutFaceRef_MarkRemoved_PersistsAndInvalidatesStamp)

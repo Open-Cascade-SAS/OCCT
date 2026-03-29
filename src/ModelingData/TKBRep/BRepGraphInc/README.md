@@ -135,7 +135,7 @@ Common header for all reference entries:
 
 - `RefId`: typed address (Kind + Index) into the ref entry vector
 - `ParentId`: NodeId of the owning parent entity
-- `MutationGen`: generation counter for change tracking
+- `OwnGen`: generation counter for change tracking (incremented on ref mutation)
 - `IsRemoved`: soft-delete flag
 
 ### Ref Types

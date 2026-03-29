@@ -476,9 +476,9 @@ TEST(BRepGraph_ReconstructTest, AfterVertexMutation_ModifiedFlagAndPointChanged)
     aMutVtx->Point = gp_Pnt(anOldPt.X(), anOldPt.Y(), anOldPt.Z() + 5.0);
   }
 
-  // Verify the modification flag is set on the vertex def.
-  EXPECT_TRUE(aGraph.Topo().Vertex(BRepGraph_VertexId(aVertIdx)).IsModified)
-    << "Vertex def should be marked as modified after mutation";
+  // Verify the OwnGen is incremented on the vertex def (directly mutated).
+  EXPECT_GT(aGraph.Topo().Vertex(BRepGraph_VertexId(aVertIdx)).OwnGen, 0u)
+    << "Vertex def should have OwnGen > 0 after mutation";
 
   // Verify the graph VertexDef.Point has actually changed.
   const gp_Pnt aNewPt = BRepGraph_Tool::Vertex::Pnt(aGraph, BRepGraph_VertexId(aVertIdx));

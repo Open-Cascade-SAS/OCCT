@@ -32,117 +32,170 @@ protected:
   BRepGraph myGraph;
 };
 
-TEST_F(BRepGraph_MutationGenTest, MutationGen_IncrementedOnMutation)
+TEST_F(BRepGraph_MutationGenTest, OwnGen_IncrementedOnMutation)
 {
-  EXPECT_EQ(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).MutationGen, 0u);
+  EXPECT_EQ(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).OwnGen, 0u);
+  EXPECT_EQ(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).SubtreeGen, 0u);
 
   myGraph.Builder().MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
 
-  EXPECT_EQ(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).MutationGen, 1u);
+  EXPECT_EQ(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).OwnGen, 1u);
+  EXPECT_EQ(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).SubtreeGen, 1u);
 }
 
-TEST_F(BRepGraph_MutationGenTest, MutationGen_MultipleIncrements)
+TEST_F(BRepGraph_MutationGenTest, OwnGen_MultipleIncrements)
 {
   myGraph.Builder().MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.1;
   myGraph.Builder().MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.2;
 
-  EXPECT_EQ(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).MutationGen, 2u);
+  EXPECT_EQ(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).OwnGen, 2u);
 }
 
-TEST_F(BRepGraph_MutationGenTest, MutationGen_DeferredMode)
+TEST_F(BRepGraph_MutationGenTest, OwnGen_DeferredMode)
 {
   myGraph.Builder().BeginDeferredInvalidation();
   myGraph.Builder().MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
 
-  // MutationGen is incremented even in deferred mode.
-  EXPECT_EQ(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).MutationGen, 1u);
+  // OwnGen is incremented even in deferred mode.
+  EXPECT_EQ(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).OwnGen, 1u);
 
   myGraph.Builder().EndDeferredInvalidation();
 
   // Still 1 after flush - flush doesn't re-increment.
-  EXPECT_EQ(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).MutationGen, 1u);
+  EXPECT_EQ(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).OwnGen, 1u);
 }
 
-TEST_F(BRepGraph_MutationGenTest, MutationGen_PropagatedParent_NotIncremented)
+TEST_F(BRepGraph_MutationGenTest, SubtreeGen_PropagatedParent_Incremented)
 {
-  // Mutate an edge - parent wire/face/shell/solid get IsModified via propagation,
-  // but their MutationGen must stay 0 (they weren't directly mutated).
-  const int aNbWires  = myGraph.Topo().NbWires();
-  const int aNbFaces  = myGraph.Topo().NbFaces();
-  const int aNbShells = myGraph.Topo().NbShells();
-  const int aNbSolids = myGraph.Topo().NbSolids();
-
+  // Mutate an edge - parent wire/face/shell/solid get SubtreeGen incremented
+  // via propagation, enabling generation-based cache freshness on parents.
+  // Parent OwnGen must NOT change (only the edge itself was directly mutated).
   myGraph.Builder().MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
 
-  EXPECT_EQ(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).MutationGen, 1u);
+  EXPECT_EQ(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).OwnGen, 1u);
+  EXPECT_EQ(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).SubtreeGen, 1u);
 
-  for (int i = 0; i < aNbWires; ++i)
-    EXPECT_EQ(myGraph.Topo().Wire(BRepGraph_WireId(i)).MutationGen, 0u);
-  for (int i = 0; i < aNbFaces; ++i)
-    EXPECT_EQ(myGraph.Topo().Face(BRepGraph_FaceId(i)).MutationGen, 0u);
-  for (int i = 0; i < aNbShells; ++i)
-    EXPECT_EQ(myGraph.Topo().Shell(BRepGraph_ShellId(i)).MutationGen, 0u);
-  for (int i = 0; i < aNbSolids; ++i)
-    EXPECT_EQ(myGraph.Topo().Solid(BRepGraph_SolidId(i)).MutationGen, 0u);
+  // At least one parent in each level must have SubtreeGen incremented,
+  // but OwnGen must remain 0 (parent's own data was not touched).
+  bool aAnyWireSubtreeIncremented = false;
+  for (int i = 0; i < myGraph.Topo().NbWires(); ++i)
+  {
+    if (myGraph.Topo().Wire(BRepGraph_WireId(i)).SubtreeGen > 0u)
+      aAnyWireSubtreeIncremented = true;
+  }
+  EXPECT_TRUE(aAnyWireSubtreeIncremented);
+
+  // Verify parent OwnGen did NOT change (split behavior).
+  for (int i = 0; i < myGraph.Topo().NbWires(); ++i)
+    EXPECT_EQ(myGraph.Topo().Wire(BRepGraph_WireId(i)).OwnGen, 0u);
+
+  bool aAnyFaceSubtreeIncremented = false;
+  for (int i = 0; i < myGraph.Topo().NbFaces(); ++i)
+  {
+    if (myGraph.Topo().Face(BRepGraph_FaceId(i)).SubtreeGen > 0u)
+      aAnyFaceSubtreeIncremented = true;
+  }
+  EXPECT_TRUE(aAnyFaceSubtreeIncremented);
+
+  for (int i = 0; i < myGraph.Topo().NbFaces(); ++i)
+    EXPECT_EQ(myGraph.Topo().Face(BRepGraph_FaceId(i)).OwnGen, 0u);
+
+  bool aAnyShellSubtreeIncremented = false;
+  for (int i = 0; i < myGraph.Topo().NbShells(); ++i)
+  {
+    if (myGraph.Topo().Shell(BRepGraph_ShellId(i)).SubtreeGen > 0u)
+      aAnyShellSubtreeIncremented = true;
+  }
+  EXPECT_TRUE(aAnyShellSubtreeIncremented);
+
+  for (int i = 0; i < myGraph.Topo().NbShells(); ++i)
+    EXPECT_EQ(myGraph.Topo().Shell(BRepGraph_ShellId(i)).OwnGen, 0u);
+
+  bool aAnySolidSubtreeIncremented = false;
+  for (int i = 0; i < myGraph.Topo().NbSolids(); ++i)
+  {
+    if (myGraph.Topo().Solid(BRepGraph_SolidId(i)).SubtreeGen > 0u)
+      aAnySolidSubtreeIncremented = true;
+  }
+  EXPECT_TRUE(aAnySolidSubtreeIncremented);
+
+  for (int i = 0; i < myGraph.Topo().NbSolids(); ++i)
+    EXPECT_EQ(myGraph.Topo().Solid(BRepGraph_SolidId(i)).OwnGen, 0u);
 }
 
-TEST_F(BRepGraph_MutationGenTest, MutationGen_DeferredPropagatedParent_NotIncremented)
+TEST_F(BRepGraph_MutationGenTest, SubtreeGen_DeferredPropagatedParent_Incremented)
 {
-  // Same as above but in deferred mode - propagation on flush must not
-  // increment MutationGen on parents.
+  // Store baselines before mutation.
+  const uint32_t aEdgeOwnGenBefore = myGraph.Topo().Edge(BRepGraph_EdgeId(0)).OwnGen;
+  NCollection_Vector<uint32_t> aWireSubtreeGensBefore;
+  for (int i = 0; i < myGraph.Topo().NbWires(); ++i)
+    aWireSubtreeGensBefore.Append(myGraph.Topo().Wire(BRepGraph_WireId(i)).SubtreeGen);
+  NCollection_Vector<uint32_t> aFaceSubtreeGensBefore;
+  for (int i = 0; i < myGraph.Topo().NbFaces(); ++i)
+    aFaceSubtreeGensBefore.Append(myGraph.Topo().Face(BRepGraph_FaceId(i)).SubtreeGen);
+
+  // Deferred mutation + flush.
   myGraph.Builder().BeginDeferredInvalidation();
   myGraph.Builder().MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
   myGraph.Builder().EndDeferredInvalidation();
 
-  EXPECT_EQ(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).MutationGen, 1u);
+  // Directly mutated edge: OwnGen incremented by exactly 1.
+  EXPECT_EQ(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).OwnGen, aEdgeOwnGenBefore + 1);
 
+  // At least one parent wire must have SubtreeGen incremented vs its baseline.
+  bool aAnyWireSubtreeIncremented = false;
   for (int i = 0; i < myGraph.Topo().NbWires(); ++i)
-    EXPECT_EQ(myGraph.Topo().Wire(BRepGraph_WireId(i)).MutationGen, 0u);
+    if (myGraph.Topo().Wire(BRepGraph_WireId(i)).SubtreeGen > aWireSubtreeGensBefore.Value(i))
+      aAnyWireSubtreeIncremented = true;
+  EXPECT_TRUE(aAnyWireSubtreeIncremented);
+
+  // At least one parent face must have SubtreeGen incremented vs its baseline.
+  bool aAnyFaceSubtreeIncremented = false;
   for (int i = 0; i < myGraph.Topo().NbFaces(); ++i)
-    EXPECT_EQ(myGraph.Topo().Face(BRepGraph_FaceId(i)).MutationGen, 0u);
-  for (int i = 0; i < myGraph.Topo().NbShells(); ++i)
-    EXPECT_EQ(myGraph.Topo().Shell(BRepGraph_ShellId(i)).MutationGen, 0u);
-  for (int i = 0; i < myGraph.Topo().NbSolids(); ++i)
-    EXPECT_EQ(myGraph.Topo().Solid(BRepGraph_SolidId(i)).MutationGen, 0u);
+    if (myGraph.Topo().Face(BRepGraph_FaceId(i)).SubtreeGen > aFaceSubtreeGensBefore.Value(i))
+      aAnyFaceSubtreeIncremented = true;
+  EXPECT_TRUE(aAnyFaceSubtreeIncremented);
 }
 
-TEST_F(BRepGraph_MutationGenTest, RepMutation_SurfacePropagatesIsModifiedToFace)
+TEST_F(BRepGraph_MutationGenTest, RepMutation_SurfacePropagatesSubtreeGenToFace)
 {
   const BRepGraph_FaceId aFaceId(0);
   const BRepGraph_SurfaceRepId aSurfId = myGraph.Topo().Face(aFaceId).SurfaceRepId;
   ASSERT_TRUE(aSurfId.IsValid());
-  EXPECT_FALSE(myGraph.Topo().Face(aFaceId).IsModified);
+  EXPECT_EQ(myGraph.Topo().Face(aFaceId).OwnGen, 0u);
+  EXPECT_EQ(myGraph.Topo().Face(aFaceId).SubtreeGen, 0u);
 
   {
-    auto aGuard = myGraph.Builder().MutSurface(aSurfId);
+    BRepGraph_MutGuard<BRepGraphInc::SurfaceRep> aGuard = myGraph.Builder().MutSurface(aSurfId);
     (void)aGuard;
   }
 
-  // Surface mutation propagates IsModified and increments MutationGen on the owning face.
-  EXPECT_TRUE(myGraph.Topo().Face(aFaceId).IsModified);
-  EXPECT_EQ(myGraph.Topo().Face(aFaceId).MutationGen, 1u);
+  // Surface is the face's own geometry — rep mutation IS an own-data change.
+  EXPECT_GT(myGraph.Topo().Face(aFaceId).OwnGen, 0u);
+  EXPECT_GT(myGraph.Topo().Face(aFaceId).SubtreeGen, 0u);
 }
 
-TEST_F(BRepGraph_MutationGenTest, RepMutation_Curve3DPropagatesIsModifiedToEdge)
+TEST_F(BRepGraph_MutationGenTest, RepMutation_Curve3DPropagatesSubtreeGenToEdge)
 {
   const BRepGraph_EdgeId anEdgeId(0);
   const BRepGraph_Curve3DRepId aCurveId = myGraph.Topo().Edge(anEdgeId).Curve3DRepId;
   if (!aCurveId.IsValid())
     return; // Skip degenerate edges without 3D curves.
 
-  EXPECT_FALSE(myGraph.Topo().Edge(anEdgeId).IsModified);
+  EXPECT_EQ(myGraph.Topo().Edge(anEdgeId).OwnGen, 0u);
+  EXPECT_EQ(myGraph.Topo().Edge(anEdgeId).SubtreeGen, 0u);
 
   {
-    auto aGuard = myGraph.Builder().MutCurve3D(aCurveId);
+    BRepGraph_MutGuard<BRepGraphInc::Curve3DRep> aGuard = myGraph.Builder().MutCurve3D(aCurveId);
     (void)aGuard;
   }
 
-  // Curve3D mutation propagates IsModified and increments MutationGen on the owning edge.
-  EXPECT_TRUE(myGraph.Topo().Edge(anEdgeId).IsModified);
-  EXPECT_EQ(myGraph.Topo().Edge(anEdgeId).MutationGen, 1u);
+  // Curve3D is the edge's own geometry — rep mutation IS an own-data change.
+  EXPECT_GT(myGraph.Topo().Edge(anEdgeId).OwnGen, 0u);
+  EXPECT_GT(myGraph.Topo().Edge(anEdgeId).SubtreeGen, 0u);
 }
 
-TEST_F(BRepGraph_MutationGenTest, RepMutation_Curve2DPropagatesIsModifiedToCoEdge)
+TEST_F(BRepGraph_MutationGenTest, RepMutation_Curve2DPropagatesSubtreeGenToCoEdge)
 {
   // Find a coedge with a valid PCurve.
   for (int i = 0; i < myGraph.Topo().NbCoEdges(); ++i)
@@ -152,20 +205,22 @@ TEST_F(BRepGraph_MutationGenTest, RepMutation_Curve2DPropagatesIsModifiedToCoEdg
     if (!aCurveId.IsValid())
       continue;
 
-    EXPECT_FALSE(myGraph.Topo().CoEdge(aCoEdgeId).IsModified);
+    EXPECT_EQ(myGraph.Topo().CoEdge(aCoEdgeId).OwnGen, 0u);
+    EXPECT_EQ(myGraph.Topo().CoEdge(aCoEdgeId).SubtreeGen, 0u);
 
     {
-      auto aGuard = myGraph.Builder().MutCurve2D(aCurveId);
+      BRepGraph_MutGuard<BRepGraphInc::Curve2DRep> aGuard = myGraph.Builder().MutCurve2D(aCurveId);
       (void)aGuard;
     }
 
-    EXPECT_TRUE(myGraph.Topo().CoEdge(aCoEdgeId).IsModified);
-    EXPECT_EQ(myGraph.Topo().CoEdge(aCoEdgeId).MutationGen, 1u);
+    // Curve2D is the coedge's own geometry — rep mutation IS an own-data change.
+    EXPECT_GT(myGraph.Topo().CoEdge(aCoEdgeId).OwnGen, 0u);
+    EXPECT_GT(myGraph.Topo().CoEdge(aCoEdgeId).SubtreeGen, 0u);
     return;
   }
 }
 
-TEST_F(BRepGraph_MutationGenTest, RepMutation_TriangulationPropagatesIsModifiedToFace)
+TEST_F(BRepGraph_MutationGenTest, RepMutation_TriangulationPropagatesSubtreeGenToFace)
 {
   // Find a face with a valid triangulation.
   for (int i = 0; i < myGraph.Topo().NbFaces(); ++i)
@@ -176,20 +231,22 @@ TEST_F(BRepGraph_MutationGenTest, RepMutation_TriangulationPropagatesIsModifiedT
       continue;
 
     const BRepGraph_TriangulationRepId aTriId = aFace.TriangulationRepIds.Value(0);
-    EXPECT_FALSE(aFace.IsModified);
+    EXPECT_EQ(aFace.OwnGen, 0u);
+    EXPECT_EQ(aFace.SubtreeGen, 0u);
 
     {
-      auto aGuard = myGraph.Builder().MutTriangulation(aTriId);
+      BRepGraph_MutGuard<BRepGraphInc::TriangulationRep> aGuard = myGraph.Builder().MutTriangulation(aTriId);
       (void)aGuard;
     }
 
-    EXPECT_TRUE(myGraph.Topo().Face(aFaceId).IsModified);
-    EXPECT_EQ(myGraph.Topo().Face(aFaceId).MutationGen, 1u);
+    // Triangulation is the face's own mesh — rep mutation IS an own-data change.
+    EXPECT_GT(myGraph.Topo().Face(aFaceId).OwnGen, 0u);
+    EXPECT_GT(myGraph.Topo().Face(aFaceId).SubtreeGen, 0u);
     return;
   }
 }
 
-TEST_F(BRepGraph_MutationGenTest, RepMutation_Polygon3DPropagatesIsModifiedToEdge)
+TEST_F(BRepGraph_MutationGenTest, RepMutation_Polygon3DPropagatesSubtreeGenToEdge)
 {
   // Find an edge with a valid Polygon3D.
   for (int i = 0; i < myGraph.Topo().NbEdges(); ++i)
@@ -199,15 +256,17 @@ TEST_F(BRepGraph_MutationGenTest, RepMutation_Polygon3DPropagatesIsModifiedToEdg
     if (!aPolyId.IsValid())
       continue;
 
-    EXPECT_FALSE(myGraph.Topo().Edge(anEdgeId).IsModified);
+    EXPECT_EQ(myGraph.Topo().Edge(anEdgeId).OwnGen, 0u);
+    EXPECT_EQ(myGraph.Topo().Edge(anEdgeId).SubtreeGen, 0u);
 
     {
-      auto aGuard = myGraph.Builder().MutPolygon3D(aPolyId);
+      BRepGraph_MutGuard<BRepGraphInc::Polygon3DRep> aGuard = myGraph.Builder().MutPolygon3D(aPolyId);
       (void)aGuard;
     }
 
-    EXPECT_TRUE(myGraph.Topo().Edge(anEdgeId).IsModified);
-    EXPECT_EQ(myGraph.Topo().Edge(anEdgeId).MutationGen, 1u);
+    // Polygon3D is the edge's own mesh — rep mutation IS an own-data change.
+    EXPECT_GT(myGraph.Topo().Edge(anEdgeId).OwnGen, 0u);
+    EXPECT_GT(myGraph.Topo().Edge(anEdgeId).SubtreeGen, 0u);
     return;
   }
 }

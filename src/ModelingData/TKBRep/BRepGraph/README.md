@@ -61,7 +61,7 @@ All queries and mutations go through lightweight view objects obtained from a `B
 | **TopoView** | `Topo()` | Const topology definition access, entity counts, adjacency queries (SharedEdges, AdjacentFaces, SameDomainFaces) |
 | **UIDsView** | `UIDs()` | UID allocation, lookup, validity checking |
 | **ShapesView** | `Shapes()` | TopoDS reconstruction, FindNode/HasNode reverse lookup |
-| **AttrsView** | `Attrs()` | Layer registration, lookup, unregistration |
+| **AttrsView** | `Attrs()` | Transient cache access (Set/Get/Remove per-node cached attributes) |
 | **BuilderView** | `Builder()` | Mutations: AddProduct, AddOccurrence, RemoveNode, RemoveSubgraph, MutGuard accessors |
 | **RefsView** | `Refs()` | Reference entry access, RefUID lookup, VersionStamp for refs |
 | **PathView** | `Paths()` | Assembly queries (NbProducts, RootProducts, IsAssembly, IsPart), path traversal (GlobalLocation, GlobalOrientation, PathsTo, NodeLocations, CommonAncestor) |
@@ -79,6 +79,7 @@ All queries and mutations go through lightweight view objects obtained from a `B
 | `History()` | Mutation history subsystem (lineage records) |
 | `ParamLayer()` | Built-in parametric binding layer |
 | `RegularityLayer()` | Built-in edge regularity layer |
+| `TransientCache()` | Transient algorithm cache (BndBox, UVBounds) — NOT a Layer |
 | `RegisterLayer()` | Register a custom `BRepGraph_Layer` |
 | `FindLayer()` | Lookup a registered layer by name |
 | `UnregisterLayer()` | Remove a registered layer by name |
@@ -105,7 +106,7 @@ Reference entries are the typed edges of the incidence graph. Each ref kind has 
 
 ### BaseRef and Ref
 
-`BaseRef` is the common header for all reference entries: `RefId` + `ParentId` + `MutationGen` + `IsRemoved`. Concrete ref entry types (e.g. `ShellRef`, `FaceRef`) extend BaseRef with `DefId` + `Orientation` + `LocalLocation`.
+`BaseRef` is the common header for all reference entries: `RefId` + `ParentId` + `OwnGen` + `IsRemoved`. Concrete ref entry types (e.g. `ShellRef`, `FaceRef`) extend BaseRef with `DefId` + `Orientation` + `LocalLocation`.
 
 ### RefUID
 
@@ -277,21 +278,60 @@ Graph-wide named metadata collections with full lifecycle management. Registered
 - **Survives mutations**: yes
 - **Example**: `BRepGraph_NameLayer` (per-node string names)
 
-### UserAttributes (`BRepGraph_UserAttribute`)
+### TransientCache (`BRepGraph_TransientCache`)
 
-Per-node cached computations in `BaseDef.Cache`. Lazily evaluated, auto-invalidated when mutated.
+Centralized per-node cache for algorithm-computed attributes. Dense per-kind vectors with O(1) access. NOT a Layer — cleared on Build() and Compact().
 
 - **Purpose**: ephemeral computed caches (bounding boxes, UV bounds, FClass2d results)
-- **Lifecycle**: auto-invalidated by `markModified()`; recomputed on next `Get()`
-- **Survives mutations**: no
+- **Storage**: dense `NCollection_Vector<CacheSlot>` per kind per key, indexed by entity index
+- **Freshness**: SubtreeGen-validated. Each slot stores `StoredSubtreeGen`; on read, if it differs from the entity's current `SubtreeGen`, the attribute is marked dirty and recomputed lazily.
+- **Thread safety**: `shared_mutex` (concurrent reads from `OSD_Parallel::For`, exclusive writes)
+- **Survives mutations**: yes (stale entries detected by SubtreeGen mismatch)
 - **Example**: `BRepGraph_TypedAttribute<Bnd_Box>` for cached bounding boxes
 
 ### When to Use Which
 
 - Data that must persist and migrate across graph mutations → **Layer**
-- Computed values that can be recomputed from entity state → **UserAttribute**
+- Computed values that can be recomputed from entity state → **TransientCache** (via `AttrsView`)
 
-## Mutation and History
+## Mutation Tracking and Change Propagation
+
+### Split-Generation Model
+
+Every entity (`BaseDef`) carries two generation counters:
+
+| Counter | Incremented when | Used for |
+|---------|-----------------|----------|
+| **OwnGen** | Entity's own definition fields change (tolerance, point, flags) | VersionStamp persistent identity; PLM staleness detection |
+| **SubtreeGen** | Entity's own data OR any descendant's data changes | TransientCache freshness; shape cache validation |
+
+`BaseRef` and `BaseRep` carry only `OwnGen` (no subtree).
+
+### Propagation
+
+When an entity is directly mutated via `MutGuard`:
+1. `++OwnGen; ++SubtreeGen` on the mutated entity
+2. `propagateSubtreeGen()` walks upward via reverse indices (Edge→Wire→Face→Shell→Solid)
+3. Each parent gets `++SubtreeGen` only (NOT OwnGen — parent's own data didn't change)
+4. Diamond guard (`LastPropWave`) prevents exponential blowup on shared parents
+
+Propagation is **mutex-free** — no locks, no shape cache clears, no layer dispatch. Cost: ~4 cycles per parent.
+
+### Deferred Mode
+
+`BRepGraph_DeferredScope` wraps batch mutations (sewing, parallel algorithms):
+- During scope: `markModified()` appends to deferred list, no propagation
+- At scope exit: BFS upward propagation of SubtreeGen, batch layer dispatch
+
+### Shape Cache
+
+Reconstructed shapes are cached in `BRepGraph_Data::myCurrentShapes` as `CachedShape{Shape, StoredSubtreeGen}`. Validated lazily on read — if `StoredSubtreeGen != entity.SubtreeGen`, the shape is stale and reconstructed.
+
+### Persistent Identity (VersionStamp)
+
+`BRepGraph_VersionStamp` = (UID, OwnGen, Generation). `IsStale()` compares `OwnGen` — detects only direct entity changes. Parent stamps are NOT stale when children change (correct for PLM semantics).
+
+### History
 
 Primary mutation entry points are exposed via `Builder()` and scoped RAII guards (`BRepGraph_MutGuard`).
 
@@ -348,8 +388,8 @@ Benefits: O(1) allocation (bump-pointer), O(1) destruction (bulk page release). 
 | **Traversal** | `BRepGraph_Explorer.hxx/.cxx`, `BRepGraph_TopologyPath.hxx`, `BRepGraph_SubGraph.hxx`, `BRepGraph_PCurveContext.hxx` |
 | **Geometry** | `BRepGraph_Tool.hxx/.cxx` |
 | **Mutation** | `BRepGraph_MutGuard.hxx`, `BRepGraph_DeferredScope.hxx` |
-| **Layers** | `BRepGraph_Layer.hxx/.cxx`, `BRepGraph_NameLayer.hxx/.cxx`, `BRepGraph_AttrRegistry.hxx` |
-| **Attributes** | `BRepGraph_UserAttribute.hxx`, `BRepGraph_TypedAttribute.hxx`, `BRepGraph_NodeCache.hxx` |
+| **Layers** | `BRepGraph_Layer.hxx/.cxx`, `BRepGraph_NameLayer.hxx/.cxx` |
+| **Transient Cache** | `BRepGraph_TransientCache.hxx/.cxx`, `BRepGraph_UserAttribute.hxx` |
 | **Analysis** | `BRepGraph_Analyze.hxx/.cxx` |
 | **History** | `BRepGraph_History.hxx/.cxx`, `BRepGraph_HistoryRecord.hxx` |
 | **Iteration** | `BRepGraph_Iterator.hxx` |

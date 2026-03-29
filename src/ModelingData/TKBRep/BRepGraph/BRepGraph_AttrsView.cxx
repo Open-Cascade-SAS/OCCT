@@ -13,6 +13,7 @@
 
 #include <BRepGraph_AttrsView.hxx>
 #include <BRepGraph_Data.hxx>
+#include <BRepGraph_TransientCache.hxx>
 #include <NCollection_Vector.hxx>
 
 //=================================================================================================
@@ -21,9 +22,10 @@ void BRepGraph::AttrsView::Set(const BRepGraph_NodeId                      theNo
                                const int                                   theKey,
                                const occ::handle<BRepGraph_UserAttribute>& theAttr)
 {
-  BRepGraph_NodeCache* aCache = myGraph->mutableCache(theNode);
-  if (aCache != nullptr)
-    aCache->SetUserAttribute(theKey, theAttr);
+  const BRepGraphInc::BaseDef* aDef = myGraph->TopoEntity(theNode);
+  if (aDef == nullptr)
+    return;
+  myGraph->TransientCache().Set(theNode, theKey, theAttr, aDef->SubtreeGen);
 }
 
 //=================================================================================================
@@ -34,34 +36,32 @@ occ::handle<BRepGraph_UserAttribute> BRepGraph::AttrsView::Get(const BRepGraph_N
   const BRepGraphInc::BaseDef* aDef = myGraph->TopoEntity(theNode);
   if (aDef == nullptr)
     return occ::handle<BRepGraph_UserAttribute>();
-  return aDef->Cache.GetUserAttribute(theKey);
+  return myGraph->TransientCache().Get(theNode, theKey, aDef->SubtreeGen);
 }
 
 //=================================================================================================
 
 bool BRepGraph::AttrsView::Remove(const BRepGraph_NodeId theNode, const int theKey)
 {
-  BRepGraph_NodeCache* aCache = myGraph->mutableCache(theNode);
-  if (aCache == nullptr)
-    return false;
-  return aCache->RemoveUserAttribute(theKey);
+  return myGraph->TransientCache().Remove(theNode, theKey);
 }
 
 //=================================================================================================
 
 void BRepGraph::AttrsView::Invalidate(const BRepGraph_NodeId theNode, const int theKey)
 {
-  BRepGraph_NodeCache* aCache = myGraph->mutableCache(theNode);
-  if (aCache != nullptr)
-    aCache->InvalidateUserAttribute(theKey);
+  const BRepGraphInc::BaseDef* aDef = myGraph->TopoEntity(theNode);
+  if (aDef == nullptr)
+    return;
+  occ::handle<BRepGraph_UserAttribute> anAttr =
+    myGraph->TransientCache().Get(theNode, theKey, aDef->SubtreeGen);
+  if (!anAttr.IsNull())
+    anAttr->Invalidate();
 }
 
 //=================================================================================================
 
 NCollection_Vector<int> BRepGraph::AttrsView::AttributeKeys(const BRepGraph_NodeId theNode) const
 {
-  const BRepGraphInc::BaseDef* aDef = myGraph->TopoEntity(theNode);
-  if (aDef == nullptr)
-    return NCollection_Vector<int>();
-  return aDef->Cache.UserAttributeKeys();
+  return myGraph->TransientCache().AttributeKeys(theNode);
 }

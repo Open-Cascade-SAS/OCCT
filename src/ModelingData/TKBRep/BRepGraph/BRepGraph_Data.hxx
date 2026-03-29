@@ -17,7 +17,6 @@
 #include <BRepGraph_AttrsView.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_History.hxx>
-#include <BRepGraph_NodeCache.hxx>
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_PathView.hxx>
 #include <BRepGraph_RefsView.hxx>
@@ -69,13 +68,29 @@ struct BRepGraph_Data
 
   bool myIsDone = false;
 
-  //! When true, markModified() only sets IsModified flags --
-  //! no mutex acquisition and no upward propagation.
+  //! When true, markModified() only increments OwnGen + SubtreeGen and appends to
+  //! myDeferredModified — no mutex acquisition and no upward propagation.
   std::atomic<bool> myDeferredMode{false};
 
-  //! Thread-safe cache of reconstructed shapes.
-  mutable NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape> myCurrentShapes;
-  mutable std::shared_mutex                                   myCurrentShapesMutex;
+  //! Propagation wave counter. Incremented at the start of each
+  //! markModified() / markRefModified() call. markParentModified()
+  //! compares entity.LastPropWave against this to skip already-visited
+  //! parents in the same propagation wave (O(1) re-visit guard).
+  uint32_t myPropagationWave = 0;
+
+  //! NodeIds accumulated during deferred mode. Processed by EndDeferredInvalidation().
+  NCollection_Vector<BRepGraph_NodeId> myDeferredModified;
+
+  //! Gen-validated shape cache entry.
+  struct CachedShape
+  {
+    TopoDS_Shape Shape;
+    uint32_t     StoredSubtreeGen = 0;
+  };
+
+  //! Thread-safe cache of reconstructed shapes with SubtreeGen validation.
+  mutable NCollection_DataMap<BRepGraph_NodeId, CachedShape> myCurrentShapes;
+  mutable std::shared_mutex                                  myCurrentShapesMutex;
 
   using ReconstructCache = NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape>;
 
