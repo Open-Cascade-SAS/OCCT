@@ -13,9 +13,6 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_Data.hxx>
-#include <BRepGraph_Layer.hxx>
-#include <BRepGraph_ParamLayer.hxx>
-#include <BRepGraph_RegularityLayer.hxx>
 #include <BRepGraph_RefsView.hxx>
 
 #include <BRepGraph_Builder.hxx>
@@ -41,26 +38,10 @@ void BRepGraph::initViews()
   }
 }
 
-//=================================================================================================
-
-void BRepGraph::initBuiltInLayers()
-{
-  if (myParamLayer.IsNull())
-    myParamLayer = new BRepGraph_ParamLayer();
-  if (myRegularityLayer.IsNull())
-    myRegularityLayer = new BRepGraph_RegularityLayer();
-
-  RegisterLayer(myParamLayer);
-  RegisterLayer(myRegularityLayer);
-}
-
-//=================================================================================================
-
 BRepGraph::BRepGraph()
     : myData(std::make_unique<BRepGraph_Data>())
 {
   initViews();
-  initBuiltInLayers();
 }
 
 //=================================================================================================
@@ -69,7 +50,6 @@ BRepGraph::BRepGraph(const occ::handle<NCollection_BaseAllocator>& theAlloc)
     : myData(std::make_unique<BRepGraph_Data>(theAlloc))
 {
   initViews();
-  initBuiltInLayers();
 }
 
 //=================================================================================================
@@ -132,43 +112,10 @@ const BRepGraph::BuilderView& BRepGraph::Builder() const
   return myData->myBuilderView;
 }
 
-//=================================================================================================
-
-BRepGraph_ParamLayer& BRepGraph::ParamLayer()
-{
-  return *myParamLayer;
-}
-
-//=================================================================================================
-
-const BRepGraph_ParamLayer& BRepGraph::ParamLayer() const
-{
-  return *myParamLayer;
-}
-
-//=================================================================================================
-
-BRepGraph_RegularityLayer& BRepGraph::RegularityLayer()
-{
-  return *myRegularityLayer;
-}
-
-//=================================================================================================
-
-const BRepGraph_RegularityLayer& BRepGraph::RegularityLayer() const
-{
-  return *myRegularityLayer;
-}
-
-//=================================================================================================
-
 BRepGraph::BRepGraph(BRepGraph&& theOther) noexcept
     : myData(std::move(theOther.myData)),
-      myLayers(std::move(theOther.myLayers)),
-      myParamLayer(std::move(theOther.myParamLayer)),
-      myRegularityLayer(std::move(theOther.myRegularityLayer)),
-      myTransientCache(std::move(theOther.myTransientCache)),
-      myHasModificationSubscribers(theOther.myHasModificationSubscribers)
+      myLayerRegistry(std::move(theOther.myLayerRegistry)),
+      myTransientCache(std::move(theOther.myTransientCache))
 {
   // View objects store a back-pointer to the owning BRepGraph; after move,
   // they must point to the new owner (`this`), not the moved-from object.
@@ -181,12 +128,9 @@ BRepGraph& BRepGraph::operator=(BRepGraph&& theOther) noexcept
 {
   if (this != &theOther)
   {
-    myData                       = std::move(theOther.myData);
-    myLayers                     = std::move(theOther.myLayers);
-    myParamLayer                 = std::move(theOther.myParamLayer);
-    myRegularityLayer            = std::move(theOther.myRegularityLayer);
-    myTransientCache             = std::move(theOther.myTransientCache);
-    myHasModificationSubscribers = theOther.myHasModificationSubscribers;
+    myData           = std::move(theOther.myData);
+    myLayerRegistry  = std::move(theOther.myLayerRegistry);
+    myTransientCache = std::move(theOther.myTransientCache);
     // View objects store a back-pointer to the owning BRepGraph; after move,
     // they must point to the new owner (`this`), not the moved-from object.
     initViews();
@@ -573,8 +517,8 @@ void BRepGraph::markModified(const BRepGraph_NodeId theNodeId,
   }
 
   // Dispatch modification event for the directly mutated node.
-  if (myHasModificationSubscribers)
-    dispatchNodeModified(theNodeId);
+  if (myLayerRegistry.HasModificationSubscribers())
+    myLayerRegistry.DispatchNodeModified(theNodeId);
 
   // Propagate SubtreeGen upward to parents (mutex-free).
   propagateSubtreeGen(theNodeId);
@@ -816,6 +760,8 @@ BRepGraph_History& BRepGraph::History()
   return myData->myHistoryLog;
 }
 
+//=================================================================================================
+
 const BRepGraph_History& BRepGraph::History() const
 {
   return myData->myHistoryLog;
@@ -823,106 +769,35 @@ const BRepGraph_History& BRepGraph::History() const
 
 //=================================================================================================
 
-void BRepGraph::RegisterLayer(const occ::handle<BRepGraph_Layer>& theLayer)
+BRepGraph_LayerRegistry& BRepGraph::LayerRegistry()
 {
-  if (theLayer.IsNull())
-    return;
-
-  const occ::handle<BRepGraph_ParamLayer> aParamLayer = occ::down_cast<BRepGraph_ParamLayer>(theLayer);
-  if (!aParamLayer.IsNull())
-    myParamLayer = aParamLayer;
-
-  const occ::handle<BRepGraph_RegularityLayer> aRegularityLayer =
-    occ::down_cast<BRepGraph_RegularityLayer>(theLayer);
-  if (!aRegularityLayer.IsNull())
-    myRegularityLayer = aRegularityLayer;
-
-  if (myLayers.IsBound(theLayer->Name()))
-    myLayers.UnBind(theLayer->Name());
-  myLayers.Bind(theLayer->Name(), theLayer);
-  updateModificationSubscriberFlag();
+  return myLayerRegistry;
 }
 
 //=================================================================================================
 
-occ::handle<BRepGraph_Layer> BRepGraph::FindLayer(const TCollection_AsciiString& theName) const
+const BRepGraph_LayerRegistry& BRepGraph::LayerRegistry() const
 {
-  const occ::handle<BRepGraph_Layer>* aPtr = myLayers.Seek(theName);
-  return aPtr != nullptr ? *aPtr : occ::handle<BRepGraph_Layer>();
+  return myLayerRegistry;
 }
 
 //=================================================================================================
 
-void BRepGraph::UnregisterLayer(const TCollection_AsciiString& theName)
+int BRepGraph::RegisterLayer(const occ::handle<BRepGraph_Layer>& theLayer)
 {
-  if ((!myParamLayer.IsNull() && theName == myParamLayer->Name())
-      || (!myRegularityLayer.IsNull() && theName == myRegularityLayer->Name()))
-  {
-    return;
-  }
-
-  myLayers.UnBind(theName);
-  updateModificationSubscriberFlag();
+  return myLayerRegistry.RegisterLayer(theLayer);
 }
 
 //=================================================================================================
 
-void BRepGraph::dispatchLayerOnNodeRemoved(const BRepGraph_NodeId theNode,
-                                           const BRepGraph_NodeId theReplacement) noexcept
+occ::handle<BRepGraph_Layer> BRepGraph::FindLayer(const Standard_GUID& theGUID) const
 {
-  for (NCollection_DataMap<TCollection_AsciiString, occ::handle<BRepGraph_Layer>>::Iterator anIter(
-         myLayers);
-       anIter.More();
-       anIter.Next())
-  {
-    anIter.Value()->OnNodeRemoved(theNode, theReplacement);
-  }
+  return myLayerRegistry.FindLayer(theGUID);
 }
 
 //=================================================================================================
 
-void BRepGraph::updateModificationSubscriberFlag()
+void BRepGraph::UnregisterLayer(const Standard_GUID& theGUID)
 {
-  myHasModificationSubscribers = false;
-  for (NCollection_DataMap<TCollection_AsciiString, occ::handle<BRepGraph_Layer>>::Iterator anIter(
-         myLayers);
-       anIter.More();
-       anIter.Next())
-  {
-    if (anIter.Value()->SubscribedKinds() != 0)
-    {
-      myHasModificationSubscribers = true;
-      return;
-    }
-  }
-}
-
-//=================================================================================================
-
-void BRepGraph::dispatchNodeModified(const BRepGraph_NodeId theNode) noexcept
-{
-  const int aKindBit = BRepGraph_Layer::KindBit(theNode.NodeKind);
-  for (NCollection_DataMap<TCollection_AsciiString, occ::handle<BRepGraph_Layer>>::Iterator anIter(
-         myLayers);
-       anIter.More();
-       anIter.Next())
-  {
-    if ((anIter.Value()->SubscribedKinds() & aKindBit) != 0)
-      anIter.Value()->OnNodeModified(theNode);
-  }
-}
-
-//=================================================================================================
-
-void BRepGraph::dispatchNodesModified(const NCollection_Vector<BRepGraph_NodeId>& theModifiedNodes,
-                                      const int theModifiedKindsMask) noexcept
-{
-  for (NCollection_DataMap<TCollection_AsciiString, occ::handle<BRepGraph_Layer>>::Iterator anIter(
-         myLayers);
-       anIter.More();
-       anIter.Next())
-  {
-    if ((anIter.Value()->SubscribedKinds() & theModifiedKindsMask) != 0)
-      anIter.Value()->OnNodesModified(theModifiedNodes);
-  }
+  myLayerRegistry.UnregisterLayer(theGUID);
 }

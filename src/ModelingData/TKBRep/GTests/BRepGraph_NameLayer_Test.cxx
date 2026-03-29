@@ -25,6 +25,7 @@
 #include <TopoDS_Compound.hxx>
 
 #include <gtest/gtest.h>
+#include <Standard_GUID.hxx>
 
 // ============================================================
 // Registration & Lookup
@@ -36,7 +37,7 @@ TEST(BRepGraph_NameLayerTest, RegisterAndFind)
   occ::handle<BRepGraph_NameLayer> aLayer = new BRepGraph_NameLayer();
   aGraph.RegisterLayer(aLayer);
 
-  occ::handle<BRepGraph_Layer> aFound = aGraph.FindLayer("Name");
+  occ::handle<BRepGraph_Layer> aFound = aGraph.FindLayer(BRepGraph_NameLayer::GetID());
   ASSERT_FALSE(aFound.IsNull());
   EXPECT_EQ(aFound->Name(), "Name");
 }
@@ -47,15 +48,16 @@ TEST(BRepGraph_NameLayerTest, UnregisterLayer)
   occ::handle<BRepGraph_NameLayer> aLayer = new BRepGraph_NameLayer();
   aGraph.RegisterLayer(aLayer);
 
-  aGraph.UnregisterLayer("Name");
-  occ::handle<BRepGraph_Layer> aFound = aGraph.FindLayer("Name");
+  aGraph.UnregisterLayer(BRepGraph_NameLayer::GetID());
+  occ::handle<BRepGraph_Layer> aFound = aGraph.FindLayer(BRepGraph_NameLayer::GetID());
   EXPECT_TRUE(aFound.IsNull());
 }
 
 TEST(BRepGraph_NameLayerTest, FindNonExistent_ReturnsNull)
 {
   BRepGraph                    aGraph;
-  occ::handle<BRepGraph_Layer> aFound = aGraph.FindLayer("DoesNotExist");
+  const Standard_GUID          aMissing("2f9b6a5c-1f2d-4a88-9c1c-7a0c16a1ff01");
+  occ::handle<BRepGraph_Layer> aFound = aGraph.FindLayer(aMissing);
   EXPECT_TRUE(aFound.IsNull());
 }
 
@@ -69,7 +71,7 @@ TEST(BRepGraph_NameLayerTest, RegisterReplacesExisting)
   aGraph.RegisterLayer(aLayer1);
   aGraph.RegisterLayer(aLayer2);
 
-  occ::handle<BRepGraph_Layer> aFound = aGraph.FindLayer("Name");
+  occ::handle<BRepGraph_Layer> aFound = aGraph.FindLayer(BRepGraph_NameLayer::GetID());
   ASSERT_FALSE(aFound.IsNull());
   // Layer2 replaced Layer1 - Layer2 has no names.
   occ::handle<BRepGraph_NameLayer> aCast = occ::down_cast<BRepGraph_NameLayer>(aFound);
@@ -83,13 +85,14 @@ TEST(BRepGraph_NameLayerTest, RegisterNullLayer_NoOp)
   occ::handle<BRepGraph_Layer> aNullLayer;
   aGraph.RegisterLayer(aNullLayer);
   // Should not crash, no layer registered.
-  EXPECT_TRUE(aGraph.FindLayer("Name").IsNull());
+  EXPECT_TRUE(aGraph.FindLayer(BRepGraph_NameLayer::GetID()).IsNull());
 }
 
 TEST(BRepGraph_NameLayerTest, UnregisterNonExistent_NoOp)
 {
-  BRepGraph aGraph;
-  aGraph.UnregisterLayer("DoesNotExist");
+  BRepGraph           aGraph;
+  const Standard_GUID aMissing("2f9b6a5c-1f2d-4a88-9c1c-7a0c16a1ff02");
+  aGraph.UnregisterLayer(aMissing);
   // Should not crash.
 }
 
@@ -286,6 +289,12 @@ TEST(BRepGraph_NameLayerTest, OnNodeRemoved_MultipleSequential)
 class BRepGraph_TestCounterLayer : public BRepGraph_Layer
 {
 public:
+  const Standard_GUID& ID() const override
+  {
+    static const Standard_GUID THE_ID("2f9b6a5c-1f2d-4a88-9c1c-7a0c16a10005");
+    return THE_ID;
+  }
+
   const TCollection_AsciiString& Name() const override { return myName; }
 
   void OnNodeRemoved(const BRepGraph_NodeId, const BRepGraph_NodeId) noexcept override { ++myRemoveCount; }
@@ -493,7 +502,7 @@ TEST(BRepGraph_NameLayerTest, LayerSurvivesGraphMove)
   BRepGraph aGraph2 = std::move(aGraph);
 
   // Layer should be on the new graph.
-  occ::handle<BRepGraph_Layer> aFound = aGraph2.FindLayer("Name");
+  occ::handle<BRepGraph_Layer> aFound = aGraph2.FindLayer(BRepGraph_NameLayer::GetID());
   ASSERT_FALSE(aFound.IsNull());
   occ::handle<BRepGraph_NameLayer> aCast = occ::down_cast<BRepGraph_NameLayer>(aFound);
   ASSERT_FALSE(aCast.IsNull());

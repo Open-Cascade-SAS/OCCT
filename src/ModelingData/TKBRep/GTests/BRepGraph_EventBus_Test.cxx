@@ -19,6 +19,7 @@
 #include <BRepGraph_TopoView.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <Precision.hxx>
+#include <Standard_GUID.hxx>
 
 #include <gtest/gtest.h>
 
@@ -30,6 +31,12 @@ public:
       : myName(theName),
         mySubscribedKinds(theSubscribedKinds)
   {
+  }
+
+  const Standard_GUID& ID() const override
+  {
+    static const Standard_GUID THE_ID("2f9b6a5c-1f2d-4a88-9c1c-7a0c16a10004");
+    return THE_ID;
   }
 
   const TCollection_AsciiString& Name() const override { return myName; }
@@ -260,7 +267,7 @@ TEST_F(BRepGraph_EventBusTest, UnregisterLayer_FlagUpdate)
   EXPECT_GT(aLayer->myImmediateEvents.Length(), 0);
 
   // Unregister and clear.
-  myGraph.UnregisterLayer("Tracker");
+  myGraph.UnregisterLayer(aLayer->ID());
   aLayer->Clear();
 
   // Mutate again - should NOT dispatch (layer unregistered).

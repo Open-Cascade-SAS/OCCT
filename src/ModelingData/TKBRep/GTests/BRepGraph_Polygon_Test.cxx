@@ -37,6 +37,12 @@
 
 #include <gtest/gtest.h>
 
+static void registerStandardLayers(BRepGraph& theGraph)
+{
+  theGraph.RegisterLayer(new BRepGraph_ParamLayer());
+  theGraph.RegisterLayer(new BRepGraph_RegularityLayer());
+}
+
 // ============================================================
 // Multi-Triangulation roundtrip
 // ============================================================
@@ -328,8 +334,11 @@ TEST(BRepGraph_PolygonTest, VertexPointRepresentations_StructurallyValid)
   ASSERT_TRUE(hasPointOnPCurve);
 
   BRepGraph aGraph;
+  registerStandardLayers(aGraph);
   aGraph.Build(aShape);
   ASSERT_TRUE(aGraph.IsDone());
+  const occ::handle<BRepGraph_ParamLayer> aParamLayer = aGraph.FindLayer<BRepGraph_ParamLayer>();
+  ASSERT_FALSE(aParamLayer.IsNull());
 
   // Count all extracted vertex point representations.
   int aNbPointsOnCurve   = 0;
@@ -337,8 +346,8 @@ TEST(BRepGraph_PolygonTest, VertexPointRepresentations_StructurallyValid)
   int aNbPointsOnPCurve  = 0;
   for (int aVtxIdx = 0; aVtxIdx < aGraph.Topo().NbVertices(); ++aVtxIdx)
   {
-    const BRepGraph_VertexId                    aVertexId(aVtxIdx);
-    const BRepGraph_ParamLayer::VertexParams* aParams = aGraph.ParamLayer().FindVertexParams(aVertexId);
+    const BRepGraph_VertexId                   aVertexId(aVtxIdx);
+    const BRepGraph_ParamLayer::VertexParams* aParams = aParamLayer->FindVertexParams(aVertexId);
     if (aParams == nullptr)
       continue;
     aNbPointsOnCurve += aParams->PointsOnCurve.Length();
@@ -384,14 +393,18 @@ TEST(BRepGraph_PolygonTest, EdgeRegularity_MatchesOriginal)
   }
 
   BRepGraph aGraph;
+  registerStandardLayers(aGraph);
   aGraph.Build(aCyl);
   ASSERT_TRUE(aGraph.IsDone());
+  const occ::handle<BRepGraph_RegularityLayer> aRegularityLayer =
+    aGraph.FindLayer<BRepGraph_RegularityLayer>();
+  ASSERT_FALSE(aRegularityLayer.IsNull());
 
   // Count captured regularity entries.
   int aNbGraphReg = 0;
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
   {
-    aNbGraphReg += aGraph.RegularityLayer().NbRegularities(BRepGraph_EdgeId(anEdgeIdx));
+    aNbGraphReg += aRegularityLayer->NbRegularities(BRepGraph_EdgeId(anEdgeIdx));
   }
   EXPECT_EQ(aNbGraphReg, aNbOrigReg)
     << "Graph regularity count should match BRep_CurveOn2Surfaces count";

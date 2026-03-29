@@ -35,6 +35,7 @@
 #include <gp_Trsf.hxx>
 
 #include <gtest/gtest.h>
+#include <Standard_GUID.hxx>
 
 namespace
 {
@@ -186,7 +187,7 @@ TEST(BRepGraph_LayerIntegrationTest, Sewing_LayerStillRegisteredAfter)
   (void)BRepGraphAlgo_Sewing::Perform(aGraph);
 
   // Layer should still be registered after sewing.
-  occ::handle<BRepGraph_Layer> aFound = aGraph.FindLayer("Name");
+  occ::handle<BRepGraph_Layer> aFound = aGraph.FindLayer(BRepGraph_NameLayer::GetID());
   ASSERT_FALSE(aFound.IsNull());
   EXPECT_EQ(aFound.get(), aLayer.get());
 }
@@ -262,7 +263,7 @@ TEST(BRepGraph_LayerIntegrationTest, Deduplicate_EdgeNames)
   }
 
   // Layer is still registered.
-  ASSERT_FALSE(aGraph.FindLayer("Name").IsNull());
+  ASSERT_FALSE(aGraph.FindLayer(BRepGraph_NameLayer::GetID()).IsNull());
 }
 
 // ============================================================
@@ -289,7 +290,7 @@ TEST(BRepGraph_LayerIntegrationTest, Compact_LayerSurvivesSwap)
   (void)BRepGraphAlgo_Compact::Perform(aGraph);
 
   // Layer should still be registered after compact.
-  occ::handle<BRepGraph_Layer> aFound = aGraph.FindLayer("Name");
+  occ::handle<BRepGraph_Layer> aFound = aGraph.FindLayer(BRepGraph_NameLayer::GetID());
   ASSERT_FALSE(aFound.IsNull());
 
   occ::handle<BRepGraph_NameLayer> aCast = occ::down_cast<BRepGraph_NameLayer>(aFound);
@@ -449,19 +450,19 @@ TEST(BRepGraph_LayerIntegrationTest, FullPipeline_NamesTrackThroughAllStages)
 
   // Stage 1: Sew.
   (void)BRepGraphAlgo_Sewing::Perform(aGraph);
-  EXPECT_FALSE(aGraph.FindLayer("Name").IsNull());
+  EXPECT_FALSE(aGraph.FindLayer(BRepGraph_NameLayer::GetID()).IsNull());
   const int aNamesAfterSew = aLayer->NbNames();
   EXPECT_GT(aNamesAfterSew, 0);
 
   // Stage 2: Deduplicate.
   (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
-  EXPECT_FALSE(aGraph.FindLayer("Name").IsNull());
+  EXPECT_FALSE(aGraph.FindLayer(BRepGraph_NameLayer::GetID()).IsNull());
   const int aNamesAfterDedup = aLayer->NbNames();
   EXPECT_GT(aNamesAfterDedup, 0);
 
   // Stage 3: Compact.
   (void)BRepGraphAlgo_Compact::Perform(aGraph);
-  EXPECT_FALSE(aGraph.FindLayer("Name").IsNull());
+  EXPECT_FALSE(aGraph.FindLayer(BRepGraph_NameLayer::GetID()).IsNull());
   const int aNamesAfterCompact = aLayer->NbNames();
   EXPECT_GT(aNamesAfterCompact, 0);
 
@@ -515,7 +516,7 @@ TEST(BRepGraph_LayerIntegrationTest, Sewing_Cylinder_NamesPreserved)
   (void)BRepGraphAlgo_Sewing::Perform(aGraph);
 
   // Layer should survive sewing on periodic surfaces.
-  EXPECT_FALSE(aGraph.FindLayer("Name").IsNull());
+  EXPECT_FALSE(aGraph.FindLayer(BRepGraph_NameLayer::GetID()).IsNull());
   EXPECT_GT(aLayer->NbNames(), 0);
 }
 
@@ -527,6 +528,12 @@ TEST(BRepGraph_LayerIntegrationTest, Sewing_Cylinder_NamesPreserved)
 class BRepGraph_IntCounterLayer : public BRepGraph_Layer
 {
 public:
+  const Standard_GUID& ID() const override
+  {
+    static const Standard_GUID THE_ID("2f9b6a5c-1f2d-4a88-9c1c-7a0c16a10006");
+    return THE_ID;
+  }
+
   const TCollection_AsciiString& Name() const override
   {
     static const TCollection_AsciiString THE_NAME("IntCounter");
@@ -598,8 +605,8 @@ TEST(BRepGraph_LayerIntegrationTest, TwoLayers_BothSurviveFullPipeline)
   (void)BRepGraphAlgo_Compact::Perform(aGraph);
 
   // Both layers should survive.
-  EXPECT_FALSE(aGraph.FindLayer("Name").IsNull());
-  EXPECT_FALSE(aGraph.FindLayer("IntCounter").IsNull());
+  EXPECT_FALSE(aGraph.FindLayer(BRepGraph_NameLayer::GetID()).IsNull());
+  EXPECT_FALSE(aGraph.FindLayer(aIntLayer->ID()).IsNull());
   EXPECT_GT(aNameLayer->NbNames(), 0);
   EXPECT_GT(aIntLayer->NbEntries(), 0);
 

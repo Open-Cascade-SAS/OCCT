@@ -17,6 +17,7 @@
 #include <BRepGraph_NodeId.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_Vector.hxx>
+#include <Standard_GUID.hxx>
 #include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
 
@@ -43,6 +44,9 @@
 class BRepGraph_Layer : public Standard_Transient
 {
 public:
+  //! Layer type identity (unique within a graph).
+  [[nodiscard]] virtual const Standard_GUID& ID() const = 0;
+
   //! Layer identity (unique within a graph).
   [[nodiscard]] virtual const TCollection_AsciiString& Name() const = 0;
 

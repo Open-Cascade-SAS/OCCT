@@ -77,12 +77,11 @@ All queries and mutations go through lightweight view objects obtained from a `B
 | Accessor | Purpose |
 |----------|---------|
 | `History()` | Mutation history subsystem (lineage records) |
-| `ParamLayer()` | Built-in parametric binding layer |
-| `RegularityLayer()` | Built-in edge regularity layer |
 | `TransientCache()` | Transient algorithm cache (BndBox, UVBounds) — NOT a Layer |
-| `RegisterLayer()` | Register a custom `BRepGraph_Layer` |
-| `FindLayer()` | Lookup a registered layer by name |
-| `UnregisterLayer()` | Remove a registered layer by name |
+| `LayerRegistry()` | Access the GUID-keyed runtime registry of registered layers |
+| `RegisterLayer()` | Register a `BRepGraph_Layer` plugin explicitly |
+| `FindLayer(guid)` / `FindLayer<T>()` | Lookup a registered layer by GUID or layer type |
+| `UnregisterLayer(guid)` | Remove a registered layer by GUID |
 
 ## Main Data Concepts
 
@@ -270,13 +269,27 @@ Can also start from a Product to descend through assembly occurrences into topol
 
 ### Layers (`BRepGraph_Layer`)
 
-Graph-wide named metadata collections with full lifecycle management. Registered via `RegisterLayer()`.
+Graph-wide metadata plugins with full lifecycle management. Graphs start with zero layers by default;
+layers are added explicitly via `RegisterLayer()` or `LayerRegistry().RegisterLayer()`.
 
 - **Purpose**: persistent domain metadata (colors, materials, names, layer groups)
+- **Identity**: `Standard_GUID`, not display name
+- **Name**: display-only metadata returned by `BRepGraph_Layer::Name()`
 - **Storage**: internal maps keyed by NodeId, owned by the layer
 - **Lifecycle**: `OnNodeRemoved(old, replacement)` migrates data; `OnCompact(remapMap)` remaps; `OnNodeModified`/`OnNodesModified` for mutation tracking
 - **Survives mutations**: yes
-- **Example**: `BRepGraph_NameLayer` (per-node string names)
+- **Examples**: `BRepGraph_NameLayer`, `BRepGraph_ParamLayer`, `BRepGraph_RegularityLayer`
+
+Typical workflow:
+
+```cpp
+BRepGraph aGraph;
+aGraph.RegisterLayer(new BRepGraph_ParamLayer());
+aGraph.RegisterLayer(new BRepGraph_RegularityLayer());
+
+const occ::handle<BRepGraph_ParamLayer> aParamLayer =
+  aGraph.FindLayer<BRepGraph_ParamLayer>();
+```
 
 ### TransientCache (`BRepGraph_TransientCache`)
 

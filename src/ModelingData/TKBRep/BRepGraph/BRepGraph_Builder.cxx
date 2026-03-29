@@ -15,6 +15,8 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_Data.hxx>
 #include <BRepGraph_Layer.hxx>
+#include <BRepGraph_ParamLayer.hxx>
+#include <BRepGraph_RegularityLayer.hxx>
 #include <BRepGraph_TransientCache.hxx>
 #include <BRepGraphInc_Populate.hxx>
 #include <BRepGraphInc_Storage.hxx>
@@ -122,26 +124,24 @@ void BRepGraph_Builder::Perform(BRepGraph&                            theGraph,
   theGraph.myData->myIsDone    = false;
 
   // Notify registered layers that graph data is being cleared.
-  for (NCollection_DataMap<TCollection_AsciiString, occ::handle<BRepGraph_Layer>>::Iterator anIter(
-         theGraph.myLayers);
-       anIter.More();
-       anIter.Next())
-  {
-    anIter.Value()->Clear();
-  }
+  theGraph.myLayerRegistry.ClearAll();
 
   if (theShape.IsNull())
     return;
 
   // Temporary allocator for populate scratch data, discarded after build.
   occ::handle<NCollection_IncAllocator> aTmpAlloc = new NCollection_IncAllocator;
+  const occ::handle<BRepGraph_ParamLayer> aParamLayer =
+    theGraph.FindLayer<BRepGraph_ParamLayer>();
+  const occ::handle<BRepGraph_RegularityLayer> aRegularityLayer =
+    theGraph.FindLayer<BRepGraph_RegularityLayer>();
 
   BRepGraphInc_Populate::Perform(theGraph.myData->myIncStorage,
                                  theShape,
                                  theParallel,
                                  theOptions,
-                                 &theGraph.ParamLayer(),
-                                 &theGraph.RegularityLayer(),
+                                 aParamLayer.get(),
+                                 aRegularityLayer.get(),
                                  aTmpAlloc);
   if (!theGraph.myData->myIncStorage.GetIsDone())
   {
@@ -257,12 +257,16 @@ void BRepGraph_Builder::Append(BRepGraph&          theGraph,
   const int             anOldChildRef   = aStorage.NbChildRefs();
 
   occ::handle<NCollection_IncAllocator> aTmpAlloc = new NCollection_IncAllocator;
+  const occ::handle<BRepGraph_ParamLayer> aParamLayer =
+    theGraph.FindLayer<BRepGraph_ParamLayer>();
+  const occ::handle<BRepGraph_RegularityLayer> aRegularityLayer =
+    theGraph.FindLayer<BRepGraph_RegularityLayer>();
   BRepGraphInc_Populate::Append(aStorage,
                                 theShape,
                                 theParallel,
                                 BRepGraphInc_Populate::Options(),
-                                &theGraph.ParamLayer(),
-                                &theGraph.RegularityLayer(),
+                                aParamLayer.get(),
+                                aRegularityLayer.get(),
                                 aTmpAlloc);
 
   if (!aStorage.GetIsDone())

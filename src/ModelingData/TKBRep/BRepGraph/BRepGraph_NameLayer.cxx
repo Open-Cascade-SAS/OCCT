@@ -16,6 +16,21 @@
 IMPLEMENT_STANDARD_RTTIEXT(BRepGraph_NameLayer, BRepGraph_Layer)
 
 static const TCollection_AsciiString THE_LAYER_NAME("Name");
+static const Standard_GUID           THE_LAYER_ID("2f9b6a5c-1f2d-4a88-9c1c-7a0c16a10003");
+
+//=================================================================================================
+
+const Standard_GUID& BRepGraph_NameLayer::GetID()
+{
+  return THE_LAYER_ID;
+}
+
+//=================================================================================================
+
+const Standard_GUID& BRepGraph_NameLayer::ID() const
+{
+  return GetID();
+}
 
 //=================================================================================================
 

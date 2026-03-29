@@ -25,6 +25,12 @@
 class BRepGraph_NameLayer : public BRepGraph_Layer
 {
 public:
+  //! Return fixed layer type GUID.
+  [[nodiscard]] Standard_EXPORT static const Standard_GUID& GetID();
+
+  //! Return this layer type GUID.
+  [[nodiscard]] Standard_EXPORT const Standard_GUID& ID() const override;
+
   //! Set a display name for a node.
   Standard_EXPORT void SetNodeName(const BRepGraph_NodeId            theNode,
                                    const TCollection_ExtendedString& theName);

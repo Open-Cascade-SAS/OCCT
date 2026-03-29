@@ -24,6 +24,12 @@
 class BRepGraph_ParamLayer : public BRepGraph_Layer
 {
 public:
+  //! Return fixed layer type GUID.
+  [[nodiscard]] Standard_EXPORT static const Standard_GUID& GetID();
+
+  //! Return this layer type GUID.
+  [[nodiscard]] Standard_EXPORT const Standard_GUID& ID() const override;
+
   struct PointOnCurveEntry
   {
     double           Parameter = 0.0;

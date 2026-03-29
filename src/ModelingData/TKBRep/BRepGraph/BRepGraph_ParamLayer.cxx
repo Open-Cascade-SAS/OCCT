@@ -106,6 +106,21 @@ static BRepGraph_CoEdgeId remapCoEdge(
 
 //=================================================================================================
 
+const Standard_GUID& BRepGraph_ParamLayer::GetID()
+{
+  static const Standard_GUID THE_LAYER_ID("2f9b6a5c-1f2d-4a88-9c1c-7a0c16a10001");
+  return THE_LAYER_ID;
+}
+
+//=================================================================================================
+
+const Standard_GUID& BRepGraph_ParamLayer::ID() const
+{
+  return GetID();
+}
+
+//=================================================================================================
+
 const TCollection_AsciiString& BRepGraph_ParamLayer::Name() const
 {
   return THE_LAYER_NAME;

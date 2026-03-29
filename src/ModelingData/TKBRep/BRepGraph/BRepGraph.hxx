@@ -23,6 +23,7 @@
 #include <BRepGraphInc_Reference.hxx>
 #include <BRepGraphInc_Representation.hxx>
 #include <BRepGraph_HistoryRecord.hxx>
+#include <BRepGraph_LayerRegistry.hxx>
 #include <BRepGraph_SubGraph.hxx>
 #include <BRepGraph_UserAttribute.hxx>
 #include <BRepGraphInc_Populate.hxx>
@@ -44,8 +45,6 @@ class BRepGraph_MutGuard;
 
 struct BRepGraph_Data;
 class BRepGraph_Layer;
-class BRepGraph_ParamLayer;
-class BRepGraph_RegularityLayer;
 class NCollection_BaseAllocator;
 class TCollection_AsciiString;
 
@@ -144,28 +143,31 @@ public:
   [[nodiscard]] Standard_EXPORT BRepGraph_History&       History();
   [[nodiscard]] Standard_EXPORT const BRepGraph_History& History() const;
 
-  //! Access built-in parametric binding layer.
-  [[nodiscard]] Standard_EXPORT BRepGraph_ParamLayer& ParamLayer();
-  [[nodiscard]] Standard_EXPORT const BRepGraph_ParamLayer& ParamLayer() const;
-
-  //! Access built-in edge regularity layer.
-  [[nodiscard]] Standard_EXPORT BRepGraph_RegularityLayer& RegularityLayer();
-  [[nodiscard]] Standard_EXPORT const BRepGraph_RegularityLayer& RegularityLayer() const;
-
   //! Access transient cache for algorithm-computed attributes (BndBox, UVBounds).
   //! SubtreeGen-validated, cleared on Build/Compact. NOT a Layer.
   [[nodiscard]] BRepGraph_TransientCache& TransientCache() { return myTransientCache; }
   [[nodiscard]] const BRepGraph_TransientCache& TransientCache() const { return myTransientCache; }
 
-  //! Register a named layer. Replaces existing layer with same name.
-  Standard_EXPORT void RegisterLayer(const occ::handle<BRepGraph_Layer>& theLayer);
+  //! Access registered graph layers.
+  [[nodiscard]] Standard_EXPORT BRepGraph_LayerRegistry& LayerRegistry();
+  [[nodiscard]] Standard_EXPORT const BRepGraph_LayerRegistry& LayerRegistry() const;
 
-  //! Find a layer by name. Returns null handle if not found.
+  //! Register a GUID-identified layer. Replaces an existing layer with same GUID.
+  Standard_EXPORT int RegisterLayer(const occ::handle<BRepGraph_Layer>& theLayer);
+
+  //! Find a layer by GUID. Returns null handle if not found.
   [[nodiscard]] Standard_EXPORT occ::handle<BRepGraph_Layer> FindLayer(
-    const TCollection_AsciiString& theName) const;
+    const Standard_GUID& theGUID) const;
 
-  //! Remove a layer by name.
-  Standard_EXPORT void UnregisterLayer(const TCollection_AsciiString& theName);
+  //! Typed convenience lookup by layer GUID.
+  template <typename T>
+  [[nodiscard]] occ::handle<T> FindLayer() const
+  {
+    return myLayerRegistry.FindLayer<T>();
+  }
+
+  //! Remove a layer by GUID.
+  Standard_EXPORT void UnregisterLayer(const Standard_GUID& theGUID);
 
 private:
   friend class BRepGraph_Builder;
@@ -190,37 +192,12 @@ private:
 
   std::unique_ptr<BRepGraph_Data> myData;
 
-  //! Named layers (stored on BRepGraph, not BRepGraph_Data, to survive Compact swap).
-  NCollection_DataMap<TCollection_AsciiString, occ::handle<BRepGraph_Layer>> myLayers;
-
-  occ::handle<BRepGraph_ParamLayer>      myParamLayer;
-  occ::handle<BRepGraph_RegularityLayer> myRegularityLayer;
-  BRepGraph_TransientCache               myTransientCache; //!< Transient algorithm caches (BndBox, UVBounds)
-
-  //! True if any registered layer has SubscribedKinds() != 0.
-  //! Enables zero-cost skip of modification dispatch when no layer subscribes.
-  bool myHasModificationSubscribers = false;
-
-  //! Dispatch OnNodeRemoved to all registered layers.
-  void dispatchLayerOnNodeRemoved(const BRepGraph_NodeId theNode,
-                                  const BRepGraph_NodeId theReplacement) noexcept;
-
-  //! Rescan myLayers and update myHasModificationSubscribers flag.
-  Standard_EXPORT void updateModificationSubscriberFlag();
-
-  //! Dispatch OnNodeModified to layers whose SubscribedKinds matches the node's kind.
-  void dispatchNodeModified(const BRepGraph_NodeId theNode) noexcept;
-
-  //! Dispatch OnNodesModified to layers whose SubscribedKinds matches at least
-  //! one kind in theModifiedKindsMask.
-  void dispatchNodesModified(const NCollection_Vector<BRepGraph_NodeId>& theModifiedNodes,
-                             const int theModifiedKindsMask) noexcept;
+  //! Registered layers are stored on BRepGraph, not BRepGraph_Data, to survive Compact swap.
+  BRepGraph_LayerRegistry myLayerRegistry;
+  BRepGraph_TransientCache myTransientCache; //!< Transient algorithm caches (BndBox, UVBounds)
 
   //! Initialize cached view objects to point to this graph.
   void initViews();
-
-  //! Create and register built-in layers.
-  void initBuiltInLayers();
 
   Standard_EXPORT void             invalidateSubgraphImpl(const BRepGraph_NodeId theNode);
   Standard_EXPORT BRepGraph_UID    allocateUID(const BRepGraph_NodeId theNodeId);

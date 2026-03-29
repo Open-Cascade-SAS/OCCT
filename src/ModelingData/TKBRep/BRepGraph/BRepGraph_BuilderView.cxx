@@ -934,7 +934,7 @@ void BRepGraph::BuilderView::RemoveNode(const BRepGraph_NodeId theNode,
   }
 
   // Notify registered layers.
-  myGraph->dispatchLayerOnNodeRemoved(theNode, theReplacement);
+  myGraph->myLayerRegistry.DispatchOnNodeRemoved(theNode, theReplacement);
 }
 
 //=================================================================================================
@@ -1338,8 +1338,8 @@ void BRepGraph::BuilderView::EndDeferredInvalidation() noexcept
   }
 
   // Dispatch batch modification event to subscribing layers.
-  if (myGraph->myHasModificationSubscribers && !aAllModified.IsEmpty())
-    myGraph->dispatchNodesModified(aAllModified, aModifiedKindsMask);
+  if (myGraph->myLayerRegistry.HasModificationSubscribers() && !aAllModified.IsEmpty())
+    myGraph->myLayerRegistry.DispatchNodesModified(aAllModified, aModifiedKindsMask);
 
   // Clear deferred list for next scope.
   aDeferredList.Clear();
@@ -2225,7 +2225,8 @@ bool BRepGraph::BuilderView::ValidateMutationBoundary(
 
   // Validate built-in layer consistency: layers must not have bindings
   // for entity kinds that have zero active entities in the graph.
-  if (myGraph->ParamLayer().HasBindings() && aStorage.NbVertices() == 0)
+  const occ::handle<BRepGraph_ParamLayer> aParamLayer = myGraph->FindLayer<BRepGraph_ParamLayer>();
+  if (!aParamLayer.IsNull() && aParamLayer->HasBindings() && aStorage.NbVertices() == 0)
   {
     isValid = false;
     if (theIssues != nullptr)
@@ -2237,7 +2238,9 @@ bool BRepGraph::BuilderView::ValidateMutationBoundary(
     }
   }
 
-  if (myGraph->RegularityLayer().HasBindings() && aStorage.NbEdges() == 0)
+  const occ::handle<BRepGraph_RegularityLayer> aRegularityLayer =
+    myGraph->FindLayer<BRepGraph_RegularityLayer>();
+  if (!aRegularityLayer.IsNull() && aRegularityLayer->HasBindings() && aStorage.NbEdges() == 0)
   {
     isValid = false;
     if (theIssues != nullptr)

@@ -13,6 +13,8 @@
 
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_Data.hxx>
+#include <BRepGraph_ParamLayer.hxx>
+#include <BRepGraph_RegularityLayer.hxx>
 #include <BRepGraphInc_Reconstruct.hxx>
 
 #include <Standard_ProgramError.hxx>
@@ -44,10 +46,13 @@ TopoDS_Shape BRepGraph::ShapesView::Shape(const BRepGraph_NodeId theNode) const
   }
 
   // Reconstruct from incidence storage.
+  const occ::handle<BRepGraph_ParamLayer> aParamLayer = myGraph->FindLayer<BRepGraph_ParamLayer>();
+  const occ::handle<BRepGraph_RegularityLayer> aRegularityLayer =
+    myGraph->FindLayer<BRepGraph_RegularityLayer>();
   TopoDS_Shape aReconstructed = BRepGraphInc_Reconstruct::Node(myGraph->myData->myIncStorage,
                                                                theNode,
-                                                               &myGraph->ParamLayer(),
-                                                               &myGraph->RegularityLayer());
+                                                               aParamLayer.get(),
+                                                               aRegularityLayer.get());
 
   // Store under exclusive lock with double-check to avoid redundant writes
   // when multiple threads reconstruct the same parent node concurrently.
@@ -89,10 +94,13 @@ const TopoDS_Shape& BRepGraph::ShapesView::OriginalOf(const BRepGraph_NodeId the
 
 TopoDS_Shape BRepGraph::ShapesView::Reconstruct(const BRepGraph_NodeId theRoot) const
 {
+  const occ::handle<BRepGraph_ParamLayer> aParamLayer = myGraph->FindLayer<BRepGraph_ParamLayer>();
+  const occ::handle<BRepGraph_RegularityLayer> aRegularityLayer =
+    myGraph->FindLayer<BRepGraph_RegularityLayer>();
   TopoDS_Shape aShape = BRepGraphInc_Reconstruct::Node(myGraph->myData->myIncStorage,
                                                        theRoot,
-                                                       &myGraph->ParamLayer(),
-                                                       &myGraph->RegularityLayer());
+                                                       aParamLayer.get(),
+                                                       aRegularityLayer.get());
 
   return aShape;
 }
@@ -102,21 +110,27 @@ TopoDS_Shape BRepGraph::ShapesView::Reconstruct(const BRepGraph_NodeId theRoot) 
 TopoDS_Shape BRepGraph::ShapesView::ReconstructFace(const BRepGraph_FaceId theFace) const
 {
   BRepGraphInc_Reconstruct::Cache aCache;
+  const occ::handle<BRepGraph_ParamLayer> aParamLayer = myGraph->FindLayer<BRepGraph_ParamLayer>();
+  const occ::handle<BRepGraph_RegularityLayer> aRegularityLayer =
+    myGraph->FindLayer<BRepGraph_RegularityLayer>();
   return BRepGraphInc_Reconstruct::FaceWithCache(myGraph->myData->myIncStorage,
                                                  theFace.Index,
                                                  aCache,
-                                                 &myGraph->ParamLayer(),
-                                                 &myGraph->RegularityLayer());
+                                                 aParamLayer.get(),
+                                                 aRegularityLayer.get());
 }
 
 //=================================================================================================
 
 TopoDS_Shape BRepGraph::ShapesView::ReconstructFromNode(const BRepGraph_NodeId theNode) const
 {
+  const occ::handle<BRepGraph_ParamLayer> aParamLayer = myGraph->FindLayer<BRepGraph_ParamLayer>();
+  const occ::handle<BRepGraph_RegularityLayer> aRegularityLayer =
+    myGraph->FindLayer<BRepGraph_RegularityLayer>();
   return BRepGraphInc_Reconstruct::Node(myGraph->myData->myIncStorage,
                                         theNode,
-                                        &myGraph->ParamLayer(),
-                                        &myGraph->RegularityLayer());
+                                        aParamLayer.get(),
+                                        aRegularityLayer.get());
 }
 
 //=================================================================================================

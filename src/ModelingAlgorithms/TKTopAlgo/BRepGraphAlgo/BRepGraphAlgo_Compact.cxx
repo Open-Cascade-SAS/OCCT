@@ -18,9 +18,6 @@
 
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_Data.hxx>
-#include <BRepGraph_Layer.hxx>
-#include <BRepGraph_ParamLayer.hxx>
-#include <BRepGraph_RegularityLayer.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Tool.hxx>
@@ -639,18 +636,13 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
   aNewGraph.myData->myIsDone = true;
 
   // Save layers before swap (default move would transfer empty layers from aNewGraph).
-  NCollection_DataMap<TCollection_AsciiString, occ::handle<BRepGraph_Layer>> aSavedLayers;
-  occ::handle<BRepGraph_Layer> aSavedParamLayer      = theGraph.myParamLayer;
-  occ::handle<BRepGraph_Layer> aSavedRegularityLayer = theGraph.myRegularityLayer;
-  aSavedLayers = std::move(theGraph.myLayers);
+  BRepGraph_LayerRegistry aSavedLayerRegistry = std::move(theGraph.myLayerRegistry);
 
   // Swap.
   theGraph = std::move(aNewGraph);
 
   // Restore layers and notify about index remapping.
-  theGraph.myLayers          = std::move(aSavedLayers);
-  theGraph.myParamLayer      = occ::down_cast<BRepGraph_ParamLayer>(aSavedParamLayer);
-  theGraph.myRegularityLayer = occ::down_cast<BRepGraph_RegularityLayer>(aSavedRegularityLayer);
+  theGraph.myLayerRegistry = std::move(aSavedLayerRegistry);
   // Clear and re-reserve TransientCache for the compacted entity counts.
   // The saved cache had pre-allocation for old indices; after compaction
   // indices are remapped and counts may differ.
@@ -671,8 +663,6 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
     aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Occurrence)] = aStr.NbOccurrences();
     theGraph.myTransientCache.Reserve(BRepGraph_TransientCache::THE_DEFAULT_MAX_ATTR_KEY, aCounts);
   }
-  theGraph.updateModificationSubscriberFlag();
-
   // Build unified remap map covering all 8 topology kinds.
   NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId> aRemapMap;
   for (NCollection_DataMap<int, int>::Iterator it(aVertexMap); it.More(); it.Next())
@@ -694,13 +684,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
   for (NCollection_DataMap<int, int>::Iterator it(aCompSolidMap); it.More(); it.Next())
     aRemapMap.Bind(BRepGraph_NodeId::CompSolid(it.Key()), BRepGraph_NodeId::CompSolid(it.Value()));
 
-  for (NCollection_DataMap<TCollection_AsciiString, occ::handle<BRepGraph_Layer>>::Iterator anIter(
-         theGraph.myLayers);
-       anIter.More();
-       anIter.Next())
-  {
-    anIter.Value()->OnCompact(aRemapMap);
-  }
+  theGraph.myLayerRegistry.DispatchOnCompact(aRemapMap);
 
   theGraph.Builder().CommitMutation();
   theGraph.History().SetEnabled(wasHistoryEnabled);

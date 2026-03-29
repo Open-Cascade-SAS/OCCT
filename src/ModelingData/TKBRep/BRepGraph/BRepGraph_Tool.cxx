@@ -60,7 +60,8 @@ double BRepGraph_Tool::Vertex::Parameter(const BRepGraph&         theGraph,
                                          const BRepGraph_EdgeId   theEdge)
 {
   double aParameter = 0.0;
-  if (theGraph.ParamLayer().FindPointOnCurve(theVertex, theEdge, &aParameter))
+  const occ::handle<BRepGraph_ParamLayer> aParamLayer = theGraph.FindLayer<BRepGraph_ParamLayer>();
+  if (!aParamLayer.IsNull() && aParamLayer->FindPointOnCurve(theVertex, theEdge, &aParameter))
     return aParameter;
   throw Standard_NoSuchObject("BRepGraph_Tool::Parameter - no PointOnCurve for this edge");
 }
@@ -72,7 +73,8 @@ gp_Pnt2d BRepGraph_Tool::Vertex::Parameters(const BRepGraph&         theGraph,
                                             const BRepGraph_FaceId   theFace)
 {
   gp_Pnt2d aUV;
-  if (theGraph.ParamLayer().FindPointOnSurface(theVertex, theFace, &aUV))
+  const occ::handle<BRepGraph_ParamLayer> aParamLayer = theGraph.FindLayer<BRepGraph_ParamLayer>();
+  if (!aParamLayer.IsNull() && aParamLayer->FindPointOnSurface(theVertex, theFace, &aUV))
     return aUV;
   throw Standard_NoSuchObject("BRepGraph_Tool::Parameters - no PointOnSurface for this face");
 }
@@ -248,11 +250,12 @@ const occ::handle<Poly_Polygon3D>& BRepGraph_Tool::Edge::Polygon3D(const BRepGra
 //=================================================================================================
 
 double BRepGraph_Tool::Vertex::PCurveParameter(const BRepGraph&         theGraph,
-                                               const BRepGraph_VertexId theVertex,
-                                               const BRepGraph_CoEdgeId theCoEdge)
+                                                const BRepGraph_VertexId theVertex,
+                                                const BRepGraph_CoEdgeId theCoEdge)
 {
   double aParameter = 0.0;
-  if (theGraph.ParamLayer().FindPointOnPCurve(theVertex, theCoEdge, &aParameter))
+  const occ::handle<BRepGraph_ParamLayer> aParamLayer = theGraph.FindLayer<BRepGraph_ParamLayer>();
+  if (!aParamLayer.IsNull() && aParamLayer->FindPointOnPCurve(theVertex, theCoEdge, &aParameter))
     return aParameter;
   throw Standard_NoSuchObject("BRepGraph_Tool::PCurveParameter - no PointOnPCurve for this coedge");
 }
@@ -264,7 +267,10 @@ bool BRepGraph_Tool::Edge::HasContinuity(const BRepGraph&       theGraph,
                                          const BRepGraph_FaceId theFace1,
                                          const BRepGraph_FaceId theFace2)
 {
-  return theGraph.RegularityLayer().FindContinuity(theEdge, theFace1, theFace2, nullptr);
+  const occ::handle<BRepGraph_RegularityLayer> aRegularityLayer =
+    theGraph.FindLayer<BRepGraph_RegularityLayer>();
+  return !aRegularityLayer.IsNull()
+         && aRegularityLayer->FindContinuity(theEdge, theFace1, theFace2, nullptr);
 }
 
 //=================================================================================================
@@ -275,7 +281,10 @@ GeomAbs_Shape BRepGraph_Tool::Edge::Continuity(const BRepGraph&       theGraph,
                                                const BRepGraph_FaceId theFace2)
 {
   GeomAbs_Shape aContinuity = GeomAbs_C0;
-  if (theGraph.RegularityLayer().FindContinuity(theEdge, theFace1, theFace2, &aContinuity))
+  const occ::handle<BRepGraph_RegularityLayer> aRegularityLayer =
+    theGraph.FindLayer<BRepGraph_RegularityLayer>();
+  if (!aRegularityLayer.IsNull()
+      && aRegularityLayer->FindContinuity(theEdge, theFace1, theFace2, &aContinuity))
     return aContinuity;
   return GeomAbs_C0;
 }
@@ -285,7 +294,9 @@ GeomAbs_Shape BRepGraph_Tool::Edge::Continuity(const BRepGraph&       theGraph,
 GeomAbs_Shape BRepGraph_Tool::Edge::MaxContinuity(const BRepGraph&       theGraph,
                                                   const BRepGraph_EdgeId theEdge)
 {
-  return theGraph.RegularityLayer().MaxContinuity(theEdge);
+  const occ::handle<BRepGraph_RegularityLayer> aRegularityLayer =
+    theGraph.FindLayer<BRepGraph_RegularityLayer>();
+  return !aRegularityLayer.IsNull() ? aRegularityLayer->MaxContinuity(theEdge) : GeomAbs_C0;
 }
 
 //=================================================================================================
