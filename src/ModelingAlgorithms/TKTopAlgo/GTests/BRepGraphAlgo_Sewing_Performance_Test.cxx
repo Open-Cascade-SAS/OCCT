@@ -20,6 +20,7 @@
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepGProp.hxx>
 #include <BRepGraph_TopoView.hxx>
+#include <BRepTools.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_Tool.hxx>
@@ -48,16 +49,478 @@
 #include <gp_Vec.hxx>
 
 #include <chrono>
+#include <cstdlib>
+#include <filesystem>
 #include <cmath>
 #include <functional>
 #include <iostream>
+#include <random>
 #include <set>
 #include <thread>
+#include <vector>
 
 #include <gtest/gtest.h>
 
 namespace
 {
+
+constexpr const char* THE_DATASET_ENV_ENABLE   = "OCCT_SEWING_DATASET_TESTS";
+constexpr const char* THE_DATASET_ENV_SAMPLES  = "OCCT_SEWING_DATASET_SAMPLES";
+constexpr const char* THE_DATASET_ENV_SEED     = "OCCT_SEWING_DATASET_SEED";
+constexpr const char* THE_DATASET_ENV_ROOT     = "OCCT_SEWING_DATASET_ROOT";
+constexpr const char* THE_DATASET_ENV_MIN_SECONDS = "OCCT_SEWING_DATASET_MIN_SECONDS";
+constexpr const char* THE_DATASET_ENV_MAX_ITERS   = "OCCT_SEWING_DATASET_MAX_ITERS";
+constexpr const char* THE_DATASET_DEFAULT_ROOT = "data/opencascade-dataset-7.9.0";
+
+struct SewingShapeRun
+{
+  double       TimeSeconds = 0.0;
+  bool         IsDone      = false;
+  int          NbSewnEdges = 0;
+  int          Iterations  = 1;
+  TopoDS_Shape Shape;
+};
+
+struct GraphShapeMetrics
+{
+  bool IsGraphDone            = false;
+  bool IsShapeValid           = false;
+  int  NbActiveFaces          = 0;
+  int  NbActiveEdges          = 0;
+  int  NbActiveVertices       = 0;
+  int  NbFreeEdges            = 0;
+  int  NbMultipleEdges        = 0;
+  int  NbDegeneratedEdges     = 0;
+  int  NbInvalidFaceAdjacents = 0;
+};
+
+TopoDS_Shape reconstructSewnShape(const BRepGraph& theGraph);
+
+int getEnvInt(const char* theVarName, const int theDefault)
+{
+  const char* aRaw = std::getenv(theVarName);
+  if (aRaw == nullptr || *aRaw == '\0')
+  {
+    return theDefault;
+  }
+  try
+  {
+    return std::stoi(aRaw);
+  }
+  catch (const std::exception&)
+  {
+    return theDefault;
+  }
+}
+
+bool isDatasetTestEnabled()
+{
+  return getEnvInt(THE_DATASET_ENV_ENABLE, 0) != 0;
+}
+
+std::filesystem::path datasetRootPath()
+{
+  const char* aRoot = std::getenv(THE_DATASET_ENV_ROOT);
+  if (aRoot != nullptr && *aRoot != '\0')
+  {
+    return std::filesystem::path(aRoot);
+  }
+  return std::filesystem::path(THE_DATASET_DEFAULT_ROOT);
+}
+
+double datasetMinSeconds()
+{
+  return static_cast<double>(std::max(1, getEnvInt(THE_DATASET_ENV_MIN_SECONDS, 1)));
+}
+
+int datasetMaxIterations()
+{
+  return std::max(1, getEnvInt(THE_DATASET_ENV_MAX_ITERS, 10000));
+}
+
+NCollection_Sequence<TCollection_AsciiString> selectDatasetBrepFiles()
+{
+  NCollection_Sequence<TCollection_AsciiString> aResult;
+  const std::filesystem::path                   aRoot = datasetRootPath();
+  if (!std::filesystem::exists(aRoot))
+  {
+    return aResult;
+  }
+
+  std::vector<std::filesystem::path> aCandidates;
+  for (const std::filesystem::directory_entry& anEntry :
+       std::filesystem::recursive_directory_iterator(aRoot))
+  {
+    if (!anEntry.is_regular_file())
+    {
+      continue;
+    }
+    const std::filesystem::path& aPath = anEntry.path();
+    if (aPath.extension() == ".brep" || aPath.extension() == ".BREP")
+    {
+      aCandidates.push_back(aPath);
+    }
+  }
+
+  if (aCandidates.empty())
+  {
+    return aResult;
+  }
+  std::sort(aCandidates.begin(), aCandidates.end());
+
+  const int aSeed        = getEnvInt(THE_DATASET_ENV_SEED, 42);
+  const int aMaxSamples  = std::max(1, getEnvInt(THE_DATASET_ENV_SAMPLES, 8));
+  const int aSampleCount = std::min(static_cast<int>(aCandidates.size()), aMaxSamples);
+
+  std::mt19937 aRng(static_cast<unsigned int>(aSeed));
+  std::shuffle(aCandidates.begin(), aCandidates.end(), aRng);
+  for (int anIdx = 0; anIdx < aSampleCount; ++anIdx)
+  {
+    aResult.Append(TCollection_AsciiString(aCandidates[anIdx].string().c_str()));
+  }
+  return aResult;
+}
+
+bool readBrepShape(const TCollection_AsciiString& thePath, TopoDS_Shape& theShape)
+{
+  BRep_Builder aBuilder;
+  return BRepTools::Read(theShape, thePath.ToCString(), aBuilder) && !theShape.IsNull();
+}
+
+NCollection_Sequence<TopoDS_Shape> extractCopiedFacesFromShape(const TopoDS_Shape& theShape)
+{
+  NCollection_Sequence<TopoDS_Shape> aFaces;
+  for (TopExp_Explorer anExp(theShape, TopAbs_FACE); anExp.More(); anExp.Next())
+  {
+    BRepBuilderAPI_Copy aCopyFace(anExp.Current(), true);
+    if (!aCopyFace.Shape().IsNull())
+    {
+      aFaces.Append(aCopyFace.Shape());
+    }
+  }
+  return aFaces;
+}
+
+SewingShapeRun runGraphSewingWithShape(const NCollection_Sequence<TopoDS_Shape>& theFaces,
+                                       const bool                                 theParallel)
+{
+  SewingShapeRun aRun;
+  BRep_Builder   aBuilder;
+  TopoDS_Compound aInput;
+  aBuilder.MakeCompound(aInput);
+  for (int anIdx = 1; anIdx <= theFaces.Length(); ++anIdx)
+  {
+    aBuilder.Add(aInput, theFaces.Value(anIdx));
+  }
+
+  const auto aStart = std::chrono::steady_clock::now();
+  BRepGraphAlgo_Sewing::Options aOpts;
+  aOpts.Tolerance = 1.0e-04;
+  aOpts.Parallel  = theParallel;
+
+  BRepGraph aGraph;
+  aGraph.Build(aInput, theParallel);
+  if (aGraph.IsDone())
+  {
+    const BRepGraphAlgo_Sewing::Result aResult = BRepGraphAlgo_Sewing::Perform(aGraph, aOpts);
+    aRun.IsDone                                = aResult.IsDone;
+    aRun.NbSewnEdges                           = aResult.NbSewnEdges;
+    if (aResult.IsDone)
+    {
+      aRun.Shape = reconstructSewnShape(aGraph);
+    }
+  }
+  const auto aEnd = std::chrono::steady_clock::now();
+  aRun.TimeSeconds = std::chrono::duration<double>(aEnd - aStart).count();
+  return aRun;
+}
+
+SewingShapeRun runLegacySewingWithShape(const NCollection_Sequence<TopoDS_Shape>& theFaces)
+{
+  SewingShapeRun          aRun;
+  BRepBuilderAPI_Sewing   aSewer(1.0e-04);
+  const auto              aStart = std::chrono::steady_clock::now();
+  for (int anIdx = 1; anIdx <= theFaces.Length(); ++anIdx)
+  {
+    aSewer.Add(theFaces.Value(anIdx));
+  }
+  aSewer.Perform();
+  const auto aEnd  = std::chrono::steady_clock::now();
+  aRun.TimeSeconds = std::chrono::duration<double>(aEnd - aStart).count();
+  aRun.Shape       = aSewer.SewedShape();
+  aRun.IsDone      = !aRun.Shape.IsNull();
+  aRun.NbSewnEdges = aSewer.NbContigousEdges();
+  return aRun;
+}
+
+SewingShapeRun runGraphSewingWithShapeTimed(const NCollection_Sequence<TopoDS_Shape>& theFaces,
+                                            const bool                                 theParallel,
+                                            const double                               theMinSeconds)
+{
+  const int      aMaxIterations = datasetMaxIterations();
+  SewingShapeRun aLastRun;
+  double         aTotalSeconds = 0.0;
+  int            anIterations  = 0;
+  do
+  {
+    aLastRun = runGraphSewingWithShape(theFaces, theParallel);
+    ++anIterations;
+    aTotalSeconds += aLastRun.TimeSeconds;
+    if (!aLastRun.IsDone)
+    {
+      aLastRun.Iterations = anIterations;
+      return aLastRun;
+    }
+  } while (aTotalSeconds < theMinSeconds && anIterations < aMaxIterations);
+
+  aLastRun.TimeSeconds = aTotalSeconds / static_cast<double>(anIterations);
+  aLastRun.Iterations  = anIterations;
+  return aLastRun;
+}
+
+SewingShapeRun runLegacySewingWithShapeTimed(const NCollection_Sequence<TopoDS_Shape>& theFaces,
+                                             const double                               theMinSeconds)
+{
+  const int      aMaxIterations = datasetMaxIterations();
+  SewingShapeRun aLastRun;
+  double         aTotalSeconds = 0.0;
+  int            anIterations  = 0;
+  do
+  {
+    aLastRun = runLegacySewingWithShape(theFaces);
+    ++anIterations;
+    aTotalSeconds += aLastRun.TimeSeconds;
+    if (!aLastRun.IsDone)
+    {
+      aLastRun.Iterations = anIterations;
+      return aLastRun;
+    }
+  } while (aTotalSeconds < theMinSeconds && anIterations < aMaxIterations);
+
+  aLastRun.TimeSeconds = aTotalSeconds / static_cast<double>(anIterations);
+  aLastRun.Iterations  = anIterations;
+  return aLastRun;
+}
+
+GraphShapeMetrics collectGraphMetrics(const TopoDS_Shape& theShape)
+{
+  GraphShapeMetrics aMetrics;
+  if (theShape.IsNull())
+  {
+    return aMetrics;
+  }
+
+  aMetrics.IsShapeValid = BRepCheck_Analyzer(theShape).IsValid();
+
+  BRepGraph aGraph;
+  aGraph.Build(theShape, false);
+  aMetrics.IsGraphDone = aGraph.IsDone();
+  if (!aMetrics.IsGraphDone)
+  {
+    return aMetrics;
+  }
+
+  const BRepGraph::TopoView& aTopo = aGraph.Topo();
+  for (int aFaceIdx = 0; aFaceIdx < aTopo.NbFaces(); ++aFaceIdx)
+  {
+    if (!aTopo.Face(BRepGraph_FaceId(aFaceIdx)).IsRemoved)
+    {
+      ++aMetrics.NbActiveFaces;
+    }
+  }
+  for (int aVtxIdx = 0; aVtxIdx < aTopo.NbVertices(); ++aVtxIdx)
+  {
+    if (!aTopo.Vertex(BRepGraph_VertexId(aVtxIdx)).IsRemoved)
+    {
+      ++aMetrics.NbActiveVertices;
+    }
+  }
+  for (int anEdgeIdx = 0; anEdgeIdx < aTopo.NbEdges(); ++anEdgeIdx)
+  {
+    const BRepGraph_EdgeId       anEdgeId(anEdgeIdx);
+    const BRepGraphInc::EdgeDef& anEdge = aTopo.Edge(anEdgeId);
+    if (anEdge.IsRemoved)
+    {
+      continue;
+    }
+    ++aMetrics.NbActiveEdges;
+    if (BRepGraph_Tool::Edge::Degenerated(aGraph, anEdgeId))
+    {
+      ++aMetrics.NbDegeneratedEdges;
+      continue;
+    }
+    const int aFaceCount = aTopo.CoEdgesOfEdge(anEdgeId).Length();
+    if (aFaceCount == 1)
+    {
+      ++aMetrics.NbFreeEdges;
+    }
+    else if (aFaceCount > 2)
+    {
+      ++aMetrics.NbMultipleEdges;
+    }
+    else if (aFaceCount < 0)
+    {
+      ++aMetrics.NbInvalidFaceAdjacents;
+    }
+  }
+  return aMetrics;
+}
+
+bool runDatasetCase(const TCollection_AsciiString& thePath,
+                    SewingShapeRun&                theGraphRun,
+                    SewingShapeRun&                theLegacyRun,
+                    GraphShapeMetrics&             theGraphMetrics,
+                    GraphShapeMetrics&             theLegacyMetrics,
+                    int&                           theFaceCount,
+                    TCollection_AsciiString&       theSkipReason)
+{
+  TopoDS_Shape aSource;
+  if (!readBrepShape(thePath, aSource))
+  {
+    theSkipReason = "read-failed";
+    return false;
+  }
+
+  const NCollection_Sequence<TopoDS_Shape> aFaces = extractCopiedFacesFromShape(aSource);
+  theFaceCount                                     = aFaces.Length();
+  if (aFaces.IsEmpty())
+  {
+    theSkipReason = "no-faces";
+    return false;
+  }
+
+  const double aMinSeconds = datasetMinSeconds();
+  theGraphRun              = runGraphSewingWithShapeTimed(aFaces, true, aMinSeconds);
+  theLegacyRun             = runLegacySewingWithShapeTimed(aFaces, aMinSeconds);
+  theGraphMetrics = collectGraphMetrics(theGraphRun.Shape);
+  theLegacyMetrics = collectGraphMetrics(theLegacyRun.Shape);
+  return true;
+}
+
+bool loadDatasetFaces(const std::filesystem::path& theDatasetRoot,
+                      const char*                  theRelPath,
+                      NCollection_Sequence<TopoDS_Shape>& theFaces,
+                      TCollection_AsciiString&            theSkipReason)
+{
+  const std::filesystem::path aFullPath = theDatasetRoot / theRelPath;
+  if (!std::filesystem::exists(aFullPath))
+  {
+    theSkipReason = "missing";
+    return false;
+  }
+
+  TopoDS_Shape aSource;
+  if (!readBrepShape(TCollection_AsciiString(aFullPath.string().c_str()), aSource))
+  {
+    theSkipReason = "read-failed";
+    return false;
+  }
+
+  theFaces = extractCopiedFacesFromShape(aSource);
+  if (theFaces.IsEmpty())
+  {
+    theSkipReason = "no-faces";
+    return false;
+  }
+  return true;
+}
+
+void runAndCheckCuratedDatasetCase(const std::filesystem::path& theDatasetRoot,
+                                   const char*                  theRelPath)
+{
+  const std::filesystem::path aFullPath = theDatasetRoot / theRelPath;
+  if (!std::filesystem::exists(aFullPath))
+  {
+    GTEST_SKIP() << "Curated dataset file is missing: " << aFullPath.string();
+  }
+
+  SewingShapeRun         aGraphRun;
+  SewingShapeRun         aLegacyRun;
+  GraphShapeMetrics      aGraphMetrics;
+  GraphShapeMetrics      aLegacyMetrics;
+  int                    aFaceCount = 0;
+  TCollection_AsciiString aSkipReason;
+  const bool             isDone = runDatasetCase(TCollection_AsciiString(aFullPath.string().c_str()),
+                                                 aGraphRun,
+                                                 aLegacyRun,
+                                                 aGraphMetrics,
+                                                 aLegacyMetrics,
+                                                 aFaceCount,
+                                                 aSkipReason);
+  ASSERT_TRUE(isDone) << "Curated dataset case skipped (" << aSkipReason.ToCString()
+                      << "): " << aFullPath.string();
+  ASSERT_TRUE(aGraphRun.IsDone) << "Graph run failed: " << aFullPath.string();
+  ASSERT_TRUE(aLegacyRun.IsDone) << "Legacy run failed: " << aFullPath.string();
+  ASSERT_TRUE(aGraphMetrics.IsGraphDone) << "Graph metrics failed: " << aFullPath.string();
+  ASSERT_TRUE(aLegacyMetrics.IsGraphDone) << "Legacy metrics failed: " << aFullPath.string();
+  EXPECT_TRUE(aGraphMetrics.IsShapeValid) << "Graph invalid: " << aFullPath.string();
+  EXPECT_TRUE(aLegacyMetrics.IsShapeValid) << "Legacy invalid: " << aFullPath.string();
+
+  EXPECT_LE(std::abs(aGraphMetrics.NbFreeEdges - aLegacyMetrics.NbFreeEdges), 2)
+    << "Free-edge delta too high: " << aFullPath.string();
+  EXPECT_LE(std::abs(aGraphMetrics.NbMultipleEdges - aLegacyMetrics.NbMultipleEdges), 2)
+    << "Multiple-edge delta too high: " << aFullPath.string();
+  EXPECT_LE(std::abs(aGraphMetrics.NbDegeneratedEdges - aLegacyMetrics.NbDegeneratedEdges), 4)
+    << "Degenerated-edge delta too high: " << aFullPath.string();
+  EXPECT_LE(std::abs(aGraphMetrics.NbActiveFaces - aLegacyMetrics.NbActiveFaces), 2)
+    << "Face-count delta too high: " << aFullPath.string();
+
+  std::cout << "[  CURATED] " << aFullPath.string() << " faces=" << aFaceCount
+            << " tGraph=" << aGraphRun.TimeSeconds << "s(" << aGraphRun.Iterations << " iters)"
+            << " tLegacy=" << aLegacyRun.TimeSeconds << "s(" << aLegacyRun.Iterations << " iters)"
+            << "s speedup=" << (aGraphRun.TimeSeconds > 0.0
+                                  ? (aLegacyRun.TimeSeconds / aGraphRun.TimeSeconds)
+                                  : 0.0)
+            << "x"
+            << "s free(g/l)=" << aGraphMetrics.NbFreeEdges << "/" << aLegacyMetrics.NbFreeEdges
+            << " mult(g/l)=" << aGraphMetrics.NbMultipleEdges << "/" << aLegacyMetrics.NbMultipleEdges
+            << " deg(g/l)=" << aGraphMetrics.NbDegeneratedEdges << "/" << aLegacyMetrics.NbDegeneratedEdges
+            << std::endl;
+}
+
+void runAndReportCuratedDatasetCase(const std::filesystem::path& theDatasetRoot,
+                                    const char*                  theRelPath)
+{
+  const std::filesystem::path aFullPath = theDatasetRoot / theRelPath;
+  if (!std::filesystem::exists(aFullPath))
+  {
+    GTEST_SKIP() << "Curated dataset file is missing: " << aFullPath.string();
+  }
+
+  SewingShapeRun          aGraphRun;
+  SewingShapeRun          aLegacyRun;
+  GraphShapeMetrics       aGraphMetrics;
+  GraphShapeMetrics       aLegacyMetrics;
+  int                     aFaceCount = 0;
+  TCollection_AsciiString aSkipReason;
+  const bool              isDone = runDatasetCase(TCollection_AsciiString(aFullPath.string().c_str()),
+                                     aGraphRun,
+                                     aLegacyRun,
+                                     aGraphMetrics,
+                                     aLegacyMetrics,
+                                     aFaceCount,
+                                     aSkipReason);
+  ASSERT_TRUE(isDone) << "Curated dataset case skipped (" << aSkipReason.ToCString()
+                      << "): " << aFullPath.string();
+  ASSERT_TRUE(aGraphRun.IsDone) << "Graph run failed: " << aFullPath.string();
+  ASSERT_TRUE(aLegacyRun.IsDone) << "Legacy run failed: " << aFullPath.string();
+  ASSERT_TRUE(aGraphMetrics.IsGraphDone) << "Graph metrics failed: " << aFullPath.string();
+  ASSERT_TRUE(aLegacyMetrics.IsGraphDone) << "Legacy metrics failed: " << aFullPath.string();
+
+  std::cout << "[  CURATED] " << aFullPath.string() << " faces=" << aFaceCount
+            << " tGraph=" << aGraphRun.TimeSeconds << "s(" << aGraphRun.Iterations << " iters)"
+            << " tLegacy=" << aLegacyRun.TimeSeconds << "s(" << aLegacyRun.Iterations << " iters)"
+            << "s speedup=" << (aGraphRun.TimeSeconds > 0.0
+                                  ? (aLegacyRun.TimeSeconds / aGraphRun.TimeSeconds)
+                                  : 0.0)
+            << "x"
+            << " valid(g/l)=" << (aGraphMetrics.IsShapeValid ? "1" : "0") << "/"
+            << (aLegacyMetrics.IsShapeValid ? "1" : "0")
+            << " free(g/l)=" << aGraphMetrics.NbFreeEdges << "/" << aLegacyMetrics.NbFreeEdges
+            << " mult(g/l)=" << aGraphMetrics.NbMultipleEdges << "/" << aLegacyMetrics.NbMultipleEdges
+            << " deg(g/l)=" << aGraphMetrics.NbDegeneratedEdges << "/" << aLegacyMetrics.NbDegeneratedEdges
+            << std::endl;
+}
 
 //! Extract faces from a box shape using BRepBuilderAPI_Copy with copyGeom=true.
 //! This produces faces with independent TShape edges that are geometrically
@@ -976,4 +1439,542 @@ TEST(BRepGraphAlgo_SewingTest, NoNestedParallel_SequentialInsideParallel)
 
   std::cout << "[  INFO   ] No-nested-parallel test: " << aFaces.Length() << " faces, "
             << aResult.NbSewnEdges << " sewn (no deadlock)" << std::endl;
+}
+
+// ===================================================================
+// Dataset-driven temporary A/B comparison (opt-in by env flag)
+// ===================================================================
+
+TEST(BRepGraphAlgo_SewingTest, DatasetBrep_ABCompare_GraphMetricsAndTiming)
+{
+  if (!isDatasetTestEnabled())
+  {
+    GTEST_SKIP() << "Set " << THE_DATASET_ENV_ENABLE
+                 << "=1 to run dataset-driven temporary sewing tests";
+  }
+
+  const NCollection_Sequence<TCollection_AsciiString> aFiles = selectDatasetBrepFiles();
+  if (aFiles.IsEmpty())
+  {
+    GTEST_SKIP() << "No .brep files found under dataset root: " << datasetRootPath().string();
+  }
+
+  std::cout << "[  INFO   ] Dataset root: " << datasetRootPath().string() << std::endl;
+  std::cout << "[  INFO   ] Selected " << aFiles.Length()
+            << " files (seed=" << getEnvInt(THE_DATASET_ENV_SEED, 42)
+            << ", samples=" << getEnvInt(THE_DATASET_ENV_SAMPLES, 8)
+            << ", minSeconds=" << datasetMinSeconds()
+            << ", maxIters=" << datasetMaxIterations() << ")" << std::endl;
+
+  int    aProcessed      = 0;
+  int    aSkippedNoFaces = 0;
+  int    aReadFailures   = 0;
+  double aGraphTimeSum   = 0.0;
+  double aLegacyTimeSum  = 0.0;
+
+  for (int aFileIdx = 1; aFileIdx <= aFiles.Length(); ++aFileIdx)
+  {
+    const TCollection_AsciiString& aPath = aFiles.Value(aFileIdx);
+    TopoDS_Shape                   aSource;
+    if (!readBrepShape(aPath, aSource))
+    {
+      ++aReadFailures;
+      std::cout << "[  WARN   ] Failed to read: " << aPath.ToCString() << std::endl;
+      continue;
+    }
+
+    const NCollection_Sequence<TopoDS_Shape> aFaces = extractCopiedFacesFromShape(aSource);
+    if (aFaces.IsEmpty())
+    {
+      ++aSkippedNoFaces;
+      std::cout << "[  INFO   ] Skip (no faces): " << aPath.ToCString() << std::endl;
+      continue;
+    }
+    std::cout << "[  INFO   ] Processing: " << aPath.ToCString()
+              << " faces=" << aFaces.Length() << std::endl;
+    const double         aMinSeconds = datasetMinSeconds();
+    const SewingShapeRun aGraphRun   = runGraphSewingWithShapeTimed(aFaces, true, aMinSeconds);
+    const SewingShapeRun aLegacyRun  = runLegacySewingWithShapeTimed(aFaces, aMinSeconds);
+
+    ++aProcessed;
+    aGraphTimeSum += aGraphRun.TimeSeconds;
+    aLegacyTimeSum += aLegacyRun.TimeSeconds;
+
+    ASSERT_TRUE(aGraphRun.IsDone) << "Graph sewing failed for " << aPath.ToCString();
+    ASSERT_TRUE(aLegacyRun.IsDone) << "Legacy sewing failed for " << aPath.ToCString();
+    ASSERT_FALSE(aGraphRun.Shape.IsNull()) << "Graph sewn shape is null for " << aPath.ToCString();
+    ASSERT_FALSE(aLegacyRun.Shape.IsNull()) << "Legacy sewn shape is null for " << aPath.ToCString();
+
+    const GraphShapeMetrics aGraphMetrics  = collectGraphMetrics(aGraphRun.Shape);
+    const GraphShapeMetrics aLegacyMetrics = collectGraphMetrics(aLegacyRun.Shape);
+
+    ASSERT_TRUE(aGraphMetrics.IsGraphDone) << "Graph metrics build failed for graph result: "
+                                           << aPath.ToCString();
+    ASSERT_TRUE(aLegacyMetrics.IsGraphDone) << "Graph metrics build failed for legacy result: "
+                                            << aPath.ToCString();
+    EXPECT_TRUE(aGraphMetrics.IsShapeValid) << "Graph result invalid for " << aPath.ToCString();
+    EXPECT_TRUE(aLegacyMetrics.IsShapeValid) << "Legacy result invalid for " << aPath.ToCString();
+
+    // Keep parity checks strict but not exact-equality for all models.
+    EXPECT_LE(std::abs(aGraphMetrics.NbFreeEdges - aLegacyMetrics.NbFreeEdges), 2)
+      << "Free-edge delta too high for " << aPath.ToCString();
+    EXPECT_LE(std::abs(aGraphMetrics.NbMultipleEdges - aLegacyMetrics.NbMultipleEdges), 2)
+      << "Multiple-edge delta too high for " << aPath.ToCString();
+    EXPECT_LE(std::abs(aGraphMetrics.NbDegeneratedEdges - aLegacyMetrics.NbDegeneratedEdges), 4)
+      << "Degenerated-edge delta too high for " << aPath.ToCString();
+    EXPECT_LE(std::abs(aGraphMetrics.NbActiveFaces - aLegacyMetrics.NbActiveFaces), 2)
+      << "Face-count delta too high for " << aPath.ToCString();
+
+    std::cout << "[  DATA   ] " << aPath.ToCString() << " facesIn=" << aFaces.Length()
+              << " tGraph=" << aGraphRun.TimeSeconds << "s(" << aGraphRun.Iterations << " iters)"
+              << " tLegacy=" << aLegacyRun.TimeSeconds << "s(" << aLegacyRun.Iterations << " iters)"
+              << " free(g/l)=" << aGraphMetrics.NbFreeEdges << "/" << aLegacyMetrics.NbFreeEdges
+              << " mult(g/l)=" << aGraphMetrics.NbMultipleEdges << "/" << aLegacyMetrics.NbMultipleEdges
+              << " deg(g/l)=" << aGraphMetrics.NbDegeneratedEdges << "/"
+              << aLegacyMetrics.NbDegeneratedEdges << std::endl;
+  }
+
+  std::cout << "[  DATA   ] Processed=" << aProcessed << " skippedNoFaces=" << aSkippedNoFaces
+            << " readFailures=" << aReadFailures << std::endl;
+  if (aProcessed > 0)
+  {
+    std::cout << "[  DATA   ] AvgTime graph=" << (aGraphTimeSum / aProcessed)
+              << "s legacy=" << (aLegacyTimeSum / aProcessed) << "s speedup="
+              << ((aGraphTimeSum > 0.0) ? (aLegacyTimeSum / aGraphTimeSum) : 0.0) << "x"
+              << std::endl;
+  }
+
+  ASSERT_GT(aProcessed, 0) << "No usable dataset models processed";
+}
+
+TEST(BRepGraphAlgo_SewingTest, DatasetBrep_CuratedCoreSet_ABCompare)
+{
+  if (!isDatasetTestEnabled())
+  {
+    GTEST_SKIP() << "Set " << THE_DATASET_ENV_ENABLE << "=1 to run curated dataset tests";
+  }
+
+  const std::filesystem::path aRoot = datasetRootPath();
+  if (!std::filesystem::exists(aRoot))
+  {
+    GTEST_SKIP() << "Dataset root does not exist: " << aRoot.string();
+  }
+
+  // Curated hardcoded set: small + medium + practical sewing cases.
+  const std::vector<const char*> aCuratedFiles = {
+    "brep/OCC105.brep",
+    "brep/bug30990.brep",
+    "brep/bug25163_qf_25_39.brep",
+    "brep/bug25044_face32.brep",
+    "brep/OCC327b.brep",
+    "brep/CTO908_topo101-o2.brep",
+    "brep/buc60706p.brep",
+    "brep/pro13403_face.brep",
+    "brep/OCC22786-c.brep",
+    "brep/OCC107-1.brep",
+    "brep/bug25813_hlr-fillet2-tcl-f.brep",
+    "brep/shading_wrongshape_017.brep",
+    "brep/bug32767.brep",
+    "brep/shading_142.brep",
+    "brep/CTO909_tool_2.brep",
+    "brep/bug25890_f1.brep",
+    "brep/bug28719_display_issue.brep",
+    "brep/bug24867_pump.brep",
+    "brep/bug27814.brep",
+    "brep/bug27614_CC.brep",
+    "brep/bug28026_Ball.brep",
+    "brep/buc60623b.brep",
+    "brep/bug27015.brep",
+    "brep/bug27760_leid.brep",
+    "brep/bug23849_segment_1.brep",
+    "brep/bug23849_segment_2.brep",
+  };
+
+  int       aProcessed = 0;
+
+  for (const char* aRelPath : aCuratedFiles)
+  {
+    const std::filesystem::path aFullPath = aRoot / aRelPath;
+    if (!std::filesystem::exists(aFullPath))
+    {
+      std::cout << "[  INFO   ] Curated skip (missing): " << aFullPath.string() << std::endl;
+      continue;
+    }
+
+    SewingShapeRun      aGraphRun;
+    SewingShapeRun      aLegacyRun;
+    GraphShapeMetrics   aGraphMetrics;
+    GraphShapeMetrics   aLegacyMetrics;
+    int                 aFaceCount = 0;
+    TCollection_AsciiString aSkipReason;
+    const bool          isDone = runDatasetCase(TCollection_AsciiString(aFullPath.string().c_str()),
+                                       aGraphRun,
+                                       aLegacyRun,
+                                       aGraphMetrics,
+                                       aLegacyMetrics,
+                                       aFaceCount,
+                                       aSkipReason);
+    if (!isDone)
+    {
+      std::cout << "[  INFO   ] Curated skip (" << aSkipReason.ToCString()
+                << "): " << aFullPath.string() << std::endl;
+      continue;
+    }
+
+    ++aProcessed;
+    ASSERT_TRUE(aGraphRun.IsDone) << "Graph run failed: " << aFullPath.string();
+    ASSERT_TRUE(aLegacyRun.IsDone) << "Legacy run failed: " << aFullPath.string();
+    ASSERT_TRUE(aGraphMetrics.IsGraphDone) << "Graph metrics failed: " << aFullPath.string();
+    ASSERT_TRUE(aLegacyMetrics.IsGraphDone) << "Legacy metrics failed: " << aFullPath.string();
+    EXPECT_TRUE(aGraphMetrics.IsShapeValid) << "Graph invalid: " << aFullPath.string();
+    EXPECT_TRUE(aLegacyMetrics.IsShapeValid) << "Legacy invalid: " << aFullPath.string();
+
+    EXPECT_LE(std::abs(aGraphMetrics.NbFreeEdges - aLegacyMetrics.NbFreeEdges), 2)
+      << "Free-edge delta too high: " << aFullPath.string();
+    EXPECT_LE(std::abs(aGraphMetrics.NbMultipleEdges - aLegacyMetrics.NbMultipleEdges), 2)
+      << "Multiple-edge delta too high: " << aFullPath.string();
+    EXPECT_LE(std::abs(aGraphMetrics.NbDegeneratedEdges - aLegacyMetrics.NbDegeneratedEdges), 4)
+      << "Degenerated-edge delta too high: " << aFullPath.string();
+
+    std::cout << "[  CURATED] " << aFullPath.string() << " faces=" << aFaceCount
+              << " tGraph=" << aGraphRun.TimeSeconds << "s tLegacy=" << aLegacyRun.TimeSeconds
+              << "s free(g/l)=" << aGraphMetrics.NbFreeEdges << "/" << aLegacyMetrics.NbFreeEdges
+              << std::endl;
+  }
+
+  ASSERT_GT(aProcessed, 0) << "No curated dataset case was processed";
+}
+
+TEST(BRepGraphAlgo_SewingTest, DatasetBrep_Curated_bug32767_ABCompare)
+{
+  if (!isDatasetTestEnabled())
+  {
+    GTEST_SKIP() << "Set " << THE_DATASET_ENV_ENABLE << "=1 to run curated dataset tests";
+  }
+  runAndCheckCuratedDatasetCase(datasetRootPath(), "brep/bug32767.brep");
+}
+
+TEST(BRepGraphAlgo_SewingTest, DatasetBrep_Curated_shading_142_ABCompare)
+{
+  if (!isDatasetTestEnabled())
+  {
+    GTEST_SKIP() << "Set " << THE_DATASET_ENV_ENABLE << "=1 to run curated dataset tests";
+  }
+  runAndCheckCuratedDatasetCase(datasetRootPath(), "brep/shading_142.brep");
+}
+
+TEST(BRepGraphAlgo_SewingTest, DatasetBrep_Curated_CTO909_tool_2_ABCompare)
+{
+  if (!isDatasetTestEnabled())
+  {
+    GTEST_SKIP() << "Set " << THE_DATASET_ENV_ENABLE << "=1 to run curated dataset tests";
+  }
+  runAndCheckCuratedDatasetCase(datasetRootPath(), "brep/CTO909_tool_2.brep");
+}
+
+TEST(BRepGraphAlgo_SewingTest, DatasetBrep_Curated_bug25890_f1_ABCompare)
+{
+  if (!isDatasetTestEnabled())
+  {
+    GTEST_SKIP() << "Set " << THE_DATASET_ENV_ENABLE << "=1 to run curated dataset tests";
+  }
+  runAndCheckCuratedDatasetCase(datasetRootPath(), "brep/bug25890_f1.brep");
+}
+
+TEST(BRepGraphAlgo_SewingTest, DatasetBrep_Curated_bug25044_face1_ABCompare)
+{
+  if (!isDatasetTestEnabled())
+  {
+    GTEST_SKIP() << "Set " << THE_DATASET_ENV_ENABLE << "=1 to run curated dataset tests";
+  }
+  runAndCheckCuratedDatasetCase(datasetRootPath(), "brep/bug25044_face1.brep");
+}
+
+TEST(BRepGraphAlgo_SewingTest, DatasetBrep_Curated_bug25044_face3_ABCompare)
+{
+  if (!isDatasetTestEnabled())
+  {
+    GTEST_SKIP() << "Set " << THE_DATASET_ENV_ENABLE << "=1 to run curated dataset tests";
+  }
+  runAndCheckCuratedDatasetCase(datasetRootPath(), "brep/bug25044_face3.brep");
+}
+
+TEST(BRepGraphAlgo_SewingTest, DatasetBrep_Curated_bug25152_ABCompare)
+{
+  if (!isDatasetTestEnabled())
+  {
+    GTEST_SKIP() << "Set " << THE_DATASET_ENV_ENABLE << "=1 to run curated dataset tests";
+  }
+  runAndCheckCuratedDatasetCase(datasetRootPath(), "brep/bug25152.brep");
+}
+
+TEST(BRepGraphAlgo_SewingTest, DatasetBrep_Curated_buc60782a_ABCompare)
+{
+  if (!isDatasetTestEnabled())
+  {
+    GTEST_SKIP() << "Set " << THE_DATASET_ENV_ENABLE << "=1 to run curated dataset tests";
+  }
+  runAndCheckCuratedDatasetCase(datasetRootPath(), "brep/buc60782a.brep");
+}
+
+TEST(BRepGraphAlgo_SewingTest, DatasetBrep_Curated_bug28719_display_issue_ABCompare)
+{
+  if (!isDatasetTestEnabled())
+  {
+    GTEST_SKIP() << "Set " << THE_DATASET_ENV_ENABLE << "=1 to run curated dataset tests";
+  }
+  runAndReportCuratedDatasetCase(datasetRootPath(), "brep/bug28719_display_issue.brep");
+}
+
+TEST(BRepGraphAlgo_SewingTest, DatasetBrep_Curated_bug24867_pump_ABCompare)
+{
+  if (!isDatasetTestEnabled())
+  {
+    GTEST_SKIP() << "Set " << THE_DATASET_ENV_ENABLE << "=1 to run curated dataset tests";
+  }
+  runAndReportCuratedDatasetCase(datasetRootPath(), "brep/bug24867_pump.brep");
+}
+
+TEST(BRepGraphAlgo_SewingTest, DatasetBrep_Curated_bug27814_ABCompare)
+{
+  if (!isDatasetTestEnabled())
+  {
+    GTEST_SKIP() << "Set " << THE_DATASET_ENV_ENABLE << "=1 to run curated dataset tests";
+  }
+  runAndReportCuratedDatasetCase(datasetRootPath(), "brep/bug27814.brep");
+}
+
+TEST(BRepGraphAlgo_SewingTest, DatasetBrep_Curated_bug27614_CC_ABCompare)
+{
+  if (!isDatasetTestEnabled())
+  {
+    GTEST_SKIP() << "Set " << THE_DATASET_ENV_ENABLE << "=1 to run curated dataset tests";
+  }
+  runAndReportCuratedDatasetCase(datasetRootPath(), "brep/bug27614_CC.brep");
+}
+
+TEST(BRepGraphAlgo_SewingTest, DatasetBrep_Curated_bug28026_Ball_ABCompare)
+{
+  if (!isDatasetTestEnabled())
+  {
+    GTEST_SKIP() << "Set " << THE_DATASET_ENV_ENABLE << "=1 to run curated dataset tests";
+  }
+  runAndReportCuratedDatasetCase(datasetRootPath(), "brep/bug28026_Ball.brep");
+}
+
+TEST(BRepGraphAlgo_SewingTest, DatasetBrep_Curated_buc60623b_ABCompare)
+{
+  if (!isDatasetTestEnabled())
+  {
+    GTEST_SKIP() << "Set " << THE_DATASET_ENV_ENABLE << "=1 to run curated dataset tests";
+  }
+  runAndCheckCuratedDatasetCase(datasetRootPath(), "brep/buc60623b.brep");
+}
+
+TEST(BRepGraphAlgo_SewingTest, DatasetBrep_Curated_bug27015_ABCompare)
+{
+  if (!isDatasetTestEnabled())
+  {
+    GTEST_SKIP() << "Set " << THE_DATASET_ENV_ENABLE << "=1 to run curated dataset tests";
+  }
+  runAndReportCuratedDatasetCase(datasetRootPath(), "brep/bug27015.brep");
+}
+
+TEST(BRepGraphAlgo_SewingTest, DatasetBrep_Curated_bug27760_leid_ABCompare)
+{
+  if (!isDatasetTestEnabled())
+  {
+    GTEST_SKIP() << "Set " << THE_DATASET_ENV_ENABLE << "=1 to run curated dataset tests";
+  }
+  runAndReportCuratedDatasetCase(datasetRootPath(), "brep/bug27760_leid.brep");
+}
+
+TEST(BRepGraphAlgo_SewingTest, DatasetBrep_Curated_bug23849_segment_1_ABCompare)
+{
+  if (!isDatasetTestEnabled())
+  {
+    GTEST_SKIP() << "Set " << THE_DATASET_ENV_ENABLE << "=1 to run curated dataset tests";
+  }
+  runAndCheckCuratedDatasetCase(datasetRootPath(), "brep/bug23849_segment_1.brep");
+}
+
+TEST(BRepGraphAlgo_SewingTest, DatasetBrep_Curated_bug23849_segment_2_ABCompare)
+{
+  if (!isDatasetTestEnabled())
+  {
+    GTEST_SKIP() << "Set " << THE_DATASET_ENV_ENABLE << "=1 to run curated dataset tests";
+  }
+  runAndReportCuratedDatasetCase(datasetRootPath(), "brep/bug23849_segment_2.brep");
+}
+
+TEST(BRepGraphAlgo_SewingTest, DatasetBrep_Curated_GraphParallelVsSequential)
+{
+  if (!isDatasetTestEnabled())
+  {
+    GTEST_SKIP() << "Set " << THE_DATASET_ENV_ENABLE << "=1 to run curated dataset tests";
+  }
+
+  const std::filesystem::path aRoot = datasetRootPath();
+  if (!std::filesystem::exists(aRoot))
+  {
+    GTEST_SKIP() << "Dataset root does not exist: " << aRoot.string();
+  }
+
+  const std::vector<const char*> aCuratedFiles = {
+    "brep/bug28719_display_issue.brep",
+    "brep/bug24867_pump.brep",
+    "brep/bug27814.brep",
+    "brep/bug27614_CC.brep",
+    "brep/bug28026_Ball.brep",
+    "brep/buc60623b.brep",
+    "brep/bug27015.brep",
+    "brep/bug27760_leid.brep",
+    "brep/bug23849_segment_1.brep",
+    "brep/bug23849_segment_2.brep",
+    "brep/bug32767.brep",
+    "brep/shading_142.brep",
+    "brep/CTO909_tool_2.brep",
+    "brep/bug25890_f1.brep",
+    "brep/bug25044_face1.brep",
+    "brep/bug25044_face3.brep",
+    "brep/bug25152.brep",
+    "brep/buc60782a.brep",
+  };
+
+  int       aProcessed = 0;
+  double    aSeqTimeSum = 0.0;
+  double    aParTimeSum = 0.0;
+
+  for (const char* aRelPath : aCuratedFiles)
+  {
+    NCollection_Sequence<TopoDS_Shape> aFaces;
+    TCollection_AsciiString            aSkipReason;
+    if (!loadDatasetFaces(aRoot, aRelPath, aFaces, aSkipReason))
+    {
+      std::cout << "[  INFO   ] Parallel check skip (" << aSkipReason.ToCString()
+                << "): " << (aRoot / aRelPath).string() << std::endl;
+      continue;
+    }
+
+    ++aProcessed;
+    const double         aMinSeconds = datasetMinSeconds();
+    const SewingShapeRun aSeqRun = runGraphSewingWithShapeTimed(aFaces, false, aMinSeconds);
+    const SewingShapeRun aParRun = runGraphSewingWithShapeTimed(aFaces, true, aMinSeconds);
+    ASSERT_TRUE(aSeqRun.IsDone) << "Graph sequential failed for " << aRelPath;
+    ASSERT_TRUE(aParRun.IsDone) << "Graph parallel failed for " << aRelPath;
+
+    const GraphShapeMetrics aSeqMetrics = collectGraphMetrics(aSeqRun.Shape);
+    const GraphShapeMetrics aParMetrics = collectGraphMetrics(aParRun.Shape);
+    ASSERT_TRUE(aSeqMetrics.IsGraphDone);
+    ASSERT_TRUE(aParMetrics.IsGraphDone);
+    EXPECT_EQ(aSeqRun.NbSewnEdges, aParRun.NbSewnEdges) << "Sewn-edge mismatch for " << aRelPath;
+    EXPECT_EQ(aSeqMetrics.NbFreeEdges, aParMetrics.NbFreeEdges) << "Free-edge mismatch for " << aRelPath;
+    EXPECT_EQ(aSeqMetrics.NbMultipleEdges, aParMetrics.NbMultipleEdges)
+      << "Multiple-edge mismatch for " << aRelPath;
+    EXPECT_EQ(aSeqMetrics.NbDegeneratedEdges, aParMetrics.NbDegeneratedEdges)
+      << "Degenerated-edge mismatch for " << aRelPath;
+
+    aSeqTimeSum += aSeqRun.TimeSeconds;
+    aParTimeSum += aParRun.TimeSeconds;
+    std::cout << "[  PARCMP ] " << aRelPath << " faces=" << aFaces.Length()
+              << " seq=" << aSeqRun.TimeSeconds << "s(" << aSeqRun.Iterations << " iters)"
+              << " par=" << aParRun.TimeSeconds << "s(" << aParRun.Iterations << " iters)"
+              << " speedup="
+              << (aParRun.TimeSeconds > 0.0 ? (aSeqRun.TimeSeconds / aParRun.TimeSeconds) : 0.0)
+              << "x" << std::endl;
+  }
+
+  ASSERT_GT(aProcessed, 0) << "No curated file processed for parallel comparison";
+  std::cout << "[  PARCMP ] processed=" << aProcessed
+            << " avgSeq=" << (aSeqTimeSum / aProcessed)
+            << "s avgPar=" << (aParTimeSum / aProcessed)
+            << "s avgSpeedup=" << (aParTimeSum > 0.0 ? (aSeqTimeSum / aParTimeSum) : 0.0)
+            << "x" << std::endl;
+}
+
+TEST(BRepGraphAlgo_SewingTest, DatasetBrep_Curated_buc60623b_GraphOnlyProfile)
+{
+  if (std::getenv(THE_DATASET_ENV_ENABLE) == nullptr)
+  {
+    setenv(THE_DATASET_ENV_ENABLE, "1", 0);
+  }
+  if (std::getenv(THE_DATASET_ENV_ROOT) == nullptr)
+  {
+    setenv(THE_DATASET_ENV_ROOT, "/Users/dpasukhi/work/OCCT/data/opencascade-dataset-7.9.0", 0);
+  }
+
+  if (!isDatasetTestEnabled())
+  {
+    GTEST_SKIP() << "Set " << THE_DATASET_ENV_ENABLE << "=1 to run curated dataset tests";
+  }
+
+  const std::filesystem::path aRoot = datasetRootPath();
+  if (!std::filesystem::exists(aRoot))
+  {
+    GTEST_SKIP() << "Dataset root does not exist: " << aRoot.string();
+  }
+
+  NCollection_Sequence<TopoDS_Shape> aFaces;
+  TCollection_AsciiString            aSkipReason;
+  ASSERT_TRUE(loadDatasetFaces(aRoot, "brep/buc60623b.brep", aFaces, aSkipReason))
+    << "Failed to load buc60623b.brep: " << aSkipReason.ToCString();
+
+  constexpr int THE_PROFILE_ITERS = 1600;
+  SewingShapeRun aLastRun;
+  double         aSumInnerTimes = 0.0;
+
+  const auto aStart = std::chrono::steady_clock::now();
+  for (int anIter = 0; anIter < THE_PROFILE_ITERS; ++anIter)
+  {
+    aLastRun = runGraphSewingWithShape(aFaces, true);
+    ASSERT_TRUE(aLastRun.IsDone) << "Graph run failed at iteration " << anIter;
+    aSumInnerTimes += aLastRun.TimeSeconds;
+  }
+  const auto aEnd        = std::chrono::steady_clock::now();
+  const double aWallTime = std::chrono::duration<double>(aEnd - aStart).count();
+
+  ASSERT_GE(aWallTime, 1.0) << "Profile runtime is below 1 second; increase THE_PROFILE_ITERS";
+  std::cout << "[ PROFILE ] buc60623b graph-only faces=" << aFaces.Length()
+            << " iters=" << THE_PROFILE_ITERS
+            << " wall=" << aWallTime << "s"
+            << " avgInner=" << (aSumInnerTimes / THE_PROFILE_ITERS) << "s"
+            << " sewnEdges(last)=" << aLastRun.NbSewnEdges << std::endl;
+}
+
+TEST(BRepGraphAlgo_SewingTest, DatasetBrep_CuratedNoFaceCases_SkippedCleanly)
+{
+  if (!isDatasetTestEnabled())
+  {
+    GTEST_SKIP() << "Set " << THE_DATASET_ENV_ENABLE << "=1 to run curated dataset tests";
+  }
+
+  const std::filesystem::path aRoot = datasetRootPath();
+  if (!std::filesystem::exists(aRoot))
+  {
+    GTEST_SKIP() << "Dataset root does not exist: " << aRoot.string();
+  }
+
+  const std::vector<const char*> aExpectedNoFace = {
+    "brep/bug27059.brep",
+    "brep/offset_wire_020.brep",
+  };
+
+  int aObservedNoFace = 0;
+  for (const char* aRelPath : aExpectedNoFace)
+  {
+    const std::filesystem::path aFullPath = aRoot / aRelPath;
+    if (!std::filesystem::exists(aFullPath))
+    {
+      continue;
+    }
+    TopoDS_Shape aShape;
+    ASSERT_TRUE(readBrepShape(TCollection_AsciiString(aFullPath.string().c_str()), aShape));
+    const NCollection_Sequence<TopoDS_Shape> aFaces = extractCopiedFacesFromShape(aShape);
+    if (aFaces.IsEmpty())
+    {
+      ++aObservedNoFace;
+    }
+  }
+
+  EXPECT_GE(aObservedNoFace, 1) << "Expected at least one curated no-face case";
 }
