@@ -221,6 +221,27 @@ public:
   //! Number of polygon-on-triangulation representations.
   [[nodiscard]] Standard_EXPORT int NbPolygonsOnTri() const;
 
+  //! Number of active (non-removed) surface representations.
+  [[nodiscard]] Standard_EXPORT int NbActiveSurfaces() const;
+
+  //! Number of active (non-removed) 3D curve representations.
+  [[nodiscard]] Standard_EXPORT int NbActiveCurves3D() const;
+
+  //! Number of active (non-removed) 2D curve representations.
+  [[nodiscard]] Standard_EXPORT int NbActiveCurves2D() const;
+
+  //! Number of active (non-removed) triangulation representations.
+  [[nodiscard]] Standard_EXPORT int NbActiveTriangulations() const;
+
+  //! Number of active (non-removed) 3D polygon representations.
+  [[nodiscard]] Standard_EXPORT int NbActivePolygons3D() const;
+
+  //! Number of active (non-removed) 2D polygon representations.
+  [[nodiscard]] Standard_EXPORT int NbActivePolygons2D() const;
+
+  //! Number of active (non-removed) polygon-on-triangulation representations.
+  [[nodiscard]] Standard_EXPORT int NbActivePolygonsOnTri() const;
+
   //! @name Computed spatial adjacency queries (allocate result vector)
 
   //! Return all face definitions sharing the same surface as the given face.
@@ -312,6 +333,9 @@ private:
   friend struct BRepGraph_Data;
   friend class BRepGraph_Tool;
   friend class BRepGraph_Analyze;
+
+  //! @name Private PCurve lookup (implementation detail)
+  //! Public API is BRepGraph_Tool::Edge::FindPCurve() which delegates here.
 
   //! Find the CoEdge for an edge on a given face, or nullptr if none exists.
   //! @param[in] theEdgeEntity edge definition NodeId

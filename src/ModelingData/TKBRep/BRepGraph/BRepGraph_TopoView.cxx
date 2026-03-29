@@ -455,6 +455,55 @@ int BRepGraph::TopoView::NbPolygonsOnTri() const
 
 //=================================================================================================
 
+int BRepGraph::TopoView::NbActiveSurfaces() const
+{
+  return myGraph->myData->myIncStorage.NbActiveSurfaces();
+}
+
+//=================================================================================================
+
+int BRepGraph::TopoView::NbActiveCurves3D() const
+{
+  return myGraph->myData->myIncStorage.NbActiveCurves3D();
+}
+
+//=================================================================================================
+
+int BRepGraph::TopoView::NbActiveCurves2D() const
+{
+  return myGraph->myData->myIncStorage.NbActiveCurves2D();
+}
+
+//=================================================================================================
+
+int BRepGraph::TopoView::NbActiveTriangulations() const
+{
+  return myGraph->myData->myIncStorage.NbActiveTriangulations();
+}
+
+//=================================================================================================
+
+int BRepGraph::TopoView::NbActivePolygons3D() const
+{
+  return myGraph->myData->myIncStorage.NbActivePolygons3D();
+}
+
+//=================================================================================================
+
+int BRepGraph::TopoView::NbActivePolygons2D() const
+{
+  return myGraph->myData->myIncStorage.NbActivePolygons2D();
+}
+
+//=================================================================================================
+
+int BRepGraph::TopoView::NbActivePolygonsOnTri() const
+{
+  return myGraph->myData->myIncStorage.NbActivePolygonsOnTri();
+}
+
+//=================================================================================================
+
 const BRepGraphInc::Polygon2DRep& BRepGraph::TopoView::Polygon2DRep(
   const BRepGraph_Polygon2DRepId theRep) const
 {

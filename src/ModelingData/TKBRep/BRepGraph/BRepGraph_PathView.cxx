@@ -1571,6 +1571,16 @@ bool BRepGraph::PathView::IsPart(const BRepGraph_ProductId theProduct) const
 
 //=================================================================================================
 
+BRepGraph_NodeId BRepGraph::PathView::ShapeRootNode(const BRepGraph_ProductId theProduct) const
+{
+  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  if (!theProduct.IsValid(aStorage.NbProducts()))
+    return BRepGraph_NodeId();
+  return aStorage.Product(theProduct).ShapeRootId;
+}
+
+//=================================================================================================
+
 int BRepGraph::PathView::NbComponents(const BRepGraph_ProductId theProduct) const
 {
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;

@@ -167,6 +167,13 @@ public:
   //! @param[in] theProduct typed product definition identifier
   [[nodiscard]] Standard_EXPORT bool IsPart(const BRepGraph_ProductId theProduct) const;
 
+  //! Return the topology root NodeId for a part product.
+  //! For assemblies (no topology root) returns an invalid NodeId.
+  //! @param[in] theProduct typed product definition identifier
+  //! @return topology root NodeId, or invalid if theProduct is an assembly or out of range
+  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId
+    ShapeRootNode(const BRepGraph_ProductId theProduct) const;
+
   //! Number of child occurrences of a product.
   //! @param[in] theProduct typed product definition identifier
   [[nodiscard]] Standard_EXPORT int NbComponents(const BRepGraph_ProductId theProduct) const;

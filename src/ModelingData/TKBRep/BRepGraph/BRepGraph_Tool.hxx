@@ -39,7 +39,8 @@ class Adaptor3d_CurveOnSurface;
 //!
 //! Geometry in BRepGraph is stored in the definition frame (representation
 //! Location baked via applyRepresentationLocation). Instance Locations live
-//! on topology refs (CoEdgeUsage, WireUsage, FaceUsage, etc.). This class applies
+//! on topology Usage/Ref structs (VertexUsage, CoEdgeUsage, WireUsage,
+//! FaceUsage, ShellUsage, SolidUsage, OccurrenceUsage). This class applies
 //! ref Locations automatically when accessing 3D geometry.
 //!
 //! Methods are grouped by topology kind via nested classes:

@@ -18,10 +18,15 @@
 
 //! @brief Non-const view for managing transient cache values on nodes.
 //!
-//! Cached values are keyed by cache-kind descriptors and stored as
-//! Handle(BRepGraph_CacheValue). Supports set, get, remove, invalidate, and kind
-//! enumeration per node. Cached data is stored centrally in BRepGraph_TransientCache
-//! with generation-based freshness tracking via SubtreeGen.
+//! Cached values are keyed by BRepGraph_CacheKind descriptors (Handle-based)
+//! and stored as Handle(BRepGraph_CacheValue). Each CacheKind carries a
+//! Standard_GUID for stable identity and is registered in
+//! BRepGraph_CacheKindRegistry which maps GUIDs to dense runtime slot
+//! indices for O(1) internal storage lookup.
+//!
+//! Supports set, get, remove, invalidate, and kind enumeration per node.
+//! Cached data is stored centrally in BRepGraph_TransientCache with
+//! generation-based freshness tracking via SubtreeGen.
 //! Obtained via BRepGraph::Cache().
 class BRepGraph::CacheView
 {
