@@ -27,6 +27,7 @@
 
 #include <cstring>
 #include <random>
+#include <shared_mutex>
 
 namespace
 {
@@ -119,6 +120,18 @@ void BRepGraph_Builder::Perform(BRepGraph&                            theGraph,
   theGraph.myData->myHistoryLog.Clear();
   theGraph.myData->myCurrentShapes.Clear();
   theGraph.myTransientCache.Clear();
+  {
+    std::unique_lock<std::shared_mutex> aUIDLock(theGraph.myData->myUIDToNodeIdMutex);
+    theGraph.myData->myUIDToNodeId.Clear();
+    theGraph.myData->myUIDToNodeIdDirty      = true;
+    theGraph.myData->myUIDToNodeIdGeneration = theGraph.myData->myGeneration.load();
+  }
+  {
+    std::unique_lock<std::shared_mutex> aRefUIDLock(theGraph.myData->myRefUIDToRefIdMutex);
+    theGraph.myData->myRefUIDToRefId.Clear();
+    theGraph.myData->myRefUIDToRefIdDirty      = true;
+    theGraph.myData->myRefUIDToRefIdGeneration = theGraph.myData->myGeneration.load();
+  }
   ++theGraph.myData->myGeneration;
   theGraph.myData->myGraphGUID = generateRandomGUID();
   theGraph.myData->myIsDone    = false;

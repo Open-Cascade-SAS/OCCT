@@ -14,6 +14,64 @@
 #include <BRepGraph_UIDsView.hxx>
 #include <BRepGraph_Data.hxx>
 
+#include <shared_mutex>
+
+namespace
+{
+
+//=================================================================================================
+
+void appendUIDReverseIndex(BRepGraph_Data&               theData,
+                           const BRepGraph_NodeId::Kind  theKind)
+{
+  const NCollection_Vector<BRepGraph_UID>& aUIDs = theData.myIncStorage.UIDs(theKind);
+  for (int anIdx = 0; anIdx < aUIDs.Length(); ++anIdx)
+  {
+    const BRepGraph_UID aUID = aUIDs.Value(anIdx);
+    if (aUID.IsValid())
+    {
+      theData.myUIDToNodeId.Bind(aUID, BRepGraph_NodeId(theKind, anIdx));
+    }
+  }
+}
+
+//=================================================================================================
+
+void ensureUIDReverseIndex(BRepGraph_Data& theData)
+{
+  const uint32_t aGeneration = theData.myGeneration.load();
+  {
+    std::shared_lock<std::shared_mutex> aReadLock(theData.myUIDToNodeIdMutex);
+    if (!theData.myUIDToNodeIdDirty && theData.myUIDToNodeIdGeneration == aGeneration)
+    {
+      return;
+    }
+  }
+
+  std::unique_lock<std::shared_mutex> aWriteLock(theData.myUIDToNodeIdMutex);
+  if (!theData.myUIDToNodeIdDirty && theData.myUIDToNodeIdGeneration == aGeneration)
+  {
+    return;
+  }
+
+  theData.myUIDToNodeId.Clear();
+  appendUIDReverseIndex(theData, BRepGraph_NodeId::Kind::Vertex);
+  appendUIDReverseIndex(theData, BRepGraph_NodeId::Kind::Edge);
+  appendUIDReverseIndex(theData, BRepGraph_NodeId::Kind::CoEdge);
+  appendUIDReverseIndex(theData, BRepGraph_NodeId::Kind::Wire);
+  appendUIDReverseIndex(theData, BRepGraph_NodeId::Kind::Face);
+  appendUIDReverseIndex(theData, BRepGraph_NodeId::Kind::Shell);
+  appendUIDReverseIndex(theData, BRepGraph_NodeId::Kind::Solid);
+  appendUIDReverseIndex(theData, BRepGraph_NodeId::Kind::Compound);
+  appendUIDReverseIndex(theData, BRepGraph_NodeId::Kind::CompSolid);
+  appendUIDReverseIndex(theData, BRepGraph_NodeId::Kind::Product);
+  appendUIDReverseIndex(theData, BRepGraph_NodeId::Kind::Occurrence);
+  theData.myUIDToNodeIdGeneration = aGeneration;
+  theData.myUIDToNodeIdDirty      = false;
+}
+
+} // namespace
+
 //=================================================================================================
 
 BRepGraph_UID BRepGraph::UIDsView::Of(const BRepGraph_NodeId theNode) const
@@ -34,15 +92,15 @@ BRepGraph_NodeId BRepGraph::UIDsView::NodeIdFrom(const BRepGraph_UID& theUID) co
 {
   if (!theUID.IsValid())
     return BRepGraph_NodeId();
+  if (theUID.Generation() != myGraph->myData->myGeneration.load())
+    return BRepGraph_NodeId();
 
-  const NCollection_Vector<BRepGraph_UID>& aVec = myGraph->myData->myIncStorage.UIDs(theUID.Kind());
+  BRepGraph_Data& aData = *myGraph->myData;
+  ensureUIDReverseIndex(aData);
 
-  for (int i = 0; i < aVec.Length(); ++i)
-  {
-    if (aVec.Value(i) == theUID)
-      return BRepGraph_NodeId(theUID.Kind(), i);
-  }
-  return BRepGraph_NodeId();
+  std::shared_lock<std::shared_mutex> aReadLock(aData.myUIDToNodeIdMutex);
+  const BRepGraph_NodeId*             aNodeId = aData.myUIDToNodeId.Seek(theUID);
+  return aNodeId != nullptr ? *aNodeId : BRepGraph_NodeId();
 }
 
 //=================================================================================================
@@ -54,14 +112,11 @@ bool BRepGraph::UIDsView::Has(const BRepGraph_UID& theUID) const
   if (theUID.Generation() != myGraph->myData->myGeneration.load())
     return false;
 
-  const NCollection_Vector<BRepGraph_UID>& aVec = myGraph->myData->myIncStorage.UIDs(theUID.Kind());
+  BRepGraph_Data& aData = *myGraph->myData;
+  ensureUIDReverseIndex(aData);
 
-  for (int i = 0; i < aVec.Length(); ++i)
-  {
-    if (aVec.Value(i) == theUID)
-      return true;
-  }
-  return false;
+  std::shared_lock<std::shared_mutex> aReadLock(aData.myUIDToNodeIdMutex);
+  return aData.myUIDToNodeId.Seek(theUID) != nullptr;
 }
 
 //=================================================================================================

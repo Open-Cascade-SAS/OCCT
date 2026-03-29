@@ -297,6 +297,53 @@ TEST(BRepGraph_RefIdTest, RefsView_AfterBuild_UIDRoundtripAndParentKinds)
   }
 }
 
+TEST(BRepGraph_RefIdTest, RefUIDReverseLookupStaysCurrentAfterProgrammaticAdd)
+{
+  BRepGraph aGraph;
+
+  const BRepGraph_NodeId aV0 = aGraph.Builder().AddVertex(gp_Pnt(0.0, 0.0, 0.0), 0.001);
+  const BRepGraph_NodeId aV1 = aGraph.Builder().AddVertex(gp_Pnt(1.0, 0.0, 0.0), 0.001);
+  (void)aGraph.Builder().AddEdge(aV0, aV1, occ::handle<Geom_Curve>(), 0.0, 1.0, 0.001);
+
+  const BRepGraph_RefId  aFirstRefId = BRepGraph_RefId::Vertex(0);
+  const BRepGraph_RefUID aFirstUID   = aGraph.Refs().UIDOf(aFirstRefId);
+  ASSERT_TRUE(aFirstUID.IsValid());
+  ASSERT_EQ(aGraph.Refs().RefIdFrom(aFirstUID), aFirstRefId);
+
+  const BRepGraph_NodeId aV2 = aGraph.Builder().AddVertex(gp_Pnt(2.0, 0.0, 0.0), 0.001);
+  const BRepGraph_NodeId aV3 = aGraph.Builder().AddVertex(gp_Pnt(3.0, 0.0, 0.0), 0.001);
+  (void)aGraph.Builder().AddEdge(aV2, aV3, occ::handle<Geom_Curve>(), 0.0, 1.0, 0.001);
+
+  const BRepGraph_RefId  aSecondRefId = BRepGraph_RefId::Vertex(2);
+  const BRepGraph_RefUID aSecondUID   = aGraph.Refs().UIDOf(aSecondRefId);
+  ASSERT_TRUE(aSecondUID.IsValid());
+
+  EXPECT_EQ(aGraph.Refs().RefIdFrom(aFirstUID), aFirstRefId);
+  EXPECT_EQ(aGraph.Refs().RefIdFrom(aSecondUID), aSecondRefId);
+  EXPECT_TRUE(aGraph.Refs().Has(aFirstUID));
+  EXPECT_TRUE(aGraph.Refs().Has(aSecondUID));
+}
+
+TEST(BRepGraph_RefIdTest, StaleRefUID_HasReturnsFalseAndLookupBecomesInvalidAfterRebuild)
+{
+  BRepPrimAPI_MakeBox aBoxMaker1(10.0, 20.0, 30.0);
+  BRepPrimAPI_MakeBox aBoxMaker2(11.0, 21.0, 31.0);
+
+  BRepGraph aGraph;
+  aGraph.Build(aBoxMaker1.Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+  ASSERT_GT(aGraph.Refs().NbFaceRefs(), 0);
+
+  const BRepGraph_RefUID anOldUID = aGraph.Refs().UIDOf(BRepGraph_RefId::Face(0));
+  ASSERT_TRUE(anOldUID.IsValid());
+  ASSERT_TRUE(aGraph.Refs().Has(anOldUID));
+
+  aGraph.Build(aBoxMaker2.Shape());
+
+  EXPECT_FALSE(aGraph.Refs().Has(anOldUID));
+  EXPECT_FALSE(aGraph.Refs().RefIdFrom(anOldUID).IsValid());
+}
+
 TEST(BRepGraph_RefIdTest, MutFaceRef_UpdatesRefStampAndParentModifiedFlag)
 {
   BRepGraph aGraph;

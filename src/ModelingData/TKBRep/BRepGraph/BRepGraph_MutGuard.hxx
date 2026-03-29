@@ -14,6 +14,8 @@
 #ifndef _BRepGraph_MutGuard_HeaderFile
 #define _BRepGraph_MutGuard_HeaderFile
 
+#include <Standard_ProgramError.hxx>
+
 #include <type_traits>
 
 //! @brief RAII guard wrapping a mutable topology definition or reference entry.
@@ -31,11 +33,10 @@
 //! - For types derived from BRepGraphInc::BaseRef: BRepGraph_RefId + markRefModified()
 //! - For types derived from BRepGraphInc::BaseRep: BRepGraph_RepId + markRepModified()
 //!
-//! @warning The stored pointer is valid only while no entities of the same
-//! kind are appended to the graph. Appending (e.g., Builder().AddVertex(),
-//! AddEdge(), etc.) may trigger internal vector reallocation, invalidating
-//! all pointers. Callers must not invoke any Builder().Add*() method
-//! while a BRepGraph_MutGuard is alive.
+//! @warning Guarded access is scoped mutation access, not a general transaction.
+//! Callers should not mix `Mut*()` and structural `Add*()` / `Remove*()` edits in
+//! the same logical mutation step, and parallel mutation batches should use
+//! `BRepGraph_DeferredScope`.
 //!
 //! @code
 //!   {
@@ -97,6 +98,7 @@ public:
         myId(theOther.myId)
   {
     theOther.myGraph = nullptr;
+    theOther.myEntity = nullptr;
   }
 
   //! Move assignment: flushes current guard, then transfers ownership.
@@ -110,6 +112,7 @@ public:
       myEntity         = theOther.myEntity;
       myId             = theOther.myId;
       theOther.myGraph = nullptr;
+      theOther.myEntity = nullptr;
     }
     return *this;
   }
@@ -118,10 +121,20 @@ public:
   BRepGraph_MutGuard& operator=(const BRepGraph_MutGuard&) = delete;
 
   //! Access the entity via pointer syntax.
-  [[nodiscard]] T* operator->() { return myEntity; }
+  [[nodiscard]] T* operator->()
+  {
+    Standard_ProgramError_Raise_if(myEntity == nullptr,
+                                   "BRepGraph_MutGuard::operator->(): guard is empty or moved-from");
+    return myEntity;
+  }
 
   //! Dereference to the entity.
-  [[nodiscard]] T& operator*() { return *myEntity; }
+  [[nodiscard]] T& operator*()
+  {
+    Standard_ProgramError_Raise_if(myEntity == nullptr,
+                                   "BRepGraph_MutGuard::operator*(): guard is empty or moved-from");
+    return *myEntity;
+  }
 
 private:
   BRepGraph* myGraph;  //!< Owning graph (nullptr after move).

@@ -33,6 +33,12 @@ class Geom2d_Curve;
 //! shape appending, soft-deletion of nodes, scoped mutable definition guards
 //! (RAII Mut* methods), and deferred invalidation mode for parallel mutation.
 //! Obtained via BRepGraph::Builder().
+//!
+//! Contract notes:
+//! - methods returning `BRepGraph_NodeId` return an invalid id on invalid inputs
+//!   (wrong kind, out-of-range, or removed referenced nodes)
+//! - link-style void methods keep the graph unchanged on invalid inputs
+//! - `Mut*()` accessors raise `Standard_ProgramError` for invalid or out-of-range ids
 class BRepGraph::BuilderView
 {
 public:
@@ -50,7 +56,7 @@ public:
   //! @param[in] theFirst     first curve parameter
   //! @param[in] theLast      last curve parameter
   //! @param[in] theTolerance edge tolerance
-  //! @return NodeId of the new edge definition
+  //! @return NodeId of the new edge definition, or invalid on bad vertex ids
   [[nodiscard]] Standard_EXPORT BRepGraph_NodeId AddEdge(const BRepGraph_NodeId         theStartVtx,
                                                          const BRepGraph_NodeId         theEndVtx,
                                                          const occ::handle<Geom_Curve>& theCurve,
@@ -70,7 +76,7 @@ public:
   //! @param[in] theOuterWire  outer wire def NodeId
   //! @param[in] theInnerWires inner wire def NodeIds
   //! @param[in] theTolerance  face tolerance
-  //! @return NodeId of the new face definition
+  //! @return NodeId of the new face definition, or invalid on bad wire ids
   [[nodiscard]] Standard_EXPORT BRepGraph_NodeId
     AddFace(const occ::handle<Geom_Surface>&            theSurface,
             const BRepGraph_NodeId                      theOuterWire,
@@ -117,7 +123,7 @@ public:
 
   //! Add a part product with a root shape node.
   //! @param[in] theShapeRoot root topology NodeId for the part
-  //! @return NodeId of the new product definition
+  //! @return NodeId of the new product definition, or invalid on a bad root node
   [[nodiscard]] Standard_EXPORT BRepGraph_NodeId AddProduct(const BRepGraph_NodeId theShapeRoot);
 
   //! Add an assembly product (no root shape, has child occurrences).
@@ -129,7 +135,7 @@ public:
   //! @param[in] theParentProduct      parent assembly product NodeId
   //! @param[in] theReferencedProduct  child product being instantiated
   //! @param[in] thePlacement          local placement relative to parent
-  //! @return NodeId of the new occurrence definition
+  //! @return NodeId of the new occurrence definition, or invalid on bad inputs
   [[nodiscard]] Standard_EXPORT BRepGraph_NodeId
     AddOccurrence(const BRepGraph_NodeId theParentProduct,
                   const BRepGraph_NodeId theReferencedProduct,
@@ -142,7 +148,7 @@ public:
   //! @param[in] theReferencedProduct  child product being instantiated
   //! @param[in] thePlacement          local placement relative to parent
   //! @param[in] theParentOccurrence   the occurrence that placed the parent product
-  //! @return NodeId of the new occurrence definition
+  //! @return NodeId of the new occurrence definition, or invalid on bad inputs
   [[nodiscard]] Standard_EXPORT BRepGraph_NodeId
     AddOccurrence(const BRepGraph_NodeId theParentProduct,
                   const BRepGraph_NodeId theReferencedProduct,
@@ -207,10 +213,9 @@ public:
   //! entities are modified sequentially and upward propagation should be
   //! deferred until all mutations are complete.
   //! Prefer BRepGraph_DeferredScope RAII guard.
-  //! @warning NOT thread-safe. Concurrent markModified() calls from multiple
-  //! threads require external synchronization (e.g., a mutex around each
-  //! MutGuard usage). The deferred list and propagation wave counter are
-  //! not protected by internal locks.
+  //! @warning NOT thread-safe on its own. Parallel mutation batches should use
+  //! `BRepGraph_DeferredScope`, and direct concurrent `Mut*()` usage still
+  //! requires external synchronization around the mutation body.
   Standard_EXPORT void BeginDeferredInvalidation();
 
   //! End deferred invalidation mode and batch-flush:

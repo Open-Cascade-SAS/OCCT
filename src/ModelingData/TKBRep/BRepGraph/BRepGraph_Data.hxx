@@ -91,6 +91,18 @@ struct BRepGraph_Data
   mutable NCollection_DataMap<BRepGraph_NodeId, CachedShape> myCurrentShapes;
   mutable std::shared_mutex                                  myCurrentShapesMutex;
 
+  //! Lazy reverse lookup index for entity UIDs.
+  mutable NCollection_DataMap<BRepGraph_UID, BRepGraph_NodeId> myUIDToNodeId;
+  mutable std::shared_mutex                                    myUIDToNodeIdMutex;
+  mutable uint32_t                                             myUIDToNodeIdGeneration = 0;
+  mutable bool                                                 myUIDToNodeIdDirty      = true;
+
+  //! Lazy reverse lookup index for reference UIDs.
+  mutable NCollection_DataMap<BRepGraph_RefUID, BRepGraph_RefId> myRefUIDToRefId;
+  mutable std::shared_mutex                                      myRefUIDToRefIdMutex;
+  mutable uint32_t                                               myRefUIDToRefIdGeneration = 0;
+  mutable bool                                                   myRefUIDToRefIdDirty      = true;
+
   using ReconstructCache = NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape>;
 
   //! Cached view objects (pointers set to owning BRepGraph in its constructor).
@@ -105,7 +117,9 @@ struct BRepGraph_Data
   BRepGraph_Data()
       : myAllocator(new NCollection_IncAllocator),
         myIncStorage(myAllocator),
-        myCurrentShapes(1, myAllocator)
+        myCurrentShapes(1, myAllocator),
+        myUIDToNodeId(1, myAllocator),
+        myRefUIDToRefId(1, myAllocator)
   {
     myHistoryLog.SetAllocator(myAllocator);
   }
@@ -115,7 +129,9 @@ struct BRepGraph_Data
                       ? theAlloc
                       : occ::handle<NCollection_BaseAllocator>(new NCollection_IncAllocator)),
         myIncStorage(myAllocator),
-        myCurrentShapes(1, myAllocator)
+        myCurrentShapes(1, myAllocator),
+        myUIDToNodeId(1, myAllocator),
+        myRefUIDToRefId(1, myAllocator)
   {
     myHistoryLog.SetAllocator(myAllocator);
   }

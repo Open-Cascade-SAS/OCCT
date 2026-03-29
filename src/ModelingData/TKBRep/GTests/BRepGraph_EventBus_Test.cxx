@@ -27,17 +27,17 @@
 class BRepGraph_ModTrackingLayer : public BRepGraph_Layer
 {
 public:
-  BRepGraph_ModTrackingLayer(const TCollection_AsciiString& theName, int theSubscribedKinds)
+  BRepGraph_ModTrackingLayer(const TCollection_AsciiString& theName,
+                             const int                     theSubscribedKinds,
+                             const Standard_GUID&          theId = Standard_GUID(
+                               "2f9b6a5c-1f2d-4a88-9c1c-7a0c16a10004"))
       : myName(theName),
-        mySubscribedKinds(theSubscribedKinds)
+        mySubscribedKinds(theSubscribedKinds),
+        myId(theId)
   {
   }
 
-  const Standard_GUID& ID() const override
-  {
-    static const Standard_GUID THE_ID("2f9b6a5c-1f2d-4a88-9c1c-7a0c16a10004");
-    return THE_ID;
-  }
+  const Standard_GUID& ID() const override { return myId; }
 
   const TCollection_AsciiString& Name() const override { return myName; }
 
@@ -107,6 +107,7 @@ public:
 private:
   TCollection_AsciiString myName;
   int                     mySubscribedKinds;
+  Standard_GUID           myId;
 };
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepGraph_ModTrackingLayer, BRepGraph_Layer)
@@ -282,10 +283,12 @@ TEST_F(BRepGraph_EventBusTest, MultipleSubscribers)
 {
   occ::handle<BRepGraph_ModTrackingLayer> aEdgeLayer =
     new BRepGraph_ModTrackingLayer("EdgeTracker",
-                                   BRepGraph_Layer::KindBit(BRepGraph_NodeId::Kind::Edge));
+                                   BRepGraph_Layer::KindBit(BRepGraph_NodeId::Kind::Edge),
+                                   Standard_GUID("2f9b6a5c-1f2d-4a88-9c1c-7a0c16a10005"));
   occ::handle<BRepGraph_ModTrackingLayer> aFaceLayer =
     new BRepGraph_ModTrackingLayer("FaceTracker",
-                                   BRepGraph_Layer::KindBit(BRepGraph_NodeId::Kind::Face));
+                                   BRepGraph_Layer::KindBit(BRepGraph_NodeId::Kind::Face),
+                                   Standard_GUID("2f9b6a5c-1f2d-4a88-9c1c-7a0c16a10006"));
   myGraph.RegisterLayer(aEdgeLayer);
   myGraph.RegisterLayer(aFaceLayer);
 

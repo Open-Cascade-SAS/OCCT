@@ -177,6 +177,26 @@ TEST(BRepGraph_AssemblyTest, DAGSharing_MultipleOccurrencesSamePart)
   EXPECT_EQ(aGraph.Paths().NbComponents(BRepGraph_ProductId(aAssemblyId.Index)), 2);
 }
 
+TEST(BRepGraph_AssemblyTest, AddOccurrence_ParentOccurrenceMustMatchParentProduct)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  const BRepGraph_NodeId aPartId      = BRepGraph_NodeId::Product(0);
+  const BRepGraph_NodeId anAssemblyA  = aGraph.Builder().AddAssemblyProduct();
+  const BRepGraph_NodeId anAssemblyB  = aGraph.Builder().AddAssemblyProduct();
+  const BRepGraph_NodeId aParentOccId = aGraph.Builder().AddOccurrence(anAssemblyA, aPartId, TopLoc_Location());
+  ASSERT_TRUE(aParentOccId.IsValid());
+
+  const BRepGraph_NodeId anInvalidOccId =
+    aGraph.Builder().AddOccurrence(anAssemblyB, aPartId, TopLoc_Location(), aParentOccId);
+
+  EXPECT_FALSE(anInvalidOccId.IsValid());
+  EXPECT_EQ(aGraph.Paths().NbOccurrences(), 1);
+  EXPECT_EQ(aGraph.Paths().NbComponents(BRepGraph_ProductId(anAssemblyB.Index)), 0);
+}
+
 // =============================================================================
 // RootProducts_Query
 // =============================================================================

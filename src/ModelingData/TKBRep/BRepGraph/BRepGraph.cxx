@@ -22,6 +22,8 @@
 #include <NCollection_Map.hxx>
 #include <Standard_ProgramError.hxx>
 
+#include <shared_mutex>
+
 //=================================================================================================
 
 void BRepGraph::initViews()
@@ -165,6 +167,19 @@ BRepGraph_UID BRepGraph::allocateUID(const BRepGraph_NodeId theNodeId)
   const uint32_t aGeneration = myData->myGeneration.load(std::memory_order_relaxed);
   BRepGraph_UID  aUID(theNodeId.NodeKind, aCounter, aGeneration);
   myData->myIncStorage.ChangeUIDs(theNodeId.NodeKind).Append(aUID);
+  {
+    std::unique_lock<std::shared_mutex> aLock(myData->myUIDToNodeIdMutex);
+    if (myData->myUIDToNodeIdGeneration != aGeneration)
+    {
+      myData->myUIDToNodeId.Clear();
+      myData->myUIDToNodeIdGeneration = aGeneration;
+      myData->myUIDToNodeIdDirty      = false;
+    }
+    if (!myData->myUIDToNodeIdDirty)
+    {
+      myData->myUIDToNodeId.Bind(aUID, theNodeId);
+    }
+  }
   myData->myNextUIDCounter.fetch_add(1, std::memory_order_relaxed);
   return aUID;
 }
@@ -179,6 +194,19 @@ BRepGraph_RefUID BRepGraph::allocateRefUID(const BRepGraph_RefId theRefId)
   const uint32_t aGeneration = myData->myGeneration.load(std::memory_order_relaxed);
   const BRepGraph_RefUID aUID(theRefId.RefKind, aCounter, aGeneration);
   myData->myIncStorage.ChangeRefUIDs(theRefId.RefKind).Append(aUID);
+  {
+    std::unique_lock<std::shared_mutex> aLock(myData->myRefUIDToRefIdMutex);
+    if (myData->myRefUIDToRefIdGeneration != aGeneration)
+    {
+      myData->myRefUIDToRefId.Clear();
+      myData->myRefUIDToRefIdGeneration = aGeneration;
+      myData->myRefUIDToRefIdDirty      = false;
+    }
+    if (!myData->myRefUIDToRefIdDirty)
+    {
+      myData->myRefUIDToRefId.Bind(aUID, theRefId);
+    }
+  }
   myData->myNextUIDCounter.fetch_add(1, std::memory_order_relaxed);
   return aUID;
 }

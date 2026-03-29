@@ -34,7 +34,7 @@ public:
   //! @return UID for the node, or invalid UID if theNode is out of bounds
   [[nodiscard]] Standard_EXPORT BRepGraph_UID Of(const BRepGraph_NodeId theNode) const;
 
-  //! Resolve a UID back to a NodeId (O(n) linear scan).
+  //! Resolve a UID back to a NodeId using the internal reverse index.
   //! @param[in] theUID unique identifier to resolve
   //! @return corresponding NodeId, or invalid NodeId if not found
   [[nodiscard]] Standard_EXPORT BRepGraph_NodeId NodeIdFrom(const BRepGraph_UID& theUID) const;

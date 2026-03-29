@@ -29,6 +29,7 @@
 #include <gp_Lin.hxx>
 #include <gp_Pln.hxx>
 #include <Precision.hxx>
+#include <Standard_ProgramError.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 
@@ -257,6 +258,44 @@ TEST(BRepGraph_BuilderTest, AddFace_WithSurface)
   EXPECT_TRUE(aFaceDef.SurfaceRepId.IsValid());
 }
 
+TEST(BRepGraph_BuilderTest, AddEdge_InvalidVertex_ReturnsInvalidAndDoesNotAppend)
+{
+  BRepGraph        aGraph;
+  BRepGraph_NodeId aVertexId = aGraph.Builder().AddVertex(gp_Pnt(0.0, 0.0, 0.0), 0.001);
+
+  const BRepGraph_NodeId anEdgeId =
+    aGraph.Builder().AddEdge(aVertexId, BRepGraph_NodeId::Vertex(42), occ::handle<Geom_Curve>(), 0.0, 1.0, 0.001);
+
+  EXPECT_FALSE(anEdgeId.IsValid());
+  EXPECT_EQ(aGraph.Topo().NbEdges(), 0);
+}
+
+TEST(BRepGraph_BuilderTest, AddWire_InvalidEdge_ReturnsInvalidAndDoesNotAppend)
+{
+  BRepGraph aGraph;
+
+  NCollection_Vector<std::pair<BRepGraph_NodeId, TopAbs_Orientation>> anEdges;
+  anEdges.Append({BRepGraph_NodeId::Edge(17), TopAbs_FORWARD});
+
+  const BRepGraph_NodeId aWireId = aGraph.Builder().AddWire(anEdges);
+  EXPECT_FALSE(aWireId.IsValid());
+  EXPECT_EQ(aGraph.Topo().NbWires(), 0);
+  EXPECT_EQ(aGraph.Topo().NbCoEdges(), 0);
+}
+
+TEST(BRepGraph_BuilderTest, AddFace_InvalidOuterWire_ReturnsInvalidAndDoesNotAppend)
+{
+  BRepGraph aGraph;
+
+  occ::handle<Geom_Plane>              aPlane = new Geom_Plane(gp_Pln());
+  NCollection_Vector<BRepGraph_NodeId> anInnerWires;
+  const BRepGraph_NodeId               aFaceId =
+    aGraph.Builder().AddFace(aPlane, BRepGraph_NodeId::Wire(9), anInnerWires, 0.001);
+
+  EXPECT_FALSE(aFaceId.IsValid());
+  EXPECT_EQ(aGraph.Topo().NbFaces(), 0);
+}
+
 TEST(BRepGraph_BuilderTest, AddShellAndSolid)
 {
   BRepGraph        aGraph;
@@ -386,6 +425,16 @@ TEST(BRepGraph_BuilderTest, AddFaceToShell_CreatesUsage)
   EXPECT_EQ(BRepGraph_TestTools::CountFaceRefsOfShell(aGraph, BRepGraph_ShellId(0)), 1);
 }
 
+TEST(BRepGraph_BuilderTest, AddFaceToShell_InvalidNodes_NoMutation)
+{
+  BRepGraph aGraph;
+
+  const BRepGraph_NodeId aShellId = aGraph.Builder().AddShell();
+  aGraph.Builder().AddFaceToShell(aShellId, BRepGraph_NodeId::Face(4));
+
+  EXPECT_EQ(BRepGraph_TestTools::CountFaceRefsOfShell(aGraph, BRepGraph_ShellId(aShellId.Index)), 0);
+}
+
 TEST(BRepGraph_BuilderTest, AddShellToSolid_CreatesUsage)
 {
   BRepGraph aGraph;
@@ -396,6 +445,14 @@ TEST(BRepGraph_BuilderTest, AddShellToSolid_CreatesUsage)
   aGraph.Builder().AddShellToSolid(aSolidId, aShellId);
 
   EXPECT_EQ(BRepGraph_TestTools::CountShellRefsOfSolid(aGraph, BRepGraph_SolidId(0)), 1);
+}
+
+TEST(BRepGraph_BuilderTest, MutInvalidVertex_ThrowsProgramError)
+{
+  BRepGraph aGraph;
+
+  EXPECT_THROW((void)aGraph.Builder().MutVertex(BRepGraph_VertexId(7)),
+               Standard_ProgramError);
 }
 
 TEST(BRepGraph_BuilderTest, AddCompound_WithChildren)

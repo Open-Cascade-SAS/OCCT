@@ -1204,6 +1204,26 @@ TEST_F(BRepGraphTest, StaleUID_HasReturnsFalseAfterRebuild)
   aGraph.Build(aBoxMaker2.Shape());
 
   EXPECT_FALSE(aGraph.UIDs().Has(anOldUID));
+  EXPECT_FALSE(aGraph.UIDs().NodeIdFrom(anOldUID).IsValid());
+}
+
+TEST(BRepGraph_UIDsViewTest, ReverseLookupStaysCurrentAfterProgrammaticAdd)
+{
+  BRepGraph aGraph;
+
+  const BRepGraph_NodeId aFirstVertex = aGraph.Builder().AddVertex(gp_Pnt(0.0, 0.0, 0.0), 0.001);
+  const BRepGraph_UID    aFirstUID    = aGraph.UIDs().Of(aFirstVertex);
+  ASSERT_TRUE(aFirstUID.IsValid());
+  ASSERT_EQ(aGraph.UIDs().NodeIdFrom(aFirstUID), aFirstVertex);
+
+  const BRepGraph_NodeId aSecondVertex = aGraph.Builder().AddVertex(gp_Pnt(1.0, 0.0, 0.0), 0.001);
+  const BRepGraph_UID    aSecondUID    = aGraph.UIDs().Of(aSecondVertex);
+  ASSERT_TRUE(aSecondUID.IsValid());
+
+  EXPECT_EQ(aGraph.UIDs().NodeIdFrom(aFirstUID), aFirstVertex);
+  EXPECT_EQ(aGraph.UIDs().NodeIdFrom(aSecondUID), aSecondVertex);
+  EXPECT_TRUE(aGraph.UIDs().Has(aFirstUID));
+  EXPECT_TRUE(aGraph.UIDs().Has(aSecondUID));
 }
 
 // ===================================================================
