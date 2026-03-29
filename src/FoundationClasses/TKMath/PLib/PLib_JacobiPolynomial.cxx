@@ -104,6 +104,10 @@ void PLib_JacobiPolynomial::Points(const int                   theNbGaussPoints,
 void PLib_JacobiPolynomial::Weights(const int                   theNbGaussPoints,
                                     NCollection_Array2<double>& theTabWeights) const
 {
+  // Zero-initialize entire output array to ensure columns beyond myDegree
+  // (which are not populated below) contain valid finite values.
+  theTabWeights.Init(0.0);
+
   double const* aDbPointer = THE_WEIGHTS_DB[myNivConstr];
   const int     aMinDegree = 2 * (myNivConstr + 1);
 
@@ -165,13 +169,7 @@ void PLib_JacobiPolynomial::Weights(const int                   theNbGaussPoints
       aDbPointer0 += ((THE_NB_GAUSS_POINTS_25 - 1 - aMinDegree) / 2 + 1);
     }
 
-    // Fill row 0: zeros everywhere (explicit column loop for proper 2D array access)
-    for (int j = 0; j <= myDegree; j++)
-    {
-      theTabWeights.ChangeValue(0, j) = 0.0;
-    }
-
-    // Overwrite even columns with data from database
+    // Overwrite even columns of row 0 with data from database
     for (int j = 0; j <= myDegree; j += 2)
     {
       theTabWeights.ChangeValue(0, j) = *aDbPointer0++;
