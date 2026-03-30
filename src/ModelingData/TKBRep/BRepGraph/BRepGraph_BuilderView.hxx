@@ -40,7 +40,7 @@ class Geom2d_Curve;
 //!   partially modify the graph; call IsValid() on the returned id to check
 //!   success
 //! - invalid inputs include wrong kind, out-of-range ids, or removed referenced
-//!   nodes unless a method documents a narrower precondition
+//!   nodes unless a method documents stricter accepted-input rules
 //! - linking methods such as AddFaceToShell() and AddShellToSolid() return an
 //!   invalid typed RefId on failure and otherwise keep ownership explicit in
 //!   the reference layer
@@ -157,7 +157,7 @@ public:
 
   //! Add an occurrence with an explicit parent occurrence for nested assembly chains.
   //! This establishes a tree-structured placement path for unambiguous
-  //! GlobalPlacement computation even when products are shared (DAG).
+  //! GlobalLocation() / GlobalOrientation() computation even when products are shared (DAG).
   //! @param[in] theParentProduct      typed parent assembly product identifier
   //! @param[in] theReferencedProduct  typed child product identifier being instantiated
   //! @param[in] thePlacement          local placement relative to parent

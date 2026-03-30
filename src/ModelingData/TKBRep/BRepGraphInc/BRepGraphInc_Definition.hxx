@@ -198,6 +198,9 @@ struct FaceDef : public BaseDef
   NCollection_Vector<BRepGraph_WireRefId> WireRefIds; //!< Wire ref indices (outer first)
 
   //! Direct INTERNAL/EXTERNAL vertex children (not inside wires).
+  //! Boundary vertices are normally reached through WireRefIds -> CoEdgeRefIds
+  //! -> CoEdgeDef.EdgeDefId -> EdgeDef.{StartVertexRefId, EndVertexRefId}.
+  //! This vector is for additional direct face-owned vertex usage.
   NCollection_Vector<BRepGraph_VertexRefId> VertexRefIds;
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)

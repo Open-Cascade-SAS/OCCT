@@ -163,7 +163,7 @@ public:
   [[nodiscard]] Standard_EXPORT const BRepGraphInc::CoEdgeDef& CoEdge(
     const BRepGraph_CoEdgeId theCoEdge) const;
 
-  //! Generic topology definition lookup by NodeId.
+  //! Generic node-definition lookup by NodeId (topology or assembly).
   //! @param[in] theId node identifier
   //! @return pointer to BaseDef or nullptr if invalid
   [[nodiscard]] Standard_EXPORT const BRepGraphInc::BaseDef* TopoEntity(

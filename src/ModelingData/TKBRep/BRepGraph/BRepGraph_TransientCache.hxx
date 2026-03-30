@@ -80,11 +80,14 @@ private:
 //!
 //! Maps stable GUID identity to dense runtime slot index. Slot indices are an
 //! internal storage detail used by BRepGraph_TransientCache for O(1) indexing.
+//! The registry is shared across all BRepGraph instances in the current process,
+//! so cache-kind GUIDs should be globally unique.
 class BRepGraph_CacheKindRegistry
 {
 public:
   //! Register a cache kind descriptor.
   //! Idempotent: the same GUID always yields the same slot.
+  //! Slot assignment is process-global and graph-instance independent.
   //! @return dense runtime slot, or -1 for null input
   [[nodiscard]] Standard_EXPORT static int Register(const occ::handle<BRepGraph_CacheKind>& theKind);
 

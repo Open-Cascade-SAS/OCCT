@@ -26,18 +26,14 @@
 //! NodeIds via TShape pointer comparison. Shape() is the stable cached public
 //! route for repeated access; Reconstruct() forces a fresh rebuild with the
 //! same node-kind semantics and bypasses the persistent reconstructed-shape cache.
-//! The reconstructed-shape cache is keyed by node and validated against the
-//! current SubtreeGen. Shape() rebuilds only when the cached generation no
-//! longer matches. Build() and Compact() clear the cache entirely. Reconstruct()
-//! always rebuilds fresh and does not populate the persistent cache.
+//! Build() and Compact() clear the persistent reconstructed-shape cache.
 //! Obtained via BRepGraph::Shapes().
 class BRepGraph::ShapesView
 {
 public:
   //! Return or reconstruct a TopoDS_Shape for a node.
   //! Prefer this route for repeated public queries.
-  //! Returns the original Build()/AppendShape() shape directly while the node
-  //! still has SubtreeGen == 0; otherwise uses the SubtreeGen-validated cache.
+  //! Returns a cached shape when available and valid; otherwise reconstructs.
   //! Topology definition nodes (Vertex..CompSolid) reconstruct their topology
   //! directly, without assembly wrappers.
   //! Product nodes are reconstructed in product-local coordinates.

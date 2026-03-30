@@ -25,6 +25,11 @@
 //! how a child definition is used by its parent (orientation, location).
 //! Reference entries are stored in flat per-kind vectors in BRepGraphInc_Storage
 //! and support mutation tracking and soft-removal.
+//! Not every definition kind has a dedicated Ref kind by design:
+//! - Edge usage is represented by CoEdgeRef -> CoEdgeDef (which then targets EdgeDef)
+//! - Compound children use ChildRef (heterogeneous NodeId target)
+//! - Product children use OccurrenceRef (placement owned by OccurrenceDef)
+//! - CompSolid children use SolidRef
 //!
 //! For lightweight read-only projections without lifecycle fields, see
 //! BRepGraphInc_Usage.hxx (Usage structs carry only DefId + Orientation + Location).
