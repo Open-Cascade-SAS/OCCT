@@ -155,7 +155,7 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_ReconstructAfterFlush_Su
   myGraph.Builder().EndDeferredInvalidation();
 
   // Reconstruction should succeed (shape cache was cleared on flush).
-  const BRepGraph_NodeId aSolidId = BRepGraph_NodeId::Solid(0);
+  const BRepGraph_NodeId aSolidId = BRepGraph_SolidId(0);
   TopoDS_Shape           aShape;
   EXPECT_NO_THROW(aShape = myGraph.Shapes().Reconstruct(aSolidId));
   EXPECT_FALSE(aShape.IsNull());

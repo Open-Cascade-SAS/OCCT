@@ -63,7 +63,7 @@ static TopoDS_Shape reconstructProductLocal(BRepGraph_ReconstructionContext& the
   if (!theProduct.IsValid(aStorage.NbProducts()))
     return TopoDS_Shape();
 
-  const BRepGraph_NodeId aProductNode = BRepGraph_NodeId::Product(theProduct.Index);
+  const BRepGraph_NodeId aProductNode = BRepGraph_ProductId(theProduct.Index);
   if (const TopoDS_Shape* aCached = theContext.Cache.Seek(aProductNode))
     return *aCached;
 

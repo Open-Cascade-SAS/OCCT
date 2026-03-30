@@ -99,11 +99,11 @@ int countInlineChildRefs(const BRepGraph& theGraph)
   const BRepGraph::TopoView& aTopo = theGraph.Topo();
   int                        aNb   = 0;
   for (int i = 0; i < aTopo.NbCompounds(); ++i)
-    aNb += BRepGraph_TestTools::CountChildRefsOfParent(theGraph, BRepGraph_NodeId::Compound(i));
+    aNb += BRepGraph_TestTools::CountChildRefsOfParent(theGraph, BRepGraph_CompoundId(i));
   for (int i = 0; i < aTopo.NbShells(); ++i)
-    aNb += BRepGraph_TestTools::CountChildRefsOfParent(theGraph, BRepGraph_NodeId::Shell(i));
+    aNb += BRepGraph_TestTools::CountChildRefsOfParent(theGraph, BRepGraph_ShellId(i));
   for (int i = 0; i < aTopo.NbSolids(); ++i)
-    aNb += BRepGraph_TestTools::CountChildRefsOfParent(theGraph, BRepGraph_NodeId::Solid(i));
+    aNb += BRepGraph_TestTools::CountChildRefsOfParent(theGraph, BRepGraph_SolidId(i));
   return aNb;
 }
 
@@ -418,11 +418,11 @@ TEST(BRepGraph_RefIdTest, ChildRefs_CompoundEntriesAreValid)
   for (int aCompIdx = 0; aCompIdx < aTopo.NbCompounds(); ++aCompIdx)
   {
     const NCollection_Vector<BRepGraph_ChildRefId> aChildRefs =
-      BRepGraph_TestTools::ChildRefsOfParent(aGraph, BRepGraph_NodeId::Compound(aCompIdx));
+      BRepGraph_TestTools::ChildRefsOfParent(aGraph, BRepGraph_CompoundId(aCompIdx));
     for (int aChildRefIdx = 0; aChildRefIdx < aChildRefs.Length(); ++aChildRefIdx)
     {
       const BRepGraphInc::ChildRef& aRef = aRefs.Child(aChildRefs.Value(aChildRefIdx));
-      EXPECT_EQ(aRef.ParentId, BRepGraph_NodeId::Compound(aCompIdx));
+      EXPECT_EQ(aRef.ParentId, BRepGraph_CompoundId(aCompIdx));
       EXPECT_TRUE(aRef.ChildDefId.IsValid());
       EXPECT_FALSE(aRef.IsRemoved);
     }

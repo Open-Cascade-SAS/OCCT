@@ -319,9 +319,9 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
       if (anIt.Key() != anIt.Value())
       {
         NCollection_Vector<BRepGraph_NodeId> aRepl;
-        aRepl.Append(BRepGraph_NodeId::Vertex(anIt.Value()));
+        aRepl.Append(BRepGraph_VertexId(anIt.Value()));
         theGraph.History().Record(TCollection_AsciiString("Compact:Remap"),
-                                  BRepGraph_NodeId::Vertex(anIt.Key()),
+                                  BRepGraph_VertexId(anIt.Key()),
                                   aRepl);
       }
     }
@@ -330,9 +330,9 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
       if (anIt.Key() != anIt.Value())
       {
         NCollection_Vector<BRepGraph_NodeId> aRepl;
-        aRepl.Append(BRepGraph_NodeId::Edge(anIt.Value()));
+        aRepl.Append(BRepGraph_EdgeId(anIt.Value()));
         theGraph.History().Record(TCollection_AsciiString("Compact:Remap"),
-                                  BRepGraph_NodeId::Edge(anIt.Key()),
+                                  BRepGraph_EdgeId(anIt.Key()),
                                   aRepl);
       }
     }
@@ -341,9 +341,9 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
       if (anIt.Key() != anIt.Value())
       {
         NCollection_Vector<BRepGraph_NodeId> aRepl;
-        aRepl.Append(BRepGraph_NodeId::Face(anIt.Value()));
+        aRepl.Append(BRepGraph_FaceId(anIt.Value()));
         theGraph.History().Record(TCollection_AsciiString("Compact:Remap"),
-                                  BRepGraph_NodeId::Face(anIt.Key()),
+                                  BRepGraph_FaceId(anIt.Key()),
                                   aRepl);
       }
     }
@@ -690,23 +690,23 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
   // Build unified remap map covering all 8 topology kinds.
   NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId> aRemapMap;
   for (NCollection_DataMap<int, int>::Iterator it(aVertexMap); it.More(); it.Next())
-    aRemapMap.Bind(BRepGraph_NodeId::Vertex(it.Key()), BRepGraph_NodeId::Vertex(it.Value()));
+    aRemapMap.Bind(BRepGraph_VertexId(it.Key()), BRepGraph_VertexId(it.Value()));
   for (NCollection_DataMap<int, int>::Iterator it(anEdgeMap); it.More(); it.Next())
-    aRemapMap.Bind(BRepGraph_NodeId::Edge(it.Key()), BRepGraph_NodeId::Edge(it.Value()));
+    aRemapMap.Bind(BRepGraph_EdgeId(it.Key()), BRepGraph_EdgeId(it.Value()));
   for (NCollection_DataMap<int, int>::Iterator it(aCoEdgeMap); it.More(); it.Next())
-    aRemapMap.Bind(BRepGraph_NodeId::CoEdge(it.Key()), BRepGraph_NodeId::CoEdge(it.Value()));
+    aRemapMap.Bind(BRepGraph_CoEdgeId(it.Key()), BRepGraph_CoEdgeId(it.Value()));
   for (NCollection_DataMap<int, int>::Iterator it(aWireMap); it.More(); it.Next())
-    aRemapMap.Bind(BRepGraph_NodeId::Wire(it.Key()), BRepGraph_NodeId::Wire(it.Value()));
+    aRemapMap.Bind(BRepGraph_WireId(it.Key()), BRepGraph_WireId(it.Value()));
   for (NCollection_DataMap<int, int>::Iterator it(aFaceMap); it.More(); it.Next())
-    aRemapMap.Bind(BRepGraph_NodeId::Face(it.Key()), BRepGraph_NodeId::Face(it.Value()));
+    aRemapMap.Bind(BRepGraph_FaceId(it.Key()), BRepGraph_FaceId(it.Value()));
   for (NCollection_DataMap<int, int>::Iterator it(aShellMap); it.More(); it.Next())
-    aRemapMap.Bind(BRepGraph_NodeId::Shell(it.Key()), BRepGraph_NodeId::Shell(it.Value()));
+    aRemapMap.Bind(BRepGraph_ShellId(it.Key()), BRepGraph_ShellId(it.Value()));
   for (NCollection_DataMap<int, int>::Iterator it(aSolidMap); it.More(); it.Next())
-    aRemapMap.Bind(BRepGraph_NodeId::Solid(it.Key()), BRepGraph_NodeId::Solid(it.Value()));
+    aRemapMap.Bind(BRepGraph_SolidId(it.Key()), BRepGraph_SolidId(it.Value()));
   for (NCollection_DataMap<int, int>::Iterator it(aCompoundMap); it.More(); it.Next())
-    aRemapMap.Bind(BRepGraph_NodeId::Compound(it.Key()), BRepGraph_NodeId::Compound(it.Value()));
+    aRemapMap.Bind(BRepGraph_CompoundId(it.Key()), BRepGraph_CompoundId(it.Value()));
   for (NCollection_DataMap<int, int>::Iterator it(aCompSolidMap); it.More(); it.Next())
-    aRemapMap.Bind(BRepGraph_NodeId::CompSolid(it.Key()), BRepGraph_NodeId::CompSolid(it.Value()));
+    aRemapMap.Bind(BRepGraph_CompSolidId(it.Key()), BRepGraph_CompSolidId(it.Value()));
 
   theGraph.LayerRegistry().DispatchOnCompact(aRemapMap);
 

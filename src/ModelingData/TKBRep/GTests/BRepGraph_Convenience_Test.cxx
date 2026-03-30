@@ -41,43 +41,43 @@ protected:
 
 TEST_F(BRepGraph_ConvenienceTest, NodeId_Factories_CorrectKindAndIndex)
 {
-  const BRepGraph_NodeId aSolid = BRepGraph_NodeId::Solid(3);
+  const BRepGraph_NodeId aSolid = BRepGraph_SolidId(3);
   EXPECT_EQ(aSolid.NodeKind, BRepGraph_NodeId::Kind::Solid);
   EXPECT_EQ(aSolid.Index, 3);
 
-  const BRepGraph_NodeId aShell = BRepGraph_NodeId::Shell(5);
+  const BRepGraph_NodeId aShell = BRepGraph_ShellId(5);
   EXPECT_EQ(aShell.NodeKind, BRepGraph_NodeId::Kind::Shell);
   EXPECT_EQ(aShell.Index, 5);
 
-  const BRepGraph_NodeId aFace = BRepGraph_NodeId::Face(0);
+  const BRepGraph_NodeId aFace = BRepGraph_FaceId(0);
   EXPECT_EQ(aFace.NodeKind, BRepGraph_NodeId::Kind::Face);
   EXPECT_EQ(aFace.Index, 0);
 
-  const BRepGraph_NodeId aWire = BRepGraph_NodeId::Wire(2);
+  const BRepGraph_NodeId aWire = BRepGraph_WireId(2);
   EXPECT_EQ(aWire.NodeKind, BRepGraph_NodeId::Kind::Wire);
   EXPECT_EQ(aWire.Index, 2);
 
-  const BRepGraph_NodeId anEdge = BRepGraph_NodeId::Edge(7);
+  const BRepGraph_NodeId anEdge = BRepGraph_EdgeId(7);
   EXPECT_EQ(anEdge.NodeKind, BRepGraph_NodeId::Kind::Edge);
   EXPECT_EQ(anEdge.Index, 7);
 
-  const BRepGraph_NodeId aVertex = BRepGraph_NodeId::Vertex(1);
+  const BRepGraph_NodeId aVertex = BRepGraph_VertexId(1);
   EXPECT_EQ(aVertex.NodeKind, BRepGraph_NodeId::Kind::Vertex);
   EXPECT_EQ(aVertex.Index, 1);
 
-  const BRepGraph_NodeId aCompound = BRepGraph_NodeId::Compound(0);
+  const BRepGraph_NodeId aCompound = BRepGraph_CompoundId(0);
   EXPECT_EQ(aCompound.NodeKind, BRepGraph_NodeId::Kind::Compound);
   EXPECT_EQ(aCompound.Index, 0);
 
-  const BRepGraph_NodeId aCompSolid = BRepGraph_NodeId::CompSolid(0);
+  const BRepGraph_NodeId aCompSolid = BRepGraph_CompSolidId(0);
   EXPECT_EQ(aCompSolid.NodeKind, BRepGraph_NodeId::Kind::CompSolid);
   EXPECT_EQ(aCompSolid.Index, 0);
 }
 
 TEST_F(BRepGraph_ConvenienceTest, NodeId_Factories_EqualToConstructor)
 {
-  EXPECT_EQ(BRepGraph_NodeId::Face(3), BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, 3));
-  EXPECT_EQ(BRepGraph_NodeId::Edge(0), BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, 0));
+  EXPECT_EQ(BRepGraph_FaceId(3), BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, 3));
+  EXPECT_EQ(BRepGraph_EdgeId(0), BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, 0));
 }
 
 // ---------- Part B: EdgeDef Vertex Access via BRepGraph_Tool ----------
@@ -150,7 +150,7 @@ TEST_F(BRepGraph_ConvenienceTest, FindPCurve_ValidPair)
   // Find an edge/face pair that has a PCurve.
   for (int aFaceIter = 0; aFaceIter < aDefs.NbFaces(); ++aFaceIter)
   {
-    const BRepGraph_NodeId aFaceNodeId = BRepGraph_NodeId::Face(aFaceIter);
+    const BRepGraph_NodeId aFaceNodeId = BRepGraph_FaceId(aFaceIter);
 
     for (int anEdgeIter = 0; anEdgeIter < aDefs.NbEdges(); ++anEdgeIter)
     {

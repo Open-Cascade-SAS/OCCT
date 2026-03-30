@@ -224,7 +224,7 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
     // Remove face if all edges are small/degenerate.
     if (aNbEdges > 0 && aNbSmall == aNbEdges)
     {
-      const BRepGraph_NodeId aFaceNodeId = BRepGraph_NodeId::Face(aFaceIdx);
+      const BRepGraph_NodeId aFaceNodeId = BRepGraph_FaceId(aFaceIdx);
       theGraph.Builder().RemoveNode(aFaceNodeId);
       NCollection_Vector<BRepGraph_NodeId> anEmpty;
       theGraph.History().Record(TCollection_AsciiString("FaceAnalysis:RemoveFace"),
@@ -325,9 +325,9 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
   for (NCollection_DataMap<int, int>::Iterator anIt(aFinalMerge); anIt.More(); anIt.Next())
   {
     NCollection_Vector<BRepGraph_NodeId> aRepl;
-    aRepl.Append(BRepGraph_NodeId::Vertex(anIt.Value()));
+    aRepl.Append(BRepGraph_VertexId(anIt.Value()));
     theGraph.History().Record(TCollection_AsciiString("FaceAnalysis:MergeVertex"),
-                              BRepGraph_NodeId::Vertex(anIt.Key()),
+                              BRepGraph_VertexId(anIt.Key()),
                               aRepl);
   }
 

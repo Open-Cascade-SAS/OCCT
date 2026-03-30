@@ -174,35 +174,35 @@ void BRepGraph_Builder::Perform(BRepGraph&                            theGraph,
     {
       case TopAbs_COMPOUND:
         if (aStorage.NbCompounds() > 0)
-          aTopologyRoot = BRepGraph_NodeId::Compound(0);
+          aTopologyRoot = BRepGraph_CompoundId(0);
         break;
       case TopAbs_COMPSOLID:
         if (aStorage.NbCompSolids() > 0)
-          aTopologyRoot = BRepGraph_NodeId::CompSolid(0);
+          aTopologyRoot = BRepGraph_CompSolidId(0);
         break;
       case TopAbs_SOLID:
         if (aStorage.NbSolids() > 0)
-          aTopologyRoot = BRepGraph_NodeId::Solid(0);
+          aTopologyRoot = BRepGraph_SolidId(0);
         break;
       case TopAbs_SHELL:
         if (aStorage.NbShells() > 0)
-          aTopologyRoot = BRepGraph_NodeId::Shell(0);
+          aTopologyRoot = BRepGraph_ShellId(0);
         break;
       case TopAbs_FACE:
         if (aStorage.NbFaces() > 0)
-          aTopologyRoot = BRepGraph_NodeId::Face(0);
+          aTopologyRoot = BRepGraph_FaceId(0);
         break;
       case TopAbs_WIRE:
         if (aStorage.NbWires() > 0)
-          aTopologyRoot = BRepGraph_NodeId::Wire(0);
+          aTopologyRoot = BRepGraph_WireId(0);
         break;
       case TopAbs_EDGE:
         if (aStorage.NbEdges() > 0)
-          aTopologyRoot = BRepGraph_NodeId::Edge(0);
+          aTopologyRoot = BRepGraph_EdgeId(0);
         break;
       case TopAbs_VERTEX:
         if (aStorage.NbVertices() > 0)
-          aTopologyRoot = BRepGraph_NodeId::Vertex(0);
+          aTopologyRoot = BRepGraph_VertexId(0);
         break;
       default:
         break;
@@ -213,7 +213,7 @@ void BRepGraph_Builder::Perform(BRepGraph&                            theGraph,
 
     BRepGraphInc::ProductDef& aProduct    = aStorage.AppendProduct();
     const int                 aProductIdx = aStorage.NbProducts() - 1;
-    aProduct.Id                           = BRepGraph_NodeId::Product(aProductIdx);
+    aProduct.Id                           = BRepGraph_ProductId(aProductIdx);
     aProduct.ShapeRootId                  = aTopologyRoot; // invalid if no topology matched
     aProduct.RootOrientation              = theShape.Orientation();
     aProduct.RootLocation                 = theShape.Location();
@@ -323,35 +323,35 @@ void BRepGraph_Builder::Append(BRepGraph&          theGraph,
   {
     case TopAbs_COMPOUND:
       if (aStorage.NbCompounds() > anOldComp)
-        anAppendedRoot = BRepGraph_NodeId::Compound(anOldComp);
+        anAppendedRoot = BRepGraph_CompoundId(anOldComp);
       break;
     case TopAbs_COMPSOLID:
       if (aStorage.NbCompSolids() > anOldCS)
-        anAppendedRoot = BRepGraph_NodeId::CompSolid(anOldCS);
+        anAppendedRoot = BRepGraph_CompSolidId(anOldCS);
       break;
     case TopAbs_SOLID:
       if (aStorage.NbSolids() > anOldSolid)
-        anAppendedRoot = BRepGraph_NodeId::Solid(anOldSolid);
+        anAppendedRoot = BRepGraph_SolidId(anOldSolid);
       break;
     case TopAbs_SHELL:
       if (aStorage.NbShells() > anOldShell)
-        anAppendedRoot = BRepGraph_NodeId::Shell(anOldShell);
+        anAppendedRoot = BRepGraph_ShellId(anOldShell);
       break;
     case TopAbs_FACE:
       if (aStorage.NbFaces() > anOldFace)
-        anAppendedRoot = BRepGraph_NodeId::Face(anOldFace);
+        anAppendedRoot = BRepGraph_FaceId(anOldFace);
       break;
     case TopAbs_WIRE:
       if (aStorage.NbWires() > anOldWire)
-        anAppendedRoot = BRepGraph_NodeId::Wire(anOldWire);
+        anAppendedRoot = BRepGraph_WireId(anOldWire);
       break;
     case TopAbs_EDGE:
       if (aStorage.NbEdges() > anOldEdge)
-        anAppendedRoot = BRepGraph_NodeId::Edge(anOldEdge);
+        anAppendedRoot = BRepGraph_EdgeId(anOldEdge);
       break;
     case TopAbs_VERTEX:
       if (aStorage.NbVertices() > anOldVtx)
-        anAppendedRoot = BRepGraph_NodeId::Vertex(anOldVtx);
+        anAppendedRoot = BRepGraph_VertexId(anOldVtx);
       break;
     default:
       break;

@@ -48,7 +48,7 @@ NCollection_Vector<BRepGraph_CoEdgeRefId> coEdgeRefsOfWire(const BRepGraph&     
                                                            const BRepGraph_WireId theWireId)
 {
   NCollection_Vector<BRepGraph_CoEdgeRefId> aRefIds;
-  const BRepGraph_NodeId                    aParentNode = BRepGraph_NodeId::Wire(theWireId.Index);
+  const BRepGraph_NodeId                    aParentNode = BRepGraph_WireId(theWireId.Index);
   const BRepGraph::RefsView&                aRefs       = theGraph.Refs();
   for (int aRefIdx = 0; aRefIdx < aRefs.NbCoEdgeRefs(); ++aRefIdx)
   {
@@ -142,7 +142,7 @@ TEST(BRepGraphAlgo_ValidateTest, DetectsRemovedNodeReference)
   ASSERT_GE(aVtxToRemove, 0);
 
   // Remove the vertex without fixing edges referencing it.
-  aGraph.Builder().RemoveNode(BRepGraph_NodeId::Vertex(aVtxToRemove));
+  aGraph.Builder().RemoveNode(BRepGraph_VertexId(aVtxToRemove));
 
   const BRepGraphAlgo_Validate::Result aDefaultResult = BRepGraphAlgo_Validate::Perform(aGraph);
   EXPECT_TRUE(aDefaultResult.IsValid());
@@ -197,8 +197,8 @@ TEST(BRepGraphAlgo_ValidateTest, WireConnectivity_DisconnectedEdges)
   const BRepGraph_NodeId anOrigEnd = BRepGraph_NodeId(anOrigEndVtx);
   for (int aVtxIdx = 0; aVtxIdx < aGraph.Topo().NbVertices(); ++aVtxIdx)
   {
-    if (BRepGraph_NodeId::Vertex(aVtxIdx) != anOrigEnd
-        && BRepGraph_NodeId::Vertex(aVtxIdx) != BRepGraph_NodeId(anOrigStartVtx))
+    if (BRepGraph_VertexId(aVtxIdx) != anOrigEnd
+        && BRepGraph_VertexId(aVtxIdx) != BRepGraph_NodeId(anOrigStartVtx))
     {
       BRepGraph_MutGuard<BRepGraphInc::VertexRef> aMutEndRef =
         aGraph.Builder().MutVertexRef(aFirstEdge->EndVertexRefId);
@@ -272,7 +272,7 @@ TEST(BRepGraphAlgo_ValidateTest, AfterSplitEdge_ProducesSubEdges)
         && BRepGraph_Tool::Edge::StartVertex(aGraph, anCandEdgeId).VertexDefId.IsValid()
         && BRepGraph_Tool::Edge::EndVertex(aGraph, anCandEdgeId).VertexDefId.IsValid())
     {
-      anEdgeId    = BRepGraph_NodeId::Edge(i);
+      anEdgeId    = BRepGraph_EdgeId(i);
       aSplitParam = 0.5 * (anEdgeDef.ParamFirst + anEdgeDef.ParamLast);
       break;
     }
@@ -312,7 +312,7 @@ TEST(BRepGraphAlgo_ValidateTest, CorruptedPCurve_FaceDefIdOutOfBounds)
   ASSERT_GT(aGraph.Topo().NbCoEdges(), 0);
   BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef> aCoEdgeDef =
     aGraph.Builder().MutCoEdge(BRepGraph_CoEdgeId(0));
-  aCoEdgeDef->FaceDefId = BRepGraph_NodeId::Face(aGraph.Topo().NbFaces() + 999);
+  aCoEdgeDef->FaceDefId = BRepGraph_FaceId(aGraph.Topo().NbFaces() + 999);
 
   const BRepGraphAlgo_Validate::Result aDefaultResult = BRepGraphAlgo_Validate::Perform(aGraph);
   EXPECT_FALSE(aDefaultResult.IsValid());
@@ -383,7 +383,7 @@ TEST(BRepGraphAlgo_ValidateTest, DeepDetectsIdDriftButLightweightSkipsIt)
   ASSERT_GT(aGraph.Topo().NbFaces(), 0);
 
   BRepGraph_MutGuard<BRepGraphInc::FaceDef> aFaceDef = aGraph.Builder().MutFace(BRepGraph_FaceId(0));
-  aFaceDef->Id                                     = BRepGraph_NodeId::Face(42);
+  aFaceDef->Id                                     = BRepGraph_FaceId(42);
 
   const BRepGraphAlgo_Validate::Result aLightResult =
     BRepGraphAlgo_Validate::Perform(aGraph, BRepGraphAlgo_Validate::Options::Lightweight());
@@ -413,7 +413,7 @@ TEST(BRepGraphAlgo_ValidateTest, Audit_ValidatesCoEdgeUIDsFromBuilderWireCreatio
     coEdgeRefsOfWire(aGraph, aWireId);
   ASSERT_EQ(aWireRefIds.Length(), 1);
   const BRepGraph_NodeId aCoEdgeId =
-    BRepGraph_NodeId::CoEdge(aGraph.Refs().CoEdge(aWireRefIds.Value(0)).CoEdgeDefId.Index);
+    BRepGraph_CoEdgeId(aGraph.Refs().CoEdge(aWireRefIds.Value(0)).CoEdgeDefId.Index);
   EXPECT_TRUE(aGraph.UIDs().Of(aCoEdgeId).IsValid());
 
   const BRepGraphAlgo_Validate::Result anAuditResult =
@@ -500,7 +500,7 @@ TEST(BRepGraphAlgo_ValidateTest, AssemblyGraph_CorruptedProductShapeRootId_Detec
   // Corrupt ShapeRootId to an out-of-bounds value.
   BRepGraph_MutGuard<BRepGraphInc::ProductDef> aProduct =
     aGraph.Builder().MutProduct(BRepGraph_ProductId(0));
-  aProduct->ShapeRootId = BRepGraph_NodeId::Solid(aGraph.Topo().NbSolids() + 1);
+  aProduct->ShapeRootId = BRepGraph_SolidId(aGraph.Topo().NbSolids() + 1);
 
   const BRepGraphAlgo_Validate::Result aAuditResult =
     BRepGraphAlgo_Validate::Perform(aGraph, BRepGraphAlgo_Validate::Options::Audit());
@@ -606,7 +606,7 @@ TEST(BRepGraphAlgo_ValidateTest, LightweightVsAudit_RemovedVertexReference_Diffe
 
   // Remove the vertex. RemoveNode correctly decrements active count
   // but does NOT fix edges that still reference it.
-  aGraph.Builder().RemoveNode(BRepGraph_NodeId::Vertex(aVtxToRemove));
+  aGraph.Builder().RemoveNode(BRepGraph_VertexId(aVtxToRemove));
 
   // Lightweight only checks active counts - should pass.
   const BRepGraphAlgo_Validate::Result aLightResult =

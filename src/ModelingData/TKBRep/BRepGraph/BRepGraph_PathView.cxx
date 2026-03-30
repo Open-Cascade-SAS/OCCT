@@ -939,7 +939,7 @@ NCollection_Vector<BRepGraph_TopologyPath> BRepGraph::PathView::reverseWalkPaths
           aHasParent = true;
           // Recurse: CompSolid may itself be inside a Compound.
           NCollection_Vector<BRepGraph_TopologyPath> aParentPaths =
-            reverseWalkPaths(BRepGraph_NodeId::CompSolid(aCSIdx), theDepthBudget - 1);
+            reverseWalkPaths(BRepGraph_CompSolidId(aCSIdx), theDepthBudget - 1);
           for (int p = 0; p < aParentPaths.Length(); ++p)
           {
             BRepGraph_TopologyPath aPath = aParentPaths.Value(p);
@@ -978,7 +978,7 @@ NCollection_Vector<BRepGraph_TopologyPath> BRepGraph::PathView::reverseWalkPaths
             continue;
           aHasParent = true;
           NCollection_Vector<BRepGraph_TopologyPath> aParentPaths =
-            reverseWalkPaths(BRepGraph_NodeId::Compound(aCompIdx), theDepthBudget - 1);
+            reverseWalkPaths(BRepGraph_CompoundId(aCompIdx), theDepthBudget - 1);
           for (int p = 0; p < aParentPaths.Length(); ++p)
           {
             BRepGraph_TopologyPath aPath = aParentPaths.Value(p);
@@ -1021,7 +1021,7 @@ NCollection_Vector<BRepGraph_TopologyPath> BRepGraph::PathView::reverseWalkPaths
           if (aRefIdx < 0)
             continue;
           NCollection_Vector<BRepGraph_TopologyPath> aGrandPaths =
-            reverseWalkPaths(BRepGraph_NodeId::Compound(aParentIdx), theDepthBudget - 1);
+            reverseWalkPaths(BRepGraph_CompoundId(aParentIdx), theDepthBudget - 1);
           for (int g = 0; g < aGrandPaths.Length(); ++g)
           {
             BRepGraph_TopologyPath aPath = aGrandPaths.Value(g);
@@ -1065,7 +1065,7 @@ NCollection_Vector<BRepGraph_TopologyPath> BRepGraph::PathView::reverseWalkPaths
           if (aRefIdx < 0)
             continue;
           NCollection_Vector<BRepGraph_TopologyPath> aCompPaths =
-            reverseWalkPaths(BRepGraph_NodeId::Compound(aCompIdx), theDepthBudget - 1);
+            reverseWalkPaths(BRepGraph_CompoundId(aCompIdx), theDepthBudget - 1);
           for (int g = 0; g < aCompPaths.Length(); ++g)
           {
             BRepGraph_TopologyPath aPath = aCompPaths.Value(g);
@@ -1344,7 +1344,7 @@ void BRepGraph::PathView::reverseWalkFromFace(const int theFaceIdx,
       if (aRefIdx < 0)
         continue;
       NCollection_Vector<BRepGraph_TopologyPath> aCompPaths =
-        reverseWalkPaths(BRepGraph_NodeId::Compound(aCompIdx), theDepthBudget - 1);
+        reverseWalkPaths(BRepGraph_CompoundId(aCompIdx), theDepthBudget - 1);
       for (int i = 0; i < aCompPaths.Length(); ++i)
       {
         BRepGraph_TopologyPath aPath = aCompPaths.Value(i);
@@ -1397,7 +1397,7 @@ void BRepGraph::PathView::reverseWalkFromShell(
       aHasParent = true;
       // Solid may have Compound/CompSolid parents - recurse.
       NCollection_Vector<BRepGraph_TopologyPath> aSolidPaths =
-        reverseWalkPaths(BRepGraph_NodeId::Solid(aSolidIdx), theDepthBudget - 1);
+        reverseWalkPaths(BRepGraph_SolidId(aSolidIdx), theDepthBudget - 1);
       for (int i = 0; i < aSolidPaths.Length(); ++i)
       {
         BRepGraph_TopologyPath aPath = aSolidPaths.Value(i);
@@ -1436,7 +1436,7 @@ void BRepGraph::PathView::reverseWalkFromShell(
         continue;
       aHasParent = true;
       NCollection_Vector<BRepGraph_TopologyPath> aCompPaths =
-        reverseWalkPaths(BRepGraph_NodeId::Compound(aCompIdx), theDepthBudget - 1);
+        reverseWalkPaths(BRepGraph_CompoundId(aCompIdx), theDepthBudget - 1);
       for (int i = 0; i < aCompPaths.Length(); ++i)
       {
         BRepGraph_TopologyPath aPath = aCompPaths.Value(i);
@@ -1449,7 +1449,7 @@ void BRepGraph::PathView::reverseWalkFromShell(
   // Standalone root if no parents found.
   if (!aHasParent)
   {
-    theResult.Append(BRepGraph_TopologyPath(BRepGraph_NodeId::Shell(theShellIdx)));
+    theResult.Append(BRepGraph_TopologyPath(BRepGraph_ShellId(theShellIdx)));
   }
 }
 

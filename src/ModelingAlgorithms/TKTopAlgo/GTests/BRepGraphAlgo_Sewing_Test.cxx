@@ -1020,7 +1020,7 @@ TEST(BRepGraphAlgo_SewingTest, Sew_Convenience_MatchesPerform)
 
   // Count faces in both results.
   int aNbPerformFaces = 0;
-  for (TopExp_Explorer anExp(aGraph.Shapes().Reconstruct(BRepGraph_NodeId::Compound(0)),
+  for (TopExp_Explorer anExp(aGraph.Shapes().Reconstruct(BRepGraph_CompoundId(0)),
                              TopAbs_FACE);
        anExp.More();
        anExp.Next())

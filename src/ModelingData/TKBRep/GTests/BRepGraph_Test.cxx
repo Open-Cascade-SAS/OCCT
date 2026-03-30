@@ -119,61 +119,61 @@ static ReverseIndexInputData buildReverseIndexBaseInput()
 
   BRepGraphInc::EdgeDef& anEdge = aData.Edges.Appended();
   anEdge.InitVectors(occ::handle<NCollection_BaseAllocator>());
-  anEdge.Id = BRepGraph_NodeId::Edge(0);
+  anEdge.Id = BRepGraph_EdgeId(0);
 
   // Create vertex ref entries for start and end vertices.
   BRepGraphInc::VertexRef& aStartVRef0 = aData.VertexRefs.Appended();
-  aStartVRef0.ParentId                 = BRepGraph_NodeId::Edge(0);
+  aStartVRef0.ParentId                 = BRepGraph_EdgeId(0);
   aStartVRef0.VertexDefId              = BRepGraph_VertexId(0);
   aStartVRef0.Orientation              = TopAbs_FORWARD;
   anEdge.StartVertexRefId              = BRepGraph_VertexRefId(aData.VertexRefs.Length() - 1);
 
   BRepGraphInc::VertexRef& anEndVRef0 = aData.VertexRefs.Appended();
-  anEndVRef0.ParentId                 = BRepGraph_NodeId::Edge(0);
+  anEndVRef0.ParentId                 = BRepGraph_EdgeId(0);
   anEndVRef0.VertexDefId              = BRepGraph_VertexId(1);
   anEndVRef0.Orientation              = TopAbs_REVERSED;
   anEdge.EndVertexRefId               = BRepGraph_VertexRefId(aData.VertexRefs.Length() - 1);
 
   BRepGraphInc::CoEdgeDef& aCoEdge = aData.CoEdges.Appended();
   aCoEdge.InitVectors(occ::handle<NCollection_BaseAllocator>());
-  aCoEdge.Id        = BRepGraph_NodeId::CoEdge(0);
+  aCoEdge.Id        = BRepGraph_CoEdgeId(0);
   aCoEdge.EdgeDefId = BRepGraph_EdgeId(0);
   aCoEdge.FaceDefId = BRepGraph_FaceId(0);
 
   BRepGraphInc::WireDef& aWire = aData.Wires.Appended();
   aWire.InitVectors(occ::handle<NCollection_BaseAllocator>());
-  aWire.Id = BRepGraph_NodeId::Wire(0);
+  aWire.Id = BRepGraph_WireId(0);
 
   BRepGraphInc::CoEdgeRef& aCoEdgeRef = aData.CoEdgeRefs.Appended();
-  aCoEdgeRef.ParentId                 = BRepGraph_NodeId::Wire(0);
+  aCoEdgeRef.ParentId                 = BRepGraph_WireId(0);
   aCoEdgeRef.CoEdgeDefId              = BRepGraph_CoEdgeId(0);
   aWire.CoEdgeRefIds.Append(BRepGraph_CoEdgeRefId(0));
 
   BRepGraphInc::FaceDef& aFace = aData.Faces.Appended();
   aFace.InitVectors(occ::handle<NCollection_BaseAllocator>());
-  aFace.Id = BRepGraph_NodeId::Face(0);
+  aFace.Id = BRepGraph_FaceId(0);
 
   BRepGraphInc::WireRef& aWireRef = aData.WireRefs.Appended();
-  aWireRef.ParentId               = BRepGraph_NodeId::Face(0);
+  aWireRef.ParentId               = BRepGraph_FaceId(0);
   aWireRef.WireDefId              = BRepGraph_WireId(0);
   aWireRef.IsOuter                = true;
   aFace.WireRefIds.Append(BRepGraph_WireRefId(0));
 
   BRepGraphInc::ShellDef& aShell = aData.Shells.Appended();
   aShell.InitVectors(occ::handle<NCollection_BaseAllocator>());
-  aShell.Id = BRepGraph_NodeId::Shell(0);
+  aShell.Id = BRepGraph_ShellId(0);
 
   BRepGraphInc::FaceRef& aFaceRef = aData.FaceRefs.Appended();
-  aFaceRef.ParentId               = BRepGraph_NodeId::Shell(0);
+  aFaceRef.ParentId               = BRepGraph_ShellId(0);
   aFaceRef.FaceDefId              = BRepGraph_FaceId(0);
   aShell.FaceRefIds.Append(BRepGraph_FaceRefId(0));
 
   BRepGraphInc::SolidDef& aSolid = aData.Solids.Appended();
   aSolid.InitVectors(occ::handle<NCollection_BaseAllocator>());
-  aSolid.Id = BRepGraph_NodeId::Solid(0);
+  aSolid.Id = BRepGraph_SolidId(0);
 
   BRepGraphInc::ShellRef& aShellRef = aData.ShellRefs.Appended();
-  aShellRef.ParentId                = BRepGraph_NodeId::Solid(0);
+  aShellRef.ParentId                = BRepGraph_SolidId(0);
   aShellRef.ShellDefId              = BRepGraph_ShellId(0);
   aSolid.ShellRefIds.Append(BRepGraph_ShellRefId(0));
 
@@ -185,125 +185,125 @@ static void appendReverseIndexDeltaInput(ReverseIndexInputData& theData)
   // Active edge/wire/face/shell/solid chain.
   BRepGraphInc::EdgeDef& anEdge = theData.Edges.Appended();
   anEdge.InitVectors(occ::handle<NCollection_BaseAllocator>());
-  anEdge.Id = BRepGraph_NodeId::Edge(1);
+  anEdge.Id = BRepGraph_EdgeId(1);
 
   BRepGraphInc::VertexRef& aStartVRef1 = theData.VertexRefs.Appended();
-  aStartVRef1.ParentId                 = BRepGraph_NodeId::Edge(1);
+  aStartVRef1.ParentId                 = BRepGraph_EdgeId(1);
   aStartVRef1.VertexDefId              = BRepGraph_VertexId(2);
   aStartVRef1.Orientation              = TopAbs_FORWARD;
   anEdge.StartVertexRefId              = BRepGraph_VertexRefId(theData.VertexRefs.Length() - 1);
 
   BRepGraphInc::VertexRef& anEndVRef1 = theData.VertexRefs.Appended();
-  anEndVRef1.ParentId                 = BRepGraph_NodeId::Edge(1);
+  anEndVRef1.ParentId                 = BRepGraph_EdgeId(1);
   anEndVRef1.VertexDefId              = BRepGraph_VertexId(3);
   anEndVRef1.Orientation              = TopAbs_REVERSED;
   anEdge.EndVertexRefId               = BRepGraph_VertexRefId(theData.VertexRefs.Length() - 1);
 
   BRepGraphInc::CoEdgeDef& aCoEdge = theData.CoEdges.Appended();
   aCoEdge.InitVectors(occ::handle<NCollection_BaseAllocator>());
-  aCoEdge.Id        = BRepGraph_NodeId::CoEdge(1);
+  aCoEdge.Id        = BRepGraph_CoEdgeId(1);
   aCoEdge.EdgeDefId = BRepGraph_EdgeId(1);
   aCoEdge.FaceDefId = BRepGraph_FaceId(1);
 
   BRepGraphInc::WireDef& aWire = theData.Wires.Appended();
   aWire.InitVectors(occ::handle<NCollection_BaseAllocator>());
-  aWire.Id = BRepGraph_NodeId::Wire(1);
+  aWire.Id = BRepGraph_WireId(1);
 
   BRepGraphInc::CoEdgeRef& aCoEdgeRef = theData.CoEdgeRefs.Appended();
-  aCoEdgeRef.ParentId                 = BRepGraph_NodeId::Wire(1);
+  aCoEdgeRef.ParentId                 = BRepGraph_WireId(1);
   aCoEdgeRef.CoEdgeDefId              = BRepGraph_CoEdgeId(1);
   aWire.CoEdgeRefIds.Append(BRepGraph_CoEdgeRefId(theData.CoEdgeRefs.Length() - 1));
 
   BRepGraphInc::FaceDef& aFace = theData.Faces.Appended();
   aFace.InitVectors(occ::handle<NCollection_BaseAllocator>());
-  aFace.Id = BRepGraph_NodeId::Face(1);
+  aFace.Id = BRepGraph_FaceId(1);
 
   BRepGraphInc::WireRef& aWireRef = theData.WireRefs.Appended();
-  aWireRef.ParentId               = BRepGraph_NodeId::Face(1);
+  aWireRef.ParentId               = BRepGraph_FaceId(1);
   aWireRef.WireDefId              = BRepGraph_WireId(1);
   aWireRef.IsOuter                = true;
   aFace.WireRefIds.Append(BRepGraph_WireRefId(theData.WireRefs.Length() - 1));
 
   BRepGraphInc::ShellDef& aShell = theData.Shells.Appended();
   aShell.InitVectors(occ::handle<NCollection_BaseAllocator>());
-  aShell.Id = BRepGraph_NodeId::Shell(1);
+  aShell.Id = BRepGraph_ShellId(1);
 
   BRepGraphInc::FaceRef& aFaceRef = theData.FaceRefs.Appended();
-  aFaceRef.ParentId               = BRepGraph_NodeId::Shell(1);
+  aFaceRef.ParentId               = BRepGraph_ShellId(1);
   aFaceRef.FaceDefId              = BRepGraph_FaceId(1);
   aShell.FaceRefIds.Append(BRepGraph_FaceRefId(theData.FaceRefs.Length() - 1));
 
   BRepGraphInc::SolidDef& aSolid = theData.Solids.Appended();
   aSolid.InitVectors(occ::handle<NCollection_BaseAllocator>());
-  aSolid.Id = BRepGraph_NodeId::Solid(1);
+  aSolid.Id = BRepGraph_SolidId(1);
 
   BRepGraphInc::ShellRef& aShellRef = theData.ShellRefs.Appended();
-  aShellRef.ParentId                = BRepGraph_NodeId::Solid(1);
+  aShellRef.ParentId                = BRepGraph_SolidId(1);
   aShellRef.ShellDefId              = BRepGraph_ShellId(1);
   aSolid.ShellRefIds.Append(BRepGraph_ShellRefId(theData.ShellRefs.Length() - 1));
 
   // Removed entities to ensure BuildDelta skips them.
   BRepGraphInc::EdgeDef& aRemovedEdge = theData.Edges.Appended();
   aRemovedEdge.InitVectors(occ::handle<NCollection_BaseAllocator>());
-  aRemovedEdge.Id        = BRepGraph_NodeId::Edge(2);
+  aRemovedEdge.Id        = BRepGraph_EdgeId(2);
   aRemovedEdge.IsRemoved = true;
 
   BRepGraphInc::VertexRef& aRemovedStartVRef = theData.VertexRefs.Appended();
-  aRemovedStartVRef.ParentId                 = BRepGraph_NodeId::Edge(2);
+  aRemovedStartVRef.ParentId                 = BRepGraph_EdgeId(2);
   aRemovedStartVRef.VertexDefId              = BRepGraph_VertexId(10);
   aRemovedStartVRef.Orientation              = TopAbs_FORWARD;
   aRemovedEdge.StartVertexRefId = BRepGraph_VertexRefId(theData.VertexRefs.Length() - 1);
 
   BRepGraphInc::VertexRef& aRemovedEndVRef = theData.VertexRefs.Appended();
-  aRemovedEndVRef.ParentId                 = BRepGraph_NodeId::Edge(2);
+  aRemovedEndVRef.ParentId                 = BRepGraph_EdgeId(2);
   aRemovedEndVRef.VertexDefId              = BRepGraph_VertexId(11);
   aRemovedEndVRef.Orientation              = TopAbs_REVERSED;
   aRemovedEdge.EndVertexRefId              = BRepGraph_VertexRefId(theData.VertexRefs.Length() - 1);
 
   BRepGraphInc::CoEdgeDef& aRemovedCoEdge = theData.CoEdges.Appended();
   aRemovedCoEdge.InitVectors(occ::handle<NCollection_BaseAllocator>());
-  aRemovedCoEdge.Id        = BRepGraph_NodeId::CoEdge(2);
+  aRemovedCoEdge.Id        = BRepGraph_CoEdgeId(2);
   aRemovedCoEdge.IsRemoved = true;
   aRemovedCoEdge.EdgeDefId = BRepGraph_EdgeId(2);
   aRemovedCoEdge.FaceDefId = BRepGraph_FaceId(2);
 
   BRepGraphInc::WireDef& aRemovedWire = theData.Wires.Appended();
   aRemovedWire.InitVectors(occ::handle<NCollection_BaseAllocator>());
-  aRemovedWire.Id        = BRepGraph_NodeId::Wire(2);
+  aRemovedWire.Id        = BRepGraph_WireId(2);
   aRemovedWire.IsRemoved = true;
 
   BRepGraphInc::CoEdgeRef& aRemovedCoEdgeRef = theData.CoEdgeRefs.Appended();
-  aRemovedCoEdgeRef.ParentId                 = BRepGraph_NodeId::Wire(2);
+  aRemovedCoEdgeRef.ParentId                 = BRepGraph_WireId(2);
   aRemovedCoEdgeRef.CoEdgeDefId              = BRepGraph_CoEdgeId(2);
   aRemovedCoEdgeRef.IsRemoved                = true;
 
   BRepGraphInc::FaceDef& aRemovedFace = theData.Faces.Appended();
   aRemovedFace.InitVectors(occ::handle<NCollection_BaseAllocator>());
-  aRemovedFace.Id        = BRepGraph_NodeId::Face(2);
+  aRemovedFace.Id        = BRepGraph_FaceId(2);
   aRemovedFace.IsRemoved = true;
 
   BRepGraphInc::WireRef& aRemovedWireRef = theData.WireRefs.Appended();
-  aRemovedWireRef.ParentId               = BRepGraph_NodeId::Face(2);
+  aRemovedWireRef.ParentId               = BRepGraph_FaceId(2);
   aRemovedWireRef.WireDefId              = BRepGraph_WireId(2);
   aRemovedWireRef.IsRemoved              = true;
 
   BRepGraphInc::ShellDef& aRemovedShell = theData.Shells.Appended();
   aRemovedShell.InitVectors(occ::handle<NCollection_BaseAllocator>());
-  aRemovedShell.Id        = BRepGraph_NodeId::Shell(2);
+  aRemovedShell.Id        = BRepGraph_ShellId(2);
   aRemovedShell.IsRemoved = true;
 
   BRepGraphInc::FaceRef& aRemovedFaceRef = theData.FaceRefs.Appended();
-  aRemovedFaceRef.ParentId               = BRepGraph_NodeId::Shell(2);
+  aRemovedFaceRef.ParentId               = BRepGraph_ShellId(2);
   aRemovedFaceRef.FaceDefId              = BRepGraph_FaceId(2);
   aRemovedFaceRef.IsRemoved              = true;
 
   BRepGraphInc::SolidDef& aRemovedSolid = theData.Solids.Appended();
   aRemovedSolid.InitVectors(occ::handle<NCollection_BaseAllocator>());
-  aRemovedSolid.Id        = BRepGraph_NodeId::Solid(2);
+  aRemovedSolid.Id        = BRepGraph_SolidId(2);
   aRemovedSolid.IsRemoved = true;
 
   BRepGraphInc::ShellRef& aRemovedShellRef = theData.ShellRefs.Appended();
-  aRemovedShellRef.ParentId                = BRepGraph_NodeId::Solid(2);
+  aRemovedShellRef.ParentId                = BRepGraph_SolidId(2);
   aRemovedShellRef.ShellDefId              = BRepGraph_ShellId(2);
   aRemovedShellRef.IsRemoved               = true;
 }
@@ -436,7 +436,7 @@ TEST_F(BRepGraphTest, FaceCountMatchesFacesVector_AfterBindUnbindSequence)
   // Add a second active face for bind/unbind sequence checks.
   BRepGraphInc::FaceDef& aFace1 = aData.Faces.Appended();
   aFace1.InitVectors(occ::handle<NCollection_BaseAllocator>());
-  aFace1.Id = BRepGraph_NodeId::Face(1);
+  aFace1.Id = BRepGraph_FaceId(1);
 
   BRepGraphInc_ReverseIndex aRevIdx;
   aRevIdx.Build(aData.Edges,
@@ -519,7 +519,7 @@ TEST_F(BRepGraphTest, ReverseIndexValidate_DetectsStaleEdgeWireMapping)
   // Inject stale reverse entry (edge 0 -> wire 1) with no matching forward coedge ref.
   BRepGraphInc::WireDef& aWire1 = aData.Wires.Appended();
   aWire1.InitVectors(occ::handle<NCollection_BaseAllocator>());
-  aWire1.Id = BRepGraph_NodeId::Wire(1);
+  aWire1.Id = BRepGraph_WireId(1);
 
   aRevIdx.BindEdgeToWire(BRepGraph_EdgeId(0), BRepGraph_WireId(1));
 
@@ -1441,8 +1441,8 @@ TEST_F(BRepGraphTest, RemoveNode_EdgeWithReplacement_ReparentsAllCoEdges)
   const BRepGraph_EdgeId anOldEdgeId  = myGraph.Topo().CoEdge(aRef.CoEdgeDefId).EdgeDefId;
   const BRepGraph_EdgeId aNewEdgeId((anOldEdgeId.Index + 1) % myGraph.Topo().NbEdges());
 
-  myGraph.Builder().RemoveNode(BRepGraph_NodeId::Edge(anOldEdgeId.Index),
-                               BRepGraph_NodeId::Edge(aNewEdgeId.Index));
+  myGraph.Builder().RemoveNode(BRepGraph_EdgeId(anOldEdgeId.Index),
+                               BRepGraph_EdgeId(aNewEdgeId.Index));
 
   const NCollection_Vector<BRepGraph_CoEdgeId>& anOldCoEdges = myGraph.Topo().CoEdgesOfEdge(anOldEdgeId);
   EXPECT_EQ(anOldCoEdges.Length(), 0);

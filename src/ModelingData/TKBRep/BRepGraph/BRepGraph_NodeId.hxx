@@ -167,35 +167,6 @@ struct BRepGraph_NodeId
     return Index >= 0 && Index < theMaxCount;
   }
 
-  //! @name Static factory methods returning typed NodeIds.
-  static Typed<Kind::Solid> Solid(const int theIdx) { return Typed<Kind::Solid>(theIdx); }
-
-  static Typed<Kind::Shell> Shell(const int theIdx) { return Typed<Kind::Shell>(theIdx); }
-
-  static Typed<Kind::Face> Face(const int theIdx) { return Typed<Kind::Face>(theIdx); }
-
-  static Typed<Kind::Wire> Wire(const int theIdx) { return Typed<Kind::Wire>(theIdx); }
-
-  static Typed<Kind::Edge> Edge(const int theIdx) { return Typed<Kind::Edge>(theIdx); }
-
-  static Typed<Kind::Vertex> Vertex(const int theIdx) { return Typed<Kind::Vertex>(theIdx); }
-
-  static Typed<Kind::Compound> Compound(const int theIdx) { return Typed<Kind::Compound>(theIdx); }
-
-  static Typed<Kind::CompSolid> CompSolid(const int theIdx)
-  {
-    return Typed<Kind::CompSolid>(theIdx);
-  }
-
-  static Typed<Kind::CoEdge> CoEdge(const int theIdx) { return Typed<Kind::CoEdge>(theIdx); }
-
-  static Typed<Kind::Product> Product(const int theIdx) { return Typed<Kind::Product>(theIdx); }
-
-  static Typed<Kind::Occurrence> Occurrence(const int theIdx)
-  {
-    return Typed<Kind::Occurrence>(theIdx);
-  }
-
   bool operator==(const BRepGraph_NodeId& theOther) const
   {
     return NodeKind == theOther.NodeKind && Index == theOther.Index;

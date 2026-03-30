@@ -33,7 +33,7 @@
 //! PathView methods consume paths produced by BRepGraph_Explorer or assembled
 //! explicitly via BRepGraph_TopologyPath.
 //! @code
-//!   BRepGraph_Explorer anExp(aGraph, BRepGraph_NodeId::Solid(0), Kind::Face);
+//!   BRepGraph_Explorer anExp(aGraph, BRepGraph_SolidId(0), Kind::Face);
 //!   for (; anExp.More(); anExp.Next())
 //!   {
 //!     TopLoc_Location aFaceLoc = aGraph.Paths().GlobalLocation(anExp.CurrentPath());

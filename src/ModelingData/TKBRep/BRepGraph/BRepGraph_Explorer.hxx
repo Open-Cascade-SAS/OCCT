@@ -45,7 +45,7 @@
 //!
 //! ## Usage
 //! @code
-//!   for (BRepGraph_Explorer anExp(aGraph, BRepGraph_NodeId::Solid(0),
+//!   for (BRepGraph_Explorer anExp(aGraph, BRepGraph_SolidId(0),
 //!                                  BRepGraph_NodeId::Kind::Edge);
 //!        anExp.More(); anExp.Next())
 //!   {

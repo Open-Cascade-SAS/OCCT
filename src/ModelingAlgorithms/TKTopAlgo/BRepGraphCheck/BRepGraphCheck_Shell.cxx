@@ -217,7 +217,7 @@ void BRepGraphCheck::CheckShellClosed(const BRepGraph&                          
     for (int aWireIter = 0; aWireIter < aFaceWireRefs.Length(); ++aWireIter)
     {
       const BRepGraphInc::WireRef& aWR         = aFaceWireRefs.Value(aWireIter);
-      const BRepGraph_NodeId       aWireNodeId = BRepGraph_NodeId::Wire(aWR.WireDefId.Index);
+      const BRepGraph_NodeId       aWireNodeId = BRepGraph_WireId(aWR.WireDefId.Index);
       const NCollection_Vector<BRepGraphInc::CoEdgeUsage> aWireCoEdgeRefs =
         collectWireCoEdgeRefs(aDefs, aRefs, aWireNodeId);
 
@@ -302,7 +302,7 @@ void BRepGraphCheck::CheckShellOrientation(const BRepGraph&                     
     for (int aWireIter = 0; aWireIter < aFaceWireRefs.Length(); ++aWireIter)
     {
       const BRepGraphInc::WireRef& aWR         = aFaceWireRefs.Value(aWireIter);
-      const BRepGraph_NodeId       aWireNodeId = BRepGraph_NodeId::Wire(aWR.WireDefId.Index);
+      const BRepGraph_NodeId       aWireNodeId = BRepGraph_WireId(aWR.WireDefId.Index);
       const NCollection_Vector<BRepGraphInc::CoEdgeUsage> aWireCoEdgeRefs =
         collectWireCoEdgeRefs(aDefs, aRefs, aWireNodeId);
 
@@ -365,7 +365,7 @@ void BRepGraphCheck::CheckShellOrientation(const BRepGraph&                     
       aBadOriCount++;
       BRepGraphCheck_Issue anIssue;
       anIssue.NodeId        = aShellNodeId;
-      anIssue.ContextNodeId = BRepGraph_NodeId::Edge(anIter.Key());
+      anIssue.ContextNodeId = BRepGraph_EdgeId(anIter.Key());
       anIssue.Status        = BRepCheck_BadOrientation;
       anIssue.IssueSeverity = BRepGraphCheck_Issue::Severity::Error;
       theIssues.Append(anIssue);

@@ -198,7 +198,7 @@ TEST(BRepGraphAlgo_LayerTest, Sewing_NameMigratesToKeptEdge)
   {
     TCollection_ExtendedString aStr("Edge_");
     aStr += i;
-    aLayer->SetNodeName(BRepGraph_NodeId::Edge(i), aStr);
+    aLayer->SetNodeName(BRepGraph_EdgeId(i), aStr);
   }
   EXPECT_EQ(aLayer->NbNames(), aNbEdges);
 
@@ -217,7 +217,7 @@ TEST(BRepGraphAlgo_LayerTest, Sewing_NameMigratesToKeptEdge)
     const BRepGraphInc::EdgeDef& anEdge = aGraph.Topo().Edge(BRepGraph_EdgeId(i));
     if (anEdge.IsRemoved)
     {
-      EXPECT_EQ(aLayer->FindNodeName(BRepGraph_NodeId::Edge(i)), nullptr)
+      EXPECT_EQ(aLayer->FindNodeName(BRepGraph_EdgeId(i)), nullptr)
         << "Removed edge " << i << " still has a name in the layer";
     }
   }
@@ -227,7 +227,7 @@ TEST(BRepGraphAlgo_LayerTest, Sewing_NameMigratesToKeptEdge)
   for (int i = 0; i < aGraph.Topo().NbEdges(); ++i)
   {
     if (!aGraph.Topo().Edge(BRepGraph_EdgeId(i)).IsRemoved
-        && aLayer->FindNodeName(BRepGraph_NodeId::Edge(i)) != nullptr)
+        && aLayer->FindNodeName(BRepGraph_EdgeId(i)) != nullptr)
       ++aNbNamedKept;
   }
   EXPECT_EQ(aNbNamedKept, aLayer->NbNames());
@@ -250,7 +250,7 @@ TEST(BRepGraphAlgo_LayerTest, Sewing_FaceNamesUntouched)
   {
     TCollection_ExtendedString aStr("Face_");
     aStr += i;
-    aLayer->SetNodeName(BRepGraph_NodeId::Face(i), aStr);
+    aLayer->SetNodeName(BRepGraph_FaceId(i), aStr);
   }
 
   (void)BRepGraphAlgo_Sewing::Perform(aGraph);
@@ -260,7 +260,7 @@ TEST(BRepGraphAlgo_LayerTest, Sewing_FaceNamesUntouched)
   {
     TCollection_ExtendedString aExpected("Face_");
     aExpected += i;
-    const TCollection_ExtendedString* aName = aLayer->FindNodeName(BRepGraph_NodeId::Face(i));
+    const TCollection_ExtendedString* aName = aLayer->FindNodeName(BRepGraph_FaceId(i));
     ASSERT_NE(aName, nullptr) << "Face " << i << " lost its name after sewing";
     EXPECT_TRUE(aName->IsEqual(aExpected));
   }
@@ -306,7 +306,7 @@ TEST(BRepGraphAlgo_LayerTest, Deduplicate_NameMigratesToCanonical)
   {
     TCollection_ExtendedString aStr("Vertex_");
     aStr += i;
-    aLayer->SetNodeName(BRepGraph_NodeId::Vertex(i), aStr);
+    aLayer->SetNodeName(BRepGraph_VertexId(i), aStr);
   }
 
   BRepGraphAlgo_Deduplicate::Result aResult = BRepGraphAlgo_Deduplicate::Perform(aGraph);
@@ -322,7 +322,7 @@ TEST(BRepGraphAlgo_LayerTest, Deduplicate_NameMigratesToCanonical)
     {
       if (aGraph.Topo().Vertex(BRepGraph_VertexId(i)).IsRemoved)
       {
-        EXPECT_EQ(aLayer->FindNodeName(BRepGraph_NodeId::Vertex(i)), nullptr)
+        EXPECT_EQ(aLayer->FindNodeName(BRepGraph_VertexId(i)), nullptr)
           << "Removed vertex " << i << " still has a name";
       }
     }
@@ -345,7 +345,7 @@ TEST(BRepGraphAlgo_LayerTest, Deduplicate_EdgeNames)
   {
     TCollection_ExtendedString aStr("Edge_");
     aStr += i;
-    aLayer->SetNodeName(BRepGraph_NodeId::Edge(i), aStr);
+    aLayer->SetNodeName(BRepGraph_EdgeId(i), aStr);
   }
 
   BRepGraphAlgo_Deduplicate::Result aResult = BRepGraphAlgo_Deduplicate::Perform(aGraph);
@@ -375,8 +375,8 @@ TEST(BRepGraphAlgo_LayerTest, Compact_LayerSurvivesSwap)
   aGraph.LayerRegistry().RegisterLayer(aLayer);
 
   // Name some faces.
-  aLayer->SetNodeName(BRepGraph_NodeId::Face(0), "FirstFace");
-  aLayer->SetNodeName(BRepGraph_NodeId::Face(1), "SecondFace");
+  aLayer->SetNodeName(BRepGraph_FaceId(0), "FirstFace");
+  aLayer->SetNodeName(BRepGraph_FaceId(1), "SecondFace");
 
   // Deduplicate to create some removed nodes, then compact to rebuild indices.
   (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
@@ -410,12 +410,12 @@ TEST(BRepGraphAlgo_LayerTest, Compact_RemappedNamesAccessible)
   {
     TCollection_ExtendedString aStr("F_");
     aStr += i;
-    aLayer->SetNodeName(BRepGraph_NodeId::Face(i), aStr);
+    aLayer->SetNodeName(BRepGraph_FaceId(i), aStr);
   }
   EXPECT_EQ(aLayer->NbNames(), aNbFaces);
 
   // Remove one face, then compact.
-  aGraph.Builder().RemoveNode(BRepGraph_NodeId::Face(0));
+  aGraph.Builder().RemoveNode(BRepGraph_FaceId(0));
   (void)BRepGraphAlgo_Compact::Perform(aGraph);
 
   // After compact, face count decreased by 1.
@@ -429,7 +429,7 @@ TEST(BRepGraphAlgo_LayerTest, Compact_RemappedNamesAccessible)
   // Each surviving face should have a name.
   for (int i = 0; i < aNbFacesAfter; ++i)
   {
-    EXPECT_NE(aLayer->FindNodeName(BRepGraph_NodeId::Face(i)), nullptr)
+    EXPECT_NE(aLayer->FindNodeName(BRepGraph_FaceId(i)), nullptr)
       << "Remapped face " << i << " has no name after compact";
   }
 }
@@ -445,21 +445,21 @@ TEST(BRepGraphAlgo_LayerTest, Compact_MultipleEntityKindsRemapped)
   aGraph.LayerRegistry().RegisterLayer(aLayer);
 
   // Name vertices and edges.
-  aLayer->SetNodeName(BRepGraph_NodeId::Vertex(0), "V0");
-  aLayer->SetNodeName(BRepGraph_NodeId::Edge(0), "E0");
-  aLayer->SetNodeName(BRepGraph_NodeId::Face(0), "F0");
+  aLayer->SetNodeName(BRepGraph_VertexId(0), "V0");
+  aLayer->SetNodeName(BRepGraph_EdgeId(0), "E0");
+  aLayer->SetNodeName(BRepGraph_FaceId(0), "F0");
 
   // Remove vertex 0, edge 0, face 0.
-  aGraph.Builder().RemoveNode(BRepGraph_NodeId::Vertex(0));
-  aGraph.Builder().RemoveNode(BRepGraph_NodeId::Edge(0));
-  aGraph.Builder().RemoveNode(BRepGraph_NodeId::Face(0));
+  aGraph.Builder().RemoveNode(BRepGraph_VertexId(0));
+  aGraph.Builder().RemoveNode(BRepGraph_EdgeId(0));
+  aGraph.Builder().RemoveNode(BRepGraph_FaceId(0));
 
   (void)BRepGraphAlgo_Compact::Perform(aGraph);
 
   // All three names should have been removed (no remapping for removed nodes).
-  EXPECT_EQ(aLayer->FindNodeName(BRepGraph_NodeId::Vertex(0)), nullptr);
-  EXPECT_EQ(aLayer->FindNodeName(BRepGraph_NodeId::Edge(0)), nullptr);
-  EXPECT_EQ(aLayer->FindNodeName(BRepGraph_NodeId::Face(0)), nullptr);
+  EXPECT_EQ(aLayer->FindNodeName(BRepGraph_VertexId(0)), nullptr);
+  EXPECT_EQ(aLayer->FindNodeName(BRepGraph_EdgeId(0)), nullptr);
+  EXPECT_EQ(aLayer->FindNodeName(BRepGraph_FaceId(0)), nullptr);
 }
 
 // ============================================================
@@ -492,7 +492,7 @@ TEST(BRepGraphAlgo_LayerTest, SplitEdge_OriginalEdgeRemoved)
   }
   ASSERT_GE(aSplitEdgeIdx, 0) << "No suitable edge found for split test";
 
-  const BRepGraph_NodeId aSplitEdgeId = BRepGraph_NodeId::Edge(aSplitEdgeIdx);
+  const BRepGraph_NodeId aSplitEdgeId = BRepGraph_EdgeId(aSplitEdgeIdx);
   aLayer->SetNodeName(aSplitEdgeId, "OriginalEdge");
 
   // Create a split vertex.
@@ -539,7 +539,7 @@ TEST(BRepGraphAlgo_LayerTest, FullPipeline_NamesTrackThroughAllStages)
   {
     TCollection_ExtendedString aStr("Face_");
     aStr += i;
-    aLayer->SetNodeName(BRepGraph_NodeId::Face(i), aStr);
+    aLayer->SetNodeName(BRepGraph_FaceId(i), aStr);
   }
 
   // Stage 1: Sew.
@@ -604,7 +604,7 @@ TEST(BRepGraphAlgo_LayerTest, Sewing_Cylinder_NamesPreserved)
   {
     TCollection_ExtendedString aStr("CylFace_");
     aStr += i;
-    aLayer->SetNodeName(BRepGraph_NodeId::Face(i), aStr);
+    aLayer->SetNodeName(BRepGraph_FaceId(i), aStr);
   }
 
   (void)BRepGraphAlgo_Sewing::Perform(aGraph);
@@ -689,8 +689,8 @@ TEST(BRepGraphAlgo_LayerTest, TwoLayers_BothSurviveFullPipeline)
   {
     TCollection_ExtendedString aStr("F");
     aStr += i;
-    aNameLayer->SetNodeName(BRepGraph_NodeId::Face(i), aStr);
-    aIntLayer->Set(BRepGraph_NodeId::Face(i), i * 10);
+    aNameLayer->SetNodeName(BRepGraph_FaceId(i), aStr);
+    aIntLayer->Set(BRepGraph_FaceId(i), i * 10);
   }
 
   // Full pipeline.

@@ -487,7 +487,7 @@ TEST(BRepGraph_BuilderTest, AddCompound_WithChildren)
   EXPECT_TRUE(aCompId.IsValid());
   EXPECT_EQ(aGraph.Topo().NbCompounds(), 1);
 
-  EXPECT_EQ(BRepGraph_TestTools::CountChildRefsOfParent(aGraph, BRepGraph_NodeId::Compound(0)), 2);
+  EXPECT_EQ(BRepGraph_TestTools::CountChildRefsOfParent(aGraph, BRepGraph_CompoundId(0)), 2);
 }
 
 TEST(BRepGraph_BuilderTest, AddCompSolid_WithSolids)
@@ -875,7 +875,7 @@ TEST(BRepGraph_BuilderTest, EdgesOfFace_Box_HasEdges)
 
   // Each box face has 4 edges (rectangular loop).
   NCollection_Vector<BRepGraph_EdgeId> aEdges =
-    aGraph.Topo().EdgesOfFace(BRepGraph_NodeId::Face(0));
+    aGraph.Topo().EdgesOfFace(BRepGraph_FaceId(0));
   EXPECT_EQ(aEdges.Length(), 4);
 }
 
@@ -886,7 +886,7 @@ TEST(BRepGraph_BuilderTest, VerticesOfEdge_Box_HasTwoVertices)
   ASSERT_TRUE(aGraph.IsDone());
 
   NCollection_Vector<BRepGraph_VertexId> aVerts =
-    aGraph.Topo().VerticesOfEdge(BRepGraph_NodeId::Edge(0));
+    aGraph.Topo().VerticesOfEdge(BRepGraph_EdgeId(0));
   EXPECT_EQ(aVerts.Length(), 2);
   EXPECT_TRUE(aVerts.Value(0).IsValid());
   EXPECT_TRUE(aVerts.Value(1).IsValid());
@@ -900,7 +900,7 @@ TEST(BRepGraph_BuilderTest, EdgesOfVertex_Box_ThreeEdges)
 
   // Each box corner vertex is shared by 3 edges.
   const NCollection_Vector<BRepGraph_EdgeId>& aEdges =
-    aGraph.Topo().EdgesOfVertex(BRepGraph_NodeId::Vertex(0));
+    aGraph.Topo().EdgesOfVertex(BRepGraph_VertexId(0));
   EXPECT_EQ(aEdges.Length(), 3);
 }
 
@@ -913,7 +913,7 @@ TEST(BRepGraph_BuilderTest, AdjacentEdges_Box_SharedVertex)
   // Box edge shares 2 vertices, each with 3 incident edges.
   // Adjacent = (3 - 1) + (3 - 1) - overlap = at least 4 adjacent edges.
   NCollection_Vector<BRepGraph_EdgeId> aAdj =
-    aGraph.Topo().AdjacentEdges(BRepGraph_NodeId::Edge(0));
+    aGraph.Topo().AdjacentEdges(BRepGraph_EdgeId(0));
   EXPECT_GE(aAdj.Length(), 4);
 }
 

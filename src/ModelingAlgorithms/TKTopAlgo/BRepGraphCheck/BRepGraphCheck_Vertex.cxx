@@ -153,7 +153,7 @@ void BRepGraphCheck::CheckVertexOnFace(const BRepGraph&                         
     {
       BRepGraphCheck_Issue anIssue;
       anIssue.NodeId        = aVtxDef.Id;
-      anIssue.ContextNodeId = BRepGraph_NodeId::Face(theFace.Index);
+      anIssue.ContextNodeId = BRepGraph_FaceId(theFace.Index);
       anIssue.Status        = BRepCheck_InvalidPointOnCurveOnSurface;
       anIssue.IssueSeverity = BRepGraphCheck_Issue::Severity::Error;
       theIssues.Append(anIssue);

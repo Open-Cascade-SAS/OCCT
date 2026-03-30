@@ -655,19 +655,19 @@ TopoDS_Shape reconstructSewnShape(const BRepGraph& theGraph)
   const BRepGraph::TopoView& aTopo = theGraph.Topo();
   if (aTopo.NbCompounds() > 0)
   {
-    return theGraph.Shapes().Reconstruct(BRepGraph_NodeId::Compound(0));
+    return theGraph.Shapes().Reconstruct(BRepGraph_CompoundId(0));
   }
   if (aTopo.NbCompSolids() > 0)
   {
-    return theGraph.Shapes().Reconstruct(BRepGraph_NodeId::CompSolid(0));
+    return theGraph.Shapes().Reconstruct(BRepGraph_CompSolidId(0));
   }
   if (aTopo.NbSolids() > 0)
   {
-    return theGraph.Shapes().Reconstruct(BRepGraph_NodeId::Solid(0));
+    return theGraph.Shapes().Reconstruct(BRepGraph_SolidId(0));
   }
   if (aTopo.NbShells() > 0)
   {
-    return theGraph.Shapes().Reconstruct(BRepGraph_NodeId::Shell(0));
+    return theGraph.Shapes().Reconstruct(BRepGraph_ShellId(0));
   }
 
   BRep_Builder    aBB;

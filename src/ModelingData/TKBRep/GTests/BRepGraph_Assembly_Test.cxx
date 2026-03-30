@@ -98,7 +98,7 @@ TEST(BRepGraph_AssemblyTest, AddProduct_IsPart)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Add a second part product.
-  const BRepGraph_NodeId aShapeRoot = BRepGraph_NodeId::Solid(0);
+  const BRepGraph_NodeId aShapeRoot = BRepGraph_SolidId(0);
   const BRepGraph_ProductId aProductId = aGraph.Builder().AddProduct(aShapeRoot);
 
   EXPECT_TRUE(aProductId.IsValid());
@@ -112,10 +112,10 @@ TEST(BRepGraph_AssemblyTest, AddProduct_InvalidShapeRoot_ReturnsInvalid)
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  EXPECT_FALSE(aGraph.Builder().AddProduct(BRepGraph_NodeId::Product(0)).IsValid());
+  EXPECT_FALSE(aGraph.Builder().AddProduct(BRepGraph_ProductId(0)).IsValid());
 
-  aGraph.Builder().RemoveNode(BRepGraph_NodeId::Solid(0));
-  EXPECT_FALSE(aGraph.Builder().AddProduct(BRepGraph_NodeId::Solid(0)).IsValid());
+  aGraph.Builder().RemoveNode(BRepGraph_SolidId(0));
+  EXPECT_FALSE(aGraph.Builder().AddProduct(BRepGraph_SolidId(0)).IsValid());
 }
 
 // =============================================================================
@@ -175,7 +175,7 @@ TEST(BRepGraph_AssemblyTest, DAGSharing_MultipleOccurrencesSamePart)
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  const BRepGraph_ProductId aPartId     = BRepGraph_NodeId::Product(0);
+  const BRepGraph_ProductId aPartId     = BRepGraph_ProductId(0);
   const BRepGraph_ProductId aAssemblyId = aGraph.Builder().AddAssemblyProduct();
 
   gp_Trsf aTrsf1;
@@ -200,7 +200,7 @@ TEST(BRepGraph_AssemblyTest, AddOccurrence_ParentOccurrenceMustMatchParentProduc
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  const BRepGraph_ProductId aPartId     = BRepGraph_NodeId::Product(0);
+  const BRepGraph_ProductId aPartId     = BRepGraph_ProductId(0);
   const BRepGraph_ProductId anAssemblyA = aGraph.Builder().AddAssemblyProduct();
   const BRepGraph_ProductId anAssemblyB = aGraph.Builder().AddAssemblyProduct();
   const BRepGraph_OccurrenceId aParentOccId =
@@ -228,10 +228,10 @@ TEST(BRepGraph_AssemblyTest, RootProducts_Query)
   // Auto-created root product is the only root initially.
   NCollection_Vector<BRepGraph_ProductId> aRoots = aGraph.Paths().RootProducts();
   EXPECT_EQ(aRoots.Length(), 1);
-  EXPECT_EQ(aRoots.Value(0), BRepGraph_NodeId::Product(0));
+  EXPECT_EQ(aRoots.Value(0), BRepGraph_ProductId(0));
 
   // Add an assembly and make it instantiate the part product via occurrence.
-  const BRepGraph_ProductId aPartId     = BRepGraph_NodeId::Product(0);
+  const BRepGraph_ProductId aPartId     = BRepGraph_ProductId(0);
   const BRepGraph_ProductId aAssemblyId = aGraph.Builder().AddAssemblyProduct();
   (void)aGraph.Builder().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location());
 
@@ -251,7 +251,7 @@ TEST(BRepGraph_AssemblyTest, RemoveOccurrence_UpdatesParent)
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  const BRepGraph_ProductId aPartId     = BRepGraph_NodeId::Product(0);
+  const BRepGraph_ProductId aPartId     = BRepGraph_ProductId(0);
   const BRepGraph_ProductId aAssemblyId = aGraph.Builder().AddAssemblyProduct();
   const BRepGraph_OccurrenceId anOccId =
     aGraph.Builder().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location());
@@ -284,7 +284,7 @@ TEST(BRepGraph_AssemblyTest, RemoveProduct_CascadeOccurrences)
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  const BRepGraph_ProductId aPartId     = BRepGraph_NodeId::Product(0);
+  const BRepGraph_ProductId aPartId     = BRepGraph_ProductId(0);
   const BRepGraph_ProductId aAssemblyId = aGraph.Builder().AddAssemblyProduct();
   const BRepGraph_OccurrenceId anOcc1 =
     aGraph.Builder().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location());
@@ -313,7 +313,7 @@ TEST(BRepGraph_AssemblyTest, MutProduct_RAII)
     BRepGraph_MutGuard<BRepGraphInc::ProductDef> aMutProd =
       aGraph.Builder().MutProduct(BRepGraph_ProductId(0));
     // Setting ShapeRootId to a different topology node.
-    aMutProd->ShapeRootId = BRepGraph_NodeId::Solid(0);
+    aMutProd->ShapeRootId = BRepGraph_SolidId(0);
   } // markModified fires here
 
   EXPECT_GT(aGraph.Topo().Product(BRepGraph_ProductId(0)).OwnGen, 0u);
@@ -329,7 +329,7 @@ TEST(BRepGraph_AssemblyTest, MutOccurrence_Placement)
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  const BRepGraph_ProductId aPartId     = BRepGraph_NodeId::Product(0);
+  const BRepGraph_ProductId aPartId     = BRepGraph_ProductId(0);
   const BRepGraph_ProductId aAssemblyId = aGraph.Builder().AddAssemblyProduct();
   const BRepGraph_OccurrenceId anOccId =
     aGraph.Builder().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location());
@@ -412,7 +412,7 @@ TEST(BRepGraph_AssemblyTest, NbNodes_IncludesAssembly)
   // Add assembly + occurrence.
   const BRepGraph_ProductId aAssemblyId = aGraph.Builder().AddAssemblyProduct();
   (void)aGraph.Builder().AddOccurrence(aAssemblyId,
-                                       BRepGraph_NodeId::Product(0),
+                                       BRepGraph_ProductId(0),
                                        TopLoc_Location());
 
   const size_t aNbNodesAfterAssembly = aGraph.Topo().NbNodes();
@@ -515,7 +515,7 @@ TEST(BRepGraph_AssemblyTest, UID_IsAssembly)
 
   // The auto-created root product should have a UID with IsAssembly() == false
   // (it's a part, but its UID Kind is Product, so IsAssembly() on UID checks the Kind).
-  const BRepGraph_UID aProductUID = aGraph.UIDs().Of(BRepGraph_NodeId::Product(0));
+  const BRepGraph_UID aProductUID = aGraph.UIDs().Of(BRepGraph_ProductId(0));
   EXPECT_TRUE(aProductUID.IsValid());
   EXPECT_TRUE(aProductUID.IsAssembly());
   EXPECT_FALSE(aProductUID.IsTopology());
@@ -637,14 +637,14 @@ TEST(BRepGraph_AssemblyTest, AddOccurrence_RemovedProduct_ReturnsInvalid)
 
   // Cannot add occurrence to a removed product.
   const BRepGraph_OccurrenceId aResult =
-    aGraph.Builder().AddOccurrence(aAssemblyId, BRepGraph_NodeId::Product(0), TopLoc_Location());
+    aGraph.Builder().AddOccurrence(aAssemblyId, BRepGraph_ProductId(0), TopLoc_Location());
   EXPECT_FALSE(aResult.IsValid());
 
   // Cannot reference a removed product either.
   const BRepGraph_ProductId aAsm2 = aGraph.Builder().AddAssemblyProduct();
-  aGraph.Builder().RemoveNode(BRepGraph_NodeId::Product(0));
+  aGraph.Builder().RemoveNode(BRepGraph_ProductId(0));
   const BRepGraph_OccurrenceId aResult2 =
-    aGraph.Builder().AddOccurrence(aAsm2, BRepGraph_NodeId::Product(0), TopLoc_Location());
+    aGraph.Builder().AddOccurrence(aAsm2, BRepGraph_ProductId(0), TopLoc_Location());
   EXPECT_FALSE(aResult2.IsValid());
 }
 
@@ -704,13 +704,13 @@ TEST(BRepGraph_AssemblyTest, ShapesView_ProductShape_ReconstructsBuiltRootTransf
   aGraph.Build(aRootShape);
   ASSERT_TRUE(aGraph.IsDone());
 
-  const TopoDS_Shape aProductShape = aGraph.Shapes().Shape(BRepGraph_NodeId::Product(0));
+  const TopoDS_Shape aProductShape = aGraph.Shapes().Shape(BRepGraph_ProductId(0));
   ASSERT_FALSE(aProductShape.IsNull());
   EXPECT_EQ(aProductShape.ShapeType(), aRootShape.ShapeType());
   EXPECT_EQ(aProductShape.Orientation(), aRootShape.Orientation());
   EXPECT_EQ(aProductShape.Location(), aRootShape.Location());
 
-  const TopoDS_Shape aReconstructed = aGraph.Shapes().Reconstruct(BRepGraph_NodeId::Product(0));
+  const TopoDS_Shape aReconstructed = aGraph.Shapes().Reconstruct(BRepGraph_ProductId(0));
   ASSERT_FALSE(aReconstructed.IsNull());
   EXPECT_EQ(aReconstructed.ShapeType(), aRootShape.ShapeType());
   EXPECT_EQ(aReconstructed.Orientation(), aRootShape.Orientation());

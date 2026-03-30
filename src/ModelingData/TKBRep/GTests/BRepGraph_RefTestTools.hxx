@@ -33,7 +33,7 @@ inline NCollection_Vector<BRepGraph_CoEdgeRefId> CoEdgeRefsOfWire(const BRepGrap
 {
   NCollection_Vector<BRepGraph_CoEdgeRefId> aRefIds;
   const BRepGraph::RefsView&                aRefs       = theGraph.Refs();
-  const BRepGraph_NodeId                    aParentNode = BRepGraph_NodeId::Wire(theWireId.Index);
+  const BRepGraph_NodeId                    aParentNode = BRepGraph_WireId(theWireId.Index);
   for (int aRefIdx = 0; aRefIdx < aRefs.NbCoEdgeRefs(); ++aRefIdx)
   {
     const BRepGraph_CoEdgeRefId    aRefId(aRefIdx);
@@ -58,7 +58,7 @@ inline NCollection_Vector<BRepGraph_WireRefId> WireRefsOfFace(const BRepGraph&  
 {
   NCollection_Vector<BRepGraph_WireRefId> aRefIds;
   const BRepGraph::RefsView&              aRefs       = theGraph.Refs();
-  const BRepGraph_NodeId                  aParentNode = BRepGraph_NodeId::Face(theFaceId.Index);
+  const BRepGraph_NodeId                  aParentNode = BRepGraph_FaceId(theFaceId.Index);
   for (int aRefIdx = 0; aRefIdx < aRefs.NbWireRefs(); ++aRefIdx)
   {
     const BRepGraph_WireRefId    aRefId(aRefIdx);
@@ -99,7 +99,7 @@ inline NCollection_Vector<BRepGraph_FaceRefId> FaceRefsOfShell(const BRepGraph& 
 {
   NCollection_Vector<BRepGraph_FaceRefId> aRefIds;
   const BRepGraph::RefsView&              aRefs       = theGraph.Refs();
-  const BRepGraph_NodeId                  aParentNode = BRepGraph_NodeId::Shell(theShellId.Index);
+  const BRepGraph_NodeId                  aParentNode = BRepGraph_ShellId(theShellId.Index);
   for (int aRefIdx = 0; aRefIdx < aRefs.NbFaceRefs(); ++aRefIdx)
   {
     const BRepGraph_FaceRefId    aRefId(aRefIdx);
@@ -124,7 +124,7 @@ inline NCollection_Vector<BRepGraph_ShellRefId> ShellRefsOfSolid(const BRepGraph
 {
   NCollection_Vector<BRepGraph_ShellRefId> aRefIds;
   const BRepGraph::RefsView&               aRefs       = theGraph.Refs();
-  const BRepGraph_NodeId                   aParentNode = BRepGraph_NodeId::Solid(theSolidId.Index);
+  const BRepGraph_NodeId                   aParentNode = BRepGraph_SolidId(theSolidId.Index);
   for (int aRefIdx = 0; aRefIdx < aRefs.NbShellRefs(); ++aRefIdx)
   {
     const BRepGraph_ShellRefId    aRefId(aRefIdx);
@@ -150,7 +150,7 @@ inline NCollection_Vector<BRepGraph_SolidRefId> SolidRefsOfCompSolid(
 {
   NCollection_Vector<BRepGraph_SolidRefId> aRefIds;
   const BRepGraph::RefsView&               aRefs = theGraph.Refs();
-  const BRepGraph_NodeId aParentNode = BRepGraph_NodeId::CompSolid(theCompSolidId.Index);
+  const BRepGraph_NodeId aParentNode = BRepGraph_CompSolidId(theCompSolidId.Index);
   for (int aRefIdx = 0; aRefIdx < aRefs.NbSolidRefs(); ++aRefIdx)
   {
     const BRepGraph_SolidRefId    aRefId(aRefIdx);
@@ -208,7 +208,7 @@ inline NCollection_Vector<BRepGraph_CoEdgeRefId> CoEdgeRefsOfWire(
   const BRepGraph_WireId      theWireId)
 {
   NCollection_Vector<BRepGraph_CoEdgeRefId> aRefIds;
-  const BRepGraph_NodeId                    aParentNode = BRepGraph_NodeId::Wire(theWireId.Index);
+  const BRepGraph_NodeId                    aParentNode = BRepGraph_WireId(theWireId.Index);
   for (int aRefIdx = 0; aRefIdx < theStorage.NbCoEdgeRefs(); ++aRefIdx)
   {
     const BRepGraph_CoEdgeRefId    aRefId(aRefIdx);
@@ -234,7 +234,7 @@ inline NCollection_Vector<BRepGraph_WireRefId> WireRefsOfFace(
   const BRepGraph_FaceId      theFaceId)
 {
   NCollection_Vector<BRepGraph_WireRefId> aRefIds;
-  const BRepGraph_NodeId                  aParentNode = BRepGraph_NodeId::Face(theFaceId.Index);
+  const BRepGraph_NodeId                  aParentNode = BRepGraph_FaceId(theFaceId.Index);
   for (int aRefIdx = 0; aRefIdx < theStorage.NbWireRefs(); ++aRefIdx)
   {
     const BRepGraph_WireRefId    aRefId(aRefIdx);
@@ -276,7 +276,7 @@ inline NCollection_Vector<BRepGraph_FaceRefId> FaceRefsOfShell(
   const BRepGraph_ShellId     theShellId)
 {
   NCollection_Vector<BRepGraph_FaceRefId> aRefIds;
-  const BRepGraph_NodeId                  aParentNode = BRepGraph_NodeId::Shell(theShellId.Index);
+  const BRepGraph_NodeId                  aParentNode = BRepGraph_ShellId(theShellId.Index);
   for (int aRefIdx = 0; aRefIdx < theStorage.NbFaceRefs(); ++aRefIdx)
   {
     const BRepGraph_FaceRefId    aRefId(aRefIdx);
@@ -302,7 +302,7 @@ inline NCollection_Vector<BRepGraph_ShellRefId> ShellRefsOfSolid(
   const BRepGraph_SolidId     theSolidId)
 {
   NCollection_Vector<BRepGraph_ShellRefId> aRefIds;
-  const BRepGraph_NodeId                   aParentNode = BRepGraph_NodeId::Solid(theSolidId.Index);
+  const BRepGraph_NodeId                   aParentNode = BRepGraph_SolidId(theSolidId.Index);
   for (int aRefIdx = 0; aRefIdx < theStorage.NbShellRefs(); ++aRefIdx)
   {
     const BRepGraph_ShellRefId    aRefId(aRefIdx);
@@ -328,7 +328,7 @@ inline NCollection_Vector<BRepGraph_SolidRefId> SolidRefsOfCompSolid(
   const BRepGraph_CompSolidId theCompSolidId)
 {
   NCollection_Vector<BRepGraph_SolidRefId> aRefIds;
-  const BRepGraph_NodeId aParentNode = BRepGraph_NodeId::CompSolid(theCompSolidId.Index);
+  const BRepGraph_NodeId aParentNode = BRepGraph_CompSolidId(theCompSolidId.Index);
   for (int aRefIdx = 0; aRefIdx < theStorage.NbSolidRefs(); ++aRefIdx)
   {
     const BRepGraph_SolidRefId    aRefId(aRefIdx);

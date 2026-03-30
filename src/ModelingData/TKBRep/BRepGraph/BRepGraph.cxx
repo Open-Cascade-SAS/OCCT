@@ -707,17 +707,17 @@ void BRepGraph::markRepModified(const BRepGraph_RepId theRepId) noexcept
     case BRepGraph_RepId::Kind::Surface:
       for (int i = 0; i < aStorage.NbFaces(); ++i)
         if (aStorage.Face(BRepGraph_FaceId(i)).SurfaceRepId.Index == anIdx)
-          markModified(BRepGraph_NodeId::Face(i));
+          markModified(BRepGraph_FaceId(i));
       break;
     case BRepGraph_RepId::Kind::Curve3D:
       for (int i = 0; i < aStorage.NbEdges(); ++i)
         if (aStorage.Edge(BRepGraph_EdgeId(i)).Curve3DRepId.Index == anIdx)
-          markModified(BRepGraph_NodeId::Edge(i));
+          markModified(BRepGraph_EdgeId(i));
       break;
     case BRepGraph_RepId::Kind::Curve2D:
       for (int i = 0; i < aStorage.NbCoEdges(); ++i)
         if (aStorage.CoEdge(BRepGraph_CoEdgeId(i)).Curve2DRepId.Index == anIdx)
-          markModified(BRepGraph_NodeId::CoEdge(i));
+          markModified(BRepGraph_CoEdgeId(i));
       break;
     case BRepGraph_RepId::Kind::Triangulation:
       for (int i = 0; i < aStorage.NbFaces(); ++i)
@@ -726,7 +726,7 @@ void BRepGraph::markRepModified(const BRepGraph_RepId theRepId) noexcept
         for (int j = 0; j < aFace.TriangulationRepIds.Length(); ++j)
           if (aFace.TriangulationRepIds.Value(j).Index == anIdx)
           {
-            markModified(BRepGraph_NodeId::Face(i));
+            markModified(BRepGraph_FaceId(i));
             break;
           }
       }
@@ -734,7 +734,7 @@ void BRepGraph::markRepModified(const BRepGraph_RepId theRepId) noexcept
     case BRepGraph_RepId::Kind::Polygon3D:
       for (int i = 0; i < aStorage.NbEdges(); ++i)
         if (aStorage.Edge(BRepGraph_EdgeId(i)).Polygon3DRepId.Index == anIdx)
-          markModified(BRepGraph_NodeId::Edge(i));
+          markModified(BRepGraph_EdgeId(i));
       break;
     default:
       break;

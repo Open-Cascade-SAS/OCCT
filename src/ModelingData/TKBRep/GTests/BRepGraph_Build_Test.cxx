@@ -843,7 +843,7 @@ TEST(BRepGraph_BuildTest, AppendShape_PreservesExistingUIDs)
   ASSERT_GT(aGraph.Topo().NbEdges(), 0);
 
   // Record UID of the first edge before append.
-  const BRepGraph_UID anOrigUID = aGraph.UIDs().Of(BRepGraph_NodeId::Edge(0));
+  const BRepGraph_UID anOrigUID = aGraph.UIDs().Of(BRepGraph_EdgeId(0));
   ASSERT_TRUE(anOrigUID.IsValid());
 
   // Append a sphere.
@@ -853,7 +853,7 @@ TEST(BRepGraph_BuildTest, AppendShape_PreservesExistingUIDs)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Verify original edge UID is unchanged.
-  const BRepGraph_UID aPostUID = aGraph.UIDs().Of(BRepGraph_NodeId::Edge(0));
+  const BRepGraph_UID aPostUID = aGraph.UIDs().Of(BRepGraph_EdgeId(0));
   EXPECT_EQ(anOrigUID, aPostUID);
 }
 
@@ -1082,14 +1082,14 @@ TEST(BRepGraph_BuildTest, RegularityLayer_RemoveRegularity_SharedFaceRetained)
   EXPECT_EQ(aLayer.NbRegularities(anEdgeId), 2);
 
   // Remove (F1,F2) - F1 is shared by the surviving (F1,F3) entry.
-  aLayer.OnNodeModified(BRepGraph_NodeId::Face(aFace2.Index));
+  aLayer.OnNodeModified(BRepGraph_FaceId(aFace2.Index));
 
   // (F1,F3) must survive; F1 must still be tracked.
   EXPECT_TRUE(aLayer.FindContinuity(anEdgeId, aFace1, aFace3));
   EXPECT_EQ(aLayer.NbRegularities(anEdgeId), 1);
 
   // Modifying F1 should still invalidate the remaining entry.
-  aLayer.OnNodeModified(BRepGraph_NodeId::Face(aFace1.Index));
+  aLayer.OnNodeModified(BRepGraph_FaceId(aFace1.Index));
   EXPECT_EQ(aLayer.NbRegularities(anEdgeId), 0);
 }
 
@@ -1105,7 +1105,7 @@ TEST(BRepGraph_BuildTest, RegularityLayer_RemoveRegularity_NoMatch_NoEffect)
   EXPECT_EQ(aLayer.NbRegularities(anEdgeId), 1);
 
   // Modifying F3 (not referenced) should have no effect.
-  aLayer.OnNodeModified(BRepGraph_NodeId::Face(aFace3.Index));
+  aLayer.OnNodeModified(BRepGraph_FaceId(aFace3.Index));
   EXPECT_EQ(aLayer.NbRegularities(anEdgeId), 1);
   EXPECT_TRUE(aLayer.FindContinuity(anEdgeId, aFace1, aFace2));
 }
@@ -1127,9 +1127,9 @@ TEST(BRepGraph_BuildTest, ParamLayer_OnCompact_RemapsNodeIds)
 
   // Remap: vtx0->vtx0, vtx1 dropped; edge0->edge0, edge1 dropped; face0->face0; coedge0 dropped.
   NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId> aRemapMap;
-  aRemapMap.Bind(BRepGraph_NodeId::Vertex(0), BRepGraph_NodeId::Vertex(0));
-  aRemapMap.Bind(BRepGraph_NodeId::Edge(0), BRepGraph_NodeId::Edge(0));
-  aRemapMap.Bind(BRepGraph_NodeId::Face(0), BRepGraph_NodeId::Face(0));
+  aRemapMap.Bind(BRepGraph_VertexId(0), BRepGraph_VertexId(0));
+  aRemapMap.Bind(BRepGraph_EdgeId(0), BRepGraph_EdgeId(0));
+  aRemapMap.Bind(BRepGraph_FaceId(0), BRepGraph_FaceId(0));
 
   aLayer.OnCompact(aRemapMap);
 
@@ -1163,9 +1163,9 @@ TEST(BRepGraph_BuildTest, RegularityLayer_OnCompact_RemapsNodeIds)
 
   // Remap: edge0->edge0, edge1 dropped; face0->face0, face1->face1, face2 dropped.
   NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId> aRemapMap;
-  aRemapMap.Bind(BRepGraph_NodeId::Edge(0), BRepGraph_NodeId::Edge(0));
-  aRemapMap.Bind(BRepGraph_NodeId::Face(0), BRepGraph_NodeId::Face(0));
-  aRemapMap.Bind(BRepGraph_NodeId::Face(1), BRepGraph_NodeId::Face(1));
+  aRemapMap.Bind(BRepGraph_EdgeId(0), BRepGraph_EdgeId(0));
+  aRemapMap.Bind(BRepGraph_FaceId(0), BRepGraph_FaceId(0));
+  aRemapMap.Bind(BRepGraph_FaceId(1), BRepGraph_FaceId(1));
 
   aLayer.OnCompact(aRemapMap);
 

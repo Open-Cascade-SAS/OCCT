@@ -213,7 +213,7 @@ TEST_F(BRepGraph_EventBusTest, ImmediateMode_SingleEdge)
   }
 
   // Edge(0) should have an immediate event.
-  EXPECT_TRUE(aLayer->HasImmediateEventFor(BRepGraph_NodeId::Edge(0)));
+  EXPECT_TRUE(aLayer->HasImmediateEventFor(BRepGraph_EdgeId(0)));
   // At least one event total (edge + propagated parents).
   EXPECT_GT(aLayer->myImmediateEvents.Length(), 0);
 }
@@ -288,9 +288,9 @@ TEST_F(BRepGraph_EventBusTest, DeferredMode_BatchDispatch)
   EXPECT_EQ(aLayer->myBatchCallCount, 1);
   // Batch contains at least the 3 edges + propagated parents.
   EXPECT_GE(aLayer->myBatchEvents.Length(), 3);
-  EXPECT_TRUE(aLayer->HasBatchEventFor(BRepGraph_NodeId::Edge(0)));
-  EXPECT_TRUE(aLayer->HasBatchEventFor(BRepGraph_NodeId::Edge(1)));
-  EXPECT_TRUE(aLayer->HasBatchEventFor(BRepGraph_NodeId::Edge(2)));
+  EXPECT_TRUE(aLayer->HasBatchEventFor(BRepGraph_EdgeId(0)));
+  EXPECT_TRUE(aLayer->HasBatchEventFor(BRepGraph_EdgeId(1)));
+  EXPECT_TRUE(aLayer->HasBatchEventFor(BRepGraph_EdgeId(2)));
 }
 
 TEST_F(BRepGraph_EventBusTest, DeferredMode_NoImmediateDispatch)
@@ -357,8 +357,8 @@ TEST_F(BRepGraph_EventBusTest, OnNodeRemoved_DispatchesReplacement)
     new BRepGraph_ModTrackingLayer("Tracker", 0);
   myGraph.LayerRegistry().RegisterLayer(aLayer);
 
-  const BRepGraph_NodeId anOldEdge = BRepGraph_NodeId::Edge(0);
-  const BRepGraph_NodeId aNewEdge  = BRepGraph_NodeId::Edge(1);
+  const BRepGraph_NodeId anOldEdge = BRepGraph_EdgeId(0);
+  const BRepGraph_NodeId aNewEdge  = BRepGraph_EdgeId(1);
   myGraph.Builder().RemoveNode(anOldEdge, aNewEdge);
 
   EXPECT_EQ(aLayer->myRemoveCallCount, 1);
@@ -372,7 +372,7 @@ TEST_F(BRepGraph_EventBusTest, OnNodeRemoved_DispatchesInvalidReplacementForPure
     new BRepGraph_ModTrackingLayer("Tracker", 0);
   myGraph.LayerRegistry().RegisterLayer(aLayer);
 
-  const BRepGraph_NodeId aFaceId = BRepGraph_NodeId::Face(0);
+  const BRepGraph_NodeId aFaceId = BRepGraph_FaceId(0);
   myGraph.Builder().RemoveNode(aFaceId);
 
   EXPECT_EQ(aLayer->myRemoveCallCount, 1);
@@ -386,7 +386,7 @@ TEST_F(BRepGraph_EventBusTest, OnCompact_DispatchesRemapToRegisteredLayers)
     new BRepGraph_ModTrackingLayer("Tracker", 0);
   myGraph.LayerRegistry().RegisterLayer(aLayer);
 
-  myGraph.Builder().RemoveNode(BRepGraph_NodeId::Face(0));
+  myGraph.Builder().RemoveNode(BRepGraph_FaceId(0));
   const int aNbFacesBefore = myGraph.Topo().NbFaces();
 
   const BRepGraphAlgo_Compact::Result aResult = BRepGraphAlgo_Compact::Perform(myGraph);
@@ -395,11 +395,11 @@ TEST_F(BRepGraph_EventBusTest, OnCompact_DispatchesRemapToRegisteredLayers)
   EXPECT_EQ(aLayer->myCompactCallCount, 1);
   EXPECT_EQ(myGraph.Topo().NbFaces(), aNbFacesBefore - 1);
 
-  const BRepGraph_NodeId* aNewFaceId = aLayer->myLastRemapMap.Seek(BRepGraph_NodeId::Face(1));
+  const BRepGraph_NodeId* aNewFaceId = aLayer->myLastRemapMap.Seek(BRepGraph_FaceId(1));
   ASSERT_NE(aNewFaceId, nullptr);
   EXPECT_EQ(aNewFaceId->NodeKind, BRepGraph_NodeId::Kind::Face);
   EXPECT_EQ(aNewFaceId->Index, 0);
-  EXPECT_EQ(aLayer->myLastRemapMap.Seek(BRepGraph_NodeId::Face(0)), nullptr);
+  EXPECT_EQ(aLayer->myLastRemapMap.Seek(BRepGraph_FaceId(0)), nullptr);
 }
 
 TEST_F(BRepGraph_EventBusTest, MultipleSubscribers)
@@ -463,7 +463,7 @@ TEST_F(BRepGraph_EventBusTest, DeferredScope_DispatchesOnDestruction)
 
   // After guard destruction: batch dispatched.
   EXPECT_EQ(aLayer->myBatchCallCount, 1);
-  EXPECT_TRUE(aLayer->HasBatchEventFor(BRepGraph_NodeId::Edge(0)));
+  EXPECT_TRUE(aLayer->HasBatchEventFor(BRepGraph_EdgeId(0)));
 }
 
 TEST_F(BRepGraph_EventBusTest, DeferredMode_NoModifications_NoDispatch)

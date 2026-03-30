@@ -156,7 +156,7 @@ TEST(BRepGraphAlgo_TransformTest, LocationOnly_NoCopyGeom)
 
   // Verify that reconstructed solid + RootLocation produces correct geometry.
   ASSERT_GT(aResultGraph.Topo().NbSolids(), 0);
-  TopoDS_Shape aTransSolid = aResultGraph.Shapes().Reconstruct(BRepGraph_NodeId::Solid(0));
+  TopoDS_Shape aTransSolid = aResultGraph.Shapes().Reconstruct(BRepGraph_SolidId(0));
   ASSERT_FALSE(aTransSolid.IsNull());
   aTransSolid.Location(aRootLoc);
 

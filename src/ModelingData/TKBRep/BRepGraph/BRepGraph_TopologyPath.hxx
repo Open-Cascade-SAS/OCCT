@@ -106,7 +106,7 @@ public:
                                        const int theShellRefIdx,
                                        const int theFaceRefIdx)
   {
-    BRepGraph_TopologyPath aPath(BRepGraph_NodeId::Solid(theSolidIdx));
+    BRepGraph_TopologyPath aPath{BRepGraph_SolidId(theSolidIdx)};
     aPath.pushStep(theShellRefIdx);
     aPath.pushStep(theFaceRefIdx);
     return aPath;
@@ -119,7 +119,7 @@ public:
                                        const int theWireRefIdx,
                                        const int theCoEdgeRefIdx)
   {
-    BRepGraph_TopologyPath aPath(BRepGraph_NodeId::Solid(theSolidIdx));
+    BRepGraph_TopologyPath aPath{BRepGraph_SolidId(theSolidIdx)};
     aPath.pushStep(theShellRefIdx);
     aPath.pushStep(theFaceRefIdx);
     aPath.pushStep(theWireRefIdx);
@@ -136,7 +136,7 @@ public:
                                          const int theCoEdgeRefIdx,
                                          const int theVertexRefIdx)
   {
-    BRepGraph_TopologyPath aPath(BRepGraph_NodeId::Solid(theSolidIdx));
+    BRepGraph_TopologyPath aPath{BRepGraph_SolidId(theSolidIdx)};
     aPath.pushStep(theShellRefIdx);
     aPath.pushStep(theFaceRefIdx);
     aPath.pushStep(theWireRefIdx);

@@ -46,7 +46,7 @@ BRepGraph_NodeId resolveOrientedStartVertex(const BRepGraph&             theGrap
     (theSense == TopAbs_FORWARD) ? theEdge.StartVertexRefId : theEdge.EndVertexRefId;
   if (!aRefId.IsValid())
     return BRepGraph_NodeId();
-  return BRepGraph_NodeId::Vertex(theGraph.Refs().Vertex(aRefId).VertexDefId.Index);
+  return BRepGraph_VertexId(theGraph.Refs().Vertex(aRefId).VertexDefId.Index);
 }
 
 //! Resolve oriented end vertex through ref entries.
@@ -58,7 +58,7 @@ BRepGraph_NodeId resolveOrientedEndVertex(const BRepGraph&             theGraph,
     (theSense == TopAbs_FORWARD) ? theEdge.EndVertexRefId : theEdge.StartVertexRefId;
   if (!aRefId.IsValid())
     return BRepGraph_NodeId();
-  return BRepGraph_NodeId::Vertex(theGraph.Refs().Vertex(aRefId).VertexDefId.Index);
+  return BRepGraph_VertexId(theGraph.Refs().Vertex(aRefId).VertexDefId.Index);
 }
 
 //=================================================================================================
@@ -146,7 +146,7 @@ void BRepGraphCheck::CheckWireMinimum(const BRepGraph&                          
     {
       // More than 2 occurrences is always redundant.
       BRepGraphCheck_Issue anIssue;
-      anIssue.NodeId        = BRepGraph_NodeId::Edge(anIter.Key());
+      anIssue.NodeId        = BRepGraph_EdgeId(anIter.Key());
       anIssue.ContextNodeId = aWireDef.Id;
       anIssue.Status        = BRepCheck_RedundantEdge;
       anIssue.IssueSeverity = BRepGraphCheck_Issue::Severity::Error;
@@ -159,7 +159,7 @@ void BRepGraphCheck::CheckWireMinimum(const BRepGraph&                          
       if (aFwdCount == 2 || aFwdCount == 0)
       {
         BRepGraphCheck_Issue anIssue;
-        anIssue.NodeId        = BRepGraph_NodeId::Edge(anIter.Key());
+        anIssue.NodeId        = BRepGraph_EdgeId(anIter.Key());
         anIssue.ContextNodeId = aWireDef.Id;
         anIssue.Status        = BRepCheck_RedundantEdge;
         anIssue.IssueSeverity = BRepGraphCheck_Issue::Severity::Error;
@@ -180,7 +180,7 @@ void BRepGraphCheck::CheckWireOnFace(const BRepGraph&                          t
   const BRepGraph::TopoView&   aDefs       = theGraph.Topo();
   const BRepGraphInc::WireDef& aWireDef    = aDefs.Wire(theWire);
   const BRepGraph_NodeId       aWireNodeId = aWireDef.Id;
-  const BRepGraph_NodeId       aFaceNodeId = BRepGraph_NodeId::Face(theFace.Index);
+  const BRepGraph_NodeId       aFaceNodeId = BRepGraph_FaceId(theFace.Index);
   const NCollection_Vector<BRepGraphInc::CoEdgeUsage> aCoEdgeRefs =
     collectWireCoEdgeRefs(theGraph, aWireNodeId);
 

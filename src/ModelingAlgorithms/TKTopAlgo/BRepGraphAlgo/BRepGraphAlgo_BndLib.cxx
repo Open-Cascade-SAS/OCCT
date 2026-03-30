@@ -692,7 +692,7 @@ static void addNodeBox(const BRepGraph&       theGraph,
     }
     case BRepGraph_NodeId::Kind::Compound: {
       forCompoundChildRefEntries(theGraph,
-                                 BRepGraph_NodeId::Compound(theNode.Index),
+                                 BRepGraph_CompoundId(theNode.Index),
                                  [&](const BRepGraphInc::ChildRef& aCR) {
                                    addNodeBox(theGraph, aCR.ChildDefId, theBox, theUseTri);
                                  });
@@ -788,7 +788,7 @@ static void addNodeBoxOptimal(const BRepGraph&       theGraph,
     case BRepGraph_NodeId::Kind::Compound: {
       forCompoundChildRefEntries(
         theGraph,
-        BRepGraph_NodeId::Compound(theNode.Index),
+        BRepGraph_CompoundId(theNode.Index),
         [&](const BRepGraphInc::ChildRef& aCR) {
           addNodeBoxOptimal(theGraph, aCR.ChildDefId, theBox, theUseTri, theUseShapeTol);
         });

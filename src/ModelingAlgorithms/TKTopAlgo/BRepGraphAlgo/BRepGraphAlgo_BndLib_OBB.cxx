@@ -337,7 +337,7 @@ static void computeProperties(const BRepGraph& theGraph, GProp_GProps& theGCommo
   const int aNbSolids = theGraph.Topo().NbSolids();
   for (int i = 0; i < aNbSolids; ++i)
   {
-    const BRepGraph_NodeId aSolidId = BRepGraph_NodeId::Solid(i);
+    const BRepGraph_NodeId aSolidId = BRepGraph_SolidId(i);
     const TopoDS_Shape     aShape   = theGraph.Shapes().Shape(aSolidId);
     GProp_GProps           aG;
     BRepGProp::VolumeProperties(aShape, aG, true);
@@ -411,19 +411,19 @@ static void computePCA(const BRepGraph& theGraph,
     TopoDS_Shape aRootShape;
     if (theGraph.Topo().NbCompounds() > 0)
     {
-      aRootShape = theGraph.Shapes().Shape(BRepGraph_NodeId::Compound(0));
+      aRootShape = theGraph.Shapes().Shape(BRepGraph_CompoundId(0));
     }
     else if (theGraph.Topo().NbCompSolids() > 0)
     {
-      aRootShape = theGraph.Shapes().Shape(BRepGraph_NodeId::CompSolid(0));
+      aRootShape = theGraph.Shapes().Shape(BRepGraph_CompSolidId(0));
     }
     else if (theGraph.Topo().NbSolids() > 0)
     {
-      aRootShape = theGraph.Shapes().Shape(BRepGraph_NodeId::Solid(0));
+      aRootShape = theGraph.Shapes().Shape(BRepGraph_SolidId(0));
     }
     else if (theGraph.Topo().NbShells() > 0)
     {
-      aRootShape = theGraph.Shapes().Shape(BRepGraph_NodeId::Shell(0));
+      aRootShape = theGraph.Shapes().Shape(BRepGraph_ShellId(0));
     }
     else if (theGraph.Topo().NbFaces() > 0)
     {

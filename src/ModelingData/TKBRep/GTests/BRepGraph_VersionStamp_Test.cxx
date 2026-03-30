@@ -161,7 +161,7 @@ TEST_F(BRepGraph_VersionStampTest, StampOf_AssemblyNodes_WorksForProductsAndOccu
   // Box graph auto-creates a root Product.
   ASSERT_GT(myGraph.Topo().NbProducts(), 0);
 
-  const BRepGraph_VersionStamp aProdStamp = myGraph.UIDs().StampOf(BRepGraph_NodeId::Product(0));
+  const BRepGraph_VersionStamp aProdStamp = myGraph.UIDs().StampOf(BRepGraph_ProductId(0));
   EXPECT_TRUE(aProdStamp.IsValid());
   EXPECT_FALSE(myGraph.UIDs().IsStale(aProdStamp));
 }

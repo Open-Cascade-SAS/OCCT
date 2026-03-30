@@ -240,7 +240,7 @@ TEST_F(BRepGraph_SharingTest, CompoundTwoIdenticalBoxes)
 
   // Compound has 2 child references to the same solid.
   const NCollection_Vector<BRepGraph_ChildRefId> aChildRefs =
-    BRepGraph_TestTools::ChildRefsOfParent(aGraph, BRepGraph_NodeId::Compound(0));
+    BRepGraph_TestTools::ChildRefsOfParent(aGraph, BRepGraph_CompoundId(0));
   ASSERT_EQ(aChildRefs.Length(), 2);
   EXPECT_EQ(aGraph.Refs().Child(aChildRefs.Value(0)).ChildDefId.Index,
             aGraph.Refs().Child(aChildRefs.Value(1)).ChildDefId.Index);

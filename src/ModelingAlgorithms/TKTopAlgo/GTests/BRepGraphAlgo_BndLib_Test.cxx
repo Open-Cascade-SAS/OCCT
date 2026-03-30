@@ -177,7 +177,7 @@ TEST(BRepGraphAlgo_BndLibTest, Add_PerNode_Face)
   ASSERT_GT(aGraph.Topo().NbFaces(), 0);
 
   Bnd_Box aFaceBox;
-  BRepGraphAlgo_BndLib::Add(aGraph, BRepGraph_NodeId::Face(0), aFaceBox);
+  BRepGraphAlgo_BndLib::Add(aGraph, BRepGraph_FaceId(0), aFaceBox);
 
   EXPECT_FALSE(aFaceBox.IsVoid());
 
@@ -209,7 +209,7 @@ TEST(BRepGraphAlgo_BndLibTest, Add_PerNode_Edge)
   ASSERT_GT(aGraph.Topo().NbEdges(), 0);
 
   Bnd_Box anEdgeBox;
-  BRepGraphAlgo_BndLib::Add(aGraph, BRepGraph_NodeId::Edge(0), anEdgeBox);
+  BRepGraphAlgo_BndLib::Add(aGraph, BRepGraph_EdgeId(0), anEdgeBox);
 
   EXPECT_FALSE(anEdgeBox.IsVoid());
 }
@@ -223,7 +223,7 @@ TEST(BRepGraphAlgo_BndLibTest, Add_PerNode_Shell)
   ASSERT_GT(aGraph.Topo().NbShells(), 0);
 
   Bnd_Box aShellBox;
-  BRepGraphAlgo_BndLib::Add(aGraph, BRepGraph_NodeId::Shell(0), aShellBox);
+  BRepGraphAlgo_BndLib::Add(aGraph, BRepGraph_ShellId(0), aShellBox);
 
   // Shell box should match the whole box (box has one shell).
   Bnd_Box aWholeBox;
@@ -241,7 +241,7 @@ TEST(BRepGraphAlgo_BndLibTest, Add_PerNode_Solid)
   ASSERT_GT(aGraph.Topo().NbSolids(), 0);
 
   Bnd_Box aSolidBox;
-  BRepGraphAlgo_BndLib::Add(aGraph, BRepGraph_NodeId::Solid(0), aSolidBox);
+  BRepGraphAlgo_BndLib::Add(aGraph, BRepGraph_SolidId(0), aSolidBox);
 
   Bnd_Box aWholeBox;
   BRepGraphAlgo_BndLib::Add(aGraph, aWholeBox);
@@ -355,7 +355,7 @@ TEST(BRepGraphAlgo_BndLibTest, AddCached_Standard_ReturnsNonVoid)
   ASSERT_GT(aGraph.Topo().NbFaces(), 0);
 
   Bnd_Box aCachedBox = BRepGraphAlgo_BndLib::AddCached(aGraph,
-                                                       BRepGraph_NodeId::Face(0),
+                                                       BRepGraph_FaceId(0),
                                                        BRepGraphAlgo_BndLib::Precision::Standard);
 
   EXPECT_FALSE(aCachedBox.IsVoid());
@@ -368,7 +368,7 @@ TEST(BRepGraphAlgo_BndLibTest, GetCached_AfterAddCached_ReturnsTrue)
   BRepGraph aGraph = buildGraph(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  const BRepGraph_NodeId aFaceId = BRepGraph_NodeId::Face(0);
+  const BRepGraph_NodeId aFaceId = BRepGraph_FaceId(0);
 
   // Initially no cache.
   BRepGraphAlgo_BndLib::CachedData aData;
@@ -390,7 +390,7 @@ TEST(BRepGraphAlgo_BndLibTest, AddCached_OptimalSupersedesStandard)
   BRepGraph aGraph = buildGraph(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  const BRepGraph_NodeId aFaceId = BRepGraph_NodeId::Face(0);
+  const BRepGraph_NodeId aFaceId = BRepGraph_FaceId(0);
 
   // Cache at Standard level.
   Bnd_Box aStdBox =
@@ -420,7 +420,7 @@ TEST(BRepGraphAlgo_BndLibTest, SetCached_ExternalBox_RetrievedByGet)
   BRepGraph aGraph = buildGraph(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  const BRepGraph_NodeId aFaceId = BRepGraph_NodeId::Face(0);
+  const BRepGraph_NodeId aFaceId = BRepGraph_FaceId(0);
 
   // Store an externally-computed box.
   Bnd_Box anExternalBox;
@@ -454,7 +454,7 @@ TEST(BRepGraphAlgo_BndLibTest, InvalidateCached_ForcesRecompute)
   BRepGraph aGraph = buildGraph(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  const BRepGraph_NodeId aFaceId = BRepGraph_NodeId::Face(0);
+  const BRepGraph_NodeId aFaceId = BRepGraph_FaceId(0);
 
   // Populate cache.
   Bnd_Box aBox1 =

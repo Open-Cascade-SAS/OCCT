@@ -51,7 +51,7 @@ TEST(BRepGraphAlgo_CopyTest, CopyBox_FaceCount)
   EXPECT_EQ(aCopyGraph.Topo().NbFaces(), aGraph.Topo().NbFaces());
 
   // Verify reconstructed shape has correct face count.
-  TopoDS_Shape aCopy = aCopyGraph.Shapes().Reconstruct(BRepGraph_NodeId::Solid(0));
+  TopoDS_Shape aCopy = aCopyGraph.Shapes().Reconstruct(BRepGraph_SolidId(0));
   ASSERT_FALSE(aCopy.IsNull());
 
   int aNbFaces = 0;
@@ -76,7 +76,7 @@ TEST(BRepGraphAlgo_CopyTest, CopyBox_AreaPreserved)
   BRepGraph aCopyGraph = BRepGraphAlgo_Copy::Perform(aGraph, true);
   ASSERT_TRUE(aCopyGraph.IsDone());
 
-  TopoDS_Shape aCopy = aCopyGraph.Shapes().Reconstruct(BRepGraph_NodeId::Solid(0));
+  TopoDS_Shape aCopy = aCopyGraph.Shapes().Reconstruct(BRepGraph_SolidId(0));
   ASSERT_FALSE(aCopy.IsNull());
 
   // Sum face areas since result may be a compound.

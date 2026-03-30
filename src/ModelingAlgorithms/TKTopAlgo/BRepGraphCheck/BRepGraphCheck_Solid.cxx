@@ -99,7 +99,7 @@ void BRepGraphCheck::CheckSolidMinimum(const BRepGraph&                         
   {
     const BRepGraphInc::ShellRef& aSR          = aSolidShellRefs.Value(aShellIter);
     const BRepGraphInc::ShellDef& aShellDef    = aDefs.Shell(aSR.ShellDefId);
-    const BRepGraph_NodeId        aShellNodeId = BRepGraph_NodeId::Shell(aSR.ShellDefId.Index);
+    const BRepGraph_NodeId        aShellNodeId = BRepGraph_ShellId(aSR.ShellDefId.Index);
     const NCollection_Vector<BRepGraphInc::FaceRef> aShellFaceRefs =
       collectShellFaceRefs(aDefs, aRefs, aShellNodeId);
 
@@ -152,7 +152,7 @@ void BRepGraphCheck::CheckSolidMinimum(const BRepGraph&                         
     const BRepGraphInc::ShellRef&                   aSR         = aSolidShellRefs.Value(aShellIter);
     const BRepGraph_NodeId                          aShellDefId = aSR.ShellDefId;
     const NCollection_Vector<BRepGraphInc::FaceRef> aShellFaceRefs =
-      collectShellFaceRefs(aDefs, aRefs, BRepGraph_NodeId::Shell(aSR.ShellDefId.Index));
+      collectShellFaceRefs(aDefs, aRefs, BRepGraph_ShellId(aSR.ShellDefId.Index));
 
     if (aShellFaceRefs.IsEmpty())
       continue;

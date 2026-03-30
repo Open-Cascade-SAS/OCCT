@@ -33,14 +33,13 @@ TEST(BRepGraph_NodeIdTest, Construction_FromIndex)
   EXPECT_EQ(aFace.Index, 5);
 }
 
-TEST(BRepGraph_NodeIdTest, Factory_ReturnsTyped)
+TEST(BRepGraph_NodeIdTest, TypedAliases_ConstructFromIndex)
 {
-  // Factory returns Typed<Kind::Face>, which is BRepGraph_FaceId.
-  BRepGraph_FaceId aFace = BRepGraph_NodeId::Face(3);
+  BRepGraph_FaceId aFace = BRepGraph_FaceId(3);
   EXPECT_TRUE(aFace.IsValid());
   EXPECT_EQ(aFace.Index, 3);
 
-  BRepGraph_EdgeId anEdge = BRepGraph_NodeId::Edge(7);
+  BRepGraph_EdgeId anEdge = BRepGraph_EdgeId(7);
   EXPECT_EQ(anEdge.Index, 7);
 }
 

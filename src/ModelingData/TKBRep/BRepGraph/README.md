@@ -228,7 +228,7 @@ BRepGraph provides a context-preserving traversal system for walking the hierarc
 `BRepGraph_Explorer` visits each **occurrence** of an entity kind (not definitions). If Edge[5] is reachable through Face[0] and Face[1], it is visited twice with different paths:
 
 ```cpp
-for (BRepGraph_Explorer anExp(aGraph, BRepGraph_NodeId::Solid(0),
+for (BRepGraph_Explorer anExp(aGraph, BRepGraph_SolidId(0),
                                BRepGraph_NodeId::Kind::Edge);
      anExp.More(); anExp.Next())
 {

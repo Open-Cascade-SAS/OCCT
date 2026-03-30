@@ -419,7 +419,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
     return TopoDS_Shape();
 
   // Check cache first - 1 NodeId = 1 TShape.
-  BRepGraph_NodeId    aFaceNodeId = BRepGraph_NodeId::Face(theFaceIdx);
+  BRepGraph_NodeId    aFaceNodeId = BRepGraph_FaceId(theFaceIdx);
   const TopoDS_Shape* aCachedFace = theCache.Seek(aFaceNodeId);
   if (aCachedFace != nullptr)
     return *aCachedFace;
@@ -467,7 +467,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
 
   // Helper: get or build edge from cache.
   const auto aGetOrBuildEdge = [&](const int theEdgeIdx) -> TopoDS_Edge {
-    BRepGraph_NodeId    anEdgeId = BRepGraph_NodeId::Edge(theEdgeIdx);
+    BRepGraph_NodeId    anEdgeId = BRepGraph_EdgeId(theEdgeIdx);
     const TopoDS_Shape* aCached  = theCache.Seek(anEdgeId);
     if (aCached != nullptr)
       return TopoDS::Edge(*aCached);
@@ -499,7 +499,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
     const auto aGetOrBuildVertex = [&](const int theVtxIdx) -> TopoDS_Shape {
       if (theVtxIdx < 0)
         return TopoDS_Shape();
-      BRepGraph_NodeId    aVtxId     = BRepGraph_NodeId::Vertex(theVtxIdx);
+      BRepGraph_NodeId    aVtxId     = BRepGraph_VertexId(theVtxIdx);
       const TopoDS_Shape* aVtxCached = theCache.Seek(aVtxId);
       if (aVtxCached != nullptr)
         return *aVtxCached;

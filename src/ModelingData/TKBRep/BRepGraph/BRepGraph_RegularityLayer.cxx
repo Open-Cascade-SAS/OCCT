@@ -68,7 +68,7 @@ void removeEdge(NCollection_DataMap<BRepGraph_FaceId, NCollection_Vector<BRepGra
 static BRepGraph_EdgeId remapEdge(const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap,
                                   const BRepGraph_EdgeId                                          theEdge)
 {
-  const BRepGraph_NodeId* aNewId = theRemapMap.Seek(BRepGraph_NodeId::Edge(theEdge.Index));
+  const BRepGraph_NodeId* aNewId = theRemapMap.Seek(BRepGraph_EdgeId(theEdge.Index));
   if (aNewId == nullptr || aNewId->NodeKind != BRepGraph_NodeId::Kind::Edge)
     return BRepGraph_EdgeId();
   return BRepGraph_EdgeId(aNewId->Index);
@@ -77,7 +77,7 @@ static BRepGraph_EdgeId remapEdge(const NCollection_DataMap<BRepGraph_NodeId, BR
 static BRepGraph_FaceId remapFace(const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap,
                                   const BRepGraph_FaceId                                          theFace)
 {
-  const BRepGraph_NodeId* aNewId = theRemapMap.Seek(BRepGraph_NodeId::Face(theFace.Index));
+  const BRepGraph_NodeId* aNewId = theRemapMap.Seek(BRepGraph_FaceId(theFace.Index));
   if (aNewId == nullptr || aNewId->NodeKind != BRepGraph_NodeId::Kind::Face)
     return BRepGraph_FaceId();
   return BRepGraph_FaceId(aNewId->Index);

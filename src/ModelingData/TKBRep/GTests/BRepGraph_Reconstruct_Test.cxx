@@ -387,7 +387,7 @@ TEST(BRepGraph_ReconstructTest, HasOriginal_BuildFace_ReturnsTrue)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  EXPECT_TRUE(aGraph.Shapes().HasOriginal(BRepGraph_NodeId::Face(0)));
+  EXPECT_TRUE(aGraph.Shapes().HasOriginal(BRepGraph_FaceId(0)));
 }
 
 TEST(BRepGraph_ReconstructTest, OriginalOf_Face_IsSameAsBuildInputFace)
@@ -403,7 +403,7 @@ TEST(BRepGraph_ReconstructTest, OriginalOf_Face_IsSameAsBuildInputFace)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  EXPECT_TRUE(aGraph.Shapes().OriginalOf(BRepGraph_NodeId::Face(0)).IsSame(aFirstFace));
+  EXPECT_TRUE(aGraph.Shapes().OriginalOf(BRepGraph_FaceId(0)).IsSame(aFirstFace));
 }
 
 TEST(BRepGraph_ReconstructTest, HasOriginal_ManualVertex_ReturnsFalse)
@@ -430,7 +430,7 @@ TEST(BRepGraph_ReconstructTest, FindNode_OriginalFace_RoundTrip)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  const BRepGraph_NodeId aFaceId = BRepGraph_NodeId::Face(0);
+  const BRepGraph_NodeId aFaceId = BRepGraph_FaceId(0);
   const TopoDS_Shape&    anOriginalFace = aGraph.Shapes().OriginalOf(aFaceId);
   EXPECT_EQ(aGraph.Shapes().FindNode(anOriginalFace), aFaceId);
 }

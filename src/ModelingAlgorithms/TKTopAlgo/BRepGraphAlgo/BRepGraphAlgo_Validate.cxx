@@ -899,7 +899,7 @@ void checkWireConnectivity(const BRepGraph&                                   th
                                                     : aCurrEdge.StartVertexRefId;
       const BRepGraph_NodeId      aCurrEnd =
         aCurrEndRefId.IsValid()
-               ? BRepGraph_NodeId::Vertex(theGraph.Refs().Vertex(aCurrEndRefId).VertexDefId.Index)
+               ? BRepGraph_VertexId(theGraph.Refs().Vertex(aCurrEndRefId).VertexDefId.Index)
                : BRepGraph_NodeId();
 
       // Resolve oriented start vertex of next edge.
@@ -908,7 +908,7 @@ void checkWireConnectivity(const BRepGraph&                                   th
                                                       : aNextEdge.EndVertexRefId;
       const BRepGraph_NodeId      aNextStart =
         aNextStartRefId.IsValid()
-               ? BRepGraph_NodeId::Vertex(theGraph.Refs().Vertex(aNextStartRefId).VertexDefId.Index)
+               ? BRepGraph_VertexId(theGraph.Refs().Vertex(aNextStartRefId).VertexDefId.Index)
                : BRepGraph_NodeId();
 
       if (aCurrEnd.IsValid() && aNextStart.IsValid() && aCurrEnd != aNextStart)

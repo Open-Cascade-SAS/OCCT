@@ -162,7 +162,7 @@ void BRepGraphCheck::CheckEdgeOnFace(const BRepGraph&                          t
   if (!BRepGraph_Tool::Face::HasSurface(theGraph, theFace))
     return;
 
-  const BRepGraph_NodeId aFaceNodeId = BRepGraph_NodeId::Face(theFace.Index);
+  const BRepGraph_NodeId aFaceNodeId = BRepGraph_FaceId(theFace.Index);
 
   // Check PCurve existence.
   const BRepGraphInc::CoEdgeDef* aPCurve =
@@ -288,7 +288,7 @@ void BRepGraphCheck::CheckEdgeInShell(const BRepGraph&                          
 {
   const BRepGraph::TopoView&   aDefs        = theGraph.Topo();
   const BRepGraphInc::EdgeDef& anEdgeDef    = aDefs.Edge(theEdge);
-  const BRepGraph_NodeId       aShellNodeId = BRepGraph_NodeId::Shell(theShell.Index);
+  const BRepGraph_NodeId       aShellNodeId = BRepGraph_ShellId(theShell.Index);
 
   // Skip degenerate edges.
   if (BRepGraph_Tool::Edge::Degenerated(theGraph, theEdge))

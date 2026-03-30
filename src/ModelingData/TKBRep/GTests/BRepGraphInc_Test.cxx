@@ -148,7 +148,7 @@ TEST(BRepGraphIncTest, Box_RoundTrip_AreaPreserved)
   BRepGraphInc_Populate::Perform(aStorage, aBox, false);
   ASSERT_TRUE(aStorage.GetIsDone());
 
-  TopoDS_Shape aRecon = BRepGraphInc_Reconstruct::Node(aStorage, BRepGraph_NodeId::Solid(0));
+  TopoDS_Shape aRecon = BRepGraphInc_Reconstruct::Node(aStorage, BRepGraph_SolidId(0));
   ASSERT_FALSE(aRecon.IsNull());
 
   const double aReconArea = computeArea(aRecon);
@@ -165,7 +165,7 @@ TEST(BRepGraphIncTest, Cylinder_RoundTrip_AreaPreserved)
   BRepGraphInc_Populate::Perform(aStorage, aCyl, false);
   ASSERT_TRUE(aStorage.GetIsDone());
 
-  TopoDS_Shape aRecon = BRepGraphInc_Reconstruct::Node(aStorage, BRepGraph_NodeId::Solid(0));
+  TopoDS_Shape aRecon = BRepGraphInc_Reconstruct::Node(aStorage, BRepGraph_SolidId(0));
   ASSERT_FALSE(aRecon.IsNull());
 
   const double aReconArea = computeArea(aRecon);
@@ -182,7 +182,7 @@ TEST(BRepGraphIncTest, Sphere_RoundTrip_AreaPreserved)
   BRepGraphInc_Populate::Perform(aStorage, aSph, false);
   ASSERT_TRUE(aStorage.GetIsDone());
 
-  TopoDS_Shape aRecon = BRepGraphInc_Reconstruct::Node(aStorage, BRepGraph_NodeId::Solid(0));
+  TopoDS_Shape aRecon = BRepGraphInc_Reconstruct::Node(aStorage, BRepGraph_SolidId(0));
   ASSERT_FALSE(aRecon.IsNull());
 
   const double aReconArea = computeArea(aRecon);
@@ -247,7 +247,7 @@ TEST(BRepGraphIncTest, Sphere_WireEdgeOrder_Diagnostic)
   BRepGraphInc_Populate::Perform(aStorage, aSph, false);
   ASSERT_TRUE(aStorage.GetIsDone());
 
-  TopoDS_Shape aRecon = BRepGraphInc_Reconstruct::Node(aStorage, BRepGraph_NodeId::Solid(0));
+  TopoDS_Shape aRecon = BRepGraphInc_Reconstruct::Node(aStorage, BRepGraph_SolidId(0));
   ASSERT_FALSE(aRecon.IsNull());
 
   // Dump reconstructed wire content
@@ -319,7 +319,7 @@ TEST(BRepGraphIncTest, Box_RoundTrip_VolumePreserved)
   BRepGraphInc_Populate::Perform(aStorage, aBox, false);
   ASSERT_TRUE(aStorage.GetIsDone());
 
-  TopoDS_Shape aRecon = BRepGraphInc_Reconstruct::Node(aStorage, BRepGraph_NodeId::Solid(0));
+  TopoDS_Shape aRecon = BRepGraphInc_Reconstruct::Node(aStorage, BRepGraph_SolidId(0));
   ASSERT_FALSE(aRecon.IsNull());
 
   const double aReconVol = computeVolume(aRecon);
@@ -336,7 +336,7 @@ TEST(BRepGraphIncTest, Cylinder_RoundTrip_VolumePreserved)
   BRepGraphInc_Populate::Perform(aStorage, aCyl, false);
   ASSERT_TRUE(aStorage.GetIsDone());
 
-  TopoDS_Shape aRecon = BRepGraphInc_Reconstruct::Node(aStorage, BRepGraph_NodeId::Solid(0));
+  TopoDS_Shape aRecon = BRepGraphInc_Reconstruct::Node(aStorage, BRepGraph_SolidId(0));
   ASSERT_FALSE(aRecon.IsNull());
 
   const double aReconVol = computeVolume(aRecon);
@@ -356,7 +356,7 @@ TEST(BRepGraphIncTest, Box_RoundTrip_SubShapeCounts)
   BRepGraphInc_Populate::Perform(aStorage, aBox, false);
   ASSERT_TRUE(aStorage.GetIsDone());
 
-  TopoDS_Shape aRecon = BRepGraphInc_Reconstruct::Node(aStorage, BRepGraph_NodeId::Solid(0));
+  TopoDS_Shape aRecon = BRepGraphInc_Reconstruct::Node(aStorage, BRepGraph_SolidId(0));
   ASSERT_FALSE(aRecon.IsNull());
 
   EXPECT_EQ(countSubShapes(aRecon, TopAbs_FACE), countSubShapes(aBox, TopAbs_FACE));
@@ -374,7 +374,7 @@ TEST(BRepGraphIncTest, Cylinder_RoundTrip_SubShapeCounts)
   BRepGraphInc_Populate::Perform(aStorage, aCyl, false);
   ASSERT_TRUE(aStorage.GetIsDone());
 
-  TopoDS_Shape aRecon = BRepGraphInc_Reconstruct::Node(aStorage, BRepGraph_NodeId::Solid(0));
+  TopoDS_Shape aRecon = BRepGraphInc_Reconstruct::Node(aStorage, BRepGraph_SolidId(0));
   ASSERT_FALSE(aRecon.IsNull());
 
   EXPECT_EQ(countSubShapes(aRecon, TopAbs_FACE), countSubShapes(aCyl, TopAbs_FACE));
@@ -498,7 +498,7 @@ TEST(BRepGraphIncTest, Compound_RoundTrip_SubShapeCounts)
   EXPECT_EQ(aStorage.NbFaces(), 12);
 
   // Round-trip reconstruct via compound.
-  TopoDS_Shape aRecon = BRepGraphInc_Reconstruct::Node(aStorage, BRepGraph_NodeId::Compound(0));
+  TopoDS_Shape aRecon = BRepGraphInc_Reconstruct::Node(aStorage, BRepGraph_CompoundId(0));
   ASSERT_FALSE(aRecon.IsNull());
   EXPECT_EQ(countSubShapes(aRecon, TopAbs_SOLID), 2);
   EXPECT_EQ(countSubShapes(aRecon, TopAbs_FACE), 12);
@@ -616,7 +616,7 @@ TEST(BRepGraphIncTest, Sphere_DegenerateEdges_Preserved)
   EXPECT_GE(aDegenerateCount, 2) << "Sphere should have at least 2 degenerate edges (poles)";
 
   // Round-trip: reconstructed sphere area must still match.
-  TopoDS_Shape aRecon = BRepGraphInc_Reconstruct::Node(aStorage, BRepGraph_NodeId::Solid(0));
+  TopoDS_Shape aRecon = BRepGraphInc_Reconstruct::Node(aStorage, BRepGraph_SolidId(0));
   ASSERT_FALSE(aRecon.IsNull());
 
   const double anOrigArea = computeArea(aSph);
@@ -652,7 +652,7 @@ TEST(BRepGraphIncTest, Compound_TranslatedChildren_VolumePreserved)
   BRepGraphInc_Populate::Perform(aStorage, aCompound, false);
   ASSERT_TRUE(aStorage.GetIsDone());
 
-  TopoDS_Shape aRecon = BRepGraphInc_Reconstruct::Node(aStorage, BRepGraph_NodeId::Compound(0));
+  TopoDS_Shape aRecon = BRepGraphInc_Reconstruct::Node(aStorage, BRepGraph_CompoundId(0));
   ASSERT_FALSE(aRecon.IsNull());
 
   const double aReconVol = computeVolume(aRecon);
@@ -670,7 +670,7 @@ TEST(BRepGraphIncTest, Cylinder_RoundTrip_BRepDump)
   BRepGraphInc_Populate::Perform(aStorage, aCyl, false);
   ASSERT_TRUE(aStorage.GetIsDone());
 
-  TopoDS_Shape aRecon = BRepGraphInc_Reconstruct::Node(aStorage, BRepGraph_NodeId::Solid(0));
+  TopoDS_Shape aRecon = BRepGraphInc_Reconstruct::Node(aStorage, BRepGraph_SolidId(0));
   ASSERT_FALSE(aRecon.IsNull());
 
   // Dump both shapes and compare
@@ -784,7 +784,7 @@ TEST(BRepGraphIncTest, EdgeInternalVertex_RoundTrip)
   BRepGraphInc_Populate::Perform(aStorage, aFace, false);
   ASSERT_TRUE(aStorage.GetIsDone());
 
-  TopoDS_Shape aRecon = BRepGraphInc_Reconstruct::Node(aStorage, BRepGraph_NodeId::Face(0));
+  TopoDS_Shape aRecon = BRepGraphInc_Reconstruct::Node(aStorage, BRepGraph_FaceId(0));
   ASSERT_FALSE(aRecon.IsNull());
 
   // Find the edge in the reconstructed face and verify internal vertex.
@@ -956,7 +956,7 @@ TEST(BRepGraphIncTest, FaceDirectVertex_RoundTrip)
   BRepGraphInc_Populate::Perform(aStorage, aFace, false);
   ASSERT_TRUE(aStorage.GetIsDone());
 
-  TopoDS_Shape aRecon = BRepGraphInc_Reconstruct::Node(aStorage, BRepGraph_NodeId::Face(0));
+  TopoDS_Shape aRecon = BRepGraphInc_Reconstruct::Node(aStorage, BRepGraph_FaceId(0));
   ASSERT_FALSE(aRecon.IsNull());
 
   // Verify vertex is a direct child of the face (not inside a wire).
@@ -1090,7 +1090,7 @@ TEST(BRepGraphIncTest, CompoundWithInternalVertices_RoundTrip_SubShapeCounts)
   BRepGraphInc_Populate::Perform(aStorage, aCompound, false);
   ASSERT_TRUE(aStorage.GetIsDone());
 
-  TopoDS_Shape aRecon = BRepGraphInc_Reconstruct::Node(aStorage, BRepGraph_NodeId::Compound(0));
+  TopoDS_Shape aRecon = BRepGraphInc_Reconstruct::Node(aStorage, BRepGraph_CompoundId(0));
   ASSERT_FALSE(aRecon.IsNull());
 
   EXPECT_EQ(countSubShapes(aRecon, TopAbs_FACE), anOrigFaces);

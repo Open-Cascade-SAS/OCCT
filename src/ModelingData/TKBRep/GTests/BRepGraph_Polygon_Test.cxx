@@ -196,7 +196,7 @@ TEST(BRepGraph_PolygonTest, PolyOnTri_Roundtrip_PreservedOnReconstruct)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Reconstruct solid and verify polygon-on-triangulation is re-attached.
-  BRepGraph_NodeId aSolidDefId = BRepGraph_NodeId::Solid(0);
+  BRepGraph_NodeId aSolidDefId = BRepGraph_SolidId(0);
   TopoDS_Shape     aReconSolid = aGraph.Shapes().Reconstruct(aSolidDefId);
   ASSERT_FALSE(aReconSolid.IsNull());
 

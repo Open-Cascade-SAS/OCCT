@@ -2079,19 +2079,19 @@ TopoDS_Shape reconstructFromGraph(const BRepGraph& theGraph)
 
   if (aDefs.NbCompounds() > 0)
   {
-    return theGraph.Shapes().Reconstruct(BRepGraph_NodeId::Compound(0));
+    return theGraph.Shapes().Reconstruct(BRepGraph_CompoundId(0));
   }
   else if (aDefs.NbCompSolids() > 0)
   {
-    return theGraph.Shapes().Reconstruct(BRepGraph_NodeId::CompSolid(0));
+    return theGraph.Shapes().Reconstruct(BRepGraph_CompSolidId(0));
   }
   else if (aDefs.NbSolids() > 0)
   {
-    return theGraph.Shapes().Reconstruct(BRepGraph_NodeId::Solid(0));
+    return theGraph.Shapes().Reconstruct(BRepGraph_SolidId(0));
   }
   else if (aDefs.NbShells() > 0)
   {
-    return theGraph.Shapes().Reconstruct(BRepGraph_NodeId::Shell(0));
+    return theGraph.Shapes().Reconstruct(BRepGraph_ShellId(0));
   }
   else
   {
