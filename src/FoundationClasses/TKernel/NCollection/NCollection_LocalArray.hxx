@@ -277,13 +277,8 @@ protected:
   //! True if currently using inline (stack) storage.
   bool isInline() const noexcept { return myPtr == myStorage.ptr(); }
 
-  //! Inline storage: typed array for trivial types (C++17 object lifetimes),
-  //! raw aligned bytes for non-trivial types (placement new).
-  template <bool IsTrivial>
-  struct InlineStorage;
-
-  template <>
-  struct InlineStorage<true>
+  //! Inline storage for trivial types: typed array with direct element access.
+  struct InlineStorageTrivial
   {
     theItem myData[MAX_ARRAY_SIZE];
 
@@ -292,8 +287,8 @@ protected:
     const theItem* ptr() const noexcept { return myData; }
   };
 
-  template <>
-  struct InlineStorage<false>
+  //! Inline storage for non-trivial types: raw aligned bytes for placement new.
+  struct InlineStorageNonTrivial
   {
     alignas(theItem) char myData[MAX_ARRAY_SIZE * sizeof(theItem)];
 
@@ -302,10 +297,12 @@ protected:
     const theItem* ptr() const noexcept { return reinterpret_cast<const theItem*>(myData); }
   };
 
+  using InlineStorage = std::conditional_t<IS_TRIVIAL, InlineStorageTrivial, InlineStorageNonTrivial>;
+
 protected:
-  InlineStorage<IS_TRIVIAL> myStorage; //!< Inline buffer
-  theItem*                  myPtr;     //!< Points to inline or heap buffer
-  size_t                    mySize;    //!< Logical element count
+  InlineStorage myStorage; //!< Inline buffer
+  theItem*      myPtr;     //!< Points to inline or heap buffer
+  size_t        mySize;    //!< Logical element count
 };
 
 #endif // _NCollection_LocalArray_HeaderFile

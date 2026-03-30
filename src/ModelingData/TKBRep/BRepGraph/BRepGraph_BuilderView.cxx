@@ -275,8 +275,8 @@ static bool isActiveTopologyNode(const BRepGraphInc_Storage& theStorage,
 
 //=================================================================================================
 
-static bool isRepIndexInRange(const BRepGraphInc_Storage& theStorage,
-                              const BRepGraph_RepId       theRepId)
+[[maybe_unused]] static bool isRepIndexInRange(const BRepGraphInc_Storage& theStorage,
+                                               const BRepGraph_RepId       theRepId)
 {
   if (!theRepId.IsValid())
   {
