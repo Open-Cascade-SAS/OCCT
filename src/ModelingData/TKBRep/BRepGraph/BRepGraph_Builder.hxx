@@ -45,13 +45,15 @@ public:
                                       const BRepGraphInc_Populate::Options& theOptions);
 
   //! Append a shape to the existing graph without clearing.
+  //! Flattens hierarchy containers away. Solid/Shell/Compound/CompSolid inputs
+  //! append their contained faces as roots instead of adding container nodes.
   //! Uses existing deduplication maps to avoid re-registering shared entities.
   //! @param[in,out] theGraph   graph to extend
   //! @param[in] theShape       shape to add
   //! @param[in] theParallel    if true, per-face geometry extraction is parallel
-  static Standard_EXPORT void Append(BRepGraph&          theGraph,
-                                     const TopoDS_Shape& theShape,
-                                     const bool          theParallel);
+  static Standard_EXPORT void AppendFlattened(BRepGraph&          theGraph,
+                                              const TopoDS_Shape& theShape,
+                                              const bool          theParallel);
 
 private:
   //! Allocate UIDs for all incidence entities after BRepGraphInc_Populate
@@ -59,7 +61,7 @@ private:
   static void populateUIDs(BRepGraph& theGraph);
 
   //! Allocate UIDs only for entities in range [theOld, current) per kind.
-  //! Used by Append() to avoid re-walking existing entities.
+  //! Used by AppendFlattened() to avoid re-walking existing entities.
   static void populateUIDsIncremental(BRepGraph& theGraph,
                                       const int  theOldVtx,
                                       const int  theOldEdge,

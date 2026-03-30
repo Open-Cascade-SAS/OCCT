@@ -20,19 +20,37 @@
 #include <TopAbs.hxx>
 #include <TopLoc_Location.hxx>
 
-// No anonymous namespace helpers needed: entity RefId vectors provide O(1) lookup.
+namespace
+{
+
+constexpr int THE_PATHVIEW_ROOT_PRODUCTS_BLOCK_SIZE = 4;
+constexpr int THE_PATHVIEW_FILTERED_PATHS_BLOCK_SIZE = 8;
+constexpr int THE_PATHVIEW_PATHS_BLOCK_SIZE          = 8;
+constexpr int THE_PATHVIEW_NODE_LOCATIONS_BLOCK_SIZE = 8;
+constexpr int THE_PATHVIEW_PATH_NODES_BLOCK_SIZE     = 8;
 
 //=================================================================================================
 
-void BRepGraph::PathView::RootProducts(
-  NCollection_Vector<BRepGraph_ProductId>&             theResult,
+const occ::handle<NCollection_BaseAllocator>& effectiveAllocator(
+  const BRepGraph&                               theGraph,
+  const occ::handle<NCollection_BaseAllocator>& theAllocator)
+{
+  return theAllocator.IsNull() ? theGraph.Allocator() : theAllocator;
+}
+
+}
+
+//=================================================================================================
+
+NCollection_Vector<BRepGraph_ProductId> BRepGraph::PathView::RootProducts(
   const occ::handle<NCollection_BaseAllocator>& theAllocator) const
 {
-  theResult.Clear();
+  NCollection_Vector<BRepGraph_ProductId> aResult(THE_PATHVIEW_ROOT_PRODUCTS_BLOCK_SIZE,
+                                                  effectiveAllocator(*myGraph, theAllocator));
   const BRepGraphInc_Storage& aStorage    = myGraph->myData->myIncStorage;
   const int                   aNbProducts = aStorage.NbProducts();
 
-  NCollection_Map<int> aReferencedProducts(1, theAllocator);
+  NCollection_Map<int> aReferencedProducts(1, effectiveAllocator(*myGraph, theAllocator));
   for (int anOccIdx = 0; anOccIdx < aStorage.NbOccurrences(); ++anOccIdx)
   {
     const BRepGraphInc::OccurrenceDef& anOcc = aStorage.Occurrence(BRepGraph_OccurrenceId(anOccIdx));
@@ -51,9 +69,10 @@ void BRepGraph::PathView::RootProducts(
     }
     if (!aReferencedProducts.Contains(aProdIdx))
     {
-      theResult.Append(BRepGraph_ProductId(aProdIdx));
+      aResult.Append(BRepGraph_ProductId(aProdIdx));
     }
   }
+  return aResult;
 }
 
 //=================================================================================================
@@ -782,112 +801,102 @@ bool BRepGraph::PathView::PathContains(const BRepGraph_TopologyPath& thePath,
 
 //=================================================================================================
 
-void BRepGraph::PathView::FilterByInclude(
+NCollection_Vector<BRepGraph_TopologyPath> BRepGraph::PathView::FilterByInclude(
   const NCollection_Vector<BRepGraph_TopologyPath>& thePaths,
   const BRepGraph_NodeId                            theNode,
-  NCollection_Vector<BRepGraph_TopologyPath>&       theResult,
   const occ::handle<NCollection_BaseAllocator>&     theAllocator) const
 {
-  const bool isAliased = &thePaths == &theResult;
-  NCollection_Vector<BRepGraph_TopologyPath> aAliasedResult(8, theAllocator);
-  NCollection_Vector<BRepGraph_TopologyPath>& aTarget = isAliased ? aAliasedResult : theResult;
-
-  aTarget.Clear();
+  const occ::handle<NCollection_BaseAllocator>& anAllocator = effectiveAllocator(*myGraph, theAllocator);
+  NCollection_Vector<BRepGraph_TopologyPath> aResult(THE_PATHVIEW_FILTERED_PATHS_BLOCK_SIZE,
+                                                     anAllocator);
   for (int i = 0; i < thePaths.Length(); ++i)
   {
     if (PathContains(thePaths.Value(i), theNode))
-      aTarget.Append(BRepGraph_TopologyPath(thePaths.Value(i), theAllocator));
+      aResult.Append(BRepGraph_TopologyPath(thePaths.Value(i), anAllocator));
   }
-
-  if (isAliased)
-  {
-    theResult.Clear();
-    for (int i = 0; i < aAliasedResult.Length(); ++i)
-      theResult.Append(aAliasedResult.Value(i));
-  }
+  return aResult;
 }
 
 //=================================================================================================
 
-void BRepGraph::PathView::FilterByExclude(
+NCollection_Vector<BRepGraph_TopologyPath> BRepGraph::PathView::FilterByExclude(
   const NCollection_Vector<BRepGraph_TopologyPath>& thePaths,
   const BRepGraph_NodeId                            theNode,
-  NCollection_Vector<BRepGraph_TopologyPath>&       theResult,
   const occ::handle<NCollection_BaseAllocator>&     theAllocator) const
 {
-  const bool isAliased = &thePaths == &theResult;
-  NCollection_Vector<BRepGraph_TopologyPath> aAliasedResult(8, theAllocator);
-  NCollection_Vector<BRepGraph_TopologyPath>& aTarget = isAliased ? aAliasedResult : theResult;
-
-  aTarget.Clear();
+  const occ::handle<NCollection_BaseAllocator>& anAllocator = effectiveAllocator(*myGraph, theAllocator);
+  NCollection_Vector<BRepGraph_TopologyPath> aResult(THE_PATHVIEW_FILTERED_PATHS_BLOCK_SIZE,
+                                                     anAllocator);
   for (int i = 0; i < thePaths.Length(); ++i)
   {
     if (!PathContains(thePaths.Value(i), theNode))
-      aTarget.Append(BRepGraph_TopologyPath(thePaths.Value(i), theAllocator));
+      aResult.Append(BRepGraph_TopologyPath(thePaths.Value(i), anAllocator));
   }
-
-  if (isAliased)
-  {
-    theResult.Clear();
-    for (int i = 0; i < aAliasedResult.Length(); ++i)
-      theResult.Append(aAliasedResult.Value(i));
-  }
+  return aResult;
 }
 
 //=================================================================================================
 
-void BRepGraph::PathView::PathsTo(const BRepGraph_NodeId                        theNode,
-                                  NCollection_Vector<BRepGraph_TopologyPath>& theResult,
-                                  const occ::handle<NCollection_BaseAllocator>& theAllocator) const
+NCollection_Vector<BRepGraph_TopologyPath> BRepGraph::PathView::PathsTo(
+  const BRepGraph_NodeId                            theNode,
+  const occ::handle<NCollection_BaseAllocator>& theAllocator) const
 {
-  reverseWalkPaths(theNode, theResult, theAllocator);
+  const occ::handle<NCollection_BaseAllocator>& anAllocator = effectiveAllocator(*myGraph, theAllocator);
+  NCollection_Vector<BRepGraph_TopologyPath> aResult(THE_PATHVIEW_PATHS_BLOCK_SIZE, anAllocator);
+  reverseWalkPaths(theNode, aResult, anAllocator);
+  return aResult;
 }
 
 //=================================================================================================
 
-void BRepGraph::PathView::PathsFromTo(const BRepGraph_NodeId                        theRoot,
-                                      const BRepGraph_NodeId                        theLeaf,
-                                      NCollection_Vector<BRepGraph_TopologyPath>& theResult,
-                                      const occ::handle<NCollection_BaseAllocator>& theAllocator) const
+NCollection_Vector<BRepGraph_TopologyPath> BRepGraph::PathView::PathsFromTo(
+  const BRepGraph_NodeId                            theRoot,
+  const BRepGraph_NodeId                            theLeaf,
+  const occ::handle<NCollection_BaseAllocator>& theAllocator) const
 {
-  theResult.Clear();
+  const occ::handle<NCollection_BaseAllocator>& anAllocator = effectiveAllocator(*myGraph, theAllocator);
+  NCollection_Vector<BRepGraph_TopologyPath> aResult(THE_PATHVIEW_PATHS_BLOCK_SIZE, anAllocator);
   if (!theRoot.IsValid() || !theLeaf.IsValid())
-    return;
+    return aResult;
 
   if (theRoot == theLeaf)
   {
-    theResult.Append(BRepGraph_TopologyPath::FromRoot(theRoot, theAllocator));
-    return;
+    aResult.Append(BRepGraph_TopologyPath::FromRoot(theRoot, anAllocator));
+    return aResult;
   }
 
-  reverseWalkPaths(theLeaf, theResult, theAllocator);
+  reverseWalkPaths(theLeaf, aResult, anAllocator);
 
   int aWriteIdx = 0;
-  for (int aReadIdx = 0; aReadIdx < theResult.Length(); ++aReadIdx)
+  for (int aReadIdx = 0; aReadIdx < aResult.Length(); ++aReadIdx)
   {
-    if (theResult.Value(aReadIdx).Root() == theRoot)
+    if (aResult.Value(aReadIdx).Root() == theRoot)
     {
       if (aWriteIdx != aReadIdx)
       {
-        theResult.ChangeValue(aWriteIdx) = theResult.Value(aReadIdx);
+        aResult.ChangeValue(aWriteIdx) = aResult.Value(aReadIdx);
       }
       ++aWriteIdx;
     }
   }
 
-  while (theResult.Length() > aWriteIdx)
+  while (aResult.Length() > aWriteIdx)
   {
-    theResult.EraseLast();
+    aResult.EraseLast();
   }
+  return aResult;
 }
 
 //=================================================================================================
 
-void BRepGraph::PathView::NodeLocations(const BRepGraph_NodeId               theNode,
-                                        NCollection_Vector<OccurrenceEntry>& theResult,
-                                        const occ::handle<NCollection_BaseAllocator>& theAllocator) const
+NCollection_Vector<BRepGraph::PathView::OccurrenceEntry> BRepGraph::PathView::NodeLocations(
+  const BRepGraph_NodeId                            theNode,
+  const occ::handle<NCollection_BaseAllocator>& theAllocator) const
 {
-  reverseWalkEntries(theNode, theResult, theAllocator);
+  const occ::handle<NCollection_BaseAllocator>& anAllocator = effectiveAllocator(*myGraph, theAllocator);
+  NCollection_Vector<OccurrenceEntry> aResult(THE_PATHVIEW_NODE_LOCATIONS_BLOCK_SIZE, anAllocator);
+  reverseWalkEntries(theNode, aResult, anAllocator);
+  return aResult;
 }
 
 //=================================================================================================
@@ -1600,16 +1609,18 @@ bool BRepGraph::PathView::IsAncestorOf(const BRepGraph_TopologyPath& theAncestor
 
 //=================================================================================================
 
-void BRepGraph::PathView::AllNodesOnPath(const BRepGraph_TopologyPath& thePath,
-                                         NCollection_Vector<BRepGraph_NodeId>& theResult) const
+NCollection_Vector<BRepGraph_NodeId> BRepGraph::PathView::AllNodesOnPath(
+  const BRepGraph_TopologyPath&                   thePath,
+  const occ::handle<NCollection_BaseAllocator>& theAllocator) const
 {
-  Standard_ASSERT_VOID(thePath.IsValid(), "invalid path");
-  theResult.Clear();
+  NCollection_Vector<BRepGraph_NodeId> aResult(THE_PATHVIEW_PATH_NODES_BLOCK_SIZE,
+                                               effectiveAllocator(*myGraph, theAllocator));
+  Standard_ASSERT_RETURN(thePath.IsValid(), "invalid path", aResult);
   if (!thePath.IsValid())
-    return;
+    return aResult;
 
   BRepGraph_NodeId aCurrent = thePath.Root();
-  theResult.Append(aCurrent);
+  aResult.Append(aCurrent);
   int aStepIdx = 0;
 
   while (aCurrent.IsValid() && aStepIdx < thePath.Depth())
@@ -1621,7 +1632,7 @@ void BRepGraph::PathView::AllNodesOnPath(const BRepGraph_TopologyPath& thePath,
       if (aCurrent == aPrev)
         break;
       if (aCurrent.IsValid())
-        theResult.Append(aCurrent);
+        aResult.Append(aCurrent);
       continue;
     }
     if (aCurrent.NodeKind == BRepGraph_NodeId::Kind::Product && aCurrent.Index >= 0
@@ -1632,12 +1643,12 @@ void BRepGraph::PathView::AllNodesOnPath(const BRepGraph_TopologyPath& thePath,
       aCurrent =
         myGraph->myData->myIncStorage.Product(BRepGraph_ProductId(aCurrent.Index)).ShapeRootId;
       if (aCurrent.IsValid())
-        theResult.Append(aCurrent);
+        aResult.Append(aCurrent);
       continue;
     }
     aCurrent = resolveChild(aCurrent, thePath.stepAt(aStepIdx));
     if (aCurrent.IsValid())
-      theResult.Append(aCurrent);
+      aResult.Append(aCurrent);
     ++aStepIdx;
   }
 
@@ -1657,6 +1668,7 @@ void BRepGraph::PathView::AllNodesOnPath(const BRepGraph_TopologyPath& thePath,
     if (aCurrent == aPrev)
       break;
     if (aCurrent.IsValid())
-      theResult.Append(aCurrent);
+      aResult.Append(aCurrent);
   }
+  return aResult;
 }

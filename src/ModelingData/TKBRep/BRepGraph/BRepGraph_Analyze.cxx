@@ -62,7 +62,7 @@ NCollection_Vector<std::pair<BRepGraph_EdgeId, BRepGraph_FaceId>> BRepGraph_Anal
   {
     const BRepGraph_FaceId aFaceId(aFaceDefIdx);
 
-    const NCollection_Vector<BRepGraph_EdgeId> anEdges = aDefs.EdgesOfFace(aFaceId);
+    const NCollection_Vector<BRepGraph_EdgeId> anEdges = aDefs.EdgesOfFace(aFaceId, theGraph.Allocator());
     for (int anEdgeIdx = 0; anEdgeIdx < anEdges.Length(); ++anEdgeIdx)
     {
       const BRepGraph_EdgeId       anEdgeDefId = anEdges.Value(anEdgeIdx);

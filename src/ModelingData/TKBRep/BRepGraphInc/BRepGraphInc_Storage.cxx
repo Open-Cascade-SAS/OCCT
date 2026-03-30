@@ -519,6 +519,82 @@ bool BRepGraphInc_Storage::MarkRemovedRef(const BRepGraph_RefId theRefId)
 
 //=================================================================================================
 
+bool BRepGraphInc_Storage::MarkRemovedRep(const BRepGraph_RepId theRepId)
+{
+  if (!theRepId.IsValid())
+    return false;
+
+  BRepGraphInc::BaseRep* aRep = nullptr;
+  switch (theRepId.RepKind)
+  {
+    case BRepGraph_RepId::Kind::Surface:
+      if (theRepId.Index >= 0 && theRepId.Index < mySurfaces.Nb())
+        aRep = &mySurfaces.Change(theRepId.Index);
+      break;
+    case BRepGraph_RepId::Kind::Curve3D:
+      if (theRepId.Index >= 0 && theRepId.Index < myCurves3D.Nb())
+        aRep = &myCurves3D.Change(theRepId.Index);
+      break;
+    case BRepGraph_RepId::Kind::Curve2D:
+      if (theRepId.Index >= 0 && theRepId.Index < myCurves2D.Nb())
+        aRep = &myCurves2D.Change(theRepId.Index);
+      break;
+    case BRepGraph_RepId::Kind::Triangulation:
+      if (theRepId.Index >= 0 && theRepId.Index < myTriangulationsRep.Nb())
+        aRep = &myTriangulationsRep.Change(theRepId.Index);
+      break;
+    case BRepGraph_RepId::Kind::Polygon3D:
+      if (theRepId.Index >= 0 && theRepId.Index < myPolygons3D.Nb())
+        aRep = &myPolygons3D.Change(theRepId.Index);
+      break;
+    case BRepGraph_RepId::Kind::Polygon2D:
+      if (theRepId.Index >= 0 && theRepId.Index < myPolygons2D.Nb())
+        aRep = &myPolygons2D.Change(theRepId.Index);
+      break;
+    case BRepGraph_RepId::Kind::PolygonOnTri:
+      if (theRepId.Index >= 0 && theRepId.Index < myPolygonsOnTri.Nb())
+        aRep = &myPolygonsOnTri.Change(theRepId.Index);
+      break;
+    default:
+      return false;
+  }
+
+  if (aRep == nullptr || aRep->IsRemoved)
+    return false;
+
+  aRep->IsRemoved = true;
+  switch (theRepId.RepKind)
+  {
+    case BRepGraph_RepId::Kind::Surface:
+      mySurfaces.DecrementActive();
+      break;
+    case BRepGraph_RepId::Kind::Curve3D:
+      myCurves3D.DecrementActive();
+      break;
+    case BRepGraph_RepId::Kind::Curve2D:
+      myCurves2D.DecrementActive();
+      break;
+    case BRepGraph_RepId::Kind::Triangulation:
+      myTriangulationsRep.DecrementActive();
+      break;
+    case BRepGraph_RepId::Kind::Polygon3D:
+      myPolygons3D.DecrementActive();
+      break;
+    case BRepGraph_RepId::Kind::Polygon2D:
+      myPolygons2D.DecrementActive();
+      break;
+    case BRepGraph_RepId::Kind::PolygonOnTri:
+      myPolygonsOnTri.DecrementActive();
+      break;
+    default:
+      return false;
+  }
+
+  return true;
+}
+
+//=================================================================================================
+
 void BRepGraphInc_Storage::BuildReverseIndex()
 {
   myReverseIdx.SetAllocator(myAllocator);
@@ -552,6 +628,13 @@ void BRepGraphInc_Storage::BuildReverseIndex()
   myCompSolids.NbActive  = 0;
   myProducts.NbActive    = 0;
   myOccurrences.NbActive = 0;
+  mySurfaces.NbActive    = 0;
+  myCurves3D.NbActive    = 0;
+  myCurves2D.NbActive    = 0;
+  myTriangulationsRep.NbActive = 0;
+  myPolygons3D.NbActive  = 0;
+  myPolygons2D.NbActive  = 0;
+  myPolygonsOnTri.NbActive = 0;
   for (int i = 0; i < myVertices.Nb(); ++i)
     if (!myVertices.Get(i).IsRemoved)
       ++myVertices.NbActive;
@@ -585,6 +668,27 @@ void BRepGraphInc_Storage::BuildReverseIndex()
   for (int i = 0; i < myOccurrences.Nb(); ++i)
     if (!myOccurrences.Get(i).IsRemoved)
       ++myOccurrences.NbActive;
+  for (int i = 0; i < mySurfaces.Nb(); ++i)
+    if (!mySurfaces.Get(i).IsRemoved)
+      ++mySurfaces.NbActive;
+  for (int i = 0; i < myCurves3D.Nb(); ++i)
+    if (!myCurves3D.Get(i).IsRemoved)
+      ++myCurves3D.NbActive;
+  for (int i = 0; i < myCurves2D.Nb(); ++i)
+    if (!myCurves2D.Get(i).IsRemoved)
+      ++myCurves2D.NbActive;
+  for (int i = 0; i < myTriangulationsRep.Nb(); ++i)
+    if (!myTriangulationsRep.Get(i).IsRemoved)
+      ++myTriangulationsRep.NbActive;
+  for (int i = 0; i < myPolygons3D.Nb(); ++i)
+    if (!myPolygons3D.Get(i).IsRemoved)
+      ++myPolygons3D.NbActive;
+  for (int i = 0; i < myPolygons2D.Nb(); ++i)
+    if (!myPolygons2D.Get(i).IsRemoved)
+      ++myPolygons2D.NbActive;
+  for (int i = 0; i < myPolygonsOnTri.Nb(); ++i)
+    if (!myPolygonsOnTri.Get(i).IsRemoved)
+      ++myPolygonsOnTri.NbActive;
 }
 
 //=================================================================================================

@@ -242,7 +242,7 @@ TEST(BRepGraph_GeometryTest, SameDomainFaces_SimpleBox_Empty)
   {
     const BRepGraph_FaceId                     aFaceDefId(i);
     const NCollection_Vector<BRepGraph_FaceId> aSameDomain =
-      aGraph.Topo().SameDomainFaces(aFaceDefId);
+      aGraph.Topo().SameDomainFaces(aFaceDefId, aGraph.Allocator());
     EXPECT_EQ(aSameDomain.Length(), 0) << "Face def " << i << " has unexpected same-domain faces";
   }
 }

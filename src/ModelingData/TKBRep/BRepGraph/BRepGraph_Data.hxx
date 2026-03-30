@@ -67,7 +67,8 @@ struct BRepGraph_Data
 
   bool myIsDone = false;
 
-  //! Root topology NodeIds set by Build()/AppendShape() - one per input shape.
+  //! Root topology NodeIds created by Build()/append operations.
+  //! Face-level append may contribute multiple face roots for one input shape.
   NCollection_Vector<BRepGraph_NodeId> myRootNodeIds;
 
   //! When true, markModified() only increments OwnGen + SubtreeGen and appends to

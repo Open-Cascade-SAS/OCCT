@@ -172,9 +172,11 @@ public:
                   const BRepGraph_OccurrenceId theParentOccurrence);
 
   //! Append a shape to the existing graph without clearing.
-  //! @param[in] theShape   shape to add
+  //! Compound/CompSolid/Solid/Shell inputs are flattened to appended face roots.
+  //! @param[in] theShape    shape to add
   //! @param[in] theParallel if true, per-face geometry extraction is parallel
-  Standard_EXPORT void AppendShape(const TopoDS_Shape& theShape, const bool theParallel = false);
+  Standard_EXPORT void AppendFlattenedShape(const TopoDS_Shape& theShape,
+                                            const bool          theParallel = false);
 
   //! Create a new Curve2DRep in storage and return its typed identifier.
   //! Use this when assigning a new PCurve to an existing CoEdge entity
@@ -225,6 +227,13 @@ public:
   //! Mark a node and all its descendants as removed (cascading soft deletion).
   //! @param[in] theNode root node to remove
   Standard_EXPORT void RemoveSubgraph(const BRepGraph_NodeId theNode);
+
+  //! Mark a representation entry as removed (soft deletion).
+  //! Invalid or already-removed ids are ignored.
+  //! Owning topology entities are marked modified so generation-based caches
+  //! and read helpers observe the representation as absent.
+  //! @param[in] theRep representation to remove
+  Standard_EXPORT void RemoveRep(const BRepGraph_RepId theRep);
 
   //! @name Deferred invalidation mode for batch mutation loops.
 

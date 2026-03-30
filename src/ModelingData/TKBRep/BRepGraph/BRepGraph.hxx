@@ -128,8 +128,11 @@ public:
   //! Return true if the graph was successfully built.
   [[nodiscard]] Standard_EXPORT bool IsDone() const;
 
-  //! Return root topology NodeIds created by Build() and AppendShape().
-  //! Each Build() or AppendShape() call adds the top-level node of the input shape.
+  //! Return root topology NodeIds created by Build() and append operations.
+  //! Build() contributes the single top-level node of the input shape.
+  //! AppendFlattenedShape() contributes the nodes actually created by the
+  //! flattened append: one Vertex/Edge/Wire/Face root for direct inputs, or
+  //! one Face root per appended face for Shell/Solid/Compound/CompSolid inputs.
   //! Returns empty vector if the graph has not been built.
   [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_NodeId>& RootNodeIds() const;
 

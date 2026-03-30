@@ -1044,9 +1044,10 @@ BRepGraph_OccurrenceId BRepGraph::BuilderView::AddOccurrence(
 
 //=================================================================================================
 
-void BRepGraph::BuilderView::AppendShape(const TopoDS_Shape& theShape, const bool theParallel)
+void BRepGraph::BuilderView::AppendFlattenedShape(const TopoDS_Shape& theShape,
+                                                  const bool          theParallel)
 {
-  BRepGraph_Builder::Append(*myGraph, theShape, theParallel);
+  BRepGraph_Builder::AppendFlattened(*myGraph, theShape, theParallel);
 }
 
 //=================================================================================================
@@ -1285,6 +1286,19 @@ void BRepGraph::BuilderView::RemoveSubgraph(const BRepGraph_NodeId theNode)
     }
     default:
       break;
+  }
+}
+
+//=================================================================================================
+
+void BRepGraph::BuilderView::RemoveRep(const BRepGraph_RepId theRep)
+{
+  if (!theRep.IsValid())
+    return;
+
+  if (myGraph->myData->myIncStorage.MarkRemovedRep(theRep))
+  {
+    myGraph->markRepModified(theRep);
   }
 }
 

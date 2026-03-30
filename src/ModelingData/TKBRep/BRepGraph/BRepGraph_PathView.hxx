@@ -58,22 +58,16 @@ public:
   //! @note Computed on demand via reverse index walk. No caching.
   //! Time scales with the number of active paths reaching theNode.
   //! @param[in] theNode entity to find all occurrences of
-  //! Fill all occurrence entries for a node: paths, locations, orientations.
-  //! @param[in] theNode entity to find all occurrences of
-  //! @param[out] theResult output vector; cleared at method entry
   //! @param[in] theAllocator allocator for internal temporaries and path step storage
-  Standard_EXPORT void NodeLocations(const BRepGraph_NodeId              theNode,
-                                     NCollection_Vector<OccurrenceEntry>& theResult,
-                                     const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<OccurrenceEntry> NodeLocations(
+    const BRepGraph_NodeId                            theNode,
+    const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
   //! @name Assembly classification and traversal
 
   //! Return typed identifiers of all root products (products not referenced by an active occurrence).
-  //! Fill typed identifiers of all root products (products not referenced by an active occurrence).
-  //! @param[out] theResult output vector; cleared at method entry
-  //! @param[in] theAllocator allocator for internal temporaries
-  Standard_EXPORT void RootProducts(
-    NCollection_Vector<BRepGraph_ProductId>&             theResult,
+  //! @param[in] theAllocator allocator for internal temporaries and the result vector
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_ProductId> RootProducts(
     const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
   //! True if the product is an assembly (has child occurrences, no topology root).
@@ -159,45 +153,38 @@ public:
                                                   const BRepGraph_NodeId        theNode) const;
 
   //! Filter paths: keep only those that pass through theNode.
-  //! Filter paths: keep only those that pass through theNode.
   //! @param[in] thePaths input paths
   //! @param[in] theNode node that must be present in kept paths
-  //! @param[out] theResult output vector; cleared at method entry
   //! @param[in] theAllocator allocator for copied output paths
-  Standard_EXPORT void FilterByInclude(const NCollection_Vector<BRepGraph_TopologyPath>& thePaths,
-                                       const BRepGraph_NodeId                            theNode,
-                                       NCollection_Vector<BRepGraph_TopologyPath>& theResult,
-                                       const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_TopologyPath> FilterByInclude(
+    const NCollection_Vector<BRepGraph_TopologyPath>& thePaths,
+    const BRepGraph_NodeId                            theNode,
+    const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
-  //! Filter paths: remove those that pass through theNode.
   //! Filter paths: remove those that pass through theNode.
   //! @param[in] thePaths input paths
   //! @param[in] theNode node that must be absent in kept paths
-  //! @param[out] theResult output vector; cleared at method entry
   //! @param[in] theAllocator allocator for copied output paths
-  Standard_EXPORT void FilterByExclude(const NCollection_Vector<BRepGraph_TopologyPath>& thePaths,
-                                       const BRepGraph_NodeId                            theNode,
-                                       NCollection_Vector<BRepGraph_TopologyPath>& theResult,
-                                       const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_TopologyPath> FilterByExclude(
+    const NCollection_Vector<BRepGraph_TopologyPath>& thePaths,
+    const BRepGraph_NodeId                            theNode,
+    const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
   //! All paths from any root to the given entity.
-  //! Fill all paths from any root to the given entity.
   //! @param[in] theNode entity to resolve from all roots
-  //! @param[out] theResult output vector; cleared at method entry
   //! @param[in] theAllocator allocator for internal temporaries and path step storage
-  Standard_EXPORT void PathsTo(const BRepGraph_NodeId                       theNode,
-                               NCollection_Vector<BRepGraph_TopologyPath>& theResult,
-                               const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_TopologyPath> PathsTo(
+    const BRepGraph_NodeId                            theNode,
+    const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
-  //! Fill all paths from a specific root to the given entity.
+  //! Return all paths from a specific root to the given entity.
   //! @param[in] theRoot root node
   //! @param[in] theLeaf leaf node
-  //! @param[out] theResult output vector; cleared at method entry
   //! @param[in] theAllocator allocator for path step storage
-  Standard_EXPORT void PathsFromTo(const BRepGraph_NodeId                       theRoot,
-                                   const BRepGraph_NodeId                       theLeaf,
-                                   NCollection_Vector<BRepGraph_TopologyPath>& theResult,
-                                   const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_TopologyPath> PathsFromTo(
+    const BRepGraph_NodeId                            theRoot,
+    const BRepGraph_NodeId                            theLeaf,
+    const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
   //! Compute the global placement of an occurrence by walking the parent chain.
   //! Shared products can appear at multiple placements; the returned location is
@@ -237,11 +224,11 @@ public:
 
   //! Enumerate all resolved nodes along a path, including root, intermediates
   //! (expanding 1:1 transitions), and leaf.
-  //! Fill all resolved nodes along a path, including root, intermediates, and leaf.
   //! @param[in] thePath topology path
-  //! @param[out] theResult output vector; cleared at method entry
-  Standard_EXPORT void AllNodesOnPath(const BRepGraph_TopologyPath& thePath,
-                                      NCollection_Vector<BRepGraph_NodeId>& theResult) const;
+  //! @param[in] theAllocator allocator for the returned node sequence
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> AllNodesOnPath(
+    const BRepGraph_TopologyPath&                   thePath,
+    const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
 private:
   friend class BRepGraph;

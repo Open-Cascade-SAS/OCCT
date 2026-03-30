@@ -44,7 +44,7 @@ public:
 
   //! Check if the node has an original shape from Build().
   //! Nodes created programmatically through Builder().Add*() do not have an
-  //! original Build()/AppendShape() shape.
+  //! original Build()/AppendFlattenedShape() shape.
   //! @param[in] theNode node identifier
   //! @return true if an original shape exists
   [[nodiscard]] Standard_EXPORT bool HasOriginal(const BRepGraph_NodeId theNode) const;
@@ -52,7 +52,7 @@ public:
   //! Return the original TopoDS_Shape stored during Build().
   //! @param[in] theNode node identifier
   //! @return reference to the exact TopoDS_Shape stored during Build() or
-  //!         AppendShape()
+  //!         AppendFlattenedShape()
   //! @exception Standard_ProgramError if no original shape exists
   [[nodiscard]] Standard_EXPORT const TopoDS_Shape& OriginalOf(
     const BRepGraph_NodeId theNode) const;

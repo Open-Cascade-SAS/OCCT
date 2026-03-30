@@ -189,6 +189,11 @@ public:
   //! @return true if the ref transitioned from active to removed
   Standard_EXPORT bool MarkRemovedRef(const BRepGraph_RefId theRefId);
 
+  //! Mark a representation entry as removed and decrement its active counter once.
+  //! @param[in] theRepId typed representation id
+  //! @return true if the representation transitioned from active to removed
+  Standard_EXPORT bool MarkRemovedRep(const BRepGraph_RepId theRepId);
+
   //! @name Const representation access
   //! Each method returns a const reference to the representation entity at the given typed id.
 

@@ -450,8 +450,8 @@ TEST(BRepGraphAlgo_ValidateTest, AssemblyGraph_ValidProduct_NoIssuesInAudit)
 
   // Identify the auto-created part product.
   const occ::handle<NCollection_BaseAllocator> anAllocator = new NCollection_IncAllocator();
-  NCollection_Vector<BRepGraph_ProductId> aInitialRootProducts(4);
-  aGraph.Paths().RootProducts(aInitialRootProducts, anAllocator);
+  const NCollection_Vector<BRepGraph_ProductId> aInitialRootProducts =
+    aGraph.Paths().RootProducts(anAllocator);
   ASSERT_GT(aInitialRootProducts.Length(), 0);
   const BRepGraph_ProductId aPartProduct = aInitialRootProducts.Value(0);
   ASSERT_TRUE(aGraph.Paths().IsPart(aPartProduct));
@@ -541,8 +541,7 @@ TEST(BRepGraphAlgo_ValidateTest, AssemblyGraph_CorruptedOccurrenceProductDefId_D
   ASSERT_TRUE(aRootAssembly.IsValid());
 
   const occ::handle<NCollection_BaseAllocator> anAllocator = new NCollection_IncAllocator();
-  NCollection_Vector<BRepGraph_ProductId> aRootProducts(4);
-  aGraph.Paths().RootProducts(aRootProducts, anAllocator);
+  const NCollection_Vector<BRepGraph_ProductId> aRootProducts = aGraph.Paths().RootProducts(anAllocator);
   BRepGraph_ProductId                           aPartId;
   for (int i = 0; i < aRootProducts.Length(); ++i)
   {

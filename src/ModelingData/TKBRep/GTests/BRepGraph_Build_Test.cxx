@@ -765,21 +765,29 @@ TEST(BRepGraph_BuildTest, Box_EdgeParamRange_IsNonDegenerate)
   }
 }
 
-TEST(BRepGraph_BuildTest, AppendShape_OnEmptyGraph_BuildsFaceLevelGraph)
+TEST(BRepGraph_BuildTest, AppendFlattenedShape_OnEmptyGraph_BuildsFlattenedGraph)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Builder().AppendShape(aBox);
+  aGraph.Builder().AppendFlattenedShape(aBox);
 
   EXPECT_TRUE(aGraph.IsDone());
   EXPECT_EQ(aGraph.Topo().NbSolids(), 0);
   EXPECT_EQ(aGraph.Topo().NbShells(), 0);
   EXPECT_EQ(aGraph.Topo().NbFaces(), 6);
+
+  const NCollection_Vector<BRepGraph_NodeId>& aRoots = aGraph.RootNodeIds();
+  ASSERT_EQ(aRoots.Length(), 6);
+  for (int anIdx = 0; anIdx < aRoots.Length(); ++anIdx)
+  {
+    EXPECT_EQ(aRoots.Value(anIdx).NodeKind, BRepGraph_NodeId::Kind::Face);
+    EXPECT_EQ(aRoots.Value(anIdx), BRepGraph_FaceId(anIdx));
+  }
 }
 
-TEST(BRepGraph_BuildTest, AppendShape_SameFaceTwice_DedupsDefinition)
+TEST(BRepGraph_BuildTest, AppendFlattenedShape_SameFaceTwice_DedupsDefinition)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -789,15 +797,15 @@ TEST(BRepGraph_BuildTest, AppendShape_SameFaceTwice_DedupsDefinition)
   const TopoDS_Face aFace = TopoDS::Face(anExp.Current());
 
   BRepGraph aGraph;
-  aGraph.Builder().AppendShape(aFace);
-  aGraph.Builder().AppendShape(aFace);
+  aGraph.Builder().AppendFlattenedShape(aFace);
+  aGraph.Builder().AppendFlattenedShape(aFace);
 
   ASSERT_TRUE(aGraph.IsDone());
   // Same TShape appended twice: definition is deduplicated.
   ASSERT_EQ(aGraph.Topo().NbFaces(), 1);
 }
 
-TEST(BRepGraph_BuildTest, AppendShape_AfterBuild_DoesNotCreateNewSolidDefs)
+TEST(BRepGraph_BuildTest, AppendFlattenedShape_AfterBuild_DoesNotCreateNewSolidDefs)
 {
   BRepPrimAPI_MakeBox aBox1Maker(10.0, 20.0, 30.0);
   BRepPrimAPI_MakeBox aBox2Maker(15.0, 25.0, 35.0);
@@ -809,13 +817,14 @@ TEST(BRepGraph_BuildTest, AppendShape_AfterBuild_DoesNotCreateNewSolidDefs)
   const int aNbSolidsBefore = aGraph.Topo().NbSolids();
   const int aNbFacesBefore  = aGraph.Topo().NbFaces();
 
-  aGraph.Builder().AppendShape(aBox2Maker.Shape());
+  aGraph.Builder().AppendFlattenedShape(aBox2Maker.Shape());
 
   EXPECT_EQ(aGraph.Topo().NbSolids(), aNbSolidsBefore);
   EXPECT_EQ(aGraph.Topo().NbFaces(), aNbFacesBefore + 6);
+  EXPECT_EQ(aGraph.RootNodeIds().Length(), 7);
 }
 
-TEST(BRepGraph_BuildTest, AppendShape_AppendedFaceHasNoParentShell)
+TEST(BRepGraph_BuildTest, AppendFlattenedShape_AppendedFaceHasNoParentShell)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -825,14 +834,14 @@ TEST(BRepGraph_BuildTest, AppendShape_AppendedFaceHasNoParentShell)
   const TopoDS_Face aFace = TopoDS::Face(anExp.Current());
 
   BRepGraph aGraph;
-  aGraph.Builder().AppendShape(aFace);
+  aGraph.Builder().AppendFlattenedShape(aFace);
 
   ASSERT_EQ(aGraph.Topo().NbFaces(), 1);
   // Appended face should not be part of any shell.
   EXPECT_EQ(aGraph.Topo().NbShells(), 0);
 }
 
-TEST(BRepGraph_BuildTest, AppendShape_PreservesExistingUIDs)
+TEST(BRepGraph_BuildTest, AppendFlattenedShape_PreservesExistingUIDs)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -849,7 +858,7 @@ TEST(BRepGraph_BuildTest, AppendShape_PreservesExistingUIDs)
   // Append a sphere.
   BRepPrimAPI_MakeSphere aSphereMaker(5.0);
   const TopoDS_Shape&    aSphere = aSphereMaker.Shape();
-  aGraph.Builder().AppendShape(aSphere);
+  aGraph.Builder().AppendFlattenedShape(aSphere);
   ASSERT_TRUE(aGraph.IsDone());
 
   // Verify original edge UID is unchanged.
@@ -1197,7 +1206,7 @@ TEST(BRepGraph_BuildTest, RootNodeIds_Box_ReturnsSolid)
   EXPECT_EQ(aRoot.NodeKind, BRepGraph_NodeId::Kind::Solid);
 }
 
-TEST(BRepGraph_BuildTest, RootNodeIds_AppendShape_ReturnsTwoRoots)
+TEST(BRepGraph_BuildTest, RootNodeIds_AppendFlattenedShape_ReturnsTwoRoots)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -1213,14 +1222,14 @@ TEST(BRepGraph_BuildTest, RootNodeIds_AppendShape_ReturnsTwoRoots)
   ASSERT_TRUE(anExp.More());
   const TopoDS_Face aFace = TopoDS::Face(anExp.Current());
 
-  aGraph.Builder().AppendShape(aFace);
+  aGraph.Builder().AppendFlattenedShape(aFace);
   ASSERT_TRUE(aGraph.IsDone());
 
   // After appending, there should be two root nodes.
   const NCollection_Vector<BRepGraph_NodeId>& aRoots = aGraph.RootNodeIds();
   EXPECT_EQ(aRoots.Length(), 2);
 
-  // First root remains a Solid; second root is a Face (from AppendShape).
+  // First root remains a Solid; second root is a Face from face-level append.
   EXPECT_EQ(aRoots.Value(0).NodeKind, BRepGraph_NodeId::Kind::Solid);
   EXPECT_EQ(aRoots.Value(1).NodeKind, BRepGraph_NodeId::Kind::Face);
 

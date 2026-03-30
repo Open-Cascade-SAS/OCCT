@@ -251,9 +251,9 @@ void BRepGraph_Builder::Perform(BRepGraph&                            theGraph,
 
 //=================================================================================================
 
-void BRepGraph_Builder::Append(BRepGraph&          theGraph,
-                               const TopoDS_Shape& theShape,
-                               const bool          theParallel)
+void BRepGraph_Builder::AppendFlattened(BRepGraph&          theGraph,
+                                        const TopoDS_Shape& theShape,
+                                        const bool          theParallel)
 {
   if (theShape.IsNull())
     return;
@@ -284,13 +284,13 @@ void BRepGraph_Builder::Append(BRepGraph&          theGraph,
     theGraph.LayerRegistry().FindLayer<BRepGraph_ParamLayer>();
   const occ::handle<BRepGraph_RegularityLayer> aRegularityLayer =
     theGraph.LayerRegistry().FindLayer<BRepGraph_RegularityLayer>();
-  BRepGraphInc_Populate::Append(aStorage,
-                                theShape,
-                                theParallel,
-                                BRepGraphInc_Populate::Options(),
-                                aParamLayer.get(),
-                                aRegularityLayer.get(),
-                                aTmpAlloc);
+  BRepGraphInc_Populate::AppendFlattened(aStorage,
+                                         theShape,
+                                         theParallel,
+                                         BRepGraphInc_Populate::Options(),
+                                         aParamLayer.get(),
+                                         aRegularityLayer.get(),
+                                         aTmpAlloc);
 
   if (!aStorage.GetIsDone())
     return;
@@ -317,47 +317,38 @@ void BRepGraph_Builder::Append(BRepGraph&          theGraph,
                           anOldSolidRef,
                           anOldChildRef);
 
-  // Track the new root from the appended shape.
-  BRepGraph_NodeId anAppendedRoot;
   switch (theShape.ShapeType())
   {
     case TopAbs_COMPOUND:
-      if (aStorage.NbCompounds() > anOldComp)
-        anAppendedRoot = BRepGraph_CompoundId(anOldComp);
-      break;
     case TopAbs_COMPSOLID:
-      if (aStorage.NbCompSolids() > anOldCS)
-        anAppendedRoot = BRepGraph_CompSolidId(anOldCS);
-      break;
     case TopAbs_SOLID:
-      if (aStorage.NbSolids() > anOldSolid)
-        anAppendedRoot = BRepGraph_SolidId(anOldSolid);
-      break;
     case TopAbs_SHELL:
-      if (aStorage.NbShells() > anOldShell)
-        anAppendedRoot = BRepGraph_ShellId(anOldShell);
+      for (int aFaceIdx = anOldFace; aFaceIdx < aStorage.NbFaces(); ++aFaceIdx)
+      {
+        theGraph.myData->myRootNodeIds.Append(BRepGraph_FaceId(aFaceIdx));
+      }
       break;
     case TopAbs_FACE:
-      if (aStorage.NbFaces() > anOldFace)
-        anAppendedRoot = BRepGraph_FaceId(anOldFace);
+      for (int aFaceIdx = anOldFace; aFaceIdx < aStorage.NbFaces(); ++aFaceIdx)
+      {
+        theGraph.myData->myRootNodeIds.Append(BRepGraph_FaceId(aFaceIdx));
+      }
       break;
     case TopAbs_WIRE:
       if (aStorage.NbWires() > anOldWire)
-        anAppendedRoot = BRepGraph_WireId(anOldWire);
+        theGraph.myData->myRootNodeIds.Append(BRepGraph_WireId(anOldWire));
       break;
     case TopAbs_EDGE:
       if (aStorage.NbEdges() > anOldEdge)
-        anAppendedRoot = BRepGraph_EdgeId(anOldEdge);
+        theGraph.myData->myRootNodeIds.Append(BRepGraph_EdgeId(anOldEdge));
       break;
     case TopAbs_VERTEX:
       if (aStorage.NbVertices() > anOldVtx)
-        anAppendedRoot = BRepGraph_VertexId(anOldVtx);
+        theGraph.myData->myRootNodeIds.Append(BRepGraph_VertexId(anOldVtx));
       break;
     default:
       break;
   }
-  if (anAppendedRoot.IsValid())
-    theGraph.myData->myRootNodeIds.Append(anAppendedRoot);
 
   theGraph.myData->myIsDone = true;
 }

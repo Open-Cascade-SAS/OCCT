@@ -704,6 +704,14 @@ void BRepGraph::markRepModified(const BRepGraph_RepId theRepId) noexcept
       if (anIdx < aStorage.NbPolygons3D())
         ++aStorage.ChangePolygon3DRep(BRepGraph_Polygon3DRepId(anIdx)).OwnGen;
       break;
+    case BRepGraph_RepId::Kind::Polygon2D:
+      if (anIdx < aStorage.NbPolygons2D())
+        ++aStorage.ChangePolygon2DRep(BRepGraph_Polygon2DRepId(anIdx)).OwnGen;
+      break;
+    case BRepGraph_RepId::Kind::PolygonOnTri:
+      if (anIdx < aStorage.NbPolygonsOnTri())
+        ++aStorage.ChangePolygonOnTriRep(BRepGraph_PolygonOnTriRepId(anIdx)).OwnGen;
+      break;
     default:
       return;
   }
@@ -742,6 +750,25 @@ void BRepGraph::markRepModified(const BRepGraph_RepId theRepId) noexcept
       for (int i = 0; i < aStorage.NbEdges(); ++i)
         if (aStorage.Edge(BRepGraph_EdgeId(i)).Polygon3DRepId.Index == anIdx)
           markModified(BRepGraph_EdgeId(i));
+      break;
+    case BRepGraph_RepId::Kind::Polygon2D:
+      for (int i = 0; i < aStorage.NbCoEdges(); ++i)
+        if (aStorage.CoEdge(BRepGraph_CoEdgeId(i)).Polygon2DRepId.Index == anIdx)
+          markModified(BRepGraph_CoEdgeId(i));
+      break;
+    case BRepGraph_RepId::Kind::PolygonOnTri:
+      for (int i = 0; i < aStorage.NbCoEdges(); ++i)
+      {
+        const BRepGraphInc::CoEdgeDef& aCoEdge = aStorage.CoEdge(BRepGraph_CoEdgeId(i));
+        for (int j = 0; j < aCoEdge.PolygonOnTriRepIds.Length(); ++j)
+        {
+          if (aCoEdge.PolygonOnTriRepIds.Value(j).Index == anIdx)
+          {
+            markModified(BRepGraph_CoEdgeId(i));
+            break;
+          }
+        }
+      }
       break;
     default:
       break;

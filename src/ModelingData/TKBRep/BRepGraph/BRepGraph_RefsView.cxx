@@ -13,13 +13,44 @@
 
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_Data.hxx>
+#include <NCollection_PackedMap.hxx>
 
 #include <shared_mutex>
 
 namespace
 {
 
+constexpr int THE_REFSVIEW_ACTIVE_RELATION_BLOCK_SIZE = 8;
+constexpr int THE_REFSVIEW_EDGE_VERTEX_REF_BLOCK_SIZE = 4;
+
 //=================================================================================================
+
+const occ::handle<NCollection_BaseAllocator>& effectiveAllocator(
+  const BRepGraph&                               theGraph,
+  const occ::handle<NCollection_BaseAllocator>& theAllocator)
+{
+  return theAllocator.IsNull() ? theGraph.Allocator() : theAllocator;
+}
+
+//=================================================================================================
+
+template <class RefIdType, class IsRemovedFn>
+NCollection_Vector<RefIdType> collectActiveRefIds(
+  const BRepGraph&                               theGraph,
+  const NCollection_Vector<RefIdType>&           theAll,
+  const occ::handle<NCollection_BaseAllocator>& theAllocator,
+  const IsRemovedFn&                             theIsRemoved)
+{
+  NCollection_Vector<RefIdType> aResult(THE_REFSVIEW_ACTIVE_RELATION_BLOCK_SIZE,
+                                        effectiveAllocator(theGraph, theAllocator));
+  for (int i = 0; i < theAll.Length(); ++i)
+  {
+    const RefIdType aRefId = theAll.Value(i);
+    if (!theIsRemoved(aRefId))
+      aResult.Append(aRefId);
+  }
+  return aResult;
+}
 
 void appendRefUIDReverseIndex(BRepGraph_Data&             theData,
                               const BRepGraph_RefId::Kind theKind)
@@ -346,17 +377,16 @@ const NCollection_Vector<BRepGraph_FaceRefId>& BRepGraph::RefsView::FaceRefIdsOf
 //=================================================================================================
 
 NCollection_Vector<BRepGraph_FaceRefId> BRepGraph::RefsView::ActiveFaceRefIdsOf(
-  const BRepGraph_ShellId theShell) const
+  const BRepGraph_ShellId                         theShell,
+  const occ::handle<NCollection_BaseAllocator>& theAllocator) const
 {
-  NCollection_Vector<BRepGraph_FaceRefId> aResult;
   const NCollection_Vector<BRepGraph_FaceRefId>& aAll = FaceRefIdsOf(theShell);
-  for (int i = 0; i < aAll.Length(); ++i)
-  {
-    const BRepGraph_FaceRefId aRefId = aAll.Value(i);
-    if (!myGraph->myData->myIncStorage.FaceRef(aRefId).IsRemoved)
-      aResult.Append(aRefId);
-  }
-  return aResult;
+  return collectActiveRefIds(*myGraph,
+                             aAll,
+                             theAllocator,
+                             [this](const BRepGraph_FaceRefId theRefId) {
+                               return myGraph->myData->myIncStorage.FaceRef(theRefId).IsRemoved;
+                             });
 }
 
 //=================================================================================================
@@ -373,17 +403,16 @@ const NCollection_Vector<BRepGraph_WireRefId>& BRepGraph::RefsView::WireRefIdsOf
 //=================================================================================================
 
 NCollection_Vector<BRepGraph_WireRefId> BRepGraph::RefsView::ActiveWireRefIdsOf(
-  const BRepGraph_FaceId theFace) const
+  const BRepGraph_FaceId                          theFace,
+  const occ::handle<NCollection_BaseAllocator>& theAllocator) const
 {
-  NCollection_Vector<BRepGraph_WireRefId> aResult;
   const NCollection_Vector<BRepGraph_WireRefId>& aAll = WireRefIdsOf(theFace);
-  for (int i = 0; i < aAll.Length(); ++i)
-  {
-    const BRepGraph_WireRefId aRefId = aAll.Value(i);
-    if (!myGraph->myData->myIncStorage.WireRef(aRefId).IsRemoved)
-      aResult.Append(aRefId);
-  }
-  return aResult;
+  return collectActiveRefIds(*myGraph,
+                             aAll,
+                             theAllocator,
+                             [this](const BRepGraph_WireRefId theRefId) {
+                               return myGraph->myData->myIncStorage.WireRef(theRefId).IsRemoved;
+                             });
 }
 
 //=================================================================================================
@@ -400,17 +429,16 @@ const NCollection_Vector<BRepGraph_CoEdgeRefId>& BRepGraph::RefsView::CoEdgeRefI
 //=================================================================================================
 
 NCollection_Vector<BRepGraph_CoEdgeRefId> BRepGraph::RefsView::ActiveCoEdgeRefIdsOf(
-  const BRepGraph_WireId theWire) const
+  const BRepGraph_WireId                          theWire,
+  const occ::handle<NCollection_BaseAllocator>& theAllocator) const
 {
-  NCollection_Vector<BRepGraph_CoEdgeRefId> aResult;
   const NCollection_Vector<BRepGraph_CoEdgeRefId>& aAll = CoEdgeRefIdsOf(theWire);
-  for (int i = 0; i < aAll.Length(); ++i)
-  {
-    const BRepGraph_CoEdgeRefId aRefId = aAll.Value(i);
-    if (!myGraph->myData->myIncStorage.CoEdgeRef(aRefId).IsRemoved)
-      aResult.Append(aRefId);
-  }
-  return aResult;
+  return collectActiveRefIds(*myGraph,
+                             aAll,
+                             theAllocator,
+                             [this](const BRepGraph_CoEdgeRefId theRefId) {
+                               return myGraph->myData->myIncStorage.CoEdgeRef(theRefId).IsRemoved;
+                             });
 }
 
 //=================================================================================================
@@ -427,17 +455,16 @@ const NCollection_Vector<BRepGraph_ShellRefId>& BRepGraph::RefsView::ShellRefIds
 //=================================================================================================
 
 NCollection_Vector<BRepGraph_ShellRefId> BRepGraph::RefsView::ActiveShellRefIdsOf(
-  const BRepGraph_SolidId theSolid) const
+  const BRepGraph_SolidId                         theSolid,
+  const occ::handle<NCollection_BaseAllocator>& theAllocator) const
 {
-  NCollection_Vector<BRepGraph_ShellRefId> aResult;
   const NCollection_Vector<BRepGraph_ShellRefId>& aAll = ShellRefIdsOf(theSolid);
-  for (int i = 0; i < aAll.Length(); ++i)
-  {
-    const BRepGraph_ShellRefId aRefId = aAll.Value(i);
-    if (!myGraph->myData->myIncStorage.ShellRef(aRefId).IsRemoved)
-      aResult.Append(aRefId);
-  }
-  return aResult;
+  return collectActiveRefIds(*myGraph,
+                             aAll,
+                             theAllocator,
+                             [this](const BRepGraph_ShellRefId theRefId) {
+                               return myGraph->myData->myIncStorage.ShellRef(theRefId).IsRemoved;
+                             });
 }
 
 //=================================================================================================
@@ -454,17 +481,16 @@ const NCollection_Vector<BRepGraph_ChildRefId>& BRepGraph::RefsView::ChildRefIds
 //=================================================================================================
 
 NCollection_Vector<BRepGraph_ChildRefId> BRepGraph::RefsView::ActiveChildRefIdsOf(
-  const BRepGraph_CompoundId theCompound) const
+  const BRepGraph_CompoundId                      theCompound,
+  const occ::handle<NCollection_BaseAllocator>& theAllocator) const
 {
-  NCollection_Vector<BRepGraph_ChildRefId> aResult;
   const NCollection_Vector<BRepGraph_ChildRefId>& aAll = ChildRefIdsOf(theCompound);
-  for (int i = 0; i < aAll.Length(); ++i)
-  {
-    const BRepGraph_ChildRefId aRefId = aAll.Value(i);
-    if (!myGraph->myData->myIncStorage.ChildRef(aRefId).IsRemoved)
-      aResult.Append(aRefId);
-  }
-  return aResult;
+  return collectActiveRefIds(*myGraph,
+                             aAll,
+                             theAllocator,
+                             [this](const BRepGraph_ChildRefId theRefId) {
+                               return myGraph->myData->myIncStorage.ChildRef(theRefId).IsRemoved;
+                             });
 }
 
 //=================================================================================================
@@ -481,17 +507,16 @@ const NCollection_Vector<BRepGraph_OccurrenceRefId>& BRepGraph::RefsView::Occurr
 //=================================================================================================
 
 NCollection_Vector<BRepGraph_OccurrenceRefId> BRepGraph::RefsView::ActiveOccurrenceRefIdsOf(
-  const BRepGraph_ProductId theProduct) const
+  const BRepGraph_ProductId                       theProduct,
+  const occ::handle<NCollection_BaseAllocator>& theAllocator) const
 {
-  NCollection_Vector<BRepGraph_OccurrenceRefId> aResult;
   const NCollection_Vector<BRepGraph_OccurrenceRefId>& aAll = OccurrenceRefIdsOf(theProduct);
-  for (int i = 0; i < aAll.Length(); ++i)
-  {
-    const BRepGraph_OccurrenceRefId aRefId = aAll.Value(i);
-    if (!myGraph->myData->myIncStorage.OccurrenceRef(aRefId).IsRemoved)
-      aResult.Append(aRefId);
-  }
-  return aResult;
+  return collectActiveRefIds(*myGraph,
+                             aAll,
+                             theAllocator,
+                             [this](const BRepGraph_OccurrenceRefId theRefId) {
+                               return myGraph->myData->myIncStorage.OccurrenceRef(theRefId).IsRemoved;
+                             });
 }
 
 //=================================================================================================
@@ -508,52 +533,53 @@ const NCollection_Vector<BRepGraph_SolidRefId>& BRepGraph::RefsView::SolidRefIds
 //=================================================================================================
 
 NCollection_Vector<BRepGraph_SolidRefId> BRepGraph::RefsView::ActiveSolidRefIdsOf(
-  const BRepGraph_CompSolidId theCompSolid) const
+  const BRepGraph_CompSolidId                     theCompSolid,
+  const occ::handle<NCollection_BaseAllocator>& theAllocator) const
 {
-  NCollection_Vector<BRepGraph_SolidRefId> aResult;
   const NCollection_Vector<BRepGraph_SolidRefId>& aAll = SolidRefIdsOf(theCompSolid);
-  for (int i = 0; i < aAll.Length(); ++i)
-  {
-    const BRepGraph_SolidRefId aRefId = aAll.Value(i);
-    if (!myGraph->myData->myIncStorage.SolidRef(aRefId).IsRemoved)
-      aResult.Append(aRefId);
-  }
-  return aResult;
+  return collectActiveRefIds(*myGraph,
+                             aAll,
+                             theAllocator,
+                             [this](const BRepGraph_SolidRefId theRefId) {
+                               return myGraph->myData->myIncStorage.SolidRef(theRefId).IsRemoved;
+                             });
 }
 
 //=================================================================================================
 
 NCollection_Vector<BRepGraph_VertexRefId> BRepGraph::RefsView::VertexRefIdsOf(
-  const BRepGraph_EdgeId theEdge) const
+  const BRepGraph_EdgeId                          theEdge,
+  const occ::handle<NCollection_BaseAllocator>& theAllocator) const
 {
-  NCollection_Vector<BRepGraph_VertexRefId> aResult;
-  if (!theEdge.IsValid(myGraph->myData->myIncStorage.NbEdges()))
+  NCollection_Vector<BRepGraph_VertexRefId> aResult(THE_REFSVIEW_EDGE_VERTEX_REF_BLOCK_SIZE,
+                                                    effectiveAllocator(*myGraph, theAllocator));
+  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  if (!theEdge.IsValid(aStorage.NbEdges()))
     return aResult;
 
-  const BRepGraphInc::EdgeDef& aDef = myGraph->myData->myIncStorage.Edge(theEdge);
-  const int                    aNbVertexRefs = myGraph->myData->myIncStorage.NbVertexRefs();
+  const BRepGraphInc::EdgeDef& aDef          = aStorage.Edge(theEdge);
+  const int                    aNbVertexRefs = aStorage.NbVertexRefs();
+  NCollection_PackedMap<int>   aSeenRefIds;
 
-  const auto appendUniqueIfValid =
-    [this, &aResult, aNbVertexRefs](const BRepGraph_VertexRefId theRefId) {
+  const auto aProcessRefId = [&aStorage, &aSeenRefIds, aNbVertexRefs, &aResult](
+                               const BRepGraph_VertexRefId theRefId) {
     if (!theRefId.IsValid(aNbVertexRefs))
       return;
-    if (myGraph->myData->myIncStorage.VertexRef(theRefId).IsRemoved)
+    if (!aSeenRefIds.Add(theRefId.Index))
       return;
-    for (int i = 0; i < aResult.Length(); ++i)
-    {
-      if (aResult.Value(i) == theRefId)
-        return;
-    }
+
+    const BRepGraphInc::VertexRef& aVertexRef = aStorage.VertexRef(theRefId);
+    if (aVertexRef.IsRemoved)
+      return;
     aResult.Append(theRefId);
   };
 
-  appendUniqueIfValid(aDef.StartVertexRefId);
-  appendUniqueIfValid(aDef.EndVertexRefId);
+  aProcessRefId(aDef.StartVertexRefId);
+  aProcessRefId(aDef.EndVertexRefId);
   for (int i = 0; i < aDef.InternalVertexRefIds.Length(); ++i)
   {
-    appendUniqueIfValid(aDef.InternalVertexRefIds.Value(i));
+    aProcessRefId(aDef.InternalVertexRefIds.Value(i));
   }
-
   return aResult;
 }
 

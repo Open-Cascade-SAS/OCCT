@@ -449,8 +449,8 @@ TEST(BRepGraph_ExplorerTest, PathsTo_SharedEdge_TwoPaths)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Each edge in a box is shared by 2 faces, so PathsTo should find 2 paths.
-  NCollection_Vector<BRepGraph_TopologyPath> aPaths(8);
-  aGraph.Paths().PathsTo(BRepGraph_EdgeId(0), aPaths, pathAllocator());
+  const NCollection_Vector<BRepGraph_TopologyPath> aPaths =
+    aGraph.Paths().PathsTo(BRepGraph_EdgeId(0), pathAllocator());
   EXPECT_EQ(aPaths.Length(), 2);
 }
 
@@ -461,8 +461,8 @@ TEST(BRepGraph_ExplorerTest, PathsTo_Face_SinglePath)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Each face appears once under a solid.
-  NCollection_Vector<BRepGraph_TopologyPath> aPaths(8);
-  aGraph.Paths().PathsTo(BRepGraph_FaceId(0), aPaths, pathAllocator());
+  const NCollection_Vector<BRepGraph_TopologyPath> aPaths =
+    aGraph.Paths().PathsTo(BRepGraph_FaceId(0), pathAllocator());
   EXPECT_EQ(aPaths.Length(), 1);
 }
 
@@ -472,9 +472,8 @@ TEST(BRepGraph_ExplorerTest, PathsFromTo_FiltersByRoot)
   aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  NCollection_Vector<BRepGraph_TopologyPath> aPaths(8);
-  aGraph.Paths().PathsFromTo(BRepGraph_SolidId(0), BRepGraph_EdgeId(0), aPaths,
-                             pathAllocator());
+  const NCollection_Vector<BRepGraph_TopologyPath> aPaths =
+    aGraph.Paths().PathsFromTo(BRepGraph_SolidId(0), BRepGraph_EdgeId(0), pathAllocator());
   EXPECT_EQ(aPaths.Length(), 2);
 }
 
@@ -488,9 +487,9 @@ TEST(BRepGraph_ExplorerTest, PathsTo_MatchesExplorer)
   BRepGraph_Explorer anExp(aGraph, BRepGraph_SolidId(0), BRepGraph_NodeId::Kind::Edge);
   ASSERT_TRUE(anExp.More());
 
-  BRepGraph_NodeId                           aFirstEdge = anExp.Current();
-  NCollection_Vector<BRepGraph_TopologyPath> aPaths(8);
-  aGraph.Paths().PathsTo(aFirstEdge, aPaths, pathAllocator());
+  BRepGraph_NodeId aFirstEdge = anExp.Current();
+  const NCollection_Vector<BRepGraph_TopologyPath> aPaths =
+    aGraph.Paths().PathsTo(aFirstEdge, pathAllocator());
   // The explorer path should be among PathsTo results.
   bool aFound = false;
   for (int i = 0; i < aPaths.Length(); ++i)
@@ -572,8 +571,8 @@ TEST(BRepGraph_ExplorerTest, PathsTo_MatchesExplorer_WhenEarlierCompoundRefRemov
   EXPECT_TRUE(aExplorerHasPath);
 
   // Reverse walk should agree with explorer.
-  NCollection_Vector<BRepGraph_TopologyPath> aReversePaths(8);
-  aGraph.Paths().PathsTo(aLeafNode, aReversePaths, pathAllocator());
+  const NCollection_Vector<BRepGraph_TopologyPath> aReversePaths =
+    aGraph.Paths().PathsTo(aLeafNode, pathAllocator());
   bool aReverseHasPath = false;
   for (int i = 0; i < aReversePaths.Length(); ++i)
   {
@@ -622,8 +621,8 @@ TEST(BRepGraph_ExplorerTest, PathsTo_MatchesExplorer_WhenFirstShellRefRemoved)
   ASSERT_EQ(aFaceNode.NodeKind, BRepGraph_NodeId::Kind::Face);
 
   // Reverse walk must return the same path (not a removed shell-ref ordinal).
-  NCollection_Vector<BRepGraph_TopologyPath> aReversePaths(8);
-  aGraph.Paths().PathsTo(aFaceNode, aReversePaths, pathAllocator());
+  const NCollection_Vector<BRepGraph_TopologyPath> aReversePaths =
+    aGraph.Paths().PathsTo(aFaceNode, pathAllocator());
   bool aReverseHasPath = false;
   for (int i = 0; i < aReversePaths.Length(); ++i)
   {
@@ -659,16 +658,16 @@ TEST(BRepGraph_ExplorerTest, FilterByInclude_SharedEdge)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Get all paths to Edge(0), then filter by one of its faces.
-  NCollection_Vector<BRepGraph_TopologyPath> aPaths(8);
-  aGraph.Paths().PathsTo(BRepGraph_EdgeId(0), aPaths, pathAllocator());
+  const NCollection_Vector<BRepGraph_TopologyPath> aPaths =
+    aGraph.Paths().PathsTo(BRepGraph_EdgeId(0), pathAllocator());
   ASSERT_EQ(aPaths.Length(), 2);
 
   // Find the face in the first path.
   BRepGraph_NodeId aFaceInPath0 =
     aGraph.Paths().LeafNode(aGraph.Paths().Truncated(aPaths.Value(0), 2, pathAllocator()));
 
-  NCollection_Vector<BRepGraph_TopologyPath> aFiltered(8);
-  aGraph.Paths().FilterByInclude(aPaths, aFaceInPath0, aFiltered, pathAllocator());
+  const NCollection_Vector<BRepGraph_TopologyPath> aFiltered =
+    aGraph.Paths().FilterByInclude(aPaths, aFaceInPath0, pathAllocator());
   EXPECT_EQ(aFiltered.Length(), 1);
 }
 
@@ -678,42 +677,44 @@ TEST(BRepGraph_ExplorerTest, FilterByExclude_Face)
   aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  NCollection_Vector<BRepGraph_TopologyPath> aPaths(8);
-  aGraph.Paths().PathsTo(BRepGraph_EdgeId(0), aPaths, pathAllocator());
+  const NCollection_Vector<BRepGraph_TopologyPath> aPaths =
+    aGraph.Paths().PathsTo(BRepGraph_EdgeId(0), pathAllocator());
   ASSERT_EQ(aPaths.Length(), 2);
 
   BRepGraph_NodeId aFaceInPath0 =
     aGraph.Paths().LeafNode(aGraph.Paths().Truncated(aPaths.Value(0), 2, pathAllocator()));
 
-  NCollection_Vector<BRepGraph_TopologyPath> aExcluded(8);
-  aGraph.Paths().FilterByExclude(aPaths, aFaceInPath0, aExcluded, pathAllocator());
+  const NCollection_Vector<BRepGraph_TopologyPath> aExcluded =
+    aGraph.Paths().FilterByExclude(aPaths, aFaceInPath0, pathAllocator());
   EXPECT_EQ(aExcluded.Length(), 1);
 }
 
-TEST(BRepGraph_ExplorerTest, FilterByIncludeExclude_AliasedInputOutput)
+TEST(BRepGraph_ExplorerTest, FilterByIncludeExclude_AllocatorReturn)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  NCollection_Vector<BRepGraph_TopologyPath> aIncludedPaths(8);
-  aGraph.Paths().PathsTo(BRepGraph_EdgeId(0), aIncludedPaths, pathAllocator());
+  const NCollection_Vector<BRepGraph_TopologyPath> aIncludedPaths =
+    aGraph.Paths().PathsTo(BRepGraph_EdgeId(0), pathAllocator());
   ASSERT_EQ(aIncludedPaths.Length(), 2);
 
   const BRepGraph_NodeId aFaceInPath0 =
     aGraph.Paths().LeafNode(aGraph.Paths().Truncated(aIncludedPaths.Value(0), 2, pathAllocator()));
 
-  aGraph.Paths().FilterByInclude(aIncludedPaths, aFaceInPath0, aIncludedPaths, pathAllocator());
-  EXPECT_EQ(aIncludedPaths.Length(), 1);
-  EXPECT_TRUE(aGraph.Paths().PathContains(aIncludedPaths.Value(0), aFaceInPath0));
+  const NCollection_Vector<BRepGraph_TopologyPath> anIncludedResult =
+    aGraph.Paths().FilterByInclude(aIncludedPaths, aFaceInPath0, pathAllocator());
+  EXPECT_EQ(anIncludedResult.Length(), 1);
+  EXPECT_TRUE(aGraph.Paths().PathContains(anIncludedResult.Value(0), aFaceInPath0));
 
-  NCollection_Vector<BRepGraph_TopologyPath> aExcludedPaths(8);
-  aGraph.Paths().PathsTo(BRepGraph_EdgeId(0), aExcludedPaths, pathAllocator());
+  const NCollection_Vector<BRepGraph_TopologyPath> aExcludedPaths =
+    aGraph.Paths().PathsTo(BRepGraph_EdgeId(0), pathAllocator());
   ASSERT_EQ(aExcludedPaths.Length(), 2);
 
-  aGraph.Paths().FilterByExclude(aExcludedPaths, aFaceInPath0, aExcludedPaths, pathAllocator());
-  EXPECT_EQ(aExcludedPaths.Length(), 1);
-  EXPECT_FALSE(aGraph.Paths().PathContains(aExcludedPaths.Value(0), aFaceInPath0));
+  const NCollection_Vector<BRepGraph_TopologyPath> anExcludedResult =
+    aGraph.Paths().FilterByExclude(aExcludedPaths, aFaceInPath0, pathAllocator());
+  EXPECT_EQ(anExcludedResult.Length(), 1);
+  EXPECT_FALSE(aGraph.Paths().PathContains(anExcludedResult.Value(0), aFaceInPath0));
 }
 
 // --- Explorer convenience tests ---
@@ -756,8 +757,8 @@ TEST(BRepGraph_ExplorerTest, NodeLocations_EdgeHasTwoOccurrences)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Each box edge is shared by 2 faces = 2 occurrence locations.
-  NCollection_Vector<BRepGraph::PathView::OccurrenceEntry> aEntries(8);
-  aGraph.Paths().NodeLocations(BRepGraph_EdgeId(0), aEntries, pathAllocator());
+  const NCollection_Vector<BRepGraph::PathView::OccurrenceEntry> aEntries =
+    aGraph.Paths().NodeLocations(BRepGraph_EdgeId(0), pathAllocator());
   EXPECT_EQ(aEntries.Length(), 2);
 
   // Both locations should be identity for a simple box.
@@ -771,8 +772,8 @@ TEST(BRepGraph_ExplorerTest, NodeLocations_FaceHasOneOccurrence)
   aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  NCollection_Vector<BRepGraph::PathView::OccurrenceEntry> aEntries(8);
-  aGraph.Paths().NodeLocations(BRepGraph_FaceId(0), aEntries, pathAllocator());
+  const NCollection_Vector<BRepGraph::PathView::OccurrenceEntry> aEntries =
+    aGraph.Paths().NodeLocations(BRepGraph_FaceId(0), pathAllocator());
   EXPECT_EQ(aEntries.Length(), 1);
 }
 
@@ -783,8 +784,8 @@ TEST(BRepGraph_ExplorerTest, NodeLocations_VertexMultipleOccurrences)
   ASSERT_TRUE(aGraph.IsDone());
 
   // A box corner vertex is shared by 3 edges, each shared by 2 faces.
-  NCollection_Vector<BRepGraph::PathView::OccurrenceEntry> aEntries(8);
-  aGraph.Paths().NodeLocations(BRepGraph_VertexId(0), aEntries, pathAllocator());
+  const NCollection_Vector<BRepGraph::PathView::OccurrenceEntry> aEntries =
+    aGraph.Paths().NodeLocations(BRepGraph_VertexId(0), pathAllocator());
   EXPECT_GT(aEntries.Length(), 0);
 }
 
@@ -795,34 +796,32 @@ TEST(BRepGraph_ExplorerTest, PathsTo_InvalidNode_Empty)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Invalid NodeId should return empty.
-  NCollection_Vector<BRepGraph_TopologyPath> aPaths(8);
-  aGraph.Paths().PathsTo(BRepGraph_NodeId(), aPaths, pathAllocator());
+  const NCollection_Vector<BRepGraph_TopologyPath> aPaths =
+    aGraph.Paths().PathsTo(BRepGraph_NodeId(), pathAllocator());
   EXPECT_EQ(aPaths.Length(), 0);
 
   // Out-of-range index should return empty.
-  NCollection_Vector<BRepGraph_TopologyPath> aPaths2(8);
-  aGraph.Paths().PathsTo(BRepGraph_EdgeId(99999), aPaths2, pathAllocator());
+  const NCollection_Vector<BRepGraph_TopologyPath> aPaths2 =
+    aGraph.Paths().PathsTo(BRepGraph_EdgeId(99999), pathAllocator());
   EXPECT_EQ(aPaths2.Length(), 0);
 }
 
-TEST(BRepGraph_ExplorerTest, PathView_OutParam_Deterministic)
+TEST(BRepGraph_ExplorerTest, PathView_DeterministicComputedQueries)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  NCollection_Vector<BRepGraph_TopologyPath> aPathsToFirst(8);
-  NCollection_Vector<BRepGraph_TopologyPath> aPathsToSecond(8);
-  aGraph.Paths().PathsTo(BRepGraph_EdgeId(0), aPathsToFirst, pathAllocator());
-  aGraph.Paths().PathsTo(BRepGraph_EdgeId(0), aPathsToSecond, pathAllocator());
+  const NCollection_Vector<BRepGraph_TopologyPath> aPathsToFirst =
+    aGraph.Paths().PathsTo(BRepGraph_EdgeId(0), pathAllocator());
+  const NCollection_Vector<BRepGraph_TopologyPath> aPathsToSecond =
+    aGraph.Paths().PathsTo(BRepGraph_EdgeId(0), pathAllocator());
   expectSameSequence(aPathsToFirst, aPathsToSecond);
 
-  NCollection_Vector<BRepGraph_TopologyPath> aPathsFromToFirst(8);
-  NCollection_Vector<BRepGraph_TopologyPath> aPathsFromToSecond(8);
-  aGraph.Paths().PathsFromTo(BRepGraph_SolidId(0), BRepGraph_EdgeId(0), aPathsFromToFirst,
-                             pathAllocator());
-  aGraph.Paths().PathsFromTo(BRepGraph_SolidId(0), BRepGraph_EdgeId(0), aPathsFromToSecond,
-                             pathAllocator());
+  const NCollection_Vector<BRepGraph_TopologyPath> aPathsFromToFirst =
+    aGraph.Paths().PathsFromTo(BRepGraph_SolidId(0), BRepGraph_EdgeId(0), pathAllocator());
+  const NCollection_Vector<BRepGraph_TopologyPath> aPathsFromToSecond =
+    aGraph.Paths().PathsFromTo(BRepGraph_SolidId(0), BRepGraph_EdgeId(0), pathAllocator());
   expectSameSequence(aPathsFromToFirst, aPathsFromToSecond);
 
   ASSERT_GT(aPathsToFirst.Length(), 0);
@@ -830,84 +829,63 @@ TEST(BRepGraph_ExplorerTest, PathView_OutParam_Deterministic)
     aGraph.Paths().LeafNode(
       aGraph.Paths().Truncated(aPathsToFirst.Value(0), 2, pathAllocator()));
 
-  NCollection_Vector<BRepGraph_TopologyPath> aIncludeFirst(8);
-  NCollection_Vector<BRepGraph_TopologyPath> aIncludeSecond(8);
-  aGraph.Paths().FilterByInclude(aPathsToFirst, aFaceInPath0, aIncludeFirst, pathAllocator());
-  aGraph.Paths().FilterByInclude(aPathsToFirst, aFaceInPath0, aIncludeSecond, pathAllocator());
+  const NCollection_Vector<BRepGraph_TopologyPath> aIncludeFirst =
+    aGraph.Paths().FilterByInclude(aPathsToFirst, aFaceInPath0, pathAllocator());
+  const NCollection_Vector<BRepGraph_TopologyPath> aIncludeSecond =
+    aGraph.Paths().FilterByInclude(aPathsToFirst, aFaceInPath0, pathAllocator());
   expectSameSequence(aIncludeFirst, aIncludeSecond);
 
-  NCollection_Vector<BRepGraph_TopologyPath> aExcludeFirst(8);
-  NCollection_Vector<BRepGraph_TopologyPath> aExcludeSecond(8);
-  aGraph.Paths().FilterByExclude(aPathsToFirst, aFaceInPath0, aExcludeFirst, pathAllocator());
-  aGraph.Paths().FilterByExclude(aPathsToFirst, aFaceInPath0, aExcludeSecond, pathAllocator());
+  const NCollection_Vector<BRepGraph_TopologyPath> aExcludeFirst =
+    aGraph.Paths().FilterByExclude(aPathsToFirst, aFaceInPath0, pathAllocator());
+  const NCollection_Vector<BRepGraph_TopologyPath> aExcludeSecond =
+    aGraph.Paths().FilterByExclude(aPathsToFirst, aFaceInPath0, pathAllocator());
   expectSameSequence(aExcludeFirst, aExcludeSecond);
 
-  NCollection_Vector<BRepGraph::PathView::OccurrenceEntry> aLocationsFirst(8);
-  NCollection_Vector<BRepGraph::PathView::OccurrenceEntry> aLocationsSecond(8);
-  aGraph.Paths().NodeLocations(BRepGraph_EdgeId(0), aLocationsFirst, pathAllocator());
-  aGraph.Paths().NodeLocations(BRepGraph_EdgeId(0), aLocationsSecond, pathAllocator());
+  const NCollection_Vector<BRepGraph::PathView::OccurrenceEntry> aLocationsFirst =
+    aGraph.Paths().NodeLocations(BRepGraph_EdgeId(0), pathAllocator());
+  const NCollection_Vector<BRepGraph::PathView::OccurrenceEntry> aLocationsSecond =
+    aGraph.Paths().NodeLocations(BRepGraph_EdgeId(0), pathAllocator());
   expectSameOccurrenceEntries(aLocationsFirst, aLocationsSecond);
 
-  NCollection_Vector<BRepGraph_NodeId> aNodesFirst(8);
-  NCollection_Vector<BRepGraph_NodeId> aNodesSecond(8);
-  aGraph.Paths().AllNodesOnPath(aPathsToFirst.Value(0), aNodesFirst);
-  aGraph.Paths().AllNodesOnPath(aPathsToFirst.Value(0), aNodesSecond);
+  const NCollection_Vector<BRepGraph_NodeId> aNodesFirst =
+    aGraph.Paths().AllNodesOnPath(aPathsToFirst.Value(0), pathAllocator());
+  const NCollection_Vector<BRepGraph_NodeId> aNodesSecond =
+    aGraph.Paths().AllNodesOnPath(aPathsToFirst.Value(0), pathAllocator());
   expectSameSequence(aNodesFirst, aNodesSecond);
 }
 
-TEST(BRepGraph_ExplorerTest, PathView_OutParam_ClearAndInvalid)
+TEST(BRepGraph_ExplorerTest, PathView_InvalidInputsReturnEmpty)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  NCollection_Vector<BRepGraph_TopologyPath> aPathResult(8);
-  aPathResult.Append(BRepGraph_TopologyPath::FromRoot(BRepGraph_SolidId(123), pathAllocator()));
-  aGraph.Paths().PathsTo(BRepGraph_EdgeId(0), aPathResult, pathAllocator());
-  EXPECT_EQ(aPathResult.Length(), 2);
-  aGraph.Paths().PathsTo(BRepGraph_NodeId(), aPathResult, pathAllocator());
-  EXPECT_EQ(aPathResult.Length(), 0);
+  const NCollection_Vector<BRepGraph_TopologyPath> aPathsToEdge =
+    aGraph.Paths().PathsTo(BRepGraph_EdgeId(0), pathAllocator());
+  EXPECT_EQ(aPathsToEdge.Length(), 2);
+  EXPECT_EQ(aGraph.Paths().PathsTo(BRepGraph_NodeId(), pathAllocator()).Length(), 0);
 
-  aPathResult.Append(BRepGraph_TopologyPath::FromRoot(BRepGraph_SolidId(123), pathAllocator()));
-  aGraph.Paths().PathsFromTo(BRepGraph_SolidId(0), BRepGraph_EdgeId(0), aPathResult,
-                             pathAllocator());
-  EXPECT_EQ(aPathResult.Length(), 2);
-  aGraph.Paths().PathsFromTo(BRepGraph_NodeId(), BRepGraph_EdgeId(0), aPathResult,
-                             pathAllocator());
-  EXPECT_EQ(aPathResult.Length(), 0);
+  EXPECT_EQ(aGraph.Paths().PathsFromTo(BRepGraph_SolidId(0), BRepGraph_EdgeId(0), pathAllocator()).Length(), 2);
+  EXPECT_EQ(aGraph.Paths().PathsFromTo(BRepGraph_NodeId(), BRepGraph_EdgeId(0), pathAllocator()).Length(), 0);
 
-  NCollection_Vector<BRepGraph_TopologyPath> aInputPaths(8);
-  aGraph.Paths().PathsTo(BRepGraph_EdgeId(0), aInputPaths, pathAllocator());
+  const NCollection_Vector<BRepGraph_TopologyPath> aInputPaths =
+    aGraph.Paths().PathsTo(BRepGraph_EdgeId(0), pathAllocator());
   ASSERT_EQ(aInputPaths.Length(), 2);
   const BRepGraph_NodeId aFaceInPath0 =
     aGraph.Paths().LeafNode(aGraph.Paths().Truncated(aInputPaths.Value(0), 2, pathAllocator()));
 
-  aPathResult.Append(BRepGraph_TopologyPath::FromRoot(BRepGraph_SolidId(123), pathAllocator()));
-  aGraph.Paths().FilterByInclude(aInputPaths, aFaceInPath0, aPathResult, pathAllocator());
-  EXPECT_EQ(aPathResult.Length(), 1);
-  aGraph.Paths().FilterByInclude(aInputPaths, BRepGraph_NodeId(), aPathResult, pathAllocator());
-  EXPECT_EQ(aPathResult.Length(), 0);
+  EXPECT_EQ(aGraph.Paths().FilterByInclude(aInputPaths, aFaceInPath0, pathAllocator()).Length(), 1);
+  EXPECT_EQ(aGraph.Paths().FilterByInclude(aInputPaths, BRepGraph_NodeId(), pathAllocator()).Length(), 0);
 
-  aPathResult.Append(BRepGraph_TopologyPath::FromRoot(BRepGraph_SolidId(123), pathAllocator()));
-  aGraph.Paths().FilterByExclude(aInputPaths, aFaceInPath0, aPathResult, pathAllocator());
-  EXPECT_EQ(aPathResult.Length(), 1);
-  aGraph.Paths().FilterByExclude(aInputPaths, BRepGraph_NodeId(), aPathResult,
-                                 pathAllocator());
-  EXPECT_EQ(aPathResult.Length(), aInputPaths.Length());
+  EXPECT_EQ(aGraph.Paths().FilterByExclude(aInputPaths, aFaceInPath0, pathAllocator()).Length(), 1);
+  EXPECT_EQ(aGraph.Paths().FilterByExclude(aInputPaths, BRepGraph_NodeId(), pathAllocator()).Length(),
+            aInputPaths.Length());
 
-  NCollection_Vector<BRepGraph::PathView::OccurrenceEntry> aEntries(8);
-  aEntries.Append(BRepGraph::PathView::OccurrenceEntry());
-  aGraph.Paths().NodeLocations(BRepGraph_EdgeId(0), aEntries, pathAllocator());
-  EXPECT_EQ(aEntries.Length(), 2);
-  aGraph.Paths().NodeLocations(BRepGraph_NodeId(), aEntries, pathAllocator());
-  EXPECT_EQ(aEntries.Length(), 0);
+  EXPECT_EQ(aGraph.Paths().NodeLocations(BRepGraph_EdgeId(0), pathAllocator()).Length(), 2);
+  EXPECT_EQ(aGraph.Paths().NodeLocations(BRepGraph_NodeId(), pathAllocator()).Length(), 0);
 
-  NCollection_Vector<BRepGraph_NodeId> aNodes(8);
-  aNodes.Append(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, 123));
-  aGraph.Paths().AllNodesOnPath(BRepGraph_TopologyPath(), aNodes);
-  EXPECT_EQ(aNodes.Length(), 0);
-  aGraph.Paths().AllNodesOnPath(aInputPaths.Value(0), aNodes);
-  EXPECT_GT(aNodes.Length(), 0);
+  EXPECT_EQ(aGraph.Paths().AllNodesOnPath(BRepGraph_TopologyPath(), pathAllocator()).Length(), 0);
+  EXPECT_GT(aGraph.Paths().AllNodesOnPath(aInputPaths.Value(0), pathAllocator()).Length(), 0);
 }
 
 TEST(BRepGraph_ExplorerTest, PathView_TempAllocator_Reuse)
@@ -919,17 +897,17 @@ TEST(BRepGraph_ExplorerTest, PathView_TempAllocator_Reuse)
   const occ::handle<NCollection_IncAllocator> anAlloc = new NCollection_IncAllocator();
 
   NCollection_Vector<BRepGraph_TopologyPath> aPaths(8, anAlloc);
-  aGraph.Paths().PathsTo(BRepGraph_EdgeId(0), aPaths, anAlloc);
+  aPaths = aGraph.Paths().PathsTo(BRepGraph_EdgeId(0), anAlloc);
   ASSERT_EQ(aPaths.Length(), 2);
 
   aPaths.Clear(false);
   anAlloc->Reset(false);
 
-  aGraph.Paths().PathsTo(BRepGraph_FaceId(0), aPaths, anAlloc);
+  aPaths = aGraph.Paths().PathsTo(BRepGraph_FaceId(0), anAlloc);
   ASSERT_EQ(aPaths.Length(), 1);
 
   NCollection_Vector<BRepGraph::PathView::OccurrenceEntry> aEntries(8, anAlloc);
-  aGraph.Paths().NodeLocations(BRepGraph_EdgeId(0), aEntries, anAlloc);
+  aEntries = aGraph.Paths().NodeLocations(BRepGraph_EdgeId(0), anAlloc);
   ASSERT_EQ(aEntries.Length(), 2);
 }
 
@@ -999,8 +977,8 @@ TEST(BRepGraph_ExplorerTest, PathsTo_NestedCompound_HasCompoundRoot)
   ASSERT_TRUE(aGraph.IsDone());
 
   // PathsTo a face should trace through inner compound to outer compound root.
-  NCollection_Vector<BRepGraph_TopologyPath> aPaths(8);
-  aGraph.Paths().PathsTo(BRepGraph_FaceId(0), aPaths, pathAllocator());
+  const NCollection_Vector<BRepGraph_TopologyPath> aPaths =
+    aGraph.Paths().PathsTo(BRepGraph_FaceId(0), pathAllocator());
   ASSERT_GT(aPaths.Length(), 0);
   // Root should be the outer compound (index 0 - outermost).
   EXPECT_EQ(aPaths.Value(0).Root().NodeKind, BRepGraph_NodeId::Kind::Compound);
@@ -1051,8 +1029,8 @@ TEST(BRepGraph_ExplorerTest, PathsTo_ShellInCompound_CompoundRoot)
   ASSERT_GT(aGraph.Topo().NbShells(), 0);
 
   // PathsTo(Face) should trace through Shell to Compound root.
-  NCollection_Vector<BRepGraph_TopologyPath> aPaths(8);
-  aGraph.Paths().PathsTo(BRepGraph_FaceId(0), aPaths, pathAllocator());
+  const NCollection_Vector<BRepGraph_TopologyPath> aPaths =
+    aGraph.Paths().PathsTo(BRepGraph_FaceId(0), pathAllocator());
   ASSERT_GT(aPaths.Length(), 0);
   EXPECT_EQ(aPaths.Value(0).Root().NodeKind, BRepGraph_NodeId::Kind::Compound);
 }
@@ -1078,8 +1056,8 @@ TEST(BRepGraph_ExplorerTest, PathsTo_SolidInCompSolid_CompSolidRoot)
   ASSERT_GT(aGraph.Topo().NbCompSolids(), 0);
 
   // PathsTo(Face) should trace up through Solid to CompSolid root.
-  NCollection_Vector<BRepGraph_TopologyPath> aPaths(8);
-  aGraph.Paths().PathsTo(BRepGraph_FaceId(0), aPaths, pathAllocator());
+  const NCollection_Vector<BRepGraph_TopologyPath> aPaths =
+    aGraph.Paths().PathsTo(BRepGraph_FaceId(0), pathAllocator());
   ASSERT_GT(aPaths.Length(), 0);
   EXPECT_EQ(aPaths.Value(0).Root().NodeKind, BRepGraph_NodeId::Kind::CompSolid);
 }
@@ -1106,8 +1084,8 @@ TEST(BRepGraph_ExplorerTest, PathsTo_CompSolidInCompound_CompoundRoot)
   ASSERT_GT(aGraph.Topo().NbCompounds(), 0);
 
   // PathsTo(Face) should trace Solid -> CompSolid -> Compound root.
-  NCollection_Vector<BRepGraph_TopologyPath> aPaths(8);
-  aGraph.Paths().PathsTo(BRepGraph_FaceId(0), aPaths, pathAllocator());
+  const NCollection_Vector<BRepGraph_TopologyPath> aPaths =
+    aGraph.Paths().PathsTo(BRepGraph_FaceId(0), pathAllocator());
   ASSERT_GT(aPaths.Length(), 0);
   EXPECT_EQ(aPaths.Value(0).Root().NodeKind, BRepGraph_NodeId::Kind::Compound);
 }
@@ -1247,8 +1225,8 @@ TEST(BRepGraph_ExplorerTest, AllNodesOnPath_BoxEdge_CorrectKinds)
   ASSERT_TRUE(anExp.More());
   const BRepGraph_TopologyPath aPath = anExp.CurrentPath(pathAllocator());
 
-  NCollection_Vector<BRepGraph_NodeId> aNodes(8);
-  aGraph.Paths().AllNodesOnPath(aPath, aNodes);
+  const NCollection_Vector<BRepGraph_NodeId> aNodes =
+    aGraph.Paths().AllNodesOnPath(aPath, pathAllocator());
   ASSERT_GT(aNodes.Length(), 0);
 
   // First node should be the solid root.
@@ -1321,9 +1299,9 @@ TEST(BRepGraph_ExplorerTest, AllNodesOnPath_InvalidPath_Empty)
   aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  BRepGraph_TopologyPath               anInvalid;
-  NCollection_Vector<BRepGraph_NodeId> aNodes(8);
-  aGraph.Paths().AllNodesOnPath(anInvalid, aNodes);
+  BRepGraph_TopologyPath anInvalid;
+  const NCollection_Vector<BRepGraph_NodeId> aNodes =
+    aGraph.Paths().AllNodesOnPath(anInvalid, pathAllocator());
   EXPECT_EQ(aNodes.Length(), 0);
 }
 
@@ -1334,13 +1312,13 @@ TEST(BRepGraph_ExplorerTest, ReverseWalkPaths_DepthBudgetZero_ReturnsEmpty)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Normal PathsTo should find paths.
-  NCollection_Vector<BRepGraph_TopologyPath> aNormal(8);
-  aGraph.Paths().PathsTo(BRepGraph_FaceId(0), aNormal, pathAllocator());
+  const NCollection_Vector<BRepGraph_TopologyPath> aNormal =
+    aGraph.Paths().PathsTo(BRepGraph_FaceId(0), pathAllocator());
   EXPECT_GT(aNormal.Length(), 0);
 
   // PathsTo with valid node should terminate even on large graphs.
-  NCollection_Vector<BRepGraph_TopologyPath> aVertex(8);
-  aGraph.Paths().PathsTo(BRepGraph_VertexId(0), aVertex, pathAllocator());
+  const NCollection_Vector<BRepGraph_TopologyPath> aVertex =
+    aGraph.Paths().PathsTo(BRepGraph_VertexId(0), pathAllocator());
   EXPECT_GT(aVertex.Length(), 0);
 }
 

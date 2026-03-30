@@ -100,7 +100,8 @@ TEST(BRepGraph_BenchmarkTest, Smoke_BuildReconstructAndAdjacency)
   EXPECT_FALSE(aFaceShape.IsNull());
 
   const BRepGraph_FaceId                     aFaceId(0);
-  const NCollection_Vector<BRepGraph_FaceId> anAdj = aGraph.Topo().AdjacentFaces(aFaceId);
+  const NCollection_Vector<BRepGraph_FaceId> anAdj =
+    aGraph.Topo().AdjacentFaces(aFaceId, aGraph.Allocator());
   EXPECT_GE(anAdj.Length(), 0);
 }
 
@@ -197,7 +198,8 @@ TEST(BRepGraph_BenchmarkTest, DISABLED_SpatialQuery_Throughput)
     for (int anIdx = 0; anIdx < aNbFaces; ++anIdx)
     {
       const BRepGraph_FaceId                     aFaceId(anIdx);
-      const NCollection_Vector<BRepGraph_FaceId> anAdj = aGraph.Topo().AdjacentFaces(aFaceId);
+      const NCollection_Vector<BRepGraph_FaceId> anAdj =
+        aGraph.Topo().AdjacentFaces(aFaceId, aGraph.Allocator());
       EXPECT_GE(anAdj.Length(), 0);
     }
   });

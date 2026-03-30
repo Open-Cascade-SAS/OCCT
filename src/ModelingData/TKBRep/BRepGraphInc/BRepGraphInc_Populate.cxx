@@ -1673,7 +1673,7 @@ void traverseHierarchy(BRepGraphInc_Storage&              theStorage,
   }
 }
 
-//! Flatten hierarchy to face level for Append() - no entity registration.
+//! Flatten hierarchy containers away for AppendFlattened() - no container registration.
 void flattenToFaces(NCollection_Vector<FaceLocalData>& theFaceData,
                     const TopoDS_Shape&                theCurrentShape,
                     const TopLoc_Location&             theParentGlobalLoc)
@@ -2050,13 +2050,13 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&                       
 
 //=================================================================================================
 
-void BRepGraphInc_Populate::Append(BRepGraphInc_Storage&                         theStorage,
-                                   const TopoDS_Shape&                           theShape,
-                                   const bool                                    theParallel,
-                                   const Options&                                theOptions,
-                                   BRepGraph_ParamLayer*                         theParamLayer,
-                                   BRepGraph_RegularityLayer*                    theRegularityLayer,
-                                   const occ::handle<NCollection_BaseAllocator>& theTmpAlloc)
+void BRepGraphInc_Populate::AppendFlattened(BRepGraphInc_Storage&                         theStorage,
+                                            const TopoDS_Shape&                           theShape,
+                                            const bool                                    theParallel,
+                                            const Options&                                theOptions,
+                                            BRepGraph_ParamLayer*                         theParamLayer,
+                                            BRepGraph_RegularityLayer*                    theRegularityLayer,
+                                            const occ::handle<NCollection_BaseAllocator>& theTmpAlloc)
 {
   if (theShape.IsNull())
     return;

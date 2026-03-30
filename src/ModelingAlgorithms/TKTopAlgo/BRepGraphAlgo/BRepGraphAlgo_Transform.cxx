@@ -91,8 +91,7 @@ void BRepGraphAlgo_Transform::applyLocationTransform(BRepGraph& theGraph, const 
   // (PathView::stepLocation, walkToLevel), so all descendant
   // queries automatically include it.
   const occ::handle<NCollection_BaseAllocator> anAllocator = new NCollection_IncAllocator();
-  NCollection_Vector<BRepGraph_ProductId> aRoots(4);
-  theGraph.Paths().RootProducts(aRoots, anAllocator);
+  const NCollection_Vector<BRepGraph_ProductId> aRoots = theGraph.Paths().RootProducts(anAllocator);
   for (int anIdx = 0; anIdx < aRoots.Length(); ++anIdx)
   {
     BRepGraph_MutGuard<BRepGraphInc::ProductDef> aProduct =

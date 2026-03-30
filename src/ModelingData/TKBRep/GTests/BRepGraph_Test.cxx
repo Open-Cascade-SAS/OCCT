@@ -691,7 +691,8 @@ TEST_F(BRepGraphTest, SameDomainFaces_Box_Empty)
   for (int aFaceIdx = 0; aFaceIdx < myGraph.Topo().NbFaces(); ++aFaceIdx)
   {
     BRepGraph_FaceId                     aFaceId(aFaceIdx);
-    NCollection_Vector<BRepGraph_FaceId> aSameDomain = myGraph.Topo().SameDomainFaces(aFaceId);
+    NCollection_Vector<BRepGraph_FaceId> aSameDomain =
+      myGraph.Topo().SameDomainFaces(aFaceId, myGraph.Allocator());
     EXPECT_EQ(aSameDomain.Length(), 0)
       << "Box face " << aFaceIdx << " should have no same-domain faces";
   }

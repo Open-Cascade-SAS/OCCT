@@ -134,6 +134,60 @@ TEST(BRepGraphIncTest, Sphere_EntityCounts_MatchDefCounts)
   EXPECT_EQ(aStorage.NbFaces(), aGraph.Topo().NbFaces());
 }
 
+TEST(BRepGraphIncTest, Storage_MarkRemovedRep_DecrementsActiveCountsAndIsIdempotent)
+{
+  BRepGraphInc_Storage aStorage;
+
+  aStorage.AppendSurfaceRep().Id             = BRepGraph_SurfaceRepId(0);
+  aStorage.AppendCurve3DRep().Id            = BRepGraph_Curve3DRepId(0);
+  aStorage.AppendCurve2DRep().Id            = BRepGraph_Curve2DRepId(0);
+  aStorage.AppendTriangulationRep().Id      = BRepGraph_TriangulationRepId(0);
+  aStorage.AppendPolygon3DRep().Id          = BRepGraph_Polygon3DRepId(0);
+  aStorage.AppendPolygon2DRep().Id          = BRepGraph_Polygon2DRepId(0);
+  aStorage.AppendPolygonOnTriRep().Id       = BRepGraph_PolygonOnTriRepId(0);
+
+  EXPECT_EQ(aStorage.NbActiveSurfaces(), 1);
+  EXPECT_EQ(aStorage.NbActiveCurves3D(), 1);
+  EXPECT_EQ(aStorage.NbActiveCurves2D(), 1);
+  EXPECT_EQ(aStorage.NbActiveTriangulations(), 1);
+  EXPECT_EQ(aStorage.NbActivePolygons3D(), 1);
+  EXPECT_EQ(aStorage.NbActivePolygons2D(), 1);
+  EXPECT_EQ(aStorage.NbActivePolygonsOnTri(), 1);
+
+  EXPECT_TRUE(aStorage.MarkRemovedRep(BRepGraph_SurfaceRepId(0)));
+  EXPECT_TRUE(aStorage.MarkRemovedRep(BRepGraph_Curve3DRepId(0)));
+  EXPECT_TRUE(aStorage.MarkRemovedRep(BRepGraph_Curve2DRepId(0)));
+  EXPECT_TRUE(aStorage.MarkRemovedRep(BRepGraph_TriangulationRepId(0)));
+  EXPECT_TRUE(aStorage.MarkRemovedRep(BRepGraph_Polygon3DRepId(0)));
+  EXPECT_TRUE(aStorage.MarkRemovedRep(BRepGraph_Polygon2DRepId(0)));
+  EXPECT_TRUE(aStorage.MarkRemovedRep(BRepGraph_PolygonOnTriRepId(0)));
+
+  EXPECT_TRUE(aStorage.SurfaceRep(BRepGraph_SurfaceRepId(0)).IsRemoved);
+  EXPECT_TRUE(aStorage.Curve3DRep(BRepGraph_Curve3DRepId(0)).IsRemoved);
+  EXPECT_TRUE(aStorage.Curve2DRep(BRepGraph_Curve2DRepId(0)).IsRemoved);
+  EXPECT_TRUE(aStorage.TriangulationRep(BRepGraph_TriangulationRepId(0)).IsRemoved);
+  EXPECT_TRUE(aStorage.Polygon3DRep(BRepGraph_Polygon3DRepId(0)).IsRemoved);
+  EXPECT_TRUE(aStorage.Polygon2DRep(BRepGraph_Polygon2DRepId(0)).IsRemoved);
+  EXPECT_TRUE(aStorage.PolygonOnTriRep(BRepGraph_PolygonOnTriRepId(0)).IsRemoved);
+
+  EXPECT_EQ(aStorage.NbActiveSurfaces(), 0);
+  EXPECT_EQ(aStorage.NbActiveCurves3D(), 0);
+  EXPECT_EQ(aStorage.NbActiveCurves2D(), 0);
+  EXPECT_EQ(aStorage.NbActiveTriangulations(), 0);
+  EXPECT_EQ(aStorage.NbActivePolygons3D(), 0);
+  EXPECT_EQ(aStorage.NbActivePolygons2D(), 0);
+  EXPECT_EQ(aStorage.NbActivePolygonsOnTri(), 0);
+
+  EXPECT_FALSE(aStorage.MarkRemovedRep(BRepGraph_SurfaceRepId(0)));
+  EXPECT_FALSE(aStorage.MarkRemovedRep(BRepGraph_Curve3DRepId(0)));
+  EXPECT_FALSE(aStorage.MarkRemovedRep(BRepGraph_Curve2DRepId(0)));
+  EXPECT_FALSE(aStorage.MarkRemovedRep(BRepGraph_TriangulationRepId(0)));
+  EXPECT_FALSE(aStorage.MarkRemovedRep(BRepGraph_Polygon3DRepId(0)));
+  EXPECT_FALSE(aStorage.MarkRemovedRep(BRepGraph_Polygon2DRepId(0)));
+  EXPECT_FALSE(aStorage.MarkRemovedRep(BRepGraph_PolygonOnTriRepId(0)));
+  EXPECT_FALSE(aStorage.MarkRemovedRep(BRepGraph_RepId()));
+}
+
 // ============================================================
 // Round-trip: area preservation
 // ============================================================
