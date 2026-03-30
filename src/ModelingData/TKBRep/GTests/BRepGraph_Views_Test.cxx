@@ -133,6 +133,50 @@ TEST_F(BRepGraph_ViewsTest, DefsView_ActiveFaceIds_ExcludeRemoved)
   }
 }
 
+TEST_F(BRepGraph_ViewsTest, DefsView_ChildEntitiesOfCompound_BasicAndFiltered)
+{
+  NCollection_Vector<BRepGraph_NodeId> aChildren;
+  aChildren.Append(BRepGraph_SolidId(0));
+  const BRepGraph_CompoundId aCompound = myGraph.Builder().AddCompound(aChildren);
+  ASSERT_TRUE(aCompound.IsValid());
+
+  NCollection_Vector<BRepGraph_NodeId> aResolved = myGraph.Topo().ChildEntitiesOfCompound(aCompound);
+  ASSERT_EQ(aResolved.Length(), 1);
+  EXPECT_EQ(aResolved.Value(0), BRepGraph_NodeId(BRepGraph_SolidId(0)));
+
+  const NCollection_Vector<BRepGraph_ChildRefId>& aChildRefs = myGraph.Refs().ChildRefIdsOf(aCompound);
+  ASSERT_EQ(aChildRefs.Length(), 1);
+  {
+    BRepGraph_MutGuard<BRepGraphInc::ChildRef> aChildRef = myGraph.Builder().MutChildRef(aChildRefs.Value(0));
+    aChildRef->IsRemoved                                 = true;
+  }
+
+  aResolved = myGraph.Topo().ChildEntitiesOfCompound(aCompound);
+  EXPECT_EQ(aResolved.Length(), 0);
+}
+
+TEST_F(BRepGraph_ViewsTest, DefsView_SolidsOfCompSolid_BasicAndFiltered)
+{
+  NCollection_Vector<BRepGraph_SolidId> aSolidIds;
+  aSolidIds.Append(BRepGraph_SolidId(0));
+  const BRepGraph_CompSolidId aCompSolid = myGraph.Builder().AddCompSolid(aSolidIds);
+  ASSERT_TRUE(aCompSolid.IsValid());
+
+  NCollection_Vector<BRepGraph_SolidId> aResolved = myGraph.Topo().SolidsOfCompSolid(aCompSolid);
+  ASSERT_EQ(aResolved.Length(), 1);
+  EXPECT_EQ(aResolved.Value(0), BRepGraph_SolidId(0));
+
+  const NCollection_Vector<BRepGraph_SolidRefId>& aSolidRefs = myGraph.Refs().SolidRefIdsOf(aCompSolid);
+  ASSERT_EQ(aSolidRefs.Length(), 1);
+  {
+    BRepGraph_MutGuard<BRepGraphInc::SolidRef> aSolidRef = myGraph.Builder().MutSolidRef(aSolidRefs.Value(0));
+    aSolidRef->IsRemoved                                 = true;
+  }
+
+  aResolved = myGraph.Topo().SolidsOfCompSolid(aCompSolid);
+  EXPECT_EQ(aResolved.Length(), 0);
+}
+
 TEST_F(BRepGraph_ViewsTest, DefsView_FaceAccessor_Valid)
 {
   for (int anIdx = 0; anIdx < myGraph.Topo().NbFaces(); ++anIdx)

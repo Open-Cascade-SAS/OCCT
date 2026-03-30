@@ -127,6 +127,20 @@ public:
   [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_EdgeId>& EdgesOfVertex(
     const BRepGraph_VertexId theVertex) const;
 
+  //! Return active child definition ids of a compound.
+  //! Child refs marked removed, invalid child ids, and removed child definitions
+  //! are filtered out. Duplicate child definitions are returned once.
+  //! @param[in] theCompound typed compound definition identifier
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> ChildEntitiesOfCompound(
+    const BRepGraph_CompoundId theCompound) const;
+
+  //! Return active solid definition ids of a comp-solid.
+  //! Solid refs marked removed, invalid solid ids, and removed solid
+  //! definitions are filtered out. Duplicate solid definitions are returned once.
+  //! @param[in] theCompSolid typed comp-solid definition identifier
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_SolidId> SolidsOfCompSolid(
+    const BRepGraph_CompSolidId theCompSolid) const;
+
   //! @name Definition accessors
 
   //! Access solid definition by typed identifier.

@@ -330,6 +330,66 @@ const NCollection_Vector<BRepGraph_EdgeId>& BRepGraph::TopoView::EdgesOfVertex(
 
 //=================================================================================================
 
+NCollection_Vector<BRepGraph_NodeId> BRepGraph::TopoView::ChildEntitiesOfCompound(
+  const BRepGraph_CompoundId theCompound) const
+{
+  NCollection_Vector<BRepGraph_NodeId> aResult;
+  const BRepGraphInc_Storage&          aStorage = myGraph->myData->myIncStorage;
+  if (!theCompound.IsValid(aStorage.NbCompounds()))
+    return aResult;
+
+  NCollection_PackedMap<int> aSeenByKind[BRepGraph_NodeId::THE_KIND_COUNT];
+  const BRepGraphInc::CompoundDef& aDef = aStorage.Compound(theCompound);
+  for (int i = 0; i < aDef.ChildRefIds.Length(); ++i)
+  {
+    const BRepGraphInc::ChildRef& aRef = aStorage.ChildRef(aDef.ChildRefIds.Value(i));
+    if (aRef.IsRemoved || !aRef.ChildDefId.IsValid())
+      continue;
+
+    const BRepGraphInc::BaseDef* aChild = myGraph->topoEntity(aRef.ChildDefId);
+    if (aChild == nullptr || aChild->IsRemoved)
+      continue;
+
+    const int aKindIdx = static_cast<int>(aRef.ChildDefId.NodeKind);
+    if (aKindIdx < 0 || aKindIdx >= BRepGraph_NodeId::THE_KIND_COUNT)
+      continue;
+
+    if (aSeenByKind[aKindIdx].Add(aRef.ChildDefId.Index))
+      aResult.Append(aRef.ChildDefId);
+  }
+  return aResult;
+}
+
+//=================================================================================================
+
+NCollection_Vector<BRepGraph_SolidId> BRepGraph::TopoView::SolidsOfCompSolid(
+  const BRepGraph_CompSolidId theCompSolid) const
+{
+  NCollection_Vector<BRepGraph_SolidId> aResult;
+  const BRepGraphInc_Storage&           aStorage = myGraph->myData->myIncStorage;
+  if (!theCompSolid.IsValid(aStorage.NbCompSolids()))
+    return aResult;
+
+  NCollection_PackedMap<int> aSeen;
+  const BRepGraphInc::CompSolidDef& aDef = aStorage.CompSolid(theCompSolid);
+  const int aNbSolids = aStorage.NbSolids();
+  for (int i = 0; i < aDef.SolidRefIds.Length(); ++i)
+  {
+    const BRepGraphInc::SolidRef& aRef = aStorage.SolidRef(aDef.SolidRefIds.Value(i));
+    if (aRef.IsRemoved || !aRef.SolidDefId.IsValid(aNbSolids))
+      continue;
+
+    if (aStorage.Solid(aRef.SolidDefId).IsRemoved)
+      continue;
+
+    if (aSeen.Add(aRef.SolidDefId.Index))
+      aResult.Append(aRef.SolidDefId);
+  }
+  return aResult;
+}
+
+//=================================================================================================
+
 const BRepGraphInc::SolidDef& BRepGraph::TopoView::Solid(const BRepGraph_SolidId theSolid) const
 {
   return myGraph->myData->myIncStorage.Solid(theSolid);
