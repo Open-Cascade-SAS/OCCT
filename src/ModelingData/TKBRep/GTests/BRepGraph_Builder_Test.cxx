@@ -263,8 +263,12 @@ TEST(BRepGraph_BuilderTest, AddEdge_InvalidVertex_ReturnsInvalidAndDoesNotAppend
   BRepGraph        aGraph;
   BRepGraph_NodeId aVertexId = aGraph.Builder().AddVertex(gp_Pnt(0.0, 0.0, 0.0), 0.001);
 
-  const BRepGraph_NodeId anEdgeId =
-    aGraph.Builder().AddEdge(aVertexId, BRepGraph_NodeId::Vertex(42), occ::handle<Geom_Curve>(), 0.0, 1.0, 0.001);
+  const BRepGraph_NodeId anEdgeId = aGraph.Builder().AddEdge(aVertexId,
+                                                             BRepGraph_NodeId::Vertex(42),
+                                                             occ::handle<Geom_Curve>(),
+                                                             0.0,
+                                                             1.0,
+                                                             0.001);
 
   EXPECT_FALSE(anEdgeId.IsValid());
   EXPECT_EQ(aGraph.Topo().NbEdges(), 0);
@@ -432,7 +436,8 @@ TEST(BRepGraph_BuilderTest, AddFaceToShell_InvalidNodes_NoMutation)
   const BRepGraph_NodeId aShellId = aGraph.Builder().AddShell();
   aGraph.Builder().AddFaceToShell(aShellId, BRepGraph_NodeId::Face(4));
 
-  EXPECT_EQ(BRepGraph_TestTools::CountFaceRefsOfShell(aGraph, BRepGraph_ShellId(aShellId.Index)), 0);
+  EXPECT_EQ(BRepGraph_TestTools::CountFaceRefsOfShell(aGraph, BRepGraph_ShellId(aShellId.Index)),
+            0);
 }
 
 TEST(BRepGraph_BuilderTest, AddShellToSolid_CreatesUsage)
@@ -450,9 +455,10 @@ TEST(BRepGraph_BuilderTest, AddShellToSolid_CreatesUsage)
 TEST(BRepGraph_BuilderTest, MutInvalidVertex_ThrowsProgramError)
 {
   BRepGraph aGraph;
+#if !defined(No_Exception)
 
-  EXPECT_THROW((void)aGraph.Builder().MutVertex(BRepGraph_VertexId(7)),
-               Standard_ProgramError);
+  EXPECT_THROW((void)aGraph.Builder().MutVertex(BRepGraph_VertexId(7)), Standard_ProgramError);
+#endif
 }
 
 TEST(BRepGraph_BuilderTest, AddCompound_WithChildren)
@@ -806,8 +812,7 @@ TEST(BRepGraph_BuilderTest, SharedEdges_AdjacentBoxFaces)
     for (int aFaceB = aFaceA + 1; aFaceB < aGraph.Topo().NbFaces(); ++aFaceB)
     {
       NCollection_Vector<BRepGraph_EdgeId> aShared =
-        aGraph.Topo().SharedEdges(BRepGraph_FaceId(aFaceA),
-                                  BRepGraph_FaceId(aFaceB));
+        aGraph.Topo().SharedEdges(BRepGraph_FaceId(aFaceA), BRepGraph_FaceId(aFaceB));
       if (!aShared.IsEmpty())
         ++aSharingPairs;
     }

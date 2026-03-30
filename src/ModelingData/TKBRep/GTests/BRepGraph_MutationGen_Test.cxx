@@ -170,7 +170,7 @@ TEST_F(BRepGraph_MutationGenTest, RepMutation_SurfacePropagatesSubtreeGenToFace)
     (void)aGuard;
   }
 
-  // Surface is the face's own geometry — rep mutation IS an own-data change.
+  // Surface is the face's own geometry - rep mutation IS an own-data change.
   EXPECT_GT(myGraph.Topo().Face(aFaceId).OwnGen, 0u);
   EXPECT_GT(myGraph.Topo().Face(aFaceId).SubtreeGen, 0u);
 }
@@ -190,7 +190,7 @@ TEST_F(BRepGraph_MutationGenTest, RepMutation_Curve3DPropagatesSubtreeGenToEdge)
     (void)aGuard;
   }
 
-  // Curve3D is the edge's own geometry — rep mutation IS an own-data change.
+  // Curve3D is the edge's own geometry - rep mutation IS an own-data change.
   EXPECT_GT(myGraph.Topo().Edge(anEdgeId).OwnGen, 0u);
   EXPECT_GT(myGraph.Topo().Edge(anEdgeId).SubtreeGen, 0u);
 }
@@ -213,7 +213,7 @@ TEST_F(BRepGraph_MutationGenTest, RepMutation_Curve2DPropagatesSubtreeGenToCoEdg
       (void)aGuard;
     }
 
-    // Curve2D is the coedge's own geometry — rep mutation IS an own-data change.
+    // Curve2D is the coedge's own geometry - rep mutation IS an own-data change.
     EXPECT_GT(myGraph.Topo().CoEdge(aCoEdgeId).OwnGen, 0u);
     EXPECT_GT(myGraph.Topo().CoEdge(aCoEdgeId).SubtreeGen, 0u);
     return;
@@ -239,7 +239,7 @@ TEST_F(BRepGraph_MutationGenTest, RepMutation_TriangulationPropagatesSubtreeGenT
       (void)aGuard;
     }
 
-    // Triangulation is the face's own mesh — rep mutation IS an own-data change.
+    // Triangulation is the face's own mesh - rep mutation IS an own-data change.
     EXPECT_GT(myGraph.Topo().Face(aFaceId).OwnGen, 0u);
     EXPECT_GT(myGraph.Topo().Face(aFaceId).SubtreeGen, 0u);
     return;
@@ -264,7 +264,7 @@ TEST_F(BRepGraph_MutationGenTest, RepMutation_Polygon3DPropagatesSubtreeGenToEdg
       (void)aGuard;
     }
 
-    // Polygon3D is the edge's own mesh — rep mutation IS an own-data change.
+    // Polygon3D is the edge's own mesh - rep mutation IS an own-data change.
     EXPECT_GT(myGraph.Topo().Edge(anEdgeId).OwnGen, 0u);
     EXPECT_GT(myGraph.Topo().Edge(anEdgeId).SubtreeGen, 0u);
     return;

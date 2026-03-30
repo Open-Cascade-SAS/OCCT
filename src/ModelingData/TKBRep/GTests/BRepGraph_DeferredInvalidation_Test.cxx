@@ -305,6 +305,6 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_OccurrenceMutation_Propa
 
   // After flush: parent assembly product must have SubtreeGen incremented exactly once.
   EXPECT_EQ(myGraph.Topo().Product(aAsmProductId).SubtreeGen, 1u);
-  // Parent's OwnGen must remain 0 — its own data didn't change.
+  // Parent's OwnGen must remain 0 - its own data didn't change.
   EXPECT_EQ(myGraph.Topo().Product(aAsmProductId).OwnGen, 0u);
 }

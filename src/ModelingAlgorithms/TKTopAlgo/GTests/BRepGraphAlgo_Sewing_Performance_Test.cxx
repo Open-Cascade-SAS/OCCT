@@ -874,14 +874,22 @@ void runBenchmark(const char*            theLabel,
   }
 
   if (theExpSewnSeq > 0)
+  {
     EXPECT_EQ(aNbSewnSeq, theExpSewnSeq);
+  }
   else if (theExpSewnSeq < 0)
+  {
     EXPECT_GT(aNbSewnSeq, -theExpSewnSeq);
+  }
 
   if (theExpSewnPar > 0)
+  {
     EXPECT_EQ(aNbSewnPar, theExpSewnPar);
+  }
   else if (theExpSewnPar < 0)
+  {
     EXPECT_GT(aNbSewnPar, -theExpSewnPar);
+  }
 }
 
 } // namespace

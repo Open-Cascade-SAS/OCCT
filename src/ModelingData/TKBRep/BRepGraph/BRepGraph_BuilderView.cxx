@@ -344,7 +344,7 @@ static bool isRepIndexInRange(const BRepGraphInc_Storage& theStorage, const BRep
 
 //=================================================================================================
 
-static void validateMutableNodeId(const BRepGraphInc_Storage& theStorage, const BRepGraph_NodeId theNodeId)
+static void validateMutableNodeId([[maybe_unused]] const BRepGraphInc_Storage& theStorage, [[maybe_unused]] const BRepGraph_NodeId theNodeId)
 {
   Standard_ProgramError_Raise_if(!isNodeIndexInRange(theStorage, theNodeId),
                                  "BRepGraph::BuilderView::Mut*(): invalid node id");
@@ -352,7 +352,7 @@ static void validateMutableNodeId(const BRepGraphInc_Storage& theStorage, const 
 
 //=================================================================================================
 
-static void validateMutableRefId(const BRepGraphInc_Storage& theStorage, const BRepGraph_RefId theRefId)
+static void validateMutableRefId([[maybe_unused]] const BRepGraphInc_Storage& theStorage, [[maybe_unused]] const BRepGraph_RefId theRefId)
 {
   Standard_ProgramError_Raise_if(!isRefIndexInRange(theStorage, theRefId),
                                  "BRepGraph::BuilderView::Mut*(): invalid reference id");
@@ -360,7 +360,7 @@ static void validateMutableRefId(const BRepGraphInc_Storage& theStorage, const B
 
 //=================================================================================================
 
-static void validateMutableRepId(const BRepGraphInc_Storage& theStorage, const BRepGraph_RepId theRepId)
+static void validateMutableRepId([[maybe_unused]] const BRepGraphInc_Storage& theStorage, [[maybe_unused]] const BRepGraph_RepId theRepId)
 {
   Standard_ProgramError_Raise_if(!isRepIndexInRange(theStorage, theRepId),
                                  "BRepGraph::BuilderView::Mut*(): invalid representation id");
@@ -1033,7 +1033,7 @@ BRepGraph_NodeId BRepGraph::BuilderView::AddOccurrence(const BRepGraph_NodeId th
   aStorage.ChangeProduct(BRepGraph_ProductId(theParentProduct.Index))
     .OccurrenceRefIds.Append(BRepGraph_OccurrenceRefId(anOccRefIdx));
 
-  // Rebuild product→occurrence reverse index to keep it in sync
+  // Rebuild product->occurrence reverse index to keep it in sync
   // after appending a new occurrence entity.
   aStorage.ChangeReverseIndex().BuildProductOccurrences(aStorage.myOccurrences.Entities,
                                                         aStorage.NbProducts());
@@ -1372,7 +1372,7 @@ void BRepGraph::BuilderView::EndDeferredInvalidation() noexcept
   if (aDeferredList.IsEmpty())
     return;
 
-  // Shape cache uses SubtreeGen validation — no bulk clear needed.
+  // Shape cache uses SubtreeGen validation - no bulk clear needed.
   // Stale entries are detected on read via StoredSubtreeGen != entity.SubtreeGen.
 
   // Propagate SubtreeGen upward from each directly-modified node.
@@ -1445,7 +1445,7 @@ void BRepGraph::BuilderView::EndDeferredInvalidation() noexcept
     const BRepGraph_NodeId aNodeId = aAllModified.Value(i);
 
     // Collect parent NodeIds via reverse index and increment SubtreeGen.
-    // NOT OwnGen — parent's own data didn't change.
+    // NOT OwnGen - parent's own data didn't change.
     // The visited set ensures each parent is incremented exactly once per flush,
     // even in diamond topologies. This matches immediate-mode LastPropWave semantics.
     switch (aNodeId.NodeKind)

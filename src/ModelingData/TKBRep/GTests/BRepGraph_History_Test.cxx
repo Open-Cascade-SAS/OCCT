@@ -331,6 +331,7 @@ TEST_F(BRepGraph_HistoryTest, ApplyModification_WhenModifierThrows_DoesNotRecord
 
   const BRepGraph_NodeId anEdge(BRepGraph_NodeId::Kind::Edge, 0);
 
+#if !defined(No_Exception)
   EXPECT_THROW(myGraph.Builder().ApplyModification(
                  anEdge,
                  [](BRepGraph&, BRepGraph_NodeId) -> NCollection_Vector<BRepGraph_NodeId> {
@@ -338,6 +339,7 @@ TEST_F(BRepGraph_HistoryTest, ApplyModification_WhenModifierThrows_DoesNotRecord
                  },
                  "ThrowingModification"),
                Standard_Failure);
+#endif
 
   EXPECT_EQ(myGraph.History().NbRecords(), aNbRecordsBefore);
 }

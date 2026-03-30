@@ -198,7 +198,7 @@ For normal graph construction, use `BRepGraph::Build()` instead. The facade owns
 
 ### Geometry: Definition-Frame Storage
 
-All geometry is stored in **definition frame** — the TShape-internal location is baked into the geometry, while instance locations are preserved separately in Ref structures.
+All geometry is stored in **definition frame** - the TShape-internal location is baked into the geometry, while instance locations are preserved separately in Ref structures.
 
 **Surface**: `S_merged = S0.Transformed(TFace.Location())`
 **3D Curve**: `C_merged = C0.Transformed(TEdge.Location())`
@@ -244,9 +244,9 @@ flowchart TD
 ```
 
 Primary API:
-- `Node(storage, nodeId)` — independent, local cache
-- `Node(storage, nodeId, cache)` — shared cache for vertex/edge reuse
-- `FaceWithCache(storage, faceIdx, cache)` — specialized face reconstruction
+- `Node(storage, nodeId)` - independent, local cache
+- `Node(storage, nodeId, cache)` - shared cache for vertex/edge reuse
+- `FaceWithCache(storage, faceIdx, cache)` - specialized face reconstruction
 
 ### Geometry Restoration
 

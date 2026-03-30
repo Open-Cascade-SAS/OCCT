@@ -223,7 +223,7 @@ void BRepGraph_Builder::Perform(BRepGraph&                            theGraph,
   theGraph.myData->myIsDone = true;
 
   // Pre-allocate transient cache for lock-free parallel access.
-  // Entity counts are now final — Reserve() sizes dense vectors so that
+  // Entity counts are now final - Reserve() sizes dense vectors so that
   // Get()/Set() skip the mutex for in-range indices.
   {
     BRepGraphInc_Storage& aStorage = theGraph.myData->myIncStorage;

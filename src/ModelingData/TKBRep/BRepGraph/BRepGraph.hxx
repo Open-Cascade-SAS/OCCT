@@ -200,20 +200,20 @@ private:
   //! @{
 
   //! Access the underlying storage.
-  [[nodiscard]] BRepGraphInc_Storage& incStorage();
-  [[nodiscard]] const BRepGraphInc_Storage& incStorage() const;
+  [[nodiscard]] Standard_EXPORT BRepGraphInc_Storage& incStorage();
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc_Storage& incStorage() const;
 
   //! Access the graph data structure.
-  [[nodiscard]] BRepGraph_Data* data();
-  [[nodiscard]] const BRepGraph_Data* data() const;
+  [[nodiscard]] Standard_EXPORT BRepGraph_Data* data();
+  [[nodiscard]] Standard_EXPORT const BRepGraph_Data* data() const;
 
   //! Access the layer registry.
-  [[nodiscard]] BRepGraph_LayerRegistry& layerRegistry();
-  [[nodiscard]] const BRepGraph_LayerRegistry& layerRegistry() const;
+  [[nodiscard]] Standard_EXPORT BRepGraph_LayerRegistry& layerRegistry();
+  [[nodiscard]] Standard_EXPORT const BRepGraph_LayerRegistry& layerRegistry() const;
 
   //! Access the transient cache.
-  [[nodiscard]] BRepGraph_TransientCache& transientCache();
-  [[nodiscard]] const BRepGraph_TransientCache& transientCache() const;
+  [[nodiscard]] Standard_EXPORT BRepGraph_TransientCache& transientCache();
+  [[nodiscard]] Standard_EXPORT const BRepGraph_TransientCache& transientCache() const;
 
   //! @}
 
@@ -231,7 +231,7 @@ private:
   Standard_EXPORT void markRefModified(const BRepGraph_RefId  theRefId,
                                        BRepGraphInc::BaseRef& theRef) noexcept;
 
-  //! Increment SubtreeGen on a parent node (NOT OwnGen — parent's own data didn't change).
+  //! Increment SubtreeGen on a parent node (NOT OwnGen - parent's own data didn't change).
   //! Uses wave guard to prevent exponential blowup on diamond topologies.
   //! Mutex-free: no shape cache clear, no dispatch.
   Standard_EXPORT void markParentSubtreeGen(const BRepGraph_NodeId theParentId) noexcept;

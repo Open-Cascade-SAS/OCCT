@@ -77,7 +77,7 @@ All queries and mutations go through lightweight view objects obtained from a `B
 | Accessor | Purpose |
 |----------|---------|
 | `History()` | Mutation history subsystem (lineage records) |
-| `TransientCache()` | Transient algorithm cache (BndBox, UVBounds) — NOT a Layer |
+| `TransientCache()` | Transient algorithm cache (BndBox, UVBounds) - NOT a Layer |
 | `LayerRegistry()` | Access the GUID-keyed runtime registry of registered layers |
 | `LayerRegistry().RegisterLayer(layer)` | Register a `BRepGraph_Layer` plugin explicitly |
 | `LayerRegistry().FindLayer(guid)` / `LayerRegistry().FindLayer<T>()` | Lookup a registered layer by GUID or layer type |
@@ -242,11 +242,11 @@ Can also start from a Product to descend through assembly occurrences into topol
 
 `PathView` (via `Paths()`) resolves topology paths:
 
-- `GlobalLocation(path)` / `GlobalOrientation(path)` — composed transforms
-- `PathsTo(node)` — all paths from any root to a given entity (reverse lookup)
-- `NodeLocations(node)` — all occurrence entries with paths, locations, orientations
-- `CommonAncestor(path1, path2)` — longest common prefix
-- `FilterByInclude` / `FilterByExclude` — path set filtering
+-- `GlobalLocation(path)` / `GlobalOrientation(path)` - composed transforms
+-- `PathsTo(node)` - all paths from any root to a given entity (reverse lookup)
+-- `NodeLocations(node)` - all occurrence entries with paths, locations, orientations
+-- `CommonAncestor(path1, path2)` - longest common prefix
+-- `FilterByInclude` / `FilterByExclude` - path set filtering
 - `IsAncestorOf`, `AllNodesOnPath`, `DepthOfKind`
 
 ### SubGraph
@@ -296,7 +296,7 @@ const occ::handle<BRepGraph_ParamLayer> aParamLayer =
 ### TransientCache (`BRepGraph_TransientCache`)
 
 Centralized per-node cache for algorithm-computed attributes. Dense graph-local storage keyed by
-registered cache-kind descriptors with O(1) slot access. NOT a Layer — cleared on Build() and Compact().
+registered cache-kind descriptors with O(1) slot access. NOT a Layer - cleared on Build() and Compact().
 
 - **Purpose**: ephemeral computed caches (bounding boxes, UV bounds, FClass2d results)
 - **Identity**: cache families are described by `BRepGraph_CacheKind` with stable `Standard_GUID` identity
@@ -337,10 +337,10 @@ Every entity (`BaseDef`) carries two generation counters:
 When an entity is directly mutated via `MutGuard`:
 1. `++OwnGen; ++SubtreeGen` on the mutated entity
 2. `propagateSubtreeGen()` walks upward via reverse indices (Edge→Wire→Face→Shell→Solid)
-3. Each parent gets `++SubtreeGen` only (NOT OwnGen — parent's own data didn't change)
+3. Each parent gets `++SubtreeGen` only (NOT OwnGen - parent's own data didn't change)
 4. Diamond guard (`LastPropWave`) prevents exponential blowup on shared parents
 
-Propagation is **mutex-free** — no locks, no shape cache clears, no layer dispatch. Cost: ~4 cycles per parent.
+Propagation is **mutex-free** - no locks, no shape cache clears, no layer dispatch. Cost: ~4 cycles per parent.
 
 ### Deferred Mode
 
@@ -351,11 +351,11 @@ Propagation is **mutex-free** — no locks, no shape cache clears, no layer disp
 
 ### Shape Cache
 
-Reconstructed shapes are cached in `BRepGraph_Data::myCurrentShapes` as `CachedShape{Shape, StoredSubtreeGen}`. Validated lazily on read — if `StoredSubtreeGen != entity.SubtreeGen`, the shape is stale and reconstructed.
+Reconstructed shapes are cached in `BRepGraph_Data::myCurrentShapes` as `CachedShape{Shape, StoredSubtreeGen}`. Validated lazily on read - if `StoredSubtreeGen != entity.SubtreeGen`, the shape is stale and reconstructed.
 
 ### Persistent Identity (VersionStamp)
 
-`BRepGraph_VersionStamp` = (UID, OwnGen, Generation). `IsStale()` compares `OwnGen` — detects only direct entity changes. Parent stamps are NOT stale when children change (correct for PLM semantics).
+`BRepGraph_VersionStamp` = (UID, OwnGen, Generation). `IsStale()` compares `OwnGen` - detects only direct entity changes. Parent stamps are NOT stale when children change (correct for PLM semantics).
 
 ### History
 

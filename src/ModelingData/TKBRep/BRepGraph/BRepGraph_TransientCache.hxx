@@ -238,38 +238,38 @@ public:
   //! Store a cached value for a node and cache kind.
   //! @pre Reserve() must have been called for lock-free parallel access
   //!      on in-range entity indices; out-of-range access falls back to mutex.
-  void Set(const BRepGraph_NodeId                  theNode,
-           const occ::handle<BRepGraph_CacheKind>& theKind,
-           const occ::handle<BRepGraph_CacheValue>& theValue,
-           const uint32_t                          theCurrentSubtreeGen);
+  Standard_EXPORT void Set(const BRepGraph_NodeId                  theNode,
+                          const occ::handle<BRepGraph_CacheKind>& theKind,
+                          const occ::handle<BRepGraph_CacheValue>& theValue,
+                          const uint32_t                          theCurrentSubtreeGen);
 
   //! Retrieve a cached value for a node and cache kind.
   //! @pre Reserve() must have been called for lock-free parallel access
   //!      on in-range entity indices; out-of-range access falls back to mutex.
-  [[nodiscard]] occ::handle<BRepGraph_CacheValue> Get(
+  [[nodiscard]] Standard_EXPORT occ::handle<BRepGraph_CacheValue> Get(
     const BRepGraph_NodeId                  theNode,
     const occ::handle<BRepGraph_CacheKind>& theKind,
     const uint32_t                          theCurrentSubtreeGen) const;
 
   //! Remove a cached value for a node and cache kind.
-  [[nodiscard]] bool Remove(const BRepGraph_NodeId theNode,
-                            const occ::handle<BRepGraph_CacheKind>& theKind);
+  [[nodiscard]] Standard_EXPORT bool Remove(const BRepGraph_NodeId theNode,
+                                           const occ::handle<BRepGraph_CacheKind>& theKind);
 
   //! True if any cached values are stored for this node (any cache kind).
-  [[nodiscard]] bool HasCacheValues(const BRepGraph_NodeId theNode) const;
+  [[nodiscard]] Standard_EXPORT bool HasCacheValues(const BRepGraph_NodeId theNode) const;
 
   //! Return all registered cache kinds that have non-null entries for this node.
-  [[nodiscard]] NCollection_Vector<occ::handle<BRepGraph_CacheKind>> CacheKinds(
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<occ::handle<BRepGraph_CacheKind>> CacheKinds(
     const BRepGraph_NodeId theNode) const;
 
   //! Transfer all cached values from a source cache to a destination node.
-  void TransferCacheValues(const BRepGraph_TransientCache& theSrcCache,
-                          const BRepGraph_NodeId          theSrcNode,
-                          const BRepGraph_NodeId          theDstNode,
-                          const uint32_t                  theDstSubtreeGen);
+  Standard_EXPORT void TransferCacheValues(const BRepGraph_TransientCache& theSrcCache,
+                                         const BRepGraph_NodeId          theSrcNode,
+                                         const BRepGraph_NodeId          theDstNode,
+                                         const uint32_t                  theDstSubtreeGen);
 
   //! Pre-allocate storage for lock-free parallel access.
-  void Reserve(const int theKindCount, const int theCounts[THE_KIND_COUNT]);
+  Standard_EXPORT void Reserve(const int theKindCount, const int theCounts[THE_KIND_COUNT]);
 
   //! True if Reserve() has been called and storage is pre-allocated.
   [[nodiscard]] bool IsReserved() const noexcept
@@ -278,7 +278,7 @@ public:
   }
 
   //! Clear all cached data. Called on Build() and Compact().
-  void Clear() noexcept;
+  Standard_EXPORT void Clear() noexcept;
 
   //! Move constructor: transfers data, creates fresh mutex.
   BRepGraph_TransientCache(BRepGraph_TransientCache&& theOther) noexcept

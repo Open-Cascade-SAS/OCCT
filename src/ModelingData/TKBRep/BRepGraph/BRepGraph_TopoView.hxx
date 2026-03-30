@@ -32,7 +32,7 @@ class Adaptor3d_CurveOnSurface;
 //! ## Soft-deletion convention
 //! Count methods (NbFaces, NbEdges, etc.) return totals including soft-removed
 //! nodes. Use NbActive* variants to exclude removed nodes. Definition accessors
-//! (Face, Edge, etc.) do not filter removed nodes — callers should check
+//! (Face, Edge, etc.) do not filter removed nodes - callers should check
 //! IsRemoved() if needed.
 //!
 //! ## TopoView vs RefsView naming

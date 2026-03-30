@@ -608,13 +608,13 @@ TEST(BRepGraphAlgo_ValidateTest, LightweightVsAudit_RemovedVertexReference_Diffe
   // but does NOT fix edges that still reference it.
   aGraph.Builder().RemoveNode(BRepGraph_NodeId::Vertex(aVtxToRemove));
 
-  // Lightweight only checks active counts — should pass.
+  // Lightweight only checks active counts - should pass.
   const BRepGraphAlgo_Validate::Result aLightResult =
     BRepGraphAlgo_Validate::Perform(aGraph, BRepGraphAlgo_Validate::Options::Lightweight());
   EXPECT_TRUE(aLightResult.IsValid())
     << "Lightweight should not check removed-node isolation.";
 
-  // Audit runs checkRemovedNodeIsolation — should detect the dangling reference.
+  // Audit runs checkRemovedNodeIsolation - should detect the dangling reference.
   const BRepGraphAlgo_Validate::Result aAuditResult =
     BRepGraphAlgo_Validate::Perform(aGraph, BRepGraphAlgo_Validate::Options::DeepAudit());
   EXPECT_FALSE(aAuditResult.IsValid())

@@ -8,19 +8,19 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 
 ## Phase 0: Immediate (2 days)
 
-### ~~Batch cache invalidation~~ — DONE (2026-03-19)
+### ~~Batch cache invalidation~~ - DONE (2026-03-19)
 - `BeginDeferredInvalidation()` / `EndDeferredInvalidation()` API on BRepGraph
-- `markModified()` in deferred mode only sets `IsModified` flag — no mutex, no upward propagation
+- `markModified()` in deferred mode only sets `IsModified` flag - no mutex, no upward propagation
 - `EndDeferredInvalidation()` bulk-clears shape cache + single upward propagation pass
 - Applied in: SameParameter::Perform, Sewing::processEdges
 - **Result**: Sewing 2500 faces parallel -25%, 1200 faces parallel -21%
 
-### ~~CommitMutation guardrails~~ — DONE (2026-03-20)
+### ~~CommitMutation guardrails~~ - DONE (2026-03-20)
 - `BRepGraph_Mutator::CommitMutation()` validates reverse index + active entity counts
 - Called at end of Sewing::Perform, Compact::Perform, Deduplicate::Perform
 - Exposed via `MutView::CommitMutation()` for algorithm use
 
-### ~~NbActiveXXX counts~~ — DONE (2026-03-19)
+### ~~NbActiveXXX counts~~ - DONE (2026-03-19)
 - `NbActiveEdges()`, `NbActiveFaces()` etc. in `BRepGraphInc_Storage`
 - `DecrementActiveCount()` called by `BuilderView::RemoveNode()`
 - Validated by `CommitMutation` guardrails
@@ -29,7 +29,7 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 
 ## Phase 1: High-ROI (1 week)
 
-### ~~Named Attribute Layers (Infrastructure)~~ — DONE (2026-03-20)
+### ~~Named Attribute Layers (Infrastructure)~~ - DONE (2026-03-20)
 - `BRepGraph_Layer` abstract base class with lifecycle callbacks:
   - `Name()`, `OnNodeRemoved(nodeId, replacement)`, `OnCompact(maps)`, `InvalidateAll()`, `Clear()`
 - Registration: `BRepGraph::LayerRegistry().RegisterLayer()`, `LayerRegistry().FindLayer()`, `LayerRegistry().UnregisterLayer()`
@@ -53,48 +53,48 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
   - `UID` / `RefUID` are the persistence anchors; `NodeId` / `RefId` remain runtime addresses
   - occurrence-context fallback (occurrence override -> product) should stay outside core storage and be added later through `PathView` or layer-side helpers
 
-### ~~Incremental reverse-index delta~~ — DONE (2026-03-19)
+### ~~Incremental reverse-index delta~~ - DONE (2026-03-19)
 - `Populate::Append` now uses `BuildDeltaReverseIndex` instead of full `BuildReverseIndex`
 - Captures entity counts before append, only processes new entities
 - **Result**: O(delta) instead of O(N) for append operations
 
-### ~~FaceCountForEdge fast path~~ — DONE (2026-03-20)
+### ~~FaceCountForEdge fast path~~ - DONE (2026-03-20)
 - `FaceCountForEdge` simplified to O(1) delegation to `ReverseIndex::NbFacesOfEdge()`
 - `UnbindEdgeFromFace` added to ReverseIndex for edge-to-face maintenance
 - `ReplaceEdgeInWire` binds new edge + unbinds old edge from wire's faces in single loop
 - Sewing `mergeMatchedEdges` uses `Builder().RemoveNode()` for replaced edges
 - `FreeEdges` and multiple-edge detection switched to O(1) `DefsView::NbFacesOfEdge` with `IsRemoved` filter
 
-### ~~DeferredScope RAII~~ — DONE (2026-03-20)
+### ~~DeferredScope RAII~~ - DONE (2026-03-20)
 - `BRepGraph_DeferredScope` RAII class: `BeginDeferredInvalidation()` on construct, `EndDeferredInvalidation()` + `CommitMutation()` on destruct
 - Re-entrant: nested guards are no-ops, only outermost flushes and commits
 - Applied in: SameParameter::Perform, Sewing::processEdges
 
-### ~~Seam detection strengthening~~ — DONE (2026-03-20)
+### ~~Seam detection strengthening~~ - DONE (2026-03-20)
 - `canSewSameFaceEdges` now evaluates PCurves at midpoints for explicit opposite-side verification
 - Midpoint UV separation must exceed 25% of surface period in the closed direction
 - Catches same-side false positives where bounding box inner/outer distance was inconclusive
 - Ported from legacy `BRepBuilderAPI_Sewing::SameParameterEdge` UV-distance check pattern
 
-### ~~UVBounds/BndLib automatic invalidation~~ — DONE (2026-03-20)
+### ~~UVBounds/BndLib automatic invalidation~~ - DONE (2026-03-20)
 - `markModified()` now calls `InvalidateAll()` on node cache alongside shape-cache clearing
 - `EndDeferredInvalidation()` sweeps all modified entities (all 8 kinds) and invalidates caches
 - Removed redundant manual `Cache().Invalidate()` in Sewing::processEdges
 - UVBounds/BndLib caches auto-invalidate when topology is mutated via `Mut()` API
 - **Result**: zero manual invalidation needed; no measurable performance impact
 
-### ~~Incremental modes for Deduplicate/Compact~~ — DEFERRED
+### ~~Incremental modes for Deduplicate/Compact~~ - DEFERRED
 - Re-sewing after sewing is a rare workflow; premature optimization
 - Compact already exits early when nothing removed
 - Revisit if iterative Build→Append→Dedup pipelines become common
 
-### ~~BRepGraph_Tool (Centralized Geometry Access)~~ — DONE (2026-03-22)
+### ~~BRepGraph_Tool (Centralized Geometry Access)~~ - DONE (2026-03-22)
 - `BRepGraph_Tool` with nested helpers: Vertex, Edge, CoEdge, Face, Wire
 - Analogue of `BRep_Tool` for BRepGraph: Pnt, Tolerance, Curve, Surface, PCurveGeometry, Range, EvalD0, etc.
 - Replaces raw DefsView geometry access; DefsView made private for geometry fields
 - ~50 files migrated (16 production + 32 test + 5 internal)
 
-### ~~Explorer / TopologyPath / PathView~~ — DONE (2026-03-25)
+### ~~Explorer / TopologyPath / PathView~~ - DONE (2026-03-25)
 - `BRepGraph_TopologyPath`: path from root to occurrence, uniform step model (assembly + topology)
 - `BRepGraph_Explorer`: context-preserving hierarchy walker visiting each occurrence (not just definitions)
 - `PathView` via `Paths()`: GlobalLocation, GlobalOrientation, PathsTo, NodeLocations, CommonAncestor, FilterByInclude/Exclude, IsAncestorOf, AllNodesOnPath
@@ -111,14 +111,14 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 
 ## Phase 2: Modularity (2 weeks)
 
-### ~~Event-Driven Invalidation Bus~~ — DONE (2026-03-20)
+### ~~Event-Driven Invalidation Bus~~ - DONE (2026-03-20)
 - Extended `BRepGraph_Layer` with `SubscribedKinds()` bitmask + `OnNodeModified()` / `OnNodesModified()` callbacks
 - Immediate mode: `markModified()` dispatches `OnNodeModified()` to layers matching kind bitmask
 - Deferred mode: `EndDeferredInvalidation()` collects modified NodeIds during Stage 3 sweep, dispatches `OnNodesModified()` once
 - Zero-cost: `myHasModificationSubscribers` flag skips all dispatch when no layer subscribes
 - **Result**: Layers can now react to geometry mutations, not just structural changes (OnNodeRemoved)
 
-### ~~OnCompact Unified Remap Map~~ — DONE (2026-03-20)
+### ~~OnCompact Unified Remap Map~~ - DONE (2026-03-20)
 - Replaced 6-argument `OnCompact(vertexMap, edgeMap, wireMap, faceMap, shellMap, solidMap)` with single `DataMap<BRepGraph_NodeId, BRepGraph_NodeId>`
 - Fixed data-loss bug: Compound/CompSolid remaps were built by Compact but never passed to layers
 - Unified map built in `BRepGraphAlgo_Compact` from all 8 per-kind maps, extensible for future kinds
@@ -142,7 +142,7 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 
 ## Phase 3: Production Readiness
 
-### ~~Per-node MutationGeneration~~ — DONE (2026-03-20)
+### ~~Per-node MutationGeneration~~ - DONE (2026-03-20)
 - `uint32_t MutationGen` added to `BaseDef`, incremented by `markModified()`
 - Enables per-node change detection across serialization boundaries
 - Propagated-modified parents do NOT get MutationGen incremented (only directly mutated nodes)
@@ -170,8 +170,8 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
   - heavy tessellation payloads when regeneration is acceptable
 - Reuse existing history + `OnCompact(remap)` as the remap contract; persistence should anchor on UID / RefUID rather than saved NodeId / RefId
 
-### ~~Assembly model extension (Phases 1+2)~~ — DONE (2026-03-20)
-- **Full design**: [TODO_Assembly.md](TODO_Assembly.md) — see for complete implementation details
+### ~~Assembly model extension (Phases 1+2)~~ - DONE (2026-03-20)
+- **Full design**: [TODO_Assembly.md](TODO_Assembly.md) - see for complete implementation details
 - **Intrinsic architecture**: assembly is core, not a Layer plugin — every graph has a root Product
 - `Kind::Product = 10`, `Kind::Occurrence = 11` as first-class node kinds with UIDs, history, compact
 - API distributed across current surfaces: TopoView / PathView (queries, RootProducts, IsAssembly, IsPart), BuilderView (AddProduct, AddOccurrence, RemoveNode cascade), `BRepGraph::MutProduct()` / `MutOccurrence()` (RAII guards), PathView (`OccurrenceLocation()`), Iterator (ProductDef, OccurrenceDef)
@@ -179,7 +179,7 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 - Product→Occurrence→Product DAG; each occurrence carries `TopLoc_Location` + `ParentOccurrenceDefId` for tree-structured placement chains
 - Self-reference prevention, removed-product guards, DAG-safe occurrence placement via `ParentOccurrenceDefId` walk
 - 30 GTests covering data model, API, mutations, DAG sharing, deep nesting, facade reconstruction, error paths, and cascading removal
-- ~~Phase 3 OnCompact signature fix~~ — DONE: `DataMap<BRepGraph_NodeId, BRepGraph_NodeId>` unified remap map
+- ~~Phase 3 OnCompact signature fix~~ - DONE: `DataMap<BRepGraph_NodeId, BRepGraph_NodeId>` unified remap map
 
 ### Assembly model extension (Remaining phases) [Arch] ★★★★
 - Phase 4: XDE Population Bridge — `BRepGraphDE_PopulateAssembly` in DataExchange/TKXCAF

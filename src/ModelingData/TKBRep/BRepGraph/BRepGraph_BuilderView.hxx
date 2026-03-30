@@ -207,7 +207,7 @@ public:
 
   //! Begin deferred invalidation mode.
   //! While active, markModified() only increments OwnGen + SubtreeGen and
-  //! appends to the deferred list — without acquiring the shape-cache mutex
+  //! appends to the deferred list - without acquiring the shape-cache mutex
   //! or propagating upward.
   //! Call EndDeferredInvalidation() to batch-flush all accumulated changes.
   //! Intended for batch mutation loops (SameParameter, Sewing) where many

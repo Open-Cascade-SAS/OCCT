@@ -339,7 +339,7 @@ TEST_F(BRepGraph_EventBusTest, MultipleSubscribers)
   EXPECT_GT(aEdgeLayer->CountImmediateEventsOfKind(BRepGraph_NodeId::Kind::Edge), 0);
   EXPECT_EQ(aEdgeLayer->CountImmediateEventsOfKind(BRepGraph_NodeId::Kind::Face), 0);
 
-  // Face layer gets NO events — parents don't get immediate dispatch.
+  // Face layer gets NO events - parents don't get immediate dispatch.
   EXPECT_EQ(aFaceLayer->CountImmediateEventsOfKind(BRepGraph_NodeId::Kind::Edge), 0);
   EXPECT_EQ(aFaceLayer->CountImmediateEventsOfKind(BRepGraph_NodeId::Kind::Face), 0);
 }

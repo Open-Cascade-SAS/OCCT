@@ -215,7 +215,7 @@ BRepGraph_RefUID BRepGraph::allocateRefUID(const BRepGraph_RefId theRefId)
 
 //=================================================================================================
 
-// mutableCache() removed — NodeCache no longer exists in BaseDef.
+// mutableCache() removed - NodeCache no longer exists in BaseDef.
 // Transient caches now live in BRepGraph_TransientCache.
 
 //=================================================================================================
@@ -602,7 +602,7 @@ void BRepGraph::markParentSubtreeGen(const BRepGraph_NodeId theParentId) noexcep
     return;
   aParent->LastPropWave = aWave;
 
-  ++aParent->SubtreeGen; // ONLY SubtreeGen — not OwnGen.
+  ++aParent->SubtreeGen; // ONLY SubtreeGen - not OwnGen.
   // NO mutex, NO shape cache UnBind, NO dispatch.
   propagateSubtreeGen(theParentId);
 }
