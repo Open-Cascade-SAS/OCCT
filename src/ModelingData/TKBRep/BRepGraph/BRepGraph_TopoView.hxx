@@ -89,6 +89,17 @@ public:
   [[nodiscard]] Standard_EXPORT int NbActiveCompounds() const;
   [[nodiscard]] Standard_EXPORT int NbActiveCompSolids() const;
 
+  //! Active (non-removed) typed identifiers per topology kind.
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_VertexId> ActiveVertexIds() const;
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_EdgeId> ActiveEdgeIds() const;
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_CoEdgeId> ActiveCoEdgeIds() const;
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_WireId> ActiveWireIds() const;
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_FaceId> ActiveFaceIds() const;
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_ShellId> ActiveShellIds() const;
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_SolidId> ActiveSolidIds() const;
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_CompoundId> ActiveCompoundIds() const;
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_CompSolidId> ActiveCompSolidIds() const;
+
   //! @name Reverse-index backed queries (O(1), zero allocation)
 
   //! Return cached face count for an edge - O(1).
@@ -340,6 +351,10 @@ public:
 
   //! Number of active (non-removed) occurrence definitions.
   [[nodiscard]] Standard_EXPORT int NbActiveOccurrences() const;
+
+  //! Active (non-removed) assembly definition identifiers.
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_ProductId> ActiveProductIds() const;
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_OccurrenceId> ActiveOccurrenceIds() const;
 
   //! Access product definition by typed identifier.
   //! For part-vs-assembly classification, use PathView::IsPart()/IsAssembly().

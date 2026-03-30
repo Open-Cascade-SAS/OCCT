@@ -105,6 +105,34 @@ TEST_F(BRepGraph_ViewsTest, DefsView_NbVertices)
   EXPECT_EQ(myGraph.Topo().NbVertices(), 8);
 }
 
+TEST_F(BRepGraph_ViewsTest, DefsView_ActiveIds_MatchActiveCounts)
+{
+  EXPECT_EQ(myGraph.Topo().ActiveVertexIds().Length(), myGraph.Topo().NbActiveVertices());
+  EXPECT_EQ(myGraph.Topo().ActiveEdgeIds().Length(), myGraph.Topo().NbActiveEdges());
+  EXPECT_EQ(myGraph.Topo().ActiveCoEdgeIds().Length(), myGraph.Topo().NbActiveCoEdges());
+  EXPECT_EQ(myGraph.Topo().ActiveWireIds().Length(), myGraph.Topo().NbActiveWires());
+  EXPECT_EQ(myGraph.Topo().ActiveFaceIds().Length(), myGraph.Topo().NbActiveFaces());
+  EXPECT_EQ(myGraph.Topo().ActiveShellIds().Length(), myGraph.Topo().NbActiveShells());
+  EXPECT_EQ(myGraph.Topo().ActiveSolidIds().Length(), myGraph.Topo().NbActiveSolids());
+  EXPECT_EQ(myGraph.Topo().ActiveCompoundIds().Length(), myGraph.Topo().NbActiveCompounds());
+  EXPECT_EQ(myGraph.Topo().ActiveCompSolidIds().Length(), myGraph.Topo().NbActiveCompSolids());
+  EXPECT_EQ(myGraph.Topo().ActiveProductIds().Length(), myGraph.Topo().NbActiveProducts());
+  EXPECT_EQ(myGraph.Topo().ActiveOccurrenceIds().Length(), myGraph.Topo().NbActiveOccurrences());
+}
+
+TEST_F(BRepGraph_ViewsTest, DefsView_ActiveFaceIds_ExcludeRemoved)
+{
+  const int aFacesBefore = myGraph.Topo().ActiveFaceIds().Length();
+  myGraph.Builder().RemoveNode(BRepGraph_FaceId(0));
+
+  const NCollection_Vector<BRepGraph_FaceId> aFaces = myGraph.Topo().ActiveFaceIds();
+  EXPECT_EQ(aFaces.Length(), aFacesBefore - 1);
+  for (int i = 0; i < aFaces.Length(); ++i)
+  {
+    EXPECT_FALSE(myGraph.Topo().IsRemoved(aFaces.Value(i)));
+  }
+}
+
 TEST_F(BRepGraph_ViewsTest, DefsView_FaceAccessor_Valid)
 {
   for (int anIdx = 0; anIdx < myGraph.Topo().NbFaces(); ++anIdx)
