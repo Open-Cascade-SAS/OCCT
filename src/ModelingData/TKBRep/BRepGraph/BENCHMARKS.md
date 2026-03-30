@@ -74,7 +74,7 @@ Config: RelWithDebInfo
   - Sewing uses `Builder().RemoveNode()` for replaced edges (proper active count maintenance)
   - `ReplaceEdgeInWire` binds new edge + unbinds old edge from faces in single loop
   - `FaceCountForEdge` simplified to direct O(1) delegation (removes PackedMap allocation per call)
-  - `FreeEdges` and multiple-edge detection switched to `DefsView::NbFacesOfEdge` with `IsRemoved` filter
+  - `FreeEdges` and multiple-edge detection switched to `Topo().NbFacesOfEdge()` with `IsRemoved` filter
   - `UnbindEdgeFromFace` added to ReverseIndex (mirrors UnbindVertexFromEdge pattern)
   - `CommitMutation` guardrails: validates reverse index + active counts at end of Sewing, Compact, Deduplicate
   - CommitMutation assertions are debug-only (`Standard_ASSERT_VOID` is no-op in non-debug) — zero overhead
@@ -108,10 +108,10 @@ Config: RelWithDebInfo
   - Build 1000 faces spike (+20-39%) is run-to-run noise: 10000 faces shows -1% seq, -9% parallel
   - Sewing/profiling benchmarks stable: no regression from centralized invalidation
 - MutGuard: 2026-03-20, unified RAII mutation API + markModified optimization:
-  - MutView::XxxDef() now returns BRepGraph_MutGuard<> (deferred markModified) instead of raw reference (eager)
-  - MutView Def accessors inlined as one-line delegates to BRepGraph::MutXxx()
+  - `Builder().Mut*()` now returns `BRepGraph_MutGuard<>` (deferred markModified) instead of raw reference (eager)
+  - Builder-side mutable definition accessors were inlined to the final RAII mutation entry points
   - markModified(NodeId, BaseDef&) overload skips ChangeTopoDef() + mutableCache() redundant dispatch
-  - All Mut().XxxDef() call sites migrated: `.Field` → `->Field`, captured refs use MutGuard type
+  - All mutable definition call sites migrated: `.Field` → `->Field`, captured refs use MutGuard type
   - SameParameter::enforceImpl() wraps all 6 edge mutations in single MutGuard scope (1 markModified vs 6)
   - Core benchmarks within noise — mutation path optimization, not build/read path
   - Sewing profiling stable: deferred markModified is equivalent to eager for single-field mutations

@@ -88,8 +88,8 @@ The Layer system already works on any NodeId including Product/Occurrence.
 What's missing is **inheritance resolution**: when querying a color for an occurrence,
 fall back to the referenced product if the occurrence has no override.
 
-**Rethink**: The original plan proposed a standalone `BRepGraph_AssemblyQuery` utility
-with `ResolveAttribute()`, `LeafParts()`, `OccurrencePath()`. Since then:
+**Rethink**: An older draft proposed a separate assembly helper covering
+`ResolveAttribute()`, `LeafParts()`, and `OccurrencePath()`. Since then:
 - `OccurrencePath` → now covered by `PathView::PathsTo()` and `PathView::OccurrenceLocation()`
 - `LeafParts` → achievable via `BRepGraph_Explorer` from a Product root with target `Kind::Face` or `Kind::Solid`
 
@@ -155,6 +155,6 @@ Assembly Attribute Resolution ─────────┘ (deferred until DE 
 | **Methods on Views** | Follows existing pattern: const on TopoView / PathView, mutations on BuilderView, spatial context on PathView. |
 | **Always via Occurrence** | Product→Occurrence→Product. Every placement is explicit with its own NodeId. |
 | **Single ShapeRootId** | One NodeId pointing to root topology. Mixed products use nested products. |
-| **PathView replaces AssemblyQuery** | `PathsTo()`, `OccurrenceLocation()`, Explorer cover OccurrencePath and LeafParts. Only ResolveAttribute remains, deferred until DE Layers exist. |
+| **PathView covers the earlier helper scope** | `PathsTo()`, `OccurrenceLocation()`, and Explorer cover occurrence paths and leaf-part traversal. Only ResolveAttribute remains, deferred until DE Layers exist. |
 | **Reconstruction at ShapesView level** | Placement composition is a facade concern, not a storage concern. BRepGraphInc_Reconstruct stays topology-only. |
 | **XDE bridge in DataExchange** | TKBRep has no TKXCAF dependency. Uses BuilderView directly. |
