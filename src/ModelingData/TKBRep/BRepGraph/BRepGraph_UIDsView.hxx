@@ -42,6 +42,13 @@ public:
   //! @return corresponding NodeId, or invalid NodeId if not found
   [[nodiscard]] Standard_EXPORT BRepGraph_NodeId NodeIdFrom(const BRepGraph_UID& theUID) const;
 
+  //! Resolve a batch of UIDs back to NodeIds using one reverse-index lookup pass.
+  //! Output order matches input order; unresolved entries are invalid NodeIds.
+  //! @param[in] theUIDs UIDs to resolve
+  //! @return vector of NodeIds with the same length as theUIDs
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> NodeIdsFrom(
+    const NCollection_Vector<BRepGraph_UID>& theUIDs) const;
+
   //! Check if a UID is valid and exists in this graph generation.
   //! @param[in] theUID unique identifier to check
   //! @return true if the UID belongs to this graph generation

@@ -105,6 +105,39 @@ BRepGraph_NodeId BRepGraph::UIDsView::NodeIdFrom(const BRepGraph_UID& theUID) co
 
 //=================================================================================================
 
+NCollection_Vector<BRepGraph_NodeId> BRepGraph::UIDsView::NodeIdsFrom(
+  const NCollection_Vector<BRepGraph_UID>& theUIDs) const
+{
+  NCollection_Vector<BRepGraph_NodeId> aResult;
+  aResult.SetIncrement(theUIDs.Length() > 0 ? theUIDs.Length() : 1);
+
+  if (theUIDs.IsEmpty())
+    return aResult;
+
+  BRepGraph_Data& aData = *myGraph->myData;
+  ensureUIDReverseIndex(aData);
+
+  const uint32_t aGeneration = aData.myGeneration.load();
+  std::shared_lock<std::shared_mutex> aReadLock(aData.myUIDToNodeIdMutex);
+
+  for (int i = 0; i < theUIDs.Length(); ++i)
+  {
+    const BRepGraph_UID aUID = theUIDs.Value(i);
+    if (!aUID.IsValid() || aUID.Generation() != aGeneration)
+    {
+      aResult.Append(BRepGraph_NodeId());
+      continue;
+    }
+
+    const BRepGraph_NodeId* aNodeId = aData.myUIDToNodeId.Seek(aUID);
+    aResult.Append(aNodeId != nullptr ? *aNodeId : BRepGraph_NodeId());
+  }
+
+  return aResult;
+}
+
+//=================================================================================================
+
 bool BRepGraph::UIDsView::Has(const BRepGraph_UID& theUID) const
 {
   if (!theUID.IsValid())

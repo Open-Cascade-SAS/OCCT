@@ -168,6 +168,45 @@ TEST_F(BRepGraph_ViewsTest, UIDsView_Generation_Positive)
   EXPECT_GT(myGraph.UIDs().Generation(), 0u);
 }
 
+TEST_F(BRepGraph_ViewsTest, UIDsView_NodeIdFrom_RoundTrip)
+{
+  const BRepGraph_FaceId aFaceId(0);
+  const BRepGraph_UID    aUID = myGraph.UIDs().Of(aFaceId);
+  ASSERT_TRUE(aUID.IsValid());
+  EXPECT_EQ(myGraph.UIDs().NodeIdFrom(aUID), BRepGraph_NodeId(aFaceId));
+}
+
+TEST_F(BRepGraph_ViewsTest, UIDsView_NodeIdsFrom_BatchRoundTrip)
+{
+  NCollection_Vector<BRepGraph_UID> aUIDs;
+  const BRepGraph_UID               aFaceUID = myGraph.UIDs().Of(BRepGraph_FaceId(0));
+  const BRepGraph_UID               anEdgeUID = myGraph.UIDs().Of(BRepGraph_EdgeId(0));
+  ASSERT_TRUE(aFaceUID.IsValid());
+  ASSERT_TRUE(anEdgeUID.IsValid());
+
+  aUIDs.Append(aFaceUID);
+  aUIDs.Append(anEdgeUID);
+
+  const NCollection_Vector<BRepGraph_NodeId> aNodes = myGraph.UIDs().NodeIdsFrom(aUIDs);
+  ASSERT_EQ(aNodes.Length(), aUIDs.Length());
+  EXPECT_EQ(aNodes.Value(0), BRepGraph_NodeId(BRepGraph_FaceId(0)));
+  EXPECT_EQ(aNodes.Value(1), BRepGraph_NodeId(BRepGraph_EdgeId(0)));
+}
+
+TEST_F(BRepGraph_ViewsTest, UIDsView_NodeIdsFrom_InvalidAndWrongGeneration)
+{
+  NCollection_Vector<BRepGraph_UID> aUIDs;
+  aUIDs.Append(BRepGraph_UID());
+  aUIDs.Append(BRepGraph_UID(BRepGraph_NodeId::Kind::Face,
+                             1,
+                             myGraph.UIDs().Generation() + 1));
+
+  const NCollection_Vector<BRepGraph_NodeId> aNodes = myGraph.UIDs().NodeIdsFrom(aUIDs);
+  ASSERT_EQ(aNodes.Length(), aUIDs.Length());
+  EXPECT_FALSE(aNodes.Value(0).IsValid());
+  EXPECT_FALSE(aNodes.Value(1).IsValid());
+}
+
 // ---------- Topology adjacency ----------
 
 TEST_F(BRepGraph_ViewsTest, SpatialView_AdjacentFaces_FourPerBoxFace)
