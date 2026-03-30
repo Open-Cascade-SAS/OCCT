@@ -21,85 +21,151 @@
 #include <cstring>
 #include <algorithm>
 #include <type_traits>
+#include <utility>
 
 //! Auxiliary class optimizing creation of array buffer
 //! (using stack allocation for small arrays).
+//!
+//! For trivially copyable types the fast memcpy / Standard::Reallocate path
+//! is used.  For non-trivially-copyable types (Handle, TopLoc_Location, etc.)
+//! the class uses placement new, move semantics, and explicit destructors
+//! while keeping Standard::Allocate / Standard::Free for heap management.
+//!
+//! Non-trivially-copyable types must be default-constructible and
+//! nothrow-move-constructible.
 template <class theItem, int MAX_ARRAY_SIZE = 1024>
 class NCollection_LocalArray
 {
-  static_assert(std::is_trivially_copyable<theItem>::value,
-                "NCollection_LocalArray uses memcpy/realloc and requires trivially copyable types");
+  static constexpr bool IS_TRIVIAL = std::is_trivially_copyable_v<theItem>;
 
 public:
   explicit NCollection_LocalArray(const size_t theSize)
-      : myPtr(myBuffer),
+      : myPtr(inlinePtr()),
         mySize(0)
   {
     Allocate(theSize);
   }
 
   NCollection_LocalArray() noexcept
-      : myPtr(myBuffer),
+      : myPtr(inlinePtr()),
         mySize(0)
   {
   }
 
-  ~NCollection_LocalArray() { Deallocate(); }
+  ~NCollection_LocalArray()
+  {
+    if constexpr (!IS_TRIVIAL)
+    {
+      for (size_t i = 0; i < mySize; ++i)
+        myPtr[i].~theItem();
+    }
+    Deallocate();
+  }
 
   void Allocate(const size_t theSize) { Reallocate(theSize, false); }
 
   //! Reallocate the array to a new size.
   //! @param[in] theNewSize new number of elements
-  //! @param[in] theToCopy  if true, existing elements are copied to the new buffer
+  //! @param[in] theToCopy  if true, existing elements are copied/moved to the new buffer
   void Reallocate(const size_t theNewSize, bool theToCopy = true)
   {
     if (theNewSize <= mySize)
     {
-      // Shrinking - just update the logical size, keep existing allocation
+      // Shrinking - just update the logical size, keep existing allocation.
+      if constexpr (!IS_TRIVIAL)
+      {
+        for (size_t i = theNewSize; i < mySize; ++i)
+          myPtr[i].~theItem();
+      }
       mySize = theNewSize;
       return;
     }
 
-    const bool   isOnHeap  = (myPtr != myBuffer);
-    const size_t aNewBytes = theNewSize * sizeof(theItem);
+    const bool   aWasInline = isInline();
+    const size_t aNewBytes  = theNewSize * sizeof(theItem);
 
     if (theNewSize <= static_cast<size_t>(MAX_ARRAY_SIZE))
     {
-      // New size fits in stack buffer
-      if (isOnHeap)
+      // New size fits in inline buffer.
+      if (!aWasInline)
       {
-        if (theToCopy && mySize > 0)
+        if constexpr (IS_TRIVIAL)
         {
-          std::memcpy(myBuffer, myPtr, std::min(mySize, theNewSize) * sizeof(theItem));
+          if (theToCopy && mySize > 0)
+          {
+            std::memcpy(inlinePtr(), myPtr, std::min(mySize, theNewSize) * sizeof(theItem));
+          }
+          Standard::Free(myPtr);
         }
-        Standard::Free(myPtr);
-        myPtr = myBuffer;
+        else
+        {
+          theItem*     anOldPtr  = myPtr;
+          const size_t anOldSize = mySize;
+          const size_t aCopy     = theToCopy ? std::min(anOldSize, theNewSize) : 0;
+          myPtr                  = inlinePtr();
+          for (size_t i = 0; i < aCopy; ++i)
+            new (myPtr + i) theItem(std::move(anOldPtr[i]));
+          for (size_t i = aCopy; i < theNewSize; ++i)
+            new (myPtr + i) theItem();
+          for (size_t i = 0; i < anOldSize; ++i)
+            anOldPtr[i].~theItem();
+          Standard::Free(anOldPtr);
+        }
+        myPtr = inlinePtr();
+      }
+      else
+      {
+        // Already inline, growing within buffer.
+        if constexpr (!IS_TRIVIAL)
+        {
+          for (size_t i = mySize; i < theNewSize; ++i)
+            new (myPtr + i) theItem();
+        }
       }
       mySize = theNewSize;
       return;
     }
 
-    if (isOnHeap)
+    // Need heap allocation (theNewSize > MAX_ARRAY_SIZE).
+    if constexpr (IS_TRIVIAL)
     {
-      // Already on heap - use Standard::Reallocate (preserves content when growing)
-      if (theToCopy)
+      if (!aWasInline)
       {
-        myPtr = (theItem*)Standard::Reallocate(myPtr, aNewBytes);
+        if (theToCopy)
+        {
+          myPtr = static_cast<theItem*>(Standard::Reallocate(myPtr, aNewBytes));
+        }
+        else
+        {
+          Standard::Free(myPtr);
+          myPtr = static_cast<theItem*>(Standard::Allocate(aNewBytes));
+        }
       }
       else
       {
-        Standard::Free(myPtr);
-        myPtr = (theItem*)Standard::Allocate(aNewBytes);
+        theItem* aNewPtr = static_cast<theItem*>(Standard::Allocate(aNewBytes));
+        if (theToCopy && mySize > 0)
+        {
+          std::memcpy(aNewPtr, myPtr, std::min(mySize, theNewSize) * sizeof(theItem));
+        }
+        myPtr = aNewPtr;
       }
     }
     else
     {
-      // Stack to heap transition
-      myPtr = (theItem*)Standard::Allocate(aNewBytes);
-      if (theToCopy && mySize > 0)
-      {
-        std::memcpy(myPtr, myBuffer, std::min(mySize, theNewSize) * sizeof(theItem));
-      }
+      // Non-trivial: Standard::Reallocate (realloc) cannot be used because
+      // it does not call constructors or destructors.
+      theItem*     aNewPtr = static_cast<theItem*>(Standard::Allocate(aNewBytes));
+      const size_t aCopy   = theToCopy ? std::min(mySize, theNewSize) : 0;
+      for (size_t i = 0; i < aCopy; ++i)
+        new (aNewPtr + i) theItem(std::move(myPtr[i]));
+      for (size_t i = aCopy; i < theNewSize; ++i)
+        new (aNewPtr + i) theItem();
+      for (size_t i = 0; i < mySize; ++i)
+        myPtr[i].~theItem();
+      if (!aWasInline)
+        Standard::Free(myPtr);
+      myPtr = aNewPtr;
     }
     mySize = theNewSize;
   }
@@ -109,48 +175,87 @@ public:
   operator theItem*() const noexcept { return myPtr; }
 
   NCollection_LocalArray(NCollection_LocalArray&& theOther) noexcept
-      : myPtr(myBuffer),
+      : myPtr(inlinePtr()),
         mySize(theOther.mySize)
   {
-    if (theOther.myPtr == theOther.myBuffer)
+    if (theOther.isInline())
     {
-      std::memcpy(myBuffer, theOther.myBuffer, mySize * sizeof(theItem));
+      if constexpr (IS_TRIVIAL)
+      {
+        std::memcpy(inlinePtr(), theOther.inlinePtr(), mySize * sizeof(theItem));
+      }
+      else
+      {
+        for (size_t i = 0; i < mySize; ++i)
+          new (inlinePtr() + i) theItem(std::move(theOther.inlinePtr()[i]));
+        for (size_t i = 0; i < mySize; ++i)
+          theOther.inlinePtr()[i].~theItem();
+      }
     }
     else
     {
       myPtr          = theOther.myPtr;
-      theOther.myPtr = theOther.myBuffer;
+      theOther.myPtr = theOther.inlinePtr();
     }
     theOther.mySize = 0;
   }
 
   NCollection_LocalArray& operator=(NCollection_LocalArray&& theOther) noexcept
   {
-    if (this != &theOther)
+    if (this == &theOther)
+      return *this;
+
+    if constexpr (IS_TRIVIAL)
     {
       mySize = theOther.mySize;
-      if (theOther.myPtr == theOther.myBuffer)
+      if (theOther.isInline())
       {
-        // Source on stack: copy data to our buffer
         Deallocate();
-        myPtr = myBuffer;
-        std::memcpy(myBuffer, theOther.myBuffer, mySize * sizeof(theItem));
+        myPtr = inlinePtr();
+        std::memcpy(inlinePtr(), theOther.inlinePtr(), mySize * sizeof(theItem));
       }
-      else if (myPtr != myBuffer)
+      else if (!isInline())
       {
-        // Both on heap: swap pointers, theOther frees our old allocation on destruction
+        // Both on heap: swap pointers, theOther frees our old allocation on destruction.
         theItem* anOldPtr = myPtr;
         myPtr             = theOther.myPtr;
         theOther.myPtr    = anOldPtr;
       }
       else
       {
-        // this on stack, theOther on heap: take the pointer
+        // this on inline, theOther on heap: take the pointer.
         myPtr          = theOther.myPtr;
-        theOther.myPtr = theOther.myBuffer;
+        theOther.myPtr = theOther.inlinePtr();
       }
-      theOther.mySize = 0;
     }
+    else
+    {
+      // Destroy our current elements.
+      for (size_t i = 0; i < mySize; ++i)
+        myPtr[i].~theItem();
+
+      if (theOther.isInline())
+      {
+        if (!isInline())
+          Standard::Free(myPtr);
+        myPtr  = inlinePtr();
+        mySize = theOther.mySize;
+        for (size_t i = 0; i < mySize; ++i)
+          new (inlinePtr() + i) theItem(std::move(theOther.inlinePtr()[i]));
+        for (size_t i = 0; i < mySize; ++i)
+          theOther.inlinePtr()[i].~theItem();
+      }
+      else
+      {
+        // Take ownership of theOther's heap allocation directly.
+        if (!isInline())
+          Standard::Free(myPtr);
+        myPtr          = theOther.myPtr;
+        mySize         = theOther.mySize;
+        theOther.myPtr = theOther.inlinePtr();
+      }
+    }
+    theOther.mySize = 0;
     return *this;
   }
 
@@ -160,14 +265,47 @@ public:
 protected:
   void Deallocate()
   {
-    if (myPtr != myBuffer)
+    if (!isInline())
       Standard::Free(myPtr);
   }
 
+  //! Pointer to inline buffer storage.
+  theItem* inlinePtr() noexcept { return myStorage.ptr(); }
+
+  const theItem* inlinePtr() const noexcept { return myStorage.ptr(); }
+
+  //! True if currently using inline (stack) storage.
+  bool isInline() const noexcept { return myPtr == myStorage.ptr(); }
+
+  //! Inline storage: typed array for trivial types (C++17 object lifetimes),
+  //! raw aligned bytes for non-trivial types (placement new).
+  template <bool IsTrivial>
+  struct InlineStorage;
+
+  template <>
+  struct InlineStorage<true>
+  {
+    theItem myData[MAX_ARRAY_SIZE];
+
+    theItem* ptr() noexcept { return myData; }
+
+    const theItem* ptr() const noexcept { return myData; }
+  };
+
+  template <>
+  struct InlineStorage<false>
+  {
+    alignas(theItem) char myData[MAX_ARRAY_SIZE * sizeof(theItem)];
+
+    theItem* ptr() noexcept { return reinterpret_cast<theItem*>(myData); }
+
+    const theItem* ptr() const noexcept { return reinterpret_cast<const theItem*>(myData); }
+  };
+
 protected:
-  theItem  myBuffer[MAX_ARRAY_SIZE];
-  theItem* myPtr;
-  size_t   mySize;
+  InlineStorage<IS_TRIVIAL> myStorage; //!< Inline buffer
+  theItem*                  myPtr;     //!< Points to inline or heap buffer
+  size_t                    mySize;    //!< Logical element count
 };
 
 #endif // _NCollection_LocalArray_HeaderFile

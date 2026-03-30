@@ -38,8 +38,7 @@ inline bool isMoreComplex(const TopAbs_ShapeEnum theType, const TopAbs_ShapeEnum
 //=================================================================================================
 
 TopExp_Explorer::TopExp_Explorer() noexcept
-    : myStack(20),
-      toFind(TopAbs_SHAPE),
+    : toFind(TopAbs_SHAPE),
       toAvoid(TopAbs_SHAPE),
       hasMore(false)
 {
@@ -50,8 +49,7 @@ TopExp_Explorer::TopExp_Explorer() noexcept
 TopExp_Explorer::TopExp_Explorer(const TopoDS_Shape&    S,
                                  const TopAbs_ShapeEnum ToFind,
                                  const TopAbs_ShapeEnum ToAvoid)
-    : myStack(20),
-      toFind(ToFind),
+    : toFind(ToFind),
       toAvoid(ToAvoid),
       hasMore(false)
 {
@@ -109,7 +107,7 @@ void TopExp_Explorer::Init(const TopoDS_Shape&    S,
 
 void TopExp_Explorer::Next()
 {
-  if (myStack.IsEmpty())
+  if (myStackTop < 0)
   {
     TopAbs_ShapeEnum ty = myShape.ShapeType();
 
@@ -125,15 +123,15 @@ void TopExp_Explorer::Next()
     }
     else
     {
-      myStack.Append(TopoDS_Iterator(myShape));
+      pushIterator(TopoDS_Iterator(myShape));
     }
   }
   else
-    myStack.ChangeLast().Next();
+    myStack[myStackTop].Next();
 
   for (;;)
   {
-    TopoDS_Iterator& aTopIter = myStack.ChangeLast();
+    TopoDS_Iterator& aTopIter = myStack[myStackTop];
 
     if (aTopIter.More())
     {
@@ -147,8 +145,8 @@ void TopExp_Explorer::Next()
       }
       else if (isMoreComplex(ty, toFind) && !shouldAvoid(ty, toAvoid))
       {
-        myStack.Append(TopoDS_Iterator(aShapTop));
-        // aTopIter reference is now invalid after Append
+        pushIterator(TopoDS_Iterator(aShapTop));
+        // aTopIter reference is now invalid after push
       }
       else
       {
@@ -157,10 +155,10 @@ void TopExp_Explorer::Next()
     }
     else
     {
-      myStack.EraseLast();
-      if (myStack.IsEmpty())
+      popIterator();
+      if (myStackTop < 0)
         break;
-      myStack.ChangeLast().Next();
+      myStack[myStackTop].Next();
     }
   }
   hasMore = false;
@@ -170,20 +168,46 @@ void TopExp_Explorer::Next()
 
 const TopoDS_Shape& TopExp_Explorer::Current() const noexcept
 {
-  return myStack.IsEmpty() ? myShape : myStack.Last().Value();
+  return myStackTop < 0 ? myShape : myStack[myStackTop].Value();
 }
 
 //=================================================================================================
 
 int TopExp_Explorer::Depth() const noexcept
 {
-  return myStack.Length();
+  return myStackTop + 1;
 }
 
 //=================================================================================================
 
 void TopExp_Explorer::Clear()
 {
-  hasMore = false;
-  myStack.Clear();
+  // Shrink to 0 — NCollection_LocalArray destroys all live elements.
+  if (myStack.Size() > 0)
+    myStack.Reallocate(0);
+  myStackTop = -1;
+  hasMore    = false;
+}
+
+//=================================================================================================
+
+void TopExp_Explorer::pushIterator(TopoDS_Iterator&& theIter)
+{
+  ++myStackTop;
+  if (static_cast<size_t>(myStackTop) >= myStack.Size())
+  {
+    const size_t aNewSize =
+      std::max<size_t>(myStack.Size() * 2, static_cast<size_t>(THE_INLINE_STACK_SIZE));
+    myStack.Reallocate(aNewSize, true);
+  }
+  myStack[myStackTop] = std::move(theIter);
+}
+
+//=================================================================================================
+
+void TopExp_Explorer::popIterator()
+{
+  // Reset the popped iterator to release shape references immediately.
+  myStack[myStackTop] = TopoDS_Iterator();
+  --myStackTop;
 }

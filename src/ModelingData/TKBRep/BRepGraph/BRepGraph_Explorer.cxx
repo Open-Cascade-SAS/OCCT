@@ -619,10 +619,13 @@ void BRepGraph_Explorer::pushFrame(const StackFrame& theFrame)
     return;
 
   ++myStackTop;
-  if (myStackTop < myStack.Length())
-    myStack.ChangeValue(myStackTop) = theFrame;
-  else
-    myStack.Append(theFrame);
+  if (static_cast<size_t>(myStackTop) >= myStack.Size())
+  {
+    const size_t aNewSize = std::max<size_t>(myStack.Size() * 2,
+                                             static_cast<size_t>(THE_INLINE_STACK_SIZE));
+    myStack.Reallocate(aNewSize, true);
+  }
+  myStack[myStackTop] = theFrame;
 }
 
 //=================================================================================================
@@ -639,7 +642,7 @@ BRepGraph_TopologyPath BRepGraph_Explorer::CurrentPath() const
 {
   BRepGraph_TopologyPath aPath(myRoot);
   for (int i = 1; i <= myStackTop; ++i)
-    aPath.pushStep(myStack.Value(i).StepFromParent);
+    aPath.pushStep(myStack[i].StepFromParent);
   if (myHasMore && myMatchStep >= 0)
     aPath.pushStep(myMatchStep);
   return aPath;
@@ -652,8 +655,8 @@ TopLoc_Location BRepGraph_Explorer::LocationOf(const BRepGraph_NodeId::Kind theK
   // Scan step frames (skip root at index 0) to match "first step" contract.
   for (int i = 1; i <= myStackTop; ++i)
   {
-    if (myStack.Value(i).Node.NodeKind == theKind)
-      return myStack.Value(i).AccLocation;
+    if (myStack[i].Node.NodeKind == theKind)
+      return myStack[i].AccLocation;
   }
   // Check the current match.
   if (myHasMore && myCurrent.NodeKind == theKind)
@@ -668,8 +671,8 @@ BRepGraph_NodeId BRepGraph_Explorer::NodeOf(const BRepGraph_NodeId::Kind theKind
   // Scan step frames (skip root at index 0) to match "first step" contract.
   for (int i = 1; i <= myStackTop; ++i)
   {
-    if (myStack.Value(i).Node.NodeKind == theKind)
-      return myStack.Value(i).Node;
+    if (myStack[i].Node.NodeKind == theKind)
+      return myStack[i].Node;
   }
   if (myHasMore && myCurrent.NodeKind == theKind)
     return myCurrent;
@@ -683,7 +686,7 @@ TopLoc_Location BRepGraph_Explorer::LocationAt(const int theLevel) const
   // Level 0 = after first step = frame[1].
   const int aFrameIdx = theLevel + 1;
   if (aFrameIdx <= myStackTop)
-    return myStack.Value(aFrameIdx).AccLocation;
+    return myStack[aFrameIdx].AccLocation;
   if (aFrameIdx == myStackTop + 1 && myHasMore)
     return myLocation;
   return TopLoc_Location();
@@ -695,7 +698,7 @@ BRepGraph_NodeId BRepGraph_Explorer::NodeAt(const int theLevel) const
 {
   const int aFrameIdx = theLevel + 1;
   if (aFrameIdx <= myStackTop)
-    return myStack.Value(aFrameIdx).Node;
+    return myStack[aFrameIdx].Node;
   if (aFrameIdx == myStackTop + 1 && myHasMore)
     return myCurrent;
   return BRepGraph_NodeId();

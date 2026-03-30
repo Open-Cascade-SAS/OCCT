@@ -16,10 +16,9 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_TopologyPath.hxx>
+#include <NCollection_LocalArray.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopLoc_Location.hxx>
-
-#include <NCollection_Vector.hxx>
 
 //! @brief Stack-based lazy hierarchy walker for BRepGraph with inline
 //! location/orientation accumulation.
@@ -191,13 +190,15 @@ private:
   void popFrame();
 
   //! Access top frame.
-  StackFrame& topFrame() { return myStack.ChangeValue(myStackTop); }
-  const StackFrame& topFrame() const { return myStack.Value(myStackTop); }
+  StackFrame&       topFrame() { return myStack[myStackTop]; }
+  const StackFrame& topFrame() const { return myStack[myStackTop]; }
 
-  const BRepGraph*               myGraph       = nullptr;
-  BRepGraph_NodeId::Kind         myTargetKind  = BRepGraph_NodeId::Kind::Vertex;
-  NCollection_Vector<StackFrame> myStack{16};     //!< DFS stack (block size 16)
-  int                            myStackTop    = -1; //!< Top of stack index (-1 = empty)
+  static constexpr int THE_INLINE_STACK_SIZE = 16; //!< Inline capacity (covers typical topology depth)
+
+  const BRepGraph*                                     myGraph      = nullptr;
+  BRepGraph_NodeId::Kind                               myTargetKind = BRepGraph_NodeId::Kind::Vertex;
+  NCollection_LocalArray<StackFrame, THE_INLINE_STACK_SIZE> myStack; //!< DFS stack (inline for depth ≤ 16)
+  int                                                  myStackTop   = -1; //!< Top of stack index (-1 = empty)
   BRepGraph_NodeId               myCurrent;          //!< Current match leaf
   int                            myMatchStep   = -1; //!< Step index of match within top frame's children
   TopLoc_Location                myLocation;         //!< Accumulated location at current match
