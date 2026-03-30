@@ -42,6 +42,10 @@ class Adaptor3d_CurveOnSurface;
 //! on topology Usage/Ref structs (VertexUsage, CoEdgeUsage, WireUsage,
 //! FaceUsage, ShellUsage, SolidUsage, OccurrenceUsage). This class applies
 //! ref Locations automatically when accessing 3D geometry.
+//! Usage structs are lightweight read-only projections produced during
+//! traversal, while Ref structs are stored reference entries from RefsView;
+//! this API accepts whichever form naturally carries the required context for
+//! the queried property.
 //!
 //! Methods are grouped by topology kind via nested classes:
 //! BRepGraph_Tool::Vertex, Edge, CoEdge, Face, Wire.

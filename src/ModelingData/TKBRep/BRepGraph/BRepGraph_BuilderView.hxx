@@ -41,8 +41,9 @@ class Geom2d_Curve;
 //!   success
 //! - invalid inputs include wrong kind, out-of-range ids, or removed referenced
 //!   nodes unless a method documents a narrower precondition
-//! - void linking methods such as AddFaceToShell() and AddShellToSolid() keep
-//!   the graph unchanged on invalid inputs and do not report success separately
+//! - linking methods such as AddFaceToShell() and AddShellToSolid() return an
+//!   invalid typed RefId on failure and otherwise keep ownership explicit in
+//!   the reference layer
 //! - `Mut*()` accessors raise `Standard_ProgramError` for null, out-of-range,
 //!   or removed typed ids
 class BRepGraph::BuilderView
@@ -104,19 +105,21 @@ public:
   //! Appends FaceRef and stores its FaceRefId in shell FaceRefIds.
   //! @param[in] theShellEntity  typed shell definition identifier
   //! @param[in] theFaceEntity   typed face definition identifier
-  //! @param[in] theOri       orientation of the face in the shell
-  Standard_EXPORT void AddFaceToShell(const BRepGraph_ShellId  theShellEntity,
-                                      const BRepGraph_FaceId   theFaceEntity,
-                                      const TopAbs_Orientation theOri = TopAbs_FORWARD);
+  //! @param[in] theOri          orientation of the face in the shell
+  //! @return typed face reference identifier, or invalid if inputs are not active
+  Standard_EXPORT BRepGraph_FaceRefId AddFaceToShell(const BRepGraph_ShellId  theShellEntity,
+                                                     const BRepGraph_FaceId   theFaceEntity,
+                                                     const TopAbs_Orientation theOri = TopAbs_FORWARD);
 
   //! Link a shell to a solid.
   //! Appends ShellRef and stores its ShellRefId in solid ShellRefIds.
   //! @param[in] theSolidEntity  typed solid definition identifier
   //! @param[in] theShellEntity  typed shell definition identifier
-  //! @param[in] theOri       orientation of the shell in the solid
-  Standard_EXPORT void AddShellToSolid(const BRepGraph_SolidId  theSolidEntity,
-                                       const BRepGraph_ShellId  theShellEntity,
-                                       const TopAbs_Orientation theOri = TopAbs_FORWARD);
+  //! @param[in] theOri          orientation of the shell in the solid
+  //! @return typed shell reference identifier, or invalid if inputs are not active
+  Standard_EXPORT BRepGraph_ShellRefId AddShellToSolid(const BRepGraph_SolidId  theSolidEntity,
+                                                       const BRepGraph_ShellId  theShellEntity,
+                                                       const TopAbs_Orientation theOri = TopAbs_FORWARD);
 
   //! Add a compound definition with child definitions.
   //! @param[in] theChildEntities child definition NodeIds
@@ -175,10 +178,9 @@ public:
 
   //! Create a new Curve2DRep in storage and return its typed identifier.
   //! Use this when assigning a new PCurve to an existing CoEdge entity
-  //! via MutCoEdge(). Prefer AddPCurveToEdge() for the one-shot public route
-  //! when creating and binding a PCurve in one call. Prefer this route when a
-  //! caller has already located the target CoEdge and is updating its
-  //! Curve2DRepId inside a larger mutation sequence such as SameParameter.
+  //! via MutCoEdge() inside a larger mutation sequence.
+  //! For one-shot creation and binding of a face-context PCurve, use
+  //! AddPCurveToEdge().
   //! @param[in] theCurve2d the 2D parametric curve handle
   //! @return typed Curve2DRep identifier, or invalid if the curve is null
   [[nodiscard]] Standard_EXPORT BRepGraph_Curve2DRepId
@@ -190,9 +192,8 @@ public:
   //! should avoid duplicate creation unless multiple bindings are intentional
   //! for the modeled topology.
   //! Prefer this route when the caller needs to add a face-context PCurve in
-  //! one operation. Use CreateCurve2DRep() with MutCoEdge() when editing an
-  //! existing CoEdge that has already been identified inside a larger mutation
-  //! sequence.
+  //! one operation. For editing an already identified CoEdge inside a larger
+  //! mutation sequence, use CreateCurve2DRep() with MutCoEdge().
   //! @param[in] theEdgeEntity        typed edge definition identifier
   //! @param[in] theFaceEntity        typed face definition identifier
   //! @param[in] theCurve2d           2D curve geometry
@@ -269,11 +270,11 @@ public:
   //! @param[in] theSplitParam     parameter on the 3D curve at the split point
   //! @param[out] theSubA          sub-edge: StartVertex -> SplitVertex
   //! @param[out] theSubB          sub-edge: SplitVertex -> EndVertex
-  Standard_EXPORT void SplitEdge(const BRepGraph_NodeId theEdgeEntity,
-                                 const BRepGraph_NodeId theSplitVertex,
-                                 const double           theSplitParam,
-                                 BRepGraph_NodeId&      theSubA,
-                                 BRepGraph_NodeId&      theSubB);
+  Standard_EXPORT void SplitEdge(const BRepGraph_EdgeId   theEdgeEntity,
+                                 const BRepGraph_VertexId theSplitVertex,
+                                 const double             theSplitParam,
+                                 BRepGraph_EdgeId&        theSubA,
+                                 BRepGraph_EdgeId&        theSubB);
 
   //! Replace one edge with another in a wire definition.
   //! Updates the CoEdge's EdgeIdx to point to the new edge, adjusts orientation

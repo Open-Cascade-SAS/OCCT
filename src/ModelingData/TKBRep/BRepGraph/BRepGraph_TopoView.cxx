@@ -260,49 +260,6 @@ const BRepGraphInc::CoEdgeDef& BRepGraph::TopoView::CoEdge(const BRepGraph_CoEdg
 
 //=================================================================================================
 
-int BRepGraph::TopoView::NbShellFaces(const BRepGraph_ShellId theShell) const
-{
-  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
-  if (!theShell.IsValid(aStorage.NbShells()))
-    return 0;
-
-  const BRepGraphInc::ShellDef& aShell   = aStorage.Shell(theShell);
-  int                           aNbFaces = 0;
-  for (int i = 0; i < aShell.FaceRefIds.Length(); ++i)
-  {
-    if (!aStorage.FaceRef(aShell.FaceRefIds.Value(i)).IsRemoved)
-      ++aNbFaces;
-  }
-  return aNbFaces;
-}
-
-//=================================================================================================
-
-BRepGraph_FaceId BRepGraph::TopoView::ShellFaceEntity(const BRepGraph_ShellId theShell,
-                                                      const int               theFaceIndex) const
-{
-  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
-  if (!theShell.IsValid(aStorage.NbShells()))
-    return BRepGraph_FaceId();
-  if (theFaceIndex < 0)
-    return BRepGraph_FaceId();
-
-  const BRepGraphInc::ShellDef& aShell    = aStorage.Shell(theShell);
-  int                           anOrdinal = 0;
-  for (int i = 0; i < aShell.FaceRefIds.Length(); ++i)
-  {
-    const BRepGraphInc::FaceRef& aRef = aStorage.FaceRef(aShell.FaceRefIds.Value(i));
-    if (aRef.IsRemoved)
-      continue;
-    if (anOrdinal == theFaceIndex)
-      return aRef.FaceDefId;
-    ++anOrdinal;
-  }
-  return BRepGraph_FaceId();
-}
-
-//=================================================================================================
-
 const BRepGraphInc::BaseDef* BRepGraph::TopoView::TopoEntity(const BRepGraph_NodeId theId) const
 {
   return myGraph->topoEntity(theId);

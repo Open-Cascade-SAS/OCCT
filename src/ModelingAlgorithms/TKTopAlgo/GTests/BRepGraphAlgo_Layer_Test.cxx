@@ -492,26 +492,24 @@ TEST(BRepGraphAlgo_LayerTest, SplitEdge_OriginalEdgeRemoved)
   }
   ASSERT_GE(aSplitEdgeIdx, 0) << "No suitable edge found for split test";
 
-  const BRepGraph_NodeId aSplitEdgeId = BRepGraph_EdgeId(aSplitEdgeIdx);
+  const BRepGraph_EdgeId aSplitEdgeId(aSplitEdgeIdx);
   aLayer->SetNodeName(aSplitEdgeId, "OriginalEdge");
 
   // Create a split vertex.
-  const auto [aEdgeFirst, aEdgeLast] =
-    BRepGraph_Tool::Edge::Range(aGraph, BRepGraph_EdgeId(aSplitEdgeIdx));
+  const auto [aEdgeFirst, aEdgeLast] = BRepGraph_Tool::Edge::Range(aGraph, aSplitEdgeId);
   const double aMidParam = 0.5 * (aEdgeFirst + aEdgeLast);
-  const gp_Pnt aMidPnt =
-    BRepGraph_Tool::Edge::Curve(aGraph, BRepGraph_EdgeId(aSplitEdgeIdx))->EvalD0(aMidParam);
+  const gp_Pnt aMidPnt = BRepGraph_Tool::Edge::Curve(aGraph, aSplitEdgeId)->EvalD0(aMidParam);
   const BRepGraph_VertexId aSplitVtx = aGraph.Builder().AddVertex(aMidPnt, Precision::Confusion());
 
   // Split the edge.
-  BRepGraph_NodeId aSubA, aSubB;
+  BRepGraph_EdgeId aSubA, aSubB;
   aGraph.Builder().SplitEdge(aSplitEdgeId, aSplitVtx, aMidParam, aSubA, aSubB);
 
   // SplitEdge marks original as removed directly (not via RemoveNode),
   // so the layer callback is NOT triggered. Original name stays in the layer
   // but the edge is marked IsRemoved. This is a known limitation -
   // SplitEdge doesn't know the "replacement" (it creates 2 sub-edges).
-  EXPECT_TRUE(aGraph.Topo().Edge(BRepGraph_EdgeId(aSplitEdgeIdx)).IsRemoved);
+  EXPECT_TRUE(aGraph.Topo().Edge(aSplitEdgeId).IsRemoved);
 
   // Sub-edges should be valid.
   EXPECT_TRUE(aSubA.IsValid());

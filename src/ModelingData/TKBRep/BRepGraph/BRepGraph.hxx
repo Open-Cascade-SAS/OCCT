@@ -173,11 +173,14 @@ public:
   [[nodiscard]] Standard_EXPORT const ShapesView& Shapes() const;
   //! Access programmatic graph construction and mutation.
   [[nodiscard]] Standard_EXPORT BuilderView& Builder();
-  //! Const access provides ValidateMutationBoundary() and IsDeferredMode() only.
-  //! All mutation methods require non-const Builder().
+  //! Const access is for BuilderView inspection only.
+  //! Mutation methods require non-const Builder().
   [[nodiscard]] Standard_EXPORT const BuilderView& Builder() const;
 
   //! Access history subsystem directly.
+  //! History is returned directly rather than through a lightweight view
+  //! because it is already a self-contained query and recording subsystem
+  //! with no per-view cached state.
   //! @return history subsystem for tracking modifications
   [[nodiscard]] Standard_EXPORT BRepGraph_History&       History();
   //! Access history subsystem directly (const).
@@ -189,6 +192,8 @@ public:
   //! API. This accessor remains for lower-level algorithm code that needs
   //! Reserve() after compaction or copy, TransferCacheValues() between graphs,
   //! explicit SubtreeGen-aware Get()/Set(), or full Clear() during remap.
+  //! Public exposure is intentional for advanced algorithm integration, but
+  //! normal callers should treat Cache() as the primary interface.
   [[nodiscard]] BRepGraph_TransientCache& TransientCache() { return myTransientCache; }
   //! Access the raw transient cache (const).
   //! Prefer Cache() for normal public read access.

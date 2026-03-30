@@ -367,8 +367,8 @@ TEST_F(BRepGraph_HistoryTest, SplitEdge_RewritesAllContainingWires)
   const int aNbEdgesBefore       = myGraph.Topo().NbEdges();
   const int aNbActiveEdgesBefore = myGraph.Topo().NbActiveEdges();
 
-  BRepGraph_NodeId aSubA;
-  BRepGraph_NodeId aSubB;
+  BRepGraph_EdgeId aSubA;
+  BRepGraph_EdgeId aSubB;
 
   myGraph.Builder().SplitEdge(anEdgeId, aSplitVertex, aSplitParam, aSubA, aSubB);
 
@@ -467,8 +467,8 @@ TEST_F(BRepGraph_HistoryTest, SplitEdge_IgnoresRemovedCoEdgeRefEntries)
   const BRepGraph_VertexId aSplitVertex = myGraph.Builder().AddVertex(gp_Pnt(4.0, 5.0, 6.0), 1.0e-7);
   ASSERT_TRUE(aSplitVertex.IsValid());
 
-  BRepGraph_NodeId aSubA;
-  BRepGraph_NodeId aSubB;
+  BRepGraph_EdgeId aSubA;
+  BRepGraph_EdgeId aSubB;
   myGraph.Builder().SplitEdge(anEdgeId, aSplitVertex, aSplitParam, aSubA, aSubB);
   ASSERT_TRUE(aSubA.IsValid());
   ASSERT_TRUE(aSubB.IsValid());
@@ -513,9 +513,13 @@ TEST_F(BRepGraph_HistoryTest, ApplyModification_SplitEdge_RecordsBothDerivedNode
   myGraph.Builder().ApplyModification(
     anEdgeId,
     [&](BRepGraph& theGraph, BRepGraph_NodeId theTarget) -> NCollection_Vector<BRepGraph_NodeId> {
-      BRepGraph_NodeId aSubA;
-      BRepGraph_NodeId aSubB;
-      theGraph.Builder().SplitEdge(theTarget, aSplitVertex, aSplitParam, aSubA, aSubB);
+      BRepGraph_EdgeId aSubA;
+      BRepGraph_EdgeId aSubB;
+      theGraph.Builder().SplitEdge(BRepGraph_EdgeId::FromNodeId(theTarget),
+                                   aSplitVertex,
+                                   aSplitParam,
+                                   aSubA,
+                                   aSubB);
 
       NCollection_Vector<BRepGraph_NodeId> aResult;
       aResult.Append(aSubA);

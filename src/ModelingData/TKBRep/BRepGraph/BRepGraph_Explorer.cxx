@@ -33,13 +33,7 @@ BRepGraph_Explorer::BRepGraph_Explorer(const BRepGraph&          theGraph,
                                        BRepGraph_NodeId::Kind    theTargetKind)
     : myGraph(&theGraph)
 {
-  myResults.Clear();
-  myCurrent = 0;
-
-  const int              aDepthBudget = static_cast<int>(theGraph.Topo().NbNodes());
-  const BRepGraph_NodeId aRootNode    = theProduct;
-  BRepGraph_TopologyPath aRootPath(aRootNode);
-  explore(theGraph, theTargetKind, aRootNode, aRootPath, aDepthBudget);
+  Init(theGraph, theProduct, theTargetKind);
 }
 
 //=================================================================================================
@@ -58,6 +52,15 @@ void BRepGraph_Explorer::Init(const BRepGraph&       theGraph,
   const int              aDepthBudget = static_cast<int>(theGraph.Topo().NbNodes());
   BRepGraph_TopologyPath aRootPath(theRoot);
   explore(theGraph, theTargetKind, theRoot, aRootPath, aDepthBudget);
+}
+
+//=================================================================================================
+
+void BRepGraph_Explorer::Init(const BRepGraph&          theGraph,
+                              const BRepGraph_ProductId theProduct,
+                              BRepGraph_NodeId::Kind    theTargetKind)
+{
+  Init(theGraph, BRepGraph_NodeId(theProduct), theTargetKind);
 }
 
 //=================================================================================================

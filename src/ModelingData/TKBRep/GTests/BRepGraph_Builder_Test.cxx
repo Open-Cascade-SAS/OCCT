@@ -430,7 +430,8 @@ TEST(BRepGraph_BuilderTest, AddFaceToShell_CreatesUsage)
 
   // Create shell and link face to it.
   BRepGraph_ShellId aShellId = aGraph.Builder().AddShell();
-  aGraph.Builder().AddFaceToShell(aShellId, aFaceId);
+  const BRepGraph_FaceRefId aFaceRefId = aGraph.Builder().AddFaceToShell(aShellId, aFaceId);
+  EXPECT_TRUE(aFaceRefId.IsValid());
 
   EXPECT_EQ(BRepGraph_TestTools::CountFaceRefsOfShell(aGraph, BRepGraph_ShellId(0)), 1);
 }
@@ -440,7 +441,9 @@ TEST(BRepGraph_BuilderTest, AddFaceToShell_InvalidNodes_NoMutation)
   BRepGraph aGraph;
 
   const BRepGraph_ShellId aShellId = aGraph.Builder().AddShell();
-  aGraph.Builder().AddFaceToShell(aShellId, BRepGraph_FaceId(4));
+  const BRepGraph_FaceRefId aFaceRefId = aGraph.Builder().AddFaceToShell(aShellId,
+                                                                          BRepGraph_FaceId(4));
+  EXPECT_FALSE(aFaceRefId.IsValid());
 
   EXPECT_EQ(BRepGraph_TestTools::CountFaceRefsOfShell(aGraph, BRepGraph_ShellId(aShellId.Index)),
             0);
@@ -453,7 +456,8 @@ TEST(BRepGraph_BuilderTest, AddShellToSolid_CreatesUsage)
   BRepGraph_ShellId aShellId = aGraph.Builder().AddShell();
   BRepGraph_SolidId aSolidId = aGraph.Builder().AddSolid();
 
-  aGraph.Builder().AddShellToSolid(aSolidId, aShellId);
+  const BRepGraph_ShellRefId aShellRefId = aGraph.Builder().AddShellToSolid(aSolidId, aShellId);
+  EXPECT_TRUE(aShellRefId.IsValid());
 
   EXPECT_EQ(BRepGraph_TestTools::CountShellRefsOfSolid(aGraph, BRepGraph_SolidId(0)), 1);
 }

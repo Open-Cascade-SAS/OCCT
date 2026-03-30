@@ -15,6 +15,7 @@
 #include <BRepGraphInc_Definition.hxx>
 #include <BRepGraphInc_Reference.hxx>
 #include <BRepGraphInc_Representation.hxx>
+#include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -174,32 +175,31 @@ TEST_F(BRepGraph_ConvenienceTest, FindPCurve_InvalidPair_ReturnsNull)
             nullptr);
 }
 
-// ---------- Part F: DefsView::NbShellFaces / ShellFaceEntity ----------
+// ---------- Part F: RefsView::FaceRefIdsOf ----------
 
-TEST_F(BRepGraph_ConvenienceTest, NbShellFaces_Box_SixFaces)
+TEST_F(BRepGraph_ConvenienceTest, ShellFaceRefs_Box_SixFaces)
 {
-  const BRepGraph::TopoView aDefs = myGraph.Topo();
-  ASSERT_EQ(aDefs.NbShells(), 1);
-  EXPECT_EQ(aDefs.NbShellFaces(BRepGraph_ShellId(0)), 6);
+  const BRepGraph::RefsView& aRefs = myGraph.Refs();
+  ASSERT_EQ(myGraph.Topo().NbShells(), 1);
+  EXPECT_EQ(aRefs.FaceRefIdsOf(BRepGraph_ShellId(0)).Length(), 6);
 }
 
-TEST_F(BRepGraph_ConvenienceTest, ShellFaceEntity_AllValid)
+TEST_F(BRepGraph_ConvenienceTest, ShellFaceRefs_AllValid)
 {
-  const BRepGraph::TopoView aDefs    = myGraph.Topo();
-  const int                 aNbFaces = aDefs.NbShellFaces(BRepGraph_ShellId(0));
-  for (int aFaceIter = 0; aFaceIter < aNbFaces; ++aFaceIter)
+  const BRepGraph::RefsView& aRefs       = myGraph.Refs();
+  const NCollection_Vector<BRepGraph_FaceRefId>& aFaceRefIds =
+    aRefs.FaceRefIdsOf(BRepGraph_ShellId(0));
+  for (int aFaceIter = 0; aFaceIter < aFaceRefIds.Length(); ++aFaceIter)
   {
-    const BRepGraph_NodeId aFaceDefId = aDefs.ShellFaceEntity(BRepGraph_ShellId(0), aFaceIter);
-    EXPECT_TRUE(aFaceDefId.IsValid()) << "Shell face " << aFaceIter;
-    EXPECT_EQ(aFaceDefId.NodeKind, BRepGraph_NodeId::Kind::Face);
+    const BRepGraphInc::FaceRef& aFaceRef = aRefs.Face(aFaceRefIds.Value(aFaceIter));
+    EXPECT_TRUE(aFaceRef.FaceDefId.IsValid()) << "Shell face ref " << aFaceIter;
   }
 }
 
-TEST_F(BRepGraph_ConvenienceTest, ShellFaceEntity_OutOfRange_Invalid)
+TEST_F(BRepGraph_ConvenienceTest, ShellFaceRefs_InvalidShell_Empty)
 {
-  const BRepGraph::TopoView aDefs = myGraph.Topo();
-  EXPECT_FALSE(aDefs.ShellFaceEntity(BRepGraph_ShellId(0), -1).IsValid());
-  EXPECT_FALSE(aDefs.ShellFaceEntity(BRepGraph_ShellId(0), 100).IsValid());
+  const BRepGraph::RefsView& aRefs = myGraph.Refs();
+  EXPECT_EQ(aRefs.FaceRefIdsOf(BRepGraph_ShellId(100)).Length(), 0);
 }
 
 // ---------- Integration: Cylinder with seam edge ----------

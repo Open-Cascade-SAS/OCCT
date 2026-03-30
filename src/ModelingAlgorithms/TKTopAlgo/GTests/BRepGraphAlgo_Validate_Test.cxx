@@ -262,7 +262,7 @@ TEST(BRepGraphAlgo_ValidateTest, AfterSplitEdge_ProducesSubEdges)
   const int anOrigEdgeCount = aGraph.Topo().NbEdges();
 
   // Find a non-degenerate edge with valid vertices to split.
-  BRepGraph_NodeId anEdgeId;
+  BRepGraph_EdgeId anEdgeId;
   double           aSplitParam = 0.0;
   for (int i = 0; i < aGraph.Topo().NbEdges(); ++i)
   {
@@ -281,12 +281,12 @@ TEST(BRepGraphAlgo_ValidateTest, AfterSplitEdge_ProducesSubEdges)
 
   // Create a split vertex at the midpoint.
   gp_Pnt aMidPt;
-  BRepGraph_Tool::Edge::Curve(aGraph, BRepGraph_EdgeId(anEdgeId.Index))->D0(aSplitParam, aMidPt);
+  BRepGraph_Tool::Edge::Curve(aGraph, anEdgeId)->D0(aSplitParam, aMidPt);
   BRepGraph_VertexId aSplitVtx = aGraph.Builder().AddVertex(
     aMidPt,
-    BRepGraph_Tool::Edge::Tolerance(aGraph, BRepGraph_EdgeId(anEdgeId.Index)));
+    BRepGraph_Tool::Edge::Tolerance(aGraph, anEdgeId));
 
-  BRepGraph_NodeId aSubA, aSubB;
+  BRepGraph_EdgeId aSubA, aSubB;
   aGraph.Builder().SplitEdge(anEdgeId, aSplitVtx, aSplitParam, aSubA, aSubB);
 
   // Two new sub-edges should have been created.
@@ -295,7 +295,7 @@ TEST(BRepGraphAlgo_ValidateTest, AfterSplitEdge_ProducesSubEdges)
   EXPECT_TRUE(aSubB.IsValid());
 
   // Original edge should be marked removed.
-  EXPECT_TRUE(aGraph.Topo().Edge(BRepGraph_EdgeId(anEdgeId.Index)).IsRemoved);
+  EXPECT_TRUE(aGraph.Topo().Edge(anEdgeId).IsRemoved);
 }
 
 TEST(BRepGraphAlgo_ValidateTest, CorruptedPCurve_FaceDefIdOutOfBounds)

@@ -169,16 +169,6 @@ public:
   [[nodiscard]] Standard_EXPORT const BRepGraphInc::BaseDef* TopoEntity(
     const BRepGraph_NodeId theId) const;
 
-  //! Number of face definitions in a shell (via first usage).
-  //! @param[in] theShell typed shell definition identifier
-  [[nodiscard]] Standard_EXPORT int NbShellFaces(const BRepGraph_ShellId theShell) const;
-
-  //! Access face definition identifier belonging to a shell by index.
-  //! @param[in] theShell typed shell definition identifier
-  //! @param[in] theFaceIndex zero-based face index within the shell
-  [[nodiscard]] Standard_EXPORT BRepGraph_FaceId ShellFaceEntity(const BRepGraph_ShellId theShell,
-                                                                 const int               theFaceIndex) const;
-
   //! Total number of nodes in the graph (all topology + assembly kinds).
   [[nodiscard]] Standard_EXPORT int NbNodes() const;
 
@@ -370,7 +360,8 @@ private:
   friend class BRepGraph_Analyze;
 
   //! @name Private PCurve lookup (implementation detail)
-  //! Public API is BRepGraph_Tool::Edge::FindPCurve() which delegates here.
+  //! Public callers should use BRepGraph_Tool::Edge::FindPCurve(), which
+  //! delegates to these helpers.
 
   //! Find the CoEdge for an edge on a given face, or nullptr if none exists.
   //! @param[in] theEdgeEntity edge definition NodeId

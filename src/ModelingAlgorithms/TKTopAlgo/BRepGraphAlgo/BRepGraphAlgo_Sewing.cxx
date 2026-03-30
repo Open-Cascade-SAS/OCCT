@@ -1105,8 +1105,12 @@ void cutAtIntersections(BRepGraph&                                   theGraph,
     {
       const SplitCandidate& aCand = aUniqueSplits.Value(aSplitIter);
       const BRepGraph_VertexId aVtxNodeId(aCand.VtxIdx);
-      BRepGraph_NodeId        aSubA, aSubB;
-      theGraph.Builder().SplitEdge(aCurrentEdge, aVtxNodeId, aCand.Param, aSubA, aSubB);
+      BRepGraph_EdgeId         aSubA, aSubB;
+      theGraph.Builder().SplitEdge(BRepGraph_EdgeId::FromNodeId(aCurrentEdge),
+                   aVtxNodeId,
+                   aCand.Param,
+                   aSubA,
+                   aSubB);
       aChain.Append(aSubA);
       aCurrentEdge = aSubB;
     }

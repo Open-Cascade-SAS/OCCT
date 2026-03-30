@@ -116,6 +116,11 @@ public:
                             const BRepGraph_NodeId theRoot,
                             BRepGraph_NodeId::Kind theTargetKind);
 
+  //! Reinitialize with a product root and target kind.
+  Standard_EXPORT void Init(const BRepGraph&          theGraph,
+                            const BRepGraph_ProductId theProduct,
+                            BRepGraph_NodeId::Kind    theTargetKind);
+
 private:
   //! Recursive traversal building paths.
   //! @param[in] theDepthBudget remaining recursion budget (derived from total entity count)

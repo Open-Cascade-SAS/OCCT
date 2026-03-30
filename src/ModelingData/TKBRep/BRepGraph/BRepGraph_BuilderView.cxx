@@ -816,52 +816,56 @@ BRepGraph_SolidId BRepGraph::BuilderView::AddSolid()
 
 //=================================================================================================
 
-void BRepGraph::BuilderView::AddFaceToShell(const BRepGraph_ShellId  theShellEntity,
-                                            const BRepGraph_FaceId   theFaceEntity,
-                                            const TopAbs_Orientation theOri)
+BRepGraph_FaceRefId BRepGraph::BuilderView::AddFaceToShell(const BRepGraph_ShellId  theShellEntity,
+                                                           const BRepGraph_FaceId   theFaceEntity,
+                                                           const TopAbs_Orientation theOri)
 {
   BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
   if (!isActiveNode(aStorage, theShellEntity) || !isActiveNode(aStorage, theFaceEntity))
   {
-    return;
+    return BRepGraph_FaceRefId();
   }
 
-  // Append FaceUsage to shell entity.
+  // Append FaceRef to the shell definition.
   BRepGraphInc::FaceRef& aFREntry = aStorage.AppendFaceRef();
   const int              aFRIdx   = aStorage.NbFaceRefs() - 1;
-    aFREntry.RefId                  = BRepGraph_FaceRefId(aFRIdx);
-    aFREntry.ParentId               = theShellEntity;
-    aFREntry.FaceDefId              = theFaceEntity;
-    aFREntry.Orientation            = theOri;
-    myGraph->allocateRefUID(aFREntry.RefId);
-  aStorage.ChangeShell(theShellEntity).FaceRefIds.Append(BRepGraph_FaceRefId(aFRIdx));
+  const BRepGraph_FaceRefId aFaceRefId(aFRIdx);
+  aFREntry.RefId       = aFaceRefId;
+  aFREntry.ParentId    = theShellEntity;
+  aFREntry.FaceDefId   = theFaceEntity;
+  aFREntry.Orientation = theOri;
+  myGraph->allocateRefUID(aFREntry.RefId);
+  aStorage.ChangeShell(theShellEntity).FaceRefIds.Append(aFaceRefId);
 
   myGraph->markModified(theShellEntity);
+  return aFaceRefId;
 }
 
 //=================================================================================================
 
-void BRepGraph::BuilderView::AddShellToSolid(const BRepGraph_SolidId  theSolidEntity,
-                                             const BRepGraph_ShellId  theShellEntity,
-                                             const TopAbs_Orientation theOri)
+BRepGraph_ShellRefId BRepGraph::BuilderView::AddShellToSolid(const BRepGraph_SolidId  theSolidEntity,
+                                                             const BRepGraph_ShellId  theShellEntity,
+                                                             const TopAbs_Orientation theOri)
 {
   BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
   if (!isActiveNode(aStorage, theSolidEntity) || !isActiveNode(aStorage, theShellEntity))
   {
-    return;
+    return BRepGraph_ShellRefId();
   }
 
-  // Append ShellUsage to solid entity.
+  // Append ShellRef to the solid definition.
   BRepGraphInc::ShellRef& aSREntry = aStorage.AppendShellRef();
   const int               aSRIdx   = aStorage.NbShellRefs() - 1;
-    aSREntry.RefId                   = BRepGraph_ShellRefId(aSRIdx);
-    aSREntry.ParentId                = theSolidEntity;
-    aSREntry.ShellDefId              = theShellEntity;
-    aSREntry.Orientation             = theOri;
-    myGraph->allocateRefUID(aSREntry.RefId);
-  aStorage.ChangeSolid(theSolidEntity).ShellRefIds.Append(BRepGraph_ShellRefId(aSRIdx));
+  const BRepGraph_ShellRefId aShellRefId(aSRIdx);
+  aSREntry.RefId       = aShellRefId;
+  aSREntry.ParentId    = theSolidEntity;
+  aSREntry.ShellDefId  = theShellEntity;
+  aSREntry.Orientation = theOri;
+  myGraph->allocateRefUID(aSREntry.RefId);
+  aStorage.ChangeSolid(theSolidEntity).ShellRefIds.Append(aShellRefId);
 
   myGraph->markModified(theSolidEntity);
+  return aShellRefId;
 }
 
 //=================================================================================================
@@ -1908,21 +1912,17 @@ void BRepGraph::BuilderView::applyModificationImpl(
 
 //=================================================================================================
 
-void BRepGraph::BuilderView::SplitEdge(const BRepGraph_NodeId theEdgeEntity,
-                                       const BRepGraph_NodeId theSplitVertex,
-                                       const double           theSplitParam,
-                                       BRepGraph_NodeId&      theSubA,
-                                       BRepGraph_NodeId&      theSubB)
+void BRepGraph::BuilderView::SplitEdge(const BRepGraph_EdgeId   theEdgeEntity,
+                                       const BRepGraph_VertexId theSplitVertex,
+                                       const double             theSplitParam,
+                                       BRepGraph_EdgeId&        theSubA,
+                                       BRepGraph_EdgeId&        theSubB)
 {
-  Standard_ASSERT_RETURN(theEdgeEntity.NodeKind == BRepGraph_NodeId::Kind::Edge,
-                         "SplitEdge: theEdgeEntity must be an Edge node",
-                         Standard_VOID_RETURN);
+  theSubA = BRepGraph_EdgeId();
+  theSubB = BRepGraph_EdgeId();
   Standard_ASSERT_RETURN(theEdgeEntity.Index >= 0
                            && theEdgeEntity.Index < myGraph->myData->myIncStorage.NbEdges(),
                          "SplitEdge: edge index is out of range",
-                         Standard_VOID_RETURN);
-  Standard_ASSERT_RETURN(theSplitVertex.NodeKind == BRepGraph_NodeId::Kind::Vertex,
-                         "SplitEdge: theSplitVertex must be a Vertex node",
                          Standard_VOID_RETURN);
   Standard_ASSERT_RETURN(theSplitVertex.Index >= 0
                            && theSplitVertex.Index < myGraph->myData->myIncStorage.NbVertices(),
@@ -1930,8 +1930,7 @@ void BRepGraph::BuilderView::SplitEdge(const BRepGraph_NodeId theEdgeEntity,
                          Standard_VOID_RETURN);
 
   // Copy all data from the original EdgeDef before appending to vectors (which may reallocate).
-  const BRepGraphInc::EdgeDef& anOrig =
-    myGraph->myData->myIncStorage.Edge(BRepGraph_EdgeId::FromNodeId(theEdgeEntity));
+  const BRepGraphInc::EdgeDef& anOrig = myGraph->myData->myIncStorage.Edge(theEdgeEntity);
   Standard_ASSERT_RETURN(!anOrig.IsRemoved, "SplitEdge: source edge is removed", Standard_VOID_RETURN);
   Standard_ASSERT_RETURN(!anOrig.IsDegenerate,
                          "SplitEdge: degenerate edge cannot be split",
@@ -1960,26 +1959,24 @@ void BRepGraph::BuilderView::SplitEdge(const BRepGraph_NodeId theEdgeEntity,
 
   // Copy wire indices: ReverseIdx may be rebuilt below.
   const NCollection_Vector<BRepGraph_WireId>* aOrigWiresPtr =
-    myGraph->myData->myIncStorage.ReverseIndex().WiresOfEdge(BRepGraph_EdgeId(theEdgeEntity.Index));
+    myGraph->myData->myIncStorage.ReverseIndex().WiresOfEdge(theEdgeEntity);
   const NCollection_Vector<BRepGraph_WireId> aOrigWires =
     aOrigWiresPtr != nullptr ? *aOrigWiresPtr : NCollection_Vector<BRepGraph_WireId>();
 
   // Allocate SubA slot.
   BRepGraphInc::EdgeDef& aSubADef = myGraph->myData->myIncStorage.AppendEdge();
   const int              aSubAIdx = myGraph->myData->myIncStorage.NbEdges() - 1;
-  aSubADef.Id                     = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, aSubAIdx);
-  theSubA                         = aSubADef.Id;
+  aSubADef.Id                     = BRepGraph_EdgeId(aSubAIdx);
+  theSubA                         = BRepGraph_EdgeId(aSubAIdx);
 
   // Allocate SubB slot (note: Appended() may invalidate aSubADef reference - use index).
   BRepGraphInc::EdgeDef& aSubBDef = myGraph->myData->myIncStorage.AppendEdge();
   const int              aSubBIdx = myGraph->myData->myIncStorage.NbEdges() - 1;
-  aSubBDef.Id                     = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, aSubBIdx);
-  theSubB                         = aSubBDef.Id;
+  aSubBDef.Id                     = BRepGraph_EdgeId(aSubBIdx);
+  theSubB                         = BRepGraph_EdgeId(aSubBIdx);
 
   // Build vertex ref entries for the split vertex (no Location since split vertex is new).
-  const BRepGraph_VertexId aSplitVertexDefId = theSplitVertex.IsValid()
-                                                 ? BRepGraph_VertexId::FromNodeId(theSplitVertex)
-                                                 : BRepGraph_VertexId();
+  const BRepGraph_VertexId aSplitVertexDefId = theSplitVertex;
 
   // Create start vertex ref entry for SubA (copy from original edge's start vertex ref).
   BRepGraph_VertexRefId aSubAStartRefId;
