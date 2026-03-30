@@ -36,9 +36,12 @@ class Geom2d_Curve;
 //! Obtained via BRepGraph::Builder().
 //!
 //! Contract notes:
-//! - methods returning `BRepGraph_NodeId` return an invalid id on invalid inputs
-//!   (wrong kind, out-of-range, or removed referenced nodes)
-//! - link-style void methods keep the graph unchanged on invalid inputs
+//! - methods returning typed ids return an invalid id on invalid inputs and do
+//!   not partially modify the graph
+//! - invalid inputs include wrong kind, out-of-range ids, or removed referenced
+//!   nodes unless a method documents a narrower precondition
+//! - link-style void methods keep the graph unchanged on invalid inputs and do
+//!   not report success separately
 //! - `Mut*()` accessors raise `Standard_ProgramError` for invalid or out-of-range ids
 class BRepGraph::BuilderView
 {
@@ -57,7 +60,8 @@ public:
   //! @param[in] theFirst     first curve parameter
   //! @param[in] theLast      last curve parameter
   //! @param[in] theTolerance edge tolerance
-  //! @return NodeId of the new edge definition, or invalid on bad vertex ids
+  //! @return NodeId of the new edge definition, or invalid if either referenced
+  //!         vertex id is invalid, removed, or not a vertex definition
   [[nodiscard]] Standard_EXPORT BRepGraph_NodeId AddEdge(const BRepGraph_NodeId         theStartVtx,
                                                          const BRepGraph_NodeId         theEndVtx,
                                                          const occ::handle<Geom_Curve>& theCurve,
@@ -68,7 +72,8 @@ public:
   //! Add a wire definition to the graph.
   //! Each pair is (EdgeDefId, OrientationInWire).
   //! @param[in] theEdges ordered edge entries
-  //! @return NodeId of the new wire definition
+  //! @return NodeId of the new wire definition, or invalid if any referenced
+  //!         edge entry is invalid
   [[nodiscard]] Standard_EXPORT BRepGraph_NodeId
     AddWire(const NCollection_Vector<std::pair<BRepGraph_NodeId, TopAbs_Orientation>>& theEdges);
 
@@ -77,7 +82,8 @@ public:
   //! @param[in] theOuterWire  outer wire def NodeId
   //! @param[in] theInnerWires inner wire def NodeIds
   //! @param[in] theTolerance  face tolerance
-  //! @return NodeId of the new face definition, or invalid on bad wire ids
+  //! @return NodeId of the new face definition, or invalid if any referenced
+  //!         wire id is invalid, removed, or not a wire definition
   [[nodiscard]] Standard_EXPORT BRepGraph_NodeId
     AddFace(const occ::handle<Geom_Surface>&            theSurface,
             const BRepGraph_NodeId                      theOuterWire,
@@ -124,7 +130,8 @@ public:
 
   //! Add a part product with a root shape node.
   //! @param[in] theShapeRoot root topology NodeId for the part
-  //! @return NodeId of the new product definition, or invalid on a bad root node
+  //! @return NodeId of the new product definition, or invalid if the root is
+  //!         not an active topology definition node
   [[nodiscard]] Standard_EXPORT BRepGraph_NodeId AddProduct(const BRepGraph_NodeId theShapeRoot);
 
   //! Add an assembly product (no root shape, has child occurrences).
@@ -136,7 +143,8 @@ public:
   //! @param[in] theParentProduct      parent assembly product NodeId
   //! @param[in] theReferencedProduct  child product being instantiated
   //! @param[in] thePlacement          local placement relative to parent
-  //! @return NodeId of the new occurrence definition, or invalid on bad inputs
+  //! @return NodeId of the new occurrence definition, or invalid unless the
+  //!         parent is an active assembly product and the referenced product is active
   [[nodiscard]] Standard_EXPORT BRepGraph_NodeId
     AddOccurrence(const BRepGraph_NodeId theParentProduct,
                   const BRepGraph_NodeId theReferencedProduct,
@@ -149,7 +157,9 @@ public:
   //! @param[in] theReferencedProduct  child product being instantiated
   //! @param[in] thePlacement          local placement relative to parent
   //! @param[in] theParentOccurrence   the occurrence that placed the parent product
-  //! @return NodeId of the new occurrence definition, or invalid on bad inputs
+  //! @return NodeId of the new occurrence definition, or invalid unless the
+  //!         parent product, referenced product, and explicit parent occurrence
+  //!         form a valid active assembly chain
   [[nodiscard]] Standard_EXPORT BRepGraph_NodeId
     AddOccurrence(const BRepGraph_NodeId theParentProduct,
                   const BRepGraph_NodeId theReferencedProduct,
@@ -163,7 +173,8 @@ public:
 
   //! Create a new Curve2DRep in storage and return its typed identifier.
   //! Use this when assigning a new PCurve to an existing CoEdge entity
-  //! via MutCoEdge().
+  //! via MutCoEdge(). Prefer AddPCurveToEdge() for the one-shot public route
+  //! when creating and binding a PCurve in one call.
   //! @param[in] theCurve2d the 2D parametric curve handle
   //! @return typed Curve2DRep identifier, or invalid if the curve is null
   [[nodiscard]] Standard_EXPORT BRepGraph_Curve2DRepId
@@ -171,6 +182,9 @@ public:
 
   //! Attach a PCurve to an edge for a given face context.
   //! Creates a new CoEdge entity with Curve2DRep and updates reverse indices.
+  //! Prefer this route when the caller needs to add a face-context PCurve in
+  //! one operation. Use CreateCurve2DRep() with MutCoEdge() when editing an
+  //! existing CoEdge as part of a larger low-level mutation sequence.
   //! @param[in] theEdgeEntity           edge definition NodeId
   //! @param[in] theFaceEntity           face definition NodeId
   //! @param[in] theCurve2d           2D curve geometry
@@ -216,8 +230,8 @@ public:
   //! Prefer BRepGraph_DeferredScope RAII guard.
   //! @warning Deferred mode batches invalidation only; it does NOT serialize
   //! the mutation body. Callers must guarantee exclusive Builder() mutation
-  //! access while deferred mode is active; direct concurrent `Mut*()` usage
-  //! still requires external synchronization around each mutation.
+  //! access for the whole deferred scope; direct concurrent `Mut*()` usage
+  //! still requires external synchronization around the surrounding batch.
   Standard_EXPORT void BeginDeferredInvalidation();
 
   //! End deferred invalidation mode and batch-flush:

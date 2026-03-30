@@ -58,13 +58,13 @@ All queries and mutations go through lightweight view objects obtained from a `B
 
 | View | Accessor | Purpose |
 |------|----------|---------|
-| **TopoView** | `Topo()` | Const topology definition access, entity counts, adjacency queries (SharedEdges, AdjacentFaces, SameDomainFaces) |
+| **TopoView** | `Topo()` | Const topology definition access, representation access, adjacency queries, and raw Product/Occurrence definition storage |
 | **UIDsView** | `UIDs()` | UID allocation, lookup, validity checking |
-| **ShapesView** | `Shapes()` | TopoDS reconstruction, FindNode/HasNode reverse lookup |
-| **CacheView** | `Cache()` | Transient cache access (Set/Get/Remove per-node cached values) |
+| **ShapesView** | `Shapes()` | Cached `Shape()` access, fresh `Reconstruct()`, and FindNode/HasNode reverse lookup |
+| **CacheView** | `Cache()` | Stable public transient cache access (Set/Get/Has/Remove per-node cached values) |
 | **BuilderView** | `Builder()` | Mutations: AddProduct, AddOccurrence, RemoveNode, RemoveSubgraph, MutGuard accessors |
 | **RefsView** | `Refs()` | Reference entry access, RefUID lookup, VersionStamp for refs |
-| **PathView** | `Paths()` | Assembly queries (NbProducts, RootProducts, IsAssembly, IsPart), path traversal (GlobalLocation, GlobalOrientation, PathsTo, NodeLocations, CommonAncestor) |
+| **PathView** | `Paths()` | Assembly-aware queries (RootProducts, IsAssembly, IsPart, NbComponents, Component) and path traversal (GlobalLocation, GlobalOrientation, PathsTo, NodeLocations, CommonAncestor) |
 
 ### Non-View Helpers
 
@@ -77,7 +77,7 @@ All queries and mutations go through lightweight view objects obtained from a `B
 | Accessor | Purpose |
 |----------|---------|
 | `History()` | Mutation history subsystem (lineage records) |
-| `TransientCache()` | Transient algorithm cache (BndBox, UVBounds) - NOT a Layer |
+| `TransientCache()` | Raw transient algorithm cache for low-level algorithms; public callers should prefer `Cache()` |
 | `LayerRegistry()` | Access the GUID-keyed runtime registry of registered layers |
 | `LayerRegistry().RegisterLayer(layer)` | Register a `BRepGraph_Layer` plugin explicitly |
 | `LayerRegistry().FindLayer(guid)` / `LayerRegistry().FindLayer<T>()` | Lookup a registered layer by GUID or layer type |
@@ -206,7 +206,8 @@ flowchart LR
 
 | View | Methods |
 |------|---------|
-| **PathView** | `NbProducts`, `NbOccurrences`, `Product(i)`, `Occurrence(i)`, `RootProducts`, `IsAssembly`, `IsPart`, `NbComponents`, `Component`, `OccurrenceLocation(occId)` |
+| **TopoView** | `NbProducts`, `NbOccurrences`, `Product(i)`, `Occurrence(i)` |
+| **PathView** | `RootProducts`, `IsAssembly`, `IsPart`, `NbComponents`, `Component`, `OccurrenceLocation(occId)` |
 | **BuilderView** | `AddProduct`, `AddAssemblyProduct`, `AddOccurrence` (with optional parent occurrence), `RemoveSubgraph` (cascades to child occurrences), `MutProduct(i)`, `MutOccurrence(i)` (RAII guards) |
 | **Iterator** | `BRepGraph_Iterator<ProductDef>`, `BRepGraph_Iterator<OccurrenceDef>` |
 
@@ -242,6 +243,7 @@ Can also start from a Product to descend through assembly occurrences into topol
 
 `PathView` (via `Paths()`) resolves topology paths:
 
+- `RootProducts()` / `IsAssembly()` / `IsPart()` / `NbComponents()` / `Component()` - assembly-aware product traversal
 -- `GlobalLocation(path)` / `GlobalOrientation(path)` - composed transforms
 -- `PathsTo(node)` - all paths from any root to a given entity (reverse lookup)
 -- `NodeLocations(node)` - all occurrence entries with paths, locations, orientations
@@ -310,7 +312,7 @@ registered cache-kind descriptors with O(1) slot access. NOT a Layer - cleared o
 ### When to Use Which
 
 - Data that must persist and migrate across graph mutations → **Layer**
-- Computed values that can be recomputed from entity state → **TransientCache** (via `CacheView` / `Cache()`)
+- Computed values that can be recomputed from entity state → **TransientCache** (prefer `CacheView` / `Cache()` in public code)
 
 ### Persistence Boundary
 
@@ -386,7 +388,10 @@ Benefits: O(1) allocation (bump-pointer), O(1) destruction (bulk page release). 
 
 ## Build Options
 
-`Build()` accepts optional `BRepGraphInc_Populate::Options`:
+`Build(theShape, theParallel)` uses default `BRepGraphInc_Populate::Options`.
+Use the explicit overload when the caller needs to override optional extraction passes.
+
+`Build()` options:
 
 - `ExtractRegularities` (default true): edge continuity across face pairs.
 - `ExtractVertexPointReps` (default true): vertex parameter representations on curves/surfaces.

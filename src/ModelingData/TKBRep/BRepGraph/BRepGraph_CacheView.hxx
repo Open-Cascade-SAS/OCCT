@@ -18,6 +18,11 @@
 
 //! @brief Non-const view for managing transient cache values on nodes.
 //!
+//! This view is the stable public cache API for BRepGraph callers.
+//! External code should prefer Cache() over direct TransientCache() access.
+//! Raw cache access remains available for low-level algorithms that need
+//! storage-specific operations such as reserve or cross-graph cache transfer.
+//!
 //! Cached values are keyed by BRepGraph_CacheKind descriptors (Handle-based)
 //! and stored as Handle(BRepGraph_CacheValue). Each CacheKind carries a
 //! Standard_GUID for stable identity and is registered in

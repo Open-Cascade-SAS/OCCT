@@ -109,10 +109,14 @@ public:
   //! Move assignment operator.
   Standard_EXPORT BRepGraph& operator=(BRepGraph&&) noexcept;
 
-  //! Build the full graph from a TopoDS_Shape.
+  //! Build the full graph from a TopoDS_Shape using default populate options.
+  //! Use the overload with explicit BRepGraphInc_Populate::Options when the
+  //! caller needs control over optional extraction passes.
   Standard_EXPORT void Build(const TopoDS_Shape& theShape, const bool theParallel = false);
 
-  //! Build the full graph with explicit post-pass control.
+  //! Build the full graph with explicit populate options.
+  //! Use this overload when the caller must enable or disable optional
+  //! extraction passes such as regularity or vertex-point representations.
   Standard_EXPORT void Build(const TopoDS_Shape&                   theShape,
                              const bool                            theParallel,
                              const BRepGraphInc_Populate::Options& theOptions);
@@ -144,21 +148,24 @@ public:
   class BuilderView;
   class PathView;
 
-  //! Access topology definitions and spatial adjacency queries.
+  //! Access topology definitions, representation access, adjacency queries,
+  //! and raw Product/Occurrence definition storage.
+  //! For assembly-aware classification and path-based placement/orientation,
+  //! use Paths().
   [[nodiscard]] Standard_EXPORT const TopoView& Topo() const;
   //! Access unique identifiers.
   [[nodiscard]] Standard_EXPORT const UIDsView& UIDs() const;
-  //! Access topology path resolution queries.
+  //! Access assembly structure, placement, and topology path resolution queries.
   [[nodiscard]] Standard_EXPORT const PathView& Paths() const;
-  //! Access transient cache values.
+  //! Access transient cache values through the stable grouped-view API.
   [[nodiscard]] Standard_EXPORT CacheView& Cache();
-  //! Access transient cache values (const, read-only Get/CacheKinds).
+  //! Access transient cache values (const, read-only Get/Has/CacheKinds).
   [[nodiscard]] Standard_EXPORT const CacheView& Cache() const;
   //! Access reference entries and their UIDs.
   [[nodiscard]] Standard_EXPORT const RefsView& Refs() const;
-  //! Access shape reconstruction.
+  //! Access cached and fresh shape reconstruction.
   [[nodiscard]] Standard_EXPORT const ShapesView& Shapes() const;
-  //! Access programmatic graph construction.
+  //! Access programmatic graph construction and mutation.
   [[nodiscard]] Standard_EXPORT BuilderView& Builder();
   //! Const access provides ValidateMutationBoundary() and IsDeferredMode() only.
   //! All mutation methods require non-const Builder().
@@ -171,11 +178,13 @@ public:
   //! @return history subsystem for tracking modifications
   [[nodiscard]] Standard_EXPORT const BRepGraph_History& History() const;
 
-  //! Access transient cache for algorithm-computed attributes (BndBox, UVBounds).
-  //! Prefer Cache() for the public grouped-view API; this accessor remains for
-  //! lower-level algorithm code that operates directly on BRepGraph_TransientCache.
+  //! Access the raw transient cache for algorithm-computed attributes.
+  //! External callers should prefer Cache(), which is the stable grouped-view
+  //! API. This accessor remains for lower-level algorithm code that needs raw
+  //! cache operations such as reserve, transfer, or direct storage access.
   [[nodiscard]] BRepGraph_TransientCache& TransientCache() { return myTransientCache; }
-  //! Access transient cache for algorithm-computed attributes (const).
+  //! Access the raw transient cache (const).
+  //! Prefer Cache() for normal read access from public callers.
   [[nodiscard]] const BRepGraph_TransientCache& TransientCache() const { return myTransientCache; }
 
   //! Access registered graph layers.
@@ -212,7 +221,7 @@ private:
   [[nodiscard]] Standard_EXPORT BRepGraph_LayerRegistry& layerRegistry();
   [[nodiscard]] Standard_EXPORT const BRepGraph_LayerRegistry& layerRegistry() const;
 
-  //! Access the transient cache.
+  //! Access the raw transient cache for friend algorithms and builders.
   [[nodiscard]] Standard_EXPORT BRepGraph_TransientCache& transientCache();
   [[nodiscard]] Standard_EXPORT const BRepGraph_TransientCache& transientCache() const;
 

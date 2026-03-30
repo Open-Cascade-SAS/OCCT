@@ -25,12 +25,16 @@ class Adaptor3d_CurveOnSurface;
 //!
 //! Provides topology definition lookup, representation lookup, and read-only
 //! adjacency queries over the incidence-table model stored in BRepGraph.
+//! Product and Occurrence accessors in this view expose raw definition storage
+//! only. For assembly-aware classification, child-occurrence traversal, and
+//! path-based placement/orientation queries, use PathView.
 //! Obtained via BRepGraph::Topo().
 //!
 //! ## Soft-deletion convention
 //! Count methods (NbFaces, NbEdges, etc.) return totals including soft-removed
-//! nodes. Use NbActive* variants to exclude removed nodes. Definition accessors
-//! (Face, Edge, etc.) do not filter removed nodes - callers should check
+//! nodes. Prefer NbActive* variants for traversal and validation code that
+//! should ignore removed entities. Definition accessors (Face, Edge, etc.) do
+//! not filter removed nodes - callers should check
 //! IsRemoved() if needed.
 //!
 //! ## TopoView vs RefsView naming
@@ -328,7 +332,8 @@ public:
   //!
   //! Product and Occurrence definitions live in the incidence storage alongside
   //! topology nodes. This view exposes only direct definition lookup and counts.
-  //! For assembly structure queries and placement/path traversal, use PathView.
+  //! Use PathView for part-vs-assembly classification, root-product discovery,
+  //! active child-occurrence traversal, and placement/path queries.
 
   //! Number of product definitions.
   [[nodiscard]] Standard_EXPORT int NbProducts() const;
@@ -343,11 +348,13 @@ public:
   [[nodiscard]] Standard_EXPORT int NbActiveOccurrences() const;
 
   //! Access product definition by typed identifier.
+  //! For part-vs-assembly classification, use PathView::IsPart()/IsAssembly().
   //! @param[in] theProduct typed product definition identifier
   [[nodiscard]] Standard_EXPORT const BRepGraphInc::ProductDef& Product(
     const BRepGraph_ProductId theProduct) const;
 
   //! Access occurrence definition by typed identifier.
+  //! For composed placement, use PathView::OccurrenceLocation() or path-based queries.
   //! @param[in] theOccurrence typed occurrence definition identifier
   [[nodiscard]] Standard_EXPORT const BRepGraphInc::OccurrenceDef& Occurrence(
     const BRepGraph_OccurrenceId theOccurrence) const;

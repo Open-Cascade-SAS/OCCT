@@ -25,7 +25,8 @@
 //! with path-based resolution. All path-based queries use the uniform step
 //! model: the path is walked from root through each step, dispatching on the
 //! current entity kind to resolve ref locations, orientations, and child
-//! entities.
+//! entities. Raw Product and Occurrence definition storage remains on TopoView;
+//! this view is the assembly-aware query layer built on top of those defs.
 //!
 //! ## Usage
 //! @code
@@ -54,6 +55,8 @@ public:
   [[nodiscard]] Standard_EXPORT NCollection_Vector<OccurrenceEntry> NodeLocations(
     const BRepGraph_NodeId theNode) const;
 
+  //! @name Assembly classification and traversal
+
   //! Return NodeIds of all root products (products not referenced by an active occurrence).
   [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> RootProducts() const;
 
@@ -81,7 +84,7 @@ public:
   [[nodiscard]] Standard_EXPORT BRepGraph_NodeId Component(const BRepGraph_ProductId theProduct,
                                                            const int theComponentIdx) const;
 
-  //! Global location at the leaf of the path (all levels composed).
+  //! Global location at the leaf of the path (all levels composed in root-to-leaf order).
   //! Handles assembly occurrences, compound containers, and topology uniformly.
   //! @param[in] thePath fully specified topology path
   //! @return composed TopLoc_Location
@@ -100,7 +103,7 @@ public:
   [[nodiscard]] Standard_EXPORT BRepGraph_NodeId
     LeafNode(const BRepGraph_TopologyPath& thePath) const;
 
-  //! Location composed from root down to step theLevel (0-based).
+  //! Location composed from root down to step theLevel (0-based, inclusive).
   //! Level 0 = first child of root. Level Depth()-1 = leaf.
   //! @param[in] thePath  topology path
   //! @param[in] theLevel step index (0-based)
@@ -156,6 +159,8 @@ public:
     const BRepGraph_NodeId theLeaf) const;
 
   //! Compute the global placement of an occurrence by walking the parent chain.
+  //! Shared products can appear at multiple placements; the returned location is
+  //! specific to the supplied occurrence path through ParentOccurrenceDefId.
   //! @param[in] theOccurrence typed occurrence identifier
   //! @return composed TopLoc_Location from root to the occurrence
   [[nodiscard]] Standard_EXPORT TopLoc_Location

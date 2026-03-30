@@ -23,12 +23,15 @@
 //! reconstruction backend, while Product / Occurrence nodes are assembled at
 //! the facade level using product-local roots and occurrence placement chains.
 //! Provides lookup from original Build()-time shapes back to their graph
-//! NodeIds via TShape pointer comparison.
+//! NodeIds via TShape pointer comparison. Shape() is the stable cached public
+//! route for repeated access; Reconstruct() forces a fresh rebuild with the
+//! same node-kind semantics and bypasses the persistent reconstructed-shape cache.
 //! Obtained via BRepGraph::Shapes().
 class BRepGraph::ShapesView
 {
 public:
   //! Return or reconstruct a TopoDS_Shape for a node.
+  //! Prefer this route for repeated public queries.
   //! Topology definition nodes (Vertex..CompSolid) reconstruct their topology
   //! directly, without assembly wrappers.
   //! Product nodes are reconstructed in product-local coordinates.
@@ -50,6 +53,8 @@ public:
     const BRepGraph_NodeId theNode) const;
 
   //! Reconstruct a TopoDS_Shape from a graph node without using the persistent cache.
+  //! Use this when the caller explicitly needs a fresh rebuild instead of the
+  //! shared cached shape returned by Shape().
   //! Topology definition nodes reconstruct topology directly.
   //! Product nodes are reconstructed in product-local coordinates.
   //! Occurrence nodes are reconstructed with cumulative occurrence placement.

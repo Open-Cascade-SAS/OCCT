@@ -25,11 +25,12 @@
 //! are executed at scope exit.
 //!
 //! Re-entrant: if deferred mode is already active (e.g., nested guard),
-//! the inner guard is a no-op - only the outermost guard flushes and commits.
+//! the inner guard is a no-op. Only the outermost guard flushes and commits,
+//! so nested scopes do not create separate transaction or validation boundaries.
 //!
 //! @warning This guard batches invalidation and propagation; it is NOT a
 //! transaction and does not serialize mutation bodies. Concurrent `Mut*()`
-//! usage still requires external synchronization.
+//! usage still requires external synchronization for the whole guarded scope.
 //!
 //! Usage:
 //! @code
