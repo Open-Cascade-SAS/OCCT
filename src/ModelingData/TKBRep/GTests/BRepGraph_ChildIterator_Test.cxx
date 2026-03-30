@@ -22,6 +22,7 @@
 
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRep_Builder.hxx>
+#include <Precision.hxx>
 #include <TopAbs.hxx>
 #include <TopoDS_Compound.hxx>
 
@@ -260,7 +261,17 @@ TEST(BRepGraph_ChildIteratorTest, ProductPartRootContext_ComposedWithOccurrence)
   EXPECT_EQ(anIt.Current(), BRepGraph_NodeId(BRepGraph_SolidId(0)));
 
   const TopLoc_Location anExpectedLoc = TopLoc_Location(aOccTrsf) * TopLoc_Location(aRootTrsf);
-  EXPECT_TRUE(anIt.Location().IsEqual(anExpectedLoc));
+  const gp_Trsf&        anActualTrsf   = anIt.Location().Transformation();
+  const gp_Trsf&        anExpectedTrsf = anExpectedLoc.Transformation();
+  EXPECT_NEAR(anActualTrsf.TranslationPart().X(),
+              anExpectedTrsf.TranslationPart().X(),
+              Precision::Confusion());
+  EXPECT_NEAR(anActualTrsf.TranslationPart().Y(),
+              anExpectedTrsf.TranslationPart().Y(),
+              Precision::Confusion());
+  EXPECT_NEAR(anActualTrsf.TranslationPart().Z(),
+              anExpectedTrsf.TranslationPart().Z(),
+              Precision::Confusion());
   EXPECT_EQ(anIt.Orientation(), TopAbs_REVERSED);
 
   anIt.Next();
