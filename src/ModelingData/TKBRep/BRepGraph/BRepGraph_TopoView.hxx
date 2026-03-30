@@ -294,11 +294,23 @@ public:
   [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_FaceId> AdjacentFaces(
     const BRepGraph_FaceId theFace) const;
 
+  //! Fill all faces adjacent to a face (sharing at least one edge).
+  //! @param[in] theFace face definition identifier
+  //! @param[out] theResult output vector; cleared at method entry
+  Standard_EXPORT void AdjacentFaces(const BRepGraph_FaceId                  theFace,
+                                     NCollection_Vector<BRepGraph_FaceId>& theResult) const;
+
   //! Return all edge definitions in a face (collected from all wires via coedges).
   //! @param[in] theFace face definition identifier
   //! @return unique edge definition ids (deduplicated)
   [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_EdgeId> EdgesOfFace(
     const BRepGraph_FaceId theFace) const;
+
+  //! Fill all edge definitions in a face (collected from all wires via coedges).
+  //! @param[in] theFace face definition identifier
+  //! @param[out] theResult output vector; cleared at method entry
+  Standard_EXPORT void EdgesOfFace(const BRepGraph_FaceId                  theFace,
+                                   NCollection_Vector<BRepGraph_EdgeId>& theResult) const;
 
   //! Return outer wire definition id of a face, or invalid if none.
   //! @param[in] theFace typed face definition identifier
@@ -311,10 +323,22 @@ public:
   [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_VertexId> VerticesOfEdge(
     const BRepGraph_EdgeId theEdge) const;
 
+  //! Fill start, end, and internal vertex definitions for an edge.
+  //! @param[in] theEdge edge definition identifier
+  //! @param[out] theResult output vector; cleared at method entry
+  Standard_EXPORT void VerticesOfEdge(const BRepGraph_EdgeId                   theEdge,
+                                      NCollection_Vector<BRepGraph_VertexId>& theResult) const;
+
   //! Return all edges sharing a vertex with the given edge (excluding itself).
   //! @param[in] theEdge edge definition identifier
   [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_EdgeId> AdjacentEdges(
     const BRepGraph_EdgeId theEdge) const;
+
+  //! Fill all edges sharing a vertex with the given edge (excluding itself).
+  //! @param[in] theEdge edge definition identifier
+  //! @param[out] theResult output vector; cleared at method entry
+  Standard_EXPORT void AdjacentEdges(const BRepGraph_EdgeId                  theEdge,
+                                     NCollection_Vector<BRepGraph_EdgeId>& theResult) const;
 
   //! True if the edge is referenced by exactly one face (boundary edge).
   //! @param[in] theEdge typed edge definition identifier
@@ -329,6 +353,12 @@ public:
   //! @return unique face definition ids
   [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_FaceId> FacesOfVertex(
     const BRepGraph_VertexId theVertex) const;
+
+  //! Fill all face definitions that share at least one edge with the given vertex.
+  //! @param[in] theVertex vertex definition identifier
+  //! @param[out] theResult output vector; cleared at method entry
+  Standard_EXPORT void FacesOfVertex(const BRepGraph_VertexId                theVertex,
+                                     NCollection_Vector<BRepGraph_FaceId>& theResult) const;
 
   //! @name Representation accessors
 

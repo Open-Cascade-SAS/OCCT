@@ -58,6 +58,17 @@ const occ::handle<BRepGraph_CacheKind>& testUserAttrKind()
     new BRepGraph_CacheKind(Standard_GUID("2f9b6a5c-1f2d-4a88-9c1c-7a0c16a10020"), "ViewsTestAttr");
   return THE_KIND;
 }
+
+template <class theIdType>
+static void expectSameSequence(const NCollection_Vector<theIdType>& theLeft,
+                               const NCollection_Vector<theIdType>& theRight)
+{
+  ASSERT_EQ(theLeft.Length(), theRight.Length());
+  for (int i = 0; i < theLeft.Length(); ++i)
+  {
+    EXPECT_EQ(theLeft.Value(i), theRight.Value(i));
+  }
+}
 } // namespace
 
 class BRepGraph_ViewsTest : public testing::Test
@@ -321,6 +332,76 @@ TEST_F(BRepGraph_ViewsTest, SpatialView_FacesOfEdge_TwoPerBoxEdge)
   BRepGraph_EdgeId                           anEdgeId(0);
   const NCollection_Vector<BRepGraph_FaceId>& aResult = myGraph.Topo().FacesOfEdge(anEdgeId);
   EXPECT_EQ(aResult.Length(), 2);
+}
+
+TEST_F(BRepGraph_ViewsTest, SpatialView_OutParam_Parity)
+{
+  const BRepGraph_FaceId   aFaceId(0);
+  const BRepGraph_EdgeId   anEdgeId(0);
+  const BRepGraph_VertexId aVertexId(0);
+
+  const NCollection_Vector<BRepGraph_FaceId> aAdjacentByValue = myGraph.Topo().AdjacentFaces(aFaceId);
+  NCollection_Vector<BRepGraph_FaceId>       aAdjacentByRef;
+  myGraph.Topo().AdjacentFaces(aFaceId, aAdjacentByRef);
+  expectSameSequence(aAdjacentByValue, aAdjacentByRef);
+
+  const NCollection_Vector<BRepGraph_EdgeId> anEdgesByValue = myGraph.Topo().EdgesOfFace(aFaceId);
+  NCollection_Vector<BRepGraph_EdgeId>       anEdgesByRef;
+  myGraph.Topo().EdgesOfFace(aFaceId, anEdgesByRef);
+  expectSameSequence(anEdgesByValue, anEdgesByRef);
+
+  const NCollection_Vector<BRepGraph_VertexId> aVerticesByValue = myGraph.Topo().VerticesOfEdge(anEdgeId);
+  NCollection_Vector<BRepGraph_VertexId>       aVerticesByRef;
+  myGraph.Topo().VerticesOfEdge(anEdgeId, aVerticesByRef);
+  expectSameSequence(aVerticesByValue, aVerticesByRef);
+
+  const NCollection_Vector<BRepGraph_EdgeId> anAdjEdgesByValue = myGraph.Topo().AdjacentEdges(anEdgeId);
+  NCollection_Vector<BRepGraph_EdgeId>       anAdjEdgesByRef;
+  myGraph.Topo().AdjacentEdges(anEdgeId, anAdjEdgesByRef);
+  expectSameSequence(anAdjEdgesByValue, anAdjEdgesByRef);
+
+  const NCollection_Vector<BRepGraph_FaceId> aFacesByValue = myGraph.Topo().FacesOfVertex(aVertexId);
+  NCollection_Vector<BRepGraph_FaceId>       aFacesByRef;
+  myGraph.Topo().FacesOfVertex(aVertexId, aFacesByRef);
+  expectSameSequence(aFacesByValue, aFacesByRef);
+}
+
+TEST_F(BRepGraph_ViewsTest, SpatialView_OutParam_ClearAndInvalid)
+{
+  NCollection_Vector<BRepGraph_FaceId> aFaceResult;
+  aFaceResult.Append(BRepGraph_FaceId(123));
+  myGraph.Topo().AdjacentFaces(BRepGraph_FaceId(0), aFaceResult);
+  EXPECT_EQ(aFaceResult.Length(), 4);
+  myGraph.Topo().AdjacentFaces(BRepGraph_FaceId(999), aFaceResult);
+  EXPECT_EQ(aFaceResult.Length(), 0);
+
+  NCollection_Vector<BRepGraph_EdgeId> anEdgeResult;
+  anEdgeResult.Append(BRepGraph_EdgeId(123));
+  myGraph.Topo().EdgesOfFace(BRepGraph_FaceId(0), anEdgeResult);
+  EXPECT_EQ(anEdgeResult.Length(), 4);
+  myGraph.Topo().EdgesOfFace(BRepGraph_FaceId(999), anEdgeResult);
+  EXPECT_EQ(anEdgeResult.Length(), 0);
+
+  NCollection_Vector<BRepGraph_VertexId> aVertexResult;
+  aVertexResult.Append(BRepGraph_VertexId(123));
+  myGraph.Topo().VerticesOfEdge(BRepGraph_EdgeId(0), aVertexResult);
+  EXPECT_EQ(aVertexResult.Length(), 2);
+  myGraph.Topo().VerticesOfEdge(BRepGraph_EdgeId(999), aVertexResult);
+  EXPECT_EQ(aVertexResult.Length(), 0);
+
+  NCollection_Vector<BRepGraph_EdgeId> anAdjEdgeResult;
+  anAdjEdgeResult.Append(BRepGraph_EdgeId(123));
+  myGraph.Topo().AdjacentEdges(BRepGraph_EdgeId(0), anAdjEdgeResult);
+  EXPECT_GE(anAdjEdgeResult.Length(), 4);
+  myGraph.Topo().AdjacentEdges(BRepGraph_EdgeId(999), anAdjEdgeResult);
+  EXPECT_EQ(anAdjEdgeResult.Length(), 0);
+
+  NCollection_Vector<BRepGraph_FaceId> aFacesOfVertexResult;
+  aFacesOfVertexResult.Append(BRepGraph_FaceId(123));
+  myGraph.Topo().FacesOfVertex(BRepGraph_VertexId(0), aFacesOfVertexResult);
+  EXPECT_GT(aFacesOfVertexResult.Length(), 0);
+  myGraph.Topo().FacesOfVertex(BRepGraph_VertexId(999), aFacesOfVertexResult);
+  EXPECT_EQ(aFacesOfVertexResult.Length(), 0);
 }
 
 // ---------- BndLib ----------
