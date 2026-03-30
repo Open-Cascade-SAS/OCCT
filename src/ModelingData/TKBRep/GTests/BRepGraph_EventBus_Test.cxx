@@ -16,6 +16,7 @@
 #include <BRepGraph_Layer.hxx>
 #include <BRepGraph_DeferredScope.hxx>
 #include <BRepGraph_TopoView.hxx>
+#include <BRepGraphAlgo_Compact.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <Precision.hxx>
 #include <Standard_GUID.hxx>
@@ -53,14 +54,25 @@ public:
     ++myBatchCallCount;
   }
 
-  void OnNodeRemoved(const BRepGraph_NodeId /*theNode*/,
-                     const BRepGraph_NodeId /*theReplacement*/) noexcept override
+  void OnNodeRemoved(const BRepGraph_NodeId theNode,
+                     const BRepGraph_NodeId theReplacement) noexcept override
   {
+    myLastRemovedNode = theNode;
+    myLastReplacement = theReplacement;
+    ++myRemoveCallCount;
   }
 
   void OnCompact(
-    const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& /*theRemapMap*/) noexcept override
+    const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap) noexcept override
   {
+    myLastRemapMap.Clear();
+    for (NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>::Iterator anIter(theRemapMap);
+         anIter.More();
+         anIter.Next())
+    {
+      myLastRemapMap.Bind(anIter.Key(), anIter.Value());
+    }
+    ++myCompactCallCount;
   }
 
   void InvalidateAll() noexcept override {}
@@ -70,6 +82,11 @@ public:
     myImmediateEvents.Clear();
     myBatchEvents.Clear();
     myBatchCallCount = 0;
+    myRemoveCallCount = 0;
+    myCompactCallCount = 0;
+    myLastRemovedNode = BRepGraph_NodeId();
+    myLastReplacement = BRepGraph_NodeId();
+    myLastRemapMap.Clear();
   }
 
   bool HasImmediateEventFor(BRepGraph_NodeId theNode) const
@@ -100,6 +117,11 @@ public:
   NCollection_Vector<BRepGraph_NodeId> myImmediateEvents;
   NCollection_Vector<BRepGraph_NodeId> myBatchEvents;
   int                                  myBatchCallCount = 0;
+  int                                  myRemoveCallCount = 0;
+  int                                  myCompactCallCount = 0;
+  BRepGraph_NodeId                     myLastRemovedNode;
+  BRepGraph_NodeId                     myLastReplacement;
+  NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId> myLastRemapMap;
 
   DEFINE_STANDARD_RTTIEXT(BRepGraph_ModTrackingLayer, BRepGraph_Layer)
 
@@ -317,6 +339,69 @@ TEST_F(BRepGraph_EventBusTest, UnregisterLayer_FlagUpdate)
   EXPECT_EQ(aLayer->myImmediateEvents.Length(), 0);
 }
 
+TEST_F(BRepGraph_EventBusTest, FindLayer_ByGuid_ReturnsRegisteredLayer)
+{
+  const int aEdgeBit = BRepGraph_Layer::KindBit(BRepGraph_NodeId::Kind::Edge);
+  occ::handle<BRepGraph_ModTrackingLayer> aLayer =
+    new BRepGraph_ModTrackingLayer("Tracker", aEdgeBit);
+
+  myGraph.LayerRegistry().RegisterLayer(aLayer);
+
+  EXPECT_EQ(myGraph.LayerRegistry().FindLayer(aLayer->ID()), aLayer);
+  EXPECT_GE(myGraph.LayerRegistry().FindSlot(aLayer->ID()), 0);
+}
+
+TEST_F(BRepGraph_EventBusTest, OnNodeRemoved_DispatchesReplacement)
+{
+  occ::handle<BRepGraph_ModTrackingLayer> aLayer =
+    new BRepGraph_ModTrackingLayer("Tracker", 0);
+  myGraph.LayerRegistry().RegisterLayer(aLayer);
+
+  const BRepGraph_NodeId anOldEdge = BRepGraph_NodeId::Edge(0);
+  const BRepGraph_NodeId aNewEdge  = BRepGraph_NodeId::Edge(1);
+  myGraph.Builder().RemoveNode(anOldEdge, aNewEdge);
+
+  EXPECT_EQ(aLayer->myRemoveCallCount, 1);
+  EXPECT_EQ(aLayer->myLastRemovedNode, anOldEdge);
+  EXPECT_EQ(aLayer->myLastReplacement, aNewEdge);
+}
+
+TEST_F(BRepGraph_EventBusTest, OnNodeRemoved_DispatchesInvalidReplacementForPureDeletion)
+{
+  occ::handle<BRepGraph_ModTrackingLayer> aLayer =
+    new BRepGraph_ModTrackingLayer("Tracker", 0);
+  myGraph.LayerRegistry().RegisterLayer(aLayer);
+
+  const BRepGraph_NodeId aFaceId = BRepGraph_NodeId::Face(0);
+  myGraph.Builder().RemoveNode(aFaceId);
+
+  EXPECT_EQ(aLayer->myRemoveCallCount, 1);
+  EXPECT_EQ(aLayer->myLastRemovedNode, aFaceId);
+  EXPECT_FALSE(aLayer->myLastReplacement.IsValid());
+}
+
+TEST_F(BRepGraph_EventBusTest, OnCompact_DispatchesRemapToRegisteredLayers)
+{
+  occ::handle<BRepGraph_ModTrackingLayer> aLayer =
+    new BRepGraph_ModTrackingLayer("Tracker", 0);
+  myGraph.LayerRegistry().RegisterLayer(aLayer);
+
+  myGraph.Builder().RemoveNode(BRepGraph_NodeId::Face(0));
+  const int aNbFacesBefore = myGraph.Topo().NbFaces();
+
+  const BRepGraphAlgo_Compact::Result aResult = BRepGraphAlgo_Compact::Perform(myGraph);
+  (void)aResult;
+
+  EXPECT_EQ(aLayer->myCompactCallCount, 1);
+  EXPECT_EQ(myGraph.Topo().NbFaces(), aNbFacesBefore - 1);
+
+  const BRepGraph_NodeId* aNewFaceId = aLayer->myLastRemapMap.Seek(BRepGraph_NodeId::Face(1));
+  ASSERT_NE(aNewFaceId, nullptr);
+  EXPECT_EQ(aNewFaceId->NodeKind, BRepGraph_NodeId::Kind::Face);
+  EXPECT_EQ(aNewFaceId->Index, 0);
+  EXPECT_EQ(aLayer->myLastRemapMap.Seek(BRepGraph_NodeId::Face(0)), nullptr);
+}
+
 TEST_F(BRepGraph_EventBusTest, MultipleSubscribers)
 {
   occ::handle<BRepGraph_ModTrackingLayer> aEdgeLayer =
@@ -352,8 +437,8 @@ TEST_F(BRepGraph_EventBusTest, DefaultSubscribedKinds_Zero)
   // SubscribedKinds() == 0 in BRepGraph_Layer base default implementation.
   EXPECT_EQ(aDefaultLayer->SubscribedKinds(), 0);
 
-  // Mutate - NameLayer should not receive modification events.
-  // (We just verify no crash; NameLayer has no event tracking.)
+  // Mutate - a layer with default SubscribedKinds() should not receive modification events.
+  // This just verifies the default no-subscription path remains a no-op.
   {
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
     aMut->Tolerance                              = 0.5;

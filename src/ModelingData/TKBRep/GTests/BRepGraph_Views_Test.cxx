@@ -233,6 +233,49 @@ TEST_F(BRepGraph_ViewsTest, AttrsView_Remove_Works)
   EXPECT_TRUE(myGraph.Cache().Get(aFaceId, testUserAttrKind()).IsNull());
 }
 
+TEST_F(BRepGraph_ViewsTest, AttrsView_PublicAndRawAccess_ShareStorage)
+{
+  BRepGraph_NodeId                     aFaceId(BRepGraph_NodeId::Kind::Face, 0);
+  occ::handle<BRepGraph_CacheValue> anAttr = new TestCacheValue();
+  myGraph.Cache().Set(aFaceId, testUserAttrKind(), anAttr);
+
+  const uint32_t aSubtreeGen = myGraph.Topo().Face(BRepGraph_FaceId(0)).SubtreeGen;
+  const occ::handle<BRepGraph_CacheValue> aRawValue =
+    myGraph.TransientCache().Get(aFaceId, testUserAttrKind(), aSubtreeGen);
+
+  EXPECT_EQ(aRawValue, anAttr);
+  EXPECT_EQ(myGraph.Cache().Get(aFaceId, testUserAttrKind()), anAttr);
+}
+
+TEST_F(BRepGraph_ViewsTest, AttrsView_MutFace_InvalidatesEntry)
+{
+  BRepGraph_NodeId                     aFaceId(BRepGraph_NodeId::Kind::Face, 0);
+  occ::handle<BRepGraph_CacheValue> anAttr = new TestCacheValue();
+  myGraph.Cache().Set(aFaceId, testUserAttrKind(), anAttr);
+  ASSERT_TRUE(myGraph.Cache().Has(aFaceId, testUserAttrKind()));
+
+  {
+    BRepGraph_MutGuard<BRepGraphInc::FaceDef> aFace = myGraph.Builder().MutFace(BRepGraph_FaceId(0));
+    aFace->Tolerance += 0.1;
+  }
+
+  EXPECT_FALSE(myGraph.Cache().Has(aFaceId, testUserAttrKind()));
+  EXPECT_TRUE(myGraph.Cache().Get(aFaceId, testUserAttrKind()).IsNull());
+}
+
+TEST_F(BRepGraph_ViewsTest, AttrsView_RemoveNode_InvalidatesEntry)
+{
+  BRepGraph_NodeId                     aFaceId(BRepGraph_NodeId::Kind::Face, 0);
+  occ::handle<BRepGraph_CacheValue> anAttr = new TestCacheValue();
+  myGraph.Cache().Set(aFaceId, testUserAttrKind(), anAttr);
+  ASSERT_TRUE(myGraph.Cache().Has(aFaceId, testUserAttrKind()));
+
+  myGraph.Builder().RemoveNode(aFaceId);
+
+  EXPECT_TRUE(myGraph.Topo().IsRemoved(aFaceId));
+  EXPECT_FALSE(myGraph.Cache().Has(aFaceId, testUserAttrKind()));
+}
+
 TEST_F(BRepGraph_ViewsTest, RefsView_ActiveCounts_MatchFreshBuild)
 {
   EXPECT_EQ(myGraph.Refs().NbActiveShellRefs(), myGraph.Refs().NbShellRefs());

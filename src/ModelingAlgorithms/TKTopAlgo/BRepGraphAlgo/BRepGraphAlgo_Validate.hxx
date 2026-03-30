@@ -45,6 +45,16 @@
 //! | Entity ID positional integrity |      -      |  YES  |
 //! | UID round-trip integrity       |      -      |  YES  |
 //! | Assembly DAG cycle detection   |      -      |  YES  |
+//!
+//! ### Mode Guidance
+//!
+//! | Mode | What it checks | Cost | Recommended use |
+//! |------|----------------|------|-----------------|
+//! | `Lightweight` | Active entity count boundary only | Low | Hot-path release builds when the graph structure is already trusted |
+//! | `Audit` | Full structural audit from cross-reference bounds through assembly DAG cycle detection | Higher | Default validation mode for production pipelines, test gates, and API-boundary verification |
+//!
+//! For production pipelines, prefer `Mode::Audit`; `Mode::Lightweight` is intended
+//! for hot-path release builds where the graph structure is already trusted.
 class BRepGraphAlgo_Validate
 {
 public:
@@ -63,9 +73,7 @@ public:
     //! Fast boundary-oriented checks for frequent validation points.
     Lightweight,
     //! Full structural audit (superset of Lightweight).
-    Audit,
-    //! Backward-compatible alias.
-    DeepAudit = Audit
+    Audit
   };
 
   //! A single structural issue found in the graph.
@@ -118,9 +126,6 @@ public:
       anOptions.ValidationMode = Mode::Lightweight;
       return anOptions;
     }
-
-    //! Build options for deep-audit validation.
-    static Options DeepAudit() { return Audit(); }
 
     //! Build options for full-audit validation.
     static Options Audit()

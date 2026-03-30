@@ -13,6 +13,7 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_BuilderView.hxx>
+#include <BRepGraph_DeferredScope.hxx>
 #include <BRepGraph_PathView.hxx>
 #include "BRepGraph_RefTestTools.hxx"
 #include <BRepGraph_TopoView.hxx>
@@ -220,6 +221,30 @@ TEST_F(BRepGraph_DeferredInvalidationTest, EndWithoutBegin_IsIdempotent)
   // Nothing should be mutated or cleared.
   EXPECT_EQ(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).OwnGen, 0u);
   EXPECT_EQ(myGraph.Topo().Solid(BRepGraph_SolidId(0)).OwnGen, 0u);
+}
+
+TEST_F(BRepGraph_DeferredInvalidationTest, DeferredScope_NestedGuards_FlushOnlyOnOuterDestruction)
+{
+  const NCollection_Vector<BRepGraph_WireId>& aWires = myGraph.Topo().WiresOfEdge(BRepGraph_EdgeId(0));
+  ASSERT_GT(aWires.Length(), 0);
+  const BRepGraph_WireId aWireId = aWires.Value(0);
+
+  {
+    BRepGraph_DeferredScope anOuterScope(myGraph);
+    EXPECT_TRUE(myGraph.Builder().IsDeferredMode());
+
+    {
+      BRepGraph_DeferredScope anInnerScope(myGraph);
+      EXPECT_TRUE(myGraph.Builder().IsDeferredMode());
+      myGraph.Builder().MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
+    }
+
+    EXPECT_TRUE(myGraph.Builder().IsDeferredMode());
+    EXPECT_EQ(myGraph.Topo().Wire(aWireId).SubtreeGen, 0u);
+  }
+
+  EXPECT_FALSE(myGraph.Builder().IsDeferredMode());
+  EXPECT_GT(myGraph.Topo().Wire(aWireId).SubtreeGen, 0u);
 }
 
 TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_DoubleEnd_IsIdempotent)

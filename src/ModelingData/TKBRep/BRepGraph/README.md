@@ -402,6 +402,21 @@ Use the explicit overload when the caller needs to override optional extraction 
 
 `Builder().CommitMutation()` validates reverse index + active entity counts. Called at end of Sewing, Compact, Deduplicate.
 
+### Validation Pipeline
+
+`BRepGraphAlgo_Validate` checks structural graph invariants, not geometric validity. Use `Mode::Lightweight` only for cheap boundary checks on graphs whose structure is already trusted. For CI, integration tests, and production API boundaries, prefer `Mode::Audit`, which adds cross-reference, reverse-index, UID, and assembly-cycle checks.
+
+If the caller also needs geometric/topological validity of reconstructed shapes, run `BRepGraphAlgo_Validate` first for graph integrity, then run the shape-level validation stack separately.
+
+```cpp
+const BRepGraphAlgo_Validate::Result aResult =
+  BRepGraphAlgo_Validate::Perform(aGraph, BRepGraphAlgo_Validate::Mode::Audit);
+if (!aResult.IsValid())
+{
+  // inspect aResult.Issues before continuing
+}
+```
+
 ## Practical Guidance
 
 1. Treat BRepGraph as API boundary and BRepGraphInc as implementation backend.

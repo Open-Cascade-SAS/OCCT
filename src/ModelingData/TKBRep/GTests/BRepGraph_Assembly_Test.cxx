@@ -23,6 +23,7 @@
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <Precision.hxx>
+#include <Standard_ProgramError.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Iterator.hxx>
@@ -104,6 +105,18 @@ TEST(BRepGraph_AssemblyTest, AddProduct_IsPart)
   EXPECT_EQ(aProductId.NodeKind, BRepGraph_NodeId::Kind::Product);
   EXPECT_TRUE(aGraph.Paths().IsPart(BRepGraph_ProductId(aProductId.Index)));
   EXPECT_FALSE(aGraph.Paths().IsAssembly(BRepGraph_ProductId(aProductId.Index)));
+}
+
+TEST(BRepGraph_AssemblyTest, AddProduct_InvalidShapeRoot_ReturnsInvalid)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  EXPECT_FALSE(aGraph.Builder().AddProduct(BRepGraph_NodeId::Product(0)).IsValid());
+
+  aGraph.Builder().RemoveNode(BRepGraph_NodeId::Solid(0));
+  EXPECT_FALSE(aGraph.Builder().AddProduct(BRepGraph_NodeId::Solid(0)).IsValid());
 }
 
 // =============================================================================
@@ -339,6 +352,16 @@ TEST(BRepGraph_AssemblyTest, MutOccurrence_Placement)
   const gp_Trsf& aStoredTrsf =
     aGraph.Topo().Occurrence(BRepGraph_OccurrenceId(anOccId.Index)).Placement.Transformation();
   EXPECT_NEAR(aStoredTrsf.TranslationPart().X(), 50.0, Precision::Confusion());
+}
+
+TEST(BRepGraph_AssemblyTest, MutInvalidAssemblyDefs_ThrowProgramError)
+{
+  BRepGraph aGraph;
+#if !defined(No_Exception)
+  EXPECT_THROW((void)aGraph.Builder().MutProduct(BRepGraph_ProductId(7)), Standard_ProgramError);
+  EXPECT_THROW((void)aGraph.Builder().MutOccurrence(BRepGraph_OccurrenceId(7)),
+               Standard_ProgramError);
+#endif
 }
 
 // =============================================================================

@@ -387,6 +387,20 @@ TEST(BRepGraph_BuilderTest, RemoveInvalidNode_NoError)
   aGraph.Builder().RemoveNode(anInvalidId); // Should not crash.
 }
 
+TEST(BRepGraph_BuilderTest, RemoveAlreadyRemovedNode_NoError)
+{
+  BRepGraph aGraph;
+
+  const BRepGraph_NodeId aVertexId = aGraph.Builder().AddVertex(gp_Pnt(1.0, 2.0, 3.0), 0.001);
+  ASSERT_TRUE(aVertexId.IsValid());
+
+  aGraph.Builder().RemoveNode(aVertexId);
+  EXPECT_TRUE(aGraph.Topo().IsRemoved(aVertexId));
+
+  EXPECT_NO_THROW(aGraph.Builder().RemoveNode(aVertexId));
+  EXPECT_TRUE(aGraph.Topo().IsRemoved(aVertexId));
+}
+
 // ============================================================
 // Item 1: Complete Construction API (Shell/Solid linking)
 // ============================================================
@@ -452,12 +466,17 @@ TEST(BRepGraph_BuilderTest, AddShellToSolid_CreatesUsage)
   EXPECT_EQ(BRepGraph_TestTools::CountShellRefsOfSolid(aGraph, BRepGraph_SolidId(0)), 1);
 }
 
-TEST(BRepGraph_BuilderTest, MutInvalidVertex_ThrowsProgramError)
+TEST(BRepGraph_BuilderTest, MutInvalidTopologyDefs_ThrowProgramError)
 {
   BRepGraph aGraph;
 #if !defined(No_Exception)
-
   EXPECT_THROW((void)aGraph.Builder().MutVertex(BRepGraph_VertexId(7)), Standard_ProgramError);
+  EXPECT_THROW((void)aGraph.Builder().MutEdge(BRepGraph_EdgeId(7)), Standard_ProgramError);
+  EXPECT_THROW((void)aGraph.Builder().MutWire(BRepGraph_WireId(7)), Standard_ProgramError);
+  EXPECT_THROW((void)aGraph.Builder().MutFace(BRepGraph_FaceId(7)), Standard_ProgramError);
+  EXPECT_THROW((void)aGraph.Builder().MutShell(BRepGraph_ShellId(7)), Standard_ProgramError);
+  EXPECT_THROW((void)aGraph.Builder().MutSolid(BRepGraph_SolidId(7)), Standard_ProgramError);
+  EXPECT_THROW((void)aGraph.Builder().MutCoEdge(BRepGraph_CoEdgeId(7)), Standard_ProgramError);
 #endif
 }
 

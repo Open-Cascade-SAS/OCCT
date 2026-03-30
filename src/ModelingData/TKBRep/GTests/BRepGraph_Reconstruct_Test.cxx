@@ -378,6 +378,63 @@ TEST(BRepGraph_ReconstructTest, Shape_UnmodifiedGraph_SameAsOriginalOf)
   EXPECT_TRUE(aShapeResult.IsSame(anOriginal));
 }
 
+TEST(BRepGraph_ReconstructTest, HasOriginal_BuildFace_ReturnsTrue)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+
+  BRepGraph aGraph;
+  aGraph.Build(aBox);
+  ASSERT_TRUE(aGraph.IsDone());
+
+  EXPECT_TRUE(aGraph.Shapes().HasOriginal(BRepGraph_NodeId::Face(0)));
+}
+
+TEST(BRepGraph_ReconstructTest, OriginalOf_Face_IsSameAsBuildInputFace)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+
+  TopExp_Explorer anExp(aBox, TopAbs_FACE);
+  ASSERT_TRUE(anExp.More());
+  const TopoDS_Shape aFirstFace = anExp.Current();
+
+  BRepGraph aGraph;
+  aGraph.Build(aBox);
+  ASSERT_TRUE(aGraph.IsDone());
+
+  EXPECT_TRUE(aGraph.Shapes().OriginalOf(BRepGraph_NodeId::Face(0)).IsSame(aFirstFace));
+}
+
+TEST(BRepGraph_ReconstructTest, HasOriginal_ManualVertex_ReturnsFalse)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+
+  BRepGraph aGraph;
+  aGraph.Build(aBox);
+  ASSERT_TRUE(aGraph.IsDone());
+
+  const BRepGraph_NodeId aVertexId = aGraph.Builder().AddVertex(gp_Pnt(42.0, 0.0, 0.0), 0.001);
+  ASSERT_TRUE(aVertexId.IsValid());
+
+  EXPECT_FALSE(aGraph.Shapes().HasOriginal(aVertexId));
+}
+
+TEST(BRepGraph_ReconstructTest, FindNode_OriginalFace_RoundTrip)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+
+  BRepGraph aGraph;
+  aGraph.Build(aBox);
+  ASSERT_TRUE(aGraph.IsDone());
+
+  const BRepGraph_NodeId aFaceId = BRepGraph_NodeId::Face(0);
+  const TopoDS_Shape&    anOriginalFace = aGraph.Shapes().OriginalOf(aFaceId);
+  EXPECT_EQ(aGraph.Shapes().FindNode(anOriginalFace), aFaceId);
+}
+
 TEST(BRepGraph_ReconstructTest, Reconstruct_Face_ValidShape)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);

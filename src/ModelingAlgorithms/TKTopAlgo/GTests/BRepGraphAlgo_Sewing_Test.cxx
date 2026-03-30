@@ -1487,7 +1487,7 @@ TEST(BRepGraphAlgo_SewingTest, SeamEdge_CorruptedDualPCurve_DetectedByValidator)
   aCoEdgeDef->Curve2DRepId = BRepGraph_Curve2DRepId(aGraph.Topo().NbCurves2D() + 1);
 
   const BRepGraphAlgo_Validate::Result aAuditResult =
-    BRepGraphAlgo_Validate::Perform(aGraph, BRepGraphAlgo_Validate::Options::DeepAudit());
+    BRepGraphAlgo_Validate::Perform(aGraph, BRepGraphAlgo_Validate::Options::Audit());
   EXPECT_FALSE(aAuditResult.IsValid())
     << "Corrupted seam edge PCurve should be detected by audit.";
   EXPECT_GT(aAuditResult.NbIssues(BRepGraphAlgo_Validate::Severity::Error), 0);
