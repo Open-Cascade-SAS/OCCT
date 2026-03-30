@@ -37,6 +37,8 @@
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
 
+#include <NCollection_IncAllocator.hxx>
+
 #include <gtest/gtest.h>
 
 namespace
@@ -447,7 +449,9 @@ TEST(BRepGraphAlgo_ValidateTest, AssemblyGraph_ValidProduct_NoIssuesInAudit)
   ASSERT_GE(aGraph.Topo().NbProducts(), 1);
 
   // Identify the auto-created part product.
-  const NCollection_Vector<BRepGraph_ProductId> aInitialRootProducts = aGraph.Paths().RootProducts();
+  const occ::handle<NCollection_BaseAllocator> anAllocator = new NCollection_IncAllocator();
+  NCollection_Vector<BRepGraph_ProductId> aInitialRootProducts(4);
+  aGraph.Paths().RootProducts(aInitialRootProducts, anAllocator);
   ASSERT_GT(aInitialRootProducts.Length(), 0);
   const BRepGraph_ProductId aPartProduct = aInitialRootProducts.Value(0);
   ASSERT_TRUE(aGraph.Paths().IsPart(aPartProduct));
@@ -536,7 +540,9 @@ TEST(BRepGraphAlgo_ValidateTest, AssemblyGraph_CorruptedOccurrenceProductDefId_D
   const BRepGraph_ProductId aRootAssembly = aGraph.Builder().AddAssemblyProduct();
   ASSERT_TRUE(aRootAssembly.IsValid());
 
-  const NCollection_Vector<BRepGraph_ProductId> aRootProducts = aGraph.Paths().RootProducts();
+  const occ::handle<NCollection_BaseAllocator> anAllocator = new NCollection_IncAllocator();
+  NCollection_Vector<BRepGraph_ProductId> aRootProducts(4);
+  aGraph.Paths().RootProducts(aRootProducts, anAllocator);
   BRepGraph_ProductId                           aPartId;
   for (int i = 0; i < aRootProducts.Length(); ++i)
   {

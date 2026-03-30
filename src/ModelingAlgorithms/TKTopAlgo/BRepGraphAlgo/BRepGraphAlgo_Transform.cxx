@@ -17,6 +17,7 @@
 #include <BRepGraphInc_Reference.hxx>
 #include <BRepGraphInc_Representation.hxx>
 #include <BRepGraphAlgo_Copy.hxx>
+#include <NCollection_IncAllocator.hxx>
 #include <NCollection_Map.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_PathView.hxx>
@@ -89,7 +90,9 @@ void BRepGraphAlgo_Transform::applyLocationTransform(BRepGraph& theGraph, const 
   // Product::RootLocation participates in path composition
   // (PathView::stepLocation, walkToLevel), so all descendant
   // queries automatically include it.
-  const NCollection_Vector<BRepGraph_ProductId> aRoots = theGraph.Paths().RootProducts();
+  const occ::handle<NCollection_BaseAllocator> anAllocator = new NCollection_IncAllocator();
+  NCollection_Vector<BRepGraph_ProductId> aRoots(4);
+  theGraph.Paths().RootProducts(aRoots, anAllocator);
   for (int anIdx = 0; anIdx < aRoots.Length(); ++anIdx)
   {
     BRepGraph_MutGuard<BRepGraphInc::ProductDef> aProduct =

@@ -16,6 +16,7 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_TopologyPath.hxx>
+#include <NCollection_BaseAllocator.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopLoc_Location.hxx>
 
@@ -34,9 +35,10 @@
 //! explicitly via BRepGraph_TopologyPath.
 //! @code
 //!   BRepGraph_Explorer anExp(aGraph, BRepGraph_SolidId(0), Kind::Face);
+//!   const occ::handle<NCollection_BaseAllocator> anAllocator = ...;
 //!   for (; anExp.More(); anExp.Next())
 //!   {
-//!     TopLoc_Location aFaceLoc = aGraph.Paths().GlobalLocation(anExp.CurrentPath());
+//!     TopLoc_Location aFaceLoc = aGraph.Paths().GlobalLocation(anExp.CurrentPath(anAllocator));
 //!   }
 //! @endcode
 //!
@@ -56,13 +58,23 @@ public:
   //! @note Computed on demand via reverse index walk. No caching.
   //! Time scales with the number of active paths reaching theNode.
   //! @param[in] theNode entity to find all occurrences of
-  [[nodiscard]] Standard_EXPORT NCollection_Vector<OccurrenceEntry> NodeLocations(
-    const BRepGraph_NodeId theNode) const;
+  //! Fill all occurrence entries for a node: paths, locations, orientations.
+  //! @param[in] theNode entity to find all occurrences of
+  //! @param[out] theResult output vector; cleared at method entry
+  //! @param[in] theAllocator allocator for internal temporaries and path step storage
+  Standard_EXPORT void NodeLocations(const BRepGraph_NodeId              theNode,
+                                     NCollection_Vector<OccurrenceEntry>& theResult,
+                                     const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
   //! @name Assembly classification and traversal
 
   //! Return typed identifiers of all root products (products not referenced by an active occurrence).
-  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_ProductId> RootProducts() const;
+  //! Fill typed identifiers of all root products (products not referenced by an active occurrence).
+  //! @param[out] theResult output vector; cleared at method entry
+  //! @param[in] theAllocator allocator for internal temporaries
+  Standard_EXPORT void RootProducts(
+    NCollection_Vector<BRepGraph_ProductId>&             theResult,
+    const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
   //! True if the product is an assembly (has child occurrences, no topology root).
   //! @param[in] theProduct typed product definition identifier
@@ -136,31 +148,56 @@ public:
   //! Truncate path to theLevel steps (returns new path addressing that entity).
   //! @param[in] thePath  topology path
   //! @param[in] theLevel number of steps to keep
+  //! @param[in] theAllocator allocator for the new truncated path
   [[nodiscard]] Standard_EXPORT BRepGraph_TopologyPath
-    Truncated(const BRepGraph_TopologyPath& thePath, const int theLevel) const;
+    Truncated(const BRepGraph_TopologyPath&             thePath,
+              const int                                 theLevel,
+              const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
   //! True if the path passes through the given entity at any level.
   [[nodiscard]] Standard_EXPORT bool PathContains(const BRepGraph_TopologyPath& thePath,
                                                   const BRepGraph_NodeId        theNode) const;
 
   //! Filter paths: keep only those that pass through theNode.
-  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_TopologyPath> FilterByInclude(
-    const NCollection_Vector<BRepGraph_TopologyPath>& thePaths,
-    const BRepGraph_NodeId                            theNode) const;
+  //! Filter paths: keep only those that pass through theNode.
+  //! @param[in] thePaths input paths
+  //! @param[in] theNode node that must be present in kept paths
+  //! @param[out] theResult output vector; cleared at method entry
+  //! @param[in] theAllocator allocator for copied output paths
+  Standard_EXPORT void FilterByInclude(const NCollection_Vector<BRepGraph_TopologyPath>& thePaths,
+                                       const BRepGraph_NodeId                            theNode,
+                                       NCollection_Vector<BRepGraph_TopologyPath>& theResult,
+                                       const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
   //! Filter paths: remove those that pass through theNode.
-  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_TopologyPath> FilterByExclude(
-    const NCollection_Vector<BRepGraph_TopologyPath>& thePaths,
-    const BRepGraph_NodeId                            theNode) const;
+  //! Filter paths: remove those that pass through theNode.
+  //! @param[in] thePaths input paths
+  //! @param[in] theNode node that must be absent in kept paths
+  //! @param[out] theResult output vector; cleared at method entry
+  //! @param[in] theAllocator allocator for copied output paths
+  Standard_EXPORT void FilterByExclude(const NCollection_Vector<BRepGraph_TopologyPath>& thePaths,
+                                       const BRepGraph_NodeId                            theNode,
+                                       NCollection_Vector<BRepGraph_TopologyPath>& theResult,
+                                       const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
   //! All paths from any root to the given entity.
-  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_TopologyPath> PathsTo(
-    const BRepGraph_NodeId theNode) const;
+  //! Fill all paths from any root to the given entity.
+  //! @param[in] theNode entity to resolve from all roots
+  //! @param[out] theResult output vector; cleared at method entry
+  //! @param[in] theAllocator allocator for internal temporaries and path step storage
+  Standard_EXPORT void PathsTo(const BRepGraph_NodeId                       theNode,
+                               NCollection_Vector<BRepGraph_TopologyPath>& theResult,
+                               const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
-  //! All paths from a specific root to the given entity.
-  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_TopologyPath> PathsFromTo(
-    const BRepGraph_NodeId theRoot,
-    const BRepGraph_NodeId theLeaf) const;
+  //! Fill all paths from a specific root to the given entity.
+  //! @param[in] theRoot root node
+  //! @param[in] theLeaf leaf node
+  //! @param[out] theResult output vector; cleared at method entry
+  //! @param[in] theAllocator allocator for path step storage
+  Standard_EXPORT void PathsFromTo(const BRepGraph_NodeId                       theRoot,
+                                   const BRepGraph_NodeId                       theLeaf,
+                                   NCollection_Vector<BRepGraph_TopologyPath>& theResult,
+                                   const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
   //! Compute the global placement of an occurrence by walking the parent chain.
   //! Shared products can appear at multiple placements; the returned location is
@@ -183,10 +220,12 @@ public:
   //! Both paths must share the same root; otherwise returns an invalid path.
   //! @param[in] thePath1  first path
   //! @param[in] thePath2  second path
+  //! @param[in] theAllocator allocator for the returned common path
   //! @return longest common prefix path, or invalid path if roots differ
   [[nodiscard]] Standard_EXPORT BRepGraph_TopologyPath
     CommonAncestor(const BRepGraph_TopologyPath& thePath1,
-                   const BRepGraph_TopologyPath& thePath2) const;
+                   const BRepGraph_TopologyPath& thePath2,
+                   const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
   //! Check if theAncestorPath is a prefix of theDescendantPath.
   //! @param[in] theAncestorPath    candidate ancestor path
@@ -198,10 +237,11 @@ public:
 
   //! Enumerate all resolved nodes along a path, including root, intermediates
   //! (expanding 1:1 transitions), and leaf.
-  //! @param[in] thePath  topology path
-  //! @return vector of NodeIds in walk order
-  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> AllNodesOnPath(
-    const BRepGraph_TopologyPath& thePath) const;
+  //! Fill all resolved nodes along a path, including root, intermediates, and leaf.
+  //! @param[in] thePath topology path
+  //! @param[out] theResult output vector; cleared at method entry
+  Standard_EXPORT void AllNodesOnPath(const BRepGraph_TopologyPath& thePath,
+                                      NCollection_Vector<BRepGraph_NodeId>& theResult) const;
 
 private:
   friend class BRepGraph;
@@ -245,43 +285,62 @@ private:
   BRepGraph_NodeId transitChild(const BRepGraph_NodeId theNode) const;
 
   //! Reverse walk to discover all paths to a node (no location composition).
-  //! Uses a conservative depth budget to prevent infinite recursion on malformed graphs.
-  NCollection_Vector<BRepGraph_TopologyPath> reverseWalkPaths(const BRepGraph_NodeId theNode) const;
+  //! @param[in] theNode target node
+  //! @param[out] theResult output paths; cleared at method entry
+  void reverseWalkPaths(const BRepGraph_NodeId                       theNode,
+                        NCollection_Vector<BRepGraph_TopologyPath>& theResult,
+                        const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
   //! Depth-budgeted reverse walk (decrements budget on each recursive call).
-  NCollection_Vector<BRepGraph_TopologyPath> reverseWalkPaths(const BRepGraph_NodeId theNode,
-                                                              const int theDepthBudget) const;
+  //! Appends results to theResult.
+  void reverseWalkPaths(const BRepGraph_NodeId                       theNode,
+                        const int                                    theDepthBudget,
+                        NCollection_Vector<BRepGraph_TopologyPath>& theResult,
+                        const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
   //! Reverse walk with location/orientation composition (for NodeLocations).
-  NCollection_Vector<OccurrenceEntry> reverseWalkEntries(const BRepGraph_NodeId theNode) const;
+  //! @param[in] theNode target node
+  //! @param[out] theResult output entries; cleared at method entry
+  void reverseWalkEntries(const BRepGraph_NodeId               theNode,
+                          NCollection_Vector<OccurrenceEntry>& theResult,
+                          const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
-  //! Build occurrence entry from a complete path (compose location + orientation).
-  OccurrenceEntry buildEntry(const BRepGraph_TopologyPath& thePath) const;
+  //! Append all parent paths and push one additional child step on appended range.
+  void appendParentPathsWithStep(const BRepGraph_NodeId                       theParent,
+                                 const int                                    theDepthBudget,
+                                 const int                                    theRefIdx,
+                                 NCollection_Vector<BRepGraph_TopologyPath>& theResult,
+                                 const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
   //! Walk upward from an edge to all roots, collecting paths.
   void reverseWalkFromEdge(const int                                   theEdgeIdx,
                            NCollection_Vector<BRepGraph_TopologyPath>& theResult,
-                           const int                                   theDepthBudget) const;
+                           const int                                   theDepthBudget,
+                           const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
   //! Walk upward from a face to all roots.
   void reverseWalkFromFace(const int                                   theFaceIdx,
                            NCollection_Vector<BRepGraph_TopologyPath>& theResult,
-                           const int                                   theDepthBudget) const;
+                           const int                                   theDepthBudget,
+                           const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
   //! Walk upward from a shell to all roots.
   void reverseWalkFromShell(const int                                   theShellIdx,
                             NCollection_Vector<BRepGraph_TopologyPath>& theResult,
-                            const int                                   theDepthBudget) const;
+                            const int                                   theDepthBudget,
+                            const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
   //! Walk upward from a wire to all roots via faces.
   void reverseWalkFromWire(const int                                   theWireIdx,
                            NCollection_Vector<BRepGraph_TopologyPath>& theResult,
-                           const int                                   theDepthBudget) const;
+                           const int                                   theDepthBudget,
+                           const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
   //! Walk upward from a vertex to all roots via edges.
   void reverseWalkFromVertex(const int                                   theVertexIdx,
                              NCollection_Vector<BRepGraph_TopologyPath>& theResult,
-                             const int                                   theDepthBudget) const;
+                             const int                                   theDepthBudget,
+                             const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
   const BRepGraph* myGraph;
 };

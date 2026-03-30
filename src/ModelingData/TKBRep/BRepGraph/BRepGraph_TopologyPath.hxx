@@ -15,6 +15,7 @@
 #define _BRepGraph_TopologyPath_HeaderFile
 
 #include <BRepGraph_NodeId.hxx>
+#include <NCollection_BaseAllocator.hxx>
 #include <NCollection_Vector.hxx>
 #include <Standard_HashUtils.hxx>
 
@@ -51,13 +52,39 @@ class BRepGraph_TopologyPath
 {
 public:
   //! Default: invalid (empty) path.
-  BRepGraph_TopologyPath() = default;
+  BRepGraph_TopologyPath()
+      : mySteps(8)
+  {
+  }
 
   //! Create a path rooted at the given entity.
   //! @param[in] theRoot any valid NodeId (Occurrence, Compound, Solid, Face, etc.)
   explicit BRepGraph_TopologyPath(const BRepGraph_NodeId theRoot)
-      : myRoot(theRoot)
+      : myRoot(theRoot),
+        mySteps(8)
   {
+  }
+
+  //! Create a path rooted at the given entity using a custom allocator for step storage.
+  //! @param[in] theRoot any valid NodeId (Occurrence, Compound, Solid, Face, etc.)
+  //! @param[in] theAllocator allocator for the internal step vector
+  BRepGraph_TopologyPath(const BRepGraph_NodeId                             theRoot,
+                         const occ::handle<NCollection_BaseAllocator>& theAllocator)
+      : myRoot(theRoot),
+        mySteps(8, theAllocator)
+  {
+  }
+
+  //! Copy a path into a new step container using the given allocator.
+  //! @param[in] theOther source path to copy
+  //! @param[in] theAllocator allocator for the new step vector
+  BRepGraph_TopologyPath(const BRepGraph_TopologyPath&                   theOther,
+                         const occ::handle<NCollection_BaseAllocator>& theAllocator)
+      : myRoot(theOther.myRoot),
+        mySteps(8, theAllocator)
+  {
+    for (int i = 0; i < theOther.Depth(); ++i)
+      pushStep(theOther.mySteps.Value(i));
   }
 
   //! Root entity (outermost level). Can be any kind.
@@ -86,27 +113,33 @@ public:
   //! Return a new path keeping only the first theLevel steps.
   //! If theLevel >= Depth(), returns a copy of this path.
   //! @param[in] theLevel number of steps to keep
-  BRepGraph_TopologyPath Truncated(const int theLevel) const
+  //! @param[in] theAllocator allocator for the new truncated path
+  BRepGraph_TopologyPath
+    Truncated(const int                                     theLevel,
+              const occ::handle<NCollection_BaseAllocator>& theAllocator) const
   {
-    BRepGraph_TopologyPath aResult(myRoot);
     const int              aLimit = theLevel < Depth() ? theLevel : Depth();
+    BRepGraph_TopologyPath aResult(myRoot, theAllocator);
     for (int i = 0; i < aLimit; ++i)
       aResult.pushStep(mySteps.Value(i));
     return aResult;
   }
 
   //! Root-only path (depth 0).
-  static BRepGraph_TopologyPath FromRoot(const BRepGraph_NodeId theRoot)
+  static BRepGraph_TopologyPath
+    FromRoot(const BRepGraph_NodeId                             theRoot,
+             const occ::handle<NCollection_BaseAllocator>& theAllocator)
   {
-    return BRepGraph_TopologyPath(theRoot);
+    return BRepGraph_TopologyPath(theRoot, theAllocator);
   }
 
   //! Path to a face in a solid: Solid -> ShellRefs[i] -> FaceRefs[j].
   static BRepGraph_TopologyPath ToFace(const int theSolidIdx,
                                        const int theShellRefIdx,
-                                       const int theFaceRefIdx)
+                                       const int theFaceRefIdx,
+                                       const occ::handle<NCollection_BaseAllocator>& theAllocator)
   {
-    BRepGraph_TopologyPath aPath{BRepGraph_SolidId(theSolidIdx)};
+    BRepGraph_TopologyPath aPath(BRepGraph_SolidId(theSolidIdx), theAllocator);
     aPath.pushStep(theShellRefIdx);
     aPath.pushStep(theFaceRefIdx);
     return aPath;
@@ -117,9 +150,10 @@ public:
                                        const int theShellRefIdx,
                                        const int theFaceRefIdx,
                                        const int theWireRefIdx,
-                                       const int theCoEdgeRefIdx)
+                                       const int theCoEdgeRefIdx,
+                                       const occ::handle<NCollection_BaseAllocator>& theAllocator)
   {
-    BRepGraph_TopologyPath aPath{BRepGraph_SolidId(theSolidIdx)};
+    BRepGraph_TopologyPath aPath(BRepGraph_SolidId(theSolidIdx), theAllocator);
     aPath.pushStep(theShellRefIdx);
     aPath.pushStep(theFaceRefIdx);
     aPath.pushStep(theWireRefIdx);
@@ -134,9 +168,10 @@ public:
                                          const int theFaceRefIdx,
                                          const int theWireRefIdx,
                                          const int theCoEdgeRefIdx,
-                                         const int theVertexRefIdx)
+                                         const int theVertexRefIdx,
+                                         const occ::handle<NCollection_BaseAllocator>& theAllocator)
   {
-    BRepGraph_TopologyPath aPath{BRepGraph_SolidId(theSolidIdx)};
+    BRepGraph_TopologyPath aPath(BRepGraph_SolidId(theSolidIdx), theAllocator);
     aPath.pushStep(theShellRefIdx);
     aPath.pushStep(theFaceRefIdx);
     aPath.pushStep(theWireRefIdx);

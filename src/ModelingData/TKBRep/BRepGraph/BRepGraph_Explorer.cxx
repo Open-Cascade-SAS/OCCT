@@ -638,9 +638,10 @@ void BRepGraph_Explorer::popFrame()
 
 //=================================================================================================
 
-BRepGraph_TopologyPath BRepGraph_Explorer::CurrentPath() const
+BRepGraph_TopologyPath BRepGraph_Explorer::CurrentPath(
+  const occ::handle<NCollection_BaseAllocator>& theAllocator) const
 {
-  BRepGraph_TopologyPath aPath(myRoot);
+  BRepGraph_TopologyPath aPath(myRoot, theAllocator);
   for (int i = 1; i <= myStackTop; ++i)
     aPath.pushStep(myStack[i].StepFromParent);
   if (myHasMore && myMatchStep >= 0)

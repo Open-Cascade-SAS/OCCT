@@ -108,8 +108,10 @@ public:
 
   //! Build the topology path from root to current match.
   //! Reconstructed on demand from the DFS stack — no stored paths.
+  //! @param[in] theAllocator allocator for the returned path
   //! @return topology path (by value)
-  [[nodiscard]] Standard_EXPORT BRepGraph_TopologyPath CurrentPath() const;
+  [[nodiscard]] Standard_EXPORT BRepGraph_TopologyPath
+    CurrentPath(const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
   //! Definition NodeId at the current match leaf (O(1)).
   [[nodiscard]] BRepGraph_NodeId Current() const { return myCurrent; }

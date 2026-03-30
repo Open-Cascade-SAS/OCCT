@@ -30,6 +30,8 @@
 #include <BRep_Builder.hxx>
 #include <gp_Trsf.hxx>
 
+#include <NCollection_IncAllocator.hxx>
+
 #include <gtest/gtest.h>
 
 namespace
@@ -37,6 +39,17 @@ namespace
 static double translationX(const TopoDS_Shape& theShape)
 {
   return theShape.Location().Transformation().TranslationPart().X();
+}
+
+template <class theValueType>
+static void expectSameSequence(const NCollection_Vector<theValueType>& theLeft,
+                               const NCollection_Vector<theValueType>& theRight)
+{
+  ASSERT_EQ(theLeft.Length(), theRight.Length());
+  for (int i = 0; i < theLeft.Length(); ++i)
+  {
+    EXPECT_EQ(theLeft.Value(i), theRight.Value(i));
+  }
 }
 } // namespace
 
@@ -226,7 +239,9 @@ TEST(BRepGraph_AssemblyTest, RootProducts_Query)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Auto-created root product is the only root initially.
-  NCollection_Vector<BRepGraph_ProductId> aRoots = aGraph.Paths().RootProducts();
+  const occ::handle<NCollection_BaseAllocator> anAllocator = new NCollection_IncAllocator();
+  NCollection_Vector<BRepGraph_ProductId> aRoots(4);
+  aGraph.Paths().RootProducts(aRoots, anAllocator);
   EXPECT_EQ(aRoots.Length(), 1);
   EXPECT_EQ(aRoots.Value(0), BRepGraph_ProductId(0));
 
@@ -236,9 +251,35 @@ TEST(BRepGraph_AssemblyTest, RootProducts_Query)
   (void)aGraph.Builder().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location());
 
   // Now only the assembly (which is not referenced by any occurrence) is a root.
-  aRoots = aGraph.Paths().RootProducts();
+  aGraph.Paths().RootProducts(aRoots, anAllocator);
   EXPECT_EQ(aRoots.Length(), 1);
   EXPECT_EQ(aRoots.Value(0), aAssemblyId);
+}
+
+// =============================================================================
+// RootProducts_OutParam_ParityAndClear
+// =============================================================================
+
+TEST(BRepGraph_AssemblyTest, RootProducts_OutParam_ParityAndClear)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  const occ::handle<NCollection_BaseAllocator> anAllocator = new NCollection_IncAllocator();
+  NCollection_Vector<BRepGraph_ProductId> aRootsByValue(4);
+  aGraph.Paths().RootProducts(aRootsByValue, anAllocator);
+  NCollection_Vector<BRepGraph_ProductId> aRootsByRef(4);
+  aGraph.Paths().RootProducts(aRootsByRef, anAllocator);
+  expectSameSequence(aRootsByValue, aRootsByRef);
+
+  const BRepGraph_ProductId aAssemblyId = aGraph.Builder().AddAssemblyProduct();
+  (void)aGraph.Builder().AddOccurrence(aAssemblyId, BRepGraph_ProductId(0), TopLoc_Location());
+
+  aGraph.Paths().RootProducts(aRootsByValue, anAllocator);
+  aRootsByRef.Append(BRepGraph_ProductId(123));
+  aGraph.Paths().RootProducts(aRootsByRef, anAllocator);
+  expectSameSequence(aRootsByValue, aRootsByRef);
 }
 
 // =============================================================================
@@ -575,14 +616,16 @@ TEST(BRepGraph_AssemblyTest, RootProducts_RemovedOccurrence_DoesNotAffectRoots)
     aGraph.Builder().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location());
 
   // Before removal: only assembly is root (part is referenced).
-  NCollection_Vector<BRepGraph_ProductId> aRoots = aGraph.Paths().RootProducts();
+  const occ::handle<NCollection_BaseAllocator> anAllocator = new NCollection_IncAllocator();
+  NCollection_Vector<BRepGraph_ProductId> aRoots(4);
+  aGraph.Paths().RootProducts(aRoots, anAllocator);
   EXPECT_EQ(aRoots.Length(), 1);
   EXPECT_EQ(aRoots.Value(0), aAssemblyId);
 
   // Remove the occurrence - part should become a root again.
   aGraph.Builder().RemoveSubgraph(anOccId);
 
-  aRoots = aGraph.Paths().RootProducts();
+  aGraph.Paths().RootProducts(aRoots, anAllocator);
   EXPECT_EQ(aRoots.Length(), 2); // both part and assembly are roots now
 }
 
