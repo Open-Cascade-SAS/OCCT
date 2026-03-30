@@ -145,9 +145,9 @@ TEST(BRepGraphAlgo_TransformTest, LocationOnly_NoCopyGeom)
   }
 
   // Verify the transform is stored on Product::RootLocation.
-  ASSERT_GT(aResultGraph.Paths().NbProducts(), 0);
+  ASSERT_GT(aResultGraph.Topo().NbProducts(), 0);
   const TopLoc_Location& aRootLoc =
-    aResultGraph.Paths().Product(BRepGraph_ProductId(0)).RootLocation;
+    aResultGraph.Topo().Product(BRepGraph_ProductId(0)).RootLocation;
   EXPECT_FALSE(aRootLoc.IsIdentity());
   const gp_Trsf aProductTrsf = aRootLoc.Transformation();
   EXPECT_NEAR(aProductTrsf.Value(1, 4), aDx, Precision::Confusion());

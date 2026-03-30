@@ -286,7 +286,7 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_OccurrenceMutation_Propa
 
   // Verify parent product starts clean.
   const BRepGraph_ProductId aAsmProductId(aAssemblyId.Index);
-  EXPECT_EQ(myGraph.Paths().Product(aAsmProductId).SubtreeGen, 0u);
+  EXPECT_EQ(myGraph.Topo().Product(aAsmProductId).SubtreeGen, 0u);
 
   // Mutate occurrence placement in deferred mode.
   myGraph.Builder().BeginDeferredInvalidation();
@@ -298,13 +298,13 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_OccurrenceMutation_Propa
   }
 
   // During deferred mode: occurrence OwnGen incremented, but parent product NOT yet.
-  EXPECT_GT(myGraph.Paths().Occurrence(BRepGraph_OccurrenceId(anOccId.Index)).OwnGen, 0u);
-  EXPECT_EQ(myGraph.Paths().Product(aAsmProductId).SubtreeGen, 0u);
+  EXPECT_GT(myGraph.Topo().Occurrence(BRepGraph_OccurrenceId(anOccId.Index)).OwnGen, 0u);
+  EXPECT_EQ(myGraph.Topo().Product(aAsmProductId).SubtreeGen, 0u);
 
   myGraph.Builder().EndDeferredInvalidation();
 
   // After flush: parent assembly product must have SubtreeGen incremented exactly once.
-  EXPECT_EQ(myGraph.Paths().Product(aAsmProductId).SubtreeGen, 1u);
+  EXPECT_EQ(myGraph.Topo().Product(aAsmProductId).SubtreeGen, 1u);
   // Parent's OwnGen must remain 0 — its own data didn't change.
-  EXPECT_EQ(myGraph.Paths().Product(aAsmProductId).OwnGen, 0u);
+  EXPECT_EQ(myGraph.Topo().Product(aAsmProductId).OwnGen, 0u);
 }

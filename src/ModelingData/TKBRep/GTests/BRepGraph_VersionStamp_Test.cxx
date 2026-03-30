@@ -159,7 +159,7 @@ TEST_F(BRepGraph_VersionStampTest, IsSameNode_DifferentVersion_StillSameNode)
 TEST_F(BRepGraph_VersionStampTest, StampOf_AssemblyNodes_WorksForProductsAndOccurrences)
 {
   // Box graph auto-creates a root Product.
-  ASSERT_GT(myGraph.Paths().NbProducts(), 0);
+  ASSERT_GT(myGraph.Topo().NbProducts(), 0);
 
   const BRepGraph_VersionStamp aProdStamp = myGraph.UIDs().StampOf(BRepGraph_NodeId::Product(0));
   EXPECT_TRUE(aProdStamp.IsValid());

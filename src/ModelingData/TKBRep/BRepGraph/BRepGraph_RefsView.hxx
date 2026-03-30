@@ -21,7 +21,7 @@
 //! @brief Read-only view for RefId/RefUID-based reference storage.
 //!
 //! This view exposes reference-entry storage:
-//! - typed reference entry access (ShellRef, FaceRef, ...)
+//! - typed reference entry access (Shell, Face, ...)
 //! - reference counts
 //! - RefUID lookup and reverse lookup
 //! - stale tracking via BRepGraph_VersionStamp
@@ -37,6 +37,30 @@
 //! and return reference-entry structs carrying per-use orientation and location.
 //! TopoView accessors take definition IDs (BRepGraph_ShellId, BRepGraph_FaceId)
 //! and return definition structs.
+//!
+//! ## Iterating over references
+//! There is no dedicated BRepGraph_Iterator for reference types. Iterate
+//! using a counted loop over the appropriate NbXxxRefs() count:
+//! @code
+//!   const BRepGraph::RefsView& aRefs = aGraph.Refs();
+//!   for (int i = 0; i < aRefs.NbFaceRefs(); ++i)
+//!   {
+//!     const BRepGraphInc::FaceRef& aFR = aRefs.Face(BRepGraph_FaceRefId(i));
+//!     if (aFR.IsRemoved)
+//!       continue;
+//!     // use aFR.FaceDefId, aFR.Orientation, aFR.Location ...
+//!   }
+//! @endcode
+//!
+//! To iterate refs belonging to a specific parent, use the typed RefIdsOf
+//! accessors (e.g. FaceRefIdsOf, WireRefIdsOf):
+//! @code
+//!   for (const BRepGraph_WireRefId& aWireRefId : aRefs.WireRefIdsOf(aFaceId))
+//!   {
+//!     const BRepGraphInc::WireRef& aWR = aRefs.Wire(aWireRefId);
+//!     // ...
+//!   }
+//! @endcode
 class BRepGraph::RefsView
 {
 public:

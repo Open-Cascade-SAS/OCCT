@@ -152,6 +152,8 @@ public:
   [[nodiscard]] Standard_EXPORT const PathView& Paths() const;
   //! Access transient cache values.
   [[nodiscard]] Standard_EXPORT CacheView& Cache();
+  //! Access transient cache values (const, read-only Get/CacheKinds).
+  [[nodiscard]] Standard_EXPORT const CacheView& Cache() const;
   //! Access reference entries and their UIDs.
   [[nodiscard]] Standard_EXPORT const RefsView& Refs() const;
   //! Access shape reconstruction.

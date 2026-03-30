@@ -342,7 +342,7 @@ void BRepGraph_Explorer::explore(const BRepGraph&              theGraph,
 
     case Kind::Product: {
       const BRepGraphInc::ProductDef& aProd =
-        theGraph.Paths().Product(BRepGraph_ProductId(theCurrentNode.Index));
+        theGraph.Topo().Product(BRepGraph_ProductId(theCurrentNode.Index));
       if (aProd.IsRemoved)
         return;
       if (aProd.ShapeRootId.IsValid())
@@ -354,10 +354,10 @@ void BRepGraph_Explorer::explore(const BRepGraph&              theGraph,
       {
         // Assembly product: descend through OccurrenceRefIds.
         const BRepGraph_ProductId aProdId(theCurrentNode.Index);
-        const int                 aNbComps = theGraph.Paths().NbComponents(aProdId);
+        const int                 aNbComps = theGraph.Topo().NbComponents(aProdId);
         for (int i = 0; i < aNbComps; ++i)
         {
-          const BRepGraph_NodeId anOccNode = theGraph.Paths().Component(aProdId, i);
+          const BRepGraph_NodeId anOccNode = theGraph.Topo().Component(aProdId, i);
           BRepGraph_TopologyPath aChild    = thePath;
           aChild.pushStep(i);
           explore(theGraph, theTargetKind, anOccNode, aChild, aChildBudget);
@@ -368,7 +368,7 @@ void BRepGraph_Explorer::explore(const BRepGraph&              theGraph,
 
     case Kind::Occurrence: {
       const BRepGraphInc::OccurrenceDef& anOcc =
-        theGraph.Paths().Occurrence(BRepGraph_OccurrenceId(theCurrentNode.Index));
+        theGraph.Topo().Occurrence(BRepGraph_OccurrenceId(theCurrentNode.Index));
       if (anOcc.IsRemoved)
         return;
       // 1:1 transition to Product (no step consumed).

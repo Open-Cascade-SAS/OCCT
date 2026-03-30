@@ -32,24 +32,37 @@ class BRepGraph::CacheView
 {
 public:
   //! Attach a cached value to a node.
+  //! @param[in] theNode  node to attach the value to
+  //! @param[in] theKind  cache kind descriptor identifying the slot
+  //! @param[in] theValue cached value to store
   Standard_EXPORT void Set(const BRepGraph_NodeId                   theNode,
                            const occ::handle<BRepGraph_CacheKind>&  theKind,
                            const occ::handle<BRepGraph_CacheValue>& theValue);
 
   //! Retrieve a cached value from a node.
+  //! @param[in] theNode node to query
+  //! @param[in] theKind cache kind descriptor identifying the slot
+  //! @return cached value, or null handle if not present or stale
   [[nodiscard]] Standard_EXPORT occ::handle<BRepGraph_CacheValue> Get(
     const BRepGraph_NodeId                  theNode,
     const occ::handle<BRepGraph_CacheKind>& theKind) const;
 
   //! Remove a cached value from a node.
+  //! @param[in] theNode node to remove the value from
+  //! @param[in] theKind cache kind descriptor identifying the slot
+  //! @return true if a value was actually removed
   Standard_EXPORT bool Remove(const BRepGraph_NodeId theNode,
                               const occ::handle<BRepGraph_CacheKind>& theKind);
 
   //! Invalidate (but do not remove) a cached value on a node.
+  //! @param[in] theNode node whose cache entry to invalidate
+  //! @param[in] theKind cache kind descriptor identifying the slot
   Standard_EXPORT void Invalidate(const BRepGraph_NodeId theNode,
                                   const occ::handle<BRepGraph_CacheKind>& theKind);
 
   //! Return all cache kinds populated on a node.
+  //! @param[in] theNode node to query
+  //! @return vector of cache kind descriptors that have stored values on this node
   [[nodiscard]] Standard_EXPORT NCollection_Vector<occ::handle<BRepGraph_CacheKind>> CacheKinds(
     const BRepGraph_NodeId theNode) const;
 

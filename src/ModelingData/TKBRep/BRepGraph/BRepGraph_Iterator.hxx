@@ -208,7 +208,7 @@ inline BRepGraph_Iterator<BRepGraphInc::VertexDef>::BRepGraph_Iterator(const BRe
 template <>
 inline BRepGraph_Iterator<BRepGraphInc::ProductDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
     : myGraph(theGraph),
-      myLength(theGraph.Paths().NbProducts())
+      myLength(theGraph.Topo().NbProducts())
 {
   skipRemoved();
 }
@@ -217,7 +217,7 @@ template <>
 inline BRepGraph_Iterator<BRepGraphInc::OccurrenceDef>::BRepGraph_Iterator(
   const BRepGraph& theGraph)
     : myGraph(theGraph),
-      myLength(theGraph.Paths().NbOccurrences())
+      myLength(theGraph.Topo().NbOccurrences())
 {
   skipRemoved();
 }
@@ -289,14 +289,14 @@ inline const BRepGraphInc::VertexDef& BRepGraph_Iterator<BRepGraphInc::VertexDef
 template <>
 inline const BRepGraphInc::ProductDef& BRepGraph_Iterator<BRepGraphInc::ProductDef>::Current() const
 {
-  return myGraph.Paths().Product(CurrentId());
+  return myGraph.Topo().Product(CurrentId());
 }
 
 template <>
 inline const BRepGraphInc::OccurrenceDef& BRepGraph_Iterator<BRepGraphInc::OccurrenceDef>::Current()
   const
 {
-  return myGraph.Paths().Occurrence(CurrentId());
+  return myGraph.Topo().Occurrence(CurrentId());
 }
 
 template <>

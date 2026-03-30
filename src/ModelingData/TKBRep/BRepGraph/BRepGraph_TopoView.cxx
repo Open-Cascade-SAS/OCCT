@@ -815,3 +815,159 @@ bool BRepGraph::TopoView::IsManifoldEdge(const BRepGraph_EdgeId theEdge) const
 {
   return NbFacesOfEdge(theEdge) == 2;
 }
+
+//=================================================================================================
+
+NCollection_Vector<BRepGraph_FaceId> BRepGraph::TopoView::FacesOfVertex(
+  const BRepGraph_VertexId theVertex) const
+{
+  const NCollection_Vector<BRepGraph_EdgeId>& anEdges = EdgesOfVertex(theVertex);
+  NCollection_Map<int>                        aSeenFaces;
+  NCollection_Vector<BRepGraph_FaceId>        aResult;
+  for (int anEdgeIdx = 0; anEdgeIdx < anEdges.Length(); ++anEdgeIdx)
+  {
+    const NCollection_Vector<BRepGraph_FaceId>& aFaces = FacesOfEdge(anEdges.Value(anEdgeIdx));
+    for (int aFaceIdx = 0; aFaceIdx < aFaces.Length(); ++aFaceIdx)
+    {
+      if (aSeenFaces.Add(aFaces.Value(aFaceIdx).Index))
+      {
+        aResult.Append(aFaces.Value(aFaceIdx));
+      }
+    }
+  }
+  return aResult;
+}
+
+// ==========================================================================
+// Assembly definition accessors
+// ==========================================================================
+
+//=================================================================================================
+
+int BRepGraph::TopoView::NbProducts() const
+{
+  return myGraph->myData->myIncStorage.NbProducts();
+}
+
+//=================================================================================================
+
+int BRepGraph::TopoView::NbOccurrences() const
+{
+  return myGraph->myData->myIncStorage.NbOccurrences();
+}
+
+//=================================================================================================
+
+int BRepGraph::TopoView::NbActiveProducts() const
+{
+  return myGraph->myData->myIncStorage.NbActiveProducts();
+}
+
+//=================================================================================================
+
+int BRepGraph::TopoView::NbActiveOccurrences() const
+{
+  return myGraph->myData->myIncStorage.NbActiveOccurrences();
+}
+
+//=================================================================================================
+
+const BRepGraphInc::ProductDef& BRepGraph::TopoView::Product(
+  const BRepGraph_ProductId theProduct) const
+{
+  return myGraph->myData->myIncStorage.Product(theProduct);
+}
+
+//=================================================================================================
+
+const BRepGraphInc::OccurrenceDef& BRepGraph::TopoView::Occurrence(
+  const BRepGraph_OccurrenceId theOccurrence) const
+{
+  return myGraph->myData->myIncStorage.Occurrence(theOccurrence);
+}
+
+//=================================================================================================
+
+NCollection_Vector<BRepGraph_NodeId> BRepGraph::TopoView::RootProducts() const
+{
+  const BRepGraphInc_Storage& aStorage    = myGraph->myData->myIncStorage;
+  const int                   aNbProducts = aStorage.NbProducts();
+
+  // Collect product indices that are referenced by at least one active occurrence.
+  NCollection_Map<int> aReferencedProducts;
+  for (int anOccIdx = 0; anOccIdx < aStorage.NbOccurrences(); ++anOccIdx)
+  {
+    const BRepGraphInc::OccurrenceDef& anOcc =
+      aStorage.Occurrence(BRepGraph_OccurrenceId(anOccIdx));
+    if (!anOcc.IsRemoved && anOcc.ProductDefId.IsValid())
+      aReferencedProducts.Add(anOcc.ProductDefId.Index);
+  }
+
+  NCollection_Vector<BRepGraph_NodeId> aRoots;
+  for (int aProdIdx = 0; aProdIdx < aNbProducts; ++aProdIdx)
+  {
+    const BRepGraphInc::ProductDef& aProduct = aStorage.Product(BRepGraph_ProductId(aProdIdx));
+    if (aProduct.IsRemoved)
+      continue;
+    if (!aReferencedProducts.Contains(aProdIdx))
+      aRoots.Append(BRepGraph_NodeId::Product(aProdIdx));
+  }
+  return aRoots;
+}
+
+//=================================================================================================
+
+bool BRepGraph::TopoView::IsAssembly(const BRepGraph_ProductId theProduct) const
+{
+  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  if (!theProduct.IsValid(aStorage.NbProducts()))
+    return false;
+  const BRepGraphInc::ProductDef& aProductEnt = aStorage.Product(theProduct);
+  return !aProductEnt.ShapeRootId.IsValid();
+}
+
+//=================================================================================================
+
+bool BRepGraph::TopoView::IsPart(const BRepGraph_ProductId theProduct) const
+{
+  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  if (!theProduct.IsValid(aStorage.NbProducts()))
+    return false;
+  const BRepGraphInc::ProductDef& aProductEnt = aStorage.Product(theProduct);
+  return aProductEnt.ShapeRootId.IsValid();
+}
+
+//=================================================================================================
+
+BRepGraph_NodeId BRepGraph::TopoView::ShapeRootNode(const BRepGraph_ProductId theProduct) const
+{
+  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  if (!theProduct.IsValid(aStorage.NbProducts()))
+    return BRepGraph_NodeId();
+  return aStorage.Product(theProduct).ShapeRootId;
+}
+
+//=================================================================================================
+
+int BRepGraph::TopoView::NbComponents(const BRepGraph_ProductId theProduct) const
+{
+  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  if (!theProduct.IsValid(aStorage.NbProducts()))
+    return 0;
+  return aStorage.Product(theProduct).OccurrenceRefIds.Length();
+}
+
+//=================================================================================================
+
+BRepGraph_NodeId BRepGraph::TopoView::Component(const BRepGraph_ProductId theProduct,
+                                                const int                 theComponentIdx) const
+{
+  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  if (!theProduct.IsValid(aStorage.NbProducts()))
+    return BRepGraph_NodeId();
+  const BRepGraphInc::ProductDef& aProductEnt = aStorage.Product(theProduct);
+  if (theComponentIdx < 0 || theComponentIdx >= aProductEnt.OccurrenceRefIds.Length())
+    return BRepGraph_NodeId();
+  return aStorage.OccurrenceRef(aProductEnt.OccurrenceRefIds.Value(theComponentIdx))
+    .OccurrenceDefId;
+}

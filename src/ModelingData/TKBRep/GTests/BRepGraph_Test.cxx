@@ -1746,8 +1746,8 @@ TEST_F(BRepGraphTest, NbNodes_Box_TotalCount)
                       + myGraph.Topo().NbFaces() + myGraph.Topo().NbWires()
                       + myGraph.Topo().NbCoEdges() + myGraph.Topo().NbEdges()
                       + myGraph.Topo().NbVertices() + myGraph.Topo().NbCompounds()
-                      + myGraph.Topo().NbCompSolids() + myGraph.Paths().NbProducts()
-                      + myGraph.Paths().NbOccurrences();
+                      + myGraph.Topo().NbCompSolids() + myGraph.Topo().NbProducts()
+                      + myGraph.Topo().NbOccurrences();
   EXPECT_EQ(myGraph.Topo().NbNodes(), anExpected);
 }
 

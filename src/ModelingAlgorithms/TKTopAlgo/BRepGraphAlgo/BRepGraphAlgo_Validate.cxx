@@ -177,9 +177,9 @@ bool isValidNodeId(const BRepGraph& theGraph, const BRepGraph_NodeId theId)
     case BRepGraph_NodeId::Kind::CompSolid:
       return theId.IsValid(theGraph.Topo().NbCompSolids());
     case BRepGraph_NodeId::Kind::Product:
-      return theId.IsValid(theGraph.Paths().NbProducts());
+      return theId.IsValid(theGraph.Topo().NbProducts());
     case BRepGraph_NodeId::Kind::Occurrence:
-      return theId.IsValid(theGraph.Paths().NbOccurrences());
+      return theId.IsValid(theGraph.Topo().NbOccurrences());
   }
   return false;
 }
@@ -419,10 +419,10 @@ void checkCrossReferenceBounds(const BRepGraph&                                 
   }
 
   // Check ProductDef references.
-  for (int aProductIdx = 0; aProductIdx < theGraph.Paths().NbProducts(); ++aProductIdx)
+  for (int aProductIdx = 0; aProductIdx < theGraph.Topo().NbProducts(); ++aProductIdx)
   {
     const BRepGraphInc::ProductDef& aProduct =
-      theGraph.Paths().Product(BRepGraph_ProductId(aProductIdx));
+      theGraph.Topo().Product(BRepGraph_ProductId(aProductIdx));
     if (aProduct.IsRemoved)
       continue;
 
@@ -442,10 +442,10 @@ void checkCrossReferenceBounds(const BRepGraph&                                 
     }
 
     const BRepGraph_ProductId aProdId(aProductIdx);
-    const int                 aNbComponents = theGraph.Paths().NbComponents(aProdId);
+    const int                 aNbComponents = theGraph.Topo().NbComponents(aProdId);
     for (int anOccRefIdx = 0; anOccRefIdx < aNbComponents; ++anOccRefIdx)
     {
-      const BRepGraph_NodeId anOccId = theGraph.Paths().Component(aProdId, anOccRefIdx);
+      const BRepGraph_NodeId anOccId = theGraph.Topo().Component(aProdId, anOccRefIdx);
       if (anOccId.IsValid() && !isValidNodeId(theGraph, anOccId))
       {
         theIssues.Append(
@@ -455,10 +455,10 @@ void checkCrossReferenceBounds(const BRepGraph&                                 
   }
 
   // Check OccurrenceDef references.
-  for (int anOccIdx = 0; anOccIdx < theGraph.Paths().NbOccurrences(); ++anOccIdx)
+  for (int anOccIdx = 0; anOccIdx < theGraph.Topo().NbOccurrences(); ++anOccIdx)
   {
     const BRepGraphInc::OccurrenceDef& anOcc =
-      theGraph.Paths().Occurrence(BRepGraph_OccurrenceId(anOccIdx));
+      theGraph.Topo().Occurrence(BRepGraph_OccurrenceId(anOccIdx));
     if (anOcc.IsRemoved)
       continue;
 
@@ -970,9 +970,9 @@ void checkDefIds(const BRepGraph&                                   theGraph,
   checkKind(BRepGraph_NodeId::Kind::Solid, aDefs.NbSolids());
   checkKind(BRepGraph_NodeId::Kind::Compound, aDefs.NbCompounds());
   checkKind(BRepGraph_NodeId::Kind::CompSolid, aDefs.NbCompSolids());
-  const BRepGraph::PathView& aPaths = theGraph.Paths();
-  checkKind(BRepGraph_NodeId::Kind::Product, aPaths.NbProducts());
-  checkKind(BRepGraph_NodeId::Kind::Occurrence, aPaths.NbOccurrences());
+  const BRepGraph::TopoView& aTopo = theGraph.Topo();
+  checkKind(BRepGraph_NodeId::Kind::Product, aTopo.NbProducts());
+  checkKind(BRepGraph_NodeId::Kind::Occurrence, aTopo.NbOccurrences());
 }
 
 //! Validate that NbActive*() counts match the actual number of non-removed
@@ -1039,13 +1039,13 @@ void checkActiveCounts(const BRepGraph&                                   theGra
   verify("CompSolids",
          aDefs.NbActiveCompSolids(),
          countActive(BRepGraph_NodeId::Kind::CompSolid, aDefs.NbCompSolids()));
-  const BRepGraph::PathView& aPaths = theGraph.Paths();
+  const BRepGraph::TopoView& aTopo = theGraph.Topo();
   verify("Products",
-         aPaths.NbActiveProducts(),
-         countActive(BRepGraph_NodeId::Kind::Product, aPaths.NbProducts()));
+         aTopo.NbActiveProducts(),
+         countActive(BRepGraph_NodeId::Kind::Product, aTopo.NbProducts()));
   verify("Occurrences",
-         aPaths.NbActiveOccurrences(),
-         countActive(BRepGraph_NodeId::Kind::Occurrence, aPaths.NbOccurrences()));
+         aTopo.NbActiveOccurrences(),
+         countActive(BRepGraph_NodeId::Kind::Occurrence, aTopo.NbOccurrences()));
 }
 
 } // namespace
@@ -1151,18 +1151,18 @@ BRepGraphAlgo_Validate::Result BRepGraphAlgo_Validate::Perform(const BRepGraph& 
   checkUIDKind(BRepGraph_NodeId::Kind::Solid, aDefs.NbSolids());
   checkUIDKind(BRepGraph_NodeId::Kind::Compound, aDefs.NbCompounds());
   checkUIDKind(BRepGraph_NodeId::Kind::CompSolid, aDefs.NbCompSolids());
-  const BRepGraph::PathView& aPaths = theGraph.Paths();
-  checkUIDKind(BRepGraph_NodeId::Kind::Product, aPaths.NbProducts());
-  checkUIDKind(BRepGraph_NodeId::Kind::Occurrence, aPaths.NbOccurrences());
+  const BRepGraph::TopoView& aTopo = theGraph.Topo();
+  checkUIDKind(BRepGraph_NodeId::Kind::Product, aTopo.NbProducts());
+  checkUIDKind(BRepGraph_NodeId::Kind::Occurrence, aTopo.NbOccurrences());
 
   // Assembly DAG cycle detection: for each product, check if it can
   // reach itself through its occurrence->product chain.
   // Shared references (two occurrences pointing to the same child) are valid;
   // only self-reachability constitutes a cycle.
-  for (int aProdIdx = 0; aProdIdx < aPaths.NbProducts(); ++aProdIdx)
+  for (int aProdIdx = 0; aProdIdx < aTopo.NbProducts(); ++aProdIdx)
   {
     const BRepGraph_ProductId           aProdId(aProdIdx);
-    const BRepGraphInc::ProductDef& aProd = aPaths.Product(aProdId);
+    const BRepGraphInc::ProductDef& aProd = aTopo.Product(aProdId);
     if (aProd.IsRemoved)
       continue;
 
@@ -1177,10 +1177,10 @@ BRepGraphAlgo_Validate::Result BRepGraphAlgo_Validate::Perform(const BRepGraph& 
     {
       const BRepGraphInc::OccurrenceRef& anOccRef =
         theGraph.Refs().Occurrence(aProd.OccurrenceRefIds.Value(i));
-      if (anOccRef.IsRemoved || !anOccRef.OccurrenceDefId.IsValid(aPaths.NbOccurrences()))
+      if (anOccRef.IsRemoved || !anOccRef.OccurrenceDefId.IsValid(aTopo.NbOccurrences()))
         continue;
-      const BRepGraphInc::OccurrenceDef& anOcc = aPaths.Occurrence(anOccRef.OccurrenceDefId);
-      if (anOcc.IsRemoved || !anOcc.ProductDefId.IsValid(aPaths.NbProducts()))
+      const BRepGraphInc::OccurrenceDef& anOcc = aTopo.Occurrence(anOccRef.OccurrenceDefId);
+      if (anOcc.IsRemoved || !anOcc.ProductDefId.IsValid(aTopo.NbProducts()))
         continue;
       if (anOcc.ProductDefId.Index == aProdIdx)
       {
@@ -1198,17 +1198,17 @@ BRepGraphAlgo_Validate::Result BRepGraphAlgo_Validate::Perform(const BRepGraph& 
     {
       const BRepGraph_ProductId         aChildProdId = aQueue.Value(aHead);
       ++aHead;
-      const BRepGraphInc::ProductDef& aChildProd = aPaths.Product(aChildProdId);
+      const BRepGraphInc::ProductDef& aChildProd = aTopo.Product(aChildProdId);
       if (aChildProd.IsRemoved)
         continue;
       for (int i = 0; i < aChildProd.OccurrenceRefIds.Length(); ++i)
       {
         const BRepGraphInc::OccurrenceRef& aRef =
           theGraph.Refs().Occurrence(aChildProd.OccurrenceRefIds.Value(i));
-        if (aRef.IsRemoved || !aRef.OccurrenceDefId.IsValid(aPaths.NbOccurrences()))
+        if (aRef.IsRemoved || !aRef.OccurrenceDefId.IsValid(aTopo.NbOccurrences()))
           continue;
-        const BRepGraphInc::OccurrenceDef& aOcc = aPaths.Occurrence(aRef.OccurrenceDefId);
-        if (aOcc.IsRemoved || !aOcc.ProductDefId.IsValid(aPaths.NbProducts()))
+        const BRepGraphInc::OccurrenceDef& aOcc = aTopo.Occurrence(aRef.OccurrenceDefId);
+        if (aOcc.IsRemoved || !aOcc.ProductDefId.IsValid(aTopo.NbProducts()))
           continue;
         if (aOcc.ProductDefId.Index == aProdIdx)
         {

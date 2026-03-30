@@ -291,6 +291,12 @@ public:
   //! @param[in] theEdge typed edge definition identifier
   [[nodiscard]] Standard_EXPORT bool IsManifoldEdge(const BRepGraph_EdgeId theEdge) const;
 
+  //! Return all face definitions that share at least one edge with the given vertex.
+  //! @param[in] theVertex vertex definition identifier
+  //! @return unique face definition ids
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_FaceId> FacesOfVertex(
+    const BRepGraph_VertexId theVertex) const;
+
   //! @name Representation accessors
 
   //! Access surface representation by typed identifier.
@@ -327,6 +333,62 @@ public:
   //! @param[in] theRep typed polygon-on-triangulation representation identifier
   [[nodiscard]] Standard_EXPORT const BRepGraphInc::PolygonOnTriRep& PolygonOnTriRep(
     const BRepGraph_PolygonOnTriRepId theRep) const;
+
+  //! @name Assembly definition accessors
+  //!
+  //! Product and Occurrence definitions live in the incidence storage alongside
+  //! topology nodes. These methods provide definition lookup and counts;
+  //! for placement composition and path-based queries see PathView.
+
+  //! Number of product definitions.
+  [[nodiscard]] Standard_EXPORT int NbProducts() const;
+
+  //! Number of occurrence definitions.
+  [[nodiscard]] Standard_EXPORT int NbOccurrences() const;
+
+  //! Number of active (non-removed) product definitions.
+  [[nodiscard]] Standard_EXPORT int NbActiveProducts() const;
+
+  //! Number of active (non-removed) occurrence definitions.
+  [[nodiscard]] Standard_EXPORT int NbActiveOccurrences() const;
+
+  //! Access product definition by typed identifier.
+  //! @param[in] theProduct typed product definition identifier
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::ProductDef& Product(
+    const BRepGraph_ProductId theProduct) const;
+
+  //! Access occurrence definition by typed identifier.
+  //! @param[in] theOccurrence typed occurrence definition identifier
+  [[nodiscard]] Standard_EXPORT const BRepGraphInc::OccurrenceDef& Occurrence(
+    const BRepGraph_OccurrenceId theOccurrence) const;
+
+  //! Return NodeIds of all root products (products that are not referenced by any occurrence).
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> RootProducts() const;
+
+  //! True if the product is an assembly (has child occurrences, no ShapeRootId).
+  //! @param[in] theProduct typed product definition identifier
+  [[nodiscard]] Standard_EXPORT bool IsAssembly(const BRepGraph_ProductId theProduct) const;
+
+  //! True if the product is a part (has a valid ShapeRootId).
+  //! @param[in] theProduct typed product definition identifier
+  [[nodiscard]] Standard_EXPORT bool IsPart(const BRepGraph_ProductId theProduct) const;
+
+  //! Return the topology root NodeId for a part product.
+  //! For assemblies (no topology root) returns an invalid NodeId.
+  //! @param[in] theProduct typed product definition identifier
+  //! @return topology root NodeId, or invalid if theProduct is an assembly or out of range
+  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId
+    ShapeRootNode(const BRepGraph_ProductId theProduct) const;
+
+  //! Number of child occurrences of a product.
+  //! @param[in] theProduct typed product definition identifier
+  [[nodiscard]] Standard_EXPORT int NbComponents(const BRepGraph_ProductId theProduct) const;
+
+  //! Return the i-th child occurrence NodeId of a product.
+  //! @param[in] theProduct typed product definition identifier
+  //! @param[in] theComponentIdx zero-based occurrence index within the product
+  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId Component(const BRepGraph_ProductId theProduct,
+                                                           const int theComponentIdx) const;
 
 private:
   friend class BRepGraph;
