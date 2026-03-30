@@ -25,24 +25,14 @@ constexpr int THE_REFSVIEW_EDGE_VERTEX_REF_BLOCK_SIZE = 4;
 
 //=================================================================================================
 
-const occ::handle<NCollection_BaseAllocator>& effectiveAllocator(
-  const BRepGraph&                               theGraph,
-  const occ::handle<NCollection_BaseAllocator>& theAllocator)
-{
-  return theAllocator.IsNull() ? theGraph.Allocator() : theAllocator;
-}
-
-//=================================================================================================
-
 template <class RefIdType, class IsRemovedFn>
 NCollection_Vector<RefIdType> collectActiveRefIds(
-  const BRepGraph&                               theGraph,
   const NCollection_Vector<RefIdType>&           theAll,
   const occ::handle<NCollection_BaseAllocator>& theAllocator,
   const IsRemovedFn&                             theIsRemoved)
 {
   NCollection_Vector<RefIdType> aResult(THE_REFSVIEW_ACTIVE_RELATION_BLOCK_SIZE,
-                                        effectiveAllocator(theGraph, theAllocator));
+                                        theAllocator);
   for (int i = 0; i < theAll.Length(); ++i)
   {
     const RefIdType aRefId = theAll.Value(i);
@@ -381,8 +371,7 @@ NCollection_Vector<BRepGraph_FaceRefId> BRepGraph::RefsView::ActiveFaceRefIdsOf(
   const occ::handle<NCollection_BaseAllocator>& theAllocator) const
 {
   const NCollection_Vector<BRepGraph_FaceRefId>& aAll = FaceRefIdsOf(theShell);
-  return collectActiveRefIds(*myGraph,
-                             aAll,
+  return collectActiveRefIds(aAll,
                              theAllocator,
                              [this](const BRepGraph_FaceRefId theRefId) {
                                return myGraph->myData->myIncStorage.FaceRef(theRefId).IsRemoved;
@@ -407,8 +396,7 @@ NCollection_Vector<BRepGraph_WireRefId> BRepGraph::RefsView::ActiveWireRefIdsOf(
   const occ::handle<NCollection_BaseAllocator>& theAllocator) const
 {
   const NCollection_Vector<BRepGraph_WireRefId>& aAll = WireRefIdsOf(theFace);
-  return collectActiveRefIds(*myGraph,
-                             aAll,
+  return collectActiveRefIds(aAll,
                              theAllocator,
                              [this](const BRepGraph_WireRefId theRefId) {
                                return myGraph->myData->myIncStorage.WireRef(theRefId).IsRemoved;
@@ -433,8 +421,7 @@ NCollection_Vector<BRepGraph_CoEdgeRefId> BRepGraph::RefsView::ActiveCoEdgeRefId
   const occ::handle<NCollection_BaseAllocator>& theAllocator) const
 {
   const NCollection_Vector<BRepGraph_CoEdgeRefId>& aAll = CoEdgeRefIdsOf(theWire);
-  return collectActiveRefIds(*myGraph,
-                             aAll,
+  return collectActiveRefIds(aAll,
                              theAllocator,
                              [this](const BRepGraph_CoEdgeRefId theRefId) {
                                return myGraph->myData->myIncStorage.CoEdgeRef(theRefId).IsRemoved;
@@ -459,8 +446,7 @@ NCollection_Vector<BRepGraph_ShellRefId> BRepGraph::RefsView::ActiveShellRefIdsO
   const occ::handle<NCollection_BaseAllocator>& theAllocator) const
 {
   const NCollection_Vector<BRepGraph_ShellRefId>& aAll = ShellRefIdsOf(theSolid);
-  return collectActiveRefIds(*myGraph,
-                             aAll,
+  return collectActiveRefIds(aAll,
                              theAllocator,
                              [this](const BRepGraph_ShellRefId theRefId) {
                                return myGraph->myData->myIncStorage.ShellRef(theRefId).IsRemoved;
@@ -485,8 +471,7 @@ NCollection_Vector<BRepGraph_ChildRefId> BRepGraph::RefsView::ActiveChildRefIdsO
   const occ::handle<NCollection_BaseAllocator>& theAllocator) const
 {
   const NCollection_Vector<BRepGraph_ChildRefId>& aAll = ChildRefIdsOf(theCompound);
-  return collectActiveRefIds(*myGraph,
-                             aAll,
+  return collectActiveRefIds(aAll,
                              theAllocator,
                              [this](const BRepGraph_ChildRefId theRefId) {
                                return myGraph->myData->myIncStorage.ChildRef(theRefId).IsRemoved;
@@ -511,8 +496,7 @@ NCollection_Vector<BRepGraph_OccurrenceRefId> BRepGraph::RefsView::ActiveOccurre
   const occ::handle<NCollection_BaseAllocator>& theAllocator) const
 {
   const NCollection_Vector<BRepGraph_OccurrenceRefId>& aAll = OccurrenceRefIdsOf(theProduct);
-  return collectActiveRefIds(*myGraph,
-                             aAll,
+  return collectActiveRefIds(aAll,
                              theAllocator,
                              [this](const BRepGraph_OccurrenceRefId theRefId) {
                                return myGraph->myData->myIncStorage.OccurrenceRef(theRefId).IsRemoved;
@@ -537,8 +521,7 @@ NCollection_Vector<BRepGraph_SolidRefId> BRepGraph::RefsView::ActiveSolidRefIdsO
   const occ::handle<NCollection_BaseAllocator>& theAllocator) const
 {
   const NCollection_Vector<BRepGraph_SolidRefId>& aAll = SolidRefIdsOf(theCompSolid);
-  return collectActiveRefIds(*myGraph,
-                             aAll,
+  return collectActiveRefIds(aAll,
                              theAllocator,
                              [this](const BRepGraph_SolidRefId theRefId) {
                                return myGraph->myData->myIncStorage.SolidRef(theRefId).IsRemoved;
@@ -552,7 +535,7 @@ NCollection_Vector<BRepGraph_VertexRefId> BRepGraph::RefsView::VertexRefIdsOf(
   const occ::handle<NCollection_BaseAllocator>& theAllocator) const
 {
   NCollection_Vector<BRepGraph_VertexRefId> aResult(THE_REFSVIEW_EDGE_VERTEX_REF_BLOCK_SIZE,
-                                                    effectiveAllocator(*myGraph, theAllocator));
+                                                    theAllocator);
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
   if (!theEdge.IsValid(aStorage.NbEdges()))
     return aResult;

@@ -17,7 +17,11 @@
 
 namespace
 {
-constexpr int THE_INIT_VECTOR_CAPACITY = 256;
+constexpr int THE_HISTORY_RECORD_BLOCK_SIZE      = 32;
+constexpr int THE_HISTORY_REPLACEMENT_BLOCK_SIZE = 4;
+constexpr int THE_HISTORY_FILTERED_BLOCK_SIZE    = 4;
+constexpr int THE_HISTORY_DERIVED_BLOCK_SIZE     = 8;
+constexpr int THE_HISTORY_QUEUE_BLOCK_SIZE       = 32;
 }
 
 //=================================================================================================
@@ -28,7 +32,8 @@ void BRepGraph_History::SetAllocator(const occ::handle<NCollection_BaseAllocator
                        "SetAllocator: must be called before any records are added");
   myAllocator = theAlloc;
   // Reconstruct internal containers with the new allocator.
-  myRecords = NCollection_Vector<BRepGraph_HistoryRecord>(THE_INIT_VECTOR_CAPACITY, myAllocator);
+  myRecords = NCollection_Vector<BRepGraph_HistoryRecord>(THE_HISTORY_RECORD_BLOCK_SIZE,
+                                                          myAllocator);
   myDerivedToOriginal = NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>(1, myAllocator);
   myOriginalToDerived =
     NCollection_DataMap<BRepGraph_NodeId, NCollection_Vector<BRepGraph_NodeId>>(1, myAllocator);
@@ -60,7 +65,9 @@ void BRepGraph_History::Record(const TCollection_AsciiString&              theOp
   // Populate the bidirectional lookup maps.
   // Skip self-referencing entries (aDerived == theOriginal) to avoid overwriting
   // prior chain links in the reverse map.
-  NCollection_Vector<BRepGraph_NodeId> aFilteredReplacements(THE_INIT_VECTOR_CAPACITY, myAllocator);
+  NCollection_Vector<BRepGraph_NodeId> aFilteredReplacements(
+    THE_HISTORY_FILTERED_BLOCK_SIZE,
+    myAllocator);
   for (int anIdx = 0; anIdx < theReplacements.Length(); ++anIdx)
   {
     const BRepGraph_NodeId& aDerived = theReplacements.Value(anIdx);
@@ -128,7 +135,7 @@ void BRepGraph_History::RecordBatch(const TCollection_AsciiString&              
     const BRepGraph_NodeId& aReplacement = theReplacements.Value(i);
     Standard_ASSERT_VOID(!aRecord.Mapping.IsBound(anOriginal),
                          "RecordBatch: duplicate original node");
-    NCollection_Vector<BRepGraph_NodeId> aRepVec(THE_INIT_VECTOR_CAPACITY, myAllocator);
+    NCollection_Vector<BRepGraph_NodeId> aRepVec(THE_HISTORY_REPLACEMENT_BLOCK_SIZE, myAllocator);
     aRepVec.Append(aReplacement);
     aRecord.Mapping.Bind(anOriginal, std::move(aRepVec));
   }
@@ -156,7 +163,8 @@ void BRepGraph_History::RecordBatch(const TCollection_AsciiString&              
     }
     else
     {
-      NCollection_Vector<BRepGraph_NodeId> aDerVec(THE_INIT_VECTOR_CAPACITY, myAllocator);
+      NCollection_Vector<BRepGraph_NodeId> aDerVec(THE_HISTORY_REPLACEMENT_BLOCK_SIZE,
+                                                   myAllocator);
       aDerVec.Append(aReplacement);
       myOriginalToDerived.Bind(anOriginal, std::move(aDerVec));
     }
@@ -190,8 +198,8 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph_History::FindDerived(
 {
   // Collect all transitively derived nodes using iterative BFS.
   // A visited set guards against infinite loops if cycles exist in the forward map.
-  NCollection_Vector<BRepGraph_NodeId> aResult;
-  NCollection_Vector<BRepGraph_NodeId> aQueue;
+  NCollection_Vector<BRepGraph_NodeId> aResult(THE_HISTORY_DERIVED_BLOCK_SIZE);
+  NCollection_Vector<BRepGraph_NodeId> aQueue(THE_HISTORY_QUEUE_BLOCK_SIZE);
   NCollection_Map<BRepGraph_NodeId>    aVisited;
 
   aQueue.Append(theOriginal);

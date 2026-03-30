@@ -29,15 +29,6 @@ constexpr int THE_PATHVIEW_PATHS_BLOCK_SIZE          = 8;
 constexpr int THE_PATHVIEW_NODE_LOCATIONS_BLOCK_SIZE = 8;
 constexpr int THE_PATHVIEW_PATH_NODES_BLOCK_SIZE     = 8;
 
-//=================================================================================================
-
-const occ::handle<NCollection_BaseAllocator>& effectiveAllocator(
-  const BRepGraph&                               theGraph,
-  const occ::handle<NCollection_BaseAllocator>& theAllocator)
-{
-  return theAllocator.IsNull() ? theGraph.Allocator() : theAllocator;
-}
-
 }
 
 //=================================================================================================
@@ -46,11 +37,11 @@ NCollection_Vector<BRepGraph_ProductId> BRepGraph::PathView::RootProducts(
   const occ::handle<NCollection_BaseAllocator>& theAllocator) const
 {
   NCollection_Vector<BRepGraph_ProductId> aResult(THE_PATHVIEW_ROOT_PRODUCTS_BLOCK_SIZE,
-                                                  effectiveAllocator(*myGraph, theAllocator));
+                                                  theAllocator);
   const BRepGraphInc_Storage& aStorage    = myGraph->myData->myIncStorage;
   const int                   aNbProducts = aStorage.NbProducts();
 
-  NCollection_Map<int> aReferencedProducts(1, effectiveAllocator(*myGraph, theAllocator));
+  NCollection_Map<int> aReferencedProducts(1, theAllocator);
   for (int anOccIdx = 0; anOccIdx < aStorage.NbOccurrences(); ++anOccIdx)
   {
     const BRepGraphInc::OccurrenceDef& anOcc = aStorage.Occurrence(BRepGraph_OccurrenceId(anOccIdx));
@@ -806,13 +797,12 @@ NCollection_Vector<BRepGraph_TopologyPath> BRepGraph::PathView::FilterByInclude(
   const BRepGraph_NodeId                            theNode,
   const occ::handle<NCollection_BaseAllocator>&     theAllocator) const
 {
-  const occ::handle<NCollection_BaseAllocator>& anAllocator = effectiveAllocator(*myGraph, theAllocator);
   NCollection_Vector<BRepGraph_TopologyPath> aResult(THE_PATHVIEW_FILTERED_PATHS_BLOCK_SIZE,
-                                                     anAllocator);
+                                                     theAllocator);
   for (int i = 0; i < thePaths.Length(); ++i)
   {
     if (PathContains(thePaths.Value(i), theNode))
-      aResult.Append(BRepGraph_TopologyPath(thePaths.Value(i), anAllocator));
+      aResult.Append(BRepGraph_TopologyPath(thePaths.Value(i), theAllocator));
   }
   return aResult;
 }
@@ -824,13 +814,12 @@ NCollection_Vector<BRepGraph_TopologyPath> BRepGraph::PathView::FilterByExclude(
   const BRepGraph_NodeId                            theNode,
   const occ::handle<NCollection_BaseAllocator>&     theAllocator) const
 {
-  const occ::handle<NCollection_BaseAllocator>& anAllocator = effectiveAllocator(*myGraph, theAllocator);
   NCollection_Vector<BRepGraph_TopologyPath> aResult(THE_PATHVIEW_FILTERED_PATHS_BLOCK_SIZE,
-                                                     anAllocator);
+                                                     theAllocator);
   for (int i = 0; i < thePaths.Length(); ++i)
   {
     if (!PathContains(thePaths.Value(i), theNode))
-      aResult.Append(BRepGraph_TopologyPath(thePaths.Value(i), anAllocator));
+      aResult.Append(BRepGraph_TopologyPath(thePaths.Value(i), theAllocator));
   }
   return aResult;
 }
@@ -841,9 +830,8 @@ NCollection_Vector<BRepGraph_TopologyPath> BRepGraph::PathView::PathsTo(
   const BRepGraph_NodeId                            theNode,
   const occ::handle<NCollection_BaseAllocator>& theAllocator) const
 {
-  const occ::handle<NCollection_BaseAllocator>& anAllocator = effectiveAllocator(*myGraph, theAllocator);
-  NCollection_Vector<BRepGraph_TopologyPath> aResult(THE_PATHVIEW_PATHS_BLOCK_SIZE, anAllocator);
-  reverseWalkPaths(theNode, aResult, anAllocator);
+  NCollection_Vector<BRepGraph_TopologyPath> aResult(THE_PATHVIEW_PATHS_BLOCK_SIZE, theAllocator);
+  reverseWalkPaths(theNode, aResult, theAllocator);
   return aResult;
 }
 
@@ -854,18 +842,17 @@ NCollection_Vector<BRepGraph_TopologyPath> BRepGraph::PathView::PathsFromTo(
   const BRepGraph_NodeId                            theLeaf,
   const occ::handle<NCollection_BaseAllocator>& theAllocator) const
 {
-  const occ::handle<NCollection_BaseAllocator>& anAllocator = effectiveAllocator(*myGraph, theAllocator);
-  NCollection_Vector<BRepGraph_TopologyPath> aResult(THE_PATHVIEW_PATHS_BLOCK_SIZE, anAllocator);
+  NCollection_Vector<BRepGraph_TopologyPath> aResult(THE_PATHVIEW_PATHS_BLOCK_SIZE, theAllocator);
   if (!theRoot.IsValid() || !theLeaf.IsValid())
     return aResult;
 
   if (theRoot == theLeaf)
   {
-    aResult.Append(BRepGraph_TopologyPath::FromRoot(theRoot, anAllocator));
+    aResult.Append(BRepGraph_TopologyPath::FromRoot(theRoot, theAllocator));
     return aResult;
   }
 
-  reverseWalkPaths(theLeaf, aResult, anAllocator);
+  reverseWalkPaths(theLeaf, aResult, theAllocator);
 
   int aWriteIdx = 0;
   for (int aReadIdx = 0; aReadIdx < aResult.Length(); ++aReadIdx)
@@ -893,9 +880,8 @@ NCollection_Vector<BRepGraph::PathView::OccurrenceEntry> BRepGraph::PathView::No
   const BRepGraph_NodeId                            theNode,
   const occ::handle<NCollection_BaseAllocator>& theAllocator) const
 {
-  const occ::handle<NCollection_BaseAllocator>& anAllocator = effectiveAllocator(*myGraph, theAllocator);
-  NCollection_Vector<OccurrenceEntry> aResult(THE_PATHVIEW_NODE_LOCATIONS_BLOCK_SIZE, anAllocator);
-  reverseWalkEntries(theNode, aResult, anAllocator);
+  NCollection_Vector<OccurrenceEntry> aResult(THE_PATHVIEW_NODE_LOCATIONS_BLOCK_SIZE, theAllocator);
+  reverseWalkEntries(theNode, aResult, theAllocator);
   return aResult;
 }
 
@@ -1614,7 +1600,7 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::PathView::AllNodesOnPath(
   const occ::handle<NCollection_BaseAllocator>& theAllocator) const
 {
   NCollection_Vector<BRepGraph_NodeId> aResult(THE_PATHVIEW_PATH_NODES_BLOCK_SIZE,
-                                               effectiveAllocator(*myGraph, theAllocator));
+                                               theAllocator);
   Standard_ASSERT_RETURN(thePath.IsValid(), "invalid path", aResult);
   if (!thePath.IsValid())
     return aResult;

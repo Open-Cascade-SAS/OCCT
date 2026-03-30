@@ -28,13 +28,20 @@
 
 #include <functional>
 
+namespace
+{
+
+constexpr int THE_ANALYZE_RESULT_BLOCK_SIZE     = 16;
+constexpr int THE_ANALYZE_CURVE_EDGE_BUCKET_SIZE = 4;
+
+}
+
 //==================================================================================================
 
 NCollection_Vector<BRepGraph_EdgeId> BRepGraph_Analyze::FreeEdges(const BRepGraph& theGraph)
 {
-  NCollection_Vector<BRepGraph_EdgeId> aResult;
-
   const BRepGraph::TopoView& aDefs = theGraph.Topo();
+  NCollection_Vector<BRepGraph_EdgeId> aResult(THE_ANALYZE_RESULT_BLOCK_SIZE);
 
   for (int anEdgeIdx = 0; anEdgeIdx < aDefs.NbEdges(); ++anEdgeIdx)
   {
@@ -54,15 +61,17 @@ NCollection_Vector<BRepGraph_EdgeId> BRepGraph_Analyze::FreeEdges(const BRepGrap
 NCollection_Vector<std::pair<BRepGraph_EdgeId, BRepGraph_FaceId>> BRepGraph_Analyze::MissingPCurves(
   const BRepGraph& theGraph)
 {
-  NCollection_Vector<std::pair<BRepGraph_EdgeId, BRepGraph_FaceId>> aResult;
-
   const BRepGraph::TopoView& aDefs = theGraph.Topo();
+  NCollection_Vector<std::pair<BRepGraph_EdgeId, BRepGraph_FaceId>> aResult =
+    NCollection_Vector<std::pair<BRepGraph_EdgeId, BRepGraph_FaceId>>(THE_ANALYZE_RESULT_BLOCK_SIZE);
+
+  const occ::handle<NCollection_BaseAllocator> anAllocator;
 
   for (int aFaceDefIdx = 0; aFaceDefIdx < aDefs.NbFaces(); ++aFaceDefIdx)
   {
     const BRepGraph_FaceId aFaceId(aFaceDefIdx);
 
-    const NCollection_Vector<BRepGraph_EdgeId> anEdges = aDefs.EdgesOfFace(aFaceId, theGraph.Allocator());
+    const NCollection_Vector<BRepGraph_EdgeId> anEdges = aDefs.EdgesOfFace(aFaceId, anAllocator);
     for (int anEdgeIdx = 0; anEdgeIdx < anEdges.Length(); ++anEdgeIdx)
     {
       const BRepGraph_EdgeId       anEdgeDefId = anEdges.Value(anEdgeIdx);
@@ -85,7 +94,7 @@ NCollection_Vector<BRepGraph_EdgeId> BRepGraph_Analyze::ToleranceConflicts(
   const BRepGraph& theGraph,
   const double     theThreshold)
 {
-  NCollection_Vector<BRepGraph_EdgeId> aResult;
+  NCollection_Vector<BRepGraph_EdgeId> aResult(THE_ANALYZE_RESULT_BLOCK_SIZE);
 
   // Build temporary curve pointer -> edges map by scanning edge defs
   NCollection_DataMap<const Geom_Curve*, NCollection_Vector<BRepGraph_EdgeId>> aCurveToEdges;
@@ -100,7 +109,8 @@ NCollection_Vector<BRepGraph_EdgeId> BRepGraph_Analyze::ToleranceConflicts(
     if (aCurve3d.IsNull())
       continue;
     const Geom_Curve* aCurveKey = aCurve3d.get();
-    aCurveToEdges.TryBind(aCurveKey, NCollection_Vector<BRepGraph_EdgeId>());
+    aCurveToEdges.TryBind(aCurveKey,
+                          NCollection_Vector<BRepGraph_EdgeId>(THE_ANALYZE_CURVE_EDGE_BUCKET_SIZE));
     aCurveToEdges.ChangeFind(aCurveKey).Append(anEdgeId);
   }
 
@@ -139,10 +149,9 @@ NCollection_Vector<BRepGraph_EdgeId> BRepGraph_Analyze::ToleranceConflicts(
 
 NCollection_Vector<BRepGraph_WireId> BRepGraph_Analyze::DegenerateWires(const BRepGraph& theGraph)
 {
-  NCollection_Vector<BRepGraph_WireId> aResult;
-
   const BRepGraph::TopoView&  aDefs    = theGraph.Topo();
   const BRepGraphInc_Storage& aStorage = theGraph.myData->myIncStorage;
+  NCollection_Vector<BRepGraph_WireId> aResult(THE_ANALYZE_RESULT_BLOCK_SIZE);
 
   const int aNbWires = aDefs.NbWires();
   if (aNbWires == 0)
@@ -208,10 +217,12 @@ NCollection_Vector<BRepGraph_WireId> BRepGraph_Analyze::DegenerateWires(const BR
 
 NCollection_Vector<BRepGraph_SubGraph> BRepGraph_Analyze::Decompose(const BRepGraph& theGraph)
 {
-  NCollection_Vector<BRepGraph_SubGraph> aResult;
-
   const BRepGraph::TopoView&  aDefs    = theGraph.Topo();
   const BRepGraphInc_Storage& aStorage = theGraph.myData->myIncStorage;
+  const int aComponentHint = aDefs.NbSolids() > 0 ? aDefs.NbSolids()
+                                                   : (aDefs.NbShells() > 0 ? aDefs.NbShells() : 1);
+  (void )aComponentHint;
+  NCollection_Vector<BRepGraph_SubGraph> aResult(THE_ANALYZE_RESULT_BLOCK_SIZE);
 
   // Collect wire, edge and vertex children from a face def into a SubGraph.
   const auto aCollectFaceChildren = [&](BRepGraph_SubGraph&    theSub,
