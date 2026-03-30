@@ -455,6 +455,48 @@ const BRepGraphInc::CoEdgeDef& BRepGraph::TopoView::CoEdge(const BRepGraph_CoEdg
 
 //=================================================================================================
 
+BRepGraph_SurfaceRepId BRepGraph::TopoView::SurfaceRepIdOfFace(const BRepGraph_FaceId theFace) const
+{
+  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  if (!theFace.IsValid(aStorage.NbFaces()))
+    return BRepGraph_SurfaceRepId();
+  return aStorage.Face(theFace).SurfaceRepId;
+}
+
+//=================================================================================================
+
+BRepGraph_TriangulationRepId BRepGraph::TopoView::ActiveTriangulationRepIdOfFace(
+  const BRepGraph_FaceId theFace) const
+{
+  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  if (!theFace.IsValid(aStorage.NbFaces()))
+    return BRepGraph_TriangulationRepId();
+  return aStorage.Face(theFace).ActiveTriangulationRepId();
+}
+
+//=================================================================================================
+
+BRepGraph_Curve3DRepId BRepGraph::TopoView::Curve3DRepIdOfEdge(const BRepGraph_EdgeId theEdge) const
+{
+  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  if (!theEdge.IsValid(aStorage.NbEdges()))
+    return BRepGraph_Curve3DRepId();
+  return aStorage.Edge(theEdge).Curve3DRepId;
+}
+
+//=================================================================================================
+
+BRepGraph_Curve2DRepId BRepGraph::TopoView::Curve2DRepIdOfCoEdge(
+  const BRepGraph_CoEdgeId theCoEdge) const
+{
+  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  if (!theCoEdge.IsValid(aStorage.NbCoEdges()))
+    return BRepGraph_Curve2DRepId();
+  return aStorage.CoEdge(theCoEdge).Curve2DRepId;
+}
+
+//=================================================================================================
+
 const BRepGraphInc::BaseDef* BRepGraph::TopoView::TopoEntity(const BRepGraph_NodeId theId) const
 {
   return myGraph->topoEntity(theId);

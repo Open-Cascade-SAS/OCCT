@@ -226,6 +226,34 @@ TEST_F(BRepGraph_ViewsTest, DefsView_FindPCurve_NoCrash)
   (void)BRepGraph_Tool::Edge::FindPCurve(myGraph, BRepGraph_EdgeId(0), BRepGraph_FaceId(0));
 }
 
+TEST_F(BRepGraph_ViewsTest, DefsView_RepIdConvenienceAccessors_RoundTrip)
+{
+  const BRepGraph_FaceId aFaceId(0);
+  const BRepGraph_EdgeId anEdgeId(0);
+
+  EXPECT_EQ(myGraph.Topo().SurfaceRepIdOfFace(aFaceId), myGraph.Topo().Face(aFaceId).SurfaceRepId);
+  EXPECT_EQ(myGraph.Topo().ActiveTriangulationRepIdOfFace(aFaceId),
+            myGraph.Topo().Face(aFaceId).ActiveTriangulationRepId());
+  EXPECT_EQ(myGraph.Topo().Curve3DRepIdOfEdge(anEdgeId), myGraph.Topo().Edge(anEdgeId).Curve3DRepId);
+
+  const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdges = myGraph.Topo().CoEdgesOfEdge(anEdgeId);
+  ASSERT_GT(aCoEdges.Length(), 0);
+  const BRepGraph_CoEdgeId aCoEdgeId = aCoEdges.Value(0);
+  EXPECT_EQ(myGraph.Topo().Curve2DRepIdOfCoEdge(aCoEdgeId), myGraph.Topo().CoEdge(aCoEdgeId).Curve2DRepId);
+}
+
+TEST_F(BRepGraph_ViewsTest, DefsView_RepIdConvenienceAccessors_InvalidInput)
+{
+  const BRepGraph_FaceId aFaceOut(myGraph.Topo().NbFaces());
+  const BRepGraph_EdgeId anEdgeOut(myGraph.Topo().NbEdges());
+  const BRepGraph_CoEdgeId aCoEdgeOut(myGraph.Topo().NbCoEdges());
+
+  EXPECT_FALSE(myGraph.Topo().SurfaceRepIdOfFace(aFaceOut).IsValid());
+  EXPECT_FALSE(myGraph.Topo().ActiveTriangulationRepIdOfFace(aFaceOut).IsValid());
+  EXPECT_FALSE(myGraph.Topo().Curve3DRepIdOfEdge(anEdgeOut).IsValid());
+  EXPECT_FALSE(myGraph.Topo().Curve2DRepIdOfCoEdge(aCoEdgeOut).IsValid());
+}
+
 // ---------- UIDsView ----------
 
 TEST_F(BRepGraph_ViewsTest, UIDsView_Of_Valid)

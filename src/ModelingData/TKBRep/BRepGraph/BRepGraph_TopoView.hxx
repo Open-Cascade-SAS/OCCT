@@ -188,6 +188,26 @@ public:
   [[nodiscard]] Standard_EXPORT const BRepGraphInc::CoEdgeDef& CoEdge(
     const BRepGraph_CoEdgeId theCoEdge) const;
 
+  //! Return the surface representation id referenced by a face definition.
+  //! Returns invalid id when theFace is out of range.
+  [[nodiscard]] Standard_EXPORT BRepGraph_SurfaceRepId SurfaceRepIdOfFace(
+    const BRepGraph_FaceId theFace) const;
+
+  //! Return the active triangulation representation id referenced by a face definition.
+  //! Returns invalid id when theFace is out of range or no active triangulation is set.
+  [[nodiscard]] Standard_EXPORT BRepGraph_TriangulationRepId ActiveTriangulationRepIdOfFace(
+    const BRepGraph_FaceId theFace) const;
+
+  //! Return the 3D-curve representation id referenced by an edge definition.
+  //! Returns invalid id when theEdge is out of range.
+  [[nodiscard]] Standard_EXPORT BRepGraph_Curve3DRepId Curve3DRepIdOfEdge(
+    const BRepGraph_EdgeId theEdge) const;
+
+  //! Return the 2D-curve representation id referenced by a coedge definition.
+  //! Returns invalid id when theCoEdge is out of range.
+  [[nodiscard]] Standard_EXPORT BRepGraph_Curve2DRepId Curve2DRepIdOfCoEdge(
+    const BRepGraph_CoEdgeId theCoEdge) const;
+
   //! Generic node-definition lookup by NodeId (topology or assembly).
   //! @param[in] theId node identifier
   //! @return pointer to BaseDef or nullptr if invalid
