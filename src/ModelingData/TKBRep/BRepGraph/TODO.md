@@ -18,7 +18,7 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 ### ~~CommitMutation guardrails~~ - DONE (2026-03-20)
 - `BRepGraph_Mutator::CommitMutation()` validates reverse index + active entity counts
 - Called at end of Sewing::Perform, Compact::Perform, Deduplicate::Perform
-- Exposed via `MutView::CommitMutation()` for algorithm use
+- Exposed via `Builder().CommitMutation()` for algorithm use
 
 ### ~~NbActiveXXX counts~~ - DONE (2026-03-19)
 - `NbActiveEdges()`, `NbActiveFaces()` etc. in `BRepGraphInc_Storage`
@@ -63,7 +63,7 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 - `UnbindEdgeFromFace` added to ReverseIndex for edge-to-face maintenance
 - `ReplaceEdgeInWire` binds new edge + unbinds old edge from wire's faces in single loop
 - Sewing `mergeMatchedEdges` uses `Builder().RemoveNode()` for replaced edges
-- `FreeEdges` and multiple-edge detection switched to O(1) `DefsView::NbFacesOfEdge` with `IsRemoved` filter
+- `FreeEdges` and multiple-edge detection switched to O(1) `Topo().NbFacesOfEdge()` with `IsRemoved` filter
 
 ### ~~DeferredScope RAII~~ - DONE (2026-03-20)
 - `BRepGraph_DeferredScope` RAII class: `BeginDeferredInvalidation()` on construct, `EndDeferredInvalidation()` + `CommitMutation()` on destruct
@@ -74,7 +74,7 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 - `canSewSameFaceEdges` now evaluates PCurves at midpoints for explicit opposite-side verification
 - Midpoint UV separation must exceed 25% of surface period in the closed direction
 - Catches same-side false positives where bounding box inner/outer distance was inconclusive
-- Ported from legacy `BRepBuilderAPI_Sewing::SameParameterEdge` UV-distance check pattern
+- Ported from `BRepBuilderAPI_Sewing::SameParameterEdge` UV-distance check pattern
 
 ### ~~UVBounds/BndLib automatic invalidation~~ - DONE (2026-03-20)
 - `markModified()` now calls `InvalidateAll()` on node cache alongside shape-cache clearing
@@ -91,11 +91,11 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 ### ~~BRepGraph_Tool (Centralized Geometry Access)~~ - DONE (2026-03-22)
 - `BRepGraph_Tool` with nested helpers: Vertex, Edge, CoEdge, Face, Wire
 - Analogue of `BRep_Tool` for BRepGraph: Pnt, Tolerance, Curve, Surface, PCurveGeometry, Range, EvalD0, etc.
-- Replaces raw DefsView geometry access; DefsView made private for geometry fields
+- Replaces raw geometry-field access through backend definitions; public geometry queries are centralized in `BRepGraph_Tool`
 - ~50 files migrated (16 production + 32 test + 5 internal)
 
 ### ~~Explorer / TopologyPath / PathView~~ - DONE (2026-03-25)
-- `BRepGraph_TopologyPath`: path from root to occurrence, uniform step model (assembly + topology)
+- `BRepGraph_TopologyPath`: root-to-leaf step sequence spanning assembly and topology relations
 - `BRepGraph_Explorer`: context-preserving hierarchy walker visiting each occurrence (not just definitions)
 - `PathView` via `Paths()`: GlobalLocation, GlobalOrientation, PathsTo, NodeLocations, CommonAncestor, FilterByInclude/Exclude, IsAncestorOf, AllNodesOnPath
 - `BRepGraph_SubGraph`: non-owning view over connected component for parallel processing
@@ -195,16 +195,12 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 - Currently Compact transfers UIDs but doesn't expose the remapping
 
 ### Public/Internal Boundary Cleanup [Arch] ★★★
-- Keep `BRepGraphInc_*` as backend storage implementation, not stable public surface
-- Highest-priority leaks to remove first:
-  - public headers including `BRepGraphInc_Definition.hxx` / `Reference.hxx` / `Representation.hxx`
-  - `RefsView` returning concrete `BRepGraphInc::*Ref`
-  - helper signatures (`Tool`, `WireExplorer`) that hard-code backend usage structs
-- Smallest safe slice:
-  - add public usage/value wrappers for ref payload inspection
-  - refactor `RefsView` to return those wrappers
-  - add test helpers so GTests can stop depending directly on backend structs
-- Defer deeper mutation/accessor redesign until after this header-boundary slice lands
+- Keep `BRepGraphInc_*` as backend storage implementation and avoid widening its exposure unnecessarily
+- Highest-priority cleanup:
+  - remove unneeded public includes of `BRepGraphInc_Definition.hxx` / `Reference.hxx` / `Representation.hxx` where the public contract does not require them
+  - document intentional direct exposure in `RefsView`, `BRepGraph_Tool`, and `BRepGraph_WireExplorer` instead of adding wrappers or aliases
+  - keep tests aligned with the existing public surface without introducing facade-owned replacement structs
+- Defer deeper boundary redesign until there is a concrete external consumer need; no wrapper/value layer is planned in the current direction
 
 ### Fingerprinting & Quick Equality [Perf] ★★★
 - Topological fingerprints (hash of reverse-index adjacency + geometry hashes)

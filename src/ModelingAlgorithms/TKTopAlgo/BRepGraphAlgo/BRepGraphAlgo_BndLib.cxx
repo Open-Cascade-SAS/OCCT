@@ -994,6 +994,8 @@ bool BRepGraphAlgo_BndLib::GetCached(const BRepGraph&                  theGraph,
                                      const BRepGraph_NodeId            theNode,
                                      BRepGraphAlgo_BndLib::CachedData& theData)
 {
+  // Direct TransientCache() access is intentional in BndLib because cache
+  // entries are validated against explicit SubtreeGen values.
   const BRepGraphInc::BaseDef* aDef = theGraph.topoEntity(theNode);
   if (aDef == nullptr)
   {

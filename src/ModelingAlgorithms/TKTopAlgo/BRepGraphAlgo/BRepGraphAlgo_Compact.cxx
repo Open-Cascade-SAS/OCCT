@@ -657,9 +657,9 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
 
   // Restore layers and notify about index remapping.
   theGraph.layerRegistry() = std::move(aSavedLayerRegistry);
-  // Clear and re-reserve TransientCache for the compacted entity counts.
-  // The saved cache had pre-allocation for old indices; after compaction
-  // indices are remapped and counts may differ.
+  // Direct transientCache()/TransientCache() access is intentional here.
+  // Compact must clear stale slots keyed by old indices, then re-reserve the
+  // cache for the new compacted entity counts before later algorithm use.
   theGraph.transientCache().Clear();
   {
     BRepGraphInc_Storage& aStr = theGraph.incStorage();

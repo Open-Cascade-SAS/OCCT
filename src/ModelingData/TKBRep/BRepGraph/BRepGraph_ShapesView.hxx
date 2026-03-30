@@ -26,12 +26,18 @@
 //! NodeIds via TShape pointer comparison. Shape() is the stable cached public
 //! route for repeated access; Reconstruct() forces a fresh rebuild with the
 //! same node-kind semantics and bypasses the persistent reconstructed-shape cache.
+//! The reconstructed-shape cache is keyed by node and validated against the
+//! current SubtreeGen. Shape() rebuilds only when the cached generation no
+//! longer matches. Build() and Compact() clear the cache entirely. Reconstruct()
+//! always rebuilds fresh and does not populate the persistent cache.
 //! Obtained via BRepGraph::Shapes().
 class BRepGraph::ShapesView
 {
 public:
   //! Return or reconstruct a TopoDS_Shape for a node.
   //! Prefer this route for repeated public queries.
+  //! Returns the original Build()/AppendShape() shape directly while the node
+  //! still has SubtreeGen == 0; otherwise uses the SubtreeGen-validated cache.
   //! Topology definition nodes (Vertex..CompSolid) reconstruct their topology
   //! directly, without assembly wrappers.
   //! Product nodes are reconstructed in product-local coordinates.
@@ -41,20 +47,24 @@ public:
   [[nodiscard]] Standard_EXPORT TopoDS_Shape Shape(const BRepGraph_NodeId theNode) const;
 
   //! Check if the node has an original shape from Build().
+  //! Nodes created programmatically through Builder().Add*() do not have an
+  //! original Build()/AppendShape() shape.
   //! @param[in] theNode node identifier
   //! @return true if an original shape exists
   [[nodiscard]] Standard_EXPORT bool HasOriginal(const BRepGraph_NodeId theNode) const;
 
   //! Return the original TopoDS_Shape stored during Build().
   //! @param[in] theNode node identifier
-  //! @return reference to the original shape
+  //! @return reference to the exact TopoDS_Shape stored during Build() or
+  //!         AppendShape()
   //! @exception Standard_ProgramError if no original shape exists
   [[nodiscard]] Standard_EXPORT const TopoDS_Shape& OriginalOf(
     const BRepGraph_NodeId theNode) const;
 
   //! Reconstruct a TopoDS_Shape from a graph node without using the persistent cache.
   //! Use this when the caller explicitly needs a fresh rebuild instead of the
-  //! shared cached shape returned by Shape().
+  //! shared cached shape returned by Shape(). This method does not populate the
+  //! persistent reconstructed-shape cache.
   //! Topology definition nodes reconstruct topology directly.
   //! Product nodes are reconstructed in product-local coordinates.
   //! Occurrence nodes are reconstructed with cumulative occurrence placement.
@@ -66,6 +76,8 @@ public:
   //! Uses TShape pointer comparison (same semantics as IsSame()).
   //! Synthetic Product / Occurrence reconstructions are not given dedicated
   //! TShape bindings, so lookup is only guaranteed for Build()-time topology.
+  //! Programmatically created Builder().Add*() nodes can still be located by
+  //! UID or by direct iteration over Topo() definitions.
   //! @param[in] theShape shape to look up
   //! @return node identifier, or invalid NodeId if the shape is not in the graph
   [[nodiscard]] Standard_EXPORT BRepGraph_NodeId FindNode(const TopoDS_Shape& theShape) const;
@@ -74,6 +86,8 @@ public:
   //! Uses TShape pointer comparison (same semantics as IsSame()).
   //! Synthetic Product / Occurrence reconstructions are not given dedicated
   //! TShape bindings, so this is only guaranteed for Build()-time topology.
+  //! Programmatically created Builder().Add*() nodes can still be located by
+  //! UID or by direct iteration over Topo() definitions.
   //! @param[in] theShape shape to check
   //! @return true if the shape has a corresponding definition node
   [[nodiscard]] Standard_EXPORT bool HasNode(const TopoDS_Shape& theShape) const;

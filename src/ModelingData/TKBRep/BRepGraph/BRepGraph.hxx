@@ -110,13 +110,17 @@ public:
   Standard_EXPORT BRepGraph& operator=(BRepGraph&&) noexcept;
 
   //! Build the full graph from a TopoDS_Shape using default populate options.
+  //! Equivalent to passing a default-constructed BRepGraphInc_Populate::Options,
+  //! which enables both ExtractRegularities and ExtractVertexPointReps.
   //! Use the overload with explicit BRepGraphInc_Populate::Options when the
-  //! caller needs control over optional extraction passes.
+  //! caller needs control over those optional extraction passes.
   Standard_EXPORT void Build(const TopoDS_Shape& theShape, const bool theParallel = false);
 
   //! Build the full graph with explicit populate options.
   //! Use this overload when the caller must enable or disable optional
-  //! extraction passes such as regularity or vertex-point representations.
+  //! extraction passes such as regularity or vertex-point representations
+  //! through BRepGraphInc_Populate::Options::ExtractRegularities and
+  //! BRepGraphInc_Populate::Options::ExtractVertexPointReps.
   Standard_EXPORT void Build(const TopoDS_Shape&                   theShape,
                              const bool                            theParallel,
                              const BRepGraphInc_Populate::Options& theOptions);
@@ -158,8 +162,10 @@ public:
   //! Access assembly structure, placement, and topology path resolution queries.
   [[nodiscard]] Standard_EXPORT const PathView& Paths() const;
   //! Access transient cache values through the stable grouped-view API.
+  //! Prefer this route for public per-node cache access.
   [[nodiscard]] Standard_EXPORT CacheView& Cache();
   //! Access transient cache values (const, read-only Get/Has/CacheKinds).
+  //! Prefer this route for public read access to per-node cached values.
   [[nodiscard]] Standard_EXPORT const CacheView& Cache() const;
   //! Access reference entries and their UIDs.
   [[nodiscard]] Standard_EXPORT const RefsView& Refs() const;
@@ -180,11 +186,12 @@ public:
 
   //! Access the raw transient cache for algorithm-computed attributes.
   //! External callers should prefer Cache(), which is the stable grouped-view
-  //! API. This accessor remains for lower-level algorithm code that needs raw
-  //! cache operations such as reserve, transfer, or direct storage access.
+  //! API. This accessor remains for lower-level algorithm code that needs
+  //! Reserve() after compaction or copy, TransferCacheValues() between graphs,
+  //! explicit SubtreeGen-aware Get()/Set(), or full Clear() during remap.
   [[nodiscard]] BRepGraph_TransientCache& TransientCache() { return myTransientCache; }
   //! Access the raw transient cache (const).
-  //! Prefer Cache() for normal read access from public callers.
+  //! Prefer Cache() for normal public read access.
   [[nodiscard]] const BRepGraph_TransientCache& TransientCache() const { return myTransientCache; }
 
   //! Access registered graph layers.

@@ -61,7 +61,7 @@ All queries and mutations go through lightweight view objects obtained from a `B
 | **TopoView** | `Topo()` | Const topology definition access, representation access, adjacency queries, and raw Product/Occurrence definition storage |
 | **UIDsView** | `UIDs()` | UID allocation, lookup, validity checking |
 | **ShapesView** | `Shapes()` | Cached `Shape()` access, fresh `Reconstruct()`, and FindNode/HasNode reverse lookup |
-| **CacheView** | `Cache()` | Stable public transient cache access (Set/Get/Has/Remove per-node cached values) |
+| **CacheView** | `Cache()` | Stable public transient cache access (Set/Get/Has/Remove per-node cached values). Low-level reserve, transfer, and explicit generation-aware access remain on `TransientCache()` for algorithm code. |
 | **BuilderView** | `Builder()` | Mutations: AddProduct, AddOccurrence, RemoveNode, RemoveSubgraph, MutGuard accessors |
 | **RefsView** | `Refs()` | Reference entry access, RefUID lookup, VersionStamp for refs |
 | **PathView** | `Paths()` | Assembly-aware queries (RootProducts, IsAssembly, IsPart, NbComponents, Component) and path traversal (GlobalLocation, GlobalOrientation, PathsTo, NodeLocations, CommonAncestor) |
@@ -77,7 +77,7 @@ All queries and mutations go through lightweight view objects obtained from a `B
 | Accessor | Purpose |
 |----------|---------|
 | `History()` | Mutation history subsystem (lineage records) |
-| `TransientCache()` | Raw transient algorithm cache for low-level algorithms; public callers should prefer `Cache()` |
+| `TransientCache()` | Raw transient algorithm cache for low-level algorithms needing reserve, transfer, or explicit generation-aware access; public callers should prefer `Cache()` |
 | `LayerRegistry()` | Access the GUID-keyed runtime registry of registered layers |
 | `LayerRegistry().RegisterLayer(layer)` | Register a `BRepGraph_Layer` plugin explicitly |
 | `LayerRegistry().FindLayer(guid)` / `LayerRegistry().FindLayer<T>()` | Lookup a registered layer by GUID or layer type |
@@ -329,7 +329,7 @@ Every entity (`BaseDef`) carries two generation counters:
 
 | Counter | Incremented when | Used for |
 |---------|-----------------|----------|
-| **OwnGen** | Entity's own definition fields change (tolerance, point, flags) | VersionStamp persistent identity; PLM staleness detection |
+| **OwnGen** | Entity's own definition fields change (tolerance, point, flags, edge list, surface, etc.) | VersionStamp persistent identity; PLM staleness detection |
 | **SubtreeGen** | Entity's own data OR any descendant's data changes | TransientCache freshness; shape cache validation |
 
 `BaseRef` and `BaseRep` carry only `OwnGen` (no subtree).
@@ -342,7 +342,7 @@ When an entity is directly mutated via `MutGuard`:
 3. Each parent gets `++SubtreeGen` only (NOT OwnGen - parent's own data didn't change)
 4. Diamond guard (`LastPropWave`) prevents exponential blowup on shared parents
 
-Propagation is **mutex-free** - no locks, no shape cache clears, no layer dispatch. Cost: ~4 cycles per parent.
+Propagation is **mutex-free** - no locks, no shape cache clears, no layer dispatch. Cost: ~4 cycles per parent on Apple M1; actual cost depends on hardware and memory state.
 
 ### Deferred Mode
 
@@ -350,6 +350,7 @@ Propagation is **mutex-free** - no locks, no shape cache clears, no layer dispat
 - During scope: `markModified()` appends to deferred list, no propagation
 - At scope exit: BFS upward propagation of SubtreeGen, batch layer dispatch
 - Deferred mode batches invalidation only; concurrent `Mut*()` calls still require external synchronization
+- See `BRepGraph_DeferredScope` for the RAII guard wrapping `BeginDeferredInvalidation()` / `EndDeferredInvalidation()`
 
 ### Shape Cache
 
@@ -357,7 +358,7 @@ Reconstructed shapes are cached in `BRepGraph_Data::myCurrentShapes` as `CachedS
 
 ### Persistent Identity (VersionStamp)
 
-`BRepGraph_VersionStamp` = (UID, OwnGen, Generation). `IsStale()` compares `OwnGen` - detects only direct entity changes. Parent stamps are NOT stale when children change (correct for PLM semantics).
+`BRepGraph_VersionStamp` = (UID, OwnGen, Generation). `IsStale()` compares `OwnGen` - detects only direct entity changes. Parent stamps are NOT stale when children change, matching PLM-style semantics where direct parent edits and child edits are tracked separately.
 
 ### History
 
@@ -404,7 +405,7 @@ Use the explicit overload when the caller needs to override optional extraction 
 
 ### Validation Pipeline
 
-`BRepGraphAlgo_Validate` checks structural graph invariants, not geometric validity. Use `Mode::Lightweight` only for cheap boundary checks on graphs whose structure is already trusted. For CI, integration tests, and production API boundaries, prefer `Mode::Audit`, which adds cross-reference, reverse-index, UID, and assembly-cycle checks.
+`BRepGraphAlgo_Validate` checks structural graph invariants, not geometric validity. Use `Mode::Lightweight` only for cheap boundary checks on graphs whose structure is created or mutated exclusively by internal algorithm code with already-tested invariants. For CI, integration tests, and production API boundaries, prefer `Mode::Audit`, which adds cross-reference, reverse-index, UID, and assembly-cycle checks.
 
 If the caller also needs geometric/topological validity of reconstructed shapes, run `BRepGraphAlgo_Validate` first for graph integrity, then run the shape-level validation stack separately.
 

@@ -22,13 +22,16 @@
 //! @brief Read-only view for assembly structure, placements, and topology paths.
 //!
 //! Provides assembly-structural queries on Products and Occurrences together
-//! with path-based resolution. All path-based queries use the uniform step
-//! model: the path is walked from root through each step, dispatching on the
-//! current entity kind to resolve ref locations, orientations, and child
-//! entities. Raw Product and Occurrence definition storage remains on TopoView;
-//! this view is the assembly-aware query layer built on top of those defs.
+//! with path-based resolution. Each BRepGraph_TopologyPath is a sequence of
+//! root-to-leaf steps. Steps span assembly edges (occurrence in product),
+//! container edges (child in compound or compsolid), and topology edges
+//! (face in shell, edge in wire, and similar relations). Raw Product and
+//! Occurrence definition storage remains on TopoView; this view is the
+//! assembly-aware query layer built on top of those defs.
 //!
 //! ## Usage
+//! PathView methods consume paths produced by BRepGraph_Explorer or assembled
+//! explicitly via BRepGraph_TopologyPath.
 //! @code
 //!   BRepGraph_Explorer anExp(aGraph, BRepGraph_NodeId::Solid(0), Kind::Face);
 //!   for (; anExp.More(); anExp.Next())
@@ -51,6 +54,7 @@ public:
 
   //! All occurrence entries for a node: paths, locations, orientations.
   //! @note Computed on demand via reverse index walk. No caching.
+  //! Time scales with the number of active paths reaching theNode.
   //! @param[in] theNode entity to find all occurrences of
   [[nodiscard]] Standard_EXPORT NCollection_Vector<OccurrenceEntry> NodeLocations(
     const BRepGraph_NodeId theNode) const;

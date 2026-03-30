@@ -22,7 +22,9 @@
 //! Activates deferred invalidation on construction and flushes it on destruction,
 //! followed by CommitMutation validation. Guarantees exception-safe cleanup:
 //! when this guard owns deferred mode, it is always closed and boundary checks
-//! are executed at scope exit.
+//! are executed at scope exit. EndDeferredInvalidation() batch-propagates
+//! SubtreeGen upward, then CommitMutation() validates reverse-index consistency
+//! and active-entity counts.
 //!
 //! Re-entrant: if deferred mode is already active (e.g., nested guard),
 //! the inner guard is a no-op. Only the outermost guard flushes and commits,
@@ -30,7 +32,9 @@
 //!
 //! @warning This guard batches invalidation and propagation; it is NOT a
 //! transaction and does not serialize mutation bodies. Concurrent `Mut*()`
-//! usage still requires external synchronization for the whole guarded scope.
+//! usage still requires external synchronization for the whole guarded scope
+//! (for example, a mutex protecting exclusive Builder() access until the guard
+//! is destroyed).
 //!
 //! Usage:
 //! @code

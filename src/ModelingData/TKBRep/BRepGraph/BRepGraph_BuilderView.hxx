@@ -36,13 +36,15 @@ class Geom2d_Curve;
 //! Obtained via BRepGraph::Builder().
 //!
 //! Contract notes:
-//! - methods returning typed ids return an invalid id on invalid inputs and do
-//!   not partially modify the graph
+//! - Add* methods return BRepGraph_NodeId() on invalid inputs and do not
+//!   partially modify the graph; call IsValid() on the returned id to check
+//!   success
 //! - invalid inputs include wrong kind, out-of-range ids, or removed referenced
 //!   nodes unless a method documents a narrower precondition
-//! - link-style void methods keep the graph unchanged on invalid inputs and do
-//!   not report success separately
-//! - `Mut*()` accessors raise `Standard_ProgramError` for invalid or out-of-range ids
+//! - void linking methods such as AddFaceToShell() and AddShellToSolid() keep
+//!   the graph unchanged on invalid inputs and do not report success separately
+//! - `Mut*()` accessors raise `Standard_ProgramError` for null, out-of-range,
+//!   or removed typed ids
 class BRepGraph::BuilderView
 {
 public:
@@ -174,7 +176,9 @@ public:
   //! Create a new Curve2DRep in storage and return its typed identifier.
   //! Use this when assigning a new PCurve to an existing CoEdge entity
   //! via MutCoEdge(). Prefer AddPCurveToEdge() for the one-shot public route
-  //! when creating and binding a PCurve in one call.
+  //! when creating and binding a PCurve in one call. Prefer this route when a
+  //! caller has already located the target CoEdge and is updating its
+  //! Curve2DRepId inside a larger mutation sequence such as SameParameter.
   //! @param[in] theCurve2d the 2D parametric curve handle
   //! @return typed Curve2DRep identifier, or invalid if the curve is null
   [[nodiscard]] Standard_EXPORT BRepGraph_Curve2DRepId
@@ -182,9 +186,13 @@ public:
 
   //! Attach a PCurve to an edge for a given face context.
   //! Creates a new CoEdge entity with Curve2DRep and updates reverse indices.
+  //! This always appends a new CoEdge entry for the edge-face pair; callers
+  //! should avoid duplicate creation unless multiple bindings are intentional
+  //! for the modeled topology.
   //! Prefer this route when the caller needs to add a face-context PCurve in
   //! one operation. Use CreateCurve2DRep() with MutCoEdge() when editing an
-  //! existing CoEdge as part of a larger low-level mutation sequence.
+  //! existing CoEdge that has already been identified inside a larger mutation
+  //! sequence.
   //! @param[in] theEdgeEntity           edge definition NodeId
   //! @param[in] theFaceEntity           face definition NodeId
   //! @param[in] theCurve2d           2D curve geometry

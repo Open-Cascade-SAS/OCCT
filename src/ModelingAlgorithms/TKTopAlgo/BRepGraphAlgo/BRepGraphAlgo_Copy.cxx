@@ -59,6 +59,8 @@ occ::handle<Geom2d_Curve> copyPCurve(const occ::handle<Geom2d_Curve>& theCrv, bo
 //! Transfer transient cache values from source graph/node to destination graph/node.
 //! Cache values are shared (same handle) - caller must deep-copy if needed.
 //! Uses OwnGen=0 for destination (fresh entities from copy always start at gen 0).
+//! Direct TransientCache() access is intentional here because copy needs the
+//! low-level transfer helper that moves cache payloads between graph instances.
 void transferCacheValues(const BRepGraph&       theSrcGraph,
                          const BRepGraph_NodeId theSrcNode,
                          BRepGraph&             theDstGraph,

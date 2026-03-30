@@ -551,6 +551,8 @@ bool BRepGraphAlgo_UVBounds::GetCached(const BRepGraph&       theGraph,
                                        const BRepGraph_NodeId theNode,
                                        CachedData&            theData)
 {
+  // Direct TransientCache() access is intentional in UVBounds because cache
+  // entries are validated against explicit SubtreeGen values.
   if (theNode.NodeKind != BRepGraph_NodeId::Kind::Face || !theNode.IsValid())
   {
     return false;

@@ -42,6 +42,10 @@ class Adaptor3d_CurveOnSurface;
 //! and return definition structs (FaceDef, ShellDef). RefsView accessors take
 //! reference IDs (BRepGraph_FaceRefId, BRepGraph_ShellRefId) and return
 //! reference-entry structs carrying per-use orientation and location.
+//!
+//! Reverse-index accessors return const references to internal vectors. The
+//! reference itself is always valid; the returned vector may be empty when the
+//! queried entity has no parents of that kind.
 class BRepGraph::TopoView
 {
 public:
@@ -91,23 +95,23 @@ public:
   //! @param[in] theEdge typed edge definition identifier
   [[nodiscard]] Standard_EXPORT int NbFacesOfEdge(const BRepGraph_EdgeId theEdge) const;
 
-  //! Return wire definition indices that contain a given edge (safe reference, never null).
+  //! Return wire definition indices that contain a given edge.
   //! @param[in] theEdge typed edge definition identifier
   [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_WireId>& WiresOfEdge(
     const BRepGraph_EdgeId theEdge) const;
 
-  //! Return coedge indices referencing the given edge (safe reference, never null).
+  //! Return coedge indices referencing the given edge.
   //! @param[in] theEdge typed edge definition identifier
   [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_CoEdgeId>& CoEdgesOfEdge(
     const BRepGraph_EdgeId theEdge) const;
 
-  //! Return face indices containing the given edge (safe reference, never null).
+  //! Return face indices containing the given edge.
   //! Derived from CoEdge.FaceDefId links during Build()/BuildDelta().
   //! @param[in] theEdge typed edge definition identifier
   [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_FaceId>& FacesOfEdge(
     const BRepGraph_EdgeId theEdge) const;
 
-  //! Return edge indices incident to the given vertex (safe reference, never null).
+  //! Return edge indices incident to the given vertex.
   //! @param[in] theVertex typed vertex definition identifier
   [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_EdgeId>& EdgesOfVertex(
     const BRepGraph_VertexId theVertex) const;
