@@ -11,6 +11,8 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_Builder.hxx
   BRepGraph_BuilderView.cxx
   BRepGraph_BuilderView.hxx
+  BRepGraph_ChildIterator.cxx
+  BRepGraph_ChildIterator.hxx
   BRepGraph_Data.hxx
   BRepGraph_TopoView.cxx
   BRepGraph_TopoView.hxx
