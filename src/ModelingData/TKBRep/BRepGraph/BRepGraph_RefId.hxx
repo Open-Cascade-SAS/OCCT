@@ -134,25 +134,6 @@ struct BRepGraph_RefId
     return Index >= 0 && Index < theMaxCount;
   }
 
-  static Typed<Kind::Shell> Shell(const int theIdx) { return Typed<Kind::Shell>(theIdx); }
-
-  static Typed<Kind::Face> Face(const int theIdx) { return Typed<Kind::Face>(theIdx); }
-
-  static Typed<Kind::Wire> Wire(const int theIdx) { return Typed<Kind::Wire>(theIdx); }
-
-  static Typed<Kind::CoEdge> CoEdge(const int theIdx) { return Typed<Kind::CoEdge>(theIdx); }
-
-  static Typed<Kind::Vertex> Vertex(const int theIdx) { return Typed<Kind::Vertex>(theIdx); }
-
-  static Typed<Kind::Solid> Solid(const int theIdx) { return Typed<Kind::Solid>(theIdx); }
-
-  static Typed<Kind::Child> Child(const int theIdx) { return Typed<Kind::Child>(theIdx); }
-
-  static Typed<Kind::Occurrence> Occurrence(const int theIdx)
-  {
-    return Typed<Kind::Occurrence>(theIdx);
-  }
-
   bool operator==(const BRepGraph_RefId& theOther) const
   {
     return RefKind == theOther.RefKind && Index == theOther.Index;

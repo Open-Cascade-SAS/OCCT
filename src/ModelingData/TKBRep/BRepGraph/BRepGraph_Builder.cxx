@@ -85,19 +85,19 @@ void BRepGraph_Builder::populateUIDs(BRepGraph& theGraph)
     theGraph.allocateUID(aStorage.Occurrence(BRepGraph_OccurrenceId(i)).Id);
 
   for (int i = 0; i < aStorage.NbShellRefs(); ++i)
-    theGraph.allocateRefUID(BRepGraph_RefId::Shell(i));
+    theGraph.allocateRefUID(BRepGraph_ShellRefId(i));
   for (int i = 0; i < aStorage.NbFaceRefs(); ++i)
-    theGraph.allocateRefUID(BRepGraph_RefId::Face(i));
+    theGraph.allocateRefUID(BRepGraph_FaceRefId(i));
   for (int i = 0; i < aStorage.NbWireRefs(); ++i)
-    theGraph.allocateRefUID(BRepGraph_RefId::Wire(i));
+    theGraph.allocateRefUID(BRepGraph_WireRefId(i));
   for (int i = 0; i < aStorage.NbCoEdgeRefs(); ++i)
-    theGraph.allocateRefUID(BRepGraph_RefId::CoEdge(i));
+    theGraph.allocateRefUID(BRepGraph_CoEdgeRefId(i));
   for (int i = 0; i < aStorage.NbVertexRefs(); ++i)
-    theGraph.allocateRefUID(BRepGraph_RefId::Vertex(i));
+    theGraph.allocateRefUID(BRepGraph_VertexRefId(i));
   for (int i = 0; i < aStorage.NbSolidRefs(); ++i)
-    theGraph.allocateRefUID(BRepGraph_RefId::Solid(i));
+    theGraph.allocateRefUID(BRepGraph_SolidRefId(i));
   for (int i = 0; i < aStorage.NbChildRefs(); ++i)
-    theGraph.allocateRefUID(BRepGraph_RefId::Child(i));
+    theGraph.allocateRefUID(BRepGraph_ChildRefId(i));
 }
 
 //=================================================================================================
@@ -413,17 +413,17 @@ void BRepGraph_Builder::populateUIDsIncremental(BRepGraph& theGraph,
     theGraph.allocateUID(aStorage.Occurrence(BRepGraph_OccurrenceId(i)).Id);
 
   for (int i = theOldShellRef; i < aStorage.NbShellRefs(); ++i)
-    theGraph.allocateRefUID(BRepGraph_RefId::Shell(i));
+    theGraph.allocateRefUID(BRepGraph_ShellRefId(i));
   for (int i = theOldFaceRef; i < aStorage.NbFaceRefs(); ++i)
-    theGraph.allocateRefUID(BRepGraph_RefId::Face(i));
+    theGraph.allocateRefUID(BRepGraph_FaceRefId(i));
   for (int i = theOldWireRef; i < aStorage.NbWireRefs(); ++i)
-    theGraph.allocateRefUID(BRepGraph_RefId::Wire(i));
+    theGraph.allocateRefUID(BRepGraph_WireRefId(i));
   for (int i = theOldCoEdgeRef; i < aStorage.NbCoEdgeRefs(); ++i)
-    theGraph.allocateRefUID(BRepGraph_RefId::CoEdge(i));
+    theGraph.allocateRefUID(BRepGraph_CoEdgeRefId(i));
   for (int i = theOldVertexRef; i < aStorage.NbVertexRefs(); ++i)
-    theGraph.allocateRefUID(BRepGraph_RefId::Vertex(i));
+    theGraph.allocateRefUID(BRepGraph_VertexRefId(i));
   for (int i = theOldSolidRef; i < aStorage.NbSolidRefs(); ++i)
-    theGraph.allocateRefUID(BRepGraph_RefId::Solid(i));
+    theGraph.allocateRefUID(BRepGraph_SolidRefId(i));
   for (int i = theOldChildRef; i < aStorage.NbChildRefs(); ++i)
-    theGraph.allocateRefUID(BRepGraph_RefId::Child(i));
+    theGraph.allocateRefUID(BRepGraph_ChildRefId(i));
 }
