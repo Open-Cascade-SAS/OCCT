@@ -1900,54 +1900,6 @@ TEST(BRepGraphAlgo_SewingTest, DatasetBrep_Curated_GraphParallelVsSequential)
             << "x" << std::endl;
 }
 
-TEST(BRepGraphAlgo_SewingTest, DatasetBrep_Curated_buc60623b_GraphOnlyProfile)
-{
-  if (std::getenv(THE_DATASET_ENV_ENABLE) == nullptr)
-  {
-    setenv(THE_DATASET_ENV_ENABLE, "1", 0);
-  }
-  if (std::getenv(THE_DATASET_ENV_ROOT) == nullptr)
-  {
-    setenv(THE_DATASET_ENV_ROOT, "/Users/dpasukhi/work/OCCT/data/opencascade-dataset-7.9.0", 0);
-  }
-
-  if (!isDatasetTestEnabled())
-  {
-    GTEST_SKIP() << "Set " << THE_DATASET_ENV_ENABLE << "=1 to run curated dataset tests";
-  }
-
-  const std::filesystem::path aRoot = datasetRootPath();
-  if (!std::filesystem::exists(aRoot))
-  {
-    GTEST_SKIP() << "Dataset root does not exist: " << aRoot.string();
-  }
-
-  NCollection_Sequence<TopoDS_Shape> aFaces;
-  TCollection_AsciiString            aSkipReason;
-  ASSERT_TRUE(loadDatasetFaces(aRoot, "brep/buc60623b.brep", aFaces, aSkipReason))
-    << "Failed to load buc60623b.brep: " << aSkipReason.ToCString();
-
-  constexpr int THE_PROFILE_ITERS = 1600;
-  SewingShapeRun aLastRun;
-  double         aSumInnerTimes = 0.0;
-
-  const auto aStart = std::chrono::steady_clock::now();
-  for (int anIter = 0; anIter < THE_PROFILE_ITERS; ++anIter)
-  {
-    aLastRun = runGraphSewingWithShape(aFaces, true);
-    ASSERT_TRUE(aLastRun.IsDone) << "Graph run failed at iteration " << anIter;
-    aSumInnerTimes += aLastRun.TimeSeconds;
-  }
-  const auto aEnd        = std::chrono::steady_clock::now();
-  const double aWallTime = std::chrono::duration<double>(aEnd - aStart).count();
-
-  std::cout << "[ PROFILE ] buc60623b graph-only faces=" << aFaces.Length()
-            << " iters=" << THE_PROFILE_ITERS
-            << " wall=" << aWallTime << "s"
-            << " avgInner=" << (aSumInnerTimes / THE_PROFILE_ITERS) << "s"
-            << " sewnEdges(last)=" << aLastRun.NbSewnEdges << std::endl;
-}
-
 TEST(BRepGraphAlgo_SewingTest, DatasetBrep_CuratedNoFaceCases_SkippedCleanly)
 {
   if (!isDatasetTestEnabled())
