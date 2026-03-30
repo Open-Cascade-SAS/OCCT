@@ -41,10 +41,9 @@ public:
   //! Replaces NCollection_DataMap to eliminate hash/equality overhead.
   struct Cache
   {
-    //! Number of Kind slots (Vertex=5, Edge=4, Wire=3, Face=2, Shell=1, Solid=0,
-    //! Compound=6, CompSolid=7, CoEdge=8).
-    static constexpr int THE_KIND_COUNT =
-      static_cast<int>(BRepGraph_NodeId::Kind::Occurrence) + 1;
+    //! Number of Kind slots used by BRepGraph_NodeId dense-kind indexing.
+    //! Includes topology kinds, assembly kinds, and the reserved gap at kind 9.
+    static constexpr int THE_KIND_COUNT = BRepGraph_NodeId::THE_KIND_COUNT;
 
     NCollection_Vector<TopoDS_Shape> myKinds[THE_KIND_COUNT];
 

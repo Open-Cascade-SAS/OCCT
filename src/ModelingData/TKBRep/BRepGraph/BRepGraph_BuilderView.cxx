@@ -1376,7 +1376,7 @@ void BRepGraph::BuilderView::EndDeferredInvalidation() noexcept
 
   // Dense visited arrays indexed by entity index per kind.
   // NCollection_Array1 with bool values: O(1) checked/set by index.
-  static constexpr int THE_KIND_COUNT = static_cast<int>(BRepGraph_NodeId::Kind::Occurrence) + 1;
+  static constexpr int THE_KIND_COUNT = BRepGraph_NodeId::THE_KIND_COUNT;
   NCollection_Array1<bool> aVisArrays[THE_KIND_COUNT];
   {
     const int aKindCounts[THE_KIND_COUNT] = {

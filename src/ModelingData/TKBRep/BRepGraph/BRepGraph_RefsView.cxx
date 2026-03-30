@@ -410,3 +410,36 @@ const NCollection_Vector<BRepGraph_SolidRefId>& BRepGraph::RefsView::SolidRefIds
 }
 
 //=================================================================================================
+
+NCollection_Vector<BRepGraph_VertexRefId> BRepGraph::RefsView::VertexRefIdsOf(
+  const BRepGraph_EdgeId theEdge) const
+{
+  NCollection_Vector<BRepGraph_VertexRefId> aResult;
+  if (!theEdge.IsValid(myGraph->myData->myIncStorage.NbEdges()))
+    return aResult;
+
+  const BRepGraphInc::EdgeDef& aDef = myGraph->myData->myIncStorage.Edge(theEdge);
+  const int                    aNbVertexRefs = myGraph->myData->myIncStorage.NbVertexRefs();
+
+  const auto appendUniqueIfValid = [&aResult, aNbVertexRefs](const BRepGraph_VertexRefId theRefId) {
+    if (!theRefId.IsValid(aNbVertexRefs))
+      return;
+    for (int i = 0; i < aResult.Length(); ++i)
+    {
+      if (aResult.Value(i) == theRefId)
+        return;
+    }
+    aResult.Append(theRefId);
+  };
+
+  appendUniqueIfValid(aDef.StartVertexRefId);
+  appendUniqueIfValid(aDef.EndVertexRefId);
+  for (int i = 0; i < aDef.InternalVertexRefIds.Length(); ++i)
+  {
+    appendUniqueIfValid(aDef.InternalVertexRefIds.Value(i));
+  }
+
+  return aResult;
+}
+
+//=================================================================================================

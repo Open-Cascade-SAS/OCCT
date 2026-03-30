@@ -217,6 +217,12 @@ public:
   [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_SolidRefId>& SolidRefIdsOf(
     const BRepGraph_CompSolidId theCompSolid) const;
 
+  //! @param[in] theEdge edge entity identifier
+  //! @return boundary and internal vertex ref ids referenced by this edge
+  //!         (start, end, then internals; duplicate ids removed)
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_VertexRefId> VertexRefIdsOf(
+    const BRepGraph_EdgeId theEdge) const;
+
 private:
   friend class BRepGraph;
   friend struct BRepGraph_Data;

@@ -139,6 +139,10 @@ struct BRepGraph_NodeId
     return theKind == Kind::Product || theKind == Kind::Occurrence;
   }
 
+  //! Total number of dense kind slots used by per-kind arrays.
+  //! Includes the reserved gap at enum value 9.
+  static constexpr int THE_KIND_COUNT = static_cast<int>(Kind::Occurrence) + 1;
+
   Kind NodeKind;
   int  Index;
 
