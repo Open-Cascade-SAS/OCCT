@@ -238,10 +238,18 @@ public:
   //! Store a cached value for a node and cache kind.
   //! @pre Reserve() must have been called for lock-free parallel access
   //!      on in-range entity indices; out-of-range access falls back to mutex.
-  Standard_EXPORT void Set(const BRepGraph_NodeId                  theNode,
-                          const occ::handle<BRepGraph_CacheKind>& theKind,
-                          const occ::handle<BRepGraph_CacheValue>& theValue,
-                          const uint32_t                          theCurrentSubtreeGen);
+  Standard_EXPORT void Set(const BRepGraph_NodeId                   theNode,
+                           const occ::handle<BRepGraph_CacheKind>&  theKind,
+                           const occ::handle<BRepGraph_CacheValue>& theValue,
+                           const uint32_t                           theCurrentSubtreeGen);
+
+  //! Store a cached value using a pre-resolved kind slot index.
+  //! Bypasses BRepGraph_CacheKindRegistry lookup — use in hot parallel paths.
+  //! @param[in] theKindSlot  slot from BRepGraph_CacheKindRegistry::Register()
+  Standard_EXPORT void Set(const BRepGraph_NodeId                   theNode,
+                           const int                                theKindSlot,
+                           const occ::handle<BRepGraph_CacheValue>& theValue,
+                           const uint32_t                           theCurrentSubtreeGen);
 
   //! Retrieve a cached value for a node and cache kind.
   //! @pre Reserve() must have been called for lock-free parallel access
@@ -251,9 +259,17 @@ public:
     const occ::handle<BRepGraph_CacheKind>& theKind,
     const uint32_t                          theCurrentSubtreeGen) const;
 
+  //! Retrieve a cached value using a pre-resolved kind slot index.
+  //! Bypasses BRepGraph_CacheKindRegistry lookup — use in hot parallel paths.
+  //! @param[in] theKindSlot  slot from BRepGraph_CacheKindRegistry::Register()
+  [[nodiscard]] Standard_EXPORT occ::handle<BRepGraph_CacheValue> Get(
+    const BRepGraph_NodeId theNode,
+    const int              theKindSlot,
+    const uint32_t         theCurrentSubtreeGen) const;
+
   //! Remove a cached value for a node and cache kind.
-  [[nodiscard]] Standard_EXPORT bool Remove(const BRepGraph_NodeId theNode,
-                                           const occ::handle<BRepGraph_CacheKind>& theKind);
+  [[nodiscard]] Standard_EXPORT bool Remove(const BRepGraph_NodeId                  theNode,
+                                            const occ::handle<BRepGraph_CacheKind>& theKind);
 
   //! True if any cached values are stored for this node (any cache kind).
   [[nodiscard]] Standard_EXPORT bool HasCacheValues(const BRepGraph_NodeId theNode) const;

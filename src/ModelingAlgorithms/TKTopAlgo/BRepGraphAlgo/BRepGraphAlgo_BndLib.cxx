@@ -984,6 +984,14 @@ const occ::handle<BRepGraph_CacheKind>& BRepGraphAlgo_BndLib::CacheKind()
   return THE_KIND;
 }
 
+//! Pre-resolved slot index for the BndBox cache kind.
+//! Avoids global BRepGraph_CacheKindRegistry mutex on every Get/Set call.
+static int cacheKindSlot()
+{
+  static const int THE_SLOT = BRepGraph_CacheKindRegistry::Register(BRepGraphAlgo_BndLib::CacheKind());
+  return THE_SLOT;
+}
+
 //=================================================================================================
 
 bool BRepGraphAlgo_BndLib::GetCached(const BRepGraph&                  theGraph,
@@ -999,7 +1007,7 @@ bool BRepGraphAlgo_BndLib::GetCached(const BRepGraph&                  theGraph,
   }
 
   occ::handle<BRepGraph_CacheValue> aValue =
-    theGraph.TransientCache().Get(theNode, CacheKind(), aDef->SubtreeGen);
+    theGraph.TransientCache().Get(theNode, cacheKindSlot(), aDef->SubtreeGen);
   if (!aValue)
   {
     return false;
@@ -1028,8 +1036,9 @@ Bnd_Box BRepGraphAlgo_BndLib::AddCached(BRepGraph&                            th
   const uint32_t         aGen      = aDef->SubtreeGen;
   BRepGraph_TransientCache& aCache = theGraph.TransientCache();
 
-  // Try to read existing cached value.
-  occ::handle<BRepGraph_CacheValue> anExistingValue = aCache.Get(theNode, CacheKind(), aGen);
+  // Try to read existing cached value (slot-based, no global registry lock).
+  const int aSlot = cacheKindSlot();
+  occ::handle<BRepGraph_CacheValue> anExistingValue = aCache.Get(theNode, aSlot, aGen);
   if (anExistingValue)
   {
     occ::handle<BRepGraphAlgo_BndBoxCacheValue> aBndValue =
@@ -1081,7 +1090,7 @@ Bnd_Box BRepGraphAlgo_BndLib::AddCached(BRepGraph&                            th
 
   occ::handle<BRepGraphAlgo_BndBoxCacheValue> aNewValue = new BRepGraphAlgo_BndBoxCacheValue();
   aNewValue->SetData(aCachedData);
-  aCache.Set(theNode, CacheKind(), aNewValue, aGen);
+  aCache.Set(theNode, aSlot, aNewValue, aGen);
 
   return aBox;
 }
@@ -1109,7 +1118,8 @@ void BRepGraphAlgo_BndLib::SetCached(BRepGraph&             theGraph,
   aData.UsedTriangulation  = theUsedTriangulation;
   aData.UsedShapeTolerance = theUsedShapeTolerance;
 
-  occ::handle<BRepGraph_CacheValue> anExistingValue = aCache.Get(theNode, CacheKind(), aGen);
+  const int aSlot = cacheKindSlot();
+  occ::handle<BRepGraph_CacheValue> anExistingValue = aCache.Get(theNode, aSlot, aGen);
   if (anExistingValue)
   {
     occ::handle<BRepGraphAlgo_BndBoxCacheValue> aBndValue =
@@ -1123,7 +1133,7 @@ void BRepGraphAlgo_BndLib::SetCached(BRepGraph&             theGraph,
 
   occ::handle<BRepGraphAlgo_BndBoxCacheValue> aNewValue = new BRepGraphAlgo_BndBoxCacheValue();
   aNewValue->SetData(aData);
-  aCache.Set(theNode, CacheKind(), aNewValue, aGen);
+  aCache.Set(theNode, aSlot, aNewValue, aGen);
 }
 
 //=================================================================================================

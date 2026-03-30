@@ -235,10 +235,25 @@ void BRepGraph_TransientCache::Set(const BRepGraph_NodeId                   theN
     return;
   }
 
-  if (myIsReserved.load(std::memory_order_acquire) && aKindSlot < myKinds.Length())
+  Set(theNode, aKindSlot, theValue, theCurrentSubtreeGen);
+}
+
+//=================================================================================================
+
+void BRepGraph_TransientCache::Set(const BRepGraph_NodeId                   theNode,
+                                   const int                                theKindSlot,
+                                   const occ::handle<BRepGraph_CacheValue>& theValue,
+                                   const uint32_t                           theCurrentSubtreeGen)
+{
+  if (!theNode.IsValid() || theKindSlot < 0)
+  {
+    return;
+  }
+
+  if (myIsReserved.load(std::memory_order_acquire) && theKindSlot < myKinds.Length())
   {
     const int                      aKindIdx = static_cast<int>(theNode.NodeKind);
-    NCollection_Vector<CacheSlot>& aVec = myKinds.ChangeValue(aKindSlot).myNodeKinds[aKindIdx].mySlots;
+    NCollection_Vector<CacheSlot>& aVec = myKinds.ChangeValue(theKindSlot).myNodeKinds[aKindIdx].mySlots;
     if (theNode.Index < aVec.Length())
     {
       CacheSlot& aSlot       = aVec.ChangeValue(theNode.Index);
@@ -249,7 +264,7 @@ void BRepGraph_TransientCache::Set(const BRepGraph_NodeId                   theN
   }
 
   std::unique_lock<std::shared_mutex> aLock(myMutex);
-  CacheSlot& aSlot       = changeSlot(theNode, aKindSlot);
+  CacheSlot& aSlot       = changeSlot(theNode, theKindSlot);
   aSlot.Value            = theValue;
   aSlot.StoredSubtreeGen = theCurrentSubtreeGen;
 }
@@ -272,10 +287,25 @@ occ::handle<BRepGraph_CacheValue> BRepGraph_TransientCache::Get(
     return occ::handle<BRepGraph_CacheValue>();
   }
 
-  if (myIsReserved.load(std::memory_order_acquire) && aKindSlot < myKinds.Length())
+  return Get(theNode, aKindSlot, theCurrentSubtreeGen);
+}
+
+//=================================================================================================
+
+occ::handle<BRepGraph_CacheValue> BRepGraph_TransientCache::Get(
+  const BRepGraph_NodeId theNode,
+  const int              theKindSlot,
+  const uint32_t         theCurrentSubtreeGen) const
+{
+  if (!theNode.IsValid() || theKindSlot < 0)
+  {
+    return occ::handle<BRepGraph_CacheValue>();
+  }
+
+  if (myIsReserved.load(std::memory_order_acquire) && theKindSlot < myKinds.Length())
   {
     const int                            aKindIdx = static_cast<int>(theNode.NodeKind);
-    const NCollection_Vector<CacheSlot>& aVec = myKinds.Value(aKindSlot).myNodeKinds[aKindIdx].mySlots;
+    const NCollection_Vector<CacheSlot>& aVec = myKinds.Value(theKindSlot).myNodeKinds[aKindIdx].mySlots;
     if (theNode.Index < aVec.Length())
     {
       const CacheSlot& aSlot = aVec.Value(theNode.Index);
@@ -292,7 +322,7 @@ occ::handle<BRepGraph_CacheValue> BRepGraph_TransientCache::Get(
   }
 
   std::shared_lock<std::shared_mutex> aLock(myMutex);
-  const CacheSlot*                    aSlot = seekSlot(theNode, aKindSlot);
+  const CacheSlot*                    aSlot = seekSlot(theNode, theKindSlot);
   if (aSlot == nullptr || aSlot->Value.IsNull())
   {
     return occ::handle<BRepGraph_CacheValue>();
