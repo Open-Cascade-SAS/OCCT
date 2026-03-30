@@ -1397,7 +1397,10 @@ void BRepGraph::BuilderView::EndDeferredInvalidation() noexcept
     {
       const int aCount = aKindCounts[aKindIdx];
       if (aCount > 0)
+      {
         aVisArrays[aKindIdx].Resize(0, aCount - 1, false);
+        aVisArrays[aKindIdx].Init(false);
+      }
     }
   }
 
