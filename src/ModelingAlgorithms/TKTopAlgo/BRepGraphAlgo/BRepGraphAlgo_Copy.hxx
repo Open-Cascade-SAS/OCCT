@@ -66,6 +66,11 @@ public:
                                                           const bool theReserveCache = true);
 
 private:
+  Standard_EXPORT static void transferCacheValues(const BRepGraph&       theSrcGraph,
+                                                  BRepGraph_NodeId       theSrcNode,
+                                                  BRepGraph&             theDstGraph,
+                                                  BRepGraph_NodeId       theDstNode);
+
   BRepGraphAlgo_Copy() = delete;
 };
 

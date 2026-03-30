@@ -56,23 +56,23 @@ occ::handle<Geom2d_Curve> copyPCurve(const occ::handle<Geom2d_Curve>& theCrv, bo
   return occ::down_cast<Geom2d_Curve>(theCrv->Copy());
 }
 
-//! Transfer transient cache values from source graph/node to destination graph/node.
-//! Cache values are shared (same handle) - caller must deep-copy if needed.
-//! Uses OwnGen=0 for destination (fresh entities from copy always start at gen 0).
-//! Direct TransientCache() access is intentional here because copy needs the
-//! low-level transfer helper that moves cache payloads between graph instances.
-void transferCacheValues(const BRepGraph&       theSrcGraph,
-                         const BRepGraph_NodeId theSrcNode,
-                         BRepGraph&             theDstGraph,
-                         const BRepGraph_NodeId theDstNode)
-{
-  const BRepGraph_TransientCache& aSrcCache = theSrcGraph.TransientCache();
-  if (!aSrcCache.HasCacheValues(theSrcNode))
-    return;
-  theDstGraph.TransientCache().TransferCacheValues(aSrcCache, theSrcNode, theDstNode, 0);
-}
-
 } // namespace
+
+//=================================================================================================
+
+void BRepGraphAlgo_Copy::transferCacheValues(const BRepGraph&       theSrcGraph,
+                                             const BRepGraph_NodeId theSrcNode,
+                                             BRepGraph&             theDstGraph,
+                                             const BRepGraph_NodeId theDstNode)
+{
+  const BRepGraph_TransientCache& aSrcCache = theSrcGraph.transientCache();
+  if (!aSrcCache.HasCacheValues(theSrcNode))
+  {
+    return;
+  }
+
+  theDstGraph.transientCache().TransferCacheValues(aSrcCache, theSrcNode, theDstNode, 0);
+}
 
 //=================================================================================================
 
@@ -380,7 +380,7 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph, bool theCopyGeo
     {
       aReservedKindCount = aRegisteredKindCount;
     }
-    aResult.TransientCache().Reserve(aReservedKindCount, aCounts);
+    aResult.transientCache().Reserve(aReservedKindCount, aCounts);
   }
 
   return aResult;
@@ -635,7 +635,7 @@ BRepGraph BRepGraphAlgo_Copy::CopyFace(const BRepGraph&       theGraph,
     {
       aReservedKindCount = aRegisteredKindCount;
     }
-    aResult.TransientCache().Reserve(aReservedKindCount, aCounts);
+    aResult.transientCache().Reserve(aReservedKindCount, aCounts);
   }
 
   return aResult;

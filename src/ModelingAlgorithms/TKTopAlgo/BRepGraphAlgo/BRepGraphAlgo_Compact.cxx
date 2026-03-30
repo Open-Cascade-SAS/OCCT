@@ -661,7 +661,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
 
   // Restore layers and notify about index remapping.
   theGraph.layerRegistry() = std::move(aSavedLayerRegistry);
-  // Direct transientCache()/TransientCache() access is intentional here.
+  // Direct transientCache() access is intentional here.
   // Compact must clear stale slots keyed by old indices, then re-reserve the
   // cache for the new compacted entity counts before later algorithm use.
   theGraph.transientCache().Clear();
@@ -685,7 +685,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
     {
       aReservedKindCount = aRegisteredKindCount;
     }
-    theGraph.TransientCache().Reserve(aReservedKindCount, aCounts);
+    theGraph.transientCache().Reserve(aReservedKindCount, aCounts);
   }
   // Build unified remap map covering all 8 topology kinds.
   NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId> aRemapMap;

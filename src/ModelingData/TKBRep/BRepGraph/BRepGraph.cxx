@@ -88,6 +88,13 @@ BRepGraph::CacheView& BRepGraph::Cache()
 
 //=================================================================================================
 
+const BRepGraph::CacheView& BRepGraph::Cache() const
+{
+  return myData->myCacheView;
+}
+
+//=================================================================================================
+
 const BRepGraph::RefsView& BRepGraph::Refs() const
 {
   return myData->myRefsView;

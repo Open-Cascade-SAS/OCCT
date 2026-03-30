@@ -271,6 +271,10 @@ public:
   [[nodiscard]] Standard_EXPORT bool Remove(const BRepGraph_NodeId                  theNode,
                                             const occ::handle<BRepGraph_CacheKind>& theKind);
 
+  //! Remove a cached value using a pre-resolved cache-kind slot.
+  [[nodiscard]] Standard_EXPORT bool Remove(const BRepGraph_NodeId theNode,
+                                            const int              theKindSlot);
+
   //! True if any cached values are stored for this node (any cache kind).
   [[nodiscard]] Standard_EXPORT bool HasCacheValues(const BRepGraph_NodeId theNode) const;
 

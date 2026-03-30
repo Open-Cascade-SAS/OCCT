@@ -19,9 +19,9 @@
 //! @brief Non-const view for managing transient cache values on nodes.
 //!
 //! This view is the stable public cache API for BRepGraph callers.
-//! External code should prefer Cache() over direct TransientCache() access.
-//! Raw cache access remains available for low-level algorithms that need
-//! storage-specific operations such as reserve or cross-graph cache transfer.
+//! External code should use Cache() for all cache access.
+//! Low-level storage operations such as reserve or cross-graph cache transfer
+//! stay internal to graph-maintenance code through the graph's private cache access.
 //!
 //! Cached values are keyed by BRepGraph_CacheKind descriptors (Handle-based)
 //! and stored as Handle(BRepGraph_CacheValue). Each CacheKind carries a
@@ -32,6 +32,9 @@
 //! Supports set, get, remove, invalidate, and kind enumeration per node.
 //! Cached data is stored centrally in BRepGraph_TransientCache with
 //! generation-based freshness tracking via SubtreeGen.
+//! Hot-path callers may pre-resolve a cache-kind slot once through
+//! BRepGraph_CacheKindRegistry::Register() and then use slot-based overloads
+//! to avoid repeated registry locking.
 //! Obtained via BRepGraph::Cache().
 class BRepGraph::CacheView
 {
@@ -44,6 +47,11 @@ public:
                            const occ::handle<BRepGraph_CacheKind>&  theKind,
                            const occ::handle<BRepGraph_CacheValue>& theValue);
 
+  //! Attach a cached value using a pre-resolved cache-kind slot.
+  Standard_EXPORT void Set(const BRepGraph_NodeId                   theNode,
+                           const int                                theKindSlot,
+                           const occ::handle<BRepGraph_CacheValue>& theValue);
+
   //! Retrieve a cached value from a node.
   //! @param[in] theNode node to query
   //! @param[in] theKind cache kind descriptor identifying the slot
@@ -52,12 +60,21 @@ public:
     const BRepGraph_NodeId                  theNode,
     const occ::handle<BRepGraph_CacheKind>& theKind) const;
 
+  //! Retrieve a cached value using a pre-resolved cache-kind slot.
+  [[nodiscard]] Standard_EXPORT occ::handle<BRepGraph_CacheValue> Get(
+    const BRepGraph_NodeId theNode,
+    const int              theKindSlot) const;
+
   //! Check if a non-stale cached value exists on a node.
   //! @param[in] theNode node to query
   //! @param[in] theKind cache kind descriptor identifying the slot
   //! @return true if a current value exists for this node and kind
   [[nodiscard]] Standard_EXPORT bool Has(const BRepGraph_NodeId theNode,
                                          const occ::handle<BRepGraph_CacheKind>& theKind) const;
+
+  //! Check if a non-stale cached value exists using a pre-resolved slot.
+  [[nodiscard]] Standard_EXPORT bool Has(const BRepGraph_NodeId theNode,
+                                         const int              theKindSlot) const;
 
   //! Remove a cached value from a node.
   //! @param[in] theNode node to remove the value from
@@ -66,11 +83,17 @@ public:
   Standard_EXPORT bool Remove(const BRepGraph_NodeId theNode,
                               const occ::handle<BRepGraph_CacheKind>& theKind);
 
+  //! Remove a cached value using a pre-resolved cache-kind slot.
+  Standard_EXPORT bool Remove(const BRepGraph_NodeId theNode, const int theKindSlot);
+
   //! Invalidate (but do not remove) a cached value on a node.
   //! @param[in] theNode node whose cache entry to invalidate
   //! @param[in] theKind cache kind descriptor identifying the slot
   Standard_EXPORT void Invalidate(const BRepGraph_NodeId theNode,
                                   const occ::handle<BRepGraph_CacheKind>& theKind);
+
+  //! Invalidate a cached value using a pre-resolved cache-kind slot.
+  Standard_EXPORT void Invalidate(const BRepGraph_NodeId theNode, const int theKindSlot);
 
   //! Return all cache kinds populated on a node.
   //! @param[in] theNode node to query

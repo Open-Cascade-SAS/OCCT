@@ -233,17 +233,18 @@ TEST_F(BRepGraph_ViewsTest, AttrsView_Remove_Works)
   EXPECT_TRUE(myGraph.Cache().Get(aFaceId, testUserAttrKind()).IsNull());
 }
 
-TEST_F(BRepGraph_ViewsTest, AttrsView_PublicAndRawAccess_ShareStorage)
+TEST_F(BRepGraph_ViewsTest, AttrsView_CacheKinds_ReportsStoredKind)
 {
   BRepGraph_FaceId                     aFaceId(0);
   occ::handle<BRepGraph_CacheValue> anAttr = new TestCacheValue();
   myGraph.Cache().Set(aFaceId, testUserAttrKind(), anAttr);
 
-  const uint32_t aSubtreeGen = myGraph.Topo().Face(BRepGraph_FaceId(0)).SubtreeGen;
-  const occ::handle<BRepGraph_CacheValue> aRawValue =
-    myGraph.TransientCache().Get(aFaceId, testUserAttrKind(), aSubtreeGen);
+  const NCollection_Vector<occ::handle<BRepGraph_CacheKind>> aKinds =
+    myGraph.Cache().CacheKinds(aFaceId);
 
-  EXPECT_EQ(aRawValue, anAttr);
+  ASSERT_EQ(aKinds.Length(), 1);
+  ASSERT_FALSE(aKinds.Value(0).IsNull());
+  EXPECT_EQ(aKinds.Value(0)->ID(), testUserAttrKind()->ID());
   EXPECT_EQ(myGraph.Cache().Get(aFaceId, testUserAttrKind()), anAttr);
 }
 

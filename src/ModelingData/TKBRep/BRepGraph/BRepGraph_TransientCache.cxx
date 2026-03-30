@@ -350,14 +350,26 @@ bool BRepGraph_TransientCache::Remove(const BRepGraph_NodeId theNode,
     return false;
   }
 
+  return Remove(theNode, aKindSlot);
+}
+
+//=================================================================================================
+
+bool BRepGraph_TransientCache::Remove(const BRepGraph_NodeId theNode, const int theKindSlot)
+{
+  if (!theNode.IsValid() || theKindSlot < 0)
+  {
+    return false;
+  }
+
   std::unique_lock<std::shared_mutex> aLock(myMutex);
-  if (aKindSlot >= myKinds.Length())
+  if (theKindSlot >= myKinds.Length())
   {
     return false;
   }
 
   const int                      aKindIdx = static_cast<int>(theNode.NodeKind);
-  NCollection_Vector<CacheSlot>& aVec = myKinds.ChangeValue(aKindSlot).myNodeKinds[aKindIdx].mySlots;
+  NCollection_Vector<CacheSlot>& aVec = myKinds.ChangeValue(theKindSlot).myNodeKinds[aKindIdx].mySlots;
   if (theNode.Index >= aVec.Length())
   {
     return false;

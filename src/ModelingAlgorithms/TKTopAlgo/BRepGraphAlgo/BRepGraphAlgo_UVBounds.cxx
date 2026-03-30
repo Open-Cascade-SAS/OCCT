@@ -17,6 +17,7 @@
 #include <BRepGraphInc_Representation.hxx>
 
 #include <BRepGraph.hxx>
+#include <BRepGraph_CacheView.hxx>
 #include <BRepGraph_TransientCache.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_TopoView.hxx>
@@ -545,30 +546,29 @@ const occ::handle<BRepGraph_CacheKind>& BRepGraphAlgo_UVBounds::CacheKind()
   return THE_KIND;
 }
 
+//! Pre-resolved slot index for the UVBounds cache kind.
+static int cacheKindSlot()
+{
+  static const int THE_SLOT = BRepGraph_CacheKindRegistry::Register(BRepGraphAlgo_UVBounds::CacheKind());
+  return THE_SLOT;
+}
+
 //=================================================================================================
 
 bool BRepGraphAlgo_UVBounds::GetCached(const BRepGraph&       theGraph,
                                        const BRepGraph_FaceId theFace,
                                        CachedData&            theData)
 {
-  // Direct TransientCache() access is intentional in UVBounds because cache
-  // entries are validated against explicit SubtreeGen values.
   if (!theFace.IsValid())
   {
     return false;
   }
 
-  const BRepGraph_NodeId aFaceNode = theFace;
-  const BRepGraphInc::BaseDef* aDef = theGraph.topoEntity(aFaceNode);
-  if (aDef == nullptr)
+  occ::handle<BRepGraph_CacheValue> aValue = theGraph.Cache().Get(theFace, cacheKindSlot());
+  if (aValue.IsNull())
   {
     return false;
   }
-
-  occ::handle<BRepGraph_CacheValue> aValue =
-    theGraph.TransientCache().Get(aFaceNode, CacheKind(), aDef->SubtreeGen);
-  if (aValue.IsNull())
-    return false;
   occ::handle<BRepGraphAlgo_UVBoundsCacheValue> aUVValue =
     occ::down_cast<BRepGraphAlgo_UVBoundsCacheValue>(aValue);
   return !aUVValue.IsNull() && aUVValue->Get(theData);
@@ -584,17 +584,8 @@ BRepGraphAlgo_UVBounds::CachedData BRepGraphAlgo_UVBounds::AddCached(BRepGraph& 
     return CachedData();
   }
 
-  const BRepGraph_NodeId aFaceNode = theFace;
-  const BRepGraphInc::BaseDef* aDef = theGraph.topoEntity(aFaceNode);
-  if (aDef == nullptr)
-  {
-    return CachedData();
-  }
-  const uint32_t       aGen      = aDef->SubtreeGen;
-  BRepGraph_TransientCache& aCache = theGraph.TransientCache();
-
-  // Try cache hit.
-  occ::handle<BRepGraph_CacheValue> anExistingValue = aCache.Get(aFaceNode, CacheKind(), aGen);
+  const int aKindSlot = cacheKindSlot();
+  occ::handle<BRepGraph_CacheValue> anExistingValue = theGraph.Cache().Get(theFace, aKindSlot);
   if (!anExistingValue.IsNull())
   {
     occ::handle<BRepGraphAlgo_UVBoundsCacheValue> aUVValue =
@@ -626,7 +617,7 @@ BRepGraphAlgo_UVBounds::CachedData BRepGraphAlgo_UVBounds::AddCached(BRepGraph& 
     }
     occ::handle<BRepGraphAlgo_UVBoundsCacheValue> aNewValue = new BRepGraphAlgo_UVBoundsCacheValue();
     aNewValue->SetData(aData);
-    aCache.Set(aFaceNode, CacheKind(), aNewValue, aGen);
+    theGraph.Cache().Set(theFace, aKindSlot, aNewValue);
   }
 
   return aData;
@@ -643,16 +634,8 @@ void BRepGraphAlgo_UVBounds::SetCached(BRepGraph&             theGraph,
     return;
   }
 
-  const BRepGraph_NodeId aFaceNode = theFace;
-  const BRepGraphInc::BaseDef* aDef = theGraph.topoEntity(aFaceNode);
-  if (aDef == nullptr)
-  {
-    return;
-  }
-  const uint32_t       aGen      = aDef->SubtreeGen;
-  BRepGraph_TransientCache& aCache = theGraph.TransientCache();
-
-  occ::handle<BRepGraph_CacheValue> anExistingValue = aCache.Get(aFaceNode, CacheKind(), aGen);
+  const int aKindSlot = cacheKindSlot();
+  occ::handle<BRepGraph_CacheValue> anExistingValue = theGraph.Cache().Get(theFace, aKindSlot);
   if (!anExistingValue.IsNull())
   {
     occ::handle<BRepGraphAlgo_UVBoundsCacheValue> aUVValue =
@@ -666,7 +649,7 @@ void BRepGraphAlgo_UVBounds::SetCached(BRepGraph&             theGraph,
 
   occ::handle<BRepGraphAlgo_UVBoundsCacheValue> aNewValue = new BRepGraphAlgo_UVBoundsCacheValue();
   aNewValue->SetData(theData);
-  aCache.Set(aFaceNode, CacheKind(), aNewValue, aGen);
+  theGraph.Cache().Set(theFace, aKindSlot, aNewValue);
 }
 
 //=================================================================================================
@@ -679,5 +662,5 @@ void BRepGraphAlgo_UVBounds::InvalidateCached(BRepGraph&             theGraph,
     return;
   }
 
-  (void)theGraph.TransientCache().Remove(theFace, CacheKind());
+  (void)theGraph.Cache().Remove(theFace, cacheKindSlot());
 }

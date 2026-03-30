@@ -17,6 +17,7 @@
 #include <BRepGraphInc_Representation.hxx>
 
 #include <BRepGraph.hxx>
+#include <BRepGraph_CacheView.hxx>
 #include <BRepGraph_TransientCache.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_TopoView.hxx>
@@ -989,7 +990,6 @@ const occ::handle<BRepGraph_CacheKind>& BRepGraphAlgo_BndLib::CacheKind()
 }
 
 //! Pre-resolved slot index for the BndBox cache kind.
-//! Avoids global BRepGraph_CacheKindRegistry mutex on every Get/Set call.
 static int cacheKindSlot()
 {
   static const int THE_SLOT = BRepGraph_CacheKindRegistry::Register(BRepGraphAlgo_BndLib::CacheKind());
@@ -1002,17 +1002,8 @@ bool BRepGraphAlgo_BndLib::GetCached(const BRepGraph&                  theGraph,
                                      const BRepGraph_NodeId            theNode,
                                      BRepGraphAlgo_BndLib::CachedData& theData)
 {
-  // Direct TransientCache() access is intentional in BndLib because cache
-  // entries are validated against explicit SubtreeGen values.
-  const BRepGraphInc::BaseDef* aDef = theGraph.topoEntity(theNode);
-  if (aDef == nullptr)
-  {
-    return false;
-  }
-
-  occ::handle<BRepGraph_CacheValue> aValue =
-    theGraph.TransientCache().Get(theNode, cacheKindSlot(), aDef->SubtreeGen);
-  if (!aValue)
+  occ::handle<BRepGraph_CacheValue> aValue = theGraph.Cache().Get(theNode, cacheKindSlot());
+  if (aValue.IsNull())
   {
     return false;
   }
@@ -1034,15 +1025,8 @@ Bnd_Box BRepGraphAlgo_BndLib::AddCached(BRepGraph&                            th
                                         const BRepGraphAlgo_BndLib::Precision thePrecision,
                                         const bool                            theUseTriangulation)
 {
-  const BRepGraphInc::BaseDef* aDef = theGraph.topoEntity(theNode);
-  if (aDef == nullptr)
-    return Bnd_Box();
-  const uint32_t         aGen      = aDef->SubtreeGen;
-  BRepGraph_TransientCache& aCache = theGraph.TransientCache();
-
-  // Try to read existing cached value (slot-based, no global registry lock).
-  const int aSlot = cacheKindSlot();
-  occ::handle<BRepGraph_CacheValue> anExistingValue = aCache.Get(theNode, aSlot, aGen);
+  const int aKindSlot = cacheKindSlot();
+  occ::handle<BRepGraph_CacheValue> anExistingValue = theGraph.Cache().Get(theNode, aKindSlot);
   if (anExistingValue)
   {
     occ::handle<BRepGraphAlgo_BndBoxCacheValue> aBndValue =
@@ -1094,7 +1078,7 @@ Bnd_Box BRepGraphAlgo_BndLib::AddCached(BRepGraph&                            th
 
   occ::handle<BRepGraphAlgo_BndBoxCacheValue> aNewValue = new BRepGraphAlgo_BndBoxCacheValue();
   aNewValue->SetData(aCachedData);
-  aCache.Set(theNode, aSlot, aNewValue, aGen);
+  theGraph.Cache().Set(theNode, aKindSlot, aNewValue);
 
   return aBox;
 }
@@ -1108,22 +1092,14 @@ void BRepGraphAlgo_BndLib::SetCached(BRepGraph&             theGraph,
                                      const bool             theUsedTriangulation,
                                      const bool             theUsedShapeTolerance)
 {
-  const BRepGraphInc::BaseDef* aDef = theGraph.topoEntity(theNode);
-  if (aDef == nullptr)
-  {
-    return;
-  }
-  const uint32_t       aGen      = aDef->SubtreeGen;
-  BRepGraph_TransientCache& aCache = theGraph.TransientCache();
-
+  const int aKindSlot = cacheKindSlot();
   CachedData aData;
   aData.Box                = theBox;
   aData.BoxPrecision       = thePrecision;
   aData.UsedTriangulation  = theUsedTriangulation;
   aData.UsedShapeTolerance = theUsedShapeTolerance;
 
-  const int aSlot = cacheKindSlot();
-  occ::handle<BRepGraph_CacheValue> anExistingValue = aCache.Get(theNode, aSlot, aGen);
+  occ::handle<BRepGraph_CacheValue> anExistingValue = theGraph.Cache().Get(theNode, aKindSlot);
   if (anExistingValue)
   {
     occ::handle<BRepGraphAlgo_BndBoxCacheValue> aBndValue =
@@ -1137,12 +1113,12 @@ void BRepGraphAlgo_BndLib::SetCached(BRepGraph&             theGraph,
 
   occ::handle<BRepGraphAlgo_BndBoxCacheValue> aNewValue = new BRepGraphAlgo_BndBoxCacheValue();
   aNewValue->SetData(aData);
-  aCache.Set(theNode, aSlot, aNewValue, aGen);
+  theGraph.Cache().Set(theNode, aKindSlot, aNewValue);
 }
 
 //=================================================================================================
 
 void BRepGraphAlgo_BndLib::InvalidateCached(BRepGraph& theGraph, const BRepGraph_NodeId theNode)
 {
-  (void)theGraph.TransientCache().Remove(theNode, CacheKind());
+  (void)theGraph.Cache().Remove(theNode, cacheKindSlot());
 }

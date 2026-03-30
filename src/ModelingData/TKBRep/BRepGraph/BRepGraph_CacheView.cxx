@@ -31,6 +31,20 @@ void BRepGraph::CacheView::Set(const BRepGraph_NodeId                   theNode,
 
 //=================================================================================================
 
+void BRepGraph::CacheView::Set(const BRepGraph_NodeId                   theNode,
+                               const int                                theKindSlot,
+                               const occ::handle<BRepGraph_CacheValue>& theValue)
+{
+  const BRepGraphInc::BaseDef* aDef = myGraph->topoEntity(theNode);
+  if (aDef == nullptr)
+  {
+    return;
+  }
+  myGraph->transientCache().Set(theNode, theKindSlot, theValue, aDef->SubtreeGen);
+}
+
+//=================================================================================================
+
 occ::handle<BRepGraph_CacheValue> BRepGraph::CacheView::Get(
   const BRepGraph_NodeId                  theNode,
   const occ::handle<BRepGraph_CacheKind>& theKind) const
@@ -45,6 +59,19 @@ occ::handle<BRepGraph_CacheValue> BRepGraph::CacheView::Get(
 
 //=================================================================================================
 
+occ::handle<BRepGraph_CacheValue> BRepGraph::CacheView::Get(const BRepGraph_NodeId theNode,
+                                                            const int              theKindSlot) const
+{
+  const BRepGraphInc::BaseDef* aDef = myGraph->topoEntity(theNode);
+  if (aDef == nullptr)
+  {
+    return occ::handle<BRepGraph_CacheValue>();
+  }
+  return myGraph->transientCache().Get(theNode, theKindSlot, aDef->SubtreeGen);
+}
+
+//=================================================================================================
+
 bool BRepGraph::CacheView::Has(const BRepGraph_NodeId theNode,
                                const occ::handle<BRepGraph_CacheKind>& theKind) const
 {
@@ -53,10 +80,24 @@ bool BRepGraph::CacheView::Has(const BRepGraph_NodeId theNode,
 
 //=================================================================================================
 
+bool BRepGraph::CacheView::Has(const BRepGraph_NodeId theNode, const int theKindSlot) const
+{
+  return !Get(theNode, theKindSlot).IsNull();
+}
+
+//=================================================================================================
+
 bool BRepGraph::CacheView::Remove(const BRepGraph_NodeId theNode,
                                   const occ::handle<BRepGraph_CacheKind>& theKind)
 {
   return myGraph->transientCache().Remove(theNode, theKind);
+}
+
+//=================================================================================================
+
+bool BRepGraph::CacheView::Remove(const BRepGraph_NodeId theNode, const int theKindSlot)
+{
+  return myGraph->transientCache().Remove(theNode, theKindSlot);
 }
 
 //=================================================================================================
@@ -72,6 +113,17 @@ void BRepGraph::CacheView::Invalidate(const BRepGraph_NodeId theNode,
 
   occ::handle<BRepGraph_CacheValue> aValue =
     myGraph->transientCache().Get(theNode, theKind, aDef->SubtreeGen);
+  if (!aValue.IsNull())
+  {
+    aValue->Invalidate();
+  }
+}
+
+//=================================================================================================
+
+void BRepGraph::CacheView::Invalidate(const BRepGraph_NodeId theNode, const int theKindSlot)
+{
+  occ::handle<BRepGraph_CacheValue> aValue = Get(theNode, theKindSlot);
   if (!aValue.IsNull())
   {
     aValue->Invalidate();

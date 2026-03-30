@@ -162,10 +162,10 @@ public:
   //! Access assembly structure, placement, and topology path resolution queries.
   [[nodiscard]] Standard_EXPORT const PathView& Paths() const;
   //! Access transient cache values through the stable grouped-view API.
-  //! Prefer this route for public per-node cache access.
+  //! This is the only public cache interface.
   [[nodiscard]] Standard_EXPORT CacheView& Cache();
   //! Access transient cache values (const, read-only Get/Has/CacheKinds).
-  //! Prefer this route for public read access to per-node cached values.
+  //! This is the only public cache interface.
   [[nodiscard]] Standard_EXPORT const CacheView& Cache() const;
   //! Access reference entries and their UIDs.
   [[nodiscard]] Standard_EXPORT const RefsView& Refs() const;
@@ -187,18 +187,6 @@ public:
   //! @return history subsystem for tracking modifications
   [[nodiscard]] Standard_EXPORT const BRepGraph_History& History() const;
 
-  //! Access the raw transient cache for algorithm-computed attributes.
-  //! External callers should prefer Cache(), which is the stable grouped-view
-  //! API. This accessor remains for lower-level algorithm code that needs
-  //! Reserve() after compaction or copy, TransferCacheValues() between graphs,
-  //! explicit SubtreeGen-aware Get()/Set(), or full Clear() during remap.
-  //! Public exposure is intentional for advanced algorithm integration, but
-  //! normal callers should treat Cache() as the primary interface.
-  [[nodiscard]] BRepGraph_TransientCache& TransientCache() { return myTransientCache; }
-  //! Access the raw transient cache (const).
-  //! Prefer Cache() for normal public read access.
-  [[nodiscard]] const BRepGraph_TransientCache& TransientCache() const { return myTransientCache; }
-
   //! Access registered graph layers.
   //! @return layer registry for managing attribute layers
   [[nodiscard]] Standard_EXPORT BRepGraph_LayerRegistry& LayerRegistry();
@@ -209,11 +197,9 @@ public:
 private:
   friend class BRepGraph_Builder;
   friend class BRepGraph_Analyze;
-  friend class BRepGraphAlgo_BndLib;
   friend class BRepGraphAlgo_Compact;
   friend class BRepGraphAlgo_Copy;
   friend class BRepGraphAlgo_Transform;
-  friend class BRepGraphAlgo_UVBounds;
   template <typename>
   friend class BRepGraph_MutGuard;
 
