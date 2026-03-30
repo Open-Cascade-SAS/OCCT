@@ -585,7 +585,7 @@ void IntAna_QuadQuadGeo::Perform(const gp_Pln&      P,
       // instead of the Ellipse (which degenerates for nearly-parallel cases).
       if (dif < Tol || (H > 0. && sinda * H < 2. * Tol))
       {
-        tolang    = sinda * 2.;
+        tolang = sinda * 2.;
         // Relax the linear tolerance so that the endpoint distance check
         // in IntAna_IntConicQuad (P.Distance(aP2) > Tol) does not reject
         // the parallel status when the deviation over H is small.
