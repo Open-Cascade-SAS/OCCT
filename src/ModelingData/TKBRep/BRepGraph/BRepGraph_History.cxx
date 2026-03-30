@@ -233,7 +233,11 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph_History::FindDerived(
   // return the direct derived for the non-recursive case.
   if (aResult.IsEmpty() && myOriginalToDerived.IsBound(theOriginal))
   {
-    return myOriginalToDerived.Find(theOriginal);
+    const NCollection_Vector<BRepGraph_NodeId>& aDirectDerived = myOriginalToDerived.Find(theOriginal);
+    for (int anIdx = 0; anIdx < aDirectDerived.Length(); ++anIdx)
+    {
+      aResult.Append(aDirectDerived.Value(anIdx));
+    }
   }
 
   return aResult;
