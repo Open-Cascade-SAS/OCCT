@@ -116,7 +116,7 @@ TEST_F(BRepGraph_ViewsTest, DefsView_FaceAccessor_Valid)
 
 TEST_F(BRepGraph_ViewsTest, DefsView_TopoEntity_Valid)
 {
-  BRepGraph_NodeId             aFaceId(BRepGraph_NodeId::Kind::Face, 0);
+  BRepGraph_FaceId             aFaceId(0);
   const BRepGraphInc::BaseDef* aBase = myGraph.Topo().TopoEntity(aFaceId);
   ASSERT_NE(aBase, nullptr);
   EXPECT_EQ(aBase->Id, myGraph.Topo().Face(BRepGraph_FaceId(0)).Id);
@@ -158,7 +158,7 @@ TEST_F(BRepGraph_ViewsTest, DefsView_FindPCurve_NoCrash)
 
 TEST_F(BRepGraph_ViewsTest, UIDsView_Of_Valid)
 {
-  BRepGraph_NodeId     aFaceId(BRepGraph_NodeId::Kind::Face, 0);
+  BRepGraph_FaceId     aFaceId(0);
   const BRepGraph_UID& aUID = myGraph.UIDs().Of(aFaceId);
   EXPECT_TRUE(aUID.IsValid());
 }
@@ -188,7 +188,7 @@ TEST_F(BRepGraph_ViewsTest, SpatialView_FacesOfEdge_TwoPerBoxEdge)
 
 TEST_F(BRepGraph_ViewsTest, BndLib_BoundingBox_NonVoid)
 {
-  BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
+  BRepGraph_FaceId aFaceId(0);
   Bnd_Box          aBox;
   BRepGraphAlgo_BndLib::Add(myGraph, aFaceId, aBox);
   EXPECT_FALSE(aBox.IsVoid());
@@ -196,7 +196,7 @@ TEST_F(BRepGraph_ViewsTest, BndLib_BoundingBox_NonVoid)
 
 TEST_F(BRepGraph_ViewsTest, BndLib_Centroid_InsideBBox)
 {
-  BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
+  BRepGraph_FaceId aFaceId(0);
   gp_Pnt           aCentroid = bboxCenter(myGraph, aFaceId);
   Bnd_Box          aBox;
   BRepGraphAlgo_BndLib::Add(myGraph, aFaceId, aBox);
@@ -215,7 +215,7 @@ TEST_F(BRepGraph_ViewsTest, BndLib_Centroid_InsideBBox)
 
 TEST_F(BRepGraph_ViewsTest, AttrsView_SetGet_RoundTrip)
 {
-  BRepGraph_NodeId                     aFaceId(BRepGraph_NodeId::Kind::Face, 0);
+  BRepGraph_FaceId                     aFaceId(0);
   occ::handle<BRepGraph_CacheValue> anAttr = new TestCacheValue();
   myGraph.Cache().Set(aFaceId, testUserAttrKind(), anAttr);
   occ::handle<BRepGraph_CacheValue> aRetrieved = myGraph.Cache().Get(aFaceId, testUserAttrKind());
@@ -225,7 +225,7 @@ TEST_F(BRepGraph_ViewsTest, AttrsView_SetGet_RoundTrip)
 
 TEST_F(BRepGraph_ViewsTest, AttrsView_Remove_Works)
 {
-  BRepGraph_NodeId                     aFaceId(BRepGraph_NodeId::Kind::Face, 0);
+  BRepGraph_FaceId                     aFaceId(0);
   occ::handle<BRepGraph_CacheValue> anAttr = new TestCacheValue();
   myGraph.Cache().Set(aFaceId, testUserAttrKind(), anAttr);
   EXPECT_TRUE(myGraph.Cache().Remove(aFaceId, testUserAttrKind()));
@@ -235,7 +235,7 @@ TEST_F(BRepGraph_ViewsTest, AttrsView_Remove_Works)
 
 TEST_F(BRepGraph_ViewsTest, AttrsView_PublicAndRawAccess_ShareStorage)
 {
-  BRepGraph_NodeId                     aFaceId(BRepGraph_NodeId::Kind::Face, 0);
+  BRepGraph_FaceId                     aFaceId(0);
   occ::handle<BRepGraph_CacheValue> anAttr = new TestCacheValue();
   myGraph.Cache().Set(aFaceId, testUserAttrKind(), anAttr);
 
@@ -249,7 +249,7 @@ TEST_F(BRepGraph_ViewsTest, AttrsView_PublicAndRawAccess_ShareStorage)
 
 TEST_F(BRepGraph_ViewsTest, AttrsView_MutFace_InvalidatesEntry)
 {
-  BRepGraph_NodeId                     aFaceId(BRepGraph_NodeId::Kind::Face, 0);
+  BRepGraph_FaceId                     aFaceId(0);
   occ::handle<BRepGraph_CacheValue> anAttr = new TestCacheValue();
   myGraph.Cache().Set(aFaceId, testUserAttrKind(), anAttr);
   ASSERT_TRUE(myGraph.Cache().Has(aFaceId, testUserAttrKind()));
@@ -265,7 +265,7 @@ TEST_F(BRepGraph_ViewsTest, AttrsView_MutFace_InvalidatesEntry)
 
 TEST_F(BRepGraph_ViewsTest, AttrsView_RemoveNode_InvalidatesEntry)
 {
-  BRepGraph_NodeId                     aFaceId(BRepGraph_NodeId::Kind::Face, 0);
+  BRepGraph_FaceId                     aFaceId(0);
   occ::handle<BRepGraph_CacheValue> anAttr = new TestCacheValue();
   myGraph.Cache().Set(aFaceId, testUserAttrKind(), anAttr);
   ASSERT_TRUE(myGraph.Cache().Has(aFaceId, testUserAttrKind()));
@@ -292,13 +292,13 @@ TEST_F(BRepGraph_ViewsTest, RefsView_ActiveCounts_MatchFreshBuild)
 
 TEST_F(BRepGraph_ViewsTest, ShapesView_Shape_NonNull)
 {
-  BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
+  BRepGraph_FaceId aFaceId(0);
   EXPECT_FALSE(myGraph.Shapes().Shape(aFaceId).IsNull());
 }
 
 TEST_F(BRepGraph_ViewsTest, ShapesView_HasOriginal_True)
 {
-  BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
+  BRepGraph_FaceId aFaceId(0);
   EXPECT_TRUE(myGraph.Shapes().HasOriginal(aFaceId));
 }
 
@@ -317,14 +317,14 @@ TEST_F(BRepGraph_ViewsTest, MutView_EdgeDef_IncrementsOwnGen)
 TEST_F(BRepGraph_ViewsTest, BuilderView_AddVertex_Works)
 {
   const int        aNbBefore = myGraph.Topo().NbVertices();
-  BRepGraph_NodeId aVtx      = myGraph.Builder().AddVertex(gp_Pnt(1, 2, 3), 0.001);
+  BRepGraph_VertexId aVtx    = myGraph.Builder().AddVertex(gp_Pnt(1, 2, 3), 0.001);
   EXPECT_TRUE(aVtx.IsValid());
   EXPECT_EQ(myGraph.Topo().NbVertices(), aNbBefore + 1);
 }
 
 TEST_F(BRepGraph_ViewsTest, BuilderView_IsRemoved_False)
 {
-  BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
+  BRepGraph_FaceId aFaceId(0);
   EXPECT_FALSE(myGraph.Topo().IsRemoved(aFaceId));
 }
 

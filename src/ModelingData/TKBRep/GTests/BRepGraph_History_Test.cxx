@@ -348,14 +348,14 @@ TEST_F(BRepGraph_HistoryTest, SplitEdge_RewritesAllContainingWires)
 {
   ASSERT_GT(myGraph.Topo().NbEdges(), 0);
 
-  const BRepGraph_NodeId       anEdgeId(BRepGraph_NodeId::Kind::Edge, 0);
+  const BRepGraph_EdgeId       anEdgeId(0);
   const BRepGraphInc::EdgeDef& anEdgeDef = myGraph.Topo().Edge(BRepGraph_EdgeId(anEdgeId.Index));
 
   const double aSplitParam = 0.5 * (anEdgeDef.ParamFirst + anEdgeDef.ParamLast);
 
   const int              aNbVerticesBefore = myGraph.Topo().NbVertices();
   const gp_Pnt           aSplitPoint(1.0, 2.0, 3.0);
-  const BRepGraph_NodeId aSplitVertex = myGraph.Builder().AddVertex(aSplitPoint, 1.0e-7);
+  const BRepGraph_VertexId aSplitVertex = myGraph.Builder().AddVertex(aSplitPoint, 1.0e-7);
 
   ASSERT_TRUE(aSplitVertex.IsValid());
   EXPECT_EQ(myGraph.Topo().NbVertices(), aNbVerticesBefore + 1);
@@ -423,7 +423,7 @@ TEST_F(BRepGraph_HistoryTest, SplitEdge_IgnoresRemovedCoEdgeRefEntries)
 {
   ASSERT_GT(myGraph.Topo().NbEdges(), 0);
 
-  const BRepGraph_NodeId       anEdgeId(BRepGraph_NodeId::Kind::Edge, 0);
+  const BRepGraph_EdgeId       anEdgeId(0);
   const BRepGraphInc::EdgeDef& anEdgeDef   = myGraph.Topo().Edge(BRepGraph_EdgeId(anEdgeId.Index));
   const double                 aSplitParam = 0.5 * (anEdgeDef.ParamFirst + anEdgeDef.ParamLast);
 
@@ -464,7 +464,7 @@ TEST_F(BRepGraph_HistoryTest, SplitEdge_IgnoresRemovedCoEdgeRefEntries)
   const int aRemovedWireNbActiveBefore =
     BRepGraph_TestTools::CountCoEdgeRefsOfWire(myGraph, aWireId);
 
-  const BRepGraph_NodeId aSplitVertex = myGraph.Builder().AddVertex(gp_Pnt(4.0, 5.0, 6.0), 1.0e-7);
+  const BRepGraph_VertexId aSplitVertex = myGraph.Builder().AddVertex(gp_Pnt(4.0, 5.0, 6.0), 1.0e-7);
   ASSERT_TRUE(aSplitVertex.IsValid());
 
   BRepGraph_NodeId aSubA;
@@ -501,11 +501,11 @@ TEST_F(BRepGraph_HistoryTest, ApplyModification_SplitEdge_RecordsBothDerivedNode
 {
   ASSERT_GT(myGraph.Topo().NbEdges(), 0);
 
-  const BRepGraph_NodeId       anEdgeId(BRepGraph_NodeId::Kind::Edge, 0);
+  const BRepGraph_EdgeId       anEdgeId(0);
   const BRepGraphInc::EdgeDef& anEdgeDef   = myGraph.Topo().Edge(BRepGraph_EdgeId(anEdgeId.Index));
   const double                 aSplitParam = 0.5 * (anEdgeDef.ParamFirst + anEdgeDef.ParamLast);
 
-  const BRepGraph_NodeId aSplitVertex = myGraph.Builder().AddVertex(gp_Pnt(4.0, 5.0, 6.0), 1.0e-7);
+  const BRepGraph_VertexId aSplitVertex = myGraph.Builder().AddVertex(gp_Pnt(4.0, 5.0, 6.0), 1.0e-7);
   ASSERT_TRUE(aSplitVertex.IsValid());
 
   const int aNbRecordsBefore = myGraph.History().NbRecords();

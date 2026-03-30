@@ -282,7 +282,7 @@ TEST(BRepGraphAlgo_ValidateTest, AfterSplitEdge_ProducesSubEdges)
   // Create a split vertex at the midpoint.
   gp_Pnt aMidPt;
   BRepGraph_Tool::Edge::Curve(aGraph, BRepGraph_EdgeId(anEdgeId.Index))->D0(aSplitParam, aMidPt);
-  BRepGraph_NodeId aSplitVtx = aGraph.Builder().AddVertex(
+  BRepGraph_VertexId aSplitVtx = aGraph.Builder().AddVertex(
     aMidPt,
     BRepGraph_Tool::Edge::Tolerance(aGraph, BRepGraph_EdgeId(anEdgeId.Index)));
 

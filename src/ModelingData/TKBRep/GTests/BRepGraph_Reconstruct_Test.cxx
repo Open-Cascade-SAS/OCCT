@@ -370,7 +370,7 @@ TEST(BRepGraph_ReconstructTest, Shape_UnmodifiedGraph_SameAsOriginalOf)
   ASSERT_TRUE(aGraph.IsDone());
 
   // For an unmodified graph, Shape(id) should be the same TShape as OriginalOf(id).
-  BRepGraph_NodeId aSolidId(BRepGraph_NodeId::Kind::Solid, 0);
+  BRepGraph_SolidId aSolidId(0);
   ASSERT_TRUE(aGraph.Shapes().HasOriginal(aSolidId));
 
   TopoDS_Shape        aShapeResult = aGraph.Shapes().Shape(aSolidId);
@@ -415,7 +415,7 @@ TEST(BRepGraph_ReconstructTest, HasOriginal_ManualVertex_ReturnsFalse)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  const BRepGraph_NodeId aVertexId = aGraph.Builder().AddVertex(gp_Pnt(42.0, 0.0, 0.0), 0.001);
+  const BRepGraph_VertexId aVertexId = aGraph.Builder().AddVertex(gp_Pnt(42.0, 0.0, 0.0), 0.001);
   ASSERT_TRUE(aVertexId.IsValid());
 
   EXPECT_FALSE(aGraph.Shapes().HasOriginal(aVertexId));
@@ -552,7 +552,7 @@ TEST(BRepGraph_ReconstructTest, AfterToleranceMutation_NewTShape)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  BRepGraph_NodeId anEdgeId(BRepGraph_NodeId::Kind::Edge, 0);
+  BRepGraph_EdgeId anEdgeId(0);
   TopoDS_Shape     aShapeBefore = aGraph.Shapes().Shape(anEdgeId);
 
   // Mutate tolerance.

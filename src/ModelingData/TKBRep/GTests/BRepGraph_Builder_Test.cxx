@@ -62,8 +62,8 @@ TEST(BRepGraph_BuilderTest, Box_MatchesTopoDSBox)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Get bounding box from graph.
-  BRepGraph_NodeId aSolidId(BRepGraph_NodeId::Kind::Solid, 0);
-  Bnd_Box          aGraphBox;
+  BRepGraph_SolidId aSolidId(0);
+  Bnd_Box           aGraphBox;
   BRepGraphAlgo_BndLib::Add(aGraph, aSolidId, aGraphBox);
   ASSERT_FALSE(aGraphBox.IsVoid());
 
@@ -88,8 +88,8 @@ TEST(BRepGraph_BuilderTest, Sphere_NonVoid)
   aGraph.Build(aSphere);
   ASSERT_TRUE(aGraph.IsDone());
 
-  BRepGraph_NodeId aSolidId(BRepGraph_NodeId::Kind::Solid, 0);
-  Bnd_Box          aGraphBox;
+  BRepGraph_SolidId aSolidId(0);
+  Bnd_Box           aGraphBox;
   BRepGraphAlgo_BndLib::Add(aGraph, aSolidId, aGraphBox);
   EXPECT_FALSE(aGraphBox.IsVoid());
 }
@@ -103,8 +103,8 @@ TEST(BRepGraph_BuilderTest, Cylinder_NonVoid)
   aGraph.Build(aCyl);
   ASSERT_TRUE(aGraph.IsDone());
 
-  BRepGraph_NodeId aSolidId(BRepGraph_NodeId::Kind::Solid, 0);
-  Bnd_Box          aGraphBox;
+  BRepGraph_SolidId aSolidId(0);
+  Bnd_Box           aGraphBox;
   BRepGraphAlgo_BndLib::Add(aGraph, aSolidId, aGraphBox);
   EXPECT_FALSE(aGraphBox.IsVoid());
 }
@@ -119,7 +119,7 @@ TEST(BRepGraph_BuilderTest, SingleFace_MatchesVertices)
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().NbFaces(), 0);
 
-  BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
+  BRepGraph_FaceId aFaceId(0);
   Bnd_Box          aGraphBox;
   BRepGraphAlgo_BndLib::Add(aGraph, aFaceId, aGraphBox);
   EXPECT_FALSE(aGraphBox.IsVoid());
@@ -134,8 +134,8 @@ TEST(BRepGraph_BuilderTest, Box_CentroidNearCenter)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  BRepGraph_NodeId aSolidId(BRepGraph_NodeId::Kind::Solid, 0);
-  gp_Pnt           aCentroid = bboxCenter(aGraph, aSolidId);
+  BRepGraph_SolidId aSolidId(0);
+  gp_Pnt            aCentroid = bboxCenter(aGraph, aSolidId);
 
   // Centroid should be near the center of the box.
   EXPECT_NEAR(aCentroid.X(), 5.0, 1.0);
@@ -358,7 +358,7 @@ TEST(BRepGraph_BuilderTest, RemoveFaceFromBox)
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_EQ(aGraph.Topo().NbFaces(), 6);
 
-  BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
+  BRepGraph_FaceId aFaceId(0);
   EXPECT_FALSE(aGraph.Topo().IsRemoved(aFaceId));
 
   aGraph.Builder().RemoveNode(aFaceId);
@@ -476,16 +476,15 @@ TEST(BRepGraph_BuilderTest, AddCompound_WithChildren)
 {
   BRepGraph aGraph;
 
-  BRepGraph_NodeId aSolid1 = aGraph.Builder().AddSolid();
-  BRepGraph_NodeId aSolid2 = aGraph.Builder().AddSolid();
+  BRepGraph_SolidId aSolid1 = aGraph.Builder().AddSolid();
+  BRepGraph_SolidId aSolid2 = aGraph.Builder().AddSolid();
 
   NCollection_Vector<BRepGraph_NodeId> aChildren;
   aChildren.Append(aSolid1);
   aChildren.Append(aSolid2);
 
-  BRepGraph_NodeId aCompId = aGraph.Builder().AddCompound(aChildren);
+  BRepGraph_CompoundId aCompId = aGraph.Builder().AddCompound(aChildren);
   EXPECT_TRUE(aCompId.IsValid());
-  EXPECT_EQ(aCompId.NodeKind, BRepGraph_NodeId::Kind::Compound);
   EXPECT_EQ(aGraph.Topo().NbCompounds(), 1);
 
   EXPECT_EQ(BRepGraph_TestTools::CountChildRefsOfParent(aGraph, BRepGraph_NodeId::Compound(0)), 2);
@@ -769,7 +768,7 @@ TEST(BRepGraph_BuilderTest, RemoveSolid_CascadesToFaces)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  BRepGraph_NodeId aSolidId(BRepGraph_NodeId::Kind::Solid, 0);
+  BRepGraph_SolidId aSolidId(0);
   aGraph.Builder().RemoveSubgraph(aSolidId);
 
   EXPECT_TRUE(aGraph.Topo().IsRemoved(aSolidId));

@@ -1103,9 +1103,9 @@ void cutAtIntersections(BRepGraph&                                   theGraph,
     BRepGraph_NodeId                      aCurrentEdge = anEdgeId;
     for (int aSplitIter = 0; aSplitIter < aUniqueSplits.Length(); ++aSplitIter)
     {
-      const SplitCandidate&  aCand = aUniqueSplits.Value(aSplitIter);
-      const BRepGraph_NodeId aVtxNodeId(BRepGraph_NodeId::Kind::Vertex, aCand.VtxIdx);
-      BRepGraph_NodeId       aSubA, aSubB;
+      const SplitCandidate& aCand = aUniqueSplits.Value(aSplitIter);
+      const BRepGraph_VertexId aVtxNodeId(aCand.VtxIdx);
+      BRepGraph_NodeId        aSubA, aSubB;
       theGraph.Builder().SplitEdge(aCurrentEdge, aVtxNodeId, aCand.Param, aSubA, aSubB);
       aChain.Append(aSubA);
       aCurrentEdge = aSubB;
@@ -1991,7 +1991,7 @@ int mergeMatchedEdges(
           BRepGraph_Tool::CoEdge::PCurve(theGraph, aRemoveCoEdges.Value(aCEIter));
         // Add PCurve entry to keep-edge via graph API; preserve original orientation
         // so that seam edges (REVERSED orientation) are correctly reconstructed as C2.
-        theGraph.Builder().AddPCurveToEdge(anIdA,
+        theGraph.Builder().AddPCurveToEdge(anEdgeIdA,
                                            aRemoveCE.FaceDefId,
                                            aRemovePCurve,
                                            aRemoveCE.ParamFirst,

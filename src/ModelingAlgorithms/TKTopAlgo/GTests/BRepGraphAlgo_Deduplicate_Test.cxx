@@ -273,7 +273,7 @@ int addDuplicatePCurvesToAllEdges(BRepGraph& theGraph)
     }
 
     const occ::handle<Geom2d_Curve>& aDupPCurve = BRepGraph_Tool::CoEdge::PCurve(theGraph, aCE);
-    theGraph.Builder().AddPCurveToEdge(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, anEdgeIdx),
+    theGraph.Builder().AddPCurveToEdge(BRepGraph_EdgeId(anEdgeIdx),
                                        aCE.FaceDefId,
                                        aDupPCurve,
                                        aCE.ParamFirst,

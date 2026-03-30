@@ -517,7 +517,7 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
           {
             const occ::handle<Geom2d_Curve>& aOldPCurve =
               BRepGraph_Tool::CoEdge::PCurve(theGraph, aOldCoEdges.Value(aCEIdx));
-            theGraph.Builder().AddPCurveToEdge(aCanonId,
+            theGraph.Builder().AddPCurveToEdge(BRepGraph_EdgeId::FromNodeId(aCanonId),
                                                aOldCE.FaceDefId,
                                                aOldPCurve,
                                                aOldCE.ParamFirst,

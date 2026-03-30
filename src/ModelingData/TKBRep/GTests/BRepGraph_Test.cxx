@@ -1211,13 +1211,13 @@ TEST(BRepGraph_UIDsViewTest, ReverseLookupStaysCurrentAfterProgrammaticAdd)
 {
   BRepGraph aGraph;
 
-  const BRepGraph_NodeId aFirstVertex = aGraph.Builder().AddVertex(gp_Pnt(0.0, 0.0, 0.0), 0.001);
-  const BRepGraph_UID    aFirstUID    = aGraph.UIDs().Of(aFirstVertex);
+  const BRepGraph_VertexId aFirstVertex = aGraph.Builder().AddVertex(gp_Pnt(0.0, 0.0, 0.0), 0.001);
+  const BRepGraph_UID      aFirstUID    = aGraph.UIDs().Of(aFirstVertex);
   ASSERT_TRUE(aFirstUID.IsValid());
   ASSERT_EQ(aGraph.UIDs().NodeIdFrom(aFirstUID), aFirstVertex);
 
-  const BRepGraph_NodeId aSecondVertex = aGraph.Builder().AddVertex(gp_Pnt(1.0, 0.0, 0.0), 0.001);
-  const BRepGraph_UID    aSecondUID    = aGraph.UIDs().Of(aSecondVertex);
+  const BRepGraph_VertexId aSecondVertex = aGraph.Builder().AddVertex(gp_Pnt(1.0, 0.0, 0.0), 0.001);
+  const BRepGraph_UID      aSecondUID    = aGraph.UIDs().Of(aSecondVertex);
   ASSERT_TRUE(aSecondUID.IsValid());
 
   EXPECT_EQ(aGraph.UIDs().NodeIdFrom(aFirstUID), aFirstVertex);
@@ -1355,14 +1355,14 @@ TEST_F(BRepGraphTest, ApplyModification_MultiStepChain_FindOriginalTracesBack)
 
 TEST_F(BRepGraphTest, AddPCurveToEdge_NewPCurve_RetrievableViaFindPCurve)
 {
-  BRepGraph_NodeId anEdgeId(BRepGraph_NodeId::Kind::Edge, 0);
-  BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
+  BRepGraph_EdgeId anEdgeId(0);
+  BRepGraph_FaceId aFaceId(0);
 
   occ::handle<Geom2d_Line> aCurve2d = new Geom2d_Line(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0));
   myGraph.Builder().AddPCurveToEdge(anEdgeId, aFaceId, aCurve2d, 0.0, 1.0);
 
   const BRepGraphInc::CoEdgeDef* aRetrieved =
-    BRepGraph_Tool::Edge::FindPCurve(myGraph, BRepGraph_EdgeId(anEdgeId.Index), BRepGraph_FaceId(aFaceId.Index));
+    BRepGraph_Tool::Edge::FindPCurve(myGraph, anEdgeId, aFaceId);
   EXPECT_NE(aRetrieved, nullptr);
   if (aRetrieved != nullptr)
   {

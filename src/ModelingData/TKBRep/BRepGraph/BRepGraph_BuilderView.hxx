@@ -193,15 +193,15 @@ public:
   //! one operation. Use CreateCurve2DRep() with MutCoEdge() when editing an
   //! existing CoEdge that has already been identified inside a larger mutation
   //! sequence.
-  //! @param[in] theEdgeEntity           edge definition NodeId
-  //! @param[in] theFaceEntity           face definition NodeId
+  //! @param[in] theEdgeEntity        typed edge definition identifier
+  //! @param[in] theFaceEntity        typed face definition identifier
   //! @param[in] theCurve2d           2D curve geometry
   //! @param[in] theFirst             first curve parameter
   //! @param[in] theLast              last curve parameter
   //! @param[in] theEdgeOrientation   edge orientation on the face
   Standard_EXPORT void AddPCurveToEdge(
-    const BRepGraph_NodeId           theEdgeEntity,
-    const BRepGraph_NodeId           theFaceEntity,
+    const BRepGraph_EdgeId           theEdgeEntity,
+    const BRepGraph_FaceId           theFaceEntity,
     const occ::handle<Geom2d_Curve>& theCurve2d,
     const double                     theFirst,
     const double                     theLast,

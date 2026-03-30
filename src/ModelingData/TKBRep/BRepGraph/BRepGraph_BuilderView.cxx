@@ -1309,16 +1309,15 @@ BRepGraph_Curve2DRepId BRepGraph::BuilderView::CreateCurve2DRep(
 
 //=================================================================================================
 
-void BRepGraph::BuilderView::AddPCurveToEdge(const BRepGraph_NodeId           theEdgeEntity,
-                                             const BRepGraph_NodeId           theFaceEntity,
+void BRepGraph::BuilderView::AddPCurveToEdge(const BRepGraph_EdgeId           theEdgeEntity,
+                                             const BRepGraph_FaceId           theFaceEntity,
                                              const occ::handle<Geom2d_Curve>& theCurve2d,
                                              const double                     theFirst,
                                              const double                     theLast,
                                              const TopAbs_Orientation         theEdgeOrientation)
 {
   BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
-  if (!isActiveNodeOfKind(aStorage, theEdgeEntity, BRepGraph_NodeId::Kind::Edge)
-      || !isActiveNodeOfKind(aStorage, theFaceEntity, BRepGraph_NodeId::Kind::Face)
+  if (!isActiveNode(aStorage, theEdgeEntity) || !isActiveNode(aStorage, theFaceEntity)
       || theCurve2d.IsNull())
   {
     return;
@@ -1328,8 +1327,8 @@ void BRepGraph::BuilderView::AddPCurveToEdge(const BRepGraph_NodeId           th
   BRepGraphInc::CoEdgeDef& aCoEdge    = aStorage.AppendCoEdge();
   const int                aCoEdgeIdx = aStorage.NbCoEdges() - 1;
   aCoEdge.Id                          = BRepGraph_NodeId::CoEdge(aCoEdgeIdx);
-  aCoEdge.EdgeDefId                   = BRepGraph_EdgeId::FromNodeId(theEdgeEntity);
-  aCoEdge.FaceDefId                   = BRepGraph_FaceId::FromNodeId(theFaceEntity);
+  aCoEdge.EdgeDefId                   = theEdgeEntity;
+  aCoEdge.FaceDefId                   = theFaceEntity;
   aCoEdge.Sense                       = theEdgeOrientation;
   if (!theCurve2d.IsNull())
   {
@@ -1343,10 +1342,8 @@ void BRepGraph::BuilderView::AddPCurveToEdge(const BRepGraph_NodeId           th
   aCoEdge.ParamLast  = theLast;
 
   // Update reverse indices.
-  aStorage.ChangeReverseIndex().BindEdgeToCoEdge(BRepGraph_EdgeId(theEdgeEntity.Index),
-                                                 BRepGraph_CoEdgeId(aCoEdgeIdx));
-  aStorage.ChangeReverseIndex().BindEdgeToFace(BRepGraph_EdgeId(theEdgeEntity.Index),
-                                               BRepGraph_FaceId(theFaceEntity.Index));
+  aStorage.ChangeReverseIndex().BindEdgeToCoEdge(theEdgeEntity, BRepGraph_CoEdgeId(aCoEdgeIdx));
+  aStorage.ChangeReverseIndex().BindEdgeToFace(theEdgeEntity, theFaceEntity);
   myGraph->allocateUID(aCoEdge.Id);
 
   myGraph->markModified(theEdgeEntity);

@@ -600,8 +600,8 @@ BRepGraph BRepGraphAlgo_Copy::CopyFace(const BRepGraph&       theGraph,
       const occ::handle<Geom2d_Curve>& aCoEdgeSrcPC2 =
         BRepGraph_Tool::CoEdge::PCurve(theGraph, aCoEdgeId);
       occ::handle<Geom2d_Curve> aNewPC = copyPCurve(aCoEdgeSrcPC2, theCopyGeom);
-      aResult.Builder().AddPCurveToEdge(BRepGraph_NodeId::Edge(aNewEdgeIdx),
-                                        BRepGraph_NodeId::Face(0),
+      aResult.Builder().AddPCurveToEdge(BRepGraph_EdgeId(aNewEdgeIdx),
+                    BRepGraph_FaceId(0),
                                         aNewPC,
                                         aCoEdge.ParamFirst,
                                         aCoEdge.ParamLast,
