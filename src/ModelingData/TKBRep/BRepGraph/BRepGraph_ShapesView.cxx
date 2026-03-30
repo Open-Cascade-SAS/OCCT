@@ -253,18 +253,6 @@ TopoDS_Shape BRepGraph::ShapesView::Reconstruct(const BRepGraph_NodeId theRoot) 
 
 //=================================================================================================
 
-TopoDS_Shape BRepGraph::ShapesView::ReconstructFace(const BRepGraph_FaceId theFace) const
-{
-  BRepGraphInc_Reconstruct::Cache aCache;
-  const occ::handle<BRepGraph_ParamLayer> aParamLayer = myGraph->LayerRegistry().FindLayer<BRepGraph_ParamLayer>();
-  const occ::handle<BRepGraph_RegularityLayer> aRegularityLayer =
-    myGraph->LayerRegistry().FindLayer<BRepGraph_RegularityLayer>();
-  return BRepGraphInc_Reconstruct::FaceWithCache(myGraph->myData->myIncStorage,
-                                                 theFace.Index,
-                                                 aCache,
-                                                 aParamLayer.get(),
-                                                 aRegularityLayer.get());
-}
 
 //=================================================================================================
 

@@ -168,7 +168,7 @@ TEST(BRepGraphAlgo_CopyTest, CopySingleFace)
   EXPECT_EQ(aCopyGraph.Topo().NbShells(), 0);
   EXPECT_EQ(aCopyGraph.Topo().NbSolids(), 0);
 
-  TopoDS_Shape aCopiedFace = aCopyGraph.Shapes().ReconstructFace(BRepGraph_FaceId(0));
+  TopoDS_Shape aCopiedFace = aCopyGraph.Shapes().Reconstruct(BRepGraph_FaceId(0));
   ASSERT_FALSE(aCopiedFace.IsNull());
   EXPECT_EQ(aCopiedFace.ShapeType(), TopAbs_FACE);
 
@@ -263,7 +263,7 @@ TEST(BRepGraphAlgo_CopyTest, FusedBoxes_Regularity_AreaPreserved)
   double aCopyArea = 0.0;
   for (int aFaceIdx = 0; aFaceIdx < aCopyGraph.Topo().NbFaces(); ++aFaceIdx)
   {
-    TopoDS_Shape aFace = aCopyGraph.Shapes().ReconstructFace(BRepGraph_FaceId(aFaceIdx));
+    TopoDS_Shape aFace = aCopyGraph.Shapes().Reconstruct(BRepGraph_FaceId(aFaceIdx));
     GProp_GProps aProps;
     BRepGProp::SurfaceProperties(aFace, aProps);
     aCopyArea += std::abs(aProps.Mass());

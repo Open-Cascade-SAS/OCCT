@@ -25,7 +25,7 @@
 //!
 //! Walks the graph hierarchy from a root node down to entities of a target kind,
 //! producing a BRepGraph_TopologyPath for each occurrence. The path uniquely
-//! identifies the occurrence and can be passed to SpatialView for location,
+//! identifies the occurrence and can be passed to PathView for location,
 //! orientation, and entity queries at any intermediate level.
 //!
 //! Unlike BRepGraph_Iterator (which iterates definitions without context),

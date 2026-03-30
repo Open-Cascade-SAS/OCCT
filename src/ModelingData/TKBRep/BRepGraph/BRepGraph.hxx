@@ -172,7 +172,8 @@ public:
   [[nodiscard]] Standard_EXPORT const BRepGraph_History& History() const;
 
   //! Access transient cache for algorithm-computed attributes (BndBox, UVBounds).
-  //! SubtreeGen-validated, cleared on Build/Compact. NOT a Layer.
+  //! Prefer Cache() for the public grouped-view API; this accessor remains for
+  //! lower-level algorithm code that operates directly on BRepGraph_TransientCache.
   [[nodiscard]] BRepGraph_TransientCache& TransientCache() { return myTransientCache; }
   //! Access transient cache for algorithm-computed attributes (const).
   [[nodiscard]] const BRepGraph_TransientCache& TransientCache() const { return myTransientCache; }

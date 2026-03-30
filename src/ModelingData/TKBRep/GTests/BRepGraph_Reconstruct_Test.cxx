@@ -310,7 +310,7 @@ TEST(BRepGraph_ReconstructTest, Face_PCurvesPresent_OnAllEdges)
 
   for (int aFaceIdx = 0; aFaceIdx < aGraph.Topo().NbFaces(); ++aFaceIdx)
   {
-    TopoDS_Shape aReconFace = aGraph.Shapes().ReconstructFace(BRepGraph_FaceId(aFaceIdx));
+    TopoDS_Shape aReconFace = aGraph.Shapes().Reconstruct(BRepGraph_FaceId(aFaceIdx));
     ASSERT_FALSE(aReconFace.IsNull()) << "ReconstructFace returned null for face " << aFaceIdx;
 
     const TopoDS_Face& aFace = TopoDS::Face(aReconFace);
@@ -346,7 +346,7 @@ TEST(BRepGraph_ReconstructTest, Face_OrientationPreserved)
     const BRepGraphInc::FaceRef& aFaceRef      = aGraph.Refs().Face(aFaceRefs.Value(aRefIdx));
     const TopAbs_Orientation     anExpectedOri = aFaceRef.Orientation;
 
-    TopoDS_Shape aReconFace = aGraph.Shapes().ReconstructFace(aFaceRef.FaceDefId);
+    TopoDS_Shape aReconFace = aGraph.Shapes().Reconstruct(aFaceRef.FaceDefId);
     ASSERT_FALSE(aReconFace.IsNull())
       << "ReconstructFace returned null for face " << aFaceRef.FaceDefId.Index;
 
@@ -388,7 +388,7 @@ TEST(BRepGraph_ReconstructTest, Reconstruct_Face_ValidShape)
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().NbFaces(), 0);
 
-  TopoDS_Shape aRecon = aGraph.Shapes().ReconstructFace(BRepGraph_FaceId(0));
+  TopoDS_Shape aRecon = aGraph.Shapes().Reconstruct(BRepGraph_FaceId(0));
   EXPECT_FALSE(aRecon.IsNull());
   EXPECT_EQ(aRecon.ShapeType(), TopAbs_FACE);
 }

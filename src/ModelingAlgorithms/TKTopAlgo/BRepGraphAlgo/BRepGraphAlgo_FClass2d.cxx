@@ -641,7 +641,7 @@ TopAbs_State BRepGraphAlgo_FClass2d::classifyInternal(const gp_Pnt2d& thePntUV,
         else
         {
           // Uncertain - fallback to BRepClass_FaceClassifier via face reconstruction.
-          const TopoDS_Shape aReconstructed = myGraph->Shapes().ReconstructFace(myFaceId);
+          const TopoDS_Shape aReconstructed = myGraph->Shapes().Reconstruct(myFaceId);
           if (!aReconstructed.IsNull())
           {
             BRepClass_FaceClassifier aClassifier;
@@ -662,7 +662,7 @@ TopAbs_State BRepGraphAlgo_FClass2d::classifyInternal(const gp_Pnt2d& thePntUV,
     else
     {
       // Bad wire - fallback to BRepClass_FaceClassifier.
-      const TopoDS_Shape aReconstructed = myGraph->Shapes().ReconstructFace(myFaceId);
+      const TopoDS_Shape aReconstructed = myGraph->Shapes().Reconstruct(myFaceId);
       if (!aReconstructed.IsNull())
       {
         BRepClass_FaceClassifier aClassifier;

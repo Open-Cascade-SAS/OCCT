@@ -57,11 +57,6 @@ public:
   //! @return reconstructed shape
   [[nodiscard]] Standard_EXPORT TopoDS_Shape Reconstruct(const BRepGraph_NodeId theRoot) const;
 
-  //! Reconstruct a TopoDS_Face from a face definition id.
-  //! @param[in] theFace typed face identifier
-  //! @return reconstructed face shape
-  [[nodiscard]] Standard_EXPORT TopoDS_Shape ReconstructFace(const BRepGraph_FaceId theFace) const;
-
   //! Look up the definition NodeId for a shape from the Build() input.
   //! Uses TShape pointer comparison (same semantics as IsSame()).
   //! Synthetic Product / Occurrence reconstructions are not given dedicated

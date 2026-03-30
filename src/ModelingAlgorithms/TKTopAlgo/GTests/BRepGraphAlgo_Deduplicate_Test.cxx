@@ -1880,7 +1880,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, RoundTrip_TwoCopiedFaces_FewerSurfaces)
   aBB.MakeCompound(aReconstructed);
   for (int aFaceIdx = 0; aFaceIdx < aGraph1.Topo().NbFaces(); ++aFaceIdx)
   {
-    const TopoDS_Shape aFace = aGraph1.Shapes().ReconstructFace(BRepGraph_FaceId(aFaceIdx));
+    const TopoDS_Shape aFace = aGraph1.Shapes().Reconstruct(BRepGraph_FaceId(aFaceIdx));
     ASSERT_FALSE(aFace.IsNull());
     aBB.Add(aReconstructed, aFace);
   }
@@ -1915,7 +1915,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, RoundTrip_TwoCopiedFaces_FewerCurves)
   aBB.MakeCompound(aReconstructed);
   for (int aFaceIdx = 0; aFaceIdx < aGraph1.Topo().NbFaces(); ++aFaceIdx)
   {
-    const TopoDS_Shape aFace = aGraph1.Shapes().ReconstructFace(BRepGraph_FaceId(aFaceIdx));
+    const TopoDS_Shape aFace = aGraph1.Shapes().Reconstruct(BRepGraph_FaceId(aFaceIdx));
     ASSERT_FALSE(aFace.IsNull());
     aBB.Add(aReconstructed, aFace);
   }

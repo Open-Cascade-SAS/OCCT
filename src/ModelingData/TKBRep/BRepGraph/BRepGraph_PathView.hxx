@@ -19,11 +19,13 @@
 #include <TopAbs_Orientation.hxx>
 #include <TopLoc_Location.hxx>
 
-//! @brief Read-only view for topology path resolution queries.
+//! @brief Read-only view for assembly structure, placements, and topology paths.
 //!
-//! All path-based queries use the uniform step model: the path is walked
-//! from root through each step, dispatching on the current entity kind
-//! to resolve ref locations, orientations, and child entities.
+//! Provides assembly-structural queries on Products and Occurrences together
+//! with path-based resolution. All path-based queries use the uniform step
+//! model: the path is walked from root through each step, dispatching on the
+//! current entity kind to resolve ref locations, orientations, and child
+//! entities.
 //!
 //! ## Usage
 //! @code
@@ -47,10 +49,37 @@ public:
   };
 
   //! All occurrence entries for a node: paths, locations, orientations.
-  //! Computed on demand via reverse index walk. No caching.
+  //! @note Computed on demand via reverse index walk. No caching.
   //! @param[in] theNode entity to find all occurrences of
   [[nodiscard]] Standard_EXPORT NCollection_Vector<OccurrenceEntry> NodeLocations(
     const BRepGraph_NodeId theNode) const;
+
+  //! Return NodeIds of all root products (products not referenced by an active occurrence).
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> RootProducts() const;
+
+  //! True if the product is an assembly (has child occurrences, no topology root).
+  //! @param[in] theProduct typed product definition identifier
+  [[nodiscard]] Standard_EXPORT bool IsAssembly(const BRepGraph_ProductId theProduct) const;
+
+  //! True if the product is a part (has a valid topology root).
+  //! @param[in] theProduct typed product definition identifier
+  [[nodiscard]] Standard_EXPORT bool IsPart(const BRepGraph_ProductId theProduct) const;
+
+  //! Return the topology root NodeId for a part product.
+  //! For assemblies (no topology root) returns an invalid NodeId.
+  //! @param[in] theProduct typed product definition identifier
+  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId
+    ShapeRootNode(const BRepGraph_ProductId theProduct) const;
+
+  //! Number of active child occurrences of a product.
+  //! @param[in] theProduct typed product definition identifier
+  [[nodiscard]] Standard_EXPORT int NbComponents(const BRepGraph_ProductId theProduct) const;
+
+  //! Return the i-th active child occurrence NodeId of a product.
+  //! @param[in] theProduct typed product definition identifier
+  //! @param[in] theComponentIdx zero-based active occurrence index within the product
+  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId Component(const BRepGraph_ProductId theProduct,
+                                                           const int theComponentIdx) const;
 
   //! Global location at the leaf of the path (all levels composed).
   //! Handles assembly occurrences, compound containers, and topology uniformly.
@@ -132,7 +161,7 @@ public:
   [[nodiscard]] Standard_EXPORT TopLoc_Location
     OccurrenceLocation(const BRepGraph_OccurrenceId theOccurrence) const;
 
-  //! @name Path analysis and assembly-structural queries
+  //! @name Path analysis queries
 
   //! Count entities of the given kind encountered along the path.
   //! @param[in] thePath  topology path

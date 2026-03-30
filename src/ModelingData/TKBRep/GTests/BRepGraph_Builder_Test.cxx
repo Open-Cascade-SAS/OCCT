@@ -856,7 +856,7 @@ TEST(BRepGraph_BuilderTest, FacesOfEdge_NoFaces_Programmatic)
   EXPECT_EQ(aFaces.Length(), 0);
 }
 
-// ============ New SpatialView adjacency methods ============
+// ============ Topology adjacency methods ============
 
 TEST(BRepGraph_BuilderTest, EdgesOfFace_Box_HasEdges)
 {

@@ -78,9 +78,23 @@ int BRepGraph::RefsView::NbShellRefs() const
 
 //=================================================================================================
 
+int BRepGraph::RefsView::NbActiveShellRefs() const
+{
+  return myGraph->myData->myIncStorage.NbActiveShellRefs();
+}
+
+//=================================================================================================
+
 int BRepGraph::RefsView::NbFaceRefs() const
 {
   return myGraph->myData->myIncStorage.NbFaceRefs();
+}
+
+//=================================================================================================
+
+int BRepGraph::RefsView::NbActiveFaceRefs() const
+{
+  return myGraph->myData->myIncStorage.NbActiveFaceRefs();
 }
 
 //=================================================================================================
@@ -92,9 +106,23 @@ int BRepGraph::RefsView::NbWireRefs() const
 
 //=================================================================================================
 
+int BRepGraph::RefsView::NbActiveWireRefs() const
+{
+  return myGraph->myData->myIncStorage.NbActiveWireRefs();
+}
+
+//=================================================================================================
+
 int BRepGraph::RefsView::NbCoEdgeRefs() const
 {
   return myGraph->myData->myIncStorage.NbCoEdgeRefs();
+}
+
+//=================================================================================================
+
+int BRepGraph::RefsView::NbActiveCoEdgeRefs() const
+{
+  return myGraph->myData->myIncStorage.NbActiveCoEdgeRefs();
 }
 
 //=================================================================================================
@@ -106,9 +134,23 @@ int BRepGraph::RefsView::NbVertexRefs() const
 
 //=================================================================================================
 
+int BRepGraph::RefsView::NbActiveVertexRefs() const
+{
+  return myGraph->myData->myIncStorage.NbActiveVertexRefs();
+}
+
+//=================================================================================================
+
 int BRepGraph::RefsView::NbSolidRefs() const
 {
   return myGraph->myData->myIncStorage.NbSolidRefs();
+}
+
+//=================================================================================================
+
+int BRepGraph::RefsView::NbActiveSolidRefs() const
+{
+  return myGraph->myData->myIncStorage.NbActiveSolidRefs();
 }
 
 //=================================================================================================
@@ -120,9 +162,23 @@ int BRepGraph::RefsView::NbChildRefs() const
 
 //=================================================================================================
 
+int BRepGraph::RefsView::NbActiveChildRefs() const
+{
+  return myGraph->myData->myIncStorage.NbActiveChildRefs();
+}
+
+//=================================================================================================
+
 int BRepGraph::RefsView::NbOccurrenceRefs() const
 {
   return myGraph->myData->myIncStorage.NbOccurrenceRefs();
+}
+
+//=================================================================================================
+
+int BRepGraph::RefsView::NbActiveOccurrenceRefs() const
+{
+  return myGraph->myData->myIncStorage.NbActiveOccurrenceRefs();
 }
 
 //=================================================================================================

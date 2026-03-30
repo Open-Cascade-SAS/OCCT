@@ -39,8 +39,10 @@
 //! and return definition structs.
 //!
 //! ## Iterating over references
-//! There is no dedicated BRepGraph_Iterator for reference types. Iterate
-//! using a counted loop over the appropriate NbXxxRefs() count:
+//! Reference entries are primarily traversed in parent-owned context through
+//! the typed RefIdsOf accessors. When flat iteration is needed, there is no
+//! dedicated BRepGraph_Iterator for reference types; iterate using a counted
+//! loop over the appropriate NbXxxRefs() or NbActiveXxxRefs() count:
 //! @code
 //!   const BRepGraph::RefsView& aRefs = aGraph.Refs();
 //!   for (int i = 0; i < aRefs.NbFaceRefs(); ++i)
@@ -70,20 +72,36 @@ public:
 
   //! Number of shell references.
   [[nodiscard]] Standard_EXPORT int NbShellRefs() const;
+  //! Number of active shell references.
+  [[nodiscard]] Standard_EXPORT int NbActiveShellRefs() const;
   //! Number of face references.
   [[nodiscard]] Standard_EXPORT int NbFaceRefs() const;
+  //! Number of active face references.
+  [[nodiscard]] Standard_EXPORT int NbActiveFaceRefs() const;
   //! Number of wire references.
   [[nodiscard]] Standard_EXPORT int NbWireRefs() const;
+  //! Number of active wire references.
+  [[nodiscard]] Standard_EXPORT int NbActiveWireRefs() const;
   //! Number of coedge references.
   [[nodiscard]] Standard_EXPORT int NbCoEdgeRefs() const;
+  //! Number of active coedge references.
+  [[nodiscard]] Standard_EXPORT int NbActiveCoEdgeRefs() const;
   //! Number of vertex references.
   [[nodiscard]] Standard_EXPORT int NbVertexRefs() const;
+  //! Number of active vertex references.
+  [[nodiscard]] Standard_EXPORT int NbActiveVertexRefs() const;
   //! Number of solid references.
   [[nodiscard]] Standard_EXPORT int NbSolidRefs() const;
+  //! Number of active solid references.
+  [[nodiscard]] Standard_EXPORT int NbActiveSolidRefs() const;
   //! Number of generic child references.
   [[nodiscard]] Standard_EXPORT int NbChildRefs() const;
+  //! Number of active generic child references.
+  [[nodiscard]] Standard_EXPORT int NbActiveChildRefs() const;
   //! Number of occurrence references.
   [[nodiscard]] Standard_EXPORT int NbOccurrenceRefs() const;
+  //! Number of active occurrence references.
+  [[nodiscard]] Standard_EXPORT int NbActiveOccurrenceRefs() const;
 
   //! @}
 

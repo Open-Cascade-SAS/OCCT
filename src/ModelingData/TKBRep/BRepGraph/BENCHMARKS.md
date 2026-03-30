@@ -38,7 +38,7 @@ Config: RelWithDebInfo
 - After T1.2: 2026-03-18, UIDs always-on via two DataMap::Bind() per node in allocateUID()
 - Array UIDs: 2026-03-18, per-kind NCollection_Vector forward + lazy DataMap reverse
 - Grouped: 2026-03-18, 33 fields -> 11 TopoKindData/GeomKindData template structs
-- Dense RevIdx: 2026-03-19, ReverseIndex DataMap->Vector, SpatialView direct edge->faces
+- Dense RevIdx: 2026-03-19, ReverseIndex DataMap->Vector, direct TopoView edge->faces lookup
 - Build overhead reduced: T1.2 was +36-52%, Array UIDs +7-11%, Grouped -1% to +6%
 - Reconstruct improved: -7% (dense ReverseIndex + better cache locality)
 - SpatialQuery 17x faster: direct edge->faces lookup eliminates 2-hop wire traversal + PackedMap

@@ -147,7 +147,7 @@ public:
 
 private:
   friend class BRepGraph_Explorer;
-  friend class BRepGraph; // for SpatialView access
+  friend class BRepGraph; // for PathView access
   friend struct std::hash<BRepGraph_TopologyPath>;
 
   //! Append a ref-index step.

@@ -908,7 +908,7 @@ TEST_F(BRepGraphTest, ReconstructFace_EachBoxFace_SameSubShapeCounts)
     BRepGraph_NodeId    aFaceId(BRepGraph_NodeId::Kind::Face, aFaceIdx);
     const TopoDS_Shape& anOrigFace = myGraph.Shapes().OriginalOf(aFaceId);
     const TopoDS_Shape  aReconstructed =
-      myGraph.Shapes().ReconstructFace(BRepGraph_FaceId(aFaceIdx));
+      myGraph.Shapes().Reconstruct(BRepGraph_FaceId(aFaceIdx));
 
     NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> anOrigVerts, anOrigEdges,
       anOrigWires;
@@ -966,7 +966,7 @@ TEST_F(BRepGraphTest, ReconstructFace_AfterEdgeReplace_ContainsNewEdge)
   const int aFaceIdx =
     BRepGraph_TestTools::FaceUsesWire(myGraph, BRepGraph_FaceId(0), BRepGraph_WireId(0)) ? 0 : -1;
   ASSERT_GE(aFaceIdx, 0);
-  const TopoDS_Shape aReconstructed = myGraph.Shapes().ReconstructFace(BRepGraph_FaceId(aFaceIdx));
+  const TopoDS_Shape aReconstructed = myGraph.Shapes().Reconstruct(BRepGraph_FaceId(aFaceIdx));
 
   // Check via 3D curve handle identity (reconstructed edges have new TShapes).
   bool isNewFound = false;

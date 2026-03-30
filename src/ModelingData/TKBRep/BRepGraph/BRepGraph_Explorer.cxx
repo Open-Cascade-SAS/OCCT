@@ -354,10 +354,10 @@ void BRepGraph_Explorer::explore(const BRepGraph&              theGraph,
       {
         // Assembly product: descend through OccurrenceRefIds.
         const BRepGraph_ProductId aProdId(theCurrentNode.Index);
-        const int                 aNbComps = theGraph.Topo().NbComponents(aProdId);
+        const int                 aNbComps = theGraph.Paths().NbComponents(aProdId);
         for (int i = 0; i < aNbComps; ++i)
         {
-          const BRepGraph_NodeId anOccNode = theGraph.Topo().Component(aProdId, i);
+          const BRepGraph_NodeId anOccNode = theGraph.Paths().Component(aProdId, i);
           BRepGraph_TopologyPath aChild    = thePath;
           aChild.pushStep(i);
           explore(theGraph, theTargetKind, anOccNode, aChild, aChildBudget);

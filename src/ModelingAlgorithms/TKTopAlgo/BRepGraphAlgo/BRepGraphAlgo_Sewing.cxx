@@ -2103,7 +2103,7 @@ TopoDS_Shape reconstructFromGraph(const BRepGraph& theGraph)
     {
       if (!aDefs.Face(BRepGraph_FaceId(aFaceIdx)).IsRemoved)
       {
-        aBB.Add(aResultCompound, theGraph.Shapes().ReconstructFace(BRepGraph_FaceId(aFaceIdx)));
+        aBB.Add(aResultCompound, theGraph.Shapes().Reconstruct(BRepGraph_FaceId(aFaceIdx)));
       }
     }
     return aResultCompound;

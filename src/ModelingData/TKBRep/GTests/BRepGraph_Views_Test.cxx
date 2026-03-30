@@ -18,6 +18,7 @@
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_History.hxx>
+#include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_UIDsView.hxx>
 #include <BRepGraphAlgo_BndLib.hxx>
@@ -167,7 +168,7 @@ TEST_F(BRepGraph_ViewsTest, UIDsView_Generation_Positive)
   EXPECT_GT(myGraph.UIDs().Generation(), 0u);
 }
 
-// ---------- SpatialView ----------
+// ---------- Topology adjacency ----------
 
 TEST_F(BRepGraph_ViewsTest, SpatialView_AdjacentFaces_FourPerBoxFace)
 {
@@ -219,6 +220,7 @@ TEST_F(BRepGraph_ViewsTest, AttrsView_SetGet_RoundTrip)
   myGraph.Cache().Set(aFaceId, testUserAttrKind(), anAttr);
   occ::handle<BRepGraph_CacheValue> aRetrieved = myGraph.Cache().Get(aFaceId, testUserAttrKind());
   EXPECT_EQ(aRetrieved, anAttr);
+  EXPECT_TRUE(myGraph.Cache().Has(aFaceId, testUserAttrKind()));
 }
 
 TEST_F(BRepGraph_ViewsTest, AttrsView_Remove_Works)
@@ -227,7 +229,20 @@ TEST_F(BRepGraph_ViewsTest, AttrsView_Remove_Works)
   occ::handle<BRepGraph_CacheValue> anAttr = new TestCacheValue();
   myGraph.Cache().Set(aFaceId, testUserAttrKind(), anAttr);
   EXPECT_TRUE(myGraph.Cache().Remove(aFaceId, testUserAttrKind()));
+  EXPECT_FALSE(myGraph.Cache().Has(aFaceId, testUserAttrKind()));
   EXPECT_TRUE(myGraph.Cache().Get(aFaceId, testUserAttrKind()).IsNull());
+}
+
+TEST_F(BRepGraph_ViewsTest, RefsView_ActiveCounts_MatchFreshBuild)
+{
+  EXPECT_EQ(myGraph.Refs().NbActiveShellRefs(), myGraph.Refs().NbShellRefs());
+  EXPECT_EQ(myGraph.Refs().NbActiveFaceRefs(), myGraph.Refs().NbFaceRefs());
+  EXPECT_EQ(myGraph.Refs().NbActiveWireRefs(), myGraph.Refs().NbWireRefs());
+  EXPECT_EQ(myGraph.Refs().NbActiveCoEdgeRefs(), myGraph.Refs().NbCoEdgeRefs());
+  EXPECT_EQ(myGraph.Refs().NbActiveVertexRefs(), myGraph.Refs().NbVertexRefs());
+  EXPECT_EQ(myGraph.Refs().NbActiveSolidRefs(), myGraph.Refs().NbSolidRefs());
+  EXPECT_EQ(myGraph.Refs().NbActiveChildRefs(), myGraph.Refs().NbChildRefs());
+  EXPECT_EQ(myGraph.Refs().NbActiveOccurrenceRefs(), myGraph.Refs().NbOccurrenceRefs());
 }
 
 // ---------- ShapesView ----------

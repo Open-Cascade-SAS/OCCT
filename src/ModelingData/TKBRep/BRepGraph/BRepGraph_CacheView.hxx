@@ -47,6 +47,13 @@ public:
     const BRepGraph_NodeId                  theNode,
     const occ::handle<BRepGraph_CacheKind>& theKind) const;
 
+  //! Check if a non-stale cached value exists on a node.
+  //! @param[in] theNode node to query
+  //! @param[in] theKind cache kind descriptor identifying the slot
+  //! @return true if a current value exists for this node and kind
+  [[nodiscard]] Standard_EXPORT bool Has(const BRepGraph_NodeId theNode,
+                                         const occ::handle<BRepGraph_CacheKind>& theKind) const;
+
   //! Remove a cached value from a node.
   //! @param[in] theNode node to remove the value from
   //! @param[in] theKind cache kind descriptor identifying the slot

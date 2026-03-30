@@ -26,7 +26,7 @@ void BRepGraph::CacheView::Set(const BRepGraph_NodeId                   theNode,
   {
     return;
   }
-  myGraph->TransientCache().Set(theNode, theKind, theValue, aDef->SubtreeGen);
+  myGraph->transientCache().Set(theNode, theKind, theValue, aDef->SubtreeGen);
 }
 
 //=================================================================================================
@@ -40,7 +40,15 @@ occ::handle<BRepGraph_CacheValue> BRepGraph::CacheView::Get(
   {
     return occ::handle<BRepGraph_CacheValue>();
   }
-  return myGraph->TransientCache().Get(theNode, theKind, aDef->SubtreeGen);
+  return myGraph->transientCache().Get(theNode, theKind, aDef->SubtreeGen);
+}
+
+//=================================================================================================
+
+bool BRepGraph::CacheView::Has(const BRepGraph_NodeId theNode,
+                               const occ::handle<BRepGraph_CacheKind>& theKind) const
+{
+  return !Get(theNode, theKind).IsNull();
 }
 
 //=================================================================================================
@@ -48,7 +56,7 @@ occ::handle<BRepGraph_CacheValue> BRepGraph::CacheView::Get(
 bool BRepGraph::CacheView::Remove(const BRepGraph_NodeId theNode,
                                   const occ::handle<BRepGraph_CacheKind>& theKind)
 {
-  return myGraph->TransientCache().Remove(theNode, theKind);
+  return myGraph->transientCache().Remove(theNode, theKind);
 }
 
 //=================================================================================================
@@ -63,7 +71,7 @@ void BRepGraph::CacheView::Invalidate(const BRepGraph_NodeId theNode,
   }
 
   occ::handle<BRepGraph_CacheValue> aValue =
-    myGraph->TransientCache().Get(theNode, theKind, aDef->SubtreeGen);
+    myGraph->transientCache().Get(theNode, theKind, aDef->SubtreeGen);
   if (!aValue.IsNull())
   {
     aValue->Invalidate();
@@ -75,5 +83,5 @@ void BRepGraph::CacheView::Invalidate(const BRepGraph_NodeId theNode,
 NCollection_Vector<occ::handle<BRepGraph_CacheKind>> BRepGraph::CacheView::CacheKinds(
   const BRepGraph_NodeId theNode) const
 {
-  return myGraph->TransientCache().CacheKinds(theNode);
+  return myGraph->transientCache().CacheKinds(theNode);
 }

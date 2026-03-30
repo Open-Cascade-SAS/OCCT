@@ -442,10 +442,10 @@ void checkCrossReferenceBounds(const BRepGraph&                                 
     }
 
     const BRepGraph_ProductId aProdId(aProductIdx);
-    const int                 aNbComponents = theGraph.Topo().NbComponents(aProdId);
+    const int                 aNbComponents = theGraph.Paths().NbComponents(aProdId);
     for (int anOccRefIdx = 0; anOccRefIdx < aNbComponents; ++anOccRefIdx)
     {
-      const BRepGraph_NodeId anOccId = theGraph.Topo().Component(aProdId, anOccRefIdx);
+      const BRepGraph_NodeId anOccId = theGraph.Paths().Component(aProdId, anOccRefIdx);
       if (anOccId.IsValid() && !isValidNodeId(theGraph, anOccId))
       {
         theIssues.Append(

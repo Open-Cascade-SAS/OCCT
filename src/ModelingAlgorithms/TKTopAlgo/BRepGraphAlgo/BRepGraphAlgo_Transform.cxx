@@ -87,9 +87,9 @@ void BRepGraphAlgo_Transform::applyLocationTransform(BRepGraph& theGraph, const 
   // Compose the transform into root Product RootLocations.
   // RootProducts() returns products not referenced by any occurrence.
   // Product::RootLocation participates in path composition
-  // (SpatialView::stepLocation, composeToLevel), so all descendant
+  // (PathView::stepLocation, walkToLevel), so all descendant
   // queries automatically include it.
-  const NCollection_Vector<BRepGraph_NodeId> aRoots = theGraph.Topo().RootProducts();
+  const NCollection_Vector<BRepGraph_NodeId> aRoots = theGraph.Paths().RootProducts();
   for (int anIdx = 0; anIdx < aRoots.Length(); ++anIdx)
   {
     const BRepGraph_ProductId aRootId(aRoots.Value(anIdx).Index);

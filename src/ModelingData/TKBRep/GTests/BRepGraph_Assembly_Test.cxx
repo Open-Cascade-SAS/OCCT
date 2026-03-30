@@ -58,8 +58,8 @@ TEST(BRepGraph_AssemblyTest, Build_SingleSolid_AutoCreatesRootProduct)
   EXPECT_EQ(aProduct.Id.Index, 0);
 
   // The root product should be a part (has topology root).
-  EXPECT_TRUE(aGraph.Topo().IsPart(BRepGraph_ProductId(0)));
-  EXPECT_FALSE(aGraph.Topo().IsAssembly(BRepGraph_ProductId(0)));
+  EXPECT_TRUE(aGraph.Paths().IsPart(BRepGraph_ProductId(0)));
+  EXPECT_FALSE(aGraph.Paths().IsAssembly(BRepGraph_ProductId(0)));
 }
 
 // =============================================================================
@@ -102,8 +102,8 @@ TEST(BRepGraph_AssemblyTest, AddProduct_IsPart)
 
   EXPECT_TRUE(aProductId.IsValid());
   EXPECT_EQ(aProductId.NodeKind, BRepGraph_NodeId::Kind::Product);
-  EXPECT_TRUE(aGraph.Topo().IsPart(BRepGraph_ProductId(aProductId.Index)));
-  EXPECT_FALSE(aGraph.Topo().IsAssembly(BRepGraph_ProductId(aProductId.Index)));
+  EXPECT_TRUE(aGraph.Paths().IsPart(BRepGraph_ProductId(aProductId.Index)));
+  EXPECT_FALSE(aGraph.Paths().IsAssembly(BRepGraph_ProductId(aProductId.Index)));
 }
 
 // =============================================================================
@@ -120,8 +120,8 @@ TEST(BRepGraph_AssemblyTest, AddAssemblyProduct_IsAssembly)
 
   EXPECT_TRUE(aAssemblyId.IsValid());
   EXPECT_EQ(aAssemblyId.NodeKind, BRepGraph_NodeId::Kind::Product);
-  EXPECT_TRUE(aGraph.Topo().IsAssembly(BRepGraph_ProductId(aAssemblyId.Index)));
-  EXPECT_FALSE(aGraph.Topo().IsPart(BRepGraph_ProductId(aAssemblyId.Index)));
+  EXPECT_TRUE(aGraph.Paths().IsAssembly(BRepGraph_ProductId(aAssemblyId.Index)));
+  EXPECT_FALSE(aGraph.Paths().IsPart(BRepGraph_ProductId(aAssemblyId.Index)));
 }
 
 // =============================================================================
@@ -153,8 +153,8 @@ TEST(BRepGraph_AssemblyTest, AddOccurrence_LinksCorrectly)
 
   // Check that assembly product has the occurrence in OccurrenceRefIds.
   const BRepGraph_ProductId aAssemblyProdId(aAssemblyId.Index);
-  EXPECT_EQ(aGraph.Topo().NbComponents(aAssemblyProdId), 1);
-  EXPECT_EQ(aGraph.Topo().Component(aAssemblyProdId, 0).Index, anOccId.Index);
+  EXPECT_EQ(aGraph.Paths().NbComponents(aAssemblyProdId), 1);
+  EXPECT_EQ(aGraph.Paths().Component(aAssemblyProdId, 0).Index, anOccId.Index);
 }
 
 // =============================================================================
@@ -184,7 +184,7 @@ TEST(BRepGraph_AssemblyTest, DAGSharing_MultipleOccurrencesSamePart)
   EXPECT_EQ(aGraph.Topo().Occurrence(BRepGraph_OccurrenceId(anOcc1.Index)).ProductDefId,
             aGraph.Topo().Occurrence(BRepGraph_OccurrenceId(anOcc2.Index)).ProductDefId);
 
-  EXPECT_EQ(aGraph.Topo().NbComponents(BRepGraph_ProductId(aAssemblyId.Index)), 2);
+  EXPECT_EQ(aGraph.Paths().NbComponents(BRepGraph_ProductId(aAssemblyId.Index)), 2);
 }
 
 TEST(BRepGraph_AssemblyTest, AddOccurrence_ParentOccurrenceMustMatchParentProduct)
@@ -204,7 +204,7 @@ TEST(BRepGraph_AssemblyTest, AddOccurrence_ParentOccurrenceMustMatchParentProduc
 
   EXPECT_FALSE(anInvalidOccId.IsValid());
   EXPECT_EQ(aGraph.Topo().NbOccurrences(), 1);
-  EXPECT_EQ(aGraph.Topo().NbComponents(BRepGraph_ProductId(anAssemblyB.Index)), 0);
+  EXPECT_EQ(aGraph.Paths().NbComponents(BRepGraph_ProductId(anAssemblyB.Index)), 0);
 }
 
 // =============================================================================
@@ -218,7 +218,7 @@ TEST(BRepGraph_AssemblyTest, RootProducts_Query)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Auto-created root product is the only root initially.
-  NCollection_Vector<BRepGraph_NodeId> aRoots = aGraph.Topo().RootProducts();
+  NCollection_Vector<BRepGraph_NodeId> aRoots = aGraph.Paths().RootProducts();
   EXPECT_EQ(aRoots.Length(), 1);
   EXPECT_EQ(aRoots.Value(0), BRepGraph_NodeId::Product(0));
 
@@ -228,7 +228,7 @@ TEST(BRepGraph_AssemblyTest, RootProducts_Query)
   (void)aGraph.Builder().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location());
 
   // Now only the assembly (which is not referenced by any occurrence) is a root.
-  aRoots = aGraph.Topo().RootProducts();
+  aRoots = aGraph.Paths().RootProducts();
   EXPECT_EQ(aRoots.Length(), 1);
   EXPECT_EQ(aRoots.Value(0), aAssemblyId);
 }
@@ -248,7 +248,7 @@ TEST(BRepGraph_AssemblyTest, RemoveOccurrence_UpdatesParent)
   const BRepGraph_NodeId anOccId =
     aGraph.Builder().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location());
 
-  EXPECT_EQ(aGraph.Topo().NbComponents(BRepGraph_ProductId(aAssemblyId.Index)), 1);
+  EXPECT_EQ(aGraph.Paths().NbComponents(BRepGraph_ProductId(aAssemblyId.Index)), 1);
   const NCollection_Vector<BRepGraph_OccurrenceRefId>& aBeforeRefs =
     aGraph.Refs().OccurrenceRefIdsOf(BRepGraph_ProductId(aAssemblyId.Index));
   ASSERT_EQ(aBeforeRefs.Length(), 1);
@@ -259,7 +259,7 @@ TEST(BRepGraph_AssemblyTest, RemoveOccurrence_UpdatesParent)
   aGraph.Builder().RemoveSubgraph(anOccId);
 
   EXPECT_TRUE(aGraph.Topo().IsRemoved(anOccId));
-  EXPECT_EQ(aGraph.Topo().NbComponents(BRepGraph_ProductId(aAssemblyId.Index)), 0);
+  EXPECT_EQ(aGraph.Paths().NbComponents(BRepGraph_ProductId(aAssemblyId.Index)), 0);
   const NCollection_Vector<BRepGraph_OccurrenceRefId>& anAfterRefs =
     aGraph.Refs().OccurrenceRefIdsOf(BRepGraph_ProductId(aAssemblyId.Index));
   EXPECT_EQ(anAfterRefs.Length(), 0);
@@ -422,7 +422,7 @@ TEST(BRepGraph_AssemblyTest, OccurrencesOfProduct_ReverseIndex)
   // We test the reverse index build via Storage's exposed reverse index.
   // Since BuildReverseIndex doesn't cover product/occurrences yet,
   // we test through the NbComponents API.
-  EXPECT_EQ(aGraph.Topo().NbComponents(BRepGraph_ProductId(aAssemblyId.Index)), 2);
+  EXPECT_EQ(aGraph.Paths().NbComponents(BRepGraph_ProductId(aAssemblyId.Index)), 2);
 }
 
 // =============================================================================
@@ -567,14 +567,14 @@ TEST(BRepGraph_AssemblyTest, RootProducts_RemovedOccurrence_DoesNotAffectRoots)
     aGraph.Builder().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location());
 
   // Before removal: only assembly is root (part is referenced).
-  NCollection_Vector<BRepGraph_NodeId> aRoots = aGraph.Topo().RootProducts();
+  NCollection_Vector<BRepGraph_NodeId> aRoots = aGraph.Paths().RootProducts();
   EXPECT_EQ(aRoots.Length(), 1);
   EXPECT_EQ(aRoots.Value(0), aAssemblyId);
 
   // Remove the occurrence - part should become a root again.
   aGraph.Builder().RemoveSubgraph(anOccId);
 
-  aRoots = aGraph.Topo().RootProducts();
+  aRoots = aGraph.Paths().RootProducts();
   EXPECT_EQ(aRoots.Length(), 2); // both part and assembly are roots now
 }
 
@@ -816,11 +816,11 @@ TEST(BRepGraph_AssemblyTest, OccurrencesOfProduct_ViaReverseIndex)
   // Rebuild reverse index to populate product->occurrences.
   // (BuildReverseIndex is called during Build, but not after Builder mutations.)
   // Access via DefsView which uses forward OccurrenceRefs.
-  EXPECT_EQ(aGraph.Topo().NbComponents(BRepGraph_ProductId(aAsmId.Index)), 2);
+  EXPECT_EQ(aGraph.Paths().NbComponents(BRepGraph_ProductId(aAsmId.Index)), 2);
 
   // The auto-created root product is not referenced by any occurrence.
   // (It IS the part being referenced, so OccurrencesOfProduct should have entries.)
-  EXPECT_EQ(aGraph.Topo().NbComponents(BRepGraph_ProductId(aPartId.Index)),
+  EXPECT_EQ(aGraph.Paths().NbComponents(BRepGraph_ProductId(aPartId.Index)),
             0); // part has no child occurrences
 }
 

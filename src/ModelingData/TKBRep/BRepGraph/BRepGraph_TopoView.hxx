@@ -21,12 +21,10 @@
 
 class Adaptor3d_CurveOnSurface;
 
-//! @brief Unified read-only view over topology definition and adjacency nodes stored in BRepGraph.
+//! @brief Unified read-only view over topology definitions, adjacency, and representations.
 //!
-//! Merges the former TopoView (definition lookups, representation counts,
-//! PCurve queries) and SpatialView (adjacency queries: adjacent faces,
-//! shared edges, same-domain faces, faces referencing an edge, etc.)
-//! into a single view class.
+//! Provides topology definition lookup, representation lookup, and read-only
+//! adjacency queries over the incidence-table model stored in BRepGraph.
 //! Obtained via BRepGraph::Topo().
 //!
 //! ## Soft-deletion convention
@@ -175,14 +173,6 @@ public:
 
   //! Total number of nodes in the graph (all topology + assembly kinds).
   [[nodiscard]] Standard_EXPORT int NbNodes() const;
-
-  //! Number of definitions for the given kind (includes soft-removed).
-  //! @param[in] theKind node kind to query
-  [[nodiscard]] Standard_EXPORT int NbNodes(const BRepGraph_NodeId::Kind theKind) const;
-
-  //! Number of active (non-removed) definitions for the given kind.
-  //! @param[in] theKind node kind to query
-  [[nodiscard]] Standard_EXPORT int NbActiveNodes(const BRepGraph_NodeId::Kind theKind) const;
 
   //! Check if a node has been soft-removed.
   //! @param[in] theNode node to check
@@ -337,8 +327,8 @@ public:
   //! @name Assembly definition accessors
   //!
   //! Product and Occurrence definitions live in the incidence storage alongside
-  //! topology nodes. These methods provide definition lookup and counts;
-  //! for placement composition and path-based queries see PathView.
+  //! topology nodes. This view exposes only direct definition lookup and counts.
+  //! For assembly structure queries and placement/path traversal, use PathView.
 
   //! Number of product definitions.
   [[nodiscard]] Standard_EXPORT int NbProducts() const;
@@ -361,34 +351,6 @@ public:
   //! @param[in] theOccurrence typed occurrence definition identifier
   [[nodiscard]] Standard_EXPORT const BRepGraphInc::OccurrenceDef& Occurrence(
     const BRepGraph_OccurrenceId theOccurrence) const;
-
-  //! Return NodeIds of all root products (products that are not referenced by any occurrence).
-  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> RootProducts() const;
-
-  //! True if the product is an assembly (has child occurrences, no ShapeRootId).
-  //! @param[in] theProduct typed product definition identifier
-  [[nodiscard]] Standard_EXPORT bool IsAssembly(const BRepGraph_ProductId theProduct) const;
-
-  //! True if the product is a part (has a valid ShapeRootId).
-  //! @param[in] theProduct typed product definition identifier
-  [[nodiscard]] Standard_EXPORT bool IsPart(const BRepGraph_ProductId theProduct) const;
-
-  //! Return the topology root NodeId for a part product.
-  //! For assemblies (no topology root) returns an invalid NodeId.
-  //! @param[in] theProduct typed product definition identifier
-  //! @return topology root NodeId, or invalid if theProduct is an assembly or out of range
-  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId
-    ShapeRootNode(const BRepGraph_ProductId theProduct) const;
-
-  //! Number of child occurrences of a product.
-  //! @param[in] theProduct typed product definition identifier
-  [[nodiscard]] Standard_EXPORT int NbComponents(const BRepGraph_ProductId theProduct) const;
-
-  //! Return the i-th child occurrence NodeId of a product.
-  //! @param[in] theProduct typed product definition identifier
-  //! @param[in] theComponentIdx zero-based occurrence index within the product
-  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId Component(const BRepGraph_ProductId theProduct,
-                                                           const int theComponentIdx) const;
 
 private:
   friend class BRepGraph;

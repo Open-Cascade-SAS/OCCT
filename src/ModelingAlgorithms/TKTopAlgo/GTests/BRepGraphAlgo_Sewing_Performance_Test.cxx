@@ -612,7 +612,7 @@ NCollection_Sequence<TopoDS_Shape> buildFaceGrid(int    theNx,
           BRepGraphAlgo_Transform::TransformFace(aTemplateGraph, BRepGraph_FaceId(0), aTrsf, true);
         if (aTransGraph.IsDone())
         {
-          aFaces.Append(aTransGraph.Shapes().ReconstructFace(BRepGraph_FaceId(0)));
+          aFaces.Append(aTransGraph.Shapes().Reconstruct(BRepGraph_FaceId(0)));
           continue;
         }
       }
@@ -675,7 +675,7 @@ TopoDS_Shape reconstructSewnShape(const BRepGraph& theGraph)
   aBB.MakeCompound(aCompound);
   for (int aFaceIdx = 0; aFaceIdx < aTopo.NbFaces(); ++aFaceIdx)
   {
-    aBB.Add(aCompound, theGraph.Shapes().ReconstructFace(BRepGraph_FaceId(aFaceIdx)));
+    aBB.Add(aCompound, theGraph.Shapes().Reconstruct(BRepGraph_FaceId(aFaceIdx)));
   }
   return aCompound;
 }

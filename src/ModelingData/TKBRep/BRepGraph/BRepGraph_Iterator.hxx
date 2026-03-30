@@ -137,6 +137,8 @@ public:
 
   [[nodiscard]] int Index() const { return myIndex; }
 
+private:
+
   //! Advance past any nodes marked as removed.
   void skipRemoved()
   {
@@ -147,7 +149,6 @@ public:
     }
   }
 
-private:
   const BRepGraph& myGraph;
   int              myIndex  = 0;
   int              myLength = 0;

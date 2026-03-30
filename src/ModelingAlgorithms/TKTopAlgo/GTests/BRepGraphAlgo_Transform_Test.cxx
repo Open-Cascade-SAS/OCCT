@@ -74,7 +74,7 @@ TEST(BRepGraphAlgo_TransformTest, TranslateBox_AreaPreserved)
   double aTransArea = 0.0;
   for (int aFaceIdx = 0; aFaceIdx < aResultGraph.Topo().NbFaces(); ++aFaceIdx)
   {
-    TopoDS_Shape aFace = aResultGraph.Shapes().ReconstructFace(BRepGraph_FaceId(aFaceIdx));
+    TopoDS_Shape aFace = aResultGraph.Shapes().Reconstruct(BRepGraph_FaceId(aFaceIdx));
     GProp_GProps aProps;
     BRepGProp::SurfaceProperties(aFace, aProps);
     aTransArea += std::abs(aProps.Mass());

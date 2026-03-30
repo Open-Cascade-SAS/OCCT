@@ -348,7 +348,7 @@ static void computeProperties(const BRepGraph& theGraph, GProp_GProps& theGCommo
   const int aNbFaces = theGraph.Topo().NbFaces();
   for (int i = 0; i < aNbFaces; ++i)
   {
-    const TopoDS_Shape aFaceShape = theGraph.Shapes().ReconstructFace(BRepGraph_FaceId(i));
+    const TopoDS_Shape aFaceShape = theGraph.Shapes().Reconstruct(BRepGraph_FaceId(i));
     GProp_GProps       aG;
     BRepGProp::SurfaceProperties(aFaceShape, aG, true);
     theGCommon.Add(aG);
@@ -427,7 +427,7 @@ static void computePCA(const BRepGraph& theGraph,
     }
     else if (theGraph.Topo().NbFaces() > 0)
     {
-      aRootShape = theGraph.Shapes().ReconstructFace(BRepGraph_FaceId(0));
+      aRootShape = theGraph.Shapes().Reconstruct(BRepGraph_FaceId(0));
     }
 
     if (!aRootShape.IsNull())
