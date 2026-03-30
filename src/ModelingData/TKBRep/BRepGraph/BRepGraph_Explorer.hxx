@@ -21,36 +21,39 @@
 
 #include <NCollection_Vector.hxx>
 
-//! @brief Context-preserving hierarchy walker for BRepGraph.
+//! @brief Stack-based lazy hierarchy walker for BRepGraph with inline
+//! location/orientation accumulation.
 //!
 //! Walks the graph hierarchy from a root node down to entities of a target kind,
-//! producing a BRepGraph_TopologyPath for each occurrence. The path uniquely
-//! identifies the occurrence and can be passed to PathView for location,
-//! orientation, and entity queries at any intermediate level.
+//! yielding one occurrence at a time via a depth-first stack. Location and
+//! orientation are composed incrementally during the walk, making Location()
+//! and Orientation() O(1) per call.
 //!
-//! Unlike BRepGraph_Iterator (which iterates definitions without context),
-//! BRepGraph_Explorer visits each **occurrence** - if Edge[5] is reachable
-//! through Face[0] and Face[1], it is visited twice with different paths.
+//! Unlike the definition-only BRepGraph_Iterator, BRepGraph_Explorer visits
+//! each **occurrence** — if Edge[5] is reachable through Face[0] and Face[1],
+//! it is visited twice with different accumulated transforms.
 //!
 //! The explorer handles all hierarchy levels uniformly: assembly occurrences,
 //! compound containers, topology entities, free children, and direct face vertices.
 //!
-//! ## When to use Explorer vs PathView
-//! - **Explorer**: enumerate all occurrences of a target kind under a root,
-//!   with composed Location and Orientation available at each step. Best for
-//!   bulk traversal (e.g., "visit every Edge in a Solid").
-//! - **PathView**: query specific paths, compose global placement for a known
-//!   occurrence, find all paths to a node, or perform assembly-level queries
-//!   (products, occurrences, common ancestor). Best for targeted lookups.
+//! ## Performance
+//! Memory usage is O(depth) — typically 8-10 stack frames. No pre-collection
+//! of results. Each call to Next() advances the DFS to find the next match.
+//!
+//! ## Cumulative location/orientation
+//! By default, locations and orientations are composed from root to leaf
+//! (like TopoDS_Iterator with cumOri/cumLoc=true). Pass theCumLoc=false
+//! or theCumOri=false to disable propagation.
 //!
 //! ## Usage
 //! @code
 //!   for (BRepGraph_Explorer anExp(aGraph, BRepGraph_SolidId(0),
-//!                                  BRepGraph_NodeId::Kind::Edge);
+//!                                  BRepGraph_NodeId::Kind::Face);
 //!        anExp.More(); anExp.Next())
 //!   {
-//!     BRepGraph_NodeId anEdge = anExp.Current();
-//!     TopLoc_Location  aLoc   = anExp.Location();
+//!     BRepGraph_NodeId    aFace = anExp.Current();
+//!     TopLoc_Location     aLoc  = anExp.Location();     // O(1)
+//!     TopAbs_Orientation  anOri = anExp.Orientation();   // O(1)
 //!   }
 //! @endcode
 class BRepGraph_Explorer
@@ -74,42 +77,64 @@ public:
                                      const BRepGraph_ProductId theProduct,
                                      BRepGraph_NodeId::Kind    theTargetKind);
 
+  //! Explore from a topology root with control over location/orientation accumulation.
+  //! @param[in] theGraph      source graph
+  //! @param[in] theRoot       root node to start traversal
+  //! @param[in] theTargetKind kind of entities to visit
+  //! @param[in] theCumLoc     if true, compose locations during traversal
+  //! @param[in] theCumOri     if true, compose orientations during traversal
+  Standard_EXPORT BRepGraph_Explorer(const BRepGraph&       theGraph,
+                                     const BRepGraph_NodeId theRoot,
+                                     BRepGraph_NodeId::Kind theTargetKind,
+                                     bool                   theCumLoc,
+                                     bool                   theCumOri);
+
+  //! Explore from a Product with control over location/orientation accumulation.
+  //! @param[in] theGraph      source graph
+  //! @param[in] theProduct    typed product identifier
+  //! @param[in] theTargetKind kind of entities to visit
+  //! @param[in] theCumLoc     if true, compose locations during traversal
+  //! @param[in] theCumOri     if true, compose orientations during traversal
+  Standard_EXPORT BRepGraph_Explorer(const BRepGraph&          theGraph,
+                                     const BRepGraph_ProductId theProduct,
+                                     BRepGraph_NodeId::Kind    theTargetKind,
+                                     bool                      theCumLoc,
+                                     bool                      theCumOri);
+
   //! Returns true if there are more entities to visit.
-  [[nodiscard]] bool More() const { return myCurrent < myResults.Length(); }
+  [[nodiscard]] bool More() const { return myHasMore; }
 
   //! Advance to the next entity occurrence.
-  void Next() { ++myCurrent; }
+  Standard_EXPORT void Next();
 
-  //! The full path from root to current entity occurrence.
-  [[nodiscard]] const BRepGraph_TopologyPath& CurrentPath() const
-  {
-    return myResults.Value(myCurrent).Path;
-  }
+  //! Build the topology path from root to current match.
+  //! Reconstructed on demand from the DFS stack — no stored paths.
+  //! @return topology path (by value)
+  [[nodiscard]] Standard_EXPORT BRepGraph_TopologyPath CurrentPath() const;
 
-  //! Definition NodeId at the path leaf (cached, O(1)).
-  [[nodiscard]] BRepGraph_NodeId Current() const { return myResults.Value(myCurrent).Leaf; }
+  //! Definition NodeId at the current match leaf (O(1)).
+  [[nodiscard]] BRepGraph_NodeId Current() const { return myCurrent; }
 
-  //! Composed location from the current path (all levels).
-  [[nodiscard]] Standard_EXPORT TopLoc_Location Location() const;
+  //! Composed location from root to the current match (O(1)).
+  [[nodiscard]] const TopLoc_Location& Location() const { return myLocation; }
 
-  //! Composed orientation from the current path (all levels).
-  [[nodiscard]] Standard_EXPORT TopAbs_Orientation Orientation() const;
+  //! Composed orientation from root to the current match (O(1)).
+  [[nodiscard]] TopAbs_Orientation Orientation() const { return myOrientation; }
 
   //! Location composed from root to the first step matching theKind.
+  //! Scans the DFS stack — O(depth).
   [[nodiscard]] Standard_EXPORT TopLoc_Location
     LocationOf(const BRepGraph_NodeId::Kind theKind) const;
 
   //! Entity at the first step matching theKind.
+  //! Scans the DFS stack — O(depth).
   [[nodiscard]] Standard_EXPORT BRepGraph_NodeId NodeOf(const BRepGraph_NodeId::Kind theKind) const;
 
-  //! Location at step theLevel (0-based).
+  //! Location at step theLevel (0-based). O(1).
   [[nodiscard]] Standard_EXPORT TopLoc_Location LocationAt(const int theLevel) const;
 
-  //! Entity at step theLevel.
+  //! Entity at step theLevel. O(1).
   [[nodiscard]] Standard_EXPORT BRepGraph_NodeId NodeAt(const int theLevel) const;
-
-  //! Number of entity occurrences found.
-  [[nodiscard]] int NbFound() const { return myResults.Length(); }
 
   //! Reinitialize with new root and target kind.
   Standard_EXPORT void Init(const BRepGraph&       theGraph,
@@ -121,25 +146,66 @@ public:
                             const BRepGraph_ProductId theProduct,
                             BRepGraph_NodeId::Kind    theTargetKind);
 
-private:
-  //! Recursive traversal building paths.
-  //! @param[in] theDepthBudget remaining recursion budget (derived from total entity count)
-  void explore(const BRepGraph&              theGraph,
-               BRepGraph_NodeId::Kind        theTargetKind,
-               BRepGraph_NodeId              theCurrentNode,
-               const BRepGraph_TopologyPath& thePath,
-               const int                     theDepthBudget);
+  //! Reinitialize with new root, target kind, and accumulation flags.
+  Standard_EXPORT void Init(const BRepGraph&       theGraph,
+                            const BRepGraph_NodeId theRoot,
+                            BRepGraph_NodeId::Kind theTargetKind,
+                            bool                   theCumLoc,
+                            bool                   theCumOri);
 
-  //! Result entry pairing a path with its pre-resolved leaf node.
-  struct ExplorerResult
+  //! Reinitialize with product root, target kind, and accumulation flags.
+  Standard_EXPORT void Init(const BRepGraph&          theGraph,
+                            const BRepGraph_ProductId theProduct,
+                            BRepGraph_NodeId::Kind    theTargetKind,
+                            bool                      theCumLoc,
+                            bool                      theCumOri);
+
+private:
+  //! DFS stack frame.
+  struct StackFrame
   {
-    BRepGraph_TopologyPath Path;
-    BRepGraph_NodeId       Leaf;
+    BRepGraph_NodeId   Node;                                //!< Entity at this depth
+    int                NextChildIdx    = 0;                 //!< Next child ref index to visit
+    int                StepFromParent  = -1;                //!< Step index from parent (-1 for root)
+    TopLoc_Location    AccLocation;                         //!< Accumulated location (root to this node)
+    TopAbs_Orientation AccOrientation  = TopAbs_FORWARD;    //!< Accumulated orientation (root to this node)
   };
 
-  const BRepGraph*                   myGraph = nullptr;
-  NCollection_Vector<ExplorerResult> myResults;
-  int                                myCurrent = 0;
+  //! Advance the DFS to find the next match.
+  void advance();
+
+  //! Resolve 1:1 transitions (CoEdge->Edge, Occurrence->Product, Product(part)->ShapeRoot).
+  //! Updates theNode, theLoc, theOri in-place.
+  void resolve1to1(BRepGraph_NodeId&   theNode,
+                   TopLoc_Location&    theLoc,
+                   TopAbs_Orientation& theOri) const;
+
+  //! True if entities of theParentKind can contain theTargetKind in their child hierarchy.
+  static bool canContainTarget(BRepGraph_NodeId::Kind theParentKind,
+                               BRepGraph_NodeId::Kind theTargetKind);
+
+  //! Push a new stack frame (reuses vector slots to avoid reallocation).
+  void pushFrame(const StackFrame& theFrame);
+
+  //! Pop the top stack frame.
+  void popFrame();
+
+  //! Access top frame.
+  StackFrame& topFrame() { return myStack.ChangeValue(myStackTop); }
+  const StackFrame& topFrame() const { return myStack.Value(myStackTop); }
+
+  const BRepGraph*               myGraph       = nullptr;
+  BRepGraph_NodeId::Kind         myTargetKind  = BRepGraph_NodeId::Kind::Vertex;
+  NCollection_Vector<StackFrame> myStack{16};     //!< DFS stack (block size 16)
+  int                            myStackTop    = -1; //!< Top of stack index (-1 = empty)
+  BRepGraph_NodeId               myCurrent;          //!< Current match leaf
+  int                            myMatchStep   = -1; //!< Step index of match within top frame's children
+  TopLoc_Location                myLocation;         //!< Accumulated location at current match
+  TopAbs_Orientation             myOrientation = TopAbs_FORWARD; //!< Accumulated orientation at match
+  bool                           myHasMore     = false;
+  bool                           myCumLoc      = true;  //!< Accumulate locations
+  bool                           myCumOri      = true;  //!< Accumulate orientations
+  BRepGraph_NodeId               myRoot;               //!< Root for path reconstruction
 };
 
 #endif // _BRepGraph_Explorer_HeaderFile

@@ -100,9 +100,12 @@ TEST(BRepGraph_ExplorerTest, Box_EdgeOccurrences_Count24)
   aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  BRepGraph_Explorer anExp(aGraph, BRepGraph_SolidId(0), BRepGraph_NodeId::Kind::Edge);
+  int aCount = 0;
+  for (BRepGraph_Explorer anExp(aGraph, BRepGraph_SolidId(0), BRepGraph_NodeId::Kind::Edge);
+       anExp.More(); anExp.Next())
+    ++aCount;
   // 12 edges x 2 faces each = 24 edge occurrences.
-  EXPECT_EQ(anExp.NbFound(), 24);
+  EXPECT_EQ(aCount, 24);
 }
 
 TEST(BRepGraph_ExplorerTest, Box_FaceOccurrences_Count6)
@@ -111,8 +114,11 @@ TEST(BRepGraph_ExplorerTest, Box_FaceOccurrences_Count6)
   aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  BRepGraph_Explorer anExp(aGraph, BRepGraph_SolidId(0), BRepGraph_NodeId::Kind::Face);
-  EXPECT_EQ(anExp.NbFound(), 6);
+  int aFaceCount = 0;
+  for (BRepGraph_Explorer anExp(aGraph, BRepGraph_SolidId(0), BRepGraph_NodeId::Kind::Face);
+       anExp.More(); anExp.Next())
+    ++aFaceCount;
+  EXPECT_EQ(aFaceCount, 6);
 }
 
 TEST(BRepGraph_ExplorerTest, Box_VertexOccurrences)
@@ -121,13 +127,16 @@ TEST(BRepGraph_ExplorerTest, Box_VertexOccurrences)
   aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  BRepGraph_Explorer anExp(aGraph, BRepGraph_SolidId(0), BRepGraph_NodeId::Kind::Vertex);
-  EXPECT_GT(anExp.NbFound(), 0);
-
   // Count unique vertices.
+  int                  aCount = 0;
   NCollection_Map<int> aVisited;
-  for (; anExp.More(); anExp.Next())
+  for (BRepGraph_Explorer anExp(aGraph, BRepGraph_SolidId(0), BRepGraph_NodeId::Kind::Vertex);
+       anExp.More(); anExp.Next())
+  {
     aVisited.Add(anExp.Current().Index);
+    ++aCount;
+  }
+  EXPECT_GT(aCount, 0);
   EXPECT_EQ(aVisited.Extent(), 8);
 }
 
@@ -137,8 +146,11 @@ TEST(BRepGraph_ExplorerTest, Face_EdgeOccurrences_4)
   aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  BRepGraph_Explorer anExp(aGraph, BRepGraph_FaceId(0), BRepGraph_NodeId::Kind::Edge);
-  EXPECT_EQ(anExp.NbFound(), 4);
+  int aCount = 0;
+  for (BRepGraph_Explorer anExp(aGraph, BRepGraph_FaceId(0), BRepGraph_NodeId::Kind::Edge);
+       anExp.More(); anExp.Next())
+    ++aCount;
+  EXPECT_EQ(aCount, 4);
 }
 
 TEST(BRepGraph_ExplorerTest, InvalidRoot_Empty)
@@ -148,7 +160,7 @@ TEST(BRepGraph_ExplorerTest, InvalidRoot_Empty)
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_Explorer anExp(aGraph, BRepGraph_NodeId(), BRepGraph_NodeId::Kind::Edge);
-  EXPECT_EQ(anExp.NbFound(), 0);
+  EXPECT_FALSE(anExp.More());
 }
 
 TEST(BRepGraph_ExplorerTest, RootEqualsTarget_ReturnsSelf)
@@ -158,8 +170,71 @@ TEST(BRepGraph_ExplorerTest, RootEqualsTarget_ReturnsSelf)
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_Explorer anExp(aGraph, BRepGraph_FaceId(0), BRepGraph_NodeId::Kind::Face);
-  EXPECT_EQ(anExp.NbFound(), 1);
+  ASSERT_TRUE(anExp.More());
   EXPECT_EQ(anExp.Current(), BRepGraph_FaceId(0));
+  anExp.Next();
+  EXPECT_FALSE(anExp.More());
+}
+
+// --- Cached location/orientation tests ---
+
+TEST(BRepGraph_ExplorerTest, CachedLocation_MatchesPathView)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  // Verify cached Location() matches PathView::GlobalLocation() for every edge occurrence.
+  for (BRepGraph_Explorer anExp(aGraph, BRepGraph_SolidId(0), BRepGraph_NodeId::Kind::Edge);
+       anExp.More(); anExp.Next())
+  {
+    TopLoc_Location aCached  = anExp.Location();
+    TopLoc_Location aFromPV  = aGraph.Paths().GlobalLocation(anExp.CurrentPath());
+    EXPECT_TRUE(aCached.IsEqual(aFromPV));
+  }
+}
+
+TEST(BRepGraph_ExplorerTest, CachedOrientation_MatchesPathView)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  for (BRepGraph_Explorer anExp(aGraph, BRepGraph_SolidId(0), BRepGraph_NodeId::Kind::Edge);
+       anExp.More(); anExp.Next())
+  {
+    TopAbs_Orientation aCached = anExp.Orientation();
+    TopAbs_Orientation aFromPV = aGraph.Paths().GlobalOrientation(anExp.CurrentPath());
+    EXPECT_EQ(aCached, aFromPV);
+  }
+}
+
+TEST(BRepGraph_ExplorerTest, NoCumLoc_IdentityLocation)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  for (BRepGraph_Explorer anExp(aGraph, BRepGraph_SolidId(0), BRepGraph_NodeId::Kind::Edge,
+                                false, true);
+       anExp.More(); anExp.Next())
+  {
+    EXPECT_TRUE(anExp.Location().IsIdentity());
+  }
+}
+
+TEST(BRepGraph_ExplorerTest, NoCumOri_ForwardOrientation)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  for (BRepGraph_Explorer anExp(aGraph, BRepGraph_SolidId(0), BRepGraph_NodeId::Kind::Edge,
+                                true, false);
+       anExp.More(); anExp.Next())
+  {
+    EXPECT_EQ(anExp.Orientation(), TopAbs_FORWARD);
+  }
 }
 
 // --- Path-based composition tests ---
@@ -174,8 +249,7 @@ TEST(BRepGraph_ExplorerTest, GlobalLocation_Box_Identity)
   BRepGraph_Explorer anExp(aGraph, BRepGraph_SolidId(0), BRepGraph_NodeId::Kind::Edge);
   for (; anExp.More(); anExp.Next())
   {
-    TopLoc_Location aLoc = aGraph.Paths().GlobalLocation(anExp.CurrentPath());
-    EXPECT_TRUE(aLoc.IsIdentity());
+    EXPECT_TRUE(anExp.Location().IsIdentity());
   }
 }
 
@@ -188,7 +262,7 @@ TEST(BRepGraph_ExplorerTest, GlobalOrientation_BoxEdges_ForwardOrReversed)
   BRepGraph_Explorer anExp(aGraph, BRepGraph_SolidId(0), BRepGraph_NodeId::Kind::Edge);
   for (; anExp.More(); anExp.Next())
   {
-    TopAbs_Orientation anOri = aGraph.Paths().GlobalOrientation(anExp.CurrentPath());
+    TopAbs_Orientation anOri = anExp.Orientation();
     EXPECT_TRUE(anOri == TopAbs_FORWARD || anOri == TopAbs_REVERSED);
   }
 }
@@ -218,7 +292,7 @@ TEST(BRepGraph_ExplorerTest, NodeAt_IntermediateDepths)
   // Get a path to an edge.
   BRepGraph_Explorer anExp(aGraph, BRepGraph_SolidId(0), BRepGraph_NodeId::Kind::Edge);
   ASSERT_TRUE(anExp.More());
-  const BRepGraph_TopologyPath& aPath = anExp.CurrentPath();
+  const BRepGraph_TopologyPath aPath = anExp.CurrentPath();
 
   // Level 0 = shell, level 1 = face, level 2 = wire, level 3 = coedge (-> edge via 1:1).
   EXPECT_EQ(aPath.Depth(), 4); // 4 steps: shell, face, wire, coedge
@@ -244,7 +318,7 @@ TEST(BRepGraph_ExplorerTest, FindLevel_ByKind)
 
   BRepGraph_Explorer anExp(aGraph, BRepGraph_SolidId(0), BRepGraph_NodeId::Kind::Edge);
   ASSERT_TRUE(anExp.More());
-  const BRepGraph_TopologyPath& aPath = anExp.CurrentPath();
+  const BRepGraph_TopologyPath aPath = anExp.CurrentPath();
 
   int aFaceLevel = aGraph.Paths().FindLevel(aPath, BRepGraph_NodeId::Kind::Face);
   EXPECT_GE(aFaceLevel, 0);
@@ -261,7 +335,7 @@ TEST(BRepGraph_ExplorerTest, Truncated_ToFace)
 
   BRepGraph_Explorer anExp(aGraph, BRepGraph_SolidId(0), BRepGraph_NodeId::Kind::Edge);
   ASSERT_TRUE(anExp.More());
-  const BRepGraph_TopologyPath& aPath = anExp.CurrentPath();
+  const BRepGraph_TopologyPath aPath = anExp.CurrentPath();
 
   // Truncate to 2 steps (shell + face).
   BRepGraph_TopologyPath aTruncated = aGraph.Paths().Truncated(aPath, 2);
@@ -316,8 +390,11 @@ TEST(BRepGraph_ExplorerTest, Compound_FaceCount)
   aGraph.Build(aComp);
   ASSERT_TRUE(aGraph.IsDone());
 
-  BRepGraph_Explorer anExp(aGraph, BRepGraph_CompoundId(0), BRepGraph_NodeId::Kind::Face);
-  EXPECT_EQ(anExp.NbFound(), 12); // 6 + 6 faces
+  int aCount = 0;
+  for (BRepGraph_Explorer anExp(aGraph, BRepGraph_CompoundId(0), BRepGraph_NodeId::Kind::Face);
+       anExp.More(); anExp.Next())
+    ++aCount;
+  EXPECT_EQ(aCount, 12); // 6 + 6 faces
 }
 
 // --- Reverse path discovery tests ---
@@ -413,7 +490,7 @@ TEST(BRepGraph_ExplorerTest, PathsTo_MatchesExplorer_WhenEarlierCompoundRefRemov
        anExp.More();
        anExp.Next())
   {
-    const BRepGraph_TopologyPath& aPath = anExp.CurrentPath();
+    const BRepGraph_TopologyPath aPath = anExp.CurrentPath();
     if (aPath.Depth() > 0 && aGraph.Paths().NodeAt(aPath, 0) == aSecondChild)
     {
       aExpectedPath = aPath;
@@ -675,8 +752,11 @@ TEST(BRepGraph_ExplorerTest, DeepCompound_NoStackOverflow)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Should not crash (stack overflow) and should find the box's faces.
-  BRepGraph_Explorer anExp(aGraph, BRepGraph_CompoundId(0), BRepGraph_NodeId::Kind::Face);
-  EXPECT_EQ(anExp.NbFound(), 6);
+  int aCount = 0;
+  for (BRepGraph_Explorer anExp(aGraph, BRepGraph_CompoundId(0), BRepGraph_NodeId::Kind::Face);
+       anExp.More(); anExp.Next())
+    ++aCount;
+  EXPECT_EQ(aCount, 6);
 }
 
 TEST(BRepGraph_ExplorerTest, Init_ResetAndReexplore)
@@ -685,12 +765,18 @@ TEST(BRepGraph_ExplorerTest, Init_ResetAndReexplore)
   aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
+  int aFaceCount = 0;
   BRepGraph_Explorer anExp(aGraph, BRepGraph_SolidId(0), BRepGraph_NodeId::Kind::Face);
-  EXPECT_EQ(anExp.NbFound(), 6);
+  for (; anExp.More(); anExp.Next())
+    ++aFaceCount;
+  EXPECT_EQ(aFaceCount, 6);
 
   // Re-init targeting edges.
   anExp.Init(aGraph, BRepGraph_SolidId(0), BRepGraph_NodeId::Kind::Edge);
-  EXPECT_EQ(anExp.NbFound(), 24);
+  int aEdgeCount = 0;
+  for (; anExp.More(); anExp.Next())
+    ++aEdgeCount;
+  EXPECT_EQ(aEdgeCount, 24);
 }
 
 // --- Reverse walk with Compound/CompSolid parents ---
@@ -738,8 +824,11 @@ TEST(BRepGraph_ExplorerTest, NodeLocations_CompoundChild_ComposedLocation)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Explorer from compound root should find all faces.
-  BRepGraph_Explorer anExp(aGraph, BRepGraph_CompoundId(0), BRepGraph_NodeId::Kind::Face);
-  EXPECT_EQ(anExp.NbFound(), 6);
+  int aCount = 0;
+  for (BRepGraph_Explorer anExp(aGraph, BRepGraph_CompoundId(0), BRepGraph_NodeId::Kind::Face);
+       anExp.More(); anExp.Next())
+    ++aCount;
+  EXPECT_EQ(aCount, 6);
 }
 
 TEST(BRepGraph_ExplorerTest, PathsTo_ShellInCompound_CompoundRoot)
@@ -832,7 +921,7 @@ TEST(BRepGraph_ExplorerTest, OrientationAt_IntermediateLevel)
 
   BRepGraph_Explorer anExp(aGraph, BRepGraph_SolidId(0), BRepGraph_NodeId::Kind::Edge);
   ASSERT_TRUE(anExp.More());
-  const BRepGraph_TopologyPath& aPath = anExp.CurrentPath();
+  const BRepGraph_TopologyPath aPath = anExp.CurrentPath();
 
   TopAbs_Orientation anOri = aGraph.Paths().OrientationAt(aPath, 0);
   EXPECT_TRUE(anOri == TopAbs_FORWARD || anOri == TopAbs_REVERSED);
@@ -863,7 +952,7 @@ TEST(BRepGraph_ExplorerTest, DepthOfKind_Face_CountsOne)
 
   BRepGraph_Explorer anExp(aGraph, BRepGraph_SolidId(0), BRepGraph_NodeId::Kind::Edge);
   ASSERT_TRUE(anExp.More());
-  const BRepGraph_TopologyPath& aPath = anExp.CurrentPath();
+  const BRepGraph_TopologyPath aPath = anExp.CurrentPath();
 
   // Path Solid->Shell->Face->Wire->CoEdge(->Edge) should have exactly 1 Face.
   EXPECT_EQ(aGraph.Paths().DepthOfKind(aPath, BRepGraph_NodeId::Kind::Face), 1);
@@ -914,7 +1003,7 @@ TEST(BRepGraph_ExplorerTest, IsAncestorOf_TrueForPrefix)
 
   BRepGraph_Explorer anExp(aGraph, BRepGraph_SolidId(0), BRepGraph_NodeId::Kind::Edge);
   ASSERT_TRUE(anExp.More());
-  const BRepGraph_TopologyPath& aEdgePath = anExp.CurrentPath();
+  const BRepGraph_TopologyPath aEdgePath = anExp.CurrentPath();
 
   // Truncated to face level should be an ancestor.
   BRepGraph_TopologyPath aFacePath = aEdgePath.Truncated(2);
@@ -953,7 +1042,7 @@ TEST(BRepGraph_ExplorerTest, AllNodesOnPath_BoxEdge_CorrectKinds)
 
   BRepGraph_Explorer anExp(aGraph, BRepGraph_SolidId(0), BRepGraph_NodeId::Kind::Edge);
   ASSERT_TRUE(anExp.More());
-  const BRepGraph_TopologyPath& aPath = anExp.CurrentPath();
+  const BRepGraph_TopologyPath aPath = anExp.CurrentPath();
 
   NCollection_Vector<BRepGraph_NodeId> aNodes = aGraph.Paths().AllNodesOnPath(aPath);
   ASSERT_GT(aNodes.Length(), 0);
@@ -1048,4 +1137,61 @@ TEST(BRepGraph_ExplorerTest, ReverseWalkPaths_DepthBudgetZero_ReturnsEmpty)
   NCollection_Vector<BRepGraph_TopologyPath> aVertex =
     aGraph.Paths().PathsTo(BRepGraph_VertexId(0));
   EXPECT_GT(aVertex.Length(), 0);
+}
+
+// ============ Regression tests: CoEdge/Occurrence target reachability ============
+
+TEST(BRepGraph_ExplorerTest, CoEdgeTarget_Reachable)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  // CoEdge target from Solid must find all coedges (24 edge occurrences = 24 coedges).
+  int aCount = 0;
+  for (BRepGraph_Explorer anExp(aGraph, BRepGraph_SolidId(0), BRepGraph_NodeId::Kind::CoEdge);
+       anExp.More(); anExp.Next())
+  {
+    EXPECT_EQ(anExp.Current().NodeKind, BRepGraph_NodeId::Kind::CoEdge);
+    ++aCount;
+  }
+  EXPECT_EQ(aCount, 24);
+}
+
+TEST(BRepGraph_ExplorerTest, CoEdgeTarget_FromFace_Count4)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  int aCount = 0;
+  for (BRepGraph_Explorer anExp(aGraph, BRepGraph_FaceId(0), BRepGraph_NodeId::Kind::CoEdge);
+       anExp.More(); anExp.Next())
+  {
+    EXPECT_EQ(anExp.Current().NodeKind, BRepGraph_NodeId::Kind::CoEdge);
+    ++aCount;
+  }
+  EXPECT_EQ(aCount, 4);
+}
+
+TEST(BRepGraph_ExplorerTest, HighFanout_CompletesAllChildren)
+{
+  // Build a compound with many children to verify no premature traversal termination.
+  TopoDS_Compound aComp;
+  BRep_Builder    aBB;
+  aBB.MakeCompound(aComp);
+  constexpr int THE_NB_CHILDREN = 500;
+  for (int i = 0; i < THE_NB_CHILDREN; ++i)
+    aBB.Add(aComp, BRepPrimAPI_MakeBox(1, 1, 1).Shape());
+
+  BRepGraph aGraph;
+  aGraph.Build(aComp);
+  ASSERT_TRUE(aGraph.IsDone());
+
+  int aFaceCount = 0;
+  for (BRepGraph_Explorer anExp(aGraph, BRepGraph_CompoundId(0), BRepGraph_NodeId::Kind::Face);
+       anExp.More(); anExp.Next())
+    ++aFaceCount;
+  // Each box has 6 faces.
+  EXPECT_EQ(aFaceCount, THE_NB_CHILDREN * 6);
 }
