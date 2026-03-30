@@ -61,8 +61,8 @@ public:
 
   //! @name Assembly classification and traversal
 
-  //! Return NodeIds of all root products (products not referenced by an active occurrence).
-  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> RootProducts() const;
+  //! Return typed identifiers of all root products (products not referenced by an active occurrence).
+  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_ProductId> RootProducts() const;
 
   //! True if the product is an assembly (has child occurrences, no topology root).
   //! @param[in] theProduct typed product definition identifier
@@ -82,11 +82,11 @@ public:
   //! @param[in] theProduct typed product definition identifier
   [[nodiscard]] Standard_EXPORT int NbComponents(const BRepGraph_ProductId theProduct) const;
 
-  //! Return the i-th active child occurrence NodeId of a product.
+  //! Return the i-th active child occurrence identifier of a product.
   //! @param[in] theProduct typed product definition identifier
   //! @param[in] theComponentIdx zero-based active occurrence index within the product
-  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId Component(const BRepGraph_ProductId theProduct,
-                                                           const int theComponentIdx) const;
+  [[nodiscard]] Standard_EXPORT BRepGraph_OccurrenceId Component(const BRepGraph_ProductId theProduct,
+                                                                 const int theComponentIdx) const;
 
   //! Global location at the leaf of the path (all levels composed in root-to-leaf order).
   //! Handles assembly occurrences, compound containers, and topology uniformly.

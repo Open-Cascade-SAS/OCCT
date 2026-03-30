@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-NCollection_Vector<BRepGraph_NodeId> BRepGraph::PathView::RootProducts() const
+NCollection_Vector<BRepGraph_ProductId> BRepGraph::PathView::RootProducts() const
 {
   const BRepGraphInc_Storage& aStorage    = myGraph->myData->myIncStorage;
   const int                   aNbProducts = aStorage.NbProducts();
@@ -39,7 +39,7 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::PathView::RootProducts() const
     }
   }
 
-  NCollection_Vector<BRepGraph_NodeId> aRoots;
+  NCollection_Vector<BRepGraph_ProductId> aRoots;
   for (int aProdIdx = 0; aProdIdx < aNbProducts; ++aProdIdx)
   {
     const BRepGraphInc::ProductDef& aProduct = aStorage.Product(BRepGraph_ProductId(aProdIdx));
@@ -49,7 +49,7 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph::PathView::RootProducts() const
     }
     if (!aReferencedProducts.Contains(aProdIdx))
     {
-      aRoots.Append(BRepGraph_NodeId::Product(aProdIdx));
+      aRoots.Append(BRepGraph_ProductId(aProdIdx));
     }
   }
   return aRoots;
@@ -142,19 +142,19 @@ int BRepGraph::PathView::NbComponents(const BRepGraph_ProductId theProduct) cons
 
 //=================================================================================================
 
-BRepGraph_NodeId BRepGraph::PathView::Component(const BRepGraph_ProductId theProduct,
-                                                const int                 theComponentIdx) const
+BRepGraph_OccurrenceId BRepGraph::PathView::Component(const BRepGraph_ProductId theProduct,
+                                                      const int                 theComponentIdx) const
 {
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
   if (!theProduct.IsValid(aStorage.NbProducts()) || theComponentIdx < 0)
   {
-    return BRepGraph_NodeId();
+    return BRepGraph_OccurrenceId();
   }
 
   const BRepGraphInc::ProductDef& aProductDef = aStorage.Product(theProduct);
   if (aProductDef.IsRemoved)
   {
-    return BRepGraph_NodeId();
+    return BRepGraph_OccurrenceId();
   }
 
   int anActiveIndex = 0;
@@ -183,7 +183,7 @@ BRepGraph_NodeId BRepGraph::PathView::Component(const BRepGraph_ProductId thePro
     }
     ++anActiveIndex;
   }
-  return BRepGraph_NodeId();
+  return BRepGraph_OccurrenceId();
 }
 
 //=================================================================================================

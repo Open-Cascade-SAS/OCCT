@@ -301,8 +301,8 @@ TEST(BRepGraph_RefIdTest, RefUIDReverseLookupStaysCurrentAfterProgrammaticAdd)
 {
   BRepGraph aGraph;
 
-  const BRepGraph_NodeId aV0 = aGraph.Builder().AddVertex(gp_Pnt(0.0, 0.0, 0.0), 0.001);
-  const BRepGraph_NodeId aV1 = aGraph.Builder().AddVertex(gp_Pnt(1.0, 0.0, 0.0), 0.001);
+  const BRepGraph_VertexId aV0 = aGraph.Builder().AddVertex(gp_Pnt(0.0, 0.0, 0.0), 0.001);
+  const BRepGraph_VertexId aV1 = aGraph.Builder().AddVertex(gp_Pnt(1.0, 0.0, 0.0), 0.001);
   (void)aGraph.Builder().AddEdge(aV0, aV1, occ::handle<Geom_Curve>(), 0.0, 1.0, 0.001);
 
   const BRepGraph_RefId  aFirstRefId = BRepGraph_RefId::Vertex(0);
@@ -310,8 +310,8 @@ TEST(BRepGraph_RefIdTest, RefUIDReverseLookupStaysCurrentAfterProgrammaticAdd)
   ASSERT_TRUE(aFirstUID.IsValid());
   ASSERT_EQ(aGraph.Refs().RefIdFrom(aFirstUID), aFirstRefId);
 
-  const BRepGraph_NodeId aV2 = aGraph.Builder().AddVertex(gp_Pnt(2.0, 0.0, 0.0), 0.001);
-  const BRepGraph_NodeId aV3 = aGraph.Builder().AddVertex(gp_Pnt(3.0, 0.0, 0.0), 0.001);
+  const BRepGraph_VertexId aV2 = aGraph.Builder().AddVertex(gp_Pnt(2.0, 0.0, 0.0), 0.001);
+  const BRepGraph_VertexId aV3 = aGraph.Builder().AddVertex(gp_Pnt(3.0, 0.0, 0.0), 0.001);
   (void)aGraph.Builder().AddEdge(aV2, aV3, occ::handle<Geom_Curve>(), 0.0, 1.0, 0.001);
 
   const BRepGraph_RefId  aSecondRefId = BRepGraph_RefId::Vertex(2);

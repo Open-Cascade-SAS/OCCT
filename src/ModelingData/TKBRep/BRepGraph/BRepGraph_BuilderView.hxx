@@ -51,21 +51,21 @@ public:
   //! Add a vertex definition to the graph.
   //! @param[in] thePoint     3D coordinates
   //! @param[in] theTolerance vertex tolerance
-  //! @return NodeId of the new vertex definition
-  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId AddVertex(const gp_Pnt& thePoint,
-                                                           const double  theTolerance);
+  //! @return typed vertex definition identifier
+  [[nodiscard]] Standard_EXPORT BRepGraph_VertexId AddVertex(const gp_Pnt& thePoint,
+                                                             const double  theTolerance);
 
   //! Add an edge definition to the graph.
-  //! @param[in] theStartVtx  start vertex def NodeId
-  //! @param[in] theEndVtx    end vertex def NodeId
+  //! @param[in] theStartVtx  typed start vertex definition identifier
+  //! @param[in] theEndVtx    typed end vertex definition identifier
   //! @param[in] theCurve     3D curve (may be null for degenerate edges)
   //! @param[in] theFirst     first curve parameter
   //! @param[in] theLast      last curve parameter
   //! @param[in] theTolerance edge tolerance
-  //! @return NodeId of the new edge definition, or invalid if either referenced
-  //!         vertex id is invalid, removed, or not a vertex definition
-  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId AddEdge(const BRepGraph_NodeId         theStartVtx,
-                                                         const BRepGraph_NodeId         theEndVtx,
+  //! @return typed edge definition identifier, or invalid if either referenced
+  //!         vertex id is out of range or removed
+  [[nodiscard]] Standard_EXPORT BRepGraph_EdgeId AddEdge(const BRepGraph_VertexId       theStartVtx,
+                                                         const BRepGraph_VertexId       theEndVtx,
                                                          const occ::handle<Geom_Curve>& theCurve,
                                                          const double                   theFirst,
                                                          const double                   theLast,
@@ -74,99 +74,99 @@ public:
   //! Add a wire definition to the graph.
   //! Each pair is (EdgeDefId, OrientationInWire).
   //! @param[in] theEdges ordered edge entries
-  //! @return NodeId of the new wire definition, or invalid if any referenced
+  //! @return typed wire definition identifier, or invalid if any referenced
   //!         edge entry is invalid
-  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId
-    AddWire(const NCollection_Vector<std::pair<BRepGraph_NodeId, TopAbs_Orientation>>& theEdges);
+  [[nodiscard]] Standard_EXPORT BRepGraph_WireId
+    AddWire(const NCollection_Vector<std::pair<BRepGraph_EdgeId, TopAbs_Orientation>>& theEdges);
 
   //! Add a face definition to the graph.
   //! @param[in] theSurface    surface geometry
-  //! @param[in] theOuterWire  outer wire def NodeId
-  //! @param[in] theInnerWires inner wire def NodeIds
+  //! @param[in] theOuterWire  typed outer wire definition identifier
+  //! @param[in] theInnerWires typed inner wire definition identifiers
   //! @param[in] theTolerance  face tolerance
-  //! @return NodeId of the new face definition, or invalid if any referenced
-  //!         wire id is invalid, removed, or not a wire definition
-  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId
+  //! @return typed face definition identifier, or invalid if any referenced
+  //!         wire id is out of range or removed
+  [[nodiscard]] Standard_EXPORT BRepGraph_FaceId
     AddFace(const occ::handle<Geom_Surface>&            theSurface,
-            const BRepGraph_NodeId                      theOuterWire,
-            const NCollection_Vector<BRepGraph_NodeId>& theInnerWires,
+            const BRepGraph_WireId                      theOuterWire,
+            const NCollection_Vector<BRepGraph_WireId>& theInnerWires,
             const double                                theTolerance);
 
   //! Add an empty shell definition to the graph.
-  //! @return NodeId of the new shell definition
-  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId AddShell();
+  //! @return typed shell definition identifier
+  [[nodiscard]] Standard_EXPORT BRepGraph_ShellId AddShell();
 
   //! Add an empty solid definition to the graph.
-  //! @return NodeId of the new solid definition
-  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId AddSolid();
+  //! @return typed solid definition identifier
+  [[nodiscard]] Standard_EXPORT BRepGraph_SolidId AddSolid();
 
   //! Link a face to a shell.
   //! Appends FaceRef and stores its FaceRefId in shell FaceRefIds.
-  //! @param[in] theShellEntity  shell definition NodeId
-  //! @param[in] theFaceEntity   face definition NodeId
+  //! @param[in] theShellEntity  typed shell definition identifier
+  //! @param[in] theFaceEntity   typed face definition identifier
   //! @param[in] theOri       orientation of the face in the shell
-  Standard_EXPORT void AddFaceToShell(const BRepGraph_NodeId   theShellEntity,
-                                      const BRepGraph_NodeId   theFaceEntity,
+  Standard_EXPORT void AddFaceToShell(const BRepGraph_ShellId  theShellEntity,
+                                      const BRepGraph_FaceId   theFaceEntity,
                                       const TopAbs_Orientation theOri = TopAbs_FORWARD);
 
   //! Link a shell to a solid.
   //! Appends ShellRef and stores its ShellRefId in solid ShellRefIds.
-  //! @param[in] theSolidEntity  solid definition NodeId
-  //! @param[in] theShellEntity  shell definition NodeId
+  //! @param[in] theSolidEntity  typed solid definition identifier
+  //! @param[in] theShellEntity  typed shell definition identifier
   //! @param[in] theOri       orientation of the shell in the solid
-  Standard_EXPORT void AddShellToSolid(const BRepGraph_NodeId   theSolidEntity,
-                                       const BRepGraph_NodeId   theShellEntity,
+  Standard_EXPORT void AddShellToSolid(const BRepGraph_SolidId  theSolidEntity,
+                                       const BRepGraph_ShellId  theShellEntity,
                                        const TopAbs_Orientation theOri = TopAbs_FORWARD);
 
   //! Add a compound definition with child definitions.
   //! @param[in] theChildEntities child definition NodeIds
-  //! @return NodeId of the new compound definition
-  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId
+  //! @return typed compound definition identifier
+  [[nodiscard]] Standard_EXPORT BRepGraph_CompoundId
     AddCompound(const NCollection_Vector<BRepGraph_NodeId>& theChildEntities);
 
   //! Add a compsolid definition with child solid definitions.
-  //! @param[in] theSolidEntities child solid definition NodeIds
-  //! @return NodeId of the new compsolid definition
-  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId
-    AddCompSolid(const NCollection_Vector<BRepGraph_NodeId>& theSolidEntities);
+  //! @param[in] theSolidEntities typed child solid definition identifiers
+  //! @return typed compsolid definition identifier
+  [[nodiscard]] Standard_EXPORT BRepGraph_CompSolidId
+    AddCompSolid(const NCollection_Vector<BRepGraph_SolidId>& theSolidEntities);
 
   //! Add a part product with a root shape node.
   //! @param[in] theShapeRoot root topology NodeId for the part
-  //! @return NodeId of the new product definition, or invalid if the root is
+  //! @return typed product definition identifier, or invalid if the root is
   //!         not an active topology definition node
-  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId AddProduct(const BRepGraph_NodeId theShapeRoot);
+  [[nodiscard]] Standard_EXPORT BRepGraph_ProductId AddProduct(const BRepGraph_NodeId theShapeRoot);
 
   //! Add an assembly product (no root shape, has child occurrences).
-  //! @return NodeId of the new product definition
-  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId AddAssemblyProduct();
+  //! @return typed product definition identifier
+  [[nodiscard]] Standard_EXPORT BRepGraph_ProductId AddAssemblyProduct();
 
   //! Add an occurrence linking a parent product to a referenced (child) product.
   //! ParentOccurrenceIdx is set to -1 (top-level).
-  //! @param[in] theParentProduct      parent assembly product NodeId
-  //! @param[in] theReferencedProduct  child product being instantiated
+  //! @param[in] theParentProduct      typed parent assembly product identifier
+  //! @param[in] theReferencedProduct  typed child product identifier being instantiated
   //! @param[in] thePlacement          local placement relative to parent
-  //! @return NodeId of the new occurrence definition, or invalid unless the
+  //! @return typed occurrence definition identifier, or invalid unless the
   //!         parent is an active assembly product and the referenced product is active
-  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId
-    AddOccurrence(const BRepGraph_NodeId theParentProduct,
-                  const BRepGraph_NodeId theReferencedProduct,
+  [[nodiscard]] Standard_EXPORT BRepGraph_OccurrenceId
+    AddOccurrence(const BRepGraph_ProductId theParentProduct,
+                  const BRepGraph_ProductId theReferencedProduct,
                   const TopLoc_Location& thePlacement);
 
   //! Add an occurrence with an explicit parent occurrence for nested assembly chains.
   //! This establishes a tree-structured placement path for unambiguous
   //! GlobalPlacement computation even when products are shared (DAG).
-  //! @param[in] theParentProduct      parent assembly product NodeId
-  //! @param[in] theReferencedProduct  child product being instantiated
+  //! @param[in] theParentProduct      typed parent assembly product identifier
+  //! @param[in] theReferencedProduct  typed child product identifier being instantiated
   //! @param[in] thePlacement          local placement relative to parent
-  //! @param[in] theParentOccurrence   the occurrence that placed the parent product
-  //! @return NodeId of the new occurrence definition, or invalid unless the
+  //! @param[in] theParentOccurrence   typed occurrence that placed the parent product
+  //! @return typed occurrence definition identifier, or invalid unless the
   //!         parent product, referenced product, and explicit parent occurrence
   //!         form a valid active assembly chain
-  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId
-    AddOccurrence(const BRepGraph_NodeId theParentProduct,
-                  const BRepGraph_NodeId theReferencedProduct,
+  [[nodiscard]] Standard_EXPORT BRepGraph_OccurrenceId
+    AddOccurrence(const BRepGraph_ProductId theParentProduct,
+                  const BRepGraph_ProductId theReferencedProduct,
                   const TopLoc_Location& thePlacement,
-                  const BRepGraph_NodeId theParentOccurrence);
+                  const BRepGraph_OccurrenceId theParentOccurrence);
 
   //! Append a shape to the existing graph without clearing.
   //! @param[in] theShape   shape to add

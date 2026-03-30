@@ -303,33 +303,31 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_DirectWireMutation_Propa
 TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_OccurrenceMutation_PropagatesSubtreeGenToProduct)
 {
   // Build an assembly: root product + child occurrence referencing it.
-  const BRepGraph_NodeId aPartId     = BRepGraph_NodeId::Product(0);
-  const BRepGraph_NodeId aAssemblyId = myGraph.Builder().AddAssemblyProduct();
-  const BRepGraph_NodeId anOccId =
+  const BRepGraph_ProductId aPartId     = BRepGraph_ProductId(0);
+  const BRepGraph_ProductId aAssemblyId = myGraph.Builder().AddAssemblyProduct();
+  const BRepGraph_OccurrenceId anOccId =
     myGraph.Builder().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location());
   ASSERT_TRUE(anOccId.IsValid());
 
   // Verify parent product starts clean.
-  const BRepGraph_ProductId aAsmProductId(aAssemblyId.Index);
-  EXPECT_EQ(myGraph.Topo().Product(aAsmProductId).SubtreeGen, 0u);
+  EXPECT_EQ(myGraph.Topo().Product(aAssemblyId).SubtreeGen, 0u);
 
   // Mutate occurrence placement in deferred mode.
   myGraph.Builder().BeginDeferredInvalidation();
   {
     gp_Trsf aTrsf;
     aTrsf.SetTranslation(gp_Vec(100.0, 0.0, 0.0));
-    myGraph.Builder().MutOccurrence(BRepGraph_OccurrenceId(anOccId.Index))->Placement =
-      TopLoc_Location(aTrsf);
+    myGraph.Builder().MutOccurrence(anOccId)->Placement = TopLoc_Location(aTrsf);
   }
 
   // During deferred mode: occurrence OwnGen incremented, but parent product NOT yet.
-  EXPECT_GT(myGraph.Topo().Occurrence(BRepGraph_OccurrenceId(anOccId.Index)).OwnGen, 0u);
-  EXPECT_EQ(myGraph.Topo().Product(aAsmProductId).SubtreeGen, 0u);
+  EXPECT_GT(myGraph.Topo().Occurrence(anOccId).OwnGen, 0u);
+  EXPECT_EQ(myGraph.Topo().Product(aAssemblyId).SubtreeGen, 0u);
 
   myGraph.Builder().EndDeferredInvalidation();
 
   // After flush: parent assembly product must have SubtreeGen incremented exactly once.
-  EXPECT_EQ(myGraph.Topo().Product(aAsmProductId).SubtreeGen, 1u);
+  EXPECT_EQ(myGraph.Topo().Product(aAssemblyId).SubtreeGen, 1u);
   // Parent's OwnGen must remain 0 - its own data didn't change.
-  EXPECT_EQ(myGraph.Topo().Product(aAsmProductId).OwnGen, 0u);
+  EXPECT_EQ(myGraph.Topo().Product(aAssemblyId).OwnGen, 0u);
 }

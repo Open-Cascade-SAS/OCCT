@@ -404,13 +404,13 @@ TEST(BRepGraphAlgo_ValidateTest, Audit_ValidatesCoEdgeUIDsFromBuilderWireCreatio
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().NbEdges(), 0);
 
-  NCollection_Vector<std::pair<BRepGraph_NodeId, TopAbs_Orientation>> anEdges;
-  anEdges.Append(std::make_pair(BRepGraph_NodeId::Edge(0), TopAbs_FORWARD));
-  const BRepGraph_NodeId aWireId = aGraph.Builder().AddWire(anEdges);
+  NCollection_Vector<std::pair<BRepGraph_EdgeId, TopAbs_Orientation>> anEdges;
+  anEdges.Append(std::make_pair(BRepGraph_EdgeId(0), TopAbs_FORWARD));
+  const BRepGraph_WireId aWireId = aGraph.Builder().AddWire(anEdges);
   ASSERT_TRUE(aWireId.IsValid());
 
   const NCollection_Vector<BRepGraph_CoEdgeRefId> aWireRefIds =
-    coEdgeRefsOfWire(aGraph, BRepGraph_WireId(aWireId.Index));
+    coEdgeRefsOfWire(aGraph, aWireId);
   ASSERT_EQ(aWireRefIds.Length(), 1);
   const BRepGraph_NodeId aCoEdgeId =
     BRepGraph_NodeId::CoEdge(aGraph.Refs().CoEdge(aWireRefIds.Value(0)).CoEdgeDefId.Index);
@@ -447,27 +447,27 @@ TEST(BRepGraphAlgo_ValidateTest, AssemblyGraph_ValidProduct_NoIssuesInAudit)
   ASSERT_GE(aGraph.Topo().NbProducts(), 1);
 
   // Identify the auto-created part product.
-  const NCollection_Vector<BRepGraph_NodeId> aInitialRootProducts = aGraph.Paths().RootProducts();
+  const NCollection_Vector<BRepGraph_ProductId> aInitialRootProducts = aGraph.Paths().RootProducts();
   ASSERT_GT(aInitialRootProducts.Length(), 0);
-  const BRepGraph_NodeId aPartProduct = aInitialRootProducts.Value(0);
-  ASSERT_TRUE(aGraph.Paths().IsPart(BRepGraph_ProductId(aPartProduct.Index)));
+  const BRepGraph_ProductId aPartProduct = aInitialRootProducts.Value(0);
+  ASSERT_TRUE(aGraph.Paths().IsPart(aPartProduct));
 
   // Explicitly create an assembly product and add two occurrences of the part.
-  const BRepGraph_NodeId aAssemblyProduct = aGraph.Builder().AddAssemblyProduct();
+  const BRepGraph_ProductId aAssemblyProduct = aGraph.Builder().AddAssemblyProduct();
   ASSERT_TRUE(aAssemblyProduct.IsValid());
 
   gp_Trsf aTrsf;
   aTrsf.SetTranslation(gp_Vec(20.0, 0.0, 0.0));
-  const BRepGraph_NodeId anOcc1 =
+  const BRepGraph_OccurrenceId anOcc1 =
     aGraph.Builder().AddOccurrence(aAssemblyProduct, aPartProduct, TopLoc_Location());
-  const BRepGraph_NodeId anOcc2 =
+  const BRepGraph_OccurrenceId anOcc2 =
     aGraph.Builder().AddOccurrence(aAssemblyProduct, aPartProduct, TopLoc_Location(aTrsf));
   ASSERT_TRUE(anOcc1.IsValid());
   ASSERT_TRUE(anOcc2.IsValid());
 
   // Verify assembly structure.
-  EXPECT_TRUE(aGraph.Paths().IsAssembly(BRepGraph_ProductId(aAssemblyProduct.Index)));
-  EXPECT_EQ(aGraph.Paths().NbComponents(BRepGraph_ProductId(aAssemblyProduct.Index)), 2);
+  EXPECT_TRUE(aGraph.Paths().IsAssembly(aAssemblyProduct));
+  EXPECT_EQ(aGraph.Paths().NbComponents(aAssemblyProduct), 2);
 
   // Rebuild reverse index after assembly modifications.
   aGraph.Builder().CommitMutation();
@@ -533,14 +533,14 @@ TEST(BRepGraphAlgo_ValidateTest, AssemblyGraph_CorruptedOccurrenceProductDefId_D
   ASSERT_TRUE(aGraph.IsDone());
 
   // Create an assembly with one occurrence.
-  const BRepGraph_NodeId aRootAssembly = aGraph.Builder().AddAssemblyProduct();
+  const BRepGraph_ProductId aRootAssembly = aGraph.Builder().AddAssemblyProduct();
   ASSERT_TRUE(aRootAssembly.IsValid());
 
-  const NCollection_Vector<BRepGraph_NodeId> aRootProducts = aGraph.Paths().RootProducts();
-  BRepGraph_NodeId                           aPartId;
+  const NCollection_Vector<BRepGraph_ProductId> aRootProducts = aGraph.Paths().RootProducts();
+  BRepGraph_ProductId                           aPartId;
   for (int i = 0; i < aRootProducts.Length(); ++i)
   {
-    const BRepGraph_ProductId aProductId(aRootProducts.Value(i).Index);
+    const BRepGraph_ProductId aProductId = aRootProducts.Value(i);
     if (aGraph.Paths().IsPart(aProductId))
     {
       aPartId = aRootProducts.Value(i);
@@ -549,13 +549,13 @@ TEST(BRepGraphAlgo_ValidateTest, AssemblyGraph_CorruptedOccurrenceProductDefId_D
   }
   ASSERT_TRUE(aPartId.IsValid());
 
-  const BRepGraph_NodeId anOccId =
+  const BRepGraph_OccurrenceId anOccId =
     aGraph.Builder().AddOccurrence(aRootAssembly, aPartId, TopLoc_Location());
   ASSERT_TRUE(anOccId.IsValid());
 
   // Corrupt the occurrence's ProductDefId to an invalid index.
   BRepGraph_MutGuard<BRepGraphInc::OccurrenceDef> anOccDef =
-    aGraph.Builder().MutOccurrence(BRepGraph_OccurrenceId(anOccId.Index));
+    aGraph.Builder().MutOccurrence(anOccId);
   anOccDef->ProductDefId = BRepGraph_ProductId(aGraph.Topo().NbProducts() + 1);
 
   const BRepGraphAlgo_Validate::Result aAuditResult =

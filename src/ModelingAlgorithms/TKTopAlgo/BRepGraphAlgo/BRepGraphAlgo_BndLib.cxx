@@ -677,8 +677,8 @@ static void addNodeBox(const BRepGraph&       theGraph,
       const int               aNbFaces = theGraph.Topo().NbShellFaces(aShellId);
       for (int i = 0; i < aNbFaces; ++i)
       {
-        const BRepGraph_NodeId aFaceDefId = theGraph.Topo().ShellFaceEntity(aShellId, i);
-        addFaceBox(theGraph, BRepGraph_FaceId(aFaceDefId.Index), theBox, theUseTri);
+        const BRepGraph_FaceId aFaceDefId = theGraph.Topo().ShellFaceEntity(aShellId, i);
+        addFaceBox(theGraph, aFaceDefId, theBox, theUseTri);
       }
       break;
     }
@@ -771,12 +771,8 @@ static void addNodeBoxOptimal(const BRepGraph&       theGraph,
       const int               aNbFaces = theGraph.Topo().NbShellFaces(aShellId);
       for (int i = 0; i < aNbFaces; ++i)
       {
-        const BRepGraph_NodeId aFaceDefId = theGraph.Topo().ShellFaceEntity(aShellId, i);
-        addFaceBoxOptimal(theGraph,
-                          BRepGraph_FaceId(aFaceDefId.Index),
-                          theBox,
-                          theUseTri,
-                          theUseShapeTol);
+        const BRepGraph_FaceId aFaceDefId = theGraph.Topo().ShellFaceEntity(aShellId, i);
+        addFaceBoxOptimal(theGraph, aFaceDefId, theBox, theUseTri, theUseShapeTol);
       }
       break;
     }

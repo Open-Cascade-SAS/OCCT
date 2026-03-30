@@ -89,11 +89,11 @@ void BRepGraphAlgo_Transform::applyLocationTransform(BRepGraph& theGraph, const 
   // Product::RootLocation participates in path composition
   // (PathView::stepLocation, walkToLevel), so all descendant
   // queries automatically include it.
-  const NCollection_Vector<BRepGraph_NodeId> aRoots = theGraph.Paths().RootProducts();
+  const NCollection_Vector<BRepGraph_ProductId> aRoots = theGraph.Paths().RootProducts();
   for (int anIdx = 0; anIdx < aRoots.Length(); ++anIdx)
   {
-    const BRepGraph_ProductId aRootId(aRoots.Value(anIdx).Index);
-    BRepGraph_MutGuard<BRepGraphInc::ProductDef> aProduct = theGraph.Builder().MutProduct(aRootId);
+    BRepGraph_MutGuard<BRepGraphInc::ProductDef> aProduct =
+      theGraph.Builder().MutProduct(aRoots.Value(anIdx));
     aProduct->RootLocation = aLoc * aProduct->RootLocation;
   }
 }

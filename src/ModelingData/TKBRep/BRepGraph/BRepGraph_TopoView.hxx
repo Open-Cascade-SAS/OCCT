@@ -173,11 +173,11 @@ public:
   //! @param[in] theShell typed shell definition identifier
   [[nodiscard]] Standard_EXPORT int NbShellFaces(const BRepGraph_ShellId theShell) const;
 
-  //! Access face definition NodeId belonging to a shell by index.
+  //! Access face definition identifier belonging to a shell by index.
   //! @param[in] theShell typed shell definition identifier
   //! @param[in] theFaceIndex zero-based face index within the shell
-  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId ShellFaceEntity(const BRepGraph_ShellId theShell,
-                                                                 const int theFaceIndex) const;
+  [[nodiscard]] Standard_EXPORT BRepGraph_FaceId ShellFaceEntity(const BRepGraph_ShellId theShell,
+                                                                 const int               theFaceIndex) const;
 
   //! Total number of nodes in the graph (all topology + assembly kinds).
   [[nodiscard]] Standard_EXPORT int NbNodes() const;

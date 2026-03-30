@@ -166,7 +166,7 @@ TEST(BRepGraphAlgo_UVBoundsTest, CachedAPI_AddGet_Consistent)
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GE(aGraph.Topo().NbFaces(), 1);
 
-  const BRepGraph_NodeId aFaceNode = aGraph.Topo().Face(BRepGraph_FaceId(0)).Id;
+  const BRepGraph_FaceId aFaceNode = BRepGraph_FaceId(0);
 
   // AddCached computes and stores.
   BRepGraphAlgo_UVBounds::CachedData aAdded = BRepGraphAlgo_UVBounds::AddCached(aGraph, aFaceNode);
@@ -191,7 +191,7 @@ TEST(BRepGraphAlgo_UVBoundsTest, CachedAPI_Invalidate_ClearsCache)
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GE(aGraph.Topo().NbFaces(), 1);
 
-  const BRepGraph_NodeId aFaceNode = aGraph.Topo().Face(BRepGraph_FaceId(0)).Id;
+  const BRepGraph_FaceId aFaceNode = BRepGraph_FaceId(0);
 
   // Populate cache.
   BRepGraphAlgo_UVBounds::AddCached(aGraph, aFaceNode);
