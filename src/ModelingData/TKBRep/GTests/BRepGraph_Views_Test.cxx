@@ -289,6 +289,51 @@ TEST_F(BRepGraph_ViewsTest, RefsView_ActiveCounts_MatchFreshBuild)
   EXPECT_EQ(myGraph.Refs().NbActiveOccurrenceRefs(), myGraph.Refs().NbOccurrenceRefs());
 }
 
+TEST_F(BRepGraph_ViewsTest, RefsView_ActiveRefIdsOf_MatchFreshBuild)
+{
+  const BRepGraph_ShellId aShellId(0);
+  const BRepGraph_FaceId aFaceId(0);
+  const BRepGraph_WireId aWireId(0);
+  const BRepGraph_SolidId aSolidId(0);
+
+  EXPECT_EQ(myGraph.Refs().ActiveFaceRefIdsOf(aShellId).Length(),
+            myGraph.Refs().FaceRefIdsOf(aShellId).Length());
+  EXPECT_EQ(myGraph.Refs().ActiveWireRefIdsOf(aFaceId).Length(),
+            myGraph.Refs().WireRefIdsOf(aFaceId).Length());
+  EXPECT_EQ(myGraph.Refs().ActiveCoEdgeRefIdsOf(aWireId).Length(),
+            myGraph.Refs().CoEdgeRefIdsOf(aWireId).Length());
+  EXPECT_EQ(myGraph.Refs().ActiveShellRefIdsOf(aSolidId).Length(),
+            myGraph.Refs().ShellRefIdsOf(aSolidId).Length());
+}
+
+TEST_F(BRepGraph_ViewsTest, RefsView_ActiveFaceRefIdsOf_FiltersRemoved)
+{
+  const BRepGraph_ShellId aShellId(0);
+  const NCollection_Vector<BRepGraph_FaceRefId>& aFaceRefs = myGraph.Refs().FaceRefIdsOf(aShellId);
+  ASSERT_GT(aFaceRefs.Length(), 0);
+
+  {
+    BRepGraph_MutGuard<BRepGraphInc::FaceRef> aFaceRef = myGraph.Builder().MutFaceRef(aFaceRefs.Value(0));
+    aFaceRef->IsRemoved                               = true;
+  }
+
+  EXPECT_EQ(myGraph.Refs().ActiveFaceRefIdsOf(aShellId).Length(), aFaceRefs.Length() - 1);
+}
+
+TEST_F(BRepGraph_ViewsTest, RefsView_VertexRefIdsOfEdge_ContainsBoundaryVertices)
+{
+  const NCollection_Vector<BRepGraph_VertexRefId> aVertexRefs =
+    myGraph.Refs().VertexRefIdsOf(BRepGraph_EdgeId(0));
+
+  EXPECT_GE(aVertexRefs.Length(), 2);
+  for (int i = 0; i < aVertexRefs.Length(); ++i)
+  {
+    const BRepGraphInc::VertexRef& aRef = myGraph.Refs().Vertex(aVertexRefs.Value(i));
+    EXPECT_FALSE(aRef.IsRemoved);
+    EXPECT_TRUE(aRef.VertexDefId.IsValid(myGraph.Topo().NbVertices()));
+  }
+}
+
 // ---------- ShapesView ----------
 
 TEST_F(BRepGraph_ViewsTest, ShapesView_Shape_NonNull)

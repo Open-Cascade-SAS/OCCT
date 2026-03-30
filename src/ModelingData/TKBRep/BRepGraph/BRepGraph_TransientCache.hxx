@@ -226,7 +226,7 @@ class BRepGraph_TransientCache
 {
 public:
   //! Number of Kind enum slots to cover (0..11, with gap at 9).
-  static constexpr int THE_KIND_COUNT = static_cast<int>(BRepGraph_NodeId::Kind::Occurrence) + 1;
+  static constexpr int THE_KIND_COUNT = BRepGraph_NodeId::THE_KIND_COUNT;
 
   //! Default number of cache-kind slots reserved after Build().
   static constexpr int THE_DEFAULT_RESERVED_KIND_COUNT = 16;
