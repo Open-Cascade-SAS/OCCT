@@ -147,9 +147,9 @@ int BRepGraph_CacheKindRegistry::NbRegistered()
 
 void BRepGraph_TransientCache::ensureKind(const int theKindSlot)
 {
-  while (theKindSlot >= myKinds.Length())
+  if (theKindSlot >= myKinds.Length())
   {
-    myKinds.Append(CacheKindSlot());
+    myKinds.SetValue(theKindSlot, CacheKindSlot());
   }
 }
 
@@ -162,9 +162,9 @@ BRepGraph_TransientCache::CacheSlot& BRepGraph_TransientCache::changeSlot(
   ensureKind(theKindSlot);
   const int                      aKindIdx = static_cast<int>(theNode.NodeKind);
   NCollection_Vector<CacheSlot>& aVec = myKinds.ChangeValue(theKindSlot).myNodeKinds[aKindIdx].mySlots;
-  while (theNode.Index >= aVec.Length())
+  if (theNode.Index >= aVec.Length())
   {
-    aVec.Append(CacheSlot());
+    return aVec.SetValue(theNode.Index, CacheSlot());
   }
   return aVec.ChangeValue(theNode.Index);
 }
@@ -207,10 +207,9 @@ void BRepGraph_TransientCache::Reserve(const int theKindCount, const int theCoun
     for (int aKindIdx = 0; aKindIdx < THE_KIND_COUNT; ++aKindIdx)
     {
       const int aCount = theCounts[aKindIdx];
-      NCollection_Vector<CacheSlot>& aVec = aKindSlotData.myNodeKinds[aKindIdx].mySlots;
-      while (aVec.Length() < aCount)
+      if (aCount > 0 && aCount > aKindSlotData.myNodeKinds[aKindIdx].mySlots.Length())
       {
-        aVec.Append(CacheSlot());
+        aKindSlotData.myNodeKinds[aKindIdx].mySlots.SetValue(aCount - 1, CacheSlot());
       }
     }
   }

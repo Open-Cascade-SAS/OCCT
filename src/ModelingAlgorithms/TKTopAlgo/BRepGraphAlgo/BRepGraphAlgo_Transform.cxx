@@ -147,9 +147,13 @@ BRepGraph BRepGraphAlgo_Transform::TransformFace(const BRepGraph&       theGraph
     theCopyGeom || theTrsf.IsNegative()
     || (std::abs(std::abs(theTrsf.ScaleFactor()) - 1.) > TopLoc_Location::ScalePrec());
 
+  // Skip transient cache reservation for temporary transform graphs
+  // that are only used for reconstruction and then discarded.
+  constexpr bool THE_RESERVE_CACHE = false;
+
   if (useGeomModif)
   {
-    BRepGraph aResult = BRepGraphAlgo_Copy::CopyFace(theGraph, theFace, true);
+    BRepGraph aResult = BRepGraphAlgo_Copy::CopyFace(theGraph, theFace, true, THE_RESERVE_CACHE);
     if (!aResult.IsDone())
       return aResult;
 
@@ -157,7 +161,7 @@ BRepGraph BRepGraphAlgo_Transform::TransformFace(const BRepGraph&       theGraph
     return aResult;
   }
 
-  BRepGraph aResult = BRepGraphAlgo_Copy::CopyFace(theGraph, theFace, false);
+  BRepGraph aResult = BRepGraphAlgo_Copy::CopyFace(theGraph, theFace, false, THE_RESERVE_CACHE);
   if (!aResult.IsDone())
     return aResult;
 

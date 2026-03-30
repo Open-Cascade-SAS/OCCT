@@ -68,9 +68,7 @@ public:
       if (aKindIdx < 0 || aKindIdx >= THE_KIND_COUNT)
         return;
       NCollection_Vector<TopoDS_Shape>& aVec = myKinds[aKindIdx];
-      while (theNode.Index >= aVec.Length())
-        aVec.Append(TopoDS_Shape());
-      aVec.ChangeValue(theNode.Index) = theShape;
+      aVec.SetValue(theNode.Index, theShape);
     }
 
     //! Check if a node is already cached.

@@ -792,12 +792,13 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(const BRepGraphInc_Storage&
   }
 
   // Add direct INTERNAL/EXTERNAL vertex children.
-  for (int aRefIdx = 0; aRefIdx < theStorage.NbVertexRefs(); ++aRefIdx)
+  for (int aRefOrd = 0; aRefOrd < aFace.VertexRefIds.Length(); ++aRefOrd)
   {
-    const BRepGraphInc::VertexRef& aVR = theStorage.VertexRef(BRepGraph_VertexRefId(aRefIdx));
-    if (aVR.ParentId != aFaceNodeId || aVR.IsRemoved)
+    const BRepGraph_VertexRefId aVRefId = aFace.VertexRefIds.Value(aRefOrd);
+    if (!aVRefId.IsValid(theStorage.NbVertexRefs()))
       continue;
-    if (!aVR.VertexDefId.IsValid())
+    const BRepGraphInc::VertexRef& aVR = theStorage.VertexRef(aVRefId);
+    if (aVR.IsRemoved || !aVR.VertexDefId.IsValid())
       continue;
     const BRepGraphInc::VertexDef& aVtxEnt    = theStorage.Vertex(aVR.VertexDefId);
     BRepGraph_NodeId               aVtxId     = aVR.VertexDefId;

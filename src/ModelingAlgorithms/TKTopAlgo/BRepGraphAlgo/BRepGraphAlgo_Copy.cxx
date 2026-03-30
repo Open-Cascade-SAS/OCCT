@@ -390,7 +390,8 @@ BRepGraph BRepGraphAlgo_Copy::Perform(const BRepGraph& theGraph, bool theCopyGeo
 
 BRepGraph BRepGraphAlgo_Copy::CopyFace(const BRepGraph&       theGraph,
                                        const BRepGraph_FaceId theFace,
-                                       const bool             theCopyGeom)
+                                       const bool             theCopyGeom,
+                                       const bool             theReserveCache)
 {
   BRepGraph aResult;
   if (!theGraph.IsDone() || theFace.Index < 0 || theFace.Index >= theGraph.Topo().NbFaces())
@@ -612,6 +613,8 @@ BRepGraph BRepGraphAlgo_Copy::CopyFace(const BRepGraph&       theGraph,
   aResult.data()->myIsDone = true;
 
   // Pre-allocate transient cache for lock-free parallel access on the copied graph.
+  // Skip for short-lived temporary graphs where cache is never queried.
+  if (theReserveCache)
   {
     BRepGraphInc_Storage& aStorage = aResult.incStorage();
     int aCounts[BRepGraph_TransientCache::THE_KIND_COUNT] = {};

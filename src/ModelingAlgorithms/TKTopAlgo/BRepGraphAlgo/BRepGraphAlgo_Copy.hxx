@@ -54,13 +54,16 @@ public:
                                                          bool             theCopyGeom = true);
 
   //! Copy a single face sub-graph.
-  //! @param[in] theGraph    a pre-built BRepGraph
-  //! @param[in] theFace     face definition identifier in the graph
-  //! @param[in] theCopyGeom if true, geometry is deep-copied
+  //! @param[in] theGraph        a pre-built BRepGraph
+  //! @param[in] theFace         face definition identifier in the graph
+  //! @param[in] theCopyGeom     if true, geometry is deep-copied
+  //! @param[in] theReserveCache if true (default), pre-allocates transient cache;
+  //!                            pass false for short-lived temporary graphs
   //! @return a new BRepGraph containing only the specified face and its dependencies
   [[nodiscard]] Standard_EXPORT static BRepGraph CopyFace(const BRepGraph&       theGraph,
                                                           const BRepGraph_FaceId theFace,
-                                                          const bool theCopyGeom = true);
+                                                          const bool theCopyGeom     = true,
+                                                          const bool theReserveCache = true);
 
 private:
   BRepGraphAlgo_Copy() = delete;
