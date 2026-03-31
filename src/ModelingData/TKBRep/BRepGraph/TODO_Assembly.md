@@ -91,7 +91,7 @@ fall back to the referenced product if the occurrence has no override.
 **Rethink**: An older draft proposed a separate assembly helper covering
 `ResolveAttribute()`, `LeafParts()`, and `OccurrencePath()`. Since then:
 - `OccurrencePath` → now covered by `PathView::PathsTo()` and `PathView::OccurrenceLocation()`
-- `LeafParts` → achievable via `BRepGraph_Explorer` from a Product root with target `Kind::Face` or `Kind::Solid`
+- `LeafParts` → achievable via `BRepGraph_ChildExplorer` from a Product root with target `Kind::Face` or `Kind::Solid`
 
 Only `ResolveAttribute` remains genuinely useful. Two options:
 1. **Template helper on BRepGraph_Layer**: `ResolveForOccurrence(occId)` that checks occurrence then falls back to product. Simple, no new file.
@@ -141,7 +141,7 @@ Assembly Attribute Resolution ─────────┘ (deferred until DE 
 | RAII guards (`MutProduct()`, `MutOccurrence()`) | `BRepGraph` |
 | `OccurrenceLocation()` | `PathView` |
 | Occurrence path, location, attribute context | `PathView` |
-| Assembly traversal into topology | `BRepGraph_Explorer` |
+| Assembly traversal into topology | `BRepGraph_ChildExplorer` |
 | Reverse index (product→occurrences) | `BRepGraphInc_ReverseIndex` |
 | Removal cascade (product→occurrences) | `BuilderView::RemoveNode()` / `RemoveSubgraph()` |
 | Compact remap | `BRepGraphAlgo_Compact` |

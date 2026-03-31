@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepGraph_Explorer.hxx>
+#include <BRepGraph_ChildExplorer.hxx>
 #include <BRepGraph_PathView.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_TopoView.hxx>
@@ -20,90 +20,142 @@
 
 //=================================================================================================
 
-BRepGraph_Explorer::BRepGraph_Explorer(const BRepGraph&       theGraph,
-                                       const BRepGraph_NodeId theRoot,
-                                       BRepGraph_NodeId::Kind theTargetKind)
+BRepGraph_ChildExplorer::BRepGraph_ChildExplorer(const BRepGraph&       theGraph,
+                                                 const BRepGraph_NodeId theRoot,
+                                                 BRepGraph_NodeId::Kind theTargetKind)
 {
-  Init(theGraph, theRoot, theTargetKind, true, true);
+  Init(theGraph, theRoot, theTargetKind, true, true, TraversalMode::Recursive);
 }
 
 //=================================================================================================
 
-BRepGraph_Explorer::BRepGraph_Explorer(const BRepGraph&          theGraph,
-                                       const BRepGraph_ProductId theProduct,
-                                       BRepGraph_NodeId::Kind    theTargetKind)
+BRepGraph_ChildExplorer::BRepGraph_ChildExplorer(const BRepGraph&          theGraph,
+                                                 const BRepGraph_ProductId theProduct,
+                                                 BRepGraph_NodeId::Kind    theTargetKind)
 {
-  Init(theGraph, BRepGraph_NodeId(theProduct), theTargetKind, true, true);
+  Init(theGraph, BRepGraph_NodeId(theProduct), theTargetKind, true, true, TraversalMode::Recursive);
 }
 
 //=================================================================================================
 
-BRepGraph_Explorer::BRepGraph_Explorer(const BRepGraph&       theGraph,
-                                       const BRepGraph_NodeId theRoot,
-                                       BRepGraph_NodeId::Kind theTargetKind,
-                                       const bool             theCumLoc,
-                                       const bool             theCumOri)
+BRepGraph_ChildExplorer::BRepGraph_ChildExplorer(const BRepGraph&       theGraph,
+                                                 const BRepGraph_NodeId theRoot,
+                                                 BRepGraph_NodeId::Kind theTargetKind,
+                                                 const TraversalMode    theMode)
 {
-  Init(theGraph, theRoot, theTargetKind, theCumLoc, theCumOri);
+  Init(theGraph, theRoot, theTargetKind, true, true, theMode);
 }
 
 //=================================================================================================
 
-BRepGraph_Explorer::BRepGraph_Explorer(const BRepGraph&          theGraph,
-                                       const BRepGraph_ProductId theProduct,
-                                       BRepGraph_NodeId::Kind    theTargetKind,
-                                       const bool                theCumLoc,
-                                       const bool                theCumOri)
+BRepGraph_ChildExplorer::BRepGraph_ChildExplorer(const BRepGraph&          theGraph,
+                                                 const BRepGraph_ProductId theProduct,
+                                                 BRepGraph_NodeId::Kind    theTargetKind,
+                                                 const TraversalMode       theMode)
 {
-  Init(theGraph, BRepGraph_NodeId(theProduct), theTargetKind, theCumLoc, theCumOri);
+  Init(theGraph, BRepGraph_NodeId(theProduct), theTargetKind, true, true, theMode);
 }
 
 //=================================================================================================
 
-void BRepGraph_Explorer::Init(const BRepGraph&       theGraph,
-                              const BRepGraph_NodeId theRoot,
-                              BRepGraph_NodeId::Kind theTargetKind)
+BRepGraph_ChildExplorer::BRepGraph_ChildExplorer(const BRepGraph&       theGraph,
+                                                 const BRepGraph_NodeId theRoot,
+                                                 BRepGraph_NodeId::Kind theTargetKind,
+                                                 const bool             theCumLoc,
+                                                 const bool             theCumOri,
+                                                 const TraversalMode    theMode)
 {
-  Init(theGraph, theRoot, theTargetKind, myCumLoc, myCumOri);
+  Init(theGraph, theRoot, theTargetKind, theCumLoc, theCumOri, theMode);
 }
 
 //=================================================================================================
 
-void BRepGraph_Explorer::Init(const BRepGraph&          theGraph,
-                              const BRepGraph_ProductId theProduct,
-                              BRepGraph_NodeId::Kind    theTargetKind)
+BRepGraph_ChildExplorer::BRepGraph_ChildExplorer(const BRepGraph&          theGraph,
+                                                 const BRepGraph_ProductId theProduct,
+                                                 BRepGraph_NodeId::Kind    theTargetKind,
+                                                 const bool                theCumLoc,
+                                                 const bool                theCumOri,
+                                                 const TraversalMode       theMode)
 {
-  Init(theGraph, BRepGraph_NodeId(theProduct), theTargetKind, myCumLoc, myCumOri);
+  Init(theGraph, BRepGraph_NodeId(theProduct), theTargetKind, theCumLoc, theCumOri, theMode);
 }
 
 //=================================================================================================
 
-void BRepGraph_Explorer::Init(const BRepGraph&       theGraph,
-                              const BRepGraph_NodeId theRoot,
-                              BRepGraph_NodeId::Kind theTargetKind,
-                              const bool             theCumLoc,
-                              const bool             theCumOri)
+BRepGraph_ChildExplorer::BRepGraph_ChildExplorer(const BRepGraph&         theGraph,
+                                                 const BRepGraph_NodeId   theRoot,
+                                                 BRepGraph_NodeId::Kind   theTargetKind,
+                                                 const TopLoc_Location&   theStartLoc,
+                                                 const TopAbs_Orientation theStartOri,
+                                                 const TraversalMode      theMode)
+{
+  Init(theGraph, theRoot, theTargetKind, theStartLoc, theStartOri, theMode);
+}
+
+//=================================================================================================
+
+void BRepGraph_ChildExplorer::Init(const BRepGraph&       theGraph,
+                                   const BRepGraph_NodeId theRoot,
+                                   BRepGraph_NodeId::Kind theTargetKind)
+{
+  Init(theGraph, theRoot, theTargetKind, myCumLoc, myCumOri, myMode);
+}
+
+//=================================================================================================
+
+void BRepGraph_ChildExplorer::Init(const BRepGraph&          theGraph,
+                                   const BRepGraph_ProductId theProduct,
+                                   BRepGraph_NodeId::Kind    theTargetKind)
+{
+  Init(theGraph, BRepGraph_NodeId(theProduct), theTargetKind, myCumLoc, myCumOri, myMode);
+}
+
+//=================================================================================================
+
+void BRepGraph_ChildExplorer::Init(const BRepGraph&       theGraph,
+                                   const BRepGraph_NodeId theRoot,
+                                   BRepGraph_NodeId::Kind theTargetKind,
+                                   const bool             theCumLoc,
+                                   const bool             theCumOri,
+                                   const TraversalMode    theMode)
+{
+  myCumLoc = theCumLoc;
+  myCumOri = theCumOri;
+  myMode   = theMode;
+  Init(theGraph, theRoot, theTargetKind, TopLoc_Location(), TopAbs_FORWARD, theMode);
+}
+
+//=================================================================================================
+
+void BRepGraph_ChildExplorer::Init(const BRepGraph&         theGraph,
+                                   const BRepGraph_NodeId   theRoot,
+                                   BRepGraph_NodeId::Kind   theTargetKind,
+                                   const TopLoc_Location&   theStartLoc,
+                                   const TopAbs_Orientation theStartOri,
+                                   const TraversalMode      theMode)
 {
   myGraph      = &theGraph;
   myTargetKind = theTargetKind;
   myStackTop   = -1;
   myHasMore    = false;
-  myCumLoc     = theCumLoc;
-  myCumOri     = theCumOri;
+  myMode       = theMode;
   myRoot       = theRoot;
+  myCurrent    = BRepGraph_NodeId();
+  myLocation   = theStartLoc;
+  myOrientation = theStartOri;
 
   if (!theRoot.IsValid())
     return;
 
-  // Check pre-resolution root match (for CoEdge, Occurrence targets).
-  if (theRoot.NodeKind == myTargetKind)
+  // Check pre-resolution root match (for CoEdge, Occurrence targets) only in recursive mode.
+  if (myMode == TraversalMode::Recursive && theRoot.NodeKind == myTargetKind)
   {
     const BRepGraphInc::BaseDef* aRootDef = theGraph.Topo().TopoEntity(theRoot);
     if (aRootDef != nullptr && !aRootDef->IsRemoved)
     {
       myCurrent     = theRoot;
-      myLocation    = TopLoc_Location();
-      myOrientation = TopAbs_FORWARD;
+      myLocation    = theStartLoc;
+      myOrientation = theStartOri;
       myMatchStep   = -1;
       myHasMore     = true;
       return;
@@ -112,8 +164,8 @@ void BRepGraph_Explorer::Init(const BRepGraph&       theGraph,
 
   // Resolve 1:1 transitions from root.
   BRepGraph_NodeId    aResolved = theRoot;
-  TopLoc_Location     aRootLoc;
-  TopAbs_Orientation  aRootOri = TopAbs_FORWARD;
+  TopLoc_Location     aRootLoc = theStartLoc;
+  TopAbs_Orientation  aRootOri = theStartOri;
   resolve1to1(aResolved, aRootLoc, aRootOri);
 
   if (!aResolved.IsValid())
@@ -125,7 +177,7 @@ void BRepGraph_Explorer::Init(const BRepGraph&       theGraph,
     return;
 
   // Post-resolution root match (e.g., root=CoEdge, target=Edge).
-  if (aResolved.NodeKind == myTargetKind)
+  if (myMode == TraversalMode::Recursive && aResolved.NodeKind == myTargetKind)
   {
     myCurrent     = aResolved;
     myLocation    = aRootLoc;
@@ -148,25 +200,26 @@ void BRepGraph_Explorer::Init(const BRepGraph&       theGraph,
 
 //=================================================================================================
 
-void BRepGraph_Explorer::Init(const BRepGraph&          theGraph,
-                              const BRepGraph_ProductId theProduct,
-                              BRepGraph_NodeId::Kind    theTargetKind,
-                              const bool                theCumLoc,
-                              const bool                theCumOri)
+void BRepGraph_ChildExplorer::Init(const BRepGraph&          theGraph,
+                                   const BRepGraph_ProductId theProduct,
+                                   BRepGraph_NodeId::Kind    theTargetKind,
+                                   const bool                theCumLoc,
+                                   const bool                theCumOri,
+                                   const TraversalMode       theMode)
 {
-  Init(theGraph, BRepGraph_NodeId(theProduct), theTargetKind, theCumLoc, theCumOri);
+  Init(theGraph, BRepGraph_NodeId(theProduct), theTargetKind, theCumLoc, theCumOri, theMode);
 }
 
 //=================================================================================================
 
-void BRepGraph_Explorer::Next()
+void BRepGraph_ChildExplorer::Next()
 {
   advance();
 }
 
 //=================================================================================================
 
-void BRepGraph_Explorer::advance()
+void BRepGraph_ChildExplorer::advance()
 {
   using Kind = BRepGraph_NodeId::Kind;
   const BRepGraph::TopoView& aDefs = myGraph->Topo();
@@ -491,7 +544,7 @@ void BRepGraph_Explorer::advance()
       continue;
 
     // Descend if this kind can contain the target.
-    if (canContainTarget(aChildNode.NodeKind, myTargetKind))
+    if (myMode == TraversalMode::Recursive && canContainTarget(aChildNode.NodeKind, myTargetKind))
     {
       StackFrame aChildFrame;
       aChildFrame.Node           = aChildNode;
@@ -507,9 +560,9 @@ void BRepGraph_Explorer::advance()
 
 //=================================================================================================
 
-void BRepGraph_Explorer::resolve1to1(BRepGraph_NodeId&   theNode,
-                                     TopLoc_Location&    theLoc,
-                                     TopAbs_Orientation& theOri) const
+void BRepGraph_ChildExplorer::resolve1to1(BRepGraph_NodeId&   theNode,
+                                          TopLoc_Location&    theLoc,
+                                          TopAbs_Orientation& theOri) const
 {
   using Kind = BRepGraph_NodeId::Kind;
   const BRepGraph::TopoView& aDefs = myGraph->Topo();
@@ -582,8 +635,8 @@ void BRepGraph_Explorer::resolve1to1(BRepGraph_NodeId&   theNode,
 
 //=================================================================================================
 
-bool BRepGraph_Explorer::canContainTarget(const BRepGraph_NodeId::Kind theParentKind,
-                                          const BRepGraph_NodeId::Kind theTargetKind)
+bool BRepGraph_ChildExplorer::canContainTarget(const BRepGraph_NodeId::Kind theParentKind,
+                                               const BRepGraph_NodeId::Kind theTargetKind)
 {
   // Containment depth: lower value = "larger" container that can hold higher values.
   // Indexed by Kind enum (Solid=0, Shell=1, ..., Occurrence=11).
@@ -611,7 +664,7 @@ bool BRepGraph_Explorer::canContainTarget(const BRepGraph_NodeId::Kind theParent
 
 //=================================================================================================
 
-void BRepGraph_Explorer::pushFrame(const StackFrame& theFrame)
+void BRepGraph_ChildExplorer::pushFrame(const StackFrame& theFrame)
 {
   // Guard against pathological cycles (e.g., self-referencing compounds).
   // A valid DFS path cannot exceed the total node count in the graph.
@@ -630,7 +683,7 @@ void BRepGraph_Explorer::pushFrame(const StackFrame& theFrame)
 
 //=================================================================================================
 
-void BRepGraph_Explorer::popFrame()
+void BRepGraph_ChildExplorer::popFrame()
 {
   if (myStackTop >= 0)
     --myStackTop;
@@ -638,7 +691,7 @@ void BRepGraph_Explorer::popFrame()
 
 //=================================================================================================
 
-BRepGraph_TopologyPath BRepGraph_Explorer::CurrentPath(
+BRepGraph_TopologyPath BRepGraph_ChildExplorer::CurrentPath(
   const occ::handle<NCollection_BaseAllocator>& theAllocator) const
 {
   BRepGraph_TopologyPath aPath(myRoot, theAllocator);
@@ -651,7 +704,7 @@ BRepGraph_TopologyPath BRepGraph_Explorer::CurrentPath(
 
 //=================================================================================================
 
-TopLoc_Location BRepGraph_Explorer::LocationOf(const BRepGraph_NodeId::Kind theKind) const
+TopLoc_Location BRepGraph_ChildExplorer::LocationOf(const BRepGraph_NodeId::Kind theKind) const
 {
   // Scan step frames (skip root at index 0) to match "first step" contract.
   for (int i = 1; i <= myStackTop; ++i)
@@ -667,7 +720,7 @@ TopLoc_Location BRepGraph_Explorer::LocationOf(const BRepGraph_NodeId::Kind theK
 
 //=================================================================================================
 
-BRepGraph_NodeId BRepGraph_Explorer::NodeOf(const BRepGraph_NodeId::Kind theKind) const
+BRepGraph_NodeId BRepGraph_ChildExplorer::NodeOf(const BRepGraph_NodeId::Kind theKind) const
 {
   // Scan step frames (skip root at index 0) to match "first step" contract.
   for (int i = 1; i <= myStackTop; ++i)
@@ -682,7 +735,7 @@ BRepGraph_NodeId BRepGraph_Explorer::NodeOf(const BRepGraph_NodeId::Kind theKind
 
 //=================================================================================================
 
-TopLoc_Location BRepGraph_Explorer::LocationAt(const int theLevel) const
+TopLoc_Location BRepGraph_ChildExplorer::LocationAt(const int theLevel) const
 {
   // Level 0 = after first step = frame[1].
   const int aFrameIdx = theLevel + 1;
@@ -695,7 +748,7 @@ TopLoc_Location BRepGraph_Explorer::LocationAt(const int theLevel) const
 
 //=================================================================================================
 
-BRepGraph_NodeId BRepGraph_Explorer::NodeAt(const int theLevel) const
+BRepGraph_NodeId BRepGraph_ChildExplorer::NodeAt(const int theLevel) const
 {
   const int aFrameIdx = theLevel + 1;
   if (aFrameIdx <= myStackTop)

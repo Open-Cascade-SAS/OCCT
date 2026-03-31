@@ -96,7 +96,8 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 
 ### ~~Explorer / TopologyPath / PathView~~ - DONE (2026-03-25)
 - `BRepGraph_TopologyPath`: root-to-leaf step sequence spanning assembly and topology relations
-- `BRepGraph_Explorer`: context-preserving hierarchy walker visiting each occurrence (not just definitions)
+- `BRepGraph_ChildExplorer`: context-preserving downward walker visiting each occurrence (not just definitions)
+- `BRepGraph_ParentExplorer`: path-aware upward walker with accumulated context per ancestor occurrence
 - `PathView` via `Paths()`: GlobalLocation, GlobalOrientation, PathsTo, NodeLocations, CommonAncestor, FilterByInclude/Exclude, IsAncestorOf, AllNodesOnPath
 - `BRepGraph_SubGraph`: non-owning view over connected component for parallel processing
 - `BRepGraph_PCurveContext`: composite key (Edge, Face, Orientation) for PCurve identification

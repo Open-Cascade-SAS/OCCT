@@ -30,7 +30,7 @@
 //! containers, and topology entities are all just steps. This mirrors
 //! Parasolid's PK_TOPOL_traverse pattern.
 //!
-//! Paths are produced by BRepGraph_Explorer (top-down discovery)
+//! Paths are produced by BRepGraph_ChildExplorer (top-down discovery)
 //! or PathView::PathsTo (bottom-up reverse lookup).
 //! Pass paths to PathView for location, orientation, and entity queries.
 //!
@@ -181,7 +181,8 @@ public:
   }
 
 private:
-  friend class BRepGraph_Explorer;
+  friend class BRepGraph_ChildExplorer;
+  friend class BRepGraph_ParentExplorer;
   friend class BRepGraph; // for PathView access
   friend struct std::hash<BRepGraph_TopologyPath>;
 

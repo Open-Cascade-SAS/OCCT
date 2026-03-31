@@ -17,9 +17,9 @@ set(OCCT_TKBRep_GTests_FILES
   BRepGraph_DeferredInvalidation_Test.cxx
   BRepGraph_MutationGen_Test.cxx
   BRepGraph_Convenience_Test.cxx
-  BRepGraph_ChildIterator_Test.cxx
   BRepGraph_EdgeCases_Test.cxx
-  BRepGraph_Explorer_Test.cxx
+  BRepGraph_ChildExplorer_Test.cxx
+  BRepGraph_ParentExplorer_Test.cxx
   BRepGraph_EventBus_Test.cxx
   BRepGraph_Geometry_Test.cxx
   BRepGraph_History_Test.cxx

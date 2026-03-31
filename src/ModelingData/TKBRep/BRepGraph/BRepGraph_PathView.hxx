@@ -31,10 +31,10 @@
 //! assembly-aware query layer built on top of those defs.
 //!
 //! ## Usage
-//! PathView methods consume paths produced by BRepGraph_Explorer or assembled
+//! PathView methods consume paths produced by BRepGraph_ChildExplorer or assembled
 //! explicitly via BRepGraph_TopologyPath.
 //! @code
-//!   BRepGraph_Explorer anExp(aGraph, BRepGraph_SolidId(0), Kind::Face);
+//!   BRepGraph_ChildExplorer anExp(aGraph, BRepGraph_SolidId(0), Kind::Face);
 //!   const occ::handle<NCollection_BaseAllocator> anAllocator = ...;
 //!   for (; anExp.More(); anExp.Next())
 //!   {
