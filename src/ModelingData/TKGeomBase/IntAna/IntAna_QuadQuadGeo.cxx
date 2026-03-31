@@ -563,6 +563,7 @@ void IntAna_QuadQuadGeo::Perform(const gp_Pln&      P,
   dist = A * X + B * Y + C * Z + D;
 
   double tolang    = Tolang;
+  double toltang   = Tol;
   bool   newparams = false;
 
   gp_Vec ldv(axec.Direction());
@@ -576,16 +577,26 @@ void IntAna_QuadQuadGeo::Perform(const gp_Pln&      P,
     {
       double sinda = std::abs(std::sin(dangle));
       double dif   = std::abs(sinda - Tol);
-      if (dif < Tol)
+      // When the cylinder face height H is known and small, use the deviation
+      // of the axis over this height (sinda * H) as an additional criterion.
+      // If the axis deviates from the plane by less than a small multiple of
+      // the tolerance over the full height of the face, the axis is effectively
+      // parallel for this face, and the Line intersection type should be used
+      // instead of the Ellipse (which degenerates for nearly-parallel cases).
+      if (dif < Tol || (H > 0. && sinda * H < 2. * Tol))
       {
-        tolang    = sinda * 2.;
+        tolang = sinda * 2.;
+        // Relax the linear tolerance so that the endpoint distance check
+        // in IntAna_IntConicQuad (P.Distance(aP2) > Tol) does not reject
+        // the parallel status when the deviation over H is small.
+        toltang   = std::max(Tol, sinda * H * 1.01);
         newparams = true;
       }
     }
   }
 
   nbint = 0;
-  IntAna_IntConicQuad inter(axec, P, tolang, Tol, H);
+  IntAna_IntConicQuad inter(axec, P, tolang, toltang, H);
 
   if (inter.IsParallel())
   {
